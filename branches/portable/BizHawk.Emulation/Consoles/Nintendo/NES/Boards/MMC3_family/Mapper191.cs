@@ -17,13 +17,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return false;
 			}
 
-			throw new InvalidOperationException("THIS MAPPER ISNT TESTED! WHAT GAME USES IT? PLEASE REPORT!");
-
 			//this board has 2k of chr ram
 			Cart.vram_size = 2;
 			BaseSetup();
 
-			return true;
+			throw new InvalidOperationException("THIS MAPPER ISNT TESTED! WHAT GAME USES IT? PLEASE REPORT!");
+
+			//return true;
 		}
 
 		public override byte ReadPPU(int addr)

@@ -94,7 +94,7 @@ namespace BizHawk.DiscSystem
 			string physicalPath;
 			long length;
 
-			public long Offset;
+			public long Offset = 0;
 
 			BufferedStream fs;
 			public void Dispose()

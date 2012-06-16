@@ -52,8 +52,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "IREM-H3001":
 					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0);
 					break;
-				case "IREM-H3001-FLEX":
-					break;
 				default:
 					return false;
 			}

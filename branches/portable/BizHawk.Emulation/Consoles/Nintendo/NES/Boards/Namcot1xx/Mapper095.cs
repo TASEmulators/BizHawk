@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//pretty much just one game. 
 	//wires the mapper outputs to control the nametables. check out the companion board TLSROM
-	public class Mapper095 : Namcot109Board_Base
+	public class Mapper095 : Namcot108Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -26,15 +26,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return true;
 		}
 
+		int RewireNametable(int addr, int bitsel)
+		{
+			int bank_1k = mapper.Get_CHRBank_1K(addr & 0x1FFF);
+			int nt = (bank_1k >> bitsel) & 1;
+			int ofs = addr & 0x3FF;
+			addr = 0x2000 + (nt << 10);
+			addr |= (ofs);
+			return addr;
+		}
+
+		//mapper 095's chief unique contribution is to add this nametable rewiring logic: CHR A15 directly controls CIRAM A10
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000) return base.ReadPPU(addr);
-			else return base.ReadPPU(RewireNametable_Mapper095_and_TLSROM(addr, 5));
+			else return base.ReadPPU(RewireNametable(addr, 5));
 		}
 		public override void WritePPU(int addr, byte value)
 		{
 			if (addr < 0x2000) base.WritePPU(addr, value);
-			else base.WritePPU(RewireNametable_Mapper095_and_TLSROM(addr, 5), value);
+			else base.WritePPU(RewireNametable(addr, 5), value);
 		}
 	}
 }

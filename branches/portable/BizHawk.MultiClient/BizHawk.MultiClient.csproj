@@ -285,6 +285,8 @@
     <Compile Include="NEStools\SpriteViewer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NutMuxer.cs" />
+    <Compile Include="NutWriter.cs" />
     <Compile Include="PCEtools\PCEBGCanvas.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -316,6 +318,12 @@
       <DependentUpon>HexColor.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\WatchCommon.cs" />
+    <Compile Include="VideoWriterChooserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VideoWriterChooserForm.Designer.cs">
+      <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="WavWriter.cs" />
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
@@ -368,6 +376,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="VideoWriterChooserForm.resx">
+      <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

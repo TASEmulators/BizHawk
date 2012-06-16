@@ -290,30 +290,27 @@ namespace BizHawk.MultiClient
 	{
 		public string FPS { get; set; }
 		public string MT { get; set; }
-		private Font MessageFont;
-		private Font AlertFont;
+		IBlitterFont MessageFont;
+		IBlitterFont AlertFont;
 		public void Dispose()
 		{
-			if (MessageFont != null)
-			{
-				MessageFont.Dispose();
-				MessageFont = null;
-			}
-			if (AlertFont != null)
-			{
-				AlertFont.Dispose();
-				AlertFont = null;
-			}
-		}
-		public OSDManager()
-		{
-			//MessageFont = new Font(Device, 16, 0, FontWeight.Bold, 1, false, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
-			//AlertFont = new Font(Device, 16, 0, FontWeight.ExtraBold, 1, true, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
-			MessageFont = new Font("Courier", 14, FontStyle.Bold, GraphicsUnit.Pixel);
-			AlertFont = new Font("Courier", 14, FontStyle.Bold, GraphicsUnit.Pixel);
+
 		}
 
-		private float GetX(Graphics g, int x, int anchor, Font font, string message)
+		public void Begin(IBlitter blitter)
+		{
+			MessageFont = blitter.GetFontType("MessageFont");
+			AlertFont = blitter.GetFontType("AlertFont");
+		}
+
+		public System.Drawing.Color FixedMessagesColor { get { return System.Drawing.Color.FromArgb(Global.Config.MessagesColor); } }
+		public System.Drawing.Color FixedAlertMessageColor { get { return System.Drawing.Color.FromArgb(Global.Config.AlertMessageColor); } }
+
+		public OSDManager()
+		{
+		}
+
+		private float GetX(IBlitter g, int x, int anchor, IBlitterFont font, string message)
 		{
 			var size = g.MeasureString(message, font);
 			//Rectangle rect = g.MeasureString(Sprite, message, new DrawTextFormat());
@@ -329,7 +326,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private float GetY(Graphics g, int y, int anchor, Font font, string message)
+		private float GetY(IBlitter g, int y, int anchor, IBlitterFont font, string message)
 		{
 			var size = g.MeasureString(message, font);
 			switch (anchor)
@@ -377,9 +374,9 @@ namespace BizHawk.MultiClient
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-        public void AddGUIText(string message, int x, int y, bool alert, Brush BackGround, Brush ForeColor, int anchor)
+		public void AddGUIText(string message, int x, int y, bool alert, Color BackGround, Color ForeColor, int anchor)
 		{
-            GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
+			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
 		}
 
 		public void ClearGUIText()
@@ -388,7 +385,7 @@ namespace BizHawk.MultiClient
 		}
 
 
-		public void DrawMessages(Graphics g)
+		public void DrawMessages(IBlitter g)
 		{
 			//todo - not so much brush object churn?
 
@@ -399,31 +396,29 @@ namespace BizHawk.MultiClient
 			{
 				float x = 3;
 				float y = g.ClipBounds.Height - (line * 18);
-				g.DrawString(messages[i].Message, MessageFont, Brushes.Black, x + 2, y + 2);
-				using(var brush = new SolidBrush(Color.FromArgb(Global.Config.MessagesColor)))
-					g.DrawString(messages[i].Message, MessageFont, brush, x, y);
+				g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+				g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 			}
 			for (int x = 0; x < GUITextList.Count; x++)
 			{
-                try
-                {
-				    float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-				    float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+				try
+				{
+					float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+					float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
 
-				    g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
-				    g.DrawString(GUITextList[x].Message, MessageFont, Brushes.Gray, posx + 1, posy + 1);
+					g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
+					g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
 
-				    if (GUITextList[x].Alert)
-					    using(var brush = new SolidBrush(Color.FromArgb(Global.Config.AlertMessageColor)))
-						    g.DrawString(GUITextList[x].Message, MessageFont, brush, posx,posy);
-				    else
-                        g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
-			    }
-                catch (Exception e)
-                {
-                    return;
-                }
-            }
+					if (GUITextList[x].Alert)
+						g.DrawString(GUITextList[x].Message, MessageFont, FixedMessagesColor, posx, posy);
+					else
+						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
+				}
+				catch (Exception e)
+				{
+					return;
+				}
+			}
 		}
 
 
@@ -450,16 +445,15 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Display all screen info objects like fps, frame counter, lag counter, and input display
 		/// </summary>
-		public void DrawScreenInfo(Graphics g)
+		public void DrawScreenInfo(IBlitter g)
 		{
 			if (Global.Config.DisplayFrameCounter)
 			{
 				string message = MakeFrameCounter();
 				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, MessageFont, message);
 				float y = GetY(g, Global.Config.DispFrameCy, Global.Config.DispFrameanchor, MessageFont, message);
-				g.DrawString(message, MessageFont, Brushes.Black, x + 1, y + 1);
-				using(var brush = new SolidBrush(Color.FromArgb(Global.Config.MessagesColor)))
-					g.DrawString(message, MessageFont, brush, x, y );
+				g.DrawString(message, MessageFont, Color.Black, x + 1, y + 1);
+					g.DrawString(message, MessageFont, Color.FromArgb(Global.Config.MessagesColor), x, y);
 			}
 			if (Global.Config.DisplayInput)
 			{
@@ -474,27 +468,24 @@ namespace BizHawk.MultiClient
 				else
 					c = Color.FromArgb(Global.Config.MessagesColor);
 
-				g.DrawString(input, MessageFont, Brushes.Black, x+1,y+1);
-				using(var brush = new SolidBrush(c))
-					g.DrawString(input, MessageFont, brush, x,y);
+				g.DrawString(input, MessageFont, Color.Black, x+1,y+1);
+				g.DrawString(input, MessageFont, c, x,y);
 			}
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
-				g.DrawString(MT, MessageFont, Brushes.Black,
+				g.DrawString(MT, MessageFont, Color.Black,
 				Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
 					Global.Config.DispFPSy + 1);
-				using(var brush = new SolidBrush(Color.FromArgb(Global.Config.MessagesColor)))
-					g.DrawString(MT, MessageFont, Brushes.Black,
-						Global.Config.DispFPSx, //TODO: Multitrack position variables
-						Global.Config.DispFPSy);
+				g.DrawString(MT, MessageFont, FixedMessagesColor,
+					Global.Config.DispFPSx, //TODO: Multitrack position variables
+					Global.Config.DispFPSy);
 			}
 			if (Global.Config.DisplayFPS && FPS != null)
 			{
 				float x = GetX(g, Global.Config.DispFPSx, Global.Config.DispFPSanchor, MessageFont, FPS);
 				float y = GetY(g, Global.Config.DispFPSy, Global.Config.DispFPSanchor, MessageFont, FPS);
-				g.DrawString(FPS, MessageFont, Brushes.Black, x + 1, y + 1);
-				using(var brush = new SolidBrush(Color.FromArgb(Global.Config.MessagesColor)))
-					g.DrawString(FPS, MessageFont, brush, x, y);
+				g.DrawString(FPS, MessageFont, Color.Black, x + 1, y + 1);
+				g.DrawString(FPS, MessageFont, FixedMessagesColor, x, y);
 			}
 
 			if (Global.Config.DisplayLagCounter)
@@ -505,21 +496,19 @@ namespace BizHawk.MultiClient
 				{
 					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
 					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
-					g.DrawString(MakeLagCounter(), AlertFont, Brushes.Black,
+					g.DrawString(MakeLagCounter(), AlertFont, Color.Black,
 					Global.Config.DispLagx + 1,
 						Global.Config.DispLagy + 1);
-					using(var brush = new SolidBrush(Color.FromArgb(Global.Config.AlertMessageColor)))
-						g.DrawString(MakeLagCounter(), AlertFont, brush,
-						Global.Config.DispLagx,
-							Global.Config.DispLagy);
+					g.DrawString(MakeLagCounter(), AlertFont, FixedAlertMessageColor,
+					Global.Config.DispLagx,
+						Global.Config.DispLagy);
 				}
 				else
 				{
 					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, MessageFont, counter);
 					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, MessageFont, counter);
-					g.DrawString(counter, MessageFont, Brushes.Black, x + 1, y + 1);
-					using(var brush = new SolidBrush(Color.FromArgb(Global.Config.MessagesColor)))
-						g.DrawString(counter, MessageFont, brush, x , y );
+					g.DrawString(counter, MessageFont, Color.Black, x + 1, y + 1);
+					g.DrawString(counter, MessageFont, FixedMessagesColor, x , y );
 				}
 
 			}
@@ -528,26 +517,26 @@ namespace BizHawk.MultiClient
 				string rerec = MakeRerecordCount();
 				float x = GetX(g, Global.Config.DispRecx, Global.Config.DispRecanchor, MessageFont, rerec);
 				float y = GetY(g, Global.Config.DispRecy, Global.Config.DispRecanchor, MessageFont, rerec);
-				g.DrawString(rerec, MessageFont, Brushes.Black, x + 1, y + 1);
-				using(var brush = new SolidBrush(Color.FromArgb(Global.Config.MessagesColor)))
-				g.DrawString(rerec, MessageFont, brush, x , y);
+				g.DrawString(rerec, MessageFont, Color.Black, x + 1, y + 1);
+				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
-				
 				int r = (int)g.ClipBounds.Width;
 				Point[] p = { new Point(r - 20, 2), 
 								new Point(r - 4, 12), 
 								new Point(r - 20, 22) };
-				g.FillPolygon(new SolidBrush(Color.Red), p);
-				g.DrawPolygon(new Pen(new SolidBrush(Color.Pink)), p);
+				//TODO
+				//g.FillPolygon(new SolidBrush(Color.Red), p);
+				//g.DrawPolygon(new Pen(new SolidBrush(Color.Pink)), p);
 
 			}
 			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 			{
-				g.FillEllipse(new SolidBrush(Color.Red), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
-				g.DrawEllipse(new Pen(new SolidBrush(Color.Pink)), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
+				//TODO
+				//g.FillEllipse(new SolidBrush(Color.Red), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
+				//g.DrawEllipse(new Pen(new SolidBrush(Color.Pink)), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
 			}
 
 			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE && Global.Config.DisplaySubtitles)
@@ -557,11 +546,10 @@ namespace BizHawk.MultiClient
 				if (s == null) return;
 				for (int i = 0; i < s.Count; i++)
 				{
-					g.DrawString(s[i].Message, MessageFont, Brushes.Black,
+					g.DrawString(s[i].Message, MessageFont, Color.Black,
 						s[i].X + 1, s[i].Y + 1);
-					using (var brush = new SolidBrush(Color.FromArgb((int)s[i].Color)))
-						g.DrawString(s[i].Message, MessageFont, brush,
-											s[i].X, s[i].Y);
+					g.DrawString(s[i].Message, MessageFont, Color.FromArgb((int)s[i].Color),
+										s[i].X, s[i].Y);
 				}
 			}
 			 
@@ -585,12 +573,6 @@ namespace BizHawk.MultiClient
 		{
 			//have at least something here at the start
 			luaNativeSurfacePreOSD = new DisplaySurface(1, 1); 
-			
-			wakeupEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
-			suspendReplyEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
-			displayThread = new Thread(ThreadProc);
-			displayThread.IsBackground = true;
-			displayThread.Start();
 		}
 
 		volatile bool VsyncToggle = false;
@@ -598,31 +580,50 @@ namespace BizHawk.MultiClient
 		SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
-			VsyncRequested = Global.Config.DisplayVSync;
-
-			//needsclear = false because we're about to clobber the data with AcceptIntArray
 			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
-			newPendingSurface.AcceptIntArray((int[])videoProvider.GetVideoBuffer().Clone());
+			newPendingSurface.AcceptIntArray(videoProvider.GetVideoBuffer());
 			sourceSurfaceSet.SetPending(newPendingSurface);
-			wakeupEvent.Set();
+		
+			var renderPanel = Global.RenderPanel;
+			if (renderPanel == null) return;
 
-			if (VsyncRequested)
-			{
-				VsyncToggle = true;
+			currNativeWidth = Global.RenderPanel.NativeSize.Width;
+			currNativeHeight = Global.RenderPanel.NativeSize.Height;
 
-				for (; ; )
-				{
-					//if (Direct3DRenderPanel.vsyncEvent.WaitOne(1)) break;
-					if (!VsyncToggle) break;
-					Application.DoEvents();
-				}
-			}
+			//if we're configured to use a scaling filter, apply it now
+			//SHOULD THIS BE RUN REPEATEDLY?
+			//some filters may need to run repeatedly (temporal interpolation, ntsc scanline field alternating)
+			//but its sort of wasted work.
+			//IDisplayFilter filter = new Hq2xBase_Super2xSai();
+			//var tempSurface = filter.Execute(currentSourceSurface);
+			//currentSourceSurface.Dispose();
+			//currentSourceSurface = tempSurface;
 
-			//for(;;)
-			//{
-			//  if (Direct3DRenderPanel.vsyncEvent.WaitOne(1)) break;
-			//  Application.DoEvents();
-			//}
+			currentSourceSurface = sourceSurfaceSet.GetCurrent();
+
+			if (currentSourceSurface == null) return;
+
+			int w = currNativeWidth;
+			int h = currNativeHeight;
+
+			DisplaySurface luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
+			DisplaySurface luaSurface = luaNativeSurfaceSet.GetCurrent();
+
+			//do we have anything to do?
+			//bool complexComposite = false;
+			//if (luaEmuSurface != null) complexComposite = true;
+			//if (luaSurface != null) complexComposite = true;
+
+			Global.RenderPanel.Clear(Color.FromArgb(videoProvider.BackgroundColor));
+			Global.RenderPanel.Render(currentSourceSurface);
+			if (luaEmuSurface != null)
+				Global.RenderPanel.RenderOverlay(luaEmuSurface);
+
+			RenderOSD();
+
+			Global.RenderPanel.Present();
+
+
 		}
 
 		public bool Disposed { get; private set; }
@@ -630,10 +631,6 @@ namespace BizHawk.MultiClient
 		public void Dispose()
 		{
 			if (Disposed) return;
-			shutdownFlag = true;
-			VsyncToggle = true;
-			while (shutdownFlag) Thread.Sleep(1);
-			wakeupEvent.Dispose();
 			Disposed = true;
 		}
 
@@ -663,42 +660,13 @@ namespace BizHawk.MultiClient
 		}
 
 		int currNativeWidth, currNativeHeight;
-		EventWaitHandle wakeupEvent, suspendReplyEvent;
-		bool shutdownFlag, suspendFlag;
-		void ThreadProc()
-		{
-			for (; ; )
-			{
-				Display();
-
-				//wait until we receive something interesting, or just a little while anyway
-				wakeupEvent.WaitOne(1);
-
-				if (suspendFlag)
-				{
-					suspendFlag = false;
-					suspendReplyEvent.Set();
-					wakeupEvent.WaitOne();
-					suspendReplyEvent.Set();
-					wakeupEvent.WaitOne();
-					suspendReplyEvent.Set();
-				}
-
-				if (shutdownFlag) break;
-			}
-			shutdownFlag = false;
-		}
+	
 
 		/// <summary>
 		/// suspends the display manager so that tricky things can be changed without the display thread going in and getting all confused and hating
 		/// </summary>
 		public void Suspend()
 		{
-			suspendFlag = true;
-			wakeupEvent.Set();
-			suspendReplyEvent.WaitOne();
-			wakeupEvent.Set();
-			suspendReplyEvent.WaitOne();
 		}
 
 		/// <summary>
@@ -706,125 +674,19 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void Resume()
 		{
-			wakeupEvent.Set();
-			suspendReplyEvent.WaitOne();
+		}
+
+		void RenderOSD()
+		{
+			Global.OSD.Begin((IBlitter)Global.RenderPanel);
+			((IBlitter)Global.RenderPanel).Open();
+			Global.OSD.DrawScreenInfo((IBlitter)Global.RenderPanel);
+			Global.OSD.DrawMessages((IBlitter)Global.RenderPanel);
+			((IBlitter)Global.RenderPanel).Close();
 		}
 
 
 		SwappableDisplaySurfaceSet nativeDisplaySurfaceSet = new SwappableDisplaySurfaceSet();
-
-		/// <summary>
-		/// internal display worker proc; runs through the multiply layered display pipeline 
-		/// </summary>
-		void Display()
-		{
-			var renderPanel = Global.RenderPanel;
-			if (renderPanel == null) return;
-
-			currNativeWidth = Global.RenderPanel.NativeSize.Width;
-			currNativeHeight = Global.RenderPanel.NativeSize.Height;
-
-			//if we're configured to use a scaling filter, apply it now
-			//SHOULD THIS BE RUN REPEATEDLY?
-			//some filters may need to run repeatedly (temporal interpolation, ntsc scanline field alternating)
-			//but its sort of wasted work.
-			//IDisplayFilter filter = new Hq2xBase_Super2xSai();
-			//var tempSurface = filter.Execute(currentSourceSurface);
-			//currentSourceSurface.Dispose();
-			//currentSourceSurface = tempSurface;
-
-			currentSourceSurface = sourceSurfaceSet.GetCurrent();
-
-			if (currentSourceSurface == null) return;
-
-			int w = currNativeWidth;
-			int h = currNativeHeight;
-
-			DisplaySurface luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
-			DisplaySurface luaSurface = luaNativeSurfaceSet.GetCurrent();
-
-			//do we have anything to do?
-			bool complexComposite = false;
-			if (luaEmuSurface != null) complexComposite = true;
-			if (luaSurface != null) complexComposite = true;
-
-			if (!complexComposite)
-			{
-				if (Global.Config.SuppressGui)
-				{
-					Global.RenderPanel.Render(currentSourceSurface);
-				}
-				else
-				{
-					Global.RenderPanel.Render(currentSourceSurface);
-					var nativeBmp = nativeDisplaySurfaceSet.AllocateSurface(w, h, true);
-					using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
-					{
-						Global.OSD.DrawScreenInfo(g);
-						Global.OSD.DrawMessages(g);
-						//Thread.Sleep(1);
-					}
-					nativeBmp.FromBitmap();
-					Global.RenderPanel.RenderOverlay(nativeBmp);
-					//release the native resolution image
-					nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
-					//Global.RenderPanel.Present();
-				}
-			}
-			else
-			{
-				var nativeBmp = nativeDisplaySurfaceSet.AllocateSurface(w, h, true);
-				using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
-				{
-					//scale the source bitmap to the desired size of the render panel
-					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-					g.InterpolationMode = InterpolationMode.NearestNeighbor;
-					g.CompositingMode = CompositingMode.SourceCopy;
-					g.CompositingQuality = CompositingQuality.HighSpeed;
-					g.DrawImage(currentSourceSurface.PeekBitmap(), 0, 0, w, h);
-
-					//switch to fancier composition for OSD overlays and such
-					g.CompositingMode = CompositingMode.SourceOver;
-
-					//this could have been done onto the source surface earlier and then scaled only once but the whole composition system needs revising, soo..
-					if (luaEmuSurface != null) g.DrawImage(luaEmuSurface.PeekBitmap(), 0, 0, w, h);
-					g.Clip = new Region(new Rectangle(0, 0, nativeBmp.Width, nativeBmp.Height));
-
-					//apply a lua layer
-					if (luaSurface != null) g.DrawImageUnscaled(luaSurface.PeekBitmap(), 0, 0);
-					//although we may want to change this if we want to fade out messages or have some other fancy alpha faded gui stuff
-
-					//draw the OSD at native resolution
-					if (!Global.Config.SuppressGui)
-					{
-						Global.OSD.DrawScreenInfo(g);
-						Global.OSD.DrawMessages(g);
-					}
-					g.Clip.Dispose();
-				}
-
-				//send the native resolution image to the render panel
-				Global.RenderPanel.Render(nativeBmp);
-				//Global.RenderPanel.Present();
-
-				//release the native resolution image
-				nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
-			}
-
-			Global.RenderPanel.Present();
-
-			if (VsyncRequested)
-			{
-				for (; ; )
-				{
-					//if (Direct3DRenderPanel.vsyncEvent.WaitOne(1)) break;
-					if (VsyncToggle) break;
-				}
-				VsyncToggle = false;
-			}
-
-
-		}
 
 		Thread displayThread;
 	}

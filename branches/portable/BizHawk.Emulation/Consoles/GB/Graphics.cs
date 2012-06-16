@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Consoles.GB
 {
 	public partial class GB
 	{
-		private byte[] OAM;
-		private byte[] VRAM;
+		private byte[] OAM = new byte[1];
+		private byte[] VRAM = new byte[1];
 	}
 }

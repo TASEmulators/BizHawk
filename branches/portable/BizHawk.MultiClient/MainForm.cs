@@ -2861,73 +2861,85 @@ namespace BizHawk.MultiClient
 		public void RecordAVI()
 		{
 			if (CurrAviWriter != null) return;
-			var sfd = new SaveFileDialog();
-			if (!(Global.Emulator is NullEmulator))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
-			}
-			else
-			{
-				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
-			}
-			sfd.Filter = "AVI (*.avi)|*.avi|JMD (*.jmd)|*.jmd|WAV (*.wav)|*.wav|Matroska (*.mkv)|*.mkv|All Files|*.*";
-            RunLoopBlocked = true;
-			Global.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
-            RunLoopBlocked = false;
 
-			if (result == DialogResult.Cancel)
+			// select IVideoWriter to use
+
+			var writers = new IVideoWriter[]{new AviWriter(), new JMDWriter(), new WavWriterV(), new FFmpegWriter(), new NutWriter()};
+			IVideoWriter aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm);
+			foreach (var w in writers)
+			{
+				if (w != aw)
+					w.Dispose();
+			}
+			if (aw == null)
+			{
+				Global.OSD.AddMessage("A/V capture canceled.");
 				return;
+			}
 
-			//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
-			int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
-
-            IVideoWriter aw;
-            string ext = Path.GetExtension(sfd.FileName).ToLower();
-
-			if (ext == ".jmd")
-				aw = new JMDWriter();
-			else if (ext == ".avi")
-				aw = new AviWriter();
-			else if (ext == ".wav")
-				aw = new WavWriterV();
-			else if (ext == ".mkv")
-				aw = new FFmpegWriter();
-			else // hmm?
-				aw = new AviWriter();
 			try
 			{
+				//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
+				int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
+		
 				aw.SetMovieParameters(fps, 0x01000000);
 				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
 				aw.SetAudioParameters(44100, 2, 16);
-				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
-                if (token == null)
-                {
-                    Global.OSD.AddMessage("AVI capture canceled.");
-                    aw.Dispose();
-                    return;
-                }
 
+				// select codec token
+				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
+
+				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
+				if (token == null)
+				{
+					Global.OSD.AddMessage("A/V capture canceled.");
+					aw.Dispose();
+					return;
+				}
 				aw.SetVideoCodecToken(token);
+
+				// select file to save to
+
+				var sfd = new SaveFileDialog();
+				if (!(Global.Emulator is NullEmulator))
+				{
+					sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+				}
+				else
+				{
+					sfd.FileName = "NULL";
+					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+				}
+				sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
+
+				Global.Sound.StopSound();
+				var result = sfd.ShowDialog();
+				Global.Sound.StartSound();
+
+				if (result == DialogResult.Cancel)
+				{
+					aw.Dispose();
+					return;
+				}
+
 				aw.OpenFile(sfd.FileName);
 
 				//commit the avi writing last, in case there were any errors earlier
 				CurrAviWriter = aw;
-				Global.OSD.AddMessage("AVI capture started");
+				Global.OSD.AddMessage("A/V capture started");
 				AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.AVI;
-				AVIStatusLabel.ToolTipText = "AVI capture in progress";
+				AVIStatusLabel.ToolTipText = "A/V capture in progress";
 			}
 			catch
 			{
-				Global.OSD.AddMessage("AVI capture failed!");
+				Global.OSD.AddMessage("A/V capture failed!");
 				aw.Dispose();
 				throw;
 			}
-            // buffersize here is entirely guess
-            DumpProxy = new Emulation.Sound.Utilities.DualSound(Global.Emulator.SoundProvider, 8192);
+
+			// buffersize here is entirely guess
+			DumpProxy = new Emulation.Sound.Utilities.DualSound(Global.Emulator.SoundProvider, 8192);
 		}
 
 		public void StopAVI()

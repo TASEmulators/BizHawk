@@ -22,7 +22,6 @@ namespace BizHawk.MultiClient
 		int defaultHeight;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		int RowsVisible = 0;
-		string Header = "";
 		int NumDigits = 4;
 		string NumDigitsStr = "{0:X4}  ";
 		string DigitFormatString = "{0:X2} ";
@@ -62,7 +61,8 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 			SetHeader();
 			Closing += (o, e) => SaveConfigSettings();
-			AddressesLabel.Font = new Font("Courier New", 8); ;
+			Header.Font = new Font("Courier New", 8);
+			AddressesLabel.Font = new Font("Courier New", 8);
 		}
 
 		private void LoadConfigSettings()
@@ -75,6 +75,13 @@ namespace BizHawk.MultiClient
 			Height_ = Global.Config.HexEditorHeight;
 			BigEndian = Global.Config.HexEditorBigEndian;
 			DataSize = Global.Config.HexEditorDataSize;
+			//Colors
+			menuStrip1.BackColor = Global.Config.HexMenubarColor;
+			MemoryViewerBox.BackColor = Global.Config.HexBackgrndColor;
+			MemoryViewerBox.ForeColor = Global.Config.HexForegrndColor;
+			Header.BackColor = Global.Config.HexBackgrndColor;
+			Header.ForeColor = Global.Config.HexForegrndColor;
+
 		}
 
 		public void SaveConfigSettings()
@@ -104,21 +111,6 @@ namespace BizHawk.MultiClient
 				if (Width_ >= 0 && Height_ >= 0)
 					this.Size = new System.Drawing.Size(Width_, Height_);
 			}
-
-			if (Global.Config.hexcustom)
-			{
-				menuStrip1.BackColor = Global.Config.hexmenubar;
-				MemoryViewerBox.BackColor = Global.Config.hexbackgrnd;
-				MemoryViewerBox.ForeColor = Global.Config.hexforegrnd;
-			}
-			else
-			{
-				Global.Config.hexmenubar = this.menuStrip1.BackColor;
-				Global.Config.hexbackgrnd = this.MemoryViewerBox.BackColor;
-				Global.Config.hexforegrnd = this.AddressesLabel.ForeColor;
-				Global.Config.hexcustom = true;
-			}
-
 			SetMemoryDomainMenu();
 			SetDataSize(DataSize);
 			UpdateValues();
@@ -141,8 +133,6 @@ namespace BizHawk.MultiClient
 		{
 			StringBuilder rowStr = new StringBuilder("");
 			addrOffset = (NumDigits % 4) * 9;
-
-			rowStr.Append(Header + '\n');
 
 			for (int i = 0; i < RowsVisible; i++)
 			{
@@ -445,13 +435,13 @@ namespace BizHawk.MultiClient
 			switch (DataSize)
 			{
 				case 1:
-					Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
+					Header.Text = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
 					break;
 				case 2:
-					Header = "         0    2    4    6    8    A    C    E";
+					Header.Text = "         0    2    4    6    8    A    C    E";
 					break;
 				case 4:
-					Header = "             0        4        8        C";
+					Header.Text = "             0        4        8        C";
 					break;
 			}
 			NumDigits = GetNumDigits(Domain.Size);
@@ -965,6 +955,7 @@ namespace BizHawk.MultiClient
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
+			
 			for (int x = 0; x < Global.CheatList.Count; x++)
 			{
 				if (IsVisible(Global.CheatList.cheatList[x].address))
@@ -973,7 +964,7 @@ namespace BizHawk.MultiClient
 					{
 						Rectangle rect = new Rectangle(GetAddressCoordinates(Global.CheatList.cheatList[x].address), new Size(15 * DataSize, fontHeight));
 						e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
-						e.Graphics.FillRectangle(Brushes.LightBlue, rect);
+						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexFreezeColor), rect);
 					}
 				}
 			}
@@ -982,9 +973,9 @@ namespace BizHawk.MultiClient
 				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(15 * DataSize, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 				if (Global.CheatList.IsActiveCheat(Domain, addressHighlighted))
-					e.Graphics.FillRectangle(Brushes.Violet, rect);
+					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
 				else
-					e.Graphics.FillRectangle(Brushes.Pink, rect);
+					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightColor), rect);
 			}
 			if (HasNibbles())
 			{
@@ -1460,16 +1451,6 @@ namespace BizHawk.MultiClient
 			SaveAsBinary();
 		}
 
-		private void resetToDefaultToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.hexbackgrnd = Color.FromName("Control");
-			Global.Config.hexforegrnd = Color.FromName("ControlText");
-			Global.Config.hexmenubar = Color.FromName("Control");
-			MemoryViewerBox.BackColor = Global.Config.hexbackgrnd;
-			MemoryViewerBox.ForeColor = Global.Config.hexforegrnd;
-			menuStrip1.BackColor = Global.Config.hexmenubar;
-		}
-
 		private void setColorsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			HexColors_Form h = new HexColors_Form();
@@ -1479,17 +1460,24 @@ namespace BizHawk.MultiClient
 		private void setColorsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			HexColors_Form h = new HexColors_Form();
+			Global.Sound.StopSound();
 			h.ShowDialog();
+			Global.Sound.StartSound();
 		}
 
 		private void resetToDefaultToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			this.MemoryViewerBox.BackColor = Color.FromName("Control");
-			Global.Config.hexbackgrnd = Color.FromName("Control");
 			this.MemoryViewerBox.ForeColor = Color.FromName("ControlText");
-			Global.Config.hexforegrnd = Color.FromName("ControlText");
 			this.menuStrip1.BackColor = Color.FromName("Control");
-			Global.Config.hexmenubar = Color.FromName("Control");
+			this.Header.BackColor = Color.FromName("Control");
+			this.Header.ForeColor = Color.FromName("ControlText");
+			Global.Config.HexMenubarColor = Color.FromName("Control");
+			Global.Config.HexForegrndColor = Color.FromName("ControlText");
+			Global.Config.HexBackgrndColor = Color.FromName("Control");
+			Global.Config.HexFreezeColor = Color.LightBlue;
+			Global.Config.HexHighlightColor = Color.Pink;
+			Global.Config.HexHighlightFreezeColor = Color.Violet;
 		}
 	}
 } 

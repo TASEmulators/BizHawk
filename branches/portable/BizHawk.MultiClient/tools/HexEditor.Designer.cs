@@ -77,6 +77,7 @@
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
+			this.Header = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -362,7 +363,6 @@
 			this.resetToDefaultToolStripMenuItem.Name = "resetToDefaultToolStripMenuItem";
 			this.resetToDefaultToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.resetToDefaultToolStripMenuItem.Text = "Reset to Default";
-			this.resetToDefaultToolStripMenuItem.Click += new System.EventHandler(this.resetToDefaultToolStripMenuItem_Click);
 			// 
 			// ViewerContextMenuStrip
 			// 
@@ -473,7 +473,7 @@
 			// 
 			this.AddressesLabel.AutoSize = true;
 			this.AddressesLabel.ContextMenuStrip = this.ViewerContextMenuStrip;
-			this.AddressesLabel.Location = new System.Drawing.Point(6, 16);
+			this.AddressesLabel.Location = new System.Drawing.Point(6, 30);
 			this.AddressesLabel.Name = "AddressesLabel";
 			this.AddressesLabel.Size = new System.Drawing.Size(31, 13);
 			this.AddressesLabel.TabIndex = 0;
@@ -482,11 +482,22 @@
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
 			// 
+			// Header
+			// 
+			this.Header.AutoSize = true;
+			this.Header.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Header.Location = new System.Drawing.Point(18, 44);
+			this.Header.Name = "Header";
+			this.Header.Size = new System.Drawing.Size(35, 13);
+			this.Header.TabIndex = 2;
+			this.Header.Text = "label1";
+			// 
 			// HexEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(584, 301);
+			this.Controls.Add(this.Header);
 			this.Controls.Add(this.MemoryViewerBox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -559,5 +570,6 @@
 		private System.Windows.Forms.ToolStripMenuItem setColorsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem resetToDefaultToolStripMenuItem1;
+		public System.Windows.Forms.Label Header;
     }
 }

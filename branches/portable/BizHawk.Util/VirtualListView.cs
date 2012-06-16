@@ -23,6 +23,19 @@ namespace BizHawk
 		public int code;
 	}
 
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct NMITEMACTIVATE {
+			NMHDR  hdr;
+			int    iItem;
+			int    iSubItem;
+			uint uNewState;
+			uint   uOldState;
+			uint   uChanged;
+			POINT  ptAction;
+			uint lParam;
+			uint   uKeyFlags;
+		}
+
 	[StructLayout(LayoutKind.Sequential)]
 	internal struct RECT {
 		public int left, top, right, bottom;
@@ -216,7 +229,9 @@ namespace BizHawk
 
 	internal enum Notices : int {
 		NM_FIRST = 0,
-		NM_CUSTOMDRAW = NM_FIRST - 12
+		NM_CUSTOMDRAW = NM_FIRST - 12,
+		NM_CLICK = NM_FIRST - 2,
+		NM_DBLCLICK = NM_FIRST - 3,
 	}
 
 	internal enum ListViewNotices : int {
@@ -550,6 +565,14 @@ namespace BizHawk
 							OnBeginItemDrag(MouseButtons.Right, ref m);
 							messageProcessed = true;
 							break;
+						//case (int)Notices.NM_CLICK:
+						//case (int)Notices.NM_DBLCLICK:
+						//  {
+						//    NMITEMACTIVATE test = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
+						//    messageProcessed = true;
+						//    break;
+						//  }
+
 						default:
 							break;
 					}
@@ -560,16 +583,6 @@ namespace BizHawk
 					OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), 0));
 					break;
 
-				case 0x100C:
-					{
-						base.WndProc(ref m);
-						int num = m.Result.ToInt32();
-						messageProcessed = true;
-						m.Result = new IntPtr(0);
-						break;
-					}
-
-
 				//obscure message loop flakiness when exceptions are thrown from the message loop...
 				//THIS BREAKS PROPER LISTVIEW FOCUS SELECTION (blue)
 				//next time we run into this, debug it better.
@@ -577,6 +590,25 @@ namespace BizHawk
 				//    if (SelectedIndices.Count > 0 && SelectedIndices[0] >= VirtualListSize)
 				//        messageProcessed = true;
 				//    break;
+				//TRY THIS HACK INSTEAD TO FIX THE EXCEPTION
+					// (( NOPE, THEY ALL BREAK ONE THING OR ANOTHER. WINFORMS LISTVIEW JUST THROWS EXCEPTIONS, WHAT CAN WE DO? ))
+				//case 0x100C:
+				//  {
+				//    base.WndProc(ref m);
+				//    int num = m.Result.ToInt32();
+				//    messageProcessed = true;
+				//    m.Result = new IntPtr(-1);
+				//    break;
+				//  }
+				//case 0x1012:
+				//  {
+				//    base.WndProc(ref m);
+				//    int num = m.Result.ToInt32();
+				//    messageProcessed = true;
+				//    m.Result = new IntPtr(-1);
+				//    break;
+				//  }
+
 				case (int)WindowsMessage.WM_ERASEBKGND:
 					if (BlazingFast)
 					{

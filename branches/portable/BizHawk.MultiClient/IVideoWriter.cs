@@ -75,5 +75,13 @@ namespace BizHawk
         /// <param name="rerecords">Number of rerecords on movie file</param>
         void SetMetaData(string gameName, string authors, UInt64 lengthMS, UInt64 rerecords);
 
+		/// <summary>
+		/// short description of this IVideoWriter
+		/// </summary>
+		string WriterDescription();
+		/// <summary>
+		/// what default extension this writer would like to put on its output
+		/// </summary>
+		string DesiredExtension();
     }
 }

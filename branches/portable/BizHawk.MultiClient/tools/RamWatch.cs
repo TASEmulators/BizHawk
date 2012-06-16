@@ -79,7 +79,7 @@ namespace BizHawk.MultiClient
 				{
 					bool alert = Global.CheatList.IsActiveCheat(Domain, watchList[x].address);
 					Global.OSD.AddGUIText(watchList[x].ToString(),
-						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Brushes.Black, Brushes.White, 0);
+						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Color.Black, Color.White, 0);
 				}
 			}
 
@@ -367,6 +367,10 @@ namespace BizHawk.MultiClient
 		private void InitializeAddress(Watch w)
 		{
 			w.PeekAddress(Domain);
+			w.prev = w.value;
+			w.original = w.value;
+			w.lastchange = w.value;
+			w.lastsearch = w.value;
 			w.changecount = 0;
 		}
 
@@ -1407,6 +1411,18 @@ namespace BizHawk.MultiClient
 					WatchListView.SelectItem(x, true);
 				}
 			}
+		}
+
+		private void showPreviousValueToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowPrevColumn ^= true;
+			SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
+		}
+
+		private void showChangeCountsToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowChangeColumn ^= true;
+			SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
 		}
 	}
 }

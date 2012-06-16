@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Drawing;
+using sysdrawingfont=System.Drawing.Font;
 using sysdrawing2d=System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
@@ -11,7 +12,7 @@ using System.Windows.Forms;
 #if WINDOWS
 using SlimDX;
 using SlimDX.Direct3D9;
-using Font = SlimDX.Direct3D9.Font;
+using d3d9font=SlimDX.Direct3D9.Font;
 #else
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -66,7 +67,6 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-
 			// If we need to recreate the texture, do so.
 			if (needsRecreating)
 			{
@@ -85,6 +85,8 @@ namespace BizHawk.MultiClient
 				// Create a new texture instance.
 				Texture = new Texture(GraphicsDevice, textureWidth, textureHeight, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
 			}
+
+			surface.FromBitmap();
 
 			// Copy the image data to the texture.
 			using (var Data = Texture.LockRectangle(0, LockFlags.Discard | LockFlags.NoDirtyUpdate).Data)
@@ -125,34 +127,29 @@ namespace BizHawk.MultiClient
 	}
 #endif
 
-
 	public interface IRenderer : IDisposable
 	{
 		void FastRenderAndPresent(DisplaySurface surface);
 		void Render(DisplaySurface surface);
 		void RenderOverlay(DisplaySurface surface);
+		void Clear(System.Drawing.Color color);
 		void Present();
 		bool Resized { get; set; }
 		Size NativeSize { get; }
 	}
 
-	public class SysdrawingRenderPanel : IRenderer
+	public class SysdrawingRenderPanel : IRenderer, IBlitter
 	{
+		sysdrawingfont MessageFont;
+		sysdrawingfont AlertFont;
+		DisplaySurface tempBuffer;
+		Graphics g;
+
 		public bool Resized { get; set; }
 		public void Dispose() { }
 		public void Render(DisplaySurface surface)
 		{
 			backingControl.ReleaseCallback = RetainedViewportPanelDisposeCallback;
-			//Color BackgroundColor = Color.FromArgb(video.BackgroundColor);
-			//int[] data = video.GetVideoBuffer();
-
-			//Bitmap bmp = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
-			//BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-			////TODO - this is not very intelligent. no handling of pitch, for instance
-			//Marshal.Copy(data, 0, bmpdata.Scan0, bmp.Width * bmp.Height);
-
-			//bmp.UnlockBits(bmpdata);
 
 			lock(this)
 				tempBuffer = surfaceSet.AllocateSurface(backingControl.Width, backingControl.Height, false);
@@ -161,7 +158,52 @@ namespace BizHawk.MultiClient
 		}
 		SwappableDisplaySurfaceSet surfaceSet = new SwappableDisplaySurfaceSet();
 
-		DisplaySurface tempBuffer;
+		class FontWrapper : IBlitterFont
+		{
+			public FontWrapper(sysdrawingfont font)
+			{
+				this.font = font;
+			}
+			public sysdrawingfont font;
+		}
+
+		public Size NativeSize { get { return backingControl.ClientSize; } }
+
+		IBlitterFont IBlitter.GetFontType(string fontType)
+		{
+			if (fontType == "MessageFont") return new FontWrapper(MessageFont);
+			if (fontType == "AlertFont") return new FontWrapper(AlertFont);
+			return null;
+		}
+
+		void IBlitter.Open()
+		{
+			g = Graphics.FromImage(tempBuffer.PeekBitmap());
+		}
+
+		void IBlitter.Close()
+		{
+			g.Dispose();
+		}
+
+		void IBlitter.DrawString(string s, IBlitterFont font, Color color, float x, float y)
+		{
+			using (var brush = new SolidBrush(color))
+				g.DrawString(s, ((FontWrapper)font).font, brush, x, y);
+		}
+
+		SizeF IBlitter.MeasureString(string s, IBlitterFont _font)
+		{
+			var font = ((FontWrapper)_font).font;
+			return g.MeasureString(s, font);
+		}
+
+		public void Clear(Color color)
+		{
+			//todo
+		}
+
+		Rectangle IBlitter.ClipBounds { get; set; }
 
 		bool RetainedViewportPanelDisposeCallback(Bitmap bmp)
 		{
@@ -208,13 +250,28 @@ namespace BizHawk.MultiClient
 		public SysdrawingRenderPanel(RetainedViewportPanel control)
 		{
 			backingControl = control;
+			MessageFont = new sysdrawingfont("Courier", 14, FontStyle.Bold, GraphicsUnit.Pixel);
+			AlertFont = new sysdrawingfont("Courier", 14, FontStyle.Bold, GraphicsUnit.Pixel);
 		}
 		RetainedViewportPanel backingControl;
-		public Size NativeSize { get { return backingControl.ClientSize; } }
 	}
 
+	public interface IBlitter
+	{
+		void Open();
+		void Close();
+		IBlitterFont GetFontType(string fontType);
+		void DrawString(string s, IBlitterFont font, Color color, float x, float y);
+		SizeF MeasureString(string s, IBlitterFont font);
+		Rectangle ClipBounds { get; set; }
+	}
+
+	public interface IBlitterFont { }
+
+
 #if WINDOWS
-	public class Direct3DRenderPanel : IRenderer
+
+	public class Direct3DRenderPanel : IRenderer, IBlitter
 	{
 		public Color BackgroundColor { get; set; }
 		public bool Resized { get; set; }
@@ -225,10 +282,47 @@ namespace BizHawk.MultiClient
 		private Control backingControl;
 		public ImageTexture Texture;
 		private Sprite Sprite;
+		private d3d9font MessageFont;
+		private d3d9font AlertFont;
+
+		class FontWrapper : IBlitterFont
+		{
+			public FontWrapper(d3d9font font)
+			{
+				this.font = font;
+			}
+			public d3d9font font;
+		}
+
+		void IBlitter.Open() {}
+		void IBlitter.Close() {}
 
 		private bool Vsync;
 
 		public Size NativeSize { get { return backingControl.ClientSize; } }
+
+		IBlitterFont IBlitter.GetFontType(string fontType)
+		{
+			if (fontType == "MessageFont") return new FontWrapper(MessageFont);
+			if (fontType == "AlertFont") return new FontWrapper(AlertFont);
+			return null;
+		}
+
+		Color4 col(Color c) { return new Color4(c.ToArgb()); }
+
+		void IBlitter.DrawString(string s, IBlitterFont font, Color color, float x, float y)
+		{
+			((FontWrapper)font).font.DrawString(null, s, (int)x + 1, (int)y + 1, col(color));
+		}
+
+		SizeF IBlitter.MeasureString(string s, IBlitterFont _font)
+		{
+			var font = ((FontWrapper)_font).font;
+			Rectangle r = font.MeasureString(null, s, DrawTextFormat.Left);
+			return new SizeF(r.Width, r.Height);
+		}
+
+		Rectangle IBlitter.ClipBounds { get; set; }
 
 		public Direct3DRenderPanel(Direct3D direct3D, Control control)
 		{
@@ -262,6 +356,17 @@ namespace BizHawk.MultiClient
 				Device.Dispose();
 				Device = null;
 			}
+
+			if (MessageFont != null)
+			{
+				MessageFont.Dispose();
+				MessageFont = null;
+			}
+			if (AlertFont != null)
+			{
+				AlertFont.Dispose();
+				AlertFont = null;
+			}
 		}
 
 		private bool VsyncRequested
@@ -293,6 +398,11 @@ namespace BizHawk.MultiClient
 			Device = new Device(d3d, 0, DeviceType.Hardware, backingControl.Handle, flags, pp);
 			Sprite = new Sprite(Device);
 			Texture = new ImageTexture(Device);
+
+			MessageFont = new d3d9font(Device, 16, 0, FontWeight.Bold, 1, false, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
+			AlertFont = new d3d9font(Device, 16, 0, FontWeight.ExtraBold, 1, true, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
+			// NOTE: if you add ANY objects, like new fonts, textures, etc, to this method
+			// ALSO add dispose code in DestroyDevice() or you will be responsible for VRAM memory leaks.
 
 		}
 
@@ -345,25 +455,25 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		void RenderPrep()
+		{
+			if (Device == null || Resized || Vsync != VsyncRequested)
+				backingControl.Invoke(() => CreateDevice());
+			Resized = false;
+		}
+
+		public void Clear(Color color)
+		{
+			Device.Clear(ClearFlags.Target, col(color), 0.0f, 0);
+		}
+
 		private void RenderExec(DisplaySurface surface, bool overlay)
 		{
+			RenderPrep();
 			if (surface == null)
 			{
 				Render();
 				return;
-			}
-
-			if (Device == null || Resized || Vsync != VsyncRequested)
-				backingControl.Invoke(() => CreateDevice());
-			Resized = false;
-
-
-
-			//TODO
-			//BackgroundColor = Color.FromArgb(video.BackgroundColor);
-			if (overlay)
-			{
-				//return;
 			}
 
 			Texture.SetImage(surface, surface.Width, surface.Height);
@@ -383,7 +493,6 @@ namespace BizHawk.MultiClient
 			Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
 			Sprite.Transform = Matrix.Scaling(finalScale, finalScale, 0f);
 			Sprite.Draw(Texture.Texture, new Rectangle(0, 0, surface.Width, surface.Height), new Vector3(surface.Width / 2f, surface.Height / 2f, 0), new Vector3(backingControl.Size.Width / 2f / finalScale, backingControl.Size.Height / 2f / finalScale, 0), Color.White);
-			//if (overlay) Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			Sprite.End();
 
 			Device.EndScene();
@@ -391,7 +500,6 @@ namespace BizHawk.MultiClient
 
 		public void Present()
 		{
-			//Device.Present(SlimDX.Direct3D9.Present.DoNotWait);
 			Device.Present(SlimDX.Direct3D9.Present.None);
 			vsyncEvent.Set();
 		}
@@ -455,7 +563,7 @@ namespace BizHawk.MultiClient
 		public int Y;
 		public bool Alert;
 		public int Anchor;
-        public Brush ForeColor;
-		public Brush BackGround;
+		public Color ForeColor;
+		public Color BackGround;
 	}
 }

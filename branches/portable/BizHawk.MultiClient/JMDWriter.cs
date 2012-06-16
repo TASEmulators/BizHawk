@@ -602,7 +602,7 @@ namespace BizHawk.MultiClient
 			if (ext == null || ext.ToLower() != ".jmd")
 				baseName = baseName + ".jmd";
 
-			jmdfile = new JMDfile(File.Open(baseName, FileMode.OpenOrCreate), fpsnum, fpsden, audiosamplerate, audiochannels == 2);
+			jmdfile = new JMDfile(File.Open(baseName, FileMode.Create), fpsnum, fpsden, audiosamplerate, audiochannels == 2);
 
 
 			if (moviemetadata != null)
@@ -763,6 +763,22 @@ namespace BizHawk.MultiClient
 			moviemetadata.authors = authors;
 			moviemetadata.lengthms = lengthMS;
 			moviemetadata.rerecords = rerecords;
+		}
+
+
+		public override string ToString()
+		{
+			return "JMD writer";
+		}
+
+		public string WriterDescription()
+		{
+			return "Writes a JPC-rr multidump file (JMD).  These can be read and further processed with jpc-streamtools.  One JMD file contains all audio (uncompressed) and video (compressed).";
+		}
+
+		public string DesiredExtension()
+		{
+			return "jmd";
 		}
 	}
 }

@@ -243,7 +243,6 @@ class RiffMaster : IDisposable
 	public class RiffContainer_INFO : RiffContainer
 	{
 		public Dictionary<string, string> dictionary = new Dictionary<string, string>();
-		byte[] data;
 		public RiffContainer_INFO() { type = "INFO"; }
 		public RiffContainer_INFO(RiffContainer rc)
 		{
