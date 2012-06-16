@@ -43,7 +43,7 @@ namespace BizHawk
         /// </summary>
         /// <param name="hwnd">hwnd to attach to if the user is shown config dialog</param>
         /// <returns>codec token, dispose of it when you're done with it</returns>
-        IDisposable AcquireVideoCodecToken(IntPtr hwnd);
+        IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd);
 
         /// <summary>
         /// set framerate to fpsnum/fpsden (assumed to be unchanging over the life of the stream)

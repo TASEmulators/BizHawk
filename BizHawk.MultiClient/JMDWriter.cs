@@ -538,7 +538,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		/// <param name="hwnd">hwnd to attach to if the user is shown config dialog</param>
 		/// <returns>codec token, dispose of it when you're done with it</returns>
-		public IDisposable AcquireVideoCodecToken(IntPtr hwnd)
+		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
 		{
 			CodecToken ret = new CodecToken();
 

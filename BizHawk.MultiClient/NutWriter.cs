@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient
 		{
 			// ignored
 		}
-		public IDisposable AcquireVideoCodecToken(IntPtr hwnd)
+		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
 		{
 			return new NutWriterToken();
 		}
