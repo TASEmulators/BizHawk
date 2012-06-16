@@ -43,26 +43,6 @@ namespace BizHawk.MultiClient
         }
 
         /// <summary>
-        /// minimal IWin32Window wrapper around an IntPtr hwnd
-        /// </summary>
-        class WindowWrapper : IWin32Window
-        {
-            /// <summary>
-            /// create an instance of WindowWrapper
-            /// </summary>
-            /// <param name="handle">hwnd to store</param>
-            public WindowWrapper (IntPtr handle)
-            {
-                hwnd = handle;
-            }
-            public IntPtr Handle
-            {
-                get { return hwnd; }
-            }
-            IntPtr hwnd;
-        }
-
-        /// <summary>
         /// Show a configuration dialog (modal) for JMDWriter
         /// </summary>
         /// <param name="threads">number of threads</param>
@@ -73,7 +53,7 @@ namespace BizHawk.MultiClient
         /// <param name="cmax">maximum compression level</param>
         /// <param name="hwnd">hwnd of parent</param>
         /// <returns>false if user canceled; true if user consented</returns>
-        public static bool DoCompressionDlg(ref int threads, ref int complevel, int tmin, int tmax, int cmin, int cmax, IntPtr hwnd)
+        public static bool DoCompressionDlg(ref int threads, ref int complevel, int tmin, int tmax, int cmin, int cmax, System.Windows.Forms.IWin32Window hwnd)
         {
             JMDForm j = new JMDForm();
             j.threadsBar.Minimum = tmin;
@@ -89,7 +69,7 @@ namespace BizHawk.MultiClient
             j.compressionLeft.Text = String.Format("{0}", cmin);
             j.compressionRight.Text = String.Format("{0}", cmax);
 
-            DialogResult d = j.ShowDialog(new WindowWrapper(hwnd));
+            DialogResult d = j.ShowDialog(hwnd);
 
             threads = j.threadsBar.Value;
             complevel = j.compressionBar.Value;

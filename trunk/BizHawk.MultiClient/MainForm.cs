@@ -2765,7 +2765,7 @@ namespace BizHawk.MultiClient
 				// select codec token
 				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
 
-				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
+				var token = aw.AcquireVideoCodecToken(Global.MainForm);
 				if (token == null)
 				{
 					Global.OSD.AddMessage("A/V capture canceled.");

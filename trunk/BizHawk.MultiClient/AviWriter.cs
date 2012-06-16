@@ -196,7 +196,7 @@ namespace BizHawk.MultiClient
 		/// Acquires a video codec configuration from the user. you may save it for future use, but you must dispose of it when youre done with it.
 		/// returns null if the user canceled the dialog
 		/// </summary>
-		public IDisposable AcquireVideoCodecToken(IntPtr hwnd) //, CodecToken lastToken)
+		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd) //, CodecToken lastToken)
 		{
 			var temp_params = new Parameters();
 			temp_params.height = 256;
@@ -211,7 +211,7 @@ namespace BizHawk.MultiClient
 			File.Delete(tempfile);
 			tempfile = Path.ChangeExtension(tempfile, "avi");
 			temp.OpenFile(tempfile, temp_params, null); //lastToken);
-			CodecToken token = (CodecToken) temp.AcquireVideoCodecToken(hwnd);
+			CodecToken token = (CodecToken) temp.AcquireVideoCodecToken(hwnd.Handle);
 			temp.CloseFile();
 			File.Delete(tempfile);
 			return token;
