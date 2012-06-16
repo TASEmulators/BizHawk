@@ -1,21 +1,31 @@
 using System;
 using MonoMac.AppKit;
+using System.Collections.Generic;
 
 namespace MonoMacWrapper
 {
 	public class MacOpenFileDialog : BizHawk.IOpenFileDialog
 	{
 		private MonoMac.AppKit.NSOpenPanel _openPanel;
+		private static MonoMac.Foundation.NSUrl _directoryToRestore;
+		private bool _restoreDir;
+		private string _filter;
 		
 		public MacOpenFileDialog()
 		{
 			_openPanel = new NSOpenPanel();
+			_directoryToRestore = null;
 		}
 		
 		public System.Windows.Forms.DialogResult ShowDialog()
 		{
+			if(_restoreDir && _directoryToRestore != null)
+			{
+				_openPanel.DirectoryUrl = _directoryToRestore;
+			}
 			if(_openPanel.RunModal() == 1)
 			{
+				_directoryToRestore = _openPanel.DirectoryUrl;
 				return System.Windows.Forms.DialogResult.OK;
 			}
 			return System.Windows.Forms.DialogResult.Cancel;
@@ -25,11 +35,11 @@ namespace MonoMacWrapper
 		{
 			get 
 			{
-				return _openPanel.Directory;
+				return _openPanel.DirectoryUrl.Path;
 			}
 			set 
 			{
-				_openPanel.Directory = value;
+				_openPanel.DirectoryUrl = new MonoMac.Foundation.NSUrl(value, true);
 			}
 		}
 
@@ -37,23 +47,46 @@ namespace MonoMacWrapper
 		{
 			get 
 			{
-				return string.Empty; //Todo
+				return _filter;
 			}
-			set 
+			set
 			{
-				//Todo
+				_filter = value;
+				ParseFilter();
 			}
+		}
+		
+		public void ParseFilter()
+		{
+			List<string> fileTypes = new List<string>();
+			string[] pieces = _filter.Split('|');
+			if(pieces.Length > 1)
+			{
+				string piece = pieces[1]; //Todo: Handle the actual drop down for type options
+				string[] types = piece.Split(';');
+				foreach(string tp in types)
+				{
+					string trimmedTp = tp.Trim();
+					if(trimmedTp.StartsWith("*."))
+					{
+						fileTypes.Add(trimmedTp.Substring(2));
+					}
+				}
+			}
+			
+			if(fileTypes.Count > 0)
+				_openPanel.AllowedFileTypes = fileTypes.ToArray();
 		}
 
 		public bool RestoreDirectory 
 		{
-			get 
+			get
 			{
-				return true; //This feature is built into NSOpenPanel somehow
+				return _restoreDir;
 			}
 			set 
 			{
-				//Not supported
+				_restoreDir = value;
 			}
 		}
 
@@ -73,7 +106,7 @@ namespace MonoMacWrapper
 		{
 			get 
 			{
-				return _openPanel.Filename;
+				return _openPanel.Url.Path;
 			}
 			set
 			{
@@ -85,7 +118,12 @@ namespace MonoMacWrapper
 		{
 			get 
 			{
-				return _openPanel.Filenames;
+				string[] retval = new string[_openPanel.Urls.Length];
+				for(int i=0; i<_openPanel.Urls.Length; i++)
+				{
+					retval[i] = _openPanel.Urls[i].Path;
+				}
+				return retval;
 			}
 		}
 		
