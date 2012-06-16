@@ -14,7 +14,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//configuration
 		int prg_bank_mask_8k;
 		int chr_bank_mask_1k;
-		bool is210;
 
 		//state
 		IntBuffer prg_banks_8k = new IntBuffer(4);
@@ -55,7 +54,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "MAPPER019":
 					break;
 				case "MAPPER210":
-					is210 = true;
 					break;
 
 				//mapper 19:
@@ -66,7 +64,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//famista '90
 					//hydelide 3 *this is a good test of more advanced features
 					Cart.vram_size = 8; //not many test cases of this, but hydelide 3 needs it.
-					is210 = false;
 					AssertPrg(128,256); AssertChr(128,256); AssertVram(8); AssertWram(0,8);
 					break;
 
@@ -74,14 +71,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NAMCOT-175":
 					//wagyan land 2
 					//splatter house
-					is210 = true;
 					AssertPrg(128,256); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
 				case "NAMCOT-340":
 					//family circuit '91
 					//dream master
 					//famista '92
-					is210 = true;
 					AssertPrg(128,256,512); AssertChr(128,256); AssertVram(0); AssertWram(0,8);
 					break;
 				default:
@@ -91,10 +86,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
-
 			prg_banks_8k[3] = (byte)(0xFF & prg_bank_mask_8k);
-			nt_banks_1k[0] = nt_banks_1k[1] = nt_banks_1k[2] = nt_banks_1k[3] = 0xFF;
+			nt_banks_1k[0] = nt_banks_1k[2] = 0xFF;
+			nt_banks_1k[1] = nt_banks_1k[3] = 0xFF;
 
 			return true;
 		}
@@ -157,16 +151,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x3800: chr_banks_1k[7] = value & chr_bank_mask_1k; break;
 
 				case 0x4000: //$C000
-					if(!is210) nt_banks_1k[0] = value;
+					nt_banks_1k[0] = value;
 					break;
 				case 0x4800: //$C800
-					if (!is210) nt_banks_1k[1] = value;
+					nt_banks_1k[1] = value;
 					break;
 				case 0x5000: //$D000
-					if (!is210) nt_banks_1k[2] = value;
+					nt_banks_1k[2] = value;
 					break;
 				case 0x5800: //$D800
-					if (!is210) nt_banks_1k[3] = value;
+					nt_banks_1k[3] = value;
 					break;
 
 				case 0x6000: //$E000
@@ -203,11 +197,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else
 			{
-				if (is210)
-				{
-					base.WritePPU(addr, value);
-					return;
-				}
 				addr -= 0x2000;
 				int bank_1k = addr >> 10;
 				int ofs = addr & ((1 << 10) - 1);
@@ -247,8 +236,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else
 			{
-				if (is210) return base.ReadPPU(addr);
-
 				addr -= 0x2000;
 				int bank_1k = addr >> 10;
 				if (bank_1k > 3) return base.ReadPPU(addr); //namco classic 2 tests this at the title screen
