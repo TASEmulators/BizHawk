@@ -46,9 +46,20 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		NutMuxer muxer;
 
+		/// <summary>
+		/// codec token in use
+		/// </summary>
+		FFmpegWriterForm.FormatPreset token;
+
+		/// <summary>
+		/// file extension actually used
+		/// </summary>
+		string ext;
+
 		public void OpenFile(string baseName)
 		{
 			string s = System.IO.Path.GetFileNameWithoutExtension(baseName);
+			ext = System.IO.Path.GetExtension(baseName);
 
 			this.baseName = s;
 
@@ -64,13 +75,9 @@ namespace BizHawk.MultiClient
 			ffmpeg = new Process();
 			ffmpeg.StartInfo.FileName = "ffmpeg";
 
-			string filename = String.Format("{0}_{1,4:D4}", baseName, segment);
+			string filename = String.Format("{0}_{1,4:D4}{2}", baseName, segment, ext);
 
-			ffmpeg.StartInfo.Arguments = String.Format
-			(
-				"-y -f nut -i - -vcodec libx264rgb -acodec pcm_s16le -crf 0 \"{0}.mkv\"",
-				filename
-			);
+			ffmpeg.StartInfo.Arguments = String.Format("-y -f nut -i - {1} \"{0}\"", filename, token.commandline);
 
 			ffmpeg.StartInfo.CreateNoWindow = true;
 
@@ -145,7 +152,6 @@ namespace BizHawk.MultiClient
 			while (stderr.Count > 0)
 			{
 				var foo = stderr.Dequeue();
-				//System.Windows.Forms.MessageBox.Show(foo);
 				s.Append(foo);
 			}
 			return s.ToString();
@@ -163,31 +169,31 @@ namespace BizHawk.MultiClient
 			var b = new byte[a.Length * sizeof (int)];
 			Buffer.BlockCopy(a, 0, b, 0, b.Length);
 
-			muxer.writevideoframe(b);
+			try
+			{
+				muxer.writevideoframe(b);
+			}
+			catch
+			{
+				System.Windows.Forms.MessageBox.Show("Exception! ffmpeg history:\n" + ffmpeg_geterror());
+				throw;
+			}
 
 			// have to do binary write!
 			//ffmpeg.StandardInput.BaseStream.Write(b, 0, b.Length);
 		}
 
-
-		/// <summary>
-		/// codec token for FFmpegWriter
-		/// </summary>
-		class FFmpegWriterToken : IDisposable
+		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
 		{
-			public void Dispose()
-			{
-			}
-		}
-
-		public IDisposable AcquireVideoCodecToken(IntPtr hwnd)
-		{
-			return new FFmpegWriterToken();
+			return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
 		}
 	
 		public void SetVideoCodecToken(IDisposable token)
 		{
-			// nyi
+			if (token is FFmpegWriterForm.FormatPreset)
+				this.token = (FFmpegWriterForm.FormatPreset)token;
+			else
+				throw new ArgumentException("FFmpegWriter can only take its own codec tokens!");
 		}
 
 		/// <summary>
@@ -231,7 +237,17 @@ namespace BizHawk.MultiClient
 
 		public void AddSamples(short[] samples)
 		{
-			muxer.writeaudioframe(samples);
+			if (ffmpeg.HasExited)
+				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
+			try
+			{
+				muxer.writeaudioframe(samples);
+			}
+			catch
+			{
+				System.Windows.Forms.MessageBox.Show("Exception! ffmpeg history:\n" + ffmpeg_geterror());
+				throw;
+			}
 		}
 
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
@@ -256,7 +272,7 @@ namespace BizHawk.MultiClient
 		public string DesiredExtension()
 		{
 			// this needs to interface with the codec token
-			return "mkv";
+			return token.defaultext;
 		}
 	}
 }

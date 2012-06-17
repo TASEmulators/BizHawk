@@ -118,9 +118,9 @@
 			this.VersionLabel.AutoSize = true;
 			this.VersionLabel.Location = new System.Drawing.Point(201, 56);
 			this.VersionLabel.Name = "VersionLabel";
-			this.VersionLabel.Size = new System.Drawing.Size(195, 13);
+			this.VersionLabel.Size = new System.Drawing.Size(188, 13);
 			this.VersionLabel.TabIndex = 7;
-			this.VersionLabel.Text = "Version 1.0.3 Released March 30, 2012";
+			this.VersionLabel.Text = "Version 1.0.4 Released June 16, 2012";
 			// 
 			// label5
 			// 
@@ -145,9 +145,9 @@
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(198, 153);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(91, 13);
+			this.label7.Size = new System.Drawing.Size(214, 13);
 			this.label7.TabIndex = 10;
-			this.label7.Text = "Deign, Brandon E";
+			this.label7.Text = "Deign, Brandon E, Pasky13, link_7777, natt";
 			// 
 			// BizBox
 			// 

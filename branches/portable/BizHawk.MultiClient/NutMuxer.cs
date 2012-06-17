@@ -505,10 +505,10 @@ namespace BizHawk.MultiClient
 
 			static NutFrame()
 			{
-				dbg = new StreamWriter(".\\nutframe.txt", false);
+				//dbg = new StreamWriter(".\\nutframe.txt", false);
 			}
 
-			static StreamWriter dbg;
+			//static StreamWriter dbg;
 
 			/// <summary>
 			/// write out frame, with syncpoint and all headers
@@ -516,10 +516,8 @@ namespace BizHawk.MultiClient
 			/// <param name="dest"></param>
 			public void WriteData(Stream dest)
 			{
-				
-
 				dest.Write(data, 0, data.Length);
-				dbg.WriteLine(string.Format("{0},{1},{2}", pts, ptsnum, ptsden));
+				//dbg.WriteLine(string.Format("{0},{1},{2}", pts, ptsnum, ptsden));
 			}
 
 		}

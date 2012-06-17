@@ -204,7 +204,7 @@ namespace BizHawk.MultiClient
 		{
 			public void Dispose() { }
 		}
-		public IDisposable AcquireVideoCodecToken(IntPtr hwnd)
+		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
 		{
 			// don't care
 			return new WavWriterVToken();

@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
 	public partial class MainForm : Form
 	{
 		public bool INTERIM = true;
-		public const string EMUVERSION = "BizHawk v1.0.4 interim"; //TODO: Get rid of this, only the movie object uses it, maybe it can use assembly info
+		public const string EMUVERSION = "BizHawk v1.0.5 interim"; //TODO: Get rid of this, only the movie object uses it, maybe it can use assembly info
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -2889,7 +2889,7 @@ namespace BizHawk.MultiClient
 				// select codec token
 				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
 
-				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
+				var token = aw.AcquireVideoCodecToken(Global.MainForm);
 				if (token == null)
 				{
 					Global.OSD.AddMessage("A/V capture canceled.");

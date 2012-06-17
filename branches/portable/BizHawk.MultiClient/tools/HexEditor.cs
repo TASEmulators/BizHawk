@@ -879,7 +879,7 @@ namespace BizHawk.MultiClient
 		{
 			//Scroll value determines the first row
 			int row = vScrollBar1.Value;
-			int rowoffset = ((y - 16) / fontHeight);
+			int rowoffset = y / fontHeight;
 			row += rowoffset;
 			int colWidth = 0;
 			switch (DataSize)
