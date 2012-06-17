@@ -34,12 +34,19 @@ namespace BizHawk.MultiClient
 
 			dlg.listBox1.Items.AddRange(list);
 
+			int i = dlg.listBox1.FindStringExact(Global.Config.VideoWriter);
+			if (i != ListBox.NoMatches)
+				dlg.listBox1.SelectedIndex = i;
+
 			DialogResult result = dlg.ShowDialog(owner);
 
 			IVideoWriter ret;
 
 			if (result == DialogResult.OK && dlg.listBox1.SelectedIndex != -1)
+			{
 				ret = (IVideoWriter)dlg.listBox1.SelectedItem;
+				Global.Config.VideoWriter = ret.ToString();
+			}
 			else
 				ret = null;
 
