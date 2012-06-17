@@ -49,8 +49,11 @@ namespace BizHawk.MultiClient
 			{
 				this.name = name;
 				this.desc = desc;
-				this.commandline = commandline;
 				this.custom = custom;
+				if (custom)
+					this.commandline = Global.Config.FFmpegCustomCommand;
+				else
+					this.commandline = commandline;
 				this.defaultext = defaultext;
 			}
 
@@ -109,6 +112,11 @@ namespace BizHawk.MultiClient
 			FFmpegWriterForm dlg = new FFmpegWriterForm();
 			dlg.listBox1.Items.AddRange(FormatPreset.GetPresets());
 
+			int i = dlg.listBox1.FindStringExact(Global.Config.FFmpegFormat);
+			if (i != ListBox.NoMatches)
+				dlg.listBox1.SelectedIndex = i;
+
+
 			DialogResult result = dlg.ShowDialog(owner);
 
 			FormatPreset ret;
@@ -117,8 +125,12 @@ namespace BizHawk.MultiClient
 			else
 			{
 				ret = (FormatPreset)dlg.listBox1.SelectedItem;
+				Global.Config.FFmpegFormat = ret.ToString();
 				if (ret.custom)
+				{
 					ret.commandline = dlg.textBox1.Text;
+					Global.Config.FFmpegCustomCommand = dlg.textBox1.Text;
+				}
 			}
 			dlg.Dispose();
 			return ret;
