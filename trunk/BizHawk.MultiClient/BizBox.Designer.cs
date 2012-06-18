@@ -118,9 +118,9 @@
 			this.VersionLabel.AutoSize = true;
 			this.VersionLabel.Location = new System.Drawing.Point(201, 56);
 			this.VersionLabel.Name = "VersionLabel";
-			this.VersionLabel.Size = new System.Drawing.Size(188, 13);
+			this.VersionLabel.Size = new System.Drawing.Size(194, 13);
 			this.VersionLabel.TabIndex = 7;
-			this.VersionLabel.Text = "Version 1.0.4 Released June 16, 2012";
+			this.VersionLabel.Text = "Version 1.0.4a Released June 17, 2012";
 			// 
 			// label5
 			// 
