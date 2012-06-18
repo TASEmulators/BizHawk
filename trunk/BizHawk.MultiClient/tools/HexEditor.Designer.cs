@@ -78,6 +78,7 @@
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
+			this.AddressLabel = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -446,6 +447,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.MemoryViewerBox.ContextMenuStrip = this.ViewerContextMenuStrip;
+			this.MemoryViewerBox.Controls.Add(this.AddressLabel);
 			this.MemoryViewerBox.Controls.Add(this.vScrollBar1);
 			this.MemoryViewerBox.Controls.Add(this.AddressesLabel);
 			this.MemoryViewerBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -473,7 +475,7 @@
 			// 
 			this.AddressesLabel.AutoSize = true;
 			this.AddressesLabel.ContextMenuStrip = this.ViewerContextMenuStrip;
-			this.AddressesLabel.Location = new System.Drawing.Point(6, 30);
+			this.AddressesLabel.Location = new System.Drawing.Point(48, 30);
 			this.AddressesLabel.Name = "AddressesLabel";
 			this.AddressesLabel.Size = new System.Drawing.Size(31, 13);
 			this.AddressesLabel.TabIndex = 0;
@@ -491,6 +493,16 @@
 			this.Header.Size = new System.Drawing.Size(35, 13);
 			this.Header.TabIndex = 2;
 			this.Header.Text = "label1";
+			// 
+			// AddressLabel
+			// 
+			this.AddressLabel.AutoSize = true;
+			this.AddressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.AddressLabel.Location = new System.Drawing.Point(3, 30);
+			this.AddressLabel.Name = "AddressLabel";
+			this.AddressLabel.Size = new System.Drawing.Size(25, 13);
+			this.AddressLabel.TabIndex = 2;
+			this.AddressLabel.Text = "      ";
 			// 
 			// HexEditor
 			// 
@@ -571,5 +583,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem resetToDefaultToolStripMenuItem1;
 		public System.Windows.Forms.Label Header;
+		private System.Windows.Forms.Label AddressLabel;
     }
 }
