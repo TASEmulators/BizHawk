@@ -152,7 +152,6 @@ namespace BizHawk.MultiClient
 		public string GenerateMemoryViewString()
 		{
 			StringBuilder rowStr = new StringBuilder();
-			addrOffset = (NumDigits % 4) * 9; //TODO: I dont think this has any purpose here anymore, if this needs to be calculated, it could be done outside the frame loop
 
 			for (int i = 0; i < RowsVisible; i++)
 			{
@@ -160,8 +159,7 @@ namespace BizHawk.MultiClient
 				addr = (row << 4);
 				if (addr >= Domain.Size)
 					break;
-				//rowStr.AppendFormat(NumDigitsStr, addr);
-					
+
 				for (int j = 0; j < 16; j += DataSize)
 				{
 					if (addr + j < Domain.Size)
@@ -965,6 +963,7 @@ namespace BizHawk.MultiClient
 
 		private Point GetAddressCoordinates(int address)
 		{
+			addrOffset = (NumDigits % 4) * 9;
 			switch (DataSize)
 			{
 				default:
