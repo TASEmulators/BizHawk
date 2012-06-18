@@ -32,7 +32,8 @@ namespace BizHawk.MultiClient
 		public bool PressRewind = false;
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
-		public bool StopOnEnd = true;
+		public int  StopOnFrame = -1;
+		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
 
 		//avi/wav state
@@ -1892,15 +1893,21 @@ namespace BizHawk.MultiClient
 					session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
+				if (-1 != StopOnFrame && StopOnFrame == Global.Emulator.Frame + 1)
 				{
-					if (Global.MovieSession.Movie.LogLength() == Global.Emulator.Frame + 1 && true == StopOnEnd)
+					if(StopOnFrame == Global.MovieSession.Movie.LogLength())
 					{
-						if (true == Global.MovieSession.Movie.TastudioOn)
-						{
-							StopOnEnd = false;
-						}
 						Global.MovieSession.Movie.SetMovieFinished();
+					}
+					if (true == Global.MovieSession.Movie.TastudioOn)
+					{
+						PauseEmulator();
+						StopOnFrame = -1;
+					}
+					if(true == RestoreReadWriteOnStop)
+					{
+						Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+						RestoreReadWriteOnStop = false;
 					}
 				}
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
@@ -1998,7 +2005,6 @@ namespace BizHawk.MultiClient
 		{
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
-			Global.MovieSession.Movie.CheckValidity();
 			TAStudio1.UpdateValues();
 		}
 

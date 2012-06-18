@@ -12,10 +12,24 @@ namespace BizHawk.MultiClient
 	public class MovieLog
 	{
 		//TODO: Insert(int frame) not useful for convenctional tasing but TAStudio will want it
+		
+		private struct StateRecordStruct
+		{
+			public StateRecordStruct(int index, byte[] state)
+			{
+				this.index = index;
+				this.state = state;
+			}
 
-		List<string> MovieRecords = new List<string>();
+			public int index;
+			public byte[] state;
+		}
 
-		private List<byte[]> StateRecords = new List<byte[]>();
+		private List<string> MovieRecords = new List<string>();
+		private List<StateRecordStruct> StateRecords = new List<StateRecordStruct>();
+		private byte[] InitState;
+		//TODO: Make this size limit configurable by the user
+		private int MaxStateRecordSize = 1024 * 1024 * 1024; //To limit memory usage.
 
 		public MovieLog()
 		{
@@ -26,9 +40,24 @@ namespace BizHawk.MultiClient
 			return MovieRecords.Count;
 		}
 
-		public int StateLength()
+		public int StateFirstIndex()
+		{
+			return (0 == StateRecords.Count) ? -1 : StateRecords[0].index;
+		}
+
+		public int StateLastIndex()
+		{
+			return (0 == StateRecords.Count) ? -1 : StateRecords[StateRecords.Count-1].index;
+		}
+
+		public int StateSizeInFrames()
 		{
 			return StateRecords.Count;
+		}
+
+		public int StateSizeInBytes()
+		{
+			return (0 == StateRecords.Count) ? 0 : StateRecords.Count * StateRecords[0].state.Length;
 		}
 
 		public void Clear()
@@ -44,14 +73,33 @@ namespace BizHawk.MultiClient
 
 		public void AddState(byte[] state)
 		{
-			if (Global.Emulator.Frame >= StateRecords.Count)
+			if (0 == Global.Emulator.Frame)
 			{
-				StateRecords.Add(state);
+				InitState = state;
+			}
+			if (Global.Emulator.Frame < StateFirstIndex())
+			{
+				StateRecords.Clear();
+				StateRecords.Add(new StateRecordStruct(Global.Emulator.Frame, state));
+			}
+			if (Global.Emulator.Frame > StateLastIndex())
+			{
+				if (StateSizeInBytes() + state.Length > MaxStateRecordSize)
+				{
+					// Discard the oldest state to save space.
+					StateRecords.RemoveAt(0);
+				}
+				StateRecords.Add(new StateRecordStruct(Global.Emulator.Frame,state));
 			}
 		}
 
 		public void SetFrameAt(int frameNum, string frame)
 		{
+			if (frameNum < StateLastIndex() && (frameNum < StateFirstIndex() || frame != GetFrame(frameNum)))
+			{
+				TruncateStates(frameNum+1);
+			}
+
 			if (MovieRecords.Count > frameNum)
 				MovieRecords[frameNum] = frame;
 			else
@@ -61,42 +109,44 @@ namespace BizHawk.MultiClient
 		{
 			MovieRecords.Insert(frameNum, frame);
 
-			if (frameNum <= StateRecords.Count - 1)
+			if (frameNum <= StateLastIndex())
 			{
-				StateRecords.RemoveRange(frameNum, StateRecords.Count - frameNum);
+				if (frameNum <= StateFirstIndex())
+				{
+					StateRecords.Clear();
+					Global.MovieSession.Movie.RewindToFrame(0);
+				}
+				else
+				{
+					StateRecords.RemoveRange(frameNum - StateFirstIndex(), StateLastIndex() - frameNum + 1);
+					Global.MovieSession.Movie.RewindToFrame(frameNum);
+				}
 			}
-		}
-
-		public void CheckValidity()
-		{
-			byte[] state = Global.Emulator.SaveStateBinary();
-			if (Global.Emulator.Frame < StateRecords.Count && !state.SequenceEqual((byte[])StateRecords[Global.Emulator.Frame]))
-			{
-				TruncateStates(Global.Emulator.Frame);
-			}
-		}
-
-		public int CapturedStateCount()
-		{
-			return StateRecords.Count;
-		}
-
-		public int ValidStateCount()
-		{
-			return StateRecords.Count;
 		}
 
 		public byte[] GetState(int frame)
 		{
-			return StateRecords[frame];
+			return StateRecords[frame-StateFirstIndex()].state;
+		}
+
+		public byte[] GetInitState()
+		{
+			return InitState;
 		}
 
 		public void DeleteFrame(int frame)
 		{
 			MovieRecords.RemoveAt(frame);
-			if (frame < StateRecords.Count)
+			if (frame <= StateLastIndex())
 			{
-				StateRecords.RemoveAt(frame);
+				if (frame <= StateFirstIndex())
+				{
+					StateRecords.Clear();
+				}
+				else
+				{
+					StateRecords.RemoveRange(frame - StateFirstIndex(), StateLastIndex() - frame + 1);
+				}
 			}
 		}
 
@@ -105,19 +155,18 @@ namespace BizHawk.MultiClient
 			StateRecords.Clear();
 		}
 
-		public void TruncateFrames(int frame)
-		{
-			if (frame >= 0 && frame < MovieLength())
-			{
-				MovieRecords.RemoveRange(frame, MovieLength() - frame);
-			}
-		}
-
 		public void TruncateStates(int frame)
 		{
-			if (frame >= 0 && frame < StateLength())
+			if (frame >= 0)
 			{
-				StateRecords.RemoveRange(frame, StateLength() - frame);
+				if (frame < StateFirstIndex())
+				{
+					StateRecords.Clear();
+				}
+				else if (frame <= StateLastIndex())
+				{
+					StateRecords.RemoveRange(frame - StateFirstIndex(), StateLastIndex() - frame+1);
+				}
 			}
 		}
 
