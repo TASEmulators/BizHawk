@@ -14,8 +14,9 @@ namespace BizHawk.MultiClient
 	public partial class HexEditor : Form
 	{
 		//TODO:
-		//Find text box - autohighlights matches, and shows total matches
-		//Users can customize background, & text colors
+		//Find Prev, Find Next
+		//Multi-select
+		//Open Up ROM in memory domains, set up logic for saving the rom
 		//Tool strip
 		//Increment/Decrement wrapping logic for 2 and 4 byte values
 		int defaultWidth;
@@ -63,6 +64,7 @@ namespace BizHawk.MultiClient
 			Closing += (o, e) => SaveConfigSettings();
 			Header.Font = new Font("Courier New", 8);
 			AddressesLabel.Font = new Font("Courier New", 8);
+			AddressLabel.Font = new Font("Courier New", 8);
 		}
 
 		private void LoadConfigSettings()
@@ -115,6 +117,7 @@ namespace BizHawk.MultiClient
 			SetDataSize(DataSize);
 			UpdateValues();
 			loaded = true;
+			AddressLabel.Text = GenerateAddressString();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -129,18 +132,35 @@ namespace BizHawk.MultiClient
 			AddressesLabel.Text = GenerateMemoryViewString();
 		}
 
-		public string GenerateMemoryViewString()
+		public string GenerateAddressString()
 		{
-			StringBuilder rowStr = new StringBuilder("");
-			addrOffset = (NumDigits % 4) * 9;
+			StringBuilder addrStr = new StringBuilder();
 
 			for (int i = 0; i < RowsVisible; i++)
 			{
 				row = i + vScrollBar1.Value;
-				addr = (row * 16);
+				addr = (row << 4);
 				if (addr >= Domain.Size)
 					break;
-				rowStr.AppendFormat(NumDigitsStr, addr);
+				addrStr.AppendFormat(NumDigitsStr, addr);
+				addrStr.Append('\n');
+			}
+
+			return addrStr.ToString();
+		}
+
+		public string GenerateMemoryViewString()
+		{
+			StringBuilder rowStr = new StringBuilder();
+			addrOffset = (NumDigits % 4) * 9; //TODO: I dont think this has any purpose here anymore, if this needs to be calculated, it could be done outside the frame loop
+
+			for (int i = 0; i < RowsVisible; i++)
+			{
+				row = i + vScrollBar1.Value;
+				addr = (row << 4);
+				if (addr >= Domain.Size)
+					break;
+				//rowStr.AppendFormat(NumDigitsStr, addr);
 					
 				for (int j = 0; j < 16; j += DataSize)
 				{
@@ -362,6 +382,7 @@ namespace BizHawk.MultiClient
 					GoToAddress(int.Parse(i.UserText, NumberStyles.HexNumber));
 				}
 			}
+			AddressLabel.Text = GenerateAddressString();
 		}
 
 		private void ClearNibbles()
@@ -382,6 +403,7 @@ namespace BizHawk.MultiClient
 			ClearNibbles();
 			UpdateValues();
 			MemoryViewerBox.Refresh();
+			AddressLabel.Text = GenerateAddressString();
 		}
 
 		public void SetHighlighted(int addr)
@@ -867,6 +889,7 @@ namespace BizHawk.MultiClient
 			else
 				vScrollBar1.Visible = false;
 
+			AddressLabel.Text = GenerateAddressString();
 		}
 
 		private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
@@ -895,7 +918,7 @@ namespace BizHawk.MultiClient
 					colWidth = 9;
 					break;
 			}
-			int column = (x - 43) / (fontWidth * colWidth);
+			int column = (x /*- 43*/) / (fontWidth * colWidth);
 
 			if (row >= 0 && row <= maxRow && column >= 0 && column < (16 / DataSize))
 			{
@@ -907,6 +930,7 @@ namespace BizHawk.MultiClient
 				addressOver = -1;
 				info = "";
 			}
+			AddressLabel.Text = GenerateAddressString();
 		}
 
 		private void HexEditor_ResizeEnd(object sender, EventArgs e)
