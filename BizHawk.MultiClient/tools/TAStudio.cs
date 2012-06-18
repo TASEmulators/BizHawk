@@ -70,9 +70,9 @@ namespace BizHawk.MultiClient
 						case "SMS":
 						case "GG":
 						case "SG":
-							Pads[0].SetButtons(str.Substring(0, 6));
-							Pads[1].SetButtons(str.Substring(7, 6));
-							Pads[2].SetButtons(str.Substring(14, 2));
+							Pads[0].SetButtons(str.Substring(1, 6));
+							Pads[1].SetButtons(str.Substring(8, 6));
+							Pads[2].SetButtons(str.Substring(15, 2));
 							break;
 						case "PCE":
 						case "SGX":
@@ -104,9 +104,13 @@ namespace BizHawk.MultiClient
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index < Global.MovieSession.Movie.ValidStateCount())
+			if (0 == index && 0 == Global.MovieSession.Movie.StateFirstIndex())
+				color = Color.LightGreen; //special case for frame 0. Normally we need to go back an extra frame, but for frame 0 we can reload the rom.
+			if (index > Global.MovieSession.Movie.StateFirstIndex() && index <= Global.MovieSession.Movie.StateLastIndex())
 				color = Color.LightGreen;
-			else if ("" != Global.MovieSession.Movie.GetInputFrame(index) && Global.MovieSession.Movie.GetInputFrame(index)[1] == 'L')
+			if ("" != Global.MovieSession.Movie.GetInputFrame(index) &&
+				Global.COMMANDS[Global.MovieInputSourceAdapter.Type.Name].ContainsKey("Lag") &&
+				Global.MovieSession.Movie.GetInputFrame(index)[1] == Global.COMMANDS[Global.MovieInputSourceAdapter.Type.Name]["Lag"][0])
 				color = Color.Pink;
 			if (index == Global.Emulator.Frame)
 			{
@@ -131,7 +135,7 @@ namespace BizHawk.MultiClient
 		private void DisplayList()
 		{
 			TASView.ItemCount = Global.MovieSession.Movie.LogLength();
-			if (Global.MovieSession.Movie.LogLength() == Global.Emulator.Frame && Global.MovieSession.Movie.StateLength() == Global.Emulator.Frame)
+			if (Global.MovieSession.Movie.LogLength() == Global.Emulator.Frame && Global.MovieSession.Movie.StateLastIndex() == Global.Emulator.Frame - 1)
 			{
 				//If we're at the end of the movie add one to show the cursor as a blank frame
 				TASView.ItemCount++;
@@ -158,7 +162,7 @@ namespace BizHawk.MultiClient
 
 			Global.MovieSession.Movie.TastudioOn = true;
 
-			Global.MainForm.StopOnEnd = false;
+			Global.MainForm.StopOnFrame = -1;
 
 			LoadConfigSettings();
 			ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
@@ -367,11 +371,11 @@ namespace BizHawk.MultiClient
 		{
 			if (true == this.FastFowardToEnd.Checked)
 			{
-				Global.MainForm.StopOnEnd = false;
+				Global.MainForm.StopOnFrame = -1;
 			}
 			else
 			{
-				Global.MainForm.StopOnEnd = true;
+				Global.MainForm.StopOnFrame = Global.MovieSession.Movie.LogLength();
 			}
 
             this.FastFowardToEnd.Checked ^= true;
@@ -490,7 +494,6 @@ namespace BizHawk.MultiClient
 			{
 				Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInputFrame(list[index]), (int)list[index]);
 			}
-			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
 		}
 
 		private void Delete_Click(object sender, EventArgs e)
@@ -498,7 +501,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			for (int index = 0; index < list.Count; index++)
 			{
-				Global.MovieSession.Movie.DeleteFrame(TASView.selectedItem);
+				Global.MovieSession.Movie.DeleteFrame(list[index]);
 			}
 		}
 	}
