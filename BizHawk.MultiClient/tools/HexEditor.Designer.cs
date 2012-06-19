@@ -75,10 +75,12 @@
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.gotoAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
+			this.AddressLabel = new System.Windows.Forms.Label();
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
-			this.AddressLabel = new System.Windows.Forms.Label();
+			this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -152,7 +154,7 @@
 			this.copyToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.copyToolStripMenuItem.Text = "&Copy";
 			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			// 
@@ -161,20 +163,20 @@
 			this.pasteToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Paste;
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.pasteToolStripMenuItem.Text = "&Paste";
 			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(143, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
 			// 
 			// findToolStripMenuItem1
 			// 
 			this.findToolStripMenuItem1.Name = "findToolStripMenuItem1";
 			this.findToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.findToolStripMenuItem1.Size = new System.Drawing.Size(146, 22);
+			this.findToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.findToolStripMenuItem1.Text = "&Find...";
 			this.findToolStripMenuItem1.Click += new System.EventHandler(this.findToolStripMenuItem1_Click);
 			// 
@@ -368,6 +370,8 @@
 			// ViewerContextMenuStrip
 			// 
 			this.ViewerContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyToolStripMenuItem1,
+            this.pasteToolStripMenuItem1,
             this.freezeToolStripMenuItem,
             this.addToRamWatchToolStripMenuItem,
             this.unfreezeAllToolStripMenuItem1,
@@ -377,7 +381,7 @@
             this.toolStripSeparator5,
             this.gotoAddressToolStripMenuItem1});
 			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
-			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(220, 148);
+			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(220, 214);
 			this.ViewerContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContextMenuStrip_Opening);
 			// 
 			// freezeToolStripMenuItem
@@ -438,7 +442,7 @@
 			this.gotoAddressToolStripMenuItem1.Name = "gotoAddressToolStripMenuItem1";
 			this.gotoAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+G";
 			this.gotoAddressToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
-			this.gotoAddressToolStripMenuItem1.Text = "&Go to Addres...";
+			this.gotoAddressToolStripMenuItem1.Text = "&Go to Address...";
 			this.gotoAddressToolStripMenuItem1.Click += new System.EventHandler(this.gotoAddressToolStripMenuItem1_Click);
 			// 
 			// MemoryViewerBox
@@ -459,6 +463,16 @@
 			this.MemoryViewerBox.TabIndex = 2;
 			this.MemoryViewerBox.TabStop = false;
 			this.MemoryViewerBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewerBox_Paint);
+			// 
+			// AddressLabel
+			// 
+			this.AddressLabel.AutoSize = true;
+			this.AddressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.AddressLabel.Location = new System.Drawing.Point(3, 30);
+			this.AddressLabel.Name = "AddressLabel";
+			this.AddressLabel.Size = new System.Drawing.Size(25, 13);
+			this.AddressLabel.TabIndex = 2;
+			this.AddressLabel.Text = "      ";
 			// 
 			// vScrollBar1
 			// 
@@ -494,15 +508,23 @@
 			this.Header.TabIndex = 2;
 			this.Header.Text = "label1";
 			// 
-			// AddressLabel
+			// copyToolStripMenuItem1
 			// 
-			this.AddressLabel.AutoSize = true;
-			this.AddressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AddressLabel.Location = new System.Drawing.Point(3, 30);
-			this.AddressLabel.Name = "AddressLabel";
-			this.AddressLabel.Size = new System.Drawing.Size(25, 13);
-			this.AddressLabel.TabIndex = 2;
-			this.AddressLabel.Text = "      ";
+			this.copyToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
+			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
+			this.copyToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+C";
+			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
+			this.copyToolStripMenuItem1.Text = "&Copy";
+			this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem1_Click);
+			// 
+			// pasteToolStripMenuItem1
+			// 
+			this.pasteToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Paste;
+			this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
+			this.pasteToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+V";
+			this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
+			this.pasteToolStripMenuItem1.Text = "&Paste";
+			this.pasteToolStripMenuItem1.Click += new System.EventHandler(this.pasteToolStripMenuItem1_Click);
 			// 
 			// HexEditor
 			// 
@@ -584,5 +606,7 @@
 		private System.Windows.Forms.ToolStripMenuItem resetToDefaultToolStripMenuItem1;
 		public System.Windows.Forms.Label Header;
 		private System.Windows.Forms.Label AddressLabel;
+		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem1;
     }
 }
