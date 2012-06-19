@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				byte old_value = value;
 				value &= ReadPRG(addr);
-				Debug.Assert(old_value == value, "Found a test case of bus conflict. please report.");
+				//Debug.Assert(old_value == value, "Found a test case of bus conflict. please report.");
 				//report: pinball quest (J)
 				return value;
 			}

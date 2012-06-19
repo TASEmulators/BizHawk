@@ -7,6 +7,8 @@ using System;
 using System.IO;
 using System.Diagnostics;
 
+//TODO - prg is 4 bits, chr is 6 bits
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//also, Namcot109, Namcot118, Namcot119 chips are this exact same thing
@@ -44,6 +46,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public virtual void WritePRG(int addr, byte value)
 		{
+			//($8001-$9FFF, odd)
 			switch (addr & 0x6001)
 			{
 				case 0x0000: //$8000
@@ -123,7 +126,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return mapper.Get_PRGBank_8K(addr);
 		}
 
-		int MapCHR(int addr)
+		protected int MapCHR(int addr)
 		{
 			int bank_1k = Get_CHRBank_1K(addr);
 			bank_1k &= chr_mask;

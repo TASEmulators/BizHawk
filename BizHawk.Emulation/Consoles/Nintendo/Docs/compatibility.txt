@@ -25,7 +25,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 011	Misc		Complete
 012 DBZ5		Decent (mmc3 variant)
 013	CPROM		Complete
-015	Multicart	Junk
+015	Multicart	Decent (some things uncertain)
 016	Bandai		Decent
 018	Jaleco*		Nothing
 019	Namcot106	Decent (but no sound) (+210)
