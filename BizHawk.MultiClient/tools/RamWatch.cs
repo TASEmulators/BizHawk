@@ -745,6 +745,9 @@ namespace BizHawk.MultiClient
 			WatchListView.Columns[2].Width = 0;
 			WatchListView.Columns[3].Width = defaultChangeWidth;
 			WatchListView.Columns[4].Width = NotesWidth;
+			Global.Config.RamWatchShowChangeFromPrev = false;
+			Global.Config.DisplayRamWatch = false;
+			Global.Config.RamWatchSaveWindowPosition = false;
 		}
 
 		private void newToolStripButton_Click(object sender, EventArgs e)
