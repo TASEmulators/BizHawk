@@ -1477,7 +1477,12 @@ namespace BizHawk.MultiClient
 			prompt.HexOnly = true;
 			if (addressHighlighted > 0)
 			{
-				prompt.SetInitialValue(ValueString(GetHighlightedAddress()));
+				string values = ValueString(GetHighlightedAddress());
+				foreach (int x in SecondaryHighlightedAddresses)
+				{
+					values += ValueString(x);
+				}
+				prompt.SetInitialValue(values);
 			}
 			prompt.ShowDialog();
 
