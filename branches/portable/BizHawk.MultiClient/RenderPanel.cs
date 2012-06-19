@@ -179,6 +179,7 @@ namespace BizHawk.MultiClient
 		void IBlitter.Open()
 		{
 			g = Graphics.FromImage(tempBuffer.PeekBitmap());
+			ClipBounds = new Rectangle(0, 0, NativeSize.Width, NativeSize.Height); 
 		}
 
 		void IBlitter.Close()
@@ -203,7 +204,7 @@ namespace BizHawk.MultiClient
 			//todo
 		}
 
-		Rectangle IBlitter.ClipBounds { get; set; }
+		public Rectangle ClipBounds { get; set; }
 
 		bool RetainedViewportPanelDisposeCallback(Bitmap bmp)
 		{
@@ -294,7 +295,10 @@ namespace BizHawk.MultiClient
 			public d3d9font font;
 		}
 
-		void IBlitter.Open() {}
+		void IBlitter.Open()
+		{
+			ClipBounds = new Rectangle(0, 0, NativeSize.Width, NativeSize.Height);
+		}
 		void IBlitter.Close() {}
 
 		private bool Vsync;
@@ -322,7 +326,7 @@ namespace BizHawk.MultiClient
 			return new SizeF(r.Width, r.Height);
 		}
 
-		Rectangle IBlitter.ClipBounds { get; set; }
+		public Rectangle ClipBounds { get; set; }
 
 		public Direct3DRenderPanel(Direct3D direct3D, Control control)
 		{

@@ -168,9 +168,9 @@ namespace BizHawk.MultiClient
 			else if (sender == PR)
 				Global.StickyXORAdapter.SetSticky(Controller + " Right", PR.Checked);
 			else if (sender == B1)
-				Global.StickyXORAdapter.SetSticky(Controller + " B1", B3.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " B1", B1.Checked);
 			else if (sender == B2)
-				Global.StickyXORAdapter.SetSticky(Controller + " B2", B4.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " B2", B2.Checked);
 		}
 
 		public override void Clear()

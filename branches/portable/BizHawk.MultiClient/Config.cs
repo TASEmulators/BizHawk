@@ -288,8 +288,11 @@ namespace BizHawk.MultiClient
 		public Color HexHighlightFreezeColor = Color.Violet;
 
 		// Video dumping settings
+		public string VideoWriter = "";
 		public int JMDCompression = 3;
 		public int JMDThreads = 3;
+		public string FFmpegFormat = "";
+		public string FFmpegCustomCommand = "-c:a foo -c:v bar -f baz";
 
 		// NESPPU Settings
 		public bool AutoLoadNESPPU = false;

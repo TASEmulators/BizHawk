@@ -80,14 +80,6 @@ namespace BizHawk.MultiClient
 				return Frames;
 		}
 
-		public int StateLength()
-		{
-			if (Loaded)
-				return Log.StateLength();
-			else
-				return Frames;
-		}
-
 		public void UpdateFileName(string filename)
         {
             this.Filename = filename;
@@ -118,27 +110,71 @@ namespace BizHawk.MultiClient
 		{
 			if (frame <= Global.Emulator.Frame)
 			{
-				//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
-				Global.MainForm.UpdateFrame = true;
+				if (frame <= Log.StateFirstIndex())
+				{
+					//Global.MainForm.LoadRom(Global.MainForm.CurrentlyOpenRom,false);
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
+					Global.MainForm.TAStudio1.UpdateValues();
+					if (true == Global.MainForm.EmulatorPaused && 0 != frame)
+					{
+						Global.MainForm.StopOnFrame = frame;
+						Global.MainForm.UnpauseEmulator();
+					}
+					if (MOVIEMODE.RECORD == Mode)
+					{
+						Mode = MOVIEMODE.PLAY;
+						Global.MainForm.RestoreReadWriteOnStop = true;
+					}
+				}
+				else
+				{
+					if (0 == frame)
+					{
+						//Global.MainForm.LoadRom(Global.MainForm.CurrentlyOpenRom, false);
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
+						//Global.MainForm.StopOnFrame = frame;
+						Global.MainForm.TAStudio1.UpdateValues();
+					}
+					else
+					{
+						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+						Global.MainForm.UpdateFrame = true;
+					}
+				}
+			}
+			else
+			{
+				Global.MainForm.StopOnFrame = frame;
+				Global.MainForm.UnpauseEmulator();
 			}
 		}
 
 		public void DeleteFrame(int frame)
 		{
-			RewindToFrame(frame);
+			if (frame <= StateLastIndex())
+			{
+				if (frame <= StateFirstIndex())
+				{
+					RewindToFrame(0);
+				}
+				else
+				{
+					RewindToFrame(frame);
+				}
+			}
 			Log.DeleteFrame(frame);
 			Global.MainForm.TAStudio1.UpdateValues();
 		}
 
-		public int ValidStateCount()
+		public int StateFirstIndex()
 		{
-			return Log.ValidStateCount();
+			return Log.StateFirstIndex();
 		}
 
-		public void CheckValidity()
+		public int StateLastIndex()
 		{
-			Log.CheckValidity();
+			return Log.StateLastIndex();
 		}
 
 		public void ClearSaveRAM()
@@ -186,6 +222,7 @@ namespace BizHawk.MultiClient
 		{
 			ClearSaveRAM();
 			Mode = MOVIEMODE.PLAY;
+			Global.MainForm.StopOnFrame = LogLength();
 		}
 
 		public void ResumeRecording()
@@ -207,6 +244,7 @@ namespace BizHawk.MultiClient
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 
 			mg.SetSource(source);
+
 			Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
 		}
 

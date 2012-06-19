@@ -22,7 +22,7 @@
 			Global.MovieSession.Movie.TastudioOn = false;
 			Global.MovieSession.Movie.ClearStates();
 
-			Global.MainForm.StopOnEnd = true;
+			Global.MainForm.StopOnFrame = Global.MovieSession.Movie.LogLength();
 
 			base.Dispose(disposing);
         }
