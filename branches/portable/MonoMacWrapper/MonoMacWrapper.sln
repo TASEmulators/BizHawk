@@ -48,6 +48,6 @@ Global
 		$2.Text = 
 		$2.IncludeInNewFiles = True
 		description = Alpha release, work in progress
-		version = 1.0.3
+		version = 1.0.4
 	EndGlobalSection
 EndGlobal
