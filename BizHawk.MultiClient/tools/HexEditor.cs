@@ -1260,6 +1260,7 @@ namespace BizHawk.MultiClient
 				{
 					vScrollBar1.Value--;
 					MemoryViewerBox.Refresh();
+					AddressLabel.Text = GenerateAddressString();
 					UpdateValues();
 				}
 			}
@@ -1269,6 +1270,7 @@ namespace BizHawk.MultiClient
 				{
 					vScrollBar1.Value++;
 					MemoryViewerBox.Refresh();
+					AddressLabel.Text = GenerateAddressString();
 					UpdateValues();
 				}
 			}
