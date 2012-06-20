@@ -125,6 +125,9 @@ sha1:977286FDC76C34A618E2A2D0270641BC36CFE89C		Nintendo World Championships 1990
 ;these are from the 2002 konami collection and castlevania at least has a published TAS. presumably these are good, as they came from a PC game
 sha1:EC652EE1660E527098102E26A36A8B9B7BB3943F		Castlevania (Konami Collection 2002)	NES		board=NES-UNROM;PRG=128;WRAM=0;VRAM=8;PAD_H=1
 sha1:B5C4E5E858113F5AA5E063BC79A12D7F6B856E6C		Contra (Konami Collection 2002)	NES		board=NES-UNROM;PRG=128;WRAM=0;VRAM=8;PAD_H=1
+
+;chinese shit
+sha1:BFA31777E077E64AF0E274B5A22B57C6765D36E1		Fan Kong Jing Ying (Unl) (Ch)	NES		board=MAPPER241;MIR=H
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------

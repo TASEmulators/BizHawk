@@ -369,6 +369,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart.pad_h = byte.Parse(dict["PAD_H"]);
 			if (dict.ContainsKey("PAD_V"))
 				cart.pad_v = byte.Parse(dict["PAD_V"]);
+			if(dict.ContainsKey("MIR"))
+				if (dict["MIR"] == "H")
+				{
+					cart.pad_v = 1; cart.pad_h = 0;
+				}
+				else if (dict["MIR"] == "V")
+				{
+					cart.pad_h = 1; cart.pad_v = 0;
+				}
 			if (dict.ContainsKey("BAD"))
 				cart.bad = true;
 			if (dict.ContainsKey("MMC3"))

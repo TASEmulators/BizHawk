@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
-			prg_bank_mask_8k = (Cart.prg_size / 16) - 1;
+			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
 
 			prg_banks_8k[0] = 0;
 			prg_banks_8k[1] = 1;
@@ -77,9 +77,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					prg_banks_8k[3] = (byte)((prg_high * 2 + 1) ^ prg_low_val);
 					break;
 			}
+
+			ApplyMemoryMapMask(prg_bank_mask_8k, prg_banks_8k);
 		}
-
-
 
 		public override void SyncState(Serializer ser)
 		{
