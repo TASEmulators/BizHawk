@@ -123,6 +123,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 233	Multicart	Junk
 234	Misc		Nothing
 240	Misc (CN)	Complete
+241 Misc (CN)	Complete
 242	Misc (CN)	Complete
 243	Misc		Nothing
 245	Pirate		Junk
