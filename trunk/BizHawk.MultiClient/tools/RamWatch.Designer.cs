@@ -719,7 +719,6 @@
 			// ClearChangeCountstoolStripButton
 			// 
 			this.ClearChangeCountstoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.ClearChangeCountstoolStripButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.ClearChangeCountstoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountstoolStripButton.Image")));
 			this.ClearChangeCountstoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ClearChangeCountstoolStripButton.Name = "ClearChangeCountstoolStripButton";

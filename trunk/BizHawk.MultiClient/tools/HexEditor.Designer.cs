@@ -88,7 +88,6 @@
 			// 
 			// menuStrip1
 			// 
-			this.menuStrip1.Font = new System.Drawing.Font("Tahoma", 8.25F);
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
@@ -191,7 +190,6 @@
             this.addToRamWatchToolStripMenuItem1,
             this.freezeAddressToolStripMenuItem,
             this.unfreezeAllToolStripMenuItem});
-			this.optionsToolStripMenuItem.Font = new System.Drawing.Font("Tahoma", 8.25F);
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
