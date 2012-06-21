@@ -89,9 +89,9 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(198, 98);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(129, 13);
+			this.label2.Size = new System.Drawing.Size(125, 13);
 			this.label2.TabIndex = 4;
-			this.label2.Text = "Vecna, Zeromus, Adelikat";
+			this.label2.Text = "vecna, adelikat, zeromus";
 			// 
 			// label3
 			// 
@@ -129,7 +129,7 @@
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(66, 13);
 			this.label5.TabIndex = 8;
-			this.label5.Text = "Contributers:";
+			this.label5.Text = "Contributors:";
 			// 
 			// label6
 			// 
@@ -145,9 +145,9 @@
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(198, 153);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(214, 13);
+			this.label7.Size = new System.Drawing.Size(237, 13);
 			this.label7.TabIndex = 10;
-			this.label7.Text = "Deign, Brandon E, Pasky13, link_7777, natt";
+			this.label7.Text = "Deign, Brandon Evans, Pasky13, link_7777, natt";
 			// 
 			// BizBox
 			// 
