@@ -319,6 +319,12 @@
     <Compile Include="tools\HexColor.Designer.cs">
       <DependentUpon>HexColor.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\HexFind.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\HexFind.Designer.cs">
+      <DependentUpon>HexFind.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\WatchCommon.cs" />
     <Compile Include="VideoWriterChooserForm.cs">
       <SubType>Form</SubType>
@@ -364,6 +370,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexColor.resx">
       <DependentUpon>HexColor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\HexFind.resx">
+      <DependentUpon>HexFind.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\LuaFunctionList.resx">
       <DependentUpon>LuaFunctionList.cs</DependentUpon>
