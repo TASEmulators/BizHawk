@@ -1136,27 +1136,101 @@ namespace BizHawk.MultiClient
 
 		private void HexEditor_KeyDown(object sender, KeyEventArgs e)
 		{
+			int newHighlighted;
 			switch (e.KeyCode)
 			{
 				case Keys.Up:
-					GoToAddress(addressHighlighted - 16);
+					newHighlighted = addressHighlighted - 16;
+					if (e.Modifiers == Keys.Shift)
+					{
+						for (int i = newHighlighted + 1; i <= addressHighlighted; i++)
+						{
+							AddToSecondaryHighlights(i);
+						}
+						GoToAddress(newHighlighted);
+					}
+					else
+					{
+						SecondaryHighlightedAddresses.Clear();
+						GoToAddress(newHighlighted);
+					}
 					break;
 				case Keys.Down:
-					GoToAddress(addressHighlighted + 16);
+					newHighlighted = addressHighlighted + 16;
+					if (e.Modifiers == Keys.Shift)
+					{
+						for (int i = newHighlighted - 16; i < newHighlighted; i++)
+						{
+							AddToSecondaryHighlights(i);
+						}
+						GoToAddress(newHighlighted);
+					}
+					else
+					{
+						SecondaryHighlightedAddresses.Clear();
+						GoToAddress(newHighlighted);
+					}
 					break;
 				case Keys.Left:
-					GoToAddress(addressHighlighted - (1 * DataSize));
+					newHighlighted = addressHighlighted - (1 * DataSize);
+					if (e.Modifiers == Keys.Shift)
+					{
+						AddToSecondaryHighlights(addressHighlighted);
+						GoToAddress(newHighlighted);
+					}
+					else
+					{
+						SecondaryHighlightedAddresses.Clear();
+						GoToAddress(newHighlighted);
+					}
 					break;
 				case Keys.Right:
-					GoToAddress(addressHighlighted + (1 * DataSize));
+					newHighlighted = addressHighlighted + (1 * DataSize);
+					if (e.Modifiers == Keys.Shift)
+					{
+						AddToSecondaryHighlights(addressHighlighted);
+						GoToAddress(newHighlighted);
+					}
+					else
+					{
+						SecondaryHighlightedAddresses.Clear();
+						GoToAddress(newHighlighted);
+					}
 					break;
 				case Keys.PageUp:
-					GoToAddress(addressHighlighted - (RowsVisible * 16));
+					newHighlighted = addressHighlighted - (RowsVisible * 16);
+					if (e.Modifiers == Keys.Shift)
+					{
+						for (int i = newHighlighted + 1; i <= addressHighlighted; i++)
+						{
+							AddToSecondaryHighlights(i);
+						}
+						GoToAddress(newHighlighted);
+					}
+					else
+					{
+						SecondaryHighlightedAddresses.Clear();
+						GoToAddress(newHighlighted);
+					}
 					break;
 				case Keys.PageDown:
-					GoToAddress(addressHighlighted + (RowsVisible * 16));
+					newHighlighted = addressHighlighted + (RowsVisible * 16);
+					if (e.Modifiers == Keys.Shift)
+					{
+						for (int i = addressHighlighted + 1; i < newHighlighted; i++)
+						{
+							AddToSecondaryHighlights(i);
+						}
+						GoToAddress(newHighlighted);
+					}
+					else
+					{
+						SecondaryHighlightedAddresses.Clear();
+						GoToAddress(newHighlighted);
+					}
 					break;
 				case Keys.Tab:
+					SecondaryHighlightedAddresses.Clear();
 					if (e.Modifiers == Keys.Shift)
 						GoToAddress(addressHighlighted - 8);
 					else
@@ -1189,6 +1263,14 @@ namespace BizHawk.MultiClient
 					if (e.Modifiers == Keys.Control)
 						AddToRamWatch();
 					break;
+			}
+		}
+
+		private void AddToSecondaryHighlights(int address)
+		{
+			if (address >= 0 && address < Domain.Size)
+			{
+				SecondaryHighlightedAddresses.Add(address);
 			}
 		}
 
