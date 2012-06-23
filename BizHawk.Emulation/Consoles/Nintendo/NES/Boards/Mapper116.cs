@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	class Mapper116 : NES.NESBoardBase
 	{
+		[NES.INESBoardImplCancel]
 		class MMC3_CustomBoard : MMC3Board_Base
 		{
 			public override void WritePRG(int addr, byte value)

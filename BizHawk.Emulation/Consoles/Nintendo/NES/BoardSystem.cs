@@ -256,6 +256,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//this will be used to track classes that implement boards
 		[AttributeUsage(AttributeTargets.Class)]
 		public class INESBoardImplAttribute : Attribute { }
+		//this tracks derived boards that shouldnt be used by the implementation scanner
+		[AttributeUsage(AttributeTargets.Class)]
+		public class INESBoardImplCancelAttribute : Attribute { }
 		static List<Type> INESBoardImplementors = new List<Type>();
 
 		static NES()
@@ -266,6 +269,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				var attrs = type.GetCustomAttributes(typeof(INESBoardImplAttribute), true);
 				if (attrs.Length == 0) continue;
 				if (type.IsAbstract) continue;
+				var cancelAttrs = type.GetCustomAttributes(typeof(INESBoardImplCancelAttribute), true);
+				if (cancelAttrs.Length != 0) continue;
 				INESBoardImplementors.Add(type);
 			}
 		}
