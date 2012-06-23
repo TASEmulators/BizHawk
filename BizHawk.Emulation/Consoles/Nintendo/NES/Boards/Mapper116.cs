@@ -227,11 +227,5 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			mmc3.ClockPPU();
 		}
-
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-		}
 	}
 }
