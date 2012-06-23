@@ -14,12 +14,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//state
 		int reg_addr;
 		bool chr_mode, prg_mode;
-		ByteBuffer regs = new ByteBuffer(8);
+		public ByteBuffer regs = new ByteBuffer(8);
 
 		public byte mirror;
 		int a12_old;
 		byte irq_reload, irq_counter;
-		protected bool irq_pending, irq_enable, irq_reload_flag;
+		public bool irq_pending, irq_enable, irq_reload_flag;
 		public bool wram_enable, wram_write_protect;
 
 		//it really seems like these should be the same but i cant seem to unify them.
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Sync();
 		}
 
-		void Sync()
+		public void Sync()
 		{
 			if (prg_mode)
 			{
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		protected virtual void SyncIRQ()
 		{
-			board.NES.irq_cart = irq_pending;
+			board.SyncIRQ(irq_pending);
 		}
 
 		public void WritePRG(int addr, byte value)
@@ -279,7 +279,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	public abstract class MMC3Board_Base : NES.NESBoardBase
 	{
 		//state
-		protected MMC3 mmc3;
+		public MMC3 mmc3;
+		public int extra_vrom;
+
 
 		public override void AddressPPU(int addr)
 		{
@@ -303,6 +305,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			base.SyncState(ser);
 			mmc3.SyncState(ser);
+			ser.Sync("extra_vrom", ref extra_vrom);
 		}
 
 		protected virtual int Get_CHRBank_1K(int addr)
@@ -329,7 +332,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				addr = MapCHR(addr);
 				if (VROM != null)
-					return VROM[addr];
+					return VROM[addr + extra_vrom];
 				else return VRAM[addr];
 			}
 			else return base.ReadPPU(addr);

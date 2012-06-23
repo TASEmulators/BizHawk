@@ -530,7 +530,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart = choice;
 				board.Create(this);
 				board.Configure(origin);
-				board.PostConfigure();
 
 				if (origin == EDetectionOrigin.BootGodDB)
 				{
@@ -572,6 +571,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					board.WRAM = new byte[cart.wram_size * 1024];
 				if (cart.vram_size != 0)
 					board.VRAM = new byte[cart.vram_size * 1024];
+
+				board.PostConfigure();
 
 				HardReset();
 				SetupMemoryDomains();

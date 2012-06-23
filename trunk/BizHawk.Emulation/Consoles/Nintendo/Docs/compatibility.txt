@@ -87,6 +87,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 112	Misc (CN)	Nothing
 113	=USELESS=	Junk
 115	MMC3Variant	Decent
+116 Unlicensed	Minimal (missing correct mirroring logic)
 118	TLSROM		Complete
 119	TQROM		Complete
 140	Misc (J)	Complete

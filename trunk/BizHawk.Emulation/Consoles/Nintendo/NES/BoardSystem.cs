@@ -76,6 +76,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				for (int i = 0; i < 4; i++) ser.Sync("mirroring" + i, ref mirroring[i]);
 			}
 
+			public virtual void SyncIRQ(bool flag)
+			{
+				NES.irq_cart = flag;
+			}
+
 			public virtual void Dispose() { }
 
 			int[] mirroring = new int[4];

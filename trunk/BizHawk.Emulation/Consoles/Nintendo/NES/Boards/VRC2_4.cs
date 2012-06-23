@@ -1,4 +1,6 @@
-﻿using System;
+﻿//TODO - for chr, refactor to use 8 registers of 8 bits instead of 16 registers of 4 bits. more realistic, less weird code.
+
+using System;
 using System.IO;
 using System.Diagnostics;
 
@@ -10,21 +12,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;
+		int prg_reg_mask_8k;
 		Func<int, int> remap;
 		Func<int, int> fix_chr;
 		int type;
 
 		//state
-		int[] prg_bank_reg_8k = new int[2];
-		int[] chr_bank_reg_1k = new int[16];
+		public int[] prg_bank_reg_8k = new int[2];
+		public int[] chr_bank_reg_1k = new int[16];
 		bool prg_mode;
 		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-		ByteBuffer chr_banks_1k = new ByteBuffer(8);
+		public ByteBuffer chr_banks_1k = new ByteBuffer(8);
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;
 		byte irq_reload;
 		byte irq_counter;
 		int irq_prescaler;
+		public int extra_vrom;
 
 		public override void Dispose()
 		{
@@ -45,6 +49,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_reload", ref irq_reload);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_prescaler", ref irq_prescaler);
+			ser.Sync("extra_vrom", ref extra_vrom);
 
 			if (ser.IsReader)
 			{
@@ -71,7 +76,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		void SyncCHR()
+		public void SyncCHR()
 		{
 			//Console.Write("{0}: ", NES.ppu.ppur.status.sl);
 			for (int i = 0; i < 8; i++)
@@ -101,6 +106,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "MAPPER023":
 				case "MAPPER025":
 					throw new InvalidOperationException("someone will need to bug me to set these up for failsafe mapping");
+
+				case "MAPPER116_HACKY":
+					remap = (addr) => addr;
+					type = 2;
+					break;
 
 				case "KONAMI-VRC-4":
 					AssertPrg(128,256); AssertChr(128,256); AssertVram(0); AssertWram(0,2,8);
@@ -134,7 +144,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
 
-			prg_bank_reg_8k[0] = prg_bank_reg_8k[1] = 0;
+			if(type == 4) prg_reg_mask_8k = 0x1F;
+			else prg_reg_mask_8k = 0xF;
+			
+			//this VRC2 variant has an extra large PRG reg
+			if (Cart.board_type == "MAPPER116_HACKY")
+				prg_reg_mask_8k = 0x1F;
+
+			prg_bank_reg_8k[0] = 0;
+			prg_bank_reg_8k[1] = 1;
 			SyncPRG();
 			SyncCHR();
 			SetMirrorType(EMirrorType.Vertical);
@@ -159,7 +177,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int ofs = addr & ((1 << 10) - 1);
 				bank_1k = chr_banks_1k[bank_1k];
 				addr = (bank_1k << 10) | ofs;
-				return VROM[addr];
+				return VROM[addr + extra_vrom];
 			}
 			else return base.ReadPPU(addr);
 		}
@@ -171,17 +189,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (addr)
 			{
 				default:
-					Console.WriteLine("missed case: {0:X4}", addr);
+					Console.WriteLine("missed case: {0:X4}", addr + 0x8000);
 					break;
 
 				case 0x0000: //$8000
 				case 0x0001:
 				case 0x0002:
 				case 0x0003:
-					if(type==4)
-						prg_bank_reg_8k[0] = value & 0x1F;
-					else
-						prg_bank_reg_8k[0] = value & 0xF;
+					prg_bank_reg_8k[0] = value & prg_reg_mask_8k;
 					SyncPRG();
 					break;
 				
@@ -207,10 +222,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x2001: //$A001
 				case 0x2002: //$A002
 				case 0x2003: //$A003
-					if(type==4)
-						prg_bank_reg_8k[1] = value & 0x1F;
-					else
-						prg_bank_reg_8k[1] = value & 0xF;
+					prg_bank_reg_8k[1] = value & prg_reg_mask_8k;
 					SyncPRG();
 					break;
 
