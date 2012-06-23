@@ -97,6 +97,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 164	Pirate		Junk - Started
 165	Pirate		Junk
 176 Chinese WXN Decent
+178 Chinese		Decent
 180	Misc (J)	Complete (but we don't implement the crazy climber controller) 
 182	MMC3Variant	Decent
 184	Sunsoft-1	Complete
