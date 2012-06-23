@@ -338,7 +338,6 @@ namespace BizHawk.MultiClient
 
 		private Point GetPromptPoint()
 		{
-
 			Point p = new Point(WatchListView.Location.X, WatchListView.Location.Y);
 			Point q = new Point();
 			q = PointToScreen(p);

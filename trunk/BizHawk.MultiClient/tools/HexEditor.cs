@@ -19,6 +19,13 @@ namespace BizHawk.MultiClient
 		//Tool strip
 		//Increment/Decrement wrapping logic for 2 and 4 byte values
 
+		//HIghlight:
+		//shift + keys do secondary highlight
+		
+		//changing highlighted value clears our find
+		//find next/prev focuses memory viewer box
+		//shift+click off by one descending (ascending untested) (shift click 0000 and it fails)
+
 		int defaultWidth;
 		int defaultHeight;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -43,6 +50,7 @@ namespace BizHawk.MultiClient
 		const int rowYoffset = 20;
 		const int fontHeight = 14;
 		const int fontWidth = 7; //Width of 1 digits
+		string FindStr = "";
 
 		bool loaded = false;
 		
@@ -55,6 +63,8 @@ namespace BizHawk.MultiClient
 		int Height_ = -1;
 		bool BigEndian;
 		int DataSize;
+
+		HexFind HexFind1 = new HexFind();
 
 		public HexEditor()
 		{
@@ -89,6 +99,11 @@ namespace BizHawk.MultiClient
 
 		public void SaveConfigSettings()
 		{
+			if (HexFind1.IsHandleCreated || !HexFind1.IsDisposed)
+			{
+				HexFind1.Close();
+			}
+
 			Global.Config.AutoLoadHexEditor = AutoLoad;
 			Global.Config.HexEditorSaveWindowPosition = SaveWindowPosition;
 			if (SaveWindowPosition)
@@ -1015,6 +1030,7 @@ namespace BizHawk.MultiClient
 				{
 					SetHighlighted(addressOver);
 					SecondaryHighlightedAddresses.Clear();
+					FindStr = "";
 				}
 
 				MemoryViewerBox.Refresh();
@@ -1469,6 +1485,149 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void OpenFindBox()
+		{
+
+			FindStr = GetFindValues();
+			if (!HexFind1.IsHandleCreated || HexFind1.IsDisposed)
+			{
+				HexFind1 = new HexFind();
+				Point p = PointToScreen(AddressesLabel.Location);
+				HexFind1.SetLocation(p);
+				HexFind1.SetInitialValue(FindStr);
+				HexFind1.Show();
+			}
+			else
+			{
+				HexFind1.SetInitialValue(FindStr);
+				HexFind1.Focus();
+			}
+		}
+
+		private string GetFindValues()
+		{
+			string values = "";
+			if (addressHighlighted > 0)
+			{
+				values += ValueString(GetHighlightedAddress());
+				foreach (int x in SecondaryHighlightedAddresses)
+				{
+					values += ValueString(x);
+				}
+			}
+			return values;
+		}
+
+		public void FindNext(string value)
+		{
+			int found = 0;
+
+			string search = value.Replace(" ", "").ToUpper();
+			if (search.Length == 0)
+				return;
+
+			int numByte = search.Length / 2;
+
+			int startByte = 0;
+			if (addressHighlighted == -1)
+			{
+				startByte = 0;
+			}
+			else if (addressHighlighted >= (Domain.Size - 1 - numByte))
+			{
+				startByte = 0;
+			}
+			else
+			{
+				startByte = addressHighlighted + DataSize;
+			}
+
+			for (int i = startByte; i < (Domain.Size - numByte); i++)
+			{
+				StringBuilder ramblock = new StringBuilder();
+				for (int j = 0; j < numByte; j++)
+				{
+					ramblock.Append(String.Format("{0:X2}", (int)Domain.PeekByte(i + j)));
+				}
+				string block = ramblock.ToString().ToUpper();
+				if (search == block)
+				{
+					found = i;
+					break;
+				}
+			}
+
+			if (found > 0)
+			{
+				HighlightSecondaries(search, found);
+				GoToAddress(found);
+				FindStr = search;
+			}
+		}
+
+		public void FindPrev(string value)
+		{
+			int found = 0;
+
+			string search = value.Replace(" ", "").ToUpper();
+			if (search.Length == 0)
+				return;
+
+			int numByte = search.Length / 2;
+
+			int startByte = 0;
+			if (addressHighlighted == -1)
+			{
+				startByte = Domain.Size - DataSize;
+			}
+			else
+			{
+				startByte = addressHighlighted - 1;
+			}
+
+			for (int i = startByte; i >= 0; i--)
+			{
+				StringBuilder ramblock = new StringBuilder();
+				for (int j = 0; j < numByte; j++)
+				{
+					ramblock.Append(String.Format("{0:X2}", (int)Domain.PeekByte(i + j)));
+				}
+				string block = ramblock.ToString().ToUpper();
+				if (search == block)
+				{
+					found = i;
+					break;
+				}
+			}
+
+			if (found > 0)
+			{
+				HighlightSecondaries(search, found);
+				GoToAddress(found);
+				FindStr = search;
+				
+			}
+		}
+
+		private void HighlightSecondaries(string value, int found)
+		{
+			//This function assumes that the primary highlighted value has been set and sets the remaining characters in this string
+			SecondaryHighlightedAddresses.Clear();
+			
+			int addrLength = DataSize * 2;
+			if (value.Length <= addrLength)
+			{
+				return;
+			}
+			int numToHighlight = ((value.Length / addrLength)) - 1;
+
+			for (int i = 0; i < numToHighlight; i++)
+			{
+				SecondaryHighlightedAddresses.Add(found + 1 + i);
+			}
+			
+		}
+
 		private void Find()
 		{
 			InputPrompt prompt = new InputPrompt();
@@ -1588,7 +1747,8 @@ namespace BizHawk.MultiClient
 
 		private void findToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			Find();
+			OpenFindBox();
+			//Find();
 		}
 
 		private void saveAsBinaryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1633,6 +1793,30 @@ namespace BizHawk.MultiClient
 		private void pasteToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			Paste();
+		}
+
+		private void findNextToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FindNext(FindStr);
+		}
+
+		private void findPrevToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FindPrev(FindStr);
+		}
+
+		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (String.IsNullOrWhiteSpace(FindStr))
+			{
+				findNextToolStripMenuItem.Enabled = false;
+				findPrevToolStripMenuItem.Enabled = false;
+			}
+			else
+			{
+				findNextToolStripMenuItem.Enabled = true;
+				findPrevToolStripMenuItem.Enabled = true;
+			}
 		}
 	}
 } 
