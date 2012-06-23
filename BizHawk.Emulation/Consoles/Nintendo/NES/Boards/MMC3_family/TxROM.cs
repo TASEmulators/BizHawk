@@ -37,6 +37,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//analyze board type
 			switch (Cart.board_type)
 			{
+				case "MAPPER116_HACKY":
+					break;
+
 				case "MAPPER004":
 					break;
 				case "NES-TBROM": //tecmo world cup soccer (DE) [untested]

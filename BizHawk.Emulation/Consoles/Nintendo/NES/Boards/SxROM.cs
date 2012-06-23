@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	public class MMC1
 	{
 		NES.NESBoardBase board;
-		MMC1_SerialController scnt = new MMC1_SerialController();
+		public MMC1_SerialController scnt = new MMC1_SerialController();
 
 		public MMC1(NES.NESBoardBase board)
 		{
@@ -89,6 +89,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public Action Reset;
 			public Action<int, int> WriteRegister;
 
+			public void ResetShift()
+			{
+				shift_count = shift_val = 0;
+			}
+
 			public void Write(int addr, byte value)
 			{
 				int data = value & 1;
@@ -121,11 +126,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_slot = 1;
 		}
 
-		void StandardReset()
+		public void StandardReset()
 		{
 			prg_mode = 1;
 			prg_slot = 1;
 			chr_mode = 1;
+			scnt.Reset();
 			mirror = NES.NESBoardBase.EMirrorType.Horizontal;
 		}
 
@@ -134,7 +140,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			scnt.Write(addr, value);
 		}
 
-		void SerialWriteRegister(int addr, int value)
+		//logical register writes, called from the serial controller
+		public void SerialWriteRegister(int addr, int value)
 		{
 			switch (addr)
 			{
@@ -156,7 +163,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 			}
 			//board.NES.LogLine("mapping.. chr_mode={0}, chr={1},{2}", chr_mode, chr_0, chr_1);
-			//board.NES.LogLine("mapping.. prg_mode={0}, prg_slot{1}, prg={2}", prg_mode, prg_slot, prg);
+			board.NES.LogLine("mapping.. prg_mode={0}, prg_slot{1}, prg={2}", prg_mode, prg_slot, prg);
 		}
 
 		public int Get_PRGBank(int addr)
@@ -201,7 +208,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		protected int vram_mask;
 
 		//state
-		protected MMC1 mmc1;
+		public MMC1 mmc1;
 
 		public override void WritePRG(int addr, byte value)
 		{
@@ -254,6 +261,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER116_HACKY":
+					break;
 				case "MAPPER001":
 					break;
 				case "NES-SAROM": //dragon warrior
