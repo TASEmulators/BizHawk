@@ -14,17 +14,14 @@ namespace BizHawk.MultiClient
 	public partial class HexEditor : Form
 	{
 		//TODO:
-		//Find Prev, Find Next
-		//Open Up ROM in memory domains, set up logic for saving the rom
+		//Add ROM in memory domains, set up logic for saving the rom in SaveFile logic
 		//Tool strip
 		//Increment/Decrement wrapping logic for 2 and 4 byte values
 
 		//HIghlight:
-		//shift + keys do secondary highlight
-		
-		//changing highlighted value clears our find
-		//find next/prev focuses memory viewer box
+		//find next/prev should focus memory viewer box so that F2 and F3 work
 		//shift+click off by one descending (ascending untested) (shift click 0000 and it fails)
+		//Implement incrementing/decrementing of frozen addresses (unfreeze, increment, freeze).  Perhaps add a menu option to toggle this
 
 		int defaultWidth;
 		int defaultHeight;
@@ -1237,10 +1234,35 @@ namespace BizHawk.MultiClient
 						GoToAddress(addressHighlighted + 8);
 					break;
 				case Keys.Home:
-					GoToAddress(0);
+					if (e.Modifiers == Keys.Shift)
+					{
+						for (int i = 1; i <= addressHighlighted; i++)
+						{
+							AddToSecondaryHighlights(i);
+						}
+						GoToAddress(0);
+					}
+					else
+					{
+						SecondaryHighlightedAddresses.Clear();
+						GoToAddress(0);
+					}
 					break;
 				case Keys.End:
-					GoToAddress(Domain.Size - (DataSize));
+					newHighlighted = Domain.Size - (DataSize);
+					if (e.Modifiers == Keys.Shift)
+					{
+						for (int i = addressHighlighted; i < newHighlighted; i++)
+						{
+							AddToSecondaryHighlights(i);
+						}
+						GoToAddress(newHighlighted);
+					}
+					else
+					{
+						SecondaryHighlightedAddresses.Clear();
+						GoToAddress(newHighlighted);
+					}
 					break;
 				case Keys.Add:
 					IncrementAddress();
