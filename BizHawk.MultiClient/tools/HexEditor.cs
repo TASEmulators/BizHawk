@@ -1094,7 +1094,7 @@ namespace BizHawk.MultiClient
 			}
 			if (HasNibbles())
 			{
-				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(8,10));
+				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(158,4));
 			}
 		}
 
