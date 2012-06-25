@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte[] ROM { get; set; }
 			byte[] VROM { get; set; }
 			void SyncState(Serializer ser);
+			bool IRQSignal { get; }
 
 			//mixes the board's custom audio into the supplied sample buffer
 			void ApplyCustomAudio(short[] samples);
@@ -74,12 +75,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ser.Sync("vram", ref vram, true);
 				ser.Sync("wram", ref wram, true);
 				for (int i = 0; i < 4; i++) ser.Sync("mirroring" + i, ref mirroring[i]);
+				ser.Sync("irq_signal", ref irq_signal);
 			}
 
 			public virtual void SyncIRQ(bool flag)
 			{
-				NES.irq_cart = flag;
+				IRQSignal = flag;
 			}
+
+			private bool irq_signal;
+			public bool IRQSignal { get { return irq_signal; } set { irq_signal = value; } }
 
 			public virtual void Dispose() { }
 

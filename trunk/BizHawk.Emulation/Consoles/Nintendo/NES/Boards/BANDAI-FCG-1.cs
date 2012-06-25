@@ -53,11 +53,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_asserted", ref irq_asserted);
 			ser.Sync("clock_counter", ref clock_counter);
 
-			if (ser.IsReader)
-			{
-				SyncPRG();
-				SyncIrq();
-			}
+			SyncPRG();
+			SyncIrq();
 		}
 
 		public override void Dispose()
@@ -169,7 +166,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncIrq()
 		{
-			NES.irq_cart = irq_asserted;
+			IRQSignal = irq_asserted;
 		}
 
 		void ClockCPU()
