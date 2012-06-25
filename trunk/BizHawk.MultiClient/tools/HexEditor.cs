@@ -16,12 +16,11 @@ namespace BizHawk.MultiClient
 		//TODO:
 		//Add ROM in memory domains, set up logic for saving the rom in SaveFile logic
 		//Tool strip
-		//Increment/Decrement wrapping logic for 2 and 4 byte values
+		//Increment/Decrement wrapping logic for 4 byte values is messed up
 
 		//HIghlight:
 		//find next/prev should focus memory viewer box so that F2 and F3 work
 		//shift+click off by one descending (ascending untested) (shift click 0000 and it fails)
-		//Implement incrementing/decrementing of frozen addresses (unfreeze, increment, freeze).  Perhaps add a menu option to toggle this
 
 		int defaultWidth;
 		int defaultHeight;
@@ -1487,19 +1486,73 @@ namespace BizHawk.MultiClient
 				switch (DataSize)
 				{
 					default:
-					case 1: //TODO: some kind of logic here for 2 and 4, if value wraps, then next value up needs to increment
+					case 1: 
 						value = Domain.PeekByte(address);
-						Domain.PokeByte(address, (byte)(value + 1));
+						HexPokeAddress(address, (byte)(value + 1));
 						break;
 					case 2:
-						value = Domain.PeekByte(address);
-						Domain.PokeByte(address, (byte)(value + 1));
+						if (BigEndian)
+						{
+							value = Domain.PeekByte(address + 1);
+							if (value == 0xFF) //Wrapping logic
+							{
+								HexPokeAddress(address, (byte)(value + 1));
+								HexPokeAddress(address + 1, (byte)(value + 1));
+							}
+							else
+							{
+								HexPokeAddress(address + 1, (byte)(value + 1));
+							}
+						}
+						else
+						{
+							value = Domain.PeekByte(address);
+							if (value == 0xFF) //Wrapping logic
+							{
+								HexPokeAddress(address, (byte)(value + 1));
+								HexPokeAddress(address + 1, (byte)(value + 1));
+							}
+							else
+							{
+								HexPokeAddress(address, (byte)(value + 1));
+							}
+						}
 						break;
 					case 4:
-						value = Domain.PeekByte(address);
-						Domain.PokeByte(address, (byte)(value + 1));
+						if (BigEndian)
+						{
+							value = Domain.PeekByte(address + 3);
+							if (value == 0xFF) //Wrapping logic
+							{
+								HexPokeAddress(address + 3, (byte)(value + 1));
+								HexPokeAddress(address + 2, (byte)(value + 1));
+							}
+							else
+							{
+								HexPokeAddress(address + 2, (byte)(value + 1));
+							}
+						}
+						else
+						{
+							value = Domain.PeekByte(address);
+							HexPokeAddress(address, (byte)(value + 1));
+						}
 						break;
 				}
+			}
+		}
+
+		private void HexPokeAddress(int address, byte value)
+		{
+			if (Global.CheatList.IsActiveCheat(Domain, address))
+			{
+				UnFreezeAddress(address);
+				Domain.PokeByte(address, value);
+				FreezeAddress(address);
+			}
+			else
+			{
+				Domain.PokeByte(address, (byte)value);
 			}
 		}
 
@@ -1514,15 +1567,73 @@ namespace BizHawk.MultiClient
 					default:
 					case 1:
 						value = Domain.PeekByte(address);
-						Domain.PokeByte(address, (byte)(value - 1));
+						HexPokeAddress(address, (byte)(value - 1));
 						break;
-					case 2: 
-						value = Domain.PeekByte(address);
-						Domain.PokeByte(address, (byte)(value - 1));
+					case 2:
+						if (BigEndian)
+						{
+							value = Domain.PeekByte(address + 1);
+							if (value == 0) //Wrapping logic
+							{
+								HexPokeAddress(address, (byte)(value - 1));
+								HexPokeAddress(address + 1, (byte)(value - 1));
+							}
+							else
+							{
+								Domain.PokeByte(address + 1, (byte)(value - 1));
+							}
+						}
+						else
+						{
+							value = Domain.PeekByte(address);
+							if (value == 0) //Wrapping logic
+							{
+								HexPokeAddress(address, (byte)(value - 1));
+								HexPokeAddress(address + 1, (byte)(value - 1));
+							}
+							else
+							{
+								HexPokeAddress(address, (byte)(value - 1));
+							}
+						}
 						break;
 					case 4:
-						value = Domain.PeekByte(address);
-						Domain.PokeByte(address, (byte)(value - 1));
+						if (BigEndian)
+						{
+							value = Domain.PeekByte(address + 3);
+							if (value == 0xFF) //Wrapping logic
+							{
+								HexPokeAddress(address + 3, (byte)(value - 1));
+								HexPokeAddress(address + 2, (byte)(value - 1));
+							}
+							else
+							{
+								HexPokeAddress(address + 3, (byte)(value - 1));
+							}
+						}
+						else
+						{
+							value = Domain.PeekByte(address);
+							if (value == 0)
+							{
+								HexPokeAddress(address, (byte)(value - 1));
+								HexPokeAddress(address + 1, (byte)(value - 1));
+								int value2 = Domain.PeekByte(address + 1);
+								if (value2 == 0xFF)
+								{
+									Domain.PokeByte(address + 2, (byte)(value - 1));
+									int value3 = Domain.PeekByte(address + 1);
+									if (value3 == 0xFF)
+									{
+										HexPokeAddress(address + 3, (byte)(value - 1));
+									}
+								}
+							}
+							else
+							{
+								HexPokeAddress(address, (byte)(value - 1));
+							}
+						}
 						break;
 				}
 			}
