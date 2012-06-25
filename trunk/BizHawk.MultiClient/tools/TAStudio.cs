@@ -28,7 +28,7 @@ namespace BizHawk.MultiClient
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
-		
+
 		public bool Engaged; //When engaged the Client will listen to TAStudio for input
 		List<VirtualPad> Pads = new List<VirtualPad>();
 
@@ -92,7 +92,7 @@ namespace BizHawk.MultiClient
 		public string GetMnemonic()
 		{
 			StringBuilder str = new StringBuilder("|"); //TODO: Control Command virtual pad
-			
+
 			//TODO: remove this hack with a nes controls pad 
 			if (Global.Emulator.SystemId == "NES")
 				str.Append("0|");
@@ -140,7 +140,7 @@ namespace BizHawk.MultiClient
 				//If we're at the end of the movie add one to show the cursor as a blank frame
 				TASView.ItemCount++;
 			}
-            TASView.ensureVisible(Global.Emulator.Frame-1);
+			TASView.ensureVisible(Global.Emulator.Frame - 1);
 		}
 
 		public void Restart()
@@ -348,14 +348,14 @@ namespace BizHawk.MultiClient
 		{
 			if (ReadOnlyCheckBox.Checked)
 			{
-                Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
+				Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
 				ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
 				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read-Only Mode");
 			}
 			else
 			{
-                Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
-                ReadOnlyCheckBox.BackColor = Color.LightCoral;
+				Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+				ReadOnlyCheckBox.BackColor = Color.LightCoral;
 				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read+Write Mode");
 			}
 		}
@@ -378,14 +378,14 @@ namespace BizHawk.MultiClient
 				Global.MainForm.StopOnFrame = Global.MovieSession.Movie.LogLength();
 			}
 
-            this.FastFowardToEnd.Checked ^= true;
-            Global.MainForm.FastForward = this.FastFowardToEnd.Checked;
-            if (true == this.FastFowardToEnd.Checked)
-            {
-                this.FastForward.Checked = false;
-                this.TurboFastForward.Checked = false;
-            }
-        }
+			this.FastFowardToEnd.Checked ^= true;
+			Global.MainForm.FastForward = this.FastFowardToEnd.Checked;
+			if (true == this.FastFowardToEnd.Checked)
+			{
+				this.FastForward.Checked = false;
+				this.TurboFastForward.Checked = false;
+			}
+		}
 
 		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -412,28 +412,28 @@ namespace BizHawk.MultiClient
 
 		private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            Global.MainForm.RecordMovie();
-        }
+			Global.MainForm.RecordMovie();
+		}
 
 		private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            Global.MainForm.PlayMovie();
-        }
+			Global.MainForm.PlayMovie();
+		}
 
 		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            Global.MovieSession.Movie.WriteMovie();
+			Global.MovieSession.Movie.WriteMovie();
 		}
 
 		private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            string fileName = Movie.SaveRecordingAs();
+			string fileName = SaveRecordingAs();
 
-            if ("" != fileName)
-            {
-                Global.MovieSession.Movie.UpdateFileName(fileName);
-                Global.MovieSession.Movie.WriteMovie();
-            }
+			if ("" != fileName)
+			{
+				Global.MovieSession.Movie.UpdateFileName(fileName);
+				Global.MovieSession.Movie.WriteMovie();
+			}
 		}
 
 		private void ClearVirtualPadHolds()
@@ -455,27 +455,27 @@ namespace BizHawk.MultiClient
 			ClearVirtualPadHolds();
 		}
 
-        private void FastForward_Click(object sender, EventArgs e)
-        {
-            this.FastForward.Checked ^= true;
-            Global.MainForm.FastForward = this.FastForward.Checked;
-            if (true == this.FastForward.Checked)
-            {
-                this.TurboFastForward.Checked = false;
-                this.FastFowardToEnd.Checked = false;
-            }
-        }
+		private void FastForward_Click(object sender, EventArgs e)
+		{
+			this.FastForward.Checked ^= true;
+			Global.MainForm.FastForward = this.FastForward.Checked;
+			if (true == this.FastForward.Checked)
+			{
+				this.TurboFastForward.Checked = false;
+				this.FastFowardToEnd.Checked = false;
+			}
+		}
 
-        private void TurboFastForward_Click(object sender, EventArgs e)
-        {
-            Global.MainForm.TurboFastForward ^= true;
-            this.TurboFastForward.Checked ^= true;
-            if (true == this.TurboFastForward.Checked)
-            {
-                this.FastForward.Checked = false;
-                this.FastFowardToEnd.Checked = false;
-            }
-        }
+		private void TurboFastForward_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.TurboFastForward ^= true;
+			this.TurboFastForward.Checked ^= true;
+			if (true == this.TurboFastForward.Checked)
+			{
+				this.FastForward.Checked = false;
+				this.FastFowardToEnd.Checked = false;
+			}
+		}
 
 		private void TASView_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -503,6 +503,25 @@ namespace BizHawk.MultiClient
 			{
 				Global.MovieSession.Movie.DeleteFrame(list[index]);
 			}
+		}
+
+		private static string SaveRecordingAs()
+		{
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+			sfd.DefaultExt = "." + Global.Config.MovieExtension;
+			//sfd.FileName = RecordBox.Text;
+			sfd.FileName = Global.MovieSession.Movie.Filename;
+			sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
+
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result == DialogResult.OK)
+			{
+				return sfd.FileName;
+			}
+			return "";
 		}
 	}
 }

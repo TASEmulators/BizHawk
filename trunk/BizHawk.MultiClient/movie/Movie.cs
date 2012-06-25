@@ -198,26 +198,6 @@ namespace BizHawk.MultiClient
 			if(truncate) Log.Clear();
 		}
 
-        public static string SaveRecordingAs()
-        {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
-            sfd.DefaultExt = "." + Global.Config.MovieExtension;
-            //sfd.FileName = RecordBox.Text;
-            sfd.FileName = Global.MovieSession.Movie.Filename;
-            sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
-
-            Global.Sound.StopSound();
-            var result = sfd.ShowDialog();
-            Global.Sound.StartSound();
-            if (result == DialogResult.OK)
-            {
-                return sfd.FileName;
-            }
-            return "";
-        }
-
-
 		public void StartPlayback()
 		{
 			ClearSaveRAM();
