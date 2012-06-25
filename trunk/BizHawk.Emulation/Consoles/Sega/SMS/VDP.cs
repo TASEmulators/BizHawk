@@ -494,6 +494,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             return mode == VdpMode.SMS ? FrameBuffer : GameGearFrameBuffer;
         }
 
+        public int VirtualWidth { get { return BufferWidth; } }
         public int BufferWidth
         {
             get { return mode == VdpMode.SMS ? 256 : 160; }

@@ -384,6 +384,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					}
 				return pixels;
 			}
+            public int VirtualWidth { get { return 96; } }
 			public int BufferWidth { get { return 96; } }
 			public int BufferHeight { get { return 64; } }
 			public int BackgroundColor { get { return 0; } }

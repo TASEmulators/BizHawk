@@ -87,7 +87,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		}
 
 		public int[] GetVideoBuffer() { return frameBuffer; }
-		public int BufferWidth { get { return 256; } }
+        public int VirtualWidth { get { return 256; } }
+        public int BufferWidth { get { return 256; } }
 		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }
 		public void GetSamples(short[] samples)

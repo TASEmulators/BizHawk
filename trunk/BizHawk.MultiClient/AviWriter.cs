@@ -91,6 +91,7 @@ namespace BizHawk.MultiClient
         {
             int[] vb;
             int bw, bh, bc;
+            public int VirtualWidth { get { return bw; } }
             public int BufferWidth { get {return bw;} }
             public int BufferHeight { get { return bh; } }
             public int BackgroundColor { get { return bc; } }
