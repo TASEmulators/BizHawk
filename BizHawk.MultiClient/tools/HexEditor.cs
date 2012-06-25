@@ -19,7 +19,6 @@ namespace BizHawk.MultiClient
 		//Increment/Decrement wrapping logic for 4 byte values is messed up
 
 		//HIghlight:
-		//find next/prev should focus memory viewer box so that F2 and F3 work
 		//shift+click off by one descending (ascending untested) (shift click 0000 and it fails)
 
 		int defaultWidth;
@@ -1777,6 +1776,7 @@ namespace BizHawk.MultiClient
 				HighlightSecondaries(search, found);
 				GoToAddress(found);
 				FindStr = search;
+				MemoryViewerBox.Focus();
 			}
 		}
 
@@ -1820,7 +1820,7 @@ namespace BizHawk.MultiClient
 				HighlightSecondaries(search, found);
 				GoToAddress(found);
 				FindStr = search;
-				
+				MemoryViewerBox.Focus();
 			}
 		}
 
