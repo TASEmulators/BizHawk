@@ -66,12 +66,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("last_nt_read", ref last_nt_read);
 			ser.Sync("EXRAM", ref EXRAM, false);
 
-			if (ser.IsReader)
-			{
-				SyncPRGBanks();
-				SyncCHRBanks();
-				SyncMultiplier();
-			}
+			SyncPRGBanks();
+			SyncCHRBanks();
+			SyncMultiplier();
+			SyncIRQ();
 		}
 
 		public override void Dispose()
@@ -451,7 +449,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncIRQ()
 		{
-			NES.irq_cart = (irq_pending && irq_enabled);
+			IRQSignal = (irq_pending && irq_enabled);
 		}
 
 		public override void ClockPPU()

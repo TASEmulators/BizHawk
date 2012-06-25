@@ -54,8 +54,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_reload_pending", ref irq_reload_pending);
 			ser.Sync("separator_counter", ref separator_counter);
 
-			if (ser.IsReader)
-				Sync();
+			Sync();
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -83,6 +82,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void Sync()
 		{
+			SyncIRQ();
+	
 			if (prg_mode)
 			{
 				prg_banks_8k[0] = regs[0xF] & prg_bank_mask_8k;
@@ -189,7 +190,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-
 		public override byte ReadPRG(int addr)
 		{
 			int bank_8k = addr >> 13;
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncIRQ()
 		{
-			NES.irq_cart = irq_pending;
+			IRQSignal = irq_pending;
 		}
 
 		void ClockIRQ()

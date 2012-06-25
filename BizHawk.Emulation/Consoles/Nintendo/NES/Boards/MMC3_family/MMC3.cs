@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void Sync()
 		{
+			SyncIRQ();
 			if (prg_mode)
 			{
 				prg_regs_8k[0] = 0xFE;
@@ -138,7 +139,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Sync();
 		}
 
-		protected virtual void SyncIRQ()
+		//some MMC3 variants pass along the irq signal differently (primarily different delay)
+		//this is overrideable so that those boards can get signals whenever this mmc3 base class code manipulates the irq line
+		public virtual void SyncIRQ()
 		{
 			board.SyncIRQ(irq_pending);
 		}

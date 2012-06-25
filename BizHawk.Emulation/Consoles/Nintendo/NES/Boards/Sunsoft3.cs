@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_enable", ref irq_enable);
 			ser.Sync("irq_asserted", ref irq_asserted);
 			ser.Sync("clock_counter", ref clock_counter);
+			SyncIRQ();
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -63,7 +64,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncIRQ()
 		{
-			NES.irq_cart = irq_asserted;
+			IRQSignal = irq_asserted;
 		}
 
 		public override void WritePRG(int addr, byte value)
