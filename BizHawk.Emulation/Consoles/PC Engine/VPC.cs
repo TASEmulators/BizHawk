@@ -498,24 +498,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        public int[] GetVideoBuffer()
-        {
-            return FrameBuffer;
-        }
+        public int[] GetVideoBuffer() { return FrameBuffer; }
 
-        public int BufferWidth
-        {
-            get { return FrameWidth; }
-        }
-
-        public int BufferHeight
-        {
-            get { return FrameHeight; }
-        }
-
-        public int BackgroundColor
-        {
-            get { return VCE.Palette[0]; }
-        }
+        public int VirtualWidth    { get { return FrameWidth; } }
+        public int BufferWidth     { get { return FrameWidth; } }
+        public int BufferHeight    { get { return FrameHeight; } }
+        public int BackgroundColor { get { return VCE.Palette[0]; } }
     }
 }

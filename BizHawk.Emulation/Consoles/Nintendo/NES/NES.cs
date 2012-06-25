@@ -150,6 +150,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				return pixels;
 			}
+            public int VirtualWidth { get { return BufferWidth; } }
 			public int BufferWidth { get { return right - left + 1; } }
 			public int BufferHeight { get { return bottom - top + 1; } }
 			public int BackgroundColor { get { return 0; } }

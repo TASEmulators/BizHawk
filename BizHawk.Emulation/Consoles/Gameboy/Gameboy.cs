@@ -754,7 +754,8 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			return buf;
 		}
 
-		public int BufferWidth { get { return 160; } }
+        public int VirtualWidth { get { return 160; } }
+        public int BufferWidth { get { return 160; } }
 		public int BufferHeight { get { return 144; } }
 		public int BackgroundColor { get { return 0; } }
 

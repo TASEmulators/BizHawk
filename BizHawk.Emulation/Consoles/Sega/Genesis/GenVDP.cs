@@ -314,6 +314,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             return FrameBuffer;
         }
 
+        public int VirtualWidth { get { return 320; } }
+
         public int BufferWidth
         {
             get { return FrameWidth; }

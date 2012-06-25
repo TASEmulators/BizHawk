@@ -343,24 +343,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         int FrameHeight = 240;
         int[] FrameBuffer = new int[256 * 240];
 
-        public int[] GetVideoBuffer()
-        {
-            return FrameBuffer;
-        }
+        public int[] GetVideoBuffer() { return FrameBuffer; }
 
-        public int BufferWidth
-        {
-            get { return FramePitch; }
-        }
-
-        public int BufferHeight
-        {
-            get { return FrameHeight; }
-        }
-
-        public int BackgroundColor
-        {
-            get { return vce.Palette[256]; }
-        }
+        public int VirtualWidth    { get { return FramePitch; } }
+        public int BufferWidth     { get { return FramePitch; } }
+        public int BufferHeight    { get { return FrameHeight; } }
+        public int BackgroundColor { get { return vce.Palette[256]; } }
     }
 }
