@@ -404,6 +404,7 @@ namespace BizHawk.MultiClient
 			}
 			if (ControlType == "Atari 2600 Basic Controller")
 			{
+				if (mnemonic.Length < 2) return;
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0');
 				Force("Select", mnemonic[2] != '.' && mnemonic[2] != '0');
 				start = 4;
