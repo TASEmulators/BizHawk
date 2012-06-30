@@ -67,6 +67,11 @@ namespace BizHawk.MultiClient
 							Pads[1].SetButtons(str.Substring(12, 8));
 							Pads[2].SetButtons(str[1].ToString());
 							break;
+						case "A26":
+							Pads[0].SetButtons(str.Substring(4, 5));
+							Pads[1].SetButtons(str.Substring(10, 5));
+							Pads[2].SetButtons(str.Substring(1, 2));
+							break;
 						case "SMS":
 						case "GG":
 						case "SG":
