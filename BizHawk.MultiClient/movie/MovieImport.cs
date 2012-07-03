@@ -124,26 +124,26 @@ namespace BizHawk.MultiClient
 				lineNum++;
 				if (line == "")
 					continue;
-				if (line.StartsWith("emuVersion"))
+				if (line.ToLower().StartsWith("emuversion"))
 					m.Header.Comments.Add(EMULATIONORIGIN + " " + emulator + " version " + ParseHeader(line, "emuVersion"));
-				else if (line.StartsWith("version"))
+				else if (line.ToLower().StartsWith("version"))
 					m.Header.Comments.Add(
 						MOVIEORIGIN + " " + Path.GetExtension(path) + " version " + ParseHeader(line, "version")
 					);
-				else if (line.StartsWith("romFilename"))
+				else if (line.ToLower().StartsWith("romfilename"))
 					m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(line, "romFilename"));
-				else if (line.StartsWith("romChecksum"))
+				else if (line.ToLower().StartsWith("romchecksum"))
 				{
-					string blob = ParseHeader(line, "romChecksum").Trim();
+					string blob = ParseHeader(line, "romChecksum");
 					byte[] MD5 = DecodeBlob(blob);
 					if (MD5 != null && MD5.Length == 16)
 						m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
 					else
 						warningMsg = "Bad ROM checksum.";
 				}
-				else if (line.StartsWith("comment author"))
+				else if (line.ToLower().StartsWith("comment author"))
 					m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(line, "comment author"));
-				else if (line.StartsWith("rerecordCount"))
+				else if (line.ToLower().StartsWith("rerecordcount"))
 				{
 					int rerecordCount;
 					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
@@ -157,9 +157,9 @@ namespace BizHawk.MultiClient
 					}
 					m.SetRerecords(rerecordCount);
 				}
-				else if (line.StartsWith("guid"))
+				else if (line.ToLower().StartsWith("guid"))
 					m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(line, "guid"));
-				else if (line.StartsWith("StartsFromSavestate"))
+				else if (line.ToLower().StartsWith("startsfromsavestate"))
 				{
 					// If this movie starts from a savestate, we can't support it.
 					if (ParseHeader(line, "StartsFromSavestate") == "1")
@@ -169,19 +169,19 @@ namespace BizHawk.MultiClient
 						return null;
 					}
 				}
-				else if (line.StartsWith("palFlag"))
+				else if (line.ToLower().StartsWith("palflag"))
 				{
 					bool pal = (ParseHeader(line, "palFlag") == "1");
 					m.Header.SetHeaderLine("PAL", pal.ToString());
 				}
-				else if (line.StartsWith("fourscore"))
+				else if (line.ToLower().StartsWith("fourscore"))
 					m.Header.SetHeaderLine(
 						MovieHeader.FOURSCORE,
 						Convert.ToBoolean(
 							int.Parse(ParseHeader(line, "fourscore"))
 						).ToString()
 					);
-				else if (line.StartsWith("sub"))
+				else if (line.ToLower().StartsWith("sub"))
 				{
 					Subtitle s = new Subtitle();
 					// The header name, frame, and message are separated by a space.
@@ -264,9 +264,12 @@ namespace BizHawk.MultiClient
 		private static string ParseHeader(string line, string headerName)
 		{
 			string str;
-			int x = line.LastIndexOf(headerName) + headerName.Length;
+			// Case-insensitive search.
+			int x = line.ToLower().LastIndexOf(
+				headerName.ToLower()
+			) + headerName.Length;
 			str = line.Substring(x + 1, line.Length - x - 1);
-			return str;
+			return str.Trim();
 		}
 
 		// Decode a blob used in FM2 (base64:..., 0x123456...)
@@ -279,7 +282,7 @@ namespace BizHawk.MultiClient
 				return BizHawk.Util.HexStringToBytes(blob.Substring(2));
 			else {
 				// base64
-				if(!blob.StartsWith("base64:"))
+				if(!blob.ToLower().StartsWith("base64:"))
 					return null;
 				try
 				{
