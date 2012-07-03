@@ -175,23 +175,33 @@ namespace BizHawk.MultiClient
 					m.Header.SetHeaderLine("PAL", pal.ToString());
 				}
 				else if (line.ToLower().StartsWith("fourscore"))
-					m.Header.SetHeaderLine(
-						MovieHeader.FOURSCORE,
-						Convert.ToBoolean(
-							int.Parse(ParseHeader(line, "fourscore"))
-						).ToString()
-					);
+				{
+					bool fourscore = (ParseHeader(line, "fourscore") == "1");
+					m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
+				}
 				else if (line.ToLower().StartsWith("sub"))
 				{
 					Subtitle s = new Subtitle();
-					// The header name, frame, and message are separated by a space.
+					// Reduce all whitespace to single spaces.
+					line = line.Replace("\t", " ");
+					line = line.Replace("\n", " ");
+					line = line.Replace("\r", " ");
+					line = line.Replace("\r\n", " ");
+					string prev;
+					do
+					{
+						prev = line;
+						line = line.Replace("  ", " ");
+					}
+					while (prev != line);
+					// The header name, frame, and message are separated by whitespace.
 					int first = line.IndexOf(' ');
 					int second = line.IndexOf(' ', first + 1);
 					if (first != -1 && second != -1)
 					{
 						// Concatenate the frame and message with default values for the additional fields.
 						string frame = line.Substring(first + 1, second - first - 1);
-						string message = line.Substring(second + 1, line.Length - second - 1);
+						string message = line.Substring(second + 1, line.Length - second - 1).Trim();
 						m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
 					}
 				}
