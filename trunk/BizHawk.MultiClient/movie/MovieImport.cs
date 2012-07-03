@@ -158,7 +158,7 @@ namespace BizHawk.MultiClient
 					m.SetRerecords(rerecordCount);
 				}
 				else if (line.StartsWith("guid"))
-					m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(line, "GUID"));
+					m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(line, "guid"));
 				else if (line.StartsWith("StartsFromSavestate"))
 				{
 					// If this movie starts from a savestate, we can't support it.
