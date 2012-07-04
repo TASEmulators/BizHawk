@@ -127,9 +127,18 @@ namespace BizHawk.MultiClient
 				if (line.ToLower().StartsWith("emuversion"))
 					m.Header.Comments.Add(EMULATIONORIGIN + " " + emulator + " version " + ParseHeader(line, "emuVersion"));
 				else if (line.ToLower().StartsWith("version"))
+				{
+					string version = ParseHeader(line, "version");
 					m.Header.Comments.Add(
-						MOVIEORIGIN + " " + Path.GetExtension(path) + " version " + ParseHeader(line, "version")
+						MOVIEORIGIN + " " + Path.GetExtension(path) + " version " + version
 					);
+					if (platform == "NES" && version != "3")
+					{
+						errorMsg = ".FM2 movie version must always be 3.";
+						sr.Close();
+						return null;
+					}
+				}
 				else if (line.ToLower().StartsWith("romfilename"))
 					m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(line, "romFilename"));
 				else if (line.ToLower().StartsWith("romchecksum"))
@@ -201,7 +210,7 @@ namespace BizHawk.MultiClient
 					{
 						// Concatenate the frame and message with default values for the additional fields.
 						string frame = line.Substring(first + 1, second - first - 1);
-						string message = line.Substring(second + 1, line.Length - second - 1).Trim();
+						string message = line.Substring(second + 1).Trim();
 						m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
 					}
 				}
