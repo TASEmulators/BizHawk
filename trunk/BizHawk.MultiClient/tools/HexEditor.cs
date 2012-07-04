@@ -18,9 +18,6 @@ namespace BizHawk.MultiClient
 		//Tool strip
 		//Increment/Decrement wrapping logic for 4 byte values is messed up
 
-		//HIghlight:
-		//shift+click off by one descending (ascending untested) (shift click 0000 and it fails)
-
 		int defaultWidth;
 		int defaultHeight;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -998,7 +995,7 @@ namespace BizHawk.MultiClient
 				}
 				else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
 				{
-					if (addressOver > 0)
+					if (addressOver >= 0)
 					{
 						SecondaryHighlightedAddresses.Clear();
 						if (addressOver < addressHighlighted)
