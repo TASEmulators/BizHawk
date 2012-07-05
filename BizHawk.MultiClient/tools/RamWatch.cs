@@ -755,12 +755,12 @@ namespace BizHawk.MultiClient
 			showChangeCountsToolStripMenuItem.Checked = true;
 			Global.Config.RamWatchShowChangeColumn = true;
 			Global.Config.RamWatchShowDiffColumn = false;
-			WatchListView.Columns[0].Width = defaultAddressWidth;
-			WatchListView.Columns[1].Width = defaultValueWidth;
+			WatchListView.Columns[0].Width = 60;
+			WatchListView.Columns[1].Width = 59;
 			WatchListView.Columns[2].Width = 0;
-			WatchListView.Columns[3].Width = defaultChangeWidth;
+			WatchListView.Columns[3].Width = 55;
 			WatchListView.Columns[4].Width = 0;
-			WatchListView.Columns[5].Width = NotesWidth;
+			WatchListView.Columns[5].Width = 128;
 			Global.Config.DisplayRamWatch = false;
 			Global.Config.RamWatchSaveWindowPosition = false;
 		}
@@ -1472,13 +1472,13 @@ namespace BizHawk.MultiClient
 		private void previousFrameToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchPrev_Type = 1;
-			UpdateValues();
+			WatchListView.Refresh();
 		}
 
 		private void lastChangeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamWatchPrev_Type = 2;
-			UpdateValues();
+			WatchListView.Refresh();
 		}
 
 		private void definePreviousValueAsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
