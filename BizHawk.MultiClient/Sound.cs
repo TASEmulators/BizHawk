@@ -185,6 +185,7 @@ namespace BizHawk.MultiClient
 			else
 				DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 15);
 
+			/* //adelikat: I've been told this isn't TAS safe, so I'm disabling this speed hack
 			if (Global.Emulator is NES)
 			{
 				NES n = Global.Emulator as NES;
@@ -193,6 +194,7 @@ namespace BizHawk.MultiClient
 				else
 					n.SoundOn = true;
 			}
+			*/
 		}
 	}
 #else
