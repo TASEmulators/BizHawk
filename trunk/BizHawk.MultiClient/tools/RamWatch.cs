@@ -1337,40 +1337,34 @@ namespace BizHawk.MultiClient
 		private void ColumnPositionSet()
 		{
 			List<ColumnHeader> columnHeaders = new List<ColumnHeader>();
-			int i = 0;
-			for (i = 0; i < WatchListView.Columns.Count; i++)
+			for (int i = 0; i < WatchListView.Columns.Count; i++)
+			{
 				columnHeaders.Add(WatchListView.Columns[i]);
+			}
 
 			WatchListView.Columns.Clear();
 
-			i = 0;
-			do
-			{
-				string column = "";
-				if (Global.Config.RamWatchAddressIndex == i)
-					column = "Address";
-				else if (Global.Config.RamWatchValueIndex == i)
-					column = "Value";
-				else if (Global.Config.RamWatchPrevIndex == i)
-					column = "Prev";
-				else if (Global.Config.RamWatchChangeIndex == i)
-					column = "Changes";
-				else if (Global.Config.RamWatchDiffIndex == i)
-					column = "Diff";
-				else if (Global.Config.RamWatchNotesIndex == i)
-					column = "Notes";
+			List<KeyValuePair<int, string>> columnSettings = new List<KeyValuePair<int, string>>();
+			columnSettings.Add(new KeyValuePair<int,string>(Global.Config.RamWatchAddressIndex, "Address"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchValueIndex, "Value"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchPrevIndex, "Prev"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchChangeIndex, "Changes"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchDiffIndex, "Diff"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchNotesIndex, "Notes"));
 
-				for (int k = 0; k < columnHeaders.Count(); k++)
+			columnSettings = columnSettings.OrderBy(s => s.Key).ToList();
+		
+
+			for (int i = 0; i < columnSettings.Count; i++)
+			{
+				for (int j = 0; j < columnHeaders.Count; j++)
 				{
-					if (columnHeaders[k].Text == column)
+					if (columnSettings[i].Value == columnHeaders[j].Text)
 					{
-						WatchListView.Columns.Add(columnHeaders[k]);
-						columnHeaders.Remove(columnHeaders[k]);
-						break;
+						WatchListView.Columns.Add(columnHeaders[j]);
 					}
 				}
-				i++;
-			} while (columnHeaders.Count() > 0);
+			}
 		}
 
 		private void OrderColumn(int columnToOrder)
