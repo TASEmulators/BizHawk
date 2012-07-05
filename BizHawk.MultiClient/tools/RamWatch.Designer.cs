@@ -64,9 +64,12 @@
 			this.showChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.diffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.definePreviousValueAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.previousFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.lastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.displayWatchesOnScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.WatchListView = new BizHawk.VirtualListView();
 			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -89,6 +92,7 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.showChangeCountsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.showPreviousValueToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.showDifferenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -108,10 +112,6 @@
 			this.WatchCountLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
-			this.showDifferenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.definePreviousValueAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.previousFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.lastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -421,6 +421,30 @@
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
 			// 
+			// definePreviousValueAsToolStripMenuItem
+			// 
+			this.definePreviousValueAsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.previousFrameToolStripMenuItem,
+            this.lastChangeToolStripMenuItem});
+			this.definePreviousValueAsToolStripMenuItem.Name = "definePreviousValueAsToolStripMenuItem";
+			this.definePreviousValueAsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.definePreviousValueAsToolStripMenuItem.Text = "Define Previous Value As";
+			this.definePreviousValueAsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.definePreviousValueAsToolStripMenuItem_DropDownOpened);
+			// 
+			// previousFrameToolStripMenuItem
+			// 
+			this.previousFrameToolStripMenuItem.Name = "previousFrameToolStripMenuItem";
+			this.previousFrameToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.previousFrameToolStripMenuItem.Text = "Previous Frame";
+			this.previousFrameToolStripMenuItem.Click += new System.EventHandler(this.previousFrameToolStripMenuItem_Click);
+			// 
+			// lastChangeToolStripMenuItem
+			// 
+			this.lastChangeToolStripMenuItem.Name = "lastChangeToolStripMenuItem";
+			this.lastChangeToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.lastChangeToolStripMenuItem.Text = "Last Change";
+			this.lastChangeToolStripMenuItem.Click += new System.EventHandler(this.lastChangeToolStripMenuItem_Click);
+			// 
 			// displayWatchesOnScreenToolStripMenuItem
 			// 
 			this.displayWatchesOnScreenToolStripMenuItem.Name = "displayWatchesOnScreenToolStripMenuItem";
@@ -428,17 +452,17 @@
 			this.displayWatchesOnScreenToolStripMenuItem.Text = "Display Watches On Screen";
 			this.displayWatchesOnScreenToolStripMenuItem.Click += new System.EventHandler(this.displayWatchesOnScreenToolStripMenuItem_Click);
 			// 
-			// toolStripSeparator7
-			// 
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(214, 6);
-			// 
 			// saveWindowPositionToolStripMenuItem
 			// 
 			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
 			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(214, 6);
 			// 
 			// restoreWindowSizeToolStripMenuItem
 			// 
@@ -506,6 +530,7 @@
 			// 
 			this.Diff.DisplayIndex = 5;
 			this.Diff.Text = "Diff";
+			this.Diff.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.Diff.Width = 59;
 			// 
 			// Notes
@@ -629,6 +654,13 @@
 			this.showPreviousValueToolStripMenuItem1.Size = new System.Drawing.Size(230, 22);
 			this.showPreviousValueToolStripMenuItem1.Text = "Show Previous Value";
 			this.showPreviousValueToolStripMenuItem1.Click += new System.EventHandler(this.showPreviousValueToolStripMenuItem_Click);
+			// 
+			// showDifferenceToolStripMenuItem
+			// 
+			this.showDifferenceToolStripMenuItem.Name = "showDifferenceToolStripMenuItem";
+			this.showDifferenceToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.showDifferenceToolStripMenuItem.Text = "Show Difference";
+			this.showDifferenceToolStripMenuItem.Click += new System.EventHandler(this.showDifferenceToolStripMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -827,37 +859,6 @@
 			this.MemDomainLabel.Name = "MemDomainLabel";
 			this.MemDomainLabel.Size = new System.Drawing.Size(0, 13);
 			this.MemDomainLabel.TabIndex = 6;
-			// 
-			// showDifferenceToolStripMenuItem
-			// 
-			this.showDifferenceToolStripMenuItem.Name = "showDifferenceToolStripMenuItem";
-			this.showDifferenceToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-			this.showDifferenceToolStripMenuItem.Text = "Show Difference";
-			this.showDifferenceToolStripMenuItem.Click += new System.EventHandler(this.showDifferenceToolStripMenuItem_Click);
-			// 
-			// definePreviousValueAsToolStripMenuItem
-			// 
-			this.definePreviousValueAsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.previousFrameToolStripMenuItem,
-            this.lastChangeToolStripMenuItem});
-			this.definePreviousValueAsToolStripMenuItem.Name = "definePreviousValueAsToolStripMenuItem";
-			this.definePreviousValueAsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.definePreviousValueAsToolStripMenuItem.Text = "Define Previous Value As";
-			this.definePreviousValueAsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.definePreviousValueAsToolStripMenuItem_DropDownOpened);
-			// 
-			// previousFrameToolStripMenuItem
-			// 
-			this.previousFrameToolStripMenuItem.Name = "previousFrameToolStripMenuItem";
-			this.previousFrameToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-			this.previousFrameToolStripMenuItem.Text = "Previous Frame";
-			this.previousFrameToolStripMenuItem.Click += new System.EventHandler(this.previousFrameToolStripMenuItem_Click);
-			// 
-			// lastChangeToolStripMenuItem
-			// 
-			this.lastChangeToolStripMenuItem.Name = "lastChangeToolStripMenuItem";
-			this.lastChangeToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-			this.lastChangeToolStripMenuItem.Text = "Last Change";
-			this.lastChangeToolStripMenuItem.Click += new System.EventHandler(this.lastChangeToolStripMenuItem_Click);
 			// 
 			// RamWatch
 			// 
