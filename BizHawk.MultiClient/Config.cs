@@ -251,6 +251,7 @@ namespace BizHawk.MultiClient
 		public int RamWatchChangeIndex = 3;
 		public int RamWatchDiffIndex = 4;
 		public int RamWatchNotesIndex = 5;
+		public int RamWatchPrev_Type = 1;
 
 		// RamSearch Settings
 		public bool AutoLoadRamSearch = false;
