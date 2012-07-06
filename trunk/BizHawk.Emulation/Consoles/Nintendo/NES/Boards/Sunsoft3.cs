@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPRG(int addr)
 		{
 			addr = ApplyMemoryMap(14, prg_banks_16k, addr);
-			return ROM[addr];
+			return ROM[addr]; 
 		}
 
 		public override byte ReadPPU(int addr)
