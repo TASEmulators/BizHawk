@@ -97,25 +97,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("chr_banks_2k", ref chr_banks_2k);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WriteWRAM(int addr, byte value)
 		{
 			addr &= 0x6003;
 			switch (addr)
 			{
 				case 0:
-					chr_banks_2k[0] = (byte)(value/2*2);
-					chr_banks_2k[1] = (byte)(value/2*2+1);
+					chr_banks_2k[0] = (byte)(value / 4 * 2);
+					chr_banks_2k[1] = (byte)(value / 4 * 2 + 1);
 					break;
 				case 1:
-					chr_banks_2k[2] = value;
+					chr_banks_2k[2] = (byte)(value / 2);
 					break;
 				case 2:
-					chr_banks_2k[3] = value;
+					chr_banks_2k[3] = (byte)(value / 2);
 					break;
 				case 3:
 					prg_banks_8k[0] = value;
 					break;
 			}
+			SyncMap();
 		}
 
 		public override byte ReadPPU(int addr)
