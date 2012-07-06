@@ -665,7 +665,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			else if (parameter == "Prev")
+			else if (parameter == "Diff")
 			{
 				compare = CompareDiff(Other, previous);
 				if (compare == 0)

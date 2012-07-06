@@ -556,17 +556,6 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class VideoProviderData : IVideoProvider
-	{
-		public int[] VideoBuffer;
-
-		public int BufferWidth { get; set; }
-		public int BufferHeight { get; set; }
-		public int BackgroundColor { get; set; }
-
-		public int[] GetVideoBuffer() { return VideoBuffer; }
-	}
-
 	public class DisplayManager : IDisposable
 	{
 		public DisplayManager()

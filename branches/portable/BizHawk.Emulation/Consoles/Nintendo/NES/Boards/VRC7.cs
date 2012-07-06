@@ -43,11 +43,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_reload", ref irq_reload);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_prescaler", ref irq_prescaler);
+			SyncIRQ();
 		}
 
 		void SyncIRQ()
 		{
-			NES.irq_cart = (irq_pending && irq_enabled);
+			IRQSignal = (irq_pending && irq_enabled);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

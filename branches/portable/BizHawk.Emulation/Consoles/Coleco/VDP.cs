@@ -499,7 +499,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			return mode == VdpMode.SMS ? FrameBuffer : GameGearFrameBuffer;
 		}
 
-		public int BufferWidth
+        public int VirtualWidth { get { return BufferWidth; } }
+        public int BufferWidth
 		{
 			get { return mode == VdpMode.SMS ? 256 : 160; }
 		}

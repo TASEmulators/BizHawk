@@ -150,6 +150,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				return pixels;
 			}
+            public int VirtualWidth { get { return BufferWidth; } }
 			public int BufferWidth { get { return right - left + 1; } }
 			public int BufferHeight { get { return bottom - top + 1; } }
 			public int BackgroundColor { get { return 0; } }
@@ -530,7 +531,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart = choice;
 				board.Create(this);
 				board.Configure(origin);
-				board.PostConfigure();
 
 				if (origin == EDetectionOrigin.BootGodDB)
 				{
@@ -573,6 +573,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (cart.vram_size != 0)
 					board.VRAM = new byte[cart.vram_size * 1024];
 
+				board.PostConfigure();
+
 				HardReset();
 				SetupMemoryDomains();
 			}
@@ -588,12 +590,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("CIRAM", ref CIRAM, false);
 			ser.Sync("cpu_accumulate", ref cpu_accumulate);
 			ser.Sync("_irq_apu", ref _irq_apu);
-			ser.Sync("_irq_cart", ref _irq_cart);
 			ser.Sync("sprdma_countdown", ref sprdma_countdown);
 			ser.Sync("cpu_step", ref cpu_step);
 			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
 			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
-			sync_irq();
 			board.SyncState(ser);
 			ppu.SyncState(ser);
 			apu.SyncState(ser);

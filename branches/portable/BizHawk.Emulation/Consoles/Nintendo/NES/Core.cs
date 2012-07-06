@@ -24,15 +24,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		INESBoard board; //the board hardware that is currently driving things
 		public bool SoundOn = true;
 		int sprdma_countdown; //used to 
-		bool _irq_apu, _irq_cart; //various irq signals that get merged to the cpu irq pin
+		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
 
 		//irq state management
-		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; sync_irq(); } }
-		public bool irq_cart { get { return _irq_cart; } set { _irq_cart = value; sync_irq(); } }
-		void sync_irq()
-		{
-			cpu.IRQ = _irq_apu || _irq_cart;
-		}
+		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; } }
 
 		//user configuration 
 		int[,] palette = new int[64,3];
@@ -119,10 +114,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 				}
 
-				if(cpu_deadcounter>0)
+				if (cpu_deadcounter > 0)
 					cpu_deadcounter--;
 				else
+				{
+					cpu.IRQ = _irq_apu || board.IRQSignal;
 					cpu.ExecuteOne();
+				}
 
 				if (SoundOn) apu.RunOne(); //THIS ISNT SAFE!!!!!!!!! SOUND MUST ALWAYS RUN!!!!
 				ppu.PostCpuInstructionOne();

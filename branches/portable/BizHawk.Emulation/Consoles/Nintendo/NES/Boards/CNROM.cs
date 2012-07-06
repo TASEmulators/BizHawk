@@ -29,16 +29,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "MAPPER003":
+					//we assume no bus conflicts for generic unknown cases.
+					//this was done originally to support Colorful Dragon (Unl) (Sachen) which bugs out if bus conflicts are emulated
+					//Games which behave otherwise will force us to start entering these in the game DB
+					//Licensed titles below are more likely to have used the same original discrete logic design and so suffer from the conflicts
+					bus_conflict = false;
 					break;
 
 				case "NES-CNROM": //adventure island
 				case "HVC-CNROM":
+					bus_conflict = true;
 					AssertPrg(16, 32); AssertChr(8,16,32,64);
 					break;
 				case "KONAMI-CNROM": //gradius (J)
+					bus_conflict = true;
 					AssertPrg(32); AssertChr(32);
 					break;
 				case "AVE-74*161":
+					bus_conflict = true;
 					AssertPrg(32); AssertChr(64);
 					break;
 				default:
@@ -52,7 +60,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_mask = (Cart.prg_size / 16) - 1;
 			chr_mask = (Cart.chr_size / 8) - 1;
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
-			bus_conflict = true;
 
 			return true;
 		}

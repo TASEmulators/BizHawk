@@ -114,6 +114,18 @@ namespace BizHawk.MultiClient
 			return false;
 		}
 
+		public Cheat GetCheat(MemoryDomain d, int address)
+		{
+			for (int x = 0; x < cheatList.Count; x++)
+			{
+				if (cheatList[x].address == address && cheatList[x].domain.Name == d.Name)
+				{
+					return cheatList[x];
+				}
+			}
+			return null;
+		}
+
 		public void RemoveCheat(MemoryDomain d, int address)
 		{
 			for (int x = 0; x < cheatList.Count; x++)

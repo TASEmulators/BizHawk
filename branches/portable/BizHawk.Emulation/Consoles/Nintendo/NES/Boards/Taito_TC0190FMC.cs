@@ -38,14 +38,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ser.EndSection();
 			}
 
-			protected override void SyncIRQ()
+			public override void SyncIRQ()
 			{
 				if (irq_pending && !pending)
 					delay = 12; //supposed to be 4 cpu clocks
 				if (!irq_pending)
 				{
 					delay = 0;
-					board.NES.irq_cart = false;
+					board.IRQSignal = false;
 				}
 				pending = irq_pending;
 			}
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					delay--;
 					if(delay==0)
-						board.NES.irq_cart = true;
+						board.IRQSignal = true;
 				}
 			}
 		}

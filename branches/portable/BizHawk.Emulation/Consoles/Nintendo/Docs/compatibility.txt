@@ -25,7 +25,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 011	Misc		Complete
 012 DBZ5		Decent (mmc3 variant)
 013	CPROM		Complete
-015	Multicart	Junk
+015	Multicart	Decent (some things uncertain)
 016	Bandai		Decent
 018	Jaleco*		Nothing
 019	Namcot106	Decent (but no sound) (+210)
@@ -87,6 +87,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 112	Misc (CN)	Nothing
 113	=USELESS=	Junk
 115	MMC3Variant	Decent
+116 Unlicensed	Minimal (missing correct mirroring logic)
 118	TLSROM		Complete
 119	TQROM		Complete
 140	Misc (J)	Complete
@@ -96,6 +97,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 164	Pirate		Junk - Started
 165	Pirate		Junk
 176 Chinese WXN Decent
+178 Chinese		Decent
 180	Misc (J)	Complete (but we don't implement the crazy climber controller) 
 182	MMC3Variant	Decent
 184	Sunsoft-1	Complete
@@ -123,6 +125,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 233	Multicart	Junk
 234	Misc		Nothing
 240	Misc (CN)	Complete
+241 Misc (CN)	Complete
 242	Misc (CN)	Complete
 243	Misc		Nothing
 245	Pirate		Junk

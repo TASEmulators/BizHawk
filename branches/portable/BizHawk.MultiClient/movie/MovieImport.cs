@@ -85,6 +85,112 @@ namespace BizHawk.MultiClient
 			return false;
 		}
 
+		// Import a frame from a text-based format.
+		private static Movie ImportTextFrame(string line, int lineNum, Movie m, string path, ref string warningMsg)
+		{
+			string[] buttons = new string[] { };
+			string controller = "";
+			switch (Path.GetExtension(path).ToUpper())
+			{
+				case ".FM2":
+					buttons = new string[8] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
+					controller = "NES Controller";
+					break;
+				case ".MC2":
+					buttons = new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
+					controller = "PC Engine Controller";
+					break;
+			}
+			SimpleController controllers = new SimpleController();
+			controllers.Type = new ControllerDefinition();
+			controllers.Type.Name = controller;
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			// Split up the sections of the frame.
+			string[] sections = line.Split('|');
+			if (Path.GetExtension(path).ToUpper() == ".FM2" && sections[1].Length != 0)
+			{
+				controllers["Reset"] = (sections[1][0] == '1');
+				// Get the first invalid command warning message that arises.
+				if (warningMsg == "")
+				{
+					switch (sections[1][0])
+					{
+						case '0':
+							break;
+						case '1':
+							break;
+						case '2':
+							if (m.LogLength() != 0)
+								warningMsg = "hard reset";
+							break;
+						case '4':
+							warningMsg = "FDS Insert";
+							break;
+						case '8':
+							warningMsg = "FDS Select Side";
+							break;
+						default:
+							warningMsg = "unknown";
+							break;
+					}
+					if (warningMsg != "")
+						warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
+				}
+			}
+			/*
+			 Skip the first two sections of the split, which consist of everything before the starting | and the
+			 command. Do not use the section after the last |. In other words, get the sections for the players.
+			*/
+			for (int section = 2; section < sections.Length - 1; section++)
+			{
+				// The player number is one less than the section number for the reasons explained above.
+				int player = section - 1;
+				// Only count lines with that have the right number of buttons and are for valid players.
+				if (
+					sections[section].Length == buttons.Length &&
+					player <= Global.PLAYERS[controllers.Type.Name]
+				)
+					for (int button = 0; button < buttons.Length; button++)
+						// Consider the button pressed so long as its spot is not occupied by a ".".
+						controllers["P" + (player).ToString() + " " + buttons[button]] = (
+							sections[section][button] != '.'
+						);
+			}
+			// Convert the data for the controllers to a mnemonic and add it as a frame.
+			mg.SetSource(controllers);
+			m.AppendFrame(mg.GetControllersAsMnemonic());
+			return m;
+		}
+
+		// Import a subtitle from a text-based format.
+		private static Movie ImportTextSubtitle(string line, Movie m)
+		{
+			Subtitle s = new Subtitle();
+			// Reduce all whitespace to single spaces.
+			line = line.Replace("\t", " ");
+			line = line.Replace("\n", " ");
+			line = line.Replace("\r", " ");
+			line = line.Replace("\r\n", " ");
+			string prev;
+			do
+			{
+				prev = line;
+				line = line.Replace("  ", " ");
+			}
+			while (prev != line);
+			// The header name, frame, and message are separated by whitespace.
+			int first = line.IndexOf(' ');
+			int second = line.IndexOf(' ', first + 1);
+			if (first != -1 && second != -1)
+			{
+				// Concatenate the frame and message with default values for the additional fields.
+				string frame = line.Substring(first + 1, second - first - 1);
+				string message = line.Substring(second + 1).Trim();
+				m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
+			}
+			return m;
+		}
+
 		// Import a text-based movie format. This works for .FM2 and .MC2.
 		private static Movie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
@@ -93,30 +199,20 @@ namespace BizHawk.MultiClient
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
 			FileInfo file = new FileInfo(path);
 			StreamReader sr = file.OpenText();
-			string[] buttons = new string[] { };
-			string controller = "";
 			string emulator = "";
 			string platform = "";
 			switch (Path.GetExtension(path).ToUpper())
 			{
 				case ".FM2":
-					buttons = new string[8] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
-					controller = "NES Controller";
 					emulator = "FCEUX";
 					platform = "NES";
 					break;
 				case ".MC2":
-					buttons = new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
-					controller = "PC Engine Controller";
 					emulator = "Mednafen/PCEjin";
 					platform = "PCE";
 					break;
 			}
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = controller;
-			MnemonicsGenerator mg = new MnemonicsGenerator();
 			int lineNum = 0;
 			string line = "";
 			while ((line = sr.ReadLine()) != null)
@@ -124,26 +220,39 @@ namespace BizHawk.MultiClient
 				lineNum++;
 				if (line == "")
 					continue;
-				if (line.StartsWith("emuVersion"))
+				else if (line[0] == '|')
+					m = ImportTextFrame(line, lineNum, m, path, ref warningMsg);
+				else if (line.ToLower().StartsWith("sub"))
+					m = ImportTextSubtitle(line, m);
+				else if (line.ToLower().StartsWith("emuversion"))
 					m.Header.Comments.Add(EMULATIONORIGIN + " " + emulator + " version " + ParseHeader(line, "emuVersion"));
-				else if (line.StartsWith("version"))
-					m.Header.Comments.Add(
-						MOVIEORIGIN + " " + Path.GetExtension(path) + " version " + ParseHeader(line, "version")
-					);
-				else if (line.StartsWith("romFilename"))
-					m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(line, "romFilename"));
-				else if (line.StartsWith("romChecksum"))
+				else if (line.ToLower().StartsWith("version"))
 				{
-					string blob = ParseHeader(line, "romChecksum").Trim();
+					string version = ParseHeader(line, "version");
+					m.Header.Comments.Add(
+						MOVIEORIGIN + " " + Path.GetExtension(path) + " version " + version
+					);
+					if (Path.GetExtension(path).ToUpper() == ".FM2" && version != "3")
+					{
+						errorMsg = ".FM2 movie version must always be 3.";
+						sr.Close();
+						return null;
+					}
+				}
+				else if (line.ToLower().StartsWith("romfilename"))
+					m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(line, "romFilename"));
+				else if (line.ToLower().StartsWith("romchecksum"))
+				{
+					string blob = ParseHeader(line, "romChecksum");
 					byte[] MD5 = DecodeBlob(blob);
 					if (MD5 != null && MD5.Length == 16)
 						m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
 					else
 						warningMsg = "Bad ROM checksum.";
 				}
-				else if (line.StartsWith("comment author"))
+				else if (line.ToLower().StartsWith("comment author"))
 					m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(line, "comment author"));
-				else if (line.StartsWith("rerecordCount"))
+				else if (line.ToLower().StartsWith("rerecordcount"))
 				{
 					int rerecordCount;
 					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
@@ -157,9 +266,9 @@ namespace BizHawk.MultiClient
 					}
 					m.SetRerecords(rerecordCount);
 				}
-				else if (line.StartsWith("guid"))
-					m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(line, "GUID"));
-				else if (line.StartsWith("StartsFromSavestate"))
+				else if (line.ToLower().StartsWith("guid"))
+					m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(line, "guid"));
+				else if (line.ToLower().StartsWith("startsfromsavestate"))
 				{
 					// If this movie starts from a savestate, we can't support it.
 					if (ParseHeader(line, "StartsFromSavestate") == "1")
@@ -169,88 +278,15 @@ namespace BizHawk.MultiClient
 						return null;
 					}
 				}
-				else if (line.StartsWith("palFlag"))
+				else if (line.ToLower().StartsWith("palflag"))
 				{
 					bool pal = (ParseHeader(line, "palFlag") == "1");
 					m.Header.SetHeaderLine("PAL", pal.ToString());
 				}
-				else if (line.StartsWith("fourscore"))
-					m.Header.SetHeaderLine(
-						MovieHeader.FOURSCORE,
-						Convert.ToBoolean(
-							int.Parse(ParseHeader(line, "fourscore"))
-						).ToString()
-					);
-				else if (line.StartsWith("sub"))
+				else if (line.ToLower().StartsWith("fourscore"))
 				{
-					Subtitle s = new Subtitle();
-					// The header name, frame, and message are separated by a space.
-					int first = line.IndexOf(' ');
-					int second = line.IndexOf(' ', first + 1);
-					if (first != -1 && second != -1)
-					{
-						// Concatenate the frame and message with default values for the additional fields.
-						string frame = line.Substring(first + 1, second - first - 1);
-						string message = line.Substring(second + 1, line.Length - second - 1);
-						m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
-					}
-				}
-				else if (line[0] == '|')
-				{
-					// Split up the sections of the frame.
-					string[] sections = line.Split('|');
-					if (Path.GetExtension(path).ToUpper() == ".FM2" && sections[1].Length != 0)
-					{
-						controllers["Reset"] = (sections[1][0] == '1');
-						// Get the first invalid command warning message that arises.
-						if (warningMsg == "")
-						{
-							switch (sections[1][0])
-							{
-								case '0':
-									break;
-								case '1':
-									break;
-								case '2':
-									if (m.LogLength() != 0)
-										warningMsg = "hard reset";
-									break;
-								case '4':
-									warningMsg = "FDS Insert";
-									break;
-								case '8':
-									warningMsg = "FDS Select Side";
-									break;
-								default:
-									warningMsg = "unknown";
-									break;
-							}
-							if (warningMsg != "")
-								warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
-						}
-					}
-					/*
-					 Skip the first two sections of the split, which consist of everything before the starting | and the
-					 command. Do not use the section after the last |. In other words, get the sections for the players.
-					*/
-					for (int section = 2; section < sections.Length - 1; section++)
-					{
-						// The player number is one less than the section number for the reasons explained above.
-						int player = section - 1;
-						// Only count lines with that have the right number of buttons and are for valid players.
-						if (
-							sections[section].Length == buttons.Length &&
-							player <= Global.PLAYERS[controllers.Type.Name]
-						)
-							for (int button = 0; button < buttons.Length; button++)
-								// Consider the button pressed so long as its spot is not occupied by a ".".
-								controllers["P" + (player).ToString() + " " + buttons[button]] = (
-									sections[section][button] != '.'
-								);
-					}
-					// Convert the data for the controllers to a mnemonic and add it as a frame.
-					mg.SetSource(controllers);
-					m.AppendFrame(mg.GetControllersAsMnemonic());
+					bool fourscore = (ParseHeader(line, "fourscore") == "1");
+					m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
 				}
 				else
 					// Everything not explicitly defined is treated as a comment.
@@ -264,9 +300,12 @@ namespace BizHawk.MultiClient
 		private static string ParseHeader(string line, string headerName)
 		{
 			string str;
-			int x = line.LastIndexOf(headerName) + headerName.Length;
+			// Case-insensitive search.
+			int x = line.ToLower().LastIndexOf(
+				headerName.ToLower()
+			) + headerName.Length;
 			str = line.Substring(x + 1, line.Length - x - 1);
-			return str;
+			return str.Trim();
 		}
 
 		// Decode a blob used in FM2 (base64:..., 0x123456...)
@@ -279,7 +318,7 @@ namespace BizHawk.MultiClient
 				return BizHawk.Util.HexStringToBytes(blob.Substring(2));
 			else {
 				// base64
-				if(!blob.StartsWith("base64:"))
+				if(!blob.ToLower().StartsWith("base64:"))
 					return null;
 				try
 				{

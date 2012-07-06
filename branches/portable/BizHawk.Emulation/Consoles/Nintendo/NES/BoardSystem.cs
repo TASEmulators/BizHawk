@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte[] ROM { get; set; }
 			byte[] VROM { get; set; }
 			void SyncState(Serializer ser);
+			bool IRQSignal { get; }
 
 			//mixes the board's custom audio into the supplied sample buffer
 			void ApplyCustomAudio(short[] samples);
@@ -74,7 +75,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ser.Sync("vram", ref vram, true);
 				ser.Sync("wram", ref wram, true);
 				for (int i = 0; i < 4; i++) ser.Sync("mirroring" + i, ref mirroring[i]);
+				ser.Sync("irq_signal", ref irq_signal);
 			}
+
+			public virtual void SyncIRQ(bool flag)
+			{
+				IRQSignal = flag;
+			}
+
+			private bool irq_signal;
+			public bool IRQSignal { get { return irq_signal; } set { irq_signal = value; } }
 
 			public virtual void Dispose() { }
 
@@ -145,7 +155,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				byte old_value = value;
 				value &= ReadPRG(addr);
-				Debug.Assert(old_value == value, "Found a test case of bus conflict. please report.");
+				//Debug.Assert(old_value == value, "Found a test case of bus conflict. please report.");
 				//report: pinball quest (J)
 				return value;
 			}
@@ -251,6 +261,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//this will be used to track classes that implement boards
 		[AttributeUsage(AttributeTargets.Class)]
 		public class INESBoardImplAttribute : Attribute { }
+		//this tracks derived boards that shouldnt be used by the implementation scanner
+		[AttributeUsage(AttributeTargets.Class)]
+		public class INESBoardImplCancelAttribute : Attribute { }
 		static List<Type> INESBoardImplementors = new List<Type>();
 
 		static NES()
@@ -261,6 +274,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				var attrs = type.GetCustomAttributes(typeof(INESBoardImplAttribute), true);
 				if (attrs.Length == 0) continue;
 				if (type.IsAbstract) continue;
+				var cancelAttrs = type.GetCustomAttributes(typeof(INESBoardImplCancelAttribute), true);
+				if (cancelAttrs.Length != 0) continue;
 				INESBoardImplementors.Add(type);
 			}
 		}
@@ -369,6 +384,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart.pad_h = byte.Parse(dict["PAD_H"]);
 			if (dict.ContainsKey("PAD_V"))
 				cart.pad_v = byte.Parse(dict["PAD_V"]);
+			if(dict.ContainsKey("MIR"))
+				if (dict["MIR"] == "H")
+				{
+					cart.pad_v = 1; cart.pad_h = 0;
+				}
+				else if (dict["MIR"] == "V")
+				{
+					cart.pad_h = 1; cart.pad_v = 0;
+				}
 			if (dict.ContainsKey("BAD"))
 				cart.bad = true;
 			if (dict.ContainsKey("MMC3"))

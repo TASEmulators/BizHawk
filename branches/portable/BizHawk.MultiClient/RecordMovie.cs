@@ -82,7 +82,7 @@ namespace BizHawk.MultiClient
 					var writer = new StreamWriter(temppath);
 					Global.Emulator.SaveStateText(writer);
 					writer.Close();
-                    
+
 					var file = new FileInfo(temppath);
 					using (StreamReader sr = file.OpenText())
 					{
@@ -119,22 +119,34 @@ namespace BizHawk.MultiClient
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-            string fileName = Movie.SaveRecordingAs();
+			string filename = "";
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+			sfd.DefaultExt = "." + Global.Config.MovieExtension;
+			sfd.FileName = RecordBox.Text;
+			sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
 
-			if ("" != fileName)
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result == DialogResult.OK)
 			{
-				RecordBox.Text = fileName;
+				filename = sfd.FileName;
+			}
+
+			if ("" != filename)
+			{
+				RecordBox.Text = filename;
 			}
 		}
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			RecordBox.Text = Global.Game.Name;
+			RecordBox.Text = PathManager.FilesystemSafeName(Global.Game);
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
 			if (Global.Config.UseDefaultAuthor)
 				AuthorBox.Text = Global.Config.DefaultAuthor;
-			//TODO: populate combo with savestate slots that currently exist
 		}
 
 		private void RecordBox_DragEnter(object sender, DragEventArgs e)

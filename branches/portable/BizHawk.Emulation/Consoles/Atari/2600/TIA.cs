@@ -420,7 +420,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public int[] frameBuffer = new int[320 * 262];
 		public int[] GetVideoBuffer() { return frameBuffer; }
-		public int BufferWidth { get { return 320; } }
+        public int VirtualWidth { get { return 320; } }
+        public int BufferWidth { get { return 320; } }
 		public int BufferHeight { get { return 262; } }
 		public int BackgroundColor { get { return 0; } }
 
