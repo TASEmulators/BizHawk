@@ -105,7 +105,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 189	MMC3Variant	Decent
 *191 Pirate		Minimal (mmc3 variant) - No known game uses this (extant dumps of Sugoro Quest use mapper 4). So this isn't tested.
 192	Pirate		Nothing (mmc3 variant) - No known game uses this (extant dumps of Ying Lie Qun Xia Zhuan use mapper 245)
-193	Unlicensed	Junk - Started
+193	Unlicensed	Complete
 194	Pirate		Junk
 200	Multicart	Junk
 201	Multicart	Junk
@@ -129,5 +129,5 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 242	Misc (CN)	Complete
 243	Misc		Nothing
 245	Pirate		Junk
-246	Misc (CN)	Nothing
+246	Misc (CN)	Complete
 248 Misc (CN)	{{See 115}} 
