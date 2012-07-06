@@ -103,14 +103,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (addr)
 			{
 				case 0:
-					chr_banks_2k[0] = (byte)(value / 4 * 2);
-					chr_banks_2k[1] = (byte)(value / 4 * 2 + 1);
+					chr_banks_2k[0] = (byte)((value & ~3) >> 1);
+					chr_banks_2k[1] = (byte)(((value & ~3) >> 1) + 1); 
 					break;
 				case 1:
-					chr_banks_2k[2] = (byte)(value / 2);
+					chr_banks_2k[2] = (byte)((value & ~1) >> 1);
 					break;
 				case 2:
-					chr_banks_2k[3] = (byte)(value / 2);
+					chr_banks_2k[3] = (byte)((value & ~1) >> 1); 
 					break;
 				case 3:
 					prg_banks_8k[0] = value;
