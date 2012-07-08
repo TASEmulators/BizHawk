@@ -10,7 +10,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public string Disassemble(ushort pc, out int bytesToAdvance)
 		{
 			bytesToAdvance = 1;
-			int second, third, op1, op2, op3;
+			byte register;
+			int second, third, op1, op2;
 			string result = "";
 			int opcode = ReadMemory(RegisterPC) & 0x3FF;
 			switch (opcode)
@@ -28,15 +29,15 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					second = ReadMemory((byte)(RegisterPC + 1));
 					third = ReadMemory((byte)(RegisterPC + 1));
 					// rr indicates the register into which to store the return address
-					op1 = (second >> 8) & 0x3;
+					register = (byte)(((second >> 8) & 0x3) + 4);
 					// ff indicates how to affect the Interrupt (I) flag in the CP1610
-					op2 = second & 0x3;
+					op1 = second & 0x3;
 					// aaaaaaaaaaaaaaaa indicates the address to where the CP1610 should Jump
-					op3 = ((second << 8) & 0xFC00) | (third & 0x3FF);
+					op2 = ((second << 8) & 0xFC00) | (third & 0x3FF);
 					result = "J";
-					if (op1 != 0x3)
+					if (register != 0x7)
 						result += "SR";
-					switch (op2)
+					switch (op1)
 					{
 						case 0x1:
 							result += "E";
@@ -48,9 +49,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							// Unknown opcode.
 							break;
 					}
-					if (op1 != 0x3)
-						result += " R" + (op1 + 4) + ",";
-					result += string.Format(" ${0:X4})", op3);
+					if (register != 0x3)
+						result += " R" + register + ",";
+					result += string.Format(" ${0:X4})", op2);
 					bytesToAdvance = 3;
 					return result;
 				case 0x005:
@@ -59,7 +60,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					return "CLRC";
 				case 0x007:
 					return "SETC";
-				// INCR
 				case 0x008:
 				case 0x009:
 				case 0x00A:
@@ -68,8 +68,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x00D:
 				case 0x00E:
 				case 0x00F:
-					throw new NotImplementedException();
-				// DECR
+					register = (byte)(opcode & 0x7);
+					return "INCR R" + register;
 				case 0x010:
 				case 0x011:
 				case 0x012:
@@ -78,8 +78,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x015:
 				case 0x016:
 				case 0x017:
-					throw new NotImplementedException();
-				// COMR
+					register = (byte)(opcode & 0x7);
+					return "DECR R" + register;
 				case 0x018:
 				case 0x019:
 				case 0x01A:
@@ -88,8 +88,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x01D:
 				case 0x01E:
 				case 0x01F:
-					throw new NotImplementedException();
-				// NEGR
+					register = (byte)(opcode & 0x7);
+					return "COMR R" + register;
 				case 0x020:
 				case 0x021:
 				case 0x022:
@@ -98,8 +98,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x025:
 				case 0x026:
 				case 0x027:
-					throw new NotImplementedException();
-				// ADCR
+					register = (byte)(opcode & 0x7);
+					return "NEGR R" + register;
 				case 0x028:
 				case 0x029:
 				case 0x02A:
@@ -108,22 +108,20 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x02D:
 				case 0x02E:
 				case 0x02F:
-					throw new NotImplementedException();
-				// GSWD
+					register = (byte)(opcode & 0x7);
+					return "ADCR R" + register;
 				case 0x030:
 				case 0x031:
 				case 0x032:
 				case 0x033:
-					throw new NotImplementedException();
-				// NOP
+					register = (byte)(opcode & 0x3);
+					return "GSWD R" + register;
 				case 0x034:
 				case 0x035:
-					throw new NotImplementedException();
-				// SIN
+					return "NOP";
 				case 0x036:
 				case 0x037:
-					throw new NotImplementedException();
-				// RSWD
+					return "SIN";
 				case 0x038:
 				case 0x039:
 				case 0x03A:
@@ -132,8 +130,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x03D:
 				case 0x03E:
 				case 0x03F:
-					throw new NotImplementedException();
-				// SWAP
+					register = (byte)(opcode & 0x7);
+					return "RSWD R" + register;
 				case 0x040:
 				case 0x041:
 				case 0x042:
@@ -142,8 +140,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x045:
 				case 0x046:
 				case 0x047:
-					throw new NotImplementedException();
-				// SLL
+					register = (byte)(opcode & 0x3);
+					op1 = opcode & 0x4;
+					return "SWAP R" + register + ", " + (op1 + 1);
 				case 0x048:
 				case 0x049:
 				case 0x04A:
@@ -152,8 +151,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x04D:
 				case 0x04E:
 				case 0x04F:
-					throw new NotImplementedException();
-				// RLC
+					register = (byte)(opcode & 0x3);
+					op1 = opcode & 0x4;
+					return "SLL R" + register + ", " + (op1 + 1);
 				case 0x050:
 				case 0x051:
 				case 0x052:
@@ -162,7 +162,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x055:
 				case 0x056:
 				case 0x057:
-					throw new NotImplementedException();
+					register = (byte)(opcode & 0x3);
+					op1 = opcode & 0x4;
+					return "RLC R" + register + ", " + (op1 + 1);
 				// SLLC
 				case 0x058:
 				case 0x059:
