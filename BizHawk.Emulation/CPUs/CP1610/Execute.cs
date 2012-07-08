@@ -23,6 +23,11 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			FlagS = ((result & 0x8000) != 0);
 		}
 
+		private void Calc_FlagS_7(int result)
+		{
+			FlagS = ((result & 0x80) != 0);
+		}
+
 		private void Calc_FlagZ(int result)
 		{
 			FlagZ = (result == 0);
@@ -30,8 +35,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 
 		public void Execute(int cycles)
 		{
-			byte target;
-			int second, third, op1, op2, op3, temp, result;
+			byte register;
+			int second, third, op1, op2, temp, result = 0;
             PendingCycles += cycles;
 			while (PendingCycles > 0)
 			{
@@ -39,33 +44,38 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				switch (opcode)
 				{
 					case 0x000: // HLT
-						throw new NotImplementedException();
+						// Unexpected behavior.
+						throw new ArgumentException();
 					case 0x001: // SDBD
+						throw new NotImplementedException();
 						FlagD = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x002: // EIS
+						throw new NotImplementedException();
 						FlagI = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x003: // DIS
+						throw new NotImplementedException();
 						FlagI = false;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x004: // J, JE, JD, JSR, JSRE, JSRD
+						throw new NotImplementedException();
 						// 0000:0000:0000:0100    0000:00rr:aaaa:aaff    0000:00aa:aaaa:aaaa
 						second = ReadMemory(RegisterPC++);
 						third = ReadMemory(RegisterPC++);
 						// rr indicates the register into which to store the return address
-						op1 = (second >> 8) & 0x3;
+						register = (byte)(((second >> 8) & 0x3) + 4);
 						// ff indicates how to affect the Interrupt (I) flag in the CP1610
-						op2 = second & 0x3;
+						op1 = second & 0x3;
 						// aaaaaaaaaaaaaaaa indicates the address to where the CP1610 should Jump
-						op3 = ((second << 8) & 0xFC00) | (third & 0x3FF);
-						if (op1 != 0x3)
+						op2 = ((second << 8) & 0xFC00) | (third & 0x3FF);
+						if (register != 0x7)
 							// Store the return address.
-							Register[op1 + 4] = (ushort)((RegisterPC + 1) & 0xFFFF);
-						switch (op2)
+							Register[register] = (ushort)((RegisterPC + 1) & 0xFFFF);
+						switch (op1)
 						{
 							case 0x1:
 								FlagI = true;
@@ -77,16 +87,21 @@ namespace BizHawk.Emulation.CPUs.CP1610
 								// Unknown opcode.
 								throw new ArgumentException();
 						}
-						RegisterPC = (ushort)op3;
+						RegisterPC = (ushort)op2;
 						PendingCycles -= 12; TotalExecutedCycles += 12;
 						break;
 					case 0x005: // TCI
 						throw new NotImplementedException();
+						// Little or no use in Intellivision.
+						PendingCycles -= 4; TotalExecutedCycles += 4;
+						break;
 					case 0x006: // CLRC
+						throw new NotImplementedException();
 						FlagC = false;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x007: // SETC
+						throw new NotImplementedException();
 						FlagC = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
@@ -99,11 +114,12 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x00D:
 					case 0x00E:
 					case 0x00F:
-						target = (byte)(opcode & 0x7);
-						result = (Register[target] + 1) & 0xFFFF;
+						throw new NotImplementedException();
+						register = (byte)(opcode & 0x7);
+						result = (Register[register] + 1) & 0xFFFF;
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
-						Register[target] = (ushort)result;
+						Register[register] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
 						break;
 					// DECR
@@ -115,11 +131,12 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x015:
 					case 0x016:
 					case 0x017:
-						target = (byte)(opcode & 0x7);
-						result = (Register[target] - 1) & 0xFFFF;
+						throw new NotImplementedException();
+						register = (byte)(opcode & 0x7);
+						result = (Register[register] - 1) & 0xFFFF;
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
-						Register[target] = (ushort)result;
+						Register[register] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
 						break;
 					// COMR
@@ -131,11 +148,12 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x01D:
 					case 0x01E:
 					case 0x01F:
-						target = (byte)(opcode & 0x7);
-						result = Register[target] ^ 0xFFFF;
+						throw new NotImplementedException();
+						register = (byte)(opcode & 0x7);
+						result = Register[register] ^ 0xFFFF;
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
-						Register[target] = (ushort)result;
+						Register[register] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
 						break;
 					// NEGR
@@ -147,8 +165,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x025:
 					case 0x026:
 					case 0x027:
-						target = (byte)(opcode & 0x7);
-						op1 = Register[target];
+						throw new NotImplementedException();
+						register = (byte)(opcode & 0x7);
+						op1 = Register[register];
 						temp = (op1 ^ 0xFFFF);
 						result = temp + 1;
 						Calc_FlagC(result);
@@ -156,7 +175,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
 						result &= 0xFFFF;
-						Register[target] = (ushort)result;
+						Register[register] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
 						break;
 					// ADCR
@@ -168,8 +187,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x02D:
 					case 0x02E:
 					case 0x02F:
-						target = (byte)(opcode & 0x7);
-						op1 = Register[target];
+						throw new NotImplementedException();
+						register = (byte)(opcode & 0x7);
+						op1 = Register[register];
 						op2 = FlagC ? 1 : 0;
 						result = op1 + op2;
 						Calc_FlagC(result);
@@ -177,7 +197,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
 						result &= 0xFFFF;
-						Register[target] = (ushort)result;
+						Register[register] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
 						break;
 					// GSWD
@@ -186,14 +206,23 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x032:
 					case 0x033:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x3);
+						temp = ((FlagS ? 1 : 0) << 3) | ((FlagZ ? 1 : 0) << 2) | ((FlagO ? 1 : 0) << 1) | (FlagC ? 1 : 0);
+						Register[register] = (ushort)((temp << 12) | (temp << 4));
+						PendingCycles -= 6; TotalExecutedCycles += 6;
+						break;
 					// NOP
 					case 0x034:
 					case 0x035:
 						throw new NotImplementedException();
+						break;
 					// SIN
 					case 0x036:
 					case 0x037:
 						throw new NotImplementedException();
+						// Little or no use in Intellivision.
+						PendingCycles -= 6; TotalExecutedCycles += 6;
+						break;
 					// RSWD
 					case 0x038:
 					case 0x039:
@@ -204,6 +233,14 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x03E:
 					case 0x03F:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x7);
+						op1 = Register[register];
+						FlagC = ((op1 & 0x80) != 0) ? true : false;
+						FlagO = ((op1 & 0x40) != 0) ? true : false;
+						FlagZ = ((op1 & 0x20) != 0) ? true : false;
+						FlagS = ((op1 & 0x10) != 0) ? true : false;
+						PendingCycles -= 6; TotalExecutedCycles += 6;
+						break;
 					// SWAP
 					case 0x040:
 					case 0x041:
@@ -214,6 +251,24 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x046:
 					case 0x047:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x3);
+						op1 = opcode & 0x4;
+						op2 = Register[register];
+						temp = op2 & 0xFF;
+						if (op1 == 0)
+						{
+							// Single swap.
+							result = (temp << 8) | ((op2 >> 8) & 0xFF);
+							PendingCycles -= 6; TotalExecutedCycles += 6;
+						}
+						else
+						{
+							// Double swap.
+							result = (temp << 8) | temp;
+							PendingCycles -= 8; TotalExecutedCycles += 8;
+						}
+						Calc_FlagS_7(result);
+						Calc_FlagZ(result);
 					// SLL
 					case 0x048:
 					case 0x049:
@@ -224,6 +279,23 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x04E:
 					case 0x04F:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x3);
+						op1 = opcode & 0x4;
+						result = Register[register] << 1;
+						if (op1 == 0)
+						{
+							// Single shift.
+							PendingCycles -= 6; TotalExecutedCycles += 6;
+						}
+						else
+						{
+							// Double shift.
+							result <<= 1;
+							PendingCycles -= 8; TotalExecutedCycles += 8;
+						}
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						Register[register] = (ushort)result;
 					// RLC
 					case 0x050:
 					case 0x051:
@@ -234,6 +306,27 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x056:
 					case 0x057:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x3);
+						op1 = opcode & 0x4;
+						op2 = Register[register];
+						result = (op2 << 1) | (FlagC ? 1 : 0);
+						FlagC = ((op2 & 0x8000) != 0);
+						if (op1 == 0)
+						{
+							// Single rotate.
+							PendingCycles -= 6; TotalExecutedCycles += 6;
+						}
+						else
+						{
+							// Double rotate.
+							result <<= 1;
+							result |= (FlagO ? 1 : 0);
+							FlagO = ((op2 & 0x4000) != 0);
+							PendingCycles -= 8; TotalExecutedCycles += 8;
+						}
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						Register[register] = (ushort)result;
 					// SLLC
 					case 0x058:
 					case 0x059:
