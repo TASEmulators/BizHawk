@@ -165,7 +165,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					register = (byte)(opcode & 0x3);
 					op1 = opcode & 0x4;
 					return "RLC R" + register + ", " + (op1 + 1);
-				// SLLC
 				case 0x058:
 				case 0x059:
 				case 0x05A:
@@ -174,7 +173,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x05D:
 				case 0x05E:
 				case 0x05F:
-					throw new NotImplementedException();
+					register = (byte)(opcode & 0x3);
+					op1 = opcode & 0x4;
+					return "SLLC R" + register + ", " + (op1 + 1);
 				// SLR
 				case 0x060:
 				case 0x061:
