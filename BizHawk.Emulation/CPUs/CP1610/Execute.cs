@@ -31,10 +31,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public void Execute(int cycles)
 		{
 			byte target;
-			int op1;
-			int op2;
-			int temp;
-			int result;
+			int op1, op2, temp, result;
             PendingCycles += cycles;
 			while (PendingCycles > 0)
 			{
