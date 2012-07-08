@@ -239,6 +239,7 @@
     <Compile Include="CPUs\68000\OpcodeTable.cs" />
     <Compile Include="CPUs\68000\Tables.cs" />
     <Compile Include="CPUs\CP1610\CP1610.cs" />
+    <Compile Include="CPUs\CP1610\Disassembler.cs" />
     <Compile Include="CPUs\CP1610\Execute.cs" />
     <Compile Include="CPUs\HuC6280\Disassembler.cs" />
     <Compile Include="CPUs\HuC6280\Execute.cs" />
