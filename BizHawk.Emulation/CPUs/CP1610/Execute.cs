@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public void Execute(int cycles)
 		{
 			byte target;
-			int op1, op2, temp, result;
+			int second, third, op1, op2, op3, temp, result;
             PendingCycles += cycles;
 			while (PendingCycles > 0)
 			{
@@ -53,7 +53,33 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x004: // J, JE, JD, JSR, JSRE, JSRD
-						throw new NotImplementedException();
+						// 0000:0000:0000:0100    0000:00rr:aaaa:aaff    0000:00aa:aaaa:aaaa
+						second = ReadMemory(RegisterPC++);
+						third = ReadMemory(RegisterPC++);
+						// rr indicates the register into which to store the return address
+						op1 = (second >> 8) & 0x3;
+						// ff indicates how to affect the Interrupt (I) flag in the CP1610
+						op2 = second & 0x3;
+						// aaaaaaaaaaaaaaaa indicates the address to where the CP1610 should Jump
+						op3 = ((second << 8) & 0xFC00) | (third & 0x3FF);
+						if (op1 != 0x3)
+							// Store the return address.
+							Register[op1 + 4] = (ushort)((RegisterPC + 1) & 0xFFFF);
+						switch (op2)
+						{
+							case 0x1:
+								FlagI = true;
+								break;
+							case 0x2:
+								FlagI = false;
+								break;
+							case 0x3:
+								// Unknown opcode.
+								throw new ArgumentException();
+						}
+						RegisterPC = (ushort)op3;
+						PendingCycles -= 12; TotalExecutedCycles += 12;
+						break;
 					case 0x005: // TCI
 						throw new NotImplementedException();
 					case 0x006: // CLRC

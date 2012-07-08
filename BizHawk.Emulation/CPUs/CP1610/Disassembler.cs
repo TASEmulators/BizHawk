@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public string Disassemble(ushort pc, out int bytesToAdvance)
 		{
 			bytesToAdvance = 1;
-			int second, third, op1, op2, op3, temp1, temp2;
+			int second, third, op1, op2, op3;
 			string result = "";
 			int opcode = ReadMemory(RegisterPC) & 0x3FF;
 			switch (opcode)
@@ -25,48 +25,31 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					return "DIS";
 				case 0x004:
 					// 0000:0000:0000:0100    0000:00rr:aaaa:aaff    0000:00aa:aaaa:aaaa
-					second = ReadMemory(++RegisterPC);
-					third = ReadMemory(++RegisterPC);
+					second = ReadMemory((byte)(RegisterPC + 1));
+					third = ReadMemory((byte)(RegisterPC + 1));
 					// rr indicates the register into which to store the return address
 					op1 = (second >> 8) & 0x3;
 					// ff indicates how to affect the Interrupt (I) flag in the CP1610
 					op2 = second & 0x3;
 					// aaaaaaaaaaaaaaaa indicates the address to where the CP1610 should Jump
 					op3 = ((second << 8) & 0xFC00) | (third & 0x3FF);
-					temp1 = 0x4 ^ op1;
+					result = "J";
 					if (op1 != 0x3)
+						result += "SR";
+					switch (op2)
 					{
-						switch (op2)
-						{
-							case 0x0:
-								result = "JSR";
-								break;
-							case 0x1:
-								result = "JSRE";
-								break;
-							case 0x2:
-								result = "JSRD";
-								break;
-							case 0x3:
-								break;
-						}
-						result += " R" + temp1 + ",";
+						case 0x1:
+							result += "E";
+							break;
+						case 0x2:
+							result += "D";
+							break;
+						case 0x3:
+							// Unknown opcode.
+							break;
 					}
-					else
-						switch (op2)
-						{
-							case 0x0:
-								result = "J";
-								break;
-							case 0x1:
-								result = "JE";
-								break;
-							case 0x2:
-								result = "JD";
-								break;
-							case 0x3:
-								break;
-						}
+					if (op1 != 0x3)
+						result += " R" + (op1 + 4) + ",";
 					result += string.Format(" ${0:X4})", op3);
 					bytesToAdvance = 3;
 					return result;
