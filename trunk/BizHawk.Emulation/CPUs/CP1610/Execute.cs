@@ -337,6 +337,26 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x05E:
 					case 0x05F:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x3);
+						op1 = opcode & 0x4;
+						op2 = Register[register];
+						result = op2 << 1;
+						FlagC = ((op2 & 0x8000) != 0);
+						if (op1 == 0)
+						{
+							// Single shift.
+							PendingCycles -= 6; TotalExecutedCycles += 6;
+						}
+						else
+						{
+							// Double shift.
+							result <<= 1;
+							FlagO = ((op2 & 0x4000) != 0);
+							PendingCycles -= 8; TotalExecutedCycles += 8;
+						}
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						Register[register] = (ushort)result;
 					// SLR
 					case 0x060:
 					case 0x061:
