@@ -114,6 +114,7 @@
     <Compile Include="Consoles\GB\Input.cs" />
     <Compile Include="Consoles\GB\MemoryMap.cs" />
     <Compile Include="Consoles\GB\GB.cs" />
+    <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
@@ -237,6 +238,8 @@
     <Compile Include="CPUs\68000\Memory.cs" />
     <Compile Include="CPUs\68000\OpcodeTable.cs" />
     <Compile Include="CPUs\68000\Tables.cs" />
+    <Compile Include="CPUs\CP1610\CP1610.cs" />
+    <Compile Include="CPUs\CP1610\Execute.cs" />
     <Compile Include="CPUs\HuC6280\Disassembler.cs" />
     <Compile Include="CPUs\HuC6280\Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280.cs" />

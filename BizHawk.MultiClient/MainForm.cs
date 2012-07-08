@@ -15,6 +15,7 @@ using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Coleco;
 using BizHawk.MultiClient.tools;
 using System.Collections.Generic;
+using BizHawk.Emulation.Consoles.Mattel;
 
 namespace BizHawk.MultiClient
 {
@@ -1109,7 +1110,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM" };
+				string[] romExtensions = new string[] { "SMS", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM", "INT" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1284,6 +1285,10 @@ namespace BizHawk.MultiClient
 								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
 								nextEmulator = c;
 								break;
+                            case "INTV":
+                                Intellivision intv = new Intellivision(game, rom.RomData);
+                                nextEmulator = intv;
+                                break;
 						}
 					}
 
@@ -2488,6 +2493,7 @@ namespace BizHawk.MultiClient
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
 					"Gameboy (experimental)", "*.gb;%ARCH%",
 					"Colecovision (very experimental)", "*.col;%ARCH%",
+                    "Intellivision (very experimental)", "*.int;%ARCH%",
 					"PSX Executables (experimental)", "*.exe",
 					"All Files", "*.*");
 			}
