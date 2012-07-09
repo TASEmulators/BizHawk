@@ -115,6 +115,7 @@
     <Compile Include="Consoles\GB\MemoryMap.cs" />
     <Compile Include="Consoles\GB\GB.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
+    <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />

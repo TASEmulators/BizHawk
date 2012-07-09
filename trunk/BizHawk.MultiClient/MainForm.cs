@@ -15,7 +15,7 @@ using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Coleco;
 using BizHawk.MultiClient.tools;
 using System.Collections.Generic;
-using BizHawk.Emulation.Consoles.Mattel;
+using BizHawk.Emulation.Consoles.Intellivision;
 
 namespace BizHawk.MultiClient
 {

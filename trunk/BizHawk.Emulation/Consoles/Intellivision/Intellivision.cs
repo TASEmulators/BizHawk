@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using BizHawk.Emulation.CPUs.CP1610;
 
-namespace BizHawk.Emulation.Consoles.Mattel
+namespace BizHawk.Emulation.Consoles.Intellivision
 {
     public sealed partial class Intellivision : IEmulator
     {
@@ -20,18 +20,9 @@ namespace BizHawk.Emulation.Consoles.Mattel
             Cpu = new CP1610();
             Cpu.ReadMemory = ReadMemory;
             Cpu.WriteMemory = WriteMemory;
+			Cpu.RegisterPC = 0x1000;
             
             CoreOutputComm = new CoreOutputComm();
-        }
-
-        public byte ReadMemory(ushort addr)
-        {
-            return 0xFF; // TODO you need to implement a memory mapper.
-        }
-
-        public void WriteMemory(ushort addr, byte value)
-        {
-            // TODO
         }
 
         public void FrameAdvance(bool render)
