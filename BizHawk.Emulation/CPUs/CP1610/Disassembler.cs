@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 {
 	public sealed partial class CP1610
 	{
+		public const string UNKNOWN = "???";
+
 		public string Disassemble(ushort pc, out int bytesToAdvance)
 		{
 			bytesToAdvance = 1;
@@ -47,7 +49,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							break;
 						case 0x3:
 							// Unknown opcode.
-							break;
+							return UNKNOWN;
 					}
 					if (register != 0x3)
 						result += " R" + register + ",";
@@ -1178,7 +1180,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x3FF:
 					throw new NotImplementedException();
 			}
-			return "???";
+			return UNKNOWN;
 		}
 	}
 }

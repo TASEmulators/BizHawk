@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public int TotalExecutedCycles;
 		public int PendingCycles;
 
-		public Func<ushort, byte> ReadMemory;
-		public Action<ushort, byte> WriteMemory;
+		public Func<ushort, ushort> ReadMemory;
+		public Action<ushort, ushort> WriteMemory;
 	}
 }
