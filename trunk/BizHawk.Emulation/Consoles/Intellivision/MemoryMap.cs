@@ -7,15 +7,15 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 {
 	public sealed partial class Intellivision
 	{
-		private byte[] STIC_Registers;
-		private byte[] Scratchpad_RAM;
-		private byte[] PSG_Registers;
-		private byte[] System_RAM;
-		private byte[] Executive_ROM;
-		private byte[] Graphics_ROM;
-		private byte[] Graphics_RAM;
+		private ushort[] STIC_Registers;
+		private ushort[] Scratchpad_RAM;
+		private ushort[] PSG_Registers;
+		private ushort[] System_RAM;
+		private ushort[] Executive_ROM;
+		private ushort[] Graphics_ROM;
+		private ushort[] Graphics_RAM;
 
-		public byte ReadMemory(ushort addr)
+		public ushort ReadMemory(ushort addr)
 		{
 			switch (addr & 0xF000)
 			{
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			throw new NotImplementedException();
 		}
 
-		public void WriteMemory(ushort addr, byte value)
+		public void WriteMemory(ushort addr, ushort value)
 		{
 			switch (addr & 0xF000)
 			{
