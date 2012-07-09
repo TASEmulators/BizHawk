@@ -367,6 +367,23 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x066:
 					case 0x067:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x3);
+						op1 = opcode & 0x4;
+						result = Register[register] >> 1;
+						if (op1 == 0)
+						{
+							// Single shift.
+							PendingCycles -= 6; TotalExecutedCycles += 6;
+						}
+						else
+						{
+							// Double shift.
+							result >>= 1;
+							PendingCycles -= 8; TotalExecutedCycles += 8;
+						}
+						Calc_FlagS_7(result);
+						Calc_FlagZ(result);
+						Register[register] = (ushort)result;
 					// SAR
 					case 0x068:
 					case 0x069:
@@ -377,6 +394,26 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x06E:
 					case 0x06F:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x3);
+						op1 = opcode & 0x4;
+						op2 = Register[register];
+						temp = op2 & 0x8000;
+						result = (op2 >> 1) | temp;
+						if (op1 == 0)
+						{
+							// Single shift.
+							PendingCycles -= 6; TotalExecutedCycles += 6;
+						}
+						else
+						{
+							// Double shift.
+							result >>= 1;
+							result |= temp;
+							PendingCycles -= 8; TotalExecutedCycles += 8;
+						}
+						Calc_FlagS_7(result);
+						Calc_FlagZ(result);
+						Register[register] = (ushort)result;
 					// RRC
 					case 0x070:
 					case 0x071:
@@ -387,6 +424,27 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x076:
 					case 0x077:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x3);
+						op1 = opcode & 0x4;
+						op2 = Register[register];
+						result = (op2 >> 1) | ((FlagC ? 1 : 0) << 15);
+						FlagC = ((op2 & 0x1) != 0);
+						if (op1 == 0)
+						{
+							// Single rotate.
+							PendingCycles -= 6; TotalExecutedCycles += 6;
+						}
+						else
+						{
+							// Double rotate.
+							result >>= 1;
+							result |= (FlagO ? 1 : 0) << 15;
+							FlagO = ((op2 & 0x2) != 0);
+							PendingCycles -= 8; TotalExecutedCycles += 8;
+						}
+						Calc_FlagS_7(result);
+						Calc_FlagZ(result);
+						Register[register] = (ushort)result;
 					// SARC
 					case 0x078:
 					case 0x079:
@@ -397,6 +455,28 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x07E:
 					case 0x07F:
 						throw new NotImplementedException();
+						register = (byte)(opcode & 0x3);
+						op1 = opcode & 0x4;
+						op2 = Register[register];
+						temp = op2 & 0x8000;
+						result = (op2 >> 1) | temp;
+						FlagC = ((op2 & 0x1) != 0);
+						if (op1 == 0)
+						{
+							// Single shift.
+							PendingCycles -= 6; TotalExecutedCycles += 6;
+						}
+						else
+						{
+							// Double shift.
+							result >>= 1;
+							result |= temp;
+							FlagO = ((op2 & 0x2) != 0);
+							PendingCycles -= 8; TotalExecutedCycles += 8;
+						}
+						Calc_FlagS_7(result);
+						Calc_FlagZ(result);
+						Register[register] = (ushort)result;
 					// MOVR
 					case 0x080:
 					case 0x081:

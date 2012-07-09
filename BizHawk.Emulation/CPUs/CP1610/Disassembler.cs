@@ -176,7 +176,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					register = (byte)(opcode & 0x3);
 					op1 = opcode & 0x4;
 					return "SLLC R" + register + ", " + (op1 + 1);
-				// SLR
 				case 0x060:
 				case 0x061:
 				case 0x062:
@@ -185,8 +184,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x065:
 				case 0x066:
 				case 0x067:
-					throw new NotImplementedException();
-				// SAR
+					register = (byte)(opcode & 0x3);
+					op1 = opcode & 0x4;
+					return "SLR R" + register + ", " + (op1 + 1);
 				case 0x068:
 				case 0x069:
 				case 0x06A:
@@ -195,8 +195,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x06D:
 				case 0x06E:
 				case 0x06F:
-					throw new NotImplementedException();
-				// RRC
+					register = (byte)(opcode & 0x3);
+					op1 = opcode & 0x4;
+					return "SAR R" + register + ", " + (op1 + 1);
 				case 0x070:
 				case 0x071:
 				case 0x072:
@@ -205,8 +206,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x075:
 				case 0x076:
 				case 0x077:
-					throw new NotImplementedException();
-				// SARC
+					register = (byte)(opcode & 0x3);
+					op1 = opcode & 0x4;
+					return "RRC R" + register + ", " + (op1 + 1);
 				case 0x078:
 				case 0x079:
 				case 0x07A:
@@ -215,7 +217,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x07D:
 				case 0x07E:
 				case 0x07F:
-					throw new NotImplementedException();
+					register = (byte)(opcode & 0x3);
+					op1 = opcode & 0x4;
+					return "SARC R" + register + ", " + (op1 + 1);
 				// MOVR
 				case 0x080:
 				case 0x081:
