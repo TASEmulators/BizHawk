@@ -15,7 +15,6 @@ namespace BizHawk.MultiClient
 	{
 		//TODO:
 		//Add ROM in memory domains, set up logic for saving the rom in SaveFile logic
-		//Tool strip
 		//Increment/Decrement wrapping logic for 4 byte values is messed up
 
 		int defaultWidth;
