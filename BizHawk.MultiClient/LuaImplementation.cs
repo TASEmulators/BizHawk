@@ -412,6 +412,10 @@ namespace BizHawk.MultiClient
 				"destroy",
 				"destroyall",
 				"button",
+				"label",
+				"textbox",
+				"setlocation",
+				"setsize",
 		};
 
 		/****************************************************/
@@ -1704,38 +1708,145 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null)
+		private LuaWinform GetForm(object form_handle)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(form_handle));
 			foreach (LuaWinform form in LuaForms)
 			{
 				if (form.Handle == ptr)
 				{
-					LuaButton button = new LuaButton();
-					button.Text = caption.ToString();
-					form.Controls.Add(button);
-					form.Control_Events.Add(new LuaWinform.Lua_Event(button.Handle, lua_event));
-					
-					//button.Click += new System.EventHandler(button.DoLuaClick);
-					try
-					{
-						if (X != null && Y != null)
-						{
-							int x = LuaInt(X);
-							int y = LuaInt(Y);
-							button.Location = new Point(x, y);
-						}
-					}
-					catch
-					{
-						//Do nothing
-					}
-
-					return (int)button.Handle;
+					return form;
 				}
 			}
+			return null;
+		}
 
-			return 0;
+		private void SetLocation(Control control, object X, object Y)
+		{
+			try
+			{
+				if (X != null && Y != null)
+				{
+					int x = LuaInt(X);
+					int y = LuaInt(Y);
+					control.Location = new Point(x, y);
+				}
+			}
+			catch
+			{
+				//Do nothing
+			}
+		}
+
+		private void SetSize(Control control, object Width, object Height)
+		{
+			try
+			{
+				if (Width != null && Height != null)
+				{
+					int width = LuaInt(Width);
+					int height = LuaInt(Height);
+					control.Size = new Size(width, height);
+				}
+			}
+			catch
+			{
+				//Do nothing
+			}
+		}
+
+		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null)
+		{
+			LuaWinform form = GetForm(form_handle);
+			if (form == null)
+			{
+				return 0;
+			}
+			
+			LuaButton button = new LuaButton();
+			button.Text = caption.ToString();
+			form.Controls.Add(button);
+			form.Control_Events.Add(new LuaWinform.Lua_Event(button.Handle, lua_event));
+			SetLocation(button, X, Y);
+			return (int)button.Handle;
+		}
+
+		public int forms_label(object form_handle, object caption, object X = null, object Y = null)
+		{
+			LuaWinform form = GetForm(form_handle);
+			if (form == null)
+			{
+				return 0;
+			}
+
+			Label label = new Label();
+			label.Text = caption.ToString();
+			form.Controls.Add(label);
+			SetLocation(label, X, Y);
+			return (int)label.Handle;
+		}
+
+		public int forms_textbox(object form_handle, object caption = null, object width = null, object height = null, object X = null, object Y = null)
+		{
+			LuaWinform form = GetForm(form_handle);
+			if (form == null)
+			{
+				return 0;
+			}
+
+			TextBox textbox = new TextBox();
+			if (caption != null)
+			{
+				textbox.Text = caption.ToString();
+			}
+			SetLocation(textbox, X, Y);
+			SetSize(textbox, X, Y);
+			form.Controls.Add(textbox);
+			return (int)textbox.Handle;
+		}
+
+		public void forms_setlocation(object handle, object X, object Y)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					SetLocation(form, X, Y);
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							SetLocation(control, X, Y);
+						}
+					}
+				}
+			}
+		}
+
+		public void forms_setsize(object handle, object Width, object Height)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					SetSize(form, Width, Height);
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							SetSize(control, Width, Height);
+						}
+					}
+				}
+			}
 		}
 	}
 }
