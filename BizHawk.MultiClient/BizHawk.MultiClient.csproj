@@ -335,6 +335,9 @@
     <Compile Include="tools\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\LuaTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\LuaWinform.cs">
       <SubType>Form</SubType>
     </Compile>

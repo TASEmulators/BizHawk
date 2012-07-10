@@ -1798,7 +1798,7 @@ namespace BizHawk.MultiClient
 			return (int)label.Handle;
 		}
 
-		public int forms_textbox(object form_handle, object caption = null, object width = null, object height = null, object X = null, object Y = null)
+		public int forms_textbox(object form_handle, object caption = null, object width = null, object height = null, object boxtype = null, object X = null, object Y = null)
 		{
 			LuaWinform form = GetForm(form_handle);
 			if (form == null)
@@ -1806,10 +1806,30 @@ namespace BizHawk.MultiClient
 				return 0;
 			}
 
-			TextBox textbox = new TextBox();
+			LuaTextBox textbox = new LuaTextBox();
 			SetText(textbox, caption);
 			SetLocation(textbox, X, Y);
 			SetSize(textbox, X, Y);
+			if (boxtype != null)
+			{
+				switch (boxtype.ToString().ToUpper())
+				{
+					case "HEX":
+					case "HEXADECIMAL":
+						textbox.SetType(BoxType.HEX);
+						break;
+					case "UNSIGNED":
+					case "UINT":
+						textbox.SetType(BoxType.UNSIGNED);
+						break;
+					case "NUMBER":
+					case "NUM":
+					case "SIGNED":
+					case "INT":
+						textbox.SetType(BoxType.SIGNED);
+						break;
+				}
+			}
 			form.Controls.Add(textbox);
 			return (int)textbox.Handle;
 		}
