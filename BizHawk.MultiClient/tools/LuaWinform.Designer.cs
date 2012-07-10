@@ -38,7 +38,7 @@
 			this.ClientSize = new System.Drawing.Size(284, 262);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "LuaWinform";
-			this.Text = "LuaWinform";
+			this.Text = "Lua Dialog";
 			this.Load += new System.EventHandler(this.LuaWinform_Load);
 			this.ResumeLayout(false);
 

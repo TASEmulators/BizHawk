@@ -411,6 +411,7 @@ namespace BizHawk.MultiClient
 				"newform",
 				"destroy",
 				"destroyall",
+				"button",
 		};
 
 		/****************************************************/
@@ -423,7 +424,14 @@ namespace BizHawk.MultiClient
 
 		public void console_output(object lua_input)
 		{
-			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+			if (lua_input == null)
+			{
+				Global.MainForm.LuaConsole1.WriteToOutputWindow("NULL");
+			}
+			else
+			{
+				Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+			}
 		}
 
 		public void console_log(object lua_input)
@@ -1674,7 +1682,6 @@ namespace BizHawk.MultiClient
 
 		public bool forms_destroy(object handle)
 		{
-			//TODO: try/catch, error handling, etc
 			IntPtr ptr = new IntPtr(LuaInt(handle));
 			foreach (LuaWinform form in LuaForms)
 			{
@@ -1695,6 +1702,40 @@ namespace BizHawk.MultiClient
 				form.Close();
 				LuaForms.Remove(form);
 			}
+		}
+
+		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(form_handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					LuaButton button = new LuaButton();
+					button.Text = caption.ToString();
+					form.Controls.Add(button);
+					form.Control_Events.Add(new LuaWinform.Lua_Event(button.Handle, lua_event));
+					
+					//button.Click += new System.EventHandler(button.DoLuaClick);
+					try
+					{
+						if (X != null && Y != null)
+						{
+							int x = LuaInt(X);
+							int y = LuaInt(Y);
+							button.Location = new Point(x, y);
+						}
+					}
+					catch
+					{
+						//Do nothing
+					}
+
+					return (int)button.Handle;
+				}
+			}
+
+			return 0;
 		}
 	}
 }
