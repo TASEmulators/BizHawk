@@ -218,15 +218,25 @@ namespace BizHawk.MultiClient
 		public class ResumeResult
 		{
 			public bool WaitForFrame;
+			public bool Terminated;
 		}
 
 		public ResumeResult ResumeScript(Lua script)
 		{
 			currThread = script;
-			script.Resume(0);
+			int execResult = script.Resume(0);
 			currThread = null;
 			var result = new ResumeResult();
-			result.WaitForFrame = FrameAdvanceRequested;
+			if (execResult == 0)
+			{
+				//terminated
+				result.Terminated = true;
+			}
+			else
+			{
+				//yielded
+				result.WaitForFrame = FrameAdvanceRequested;
+			}
 			FrameAdvanceRequested = false;
 			return result;
 		}
