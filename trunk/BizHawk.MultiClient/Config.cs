@@ -157,6 +157,7 @@ namespace BizHawk.MultiClient
 		public bool WIN32_CONSOLE = true;
 		public bool SkipLagFrame = false;
 		public string MovieExtension = "bkm";
+		public bool SupressAskSave = false;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?

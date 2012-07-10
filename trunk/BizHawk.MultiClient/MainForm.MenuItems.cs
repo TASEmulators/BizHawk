@@ -1178,6 +1178,7 @@ namespace BizHawk.MultiClient
 			acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
 			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
 			logWindowAsConsoleToolStripMenuItem.Checked = Global.Config.WIN32_CONSOLE;
+			neverBeAskedToSaveChangesToolStripMenuItem.Checked = Global.Config.SupressAskSave;
 		}
 
 		private void enableToolStripMenuItem_DropDownOpened(object sender, EventArgs e)

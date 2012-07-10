@@ -3176,6 +3176,9 @@ namespace BizHawk.MultiClient
 			FrameBufferResized();
 		}
 
-
+		private void neverBeAskedToSaveChangesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SupressAskSave ^= true;
+		}
 	}
 }

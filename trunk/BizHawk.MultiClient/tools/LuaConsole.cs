@@ -13,10 +13,8 @@ namespace BizHawk.MultiClient
 {
 	public partial class LuaConsole : Form
 	{
-		//options - autoload session
 		//TODO: remember column widths
 		//TODO: restore column width on restore default settings
-		//TODO: don't call asksave without looking at the surpress asksave config item
 
 		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -1043,6 +1041,11 @@ namespace BizHawk.MultiClient
 
 		public bool AskSave()
 		{
+			if (Global.Config.SupressAskSave) //User has elected to not be nagged
+			{
+				return true;
+			}
+
 			if (changes)
 			{
 				Global.Sound.StopSound();
