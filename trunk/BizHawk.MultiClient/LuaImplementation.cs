@@ -416,6 +416,7 @@ namespace BizHawk.MultiClient
 				"textbox",
 				"setlocation",
 				"setsize",
+				"settext",
 		};
 
 		/****************************************************/
@@ -1755,6 +1756,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void SetText(Control control, object caption)
+		{
+			if (caption != null)
+			{
+				control.Text = caption.ToString();
+			}
+		}
+
 		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null)
 		{
 			LuaWinform form = GetForm(form_handle);
@@ -1764,7 +1773,7 @@ namespace BizHawk.MultiClient
 			}
 			
 			LuaButton button = new LuaButton();
-			button.Text = caption.ToString();
+			SetText(button, caption);
 			form.Controls.Add(button);
 			form.Control_Events.Add(new LuaWinform.Lua_Event(button.Handle, lua_event));
 			SetLocation(button, X, Y);
@@ -1780,7 +1789,7 @@ namespace BizHawk.MultiClient
 			}
 
 			Label label = new Label();
-			label.Text = caption.ToString();
+			SetText(label, caption);
 			form.Controls.Add(label);
 			SetLocation(label, X, Y);
 			return (int)label.Handle;
@@ -1795,10 +1804,7 @@ namespace BizHawk.MultiClient
 			}
 
 			TextBox textbox = new TextBox();
-			if (caption != null)
-			{
-				textbox.Text = caption.ToString();
-			}
+			SetText(textbox, caption);
 			SetLocation(textbox, X, Y);
 			SetSize(textbox, X, Y);
 			form.Controls.Add(textbox);
@@ -1843,6 +1849,28 @@ namespace BizHawk.MultiClient
 						if (control.Handle == ptr)
 						{
 							SetSize(control, Width, Height);
+						}
+					}
+				}
+			}
+		}
+
+		public void forms_settext(object handle, object caption)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					SetText(form, caption);
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							SetText(control, caption);
 						}
 					}
 				}
