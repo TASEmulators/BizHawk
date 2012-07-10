@@ -845,6 +845,7 @@ namespace BizHawk.MultiClient
 						if (!prohibit)
 						{
 							var result = LuaImp.ResumeScript(s.Thread);
+							if(result.Terminated) s.Stop();
 							s.FrameWaiting = result.WaitForFrame;
 						}
 					}
