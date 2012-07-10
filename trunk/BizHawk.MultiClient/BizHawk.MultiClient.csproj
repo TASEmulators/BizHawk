@@ -332,6 +332,9 @@
     <Compile Include="tools\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\LuaButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\LuaWinform.cs">
       <SubType>Form</SubType>
     </Compile>
