@@ -417,6 +417,9 @@ namespace BizHawk.MultiClient
 				"setlocation",
 				"setsize",
 				"settext",
+				"addclick",
+				"clearclicks",
+				"gettext",
 		};
 
 		/****************************************************/
@@ -1875,6 +1878,64 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+		}
+
+		public void forms_addclick(object handle, LuaFunction lua_event)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				foreach (Control control in form.Controls)
+				{
+					if (control.Handle == ptr)
+					{
+						form.Control_Events.Add(new LuaWinform.Lua_Event(control.Handle, lua_event));
+					}
+				}
+			}
+		}
+
+		public void forms_clearclicks(object handle)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				foreach (Control control in form.Controls)
+				{
+					if (control.Handle == ptr)
+					{
+						List<LuaWinform.Lua_Event> lua_events = form.Control_Events.Where(x => x.Control == ptr).ToList();
+						foreach (LuaWinform.Lua_Event levent in lua_events)
+						{
+							form.Control_Events.Remove(levent);
+						}
+					}
+				}
+			}
+		}
+
+		public string forms_gettext(object handle)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					return form.Text;
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							return control.Text;
+						}
+					}
+				}
+			}
+
+			return "";
 		}
 	}
 }
