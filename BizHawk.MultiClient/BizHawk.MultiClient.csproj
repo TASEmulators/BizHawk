@@ -332,6 +332,12 @@
     <Compile Include="tools\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\LuaWinform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\LuaWinform.Designer.cs">
+      <DependentUpon>LuaWinform.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\WatchCommon.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
@@ -379,6 +385,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\LuaFunctionList.resx">
       <DependentUpon>LuaFunctionList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\LuaWinform.resx">
+      <DependentUpon>LuaWinform.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\RamWatch.resx">
       <DependentUpon>RamWatch.cs</DependentUpon>

@@ -146,6 +146,13 @@ namespace BizHawk.MultiClient
 				LuaLibraryList.Add("client." + MultiClientFunctions[i]);
 			}
 
+			lua.NewTable("forms");
+			for (int i = 0; i < FormsFunctions.Length; i++)
+			{
+				lua.RegisterFunction("forms." + FormsFunctions[i], this, this.GetType().GetMethod("forms_" + FormsFunctions[i]));
+				LuaLibraryList.Add("forms." + FormsFunctions[i]);
+			}
+
 			LuaLibraryList.Sort();
 		}
 
@@ -236,6 +243,7 @@ namespace BizHawk.MultiClient
 		public static string[] ConsoleFunctions = new string[]
 		{
 			"output",
+			"log",
 			"clear",
 			"getluafunctionslist",
 		};
@@ -389,6 +397,12 @@ namespace BizHawk.MultiClient
 			"opencheats",
 		};
 
+		public static string[] FormsFunctions = new string[] {
+				"newform",
+				"destroy",
+				"destroyall",
+		};
+
 		/****************************************************/
 		/*************function definitions********************/
 		/****************************************************/
@@ -400,6 +414,11 @@ namespace BizHawk.MultiClient
 		public void console_output(object lua_input)
 		{
 			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+		}
+
+		public void console_log(object lua_input)
+		{
+			console_output(lua_input);
 		}
 
 		public void console_clear()
@@ -1607,6 +1626,65 @@ namespace BizHawk.MultiClient
 		public void client_opencheats()
 		{
 			Global.MainForm.LoadCheatsWindow();
+		}
+
+		//Winforms
+		public List<LuaWinform> LuaForms = new List<LuaWinform>();
+
+		public int forms_newform(object Width = null, object Height = null, object title = null)
+		{
+			
+			LuaWinform theForm = new LuaWinform();
+			LuaForms.Add(theForm);
+			if (Width != null && Height != null)
+			{
+				theForm.Size = new Size(LuaInt(Width), LuaInt(Height));
+			}
+
+			if (title != null)
+			{
+				theForm.Text = title.ToString();
+			}
+
+			theForm.Show();
+			return (int)theForm.Handle;
+		}
+
+		public void WindowClosed(IntPtr handle)
+		{
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == handle)
+				{
+					LuaForms.Remove(form);
+					return;
+				}
+			}
+		}
+
+		public bool forms_destroy(object handle)
+		{
+			//TODO: try/catch, error handling, etc
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					form.Close();
+					LuaForms.Remove(form);
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void forms_destroyall()
+		{
+			foreach (LuaWinform form in LuaForms)
+			{
+				form.Close();
+				LuaForms.Remove(form);
+			}
 		}
 	}
 }
