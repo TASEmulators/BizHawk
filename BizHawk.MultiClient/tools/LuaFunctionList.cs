@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BizHawk.MultiClient.tools;
 
 namespace BizHawk.MultiClient
 {
@@ -20,9 +21,9 @@ namespace BizHawk.MultiClient
 		{
 			FunctionBox.Text = "";
 
-			foreach (string l in Global.MainForm.LuaConsole1.LuaImp.LuaLibraryList)
+			foreach (LuaDocumentation.LibraryFunction l in Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
 			{
-				FunctionBox.Text += l + "\n";
+				FunctionBox.Text += l.name + "\n";
 			}
 		}
 
