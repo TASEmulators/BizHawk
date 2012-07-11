@@ -11,7 +11,15 @@
 
 	public class CoreOutputComm
 	{
-		public double VsyncRate = 60;
+		public double VsyncRate
+		{
+			get
+			{
+				return VsyncNum / (double)VsyncDen;
+			}
+		}
+		public int VsyncNum = 60;
+		public int VsyncDen = 1;
 		public string RomStatusAnnotation;
 		public string RomStatusDetails;
 	}

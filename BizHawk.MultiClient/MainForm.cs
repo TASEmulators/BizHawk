@@ -43,7 +43,8 @@ namespace BizHawk.MultiClient
 		/// an audio proxy used for dumping
 		/// </summary>
 		Emulation.Sound.Utilities.DualSound DumpProxy = null;
-
+		/// <summary>audio timekeeping for video dumping</summary>
+		long SoundRemainder = 0;
 
 		//runloop control
 		bool exit;
@@ -366,6 +367,7 @@ namespace BizHawk.MultiClient
 			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward;
 			Global.ForceNoVsync = unthrottled || fastforward;
 
+			// realtime throttle is never going to be so exact that using a double here is wrong
 			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
 
 			throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
@@ -1940,9 +1942,12 @@ namespace BizHawk.MultiClient
 				//=======================================
 				if (CurrAviWriter != null)
 				{
-					//TODO - this will stray over time! have AviWriter keep an accumulation!
-					int samples = (int)(44100 / Global.Emulator.CoreOutputComm.VsyncRate);
-					short[] temp = new short[samples * 2];
+					long nsampnum = 44100 * (long)Global.Emulator.CoreOutputComm.VsyncDen + SoundRemainder;
+					long nsamp = nsampnum / Global.Emulator.CoreOutputComm.VsyncNum;
+					// exactly remember fractional parts of an audio sample
+					SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
+
+					short[] temp = new short[nsamp * 2];
 					//Global.Emulator.SoundProvider.GetSamples(temp);
 					DumpProxy.GetSamples(temp);
 					//genSound = false;
@@ -2767,10 +2772,7 @@ namespace BizHawk.MultiClient
 
 			try
 			{
-				//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
-				int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
-		
-				aw.SetMovieParameters(fps, 0x01000000);
+				aw.SetMovieParameters(Global.Emulator.CoreOutputComm.VsyncNum, Global.Emulator.CoreOutputComm.VsyncDen);
 				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
 				aw.SetAudioParameters(44100, 2, 16);
 
@@ -2828,6 +2830,7 @@ namespace BizHawk.MultiClient
 
 			// buffersize here is entirely guess
 			DumpProxy = new Emulation.Sound.Utilities.DualSound(Global.Emulator.SoundProvider, 8192);
+			SoundRemainder = 0;
 		}
 
 		public void StopAVI()
@@ -2843,6 +2846,7 @@ namespace BizHawk.MultiClient
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			DumpProxy = null; // return to normal sound output
+			SoundRemainder = 0;
 		}
 
 		private void SwapBackupSavestate(string path)

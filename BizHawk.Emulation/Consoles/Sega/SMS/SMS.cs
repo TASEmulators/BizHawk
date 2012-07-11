@@ -74,7 +74,8 @@ namespace BizHawk.Emulation.Consoles.Sega
                 Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
             RomBanks = (byte)(RomData.Length / BankSize);
             DisplayType = DisplayType.NTSC;
-            CoreOutputComm.VsyncRate = DisplayType == DisplayType.NTSC ? 60d : 50d;
+			CoreOutputComm.VsyncNum = DisplayType == DisplayType.NTSC ? 60 : 50;
+			CoreOutputComm.VsyncDen = 1;
             if (game["PAL"]) DisplayType = DisplayType.PAL;
             if (game["Japan"]) Region = "Japan";
             if (game.NotInDatabase || game["FM"] && game["UseFM"])
