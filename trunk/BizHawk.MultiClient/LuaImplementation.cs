@@ -281,12 +281,13 @@ namespace BizHawk.MultiClient
 			"pause",
 			"unpause",
 			"togglepause",
-			//"speedmode",
+			"speedmode",
 			"framecount",
 			"lagcount",
 			"islagged",
 			"getsystemid",
 			"setrenderplanes",
+			"frameskip",
 		};
 
 		public static string[] MemoryFunctions = new string[]
@@ -820,6 +821,49 @@ namespace BizHawk.MultiClient
 		public string emu_getsystemid()
 		{
 			return Global.Emulator.SystemId;
+		}
+
+		public void emu_speedmode(object percent)
+		{
+			try
+			{
+				string temp = percent.ToString();
+				int speed = Convert.ToInt32(temp);
+				if (speed > 0 && speed < 1000) //arbituarily capping it at 1000%
+				{
+					Global.MainForm.ClickSpeedItem(speed);
+				}
+				else
+				{
+					console_log("Invalid speed value");
+				}
+			}
+			catch
+			{
+				console_log("Invalid speed value");
+			}
+		}
+
+		public void emu_frameskip(object num_frames)
+		{
+			try
+			{
+				string temp = num_frames.ToString();
+				int frames = Convert.ToInt32(temp);
+				if (frames > 0)
+				{
+					Global.Config.FrameSkip = frames;
+					Global.MainForm.FrameSkipMessage();
+				}
+				else
+				{
+					console_log("Invalid frame skip value");
+				}
+			}
+			catch
+			{
+				console_log("Invalid frame skip value");
+			}
 		}
 
 		// For now, it accepts arguments up to 5.
