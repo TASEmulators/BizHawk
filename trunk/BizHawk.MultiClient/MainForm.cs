@@ -1320,6 +1320,7 @@ namespace BizHawk.MultiClient
 					NES nes = Global.Emulator as NES;
 					Global.Game.Name = nes.GameName;
 					Global.Game.Status = nes.RomStatus;
+					SetNESSoundChannels();
 				}
 
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
@@ -3230,6 +3231,27 @@ namespace BizHawk.MultiClient
 			else if (oldp > 3) newp = 3;
 			else newp = 1;
 			SetSpeedPercent(newp);
+		}
+
+		public void SetNESSoundChannels()
+		{
+			NES nes = Global.Emulator as NES;
+			nes.SetSquare1(Global.Config.NESEnableSquare1);
+			nes.SetSquare2(Global.Config.NESEnableSquare2);
+			nes.SetTriangle(Global.Config.NESEnableTriangle);
+			nes.SetNoise(Global.Config.NESEnableNoise);
+			nes.SetDMC(Global.Config.NESEnableDMC);
+		}
+
+		private void soundChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is NES)
+			{
+				Global.Sound.StopSound();
+				NESSoundConfig config = new NESSoundConfig();
+				config.ShowDialog();
+				Global.Sound.StartSound();
+			}
 		}
 	}
 }

@@ -21,6 +21,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public static bool CFG_USE_METASPU = true;
 			public static bool CFG_DECLICK = true;
 
+			public bool EnableSquare1 = false;
+			public bool EnableSquare2 = false;
+			public bool EnableTriangle = true;
+			public bool EnableNoise = false;
+			public bool EnableDMC = true;
+
+
 			NES nes;
 			public APU(NES nes)
 			{
@@ -929,11 +936,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				dmc.Run();
 
 				int mix = 0;
-				mix += pulse[0].sample;
-				mix += pulse[1].sample;
-				mix += triangle.sample;
-				mix += noise.sample >> 1;
-				mix += dmc.sample;
+				if (EnableSquare1)  mix += pulse[0].sample;
+				if (EnableSquare2) mix += pulse[1].sample;
+				if (EnableTriangle) mix += triangle.sample;
+				if (EnableNoise) mix += noise.sample >> 1;
+				if (EnableDMC) mix += dmc.sample;
 
 				EmitSample(mix);
 
