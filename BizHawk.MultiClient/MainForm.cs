@@ -2372,7 +2372,7 @@ namespace BizHawk.MultiClient
 			Global.DisplayManager.UpdateSource(Global.Emulator.VideoProvider);
 		}
 
-		private void FrameBufferResized()
+		public void FrameBufferResized()
 		{
 			var video = Global.Emulator.VideoProvider;
 			int zoom = Global.Config.TargetZoomFactor;

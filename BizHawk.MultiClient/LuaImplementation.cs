@@ -401,6 +401,7 @@ namespace BizHawk.MultiClient
 		};
 
 		public static string[] MultiClientFunctions = new string[] {
+			"setwindowsize",
 			"openrom",
 			"closerom",
 			"opentoolbox",
@@ -1763,6 +1764,30 @@ namespace BizHawk.MultiClient
 		public void client_opentasstudio()
 		{
 			Global.MainForm.LoadTAStudio();
+		}
+
+		public void client_setwindowsize(object window_size)
+		{
+			try
+			{
+				string temp = window_size.ToString();
+				int size = Convert.ToInt32(temp);
+				if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
+				{
+					Global.Config.TargetZoomFactor = size;
+					Global.MainForm.FrameBufferResized();
+					Global.OSD.AddMessage("Window size set to " + size.ToString() + "x");
+				}
+				else
+				{
+					console_log("Invalid window size");
+				}
+			}
+			catch
+			{
+				console_log("Invalid window size");
+			}
+
 		}
 
 		public void client_opencheats()
