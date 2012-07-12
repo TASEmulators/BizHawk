@@ -288,6 +288,7 @@ namespace BizHawk.MultiClient
 			"getsystemid",
 			"setrenderplanes",
 			"frameskip",
+			"minimizeframeskip",
 		};
 
 		public static string[] MemoryFunctions = new string[]
@@ -841,6 +842,23 @@ namespace BizHawk.MultiClient
 			catch
 			{
 				console_log("Invalid speed value");
+			}
+		}
+
+		public void emu_minimizeframeskip(object minimize)
+		{
+			string temp = minimize.ToString();
+			if (!String.IsNullOrWhiteSpace(temp))
+			{
+				if (temp == "0" || temp.ToLower() == "false")
+				{
+					Global.Config.AutoMinimizeSkipping = false;
+				}
+				else
+				{
+					Global.Config.AutoMinimizeSkipping = true;
+				}
+				Global.MainForm.MinimizeFrameskipMessage();
 			}
 		}
 
