@@ -66,18 +66,23 @@ namespace BizHawk.MultiClient
 			Global.Config.AutoMinimizeSkipping ^= true;
 		}
 
-		private void miFrameskip0_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 0; }
-		private void miFrameskip1_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 1; }
-		private void miFrameskip2_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 2; }
-		private void miFrameskip3_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 3; }
-		private void miFrameskip4_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 4; }
-		private void miFrameskip5_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 5; }
-		private void miFrameskip6_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 6; }
-		private void miFrameskip7_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 7; }
-		private void miFrameskip8_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 8; }
-		private void miFrameskip9_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 9; }
+		private void miFrameskip0_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 0; FrameSkipMessage(); }
+		private void miFrameskip1_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 1; FrameSkipMessage(); }
+		private void miFrameskip2_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 2; FrameSkipMessage(); }
+		private void miFrameskip3_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 3; FrameSkipMessage(); }
+		private void miFrameskip4_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 4; FrameSkipMessage(); }
+		private void miFrameskip5_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 5; FrameSkipMessage(); }
+		private void miFrameskip6_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 6; FrameSkipMessage(); }
+		private void miFrameskip7_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 7; FrameSkipMessage(); }
+		private void miFrameskip8_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 8; FrameSkipMessage(); }
+		private void miFrameskip9_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 9; FrameSkipMessage(); }
 
-		void ClickSpeedItem(int num)
+		public void FrameSkipMessage()
+		{
+			Global.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
+		}
+
+		public void ClickSpeedItem(int num)
 		{
 			if ((Control.ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
 			else SetSpeedPercent(num);
