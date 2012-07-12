@@ -827,6 +827,14 @@ namespace BizHawk.MultiClient
 		private void enableContextMenuToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.ShowContextMenu ^= true;
+			if (Global.Config.ShowContextMenu)
+			{
+				Global.OSD.AddMessage("Context menu enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Context menu disabled");
+			}
 		}
 
 		private void recordMovieToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1476,16 +1484,40 @@ namespace BizHawk.MultiClient
 		private void backupSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.BackupSavestates ^= true;
+			if (Global.Config.BackupSavestates)
+			{
+				Global.OSD.AddMessage("Backup savestates enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Backup savestates disabled");
+			}
 		}
 
 		void autoSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoSavestates ^= true;
+			if (Global.Config.AutoSavestates)
+			{
+				Global.OSD.AddMessage("AutoSavestates enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("AutoSavestates disabled");
+			}
 		}
 
 		void screenshotWithSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SaveScreenshotWithStates ^= true;
+			if (Global.Config.SaveScreenshotWithStates)
+			{
+				Global.OSD.AddMessage("Screenshots will be saved in savestates");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Screenshots will not be saved in savestates");
+			}
 		}
 
 		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
