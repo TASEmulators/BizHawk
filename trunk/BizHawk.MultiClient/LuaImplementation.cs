@@ -80,77 +80,77 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < ConsoleFunctions.Length; i++)
 			{
 				lua.RegisterFunction("console." + ConsoleFunctions[i], this, this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
-				docs.Add("console", "console." + ConsoleFunctions[i], this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
+				docs.Add("console", ConsoleFunctions[i], this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
 			}
 
 			lua.NewTable("gui");
 			for (int i = 0; i < GuiFunctions.Length; i++)
 			{
 				lua.RegisterFunction("gui." + GuiFunctions[i], this, this.GetType().GetMethod("gui_" + GuiFunctions[i]));
-				docs.Add("gui", "gui." + GuiFunctions[i], this.GetType().GetMethod("gui_" + GuiFunctions[i]));
+				docs.Add("gui", GuiFunctions[i], this.GetType().GetMethod("gui_" + GuiFunctions[i]));
 			}
 
 			lua.NewTable("emu");
 			for (int i = 0; i < EmuFunctions.Length; i++)
 			{
 				lua.RegisterFunction("emu." + EmuFunctions[i], this, this.GetType().GetMethod("emu_" + EmuFunctions[i]));
-				docs.Add("emu", "emu." + EmuFunctions[i], this.GetType().GetMethod("emu_" + EmuFunctions[i]));
+				docs.Add("emu", EmuFunctions[i], this.GetType().GetMethod("emu_" + EmuFunctions[i]));
 			}
 
 			lua.NewTable("memory");
 			for (int i = 0; i < MemoryFunctions.Length; i++)
 			{
 				lua.RegisterFunction("memory." + MemoryFunctions[i], this, this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
-				docs.Add("memory", "memory." + MemoryFunctions[i], this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
+				docs.Add("memory", MemoryFunctions[i], this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
 			}
 
 			lua.NewTable("mainmemory");
 			for (int i = 0; i < MainMemoryFunctions.Length; i++)
 			{
 				lua.RegisterFunction("mainmemory." + MainMemoryFunctions[i], this, this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
-				docs.Add("mainmemory", "mainmemory." + MainMemoryFunctions[i], this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
+				docs.Add("mainmemory", MainMemoryFunctions[i], this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
 			}
 
 			lua.NewTable("savestate");
 			for (int i = 0; i < SaveStateFunctions.Length; i++)
 			{
 				lua.RegisterFunction("savestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
-				docs.Add("savestate", "savestate." + SaveStateFunctions[i], this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
+				docs.Add("savestate", SaveStateFunctions[i], this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
 			}
 
 			lua.NewTable("movie");
 			for (int i = 0; i < MovieFunctions.Length; i++)
 			{
 				lua.RegisterFunction("movie." + MovieFunctions[i], this, this.GetType().GetMethod("movie_" + MovieFunctions[i]));
-				docs.Add("movie", "movie." + MovieFunctions[i], this.GetType().GetMethod("movie_" + MovieFunctions[i]));
+				docs.Add("movie", MovieFunctions[i], this.GetType().GetMethod("movie_" + MovieFunctions[i]));
 			}
 
 			lua.NewTable("input");
 			for (int i = 0; i < InputFunctions.Length; i++)
 			{
 				lua.RegisterFunction("input." + InputFunctions[i], this, this.GetType().GetMethod("input_" + InputFunctions[i]));
-				docs.Add("input", "input." + InputFunctions[i], this.GetType().GetMethod("input_" + InputFunctions[i]));
+				docs.Add("input", InputFunctions[i], this.GetType().GetMethod("input_" + InputFunctions[i]));
 			}
 
 			lua.NewTable("joypad");
 			for (int i = 0; i < JoypadFunctions.Length; i++)
 			{
 				lua.RegisterFunction("joypad." + JoypadFunctions[i], this, this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
-				docs.Add("joypad", "joypad." + JoypadFunctions[i], this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
+				docs.Add("joypad", JoypadFunctions[i], this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
 			}
 
 			lua.NewTable("client");
 			for (int i = 0; i < MultiClientFunctions.Length; i++)
 			{
 				lua.RegisterFunction("client." + MultiClientFunctions[i], this, this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
-				docs.Add("client", "client." + MultiClientFunctions[i], this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
+				docs.Add("client", MultiClientFunctions[i], this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
 			}
 
 			lua.NewTable("forms");
 			for (int i = 0; i < FormsFunctions.Length; i++)
 			{
 				lua.RegisterFunction("forms." + FormsFunctions[i], this, this.GetType().GetMethod("forms_" + FormsFunctions[i]));
-				docs.Add("forms", "forms." + FormsFunctions[i], this.GetType().GetMethod("forms_" + FormsFunctions[i]));
+				docs.Add("forms", FormsFunctions[i], this.GetType().GetMethod("forms_" + FormsFunctions[i]));
 			}
 
 			docs.Sort();

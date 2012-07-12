@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient.tools
 
 		public void Sort()
 		{
-			FunctionList = FunctionList.OrderBy(x => x.name).ToList();
+			FunctionList = FunctionList.OrderBy(x => x.library).ThenBy(x => x.name).ToList();
 		}
 
 		public class LibraryFunction
@@ -43,6 +43,36 @@ namespace BizHawk.MultiClient.tools
 			public string name = "";
 			public List<string> parameters = new List<string>();
 			public string return_type = "";
+
+			public string ParameterList
+			{
+				get
+				{
+					StringBuilder list = new StringBuilder();
+					list.Append('(');
+					for (int i = 0; i < parameters.Count; i++)
+					{
+						string param = parameters[i].Replace("System", "").Replace("Object", "").Replace(" ", "").Replace(".", "").Replace("LuaInterface", "");
+						list.Append(param);
+						if (i < parameters.Count - 1)
+						{
+							list.Append(',');
+						}
+					}
+					list.Append(')');
+					return list.ToString();
+				}
+			}
+
+			public string ReturnType
+			{
+				get
+				{
+					string r = "";
+					r = return_type.Replace("System.", "").Replace("LuaInterface.", "").ToLower().Trim();
+					return r;
+				}
+			}
 		}
 	}
 }
