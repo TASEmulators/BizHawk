@@ -290,6 +290,7 @@ namespace BizHawk.MultiClient
 			"frameskip",
 			"minimizeframeskip",
 			"limitframerate",
+			"displayvsync",
 		};
 
 		public static string[] MemoryFunctions = new string[]
@@ -877,6 +878,23 @@ namespace BizHawk.MultiClient
 					Global.Config.LimitFramerate = true;
 				}
 				Global.MainForm.LimitFrameRateMessage();
+			}
+		}
+
+		public void emu_displayvsync(object boolean)
+		{
+			string temp = boolean.ToString();
+			if (!String.IsNullOrWhiteSpace(temp))
+			{
+				if (temp == "0" || temp.ToLower() == "false")
+				{
+					Global.Config.DisplayVSync = false;
+				}
+				else
+				{
+					Global.Config.DisplayVSync = true;
+				}
+				Global.MainForm.VsyncMessage();
 			}
 		}
 
