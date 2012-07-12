@@ -507,7 +507,7 @@ namespace BizHawk.MultiClient
 				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor",
 				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI", "Toggle Menu"}
+				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI", "Toggle Menu", "Increase Speed", "Decrease Speed"}
 		};
 
 		private void InitControls()
@@ -520,6 +520,8 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
 			controls.BindMulti("Emulator Pause", Global.Config.EmulatorPauseBinding);
 			controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
+			controls.BindMulti("Increase Speed", Global.Config.IncreaseSpeedBinding);
+			controls.BindMulti("Decrease Speed", Global.Config.DecreaseSpeedBinding);
 			controls.BindMulti("Unthrottle", Global.Config.TurboBinding);
 			controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
 			controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
@@ -1586,7 +1588,12 @@ namespace BizHawk.MultiClient
 				case "ToolBox":
 					LoadToolBox();
 					break;
-
+				case "Increase Speed":
+					IncreaseSpeed();
+					break;
+				case "Decrease Speed":
+					DecreaseSpeed();
+					break;
 				case "Quick Save State":
 					if (!IsNullEmulator())
 						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
@@ -3183,6 +3190,42 @@ namespace BizHawk.MultiClient
 		private void neverBeAskedToSaveChangesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SupressAskSave ^= true;
+		}
+
+		private void IncreaseSpeed()
+		{
+			int oldp = Global.Config.SpeedPercent;
+			int newp = 0;
+			if (oldp < 3) newp = 3;
+			else if (oldp < 6) newp = 6;
+			else if (oldp < 12) newp = 12;
+			else if (oldp < 25) newp = 25;
+			else if (oldp < 50) newp = 50;
+			else if (oldp < 75) newp = 75;
+			else if (oldp < 100) newp = 100;
+			else if (oldp < 150) newp = 150;
+			else if (oldp < 200) newp = 200;
+			else if (oldp < 400) newp = 400;
+			else if (oldp < 800) newp = 800;
+			else newp = 1000;
+			SetSpeedPercent(newp);
+		}
+
+		private void DecreaseSpeed()
+		{
+			int oldp = Global.Config.SpeedPercent;
+			int newp = 0;
+			if (oldp > 800) newp = 800;
+			else if (oldp > 400) newp = 400;
+			else if (oldp > 200) newp = 200;
+			else if (oldp > 100) newp = 100;
+			else if (oldp > 50) newp = 50;
+			else if (oldp > 25) newp = 25;
+			else if (oldp > 12) newp = 12;
+			else if (oldp > 6) newp = 6;
+			else if (oldp > 3) newp = 3;
+			else newp = 1;
+			SetSpeedPercent(newp);
 		}
 	}
 }
