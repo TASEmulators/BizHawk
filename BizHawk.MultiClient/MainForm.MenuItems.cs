@@ -53,6 +53,19 @@ namespace BizHawk.MultiClient
 		private void miLimitFramerate_Click(object sender, EventArgs e)
 		{
 			Global.Config.LimitFramerate ^= true;
+			LimitFrameRateMessage();
+		}
+
+		public void LimitFrameRateMessage()
+		{
+			if (Global.Config.LimitFramerate)
+			{
+				Global.OSD.AddMessage("Framerate limiting on");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Framerate limiting off");
+			}
 		}
 
 		private void miDisplayVsync_Click(object sender, EventArgs e)
