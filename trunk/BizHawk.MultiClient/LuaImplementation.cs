@@ -289,6 +289,7 @@ namespace BizHawk.MultiClient
 			"setrenderplanes",
 			"frameskip",
 			"minimizeframeskip",
+			"limitframerate",
 		};
 
 		public static string[] MemoryFunctions = new string[]
@@ -845,9 +846,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void emu_minimizeframeskip(object minimize)
+		public void emu_minimizeframeskip(object boolean)
 		{
-			string temp = minimize.ToString();
+			string temp = boolean.ToString();
 			if (!String.IsNullOrWhiteSpace(temp))
 			{
 				if (temp == "0" || temp.ToLower() == "false")
@@ -859,6 +860,23 @@ namespace BizHawk.MultiClient
 					Global.Config.AutoMinimizeSkipping = true;
 				}
 				Global.MainForm.MinimizeFrameskipMessage();
+			}
+		}
+
+		public void emu_limitframerate(object boolean)
+		{
+			string temp = boolean.ToString();
+			if (!String.IsNullOrWhiteSpace(temp))
+			{
+				if (temp == "0" || temp.ToLower() == "false")
+				{
+					Global.Config.LimitFramerate = false;
+				}
+				else
+				{
+					Global.Config.LimitFramerate = true;
+				}
+				Global.MainForm.LimitFrameRateMessage();
 			}
 		}
 
