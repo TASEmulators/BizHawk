@@ -291,6 +291,7 @@ namespace BizHawk.MultiClient
 			"minimizeframeskip",
 			"limitframerate",
 			"displayvsync",
+			"enablerewind"
 		};
 
 		public static string[] MemoryFunctions = new string[]
@@ -895,6 +896,23 @@ namespace BizHawk.MultiClient
 					Global.Config.DisplayVSync = true;
 				}
 				Global.MainForm.VsyncMessage();
+			}
+		}
+
+		public void emu_enablerewind(object boolean)
+		{
+			string temp = boolean.ToString();
+			if (!String.IsNullOrWhiteSpace(temp))
+			{
+				if (temp == "0" || temp.ToLower() == "false")
+				{
+					Global.Config.RewindEnabled = false;
+				}
+				else
+				{
+					Global.Config.RewindEnabled = true;
+				}
+				Global.MainForm.RewindMessage();
 			}
 		}
 

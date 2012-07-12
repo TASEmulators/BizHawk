@@ -476,6 +476,19 @@ namespace BizHawk.MultiClient
 		private void enableRewindToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RewindEnabled ^= true;
+			RewindMessage();
+		}
+
+		public void RewindMessage()
+		{
+			if (Global.Config.RewindEnabled)
+			{
+				Global.OSD.AddMessage("Rewind enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Rewind disabled");
+			}
 		}
 
 		private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
