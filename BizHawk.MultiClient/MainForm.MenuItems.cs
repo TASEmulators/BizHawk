@@ -66,6 +66,18 @@ namespace BizHawk.MultiClient
 			Global.Config.AutoMinimizeSkipping ^= true;
 		}
 
+		public void MinimizeFrameskipMessage()
+		{
+			if (Global.Config.AutoMinimizeSkipping)
+			{
+				Global.OSD.AddMessage("Autominimizing set to on");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Autominimizing set to off");
+			}
+		}
+
 		private void miFrameskip0_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 0; FrameSkipMessage(); }
 		private void miFrameskip1_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 1; FrameSkipMessage(); }
 		private void miFrameskip2_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 2; FrameSkipMessage(); }
