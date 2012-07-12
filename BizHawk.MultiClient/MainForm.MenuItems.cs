@@ -72,6 +72,19 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.DisplayVSync ^= true;
 			Global.RenderPanel.Resized = true;
+			VsyncMessage();
+		}
+
+		public void VsyncMessage()
+		{
+			if (Global.Config.DisplayVSync)
+			{
+				Global.OSD.AddMessage("Display Vsync is set to on");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Display Vsync is set to off");
+			}
 		}
 
 		private void miAutoMinimizeSkipping_Click(object sender, EventArgs e)
