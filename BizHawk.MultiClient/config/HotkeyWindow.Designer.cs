@@ -191,6 +191,10 @@
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
+			this.IDW_IncSpeed = new BizHawk.MultiClient.InputWidget();
+			this.label78 = new System.Windows.Forms.Label();
+			this.IDW_DecSpeed = new BizHawk.MultiClient.InputWidget();
+			this.label79 = new System.Windows.Forms.Label();
 			this.hotkeyTabs.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -215,6 +219,10 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.label79);
+			this.tabPage1.Controls.Add(this.IDW_DecSpeed);
+			this.tabPage1.Controls.Add(this.label78);
+			this.tabPage1.Controls.Add(this.IDW_IncSpeed);
 			this.tabPage1.Controls.Add(this.label76);
 			this.tabPage1.Controls.Add(this.label75);
 			this.tabPage1.Controls.Add(this.label74);
@@ -536,7 +544,7 @@
 			// 
 			this.IDW_RESET.AcceptsTab = true;
 			this.IDW_RESET.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_RESET.Location = new System.Drawing.Point(92, 130);
+			this.IDW_RESET.Location = new System.Drawing.Point(93, 130);
 			this.IDW_RESET.Name = "IDW_RESET";
 			this.IDW_RESET.Size = new System.Drawing.Size(100, 20);
 			this.IDW_RESET.TabIndex = 25;
@@ -545,7 +553,7 @@
 			// 
 			this.IDW_UNTHROTTLE.AcceptsTab = true;
 			this.IDW_UNTHROTTLE.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_UNTHROTTLE.Location = new System.Drawing.Point(92, 106);
+			this.IDW_UNTHROTTLE.Location = new System.Drawing.Point(93, 106);
 			this.IDW_UNTHROTTLE.Name = "IDW_UNTHROTTLE";
 			this.IDW_UNTHROTTLE.Size = new System.Drawing.Size(100, 20);
 			this.IDW_UNTHROTTLE.TabIndex = 20;
@@ -626,7 +634,7 @@
 			// 
 			this.IDW_FRAMEADVANCE.AcceptsTab = true;
 			this.IDW_FRAMEADVANCE.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_FRAMEADVANCE.Location = new System.Drawing.Point(92, 10);
+			this.IDW_FRAMEADVANCE.Location = new System.Drawing.Point(93, 10);
 			this.IDW_FRAMEADVANCE.Name = "IDW_FRAMEADVANCE";
 			this.IDW_FRAMEADVANCE.Size = new System.Drawing.Size(100, 20);
 			this.IDW_FRAMEADVANCE.TabIndex = 1;
@@ -653,7 +661,7 @@
 			// 
 			this.IDW_REWIND.AcceptsTab = true;
 			this.IDW_REWIND.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_REWIND.Location = new System.Drawing.Point(92, 34);
+			this.IDW_REWIND.Location = new System.Drawing.Point(93, 34);
 			this.IDW_REWIND.Name = "IDW_REWIND";
 			this.IDW_REWIND.Size = new System.Drawing.Size(100, 20);
 			this.IDW_REWIND.TabIndex = 5;
@@ -662,7 +670,7 @@
 			// 
 			this.IDW_FASTFORWARD.AcceptsTab = true;
 			this.IDW_FASTFORWARD.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_FASTFORWARD.Location = new System.Drawing.Point(92, 82);
+			this.IDW_FASTFORWARD.Location = new System.Drawing.Point(93, 82);
 			this.IDW_FASTFORWARD.Name = "IDW_FASTFORWARD";
 			this.IDW_FASTFORWARD.Size = new System.Drawing.Size(100, 20);
 			this.IDW_FASTFORWARD.TabIndex = 15;
@@ -671,7 +679,7 @@
 			// 
 			this.IDW_HARDRESET.AcceptsTab = true;
 			this.IDW_HARDRESET.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_HARDRESET.Location = new System.Drawing.Point(92, 154);
+			this.IDW_HARDRESET.Location = new System.Drawing.Point(93, 154);
 			this.IDW_HARDRESET.Name = "IDW_HARDRESET";
 			this.IDW_HARDRESET.Size = new System.Drawing.Size(100, 20);
 			this.IDW_HARDRESET.TabIndex = 30;
@@ -680,7 +688,7 @@
 			// 
 			this.IDW_PAUSE.AcceptsTab = true;
 			this.IDW_PAUSE.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_PAUSE.Location = new System.Drawing.Point(92, 58);
+			this.IDW_PAUSE.Location = new System.Drawing.Point(93, 58);
 			this.IDW_PAUSE.Name = "IDW_PAUSE";
 			this.IDW_PAUSE.Size = new System.Drawing.Size(100, 20);
 			this.IDW_PAUSE.TabIndex = 10;
@@ -689,7 +697,7 @@
 			// 
 			this.IDW_QuickLoad.AcceptsTab = true;
 			this.IDW_QuickLoad.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_QuickLoad.Location = new System.Drawing.Point(92, 178);
+			this.IDW_QuickLoad.Location = new System.Drawing.Point(93, 178);
 			this.IDW_QuickLoad.Name = "IDW_QuickLoad";
 			this.IDW_QuickLoad.Size = new System.Drawing.Size(100, 20);
 			this.IDW_QuickLoad.TabIndex = 35;
@@ -698,7 +706,7 @@
 			// 
 			this.IDW_QuickSave.AcceptsTab = true;
 			this.IDW_QuickSave.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_QuickSave.Location = new System.Drawing.Point(92, 202);
+			this.IDW_QuickSave.Location = new System.Drawing.Point(93, 202);
 			this.IDW_QuickSave.Name = "IDW_QuickSave";
 			this.IDW_QuickSave.Size = new System.Drawing.Size(100, 20);
 			this.IDW_QuickSave.TabIndex = 40;
@@ -1752,6 +1760,42 @@
 			this.AutoTabCheckBox.UseVisualStyleBackColor = true;
 			this.AutoTabCheckBox.CheckedChanged += new System.EventHandler(this.AutoTabCheckBox_CheckedChanged);
 			// 
+			// IDW_IncSpeed
+			// 
+			this.IDW_IncSpeed.AcceptsTab = true;
+			this.IDW_IncSpeed.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_IncSpeed.Location = new System.Drawing.Point(93, 226);
+			this.IDW_IncSpeed.Name = "IDW_IncSpeed";
+			this.IDW_IncSpeed.Size = new System.Drawing.Size(100, 20);
+			this.IDW_IncSpeed.TabIndex = 104;
+			// 
+			// label78
+			// 
+			this.label78.AutoSize = true;
+			this.label78.Location = new System.Drawing.Point(6, 229);
+			this.label78.Name = "label78";
+			this.label78.Size = new System.Drawing.Size(82, 13);
+			this.label78.TabIndex = 105;
+			this.label78.Text = "Increase Speed";
+			// 
+			// IDW_DecSpeed
+			// 
+			this.IDW_DecSpeed.AcceptsTab = true;
+			this.IDW_DecSpeed.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_DecSpeed.Location = new System.Drawing.Point(93, 250);
+			this.IDW_DecSpeed.Name = "IDW_DecSpeed";
+			this.IDW_DecSpeed.Size = new System.Drawing.Size(100, 20);
+			this.IDW_DecSpeed.TabIndex = 106;
+			// 
+			// label79
+			// 
+			this.label79.AutoSize = true;
+			this.label79.Location = new System.Drawing.Point(6, 253);
+			this.label79.Name = "label79";
+			this.label79.Size = new System.Drawing.Size(87, 13);
+			this.label79.TabIndex = 107;
+			this.label79.Text = "Decrease Speed";
+			// 
 			// HotkeyWindow
 			// 
 			this.AcceptButton = this.IDB_SAVE;
@@ -1949,5 +1993,9 @@
 		private InputWidget IDW_IncreaseWindowSize;
 		private System.Windows.Forms.Label label77;
 		private InputWidget IDW_TASTudio;
+		private System.Windows.Forms.Label label79;
+		private InputWidget IDW_DecSpeed;
+		private System.Windows.Forms.Label label78;
+		private InputWidget IDW_IncSpeed;
     }
 }
