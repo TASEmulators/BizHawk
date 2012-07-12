@@ -507,7 +507,7 @@ namespace BizHawk.MultiClient
 				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor",
 				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI", "Toggle Menu", "Increase Speed", "Decrease Speed"}
+				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input"}
 		};
 
 		private void InitControls()
@@ -522,6 +522,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
 			controls.BindMulti("Increase Speed", Global.Config.IncreaseSpeedBinding);
 			controls.BindMulti("Decrease Speed", Global.Config.DecreaseSpeedBinding);
+			controls.BindMulti("Toggle Background Input", Global.Config.ToggleBackgroundInput);
 			controls.BindMulti("Unthrottle", Global.Config.TurboBinding);
 			controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
 			controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
@@ -1593,6 +1594,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "Decrease Speed":
 					DecreaseSpeed();
+					break;
+				case "Toggle Background Input":
+					ToggleBackgroundInput();
 					break;
 				case "Quick Save State":
 					if (!IsNullEmulator())

@@ -768,7 +768,20 @@ namespace BizHawk.MultiClient
 
 		private void acceptBackgroundInputToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			ToggleBackgroundInput();
+		}
+
+		public void ToggleBackgroundInput()
+		{
 			Global.Config.AcceptBackgroundInput ^= true;
+			if (Global.Config.AcceptBackgroundInput)
+			{
+				Global.OSD.AddMessage("Background Input enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Background Input disabled");
+			}
 		}
 
 		private void displayStatusBarToolStripMenuItem_Click(object sender, EventArgs e)

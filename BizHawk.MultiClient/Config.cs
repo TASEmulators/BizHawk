@@ -410,6 +410,7 @@ namespace BizHawk.MultiClient
 		public bool TI83ToolTips = true;
 
 		// Client Hotkey Bindings
+		public string ToggleBackgroundInput = "";
 		public string IncreaseSpeedBinding = "Equals";
 		public string DecreaseSpeedBinding = "Minus";
 		public string HardResetBinding = "Ctrl+R";
