@@ -19,11 +19,15 @@ namespace BizHawk.MultiClient
 
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
-			FunctionBox.Text = "";
-
+			FunctionView.Items.Clear();
 			foreach (LuaDocumentation.LibraryFunction l in Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
 			{
-				FunctionBox.Text += l.name + "\n";
+				ListViewItem item = new ListViewItem();
+				item.Text = l.ReturnType;
+				item.SubItems.Add(l.library + ".");
+				item.SubItems.Add(l.name);
+				item.SubItems.Add(l.ParameterList);
+				FunctionView.Items.Add(item);
 			}
 		}
 
