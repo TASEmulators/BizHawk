@@ -490,6 +490,13 @@ namespace BizHawk.MultiClient
 		public string IncreaseWindowSize = "Alt+UpArrow";
 		public string DecreaseWindowSize = "Alt+DownArrow";
 
+		// NES Sound settings
+		public bool NESEnableSquare1 = true;
+		public bool NESEnableSquare2 = true;
+		public bool NESEnableTriangle = true;
+		public bool NESEnableNoise = true;
+		public bool NESEnableDMC = true;
+
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
 		public bool SmsAllowOverlock = false;
