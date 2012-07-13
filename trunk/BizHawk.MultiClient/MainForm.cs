@@ -3222,7 +3222,9 @@ namespace BizHawk.MultiClient
 			if (oldp > 800) newp = 800;
 			else if (oldp > 400) newp = 400;
 			else if (oldp > 200) newp = 200;
+			else if (oldp > 150) newp = 150;
 			else if (oldp > 100) newp = 100;
+			else if (oldp > 75) newp = 75;
 			else if (oldp > 50) newp = 50;
 			else if (oldp > 25) newp = 25;
 			else if (oldp > 12) newp = 12;
