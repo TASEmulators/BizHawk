@@ -392,6 +392,7 @@ namespace BizHawk.MultiClient
 
 		public static string[] InputFunctions = new string[] {
 			"get",
+			"getmouse",
 		};
 
 		public static string[] JoypadFunctions = new string[] {
@@ -2097,6 +2098,20 @@ namespace BizHawk.MultiClient
 			}
 
 			return "";
+		}
+
+		public LuaTable input_getmouse()
+		{
+			LuaTable buttons = lua.NewTable();
+			buttons["X"] = Control.MousePosition.X;
+			buttons["Y"] = Control.MousePosition.Y;
+			buttons[MouseButtons.Left.ToString()] = Control.MouseButtons & MouseButtons.Left;
+			buttons[MouseButtons.Middle.ToString()] = Control.MouseButtons & MouseButtons.Middle;
+			buttons[MouseButtons.Right.ToString()] = Control.MouseButtons & MouseButtons.Right;
+			buttons[MouseButtons.XButton1.ToString()] = Control.MouseButtons & MouseButtons.XButton1;
+			buttons[MouseButtons.XButton2.ToString()] = Control.MouseButtons & MouseButtons.XButton2;
+			return buttons;
+
 		}
 	}
 }
