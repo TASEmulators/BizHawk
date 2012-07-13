@@ -179,5 +179,17 @@ namespace BizHawk.MultiClient
 					break;
 			}
 		}
+
+		private void canvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			VDC vdc = VDCtype == 0 ? pce.VDC1 : pce.VDC2;
+			int xTile = e.X / 8;
+			int yTile = e.Y / 8;
+			int tileNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] & 0x07FF;
+			int paletteNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] >> 12;
+			TileIDLabel.Text = tileNo.ToString();
+			XYLabel.Text = xTile.ToString() + ":" + yTile.ToString();
+			PaletteLabel.Text = paletteNo.ToString();
+		}
 	}
 }

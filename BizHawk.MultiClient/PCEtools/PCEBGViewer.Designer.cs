@@ -42,11 +42,20 @@
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.PaletteLabel = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.PPUAddressLabel = new System.Windows.Forms.Label();
+			this.XYLabel = new System.Windows.Forms.Label();
+			this.TileIDLabel = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
 			this.canvas = new BizHawk.MultiClient.PCEBGCanvas();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).BeginInit();
+			this.groupBox4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -137,7 +146,7 @@
 			this.groupBox5.Controls.Add(this.label7);
 			this.groupBox5.Controls.Add(this.label6);
 			this.groupBox5.Controls.Add(this.RefreshRate);
-			this.groupBox5.Location = new System.Drawing.Point(554, 28);
+			this.groupBox5.Location = new System.Drawing.Point(554, 122);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(108, 236);
 			this.groupBox5.TabIndex = 15;
@@ -175,6 +184,85 @@
 			this.RefreshRate.TickFrequency = 4;
 			this.RefreshRate.Value = 16;
 			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.PaletteLabel);
+			this.groupBox4.Controls.Add(this.label5);
+			this.groupBox4.Controls.Add(this.PPUAddressLabel);
+			this.groupBox4.Controls.Add(this.XYLabel);
+			this.groupBox4.Controls.Add(this.TileIDLabel);
+			this.groupBox4.Controls.Add(this.label2);
+			this.groupBox4.Controls.Add(this.label1);
+			this.groupBox4.Location = new System.Drawing.Point(554, 28);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(108, 87);
+			this.groupBox4.TabIndex = 16;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "Properties";
+			// 
+			// PaletteLabel
+			// 
+			this.PaletteLabel.AutoSize = true;
+			this.PaletteLabel.Location = new System.Drawing.Point(64, 60);
+			this.PaletteLabel.Name = "PaletteLabel";
+			this.PaletteLabel.Size = new System.Drawing.Size(22, 13);
+			this.PaletteLabel.TabIndex = 9;
+			this.PaletteLabel.Text = "     ";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(6, 60);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(43, 13);
+			this.label5.TabIndex = 8;
+			this.label5.Text = "Palette:";
+			// 
+			// PPUAddressLabel
+			// 
+			this.PPUAddressLabel.AutoSize = true;
+			this.PPUAddressLabel.Location = new System.Drawing.Point(64, 60);
+			this.PPUAddressLabel.Name = "PPUAddressLabel";
+			this.PPUAddressLabel.Size = new System.Drawing.Size(22, 13);
+			this.PPUAddressLabel.TabIndex = 5;
+			this.PPUAddressLabel.Text = "     ";
+			// 
+			// XYLabel
+			// 
+			this.XYLabel.AutoSize = true;
+			this.XYLabel.Location = new System.Drawing.Point(64, 43);
+			this.XYLabel.Name = "XYLabel";
+			this.XYLabel.Size = new System.Drawing.Size(22, 13);
+			this.XYLabel.TabIndex = 4;
+			this.XYLabel.Text = "     ";
+			// 
+			// TileIDLabel
+			// 
+			this.TileIDLabel.AutoSize = true;
+			this.TileIDLabel.Location = new System.Drawing.Point(64, 26);
+			this.TileIDLabel.Name = "TileIDLabel";
+			this.TileIDLabel.Size = new System.Drawing.Size(22, 13);
+			this.TileIDLabel.TabIndex = 3;
+			this.TileIDLabel.Text = "     ";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(6, 43);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(35, 13);
+			this.label2.TabIndex = 1;
+			this.label2.Text = "X / Y:";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(6, 26);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(41, 13);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Tile ID:";
+			// 
 			// canvas
 			// 
 			this.canvas.BackColor = System.Drawing.SystemColors.ControlLightLight;
@@ -182,12 +270,14 @@
 			this.canvas.Name = "canvas";
 			this.canvas.Size = new System.Drawing.Size(512, 513);
 			this.canvas.TabIndex = 0;
+			this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
 			// 
 			// PCEBGViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(676, 575);
+			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.menuStrip1);
@@ -203,6 +293,8 @@
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).EndInit();
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -225,5 +317,13 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.TrackBar RefreshRate;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.Label PaletteLabel;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label PPUAddressLabel;
+		private System.Windows.Forms.Label XYLabel;
+		private System.Windows.Forms.Label TileIDLabel;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label1;
 	}
 }

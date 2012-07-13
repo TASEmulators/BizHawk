@@ -1466,17 +1466,6 @@ namespace BizHawk.MultiClient
 
 		private void pCEToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (INTERIM)
-			{
-				pceBGViewerToolStripMenuItem.Visible = true;
-				toolStripSeparator25.Visible = true;
-			}
-			else
-			{
-				pceBGViewerToolStripMenuItem.Visible = false;
-				toolStripSeparator25.Visible = false;
-			}
-
 			pceAlwaysPerformSpriteLimitToolStripMenuItem.Checked = Global.Config.PceSpriteLimit;
 			pceAlwaysEqualizeVolumesToolStripMenuItem.Checked = Global.Config.PceEqualizeVolume;
 			pceArcadeCardRewindEnableHackToolStripMenuItem.Checked = Global.Config.PceArcadeCardRewindHack;
