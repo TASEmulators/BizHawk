@@ -342,6 +342,7 @@ namespace BizHawk.MultiClient
 		public bool PCEBGViewerAutoload = false;
 		public int PCEBGViewerWndx = -1;
 		public int PCEBGViewerWndy = -1;
+		public int PCEBGViewerRefreshRate = 16;
 
 		// SMS Graphics settings
 		public bool SMSDispBG = true;
