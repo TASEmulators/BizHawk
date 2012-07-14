@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 			}
 			//board.NES.LogLine("mapping.. chr_mode={0}, chr={1},{2}", chr_mode, chr_0, chr_1);
-			board.NES.LogLine("mapping.. prg_mode={0}, prg_slot{1}, prg={2}", prg_mode, prg_slot, prg);
+			//board.NES.LogLine("mapping.. prg_mode={0}, prg_slot{1}, prg={2}", prg_mode, prg_slot, prg);
 		}
 
 		public int Get_PRGBank(int addr)
