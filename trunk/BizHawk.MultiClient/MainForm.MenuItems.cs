@@ -161,6 +161,19 @@ namespace BizHawk.MultiClient
 			FrameBufferResized();
 		}
 
+		private void DisplayFilterMenuItem_Click(object sender, EventArgs e)
+		{
+			if (sender == DisplayFilterNoneMenuItem) Global.Config.TargetDisplayFilter = 0;
+			if (sender == x2SAIMenuItem) Global.Config.TargetDisplayFilter = 1;
+			if (sender == SuperX2SAIMenuItem) Global.Config.TargetDisplayFilter = 2;
+			if (sender == SuperEagleMenuItem) Global.Config.TargetDisplayFilter = 3;
+
+			DisplayFilterNoneMenuItem.Checked = Global.Config.TargetDisplayFilter == 0;
+			x2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 1;
+			SuperX2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 2;
+			SuperEagleMenuItem.Checked = Global.Config.TargetDisplayFilter == 3;
+		}
+
 		private void smsEnableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsEnableFM ^= true;

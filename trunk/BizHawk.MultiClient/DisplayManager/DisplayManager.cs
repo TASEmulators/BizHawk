@@ -582,10 +582,8 @@ namespace BizHawk.MultiClient
 			//SHOULD THIS BE RUN REPEATEDLY?
 			//some filters may need to run repeatedly (temporal interpolation, ntsc scanline field alternating)
 			//but its sort of wasted work.
-			//IDisplayFilter filter = new Hq2xBase_Super2xSai();
-			//var tempSurface = filter.Execute(currentSourceSurface);
-			//currentSourceSurface.Dispose();
-			//currentSourceSurface = tempSurface;
+
+			if (Global.Config.TargetDisplayFilter > 0) CheckFilter();
 
 			int w = currNativeWidth;
 			int h = currNativeHeight;
@@ -669,6 +667,27 @@ namespace BizHawk.MultiClient
 			((IBlitter)Global.RenderPanel).Close();
 		}
 
+		void CheckFilter()
+		{
+
+			IDisplayFilter filter = null;
+			switch (Global.Config.TargetDisplayFilter)
+			{
+				case 1:
+					filter = new Hq2xBase_2xSai();
+					break;
+				case 2:
+					filter = new Hq2xBase_Super2xSai();
+					break;
+				case 3:
+					filter = new Hq2xBase_SuperEagle();
+					break;
+			
+			}
+			var tempSurface = filter.Execute(currentSourceSurface);
+			currentSourceSurface.Dispose();
+			currentSourceSurface = tempSurface;
+		}
 
 		SwappableDisplaySurfaceSet nativeDisplaySurfaceSet = new SwappableDisplaySurfaceSet();
 
