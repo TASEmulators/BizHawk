@@ -8,18 +8,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	/*
 	Example Games:
 	--------------------------
-	Quinty (J)
-	Namcot Mahjong 3
-	Dragon Spirit - Aratanaru Densetsu
+	Devil Man
 	
-	This is the same as Mapper206, with the following exception:
-	CHR support is increased to 128KB by connecting PPU's A12 line to the CHR ROM's A16 line.
-	For example, mask the CHR ROM 1K bank output from the mapper by $3F, and then OR it with $40 if the PPU address was >= $1000.
-	Consequently, CHR is split into two halves. $0xxx can only have CHR from the first 64K, $1xxx can only have CHR from the second 64K.
+	Similar to Mapper 88 except for mirroing
 	*/
 
 
-	class Mapper088 : Namcot108Board_Base
+	class Mapper154 : Namcot108Board_Base
 	{
 		//configuration
 		int chr_bank_mask_1k;
@@ -29,16 +24,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//analyze board type
 			switch (Cart.board_type)
 			{
-				case "NAMCOT-3443":
-				case "NAMCOT-3433":
-				case "MAPPER088":
+				case "NAMCOT-3453":
+				case "MAPPER154":
 					break;
 				default:
 					return false;
 			}
 
 			BaseSetup();
-			SetMirrorType(EMirrorType.Vertical);
+			SetMirrorType(EMirrorType.OneScreenA);
 
 			chr_bank_mask_1k = Cart.chr_size - 1;
 
@@ -66,6 +60,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000) { }
 			else base.WritePPU(addr, value);
+		}
+
+		public override void WritePRG(int addr, byte value)
+		{
+			if ((addr & 0x6001) == 0)
+			{
+				if (((value >> 6) & 1) == 0)
+				{
+					SetMirrorType(EMirrorType.OneScreenA);
+				}
+				else
+				{
+					SetMirrorType(EMirrorType.OneScreenB);
+				}
+			}
+			base.WritePRG(addr, value);
 		}
 	}
 }
