@@ -242,25 +242,20 @@ namespace BizHawk.MultiClient
 		/// <returns></returns>
 		public DisplaySurface ToPaddedSurface(int xpad0, int ypad0, int xpad1, int ypad1)
 		{
-			//Lock();
-			//int new_width = Width + xpad0 + xpad1;
-			//int new_height = Height + ypad0 + ypad1;
-			//DisplaySurface ret = new DisplaySurface(new_width, new_height);
-			//ret.Lock();
-			//int* dptr = ret.PixelPtr;
-			//int* sptr = PixelPtr;
-			//int dstride = ret.Stride/4;
-			//int sstride = Stride/4;
-			//for (int y = 0; y < Height; y++)
-			//  for (int x = 0; x < Width; x++)
-			//  {
-			//    dptr[(y + ypad0) * dstride + x + xpad0] = sptr[y * sstride + x];
-			//  }
-			//return ret;
+			int new_width = Width + xpad0 + xpad1;
+			int new_height = Height + ypad0 + ypad1;
+			DisplaySurface ret = new DisplaySurface(new_width, new_height);
+			int* dptr = ret.PixelPtr;
+			int* sptr = PixelPtr;
+			int dstride = ret.Stride / 4;
+			int sstride = Stride / 4;
+			for (int y = 0; y < Height; y++)
+				for (int x = 0; x < Width; x++)
+				{
+					dptr[(y + ypad0) * dstride + x + xpad0] = sptr[y * sstride + x];
+				}
+			return ret;
 
-			//need to reimplement this
-			throw new NotSupportedException();
-			return null;
 		}
 
 		public int Width { get; private set; }
@@ -579,6 +574,10 @@ namespace BizHawk.MultiClient
 			currNativeWidth = Global.RenderPanel.NativeSize.Width;
 			currNativeHeight = Global.RenderPanel.NativeSize.Height;
 
+			currentSourceSurface = sourceSurfaceSet.GetCurrent();
+
+			if (currentSourceSurface == null) return;
+
 			//if we're configured to use a scaling filter, apply it now
 			//SHOULD THIS BE RUN REPEATEDLY?
 			//some filters may need to run repeatedly (temporal interpolation, ntsc scanline field alternating)
@@ -587,10 +586,6 @@ namespace BizHawk.MultiClient
 			//var tempSurface = filter.Execute(currentSourceSurface);
 			//currentSourceSurface.Dispose();
 			//currentSourceSurface = tempSurface;
-
-			currentSourceSurface = sourceSurfaceSet.GetCurrent();
-
-			if (currentSourceSurface == null) return;
 
 			int w = currNativeWidth;
 			int h = currNativeHeight;
