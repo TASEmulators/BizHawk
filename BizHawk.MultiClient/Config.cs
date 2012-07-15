@@ -130,6 +130,7 @@ namespace BizHawk.MultiClient
 
 		// General Client Settings
 		public int TargetZoomFactor = 2;
+		public int TargetDisplayFilter = 0;
 		public bool AutoLoadMostRecentRom = false;
 		public RecentFiles RecentRoms = new RecentFiles(8);
 		public bool PauseWhenMenuActivated = true;

@@ -107,6 +107,10 @@
 			this.powerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.windowFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.x2SAIMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SuperX2SAIMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SuperEagleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.windowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.x1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.x2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -195,6 +199,7 @@
 			this.gameGenieCodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
 			this.graphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.soundChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pCEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pceBGViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
@@ -263,7 +268,7 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.soundChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DisplayFilterNoneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -990,6 +995,7 @@
 			// viewToolStripMenuItem
 			// 
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.windowFilterMenuItem,
             this.windowSizeMenuItem,
             this.switchToFullscreenToolStripMenuItem,
             this.toolStripSeparator2,
@@ -1007,6 +1013,38 @@
 			this.viewToolStripMenuItem.Text = "&View";
 			this.viewToolStripMenuItem.DropDownOpened += new System.EventHandler(this.viewToolStripMenuItem_DropDownOpened);
 			// 
+			// windowFilterMenuItem
+			// 
+			this.windowFilterMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DisplayFilterNoneMenuItem,
+            this.x2SAIMenuItem,
+            this.SuperX2SAIMenuItem,
+            this.SuperEagleMenuItem});
+			this.windowFilterMenuItem.Name = "windowFilterMenuItem";
+			this.windowFilterMenuItem.Size = new System.Drawing.Size(198, 22);
+			this.windowFilterMenuItem.Text = "Display Filter";
+			// 
+			// x2SAIMenuItem
+			// 
+			this.x2SAIMenuItem.Name = "x2SAIMenuItem";
+			this.x2SAIMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.x2SAIMenuItem.Text = "2xSAI";
+			this.x2SAIMenuItem.Click += new System.EventHandler(this.DisplayFilterMenuItem_Click);
+			// 
+			// SuperX2SAIMenuItem
+			// 
+			this.SuperX2SAIMenuItem.Name = "SuperX2SAIMenuItem";
+			this.SuperX2SAIMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SuperX2SAIMenuItem.Text = "Super 2xSAI";
+			this.SuperX2SAIMenuItem.Click += new System.EventHandler(this.DisplayFilterMenuItem_Click);
+			// 
+			// SuperEagleMenuItem
+			// 
+			this.SuperEagleMenuItem.Name = "SuperEagleMenuItem";
+			this.SuperEagleMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SuperEagleMenuItem.Text = "Super Eagle";
+			this.SuperEagleMenuItem.Click += new System.EventHandler(this.DisplayFilterMenuItem_Click);
+			// 
 			// windowSizeMenuItem
 			// 
 			this.windowSizeMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1023,42 +1061,42 @@
 			// x1MenuItem
 			// 
 			this.x1MenuItem.Name = "x1MenuItem";
-			this.x1MenuItem.Size = new System.Drawing.Size(96, 22);
+			this.x1MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x1MenuItem.Text = "&1x";
 			this.x1MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
 			// 
 			// x2MenuItem
 			// 
 			this.x2MenuItem.Name = "x2MenuItem";
-			this.x2MenuItem.Size = new System.Drawing.Size(96, 22);
+			this.x2MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x2MenuItem.Text = "&2x";
 			this.x2MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
 			// 
 			// x3MenuItem
 			// 
 			this.x3MenuItem.Name = "x3MenuItem";
-			this.x3MenuItem.Size = new System.Drawing.Size(96, 22);
+			this.x3MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x3MenuItem.Text = "&3x";
 			this.x3MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
 			// 
 			// x4MenuItem
 			// 
 			this.x4MenuItem.Name = "x4MenuItem";
-			this.x4MenuItem.Size = new System.Drawing.Size(96, 22);
+			this.x4MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x4MenuItem.Text = "&4x";
 			this.x4MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
 			// 
 			// x5MenuItem
 			// 
 			this.x5MenuItem.Name = "x5MenuItem";
-			this.x5MenuItem.Size = new System.Drawing.Size(96, 22);
+			this.x5MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x5MenuItem.Text = "&5x";
 			this.x5MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
 			// 
 			// mzMenuItem
 			// 
 			this.mzMenuItem.Name = "mzMenuItem";
-			this.mzMenuItem.Size = new System.Drawing.Size(96, 22);
+			this.mzMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.mzMenuItem.Text = "&Max";
 			this.mzMenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
 			// 
@@ -1696,6 +1734,13 @@
 			this.graphicsSettingsToolStripMenuItem.Text = "Graphics Settings";
 			this.graphicsSettingsToolStripMenuItem.Click += new System.EventHandler(this.graphicsSettingsToolStripMenuItem_Click);
 			// 
+			// soundChannelsToolStripMenuItem
+			// 
+			this.soundChannelsToolStripMenuItem.Name = "soundChannelsToolStripMenuItem";
+			this.soundChannelsToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.soundChannelsToolStripMenuItem.Text = "Sound Channels";
+			this.soundChannelsToolStripMenuItem.Click += new System.EventHandler(this.soundChannelsToolStripMenuItem_Click);
+			// 
 			// pCEToolStripMenuItem
 			// 
 			this.pCEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2258,12 +2303,12 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
-			// soundChannelsToolStripMenuItem
+			// DisplayFilterNoneMenuItem
 			// 
-			this.soundChannelsToolStripMenuItem.Name = "soundChannelsToolStripMenuItem";
-			this.soundChannelsToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.soundChannelsToolStripMenuItem.Text = "Sound Channels";
-			this.soundChannelsToolStripMenuItem.Click += new System.EventHandler(this.soundChannelsToolStripMenuItem_Click);
+			this.DisplayFilterNoneMenuItem.Name = "DisplayFilterNoneMenuItem";
+			this.DisplayFilterNoneMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.DisplayFilterNoneMenuItem.Text = "None";
+			this.DisplayFilterNoneMenuItem.Click += new System.EventHandler(this.DisplayFilterMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -2541,6 +2586,11 @@
 		private System.Windows.Forms.ToolStripMenuItem miSuppressGuiLayer;
 		private System.Windows.Forms.ToolStripMenuItem neverBeAskedToSaveChangesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem soundChannelsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem windowFilterMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem x2SAIMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SuperEagleMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SuperX2SAIMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem DisplayFilterNoneMenuItem;
     }
 }
 

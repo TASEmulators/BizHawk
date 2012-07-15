@@ -3254,5 +3254,6 @@ namespace BizHawk.MultiClient
 				Global.Sound.StartSound();
 			}
 		}
+
 	}
 }
