@@ -37,6 +37,7 @@ namespace BizHawk.MultiClient
 				if(this is Hq2xBase_2xSai) _2xSaI32((byte*)padded.PixelPtr + padded.OffsetOf(1, 1), (uint)(padded.Stride), null, (byte*)ret.PixelPtr, (uint)(ret.Stride), (uint)w, (uint)h);
 				if (this is Hq2xBase_Super2xSai) Super2xSaI32((byte*)padded.PixelPtr + padded.OffsetOf(1, 1), (uint)(padded.Stride), null, (byte*)ret.PixelPtr, (uint)(ret.Stride), (uint)w, (uint)h);
 				if (this is Hq2xBase_SuperEagle) SuperEagle32((byte*)padded.PixelPtr + padded.OffsetOf(1, 1), (uint)(padded.Stride), null, (byte*)ret.PixelPtr, (uint)(ret.Stride), (uint)w, (uint)h);
+				padded.Dispose();
 			}
 			return ret;
 		}

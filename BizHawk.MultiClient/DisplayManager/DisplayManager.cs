@@ -582,8 +582,7 @@ namespace BizHawk.MultiClient
 			//SHOULD THIS BE RUN REPEATEDLY?
 			//some filters may need to run repeatedly (temporal interpolation, ntsc scanline field alternating)
 			//but its sort of wasted work.
-
-			if (Global.Config.TargetDisplayFilter > 0) CheckFilter();
+			CheckFilter();
 
 			int w = currNativeWidth;
 			int h = currNativeHeight;
@@ -596,8 +595,11 @@ namespace BizHawk.MultiClient
 			//if (luaEmuSurface != null) complexComposite = true;
 			//if (luaSurface != null) complexComposite = true;
 
+			DisplaySurface surfaceToRender = filteredSurface;
+			if (surfaceToRender == null) surfaceToRender = currentSourceSurface;
+
 			Global.RenderPanel.Clear(Color.FromArgb(videoProvider.BackgroundColor));
-			Global.RenderPanel.Render(currentSourceSurface);
+			Global.RenderPanel.Render(surfaceToRender);
 			if (luaEmuSurface != null)
 				Global.RenderPanel.RenderOverlay(luaEmuSurface);
 
@@ -605,7 +607,9 @@ namespace BizHawk.MultiClient
 
 			Global.RenderPanel.Present();
 
-
+			if (filteredSurface != null)
+				filteredSurface.Dispose();
+			filteredSurface = null;
 		}
 
 		public bool Disposed { get; private set; }
@@ -616,7 +620,7 @@ namespace BizHawk.MultiClient
 			Disposed = true;
 		}
 
-		DisplaySurface currentSourceSurface;
+		DisplaySurface currentSourceSurface, filteredSurface;
 
 		//the surface to use to render a lua layer at native resolution (under the OSD)
 		DisplaySurface luaNativeSurfacePreOSD;
@@ -669,10 +673,12 @@ namespace BizHawk.MultiClient
 
 		void CheckFilter()
 		{
-
 			IDisplayFilter filter = null;
 			switch (Global.Config.TargetDisplayFilter)
 			{
+				case 0:
+					//no filter
+					break;
 				case 1:
 					filter = new Hq2xBase_2xSai();
 					break;
@@ -684,9 +690,10 @@ namespace BizHawk.MultiClient
 					break;
 			
 			}
-			var tempSurface = filter.Execute(currentSourceSurface);
-			currentSourceSurface.Dispose();
-			currentSourceSurface = tempSurface;
+			if (filter == null)
+				filteredSurface = null;
+			else
+				filteredSurface = filter.Execute(currentSourceSurface);
 		}
 
 		SwappableDisplaySurfaceSet nativeDisplaySurfaceSet = new SwappableDisplaySurfaceSet();
