@@ -5,117 +5,118 @@ using BizHawk.Emulation.CPUs.CP1610;
 
 namespace BizHawk.Emulation.Consoles.Intellivision
 {
-    public sealed partial class Intellivision : IEmulator
-    {
-        byte[] Rom;
-        GameInfo Game;
+	public sealed partial class Intellivision : IEmulator
+	{
+		byte[] Rom;
+		GameInfo Game;
 
-        CP1610 Cpu ;
+		CP1610 Cpu;
 
-        public Intellivision(GameInfo game, byte[] rom)
-        {
-            Rom = rom;
-            Game = game;
-            
-            Cpu = new CP1610();
-            Cpu.ReadMemory = ReadMemory;
-            Cpu.WriteMemory = WriteMemory;
+		public Intellivision(GameInfo game, byte[] rom)
+		{
+			Rom = rom;
+			Game = game;
+			Parse();
+
+			Cpu = new CP1610();
+			Cpu.ReadMemory = ReadMemory;
+			Cpu.WriteMemory = WriteMemory;
 			Cpu.RegisterPC = 0x1000;
-            
-            CoreOutputComm = new CoreOutputComm();
-        }
 
-        public void FrameAdvance(bool render)
-        {
-            Cpu.Execute(999); // execute some cycles. this will do nothing useful until a memory mapper is created.
-        }
+			CoreOutputComm = new CoreOutputComm();
+		}
+
+		public void FrameAdvance(bool render)
+		{
+			Cpu.Execute(999); // execute some cycles. this will do nothing useful until a memory mapper is created.
+		}
 
 
 
-        // This is all crap to worry about later.
+		// This is all crap to worry about later.
 
-        public IVideoProvider VideoProvider { get { return new NullEmulator(); } }
-        public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
+		public IVideoProvider VideoProvider { get { return new NullEmulator(); } }
+		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
 
-        public ControllerDefinition ControllerDefinition
-        {
-            get { return null; }
-        }
+		public ControllerDefinition ControllerDefinition
+		{
+			get { return null; }
+		}
 
-        public IController Controller { get; set; }
+		public IController Controller { get; set; }
 
-        
-        public int Frame
-        {
-            get { return 0; }
-        }
 
-        public int LagCount
-        {
-            get { return 0; }
-            set { }
-        }
+		public int Frame
+		{
+			get { return 0; }
+		}
 
-        public bool IsLagFrame { get { return false; } }
-        public string SystemId
-        {
-            get { return "INTV"; }
-        }
+		public int LagCount
+		{
+			get { return 0; }
+			set { }
+		}
 
-        public bool DeterministicEmulation { get; set; }
+		public bool IsLagFrame { get { return false; } }
+		public string SystemId
+		{
+			get { return "INTV"; }
+		}
 
-        public byte[] SaveRam { get { return null; } }
+		public bool DeterministicEmulation { get; set; }
 
-        public bool SaveRamModified
-        {
-            get { return false; }
-            set { }
-        }
+		public byte[] SaveRam { get { return null; } }
 
-        public void ResetFrameCounter()
-        {
-        }
+		public bool SaveRamModified
+		{
+			get { return false; }
+			set { }
+		}
 
-        public void SaveStateText(TextWriter writer)
-        {
-            throw new NotImplementedException();
-        }
+		public void ResetFrameCounter()
+		{
+		}
 
-        public void LoadStateText(TextReader reader)
-        {
-            throw new NotImplementedException();
-        }
+		public void SaveStateText(TextWriter writer)
+		{
+			throw new NotImplementedException();
+		}
 
-        public void SaveStateBinary(BinaryWriter writer)
-        {
-            throw new NotImplementedException();
-        }
+		public void LoadStateText(TextReader reader)
+		{
+			throw new NotImplementedException();
+		}
 
-        public void LoadStateBinary(BinaryReader reader)
-        {
-            throw new NotImplementedException();
-        }
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			throw new NotImplementedException();
+		}
 
-        public byte[] SaveStateBinary()
-        {
-            return new byte[0];
-        }
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			throw new NotImplementedException();
+		}
 
-        public CoreInputComm CoreInputComm { get; set; }
-        public CoreOutputComm CoreOutputComm { get; private set; }
+		public byte[] SaveStateBinary()
+		{
+			return new byte[0];
+		}
 
-        public IList<MemoryDomain> MemoryDomains
-        {
-            get { throw new NotImplementedException(); }
-        }
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
 
-        public MemoryDomain MainMemory
-        {
-            get { throw new NotImplementedException(); }
-        }
+		public IList<MemoryDomain> MemoryDomains
+		{
+			get { throw new NotImplementedException(); }
+		}
 
-        public void Dispose()
-        {
-        }
-    }
+		public MemoryDomain MainMemory
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public void Dispose()
+		{
+		}
+	}
 }
