@@ -139,6 +139,7 @@ namespace BizHawk
 				case ".NES": Game.System = "NES"; break;
 				case ".A26": Game.System = "A26"; break;
 				case ".COL": Game.System = "COLV"; break;
+				case ".ROM":
                 case ".INT": Game.System = "INTV"; break;
 			}
 
