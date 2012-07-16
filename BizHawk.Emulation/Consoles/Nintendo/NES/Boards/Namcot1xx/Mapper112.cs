@@ -8,6 +8,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	class Mapper112 : NES.NESBoardBase
 	{
 		//TODO: this doesn't work
+
+		//state
+		int reg_addr;
+		int prg_mask, chr_mask;
+		ByteBuffer regs = new ByteBuffer(8);
+
+		//volatile state
+		ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		ByteBuffer prg_regs_8k = new ByteBuffer(4);
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
@@ -25,18 +35,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int num_chr_banks = (Cart.chr_size);
 			chr_mask = num_chr_banks - 1;
 			SetMirrorType(EMirrorType.Vertical);
-			
+
+			//regs[0] = 1;
+			//regs[1] = 1;
+
 			return true;
 		}
-
-		//state
-		int reg_addr;
-		int prg_mask, chr_mask;
-		ByteBuffer regs = new ByteBuffer(8);
-
-		//volatile state
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 
 		public void Dispose()
 		{
@@ -103,7 +107,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public int Get_PRGBank_8K(int addr)
 		{
-			int bank_8k = addr >> 13;
+			//int bank_8k = addr >> 13;
+			int bank_8k;
+			if (addr < 0x8000)
+				bank_8k = 0;
+			else if (addr < 0xA000)
+				bank_8k = 1;
+			else if (addr < 0xC000)
+				bank_8k = 2;
+			else
+				bank_8k = 3;
+
 			bank_8k = prg_regs_8k[bank_8k];
 			return bank_8k;
 		}
