@@ -159,23 +159,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		private void DoMirroring()
 		{
-			if (mirror0 == false && mirror1 == false)
-			{
-				SetMirrorType(EMirrorType.Horizontal);
-			}
-			else if (mirror0 == true && mirror1 == false)
-			{
-				SetMirrorType(EMirrorType.Vertical);
-			}
-			else if (mirror0 == false && mirror1 == true)
-			{
-				SetMirrorType(EMirrorType.OneScreenA);
-			}
-			else
-			{
-				SetMirrorType(EMirrorType.OneScreenB);
-			}
-			
+			int m0 = mirror0?1:0;
+			int m1 = mirror1?1:0;
+			SetMirroring(m0, m0, m1, m1);
 		}
 
 		public override byte ReadPRG(int addr)
