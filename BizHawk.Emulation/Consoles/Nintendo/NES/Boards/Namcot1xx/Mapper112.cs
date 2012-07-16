@@ -9,6 +9,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//TODO: this doesn't work
 
+		//configuration
+		int prg_bank_mask_8k;
+
 		//state
 		int reg_addr;
 		int prg_mask, chr_mask;
@@ -29,21 +32,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return false;
 			}
 
-			int num_prg_banks = Cart.prg_size / 8;
-			prg_mask = num_prg_banks - 1;
+			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
 
 			int num_chr_banks = (Cart.chr_size);
 			chr_mask = num_chr_banks - 1;
 			SetMirrorType(EMirrorType.Vertical);
 
-			//regs[0] = 1;
-			//regs[1] = 1;
+			regs[0] = 0; //<-- its not always clear what mapper regs get initialized to. absent information, assume 0
+			regs[1] = 0;
+			Sync(); //<-- this was the critical part you left out. without this, prg_regs_8k[2] and prg_regs_8k[3] werent getting set
 
 			return true;
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
+			base.Dispose();
 			regs.Dispose();
 			chr_regs_1k.Dispose();
 			prg_regs_8k.Dispose();
@@ -51,6 +55,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void SyncState(Serializer ser)
 		{
+			base.SyncState(ser); //any syncstate which doesnt call base is a BUG!!!!!!!!! im going to protect against this in the near future.
 			ser.Sync("reg_addr", ref reg_addr);
 			ser.Sync("regs", ref regs);
 			Sync();
@@ -58,27 +63,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePRG(int addr, byte value)
 		{
-			//($8001-$9FFF, odd)
-			if (addr == 0x6000)
-			{
-				if ((value & 1) == 0)
-				{
-					SetMirrorType(EMirrorType.Vertical);
-				}
-				else
-				{
-					SetMirrorType(EMirrorType.Horizontal);
-				}
-			}
-
+			Console.WriteLine("{0:X4} = {1:X2}", addr, value);
 			switch (addr & 0x6001)
 			{
 				case 0x0000: //$8000
 					reg_addr = (value & 7);
 					break;
-				case 0x0001: //$8001
+				case 0x2000: //$A000
 					regs[reg_addr] = value;
 					Sync();
+					break;
+				case 0x6000:
+					if ((value & 1) == 0)
+					{
+						SetMirrorType(EMirrorType.Vertical);
+					}
+					else
+					{
+						SetMirrorType(EMirrorType.Horizontal);
+					}
 					break;
 			}
 		}
@@ -107,17 +110,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public int Get_PRGBank_8K(int addr)
 		{
-			//int bank_8k = addr >> 13;
-			int bank_8k;
-			if (addr < 0x8000)
-				bank_8k = 0;
-			else if (addr < 0xA000)
-				bank_8k = 1;
-			else if (addr < 0xC000)
-				bank_8k = 2;
-			else
-				bank_8k = 3;
-
+			int bank_8k = addr >> 13;
 			bank_8k = prg_regs_8k[bank_8k];
 			return bank_8k;
 		}
@@ -160,7 +153,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPRG(int addr)
 		{
 			int bank_8k = Get_PRGBank_8K(addr);
-			bank_8k &= prg_mask;
+			bank_8k &= prg_bank_mask_8k;
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
 			return ROM[addr];
 		}
