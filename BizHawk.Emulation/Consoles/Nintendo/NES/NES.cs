@@ -595,6 +595,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
 			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
 			board.SyncState(ser);
+			if (board is NESBoardBase && !((NESBoardBase)board).SyncStateFlag)
+				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
 			ppu.SyncState(ser);
 			apu.SyncState(ser);
 			ser.EndSection();
