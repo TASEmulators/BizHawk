@@ -2509,7 +2509,7 @@ namespace BizHawk.MultiClient
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
 					"Gameboy (experimental)", "*.gb;%ARCH%",
 					"Colecovision (very experimental)", "*.col;%ARCH%",
-                    "Intellivision (very experimental)", "*.int;%ARCH%",
+                    "Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 					"PSX Executables (experimental)", "*.exe",
 					"All Files", "*.*");
 			}
