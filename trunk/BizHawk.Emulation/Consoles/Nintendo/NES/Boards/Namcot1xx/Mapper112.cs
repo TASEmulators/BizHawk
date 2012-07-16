@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void SyncState(Serializer ser)
 		{
-			base.SyncState(ser); //any syncstate which doesnt call base is a BUG!!!!!!!!! im going to protect against this in the near future.
+			base.SyncState(ser);
 			ser.Sync("reg_addr", ref reg_addr);
 			ser.Sync("regs", ref regs);
 			Sync();

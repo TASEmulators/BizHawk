@@ -70,12 +70,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public CartInfo Cart { get { return NES.cart; } }
 			public NES NES { get; set; }
 
+			//this is set to true when SyncState is called, so that we know the base class SyncState was used
+			public bool SyncStateFlag = false;
+
 			public virtual void SyncState(Serializer ser)
 			{
 				ser.Sync("vram", ref vram, true);
 				ser.Sync("wram", ref wram, true);
 				for (int i = 0; i < 4; i++) ser.Sync("mirroring" + i, ref mirroring[i]);
 				ser.Sync("irq_signal", ref irq_signal);
+				SyncStateFlag = true;
 			}
 
 			public virtual void SyncIRQ(bool flag)
