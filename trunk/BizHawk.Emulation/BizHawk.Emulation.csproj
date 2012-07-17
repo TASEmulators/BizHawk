@@ -167,6 +167,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper078.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper046.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper246.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper60.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\HKROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper012.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper044.cs" />
