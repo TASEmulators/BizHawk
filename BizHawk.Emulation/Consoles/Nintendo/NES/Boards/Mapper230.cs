@@ -67,10 +67,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		chip 1 = 512k PRG  (offset 0x20010-0xA000F)
 		*/
 
+		//TODO: fix prg1
+		//TODO: soft reset back to contra = fails
+
 		public int prg_page;
 		public bool prg_mode;
 		public bool contra_mode;
-		public int prg_bank_mask_16k;
+		public int chip0_prg_bank_mask_16k = 0x07;
+		public int chip1_prg_bank_mask_16k = 0x1F;
+		public int chip1_offset = 0x20000;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -83,8 +88,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			contra_mode = true;
 			SetMirrorType(EMirrorType.Vertical);
-			prg_mode = false;
-			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+
 			return true;
 		}
 
@@ -106,7 +110,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				prg_page = value & 0x0F;
 				prg_mode = value.Bit(5);
-				
+
 				if (addr.Bit(6))
 				{
 					SetMirrorType(EMirrorType.Horizontal);
@@ -124,7 +128,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if (addr < 0x4000)
 				{
-					return ROM[((prg_page & prg_bank_mask_16k) * 0x4000) + addr];
+					return ROM[((prg_page & chip0_prg_bank_mask_16k) * 0x4000) + addr];
 				}
 				else
 				{
@@ -133,22 +137,37 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else
 			{
-				if (prg_mode)
+				if (prg_mode == false)
 				{
-					return ROM[(prg_page * 0x8000) + addr]; //TODO
+						return ROM[((prg_page >> 1) * 0x8000) + addr + chip1_offset]; //TODO
 				}
-				else
+				else //TODO:
 				{
 					if (addr < 0x4000)
 					{
-						return ROM[((prg_page & prg_bank_mask_16k) * 0x4000) + addr];
+						return ROM[((prg_page & chip1_prg_bank_mask_16k) * 0x4000) + (addr + chip1_offset)];
 					}
 					else
 					{
-						return ROM[((prg_page & prg_bank_mask_16k) * 0x4000) + (addr - 0x4000)];
+						return ROM[((prg_page & chip1_prg_bank_mask_16k) * 0x4000) + (addr - 0x4000 + chip1_offset)];
 					}
 					
 				}
+			}
+		}
+
+		public override void NESSoftReset()
+		{
+			contra_mode ^= true;
+			prg_page = 0;
+			prg_mode = false;
+			if (contra_mode)
+			{
+				SetMirrorType(EMirrorType.Vertical);
+			}
+			else
+			{
+				SetMirrorType(EMirrorType.Horizontal);
 			}
 		}
 	}
