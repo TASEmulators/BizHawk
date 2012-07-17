@@ -74,9 +74,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			lagged = true;
 			if (resetSignal)
 			{
+				board.NESSoftReset();
 				cpu.NESSoftReset();
 				apu.NESSoftReset();
-				board.NESSoftReset();
 				//need to study what happens to ppu and apu and stuff..
 			}
 
