@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		| $8000 AND $1E |     $8000     |
 		+---------------+---------------+
 		*/
-		public int reg;
+		public int prg_reg;
 		public bool low;
 		public int prg_bank_mask_16k;
 
@@ -60,8 +60,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("reg", ref reg);
-			ser.Sync("low", ref low);
+			ser.Sync("prg_reg", ref prg_reg);
 			base.SyncState(ser);
 		}
 
@@ -76,20 +75,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				SetMirrorType(EMirrorType.Vertical);
 			}
 
-			low = addr.Bit(5);
-			reg = addr & 0x1E;
+			int prg_reg_P = (addr >> 1) & 0xF;
+			int prg_reg_L = (addr >> 5) & 1;
+			prg_reg = (prg_reg_P<<1) | prg_reg_L;
+			prg_reg &= prg_bank_mask_16k;
 		}
 
 		public override byte ReadPRG(int addr)
 		{
 			if (low)
 			{
-				int bank = ((reg >> 1) & 0x0F) & (prg_bank_mask_16k >> 1);
-				return ROM[(bank * 0x8000) + addr];
+				int bank = prg_reg & 0x1E;
+				return ROM[(bank * 0x4000) + addr];
 			}
 			else
 			{
-				return ROM[((reg & prg_bank_mask_16k) * 0x4000) + addr];
+				int bank = prg_reg;
+				return ROM[(bank * 0x4000) + addr - 0x4000];
 				
 			}
 		}
