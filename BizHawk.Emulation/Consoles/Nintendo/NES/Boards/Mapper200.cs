@@ -45,8 +45,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		|     $8000     |     $8000     |
 		+---------------+---------------+
 		*/
-		int reg;
+		int prg_reg_16k, chr_reg_8k;
 		int prg_bank_mask_16k;
+		int chr_bank_mask_8k;
 		bool low;
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -60,13 +61,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
 
 			return true;
 		}
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("reg", ref reg);
+			ser.Sync("prg_reg_16k", ref prg_reg_16k);
+			ser.Sync("chr_reg_8k", ref chr_reg_8k);
 			base.SyncState(ser);
 		}
 
@@ -80,20 +83,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				SetMirrorType(EMirrorType.Vertical);
 			}
-			reg = addr & 0x07;
-			low = addr.Bit(0);
+			int reg = addr & 0x07;
+			prg_reg_16k = reg & prg_bank_mask_16k;
+			chr_reg_8k = reg & chr_bank_mask_8k;
 		}
 
 		public override byte ReadPRG(int addr)
 		{
 			if (addr < 0x4000)
 			{
-				return ROM[(reg * 0x4000) + addr];
+				return ROM[(prg_reg_16k * 0x4000) + addr];
 			}
 			else
 			{
-				int bank = reg >> 1;
-				return ROM[(bank * 0x4000) + addr];
+				return ROM[(prg_reg_16k * 0x4000) + addr - 0x4000];
 			}
 		}
 
@@ -101,7 +104,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[(reg * 0x2000) + addr];
+				return VROM[(chr_reg_8k * 0x2000) + addr];
 			}
 			return base.ReadPPU(addr);
 		}
