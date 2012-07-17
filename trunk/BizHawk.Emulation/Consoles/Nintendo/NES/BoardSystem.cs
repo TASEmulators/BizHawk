@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			void WritePPU(int addr, byte value);
 			void WriteWRAM(int addr, byte value);
 			void WriteEXP(int addr, byte value);
+			void NESSoftReset();
 			byte[] SaveRam { get; }
 			byte[] WRAM { get; set; }
 			byte[] VRAM { get; set; }
@@ -62,6 +63,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual void Create(NES nes)
 			{
 				this.NES = nes;
+			}
+
+			public virtual void NESSoftReset()
+			{
+
 			}
 
 			public abstract bool Configure(NES.EDetectionOrigin origin);
