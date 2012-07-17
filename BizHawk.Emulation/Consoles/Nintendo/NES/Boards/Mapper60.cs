@@ -63,10 +63,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override byte ReadPRG(int addr)
 		{
-			if (addr >= 0x4000)
-			{
-				addr -= 0x4000;
-			}
+			addr &= 0x3FFF;
 			return ROM[addr + (reg * 0x4000)];
 		}
 
