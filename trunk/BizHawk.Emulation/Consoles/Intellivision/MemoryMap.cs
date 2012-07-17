@@ -17,6 +17,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public ushort ReadMemory(ushort addr)
 		{
+			ushort? cart = ReadCart(addr);
+			if (cart != null)
+				return (ushort)cart;
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
@@ -41,6 +44,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public void WriteMemory(ushort addr, ushort value)
 		{
+			bool cart = WriteCart(addr, value);
+			if (cart)
+				return;
 			switch (addr & 0xF000)
 			{
 				case 0x0000:

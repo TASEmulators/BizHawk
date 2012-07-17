@@ -8,6 +8,6 @@ namespace BizHawk
 	public interface ICart
 	{
 		ushort? ReadCart(ushort addr);
-		bool? WriteCart(ushort addr, ushort value);
+		bool WriteCart(ushort addr, ushort value);
 	}
 }
