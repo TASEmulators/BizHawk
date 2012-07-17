@@ -50,13 +50,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return (ushort)((crc << 8) ^ CRC16_table[(crc >> 8) ^ data]);
 		}
 
-		private ushort UpdateCRC16_Block(ushort crc, byte[] data, int start, int length)
-		{
-			for (int item = 0; item < length; item++)
-				crc = UpdateCRC16(crc, data[start + item]);
-			return crc;
-		}
-
 		public void Parse()
 		{
 			// Check to see if the header is valid.
@@ -65,22 +58,29 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			int offset = 3;
 			for (int segment = 0; segment < Rom[1]; segment++)
 			{
-				int start = offset;
-				int low = Rom[offset++] << 8;
-				int high = (Rom[offset++] << 8) + 0xFF;
-				// This range is invalid if it starts at an higher range than it ends.
-				if (high < low)
+				ushort crc = 0xFFFF;
+				byte upper_start = Rom[offset++];
+				byte upper_end = Rom[offset++];
+				crc = UpdateCRC16(crc, upper_start);
+				crc = UpdateCRC16(crc, upper_end);
+				int start = upper_start << 8;
+				int end = (upper_end << 8) | 0xFF;
+				// This range is invalid if it starts at a higher range than it ends.
+				if (end < start)
 					throw new ArgumentException();
-				for (int addr = low; addr <= high; addr++)
+				for (int addr = start; addr <= end; addr++)
 				{
 					int data;
-					data = (Rom[offset++] << 8) | (Rom[offset++] & 0xFF);
+					byte high = Rom[offset++];
+					byte low = Rom[offset++];
+					crc = UpdateCRC16(crc, high);
+					crc = UpdateCRC16(crc, low);
+					data = (high << 8) | low;
 					WriteCart((ushort)addr, (ushort)data);
 				}
-				int expected = (Rom[offset++] << 8) | (Rom[offset++] & 0xFF);
-				int actual = UpdateCRC16_Block(0xFFFF, Rom, start, 2 * (high - low) + 2);
+				int expected = (Rom[offset++] << 8) | Rom[offset++];
 				// Check if there is an invalid CRC.
-				if (expected != actual)
+				if (expected != crc)
 					throw new ArgumentException();
 			}
 		}
