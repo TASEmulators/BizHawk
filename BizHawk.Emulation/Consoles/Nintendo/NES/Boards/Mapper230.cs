@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		chip 1 = 512k PRG  (offset 0x20010-0xA000F)
 		*/
 
-		//TODO: fix prg1
+		//TODO: fix reads on prg_mode = 1
 		//TODO: soft reset back to contra = fails
 
 		public int prg_page;
@@ -111,13 +111,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				prg_page = value & 0x0F;
 				prg_mode = value.Bit(5);
 
-				if (addr.Bit(6))
+				if (value.Bit(6))
 				{
-					SetMirrorType(EMirrorType.Horizontal);
+					SetMirrorType(EMirrorType.Vertical);
 				}
 				else
 				{
-					SetMirrorType(EMirrorType.Vertical);
+					SetMirrorType(EMirrorType.Horizontal);
 				}
 			}
 		}
@@ -161,14 +161,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			contra_mode ^= true;
 			prg_page = 0;
 			prg_mode = false;
-			if (contra_mode)
-			{
-				SetMirrorType(EMirrorType.Vertical);
-			}
-			else
-			{
-				SetMirrorType(EMirrorType.Horizontal);
-			}
+			SetMirrorType(EMirrorType.Vertical);
 		}
 	}
 }
