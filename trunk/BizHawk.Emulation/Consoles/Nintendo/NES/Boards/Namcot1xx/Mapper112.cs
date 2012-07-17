@@ -7,14 +7,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	class Mapper112 : NES.NESBoardBase
 	{
-		//TODO: this doesn't work
-
 		//configuration
-		int prg_bank_mask_8k;
+		int prg_bank_mask_8k, chr_bank_mask_1k;
 
 		//state
 		int reg_addr;
-		int prg_mask, chr_mask;
 		ByteBuffer regs = new ByteBuffer(8);
 
 		//volatile state
@@ -33,14 +30,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
-
 			int num_chr_banks = (Cart.chr_size);
-			chr_mask = num_chr_banks - 1;
+			chr_bank_mask_1k = num_chr_banks - 1;
 			SetMirrorType(EMirrorType.Vertical);
-
-			regs[0] = 0; //<-- its not always clear what mapper regs get initialized to. absent information, assume 0
-			regs[1] = 0;
-			Sync(); //<-- this was the critical part you left out. without this, prg_regs_8k[2] and prg_regs_8k[3] werent getting set
+			Sync();
 
 			return true;
 		}
@@ -63,7 +56,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePRG(int addr, byte value)
 		{
-			Console.WriteLine("{0:X4} = {1:X2}", addr, value);
+			//Console.WriteLine("{0:X4} = {1:X2}", addr, value);
 			switch (addr & 0x6001)
 			{
 				case 0x0000: //$8000
@@ -124,19 +117,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		int RewireCHR(int addr)
 		{
-			if (addr < 0x1000)
-			{
-				int mapper_addr = addr >> 1;
-				int bank_1k = Get_CHRBank_1K(mapper_addr);
-				int ofs = addr & ((1 << 10) - 1);
-				return (bank_1k << 11) + ofs;
-			}
-			else
-			{
-				int bank_1k = Get_CHRBank_1K(addr);
-				int ofs = addr & ((1 << 10) - 1);
-				return (bank_1k << 11) + ofs;
-			}
+			int bank_1k = Get_CHRBank_1K(addr);
+			bank_1k &= chr_bank_mask_1k;
+			int ofs = addr & ((1 << 10) - 1);
+			addr = (bank_1k << 10) + ofs;
+			return addr;
 		}
 
 		public override byte ReadPPU(int addr)

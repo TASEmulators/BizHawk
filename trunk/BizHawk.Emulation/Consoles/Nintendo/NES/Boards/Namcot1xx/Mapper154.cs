@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	--------------------------
 	Devil Man
 	
-	Similar to Mapper 88 except for mirroing
+	Similar to Mapper 88 except for mirroring
 	*/
 
 
