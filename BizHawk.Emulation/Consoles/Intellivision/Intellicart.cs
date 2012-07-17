@@ -7,7 +7,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 {
 	public sealed partial class Intellivision : ICart
 	{
-		private ushort[] memory = new ushort[65536];
+		private ushort[] Intellicart = new ushort[65536];
+		private bool[][] MemoryAttributes = new bool[32][];
 
 		private ushort[] CRC16_table =
 		{
@@ -52,10 +53,11 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public void Parse()
 		{
+			int offset = 0;
 			// Check to see if the header is valid.
-			if (Rom[0] != 0xA8 || Rom[1] != (0xFF ^ Rom[2]))
+			if (Rom[offset++] != 0xA8 || Rom[offset++] != (0xFF ^ Rom[offset++]))
 				throw new ArgumentException();
-			int offset = 3;
+			// Parse for data segments.
 			for (int segment = 0; segment < Rom[1]; segment++)
 			{
 				ushort crc = 0xFFFF;
@@ -76,23 +78,55 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					crc = UpdateCRC16(crc, high);
 					crc = UpdateCRC16(crc, low);
 					data = (high << 8) | low;
-					WriteCart((ushort)addr, (ushort)data);
+					Intellicart[addr] = (ushort)data;
 				}
 				int expected = (Rom[offset++] << 8) | Rom[offset++];
 				// Check if there is an invalid CRC.
 				if (expected != crc)
 					throw new ArgumentException();
 			}
+			// Parse for memory attributes.
+			for (int attr = 0; attr < 32; attr++)
+			{
+				byte attributes = Rom[offset + (attr >> 1)];
+				// Every second 2K block is stored in the upper 4 bits.
+				if ((attr & 0x1) != 0)
+					attributes = (byte)(attributes >> 4);
+				attributes &= 0xF;
+				MemoryAttributes[attr] = new bool[4];
+				// Readable.
+				MemoryAttributes[attr][0] = ((attr & 0x1) != 0);
+				// Writeable.
+				MemoryAttributes[attr][1] = ((attr & 0x2) != 0);
+				// Narrow.
+				MemoryAttributes[attr][2] = ((attr & 0x4) != 0);
+				// Bank-switched.
+				MemoryAttributes[attr][3] = ((attr & 0x8) != 0);
+			}
 		}
 
 		public ushort? ReadCart(ushort addr)
 		{
+			bool[] attributes = MemoryAttributes[addr / 2048];
+			if (attributes[0])
+				return Intellicart[addr];
 			return null;
 		}
 
-		public bool? WriteCart(ushort addr, ushort value)
+		public bool WriteCart(ushort addr, ushort value)
 		{
-			return null;
+			bool[] attributes = MemoryAttributes[addr / 2048];
+			if (attributes[1])
+			{
+				// Only write lower 8 bits if the Narrow attribute is set.
+				if (attributes[2])
+					value &= 0xFF;
+				if (attributes[3])
+					throw new NotImplementedException("Bank-switched memory attribute not implemented.");
+				Intellicart[addr] = value;
+				return true;
+			}
+			return false;
 		}
 	}
 }
