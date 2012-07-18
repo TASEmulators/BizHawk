@@ -67,7 +67,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		chip 1 = 512k PRG  (offset 0x20010-0xA000F)
 		*/
 
-		//TODO: fix reads on prg_mode = 1
 		//TODO: soft reset back to contra = fails
 
 		public int prg_page;
@@ -108,7 +107,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else
 			{
-				prg_page = value & 0x0F;
+				prg_page = value & 0x1F;
 				prg_mode = value.Bit(5);
 
 				if (value.Bit(6))
@@ -132,26 +131,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				else
 				{
-					return ROM[(7 * 0x4000) + addr - 0x4000];
+					return ROM[(7 * 0x4000) + (addr & 0x3FFF)];
 				}
 			}
 			else
 			{
 				if (prg_mode == false)
 				{
-						return ROM[((prg_page >> 1) * 0x8000) + addr + chip1_offset]; //TODO
+					return ROM[((prg_page >> 1) * 0x8000) + addr + chip1_offset];
 				}
-				else //TODO:
+				else
 				{
-					if (addr < 0x4000)
-					{
-						return ROM[((prg_page & chip1_prg_bank_mask_16k) * 0x4000) + (addr + chip1_offset)];
-					}
-					else
-					{
-						return ROM[((prg_page & chip1_prg_bank_mask_16k) * 0x4000) + (addr - 0x4000 + chip1_offset)];
-					}
-					
+					int page = prg_page + 8;
+					return ROM[(page * 0x4000) + (addr & 0x03FFF)];
 				}
 			}
 		}
