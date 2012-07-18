@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 	{
 		private ushort[] Intellicart = new ushort[65536];
 		private bool[][] MemoryAttributes = new bool[32][];
+		private int[][] FineAddresses = new int[32][];
 
 		private ushort[] CRC16_table =
 		{
@@ -51,16 +52,18 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return (ushort)((crc << 8) ^ CRC16_table[(crc >> 8) ^ data]);
 		}
 
-		public void Parse()
+		public int Parse()
 		{
 			int offset = 0;
 			// Check to see if the header is valid.
 			if (Rom[offset++] != 0xA8 || Rom[offset++] != (0xFF ^ Rom[offset++]))
 				throw new ArgumentException();
+			ushort crc;
+			int expected;
 			// Parse for data segments.
 			for (int segment = 0; segment < Rom[1]; segment++)
 			{
-				ushort crc = 0xFFFF;
+				crc = 0xFFFF;
 				byte upper_start = Rom[offset++];
 				byte upper_end = Rom[offset++];
 				crc = UpdateCRC16(crc, upper_start);
@@ -80,43 +83,72 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					data = (high << 8) | low;
 					Intellicart[addr] = (ushort)data;
 				}
-				int expected = (Rom[offset++] << 8) | Rom[offset++];
+				expected = (Rom[offset++] << 8) | Rom[offset++];
 				// Check if there is an invalid CRC.
 				if (expected != crc)
 					throw new ArgumentException();
 			}
 			// Parse for memory attributes.
-			for (int attr = 0; attr < 32; attr++)
+			for (int range = 0; range < 32; range++)
 			{
-				byte attributes = Rom[offset + (attr >> 1)];
+				byte attributes = Rom[offset + (range >> 1)];
 				// Every second 2K block is stored in the upper 4 bits.
-				if ((attr & 0x1) != 0)
+				if ((range & 0x1) != 0)
 					attributes = (byte)(attributes >> 4);
 				attributes &= 0xF;
-				MemoryAttributes[attr] = new bool[4];
+				MemoryAttributes[range] = new bool[4];
 				// Readable.
-				MemoryAttributes[attr][0] = ((attr & 0x1) != 0);
+				MemoryAttributes[range][0] = ((range & 0x1) != 0);
 				// Writeable.
-				MemoryAttributes[attr][1] = ((attr & 0x2) != 0);
+				MemoryAttributes[range][1] = ((range & 0x2) != 0);
 				// Narrow.
-				MemoryAttributes[attr][2] = ((attr & 0x4) != 0);
+				MemoryAttributes[range][2] = ((range & 0x4) != 0);
 				// Bank-switched.
-				MemoryAttributes[attr][3] = ((attr & 0x8) != 0);
+				MemoryAttributes[range][3] = ((range & 0x8) != 0);
 			}
+			// Parse for fine addresses (Trimmed 2K ranges).
+			for (int range = 0; range < 32; range++)
+			{
+				int index;
+				// The lower and upper 2K in a 4K range are 16 addresses away from each other.
+				if ((range & 0x1) != 0)
+					index = offset + 16 + (range >> 1);
+				else
+					index = offset + 32 + (range >> 1);
+				int range_start = range * 2048;
+				int start = (((Rom[index] >> 4) & 0x07) << 8) + range_start;
+				int end = (((Rom[index]) & 0x07) << 8) + 0xFF + range_start;
+				// This range is invalid if it starts at a higher range than it ends.
+				if (end < start)
+					throw new ArgumentException();
+				FineAddresses[range] = new int[2];
+				FineAddresses[range][0] = start;
+				FineAddresses[range][1] = end;
+			}
+			crc = 0xFFFF;
+			for (int index = 0; index < 48; index++)
+				crc = UpdateCRC16(crc, Rom[offset++]);
+			expected = (Rom[offset++] << 8) | (Rom[offset++] & 0xFF);
+			// Check if there is an invalid CRC for the memory attributes / fine addresses.
+			if (expected != crc)
+				throw new ArgumentException();
+			return offset;
 		}
 
 		public ushort? ReadCart(ushort addr)
 		{
-			bool[] attributes = MemoryAttributes[addr / 2048];
-			if (attributes[0])
+			int range = addr / 2048;
+			bool[] attributes = MemoryAttributes[range];
+			if (attributes[0] && addr >= FineAddresses[range][0] && addr <= FineAddresses[range][1])
 				return Intellicart[addr];
 			return null;
 		}
 
 		public bool WriteCart(ushort addr, ushort value)
 		{
-			bool[] attributes = MemoryAttributes[addr / 2048];
-			if (attributes[1])
+			int range = addr / 2048;
+			bool[] attributes = MemoryAttributes[range];
+			if (attributes[1] && addr >= FineAddresses[range][0] && addr <= FineAddresses[range][1])
 			{
 				// Only write lower 8 bits if the Narrow attribute is set.
 				if (attributes[2])
