@@ -42,12 +42,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		PRG Setup:
 		---------------------------
 
-			$8000   $A000   $C000   $E000  
-			+-------------------------------+
+					  $8000   $A000   $C000   $E000  
+					+-------------------------------+
 		PRG Mode 0: |            <$8000>            |
-			+-------------------------------+
+					+-------------------------------+
 		PRG Mode 1: |     $8000     |     $8000     |
-			+---------------+---------------+
+					+---------------+---------------+
 
 
 		Mirroring:
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else
 			{
-				return ROM[(prg_page * 0x4000) + (addr & 0x03FFF)];
+				return ROM[(prg_page * 0x4000) + (addr & 0x3FFF)];
 			}
 		}
 	}
