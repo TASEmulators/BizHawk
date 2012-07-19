@@ -351,6 +351,12 @@
     <Compile Include="tools\LuaWinform.Designer.cs">
       <DependentUpon>LuaWinform.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\LuaWriter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\LuaWriter.designer.cs">
+      <DependentUpon>LuaWriter.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\WatchCommon.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
@@ -404,6 +410,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\LuaWinform.resx">
       <DependentUpon>LuaWinform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\LuaWriter.resx">
+      <DependentUpon>LuaWriter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\RamWatch.resx">
       <DependentUpon>RamWatch.cs</DependentUpon>

@@ -1229,5 +1229,11 @@ namespace BizHawk.MultiClient
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
 		}
+
+		private void toolStripButton1_Click_2(object sender, EventArgs e)
+		{
+			LuaWriter writer = new LuaWriter();
+			writer.Show();
+		}
 	}
 }
