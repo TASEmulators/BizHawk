@@ -21,14 +21,20 @@ namespace BizHawk.MultiClient
 		private void timer_Tick(object sender, EventArgs e)
 		{
             int selPos = LuaText.SelectionStart;
+            int selChars = LuaText.SelectedText.Length;
+            int curPos = 0;
+
 			foreach (Match keyWordMatch in keyWords.Matches(LuaText.Text))
             {
+                LuaText.Select(curPos, keyWordMatch.Index);
+                LuaText.SelectionColor = Color.Black;
 				LuaText.Select(keyWordMatch.Index, keyWordMatch.Length);
 				LuaText.SelectionColor = Color.Blue;
-				LuaText.SelectionStart = selPos;
-				LuaText.SelectionColor = Color.Black;
+                curPos = keyWordMatch.Index + keyWordMatch.Length;
             }
-
+            LuaText.Select(curPos, selPos);
+            LuaText.SelectionColor = Color.Black;
+            LuaText.Select(selPos, selChars);
 		}
 
     }
