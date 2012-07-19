@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x004: // J, JE, JD, JSR, JSRE, JSRD
-						throw new NotImplementedException();
 						// 0000:0000:0000:0100    0000:00rr:aaaa:aaff    0000:00aa:aaaa:aaaa
 						second = ReadMemory(RegisterPC++);
 						third = ReadMemory(RegisterPC++);
@@ -993,8 +992,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x26D:
 					case 0x26E:
 					case 0x26F:
-						throw new NotImplementedException();
-					// MVOI
 					case 0x270:
 					case 0x271:
 					case 0x272:
@@ -1063,8 +1060,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x2AD:
 					case 0x2AE:
 					case 0x2AF:
-						throw new NotImplementedException();
-					// MVII
 					case 0x2B0:
 					case 0x2B1:
 					case 0x2B2:
@@ -1133,8 +1128,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x2ED:
 					case 0x2EE:
 					case 0x2EF:
-						throw new NotImplementedException();
-					// ADDI
 					case 0x2F0:
 					case 0x2F1:
 					case 0x2F2:
@@ -1203,8 +1196,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x32D:
 					case 0x32E:
 					case 0x32F:
-						throw new NotImplementedException();
-					// SUBI
 					case 0x330:
 					case 0x331:
 					case 0x332:
@@ -1221,8 +1212,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x33D:
 					case 0x33E:
 					case 0x33F:
-						throw new NotImplementedException();
-					default:
 						throw new NotImplementedException();
 					// CMP
 					case 0x340:
@@ -1275,8 +1264,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x36D:
 					case 0x36E:
 					case 0x36F:
-						throw new NotImplementedException();
-					// CMPI
 					case 0x370:
 					case 0x371:
 					case 0x372:
@@ -1345,8 +1332,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x3AD:
 					case 0x3AE:
 					case 0x3AF:
-						throw new NotImplementedException();
-					// ANDI
 					case 0x3B0:
 					case 0x3B1:
 					case 0x3B2:
@@ -1415,8 +1400,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x3ED:
 					case 0x3EE:
 					case 0x3EF:
-						throw new NotImplementedException();
-					// XORI
 					case 0x3F0:
 					case 0x3F1:
 					case 0x3F2:
