@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					  +---------------+---------------+
 		*/
 
-		public int prg_page;
+		public byte prg_page;
 		public bool prg_mode;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
-
+			prg_page = 0;
 			prg_mode = false;
 			return true;
 		}
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr == 0)
 			{
-				prg_page = (value & 0x1F) + (value >> 7 << 5);
+				prg_page = (byte)((value & 0x1F) + ((value & 0x80) >> 2));
 				prg_mode = value.Bit(5);
 
 				if (value.Bit(6))
@@ -87,12 +87,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					SetMirrorType(EMirrorType.Horizontal);
 				}
 			}
-			else
+			else if ((addr & 0x01) > 0)
 			{
-				prg_page += (value & 0x1) << 7;
+				prg_page |= (byte)((value & 0x1) << 6);
 			}
 		}
-
+		
 		public override byte ReadPRG(int addr)
 		{
 			if (prg_mode == false)
