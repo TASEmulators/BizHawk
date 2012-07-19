@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			byte register;
 			int second, third, op1, op2;
 			string result = "";
-			int opcode = ReadMemory(RegisterPC) & 0x3FF;
+			int opcode = ReadMemory(pc) & 0x3FF;
 			switch (opcode)
 			{
 				case 0x000:
@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					return "DIS";
 				case 0x004:
 					// 0000:0000:0000:0100    0000:00rr:aaaa:aaff    0000:00aa:aaaa:aaaa
-					second = ReadMemory((byte)(RegisterPC + 1));
-					third = ReadMemory((byte)(RegisterPC + 1));
+					second = ReadMemory((ushort)(pc + 1));
+					third = ReadMemory((ushort)(pc + 2));
 					// rr indicates the register into which to store the return address
 					register = (byte)(((second >> 8) & 0x3) + 4);
 					// ff indicates how to affect the Interrupt (I) flag in the CP1610
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					}
 					if (register != 0x3)
 						result += " R" + register + ",";
-					result += string.Format(" ${0:X4})", op2);
+					result += string.Format(" ${0:X4}", op2);
 					bytesToAdvance = 3;
 					return result;
 				case 0x005:

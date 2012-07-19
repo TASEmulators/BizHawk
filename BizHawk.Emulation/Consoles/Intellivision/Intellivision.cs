@@ -12,10 +12,36 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		CP1610 Cpu;
 
+		public void LoadExecutive_ROM()
+		{
+			FileStream fs = new FileStream("C:/erom.int", FileMode.Open, FileAccess.Read);
+			BinaryReader r = new BinaryReader(fs);
+			byte[] erom = r.ReadBytes(8192);
+			int index = 0;
+			// Combine every two bytes into a word.
+			while (index + 1 < erom.Length)
+				Executive_ROM[index / 2] = (ushort)((erom[index++] << 8) | erom[index++]);
+			r.Close();
+			fs.Close();
+		}
+
+		public void LoadGraphics_ROM()
+		{
+			FileStream fs = new FileStream("C:/grom.int", FileMode.Open, FileAccess.Read);
+			BinaryReader r = new BinaryReader(fs);
+			byte[] grom = r.ReadBytes(2048);
+			for (int index = 0; index < grom.Length; index++)
+				Graphics_ROM[index] = grom[index];
+			r.Close();
+			fs.Close();
+		}
+
 		public Intellivision(GameInfo game, byte[] rom)
 		{
 			Rom = rom;
 			Game = game;
+			LoadExecutive_ROM();
+			LoadGraphics_ROM();
 			Parse();
 
 			Cpu = new CP1610();
