@@ -32,8 +32,23 @@ namespace BizHawk.MultiClient
 				LuaText.SelectionColor = Color.Blue;
                 curPos = keyWordMatch.Index + keyWordMatch.Length;
             }
+
             LuaText.Select(curPos, selPos);
             LuaText.SelectionColor = Color.Black;
+
+            foreach (Match CommentMatch in new Regex("--").Matches(LuaText.Text))
+            {
+                int endComment;
+                
+                if (LuaText.GetLineFromCharIndex(CommentMatch.Index) + 1 == LuaText.Lines.Count())
+                    endComment = LuaText.Text.Length - CommentMatch.Index;
+                else
+                    endComment = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(CommentMatch.Index) + 1) - CommentMatch.Index;
+                
+                LuaText.Select(CommentMatch.Index, endComment);
+                LuaText.SelectionColor = Color.Green;
+            }
+
             LuaText.Select(selPos, selChars);
 		}
 
