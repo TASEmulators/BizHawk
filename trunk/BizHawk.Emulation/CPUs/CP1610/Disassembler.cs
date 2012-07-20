@@ -692,7 +692,67 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x23D:
 				case 0x23E:
 				case 0x23F:
-					throw new NotImplementedException();
+					second = ReadMemory((ushort)(pc + 1));
+					if ((opcode & 0x16) != 0)
+						result = "BEXT";
+					else
+					{
+						switch (opcode & 0x15)
+						{
+							case 0x0:
+								result = "B";
+								break;
+							case 0x1:
+								result = "BC";
+								break;
+							case 0x2:
+								result = "BOV";
+								break;
+							case 0x3:
+								result = "BPL";
+								break;
+							case 0x4:
+								result = "BEQ";
+								break;
+							case 0x5:
+								result = "BLT";
+								break;
+							case 0x6:
+								result = "BLE";
+								break;
+							case 0x7:
+								result = "BUSC";
+								break;
+							case 0x8:
+								result = "NOPP";
+								break;
+							case 0x9:
+								result = "BNC";
+								break;
+							case 0x10:
+								result = "BNOV";
+								break;
+							case 0x11:
+								result = "BMI";
+								break;
+							case 0x12:
+								result = "BNEQ";
+								break;
+							case 0x13:
+								result = "BGE";
+								break;
+							case 0x14:
+								result = "BGT";
+								break;
+							case 0x15:
+								result = "BESC";
+								break;
+						}
+					}
+					op1 = opcode & 0x32;
+					result += string.Format(" ${0:X4}", second) + ", " + op1;
+					bytesToAdvance = 2;
+					return result;
 				case 0x240:
 				case 0x241:
 				case 0x242:
@@ -703,6 +763,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x247:
 					register1 = (byte)(opcode & 0x7);
 					second = ReadMemory((ushort)(pc + 1));
+					bytesToAdvance = 2;
 					return "MVO R" + register1 + ", " + string.Format("${0:X4}", second);
 				case 0x248:
 				case 0x249:
@@ -773,6 +834,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x287:
 					register1 = (byte)(opcode & 0x7);
 					second = ReadMemory((ushort)(pc + 1));
+					bytesToAdvance = 2;
 					return "MVI R" + register1 + ", " + string.Format("${0:X4}", second);
 				case 0x288:
 				case 0x289:
@@ -843,6 +905,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x2C7:
 					register1 = (byte)(opcode & 0x7);
 					second = ReadMemory((ushort)(pc + 1));
+					bytesToAdvance = 2;
 					return "ADD R" + register1 + ", " + string.Format("${0:X4}", second);
 				case 0x2C8:
 				case 0x2C9:
@@ -913,6 +976,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x307:
 					register1 = (byte)(opcode & 0x7);
 					second = ReadMemory((ushort)(pc + 1));
+					bytesToAdvance = 2;
 					return "SUB R" + register1 + ", " + string.Format("${0:X4}", second);
 				case 0x308:
 				case 0x309:
@@ -983,6 +1047,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x347:
 					register1 = (byte)(opcode & 0x7);
 					second = ReadMemory((ushort)(pc + 1));
+					bytesToAdvance = 2;
 					return "CMP R" + register1 + ", " + string.Format("${0:X4}", second);
 				case 0x348:
 				case 0x349:
@@ -1053,6 +1118,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x387:
 					register1 = (byte)(opcode & 0x7);
 					second = ReadMemory((ushort)(pc + 1));
+					bytesToAdvance = 2;
 					return "AND R" + register1 + ", " + string.Format("${0:X4}", second);
 				case 0x388:
 				case 0x389:
@@ -1123,6 +1189,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x3C7:
 					register1 = (byte)(opcode & 0x7);
 					second = ReadMemory((ushort)(pc + 1));
+					bytesToAdvance = 2;
 					return "XOR R" + register1 + ", " + string.Format("${0:X4}", second);
 				case 0x3C8:
 				case 0x3C9:
