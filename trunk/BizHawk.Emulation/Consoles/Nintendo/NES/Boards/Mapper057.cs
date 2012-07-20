@@ -83,13 +83,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr == 0)
 			{
-				chr_reg = (value & 0x07) | ((value & 0x40) >> 3);
+				chr_reg |= value & 0x07;
+				chr_reg &= ~0x08;
+				chr_reg &= (value & 0x40) >> 3;
 			}
 			else if ((addr & 0x800) > 0)
 			{
 				prg_reg = (value >> 5) & 0x07;
 				prg_mode = value.Bit(4);
 				chr_reg |= (value & 0x07);
+
 				if (addr.Bit(3))
 				{
 					SetMirrorType(EMirrorType.Horizontal);
