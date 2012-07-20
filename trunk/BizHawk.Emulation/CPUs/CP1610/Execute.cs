@@ -1008,7 +1008,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x27D:
 					case 0x27E:
 					case 0x27F:
-						throw new NotImplementedException();
+						register1 = (byte)((opcode >> 3) & 0x7);
+						register2 = (byte)(opcode & 0x7);
+						WriteMemory(Register[register1], Register[register2]);
+						// Stack mode.
+						if (register1 == 0x6)
+							RegisterSP--;
+						// Immediate mode.
+						if (register1 == 0x7)
+							RegisterPC++;
+						PendingCycles -= 9; TotalExecutedCycles += 9;
+						break;
 					// MVI
 					case 0x280:
 					case 0x281:
@@ -1097,6 +1107,12 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							Register[register2] |= (ushort)(ReadMemory(Register[register1]) & 0xFF);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
+						// Stack mode.
+						if (register1 == 0x6)
+							RegisterSP++;
+						// Immediate mode.
+						if (register1 == 0x7)
+							RegisterPC++;
 						break;
 					// ADD
 					case 0x2C0:
@@ -1186,6 +1202,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							op1 |= (ushort)(ReadMemory(Register[register1]) & 0xFF);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
+						// Stack mode.
+						if (register1 == 0x6)
+							RegisterSP++;
+						// Immediate mode.
+						if (register1 == 0x7)
+							RegisterPC++;
+						break;
 						op2 = Register[register2];
 						result = op1 + op2;
 						Calc_FlagC(result);
