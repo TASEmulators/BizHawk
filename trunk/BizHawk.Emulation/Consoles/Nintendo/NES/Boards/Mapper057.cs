@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		*/
 
 		bool prg_mode = false;
-		int chr_reg;
+		int chr_reg_low_0, chr_reg_low_1, chr_reg;
 		int prg_reg;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -75,23 +75,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			ser.Sync("prg_reg", ref prg_reg);
 			ser.Sync("chr_reg", ref chr_reg);
+			ser.Sync("chr_reg_low_0", ref chr_reg);
+			ser.Sync("chr_reg_low_1", ref chr_reg);
 			ser.Sync("prg_mode", ref prg_mode);
 			base.SyncState(ser);
 		}
 
 		public override void WritePRG(int addr, byte value)
 		{
+			addr &= 0x8800;
 			if (addr == 0)
 			{
-				chr_reg |= value & 0x07;
-				chr_reg &= ~0x08;
-				chr_reg &= (value & 0x40) >> 3;
+				chr_reg_low_0 = value & 0x07;
+				chr_reg &= 0x08;
+				chr_reg |= (value & 0x40) >> 3;
 			}
-			else if ((addr & 0x800) > 0)
+			else if(addr == 0x800)
 			{
 				prg_reg = (value >> 5) & 0x07;
 				prg_mode = value.Bit(4);
-				chr_reg |= (value & 0x07);
+				chr_reg_low_1 = (value & 0x07);
 
 				if (addr.Bit(3))
 				{
@@ -102,6 +105,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					SetMirrorType(EMirrorType.Vertical);
 				}
 			}
+			
+			chr_reg &= ~0x07;
+			chr_reg |= (chr_reg_low_0 | chr_reg_low_1);
 
 			//Console.WriteLine("chr page = {0}", chr_reg);
 		}
