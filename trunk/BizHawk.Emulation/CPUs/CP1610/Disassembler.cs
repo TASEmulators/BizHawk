@@ -120,10 +120,16 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					return "GSWD R" + register1;
 				case 0x034:
 				case 0x035:
-					return "NOP";
+					result = "NOP";
+					if ((opcode & 0x1) != 0)
+						result += " 1";
+					return result;
 				case 0x036:
 				case 0x037:
-					return "SIN";
+					result = "SIN";
+					if ((opcode & 0x1) != 0)
+						result += " 1";
+					return result;
 				case 0x038:
 				case 0x039:
 				case 0x03A:
@@ -143,8 +149,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x046:
 				case 0x047:
 					register1 = (byte)(opcode & 0x3);
-					op1 = opcode & 0x4;
-					return "SWAP R" + register1 + ", " + (op1 + 1);
+					result = "SWAP R" + register1;
+					if (((opcode >> 3) & 0x1) != 0)
+						result += ", 1";
+					return result;
 				case 0x048:
 				case 0x049:
 				case 0x04A:
@@ -154,8 +162,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x04E:
 				case 0x04F:
 					register1 = (byte)(opcode & 0x3);
-					op1 = opcode & 0x4;
-					return "SLL R" + register1 + ", " + (op1 + 1);
+					result = "SLL R" + register1;
+					if (((opcode >> 3) & 0x1) != 0)
+						result += ", 1";
+					return result;
 				case 0x050:
 				case 0x051:
 				case 0x052:
@@ -165,8 +175,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x056:
 				case 0x057:
 					register1 = (byte)(opcode & 0x3);
-					op1 = opcode & 0x4;
-					return "RLC R" + register1 + ", " + (op1 + 1);
+					result = "RLC R" + register1;
+					if (((opcode >> 3) & 0x1) != 0)
+						result += ", 1";
+					return result;
 				case 0x058:
 				case 0x059:
 				case 0x05A:
@@ -176,8 +188,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x05E:
 				case 0x05F:
 					register1 = (byte)(opcode & 0x3);
-					op1 = opcode & 0x4;
-					return "SLLC R" + register1 + ", " + (op1 + 1);
+					result = "SLLC R" + register1;
+					if (((opcode >> 3) & 0x1) != 0)
+						result += ", 1";
+					return result;
 				case 0x060:
 				case 0x061:
 				case 0x062:
@@ -187,8 +201,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x066:
 				case 0x067:
 					register1 = (byte)(opcode & 0x3);
-					op1 = opcode & 0x4;
-					return "SLR R" + register1 + ", " + (op1 + 1);
+					result = "SLR R" + register1;
+					if (((opcode >> 3) & 0x1) != 0)
+						result += ", 1";
+					return result;
 				case 0x068:
 				case 0x069:
 				case 0x06A:
@@ -198,8 +214,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x06E:
 				case 0x06F:
 					register1 = (byte)(opcode & 0x3);
-					op1 = opcode & 0x4;
-					return "SAR R" + register1 + ", " + (op1 + 1);
+					result = "SAR R" + register1;
+					if (((opcode >> 3) & 0x1) != 0)
+						result += ", 1";
+					return result;
 				case 0x070:
 				case 0x071:
 				case 0x072:
@@ -209,8 +227,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x076:
 				case 0x077:
 					register1 = (byte)(opcode & 0x3);
-					op1 = opcode & 0x4;
-					return "RRC R" + register1 + ", " + (op1 + 1);
+					result = "RRC R" + register1;
+					if (((opcode >> 3) & 0x1) != 0)
+						result += ", 1";
+					return result;
 				case 0x078:
 				case 0x079:
 				case 0x07A:
@@ -220,8 +240,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x07E:
 				case 0x07F:
 					register1 = (byte)(opcode & 0x3);
-					op1 = opcode & 0x4;
-					return "SARC R" + register1 + ", " + (op1 + 1);
+					result = "SARC R" + register1;
+					if (((opcode >> 3) & 0x1) != 0)
+						result += ", 1";
+					return result;
 				case 0x080:
 				case 0x081:
 				case 0x082:
@@ -693,11 +715,12 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x23E:
 				case 0x23F:
 					second = ReadMemory((ushort)(pc + 1));
+					op1 = opcode & 0x15;
 					if ((opcode & 0x16) != 0)
 						result = "BEXT";
 					else
 					{
-						switch (opcode & 0x15)
+						switch (op1)
 						{
 							case 0x0:
 								result = "B";
@@ -749,8 +772,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 								break;
 						}
 					}
-					op1 = opcode & 0x32;
-					result += string.Format(" ${0:X4}", second) + ", " + op1;
+					op2 = (opcode >> 5) & 0x1;
+					if (op1 != 0x8)
+					{
+						result += string.Format(" ${0:X4}", second);
+						if (op1 != 0x0)
+							result += ", " + op2;
+					}
 					bytesToAdvance = 2;
 					return result;
 				case 0x240:
@@ -823,7 +851,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x27F:
 					register1 = (byte)((opcode >> 3) & 0x7);
 					register2 = (byte)(opcode & 0x7);
-					return "MVO@ R" + register1 + ", R" + register2;
+					return "MVO@ R" + register2 + ", R" + register1;
 				case 0x280:
 				case 0x281:
 				case 0x282:

@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x047:
 						throw new NotImplementedException();
 						register1 = (byte)(opcode & 0x3);
-						op1 = opcode & 0x4;
+						op1 = (opcode >> 3) & 0x1;
 						op2 = Register[register1];
 						temp = op2 & 0xFF;
 						if (op1 == 0)
@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x04F:
 						throw new NotImplementedException();
 						register1 = (byte)(opcode & 0x3);
-						op1 = opcode & 0x4;
+						op1 = (opcode >> 3) & 0x1;
 						result = Register[register1] << 1;
 						if (op1 == 0)
 						{
@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x057:
 						throw new NotImplementedException();
 						register1 = (byte)(opcode & 0x3);
-						op1 = opcode & 0x4;
+						op1 = (opcode >> 3) & 0x1;
 						op2 = Register[register1];
 						result = (op2 << 1) | (FlagC ? 1 : 0);
 						FlagC = ((op2 & 0x8000) != 0);
@@ -337,7 +337,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x05F:
 						throw new NotImplementedException();
 						register1 = (byte)(opcode & 0x3);
-						op1 = opcode & 0x4;
+						op1 = (opcode >> 3) & 0x1;
 						op2 = Register[register1];
 						result = op2 << 1;
 						FlagC = ((op2 & 0x8000) != 0);
@@ -367,7 +367,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x067:
 						throw new NotImplementedException();
 						register1 = (byte)(opcode & 0x3);
-						op1 = opcode & 0x4;
+						op1 = (opcode >> 3) & 0x1;
 						result = Register[register1] >> 1;
 						if (op1 == 0)
 						{
@@ -394,7 +394,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x06F:
 						throw new NotImplementedException();
 						register1 = (byte)(opcode & 0x3);
-						op1 = opcode & 0x4;
+						op1 = (opcode >> 3) & 0x1;
 						op2 = Register[register1];
 						temp = op2 & 0x8000;
 						result = (op2 >> 1) | temp;
@@ -424,7 +424,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x077:
 						throw new NotImplementedException();
 						register1 = (byte)(opcode & 0x3);
-						op1 = opcode & 0x4;
+						op1 = (opcode >> 3) & 0x1;
 						op2 = Register[register1];
 						result = (op2 >> 1) | ((FlagC ? 1 : 0) << 15);
 						FlagC = ((op2 & 0x1) != 0);
@@ -455,7 +455,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x07F:
 						throw new NotImplementedException();
 						register1 = (byte)(opcode & 0x3);
-						op1 = opcode & 0x4;
+						op1 = (opcode >> 3) & 0x1;
 						op2 = Register[register1];
 						temp = op2 & 0x8000;
 						result = (op2 >> 1) | temp;
