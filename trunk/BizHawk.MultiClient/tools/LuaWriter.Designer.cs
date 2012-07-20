@@ -28,35 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.components = new System.ComponentModel.Container();
-			this.LuaText = new System.Windows.Forms.RichTextBox();
-			this.timer = new System.Windows.Forms.Timer(this.components);
-			this.SuspendLayout();
-			// 
-			// LuaText
-			// 
-			this.LuaText.Location = new System.Drawing.Point(12, 12);
-			this.LuaText.Name = "LuaText";
-			this.LuaText.Size = new System.Drawing.Size(819, 417);
-			this.LuaText.TabIndex = 0;
-			this.LuaText.Text = "";
-			this.LuaText.ZoomFactor = 1.2F;
-			// 
-			// timer
-			// 
-			this.timer.Enabled = true;
-			this.timer.Interval = 1000;
-			this.timer.Tick += new System.EventHandler(this.timer_Tick);
-			// 
-			// LuaWriter
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(843, 441);
-			this.Controls.Add(this.LuaText);
-			this.Name = "LuaWriter";
-			this.Text = "LuaWriter";
-			this.ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            this.LuaText = new System.Windows.Forms.RichTextBox();
+            this.timer = new System.Windows.Forms.Timer(this.components);
+            this.SuspendLayout();
+            // 
+            // LuaText
+            // 
+            this.LuaText.Location = new System.Drawing.Point(12, 12);
+            this.LuaText.Name = "LuaText";
+            this.LuaText.Size = new System.Drawing.Size(819, 417);
+            this.LuaText.TabIndex = 0;
+            this.LuaText.Text = "";
+            this.LuaText.ZoomFactor = 2F;
+            // 
+            // timer
+            // 
+            this.timer.Enabled = true;
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
+            // LuaWriter
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(843, 441);
+            this.Controls.Add(this.LuaText);
+            this.Name = "LuaWriter";
+            this.Text = "LuaWriter";
+            this.ResumeLayout(false);
 
         }
 

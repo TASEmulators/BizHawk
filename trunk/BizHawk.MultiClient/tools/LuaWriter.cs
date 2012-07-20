@@ -43,24 +43,24 @@ namespace BizHawk.MultiClient
                     {
                         int stringStart = LuaText.SelectionStart;
                         int endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(stringStart) + 1) - 1;
-                        int stringEnd = LuaText.Find("\"", stringStart + 1, endLine, RichTextBoxFinds.MatchCase);
+                        int stringEnd = LuaText.Find("\"", stringStart + 1, endLine, RichTextBoxFinds.None);
 
                         if (stringEnd > 0)
                         {
                             LuaText.Select(stringStart, stringEnd - stringStart + 1);
-                            firstQuote = LuaText.Find("\"", stringEnd + 1, RichTextBoxFinds.MatchCase);
+                            LuaText.SelectionColor = Color.Gray;
+                            firstQuote = LuaText.Find("\"", stringEnd + 1, RichTextBoxFinds.None);
                         }
                         else
                         {
                             LuaText.Select(stringStart, endLine - stringStart);
-                            firstQuote = LuaText.Find("\"", endLine + 1, RichTextBoxFinds.MatchCase);
+                            LuaText.SelectionColor = Color.Gray;
+                            firstQuote = LuaText.Find("\"", endLine + 1, RichTextBoxFinds.None);
                         }
-
-                        LuaText.SelectionColor = Color.Gray;
                     }
                 }
                 else
-                    firstQuote = LuaText.Find("\"", LuaText.SelectionStart + 1, RichTextBoxFinds.MatchCase);
+                    firstQuote = LuaText.Find("\"", LuaText.SelectionStart + 1, RichTextBoxFinds.None);
             }
         }
 
@@ -99,9 +99,17 @@ namespace BizHawk.MultiClient
 
             foreach (Match keyWordMatch in keyWords.Matches(LuaText.Text))
             {
-                LuaText.Select(curPos, keyWordMatch.Index);
-                if (LuaText.SelectionColor != Color.Gray)
+                char before = ' ', after = ' ';
+
+                if (keyWordMatch.Index > 0)
+                    before = LuaText.Text[keyWordMatch.Index - 1];
+
+                if (keyWordMatch.Index + keyWordMatch.Length != LuaText.Text.Length)
+                    after = LuaText.Text[keyWordMatch.Index + keyWordMatch.Length];
+
+                if (!char.IsLetterOrDigit(before) && !char.IsLetterOrDigit(after))
                 {
+                    LuaText.Select(curPos, keyWordMatch.Index);
                     LuaText.SelectionColor = Color.Black;
                     LuaText.Select(keyWordMatch.Index, keyWordMatch.Length);
                     LuaText.SelectionColor = Color.Blue;
