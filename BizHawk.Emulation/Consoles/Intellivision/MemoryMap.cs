@@ -45,8 +45,11 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				default:
 					throw new NotImplementedException();
 			}
+			/*
+			TODO: Fix Intellicart hook.
 			if (cart != null)
 				return (ushort)cart;
+			*/
 			return core;
 		}
 
