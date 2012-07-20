@@ -39,14 +39,27 @@ namespace BizHawk.MultiClient
             foreach (Match CommentMatch in new Regex("--").Matches(LuaText.Text))
             {
                 int endComment;
-                
-                if (LuaText.GetLineFromCharIndex(CommentMatch.Index) + 1 == LuaText.Lines.Count())
-                    endComment = LuaText.Text.Length - CommentMatch.Index;
+
+                if (LuaText.Text.Substring(CommentMatch.Index, 4) == "--[[")
+                {
+                    if (LuaText.Find("]]", RichTextBoxFinds.MatchCase) > 0)
+                        endComment = LuaText.SelectionStart - CommentMatch.Index + 2;
+                    else
+                        endComment = LuaText.Text.Length;
+
+                    LuaText.Select(CommentMatch.Index, endComment);
+                    LuaText.SelectionColor = Color.Green;
+                }
                 else
-                    endComment = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(CommentMatch.Index) + 1) - CommentMatch.Index;
-                
-                LuaText.Select(CommentMatch.Index, endComment);
-                LuaText.SelectionColor = Color.Green;
+                {
+                    if (LuaText.GetLineFromCharIndex(CommentMatch.Index) + 1 == LuaText.Lines.Count())
+                        endComment = LuaText.Text.Length - CommentMatch.Index;
+                    else
+                        endComment = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(CommentMatch.Index) + 1) - CommentMatch.Index;
+
+                    LuaText.Select(CommentMatch.Index, endComment);
+                    LuaText.SelectionColor = Color.Green;
+                }
             }
 
             LuaText.Select(selPos, selChars);
