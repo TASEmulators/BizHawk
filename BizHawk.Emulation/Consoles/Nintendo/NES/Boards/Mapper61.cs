@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			prg_mode = addr.Bit(4);
-			prg_page = ((addr & 0x0F) << 1) | ((addr & 0x20) >> 4);
+			prg_page = ((addr & 0x0F) << 1) | ((addr & 0x20) >> 5);
 		}
 
 		public override byte ReadPRG(int addr)
