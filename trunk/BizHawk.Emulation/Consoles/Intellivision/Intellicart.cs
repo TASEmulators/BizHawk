@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 	{
 		private ushort[] Intellicart = new ushort[65536];
 		private bool[][] MemoryAttributes = new bool[32][];
-		private int[][] FineAddresses = new int[32][];
+		private ushort[][] FineAddresses = new ushort[32][];
 
 		private ushort[] CRC16_table =
 		{
@@ -58,8 +58,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			// Check to see if the header is valid.
 			if (Rom[offset++] != 0xA8 || Rom[offset++] != (0xFF ^ Rom[offset++]))
 				throw new ArgumentException();
-			ushort crc;
-			int expected;
+			ushort crc, expected;
 			// Parse for data segments.
 			for (int segment = 0; segment < Rom[1]; segment++)
 			{
@@ -68,22 +67,22 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				byte upper_end = Rom[offset++];
 				crc = UpdateCRC16(crc, upper_start);
 				crc = UpdateCRC16(crc, upper_end);
-				int start = upper_start << 8;
-				int end = (upper_end << 8) | 0xFF;
+				ushort start = (ushort)(upper_start << 8);
+				ushort end = (ushort)((upper_end << 8) | 0xFF);
 				// This range is invalid if it starts at a higher range than it ends.
 				if (end < start)
 					throw new ArgumentException();
 				for (int addr = start; addr <= end; addr++)
 				{
-					int data;
+					ushort data;
 					byte high = Rom[offset++];
 					byte low = Rom[offset++];
 					crc = UpdateCRC16(crc, high);
 					crc = UpdateCRC16(crc, low);
-					data = (high << 8) | low;
-					Intellicart[addr] = (ushort)data;
+					data = (ushort)((high << 8) | low);
+					Intellicart[addr] = data;
 				}
-				expected = (Rom[offset++] << 8) | Rom[offset++];
+				expected = (ushort)((Rom[offset++] << 8) | Rom[offset++]);
 				// Check if there is an invalid CRC.
 				if (expected != crc)
 					throw new ArgumentException();
@@ -116,19 +115,19 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				else
 					index = offset + 32 + (range >> 1);
 				int range_start = range * 2048;
-				int start = (((Rom[index] >> 4) & 0x07) << 8) + range_start;
-				int end = (((Rom[index]) & 0x07) << 8) + 0xFF + range_start;
+				ushort start = (ushort)((((Rom[index] >> 4) & 0x07) << 8) + range_start);
+				ushort end = (ushort)((((Rom[index]) & 0x07) << 8) + 0xFF + range_start);
 				// This range is invalid if it starts at a higher range than it ends.
 				if (end < start)
 					throw new ArgumentException();
-				FineAddresses[range] = new int[2];
+				FineAddresses[range] = new ushort[2];
 				FineAddresses[range][0] = start;
 				FineAddresses[range][1] = end;
 			}
 			crc = 0xFFFF;
 			for (int index = 0; index < 48; index++)
 				crc = UpdateCRC16(crc, Rom[offset++]);
-			expected = (Rom[offset++] << 8) | (Rom[offset++] & 0xFF);
+			expected = (ushort)((Rom[offset++] << 8) | (Rom[offset++] & 0xFF));
 			// Check if there is an invalid CRC for the memory attributes / fine addresses.
 			if (expected != crc)
 				throw new ArgumentException();
