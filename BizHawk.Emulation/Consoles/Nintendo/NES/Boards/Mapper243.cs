@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		int reg_addr;
 		ByteBuffer regs = new ByteBuffer(8);
+		int chr_bank_mask_8k, prg_bank_mask_32k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -66,7 +67,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
-
+			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
+			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
 			return true;
 		}
 
@@ -79,49 +81,43 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WriteEXP(int addr, byte value)
 		{
-			switch (addr & 0x101)
+			switch (addr & 0x01)
 			{
 				case 0x0000:
-					reg_addr = addr & 0x07;
+					reg_addr = value & 0x07;
 					break;
 				case 0x0001:
 					switch (reg_addr)
 					{
-						case 0:
-							regs[0] = 0; regs[1] = 3; //FCEUX does this
-							break;
 						case 2:
-							regs[3] = (byte)((value & 0x01) << 3);
-							break;
-						case 4:
-							regs[1] = (byte)((regs[1] & 0x06) | (value & 0x03));
-							break;
-						case 5:
-							regs[0] = (byte)(value & 0x01);
-							break;
-						case 6:
-							regs[1] = (byte)((regs[1] & 0x01) | (regs[3] | (value & 0x03) << 1));
-							break;
-						case 7:
 							regs[2] = (byte)(value & 0x01);
 							break;
-
-					}
-
-					int mirror = (value >> 1) & 0x03;
-					switch (mirror)
-					{
-						case 0:
-							SetMirrorType(EMirrorType.Horizontal);
+						case 4:
+							regs[4] = (byte)(value & 0x01);
 							break;
-						case 1:
-							SetMirrorType(EMirrorType.Vertical);
+						case 5:
+							regs[5] = (byte)(value & 0x07);
 							break;
-						case 2:
-							SetMirroring(0, 1, 1, 1);
+						case 6:
+							regs[6] = (byte)(value & 0x03);
 							break;
-						case 3:
-							SetMirrorType(EMirrorType.OneScreenB);
+						case 7:
+							int mirror = (value >> 1) & 0x03;
+							switch (mirror)
+							{
+								case 0:
+									SetMirrorType(EMirrorType.Horizontal);
+									break;
+								case 1:
+									SetMirrorType(EMirrorType.Vertical);
+									break;
+								case 2:
+									SetMirroring(0, 1, 1, 1);
+									break;
+								case 3:
+									SetMirrorType(EMirrorType.OneScreenB);
+									break;
+							}
 							break;
 					}
 					break;
@@ -133,7 +129,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (addr < 0x2000)
 			{
 				int chr_bank = regs[4] | (regs[6] << 1) | (regs[2] << 3);
-				return VROM[(chr_bank * 0x2000) + addr];
+				return VROM[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
 			}
 			else
 			{
@@ -143,7 +139,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override byte ReadPRG(int addr)
 		{
-			return ROM[(regs[5] * 0x8000) + addr];
+			return ROM[((regs[5] & prg_bank_mask_32k) * 0x8000) + addr];
 		}
 	}
 }
