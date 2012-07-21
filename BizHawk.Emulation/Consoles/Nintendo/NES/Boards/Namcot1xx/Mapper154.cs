@@ -11,6 +11,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	Devil Man
 	
 	Similar to Mapper 88 except for mirroring
+
+	$8000-$FFFF: [.Mxx xxxx]
+	x = See mapper 206 documentation
+	M = Mirroring
+		0 = 1ScA
+		1 = 1ScB
 	*/
 
 
@@ -64,17 +70,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if ((addr & 0x6001) == 0)
+			if (value.Bit(6))
 			{
-				if (((value >> 6) & 1) == 0)
-				{
-					SetMirrorType(EMirrorType.OneScreenA);
-				}
-				else
-				{
-					SetMirrorType(EMirrorType.OneScreenB);
-				}
+				SetMirrorType(EMirrorType.OneScreenB);
 			}
+			else
+			{
+				SetMirrorType(EMirrorType.OneScreenA);
+			}
+
 			base.WritePRG(addr, value);
 		}
 	}
