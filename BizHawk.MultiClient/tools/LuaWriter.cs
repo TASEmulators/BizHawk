@@ -39,13 +39,10 @@ namespace BizHawk.MultiClient
 
 		private void ColorCharacters()
 		{
-			Color color = Color.Gray;
-			Color commentColor = Color.Green;
-
 			int firstApostrophe = LuaText.Find("'", 0);
 			while (firstApostrophe >= 0)
 			{
-				if (LuaText.SelectionColor != commentColor)
+				if (LuaText.SelectionColor != Color.FromArgb(Global.Config.LuaCommentColor))
 				{
 					int opening = firstApostrophe;
 					int endLine;
@@ -66,19 +63,19 @@ namespace BizHawk.MultiClient
 
 							if (ending > endLine)
 							{
-								ending = opening;
+								ending = endLine;
 								break;
 							}
 
 							ending = LuaText.Find("'", ending, endLine, RichTextBoxFinds.None);
 						}
 					else
-						ending = opening;
+						ending = endLine;
 
 					if (opening != ending)
 					{
 						LuaText.Select(opening, ending - opening + 1);
-						LuaText.SelectionColor = color;
+						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
 						if (ending != LuaText.Text.Length - 1)
 							firstApostrophe = LuaText.Find("'", ending + 1, RichTextBoxFinds.None);
 						else
@@ -102,13 +99,10 @@ namespace BizHawk.MultiClient
 
         private void ColorStrings()
         {
-			Color color = Color.Gray;
-			Color commentColor = Color.Green;
-
 			int firstQuotation = LuaText.Find("\"", 0);
 			while (firstQuotation >= 0)
 			{
-				if (LuaText.SelectionColor != commentColor)
+				if (LuaText.SelectionColor != Color.FromArgb(Global.Config.LuaCommentColor))
 				{
 					int opening = firstQuotation;
 					int endLine;
@@ -129,19 +123,19 @@ namespace BizHawk.MultiClient
 
 							if (ending > endLine)
 							{
-								ending = opening;
+								ending = endLine;
 								break;
 							}
 
 							ending = LuaText.Find("\"", ending, endLine, RichTextBoxFinds.None);
 						}
 					else
-						ending = opening;
+						ending = endLine;
 
 					if (opening != ending)
 					{
 						LuaText.Select(opening, ending - opening + 1);
-						LuaText.SelectionColor = color;
+						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
 						if (ending != LuaText.Text.Length - 1)
 							firstQuotation = LuaText.Find("\"", ending + 1, RichTextBoxFinds.None);
 						else
@@ -165,8 +159,6 @@ namespace BizHawk.MultiClient
 
         private void ColorComments()
         {
-			Color color = Color.Green;
-
             foreach (Match CommentMatch in new Regex("--").Matches(LuaText.Text))
             {
                 int endComment;
@@ -179,7 +171,7 @@ namespace BizHawk.MultiClient
                         endComment = LuaText.Text.Length;
 
                     LuaText.Select(CommentMatch.Index, endComment);
-					LuaText.SelectionColor = color;
+					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaCommentColor);
                 }
                 else
                 {
@@ -189,29 +181,29 @@ namespace BizHawk.MultiClient
                         endComment = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(CommentMatch.Index) + 1) - CommentMatch.Index;
 
                     LuaText.Select(CommentMatch.Index, endComment);
-					LuaText.SelectionColor = color;
+					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaCommentColor);
                 }
             }
         }
 
         private void ColorReservedWords()
         {
-			Color color = Color.Blue;
-
             foreach (Match keyWordMatch in keyWords.Matches(LuaText.Text))
             {
                 char before = ' ', after = ' ';
 
                 if (keyWordMatch.Index > 0)
-                    before = LuaText.Text[keyWordMatch.Index - 1];
+                    if(keyWordMatch.Value != "if" && LuaText.Text.Substring(keyWordMatch.Index - 4, 4) != "else")
+                        before = LuaText.Text[keyWordMatch.Index - 1];
 
                 if (keyWordMatch.Index + keyWordMatch.Length != LuaText.Text.Length)
-                    after = LuaText.Text[keyWordMatch.Index + keyWordMatch.Length];
+                    if (keyWordMatch.Value != "else" && LuaText.Text.Substring(keyWordMatch.Index, 2) != "if")
+                        after = LuaText.Text[keyWordMatch.Index + keyWordMatch.Length];
 
                 if (!char.IsLetterOrDigit(before) && !char.IsLetterOrDigit(after))
                 {
                     LuaText.Select(keyWordMatch.Index, keyWordMatch.Length);
-					LuaText.SelectionColor = color;
+					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaKeyWordColor);
                 }
             }
         }

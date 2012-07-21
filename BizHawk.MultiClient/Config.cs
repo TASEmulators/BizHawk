@@ -549,6 +549,11 @@ namespace BizHawk.MultiClient
 		public int GifAnimatorFrameSkip;
 		public int GifAnimatorSpeed;
 		public bool GifAnimatorReversable;
+
+        //LuaWriter Settings
+        public int LuaKeyWordColor = -16776961;
+        public int LuaCommentColor = -16744448;
+        public int LuaStringColor = -8355712;
 	}
 
 	public class SMSControllerTemplate
