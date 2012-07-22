@@ -18,9 +18,7 @@ namespace BizHawk.MultiClient
 		bool changes = false;
 		bool hasChanged;
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
-		
-        Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
-        char[] Symbols = { '+','-','*','/','%','^','#','=','<','>','(',')','{','}','[',']',';',':',',','.' };
+		char[] Symbols = { '+','-','*','/','%','^','#','=','<','>','(',')','{','}','[',']',';',':',',','.' };
 
 
 		public LuaWriter()
