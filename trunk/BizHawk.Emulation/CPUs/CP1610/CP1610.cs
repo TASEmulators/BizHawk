@@ -17,22 +17,15 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public Action<ushort, ushort> WriteMemory;
 
 		private bool logging = true;
-		private TextWriter log;
-
-		public CP1610()
-		{
-			if (logging)
-				log = File.CreateText("log.txt");
-		}
+		private string log = "";
 
 		~CP1610()
 		{
-			Close();
-		}
-
-		public void Close()
-		{
-			log.Close();
+			using (StreamWriter write = new StreamWriter("log.txt"))
+			{
+				if (logging)
+					write.Write(log);
+			}
 		}
 
 		public void LogData()
@@ -40,17 +33,16 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			if (!logging)
 				return;
 			for (int register = 0; register <= 5; register++)
-				log.WriteLine("R" + register + " = {0:X4}", Register[register]);
-			log.WriteLine("SP = {0:X4}", RegisterSP);
-			log.WriteLine("PC = {0:X4}", RegisterPC);
-			log.WriteLine("S = {0:X4}", FlagS);
-			log.WriteLine("C = {0:X4}", FlagC);
-			log.WriteLine("Z = {0:X4}", FlagZ);
-			log.WriteLine("O = {0:X4}", FlagO);
-			log.WriteLine("I = {0:X4}", FlagI);
-			log.WriteLine("D = {0:X4}", FlagD);
-			log.WriteLine("------");
-			log.WriteLine();
+				log += string.Format("R{0:d} = {1:X4}\n", register, Register[register]);
+			log += string.Format("SP = {0:X4}\n", RegisterSP);
+			log += string.Format("PC = {0:X4}\n", RegisterPC);
+			log += string.Format("S = {0:X4}\n", FlagS);
+			log += string.Format("C = {0:X4}\n", FlagC);
+			log += string.Format("Z = {0:X4}\n", FlagZ);
+			log += string.Format("O = {0:X4}\n", FlagO);
+			log += string.Format("I = {0:X4}\n", FlagI);
+			log += string.Format("D = {0:X4}\n", FlagD);
+			log += "------\n";
 		}
 	}
 }
