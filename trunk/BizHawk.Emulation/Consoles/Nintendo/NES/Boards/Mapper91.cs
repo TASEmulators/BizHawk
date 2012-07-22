@@ -74,8 +74,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		For details on MMC3 IRQ operation, see mapper 004
 		*/
 
-		ByteBuffer chr_regs = new ByteBuffer(4);
-		ByteBuffer prg_regs = new ByteBuffer(4);
+		ByteBuffer chr_regs_2k = new ByteBuffer(4);
+		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 		int chr_bank_mask_2k, prg_bank_mask_8k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -92,70 +92,73 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr_bank_mask_2k = Cart.chr_size / 2 - 1;
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 
-			prg_regs[3] = 0xFF;
-			prg_regs[2] = 0xFE;
-
+			prg_regs_8k[3] = 0xFF;
+			prg_regs_8k[2] = 0xFE;
+			
 			return true;
 		}
 
 		public override void Dispose()
 		{
-			prg_regs.Dispose();
-			chr_regs.Dispose();
+			prg_regs_8k.Dispose();
+			chr_regs_2k.Dispose();
 			base.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("prg_regs", ref prg_regs);
-			ser.Sync("chr_regs", ref chr_regs);
+			ser.Sync("prg_regs", ref prg_regs_8k);
+			ser.Sync("chr_regs", ref chr_regs_2k);
 			base.SyncState(ser);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WritePPU(int addr, byte value)
 		{
-			addr &= 0x1003;
-			chr_regs[addr & 0x03] = value;
-			
-			if (addr.Bit(12))
+			if (addr < 0x2000)
 			{
-				prg_regs[addr & 0x01] = (byte)(value & 0x0F);
+				switch (addr)
+				{
+					case 0x0000:
+						chr_regs_2k[0] = value;
+						break;
+					case 0x0001:
+						chr_regs_2k[1] = value;
+						break;
+					case 0x0002:
+						chr_regs_2k[2] = value;
+						break;
+					case 0x0003:
+						chr_regs_2k[3] = value;
+						break;
+					case 0x1000:
+						prg_regs_8k[0] = (byte)(value & 0x0F);
+						break;
+					case 0x1001:
+						prg_regs_8k[1] = (byte)(value & 0x0F);
+						break;
+				}
 			}
-
+			base.WritePPU(addr, value);
 		}
 
 		public override byte ReadPPU(int addr)
 		{
-			int reg_num = (addr >> 11) - 1;
 			if (addr < 0x2000)
 			{
-				return VROM[((chr_regs[reg_num] & chr_bank_mask_2k) * 0x800) + addr];
+				int bank_2k = (addr >> 11) - 1;
+				bank_2k = chr_regs_2k[bank_2k];
+				bank_2k &= chr_bank_mask_2k;
+				return VROM[(bank_2k * 0x800) + addr];
 			}
 			return base.ReadPPU(addr);
 		}
 
 		public override byte ReadPRG(int addr)
 		{
-			addr += 0x8000;
-			int reg_num;
-			if (addr < 0xA000)
-			{
-				reg_num = 0;
-			}
-			else if (addr < 0xC000)
-			{
-				reg_num = 1;
-			}
-			else if (addr < 0xE000)
-			{
-				reg_num = 2;
-			}
-			else 
-			{
-				reg_num = 3;
-			}
-			
-			return ROM[((prg_regs[reg_num] & prg_bank_mask_8k) * 0x2000) + (addr & 0x1FFF)];
+			int bank_8k = addr >> 13;
+			bank_8k = prg_regs_8k[bank_8k];
+			bank_8k &= prg_bank_mask_8k;
+			return ROM[(bank_8k * 0x2000) + (addr & 0x1FFF)];
 		}
 	}
 }
