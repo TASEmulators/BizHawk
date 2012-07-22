@@ -14,9 +14,14 @@ namespace BizHawk.MultiClient
 	public partial class LuaWriter : Form
 	{
 		public string CurrentFile = "";
+
+		bool changes = false;
+		bool hasChanged;
+		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
 		
         Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
         char[] Symbols = { '+','-','*','/','%','^','#','=','<','>','(',')','{','}','[',']',';',':',',','.' };
+
 
 		public LuaWriter()
 		{
@@ -25,6 +30,18 @@ namespace BizHawk.MultiClient
 
 		private void timer_Tick(object sender, EventArgs e)
 		{
+			if (!hasChanged)
+			{
+				return;
+			}
+
+			ProcessText();
+
+			hasChanged = false;
+		}
+
+		private void ProcessText()
+		{
 			int selPos = LuaText.SelectionStart;
 			int selChars = LuaText.SelectedText.Length;
 
@@ -32,11 +49,8 @@ namespace BizHawk.MultiClient
 			LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaDefaultTextColor);
 
 			ColorReservedWords();
-
 			ColorComments();
-
 			ColorStrings();
-
             ColorSymbols();
 
 			LuaText.Select(selPos, selChars);
@@ -167,7 +181,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
-
+		
 		private void ColorReservedWords()
 		{
 			foreach (Match keyWordMatch in keyWords.Matches(LuaText.Text))
@@ -195,7 +209,15 @@ namespace BizHawk.MultiClient
 			if (!String.IsNullOrWhiteSpace(CurrentFile))
 			{
 				LoadCurrentFile();
+				ProcessText();
+				NoChanges();
 			}
+		}
+
+		private void NoChanges()
+		{
+			changes = false;
+			MessageLabel.Text = CurrentFile;
 		}
 
 		private void LoadCurrentFile()
@@ -221,6 +243,8 @@ namespace BizHawk.MultiClient
 					LuaText.Text = luaText.ToString();
 				}
 			}
+
+			MessageLabel.Text = CurrentFile;
 		}
 
 		private void LuaWriter_DragEnter(object sender, DragEventArgs e)
@@ -237,6 +261,96 @@ namespace BizHawk.MultiClient
 				CurrentFile = filePaths[0];
 				LoadCurrentFile();
 			}
+		}
+
+		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!String.IsNullOrWhiteSpace(CurrentFile))
+			{
+				SaveScript();
+			}
+			else if (changes)
+			{
+				SaveScriptAs();
+				MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
+			}
+		}
+
+		private void SaveScript()
+		{
+			var file = new FileInfo(CurrentFile);
+
+			using (StreamWriter sw = new StreamWriter(CurrentFile))
+			{
+				foreach (string s in LuaText.Lines)
+				{
+					sw.WriteLine(s + '\n');
+				}
+			}
+
+			NoChanges();
+		}
+
+		private void SaveScriptAs()
+		{
+			var file = GetSaveFileFromUser(CurrentFile);
+			if (file != null)
+			{
+				CurrentFile = file.FullName;
+				SaveScript();
+				MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
+				Global.Config.RecentWatches.Add(file.FullName);
+			}
+		}
+
+		public static FileInfo GetSaveFileFromUser(string currentFile)
+		{
+			var sfd = new SaveFileDialog();
+			if (currentFile.Length > 0)
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
+			}
+			else if (!(Global.Emulator is NullEmulator))
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
+			}
+			else
+			{
+				sfd.FileName = "NULL";
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
+			}
+			sfd.Filter = "Watch Files (*.lua)|*.lua|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return null;
+			var file = new FileInfo(sfd.FileName);
+			return file;
+		}
+
+		private void LuaText_KeyUp(object sender, KeyEventArgs e)
+		{
+			hasChanged = true;
+		}
+
+		private void Changes()
+		{
+			changes = true;
+			MessageLabel.Text = CurrentFile + " *";
+		}
+
+		private void LuaText_TextChanged(object sender, EventArgs e)
+		{
+			Changes();
+		}
+
+		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveScriptAs();
 		}
 	}
 }
