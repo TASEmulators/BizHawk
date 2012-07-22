@@ -704,7 +704,14 @@ namespace BizHawk.MultiClient
 
 		private void EditToolstripButton_Click(object sender, EventArgs e)
 		{
-			EditScript();
+			if (Global.MainForm.INTERIM)
+			{
+				DoLuaWriter();
+			}
+			else
+			{
+				EditScript();
+			}
 		}
 
 		private void cutToolStripButton_Click(object sender, EventArgs e)
@@ -1230,7 +1237,7 @@ namespace BizHawk.MultiClient
 			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
 		}
 
-		private void toolStripButton1_Click_2(object sender, EventArgs e)
+		private void DoLuaWriter()
 		{
 			LuaWriter writer = new LuaWriter();
 			writer.Show();

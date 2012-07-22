@@ -94,7 +94,6 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.LuaListView = new BizHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -578,8 +577,7 @@
             this.toolStripButtonSeparator,
             this.toolStripSeparator2,
             this.toolStripButtonMoveUp,
-            this.toolStripButtonMoveDown,
-            this.toolStripButton1});
+            this.toolStripButtonMoveDown});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(584, 25);
@@ -670,16 +668,6 @@
 			this.toolStripButtonMoveDown.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButtonMoveDown.Text = "Move Down";
 			this.toolStripButtonMoveDown.Click += new System.EventHandler(this.toolStripButtonMoveDown_Click);
-			// 
-			// toolStripButton1
-			// 
-			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.ToolBox;
-			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButton1.Text = "hacky button for lua script editor";
-			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_2);
 			// 
 			// LuaListView
 			// 
@@ -816,6 +804,5 @@
         public System.Windows.Forms.RichTextBox OutputBox;
         private System.Windows.Forms.Label OutputMessages;
 		private System.Windows.Forms.ToolStripMenuItem onlineDocumentationToolStripMenuItem;
-		private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }
