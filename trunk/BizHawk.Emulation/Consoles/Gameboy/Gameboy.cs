@@ -285,6 +285,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				Cpu.ReadMemory = ReadMemoryBios;
 			Cpu.WriteMemory = WriteMemory;
 			Cpu.Reset();
+			Cpu.LogData();
 
 			//setup initial cpu registers. based on no evidence:
 			//registers which may be used to identify system type are judged to be important; and

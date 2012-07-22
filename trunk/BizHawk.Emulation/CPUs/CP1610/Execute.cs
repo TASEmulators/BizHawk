@@ -44,7 +44,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			{
 				int addrToAdvance;
 				if (logging)
-					log += Disassemble(RegisterPC, out addrToAdvance) + "\n";
+				{
+					log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
+					log.Flush();
+				}
 				int opcode = ReadMemory(RegisterPC++) & 0x3FF;
 				switch (opcode)
 				{
