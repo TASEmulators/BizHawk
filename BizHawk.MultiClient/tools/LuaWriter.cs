@@ -7,11 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace BizHawk.MultiClient
 {
 	public partial class LuaWriter : Form
 	{
+		public string CurrentFile = "";
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
 		public LuaWriter()
 		{
@@ -163,7 +165,51 @@ namespace BizHawk.MultiClient
 
 		private void LuaWriter_Load(object sender, EventArgs e)
 		{
+			if (!String.IsNullOrWhiteSpace(CurrentFile))
+			{
+				LoadCurrentFile();
+			}
+		}
 
+		private void LoadCurrentFile()
+		{
+			var file = new FileInfo(CurrentFile);
+			if (file.Exists == false)
+			{
+				return;
+			}
+
+			using (StreamReader sr = file.OpenText())
+			{
+				StringBuilder luaText = new StringBuilder();
+				string s = "";
+				while ((s = sr.ReadLine()) != null)
+				{
+					luaText.Append(s);
+					luaText.Append('\n');
+				}
+
+				if (luaText.Length > 0)
+				{
+					LuaText.Text = luaText.ToString();
+				}
+			}
+		}
+
+		private void LuaWriter_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+		}
+
+		private void LuaWriter_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (Path.GetExtension(filePaths[0]) == (".lua") || Path.GetExtension(filePaths[0]) == (".txt"))
+			{
+				//TODO: save changes
+				CurrentFile = filePaths[0];
+				LoadCurrentFile();
+			}
 		}
 	}
 }

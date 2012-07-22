@@ -1239,7 +1239,35 @@ namespace BizHawk.MultiClient
 
 		private void DoLuaWriter()
 		{
+			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			if (indexes.Count == 0)
+				return;
+
+			if (indexes.Count > 0)
+			{
+				//If/When we want multiple file editing
+				/*
+				for (int x = 0; x < indexes.Count; x++)
+				{
+					var item = luaList[indexes[x]];
+					if (!item.IsSeparator)
+					{
+						OpenLuaWriter(luaList[indexes[x]].Path);
+					}
+				}
+				*/
+				var item = luaList[indexes[0]];
+				if (!item.IsSeparator)
+				{
+					OpenLuaWriter(luaList[indexes[0]].Path);
+				}
+			}
+		}
+
+		private void OpenLuaWriter(string path)
+		{
 			LuaWriter writer = new LuaWriter();
+			writer.CurrentFile = path;
 			writer.Show();
 		}
 	}

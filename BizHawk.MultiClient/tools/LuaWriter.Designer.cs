@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
 			this.components = new System.ComponentModel.Container();
-			this.LuaText = new LuaWriterBox();
+			this.LuaText = new BizHawk.MultiClient.LuaWriterBox();
 			this.timer = new System.Windows.Forms.Timer(this.components);
 			this.SuspendLayout();
 			// 
@@ -52,6 +52,7 @@
 			// 
 			// LuaWriter
 			// 
+			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(843, 441);
@@ -59,6 +60,8 @@
 			this.Name = "LuaWriter";
 			this.Text = "LuaWriter";
 			this.Load += new System.EventHandler(this.LuaWriter_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.LuaWriter_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.LuaWriter_DragEnter);
 			this.ResumeLayout(false);
 
         }
