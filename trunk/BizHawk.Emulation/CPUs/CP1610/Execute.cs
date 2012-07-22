@@ -42,6 +42,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
             PendingCycles += cycles;
 			while (PendingCycles > 0)
 			{
+				int addrToAdvance;
+				if (!logging)
+					log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
 				int opcode = ReadMemory(RegisterPC++) & 0x3FF;
 				switch (opcode)
 				{
@@ -1494,6 +1497,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						throw new NotImplementedException();
 				}
 			}
+			LogData();
 		}
 	}
 }
