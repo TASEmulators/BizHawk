@@ -14,7 +14,10 @@ namespace BizHawk.MultiClient
 	public partial class LuaWriter : Form
 	{
 		public string CurrentFile = "";
-		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
+		
+        Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
+        char[] Symbols = { '+','-','*','/','%','^','#','=','<','>','(',')','{','}','[',']',';',':',',','.' };
+
 		public LuaWriter()
 		{
 			InitializeComponent();
@@ -26,7 +29,7 @@ namespace BizHawk.MultiClient
 			int selChars = LuaText.SelectedText.Length;
 
 			LuaText.SelectAll();
-			LuaText.SelectionColor = Color.Black;
+			LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaDefaultTextColor);
 
 			ColorReservedWords();
 
@@ -34,8 +37,27 @@ namespace BizHawk.MultiClient
 
 			ColorStrings();
 
+            ColorSymbols();
+
 			LuaText.Select(selPos, selChars);
 		}
+
+        private void ColorSymbols()
+        {
+            foreach (char mark in Symbols)
+            {
+                int currPos = 0;
+                while (LuaText.Find(mark.ToString(), currPos, RichTextBoxFinds.None) >= 0)
+                {
+                    if (LuaText.SelectionColor.ToArgb() != Global.Config.LuaCommentColor && LuaText.SelectionColor.ToArgb() != Global.Config.LuaStringColor)
+                        LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaSymbolsColor);
+                    currPos = LuaText.SelectionStart + 1;
+
+                    if (currPos == LuaText.Text.Length)
+                        break;
+                }
+            }
+        }
 
 		private void ColorStrings()
 		{
@@ -45,56 +67,61 @@ namespace BizHawk.MultiClient
 			foreach (char mark in chars)
 			{
 				firstMark = LuaText.Find(mark.ToString());
-				while (firstMark > 0)
-				{
-					opening = firstMark;
-					if (LuaText.GetLineFromCharIndex(opening) + 1 == LuaText.Lines.Count())
-						endLine = LuaText.Text.Length - 1;
-					else
-						endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(opening) + 1) - 1;
+                while (firstMark >= 0)
+                {
+                    if (LuaText.SelectionColor.ToArgb() != Global.Config.LuaCommentColor)
+                    {
+                        opening = firstMark;
+                        if (LuaText.GetLineFromCharIndex(opening) + 1 == LuaText.Lines.Count())
+                            endLine = LuaText.Text.Length - 1;
+                        else
+                            endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(opening) + 1) - 1;
 
-					ending = 0;
+                        ending = 0;
 
-					if (opening != LuaText.Text.Length - 1)
-					{
-						if (opening + 1 != endLine)
-						{
-							ending = LuaText.Find(mark.ToString(), opening + 1, endLine, RichTextBoxFinds.MatchCase);
-							if (ending > 0)
-							{
-								while (ending > 0)
-								{
-									if (!IsThisPartOfTheString(LuaText.Text.Substring(opening, ending - opening + 1)))
-										break;
-									else
-										ending++;
+                        if (opening != LuaText.Text.Length - 1)
+                        {
+                            if (opening + 1 != endLine)
+                            {
+                                ending = LuaText.Find(mark.ToString(), opening + 1, endLine, RichTextBoxFinds.MatchCase);
+                                if (ending > 0)
+                                {
+                                    while (ending > 0)
+                                    {
+                                        if (!IsThisPartOfTheString(LuaText.Text.Substring(opening, ending - opening + 1)))
+                                            break;
+                                        else
+                                            ending++;
 
-									ending = LuaText.Find(mark.ToString(), ending, endLine, RichTextBoxFinds.MatchCase);
-								}
-							}
-							else
-								ending = endLine;
-						}
-						else
-							ending = endLine;
-					}
-					else
-						ending = endLine;
+                                        ending = LuaText.Find(mark.ToString(), ending, endLine, RichTextBoxFinds.MatchCase);
+                                    }
+                                }
+                                else
+                                    ending = endLine;
+                            }
+                            else
+                                ending = endLine;
+                        }
+                        else
+                            ending = endLine;
 
-					if (opening != LuaText.Text.Length)
-					{
-						LuaText.Select(opening, ending - opening + 1);
-						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
-						if (ending >= LuaText.Text.Length)
-							ending++;
-						else
-							break;
+                        if (opening != LuaText.Text.Length)
+                        {
+                            LuaText.Select(opening, ending - opening + 1);
+                            LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
+                            if (ending >= LuaText.Text.Length)
+                                ending++;
+                            else
+                                break;
 
-						firstMark = LuaText.Find(mark.ToString(), ending + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
-					}
-					else
-						break;
-				}
+                            firstMark = LuaText.Find(mark.ToString(), ending + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+                        }
+                        else
+                            break;
+                    }
+                    else
+                        firstMark = LuaText.Find(mark.ToString(), firstMark + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+                }
 			}
 		}
 
@@ -164,7 +191,7 @@ namespace BizHawk.MultiClient
 		}
 
 		private void LuaWriter_Load(object sender, EventArgs e)
-		{
+        {
 			if (!String.IsNullOrWhiteSpace(CurrentFile))
 			{
 				LoadCurrentFile();
