@@ -184,10 +184,12 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper012.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper044.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper074.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper115.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper182.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper189.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper191.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper192.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\NES-QJ.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TQROM.cs" />
