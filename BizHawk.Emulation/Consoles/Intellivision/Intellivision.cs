@@ -48,21 +48,14 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Cpu.ReadMemory = ReadMemory;
 			Cpu.WriteMemory = WriteMemory;
 			Cpu.RegisterPC = 0x1000;
+			Cpu.LogData();
 
 			CoreOutputComm = new CoreOutputComm();
 		}
 
 		public void FrameAdvance(bool render)
 		{
-			try
-			{
-				Cpu.Execute(999); // execute some cycles. this will do nothing useful until a memory mapper is created.
-			}
-			catch (Exception e)
-			{
-				Cpu.Close();
-				throw e;
-			}
+			Cpu.Execute(999); // execute some cycles. this will do nothing useful until a memory mapper is created.
 		}
 
 

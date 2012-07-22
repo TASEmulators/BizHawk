@@ -792,7 +792,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					src = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1));
 					addrToAdvance = 2;
-					return "MVO R" + src + ", " + string.Format("${0:X4}", addr);
+					return string.Format("MVO R{0:d}, ${1:X4}", src, addr);
 				case 0x248:
 				case 0x249:
 				case 0x24A:
@@ -863,7 +863,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1));
 					addrToAdvance = 2;
-					return "MVI R" + dest + ", " + string.Format("${0:X4}", addr);
+					return string.Format("MVI R{0:d}, ${1:X4}", dest, addr);
 				case 0x288:
 				case 0x289:
 				case 0x28A:
@@ -934,7 +934,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1));
 					addrToAdvance = 2;
-					return "ADD R" + dest + ", " + string.Format("${0:X4}", addr);
+					return string.Format("ADD R{0:d}, ${1:X4}", dest, addr);
 				case 0x2C8:
 				case 0x2C9:
 				case 0x2CA:
@@ -1005,7 +1005,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					mem = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1));
 					addrToAdvance = 2;
-					return "SUB R" + mem + ", " + string.Format("${0:X4}", addr);
+					return string.Format("SUB R{0:d}, ${1:X4}", mem, addr);
 				case 0x308:
 				case 0x309:
 				case 0x30A:
@@ -1076,7 +1076,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					mem = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1));
 					addrToAdvance = 2;
-					return "CMP R" + mem + ", " + string.Format("${0:X4}", addr);
+					return string.Format("CMP R{0:d}, ${1:X4}", mem, addr);
 				case 0x348:
 				case 0x349:
 				case 0x34A:
@@ -1147,7 +1147,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					mem = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1));
 					addrToAdvance = 2;
-					return "AND R" + mem + ", " + string.Format("${0:X4}", addr);
+					return string.Format("AND R{0:d}, ${1:X4}", mem, addr);
 				case 0x388:
 				case 0x389:
 				case 0x38A:
@@ -1218,7 +1218,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					mem = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1));
 					addrToAdvance = 2;
-					return "XOR R" + mem + ", " + string.Format("${0:X4}", addr);
+					return string.Format("XOR R{0:d}, ${1:X4}", mem, addr);
 				case 0x3C8:
 				case 0x3C9:
 				case 0x3CA:

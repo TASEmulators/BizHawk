@@ -43,8 +43,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			while (PendingCycles > 0)
 			{
 				int addrToAdvance;
-				if (!logging)
-					log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
+				if (logging)
+					log += Disassemble(RegisterPC, out addrToAdvance) + "\n";
 				int opcode = ReadMemory(RegisterPC++) & 0x3FF;
 				switch (opcode)
 				{
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						addr = (ushort)(((decle2 << 8) & 0xFC00) | (decle3 & 0x3FF));
 						if (dest != 0x7)
 							// Store the return address.
-							Register[dest] = (ushort)((RegisterPC + 1) & 0xFFFF);
+							Register[dest] = (ushort)(RegisterPC & 0xFFFF);
 						// ff indicates how to affect the Interrupt (I) flag in the CP1610
 						switch (decle2 & 0x3)
 						{
@@ -1496,8 +1496,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x3FF:
 						throw new NotImplementedException();
 				}
+				LogData();
 			}
-			LogData();
 		}
 	}
 }
