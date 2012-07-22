@@ -190,6 +190,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper189.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper191.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper192.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper205.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\NES-QJ.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TQROM.cs" />
