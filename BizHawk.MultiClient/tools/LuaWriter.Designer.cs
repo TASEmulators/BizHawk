@@ -35,11 +35,13 @@
             // 
             // LuaText
             // 
+            this.LuaText.AcceptsTab = true;
             this.LuaText.Location = new System.Drawing.Point(12, 12);
             this.LuaText.Name = "LuaText";
             this.LuaText.Size = new System.Drawing.Size(819, 417);
             this.LuaText.TabIndex = 0;
             this.LuaText.Text = "";
+            this.LuaText.WordWrap = false;
             this.LuaText.ZoomFactor = 2F;
             // 
             // timer
