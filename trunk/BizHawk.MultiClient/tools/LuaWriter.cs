@@ -32,129 +32,82 @@ namespace BizHawk.MultiClient
 
             ColorStrings();
 
-			ColorCharacters();
-
             LuaText.Select(selPos, selChars);
         }
 
-		private void ColorCharacters()
-		{
-			int firstApostrophe = LuaText.Find("'", 0);
-			while (firstApostrophe >= 0)
-			{
-				if (LuaText.SelectionColor != Color.FromArgb(Global.Config.LuaCommentColor))
-				{
-					int opening = firstApostrophe;
-					int endLine;
-
-					if (LuaText.Lines[LuaText.GetLineFromCharIndex(LuaText.GetFirstCharIndexOfCurrentLine())] == LuaText.Lines[LuaText.Lines.Length - 1])
-						endLine = LuaText.Text.Length;
-					else
-						endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(opening) + 1) - 1;
-
-					int ending = LuaText.Find("'", opening + 1, endLine, RichTextBoxFinds.None);
-					if (ending > 0)
-						while (ending > 0)
-						{
-							if (LuaText.Text[ending - 1] == '\\')
-								ending++;
-							else
-								break;
-
-							if (ending > endLine)
-							{
-								ending = endLine;
-								break;
-							}
-
-							ending = LuaText.Find("'", ending, endLine, RichTextBoxFinds.None);
-						}
-					else
-						ending = endLine;
-
-					if (opening != ending)
-					{
-						LuaText.Select(opening, ending - opening + 1);
-						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
-						if (ending != LuaText.Text.Length - 1)
-							firstApostrophe = LuaText.Find("'", ending + 1, RichTextBoxFinds.None);
-						else
-							break;
-					}
-					else
-						if (endLine != LuaText.Text.Length)
-							firstApostrophe = LuaText.Find("'", endLine + 1, RichTextBoxFinds.None);
-						else
-							break;
-				}
-				else
-				{
-					if (LuaText.SelectionStart == LuaText.Text.Length - 1)
-						break;
-					else
-						firstApostrophe = LuaText.Find("'", LuaText.SelectionStart + 1, RichTextBoxFinds.None);
-				}
-			}
-		}
-
         private void ColorStrings()
         {
-			int firstQuotation = LuaText.Find("\"", 0);
-			while (firstQuotation >= 0)
-			{
-				if (LuaText.SelectionColor != Color.FromArgb(Global.Config.LuaCommentColor))
-				{
-					int opening = firstQuotation;
-					int endLine;
+            int firstMark, opening, ending, endLine;
 
-					if (LuaText.Lines[LuaText.GetLineFromCharIndex(LuaText.GetFirstCharIndexOfCurrentLine())] == LuaText.Lines[LuaText.Lines.Length - 1])
-						endLine = LuaText.Text.Length;
-					else
-						endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(opening) + 1) - 1;
+            char[] chars = { '"', '\'' };
+            foreach (char mark in chars)
+            {
+                firstMark = LuaText.Find(mark.ToString());
+                while (firstMark > 0)
+                {
+                    opening = firstMark;
+                    if (LuaText.GetLineFromCharIndex(opening) + 1 == LuaText.Lines.Count())
+                        endLine = LuaText.Text.Length - 1;
+                    else
+                        endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(opening) + 1) - 1;
+                    
+                    ending = 0;
 
-					int ending = LuaText.Find("\"", opening + 1, endLine, RichTextBoxFinds.None);
-					if (ending > 0)
-						while (ending > 0)
-						{
-							if (LuaText.Text[ending - 1] == '\\')
-								ending++;
-							else
-								break;
+                    if (opening != LuaText.Text.Length - 1)
+                    {
+                        if (opening + 1 != endLine)
+                        {
+                            ending = LuaText.Find(mark.ToString(), opening + 1, endLine, RichTextBoxFinds.MatchCase);
+                            if (ending > 0)
+                            {
+                                while (ending > 0)
+                                {
+                                    if (!IsThisPartOfTheString(LuaText.Text.Substring(opening, ending - opening + 1)))
+                                        break;
+                                    else
+                                        ending++;
 
-							if (ending > endLine)
-							{
-								ending = endLine;
-								break;
-							}
+                                    ending = LuaText.Find(mark.ToString(), ending, endLine, RichTextBoxFinds.MatchCase);
+                                }
+                            }
+                            else
+                                ending = endLine;
+                        }
+                        else
+                            ending = endLine;
+                    }
+                    else
+                        ending = endLine;
 
-							ending = LuaText.Find("\"", ending, endLine, RichTextBoxFinds.None);
-						}
-					else
-						ending = endLine;
+                    if (opening != LuaText.Text.Length)
+                    {
+                        LuaText.Select(opening, ending - opening + 1);
+                        LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
+                        if (ending >= LuaText.Text.Length)
+                            ending++;
+                        else
+                            break;
 
-					if (opening != ending)
-					{
-						LuaText.Select(opening, ending - opening + 1);
-						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
-						if (ending != LuaText.Text.Length - 1)
-							firstQuotation = LuaText.Find("\"", ending + 1, RichTextBoxFinds.None);
-						else
-							break;
-					}
-					else
-						if (endLine != LuaText.Text.Length)
-							firstQuotation = LuaText.Find("\"", endLine + 1, RichTextBoxFinds.None);
-						else
-							break;
-				}
-				else
-				{
-					if (LuaText.SelectionStart == LuaText.Text.Length - 1)
-						break;
-					else
-						firstQuotation = LuaText.Find("\"", LuaText.SelectionStart + 1, RichTextBoxFinds.None);
-				}
-			}
+                        firstMark = LuaText.Find(mark.ToString(), ending + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+                    }
+                    else
+                        break;
+                }
+            }
+        }
+
+        private bool IsThisPartOfTheString(string wholestring)
+        {
+            int ammount = 0;
+            for (int x = wholestring.Length - 2; x > -1; x--)
+            {
+                if (wholestring[x] == '\\')
+                    ammount++;
+                else
+                    break;
+            }
+
+            return !(ammount % 2 == 0);
         }
 
         private void ColorComments()
@@ -193,7 +146,7 @@ namespace BizHawk.MultiClient
                 char before = ' ', after = ' ';
 
                 if (keyWordMatch.Index > 0)
-                    if(keyWordMatch.Value != "if" && LuaText.Text.Substring(keyWordMatch.Index - 4, 4) != "else")
+                    if(keyWordMatch.Index > 5 && keyWordMatch.Value != "if" && LuaText.Text.Substring(keyWordMatch.Index - 4, 4) != "else")
                         before = LuaText.Text[keyWordMatch.Index - 1];
 
                 if (keyWordMatch.Index + keyWordMatch.Length != LuaText.Text.Length)
