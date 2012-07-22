@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 
 namespace BizHawk.Emulation.CPUs.CP1610
 {
@@ -17,5 +15,42 @@ namespace BizHawk.Emulation.CPUs.CP1610
 
 		public Func<ushort, ushort> ReadMemory;
 		public Action<ushort, ushort> WriteMemory;
+
+		private bool logging = true;
+		private TextWriter log;
+
+		public CP1610()
+		{
+			if (logging)
+				log = File.CreateText("log.txt");
+		}
+
+		~CP1610()
+		{
+			Close();
+		}
+
+		public void Close()
+		{
+			log.Close();
+		}
+
+		public void LogData()
+		{
+			if (!logging)
+				return;
+			for (int register = 0; register <= 5; register++)
+				log.WriteLine("R" + register + " = {0:X4}", Register[register]);
+			log.WriteLine("SP = {0:X4}", RegisterSP);
+			log.WriteLine("PC = {0:X4}", RegisterPC);
+			log.WriteLine("S = {0:X4}", FlagS);
+			log.WriteLine("C = {0:X4}", FlagC);
+			log.WriteLine("Z = {0:X4}", FlagZ);
+			log.WriteLine("O = {0:X4}", FlagO);
+			log.WriteLine("I = {0:X4}", FlagI);
+			log.WriteLine("D = {0:X4}", FlagD);
+			log.WriteLine("------");
+			log.WriteLine();
+		}
 	}
 }
