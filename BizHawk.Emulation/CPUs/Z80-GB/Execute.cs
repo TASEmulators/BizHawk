@@ -41,7 +41,6 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 
 		public void ExecuteInstruction()
 		{
-			LogCPU();
 			byte TB; byte TB2; sbyte TSB; ushort TUS; int TI1; int TI2; int TIR;
 			while (RegPC.Word == 0x031A)
 				break;
@@ -2243,6 +2242,7 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 					break;
 				default: throw new Exception("unhandled opcode");
 			}
+			LogData();
 		}
 
 		void CheckIrq()

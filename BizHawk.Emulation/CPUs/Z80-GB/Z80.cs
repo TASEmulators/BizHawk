@@ -9,15 +9,19 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 {
 	public sealed partial class Z80
 	{
-		private bool logging = false;
-		private TextWriter log;
+		private static bool logging = false;
+		private static StreamWriter log;
+
+		static Z80()
+		{
+			if (logging)
+				log = new StreamWriter("log_Z80.txt");
+		}
 
 		public Z80()
 		{
 			InitializeTables();
 			Reset();
-			if (logging)
-				log = File.CreateText("log.txt");
 		}
 
 		public void Reset()
@@ -149,7 +153,7 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 			PendingCycles = reader.ReadInt32();
 		}
 
-		private void LogCPU()
+		public void LogData()
 		{
 			if (!logging)
 				return;
@@ -161,6 +165,7 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 			log.WriteLine("PC {0:X4}", RegPC.Word);
 			log.WriteLine("------");
 			log.WriteLine();
+			log.Flush();
 		}
 	}
 }
