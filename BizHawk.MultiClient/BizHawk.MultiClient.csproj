@@ -357,6 +357,9 @@
     <Compile Include="tools\LuaWriter.designer.cs">
       <DependentUpon>LuaWriter.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\LuaWriterBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\WatchCommon.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
