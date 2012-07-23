@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int irq_countdown;
 
 		//volatile state
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		public ByteBuffer chr_regs_1k = new ByteBuffer(8);
 		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 
 		//configuration
