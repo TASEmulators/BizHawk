@@ -79,6 +79,26 @@ namespace BizHawk.MultiClient
 				};
 			}
 
+			/// <summary>
+			/// get the default format preset (from config files)
+			/// </summary>
+			/// <returns></returns>
+			public static FormatPreset GetDefaultPreset()
+			{
+				FormatPreset[] fps = GetPresets();
+
+				foreach (var fp in fps)
+				{
+					if (fp.ToString() == Global.Config.VideoWriter)
+					{
+						if (fp.custom)
+							return fp;
+					}
+				}
+				// default to xvid?
+				return fps[1];
+			}
+
 			public void Dispose()
 			{
 			}

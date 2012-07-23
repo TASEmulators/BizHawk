@@ -232,6 +232,8 @@ namespace BizHawk.MultiClient
 
 		public void Dispose()
 		{
+			if (ffmpeg != null)
+				CloseFile();
 		}
 
 
@@ -273,6 +275,17 @@ namespace BizHawk.MultiClient
 		{
 			// this needs to interface with the codec token
 			return token.defaultext;
+		}
+
+
+		public void SetDefaultVideoCodecToken()
+		{
+			this.token = FFmpegWriterForm.FormatPreset.GetDefaultPreset();
+		}
+
+		public string ShortName()
+		{
+			return "ffmpeg";
 		}
 	}
 }

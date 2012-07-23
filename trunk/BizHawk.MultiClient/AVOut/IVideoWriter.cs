@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using BizHawk.MultiClient;
 
 namespace BizHawk
 {
@@ -10,6 +11,11 @@ namespace BizHawk
         /// sets the codec token to be used for video compression
         /// </summary>
         void SetVideoCodecToken(IDisposable token);
+
+		/// <summary>
+		/// sets to a default video codec token without calling any UI - for automated dumping
+		/// </summary>
+		void SetDefaultVideoCodecToken();
 
 
         // why no OpenFile(IEnumerator<string>) ?
@@ -83,5 +89,50 @@ namespace BizHawk
 		/// what default extension this writer would like to put on its output
 		/// </summary>
 		string DesiredExtension();
+		/// <summary>
+		/// name that command line parameters can refer to
+		/// </summary>
+		/// <returns></returns>
+		string ShortName();
     }
+
+	/// <summary>
+	/// contains methods to find all IVideoWriter
+	/// </summary>
+	public static class VideoWriterInventory
+	{
+		public static IEnumerable<IVideoWriter> GetAllVideoWriters()
+		{
+			var ret = new IVideoWriter[]
+			{ 
+				new AviWriter(),
+				new JMDWriter(),
+				new WavWriterV(),
+				new FFmpegWriter(),
+				new NutWriter()
+			};
+			return ret;
+		}
+
+		/// <summary>
+		/// find an IVideoWriter by its short name
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public static IVideoWriter GetVideoWriter(string name)
+		{
+			IVideoWriter ret = null;
+
+			var vws = GetAllVideoWriters();
+
+			foreach (var vw in vws)
+				if (vw.ShortName() == name)
+					ret = vw;
+
+			foreach (var vw in vws)
+				if (vw != ret)
+					vw.Dispose();
+			return ret;
+		}
+	}
 }

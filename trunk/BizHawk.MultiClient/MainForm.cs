@@ -82,6 +82,12 @@ namespace BizHawk.MultiClient
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
 
+		/// <summary>
+		/// number of frames to autodump
+		/// </summary>
+		int autoDumpLength = 0;
+
+
 		public MainForm(string[] args)
 		{
 			Global.MovieSession = new MovieSession();
@@ -168,6 +174,9 @@ namespace BizHawk.MultiClient
 			string cmdRom = null;
 			string cmdLoadState = null;
 			string cmdMovie = null;
+			string cmdDumpType = null;
+			string cmdDumpName = null;
+
 			for (int i = 0; i < args.Length; i++)
 			{
 				//for some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
@@ -184,6 +193,12 @@ namespace BizHawk.MultiClient
 					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
 				else if (arg.StartsWith("--movie="))
 					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+				else if (arg.StartsWith("--dump-type="))
+					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
+				else if (arg.StartsWith("--dump-name="))
+					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
+				else if (arg.StartsWith("--dump-length="))
+					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out autoDumpLength);
 				else
 					cmdRom = arg;
 			}
@@ -208,6 +223,9 @@ namespace BizHawk.MultiClient
 				{
 					Movie m = new Movie(cmdMovie, MOVIEMODE.PLAY);
 					ReadOnly = true;
+					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
+					if (autoDumpLength == 0)
+						autoDumpLength = m.LogLength();
 					StartNewMovie(m, false);
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
@@ -267,6 +285,12 @@ namespace BizHawk.MultiClient
 			{
 				debuggerToolStripMenuItem.Enabled = false;
 				//luaConsoleToolStripMenuItem.Enabled = false;
+			}
+
+			// start dumping, if appropriate
+			if (cmdDumpType != null && cmdDumpName != null)
+			{
+				RecordAVI(cmdDumpType, cmdDumpName);
 			}
 		}
 
@@ -1966,6 +1990,13 @@ namespace BizHawk.MultiClient
 
 					CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
 					CurrAviWriter.AddSamples(temp);
+
+					if (autoDumpLength > 0)
+					{
+						autoDumpLength--;
+						if (autoDumpLength == 0) // finish
+							StopAVI();
+					}
 				}
 
 
@@ -2762,22 +2793,66 @@ namespace BizHawk.MultiClient
 			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlLightLight;
 		}
 
+		/// <summary>
+		/// start avi recording, unattended
+		/// </summary>
+		/// <param name="videowritername">match the short name of an ivideowriter</param>
+		/// <param name="filename">filename to save to</param>
+		public void RecordAVI(string videowritername, string filename)
+		{
+			_RecordAVI(videowritername, filename, true);
+		}
+
+		/// <summary>
+		/// start avi recording, asking user for filename and options
+		/// </summary>
 		public void RecordAVI()
+		{
+			_RecordAVI(null, null, false);
+		}
+
+		/// <summary>
+		/// start avi recording
+		/// </summary>
+		/// <param name="videowritername"></param>
+		/// <param name="filename"></param>
+		/// <param name="unattended"></param>
+		private void _RecordAVI(string videowritername, string filename, bool unattended)
 		{
 			if (CurrAviWriter != null) return;
 
 			// select IVideoWriter to use
+			IVideoWriter aw = null;
+			var writers = VideoWriterInventory.GetAllVideoWriters();
 
-			var writers = new IVideoWriter[]{new AviWriter(), new JMDWriter(), new WavWriterV(), new FFmpegWriter(), new NutWriter()};
-			IVideoWriter aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm);
+			if (unattended)
+			{
+				foreach (var w in writers)
+				{
+					if (w.ShortName() == videowritername)
+					{
+						aw = w;
+						break;
+					}
+				}
+			}
+			else
+			{
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm);
+			}
+
 			foreach (var w in writers)
 			{
 				if (w != aw)
 					w.Dispose();
 			}
+
 			if (aw == null)
 			{
-				Global.OSD.AddMessage("A/V capture canceled.");
+				if (unattended)
+					Global.OSD.AddMessage(string.Format("Couldn't start video writer \"{0}\"", videowritername));
+				else
+					Global.OSD.AddMessage("A/V capture canceled.");
 				return;
 			}
 
@@ -2789,42 +2864,53 @@ namespace BizHawk.MultiClient
 
 				// select codec token
 				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
-
-				var token = aw.AcquireVideoCodecToken(Global.MainForm);
-				if (token == null)
+				if (unattended)
 				{
-					Global.OSD.AddMessage("A/V capture canceled.");
-					aw.Dispose();
-					return;
-				}
-				aw.SetVideoCodecToken(token);
-
-				// select file to save to
-
-				var sfd = new SaveFileDialog();
-				if (!(Global.Emulator is NullEmulator))
-				{
-					sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+					aw.SetDefaultVideoCodecToken();
 				}
 				else
 				{
-					sfd.FileName = "NULL";
-					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+					var token = aw.AcquireVideoCodecToken(Global.MainForm);
+					if (token == null)
+					{
+						Global.OSD.AddMessage("A/V capture canceled.");
+						aw.Dispose();
+						return;
+					}
+					aw.SetVideoCodecToken(token);
 				}
-				sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
-				Global.Sound.StopSound();
-				var result = sfd.ShowDialog();
-				Global.Sound.StartSound();
-
-				if (result == DialogResult.Cancel)
+				// select file to save to
+				if (unattended)
 				{
-					aw.Dispose();
-					return;
+					aw.OpenFile(filename);
 				}
+				else
+				{
+					var sfd = new SaveFileDialog();
+					if (!(Global.Emulator is NullEmulator))
+					{
+						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+					}
+					else
+					{
+						sfd.FileName = "NULL";
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+					}
+					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
-				aw.OpenFile(sfd.FileName);
+					Global.Sound.StopSound();
+					var result = sfd.ShowDialog();
+					Global.Sound.StartSound();
+
+					if (result == DialogResult.Cancel)
+					{
+						aw.Dispose();
+						return;
+					}
+					aw.OpenFile(sfd.FileName);
+				}
 
 				//commit the avi writing last, in case there were any errors earlier
 				CurrAviWriter = aw;
@@ -2852,6 +2938,7 @@ namespace BizHawk.MultiClient
 				return;
 			}
 			CurrAviWriter.CloseFile();
+			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
 			Global.OSD.AddMessage("AVI capture stopped");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
