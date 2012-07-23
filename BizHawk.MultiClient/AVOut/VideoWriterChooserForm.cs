@@ -25,14 +25,17 @@ namespace BizHawk.MultiClient
 		/// <param name="list">list of IVideoWriters to choose from</param>
 		/// <param name="owner">parent window</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
-		public static IVideoWriter DoVideoWriterChoserDlg(IVideoWriter[] list, IWin32Window owner)
+		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<IVideoWriter> list, IWin32Window owner)
 		{
 			VideoWriterChooserForm dlg = new VideoWriterChooserForm();
 
 			dlg.label1.Text = "Description:";
 			dlg.label2.Text = "";
 
-			dlg.listBox1.Items.AddRange(list);
+			dlg.listBox1.BeginUpdate();
+			foreach (var vw in list)
+				dlg.listBox1.Items.Add(vw);
+			dlg.listBox1.EndUpdate();
 
 			int i = dlg.listBox1.FindStringExact(Global.Config.VideoWriter);
 			if (i != ListBox.NoMatches)
@@ -61,6 +64,5 @@ namespace BizHawk.MultiClient
 			else
 				label2.Text = "";
 		}
-
 	}
 }

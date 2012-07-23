@@ -21,7 +21,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			// ignored
@@ -122,8 +121,10 @@ namespace BizHawk.MultiClient
 
 		public void Dispose()
 		{
+			if (current != null)
+				endsegment();
+			baseName = null;
 		}
-
 
 		public override string ToString()
 		{
@@ -136,6 +137,17 @@ namespace BizHawk.MultiClient
 		}
 
 		public string DesiredExtension()
+		{
+			return "nut";
+		}
+
+
+		public void SetDefaultVideoCodecToken()
+		{
+			// ignored
+		}
+
+		public string ShortName()
 		{
 			return "nut";
 		}

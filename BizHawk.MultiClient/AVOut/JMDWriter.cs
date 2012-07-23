@@ -780,5 +780,26 @@ namespace BizHawk.MultiClient
 		{
 			return "jmd";
 		}
+
+
+		public void SetDefaultVideoCodecToken()
+		{
+			CodecToken ct = new CodecToken();
+
+			// load from config and sanitize
+			int t = Math.Min(Math.Max(Global.Config.JMDThreads, 1), 6);
+
+			int c = Math.Min(Math.Max(Global.Config.JMDCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
+
+			ct.compressionlevel = c;
+			ct.numthreads = t;
+
+			token = ct;
+		}
+
+		public string ShortName()
+		{
+			return "jmd";
+		}
 	}
 }
