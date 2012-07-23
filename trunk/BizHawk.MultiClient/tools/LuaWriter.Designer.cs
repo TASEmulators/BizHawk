@@ -113,17 +113,17 @@
 			// 
 			// fontToolStripMenuItem
 			// 
-			this.fontToolStripMenuItem.Enabled = false;
 			this.fontToolStripMenuItem.Name = "fontToolStripMenuItem";
 			this.fontToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-			this.fontToolStripMenuItem.Text = "Font";
+			this.fontToolStripMenuItem.Text = "&Font";
+			this.fontToolStripMenuItem.Click += new System.EventHandler(this.fontToolStripMenuItem_Click);
 			// 
 			// syntaxHighlightingToolStripMenuItem
 			// 
-			this.syntaxHighlightingToolStripMenuItem.Enabled = false;
 			this.syntaxHighlightingToolStripMenuItem.Name = "syntaxHighlightingToolStripMenuItem";
 			this.syntaxHighlightingToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-			this.syntaxHighlightingToolStripMenuItem.Text = "Syntax Highlighting";
+			this.syntaxHighlightingToolStripMenuItem.Text = "&Syntax Highlighting";
+			this.syntaxHighlightingToolStripMenuItem.Click += new System.EventHandler(this.syntaxHighlightingToolStripMenuItem_Click);
 			// 
 			// MessageLabel
 			// 
