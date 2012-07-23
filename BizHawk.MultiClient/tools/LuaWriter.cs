@@ -18,14 +18,13 @@ namespace BizHawk.MultiClient
 		//Line numbers
 		//Option to toggle line numbers
 		//Go to line number Ctrl+G
-		//Syntax highlighting on emulua libraries
 		//Auto-complete drop down on functions in libraries
 		//intellisense on library functions
 		//New lua script menu item on console
 		//Open up a basic while true do emu.frameadvance() end code block on new lua script
 		//Option to turn off basic lua script
 		//Color config menu item
-		//Font config menu item
+		//Load/Save font
 		//Tool strip
 		//function toolstrip button (inserts a function end block and puts cursor on blank line between them
 		//when pressing enter on function blah, it should put the end afterwards
@@ -41,6 +40,7 @@ namespace BizHawk.MultiClient
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
 		char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		public Regex libraryWords;
+		Font LuaTextFont = new Font("Courier New", 8);
 
 		public LuaWriter()
 		{
@@ -425,6 +425,23 @@ namespace BizHawk.MultiClient
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveScriptAs();
+		}
+
+		private void syntaxHighlightingToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LuaWriterColorConfig l = new LuaWriterColorConfig();
+			l.ShowDialog();
+		}
+
+		private void fontToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FontDialog f = new FontDialog();
+			DialogResult result = f.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				LuaText.Font = LuaTextFont = f.Font;
+				
+			}
 		}
 	}
 }
