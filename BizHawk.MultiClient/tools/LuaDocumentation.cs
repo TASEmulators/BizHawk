@@ -37,6 +37,20 @@ namespace BizHawk.MultiClient.tools
 			return libs.ToList();
 		}
 
+		public List<string> GetFunctionsByLibrary(string library)
+		{
+			List<string> functions = new List<string>();
+			for (int i = 0; i < FunctionList.Count; i++)
+			{
+				if (FunctionList[i].library == library)
+				{
+					functions.Add(FunctionList[i].name);
+				}
+			}
+
+			return functions;
+		}
+
 		public class LibraryFunction
 		{
 			public LibraryFunction(string method_lib, string method_name, System.Reflection.MethodInfo method)
