@@ -15,6 +15,7 @@ namespace BizHawk.MultiClient
 	public partial class LuaWriter : Form
 	{
 		//TODO:
+        //make functions is string part of string or comment since the actual way of validating it isn't correct
 		//fix tabs (tab should be 4 characters)
 		//Line numbers
 		//Option to toggle line numbers
@@ -228,14 +229,23 @@ namespace BizHawk.MultiClient
 		{
 			foreach (Match libraryWordMatch in libraryWords.Matches(LuaText.Text))
 			{
-				if (libraryWordMatch.Index > 0)
+				if (libraryWordMatch.Index >= 0)
 				{
-					if (!IsAlphaNumeric(LuaText.Text[libraryWordMatch.Index - 1]))
+                    char before = ' ', after = ' ';
+
+                    if (libraryWordMatch.Index > 0)
+                        before = LuaText.Text[libraryWordMatch.Index - 1];
+
+                    if (libraryWordMatch.Index + libraryWordMatch.Length != LuaText.Text.Length)
+                        after = LuaText.Text[libraryWordMatch.Index + libraryWordMatch.Length];
+
+					if (!IsAlphaNumeric(before))
 					{
-						if (LuaText.Text[libraryWordMatch.Index + libraryWordMatch.Length] == '.')
+						if (after == '.')
 						{
 							LuaText.Select(libraryWordMatch.Index, libraryWordMatch.Length);
-							LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
+                            if(LuaText.SelectionColor.ToArgb() != Global.Config.LuaCommentColor && LuaText.SelectionColor.ToArgb() != Global.Config.LuaStringColor)
+							    LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
 						}
 					}
 				}
