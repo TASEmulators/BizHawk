@@ -132,6 +132,7 @@ sha1:B6D1C372A38D196112AA98905C709AD844BD6627		Super 35-in-1 (6-in-1 VT5201)	NES
 
 ;chinese shit
 sha1:BFA31777E077E64AF0E274B5A22B57C6765D36E1		Fan Kong Jing Ying (Unl) (Ch)	NES		board=MAPPER241;MIR=H
+sha1:17473C223453D2D80FCB9DCFA317947287DC5C52		Xing He Zhan Shi (Ch)	NES		board=MAPPER176
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
