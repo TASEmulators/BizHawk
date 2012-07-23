@@ -34,13 +34,13 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MessageLabel = new System.Windows.Forms.Label();
-			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.syntaxHighlightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.syntaxHighlightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MessageLabel = new System.Windows.Forms.Label();
 			this.LuaText = new BizHawk.MultiClient.LuaWriterBox();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -81,6 +81,15 @@
 			this.saveToolStripMenuItem.Text = "&Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
 			// 
+			// saveAsToolStripMenuItem
+			// 
+			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.saveAsToolStripMenuItem.Text = "Save &As...";
+			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -93,24 +102,6 @@
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			// 
-			// MessageLabel
-			// 
-			this.MessageLabel.AutoSize = true;
-			this.MessageLabel.Location = new System.Drawing.Point(16, 424);
-			this.MessageLabel.Name = "MessageLabel";
-			this.MessageLabel.Size = new System.Drawing.Size(91, 13);
-			this.MessageLabel.TabIndex = 2;
-			this.MessageLabel.Text = "                            ";
-			// 
-			// saveAsToolStripMenuItem
-			// 
-			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.saveAsToolStripMenuItem.Text = "Save &As...";
-			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
-			// 
 			// configToolStripMenuItem
 			// 
 			this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -120,13 +111,6 @@
 			this.configToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
 			this.configToolStripMenuItem.Text = "&Config";
 			// 
-			// syntaxHighlightingToolStripMenuItem
-			// 
-			this.syntaxHighlightingToolStripMenuItem.Enabled = false;
-			this.syntaxHighlightingToolStripMenuItem.Name = "syntaxHighlightingToolStripMenuItem";
-			this.syntaxHighlightingToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-			this.syntaxHighlightingToolStripMenuItem.Text = "Syntax Highlighting";
-			// 
 			// fontToolStripMenuItem
 			// 
 			this.fontToolStripMenuItem.Enabled = false;
@@ -134,12 +118,32 @@
 			this.fontToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.fontToolStripMenuItem.Text = "Font";
 			// 
+			// syntaxHighlightingToolStripMenuItem
+			// 
+			this.syntaxHighlightingToolStripMenuItem.Enabled = false;
+			this.syntaxHighlightingToolStripMenuItem.Name = "syntaxHighlightingToolStripMenuItem";
+			this.syntaxHighlightingToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.syntaxHighlightingToolStripMenuItem.Text = "Syntax Highlighting";
+			// 
+			// MessageLabel
+			// 
+			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.MessageLabel.AutoSize = true;
+			this.MessageLabel.Location = new System.Drawing.Point(15, 424);
+			this.MessageLabel.Name = "MessageLabel";
+			this.MessageLabel.Size = new System.Drawing.Size(91, 13);
+			this.MessageLabel.TabIndex = 2;
+			this.MessageLabel.Text = "                            ";
+			// 
 			// LuaText
 			// 
 			this.LuaText.AcceptsTab = true;
+			this.LuaText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.LuaText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.LuaText.EnableAutoDragDrop = true;
-			this.LuaText.Location = new System.Drawing.Point(24, 27);
+			this.LuaText.Location = new System.Drawing.Point(12, 29);
 			this.LuaText.Name = "LuaText";
 			this.LuaText.Size = new System.Drawing.Size(819, 392);
 			this.LuaText.TabIndex = 0;
