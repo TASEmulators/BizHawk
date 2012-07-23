@@ -234,7 +234,7 @@ namespace BizHawk.MultiClient
 						if (LuaText.Text[libraryWordMatch.Index + libraryWordMatch.Length] == '.')
 						{
 							LuaText.Select(libraryWordMatch.Index, libraryWordMatch.Length);
-							LuaText.SelectionColor = Color.Cyan; //TODO: make variable
+							LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
 						}
 					}
 				}
