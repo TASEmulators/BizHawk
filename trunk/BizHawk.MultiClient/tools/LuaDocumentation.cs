@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace BizHawk.MultiClient.tools
 {
 	public class LuaDocumentation
@@ -23,6 +24,17 @@ namespace BizHawk.MultiClient.tools
 		public void Sort()
 		{
 			FunctionList = FunctionList.OrderBy(x => x.library).ThenBy(x => x.name).ToList();
+		}
+
+		public List<string> GetLibraryList()
+		{
+			HashSet<string> libs = new HashSet<string>();
+			foreach (LibraryFunction function in FunctionList)
+			{
+				libs.Add(function.library);
+			}
+
+			return libs.ToList();
 		}
 
 		public class LibraryFunction
