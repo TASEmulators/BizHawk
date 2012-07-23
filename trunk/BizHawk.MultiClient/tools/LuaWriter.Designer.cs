@@ -41,6 +41,8 @@
 			this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.syntaxHighlightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MessageLabel = new System.Windows.Forms.Label();
+			this.AutoCompleteView = new System.Windows.Forms.ListView();
+			this.PositionLabel = new System.Windows.Forms.Label();
 			this.LuaText = new BizHawk.MultiClient.LuaWriterBox();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -135,6 +137,27 @@
 			this.MessageLabel.TabIndex = 2;
 			this.MessageLabel.Text = "                            ";
 			// 
+			// AutoCompleteView
+			// 
+			this.AutoCompleteView.FullRowSelect = true;
+			this.AutoCompleteView.Location = new System.Drawing.Point(695, 322);
+			this.AutoCompleteView.Name = "AutoCompleteView";
+			this.AutoCompleteView.Size = new System.Drawing.Size(121, 97);
+			this.AutoCompleteView.TabIndex = 3;
+			this.AutoCompleteView.UseCompatibleStateImageBehavior = false;
+			this.AutoCompleteView.View = System.Windows.Forms.View.List;
+			this.AutoCompleteView.Visible = false;
+			this.AutoCompleteView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.AutoCompleteView_MouseDoubleClick);
+			// 
+			// PositionLabel
+			// 
+			this.PositionLabel.AutoSize = true;
+			this.PositionLabel.Location = new System.Drawing.Point(14, 30);
+			this.PositionLabel.Name = "PositionLabel";
+			this.PositionLabel.Size = new System.Drawing.Size(46, 13);
+			this.PositionLabel.TabIndex = 4;
+			this.PositionLabel.Text = "             ";
+			// 
 			// LuaText
 			// 
 			this.LuaText.AcceptsTab = true;
@@ -143,14 +166,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.LuaText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.LuaText.EnableAutoDragDrop = true;
-			this.LuaText.Location = new System.Drawing.Point(12, 29);
+			this.LuaText.Location = new System.Drawing.Point(15, 50);
 			this.LuaText.Name = "LuaText";
-			this.LuaText.Size = new System.Drawing.Size(819, 392);
+			this.LuaText.Size = new System.Drawing.Size(813, 369);
 			this.LuaText.TabIndex = 0;
 			this.LuaText.Text = "";
 			this.LuaText.WordWrap = false;
 			this.LuaText.ZoomFactor = 2F;
 			this.LuaText.TextChanged += new System.EventHandler(this.LuaText_TextChanged);
+			this.LuaText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaText_KeyDown);
 			this.LuaText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LuaText_KeyUp);
 			// 
 			// LuaWriter
@@ -159,6 +183,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(843, 441);
+			this.Controls.Add(this.PositionLabel);
+			this.Controls.Add(this.AutoCompleteView);
 			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.LuaText);
 			this.Controls.Add(this.menuStrip1);
@@ -190,5 +216,7 @@
 		private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem syntaxHighlightingToolStripMenuItem;
+		private System.Windows.Forms.ListView AutoCompleteView;
+		private System.Windows.Forms.Label PositionLabel;
     }
 }

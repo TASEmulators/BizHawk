@@ -15,6 +15,7 @@ namespace BizHawk.MultiClient
 	public partial class LuaWriter : Form
 	{
 		//TODO:
+		//fix tabs (tab should be 4 characters)
 		//Line numbers
 		//Option to toggle line numbers
 		//Go to line number Ctrl+G
@@ -409,6 +410,12 @@ namespace BizHawk.MultiClient
 		private void LuaText_KeyUp(object sender, KeyEventArgs e)
 		{
 			hasChanged = true;
+
+			int currentLineIndex = LuaText.GetLineFromCharIndex(LuaText.SelectionStart);
+			int lastLineIndex = LuaText.GetLineFromCharIndex(LuaText.TextLength);
+			int currentColumnIndex = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentLineIndex);
+
+			PositionLabel.Text = string.Format("Line {0}/{1}, Column {2}", currentLineIndex + 1, lastLineIndex + 1, currentColumnIndex + 1); 
 		}
 
 		private void Changes()
@@ -441,6 +448,82 @@ namespace BizHawk.MultiClient
 			{
 				LuaText.Font = LuaTextFont = f.Font;
 				
+			}
+		}
+
+		private void LuaText_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+			{
+				AutoCompleteView.Visible = false;
+			}
+
+			if (e.KeyCode == Keys.OemPeriod)
+			{
+				string currentword = CurrentWord();
+				if (IsLibraryWord(currentword))
+				{
+					List<string> libfunctions = Global.MainForm.LuaConsole1.LuaImp.docs.GetFunctionsByLibrary(currentword);
+					AutoCompleteView.Visible = true;
+					AutoCompleteView.Items.Clear();
+					foreach(string function in libfunctions)
+					{
+						ListViewItem item = new ListViewItem(function);
+						AutoCompleteView.Items.Add(item);
+					}
+					AutoCompleteView.Location = new Point(0, 0);
+					
+
+				}
+			}
+		}
+
+		private string CurrentWord()
+		{
+			int last = LuaText.SelectionStart;
+
+			int lastSpace = LuaText.Text.Substring(0, last).LastIndexOf(' ');
+			int lastLine = LuaText.Text.Substring(0, last).LastIndexOf('\n');
+			int start = 0;
+			if (lastSpace > lastLine)
+			{
+				start = lastSpace;
+			}
+			else
+			{
+				start = lastLine;
+			}
+
+			if (start == -1)
+			{
+				start = 0;
+			}
+
+			int length = last - start - 1;
+			string word = LuaText.Text.Substring(start + 1, length);
+
+			return word;
+		}
+
+		private bool IsLibraryWord(string word)
+		{
+			List<string> Libs = Global.MainForm.LuaConsole1.LuaImp.docs.GetLibraryList();
+			if (Libs.Contains(word))
+			{
+				return true;
+			}
+			return false;
+		}
+
+		private void AutoCompleteView_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			ListView.SelectedIndexCollection indexes = AutoCompleteView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				string str = AutoCompleteView.Items[indexes[0]].Text;
+				int start = LuaText.SelectionStart;
+				LuaText.Text = LuaText.Text.Insert(start, str);
+				AutoCompleteView.Visible = false;
 			}
 		}
 	}
