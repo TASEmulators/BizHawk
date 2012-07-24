@@ -78,5 +78,9 @@ namespace BizHawk.MultiClient.tools
             }
         }
 
+		private void OK_Click(object sender, EventArgs e)
+		{
+
+		}
     }
 }
