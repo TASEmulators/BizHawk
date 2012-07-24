@@ -42,6 +42,7 @@ namespace BizHawk.MultiClient
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
 		char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		public Regex libraryWords;
+		public Regex LuaLibraryWords = new Regex("coroutine|package|debug|file|io|math|os|package|string|table");
 		Font LuaTextFont = new Font("Courier New", 8);
 
 		public LuaWriter()
@@ -70,11 +71,38 @@ namespace BizHawk.MultiClient
 			LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaDefaultTextColor);
 
 			ColorReservedWords();
+			ColorLibraries();
+			ColorLuaLibraries();
 			ColorComments();
 			ColorStrings();
 			ColorSymbols();
-			ColorLibraries();
 			LuaText.Select(selPos, selChars);
+		}
+
+		private void ColorLuaLibraries()
+		{
+			foreach (Match libraryWordMatch in LuaLibraryWords.Matches(LuaText.Text))
+			{
+				if (libraryWordMatch.Index >= 0)
+				{
+					char before = ' ', after = ' ';
+
+					if (libraryWordMatch.Index > 0)
+						before = LuaText.Text[libraryWordMatch.Index - 1];
+
+					if (libraryWordMatch.Index + libraryWordMatch.Length != LuaText.Text.Length)
+						after = LuaText.Text[libraryWordMatch.Index + libraryWordMatch.Length];
+
+					if (!char.IsLetterOrDigit(before))
+					{
+						if (after == '.')
+						{
+							LuaText.Select(libraryWordMatch.Index, libraryWordMatch.Length);
+							LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
+						}
+					}
+				}
+			}
 		}
 
 		private void ColorSymbols()
@@ -239,36 +267,15 @@ namespace BizHawk.MultiClient
                     if (libraryWordMatch.Index + libraryWordMatch.Length != LuaText.Text.Length)
                         after = LuaText.Text[libraryWordMatch.Index + libraryWordMatch.Length];
 
-					if (!IsAlphaNumeric(before))
+					if (!char.IsLetterOrDigit(before))
 					{
 						if (after == '.')
 						{
 							LuaText.Select(libraryWordMatch.Index, libraryWordMatch.Length);
-                            if(LuaText.SelectionColor.ToArgb() != Global.Config.LuaCommentColor && LuaText.SelectionColor.ToArgb() != Global.Config.LuaStringColor)
-							    LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
+							    LuaText.SelectionColor = Color.FromArgb(Global.Config.EmuluaLibraryColor);
 						}
 					}
 				}
-			}
-		}
-
-		private bool IsAlphaNumeric(char x)
-		{
-			if (x >= 'a' && x <= 'z')
-			{
-				return true;
-			}
-			else if (x >= 'A' && x <= 'Z')
-			{
-				return true;
-			}
-			else if (x >= '0' && x <= '9')
-			{
-				return true;
-			}
-			else
-			{
-				return false;
 			}
 		}
 
@@ -419,13 +426,7 @@ namespace BizHawk.MultiClient
 
 		private void LuaText_KeyUp(object sender, KeyEventArgs e)
 		{
-			hasChanged = true;
 
-			int currentLineIndex = LuaText.GetLineFromCharIndex(LuaText.SelectionStart);
-			int lastLineIndex = LuaText.GetLineFromCharIndex(LuaText.TextLength);
-			int currentColumnIndex = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentLineIndex);
-
-			PositionLabel.Text = string.Format("Line {0}/{1}, Column {2}", currentLineIndex + 1, lastLineIndex + 1, currentColumnIndex + 1); 
 		}
 
 		private void Changes()
@@ -436,6 +437,7 @@ namespace BizHawk.MultiClient
 
 		private void LuaText_TextChanged(object sender, EventArgs e)
 		{
+			hasChanged = true;
 			Changes();
 		}
 
@@ -535,6 +537,18 @@ namespace BizHawk.MultiClient
 				int start = LuaText.SelectionStart;
 				LuaText.Text = LuaText.Text.Insert(start, str);
 				AutoCompleteView.Visible = false;
+			}
+		}
+
+		private void LuaText_SelectionChanged(object sender, EventArgs e)
+		{
+			if (!hasChanged)
+			{
+				int currentLineIndex = LuaText.GetLineFromCharIndex(LuaText.SelectionStart);
+				int lastLineIndex = LuaText.GetLineFromCharIndex(LuaText.TextLength);
+				int currentColumnIndex = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentLineIndex);
+
+				PositionLabel.Text = string.Format("Line {0}/{1}, Column {2}", currentLineIndex + 1, lastLineIndex + 1, currentColumnIndex + 1);
 			}
 		}
 	}

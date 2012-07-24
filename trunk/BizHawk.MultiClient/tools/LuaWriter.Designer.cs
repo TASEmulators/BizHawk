@@ -173,6 +173,7 @@
 			this.LuaText.Text = "";
 			this.LuaText.WordWrap = false;
 			this.LuaText.ZoomFactor = 2F;
+			this.LuaText.SelectionChanged += new System.EventHandler(this.LuaText_SelectionChanged);
 			this.LuaText.TextChanged += new System.EventHandler(this.LuaText_TextChanged);
 			this.LuaText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaText_KeyDown);
 			this.LuaText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LuaText_KeyUp);
