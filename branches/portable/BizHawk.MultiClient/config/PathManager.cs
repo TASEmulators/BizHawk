@@ -280,7 +280,10 @@ namespace BizHawk.MultiClient
 		{
 			string filesystemSafeName = game.Name.Replace("|", "+");
 			filesystemSafeName = RemoveInvalidFileSystemChars(filesystemSafeName);
-			return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
+			//zero 22-jul-2012 - i dont think this is used the same way it used to. game.Name shouldnt be a path, so this stuff is illogical.
+			//if game.Name is a path, then someone shouldve made it not-a-path already.
+			//return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
+			return filesystemSafeName;
 		}
 
 		public static string SaveRamPath(GameInfo game)

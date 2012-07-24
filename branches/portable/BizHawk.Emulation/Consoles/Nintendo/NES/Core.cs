@@ -33,6 +33,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int[,] palette = new int[64,3];
 		int[] palette_compiled = new int[64*8];
 		IPortDevice[] ports;
+		
+		//Sound config
+		public void SetSquare1(bool enabled) { apu.EnableSquare1 = enabled; }
+		public void SetSquare2(bool enabled) { apu.EnableSquare2 = enabled; }
+		public void SetTriangle(bool enabled) { apu.EnableTriangle = enabled; }
+		public void SetNoise(bool enabled) { apu.EnableNoise = enabled; }
+		public void SetDMC(bool enabled) { apu.EnableDMC = enabled; }
 
 		public void HardReset()
 		{
@@ -67,6 +74,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			lagged = true;
 			if (resetSignal)
 			{
+				board.NESSoftReset();
 				cpu.NESSoftReset();
 				apu.NESSoftReset();
 				//need to study what happens to ppu and apu and stuff..

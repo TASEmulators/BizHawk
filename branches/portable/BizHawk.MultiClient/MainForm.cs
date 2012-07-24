@@ -15,6 +15,7 @@ using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Coleco;
 using BizHawk.MultiClient.tools;
 using System.Collections.Generic;
+using BizHawk.Emulation.Consoles.Intellivision;
 
 namespace BizHawk.MultiClient
 {
@@ -42,7 +43,8 @@ namespace BizHawk.MultiClient
         /// an audio proxy used for dumping
         /// </summary>
         Emulation.Sound.Utilities.DualSound DumpProxy = null;
-
+		/// <summary>audio timekeeping for video dumping</summary>
+		long SoundRemainder = 0;
 
 		//runloop control
         private Thread runLoopThread;
@@ -82,6 +84,12 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
+
+		/// <summary>
+		/// number of frames to autodump
+		/// </summary>
+		int autoDumpLength = 0;
+
 
 		public MainForm(string[] args)
 		{
@@ -192,6 +200,9 @@ namespace BizHawk.MultiClient
 			string cmdRom = null;
 			string cmdLoadState = null;
 			string cmdMovie = null;
+			string cmdDumpType = null;
+			string cmdDumpName = null;
+
 			for (int i = 0; i < args.Length; i++)
 			{
 				//for some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
@@ -208,6 +219,12 @@ namespace BizHawk.MultiClient
 					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
 				else if (arg.StartsWith("--movie="))
 					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+				else if (arg.StartsWith("--dump-type="))
+					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
+				else if (arg.StartsWith("--dump-name="))
+					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
+				else if (arg.StartsWith("--dump-length="))
+					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out autoDumpLength);
 				else
 					cmdRom = arg;
 			}
@@ -234,6 +251,9 @@ namespace BizHawk.MultiClient
 				{
 					Movie m = new Movie(cmdMovie, MOVIEMODE.PLAY);
 					ReadOnly = true;
+					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
+					if (autoDumpLength == 0)
+						autoDumpLength = m.LogLength();
 					StartNewMovie(m, false);
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
@@ -297,6 +317,12 @@ namespace BizHawk.MultiClient
 			{
 				debuggerToolStripMenuItem.Enabled = false;
 				//luaConsoleToolStripMenuItem.Enabled = false;
+			}
+
+			// start dumping, if appropriate
+			if (cmdDumpType != null && cmdDumpName != null)
+			{
+				RecordAVI(cmdDumpType, cmdDumpName);
 			}
 		}
 
@@ -412,6 +438,7 @@ namespace BizHawk.MultiClient
 			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward;
 			Global.ForceNoVsync = unthrottled || fastforward;
 
+			// realtime throttle is never going to be so exact that using a double here is wrong
 			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
 
 			throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
@@ -566,7 +593,7 @@ namespace BizHawk.MultiClient
 				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor",
 				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI", "Toggle Menu"}
+				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input"}
 		};
 
 		private void InitControls()
@@ -579,6 +606,9 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
 			controls.BindMulti("Emulator Pause", Global.Config.EmulatorPauseBinding);
 			controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
+			controls.BindMulti("Increase Speed", Global.Config.IncreaseSpeedBinding);
+			controls.BindMulti("Decrease Speed", Global.Config.DecreaseSpeedBinding);
+			controls.BindMulti("Toggle Background Input", Global.Config.ToggleBackgroundInput);
 			controls.BindMulti("Unthrottle", Global.Config.TurboBinding);
 			controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
 			controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
@@ -1178,7 +1208,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM" };
+				string[] romExtensions = new string[] { "SMS", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM", "INT" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1363,6 +1393,10 @@ namespace BizHawk.MultiClient
 								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
 								nextEmulator = c;
 								break;
+                            case "INTV":
+                                Intellivision intv = new Intellivision(game, rom.RomData);
+                                nextEmulator = intv;
+                                break;
 						}
 					}
 
@@ -1391,6 +1425,7 @@ namespace BizHawk.MultiClient
 					NES nes = Global.Emulator as NES;
 					Global.Game.Name = nes.GameName;
 					Global.Game.Status = nes.RomStatus;
+					SetNESSoundChannels();
 				}
 
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
@@ -1660,7 +1695,15 @@ namespace BizHawk.MultiClient
 				case "ToolBox":
 					LoadToolBox();
 					break;
-
+				case "Increase Speed":
+					IncreaseSpeed();
+					break;
+				case "Decrease Speed":
+					DecreaseSpeed();
+					break;
+				case "Toggle Background Input":
+					ToggleBackgroundInput();
+					break;
 				case "Quick Save State":
 					if (!IsNullEmulator())
 						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
@@ -2018,15 +2061,25 @@ namespace BizHawk.MultiClient
 				//=======================================
 				if (CurrAviWriter != null)
 				{
-					//TODO - this will stray over time! have AviWriter keep an accumulation!
-					int samples = (int)(44100 / Global.Emulator.CoreOutputComm.VsyncRate);
-					short[] temp = new short[samples * 2];
+					long nsampnum = 44100 * (long)Global.Emulator.CoreOutputComm.VsyncDen + SoundRemainder;
+					long nsamp = nsampnum / Global.Emulator.CoreOutputComm.VsyncNum;
+					// exactly remember fractional parts of an audio sample
+					SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
+
+					short[] temp = new short[nsamp * 2];
 					//Global.Emulator.SoundProvider.GetSamples(temp);
                     DumpProxy.GetSamples(temp);
                     //genSound = false;
 
 					CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
 					CurrAviWriter.AddSamples(temp);
+
+					if (autoDumpLength > 0)
+					{
+						autoDumpLength--;
+						if (autoDumpLength == 0) // finish
+							StopAVI();
+					}
 				}
 
 
@@ -2077,7 +2130,6 @@ namespace BizHawk.MultiClient
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
-			PCEBGViewer1.Generate(); // TODO: just a makeshift. PCE core should provide callbacks.
 			GBDebugger.UpdateValues();
 		}
 
@@ -2469,7 +2521,7 @@ namespace BizHawk.MultiClient
 			renderTimer.Start();
 		}
 		
-		private void FrameBufferResized()
+		public void FrameBufferResized()
 		{
 			var video = Global.Emulator.VideoProvider;
 			int zoom = Global.Config.TargetZoomFactor;
@@ -2606,6 +2658,7 @@ namespace BizHawk.MultiClient
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
 					"Gameboy (experimental)", "*.gb;%ARCH%",
 					"Colecovision (very experimental)", "*.col;%ARCH%",
+                    "Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 					"PSX Executables (experimental)", "*.exe",
 					"All Files", "*.*");
 			}
@@ -2864,72 +2917,124 @@ namespace BizHawk.MultiClient
 			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlLightLight;
 		}
 
+		/// <summary>
+		/// start avi recording, unattended
+		/// </summary>
+		/// <param name="videowritername">match the short name of an ivideowriter</param>
+		/// <param name="filename">filename to save to</param>
+		public void RecordAVI(string videowritername, string filename)
+		{
+			_RecordAVI(videowritername, filename, true);
+		}
+
+		/// <summary>
+		/// start avi recording, asking user for filename and options
+		/// </summary>
 		public void RecordAVI()
+		{
+			_RecordAVI(null, null, false);
+		}
+
+		/// <summary>
+		/// start avi recording
+		/// </summary>
+		/// <param name="videowritername"></param>
+		/// <param name="filename"></param>
+		/// <param name="unattended"></param>
+		private void _RecordAVI(string videowritername, string filename, bool unattended)
 		{
 			if (CurrAviWriter != null) return;
 
 			// select IVideoWriter to use
+			IVideoWriter aw = null;
+			var writers = VideoWriterInventory.GetAllVideoWriters();
 
-			var writers = new IVideoWriter[]{new AviWriter(), new JMDWriter(), new WavWriterV(), new FFmpegWriter(), new NutWriter()};
-			IVideoWriter aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm);
+			if (unattended)
+			{
+				foreach (var w in writers)
+				{
+					if (w.ShortName() == videowritername)
+					{
+						aw = w;
+						break;
+					}
+				}
+			}
+			else
+			{
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm);
+			}
+
 			foreach (var w in writers)
 			{
 				if (w != aw)
 					w.Dispose();
 			}
+
 			if (aw == null)
 			{
-				Global.OSD.AddMessage("A/V capture canceled.");
+				if (unattended)
+					Global.OSD.AddMessage(string.Format("Couldn't start video writer \"{0}\"", videowritername));
+				else
+					Global.OSD.AddMessage("A/V capture canceled.");
 				return;
 			}
 
 			try
 			{
-				//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
-				int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
-		
-				aw.SetMovieParameters(fps, 0x01000000);
+				aw.SetMovieParameters(Global.Emulator.CoreOutputComm.VsyncNum, Global.Emulator.CoreOutputComm.VsyncDen);
 				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
 				aw.SetAudioParameters(44100, 2, 16);
 
 				// select codec token
 				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
-
-				var token = aw.AcquireVideoCodecToken(Global.MainForm);
-				if (token == null)
+				if (unattended)
 				{
-					Global.OSD.AddMessage("A/V capture canceled.");
-					aw.Dispose();
-					return;
-				}
-				aw.SetVideoCodecToken(token);
-
-				// select file to save to
-
-				var sfd = new SaveFileDialog();
-				if (!(Global.Emulator is NullEmulator))
-				{
-					sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+					aw.SetDefaultVideoCodecToken();
 				}
 				else
 				{
-					sfd.FileName = "NULL";
-					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+					var token = aw.AcquireVideoCodecToken(Global.MainForm);
+					if (token == null)
+					{
+						Global.OSD.AddMessage("A/V capture canceled.");
+						aw.Dispose();
+						return;
+					}
+					aw.SetVideoCodecToken(token);
 				}
-				sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
-				Global.Sound.StopSound();
-				var result = sfd.ShowDialog();
-				Global.Sound.StartSound();
-
-				if (result == DialogResult.Cancel)
+				// select file to save to
+				if (unattended)
 				{
-					aw.Dispose();
-					return;
+					aw.OpenFile(filename);
 				}
+				else
+				{
+					var sfd = new SaveFileDialog();
+					if (!(Global.Emulator is NullEmulator))
+					{
+						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+					}
+					else
+					{
+						sfd.FileName = "NULL";
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+					}
+					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
-				aw.OpenFile(sfd.FileName);
+					Global.Sound.StopSound();
+					var result = sfd.ShowDialog();
+					Global.Sound.StartSound();
+
+					if (result == DialogResult.Cancel)
+					{
+						aw.Dispose();
+						return;
+					}
+					aw.OpenFile(sfd.FileName);
+				}
 
 				//commit the avi writing last, in case there were any errors earlier
 				CurrAviWriter = aw;
@@ -2946,6 +3051,7 @@ namespace BizHawk.MultiClient
 
 			// buffersize here is entirely guess
 			DumpProxy = new Emulation.Sound.Utilities.DualSound(Global.Emulator.SoundProvider, 8192);
+			SoundRemainder = 0;
 		}
 
 		public void StopAVI()
@@ -2956,11 +3062,13 @@ namespace BizHawk.MultiClient
                 return;
             }
 			CurrAviWriter.CloseFile();
+			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
 			Global.OSD.AddMessage("AVI capture stopped");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
             DumpProxy = null; // return to normal sound output
+			SoundRemainder = 0;
 		}
 
 		private void SwapBackupSavestate(string path)
@@ -3312,6 +3420,69 @@ namespace BizHawk.MultiClient
 			FrameBufferResized();
 		}
 
+		private void neverBeAskedToSaveChangesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SupressAskSave ^= true;
+		}
+
+		private void IncreaseSpeed()
+		{
+			int oldp = Global.Config.SpeedPercent;
+			int newp = 0;
+			if (oldp < 3) newp = 3;
+			else if (oldp < 6) newp = 6;
+			else if (oldp < 12) newp = 12;
+			else if (oldp < 25) newp = 25;
+			else if (oldp < 50) newp = 50;
+			else if (oldp < 75) newp = 75;
+			else if (oldp < 100) newp = 100;
+			else if (oldp < 150) newp = 150;
+			else if (oldp < 200) newp = 200;
+			else if (oldp < 400) newp = 400;
+			else if (oldp < 800) newp = 800;
+			else newp = 1000;
+			SetSpeedPercent(newp);
+		}
+
+		private void DecreaseSpeed()
+		{
+			int oldp = Global.Config.SpeedPercent;
+			int newp = 0;
+			if (oldp > 800) newp = 800;
+			else if (oldp > 400) newp = 400;
+			else if (oldp > 200) newp = 200;
+			else if (oldp > 150) newp = 150;
+			else if (oldp > 100) newp = 100;
+			else if (oldp > 75) newp = 75;
+			else if (oldp > 50) newp = 50;
+			else if (oldp > 25) newp = 25;
+			else if (oldp > 12) newp = 12;
+			else if (oldp > 6) newp = 6;
+			else if (oldp > 3) newp = 3;
+			else newp = 1;
+			SetSpeedPercent(newp);
+		}
+
+		public void SetNESSoundChannels()
+		{
+			NES nes = Global.Emulator as NES;
+			nes.SetSquare1(Global.Config.NESEnableSquare1);
+			nes.SetSquare2(Global.Config.NESEnableSquare2);
+			nes.SetTriangle(Global.Config.NESEnableTriangle);
+			nes.SetNoise(Global.Config.NESEnableNoise);
+			nes.SetDMC(Global.Config.NESEnableDMC);
+		}
+
+		private void soundChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is NES)
+			{
+				Global.Sound.StopSound();
+				NESSoundConfig config = new NESSoundConfig();
+				config.ShowDialog();
+				Global.Sound.StartSound();
+			}
+		}
 
 	}
 }

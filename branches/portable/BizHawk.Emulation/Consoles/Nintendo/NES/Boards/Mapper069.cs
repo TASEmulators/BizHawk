@@ -78,6 +78,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "NES-JLROM": //mr gimmick!
+					AssertPrg(256); AssertChr(128); AssertWram(0); AssertVram(0); AssertBattery(false);
+					break;
 				case "MAPPER069":
 					break;
 				case "SUNSOFT-5A": //Batman (J)

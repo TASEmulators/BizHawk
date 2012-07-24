@@ -30,12 +30,15 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.screenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveImageClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.refreshImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.screenshotToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,9 +68,7 @@
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
-			this.saveImageClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.screenshotToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBox1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -87,6 +88,18 @@
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			// 
+			// NameTableView
+			// 
+			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
+			this.NameTableView.ContextMenuStrip = this.contextMenuStrip1;
+			this.NameTableView.Location = new System.Drawing.Point(17, 19);
+			this.NameTableView.Name = "NameTableView";
+			this.NameTableView.Size = new System.Drawing.Size(512, 480);
+			this.NameTableView.TabIndex = 0;
+			this.NameTableView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NESNameTableViewer_KeyDown);
+			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
+			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
+			// 
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -102,6 +115,14 @@
 			this.screenshotAsToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
 			this.screenshotAsToolStripMenuItem.Text = "&Save Image...";
 			this.screenshotAsToolStripMenuItem.Click += new System.EventHandler(this.screenshotAsToolStripMenuItem_Click);
+			// 
+			// saveImageClipboardToolStripMenuItem
+			// 
+			this.saveImageClipboardToolStripMenuItem.Name = "saveImageClipboardToolStripMenuItem";
+			this.saveImageClipboardToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
+			this.saveImageClipboardToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+			this.saveImageClipboardToolStripMenuItem.Text = "&Copy Image to clipboard";
+			this.saveImageClipboardToolStripMenuItem.Click += new System.EventHandler(this.saveImageClipboardToolStripMenuItem_Click);
 			// 
 			// refreshImageToolStripMenuItem
 			// 
@@ -138,6 +159,14 @@
 			this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
 			this.screenshotToolStripMenuItem.Text = "Save Screenshot As...";
 			this.screenshotToolStripMenuItem.Click += new System.EventHandler(this.screenshotToolStripMenuItem_Click);
+			// 
+			// screenshotToClipboardToolStripMenuItem
+			// 
+			this.screenshotToClipboardToolStripMenuItem.Name = "screenshotToClipboardToolStripMenuItem";
+			this.screenshotToClipboardToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
+			this.screenshotToClipboardToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+			this.screenshotToClipboardToolStripMenuItem.Text = "Screenshot to &Clipboard";
+			this.screenshotToClipboardToolStripMenuItem.Click += new System.EventHandler(this.screenshotToClipboardToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
@@ -198,6 +227,7 @@
 			this.rbNametableNW.Name = "rbNametableNW";
 			this.rbNametableNW.Size = new System.Drawing.Size(14, 13);
 			this.rbNametableNW.TabIndex = 4;
+			this.toolTip1.SetToolTip(this.rbNametableNW, "0x2000");
 			this.rbNametableNW.UseVisualStyleBackColor = true;
 			this.rbNametableNW.CheckedChanged += new System.EventHandler(this.rbNametable_CheckedChanged);
 			// 
@@ -208,6 +238,7 @@
 			this.rbNametableNE.Name = "rbNametableNE";
 			this.rbNametableNE.Size = new System.Drawing.Size(14, 13);
 			this.rbNametableNE.TabIndex = 5;
+			this.toolTip1.SetToolTip(this.rbNametableNE, "0x2400");
 			this.rbNametableNE.UseVisualStyleBackColor = true;
 			this.rbNametableNE.CheckedChanged += new System.EventHandler(this.rbNametable_CheckedChanged);
 			// 
@@ -218,6 +249,7 @@
 			this.rbNametableSW.Name = "rbNametableSW";
 			this.rbNametableSW.Size = new System.Drawing.Size(14, 13);
 			this.rbNametableSW.TabIndex = 6;
+			this.toolTip1.SetToolTip(this.rbNametableSW, "0x2800");
 			this.rbNametableSW.UseVisualStyleBackColor = true;
 			this.rbNametableSW.CheckedChanged += new System.EventHandler(this.rbNametable_CheckedChanged);
 			// 
@@ -228,6 +260,7 @@
 			this.rbNametableSE.Name = "rbNametableSE";
 			this.rbNametableSE.Size = new System.Drawing.Size(14, 13);
 			this.rbNametableSE.TabIndex = 7;
+			this.toolTip1.SetToolTip(this.rbNametableSE, "0x2C00");
 			this.rbNametableSE.UseVisualStyleBackColor = true;
 			this.rbNametableSE.CheckedChanged += new System.EventHandler(this.rbNametable_CheckedChanged);
 			// 
@@ -240,6 +273,7 @@
 			this.rbNametableAll.Size = new System.Drawing.Size(14, 13);
 			this.rbNametableAll.TabIndex = 9;
 			this.rbNametableAll.TabStop = true;
+			this.toolTip1.SetToolTip(this.rbNametableAll, "All");
 			this.rbNametableAll.UseVisualStyleBackColor = true;
 			this.rbNametableAll.CheckedChanged += new System.EventHandler(this.rbNametable_CheckedChanged);
 			// 
@@ -419,34 +453,6 @@
 			this.RefreshRate.TickFrequency = 4;
 			this.RefreshRate.Value = 1;
 			// 
-			// saveImageClipboardToolStripMenuItem
-			// 
-			this.saveImageClipboardToolStripMenuItem.Name = "saveImageClipboardToolStripMenuItem";
-			this.saveImageClipboardToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
-			this.saveImageClipboardToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
-			this.saveImageClipboardToolStripMenuItem.Text = "&Copy Image to clipboard";
-			this.saveImageClipboardToolStripMenuItem.Click += new System.EventHandler(this.saveImageClipboardToolStripMenuItem_Click);
-			// 
-			// screenshotToClipboardToolStripMenuItem
-			// 
-			this.screenshotToClipboardToolStripMenuItem.Name = "screenshotToClipboardToolStripMenuItem";
-			this.screenshotToClipboardToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
-			this.screenshotToClipboardToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-			this.screenshotToClipboardToolStripMenuItem.Text = "Screenshot to &Clipboard";
-			this.screenshotToClipboardToolStripMenuItem.Click += new System.EventHandler(this.screenshotToClipboardToolStripMenuItem_Click);
-			// 
-			// NameTableView
-			// 
-			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
-			this.NameTableView.ContextMenuStrip = this.contextMenuStrip1;
-			this.NameTableView.Location = new System.Drawing.Point(17, 19);
-			this.NameTableView.Name = "NameTableView";
-			this.NameTableView.Size = new System.Drawing.Size(512, 480);
-			this.NameTableView.TabIndex = 0;
-			this.NameTableView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NESNameTableViewer_KeyDown);
-			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
-			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
-			// 
 			// NESNameTableViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -525,5 +531,6 @@
 		private System.Windows.Forms.ToolStripMenuItem refreshImageToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveImageClipboardToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem screenshotToClipboardToolStripMenuItem;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }

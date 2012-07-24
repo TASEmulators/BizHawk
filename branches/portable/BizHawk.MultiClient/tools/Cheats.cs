@@ -389,6 +389,11 @@ namespace BizHawk.MultiClient
 
 		public bool AskSave()
 		{
+			if (Global.Config.SupressAskSave) //User has elected to not be nagged
+			{
+				return true;
+			}
+
 			if (Global.CheatList.Changes)
 			{
 				DialogResult result = MessageBox.Show("Save Changes?", "Cheats", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);

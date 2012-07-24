@@ -1,4 +1,6 @@
-﻿using System;
+﻿//TODO - so many integers in the square wave output keep us from exactly unbiasing the waveform. also other waves probably
+
+using System;
 using System.IO;
 using System.Collections.Generic;
 
@@ -11,6 +13,7 @@ using BizHawk.Emulation.Sound;
 
 //TODO - refactor length counter to be separate component
 
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 
@@ -20,6 +23,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			public static bool CFG_USE_METASPU = true;
 			public static bool CFG_DECLICK = true;
+
+			public bool EnableSquare1 = false;
+			public bool EnableSquare2 = false;
+			public bool EnableTriangle = true;
+			public bool EnableNoise = false;
+			public bool EnableDMC = true;
+
 
 			NES nes;
 			public APU(NES nes)
@@ -226,19 +236,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						//reload timer
 						timer_counter = timer_raw_reload_value;
 					}
-					if (duty_value) //we are outputting something
+					
+					if (duty_value) //high state of duty cycle
 					{
 						sample = env_output;
 
 						if (swp_silence)
-							sample = 0;
+							sample = env_output / 2; //(a little biasing hack here)
 
 						if (len_cnt == 0) //length counter is 0
-							sample = 0; //silenced
+							sample = env_output / 2; //silenced (a little biasing hack here)
 					}
 					else
-						sample = 0; //duty cycle is 0, silenced.
+						sample = env_output / 2; //duty cycle is 0, silenced.
 
+					sample -= env_output / 2; //unbias
 				}
 			}
 
@@ -376,9 +388,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						noise_bit = (shift_register & 1) != 0;
 					}
 
-					if (noise_bit || len_cnt == 0) sample = 0;
-					else
-						sample = env_output;
+					//unbiasing is rolled in here
+					if (len_cnt == 0) sample = 0;
+					else if (noise_bit) sample = -env_output;
+					else sample = env_output;
 				}
 			}
 
@@ -469,10 +482,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							seq = (seq + 1) & 0x1F;
 							timer = timer_cnt_reload;
 						}
-						//if(CFG_DECLICK)
-						//sample = TRIANGLE_TABLE[(seq+8)&0x1F];
-						//else
-						sample = TRIANGLE_TABLE[seq];
+						if(CFG_DECLICK)
+							sample = TRIANGLE_TABLE[(seq+8)&0x1F];
+						else
+							sample = TRIANGLE_TABLE[seq];
+						
+						//special hack: frequently, games will use the maximum frequency triangle in order to mute it
+						//apparently this results in the DAC for the triangle wave outputting a steady level at about 7.5
+						//so we'll emulate it at the digital level
+						if (timer_cnt_reload == 1) sample = 8;
+
+						sample -= 8; //unbias
 					}
 
 				}
@@ -569,12 +589,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						timer = timer_reload;
 						Clock();
 					}
+
+					if (out_silence)
+						sample = 0;
+					else
+					{
+						sample = out_deltacounter;
+						sample -= 64; //unbias;
+					}
 				}
 
 				void SyncSample()
 				{
-					sample = (out_deltacounter - 64) / 4;
+					//sample = (out_deltacounter - 64) / 4;
 					//Console.WriteLine("dmc sample: {0}", sample);
+					//sample -= 64; //unbias
 				}
 
 				void Clock()
@@ -837,54 +866,47 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			void _WriteReg(int addr, byte val)
 			{
 				//Console.WriteLine("{0:X4} = {1:X2}", addr, val);
-				switch (addr)
+				int index = addr - 0x4000;
+				int reg = index & 3;
+				int channel = index >> 2;
+				switch (channel)
 				{
-					case 0x4000:
-					case 0x4001:
-					case 0x4002:
-					case 0x4003:
-						pulse[0].WriteReg(addr - 0x4000, val);
+					case 0: 
+						pulse[0].WriteReg(reg, val); 
 						break;
-					case 0x4004:
-					case 0x4005:
-					case 0x4006:
-					case 0x4007:
-						pulse[1].WriteReg(addr - 0x4004, val);
+					case 1: 
+						pulse[1].WriteReg(reg, val); 
 						break;
-					case 0x4008:
-					case 0x4009:
-					case 0x400A:
-					case 0x400B:
-						triangle.WriteReg(addr - 0x4008, val);
+					case 2: 
+						triangle.WriteReg(reg, val); 
 						break;
-					case 0x400C:
-					case 0x400D:
-					case 0x400E:
-					case 0x400F:
-						noise.WriteReg(addr - 0x400C, val);
+					case 3: 
+						noise.WriteReg(reg, val); 
 						break;
-					case 0x4010:
-					case 0x4011:
-					case 0x4012:
-					case 0x4013:
-						dmc.WriteReg(addr - 0x4010, val);
+					case 4: 
+						dmc.WriteReg(reg, val); 
 						break;
-					case 0x4015:
-						pulse[0].set_lenctr_en(val & 1);
-						pulse[1].set_lenctr_en((val >> 1) & 1);
-						triangle.set_lenctr_en((val >> 2) & 1);
-						noise.set_lenctr_en((val >> 3) & 1);
-						dmc.set_lenctr_en(val.Bit(4));
-						break;
-					case 0x4017:
-						//Console.WriteLine("apu 4017 = {0:X2}", val);
-						sequencer_mode = (val >> 7) & 1;
-						sequencer_irq_inhibit = (val >> 6) & 1;
-						if (sequencer_irq_inhibit == 1)
+					case 5:
+						if (addr == 0x4015)
 						{
-							sequencer_irq_clear_pending = true;
+							pulse[0].set_lenctr_en(val & 1);
+							pulse[1].set_lenctr_en((val >> 1) & 1);
+							triangle.set_lenctr_en((val >> 2) & 1);
+							noise.set_lenctr_en((val >> 3) & 1);
+							dmc.set_lenctr_en(val.Bit(4));
 						}
-						sequence_reset_pending = true;
+						else if (addr == 0x4017)
+						{
+							//Console.WriteLine("apu 4017 = {0:X2}", val);
+							sequencer_mode = (val >> 7) & 1;
+							sequencer_irq_inhibit = (val >> 6) & 1;
+							if (sequencer_irq_inhibit == 1)
+							{
+								sequencer_irq_clear_pending = true;
+							}
+							sequence_reset_pending = true;
+							break;
+						}
 						break;
 				}
 			}
@@ -928,12 +950,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				noise.Run();
 				dmc.Run();
 
-				int mix = 0;
-				mix += pulse[0].sample;
-				mix += pulse[1].sample;
-				mix += triangle.sample;
-				mix += noise.sample >> 1;
-				mix += dmc.sample;
+				int s_pulse0 = pulse[0].sample;
+				int s_pulse1 = pulse[1].sample;
+				int s_tri = triangle.sample;
+				int s_noise = noise.sample;
+				int s_dmc = dmc.sample;
+				//int s_ext = 0; //gamepak
+
+				if (!EnableSquare1) s_pulse0 = 0;
+				if (!EnableSquare2) s_pulse1 = 0;
+				if (!EnableTriangle) s_tri = 0;
+				if (!EnableNoise) s_noise = 0;
+				if (!EnableDMC) s_dmc = 0;
+
+				//s_pulse0 = 0;
+				//s_pulse1 = 0;
+				//s_tri = 0;
+				//s_noise = 0;
+				//s_dmc = 0;
+
+				const float NOISEADJUST = 0.5f;
+				float pulse_out = 0.00752f * (s_pulse0 + s_pulse1);
+				float tnd_out = 0.00851f * s_tri + 0.00494f * NOISEADJUST * s_noise + 0.00335f * s_dmc;
+				float output = pulse_out + tnd_out;
+
+				int mix = (int)(50000 * output);
 
 				EmitSample(mix);
 
@@ -1004,7 +1045,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				double factional_remainder = (this_samp - last_hwsamp) * (1 - ratio);
 				accumulate += fractional;
 
-				accumulate *= 436; //32768/(15*4) -- adjust later for other sound channels
+				//accumulate *= 436; //32768/(15*4) -- adjust later for other sound channels
 				int outsamp = (int)(accumulate / kInvMixRate);
 				if (CFG_USE_METASPU)
 					metaspu.buffer.enqueue_sample((short)outsamp, (short)outsamp);

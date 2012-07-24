@@ -10,37 +10,37 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Taito Grand Prix - Eikou heno License
 	//Kyuukyoku Harikiri Stadium
 
-/*
-* Registers:
----------------------------
+	/*
+	* Registers:
+	---------------------------
 
-  $7EF0-7EF5:  CHR Regs
+	$7EF0-7EF5:  CHR Regs
 
-  $7EF6:  [.... ...M]  Mirroring
-    0 = Horz
-    1 = Vert
+	$7EF6:  [.... ...M]  Mirroring
+	0 = Horz
+	1 = Vert
 
-  $7EFA,7EFB:  PRG Reg 0 (8k @ $8000)
-  $7EFC,7EFD:  PRG Reg 1 (8k @ $A000)
-  $7EFE,7EFF:  PRG Reg 2 (8k @ $C000)
+	$7EFA,7EFB:  PRG Reg 0 (8k @ $8000)
+	$7EFC,7EFD:  PRG Reg 1 (8k @ $A000)
+	$7EFE,7EFF:  PRG Reg 2 (8k @ $C000)
 
 
-CHR Setup:
----------------------------
+	CHR Setup:
+	---------------------------
 
-       $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
-     +---------------+---------------+-------+-------+-------+-------+
-     |    <$7EF0>    |    <$7EF1>    | $7EF2 | $7EF3 | $7EF4 | $7EF5 |
-     +---------------+---------------+-------+-------+-------+-------+
+	$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
+	+---------------+---------------+-------+-------+-------+-------+
+	|    <$7EF0>    |    <$7EF1>    | $7EF2 | $7EF3 | $7EF4 | $7EF5 |
+	+---------------+---------------+-------+-------+-------+-------+
 
-PRG Setup:
----------------------------
+	PRG Setup:
+	---------------------------
 
-      $8000   $A000   $C000   $E000  
-    +-------+-------+-------+-------+
-    | $7EFA | $7EFC | $7EFE | { -1} |
-    +-------+-------+-------+-------+
-*/
+	$8000   $A000   $C000   $E000  
+	+-------+-------+-------+-------+
+	| $7EFA | $7EFC | $7EFE | { -1} |
+	+-------+-------+-------+-------+
+	*/
 
 	class TAITO_X1_005 : NES.NESBoardBase
 	{
@@ -70,6 +70,10 @@ PRG Setup:
 				case "MAPPER080":
 					break;
 				case "TAITO-X1-005":
+					if (Cart.mapper == 207)
+					{
+						return false;
+					}
 					break;
 				default:
 					return false;

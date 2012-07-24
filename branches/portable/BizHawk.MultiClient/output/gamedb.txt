@@ -114,6 +114,7 @@ sha1:6DF9AECF5787C0833B0F05A9A83D0E58A6153977		Rumblestation 15-in-1 (Unl)	NES		
 sha1:E4BFD5AB3C3649DBD36B9A7280CF431641BCBCEC		Peek-A-Boo Poker (Unl)	NES		board=NES-CNROM;PRG=32;CHR=24;WRAM=0
 sha1:39294394A0631708F58397371CE14075AE1FB7E6		Peek-A-Boo Poker (Panesian)	NES		board=NES-CNROM;PRG=32;CHR=64;WRAM=0
 sha1:C87E7E6A68DD9C7E24652CD2C7D390A14E8ADF04		Lagrange Point	NES		board=KONAMI-VRC-7;PRG=512;CHR=0;WRAM=8;PRAM=8;PCB=352402
+sha1:E05B0FCA7EA2F6433FA06DD204F7265417B91BBE		Street Fighter III	NES		board=MAPPER091;PRG=128;CHR=512
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
@@ -126,8 +127,12 @@ sha1:977286FDC76C34A618E2A2D0270641BC36CFE89C		Nintendo World Championships 1990
 sha1:EC652EE1660E527098102E26A36A8B9B7BB3943F		Castlevania (Konami Collection 2002)	NES		board=NES-UNROM;PRG=128;WRAM=0;VRAM=8;PAD_H=1
 sha1:B5C4E5E858113F5AA5E063BC79A12D7F6B856E6C		Contra (Konami Collection 2002)	NES		board=NES-UNROM;PRG=128;WRAM=0;VRAM=8;PAD_H=1
 
+;multi-cart crap
+sha1:B6D1C372A38D196112AA98905C709AD844BD6627		Super 35-in-1 (6-in-1 VT5201)	NES		board=MAPPER203;PRG=128;CHR=64
+
 ;chinese shit
 sha1:BFA31777E077E64AF0E274B5A22B57C6765D36E1		Fan Kong Jing Ying (Unl) (Ch)	NES		board=MAPPER241;MIR=H
+sha1:17473C223453D2D80FCB9DCFA317947287DC5C52		Xing He Zhan Shi (Ch)	NES		board=MAPPER176
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------

@@ -130,6 +130,7 @@ namespace BizHawk.MultiClient
 
 		// General Client Settings
 		public int TargetZoomFactor = 2;
+		public int TargetDisplayFilter = 0;
 		public bool AutoLoadMostRecentRom = false;
 		public RecentFiles RecentRoms = new RecentFiles(8);
 		public bool PauseWhenMenuActivated = true;
@@ -157,6 +158,7 @@ namespace BizHawk.MultiClient
 		public bool WIN32_CONSOLE = true;
 		public bool SkipLagFrame = false;
 		public string MovieExtension = "bkm";
+		public bool SupressAskSave = false;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
@@ -341,6 +343,7 @@ namespace BizHawk.MultiClient
 		public bool PCEBGViewerAutoload = false;
 		public int PCEBGViewerWndx = -1;
 		public int PCEBGViewerWndy = -1;
+		public int PCEBGViewerRefreshRate = 16;
 
 		// SMS Graphics settings
 		public bool SMSDispBG = true;
@@ -409,6 +412,9 @@ namespace BizHawk.MultiClient
 		public bool TI83ToolTips = true;
 
 		// Client Hotkey Bindings
+		public string ToggleBackgroundInput = "";
+		public string IncreaseSpeedBinding = "Equals";
+		public string DecreaseSpeedBinding = "Minus";
 		public string HardResetBinding = "Ctrl+R";
 		public string FastForwardBinding = "Tab, J1 B6";
 		public string RewindBinding = "Shift+R, J1 B5";
@@ -486,6 +492,13 @@ namespace BizHawk.MultiClient
 		public string IncreaseWindowSize = "Alt+UpArrow";
 		public string DecreaseWindowSize = "Alt+DownArrow";
 
+		// NES Sound settings
+		public bool NESEnableSquare1 = true;
+		public bool NESEnableSquare2 = true;
+		public bool NESEnableTriangle = true;
+		public bool NESEnableNoise = true;
+		public bool NESEnableDMC = true;
+
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
 		public bool SmsAllowOverlock = false;
@@ -536,6 +549,14 @@ namespace BizHawk.MultiClient
 		public int GifAnimatorFrameSkip;
 		public int GifAnimatorSpeed;
 		public bool GifAnimatorReversable;
+
+        //LuaWriter Settings
+        public int LuaDefaultTextColor = -16777216;
+        public int LuaKeyWordColor = -16776961;
+        public int LuaCommentColor = -16744448;
+        public int LuaStringColor = -8355712;
+        public int LuaSymbolsColor = -16777216;
+		public int LuaLibraryColor = 10349567;
 	}
 
 	public class SMSControllerTemplate

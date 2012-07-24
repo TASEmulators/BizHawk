@@ -77,6 +77,7 @@
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.luaFunctionsListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.onlineDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OutputBox = new System.Windows.Forms.RichTextBox();
 			this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,7 +97,6 @@
 			this.LuaListView = new BizHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.onlineDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip2.SuspendLayout();
@@ -496,9 +496,16 @@
 			// luaFunctionsListToolStripMenuItem
 			// 
 			this.luaFunctionsListToolStripMenuItem.Name = "luaFunctionsListToolStripMenuItem";
-			this.luaFunctionsListToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.luaFunctionsListToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
 			this.luaFunctionsListToolStripMenuItem.Text = "&Lua Functions List";
 			this.luaFunctionsListToolStripMenuItem.Click += new System.EventHandler(this.luaFunctionsListToolStripMenuItem_Click);
+			// 
+			// onlineDocumentationToolStripMenuItem
+			// 
+			this.onlineDocumentationToolStripMenuItem.Name = "onlineDocumentationToolStripMenuItem";
+			this.onlineDocumentationToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+			this.onlineDocumentationToolStripMenuItem.Text = "Documentation online...";
+			this.onlineDocumentationToolStripMenuItem.Click += new System.EventHandler(this.onlineDocumentationToolStripMenuItem_Click);
 			// 
 			// OutputBox
 			// 
@@ -695,13 +702,6 @@
 			// 
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
-			// 
-			// onlineDocumentationToolStripMenuItem
-			// 
-			this.onlineDocumentationToolStripMenuItem.Name = "onlineDocumentationToolStripMenuItem";
-			this.onlineDocumentationToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-			this.onlineDocumentationToolStripMenuItem.Text = "Documentation online...";
-			this.onlineDocumentationToolStripMenuItem.Click += new System.EventHandler(this.onlineDocumentationToolStripMenuItem_Click);
 			// 
 			// LuaConsole
 			// 

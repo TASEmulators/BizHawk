@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			void WritePPU(int addr, byte value);
 			void WriteWRAM(int addr, byte value);
 			void WriteEXP(int addr, byte value);
+			void NESSoftReset();
 			byte[] SaveRam { get; }
 			byte[] WRAM { get; set; }
 			byte[] VRAM { get; set; }
@@ -64,11 +65,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				this.NES = nes;
 			}
 
+			public virtual void NESSoftReset()
+			{
+
+			}
+
 			public abstract bool Configure(NES.EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
 
 			public CartInfo Cart { get { return NES.cart; } }
 			public NES NES { get; set; }
+
+			//this is set to true when SyncState is called, so that we know the base class SyncState was used
+			public bool SyncStateFlag = false;
 
 			public virtual void SyncState(Serializer ser)
 			{
@@ -76,6 +85,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ser.Sync("wram", ref wram, true);
 				for (int i = 0; i < 4; i++) ser.Sync("mirroring" + i, ref mirroring[i]);
 				ser.Sync("irq_signal", ref irq_signal);
+				SyncStateFlag = true;
 			}
 
 			public virtual void SyncIRQ(bool flag)

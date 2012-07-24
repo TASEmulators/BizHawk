@@ -59,12 +59,38 @@ namespace BizHawk.MultiClient
 		private void miLimitFramerate_Click(object sender, EventArgs e)
 		{
 			Global.Config.LimitFramerate ^= true;
+			LimitFrameRateMessage();
+		}
+
+		public void LimitFrameRateMessage()
+		{
+			if (Global.Config.LimitFramerate)
+			{
+				Global.OSD.AddMessage("Framerate limiting on");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Framerate limiting off");
+			}
 		}
 
 		private void miDisplayVsync_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisplayVSync ^= true;
 			Global.RenderPanel.Resized = true;
+			VsyncMessage();
+		}
+
+		public void VsyncMessage()
+		{
+			if (Global.Config.DisplayVSync)
+			{
+				Global.OSD.AddMessage("Display Vsync is set to on");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Display Vsync is set to off");
+			}
 		}
 
 		private void miAutoMinimizeSkipping_Click(object sender, EventArgs e)
@@ -72,18 +98,35 @@ namespace BizHawk.MultiClient
 			Global.Config.AutoMinimizeSkipping ^= true;
 		}
 
-		private void miFrameskip0_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 0; }
-		private void miFrameskip1_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 1; }
-		private void miFrameskip2_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 2; }
-		private void miFrameskip3_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 3; }
-		private void miFrameskip4_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 4; }
-		private void miFrameskip5_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 5; }
-		private void miFrameskip6_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 6; }
-		private void miFrameskip7_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 7; }
-		private void miFrameskip8_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 8; }
-		private void miFrameskip9_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 9; }
+		public void MinimizeFrameskipMessage()
+		{
+			if (Global.Config.AutoMinimizeSkipping)
+			{
+				Global.OSD.AddMessage("Autominimizing set to on");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Autominimizing set to off");
+			}
+		}
 
-		void ClickSpeedItem(int num)
+		private void miFrameskip0_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 0; FrameSkipMessage(); }
+		private void miFrameskip1_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 1; FrameSkipMessage(); }
+		private void miFrameskip2_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 2; FrameSkipMessage(); }
+		private void miFrameskip3_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 3; FrameSkipMessage(); }
+		private void miFrameskip4_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 4; FrameSkipMessage(); }
+		private void miFrameskip5_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 5; FrameSkipMessage(); }
+		private void miFrameskip6_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 6; FrameSkipMessage(); }
+		private void miFrameskip7_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 7; FrameSkipMessage(); }
+		private void miFrameskip8_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 8; FrameSkipMessage(); }
+		private void miFrameskip9_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 9; FrameSkipMessage(); }
+
+		public void FrameSkipMessage()
+		{
+			Global.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip.ToString());
+		}
+
+		public void ClickSpeedItem(int num)
 		{
 			if ((Control.ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
 			else SetSpeedPercent(num);
@@ -124,6 +167,19 @@ namespace BizHawk.MultiClient
 			mzMenuItem.Checked = Global.Config.TargetZoomFactor == 10;
 
 			FrameBufferResized();
+		}
+
+		private void DisplayFilterMenuItem_Click(object sender, EventArgs e)
+		{
+			if (sender == DisplayFilterNoneMenuItem) Global.Config.TargetDisplayFilter = 0;
+			if (sender == x2SAIMenuItem) Global.Config.TargetDisplayFilter = 1;
+			if (sender == SuperX2SAIMenuItem) Global.Config.TargetDisplayFilter = 2;
+			if (sender == SuperEagleMenuItem) Global.Config.TargetDisplayFilter = 3;
+
+			DisplayFilterNoneMenuItem.Checked = Global.Config.TargetDisplayFilter == 0;
+			x2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 1;
+			SuperX2SAIMenuItem.Checked = Global.Config.TargetDisplayFilter == 2;
+			SuperEagleMenuItem.Checked = Global.Config.TargetDisplayFilter == 3;
 		}
 
 		private void smsEnableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
@@ -449,6 +505,19 @@ namespace BizHawk.MultiClient
 		private void enableRewindToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RewindEnabled ^= true;
+			RewindMessage();
+		}
+
+		public void RewindMessage()
+		{
+			if (Global.Config.RewindEnabled)
+			{
+				Global.OSD.AddMessage("Rewind enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Rewind disabled");
+			}
 		}
 
 		private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -734,7 +803,20 @@ namespace BizHawk.MultiClient
 
 		private void acceptBackgroundInputToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			ToggleBackgroundInput();
+		}
+
+		public void ToggleBackgroundInput()
+		{
 			Global.Config.AcceptBackgroundInput ^= true;
+			if (Global.Config.AcceptBackgroundInput)
+			{
+				Global.OSD.AddMessage("Background Input enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Background Input disabled");
+			}
 		}
 
 		private void displayStatusBarToolStripMenuItem_Click(object sender, EventArgs e)
@@ -799,6 +881,14 @@ namespace BizHawk.MultiClient
 		private void enableContextMenuToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.ShowContextMenu ^= true;
+			if (Global.Config.ShowContextMenu)
+			{
+				Global.OSD.AddMessage("Context menu enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Context menu disabled");
+			}
 		}
 
 		private void recordMovieToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1212,6 +1302,9 @@ namespace BizHawk.MultiClient
 			acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
 			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
 			logWindowAsConsoleToolStripMenuItem.Checked = Global.Config.WIN32_CONSOLE;
+			neverBeAskedToSaveChangesToolStripMenuItem.Checked = Global.Config.SupressAskSave;
+
+			acceptBackgroundInputToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ToggleBackgroundInput;
 		}
 
 		private void enableToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1420,17 +1513,6 @@ namespace BizHawk.MultiClient
 
 		private void pCEToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (INTERIM)
-			{
-				pceBGViewerToolStripMenuItem.Visible = true;
-				toolStripSeparator25.Visible = true;
-			}
-			else
-			{
-				pceBGViewerToolStripMenuItem.Visible = false;
-				toolStripSeparator25.Visible = false;
-			}
-
 			pceAlwaysPerformSpriteLimitToolStripMenuItem.Checked = Global.Config.PceSpriteLimit;
 			pceAlwaysEqualizeVolumesToolStripMenuItem.Checked = Global.Config.PceEqualizeVolume;
 			pceArcadeCardRewindEnableHackToolStripMenuItem.Checked = Global.Config.PceArcadeCardRewindHack;
@@ -1453,16 +1535,40 @@ namespace BizHawk.MultiClient
 		private void backupSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.BackupSavestates ^= true;
+			if (Global.Config.BackupSavestates)
+			{
+				Global.OSD.AddMessage("Backup savestates enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Backup savestates disabled");
+			}
 		}
 
 		void autoSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoSavestates ^= true;
+			if (Global.Config.AutoSavestates)
+			{
+				Global.OSD.AddMessage("AutoSavestates enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("AutoSavestates disabled");
+			}
 		}
 
 		void screenshotWithSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SaveScreenshotWithStates ^= true;
+			if (Global.Config.SaveScreenshotWithStates)
+			{
+				Global.OSD.AddMessage("Screenshots will be saved in savestates");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Screenshots will not be saved in savestates");
+			}
 		}
 
 		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)

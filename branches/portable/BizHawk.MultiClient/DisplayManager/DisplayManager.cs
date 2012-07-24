@@ -242,25 +242,20 @@ namespace BizHawk.MultiClient
 		/// <returns></returns>
 		public DisplaySurface ToPaddedSurface(int xpad0, int ypad0, int xpad1, int ypad1)
 		{
-			//Lock();
-			//int new_width = Width + xpad0 + xpad1;
-			//int new_height = Height + ypad0 + ypad1;
-			//DisplaySurface ret = new DisplaySurface(new_width, new_height);
-			//ret.Lock();
-			//int* dptr = ret.PixelPtr;
-			//int* sptr = PixelPtr;
-			//int dstride = ret.Stride/4;
-			//int sstride = Stride/4;
-			//for (int y = 0; y < Height; y++)
-			//  for (int x = 0; x < Width; x++)
-			//  {
-			//    dptr[(y + ypad0) * dstride + x + xpad0] = sptr[y * sstride + x];
-			//  }
-			//return ret;
+			int new_width = Width + xpad0 + xpad1;
+			int new_height = Height + ypad0 + ypad1;
+			DisplaySurface ret = new DisplaySurface(new_width, new_height);
+			int* dptr = ret.PixelPtr;
+			int* sptr = PixelPtr;
+			int dstride = ret.Stride / 4;
+			int sstride = Stride / 4;
+			for (int y = 0; y < Height; y++)
+				for (int x = 0; x < Width; x++)
+				{
+					dptr[(y + ypad0) * dstride + x + xpad0] = sptr[y * sstride + x];
+				}
+			return ret;
 
-			//need to reimplement this
-			throw new NotSupportedException();
-			return null;
 		}
 
 		public int Width { get; private set; }
@@ -579,18 +574,15 @@ namespace BizHawk.MultiClient
 			currNativeWidth = Global.RenderPanel.NativeSize.Width;
 			currNativeHeight = Global.RenderPanel.NativeSize.Height;
 
+			currentSourceSurface = sourceSurfaceSet.GetCurrent();
+
+			if (currentSourceSurface == null) return;
+
 			//if we're configured to use a scaling filter, apply it now
 			//SHOULD THIS BE RUN REPEATEDLY?
 			//some filters may need to run repeatedly (temporal interpolation, ntsc scanline field alternating)
 			//but its sort of wasted work.
-			//IDisplayFilter filter = new Hq2xBase_Super2xSai();
-			//var tempSurface = filter.Execute(currentSourceSurface);
-			//currentSourceSurface.Dispose();
-			//currentSourceSurface = tempSurface;
-
-			currentSourceSurface = sourceSurfaceSet.GetCurrent();
-
-			if (currentSourceSurface == null) return;
+			CheckFilter();
 
 			int w = currNativeWidth;
 			int h = currNativeHeight;
@@ -603,8 +595,11 @@ namespace BizHawk.MultiClient
 			//if (luaEmuSurface != null) complexComposite = true;
 			//if (luaSurface != null) complexComposite = true;
 
+			DisplaySurface surfaceToRender = filteredSurface;
+			if (surfaceToRender == null) surfaceToRender = currentSourceSurface;
+
 			Global.RenderPanel.Clear(Color.FromArgb(videoProvider.BackgroundColor));
-			Global.RenderPanel.Render(currentSourceSurface);
+			Global.RenderPanel.Render(surfaceToRender);
 			if (luaEmuSurface != null)
 				Global.RenderPanel.RenderOverlay(luaEmuSurface);
 
@@ -612,7 +607,9 @@ namespace BizHawk.MultiClient
 
 			Global.RenderPanel.Present();
 
-
+			if (filteredSurface != null)
+				filteredSurface.Dispose();
+			filteredSurface = null;
 		}
 
 		public bool Disposed { get; private set; }
@@ -623,7 +620,7 @@ namespace BizHawk.MultiClient
 			Disposed = true;
 		}
 
-		DisplaySurface currentSourceSurface;
+		DisplaySurface currentSourceSurface, filteredSurface;
 
 		//the surface to use to render a lua layer at native resolution (under the OSD)
 		DisplaySurface luaNativeSurfacePreOSD;
@@ -674,6 +671,30 @@ namespace BizHawk.MultiClient
 			((IBlitter)Global.RenderPanel).Close();
 		}
 
+		void CheckFilter()
+		{
+			IDisplayFilter filter = null;
+			switch (Global.Config.TargetDisplayFilter)
+			{
+				case 0:
+					//no filter
+					break;
+				case 1:
+					filter = new Hq2xBase_2xSai();
+					break;
+				case 2:
+					filter = new Hq2xBase_Super2xSai();
+					break;
+				case 3:
+					filter = new Hq2xBase_SuperEagle();
+					break;
+			
+			}
+			if (filter == null)
+				filteredSurface = null;
+			else
+				filteredSurface = filter.Execute(currentSourceSurface);
+		}
 
 		SwappableDisplaySurfaceSet nativeDisplaySurfaceSet = new SwappableDisplaySurfaceSet();
 

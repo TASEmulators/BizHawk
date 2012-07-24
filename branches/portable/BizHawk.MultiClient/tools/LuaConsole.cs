@@ -13,10 +13,8 @@ namespace BizHawk.MultiClient
 {
 	public partial class LuaConsole : Form
 	{
-		//options - autoload session
 		//TODO: remember column widths
 		//TODO: restore column width on restore default settings
-		//TODO: don't call asksave without looking at the surpress asksave config item
 
 		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -706,7 +704,14 @@ namespace BizHawk.MultiClient
 
 		private void EditToolstripButton_Click(object sender, EventArgs e)
 		{
-			EditScript();
+			if (Global.MainForm.INTERIM)
+			{
+				DoLuaWriter();
+			}
+			else
+			{
+				EditScript();
+			}
 		}
 
 		private void cutToolStripButton_Click(object sender, EventArgs e)
@@ -847,6 +852,7 @@ namespace BizHawk.MultiClient
 						if (!prohibit)
 						{
 							var result = LuaImp.ResumeScript(s.Thread);
+							if(result.Terminated) s.Stop();
 							s.FrameWaiting = result.WaitForFrame;
 						}
 					}
@@ -1043,6 +1049,11 @@ namespace BizHawk.MultiClient
 
 		public bool AskSave()
 		{
+			if (Global.Config.SupressAskSave) //User has elected to not be nagged
+			{
+				return true;
+			}
+
 			if (changes)
 			{
 				Global.Sound.StopSound();
@@ -1224,6 +1235,40 @@ namespace BizHawk.MultiClient
 		private void onlineDocumentationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
+		}
+
+		private void DoLuaWriter()
+		{
+			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			if (indexes.Count == 0)
+				return;
+
+			if (indexes.Count > 0)
+			{
+				//If/When we want multiple file editing
+				/*
+				for (int x = 0; x < indexes.Count; x++)
+				{
+					var item = luaList[indexes[x]];
+					if (!item.IsSeparator)
+					{
+						OpenLuaWriter(luaList[indexes[x]].Path);
+					}
+				}
+				*/
+				var item = luaList[indexes[0]];
+				if (!item.IsSeparator)
+				{
+					OpenLuaWriter(luaList[indexes[0]].Path);
+				}
+			}
+		}
+
+		private void OpenLuaWriter(string path)
+		{
+			LuaWriter writer = new LuaWriter();
+			writer.CurrentFile = path;
+			writer.Show();
 		}
 	}
 }

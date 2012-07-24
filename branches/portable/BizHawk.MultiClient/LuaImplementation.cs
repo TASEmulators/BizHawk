@@ -15,9 +15,9 @@ namespace BizHawk.MultiClient
 {
 	public class LuaImplementation
 	{
+		public LuaDocumentation docs = new LuaDocumentation();
 		Lua lua = new Lua();
 		LuaConsole Caller;
-		public List<string> LuaLibraryList = new List<string>();
 		public EventWaitHandle LuaWait;
 		public bool isRunning;
 		private int CurrentMemoryDomain = 0; //Main memory by default
@@ -61,7 +61,7 @@ namespace BizHawk.MultiClient
 		public LuaImplementation(LuaConsole passed)
 		{
 			LuaWait = new AutoResetEvent(false);
-			LuaLibraryList.Clear();
+			docs.Clear();
 			Caller = passed.get();
 			LuaRegister(lua);
 		}
@@ -80,73 +80,80 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < ConsoleFunctions.Length; i++)
 			{
 				lua.RegisterFunction("console." + ConsoleFunctions[i], this, this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
-				LuaLibraryList.Add("console." + ConsoleFunctions[i]);
+				docs.Add("console", ConsoleFunctions[i], this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
 			}
 
 			lua.NewTable("gui");
 			for (int i = 0; i < GuiFunctions.Length; i++)
 			{
 				lua.RegisterFunction("gui." + GuiFunctions[i], this, this.GetType().GetMethod("gui_" + GuiFunctions[i]));
-				LuaLibraryList.Add("gui." + GuiFunctions[i]);
+				docs.Add("gui", GuiFunctions[i], this.GetType().GetMethod("gui_" + GuiFunctions[i]));
 			}
 
 			lua.NewTable("emu");
 			for (int i = 0; i < EmuFunctions.Length; i++)
 			{
 				lua.RegisterFunction("emu." + EmuFunctions[i], this, this.GetType().GetMethod("emu_" + EmuFunctions[i]));
-				LuaLibraryList.Add("emu." + EmuFunctions[i]);
+				docs.Add("emu", EmuFunctions[i], this.GetType().GetMethod("emu_" + EmuFunctions[i]));
 			}
 
 			lua.NewTable("memory");
 			for (int i = 0; i < MemoryFunctions.Length; i++)
 			{
 				lua.RegisterFunction("memory." + MemoryFunctions[i], this, this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
-				LuaLibraryList.Add("memory." + MemoryFunctions[i]);
+				docs.Add("memory", MemoryFunctions[i], this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
 			}
 
 			lua.NewTable("mainmemory");
 			for (int i = 0; i < MainMemoryFunctions.Length; i++)
 			{
 				lua.RegisterFunction("mainmemory." + MainMemoryFunctions[i], this, this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
-				LuaLibraryList.Add("mainmemory." + MainMemoryFunctions[i]);
+				docs.Add("mainmemory", MainMemoryFunctions[i], this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
 			}
 
 			lua.NewTable("savestate");
 			for (int i = 0; i < SaveStateFunctions.Length; i++)
 			{
 				lua.RegisterFunction("savestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
-				LuaLibraryList.Add("savestate." + SaveStateFunctions[i]);
+				docs.Add("savestate", SaveStateFunctions[i], this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
 			}
 
 			lua.NewTable("movie");
 			for (int i = 0; i < MovieFunctions.Length; i++)
 			{
 				lua.RegisterFunction("movie." + MovieFunctions[i], this, this.GetType().GetMethod("movie_" + MovieFunctions[i]));
-				LuaLibraryList.Add("movie." + MovieFunctions[i]);
+				docs.Add("movie", MovieFunctions[i], this.GetType().GetMethod("movie_" + MovieFunctions[i]));
 			}
 
 			lua.NewTable("input");
 			for (int i = 0; i < InputFunctions.Length; i++)
 			{
 				lua.RegisterFunction("input." + InputFunctions[i], this, this.GetType().GetMethod("input_" + InputFunctions[i]));
-				LuaLibraryList.Add("input." + InputFunctions[i]);
+				docs.Add("input", InputFunctions[i], this.GetType().GetMethod("input_" + InputFunctions[i]));
 			}
 
 			lua.NewTable("joypad");
 			for (int i = 0; i < JoypadFunctions.Length; i++)
 			{
 				lua.RegisterFunction("joypad." + JoypadFunctions[i], this, this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
-				LuaLibraryList.Add("joypad." + JoypadFunctions[i]);
+				docs.Add("joypad", JoypadFunctions[i], this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
 			}
 
 			lua.NewTable("client");
 			for (int i = 0; i < MultiClientFunctions.Length; i++)
 			{
 				lua.RegisterFunction("client." + MultiClientFunctions[i], this, this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
-				LuaLibraryList.Add("client." + MultiClientFunctions[i]);
+				docs.Add("client", MultiClientFunctions[i], this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
 			}
 
-			LuaLibraryList.Sort();
+			lua.NewTable("forms");
+			for (int i = 0; i < FormsFunctions.Length; i++)
+			{
+				lua.RegisterFunction("forms." + FormsFunctions[i], this, this.GetType().GetMethod("forms_" + FormsFunctions[i]));
+				docs.Add("forms", FormsFunctions[i], this.GetType().GetMethod("forms_" + FormsFunctions[i]));
+			}
+
+			docs.Sort();
 		}
 
 		public Lua SpawnCoroutine(string File)
@@ -211,15 +218,25 @@ namespace BizHawk.MultiClient
 		public class ResumeResult
 		{
 			public bool WaitForFrame;
+			public bool Terminated;
 		}
 
 		public ResumeResult ResumeScript(Lua script)
 		{
 			currThread = script;
-			script.Resume(0);
+			int execResult = script.Resume(0);
 			currThread = null;
 			var result = new ResumeResult();
-			result.WaitForFrame = FrameAdvanceRequested;
+			if (execResult == 0)
+			{
+				//terminated
+				result.Terminated = true;
+			}
+			else
+			{
+				//yielded
+				result.WaitForFrame = FrameAdvanceRequested;
+			}
 			FrameAdvanceRequested = false;
 			return result;
 		}
@@ -236,6 +253,7 @@ namespace BizHawk.MultiClient
 		public static string[] ConsoleFunctions = new string[]
 		{
 			"output",
+			"log",
 			"clear",
 			"getluafunctionslist",
 		};
@@ -263,12 +281,17 @@ namespace BizHawk.MultiClient
 			"pause",
 			"unpause",
 			"togglepause",
-			//"speedmode",
+			"speedmode",
 			"framecount",
 			"lagcount",
 			"islagged",
 			"getsystemid",
 			"setrenderplanes",
+			"frameskip",
+			"minimizeframeskip",
+			"limitframerate",
+			"displayvsync",
+			"enablerewind"
 		};
 
 		public static string[] MemoryFunctions = new string[]
@@ -369,6 +392,7 @@ namespace BizHawk.MultiClient
 
 		public static string[] InputFunctions = new string[] {
 			"get",
+			"getmouse",
 		};
 
 		public static string[] JoypadFunctions = new string[] {
@@ -378,6 +402,7 @@ namespace BizHawk.MultiClient
 		};
 
 		public static string[] MultiClientFunctions = new string[] {
+			"setwindowsize",
 			"openrom",
 			"closerom",
 			"opentoolbox",
@@ -387,6 +412,21 @@ namespace BizHawk.MultiClient
 			"openhexeditor",
 			"opentasstudio",
 			"opencheats",
+		};
+
+		public static string[] FormsFunctions = new string[] {
+				"newform",
+				"destroy",
+				"destroyall",
+				"button",
+				"label",
+				"textbox",
+				"setlocation",
+				"setsize",
+				"settext",
+				"addclick",
+				"clearclicks",
+				"gettext",
 		};
 
 		/****************************************************/
@@ -399,7 +439,19 @@ namespace BizHawk.MultiClient
 
 		public void console_output(object lua_input)
 		{
-			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+			if (lua_input == null)
+			{
+				Global.MainForm.LuaConsole1.WriteToOutputWindow("NULL");
+			}
+			else
+			{
+				Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+			}
+		}
+
+		public void console_log(object lua_input)
+		{
+			console_output(lua_input);
 		}
 
 		public void console_clear()
@@ -410,11 +462,11 @@ namespace BizHawk.MultiClient
 		public string console_getluafunctionslist()
 		{
 			string list = "";
-			foreach (string l in LuaLibraryList)
+			foreach (LuaDocumentation.LibraryFunction l in Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
 			{
-				list += l + "\n";
+				list += l.name + "\n";
 			}
-
+			
 			return list;
 		}
 
@@ -775,6 +827,117 @@ namespace BizHawk.MultiClient
 		public string emu_getsystemid()
 		{
 			return Global.Emulator.SystemId;
+		}
+
+		public void emu_speedmode(object percent)
+		{
+			try
+			{
+				string temp = percent.ToString();
+				int speed = Convert.ToInt32(temp);
+				if (speed > 0 && speed < 1000) //arbituarily capping it at 1000%
+				{
+					Global.MainForm.ClickSpeedItem(speed);
+				}
+				else
+				{
+					console_log("Invalid speed value");
+				}
+			}
+			catch
+			{
+				console_log("Invalid speed value");
+			}
+		}
+
+		public void emu_minimizeframeskip(object boolean)
+		{
+			string temp = boolean.ToString();
+			if (!String.IsNullOrWhiteSpace(temp))
+			{
+				if (temp == "0" || temp.ToLower() == "false")
+				{
+					Global.Config.AutoMinimizeSkipping = false;
+				}
+				else
+				{
+					Global.Config.AutoMinimizeSkipping = true;
+				}
+				Global.MainForm.MinimizeFrameskipMessage();
+			}
+		}
+
+		public void emu_limitframerate(object boolean)
+		{
+			string temp = boolean.ToString();
+			if (!String.IsNullOrWhiteSpace(temp))
+			{
+				if (temp == "0" || temp.ToLower() == "false")
+				{
+					Global.Config.LimitFramerate = false;
+				}
+				else
+				{
+					Global.Config.LimitFramerate = true;
+				}
+				Global.MainForm.LimitFrameRateMessage();
+			}
+		}
+
+		public void emu_displayvsync(object boolean)
+		{
+			string temp = boolean.ToString();
+			if (!String.IsNullOrWhiteSpace(temp))
+			{
+				if (temp == "0" || temp.ToLower() == "false")
+				{
+					Global.Config.DisplayVSync = false;
+				}
+				else
+				{
+					Global.Config.DisplayVSync = true;
+				}
+				Global.MainForm.VsyncMessage();
+			}
+		}
+
+		public void emu_enablerewind(object boolean)
+		{
+			string temp = boolean.ToString();
+			if (!String.IsNullOrWhiteSpace(temp))
+			{
+				if (temp == "0" || temp.ToLower() == "false")
+				{
+					Global.Config.RewindEnabled = false;
+				}
+				else
+				{
+					Global.Config.RewindEnabled = true;
+				}
+				Global.MainForm.RewindMessage();
+			}
+		}
+
+		public void emu_frameskip(object num_frames)
+		{
+			try
+			{
+				string temp = num_frames.ToString();
+				int frames = Convert.ToInt32(temp);
+				if (frames > 0)
+				{
+					Global.Config.FrameSkip = frames;
+					Global.MainForm.FrameSkipMessage();
+				}
+				else
+				{
+					console_log("Invalid frame skip value");
+				}
+			}
+			catch
+			{
+				console_log("Invalid frame skip value");
+			}
 		}
 
 		// For now, it accepts arguments up to 5.
@@ -1604,9 +1767,351 @@ namespace BizHawk.MultiClient
 			Global.MainForm.LoadTAStudio();
 		}
 
+		public void client_setwindowsize(object window_size)
+		{
+			try
+			{
+				string temp = window_size.ToString();
+				int size = Convert.ToInt32(temp);
+				if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
+				{
+					Global.Config.TargetZoomFactor = size;
+					Global.MainForm.FrameBufferResized();
+					Global.OSD.AddMessage("Window size set to " + size.ToString() + "x");
+				}
+				else
+				{
+					console_log("Invalid window size");
+				}
+			}
+			catch
+			{
+				console_log("Invalid window size");
+			}
+
+		}
+
 		public void client_opencheats()
 		{
 			Global.MainForm.LoadCheatsWindow();
+		}
+
+		//Winforms
+		public List<LuaWinform> LuaForms = new List<LuaWinform>();
+
+		public int forms_newform(object Width = null, object Height = null, object title = null)
+		{
+			
+			LuaWinform theForm = new LuaWinform();
+			LuaForms.Add(theForm);
+			if (Width != null && Height != null)
+			{
+				theForm.Size = new Size(LuaInt(Width), LuaInt(Height));
+			}
+
+			if (title != null)
+			{
+				theForm.Text = title.ToString();
+			}
+
+			theForm.Show();
+			return (int)theForm.Handle;
+		}
+
+		public void WindowClosed(IntPtr handle)
+		{
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == handle)
+				{
+					LuaForms.Remove(form);
+					return;
+				}
+			}
+		}
+
+		public bool forms_destroy(object handle)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					form.Close();
+					LuaForms.Remove(form);
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void forms_destroyall()
+		{
+			foreach (LuaWinform form in LuaForms)
+			{
+				form.Close();
+				LuaForms.Remove(form);
+			}
+		}
+
+		private LuaWinform GetForm(object form_handle)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(form_handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					return form;
+				}
+			}
+			return null;
+		}
+
+		private void SetLocation(Control control, object X, object Y)
+		{
+			try
+			{
+				if (X != null && Y != null)
+				{
+					int x = LuaInt(X);
+					int y = LuaInt(Y);
+					control.Location = new Point(x, y);
+				}
+			}
+			catch
+			{
+				//Do nothing
+			}
+		}
+
+		private void SetSize(Control control, object Width, object Height)
+		{
+			try
+			{
+				if (Width != null && Height != null)
+				{
+					int width = LuaInt(Width);
+					int height = LuaInt(Height);
+					control.Size = new Size(width, height);
+				}
+			}
+			catch
+			{
+				//Do nothing
+			}
+		}
+
+		private void SetText(Control control, object caption)
+		{
+			if (caption != null)
+			{
+				control.Text = caption.ToString();
+			}
+		}
+
+		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null)
+		{
+			LuaWinform form = GetForm(form_handle);
+			if (form == null)
+			{
+				return 0;
+			}
+			
+			LuaButton button = new LuaButton();
+			SetText(button, caption);
+			form.Controls.Add(button);
+			form.Control_Events.Add(new LuaWinform.Lua_Event(button.Handle, lua_event));
+			SetLocation(button, X, Y);
+			return (int)button.Handle;
+		}
+
+		public int forms_label(object form_handle, object caption, object X = null, object Y = null)
+		{
+			LuaWinform form = GetForm(form_handle);
+			if (form == null)
+			{
+				return 0;
+			}
+
+			Label label = new Label();
+			SetText(label, caption);
+			form.Controls.Add(label);
+			SetLocation(label, X, Y);
+			return (int)label.Handle;
+		}
+
+		public int forms_textbox(object form_handle, object caption = null, object width = null, object height = null, object boxtype = null, object X = null, object Y = null)
+		{
+			LuaWinform form = GetForm(form_handle);
+			if (form == null)
+			{
+				return 0;
+			}
+
+			LuaTextBox textbox = new LuaTextBox();
+			SetText(textbox, caption);
+			SetLocation(textbox, X, Y);
+			SetSize(textbox, X, Y);
+			if (boxtype != null)
+			{
+				switch (boxtype.ToString().ToUpper())
+				{
+					case "HEX":
+					case "HEXADECIMAL":
+						textbox.SetType(BoxType.HEX);
+						break;
+					case "UNSIGNED":
+					case "UINT":
+						textbox.SetType(BoxType.UNSIGNED);
+						break;
+					case "NUMBER":
+					case "NUM":
+					case "SIGNED":
+					case "INT":
+						textbox.SetType(BoxType.SIGNED);
+						break;
+				}
+			}
+			form.Controls.Add(textbox);
+			return (int)textbox.Handle;
+		}
+
+		public void forms_setlocation(object handle, object X, object Y)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					SetLocation(form, X, Y);
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							SetLocation(control, X, Y);
+						}
+					}
+				}
+			}
+		}
+
+		public void forms_setsize(object handle, object Width, object Height)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					SetSize(form, Width, Height);
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							SetSize(control, Width, Height);
+						}
+					}
+				}
+			}
+		}
+
+		public void forms_settext(object handle, object caption)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					SetText(form, caption);
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							SetText(control, caption);
+						}
+					}
+				}
+			}
+		}
+
+		public void forms_addclick(object handle, LuaFunction lua_event)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				foreach (Control control in form.Controls)
+				{
+					if (control.Handle == ptr)
+					{
+						form.Control_Events.Add(new LuaWinform.Lua_Event(control.Handle, lua_event));
+					}
+				}
+			}
+		}
+
+		public void forms_clearclicks(object handle)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				foreach (Control control in form.Controls)
+				{
+					if (control.Handle == ptr)
+					{
+						List<LuaWinform.Lua_Event> lua_events = form.Control_Events.Where(x => x.Control == ptr).ToList();
+						foreach (LuaWinform.Lua_Event levent in lua_events)
+						{
+							form.Control_Events.Remove(levent);
+						}
+					}
+				}
+			}
+		}
+
+		public string forms_gettext(object handle)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					return form.Text;
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							return control.Text;
+						}
+					}
+				}
+			}
+
+			return "";
+		}
+
+		public LuaTable input_getmouse()
+		{
+			LuaTable buttons = lua.NewTable();
+			buttons["X"] = Control.MousePosition.X;
+			buttons["Y"] = Control.MousePosition.Y;
+			buttons[MouseButtons.Left.ToString()] = Control.MouseButtons & MouseButtons.Left;
+			buttons[MouseButtons.Middle.ToString()] = Control.MouseButtons & MouseButtons.Middle;
+			buttons[MouseButtons.Right.ToString()] = Control.MouseButtons & MouseButtons.Right;
+			buttons[MouseButtons.XButton1.ToString()] = Control.MouseButtons & MouseButtons.XButton1;
+			buttons[MouseButtons.XButton2.ToString()] = Control.MouseButtons & MouseButtons.XButton2;
+			return buttons;
+
 		}
 	}
 }

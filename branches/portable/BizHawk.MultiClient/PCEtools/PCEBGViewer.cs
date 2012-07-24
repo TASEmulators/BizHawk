@@ -27,10 +27,7 @@ namespace BizHawk.MultiClient
 
 		public unsafe void Generate()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
-			if (pce == null) return;
-
-			if (Global.Emulator.Frame % 20 != 0) return; // TODO: just a makeshift. hard-coded 3fps
+			if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
 
 			VDC vdc = VDCtype == 0 ? pce.VDC1 : pce.VDC2;
 
@@ -88,12 +85,14 @@ namespace BizHawk.MultiClient
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (!(Global.Emulator is PCEngine)) return;
+			Generate();
 		}
 
 		private void SaveConfigSettings()
 		{
 			Global.Config.PCEBGViewerWndx = this.Location.X;
 			Global.Config.PCEBGViewerWndy = this.Location.Y;
+			Global.Config.PCEBGViewerRefreshRate = RefreshRate.Value;
 		}
 
 		private void LoadConfigSettings()
@@ -109,6 +108,14 @@ namespace BizHawk.MultiClient
 		{
 			pce = Global.Emulator as PCEngine;
 			LoadConfigSettings();
+			if (Global.Config.PCEBGViewerRefreshRate >= RefreshRate.Minimum && Global.Config.PCEBGViewerRefreshRate <= RefreshRate.Maximum)
+			{
+				RefreshRate.Value = Global.Config.PCEBGViewerRefreshRate;
+			}
+			else
+			{
+				RefreshRate.Value = RefreshRate.Maximum;
+			}
 		}
 
 		private void PCEBGViewer_FormClosed(object sender, FormClosedEventArgs e)
@@ -171,6 +178,18 @@ namespace BizHawk.MultiClient
 					vCD2ToolStripMenuItem.Checked = true;
 					break;
 			}
+		}
+
+		private void canvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			VDC vdc = VDCtype == 0 ? pce.VDC1 : pce.VDC2;
+			int xTile = e.X / 8;
+			int yTile = e.Y / 8;
+			int tileNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] & 0x07FF;
+			int paletteNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] >> 12;
+			TileIDLabel.Text = tileNo.ToString();
+			XYLabel.Text = xTile.ToString() + ":" + yTile.ToString();
+			PaletteLabel.Text = paletteNo.ToString();
 		}
 	}
 }

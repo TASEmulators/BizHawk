@@ -527,8 +527,8 @@ namespace LuaInterface
 					int ret = LuaDLL.lua_resume(luaState, narg);
 					if (ret == 1 /*LUA_YIELD*/)
 						return 1; //yielded
-					if (ret == 0) //normal termination - what to do?
-						return 0;
+					if (ret == 0) 
+						return 0; //normal termination
 					//error. throw exception with error message (TBD - debug api to get call stack)
 					ThrowExceptionFromError(top);
 					return ret;

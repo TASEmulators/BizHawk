@@ -283,5 +283,16 @@ namespace BizHawk.MultiClient
 		{
 			return "wav";
 		}
+
+
+		public void SetDefaultVideoCodecToken()
+		{
+			// don't use codec tokens, so don't care
+		}
+
+		public string ShortName()
+		{
+			return "wave";
+		}
 	}
 }

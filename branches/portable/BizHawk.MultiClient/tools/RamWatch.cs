@@ -244,6 +244,11 @@ namespace BizHawk.MultiClient
 
 		public bool AskSave()
 		{
+			if (Global.Config.SupressAskSave) //User has elected to not be nagged
+			{
+				return true;
+			}
+
 			if (changes)
 			{
 				Global.Sound.StopSound();

@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		protected Namcot108Chip mapper;
 
 		//configuration
-		protected int prg_mask, chr_mask;
+		protected int prg_mask, chr_byte_mask;
 
 		public override void Dispose()
 		{
@@ -129,7 +129,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		protected int MapCHR(int addr)
 		{
 			int bank_1k = Get_CHRBank_1K(addr);
-			bank_1k &= chr_mask;
 			addr = (bank_1k << 10) | (addr & 0x3FF);
 			return addr;
 		}
@@ -140,7 +139,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				addr = MapCHR(addr);
 				if (VROM != null)
+				{
+					addr &= chr_byte_mask;
 					return VROM[addr];
+				}
 				else return VRAM[addr];
 			}
 			else return base.ReadPPU(addr);
@@ -177,7 +179,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_mask = num_prg_banks - 1;
 
 			int num_chr_banks = (Cart.chr_size);
-			chr_mask = num_chr_banks - 1;
+			chr_byte_mask = (num_chr_banks*1024) - 1;
 
 			mapper = new Namcot108Chip(this);
 			SetMirrorType(EMirrorType.Vertical);

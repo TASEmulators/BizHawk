@@ -95,6 +95,9 @@ namespace BizHawk.MultiClient.tools
 			IDW_ToggleMenu.SetBindings(Global.Config.ToggleMenuBinding);
 			IDW_IncreaseWindowSize.SetBindings(Global.Config.IncreaseWindowSize);
 			IDW_DecreaseWindowSize.SetBindings(Global.Config.DecreaseWindowSize);
+			IDW_IncSpeed.SetBindings(Global.Config.IncreaseSpeedBinding);
+			IDW_DecSpeed.SetBindings(Global.Config.DecreaseSpeedBinding);
+			IDW_ToggleBGInput.SetBindings(Global.Config.ToggleBackgroundInput);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -198,7 +201,9 @@ namespace BizHawk.MultiClient.tools
 
 			Global.Config.IncreaseWindowSize = IDW_IncreaseWindowSize.Text;
 			Global.Config.DecreaseWindowSize = IDW_DecreaseWindowSize.Text;
-
+			Global.Config.IncreaseSpeedBinding = IDW_IncSpeed.Text;
+			Global.Config.DecreaseSpeedBinding = IDW_DecSpeed.Text;
+			Global.Config.ToggleBackgroundInput = IDW_ToggleBGInput.Text;
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
