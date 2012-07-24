@@ -85,7 +85,7 @@ namespace BizHawk.MultiClient
 				while (LuaText.Find(mark.ToString(), currPos, RichTextBoxFinds.None) >= 0)
 				{
 					if (LuaText.SelectionColor.ToArgb() != Global.Config.LuaCommentColor && LuaText.SelectionColor.ToArgb() != Global.Config.LuaStringColor)
-						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaSymbolsColor);
+						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaSymbolColor);
 					currPos = LuaText.SelectionStart + 1;
 
 					if (currPos == LuaText.Text.Length)
@@ -447,7 +447,8 @@ namespace BizHawk.MultiClient
 		private void syntaxHighlightingToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LuaWriterColorConfig l = new LuaWriterColorConfig();
-			l.ShowDialog();
+            // l.Load();
+            l.ShowDialog();
 		}
 
 		private void fontToolStripMenuItem_Click(object sender, EventArgs e)
@@ -457,7 +458,7 @@ namespace BizHawk.MultiClient
 			if (result == DialogResult.OK)
 			{
 				LuaText.Font = LuaTextFont = f.Font;
-				
+                ProcessText();   //Re-update coloring and such when font changes
 			}
 		}
 

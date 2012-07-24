@@ -555,7 +555,7 @@ namespace BizHawk.MultiClient
         public int LuaKeyWordColor = -16776961;
         public int LuaCommentColor = -16744448;
         public int LuaStringColor = -8355712;
-        public int LuaSymbolsColor = -16777216;
+        public int LuaSymbolColor = -16777216;
 		public int LuaLibraryColor = 10349567;
 	}
 
