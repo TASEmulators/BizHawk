@@ -43,12 +43,12 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			while (PendingCycles > 0)
 			{
 				int addrToAdvance;
-				int opcode = ReadMemory(RegisterPC++) & 0x3FF;
 				if (logging)
 				{
-					log.WriteLine("{0:X3} ({1})", opcode, Disassemble((ushort)(RegisterPC - 1), out addrToAdvance));
+					log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
 					log.Flush();
 				}
+				int opcode = ReadMemory(RegisterPC++) & 0x3FF;
 				switch (opcode)
 				{
 					case 0x000: // HLT

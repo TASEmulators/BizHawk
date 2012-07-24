@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			addrToAdvance = 1;
 			byte dest, src, mem;
 			int decle2, decle3;
-			int cond;
+			int cond, ext;
 			ushort addr, offset;
 			string result = "";
 			int opcode = ReadMemory(pc) & 0x3FF;
@@ -717,7 +717,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x23F:
 					offset = ReadMemory((ushort)(pc + 1));
 					cond = opcode & 0x15;
-					if ((opcode & 0x16) != 0)
+					ext = opcode & 0x16;
+					if (ext != 0)
 						result = "BEXT";
 					else
 					{
@@ -775,9 +776,11 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					}
 					if (cond != 0x8)
 					{
+						if (((opcode >> 5) & 0x1) != 0)
+							offset = (ushort)-offset;
 						result += string.Format(" ${0:X4}", offset);
-						if (cond != 0x0)
-							result += ", " + ((opcode >> 5) & 0x1);
+						if (ext != 0)
+							result += string.Format(", ${0:X1}", opcode & 0x8);
 					}
 					addrToAdvance = 2;
 					return result;
