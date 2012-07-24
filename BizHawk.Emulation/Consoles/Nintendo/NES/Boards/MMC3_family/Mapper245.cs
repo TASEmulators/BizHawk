@@ -66,6 +66,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		R:0 remains the normal MMC3 CHR reg, as well.  Although the game that uses it as a PRG block selector ("DQ7")
 		uses CHR-RAM, so it is normally ignored.
 		*/
+		bool chr_mode;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -77,7 +78,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
-
+			chr_mode = false;
 			BaseSetup();
 			return true;
 		}
@@ -100,6 +101,34 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
 			return ROM[addr];
+		}
+
+		public override void WritePRG(int addr, byte value)
+		{
+			if (addr == 0)
+			{
+				chr_mode = value.Bit(7);
+			}
+			base.WritePRG(addr, value);
+		}
+
+		public override byte  ReadPPU(int addr)
+		{
+			if (chr_mode) //All games seem to have 0 Chr-ROM
+			{
+				if (addr < 0x1000)
+				{
+					return VRAM[addr + 0x1000];
+				}
+				else
+				{
+					return VRAM[addr - 0x1000];
+				}
+			}
+			else
+			{
+				return base.ReadPPU(addr);
+			}
 		}
 	}
 }
