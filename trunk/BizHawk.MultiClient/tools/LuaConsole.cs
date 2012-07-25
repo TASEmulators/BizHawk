@@ -100,6 +100,11 @@ namespace BizHawk.MultiClient
 					LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
 				}
 			}
+
+            newStripButton1.Visible = Global.MainForm.INTERIM;
+            newScriptToolStripMenuItem.Visible = Global.MainForm.INTERIM;
+            newStripButton1.Enabled = Global.MainForm.INTERIM;
+            newScriptToolStripMenuItem.Enabled = Global.MainForm.INTERIM;
 		}
 
 		private void StopScript(int x)

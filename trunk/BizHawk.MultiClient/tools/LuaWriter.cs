@@ -489,10 +489,27 @@ namespace BizHawk.MultiClient
 						AutoCompleteView.Items.Add(item);
 					}
 					AutoCompleteView.Location = new Point(0, 0);
-					
-
 				}
 			}
+
+            if (e.KeyCode == Keys.Enter)
+            {
+                string[] Words = { "if", "for", "while", "function" };
+                foreach (string Word in Words)
+                {
+                    try
+                    {
+                        int linenumber = LuaText.GetLineFromCharIndex(LuaText.GetFirstCharIndexOfCurrentLine());
+                        if (LuaText.Lines[linenumber].Substring(0, Word.Length) == Word)
+                        {
+                            string str = LuaText.Text.Insert(LuaText.SelectionStart, "\n\nend");
+                            LuaText.Text = str;
+                            break;
+                        }
+                    }
+                    catch { }
+                }
+            }
 		}
 
 		private string CurrentWord()
@@ -560,5 +577,10 @@ namespace BizHawk.MultiClient
 				PositionLabel.Text = string.Format("Line {0}/{1}, Column {2}", currentLineIndex + 1, lastLineIndex + 1, currentColumnIndex + 1);
 			}
 		}
+
+        private void LuaText_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            
+        }
 	}
 }
