@@ -381,27 +381,22 @@ namespace BizHawk.MultiClient
 			using (StreamReader sr = file.OpenText())
 			{
 				string str = "";
-				int length = 0;
 				while ((str = sr.ReadLine()) != null)
 				{
-					length += str.Length + 1;
-					if (str == "")
-					{
+					if (str == "" || Header.AddHeaderFromLine(str))
 						continue;
-					}
-					else if (Header.AddHeaderFromLine(str))
-						continue;
-
 					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
-					{
 						Subtitles.AddSubtitle(str);
-					}
 					else if (str[0] == '|')
 					{
-						int line = str.Length + 1;
-						length -= line;
-						int lines = (int)file.Length - length;
-						this.Frames = lines / line;
+						string frames = sr.ReadToEnd();
+						int length = str.Length;
+						// Account for line breaks of either size.
+						if (frames.IndexOf("\r\n") != -1)
+							length++;
+						length++;
+						// Count the remaining frames and the current one.
+						this.Frames = (frames.Length / length) + 1;
 						break;
 					}
 					else
