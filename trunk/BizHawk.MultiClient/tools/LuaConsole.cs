@@ -94,7 +94,12 @@ namespace BizHawk.MultiClient
 		{
 			LoadConfigSettings();
 			if (Global.Config.AutoLoadLuaSession)
-				LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
+			{
+				if (!Global.Config.RecentLuaSession.IsEmpty())
+				{
+					LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
+				}
+			}
 		}
 
 		private void StopScript(int x)
@@ -390,7 +395,7 @@ namespace BizHawk.MultiClient
 				luaList.Clear();
 				DisplayLuaList();
 				UpdateNumberOfScripts();
-                currentSessionFile = "";
+				currentSessionFile = "";
 				Changes(false);
 			}
 		}
