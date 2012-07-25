@@ -1275,5 +1275,20 @@ namespace BizHawk.MultiClient
 			writer.CurrentFile = path;
 			writer.Show();
 		}
+
+		private void newScriptToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			NewScript();
+		}
+
+		private void NewScript()
+		{
+			OpenLuaWriter(null);
+		}
+
+		private void newStripButton1_Click(object sender, EventArgs e)
+		{
+			NewScript();
+		}
 	}
 }
