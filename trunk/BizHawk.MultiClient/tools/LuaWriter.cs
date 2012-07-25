@@ -23,7 +23,6 @@ namespace BizHawk.MultiClient
 		//Auto-complete drop down on functions in libraries
 		//intellisense on library functions
 		//New lua script menu item on console
-		//Open up a basic while true do emu.frameadvance() end code block on new lua script
 		//Option to turn off basic lua script
 		//Color config menu item
 		//Load/Save font
@@ -301,9 +300,14 @@ namespace BizHawk.MultiClient
 			if (!String.IsNullOrWhiteSpace(CurrentFile))
 			{
 				LoadCurrentFile();
-				ProcessText();
-				NoChanges();
 			}
+			else
+			{
+				LuaText.Text = "while true do\n\temu.frameadvance()\nend";
+			}
+			UpdateLineNumber();
+			ProcessText();
+			NoChanges();
 		}
 
 		private void NoChanges()
@@ -541,6 +545,11 @@ namespace BizHawk.MultiClient
 		}
 
 		private void LuaText_SelectionChanged(object sender, EventArgs e)
+		{
+			UpdateLineNumber();
+		}
+
+		private void UpdateLineNumber()
 		{
 			if (!hasChanged)
 			{

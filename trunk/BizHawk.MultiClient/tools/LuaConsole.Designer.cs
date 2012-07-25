@@ -97,6 +97,8 @@
 			this.LuaListView = new BizHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.newScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.newStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip2.SuspendLayout();
@@ -205,7 +207,8 @@
 			// 
 			this.newToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.N)));
 			this.newToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
 			this.newToolStripMenuItem.Text = "&New Session";
 			this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
@@ -316,6 +319,7 @@
 			// scriptToolStripMenuItem
 			// 
 			this.scriptToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newScriptToolStripMenuItem,
             this.openToolStripMenuItem,
             this.toggleToolStripMenuItem,
             this.pauseResumeToolStripMenuItem,
@@ -569,6 +573,7 @@
 			// 
 			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newStripButton1,
             this.openToolStripButton,
             this.copyToolStripButton,
             this.resumePauseButton1,
@@ -703,6 +708,25 @@
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
 			// 
+			// newScriptToolStripMenuItem
+			// 
+			this.newScriptToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
+			this.newScriptToolStripMenuItem.Name = "newScriptToolStripMenuItem";
+			this.newScriptToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+			this.newScriptToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.newScriptToolStripMenuItem.Text = "New Script";
+			this.newScriptToolStripMenuItem.Click += new System.EventHandler(this.newScriptToolStripMenuItem_Click);
+			// 
+			// newStripButton1
+			// 
+			this.newStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.newStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
+			this.newStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.newStripButton1.Name = "newStripButton1";
+			this.newStripButton1.Size = new System.Drawing.Size(23, 22);
+			this.newStripButton1.Text = "toolStripButton1";
+			this.newStripButton1.Click += new System.EventHandler(this.newStripButton1_Click);
+			// 
 			// LuaConsole
 			// 
 			this.AllowDrop = true;
@@ -804,5 +828,7 @@
         public System.Windows.Forms.RichTextBox OutputBox;
         private System.Windows.Forms.Label OutputMessages;
 		private System.Windows.Forms.ToolStripMenuItem onlineDocumentationToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem newScriptToolStripMenuItem;
+		private System.Windows.Forms.ToolStripButton newStripButton1;
     }
 }
