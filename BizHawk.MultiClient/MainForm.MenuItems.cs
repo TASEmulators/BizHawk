@@ -1176,13 +1176,26 @@ namespace BizHawk.MultiClient
 		private void MainForm_Deactivate(object sender, EventArgs e)
 		{
 			if (!Global.Config.RunInBackground)
+			{
+				if (EmulatorPaused)
+				{
+					wasPaused = true;
+				}
 				PauseEmulator();
+			}
 		}
 
 		private void MainForm_Activated(object sender, EventArgs e)
 		{
 			if (!Global.Config.RunInBackground)
-				UnpauseEmulator();
+			{
+				
+				if (!wasPaused)
+				{
+					UnpauseEmulator();
+				}
+				wasPaused = false;
+			}
 		}
 
 		private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)
