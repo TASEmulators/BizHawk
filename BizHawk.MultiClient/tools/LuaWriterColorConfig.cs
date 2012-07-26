@@ -26,61 +26,112 @@ namespace BizHawk.MultiClient.tools
         private void LuaWriterColorConfig_Load(object sender, EventArgs e)
         {
             //Set the initial colors into the panels
-            KeyWordColorDialog.Color = Color.FromArgb(KeyWordColor);
-            CommentColorDialog.Color = Color.FromArgb(CommentColor);
-            StringColorDialog.Color = Color.FromArgb(StringColor);
-            SymbolColorDialog.Color = Color.FromArgb(SymbolColor);
-            LibraryColorDialog.Color = Color.FromArgb(LibraryColor);
+            SetKeyWordColor(KeyWordColor);
+            SetCommentColor(CommentColor);
+            SetStringColor(StringColor);
+            SetSymbolColor(SymbolColor);
+            SetLibraryColor(LibraryColor);
         }
 
+        private void SetKeyWordColor(int color)
+        {
+            KeyWordColor = color;   //Set new color
+            panelKeyWord.BackColor = Color.FromArgb(color);   //Update panel color with new selection
+        }
+
+        private void SetCommentColor(int color)
+        {
+            CommentColor = color;   //Set new color
+            panelComment.BackColor = Color.FromArgb(color);   //Update panel color with new selection
+        }
+
+        private void SetStringColor(int color)
+        {
+            StringColor = color;   //Set new color
+            panelString.BackColor = Color.FromArgb(color);   //Update panel color with new selection
+        }
+
+        private void SetSymbolColor(int color)
+        {
+            SymbolColor = color;   //Set new color
+            panelSymbol.BackColor = Color.FromArgb(color);   //Update panel color with new selection
+        }
+
+        private void SetLibraryColor(int color)
+        {
+            LibraryColor = color;   //Set new color
+            panelLibrary.BackColor = Color.FromArgb(color);   //Update panel color with new selection
+        }
+
+        //Pop up color dialog when double-clicked
         private void panelKeyWord_DoubleClick(object sender, EventArgs e)
         {
             if (KeyWordColorDialog.ShowDialog() == DialogResult.OK)
             {
-                KeyWordColor = KeyWordColorDialog.Color.ToArgb();  //Set new color
-                panelKeyWord.BackColor = KeyWordColorDialog.Color;  //Update panel color with selection
+                SetKeyWordColor(KeyWordColorDialog.Color.ToArgb());
             }
         }
 
+        //Pop up color dialog when double-clicked
         private void panelComment_DoubleClick(object sender, EventArgs e)
         {
             if (CommentColorDialog.ShowDialog() == DialogResult.OK)
             {
-                CommentColor = CommentColorDialog.Color.ToArgb();  //Set new color
-                panelComment.BackColor = CommentColorDialog.Color;  //Update panel color with selection
+                SetCommentColor(CommentColorDialog.Color.ToArgb());
             }
         }
 
+        //Pop up color dialog when double-clicked
         private void panelString_DoubleClick(object sender, EventArgs e)
         {
             if (StringColorDialog.ShowDialog() == DialogResult.OK)
             {
-                StringColor = StringColorDialog.Color.ToArgb();  //Set new color
-                panelString.BackColor = StringColorDialog.Color;  //Update panel color with selection
+                SetStringColor(StringColorDialog.Color.ToArgb());
             }
         }
- 
+
+        //Pop up color dialog when double-clicked
         private void panelSymbol_DoubleClick(object sender, EventArgs e)
         {
             if (SymbolColorDialog.ShowDialog() == DialogResult.OK)
             {
-                SymbolColor = SymbolColorDialog.Color.ToArgb();  //Set new color
-                panelSymbol.BackColor = SymbolColorDialog.Color;  //Update panel color with selection
+                SetSymbolColor(SymbolColorDialog.Color.ToArgb());
             }
         }
 
+        //Pop up color dialog when double-clicked
         private void panelLibrary_DoubleClick(object sender, EventArgs e)
         {
             if (LibraryColorDialog.ShowDialog() == DialogResult.OK)
             {
-                LibraryColor = LibraryColorDialog.Color.ToArgb();  //Set new color
-                panelLibrary.BackColor = LibraryColorDialog.Color;  //Update panel color with selection
+                SetLibraryColor(LibraryColorDialog.Color.ToArgb());
+                LibraryColorDialog.Color = Color.FromArgb(10349567);
             }
         }
 
-		private void OK_Click(object sender, EventArgs e)
+        private void OK_Click(object sender, EventArgs e)
 		{
-
+            SaveData();   //Save the chosen settings
+            this.DialogResult = DialogResult.OK;
+            this.Close();
 		}
+
+        private void SaveData()
+        {
+            Global.Config.LuaKeyWordColor = KeyWordColor;
+            Global.Config.LuaCommentColor = CommentColor;
+            Global.Config.LuaStringColor = StringColor;
+            Global.Config.LuaSymbolColor = SymbolColor;
+            Global.Config.LuaLibraryColor = LibraryColor;
+        }
+
+        private void buttonDefaults_Click(object sender, EventArgs e)
+        {
+            SetKeyWordColor(-16776961);
+            SetCommentColor(-16744448);
+            SetStringColor(-8355712);
+            SetSymbolColor(-16777216);
+            SetLibraryColor(-6427649);
+        }
     }
 }

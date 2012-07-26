@@ -271,7 +271,7 @@ namespace BizHawk.MultiClient
 						if (after == '.')
 						{
 							LuaText.Select(libraryWordMatch.Index, libraryWordMatch.Length);
-							    LuaText.SelectionColor = Color.FromArgb(Global.Config.EmuluaLibraryColor);
+							    LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
 						}
 					}
 				}
@@ -453,8 +453,11 @@ namespace BizHawk.MultiClient
 		private void syntaxHighlightingToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LuaWriterColorConfig l = new LuaWriterColorConfig();
-            // l.Load();
-            l.ShowDialog();
+            if (l.ShowDialog() == DialogResult.OK)
+            {
+                ProcessText();  //Update display with new settings
+            }
+            
 		}
 
 		private void fontToolStripMenuItem_Click(object sender, EventArgs e)
