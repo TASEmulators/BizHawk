@@ -16,15 +16,12 @@ namespace BizHawk.MultiClient
 	{
 		//TODO:
         //make functions is string part of string or comment since the actual way of validating it isn't correct
-		//fix tabs (tab should be 4 characters)
 		//Line numbers
 		//Option to toggle line numbers
 		//Go to line number Ctrl+G
 		//Auto-complete drop down on functions in libraries
 		//intellisense on library functions
-		//New lua script menu item on console
 		//Option to turn off basic lua script
-		//Color config menu item
 		//Load/Save font
 		//Tool strip
 		//function toolstrip button (inserts a function end block and puts cursor on blank line between them
@@ -305,7 +302,8 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				LuaText.Text = "while true do\n\temu.frameadvance()\nend";
+				LuaText.Text = "while true do\n\t\n\temu.frameadvance()\nend";
+				LuaText.SelectionStart = 15;
 			}
 			UpdateLineNumber();
 			ProcessText();
