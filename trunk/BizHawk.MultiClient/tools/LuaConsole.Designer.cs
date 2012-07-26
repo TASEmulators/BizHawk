@@ -56,6 +56,7 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.scriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.newScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pauseResumeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,6 +86,7 @@
 			this.NumberOfScripts = new System.Windows.Forms.Label();
 			this.OutputMessages = new System.Windows.Forms.Label();
 			this.toolStrip1 = new ToolStripEx();
+			this.newStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.resumePauseButton1 = new System.Windows.Forms.ToolStripButton();
@@ -97,8 +99,6 @@
 			this.LuaListView = new BizHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.newScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.newStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip2.SuspendLayout();
@@ -336,6 +336,15 @@
 			this.scriptToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
 			this.scriptToolStripMenuItem.Text = "&Script";
 			this.scriptToolStripMenuItem.DropDownOpened += new System.EventHandler(this.scriptToolStripMenuItem_DropDownOpened);
+			// 
+			// newScriptToolStripMenuItem
+			// 
+			this.newScriptToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
+			this.newScriptToolStripMenuItem.Name = "newScriptToolStripMenuItem";
+			this.newScriptToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+			this.newScriptToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.newScriptToolStripMenuItem.Text = "New Script";
+			this.newScriptToolStripMenuItem.Click += new System.EventHandler(this.newScriptToolStripMenuItem_Click);
 			// 
 			// openToolStripMenuItem
 			// 
@@ -589,6 +598,16 @@
 			this.toolStrip1.TabIndex = 5;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
+			// newStripButton1
+			// 
+			this.newStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.newStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
+			this.newStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.newStripButton1.Name = "newStripButton1";
+			this.newStripButton1.Size = new System.Drawing.Size(23, 22);
+			this.newStripButton1.Text = "New Lua Script";
+			this.newStripButton1.Click += new System.EventHandler(this.newStripButton1_Click);
+			// 
 			// openToolStripButton
 			// 
 			this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -707,25 +726,6 @@
 			// 
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
-			// 
-			// newScriptToolStripMenuItem
-			// 
-			this.newScriptToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
-			this.newScriptToolStripMenuItem.Name = "newScriptToolStripMenuItem";
-			this.newScriptToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.newScriptToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.newScriptToolStripMenuItem.Text = "New Script";
-			this.newScriptToolStripMenuItem.Click += new System.EventHandler(this.newScriptToolStripMenuItem_Click);
-			// 
-			// newStripButton1
-			// 
-			this.newStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.newStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.NewFile;
-			this.newStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.newStripButton1.Name = "newStripButton1";
-			this.newStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.newStripButton1.Text = "toolStripButton1";
-			this.newStripButton1.Click += new System.EventHandler(this.newStripButton1_Click);
 			// 
 			// LuaConsole
 			// 
