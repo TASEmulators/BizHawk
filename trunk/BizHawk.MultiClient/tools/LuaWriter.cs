@@ -296,6 +296,8 @@ namespace BizHawk.MultiClient
 
 		private void LuaWriter_Load(object sender, EventArgs e)
 		{
+			//LuaTextFont;
+			LuaText.SelectionTabs = new int[] { 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 480, 500, 520, 540, 560, 580, 600 }; //adelikat:  What a goofy way to have to do this
 			GenerateLibraryRegex();
 			if (!String.IsNullOrWhiteSpace(CurrentFile))
 			{
