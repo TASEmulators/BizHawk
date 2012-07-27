@@ -103,6 +103,7 @@
 			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// configToolStripMenuItem
 			// 
