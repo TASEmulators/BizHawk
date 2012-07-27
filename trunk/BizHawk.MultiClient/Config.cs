@@ -550,13 +550,15 @@ namespace BizHawk.MultiClient
 		public int GifAnimatorSpeed;
 		public bool GifAnimatorReversable;
 
-        //LuaWriter Settings
-        public int LuaDefaultTextColor = -16777216;
-        public int LuaKeyWordColor = -16776961;
-        public int LuaCommentColor = -16744448;
-        public int LuaStringColor = -8355712;
-        public int LuaSymbolColor = -16777216;
-        public int LuaLibraryColor = -6427649;
+		//LuaWriter Settings
+		public int LuaDefaultTextColor = -16777216;
+		public int LuaKeyWordColor = -16776961;
+		public int LuaCommentColor = -16744448;
+		public int LuaStringColor = -8355712;
+		public int LuaSymbolColor = -16777216;
+		public int LuaLibraryColor = -6427649;
+		public float LuaWriterFontSize = 11;
+		public string LuaWriterFont = "Courier New";
 	}
 
 	public class SMSControllerTemplate

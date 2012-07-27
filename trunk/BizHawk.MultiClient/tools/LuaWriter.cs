@@ -15,14 +15,16 @@ namespace BizHawk.MultiClient
 	public partial class LuaWriter : Form
 	{
 		//TODO:
+		//ability to save new script (currently causes an exception)
+		//New scripts should be added to lua console automatically
         //make functions is string part of string or comment since the actual way of validating it isn't correct
+		//Save fontstyle to config
 		//Line numbers
 		//Option to toggle line numbers
 		//Go to line number Ctrl+G
 		//Auto-complete drop down on functions in libraries
 		//intellisense on library functions
 		//Option to turn off basic lua script
-		//Load/Save font
 		//Tool strip
 		//function toolstrip button (inserts a function end block and puts cursor on blank line between them
 		//when pressing enter on function blah, it should put the end afterwards
@@ -39,7 +41,6 @@ namespace BizHawk.MultiClient
 		char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		public Regex libraryWords;
 		public Regex LuaLibraryWords = new Regex("coroutine|package|debug|file|io|math|os|package|string|table");
-		Font LuaTextFont = new Font("Courier New", 8);
 
 		public LuaWriter()
 		{
@@ -291,10 +292,16 @@ namespace BizHawk.MultiClient
 			libraryWords = new Regex(list.ToString());
 		}
 
+		private void LoadFont()
+		{
+			LuaText.Font = new Font(Global.Config.LuaWriterFont, Global.Config.LuaWriterFontSize);
+		}
+
 		private void LuaWriter_Load(object sender, EventArgs e)
 		{
 			//LuaTextFont;
 			LuaText.SelectionTabs = new int[] { 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 480, 500, 520, 540, 560, 580, 600 }; //adelikat:  What a goofy way to have to do this
+			LoadFont();
 			GenerateLibraryRegex();
 			if (!String.IsNullOrWhiteSpace(CurrentFile))
 			{
@@ -466,8 +473,10 @@ namespace BizHawk.MultiClient
 			DialogResult result = f.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				LuaText.Font = LuaTextFont = f.Font;
-                ProcessText();   //Re-update coloring and such when font changes
+				LuaText.Font = f.Font;
+				Global.Config.LuaWriterFont = f.Font.Name;
+				Global.Config.LuaWriterFontSize = f.Font.Size;
+				ProcessText();   //Re-update coloring and such when font changes
 			}
 		}
 
@@ -585,5 +594,11 @@ namespace BizHawk.MultiClient
         {
             
         }
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			//TODO: check for changes and ask save
+			this.Close();
+		}
 	}
 }
