@@ -137,7 +137,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x015:
 					case 0x016:
 					case 0x017:
-						throw new NotImplementedException();
 						dest = (byte)(opcode & 0x7);
 						result = (Register[dest] - 1) & 0xFFFF;
 						Calc_FlagS(result);

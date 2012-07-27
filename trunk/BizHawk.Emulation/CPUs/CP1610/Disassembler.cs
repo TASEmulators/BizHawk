@@ -716,8 +716,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x23E:
 				case 0x23F:
 					offset = ReadMemory((ushort)(pc + 1));
-					cond = opcode & 0x15;
-					ext = opcode & 0x16;
+					cond = opcode & 0xF;
+					ext = opcode & 0x10;
 					if (ext != 0)
 						result = "BEXT";
 					else
@@ -754,30 +754,31 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							case 0x9:
 								result = "BNC";
 								break;
-							case 0x10:
+							case 0xA:
 								result = "BNOV";
 								break;
-							case 0x11:
+							case 0xB:
 								result = "BMI";
 								break;
-							case 0x12:
+							case 0xC:
 								result = "BNEQ";
 								break;
-							case 0x13:
+							case 0xD:
 								result = "BGE";
 								break;
-							case 0x14:
+							case 0xE:
 								result = "BGT";
 								break;
-							case 0x15:
+							case 0xF:
 								result = "BESC";
 								break;
 						}
 					}
 					if (cond != 0x8)
 					{
+						// Branch in the reverse direction by negating the offset and subtracting 1.
 						if (((opcode >> 5) & 0x1) != 0)
-							offset = (ushort)-offset;
+							offset = (ushort)(-offset - 1);
 						result += string.Format(" ${0:X4}", offset);
 						if (ext != 0)
 							result += string.Format(", ${0:X1}", opcode & 0x8);
