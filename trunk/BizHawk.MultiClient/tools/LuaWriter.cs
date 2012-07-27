@@ -45,6 +45,13 @@ namespace BizHawk.MultiClient
 		public LuaWriter()
 		{
 			InitializeComponent();
+			LuaText.MouseWheel += new MouseEventHandler(LuaText_MouseWheel);
+		}
+
+		void LuaText_MouseWheel(object sender, MouseEventArgs e)
+		{
+			if(KeyInput.IsPressed(SlimDX.DirectInput.Key.LeftControl))
+				ZoomLabel.Text = string.Format("Zoom: {0}%", (LuaText.ZoomFactor * 100) + e.Delta / 12);
 		}
 
 		private void timer_Tick(object sender, EventArgs e)

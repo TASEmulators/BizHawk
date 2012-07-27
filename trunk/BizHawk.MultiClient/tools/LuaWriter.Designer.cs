@@ -43,6 +43,7 @@
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.AutoCompleteView = new System.Windows.Forms.ListView();
 			this.PositionLabel = new System.Windows.Forms.Label();
+			this.ZoomLabel = new System.Windows.Forms.Label();
 			this.LuaText = new BizHawk.MultiClient.LuaWriterBox();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -160,6 +161,15 @@
 			this.PositionLabel.TabIndex = 4;
 			this.PositionLabel.Text = "             ";
 			// 
+			// ZoomLabel
+			// 
+			this.ZoomLabel.AutoSize = true;
+			this.ZoomLabel.Location = new System.Drawing.Point(115, 30);
+			this.ZoomLabel.Name = "ZoomLabel";
+			this.ZoomLabel.Size = new System.Drawing.Size(66, 13);
+			this.ZoomLabel.TabIndex = 5;
+			this.ZoomLabel.Text = "Zoom: 100%";
+			// 
 			// LuaText
 			// 
 			this.LuaText.AcceptsTab = true;
@@ -186,6 +196,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(474, 441);
+			this.Controls.Add(this.ZoomLabel);
 			this.Controls.Add(this.PositionLabel);
 			this.Controls.Add(this.AutoCompleteView);
 			this.Controls.Add(this.MessageLabel);
@@ -221,5 +232,6 @@
 		private System.Windows.Forms.ToolStripMenuItem syntaxHighlightingToolStripMenuItem;
 		private System.Windows.Forms.ListView AutoCompleteView;
 		private System.Windows.Forms.Label PositionLabel;
+		private System.Windows.Forms.Label ZoomLabel;
     }
 }
