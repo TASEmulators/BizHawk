@@ -551,6 +551,21 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x0BE:
 					case 0x0BF:
 						throw new NotImplementedException();
+						src = (byte)((opcode >> 3) & 0x7);
+						dest = (byte)(opcode & 0x7);
+						result = Register[src];
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						Register[dest] = (ushort)result;
+						if (dest == 0x6 || dest == 0x7)
+						{
+							PendingCycles -= 7; TotalExecutedCycles += 7;
+						}
+						else
+						{
+							PendingCycles -= 6; TotalExecutedCycles += 6;
+						}
+						break;
 					// ADDR
 					case 0x0C0:
 					case 0x0C1:
@@ -617,6 +632,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x0FE:
 					case 0x0FF:
 						throw new NotImplementedException();
+						src = (byte)((opcode >> 3) & 0x7);
+						dest = (byte)(opcode & 0x7);
+						result = Register[dest] + Register[src];
+						Calc_FlagC(result);
+						Calc_FlagO_Add(dest, src);
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						result &= 0xFFFF;
+						Register[dest] = (ushort)result;
+						PendingCycles -= 6; TotalExecutedCycles += 6;
+						break;
 					// SUBR
 					case 0x100:
 					case 0x101:
@@ -683,6 +709,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x13E:
 					case 0x13F:
 						throw new NotImplementedException();
+						src = (byte)((opcode >> 3) & 0x7);
+						dest = (byte)(opcode & 0x7);
+						result = Register[dest] - Register[src];
+						Calc_FlagC(result);
+						Calc_FlagO_Add(ones, 1);
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						result &= 0xFFFF;
+						Register[dest] = (ushort)result;
+						PendingCycles -= 6; TotalExecutedCycles += 6;
+						break;
 					// CMPR
 					case 0x140:
 					case 0x141:
@@ -749,6 +786,15 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x17E:
 					case 0x17F:
 						throw new NotImplementedException();
+						src = (byte)((opcode >> 3) & 0x7);
+						dest = (byte)(opcode & 0x7);
+						result = Register[dest] - Register[src];
+						Calc_FlagC(result);
+						Calc_FlagO_Add(ones, 1);
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						PendingCycles -= 6; TotalExecutedCycles += 6;
+						break;
 					// ANDR
 					case 0x180:
 					case 0x181:
@@ -815,6 +861,14 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x1BE:
 					case 0x1BF:
 						throw new NotImplementedException();
+						src = (byte)((opcode >> 3) & 0x7);
+						dest = (byte)(opcode & 0x7);
+						result = Register[dest] & Register[src];
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						Register[dest] = (ushort)result;
+						PendingCycles -= 6; TotalExecutedCycles += 6;
+						break;
 					// XORR
 					case 0x1C0:
 					case 0x1C1:
@@ -880,7 +934,14 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x1FD:
 					case 0x1FE:
 					case 0x1FF:
-						throw new NotImplementedException();
+						src = (byte)((opcode >> 3) & 0x7);
+						dest = (byte)(opcode & 0x7);
+						result = Register[dest] ^ Register[src];
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						Register[dest] = (ushort)result;
+						PendingCycles -= 6; TotalExecutedCycles += 6;
+						break;
 					// Branch Forward, no External Condition
 					case 0x200: // B
 					case 0x201: // BC
