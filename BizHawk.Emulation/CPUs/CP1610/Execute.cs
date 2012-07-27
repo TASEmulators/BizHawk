@@ -1081,12 +1081,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						mem = (byte)((opcode >> 3) & 0x7);
 						src = (byte)(opcode & 0x7);
 						WriteMemory(Register[mem], Register[src]);
-						// Stack mode.
-						if (mem == 0x6)
-							RegisterSP++;
-						// Immediate mode.
-						if (mem == 0x7)
-							RegisterPC++;
+						// Auto-increment.
+						if (mem >= 0x4)
+							Register[mem]++;
 						PendingCycles -= 9; TotalExecutedCycles += 9;
 						break;
 					// MVI
@@ -1177,12 +1174,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							Register[dest] |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
-						// Stack mode.
-						if (mem == 0x6)
-							RegisterSP++;
-						// Immediate mode.
-						if (mem == 0x7)
-							RegisterPC++;
+						// Auto-increment.
+						if (mem >= 0x4)
+							Register[mem]++;
 						break;
 					// ADD
 					case 0x2C0:
@@ -1272,12 +1266,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							mem_read |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
-						// Stack mode.
-						if (mem == 0x6)
-							RegisterSP++;
-						// Immediate mode.
-						if (mem == 0x7)
-							RegisterPC++;
+						// Auto-increment.
+						if (mem >= 0x4)
+							Register[mem]++;
 						dest_value = Register[dest];
 						result = mem_read + dest_value;
 						Calc_FlagC(result);
