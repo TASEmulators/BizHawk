@@ -57,13 +57,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else
 			{
-				lock_regs = value.Bit(4);
+				lock_regs = true;
 				prg_block_size = value.Bit(3);
 				chr_block_size = value.Bit(6);
 				int combo = (value >> 2) & 0x01;
 				prg_or = ((value >> 1) & 0x01) << 5;
-				prg_or |= (value & 0x01) << 6;
-				prg_or |= (combo << 7);
+				prg_or |= (value & 0x01) << 4;
+				prg_or |= (combo << 6);
 				chr_or = ((value >> 4) & 0x01) << 7;
 				chr_or |= combo << 8;
 				chr_or |= ((value >> 5) & 0x01) << 9;
