@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ROM[addr];
 		}
 
-		int MapCHR(int addr)
+		int MapCHR2(int addr)
 		{
 			int bank_1k = Get_CHRBank_1K(addr);
 			bank_1k &= chr_mask;
@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				addr = MapCHR(addr);
+				addr = MapCHR2(addr);
 				if (VROM != null)
 					return VROM[addr + extra_vrom];
 				else return VRAM[addr];
