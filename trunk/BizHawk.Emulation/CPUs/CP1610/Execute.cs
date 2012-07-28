@@ -36,9 +36,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public void Execute(int cycles)
 		{
 			byte dest, src, mem;
+			ushort dest_value, src_value, mem_read, addr, offset;
 			int decle2, decle3, result = 0;
-			int ones, carry, status_word, lower, sign;
-			ushort dest_value, src_value, mem_read, addr;
+			int ones, carry, status_word, lower, sign, cond, ext;
+			bool branch = false;
             PendingCycles += cycles;
 			while (PendingCycles > 0)
 			{
@@ -1009,7 +1010,95 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x23D:
 					case 0x23E:
 					case 0x23F:
-						throw new NotImplementedException();
+						offset = ReadMemory(RegisterPC++);
+						cond = opcode & 0xF;
+						ext = opcode & 0x10;
+						// BEXT
+						if (ext != 0)
+							throw new NotImplementedException();
+						else
+						{
+							switch (cond)
+							{
+								// B
+								case 0x0:
+									branch = true;
+									break;
+								// BC
+								case 0x1:
+									branch = FlagC;
+									break;
+								// BOV
+								case 0x2:
+									branch = FlagO;
+									break;
+								// BPL
+								case 0x3:
+									branch = !FlagS;
+									break;
+								// BEQ
+								case 0x4:
+									branch = FlagZ;
+									break;
+								// BLT
+								case 0x5:
+									branch = (FlagS != FlagO);
+									break;
+								// BLE
+								case 0x6:
+									branch = (FlagZ || FlagS != FlagO);
+									break;
+								// BUSC
+								case 0x7:
+									branch = (FlagC != FlagS);
+									break;
+								// NOPP
+								case 0x8:
+									branch = false;
+									break;
+								// BNC
+								case 0x9:
+									branch = !FlagC;
+									break;
+								// BNOV
+								case 0xA:
+									branch = !FlagO;
+									break;
+								// BMI
+								case 0xB:
+									branch = FlagS;
+									break;
+								// BNEQ
+								case 0xC:
+									branch = !FlagZ;
+									break;
+								// BGE
+								case 0xD:
+									branch = (FlagS == FlagO);
+									break;
+								// BGT
+								case 0xE:
+									branch = (!FlagZ && FlagS == FlagO);
+									break;
+								// BESC
+								case 0xF:
+									branch = (FlagC == FlagS);
+									break;
+							}
+						}
+						if (branch)
+						{
+							// Branch in the reverse direction by negating the offset and subtracting 1.
+							if (((opcode >> 5) & 0x1) != 0)
+								offset = (ushort)(-offset - 1);
+							RegisterPC += offset;
+							PendingCycles -= 9; TotalExecutedCycles += 9;
+						}
+						else
+						{
+							PendingCycles -= 7; TotalExecutedCycles += 7;
+						}
+						break;
 					// MVO
 					case 0x240:
 					case 0x241:
@@ -1173,9 +1262,15 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							Register[dest] |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
-						// Auto-increment.
 						if (mem >= 0x4)
-							Register[mem]++;
+						{
+							if (mem == 0x6)
+								// Auto-decrement.
+								Register[mem]--;
+							else
+								// Auto-increment.
+								Register[mem]++;
+						}
 						break;
 					// ADD
 					case 0x2C0:
@@ -1265,9 +1360,15 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							mem_read |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
-						// Auto-increment.
 						if (mem >= 0x4)
-							Register[mem]++;
+						{
+							if (mem == 0x6)
+								// Auto-decrement.
+								Register[mem]--;
+							else
+								// Auto-increment.
+								Register[mem]++;
+						}
 						dest_value = Register[dest];
 						result = mem_read + dest_value;
 						Calc_FlagC(result);
