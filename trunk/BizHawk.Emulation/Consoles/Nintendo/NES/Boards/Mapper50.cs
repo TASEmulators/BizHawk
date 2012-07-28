@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			prg_bank = 0;
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
-
+			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
 
