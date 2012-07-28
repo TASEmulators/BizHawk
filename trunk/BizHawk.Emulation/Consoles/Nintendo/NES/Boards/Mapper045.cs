@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("regs", ref regs);
+			ser.Sync("lock_regs", ref lock_regs);
 			base.SyncState(ser);
 		}
 
