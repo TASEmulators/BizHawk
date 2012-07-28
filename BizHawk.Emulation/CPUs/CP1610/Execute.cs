@@ -1169,7 +1169,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						mem = (byte)((opcode >> 3) & 0x7);
 						src = (byte)(opcode & 0x7);
 						WriteMemory(Register[mem], Register[src]);
-						// Auto-increment.
+						// Auto-increment the memory register if it does so on read.
 						if (mem >= 0x4)
 							Register[mem]++;
 						PendingCycles -= 9; TotalExecutedCycles += 9;
@@ -1243,6 +1243,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x2BF:
 						mem = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
+						// Auto-decrement the stack pointer if it's the memory register.
+						if (mem == 0x6)
+							RegisterSP--;
 						if (!FlagD)
 						{
 							Register[dest] = ReadMemory(Register[mem]);
@@ -1262,15 +1265,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							Register[dest] |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
-						if (mem >= 0x4)
-						{
-							if (mem == 0x6)
-								// Auto-decrement.
-								Register[mem]--;
-							else
-								// Auto-increment.
-								Register[mem]++;
-						}
+						// Auto-increment the memory register if it does so on write.
+						if (mem >= 0x4 && mem != 0x6)
+							Register[mem]++;
 						break;
 					// ADD
 					case 0x2C0:
@@ -1341,6 +1338,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x2FF:
 						mem = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
+						// Auto-decrement the stack pointer if it's the memory register.
+						if (mem == 0x6)
+							RegisterSP--;
 						if (!FlagD)
 						{
 							mem_read = ReadMemory(Register[mem]);
@@ -1360,15 +1360,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							mem_read |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
-						if (mem >= 0x4)
-						{
-							if (mem == 0x6)
-								// Auto-decrement.
-								Register[mem]--;
-							else
-								// Auto-increment.
-								Register[mem]++;
-						}
+						// Auto-increment the memory register if it does so on write.
+						if (mem >= 0x4 && mem != 0x6)
+							Register[mem]++;
 						dest_value = Register[dest];
 						result = mem_read + dest_value;
 						Calc_FlagC(result);
