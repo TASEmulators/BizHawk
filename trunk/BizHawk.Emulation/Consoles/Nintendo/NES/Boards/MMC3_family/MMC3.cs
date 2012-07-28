@@ -321,7 +321,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return mmc3.Get_PRGBank_8K(addr);
 		}
 
-		int MapCHR(int addr)
+		protected virtual int MapCHR(int addr)
 		{
 			int bank_1k = Get_CHRBank_1K(addr);
 			bank_1k &= chr_mask;
