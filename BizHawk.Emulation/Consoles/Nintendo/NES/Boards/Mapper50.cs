@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		byte prg_bank;
 		int prg_bank_mask_8k;
-
+		bool irq_enable;
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
@@ -39,16 +39,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			addr &= 0x0120;
 			if (addr == 0x0020)
 			{
-				//byte low = (byte)((value >> 1) & 0x03);
-				//byte middle = (byte)(value & 0x01);
-				//byte high = (byte)((value >> 3) & 0x01);
-				//prg_bank = (byte)(low | (middle << 2) | (high << 3));
-
 				prg_bank = (byte)(((value & 1) << 2) | ((value & 2) >> 1) | ((value & 4) >> 1) | (value & 8));
-				
-				Console.WriteLine(prg_bank);
 			}
-			base.WriteEXP(addr, value);
+			else if (addr == 0x0120)
+			{
+				SyncIRQ(value.Bit(0));
+			}
 		}
 
 		public override byte ReadPRG(int addr)
@@ -72,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadWRAM(int addr)
 		{
 			return ROM[(0x0F * 0x2000) + (addr & 0x1FFF)];
 		}
