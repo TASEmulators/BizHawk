@@ -13,9 +13,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		{
 			addrToAdvance = 1;
 			byte dest, src, mem;
+			ushort addr, offset;
 			int decle2, decle3;
 			int cond, ext;
-			ushort addr, offset;
 			string result = "";
 			int opcode = ReadMemory(pc) & 0x3FF;
 			switch (opcode)
