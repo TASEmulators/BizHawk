@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		byte prg_bank;
 		int prg_bank_mask_8k;
 		bool irq_enable;
+		ushort irq_counter = 0;
+		bool irq_ready = false;
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
@@ -31,6 +33,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("prg_bank", ref prg_bank);
+			ser.Sync("irq_enable", ref irq_enable);
+			ser.Sync("irq_counter", ref irq_counter);
+			ser.Sync("irq_ready", ref irq_ready);
 			base.SyncState(ser);
 		}
 
@@ -43,7 +48,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else if (addr == 0x0120)
 			{
-				SyncIRQ(value.Bit(0));
+				irq_enable = value.Bit(0);
+				if (!irq_enable)
+				{
+					SyncIRQ(irq_enable);
+					irq_counter = 0;
+				}
 			}
 		}
 
@@ -71,6 +81,36 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadWRAM(int addr)
 		{
 			return ROM[(0x0F * 0x2000) + (addr & 0x1FFF)];
+		}
+
+		private void IRQ_Ready()
+		{
+			base.SyncIRQ(irq_ready);
+		}
+
+		private void IRQ_Tick()
+		{
+			if (irq_enable)
+			{
+				if (irq_counter < 0x0FFF)
+				{
+					irq_counter += 1;
+					irq_ready = false;
+				}
+				else
+				{
+					irq_counter = 0;
+					irq_ready = true;
+					IRQ_Ready();
+				}
+			}
+			
+		}
+
+		public override void ClockPPU()
+		{
+			IRQ_Tick();
+			base.ClockPPU();
 		}
 	}
 }
