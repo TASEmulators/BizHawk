@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public void Execute(int cycles)
 		{
 			byte dest, src, mem;
-			ushort dest_value, src_value, mem_read, addr, offset;
+			ushort dest_value, src_value, mem_read, addr, addr_read, offset;
 			int decle2, decle3, result = 0;
 			int ones, carry, status_word, lower, sign, cond, ext;
 			bool branch = false;
@@ -56,17 +56,14 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						// Unexpected behavior.
 						throw new ArgumentException();
 					case 0x001: // SDBD
-						throw new NotImplementedException();
 						FlagD = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x002: // EIS
-						throw new NotImplementedException();
 						FlagI = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x003: // DIS
-						throw new NotImplementedException();
 						FlagI = false;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
@@ -103,12 +100,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x006: // CLRC
-						throw new NotImplementedException();
 						FlagC = false;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
 					case 0x007: // SETC
-						throw new NotImplementedException();
 						FlagC = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
 						break;
@@ -1114,7 +1109,11 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x245:
 					case 0x246:
 					case 0x247:
-						throw new NotImplementedException();
+						src = (byte)(opcode & 0x7);
+						addr = ReadMemory(RegisterPC++);
+						WriteMemory(addr, Register[src]);
+						PendingCycles -= 11; TotalExecutedCycles += 11;
+						break;
 					// MVO@
 					case 0x248:
 					case 0x249:
@@ -1190,6 +1189,11 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x286:
 					case 0x287:
 						throw new NotImplementedException();
+						dest = (byte)(opcode & 0x7);
+						addr = ReadMemory(RegisterPC++);
+						Register[dest] = ReadMemory(addr);
+						PendingCycles -= 10; TotalExecutedCycles += 10;
+						break;
 					// MVI@
 					case 0x288:
 					case 0x289:
@@ -1285,6 +1289,19 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x2C6:
 					case 0x2C7:
 						throw new NotImplementedException();
+						dest = (byte)(opcode & 0x7);
+						addr = ReadMemory(RegisterPC++);
+						dest_value = Register[dest];
+						addr_read = ReadMemory(addr);
+						result = dest_value + addr_read;
+						Calc_FlagC(result);
+						Calc_FlagO_Add(dest_value, addr_read);
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						result &= 0xFFFF;
+						Register[dest] = (ushort)result;
+						PendingCycles -= 10; TotalExecutedCycles += 10;
+						break;
 					// ADD@
 					case 0x2C8:
 					case 0x2C9:
@@ -1388,6 +1405,19 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x306:
 					case 0x307:
 						throw new NotImplementedException();
+						dest = (byte)(opcode & 0x7);
+						addr = ReadMemory(RegisterPC++);
+						dest_value = Register[dest];
+						addr_read = ReadMemory(addr);
+						result = dest_value - addr_read;
+						Calc_FlagC(result);
+						Calc_FlagO_Add(dest_value, -addr_read);
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						result &= 0xFFFF;
+						Register[dest] = (ushort)result;
+						PendingCycles -= 10; TotalExecutedCycles += 10;
+						break;
 					// SUB@
 					case 0x308:
 					case 0x309:
@@ -1492,6 +1522,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x346:
 					case 0x347:
 						throw new NotImplementedException();
+						dest = (byte)(opcode & 0x7);
+						addr = ReadMemory(RegisterPC++);
+						dest_value = Register[dest];
+						addr_read = ReadMemory(addr);
+						result = dest_value - addr_read;
+						Calc_FlagC(result);
+						Calc_FlagO_Add(dest_value, -addr_read);
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						PendingCycles -= 10; TotalExecutedCycles += 10;
+						break;
 					// CMP@
 					case 0x348:
 					case 0x349:
@@ -1594,6 +1635,16 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x386:
 					case 0x387:
 						throw new NotImplementedException();
+						dest = (byte)(opcode & 0x7);
+						addr = ReadMemory(RegisterPC++);
+						dest_value = Register[dest];
+						addr_read = ReadMemory(addr);
+						result = dest_value & addr_read;
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						Register[dest] = (ushort)result;
+						PendingCycles -= 10; TotalExecutedCycles += 10;
+						break;
 					// AND@
 					case 0x388:
 					case 0x389:
@@ -1694,6 +1745,16 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x3C6:
 					case 0x3C7:
 						throw new NotImplementedException();
+						dest = (byte)(opcode & 0x7);
+						addr = ReadMemory(RegisterPC++);
+						dest_value = Register[dest];
+						addr_read = ReadMemory(addr);
+						result = dest_value ^ addr_read;
+						Calc_FlagS(result);
+						Calc_FlagZ(result);
+						Register[dest] = (ushort)result;
+						PendingCycles -= 10; TotalExecutedCycles += 10;
+						break;
 					// XOR@
 					case 0x3C8:
 					case 0x3C9:
