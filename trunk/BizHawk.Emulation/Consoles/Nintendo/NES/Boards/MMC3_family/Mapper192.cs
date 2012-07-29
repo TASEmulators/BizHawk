@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
-
+			VRAM = new byte[4096];
 			BaseSetup();
 			return true;
 		}
