@@ -134,6 +134,7 @@ sha1:B6D1C372A38D196112AA98905C709AD844BD6627		Super 35-in-1 (6-in-1 VT5201)	NES
 sha1:BFA31777E077E64AF0E274B5A22B57C6765D36E1		Fan Kong Jing Ying (Unl) (Ch)	NES		board=MAPPER241;MIR=H
 sha1:17473C223453D2D80FCB9DCFA317947287DC5C52		Xing He Zhan Shi (Ch)	NES		board=MAPPER176
 sha1:0B58E16B7FD5ABE62B1D9B1841875582DF5A9195		Ying Lie Qun Xia Zhuan (Ch)	NES		board=MAPPER192
+sha1:27CB8AEAF0EA97A6C69D3D90BC056C5EB61695F6		Dai-2-Ji - Super Robot Taisen (Ch)	NES		board=MAPPER074;VRAM=2
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------

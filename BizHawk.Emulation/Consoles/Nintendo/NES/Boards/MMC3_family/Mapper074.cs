@@ -7,35 +7,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	class Mapper074 : MMC3Board_Base
 	{
-		/*
-			Here are Disch's original notes:
-		========================
-		=  Mapper 074          =
-		========================
-
-
-		aka:
-		--------------------------
-		Pirate MMC3 variant
-
-
-		Example Games:
-		--------------------------
-		Di 4 Ci - Ji Qi Ren Dai Zhan
-		Ji Jia Zhan Shi
-
-
-		Notes:
-		--------------------------
-		This mapper is a modified MMC3 (or is based on MMC3?).
-
-		In addition to any CHR-ROM present, there is also an additional 2k of CHR-RAM which is selectable.  CHR pages
-		$08 and $09 select CHR-RAM, other pages select CHR-ROM
-
-		Apart from that, this mapper behaves exactly like your typical MMC3.  See mapper 004 for details.
+		//http://wiki.nesdev.com/w/index.php/INES_Mapper_074
 		
-		TODO: implement CHR-RAM behavior
-		*/
+		//TODO: fix CHR-RAM behavior
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -50,6 +24,64 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			BaseSetup();
 			return true;
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				VRAM[addr & 0x7FF] = value;
+			}
+			else
+			{
+				base.WritePPU(addr, value);
+			}
+		}
+
+		private int GetBankNum(int addr)
+		{
+			int bank_1k = Get_CHRBank_1K(addr);
+			bank_1k &= chr_mask;
+			return bank_1k;
+		}
+
+		public override byte ReadPPU(int addr)
+		{
+			if (addr < 0x2000)
+			{
+				int bank = GetBankNum(addr);
+				if (bank == 0x08)
+				{
+					byte value = VRAM[addr & 0x03FF];
+					
+					
+					//adelikat: value ==255 is a hack to prevent a regression.
+					//Without any chr-ram mapping this game works fine other than the missing chinese characters.  This current mapping does not fix that issue.  
+					//In addition, the blue caret on the title screen is missing without this hack, so I put it in to prevent a regression.
+					//Note: FCEUX and Nintendulator are missing this blue caret (and chinese characters) suggesting a possible logical flaw in the mapper documentation.  
+					//Nestopia achieves the correct behavior but I was unable to determine how its logic was any different.
+					if (value == 255) 
+					{
+						return VROM[(addr & 0x03FF) + 0x2000];
+					}
+					else
+					{
+						return value;
+					}
+					
+				}
+				else if (bank == 0x09)
+				{
+					return VRAM[(addr & 0x03FF) + 0x400];
+				}
+				else
+				{
+					addr = MapCHR(addr);
+					return VROM[addr + extra_vrom];
+				}
+
+			}
+			else return base.ReadPPU(addr);
 		}
 	}
 }
