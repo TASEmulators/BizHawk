@@ -35,20 +35,20 @@ namespace BizHawk.Emulation.CPUs.CP1610
 
 		public void Execute(int cycles)
 		{
-			byte dest, src, mem;
-			ushort dest_value, src_value, mem_read, addr, addr_read, offset;
-			int decle2, decle3, result = 0;
-			int ones, carry, status_word, lower, sign, cond, ext;
-			bool branch = false;
             PendingCycles += cycles;
 			while (PendingCycles > 0)
 			{
-				int addrToAdvance;
 				if (logging)
 				{
+					int addrToAdvance;
 					log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
 					log.Flush();
 				}
+				byte dest, src, mem;
+				ushort dest_value, src_value, mem_read, addr, addr_read, offset;
+				int decle2, decle3, result = 0, ones, carry, status_word, lower, sign, cond, ext;
+				bool branch = false;
+				bool prev_FlagD = FlagD;
 				int opcode = ReadMemory(RegisterPC++) & 0x3FF;
 				switch (opcode)
 				{
@@ -1271,8 +1271,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						else
 						{
 							// Double Byte Data.
-							Register[dest] = (ushort)(ReadMemory(Register[mem]++) << 8);
-							Register[dest] |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
+							Register[dest] = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
+							Register[dest] |= (ushort)(ReadMemory(Register[mem]) << 8);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
 						// Auto-increment the memory register if it does so on write.
@@ -1379,8 +1379,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						else
 						{
 							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) << 8);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
+							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
+							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
 						// Auto-increment the memory register if it does so on write.
@@ -1496,8 +1496,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						else
 						{
 							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) << 8);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
+							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
+							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
 						// Auto-increment the memory register if it does so on write.
@@ -1611,8 +1611,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						else
 						{
 							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) << 8);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
+							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
+							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
 						// Auto-increment the memory register if it does so on write.
@@ -1723,8 +1723,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						else
 						{
 							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) << 8);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
+							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
+							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
 						// Auto-increment the memory register if it does so on write.
@@ -1833,8 +1833,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						else
 						{
 							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) << 8);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) & 0xFF);
+							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
+							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
 							PendingCycles -= 10; TotalExecutedCycles += 10;
 						}
 						// Auto-increment the memory register if it does so on write.
@@ -1846,6 +1846,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Register[dest] = (ushort)result;
 						break;
 				}
+				if (FlagD == prev_FlagD)
+					FlagD = false;
 				LogData();
 			}
 		}
