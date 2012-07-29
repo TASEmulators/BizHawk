@@ -7,40 +7,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	class Mapper192 : MMC3Board_Base
 	{
-		/*
-		Here are Disch's original notes:  
-		========================
-		=  Mapper 192          =
-		========================
- 
- 
-		aka:
-		--------------------------
-		Pirate MMC3 variant
- 
- 
-		Example Game:
-		--------------------------
-		Ying Lie Qun Xia Zhuan
- 
- 
-		Notes:
-		--------------------------
-		This mapper is a modified MMC3 (or is based on MMC3?).
- 
-		In addition to any CHR-ROM present, there is also an additional 4k of CHR-RAM which is selectable.
- 
-		CHR Pages $08-$0B are CHR-RAM, other pages are CHR-ROM.
- 
-		Apart from that, this mapper behaves exactly like your typical MMC3.  See mapper 004 for details.
-		*/
-
+		//http://wiki.nesdev.com/w/index.php/INES_Mapper_192
+		
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
 			switch (Cart.board_type)
 			{
-				case "MAPPER192": //adelikat:  I couldn't find any ROMs that weren't labeled as Mapper 04.  All of these ran fine as far as I could tell, but just in case, I added this.  I'm considering the mapper fully supported until proven otherwise.
+				case "MAPPER192":
 					break;
 				default:
 					return false;
@@ -48,6 +22,57 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			BaseSetup();
 			return true;
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				VRAM[addr & 0xFFF] = value;
+			}
+			else
+			{
+				base.WritePPU(addr, value);
+			}
+		}
+
+		private int GetBankNum(int addr)
+		{
+			int bank_1k = Get_CHRBank_1K(addr);
+			bank_1k &= chr_mask;
+			return bank_1k;
+		}
+
+		public override byte ReadPPU(int addr)
+		{
+			if (addr < 0x2000)
+			{
+				int bank = GetBankNum(addr);
+				if (bank == 0x08)
+				{
+					byte value = VRAM[addr & 0x03FF];
+					return value;
+				}
+				else if (bank == 0x09)
+				{
+					return VRAM[(addr & 0x03FF) + 0x400];
+				}
+				else if (bank == 0x0A)
+				{
+					return VRAM[(addr & 0x03FF) + 0x800];
+				}
+				else if (bank == 0x0B)
+				{
+					return VRAM[(addr & 0x03FF) + 0xC00];
+				}
+				else
+				{
+					addr = MapCHR(addr);
+					return VROM[addr + extra_vrom];
+				}
+
+			}
+			else return base.ReadPPU(addr);
 		}
 	}
 }
