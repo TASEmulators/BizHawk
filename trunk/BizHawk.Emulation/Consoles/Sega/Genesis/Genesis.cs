@@ -181,7 +181,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             SoundCPU.SaveStateText(writer);
             PSG.SaveStateText(writer);
             VDP.SaveStateText(writer);
-
+			writer.WriteLine("Frame {0}", Frame);
+			writer.WriteLine("Lag {0}", _lagcount);
             writer.Write("MainRAM ");
             Ram.SaveAsHex(writer);
             writer.Write("Z80RAM ");
@@ -207,6 +208,10 @@ namespace BizHawk.Emulation.Consoles.Sega
                     MainCPU.LoadStateText(reader, "Main68K");
                 else if (args[0] == "[Z80]")
                     SoundCPU.LoadStateText(reader);
+				else if (args[0] == "Frame")
+					Frame = int.Parse(args[1]);
+				else if (args[0] == "Lag")
+					_lagcount = int.Parse(args[1]);
                 else if (args[0] == "[PSG]")
                     PSG.LoadStateText(reader);
                 else if (args[0] == "[VDP]")
