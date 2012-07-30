@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 {
 	public sealed partial class CP1610
 	{
+		private const string HLT_UNEXPECTED = "HLT is an unexpected behavior.";
+
 		private void Calc_FlagC(int result)
 		{
 			FlagC = ((result & 0x10000) != 0);
@@ -53,8 +55,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				switch (opcode)
 				{
 					case 0x000: // HLT
-						// Unexpected behavior.
-						throw new ArgumentException();
+						throw new ArgumentException(HLT_UNEXPECTED);
 					case 0x001: // SDBD
 						FlagD = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
@@ -1015,7 +1016,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						ext = opcode & 0x10;
 						// BEXT
 						if (ext != 0)
-							throw new NotImplementedException();
+							throw new NotImplementedException("BEXT not implemented.");
 						else
 						{
 							switch (cond)
