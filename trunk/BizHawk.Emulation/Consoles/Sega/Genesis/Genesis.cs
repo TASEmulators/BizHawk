@@ -183,6 +183,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             VDP.SaveStateText(writer);
 			writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("Lag {0}", _lagcount);
+			writer.WriteLine("IsLag {0}", islag);
             writer.Write("MainRAM ");
             Ram.SaveAsHex(writer);
             writer.Write("Z80RAM ");
@@ -212,6 +213,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 					Frame = int.Parse(args[1]);
 				else if (args[0] == "Lag")
 					_lagcount = int.Parse(args[1]);
+				else if (args[0] == "IsLag")
+					islag = bool.Parse(args[1]);
                 else if (args[0] == "[PSG]")
                     PSG.LoadStateText(reader);
                 else if (args[0] == "[VDP]")

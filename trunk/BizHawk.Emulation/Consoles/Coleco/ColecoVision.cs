@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
+			ser.Sync("IsLag", ref _islag);
 		}
 
 		public ControllerDefinition ControllerDefinition { get { return ColecoVisionControllerDefinition; } }

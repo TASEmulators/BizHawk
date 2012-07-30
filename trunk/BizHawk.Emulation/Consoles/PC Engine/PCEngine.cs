@@ -301,6 +301,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
 			writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("Lag {0}", _lagcount);
+			writer.WriteLine("IsLag {0}", islag);
 			if (Cpu.ReadMemory21 == ReadMemorySF2)
 				writer.WriteLine("SF2MapperLatch " + SF2MapperLatch);
 			writer.WriteLine("IOBuffer {0:X2}", IOBuffer);
@@ -353,46 +354,48 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 					Frame = int.Parse(args[1]);
 				else if (args[0] == "Lag")
 					_lagcount = int.Parse(args[1]);
+				else if (args[0] == "IsLag")
+					islag = bool.Parse(args[1]);
 				else if (args[0] == "SF2MapperLatch")
 					SF2MapperLatch = byte.Parse(args[1]);
 				else if (args[0] == "IOBuffer")
 					IOBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "CdIoPorts")
-                    { CdIoPorts.ReadFromHex(args[1]); RefreshIRQ2(); }
-                else if (args[0] == "BramLocked")
-                    BramLocked = bool.Parse(args[1]);
-                else if (args[0] == "RAM")
-                    Ram.ReadFromHex(args[1]);
-                else if (args[0] == "BRAM")
-                    BRAM.ReadFromHex(args[1]);
-                else if (args[0] == "CDRAM")
-                    CDRam.ReadFromHex(args[1]);
-                else if (args[0] == "SuperRAM")
-                    SuperRam.ReadFromHex(args[1]);
-                else if (args[0] == "PopulousRAM" && PopulousRAM != null)
-                    PopulousRAM.ReadFromHex(args[1]);
-                else if (args[0] == "[HuC6280]")
-                    Cpu.LoadStateText(reader);
-                else if (args[0] == "[PSG]")
-                    PSG.LoadStateText(reader);
-                else if (args[0] == "[VCE]")
-                    VCE.LoadStateText(reader);
-                else if (args[0] == "[VPC]")
-                    VPC.LoadStateText(reader);
-                else if (args[0] == "[VDC1]")
-                    VDC1.LoadStateText(reader, 1);
-                else if (args[0] == "[VDC2]")
-                    VDC2.LoadStateText(reader, 2);
-                else if (args[0] == "[SCSI]")
-                    SCSI.LoadStateText(reader);
-                else if (args[0] == "[CDAudio]")
-                    CDAudio.LoadStateText(reader);
-                else if (args[0] == "[ADPCM]")
-                    ADPCM.LoadStateText(reader);
-                else if (args[0] == "[ArcadeCard]")
-                    LoadArcadeCardText(reader);
-                else
-                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+				else if (args[0] == "CdIoPorts")
+				{ CdIoPorts.ReadFromHex(args[1]); RefreshIRQ2(); }
+				else if (args[0] == "BramLocked")
+					BramLocked = bool.Parse(args[1]);
+				else if (args[0] == "RAM")
+					Ram.ReadFromHex(args[1]);
+				else if (args[0] == "BRAM")
+					BRAM.ReadFromHex(args[1]);
+				else if (args[0] == "CDRAM")
+					CDRam.ReadFromHex(args[1]);
+				else if (args[0] == "SuperRAM")
+					SuperRam.ReadFromHex(args[1]);
+				else if (args[0] == "PopulousRAM" && PopulousRAM != null)
+					PopulousRAM.ReadFromHex(args[1]);
+				else if (args[0] == "[HuC6280]")
+					Cpu.LoadStateText(reader);
+				else if (args[0] == "[PSG]")
+					PSG.LoadStateText(reader);
+				else if (args[0] == "[VCE]")
+					VCE.LoadStateText(reader);
+				else if (args[0] == "[VPC]")
+					VPC.LoadStateText(reader);
+				else if (args[0] == "[VDC1]")
+					VDC1.LoadStateText(reader, 1);
+				else if (args[0] == "[VDC2]")
+					VDC2.LoadStateText(reader, 2);
+				else if (args[0] == "[SCSI]")
+					SCSI.LoadStateText(reader);
+				else if (args[0] == "[CDAudio]")
+					CDAudio.LoadStateText(reader);
+				else if (args[0] == "[ADPCM]")
+					ADPCM.LoadStateText(reader);
+				else if (args[0] == "[ArcadeCard]")
+					LoadArcadeCardText(reader);
+				else
+					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
 			}
 		}
 
