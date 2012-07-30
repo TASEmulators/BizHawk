@@ -48,6 +48,7 @@ namespace BizHawk
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
+			ser.Sync("IsLag", ref _islag);
 			tia.SyncState(ser);
 			m6532.SyncState(ser);
 			mapper.SyncState(ser);
