@@ -252,7 +252,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x045:
 					case 0x046:
 					case 0x047:
-						throw new NotImplementedException();
 						dest = (byte)(opcode & 0x3);
 						dest_value = Register[dest];
 						lower = dest_value & 0xFF;
