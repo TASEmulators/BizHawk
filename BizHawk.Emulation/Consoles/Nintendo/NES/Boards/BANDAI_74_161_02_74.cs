@@ -138,13 +138,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePRG(int addr, byte value)
 		{
-			prg_bank_mask_32k = (byte)(value & 0x03);
+			prg_bank_32k = (byte)(value & 0x03);
 			chr_block = (value >> 2) & 0x01;
 		}
 
 		public override byte ReadPRG(int addr)
 		{
 			int bank_32k = prg_bank_32k & prg_bank_mask_32k;
+
+			int x = 0;
+			switch (bank_32k)
+			{
+				case 0:
+					x += 0;
+					break;
+				case 1:
+					x += 1;
+					break;
+				case 2:
+					x += 2;
+					break;
+				case 3:
+					x += 3;
+					break;
+			}
+			int y = 0;
 			return ROM[(bank_32k * 0x8000) + addr];
 		}
 
