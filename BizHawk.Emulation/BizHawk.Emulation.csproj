@@ -114,6 +114,7 @@
     <Compile Include="Consoles\GB\Input.cs" />
     <Compile Include="Consoles\GB\MemoryMap.cs" />
     <Compile Include="Consoles\GB\GB.cs" />
+    <Compile Include="Consoles\Intellivision\Cartridge.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
