@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		private ushort[] Executive_ROM = new ushort[4096]; // TODO: Intellivision II support?
 		private ushort[] Graphics_ROM = new ushort[2048];
 		private ushort[] Graphics_RAM = new ushort[512];
-		private ushort[] Cartridge = new ushort[23552]; // TODO: Resize as cartridge mapping grows.
+		private ushort[] Cartridge = new ushort[56320]; // TODO: Resize as cartridge mapping grows.
 
 		public ushort ReadMemory(ushort addr)
 		{
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_READ);
 						else
-							core = Cartridge[(addr & 0x0FFF) + 0x01C00];
+							core = Cartridge[(addr & 0x0FFF) + 0x1C00];
 					}
 					break;
 				case 0x5000:
@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_READ);
 						else
-							core = Cartridge[(addr & 0x0014) + 0x02C00];
+							core = Cartridge[(addr & 0x0014) + 0x2C00];
 					}
 					else
 					{
@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_READ);
 						else
-							core = Cartridge[(addr & 0x1FFF) + 0x02C00];
+							core = Cartridge[(addr & 0x1FFF) + 0x2C00];
 					}
 					break;
 				case 0x7000:
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_READ);
 						else
-							core = Cartridge[(addr & 0x07FF) + 0x04C00];
+							core = Cartridge[(addr & 0x07FF) + 0x4C00];
 					}
 					else if (addr <= 0x79FF)
 					{
@@ -195,7 +195,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_READ);
 						else
-							core = Cartridge[(addr & 0x09FF) + 0x04C00];
+							core = Cartridge[(addr & 0x09FF) + 0x4C00];
 					}
 					else if (addr <= 0x7BFF)
 					{
@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_READ);
 						else
-							core = Cartridge[(addr & 0x0BFF) + 0x04C00];
+							core = Cartridge[(addr & 0x0BFF) + 0x4C00];
 					}
 					else if (addr <= 0x7DFF)
 					{
@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_READ);
 						else
-							core = Cartridge[(addr & 0x0DFF) + 0x04C00];
+							core = Cartridge[(addr & 0x0DFF) + 0x4C00];
 					}
 					else
 					{
@@ -228,7 +228,173 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_READ);
 						else
-							core = Cartridge[(addr & 0x0FFF) + 0x04C00];
+							core = Cartridge[(addr & 0x0FFF) + 0x4C00];
+					}
+					break;
+				case 0x8000:
+					if (addr <= 0x803F)
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (true)
+						{
+							// TODO: OK only during VBlank Period 1.
+							if (addr == 0x8021)
+								// TODO: Switch into Color Stack mode.
+								core = STIC_Registers[0x0021];
+							else
+								throw new ArgumentException(WRITE_ONLY_STIC);
+						}
+						else
+							core = Cartridge[(addr & 0x003F) + 0x5C00];
+					}
+					else
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x0FFF) + 0x5C00];
+					}
+					break;
+				case 0x9000:
+				case 0xA000:
+				case 0xB000:
+					if (addr <= 0xB7FF)
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x27FF) + 0x6C00];
+					}
+					else if (addr <= 0xB9FF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x29FF) + 0x6C00];
+					}
+					else if (addr <= 0xBBFF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x2BFF) + 0x6C00];
+					}
+					else if (addr <= 0xBDFF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x2DFF) + 0x6C00];
+					}
+					else
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x2FFF) + 0x6C00];
+					}
+					break;
+				case 0xC000:
+					if (addr <= 0xC03F)
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (true)
+						{
+							// TODO: OK only during VBlank Period 1.
+							if (addr == 0xC021)
+								// TODO: Switch into Color Stack mode.
+								core = STIC_Registers[0x0021];
+							else
+								throw new ArgumentException(WRITE_ONLY_STIC);
+						}
+						else
+							core = Cartridge[(addr & 0x003F) + 0x9C00];
+					}
+					else
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x0FFF) + 0x9C00];
+					}
+					break;
+				case 0xD000:
+					// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+					if (false)
+						throw new ArgumentException(UNOCCUPIED_CART_READ);
+					else
+						core = Cartridge[(addr & 0x0FFF) + 0xAC00];
+					break;
+				case 0xE000:
+					// TODO: Actually map cartridge (only if no ECS) RAM / ROM to decide which path to take.
+					if (false)
+						throw new ArgumentException(UNOCCUPIED_CART_READ);
+					else
+						core = Cartridge[(addr & 0x0FFF) + 0xBC00];
+					break;
+				case 0xF000:
+					if (addr <= 0xF7FF)
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x07FF) + 0xCC00];
+					}
+					else if (addr <= 0xF9FF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x09FF) + 0xCC00];
+					}
+					else if (addr <= 0xFBFF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x0BFF) + 0xCC00];
+					}
+					else if (addr <= 0xFDFF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x0DFF) + 0xCC00];
+					}
+					else
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_READ);
+						else
+							core = Cartridge[(addr & 0x0FFF) + 0xCC00];
 					}
 					break;
 				default:
@@ -346,7 +512,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_WRITE);
 						else
-							Cartridge[(addr & 0x0FFF) + 0x01C00] = value;
+							Cartridge[(addr & 0x0FFF) + 0x1C00] = value;
 					}
 					break;
 				case 0x5000:
@@ -360,14 +526,14 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_WRITE);
 						else
-							Cartridge[(addr & 0x0014) + 0x02C00] = value;
+							Cartridge[(addr & 0x0014) + 0x2C00] = value;
 					}
 					else
 					{
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_WRITE);
 						else
-							Cartridge[(addr & 0x1FFF) + 0x02C00] = value;
+							Cartridge[(addr & 0x1FFF) + 0x2C00] = value;
 					}
 					break;
 				case 0x7000:
@@ -388,7 +554,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (false)
 							throw new ArgumentException(UNOCCUPIED_CART_WRITE);
 						else
-							Cartridge[(addr & 0x07FF) + 0x04C00] = value;
+							Cartridge[(addr & 0x07FF) + 0x4C00] = value;
 					}
 					else if (addr <= 0x79FF)
 					{
@@ -397,9 +563,10 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						 which path to take.
 						*/
 						if (true)
+							// TODO: OK only during VBlank Period 2.
 							Graphics_RAM[addr & 0x01FF] = value;
 						else
-							Cartridge[(addr & 0x09FF) + 0x04C00] = value;
+							Cartridge[(addr & 0x09FF) + 0x4C00] = value;
 					}
 					else if (addr <= 0x7BFF)
 					{
@@ -408,9 +575,10 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						 which path to take.
 						*/
 						if (true)
+							// TODO: OK only during VBlank Period 2.
 							Graphics_RAM[addr & 0x01FF] = value;
 						else
-							Cartridge[(addr & 0x0BFF) + 0x04C00] = value;
+							Cartridge[(addr & 0x0BFF) + 0x4C00] = value;
 					}
 					else if (addr <= 0x7DFF)
 					{
@@ -419,9 +587,10 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						 which path to take.
 						*/
 						if (true)
+							// TODO: OK only during VBlank Period 2.
 							Graphics_RAM[addr & 0x01FF] = value;
 						else
-							Cartridge[(addr & 0x0DFF) + 0x04C00] = value;
+							Cartridge[(addr & 0x0DFF) + 0x4C00] = value;
 					}
 					else
 					{
@@ -430,9 +599,172 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						 which path to take.
 						*/
 						if (true)
+							// TODO: OK only during VBlank Period 2.
 							Graphics_RAM[addr & 0x01FF] = value;
 						else
-							Cartridge[(addr & 0x0FFF) + 0x04C00] = value;
+							Cartridge[(addr & 0x0FFF) + 0x4C00] = value;
+					}
+					break;
+				case 0x8000:
+					if (addr <= 0x803F)
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (true)
+							// TODO: OK only during VBlank Period 1.
+							STIC_Registers[addr & 0x003F] = value;
+						else
+							Cartridge[(addr & 0x003F) + 0x5C00] = value;
+					}
+					else
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_WRITE);
+						else
+							Cartridge[(addr & 0x0FFF) + 0x5C00] = value;
+					}
+					break;
+				case 0x9000:
+				case 0xA000:
+				case 0xB000:
+					if (addr <= 0xB7FF)
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_WRITE);
+						else
+							Cartridge[(addr & 0x27FF) + 0x6C00] = value;
+					}
+					else if (addr <= 0xB9FF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (true)
+							// TODO: OK only during VBlank Period 2.
+							Graphics_RAM[addr & 0x01FF] = value;
+						else
+							Cartridge[(addr & 0x29FF) + 0x6C00] = value;
+					}
+					else if (addr <= 0xBBFF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (true)
+							// TODO: OK only during VBlank Period 2.
+							Graphics_RAM[addr & 0x01FF] = value;
+						else
+							Cartridge[(addr & 0x2BFF) + 0x6C00] = value;
+					}
+					else if (addr <= 0xBDFF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (true)
+							// TODO: OK only during VBlank Period 2.
+							Graphics_RAM[addr & 0x01FF] = value;
+						else
+							Cartridge[(addr & 0x2DFF) + 0x6C00] = value;
+					}
+					else
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (true)
+							// TODO: OK only during VBlank Period 2.
+							Graphics_RAM[addr & 0x01FF] = value;
+						else
+							Cartridge[(addr & 0x2FFF) + 0x6C00] = value;
+					}
+					break;
+				case 0xC000:
+					if (addr <= 0x803F)
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (true)
+							// TODO: OK only during VBlank Period 1.
+							STIC_Registers[addr & 0x003F] = value;
+						else
+							Cartridge[(addr & 0x003F) + 0x9C00] = value;
+					}
+					else
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_WRITE);
+						else
+							Cartridge[(addr & 0x0FFF) + 0x9C00] = value;
+					}
+					break;
+				case 0xD000:
+					// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+					if (false)
+						throw new ArgumentException(UNOCCUPIED_CART_WRITE);
+					else
+						Cartridge[(addr & 0x0FFF) + 0xAC00] = value;
+					break;
+				case 0xE000:
+					// TODO: Actually map cartridge (only if no ECS) RAM / ROM to decide which path to take.
+					if (false)
+						throw new ArgumentException(UNOCCUPIED_CART_WRITE);
+					else
+						Cartridge[(addr & 0x0FFF) + 0xBC00] = value;
+					break;
+				case 0xF000:
+					if (addr <= 0xF7FF)
+					{
+						// TODO: Actually map cartridge RAM / ROM to decide which path to take.
+						if (false)
+							throw new ArgumentException(UNOCCUPIED_CART_WRITE);
+						else
+							Cartridge[(addr & 0x07FF) + 0xCC00] = value;
+					}
+					else if (addr <= 0xF9FF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (true)
+							// TODO: OK only during VBlank Period 2.
+							Graphics_RAM[addr & 0x01FF] = value;
+						else
+							Cartridge[(addr & 0x09FF) + 0xCC00] = value;
+					}
+					else if (addr <= 0xFBFF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (true)
+							// TODO: OK only during VBlank Period 2.
+							Graphics_RAM[addr & 0x01FF] = value;
+						else
+							Cartridge[(addr & 0x0BFF) + 0xCC00] = value;
+					}
+					else if (addr <= 0xFDFF)
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (true)
+							// TODO: OK only during VBlank Period 2.
+							Graphics_RAM[addr & 0x01FF] = value;
+						else
+							Cartridge[(addr & 0x0DFF) + 0xCC00] = value;
+					}
+					else
+					{
+						/*
+						 TODO: Actually map cartridge RAM (Do not because of GRAM alias) / ROM to decide which path to take.
+						*/
+						if (true)
+							// TODO: OK only during VBlank Period 2.
+							Graphics_RAM[addr & 0x01FF] = value;
+						else
+							Cartridge[(addr & 0x0FFF) + 0xCC00] = value;
 					}
 					break;
 				default:
