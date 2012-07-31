@@ -139,6 +139,7 @@ sha1:0B58E16B7FD5ABE62B1D9B1841875582DF5A9195		Ying Lie Qun Xia Zhuan (Ch)	NES		
 sha1:F5FA7807F2B70ADFE5707D9BF88F90DAC1436DB0		Di 4 Ci - Ji Qi Ren Dai Zhan (Ch)	NES		board=MAPPER074;VRAM=2
 sha1:A9887C308C5D0659C3AA45D003A603C9DFFB148A	B	Ji Jia Zhan Shi (Asia)	NES		board=MAPPER074;VRAM=2
 sha1:5084F25F14A61AB2799BD85D363B57B9B494601D		Ji Jia Zhan Shi (Asia)	NES		board=MAPPER074;VRAM=2
+sha1:6143D80047FFC17C752078C622A44C3E0CB7466E	B	Dong Fang de Chuan Shuo - The Hyrule Fantasy (Asia)	NES		board=MAPPER245
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
