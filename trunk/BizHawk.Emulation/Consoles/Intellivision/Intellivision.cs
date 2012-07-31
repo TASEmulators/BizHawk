@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		GameInfo Game;
 
 		CP1610 Cpu;
+		ICart Cart;
 
 		public void LoadExecutive_ROM()
 		{
@@ -42,7 +43,12 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Game = game;
 			LoadExecutive_ROM();
 			LoadGraphics_ROM();
-			Parse();
+			Cart = new Intellicart();
+			if (Cart.Parse(Rom) == -1)
+			{
+				Cart = new Cartridge();
+				Cart.Parse(Rom);
+			}
 
 			Cpu = new CP1610();
 			Cpu.ReadMemory = ReadMemory;

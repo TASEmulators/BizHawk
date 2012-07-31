@@ -5,9 +5,9 @@ using System.Text;
 
 namespace BizHawk.Emulation.Consoles.Intellivision
 {
-	public sealed partial class Intellivision : ICart
+	public sealed class Intellicart : ICart
 	{
-		private ushort[] Intellicart = new ushort[65536];
+		private ushort[] Data = new ushort[65536];
 		private bool[][] MemoryAttributes = new bool[32][];
 		private ushort[][] FineAddresses = new ushort[32][];
 
@@ -52,12 +52,12 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return (ushort)((crc << 8) ^ CRC16_table[(crc >> 8) ^ data]);
 		}
 
-		public int Parse()
+		public int Parse(byte[] Rom)
 		{
 			int offset = 0;
 			// Check to see if the header is valid.
 			if (Rom[offset++] != 0xA8 || Rom[offset++] != (0xFF ^ Rom[offset++]))
-				throw new ArgumentException();
+				return -1;
 			ushort crc, expected;
 			// Parse for data segments.
 			for (int segment = 0; segment < Rom[1]; segment++)
@@ -69,9 +69,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				crc = UpdateCRC16(crc, upper_end);
 				ushort start = (ushort)(upper_start << 8);
 				ushort end = (ushort)((upper_end << 8) | 0xFF);
-				// This range is invalid if it starts at a higher range than it ends.
 				if (end < start)
-					throw new ArgumentException();
+					throw new ArgumentException("Ranges can't start higher than they end.");
 				for (int addr = start; addr <= end; addr++)
 				{
 					ushort data;
@@ -80,12 +79,11 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					crc = UpdateCRC16(crc, high);
 					crc = UpdateCRC16(crc, low);
 					data = (ushort)((high << 8) | low);
-					Intellicart[addr] = data;
+					Data[addr] = data;
 				}
 				expected = (ushort)((Rom[offset++] << 8) | Rom[offset++]);
-				// Check if there is an invalid CRC.
 				if (expected != crc)
-					throw new ArgumentException();
+					throw new ArgumentException("Invalid CRC.");
 			}
 			// Parse for memory attributes.
 			for (int range = 0; range < 32; range++)
@@ -117,9 +115,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				int range_start = range * 2048;
 				ushort start = (ushort)((((Rom[index] >> 4) & 0x07) << 8) + range_start);
 				ushort end = (ushort)((((Rom[index]) & 0x07) << 8) + 0xFF + range_start);
-				// This range is invalid if it starts at a higher range than it ends.
 				if (end < start)
-					throw new ArgumentException();
+					throw new ArgumentException("Ranges can't start higher than they end.");
 				FineAddresses[range] = new ushort[2];
 				FineAddresses[range][0] = start;
 				FineAddresses[range][1] = end;
@@ -130,20 +127,20 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			expected = (ushort)((Rom[offset++] << 8) | (Rom[offset++] & 0xFF));
 			// Check if there is an invalid CRC for the memory attributes / fine addresses.
 			if (expected != crc)
-				throw new ArgumentException();
+				throw new ArgumentException("Invalid CRC.");
 			return offset;
 		}
 
-		public ushort? ReadCart(ushort addr)
+		public ushort? Read(ushort addr)
 		{
 			int range = addr / 2048;
 			bool[] attributes = MemoryAttributes[range];
 			if (attributes[0] && addr >= FineAddresses[range][0] && addr <= FineAddresses[range][1])
-				return Intellicart[addr];
+				return Data[addr];
 			return null;
 		}
 
-		public bool WriteCart(ushort addr, ushort value)
+		public bool Write(ushort addr, ushort value)
 		{
 			int range = addr / 2048;
 			bool[] attributes = MemoryAttributes[range];
@@ -154,7 +151,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					value &= 0xFF;
 				if (attributes[3])
 					throw new NotImplementedException("Bank-switched memory attribute not implemented.");
-				Intellicart[addr] = value;
+				Data[addr] = value;
 				return true;
 			}
 			return false;
