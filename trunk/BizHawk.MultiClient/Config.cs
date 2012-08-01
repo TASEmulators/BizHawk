@@ -556,9 +556,11 @@ namespace BizHawk.MultiClient
 		public int LuaCommentColor = -16744448;
 		public int LuaStringColor = -8355712;
 		public int LuaSymbolColor = -16777216;
-		public int LuaLibraryColor = -6427649;
+		//public int LuaLibraryColor = -6427649;
+		public int LuaLibraryColor = -16711681;
 		public float LuaWriterFontSize = 11;
 		public string LuaWriterFont = "Courier New";
+		public float LuaWriterZoom = 1;
 	}
 
 	public class SMSControllerTemplate

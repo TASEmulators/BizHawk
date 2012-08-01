@@ -60,7 +60,8 @@ namespace BizHawk.MultiClient.tools
         private void SetLibraryColor(int color)
         {
             LibraryColor = color;   //Set new color
-            panelLibrary.BackColor = Color.FromArgb(color);   //Update panel color with new selection
+			panelLibrary.BackColor = Color.FromArgb(color);   //Update panel color with new selection
+			//MessageBox.Show(color.ToString());
         }
 
         //Pop up color dialog when double-clicked
@@ -131,7 +132,7 @@ namespace BizHawk.MultiClient.tools
             SetCommentColor(-16744448);
             SetStringColor(-8355712);
             SetSymbolColor(-16777216);
-            SetLibraryColor(-6427649);
+			SetLibraryColor(-16711681);
         }
     }
 }
