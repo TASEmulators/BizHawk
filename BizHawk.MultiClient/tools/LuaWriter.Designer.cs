@@ -45,6 +45,7 @@
 			this.PositionLabel = new System.Windows.Forms.Label();
 			this.ZoomLabel = new System.Windows.Forms.Label();
 			this.LuaText = new BizHawk.MultiClient.LuaWriterBox();
+			this.restoreSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -110,7 +111,8 @@
 			// 
 			this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fontToolStripMenuItem,
-            this.syntaxHighlightingToolStripMenuItem});
+            this.syntaxHighlightingToolStripMenuItem,
+            this.restoreSettingsToolStripMenuItem});
 			this.configToolStripMenuItem.Name = "configToolStripMenuItem";
 			this.configToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
 			this.configToolStripMenuItem.Text = "&Config";
@@ -190,6 +192,13 @@
 			this.LuaText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LuaText_KeyUp);
 			this.LuaText.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.LuaText_PreviewKeyDown);
 			// 
+			// restoreSettingsToolStripMenuItem
+			// 
+			this.restoreSettingsToolStripMenuItem.Name = "restoreSettingsToolStripMenuItem";
+			this.restoreSettingsToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.restoreSettingsToolStripMenuItem.Text = "Restore Settings";
+			this.restoreSettingsToolStripMenuItem.Click += new System.EventHandler(this.restoreSettingsToolStripMenuItem_Click);
+			// 
 			// LuaWriter
 			// 
 			this.AllowDrop = true;
@@ -206,6 +215,7 @@
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "LuaWriter";
 			this.Text = "LuaWriter";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LuaWriter_FormClosing);
 			this.Load += new System.EventHandler(this.LuaWriter_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.LuaWriter_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.LuaWriter_DragEnter);
@@ -233,5 +243,6 @@
 		private System.Windows.Forms.ListView AutoCompleteView;
 		private System.Windows.Forms.Label PositionLabel;
 		private System.Windows.Forms.Label ZoomLabel;
+		private System.Windows.Forms.ToolStripMenuItem restoreSettingsToolStripMenuItem;
     }
 }

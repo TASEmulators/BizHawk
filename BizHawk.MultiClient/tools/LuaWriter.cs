@@ -50,8 +50,16 @@ namespace BizHawk.MultiClient
 
 		void LuaText_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if(KeyInput.IsPressed(SlimDX.DirectInput.Key.LeftControl))
-				ZoomLabel.Text = string.Format("Zoom: {0}%", (LuaText.ZoomFactor * 100) + e.Delta / 12);
+			if (KeyInput.IsPressed(SlimDX.DirectInput.Key.LeftControl))
+			{
+				Double Zoom;
+				if ((LuaText.ZoomFactor == 0.1F && e.Delta < 0) || (LuaText.ZoomFactor == 5.0F && e.Delta > 0))
+					Zoom = (LuaText.ZoomFactor * 100);
+				else
+					Zoom = (LuaText.ZoomFactor * 100) + e.Delta / 12;
+
+				ZoomLabel.Text = string.Format("Zoom: {0:0}%", Zoom);
+			}
 		}
 
 		private void timer_Tick(object sender, EventArgs e)
@@ -309,6 +317,8 @@ namespace BizHawk.MultiClient
 			//LuaTextFont;
 			LuaText.SelectionTabs = new int[] { 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 480, 500, 520, 540, 560, 580, 600 }; //adelikat:  What a goofy way to have to do this
 			LoadFont();
+			LuaText.ZoomFactor = Global.Config.LuaWriterZoom;
+			ZoomLabel.Text = string.Format("Zoom: {0}%", LuaText.ZoomFactor * 100);
 			GenerateLibraryRegex();
 			if (!String.IsNullOrWhiteSpace(CurrentFile))
 			{
@@ -606,6 +616,30 @@ namespace BizHawk.MultiClient
 		{
 			//TODO: check for changes and ask save
 			this.Close();
+		}
+
+		private void LuaWriter_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Global.Config.LuaWriterZoom = LuaText.ZoomFactor;
+		}
+
+		private void restoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.LuaDefaultTextColor = -16777216;
+			Global.Config.LuaKeyWordColor = -16776961;
+			Global.Config.LuaCommentColor = -16744448;
+			Global.Config.LuaStringColor = -8355712;
+			Global.Config.LuaSymbolColor = -16777216;
+			Global.Config.LuaLibraryColor = -16711681;
+			ProcessText();
+
+			Global.Config.LuaWriterFontSize = 11;
+			Global.Config.LuaWriterFont = "Courier New";
+			LuaText.Font = new Font("Courier New", 11);
+
+			Global.Config.LuaWriterZoom = 1;
+			LuaText.ZoomFactor = 1;
+			ZoomLabel.Text = "Zoom: 100%";
 		}
 	}
 }
