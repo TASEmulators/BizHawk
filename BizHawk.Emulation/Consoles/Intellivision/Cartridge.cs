@@ -11,205 +11,236 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public int Parse(byte[] Rom)
 		{
-			// TODO: Actually parse the ROM.
-			return 1;
+			// TODO: Fix.
+			int index = 0;
+			// Combine every two bytes into a word.
+			while (index + 1 < Rom.Length)
+				Data[(index / 2) + 0x2C00] = (ushort)((Rom[index++] << 8) | Rom[index++]);
+			/*
+			for (int index = 0; index < Rom.Length; index++)
+				Data[index + 0x2C00] = Rom[index];
+			*/
+			return Rom.Length;
 		}
 
 		public ushort? Read(ushort addr)
 		{
 			// TODO: Check if address is RAM / ROM.
+			int dest;
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
+					dest = addr - 0x0400;
 					if (addr <= 0x03FF)
 						break;
 					if (addr <= 0x04FF)
 						// OK on all but Intellivision 2.
-						return Data[addr & 0x00FF];
+						return Data[dest];
 					else if (addr <= 0x06FF)
-						return Data[addr & 0x02FF];
+						return Data[dest];
 					else if (addr <= 0x0CFF)
 						// OK if no Intellivoice.
-						return Data[addr & 0x08FF];
+						return Data[dest];
 					else
-						return Data[addr & 0x0BFF];
+						return Data[dest];
 				case 0x2000:
+					dest = (addr - 0x2000) + 0x0C00;
 					// OK if no ECS.
-					return Data[(addr & 0x0FFF) + 0x0C00];
+					return Data[dest];
 				case 0x4000:
+					dest = (addr - 0x4000) + 0x1C00;
 					if (addr <= 0x47FF)
 						// OK if no ECS.
-						return Data[(addr & 0x07FF) + 0x1C00];
+						return Data[dest];
 					else if (addr == 0x4800)
-						return Data[0x2400];
+						return Data[dest];
 					else
-						return Data[(addr & 0x0FFF) + 0x1C00];
+						return Data[dest];
 				case 0x5000:
 				case 0x6000:
+					dest = (addr - 0x5000) + 0x2C00;
 					if (addr <= 0x5014)
-						return Data[(addr & 0x0014) + 0x2C00];
+						return Data[dest];
 					else
-						return Data[(addr & 0x1FFF) + 0x2C00];
+						return Data[dest];
 				case 0x7000:
+					dest = (addr - 0x7000) + 0x4C00;
 					if (addr == 0x7000)
 						// OK if no ECS.
-						return Data[0x04C00];
+						return Data[dest];
 					else if (addr <= 0x77FF)
 						// OK if no ECS.
-						return Data[(addr & 0x07FF) + 0x4C00];
+						return Data[dest];
 					else
 						// OK if no ECS.
-						return Data[(addr & 0x0FFF) + 0x4C00];
+						return Data[dest];
 				case 0x8000:
+					dest = (addr - 0x8000) + 0x5C00;
 					// OK. Avoid STIC alias at $8000-$803F.
-					return Data[(addr & 0x0FFF) + 0x5C00];
+					return Data[dest];
 				case 0x9000:
 				case 0xA000:
 				case 0xB000:
+					dest = (addr - 0x9000) + 0x6C00;
 					if (addr <= 0xB7FF)
-						return Data[(addr & 0x27FF) + 0x6C00];
+						return Data[dest];
 					else
-						return Data[(addr & 0x2FFF) + 0x6C00];
+						return Data[dest];
 				case 0xC000:
+					dest = (addr - 0xC000) + 0x9C00;
 					// OK. Avoid STIC alias at $C000-$C03F.
-					return Data[(addr & 0x0FFF) + 0x9C00];
+					return Data[dest];
 				case 0xD000:
-					return Data[(addr & 0x0FFF) + 0xAC00];
+					dest = (addr - 0xD000) + 0xAC00;
+					return Data[dest];
 				case 0xE000:
+					dest = (addr - 0xE000) + 0xBC00;
 					// OK if no ECS.
-					return Data[(addr & 0x0FFF) + 0xBC00];
+					return Data[dest];
 				case 0xF000:
+					dest = (addr - 0xF000) + 0xCC00;
 					if (addr <= 0xF7FF)
-						return Data[(addr & 0x07FF) + 0xCC00];
+						return Data[dest];
 					else
-						return Data[(addr & 0x0FFF) + 0xCC00];
+						return Data[dest];
 			}
 			return null;
 		}
 
 		public bool Write(ushort addr, ushort value)
 		{
+			int dest;
 			// TODO: Check if address is RAM / ROM.
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
+					dest = addr - 0x0400;
 					if (addr <= 0x03FF)
 						break;
 					if (addr <= 0x04FF)
 					{
 						// OK on all but Intellivision 2.
-						Data[addr & 0x00FF] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else if (addr <= 0x06FF)
 					{
-						Data[addr & 0x02FF] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else if (addr <= 0x0CFF)
 					{
 						// OK if no Intellivoice.
-						Data[addr & 0x08FF] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else
 					{
-						Data[addr & 0x0BFF] = value;
+						Data[dest] = value;
 						return true;
 					}
 				case 0x2000:
+					dest = (addr - 0x2000) + 0x0C00;
 					// OK if no ECS.
-					Data[(addr & 0x0FFF) + 0x0C00] = value;
+					Data[dest] = value;
 					return true;
 				case 0x4000:
+					dest = (addr - 0x4000) + 0x1C00;
 					if (addr <= 0x47FF)
 					{
 						// OK if no ECS.
-						Data[(addr & 0x07FF) + 0x1C00] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else if (addr == 0x4800)
 					{
 						// OK only if boot ROM at $7000.
-						Data[0x2400] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else
 					{
-						Data[(addr & 0x0FFF) + 0x1C00] = value;
+						Data[dest] = value;
 						return true;
 					}
 				case 0x5000:
 				case 0x6000:
+					dest = (addr - 0x5000) + 0x2C00;
 					if (addr <= 0x5014)
 					{
 						// OK only if boot ROM at $4800 or $7000.
-						Data[(addr & 0x0014) + 0x2C00] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else
 					{
-						Data[(addr & 0x1FFF) + 0x2C00] = value;
+						Data[dest] = value;
 						return true;
 					}
 				case 0x7000:
+					dest = (addr - 0x7000) + 0x4C00;
 					if (addr == 0x7000)
 					{
 						// RAM at $7000 confuses EXEC boot sequence.
-						Data[0x04C00] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else if (addr <= 0x77FF)
 					{
 						// OK if no ECS.
-						Data[(addr & 0x07FF) + 0x4C00] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else
 					{
 						// Do not map RAM here due to GRAM alias.
-						Data[(addr & 0x0FFF) + 0x4C00] = value;
+						Data[dest] = value;
 						return true;
 					}
 				case 0x8000:
+					dest = (addr - 0x8000) + 0x5C00;
 					// OK. Avoid STIC alias at $8000-$803F.
-					Data[(addr & 0x0FFF) + 0x5C00] = value;
+					Data[dest] = value;
 					return true;
 				case 0x9000:
 				case 0xA000:
 				case 0xB000:
+					dest = (addr - 0x9000) + 0x6C00;
 					if (addr <= 0xB7FF)
 					{
-						Data[(addr & 0x27FF) + 0x6C00] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else
 					{
 						// Do not map RAM here due to GRAM alias.
-						Data[(addr & 0x2FFF) + 0x6C00] = value;
+						Data[dest] = value;
 						return true;
 					}
 				case 0xC000:
+					dest = (addr - 0xC000) + 0x9C00;
 					// OK. Avoid STIC alias at $C000-$C03F.
-					Data[(addr & 0x0FFF) + 0x9C00] = value;
+					Data[dest] = value;
 					return true;
 				case 0xD000:
 					Data[(addr & 0x0FFF) + 0xAC00] = value;
 					return true;
 				case 0xE000:
+					dest = (addr - 0xE000) + 0xBC00;
 					// OK if no ECS.
-					Data[(addr & 0x0FFF) + 0xBC00] = value;
+					Data[dest] = value;
 					return true;
 				case 0xF000:
+					dest = (addr - 0xF000) + 0xCC00;
 					if (addr <= 0xF7FF)
 					{
-						Data[(addr & 0x07FF) + 0xCC00] = value;
+						Data[dest] = value;
 						return true;
 					}
 					else
 					{
 						// Do not map RAM here due to GRAM alias.
-						Data[(addr & 0x0FFF) + 0xCC00] = value;
+						Data[dest] = value;
 						return true;
 					}
 			}
