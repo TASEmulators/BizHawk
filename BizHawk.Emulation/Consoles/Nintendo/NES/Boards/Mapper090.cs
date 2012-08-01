@@ -18,7 +18,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int chr_bank_mask_4k;
 		int chr_bank_mask_8k;
 
-		int prg_mode_select = 0;
+		byte prg_mode_select = 0;
+		byte chr_mode_select = 0;
 		bool sram_prg = false;
 		
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -48,8 +49,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("prg_regs_8k", ref prg_banks);
+			ser.Sync("prg_banks", ref prg_banks);
+			ser.Sync("chr_banks", ref chr_banks);
 			ser.Sync("prg_mode_select", ref prg_mode_select);
+			ser.Sync("chr_mode_select", ref prg_mode_select);
 			ser.Sync("sram_prg", ref sram_prg);
 			base.SyncState(ser);
 		}
@@ -76,24 +79,58 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 
 				case 0x1000:
+					chr_banks[0] |= value;
 					break;
 				case 0x1001:
+					chr_banks[1] |= value;
 					break;
 				case 0x1002:
+					chr_banks[2] |= value;
 					break;
 				case 0x1003:
+					chr_banks[3] |= value;
 					break;
 				case 0x1004:
+					chr_banks[4] |= value;
 					break;
 				case 0x1005:
+					chr_banks[5] |= value;
 					break;
 				case 0x1006:
+					chr_banks[6] |= value;
 					break;
 				case 0x1007:
+					chr_banks[7] |= value;
+					break;
+
+				case 0x2000:
+					chr_banks[0] |= (value << 8);
+					break;
+				case 0x2001:
+					chr_banks[1] |= (value << 8);
+					break;
+				case 0x2002:
+					chr_banks[2] |= (value << 8);
+					break;
+				case 0x2003:
+					chr_banks[3] |= (value << 8);
+					break;
+				case 0x2004:
+					chr_banks[4] |= (value << 8);
+					break;
+				case 0x2005:
+					chr_banks[5] |= (value << 8);
+					break;
+				case 0x2006:
+					chr_banks[6] |= (value << 8);
+					break;
+				case 0x2007:
+					chr_banks[7] |= (value << 8);
 					break;
 
 				case 0x5000:
 					prg_mode_select = (byte)(value & 0x07);
+					chr_mode_select = (byte)((value >> 3) & 0x03);
 					sram_prg = value.Bit(7);
 					break;
 				case 0x5001: //TODO: mapper 90 flag
@@ -114,6 +151,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 					break;
 			}
+		}
+
+		private byte BitRev7(byte value) //adelikat: Bit reverses a 7 bit register, ugly but gets the job done
+		{
+			byte newvalue = 0;
+			newvalue |= (byte)((value & 0x01) << 6);
+			newvalue |= (byte)(((value >> 1) & 0x01) << 5);
+			newvalue |= (byte)(((value >> 2) & 0x01) << 4);
+			newvalue |= (byte)(value & 0x08);
+			newvalue |= (byte)(((value >> 4) & 0x01 ) << 2);
+			newvalue |= (byte)(((value >> 5) & 0x01) << 1);
+			newvalue |= (byte)((value >> 6) & 0x01);
+
+			return newvalue;
 		}
 
 		public override byte ReadPRG(int addr)
@@ -139,15 +190,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 3:
 					if (addr < 0x2000)
 					{
-						bank = prg_banks[0] & prg_bank_mask_8k;
+						bank = BitRev7(prg_banks[0]) & prg_bank_mask_8k;
 					}
 					else if (addr < 0x4000)
 					{
-						bank = prg_banks[1] & prg_bank_mask_8k;
+						bank = BitRev7(prg_banks[1]) & prg_bank_mask_8k;
 					}
 					else if (addr < 0x6000)
 					{
-						bank = prg_banks[2] & prg_bank_mask_8k;
+						bank = BitRev7(prg_banks[2]) & prg_bank_mask_8k;
 					}
 					else
 					{
@@ -172,19 +223,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 7:
 					if (addr < 0x2000)
 					{
-						bank = prg_banks[0] & prg_bank_mask_8k;
+						bank = BitRev7(prg_banks[0]) & prg_bank_mask_8k;
 					}
 					else if (addr < 0x4000)
 					{
-						bank = prg_banks[1] & prg_bank_mask_8k;
+						bank = BitRev7(prg_banks[1]) & prg_bank_mask_8k;
 					}
 					else if (addr < 0x6000)
 					{
-						bank = prg_banks[2] & prg_bank_mask_8k;
+						bank = BitRev7(prg_banks[2]) & prg_bank_mask_8k;
 					}
 					else
 					{
-						bank = prg_banks[3] & prg_bank_mask_8k;
+						bank = BitRev7(prg_banks[3]) & prg_bank_mask_8k;
 					}
 					return ROM[(bank * 0x2000) + (addr & 0x1FFF)];
 			}
@@ -210,10 +261,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						bank = (prg_banks[3] << 1) + 3;
 						break;
 					case 2:
-					case 3:
+					
 					case 6:
-					case 7:
 						bank = prg_banks[3];
+						break;
+					case 3:
+					case 7:
+						bank = BitRev7(prg_banks[3]);
 						break;
 				}
 				return ROM[(bank * 0x2000) + (addr + 0x1FFF)];
@@ -221,6 +275,87 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else
 			{
 				return base.ReadWRAM(addr);
+			}
+		}
+
+		public override byte ReadPPU(int addr)
+		{
+			if (addr < 0x2000)
+			{
+				int bank = 0;
+				switch (chr_mode_select)
+				{
+					default:
+					case 0:
+						bank = chr_banks[0] & chr_bank_mask_8k;
+						return VROM[(bank * 0x2000) + (addr & 0x1FFF)];
+					case 1:
+						if (addr < 0x1000)
+						{
+							bank = chr_banks[0] & chr_bank_mask_4k;
+						}
+						else
+						{
+							bank = chr_banks[4] & chr_bank_mask_4k;
+						}
+						return VROM[(bank * 0x1000) + (addr & 0x0FFF)];
+					case 2:
+						if (addr < 0x800)
+						{
+							bank = chr_banks[0] & chr_bank_mask_2k;
+						}
+						else if (addr < 0x1000)
+						{
+							bank = chr_banks[2] & chr_bank_mask_2k;
+						}
+						else if (addr < 0x1800)
+						{
+							bank = chr_banks[4] & chr_bank_mask_2k;
+						}
+						else
+						{
+							bank = chr_banks[6] & chr_bank_mask_2k;
+						}
+						return VROM[(bank * 0x0800) + (addr & 0x07FF)];
+					case 3:
+						if (addr < 0x0400)
+						{
+							bank = chr_banks[0] & chr_bank_mask_1k;
+						}
+						else if (addr < 0x0800)
+						{
+							bank = chr_banks[1] & chr_bank_mask_1k;
+						}
+						else if (addr < 0x0C00)
+						{
+							bank = chr_banks[2] & chr_bank_mask_1k;
+						}
+						else if (addr < 0x1000)
+						{
+							bank = chr_banks[3] & chr_bank_mask_1k;
+						}
+						else if (addr < 0x1400)
+						{
+							bank = chr_banks[4] & chr_bank_mask_1k;
+						}
+						else if (addr < 0x1800)
+						{
+							bank = chr_banks[5] & chr_bank_mask_1k;
+						}
+						else if (addr < 0x1C00)
+						{
+							bank = chr_banks[6] & chr_bank_mask_1k;
+						}
+						else
+						{
+							bank = chr_banks[7] & chr_bank_mask_1k;
+						}
+						return VROM[(bank * 0x0400) + (addr & 0x03FF)];
+				}
+			}
+			else
+			{
+				return base.ReadPPU(addr);
 			}
 		}
 	}
