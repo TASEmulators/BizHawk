@@ -443,6 +443,19 @@ namespace BizHawk.MultiClient
 
 		}
 
+        private int CountTabsAtBeginningOfLine(string line)
+        {
+            int tabs = 0;
+            foreach (Char c in line)
+            {
+                if (c == '\t')
+                    tabs++;
+                else
+                    break;
+            }
+            return tabs;
+        }
+
 		private void Changes()
 		{
 			changes = true;
@@ -535,16 +548,25 @@ namespace BizHawk.MultiClient
                     try
                     {
                         int linenumber = LuaText.GetLineFromCharIndex(LuaText.GetFirstCharIndexOfCurrentLine());
-                        if (LuaText.Lines[linenumber].Substring(0, Word.Length) == Word)
+                        int tabs = CountTabsAtBeginningOfLine(LuaText.Lines[linenumber]);
+                        if (LuaText.Lines[linenumber].Substring(0 + tabs, Word.Length) == Word)
                         {
-                            string str = LuaText.Text.Insert(LuaText.SelectionStart, "\n\nend");
+                            string str, tabsStr = "";
+
+                            for (int a = 1; a <= tabs; a++)
+                                tabsStr += "\t";
+
+                            str = LuaText.Text.Insert(LuaText.SelectionStart, "\n" +  tabsStr + "\t\n" + tabsStr + "end");
                             LuaText.Text = str;
+                            LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + 1 + tabs, 0);
+                            e.SuppressKeyPress = true;
                             break;
                         }
                     }
                     catch { }
                 }
             }
+            
 		}
 
 		private string CurrentWord()
@@ -654,5 +676,63 @@ namespace BizHawk.MultiClient
 			LuaText.ZoomFactor = 1;
 			ZoomLabel.Text = "Zoom: 100%";
 		}
+
+        private void goToToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InputPrompt gotodialog = new InputPrompt();
+            gotodialog.FormClosing += (s, a) =>
+                {
+                    if (gotodialog.UserOK)
+                    {
+                        int x;
+
+                        if (!int.TryParse(gotodialog.UserText, out x))
+                        {
+                            a.Cancel = true;
+                            MessageBox.Show("You must enter only numbers.", "Invalid text", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else if (Convert.ToInt32(gotodialog.UserText) > LuaText.Lines.Length)
+                        {
+                            a.Cancel = true;
+                            MessageBox.Show("You must enter a number between 1 and " + LuaText.Lines.Length.ToString() + '.', "Invalid Line number", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                };
+            gotodialog.Text = "Go To Line";
+            gotodialog.SetMessage("Line Number (1 - " + LuaText.Lines.Length.ToString() + ')');
+            gotodialog.ShowDialog();
+            int linepos = Convert.ToInt32(gotodialog.UserText) - 1;
+            LuaText.Select(LuaText.GetFirstCharIndexFromLine(linepos) + CountTabsAtBeginningOfLine(LuaText.Lines[linepos]), 0);
+        }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LuaText.SelectAll();
+        }
+
+        private void cutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LuaText.Cut();
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LuaText.Copy();
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LuaText.Paste();
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LuaText.Undo();
+        }
+
+        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LuaText.Redo();
+        }
 	}
 }
