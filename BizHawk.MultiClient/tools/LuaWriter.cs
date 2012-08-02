@@ -40,7 +40,6 @@ namespace BizHawk.MultiClient
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
 		char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		public Regex libraryWords;
-		public Regex LuaLibraryWords = new Regex("coroutine|package|debug|file|io|math|os|package|string|table");
 
 		public LuaWriter()
 		{
@@ -81,40 +80,14 @@ namespace BizHawk.MultiClient
 
 			LuaText.SelectAll();
 			LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaDefaultTextColor);
+            LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 
 			ColorReservedWords();
 			ColorLibraries();
-			ColorLuaLibraries();
 			ColorComments();
 			ColorStrings();
 			ColorSymbols();
 			LuaText.Select(selPos, selChars);
-		}
-
-		private void ColorLuaLibraries()
-		{
-			foreach (Match libraryWordMatch in LuaLibraryWords.Matches(LuaText.Text))
-			{
-				if (libraryWordMatch.Index >= 0)
-				{
-					char before = ' ', after = ' ';
-
-					if (libraryWordMatch.Index > 0)
-						before = LuaText.Text[libraryWordMatch.Index - 1];
-
-					if (libraryWordMatch.Index + libraryWordMatch.Length != LuaText.Text.Length)
-						after = LuaText.Text[libraryWordMatch.Index + libraryWordMatch.Length];
-
-					if (!char.IsLetterOrDigit(before))
-					{
-						if (after == '.')
-						{
-							LuaText.Select(libraryWordMatch.Index, libraryWordMatch.Length);
-							LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
-						}
-					}
-				}
-			}
 		}
 
 		private void ColorSymbols()
@@ -126,6 +99,8 @@ namespace BizHawk.MultiClient
 				{
 					if (LuaText.SelectionColor.ToArgb() != Global.Config.LuaCommentColor && LuaText.SelectionColor.ToArgb() != Global.Config.LuaStringColor)
 						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaSymbolColor);
+                    if (Global.Config.LuaSymbolBold)
+                        LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
 					currPos = LuaText.SelectionStart + 1;
 
 					if (currPos == LuaText.Text.Length)
@@ -184,6 +159,8 @@ namespace BizHawk.MultiClient
 						{
 							LuaText.Select(opening, ending - opening + 1);
 							LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
+                            if (Global.Config.LuaStringBold)
+                                LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
 							if (ending >= LuaText.Text.Length)
 								ending++;
 							else
@@ -229,6 +206,8 @@ namespace BizHawk.MultiClient
 
 					LuaText.Select(CommentMatch.Index, endComment);
 					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaCommentColor);
+                    if (Global.Config.LuaCommentBold)
+                        LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
 				}
 				else
 				{
@@ -239,6 +218,8 @@ namespace BizHawk.MultiClient
 
 					LuaText.Select(CommentMatch.Index, endComment);
 					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaCommentColor);
+                    if (Global.Config.LuaCommentBold)
+                        LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
 				}
 			}
 		}
@@ -261,6 +242,8 @@ namespace BizHawk.MultiClient
 				{
 					LuaText.Select(keyWordMatch.Index, keyWordMatch.Length);
 					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaKeyWordColor);
+                    if (Global.Config.LuaKeyWordBold)
+                        LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
 				}
 			}
 		}
@@ -284,7 +267,9 @@ namespace BizHawk.MultiClient
 						if (after == '.')
 						{
 							LuaText.Select(libraryWordMatch.Index, libraryWordMatch.Length);
-							    LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
+							LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
+                            if (Global.Config.LuaLibraryBold)
+                                LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
 						}
 					}
 				}
@@ -304,6 +289,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
+            list.Append("|coroutine|package|debug|file|io|math|os|package|string|table");
 			libraryWords = new Regex(list.ToString());
 		}
 
@@ -510,35 +496,34 @@ namespace BizHawk.MultiClient
 				if (IsLibraryWord(currentword))
 				{
 					List<string> libfunctions = Global.MainForm.LuaConsole1.LuaImp.docs.GetFunctionsByLibrary(currentword);
+					
+					/*  This part doesn't work yet.
+					int x = 0;
+					int y = 0;
 
-                    /*  This part doesn't work yet.
-                    int x = 0;
-                    int y = 0;
+					int currentRow;
+					int currentColumn;
+					int fontHeight;
+					int topRow;
 
-                    int currentRow;
-                    int currentColumn;
-                    int fontHeight;
-                    int topRow;
+					currentRow = LuaText.GetLineFromCharIndex(LuaText.SelectionStart);   //Currently selected row
+					currentColumn = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentRow);
+					fontHeight = (int)LuaText.Font.GetHeight();   //Explicilty cast to int (may be a problem later)
 
-                    currentRow = LuaText.GetLineFromCharIndex(LuaText.SelectionStart);   //Currently selected row
-                    currentColumn = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentRow);
-                    fontHeight = (int)LuaText.Font.GetHeight();   //Explicilty cast to int (may be a problem later)
+					x = ((currentRow + 1) * fontHeight) + LuaText.Location.Y;
+					y = 50;
 
-                    x = ((currentRow + 1) * fontHeight) + LuaText.Location.Y;
-                    y = 50;                    
-
-                    AutoCompleteView.Location = new Point(y, x);
-                    */
-
-                    AutoCompleteView.Location = new Point(0, 0);
-                    AutoCompleteView.Visible = true;
+					AutoCompleteView.Location = new Point(y, x);
+					*/
+	
+					AutoCompleteView.Location = new Point(0, 0);
+					AutoCompleteView.Visible = true;
 					AutoCompleteView.Items.Clear();
 					foreach(string function in libfunctions)
 					{
 						ListViewItem item = new ListViewItem(function);
 						AutoCompleteView.Items.Add(item);
 					}
-					
 				}
 			}
 
@@ -652,6 +637,13 @@ namespace BizHawk.MultiClient
 			Global.Config.LuaStringColor = -8355712;
 			Global.Config.LuaSymbolColor = -16777216;
 			Global.Config.LuaLibraryColor = -16711681;
+
+            Global.Config.LuaKeyWordBold = false;
+            Global.Config.LuaCommentBold = false;
+            Global.Config.LuaStringBold = false;
+            Global.Config.LuaSymbolBold = false;
+            Global.Config.LuaLibraryBold = false;
+
 			ProcessText();
 
 			Global.Config.LuaWriterFontSize = 11;

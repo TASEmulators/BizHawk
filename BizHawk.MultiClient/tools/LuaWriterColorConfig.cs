@@ -31,6 +31,12 @@ namespace BizHawk.MultiClient.tools
             SetStringColor(StringColor);
             SetSymbolColor(SymbolColor);
             SetLibraryColor(LibraryColor);
+
+            BoldKeyWords.Checked = Global.Config.LuaKeyWordBold;
+            BoldComments.Checked = Global.Config.LuaCommentBold;
+            BoldStrings.Checked = Global.Config.LuaStringBold;
+            BoldSymbols.Checked = Global.Config.LuaSymbolBold;
+            BoldLibraries.Checked = Global.Config.LuaLibraryBold;
         }
 
         private void SetKeyWordColor(int color)
@@ -61,7 +67,6 @@ namespace BizHawk.MultiClient.tools
         {
             LibraryColor = color;   //Set new color
 			panelLibrary.BackColor = Color.FromArgb(color);   //Update panel color with new selection
-			//MessageBox.Show(color.ToString());
         }
 
         //Pop up color dialog when double-clicked
@@ -119,11 +124,19 @@ namespace BizHawk.MultiClient.tools
 
         private void SaveData()
         {
+            //Colors
             Global.Config.LuaKeyWordColor = KeyWordColor;
             Global.Config.LuaCommentColor = CommentColor;
             Global.Config.LuaStringColor = StringColor;
             Global.Config.LuaSymbolColor = SymbolColor;
             Global.Config.LuaLibraryColor = LibraryColor;
+            
+            //Bold
+            Global.Config.LuaKeyWordBold = BoldKeyWords.Checked;
+            Global.Config.LuaCommentBold = BoldComments.Checked;
+            Global.Config.LuaStringBold = BoldStrings.Checked;
+            Global.Config.LuaSymbolBold = BoldSymbols.Checked;
+            Global.Config.LuaLibraryBold = BoldLibraries.Checked;
         }
 
         private void buttonDefaults_Click(object sender, EventArgs e)
@@ -133,6 +146,12 @@ namespace BizHawk.MultiClient.tools
             SetStringColor(-8355712);
             SetSymbolColor(-16777216);
 			SetLibraryColor(-16711681);
+
+            BoldKeyWords.Checked = false;
+            BoldComments.Checked = false;
+            BoldStrings.Checked = false;
+            BoldSymbols.Checked = false;
+            BoldLibraries.Checked = false;
         }
     }
 }
