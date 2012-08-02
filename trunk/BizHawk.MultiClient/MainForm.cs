@@ -1803,7 +1803,7 @@ namespace BizHawk.MultiClient
 			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
 
-			if (Global.Emulator.IsLagFrame && frameProgressTimeElapsed && Global.Config.SkipLagFrame)
+			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed)
 			{
 				Global.Emulator.FrameAdvance(true);
 			}
@@ -1902,38 +1902,34 @@ namespace BizHawk.MultiClient
 
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
 
-				Global.MovieSession.Movie.CaptureState();
-
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
-				MovieSession session = Global.MovieSession;
-
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD || Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
-					session.LatchInputFromLog();
-				}
+					Global.MovieSession.Movie.CaptureState();
+					Global.MovieSession.LatchInputFromLog();
 
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
-				{
-					if (session.MultiTrack.IsActive)
+					if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 					{
-						session.LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
-					}
-					else
-					{
-						session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+						if (Global.MovieSession.MultiTrack.IsActive)
+						{
+							Global.MovieSession.LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
+						}
+						else
+						{
+							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+						}
+
+						//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
+						//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
+						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 					}
 				}
-
-				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
-				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-				session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
-
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
+				else if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				{
-					session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 
 				if (-1 != StopOnFrame && StopOnFrame == Global.Emulator.Frame + 1)
@@ -1961,7 +1957,7 @@ namespace BizHawk.MultiClient
 						//Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame));
 						//Global.MovieMode = true;
 						//adelikat: is Global.MovieMode doing anything anymore? if not we shoudl remove this variable
-						session.LatchInputFromLog();
+						Global.MovieSession.LatchInputFromLog();
 					}
 				}
 
@@ -1999,8 +1995,6 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-
-
 				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
 				{
 					Global.AutoFireController.IncrementStarts();
@@ -2014,13 +2008,17 @@ namespace BizHawk.MultiClient
 			{
 				UpdateToolsAfter();
 				if (ReturnToRecording)
+				{
 					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+				}
 				PressRewind = false;
 			}
 			if (true == UpdateFrame)
 			{
 				if (ReturnToRecording)
+				{
 					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+				}
 				UpdateFrame = false;
 			}
 
