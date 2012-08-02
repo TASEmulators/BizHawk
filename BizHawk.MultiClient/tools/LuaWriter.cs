@@ -510,14 +510,35 @@ namespace BizHawk.MultiClient
 				if (IsLibraryWord(currentword))
 				{
 					List<string> libfunctions = Global.MainForm.LuaConsole1.LuaImp.docs.GetFunctionsByLibrary(currentword);
-					AutoCompleteView.Visible = true;
+
+                    /*  This part doesn't work yet.
+                    int x = 0;
+                    int y = 0;
+
+                    int currentRow;
+                    int currentColumn;
+                    int fontHeight;
+                    int topRow;
+
+                    currentRow = LuaText.GetLineFromCharIndex(LuaText.SelectionStart);   //Currently selected row
+                    currentColumn = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentRow);
+                    fontHeight = (int)LuaText.Font.GetHeight();   //Explicilty cast to int (may be a problem later)
+
+                    x = ((currentRow + 1) * fontHeight) + LuaText.Location.Y;
+                    y = 50;                    
+
+                    AutoCompleteView.Location = new Point(y, x);
+                    */
+
+                    AutoCompleteView.Location = new Point(0, 0);
+                    AutoCompleteView.Visible = true;
 					AutoCompleteView.Items.Clear();
 					foreach(string function in libfunctions)
 					{
 						ListViewItem item = new ListViewItem(function);
 						AutoCompleteView.Items.Add(item);
 					}
-					AutoCompleteView.Location = new Point(0, 0);
+					
 				}
 			}
 
