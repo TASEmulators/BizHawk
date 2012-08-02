@@ -86,12 +86,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (low)
 			{
 				int bank = prg_reg & 0x1E;
-				return ROM[(bank * 0x4000) + addr];
+				return ROM[(bank << 14) + addr];
 			}
 			else
 			{
 				int bank = prg_reg;
-				return ROM[(bank * 0x4000) + addr - 0x4000];
+				return ROM[(bank << 14) + addr - 0x4000];
 				
 			}
 		}
