@@ -552,12 +552,17 @@ namespace BizHawk.MultiClient
 
 		//LuaWriter Settings
 		public int LuaDefaultTextColor = -16777216;
+        
 		public int LuaKeyWordColor = -16776961;
+        public bool LuaKeyWordBold = false;
 		public int LuaCommentColor = -16744448;
+        public bool LuaCommentBold = false;
 		public int LuaStringColor = -8355712;
+        public bool LuaStringBold = false;
 		public int LuaSymbolColor = -16777216;
-		//public int LuaLibraryColor = -6427649;
-		public int LuaLibraryColor = -16711681;
+        public bool LuaSymbolBold = false;
+        public int LuaLibraryColor = -16711681;
+        public bool LuaLibraryBold = false;
 		public float LuaWriterFontSize = 11;
 		public string LuaWriterFont = "Courier New";
 		public float LuaWriterZoom = 1;
