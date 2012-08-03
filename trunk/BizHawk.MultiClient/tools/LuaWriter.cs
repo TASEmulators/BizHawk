@@ -33,7 +33,8 @@ namespace BizHawk.MultiClient
 		public string CurrentFile = "";
 
 		bool changes = false;
-		bool hasChanged;
+        bool hasChanged = false;
+        bool ProcessingText = false;
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
 		char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		public Regex libraryWords;
@@ -72,6 +73,7 @@ namespace BizHawk.MultiClient
 
 		private void ProcessText()
 		{
+            ProcessingText = true;
 			int selPos = LuaText.SelectionStart;
 			int selChars = LuaText.SelectedText.Length;
 
@@ -86,6 +88,7 @@ namespace BizHawk.MultiClient
 			ColorStrings();
 			ColorLongStrings();
 			LuaText.Select(selPos, selChars);
+            ProcessingText = false;
 		}
 
 		private void ColorLongStrings()
@@ -103,29 +106,35 @@ namespace BizHawk.MultiClient
 				else if (firstBracket != LuaText.Text.Length - 1)
 				{
 					secondBracket = LuaText.Find("[", firstBracket + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
-					if (secondBracket >= 0 && IsLongString(LuaText.Text.Substring(firstBracket, secondBracket - firstBracket)))
-					{
-						if (secondBracket + 1 == LuaText.Text.Length)
-							ending = LuaText.Text.Length - 1;
-						else
-						{
-							string temp = GetLongStringClosingBracket(LuaText.Text.Substring(firstBracket, secondBracket - firstBracket + 1));
-							ending = LuaText.Find(temp, secondBracket + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
-							ending += temp.Length - 1;
-						}
-						if (ending < 0)
-							ending = LuaText.Text.Length - 1;
+                    if (secondBracket >= 0 && IsLongString(LuaText.Text.Substring(firstBracket, secondBracket - firstBracket + 1)))
+                    {
+                        if (secondBracket + 1 == LuaText.Text.Length)
+                            ending = LuaText.Text.Length - 1;
+                        else
+                        {
+                            string temp = GetLongStringClosingBracket(LuaText.Text.Substring(firstBracket, secondBracket - firstBracket + 1));
+                            ending = LuaText.Find(temp, secondBracket + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+                            if (ending < 0)
+                                ending = LuaText.Text.Length;
+                            else
+                                ending += temp.Length - 1;
+                        }
 
-						LuaText.Select(firstBracket, ending - firstBracket + 1);
-						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
+                        LuaText.Select(firstBracket, ending - firstBracket + 1);
+                        LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
 
-						if(ending < LuaText.Text.Length - 1)
-							firstBracket = LuaText.Find("[", ending + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
-						else
-							break;
-					}
-					else
-						break;
+                        if (ending < LuaText.Text.Length - 1)
+                            firstBracket = LuaText.Find("[", ending + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+                        else
+                            break;
+                    }
+                    else
+                    {
+                        if(secondBracket >= 0 && secondBracket != LuaText.Text.Length - 1)
+                            firstBracket = LuaText.Find("[", secondBracket, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+                        else
+                            break;
+                    }
 				}
 				else
 					break;
@@ -152,8 +161,11 @@ namespace BizHawk.MultiClient
 			bool Validated = true;
 
 			foreach (char c in longstring)
-				if (c != ']' && c != '=')
-					break;
+                if (c != '[' && c != '=')
+                {
+                    Validated = false;
+                    break;
+                }
 
 			return Validated;
 		}
@@ -404,21 +416,9 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			using (StreamReader sr = file.OpenText())
-			{
-				StringBuilder luaText = new StringBuilder();
-				string s = "";
-				while ((s = sr.ReadLine()) != null)
-				{
-					luaText.Append(s);
-					luaText.Append('\n');
-				}
-
-				if (luaText.Length > 0)
-				{
-					LuaText.Text = luaText.ToString();
-				}
-			}
+            StreamReader sr = new StreamReader(file.FullName);
+            LuaText.Text = sr.ReadToEnd();
+            sr.Close();
 
 			MessageLabel.Text = CurrentFile;
 		}
@@ -447,9 +447,9 @@ namespace BizHawk.MultiClient
 			}
 			else if (changes)
 			{
-				SaveScriptAs();
-				MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
+                SaveScriptAs();
 			}
+            MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
 		}
 
 		private void SaveScript()
@@ -458,10 +458,7 @@ namespace BizHawk.MultiClient
 
 			using (StreamWriter sw = new StreamWriter(CurrentFile))
 			{
-				foreach (string s in LuaText.Lines)
-				{
-					sw.WriteLine(s + '\n');
-				}
+                sw.Write(LuaText.Text);
 			}
 
 			NoChanges();
@@ -534,8 +531,11 @@ namespace BizHawk.MultiClient
 
 		private void LuaText_TextChanged(object sender, EventArgs e)
 		{
-			hasChanged = true;
-			Changes();
+            if (!ProcessingText)
+            {
+                hasChanged = true;
+                Changes();
+            }
 		}
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
