@@ -328,27 +328,49 @@ namespace BizHawk.MultiClient
 			private CodecToken() { }
 			public Win32.AVICOMPRESSOPTIONS comprOptions;
 			public string codec;
+			/// <summary>
+			/// true if data was allocated by AviSaveOptions and should be freed by AVISaveOptionsFree
+			/// </summary>
 			bool allocated = false;
+			/// <summary>
+			/// true if data was allocated by AllocHGlobal and should be freed by FreeHGlobal
+			/// </summary>
+			bool marshaled = false;
 			public void Dispose()
 			{
-				if (!allocated) return;
+				if (allocated)
+				{
+					IntPtr[] infPtrs = new IntPtr[1];
+					IntPtr mem;
 
-				IntPtr[] infPtrs = new IntPtr[1];
-				IntPtr mem;
+					// alloc unmanaged memory 
+					mem = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Win32.AVICOMPRESSOPTIONS)));
+					infPtrs[0] = mem;
 
-				// alloc unmanaged memory 
-				mem = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Win32.AVICOMPRESSOPTIONS)));
-				infPtrs[0] = mem;
+					// copy from managed structure to unmanaged memory 
+					Marshal.StructureToPtr(comprOptions, mem, false);
 
-				// copy from managed structure to unmanaged memory 
-				Marshal.StructureToPtr(comprOptions, mem, false);
+					Win32.AVISaveOptionsFree(1, infPtrs);
+					Marshal.FreeHGlobal(mem);
 
-				Win32.AVISaveOptionsFree(1, infPtrs);
-				Marshal.FreeHGlobal(mem);
+					codec = null;
+					comprOptions = new Win32.AVICOMPRESSOPTIONS();
+					allocated = false;
+				}
+				if (marshaled)
+				{
+					IntPtr p;
+					p = (IntPtr)comprOptions.lpFormat;
+					if (p != IntPtr.Zero)
+						Marshal.FreeHGlobal(p);
+					p = (IntPtr)comprOptions.lpParms;
+					if (p != IntPtr.Zero)
+						Marshal.FreeHGlobal(p);
 
-				codec = null;
-				comprOptions = new Win32.AVICOMPRESSOPTIONS();
-				allocated = false;
+					codec = null;
+					comprOptions = new Win32.AVICOMPRESSOPTIONS();
+					marshaled = false;
+				}
 			}
 
 			byte[] SerializeToByteArray()
@@ -437,7 +459,12 @@ namespace BizHawk.MultiClient
 				}
 				else
 					comprOptions.lpParms = (int)IntPtr.Zero;
-				return CodecToken.TakePossession(comprOptions);
+
+				CodecToken ret = new CodecToken();
+				ret.marshaled = true;
+				ret.comprOptions = comprOptions;
+				ret.codec = Win32.decode_mmioFOURCC(comprOptions.fccHandler);
+				return ret;
 			}
 
 			public string Serialize()
