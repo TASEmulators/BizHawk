@@ -81,10 +81,81 @@ namespace BizHawk.MultiClient
 
 			ColorReservedWords();
 			ColorLibraries();
+			ColorSymbols();
 			ColorComments();
 			ColorStrings();
-			ColorSymbols();
+			ColorLongStrings();
 			LuaText.Select(selPos, selChars);
+		}
+
+		private void ColorLongStrings()
+		{
+			int firstBracket = LuaText.Find("["), secondBracket, ending;
+			while (firstBracket >= 0)
+			{
+				ending = 0;
+				if (firstBracket > 1 && LuaText.Text.Substring(firstBracket - 2, 2) == "--")
+				{
+					firstBracket = LuaText.Find("[", firstBracket + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+					if (firstBracket == LuaText.Text.Length - 1)
+						break;
+				}
+				else if (firstBracket != LuaText.Text.Length - 1)
+				{
+					secondBracket = LuaText.Find("[", firstBracket + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+					if (secondBracket >= 0 && IsLongString(LuaText.Text.Substring(firstBracket, secondBracket - firstBracket)))
+					{
+						if (secondBracket + 1 == LuaText.Text.Length)
+							ending = LuaText.Text.Length - 1;
+						else
+						{
+							string temp = GetLongStringClosingBracket(LuaText.Text.Substring(firstBracket, secondBracket - firstBracket + 1));
+							ending = LuaText.Find(temp, secondBracket + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+							ending += temp.Length - 1;
+						}
+						if (ending < 0)
+							ending = LuaText.Text.Length - 1;
+
+						LuaText.Select(firstBracket, ending - firstBracket + 1);
+						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
+
+						if(ending < LuaText.Text.Length - 1)
+							firstBracket = LuaText.Find("[", ending + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
+						else
+							break;
+					}
+					else
+						break;
+				}
+				else
+					break;
+			}
+		}
+
+		private string GetLongStringClosingBracket(string openingBracket)
+		{
+			string closingBrackets = "]";
+			int level = 0;
+
+			foreach (char c in openingBracket)
+				if (c == '=')
+					level++;
+
+			for (int x = 0; x < level; x++)
+				closingBrackets += '=';
+
+			return closingBrackets + ']';
+		}
+
+		private bool IsLongString(string longstring)
+		{
+			bool Validated = true;
+
+			foreach (char c in longstring)
+				if (c != ']' && c != '=')
+					break;
+
+			return Validated;
 		}
 
 		private void ColorSymbols()
@@ -94,8 +165,7 @@ namespace BizHawk.MultiClient
 				int currPos = 0;
 				while (LuaText.Find(mark.ToString(), currPos, RichTextBoxFinds.None) >= 0)
 				{
-					if (LuaText.SelectionColor.ToArgb() != Global.Config.LuaCommentColor && LuaText.SelectionColor.ToArgb() != Global.Config.LuaStringColor)
-						LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaSymbolColor);
+					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaSymbolColor);
                     if (Global.Config.LuaSymbolBold)
                         LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
 					currPos = LuaText.SelectionStart + 1;
@@ -194,7 +264,7 @@ namespace BizHawk.MultiClient
 			{
 				int endComment;
 
-				if (LuaText.Text.Substring(CommentMatch.Index, 4) == "--[[")
+				if (CommentMatch.Index + 4 < LuaText.Text.Length && LuaText.Text.Substring(CommentMatch.Index, 4) == "--[[")
 				{
 					if (LuaText.Find("]]", RichTextBoxFinds.MatchCase) > 0)
 						endComment = LuaText.SelectionStart - CommentMatch.Index + 2;
