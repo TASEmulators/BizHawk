@@ -566,6 +566,7 @@ namespace BizHawk.MultiClient
 		public float LuaWriterFontSize = 11;
 		public string LuaWriterFont = "Courier New";
 		public float LuaWriterZoom = 1;
+		public bool LuaWriterStartEmpty = false;
 	}
 
 	public class SMSControllerTemplate

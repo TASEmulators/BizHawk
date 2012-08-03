@@ -21,14 +21,11 @@ namespace BizHawk.MultiClient
 		//Save fontstyle to config
 		//Line numbers
 		//Option to toggle line numbers
-		//Go to line number Ctrl+G
 		//Auto-complete drop down on functions in libraries
 		//intellisense on library functions
 		//Option to turn off basic lua script
 		//Tool strip
 		//function toolstrip button (inserts a function end block and puts cursor on blank line between them
-		//when pressing enter on function blah, it should put the end afterwards
-		//on if then + enter key, put end afterwards
 		//error checking logic on library functions (check parameters, etc)
 		//fix so drag & drop text file on edit box works (not just the edges around it
 		//listview object with lua functions, double click inserts them into the script
@@ -310,11 +307,14 @@ namespace BizHawk.MultiClient
 			{
 				LoadCurrentFile();
 			}
-			else
+			else if (!Global.Config.LuaWriterStartEmpty)
 			{
 				LuaText.Text = "while true do\n\t\n\temu.frameadvance()\nend";
 				LuaText.SelectionStart = 15;
 			}
+			else
+				startWithEmptyScriptToolStripMenuItem.Checked = true;
+
 			UpdateLineNumber();
 			ProcessText();
 			NoChanges();
@@ -649,6 +649,7 @@ namespace BizHawk.MultiClient
 		private void LuaWriter_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Global.Config.LuaWriterZoom = LuaText.ZoomFactor;
+			Global.Config.LuaWriterStartEmpty = startWithEmptyScriptToolStripMenuItem.Checked;
 		}
 
 		private void restoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -665,6 +666,9 @@ namespace BizHawk.MultiClient
             Global.Config.LuaStringBold = false;
             Global.Config.LuaSymbolBold = false;
             Global.Config.LuaLibraryBold = false;
+
+			Global.Config.LuaWriterStartEmpty = false;
+			startWithEmptyScriptToolStripMenuItem.Checked = false;
 
 			ProcessText();
 
@@ -734,5 +738,10 @@ namespace BizHawk.MultiClient
         {
             LuaText.Redo();
         }
+
+		private void startWithEmptyScriptToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			startWithEmptyScriptToolStripMenuItem.Checked ^= true;
+		}
 	}
 }
