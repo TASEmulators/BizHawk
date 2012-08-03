@@ -351,6 +351,7 @@
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\Utilities\DualSound.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
+    <Compile Include="Sound\VRC6.cs" />
     <Compile Include="Sound\YM2612.IO.cs" />
     <Compile Include="Sound\YM2612.Channel.cs" />
     <Compile Include="Sound\YM2612.Operator.cs" />

@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int prg_bank_mask_8k, chr_bank_mask_1k;
 		bool newer_variant;
 
+		Sound.VRC6 VRC6Sound = new Sound.VRC6();
+
 		//state
 		int prg_bank_16k, prg_bank_8k;
 		ByteBuffer prg_banks_8k = new ByteBuffer(4);
@@ -32,6 +34,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
+			VRC6Sound.SyncState(ser);
 			ser.Sync("prg_bank_16k", ref prg_bank_16k);
 			ser.Sync("prg_bank_8k", ref prg_bank_8k);
 			ser.Sync("chr_banks_1k", ref chr_banks_1k);
@@ -132,21 +135,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				
 				case 0x1000: //$9000
+					VRC6Sound.Write9000(value);
+					break;
 				case 0x1001: //$9001
+					VRC6Sound.Write9000(value);
+					break;
 				case 0x1002: //$9002
-					//TODO pulse 1
+					VRC6Sound.Write9002(value);
 					break;
 
 				case 0x2000: //$A000
+					VRC6Sound.WriteA000(value);
+					break;
 				case 0x2001: //$A001
+					VRC6Sound.WriteA001(value);
+					break;
 				case 0x2002: //$A002
-					//TODO pulse 2
+					VRC6Sound.WriteA002(value);
 					break;
 
 				case 0x3000: //$B000
+					VRC6Sound.WriteB000(value);
+					break;
 				case 0x3001: //$B001
+					VRC6Sound.WriteB001(value);
+					break;
 				case 0x3002: //$B002
-					//TODO sawtooth
+					VRC6Sound.WriteB002(value);
 					break;
 				
 				case 0x3003: //$B003
@@ -244,6 +259,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					irq_prescaler += 341;
 					ClockIRQ();
 				}
+			}
+		}
+
+		public override void ApplyCustomAudio(short[] samples)
+		{
+			short[] fmsamples = new short[samples.Length];
+			VRC6Sound.GetSamples(fmsamples);
+			int len = samples.Length;
+			for (int i = 0; i < len; i++)
+			{
+				samples[i] = (short)((samples[i] >> 1) + (fmsamples[i] >> 1));
 			}
 		}
 
