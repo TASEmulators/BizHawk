@@ -11,17 +11,17 @@ namespace BizHawk.Emulation.Sound
 		public int MaxVolume { get; set; }
 		public void GetSamples(short[] samples)
 		{
-			for (int i = 0; i < samples.Length; )
-			{
-				short val = 0;
-				val = Pulse1.RenderSample();
-				val *= Pulse2.RenderSample();
-				val *= Sawtooth.RenderSample();
-				val = (short)((val * MaxVolume) / short.MaxValue);
+			//for (int i = 0; i < samples.Length; )
+			//{
+			//    short val = 0;
+			//    val = Pulse1.RenderSample();
+			//    val += Pulse2.RenderSample();
+			//    val += Sawtooth.RenderSample();
+			//    val = (short)((val * MaxVolume) / short.MaxValue);
 				
-				samples[i++] = val;
-				samples[i++] = val;
-			}
+			//    samples[i++] = val;
+			//    samples[i++] = val;
+			//}
 		}
 
 		public VRC6()
