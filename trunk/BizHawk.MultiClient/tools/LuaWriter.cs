@@ -34,7 +34,7 @@ namespace BizHawk.MultiClient
 
 		bool changes = false;
         bool hasChanged = false;
-        bool ProcessingText = false;
+		bool ProcessingText;
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
 		char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		public Regex libraryWords;
@@ -79,7 +79,10 @@ namespace BizHawk.MultiClient
 
 			LuaText.SelectAll();
 			LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaDefaultTextColor);
-            LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
+			if(Global.Config.LuaDefaultTextBold)
+				LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+			else
+				LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 
 			ColorReservedWords();
 			ColorLibraries();
@@ -122,6 +125,10 @@ namespace BizHawk.MultiClient
 
                         LuaText.Select(firstBracket, ending - firstBracket + 1);
                         LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
+						if(Global.Config.LuaStringBold)
+							LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+						else
+							LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 
                         if (ending < LuaText.Text.Length - 1)
                             firstBracket = LuaText.Find("[", ending + 1, LuaText.Text.Length, RichTextBoxFinds.MatchCase);
@@ -180,6 +187,9 @@ namespace BizHawk.MultiClient
 					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaSymbolColor);
                     if (Global.Config.LuaSymbolBold)
                         LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+					else
+						LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
+
 					currPos = LuaText.SelectionStart + 1;
 
 					if (currPos == LuaText.Text.Length)
@@ -240,6 +250,9 @@ namespace BizHawk.MultiClient
 							LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaStringColor);
                             if (Global.Config.LuaStringBold)
                                 LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+							else
+								LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
+
 							if (ending >= LuaText.Text.Length)
 								ending++;
 							else
@@ -287,6 +300,8 @@ namespace BizHawk.MultiClient
 					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaCommentColor);
                     if (Global.Config.LuaCommentBold)
                         LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+					else
+						LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 				}
 				else
 				{
@@ -299,6 +314,8 @@ namespace BizHawk.MultiClient
 					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaCommentColor);
                     if (Global.Config.LuaCommentBold)
                         LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+					else
+						LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 				}
 			}
 		}
@@ -323,6 +340,8 @@ namespace BizHawk.MultiClient
 					LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaKeyWordColor);
                     if (Global.Config.LuaKeyWordBold)
                         LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+					else
+						LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 				}
 			}
 		}
@@ -349,6 +368,8 @@ namespace BizHawk.MultiClient
 							LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaLibraryColor);
                             if (Global.Config.LuaLibraryBold)
                                 LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+							else
+								LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 						}
 					}
 				}
@@ -380,8 +401,10 @@ namespace BizHawk.MultiClient
 		private void LuaWriter_Load(object sender, EventArgs e)
 		{
 			//LuaTextFont;
+			ProcessingText = true;
 			LuaText.SelectionTabs = new int[] { 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 480, 500, 520, 540, 560, 580, 600 }; //adelikat:  What a goofy way to have to do this
 			LoadFont();
+			LuaText.BackColor = Color.FromArgb(Global.Config.LuaWriterBackColor);
 			LuaText.ZoomFactor = Global.Config.LuaWriterZoom;
 			ZoomLabel.Text = string.Format("Zoom: {0}%", LuaText.ZoomFactor * 100);
 			GenerateLibraryRegex();
@@ -419,8 +442,6 @@ namespace BizHawk.MultiClient
             StreamReader sr = new StreamReader(file.FullName);
             LuaText.Text = sr.ReadToEnd();
             sr.Close();
-
-			MessageLabel.Text = CurrentFile;
 		}
 
 		private void LuaWriter_DragEnter(object sender, DragEventArgs e)
@@ -720,6 +741,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.LuaWriterZoom = LuaText.ZoomFactor;
 			Global.Config.LuaWriterStartEmpty = startWithEmptyScriptToolStripMenuItem.Checked;
+			Global.Config.LuaWriterBackColor = LuaText.BackColor.ToArgb();
 		}
 
 		private void restoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -731,11 +753,15 @@ namespace BizHawk.MultiClient
 			Global.Config.LuaSymbolColor = -16777216;
 			Global.Config.LuaLibraryColor = -16711681;
 
+			Global.Config.LuaDefaultTextBold = false;
             Global.Config.LuaKeyWordBold = false;
             Global.Config.LuaCommentBold = false;
             Global.Config.LuaStringBold = false;
             Global.Config.LuaSymbolBold = false;
             Global.Config.LuaLibraryBold = false;
+
+			Global.Config.LuaWriterBackColor = -1;
+			LuaText.BackColor = Color.FromArgb(-1);
 
 			Global.Config.LuaWriterStartEmpty = false;
 			startWithEmptyScriptToolStripMenuItem.Checked = false;
@@ -812,6 +838,15 @@ namespace BizHawk.MultiClient
 		private void startWithEmptyScriptToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			startWithEmptyScriptToolStripMenuItem.Checked ^= true;
+		}
+
+		private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ColorDialog col = new ColorDialog();
+			if (col.ShowDialog() == DialogResult.OK)
+			{
+				LuaText.BackColor = col.Color;
+			}
 		}
 	}
 }
