@@ -46,6 +46,7 @@
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="cp -f -R &quot;${ProjectDir}/../BizHawk.MultiClient/output/&quot; &quot;${TargetDir}/BizHawk.app/Contents/MonoBundle/&quot;" />
+        <Command type="AfterBuild" command="cp -f &quot;${TargetDir}/BizHawk.icns&quot; &quot;${TargetDir}/BizHawk.app/Contents/Resources/&quot;" />
       </CustomCommands>
     </CustomCommands>
     <EnableCodeSigning>false</EnableCodeSigning>
