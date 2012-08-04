@@ -130,14 +130,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					cpu.ExecuteOne();
 				}
 
-				if (SoundOn) apu.RunOne(); //THIS ISNT SAFE!!!!!!!!! SOUND MUST ALWAYS RUN!!!!
+				apu.RunOne();
 				ppu.PostCpuInstructionOne();
 			}
-		}
-
-		public byte ReadPPUReg(int addr)
-		{
-			return ppu.ReadReg(addr);
 		}
 
 		public byte ReadReg(int addr)
@@ -161,11 +156,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			}
 			return 0xFF;
-		}
-
-		void WritePPUReg(int addr, byte val)
-		{
-			ppu.WriteReg(addr, val);
 		}
 
 		void WriteReg(int addr, byte val)
@@ -254,7 +244,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (addr < 0x1000) ret = ram[addr - 0x0800];
 			else if (addr < 0x1800) ret = ram[addr - 0x1000];
 			else if (addr < 0x2000) ret = ram[addr - 0x1800];
-			else if (addr < 0x4000) ret = ReadPPUReg(addr & 7);
+			else if (addr < 0x4000) ret = ppu.ReadReg(addr & 7);
 			else if (addr < 0x4020) ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
 			else if (addr < 0x6000) ret = board.ReadEXP(addr - 0x4000);
 			else ret = board.ReadWRAM(addr - 0x6000);
@@ -277,7 +267,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (addr < 0x1000) ram[addr - 0x0800] = value;
 			else if (addr < 0x1800) ram[addr - 0x1000] = value;
 			else if (addr < 0x2000) ram[addr - 0x1800] = value;
-			else if (addr < 0x4000) WritePPUReg(addr & 7, value);
+			else if (addr < 0x4000) ppu.WriteReg(addr & 7, value);
 			else if (addr < 0x4020) WriteReg(addr, value);  //we're not rebasing the register just to keep register names canonical
 			else if (addr < 0x6000) board.WriteEXP(addr - 0x4000, value); 
 			else if (addr < 0x8000) board.WriteWRAM(addr - 0x6000, value);
