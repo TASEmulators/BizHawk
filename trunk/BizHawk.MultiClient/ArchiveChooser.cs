@@ -71,7 +71,7 @@ namespace BizHawk.MultiClient
 
 		private void ArchiveChooser_Load(object sender, EventArgs e)
 		{
-
+			lvMembers.Items[0].Selected = true;
 		}
 	}
 }
