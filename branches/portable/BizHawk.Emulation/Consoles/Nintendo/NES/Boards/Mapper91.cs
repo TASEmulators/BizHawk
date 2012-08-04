@@ -112,33 +112,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.SyncState(ser);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WriteWRAM(int addr, byte value)
 		{
-			if (addr < 0x2000)
+			switch (addr)
 			{
-				switch (addr)
-				{
-					case 0x0000:
-						chr_regs_2k[0] = value;
-						break;
-					case 0x0001:
-						chr_regs_2k[1] = value;
-						break;
-					case 0x0002:
-						chr_regs_2k[2] = value;
-						break;
-					case 0x0003:
-						chr_regs_2k[3] = value;
-						break;
-					case 0x1000:
-						prg_regs_8k[0] = (byte)(value & 0x0F);
-						break;
-					case 0x1001:
-						prg_regs_8k[1] = (byte)(value & 0x0F);
-						break;
-				}
+				case 0x0000:
+					chr_regs_2k[0] = value;
+					break;
+				case 0x0001:
+					chr_regs_2k[1] = value;
+					break;
+				case 0x0002:
+					chr_regs_2k[2] = value;
+					break;
+				case 0x0003:
+					chr_regs_2k[3] = value;
+					break;
+				case 0x1000:
+					prg_regs_8k[0] = (byte)(value & 0x0F);
+					break;
+				case 0x1001:
+					prg_regs_8k[1] = (byte)(value & 0x0F);
+					break;
 			}
-			base.WritePPU(addr, value);
 		}
 
 		public override byte ReadPPU(int addr)

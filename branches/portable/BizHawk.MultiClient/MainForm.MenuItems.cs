@@ -968,11 +968,6 @@ namespace BizHawk.MultiClient
 			didMenuPause = true;
 			PauseEmulator();
 
-			foreach (ToolStripItem tsi in contextMenuStrip1.Items)
-			{
-				Console.WriteLine(tsi.Name);
-			}
-
 			//TODO - MUST refactor this to hide all and then view a set depending on the state
 
 			if (IsNullEmulator())
@@ -1210,13 +1205,26 @@ namespace BizHawk.MultiClient
 		private void MainForm_Deactivate(object sender, EventArgs e)
 		{
 			if (!Global.Config.RunInBackground)
+			{
+				if (EmulatorPaused)
+				{
+					wasPaused = true;
+				}
 				PauseEmulator();
+			}
 		}
 
 		private void MainForm_Activated(object sender, EventArgs e)
 		{
 			if (!Global.Config.RunInBackground)
-				UnpauseEmulator();
+			{
+				
+				if (!wasPaused)
+				{
+					UnpauseEmulator();
+				}
+				wasPaused = false;
+			}
 		}
 
 		private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)

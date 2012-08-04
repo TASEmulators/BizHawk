@@ -38,12 +38,15 @@ namespace BizHawk.MultiClient
 			Global.Config.NESNameTableRefreshRate = RefreshRate.Value;
 		}
 
-		unsafe void Generate()
+		unsafe void Generate(bool now = false)
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (Nes == null) return;
 
-			if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
+			if (now == false)
+			{
+				if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
+			}
 
 			BitmapData bmpdata = NameTableView.nametables.LockBits(new Rectangle(0, 0, 512, 480), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
@@ -133,6 +136,7 @@ namespace BizHawk.MultiClient
 
 			Nes = Global.Emulator as NES;
 			RefreshRate.Value = Global.Config.NESNameTableRefreshRate;
+			Generate(true);
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)

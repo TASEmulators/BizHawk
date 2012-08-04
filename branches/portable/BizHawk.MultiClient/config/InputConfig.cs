@@ -506,6 +506,7 @@ namespace BizHawk.MultiClient
 			CurSelectConsole = this.SystemComboBox.SelectedItem.ToString();
 			CurSelectController = 0;
 			SetFocus();
+			SetAutoTab();
 		}
 		private void ControllComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -516,6 +517,7 @@ namespace BizHawk.MultiClient
 			Do(SystemComboBox.SelectedItem.ToString());
 			CurSelectController = ControllComboBox.SelectedIndex;
 			SetFocus();
+			SetAutoTab();
 		}
 		private void UpdateAll()
 		{

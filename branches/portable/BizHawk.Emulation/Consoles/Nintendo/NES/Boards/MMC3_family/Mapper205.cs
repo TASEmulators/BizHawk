@@ -34,14 +34,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.SyncState(ser);
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WriteWRAM(int addr, byte value)
 		{
-			if (addr < 0x2000)
-			{
-				block = value & 0x03;
-			}
-
-			base.WritePPU(addr, value);
+			block = value & 0x03;
 		}
 
 		public override byte ReadPRG(int addr)
@@ -73,11 +68,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ROM[addr];
 		}
 
-		int MapCHR(int addr)
+		int MapCHR2(int addr)
 		{
 			int bank_1k = Get_CHRBank_1K(addr);
 			bank_1k &= chr_mask;
-			switch (bank_1k)
+			switch (block)
 			{
 				case 0:
 					bank_1k &= 0xFF;
@@ -104,7 +99,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				addr = MapCHR(addr);
+				addr = MapCHR2(addr);
 				if (VROM != null)
 					return VROM[addr + extra_vrom];
 				else return VRAM[addr];

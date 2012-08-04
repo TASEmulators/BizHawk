@@ -32,19 +32,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				case "NES-AN1ROM": //R.C. Pro-Am
 					AssertPrg(64); AssertChr(0); AssertVram(8); AssertWram(0); 
-				    bus_conflict = false;
-				    break;
+					bus_conflict = false;
+					break;
 
 				case "NES-AMROM": //time lord
 					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0); 
-				    bus_conflict = true;
-				    break;
+					bus_conflict = true;
+					break;
 			
 				case "NES-AOROM": //battletoads
 				case "HVC-AOROM":
-					AssertPrg(128,256); AssertChr(0); AssertVram(8); AssertWram(0); 
-				    bus_conflict = true; //MAYBE. apparently it varies
-				    break;
+					AssertPrg(128,256); AssertChr(0); AssertVram(8); AssertWram(0);
+					if (Cart.pcb == "NES-AOROM-03") //Battle toads = 03, and needs bus_conflict.  Wheel of Fortune is 01 and does not.  Thus assuming 03 always needs it and 01 and 02 do not.  Until there are test cases that suggest otherwise
+					{
+						bus_conflict = true; //MAYBE. apparently it varies
+					}
+					break;
 
 				default:
 					return false;

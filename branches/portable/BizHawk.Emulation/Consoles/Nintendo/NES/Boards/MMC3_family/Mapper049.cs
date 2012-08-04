@@ -42,7 +42,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			mode = value.Bit(0);
 			prg = (value >> 4) & 3;
 			block = (value >> 6) & 3;
-			Console.WriteLine("val={3}, addr={4}, prg={0},mode={1},block={2}", prg, mode, block, value, addr);
 			base.WriteWRAM(addr, value);
 		}
 

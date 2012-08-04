@@ -491,12 +491,8 @@ namespace BizHawk.MultiClient
 				{
 					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
 					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
-					g.DrawString(MakeLagCounter(), AlertFont, Color.Black,
-					Global.Config.DispLagx + 1,
-						Global.Config.DispLagy + 1);
-					g.DrawString(MakeLagCounter(), AlertFont, FixedAlertMessageColor,
-					Global.Config.DispLagx,
-						Global.Config.DispLagy);
+					g.DrawString(MakeLagCounter(), AlertFont, Color.Black, x + 1, y + 1);
+					g.DrawString(MakeLagCounter(), AlertFont, FixedAlertMessageColor,x, y);
 				}
 				else
 				{

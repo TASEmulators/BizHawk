@@ -14,7 +14,7 @@ namespace BizHawk.MultiClient
 	/// </summary>
 	public partial class InputPrompt : Form
 	{
-		public bool UserOK = false;    //Will be true if the user selects Ok
+		public bool UserOK;    //Will be true if the user selects Ok
 		public string UserText = "";   //What the user selected
 		public bool HexOnly = false;
 		public InputPrompt()
@@ -51,6 +51,7 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
+            UserOK = false;
 			this.Close();
 		}
 

@@ -7,35 +7,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	class Mapper074 : MMC3Board_Base
 	{
-		/*
-			Here are Disch's original notes:
-		========================
-		=  Mapper 074          =
-		========================
-
-
-		aka:
-		--------------------------
-		Pirate MMC3 variant
-
-
-		Example Games:
-		--------------------------
-		Di 4 Ci - Ji Qi Ren Dai Zhan
-		Ji Jia Zhan Shi
-
-
-		Notes:
-		--------------------------
-		This mapper is a modified MMC3 (or is based on MMC3?).
-
-		In addition to any CHR-ROM present, there is also an additional 2k of CHR-RAM which is selectable.  CHR pages
-		$08 and $09 select CHR-RAM, other pages select CHR-ROM
-
-		Apart from that, this mapper behaves exactly like your typical MMC3.  See mapper 004 for details.
-		
-		TODO: implement CHR-RAM behavior
-		*/
+		//http://wiki.nesdev.com/w/index.php/INES_Mapper_074
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -47,9 +19,51 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
-
+			VRAM = new byte[2048];
 			BaseSetup();
 			return true;
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				VRAM[addr & 0x7FF] = value;
+			}
+			else
+			{
+				base.WritePPU(addr, value);
+			}
+		}
+
+		private int GetBankNum(int addr)
+		{
+			int bank_1k = Get_CHRBank_1K(addr);
+			bank_1k &= chr_mask;
+			return bank_1k;
+		}
+
+		public override byte ReadPPU(int addr)
+		{
+			if (addr < 0x2000)
+			{
+				int bank = GetBankNum(addr);
+				if (bank == 0x08)
+				{
+					return VRAM[addr & 0x03FF];
+				}
+				else if (bank == 0x09)
+				{
+					return VRAM[(addr & 0x03FF) + 0x400];
+				}
+				else
+				{
+					addr = MapCHR(addr);
+					return VROM[addr + extra_vrom];
+				}
+
+			}
+			else return base.ReadPPU(addr);
 		}
 	}
 }

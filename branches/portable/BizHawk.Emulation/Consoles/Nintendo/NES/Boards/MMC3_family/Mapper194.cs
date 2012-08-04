@@ -5,21 +5,21 @@ using System.Text;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Mapper192 : MMC3Board_Base
+	class Mapper194 : MMC3Board_Base
 	{
-		//http://wiki.nesdev.com/w/index.php/INES_Mapper_192
-		
+		//http://wiki.nesdev.com/w/index.php/INES_Mapper_194
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
 			switch (Cart.board_type)
 			{
-				case "MAPPER192":
+				case "MAPPER194":
 					break;
 				default:
 					return false;
 			}
-			VRAM = new byte[4096];
+			VRAM = new byte[2048];
 			BaseSetup();
 			return true;
 		}
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				VRAM[addr & 0xFFF] = value;
+				VRAM[addr & 0x7FF] = value;
 			}
 			else
 			{
@@ -48,22 +48,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (addr < 0x2000)
 			{
 				int bank = GetBankNum(addr);
-				if (bank == 0x08)
+				if (bank == 0x00)
 				{
-					byte value = VRAM[addr & 0x03FF];
-					return value;
+					return VRAM[addr & 0x03FF];
 				}
-				else if (bank == 0x09)
+				else if (bank == 0x01)
 				{
 					return VRAM[(addr & 0x03FF) + 0x400];
-				}
-				else if (bank == 0x0A)
-				{
-					return VRAM[(addr & 0x03FF) + 0x800];
-				}
-				else if (bank == 0x0B)
-				{
-					return VRAM[(addr & 0x03FF) + 0xC00];
 				}
 				else
 				{

@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public int PendingCycles;
 
 		public Func<ushort, ushort> ReadMemory;
-		public Action<ushort, ushort> WriteMemory;
+		public Func<ushort, ushort, bool> WriteMemory;
 
 		private static bool logging = true;
 		private static StreamWriter log;

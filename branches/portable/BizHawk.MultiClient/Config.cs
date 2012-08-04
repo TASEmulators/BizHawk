@@ -298,6 +298,7 @@ namespace BizHawk.MultiClient
 		public int JMDThreads = 3;
 		public string FFmpegFormat = "";
 		public string FFmpegCustomCommand = "-c:a foo -c:v bar -f baz";
+		public string AVICodecToken = "";
 
 		// NESPPU Settings
 		public bool AutoLoadNESPPU = false;
@@ -550,13 +551,23 @@ namespace BizHawk.MultiClient
 		public int GifAnimatorSpeed;
 		public bool GifAnimatorReversable;
 
-        //LuaWriter Settings
-        public int LuaDefaultTextColor = -16777216;
-        public int LuaKeyWordColor = -16776961;
-        public int LuaCommentColor = -16744448;
-        public int LuaStringColor = -8355712;
-        public int LuaSymbolsColor = -16777216;
-		public int LuaLibraryColor = 10349567;
+		//LuaWriter Settings
+		public int LuaDefaultTextColor = -16777216;
+        
+		public int LuaKeyWordColor = -16776961;
+        public bool LuaKeyWordBold = false;
+		public int LuaCommentColor = -16744448;
+        public bool LuaCommentBold = false;
+		public int LuaStringColor = -8355712;
+        public bool LuaStringBold = false;
+		public int LuaSymbolColor = -16777216;
+        public bool LuaSymbolBold = false;
+        public int LuaLibraryColor = -16711681;
+        public bool LuaLibraryBold = false;
+		public float LuaWriterFontSize = 11;
+		public string LuaWriterFont = "Courier New";
+		public float LuaWriterZoom = 1;
+		public bool LuaWriterStartEmpty = false;
 	}
 
 	public class SMSControllerTemplate

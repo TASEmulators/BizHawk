@@ -328,27 +328,153 @@ namespace BizHawk.MultiClient
 			private CodecToken() { }
 			public Win32.AVICOMPRESSOPTIONS comprOptions;
 			public string codec;
+			/// <summary>
+			/// true if data was allocated by AviSaveOptions and should be freed by AVISaveOptionsFree
+			/// </summary>
 			bool allocated = false;
+			/// <summary>
+			/// true if data was allocated by AllocHGlobal and should be freed by FreeHGlobal
+			/// </summary>
+			bool marshaled = false;
 			public void Dispose()
 			{
-				if (!allocated) return;
+				if (allocated)
+				{
+					IntPtr[] infPtrs = new IntPtr[1];
+					IntPtr mem;
 
-				IntPtr[] infPtrs = new IntPtr[1];
-				IntPtr mem;
+					// alloc unmanaged memory 
+					mem = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Win32.AVICOMPRESSOPTIONS)));
+					infPtrs[0] = mem;
 
-				// alloc unmanaged memory 
-				mem = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Win32.AVICOMPRESSOPTIONS)));
-				infPtrs[0] = mem;
+					// copy from managed structure to unmanaged memory 
+					Marshal.StructureToPtr(comprOptions, mem, false);
 
-				// copy from managed structure to unmanaged memory 
-				Marshal.StructureToPtr(comprOptions, mem, false);
+					Win32.AVISaveOptionsFree(1, infPtrs);
+					Marshal.FreeHGlobal(mem);
 
-				Win32.AVISaveOptionsFree(1, infPtrs);
-				Marshal.FreeHGlobal(mem);
+					codec = null;
+					comprOptions = new Win32.AVICOMPRESSOPTIONS();
+					allocated = false;
+				}
+				if (marshaled)
+				{
+					IntPtr p;
+					p = (IntPtr)comprOptions.lpFormat;
+					if (p != IntPtr.Zero)
+						Marshal.FreeHGlobal(p);
+					p = (IntPtr)comprOptions.lpParms;
+					if (p != IntPtr.Zero)
+						Marshal.FreeHGlobal(p);
 
-				codec = null;
-				comprOptions = new Win32.AVICOMPRESSOPTIONS();
-				allocated = false;
+					codec = null;
+					comprOptions = new Win32.AVICOMPRESSOPTIONS();
+					marshaled = false;
+				}
+			}
+
+			byte[] SerializeToByteArray()
+			{
+				var m = new MemoryStream();
+				var b = new BinaryWriter(m);
+
+				b.Write(comprOptions.fccType);
+				b.Write(comprOptions.fccHandler);
+				b.Write(comprOptions.dwKeyFrameEvery);
+				b.Write(comprOptions.dwQuality);
+				b.Write(comprOptions.dwBytesPerSecond);
+				b.Write(comprOptions.dwFlags);
+				//b.Write(comprOptions.lpFormat);
+				b.Write(comprOptions.cbFormat);
+				//b.Write(comprOptions.lpParms);
+				b.Write(comprOptions.cbParms);
+				b.Write(comprOptions.dwInterleaveEvery);
+
+				// make opaque copies of the unmanaged structs pointed to
+				byte[] Format = new byte[comprOptions.cbFormat];
+				byte[] Params = new byte[comprOptions.cbParms];
+				if (comprOptions.lpFormat != 0)
+					Marshal.Copy(new IntPtr(comprOptions.lpFormat), Format, 0, Format.Length);
+				if (comprOptions.lpParms != 0)
+				Marshal.Copy(new IntPtr(comprOptions.lpParms), Params, 0, Params.Length);
+
+				b.Write(Format);
+				b.Write(Params);
+				b.Close();
+				return m.ToArray();
+			}
+
+			static CodecToken DeSerializeFromByteArray(byte[] data)
+			{
+				var m = new MemoryStream(data, false);
+				var b = new BinaryReader(m);
+
+				Win32.AVICOMPRESSOPTIONS comprOptions = new Win32.AVICOMPRESSOPTIONS();
+
+				byte[] Format;
+				byte[] Params;
+
+				try
+				{
+
+					comprOptions.fccType = b.ReadInt32();
+					comprOptions.fccHandler = b.ReadInt32();
+					comprOptions.dwKeyFrameEvery = b.ReadInt32();
+					comprOptions.dwQuality = b.ReadInt32();
+					comprOptions.dwBytesPerSecond = b.ReadInt32();
+					comprOptions.dwFlags = b.ReadInt32();
+					//comprOptions.lpFormat = b.ReadInt32();
+					comprOptions.cbFormat = b.ReadInt32();
+					//comprOptions.lpParms = b.ReadInt32();
+					comprOptions.cbParms = b.ReadInt32();
+					comprOptions.dwInterleaveEvery = b.ReadInt32();
+
+					Format = b.ReadBytes(comprOptions.cbFormat);
+					Params = b.ReadBytes(comprOptions.cbParms);
+				}
+				catch (IOException)
+				{
+					// ran off end of array most likely
+					return null;
+				}
+				finally
+				{
+					b.Close();
+				}
+
+				// create unmanaged copies of Format, Params
+				if (comprOptions.cbFormat != 0)
+				{
+					IntPtr lpFormat = Marshal.AllocHGlobal(comprOptions.cbFormat);
+					Marshal.Copy(Format, 0, lpFormat, comprOptions.cbFormat);
+					comprOptions.lpFormat = (int)lpFormat;
+				}
+				else
+					comprOptions.lpFormat = (int)IntPtr.Zero;
+				if (comprOptions.cbParms != 0)
+				{
+					IntPtr lpParms = Marshal.AllocHGlobal(comprOptions.cbParms);
+					Marshal.Copy(Params, 0, lpParms, comprOptions.cbParms);
+					comprOptions.lpParms = (int)lpParms;
+				}
+				else
+					comprOptions.lpParms = (int)IntPtr.Zero;
+
+				CodecToken ret = new CodecToken();
+				ret.marshaled = true;
+				ret.comprOptions = comprOptions;
+				ret.codec = Win32.decode_mmioFOURCC(comprOptions.fccHandler);
+				return ret;
+			}
+
+			public string Serialize()
+			{
+				return System.Convert.ToBase64String(SerializeToByteArray());
+			}
+
+			public static CodecToken DeSerialize(string s)
+			{
+				return DeSerializeFromByteArray(System.Convert.FromBase64String(s));
 			}
 		}
 
@@ -493,8 +619,14 @@ namespace BizHawk.MultiClient
 					comprOptions = currVideoCodecToken.comprOptions;
 				}
 				if (AVISaveOptions(pAviRawVideoStream, ref comprOptions, hwnd) != 0)
-					return CodecToken.TakePossession(comprOptions);
-				else return null;
+				{
+					CodecToken ret = CodecToken.TakePossession(comprOptions);
+					// save to config as well
+					Global.Config.AVICodecToken = ret.Serialize();
+					return ret;
+				}
+				else
+					return null;
 			}
 
 			/// <summary>
@@ -670,12 +802,12 @@ namespace BizHawk.MultiClient
 			return "avi";
 		}
 
-
-
-
 		public void SetDefaultVideoCodecToken()
 		{
-			throw new NotImplementedException();
+			CodecToken ct = CodecToken.DeSerialize(Global.Config.AVICodecToken);
+			if (ct == null)
+				throw new Exception("No default AVICodecToken in config!");
+			currVideoCodecToken = ct;
 		}
 
 		public string ShortName()

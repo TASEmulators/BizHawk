@@ -164,15 +164,23 @@ namespace BizHawk.MultiClient
 			//
 			Engaged = true;
 			Global.OSD.AddMessage("TAStudio engaged");
-
-			Global.MovieSession.Movie.TastudioOn = true;
-
-			Global.MainForm.StopOnFrame = -1;
-
+			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
+			{
+				Global.MovieSession.Movie.TastudioOn = true;
+				Global.MainForm.StopOnFrame = -1;
+				ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
+			}
+			else
+			{
+				ReadOnlyCheckBox.Checked = false;
+			}
+			
 			LoadConfigSettings();
-			ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
+			
+			
+			
 			DisplayList();
-
+			
 			//Add virtual pads
 			switch (Global.Emulator.SystemId)
 			{
@@ -353,18 +361,24 @@ namespace BizHawk.MultiClient
 		{
 			if (ReadOnlyCheckBox.Checked)
 			{
-				Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
 				ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
-				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read-Only Mode");
+
+				if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
+				{
+					Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
+					toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read-Only Mode");
+				}
 			}
 			else
 			{
-				Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
 				ReadOnlyCheckBox.BackColor = Color.LightCoral;
-				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read+Write Mode");
+				if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
+				{
+					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+					toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read+Write Mode");
+				}
 			}
-		}
-
+		} 
 
 		private void RewindToBeginning_Click(object sender, EventArgs e)
 		{

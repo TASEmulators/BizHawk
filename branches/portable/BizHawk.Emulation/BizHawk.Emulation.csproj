@@ -113,6 +113,7 @@
     <Compile Include="Consoles\GB\Input.cs" />
     <Compile Include="Consoles\GB\MemoryMap.cs" />
     <Compile Include="Consoles\GB\GB.cs" />
+    <Compile Include="Consoles\Intellivision\Cartridge.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
@@ -123,6 +124,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI-FCG-1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_02_74.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_161_32.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
@@ -146,10 +148,13 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_13.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_17.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_19.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_SS8806.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper015.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper045.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper057.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper058.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper069.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper090.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper116.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper164.cs" />
@@ -174,21 +179,25 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper046.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper243.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper246.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper50.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper60.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper61.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper62.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper91.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MLT-ACTION52.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MLT-MAX15.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\HKROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper012.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper044.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper052.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper074.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper115.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper182.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper189.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper191.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper192.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper194.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper205.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper245.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3.cs" />
@@ -341,6 +350,7 @@
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\Utilities\DualSound.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
+    <Compile Include="Sound\VRC6.cs" />
     <Compile Include="Sound\YM2612.IO.cs" />
     <Compile Include="Sound\YM2612.Channel.cs" />
     <Compile Include="Sound\YM2612.Operator.cs" />

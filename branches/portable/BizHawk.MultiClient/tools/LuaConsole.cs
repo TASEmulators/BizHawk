@@ -94,7 +94,17 @@ namespace BizHawk.MultiClient
 		{
 			LoadConfigSettings();
 			if (Global.Config.AutoLoadLuaSession)
-				LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
+			{
+				if (!Global.Config.RecentLuaSession.IsEmpty())
+				{
+					LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
+				}
+			}
+
+            newStripButton1.Visible = Global.MainForm.INTERIM;
+            newScriptToolStripMenuItem.Visible = Global.MainForm.INTERIM;
+            newStripButton1.Enabled = Global.MainForm.INTERIM;
+            newScriptToolStripMenuItem.Enabled = Global.MainForm.INTERIM;
 		}
 
 		private void StopScript(int x)
@@ -390,7 +400,7 @@ namespace BizHawk.MultiClient
 				luaList.Clear();
 				DisplayLuaList();
 				UpdateNumberOfScripts();
-                currentSessionFile = "";
+				currentSessionFile = "";
 				Changes(false);
 			}
 		}
@@ -837,23 +847,23 @@ namespace BizHawk.MultiClient
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			foreach (var s in luaList)
+			for (int i = 0; i < luaList.Count; i++)
 			{
 				try
 				{
 					LuaImp.gui_drawNewEmu();
 					//LuaImp.gui_clearGraphics();
-					if (s.Enabled && s.Thread != null && !s.Paused)
+					if (luaList[i].Enabled && luaList[i].Thread != null && !(luaList[i].Paused))
 					{
 						bool prohibit = false;
-						if (s.FrameWaiting && !includeFrameWaiters)
+						if (luaList[i].FrameWaiting && !includeFrameWaiters)
 							prohibit = true;
 
 						if (!prohibit)
 						{
-							var result = LuaImp.ResumeScript(s.Thread);
-							if(result.Terminated) s.Stop();
-							s.FrameWaiting = result.WaitForFrame;
+							var result = LuaImp.ResumeScript(luaList[i].Thread);
+							if (result.Terminated) luaList[i].Stop();
+							luaList[i].FrameWaiting = result.WaitForFrame;
 						}
 					}
 					LuaImp.gui_drawFinishEmu();
@@ -862,8 +872,8 @@ namespace BizHawk.MultiClient
 				{
 					if (ex is LuaInterface.LuaScriptException || ex is LuaInterface.LuaException)
 					{
-						s.Enabled = false;
-						s.Thread = null;
+						luaList[i].Enabled = false;
+						luaList[i].Thread = null;
 						AddText(ex.ToString());
 						UpdateNumberOfScripts();
 					}
@@ -1269,6 +1279,21 @@ namespace BizHawk.MultiClient
 			LuaWriter writer = new LuaWriter();
 			writer.CurrentFile = path;
 			writer.Show();
+		}
+
+		private void newScriptToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			NewScript();
+		}
+
+		private void NewScript()
+		{
+			OpenLuaWriter(null);
+		}
+
+		private void newStripButton1_Click(object sender, EventArgs e)
+		{
+			NewScript();
 		}
 	}
 }

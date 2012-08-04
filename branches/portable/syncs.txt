@@ -21,3 +21,4 @@ Kato Chan & Ken Chan (1291M) desyncs on level 1-2 at ~3900 frames.
 Keith Courage in Alpha Zones (1309M) desyncs at ~4200 frames.
 
 That is my report on how the PCE TASes sync. 1/10 of them sync.
+ 

@@ -373,34 +373,29 @@ namespace BizHawk.MultiClient
 			
 			StreamReader sr = new StreamReader(file.GetStream());
 			string str = "";
-			int length = 0;
-			while ((str = sr.ReadLine()) != null)
-			{
-				length += str.Length + 1;
-				if (str == "")
-				{
-					continue;
-				}
-				else if (Header.AddHeaderFromLine(str))
-					continue;
+            while ((str = sr.ReadLine()) != null)
+            {
+                if (str == "" || Header.AddHeaderFromLine(str))
+                    continue;
+                if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+                    Subtitles.AddSubtitle(str);
+                else if (str[0] == '|')
+                {
+                    string frames = sr.ReadToEnd();
+                    int length = str.Length;
+                    // Account for line breaks of either size.
+                    if (frames.IndexOf("\r\n") != -1)
+                        length++;
+                    length++;
+                    // Count the remaining frames and the current one.
+                    this.Frames = (frames.Length / length) + 1;
+                    break;
+                }
+                else
+                    Header.Comments.Add(str);
+            }
 
-				if (str.StartsWith("subtitle") || str.StartsWith("sub"))
-				{
-					Subtitles.AddSubtitle(str);
-				}
-				else if (str[0] == '|')
-				{
-					int line = str.Length + 1;
-					length -= line;
-					int lines = (int)sr.BaseStream.Length - length;
-					this.Frames = lines / line;
-					break;
-				}
-				else
-					Header.Comments.Add(str);
-			}
 			sr.BaseStream.Position = 0; //Reset stream for others to use
-
 			return true;
 		}
 
