@@ -43,10 +43,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-AOROM": //battletoads
 				case "HVC-AOROM":
 					AssertPrg(128,256); AssertChr(0); AssertVram(8); AssertWram(0);
-					if (Cart.pcb == "NES-AOROM-03") //Battle toads = 03, and needs bus_conflict.  Wheel of Fortune is 01 and does not.  Thus assuming 03 always needs it and 01 and 02 do not.  Until there are test cases that suggest otherwise
-					{
-						bus_conflict = true; //MAYBE. apparently it varies
-					}
+					bus_conflict = false; //adelikat:  I could not find an example of a game that needs bus conflicts, please enlightening me of a case where a game fails because of the lack of conflicts!
 					break;
 
 				default:
