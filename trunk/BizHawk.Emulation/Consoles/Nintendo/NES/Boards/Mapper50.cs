@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool irq_enable;
 		ushort irq_counter = 0;
 		bool irq_ready = false;
+		int ppu_cyclecount = 0;
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
@@ -32,6 +33,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void SyncState(Serializer ser)
 		{
+			ser.Sync("ppu_cyclecount", ref ppu_cyclecount);
 			ser.Sync("prg_bank", ref prg_bank);
 			ser.Sync("irq_enable", ref irq_enable);
 			ser.Sync("irq_counter", ref irq_counter);
@@ -92,25 +94,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (irq_enable)
 			{
-				if (irq_counter < 0x0FFF)
-				{
-					irq_counter += 1;
-					irq_ready = false;
-				}
-				else
-				{
-					irq_counter = 0;
-					irq_ready = true;
-					IRQ_Ready();
-				}
+				irq_counter += 1;
+				if (irq_counter == 0x1000)
+					SyncIRQ(true);
 			}
-			
 		}
 
 		public override void ClockPPU()
 		{
-			IRQ_Tick();
-			base.ClockPPU();
+			ppu_cyclecount++;
+			if (ppu_cyclecount >= 3)
+			{
+				ppu_cyclecount = 0;
+				IRQ_Tick();
+				base.ClockPPU();
+			}
 		}
 	}
 }
