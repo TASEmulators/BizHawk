@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 {
 	public sealed partial class CP1610
 	{
-		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, IntRM, BusRq, BusAk, MSync;
+		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, IntRM, BusRq, BusAk, MSync, Interruptible;
 		private ushort[] Register = new ushort[8];
 		public ushort RegisterSP { get { return Register[6]; } set { Register[6] = value; } }
 		public ushort RegisterPC { get { return Register[7]; } set { Register[7] = value; } }
