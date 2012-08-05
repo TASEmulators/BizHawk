@@ -11,22 +11,20 @@ namespace BizHawk.Emulation.Sound
 		public int MaxVolume { get; set; }
 		public void GetSamples(short[] samples)
 		{
-			//for (int i = 0; i < samples.Length; )
-			//{
-			//    short val = 0;
-			//    val = Pulse1.RenderSample();
-			//    val += Pulse2.RenderSample();
-			//    val += Sawtooth.RenderSample();
-			//    val = (short)((val * MaxVolume) / short.MaxValue);
-				
-			//    samples[i++] = val;
-			//    samples[i++] = val;
-			//}
+			for (int i = 0; i < samples.Length; )
+			{
+				short val = 0;
+				val = (short)(Pulse1.RenderSample() << 4);
+				val += (short)(Pulse2.RenderSample() << 7);
+				val += (short)(Sawtooth.RenderSample() << 7);
+				samples[i++] = val;
+				samples[i++] = val;
+			}
 		}
 
 		public VRC6()
 		{
-			MaxVolume = (short.MaxValue / 2);
+			MaxVolume = (short.MaxValue / 3);
 		}
 
 		public void SyncState(Serializer ser)
@@ -108,7 +106,7 @@ namespace BizHawk.Emulation.Sound
 				//ser.Sync("_Frequency", ref _Frequency);
 				//ser.Sync("_SampleCount", ref _SampleCount);
 				//ser.Sync("_RenderedLength", ref _RenderedLength);
-				//ser.Sync("WaveStatus", ref WaveStatus);
+				ser.Sync("WaveStatus", ref WaveStatus);
 				ser.Sync("OUT", ref OUT);
 			}
 
@@ -189,6 +187,20 @@ namespace BizHawk.Emulation.Sound
 			bool WaveStatus = false;
 			short OUT = 0;
 
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("_Volume", ref _Volume);
+				//ser.Sync("DutyPercentage", ref DutyPercentage);
+				ser.Sync("_DutyCycle", ref _DutyCycle);
+				ser.Sync("_FreqTimer", ref _FreqTimer);
+				ser.Sync("_Enabled", ref _Enabled);
+				//ser.Sync("_Frequency", ref _Frequency);
+				//ser.Sync("_SampleCount", ref _SampleCount);
+				//ser.Sync("_RenderedLength", ref _RenderedLength);
+				ser.Sync("WaveStatus", ref WaveStatus);
+				ser.Sync("OUT", ref OUT);
+			}
+
 			public short RenderSample()
 			{
 				if (_Enabled)
@@ -251,20 +263,6 @@ namespace BizHawk.Emulation.Sound
 				_Frequency = 1790000 / 16 / (_FreqTimer + 1);
 				_RenderedLength = 44100 / _Frequency;
 			}
-
-			public void SyncState(Serializer ser)
-			{
-				ser.Sync("_Volume", ref _Volume); //TODO
-				//st.VRC6Pulse2DutyPercentage = DutyPercentage;
-				//st.VRC6Pulse2_DutyCycle = _DutyCycle;
-				//st.VRC6Pulse2_FreqTimer = _FreqTimer;
-				//st.VRC6Pulse2_Enabled = _Enabled;
-				//st.VRC6Pulse2_Frequency = _Frequency;
-				//st.VRC6Pulse2_SampleCount = _SampleCount;
-				//st.VRC6Pulse2_RenderedLength = _RenderedLength;
-				//st.VRC6Pulse2WaveStatus = WaveStatus;
-				//st.VRC6Pulse2OUT = OUT;
-			}
 		}
 
 		public class Chn_VRC6Sawtooth
@@ -278,6 +276,20 @@ namespace BizHawk.Emulation.Sound
 			double _SampleCount = 0;
 			double _RenderedLength = 0;
 			short OUT = 0;
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("AccumRate", ref AccumRate);
+				ser.Sync("AccumStep", ref AccumStep);
+				ser.Sync("Accum", ref Accum);
+				ser.Sync("_FreqTimer", ref _FreqTimer);
+				ser.Sync("_Enabled", ref _Enabled);
+				//ser.Sync("_Frequency", ref _Frequency);
+				//ser.Sync("_SampleCount", ref _SampleCount);
+				//ser.Sync("_RenderedLength", ref _RenderedLength);
+				ser.Sync("OUT", ref OUT);
+			}
+
 			public short RenderSample()
 			{
 				if (_Enabled)
@@ -317,20 +329,6 @@ namespace BizHawk.Emulation.Sound
 				//Update freq
 				_Frequency = 1790000 / (_FreqTimer + 1);
 				_RenderedLength = 44100 / _Frequency;
-			}
-
-			public void SyncState(Serializer ser)
-			{
-				//ser.Sync("_Volume", ref _Volume); //TODO
-				//st.VRC6Pulse2DutyPercentage = DutyPercentage;
-				//st.VRC6Pulse2_DutyCycle = _DutyCycle;
-				//st.VRC6Pulse2_FreqTimer = _FreqTimer;
-				//st.VRC6Pulse2_Enabled = _Enabled;
-				//st.VRC6Pulse2_Frequency = _Frequency;
-				//st.VRC6Pulse2_SampleCount = _SampleCount;
-				//st.VRC6Pulse2_RenderedLength = _RenderedLength;
-				//st.VRC6Pulse2WaveStatus = WaveStatus;
-				//st.VRC6Pulse2OUT = OUT;
 			}
 		}
 	}
