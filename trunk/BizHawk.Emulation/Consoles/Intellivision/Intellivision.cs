@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public void FrameAdvance(bool render)
 		{
-			Cpu.Execute(999); // execute some cycles. this will do nothing useful until a memory mapper is created.
+			Cpu.Execute(9999999);
 		}
 
 

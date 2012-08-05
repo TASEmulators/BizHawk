@@ -39,8 +39,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			log.WriteLine("O = {0:X4}", FlagO);
 			log.WriteLine("I = {0:X4}", FlagI);
 			log.WriteLine("D = {0:X4}", FlagD);
-			log.WriteLine("------");
-			log.WriteLine();
 			log.Flush();
 		}
 	}

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 {
 	public sealed partial class Intellivision
 	{
-		private const string INVALID = "Invalid memory address.";
+		private const ushort UNMAPPED = 0xFFFF;
 
 		private ushort[] STIC_Registers = new ushort[64];
 		private ushort[] Scratchpad_RAM = new ushort[240];
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			if (cart != null)
 				return (ushort)cart;
 			else if (core == null)
-				throw new ArgumentException(INVALID);
+				return UNMAPPED;
 			return (ushort)core;
 		}
 
