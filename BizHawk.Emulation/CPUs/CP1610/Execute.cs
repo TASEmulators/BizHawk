@@ -43,6 +43,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				if (logging)
 				{
 					int addrToAdvance;
+					log.WriteLine("------");
+					log.WriteLine();
 					log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
 					log.Flush();
 				}
@@ -545,7 +547,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x0BD:
 					case 0x0BE:
 					case 0x0BF:
-						throw new NotImplementedException();
 						src = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
 						result = Register[src];
@@ -1521,7 +1522,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x345:
 					case 0x346:
 					case 0x347:
-						throw new NotImplementedException();
 						dest = (byte)(opcode & 0x7);
 						addr = ReadMemory(RegisterPC++);
 						dest_value = Register[dest];
@@ -1702,7 +1702,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x3BD:
 					case 0x3BE:
 					case 0x3BF:
-						throw new NotImplementedException();
 						mem = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
 						// Auto-decrement the stack pointer if it's the memory register.

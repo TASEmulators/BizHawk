@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public int Parse(byte[] Rom)
 		{
-			// TODO: Fix.
+			// TODO: Determine which loading method, if either, is correct.
 			int index = 0;
 			// Combine every two bytes into a word.
 			while (index + 1 < Rom.Length)
@@ -53,7 +53,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						// OK if no ECS.
 						return Data[dest];
 					else if (addr == 0x4800)
-						return Data[dest];
+						// return Data[dest];
+						// For now, assume unmapped. TODO: Fix.
+						return null;
 					else
 						return Data[dest];
 				case 0x5000:
@@ -67,7 +69,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					dest = (addr - 0x7000) + 0x4C00;
 					if (addr == 0x7000)
 						// OK if no ECS.
-						return Data[dest];
+						// return Data[dest];
+						// For now, assume unmapped. TODO: Fix.
+						return null;
 					else if (addr <= 0x77FF)
 						// OK if no ECS.
 						return Data[dest];
