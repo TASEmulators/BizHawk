@@ -77,6 +77,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		ByteBuffer chr_regs_2k = new ByteBuffer(4);
 		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 		int chr_bank_mask_2k, prg_bank_mask_8k;
+		MMC3 mmc3;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -95,6 +96,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_regs_8k[3] = 0xFF;
 			prg_regs_8k[2] = 0xFE;
 			
+			mmc3 = new MMC3(this, 0x7FFFFFFF);
+			
 			return true;
 		}
 
@@ -102,11 +105,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			prg_regs_8k.Dispose();
 			chr_regs_2k.Dispose();
+			mmc3.Dispose();
 			base.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
 		{
+			mmc3.SyncState(ser);
 			ser.Sync("prg_regs", ref prg_regs_8k);
 			ser.Sync("chr_regs", ref chr_regs_2k);
 			base.SyncState(ser);
@@ -114,7 +119,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WriteWRAM(int addr, byte value)
 		{
-			switch (addr)
+			switch (addr & 0x7003)
 			{
 				case 0x0000:
 					chr_regs_2k[0] = value;
@@ -134,14 +139,32 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x1001:
 					prg_regs_8k[1] = (byte)(value & 0x0F);
 					break;
+				case 0x1002: //$7002
+					mmc3.WritePRG(0xE000, value);
+					break;
+				case 0x1003: //$7003
+					mmc3.WritePRG(0xC000, 7);
+					mmc3.WritePRG(0xC001, value);
+					mmc3.WritePRG(0xE001, value);
+					break;
 			}
+		}
+
+		public override void ClockPPU()
+		{
+			mmc3.ClockPPU();
+		}
+
+		public override void AddressPPU(int addr)
+		{
+			mmc3.AddressPPU(addr);
 		}
 
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				int bank_2k = (addr >> 11) - 1;
+				int bank_2k = (addr >> 11);
 				bank_2k = chr_regs_2k[bank_2k];
 				bank_2k &= chr_bank_mask_2k;
 				return VROM[(bank_2k * 0x800) + addr];
