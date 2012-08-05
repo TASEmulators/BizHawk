@@ -8,7 +8,14 @@ namespace BizHawk.Emulation.CPUs.CP1610
 {
 	public sealed partial class CP1610
 	{
-		private const string HLT_UNEXPECTED = "HLT is an unexpected behavior.";
+		private const string UNEXPECTED_HLT = "HLT is an unexpected behavior; Intellivision should run so long as the power"
+			+ " is on.";
+		private const string UNEXPECTED_TCI = "TCI is an unexpected behavior; Intellivision doesn't connect the pin of the"
+			+ " same name to anything useful.";
+		private const string UNEXPECTED_SIN = "SIN is an unexpected behavior; Intellivision doesn't connect the CPU's PCIT"
+			+ " pin to anything else.";
+		private const string UNEXPECTED_BEXT = "BEXT is an unexpected behavior; Intellivision not connected to the External"
+			+ " Branch Condition Address pins (EBCA0-EBCA3).";
 
 		private void Calc_FlagC(int result)
 		{
@@ -57,7 +64,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				switch (opcode)
 				{
 					case 0x000: // HLT
-						throw new ArgumentException(HLT_UNEXPECTED);
+						throw new ArgumentException(UNEXPECTED_HLT);
 					case 0x001: // SDBD
 						FlagD = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
@@ -98,10 +105,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						PendingCycles -= 12; TotalExecutedCycles += 12;
 						break;
 					case 0x005: // TCI
-						throw new NotImplementedException();
-						// Little or no use in Intellivision.
-						PendingCycles -= 4; TotalExecutedCycles += 4;
-						break;
+						throw new ArgumentException(UNEXPECTED_TCI);
 					case 0x006: // CLRC
 						FlagC = false;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
@@ -224,10 +228,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					// SIN
 					case 0x036:
 					case 0x037:
-						throw new NotImplementedException();
-						// Little or no use in Intellivision.
-						PendingCycles -= 6; TotalExecutedCycles += 6;
-						break;
+						throw new ArgumentException(UNEXPECTED_SIN);
 					// RSWD
 					case 0x038:
 					case 0x039:
@@ -1017,7 +1018,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						ext = opcode & 0x10;
 						// BEXT
 						if (ext != 0)
-							throw new NotImplementedException("BEXT not implemented.");
+							throw new ArgumentException(UNEXPECTED_BEXT);
 						else
 						{
 							switch (cond)
