@@ -68,14 +68,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x001: // SDBD
 						FlagD = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
+						Interruptible = false;
 						break;
 					case 0x002: // EIS
 						FlagI = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
+						Interruptible = false;
 						break;
 					case 0x003: // DIS
 						FlagI = false;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
+						Interruptible = false;
 						break;
 					case 0x004: // J, JE, JD, JSR, JSRE, JSRD
 						// 0000:0000:0000:0100    0000:00rr:aaaa:aaff    0000:00aa:aaaa:aaaa
@@ -103,16 +106,19 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						}
 						RegisterPC = (ushort)addr;
 						PendingCycles -= 12; TotalExecutedCycles += 12;
+						Interruptible = true;
 						break;
 					case 0x005: // TCI
 						throw new ArgumentException(UNEXPECTED_TCI);
 					case 0x006: // CLRC
 						FlagC = false;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
+						Interruptible = false;
 						break;
 					case 0x007: // SETC
 						FlagC = true;
 						PendingCycles -= 4; TotalExecutedCycles += 4;
+						Interruptible = false;
 						break;
 					// INCR
 					case 0x008:
@@ -130,6 +136,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// DECR
 					case 0x010:
@@ -146,6 +153,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// COMR
 					case 0x018:
@@ -163,6 +171,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// NEGR
 					case 0x020:
@@ -185,6 +194,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						result &= 0xFFFF;
 						Register[dest] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// ADCR
 					case 0x028:
@@ -207,6 +217,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						result &= 0xFFFF;
 						Register[dest] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// GSWD
 					case 0x030:
@@ -219,11 +230,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							(FlagC ? 1 : 0);
 						Register[dest] = (ushort)((status_word << 12) | (status_word << 4));
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// NOP
 					case 0x034:
 					case 0x035:
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// SIN
 					case 0x036:
@@ -246,6 +259,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						FlagZ = ((src_value & 0x20) != 0) ? true : false;
 						FlagS = ((src_value & 0x10) != 0) ? true : false;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// SWAP
 					case 0x040:
@@ -274,6 +288,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS_7(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = false;
 						break;
 					// SLL
 					case 0x048:
@@ -301,6 +316,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = false;
 						break;
 					// RLC
 					case 0x050:
@@ -332,6 +348,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = false;
 						break;
 					// SLLC
 					case 0x058:
@@ -362,6 +379,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = false;
 						break;
 					// SLR
 					case 0x060:
@@ -389,6 +407,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS_7(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = false;
 						break;
 					// SAR
 					case 0x068:
@@ -419,6 +438,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS_7(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = false;
 						break;
 					// RRC
 					case 0x070:
@@ -450,6 +470,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS_7(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = false;
 						break;
 					// SARC
 					case 0x078:
@@ -482,6 +503,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS_7(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = false;
 						break;
 					// MOVR
 					case 0x080:
@@ -562,6 +584,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						{
 							PendingCycles -= 6; TotalExecutedCycles += 6;
 						}
+						Interruptible = true;
 						break;
 					// ADDR
 					case 0x0C0:
@@ -641,6 +664,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						result &= 0xFFFF;
 						Register[dest] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// SUBR
 					case 0x100:
@@ -720,6 +744,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						result &= 0xFFFF;
 						Register[dest] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// CMPR
 					case 0x140:
@@ -797,6 +822,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// ANDR
 					case 0x180:
@@ -871,6 +897,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// XORR
 					case 0x1C0:
@@ -944,6 +971,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
 						PendingCycles -= 6; TotalExecutedCycles += 6;
+						Interruptible = true;
 						break;
 					// Branch Forward, no External Condition
 					case 0x200: // B
@@ -1101,6 +1129,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						{
 							PendingCycles -= 7; TotalExecutedCycles += 7;
 						}
+						Interruptible = true;
 						break;
 					// MVO
 					case 0x240:
@@ -1115,6 +1144,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						addr = ReadMemory(RegisterPC++);
 						WriteMemory(addr, Register[src]);
 						PendingCycles -= 11; TotalExecutedCycles += 11;
+						Interruptible = false;
 						break;
 					// MVO@
 					case 0x248:
@@ -1180,6 +1210,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						if (mem >= 0x4)
 							Register[mem]++;
 						PendingCycles -= 9; TotalExecutedCycles += 9;
+						Interruptible = false;
 						break;
 					// MVI
 					case 0x280:
@@ -1195,6 +1226,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						addr = ReadMemory(RegisterPC++);
 						Register[dest] = ReadMemory(addr);
 						PendingCycles -= 10; TotalExecutedCycles += 10;
+						Interruptible = true;
 						break;
 					// MVI@
 					case 0x288:
@@ -1280,6 +1312,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						// Auto-increment the memory register if it does so on write.
 						if (mem >= 0x4 && mem != 0x6)
 							Register[mem]++;
+						Interruptible = true;
 						break;
 					// ADD
 					case 0x2C0:
@@ -1303,6 +1336,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						result &= 0xFFFF;
 						Register[dest] = (ushort)result;
 						PendingCycles -= 10; TotalExecutedCycles += 10;
+						Interruptible = true;
 						break;
 					// ADD@
 					case 0x2C8:
@@ -1396,6 +1430,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagZ(result);
 						result &= 0xFFFF;
 						Register[dest] = (ushort)result;
+						Interruptible = true;
 						break;
 					// SUB
 					case 0x300:
@@ -1419,6 +1454,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						result &= 0xFFFF;
 						Register[dest] = (ushort)result;
 						PendingCycles -= 10; TotalExecutedCycles += 10;
+						Interruptible = true;
 						break;
 					// SUB@
 					case 0x308:
@@ -1513,6 +1549,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagZ(result);
 						result &= 0xFFFF;
 						Register[dest] = (ushort)result;
+						Interruptible = true;
 						break;
 					// CMP
 					case 0x340:
@@ -1533,6 +1570,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
 						PendingCycles -= 10; TotalExecutedCycles += 10;
+						Interruptible = true;
 						break;
 					// CMP@
 					case 0x348:
@@ -1625,6 +1663,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagO_Add(dest_value, -mem_read);
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
+						Interruptible = true;
 						break;
 					// AND
 					case 0x380:
@@ -1645,6 +1684,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
 						PendingCycles -= 10; TotalExecutedCycles += 10;
+						Interruptible = true;
 						break;
 					// AND@
 					case 0x388:
@@ -1734,6 +1774,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = true;
 						break;
 					// XOR
 					case 0x3C0:
@@ -1754,6 +1795,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
 						PendingCycles -= 10; TotalExecutedCycles += 10;
+						Interruptible = true;
 						break;
 					// XOR@
 					case 0x3C8:
@@ -1844,6 +1886,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
 						Register[dest] = (ushort)result;
+						Interruptible = true;
 						break;
 				}
 				if (FlagD == prev_FlagD)
