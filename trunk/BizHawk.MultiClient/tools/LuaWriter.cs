@@ -624,7 +624,6 @@ namespace BizHawk.MultiClient
 				{
 					List<string> libfunctions = Global.MainForm.LuaConsole1.LuaImp.docs.GetFunctionsByLibrary(currentword);
 					
-					/*  This part doesn't work yet.
 					int x = 0;
 					int y = 0;
 
@@ -634,24 +633,28 @@ namespace BizHawk.MultiClient
 					int topRow;
 
 					currentRow = LuaText.GetLineFromCharIndex(LuaText.SelectionStart);   //Currently selected row
-					currentColumn = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentRow);
-					fontHeight = (int)LuaText.Font.GetHeight();   //Explicilty cast to int (may be a problem later)
+                    topRow = 0;  //Need to figure this out, maybe LuaText.AutoScrollOffset?
+                    currentColumn = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentRow);
+					fontHeight = (int)LuaText.Font.GetHeight();   //Explicilty cast to int
 
-					x = ((currentRow + 1) * fontHeight) + LuaText.Location.Y;
-					y = 50;
+					// Vertical position of auto complete box:
+                    // This still needs to take into account the current scroll height of the box.  Currently it only will look correct when scrolled all the way to the top.
+                    // ((Current row - Top row in view) + 1 to make it below the row) * (fontHeight + spaceBetweenLines)) + (Location of the top of the textbox in relation to overall control)
+                    x = ((currentRow - topRow + 1) * (fontHeight + 1)) + LuaText.Location.Y;
+
+                    // Horizontal position of auto complete box:
+                    // (Width of each character in current font on the current line) + (Location of the left of the textbox in relation to overall control)
+                    y = (currentColumn * (fontHeight / 2)) + LuaText.Location.X;  //    ¯\(°_o)/¯  Super-crude estimate for now, doesn't work great
 
 					AutoCompleteView.Location = new Point(y, x);
-					*/
-	
-					AutoCompleteView.Location = new Point(0, 0);
-					AutoCompleteView.Visible = true;
 					AutoCompleteView.Items.Clear();
 					foreach(string function in libfunctions)
 					{
 						ListViewItem item = new ListViewItem(function);
 						AutoCompleteView.Items.Add(item);
 					}
-				}
+                    AutoCompleteView.Visible = true;  //Show window after it has been positioned and set up
+                }
 			}
 
             if (e.KeyCode == Keys.Enter)
