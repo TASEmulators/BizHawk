@@ -68,34 +68,60 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			ProcessText();
+			ProcessText(LuaText.GetLineFromCharIndex(LuaText.SelectionStart));
 
 			hasChanged = false;
 		}
 
-		private void ProcessText()
+		/// <summary>
+		/// ProcessText - Adds color and formatting to the text depending on the formatting settings selected
+		/// </summary>
+		/// <param name="rowChanged">This indicates the row that needs updating.  Likely will need upates later 
+        ///                          to support multiple rows at once (e.g. when pasting multiple lines).
+        ///                          For now, default value is 0, which will keep behavior as it was (update all lines).</param>
+        private void ProcessText(int rowChanged = 0)
 		{
             ProcessingText = true;
-			int selPos = LuaText.SelectionStart;
-			int selChars = LuaText.SelectedText.Length;
+            int selPos = LuaText.SelectionStart;
+            int selChars = LuaText.SelectedText.Length;
 
-			LuaText.SelectAll();
-			LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaDefaultTextColor);
-			if(Global.Config.LuaDefaultTextBold)
-				LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
-			else
-				LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
+            if (rowChanged == 0)  //Deafult case, change all lines
+            {
 
-			AddKeyWords();
-			AddLibraries();
-			AddSymbols();
-			AddComments();
-			AddStrings();
-			AddLongStrings();
+                LuaText.SelectAll();
+                LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaDefaultTextColor);
+                if (Global.Config.LuaDefaultTextBold)
+                    LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+                else
+                    LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 
-			ColorText();
+                AddKeyWords();
+                AddLibraries();
+                AddSymbols();
+                AddComments();
+                AddStrings();
+                AddLongStrings();
 
-			LuaText.Select(selPos, selChars);
+                ColorText();
+            }
+            
+            else  //Specific line was passed in to change, only update that line
+            {
+                LuaText.Select(LuaText.GetFirstCharIndexFromLine(rowChanged),LuaText.GetFirstCharIndexFromLine(rowChanged + 1) - 1);
+
+                //Currently just calls the same tags - they will need to be updated to only look to the appropriate row.
+                AddKeyWords();
+                AddLibraries();
+                AddSymbols();
+                AddComments();
+                AddStrings();
+                AddLongStrings();
+
+                ColorText();
+
+            }
+
+            LuaText.Select(selPos, selChars);
             ProcessingText = false;
 		}
 
