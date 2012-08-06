@@ -42,6 +42,65 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			FlagZ = (result == 0);
 		}
 
+		private ushort Indirect_Get(byte mem)
+		{
+			ushort value;
+			// Auto-decrement the stack pointer if it's the memory register.
+			if (mem == 0x6)
+				RegisterSP--;
+			if (!FlagD)
+			{
+				value = ReadMemory(Register[mem]);
+				if (mem != 0x6)
+				{
+					PendingCycles -= 8; TotalExecutedCycles += 8;
+				}
+				else
+				{
+					PendingCycles -= 11; TotalExecutedCycles += 11;
+				}
+			}
+			else
+			{
+				// Double Byte Data.
+				value = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
+				value |= (ushort)(ReadMemory(Register[mem]) << 8);
+				PendingCycles -= 10; TotalExecutedCycles += 10;
+			}
+			// Auto-increment the memory register if it does so on write.
+			if (mem >= 0x4 && mem != 0x6)
+				Register[mem]++;
+			return value;
+		}
+
+		public void Indirect_Get_Cycles(byte mem)
+		{
+			if (!FlagD)
+			{
+				if (mem != 0x6)
+				{
+					PendingCycles -= 8; TotalExecutedCycles += 8;
+				}
+				else
+				{
+					PendingCycles -= 11; TotalExecutedCycles += 11;
+				}
+			}
+			else
+			{
+				// Double Byte Data.
+				PendingCycles -= 10; TotalExecutedCycles += 10;
+			}
+		}
+
+		public void Indirect_Set(byte mem, byte src)
+		{
+			WriteMemory(Register[mem], Register[src]);
+			// Auto-increment the memory register if it does so on read.
+			if (mem >= 0x4)
+				Register[mem]++;
+		}
+
 		public void Execute(int cycles)
 		{
             PendingCycles += cycles;
@@ -1205,10 +1264,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x27F:
 						mem = (byte)((opcode >> 3) & 0x7);
 						src = (byte)(opcode & 0x7);
-						WriteMemory(Register[mem], Register[src]);
-						// Auto-increment the memory register if it does so on read.
-						if (mem >= 0x4)
-							Register[mem]++;
+						Indirect_Set(mem, src);
 						PendingCycles -= 9; TotalExecutedCycles += 9;
 						Interruptible = false;
 						break;
@@ -1287,31 +1343,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x2BF:
 						mem = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
-						// Auto-decrement the stack pointer if it's the memory register.
-						if (mem == 0x6)
-							RegisterSP--;
-						if (!FlagD)
-						{
-							Register[dest] = ReadMemory(Register[mem]);
-							if (mem != 0x6)
-							{
-								PendingCycles -= 8; TotalExecutedCycles += 8;
-							}
-							else
-							{
-								PendingCycles -= 11; TotalExecutedCycles += 11;
-							}
-						}
-						else
-						{
-							// Double Byte Data.
-							Register[dest] = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
-							Register[dest] |= (ushort)(ReadMemory(Register[mem]) << 8);
-							PendingCycles -= 10; TotalExecutedCycles += 10;
-						}
-						// Auto-increment the memory register if it does so on write.
-						if (mem >= 0x4 && mem != 0x6)
-							Register[mem]++;
+						Register[dest] = Indirect_Get(mem);
+						Indirect_Get_Cycles(mem);
 						Interruptible = true;
 						break;
 					// ADD
@@ -1397,31 +1430,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x2FF:
 						mem = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
-						// Auto-decrement the stack pointer if it's the memory register.
-						if (mem == 0x6)
-							RegisterSP--;
-						if (!FlagD)
-						{
-							mem_read = ReadMemory(Register[mem]);
-							if (mem != 0x6)
-							{
-								PendingCycles -= 8; TotalExecutedCycles += 8;
-							}
-							else
-							{
-								PendingCycles -= 11; TotalExecutedCycles += 11;
-							}
-						}
-						else
-						{
-							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
-							PendingCycles -= 10; TotalExecutedCycles += 10;
-						}
-						// Auto-increment the memory register if it does so on write.
-						if (mem >= 0x4 && mem != 0x6)
-							Register[mem]++;
+						mem_read = Indirect_Get(mem);
+						Indirect_Get_Cycles(mem);
 						dest_value = Register[dest];
 						result = dest_value + mem_read;
 						Calc_FlagC(result);
@@ -1516,31 +1526,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						throw new NotImplementedException();
 						mem = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
-						// Auto-decrement the stack pointer if it's the memory register.
-						if (mem == 0x6)
-							RegisterSP--;
-						if (!FlagD)
-						{
-							mem_read = ReadMemory(Register[mem]);
-							if (mem != 0x6)
-							{
-								PendingCycles -= 8; TotalExecutedCycles += 8;
-							}
-							else
-							{
-								PendingCycles -= 11; TotalExecutedCycles += 11;
-							}
-						}
-						else
-						{
-							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
-							PendingCycles -= 10; TotalExecutedCycles += 10;
-						}
-						// Auto-increment the memory register if it does so on write.
-						if (mem >= 0x4 && mem != 0x6)
-							Register[mem]++;
+						mem_read = Indirect_Get(mem);
+						Indirect_Get_Cycles(mem);
 						dest_value = Register[dest];
 						result = dest_value - mem_read;
 						Calc_FlagC(result);
@@ -1632,31 +1619,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						throw new NotImplementedException();
 						mem = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
-						// Auto-decrement the stack pointer if it's the memory register.
-						if (mem == 0x6)
-							RegisterSP--;
-						if (!FlagD)
-						{
-							mem_read = ReadMemory(Register[mem]);
-							if (mem != 0x6)
-							{
-								PendingCycles -= 8; TotalExecutedCycles += 8;
-							}
-							else
-							{
-								PendingCycles -= 11; TotalExecutedCycles += 11;
-							}
-						}
-						else
-						{
-							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
-							PendingCycles -= 10; TotalExecutedCycles += 10;
-						}
-						// Auto-increment the memory register if it does so on write.
-						if (mem >= 0x4 && mem != 0x6)
-							Register[mem]++;
+						mem_read = Indirect_Get(mem);
+						Indirect_Get_Cycles(mem);
 						dest_value = Register[dest];
 						result = dest_value - mem_read;
 						Calc_FlagC(result);
@@ -1745,31 +1709,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					case 0x3BF:
 						mem = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
-						// Auto-decrement the stack pointer if it's the memory register.
-						if (mem == 0x6)
-							RegisterSP--;
-						if (!FlagD)
-						{
-							mem_read = ReadMemory(Register[mem]);
-							if (mem != 0x6)
-							{
-								PendingCycles -= 8; TotalExecutedCycles += 8;
-							}
-							else
-							{
-								PendingCycles -= 11; TotalExecutedCycles += 11;
-							}
-						}
-						else
-						{
-							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
-							PendingCycles -= 10; TotalExecutedCycles += 10;
-						}
-						// Auto-increment the memory register if it does so on write.
-						if (mem >= 0x4 && mem != 0x6)
-							Register[mem]++;
+						mem_read = Indirect_Get(mem);
+						Indirect_Get_Cycles(mem);
 						result = Register[dest] & mem_read;
 						Calc_FlagS(result);
 						Calc_FlagZ(result);
@@ -1857,31 +1798,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						throw new NotImplementedException();
 						mem = (byte)((opcode >> 3) & 0x7);
 						dest = (byte)(opcode & 0x7);
-						// Auto-decrement the stack pointer if it's the memory register.
-						if (mem == 0x6)
-							RegisterSP--;
-						if (!FlagD)
-						{
-							mem_read = ReadMemory(Register[mem]);
-							if (mem != 0x6)
-							{
-								PendingCycles -= 8; TotalExecutedCycles += 8;
-							}
-							else
-							{
-								PendingCycles -= 11; TotalExecutedCycles += 11;
-							}
-						}
-						else
-						{
-							// Double Byte Data.
-							mem_read = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
-							mem_read |= (ushort)(ReadMemory(Register[mem]) << 8);
-							PendingCycles -= 10; TotalExecutedCycles += 10;
-						}
-						// Auto-increment the memory register if it does so on write.
-						if (mem >= 0x4 && mem != 0x6)
-							Register[mem]++;
+						mem_read = Indirect_Get(mem);
+						Indirect_Get_Cycles(mem);
 						result = Register[dest] ^ mem_read;
 						Calc_FlagS(result);
 						Calc_FlagZ(result);

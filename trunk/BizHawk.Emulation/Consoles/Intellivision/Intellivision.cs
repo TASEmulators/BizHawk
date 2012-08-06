@@ -53,7 +53,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Cpu = new CP1610();
 			Cpu.ReadMemory = ReadMemory;
 			Cpu.WriteMemory = WriteMemory;
-			Cpu.RegisterPC = 0x1000;
 			Cpu.LogData();
 
 			CoreOutputComm = new CoreOutputComm();
@@ -61,7 +60,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public void FrameAdvance(bool render)
 		{
-			Cpu.Execute(9999999);
+			Cpu.Execute(999);
 		}
 
 
