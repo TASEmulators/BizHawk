@@ -1349,6 +1349,7 @@ D495C31D	H	Chuck Rock [trained - infinite lives]	GG	Chuck Rock by MuMbLy/MYSTIC'
 656708BF	 	Chuck Rock II - Son of Chuck [Sega]	GG	
 A6F0485A	V	Chuck Rock II - Son of Chuck [Sega] (corrupted)	GG	First 18KB is data from another file
 3FCC28C9	 	Chuck Rock II - Son of Chuck [Tengen]	GG	Has a different, low quality, intro screen
+72981057		CJ Elephant Fugitive	GG		CMMapper
 BF75B153	 	Cliffhanger	GG	
 D228A467	 	Clutch Hitter	GG	
 C7598B81	 	Coca Cola Kid (JP)	GG	
