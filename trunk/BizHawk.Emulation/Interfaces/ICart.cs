@@ -8,7 +8,7 @@ namespace BizHawk
 	public interface ICart
 	{
 		int Parse(byte[] Rom);
-		ushort? Read(ushort addr);
-		bool Write(ushort addr, ushort value);
+		ushort? ReadCart(ushort addr);
+		bool WriteCart(ushort addr, ushort value);
 	}
 }

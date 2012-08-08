@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return offset;
 		}
 
-		public ushort? Read(ushort addr)
+		public ushort? ReadCart(ushort addr)
 		{
 			int range = addr / 2048;
 			bool[] attributes = MemoryAttributes[range];
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return null;
 		}
 
-		public bool Write(ushort addr, ushort value)
+		public bool WriteCart(ushort addr, ushort value)
 		{
 			int range = addr / 2048;
 			bool[] attributes = MemoryAttributes[range];

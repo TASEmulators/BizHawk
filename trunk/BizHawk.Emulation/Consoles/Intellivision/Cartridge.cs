@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return Rom.Length;
 		}
 
-		public ushort? Read(ushort addr)
+		public ushort? ReadCart(ushort addr)
 		{
 			// TODO: Check if address is RAM / ROM.
 			int dest;
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return null;
 		}
 
-		public bool Write(ushort addr, ushort value)
+		public bool WriteCart(ushort addr, ushort value)
 		{
 			int dest;
 			// TODO: Check if address is RAM / ROM.

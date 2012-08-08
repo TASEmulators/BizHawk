@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		CP1610 Cpu;
 		ICart Cart;
+		STIC Stic;
+		PSG Psg;
 
 		public void LoadExecutive_ROM()
 		{
@@ -49,11 +51,14 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				Cart = new Cartridge();
 				Cart.Parse(Rom);
 			}
-
+			
 			Cpu = new CP1610();
 			Cpu.ReadMemory = ReadMemory;
 			Cpu.WriteMemory = WriteMemory;
 			Cpu.LogData();
+
+			Stic = new STIC();
+			Psg = new PSG();
 
 			CoreOutputComm = new CoreOutputComm();
 		}

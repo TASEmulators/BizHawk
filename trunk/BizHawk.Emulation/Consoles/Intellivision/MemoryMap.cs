@@ -9,9 +9,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 	{
 		private const ushort UNMAPPED = 0xFFFF;
 
-		private ushort[] STIC_Registers = new ushort[64];
 		private ushort[] Scratchpad_RAM = new ushort[240];
-		private ushort[] PSG_Registers = new ushort[16];
 		private ushort[] System_RAM = new ushort[352];
 		private ushort[] Executive_ROM = new ushort[4096]; // TODO: Intellivision II support?
 		private ushort[] Graphics_ROM = new ushort[2048];
@@ -19,25 +17,24 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public ushort ReadMemory(ushort addr)
 		{
-			ushort? cart = Cart.Read(addr);
+			ushort? cart = Cart.ReadCart(addr);
+			ushort? stic = Stic.ReadSTIC(addr);
+			ushort? psg = Psg.ReadPSG(addr);
 			ushort? core = null;
-			int dest;
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
-					if (addr <= 0x003F)
-						// TODO: OK only during VBlank Period 1.
-						core = STIC_Registers[addr];
-					else if (addr <= 0x007F)
-						// TODO: OK only during VBlank Period 2.
-						core = STIC_Registers[addr - 0x0040];
+					if (addr <= 0x007F)
+						// STIC.
+						break;
 					else if (addr <= 0x00FF)
 						// Unoccupied.
 						break;
 					else if (addr <= 0x01EF)
 						core = Scratchpad_RAM[addr - 0x0100];
 					else if (addr <= 0x01FF)
-						core = PSG_Registers[addr - 0x01F0];
+						// PSG.
+						break;
 					else if (addr <= 0x035F)
 						core = System_RAM[addr - 0x0200];
 					else if (addr <= 0x03FF)
@@ -67,15 +64,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						// TODO: OK only during VBlank Period 2.
 						core = Graphics_RAM[addr - 0x3E00];
 					break;
-				case 0x4000:
-					if (addr <= 0x403F)
-					{
-						if (addr == 0x4021)
-							// TODO: OK only during VBlank Period 1.
-							// TODO: Switch into Color Stack mode.
-							core = STIC_Registers[0x0021];
-					}
-					break;
 				case 0x7000:
 					if (addr <= 0x77FF)
 						// Available to cartridges.
@@ -92,15 +80,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					else
 						// Write-only Graphics RAM.
 						break;
-				case 0x8000:
-					if (addr <= 0x803F)
-					{
-						if (addr == 0x8021)
-							// TODO: OK only during VBlank Period 1.
-							// TODO: Switch into Color Stack mode.
-							core = STIC_Registers[0x0021];
-					}
-					break;
 				case 0xB000:
 					if (addr <= 0xB7FF)
 						// Available to cartridges.
@@ -117,15 +96,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					else
 						// Write-only Graphics RAM.
 						break;
-				case 0xC000:
-					if (addr <= 0xC03F)
-					{
-						if (addr == 0xC021)
-							// TODO: OK only during VBlank Period 1.
-							// TODO: Switch into Color Stack mode.
-							core = STIC_Registers[0x0021];
-					}
-					break;
 				case 0xF000:
 					if (addr <= 0xF7FF)
 						// Available to cartridges.
@@ -145,25 +115,25 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			}
 			if (cart != null)
 				return (ushort)cart;
-			else if (core == null)
-				return UNMAPPED;
-			return (ushort)core;
+			else if (stic != null)
+				return (ushort)stic;
+			else if (psg != null)
+				return (ushort)psg;
+			else if (core != null)
+				return (ushort)core;
+			return UNMAPPED;
 		}
 
 		public bool WriteMemory(ushort addr, ushort value)
 		{
-			bool cart = Cart.Write(addr, value);
+			bool cart = Cart.WriteCart(addr, value);
+			bool stic = Stic.WriteSTIC(addr, value);
+			bool psg = Psg.WritePSG(addr, value);
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
-					if (addr <= 0x003F)
-					{
-						// TODO: OK only during VBlank Period 1.
-						STIC_Registers[addr] = value;
-						return true;
-					}
-					else if (addr <= 0x007F)
-						// Read-only STIC.
+					if (addr <= 0x007F)
+						// STIC.
 						break;
 					else if (addr <= 0x00FF)
 						// Unoccupied.
@@ -175,8 +145,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					}
 					else if (addr <= 0x01FF)
 					{
-						PSG_Registers[addr - 0x01F0] = value;
-						return true;
+						// PSG.
+						break;
 					}
 					else if (addr <= 0x035F)
 					{
@@ -221,14 +191,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						Graphics_RAM[addr - 0x3E00] = value;
 						return true;
 					}
-				case 0x4000:
-					if (addr <= 0x403F)
-					{
-						// TODO: OK only during VBlank Period 1.
-						STIC_Registers[addr - 0x4000] = value;
-						return true;
-					}
-					break;
 				case 0x7000:
 					if (addr <= 0x77FF)
 						// Available to cartridges.
@@ -257,14 +219,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						Graphics_RAM[addr & 0x01FF] = value;
 						return true;
 					}
-				case 0x8000:
-					if (addr <= 0x803F)
-					{
-						// TODO: OK only during VBlank Period 1.
-						STIC_Registers[addr & 0x003F] = value;
-						return true;
-					}
-					break;
 				case 0x9000:
 				case 0xA000:
 				case 0xB000:
@@ -295,14 +249,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						Graphics_RAM[addr - 0xBE00] = value;
 						return true;
 					}
-				case 0xC000:
-					if (addr <= 0x803F)
-					{
-						// TODO: OK only during VBlank Period 1.
-						STIC_Registers[addr - 0xC000] = value;
-						return true;
-					}
-					break;
 				case 0xF000:
 					if (addr <= 0xF7FF)
 						// Available to cartridges.
@@ -332,7 +278,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						return true;
 					}
 			}
-			return cart;
+			return (cart || stic || psg);
 		}
 	}
 }
