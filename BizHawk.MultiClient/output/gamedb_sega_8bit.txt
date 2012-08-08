@@ -451,6 +451,7 @@ B2801B0C	B	Great Volleyball (27 bad bytes)	SMS
 6819B0C0	 	Great Volleyball (JP)	SMS	
 D87316F6	D	#gscept	SMS	blind io
 D3C52B09	H	Guerreiro Lobo	SMS	Wonder Boy 3
+3AF7CCAD		Gun.Smoke (KR)	SMS
 B9FDF6D9	 	Haja no Fuuin (JP)	SMS	
 071B045E	 	Hang On	SMS	
 CF1D7990	T	Hang On (BR) [A]	SMS	
