@@ -302,7 +302,9 @@
             // 
             this.AutoCompleteView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AutoCompleteView.FullRowSelect = true;
+            this.AutoCompleteView.HideSelection = false;
             this.AutoCompleteView.Location = new System.Drawing.Point(324, 322);
+            this.AutoCompleteView.MultiSelect = false;
             this.AutoCompleteView.Name = "AutoCompleteView";
             this.AutoCompleteView.Size = new System.Drawing.Size(121, 97);
             this.AutoCompleteView.TabIndex = 3;
