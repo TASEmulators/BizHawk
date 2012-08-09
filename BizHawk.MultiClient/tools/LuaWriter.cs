@@ -684,19 +684,60 @@ namespace BizHawk.MultiClient
                 LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + tabs, 0);
                 e.SuppressKeyPress = true;
             }
+
+            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+            {
+                if (AutoCompleteView.Visible)
+                {
+                    e.SuppressKeyPress = true;
+                    SelectNextItem(e.KeyCode == Keys.Down);
+                }
+            }
+
+
             
 		}
+
+        private void SelectNextItem(bool Next)
+        {
+            if (AutoCompleteView.SelectedItems.Count > 0)
+            {
+                if (Next)
+                {
+                    if (AutoCompleteView.FocusedItem == AutoCompleteView.Items[AutoCompleteView.Items.Count - 1])
+                        return;
+
+                    AutoCompleteView.FocusedItem = AutoCompleteView.Items[AutoCompleteView.Items.IndexOf(AutoCompleteView.SelectedItems[0]) + 1];
+                }
+                else
+                {
+                    if (AutoCompleteView.FocusedItem == AutoCompleteView.Items[0])
+                        return;
+
+                    AutoCompleteView.FocusedItem = AutoCompleteView.Items[AutoCompleteView.Items.IndexOf(AutoCompleteView.SelectedItems[0]) - 1];
+                }
+            }
+            else
+            {
+                if(Next)
+                    AutoCompleteView.FocusedItem = AutoCompleteView.Items[0];
+            }
+        }
 
 		private string CurrentWord()
 		{
 			int last = LuaText.SelectionStart;
 
 			int lastSpace = LuaText.Text.Substring(0, last).LastIndexOf(' ');
+            int lastTab = LuaText.Text.Substring(0, last).LastIndexOf('\t');
 			int lastLine = LuaText.Text.Substring(0, last).LastIndexOf('\n');
 			int start = 0;
-			if (lastSpace > lastLine)
+			if (lastSpace > lastLine || lastTab > lastLine)
 			{
-				start = lastSpace;
+                if (lastSpace > lastTab)
+                    start = lastSpace;
+                else
+                    start = lastTab;
 			}
 			else
 			{
@@ -733,6 +774,7 @@ namespace BizHawk.MultiClient
 				int start = LuaText.SelectionStart;
 				LuaText.Text = LuaText.Text.Insert(start, str);
 				AutoCompleteView.Visible = false;
+                LuaText.Select(start + str.Length, 0);
 			}
 		}
 
