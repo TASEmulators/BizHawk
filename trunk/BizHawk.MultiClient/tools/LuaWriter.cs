@@ -129,7 +129,6 @@ namespace BizHawk.MultiClient
 								ending += tempBracket.Length - 1;
 						}
 
-						//Validate if such text is not part of a comment
 						AddPosition(firstBracket, ending - firstBracket + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold);
 						
 						if (ending < temp.Length - 1)
@@ -252,7 +251,6 @@ namespace BizHawk.MultiClient
 
 						if (opening != temp.Length)
 						{
-							//Validate if such text is not part of a comment
 							AddPosition(opening, ending - opening + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold);
 							
 							if (ending >= temp.Length)
@@ -300,7 +298,6 @@ namespace BizHawk.MultiClient
 					else
 						endComment = temp.Length;
 
-					//Validate if such text is not part of a string
 					AddPosition(match.Index, endComment, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold);
 				}
 				else
@@ -310,7 +307,6 @@ namespace BizHawk.MultiClient
 					else
 						endComment = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(match.Index) + 1) - match.Index;
 
-					//Validate if such text is not part of a string
 					AddPosition(match.Index, endComment, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold);
 				}
 			}
@@ -354,7 +350,7 @@ namespace BizHawk.MultiClient
 				if (x == pos.Count - 1)
 					IndexToAdd = x + 1;
 			}
-
+            
 			pos.Insert(IndexToAdd, new int[] { start, lenght, color, IsBold });
 		}
 
@@ -362,12 +358,12 @@ namespace BizHawk.MultiClient
 		{
 			foreach (int[] positions in pos)
 			{
-				LuaText.Select(positions[0], positions[1]);
-				LuaText.SelectionColor = Color.FromArgb(positions[2]);
-				if (positions[3] == 1)
-					LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
-				else
-					LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
+                LuaText.Select(positions[0], positions[1]);
+                LuaText.SelectionColor = Color.FromArgb(positions[2]);
+                if (positions[3] == 1)
+                    LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+                else
+                    LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 			}
 
 			pos = new List<int[]>();
@@ -660,28 +656,33 @@ namespace BizHawk.MultiClient
             if (e.KeyCode == Keys.Enter)
             {
                 string[] Words = { "if", "for", "while", "function" };
+                string tabsStr = "";
+                int linenumber = LuaText.GetLineFromCharIndex(LuaText.GetFirstCharIndexOfCurrentLine());
+                int tabs = CountTabsAtBeginningOfLine(LuaText.Lines[linenumber]);
+
+                for (int a = 1; a <= tabs; a++)
+                    tabsStr += "\t";
+
                 foreach (string Word in Words)
                 {
                     try
                     {
-                        int linenumber = LuaText.GetLineFromCharIndex(LuaText.GetFirstCharIndexOfCurrentLine());
-                        int tabs = CountTabsAtBeginningOfLine(LuaText.Lines[linenumber]);
                         if (LuaText.Lines[linenumber].Substring(0 + tabs, Word.Length) == Word)
                         {
-                            string str, tabsStr = "";
-
-                            for (int a = 1; a <= tabs; a++)
-                                tabsStr += "\t";
-
-                            str = LuaText.Text.Insert(LuaText.SelectionStart, "\n" +  tabsStr + "\t\n" + tabsStr + "end");
+                            string str = LuaText.Text.Insert(LuaText.SelectionStart, "\n" +  tabsStr + "\t\n" + tabsStr + "end");
                             LuaText.Text = str;
                             LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + 1 + tabs, 0);
                             e.SuppressKeyPress = true;
-                            break;
+                            return;
                         }
                     }
                     catch { }
                 }
+
+                string tempStr = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr);
+                LuaText.Text = tempStr;
+                LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + tabs, 0);
+                e.SuppressKeyPress = true;
             }
             
 		}
