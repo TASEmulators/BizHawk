@@ -12,6 +12,7 @@ namespace BizHawk.MultiClient.tools
 	public partial class LuaWriterColorConfig : Form
 	{
         //Get existing global Lua color settings
+		int TextColor = Global.Config.LuaDefaultTextColor;
         int KeyWordColor = Global.Config.LuaKeyWordColor;
         int CommentColor = Global.Config.LuaCommentColor;
         int StringColor = Global.Config.LuaStringColor;
@@ -26,18 +27,26 @@ namespace BizHawk.MultiClient.tools
         private void LuaWriterColorConfig_Load(object sender, EventArgs e)
         {
             //Set the initial colors into the panels
+			SetTextColor(TextColor);
             SetKeyWordColor(KeyWordColor);
             SetCommentColor(CommentColor);
             SetStringColor(StringColor);
             SetSymbolColor(SymbolColor);
             SetLibraryColor(LibraryColor);
 
+			BoldText.Checked = Global.Config.LuaDefaultTextBold;
             BoldKeyWords.Checked = Global.Config.LuaKeyWordBold;
             BoldComments.Checked = Global.Config.LuaCommentBold;
             BoldStrings.Checked = Global.Config.LuaStringBold;
             BoldSymbols.Checked = Global.Config.LuaSymbolBold;
             BoldLibraries.Checked = Global.Config.LuaLibraryBold;
         }
+
+		private void SetTextColor(int color)
+		{
+			TextColor = color;   //Set new color
+			panelText.BackColor = Color.FromArgb(color);   //Update panel color with new selection
+		}
 
         private void SetKeyWordColor(int color)
         {
@@ -68,6 +77,15 @@ namespace BizHawk.MultiClient.tools
             LibraryColor = color;   //Set new color
 			panelLibrary.BackColor = Color.FromArgb(color);   //Update panel color with new selection
         }
+
+		//Pop up color dialog when double-clicked
+		private void panelText_DoubleClick(object sender, EventArgs e)
+		{
+			if (TextColorDialog.ShowDialog() == DialogResult.OK)
+			{
+				SetTextColor(TextColorDialog.Color.ToArgb());
+			}
+		}
 
         //Pop up color dialog when double-clicked
         private void panelKeyWord_DoubleClick(object sender, EventArgs e)
@@ -125,6 +143,7 @@ namespace BizHawk.MultiClient.tools
         private void SaveData()
         {
             //Colors
+			Global.Config.LuaDefaultTextColor = TextColor;
             Global.Config.LuaKeyWordColor = KeyWordColor;
             Global.Config.LuaCommentColor = CommentColor;
             Global.Config.LuaStringColor = StringColor;
@@ -132,6 +151,7 @@ namespace BizHawk.MultiClient.tools
             Global.Config.LuaLibraryColor = LibraryColor;
             
             //Bold
+			Global.Config.LuaDefaultTextBold = BoldText.Checked;
             Global.Config.LuaKeyWordBold = BoldKeyWords.Checked;
             Global.Config.LuaCommentBold = BoldComments.Checked;
             Global.Config.LuaStringBold = BoldStrings.Checked;
@@ -141,12 +161,14 @@ namespace BizHawk.MultiClient.tools
 
         private void buttonDefaults_Click(object sender, EventArgs e)
         {
+			SetTextColor(-16777216);
             SetKeyWordColor(-16776961);
             SetCommentColor(-16744448);
             SetStringColor(-8355712);
             SetSymbolColor(-16777216);
 			SetLibraryColor(-16711681);
 
+			BoldText.Checked = false;
             BoldKeyWords.Checked = false;
             BoldComments.Checked = false;
             BoldStrings.Checked = false;

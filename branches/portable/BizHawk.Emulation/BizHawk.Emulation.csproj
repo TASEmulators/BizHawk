@@ -117,6 +117,8 @@
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
+    <Compile Include="Consoles\Intellivision\PSG.cs" />
+    <Compile Include="Consoles\Intellivision\STIC.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
@@ -155,8 +157,10 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper058.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper069.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper090.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper091.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper116.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper120.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper164.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper176.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper178.cs" />
@@ -183,7 +187,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper60.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper61.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper62.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper91.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MLT-ACTION52.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MLT-MAX15.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\HKROM.cs" />
@@ -198,6 +201,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper191.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper192.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper194.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper197.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper205.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper245.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3.cs" />
@@ -351,9 +355,6 @@
     <Compile Include="Sound\Utilities\DualSound.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
     <Compile Include="Sound\VRC6.cs" />
-    <Compile Include="Sound\YM2612.IO.cs" />
-    <Compile Include="Sound\YM2612.Channel.cs" />
-    <Compile Include="Sound\YM2612.Operator.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
     <Compile Include="Interfaces\IController.cs" />
@@ -387,7 +388,6 @@
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.cs" />
     <Compile Include="Sound\YM2413.cs" />
-    <Compile Include="Sound\YM2612.Timers.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Sound\Utilities\Waves.cs" />
   </ItemGroup>

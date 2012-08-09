@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		CP1610 Cpu;
 		ICart Cart;
+		STIC Stic;
+		PSG Psg;
 
 		public void LoadExecutive_ROM()
 		{
@@ -49,19 +51,21 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				Cart = new Cartridge();
 				Cart.Parse(Rom);
 			}
-
+			
 			Cpu = new CP1610();
 			Cpu.ReadMemory = ReadMemory;
 			Cpu.WriteMemory = WriteMemory;
-			Cpu.RegisterPC = 0x1000;
 			Cpu.LogData();
+
+			Stic = new STIC();
+			Psg = new PSG();
 
 			CoreOutputComm = new CoreOutputComm();
 		}
 
 		public void FrameAdvance(bool render)
 		{
-			Cpu.Execute(999); // execute some cycles. this will do nothing useful until a memory mapper is created.
+			Cpu.Execute(999);
 		}
 
 

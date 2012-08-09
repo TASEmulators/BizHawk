@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							if (sweep_shiftcount != 0 && !swp_silence)
 							{
 								timer_reload_value = sweep_shifter;
-								timer_raw_reload_value = timer_reload_value * 2 + 2;
+								timer_raw_reload_value = (timer_reload_value << 1) + 2;
 							}
 							//TODO - does this change the user's reload value or the latched reload value?
 						}
@@ -242,15 +242,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						sample = env_output;
 
 						if (swp_silence)
-							sample = env_output / 2; //(a little biasing hack here)
+							sample = env_output >> 1; //(a little biasing hack here)
 
 						if (len_cnt == 0) //length counter is 0
-							sample = env_output / 2; //silenced (a little biasing hack here)
+							sample = env_output >> 1; //silenced (a little biasing hack here)
 					}
 					else
-						sample = env_output / 2; //duty cycle is 0, silenced.
+						sample = env_output >> 1; //duty cycle is 0, silenced.
 
-					sample -= env_output / 2; //unbias
+					sample -= env_output >> 1; //unbias
 				}
 			}
 
@@ -621,7 +621,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							if (out_deltacounter > 1)
 								out_deltacounter -= 2;
 						}
-						SyncSample();
+						//SyncSample();
 						out_shift >>= 1;
 						//apu.nes.LogLine("dmc out sample: {0}", out_deltacounter);
 					}
@@ -1077,14 +1077,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				//Console.WriteLine("a: {0} with todo: {1}",squeue.Count,samples.Length/2);
 
-				for (int i = 0; i < samples.Length / 2; i++)
+				for (int i = 0; i < (samples.Length >> 1); i++)
 				{
 					int samp = 0;
 					if (squeue.Count != 0)
 						samp = squeue.Dequeue();
 
-					samples[i * 2 + 0] = (short)(samp);
-					samples[i * 2 + 1] = (short)(samp);
+					samples[(i << 1) + 0] = (short)(samp);
+					samples[(i << 1) + 1] = (short)(samp);
 					//bw.Write((short)samp);
 				}
 			}

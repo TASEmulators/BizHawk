@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "MAPPER000":
+				case "MAPPER219": //adelikat: a version of 3D-Block tries to use this ROM, but plays fine as NROM and 219 is undocumented by Disch
 					break;
 
 				case "HVC-NROM-256": //super mario bros.

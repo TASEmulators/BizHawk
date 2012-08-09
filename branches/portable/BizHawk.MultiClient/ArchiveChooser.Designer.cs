@@ -85,6 +85,7 @@
 			this.lvMembers.UseCompatibleStateImageBehavior = false;
 			this.lvMembers.View = System.Windows.Forms.View.Details;
 			this.lvMembers.ItemActivate += new System.EventHandler(this.lvMembers_ItemActivate);
+			this.lvMembers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvMembers_KeyDown);
 			// 
 			// colSize
 			// 

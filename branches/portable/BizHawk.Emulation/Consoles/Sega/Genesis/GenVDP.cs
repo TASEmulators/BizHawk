@@ -375,6 +375,8 @@ namespace BizHawk.Emulation.Consoles.Sega
                 ProcessPalette(i);
             for (int i = 0; i < VRAM.Length; i++)
                 UpdatePatternBuffer(i);
+            for (int i = 0; i < Registers.Length; i++)
+                WriteVdpRegister(i, Registers[i]);
         }
     }
 }

@@ -553,7 +553,9 @@ namespace BizHawk.MultiClient
 
 		//LuaWriter Settings
 		public int LuaDefaultTextColor = -16777216;
-        
+		public bool LuaDefaultTextBold = false;
+		public int LuaWriterBackColor = -1;
+
 		public int LuaKeyWordColor = -16776961;
         public bool LuaKeyWordBold = false;
 		public int LuaCommentColor = -16744448;
