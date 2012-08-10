@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		STIC Stic;
 		PSG Psg;
 
-		public void LoadExecutive_ROM()
+		public void LoadExecutiveRom()
 		{
 			FileStream fs = new FileStream("C:/erom.int", FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -23,18 +23,18 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			int index = 0;
 			// Combine every two bytes into a word.
 			while (index + 1 < erom.Length)
-				Executive_ROM[index / 2] = (ushort)((erom[index++] << 8) | erom[index++]);
+				ExecutiveRom[index / 2] = (ushort)((erom[index++] << 8) | erom[index++]);
 			r.Close();
 			fs.Close();
 		}
 
-		public void LoadGraphics_ROM()
+		public void LoadGraphicsRom()
 		{
 			FileStream fs = new FileStream("C:/grom.int", FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			byte[] grom = r.ReadBytes(2048);
 			for (int index = 0; index < grom.Length; index++)
-				Graphics_ROM[index] = grom[index];
+				GraphicsRom[index] = grom[index];
 			r.Close();
 			fs.Close();
 		}
@@ -43,8 +43,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		{
 			Rom = rom;
 			Game = game;
-			LoadExecutive_ROM();
-			LoadGraphics_ROM();
+			LoadExecutiveRom();
+			LoadGraphicsRom();
 			Cart = new Intellicart();
 			if (Cart.Parse(Rom) == -1)
 			{

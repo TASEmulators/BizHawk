@@ -9,11 +9,11 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 	{
 		private const ushort UNMAPPED = 0xFFFF;
 
-		private ushort[] Scratchpad_RAM = new ushort[240];
-		private ushort[] System_RAM = new ushort[352];
-		private ushort[] Executive_ROM = new ushort[4096]; // TODO: Intellivision II support?
-		private ushort[] Graphics_ROM = new ushort[2048];
-		private ushort[] Graphics_RAM = new ushort[512];
+		private byte[] ScratchpadRam = new byte[240];
+		private ushort[] SystemRam = new ushort[352];
+		private ushort[] ExecutiveRom = new ushort[4096]; // TODO: Intellivision II support?
+		private byte[] GraphicsRom = new byte[2048];
+		private byte[] GraphicsRam = new byte[512];
 
 		public ushort ReadMemory(ushort addr)
 		{
@@ -31,12 +31,12 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						// Unoccupied.
 						break;
 					else if (addr <= 0x01EF)
-						core = Scratchpad_RAM[addr - 0x0100];
+						core = (ushort)(ScratchpadRam[addr - 0x0100] & 0x00FF);
 					else if (addr <= 0x01FF)
 						// PSG.
 						break;
 					else if (addr <= 0x035F)
-						core = System_RAM[addr - 0x0200];
+						core = SystemRam[addr - 0x0200];
 					else if (addr <= 0x03FF)
 						// TODO: Garbage values for Intellivision II.
 						break;
@@ -45,24 +45,24 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						break;
 					break;
 				case 0x1000:
-					core = Executive_ROM[addr - 0x1000];
+					core = ExecutiveRom[addr - 0x1000];
 					break;
 				case 0x3000:
 					if (addr <= 0x37FF)
 						// TODO: OK only during VBlank Period 2.
-						core = Graphics_ROM[addr - 0x3000];
+						core = (byte)(GraphicsRom[addr - 0x3000] & 0x00FF);
 					else if (addr <= 0x39FF)
 						// TODO: OK only during VBlank Period 2.
-						core = Graphics_RAM[addr - 0x3800];
+						core = (byte)(GraphicsRam[addr - 0x3800] & 0x00FF);
 					else if (addr <= 0x3BFF)
 						// TODO: OK only during VBlank Period 2.
-						core = Graphics_RAM[addr - 0x3A00];
+						core = (byte)(GraphicsRam[addr - 0x3A00] & 0x00FF);
 					else if (addr <= 0x3DFF)
 						// TODO: OK only during VBlank Period 2.
-						core = Graphics_RAM[addr - 0x3C00];
+						core = (byte)(GraphicsRam[addr - 0x3C00] & 0x00FF);
 					else
 						// TODO: OK only during VBlank Period 2.
-						core = Graphics_RAM[addr - 0x3E00];
+						core = (byte)(GraphicsRam[addr - 0x3E00] & 0x00FF);
 					break;
 				case 0x7000:
 					if (addr <= 0x77FF)
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						break;
 					else if (addr <= 0x01EF)
 					{
-						Scratchpad_RAM[addr - 0x0100] = value;
+						ScratchpadRam[addr - 0x0100] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else if (addr <= 0x01FF)
@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					}
 					else if (addr <= 0x035F)
 					{
-						System_RAM[addr - 0x0200] = value;
+						SystemRam[addr - 0x0200] = value;
 						return true;
 					}
 					else if (addr <= 0x03FF)
@@ -170,25 +170,25 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					else if (addr <= 0x39FF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0x3800] = value;
+						GraphicsRam[addr - 0x3800] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else if (addr <= 0x3BFF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0x3A00] = value;
+						GraphicsRam[addr - 0x3A00] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else if (addr <= 0x3DFF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0x3C00] = value;
+						GraphicsRam[addr - 0x3C00] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0x3E00] = value;
+						GraphicsRam[addr - 0x3E00] = (byte)(value & 0x00FF);
 						return true;
 					}
 				case 0x7000:
@@ -198,25 +198,25 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					else if (addr <= 0x79FF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr & 0x01FF] = value;
+						GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else if (addr <= 0x7BFF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr & 0x01FF] = value;
+						GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else if (addr <= 0x7DFF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr & 0x01FF] = value;
+						GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr & 0x01FF] = value;
+						GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 						return true;
 					}
 				case 0x9000:
@@ -228,25 +228,25 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					else if (addr <= 0xB9FF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0xB800] = value;
+						GraphicsRam[addr - 0xB800] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else if (addr <= 0xBBFF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0xBA00] = value;
+						GraphicsRam[addr - 0xBA00] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else if (addr <= 0xBDFF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0xBC00] = value;
+						GraphicsRam[addr - 0xBC00] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0xBE00] = value;
+						GraphicsRam[addr - 0xBE00] = (byte)(value & 0x00FF);
 						return true;
 					}
 				case 0xF000:
@@ -256,25 +256,25 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					else if (addr <= 0xF9FF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0xF800] = value;
+						GraphicsRam[addr - 0xF800] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else if (addr <= 0xFBFF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0xFA00] = value;
+						GraphicsRam[addr - 0xFA00] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else if (addr <= 0xFDFF)
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0xFC00] = value;
+						GraphicsRam[addr - 0xFC00] = (byte)(value & 0x00FF);
 						return true;
 					}
 					else
 					{
 						// TODO: OK only during VBlank Period 2.
-						Graphics_RAM[addr - 0xFE00] = value;
+						GraphicsRam[addr - 0xFE00] = (byte)(value & 0x00FF);
 						return true;
 					}
 			}
