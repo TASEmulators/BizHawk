@@ -140,13 +140,13 @@ namespace BizHawk.MultiClient
 								{
 									for (int y = 0; y < 8; y++)
 									{
-										b0 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 0 * 8, x);
-										b1 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
+										b0 = GetBit((z << 12) + (i << 8) + (j << 4) + y + 0 << 3, x);
+										b1 = GetBit((z << 12) + (i << 8) + (j << 4) + y + 1 << 3, x);
 
 										value = (byte)(b0 + (b1 << 1));
-										cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
-										int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
-										framebuf[adr + (z * 128)] = cvalue;
+										cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal << 2)]);
+										int adr = (x + (j << 3)) + (y + (i << 3)) * (bmpdata.Stride >> 2);
+										framebuf[adr + (z << 7)] = cvalue;
 									}
 								}
 							}
