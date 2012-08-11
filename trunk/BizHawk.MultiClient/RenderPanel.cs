@@ -91,16 +91,16 @@ namespace BizHawk.MultiClient
 				if (imageWidth == textureWidth)
 				{
 					// Widths are the same, just dump the data across (easy!)
-					Data.WriteRange(surface.PixelIntPtr, imageWidth * imageHeight * 4);
+					Data.WriteRange(surface.PixelIntPtr, imageWidth * imageHeight << 2);
 				}
 				else
 				{
 					// Widths are different, need a bit of additional magic here to make them fit:
-					long RowSeekOffset = 4 * (textureWidth - imageWidth);
+					long RowSeekOffset = (textureWidth - imageWidth) << 2;
 					for (int r = 0, s = 0; r < imageHeight; ++r, s += imageWidth)
 					{
 						IntPtr src = new IntPtr(((byte*)surface.PixelPtr + r*surface.Stride));
-						Data.WriteRange(src,imageWidth * 4);
+						Data.WriteRange(src,imageWidth << 2);
 						Data.Seek(RowSeekOffset, SeekOrigin.Current);
 					}
 				}
