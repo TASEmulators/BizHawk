@@ -86,12 +86,10 @@ namespace BizHawk.MultiClient
 			else
 				LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 
+			AddCommentsAndStrings();
 			AddKeyWords();
 			AddLibraries();
 			AddSymbols();
-			AddComments();
-			AddStrings();
-			AddLongStrings();
 
 			ColorText();
 
@@ -101,54 +99,76 @@ namespace BizHawk.MultiClient
 			LuaText.Refresh();
 		}
 
-		private void AddLongStrings()
+		private void AddCommentsAndStrings()
 		{
 			string temp = LuaText.Text;
-			int firstBracket = temp.IndexOf("["), secondBracket, ending;
-			while (firstBracket >= 0)
+			int comment, longcomment, quote, apos, longstring, position = 0;
+
+			while (position <= temp.Length)
 			{
-				ending = 0;
-				if (firstBracket > 1 && temp.Substring(firstBracket - 2, 2) == "--")
-				{
-					firstBracket = temp.IndexOf("[", firstBracket + 1, temp.Length - firstBracket - 1);
-					if (firstBracket == temp.Length - 1)
-						break;
-				}
-				else if (firstBracket != temp.Length - 1)
-				{
-					secondBracket = temp.IndexOf("[", firstBracket + 1, temp.Length - firstBracket - 1);
-					if (secondBracket >= 0 && IsLongString(temp.Substring(firstBracket, secondBracket - firstBracket + 1)))
-					{
-						if (secondBracket + 1 == temp.Length)
-							ending = temp.Length - 1;
-						else
-						{
-							string tempBracket = GetLongStringClosingBracket(temp.Substring(firstBracket, secondBracket - firstBracket + 1));
-							ending = temp.IndexOf(tempBracket, secondBracket + 1);
-							if (ending < 0)
-								ending = temp.Length;
-							else
-								ending += tempBracket.Length - 1;
-						}
+				comment = temp.IndexOf("--", position);
+				longcomment = temp.IndexOf("--[[", position);
+				quote = temp.IndexOf('"', position);
+				apos = temp.IndexOf('\'', position);
+				longstring = temp.IndexOf("[", position);
 
-						AddPosition(firstBracket, ending - firstBracket + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold);
-
-						if (ending < temp.Length - 1)
-							firstBracket = temp.IndexOf("[", ending + 1, temp.Length - ending - 1);
-						else
-							break;
-					}
-					else
+				int secondBracket = temp.IndexOf('[', longstring + 1);
+				if (secondBracket >= 0)
+					while (longstring >= 0 && secondBracket >= 0 && longstring != longcomment - 2 && !IsLongString(temp.Substring(longstring, secondBracket - longstring)))
 					{
-						if (secondBracket >= 0 && secondBracket != temp.Length - 1)
-							firstBracket = temp.IndexOf("[", secondBracket, temp.Length - secondBracket - 1);
-						else
-							break;
+						longstring = temp.IndexOf('[', longstring + 1);
+						if (longstring >= 0)
+							secondBracket = temp.IndexOf('[', longstring + 1);
+						if (secondBracket == -1)
+							longstring = -1;
 					}
-				}
 				else
-					break;
+					longstring = -1;
+
+				if (comment >= 0 && (comment < quote || quote == -1) && (comment < apos || apos == -1) && (comment < longstring || longstring == -1))
+				{
+					if (comment < longcomment || longcomment == -1)
+					{
+						position = AddComment(comment);
+					}
+					else if (comment >= longcomment && longcomment >= 0)
+					{
+						position = AddMultiLineComment(longcomment);
+					}
+				}
+				else if (quote >= 0 && (quote < apos || apos == -1) && (quote < longstring || longstring == -1))
+				{
+					position = AddString(quote, '"');
+				}
+				else if (apos >= 0 && (apos < longstring || longstring == -1))
+				{
+					position = AddString(apos, '\'');
+				}
+				else if (longstring >= 0)
+				{
+					position = AddLongString(longstring, secondBracket);
+				}
+
+				position++;
 			}
+		}
+
+		private int AddLongString(int startPos, int secondBracket)
+		{
+			int ending = 0;
+			if (startPos != LuaText.Text.Length - 1)
+			{
+				string tempBracket = GetLongStringClosingBracket(LuaText.Text.Substring(startPos, secondBracket - startPos + 1));
+				ending = LuaText.Text.IndexOf(tempBracket, secondBracket + 1);
+				if (ending < 0)
+					ending = LuaText.Text.Length;
+				else
+					ending += tempBracket.Length - 1;
+			}
+
+			AddPosition(startPos, ending - startPos + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold, 1);
+
+			return ending;
 		}
 
 		private string GetLongStringClosingBracket(string openingBracket)
@@ -192,8 +212,8 @@ namespace BizHawk.MultiClient
 
 				while (selection >= 0)
 				{
-					//Validate if such text is not part of a string or comment
-					AddPosition(selection, 1, Global.Config.LuaSymbolColor, Global.Config.LuaSymbolBold);
+					if(!IsThisPartOfStringOrComment(selection))
+						AddPosition(selection, 1, Global.Config.LuaSymbolColor, Global.Config.LuaSymbolBold, 0);
 
 					currPos = selection + 1;
 					selection = temp.IndexOf(mark, currPos);
@@ -204,71 +224,49 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void AddStrings()
+		private int AddString(int startPos, char mark)
 		{
-			string temp = LuaText.Text;
-			int firstMark, opening, ending, endLine;
+			int ending, endLine;
 
-			char[] chars = { '"', '\'' };
-			foreach (char mark in chars)
+			if (LuaText.GetLineFromCharIndex(startPos) + 1 == LuaText.Lines.Count())
+				endLine = LuaText.Text.Length - 1;
+			else
+				endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(startPos) + 1) - 1;
+
+			ending = 0;
+
+			if (startPos != LuaText.Text.Length - 1)
 			{
-				firstMark = temp.IndexOf(mark.ToString());
-				while (firstMark >= 0)
+				if (startPos + 1 != endLine)
 				{
-					if (LuaText.SelectionColor.ToArgb() != Global.Config.LuaCommentColor)
+					ending = LuaText.Text.IndexOf(mark, startPos + 1, endLine - startPos + 1);
+					if (ending > 0)
 					{
-						opening = firstMark;
-						if (LuaText.GetLineFromCharIndex(opening) + 1 == LuaText.Lines.Count())
-							endLine = temp.Length - 1;
-						else
-							endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(opening) + 1) - 1;
-
-						ending = 0;
-
-						if (opening != temp.Length - 1)
+						while (ending > 0)
 						{
-							if (opening + 1 != endLine)
-							{
-								ending = temp.IndexOf(mark, opening + 1, endLine - opening + 1);
-								if (ending > 0)
-								{
-									while (ending > 0)
-									{
-										if (!IsThisPartOfTheString(temp.Substring(opening, ending - opening + 1)))
-											break;
-										else
-											ending++;
-
-										ending = temp.IndexOf(mark, ending, endLine - opening + 1);
-									}
-								}
-								else
-									ending = endLine;
-							}
-							else
-								ending = endLine;
-						}
-						else
-							ending = endLine;
-
-						if (opening != temp.Length)
-						{
-							AddPosition(opening, ending - opening + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold);
-
-							if (ending >= temp.Length)
-								ending++;
-							else
+							if (!IsThisPartOfTheString(LuaText.Text.Substring(startPos, ending - startPos + 1)))
 								break;
+							else
+								ending++;
 
-							firstMark = temp.IndexOf(mark, ending + 1);
+							ending = LuaText.Text.IndexOf(mark, ending, endLine - startPos + 1);
 						}
-						else
-							break;
 					}
 					else
-						firstMark = temp.IndexOf(mark, firstMark + 1);
+						ending = endLine;
 				}
+				else
+					ending = endLine;
 			}
+			else
+				ending = endLine;
+
+			if (startPos != LuaText.Text.Length)
+			{
+				AddPosition(startPos, ending - startPos + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold, 1);
+			}
+
+			return ending;
 		}
 
 		private bool IsThisPartOfTheString(string wholestring)
@@ -285,58 +283,77 @@ namespace BizHawk.MultiClient
 			return !(ammount % 2 == 0);
 		}
 
-		private void AddComments()
+		private int AddComment(int startPos)
 		{
-			string temp = LuaText.Text;
-			foreach (Match match in new Regex("--").Matches(temp))
-			{
-				int selection, endComment;
+			int endComment;
 
-				if (match.Index + 4 < temp.Length && temp.Substring(match.Index, 4) == "--[[")
-				{
-					selection = temp.IndexOf("]]");
-					if (selection > 0)
-						endComment = selection - match.Index + 2;
-					else
-						endComment = temp.Length;
+			if (LuaText.GetLineFromCharIndex(startPos) + 1 == LuaText.Lines.Count())
+				endComment = LuaText.Text.Length - startPos;
+			else
+				endComment = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(startPos) + 1) - 1;
 
-					AddPosition(match.Index, endComment, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold);
-				}
-				else
-				{
-					if (LuaText.GetLineFromCharIndex(match.Index) + 1 == LuaText.Lines.Count())
-						endComment = temp.Length - match.Index;
-					else
-						endComment = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(match.Index) + 1) - match.Index;
+			AddPosition(startPos, endComment - startPos, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold, 1);
 
-					AddPosition(match.Index, endComment, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold);
-				}
-			}
+			return endComment;
+		}
+
+		private int AddMultiLineComment(int startPos)
+		{
+			int selection, endComment;
+
+			selection = LuaText.Text.IndexOf("]]");
+			if (selection > 0)
+				endComment = selection - startPos + 2;
+			else
+				endComment = LuaText.Text.Length;
+
+			AddPosition(startPos, endComment, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold, 1);
+
+			return endComment;
 		}
 
 		private void AddKeyWords()
 		{
 			foreach (Match match in keyWords.Matches(LuaText.Text))
 			{
-				char before = ' ', after = ' ';
-
-				if (match.Index > 0)
-					if (match.Index > 5 && match.Value != "if" && LuaText.Text.Substring(match.Index - 4, 4) != "else")
-						before = LuaText.Text[match.Index - 1];
-
-				if (match.Index + match.Length != LuaText.Text.Length)
-					if (match.Value != "else" && LuaText.Text.Substring(match.Index, 2) != "if")
-						after = LuaText.Text[match.Index + match.Length];
-
-				if (!char.IsLetterOrDigit(before) && !char.IsLetterOrDigit(after))
+				if (!IsThisPartOfStringOrComment(match.Index))
 				{
-					//Validate if such text is not part of a string or comment
-					AddPosition(match.Index, match.Length, Global.Config.LuaKeyWordColor, Global.Config.LuaKeyWordBold);
+					char before = ' ', after = ' ';
+
+					if (match.Index > 0)
+						if (match.Index > 5 && match.Value != "if" && LuaText.Text.Substring(match.Index - 4, 4) != "else")
+							before = LuaText.Text[match.Index - 1];
+
+					if (match.Index + match.Length != LuaText.Text.Length)
+						if (match.Value != "else" && LuaText.Text.Substring(match.Index, 2) != "if")
+							after = LuaText.Text[match.Index + match.Length];
+
+					if (!char.IsLetterOrDigit(before) && !char.IsLetterOrDigit(after))
+					{
+						AddPosition(match.Index, match.Length, Global.Config.LuaKeyWordColor, Global.Config.LuaKeyWordBold, 1);
+					}
 				}
 			}
 		}
 
-		private void AddPosition(int start, int lenght, int color, bool bold)
+		private bool IsThisPartOfStringOrComment(int startPos)
+		{
+			bool Validated = false;
+
+			foreach (int[] position in pos)
+			{
+				if (position[4] == 1)
+					if (position[0] <= startPos && position[0] + position[1] > startPos)
+					{
+						Validated = true;
+						break;
+					}
+			}
+
+			return Validated;
+		}
+
+		private void AddPosition(int start, int lenght, int color, bool bold, int iscommentorstring)
 		{
 			int IsBold = 0, IndexToAdd = 0;
 			if (bold)
@@ -353,7 +370,7 @@ namespace BizHawk.MultiClient
 					IndexToAdd = x + 1;
 			}
 
-			pos.Insert(IndexToAdd, new int[] { start, lenght, color, IsBold });
+			pos.Insert(IndexToAdd, new int[] { start, lenght, color, IsBold, iscommentorstring });
 		}
 
 		private void ColorText()
@@ -375,22 +392,24 @@ namespace BizHawk.MultiClient
 		{
 			foreach (Match match in libraryWords.Matches(LuaText.Text))
 			{
-				if (match.Index >= 0)
+				if (!IsThisPartOfStringOrComment(match.Index))
 				{
-					char before = ' ', after = ' ';
-
-					if (match.Index > 0)
-						before = LuaText.Text[match.Index - 1];
-
-					if (match.Index + match.Length != LuaText.Text.Length)
-						after = LuaText.Text[match.Index + match.Length];
-
-					if (!char.IsLetterOrDigit(before))
+					if (match.Index >= 0)
 					{
-						if (after == '.')
+						char before = ' ', after = ' ';
+
+						if (match.Index > 0)
+							before = LuaText.Text[match.Index - 1];
+
+						if (match.Index + match.Length != LuaText.Text.Length)
+							after = LuaText.Text[match.Index + match.Length];
+
+						if (!char.IsLetterOrDigit(before))
 						{
-							//Validate if such text is not part of a string or comment
-							AddPosition(match.Index, match.Length, Global.Config.LuaLibraryColor, Global.Config.LuaLibraryBold);
+							if (after == '.')
+							{
+								AddPosition(match.Index, match.Length, Global.Config.LuaLibraryColor, Global.Config.LuaLibraryBold, 0);
+							}
 						}
 					}
 				}
