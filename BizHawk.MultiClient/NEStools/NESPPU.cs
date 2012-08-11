@@ -140,8 +140,8 @@ namespace BizHawk.MultiClient
 								{
 									for (int y = 0; y < 8; y++)
 									{
-										b0 = GetBit((z << 12) + (i << 8) + (j << 4) + y + 0 << 3, x);
-										b1 = GetBit((z << 12) + (i << 8) + (j << 4) + y + 1 << 3, x);
+										b0 = GetBit((z << 12) + (i << 8) + (j << 4) + y , x);
+										b1 = GetBit((z << 12) + (i << 8) + (j << 4) + y + 8, x);
 
 										value = (byte)(b0 + (b1 << 1));
 										cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal << 2)]);
