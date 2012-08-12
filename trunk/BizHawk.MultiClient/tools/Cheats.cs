@@ -362,7 +362,7 @@ namespace BizHawk.MultiClient
 				sfd.FileName = Path.GetFileNameWithoutExtension(Global.CheatList.currentCheatFile);
 			else if (!(Global.Emulator is NullEmulator))
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-			sfd.InitialDirectory = Global.CheatList.GetCheatsPath();
+			sfd.InitialDirectory = Global.CheatList.CheatsPath;
 			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
@@ -471,7 +471,7 @@ namespace BizHawk.MultiClient
 			var ofd = new OpenFileDialog();
 			if (Global.CheatList.currentCheatFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(Global.CheatList.currentCheatFile);
-			ofd.InitialDirectory = Global.CheatList.GetCheatsPath();
+			ofd.InitialDirectory = Global.CheatList.CheatsPath;
 			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			ofd.RestoreDirectory = true;
 

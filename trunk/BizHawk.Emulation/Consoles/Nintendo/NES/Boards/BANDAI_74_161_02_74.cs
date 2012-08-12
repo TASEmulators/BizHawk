@@ -162,8 +162,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					x += 3;
 					break;
 			}
-			int y = 0;
-			return ROM[(bank_32k * 0x8000) + addr];
+			return ROM[(bank_32k << 15) + addr];
 		}
 
 		public override byte ReadPPU(int addr)
