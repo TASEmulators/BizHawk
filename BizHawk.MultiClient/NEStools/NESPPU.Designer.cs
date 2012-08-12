@@ -35,10 +35,12 @@
 			this.Table0PaletteLabel = new System.Windows.Forms.Label();
 			this.PatternContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.saveImageToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.imageToClipboardToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.refreshToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.PalettesGroup = new System.Windows.Forms.GroupBox();
 			this.PaletteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.imageToClipboardToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DetailsBox = new System.Windows.Forms.GroupBox();
 			this.label2 = new System.Windows.Forms.Label();
@@ -67,6 +69,10 @@
 			this.savePatternScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveSpriteScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.savePaletteToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.copyPatternToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.copySpriteToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.patternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.table0PaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,15 +96,9 @@
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoLoadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.imageToClipboardToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.imageToClipboardToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
 			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
 			this.PatternView = new BizHawk.MultiClient.PatternViewer();
-			this.savePaletteToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.copyPatternToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copySpriteToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PatternGroup.SuspendLayout();
 			this.PatternContext.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
@@ -159,6 +159,13 @@
 			this.saveImageToolStripMenuItem1.Text = "&Save Image...";
 			this.saveImageToolStripMenuItem1.Click += new System.EventHandler(this.saveImageToolStripMenuItem1_Click);
 			// 
+			// imageToClipboardToolStripMenuItem1
+			// 
+			this.imageToClipboardToolStripMenuItem1.Name = "imageToClipboardToolStripMenuItem1";
+			this.imageToClipboardToolStripMenuItem1.Size = new System.Drawing.Size(176, 22);
+			this.imageToClipboardToolStripMenuItem1.Text = "Image to &Clipboard";
+			this.imageToClipboardToolStripMenuItem1.Click += new System.EventHandler(this.imageToClipboardToolStripMenuItem1_Click);
+			// 
 			// refreshToolStripMenuItem1
 			// 
 			this.refreshToolStripMenuItem1.Name = "refreshToolStripMenuItem1";
@@ -191,6 +198,13 @@
 			this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
 			this.saveImageToolStripMenuItem.Text = "&Save Image...";
 			this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
+			// 
+			// imageToClipboardToolStripMenuItem2
+			// 
+			this.imageToClipboardToolStripMenuItem2.Name = "imageToClipboardToolStripMenuItem2";
+			this.imageToClipboardToolStripMenuItem2.Size = new System.Drawing.Size(176, 22);
+			this.imageToClipboardToolStripMenuItem2.Text = "Image to &Clipboard";
+			this.imageToClipboardToolStripMenuItem2.Click += new System.EventHandler(this.imageToClipboardToolStripMenuItem2_Click);
 			// 
 			// refreshToolStripMenuItem
 			// 
@@ -451,6 +465,32 @@
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(209, 6);
 			// 
+			// savePaletteToClipboardToolStripMenuItem
+			// 
+			this.savePaletteToClipboardToolStripMenuItem.Name = "savePaletteToClipboardToolStripMenuItem";
+			this.savePaletteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.savePaletteToClipboardToolStripMenuItem.Text = "Copy Palette to Clipboard";
+			this.savePaletteToClipboardToolStripMenuItem.Click += new System.EventHandler(this.savePaletteToClipboardToolStripMenuItem_Click);
+			// 
+			// copyPatternToClipboardToolStripMenuItem
+			// 
+			this.copyPatternToClipboardToolStripMenuItem.Name = "copyPatternToClipboardToolStripMenuItem";
+			this.copyPatternToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.copyPatternToClipboardToolStripMenuItem.Text = "Copy Pattern to Clipboard";
+			this.copyPatternToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyPatternToClipboardToolStripMenuItem_Click);
+			// 
+			// copySpriteToClipboardToolStripMenuItem
+			// 
+			this.copySpriteToClipboardToolStripMenuItem.Name = "copySpriteToClipboardToolStripMenuItem";
+			this.copySpriteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.copySpriteToClipboardToolStripMenuItem.Text = "Copy Sprite to Clipboard";
+			this.copySpriteToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copySpriteToClipboardToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(209, 6);
+			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -480,7 +520,7 @@
             this.Table0P6,
             this.Table0P7});
 			this.table0PaletteToolStripMenuItem.Name = "table0PaletteToolStripMenuItem";
-			this.table0PaletteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.table0PaletteToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
 			this.table0PaletteToolStripMenuItem.Text = "Table 0 Palette";
 			// 
 			// Table0P0
@@ -551,7 +591,7 @@
             this.Table1P6,
             this.Table1P7});
 			this.table1PaletteToolStripMenuItem1.Name = "table1PaletteToolStripMenuItem1";
-			this.table1PaletteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.table1PaletteToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
 			this.table1PaletteToolStripMenuItem1.Text = "Table 1 Palette";
 			// 
 			// Table1P0
@@ -634,20 +674,6 @@
 			this.saveWindowPositionToolStripMenuItem1.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem1.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
-			// imageToClipboardToolStripMenuItem1
-			// 
-			this.imageToClipboardToolStripMenuItem1.Name = "imageToClipboardToolStripMenuItem1";
-			this.imageToClipboardToolStripMenuItem1.Size = new System.Drawing.Size(176, 22);
-			this.imageToClipboardToolStripMenuItem1.Text = "Image to &Clipboard";
-			this.imageToClipboardToolStripMenuItem1.Click += new System.EventHandler(this.imageToClipboardToolStripMenuItem1_Click);
-			// 
-			// imageToClipboardToolStripMenuItem2
-			// 
-			this.imageToClipboardToolStripMenuItem2.Name = "imageToClipboardToolStripMenuItem2";
-			this.imageToClipboardToolStripMenuItem2.Size = new System.Drawing.Size(176, 22);
-			this.imageToClipboardToolStripMenuItem2.Text = "Image to &Clipboard";
-			this.imageToClipboardToolStripMenuItem2.Click += new System.EventHandler(this.imageToClipboardToolStripMenuItem2_Click);
-			// 
 			// SpriteView
 			// 
 			this.SpriteView.BackColor = System.Drawing.Color.Transparent;
@@ -667,7 +693,7 @@
 			this.PaletteView.ContextMenuStrip = this.PaletteContext;
 			this.PaletteView.Location = new System.Drawing.Point(6, 19);
 			this.PaletteView.Name = "PaletteView";
-			this.PaletteView.Size = new System.Drawing.Size(257, 34);
+			this.PaletteView.Size = new System.Drawing.Size(256, 32);
 			this.PaletteView.TabIndex = 0;
 			this.PaletteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseClick);
 			this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
@@ -686,32 +712,6 @@
 			this.PatternView.MouseEnter += new System.EventHandler(this.PatternView_MouseEnter);
 			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
 			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
-			// 
-			// savePaletteToClipboardToolStripMenuItem
-			// 
-			this.savePaletteToClipboardToolStripMenuItem.Name = "savePaletteToClipboardToolStripMenuItem";
-			this.savePaletteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-			this.savePaletteToClipboardToolStripMenuItem.Text = "Copy Palette to Clipboard";
-			this.savePaletteToClipboardToolStripMenuItem.Click += new System.EventHandler(this.savePaletteToClipboardToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(209, 6);
-			// 
-			// copyPatternToClipboardToolStripMenuItem
-			// 
-			this.copyPatternToClipboardToolStripMenuItem.Name = "copyPatternToClipboardToolStripMenuItem";
-			this.copyPatternToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-			this.copyPatternToClipboardToolStripMenuItem.Text = "Copy Pattern to Clipboard";
-			this.copyPatternToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyPatternToClipboardToolStripMenuItem_Click);
-			// 
-			// copySpriteToClipboardToolStripMenuItem
-			// 
-			this.copySpriteToClipboardToolStripMenuItem.Name = "copySpriteToClipboardToolStripMenuItem";
-			this.copySpriteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-			this.copySpriteToClipboardToolStripMenuItem.Text = "Copy Sprite to Clipboard";
-			this.copySpriteToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copySpriteToClipboardToolStripMenuItem_Click);
 			// 
 			// NESPPU
 			// 

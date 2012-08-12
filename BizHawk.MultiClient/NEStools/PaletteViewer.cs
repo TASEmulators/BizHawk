@@ -37,6 +37,7 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+			SetStyle(ControlStyles.Opaque, true);
 			this.Size = new Size(128, 32);
 			this.BackColor = Color.Transparent;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.PaletteViewer_Paint);
@@ -55,8 +56,8 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < 16; x++)
 			{
-				e.Graphics.FillRectangle(new SolidBrush(bgPalettes[x].Color), new Rectangle(x * 16, 1, 16, 16));
-				e.Graphics.FillRectangle(new SolidBrush(spritePalettes[x].Color), new Rectangle(x * 16, 17, 16, 16));
+				e.Graphics.FillRectangle(new SolidBrush(bgPalettes[x].Color), new Rectangle(x * 16, 0, 16, 16));
+				e.Graphics.FillRectangle(new SolidBrush(spritePalettes[x].Color), new Rectangle(x * 16, 16, 16, 16));
 			}
 		}
 
