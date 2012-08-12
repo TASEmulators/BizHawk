@@ -87,6 +87,7 @@ namespace BizHawk.MultiClient
 				LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 
 			AddCommentsAndStrings();
+			AddNumbers();
 			AddKeyWords();
 			AddLibraries();
 			AddSymbols();
@@ -97,6 +98,29 @@ namespace BizHawk.MultiClient
 			ProcessingText = false;
 			LuaText.InhibitPaint = false;
 			LuaText.Refresh();
+		}
+
+		private void AddNumbers()
+		{
+			string temp = LuaText.Text;
+			foreach (Match match in new Regex(@"(\d+\.?\d+|\.\d+|\d+)").Matches(temp))
+			{
+				if (!IsThisPartOfStringOrComment(match.Index))
+				{
+					char before = ' ', after = ' ';
+
+					if (match.Index > 0)
+						before = LuaText.Text[match.Index - 1];
+
+					if (match.Index + match.Length != LuaText.Text.Length)
+						after = LuaText.Text[match.Index + match.Length];
+
+					if (!char.IsLetter(before) && !char.IsLetter(after))
+					{
+						AddPosition(match.Index, match.Length, Global.Config.LuaDecimalColor, Global.Config.LuaDecimalBold, 0);
+					}
+				}
+			}
 		}
 
 		private void AddCommentsAndStrings()
