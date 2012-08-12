@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+			SetStyle(ControlStyles.Opaque, true);
 			this.Size = new Size(256, 224);
 			this.BackColor = Color.Transparent;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.NameTableViewer_Paint);
