@@ -187,7 +187,7 @@ namespace BizHawk.MultiClient
 
 						Attributes = Nes.ppu.OAM[BaseAddr + 2];
 						Palette = Attributes & 0x03;
-						//TODO: 8x16 viewing
+
 						for (int x = 0; x < 8; x++)
 						{
 							for (int y = 0; y < 8; y++)
@@ -197,7 +197,7 @@ namespace BizHawk.MultiClient
 								value = (byte)(b0 + (b1 << 1));
 								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
 
-								int adr = (x + (r * 8 * 2)) + (y + (n * 8 * 3)) * (bmpdata2.Stride / 4);
+								int adr = (x + (r * 16)) + (y + (n * 24)) * (bmpdata2.Stride >> 2);
 								framebuf2[adr] = cvalue;
 							}
 							if (is8x16)
@@ -205,12 +205,12 @@ namespace BizHawk.MultiClient
 								PatAddr += 0x10;
 								for (int y = 0; y < 8; y++)
 								{
-									b0 = GetBit(PatAddr + y + 0 * 8, x);
-									b1 = GetBit(PatAddr + y + 1 * 8, x);
+									b0 = GetBit(PatAddr + y, x);
+									b1 = GetBit(PatAddr + y + 8, x);
 									value = (byte)(b0 + (b1 << 1));
 									cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
 
-									int adr = (x + (r * 8 * 2)) + ((y+8) + (n * 8 * 3)) * (bmpdata2.Stride / 4);
+									int adr = (x + (r << 4)) + ((y+8) + (n * 24)) * (bmpdata2.Stride >> 2);
 									framebuf2[adr] = cvalue;
 								}
 								PatAddr -= 0x10;
