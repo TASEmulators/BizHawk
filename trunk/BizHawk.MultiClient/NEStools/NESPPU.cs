@@ -87,20 +87,28 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.Frame % RefreshRate.Value == 0 || now)
 			{
 				bool Changed = false;
-				for (int x = 0; x < 0x2000; x++)
-				{
-					PPUBusprev[x] = PPUBus[x];
-					PPUBus[x] = Nes.ppu.ppubus_peek(x);
-					if (PPUBus[x] != PPUBusprev[x])
-						Changed = true;
-				}
 
 				for (int x = 0; x < 0x20; x++)
 				{
 					PALRAMprev[x] = PALRAM[x];
 					PALRAM[x] = Nes.ppu.PALRAM[x];
 					if (PALRAM[x] != PALRAMprev[x])
+					{
 						Changed = true;
+					}
+				}
+				
+				if (!Changed)
+				{
+					for (int x = 0; x < 0x2000; x++)
+					{
+						PPUBusprev[x] = PPUBus[x];
+						PPUBus[x] = Nes.ppu.ppubus_peek(x);
+						if (PPUBus[x] != PPUBusprev[x])
+						{
+							Changed = true;
+						}
+					}
 				}
 
 				int b0 = 0;
@@ -120,9 +128,9 @@ namespace BizHawk.MultiClient
 						PaletteView.spritePalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].Address]);
 					}
 					if (PaletteView.HasChanged())
+					{
 						PaletteView.Refresh();
-
-					
+					}
 
 					System.Drawing.Imaging.BitmapData bmpdata = PatternView.pattern.LockBits(new Rectangle(new Point(0, 0), PatternView.pattern.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 					int* framebuf = (int*)bmpdata.Scan0.ToPointer();
@@ -141,8 +149,9 @@ namespace BizHawk.MultiClient
 								{
 									for (int y = 0; y < 8; y++)
 									{
-										b0 = GetBit((z << 12) + (i << 8) + (j << 4) + y , x);
-										b1 = GetBit((z << 12) + (i << 8) + (j << 4) + y + 8, x);
+										int address = (z << 12) + (i << 8) + (j << 4) + y;
+										b0 = (byte)(((PPUBus[address] >> (7 - x)) & 1));
+										b1 = (byte)(((PPUBus[address + 8] >> (7 - x)) & 1));
 
 										value = (byte)(b0 + (b1 << 1));
 										cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal << 2)]);
@@ -193,8 +202,9 @@ namespace BizHawk.MultiClient
 						{
 							for (int y = 0; y < 8; y++)
 							{
-								b0 = GetBit(PatAddr + y + 0 * 8, x);
-								b1 = GetBit(PatAddr + y + 1 * 8, x);
+								int address = PatAddr + y;
+								b0 = (byte)(((PPUBus[address] >> (7 - x)) & 1));
+								b1 = (byte)(((PPUBus[address + 8] >> (7 - x)) & 1));
 								value = (byte)(b0 + (b1 << 1));
 								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
 
@@ -206,8 +216,9 @@ namespace BizHawk.MultiClient
 								PatAddr += 0x10;
 								for (int y = 0; y < 8; y++)
 								{
-									b0 = GetBit(PatAddr + y, x);
-									b1 = GetBit(PatAddr + y + 8, x);
+									int address = PatAddr + y;
+									b0 = (byte)(((PPUBus[address] >> (7 - x)) & 1));
+									b1 = (byte)(((PPUBus[address + 8] >> (7 - x)) & 1));
 									value = (byte)(b0 + (b1 << 1));
 									cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
 
