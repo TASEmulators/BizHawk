@@ -63,6 +63,7 @@ namespace BizHawk.MultiClient
 			if (!(Global.Emulator is NES)) this.Close();
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			Nes = Global.Emulator as NES;
+			Generate(true);
 		}
 
 		private void LoadConfigSettings()
@@ -79,11 +80,11 @@ namespace BizHawk.MultiClient
 			return (byte)(((PPUBus[address] >> (7 - bit)) & 1));
 		}
 
-		unsafe void Generate()
+		unsafe void Generate(bool now = false)
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 
-			if (Global.Emulator.Frame % RefreshRate.Value == 0)
+			if (Global.Emulator.Frame % RefreshRate.Value == 0 || now)
 			{
 				bool Changed = false;
 				for (int x = 0; x < 0x2000; x++)
@@ -236,6 +237,7 @@ namespace BizHawk.MultiClient
 			Nes = Global.Emulator as NES;
 			ClearDetails();
 			RefreshRate.Value = Global.Config.NESPPURefreshRate;
+			Generate(true);
 		}
 
 		private void ClearDetails()
