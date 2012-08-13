@@ -114,6 +114,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
 					log.Flush();
 				}
+				if (FlagI && Interruptible && !IntRM)
+				{
+					IntRM = true;
+					Interruptible = false;
+					Indirect_Set(6, 7);
+					RegisterPC = INTERRUPT;
+				}
 				byte dest, src, mem;
 				ushort dest_value, src_value, mem_read, addr, addr_read, offset;
 				int decle2, decle3, result = 0, ones, carry, status_word, lower, sign, cond, ext;
