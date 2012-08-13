@@ -116,8 +116,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				}
 				if (FlagI && Interruptible && !IntRM)
 				{
-					IntRM = true;
-					Interruptible = false;
 					Indirect_Set(6, 7);
 					RegisterPC = INTERRUPT;
 				}
