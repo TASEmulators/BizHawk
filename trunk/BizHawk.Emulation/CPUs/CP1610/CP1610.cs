@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		private const ushort RESET = 0x1000;
 		private const ushort INTERRUPT = 0x1004;
 
-		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, IntRM, BusRq, BusAk, MSync, Interruptible;
+		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, MSync, Interruptible;
 		private ushort[] Register = new ushort[8];
 		private ushort RegisterSP { get { return Register[6]; } set { Register[6] = value; } }
 		private ushort RegisterPC { get { return Register[7]; } set { Register[7] = value; } }
@@ -18,6 +18,14 @@ namespace BizHawk.Emulation.CPUs.CP1610
 
 		public Func<ushort, ushort> ReadMemory;
 		public Func<ushort, ushort, bool> WriteMemory;
+		public Func<bool> GetIntRM;
+		public Func<bool> GetBusRq;
+		public Func<bool> GetBusAk;
+		public Action<bool> SetBusAk;
+
+		private bool IntRM { get { return GetIntRM(); } }
+		private bool BusRq { get { return GetBusRq(); } }
+		private bool BusAk { get { return GetBusAk(); } set { SetBusAk(value); } }
 
 		private static bool logging = true;
 		private static StreamWriter log;
@@ -28,8 +36,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				log = new StreamWriter("log_CP1610.txt");
 		}
 
-		public CP1610()
+		public void Reset()
 		{
+			BusAk = true;
+			Interruptible = false;
+			FlagS = FlagC = FlagZ = FlagO = FlagI = FlagD = false;
+			for (int register = 0; register <= 6; register++)
+				Register[register] = 0;
 			RegisterPC = RESET;
 		}
 
