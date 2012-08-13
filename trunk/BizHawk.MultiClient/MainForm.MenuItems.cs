@@ -392,13 +392,26 @@ namespace BizHawk.MultiClient
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			InputConfig i = new InputConfig();
-			i.ShowDialog();
-			//re-initialize controls in case anything was changed
-			if (i.DialogResult == DialogResult.OK)
+			if (!INTERIM)
 			{
-				InitControls();
-				SyncControls();
+				InputConfig i = new InputConfig();
+				i.ShowDialog();
+				//re-initialize controls in case anything was changed
+				if (i.DialogResult == DialogResult.OK)
+				{
+					InitControls();
+					SyncControls();
+				}
+			}
+			else
+			{
+				ControllerConfig c = new ControllerConfig();
+				c.ShowDialog();
+				if (c.DialogResult == DialogResult.OK)
+				{
+					InitControls();
+					SyncControls();
+				}
 			}
 		}
 
