@@ -7,23 +7,28 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 {
 	public sealed class STIC
 	{
-		private bool Fgbg = false;
+		private bool Sr1, Sr2, Sst, Fgbg = false;
 		private ushort[] Register = new ushort[64];
-
-		public Func<bool> GetSr1;
-		public Func<bool> GetSr2;
-		public Func<bool> GetSst;
-		public Action<bool> SetSr1;
-		public Action<bool> SetSr2;
-
-		private bool Sr1 { set { SetSr1(value); } }
-		private bool Sr2 { set { SetSr2(value); } }
-		private bool Sst { get { return GetSst(); } }
 		
 		public void Reset()
 		{
 			Sr1 = true;
 			Sr2 = true;
+		}
+
+		public bool GetSr1()
+		{
+			return Sr1;
+		}
+
+		public bool GetSr2()
+		{
+			return Sr2;
+		}
+
+		public void SetSst(bool value)
+		{
+			Sst = value;
 		}
 
 		public ushort? ReadSTIC(ushort addr)
@@ -119,6 +124,11 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					break;
 			}
 			return false;
+		}
+
+		public void Execute()
+		{
+			Sr1 = false;
 		}
 	}
 }

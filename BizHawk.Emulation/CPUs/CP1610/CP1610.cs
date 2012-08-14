@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		private const ushort RESET = 0x1000;
 		private const ushort INTERRUPT = 0x1004;
 
-		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, MSync, Interruptible;
+		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, IntRM, BusRq, BusAk, MSync, Interruptible;
 		private ushort[] Register = new ushort[8];
 		private ushort RegisterSP { get { return Register[6]; } set { Register[6] = value; } }
 		private ushort RegisterPC { get { return Register[7]; } set { Register[7] = value; } }
@@ -18,14 +18,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 
 		public Func<ushort, ushort> ReadMemory;
 		public Func<ushort, ushort, bool> WriteMemory;
-		public Func<bool> GetIntRM;
-		public Func<bool> GetBusRq;
-		public Func<bool> GetBusAk;
-		public Action<bool> SetBusAk;
-
-		private bool IntRM { get { return GetIntRM(); } }
-		private bool BusRq { get { return GetBusRq(); } }
-		private bool BusAk { get { return GetBusAk(); } set { SetBusAk(value); } }
 
 		private static bool logging = true;
 		private static StreamWriter log;
@@ -44,6 +36,31 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			for (int register = 0; register <= 6; register++)
 				Register[register] = 0;
 			RegisterPC = RESET;
+		}
+
+		public bool GetBusAk()
+		{
+			return BusAk;
+		}
+
+		public void SetIntRM(bool value)
+		{
+			IntRM = value;
+		}
+
+		public int GetPendingCycles()
+		{
+			return PendingCycles;
+		}
+
+		public void SetBusRq(bool value)
+		{
+			BusRq = value;
+		}
+
+		public void AddPendingCycles(int cycles)
+		{
+			PendingCycles += cycles;
 		}
 
 		public void LogData()
