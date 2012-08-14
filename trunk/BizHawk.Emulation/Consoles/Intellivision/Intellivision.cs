@@ -15,36 +15,11 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		STIC Stic;
 		PSG Psg;
 
-		private bool Sr1ToIntRM, Sr2ToBusRq, BusAkToSst;
-
-		private bool GetSr1ToIntRM()
+		public void Connect()
 		{
-			return Sr1ToIntRM;
-		}
-
-		private bool GetSr2ToBusRq()
-		{
-			return Sr2ToBusRq;
-		}
-
-		private bool GetBusAkToSst()
-		{
-			return BusAkToSst;
-		}
-
-		private void SetSr1ToIntRM(bool value)
-		{
-			Sr1ToIntRM = value;
-		}
-
-		private void SetSr2ToBusRq(bool value)
-		{
-			Sr2ToBusRq = value;
-		}
-
-		private void SetBusAkToSst(bool value)
-		{
-			BusAkToSst = value;
+			Cpu.SetIntRM(Stic.GetSr1());
+			Cpu.SetBusRq(Stic.GetSr2());
+			Stic.SetSst(Cpu.GetBusAk());
 		}
 
 		public void LoadExecutiveRom()
@@ -87,21 +62,14 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Cpu = new CP1610();
 			Cpu.ReadMemory = ReadMemory;
 			Cpu.WriteMemory = WriteMemory;
-			Cpu.GetIntRM = GetSr1ToIntRM;
-			Cpu.GetBusRq = GetSr2ToBusRq;
-			Cpu.GetBusAk = GetBusAkToSst;
-			Cpu.SetBusAk = SetBusAkToSst;
 			Cpu.Reset();
 
 			Stic = new STIC();
-			Stic.GetSr1 = GetSr1ToIntRM;
-			Stic.GetSr2 = GetSr2ToBusRq;
-			Stic.GetSst = GetBusAkToSst;
-			Stic.SetSr1 = SetSr1ToIntRM;
-			Stic.SetSr2 = SetSr2ToBusRq;
 			Stic.Reset();
 
 			Psg = new PSG();
+
+			Connect();
 
 			CoreOutputComm = new CoreOutputComm();
 
@@ -110,7 +78,14 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public void FrameAdvance(bool render)
 		{
-			Cpu.Execute(999);
+			Cpu.AddPendingCycles(999);
+			while (Cpu.GetPendingCycles() > 0)
+			{
+				Cpu.Execute();
+				Stic.Execute();
+				Connect();
+				Cpu.LogData();
+			}
 		}
 
 
