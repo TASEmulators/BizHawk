@@ -248,7 +248,9 @@ namespace BizHawk.MultiClient
 				LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
 
 			if (Global.Config.AutoLoadRamWatch)
+			{
 				LoadRamWatch();
+			}
 			if (Global.Config.AutoLoadRamSearch)
 				LoadRamSearch();
 			if (Global.Config.AutoLoadHexEditor)
@@ -2707,8 +2709,13 @@ namespace BizHawk.MultiClient
 			{
 				RamWatch1 = new RamWatch();
 				if (Global.Config.AutoLoadRamWatch && Global.Config.RecentWatches.Length() > 0)
+				{
 					RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
-				RamWatch1.Show();
+				}
+				if (!Global.Config.DisplayRamWatch)
+				{
+					RamWatch1.Show();
+				}
 			}
 			else
 				RamWatch1.Focus();
