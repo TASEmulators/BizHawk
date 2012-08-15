@@ -249,7 +249,14 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.AutoLoadRamWatch)
 			{
-				LoadRamWatch();
+				if (Global.Config.DisplayRamWatch)
+				{
+					LoadRamWatch(false);
+				}
+				else
+				{
+					LoadRamWatch(true);
+				}
 			}
 			if (Global.Config.AutoLoadRamSearch)
 				LoadRamSearch();
@@ -920,7 +927,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".WCH")
 			{
-				LoadRamWatch();
+				LoadRamWatch(true);
 				RamWatch1.LoadWatchFile(filePaths[0], false);
 				RamWatch1.DisplayWatchList();
 			}
@@ -1689,7 +1696,7 @@ namespace BizHawk.MultiClient
 				case "Load Named State": LoadStateAs(); break;
 				case "Previous Slot": PreviousSlot(); break;
 				case "Next Slot": NextSlot(); break;
-				case "Ram Watch": LoadRamWatch(); break;
+				case "Ram Watch": LoadRamWatch(true); break;
 				case "Ram Search": LoadRamSearch(); break;
 				case "Ram Poke":
 					{
@@ -2703,7 +2710,7 @@ namespace BizHawk.MultiClient
 				Global.OSD.AddMessage("Movie read+write mode");
 		}
 
-		public void LoadRamWatch()
+		public void LoadRamWatch(bool load_dialog)
 		{
 			if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
 			{
@@ -2712,7 +2719,7 @@ namespace BizHawk.MultiClient
 				{
 					RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
 				}
-				if (!Global.Config.DisplayRamWatch)
+				if (load_dialog)
 				{
 					RamWatch1.Show();
 				}

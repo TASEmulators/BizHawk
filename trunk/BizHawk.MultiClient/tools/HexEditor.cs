@@ -535,7 +535,7 @@ namespace BizHawk.MultiClient
 
 			if (address >= 0 || SecondaryHighlightedAddresses.Count > 0)
 			{
-				Global.MainForm.LoadRamWatch();
+				Global.MainForm.LoadRamWatch(true);
 			}
 
 			if (address >= 0)

@@ -75,7 +75,7 @@ namespace BizHawk.MultiClient
 
 		private void toolStripButton2_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.LoadRamWatch();
+			Global.MainForm.LoadRamWatch(true);
 		}
 
 		private void toolStripButton3_Click(object sender, EventArgs e)
