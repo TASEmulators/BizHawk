@@ -44,11 +44,19 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
+
 			if (currentFile.Length > 0)
+			{
 				LoadWatchFile(currentFile, false);
+			}
 			else
+			{
 				NewWatchList(true);
+			}
 		}
 
 		public List<Watch> GetRamWatchList()
@@ -67,7 +75,10 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch) return;
+			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
 
 			for (int x = 0; x < watchList.Count; x++)
 			{
