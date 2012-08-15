@@ -302,9 +302,11 @@ namespace BizHawk.MultiClient
 
 			if (indexes.Count > 0)
 			{
-				Global.MainForm.LoadRamWatch();
+				Global.MainForm.LoadRamWatch(true);
 				for (int x = 0; x < indexes.Count; x++)
+				{
 					Global.MainForm.RamWatch1.AddWatch(searchList[indexes[x]]);
+				}
 			}
 		}
 

@@ -1744,7 +1744,7 @@ namespace BizHawk.MultiClient
 
 		public void client_openramwatch()
 		{
-			Global.MainForm.LoadRamWatch();
+			Global.MainForm.LoadRamWatch(true);
 		}
 
 		public void client_openramsearch()

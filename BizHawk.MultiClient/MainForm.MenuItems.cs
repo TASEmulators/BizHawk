@@ -232,7 +232,7 @@ namespace BizHawk.MultiClient
 
 		private void RAMWatchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadRamWatch();
+			LoadRamWatch(true);
 		}
 
 		private void rAMSearchToolStripMenuItem_Click(object sender, EventArgs e)
