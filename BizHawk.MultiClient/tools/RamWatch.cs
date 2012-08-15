@@ -175,6 +175,11 @@ namespace BizHawk.MultiClient
 		
 		private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
+			if (index >= watchList.Count)
+			{
+				return;
+			}
+
 			if (column == 0)
 			{
 				if (watchList[index].type == atype.SEPARATOR)
@@ -187,6 +192,11 @@ namespace BizHawk.MultiClient
 		void WatchListView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
+			if (index >= watchList.Count)
+			{
+				return;
+			}
+
 			if (column == 0)    //Address
 			{
 				if (watchList[index].type != atype.SEPARATOR)
