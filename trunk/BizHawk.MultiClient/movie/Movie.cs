@@ -164,7 +164,6 @@ namespace BizHawk.MultiClient
 				}
 			}
 			Log.DeleteFrame(frame);
-			Global.MainForm.TAStudio1.UpdateValues();
 		}
 
 		public int StateFirstIndex()
