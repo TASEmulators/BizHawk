@@ -14,9 +14,18 @@ namespace BizHawk.MultiClient
 	/// </summary>
 	public partial class InputPrompt : Form
 	{
+		public enum InputType { HEX, UNSIGNED, SIGNED, TEXT };
 		public bool UserOK;    //Will be true if the user selects Ok
 		public string UserText = "";   //What the user selected
-		public bool HexOnly = false;
+
+		private InputType itype = InputType.TEXT;
+
+		public InputType TextInputType
+		{
+			get { return itype; }
+			set { itype = value; }
+		}
+
 		public InputPrompt()
 		{
 			InitializeComponent();
@@ -37,6 +46,11 @@ namespace BizHawk.MultiClient
 			PromptBox.Text = value;
 		}
 
+		public void SetTitle(string value)
+		{
+			Text = value;
+		}
+
 		private void InputPrompt_Load(object sender, EventArgs e)
 		{
 
@@ -51,22 +65,47 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-            UserOK = false;
+			UserOK = false;
 			this.Close();
 		}
 
 		private void PromptBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (HexOnly)
+			switch (itype)
 			{
-				if (e.KeyChar == '\b')
-				{
-					return;
-				}
-				else if (!InputValidate.IsValidHexNumber(e.KeyChar))
-				{
-					e.Handled = true;
-				}
+				default:
+				case InputType.TEXT:
+					break;
+				case InputType.HEX:
+					if (e.KeyChar == '\b')
+					{
+						return;
+					}
+					else if (!InputValidate.IsValidHexNumber(e.KeyChar))
+					{
+						e.Handled = true;
+					}
+					break;
+				case InputType.SIGNED:
+					if (e.KeyChar == '\b')
+					{
+						return;
+					}
+					else if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+					{
+						e.Handled = true;
+					}
+					break;
+				case InputType.UNSIGNED:
+					if (e.KeyChar == '\b')
+					{
+						return;
+					}
+					else if (!InputValidate.IsValidSignedNumber(e.KeyChar))
+					{
+						e.Handled = true;
+					}
+					break;
 			}
 		}
 	}

@@ -414,8 +414,8 @@ namespace BizHawk.MultiClient
 		{
 			if (ReadOnlyCheckBox.Checked)
 			{
-				
-				clearToolStripMenuItem.Enabled = false;
+
+				clearToolStripMenuItem2.Enabled = false;
 				deleteFramesToolStripMenuItem.Enabled = false;
 				cloneToolStripMenuItem.Enabled = false;
 				insertFrameToolStripMenuItem.Enabled = false;
@@ -424,7 +424,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				clearToolStripMenuItem.Enabled = true;
+				clearToolStripMenuItem2.Enabled = true;
 				deleteFramesToolStripMenuItem.Enabled = true;
 				cloneToolStripMenuItem.Enabled = true;
 				insertFrameToolStripMenuItem.Enabled = true;
@@ -576,13 +576,21 @@ namespace BizHawk.MultiClient
 		{
 			if (ReadOnlyCheckBox.Checked)
 			{
-				ContextMenu_Insert.Enabled = false; //TODO: just hide them, but right now only read-only depenent items are in this menu and I need something to show!
-				ContextMenu_Delete.Enabled = false;
+				clearToolStripMenuItem3.Visible = false;
+				ContextMenu_Delete.Visible = false;
+				cloneToolStripMenuItem1.Visible = false;
+				ContextMenu_Insert.Visible = false;
+				insertFramesToolStripMenuItem.Visible = false;
+				toolStripSeparator5.Visible = false;
 			}
 			else
 			{
-				ContextMenu_Insert.Enabled = true;
-				ContextMenu_Delete.Enabled = true;
+				clearToolStripMenuItem3.Visible = true;
+				ContextMenu_Delete.Visible = true;
+				cloneToolStripMenuItem1.Visible = true;
+				ContextMenu_Insert.Visible = true;
+				insertFramesToolStripMenuItem.Visible = true;
+				toolStripSeparator5.Visible = true;
 			}
 		}
 
@@ -645,9 +653,60 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 		}
 
+		private void InsertNumFrames()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				InputPrompt prompt = new InputPrompt();
+				prompt.TextInputType = InputPrompt.InputType.UNSIGNED;
+				prompt.SetMessage("How many frames?");
+				prompt.SetInitialValue("1");
+				prompt.SetTitle("Insert new frames");
+				prompt.ShowDialog();
+				if (prompt.UserOK)
+				{
+					int frames = int.Parse(prompt.UserText);
+					for (int i = 0; i < frames; i++)
+					{
+						Global.MovieSession.Movie.InsertBlankFrame(list[0] + i);
+					}
+				}
+			}
+			UpdateValues();
+		}
+
+		private void SelectAll()
+		{
+			for (int i = 0; i < TASView.ItemCount; i++)
+			{
+				TASView.SelectItem(i, true);
+			}
+		}
+
 		private void clearToolStripMenuItem2_Click(object sender, EventArgs e)
 		{
 			ClearFrames();
+		}
+
+		private void insertNumFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InsertNumFrames();
+		}
+
+		private void insertFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InsertNumFrames();
+		}
+
+		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SelectAll();
+		}
+
+		private void SelectAll_Click(object sender, EventArgs e)
+		{
+			SelectAll();
 		}
 	}
 }
