@@ -78,9 +78,12 @@
 			this.insertFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripItem_SelectAll = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+			this.truncateMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.ControllersContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.RewindToBeginning = new System.Windows.Forms.ToolStripButton();
 			this.RewindButton = new System.Windows.Forms.ToolStripButton();
@@ -94,12 +97,16 @@
 			this.TASView = new BizHawk.VirtualListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.truncateMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.SelectionDisplay = new System.Windows.Forms.Label();
+			this.ClipboardDisplay = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.ControllersContext.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -221,6 +228,7 @@
             this.insertFrameToolStripMenuItem,
             this.insertNumFramesToolStripMenuItem,
             this.toolStripSeparator7,
+            this.copyToolStripMenuItem,
             this.selectAllToolStripMenuItem,
             this.toolStripSeparator8,
             this.truncateMovieToolStripMenuItem,
@@ -375,7 +383,7 @@
             this.toolStripSeparator9,
             this.truncateMovieToolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(185, 192);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(185, 170);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// clearToolStripMenuItem3
@@ -427,11 +435,23 @@
 			this.toolStripItem_SelectAll.Text = "Select All";
 			this.toolStripItem_SelectAll.Click += new System.EventHandler(this.SelectAll_Click);
 			// 
+			// toolStripSeparator9
+			// 
+			this.toolStripSeparator9.Name = "toolStripSeparator9";
+			this.toolStripSeparator9.Size = new System.Drawing.Size(181, 6);
+			// 
+			// truncateMovieToolStripMenuItem1
+			// 
+			this.truncateMovieToolStripMenuItem1.Name = "truncateMovieToolStripMenuItem1";
+			this.truncateMovieToolStripMenuItem1.Size = new System.Drawing.Size(184, 22);
+			this.truncateMovieToolStripMenuItem1.Text = "&Truncate Movie";
+			this.truncateMovieToolStripMenuItem1.Click += new System.EventHandler(this.truncateMovieToolStripMenuItem1_Click);
+			// 
 			// ControllerBox
 			// 
 			this.ControllerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerBox.ContextMenuStrip = this.ControllersContext;
-			this.ControllerBox.Location = new System.Drawing.Point(300, 55);
+			this.ControllerBox.Location = new System.Drawing.Point(300, 144);
 			this.ControllerBox.Name = "ControllerBox";
 			this.ControllerBox.Size = new System.Drawing.Size(367, 197);
 			this.ControllerBox.TabIndex = 4;
@@ -451,6 +471,14 @@
 			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
 			this.clearToolStripMenuItem1.Text = "&Clear Holds";
 			this.clearToolStripMenuItem1.Click += new System.EventHandler(this.clearToolStripMenuItem1_Click);
+			// 
+			// copyToolStripMenuItem
+			// 
+			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.copyToolStripMenuItem.Text = "Copy";
+			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -585,6 +613,7 @@
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
 			this.TASView.SelectedIndexChanged += new System.EventHandler(this.TASView_SelectedIndexChanged);
+			this.TASView.Click += new System.EventHandler(this.TASView_Click);
 			this.TASView.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseWheel);
 			// 
 			// Frame
@@ -596,23 +625,62 @@
 			this.Log.Text = "Log";
 			this.Log.Width = 201;
 			// 
-			// truncateMovieToolStripMenuItem1
+			// groupBox1
 			// 
-			this.truncateMovieToolStripMenuItem1.Name = "truncateMovieToolStripMenuItem1";
-			this.truncateMovieToolStripMenuItem1.Size = new System.Drawing.Size(184, 22);
-			this.truncateMovieToolStripMenuItem1.Text = "&Truncate Movie";
-			this.truncateMovieToolStripMenuItem1.Click += new System.EventHandler(this.truncateMovieToolStripMenuItem1_Click);
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.ClipboardDisplay);
+			this.groupBox1.Controls.Add(this.SelectionDisplay);
+			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Location = new System.Drawing.Point(300, 55);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(367, 83);
+			this.groupBox1.TabIndex = 5;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Slicer";
 			// 
-			// toolStripSeparator9
+			// label1
 			// 
-			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(181, 6);
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(8, 19);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(54, 13);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Selection:";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(8, 36);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(54, 13);
+			this.label2.TabIndex = 1;
+			this.label2.Text = "Clipboard:";
+			// 
+			// SelectionDisplay
+			// 
+			this.SelectionDisplay.AutoSize = true;
+			this.SelectionDisplay.Location = new System.Drawing.Point(68, 19);
+			this.SelectionDisplay.Name = "SelectionDisplay";
+			this.SelectionDisplay.Size = new System.Drawing.Size(31, 13);
+			this.SelectionDisplay.TabIndex = 2;
+			this.SelectionDisplay.Text = "none";
+			// 
+			// ClipboardDisplay
+			// 
+			this.ClipboardDisplay.AutoSize = true;
+			this.ClipboardDisplay.Location = new System.Drawing.Point(68, 36);
+			this.ClipboardDisplay.Name = "ClipboardDisplay";
+			this.ClipboardDisplay.Size = new System.Drawing.Size(31, 13);
+			this.ClipboardDisplay.TabIndex = 3;
+			this.ClipboardDisplay.Text = "none";
 			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(686, 519);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.ReadOnlyCheckBox);
@@ -630,6 +698,8 @@
 			this.ControllersContext.ResumeLayout(false);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -696,5 +766,11 @@
 		private System.Windows.Forms.ToolStripMenuItem truncateMovieToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 		private System.Windows.Forms.ToolStripMenuItem truncateMovieToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Label ClipboardDisplay;
+		private System.Windows.Forms.Label SelectionDisplay;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label1;
     }
 }

@@ -12,6 +12,12 @@ namespace BizHawk.MultiClient
 	public partial class TAStudio : Form
 	{
 		//TODO:
+		//Slicer Section:
+			//View clipboard - opens a pop-up with a listview showing the input
+			//Save clipboard as macro - adds to the macro list (todo: macro list)
+		//click & drag on list view should highlight rows
+		//any event that changes highlighting of listview should update selection display
+		//caret column and caret
 		//Ins/Del hotkeys for Clear and Insert # Frames (set up key listener)
 		//When closing tastudio, don't write the movie file? AskSave() is acceptable however
 		//If null emulator do a base virtualpad so getmnemonic doesn't fail
@@ -43,6 +49,16 @@ namespace BizHawk.MultiClient
 			TASView.QueryItemBkColor += new QueryItemBkColorHandler(TASView_QueryItemBkColor);
 			TASView.VirtualMode = true;
 		}
+
+
+		//TODO: move me
+		public class ClipboardEntry
+		{
+			public int frame;
+			public string inputstr;
+		}
+
+		public List<ClipboardEntry> Clipboard = new List<ClipboardEntry>();
 
 		public void UpdateValues()
 		{
@@ -729,6 +745,52 @@ namespace BizHawk.MultiClient
 		private void truncateMovieToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			TruncateMovie();
+		}
+
+		private void CopySelectionToClipBoard()
+		{
+			Clipboard.Clear();
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int i = 0; i < list.Count; i++)
+			{
+				ClipboardEntry entry = new ClipboardEntry();
+				entry.frame = list[0];
+				entry.inputstr = Global.MovieSession.Movie.GetInputFrame(list[0]);
+				Clipboard.Add(entry);
+			}
+			UpdateSlicerDisplay();
+		}
+
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CopySelectionToClipBoard();
+		}
+
+		private void UpdateSlicerDisplay()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				SelectionDisplay.Text = list.Count.ToString() + " row";
+			}
+			else
+			{
+				SelectionDisplay.Text = "none";
+			}
+
+			if (Clipboard.Count > 0)
+			{
+				ClipboardDisplay.Text = Clipboard.Count.ToString() + " row";
+			}
+			else
+			{
+				ClipboardDisplay.Text = "none";
+			}
+		}
+
+		private void TASView_Click(object sender, EventArgs e)
+		{
+			UpdateSlicerDisplay();
 		}
 	}
 }
