@@ -542,5 +542,22 @@ namespace BizHawk.MultiClient
 			}
 			return "";
 		}
+
+		private void TASView_MouseWheel(object sender, MouseEventArgs e)
+		{
+
+			//if ((Control.MouseButtons & MouseButtons.Middle) > 0) //adelikat: TODO: right-click + mouse wheel won't work because in this dialog, right-click freezes emulation in the main window.  Why? Hex Editor doesn't do this for instance
+			if ((Control.ModifierKeys & Keys.Control) > 0)
+			{
+				if (e.Delta > 0) //Scroll up
+				{
+					Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
+				}
+				else if (e.Delta < 0) //Scroll down
+				{
+					Global.MainForm.PressFrameAdvance = true;
+				}
+			}
+		}
 	}
 }
