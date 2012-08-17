@@ -12,6 +12,7 @@ namespace BizHawk.MultiClient
 	public partial class TAStudio : Form
 	{
 		//TODO:
+		//Ins/Del hotkeys for Clear and Insert # Frames (set up key listener)
 		//When closing tastudio, don't write the movie file? AskSave() is acceptable however
 		//If null emulator do a base virtualpad so getmnemonic doesn't fail
 		//Right-click - Go to current frame
@@ -163,6 +164,7 @@ namespace BizHawk.MultiClient
 		{
 			//TODO: don't engage until new/open project
 			//
+			Global.MainForm.PauseEmulator();
 			Engaged = true;
 			Global.OSD.AddMessage("TAStudio engaged");
 			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
@@ -630,6 +632,22 @@ namespace BizHawk.MultiClient
 			}
 
 			UpdateValues();
+		}
+
+		private void ClearFrames()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.ClearFrame(list[index]);
+			}
+
+			UpdateValues();
+		}
+
+		private void clearToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			ClearFrames();
 		}
 	}
 }
