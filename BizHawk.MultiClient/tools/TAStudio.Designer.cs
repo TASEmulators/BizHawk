@@ -460,9 +460,9 @@
 			// 
 			// TASView
 			// 
-			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
@@ -479,7 +479,7 @@
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
 			this.TASView.SelectedIndexChanged += new System.EventHandler(this.TASView_SelectedIndexChanged);
-			this.TASView.DoubleClick += new System.EventHandler(this.TASView_DoubleClick);
+			this.TASView.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseWheel);
 			// 
 			// Frame
 			// 
