@@ -643,7 +643,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			for (int index = 0; index < list.Count; index++)
 			{
-				Global.MovieSession.Movie.DeleteFrame(list[index]);
+				Global.MovieSession.Movie.DeleteFrame(list[0]); //TODO: this doesn't allow of non-continuous deletion, instead it should iterate from last to first and remove the iterated value
 			}
 
 			UpdateValues();
@@ -754,8 +754,8 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < list.Count; i++)
 			{
 				ClipboardEntry entry = new ClipboardEntry();
-				entry.frame = list[0];
-				entry.inputstr = Global.MovieSession.Movie.GetInputFrame(list[0]);
+				entry.frame = list[i];
+				entry.inputstr = Global.MovieSession.Movie.GetInputFrame(list[i]);
 				Clipboard.Add(entry);
 			}
 			UpdateSlicerDisplay();
@@ -791,6 +791,66 @@ namespace BizHawk.MultiClient
 		private void TASView_Click(object sender, EventArgs e)
 		{
 			UpdateSlicerDisplay();
+		}
+
+		private void PasteSelectionOnTop()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				for (int i = 0; i < Clipboard.Count; i++)
+				{
+					Global.MovieSession.Movie.ModifyFrame(Clipboard[i].inputstr, list[0] + i);
+				}
+			}
+			UpdateValues();
+		}
+
+		private void PasteSelectionInsert()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				for (int i = 0; i < Clipboard.Count; i++)
+				{
+					Global.MovieSession.Movie.InsertFrame(Clipboard[i].inputstr, list[0] + i);
+				}
+			}
+			UpdateValues();
+		}
+
+		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PasteSelectionOnTop();
+		}
+
+		private void pasteInsertToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PasteSelectionInsert();
+		}
+
+		private void CutSelection()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				Clipboard.Clear();
+				for (int i = 0; i < list.Count; i++)
+				{
+					ClipboardEntry entry = new ClipboardEntry();
+					entry.frame = list[i];
+					entry.inputstr = Global.MovieSession.Movie.GetInputFrame(list[i]);
+					Clipboard.Add(entry);
+					Global.MovieSession.Movie.DeleteFrame(list[0]);
+				}
+
+				UpdateValues();
+			}
+		}
+
+		private void cutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CutSelection();
 		}
 	}
 }
