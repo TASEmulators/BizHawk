@@ -12,6 +12,7 @@ namespace BizHawk.MultiClient
 	public partial class TAStudio : Form
 	{
 		//TODO:
+		//When closing tastudio, don't write the movie file? AskSave() is acceptable however
 		//If null emulator do a base virtualpad so getmnemonic doesn't fail
 		//Right-click - Go to current frame
 		//Clicking a frame should go there
@@ -409,13 +410,23 @@ namespace BizHawk.MultiClient
 
 		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Global.MainForm.ReadOnly)
+			if (ReadOnlyCheckBox.Checked)
 			{
+				
+				clearToolStripMenuItem.Enabled = false;
+				deleteFramesToolStripMenuItem.Enabled = false;
+				cloneToolStripMenuItem.Enabled = false;
 				insertFrameToolStripMenuItem.Enabled = false;
+				insertNumFramesToolStripMenuItem.Enabled = false;
+				
 			}
 			else
 			{
+				clearToolStripMenuItem.Enabled = true;
+				deleteFramesToolStripMenuItem.Enabled = true;
+				cloneToolStripMenuItem.Enabled = true;
 				insertFrameToolStripMenuItem.Enabled = true;
+				insertNumFramesToolStripMenuItem.Enabled = true;
 			}
 		}
 
@@ -427,7 +438,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				InsertNewFrame();
+				InsertFrames();
 			}
 		}
 
@@ -515,30 +526,12 @@ namespace BizHawk.MultiClient
 
 		private void Insert_Click(object sender, EventArgs e)
 		{
-			InsertNewFrame();
-		}
-
-		private void InsertNewFrame()
-		{
-			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
-			for (int index = 0; index < list.Count; index++)
-			{
-				Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInputFrame(list[index]), (int)list[index]);
-			}
+			InsertFrames();
 		}
 
 		private void Delete_Click(object sender, EventArgs e)
 		{
-			DeleteFrame();
-		}
-
-		private void DeleteFrame()
-		{
-			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
-			for (int index = 0; index < list.Count; index++)
-			{
-				Global.MovieSession.Movie.DeleteFrame(list[index]);
-			}
+			DeleteFrames();
 		}
 
 		private static string SaveRecordingAs()
@@ -589,6 +582,54 @@ namespace BizHawk.MultiClient
 				ContextMenu_Insert.Enabled = true;
 				ContextMenu_Delete.Enabled = true;
 			}
+		}
+
+		private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Clone();
+		}
+
+		private void cloneToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			Clone();
+		}
+
+		private void deleteFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DeleteFrames();
+		}
+
+		private void InsertFrames()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.InsertBlankFrame(list[index]);
+			}
+
+			UpdateValues();
+		}
+
+		private void DeleteFrames()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.DeleteFrame(list[index]);
+			}
+
+			UpdateValues();
+		}
+
+		private void Clone()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInputFrame(list[index]), list[index]);
+			}
+
+			UpdateValues();
 		}
 	}
 }

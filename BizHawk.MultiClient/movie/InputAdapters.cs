@@ -175,6 +175,34 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
+		public string GetEmptyMnemonic()
+		{
+			switch (Global.Emulator.SystemId)
+			{
+				default:
+				case "NULL":
+					return "|.|";
+				case "A26":
+					return "|..|.....|.....|";
+				case "TI83":
+					return "|..................................................|.|";
+				case "NES":
+					return "|.|........|........|........|........|";
+				case "SMS":
+				case "GG":
+				case "SG":
+					return "|......|......|..|";
+				case "GEN":
+					return "|.|........|........|";
+				case "GB":
+					return "|.|........|";
+				case "PCE":
+				case "PCECD":
+				case "SGX":
+					return "|.|........|........|........|........|........|";
+			}
+		}
+
 		public string GetControllersAsMnemonic()
 		{
 			if (Global.Emulator.SystemId == "NULL" || ControlType == "Null Controller")

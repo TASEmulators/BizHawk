@@ -245,8 +245,12 @@ namespace BizHawk.MultiClient
 		public void InsertFrame(string record, int frame)
 		{
 			Log.AddFrameAt(record,frame);
+		}
 
-			Global.MainForm.TAStudio1.UpdateValues();
+		public void InsertBlankFrame(int frame)
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			Log.AddFrameAt(mg.GetEmptyMnemonic(), frame);
 		}
 
 		public void WriteMovie()
