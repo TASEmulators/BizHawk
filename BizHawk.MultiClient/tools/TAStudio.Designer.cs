@@ -58,6 +58,9 @@
 			this.insertFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.insertNumFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.truncateMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearVirtualPadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,8 +94,8 @@
 			this.TASView = new BizHawk.VirtualListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.truncateMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.ControllersContext.SuspendLayout();
@@ -220,6 +223,7 @@
             this.toolStripSeparator7,
             this.selectAllToolStripMenuItem,
             this.toolStripSeparator8,
+            this.truncateMovieToolStripMenuItem,
             this.clearVirtualPadsToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -269,6 +273,26 @@
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
 			this.toolStripSeparator7.Size = new System.Drawing.Size(184, 6);
+			// 
+			// selectAllToolStripMenuItem
+			// 
+			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+			this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.selectAllToolStripMenuItem.Text = "Select &All";
+			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(184, 6);
+			// 
+			// truncateMovieToolStripMenuItem
+			// 
+			this.truncateMovieToolStripMenuItem.Name = "truncateMovieToolStripMenuItem";
+			this.truncateMovieToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.truncateMovieToolStripMenuItem.Text = "&Truncate Movie";
+			this.truncateMovieToolStripMenuItem.Click += new System.EventHandler(this.truncateMovieToolStripMenuItem_Click);
 			// 
 			// clearVirtualPadsToolStripMenuItem
 			// 
@@ -347,9 +371,11 @@
             this.ContextMenu_Insert,
             this.insertFramesToolStripMenuItem,
             this.toolStripSeparator5,
-            this.toolStripItem_SelectAll});
+            this.toolStripItem_SelectAll,
+            this.toolStripSeparator9,
+            this.truncateMovieToolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(185, 164);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(185, 192);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// clearToolStripMenuItem3
@@ -394,9 +420,9 @@
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
 			this.toolStripSeparator5.Size = new System.Drawing.Size(181, 6);
 			// 
-			// SelectAll
+			// toolStripItem_SelectAll
 			// 
-			this.toolStripItem_SelectAll.Name = "SelectAll";
+			this.toolStripItem_SelectAll.Name = "toolStripItem_SelectAll";
 			this.toolStripItem_SelectAll.Size = new System.Drawing.Size(184, 22);
 			this.toolStripItem_SelectAll.Text = "Select All";
 			this.toolStripItem_SelectAll.Click += new System.EventHandler(this.SelectAll_Click);
@@ -570,18 +596,17 @@
 			this.Log.Text = "Log";
 			this.Log.Width = 201;
 			// 
-			// toolStripSeparator8
+			// truncateMovieToolStripMenuItem1
 			// 
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(184, 6);
+			this.truncateMovieToolStripMenuItem1.Name = "truncateMovieToolStripMenuItem1";
+			this.truncateMovieToolStripMenuItem1.Size = new System.Drawing.Size(184, 22);
+			this.truncateMovieToolStripMenuItem1.Text = "&Truncate Movie";
+			this.truncateMovieToolStripMenuItem1.Click += new System.EventHandler(this.truncateMovieToolStripMenuItem1_Click);
 			// 
-			// selectAllToolStripMenuItem
+			// toolStripSeparator9
 			// 
-			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
-			this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.selectAllToolStripMenuItem.Text = "Select &All";
-			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
+			this.toolStripSeparator9.Name = "toolStripSeparator9";
+			this.toolStripSeparator9.Size = new System.Drawing.Size(181, 6);
 			// 
 			// TAStudio
 			// 
@@ -668,5 +693,8 @@
 		private System.Windows.Forms.ToolStripMenuItem insertFramesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private System.Windows.Forms.ToolStripMenuItem truncateMovieToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+		private System.Windows.Forms.ToolStripMenuItem truncateMovieToolStripMenuItem1;
     }
 }

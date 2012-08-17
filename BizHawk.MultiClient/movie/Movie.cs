@@ -899,5 +899,10 @@ namespace BizHawk.MultiClient
 			StartsFromSavestate = true;
 			Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
 		}
+
+		public void TruncateMovie(int frame)
+		{
+			Log.TruncateMovie(frame);
+		}
 	}
 }

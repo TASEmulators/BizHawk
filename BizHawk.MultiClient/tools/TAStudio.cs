@@ -20,10 +20,6 @@ namespace BizHawk.MultiClient
 		//Multiple timeline system
 		//Macro listview
 		//	Double click brings up a macro editing window
-		//NES Controls virtualpad (Power-on & Reset, eventually FDS options)
-		//SMS virtualpad
-		//PCE virtualpad
-		//Dynamic virtualpad system based on platform
 		//ensureVisible when recording
 		//Allow hotkeys when TAStudio has focus
 		//Reduce the memory footprint with compression and or dropping frames and rerunning them when requested.
@@ -420,6 +416,7 @@ namespace BizHawk.MultiClient
 				cloneToolStripMenuItem.Enabled = false;
 				insertFrameToolStripMenuItem.Enabled = false;
 				insertNumFramesToolStripMenuItem.Enabled = false;
+				truncateMovieToolStripMenuItem.Enabled = false;
 				
 			}
 			else
@@ -429,6 +426,7 @@ namespace BizHawk.MultiClient
 				cloneToolStripMenuItem.Enabled = true;
 				insertFrameToolStripMenuItem.Enabled = true;
 				insertNumFramesToolStripMenuItem.Enabled = true;
+				truncateMovieToolStripMenuItem.Enabled = true;
 			}
 		}
 
@@ -582,6 +580,8 @@ namespace BizHawk.MultiClient
 				ContextMenu_Insert.Visible = false;
 				insertFramesToolStripMenuItem.Visible = false;
 				toolStripSeparator5.Visible = false;
+				truncateMovieToolStripMenuItem1.Visible = false;
+				toolStripSeparator9.Visible = false;
 			}
 			else
 			{
@@ -591,6 +591,8 @@ namespace BizHawk.MultiClient
 				ContextMenu_Insert.Visible = true;
 				insertFramesToolStripMenuItem.Visible = true;
 				toolStripSeparator5.Visible = true;
+				truncateMovieToolStripMenuItem1.Visible = true;
+				toolStripSeparator9.Visible = true;
 			}
 		}
 
@@ -707,6 +709,26 @@ namespace BizHawk.MultiClient
 		private void SelectAll_Click(object sender, EventArgs e)
 		{
 			SelectAll();
+		}
+
+		private void TruncateMovie()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				Global.MovieSession.Movie.TruncateMovie(list[0]);
+				UpdateValues();
+			}
+		}
+
+		private void truncateMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TruncateMovie();
+		}
+
+		private void truncateMovieToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			TruncateMovie();
 		}
 	}
 }

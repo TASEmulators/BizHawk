@@ -165,7 +165,7 @@ namespace BizHawk.MultiClient
 				}
 				else if (frame <= StateLastIndex())
 				{
-					StateRecords.RemoveRange(frame - StateFirstIndex(), StateLastIndex() - frame+1);
+					StateRecords.RemoveRange(frame - StateFirstIndex(), StateLastIndex() - frame + 1);
 				}
 			}
 		}
@@ -191,5 +191,15 @@ namespace BizHawk.MultiClient
 				sw.WriteLine(GetFrame(x));
 			}
 		}
+
+		public void TruncateMovie(int frame)
+		{
+			if (frame < MovieRecords.Count)
+			{
+				MovieRecords.RemoveRange(frame, MovieRecords.Count - frame);
+				TruncateStates(frame);
+			}
+		}
+
 	}
 }
