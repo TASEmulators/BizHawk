@@ -88,6 +88,8 @@
 			this.TASView = new BizHawk.VirtualListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.clearToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.ControllersContext.SuspendLayout();
@@ -224,6 +226,7 @@
 			this.clearToolStripMenuItem2.Name = "clearToolStripMenuItem2";
 			this.clearToolStripMenuItem2.Size = new System.Drawing.Size(187, 22);
 			this.clearToolStripMenuItem2.Text = "Clear";
+			this.clearToolStripMenuItem2.Click += new System.EventHandler(this.clearToolStripMenuItem2_Click);
 			// 
 			// deleteFramesToolStripMenuItem
 			// 
@@ -332,12 +335,14 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ContextMenu_Insert,
-            this.cloneToolStripMenuItem1,
+            this.clearToolStripMenuItem3,
             this.ContextMenu_Delete,
+            this.cloneToolStripMenuItem1,
+            this.ContextMenu_Insert,
+            this.toolStripSeparator5,
             this.SelectAll});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(232, 114);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(232, 120);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// ContextMenu_Insert
@@ -540,6 +545,17 @@
 			this.Log.Text = "Log";
 			this.Log.Width = 201;
 			// 
+			// clearToolStripMenuItem3
+			// 
+			this.clearToolStripMenuItem3.Name = "clearToolStripMenuItem3";
+			this.clearToolStripMenuItem3.Size = new System.Drawing.Size(231, 22);
+			this.clearToolStripMenuItem3.Text = "Clear";
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(228, 6);
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -620,5 +636,7 @@
 		private System.Windows.Forms.ToolStripMenuItem deleteFramesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem insertNumFramesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem3;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }

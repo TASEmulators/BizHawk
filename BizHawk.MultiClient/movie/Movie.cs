@@ -237,6 +237,17 @@ namespace BizHawk.MultiClient
 				return "";
 		}
 
+		public void ModifyFrame(string record, int frame)
+		{
+			Log.SetFrameAt(frame, record);
+		}
+
+		public void ClearFrame(int frame)
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			Log.SetFrameAt(frame, mg.GetEmptyMnemonic());
+		}
+
 		public void AppendFrame(string record)
 		{
 			Log.AddFrame(record);
