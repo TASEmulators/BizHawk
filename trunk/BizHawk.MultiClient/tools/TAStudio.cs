@@ -272,7 +272,6 @@ namespace BizHawk.MultiClient
 				saveProjectAsToolStripMenuItem.Enabled = false;
 				recentToolStripMenuItem.Enabled = false;
 				importTASFileToolStripMenuItem.Enabled = false;
-				insertFrameToolStripMenuItem.Enabled = false;
 			}
 
 			LoadTAStudio();
@@ -361,6 +360,7 @@ namespace BizHawk.MultiClient
 		{
 			if (ReadOnlyCheckBox.Checked)
 			{
+				Global.MainForm.SetReadOnly(true);
 				ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
 
 				if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
@@ -371,6 +371,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
+				Global.MainForm.SetReadOnly(false);
 				ReadOnlyCheckBox.BackColor = Color.LightCoral;
 				if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
 				{
@@ -420,8 +421,14 @@ namespace BizHawk.MultiClient
 
 		private void insertFrameToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MainForm.ReadOnly)
+			if (ReadOnlyCheckBox.Checked)
+			{
 				return;
+			}
+			else
+			{
+				InsertNewFrame();
+			}
 		}
 
 		private void updatePadsOnMovePlaybackToolStripMenuItem_Click(object sender, EventArgs e)
@@ -508,6 +515,11 @@ namespace BizHawk.MultiClient
 
 		private void Insert_Click(object sender, EventArgs e)
 		{
+			InsertNewFrame();
+		}
+
+		private void InsertNewFrame()
+		{
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			for (int index = 0; index < list.Count; index++)
 			{
@@ -516,6 +528,11 @@ namespace BizHawk.MultiClient
 		}
 
 		private void Delete_Click(object sender, EventArgs e)
+		{
+			DeleteFrame();
+		}
+
+		private void DeleteFrame()
 		{
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			for (int index = 0; index < list.Count; index++)
@@ -557,6 +574,20 @@ namespace BizHawk.MultiClient
 				{
 					Global.MainForm.PressFrameAdvance = true;
 				}
+			}
+		}
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			if (ReadOnlyCheckBox.Checked)
+			{
+				ContextMenu_Insert.Enabled = false; //TODO: just hide them, but right now only read-only depenent items are in this menu and I need something to show!
+				ContextMenu_Delete.Enabled = false;
+			}
+			else
+			{
+				ContextMenu_Insert.Enabled = true;
+				ContextMenu_Delete.Enabled = true;
 			}
 		}
 	}

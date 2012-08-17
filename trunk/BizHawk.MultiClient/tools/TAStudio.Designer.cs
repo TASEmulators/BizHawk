@@ -64,8 +64,8 @@
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.Insert = new System.Windows.Forms.ToolStripMenuItem();
-			this.Delete = new System.Windows.Forms.ToolStripMenuItem();
+			this.ContextMenu_Insert = new System.Windows.Forms.ToolStripMenuItem();
+			this.ContextMenu_Delete = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectAll = new System.Windows.Forms.ToolStripMenuItem();
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.ControllersContext = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -213,20 +213,21 @@
 			// insertFrameToolStripMenuItem
 			// 
 			this.insertFrameToolStripMenuItem.Name = "insertFrameToolStripMenuItem";
-			this.insertFrameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-			this.insertFrameToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.insertFrameToolStripMenuItem.Text = "Insert Frame";
+			this.insertFrameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.Insert)));
+			this.insertFrameToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+			this.insertFrameToolStripMenuItem.Text = "Insert New Frame";
 			this.insertFrameToolStripMenuItem.Click += new System.EventHandler(this.insertFrameToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(188, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(244, 6);
 			// 
 			// clearVirtualPadsToolStripMenuItem
 			// 
 			this.clearVirtualPadsToolStripMenuItem.Name = "clearVirtualPadsToolStripMenuItem";
-			this.clearVirtualPadsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.clearVirtualPadsToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
 			this.clearVirtualPadsToolStripMenuItem.Text = "&Clear Controller Holds";
 			this.clearVirtualPadsToolStripMenuItem.Click += new System.EventHandler(this.clearVirtualPadsToolStripMenuItem_Click);
 			// 
@@ -294,31 +295,33 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Insert,
-            this.Delete,
+            this.ContextMenu_Insert,
+            this.ContextMenu_Delete,
             this.SelectAll});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(157, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(248, 70);
+			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
-			// Insert
+			// ContextMenu_Insert
 			// 
-			this.Insert.Name = "Insert";
-			this.Insert.Size = new System.Drawing.Size(156, 22);
-			this.Insert.Text = "Insert Frame(s)";
-			this.Insert.Click += new System.EventHandler(this.Insert_Click);
+			this.ContextMenu_Insert.Name = "ContextMenu_Insert";
+			this.ContextMenu_Insert.ShortcutKeyDisplayString = "Ctrl+Shift+Ins";
+			this.ContextMenu_Insert.Size = new System.Drawing.Size(247, 22);
+			this.ContextMenu_Insert.Text = "Insert New Frame";
+			this.ContextMenu_Insert.Click += new System.EventHandler(this.Insert_Click);
 			// 
-			// Delete
+			// ContextMenu_Delete
 			// 
-			this.Delete.Name = "Delete";
-			this.Delete.Size = new System.Drawing.Size(156, 22);
-			this.Delete.Text = "Delete Frame(s)";
-			this.Delete.Click += new System.EventHandler(this.Delete_Click);
+			this.ContextMenu_Delete.Name = "ContextMenu_Delete";
+			this.ContextMenu_Delete.Size = new System.Drawing.Size(247, 22);
+			this.ContextMenu_Delete.Text = "Delete Frame(s)";
+			this.ContextMenu_Delete.Click += new System.EventHandler(this.Delete_Click);
 			// 
 			// SelectAll
 			// 
 			this.SelectAll.Enabled = false;
 			this.SelectAll.Name = "SelectAll";
-			this.SelectAll.Size = new System.Drawing.Size(156, 22);
+			this.SelectAll.Size = new System.Drawing.Size(247, 22);
 			this.SelectAll.Text = "Select All";
 			// 
 			// ControllerBox
@@ -551,7 +554,7 @@
 		private System.Windows.Forms.ToolStripButton FastFowardToEnd;
 		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem Insert;
+		private System.Windows.Forms.ToolStripMenuItem ContextMenu_Insert;
 		private System.Windows.Forms.ToolStripMenuItem SelectAll;
 		private System.Windows.Forms.GroupBox ControllerBox;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
@@ -564,6 +567,6 @@
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem1;
         private System.Windows.Forms.ToolStripButton FastForward;
         private System.Windows.Forms.ToolStripButton TurboFastForward;
-		private System.Windows.Forms.ToolStripMenuItem Delete;
+		private System.Windows.Forms.ToolStripMenuItem ContextMenu_Delete;
     }
 }
