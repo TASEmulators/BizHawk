@@ -60,6 +60,8 @@
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteInsertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.truncateMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -103,8 +105,6 @@
 			this.SelectionDisplay = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.pasteInsertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.ControllersContext.SuspendLayout();
@@ -247,6 +247,7 @@
 			// clearToolStripMenuItem2
 			// 
 			this.clearToolStripMenuItem2.Name = "clearToolStripMenuItem2";
+			this.clearToolStripMenuItem2.ShortcutKeyDisplayString = "Del";
 			this.clearToolStripMenuItem2.Size = new System.Drawing.Size(207, 22);
 			this.clearToolStripMenuItem2.Text = "Clear";
 			this.clearToolStripMenuItem2.Click += new System.EventHandler(this.clearToolStripMenuItem2_Click);
@@ -279,6 +280,7 @@
 			// insertNumFramesToolStripMenuItem
 			// 
 			this.insertNumFramesToolStripMenuItem.Name = "insertNumFramesToolStripMenuItem";
+			this.insertNumFramesToolStripMenuItem.ShortcutKeyDisplayString = "Ins";
 			this.insertNumFramesToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.insertNumFramesToolStripMenuItem.Text = "Insert # of Frames";
 			this.insertNumFramesToolStripMenuItem.Click += new System.EventHandler(this.insertNumFramesToolStripMenuItem_Click);
@@ -303,6 +305,23 @@
 			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.pasteToolStripMenuItem.Text = "&Paste";
 			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
+			// 
+			// pasteInsertToolStripMenuItem
+			// 
+			this.pasteInsertToolStripMenuItem.Name = "pasteInsertToolStripMenuItem";
+			this.pasteInsertToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.V)));
+			this.pasteInsertToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+			this.pasteInsertToolStripMenuItem.Text = "&Paste Insert";
+			this.pasteInsertToolStripMenuItem.Click += new System.EventHandler(this.pasteInsertToolStripMenuItem_Click);
+			// 
+			// cutToolStripMenuItem
+			// 
+			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
+			this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+			this.cutToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+			this.cutToolStripMenuItem.Text = "&Cut";
+			this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
 			// 
 			// selectAllToolStripMenuItem
 			// 
@@ -629,6 +648,7 @@
 			this.TASView.SelectedIndexChanged += new System.EventHandler(this.TASView_SelectedIndexChanged);
 			this.TASView.Click += new System.EventHandler(this.TASView_Click);
 			this.TASView.DoubleClick += new System.EventHandler(this.TASView_DoubleClick);
+			this.TASView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TASView_KeyDown);
 			this.TASView.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseWheel);
 			// 
 			// Frame
@@ -689,23 +709,6 @@
 			this.label1.Size = new System.Drawing.Size(54, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Selection:";
-			// 
-			// pasteInsertToolStripMenuItem
-			// 
-			this.pasteInsertToolStripMenuItem.Name = "pasteInsertToolStripMenuItem";
-			this.pasteInsertToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.V)));
-			this.pasteInsertToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
-			this.pasteInsertToolStripMenuItem.Text = "&Paste Insert";
-			this.pasteInsertToolStripMenuItem.Click += new System.EventHandler(this.pasteInsertToolStripMenuItem_Click);
-			// 
-			// cutToolStripMenuItem
-			// 
-			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-			this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-			this.cutToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
-			this.cutToolStripMenuItem.Text = "&Cut";
-			this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
 			// 
 			// TAStudio
 			// 

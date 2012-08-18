@@ -18,11 +18,10 @@ namespace BizHawk.MultiClient
 		//click & drag on list view should highlight rows
 		//any event that changes highlighting of listview should update selection display
 		//caret column and caret
-		//Ins/Del hotkeys for Clear and Insert # Frames (set up key listener)
 		//When closing tastudio, don't write the movie file? AskSave() is acceptable however
 		//If null emulator do a base virtualpad so getmnemonic doesn't fail
 		//Right-click - Go to current frame
-		//Clicking a frame should go there
+		//Clicking a frame should go there (currently set to double click)
 		//Multiple timeline system
 		//Macro listview
 		//	Double click brings up a macro editing window
@@ -855,6 +854,19 @@ namespace BizHawk.MultiClient
 		private void cutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			CutSelection();
+		}
+
+		private void TASView_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+				case Keys.Delete:
+					DeleteFrames();
+					break;
+				case Keys.Insert:
+					InsertFrames();
+					break;
+			}
 		}
 	}
 }
