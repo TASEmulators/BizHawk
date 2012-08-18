@@ -359,6 +359,7 @@ namespace BizHawk.MultiClient
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
 			Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
+			UpdateValues();
 		}
 
 		private void PauseButton_Click(object sender, EventArgs e)
@@ -532,12 +533,13 @@ namespace BizHawk.MultiClient
 
 		private void TASView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-
+			UpdateSlicerDisplay();
 		}
 
 		private void TASView_DoubleClick(object sender, EventArgs e)
 		{
 			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
+			UpdateValues();
 		}
 
 		private void Insert_Click(object sender, EventArgs e)
@@ -583,6 +585,8 @@ namespace BizHawk.MultiClient
 				{
 					Global.MainForm.PressFrameAdvance = true;
 				}
+
+				UpdateValues();
 			}
 		}
 

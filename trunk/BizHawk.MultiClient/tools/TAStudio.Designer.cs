@@ -628,6 +628,7 @@
 			this.TASView.View = System.Windows.Forms.View.Details;
 			this.TASView.SelectedIndexChanged += new System.EventHandler(this.TASView_SelectedIndexChanged);
 			this.TASView.Click += new System.EventHandler(this.TASView_Click);
+			this.TASView.DoubleClick += new System.EventHandler(this.TASView_DoubleClick);
 			this.TASView.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseWheel);
 			// 
 			// Frame
