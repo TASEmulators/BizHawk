@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					for (int y = top; y <= bottom; y++)
 					{
-						short pixel = emu.ppu.xbuf[(y * 256) + x];
+						short pixel = emu.ppu.xbuf[(y << 8) + x];
 						if ((pixel & 0x8000) != 0 && useBackdrop)
 						{
 							pixels[((y - top) * width) + (x - left)] = backdrop;
