@@ -71,6 +71,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool resetSignal;
 		public void FrameAdvance(bool render)
 		{
+			videoProvider.FillFrameBuffer();
+
 			lagged = true;
 			if (resetSignal)
 			{
