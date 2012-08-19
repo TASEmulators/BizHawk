@@ -1031,6 +1031,7 @@ namespace BizHawk.Emulation.Sound
             // downsample from native output rate to 44100.
             //CrappyNaiveResampler(nativeSamples, samples);
             MaybeBetterDownsampler(nativeSamples, samples);
+			//LinearDownsampler(nativeSamples, samples);
         }
 
         static void CrappyNaiveResampler(short[] input, short[] output)
@@ -1051,6 +1052,30 @@ namespace BizHawk.Emulation.Sound
         {
             return value - Math.Floor(value);
         }
+
+		/// <summary>
+		/// basic linear audio resampler. sampling rate is inferred from buffer sizes
+		/// </summary>
+		/// <param name="input">stereo s16</param>
+		/// <param name="output">stereo s16</param>
+		static void LinearDownsampler(short[] input, short[] output)
+		{
+			double samplefactor = input.Length / (double)output.Length;
+
+			for (int i = 0; i < output.Length / 2; i++)
+			{
+				// exact position on input stream
+				double inpos = i * samplefactor;
+				// selected interpolation points and weights
+				int pt0 = (int)inpos; // pt1 = pt0 + 1
+				double wt1 = inpos - pt0; // wt0 = 1 - wt1
+				double wt0 = 1.0 - wt1;
+
+				output[i * 2 + 0] = (short)(input[pt0 * 2 + 0] * wt0 + input[pt0 * 2 + 2] * wt1);
+				output[i * 2 + 1] = (short)(input[pt0 * 2 + 1] * wt0 + input[pt0 * 2 + 3] * wt1);
+			}
+		}
+
 
         static void MaybeBetterDownsampler(short[] input, short[] output)
         {
