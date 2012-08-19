@@ -385,7 +385,6 @@ namespace BizHawk.MultiClient
 			//todo - not so much brush object churn?
 
 			messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
-			DrawScreenInfo(g);
 			int line = 1;
 			for (int i = messages.Count - 1; i >= 0; i--, line++)
 			{
