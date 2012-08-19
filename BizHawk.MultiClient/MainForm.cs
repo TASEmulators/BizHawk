@@ -1404,7 +1404,7 @@ namespace BizHawk.MultiClient
 				UpdateStatusSlots();
 				UpdateDumpIcon();
 
-				LastState = Global.Emulator.SaveStateBinary();
+				CaptureRewindState();
 
 				return true;
 			}
@@ -2400,9 +2400,9 @@ namespace BizHawk.MultiClient
 		private void Render()
 		{
 			var video = Global.Emulator.VideoProvider;
-			if (video.BufferHeight != lastHeight || video.BufferWidth != lastWidth)
+			if (video.BufferHeight != lastHeight || video.VirtualWidth != lastWidth)
 			{
-				lastWidth = video.BufferWidth;
+				lastWidth = video.VirtualWidth;
 				lastHeight = video.BufferHeight;
 				FrameBufferResized();
 			}
@@ -2420,14 +2420,18 @@ namespace BizHawk.MultiClient
 			int borderHeight = Size.Height - renderTarget.Size.Height;
 
 			// start at target zoom and work way down until we find acceptable zoom
-			for (; zoom >= 1; zoom--)
+            int videoWidth = video.BufferWidth; // just so its initialized
+            int videoHeight = video.BufferHeight;
+            for (; zoom >= 1; zoom--)
 			{
-				if ((((video.BufferWidth * zoom) + borderWidth) < area.Width) && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+                videoWidth = 320 * zoom;
+                videoHeight = video.BufferHeight * zoom;
+				if ((videoWidth + borderWidth < area.Width) && (videoHeight + borderHeight < area.Height))
 					break;
 			}
 
 			// Change size
-			Size = new Size((video.BufferWidth * zoom) + borderWidth, (video.BufferHeight * zoom + borderHeight));
+			Size = new Size(videoWidth + borderWidth, videoHeight + borderHeight);
 			PerformLayout();
 			Global.RenderPanel.Resized = true;
 
