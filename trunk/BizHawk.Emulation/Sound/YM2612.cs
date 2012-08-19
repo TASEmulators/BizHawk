@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Sound
             switch (register & 0xF0)
             {
                 case 0x20: WriteLowBlock(register, value); break;
-                case 0x30: Write_MUL_DT1(chan, oper, value); break;
+                case 0x30: Write_MUL_DT(chan, oper, value); break;
                 case 0x40: Write_TL(chan, oper, value); break;
                 case 0x50: Write_AR_KS(chan, oper, value); break;
                 case 0x60: Write_DR_AM(chan, oper, value); break;
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Sound
 
             switch (register & 0xF0)
             {
-                case 0x30: Write_MUL_DT1(chan, oper, value); break;
+                case 0x30: Write_MUL_DT(chan, oper, value); break;
                 case 0x40: Write_TL(chan, oper, value); break;
                 case 0x50: Write_AR_KS(chan, oper, value); break;
                 case 0x60: Write_DR_AM(chan, oper, value); break;
@@ -353,12 +353,12 @@ namespace BizHawk.Emulation.Sound
             channel.LeftOutput  = (value & 0x80) != 0;
         }
 
-        void Write_MUL_DT1(int chan, int op, byte value)
+        void Write_MUL_DT(int chan, int op, byte value)
         {
             if (chan < 0) return;
             var oper = Channels[chan].Operators[op];
             oper.MUL_Multiple = value & 15;
-            oper.DT1_Detune = (value >> 4) & 7;
+            oper.DT_Detune = (value >> 4) & 7;
         }
 
         public void Write_TL(int chan, int op, byte value)
@@ -519,7 +519,7 @@ namespace BizHawk.Emulation.Sound
         }
 
         // ====================================================================================
-        //                                     Envelope Generator
+        //                                       Support Tables
         // ====================================================================================
 
         #region tables
@@ -616,7 +616,47 @@ namespace BizHawk.Emulation.Sound
                 0x000, 0x020, 0x040, 0x060, 0x080, 0x0A0, 0x0C0, 0x0E0,
                 0x100, 0x120, 0x140, 0x160, 0x180, 0x1A0, 0x1C0, 0x3FF
             };
+
+        static readonly int[] detuneTable = 
+            {
+                0,  0,  1,  2,  // Key-Code 0
+                0,  0,  1,  2,  // Key-Code 1
+                0,  0,  1,  2,  // Key-Code 2
+                0,  0,  1,  2,  // Key-Code 3
+                0,  1,  2,  2,  // Key-Code 4
+                0,  1,  2,  3,  // Key-Code 5
+                0,  1,  2,  3,  // Key-Code 6
+                0,  1,  2,  3,  // Key-Code 7
+                0,  1,  2,  4,  // Key-Code 8
+                0,  1,  3,  4,  // Key-Code 9
+                0,  1,  3,  4,  // Key-Code 10
+                0,  1,  3,  5,  // Key-Code 11
+                0,  2,  4,  5,  // Key-Code 12
+                0,  2,  4,  6,  // Key-Code 13
+                0,  2,  4,  6,  // Key-Code 14
+                0,  2,  5,  7,  // Key-Code 15
+                0,  2,  5,  8,  // Key-Code 16
+                0,  3,  6,  8,  // Key-Code 17
+                0,  3,  6,  9,  // Key-Code 18
+                0,  3,  7, 10,  // Key-Code 19
+                0,  4,  8, 11,  // Key-Code 20
+                0,  4,  8, 12,  // Key-Code 21
+                0,  4,  9, 13,  // Key-Code 22
+                0,  5, 10, 14,  // Key-Code 23
+                0,  5, 11, 16,  // Key-Code 24
+                0,  6, 12, 17,  // Key-Code 25
+                0,  6, 13, 19,  // Key-Code 26
+                0,  7, 14, 20,  // Key-Code 27
+                0,  8, 16, 22,  // Key-Code 28
+                0,  8, 16, 22,  // Key-Code 29
+                0,  8, 16, 22,  // Key-Code 30
+                0,  8, 16, 22   // Key-Code 31
+            };
         #endregion
+
+        // ====================================================================================
+        //                                     Envelope Generator
+        // ====================================================================================
 
         int egDivisorCounter; // This provides the /3 divisor to run the envelope generator once for every 3 FM sample output ticks.
         int egCycleCounter;   // This provides a rolling counter of the envelope generator update ticks. (/3 divisor already applied)
@@ -755,7 +795,12 @@ namespace BizHawk.Emulation.Sound
                 default: phaseIncrement <<= op.Block - 1; break;
             }
 
-            // TODO: Detune
+            // Apply Detune
+            int detuneAdjustment = detuneTable[(op.KeyCode * 4) + (op.DT_Detune & 3)];
+            if ((op.DT_Detune & 4) != 0)
+                detuneAdjustment = -detuneAdjustment;
+            phaseIncrement += detuneAdjustment;
+            phaseIncrement &= 0x1FFFF; // mask to 17-bits, which is the current size of the register at this point in the calculation. This allows proper detune overflow.
 
             // Apply MUL
             switch (op.MUL_Multiple)
@@ -920,7 +965,7 @@ namespace BizHawk.Emulation.Sound
             public int KS_KeyScale;                                     // 2 bits
             public int SSG_EG;                                          // 4 bits
 
-            public int DT1_Detune;                                      // 3 bits
+            public int DT_Detune;                                       // 3 bits
             public int MUL_Multiple;                                    // 4 bits
 
             public bool AM_AmplitudeModulation;                         // 1 bit
@@ -944,7 +989,7 @@ namespace BizHawk.Emulation.Sound
                 set
                 {
                     egAttenuation = value;
-                    if (egAttenuation < 0) egAttenuation = 0;
+                    if (egAttenuation < 0)    egAttenuation = 0;
                     if (egAttenuation > 1023) egAttenuation = 1023;
                 }
             }
@@ -984,13 +1029,65 @@ namespace BizHawk.Emulation.Sound
             GetSamplesNative(nativeSamples);
 
             // downsample from native output rate to 44100.
-            // TODO this is not good resampling code. I'm not rightly sure it's even correct as linear interpolation goes.
+            //CrappyNaiveResampler(nativeSamples, samples);
+            MaybeBetterDownsampler(nativeSamples, samples);
+        }
+
+        static void CrappyNaiveResampler(short[] input, short[] output)
+        {
+            // this is not good resampling code.
+            int numStereoSamples = output.Length / 2;
+            
             int offset = 0;
             for (int i = 0; i < numStereoSamples; i++)
             {
                 int nativeOffset = ((i * ntscOutputRate) / 44100) * 2;
-                samples[offset++] += nativeSamples[nativeOffset++]; // left
-                samples[offset++] += nativeSamples[nativeOffset]; // right
+                output[offset++] += input[nativeOffset++]; // left
+                output[offset++] += input[nativeOffset];   // right
+            }
+        }
+
+        static double Fraction(double value)
+        {
+            return value - Math.Floor(value);
+        }
+
+        static void MaybeBetterDownsampler(short[] input, short[] output)
+        {
+            // This is still not a good resampler. But it's better than the other one. Unsure how much difference it makes.
+            // The difference with this one is that all source samples will be sampled and weighted, none skipped over.
+            double nativeSamplesPerOutputSample = (double) input.Length / (double) output.Length;
+            int outputStereoSamples = output.Length / 2;
+            int inputStereoSamples = input.Length / 2;
+
+            int offset = 0;
+            for (int i = 0; i < outputStereoSamples; i++)
+            {
+                
+                double startSample = nativeSamplesPerOutputSample * i;
+                double endSample   = nativeSamplesPerOutputSample * (i+1);
+
+                int iStartSample = (int) Math.Floor(startSample);
+                int iEndSample = (int) Math.Floor(endSample);
+                double leftSample = 0;
+                double rightSample = 0;
+                for (int j = iStartSample; j <= iEndSample; j++)
+                {
+                    if (j == inputStereoSamples) 
+                        break;
+
+                    double weight = 1.0;
+
+                    if (j == iStartSample)
+                        weight = 1.0 - Fraction(startSample);
+                    else if (j == iEndSample)
+                        weight = Fraction(endSample);
+
+                    leftSample  += ((double) input[(j * 2) + 0] * weight);
+                    rightSample += ((double) input[(j * 2) + 1] * weight);
+                }
+                output[offset++] = (short) leftSample;
+                output[offset++] = (short) rightSample;
             }
         }
 
