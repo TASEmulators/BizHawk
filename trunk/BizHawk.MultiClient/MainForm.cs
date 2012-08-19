@@ -2217,6 +2217,7 @@ namespace BizHawk.MultiClient
 				}
 
 				reader.Close();
+				Global.OSD.ClearGUIText();
 				UpdateToolsBefore();
 				UpdateToolsAfter();
 				Global.OSD.AddMessage("Loaded state: " + name);
