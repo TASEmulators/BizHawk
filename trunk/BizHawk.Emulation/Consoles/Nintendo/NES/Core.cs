@@ -238,18 +238,39 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public byte DummyReadMemory(ushort addr) { return 0; }
 
+
 		public byte ReadMemory(ushort addr)
 		{
 			byte ret;
-			if (addr < 0x0800) ret = ram[addr];
-			else if(addr >= 0x8000) ret = board.ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
-			else if (addr < 0x1000) ret = ram[addr - 0x0800];
-			else if (addr < 0x1800) ret = ram[addr - 0x1000];
-			else if (addr < 0x2000) ret = ram[addr - 0x1800];
-			else if (addr < 0x4000) ret = ppu.ReadReg(addr & 7);
-			else if (addr < 0x4020) ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
-			else if (addr < 0x6000) ret = board.ReadEXP(addr - 0x4000);
-			else ret = board.ReadWRAM(addr - 0x6000);
+			
+			if (addr >= 0x8000)
+			{
+				ret = board.ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+			}
+			else if (addr < 0x0800)
+			{
+				ret = ram[addr];
+			}
+			else if (addr < 0x1000)
+			{
+				ret = ram[addr & 0x7FF];
+			}
+			else if (addr < 0x4000)
+			{
+				ret = ppu.ReadReg(addr & 7);
+			}
+			else if (addr < 0x4020)
+			{
+				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
+			}
+			else if (addr < 0x6000)
+			{
+				ret = board.ReadEXP(addr - 0x4000);
+			}
+			else
+			{
+				ret = board.ReadWRAM(addr - 0x6000);
+			}
 			
 			//handle breakpoints and stuff.
 			//the idea is that each core can implement its own watch class on an address which will track all the different kinds of monitors and breakpoints and etc.
