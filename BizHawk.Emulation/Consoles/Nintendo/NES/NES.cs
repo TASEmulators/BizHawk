@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public int bottom = 231;
 			public int left = 0;
 			public int right = 255;
-
+			
 			NES emu;
 			public MyVideoProvider(NES emu)
 			{
@@ -130,6 +130,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			int[] pixels = new int[256 * 240];
 			public int[] GetVideoBuffer()
+			{
+				return pixels;
+			}
+
+			public void FillFrameBuffer()
 			{
 				int backdrop = emu.CoreInputComm.NES_BackdropColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
@@ -148,9 +153,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						else pixels[((y - top) * width) + (x - left)] = emu.palette_compiled[pixel & 0x7FFF];
 					}
 				}
-				return pixels;
 			}
-            public int VirtualWidth { get { return BufferWidth; } }
+			public int VirtualWidth { get { return BufferWidth; } }
 			public int BufferWidth { get { return right - left + 1; } }
 			public int BufferHeight { get { return bottom - top + 1; } }
 			public int BackgroundColor { get { return 0; } }
