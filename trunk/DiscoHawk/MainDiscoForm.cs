@@ -62,7 +62,12 @@ namespace BizHawk
 				foreach (var file in files)
 				{
 					var prefs = GetCuePrefs();
-					Disc disc = Disc.FromCuePath(file, prefs);
+					string ext = Path.GetExtension(file).ToUpper();
+					Disc disc = null;
+					if (ext == ".ISO")
+						disc = Disc.FromIsoPath(file);
+					else if(ext == ".CUE")
+						disc = Disc.FromCuePath(file, prefs);
 					string baseName = Path.GetFileNameWithoutExtension(file);
 					baseName += "_hawked";
 					prefs.ReallyDumpBin = true;
@@ -117,7 +122,7 @@ namespace BizHawk
 			if (files == null) return new List<string>();
 			foreach (string str in files)
 			{
-				if (Path.GetExtension(str).ToUpper() != ".CUE")
+				if (Path.GetExtension(str).ToUpper() != ".CUE" && Path.GetExtension(str).ToUpper() != ".ISO")
 				{
 					return new List<string>();
 				}
@@ -126,24 +131,24 @@ namespace BizHawk
 			return ret;
 		}
 
-        private void lblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
-        {
-            var files = validateDrop(e.Data);
+		private void lblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
+		{
+			var files = validateDrop(e.Data);
 			if (files.Count == 0) return;
-            foreach (var file in files)
-            {
+			foreach (var file in files)
+			{
 				using (var disc = Disc.FromCuePath(file, new CueBinPrefs()))
 				{
 					var path = Path.GetDirectoryName(file);
 					var filename = Path.GetFileNameWithoutExtension(file);
 					AudioExtractor.Extract(disc, path, filename);
 				}
-            }
-        }
+			}
+		}
 
-				private void btnAbout_Click(object sender, EventArgs e)
-				{
-					new About().ShowDialog();
-				}
+		private void btnAbout_Click(object sender, EventArgs e)
+		{
+			new About().ShowDialog();
+		}
 	}
 }
