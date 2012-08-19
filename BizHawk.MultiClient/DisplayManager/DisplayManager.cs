@@ -401,7 +401,7 @@ namespace BizHawk.MultiClient
 					float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
 
 					g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
-					g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
+					//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
 
 					if (GUITextList[x].Alert)
 						g.DrawString(GUITextList[x].Message, MessageFont, FixedMessagesColor, posx, posy);
