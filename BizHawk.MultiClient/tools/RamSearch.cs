@@ -594,16 +594,15 @@ namespace BizHawk.MultiClient
 
 		private void SearchListView_QueryItemText(int index, int column, out string text)
 		{
-			text = "";
 			if (column == 0)
 			{
 				text = searchList[index].address.ToString(addressFormatStr);
 			}
-			if (column == 1)
+			else if (column == 1)
 			{
 				text = searchList[index].ValueToString();
 			}
-			if (column == 2)
+			else if (column == 2)
 			{
 				switch (Global.Config.RamSearchPreviousAs)
 				{
@@ -622,9 +621,13 @@ namespace BizHawk.MultiClient
 						break;
 				}
 			}
-			if (column == 3)
+			else if (column == 3)
 			{
 				text = searchList[index].changecount.ToString();
+			}
+			else
+			{
+				text = "";
 			}
 		}
 
