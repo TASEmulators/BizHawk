@@ -385,7 +385,6 @@ namespace BizHawk.MultiClient
 			//todo - not so much brush object churn?
 
 			messages.RemoveAll(m => m != null && DateTime.Now > m.ExpireAt);
-			DrawScreenInfo(g);
 			int line = 1;
 			for (int i = messages.Count - 1; i >= 0; i--, line++)
 			{
@@ -402,14 +401,14 @@ namespace BizHawk.MultiClient
 					float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
 
 					g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
-					g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
+					//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
 
 					if (GUITextList[x].Alert)
 						g.DrawString(GUITextList[x].Message, MessageFont, FixedMessagesColor, posx, posy);
 					else
 						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					return;
 				}
@@ -514,11 +513,11 @@ namespace BizHawk.MultiClient
 
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
-				int r = (int)g.ClipBounds.Width;
-				Point[] p = { new Point(r - 20, 2), 
-								new Point(r - 4, 12), 
-								new Point(r - 20, 22) };
 				//TODO
+				//int r = (int)g.ClipBounds.Width;
+				//Point[] p = { new Point(r - 20, 2), 
+				//				new Point(r - 4, 12), 
+				//				new Point(r - 20, 22) };
 				//g.FillPolygon(new SolidBrush(Color.Red), p);
 				//g.DrawPolygon(new Pen(new SolidBrush(Color.Pink)), p);
 

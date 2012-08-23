@@ -66,6 +66,7 @@
 			// 
 			// linkLabel1
 			// 
+			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.AutoSize = true;
 			this.linkLabel1.Location = new System.Drawing.Point(198, 179);
 			this.linkLabel1.Name = "linkLabel1";
@@ -77,6 +78,7 @@
 			// 
 			// label1
 			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(198, 84);
 			this.label1.Name = "label1";
@@ -86,6 +88,7 @@
 			// 
 			// label2
 			// 
+			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(198, 98);
 			this.label2.Name = "label2";
@@ -118,12 +121,12 @@
 			this.VersionLabel.AutoSize = true;
 			this.VersionLabel.Location = new System.Drawing.Point(201, 56);
 			this.VersionLabel.Name = "VersionLabel";
-			this.VersionLabel.Size = new System.Drawing.Size(194, 13);
+			this.VersionLabel.Size = new System.Drawing.Size(0, 13);
 			this.VersionLabel.TabIndex = 7;
-			this.VersionLabel.Text = "Version 1.0.4a Released June 17, 2012";
 			// 
 			// label5
 			// 
+			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(198, 125);
 			this.label5.Name = "label5";
@@ -133,6 +136,7 @@
 			// 
 			// label6
 			// 
+			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(198, 139);
 			this.label6.Name = "label6";
@@ -142,6 +146,7 @@
 			// 
 			// label7
 			// 
+			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(198, 153);
 			this.label7.Name = "label7";
@@ -168,7 +173,7 @@
 			this.Controls.Add(this.OK);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximumSize = new System.Drawing.Size(900, 438);
-			this.MinimumSize = new System.Drawing.Size(405, 219);
+			this.MinimumSize = new System.Drawing.Size(493, 253);
 			this.Name = "BizBox";
 			this.Text = " BizHawk";
 			this.Load += new System.EventHandler(this.BizBox_Load);

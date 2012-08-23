@@ -124,6 +124,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!(Global.Emulator is NES)) this.Close();
 			Nes = Global.Emulator as NES;
+			Generate(true);
 		}
 
 		private void NESNameTableViewer_Load(object sender, EventArgs e)

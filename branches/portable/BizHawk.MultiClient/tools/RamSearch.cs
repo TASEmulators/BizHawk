@@ -302,9 +302,11 @@ namespace BizHawk.MultiClient
 
 			if (indexes.Count > 0)
 			{
-				Global.MainForm.LoadRamWatch();
+				Global.MainForm.LoadRamWatch(true);
 				for (int x = 0; x < indexes.Count; x++)
+				{
 					Global.MainForm.RamWatch1.AddWatch(searchList[indexes[x]]);
+				}
 			}
 		}
 
@@ -592,16 +594,15 @@ namespace BizHawk.MultiClient
 
 		private void SearchListView_QueryItemText(int index, int column, out string text)
 		{
-			text = "";
 			if (column == 0)
 			{
 				text = searchList[index].address.ToString(addressFormatStr);
 			}
-			if (column == 1)
+			else if (column == 1)
 			{
 				text = searchList[index].ValueToString();
 			}
-			if (column == 2)
+			else if (column == 2)
 			{
 				switch (Global.Config.RamSearchPreviousAs)
 				{
@@ -620,9 +621,13 @@ namespace BizHawk.MultiClient
 						break;
 				}
 			}
-			if (column == 3)
+			else if (column == 3)
 			{
 				text = searchList[index].changecount.ToString();
+			}
+			else
+			{
+				text = "";
 			}
 		}
 

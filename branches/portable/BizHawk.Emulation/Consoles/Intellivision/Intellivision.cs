@@ -15,7 +15,14 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		STIC Stic;
 		PSG Psg;
 
-		public void LoadExecutive_ROM()
+		public void Connect()
+		{
+			Cpu.SetIntRM(Stic.GetSr1());
+			Cpu.SetBusRq(Stic.GetSr2());
+			Stic.SetSst(Cpu.GetBusAk());
+		}
+
+		public void LoadExecutiveRom()
 		{
 			FileStream fs = new FileStream("C:/erom.int", FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -23,18 +30,18 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			int index = 0;
 			// Combine every two bytes into a word.
 			while (index + 1 < erom.Length)
-				Executive_ROM[index / 2] = (ushort)((erom[index++] << 8) | erom[index++]);
+				ExecutiveRom[index / 2] = (ushort)((erom[index++] << 8) | erom[index++]);
 			r.Close();
 			fs.Close();
 		}
 
-		public void LoadGraphics_ROM()
+		public void LoadGraphicsRom()
 		{
 			FileStream fs = new FileStream("C:/grom.int", FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			byte[] grom = r.ReadBytes(2048);
 			for (int index = 0; index < grom.Length; index++)
-				Graphics_ROM[index] = grom[index];
+				GraphicsRom[index] = grom[index];
 			r.Close();
 			fs.Close();
 		}
@@ -43,29 +50,42 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		{
 			Rom = rom;
 			Game = game;
-			LoadExecutive_ROM();
-			LoadGraphics_ROM();
+			LoadExecutiveRom();
+			LoadGraphicsRom();
 			Cart = new Intellicart();
 			if (Cart.Parse(Rom) == -1)
 			{
 				Cart = new Cartridge();
 				Cart.Parse(Rom);
 			}
-			
+
 			Cpu = new CP1610();
 			Cpu.ReadMemory = ReadMemory;
 			Cpu.WriteMemory = WriteMemory;
-			Cpu.LogData();
+			Cpu.Reset();
 
 			Stic = new STIC();
+			Stic.Reset();
+
 			Psg = new PSG();
 
+			Connect();
+
 			CoreOutputComm = new CoreOutputComm();
+
+			Cpu.LogData();
 		}
 
 		public void FrameAdvance(bool render)
 		{
-			Cpu.Execute(999);
+			Cpu.AddPendingCycles(999);
+			while (Cpu.GetPendingCycles() > 0)
+			{
+				Cpu.Execute();
+				Stic.Execute();
+				Connect();
+				Cpu.LogData();
+			}
 		}
 
 

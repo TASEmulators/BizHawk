@@ -12,16 +12,19 @@ namespace BizHawk.MultiClient
 	public partial class TAStudio : Form
 	{
 		//TODO:
+		//Slicer Section:
+			//View clipboard - opens a pop-up with a listview showing the input
+			//Save clipboard as macro - adds to the macro list (todo: macro list)
+		//click & drag on list view should highlight rows
+		//any event that changes highlighting of listview should update selection display
+		//caret column and caret
+		//When closing tastudio, don't write the movie file? AskSave() is acceptable however
 		//If null emulator do a base virtualpad so getmnemonic doesn't fail
 		//Right-click - Go to current frame
-		//Clicking a frame should go there
+		//Clicking a frame should go there (currently set to double click)
 		//Multiple timeline system
 		//Macro listview
 		//	Double click brings up a macro editing window
-		//NES Controls virtualpad (Power-on & Reset, eventually FDS options)
-		//SMS virtualpad
-		//PCE virtualpad
-		//Dynamic virtualpad system based on platform
 		//ensureVisible when recording
 		//Allow hotkeys when TAStudio has focus
 		//Reduce the memory footprint with compression and or dropping frames and rerunning them when requested.
@@ -45,6 +48,16 @@ namespace BizHawk.MultiClient
 			TASView.QueryItemBkColor += new QueryItemBkColorHandler(TASView_QueryItemBkColor);
 			TASView.VirtualMode = true;
 		}
+
+
+		//TODO: move me
+		public class ClipboardEntry
+		{
+			public int frame;
+			public string inputstr;
+		}
+
+		public List<ClipboardEntry> Clipboard = new List<ClipboardEntry>();
 
 		public void UpdateValues()
 		{
@@ -162,6 +175,7 @@ namespace BizHawk.MultiClient
 		{
 			//TODO: don't engage until new/open project
 			//
+			Global.MainForm.PauseEmulator();
 			Engaged = true;
 			Global.OSD.AddMessage("TAStudio engaged");
 			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
@@ -272,7 +286,6 @@ namespace BizHawk.MultiClient
 				saveProjectAsToolStripMenuItem.Enabled = false;
 				recentToolStripMenuItem.Enabled = false;
 				importTASFileToolStripMenuItem.Enabled = false;
-				insertFrameToolStripMenuItem.Enabled = false;
 			}
 
 			LoadTAStudio();
@@ -345,6 +358,7 @@ namespace BizHawk.MultiClient
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
 			Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
+			UpdateValues();
 		}
 
 		private void PauseButton_Click(object sender, EventArgs e)
@@ -361,6 +375,7 @@ namespace BizHawk.MultiClient
 		{
 			if (ReadOnlyCheckBox.Checked)
 			{
+				Global.MainForm.SetReadOnly(true);
 				ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
 
 				if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
@@ -371,6 +386,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
+				Global.MainForm.SetReadOnly(false);
 				ReadOnlyCheckBox.BackColor = Color.LightCoral;
 				if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
 				{
@@ -408,20 +424,38 @@ namespace BizHawk.MultiClient
 
 		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Global.MainForm.ReadOnly)
+			if (ReadOnlyCheckBox.Checked)
 			{
+
+				clearToolStripMenuItem2.Enabled = false;
+				deleteFramesToolStripMenuItem.Enabled = false;
+				cloneToolStripMenuItem.Enabled = false;
 				insertFrameToolStripMenuItem.Enabled = false;
+				insertNumFramesToolStripMenuItem.Enabled = false;
+				truncateMovieToolStripMenuItem.Enabled = false;
+				
 			}
 			else
 			{
+				clearToolStripMenuItem2.Enabled = true;
+				deleteFramesToolStripMenuItem.Enabled = true;
+				cloneToolStripMenuItem.Enabled = true;
 				insertFrameToolStripMenuItem.Enabled = true;
+				insertNumFramesToolStripMenuItem.Enabled = true;
+				truncateMovieToolStripMenuItem.Enabled = true;
 			}
 		}
 
 		private void insertFrameToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MainForm.ReadOnly)
+			if (ReadOnlyCheckBox.Checked)
+			{
 				return;
+			}
+			else
+			{
+				InsertFrames();
+			}
 		}
 
 		private void updatePadsOnMovePlaybackToolStripMenuItem_Click(object sender, EventArgs e)
@@ -498,30 +532,23 @@ namespace BizHawk.MultiClient
 
 		private void TASView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-
+			UpdateSlicerDisplay();
 		}
 
 		private void TASView_DoubleClick(object sender, EventArgs e)
 		{
 			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
+			UpdateValues();
 		}
 
 		private void Insert_Click(object sender, EventArgs e)
 		{
-			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
-			for (int index = 0; index < list.Count; index++)
-			{
-				Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInputFrame(list[index]), (int)list[index]);
-			}
+			InsertFrames();
 		}
 
 		private void Delete_Click(object sender, EventArgs e)
 		{
-			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
-			for (int index = 0; index < list.Count; index++)
-			{
-				Global.MovieSession.Movie.DeleteFrame(list[index]);
-			}
+			DeleteFrames();
 		}
 
 		private static string SaveRecordingAs()
@@ -541,6 +568,305 @@ namespace BizHawk.MultiClient
 				return sfd.FileName;
 			}
 			return "";
+		}
+
+		private void TASView_MouseWheel(object sender, MouseEventArgs e)
+		{
+
+			//if ((Control.MouseButtons & MouseButtons.Middle) > 0) //adelikat: TODO: right-click + mouse wheel won't work because in this dialog, right-click freezes emulation in the main window.  Why? Hex Editor doesn't do this for instance
+			if ((Control.ModifierKeys & Keys.Control) > 0)
+			{
+				if (e.Delta > 0) //Scroll up
+				{
+					Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
+				}
+				else if (e.Delta < 0) //Scroll down
+				{
+					Global.MainForm.PressFrameAdvance = true;
+				}
+
+				UpdateValues();
+			}
+		}
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			if (ReadOnlyCheckBox.Checked)
+			{
+				clearToolStripMenuItem3.Visible = false;
+				ContextMenu_Delete.Visible = false;
+				cloneToolStripMenuItem1.Visible = false;
+				ContextMenu_Insert.Visible = false;
+				insertFramesToolStripMenuItem.Visible = false;
+				toolStripSeparator5.Visible = false;
+				truncateMovieToolStripMenuItem1.Visible = false;
+				toolStripSeparator9.Visible = false;
+			}
+			else
+			{
+				clearToolStripMenuItem3.Visible = true;
+				ContextMenu_Delete.Visible = true;
+				cloneToolStripMenuItem1.Visible = true;
+				ContextMenu_Insert.Visible = true;
+				insertFramesToolStripMenuItem.Visible = true;
+				toolStripSeparator5.Visible = true;
+				truncateMovieToolStripMenuItem1.Visible = true;
+				toolStripSeparator9.Visible = true;
+			}
+		}
+
+		private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Clone();
+		}
+
+		private void cloneToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			Clone();
+		}
+
+		private void deleteFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DeleteFrames();
+		}
+
+		private void InsertFrames()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.InsertBlankFrame(list[index]);
+			}
+
+			UpdateValues();
+		}
+
+		private void DeleteFrames()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.DeleteFrame(list[0]); //TODO: this doesn't allow of non-continuous deletion, instead it should iterate from last to first and remove the iterated value
+			}
+
+			UpdateValues();
+		}
+
+		private void Clone()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInputFrame(list[index]), list[index]);
+			}
+
+			UpdateValues();
+		}
+
+		private void ClearFrames()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.ClearFrame(list[index]);
+			}
+
+			UpdateValues();
+		}
+
+		private void InsertNumFrames()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				InputPrompt prompt = new InputPrompt();
+				prompt.TextInputType = InputPrompt.InputType.UNSIGNED;
+				prompt.SetMessage("How many frames?");
+				prompt.SetInitialValue("1");
+				prompt.SetTitle("Insert new frames");
+				prompt.ShowDialog();
+				if (prompt.UserOK)
+				{
+					int frames = int.Parse(prompt.UserText);
+					for (int i = 0; i < frames; i++)
+					{
+						Global.MovieSession.Movie.InsertBlankFrame(list[0] + i);
+					}
+				}
+			}
+			UpdateValues();
+		}
+
+		private void SelectAll()
+		{
+			for (int i = 0; i < TASView.ItemCount; i++)
+			{
+				TASView.SelectItem(i, true);
+			}
+		}
+
+		private void clearToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			ClearFrames();
+		}
+
+		private void insertNumFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InsertNumFrames();
+		}
+
+		private void insertFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InsertNumFrames();
+		}
+
+		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SelectAll();
+		}
+
+		private void SelectAll_Click(object sender, EventArgs e)
+		{
+			SelectAll();
+		}
+
+		private void TruncateMovie()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				Global.MovieSession.Movie.TruncateMovie(list[0]);
+				UpdateValues();
+			}
+		}
+
+		private void truncateMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TruncateMovie();
+		}
+
+		private void truncateMovieToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			TruncateMovie();
+		}
+
+		private void CopySelectionToClipBoard()
+		{
+			Clipboard.Clear();
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int i = 0; i < list.Count; i++)
+			{
+				ClipboardEntry entry = new ClipboardEntry();
+				entry.frame = list[i];
+				entry.inputstr = Global.MovieSession.Movie.GetInputFrame(list[i]);
+				Clipboard.Add(entry);
+			}
+			UpdateSlicerDisplay();
+		}
+
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CopySelectionToClipBoard();
+		}
+
+		private void UpdateSlicerDisplay()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				SelectionDisplay.Text = list.Count.ToString() + " row";
+			}
+			else
+			{
+				SelectionDisplay.Text = "none";
+			}
+
+			if (Clipboard.Count > 0)
+			{
+				ClipboardDisplay.Text = Clipboard.Count.ToString() + " row";
+			}
+			else
+			{
+				ClipboardDisplay.Text = "none";
+			}
+		}
+
+		private void TASView_Click(object sender, EventArgs e)
+		{
+			UpdateSlicerDisplay();
+		}
+
+		private void PasteSelectionOnTop()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				for (int i = 0; i < Clipboard.Count; i++)
+				{
+					Global.MovieSession.Movie.ModifyFrame(Clipboard[i].inputstr, list[0] + i);
+				}
+			}
+			UpdateValues();
+		}
+
+		private void PasteSelectionInsert()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				for (int i = 0; i < Clipboard.Count; i++)
+				{
+					Global.MovieSession.Movie.InsertFrame(Clipboard[i].inputstr, list[0] + i);
+				}
+			}
+			UpdateValues();
+		}
+
+		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PasteSelectionOnTop();
+		}
+
+		private void pasteInsertToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PasteSelectionInsert();
+		}
+
+		private void CutSelection()
+		{
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			if (list.Count > 0)
+			{
+				Clipboard.Clear();
+				for (int i = 0; i < list.Count; i++)
+				{
+					ClipboardEntry entry = new ClipboardEntry();
+					entry.frame = list[i];
+					entry.inputstr = Global.MovieSession.Movie.GetInputFrame(list[i]);
+					Clipboard.Add(entry);
+					Global.MovieSession.Movie.DeleteFrame(list[0]);
+				}
+
+				UpdateValues();
+			}
+		}
+
+		private void cutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CutSelection();
+		}
+
+		private void TASView_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+				case Keys.Delete:
+					DeleteFrames();
+					break;
+				case Keys.Insert:
+					InsertFrames();
+					break;
+			}
 		}
 	}
 }

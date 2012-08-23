@@ -7,8 +7,29 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 {
 	public sealed class STIC
 	{
-		private ushort[] Registers = new ushort[64];
-		private bool FGBG = false;
+		private bool Sr1, Sr2, Sst, Fgbg = false;
+		private ushort[] Register = new ushort[64];
+		
+		public void Reset()
+		{
+			Sr1 = true;
+			Sr2 = true;
+		}
+
+		public bool GetSr1()
+		{
+			return Sr1;
+		}
+
+		public bool GetSr2()
+		{
+			return Sr2;
+		}
+
+		public void SetSst(bool value)
+		{
+			Sst = value;
+		}
 
 		public ushort? ReadSTIC(ushort addr)
 		{
@@ -19,19 +40,19 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x0021)
-							FGBG = false;
-						return Registers[addr];
+							Fgbg = false;
+						return Register[addr];
 					}
 					else if (addr <= 0x007F)
 						// TODO: OK only during VBlank Period 2.
-						return Registers[addr - 0x0040];
+						return Register[addr - 0x0040];
 					break;
 				case 0x4000:
 					if (addr <= 0x403F)
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x4021)
-							FGBG = false;
+							Fgbg = false;
 					}
 					break;
 				case 0x8000:
@@ -39,7 +60,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x8021)
-							FGBG = false;
+							Fgbg = false;
 					}
 					break;
 				case 0xC000:
@@ -47,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0xC021)
-							FGBG = false;
+							Fgbg = false;
 					}
 					break;
 			}
@@ -63,8 +84,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x0021)
-							FGBG = true;
-						Registers[addr] = value;
+							Fgbg = true;
+						Register[addr] = value;
 						return true;
 					}
 					else if (addr <= 0x007F)
@@ -76,8 +97,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x4021)
-							FGBG = true;
-						Registers[addr - 0x4000] = value;
+							Fgbg = true;
+						Register[addr - 0x4000] = value;
 						return true;
 					}
 					break;
@@ -86,8 +107,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x8021)
-							FGBG = true;
-						Registers[addr & 0x003F] = value;
+							Fgbg = true;
+						Register[addr & 0x003F] = value;
 						return true;
 					}
 					break;
@@ -96,13 +117,18 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0xC021)
-							FGBG = true;
-						Registers[addr - 0xC000] = value;
+							Fgbg = true;
+						Register[addr - 0xC000] = value;
 						return true;
 					}
 					break;
 			}
 			return false;
+		}
+
+		public void Execute()
+		{
+			Sr1 = false;
 		}
 	}
 }

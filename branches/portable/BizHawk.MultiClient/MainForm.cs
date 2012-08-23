@@ -23,7 +23,8 @@ namespace BizHawk.MultiClient
 	public partial class MainForm : Form
 	{
 		public bool INTERIM = true;
-		public const string EMUVERSION = "BizHawk v1.0.6 interim"; //TODO: Get rid of this, only the movie object uses it, maybe it can use assembly info
+		public const string EMUVERSION = "Version 1.0.6 interim";
+		public const string RELEASEDATE = "June 17, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -276,7 +277,16 @@ namespace BizHawk.MultiClient
 				LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
 
 			if (Global.Config.AutoLoadRamWatch)
-				LoadRamWatch();
+			{
+				if (Global.Config.DisplayRamWatch)
+				{
+					LoadRamWatch(false);
+				}
+				else
+				{
+					LoadRamWatch(true);
+				}
+			}
 			if (Global.Config.AutoLoadRamSearch)
 				LoadRamSearch();
 			if (Global.Config.AutoLoadHexEditor)
@@ -983,7 +993,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".WCH")
 			{
-				LoadRamWatch();
+				LoadRamWatch(true);
 				RamWatch1.LoadWatchFile(filePaths[0], false);
 				RamWatch1.DisplayWatchList();
 			}
@@ -1476,7 +1486,7 @@ namespace BizHawk.MultiClient
 				UpdateStatusSlots();
 				UpdateDumpIcon();
 
-				LastState = Global.Emulator.SaveStateBinary();
+				CaptureRewindState();
 
 				return true;
 			}
@@ -1768,7 +1778,7 @@ namespace BizHawk.MultiClient
 				case "Load Named State": LoadStateAs(); break;
 				case "Previous Slot": PreviousSlot(); break;
 				case "Next Slot": NextSlot(); break;
-				case "Ram Watch": LoadRamWatch(); break;
+				case "Ram Watch": LoadRamWatch(true); break;
 				case "Ram Search": LoadRamSearch(); break;
 				case "Ram Poke":
 					{
@@ -2295,6 +2305,7 @@ namespace BizHawk.MultiClient
 				}
 
 				reader.Close();
+				Global.OSD.ClearGUIText();
 				UpdateToolsBefore();
 				UpdateToolsAfter();
 				Global.OSD.AddMessage("Loaded state: " + name);
@@ -2821,16 +2832,21 @@ namespace BizHawk.MultiClient
 				Global.OSD.AddMessage("Movie read+write mode");
 		}
 
-		public void LoadRamWatch()
+		public void LoadRamWatch(bool load_dialog)
 		{
 			if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
 			{
 				RamWatch1 = new RamWatch();
 				if (Global.Config.AutoLoadRamWatch && Global.Config.RecentWatches.Length() > 0)
+				{
 					RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
-				RunLoopBlocked = true;
-				RamWatch1.Show();
-				RunLoopBlocked = false;
+				}
+				if (load_dialog)
+				{
+					RunLoopBlocked = true;
+					RamWatch1.Show();
+					RunLoopBlocked = false;
+				}
 			}
 			else
 				RamWatch1.Focus();

@@ -63,6 +63,7 @@ namespace BizHawk.MultiClient
 			if (!(Global.Emulator is NES)) this.Close();
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			Nes = Global.Emulator as NES;
+			Generate(true);
 		}
 
 		private void LoadConfigSettings()
@@ -79,27 +80,35 @@ namespace BizHawk.MultiClient
 			return (byte)(((PPUBus[address] >> (7 - bit)) & 1));
 		}
 
-		unsafe void Generate()
+		unsafe void Generate(bool now = false)
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 
-			if (Global.Emulator.Frame % RefreshRate.Value == 0)
+			if (Global.Emulator.Frame % RefreshRate.Value == 0 || now)
 			{
 				bool Changed = false;
-				for (int x = 0; x < 0x2000; x++)
-				{
-					PPUBusprev[x] = PPUBus[x];
-					PPUBus[x] = Nes.ppu.ppubus_peek(x);
-					if (PPUBus[x] != PPUBusprev[x])
-						Changed = true;
-				}
 
 				for (int x = 0; x < 0x20; x++)
 				{
 					PALRAMprev[x] = PALRAM[x];
 					PALRAM[x] = Nes.ppu.PALRAM[x];
 					if (PALRAM[x] != PALRAMprev[x])
+					{
 						Changed = true;
+					}
+				}
+				
+				if (!Changed)
+				{
+					for (int x = 0; x < 0x2000; x++)
+					{
+						PPUBusprev[x] = PPUBus[x];
+						PPUBus[x] = Nes.ppu.ppubus_peek(x);
+						if (PPUBus[x] != PPUBusprev[x])
+						{
+							Changed = true;
+						}
+					}
 				}
 
 				int b0 = 0;
@@ -119,9 +128,9 @@ namespace BizHawk.MultiClient
 						PaletteView.spritePalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].Address]);
 					}
 					if (PaletteView.HasChanged())
+					{
 						PaletteView.Refresh();
-
-					
+					}
 
 					System.Drawing.Imaging.BitmapData bmpdata = PatternView.pattern.LockBits(new Rectangle(new Point(0, 0), PatternView.pattern.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 					int* framebuf = (int*)bmpdata.Scan0.ToPointer();
@@ -140,13 +149,14 @@ namespace BizHawk.MultiClient
 								{
 									for (int y = 0; y < 8; y++)
 									{
-										b0 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 0 * 8, x);
-										b1 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
+										int address = (z << 12) + (i << 8) + (j << 4) + y;
+										b0 = (byte)(((PPUBus[address] >> (7 - x)) & 1));
+										b1 = (byte)(((PPUBus[address + 8] >> (7 - x)) & 1));
 
 										value = (byte)(b0 + (b1 << 1));
-										cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
-										int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
-										framebuf[adr + (z * 128)] = cvalue;
+										cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal << 2)]);
+										int adr = (x + (j << 3)) + (y + (i << 3)) * (bmpdata.Stride >> 2);
+										framebuf[adr + (z << 7)] = cvalue;
 									}
 								}
 							}
@@ -187,17 +197,18 @@ namespace BizHawk.MultiClient
 
 						Attributes = Nes.ppu.OAM[BaseAddr + 2];
 						Palette = Attributes & 0x03;
-						//TODO: 8x16 viewing
+
 						for (int x = 0; x < 8; x++)
 						{
 							for (int y = 0; y < 8; y++)
 							{
-								b0 = GetBit(PatAddr + y + 0 * 8, x);
-								b1 = GetBit(PatAddr + y + 1 * 8, x);
+								int address = PatAddr + y;
+								b0 = (byte)(((PPUBus[address] >> (7 - x)) & 1));
+								b1 = (byte)(((PPUBus[address + 8] >> (7 - x)) & 1));
 								value = (byte)(b0 + (b1 << 1));
 								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
 
-								int adr = (x + (r * 8 * 2)) + (y + (n * 8 * 3)) * (bmpdata2.Stride / 4);
+								int adr = (x + (r * 16)) + (y + (n * 24)) * (bmpdata2.Stride >> 2);
 								framebuf2[adr] = cvalue;
 							}
 							if (is8x16)
@@ -205,12 +216,13 @@ namespace BizHawk.MultiClient
 								PatAddr += 0x10;
 								for (int y = 0; y < 8; y++)
 								{
-									b0 = GetBit(PatAddr + y + 0 * 8, x);
-									b1 = GetBit(PatAddr + y + 1 * 8, x);
+									int address = PatAddr + y;
+									b0 = (byte)(((PPUBus[address] >> (7 - x)) & 1));
+									b1 = (byte)(((PPUBus[address + 8] >> (7 - x)) & 1));
 									value = (byte)(b0 + (b1 << 1));
 									cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
 
-									int adr = (x + (r * 8 * 2)) + ((y+8) + (n * 8 * 3)) * (bmpdata2.Stride / 4);
+									int adr = (x + (r << 4)) + ((y+8) + (n * 24)) * (bmpdata2.Stride >> 2);
 									framebuf2[adr] = cvalue;
 								}
 								PatAddr -= 0x10;
@@ -236,6 +248,7 @@ namespace BizHawk.MultiClient
 			Nes = Global.Emulator as NES;
 			ClearDetails();
 			RefreshRate.Value = Global.Config.NESPPURefreshRate;
+			Generate(true);
 		}
 
 		private void ClearDetails()

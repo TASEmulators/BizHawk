@@ -12,6 +12,7 @@
 #include gamedb_sega_8bit.txt
 #include gamedb_pce_hucards.txt
 #include gamedb_pce_cd.txt
+#include gamedb_sega_md.txt
 #include gamedb_a2600.txt
 
 ; ************ TI-83 ************
@@ -24,43 +25,6 @@ D4448D09BBFDE687C04F9E3310E023AB		TI-83 v1.07	TI83		initPC=6ce
 13B0ACA73319CD7617705DD6BD509B8B	B	TI-83 v1.08	TI83		initPC=6ce
 163B7CECDD3862116DFA7F0D650D56AB	B	TI-83 v1.10	TI83		initPC=6ce
 5ACB6614E0004AAF8B9EC706D4E47DFB	B	TI-83 v1.12	TI83		initPC=6ce
-
-; ************ Genesis / MegaDrive ************
-
-F3D65BAA		Air Busters		GEN
-778A0F00		Alex Kidd in the Enchanted Castle	GEN
-7CD8169E		Atomic Robo Kid	GEN
-73DC0DD8		Decap Attack	GEN
-5F0BD984		Fatal Labyrinth	GEN
-5D8BF68B		Gaiares	GEN
-D15F5C3C		Galaxy Force II	GEN
-9F88A32E		Gods	GEN
-E8182B90		Golden Axe	GEN
-725E0A18		Golden Axe II	GEN
-CE36E6CC		Kid Chameleon	GEN
-F015C2AD		Lemmings	GEN
-7BA49EDB		The Lost Vikings	GEN
-79EBA28A		Marble Madness	GEN
-6A70791B		Michael Jackson's Moonwalker	GEN
-8F7DE05A		Might and Magic	GEN
-6EF7104A		Might and Magic III: Isles of Terra	GEN
-58A7F7B4		MUSHA Aleste	GEN
-EE7D9F4A		OutRun	GEN
-0D07D0EF		Phantasy Star 2	GEN
-733DCDD5		Phantasy Star 3: Generations of Doom	GEN
-FE236442		Phantasy Star 4: The End of the Millenium	GEN
-88C8DD94		Quackshot Starring Donald Duck	GEN
-EC6CD5F0		Road Blasters	GEN
-F1E22F43		Sagaia	GEN
-713D377B		Shadow Blasters	GEN
-BB6CF9BB		Shove It! The Warehouse Game	GEN
-F9394E97		Sonic the Hedgehog	GEN
-BFF227C6		Streets of Rage	GEN
-CB2201A3		Super Hang-On	GEN
-EA1BC9AB		Sword of Vermillion	GEN
-0A7148BF		Thunder Force II	GEN
-
-520644C0	V	Strider (Bad dump)	GEN
 
 ; ************ NES / Famicom ************
 

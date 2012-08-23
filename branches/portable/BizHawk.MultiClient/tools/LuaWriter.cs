@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient
 		//TODO:
 		//ability to save new script (currently causes an exception)
 		//New scripts should be added to lua console automatically
-        //make functions is string part of string or comment since the actual way of validating it isn't correct
+		//make functions is string part of string or comment since the actual way of validating it isn't correct
 		//Save fontstyle to config
 		//Line numbers
 		//Option to toggle line numbers
@@ -33,7 +33,7 @@ namespace BizHawk.MultiClient
 		public string CurrentFile = "";
 
 		bool changes = false;
-        bool hasChanged = false;
+		bool hasChanged = false;
 		bool ProcessingText;
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
 		char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
@@ -69,85 +69,130 @@ namespace BizHawk.MultiClient
 			}
 
 			ProcessText();
-
 			hasChanged = false;
 		}
 
-        private void ProcessText()
+		private void ProcessText()
 		{
-            ProcessingText = true;
-            int selPos = LuaText.SelectionStart;
-            int selChars = LuaText.SelectedText.Length;
+			LuaText.InhibitPaint = true;
+			ProcessingText = true;
+			int selPos = LuaText.SelectionStart;
+			int selChars = LuaText.SelectedText.Length;
 
-            LuaText.SelectAll();
-            LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaDefaultTextColor);
-            if (Global.Config.LuaDefaultTextBold)
-                LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
-            else
-                LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
+			LuaText.SelectAll();
+			LuaText.SelectionColor = Color.FromArgb(Global.Config.LuaDefaultTextColor);
+			if (Global.Config.LuaDefaultTextBold)
+				LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Bold);
+			else
+				LuaText.SelectionFont = new Font(LuaText.SelectionFont, FontStyle.Regular);
 
-            AddKeyWords();
-            AddLibraries();
-            AddSymbols();
-            AddComments();
-            AddStrings();
-            AddLongStrings();
+			AddCommentsAndStrings();
+			AddNumbers();
+			AddKeyWords();
+			AddLibraries();
+			AddSymbols();
 
-            ColorText();
-    
-            LuaText.Select(selPos, selChars);
-            ProcessingText = false;
+			ColorText();
+
+			LuaText.Select(selPos, selChars);
+			ProcessingText = false;
+			LuaText.InhibitPaint = false;
+			LuaText.Refresh();
 		}
 
-		private void AddLongStrings()
+		private void AddNumbers()
 		{
 			string temp = LuaText.Text;
-			int firstBracket = temp.IndexOf("["), secondBracket, ending;
-			while (firstBracket >= 0)
+			foreach (Match match in new Regex(@"(\d+\.?\d+|\.\d+|\d+)").Matches(temp))
 			{
-				ending = 0;
-				if (firstBracket > 1 && temp.Substring(firstBracket - 2, 2) == "--")
+				if (!IsThisPartOfStringOrComment(match.Index))
 				{
-					firstBracket = temp.IndexOf("[", firstBracket + 1, temp.Length - firstBracket - 1);
-					if (firstBracket == temp.Length - 1)
-						break;
-				}
-				else if (firstBracket != temp.Length - 1)
-				{
-					secondBracket = temp.IndexOf("[", firstBracket + 1, temp.Length - firstBracket - 1);
-					if (secondBracket >= 0 && IsLongString(temp.Substring(firstBracket, secondBracket - firstBracket + 1)))
-					{
-						if (secondBracket + 1 == temp.Length)
-							ending = temp.Length - 1;
-						else
-						{
-							string tempBracket = GetLongStringClosingBracket(temp.Substring(firstBracket, secondBracket - firstBracket + 1));
-							ending = temp.IndexOf(tempBracket, secondBracket + 1);
-							if (ending < 0)
-								ending = temp.Length;
-							else
-								ending += tempBracket.Length - 1;
-						}
+					char before = ' ', after = ' ';
 
-						//Validate if such text is not part of a comment
-						AddPosition(firstBracket, ending - firstBracket + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold);
-						
-						if (ending < temp.Length - 1)
-							firstBracket = temp.IndexOf("[", ending + 1, temp.Length - ending - 1);
-						else
-							break;
-					}
-					else
+					if (match.Index > 0)
+						before = LuaText.Text[match.Index - 1];
+
+					if (match.Index + match.Length != LuaText.Text.Length)
+						after = LuaText.Text[match.Index + match.Length];
+
+					if (!char.IsLetter(before) && !char.IsLetter(after))
 					{
-						if (secondBracket >= 0 && secondBracket != temp.Length - 1)
-							firstBracket = temp.IndexOf("[", secondBracket, temp.Length - secondBracket - 1);
-						else
-							break;
+						AddPosition(match.Index, match.Length, Global.Config.LuaDecimalColor, Global.Config.LuaDecimalBold, 0);
 					}
 				}
-				else
-					break;
 			}
+		}
+
+		private void AddCommentsAndStrings()
+		{
+			string temp = LuaText.Text;
+			int comment, longcomment, quote, apos, longstring, position = 0;
+
+			while (position <= temp.Length)
+			{
+				comment = temp.IndexOf("--", position);
+				longcomment = temp.IndexOf("--[[", position);
+				quote = temp.IndexOf('"', position);
+				apos = temp.IndexOf('\'', position);
+				longstring = temp.IndexOf("[", position);
+
+				int secondBracket = temp.IndexOf('[', longstring + 1);
+				if (secondBracket >= 0)
+					while (longstring >= 0 && secondBracket >= 0 && longstring != longcomment - 2 && !IsLongString(temp.Substring(longstring, secondBracket - longstring)))
+					{
+						longstring = temp.IndexOf('[', longstring + 1);
+						if (longstring >= 0)
+							secondBracket = temp.IndexOf('[', longstring + 1);
+						if (secondBracket == -1)
+							longstring = -1;
+					}
+				else
+					longstring = -1;
+
+				if (comment >= 0 && (comment < quote || quote == -1) && (comment < apos || apos == -1) && (comment < longstring || longstring == -1))
+				{
+					if (comment < longcomment || longcomment == -1)
+					{
+						position = AddComment(comment);
+					}
+					else if (comment >= longcomment && longcomment >= 0)
+					{
+						position = AddMultiLineComment(longcomment);
+					}
+				}
+				else if (quote >= 0 && (quote < apos || apos == -1) && (quote < longstring || longstring == -1))
+				{
+					position = AddString(quote, '"');
+				}
+				else if (apos >= 0 && (apos < longstring || longstring == -1))
+				{
+					position = AddString(apos, '\'');
+				}
+				else if (longstring >= 0)
+				{
+					position = AddLongString(longstring, secondBracket);
+				}
+
+				position++;
+			}
+		}
+
+		private int AddLongString(int startPos, int secondBracket)
+		{
+			int ending = 0;
+			if (startPos != LuaText.Text.Length - 1)
+			{
+				string tempBracket = GetLongStringClosingBracket(LuaText.Text.Substring(startPos, secondBracket - startPos + 1));
+				ending = LuaText.Text.IndexOf(tempBracket, secondBracket + 1);
+				if (ending < 0)
+					ending = LuaText.Text.Length;
+				else
+					ending += tempBracket.Length - 1;
+			}
+
+			AddPosition(startPos, ending - startPos + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold, 1);
+
+			return ending;
 		}
 
 		private string GetLongStringClosingBracket(string openingBracket)
@@ -170,11 +215,11 @@ namespace BizHawk.MultiClient
 			bool Validated = true;
 
 			foreach (char c in longstring)
-                if (c != '[' && c != '=')
-                {
-                    Validated = false;
-                    break;
-                }
+				if (c != '[' && c != '=')
+				{
+					Validated = false;
+					break;
+				}
 
 			return Validated;
 		}
@@ -191,8 +236,8 @@ namespace BizHawk.MultiClient
 
 				while (selection >= 0)
 				{
-					//Validate if such text is not part of a string or comment
-					AddPosition(selection, 1, Global.Config.LuaSymbolColor, Global.Config.LuaSymbolBold);
+					if(!IsThisPartOfStringOrComment(selection))
+						AddPosition(selection, 1, Global.Config.LuaSymbolColor, Global.Config.LuaSymbolBold, 0);
 
 					currPos = selection + 1;
 					selection = temp.IndexOf(mark, currPos);
@@ -203,72 +248,49 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void AddStrings()
+		private int AddString(int startPos, char mark)
 		{
-			string temp = LuaText.Text;
-			int firstMark, opening, ending, endLine;
+			int ending, endLine;
 
-			char[] chars = { '"', '\'' };
-			foreach (char mark in chars)
+			if (LuaText.GetLineFromCharIndex(startPos) + 1 == LuaText.Lines.Count())
+				endLine = LuaText.Text.Length - 1;
+			else
+				endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(startPos) + 1) - 1;
+
+			ending = 0;
+
+			if (startPos != LuaText.Text.Length - 1)
 			{
-				firstMark = temp.IndexOf(mark.ToString());
-				while (firstMark >= 0)
+				if (startPos + 1 != endLine)
 				{
-					if (LuaText.SelectionColor.ToArgb() != Global.Config.LuaCommentColor)
+					ending = LuaText.Text.IndexOf(mark, startPos + 1, endLine - startPos + 1);
+					if (ending > 0)
 					{
-						opening = firstMark;
-						if (LuaText.GetLineFromCharIndex(opening) + 1 == LuaText.Lines.Count())
-							endLine = temp.Length - 1;
-						else
-							endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(opening) + 1) - 1;
-
-						ending = 0;
-
-						if (opening != temp.Length - 1)
+						while (ending > 0)
 						{
-							if (opening + 1 != endLine)
-							{
-								ending = temp.IndexOf(mark, opening + 1, endLine - opening + 1);
-								if (ending > 0)
-								{
-									while (ending > 0)
-									{
-										if (!IsThisPartOfTheString(temp.Substring(opening, ending - opening + 1)))
-											break;
-										else
-											ending++;
-
-										ending = temp.IndexOf(mark, ending, endLine - opening + 1);
-									}
-								}
-								else
-									ending = endLine;
-							}
-							else
-								ending = endLine;
-						}
-						else
-							ending = endLine;
-
-						if (opening != temp.Length)
-						{
-							//Validate if such text is not part of a comment
-							AddPosition(opening, ending - opening + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold);
-							
-							if (ending >= temp.Length)
-								ending++;
-							else
+							if (!IsThisPartOfTheString(LuaText.Text.Substring(startPos, ending - startPos + 1)))
 								break;
+							else
+								ending++;
 
-							firstMark = temp.IndexOf(mark, ending + 1);
+							ending = LuaText.Text.IndexOf(mark, ending, endLine - startPos + 1);
 						}
-						else
-							break;
 					}
 					else
-						firstMark = temp.IndexOf(mark, firstMark + 1);
+						ending = endLine;
 				}
+				else
+					ending = endLine;
 			}
+			else
+				ending = endLine;
+
+			if (startPos != LuaText.Text.Length)
+			{
+				AddPosition(startPos, ending - startPos + 1, Global.Config.LuaStringColor, Global.Config.LuaStringBold, 1);
+			}
+
+			return ending;
 		}
 
 		private bool IsThisPartOfTheString(string wholestring)
@@ -285,66 +307,83 @@ namespace BizHawk.MultiClient
 			return !(ammount % 2 == 0);
 		}
 
-		private void AddComments()
+		private int AddComment(int startPos)
 		{
-			string temp = LuaText.Text;
-			foreach (Match match in new Regex("--").Matches(temp))
-			{
-				int selection, endComment;
+			int endComment;
 
-				if (match.Index + 4 < temp.Length && temp.Substring(match.Index, 4) == "--[[")
-				{
-					selection = temp.IndexOf("]]");
-					if (selection > 0)
-						endComment = selection - match.Index + 2;
-					else
-						endComment = temp.Length;
+			if (LuaText.GetLineFromCharIndex(startPos) + 1 == LuaText.Lines.Count())
+				endComment = LuaText.Text.Length - startPos;
+			else
+				endComment = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(startPos) + 1) - 1;
 
-					//Validate if such text is not part of a string
-					AddPosition(match.Index, endComment, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold);
-				}
-				else
-				{
-					if (LuaText.GetLineFromCharIndex(match.Index) + 1 == LuaText.Lines.Count())
-						endComment = temp.Length - match.Index;
-					else
-						endComment = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(match.Index) + 1) - match.Index;
+			AddPosition(startPos, endComment - startPos, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold, 1);
 
-					//Validate if such text is not part of a string
-					AddPosition(match.Index, endComment, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold);
-				}
-			}
+			return endComment;
+		}
+
+		private int AddMultiLineComment(int startPos)
+		{
+			int selection, endComment;
+
+			selection = LuaText.Text.IndexOf("]]");
+			if (selection > 0)
+				endComment = selection - startPos + 2;
+			else
+				endComment = LuaText.Text.Length;
+
+			AddPosition(startPos, endComment, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold, 1);
+
+			return endComment;
 		}
 
 		private void AddKeyWords()
 		{
 			foreach (Match match in keyWords.Matches(LuaText.Text))
 			{
-				char before = ' ', after = ' ';
-
-				if (match.Index > 0)
-					if (match.Index > 5 && match.Value != "if" && LuaText.Text.Substring(match.Index - 4, 4) != "else")
-						before = LuaText.Text[match.Index - 1];
-
-				if (match.Index + match.Length != LuaText.Text.Length)
-					if (match.Value != "else" && LuaText.Text.Substring(match.Index, 2) != "if")
-						after = LuaText.Text[match.Index + match.Length];
-
-				if (!char.IsLetterOrDigit(before) && !char.IsLetterOrDigit(after))
+				if (!IsThisPartOfStringOrComment(match.Index))
 				{
-					//Validate if such text is not part of a string or comment
-					AddPosition(match.Index, match.Length, Global.Config.LuaKeyWordColor, Global.Config.LuaKeyWordBold);
+					char before = ' ', after = ' ';
+
+					if (match.Index > 0)
+						if (match.Index > 5 && match.Value != "if" && LuaText.Text.Substring(match.Index - 4, 4) != "else")
+							before = LuaText.Text[match.Index - 1];
+
+					if (match.Index + match.Length != LuaText.Text.Length)
+						if (match.Value != "else" && LuaText.Text.Substring(match.Index, 2) != "if")
+							after = LuaText.Text[match.Index + match.Length];
+
+					if (!char.IsLetterOrDigit(before) && !char.IsLetterOrDigit(after))
+					{
+						AddPosition(match.Index, match.Length, Global.Config.LuaKeyWordColor, Global.Config.LuaKeyWordBold, 1);
+					}
 				}
 			}
 		}
 
-		private void AddPosition(int start, int lenght, int color, bool bold)
+		private bool IsThisPartOfStringOrComment(int startPos)
+		{
+			bool Validated = false;
+
+			foreach (int[] position in pos)
+			{
+				if (position[4] == 1)
+					if (position[0] <= startPos && position[0] + position[1] > startPos)
+					{
+						Validated = true;
+						break;
+					}
+			}
+
+			return Validated;
+		}
+
+		private void AddPosition(int start, int lenght, int color, bool bold, int iscommentorstring)
 		{
 			int IsBold = 0, IndexToAdd = 0;
 			if (bold)
 				IsBold = 1;
 
-			for(int x = 0; x < pos.Count; x++)
+			for (int x = 0; x < pos.Count; x++)
 			{
 				if (start < pos[x][0])
 				{
@@ -355,7 +394,7 @@ namespace BizHawk.MultiClient
 					IndexToAdd = x + 1;
 			}
 
-			pos.Insert(IndexToAdd, new int[] { start, lenght, color, IsBold });
+			pos.Insert(IndexToAdd, new int[] { start, lenght, color, IsBold, iscommentorstring });
 		}
 
 		private void ColorText()
@@ -377,22 +416,24 @@ namespace BizHawk.MultiClient
 		{
 			foreach (Match match in libraryWords.Matches(LuaText.Text))
 			{
-				if (match.Index >= 0)
+				if (!IsThisPartOfStringOrComment(match.Index))
 				{
-                    char before = ' ', after = ' ';
-
-                    if (match.Index > 0)
-                        before = LuaText.Text[match.Index - 1];
-
-                    if (match.Index + match.Length != LuaText.Text.Length)
-                        after = LuaText.Text[match.Index + match.Length];
-
-					if (!char.IsLetterOrDigit(before))
+					if (match.Index >= 0)
 					{
-						if (after == '.')
+						char before = ' ', after = ' ';
+
+						if (match.Index > 0)
+							before = LuaText.Text[match.Index - 1];
+
+						if (match.Index + match.Length != LuaText.Text.Length)
+							after = LuaText.Text[match.Index + match.Length];
+
+						if (!char.IsLetterOrDigit(before))
 						{
-							//Validate if such text is not part of a string or comment
-							AddPosition(match.Index, match.Length, Global.Config.LuaLibraryColor, Global.Config.LuaLibraryBold);
+							if (after == '.')
+							{
+								AddPosition(match.Index, match.Length, Global.Config.LuaLibraryColor, Global.Config.LuaLibraryBold, 0);
+							}
 						}
 					}
 				}
@@ -412,7 +453,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-            list.Append("|coroutine|package|debug|file|io|math|os|package|string|table");
+			list.Append("|coroutine|package|debug|file|io|math|os|package|string|table");
 			libraryWords = new Regex(list.ToString());
 		}
 
@@ -462,9 +503,9 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-            StreamReader sr = new StreamReader(file.FullName);
-            LuaText.Text = sr.ReadToEnd();
-            sr.Close();
+			StreamReader sr = new StreamReader(file.FullName);
+			LuaText.Text = sr.ReadToEnd();
+			sr.Close();
 		}
 
 		private void LuaWriter_DragEnter(object sender, DragEventArgs e)
@@ -491,9 +532,9 @@ namespace BizHawk.MultiClient
 			}
 			else if (changes)
 			{
-                SaveScriptAs();
+				SaveScriptAs();
 			}
-            MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
+			MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
 		}
 
 		private void SaveScript()
@@ -502,7 +543,7 @@ namespace BizHawk.MultiClient
 
 			using (StreamWriter sw = new StreamWriter(CurrentFile))
 			{
-                sw.Write(LuaText.Text);
+				sw.Write(LuaText.Text);
 			}
 
 			NoChanges();
@@ -554,18 +595,18 @@ namespace BizHawk.MultiClient
 
 		}
 
-        private int CountTabsAtBeginningOfLine(string line)
-        {
-            int tabs = 0;
-            foreach (Char c in line)
-            {
-                if (c == '\t')
-                    tabs++;
-                else
-                    break;
-            }
-            return tabs;
-        }
+		private int CountTabsAtBeginningOfLine(string line)
+		{
+			int tabs = 0;
+			foreach (Char c in line)
+			{
+				if (c == '\t')
+					tabs++;
+				else
+					break;
+			}
+			return tabs;
+		}
 
 		private void Changes()
 		{
@@ -575,11 +616,11 @@ namespace BizHawk.MultiClient
 
 		private void LuaText_TextChanged(object sender, EventArgs e)
 		{
-            if (!ProcessingText)
-            {
-                hasChanged = true;
-                Changes();
-            }
+			if (!ProcessingText)
+			{
+				hasChanged = true;
+				Changes();
+			}
 		}
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -590,11 +631,11 @@ namespace BizHawk.MultiClient
 		private void syntaxHighlightingToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LuaWriterColorConfig l = new LuaWriterColorConfig();
-            if (l.ShowDialog() == DialogResult.OK)
-            {
-                ProcessText();  //Update display with new settings
-            }
-            
+			if (l.ShowDialog() == DialogResult.OK)
+			{
+				ProcessText();  //Update display with new settings
+			}
+
 		}
 
 		private void fontToolStripMenuItem_Click(object sender, EventArgs e)
@@ -623,7 +664,7 @@ namespace BizHawk.MultiClient
 				if (IsLibraryWord(currentword))
 				{
 					List<string> libfunctions = Global.MainForm.LuaConsole1.LuaImp.docs.GetFunctionsByLibrary(currentword);
-					
+
 					int x = 0;
 					int y = 0;
 
@@ -633,57 +674,99 @@ namespace BizHawk.MultiClient
 					int topRow;
 
 					currentRow = LuaText.GetLineFromCharIndex(LuaText.SelectionStart);   //Currently selected row
-                    topRow = 0;  //Need to figure this out, maybe LuaText.AutoScrollOffset?
-                    currentColumn = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentRow);
+					topRow = 0;  //Need to figure this out, maybe LuaText.AutoScrollOffset?
+					currentColumn = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentRow);
 					fontHeight = (int)LuaText.Font.GetHeight();   //Explicilty cast to int
 
 					// Vertical position of auto complete box:
-                    // This still needs to take into account the current scroll height of the box.  Currently it only will look correct when scrolled all the way to the top.
-                    // ((Current row - Top row in view) + 1 to make it below the row) * (fontHeight + spaceBetweenLines)) + (Location of the top of the textbox in relation to overall control)
-                    x = ((currentRow - topRow + 1) * (fontHeight + 1)) + LuaText.Location.Y;
+					// This still needs to take into account the current scroll height of the box.  Currently it only will look correct when scrolled all the way to the top.
+					// ((Current row - Top row in view) + 1 to make it below the row) * (fontHeight + spaceBetweenLines)) + (Location of the top of the textbox in relation to overall control)
+					x = ((currentRow - topRow + 1) * (fontHeight + 1)) + LuaText.Location.Y;
 
-                    // Horizontal position of auto complete box:
-                    // (Width of each character in current font on the current line) + (Location of the left of the textbox in relation to overall control)
-                    y = (currentColumn * (fontHeight / 2)) + LuaText.Location.X;  //    ¯\(°_o)/¯  Super-crude estimate for now, doesn't work great
+					// Horizontal position of auto complete box:
+					// (Width of each character in current font on the current line) + (Location of the left of the textbox in relation to overall control)
+					y = (currentColumn * (fontHeight / 2)) + LuaText.Location.X;  //    ¯\(°_o)/¯  Super-crude estimate for now, doesn't work great
 
 					AutoCompleteView.Location = new Point(y, x);
 					AutoCompleteView.Items.Clear();
-					foreach(string function in libfunctions)
+					foreach (string function in libfunctions)
 					{
 						ListViewItem item = new ListViewItem(function);
 						AutoCompleteView.Items.Add(item);
 					}
-                    AutoCompleteView.Visible = true;  //Show window after it has been positioned and set up
-                }
+					AutoCompleteView.Visible = true;  //Show window after it has been positioned and set up
+				}
 			}
 
-            if (e.KeyCode == Keys.Enter)
-            {
-                string[] Words = { "if", "for", "while", "function" };
-                foreach (string Word in Words)
-                {
-                    try
-                    {
-                        int linenumber = LuaText.GetLineFromCharIndex(LuaText.GetFirstCharIndexOfCurrentLine());
-                        int tabs = CountTabsAtBeginningOfLine(LuaText.Lines[linenumber]);
-                        if (LuaText.Lines[linenumber].Substring(0 + tabs, Word.Length) == Word)
-                        {
-                            string str, tabsStr = "";
+			if (e.KeyCode == Keys.Enter)
+			{
+				string[] Words = { "if", "for", "while", "function" };
+				string tabsStr = "";
+				int linenumber = LuaText.GetLineFromCharIndex(LuaText.GetFirstCharIndexOfCurrentLine());
+				int tabs = CountTabsAtBeginningOfLine(LuaText.Lines[linenumber]);
 
-                            for (int a = 1; a <= tabs; a++)
-                                tabsStr += "\t";
+				for (int a = 1; a <= tabs; a++)
+					tabsStr += "\t";
 
-                            str = LuaText.Text.Insert(LuaText.SelectionStart, "\n" +  tabsStr + "\t\n" + tabsStr + "end");
-                            LuaText.Text = str;
-                            LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + 1 + tabs, 0);
-                            e.SuppressKeyPress = true;
-                            break;
-                        }
-                    }
-                    catch { }
-                }
-            }
-            
+				foreach (string Word in Words)
+				{
+					try
+					{
+						if (LuaText.Lines[linenumber].Substring(0 + tabs, Word.Length) == Word)
+						{
+							string str = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr + "\t\n" + tabsStr + "end");
+							LuaText.Text = str;
+							LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + 1 + tabs, 0);
+							e.SuppressKeyPress = true;
+							return;
+						}
+					}
+					catch { }
+				}
+
+				string tempStr = LuaText.Text.Insert(LuaText.SelectionStart, "\n" + tabsStr);
+				LuaText.Text = tempStr;
+				LuaText.Select(LuaText.GetFirstCharIndexFromLine(linenumber + 1) + tabs, 0);
+				e.SuppressKeyPress = true;
+			}
+
+			if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+			{
+				if (AutoCompleteView.Visible)
+				{
+					e.SuppressKeyPress = true;
+					SelectNextItem(e.KeyCode == Keys.Down);
+				}
+			}
+
+
+
+		}
+
+		private void SelectNextItem(bool Next)
+		{
+			if (AutoCompleteView.SelectedItems.Count > 0)
+			{
+				if (Next)
+				{
+					if (AutoCompleteView.FocusedItem == AutoCompleteView.Items[AutoCompleteView.Items.Count - 1])
+						return;
+
+					AutoCompleteView.FocusedItem = AutoCompleteView.Items[AutoCompleteView.Items.IndexOf(AutoCompleteView.SelectedItems[0]) + 1];
+				}
+				else
+				{
+					if (AutoCompleteView.FocusedItem == AutoCompleteView.Items[0])
+						return;
+
+					AutoCompleteView.FocusedItem = AutoCompleteView.Items[AutoCompleteView.Items.IndexOf(AutoCompleteView.SelectedItems[0]) - 1];
+				}
+			}
+			else
+			{
+				if (Next)
+					AutoCompleteView.FocusedItem = AutoCompleteView.Items[0];
+			}
 		}
 
 		private string CurrentWord()
@@ -691,11 +774,15 @@ namespace BizHawk.MultiClient
 			int last = LuaText.SelectionStart;
 
 			int lastSpace = LuaText.Text.Substring(0, last).LastIndexOf(' ');
+			int lastTab = LuaText.Text.Substring(0, last).LastIndexOf('\t');
 			int lastLine = LuaText.Text.Substring(0, last).LastIndexOf('\n');
 			int start = 0;
-			if (lastSpace > lastLine)
+			if (lastSpace > lastLine || lastTab > lastLine)
 			{
-				start = lastSpace;
+				if (lastSpace > lastTab)
+					start = lastSpace;
+				else
+					start = lastTab;
 			}
 			else
 			{
@@ -732,6 +819,7 @@ namespace BizHawk.MultiClient
 				int start = LuaText.SelectionStart;
 				LuaText.Text = LuaText.Text.Insert(start, str);
 				AutoCompleteView.Visible = false;
+				LuaText.Select(start + str.Length, 0);
 			}
 		}
 
@@ -752,10 +840,10 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-        private void LuaText_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            
-        }
+		private void LuaText_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+
+		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -780,11 +868,11 @@ namespace BizHawk.MultiClient
 			Global.Config.LuaLibraryColor = -16711681;
 
 			Global.Config.LuaDefaultTextBold = false;
-            Global.Config.LuaKeyWordBold = false;
-            Global.Config.LuaCommentBold = false;
-            Global.Config.LuaStringBold = false;
-            Global.Config.LuaSymbolBold = false;
-            Global.Config.LuaLibraryBold = false;
+			Global.Config.LuaKeyWordBold = false;
+			Global.Config.LuaCommentBold = false;
+			Global.Config.LuaStringBold = false;
+			Global.Config.LuaSymbolBold = false;
+			Global.Config.LuaLibraryBold = false;
 
 			Global.Config.LuaWriterBackColor = -1;
 			LuaText.BackColor = Color.FromArgb(-1);
@@ -803,63 +891,63 @@ namespace BizHawk.MultiClient
 			ZoomLabel.Text = "Zoom: 100%";
 		}
 
-        private void goToToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            InputPrompt gotodialog = new InputPrompt();
-            gotodialog.FormClosing += (s, a) =>
-                {
-                    if (gotodialog.UserOK)
-                    {
-                        int x;
+		private void goToToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InputPrompt gotodialog = new InputPrompt();
+			gotodialog.FormClosing += (s, a) =>
+				{
+					if (gotodialog.UserOK)
+					{
+						int x;
 
-                        if (!int.TryParse(gotodialog.UserText, out x))
-                        {
-                            a.Cancel = true;
-                            MessageBox.Show("You must enter only numbers.", "Invalid text", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        else if (Convert.ToInt32(gotodialog.UserText) > LuaText.Lines.Length)
-                        {
-                            a.Cancel = true;
-                            MessageBox.Show("You must enter a number between 1 and " + LuaText.Lines.Length.ToString() + '.', "Invalid Line number", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                };
-            gotodialog.Text = "Go To Line";
-            gotodialog.SetMessage("Line Number (1 - " + LuaText.Lines.Length.ToString() + ')');
-            gotodialog.ShowDialog();
-            int linepos = Convert.ToInt32(gotodialog.UserText) - 1;
-            LuaText.Select(LuaText.GetFirstCharIndexFromLine(linepos) + CountTabsAtBeginningOfLine(LuaText.Lines[linepos]), 0);
-        }
+						if (!int.TryParse(gotodialog.UserText, out x))
+						{
+							a.Cancel = true;
+							MessageBox.Show("You must enter only numbers.", "Invalid text", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						}
+						else if (Convert.ToInt32(gotodialog.UserText) > LuaText.Lines.Length)
+						{
+							a.Cancel = true;
+							MessageBox.Show("You must enter a number between 1 and " + LuaText.Lines.Length.ToString() + '.', "Invalid Line number", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						}
+					}
+				};
+			gotodialog.Text = "Go To Line";
+			gotodialog.SetMessage("Line Number (1 - " + LuaText.Lines.Length.ToString() + ')');
+			gotodialog.ShowDialog();
+			int linepos = Convert.ToInt32(gotodialog.UserText) - 1;
+			LuaText.Select(LuaText.GetFirstCharIndexFromLine(linepos) + CountTabsAtBeginningOfLine(LuaText.Lines[linepos]), 0);
+		}
 
-        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LuaText.SelectAll();
-        }
+		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LuaText.SelectAll();
+		}
 
-        private void cutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LuaText.Cut();
-        }
+		private void cutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LuaText.Cut();
+		}
 
-        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LuaText.Copy();
-        }
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LuaText.Copy();
+		}
 
-        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LuaText.Paste();
-        }
+		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LuaText.Paste();
+		}
 
-        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LuaText.Undo();
-        }
+		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LuaText.Undo();
+		}
 
-        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LuaText.Redo();
-        }
+		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LuaText.Redo();
+		}
 
 		private void startWithEmptyScriptToolStripMenuItem_Click(object sender, EventArgs e)
 		{

@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Sound
     // ======================================================================
 
     // TODO: Finish testing Envelope generator
+    // TODO: maybe add guards when changing envelope parameters to immediately change envelope state (ie dont wait for EG cycle?)
     // TODO: Detune
     // TODO: LFO
     // TODO: Switch from Perfect Operator to Accurate Operator.
@@ -27,6 +28,8 @@ namespace BizHawk.Emulation.Sound
     // TODO: MEM delayed samples
     // TODO: CSM mode
     // TODO: SSG-EG
+    // TODO: Seriously, I think we need better resampling code.
+    // TODO: Experiment with low-pass filters, etc.
 
     public sealed class YM2612 : ISoundProvider
     {
@@ -36,7 +39,6 @@ namespace BizHawk.Emulation.Sound
         {
             InitTimers();
             MaxVolume = short.MaxValue;
-            //Channels[2].Operators[3].Debug = true;
         }
 
         // ====================================================================================
@@ -136,18 +138,18 @@ namespace BizHawk.Emulation.Sound
             value &= 15;
             switch (value)
             {
-                case 0: channel = 0; oper = 0; return;
-                case 4: channel = 0; oper = 2; return;
-                case 8: channel = 0; oper = 1; return;
+                case 0:  channel = 0; oper = 0; return;
+                case 4:  channel = 0; oper = 2; return;
+                case 8:  channel = 0; oper = 1; return;
                 case 12: channel = 0; oper = 3; return;
 
-                case 1: channel = 1; oper = 0; return;
-                case 5: channel = 1; oper = 2; return;
-                case 9: channel = 1; oper = 1; return;
+                case 1:  channel = 1; oper = 0; return;
+                case 5:  channel = 1; oper = 2; return;
+                case 9:  channel = 1; oper = 1; return;
                 case 13: channel = 1; oper = 3; return;
 
-                case 2: channel = 2; oper = 0; return;
-                case 6: channel = 2; oper = 2; return;
+                case 2:  channel = 2; oper = 0; return;
+                case 6:  channel = 2; oper = 2; return;
                 case 10: channel = 2; oper = 1; return;
                 case 14: channel = 2; oper = 3; return;
 
@@ -160,18 +162,18 @@ namespace BizHawk.Emulation.Sound
             value &= 15;
             switch (value)
             {
-                case 0: channel = 3; oper = 0; return;
-                case 4: channel = 3; oper = 2; return;
-                case 8: channel = 3; oper = 1; return;
+                case 0:  channel = 3; oper = 0; return;
+                case 4:  channel = 3; oper = 2; return;
+                case 8:  channel = 3; oper = 1; return;
                 case 12: channel = 3; oper = 3; return;
 
-                case 1: channel = 4; oper = 0; return;
-                case 5: channel = 4; oper = 2; return;
-                case 9: channel = 4; oper = 1; return;
+                case 1:  channel = 4; oper = 0; return;
+                case 5:  channel = 4; oper = 2; return;
+                case 9:  channel = 4; oper = 1; return;
                 case 13: channel = 4; oper = 3; return;
 
-                case 2: channel = 5; oper = 0; return;
-                case 6: channel = 5; oper = 2; return;
+                case 2:  channel = 5; oper = 0; return;
+                case 6:  channel = 5; oper = 2; return;
                 case 10: channel = 5; oper = 1; return;
                 case 14: channel = 5; oper = 3; return;
 
@@ -187,7 +189,7 @@ namespace BizHawk.Emulation.Sound
             switch (register & 0xF0)
             {
                 case 0x20: WriteLowBlock(register, value); break;
-                case 0x30: Write_MUL_DT1(chan, oper, value); break;
+                case 0x30: Write_MUL_DT(chan, oper, value); break;
                 case 0x40: Write_TL(chan, oper, value); break;
                 case 0x50: Write_AR_KS(chan, oper, value); break;
                 case 0x60: Write_DR_AM(chan, oper, value); break;
@@ -206,7 +208,7 @@ namespace BizHawk.Emulation.Sound
 
             switch (register & 0xF0)
             {
-                case 0x30: Write_MUL_DT1(chan, oper, value); break;
+                case 0x30: Write_MUL_DT(chan, oper, value); break;
                 case 0x40: Write_TL(chan, oper, value); break;
                 case 0x50: Write_AR_KS(chan, oper, value); break;
                 case 0x60: Write_DR_AM(chan, oper, value); break;
@@ -302,10 +304,11 @@ namespace BizHawk.Emulation.Sound
             // TODO maybe its 4-frequency mode
             // TODO is this right, only reflect change when writing LSB?
 
-            channel.Operators[0].FrequencyNumber = channel.FrequencyNumber; channel.Operators[0].Block = channel.Block;
-            channel.Operators[1].FrequencyNumber = channel.FrequencyNumber; channel.Operators[1].Block = channel.Block;
-            channel.Operators[2].FrequencyNumber = channel.FrequencyNumber; channel.Operators[2].Block = channel.Block;
-            channel.Operators[3].FrequencyNumber = channel.FrequencyNumber; channel.Operators[3].Block = channel.Block;
+            Operator op;
+            op = channel.Operators[0]; op.FrequencyNumber = channel.FrequencyNumber; op.Block = channel.Block; CalcKeyCode(op); CalcRks(op);
+            op = channel.Operators[1]; op.FrequencyNumber = channel.FrequencyNumber; op.Block = channel.Block; CalcKeyCode(op); CalcRks(op);
+            op = channel.Operators[2]; op.FrequencyNumber = channel.FrequencyNumber; op.Block = channel.Block; CalcKeyCode(op); CalcRks(op);
+            op = channel.Operators[3]; op.FrequencyNumber = channel.FrequencyNumber; op.Block = channel.Block; CalcKeyCode(op); CalcRks(op);
         }
 
         static void WriteFrequencyHigh(Channel channel, byte value)
@@ -313,6 +316,27 @@ namespace BizHawk.Emulation.Sound
             channel.FrequencyNumber &= 0x0FF;
             channel.FrequencyNumber |= (value & 15) << 8;
             channel.Block = (value >> 3) & 7;
+        }
+
+        static void CalcKeyCode(Operator op)
+        {
+            int freq = op.FrequencyNumber;
+            bool f11 = ((freq >> 10) & 1) != 0;
+            bool f10 = ((freq >>  9) & 1) != 0;
+            bool f09 = ((freq >>  8) & 1) != 0;
+            bool f08 = ((freq >>  7) & 1) != 0;
+
+            bool n3a = f11 & (f10 | f09 | f08);
+            bool n3b = !f11 & f10 & f09 & f08;
+            bool n3  = n3a | n3b;
+
+            op.KeyCode = (op.Block << 2) | (f11 ? 2 : 0) | (n3 ? 1 :0);
+        }
+
+        static void CalcRks(Operator op)
+        {
+            int shiftVal = 3 - op.KS_KeyScale;
+            op.Rks = op.KeyCode >> shiftVal;
         }
 
         static void Write_Feedback_Algorithm(Channel channel, byte value)
@@ -326,15 +350,15 @@ namespace BizHawk.Emulation.Sound
             channel.FMS_FrequencyModulationSensitivity = value & 3;
             channel.AMS_AmplitudeModulationSensitivity = (value >> 3) & 7;
             channel.RightOutput = (value & 0x40) != 0;
-            channel.LeftOutput = (value & 0x80) != 0;
+            channel.LeftOutput  = (value & 0x80) != 0;
         }
 
-        void Write_MUL_DT1(int chan, int op, byte value)
+        void Write_MUL_DT(int chan, int op, byte value)
         {
             if (chan < 0) return;
             var oper = Channels[chan].Operators[op];
             oper.MUL_Multiple = value & 15;
-            oper.DT1_Detune = (value >> 4) & 7;
+            oper.DT_Detune = (value >> 4) & 7;
         }
 
         public void Write_TL(int chan, int op, byte value)
@@ -350,6 +374,7 @@ namespace BizHawk.Emulation.Sound
             var oper = Channels[chan].Operators[op];
             oper.AR_AttackRate = value & 31;
             oper.KS_KeyScale = value >> 6;
+            CalcRks(oper);
         }
 
         public void Write_DR_AM(int chan, int op, byte value)
@@ -422,12 +447,12 @@ namespace BizHawk.Emulation.Sound
         int TimerALastReset, TimerBLastReset;
 
         byte TimerControl27;
-        bool TimerALoad { get { return (TimerControl27 & 1) != 0; } }
-        bool TimerBLoad { get { return (TimerControl27 & 2) != 0; } }
+        bool TimerALoad   { get { return (TimerControl27 & 1) != 0; } }
+        bool TimerBLoad   { get { return (TimerControl27 & 2) != 0; } }
         bool TimerAEnable { get { return (TimerControl27 & 4) != 0; } }
         bool TimerBEnable { get { return (TimerControl27 & 8) != 0; } }
-        bool TimerAReset { get { return (TimerControl27 & 16) != 0; } }
-        bool TimerBReset { get { return (TimerControl27 & 32) != 0; } }
+        bool TimerAReset  { get { return (TimerControl27 & 16) != 0; } }
+        bool TimerBReset  { get { return (TimerControl27 & 32) != 0; } }
 
         void InitTimers()
         {
@@ -494,7 +519,7 @@ namespace BizHawk.Emulation.Sound
         }
 
         // ====================================================================================
-        //                                     Envelope Generator
+        //                                       Support Tables
         // ====================================================================================
 
         #region tables
@@ -591,7 +616,47 @@ namespace BizHawk.Emulation.Sound
                 0x000, 0x020, 0x040, 0x060, 0x080, 0x0A0, 0x0C0, 0x0E0,
                 0x100, 0x120, 0x140, 0x160, 0x180, 0x1A0, 0x1C0, 0x3FF
             };
+
+        static readonly int[] detuneTable = 
+            {
+                0,  0,  1,  2,  // Key-Code 0
+                0,  0,  1,  2,  // Key-Code 1
+                0,  0,  1,  2,  // Key-Code 2
+                0,  0,  1,  2,  // Key-Code 3
+                0,  1,  2,  2,  // Key-Code 4
+                0,  1,  2,  3,  // Key-Code 5
+                0,  1,  2,  3,  // Key-Code 6
+                0,  1,  2,  3,  // Key-Code 7
+                0,  1,  2,  4,  // Key-Code 8
+                0,  1,  3,  4,  // Key-Code 9
+                0,  1,  3,  4,  // Key-Code 10
+                0,  1,  3,  5,  // Key-Code 11
+                0,  2,  4,  5,  // Key-Code 12
+                0,  2,  4,  6,  // Key-Code 13
+                0,  2,  4,  6,  // Key-Code 14
+                0,  2,  5,  7,  // Key-Code 15
+                0,  2,  5,  8,  // Key-Code 16
+                0,  3,  6,  8,  // Key-Code 17
+                0,  3,  6,  9,  // Key-Code 18
+                0,  3,  7, 10,  // Key-Code 19
+                0,  4,  8, 11,  // Key-Code 20
+                0,  4,  8, 12,  // Key-Code 21
+                0,  4,  9, 13,  // Key-Code 22
+                0,  5, 10, 14,  // Key-Code 23
+                0,  5, 11, 16,  // Key-Code 24
+                0,  6, 12, 17,  // Key-Code 25
+                0,  6, 13, 19,  // Key-Code 26
+                0,  7, 14, 20,  // Key-Code 27
+                0,  8, 16, 22,  // Key-Code 28
+                0,  8, 16, 22,  // Key-Code 29
+                0,  8, 16, 22,  // Key-Code 30
+                0,  8, 16, 22   // Key-Code 31
+            };
         #endregion
+
+        // ====================================================================================
+        //                                     Envelope Generator
+        // ====================================================================================
 
         int egDivisorCounter; // This provides the /3 divisor to run the envelope generator once for every 3 FM sample output ticks.
         int egCycleCounter;   // This provides a rolling counter of the envelope generator update ticks. (/3 divisor already applied)
@@ -632,14 +697,11 @@ namespace BizHawk.Emulation.Sound
                 op.EnvelopeState = EnvelopeState.Decay;
                 if (op.SL_SustainLevel == 0) // If Sustain Level is 0, we skip Decay and go straight to Sustain phase.
                     op.EnvelopeState = EnvelopeState.Sustain;
-                if (op.Debug) Console.WriteLine("Switch to " + op.EnvelopeState);
             }
 
             if (op.EnvelopeState == EnvelopeState.Decay && op.EgAttenuation >= op.Normalized10BitSL)
             {
-                // Switch to Sustain phase
                 op.EnvelopeState = EnvelopeState.Sustain;
-                if (op.Debug) Console.WriteLine("Switch to Sustain");
             }
 
             // At this point, we've determined what envelope phase we're in. Lets do the update.
@@ -648,17 +710,18 @@ namespace BizHawk.Emulation.Sound
             int rate = 0;
             switch (op.EnvelopeState)
             {
-                case EnvelopeState.Attack: rate = op.AR_AttackRate; break;
-                case EnvelopeState.Decay: rate = op.DR_DecayRate; break;
+                case EnvelopeState.Attack:  rate = op.AR_AttackRate; break;
+                case EnvelopeState.Decay:   rate = op.DR_DecayRate; break;
                 case EnvelopeState.Sustain: rate = op.SR_SustainRate; break;
                 case EnvelopeState.Release: rate = (op.RR_ReleaseRate << 1) + 1; break;
             }
 
-            if (rate != 0) // rate=0 is 0 no matter the value of KeyScale.
-                rate = Math.Min((rate * 2) + op.KS_KeyScale, 63);
+            if (rate != 0) // rate=0 is 0 no matter the value of Rks.
+                rate = Math.Min((rate * 2) + op.Rks, 63);
 
             // Now we have rate. figure out shift value and cycle offset
             int shiftValue = egRateCounterShiftValues[rate];
+
             if (egCycleCounter % (1 << shiftValue) == 0)
             {
                 // Update attenuation value this tick
@@ -666,40 +729,36 @@ namespace BizHawk.Emulation.Sound
                 int attenuationAdjustment = egRateIncrementValues[(rate * 8) + updateCycleOffset];
 
                 if (op.EnvelopeState == EnvelopeState.Attack)
-                    op.EgAttenuation -= attenuationAdjustment * (((op.EgAttenuation) / 16) + 1);
+                    op.EgAttenuation += (~op.EgAttenuation * attenuationAdjustment) >> 4;
                 else // One of the decay phases
                     op.EgAttenuation += attenuationAdjustment;
-
-                //if (op.Debug) Console.WriteLine("Attn {0} Adj {1} Cycle {2} Rate {3} Shift {4} Offset {5}", op.EgAttenuation, op.AdjustedEGOutput, egCycleCounter, rate, shiftValue, updateCycleOffset);                
             }
         }
 
         static void KeyOn(Operator op)
         {
             op.PhaseCounter = 0; // Reset Phase Generator
-            //Console.WriteLine("key on");
-            if (op.AR_AttackRate >= 30) // AR of 30 or 31 skips attack phase
+            
+            if (op.AR_AttackRate >= 30) 
             {
-
+                
+                // AR of 30 or 31 skips attack phase
                 op.EgAttenuation = 0; // Force minimum attenuation
 
                 op.EnvelopeState = EnvelopeState.Decay;
                 if (op.SL_SustainLevel == 0) // If Sustain Level is 0, we skip Decay and go straight to Sustain phase.
                     op.EnvelopeState = EnvelopeState.Sustain;
 
-            }
-            else
-            { // Regular Key-On
+            } else {
 
+                // Regular Key-On
                 op.EnvelopeState = EnvelopeState.Attack;
-                // It's notable, though unsurprising, that we do not reset attenuation to max attenuation during a standard KeyOn.
 
             }
         }
 
         static void KeyOff(Operator op)
         {
-            // TODO I feel like it should do more than this. But maybe it doesn't.
             op.EnvelopeState = EnvelopeState.Release;
         }
 
@@ -721,12 +780,8 @@ namespace BizHawk.Emulation.Sound
 
             phase10 += phaseModulationInput10;
             phase10 &= 0x3FF;
-
-
-            int operator_output = OperatorCalc(phase10, op.AdjustedEGOutput);
-            //if (op.Debug) Log.Error("YM2612","SLOT4 eg_out {0} state _ TL {1} volume {2} SL {3} op_out {4} phase {5}", op.AdjustedEGOutput, op.Normalized10BitTL, op.EgAttenuation, op.Normalized10BitSL, operator_output, phase10);
-
-            return operator_output;
+            
+            return OperatorCalc(phase10, op.AdjustedEGOutput);
         }
 
         static void RunPhaseGenerator(Operator op)
@@ -740,12 +795,17 @@ namespace BizHawk.Emulation.Sound
                 default: phaseIncrement <<= op.Block - 1; break;
             }
 
-            // TODO: Detune
+            // Apply Detune
+            int detuneAdjustment = detuneTable[(op.KeyCode * 4) + (op.DT_Detune & 3)];
+            if ((op.DT_Detune & 4) != 0)
+                detuneAdjustment = -detuneAdjustment;
+            phaseIncrement += detuneAdjustment;
+            phaseIncrement &= 0x1FFFF; // mask to 17-bits, which is the current size of the register at this point in the calculation. This allows proper detune overflow.
 
             // Apply MUL
             switch (op.MUL_Multiple)
             {
-                case 0: phaseIncrement /= 2; break;
+                case 0:  phaseIncrement /= 2; break;
                 default: phaseIncrement *= op.MUL_Multiple; break;
             }
 
@@ -905,13 +965,16 @@ namespace BizHawk.Emulation.Sound
             public int KS_KeyScale;                                     // 2 bits
             public int SSG_EG;                                          // 4 bits
 
-            public int DT1_Detune;                                      // 3 bits
+            public int DT_Detune;                                       // 3 bits
             public int MUL_Multiple;                                    // 4 bits
 
             public bool AM_AmplitudeModulation;                         // 1 bit
 
             public int FrequencyNumber;                                 // 11 bits
             public int Block;                                           // 3 bits
+            
+            public int KeyCode;                                         // 5 bits (described on pg 25 of YM2608 docs)
+            public int Rks;                                             // 5 bits (described on pg 29 of YM2608 docs)
 
             // Internal State
 
@@ -926,16 +989,14 @@ namespace BizHawk.Emulation.Sound
                 set
                 {
                     egAttenuation = value;
-                    if (egAttenuation < 0) egAttenuation = 0;
+                    if (egAttenuation < 0)    egAttenuation = 0;
                     if (egAttenuation > 1023) egAttenuation = 1023;
                 }
             }
 
             public int Normalized10BitSL { get { return slTable[SL_SustainLevel]; } }
-            public int Normalized10BitTL { get { return TL_TotalLevel << 3; } } // TODO no idea if this is correct, it's probably not.
-            public int AdjustedEGOutput { get { return Math.Min(egAttenuation + Normalized10BitTL, 1023); } }
-
-            public bool Debug = false;
+            public int Normalized10BitTL { get { return TL_TotalLevel << 3; } }
+            public int AdjustedEGOutput  { get { return Math.Min(egAttenuation + Normalized10BitTL, 1023); } }
         }
 
         public sealed class Channel
@@ -968,13 +1029,90 @@ namespace BizHawk.Emulation.Sound
             GetSamplesNative(nativeSamples);
 
             // downsample from native output rate to 44100.
-            // TODO this is not good resampling code. I'm not rightly sure it's even correct as linear interpolation goes.
+            //CrappyNaiveResampler(nativeSamples, samples);
+            MaybeBetterDownsampler(nativeSamples, samples);
+			//LinearDownsampler(nativeSamples, samples);
+        }
+
+        static void CrappyNaiveResampler(short[] input, short[] output)
+        {
+            // this is not good resampling code.
+            int numStereoSamples = output.Length / 2;
+            
             int offset = 0;
             for (int i = 0; i < numStereoSamples; i++)
             {
                 int nativeOffset = ((i * ntscOutputRate) / 44100) * 2;
-                samples[offset++] += nativeSamples[nativeOffset++]; // left
-                samples[offset++] += nativeSamples[nativeOffset]; // right
+                output[offset++] += input[nativeOffset++]; // left
+                output[offset++] += input[nativeOffset];   // right
+            }
+        }
+
+        static double Fraction(double value)
+        {
+            return value - Math.Floor(value);
+        }
+
+		/// <summary>
+		/// basic linear audio resampler. sampling rate is inferred from buffer sizes
+		/// </summary>
+		/// <param name="input">stereo s16</param>
+		/// <param name="output">stereo s16</param>
+		static void LinearDownsampler(short[] input, short[] output)
+		{
+			double samplefactor = input.Length / (double)output.Length;
+
+			for (int i = 0; i < output.Length / 2; i++)
+			{
+				// exact position on input stream
+				double inpos = i * samplefactor;
+				// selected interpolation points and weights
+				int pt0 = (int)inpos; // pt1 = pt0 + 1
+				double wt1 = inpos - pt0; // wt0 = 1 - wt1
+				double wt0 = 1.0 - wt1;
+
+				output[i * 2 + 0] = (short)(input[pt0 * 2 + 0] * wt0 + input[pt0 * 2 + 2] * wt1);
+				output[i * 2 + 1] = (short)(input[pt0 * 2 + 1] * wt0 + input[pt0 * 2 + 3] * wt1);
+			}
+		}
+
+
+        static void MaybeBetterDownsampler(short[] input, short[] output)
+        {
+            // This is still not a good resampler. But it's better than the other one. Unsure how much difference it makes.
+            // The difference with this one is that all source samples will be sampled and weighted, none skipped over.
+            double nativeSamplesPerOutputSample = (double) input.Length / (double) output.Length;
+            int outputStereoSamples = output.Length / 2;
+            int inputStereoSamples = input.Length / 2;
+
+            int offset = 0;
+            for (int i = 0; i < outputStereoSamples; i++)
+            {
+                
+                double startSample = nativeSamplesPerOutputSample * i;
+                double endSample   = nativeSamplesPerOutputSample * (i+1);
+
+                int iStartSample = (int) Math.Floor(startSample);
+                int iEndSample = (int) Math.Floor(endSample);
+                double leftSample = 0;
+                double rightSample = 0;
+                for (int j = iStartSample; j <= iEndSample; j++)
+                {
+                    if (j == inputStereoSamples) 
+                        break;
+
+                    double weight = 1.0;
+
+                    if (j == iStartSample)
+                        weight = 1.0 - Fraction(startSample);
+                    else if (j == iEndSample)
+                        weight = Fraction(endSample);
+
+                    leftSample  += ((double) input[(j * 2) + 0] * weight);
+                    rightSample += ((double) input[(j * 2) + 1] * weight);
+                }
+                output[offset++] = (short) leftSample;
+                output[offset++] = (short) rightSample;
             }
         }
 
@@ -1001,6 +1139,7 @@ namespace BizHawk.Emulation.Sound
             {
                 MaybeRunEnvelopeGenerator();
 
+                // Generate FM output
                 for (int ch = 0; ch < 6; ch++)
                 {
                     short sample = (short)GetChannelOutput(Channels[ch], channelVolume);

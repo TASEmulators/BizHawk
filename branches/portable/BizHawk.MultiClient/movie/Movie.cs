@@ -81,9 +81,9 @@ namespace BizHawk.MultiClient
 		}
 
 		public void UpdateFileName(string filename)
-        {
-            this.Filename = filename;
-        }
+		{
+			this.Filename = filename;
+		}
 
 		public void StopMovie()
 		{
@@ -94,7 +94,7 @@ namespace BizHawk.MultiClient
 
 		public void CaptureState()
 		{
-			if (true == TastudioOn)
+			if (TastudioOn == true)
 			{
 				byte[] state = Global.Emulator.SaveStateBinary();
 				Log.AddState(state);
@@ -112,9 +112,7 @@ namespace BizHawk.MultiClient
 			{
 				if (frame <= Log.StateFirstIndex())
 				{
-					//Global.MainForm.LoadRom(Global.MainForm.CurrentlyOpenRom,false);
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
-					Global.MainForm.TAStudio1.UpdateValues();
 					if (true == Global.MainForm.EmulatorPaused && 0 != frame)
 					{
 						Global.MainForm.StopOnFrame = frame;
@@ -130,10 +128,7 @@ namespace BizHawk.MultiClient
 				{
 					if (0 == frame)
 					{
-						//Global.MainForm.LoadRom(Global.MainForm.CurrentlyOpenRom, false);
 						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
-						//Global.MainForm.StopOnFrame = frame;
-						Global.MainForm.TAStudio1.UpdateValues();
 					}
 					else
 					{
@@ -164,7 +159,6 @@ namespace BizHawk.MultiClient
 				}
 			}
 			Log.DeleteFrame(frame);
-			Global.MainForm.TAStudio1.UpdateValues();
 		}
 
 		public int StateFirstIndex()
@@ -180,7 +174,7 @@ namespace BizHawk.MultiClient
 		public void ClearSaveRAM()
 		{
 			string x = PathManager.SaveRamPath(Global.Game);
-			
+
 			var file = new FileInfo(PathManager.SaveRamPath(Global.Game));
 			if (file.Exists) file.Delete();
 		}
@@ -195,7 +189,7 @@ namespace BizHawk.MultiClient
 				WriteBackup();
 				MakeBackup = false;
 			}
-			if(truncate) Log.Clear();
+			if (truncate) Log.Clear();
 		}
 
 		public void StartPlayback()
@@ -237,6 +231,17 @@ namespace BizHawk.MultiClient
 				return "";
 		}
 
+		public void ModifyFrame(string record, int frame)
+		{
+			Log.SetFrameAt(frame, record);
+		}
+
+		public void ClearFrame(int frame)
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			Log.SetFrameAt(frame, mg.GetEmptyMnemonic());
+		}
+
 		public void AppendFrame(string record)
 		{
 			Log.AddFrame(record);
@@ -244,9 +249,13 @@ namespace BizHawk.MultiClient
 
 		public void InsertFrame(string record, int frame)
 		{
-			Log.AddFrameAt(record,frame);
+			Log.AddFrameAt(record, frame);
+		}
 
-			Global.MainForm.TAStudio1.UpdateValues();
+		public void InsertBlankFrame(int frame)
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			Log.AddFrameAt(mg.GetEmptyMnemonic(), frame);
 		}
 
 		public void WriteMovie()
@@ -526,7 +535,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void	SetRerecords(int value)
+		public void SetRerecords(int value)
 		{
 			Rerecords = value;
 			Header.SetHeaderLine(MovieHeader.RERECORDS, Rerecords.ToString());
@@ -729,8 +738,8 @@ namespace BizHawk.MultiClient
 				//Future event error
 				MessageBox.Show("The savestate is from frame " + l.MovieLength().ToString() + " which is greater than the current movie length of " +
 					Log.MovieLength().ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					reader.Close();
-					return false;
+				reader.Close();
+				return false;
 			}
 			for (int x = 0; x < stateFrame; x++)
 			{
@@ -874,6 +883,11 @@ namespace BizHawk.MultiClient
 		{
 			StartsFromSavestate = true;
 			Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
+		}
+
+		public void TruncateMovie(int frame)
+		{
+			Log.TruncateMovie(frame);
 		}
 	}
 }

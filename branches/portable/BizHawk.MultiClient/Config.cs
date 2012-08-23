@@ -566,6 +566,8 @@ namespace BizHawk.MultiClient
         public bool LuaSymbolBold = false;
         public int LuaLibraryColor = -16711681;
         public bool LuaLibraryBold = false;
+		public int LuaDecimalColor = -23296;
+		public bool LuaDecimalBold = false;
 		public float LuaWriterFontSize = 11;
 		public string LuaWriterFont = "Courier New";
 		public float LuaWriterZoom = 1;

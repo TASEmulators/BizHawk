@@ -840,6 +840,7 @@
     <None Include="images\atari_controller.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
+    <Content Include="output\gamedb_sega_md.txt" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <Content Include="output\gamedb_pce_cd.txt" />

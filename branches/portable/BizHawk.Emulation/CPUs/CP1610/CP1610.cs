@@ -28,9 +28,39 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				log = new StreamWriter("log_CP1610.txt");
 		}
 
-		public CP1610()
+		public void Reset()
 		{
+			BusAk = true;
+			Interruptible = false;
+			FlagS = FlagC = FlagZ = FlagO = FlagI = FlagD = false;
+			for (int register = 0; register <= 6; register++)
+				Register[register] = 0;
 			RegisterPC = RESET;
+		}
+
+		public bool GetBusAk()
+		{
+			return BusAk;
+		}
+
+		public void SetIntRM(bool value)
+		{
+			IntRM = value;
+		}
+
+		public int GetPendingCycles()
+		{
+			return PendingCycles;
+		}
+
+		public void SetBusRq(bool value)
+		{
+			BusRq = value;
+		}
+
+		public void AddPendingCycles(int cycles)
+		{
+			PendingCycles += cycles;
 		}
 
 		public void LogData()

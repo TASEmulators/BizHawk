@@ -30,6 +30,7 @@ namespace BizHawk.MultiClient
 		private void BizBox_Load(object sender, EventArgs e)
 		{
 			Text = " BizHawk  (SVN r" + SubWCRev.SVN_REV + ")";
+			VersionLabel.Text = MainForm.EMUVERSION + "  Released " + MainForm.RELEASEDATE;
 		}
 	}
 }

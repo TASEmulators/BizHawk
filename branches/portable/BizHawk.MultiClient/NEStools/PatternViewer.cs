@@ -25,6 +25,7 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+			SetStyle(ControlStyles.Opaque, true);
 			this.Size = pSize;
 			this.BackColor = Color.Transparent;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.PatternViewer_Paint);
@@ -32,7 +33,7 @@ namespace BizHawk.MultiClient
 
 		private void PatternViewer_Paint(object sender, PaintEventArgs e)
 		{
-			e.Graphics.DrawImage(pattern, 1, 1);
+			e.Graphics.DrawImage(pattern, 0, 0);
 		}
 
 		public void Screenshot()

@@ -44,11 +44,19 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
+
 			if (currentFile.Length > 0)
+			{
 				LoadWatchFile(currentFile, false);
+			}
 			else
+			{
 				NewWatchList(true);
+			}
 		}
 
 		public List<Watch> GetRamWatchList()
@@ -67,7 +75,10 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch) return;
+			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch)
+			{
+				return;
+			}
 
 			for (int x = 0; x < watchList.Count; x++)
 			{
@@ -175,6 +186,11 @@ namespace BizHawk.MultiClient
 		
 		private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
+			if (index >= watchList.Count)
+			{
+				return;
+			}
+
 			if (column == 0)
 			{
 				if (watchList[index].type == atype.SEPARATOR)
@@ -187,6 +203,11 @@ namespace BizHawk.MultiClient
 		void WatchListView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
+			if (index >= watchList.Count)
+			{
+				return;
+			}
+
 			if (column == 0)    //Address
 			{
 				if (watchList[index].type != atype.SEPARATOR)

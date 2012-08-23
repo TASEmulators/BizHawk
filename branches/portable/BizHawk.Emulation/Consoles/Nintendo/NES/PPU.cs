@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 					if (Reg2002_vblank_active_pending)
 					{
-						if (Reg2002_vblank_active_pending)
+						//if (Reg2002_vblank_active_pending)
 							Reg2002_vblank_active = 1;
 						Reg2002_vblank_active_pending = false;
 					}
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			//hack
 			public bool PAL = false;
-			bool SPRITELIMIT = true;
+			//bool SPRITELIMIT = true;
 	
 		}
 	}

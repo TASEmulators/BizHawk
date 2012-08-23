@@ -535,7 +535,7 @@ namespace BizHawk.MultiClient
 
 			if (address >= 0 || SecondaryHighlightedAddresses.Count > 0)
 			{
-				Global.MainForm.LoadRamWatch();
+				Global.MainForm.LoadRamWatch(true);
 			}
 
 			if (address >= 0)
@@ -1844,7 +1844,7 @@ namespace BizHawk.MultiClient
 			InputPrompt prompt = new InputPrompt();
 			prompt.SetMessage("Enter a set of hex values to search for");
 			prompt.SetCasing(CharacterCasing.Upper);
-			prompt.HexOnly = true;
+			prompt.TextInputType = InputPrompt.InputType.HEX;
 			if (addressHighlighted > 0)
 			{
 				string values = ValueString(GetHighlightedAddress());
