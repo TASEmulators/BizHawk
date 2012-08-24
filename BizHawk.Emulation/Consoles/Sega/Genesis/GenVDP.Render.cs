@@ -35,7 +35,6 @@ namespace BizHawk.Emulation.Consoles.Sega
         void RenderBackgroundScanline(int xScroll, int yScroll, int nameTableBase, int lowPriority, int highPriority)
         {
             int yTile = ((ScanLine + yScroll) / 8) % NameTableHeight;
-            int yOfs = (ScanLine + yScroll) % 8;
 
             // this is hellllla slow. but not optimizing until we implement & understand
             // all scrolling modes, shadow & hilight, etc.
@@ -45,6 +44,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 int xTile = Math.Abs(((x + (1024-xScroll)) / 8) % NameTableWidth);
                 int xOfs = Math.Abs((x + (1024-xScroll)) & 7);
+                int yOfs = (ScanLine + yScroll) % 8;
                 int cellOfs = nameTableBase + (yTile * NameTableWidth * 2) + (xTile * 2);
                 int nameTableEntry = VRAM[cellOfs] | (VRAM[cellOfs+1] << 8);
                 int patternNo = nameTableEntry & 0x7FF;
@@ -72,8 +72,6 @@ namespace BizHawk.Emulation.Consoles.Sega
             // todo scroll values
             int hscroll = VRAM[HScrollTableAddr + 0] | (VRAM[HScrollTableAddr + 1] << 8);
             hscroll &= 0x3FF;
-            //Console.WriteLine("ScrollA: " + hscroll);
-            //hscroll = 24;
             int vscroll = VSRAM[0] & 0x3FFF;
             RenderBackgroundScanline(hscroll, vscroll, NameTableAddrA, 2, 5);
         }
@@ -82,8 +80,6 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             int hscroll = VRAM[HScrollTableAddr + 2] | (VRAM[HScrollTableAddr + 3] << 8);
             hscroll &= 0x3FF;
-            //Console.WriteLine("ScrollB: " + hscroll);
-            //hscroll = 24;
             int vscroll = VSRAM[1] & 0x3FFF;
             RenderBackgroundScanline(hscroll, vscroll, NameTableAddrB, 1, 4);
         }
