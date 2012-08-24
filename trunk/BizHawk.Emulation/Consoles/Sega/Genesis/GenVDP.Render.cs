@@ -78,17 +78,15 @@ namespace BizHawk.Emulation.Consoles.Sega
         void RenderScrollA()
         {
             // todo scroll values
-            int hscroll = VRAM[HScrollTableAddr + 0] | (VRAM[HScrollTableAddr + 1] << 8);
-            hscroll &= 0x3FF;
-            int vscroll = VSRAM[0] & 0x3FFF;
+            int hscroll = CalcHScrollPlaneA(ScanLine);
+            int vscroll = VSRAM[0] & 0x3FF;
             RenderBackgroundScanline(hscroll, vscroll, NameTableAddrA, 2, 5);
         }
 
         void RenderScrollB()
         {
-            int hscroll = VRAM[HScrollTableAddr + 2] | (VRAM[HScrollTableAddr + 3] << 8);
-            hscroll &= 0x3FF;
-            int vscroll = VSRAM[1] & 0x3FFF;
+            int hscroll = CalcHScrollPlaneB(ScanLine);
+            int vscroll = VSRAM[1] & 0x3FF;
             RenderBackgroundScanline(hscroll, vscroll, NameTableAddrB, 1, 4);
         }
 
@@ -194,6 +192,36 @@ namespace BizHawk.Emulation.Consoles.Sega
             public bool Priority;
             public bool HFlip;
             public bool VFlip;
+        }
+
+        int CalcHScrollPlaneA(int line)
+        {
+            int ofs = 0;
+            switch (Registers[11] & 3)
+            {
+                case 0: ofs = HScrollTableAddr; break;
+                case 1: ofs = HScrollTableAddr + ((line & 7) * 4); break;
+                case 2: ofs = HScrollTableAddr + ((line & ~7) * 4); break;
+                case 3: ofs = HScrollTableAddr + (line * 4); break;
+            }
+
+            int value = VRAM[ofs] | (VRAM[ofs + 1] << 8);
+            return value & 0x3FF;
+        }
+
+        int CalcHScrollPlaneB(int line)
+        {
+            int ofs = 0;
+            switch (Registers[11] & 3)
+            {
+                case 0: ofs = HScrollTableAddr; break;
+                case 1: ofs = HScrollTableAddr + ((line & 7) * 4); break;
+                case 2: ofs = HScrollTableAddr + ((line & ~7) * 4); break;
+                case 3: ofs = HScrollTableAddr + (line * 4); break;
+            }
+
+            int value = VRAM[ofs + 2] | (VRAM[ofs + 3] << 8);
+            return value & 0x3FF;
         }
     }
 }
