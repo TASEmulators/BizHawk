@@ -4,6 +4,14 @@ namespace BizHawk.Emulation.Consoles.Sega
 {
     public partial class GenVDP
     {
+        // Priority buffer contents have the following values:
+        // 0 = Backdrop color
+        // 1 = Plane B Low Priority
+        // 2 = Plane A Low Priority
+        // 4 = Plane B High Priority
+        // 5 = Plane A High Priority
+        // 9 = Sprite has been drawn
+
         byte[] PriorityBuffer = new byte[320];
 
         // TODO, should provide startup register values.
@@ -21,8 +29,8 @@ namespace BizHawk.Emulation.Consoles.Sega
                 RenderSpritesScanline();
             }
 
-            if (ScanLine == 223) // shrug
-                RenderPalette();
+            //if (ScanLine == 223) // shrug
+                //RenderPalette();
         }
 
         void RenderPalette()
@@ -100,6 +108,9 @@ namespace BizHawk.Emulation.Consoles.Sega
                     goto nextSprite;
                 if (sprite.X + sprite.WidthPixels <= 0) 
                     goto nextSprite;
+                if (sprite.X == -128)
+                    throw new Exception("bleeeh"); // masking code is not really tested
+                    //break; // TODO this satisfies masking mode 1 but not masking mode 2
 
                 if (sprite.HeightCells == 2)
                     sprite.HeightCells = 2;
@@ -117,14 +128,14 @@ namespace BizHawk.Emulation.Consoles.Sega
                         if (sprite.X + xi < 0 || sprite.X + xi >= FrameWidth)
                             continue;
 
-                        if (sprite.Priority && PriorityBuffer[sprite.X + xi] >= 6) continue;
-                        if (PriorityBuffer[sprite.X + xi] >= 3) continue;
+                        if (sprite.Priority == false && PriorityBuffer[sprite.X + xi] >= 3) continue;
+                        if (PriorityBuffer[sprite.X + xi] == 9) continue;
 
                         int pixel = PatternBuffer[((pattern + ((xi / 8) * sprite.HeightCells)) * 64) + ((yline & 7) * 8) + (xi & 7)];
                         if (pixel != 0)
                         {
                             FrameBuffer[scanLineBase + sprite.X + xi] = Palette[paletteBase + pixel];
-                            PriorityBuffer[sprite.X + xi] = sprite.Priority ? (byte) 6 : (byte) 3;
+                            PriorityBuffer[sprite.X + xi] = 9;
                         }
                     }
                 } else { // HFlip
@@ -135,14 +146,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                         if (sprite.X + xi < 0 || sprite.X + xi >= FrameWidth)
                             continue;
 
-                        if (sprite.Priority && PriorityBuffer[sprite.X + xi] >= 6) continue;
-                        if (PriorityBuffer[sprite.X + xi] >= 3) continue;
+                        if (sprite.Priority == false && PriorityBuffer[sprite.X + xi] >= 3) continue;
 
                         int pixel = PatternBuffer[((pattern + ((-xi / 8) * sprite.HeightCells)) * 64) + ((yline & 7) * 8) + (7 - (xi & 7))];
                         if (pixel != 0)
                         {
                             FrameBuffer[scanLineBase + sprite.X + xi] = Palette[paletteBase + pixel];
-                            PriorityBuffer[sprite.X + xi] = sprite.Priority ? (byte) 6 : (byte) 3;
+                            PriorityBuffer[sprite.X + xi] = 9;
                         }
                     }
                 }
