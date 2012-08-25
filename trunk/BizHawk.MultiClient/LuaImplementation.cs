@@ -1969,8 +1969,13 @@ namespace BizHawk.MultiClient
 
 			LuaTextBox textbox = new LuaTextBox();
 			SetText(textbox, caption);
-			SetLocation(textbox, X, Y);
-			SetSize(textbox, X, Y);
+
+            if(X != null && Y != null)
+			    SetLocation(textbox, X, Y);
+
+            if (width != null & height != null)
+                SetSize(textbox, width, height);
+
 			if (boxtype != null)
 			{
 				switch (boxtype.ToString().ToUpper())
@@ -2061,6 +2066,28 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+        public void forms_setproperty(object handle, object property, object value)
+        {
+            IntPtr ptr = new IntPtr(LuaInt(handle));
+            foreach (LuaWinform form in LuaForms)
+            {
+                if (form.Handle == ptr)
+                {
+                    form.GetType().GetProperty(property.ToString()).SetValue(form, value, null);
+                }
+                else
+                {
+                    foreach (Control control in form.Controls)
+                    {
+                        if (control.Handle == ptr)
+                        {
+                            control.GetType().GetProperty(property.ToString()).SetValue(control, value, null);
+                        }
+                    }
+                }
+            }
+        }
+
 		public void forms_addclick(object handle, LuaFunction lua_event)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
@@ -2118,6 +2145,30 @@ namespace BizHawk.MultiClient
 
 			return "";
 		}
+
+        public string forms_getproperty(object handle, object property)
+        {
+            IntPtr ptr = new IntPtr(LuaInt(handle));
+            foreach (LuaWinform form in LuaForms)
+            {
+                if (form.Handle == ptr)
+                {
+                    return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
+                }
+                else
+                {
+                    foreach (Control control in form.Controls)
+                    {
+                        if (control.Handle == ptr)
+                        {
+                            return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
+                        }
+                    }
+                }
+            }
+
+            return "";
+        }
 
 		public LuaTable input_getmouse()
 		{
