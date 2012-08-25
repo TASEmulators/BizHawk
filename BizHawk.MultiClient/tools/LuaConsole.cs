@@ -78,6 +78,8 @@ namespace BizHawk.MultiClient
 				else if (luaList[index].Enabled && luaList[index].Paused)
 					color = Color.IndianRed;
 			}
+
+            UpdateNumberOfScripts();
 		}
 
 		private void LuaListView_QueryItemText(int index, int column, out string text)
@@ -118,7 +120,6 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < luaList.Count; x++)
 				luaList[x].Enabled = false;
 			Changes(true);
-			UpdateNumberOfScripts();
 		}
 
 		public void Restart()
@@ -235,7 +236,6 @@ namespace BizHawk.MultiClient
 			{
 				LoadLuaFile(file.FullName);
 				DisplayLuaList();
-				UpdateNumberOfScripts();
 			}
 		}
 
@@ -293,7 +293,6 @@ namespace BizHawk.MultiClient
 				}
 			}
 			LuaListView.Refresh();
-			UpdateNumberOfScripts();
 			Changes(true);
 		}
 
@@ -399,7 +398,6 @@ namespace BizHawk.MultiClient
 				StopAllScripts();
 				luaList.Clear();
 				DisplayLuaList();
-				UpdateNumberOfScripts();
 				currentSessionFile = "";
 				Changes(false);
 			}
@@ -439,7 +437,6 @@ namespace BizHawk.MultiClient
 				indexes.Clear();
 				DisplayLuaList();
 			}
-			UpdateNumberOfScripts();
 		}
 
 		private void removeScriptToolStripMenuItem_Click(object sender, EventArgs e)
@@ -580,7 +577,6 @@ namespace BizHawk.MultiClient
 		private void LoadLuaFromRecent(string path)
 		{
 			LoadLuaFile(path);
-			UpdateNumberOfScripts();
 		}
 
 		private bool LuaAlreadyInSession(string path)
@@ -608,14 +604,11 @@ namespace BizHawk.MultiClient
 					{
 						LoadLuaFile(path);
 						DisplayLuaList();
-						UpdateNumberOfScripts();
 					}
 					else if (Path.GetExtension(path) == (".luases"))
 					{
 						LoadLuaSession(path);
 						RunLuaScripts();
-						DisplayLuaList();
-						UpdateNumberOfScripts();
 						return;
 					}
 				}
@@ -832,7 +825,6 @@ namespace BizHawk.MultiClient
 				LoadLuaSession(file.FullName);
 				RunLuaScripts();
 				DisplayLuaList();
-				UpdateNumberOfScripts();
 			}
 		}
 
@@ -875,7 +867,6 @@ namespace BizHawk.MultiClient
 						luaList[i].Enabled = false;
 						luaList[i].Thread = null;
 						AddText(ex.ToString());
-						UpdateNumberOfScripts();
 					}
 					else MessageBox.Show(ex.ToString());
 				}
@@ -1049,7 +1040,6 @@ namespace BizHawk.MultiClient
 				}
 				RunLuaScripts();
 				DisplayLuaList();
-				UpdateNumberOfScripts();
 				//ClearOutput();
                 LuaListView.Refresh();
 				currentSessionFile = file;
@@ -1224,7 +1214,6 @@ namespace BizHawk.MultiClient
 				}
 			}
 			LuaListView.Refresh();
-			UpdateNumberOfScripts();
 		}
 
 		private void pauseResumeToolStripMenuItem_Click(object sender, EventArgs e)
