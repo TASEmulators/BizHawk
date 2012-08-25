@@ -281,6 +281,7 @@ namespace BizHawk.MultiClient
 			"pause",
 			"unpause",
 			"togglepause",
+			"ispaused",
 			"speedmode",
 			"framecount",
 			"lagcount",
@@ -807,6 +808,11 @@ namespace BizHawk.MultiClient
 		public void emu_togglepause()
 		{
 			Global.MainForm.TogglePause();
+		}
+
+		public bool emu_ispaused()
+		{
+			return Global.MainForm.EmulatorPaused;
 		}
 
 		public int emu_framecount()
@@ -1796,7 +1802,9 @@ namespace BizHawk.MultiClient
 			Global.MainForm.LoadCheatsWindow();
 		}
 
-		//Winforms
+		//----------------------------------------------------
+		//Winforms library
+		//----------------------------------------------------
 		public List<LuaWinform> LuaForms = new List<LuaWinform>();
 
 		public int forms_newform(object Width = null, object Height = null, object title = null)
@@ -1909,7 +1917,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null)
+		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null, object width = null, object height = null)
 		{
 			LuaWinform form = GetForm(form_handle);
 			if (form == null)
@@ -1921,11 +1929,17 @@ namespace BizHawk.MultiClient
 			SetText(button, caption);
 			form.Controls.Add(button);
 			form.Control_Events.Add(new LuaWinform.Lua_Event(button.Handle, lua_event));
-			SetLocation(button, X, Y);
+
+			if (X != null && Y != null)
+				SetLocation(button, X, Y);
+
+			if (width != null & height != null)
+				SetSize(button, width, height);
+
 			return (int)button.Handle;
 		}
 
-		public int forms_label(object form_handle, object caption, object X = null, object Y = null)
+		public int forms_label(object form_handle, object caption, object X = null, object Y = null, object width = null, object height = null)
 		{
 			LuaWinform form = GetForm(form_handle);
 			if (form == null)
@@ -1936,7 +1950,12 @@ namespace BizHawk.MultiClient
 			Label label = new Label();
 			SetText(label, caption);
 			form.Controls.Add(label);
-			SetLocation(label, X, Y);
+			if (X != null && Y != null)
+				SetLocation(label, X, Y);
+
+			if (width != null & height != null)
+				SetSize(label, width, height);
+
 			return (int)label.Handle;
 		}
 

@@ -436,6 +436,7 @@ namespace BizHawk.MultiClient
 				}
 				indexes.Clear();
 				DisplayLuaList();
+				UpdateNumberOfScripts();
 			}
 		}
 
