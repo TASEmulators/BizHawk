@@ -1916,66 +1916,7 @@ namespace BizHawk.MultiClient
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD || Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
-				{
-					Global.MovieSession.Movie.CaptureState();
-					Global.MovieSession.LatchInputFromLog();
-
-					if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
-					{
-						if (Global.MovieSession.MultiTrack.IsActive)
-						{
-							Global.MovieSession.LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
-						}
-						else
-						{
-							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-						}
-
-						//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
-						//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
-					}
-				}
-				else if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
-				{
-					Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-				}
-
-				if (-1 != StopOnFrame && StopOnFrame == Global.Emulator.Frame + 1)
-				{
-					if (StopOnFrame == Global.MovieSession.Movie.LogLength())
-					{
-						Global.MovieSession.Movie.SetMovieFinished();
-					}
-					if (true == Global.MovieSession.Movie.TastudioOn)
-					{
-						PauseEmulator();
-						StopOnFrame = -1;
-					}
-					if (RestoreReadWriteOnStop == true)
-					{
-						Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
-						RestoreReadWriteOnStop = false;
-					}
-				}
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
-				{
-					if (Global.MovieSession.Movie.LogLength() > Global.Emulator.Frame + 1)
-					{
-						Global.MovieSession.Movie.StartPlayback();
-						//Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame));
-						//Global.MovieMode = true;
-						//adelikat: is Global.MovieMode doing anything anymore? if not we shoudl remove this variable
-						Global.MovieSession.LatchInputFromLog();
-					}
-				}
-
-				//TODO: adelikat: don't know what this should do so leaving it commented out
-				//if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD && Global.MovieSession.MultiTrack.IsActive)
-				//{
-				//	Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame-1));
-				//}
+				HandleMovieOnFrameLoop();
 
 				//=======================================
 				MemoryPulse.Pulse();
@@ -2043,6 +1984,8 @@ namespace BizHawk.MultiClient
 			else
 				Global.Sound.UpdateSound(NullSound.SilenceProvider);
 		}
+
+		
 
 		/// <summary>
 		/// Update all tools that are frame dependent like Ram Search before processing

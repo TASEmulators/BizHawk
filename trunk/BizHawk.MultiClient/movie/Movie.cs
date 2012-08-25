@@ -738,6 +738,10 @@ namespace BizHawk.MultiClient
 				else
 					return false; //For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
 			}
+			else if (Mode == MOVIEMODE.FINISHED)
+			{
+				Mode = MOVIEMODE.PLAY;
+			}
 
 			if (stateFrame == 0)
 			{
