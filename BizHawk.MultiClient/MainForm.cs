@@ -2159,11 +2159,8 @@ namespace BizHawk.MultiClient
 			HandleMovieSaveState(writer);
 			if (Global.Config.SaveScreenshotWithStates)
 			{
-				if (!(Global.Emulator is NES)) //NES saves the video buffer on its own so it does not need to do this
-				{
-					writer.Write("Framebuffer ");
-					Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
-				}
+				writer.Write("Framebuffer ");
+				Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
 			}
 
 			writer.Close();
@@ -2214,7 +2211,9 @@ namespace BizHawk.MultiClient
 
 					string[] args = str.Split(' ');
 					if (args[0] == "Framebuffer")
+					{
 						Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
+					}
 				}
 
 				reader.Close();
