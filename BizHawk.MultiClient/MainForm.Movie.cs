@@ -121,16 +121,20 @@ namespace BizHawk.MultiClient
 		{
 			//Note, some of the situations in these IF's may be identical and could be combined but I intentionally separated it out for clarity
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
+			{
 				return true;
+			}
 			
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
+			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 			{
 				
 				if (ReadOnly)
 				{
 
 					if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
+					{
 						return false;	//Timeline/GUID error
+					}
 					else
 					{
 						Global.MovieSession.Movie.WriteMovie();
@@ -141,22 +145,29 @@ namespace BizHawk.MultiClient
 				else
 				{
 					if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
+					{
 						return false;	//GUID Error
+					}
 					Global.MovieSession.Movie.LoadLogFromSavestateText(path);
 				}
 			}
+
 			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
 				if (ReadOnly)
 				{
 					if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
+					{
 						return false;	//Timeline/GUID error
+					}
 					//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
 				}
 				else
 				{
 					if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
+					{
 						return false;	//GUID Error
+					}
 					Global.MovieSession.Movie.ResumeRecording();
 					SetMainformMovieInfo();
 					Global.MovieSession.Movie.LoadLogFromSavestateText(path);
@@ -168,9 +179,13 @@ namespace BizHawk.MultiClient
 				{
 					{
 						if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
+						{
 							return false;	//Timeline/GUID error
-						if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
+						}
+						else if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED) //TimeLine check can change a movie to finished, hence the check here (not a good design)
+						{
 							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+						}
 						else
 						{
 							Global.MovieSession.Movie.StartPlayback();
@@ -182,9 +197,13 @@ namespace BizHawk.MultiClient
 				{
 					{
 						if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
+						{
 							return false;	//GUID Error
-						if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
+						}
+						else if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
+						{
 							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+						}
 						else
 						{
 							Global.MovieSession.Movie.StartNewRecording();

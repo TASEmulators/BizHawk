@@ -529,7 +529,8 @@ namespace BizHawk.MultiClient
 			}
 			if (stateFrame > 0 && stateFrame < Log.MovieLength())
 			{
-				Log.TruncateStates(Global.Emulator.Frame);
+				Log.TruncateStates(stateFrame);
+				Log.TruncateMovie(stateFrame);
 			}
 			IncrementRerecords();
 			reader.Close();
