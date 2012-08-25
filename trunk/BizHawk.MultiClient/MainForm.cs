@@ -1944,7 +1944,7 @@ namespace BizHawk.MultiClient
 
 				if (-1 != StopOnFrame && StopOnFrame == Global.Emulator.Frame + 1)
 				{
-					if(StopOnFrame == Global.MovieSession.Movie.LogLength())
+					if (StopOnFrame == Global.MovieSession.Movie.LogLength())
 					{
 						Global.MovieSession.Movie.SetMovieFinished();
 					}
@@ -1953,7 +1953,7 @@ namespace BizHawk.MultiClient
 						PauseEmulator();
 						StopOnFrame = -1;
 					}
-					if(true == RestoreReadWriteOnStop)
+					if (RestoreReadWriteOnStop == true)
 					{
 						Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
 						RestoreReadWriteOnStop = false;
