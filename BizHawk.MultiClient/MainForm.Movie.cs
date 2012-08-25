@@ -130,7 +130,6 @@ namespace BizHawk.MultiClient
 				
 				if (ReadOnly)
 				{
-
 					if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
 					{
 						return false;	//Timeline/GUID error
@@ -222,6 +221,75 @@ namespace BizHawk.MultiClient
 			{
 				Global.MovieSession.Movie.DumpLogIntoSavestateText(writer);
 			}
+		}
+
+		private void HandleMovieOnFrameLoop()
+		{
+			switch (Global.MovieSession.Movie.Mode)
+			{
+				case MOVIEMODE.RECORD:
+					Global.MovieSession.Movie.CaptureState();
+					if (Global.MovieSession.MultiTrack.IsActive)
+					{
+						Global.MovieSession.LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
+					}
+					else
+					{
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					}
+					//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
+					//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
+					Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+					break;
+				case MOVIEMODE.PLAY:
+					int x = Global.MovieSession.Movie.LogLength();
+					if (Global.Emulator.Frame >= Global.MovieSession.Movie.LogLength())
+					{
+						Global.MovieSession.Movie.SetMovieFinished();
+					}
+					else
+					{
+						Global.MovieSession.Movie.CaptureState();
+						Global.MovieSession.LatchInputFromLog();
+					}
+					x++;
+					break;
+				case MOVIEMODE.FINISHED:
+					int xx = Global.MovieSession.Movie.LogLength();
+					if (Global.Emulator.Frame < Global.MovieSession.Movie.LogLength()) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
+					{
+						Global.MovieSession.Movie.StartPlayback();
+						Global.MovieSession.LatchInputFromLog();
+					}
+					else
+					{
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					}
+					xx++;
+					break;
+				case MOVIEMODE.INACTIVE:
+					Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+					break;
+			}
+
+			//adelikat; Scheduled for deletion:  RestoreReadWriteOnStop,  should just be a type of movie finished, we need a menu item for what to do when a movie finishes (closes, resumes recording, goes into finished mode)
+			//if (StopOnFrame != -1 && StopOnFrame == Global.Emulator.Frame + 1)
+			//{
+			//    if (StopOnFrame == Global.MovieSession.Movie.LogLength())
+			//    {
+			//        Global.MovieSession.Movie.SetMovieFinished();
+			//    }
+			//    if (Global.MovieSession.Movie.TastudioOn == true)
+			//    {
+			//        PauseEmulator();
+			//        StopOnFrame = -1;
+			//    }
+			//    if (RestoreReadWriteOnStop == true)
+			//    {
+			//        Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+			//        RestoreReadWriteOnStop = false;
+			//    }
+			//}
 		}
 	}
 }
