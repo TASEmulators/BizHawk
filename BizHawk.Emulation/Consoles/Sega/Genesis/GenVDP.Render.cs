@@ -166,19 +166,19 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         void FetchSprite(int spriteNo)
         {
-            int satbase = SpriteAttributeTableAddr + (spriteNo*8);
-            sprite.Y = (VRAM[satbase + 0] | (VRAM[satbase + 1] << 8) & 0x3FF) - 128;
-            sprite.X = (VRAM[satbase + 6] | (VRAM[satbase + 7] << 8) & 0x3FF) - 128;
-            sprite.WidthPixels = SpriteSizeTable[(VRAM[satbase + 3] >> 2) & 3];
-            sprite.HeightPixels = SpriteSizeTable[VRAM[satbase + 3] & 3];
-            sprite.WidthCells = ((VRAM[satbase + 3] >> 2) & 3) + 1;
-            sprite.HeightCells = (VRAM[satbase + 3] & 3) + 1;
-            sprite.Link = VRAM[satbase + 2] & 0x7F;
-            sprite.PatternIndex = (VRAM[satbase + 4] | (VRAM[satbase + 5] << 8)) & 0x7FF;
-            sprite.HFlip = ((VRAM[satbase + 5] >> 3) & 1) != 0;
-            sprite.VFlip = ((VRAM[satbase + 5] >> 4) & 1) != 0;
-            sprite.Palette = (VRAM[satbase + 5] >> 5) & 3;
-            sprite.Priority = ((VRAM[satbase + 5] >> 7) & 1) != 0;
+            int SatBase = SpriteAttributeTableAddr + (spriteNo*8);
+            sprite.Y = (VRAM[SatBase + 0] | (VRAM[SatBase + 1] << 8) & 0x3FF) - 128;
+            sprite.X = (VRAM[SatBase + 6] | (VRAM[SatBase + 7] << 8) & 0x3FF) - 128;
+            sprite.WidthPixels = SpriteSizeTable[(VRAM[SatBase + 3] >> 2) & 3];
+            sprite.HeightPixels = SpriteSizeTable[VRAM[SatBase + 3] & 3];
+            sprite.WidthCells = ((VRAM[SatBase + 3] >> 2) & 3) + 1;
+            sprite.HeightCells = (VRAM[SatBase + 3] & 3) + 1;
+            sprite.Link = VRAM[SatBase + 2] & 0x7F;
+            sprite.PatternIndex = (VRAM[SatBase + 4] | (VRAM[SatBase + 5] << 8)) & 0x7FF;
+            sprite.HFlip = ((VRAM[SatBase + 5] >> 3) & 1) != 0;
+            sprite.VFlip = ((VRAM[SatBase + 5] >> 4) & 1) != 0;
+            sprite.Palette = (VRAM[SatBase + 5] >> 5) & 3;
+            sprite.Priority = ((VRAM[SatBase + 5] >> 7) & 1) != 0;
         }
 
         struct Sprite
