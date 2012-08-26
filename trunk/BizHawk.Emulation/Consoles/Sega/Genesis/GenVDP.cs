@@ -38,11 +38,48 @@ namespace BizHawk.Emulation.Consoles.Sega
         ushort VdpDataAddr;
         byte VdpDataCode;
 
+        const int CommandVramRead   = 0;
+        const int CommandVramWrite  = 1;
+        const int CommandCramWrite  = 3;
+        const int CommandVsramRead  = 4;
+        const int CommandVsramWrite = 5;
+        const int CommandCramRead   = 7;
+
         static readonly byte[] PalXlatTable = { 0, 0, 36, 36, 73, 73, 109, 109, 145, 145, 182, 182, 219, 219, 255, 255 };
+
+        public ushort ReadVdp(int addr)
+        {
+            switch (addr)
+            {
+                case 0:
+                case 2:
+                    return ReadVdpData();
+                case 4:
+                case 6:
+                    return ReadVdpControl();
+                default:
+                    throw new Exception("HV Counter read....");
+            }
+        }
+
+        public void WriteVdp(int addr, ushort data)
+        {
+            switch (addr)
+            {
+                case 0:
+                case 2:
+                    WriteVdpData(data);
+                    return;
+                case 4:
+                case 6:
+                    WriteVdpControl(data);
+                    return;
+            }
+        }
 
         public void WriteVdpControl(ushort data)
         {
-            Log.Note("VDP", "VDP: Control Write {0:X4}", data);
+            //Log.Note("VDP", "VDP: Control Write {0:X4}", data);
 
             if (ControlWordPending == false)
             {
@@ -84,7 +121,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                             DmaFillModePending = true;
                             break;
                         case 3:
-                            Log.Note("VDP", "VRAM COPY    **** UNIMPLEMENTED ***"); 
+                            Log.Error("VDP", "VRAM COPY    **** UNIMPLEMENTED ***"); 
                             break;
                         default:
                             Log.Note("VDP", "68k->VRAM COPY");
@@ -100,7 +137,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             ushort value = 0x3400; // fixed bits per genvdp.txt TODO test on everdrive, I guess.
             value |= 0x0200; // Fifo empty
-            Log.Note("VDP", "VDP: Control Read {0:X4}", value);
+            //Log.Note("VDP", "VDP: Control Read {0:X4}", value);
             return value;
         }
 
@@ -109,8 +146,9 @@ namespace BizHawk.Emulation.Consoles.Sega
             ControlWordPending = false; 
 
             // byte-swap incoming data when A0 is set
-            if ((VdpDataAddr & 1) != 0) 
-                data = (ushort) ((data >> 8) | (data << 8));
+            // TODO what is the reason for thinking that this happens?
+            //if ((VdpDataAddr & 1) != 0) 
+            //    data = (ushort) ((data >> 8) | (data << 8));
 
             if (DmaFillModePending)
             {
@@ -119,7 +157,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             switch (VdpDataCode & 7)
             {
-                case 1: // VRAM Write
+                case CommandVramWrite: // VRAM Write
                     VRAM[VdpDataAddr & 0xFFFE] = (byte) data;
                     VRAM[(VdpDataAddr & 0xFFFE) + 1] = (byte) (data >> 8);
                     UpdatePatternBuffer(VdpDataAddr & 0xFFFE);
@@ -127,13 +165,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                     //Console.WriteLine("Wrote VRAM[{0:X4}] = {1:X4}", VdpDataAddr, data);
                     VdpDataAddr += Registers[0x0F];
                     break;
-                case 3: // CRAM write
+                case CommandCramWrite: // CRAM write
                     CRAM[(VdpDataAddr / 2) % 64] = data;
                     //Console.WriteLine("Wrote CRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 64, data);
                     ProcessPalette((VdpDataAddr/2)%64);
                     VdpDataAddr += Registers[0x0F];
                     break;
-                case 5: // VSRAM write
+                case CommandVsramWrite: // VSRAM write
                     VSRAM[(VdpDataAddr / 2) % 40] = data;
                     //Console.WriteLine("Wrote VSRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 40, data);
                     VdpDataAddr += Registers[0x0F];
@@ -147,7 +185,22 @@ namespace BizHawk.Emulation.Consoles.Sega
         public ushort ReadVdpData()
         {
             Console.WriteLine("VDP: Data Read");
-            return 0;
+
+            ushort retval = 0xBEEF;
+            switch (VdpDataCode & 7)
+            {
+                case CommandVramRead:
+                    retval = VRAM[VdpDataAddr & 0xFFFE];
+                    retval |= (ushort) (VRAM[(VdpDataAddr & 0xFFFE) + 1] << 8);
+                    VdpDataAddr += Registers[0x0F];
+                    break;
+                case CommandVsramRead:
+                    throw new Exception("VSRAM read");
+                case CommandCramRead:
+                    throw new Exception("CRAM read");
+            }
+
+            return retval;
         }
 
         public void WriteVdpRegister(int register, byte data)
@@ -259,13 +312,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 0x11: // Window H Position
                     int whp = data & 31;
                     bool fromright = (data & 0x80) != 0;
-                    //Log.Note("VDP", "Window H is {0} units from {1}", whp, fromright ? "right" : "left");
+                    Log.Error("VDP", "Window H is {0} units from {1}", whp, fromright ? "right" : "left");
                     break;
 
                 case 0x12: // Window V
                     whp = data & 31;
                     fromright = (data & 0x80) != 0;
-                    //Log.Note("VDP", "Window V is {0} units from {1}", whp, fromright ? "lower" : "upper");
+                    Log.Error("VDP", "Window V is {0} units from {1}", whp, fromright ? "lower" : "upper");
                     break;
 
                 case 0x13: // DMA Length Low
