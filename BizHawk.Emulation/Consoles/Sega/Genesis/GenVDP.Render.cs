@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         byte[] PriorityBuffer = new byte[320];
 
+        static readonly byte[] PalXlatTable = { 0, 0, 36, 36, 73, 73, 109, 109, 145, 145, 182, 182, 219, 219, 255, 255 };
+
         // TODO, should provide startup register values.
         public void RenderLine()
         {

@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         bool ControlWordPending;
         ushort VdpDataAddr;
         byte VdpDataCode;
-
+        
         const int CommandVramRead   = 0;
         const int CommandVramWrite  = 1;
         const int CommandCramWrite  = 3;
@@ -45,8 +45,14 @@ namespace BizHawk.Emulation.Consoles.Sega
         const int CommandVsramWrite = 5;
         const int CommandCramRead   = 7;
 
-        static readonly byte[] PalXlatTable = { 0, 0, 36, 36, 73, 73, 109, 109, 145, 145, 182, 182, 219, 219, 255, 255 };
-
+        public ushort VdpStatusWord = 0x3400;
+        public const int StatusVerticalInterruptPending = 0x80;
+        public const int StatusSpriteOverflow           = 0x40;
+        public const int StatusSpriteCollision          = 0x20;
+        public const int StatusOddFrame                 = 0x10;
+        public const int StatusVerticalBlanking         = 0x08;
+        public const int StatusHorizBlanking            = 0x04;
+        
         public ushort ReadVdp(int addr)
         {
             switch (addr)
@@ -58,7 +64,8 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 6:
                     return ReadVdpControl();
                 default:
-                    throw new Exception("HV Counter read....");
+                    //throw new Exception("HV Counter read....");
+                    return 0;
             }
         }
 
@@ -135,10 +142,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public ushort ReadVdpControl()
         {
-            ushort value = 0x3400; // fixed bits per genvdp.txt TODO test on everdrive, I guess.
-            value |= 0x0200; // Fifo empty
-            //Log.Note("VDP", "VDP: Control Read {0:X4}", value);
-            return value;
+            VdpStatusWord |= 0x0200; // Fifo empty
+            return VdpStatusWord;
         }
 
         public void WriteVdpData(ushort data)
@@ -210,7 +215,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 case 0x00: // Mode Set Register 1
                     Registers[register] = data;
-                    //Log.Note("VDP", "HINT enabled: " + HInterruptsEnabled);
+                    Log.Error("VDP", "HINT enabled: " + HInterruptsEnabled);
                     break;
 
                 case 0x01: // Mode Set Register 2
