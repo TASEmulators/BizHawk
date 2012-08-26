@@ -290,6 +290,7 @@
     <Compile Include="CPUs\MOS 6502\Disassembler.cs" />
     <Compile Include="CPUs\MOS 6502\Execute.cs" />
     <Compile Include="CPUs\MOS 6502\MOS6502.cs" />
+    <Compile Include="CPUs\Native68000\Musashi.cs" />
     <Compile Include="CPUs\x86\Disassembler.cs" />
     <Compile Include="CPUs\x86\Execute.cs" />
     <Compile Include="CPUs\x86\Timing.cs" />

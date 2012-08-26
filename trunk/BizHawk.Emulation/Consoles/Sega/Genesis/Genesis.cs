@@ -1,9 +1,13 @@
-﻿using System;
+﻿#define MUSASHI
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.CPUs.M68000;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
+using Native68000;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
@@ -58,6 +62,16 @@ namespace BizHawk.Emulation.Consoles.Sega
 		// 320 are active display, the remaining 160 are horizontal blanking.
 		// A total of 3420 mclks per line, but 2560 mclks are active display and 860 mclks are blanking.
 
+#if MUSASHI
+        VdpCallback _vdp;
+        ReadCallback read8;
+        ReadCallback read16;
+        ReadCallback read32;
+        WriteCallback write8;
+        WriteCallback write16;
+        WriteCallback write32;
+#endif
+
 		public Genesis(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
@@ -75,6 +89,27 @@ namespace BizHawk.Emulation.Consoles.Sega
 			MainCPU.WriteByte = WriteByte;
 			MainCPU.WriteWord = WriteWord;
 			MainCPU.WriteLong = WriteLong;
+            MainCPU.IrqCallback = InterruptCallback;
+
+            // ---------------------- musashi -----------------------
+#if MUSASHI
+            _vdp = vdpcallback;
+            read8 = Read8;
+            read16 = Read16;
+            read32 = Read32;
+            write8 = Write8;
+            write16 = Write16;
+            write32 = Write32;
+
+            Musashi.RegisterVdpCallback(Marshal.GetFunctionPointerForDelegate(_vdp));
+            Musashi.RegisterRead8(Marshal.GetFunctionPointerForDelegate(read8));
+            Musashi.RegisterRead16(Marshal.GetFunctionPointerForDelegate(read16));
+            Musashi.RegisterRead32(Marshal.GetFunctionPointerForDelegate(read32));
+            Musashi.RegisterWrite8(Marshal.GetFunctionPointerForDelegate(write8));
+            Musashi.RegisterWrite16(Marshal.GetFunctionPointerForDelegate(write16));
+            Musashi.RegisterWrite32(Marshal.GetFunctionPointerForDelegate(write32));
+#endif
+            // ---------------------- musashi -----------------------
 
 			SoundCPU.ReadMemory = ReadMemoryZ80;
 			SoundCPU.WriteMemory = WriteMemoryZ80;
@@ -87,14 +122,19 @@ namespace BizHawk.Emulation.Consoles.Sega
 				RomData[i] = rom[i];
 
 			SetupMemoryDomains();
-			MainCPU.Reset();
-		}
+#if MUSASHI
+            Musashi.Init();
+            Musashi.Reset();
+#else
+            MainCPU.Reset();
+#endif
+        }
 
 		public void FrameAdvance(bool render)
 		{
 			lagged = true;
 
-			Frame++;
+            Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(SoundCPU.TotalExecutedCycles);
             YM2612.BeginFrame(SoundCPU.TotalExecutedCycles);
 			for (VDP.ScanLine = 0; VDP.ScanLine < 262; VDP.ScanLine++)
@@ -104,22 +144,23 @@ namespace BizHawk.Emulation.Consoles.Sega
 				if (VDP.ScanLine < 224)
 					VDP.RenderLine();
 
-				MainCPU.ExecuteCycles(487); // 488??
+                Exec68k(487);
                 if (Z80Runnable)
                 {
-                    //Console.WriteLine("running z80");
                     SoundCPU.ExecuteCycles(228);
                     SoundCPU.Interrupt = false;
                 } else {
                     SoundCPU.TotalExecutedCycles += 228; // I emulate the YM2612 synced to Z80 clock, for better or worse. Keep the timer going even if Z80 isn't running.
                 }
 
-				if (VDP.ScanLine == 224)
+                if (VDP.ScanLine == 224)
 				{
-					MainCPU.ExecuteCycles(16);// stupid crap to sync with genesis plus for log testing
+                    VDP.VdpStatusWord |= GenVDP.StatusVerticalInterruptPending;
+                    VDP.VdpStatusWord |= GenVDP.StatusVerticalBlanking;
+                    Exec68k(16); // this is stupidly wrong.
 					// End-frame stuff
-					if (VDP.VInterruptEnabled)
-						MainCPU.Interrupt = 6;
+                    if (VDP.VInterruptEnabled)
+                        Set68kIrq(6);
 
 					if (Z80Runnable)
 						SoundCPU.Interrupt = true;
@@ -128,7 +169,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 			PSG.EndFrame(SoundCPU.TotalExecutedCycles);
             YM2612.EndFrame(SoundCPU.TotalExecutedCycles);
 
-			Controller.UpdateControls(Frame++);
+            unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalBlanking; }
+
 			if (lagged)
 			{
 				_lagcount++;
@@ -137,6 +179,35 @@ namespace BizHawk.Emulation.Consoles.Sega
 			else
 				islag = false;
 		}
+
+        void Exec68k(int cycles)
+        {
+#if MUSASHI
+            Musashi.Execute(cycles);
+#else
+            MainCPU.ExecuteCycles(cycles);
+#endif
+        }
+
+        void Set68kIrq(int irq)
+        {
+#if MUSASHI
+            Musashi.SetIRQ(irq);
+#else
+            MainCPU.Interrupt = irq;
+#endif
+        }
+
+        int vdpcallback(int level) // Musashi handler
+        {
+            InterruptCallback(level);
+            return -1;
+        }
+
+        void InterruptCallback(int level)
+        {
+            unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalInterruptPending; }
+        }
 
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
