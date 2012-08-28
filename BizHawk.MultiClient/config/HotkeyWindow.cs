@@ -20,6 +20,7 @@ namespace BizHawk.MultiClient.tools
 			IDW_HARDRESET.SetBindings(Global.Config.HardResetBinding);
 			IDW_REWIND.SetBindings(Global.Config.RewindBinding);
 			IDW_UNTHROTTLE.SetBindings(Global.Config.TurboBinding);
+			IDW_MAXTURBO.SetBindings(Global.Config.MaxTurboBinding);
 			IDW_FASTFORWARD.SetBindings(Global.Config.FastForwardBinding);
 			IDW_SCREENSHOT.SetBindings(Global.Config.ScreenshotBinding);
 			IDW_FULLSCREEN.SetBindings(Global.Config.ToggleFullscreenBinding);
@@ -124,6 +125,7 @@ namespace BizHawk.MultiClient.tools
 			Global.Config.HardResetBinding = IDW_HARDRESET.Text;
 			Global.Config.RewindBinding = IDW_REWIND.Text;
 			Global.Config.TurboBinding = IDW_UNTHROTTLE.Text;
+			Global.Config.MaxTurboBinding = IDW_MAXTURBO.Text;
 			Global.Config.EmulatorPauseBinding = IDW_PAUSE.Text;
 			Global.Config.ToggleFullscreenBinding = IDW_FULLSCREEN.Text;
 			Global.Config.ScreenshotBinding = IDW_SCREENSHOT.Text;
