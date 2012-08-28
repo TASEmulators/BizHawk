@@ -108,6 +108,10 @@ namespace BizHawk.MultiClient
 
 		public void RewindToFrame(int frame)
 		{
+			if (Mode == MOVIEMODE.INACTIVE || Mode == MOVIEMODE.FINISHED)
+			{
+				return;
+			}
 			if (frame <= Global.Emulator.Frame)
 			{
 				if (frame <= Log.StateFirstIndex())
@@ -126,15 +130,18 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					if (0 == frame)
+					if (frame == 0)
 					{
 						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
 					}
 					else
 					{
 						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
-						Global.MainForm.UpdateFrame = true;
+						if (frame - 1 < Log.StateCount)
+						{
+							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+							Global.MainForm.UpdateFrame = true;
+						}
 					}
 				}
 			}

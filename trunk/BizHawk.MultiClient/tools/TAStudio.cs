@@ -357,7 +357,18 @@ namespace BizHawk.MultiClient
 
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
-			Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED || Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
+			{
+				Global.MainForm.Rewind(1);
+				if (Global.Emulator.Frame <= Global.MovieSession.Movie.LogLength())
+				{
+					Global.MovieSession.Movie.StartPlayback();
+				}
+			}
+			else
+			{
+				Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
+			}
 			UpdateValues();
 		}
 
