@@ -20,9 +20,49 @@ namespace BizHawk.MultiClient
 		public bool signal_unthrottle;
 		public bool signal_continuousframeAdvancing; //continuousframeAdvancing
 
-		public int cfg_frameskiprate { get { return Global.Config.FrameSkip; } }
-		public bool cfg_frameLimit { get { return Global.Config.LimitFramerate; } }
-		public bool cfg_autoframeskipenab { get { return Global.Config.AutoMinimizeSkipping; } }
+		public int cfg_frameskiprate
+		{
+			get
+			{
+				if (Global.ClientControls["MaxTurbo"])
+				{
+					return 20;
+				}
+				else
+				{
+					return Global.Config.FrameSkip;
+				}
+			}
+		}
+		public bool cfg_frameLimit
+		{
+			get 
+			{
+				if (Global.ClientControls["MaxTurbo"])
+				{
+					return false;
+				}
+				else
+				{
+					return Global.Config.LimitFramerate; 
+				}
+			}
+		}
+
+		public bool cfg_autoframeskipenab
+		{
+			get
+			{
+				if (Global.ClientControls["MaxTurbo"])
+				{
+					return false;
+				}
+				else
+				{
+					return Global.Config.AutoMinimizeSkipping;
+				}
+			}
+		}
 
 		public void Step(bool allowSleep, int forceFrameSkip)
 		{
