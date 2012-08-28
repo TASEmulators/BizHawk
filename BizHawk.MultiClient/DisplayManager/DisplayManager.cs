@@ -382,35 +382,37 @@ namespace BizHawk.MultiClient
 
 		public void DrawMessages(IBlitter g)
 		{
-			//todo - not so much brush object churn?
-
-			messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
-			int line = 1;
-			for (int i = messages.Count - 1; i >= 0; i--, line++)
+			if (!Global.ClientControls["MaxTurbo"])
 			{
-				float x = 3;
-				float y = g.ClipBounds.Height - (line * 18);
-				g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-				g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
-			}
-			for (int x = 0; x < GUITextList.Count; x++)
-			{
-				try
+				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
+				int line = 1;
+				for (int i = messages.Count - 1; i >= 0; i--, line++)
 				{
-					float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-					float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-
-					g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
-					//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
-
-					if (GUITextList[x].Alert)
-						g.DrawString(GUITextList[x].Message, MessageFont, FixedMessagesColor, posx, posy);
-					else
-						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
+					float x = 3;
+					float y = g.ClipBounds.Height - (line * 18);
+					g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
-				catch (Exception)
+			
+				for (int x = 0; x < GUITextList.Count; x++)
 				{
-					return;
+					try
+					{
+						float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+						float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+
+						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
+						//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
+
+						if (GUITextList[x].Alert)
+							g.DrawString(GUITextList[x].Message, MessageFont, FixedMessagesColor, posx, posy);
+						else
+							g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
+					}
+					catch (Exception)
+					{
+						return;
+					}
 				}
 			}
 		}
