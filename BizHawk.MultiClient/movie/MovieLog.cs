@@ -30,6 +30,7 @@ namespace BizHawk.MultiClient
 		private byte[] InitState;
 		//TODO: Make this size limit configurable by the user
 		private int MaxStateRecordSize = 1024 * 1024 * 1024; //To limit memory usage.
+		public int StateCount { get { return StateRecords.Count; } }
 
 		public MovieLog()
 		{
