@@ -61,7 +61,6 @@ namespace BizHawk.MultiClient
 
 		Throttle throttle;
 		bool unthrottled = false;
-		bool maxturbo = false;
 
 		//For handling automatic pausing when entering the menu
 		private bool wasPaused = false;
