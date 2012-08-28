@@ -421,7 +421,8 @@ namespace BizHawk.MultiClient
 		public string RewindBinding = "Shift+R, J1 B5";
 		public string EmulatorPauseBinding = "Pause";
 		public string FrameAdvanceBinding = "F";
-		public string TurboBinding = "Shift+Tab";
+		public string TurboBinding = "";
+		public string MaxTurboBinding = "Shift+Tab";
 		public string ScreenshotBinding = "F12";
 		public string ToggleFullscreenBinding = "Alt+Return";
 		public string QuickSave = "I";

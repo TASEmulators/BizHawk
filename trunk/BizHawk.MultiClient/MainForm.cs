@@ -61,6 +61,7 @@ namespace BizHawk.MultiClient
 
 		Throttle throttle;
 		bool unthrottled = false;
+		bool maxturbo = false;
 
 		//For handling automatic pausing when entering the menu
 		private bool wasPaused = false;
@@ -398,7 +399,7 @@ namespace BizHawk.MultiClient
 
 		void SyncThrottle()
 		{
-			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward;
+			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward || Global.ClientControls["MaxTurbo"];
 			Global.ForceNoVsync = unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
@@ -535,7 +536,7 @@ namespace BizHawk.MultiClient
 		{
 			Name = "Emulator Frontend Controls",
 			BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State",
-				"Emulator Pause", "Frame Advance", "Unthrottle", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
+				"Emulator Pause", "Frame Advance", "Unthrottle", "MaxTurbo", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
 				"SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
 				"SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
 				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor",
@@ -558,6 +559,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Decrease Speed", Global.Config.DecreaseSpeedBinding);
 			controls.BindMulti("Toggle Background Input", Global.Config.ToggleBackgroundInput);
 			controls.BindMulti("Unthrottle", Global.Config.TurboBinding);
+			controls.BindMulti("MaxTurbo", Global.Config.MaxTurboBinding);
 			controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
 			controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
 			controls.BindMulti("Quick Save State", Global.Config.QuickSave);
@@ -1882,18 +1884,23 @@ namespace BizHawk.MultiClient
 			bool genSound = false;
 			if (runFrame)
 			{
+				runloop_fps++;
+				
+				bool ff = Global.ClientControls["Fast Forward"] || Global.ClientControls["MaxTurbo"];
+				bool fff = Global.ClientControls["MaxTurbo"];
+				bool updateFpsString = (runloop_last_ff != ff);
+				runloop_last_ff = ff;
+				
 				//client input-related duties
-
 				Global.OSD.ClearGUIText();
-				UpdateToolsBefore();
+				if (!fff)
+				{
+					UpdateToolsBefore();
+				
 #if WINDOWS
 				LuaConsole1.ResumeScripts(true);
 #endif
-
-				runloop_fps++;
-				bool ff = Global.ClientControls["Fast Forward"];
-				bool updateFpsString = (runloop_last_ff != ff);
-				runloop_last_ff = ff;
+				}
 
 				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
 				{
@@ -1906,7 +1913,14 @@ namespace BizHawk.MultiClient
 				if (updateFpsString)
 				{
 					string fps_string = runloop_last_fps + " fps";
-					if (ff) fps_string += " >>";
+					if (fff)
+					{
+						fps_string += " >>>>";
+					}
+					else if (ff)
+					{
+						fps_string += " >>";
+					}
 					Global.OSD.FPS = fps_string;
 				}
 
@@ -1952,7 +1966,10 @@ namespace BizHawk.MultiClient
 				}
 
 				PressFrameAdvance = false;
-				UpdateToolsAfter();
+				if (!fff)
+				{
+					UpdateToolsAfter();
+				}
 			}
 
 			if (Global.ClientControls["Rewind"] || PressRewind)
