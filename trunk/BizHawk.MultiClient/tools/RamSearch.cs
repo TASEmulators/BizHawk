@@ -588,18 +588,49 @@ namespace BizHawk.MultiClient
 				{
 					if (color == Color.Pink) return;
 					if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
-						color = Color.Purple;
+					{
+						if (color == Color.Purple)
+						{
+							return;
+						}
+						else
+						{
+							color = Color.Purple;
+						}
+					}
 					else
-						color = Color.Pink;
+					{
+						if (color == Color.Pink)
+						{
+							return;
+						}
+						else
+						{
+							color = Color.Pink;
+						}
+					}
 				}
 				else if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
 				{
-					color = Color.LightCyan;
+					if (color == Color.LightCyan)
+					{
+						return;
+					}
+					else
+					{
+						color = Color.LightCyan;
+					}
 				}
 				else
 				{
-					if (color == Color.White) return;
-					color = Color.White;
+					if (color == Color.White)
+					{
+						return;
+					}
+					else
+					{
+						color = Color.White;
+					}
 				}
 			}
 		}
