@@ -27,6 +27,7 @@ namespace BizHawk.MultiClient
 			original = 0;
 			lastchange = 0;
 			lastsearch = 0;
+			deleted = false;
 		}
 
 		public Watch(Watch w)
@@ -42,6 +43,7 @@ namespace BizHawk.MultiClient
 			original = w.original;
 			lastchange = w.lastchange;
 			lastsearch = w.lastsearch;
+			deleted = w.deleted;
 		}
 
 		public Watch(int Address, int Value, atype Type, asigned Signed, bool BigEndian, string Notes)
@@ -73,6 +75,7 @@ namespace BizHawk.MultiClient
 		public bool bigendian { get; set; }
 		public string notes { get; set; }      //User notes
 		public int changecount { get; set; }
+		public bool deleted { get; set; } //For weeding out addresses in things like ram search, without actually removing them from the list (in order to preview, undo, etc)
 
 
 		public bool SetTypeByChar(char c)     //b = byte, w = word, d = dword
