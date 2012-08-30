@@ -6,3 +6,26 @@ Timings:
  - How many cycles does TRAP take to execute?
  - How many cycles does it take to accept an interrupt?
  - AND has some funky timings when it comes to immediates?
+
+ GAMES:
+
+ Monster World 4 - Music is messed up now. Timing is all off. It used to work.
+ Quackshot doesn't boot.
+ Moonwalker doesn't boot.
+ Altered Beast: start with 0 health, 0 lives???
+  Contra Hard Corps: Scrolling is messed up in level 1... used to work.
+ After Burner 2: No music
+ MUSHA: Intro music starts too soon
+ MUSHA: uses unimplemented VRAM copy
+ MUSHA: Some sprites have messed up left/right symmetry
+ Landstalker: freezes during new game sequence, very early
+ 
+ Things that read from VRAM work like 50%-90%, but not 100%. It's frustrating. Kid Chameleon and Eternal Champions are examples.
+
+ Some games flicker in the rightmost columns. Is this caused by mid-frame mode shifting(32/40 col modes?) Alisia Dragoon is one example.
+
+
+ TODO: non-instant DMA emulation
+ TODO: Add 68000/VDP interrupt enable delay (one instruction, similar to After Burner/PCE)
+ TODO: freaking H-interrupts
+ TODO: Test DMA/ VDP command words.... I'm not at all convinced that VRAM is always correct

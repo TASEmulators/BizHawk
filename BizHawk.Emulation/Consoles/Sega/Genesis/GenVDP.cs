@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         public int FrameWidth = 256;
 
         public int ScanLine;
+        public int HIntLineCounter;
 
         public bool HInterruptsEnabled   { get { return (Registers[0] & 0x10) != 0; } }
         public bool DisplayEnabled       { get { return (Registers[1] & 0x40) != 0; } }
@@ -25,6 +26,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         public bool DmaEnabled           { get { return (Registers[1] & 0x10) != 0; } }
         public bool CellBasedVertScroll  { get { return (Registers[11] & 0x08) != 0; } }
         public bool Display40Mode        { get { return (Registers[12] & 0x81) != 0; } }
+
+        public bool InDisplayPeriod      { get { return ScanLine < 224 && DisplayEnabled; } }
 
         ushort NameTableAddrA;
         ushort NameTableAddrB;
@@ -46,13 +49,13 @@ namespace BizHawk.Emulation.Consoles.Sega
         const int CommandCramRead   = 7;
 
         public ushort VdpStatusWord = 0x3400;
-        public const int StatusVerticalInterruptPending = 0x80;
-        public const int StatusSpriteOverflow           = 0x40;
-        public const int StatusSpriteCollision          = 0x20;
-        public const int StatusOddFrame                 = 0x10;
-        public const int StatusVerticalBlanking         = 0x08;
         public const int StatusHorizBlanking            = 0x04;
-        
+        public const int StatusVerticalBlanking         = 0x08;
+        public const int StatusOddFrame                 = 0x10;
+        public const int StatusSpriteCollision          = 0x20;
+        public const int StatusSpriteOverflow           = 0x40;
+        public const int StatusVerticalInterruptPending = 0x80;
+
         public ushort ReadVdp(int addr)
         {
             switch (addr)
@@ -64,8 +67,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 6:
                     return ReadVdpControl();
                 default:
-                    //throw new Exception("HV Counter read....");
-                    return 0;
+                    return ReadHVCounter();
             }
         }
 
@@ -142,7 +144,11 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public ushort ReadVdpControl()
         {
-            VdpStatusWord |= 0x0200; // Fifo empty
+            VdpStatusWord |= 0x0200; // Fifo empty // TODO kill this, emulating the damn FIFO.
+
+            // sprite overflow flag should clear.
+            // sprite collision flag should clear.
+
             return VdpStatusWord;
         }
 
@@ -151,9 +157,11 @@ namespace BizHawk.Emulation.Consoles.Sega
             ControlWordPending = false; 
 
             // byte-swap incoming data when A0 is set
-            // TODO what is the reason for thinking that this happens?
-            //if ((VdpDataAddr & 1) != 0) 
-            //    data = (ushort) ((data >> 8) | (data << 8));
+            if ((VdpDataAddr & 1) != 0)
+            {
+                data = (ushort)((data >> 8) | (data << 8));
+                Console.WriteLine("VRAM byte-swap is happening because A0 is not 0");
+            }
 
             if (DmaFillModePending)
             {
@@ -182,7 +190,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                     VdpDataAddr += Registers[0x0F];
                     break;
                 default: 
-                    //Console.WriteLine("VDP DATA WRITE WITH UNHANDLED CODE!!!");
+                    Console.WriteLine("VDP DATA WRITE WITH UNHANDLED CODE!!!");
                     break;
             }
         }
@@ -203,9 +211,28 @@ namespace BizHawk.Emulation.Consoles.Sega
                     throw new Exception("VSRAM read");
                 case CommandCramRead:
                     throw new Exception("CRAM read");
+                default:
+                    throw new Exception("VRAM read with unexpected code!!!");
             }
 
             return retval;
+        }
+
+        ushort ReadHVCounter()
+        {
+            int vcounter = ScanLine;
+            if (vcounter > 0xEA)
+                vcounter -= 7; 
+            // TODO generalize this across multiple video modes and stuff.
+
+            // TODO dont tie this to musashi cycle count.
+            // Figure out a "clean" way to get cycle counter information available to VDP.
+            int hcounter = (487 - Native68000.Musashi.GetCyclesRemaining()) * 255 / 487;
+
+            ushort res = (ushort) ((vcounter << 8) | (hcounter & 0xFF));
+            Console.WriteLine("READ HVC: V={0:X2} H={1:X2}  ret={2:X4}", vcounter, hcounter, res);
+
+            return res;
         }
 
         public void WriteVdpRegister(int register, byte data)
@@ -317,13 +344,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 0x11: // Window H Position
                     int whp = data & 31;
                     bool fromright = (data & 0x80) != 0;
-                    Log.Error("VDP", "Window H is {0} units from {1}", whp, fromright ? "right" : "left");
+                    //Log.Error("VDP", "Window H is {0} units from {1}", whp, fromright ? "right" : "left");
                     break;
 
                 case 0x12: // Window V
                     whp = data & 31;
                     fromright = (data & 0x80) != 0;
-                    Log.Error("VDP", "Window V is {0} units from {1}", whp, fromright ? "lower" : "upper");
+                    //Log.Error("VDP", "Window V is {0} units from {1}", whp, fromright ? "lower" : "upper");
                     break;
 
                 case 0x13: // DMA Length Low
