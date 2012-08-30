@@ -137,6 +137,12 @@ namespace BizHawk.Emulation.Consoles.Sega
             Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(SoundCPU.TotalExecutedCycles);
             YM2612.BeginFrame(SoundCPU.TotalExecutedCycles);
+
+            // Do start-of-frame events
+            VDP.HIntLineCounter = VDP.Registers[10];
+            //VDP.VdpStatusWord &= 
+            unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalBlanking; }
+
 			for (VDP.ScanLine = 0; VDP.ScanLine < 262; VDP.ScanLine++)
 			{
 				//Log.Error("VDP","FRAME {0}, SCANLINE {1}", Frame, VDP.ScanLine);
@@ -164,12 +170,13 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 					if (Z80Runnable)
 						SoundCPU.Interrupt = true;
+                    //The INT output is asserted every frame for exactly one scanline, and it can't be disabled. A very short Z80 interrupt routine would be triggered multiple times if it finishes within 228 Z80 clock cycles. I think (but cannot recall the specifics) that some games have delay loops in the interrupt handler for this very reason. 
 				}
 			}
 			PSG.EndFrame(SoundCPU.TotalExecutedCycles);
             YM2612.EndFrame(SoundCPU.TotalExecutedCycles);
 
-            unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalBlanking; }
+            
 
 			if (lagged)
 			{

@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 int palette = (nameTableEntry >> 13) & 3;
 
                 if (priority && PriorityBuffer[x] >= highPriority) continue;
-                if (PriorityBuffer[x] >= lowPriority) continue;
+                if (!priority && PriorityBuffer[x] >= lowPriority) continue;
 
                 if (vFlip) yOfs = 7 - yOfs;
                 if (hFlip) xOfs = 7 - xOfs;

@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (address >= 0xC00000 && address < 0xC00010)
             {
-                Console.WriteLine("byte-reading the VDP. someone is probably stupid.");
+                //Console.WriteLine("byte-reading the VDP. someone is probably stupid.");
                 ushort value = VDP.ReadVdp(address & 0x0E);
                 if ((address & 1) == 0) // read MSB
                     return (sbyte) (value >> 8);

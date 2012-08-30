@@ -48,6 +48,9 @@ namespace Native68000
         [DllImport("MusashiDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int QueryCpuState(int regcode);
 
+        [DllImport("MusashiDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetCyclesRemaining();
+
         public static int D0 { get { return QueryCpuState(0); } }
         public static int D1 { get { return QueryCpuState(1); } }
         public static int D2 { get { return QueryCpuState(2); } }
