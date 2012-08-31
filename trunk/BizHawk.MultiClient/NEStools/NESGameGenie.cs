@@ -385,6 +385,7 @@ namespace BizHawk.MultiClient
 			c.name = GameGenieCode.Text;
 			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 			c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
+			c.compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
 			c.domain = Global.Emulator.MemoryDomains[1];
 			c.Enable();
 

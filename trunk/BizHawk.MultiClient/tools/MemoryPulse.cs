@@ -9,6 +9,7 @@ namespace BizHawk.MultiClient
 		{
 			public int address;
 			public byte value;
+			public byte? compare;
 			public MemoryDomain domain;
 		}
 
@@ -18,11 +19,21 @@ namespace BizHawk.MultiClient
 		{
 			foreach (var entry in entries)
 			{
-				entry.domain.PokeByte(entry.address, entry.value);
+				if (entry.compare.HasValue)
+				{
+					if (entry.domain.PeekByte(entry.address) == entry.compare)
+					{
+						entry.domain.PokeByte(entry.address, entry.value);
+					}
+				}
+				else
+				{
+					entry.domain.PokeByte(entry.address, entry.value);
+				}
 			}
 		}
 
-		public static void Add(MemoryDomain domain, int address, byte value)
+		public static void Add(MemoryDomain domain, int address, byte value, byte? compare = null)
 		{
 			entries.RemoveAll(o => o.domain == domain && o.address == address);
 
@@ -30,9 +41,16 @@ namespace BizHawk.MultiClient
 			entries.Add(entry);
 		}
 
-		public static MemoryPulseEntry Query(MemoryDomain domain, int address)
+		public static MemoryPulseEntry Query(MemoryDomain domain, int address, byte? compare = null)
 		{
-			return entries.Find(o => o.domain == domain && o.address == address);
+			if (compare.HasValue)
+			{
+				return entries.Find(o => o.domain == domain && o.address == address && o.compare == compare);
+			}
+			else
+			{
+				return entries.Find(o => o.domain == domain && o.address == address);
+			}
 		}
 
 		public static void Remove(MemoryDomain domain, int address)

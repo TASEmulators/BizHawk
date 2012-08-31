@@ -286,12 +286,15 @@ namespace BizHawk.MultiClient
 			}
 			List<int> i = new List<int>();
 			for (int z = 0; z < indexes.Count; z++)
+			{
 				i.Add(indexes[z] - 1);
+			}
 
 			CheatListView.SelectedIndices.Clear();
 			for (int z = 0; z < i.Count; z++)
+			{
 				CheatListView.SelectItem(i[z], true);
-
+			}
 
 			DisplayCheatsList();
 		}
@@ -320,7 +323,9 @@ namespace BizHawk.MultiClient
 
 			List<int> i = new List<int>();
 			for (int z = 0; z < indexes.Count; z++)
+			{
 				i.Add(indexes[z] + 1);
+			}
 
 			CheatListView.SelectedIndices.Clear();
 			//for (int z = 0; z < i.Count; z++)
