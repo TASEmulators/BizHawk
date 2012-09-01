@@ -18,17 +18,22 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void RenderLine()
         {
-            Array.Clear(PriorityBuffer, 0, 320);
-
             if (DisplayEnabled)
             {
+                Array.Clear(PriorityBuffer, 0, 320);
                 RenderScrollA();
                 RenderScrollB();
                 RenderSpritesScanline();
             }
+            else
+            {
+                // If display is disabled, fill in with background color.
+                for (int i = 0; i < FrameWidth; i++)
+                    FrameBuffer[(ScanLine * FrameWidth) + i] = BackgroundColor;
+            }
 
             //if (ScanLine == 223) // shrug
-                //RenderPalette();
+            //    RenderPalette();
         }
 
         void RenderPalette()
@@ -106,7 +111,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             int data = Registers[0x11];
             int windowHPosition = (data & 31) * 2; // Window H position is set in 2-cell increments
             bool fromLeft = (data & 0x80) == 0;
-
+            
             if (windowHPosition == 0)
             {
                 startPixel = -1;
@@ -118,11 +123,18 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 startPixel = 0;
                 endPixel = (windowHPosition * 8);
+                if (endPixel > FrameWidth) 
+                    endPixel = FrameWidth;
             }
             else
             {
                 startPixel = windowHPosition * 8;
                 endPixel = FrameWidth;
+                if (startPixel > FrameWidth)
+                {
+                    startPixel = -1;
+                    endPixel = -1;
+                }
             }
         }
 
@@ -263,6 +275,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                             continue;
 
                         if (sprite.Priority == false && PriorityBuffer[sprite.X + xi] >= 3) continue;
+                        if (PriorityBuffer[sprite.X + xi] == 9) continue;
 
                         int pixel = PatternBuffer[((pattern + ((-xi / 8) * sprite.HeightCells)) * 64) + ((yline & 7) * 8) + (7 - (xi & 7))];
                         if (pixel != 0)
