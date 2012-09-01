@@ -1,4 +1,5 @@
 ﻿using BizHawk.MultiClient;
+using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
@@ -51,7 +52,14 @@ namespace BizHawk.MultiClient
 		public void Enable()
 		{
 			enabled = true;
-			MemoryPulse.Add(domain, address, value, compare);
+			if (Global.Emulator is NES)
+			{
+				(Global.Emulator as NES).ApplyGameGenie(address, value, compare);
+			}
+			else
+			{
+				MemoryPulse.Add(domain, address, value, compare);
+			}
 		}
 
 		public void Disable()
