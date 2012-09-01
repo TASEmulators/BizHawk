@@ -1397,7 +1397,9 @@ namespace BizHawk.MultiClient
 				if (Global.Config.LoadCheatFileByGame)
 				{
 					if (Global.CheatList.AttemptLoadCheatFile())
+					{
 						Global.OSD.AddMessage("Cheats file loaded");
+					}
 				}
 
 				CurrentlyOpenRom = file.CanonicalFullPath;

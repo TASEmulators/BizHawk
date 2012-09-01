@@ -21,6 +21,7 @@ namespace BizHawk.MultiClient
 			var file = new FileInfo(path);
 			if (file.Exists == false) return false;
 
+			int cheatcount = 0;
 			using (StreamReader sr = file.OpenText())
 			{
 				if (!append) currentCheatFile = path;
@@ -32,78 +33,95 @@ namespace BizHawk.MultiClient
 				{
 					Clear();	//Wipe existing list and read from file
 				}
-
 				while ((s = sr.ReadLine()) != null)
 				{
-					if (s.Length < 6) continue;
-					Cheat c = new Cheat();
-					temp = s.Substring(0, s.IndexOf('\t'));   //Address
-					c.address = int.Parse(temp, NumberStyles.HexNumber);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Value
-					temp = s.Substring(0, 2);
-					c.value = byte.Parse(temp, NumberStyles.HexNumber);
-
-					bool comparefailed = false; //adelikat: This is a hack for 1.0.6 to support .cht files made in previous versions before the compare value was implemented
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Compare
-					temp = s.Substring(0, s.IndexOf('\t'));
 					try
 					{
-						if (temp == "N")
+						if (s.Length < 6) continue;
+						Cheat c = new Cheat();
+						temp = s.Substring(0, s.IndexOf('\t'));   //Address
+						c.address = int.Parse(temp, NumberStyles.HexNumber);
+
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y);   //Value
+						temp = s.Substring(0, 2);
+						c.value = byte.Parse(temp, NumberStyles.HexNumber);
+
+						bool comparefailed = false; //adelikat: This is a hack for 1.0.6 to support .cht files made in previous versions before the compare value was implemented
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y);   //Compare
+						temp = s.Substring(0, s.IndexOf('\t'));
+						try
 						{
-							c.compare = null;
+							if (temp == "N")
+							{
+								c.compare = null;
+							}
+							else
+							{
+								c.compare = byte.Parse(temp, NumberStyles.HexNumber);
+							}
+						}
+						catch
+						{
+							comparefailed = true;
+							c.domain = SetDomain(temp);
+						}
+
+						if (!comparefailed)
+						{
+							y = s.IndexOf('\t') + 1;
+							s = s.Substring(y, s.Length - y); //Memory Domain
+							temp = s.Substring(0, s.IndexOf('\t'));
+							c.domain = SetDomain(temp);
+						}
+
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y); //Enabled
+						y = int.Parse(s[0].ToString());
+
+						if (y == 0)
+						{
+							c.Disable();
 						}
 						else
 						{
-							c.compare = byte.Parse(temp, NumberStyles.HexNumber);
+							c.Enable();
 						}
+
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y); //Name
+						c.name = s;
+
+						cheatcount++;
+						cheatList.Add(c);
 					}
 					catch
 					{
-						comparefailed = true;
-						c.domain = SetDomain(temp);
+						continue;
 					}
-
-					if (!comparefailed)
-					{
-						y = s.IndexOf('\t') + 1;
-						s = s.Substring(y, s.Length - y); //Memory Domain
-						temp = s.Substring(0, s.IndexOf('\t'));
-						c.domain = SetDomain(temp);
-					}
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y); //Enabled
-					y = int.Parse(s[0].ToString());
-
-					if (y == 0)
-					{
-						c.Disable();
-					}
-					else
-					{
-						c.Enable();
-					}
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y); //Name
-					c.name = s;
-
-					cheatList.Add(c);
+					
 				}
-
-				Global.Config.RecentCheats.Add(file.FullName);
-				Changes = false;
 			}
 
 			if (Global.Config.DisableCheatsOnLoad)
 			{
 				for (int x = 0; x < cheatList.Count; x++)
+				{
 					cheatList[x].Disable();
+				}
 			}
-			return true; //TODO
+
+			if (cheatcount > 0)
+			{
+				Changes = false;
+				Global.Config.RecentCheats.Add(file.FullName);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		public void NotSupportedError()
@@ -299,9 +317,12 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				LoadCheatFile(CheatFile, false);
-				Global.MainForm.UpdateCheatStatus();
-				return true;
+				bool loaded = LoadCheatFile(CheatFile, false);
+				if (loaded)
+				{
+					Global.MainForm.UpdateCheatStatus();
+				}
+				return loaded;
 			}
 		}
 
