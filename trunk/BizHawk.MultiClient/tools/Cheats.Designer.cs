@@ -75,6 +75,9 @@
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.AddCheatGroup = new System.Windows.Forms.GroupBox();
+			this.label7 = new System.Windows.Forms.Label();
+			this.CompareBox = new System.Windows.Forms.TextBox();
+			this.label8 = new System.Windows.Forms.Label();
 			this.EditButton = new System.Windows.Forms.Button();
 			this.label6 = new System.Windows.Forms.Label();
 			this.DomainComboBox = new System.Windows.Forms.ComboBox();
@@ -92,13 +95,13 @@
 			this.CheatName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Domain = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Compare = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.On = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Domain = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.disableAllCheatsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.Compare = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.CheatsMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.AddCheatGroup.SuspendLayout();
@@ -501,6 +504,9 @@
 			// 
 			this.AddCheatGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.AddCheatGroup.Controls.Add(this.label7);
+			this.AddCheatGroup.Controls.Add(this.CompareBox);
+			this.AddCheatGroup.Controls.Add(this.label8);
 			this.AddCheatGroup.Controls.Add(this.EditButton);
 			this.AddCheatGroup.Controls.Add(this.label6);
 			this.AddCheatGroup.Controls.Add(this.DomainComboBox);
@@ -520,6 +526,34 @@
 			this.AddCheatGroup.TabStop = false;
 			this.AddCheatGroup.Text = "Add Cheat";
 			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(80, 107);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(18, 13);
+			this.label7.TabIndex = 14;
+			this.label7.Text = "0x";
+			// 
+			// CompareBox
+			// 
+			this.CompareBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.CompareBox.Location = new System.Drawing.Point(99, 103);
+			this.CompareBox.MaxLength = 2;
+			this.CompareBox.Name = "CompareBox";
+			this.CompareBox.Size = new System.Drawing.Size(65, 20);
+			this.CompareBox.TabIndex = 13;
+			this.CompareBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CompareBox_KeyPress);
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(6, 107);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(49, 13);
+			this.label8.TabIndex = 12;
+			this.label8.Text = "Compare";
+			// 
 			// EditButton
 			// 
 			this.EditButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -535,7 +569,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(7, 120);
+			this.label6.Location = new System.Drawing.Point(7, 131);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(83, 13);
 			this.label6.TabIndex = 10;
@@ -544,7 +578,7 @@
 			// DomainComboBox
 			// 
 			this.DomainComboBox.FormattingEnabled = true;
-			this.DomainComboBox.Location = new System.Drawing.Point(10, 136);
+			this.DomainComboBox.Location = new System.Drawing.Point(10, 147);
 			this.DomainComboBox.Name = "DomainComboBox";
 			this.DomainComboBox.Size = new System.Drawing.Size(100, 21);
 			this.DomainComboBox.TabIndex = 9;
@@ -552,7 +586,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(80, 87);
+			this.label5.Location = new System.Drawing.Point(80, 81);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(18, 13);
 			this.label5.TabIndex = 8;
@@ -561,7 +595,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(80, 58);
+			this.label4.Location = new System.Drawing.Point(80, 56);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(18, 13);
 			this.label4.TabIndex = 7;
@@ -582,7 +616,7 @@
 			// ValueBox
 			// 
 			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.ValueBox.Location = new System.Drawing.Point(99, 81);
+			this.ValueBox.Location = new System.Drawing.Point(99, 77);
 			this.ValueBox.MaxLength = 2;
 			this.ValueBox.Name = "ValueBox";
 			this.ValueBox.Size = new System.Drawing.Size(65, 20);
@@ -593,7 +627,7 @@
 			// AddressBox
 			// 
 			this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.AddressBox.Location = new System.Drawing.Point(99, 53);
+			this.AddressBox.Location = new System.Drawing.Point(99, 52);
 			this.AddressBox.MaxLength = 8;
 			this.AddressBox.Name = "AddressBox";
 			this.AddressBox.Size = new System.Drawing.Size(65, 20);
@@ -612,7 +646,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(7, 84);
+			this.label3.Location = new System.Drawing.Point(6, 81);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(34, 13);
 			this.label3.TabIndex = 2;
@@ -694,15 +728,19 @@
 			this.Value.Text = "Value";
 			this.Value.Width = 40;
 			// 
-			// Domain
+			// Compare
 			// 
-			this.Domain.Text = "Domain";
-			this.Domain.Width = 58;
+			this.Compare.Text = "Compare";
 			// 
 			// On
 			// 
 			this.On.Text = "On";
 			this.On.Width = 40;
+			// 
+			// Domain
+			// 
+			this.Domain.Text = "Domain";
+			this.Domain.Width = 75;
 			// 
 			// contextMenuStrip1
 			// 
@@ -736,10 +774,6 @@
 			this.disableAllCheatsToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
 			this.disableAllCheatsToolStripMenuItem1.Text = "Disable All Cheats";
 			this.disableAllCheatsToolStripMenuItem1.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem1_Click);
-			// 
-			// Compare
-			// 
-			this.Compare.Text = "Compare";
 			// 
 			// Cheats
 			// 
@@ -844,5 +878,8 @@
         private System.Windows.Forms.ToolStripMenuItem saveCheatsOnCloseToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
 		private System.Windows.Forms.ColumnHeader Compare;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.TextBox CompareBox;
+		private System.Windows.Forms.Label label8;
     }
 }
