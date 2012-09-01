@@ -45,30 +45,47 @@ namespace BizHawk.MultiClient
 					temp = s.Substring(0, 2);
 					c.value = byte.Parse(temp, NumberStyles.HexNumber);
 
+					bool comparefailed = false; //adelikat: This is a hack for 1.0.6 to support .cht files made in previous versions before the compare value was implemented
 					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y); //Memory Domain
+					s = s.Substring(y, s.Length - y);   //Compare
 					temp = s.Substring(0, s.IndexOf('\t'));
-					c.domain = SetDomain(temp);
+					try
+					{
+						if (temp == "N")
+						{
+							c.compare = null;
+						}
+						else
+						{
+							c.compare = byte.Parse(temp, NumberStyles.HexNumber);
+						}
+					}
+					catch
+					{
+						comparefailed = true;
+						c.domain = SetDomain(temp);
+					}
+
+					if (!comparefailed)
+					{
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y); //Memory Domain
+						temp = s.Substring(0, s.IndexOf('\t'));
+						c.domain = SetDomain(temp);
+					}
 
 					y = s.IndexOf('\t') + 1;
 					s = s.Substring(y, s.Length - y); //Enabled
 					y = int.Parse(s[0].ToString());
 
-					//try
-					//{
-						if (y == 0)
-						{
-							c.Disable();
-						}
-						else
-						{
-							c.Enable();
-						}
-					//}
-					//catch
-					//{
-					//    NotSupportedError();
-					//}
+					if (y == 0)
+					{
+						c.Disable();
+					}
+					else
+					{
+						c.Enable();
+					}
 
 					y = s.IndexOf('\t') + 1;
 					s = s.Substring(y, s.Length - y); //Name
@@ -200,11 +217,27 @@ namespace BizHawk.MultiClient
 				{
 					str += FormatAddress(cheatList[x].address) + "\t";
 					str += String.Format("{0:X2}", cheatList[x].value) + "\t";
-					str += cheatList[x].domain.Name + "\t";
-					if (cheatList[x].IsEnabled())
-						str += "1\t";
+					
+					if (cheatList[x].compare == null)
+					{
+						str += "N\t";
+					}
 					else
+					{
+						str += String.Format("{0:X2}", cheatList[x].compare) + "\t";
+					}
+					
+					str += cheatList[x].domain.Name + "\t";
+					
+					if (cheatList[x].IsEnabled())
+					{
+						str += "1\t";
+					}
+					else
+					{
 						str += "0\t";
+					}
+					
 					str += cheatList[x].name + "\n";
 				}
 
@@ -258,10 +291,12 @@ namespace BizHawk.MultiClient
 		public bool AttemptLoadCheatFile()
 		{
 			string CheatFile = MakeDefaultFilename();
-
 			var file = new FileInfo(CheatFile);
+			
 			if (file.Exists == false)
+			{
 				return false;
+			}
 			else
 			{
 				LoadCheatFile(CheatFile, false);
@@ -298,6 +333,10 @@ namespace BizHawk.MultiClient
 
 		public void Add(Cheat c)
 		{
+			if (c == null)
+			{
+				return;
+			}
 			cheatList.Add(c);
 			Global.MainForm.UpdateCheatStatus();
 		}
@@ -316,8 +355,12 @@ namespace BizHawk.MultiClient
 		public bool HasActiveCheat()
 		{
 			for (int x = 0; x < cheatList.Count; x++)
+			{
 				if (cheatList[x].IsEnabled())
+				{
 					return true;
+				}
+			}
 			return false;
 		}
 	}

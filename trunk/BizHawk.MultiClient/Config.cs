@@ -369,13 +369,15 @@ namespace BizHawk.MultiClient
 		public int CheatsNameWidth = -1;
 		public int CheatsAddressWidth = -1;
 		public int CheatsValueWidth = -1;
+		public int CheatsCompareWidth = -1;
 		public int CheatsDomainWidth = -1;
 		public int CheatsOnWidth = -1;
 		public int CheatsNameIndex = 0;
 		public int CheatsAddressIndex = 1;
 		public int CheatsValueIndex = 2;
-		public int CheatsDomainIndex = 3;
+		public int CheatsCompareIndex = 3;
 		public int CheatsOnIndex = 4;
+		public int CheatsDomainIndex = 5;
 
 		// TAStudio Dialog
 		public bool TAStudioSaveWindowPosition = true;
