@@ -279,7 +279,7 @@ namespace BizHawk.MultiClient
 
 		public void Remove(Cheat c)
 		{
-			MemoryPulse.Remove(c.domain, c.address);
+			c.DisposeOfCheat();
 			cheatList.Remove(c);
 			Global.MainForm.UpdateCheatStatus();
 		}

@@ -65,7 +65,19 @@ namespace BizHawk.MultiClient
 		public void Disable()
 		{
 			enabled = false;
-			MemoryPulse.Remove(domain, address);
+			DisposeOfCheat();
+		}
+
+		public void DisposeOfCheat()
+		{
+			if (Global.Emulator is NES)
+			{
+				(Global.Emulator as NES).RemoveGameGenie(address);
+			}
+			else
+			{
+				MemoryPulse.Remove(domain, address);
+			}
 		}
 
 		public bool IsEnabled()
@@ -75,7 +87,7 @@ namespace BizHawk.MultiClient
 
 		~Cheat()
 		{
-			MemoryPulse.Remove(domain, address);
+			DisposeOfCheat();
 		}
 	}
 }
