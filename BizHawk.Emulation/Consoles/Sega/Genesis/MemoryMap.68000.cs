@@ -60,10 +60,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 return (sbyte)ReadIO(address);
 
             if (address == 0xA11100) // Z80 BUS status
-            {
-                // TODO: note, its possible that something is supposed to be on the MSB (crap from the bus, ie, the next instruction)
-                return (short)(M68000HasZ80Bus && Z80Reset == false ? 0 : 1);
-            }
+                return (short)(M68000HasZ80Bus && Z80Reset == false ? 0x0000 : 0x0100);
 
             Console.WriteLine("UNHANDLED READW {0:X6}", address);
             return 0x7DCD;
