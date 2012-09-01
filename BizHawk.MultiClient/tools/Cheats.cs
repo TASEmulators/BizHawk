@@ -29,6 +29,7 @@ namespace BizHawk.MultiClient
 			NameBox.Text = "";
 			AddressBox.Text = "";
 			ValueBox.Text = "";
+			CompareBox.Text = "";
 			PopulateMemoryDomainComboBox();
 			AddressBox.MaxLength = GetNumDigits(Global.Emulator.MemoryDomains[0].Size - 1);
 		}
@@ -38,6 +39,14 @@ namespace BizHawk.MultiClient
 			NewCheatList(); //Should be run even if dialog isn't open so cheats system can work
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			ClearFields();
+		}
+
+		public void UpdateValues()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			CheatListView.ItemCount = Global.CheatList.Count;
+			DisplayCheatsList();
+			CheatListView.Refresh();
 		}
 
 		public Cheats()
@@ -782,6 +791,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.CheatList.Remove(Global.CheatList.Cheat(indexes[0]));
 					Global.CheatList.Add(MakeCheat());
+					Changes();
 				}
 				CheatListView.Refresh();
 			}

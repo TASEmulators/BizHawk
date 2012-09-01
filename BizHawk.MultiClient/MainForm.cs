@@ -1401,6 +1401,7 @@ namespace BizHawk.MultiClient
 						Global.OSD.AddMessage("Cheats file loaded");
 					}
 				}
+				Cheats1.UpdateValues();
 
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
