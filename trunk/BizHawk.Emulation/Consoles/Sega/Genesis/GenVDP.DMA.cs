@@ -24,9 +24,9 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         bool DmaFillModePending;
 
-        void ExecuteDmaFill(ushort data)
+        void ExecuteVramFill(ushort data)
         {
-            //Log.Error("VDP","DMA FILL REQD, WRITE {0:X4}, {1:X4} times, at {2:X4}", data, DmaLength, VdpDataAddr);
+            Log.Note("VDP", "DMA VRAM FILL REQD, WRITE {0:X4}, {1:X4} times, at {2:X4}", data, DmaLength, VdpDataAddr);
 
             // TODO: It should spread this out, not do it all at once.
             // TODO: DMA can go to places besides just VRAM (eg CRAM, VSRAM) ??? can it?
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         void Execute68000VramCopy()
         {
-            //Log.Error("VDP", "DMA 68000 -> VRAM COPY REQ'D. LENGTH {0:X4}, SOURCE {1:X4}", DmaLength, DmaSource);
+            Log.Note("VDP", "DMA 68000 -> VRAM COPY REQ'D. LENGTH {0:X4}, SOURCE {1:X4}", DmaLength, DmaSource);
             
             int length = DmaLength;
             if (length == 0)
@@ -61,6 +61,27 @@ namespace BizHawk.Emulation.Consoles.Sega
             do
             {
                 ushort value = (ushort) DmaReadFrom68000(source);
+                source += 2;
+                // TODO funky source behavior
+                WriteVdpData(value);
+            } while (--length > 0);
+
+            // TODO: find correct number of 68k cycles to burn
+        }
+
+        void ExecuteVramVramCopy()
+        {
+            Log.Note("VDP", "DMA VRAM -> VRAM COPY REQ'D. LENGTH {0:X4}, SOURCE {1:X4}", DmaLength, DmaSource);
+
+            int length = DmaLength;
+            if (length == 0)
+                length = 0x10000;
+
+            int source = DmaSource;
+
+            do
+            {
+                ushort value = (ushort)ReadVdpData();
                 source += 2;
                 // TODO funky source behavior
                 WriteVdpData(value);

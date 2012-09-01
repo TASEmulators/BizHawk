@@ -147,17 +147,30 @@ namespace BizHawk.Emulation.Consoles.Sega
 			{
 				//Log.Error("VDP","FRAME {0}, SCANLINE {1}", Frame, VDP.ScanLine);
 
-				if (VDP.ScanLine < 224)
+				if (VDP.ScanLine < VDP.FrameHeight)
 					VDP.RenderLine();
 
-                Exec68k(487);
-                if (Z80Runnable)
+                Exec68k(365);
+                RunZ80(171);
+
+                // H-Int now?
+
+                VDP.HIntLineCounter--;
+                if (VDP.HIntLineCounter < 0)
                 {
-                    SoundCPU.ExecuteCycles(228);
-                    SoundCPU.Interrupt = false;
-                } else {
-                    SoundCPU.TotalExecutedCycles += 228; // I emulate the YM2612 synced to Z80 clock, for better or worse. Keep the timer going even if Z80 isn't running.
+                    VDP.HIntLineCounter = VDP.Registers[10];
+                    VDP.VdpStatusWord |= GenVDP.StatusHorizBlanking;
+
+                    if (VDP.HInterruptsEnabled)
+                    {
+                        Set68kIrq(4);
+                        //Console.WriteLine("Fire hint!");
+                    }
+
                 }
+
+                Exec68k(488 - 365);
+                RunZ80(228 - 171);
 
                 if (VDP.ScanLine == 224)
 				{
@@ -168,8 +181,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                     if (VDP.VInterruptEnabled)
                         Set68kIrq(6);
 
-					if (Z80Runnable)
-						SoundCPU.Interrupt = true;
+					SoundCPU.Interrupt = true;
                     //The INT output is asserted every frame for exactly one scanline, and it can't be disabled. A very short Z80 interrupt routine would be triggered multiple times if it finishes within 228 Z80 clock cycles. I think (but cannot recall the specifics) that some games have delay loops in the interrupt handler for this very reason. 
 				}
 			}
@@ -194,6 +206,17 @@ namespace BizHawk.Emulation.Consoles.Sega
 #else
             MainCPU.ExecuteCycles(cycles);
 #endif
+        }
+
+        void RunZ80(int cycles)
+        {
+            // I emulate the YM2612 synced to Z80 clock, for better or worse.
+            // So we still need to keep the Z80 cycle count accurate even if the Z80 isn't running.
+
+            if (Z80Runnable)
+                SoundCPU.ExecuteCycles(cycles);
+            else
+                SoundCPU.TotalExecutedCycles += cycles; 
         }
 
         void Set68kIrq(int irq)

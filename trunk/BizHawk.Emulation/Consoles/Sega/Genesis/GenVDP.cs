@@ -57,6 +57,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         public const int StatusSpriteOverflow           = 0x40;
         public const int StatusVerticalInterruptPending = 0x80;
 
+        public bool VdpDebug = false;
+
         public GenVDP()
         {
             WriteVdpRegister(00, 0x04);
@@ -140,14 +142,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                     switch (Registers[23] >> 6)
                     {
                         case 2:
-                            Log.Note("VDP", "VRAM FILL");
                             DmaFillModePending = true;
                             break;
                         case 3:
-                            Log.Error("VDP", "VRAM COPY    **** UNIMPLEMENTED ***"); 
+                            Log.Error("VDP", "VRAM COPY    **** UNIMPLEMENTED ***");
+                            ExecuteVramVramCopy();
                             break;
                         default:
-                            Log.Note("VDP", "68k->VRAM COPY");
                             Execute68000VramCopy();
                             break;
                     }
@@ -179,7 +180,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (DmaFillModePending)
             {
-                ExecuteDmaFill(data);
+                ExecuteVramFill(data);
             }
 
             switch (VdpDataCode & 7)
@@ -187,21 +188,23 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case CommandVramWrite: // VRAM Write
                     VRAM[VdpDataAddr & 0xFFFE] = (byte) data;
                     VRAM[(VdpDataAddr & 0xFFFE) + 1] = (byte) (data >> 8);
-                    //Log.Error("VDP", "VRAM[{0:X4}] = {1:X4}", VdpDataAddr, data);
+                    if (VdpDebug)
+                    Log.Note("VDP", "VRAM[{0:X4}] = {1:X4}", VdpDataAddr, data);
                     UpdatePatternBuffer(VdpDataAddr & 0xFFFE);
                     UpdatePatternBuffer((VdpDataAddr & 0xFFFE) + 1);
-                    //Console.WriteLine("Wrote VRAM[{0:X4}] = {1:X4}", VdpDataAddr, data);
                     VdpDataAddr += Registers[0x0F];
                     break;
                 case CommandCramWrite: // CRAM write
                     CRAM[(VdpDataAddr / 2) % 64] = data;
-                    //Console.WriteLine("Wrote CRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 64, data);
+                    if (VdpDebug)
+                    Log.Note("VDP", "Wrote CRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 64, data);
                     ProcessPalette((VdpDataAddr/2)%64);
                     VdpDataAddr += Registers[0x0F];
                     break;
                 case CommandVsramWrite: // VSRAM write
                     VSRAM[(VdpDataAddr / 2) % 40] = data;
-                    //Console.WriteLine("Wrote VSRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 40, data);
+                    if (VdpDebug)
+                    Log.Note("VDP", "Wrote VSRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 40, data);
                     VdpDataAddr += Registers[0x0F];
                     break;
                 default: 
@@ -243,7 +246,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             // TODO dont tie this to musashi cycle count.
             // Figure out a "clean" way to get cycle counter information available to VDP.
             // Oh screw that. The VDP and the cpu cycle counters are going to be intertwined pretty tightly.
-            int hcounter = (487 - Native68000.Musashi.GetCyclesRemaining()) * 255 / 487;
+            int hcounter = (488 - Native68000.Musashi.GetCyclesRemaining()) * 255 / 488;
+            // FIXME: totally utterly wrong.
 
             ushort res = (ushort) ((vcounter << 8) | (hcounter & 0xFF));
             //Console.WriteLine("READ HVC: V={0:X2} H={1:X2}  ret={2:X4}", vcounter, hcounter, res);
@@ -253,59 +257,72 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void WriteVdpRegister(int register, byte data)
         {
+            if (VdpDebug)
             Log.Note("VDP", "Register {0}: {1:X2}", register, data);
             switch (register)
             {
                 case 0x00: // Mode Set Register 1
                     Registers[register] = data;
-                    Log.Error("VDP", "HINT enabled: " + HInterruptsEnabled);
+                    //if (VdpDebug)
+                    Log.Note("VDP", "HINT enabled: " + HInterruptsEnabled);
                     break;
 
                 case 0x01: // Mode Set Register 2
-                    Registers[register] = data;
-                    //Log.Note("VDP", "DisplayEnabled: " + DisplayEnabled);
-                    //Log.Note("VDP", "DmaEnabled: " + DmaEnabled);
-                    //Log.Note("VDP", "VINT enabled: " + VInterruptEnabled);
+                    if (VdpDebug)
+                    {
+                        Registers[register] = data;
+                        Log.Note("VDP", "DisplayEnabled: " + DisplayEnabled);
+                        Log.Note("VDP", "DmaEnabled: " + DmaEnabled);
+                        Log.Note("VDP", "VINT enabled: " + VInterruptEnabled);
+                    }
                     break;
 
                 case 0x02: // Name Table Address for Layer A
                     NameTableAddrA = (ushort) ((data & 0x38) << 10);
-                    //Log.Error("VDP", "SET NTa A = {0:X4}", NameTableAddrA);
+                    if (VdpDebug)
+                    Log.Note("VDP", "SET NTa A = {0:X4}", NameTableAddrA);
                     break;
 
                 case 0x03: // Name Table Address for Window
                     NameTableAddrWindow = (ushort) ((data & 0x3E) << 10);
-                    //Log.Error("VDP", "SET NTa W = {0:X4}", NameTableAddrWindow);
+                    if (VdpDebug)
+                    Log.Note("VDP", "SET NTa W = {0:X4}", NameTableAddrWindow);
                     break;
 
                 case 0x04: // Name Table Address for Layer B
                     NameTableAddrB = (ushort) (data << 13);
-                    //Log.Error("VDP", "SET NTa B = {0:X4}", NameTableAddrB);
+                    if (VdpDebug)
+                    Log.Note("VDP", "SET NTa B = {0:X4}", NameTableAddrB);
                     break;
 
                 case 0x05: // Sprite Attribute Table Address
                     SpriteAttributeTableAddr = (ushort) (data << 9);
-                    //Log.Error("VDP", "SET SAT attr = {0:X4}", SpriteAttributeTableAddr);
+                    if (VdpDebug)
+                    Log.Note("VDP", "SET SAT attr = {0:X4}", SpriteAttributeTableAddr);
                     break;
 
                 case 0x0A: // H Interrupt Register
-                    //Log.Note("VDP", "HInt occurs every {0} lines.", data);
+                    if (VdpDebug)
+                    Log.Note("VDP", "HInt occurs every {0} lines.", data);
                     break;
 
                 case 0x0B: // VScroll/HScroll modes
-                    /*if ((data & 4) != 0)
-                        Log.Note("VDP", "VSCroll Every 2 Cells Enabled");
-                    else
-                        Log.Note("VDP", "Full Screen VScroll");*/
+                    if (VdpDebug)
+                    {
+                        if ((data & 4) != 0)
+                            Log.Note("VDP", "VSCroll Every 2 Cells Enabled");
+                        else
+                            Log.Note("VDP", "Full Screen VScroll");
 
-                    int hscrollmode = data & 3;
-										//switch (hscrollmode)
-										//{
-										//    case 0: Log.Note("VDP", "Full Screen HScroll"); break;
-										//    case 1: Log.Note("VDP", "Prohibited HSCROLL mode!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); break;
-										//    case 2: Log.Note("VDP", "HScroll every 1 cell"); break;
-										//    case 3: Log.Note("VDP", "HScroll every 2 cell"); break;
-										//}
+                        int hscrollmode = data & 3;
+                        switch (hscrollmode)
+                        {
+                            case 0: Log.Note("VDP", "Full Screen HScroll"); break;
+                            case 1: Log.Note("VDP", "Prohibited HSCROLL mode!!!  But it'll work."); break;
+                            case 2: Log.Note("VDP", "HScroll every 1 cell"); break;
+                            case 3: Log.Note("VDP", "HScroll every line"); break;
+                        }
+                    }
                     break;
 
                 case 0x0C: // Mode Set #4
@@ -317,7 +334,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                         {
                             FrameBuffer = new int[256*224];
                             FrameWidth = 256;
-                            //Log.Note("VDP", "SWITCH TO 32 CELL WIDE MODE");
+                            Log.Note("VDP", "SWITCH TO 32 CELL WIDE MODE");
                         }
                     } else {
                         // Display is 40 cells wide
@@ -325,18 +342,20 @@ namespace BizHawk.Emulation.Consoles.Sega
                         {
                             FrameBuffer = new int[320*224];
                             FrameWidth = 320;
-                            //Log.Note("VDP", "SWITCH TO 40 CELL WIDE MODE");
+                            Log.Note("VDP", "SWITCH TO 40 CELL WIDE MODE");
                         }
                     }
                     break;
 
                 case 0x0D: // H Scroll Table Address
                     HScrollTableAddr = (ushort) (data << 10);
-                    //Log.Note("VDP", "SET HScrollTab attr = {0:X4}", HScrollTableAddr);
+                    if (VdpDebug)
+                    Log.Note("VDP", "SET HScrollTab attr = {0:X4}", HScrollTableAddr);
                     break;
 
                 case 0x0F: // Auto Address Register Increment
-                    //Log.Note("VDP", "Set Data Increment to " + data);
+                    //if (VdpDebug)
+                    Log.Note("VDP", "Set Data Increment to " + data);
                     break;
 
                 case 0x10: // Nametable Dimensions
@@ -359,36 +378,38 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 0x11: // Window H Position
                     int whp = data & 31;
                     bool fromright = (data & 0x80) != 0;
-                    //Log.Error("VDP", "Window H is {0} units from {1}", whp, fromright ? "right" : "left");
+                    if (VdpDebug)
+                    Log.Note("VDP", "Window H is {0} units from {1}", whp, fromright ? "right" : "left");
                     break;
 
                 case 0x12: // Window V
-                    //whp = data & 31;
-                    //fromright = (data & 0x80) != 0;
-                    //Log.Error("VDP", "Window V is {0} units from {1}", whp, fromright ? "lower" : "upper");
+                    whp = data & 31;
+                    fromright = (data & 0x80) != 0;
+                    if (VdpDebug)
+                    Log.Note("VDP", "Window V is {0} units from {1}", whp, fromright ? "lower" : "upper");
                     break;
 
                 case 0x13: // DMA Length Low
                     Registers[register] = data;
-                    //Log.Note("VDP", "DMA Length = {0:X4}", DmaLength);
+                    Log.Note("VDP", "DMA Length = {0:X4}", DmaLength);
                     break;
 
                 case 0x14: // DMA Length High
                     Registers[register] = data;
-                    //Log.Note("VDP", "DMA Length = {0:X4}", DmaLength);
+                    Log.Note("VDP", "DMA Length = {0:X4}", DmaLength);
                     break;
 
                 case 0x15: // DMA Source Low
                     Registers[register] = data;
-                    //Log.Note("VDP", "DMA Source = {0:X6}", DmaSource);
+                    Log.Note("VDP", "DMA Source = {0:X6}", DmaSource);
                     break;
                 case 0x16: // DMA Source Mid
                     Registers[register] = data;
-                    //Log.Note("VDP", "DMA Source = {0:X6}", DmaSource);
+                    Log.Note("VDP", "DMA Source = {0:X6}", DmaSource);
                     break;
                 case 0x17: // DMA Source High
                     Registers[register] = data;
-                    //Log.Note("VDP", "DMA Source = {0:X6}", DmaSource);
+                    Log.Note("VDP", "DMA Source = {0:X6}", DmaSource);
                     break;
 
             }
