@@ -14,8 +14,9 @@ namespace BizHawk.Emulation.Consoles.Sega
         
         public byte[] PatternBuffer = new byte[0x20000];
         public int[] Palette = new int[64];
-        public int[] FrameBuffer = new int[256*224];
-        public int FrameWidth = 256;
+        public int[] FrameBuffer = new int[320*224];
+        public int FrameWidth = 320;
+        public int FrameHeight = 224;
 
         public int ScanLine;
         public int HIntLineCounter;
@@ -55,6 +56,19 @@ namespace BizHawk.Emulation.Consoles.Sega
         public const int StatusSpriteCollision          = 0x20;
         public const int StatusSpriteOverflow           = 0x40;
         public const int StatusVerticalInterruptPending = 0x80;
+
+        public GenVDP()
+        {
+            WriteVdpRegister(00, 0x04);
+            WriteVdpRegister(01, 0x04);
+            WriteVdpRegister(02, 0x30);
+            WriteVdpRegister(03, 0x3C);
+            WriteVdpRegister(04, 0x07);
+            WriteVdpRegister(05, 0x67);
+            WriteVdpRegister(10, 0xFF);
+            WriteVdpRegister(12, 0x81);
+            WriteVdpRegister(15, 0x02);
+        }
 
         public ushort ReadVdp(int addr)
         {
@@ -157,7 +171,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             ControlWordPending = false; 
 
             // byte-swap incoming data when A0 is set
-            if ((VdpDataAddr & 1) != 0)
+             if ((VdpDataAddr & 1) != 0)
             {
                 data = (ushort)((data >> 8) | (data << 8));
                 Console.WriteLine("VRAM byte-swap is happening because A0 is not 0");
@@ -173,6 +187,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case CommandVramWrite: // VRAM Write
                     VRAM[VdpDataAddr & 0xFFFE] = (byte) data;
                     VRAM[(VdpDataAddr & 0xFFFE) + 1] = (byte) (data >> 8);
+                    //Log.Error("VDP", "VRAM[{0:X4}] = {1:X4}", VdpDataAddr, data);
                     UpdatePatternBuffer(VdpDataAddr & 0xFFFE);
                     UpdatePatternBuffer((VdpDataAddr & 0xFFFE) + 1);
                     //Console.WriteLine("Wrote VRAM[{0:X4}] = {1:X4}", VdpDataAddr, data);
@@ -227,10 +242,11 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             // TODO dont tie this to musashi cycle count.
             // Figure out a "clean" way to get cycle counter information available to VDP.
+            // Oh screw that. The VDP and the cpu cycle counters are going to be intertwined pretty tightly.
             int hcounter = (487 - Native68000.Musashi.GetCyclesRemaining()) * 255 / 487;
 
             ushort res = (ushort) ((vcounter << 8) | (hcounter & 0xFF));
-            Console.WriteLine("READ HVC: V={0:X2} H={1:X2}  ret={2:X4}", vcounter, hcounter, res);
+            //Console.WriteLine("READ HVC: V={0:X2} H={1:X2}  ret={2:X4}", vcounter, hcounter, res);
 
             return res;
         }
@@ -254,22 +270,22 @@ namespace BizHawk.Emulation.Consoles.Sega
 
                 case 0x02: // Name Table Address for Layer A
                     NameTableAddrA = (ushort) ((data & 0x38) << 10);
-                    //Log.Note("VDP", "SET NTa A = {0:X4}", NameTableAddrA);
+                    //Log.Error("VDP", "SET NTa A = {0:X4}", NameTableAddrA);
                     break;
 
                 case 0x03: // Name Table Address for Window
                     NameTableAddrWindow = (ushort) ((data & 0x3E) << 10);
-                    //Log.Note("VDP", "SET NTa W = {0:X4}", NameTableAddrWindow);
+                    //Log.Error("VDP", "SET NTa W = {0:X4}", NameTableAddrWindow);
                     break;
 
                 case 0x04: // Name Table Address for Layer B
                     NameTableAddrB = (ushort) (data << 13);
-                    //Log.Note("VDP", "SET NTa B = {0:X4}", NameTableAddrB);
+                    //Log.Error("VDP", "SET NTa B = {0:X4}", NameTableAddrB);
                     break;
 
                 case 0x05: // Sprite Attribute Table Address
                     SpriteAttributeTableAddr = (ushort) (data << 9);
-                    //Log.Note("VDP", "SET SAT attr = {0:X4}", SpriteAttributeTableAddr);
+                    //Log.Error("VDP", "SET SAT attr = {0:X4}", SpriteAttributeTableAddr);
                     break;
 
                 case 0x0A: // H Interrupt Register
@@ -338,7 +354,6 @@ namespace BizHawk.Emulation.Consoles.Sega
                         case 2: NameTableHeight = 32; break; // invalid setting
                         case 3: NameTableHeight = 128; break;
                     }
-                    //Log.Note("VDP", "Name Table Dimensions set to {0}x{1}", NameTableWidth, NameTableHeight);
                     break;
 
                 case 0x11: // Window H Position
@@ -348,8 +363,8 @@ namespace BizHawk.Emulation.Consoles.Sega
                     break;
 
                 case 0x12: // Window V
-                    whp = data & 31;
-                    fromright = (data & 0x80) != 0;
+                    //whp = data & 31;
+                    //fromright = (data & 0x80) != 0;
                     //Log.Error("VDP", "Window V is {0} units from {1}", whp, fromright ? "lower" : "upper");
                     break;
 
@@ -408,7 +423,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public int BufferHeight
         {
-            get { return 224; }
+            get { return FrameHeight; }
         }
 
         public int BackgroundColor

@@ -16,13 +16,9 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         static readonly byte[] PalXlatTable = { 0, 0, 36, 36, 73, 73, 109, 109, 145, 145, 182, 182, 219, 219, 255, 255 };
 
-        // TODO, should provide startup register values.
         public void RenderLine()
         {
             Array.Clear(PriorityBuffer, 0, 320);
-            int bgcolor = BackgroundColor;
-            for (int ofs = ScanLine * FrameWidth, i = 0; i < FrameWidth; i++, ofs++)
-                FrameBuffer[ofs] = bgcolor;
 
             if (DisplayEnabled)
             {
@@ -42,20 +38,25 @@ namespace BizHawk.Emulation.Consoles.Sega
                     FrameBuffer[(p*FrameWidth) + i] = Palette[(p*16) + i];
         }
 
-        void RenderBackgroundScanline(int xScroll, int yScroll, int nameTableBase, int lowPriority, int highPriority)
+        void RenderScrollAScanline(int xScroll, int yScroll, int nameTableBase, int startPixel, int endPixel)
         {
+            const int lowPriority = 2;
+            const int highPriority = 5;
             int yTile = ((ScanLine + yScroll) / 8) % NameTableHeight;
+            int nameTableWidth = NameTableWidth;
+            if (nameTableBase == NameTableAddrWindow)
+                nameTableWidth = Display40Mode ? 64 : 32;
 
             // this is hellllla slow. but not optimizing until we implement & understand
             // all scrolling modes, shadow & hilight, etc.
             // in thinking about this, you could convince me to optimize the PCE background renderer now.
             // Its way simple in comparison. But the PCE sprite renderer is way worse than gen.
-            for (int x = 0; x < FrameWidth; x++)
+            for (int x = startPixel; x < endPixel; x++)
             {
-                int xTile = Math.Abs(((x + (1024-xScroll)) / 8) % NameTableWidth);
+                int xTile = Math.Abs(((x + (1024-xScroll)) / 8) % nameTableWidth);
                 int xOfs = Math.Abs((x + (1024-xScroll)) & 7);
                 int yOfs = (ScanLine + yScroll) % 8;
-                int cellOfs = nameTableBase + (yTile * NameTableWidth * 2) + (xTile * 2);
+                int cellOfs = nameTableBase + (yTile * nameTableWidth * 2) + (xTile * 2);
                 int nameTableEntry = VRAM[cellOfs] | (VRAM[cellOfs+1] << 8);
                 int patternNo = nameTableEntry & 0x7FF;
                 bool hFlip = ((nameTableEntry >> 11) & 1) != 0;
@@ -77,19 +78,134 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
+        void CalculateWindowScanlines(out int startScanline, out int endScanline)
+        {
+            int data = Registers[0x12];
+            int windowVPosition = data & 31;
+            bool fromTop = (data & 0x80) == 0;
+            
+            if (windowVPosition == 0)
+            {
+                startScanline = -1;
+                endScanline = -1;
+                return;
+            }
+
+            if (fromTop)
+            {
+                startScanline = 0;
+                endScanline = (windowVPosition * 8);
+            } else {
+                startScanline = windowVPosition * 8;
+                endScanline = FrameHeight;
+            }
+        }
+
+        void CalculateWindowPosition(out int startPixel, out int endPixel)
+        {
+            int data = Registers[0x11];
+            int windowHPosition = (data & 31) * 2; // Window H position is set in 2-cell increments
+            bool fromLeft = (data & 0x80) == 0;
+
+            if (windowHPosition == 0)
+            {
+                startPixel = -1;
+                endPixel = -1;
+                return;
+            }
+
+            if (fromLeft)
+            {
+                startPixel = 0;
+                endPixel = (windowHPosition * 8);
+            }
+            else
+            {
+                startPixel = windowHPosition * 8;
+                endPixel = FrameWidth;
+            }
+        }
+
         void RenderScrollA()
         {
-            // todo scroll values
+            // Calculate scroll offsets
+
             int hscroll = CalcHScrollPlaneA(ScanLine);
             int vscroll = VSRAM[0] & 0x3FF;
-            RenderBackgroundScanline(hscroll, vscroll, NameTableAddrA, 2, 5);
+
+            // Calculate window dimensions
+
+            int startWindowScanline, endWindowScanline;
+            int startWindowPixel, endWindowPixel;
+            CalculateWindowScanlines(out startWindowScanline, out endWindowScanline);
+            CalculateWindowPosition(out startWindowPixel, out endWindowPixel);
+
+            // Render scanline
+
+            if (ScanLine >= startWindowScanline && ScanLine < endWindowScanline)  // Window takes up whole scanline
+            {
+                RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, FrameWidth);
+            }
+            else if (startWindowPixel != -1) // Window takes up partial scanline
+            {
+                if (startWindowPixel == 0) // Window grows from left side
+                {
+                    RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, endWindowPixel);
+                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, endWindowPixel, FrameWidth);
+                }
+                else // Window grows from right side
+                {
+                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, startWindowPixel);
+                    RenderScrollAScanline(0, 0, NameTableAddrWindow, startWindowPixel, FrameWidth);
+                }
+            } 
+            else // No window
+            {   
+                RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, FrameWidth);
+            }
         }
 
         void RenderScrollB()
         {
-            int hscroll = CalcHScrollPlaneB(ScanLine);
-            int vscroll = VSRAM[1] & 0x3FF;
-            RenderBackgroundScanline(hscroll, vscroll, NameTableAddrB, 1, 4);
+            int bgColor = BackgroundColor;
+            int xScroll = CalcHScrollPlaneB(ScanLine);
+            int yScroll = VSRAM[1] & 0x3FF;
+
+            const int lowPriority = 1;
+            const int highPriority = 4;
+
+            int yTile = ((ScanLine + yScroll) / 8) % NameTableHeight;
+
+            // this is hellllla slow. but not optimizing until we implement & understand
+            // all scrolling modes, shadow & hilight, etc.
+            // in thinking about this, you could convince me to optimize the PCE background renderer now.
+            // Its way simple in comparison. But the PCE sprite renderer is way worse than gen.
+            for (int x = 0; x < FrameWidth; x++)
+            {
+                int xTile = Math.Abs(((x + (1024 - xScroll)) / 8) % NameTableWidth);
+                int xOfs = Math.Abs((x + (1024 - xScroll)) & 7);
+                int yOfs = (ScanLine + yScroll) % 8;
+                int cellOfs = NameTableAddrB + (yTile * NameTableWidth * 2) + (xTile * 2);
+                int nameTableEntry = VRAM[cellOfs] | (VRAM[cellOfs + 1] << 8);
+                int patternNo = nameTableEntry & 0x7FF;
+                bool hFlip = ((nameTableEntry >> 11) & 1) != 0;
+                bool vFlip = ((nameTableEntry >> 12) & 1) != 0;
+                bool priority = ((nameTableEntry >> 15) & 1) != 0;
+                int palette = (nameTableEntry >> 13) & 3;
+
+                if (priority && PriorityBuffer[x] >= highPriority) continue;
+                if (!priority && PriorityBuffer[x] >= lowPriority) continue;
+
+                if (vFlip) yOfs = 7 - yOfs;
+                if (hFlip) xOfs = 7 - xOfs;
+
+                int texel = PatternBuffer[(patternNo * 64) + (yOfs * 8) + (xOfs)];
+                int pixel = Palette[(palette * 16) + texel];
+                if (texel == 0)
+                    pixel = bgColor;
+                FrameBuffer[(ScanLine * FrameWidth) + x] = pixel;
+                PriorityBuffer[x] = (byte)(priority ? highPriority : lowPriority);
+            }
         }
 
         static readonly int[] SpriteSizeTable = { 8, 16, 24, 32 };

@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         void ExecuteDmaFill(ushort data)
         {
-            Log.Note("VDP","DMA FILL REQD, WRITE {0:X4}, {1:X4} times, at {2:X4}", data, DmaLength, VdpDataAddr);
+            //Log.Error("VDP","DMA FILL REQD, WRITE {0:X4}, {1:X4} times, at {2:X4}", data, DmaLength, VdpDataAddr);
 
             // TODO: It should spread this out, not do it all at once.
             // TODO: DMA can go to places besides just VRAM (eg CRAM, VSRAM) ??? can it?
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         void Execute68000VramCopy()
         {
-            Log.Note("VDP", "DMA 68000 -> VRAM COPY REQ'D. LENGTH {0:X4}, SOURCE {1:X4}", DmaLength, DmaSource);
+            //Log.Error("VDP", "DMA 68000 -> VRAM COPY REQ'D. LENGTH {0:X4}, SOURCE {1:X4}", DmaLength, DmaSource);
             
             int length = DmaLength;
             if (length == 0)
