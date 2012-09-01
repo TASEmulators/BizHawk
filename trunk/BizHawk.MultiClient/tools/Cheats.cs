@@ -621,14 +621,13 @@ namespace BizHawk.MultiClient
 				{
 					c.compare = (byte)(int.Parse(CompareBox.Text, NumberStyles.HexNumber));
 				}
+				c.domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
 				c.Enable();
 			}
 			catch
 			{
 				return null;
 			}
-
-			c.domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
 			return c;
 		}
 
