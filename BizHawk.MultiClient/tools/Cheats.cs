@@ -613,6 +613,14 @@ namespace BizHawk.MultiClient
 			{
 				c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 				c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
+				if (String.IsNullOrWhiteSpace(CompareBox.Text))
+				{
+					c.compare = null;
+				}
+				else
+				{
+					c.compare = (byte)(int.Parse(CompareBox.Text, NumberStyles.HexNumber));
+				}
 				c.Enable();
 			}
 			catch
@@ -760,6 +768,7 @@ namespace BizHawk.MultiClient
 				NameBox.Text = Global.CheatList.Cheat(indexes[0]).name;
 				AddressBox.Text = Global.CheatList.FormatAddress(Global.CheatList.Cheat(indexes[0]).address);
 				ValueBox.Text = String.Format("{0:X2}", Global.CheatList.Cheat(indexes[0]).value);
+				CompareBox.Text = String.Format("{0:X2}", Global.CheatList.Cheat(indexes[0]).compare);
 				SetDomainSelection(Global.CheatList.Cheat(indexes[0]).domain.ToString());
 				CheatListView.Refresh();
 			}
@@ -782,33 +791,49 @@ namespace BizHawk.MultiClient
 		private void CheatListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (CheatListView.SelectedIndices.Count > 0)
+			{
 				EditButton.Enabled = true;
+			}
 			else
+			{
 				EditButton.Enabled = false;
+			}
 		}
 
 		private void AddressBox_TextChanged(object sender, EventArgs e)
 		{
 			if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+			{
 				AddCheatButton.Enabled = true;
+			}
 			else
+			{
 				AddCheatButton.Enabled = false;
+			}
 		}
 
 		private void ValueBox_TextChanged(object sender, EventArgs e)
 		{
 			if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+			{
 				AddCheatButton.Enabled = true;
+			}
 			else
+			{
 				AddCheatButton.Enabled = false;
+			}
 		}
 
 		private void NameBox_TextChanged(object sender, EventArgs e)
 		{
 			if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+			{
 				AddCheatButton.Enabled = true;
+			}
 			else
+			{
 				AddCheatButton.Enabled = false;
+			}
 		}
 
 		private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -1072,7 +1097,9 @@ namespace BizHawk.MultiClient
 		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
+			{
 				CheatListView.SelectItem(x, true);
+			}
 		}
 
 		private void CheatListView_KeyDown(object sender, KeyEventArgs e)
@@ -1095,14 +1122,32 @@ namespace BizHawk.MultiClient
 			//Counts should always be the same, but just in case, let's check
 			int max;
 			if (Global.Emulator.MemoryDomains.Count < DomainComboBox.Items.Count)
+			{
 				max = Global.Emulator.MemoryDomains.Count;
+			}
 			else
+			{
 				max = DomainComboBox.Items.Count;
+			}
 
 			for (int x = 0; x < max; x++)
 			{
 				if (domainStr == DomainComboBox.Items[x].ToString())
+				{
 					DomainComboBox.SelectedIndex = x;
+				}
+			}
+		}
+
+		private void CompareBox_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == '\b')
+			{
+				return;
+			}
+			else if (!InputValidate.IsValidHexNumber(e.KeyChar))
+			{
+				e.Handled = true;
 			}
 		}
 	}
