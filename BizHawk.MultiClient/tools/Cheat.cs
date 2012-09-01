@@ -31,8 +31,13 @@ namespace BizHawk.MultiClient
 			domain = c.domain;
 			compare = c.compare;
 			if (enabled)
-				MemoryPulse.Add(domain, address, value);
-
+			{
+				Enable();
+			}
+			else
+			{
+				Disable();
+			}
 		}
 
 		public Cheat(string cname, int addr, byte val, bool e, MemoryDomain d, byte? comp = null)
@@ -45,14 +50,18 @@ namespace BizHawk.MultiClient
 			compare = comp;
 			if (enabled)
 			{
-				MemoryPulse.Add(domain, address, value, compare);
+				Enable();
+			}
+			else
+			{
+				Disable();
 			}
 		}
 
 		public void Enable()
 		{
 			enabled = true;
-			if (Global.Emulator is NES)
+			if (Global.Emulator is NES && domain == Global.Emulator.MemoryDomains[1])
 			{
 				(Global.Emulator as NES).ApplyGameGenie(address, value, compare);
 			}
@@ -70,7 +79,7 @@ namespace BizHawk.MultiClient
 
 		public void DisposeOfCheat()
 		{
-			if (Global.Emulator is NES)
+			if (Global.Emulator is NES && domain == Global.Emulator.MemoryDomains[1])
 			{
 				(Global.Emulator as NES).RemoveGameGenie(address);
 			}
