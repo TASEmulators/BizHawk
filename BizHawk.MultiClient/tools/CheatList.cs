@@ -54,17 +54,21 @@ namespace BizHawk.MultiClient
 					s = s.Substring(y, s.Length - y); //Enabled
 					y = int.Parse(s[0].ToString());
 
-					try
-					{
+					//try
+					//{
 						if (y == 0)
+						{
 							c.Disable();
+						}
 						else
+						{
 							c.Enable();
-					}
-					catch
-					{
-						NotSupportedError();
-					}
+						}
+					//}
+					//catch
+					//{
+					//    NotSupportedError();
+					//}
 
 					y = s.IndexOf('\t') + 1;
 					s = s.Substring(y, s.Length - y); //Name
@@ -97,7 +101,9 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 			{
 				if (Global.Emulator.MemoryDomains[x].Name == name)
+				{
 					return Global.Emulator.MemoryDomains[x];
+				}
 			}
 			return Global.Emulator.MemoryDomains[0];
 		}

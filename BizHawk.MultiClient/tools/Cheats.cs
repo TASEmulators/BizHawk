@@ -564,12 +564,15 @@ namespace BizHawk.MultiClient
 			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber); //TODO: validation
 			c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
 			c.domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
-			try { 
+			try
+			{
 				c.Enable();
-			} 
-			catch {
+			}
+			catch
+			{
 				Global.CheatList.NotSupportedError();
 			}
+
 			return c;
 		}
 

@@ -275,13 +275,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//handle breakpoints and stuff.
 			//the idea is that each core can implement its own watch class on an address which will track all the different kinds of monitors and breakpoints and etc.
 			//but since freeze is a common case, it was implemented through its own mechanisms
-			//if (sysbus_watch[addr] != null)
-			//{
-			//    sysbus_watch[addr].Sync();
-			//    ret = sysbus_watch[addr].ApplyGameGenie(ret);
-			//}
+			if (sysbus_watch[addr] != null)
+			{
+				sysbus_watch[addr].Sync();
+				ret = sysbus_watch[addr].ApplyGameGenie(ret);
+			}
 
 			return ret;
+		}
+
+		public void ApplyGameGenie(int addr, byte value, byte? compare)
+		{
+			if (addr < sysbus_watch.Length)
+			{
+				GetWatch(NESWatch.EDomain.Sysbus, addr).SetGameGenie(compare, value);
+			}
+		}
+
+		public void RemoveGameGenie(int addr)
+		{
+			if (addr < sysbus_watch.Length)
+			{
+				GetWatch(NESWatch.EDomain.Sysbus, addr).RemoveGameGenie();
+			}
 		}
 
 		public void WriteMemory(ushort addr, byte value)

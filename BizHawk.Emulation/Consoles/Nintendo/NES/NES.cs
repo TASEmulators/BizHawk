@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				Sysbus
 			}
+
 			public NESWatch(NES nes, EDomain domain, int address)
 			{
 				Address = address;
@@ -85,20 +86,37 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				else watches[Address] = this;
 			}
 
-			public void SetGameGenie(int check, int replace)
+			public void SetGameGenie(byte? compare, byte value)
 			{
 				flags |= EFlags.GameGenie;
-				gg_check = check;
-				gg_replace = replace;
+				Compare = compare;
+				Value = value;
 				Sync();
 			}
 
-			public bool HasGameGenie { get { return (flags & EFlags.GameGenie) != 0; } }
+			public bool HasGameGenie
+			{
+				get
+				{
+					return (flags & EFlags.GameGenie) != 0;
+				}
+			}
+			
 			public byte ApplyGameGenie(byte curr)
 			{
-				if (!HasGameGenie) return curr;
-				if (curr == gg_check || gg_check == -1) { Console.WriteLine("applied game genie"); return (byte)gg_replace; }
-				else return curr;
+				if (!HasGameGenie)
+				{
+					return curr;
+				}
+				else if (curr == Compare || Compare == null)
+				{
+					Console.WriteLine("applied game genie");
+					return (byte)Value;
+				}
+				else
+				{
+					return curr;
+				}
 			}
 
 			public void RemoveGameGenie()
@@ -107,7 +125,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Sync();
 			}
 
-			int gg_check, gg_replace;
+			byte? Compare;
+			byte Value;
 
 			NESWatch[] watches;
 		}
@@ -313,10 +332,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				addr => CIRAM[addr & 0x07FF], (addr, value) => CIRAM[addr & 0x07FF] = value);
 			var OAMdoman = new MemoryDomain("OAM", 64 * 4, Endian.Unknown,
 				addr => ppu.OAM[addr & (64 * 4 - 1)], (addr, value) => ppu.OAM[addr & (64 * 4 - 1)] = value);
-
-			//demo a game genie code
-			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).SetGameGenie(-1, 0x10);
-			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).RemoveGameGenie();
 
 			domains.Add(RAM);
 			domains.Add(SystemBus);
