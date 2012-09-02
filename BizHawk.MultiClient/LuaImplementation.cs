@@ -476,6 +476,8 @@ namespace BizHawk.MultiClient
 		                                              		"openhexeditor",
 		                                              		"opentasstudio",
 		                                              		"opencheats",
+															"screenwidth",
+															"screenheight",
 		                                              	};
 
 		public static string[] FormsFunctions = new string[]
@@ -1914,6 +1916,16 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Client library
 		//----------------------------------------------------
+		public int client_screenwidth()
+		{
+			return Global.RenderPanel.NativeSize.Width;
+		}
+
+		public int client_screenheight()
+		{
+			return Global.RenderPanel.NativeSize.Height;
+		}
+
 		public void client_openrom(object lua_input)
 		{
 			Global.MainForm.LoadRom(lua_input.ToString());
