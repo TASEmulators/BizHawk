@@ -25,6 +25,8 @@ namespace BizHawk.MultiClient
 		private Lua currThread;
 		private LuaFunction savestate_registersavefunc;
 		private LuaFunction savestate_registerloadfunc;
+		private LuaFunction frame_registerbeforefunc;
+		private LuaFunction frame_registerafterfunc;
 
 		public void SavestateRegisterSave(string name)
 		{
@@ -55,6 +57,40 @@ namespace BizHawk.MultiClient
 				{
 					Global.MainForm.LuaConsole1.WriteToOutputWindow(
 						"error running function attached by lua function savestate.registerload" +
+						"\nError message: " + e.Message);
+				}
+			}
+		}
+
+		public void FrameRegisterBefore()
+		{
+			if (frame_registerbeforefunc != null)
+			{
+				try
+				{
+					frame_registerbeforefunc.Call();
+				}
+				catch (SystemException e)
+				{
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
+						"error running function attached by lua function emu.registerbefore" +
+						"\nError message: " + e.Message);
+				}
+			}
+		}
+
+		public void FrameRegisterAfter()
+		{
+			if (frame_registerafterfunc != null)
+			{
+				try
+				{
+					frame_registerafterfunc.Call();
+				}
+				catch (SystemException e)
+				{
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
+						"error running function attached by lua function emu.registerafter" +
 						"\nError message: " + e.Message);
 				}
 			}
@@ -312,7 +348,9 @@ namespace BizHawk.MultiClient
 		                                      		"minimizeframeskip",
 		                                      		"limitframerate",
 		                                      		"displayvsync",
-		                                      		"enablerewind"
+		                                      		"enablerewind",
+													"registerbefore",
+													"registerafter",
 		                                      	};
 
 		public static string[] MemoryFunctions = new string[]
@@ -1067,6 +1105,16 @@ namespace BizHawk.MultiClient
 				Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
 				Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
 			}
+		}
+
+		public void emu_registerbefore(LuaFunction luaf)
+		{
+			frame_registerbeforefunc = luaf;
+		}
+
+		public void emu_registerafter(LuaFunction luaf)
+		{
+			frame_registerafterfunc = luaf;
 		}
 
 		//----------------------------------------------------
