@@ -526,8 +526,6 @@ namespace BizHawk.MultiClient
 		private void SaveUndo()
 		{
 			undoList.Clear();
-			//for (int x = 0; x < searchList.Count; x++) //TODO: delete
-			//	undoList.Add(new Watch(searchList[x]));
 			undoList.AddRange(searchList.Where(x => x.deleted == false));
 			UndotoolStripButton.Enabled = true;
 		}
@@ -542,8 +540,6 @@ namespace BizHawk.MultiClient
 				ClearUndo();
 				RedotoolStripButton2.Enabled = true;
 				DisplaySearchList();
-				//OutputLabel.Text = "Undo: s" + searchList.Count.ToString() + " u" +
-				//	undoList.Count.ToString() + " r" + redoList.Count.ToString();
 			}
 		}
 
@@ -583,7 +579,6 @@ namespace BizHawk.MultiClient
 		{
 			if (IsAWeededList && column == 0)
 			{
-				//if (!weededList.Contains(searchList[index])) //TODO: delete me
 				if (searchList[index].deleted)
 				{
 					if (color == Color.Pink) return;
@@ -709,18 +704,25 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void TrimWeededList()
+		{
+			searchList = searchList.Where(x => x.deleted == false).ToList();
+		}
+
 		private void DoSearch()
 		{
 			if (GenerateWeedOutList())
 			{
 				SaveUndo();
 				MessageLabel.Text = MakeAddressString(searchList.Where(x => x.deleted == true).Count()) + " removed";
-				//ReplaceSearchListWithWeedOutList(); //TODO: delete me
+				TrimWeededList(); 
 				UpdateLastSearch();
 				DisplaySearchList();
 			}
 			else
+			{
 				MessageLabel.Text = "Search failed.";
+			}
 		}
 
 		private void toolStripButton1_Click(object sender, EventArgs e)
@@ -768,7 +770,6 @@ namespace BizHawk.MultiClient
 			//Generate search list
 			//Use search list to generate a list of flagged address (for displaying pink)
 			IsAWeededList = true;
-			//weededList.Clear(); TODO: delete this
 			switch (GetCompareTo())
 			{
 				case SCompareTo.PREV:
@@ -1514,8 +1515,6 @@ namespace BizHawk.MultiClient
 				searchList[x].signed = s;
 			for (int x = 0; x < undoList.Count; x++)
 				undoList[x].signed = s;
-			//for (int x = 0; x < weededList.Count; x++) //TODO: delete me
-			//    weededList[x].signed = s;
 			for (int x = 0; x < redoList.Count; x++)
 				redoList[x].signed = s;
 			SetSpecificValueBoxMaxLength();
@@ -1528,7 +1527,6 @@ namespace BizHawk.MultiClient
 		{
 			ConvertDataSize(s, bigendian, ref searchList);
 			ConvertDataSize(s, bigendian, ref undoList);
-			//ConvertDataSize(s, bigendian, ref weededList); //TODO: delete me
 			ConvertDataSize(s, bigendian, ref redoList);
 			SetSpecificValueBoxMaxLength();
 			sortReverse = false;
@@ -2139,32 +2137,9 @@ namespace BizHawk.MultiClient
 		private void DoTruncate(List<Watch> temp)
 		{
 			
-			//weededList.Clear(); //TODO: delete
-			//bool found = false;
-			//for (int x = 0; x < searchList.Count; x++)
-			//{
-			//    found = false;
-			//    for (int y = 0; y < temp.Count; y++)
-			//    {
-			//        if (searchList[x].address == temp[y].address)
-			//        {
-			//            found = true;
-			//            break;
-			//        }
-
-			//    }
-			//    if (!found)
-			//    {
-			//        //weededList.Add(searchList[x]);
-			//    }
-			//}
-			
-			SaveUndo(); //TODO: we need to undo!
+			SaveUndo();
 			MessageLabel.Text = MakeAddressString(undoList.Count) + " removed";
-			searchList = searchList.Where(x => x.deleted == false).ToList();
-
-			//MessageLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed"; //TODO: delete
-			//ReplaceSearchListWithWeedOutList(); //TODO: delete this
+			TrimWeededList(); 
 			UpdateLastSearch();
 			DisplaySearchList();
 		}
@@ -2225,7 +2200,9 @@ namespace BizHawk.MultiClient
 		private void UpdateLastSearch()
 		{
 			for (int x = 0; x < searchList.Count; x++)
+			{
 				searchList[x].lastsearch = searchList[x].value;
+			}
 		}
 
 		private void SetCurrToPrevtoolStripButton2_Click(object sender, EventArgs e)
