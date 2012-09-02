@@ -559,6 +559,14 @@ namespace BizHawk.MultiClient
 		volatile bool VsyncToggle = false;
 		volatile bool VsyncRequested = false;
 		SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
+
+
+		DisplaySurface luaEmuSurface = null;
+		public void PreFrameUpdateLuaSource()
+		{
+			luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
+		}
+
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
 			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
@@ -584,7 +592,7 @@ namespace BizHawk.MultiClient
 			int w = currNativeWidth;
 			int h = currNativeHeight;
 
-			DisplaySurface luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
+			
 			DisplaySurface luaSurface = luaNativeSurfaceSet.GetCurrent();
 
 			//do we have anything to do?
@@ -598,7 +606,9 @@ namespace BizHawk.MultiClient
 			Global.RenderPanel.Clear(Color.FromArgb(videoProvider.BackgroundColor));
 			Global.RenderPanel.Render(surfaceToRender);
 			if (luaEmuSurface != null)
+			{
 				Global.RenderPanel.RenderOverlay(luaEmuSurface);
+			}
 
 			RenderOSD();
 
