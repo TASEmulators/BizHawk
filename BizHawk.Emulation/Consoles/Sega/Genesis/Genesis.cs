@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 				(addr, value) => VDP.VRAM[addr & 0xFFFF] = value);
 
 			var RomDomain = new MemoryDomain("Rom Data", RomData.Length, Endian.Big,
-				addr => RomData[addr & (RomData.Length - 1)],
+				addr => RomData[addr], //adelikat: For speed considerations, I didn't mask this, every tool that uses memory domains is smart enough not to overflow, if I'm wrong let me know!
 				(addr, value) => RomData[addr & (RomData.Length - 1)] = value);
 
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x1000000, Endian.Big,
