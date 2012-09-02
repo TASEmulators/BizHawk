@@ -13,6 +13,7 @@ namespace BizHawk.MultiClient
 {
 	//TODO:
 	//Go To Address (Ctrl+G) feature
+	//Multiple undo levels (List<List<string>> UndoLists)
 	
 	/// <summary>
 	/// A winform designed to search through ram values
@@ -22,7 +23,6 @@ namespace BizHawk.MultiClient
 		string systemID = "NULL";
 		List<Watch> searchList = new List<Watch>();
 		List<Watch> undoList = new List<Watch>();
-		//List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
 		List<Watch> redoList = new List<Watch>();
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -526,7 +526,7 @@ namespace BizHawk.MultiClient
 		private void SaveUndo()
 		{
 			undoList.Clear();
-			undoList.AddRange(searchList.Where(x => x.deleted == false));
+			undoList.AddRange(searchList);
 			UndotoolStripButton.Enabled = true;
 		}
 
@@ -673,7 +673,9 @@ namespace BizHawk.MultiClient
 		{
 			SaveUndo();
 			for (int x = 0; x < searchList.Count; x++)
+			{
 				searchList[x].changecount = 0;
+			}
 			DisplaySearchList();
 			MessageLabel.Text = "Change counts cleared";
 		}
@@ -687,14 +689,6 @@ namespace BizHawk.MultiClient
 		{
 			DoUndo();
 		}
-
-		//adelikat: This is now obsolete, if you need a weeded list, look for non-deleted
-		//private void ReplaceSearchListWithWeedOutList()
-		//{
-		//    searchList = new List<Watch>(weededList);
-		//    weededList.Clear();
-		//    IsAWeededList = false;
-		//}
 
 		private void DoPreview()
 		{
