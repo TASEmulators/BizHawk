@@ -14,9 +14,6 @@ namespace BizHawk.MultiClient
 	public partial class HexEditor : Form
 	{
 		//TODO:
-		//allow archives for ROM File domain (instead of crashing)
-		//If ROM File domain, add new Save/Save As menu items (save disabled if archive)
-		//IF ROM Domain, no need to update values every frame!
 		//Increment/Decrement wrapping logic for 4 byte values is messed up
 
 		int defaultWidth;
@@ -922,10 +919,14 @@ namespace BizHawk.MultiClient
 
 		private void SaveAsBinary()
 		{
-			var file = GetBinarySaveFileFromUser();
+			SaveFileBinary(GetBinarySaveFileFromUser());
+		}
+
+		private void SaveFileBinary(FileInfo file)
+		{
 			if (file != null)
 			{
-				using(BinaryWriter binWriter = new BinaryWriter(File.Open(file.FullName, FileMode.Create)))
+				using (BinaryWriter binWriter = new BinaryWriter(File.Open(file.FullName, FileMode.Create)))
 				{
 					byte[] dump = new byte[Domain.Size];
 
@@ -960,6 +961,20 @@ namespace BizHawk.MultiClient
 			return file;
 		}
 
+		private string GetSaveFileFilter()
+		{
+			if (Domain.Name == "ROM File")
+			{
+				string extension = Path.GetExtension(Global.MainForm.CurrentlyOpenRom);
+
+				return "Binary (*" + extension + ")|*" +  extension + "|All Files|*.*";
+			}
+			else
+			{
+				return "Binary (*.bin)|*.bin|All Files|*.*";
+			}
+		}
+
 		private FileInfo GetBinarySaveFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
@@ -972,7 +987,7 @@ namespace BizHawk.MultiClient
 
 			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
 
-			sfd.Filter = "Binary (*.bin)|*.bin|All Files|*.*";
+			sfd.Filter = GetSaveFileFilter();
 			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
@@ -2118,6 +2133,40 @@ namespace BizHawk.MultiClient
 			{
 				findNextToolStripMenuItem.Enabled = true;
 				findPrevToolStripMenuItem.Enabled = true;
+			}
+		}
+
+		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (CurrentROMIsArchive())
+			{
+				return;
+			}
+			else
+			{
+				FileInfo file = new FileInfo(Global.MainForm.CurrentlyOpenRom);
+				SaveFileBinary(file);
+			}
+		}
+
+		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Domain.Name == "ROM File")
+			{
+				if (!CurrentROMIsArchive())
+				{
+					saveToolStripMenuItem.Visible = true;
+				}
+				else
+				{
+					saveToolStripMenuItem.Visible = false;
+				}
+
+				saveAsBinaryToolStripMenuItem.Text = "Save as ROM...";
+			}
+			else
+			{
+				saveAsBinaryToolStripMenuItem.Text = "Save as binary...";
 			}
 		}
 	}
