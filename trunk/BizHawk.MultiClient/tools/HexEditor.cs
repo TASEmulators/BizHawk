@@ -14,7 +14,9 @@ namespace BizHawk.MultiClient
 	public partial class HexEditor : Form
 	{
 		//TODO:
-		//Add ROM in memory domains, set up logic for saving the rom in SaveFile logic
+		//allow archives for ROM File domain (instead of crashing)
+		//If ROM File domain, add new Save/Save As menu items (save disabled if archive)
+		//IF ROM Domain, no need to update values every frame!
 		//Increment/Decrement wrapping logic for 4 byte values is messed up
 
 		int defaultWidth;
@@ -42,9 +44,11 @@ namespace BizHawk.MultiClient
 		const int fontHeight = 14;
 		const int fontWidth = 7; //Width of 1 digits
 		string FindStr = "";
-
 		bool loaded = false;
 		
+		byte[] ROM;
+		MemoryDomain ROMDomain;
+
 		// Configurations
 		bool AutoLoad;
 		bool SaveWindowPosition;
@@ -315,12 +319,21 @@ namespace BizHawk.MultiClient
 
 		private void SetMemoryDomain(int pos)
 		{
-			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+			if (pos == 999)
+			{
+				ROM = File.ReadAllBytes(Global.MainForm.CurrentlyOpenRom);
+				ROMDomain = new MemoryDomain("ROM File", ROM.Length, Endian.Little, 
+					addr => ROM[addr],
+					(addr, value) => ROM[addr] = value);
+				Domain = ROMDomain;
+			}
+			else if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
 			{
 				SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
 			}
 			UpdateGroupBoxTitle();
 			ResetScrollBar();
+			UpdateValues();
 			MemoryViewerBox.Refresh();
 		}
 
@@ -334,27 +347,30 @@ namespace BizHawk.MultiClient
 		private void SetMemoryDomainMenu()
 		{
 			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
-			if (Global.Emulator.MemoryDomains.Count > 0)
+			
+			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 			{
-				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				string str = Global.Emulator.MemoryDomains[x].ToString();
+				var item = new ToolStripMenuItem();
+				item.Text = str;
 				{
-					string str = Global.Emulator.MemoryDomains[x].ToString();
-					var item = new ToolStripMenuItem();
-					item.Text = str;
-					{
-						int z = x;
-						item.Click += (o, ev) => SetMemoryDomain(z);
-					}
-					if (x == 0)
-					{
-						SetMemoryDomain(x);
-					}
-					memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
-					domainMenuItems.Add(item);
+					int z = x;
+					item.Click += (o, ev) => SetMemoryDomain(z);
 				}
+				if (x == 0)
+				{
+					SetMemoryDomain(x);
+				}
+				memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+				domainMenuItems.Add(item);
 			}
-			else
-				memoryDomainsToolStripMenuItem.Enabled = false;
+			
+			//Add ROM File memory domain
+			var rom_item = new ToolStripMenuItem();
+			rom_item.Text = "ROM File";
+			rom_item.Click += (o, ev) => SetMemoryDomain(999); //999 will denote ROM file
+			memoryDomainsToolStripMenuItem.DropDownItems.Add(rom_item);
+			domainMenuItems.Add(rom_item);
 		}
 
 
@@ -790,9 +806,13 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < domainMenuItems.Count; x++)
 			{
 				if (Domain.Name == domainMenuItems[x].Text)
+				{
 					domainMenuItems[x].Checked = true;
+				}
 				else
+				{
 					domainMenuItems[x].Checked = false;
+				}
 			}
 		}
 
