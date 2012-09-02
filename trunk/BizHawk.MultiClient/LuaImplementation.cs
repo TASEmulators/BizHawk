@@ -635,8 +635,28 @@ namespace BizHawk.MultiClient
 				{
 					int int_x = LuaInt(X);
 					int int_y = LuaInt(Y);
-					int int_width = Math.Abs(LuaInt(X) - LuaInt(X2));
-					int int_height = Math.Abs(LuaInt(Y) - LuaInt(Y2));
+					int int_width = LuaInt(X2);
+					int int_height = LuaInt(Y2);
+
+					if (int_x < int_width)
+					{
+						int_width = Math.Abs(int_x - int_width);
+					}
+					else
+					{
+						int_width = int_x - int_width;
+						int_x -= int_width;
+					}
+
+					if (int_y < int_height)
+					{
+						int_height = Math.Abs(int_y - int_height);
+					}
+					else
+					{
+						int_height = int_y - int_height;
+						int_y -= int_height;
+					}
 
 					using (var pen = GetPen(line))
 					{
