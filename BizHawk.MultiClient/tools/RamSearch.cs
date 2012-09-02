@@ -2128,11 +2128,11 @@ namespace BizHawk.MultiClient
 			TruncateFromFile();
 		}
 
-		private void DoTruncate(List<Watch> temp)
+		private void DoTruncate()
 		{
 			
 			SaveUndo();
-			MessageLabel.Text = MakeAddressString(undoList.Count) + " removed";
+			MessageLabel.Text = MakeAddressString(searchList.Where(x => x.deleted == true).Count()) + " removed";
 			TrimWeededList(); 
 			UpdateLastSearch();
 			DisplaySearchList();
@@ -2146,8 +2146,29 @@ namespace BizHawk.MultiClient
 			{
 				List<Watch> temp = new List<Watch>();
 				LoadSearchFile(file.FullName, false, true, temp);
-				DoTruncate(temp);
+				TruncateList(temp);
+				DoTruncate();
+				
 			}
+		}
+
+		private void ClearWeeded()
+		{
+			foreach (Watch watch in searchList)
+			{
+				watch.deleted = false;
+			}
+		}
+
+
+		private void TruncateList(List<Watch> toRemove)
+		{
+			ClearWeeded();
+			foreach (Watch watch in toRemove)
+			{
+				searchList.Where(x => x.address == watch.address).FirstOrDefault().deleted = true;
+			}
+			DoTruncate();
 		}
 
 		/// <summary>
@@ -2155,7 +2176,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		private void ExcludeRamWatchList()
 		{
-			DoTruncate(Global.MainForm.RamWatch1.GetRamWatchList());
+			TruncateList(Global.MainForm.RamWatch1.GetRamWatchList());
 		}
 
 		private void TruncateFromFiletoolStripButton2_Click(object sender, EventArgs e)
