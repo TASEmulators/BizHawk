@@ -79,7 +79,7 @@ namespace BizHawk.MultiClient
 			sortReverse = false;
 			sortedCol = "";
 
-			for (int x = 0; x < searchList.Count; x++)
+			for (int x = searchList.Count - 1; x >= 0; x--)
 			{
 				searchList[x].PeekAddress(Domain);
 			}
