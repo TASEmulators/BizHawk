@@ -1898,10 +1898,6 @@ namespace BizHawk.MultiClient
 				if (!fff)
 				{
 					UpdateToolsBefore();
-				
-#if WINDOWS
-				LuaConsole1.ResumeScripts(true);
-#endif
 				}
 
 				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
@@ -1971,6 +1967,9 @@ namespace BizHawk.MultiClient
 				if (!fff)
 				{
 					UpdateToolsAfter();
+#if WINDOWS
+					LuaConsole1.ResumeScripts(true);
+#endif
 				}
 			}
 
