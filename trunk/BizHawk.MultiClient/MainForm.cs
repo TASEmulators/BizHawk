@@ -1900,6 +1900,7 @@ namespace BizHawk.MultiClient
 					UpdateToolsBefore();
 #if WINDOWS
 					LuaConsole1.ResumeScripts(true);
+					Global.DisplayManager.PreFrameUpdateLuaSource();
 #endif
 				}
 
