@@ -174,12 +174,17 @@ namespace BizHawk.MultiClient
 				for (int j = 0; j < 16; j += DataSize)
 				{
 					if (addr + j < Domain.Size)
+					{
 						rowStr.AppendFormat(DigitFormatString, MakeValue(addr + j));
+					}
 				}
 				rowStr.Append("  | ");
 				for (int k = 0; k < 16; k++)
 				{
-					rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+					if (addr + k < Domain.Size)
+					{
+						rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+					}
 				}
 				rowStr.AppendLine();
 
@@ -317,14 +322,80 @@ namespace BizHawk.MultiClient
 			Refresh();
 		}
 
+		private bool CurrentROMIsArchive()
+		{
+			string path = Global.MainForm.CurrentlyOpenRom;
+			if (path == null)
+			{
+				return false;
+			}
+
+			using (var file = new HawkFile())
+			{
+				file.Open(path);
+
+				if (!file.Exists)
+				{
+					return false;
+				}
+
+				if (file.IsArchive)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		private byte[] GetRomBytes()
+		{
+			byte[] bytes;
+			string path = Global.MainForm.CurrentlyOpenRom;
+			if (path == null)
+			{
+				return null;
+			}
+
+			using (var file = new HawkFile())
+			{
+				file.Open(path);
+
+				if (!file.Exists)
+				{
+					return null;
+				}
+
+				if (file.IsArchive)
+				{
+					var stream = file.GetStream();
+					return Util.ReadAllBytes(stream);
+				}
+				else
+				{
+					return File.ReadAllBytes(path);
+				}
+			}
+
+			return new byte[0];
+		}
+
 		private void SetMemoryDomain(int pos)
 		{
 			if (pos == 999)
 			{
-				ROM = File.ReadAllBytes(Global.MainForm.CurrentlyOpenRom);
-				ROMDomain = new MemoryDomain("ROM File", ROM.Length, Endian.Little, 
+				ROM = GetRomBytes();
+				if (ROM == null)
+				{
+					ROM = new byte[1] { 0xFF };
+				}
+				
+				ROMDomain = new MemoryDomain("ROM File", ROM.Length, Endian.Little,
 					addr => ROM[addr],
 					(addr, value) => ROM[addr] = value);
+			
 				Domain = ROMDomain;
 			}
 			else if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
