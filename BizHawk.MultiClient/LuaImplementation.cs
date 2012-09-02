@@ -284,6 +284,7 @@ namespace BizHawk.MultiClient
 		                                      		"cleartext",
 		                                      		"drawPixel",
 		                                      		"drawLine",
+													"drawBox",
 		                                      		"drawRectangle",
 		                                      		"drawEllipse",
 		                                      		"drawPolygon",
@@ -613,6 +614,33 @@ namespace BizHawk.MultiClient
 					using (var pen = GetPen(line))
 					{
 						g.DrawRectangle(pen, int_x, int_y, int_width, int_height);
+						if (background != null)
+							using (var brush = GetBrush(background))
+								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
+					}
+				}
+				catch (Exception)
+				{
+					// need to stop the script from here
+					return;
+				}
+			}
+		}
+
+		public void gui_drawBox(object X, object Y, object X2, object Y2, object line, object background = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					int int_x = LuaInt(X);
+					int int_y = LuaInt(Y);
+					int int_width = Math.Abs(LuaInt(X) - LuaInt(X2));
+					int int_height = Math.Abs(LuaInt(Y) - LuaInt(Y2));
+
+					using (var pen = GetPen(line))
+					{
+						g.DrawRectangle(pen,int_x,int_y,int_width,int_height);
 						if (background != null)
 							using (var brush = GetBrush(background))
 								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
