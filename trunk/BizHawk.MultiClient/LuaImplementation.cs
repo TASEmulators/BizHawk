@@ -82,7 +82,7 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < ConsoleFunctions.Length; i++)
 			{
 				lua.RegisterFunction("console." + ConsoleFunctions[i], this,
-				                     this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
+									 this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
 				docs.Add("console", ConsoleFunctions[i], this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
 			}
 
@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < MainMemoryFunctions.Length; i++)
 			{
 				lua.RegisterFunction("mainmemory." + MainMemoryFunctions[i], this,
-				                     this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
+									 this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
 				docs.Add("mainmemory", MainMemoryFunctions[i], this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
 			}
 
@@ -119,7 +119,7 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < SaveStateFunctions.Length; i++)
 			{
 				lua.RegisterFunction("savestate." + SaveStateFunctions[i], this,
-				                     this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
+									 this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
 				docs.Add("savestate", SaveStateFunctions[i], this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
 			}
 
@@ -148,7 +148,7 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < MultiClientFunctions.Length; i++)
 			{
 				lua.RegisterFunction("client." + MultiClientFunctions[i], this,
-				                     this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
+									 this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
 				docs.Add("client", MultiClientFunctions[i], this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
 			}
 
@@ -181,22 +181,22 @@ namespace BizHawk.MultiClient
 
 		private int LuaInt(object lua_arg)
 		{
-			return Convert.ToInt32((double) lua_arg);
+			return Convert.ToInt32((double)lua_arg);
 		}
 
 		private uint LuaUInt(object lua_arg)
 		{
-			return Convert.ToUInt32((double) lua_arg);
+			return Convert.ToUInt32((double)lua_arg);
 		}
 
 
 		public Color GetColor(object color)
 		{
-			if (color.GetType() == typeof (Double))
+			if (color.GetType() == typeof(Double))
 			{
 				return
 					System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"),
-					                                        System.Globalization.NumberStyles.HexNumber));
+															System.Globalization.NumberStyles.HexNumber));
 			}
 			else
 			{
@@ -513,7 +513,7 @@ namespace BizHawk.MultiClient
 		//Gui library
 		//----------------------------------------------------
 		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object background = null,
-		                         object forecolor = null, object anchor = null)
+								 object forecolor = null, object anchor = null)
 		{
 			if (!alert)
 			{
@@ -543,11 +543,11 @@ namespace BizHawk.MultiClient
 				}
 			}
 			Global.OSD.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, GetColor(background), GetColor(forecolor),
-			                      a);
+								  a);
 		}
 
 		public void gui_text(object luaX, object luaY, object luaStr, object background = null, object forecolor = null,
-		                     object anchor = null)
+							 object anchor = null)
 		{
 			do_gui_text(luaX, luaY, luaStr, false, background, forecolor, anchor);
 		}
@@ -660,7 +660,7 @@ namespace BizHawk.MultiClient
 
 					using (var pen = GetPen(line))
 					{
-						g.DrawRectangle(pen,int_x,int_y,int_width,int_height);
+						g.DrawRectangle(pen, int_x, int_y, int_width, int_height);
 						if (background != null)
 							using (var brush = GetBrush(background))
 								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
@@ -794,7 +794,7 @@ namespace BizHawk.MultiClient
 		}
 
 		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle,
-		                        object line, object background = null)
+								object line, object background = null)
 		{
 			using (var g = luaSurface.GetGraphics())
 			{
@@ -852,9 +852,9 @@ namespace BizHawk.MultiClient
 				{
 					Image img = Image.FromFile(Path.ToString());
 
-					if (width == null || width.GetType() != typeof (int))
+					if (width == null || width.GetType() != typeof(int))
 						width = img.Width.ToString();
-					if (height == null || height.GetType() != typeof (int))
+					if (height == null || height.GetType() != typeof(int))
 						height = img.Height.ToString();
 
 					g.DrawImage(img, LuaInt(x), LuaInt(y), int.Parse(width.ToString()), int.Parse(height.ToString()));
@@ -1049,23 +1049,23 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is BizHawk.Emulation.Consoles.Nintendo.NES)
 			{
-				Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool) lua_p[0];
-				Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground = (bool) lua_p[1];
+				Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
+				Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
 			}
 			else if (Global.Emulator is BizHawk.Emulation.Consoles.TurboGrafx.PCEngine)
 			{
-				Global.CoreInputComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool) lua_p[0];
-				Global.CoreInputComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool) lua_p[1];
+				Global.CoreInputComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
+				Global.CoreInputComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
 				if (lua_p.Length > 2)
 				{
-					Global.CoreInputComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool) lua_p[2];
-					Global.CoreInputComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool) lua_p[3];
+					Global.CoreInputComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
+					Global.CoreInputComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
 				}
 			}
 			else if (Global.Emulator is BizHawk.Emulation.Consoles.Sega.SMS)
 			{
-				Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool) lua_p[0];
-				Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool) lua_p[1];
+				Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
+				Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
 			}
 		}
 
@@ -1075,7 +1075,7 @@ namespace BizHawk.MultiClient
 
 		public bool memory_usememorydomain(object lua_input)
 		{
-			if (lua_input.GetType() != typeof (string))
+			if (lua_input.GetType() != typeof(string))
 				return false;
 
 			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
@@ -1121,7 +1121,7 @@ namespace BizHawk.MultiClient
 		public int memory_read_s8(object lua_addr)
 		{
 			int addr = LuaInt(lua_addr);
-			return (sbyte) M_R_U8(addr);
+			return (sbyte)M_R_U8(addr);
 		}
 
 		public uint memory_read_u8(object lua_addr)
@@ -1206,7 +1206,7 @@ namespace BizHawk.MultiClient
 		{
 			int addr = LuaInt(lua_addr);
 			int v = LuaInt(lua_v);
-			M_W_U8(addr, (uint) v);
+			M_W_U8(addr, (uint)v);
 		}
 
 		public void memory_write_u8(object lua_addr, object lua_v)
@@ -1309,7 +1309,7 @@ namespace BizHawk.MultiClient
 		{
 			uint v = 0;
 			for (int i = 0; i < size; ++i)
-				v |= M_R_U8(addr + i) << 8*i;
+				v |= M_R_U8(addr + i) << 8 * i;
 			return v;
 		}
 
@@ -1322,30 +1322,30 @@ namespace BizHawk.MultiClient
 		{
 			uint v = 0;
 			for (int i = 0; i < size; ++i)
-				v |= M_R_U8(addr + i) << 8*(size - 1 - i);
+				v |= M_R_U8(addr + i) << 8 * (size - 1 - i);
 			return v;
 		}
 
 		private void M_W_S_LE(int addr, int v, int size)
 		{
-			M_W_U_LE(addr, (uint) v, size);
+			M_W_U_LE(addr, (uint)v, size);
 		}
 
 		private void M_W_U_LE(int addr, uint v, int size)
 		{
 			for (int i = 0; i < size; ++i)
-				M_W_U8(addr + i, (v >> (8*i)) & 0xFF);
+				M_W_U8(addr + i, (v >> (8 * i)) & 0xFF);
 		}
 
 		private void M_W_S_BE(int addr, int v, int size)
 		{
-			M_W_U_BE(addr, (uint) v, size);
+			M_W_U_BE(addr, (uint)v, size);
 		}
 
 		private void M_W_U_BE(int addr, uint v, int size)
 		{
 			for (int i = 0; i < size; ++i)
-				M_W_U8(addr + i, (v >> (8*(size - 1 - i))) & 0xFF);
+				M_W_U8(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF);
 		}
 
 		private uint M_R_U8(int addr)
@@ -1355,7 +1355,7 @@ namespace BizHawk.MultiClient
 
 		private void M_W_U8(int addr, uint v)
 		{
-			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeByte(addr, (byte) v);
+			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeByte(addr, (byte)v);
 		}
 
 		//----------------------------------------------------
@@ -1378,7 +1378,7 @@ namespace BizHawk.MultiClient
 		public int mainmemory_read_s8(object lua_addr)
 		{
 			int addr = LuaInt(lua_addr);
-			return (sbyte) MM_R_U8(addr);
+			return (sbyte)MM_R_U8(addr);
 		}
 
 		public uint mainmemory_read_u8(object lua_addr)
@@ -1463,7 +1463,7 @@ namespace BizHawk.MultiClient
 		{
 			int addr = LuaInt(lua_addr);
 			int v = LuaInt(lua_v);
-			MM_W_U8(addr, (uint) v);
+			MM_W_U8(addr, (uint)v);
 		}
 
 		public void mainmemory_write_u8(object lua_addr, object lua_v)
@@ -1566,7 +1566,7 @@ namespace BizHawk.MultiClient
 		{
 			uint v = 0;
 			for (int i = 0; i < size; ++i)
-				v |= MM_R_U8(addr + i) << 8*i;
+				v |= MM_R_U8(addr + i) << 8 * i;
 			return v;
 		}
 
@@ -1579,30 +1579,30 @@ namespace BizHawk.MultiClient
 		{
 			uint v = 0;
 			for (int i = 0; i < size; ++i)
-				v |= MM_R_U8(addr + i) << 8*(size - 1 - i);
+				v |= MM_R_U8(addr + i) << 8 * (size - 1 - i);
 			return v;
 		}
 
 		private void MM_W_S_LE(int addr, int v, int size)
 		{
-			MM_W_U_LE(addr, (uint) v, size);
+			MM_W_U_LE(addr, (uint)v, size);
 		}
 
 		private void MM_W_U_LE(int addr, uint v, int size)
 		{
 			for (int i = 0; i < size; ++i)
-				MM_W_U8(addr + i, (v >> (8*i)) & 0xFF);
+				MM_W_U8(addr + i, (v >> (8 * i)) & 0xFF);
 		}
 
 		private void MM_W_S_BE(int addr, int v, int size)
 		{
-			MM_W_U_BE(addr, (uint) v, size);
+			MM_W_U_BE(addr, (uint)v, size);
 		}
 
 		private void MM_W_U_BE(int addr, uint v, int size)
 		{
 			for (int i = 0; i < size; ++i)
-				MM_W_U8(addr + i, (v >> (8*(size - 1 - i))) & 0xFF);
+				MM_W_U8(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF);
 		}
 
 		private uint MM_R_U8(int addr)
@@ -1612,57 +1612,61 @@ namespace BizHawk.MultiClient
 
 		private void MM_W_U8(int addr, uint v)
 		{
-			Global.Emulator.MainMemory.PokeByte(addr, (byte) v);
+			Global.Emulator.MainMemory.PokeByte(addr, (byte)v);
 		}
 
 		private int U2S(uint u, int size)
 		{
-			int s = (int) u;
-			s <<= 8*(4 - size);
-			s >>= 8*(4 - size);
+			int s = (int)u;
+			s <<= 8 * (4 - size);
+			s >>= 8 * (4 - size);
 			return s;
 		}
 
 		//----------------------------------------------------
 		//Bitwise Operator library
 		//----------------------------------------------------
-		public uint bit_band(object lua_v, object amt)
+		public uint bit_band(object val, object amt)
 		{
-			return (uint) lua_v & (uint) amt;
+			return (uint)(LuaInt(val) & LuaInt(amt));
 		}
 
-		public uint bit_lshift(object lua_v, object amt)
+		public uint bit_lshift(object val, object amt)
 		{
-			return (uint) lua_v << (int) amt;
+			return (uint)(LuaInt(val) << LuaInt(amt));
 		}
 
-		public uint bit_rshift(object lua_v, object amt)
+		public uint bit_rshift(object val, object amt)
 		{
-			return (uint) lua_v >> (int)amt;
+			return (uint)(LuaInt(val) >> LuaInt(amt));
 		}
 
-		public uint bit_rol(object lua_v, object amt)
+		public uint bit_rol(object val, object amt)
 		{
-			return ((uint) lua_v << (int)amt) | ((uint) lua_v >> (32 - (int) amt));
-		}
-		public uint bit_ror(object lua_v, object amt)
-		{
-			return  ((uint) lua_v >> (int) amt) | ((uint) lua_v << (32 - (int) amt));
-		}
-		public uint bit_bor(object lua_v, object amt)
-		{
-			return (uint) ((uint) lua_v | (int) amt);
-		}
-		public uint bit_bxor(object lua_v, object amt)
-		{
-			return (uint) ((uint) lua_v ^ (int) amt);
-		}
-		public uint bit_bnot(object lua_v)
-		{
-			return ~ (uint) lua_v;
+			return (uint)((LuaInt(val) << LuaInt(amt)) | (LuaInt(val) >> (32 - LuaInt(amt))));
 		}
 
-	//----------------------------------------------------
+		public uint bit_ror(object val, object amt)
+		{
+			return (uint)((LuaInt(val) >> LuaInt(amt)) | (LuaInt(val) << (32 - LuaInt(amt))));
+		}
+
+		public uint bit_bor(object val, object amt)
+		{
+			return (uint)(LuaInt(val) | LuaInt(amt));
+		}
+
+		public uint bit_bxor(object val, object amt)
+		{
+			return (uint)(LuaInt(val) ^ LuaInt(amt));
+		}
+
+		public uint bit_bnot(object val)
+		{
+			return (uint)(~LuaInt(val));
+		}
+
+		//----------------------------------------------------
 		//Savestate library
 		//----------------------------------------------------
 		public void savestate_saveslot(object lua_input)
@@ -1849,14 +1853,14 @@ namespace BizHawk.MultiClient
 
 		public void joypad_set(LuaTable buttons, object controller = null)
 		{
-            foreach (var button in buttons.Keys)
-            {
-                if (Convert.ToBoolean(buttons[button]) == true)
+			foreach (var button in buttons.Keys)
+			{
+				if (Convert.ToBoolean(buttons[button]) == true)
 					if (controller == null)
-                        Global.ClickyVirtualPadController.Click(button.ToString());
-                    else
+						Global.ClickyVirtualPadController.Click(button.ToString());
+					else
 						Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
-            }
+			}
 		}
 
 		//----------------------------------------------------
@@ -1938,7 +1942,7 @@ namespace BizHawk.MultiClient
 
 		public int forms_newform(object Width = null, object Height = null, object title = null)
 		{
-			
+
 			LuaWinform theForm = new LuaWinform();
 			LuaForms.Add(theForm);
 			if (Width != null && Height != null)
@@ -2053,7 +2057,7 @@ namespace BizHawk.MultiClient
 			{
 				return 0;
 			}
-			
+
 			LuaButton button = new LuaButton();
 			SetText(button, caption);
 			form.Controls.Add(button);
@@ -2099,11 +2103,11 @@ namespace BizHawk.MultiClient
 			LuaTextBox textbox = new LuaTextBox();
 			SetText(textbox, caption);
 
-            if(X != null && Y != null)
-			    SetLocation(textbox, X, Y);
+			if (X != null && Y != null)
+				SetLocation(textbox, X, Y);
 
-            if (width != null & height != null)
-                SetSize(textbox, width, height);
+			if (width != null & height != null)
+				SetSize(textbox, width, height);
 
 			if (boxtype != null)
 			{
@@ -2195,27 +2199,27 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-        public void forms_setproperty(object handle, object property, object value)
-        {
-            IntPtr ptr = new IntPtr(LuaInt(handle));
-            foreach (LuaWinform form in LuaForms)
-            {
-                if (form.Handle == ptr)
-                {
-                    form.GetType().GetProperty(property.ToString()).SetValue(form, value, null);
-                }
-                else
-                {
-                    foreach (Control control in form.Controls)
-                    {
-                        if (control.Handle == ptr)
-                        {
-                            control.GetType().GetProperty(property.ToString()).SetValue(control, value, null);
-                        }
-                    }
-                }
-            }
-        }
+		public void forms_setproperty(object handle, object property, object value)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					form.GetType().GetProperty(property.ToString()).SetValue(form, value, null);
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							control.GetType().GetProperty(property.ToString()).SetValue(control, value, null);
+						}
+					}
+				}
+			}
+		}
 
 		public void forms_addclick(object handle, LuaFunction lua_event)
 		{
@@ -2275,29 +2279,29 @@ namespace BizHawk.MultiClient
 			return "";
 		}
 
-        public string forms_getproperty(object handle, object property)
-        {
-            IntPtr ptr = new IntPtr(LuaInt(handle));
-            foreach (LuaWinform form in LuaForms)
-            {
-                if (form.Handle == ptr)
-                {
-                    return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
-                }
-                else
-                {
-                    foreach (Control control in form.Controls)
-                    {
-                        if (control.Handle == ptr)
-                        {
-                            return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
-                        }
-                    }
-                }
-            }
+		public string forms_getproperty(object handle, object property)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
+						}
+					}
+				}
+			}
 
-            return "";
-        }
+			return "";
+		}
 
 		public LuaTable input_getmouse()
 		{
