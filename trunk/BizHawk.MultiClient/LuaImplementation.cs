@@ -1626,40 +1626,40 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Bitwise Operator library
 		//----------------------------------------------------
-		public uint bit_band(uint lua_v, uint amt)
+		public uint bit_band(object lua_v, object amt)
 		{
-			return lua_v & amt;
+			return (uint) lua_v & (uint) amt;
 		}
 
-		public uint bit_lshift(uint lua_v, int amt)
+		public uint bit_lshift(object lua_v, object amt)
 		{
-			return lua_v << amt;
+			return (uint) lua_v << (int) amt;
 		}
 
-		public uint bit_rshift(uint lua_v, int amt)
+		public uint bit_rshift(object lua_v, object amt)
 		{
-			return lua_v >> amt;
+			return (uint) lua_v >> (int)amt;
 		}
 
-		public uint bit_rol(uint lua_v, int amt)
+		public uint bit_rol(object lua_v, object amt)
 		{
-			return (uint) ((lua_v << amt) | (lua_v >> (32 -amt)));
+			return ((uint) lua_v << (int)amt) | ((uint) lua_v >> (32 - (int) amt));
 		}
-		public uint bit_ror(uint lua_v, int amt)
+		public uint bit_ror(object lua_v, object amt)
 		{
-			return (uint) ((lua_v >> amt) | (lua_v << (32 - amt)));
+			return  ((uint) lua_v >> (int) amt) | ((uint) lua_v << (32 - (int) amt));
 		}
-		public uint bit_bor(uint lua_v, uint amt)
+		public uint bit_bor(object lua_v, object amt)
 		{
-			return lua_v | amt;
+			return (uint) ((uint) lua_v | (int) amt);
 		}
-		public uint bit_bxor(uint lua_v, uint amt)
+		public uint bit_bxor(object lua_v, object amt)
 		{
-			return lua_v ^ amt;
+			return (uint) ((uint) lua_v ^ (int) amt);
 		}
-		public uint bit_bnot(uint lua_v)
+		public uint bit_bnot(object lua_v)
 		{
-			return ~ lua_v;
+			return ~ (uint) lua_v;
 		}
 
 	//----------------------------------------------------
