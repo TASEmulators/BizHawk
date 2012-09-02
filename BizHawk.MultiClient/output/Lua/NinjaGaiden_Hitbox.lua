@@ -1,6 +1,3 @@
---Ninja Gaiden Hitbox Viewer
---Author: Pasky
-
 --Player
 local px = 0x0086
 local py = 0x008A
@@ -75,8 +72,8 @@ local function enemies()
 			local offset = mainmemory.read_u8(etype + i)
 			local x = mainmemory.read_u8(ex + i)
 			local y = mainmemory.read_u8(ey + i)
-			local xrad = memory.readbyte(0x3300)
-			local yrad = memory.readbyte(0x3400)
+			local xrad = memory.readbyte(0x3300 + offset)
+			local yrad = memory.readbyte(0x3400 + offset)
 			gui.drawBox(x+xrad,y-8,x-xrad,y-8-yrad,0xFFFF0000,0x60FF0000)
 			gui.drawLine(x,y-8,x,y-8-yrad,0xFFFFFF00)
 		end
