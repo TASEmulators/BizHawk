@@ -1,6 +1,5 @@
 --Castlevania: Rondo of Blood
 
-Size = 3
 fill = 0x64FFC8C8
 line = 0xFFFFC8C8
 
@@ -20,8 +19,8 @@ function drawObjInfo()
 		--clipping
 		if(adjustedX > 0 and adjustedY > 0) then
 				gui.text(
-					adjustedX * Size, 
-					adjustedY * Size, 
+					adjustedX * xmult, 
+					adjustedY * ymult, 
 					objX 
 					.. " " .. objY 
 --					.. " " .. "#" .. i
@@ -105,7 +104,7 @@ function dispProperties(num)
 	}
 		
 	for i = 1,8  do
-		gui.text((10+(i*20)) * size,100 * size, mainmemory.read_u8(ObjDamageInfo[i]+num))
+		gui.text((10+(i*20)) * xmult ,100 * ymult, mainmemory.read_u8(ObjDamageInfo[i]+num))
 	end
 	
 	hitBoxInfo = {
@@ -116,7 +115,7 @@ function dispProperties(num)
 	}
 	
 	for i = 1,4  do
-		gui.text((10+(i*20)) * size,120 * size, mainmemory.read_u8(hitBoxInfo[i]+num))
+		gui.text((10+(i*20)) * xmult,120 * ymult, mainmemory.read_u8(hitBoxInfo[i]+num))
 	end
 	
 	ObjPositionInfo = {
@@ -129,7 +128,7 @@ function dispProperties(num)
 	}
 	
 	for i = 1,6  do
-		gui.text((10+(i*20)) * size,140 * size, mainmemory.read_u8(ObjPositionInfo[i]+num))
+		gui.text((10+(i*20)) * xmult,140 * ymult, mainmemory.read_u8(ObjPositionInfo[i]+num))
 	end
 	
 	collisionInfo = {
@@ -139,15 +138,17 @@ function dispProperties(num)
 	}
 	
 	for i = 1,3  do
-		gui.text((10+(i*20)) * size,160 * size, mainmemory.read_u8(collisionInfo[i]+num))
+		gui.text((10+(i*20)) * xmult,160 * ymult, mainmemory.read_u8(collisionInfo[i]+num))
 	end
 end
 
 while true do
-
+	--Multiplier for text rendering
+	xmult = client.screenwidth() / 256
+	ymult = client.screenheight() / 225
 	line = 0xFFFFC8C8
 	--display info about a given object
---	dispProperties(0)
+	--dispProperties(0)
 
 	drawHitBoxes()
 	drawObjInfo()
