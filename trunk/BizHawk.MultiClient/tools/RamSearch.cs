@@ -1853,20 +1853,6 @@ namespace BizHawk.MultiClient
 			clearitem.Text = "&Clear";
 			clearitem.Click += (o, ev) => Global.Config.RecentSearches.Clear();
 			recentToolStripMenuItem.DropDownItems.Add(clearitem);
-
-			var auto = new ToolStripMenuItem();
-			auto.Text = "&Auto-Load";
-			auto.Click += (o, ev) => UpdateAutoLoadRamSearch();
-			if (Global.Config.AutoLoadRamSearch == true)
-				auto.Checked = true;
-			else
-				auto.Checked = false;
-			recentToolStripMenuItem.DropDownItems.Add(auto);
-		}
-
-		private void UpdateAutoLoadRamSearch()
-		{
-			autoLoadToolStripMenuItem.Checked = Global.Config.AutoLoadRamSearch ^= true;
 		}
 
 		private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1911,6 +1897,7 @@ namespace BizHawk.MultiClient
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
 			previewModeToolStripMenuItem.Checked = Global.Config.RamSearchPreviewMode;
 			alwaysExcludeRamSearchListToolStripMenuItem.Checked = Global.Config.AlwaysExcludeRamWatch;
+			autoloadDialogToolStripMenuItem.Checked = Global.Config.AutoLoadRamSearch;
 		}
 
 		private void searchToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2595,6 +2582,11 @@ namespace BizHawk.MultiClient
 				Global.MainForm.LoadHexEditor();
 				Global.MainForm.HexEditor1.GoToAddress(searchList[indexes[0]].address);
 			}
+		}
+
+		private void autoloadDialogToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadRamSearch ^= true;
 		}
 	}
 }
