@@ -69,7 +69,6 @@
 			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.autoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,10 +90,12 @@
 			this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alwaysExcludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoloadDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+			this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -493,8 +494,7 @@
 			this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.noneToolStripMenuItem,
             this.toolStripSeparator2,
-            this.clearToolStripMenuItem,
-            this.autoLoadToolStripMenuItem});
+            this.clearToolStripMenuItem});
 			this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
 			this.recentToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -504,25 +504,19 @@
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(128, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(100, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
-			// 
-			// autoLoadToolStripMenuItem
-			// 
-			this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
-			this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
-			this.autoLoadToolStripMenuItem.Text = "Auto-Load";
 			// 
 			// toolStripSeparator4
 			// 
@@ -659,10 +653,12 @@
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.definePreviousValueToolStripMenuItem,
-            this.restoreOriginalWindowSizeToolStripMenuItem,
-            this.saveWindowPositionToolStripMenuItem,
             this.previewModeToolStripMenuItem,
-            this.alwaysExcludeRamSearchListToolStripMenuItem});
+            this.alwaysExcludeRamSearchListToolStripMenuItem,
+            this.autoloadDialogToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem,
+            this.toolStripSeparator11,
+            this.restoreOriginalWindowSizeToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
@@ -708,20 +704,6 @@
 			this.sinceLastChangeToolStripMenuItem.Text = "Since last Change";
 			this.sinceLastChangeToolStripMenuItem.Click += new System.EventHandler(this.sinceLastChangeToolStripMenuItem_Click);
 			// 
-			// restoreOriginalWindowSizeToolStripMenuItem
-			// 
-			this.restoreOriginalWindowSizeToolStripMenuItem.Name = "restoreOriginalWindowSizeToolStripMenuItem";
-			this.restoreOriginalWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.restoreOriginalWindowSizeToolStripMenuItem.Text = "Restore Window Size";
-			this.restoreOriginalWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreOriginalWindowSizeToolStripMenuItem_Click);
-			// 
-			// saveWindowPositionToolStripMenuItem
-			// 
-			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
-			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
-			// 
 			// previewModeToolStripMenuItem
 			// 
 			this.previewModeToolStripMenuItem.Name = "previewModeToolStripMenuItem";
@@ -735,6 +717,32 @@
 			this.alwaysExcludeRamSearchListToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.alwaysExcludeRamSearchListToolStripMenuItem.Text = "Always Exclude Ram Search List";
 			this.alwaysExcludeRamSearchListToolStripMenuItem.Click += new System.EventHandler(this.alwaysExcludeRamSearchListToolStripMenuItem_Click);
+			// 
+			// autoloadDialogToolStripMenuItem
+			// 
+			this.autoloadDialogToolStripMenuItem.Name = "autoloadDialogToolStripMenuItem";
+			this.autoloadDialogToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.autoloadDialogToolStripMenuItem.Text = "Autoload Dialog";
+			this.autoloadDialogToolStripMenuItem.Click += new System.EventHandler(this.autoloadDialogToolStripMenuItem_Click);
+			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator11
+			// 
+			this.toolStripSeparator11.Name = "toolStripSeparator11";
+			this.toolStripSeparator11.Size = new System.Drawing.Size(237, 6);
+			// 
+			// restoreOriginalWindowSizeToolStripMenuItem
+			// 
+			this.restoreOriginalWindowSizeToolStripMenuItem.Name = "restoreOriginalWindowSizeToolStripMenuItem";
+			this.restoreOriginalWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.restoreOriginalWindowSizeToolStripMenuItem.Text = "Restore Window Size";
+			this.restoreOriginalWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreOriginalWindowSizeToolStripMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -1321,8 +1329,7 @@
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem autoLoadToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem appendFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
@@ -1372,5 +1379,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem includeMisalignedToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem sinceLastChangeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem autoloadDialogToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
     }
 }
