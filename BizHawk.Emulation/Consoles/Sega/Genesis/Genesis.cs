@@ -356,6 +356,10 @@ namespace BizHawk.Emulation.Consoles.Sega
 				addr => VDP.VRAM[addr & 0xFFFF],
 				(addr, value) => VDP.VRAM[addr & 0xFFFF] = value);
 
+			var RomDomain = new MemoryDomain("Rom Data", RomData.Length, Endian.Big,
+				addr => RomData[addr & (RomData.Length - 1)],
+				(addr, value) => RomData[addr & (RomData.Length - 1)] = value);
+
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x1000000, Endian.Big,
 				addr => (byte)ReadByte(addr),
 				(addr, value) => Write8((uint)addr, (uint)value));
@@ -363,6 +367,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 			domains.Add(MainMemoryDomain);
 			domains.Add(Z80Domain);
 			domains.Add(VRamDomain);
+			domains.Add(RomDomain);
 			domains.Add(SystemBusDomain);
 			memoryDomains = domains.AsReadOnly();
 		}
