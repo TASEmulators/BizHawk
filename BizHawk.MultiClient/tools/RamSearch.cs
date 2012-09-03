@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 	public partial class RamSearch : Form
 	{
 		string systemID = "NULL";
-		List<Watch> searchList = new List<Watch>();
+		List<Watch> Searches = new List<Watch>();
 		List<Watch> undoList = new List<Watch>();
 		List<Watch> redoList = new List<Watch>();
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
@@ -71,7 +71,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 
-			if (searchList.Count > 8)
+			if (Searches.Count > 8)
 			{
 				SearchListView.BlazingFast = true;
 			}
@@ -79,9 +79,9 @@ namespace BizHawk.MultiClient
 			sortReverse = false;
 			sortedCol = "";
 
-			for (int x = searchList.Count - 1; x >= 0; x--)
+			for (int x = Searches.Count - 1; x >= 0; x--)
 			{
-				searchList[x].PeekAddress(Domain);
+				Searches[x].PeekAddress(Domain);
 			}
 			if (AutoSearchCheckBox.Checked)
 			{
@@ -199,7 +199,7 @@ namespace BizHawk.MultiClient
 
 		private void SetTotal()
 		{
-			int x = searchList.Count;
+			int x = Searches.Count;
 			string str;
 			if (x == 1)
 				str = " address";
@@ -213,7 +213,7 @@ namespace BizHawk.MultiClient
 			var file = GetFileFromUser();
 			if (file != null)
 			{
-				LoadSearchFile(file.FullName, false, false, searchList);
+				LoadSearchFile(file.FullName, false, false, Searches);
 				DisplaySearchList();
 			}
 		}
@@ -313,7 +313,7 @@ namespace BizHawk.MultiClient
 				Global.MainForm.LoadRamWatch(true);
 				for (int x = 0; x < indexes.Count; x++)
 				{
-					Global.MainForm.RamWatch1.AddWatch(searchList[indexes[x]]);
+					Global.MainForm.RamWatch1.AddWatch(Searches[indexes[x]]);
 				}
 			}
 		}
@@ -343,28 +343,44 @@ namespace BizHawk.MultiClient
 			StartNewSearch();
 		}
 
-		private asigned GetDataType()
+		private Watch.DISPTYPE GetDataType()
 		{
 			if (unsignedToolStripMenuItem.Checked)
-				return asigned.UNSIGNED;
-			if (signedToolStripMenuItem.Checked)
-				return asigned.SIGNED;
-			if (hexadecimalToolStripMenuItem.Checked)
-				return asigned.HEX;
-
-			return asigned.UNSIGNED;    //Just in case
+			{
+				return Watch.DISPTYPE.UNSIGNED;
+			}
+			else if (signedToolStripMenuItem.Checked)
+			{
+				return Watch.DISPTYPE.SIGNED;
+			}
+			else if (hexadecimalToolStripMenuItem.Checked)
+			{
+				return Watch.DISPTYPE.HEX;
+			}
+			else
+			{
+				return Watch.DISPTYPE.UNSIGNED;    //Just in case
+			}
 		}
 
-		private atype GetDataSize()
+		private Watch.TYPE GetDataSize()
 		{
 			if (byteToolStripMenuItem.Checked)
-				return atype.BYTE;
-			if (bytesToolStripMenuItem.Checked)
-				return atype.WORD;
-			if (dWordToolStripMenuItem1.Checked)
-				return atype.DWORD;
-
-			return atype.BYTE;
+			{
+				return Watch.TYPE.BYTE;
+			}
+			else if (bytesToolStripMenuItem.Checked)
+			{
+				return Watch.TYPE.WORD;
+			}
+			else if (dWordToolStripMenuItem1.Checked)
+			{
+				return Watch.TYPE.DWORD;
+			}
+			else
+			{
+				return Watch.TYPE.BYTE;
+			}
 		}
 
 		private bool GetBigEndian()
@@ -381,7 +397,7 @@ namespace BizHawk.MultiClient
 			ClearRedo();
 			//weededList.Clear();
 			IsAWeededList = false;
-			searchList.Clear();
+			Searches.Clear();
 			SetPlatformAndMemoryDomainLabel();
 			int count = 0;
 			int divisor = 1;
@@ -390,10 +406,10 @@ namespace BizHawk.MultiClient
 			{
 				switch (GetDataSize())
 				{
-					case atype.WORD:
+					case Watch.TYPE.WORD:
 						divisor = 2;
 						break;
-					case atype.DWORD:
+					case Watch.TYPE.DWORD:
 						divisor = 4;
 						break;
 				}
@@ -401,30 +417,30 @@ namespace BizHawk.MultiClient
 
 			for (int x = 0; x <= ((Domain.Size / divisor) - 1); x++)
 			{
-				searchList.Add(new Watch());
-				searchList[x].address = count;
-				searchList[x].type = GetDataSize();
-				searchList[x].bigendian = GetBigEndian();
-				searchList[x].signed = GetDataType();
-				searchList[x].PeekAddress(Domain);
-				searchList[x].prev = searchList[x].value;
-				searchList[x].original = searchList[x].value;
-				searchList[x].lastchange = searchList[x].value;
-				searchList[x].lastsearch = searchList[x].value;
-				searchList[x].changecount = 0;
+				Searches.Add(new Watch());
+				Searches[x].Address = count;
+				Searches[x].Type = GetDataSize();
+				Searches[x].BigEndian = GetBigEndian();
+				Searches[x].Signed = GetDataType();
+				Searches[x].PeekAddress(Domain);
+				Searches[x].Prev = Searches[x].Value;
+				Searches[x].Original = Searches[x].Value;
+				Searches[x].LastChange = Searches[x].Value;
+				Searches[x].LastSearch = Searches[x].Value;
+				Searches[x].Changecount = 0;
 				if (includeMisalignedToolStripMenuItem.Checked)
 					count++;
 				else
 				{
 					switch (GetDataSize())
 					{
-						case atype.BYTE:
+						case Watch.TYPE.BYTE:
 							count++;
 							break;
-						case atype.WORD:
+						case Watch.TYPE.WORD:
 							count += 2;
 							break;
-						case atype.DWORD:
+						case Watch.TYPE.DWORD:
 							count += 4;
 							break;
 					}
@@ -442,7 +458,7 @@ namespace BizHawk.MultiClient
 
 		private void DisplaySearchList()
 		{
-			SearchListView.ItemCount = searchList.Count;
+			SearchListView.ItemCount = Searches.Count;
 			SetTotal();
 		}
 
@@ -475,9 +491,9 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 
 			int x = indexes[0];
-			Watch bob = searchList[indexes[0]];
+			Watch bob = Searches[indexes[0]];
 			if (indexes.Count > 0)
-				p.SetWatchObject(searchList[indexes[0]], Domain);
+				p.SetWatchObject(Searches[indexes[0]], Domain);
 			p.location = GetPromptPoint();
 			p.ShowDialog();
 			UpdateValues();
@@ -507,7 +523,7 @@ namespace BizHawk.MultiClient
 				MessageLabel.Text = MakeAddressString(indexes.Count) + " removed";
 				for (int x = 0; x < indexes.Count; x++)
 				{
-					searchList.Remove(searchList[indexes[x] - x]);
+					Searches.Remove(Searches[indexes[x] - x]);
 				}
 				indexes.Clear();
 				DisplaySearchList();
@@ -526,7 +542,7 @@ namespace BizHawk.MultiClient
 		private void SaveUndo()
 		{
 			undoList.Clear();
-			undoList.AddRange(searchList);
+			undoList.AddRange(Searches);
 			UndotoolStripButton.Enabled = true;
 		}
 
@@ -534,9 +550,9 @@ namespace BizHawk.MultiClient
 		{
 			if (undoList.Count > 0)
 			{
-				MessageLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
-				redoList = new List<Watch>(searchList);
-				searchList = new List<Watch>(undoList);
+				MessageLabel.Text = MakeAddressString(undoList.Count - Searches.Count) + " restored";
+				redoList = new List<Watch>(Searches);
+				Searches = new List<Watch>(undoList);
 				ClearUndo();
 				RedotoolStripButton2.Enabled = true;
 				DisplaySearchList();
@@ -559,9 +575,9 @@ namespace BizHawk.MultiClient
 		{
 			if (redoList.Count > 0)
 			{
-				MessageLabel.Text = MakeAddressString(searchList.Count - redoList.Count) + " removed";
-				undoList = new List<Watch>(searchList);
-				searchList = new List<Watch>(redoList);
+				MessageLabel.Text = MakeAddressString(Searches.Count - redoList.Count) + " removed";
+				undoList = new List<Watch>(Searches);
+				Searches = new List<Watch>(redoList);
 				ClearRedo();
 				UndotoolStripButton.Enabled = true;
 				DisplaySearchList();
@@ -579,10 +595,10 @@ namespace BizHawk.MultiClient
 		{
 			if (IsAWeededList && column == 0)
 			{
-				if (searchList[index].deleted)
+				if (Searches[index].Deleted)
 				{
 					if (color == Color.Pink) return;
-					if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
+					if (Global.CheatList.IsActiveCheat(Domain, Searches[index].Address))
 					{
 						if (color == Color.Purple)
 						{
@@ -605,7 +621,7 @@ namespace BizHawk.MultiClient
 						}
 					}
 				}
-				else if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
+				else if (Global.CheatList.IsActiveCheat(Domain, Searches[index].Address))
 				{
 					if (color == Color.LightCyan)
 					{
@@ -634,34 +650,34 @@ namespace BizHawk.MultiClient
 		{
 			if (column == 0)
 			{
-				text = searchList[index].address.ToString(addressFormatStr);
+				text = Searches[index].Address.ToString(addressFormatStr);
 			}
 			else if (column == 1)
 			{
-				text = searchList[index].ValueToString();
+				text = Searches[index].ValueString;
 			}
 			else if (column == 2)
 			{
 				switch (Global.Config.RamSearchPreviousAs)
 				{
 					case 0:
-						text = searchList[index].LastSearchToString();
+						text = Searches[index].LastSearchString;
 						break;
 					case 1:
-						text = searchList[index].OriginalToString();
+						text = Searches[index].OriginalString;
 						break;
 					default:
 					case 2:
-						text = searchList[index].PrevToString();
+						text = Searches[index].PrevString;
 						break;
 					case 3:
-						text = searchList[index].LastChangeToString();
+						text = Searches[index].LastChangeString;
 						break;
 				}
 			}
 			else if (column == 3)
 			{
-				text = searchList[index].changecount.ToString();
+				text = Searches[index].Changecount.ToString();
 			}
 			else
 			{
@@ -672,9 +688,9 @@ namespace BizHawk.MultiClient
 		private void ClearChangeCounts()
 		{
 			SaveUndo();
-			for (int x = 0; x < searchList.Count; x++)
+			for (int x = 0; x < Searches.Count; x++)
 			{
-				searchList[x].changecount = 0;
+				Searches[x].Changecount = 0;
 			}
 			DisplaySearchList();
 			MessageLabel.Text = "Change counts cleared";
@@ -700,7 +716,7 @@ namespace BizHawk.MultiClient
 
 		private void TrimWeededList()
 		{
-			searchList = searchList.Where(x => x.deleted == false).ToList();
+			Searches = Searches.Where(x => x.Deleted == false).ToList();
 		}
 
 		private void DoSearch()
@@ -708,7 +724,7 @@ namespace BizHawk.MultiClient
 			if (GenerateWeedOutList())
 			{
 				SaveUndo();
-				MessageLabel.Text = MakeAddressString(searchList.Where(x => x.deleted == true).Count()) + " removed";
+				MessageLabel.Text = MakeAddressString(Searches.Where(x => x.Deleted == true).Count()) + " removed";
 				TrimWeededList(); 
 				UpdateLastSearch();
 				DisplaySearchList();
@@ -784,14 +800,14 @@ namespace BizHawk.MultiClient
 			switch (Global.Config.RamSearchPreviousAs)
 			{
 				case 0:
-					return searchList[pos].lastsearch;
+					return Searches[pos].LastSearch;
 				case 1:
-					return searchList[pos].original;
+					return Searches[pos].Original;
 				default:
 				case 2:
-					return searchList[pos].prev;
+					return Searches[pos].Prev;
 				case 3:
-					return searchList[pos].lastchange;
+					return Searches[pos].LastChange;
 			}
 		}
 
@@ -800,169 +816,169 @@ namespace BizHawk.MultiClient
 			switch (GetOperator())
 			{
 				case SOperator.LESS:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) < searchList[x].SignedVal(previous))
+							if (Searches[x].SignedVal(Searches[x].Value) < Searches[x].SignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) < searchList[x].UnsignedVal(previous))
+							if (Searches[x].UnsignedVal(Searches[x].Value) < Searches[x].UnsignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
 					break;
 				case SOperator.GREATER:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) > searchList[x].SignedVal(previous))
+							if (Searches[x].SignedVal(Searches[x].Value) > Searches[x].SignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) > searchList[x].UnsignedVal(previous))
+							if (Searches[x].UnsignedVal(Searches[x].Value) > Searches[x].UnsignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 						}
 					}
 					break;
 				case SOperator.LESSEQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) <= searchList[x].SignedVal(previous))
+							if (Searches[x].SignedVal(Searches[x].Value) <= Searches[x].SignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) <= searchList[x].UnsignedVal(previous))
+							if (Searches[x].UnsignedVal(Searches[x].Value) <= Searches[x].UnsignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
 					break;
 				case SOperator.GREATEREQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) >= searchList[x].SignedVal(previous))
+							if (Searches[x].SignedVal(Searches[x].Value) >= Searches[x].SignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) >= searchList[x].UnsignedVal(previous))
+							if (Searches[x].UnsignedVal(Searches[x].Value) >= Searches[x].UnsignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
 					break;
 				case SOperator.EQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal(previous))
+							if (Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal(previous))
+							if (Searches[x].UnsignedVal(Searches[x].Value) == Searches[x].UnsignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
 					break;
 				case SOperator.NOTEQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) != searchList[x].SignedVal(previous))
+							if (Searches[x].SignedVal(Searches[x].Value) != Searches[x].SignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) != searchList[x].UnsignedVal(previous))
+							if (Searches[x].UnsignedVal(Searches[x].Value) != Searches[x].UnsignedVal(previous))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
@@ -970,29 +986,29 @@ namespace BizHawk.MultiClient
 				case SOperator.DIFFBY:
 					int diff = GetDifferentBy();
 					if (diff < 0) return false;
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
 						int previous = GetPreviousValue(x);
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal(previous) + diff || searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal(previous) - diff)
+							if (Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal(previous) + diff || Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal(previous) - diff)
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal(previous) + diff || searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal(previous) - diff)
+							if (Searches[x].UnsignedVal(Searches[x].Value) == Searches[x].UnsignedVal(previous) + diff || Searches[x].UnsignedVal(Searches[x].Value) == Searches[x].UnsignedVal(previous) - diff)
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
@@ -1020,164 +1036,164 @@ namespace BizHawk.MultiClient
 			switch (GetOperator())
 			{
 				case SOperator.LESS:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) < searchList[x].SignedVal((int)value))
+							if (Searches[x].SignedVal(Searches[x].Value) < Searches[x].SignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) < searchList[x].UnsignedVal((int)value))
+							if (Searches[x].UnsignedVal(Searches[x].Value) < Searches[x].UnsignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
 					break;
 				case SOperator.GREATER:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) > searchList[x].SignedVal((int)value))
+							if (Searches[x].SignedVal(Searches[x].Value) > Searches[x].SignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) > searchList[x].UnsignedVal((int)value))
+							if (Searches[x].UnsignedVal(Searches[x].Value) > Searches[x].UnsignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
 					break;
 				case SOperator.LESSEQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) <= searchList[x].SignedVal((int)value))
+							if (Searches[x].SignedVal(Searches[x].Value) <= Searches[x].SignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) <= searchList[x].UnsignedVal((int)value))
+							if (Searches[x].UnsignedVal(Searches[x].Value) <= Searches[x].UnsignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
 					break;
 				case SOperator.GREATEREQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) >= searchList[x].SignedVal((int)value))
+							if (Searches[x].SignedVal(Searches[x].Value) >= Searches[x].SignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) >= searchList[x].UnsignedVal((int)value))
+							if (Searches[x].UnsignedVal(Searches[x].Value) >= Searches[x].UnsignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
 					break;
 				case SOperator.EQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal((int)value))
+							if (Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal((int)value))
+							if (Searches[x].UnsignedVal(Searches[x].Value) == Searches[x].UnsignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
 					break;
 				case SOperator.NOTEQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) != searchList[x].SignedVal((int)value))
+							if (Searches[x].SignedVal(Searches[x].Value) != Searches[x].SignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) != searchList[x].UnsignedVal((int)value))
+							if (Searches[x].UnsignedVal(Searches[x].Value) != Searches[x].UnsignedVal((int)value))
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
@@ -1185,28 +1201,28 @@ namespace BizHawk.MultiClient
 				case SOperator.DIFFBY:
 					int diff = GetDifferentBy();
 					if (diff < 0) return false;
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].signed == asigned.SIGNED)
+						if (Searches[x].Signed == Watch.DISPTYPE.SIGNED)
 						{
-							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal((int)value) + diff || searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal((int)value) - diff)
+							if (Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal((int)value) + diff || Searches[x].SignedVal(Searches[x].Value) == Searches[x].SignedVal((int)value) - diff)
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 						else
 						{
-							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal((int)value) + diff || searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal((int)value) - diff)
+							if (Searches[x].UnsignedVal(Searches[x].Value) == Searches[x].UnsignedVal((int)value) + diff || Searches[x].UnsignedVal(Searches[x].Value) == Searches[x].UnsignedVal((int)value) - diff)
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
@@ -1221,27 +1237,27 @@ namespace BizHawk.MultiClient
 			bool i = false;
 			switch (GetDataType())
 			{
-				case asigned.UNSIGNED:
+				case Watch.DISPTYPE.UNSIGNED:
 					i = InputValidate.IsValidUnsignedNumber(SpecificValueBox.Text);
 					if (!i)
 						return null;
 					return (int)Int64.Parse(SpecificValueBox.Text); //Note: 64 to be safe since 4 byte values can be entered
-				case asigned.SIGNED:
+				case Watch.DISPTYPE.SIGNED:
 					i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
 					if (!i)
 						return null;
 					int value = (int)Int64.Parse(SpecificValueBox.Text);
 					switch (GetDataSize())
 					{
-						case atype.BYTE:
+						case Watch.TYPE.BYTE:
 							return (int)(byte)value;
-						case atype.WORD:
+						case Watch.TYPE.WORD:
 							return (int)(ushort)value;
-						case atype.DWORD:
+						case Watch.TYPE.DWORD:
 							return (int)(uint)value;
 					}
 					return value;
-				case asigned.HEX:
+				case Watch.DISPTYPE.HEX:
 					i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
 					if (!i)
 						return null;
@@ -1287,80 +1303,80 @@ namespace BizHawk.MultiClient
 			switch (GetOperator())
 			{
 				case SOperator.LESS:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].address < address)
+						if (Searches[x].Address < address)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.GREATER:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].address > address)
+						if (Searches[x].Address > address)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.LESSEQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].address <= address)
+						if (Searches[x].Address <= address)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.GREATEREQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].address >= address)
+						if (Searches[x].Address >= address)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.EQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].address == address)
+						if (Searches[x].Address == address)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.NOTEQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].address != address)
+						if (Searches[x].Address != address)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
@@ -1368,15 +1384,15 @@ namespace BizHawk.MultiClient
 					{
 						int diff = GetDifferentBy();
 						if (diff < 0) return false;
-						for (int x = 0; x < searchList.Count; x++)
+						for (int x = 0; x < Searches.Count; x++)
 						{
-							if (searchList[x].address == address + diff || searchList[x].address == address - diff)
+							if (Searches[x].Address == address + diff || Searches[x].Address == address - diff)
 							{
-								searchList[x].deleted = false;
+								Searches[x].Deleted = false;
 							}
 							else
 							{
-								searchList[x].deleted = true;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
@@ -1407,95 +1423,95 @@ namespace BizHawk.MultiClient
 			switch (GetOperator())
 			{
 				case SOperator.LESS:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].changecount < changes)
+						if (Searches[x].Changecount < changes)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.GREATER:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].changecount > changes)
+						if (Searches[x].Changecount > changes)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.LESSEQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].changecount <= changes)
+						if (Searches[x].Changecount <= changes)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.GREATEREQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].changecount >= changes)
+						if (Searches[x].Changecount >= changes)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.EQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].changecount == changes)
+						if (Searches[x].Changecount == changes)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.NOTEQUAL:
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].changecount != changes)
+						if (Searches[x].Changecount != changes)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
 				case SOperator.DIFFBY:
 					int diff = GetDifferentBy();
 					if (diff < 0) return false;
-					for (int x = 0; x < searchList.Count; x++)
+					for (int x = 0; x < Searches.Count; x++)
 					{
-						if (searchList[x].address == changes + diff || searchList[x].address == changes - diff)
+						if (Searches[x].Address == changes + diff || Searches[x].Address == changes - diff)
 						{
-							searchList[x].deleted = false;
+							Searches[x].Deleted = false;
 						}
 						else
 						{
-							searchList[x].deleted = true;
+							Searches[x].Deleted = true;
 						}
 					}
 					break;
@@ -1503,23 +1519,23 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		private void ConvertListsDataType(asigned s)
+		private void ConvertListsDataType(Watch.DISPTYPE s)
 		{
-			for (int x = 0; x < searchList.Count; x++)
-				searchList[x].signed = s;
+			for (int x = 0; x < Searches.Count; x++)
+				Searches[x].Signed = s;
 			for (int x = 0; x < undoList.Count; x++)
-				undoList[x].signed = s;
+				undoList[x].Signed = s;
 			for (int x = 0; x < redoList.Count; x++)
-				redoList[x].signed = s;
+				redoList[x].Signed = s;
 			SetSpecificValueBoxMaxLength();
 			sortReverse = false;
 			sortedCol = "";
 			DisplaySearchList();
 		}
 
-		private void ConvertListsDataSize(atype s, bool bigendian)
+		private void ConvertListsDataSize(Watch.TYPE s, bool bigendian)
 		{
-			ConvertDataSize(s, bigendian, ref searchList);
+			ConvertDataSize(s, bigendian, ref Searches);
 			ConvertDataSize(s, bigendian, ref undoList);
 			ConvertDataSize(s, bigendian, ref redoList);
 			SetSpecificValueBoxMaxLength();
@@ -1528,7 +1544,7 @@ namespace BizHawk.MultiClient
 			DisplaySearchList();
 		}
 
-		private void ConvertDataSize(atype s, bool bigendian, ref List<Watch> list)
+		private void ConvertDataSize(Watch.TYPE s, bool bigendian, ref List<Watch> list)
 		{
 			List<Watch> converted = new List<Watch>();
 			int divisor = 1;
@@ -1536,26 +1552,26 @@ namespace BizHawk.MultiClient
 			{
 				switch (s)
 				{
-					case atype.WORD:
+					case Watch.TYPE.WORD:
 						divisor = 2;
 						break;
-					case atype.DWORD:
+					case Watch.TYPE.DWORD:
 						divisor = 4;
 						break;
 				}
 			}
 			for (int x = 0; x < list.Count; x++)
-				if (list[x].address % divisor == 0)
+				if (list[x].Address % divisor == 0)
 				{
-					int changes = list[x].changecount;
-					list[x].type = s;
-					list[x].bigendian = GetBigEndian();
+					int changes = list[x].Changecount;
+					list[x].Type = s;
+					list[x].BigEndian = GetBigEndian();
 					list[x].PeekAddress(Domain);
-					list[x].prev = list[x].value;
-					list[x].original = list[x].value;
-					list[x].lastchange = list[x].value;
-					list[x].lastsearch = list[x].value;
-					list[x].changecount = changes;
+					list[x].Prev = list[x].Value;
+					list[x].Original = list[x].Value;
+					list[x].LastChange = list[x].Value;
+					list[x].LastSearch = list[x].Value;
+					list[x].Changecount = changes;
 					converted.Add(list[x]);
 				}
 			list = converted;
@@ -1566,15 +1582,15 @@ namespace BizHawk.MultiClient
 			Watch specificValue = new Watch();
 			int? value = GetSpecificValue();
 			ValidateSpecificValue(value);
-			specificValue.value = (int)value;
-			specificValue.signed = asigned.UNSIGNED;
-			specificValue.type = GetDataSize();
-			string converted = specificValue.ValueToString();
+			specificValue.Value = (int)value;
+			specificValue.Signed = Watch.DISPTYPE.UNSIGNED;
+			specificValue.Type = GetDataSize();
+			string converted = specificValue.ValueString;
 			unsignedToolStripMenuItem.Checked = true;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = false;
 			SpecificValueBox.Text = converted;
-			ConvertListsDataType(asigned.UNSIGNED);
+			ConvertListsDataType(Watch.DISPTYPE.UNSIGNED);
 		}
 
 		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1582,15 +1598,15 @@ namespace BizHawk.MultiClient
 			Watch specificValue = new Watch();
 			int? value = GetSpecificValue();
 			ValidateSpecificValue(value);
-			specificValue.value = (int)value;
-			specificValue.signed = asigned.SIGNED;
-			specificValue.type = GetDataSize();
-			string converted = specificValue.ValueToString();
+			specificValue.Value = (int)value;
+			specificValue.Signed = Watch.DISPTYPE.SIGNED;
+			specificValue.Type = GetDataSize();
+			string converted = specificValue.ValueString;
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = true;
 			hexadecimalToolStripMenuItem.Checked = false;
 			SpecificValueBox.Text = converted;
-			ConvertListsDataType(asigned.SIGNED);
+			ConvertListsDataType(Watch.DISPTYPE.SIGNED);
 		}
 
 		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1598,15 +1614,15 @@ namespace BizHawk.MultiClient
 			Watch specificValue = new Watch();
 			int? value = GetSpecificValue();
 			ValidateSpecificValue(value);
-			specificValue.value = (int)value;
-			specificValue.signed = asigned.HEX;
-			specificValue.type = GetDataSize();
-			string converted = specificValue.ValueToString();
+			specificValue.Value = (int)value;
+			specificValue.Signed = Watch.DISPTYPE.HEX;
+			specificValue.Type = GetDataSize();
+			string converted = specificValue.ValueString;
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = true;
 			SpecificValueBox.Text = converted;
-			ConvertListsDataType(asigned.HEX);
+			ConvertListsDataType(Watch.DISPTYPE.HEX);
 		}
 
 		private void SearchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1622,16 +1638,16 @@ namespace BizHawk.MultiClient
 		{
 			switch (GetDataType())
 			{
-				case asigned.UNSIGNED:
+				case Watch.DISPTYPE.UNSIGNED:
 					switch (GetDataSize())
 					{
-						case atype.BYTE:
+						case Watch.TYPE.BYTE:
 							SpecificValueBox.MaxLength = 3;
 							break;
-						case atype.WORD:
+						case Watch.TYPE.WORD:
 							SpecificValueBox.MaxLength = 5;
 							break;
-						case atype.DWORD:
+						case Watch.TYPE.DWORD:
 							SpecificValueBox.MaxLength = 10;
 							break;
 						default:
@@ -1639,16 +1655,16 @@ namespace BizHawk.MultiClient
 							break;
 					}
 					break;
-				case asigned.SIGNED:
+				case Watch.DISPTYPE.SIGNED:
 					switch (GetDataSize())
 					{
-						case atype.BYTE:
+						case Watch.TYPE.BYTE:
 							SpecificValueBox.MaxLength = 4;
 							break;
-						case atype.WORD:
+						case Watch.TYPE.WORD:
 							SpecificValueBox.MaxLength = 6;
 							break;
-						case atype.DWORD:
+						case Watch.TYPE.DWORD:
 							SpecificValueBox.MaxLength = 11;
 							break;
 						default:
@@ -1656,16 +1672,16 @@ namespace BizHawk.MultiClient
 							break;
 					}
 					break;
-				case asigned.HEX:
+				case Watch.DISPTYPE.HEX:
 					switch (GetDataSize())
 					{
-						case atype.BYTE:
+						case Watch.TYPE.BYTE:
 							SpecificValueBox.MaxLength = 2;
 							break;
-						case atype.WORD:
+						case Watch.TYPE.WORD:
 							SpecificValueBox.MaxLength = 4;
 							break;
-						case atype.DWORD:
+						case Watch.TYPE.DWORD:
 							SpecificValueBox.MaxLength = 8;
 							break;
 						default:
@@ -1684,7 +1700,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = true;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = false;
-			ConvertListsDataSize(atype.BYTE, GetBigEndian());
+			ConvertListsDataSize(Watch.TYPE.BYTE, GetBigEndian());
 		}
 
 		private void bytesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1692,7 +1708,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = true;
 			dWordToolStripMenuItem1.Checked = false;
-			ConvertListsDataSize(atype.WORD, GetBigEndian());
+			ConvertListsDataSize(Watch.TYPE.WORD, GetBigEndian());
 		}
 
 		private void dWordToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1700,7 +1716,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = true;
-			ConvertListsDataSize(atype.DWORD, GetBigEndian());
+			ConvertListsDataSize(Watch.TYPE.DWORD, GetBigEndian());
 		}
 
 		private void includeMisalignedToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -1772,7 +1788,7 @@ namespace BizHawk.MultiClient
 
 		private bool SaveSearchFile(string path)
 		{
-			return WatchCommon.SaveWchFile(path, Domain.Name, searchList);
+			return WatchCommon.SaveWchFile(path, Domain.Name, Searches);
 		}
 
 		public void SaveAs()
@@ -1789,7 +1805,7 @@ namespace BizHawk.MultiClient
 
 		private void LoadSearchFromRecent(string file)
 		{
-			bool r = LoadSearchFile(file, false, false, searchList);
+			bool r = LoadSearchFile(file, false, false, Searches);
 			if (!r)
 			{
 				DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
@@ -1859,7 +1875,7 @@ namespace BizHawk.MultiClient
 		{
 			var file = GetFileFromUser();
 			if (file != null)
-				LoadSearchFile(file.FullName, true, false, searchList);
+				LoadSearchFile(file.FullName, true, false, Searches);
 			DisplaySearchList();
 		}
 
@@ -1940,7 +1956,7 @@ namespace BizHawk.MultiClient
 
 		private void searchToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (searchList.Count == 0)
+			if (Searches.Count == 0)
 				searchToolStripMenuItem.Enabled = false;
 			else
 				searchToolStripMenuItem.Enabled = true;
@@ -2056,17 +2072,23 @@ namespace BizHawk.MultiClient
 
 			switch (GetDataType())
 			{
-				case asigned.UNSIGNED:
+				case Watch.DISPTYPE.UNSIGNED:
 					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+					{
 						e.Handled = true;
+					}
 					break;
-				case asigned.SIGNED:
+				case Watch.DISPTYPE.SIGNED:
 					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
+					{
 						e.Handled = true;
+					}
 					break;
-				case asigned.HEX:
+				case Watch.DISPTYPE.HEX:
 					if (!InputValidate.IsValidHexNumber(e.KeyChar))
+					{
 						e.Handled = true;
+					}
 					break;
 			}
 		}
@@ -2119,7 +2141,7 @@ namespace BizHawk.MultiClient
 		{
 			
 			SaveUndo();
-			MessageLabel.Text = MakeAddressString(searchList.Where(x => x.deleted == true).Count()) + " removed";
+			MessageLabel.Text = MakeAddressString(Searches.Where(x => x.Deleted == true).Count()) + " removed";
 			TrimWeededList(); 
 			UpdateLastSearch();
 			DisplaySearchList();
@@ -2141,9 +2163,9 @@ namespace BizHawk.MultiClient
 
 		private void ClearWeeded()
 		{
-			foreach (Watch watch in searchList)
+			foreach (Watch watch in Searches)
 			{
-				watch.deleted = false;
+				watch.Deleted = false;
 			}
 		}
 
@@ -2153,7 +2175,7 @@ namespace BizHawk.MultiClient
 			ClearWeeded();
 			foreach (Watch watch in toRemove)
 			{
-				searchList.Where(x => x.address == watch.address).FirstOrDefault().deleted = true;
+				Searches.Where(x => x.Address == watch.Address).FirstOrDefault().Deleted = true;
 			}
 			DoTruncate();
 		}
@@ -2188,12 +2210,12 @@ namespace BizHawk.MultiClient
 
 		private void CopyValueToPrev()
 		{
-			for (int x = 0; x < searchList.Count; x++)
+			for (int x = 0; x < Searches.Count; x++)
 			{
-				searchList[x].lastsearch = searchList[x].value;
-				searchList[x].original = searchList[x].value;
-				searchList[x].prev = searchList[x].value;
-				searchList[x].lastchange = searchList[x].value;
+				Searches[x].LastSearch = Searches[x].Value;
+				Searches[x].Original = Searches[x].Value;
+				Searches[x].Prev = Searches[x].Value;
+				Searches[x].LastChange = Searches[x].Value;
 			}
 			DisplaySearchList();
 			DoPreview();
@@ -2201,9 +2223,9 @@ namespace BizHawk.MultiClient
 
 		private void UpdateLastSearch()
 		{
-			for (int x = 0; x < searchList.Count; x++)
+			for (int x = 0; x < Searches.Count; x++)
 			{
-				searchList[x].lastsearch = searchList[x].value;
+				Searches[x].LastSearch = Searches[x].Value;
 			}
 		}
 
@@ -2252,20 +2274,20 @@ namespace BizHawk.MultiClient
 			{
 				for (int i = 0; i < indexes.Count; i++)
 				{
-					switch (searchList[indexes[i]].type)
+					switch (Searches[indexes[i]].Type)
 					{
-						case atype.BYTE:
-							Global.CheatList.Remove(Domain, searchList[indexes[i]].address);
+						case Watch.TYPE.BYTE:
+							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address);
 							break;
-						case atype.WORD:
-							Global.CheatList.Remove(Domain, searchList[indexes[i]].address);
-							Global.CheatList.Remove(Domain, searchList[indexes[i]].address + 1);
+						case Watch.TYPE.WORD:
+							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address);
+							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 1);
 							break;
-						case atype.DWORD:
-							Global.CheatList.Remove(Domain, searchList[indexes[i]].address);
-							Global.CheatList.Remove(Domain, searchList[indexes[i]].address + 1);
-							Global.CheatList.Remove(Domain, searchList[indexes[i]].address + 2);
-							Global.CheatList.Remove(Domain, searchList[indexes[i]].address + 3);
+						case Watch.TYPE.DWORD:
+							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address);
+							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 1);
+							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 2);
+							Global.CheatList.Remove(Domain, Searches[indexes[i]].Address + 3);
 							break;
 					}
 				}
@@ -2279,20 +2301,20 @@ namespace BizHawk.MultiClient
 			{
 				for (int i = 0; i < indexes.Count; i++)
 				{
-					switch (searchList[indexes[i]].type)
+					switch (Searches[indexes[i]].Type)
 					{
-						case atype.BYTE:
-							Cheat c = new Cheat("", searchList[indexes[i]].address, (byte)searchList[indexes[i]].value,
+						case Watch.TYPE.BYTE:
+							Cheat c = new Cheat("", Searches[indexes[i]].Address, (byte)Searches[indexes[i]].Value,
 								true, Domain);
 							Global.MainForm.Cheats1.AddCheat(c);
 							break;
-						case atype.WORD:
+						case Watch.TYPE.WORD:
 							{
-								byte low = (byte)(searchList[indexes[i]].value / 256);
-								byte high = (byte)(searchList[indexes[i]].value);
-								int a1 = searchList[indexes[i]].address;
-								int a2 = searchList[indexes[i]].address + 1;
-								if (searchList[indexes[i]].bigendian)
+								byte low = (byte)(Searches[indexes[i]].Value / 256);
+								byte high = (byte)(Searches[indexes[i]].Value);
+								int a1 = Searches[indexes[i]].Address;
+								int a2 = Searches[indexes[i]].Address + 1;
+								if (Searches[indexes[i]].BigEndian)
 								{
 									Cheat c1 = new Cheat("", a1, low, true, Domain);
 									Cheat c2 = new Cheat("", a2, high, true, Domain);
@@ -2308,17 +2330,17 @@ namespace BizHawk.MultiClient
 								}
 							}
 							break;
-						case atype.DWORD:
+						case Watch.TYPE.DWORD:
 							{
-								byte HIWORDhigh = (byte)(searchList[indexes[i]].value / 0x1000000);
-								byte HIWORDlow = (byte)(searchList[indexes[i]].value / 0x10000);
-								byte LOWORDhigh = (byte)(searchList[indexes[i]].value / 0x100);
-								byte LOWORDlow = (byte)(searchList[indexes[i]].value);
-								int a1 = searchList[indexes[i]].address;
-								int a2 = searchList[indexes[i]].address + 1;
-								int a3 = searchList[indexes[i]].address + 2;
-								int a4 = searchList[indexes[i]].address + 3;
-								if (searchList[indexes[i]].bigendian)
+								byte HIWORDhigh = (byte)(Searches[indexes[i]].Value / 0x1000000);
+								byte HIWORDlow = (byte)(Searches[indexes[i]].Value / 0x10000);
+								byte LOWORDhigh = (byte)(Searches[indexes[i]].Value / 0x100);
+								byte LOWORDlow = (byte)(Searches[indexes[i]].Value);
+								int a1 = Searches[indexes[i]].Address;
+								int a2 = Searches[indexes[i]].Address + 1;
+								int a3 = Searches[indexes[i]].Address + 2;
+								int a4 = Searches[indexes[i]].Address + 3;
+								if (Searches[indexes[i]].BigEndian)
 								{
 									Cheat c1 = new Cheat("", a1, HIWORDhigh, true, Domain);
 									Cheat c2 = new Cheat("", a2, HIWORDlow, true, Domain);
@@ -2369,7 +2391,7 @@ namespace BizHawk.MultiClient
 
 				if (indexes.Count == 1)
 				{
-					if (Global.CheatList.IsActiveCheat(Domain, searchList[indexes[0]].address))
+					if (Global.CheatList.IsActiveCheat(Domain, Searches[indexes[0]].Address))
 					{
 						contextMenuStrip1.Items[6].Text = "&Unfreeze address";
 						contextMenuStrip1.Items[6].Image =
@@ -2508,7 +2530,7 @@ namespace BizHawk.MultiClient
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == (".wch"))
 			{
-				LoadSearchFile(filePaths[0], false, false, searchList);
+				LoadSearchFile(filePaths[0], false, false, Searches);
 				DisplaySearchList();
 			}
 		}
@@ -2518,7 +2540,7 @@ namespace BizHawk.MultiClient
 			string columnName = SearchListView.Columns[columnToOrder].Text;
 			if (sortedCol.CompareTo(columnName) != 0)
 				sortReverse = false;
-			searchList.Sort((x, y) => x.CompareTo(y, columnName, (prevDef)Global.Config.RamSearchPreviousAs) * (sortReverse ? -1 : 1));
+			Searches.Sort((x, y) => x.CompareTo(y, columnName, (Watch.PREVDEF)Global.Config.RamSearchPreviousAs) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
 			SearchListView.Refresh();
@@ -2562,7 +2584,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
 			{
-				for (int x = 0; x < searchList.Count; x++)
+				for (int x = 0; x < Searches.Count; x++)
 				{
 					SearchListView.SelectItem(x, true);
 				}
@@ -2580,7 +2602,7 @@ namespace BizHawk.MultiClient
 			if (indexes.Count > 0)
 			{
 				Global.MainForm.LoadHexEditor();
-				Global.MainForm.HexEditor1.GoToAddress(searchList[indexes[0]].address);
+				Global.MainForm.HexEditor1.GoToAddress(Searches[indexes[0]].Address);
 			}
 		}
 

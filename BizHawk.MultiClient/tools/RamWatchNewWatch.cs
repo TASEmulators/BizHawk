@@ -22,17 +22,17 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 		}
 
-		private void SetTypeRadio(atype a)
+		private void SetTypeRadio(Watch.TYPE a)
 		{
 			switch (a)
 			{
-				case atype.BYTE:
+				case Watch.TYPE.BYTE:
 					Byte1Radio.Checked = true;
 					break;
-				case atype.WORD:
+				case Watch.TYPE.WORD:
 					Byte2Radio.Checked = true;
 					break;
-				case atype.DWORD:
+				case Watch.TYPE.DWORD:
 					Byte4Radio.Checked = true;
 					break;
 				default:
@@ -40,17 +40,17 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SetSignedRadio(asigned a)
+		private void SetSignedRadio(Watch.DISPTYPE a)
 		{
 			switch (a)
 			{
-				case asigned.SIGNED:
+				case Watch.DISPTYPE.SIGNED:
 					SignedRadio.Checked = true;
 					break;
-				case asigned.UNSIGNED:
+				case Watch.DISPTYPE.UNSIGNED:
 					UnsignedRadio.Checked = true;
 					break;
-				case asigned.HEX:
+				case Watch.DISPTYPE.HEX:
 					HexRadio.Checked = true;
 					break;
 				default:
@@ -64,13 +64,13 @@ namespace BizHawk.MultiClient
 			this.Text = message;
 			customSetup = true;
 
-			AddressBox.Text = string.Format("{0:X4}", w.address);
-			NotesBox.Text = w.notes;
+			AddressBox.Text = string.Format("{0:X4}", w.Address);
+			NotesBox.Text = w.Notes;
 
-			SetTypeRadio(w.type);
-			SetSignedRadio(w.signed);
+			SetTypeRadio(w.Type);
+			SetSignedRadio(w.Signed);
 
-			if (w.bigendian == true)
+			if (w.BigEndian == true)
 				BigEndianRadio.Checked = true;
 			else
 				LittleEndianRadio.Checked = true;
@@ -93,8 +93,8 @@ namespace BizHawk.MultiClient
 			if (!customSetup)
 			{
 				Watch w = new Watch();
-				SetTypeRadio(w.type);
-				SetSignedRadio(w.signed);
+				SetTypeRadio(w.Type);
+				SetSignedRadio(w.Signed);
 				AddressBox.Text = "0000";
 			}
 
@@ -113,7 +113,9 @@ namespace BizHawk.MultiClient
 			//Put user settings in the watch file
 			userSelected = true;
 			if (InputValidate.IsValidHexNumber(AddressBox.Text))
-				watch.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+			{
+				watch.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+			}
 			else
 			{
 				MessageBox.Show("Not a valid address (enter a valid Hex number)", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -124,25 +126,41 @@ namespace BizHawk.MultiClient
 			}
 
 			if (SignedRadio.Checked)
-				watch.signed = asigned.SIGNED;
+			{
+				watch.Signed = Watch.DISPTYPE.SIGNED;
+			}
 			else if (UnsignedRadio.Checked)
-				watch.signed = asigned.UNSIGNED;
+			{
+				watch.Signed = Watch.DISPTYPE.UNSIGNED;
+			}
 			else if (HexRadio.Checked)
-				watch.signed = asigned.HEX;
+			{
+				watch.Signed = Watch.DISPTYPE.HEX;
+			}
 
 			if (Byte1Radio.Checked)
-				watch.type = atype.BYTE;
+			{
+				watch.Type = Watch.TYPE.BYTE;
+			}
 			else if (Byte2Radio.Checked)
-				watch.type = atype.WORD;
+			{
+				watch.Type = Watch.TYPE.WORD;
+			}
 			else if (Byte4Radio.Checked)
-				watch.type = atype.DWORD;
+			{
+				watch.Type = Watch.TYPE.DWORD;
+			}
 
 			if (BigEndianRadio.Checked)
-				watch.bigendian = true;
+			{
+				watch.BigEndian = true;
+			}
 			else if (LittleEndianRadio.Checked)
-				watch.bigendian = false;
+			{
+				watch.BigEndian = false;
+			}
 
-			watch.notes = NotesBox.Text;
+			watch.Notes = NotesBox.Text;
 
 			this.Close();
 		}
