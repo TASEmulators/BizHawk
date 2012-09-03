@@ -1790,7 +1790,22 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public string movie_mode()
 		{
-			return Global.MovieSession.Movie.Mode.ToString();
+			if (Global.MovieSession.Movie.IsFinished)
+			{
+				return "FINISHED";
+			}
+			else if (Global.MovieSession.Movie.IsPlaying)
+			{
+				return "PLAY";
+			}
+			else if (Global.MovieSession.Movie.IsRecording)
+			{
+				return "RECORD";
+			}
+			else
+			{
+				return "INACTIVE";
+			}
 		}
 
 		public string movie_rerecordcount()
@@ -1800,20 +1815,24 @@ namespace BizHawk.MultiClient
 
 		public void movie_stop()
 		{
-			Global.MovieSession.Movie.StopMovie();
+			Global.MovieSession.Movie.Stop();
 		}
 
 		public bool movie_isloaded()
 		{
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
-				return false;
-			else
+			if (Global.MovieSession.Movie.IsActive)
+			{
 				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		public int movie_length()
 		{
-			return Global.MovieSession.Movie.TotalFrames;
+			return Global.MovieSession.Movie.Frames;
 		}
 
 		public string movie_filename()
@@ -1838,7 +1857,7 @@ namespace BizHawk.MultiClient
 		{
 			LuaTable input = lua.NewTable();
 
-			string s = Global.MovieSession.Movie.GetInputFrame(LuaInt(frame));
+			string s = Global.MovieSession.Movie.GetInput(LuaInt(frame));
 			MovieControllerAdapter m = new MovieControllerAdapter();
 			m.Type = Global.MovieSession.MovieControllerAdapter.Type;
 			m.SetControllersAsMnemonic(s);
@@ -1850,15 +1869,15 @@ namespace BizHawk.MultiClient
 
 		public bool movie_getrerecordcounting()
 		{
-			return Global.MovieSession.Movie.RerecordCounting;
+			return Global.MovieSession.Movie.IsCountingRerecords;
 		}
 
 		public void movie_setrerecordcounting(object lua_input)
 		{
 			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
-				Global.MovieSession.Movie.RerecordCounting = true;
+				Global.MovieSession.Movie.IsCountingRerecords = true;
 			else
-				Global.MovieSession.Movie.RerecordCounting = false;
+				Global.MovieSession.Movie.IsCountingRerecords = false;
 		}
 		//----------------------------------------------------
 		//Input library

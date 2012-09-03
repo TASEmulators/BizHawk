@@ -143,7 +143,7 @@ namespace BizHawk.MultiClient
 			{
 				Global.CheatList.SaveSettings();
 				CloseGame();
-				Global.MovieSession.Movie.StopMovie();
+				Global.MovieSession.Movie.Stop();
 				CloseTools();
 				SaveConfig();
 			};
@@ -219,14 +219,19 @@ namespace BizHawk.MultiClient
 			if (cmdMovie != null)
 			{
 				if (Global.Game == null)
-					OpenROM();
-				if (Global.Game != null)
 				{
-					Movie m = new Movie(cmdMovie, MOVIEMODE.PLAY);
+					OpenROM();
+				}
+				else
+				{
+					Movie m = new Movie(cmdMovie);
+					m.Play();
 					ReadOnly = true;
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (autoDumpLength == 0)
-						autoDumpLength = m.TotalFrames;
+					{
+						autoDumpLength = m.Frames;
+					}
 					StartNewMovie(m, false);
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
@@ -234,19 +239,26 @@ namespace BizHawk.MultiClient
 			else if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.IsEmpty())
 			{
 				if (Global.Game == null)
-					OpenROM();
-				if (Global.Game != null)
 				{
-					Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0), MOVIEMODE.PLAY);
+					OpenROM();
+				}
+				else
+				{
+					Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0));
+					m.Play();
 					ReadOnly = true;
 					StartNewMovie(m, false);
 				}
 			}
 
 			if (cmdLoadState != null && Global.Game != null)
+			{
 				LoadState("QuickSave" + cmdLoadState);
+			}
 			else if (Global.Config.AutoLoadLastSaveSlot && Global.Game != null)
+			{
 				LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
+			}
 
 			if (Global.Config.AutoLoadRamWatch)
 			{
@@ -514,7 +526,8 @@ namespace BizHawk.MultiClient
 
 		private void LoadMoviesFromRecent(string movie)
 		{
-			Movie m = new Movie(movie, MOVIEMODE.PLAY);
+			Movie m = new Movie(movie);
+			m.Play();
 
 			if (!m.Loaded)
 			{
@@ -915,7 +928,7 @@ namespace BizHawk.MultiClient
 
 			else if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
-				Movie m = new Movie(filePaths[0], MOVIEMODE.PLAY);
+				Movie m = new Movie(filePaths[0]);
 				StartNewMovie(m, false);
 
 			}
@@ -1491,7 +1504,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
-			Global.MovieSession.Movie.StopMovie();
+			Global.MovieSession.Movie.Stop();
 		}
 
 		private static void SaveRam()
@@ -1729,7 +1742,7 @@ namespace BizHawk.MultiClient
 				case "Soft Reset": SoftReset(); break;
 				case "Toggle MultiTrack":
 					{
-						if (Global.MovieSession.Movie.Mode > MOVIEMODE.INACTIVE)
+						if (Global.MovieSession.Movie.IsActive)
 						{
 							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
 							if (Global.MovieSession.MultiTrack.IsActive)
@@ -1859,7 +1872,7 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			bool ReturnToRecording = Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD;
+			bool ReturnToRecording = Global.MovieSession.Movie.IsRecording;
 			if (Global.Config.RewindEnabled && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
@@ -1873,14 +1886,18 @@ namespace BizHawk.MultiClient
 					runFrame = true;
 				}
 				//we don't want to capture input when rewinding, even in record mode
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
-					Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
+				if (Global.MovieSession.Movie.IsRecording)
+				{
+					Global.MovieSession.Movie.Play();
+				}
 			}
-			if (true == UpdateFrame)
+			if (UpdateFrame == true)
 			{
 				runFrame = true;
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
-					Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
+				if (Global.MovieSession.Movie.IsRecording)
+				{
+					Global.MovieSession.Movie.Play();
+				}
 			}
 
 			bool genSound = false;
@@ -1975,7 +1992,7 @@ namespace BizHawk.MultiClient
 				UpdateToolsAfter();
 				if (ReturnToRecording)
 				{
-					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+					Global.MovieSession.Movie.Record();
 				}
 				PressRewind = false;
 			}
@@ -1983,7 +2000,7 @@ namespace BizHawk.MultiClient
 			{
 				if (ReturnToRecording)
 				{
-					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+					Global.MovieSession.Movie.Record();
 				}
 				UpdateFrame = false;
 			}
@@ -2651,13 +2668,17 @@ namespace BizHawk.MultiClient
 
 		public void ToggleReadOnly()
 		{
-			if (Global.MovieSession.Movie.Mode > MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				ReadOnly ^= true;
 				if (ReadOnly)
+				{
 					Global.OSD.AddMessage("Movie read-only mode");
+				}
 				else
+				{
 					Global.OSD.AddMessage("Movie read+write mode");
+				}
 			}
 			else
 			{
@@ -2728,8 +2749,10 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
 				Global.ClickyVirtualPadController.Click("Reset");
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE && Global.Emulator is NES)
+				if (!Global.MovieSession.Movie.IsActive && Global.Emulator is NES)
+				{
 					Global.Emulator.ResetFrameCounter();
+				}
 			}
 		}
 
@@ -3319,5 +3342,12 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void ClearSaveRAM()
+		{
+			string x = PathManager.SaveRamPath(Global.Game);
+
+			var file = new FileInfo(PathManager.SaveRamPath(Global.Game));
+			if (file.Exists) file.Delete();
+		}
 	}
 }

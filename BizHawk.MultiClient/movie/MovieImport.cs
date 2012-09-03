@@ -120,7 +120,7 @@ namespace BizHawk.MultiClient
 						case '1':
 							break;
 						case '2':
-							if (m.TotalFrames != 0)
+							if (m.Frames != 0)
 								warningMsg = "hard reset";
 							break;
 						case '4':
@@ -196,7 +196,8 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			FileInfo file = new FileInfo(path);
 			StreamReader sr = file.OpenText();
 			string emulator = "";
@@ -264,7 +265,7 @@ namespace BizHawk.MultiClient
 					{
 						rerecordCount = 0;
 					}
-					m.SetRerecords(rerecordCount);
+					m.Rerecords = rerecordCount;
 				}
 				else if (line.ToLower().StartsWith("guid"))
 					m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(line, "guid"));
@@ -346,7 +347,8 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 43 4D 1A "FCM\x1A"
@@ -406,7 +408,7 @@ namespace BizHawk.MultiClient
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.SetRerecords((int)rerecordCount);
+			m.Rerecords = (int)rerecordCount;
 			// 014 4-byte little-endian unsigned int: length of controller data in bytes
 			uint movieDataSize = r.ReadUInt32();
 			/*
@@ -601,7 +603,8 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 4D 56 1A "FMV\x1A"
@@ -652,7 +655,7 @@ namespace BizHawk.MultiClient
 			 loaded, the number is 0. Famtasia however displays "1" in such case. It always adds 1 to the number found in
 			 the file.
 			*/
-			m.SetRerecords(((int)rerecordCount) + 1);
+			m.Rerecords = ((int)rerecordCount) + 1;
 			// 00E 2-byte little-endian unsigned int: unknown, set to 0000
 			r.ReadInt16();
 			// 010 64-byte zero-terminated emulator identifier string
@@ -731,7 +734,8 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
@@ -749,7 +753,7 @@ namespace BizHawk.MultiClient
 			m.Header.Comments.Add(EMULATIONORIGIN + " Gens");
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.SetRerecords((int)rerecordCount);
+			m.Rerecords = (int)rerecordCount;
 			// 014 ASCII-encoded controller config for player 1. '3' or '6'.
 			string player1Config = r.ReadStringFixedAscii(1);
 			// 015 ASCII-encoded controller config for player 2. '3' or '6'.
@@ -845,7 +849,8 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 8-byte    "MDFNMOVI" signature
@@ -873,7 +878,7 @@ namespace BizHawk.MultiClient
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 070 uint32     Re-record Count
 			uint rerecordCount = r.ReadUInt32();
-			m.SetRerecords((int)rerecordCount);
+			m.Rerecords = (int)rerecordCount;
 			// 074 5-byte     Console indicator (pce, ngp, pcfx, wswan)
 			string platform = RemoveNull(r.ReadStringFixedAscii(5));
 			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>()
@@ -968,7 +973,8 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 0000: 4-byte signature: "MMV\0"
@@ -988,7 +994,7 @@ namespace BizHawk.MultiClient
 			uint frameCount = r.ReadUInt32();
 			// 000c: 4-byte little endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.SetRerecords((int)rerecordCount);
+			m.Rerecords = (int)rerecordCount;
 			// 0010: 4-byte little endian flag: begin from reset?
 			uint reset = r.ReadUInt32();
 			if (reset == 0)
@@ -1083,7 +1089,8 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 4E 53 53 1A "NSS\x1A"
@@ -1240,7 +1247,7 @@ namespace BizHawk.MultiClient
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			// 004 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.SetRerecords((int)rerecordCount);
+			m.Rerecords = (int)rerecordCount;
 			/*
 			 008 4-byte little-endian unsigned int: length of movie description
 			 00C (variable) null-terminated UTF-8 text, movie description (currently not implemented)
@@ -1332,10 +1339,11 @@ namespace BizHawk.MultiClient
 		// SMV 1.43 file format: http://code.google.com/p/snes9x-rr/wiki/SMV143
 		private static Movie ImportSMV143(BinaryReader r, string path)
 		{
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			uint GUID = r.ReadUInt32();
 			m.Header.SetHeaderLine(MovieHeader.GUID, GUID.ToString()); //TODO: format to hex string
-			m.SetRerecords((int)r.ReadUInt32());
+			m.Rerecords = (int)r.ReadUInt32();
 
 			uint frameCount = r.ReadUInt32();
 			byte ControllerFlags = r.ReadByte();
@@ -1387,7 +1395,8 @@ namespace BizHawk.MultiClient
 		// SMV 1.51 file format: http://code.google.com/p/snes9x-rr/wiki/SMV151
 		private static Movie ImportSMV151(BinaryReader r, string path)
 		{
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.51");
 			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
 			return m;
@@ -1395,7 +1404,8 @@ namespace BizHawk.MultiClient
 
 		private static Movie ImportSMV152(BinaryReader r, string path)
 		{
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			uint GUID = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.52");
 			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
@@ -1407,7 +1417,8 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
@@ -1438,7 +1449,7 @@ namespace BizHawk.MultiClient
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.SetRerecords((int)rerecordCount);
+			m.Rerecords = (int)rerecordCount;
 			// 014 1-byte flags: (movie start flags)
 			byte flags = r.ReadByte();
 			// bit 0: if "1", movie starts from an embedded "quicksave" snapshot
@@ -1633,7 +1644,8 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension, MOVIEMODE.PLAY);
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 12-byte signature: "VirtuaNES MV"
@@ -1688,7 +1700,7 @@ namespace BizHawk.MultiClient
 			r.ReadUInt64();
 			// 01C 4-byte little-endian integer: rerecord count
 			uint rerecordCount = r.ReadUInt32();
-			m.SetRerecords((int)rerecordCount);
+			m.Rerecords = (int)rerecordCount;
 			/*
 			020 BYTE    RenderMethod
 			0=POST_ALL,1=PRE_ALL

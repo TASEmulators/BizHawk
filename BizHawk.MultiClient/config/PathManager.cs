@@ -290,7 +290,7 @@ namespace BizHawk.MultiClient
 		public static string SaveRamPath(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
-			if (Global.MainForm.MovieActive())
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
@@ -335,8 +335,12 @@ namespace BizHawk.MultiClient
 		public static string SaveStatePrefix(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
-			if (Global.Config.BindSavestatesToMovies && Global.MainForm.MovieActive())
+			
+			if (Global.Config.BindSavestatesToMovies && Global.MovieSession.Movie.IsActive)
+			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+			}
+			
 			switch (game.System)
 			{
 				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26"), name);

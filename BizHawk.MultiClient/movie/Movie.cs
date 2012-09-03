@@ -9,20 +9,19 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-	public enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
 	public class Movie
 	{
 		#region Constructors
 
-		public Movie(string filename, MOVIEMODE m)
+		public Movie(string filename)
 		{
-			Mode = m;
+			Mode = MOVIEMODE.INACTIVE;
 			lastlog = 0;
 			Rerecords = 0;
 			this.Filename = filename;
 			IsText = true;
-			frames = 0;
-			RerecordCounting = true;
+			preload_framecount = 0;
+			IsCountingRerecords = true;
 			StartsFromSavestate = false;
 			if (filename.Length > 0)
 				Loaded = true;
@@ -33,27 +32,37 @@ namespace BizHawk.MultiClient
 			Filename = "";
 			Mode = MOVIEMODE.INACTIVE;
 			IsText = true;
-			frames = 0;
+			preload_framecount = 0;
 			StartsFromSavestate = false;
 			Loaded = false;
-			RerecordCounting = true;
+			IsCountingRerecords = true;
 		}
 
 		#endregion
 
 		#region Properties
-
 		public MovieHeader Header = new MovieHeader();
 		public SubtitleList Subtitles = new SubtitleList();
+		
 		public bool MakeBackup = true; //make backup before altering movie
-		public bool TastudioOn = false; //Remove this once the memory mangement issues with save states for tastudio has been solved.
-		public bool IsText { get; private set; }
-		public string Filename { get; private set; }
-		public MOVIEMODE Mode { get; set; }
-		public int Rerecords { get; private set; }
-		public bool RerecordCounting { get; set; }
-		public bool StartsFromSavestate { get; private set; }
+		public string Filename;
+		public bool IsCountingRerecords;
+		
 		public bool Loaded { get; private set; }
+		public bool IsText { get; private set; }
+
+		public int Rerecords
+		{
+			get
+			{
+				return rerecords;
+			}
+			set
+			{
+				rerecords = value;
+				Header.SetHeaderLine(MovieHeader.RERECORDS, Rerecords.ToString());
+			}
+		}
 
 		public string SysID
 		{
@@ -79,7 +88,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public int TotalFrames
+		public int Frames
 		{
 			get
 			{
@@ -89,7 +98,27 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					return frames;
+					return preload_framecount;
+				}
+			}
+		}
+
+		public bool StartsFromSavestate
+		{
+			get
+			{
+				return startsfromsavestate;
+			}
+			set
+			{
+				startsfromsavestate = value;
+				if (value == true)
+				{
+					Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
+				}
+				else
+				{
+					Header.RemoveHeaderLine(MovieHeader.STARTSFROMSAVESTATE);
 				}
 			}
 		}
@@ -110,16 +139,132 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public void UpdateFileName(string filename)
+		public bool StateCapturing
 		{
-			this.Filename = filename;
+			get
+			{
+				return statecapturing;
+			}
+			set
+			{
+				Log.ClearStates();
+				statecapturing = value;
+			}
 		}
 
-		public void StopMovie()
+		#endregion
+
+		#region Public Mode Methods
+
+		public bool IsPlaying
+		{
+			get
+			{
+				if (Mode == MOVIEMODE.PLAY || Mode == MOVIEMODE.FINISHED)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		public bool IsRecording
+		{
+			get
+			{
+				if (Mode == MOVIEMODE.RECORD)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		public bool IsActive
+		{
+			get
+			{
+				if (Mode == MOVIEMODE.INACTIVE)
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+		}
+
+		public bool IsFinished
+		{
+			get
+			{
+				if (Mode == MOVIEMODE.FINISHED)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		//TODO: merge this with record? or better distinguish between the two events
+		/// <summary>
+		/// Tells the movie to start recording from the beginning, this will clear sram, and the movie log
+		/// </summary>
+		/// <param name="truncate"></param>
+		public void StartNewRecording(bool truncate = true)
+		{
+			Global.MainForm.ClearSaveRAM();
+			Mode = MOVIEMODE.RECORD;
+			if (Global.Config.EnableBackupMovies && MakeBackup && Log.MovieLength() > 0)
+			{
+				WriteBackup();
+				MakeBackup = false;
+			}
+			if (truncate)
+			{
+				Log.Clear();
+			}
+		}
+
+		//TODO: merge this with Play, play vs resume play?
+		public void StartPlayback()
+		{
+			Global.MainForm.ClearSaveRAM();
+			Mode = MOVIEMODE.PLAY;
+			Global.MainForm.StopOnFrame = Frames; //TODO: Get rid of this stuff
+		}
+
+		/// <summary>
+		/// Tells the movie to recording mode
+		/// </summary>
+		public void Record()
+		{
+			Mode = MOVIEMODE.RECORD;
+		}
+
+		//TODO: all the constructors for a movie that call this or record after, need to be rethought, what about clearing sram??
+		/// <summary>
+		/// Tells the movie to go into playback mode
+		/// </summary>
+		public void Play()
+		{
+			//TODO: determine if movie finished is correct here
+			//Also, consider the management of the read-only flag
+			//Really this hsouldn't be a method, it should be a consequence of other factors that should be managed
+			Mode = MOVIEMODE.PLAY;
+		}
+
+		public void Stop()
 		{
 			if (Mode == MOVIEMODE.RECORD)
 			{
@@ -129,18 +274,182 @@ namespace BizHawk.MultiClient
 			Mode = MOVIEMODE.INACTIVE;
 		}
 
+		public void Finish()
+		{
+			if (Mode == MOVIEMODE.PLAY)
+			{
+				Mode = MOVIEMODE.FINISHED;
+			}
+		}
+		
+		#endregion
+
+		#region Public File Handling
+
+		public void WriteMovie()
+		{
+			if (!Loaded) return;
+			if (Filename == "") return;
+			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
+			if (IsText)
+				WriteText(Filename);
+			else
+				WriteBinary(Filename);
+		}
+
+		public void WriteBackup()
+		{
+			if (!Loaded) return;
+			if (Filename == "") return;
+			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
+			string BackupName = Filename;
+			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
+			Global.OSD.AddMessage("Backup movie saved to " + BackupName);
+			if (IsText)
+			{
+				WriteText(BackupName);
+			}
+			else
+			{
+				WriteBinary(BackupName);
+			}
+		}
+
+		/// <summary>
+		/// Load Header information only for displaying file information in dialogs such as play movie
+		/// </summary>
+		/// <returns></returns>
+		public bool PreLoadText()
+		{
+			Loaded = false;
+			var file = new FileInfo(Filename);
+
+			if (file.Exists == false)
+				return false;
+			else
+			{
+				Header.Clear();
+				Log.Clear();
+			}
+
+			using (StreamReader sr = file.OpenText())
+			{
+				string str = "";
+				while ((str = sr.ReadLine()) != null)
+				{
+					if (str == "" || Header.AddHeaderFromLine(str))
+						continue;
+					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+						Subtitles.AddSubtitle(str);
+					else if (str[0] == '|')
+					{
+						string frames = sr.ReadToEnd();
+						int length = str.Length;
+						// Account for line breaks of either size.
+						if (frames.IndexOf("\r\n") != -1)
+							length++;
+						length++;
+						// Count the remaining frames and the current one.
+						this.preload_framecount = (frames.Length / length) + 1;
+						break;
+					}
+					else
+						Header.Comments.Add(str);
+				}
+				sr.Close();
+			}
+
+			return true;
+		}
+
+		public bool LoadMovie()
+		{
+			var file = new FileInfo(Filename);
+			if (file.Exists == false)
+			{
+				Loaded = false;
+				return false;
+			}
+
+			return LoadText();
+		}
+
+		#endregion
+
+		#region Public Log Editing
+
+		public string GetInput(int frame)
+		{
+			lastlog = frame;
+			if (frame < Log.MovieLength())
+			{
+				return Log.GetFrame(frame);
+			}
+			else
+			{
+				return "";
+			}
+		}
+
+		public void ModifyFrame(string record, int frame)
+		{
+			Log.SetFrameAt(frame, record);
+		}
+
+		public void ClearFrame(int frame)
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			Log.SetFrameAt(frame, mg.GetEmptyMnemonic());
+		}
+
+		public void AppendFrame(string record)
+		{
+			Log.AddFrame(record);
+		}
+
+		public void InsertFrame(string record, int frame)
+		{
+			Log.AddFrameAt(record, frame);
+		}
+
+		public void InsertBlankFrame(int frame)
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			Log.AddFrameAt(mg.GetEmptyMnemonic(), frame);
+		}
+
+		public void DeleteFrame(int frame)
+		{
+			if (frame <= StateLastIndex)
+			{
+				if (frame <= StateFirstIndex)
+				{
+					RewindToFrame(0);
+				}
+				else
+				{
+					RewindToFrame(frame);
+				}
+			}
+			Log.DeleteFrame(frame);
+		}
+
+		public void TruncateMovie(int frame)
+		{
+			Log.TruncateMovie(frame);
+		}
+
+		#endregion
+
+		#region Public Misc Methods
+
 		public void CaptureState()
 		{
-			if (TastudioOn == true)
+			if (StateCapturing == true)
 			{
 				byte[] state = Global.Emulator.SaveStateBinary();
 				Log.AddState(state);
 			}
-		}
-
-		public void ClearStates()
-		{
-			Log.ClearStates();
 		}
 
 		public void RewindToFrame(int frame)
@@ -189,55 +498,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void DeleteFrame(int frame)
-		{
-			if (frame <= StateLastIndex)
-			{
-				if (frame <= StateFirstIndex)
-				{
-					RewindToFrame(0);
-				}
-				else
-				{
-					RewindToFrame(frame);
-				}
-			}
-			Log.DeleteFrame(frame);
-		}
-
-		public void ClearSaveRAM()
-		{
-			string x = PathManager.SaveRamPath(Global.Game);
-
-			var file = new FileInfo(PathManager.SaveRamPath(Global.Game));
-			if (file.Exists) file.Delete();
-		}
-
-		public void StartNewRecording() { StartNewRecording(true); }
-		public void StartNewRecording(bool truncate)
-		{
-			ClearSaveRAM();
-			Mode = MOVIEMODE.RECORD;
-			if (Global.Config.EnableBackupMovies && MakeBackup && Log.MovieLength() > 0)
-			{
-				WriteBackup();
-				MakeBackup = false;
-			}
-			if (truncate) Log.Clear();
-		}
-
-		public void StartPlayback()
-		{
-			ClearSaveRAM();
-			Mode = MOVIEMODE.PLAY;
-			Global.MainForm.StopOnFrame = TotalFrames;
-		}
-
-		public void ResumeRecording()
-		{
-			Mode = MOVIEMODE.RECORD;
-		}
-
 		public void CommitFrame(int frameNum, IController source)
 		{
 			//if (Global.Emulator.Frame < Log.Length())
@@ -254,127 +514,6 @@ namespace BizHawk.MultiClient
 			mg.SetSource(source);
 
 			Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
-		}
-
-		public string GetInputFrame(int frame)
-		{
-			lastlog = frame;
-			if (frame < Log.MovieLength())
-				return Log.GetFrame(frame);
-			else
-				return "";
-		}
-
-		public void ModifyFrame(string record, int frame)
-		{
-			Log.SetFrameAt(frame, record);
-		}
-
-		public void ClearFrame(int frame)
-		{
-			MnemonicsGenerator mg = new MnemonicsGenerator();
-			Log.SetFrameAt(frame, mg.GetEmptyMnemonic());
-		}
-
-		public void AppendFrame(string record)
-		{
-			Log.AddFrame(record);
-		}
-
-		public void InsertFrame(string record, int frame)
-		{
-			Log.AddFrameAt(record, frame);
-		}
-
-		public void InsertBlankFrame(int frame)
-		{
-			MnemonicsGenerator mg = new MnemonicsGenerator();
-			Log.AddFrameAt(mg.GetEmptyMnemonic(), frame);
-		}
-
-		public void WriteMovie()
-		{
-			if (!Loaded) return;
-			if (Filename == "") return;
-			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
-			if (IsText)
-				WriteText(Filename);
-			else
-				WriteBinary(Filename);
-		}
-
-		public void WriteBackup()
-		{
-			if (!Loaded) return;
-			if (Filename == "") return;
-			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
-			string BackupName = Filename;
-			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
-			Global.OSD.AddMessage("Backup movie saved to " + BackupName);
-			if (IsText)
-				WriteText(BackupName);
-			else
-				WriteBinary(BackupName);
-
-		}
-
-		/// <summary>
-		/// Load Header information only for displaying file information in dialogs such as play movie
-		/// </summary>
-		/// <returns></returns>
-		public bool PreLoadText()
-		{
-			Loaded = false;
-			var file = new FileInfo(Filename);
-
-			if (file.Exists == false)
-				return false;
-			else
-			{
-				Header.Clear();
-				Log.Clear();
-			}
-
-			using (StreamReader sr = file.OpenText())
-			{
-				string str = "";
-				while ((str = sr.ReadLine()) != null)
-				{
-					if (str == "" || Header.AddHeaderFromLine(str))
-						continue;
-					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
-						Subtitles.AddSubtitle(str);
-					else if (str[0] == '|')
-					{
-						string frames = sr.ReadToEnd();
-						int length = str.Length;
-						// Account for line breaks of either size.
-						if (frames.IndexOf("\r\n") != -1)
-							length++;
-						length++;
-						// Count the remaining frames and the current one.
-						this.frames = (frames.Length / length) + 1;
-						break;
-					}
-					else
-						Header.Comments.Add(str);
-				}
-				sr.Close();
-			}
-
-			return true;
-		}
-
-		public bool LoadMovie()
-		{
-			var file = new FileInfo(Filename);
-			if (file.Exists == false)
-			{
-				Loaded = false;
-				return false;
-			}
-
-			return LoadText();
 		}
 
 		public void DumpLogIntoSavestateText(TextWriter writer)
@@ -475,31 +614,8 @@ namespace BizHawk.MultiClient
 				Log.TruncateStates(stateFrame);
 				Log.TruncateMovie(stateFrame);
 			}
-			IncrementRerecords();
+			Rerecords++;
 			reader.Close();
-		}
-
-		public void IncrementRerecords()
-		{
-			if (RerecordCounting)
-			{
-				Rerecords++;
-				Header.UpdateRerecordCount(Rerecords);
-			}
-		}
-
-		public void SetRerecords(int value)
-		{
-			Rerecords = value;
-			Header.SetHeaderLine(MovieHeader.RERECORDS, Rerecords.ToString());
-		}
-
-		public void SetMovieFinished()
-		{
-			if (Mode == MOVIEMODE.PLAY)
-			{
-				Mode = MOVIEMODE.FINISHED;
-			}
 		}
 
 		public string GetTime(bool preLoad)
@@ -509,7 +625,7 @@ namespace BizHawk.MultiClient
 			double seconds;
 			if (preLoad)
 			{
-				seconds = GetSeconds(frames);
+				seconds = GetSeconds(preload_framecount);
 			}
 			else
 			{
@@ -643,30 +759,22 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		public void FlagStartsFromSavestate()
-		{
-			StartsFromSavestate = true;
-			Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
-		}
-
-		public void TruncateMovie(int frame)
-		{
-			Log.TruncateMovie(frame);
-		}
-
 		#endregion
 
 		#region Private Fields
 
-		private int frames; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
+		private int preload_framecount; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 		private MovieLog Log = new MovieLog();
 		private int lastlog;
+		private int rerecords;
+		private bool statecapturing;
+		private bool startsfromsavestate;
+		private enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
+		private MOVIEMODE Mode = MOVIEMODE.INACTIVE;
 
 		#endregion
 
-		#region Private Methods
-
-
+		#region Helpers
 
 		private void WriteText(string file)
 		{
@@ -956,15 +1064,21 @@ namespace BizHawk.MultiClient
 
 		private int CompareLength(Movie Other)
 		{
-			int otherLength = Other.frames;
-			int thisLength = this.frames;
+			int otherLength = Other.preload_framecount;
+			int thisLength = this.preload_framecount;
 
 			if (thisLength < otherLength)
+			{
 				return -1;
+			}
 			else if (thisLength > otherLength)
+			{
 				return 1;
+			}
 			else
+			{
 				return 0;
+			}
 		}
 
 		#endregion

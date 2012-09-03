@@ -968,20 +968,7 @@ namespace BizHawk.MultiClient
 				cmiLoadLastRom.Visible = false;
 				toolStripSeparator_afterRomLoading.Visible = false;
 
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
-				{
-					cmiRecordMovie.Visible = true;
-					cmiPlayMovie.Visible = true;
-					cmiRestartMovie.Visible = false;
-					cmiStopMovie.Visible = false;
-					cmiLoadLastMovie.Visible = true;
-					cmiMakeMovieBackup.Visible = false;
-					cmiViewSubtitles.Visible = false;
-					cmiViewComments.Visible = false;
-					toolStripSeparator_afterMovie.Visible = true;
-					cmiAddSubtitle.Visible = false;
-				}
-				else
+				if (Global.MovieSession.Movie.IsActive)
 				{
 					cmiRecordMovie.Visible = false;
 					cmiPlayMovie.Visible = false;
@@ -1004,6 +991,19 @@ namespace BizHawk.MultiClient
 						cmiViewComments.Text = "Edit Comments";
 						cmiAddSubtitle.Visible = true;
 					}
+				}
+				else
+				{
+					cmiRecordMovie.Visible = true;
+					cmiPlayMovie.Visible = true;
+					cmiRestartMovie.Visible = false;
+					cmiStopMovie.Visible = false;
+					cmiLoadLastMovie.Visible = true;
+					cmiMakeMovieBackup.Visible = false;
+					cmiViewSubtitles.Visible = false;
+					cmiViewComments.Visible = false;
+					toolStripSeparator_afterMovie.Visible = true;
+					cmiAddSubtitle.Visible = false;
 				}
 
 				cmiUndoSavestate.Visible = true;
@@ -1135,22 +1135,24 @@ namespace BizHawk.MultiClient
 
 		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE) return;
-
-			EditCommentsForm c = new EditCommentsForm();
-			c.ReadOnly = ReadOnly;
-			c.GetMovie(Global.MovieSession.Movie);
-			c.ShowDialog();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				EditCommentsForm c = new EditCommentsForm();
+				c.ReadOnly = ReadOnly;
+				c.GetMovie(Global.MovieSession.Movie);
+				c.ShowDialog();
+			}
 		}
 
 		private void viewSubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE) return;
-
-			EditSubtitlesForm s = new EditSubtitlesForm();
-			s.ReadOnly = ReadOnly;
-			s.GetMovie(Global.MovieSession.Movie);
-			s.ShowDialog();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				EditSubtitlesForm s = new EditSubtitlesForm();
+				s.ReadOnly = ReadOnly;
+				s.GetMovie(Global.MovieSession.Movie);
+				s.ShowDialog();
+			}
 		}
 
 		private void debuggerToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1200,15 +1202,15 @@ namespace BizHawk.MultiClient
 
 		private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
-			{
-				stopMovieToolStripMenuItem.Enabled = false;
-				playFromBeginningToolStripMenuItem.Enabled = false;
-			}
-			else
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				stopMovieToolStripMenuItem.Enabled = true;
 				playFromBeginningToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				stopMovieToolStripMenuItem.Enabled = false;
+				playFromBeginningToolStripMenuItem.Enabled = false;
 			}
 
 			readonlyToolStripMenuItem.Checked = ReadOnly;

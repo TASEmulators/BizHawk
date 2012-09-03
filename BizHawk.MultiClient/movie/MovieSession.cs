@@ -45,7 +45,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void LatchInputFromLog()
 		{
-			string loggedFrame = Movie.GetInputFrame(Global.Emulator.Frame);
+			string loggedFrame = Movie.GetInput(Global.Emulator.Frame);
 			MovieControllerAdapter.SetControllersAsMnemonic(loggedFrame);
 		}
 	}
