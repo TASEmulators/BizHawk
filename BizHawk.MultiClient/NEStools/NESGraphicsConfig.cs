@@ -14,16 +14,10 @@ namespace BizHawk.MultiClient
 	public partial class NESGraphicsConfig : Form
 	{
 		//TODO:
-		//Hook up allow > 8 scan lines
-		//Hook up Clip L+R Sides
-		//Hook up Disp Background
-		//Hook up Disp Sprites
-		//Hook up BG color
+		
 		//Allow selection of palette file from archive
 		//Hotkeys for BG & Sprite display toggle
-		//select all on enter event for palette config
-		//NTSC fileter settings? Hue, Tint (This should probably be a multiclient thing, not a nes specific thing?)
-		//Color panel isn't loading color on load
+		//NTSC filter settings? Hue, Tint (This should probably be a multiclient thing, not a nes specific thing?)
 
 		HawkFile palette = null;
 		NES nes;
@@ -113,8 +107,15 @@ namespace BizHawk.MultiClient
 
 		private void ChangeBGColor_Click(object sender, EventArgs e)
 		{
+			ChangeBG();
+		}
+
+		private void ChangeBG()
+		{
 			if (BGColorDialog.ShowDialog() == DialogResult.OK)
+			{
 				SetColorBox();
+			}
 		}
 
 		private void btnAreaStandard_Click(object sender, EventArgs e)
@@ -127,6 +128,11 @@ namespace BizHawk.MultiClient
 		{
 			FirstLineNumeric.Value = 0;
 			LastLineNumeric.Value = 239;
+		}
+
+		private void BackgroundColorPanel_DoubleClick(object sender, EventArgs e)
+		{
+			ChangeBG();
 		}
 	}
 }
