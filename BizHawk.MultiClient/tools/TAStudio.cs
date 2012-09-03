@@ -135,10 +135,6 @@ namespace BizHawk.MultiClient
 			else if (Global.MovieSession.Movie.FrameLagged(index))
 			{
 				color = Color.Pink;
-
-				//TODO: remove references to this lag
-				//Global.COMMANDS[Global.MovieInputSourceAdapter.Type.Name].ContainsKey("Lag") &&
-				//Global.MovieSession.Movie.GetInput(index)[1] == Global.COMMANDS[Global.MovieInputSourceAdapter.Type.Name]["Lag"][0])
 			}
 			else if (index > Global.MovieSession.Movie.StateFirstIndex && index <= Global.MovieSession.Movie.StateLastIndex)
 			{

@@ -224,8 +224,7 @@ namespace BizHawk.MultiClient
 			}
 			if (ControlType == "NES Controller")
 			{
-				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] :
-					Global.Emulator.IsLagFrame ? Global.COMMANDS[ControlType]["Lag"] : ".");
+				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] : ".");
 			}
 			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller")
 			{
