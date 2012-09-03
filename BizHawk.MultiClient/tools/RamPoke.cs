@@ -177,8 +177,8 @@ namespace BizHawk.MultiClient
 				watch.BigEndian = false;
 			}
 
-			int x = GetSpecificValue(); //TODO: use a nullable int instead of this crap
-			if (x == -99999999)
+			int? x = GetSpecificValue();
+			if (x != null)
 			{
 				MessageBox.Show("Missing or invalid value", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				ValueBox.Focus();
@@ -303,7 +303,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private int GetSpecificValue() //TODO: don't use -99999999 use nullable int instead
+		private int? GetSpecificValue()
 		{
 			if (ValueBox.Text == "" || ValueBox.Text == "-") return 0;
 			bool i = false;
@@ -311,18 +311,36 @@ namespace BizHawk.MultiClient
 			{
 				case Watch.DISPTYPE.UNSIGNED:
 					i = InputValidate.IsValidUnsignedNumber(ValueBox.Text);
-					if (!i) return -99999999;
-					return (int)Int64.Parse(ValueBox.Text); //Note: 64 to be safe
+					if (!i)
+					{
+						return null;
+					}
+					else
+					{
+						return (int)Int64.Parse(ValueBox.Text); //Note: 64 to be safe
+					}
 				case Watch.DISPTYPE.SIGNED:
 					i = InputValidate.IsValidSignedNumber(ValueBox.Text);
-					if (!i) return -99999999;
-					return (int)Int64.Parse(ValueBox.Text);
+					if (!i)
+					{
+						return null;
+					}
+					else
+					{
+						return (int)Int64.Parse(ValueBox.Text);
+					}
 				case Watch.DISPTYPE.HEX:
 					i = InputValidate.IsValidHexNumber(ValueBox.Text);
-					if (!i) return -99999999;
-					return (int)Int64.Parse(ValueBox.Text, NumberStyles.HexNumber);
+					if (!i)
+					{
+						return null;
+					}
+					else
+					{
+						return (int)Int64.Parse(ValueBox.Text, NumberStyles.HexNumber);
+					}
 			}
-			return -99999999; //What are the odds someone wants to search for this value?
+			return null;
 		}
 
 		private void HexRadio_Click(object sender, EventArgs e)
