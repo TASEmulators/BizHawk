@@ -593,21 +593,21 @@ namespace BizHawk.MultiClient
 		private Watch MakeWatch(int address)
 		{
 			Watch w = new Watch();
-			w.address = address;
-			w.bigendian = BigEndian;
-			w.signed = asigned.HEX;
+			w.Address = address;
+			w.BigEndian = BigEndian;
+			w.Signed = Watch.DISPTYPE.HEX;
 
 			switch (DataSize)
 			{
 				default:
 				case 1:
-					w.type = atype.BYTE;
+					w.Type = Watch.TYPE.BYTE;
 					break;
 				case 2:
-					w.type = atype.WORD;
+					w.Type = Watch.TYPE.WORD;
 					break;
 				case 4:
-					w.type = atype.DWORD;
+					w.Type = Watch.TYPE.DWORD;
 					break;
 			}
 			return w;
@@ -649,22 +649,22 @@ namespace BizHawk.MultiClient
 			if (p >= 0)
 			{
 				Watch w = new Watch();
-				w.address = p;
-				w.value = MakeValue(p);
-				w.bigendian = BigEndian;
-				w.signed = asigned.HEX;
+				w.Address = p;
+				w.Value = MakeValue(p);
+				w.BigEndian = BigEndian;
+				w.Signed = Watch.DISPTYPE.HEX;
 
 				switch (DataSize)
 				{
 					default:
 					case 1:
-						w.type = atype.BYTE;
+						w.Type = Watch.TYPE.BYTE;
 						break;
 					case 2:
-						w.type = atype.WORD;
+						w.Type = Watch.TYPE.WORD;
 						break;
 					case 4:
-						w.type = atype.DWORD;
+						w.Type = Watch.TYPE.DWORD;
 						break;
 				}
 				
