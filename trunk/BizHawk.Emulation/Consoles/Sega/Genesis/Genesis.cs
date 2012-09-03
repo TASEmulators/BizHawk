@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 // H-Int now?
 
                 VDP.HIntLineCounter--;
-                if (VDP.HIntLineCounter < 0)
+                if (VDP.HIntLineCounter < 0 && VDP.ScanLine < 224) // FIXME
                 {
                     VDP.HIntLineCounter = VDP.Registers[10];
                     VDP.VdpStatusWord |= GenVDP.StatusHorizBlanking;
