@@ -21,8 +21,13 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (DisplayEnabled)
             {
                 Array.Clear(PriorityBuffer, 0, 320);
-                RenderScrollA();
+                
+                // TODO: I would like to be able to render Scroll A before Scroll B, in order to minimize overdraw.
+                // But at the moment it complicates priority stuff.
+
                 RenderScrollB();
+                RenderScrollA();
+                
                 RenderSpritesScanline();
             }
             else
@@ -213,10 +218,15 @@ namespace BizHawk.Emulation.Consoles.Sega
 
                 int texel = PatternBuffer[(patternNo * 64) + (yOfs * 8) + (xOfs)];
                 int pixel = Palette[(palette * 16) + texel];
-                if (texel == 0)
-                    pixel = bgColor;
-                FrameBuffer[(ScanLine * FrameWidth) + x] = pixel;
-                PriorityBuffer[x] = (byte)(priority ? highPriority : lowPriority);
+                if (texel != 0)
+                {
+                    FrameBuffer[(ScanLine * FrameWidth) + x] = pixel;
+                    PriorityBuffer[x] = (byte)(priority ? highPriority : lowPriority);   
+                }
+                else
+                {
+                    FrameBuffer[(ScanLine * FrameWidth) + x] = bgColor;
+                }
             }
         }
 
