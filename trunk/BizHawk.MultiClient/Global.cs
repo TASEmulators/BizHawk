@@ -112,7 +112,7 @@ namespace BizHawk.MultiClient
 			{"Atari 2600 Basic Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
 			{"Gameboy Controller", new Dictionary<string, string>() {}},
 			{"Genesis 3-Button Controller", new Dictionary<string, string>() {}},
-			{"NES Controller", new Dictionary<string, string>() {{"Lag", "l"}, {"Reset", "r"}}},
+			{"NES Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
 			{"PC Engine Controller", new Dictionary<string, string>() {}},
 			{"SMS Controller", new Dictionary<string, string>() {{"Pause", "p"}, {"Reset", "r"}}},
 			{"TI83 Controller", new Dictionary<string, string>() {}}
