@@ -94,7 +94,7 @@ namespace BizHawk.MultiClient
 			{
 				if (Loaded)
 				{
-					return Log.MovieLength();
+					return Log.Length;
 				}
 				else
 				{
@@ -127,7 +127,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				return Log.StateFirstIndex();
+				return Log.StateFirstIndex;
 			}
 		}
 
@@ -135,7 +135,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				return Log.StateLastIndex();
+				return Log.StateLastIndex;
 			}
 		}
 
@@ -147,8 +147,12 @@ namespace BizHawk.MultiClient
 			}
 			set
 			{
-				Log.ClearStates();
 				statecapturing = value;
+				if (value == false)
+				{
+					Log.ClearStates();
+				}
+				
 			}
 		}
 
@@ -224,7 +228,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.MainForm.ClearSaveRAM();
 			Mode = MOVIEMODE.RECORD;
-			if (Global.Config.EnableBackupMovies && MakeBackup && Log.MovieLength() > 0)
+			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length > 0)
 			{
 				WriteBackup();
 				MakeBackup = false;
@@ -375,7 +379,7 @@ namespace BizHawk.MultiClient
 		public string GetInput(int frame)
 		{
 			lastlog = frame;
-			if (frame < Log.MovieLength())
+			if (frame < Log.Length)
 			{
 				return Log.GetFrame(frame);
 			}
@@ -398,18 +402,18 @@ namespace BizHawk.MultiClient
 
 		public void AppendFrame(string record)
 		{
-			Log.AddFrame(record);
+			Log.AppendFrame(record);
 		}
 
 		public void InsertFrame(string record, int frame)
 		{
-			Log.AddFrameAt(record, frame);
+			Log.AddFrameAt(frame, record);
 		}
 
 		public void InsertBlankFrame(int frame)
 		{
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			Log.AddFrameAt(mg.GetEmptyMnemonic(), frame);
+			Log.AddFrameAt(frame, mg.GetEmptyMnemonic());
 		}
 
 		public void DeleteFrame(int frame)
@@ -454,9 +458,9 @@ namespace BizHawk.MultiClient
 			}
 			if (frame <= Global.Emulator.Frame)
 			{
-				if (frame <= Log.StateFirstIndex())
+				if (frame <= Log.StateFirstIndex)
 				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
 					if (Global.MainForm.EmulatorPaused == true && frame > 0)
 					{
 						Global.MainForm.UnpauseEmulator();
@@ -471,7 +475,7 @@ namespace BizHawk.MultiClient
 				{
 					if (frame == 0)
 					{
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
 					}
 					else
 					{
@@ -511,7 +515,7 @@ namespace BizHawk.MultiClient
 			writer.WriteLine("[Input]");
 			string s = MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID);
 			writer.WriteLine(s);
-			for (int x = 0; x < Log.MovieLength(); x++)
+			for (int x = 0; x < Log.Length; x++)
 			{
 				writer.WriteLine(Log.GetFrame(x));
 			}
@@ -525,7 +529,7 @@ namespace BizHawk.MultiClient
 			//We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				if (Global.Config.EnableBackupMovies && MakeBackup && Log.MovieLength() > 0)
+				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length > 0)
 				{
 					WriteBackup();
 					MakeBackup = false;
@@ -562,7 +566,7 @@ namespace BizHawk.MultiClient
 					}
 					if (line[0] == '|')
 					{
-						Log.AddFrame(line);
+						Log.AppendFrame(line);
 					}
 				}
 			}
@@ -601,7 +605,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-			if (stateFrame > 0 && stateFrame < Log.MovieLength())
+			if (stateFrame > 0 && stateFrame < Log.Length)
 			{
 				Log.TruncateStates(stateFrame);
 				Log.TruncateMovie(stateFrame);
@@ -621,7 +625,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				seconds = GetSeconds(Log.MovieLength());
+				seconds = GetSeconds(Log.Length);
 			}
 
 			int hours = ((int)seconds) / 3600;
@@ -696,7 +700,7 @@ namespace BizHawk.MultiClient
 				else if (line == "[Input]") continue;
 				else if (line == "[/Input]") break;
 				else if (line[0] == '|')
-					l.AddFrame(line);
+					l.AppendFrame(line);
 			}
 
 			reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
@@ -707,7 +711,7 @@ namespace BizHawk.MultiClient
 				return true;
 			}
 
-			if (stateFrame > l.MovieLength()) //stateFrame is greater than state input log, so movie finished mode
+			if (stateFrame > l.Length) //stateFrame is greater than state input log, so movie finished mode
 			{
 				if (Mode == MOVIEMODE.PLAY || Mode == MOVIEMODE.FINISHED)
 				{
@@ -724,13 +728,13 @@ namespace BizHawk.MultiClient
 
 			if (stateFrame == 0)
 			{
-				stateFrame = l.MovieLength();  //In case the frame count failed to parse, revert to using the entire state input log
+				stateFrame = l.Length;  //In case the frame count failed to parse, revert to using the entire state input log
 			}
-			if (Log.MovieLength() < stateFrame)
+			if (Log.Length < stateFrame)
 			{
 				//Future event error
-				MessageBox.Show("The savestate is from frame " + l.MovieLength().ToString() + " which is greater than the current movie length of " +
-					Log.MovieLength().ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("The savestate is from frame " + l.Length.ToString() + " which is greater than the current movie length of " +
+					Log.Length.ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				reader.Close();
 				return false;
 			}
@@ -770,14 +774,16 @@ namespace BizHawk.MultiClient
 
 		private void WriteText(string file)
 		{
-			if (file.Length == 0) return;	//Nothing to write
-			int length = Log.MovieLength();
-
-			using (StreamWriter sw = new StreamWriter(file))
+			if (file.Length > 0)
 			{
-				Header.WriteText(sw);
-				Subtitles.WriteText(sw);
-				Log.WriteText(sw);
+				int length = Log.Length;
+
+				using (StreamWriter sw = new StreamWriter(file))
+				{
+					Header.WriteText(sw);
+					Subtitles.WriteText(sw);
+					Log.WriteText(sw);
+				}
 			}
 		}
 
@@ -841,7 +847,7 @@ namespace BizHawk.MultiClient
 					}
 					else if (str[0] == '|')
 					{
-						Log.AddFrame(str);
+						Log.AppendFrame(str);
 					}
 					else
 					{
