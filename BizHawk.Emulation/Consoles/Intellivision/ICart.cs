@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk
+namespace BizHawk.Emulation.Consoles.Intellivision
 {
 	public interface ICart
 	{
