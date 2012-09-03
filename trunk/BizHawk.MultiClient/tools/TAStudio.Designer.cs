@@ -19,7 +19,6 @@
             }
 
 			Global.MovieSession.Movie.StateCapturing = false;
-			Global.MainForm.StopOnFrame = Global.MovieSession.Movie.Frames; //TODO: remove this StopOnFrame stuff
 
 			base.Dispose(disposing);
         }

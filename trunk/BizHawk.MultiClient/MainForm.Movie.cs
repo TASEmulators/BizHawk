@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 			}
 			if (record)
 			{
-				Global.MovieSession.Movie.StartNewRecording();
+				Global.MovieSession.Movie.StartRecording();
 				ReadOnly = false;
 			}
 			else
@@ -167,7 +167,7 @@ namespace BizHawk.MultiClient
 					{
 						return false;	//GUID Error
 					}
-					Global.MovieSession.Movie.Record();
+					Global.MovieSession.Movie.SwitchToRecord();
 					SetMainformMovieInfo();
 					Global.MovieSession.Movie.LoadLogFromSavestateText(path);
 				}
@@ -205,7 +205,7 @@ namespace BizHawk.MultiClient
 						}
 						else
 						{
-							Global.MovieSession.Movie.StartNewRecording();
+							Global.MovieSession.Movie.StartRecording();
 							SetMainformMovieInfo();
 							Global.MovieSession.Movie.LoadLogFromSavestateText(path);
 						}
@@ -271,25 +271,6 @@ namespace BizHawk.MultiClient
 				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
 				Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 			}
-
-			//adelikat TODO: Scheduled for deletion:  RestoreReadWriteOnStop,  should just be a type of movie finished, we need a menu item for what to do when a movie finishes (closes, resumes recording, goes into finished mode)
-			//if (StopOnFrame != -1 && StopOnFrame == Global.Emulator.Frame + 1)
-			//{
-			//    if (StopOnFrame == Global.MovieSession.Movie.LogLength())
-			//    {
-			//        Global.MovieSession.Movie.SetMovieFinished();
-			//    }
-			//    if (Global.MovieSession.Movie.TastudioOn == true)
-			//    {
-			//        PauseEmulator();
-			//        StopOnFrame = -1;
-			//    }
-			//    if (RestoreReadWriteOnStop == true)
-			//    {
-			//        Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
-			//        RestoreReadWriteOnStop = false;
-			//    }
-			//}
 		}
 	}
 }

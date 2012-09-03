@@ -197,7 +197,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			FileInfo file = new FileInfo(path);
 			StreamReader sr = file.OpenText();
 			string emulator = "";
@@ -348,7 +347,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 43 4D 1A "FCM\x1A"
@@ -604,7 +602,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 4D 56 1A "FMV\x1A"
@@ -735,7 +732,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
@@ -850,7 +846,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 8-byte    "MDFNMOVI" signature
@@ -974,7 +969,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 0000: 4-byte signature: "MMV\0"
@@ -1090,7 +1084,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 4E 53 53 1A "NSS\x1A"
@@ -1340,7 +1333,6 @@ namespace BizHawk.MultiClient
 		private static Movie ImportSMV143(BinaryReader r, string path)
 		{
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			uint GUID = r.ReadUInt32();
 			m.Header.SetHeaderLine(MovieHeader.GUID, GUID.ToString()); //TODO: format to hex string
 			m.Rerecords = (int)r.ReadUInt32();
@@ -1396,7 +1388,6 @@ namespace BizHawk.MultiClient
 		private static Movie ImportSMV151(BinaryReader r, string path)
 		{
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.51");
 			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
 			return m;
@@ -1405,7 +1396,6 @@ namespace BizHawk.MultiClient
 		private static Movie ImportSMV152(BinaryReader r, string path)
 		{
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			uint GUID = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.52");
 			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
@@ -1418,7 +1408,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
@@ -1645,7 +1634,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Play();
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 12-byte signature: "VirtuaNES MV"

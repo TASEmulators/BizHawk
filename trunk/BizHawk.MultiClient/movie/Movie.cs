@@ -216,12 +216,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		//TODO: merge this with record? or better distinguish between the two events
 		/// <summary>
 		/// Tells the movie to start recording from the beginning, this will clear sram, and the movie log
 		/// </summary>
 		/// <param name="truncate"></param>
-		public void StartNewRecording(bool truncate = true)
+		public void StartRecording(bool truncate = true)
 		{
 			Global.MainForm.ClearSaveRAM();
 			Mode = MOVIEMODE.RECORD;
@@ -236,31 +235,26 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		//TODO: merge this with Play, play vs resume play?
 		public void StartPlayback()
 		{
 			Global.MainForm.ClearSaveRAM();
 			Mode = MOVIEMODE.PLAY;
-			Global.MainForm.StopOnFrame = Frames; //TODO: Get rid of this stuff
 		}
 
 		/// <summary>
 		/// Tells the movie to recording mode
 		/// </summary>
-		public void Record()
+		public void SwitchToRecord()
 		{
 			Mode = MOVIEMODE.RECORD;
 		}
 
-		//TODO: all the constructors for a movie that call this or record after, need to be rethought, what about clearing sram??
+
 		/// <summary>
 		/// Tells the movie to go into playback mode
 		/// </summary>
-		public void Play()
+		public void SwitchToPlay()
 		{
-			//TODO: determine if movie finished is correct here
-			//Also, consider the management of the read-only flag
-			//Really this hsouldn't be a method, it should be a consequence of other factors that should be managed
 			Mode = MOVIEMODE.PLAY;
 		}
 
@@ -463,9 +457,8 @@ namespace BizHawk.MultiClient
 				if (frame <= Log.StateFirstIndex())
 				{
 					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
-					if (true == Global.MainForm.EmulatorPaused && 0 != frame)
+					if (Global.MainForm.EmulatorPaused == true && frame > 0)
 					{
-						Global.MainForm.StopOnFrame = frame;
 						Global.MainForm.UnpauseEmulator();
 					}
 					if (MOVIEMODE.RECORD == Mode)
@@ -493,7 +486,6 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				Global.MainForm.StopOnFrame = frame;
 				Global.MainForm.UnpauseEmulator();
 			}
 		}

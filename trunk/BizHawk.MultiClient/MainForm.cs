@@ -34,7 +34,6 @@ namespace BizHawk.MultiClient
 		public bool PressRewind = false;
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
-		public int  StopOnFrame = -1;
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
 
@@ -225,7 +224,6 @@ namespace BizHawk.MultiClient
 				else
 				{
 					Movie m = new Movie(cmdMovie);
-					m.Play();
 					ReadOnly = true;
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (autoDumpLength == 0)
@@ -245,8 +243,6 @@ namespace BizHawk.MultiClient
 				else
 				{
 					Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0));
-					m.Play();
-					ReadOnly = true;
 					StartNewMovie(m, false);
 				}
 			}
@@ -505,9 +501,13 @@ namespace BizHawk.MultiClient
 		{
 			EmulatorPaused ^= true;
 			if (EmulatorPaused)
+			{
 				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
+			}
 			else
+			{
 				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			}
 
 		}
 
@@ -519,7 +519,9 @@ namespace BizHawk.MultiClient
 				Global.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Could not open " + rom + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 				if (result == DialogResult.Yes)
+				{
 					Global.Config.RecentRoms.Remove(rom);
+				}
 				Global.Sound.StartSound();
 			}
 		}
@@ -527,14 +529,15 @@ namespace BizHawk.MultiClient
 		private void LoadMoviesFromRecent(string movie)
 		{
 			Movie m = new Movie(movie);
-			m.Play();
 
 			if (!m.Loaded)
 			{
 				Global.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Could not open " + movie + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 				if (result == DialogResult.Yes)
+				{
 					Global.Config.RecentMovies.Remove(movie);
+				}
 				Global.Sound.StartSound();
 			}
 			else
@@ -958,9 +961,13 @@ namespace BizHawk.MultiClient
 				string warningMsg = "";
 				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
 				if (errorMsg.Length > 0)
+				{
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
 				else
+				{
 					StartNewMovie(m, false);
+				}
 				Global.OSD.AddMessage(warningMsg);
 			}
 			else
@@ -1888,7 +1895,7 @@ namespace BizHawk.MultiClient
 				//we don't want to capture input when rewinding, even in record mode
 				if (Global.MovieSession.Movie.IsRecording)
 				{
-					Global.MovieSession.Movie.Play();
+					Global.MovieSession.Movie.SwitchToPlay();
 				}
 			}
 			if (UpdateFrame == true)
@@ -1896,7 +1903,7 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 				if (Global.MovieSession.Movie.IsRecording)
 				{
-					Global.MovieSession.Movie.Play();
+					Global.MovieSession.Movie.SwitchToPlay();
 				}
 			}
 
@@ -1992,7 +1999,7 @@ namespace BizHawk.MultiClient
 				UpdateToolsAfter();
 				if (ReturnToRecording)
 				{
-					Global.MovieSession.Movie.Record();
+					Global.MovieSession.Movie.SwitchToRecord();
 				}
 				PressRewind = false;
 			}
@@ -2000,7 +2007,7 @@ namespace BizHawk.MultiClient
 			{
 				if (ReturnToRecording)
 				{
-					Global.MovieSession.Movie.Record();
+					Global.MovieSession.Movie.SwitchToRecord();
 				}
 				UpdateFrame = false;
 			}
