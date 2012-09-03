@@ -117,7 +117,9 @@ namespace BizHawk.MultiClient
 
 			//TODO: remove this hack with a nes controls pad 
 			if (Global.Emulator.SystemId == "NES")
+			{
 				str.Append("0|");
+			}
 
 			for (int x = 0; x < Pads.Count; x++)
 				str.Append(Pads[x].GetMnemonic());
@@ -126,15 +128,23 @@ namespace BizHawk.MultiClient
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (0 == index && 0 == Global.MovieSession.Movie.StateFirstIndex)
+			if (index == 0 && Global.MovieSession.Movie.StateFirstIndex == 0)
+			{
 				color = Color.LightGreen; //special case for frame 0. Normally we need to go back an extra frame, but for frame 0 we can reload the rom.
-			if (index > Global.MovieSession.Movie.StateFirstIndex && index <= Global.MovieSession.Movie.StateLastIndex)
-				color = Color.LightGreen;
-			if ("" != Global.MovieSession.Movie.GetInput(index) &&
-				Global.COMMANDS[Global.MovieInputSourceAdapter.Type.Name].ContainsKey("Lag") &&
-				Global.MovieSession.Movie.GetInput(index)[1] == Global.COMMANDS[Global.MovieInputSourceAdapter.Type.Name]["Lag"][0])
+			}
+			else if (Global.MovieSession.Movie.FrameLagged(index))
+			{
 				color = Color.Pink;
-			if (index == Global.Emulator.Frame)
+
+				//TODO: remove references to this lag
+				//Global.COMMANDS[Global.MovieInputSourceAdapter.Type.Name].ContainsKey("Lag") &&
+				//Global.MovieSession.Movie.GetInput(index)[1] == Global.COMMANDS[Global.MovieInputSourceAdapter.Type.Name]["Lag"][0])
+			}
+			else if (index > Global.MovieSession.Movie.StateFirstIndex && index <= Global.MovieSession.Movie.StateLastIndex)
+			{
+				color = Color.LightGreen;
+			}
+			else if (index == Global.Emulator.Frame)
 			{
 				color = Color.LightBlue;
 			}
