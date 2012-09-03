@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 //Console.WriteLine("Address = {0:X4}", VdpDataAddr);
                 VdpDataCode &= 0x03;
                 VdpDataCode |= (byte) ((data >> 2) & 0x3C);
-                //Console.WriteLine("Code = {0:X2}", VdpDataCode);
+                //Log.Note("VDP", "Code = {0:X2}", VdpDataCode);
 
                 if ((VdpDataCode & 0x20) != 0 && DmaEnabled) // DMA triggered
                 {
@@ -161,6 +161,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         public ushort ReadVdpControl()
         {
             VdpStatusWord |= 0x0200; // Fifo empty // TODO kill this, emulating the damn FIFO.
+            ControlWordPending = false; // Hmm.. if this happens in an interrupt between 1st and 2nd word..
 
             // sprite overflow flag should clear.
             // sprite collision flag should clear.
@@ -180,7 +181,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 Log.Error("VDP", "VRAM byte-swap is happening because A0 is not 0");
             }
 
-            switch (VdpDataCode & 7)
+            switch (VdpDataCode & 0xF)
             {
                 case CommandVramWrite: // VRAM Write
                     VRAM[VdpDataAddr & 0xFFFE] = (byte) data;
@@ -219,7 +220,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
 int orig_addr = VdpDataAddr;
             ushort retval = 0xBEEF;
-            switch (VdpDataCode & 7)
+            switch (VdpDataCode & 0x0F)
             {
                 case CommandVramRead:
 //if ((VdpDataAddr & 1) != 0) throw new Exception("VRAM read is not word-aligned. what do?");
