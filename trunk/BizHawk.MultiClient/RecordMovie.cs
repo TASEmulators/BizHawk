@@ -75,7 +75,7 @@ namespace BizHawk.MultiClient
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
-					MovieToRecord.SetStartsFromSavestate(true);
+					MovieToRecord.FlagStartsFromSavestate();
 					var temppath = path + ".tmp";
 					var writer = new StreamWriter(temppath);
 					Global.Emulator.SaveStateText(writer);

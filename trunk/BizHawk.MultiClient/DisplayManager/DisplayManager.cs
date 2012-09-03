@@ -342,11 +342,11 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.LogLength().ToString() + " (Finished)";
+				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.TotalFrames.ToString() + " (Finished)";
 			}
 			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.LogLength().ToString();
+				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.TotalFrames.ToString();
 			}
 			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 				return Global.Emulator.Frame.ToString();

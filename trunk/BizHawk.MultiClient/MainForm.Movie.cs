@@ -242,8 +242,8 @@ namespace BizHawk.MultiClient
 					Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 					break;
 				case MOVIEMODE.PLAY:
-					int x = Global.MovieSession.Movie.LogLength();
-					if (Global.Emulator.Frame >= Global.MovieSession.Movie.LogLength())
+					int x = Global.MovieSession.Movie.TotalFrames;
+					if (Global.Emulator.Frame >= Global.MovieSession.Movie.TotalFrames)
 					{
 						Global.MovieSession.Movie.SetMovieFinished();
 					}
@@ -255,8 +255,8 @@ namespace BizHawk.MultiClient
 					x++;
 					break;
 				case MOVIEMODE.FINISHED:
-					int xx = Global.MovieSession.Movie.LogLength();
-					if (Global.Emulator.Frame < Global.MovieSession.Movie.LogLength()) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
+					int xx = Global.MovieSession.Movie.TotalFrames;
+					if (Global.Emulator.Frame < Global.MovieSession.Movie.TotalFrames) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 					{
 						Global.MovieSession.Movie.StartPlayback();
 						Global.MovieSession.LatchInputFromLog();

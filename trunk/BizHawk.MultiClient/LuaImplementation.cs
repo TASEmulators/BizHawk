@@ -1813,7 +1813,7 @@ namespace BizHawk.MultiClient
 
 		public int movie_length()
 		{
-			return Global.MovieSession.Movie.LogLength();
+			return Global.MovieSession.Movie.TotalFrames;
 		}
 
 		public string movie_filename()
