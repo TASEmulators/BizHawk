@@ -15,6 +15,7 @@ namespace BizHawk.MultiClient
 	{
 		//TODO:
 		//Increment/Decrement wrapping logic for 4 byte values is messed up
+		//2 & 4 byte text area clicking is off
 
 		int defaultWidth;
 		int defaultHeight;
@@ -679,9 +680,13 @@ namespace BizHawk.MultiClient
 		public int GetPointedAddress()
 		{
 			if (addressOver >= 0)
+			{
 				return addressOver;
+			}
 			else
+			{
 				return -1;  //Negative = no address pointed
+			}
 		}
 
 		public void PokeHighlighted(int value)
@@ -1032,6 +1037,7 @@ namespace BizHawk.MultiClient
 
 		private int GetPointedAddress(int x, int y)
 		{
+			
 			int address = -1;
 			//Scroll value determines the first row
 			int row = vScrollBar1.Value;
@@ -1052,6 +1058,16 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			int column = (x /*- 43*/) / (fontWidth * colWidth);
+
+			//int last = (16 / DataSize);
+			//if (column >= last)
+			//{
+				int start = GetTextOffset() - addrOffset - 50; //This is ugly, needs cleanup but it works!
+				if (x > start)
+				{
+					column = (x - start)  / (fontWidth / DataSize);
+				}
+			//}
 
 			if (row >= 0 && row <= maxRow && column >= 0 && column < (16 / DataSize))
 			{
@@ -1156,6 +1172,32 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private int GetTextOffset()
+		{
+			int start = 0;
+			switch (DataSize)
+			{
+				default:
+				case 1:
+					start = (16 * (fontWidth * 3)) + (50 + addrOffset);
+					break;
+				case 2:
+					start = ((16 / DataSize) * (fontWidth * 5)) + (50 + addrOffset);
+					break;
+				case 4:
+					start = ((16 / DataSize) * (fontWidth * 9)) + (50 + addrOffset);
+					break;
+			}
+			start += (fontWidth * 4);
+			return start;
+		}
+
+		private int GetTextX(int address)
+		{
+			int start = GetTextOffset();
+			return start + ((address % 16) * fontWidth);
+		}
+
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
 			
@@ -1173,25 +1215,46 @@ namespace BizHawk.MultiClient
 			}
 			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 			{
-				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(15 * DataSize, fontHeight));
+				Point point = GetAddressCoordinates(addressHighlighted);
+				int textX = GetTextX(addressHighlighted);
+				Point textpoint = new Point(textX, point.Y);
+
+				Rectangle rect = new Rectangle(point, new Size(15 * DataSize, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
+
+				Rectangle textrect = new Rectangle(textpoint, new Size((8 * DataSize), fontHeight));
+				
 				if (Global.CheatList.IsActiveCheat(Domain, addressHighlighted))
+				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
+					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
+				}
 				else
+				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightColor), rect);
+					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightColor), textrect);
+				}
 			}
 			foreach (int address in SecondaryHighlightedAddresses)
 			{
-				Rectangle rect = new Rectangle(GetAddressCoordinates(address), new Size(15 * DataSize, fontHeight));
+				Point point = GetAddressCoordinates(address);
+				int textX = GetTextX(address);
+				Point textpoint = new Point(textX, point.Y);
+
+				Rectangle rect = new Rectangle(point, new Size(15 * DataSize, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
+
+				Rectangle textrect = new Rectangle(textpoint, new Size(8, fontHeight));
 
 				if (Global.CheatList.IsActiveCheat(Domain, address))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
+					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
 				}
 				else
 				{
-					e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), rect); //TODO: better color
+					e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), rect);
+					e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), textrect);
 				}
 			}
 			if (HasNibbles())
