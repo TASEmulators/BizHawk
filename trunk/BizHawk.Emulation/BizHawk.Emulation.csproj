@@ -115,6 +115,7 @@
     <Compile Include="Consoles\GB\MemoryMap.cs" />
     <Compile Include="Consoles\GB\GB.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
+    <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
@@ -350,7 +351,6 @@
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
     <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
-    <Compile Include="Interfaces\ICart.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />
