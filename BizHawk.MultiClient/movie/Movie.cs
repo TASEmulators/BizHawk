@@ -441,6 +441,11 @@ namespace BizHawk.MultiClient
 
 		#region Public Misc Methods
 
+		public bool FrameLagged(int frame)
+		{
+			return Log.FrameLagged(frame);
+		}
+
 		public void CaptureState()
 		{
 			if (StateCapturing == true)

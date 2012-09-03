@@ -51,7 +51,14 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				return StateRecords.Count * StateRecords[0].State.Length;
+				if (StateRecords.Count > 0)
+				{
+					return StateCount * StateRecords[0].State.Length;
+				}
+				else
+				{
+					return 0;
+				}
 			}
 		}
 
@@ -84,7 +91,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.Frame < StateFirstIndex)
 			{
 				StateRecords.Clear();
-				StateRecords.Add(new StateRecordStruct(Global.Emulator.Frame, state));
+				StateRecords.Add(new StateRecord(Global.Emulator.Frame, state));
 			}
 			if (Global.Emulator.Frame > StateLastIndex)
 			{
@@ -93,7 +100,7 @@ namespace BizHawk.MultiClient
 					// Discard the oldest state to save space.
 					StateRecords.RemoveAt(0);
 				}
-				StateRecords.Add(new StateRecordStruct(Global.Emulator.Frame,state));
+				StateRecords.Add(new StateRecord(Global.Emulator.Frame,state));
 			}
 		}
 
@@ -169,11 +176,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public string GetFrame(int frameCount)
+		public string GetFrame(int frame)
 		{
-			if (frameCount >= 0 && frameCount < MovieRecords.Count)
+			if (frame >= 0 && frame < MovieRecords.Count)
 			{
-				return MovieRecords[frameCount];
+				return MovieRecords[frame];
 			}
 			else
 			{
@@ -198,24 +205,38 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public bool FrameLagged(int frame)
+		{
+			if (frame >= StateFirstIndex && frame <= StateLastIndex)
+			{
+				return StateRecords[frame].Lagged;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 		#endregion
 
 		#region private fields
 
-		private class StateRecordStruct
+		private class StateRecord
 		{
-			public StateRecordStruct(int index, byte[] state)
+			public StateRecord(int index, byte[] state)
 			{
-				this.Index = index;
-				this.State = state;
+				Index = index;
+				State = state;
+				Lagged = Global.Emulator.IsLagFrame;
 			}
 
 			public int Index;
 			public byte[] State;
+			public bool Lagged;
 		}
 
 		private List<string> MovieRecords = new List<string>();
-		private List<StateRecordStruct> StateRecords = new List<StateRecordStruct>();
+		private List<StateRecord> StateRecords = new List<StateRecord>();
 		
 		//TODO: Make this size limit configurable by the user
 		private int MaxStateRecordSize = 1024 * 1024 * 1024; //To limit memory usage.
