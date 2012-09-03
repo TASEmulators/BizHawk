@@ -11,55 +11,53 @@ namespace BizHawk.MultiClient
 	/// </summary>
 	public class MovieLog
 	{
-		//TODO: Insert(int frame) not useful for convenctional tasing but TAStudio will want it
+		#region Properties
+
+		public byte[] InitState { get; private set; }
 		
-		private struct StateRecordStruct
+		public int StateCount
 		{
-			public StateRecordStruct(int index, byte[] state)
+			get
 			{
-				this.index = index;
-				this.state = state;
+				return StateRecords.Count;
 			}
-
-			public int index;
-			public byte[] state;
 		}
 
-		private List<string> MovieRecords = new List<string>();
-		private List<StateRecordStruct> StateRecords = new List<StateRecordStruct>();
-		private byte[] InitState;
-		//TODO: Make this size limit configurable by the user
-		private int MaxStateRecordSize = 1024 * 1024 * 1024; //To limit memory usage.
-		public int StateCount { get { return StateRecords.Count; } }
-
-		public MovieLog()
+		public int Length
 		{
+			get
+			{
+				return MovieRecords.Count;
+			}
 		}
 
-		public int MovieLength()
+		public int StateFirstIndex
 		{
-			return MovieRecords.Count;
+			get
+			{
+				return (StateRecords.Count == 0) ? -1 : StateRecords[0].Index;
+			}
 		}
 
-		public int StateFirstIndex()
+		public int StateLastIndex
 		{
-			return (0 == StateRecords.Count) ? -1 : StateRecords[0].index;
+			get
+			{
+				return (StateRecords.Count == 0) ? -1 : StateRecords[StateRecords.Count - 1].Index;
+			}
 		}
 
-		public int StateLastIndex()
+		public int StateSizeInBytes
 		{
-			return (0 == StateRecords.Count) ? -1 : StateRecords[StateRecords.Count-1].index;
+			get
+			{
+				return StateRecords.Count * StateRecords[0].State.Length;
+			}
 		}
 
-		public int StateSizeInFrames()
-		{
-			return StateRecords.Count;
-		}
+		#endregion
 
-		public int StateSizeInBytes()
-		{
-			return (0 == StateRecords.Count) ? 0 : StateRecords.Count * StateRecords[0].state.Length;
-		}
+		#region Public Methods
 
 		public void Clear()
 		{
@@ -67,25 +65,30 @@ namespace BizHawk.MultiClient
 			StateRecords.Clear();
 		}
 
-		public void AddFrame(string frame)
+		public void ClearStates()
+		{
+			StateRecords.Clear();
+		}
+
+		public void AppendFrame(string frame)
 		{
 			MovieRecords.Add(frame);
 		}
 
 		public void AddState(byte[] state)
 		{
-			if (0 == Global.Emulator.Frame)
+			if (Global.Emulator.Frame == 0)
 			{
 				InitState = state;
 			}
-			if (Global.Emulator.Frame < StateFirstIndex())
+			if (Global.Emulator.Frame < StateFirstIndex)
 			{
 				StateRecords.Clear();
 				StateRecords.Add(new StateRecordStruct(Global.Emulator.Frame, state));
 			}
-			if (Global.Emulator.Frame > StateLastIndex())
+			if (Global.Emulator.Frame > StateLastIndex)
 			{
-				if (StateSizeInBytes() + state.Length > MaxStateRecordSize)
+				if (StateSizeInBytes + state.Length > MaxStateRecordSize)
 				{
 					// Discard the oldest state to save space.
 					StateRecords.RemoveAt(0);
@@ -96,100 +99,93 @@ namespace BizHawk.MultiClient
 
 		public void SetFrameAt(int frameNum, string frame)
 		{
-			if (frameNum < StateLastIndex() && (frameNum < StateFirstIndex() || frame != GetFrame(frameNum)))
+			if (frameNum < StateLastIndex && (frameNum < StateFirstIndex || frame != GetFrame(frameNum)))
 			{
 				TruncateStates(frameNum+1);
 			}
 
 			if (MovieRecords.Count > frameNum)
-				MovieRecords[frameNum] = frame;
-			else
-				MovieRecords.Add(frame);
-		}
-		public void AddFrameAt(string frame, int frameNum)
-		{
-			MovieRecords.Insert(frameNum, frame);
-
-			if (frameNum <= StateLastIndex())
 			{
-				if (frameNum <= StateFirstIndex())
+				MovieRecords[frameNum] = frame;
+			}
+			else
+			{
+				MovieRecords.Add(frame);
+			}
+		}
+
+		public void AddFrameAt(int frame, string record)
+		{
+			MovieRecords.Insert(frame, record);
+
+			if (frame <= StateLastIndex)
+			{
+				if (frame <= StateFirstIndex)
 				{
 					StateRecords.Clear();
 					Global.MovieSession.Movie.RewindToFrame(0);
 				}
 				else
 				{
-					StateRecords.RemoveRange(frameNum - StateFirstIndex(), StateLastIndex() - frameNum + 1);
-					Global.MovieSession.Movie.RewindToFrame(frameNum);
+					StateRecords.RemoveRange(frame - StateFirstIndex, StateLastIndex - frame + 1);
+					Global.MovieSession.Movie.RewindToFrame(frame);
 				}
 			}
 		}
 
 		public byte[] GetState(int frame)
 		{
-			return StateRecords[frame-StateFirstIndex()].state;
-		}
-
-		public byte[] GetInitState()
-		{
-			return InitState;
+			return StateRecords[frame - StateFirstIndex].State;
 		}
 
 		public void DeleteFrame(int frame)
 		{
 			MovieRecords.RemoveAt(frame);
-			if (frame <= StateLastIndex())
+			if (frame <= StateLastIndex)
 			{
-				if (frame <= StateFirstIndex())
+				if (frame <= StateFirstIndex)
 				{
 					StateRecords.Clear();
 				}
 				else
 				{
-					StateRecords.RemoveRange(frame - StateFirstIndex(), StateLastIndex() - frame + 1);
+					StateRecords.RemoveRange(frame - StateFirstIndex, StateLastIndex - frame + 1);
 				}
 			}
-		}
-
-		public void ClearStates()
-		{
-			StateRecords.Clear();
 		}
 
 		public void TruncateStates(int frame)
 		{
 			if (frame >= 0)
 			{
-				if (frame < StateFirstIndex())
+				if (frame < StateFirstIndex)
 				{
 					StateRecords.Clear();
 				}
-				else if (frame <= StateLastIndex())
+				else if (frame <= StateLastIndex)
 				{
-					StateRecords.RemoveRange(frame - StateFirstIndex(), StateLastIndex() - frame + 1);
+					StateRecords.RemoveRange(frame - StateFirstIndex, StateLastIndex - frame + 1);
 				}
 			}
 		}
 
-		public string GetFrame(int frameCount) //Frame count is 0 based here, should it be?
+		public string GetFrame(int frameCount)
 		{
-			if (frameCount >= 0)
+			if (frameCount >= 0 && frameCount < MovieRecords.Count)
 			{
-				if (frameCount < MovieRecords.Count)
-					return MovieRecords[frameCount];
-				else
-					return "";
+				return MovieRecords[frameCount];
 			}
 			else
+			{
 				return "";  //TODO: throw an exception?
+			}
 		}
 
 		public void WriteText(StreamWriter sw)
 		{
-			int length = MovieLength();
-			for (int x = 0; x < length; x++)
+			for (int i = 0; i < MovieRecords.Count; i++)
 			{
-				sw.WriteLine(GetFrame(x));
+				sw.WriteLine(GetFrame(i));
 			}
 		}
 
@@ -202,5 +198,28 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		#endregion
+
+		#region private fields
+
+		private class StateRecordStruct
+		{
+			public StateRecordStruct(int index, byte[] state)
+			{
+				this.Index = index;
+				this.State = state;
+			}
+
+			public int Index;
+			public byte[] State;
+		}
+
+		private List<string> MovieRecords = new List<string>();
+		private List<StateRecordStruct> StateRecords = new List<StateRecordStruct>();
+		
+		//TODO: Make this size limit configurable by the user
+		private int MaxStateRecordSize = 1024 * 1024 * 1024; //To limit memory usage.
+
+		#endregion
 	}
 }
