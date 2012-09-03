@@ -30,13 +30,21 @@ namespace BizHawk.MultiClient
 		{
 			text = "";
 			if (column == 0) //File
+			{
 				text = Path.GetFileName(MovieList[index].Filename);
+			}
 			if (column == 1) //System
-				text = MovieList[index].SysID();
+			{
+				text = MovieList[index].SysID;
+			}
 			if (column == 2) //Game
-				text = MovieList[index].GetGameName();
+			{
+				text = MovieList[index].GameName;
+			}
 			if (column == 3) //Time
+			{
 				text = MovieList[index].GetTime(true);
+			}
 		}
 
 		private void MovieView_QueryItemBkColor(int index, int column, ref Color color)
@@ -88,7 +96,7 @@ namespace BizHawk.MultiClient
 					{
 						Movie m = new Movie(file.FullName, MOVIEMODE.INACTIVE);
 						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.LogLength() == 0)
+						if (m.TotalFrames == 0)
 						{
 							MessageBox.Show("No input log detected in this savestate, aborting", "Can not load file", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 							return;
@@ -119,7 +127,7 @@ namespace BizHawk.MultiClient
 					{
 						Movie m = new Movie(file.CanonicalFullPath, MOVIEMODE.INACTIVE);
 						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.LogLength() > 0)
+						if (m.TotalFrames > 0)
 						{
 							MovieList.Add(m);
 							sortReverse = false;
@@ -201,7 +209,7 @@ namespace BizHawk.MultiClient
 			//Pull out matching names
 			for (int x = 0; x < MovieList.Count; x++)
 			{
-				if (PathManager.FilesystemSafeName(Global.Game) == MovieList[x].GetGameName())
+				if (PathManager.FilesystemSafeName(Global.Game) == MovieList[x].GameName)
 					Indexes.Add(x);
 			}
 			if (Indexes.Count == 0) return;

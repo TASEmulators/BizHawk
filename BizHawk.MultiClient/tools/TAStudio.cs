@@ -122,9 +122,9 @@ namespace BizHawk.MultiClient
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (0 == index && 0 == Global.MovieSession.Movie.StateFirstIndex())
+			if (0 == index && 0 == Global.MovieSession.Movie.StateFirstIndex)
 				color = Color.LightGreen; //special case for frame 0. Normally we need to go back an extra frame, but for frame 0 we can reload the rom.
-			if (index > Global.MovieSession.Movie.StateFirstIndex() && index <= Global.MovieSession.Movie.StateLastIndex())
+			if (index > Global.MovieSession.Movie.StateFirstIndex && index <= Global.MovieSession.Movie.StateLastIndex)
 				color = Color.LightGreen;
 			if ("" != Global.MovieSession.Movie.GetInputFrame(index) &&
 				Global.COMMANDS[Global.MovieInputSourceAdapter.Type.Name].ContainsKey("Lag") &&
@@ -141,7 +141,7 @@ namespace BizHawk.MultiClient
 			text = "";
 
 			//If this is just for an actual frame and not just the list view cursor at the end
-			if (Global.MovieSession.Movie.LogLength() != index)
+			if (Global.MovieSession.Movie.TotalFrames != index)
 			{
 				if (column == 0)
 					text = String.Format("{0:#,##0}", index);
@@ -152,8 +152,8 @@ namespace BizHawk.MultiClient
 
 		private void DisplayList()
 		{
-			TASView.ItemCount = Global.MovieSession.Movie.LogLength();
-			if (Global.MovieSession.Movie.LogLength() == Global.Emulator.Frame && Global.MovieSession.Movie.StateLastIndex() == Global.Emulator.Frame - 1)
+			TASView.ItemCount = Global.MovieSession.Movie.TotalFrames;
+			if (Global.MovieSession.Movie.TotalFrames == Global.Emulator.Frame && Global.MovieSession.Movie.StateLastIndex == Global.Emulator.Frame - 1)
 			{
 				//If we're at the end of the movie add one to show the cursor as a blank frame
 				TASView.ItemCount++;
@@ -360,7 +360,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED || Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
 			{
 				Global.MainForm.Rewind(1);
-				if (Global.Emulator.Frame <= Global.MovieSession.Movie.LogLength())
+				if (Global.Emulator.Frame <= Global.MovieSession.Movie.TotalFrames)
 				{
 					Global.MovieSession.Movie.StartPlayback();
 				}
@@ -421,7 +421,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				Global.MainForm.StopOnFrame = Global.MovieSession.Movie.LogLength();
+				Global.MainForm.StopOnFrame = Global.MovieSession.Movie.TotalFrames;
 			}
 
 			this.FastFowardToEnd.Checked ^= true;

@@ -120,7 +120,7 @@ namespace BizHawk.MultiClient
 						case '1':
 							break;
 						case '2':
-							if (m.LogLength() != 0)
+							if (m.TotalFrames != 0)
 								warningMsg = "hard reset";
 							break;
 						case '4':
