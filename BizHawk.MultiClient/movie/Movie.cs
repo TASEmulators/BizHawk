@@ -502,9 +502,7 @@ namespace BizHawk.MultiClient
 			//this allows users to restore a movie with any savestate from that "timeline"
 
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-
 			mg.SetSource(source);
-
 			Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
 		}
 
@@ -514,7 +512,9 @@ namespace BizHawk.MultiClient
 			string s = MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID);
 			writer.WriteLine(s);
 			for (int x = 0; x < Log.MovieLength(); x++)
+			{
 				writer.WriteLine(Log.GetFrame(x));
+			}
 			writer.WriteLine("[/Input]");
 		}
 
@@ -755,14 +755,14 @@ namespace BizHawk.MultiClient
 
 		#region Private Fields
 
-		private int preload_framecount; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 		private MovieLog Log = new MovieLog();
-		private int lastlog;
-		private int rerecords;
-		private bool statecapturing;
-		private bool startsfromsavestate;
 		private enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
 		private MOVIEMODE Mode = MOVIEMODE.INACTIVE;
+		private bool statecapturing;
+		private bool startsfromsavestate;
+		private int preload_framecount; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
+		private int lastlog;
+		private int rerecords;
 
 		#endregion
 
