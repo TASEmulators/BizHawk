@@ -185,7 +185,6 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.StateCapturing = true;
-				Global.MainForm.StopOnFrame = -1;
 				ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
 			}
 			else
@@ -395,7 +394,7 @@ namespace BizHawk.MultiClient
 
 				if (Global.MovieSession.Movie.IsActive)
 				{
-					Global.MovieSession.Movie.Play();
+					Global.MovieSession.Movie.SwitchToPlay();
 					toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read-Only Mode");
 				}
 			}
@@ -405,7 +404,7 @@ namespace BizHawk.MultiClient
 				ReadOnlyCheckBox.BackColor = Color.LightCoral;
 				if (Global.MovieSession.Movie.IsActive)
 				{
-					Global.MovieSession.Movie.Record();
+					Global.MovieSession.Movie.SwitchToRecord();
 					toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read+Write Mode");
 				}
 			}
@@ -419,14 +418,7 @@ namespace BizHawk.MultiClient
 
 		private void FastForwardToEnd_Click(object sender, EventArgs e)
 		{
-			if (true == this.FastFowardToEnd.Checked)
-			{
-				Global.MainForm.StopOnFrame = -1;
-			}
-			else
-			{
-				Global.MainForm.StopOnFrame = Global.MovieSession.Movie.Frames;
-			}
+			//TODO: adelikat: I removed the stop on frame feature, so this will keep playing into movie finished mode, need to rebuild that functionality
 
 			this.FastFowardToEnd.Checked ^= true;
 			Global.MainForm.FastForward = this.FastFowardToEnd.Checked;

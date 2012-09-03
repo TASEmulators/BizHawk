@@ -58,7 +58,6 @@ namespace BizHawk.MultiClient
 				
 				
 				MovieToRecord = new Movie(path);
-				MovieToRecord.Record();
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
