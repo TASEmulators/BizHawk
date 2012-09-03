@@ -57,7 +57,8 @@ namespace BizHawk.MultiClient
 				}
 				
 				
-				MovieToRecord = new Movie(path, MOVIEMODE.RECORD);
+				MovieToRecord = new Movie(path);
+				MovieToRecord.Record();
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
@@ -75,7 +76,7 @@ namespace BizHawk.MultiClient
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
-					MovieToRecord.FlagStartsFromSavestate();
+					MovieToRecord.StartsFromSavestate = true;
 					var temppath = path + ".tmp";
 					var writer = new StreamWriter(temppath);
 					Global.Emulator.SaveStateText(writer);
