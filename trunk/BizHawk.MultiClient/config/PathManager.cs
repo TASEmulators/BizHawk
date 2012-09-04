@@ -88,6 +88,8 @@ namespace BizHawk.MultiClient
 					return Global.Config.BaseGenesis;
 				case "GB":
 					return Global.Config.BaseGameboy;
+				case "SNES":
+					return Global.Config.BaseSNES;
 				case "NULL":
 				default:
 					return "";
@@ -229,6 +231,9 @@ namespace BizHawk.MultiClient
 
 			switch (sysID)
 			{
+				case "SNES":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathSNESROMs, "SNES");
+					break;
 				case "A26":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathAtariROMs, "A26");
 					break;
@@ -309,6 +314,7 @@ namespace BizHawk.MultiClient
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), name + ".SaveRAM");
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), name + ".SaveRAM");
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), name + ".SaveRAM");
+				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSaveRAM, "SNES"), name + ".SaveRAM");
 				default: return Path.Combine(GetBasePathAbsolute(), name + ".SaveRAM");
 			}
 		}
@@ -329,6 +335,7 @@ namespace BizHawk.MultiClient
 				case "GEN": return MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN");
 				case "NES": return MakeAbsolutePath(Global.Config.PathNESSavestates, "NES");
 				case "TI83": return MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83");
+				case "SNES": return MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES");
 			}
 		}
 
@@ -354,6 +361,7 @@ namespace BizHawk.MultiClient
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN"), name);
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSavestates, "NES"), name);
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83"), name);
+				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES"), name);
 			}
 			return "";
 		}
@@ -374,6 +382,7 @@ namespace BizHawk.MultiClient
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisScreenshots, "GEN"), name);
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"), name);
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Screenshots, "TI83"), name);
+				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESScreenshots, "SNES"), name);
 			}
 			return "";
 		}
