@@ -128,7 +128,8 @@ bool snes_get_region(void);
 uint8_t* snes_get_memory_data(unsigned id);
 unsigned snes_get_memory_size(unsigned id);
 
-//zeromus additions (TBD)
+//zeromus additions
+bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size);
 
 #ifdef __cplusplus
 }

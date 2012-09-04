@@ -1309,20 +1309,31 @@ namespace BizHawk.MultiClient
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 
+						//use some heuristics to figure out what game type it might be
 						if (game.NotInDatabase)
 						{
-							//try to load based on extension
-							switch (file.Extension.ToUpper())
+							//try asking the snes core 
+							if (LibsnesDll.snes_check_cartridge(rom.FileData, rom.FileData.Length))
+								game.System = "SNES";
+							else
 							{
-								case ".SMC":
-									nextEmulator = new BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesCore(rom.FileData);
-									game.System = "SNES";
-									break;
+								//try and use the extension
+								switch (file.Extension.ToUpper())
+								{
+									case ".SFC":
+									case ".SMC":
+										game.System = "SNES";
+										break;
+								}
 							}
 						}
 
 						switch (game.System)
 						{
+							case "SNES":
+									nextEmulator = new LibsnesCore(rom.FileData);
+									game.System = "SNES";
+								break;
 							case "SMS":
 							case "SG":
 								if (Global.Config.SmsEnableFM) game.AddOption("UseFM");
@@ -1380,10 +1391,10 @@ namespace BizHawk.MultiClient
 								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
 								nextEmulator = c;
 								break;
-                            case "INTV":
-                                Intellivision intv = new Intellivision(game, rom.RomData);
-                                nextEmulator = intv;
-                                break;
+							case "INTV":
+								Intellivision intv = new Intellivision(game, rom.RomData);
+								nextEmulator = intv;
+								break;
 						}
 					}
 

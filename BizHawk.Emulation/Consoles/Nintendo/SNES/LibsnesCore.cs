@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 {
+	//TODO - wrap around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailable
 	public unsafe static class LibsnesDll
 	{
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -51,6 +52,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern void snes_set_input_state(snes_input_state_t input_state);
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_audio_sample(snes_audio_sample_t audio_sample);
+
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.U1)]
+		public static extern bool snes_check_cartridge(
+			[MarshalAs(UnmanagedType.LPArray)] byte[] rom_data,
+			int rom_size);
 
 		public enum Device : uint
 		{
