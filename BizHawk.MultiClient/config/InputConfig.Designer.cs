@@ -146,6 +146,7 @@
 			this.SystemComboBox.FormattingEnabled = true;
 			this.SystemComboBox.Items.AddRange(new object[] {
             "NES",
+						"SNES",
             "Gameboy",
             "SMS / GG / SG-1000",
             "Sega Genesis",

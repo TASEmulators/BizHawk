@@ -11,8 +11,36 @@ namespace BizHawk.MultiClient
 	static class Program
 	{
 		[STAThread]
-		static void Main(string[] args)
+		unsafe static void Main(string[] args)
 		{
+			//string test = BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_library_revision_minor().ToString();
+
+			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_init();
+
+			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_video_refresh_t myvidproc = 
+			//  (ushort* data, int width, int height) =>
+			//  {
+			//  };
+
+			//System.Runtime.InteropServices.GCHandle handle = System.Runtime.InteropServices.GCHandle.Alloc(myvidproc);
+			////IntPtr ip = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(myvidproc);
+
+			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(myvidproc);
+
+
+			//byte[] rom = System.IO.File.ReadAllBytes("d:\\Super Mario World (US).smc");
+			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_load_cartridge_normal(null, rom, rom.Length);
+
+			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_power();
+
+			//int framectr = 0;
+			//for (; ; )
+			//{
+			//  framectr++;
+			//  BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_run();
+			//}
+
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 

@@ -57,6 +57,10 @@ namespace BizHawk
 			PokeByte = pokeByte;
 		}
 
+		public MemoryDomain()
+		{
+		}
+
 		public MemoryDomain(MemoryDomain domain)
 		{
 			Name = domain.Name;

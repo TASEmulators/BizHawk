@@ -23,17 +23,17 @@ namespace BizHawk.MultiClient
 			var stream = file.GetStream();
 			FileData = Util.ReadAllBytes(stream);
 
-            // if we're offset exactly 512 bytes from a 1024-byte boundary, 
-            // assume we have a header of that size. Otherwise, assume it's just all rom.
-            // Other 'recognized' header sizes may need to be added.
+			// if we're offset exactly 512 bytes from a 1024-byte boundary, 
+			// assume we have a header of that size. Otherwise, assume it's just all rom.
+			// Other 'recognized' header sizes may need to be added.
 			int header = (int)(stream.Length % BankSize);
-            if (header.In(0, 512) == false)
-            {
-                Console.WriteLine("ROM was not a multiple of 1024 bytes, and not a recognized header size: {0}. Assume it's purely ROM data.", header);
-                header = 0;
-            }
-            else if (header > 0)
-                Console.WriteLine("Assuming header of {0} bytes.", header);
+			if (header.In(0, 512) == false)
+			{
+				Console.WriteLine("ROM was not a multiple of 1024 bytes, and not a recognized header size: {0}. Assume it's purely ROM data.", header);
+				header = 0;
+			}
+			else if (header > 0)
+				Console.WriteLine("Assuming header of {0} bytes.", header);
 
 			stream.Position = header;
 			int length = (int)stream.Length - header;
