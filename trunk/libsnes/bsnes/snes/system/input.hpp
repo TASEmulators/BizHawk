@@ -31,6 +31,7 @@ struct Input {
   Controller *port1;
   Controller *port2;
 
+  void serialize(serializer &s);
   void connect(bool port, Input::Device id);
   Input();
   ~Input();

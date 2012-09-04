@@ -13,12 +13,14 @@
 
 struct Controller : Processor {
   enum : bool { Port1 = 0, Port2 = 1 };
+  enum { SaveSize = 16 };
   const bool port;
 
   static void Enter();
   virtual void enter();
   void step(unsigned clocks);
   void synchronize_cpu();
+  virtual void serialize(serializer& s);
 
   bool iobit();
   void iobit(bool data);

@@ -151,7 +151,7 @@ void System::unload() {
 }
 
 void System::power() {
-  random.seed((unsigned)time(0));
+  random.seed((unsigned)interface->randomSeed());
 
   region = config.region;
   expansion = config.expansion_port;

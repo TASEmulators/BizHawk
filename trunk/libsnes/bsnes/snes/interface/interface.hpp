@@ -5,6 +5,8 @@ struct Interface {
 
   virtual string path(Cartridge::Slot slot, const string &hint) = 0;
   virtual void message(const string &text);
+  virtual time_t currentTime();
+  virtual time_t randomSeed();
 };
 
 extern Interface *interface;

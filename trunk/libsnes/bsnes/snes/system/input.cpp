@@ -26,6 +26,22 @@ void Input::connect(bool port, Input::Device id) {
   }
 }
 
+void Input::serialize(serializer &s)
+{
+  int p1, p2;
+  p1 = (int)config.controller_port1;
+  p2 = (int)config.controller_port2;
+  s.integer(p1);
+  s.integer(p2);
+  if(s.mode() == nall::serializer::Load) {
+    connect(Controller::Port1, (Device)p1);
+    connect(Controller::Port2, (Device)p2);
+  }
+  port1->serialize(s);
+  port2->serialize(s);
+}
+
+
 Input::Input() : port1(nullptr), port2(nullptr) {
   connect(Controller::Port1, Input::Device::Joypad);
   connect(Controller::Port2, Input::Device::Joypad);

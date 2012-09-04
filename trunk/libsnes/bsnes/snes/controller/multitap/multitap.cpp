@@ -30,6 +30,22 @@ void Multitap::latch(bool data) {
   counter2 = 0;
 }
 
+void Multitap::serialize(serializer& s) {
+  Processor::serialize(s);
+  //Save block.
+  unsigned char block[Controller::SaveSize] = {0};
+  block[0] = latched ? 1 : 0;
+  block[1] = counter1;
+  block[2] = counter2;
+  s.array(block, Controller::SaveSize);
+  if(s.mode() == nall::serializer::Load) {
+    latched = (block[0] != 0);
+    counter1 = block[1];
+    counter2 = block[2];
+  }
+}
+
+
 Multitap::Multitap(bool port) : Controller(port) {
   latched = 0;
   counter1 = 0;

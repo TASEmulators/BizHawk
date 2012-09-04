@@ -100,6 +100,37 @@ void SuperScope::latch(bool data) {
   counter = 0;
 }
 
+void SuperScope::serialize(serializer& s) {
+  Processor::serialize(s);
+  //Save block.
+  unsigned char block[Controller::SaveSize] = {0};
+  block[0] = latched ? 1 : 0;
+  block[1] = counter;
+  block[2] = trigger ? 1 : 0;
+  block[3] = cursor ? 1 : 0;
+  block[4] = turbo ? 1 : 0;
+  block[5] = pause ? 1 : 0;
+  block[6] = offscreen ? 1 : 0;
+  block[7] = (unsigned short)x >> 8;
+  block[8] = (unsigned short)x;
+  block[9] = (unsigned short)y >> 8;
+  block[10] = (unsigned short)y;
+
+  s.array(block, Controller::SaveSize);
+  if(s.mode() == nall::serializer::Load) {
+    latched = (block[0] != 0);
+    counter = block[1];
+    trigger = (block[2] != 0);
+    cursor = (block[3] != 0);
+    turbo = (block[4] != 0);
+    pause = (block[5] != 0);
+    offscreen = (block[6] != 0);
+    x = (short)(((unsigned short)block[7] << 8) | (unsigned short)block[8]);
+    y = (short)(((unsigned short)block[9] << 8) | (unsigned short)block[10]);
+  }
+}
+
+
 SuperScope::SuperScope(bool port) : Controller(port) {
   create(Controller::Enter, 21477272);
   latched = 0;

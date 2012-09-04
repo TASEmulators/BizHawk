@@ -31,7 +31,7 @@ void SRTC::reset() {
 
 void SRTC::update_time() {
   time_t rtc_time = (rtc[16] << 0) | (rtc[17] << 8) | (rtc[18] << 16) | (rtc[19] << 24);
-  time_t current_time = time(0);
+  time_t current_time = SNES::interface->currentTime();
 
   //sizeof(time_t) is platform-dependent; though rtc[] needs to be platform-agnostic.
   //yet platforms with 32-bit signed time_t will overflow every ~68 years. handle this by

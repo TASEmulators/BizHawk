@@ -101,7 +101,7 @@ void SPC7110::set_data_adjust(unsigned addr)  { r4814 = addr; r4815 = addr >> 8;
 
 void SPC7110::update_time(int offset) {
   time_t rtc_time = (rtc[16] << 0) | (rtc[17] << 8) | (rtc[18] << 16) | (rtc[19] << 24);
-  time_t current_time = time(0) - offset;
+  time_t current_time = SNES::interface->currentTime() - offset;
 
   //sizeof(time_t) is platform-dependent; though rtc[] needs to be platform-agnostic.
   //yet platforms with 32-bit signed time_t will overflow every ~68 years. handle this by
