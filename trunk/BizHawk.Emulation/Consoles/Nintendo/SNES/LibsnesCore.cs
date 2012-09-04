@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern SNES_REGION snes_get_region();
 
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern uint snes_get_memory_size(SNES_MEMORY id);
+		public static extern int snes_get_memory_size(SNES_MEMORY id);
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr snes_get_memory_data(SNES_MEMORY id);
 
@@ -154,15 +154,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public LibsnesCore(byte[] romData)
 		{
-			//strip header
-			if ((romData.Length & 0x7FFF) == 512)
-			{
-				var newData = new byte[romData.Length - 512];
-				Array.Copy(romData, 512, newData, 0, newData.Length);
-				romData = newData;
-			}
-			LibsnesDll.snes_load_cartridge_normal(null, romData, romData.Length);
-			
 			var vidcb = new LibsnesDll.snes_video_refresh_t(snes_video_refresh);
 			_gc_snes_video_refresh = GCHandle.Alloc(vidcb);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(vidcb);
@@ -179,7 +170,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			_gc_snes_audio_sample = GCHandle.Alloc(soundcb);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
 
-			LibsnesDll.snes_power();
+			//strip header
+			if ((romData.Length & 0x7FFF) == 512)
+			{
+				var newData = new byte[romData.Length - 512];
+				Array.Copy(romData, 512, newData, 0, newData.Length);
+				romData = newData;
+			}
+			LibsnesDll.snes_load_cartridge_normal(null, romData, romData.Length);
+
+			SetupMemoryDomains(romData);
 		}
 
 		GCHandle _gc_snes_input_state;
@@ -359,8 +359,58 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		CoreOutputComm CoreOutputComm = new CoreOutputComm();
 
 		// ----- Client Debugging API stuff -----
-		public IList<MemoryDomain> MemoryDomains { get { return new List<MemoryDomain>(); } }
-		public MemoryDomain MainMemory { get { return new MemoryDomain(); } }
+		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesDll.SNES_MEMORY id, Endian endian)
+		{
+			IntPtr block = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.WRAM);
+			int size = LibsnesDll.snes_get_memory_size(id);
+			int mask = size - 1;
+			byte* blockptr = (byte*)block.ToPointer();
+			MemoryDomain md;
+			
+			//have to bitmask these somehow because it's unmanaged memory and we would hate to clobber things or make them nondeterministic
+			if (Util.IsPowerOfTwo(size))
+			{
+				//can &mask for speed
+				md = new MemoryDomain(name, size, endian,
+					 (addr) => blockptr[addr & mask],
+					 (addr, value) => blockptr[addr & mask] = value);
+			}
+			else
+			{
+				//have to use % (only OAM needs this, it seems)
+				md = new MemoryDomain(name, size, endian,
+					 (addr) => blockptr[addr % size],
+					 (addr, value) => blockptr[addr % size] = value);
+			}
+
+			MemoryDomains.Add(md);
+
+			return md;
+
+			//doesnt cache the addresses. safer. slower. necessary? don't know
+			//return new MemoryDomain(name, size, endian,
+			//  (addr) => Peek(LibsnesDll.SNES_MEMORY.WRAM, addr & mask),
+			//  (addr, value) => Poke(LibsnesDll.SNES_MEMORY.WRAM, addr & mask, value));
+		}
+
+		void SetupMemoryDomains(byte[] romData)
+		{
+			MemoryDomains = new List<MemoryDomain>();
+			
+			var romDomain = new MemoryDomain("ROM", romData.Length, Endian.Little,
+				(addr) => romData[addr],
+				(addr, value) => romData[addr] = value);
+
+			MainMemory = MakeMemoryDomain("WRAM", LibsnesDll.SNES_MEMORY.WRAM, Endian.Little);
+			MemoryDomains.Add(romDomain);
+			MakeMemoryDomain("CARTRAM", LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM, Endian.Little);
+			MakeMemoryDomain("VRAM", LibsnesDll.SNES_MEMORY.VRAM, Endian.Little);
+			MakeMemoryDomain("OAM", LibsnesDll.SNES_MEMORY.OAM, Endian.Little);
+			MakeMemoryDomain("CGRAM", LibsnesDll.SNES_MEMORY.CGRAM, Endian.Little);
+			MakeMemoryDomain("APURAM", LibsnesDll.SNES_MEMORY.APURAM, Endian.Little);
+		}
+		public IList<MemoryDomain> MemoryDomains { get; private set; }
+		public MemoryDomain MainMemory { get; private set; }
 
 
 		Queue<short> AudioBuffer = new Queue<short>();
