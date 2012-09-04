@@ -303,7 +303,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public bool DeterministicEmulation { get { return true; } set { } }
 
-		public byte[] SaveRam
+		public byte[] ReadSaveRam
 		{
 			get
 			{

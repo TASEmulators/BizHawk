@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		private int _lagcount = 0;
 		private int _frame = 0;
 
-		public byte[] SaveRam { get { return new byte[0]; } }
+		public byte[] ReadSaveRam { get { return new byte[0]; } }
 		public bool DeterministicEmulation { get; set; }
 		public bool SaveRamModified { get; set; }
 		public void SaveStateText(TextWriter writer) { SyncState(Serializer.CreateTextWriter(writer)); }

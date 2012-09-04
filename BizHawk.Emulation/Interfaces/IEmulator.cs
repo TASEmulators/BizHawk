@@ -20,7 +20,12 @@ namespace BizHawk
 		string SystemId { get; }
 		bool DeterministicEmulation { get; set; }
 
-		byte[] SaveRam { get; }
+		/// <summary>
+		/// Don't edit this data, it may be useless as it may be a copy or some compiled data.
+		/// use StoreSaveRam if you want to store sram into the core.
+		/// Well, this rule is being violated. This comment is just a reminder that this is a bad architecture
+		/// </summary>
+		byte[] ReadSaveRam { get; }
 		bool SaveRamModified { get; set; }
 
 		void ResetFrameCounter();
