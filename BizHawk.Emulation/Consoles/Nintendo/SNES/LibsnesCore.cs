@@ -1,5 +1,5 @@
 ﻿//TODO 
-//libsnes needs to be modified to support multiple instances
+//libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
 //rename snes.dll so nobody thinks it's a stock snes.dll (we'll be editing it substantially at some point)
 //wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailable
 
@@ -82,6 +82,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[return: MarshalAs(UnmanagedType.U1)]
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool snes_unserialize(IntPtr data, int size);
+
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_layer_enable(int layer, int priority,
+			[MarshalAs(UnmanagedType.U1)]
+			bool enable
+			);
 		
 		public enum SNES_MEMORY : uint
 		{
@@ -241,6 +247,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public void FrameAdvance(bool render)
 		{
+			LibsnesDll.snes_set_layer_enable(0, 0, CoreInputComm.SNES_ShowBG1_0);
+			LibsnesDll.snes_set_layer_enable(0, 1, CoreInputComm.SNES_ShowBG1_1);
+			LibsnesDll.snes_set_layer_enable(1, 0, CoreInputComm.SNES_ShowBG2_0);
+			LibsnesDll.snes_set_layer_enable(1, 1, CoreInputComm.SNES_ShowBG2_1);
+			LibsnesDll.snes_set_layer_enable(2, 0, CoreInputComm.SNES_ShowBG3_0);
+			LibsnesDll.snes_set_layer_enable(2, 1, CoreInputComm.SNES_ShowBG3_1);
+			LibsnesDll.snes_set_layer_enable(3, 0, CoreInputComm.SNES_ShowBG4_0);
+			LibsnesDll.snes_set_layer_enable(3, 1, CoreInputComm.SNES_ShowBG4_1);
+			LibsnesDll.snes_set_layer_enable(4, 0, CoreInputComm.SNES_ShowOBJ_0);
+			LibsnesDll.snes_set_layer_enable(4, 1, CoreInputComm.SNES_ShowOBJ_1);
+			LibsnesDll.snes_set_layer_enable(4, 2, CoreInputComm.SNES_ShowOBJ_2);
+			LibsnesDll.snes_set_layer_enable(4, 3, CoreInputComm.SNES_ShowOBJ_3);
+
 			//apparently this is one frame?
 			LibsnesDll.snes_run();
 		}
@@ -351,9 +370,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		// Arbitrary extensible core comm mechanism
-		CoreInputComm IEmulator.CoreInputComm { get; set; }
-		CoreOutputComm IEmulator.CoreOutputComm { get { return CoreOutputComm; } }
-		CoreOutputComm CoreOutputComm = new CoreOutputComm();
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get { return _CoreOutputComm; } }
+		CoreOutputComm _CoreOutputComm = new CoreOutputComm();
 
 		// ----- Client Debugging API stuff -----
 		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesDll.SNES_MEMORY id, Endian endian)
@@ -394,7 +413,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			MemoryDomains = new List<MemoryDomain>();
 			
-			var romDomain = new MemoryDomain("ROM", romData.Length, Endian.Little,
+			var romDomain = new MemoryDomain("CARTROM", romData.Length, Endian.Little,
 				(addr) => romData[addr],
 				(addr, value) => romData[addr] = value);
 

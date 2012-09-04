@@ -130,6 +130,7 @@ unsigned snes_get_memory_size(unsigned id);
 
 //zeromus additions
 bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size);
+void snes_set_layer_enable(int layer, int priority, bool enable);
 
 #ifdef __cplusplus
 }

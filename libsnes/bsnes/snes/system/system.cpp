@@ -247,3 +247,10 @@ System::System() {
 }
 
 }
+
+
+//zero 04-sep-2012
+extern "C" void snes_set_layer_enable(int layer, int priority, bool enable)
+{
+	SNES::ppu.layer_enable(layer, priority, enable);
+}
