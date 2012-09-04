@@ -2,6 +2,7 @@ struct SuperScope : Controller {
   void enter();
   uint2 data();
   void latch(bool data);
+  void serialize(serializer& s);
   SuperScope(bool port);
 
 //private:

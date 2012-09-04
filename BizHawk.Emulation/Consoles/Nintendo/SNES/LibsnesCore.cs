@@ -236,13 +236,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					int di = y * vidWidth + x;
 					int rgb = data[si];
 					vidBuffer[di] = rgb;
-					//int r = rgb >> 10;
-					//int g = (rgb >> 5) & 0x1F;
-					//int b = (rgb) & 0x1F;
-					//r = r * 255 / 31;
-					//g = g * 255 / 31;
-					//b = b * 255 / 31;
-					//vidBuffer[di] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
 				}
 		}
 

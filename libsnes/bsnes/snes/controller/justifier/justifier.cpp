@@ -100,6 +100,42 @@ void Justifier::latch(bool data) {
   if(latched == 0) active = !active;  //toggle between both controllers, even when unchained
 }
 
+void Justifier::serialize(serializer& s) {
+  Processor::serialize(s);
+  //Save block.
+  unsigned char block[Controller::SaveSize] = {0};
+  block[0] = latched ? 1 : 0;
+  block[1] = counter;
+  block[2] = active ? 1 : 0;
+  block[3] = player1.trigger ? 1 : 0;
+  block[4] = player2.trigger ? 1 : 0;
+  block[5] = player1.start ? 1 : 0;
+  block[6] = player2.start ? 1 : 0;
+  block[7] = (unsigned short)player1.x >> 8;
+  block[8] = (unsigned short)player1.x;
+  block[9] = (unsigned short)player2.x >> 8;
+  block[10] = (unsigned short)player2.x;
+  block[11] = (unsigned short)player1.y >> 8;
+  block[12] = (unsigned short)player1.y;
+  block[13] = (unsigned short)player2.y >> 8;
+  block[14] = (unsigned short)player2.y;
+  s.array(block, Controller::SaveSize);
+  if(s.mode() == nall::serializer::Load) {
+    latched = (block[0] != 0);
+    counter = block[1];
+    active = (block[2] != 0);
+    player1.trigger = (block[3] != 0);
+    player2.trigger = (block[4] != 0);
+    player1.start = (block[5] != 0);
+    player2.start = (block[6] != 0);
+    player1.x = (short)(((unsigned short)block[7] << 8) | (unsigned short)block[8]);
+    player2.x = (short)(((unsigned short)block[9] << 8) | (unsigned short)block[10]);
+    player1.y = (short)(((unsigned short)block[11] << 8) | (unsigned short)block[12]);
+    player2.y = (short)(((unsigned short)block[13] << 8) | (unsigned short)block[14]);
+  }
+}
+
+
 Justifier::Justifier(bool port, bool chained) : Controller(port), chained(chained) {
   create(Controller::Enter, 21477272);
   latched = 0;

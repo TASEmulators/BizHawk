@@ -2,6 +2,7 @@ struct Justifier : Controller {
   void enter();
   uint2 data();
   void latch(bool data);
+  void serialize(serializer& s);
   Justifier(bool port, bool chained);
 
 //private:

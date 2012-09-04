@@ -56,6 +56,7 @@ void System::serialize_all(serializer &s) {
   smp.serialize(s);
   ppu.serialize(s);
   dsp.serialize(s);
+  input.serialize(s);
 
   if(cartridge.mode() == Cartridge::Mode::SufamiTurbo) sufamiturbo.serialize(s);
   #if defined(GAMEBOY)
