@@ -344,6 +344,23 @@ namespace BizHawk.MultiClient
 		public int NESTopLine = 8;
 		public int NESBottomLine = 231;
 
+		// SNES Graphics settings
+		//bsnes allows the layers to be enabled for each priority level.
+		//this may not be important for the bg (there are two priority levels)
+		//but it may be useful for OBJ, so we might want to control them separately
+		public bool SNES_ShowBG1_0 = true;
+		public bool SNES_ShowBG2_0 = true;
+		public bool SNES_ShowBG3_0 = true;
+		public bool SNES_ShowBG4_0 = true;
+		public bool SNES_ShowBG1_1 = true;
+		public bool SNES_ShowBG2_1 = true;
+		public bool SNES_ShowBG3_1 = true;
+		public bool SNES_ShowBG4_1 = true;
+		public bool SNES_ShowOBJ_0 = true;
+		public bool SNES_ShowOBJ_1 = true;
+		public bool SNES_ShowOBJ_2 = true;
+		public bool SNES_ShowOBJ_3 = true;
+
 		// PCE Graphics settings
 		public bool PCEDispBG1 = true;
 		public bool PCEDispOBJ1= true;

@@ -341,6 +341,19 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2;
 			Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG;
 			Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
+
+			Global.CoreInputComm.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
+			Global.CoreInputComm.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
+			Global.CoreInputComm.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
+			Global.CoreInputComm.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_1;
+			Global.CoreInputComm.SNES_ShowBG3_0 = Global.Config.SNES_ShowBG3_0;
+			Global.CoreInputComm.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_1;
+			Global.CoreInputComm.SNES_ShowBG4_0 = Global.Config.SNES_ShowBG4_0;
+			Global.CoreInputComm.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_1;
+			Global.CoreInputComm.SNES_ShowOBJ_0 = Global.Config.SNES_ShowOBJ_0;
+			Global.CoreInputComm.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ_1;
+			Global.CoreInputComm.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ_2;
+			Global.CoreInputComm.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ_3;
 		}
 
 		void SyncPresentationMode()
