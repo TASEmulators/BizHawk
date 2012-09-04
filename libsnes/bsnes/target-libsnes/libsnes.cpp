@@ -116,6 +116,9 @@ void snes_set_cartridge_basename(const char *basename) {
 }
 
 void snes_init(void) {
+	//zero 04-sep-2012 - reset harder
+	new(&interface) Interface();
+
   SNES::interface = &interface;
   SNES::system.init();
   SNES::input.connect(SNES::Controller::Port1, SNES::Input::Device::Joypad);
@@ -209,10 +212,11 @@ void snes_cheat_set(unsigned index, bool enable, const char *code) {
   SNES::cheat.synchronize();
 }
 
-//zeromus additions
+
+//zero 03-sep-2012
 bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size)
 {
-	//tries to determine whether this rom is a snes rom
+	//tries to determine whether this rom is a snes rom - BUT THIS TRIES TO ACCEPT EVERYTHING! so we cant really use it
 	SnesCartridge temp(rom_data, rom_size);
 	return temp.type != SnesCartridge::TypeUnknown && temp.type != SnesCartridge::TypeGameBoy;
 }
