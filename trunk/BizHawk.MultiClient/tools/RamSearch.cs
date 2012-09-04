@@ -81,7 +81,7 @@ namespace BizHawk.MultiClient
 
 			for (int x = Searches.Count - 1; x >= 0; x--)
 			{
-				Searches[x].PeekAddress(Domain);
+				Searches[x].PeekAddress();
 			}
 			if (AutoSearchCheckBox.Checked)
 			{
@@ -395,7 +395,6 @@ namespace BizHawk.MultiClient
 		{
 			ClearUndo();
 			ClearRedo();
-			//weededList.Clear();
 			IsAWeededList = false;
 			Searches.Clear();
 			SetPlatformAndMemoryDomainLabel();
@@ -422,7 +421,8 @@ namespace BizHawk.MultiClient
 				Searches[x].Type = GetDataSize();
 				Searches[x].BigEndian = GetBigEndian();
 				Searches[x].Signed = GetDataType();
-				Searches[x].PeekAddress(Domain);
+				Searches[x].Domain = Domain;
+				Searches[x].PeekAddress();
 				Searches[x].Prev = Searches[x].Value;
 				Searches[x].Original = Searches[x].Value;
 				Searches[x].LastChange = Searches[x].Value;
@@ -493,7 +493,9 @@ namespace BizHawk.MultiClient
 			int x = indexes[0];
 			Watch bob = Searches[indexes[0]];
 			if (indexes.Count > 0)
-				p.SetWatchObject(Searches[indexes[0]], Domain);
+			{
+				p.SetWatchObject(Searches[indexes[0]]);
+			}
 			p.location = GetPromptPoint();
 			p.ShowDialog();
 			UpdateValues();
@@ -1566,7 +1568,7 @@ namespace BizHawk.MultiClient
 					int changes = list[x].Changecount;
 					list[x].Type = s;
 					list[x].BigEndian = GetBigEndian();
-					list[x].PeekAddress(Domain);
+					list[x].PeekAddress();
 					list[x].Prev = list[x].Value;
 					list[x].Original = list[x].Value;
 					list[x].LastChange = list[x].Value;

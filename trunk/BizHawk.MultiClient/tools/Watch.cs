@@ -270,48 +270,50 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void PeekAddress(MemoryDomain domain)
+		public void PeekAddress()
 		{
 			if (Type == TYPE.SEPARATOR)
+			{
 				return;
+			}
 
 			Prev = Value;
 			
 			switch (Type)
 			{
 				case TYPE.BYTE:
-					Value = domain.PeekByte(Address);
+					Value = Domain.PeekByte(Address);
 					break;
 				case TYPE.WORD:
 					if (BigEndian)
 					{
 						Value = 0;
-						Value |= domain.PeekByte(Address) << 8;
-						Value |= domain.PeekByte(Address + 1);
+						Value |= Domain.PeekByte(Address) << 8;
+						Value |= Domain.PeekByte(Address + 1);
 					}
 					else
 					{
 						Value = 0;
-						Value |= domain.PeekByte(Address);
-						Value |= domain.PeekByte(Address + 1) << 8;
+						Value |= Domain.PeekByte(Address);
+						Value |= Domain.PeekByte(Address + 1) << 8;
 					}
 					break;
 				case TYPE.DWORD:
 					if (BigEndian)
 					{
 						Value = 0;
-						Value |= domain.PeekByte(Address) << 24;
-						Value |= domain.PeekByte(Address + 1) << 16;
-						Value |= domain.PeekByte(Address + 2) << 8;
-						Value |= domain.PeekByte(Address + 3) << 0;
+						Value |= Domain.PeekByte(Address) << 24;
+						Value |= Domain.PeekByte(Address + 1) << 16;
+						Value |= Domain.PeekByte(Address + 2) << 8;
+						Value |= Domain.PeekByte(Address + 3) << 0;
 					}
 					else
 					{
 						Value = 0;
-						Value |= domain.PeekByte(Address) << 0;
-						Value |= domain.PeekByte(Address + 1) << 8;
-						Value |= domain.PeekByte(Address + 2) << 16;
-						Value |= domain.PeekByte(Address + 3) << 24;
+						Value |= Domain.PeekByte(Address) << 0;
+						Value |= Domain.PeekByte(Address + 1) << 8;
+						Value |= Domain.PeekByte(Address + 2) << 16;
+						Value |= Domain.PeekByte(Address + 3) << 24;
 					}
 					break;
 			}
@@ -323,7 +325,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void PokeAddress(MemoryDomain domain)
+		public void PokeAddress()
 		{
 			if (Type == TYPE.SEPARATOR)
 				return;
@@ -331,13 +333,13 @@ namespace BizHawk.MultiClient
 			switch (Type)
 			{
 				case TYPE.BYTE:
-					PokeByte(domain);
+					PokeByte();
 					break;
 				case TYPE.WORD:
-					PokeWord(domain);
+					PokeWord();
 					break;
 				case TYPE.DWORD:
-					PokeDWord(domain);
+					PokeDWord();
 					break;
 			}
 		}
@@ -421,40 +423,40 @@ namespace BizHawk.MultiClient
 
 		#region Helpers
 
-		private void PokeByte(MemoryDomain domain)
+		private void PokeByte()
 		{
-			domain.PokeByte(Address, (byte)Value);
+			Domain.PokeByte(Address, (byte)Value);
 		}
 
-		private void PokeWord(MemoryDomain domain)
+		private void PokeWord()
 		{
 			if (BigEndian)
 			{
-				domain.PokeByte(Address + 0, (byte)(Value >> 8));
-				domain.PokeByte(Address + 1, (byte)(Value));
+				Domain.PokeByte(Address + 0, (byte)(Value >> 8));
+				Domain.PokeByte(Address + 1, (byte)(Value));
 			}
 			else
 			{
-				domain.PokeByte(Address + 0, (byte)(Value));
-				domain.PokeByte(Address + 1, (byte)(Value >> 8));
+				Domain.PokeByte(Address + 0, (byte)(Value));
+				Domain.PokeByte(Address + 1, (byte)(Value >> 8));
 			}
 		}
 
-		private void PokeDWord(MemoryDomain domain)
+		private void PokeDWord()
 		{
 			if (BigEndian)
 			{
-				domain.PokeByte(Address + 0, (byte)(Value << 24));
-				domain.PokeByte(Address + 1, (byte)(Value << 16));
-				domain.PokeByte(Address + 2, (byte)(Value << 8));
-				domain.PokeByte(Address + 3, (byte)(Value));
+				Domain.PokeByte(Address + 0, (byte)(Value << 24));
+				Domain.PokeByte(Address + 1, (byte)(Value << 16));
+				Domain.PokeByte(Address + 2, (byte)(Value << 8));
+				Domain.PokeByte(Address + 3, (byte)(Value));
 			}
 			else
 			{
-				domain.PokeByte(Address + 0, (byte)(Value));
-				domain.PokeByte(Address + 1, (byte)(Value << 8));
-				domain.PokeByte(Address + 2, (byte)(Value << 16));
-				domain.PokeByte(Address + 3, (byte)(Value << 24));
+				Domain.PokeByte(Address + 0, (byte)(Value));
+				Domain.PokeByte(Address + 1, (byte)(Value << 8));
+				Domain.PokeByte(Address + 2, (byte)(Value << 16));
+				Domain.PokeByte(Address + 3, (byte)(Value << 24));
 			}
 		}
 

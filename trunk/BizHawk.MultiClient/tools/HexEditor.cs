@@ -653,6 +653,7 @@ namespace BizHawk.MultiClient
 				w.Value = MakeValue(p);
 				w.BigEndian = BigEndian;
 				w.Signed = Watch.DISPTYPE.HEX;
+				w.Domain = Domain;
 
 				switch (DataSize)
 				{
@@ -669,7 +670,7 @@ namespace BizHawk.MultiClient
 				}
 				
 				RamPoke poke = new RamPoke();
-				poke.SetWatchObject(w, Domain);
+				poke.SetWatchObject(w);
 				poke.location = GetAddressCoordinates(p);
 				Global.Sound.StopSound();
 				poke.ShowDialog();
