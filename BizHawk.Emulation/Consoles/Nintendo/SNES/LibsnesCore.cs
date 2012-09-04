@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int rom_size);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void snes_video_refresh_t(ushort *data, int width, int height);
+		public delegate void snes_video_refresh_t(int *data, int width, int height);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_input_poll_t();
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -222,7 +222,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		GCHandle _gc_snes_video_refresh;
-		void snes_video_refresh(ushort* data, int width, int height)
+		void snes_video_refresh(int* data, int width, int height)
 		{
 			vidWidth = width;
 			vidHeight = height;
@@ -234,14 +234,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				{
 					int si = y * 1024 + x;
 					int di = y * vidWidth + x;
-					ushort rgb = data[si];
-					int r = rgb >> 10;
-					int g = (rgb >> 5) & 0x1F;
-					int b = (rgb) & 0x1F;
-					r = r * 255 / 31;
-					g = g * 255 / 31;
-					b = b * 255 / 31;
-					vidBuffer[di] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
+					int rgb = data[si];
+					vidBuffer[di] = rgb;
+					//int r = rgb >> 10;
+					//int g = (rgb >> 5) & 0x1F;
+					//int b = (rgb) & 0x1F;
+					//r = r * 255 / 31;
+					//g = g * 255 / 31;
+					//b = b * 255 / 31;
+					//vidBuffer[di] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
 				}
 		}
 
