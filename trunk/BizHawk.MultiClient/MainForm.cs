@@ -1312,10 +1312,13 @@ namespace BizHawk.MultiClient
 						//use some heuristics to figure out what game type it might be
 						if (game.NotInDatabase)
 						{
-							//try asking the snes core 
-							if (LibsnesDll.snes_check_cartridge(rom.FileData, rom.FileData.Length))
-								game.System = "SNES";
-							else
+							//try asking the snes core - on second thought, dont. because it detects everything as snes.
+							//maybe we'll try improving this later, but probably not
+							//if (LibsnesDll.snes_check_cartridge(rom.FileData, rom.FileData.Length))
+							//{
+							//  game.System = "SNES";
+							//}
+							//else
 							{
 								//try and use the extension
 								switch (file.Extension.ToUpper())

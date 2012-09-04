@@ -18,9 +18,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern string snes_library_id();
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern uint snes_library_revision_major();
+		public static extern int snes_library_revision_major();
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern uint snes_library_revision_minor();
+		public static extern int snes_library_revision_minor();
 
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_init();
@@ -138,11 +138,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
 	{
-		static LibsnesCore()
-		{
-			LibsnesDll.snes_init();
-		}
-
 		public void Dispose()
 		{
 			LibsnesDll.snes_term();
@@ -154,6 +149,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public LibsnesCore(byte[] romData)
 		{
+			LibsnesDll.snes_init();
+
 			var vidcb = new LibsnesDll.snes_video_refresh_t(snes_video_refresh);
 			_gc_snes_video_refresh = GCHandle.Alloc(vidcb);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(vidcb);
