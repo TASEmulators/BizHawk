@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x047:
 					dest = (byte)(opcode & 0x3);
 					result = "SWAP R" + dest;
-					if (((opcode >> 3) & 0x1) != 0)
+					if (((opcode >> 2) & 0x1) != 0)
 						result += ", 1";
 					return result;
 				case 0x048:
@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x04F:
 					dest = (byte)(opcode & 0x3);
 					result = "SLL R" + dest;
-					if (((opcode >> 3) & 0x1) != 0)
+					if (((opcode >> 2) & 0x1) != 0)
 						result += ", 1";
 					return result;
 				case 0x050:
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x057:
 					dest = (byte)(opcode & 0x3);
 					result = "RLC R" + dest;
-					if (((opcode >> 3) & 0x1) != 0)
+					if (((opcode >> 2) & 0x1) != 0)
 						result += ", 1";
 					return result;
 				case 0x058:
@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x05F:
 					dest = (byte)(opcode & 0x3);
 					result = "SLLC R" + dest;
-					if (((opcode >> 3) & 0x1) != 0)
+					if (((opcode >> 2) & 0x1) != 0)
 						result += ", 1";
 					return result;
 				case 0x060:
@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x067:
 					dest = (byte)(opcode & 0x3);
 					result = "SLR R" + dest;
-					if (((opcode >> 3) & 0x1) != 0)
+					if (((opcode >> 2) & 0x1) != 0)
 						result += ", 1";
 					return result;
 				case 0x068:
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x06F:
 					dest = (byte)(opcode & 0x3);
 					result = "SAR R" + dest;
-					if (((opcode >> 3) & 0x1) != 0)
+					if (((opcode >> 2) & 0x1) != 0)
 						result += ", 1";
 					return result;
 				case 0x070:
@@ -228,7 +228,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x077:
 					dest = (byte)(opcode & 0x3);
 					result = "RRC R" + dest;
-					if (((opcode >> 3) & 0x1) != 0)
+					if (((opcode >> 2) & 0x1) != 0)
 						result += ", 1";
 					return result;
 				case 0x078:
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x07F:
 					dest = (byte)(opcode & 0x3);
 					result = "SARC R" + dest;
-					if (((opcode >> 3) & 0x1) != 0)
+					if (((opcode >> 2) & 0x1) != 0)
 						result += ", 1";
 					return result;
 				case 0x080:

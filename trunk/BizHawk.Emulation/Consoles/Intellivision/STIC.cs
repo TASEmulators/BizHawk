@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			{
 				Sr1 = !Sr1;
 				if (Sr1)
-					AddPendingCycles(14394);
+					AddPendingCycles(14394 - 3791 + 530);
 				else
 					AddPendingCycles(3791);
 			}
