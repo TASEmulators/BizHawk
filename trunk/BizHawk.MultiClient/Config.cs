@@ -18,6 +18,10 @@ namespace BizHawk.MultiClient
 			NESController[1] = new NESControllerTemplate(false);
 			NESController[2] = new NESControllerTemplate(false);
 			NESController[3] = new NESControllerTemplate(false);
+			SNESController[0] = new SNESControllerTemplate(true);
+			SNESController[1] = new SNESControllerTemplate(false);
+			SNESController[2] = new SNESControllerTemplate(false);
+			SNESController[3] = new SNESControllerTemplate(false);
 			GBController[0] = new GBControllerTemplate(true);
 			GBAutoController[0] = new GBControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
@@ -541,6 +545,9 @@ namespace BizHawk.MultiClient
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
 		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
 
+		//SNES settings
+		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
+
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
 
@@ -649,6 +656,53 @@ namespace BizHawk.MultiClient
 				II = "";
 				Run = "";
 				Select = "";
+			}
+		}
+	}
+
+	public class SNESControllerTemplate
+	{
+		public string Up;
+		public string Down;
+		public string Left;
+		public string Right;
+		public string A;
+		public string B;
+		public string Start;
+		public string Select;
+		public string Y, X, L, R;
+		public bool Enabled;
+		public SNESControllerTemplate() { }
+		public SNESControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Up = "UpArrow, J1 Up";
+				Down = "DownArrow, J1 Down";
+				Left = "LeftArrow, J1 Left";
+				Right = "RightArrow, J1 Right";
+				A = "X, J1 B2";
+				B = "Z, J1 B1";
+				Y = "A, J1 B3";
+				X = "S, J1 B4";
+				L = "Q";
+				R = "W";
+				Start = "Return, J1 B8";
+				Select = "Space, J1 B7";
+			}
+			else
+			{
+				Enabled = false;
+				Up = "";
+				Down = "";
+				Right = "";
+				Left = "";
+				A = "";
+				B = "";
+				Start = "";
+				Select = "";
+				X = Y = L = R = "";
 			}
 		}
 	}

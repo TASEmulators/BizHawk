@@ -12,6 +12,7 @@ using BizHawk.Emulation.Consoles.TurboGrafx;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Gameboy;
 using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Coleco;
 using BizHawk.MultiClient.tools;
 using System.Collections.Generic;
@@ -709,6 +710,25 @@ namespace BizHawk.MultiClient
 			}
 			Global.AutofirePCEControls = apceControls;
 
+			var snesControls = new Controller(LibsnesCore.SNESController);
+
+			for (int i = 0; i < 2 /*TODO*/; i++)
+			{
+				snesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.SNESController[i].Up);
+				snesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.SNESController[i].Down);
+				snesControls.BindMulti("P" + (i + 1) + " Left", Global.Config.SNESController[i].Left);
+				snesControls.BindMulti("P" + (i + 1) + " Right", Global.Config.SNESController[i].Right);
+				snesControls.BindMulti("P" + (i + 1) + " A", Global.Config.SNESController[i].A);
+				snesControls.BindMulti("P" + (i + 1) + " B", Global.Config.SNESController[i].B);
+				snesControls.BindMulti("P" + (i + 1) + " X", Global.Config.SNESController[i].X);
+				snesControls.BindMulti("P" + (i + 1) + " Y", Global.Config.SNESController[i].Y);
+				snesControls.BindMulti("P" + (i + 1) + " L", Global.Config.SNESController[i].L);
+				snesControls.BindMulti("P" + (i + 1) + " R", Global.Config.SNESController[i].R);
+				snesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.NESController[i].Select);
+				snesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESController[i].Start);
+			}
+			Global.SNESControls = snesControls;
+
 			var nesControls = new Controller(NES.NESController);
 
 			for (int i = 0; i < 2 /*TODO*/; i++)
@@ -1123,6 +1143,9 @@ namespace BizHawk.MultiClient
 					Global.ActiveController = Global.NESControls;
 					Global.AutoFireController = Global.AutofireNESControls;
 					break;
+				case "SNES":
+					Global.ActiveController = Global.SNESControls;
+					break;
 				case "GB":
 					Global.ActiveController = Global.GBControls;
 					Global.AutoFireController = Global.AutofireGBControls;
@@ -1170,7 +1193,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM", "INT" };
+				string[] romExtensions = new string[] { "SMS", "SMC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM", "INT" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1285,6 +1308,18 @@ namespace BizHawk.MultiClient
 					{
 						rom = new RomGame(file);
 						game = rom.GameInfo;
+
+						if (game.NotInDatabase)
+						{
+							//try to load based on extension
+							switch (file.Extension.ToUpper())
+							{
+								case ".SMC":
+									nextEmulator = new BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesCore(rom.FileData);
+									game.System = "SNES";
+									break;
+							}
+						}
 
 						switch (game.System)
 						{
@@ -2524,9 +2559,10 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gg;*.gen;*.col;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gg;*.gen;*.col;*.smc;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
+					"Super NES", "*.smc;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
@@ -2546,6 +2582,7 @@ namespace BizHawk.MultiClient
 					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.cue;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
+					"Super NES", "*.smc;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
