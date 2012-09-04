@@ -1206,7 +1206,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "SMC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM", "INT" };
+				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM", "INT" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1322,33 +1322,11 @@ namespace BizHawk.MultiClient
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 
-						//use some heuristics to figure out what game type it might be
-						if (game.NotInDatabase)
-						{
-							//try asking the snes core - on second thought, dont. because it detects everything as snes.
-							//maybe we'll try improving this later, but probably not
-							//if (LibsnesDll.snes_check_cartridge(rom.FileData, rom.FileData.Length))
-							//{
-							//  game.System = "SNES";
-							//}
-							//else
-							{
-								//try and use the extension
-								switch (file.Extension.ToUpper())
-								{
-									case ".SFC":
-									case ".SMC":
-										game.System = "SNES";
-										break;
-								}
-							}
-						}
-
 						switch (game.System)
 						{
 							case "SNES":
-									nextEmulator = new LibsnesCore(rom.FileData);
-									game.System = "SNES";
+								nextEmulator = new LibsnesCore(rom.FileData);
+								game.System = "SNES";
 								break;
 							case "SMS":
 							case "SG":
