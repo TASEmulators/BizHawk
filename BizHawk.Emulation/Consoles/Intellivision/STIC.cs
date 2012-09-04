@@ -9,6 +9,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 	{
 		private bool Sr1, Sr2, Sst, Fgbg = false;
 		private ushort[] Register = new ushort[64];
+
+		public int TotalExecutedCycles;
+		public int PendingCycles;
 		
 		public void Reset()
 		{
@@ -29,6 +32,16 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		public void SetSst(bool value)
 		{
 			Sst = value;
+		}
+
+		public int GetPendingCycles()
+		{
+			return PendingCycles;
+		}
+
+		public void AddPendingCycles(int cycles)
+		{
+			PendingCycles += cycles;
 		}
 
 		public ushort? ReadSTIC(ushort addr)
@@ -126,9 +139,18 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return false;
 		}
 
-		public void Execute()
+		public void Execute(int cycles)
 		{
-			Sr1 = false;
+			if (PendingCycles <= 0)
+			{
+				Sr1 = !Sr1;
+				if (Sr1)
+					AddPendingCycles(14394);
+				else
+					AddPendingCycles(3791);
+			}
+			PendingCycles -= cycles;
+			TotalExecutedCycles += cycles;
 		}
 	}
 }
