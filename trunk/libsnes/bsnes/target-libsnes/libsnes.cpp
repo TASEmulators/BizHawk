@@ -209,6 +209,14 @@ void snes_cheat_set(unsigned index, bool enable, const char *code) {
   SNES::cheat.synchronize();
 }
 
+//zeromus additions
+bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size)
+{
+	//tries to determine whether this rom is a snes rom
+	SnesCartridge temp(rom_data, rom_size);
+	return temp.type != SnesCartridge::TypeUnknown && temp.type != SnesCartridge::TypeGameBoy;
+}
+
 bool snes_load_cartridge_normal(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size
 ) {
