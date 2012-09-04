@@ -410,7 +410,12 @@ namespace BizHawk.MultiClient
 		{
 			string memoryDomain = Domain.ToString();
 			string systemID = Global.Emulator.SystemId;
-			MemoryViewerBox.Text = systemID + " " + memoryDomain + "  -  " + (Domain.Size / DataSize).ToString() + " addresses";
+			int addresses = Domain.Size / DataSize;
+			string addressesString = "0x" + string.Format("{0:X8}", addresses).TrimStart('0');
+			//if ((addresses & 0x3FF) == 0)
+			//  addressesString = (addresses >> 10).ToString() + "K";
+			//else addressesString = addresses.ToString();
+			MemoryViewerBox.Text = systemID + " " + memoryDomain + "  -  " + addressesString + " addresses";
 		}
 
 		private void SetMemoryDomainMenu()
