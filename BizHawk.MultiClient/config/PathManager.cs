@@ -170,8 +170,8 @@ namespace BizHawk.MultiClient
 			int x = NumParentDirectories(path);
 			if (x > 0)
 			{
-				int y = HowMany(path, "..\\");
-				int z = HowMany(workingpath, "\\");
+				int y = StringHelpers.HowMany(path, "..\\");
+				int z = StringHelpers.HowMany(workingpath, "\\");
 				if (y >= z)
 				{
 					//Return drive letter only, working path must be absolute?
@@ -184,34 +184,12 @@ namespace BizHawk.MultiClient
 		public static int NumParentDirectories(string path)
 		{
 			//determine the number of parent directories in path and return result
-			int x = HowMany(path, '\\');
+			int x = StringHelpers.HowMany(path, '\\');
 			if (x > 0)
 			{
-				return HowMany(path, "..\\");
+				return StringHelpers.HowMany(path, "..\\");
 			}
 			return 0;
-		}
-
-		public static int HowMany(string str, string s)
-		{
-			int count = 0;
-			for (int x = 0; x < (str.Length - s.Length); x++)
-			{
-				if (str.Substring(x, s.Length) == s)
-					count++;
-			}
-			return count;
-		}
-
-		public static int HowMany(string str, char c)
-		{
-			int count = 0;
-			for (int x = 0; x < str.Length; x++)
-			{
-				if (str[x] == c)
-					count++;
-			}
-			return count;
 		}
 
 		public static bool IsRecent(string path)

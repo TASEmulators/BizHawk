@@ -115,6 +115,7 @@
     </Compile>
     <Compile Include="InputValidate.cs" />
     <Compile Include="KeyTurbo.cs" />
+    <Compile Include="StringHelpers.cs" />
     <Compile Include="MiscControls.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -76,7 +76,7 @@ namespace BizHawk.MultiClient
 					if (s.Length >= 8 && s.Substring(0, 8) == "SystemID")
 						continue;
 
-					z = HowMany(s, '\t');
+					z = StringHelpers.HowMany(s, '\t');
 					if (z == 5)
 					{
 						//If 5, then this is a .wch file format made from another emulator, the first column (watch position) is not needed here
@@ -129,17 +129,6 @@ namespace BizHawk.MultiClient
 			}
 
 			return true;
-		}
-
-		public static int HowMany(string str, char c)
-		{
-			int count = 0;
-			for (int x = 0; x < str.Length; x++)
-			{
-				if (str[x] == c)
-					count++;
-			}
-			return count;
 		}
 
 		public static int GetDomainPos(string name)
