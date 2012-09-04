@@ -23,11 +23,11 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 		}
 
-		public void SetWatchObject(Watch w, MemoryDomain d)
+		public void SetWatchObject(Watch w)
 		{
 			PopulateMemoryDomainComboBox();
 			watch = new Watch(w);
-			domain = d;
+			domain = w.Domain;
 		}
 
 		private void RamPoke_Load(object sender, EventArgs e)
@@ -189,8 +189,8 @@ namespace BizHawk.MultiClient
 			{
 				watch.Value = int.Parse(ValueBox.Text);
 			}
-
-			watch.PokeAddress(domain);
+			watch.Domain = domain;
+			watch.PokeAddress();
 
 			string value;
 			if (HexRadio.Checked)

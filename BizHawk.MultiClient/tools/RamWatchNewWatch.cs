@@ -13,6 +13,7 @@ namespace BizHawk.MultiClient
 	public partial class RamWatchNewWatch : Form
 	{
 		public Watch watch = new Watch();
+		public MemoryDomain domain = Global.Emulator.MainMemory;
 		public bool userSelected = false;
 		public bool customSetup = false;
 		public Point location = new Point();
@@ -76,6 +77,11 @@ namespace BizHawk.MultiClient
 				LittleEndianRadio.Checked = true;
 		}
 
+		public void SetDomain(MemoryDomain domain)
+		{
+			watch.Domain = domain;
+		}
+
 		public void SetEndian(Endian endian)
 		{
 			if (endian == Endian.Big)
@@ -99,7 +105,11 @@ namespace BizHawk.MultiClient
 			}
 
 			if (location.X > 0 && location.Y > 0)
+			{
 				this.Location = location;
+			}
+
+			PopulateMemoryDomainComboBox();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
@@ -159,7 +169,7 @@ namespace BizHawk.MultiClient
 			{
 				watch.BigEndian = false;
 			}
-
+			watch.Domain = domain;
 			watch.Notes = NotesBox.Text;
 
 			this.Close();
@@ -183,6 +193,62 @@ namespace BizHawk.MultiClient
 
 			if (!InputValidate.IsValidHexNumber(e.KeyChar))
 				e.Handled = true;
+		}
+
+		private void PopulateMemoryDomainComboBox()
+		{
+			DomainComboBox.Items.Clear();
+			if (Global.Emulator.MemoryDomains.Count > 0)
+			{
+				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				{
+					string str = Global.Emulator.MemoryDomains[x].ToString();
+					DomainComboBox.Items.Add(str);
+				}
+			}
+			SetDomainSelection();
+		}
+
+		private int GetNumDigits(Int32 i)
+		{
+			if (i < 0x10000) return 4;
+			if (i < 0x100000) return 5;
+			if (i < 0x1000000) return 6;
+			if (i < 0x10000000) return 7;
+			else return 8;
+		}
+
+		private void SetAddressBox()
+		{
+			AddressBox.Text = String.Format("{0:X" +
+				GetNumDigits(watch.Address) + "}", watch.Address);
+		}
+
+		private void SetDomainSelection()
+		{
+			//Counts should always be the same, but just in case, let's check
+			int max;
+			if (Global.Emulator.MemoryDomains.Count < DomainComboBox.Items.Count)
+				max = Global.Emulator.MemoryDomains.Count;
+			else
+				max = DomainComboBox.Items.Count;
+
+			for (int x = 0; x < max; x++)
+			{
+				if (domain.ToString() == DomainComboBox.Items[x].ToString())
+					DomainComboBox.SelectedIndex = x;
+			}
+		}
+
+		private void DomainComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
+			int x = GetNumDigits(domain.Size);
+			watch.Address = 0;
+			watch.Value = 0;
+			watch.Domain = domain;
+			SetAddressBox();
+			AddressBox.MaxLength = GetNumDigits(domain.Size);
 		}
 	}
 }

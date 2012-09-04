@@ -63,8 +63,9 @@ namespace BizHawk.MultiClient
 		{
 			List<Watch> w = new List<Watch>();
 			for (int x = 0; x < Watches.Count; x++)
+			{
 				w.Add(new Watch(Watches[x]));
-
+			}
 			return w;
 		}
 
@@ -82,7 +83,7 @@ namespace BizHawk.MultiClient
 
 			for (int x = 0; x < Watches.Count; x++)
 			{
-				Watches[x].PeekAddress(Domain);
+				Watches[x].PeekAddress();
 			}
 
 			if (Global.Config.DisplayRamWatch)
@@ -397,7 +398,8 @@ namespace BizHawk.MultiClient
 
 		private void InitializeAddress(Watch w)
 		{
-			w.PeekAddress(Domain);
+			w.Domain = Domain;
+			w.PeekAddress();
 			w.Prev = w.Value;
 			w.Original = w.Value;
 			w.LastChange = w.Value;
@@ -500,12 +502,15 @@ namespace BizHawk.MultiClient
 			}
 			List<int> i = new List<int>();
 			for (int z = 0; z < indexes.Count; z++)
+			{
 				i.Add(indexes[z] - 1);
+			}
 
 			WatchListView.SelectedIndices.Clear();
 			for (int z = 0; z < i.Count; z++)
+			{
 				WatchListView.SelectItem(i[z], true);
-
+			}
 
 			DisplayWatchList();
 		}
@@ -820,7 +825,9 @@ namespace BizHawk.MultiClient
 					Watches.Insert(indexes[0], w);
 			}
 			else
+			{
 				Watches.Add(w);
+			}
 			DisplayWatchList();
 		}
 
@@ -876,7 +883,9 @@ namespace BizHawk.MultiClient
 			RamPoke p = new RamPoke();
 			Global.Sound.StartSound();
 			if (indexes.Count > 0)
-				p.SetWatchObject(Watches[indexes[0]], Domain);
+			{
+				p.SetWatchObject(Watches[indexes[0]]);
+			}
 			p.location = GetPromptPoint();
 			p.ShowDialog();
 			UpdateValues();
