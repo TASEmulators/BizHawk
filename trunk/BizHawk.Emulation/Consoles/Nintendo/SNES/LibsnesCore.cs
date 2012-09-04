@@ -69,8 +69,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern uint snes_get_memory_size(SNES_MEMORY id);
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint="snes_get_memory_data")]
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr snes_get_memory_data(SNES_MEMORY id);
+
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int snes_serialize_size();
+    
+		[return: MarshalAs(UnmanagedType.U1)]
+    [DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern bool snes_serialize(IntPtr data, int size);
+		
+		[return: MarshalAs(UnmanagedType.U1)]
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool snes_unserialize(IntPtr data, int size);
 		
 		public enum SNES_MEMORY : uint
 		{
@@ -136,6 +147,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			LibsnesDll.snes_term();
 			_gc_snes_video_refresh.Free();
+			_gc_snes_input_poll.Free();
+			_gc_snes_input_state.Free();
 			_gc_snes_audio_sample.Free();
 		}
 
@@ -284,6 +297,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static byte[] snes_get_memory_data_read(LibsnesDll.SNES_MEMORY id)
 		{
 			var size = (int)LibsnesDll.snes_get_memory_size(id);
+			if (size == 0) return new byte[0];
 			var data = LibsnesDll.snes_get_memory_data(id);
 			var ret = new byte[size];
 			Marshal.Copy(data,ret,0,size);
@@ -293,16 +307,51 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public void StoreSaveRam(byte[] data)
 		{
 			var size = (int)LibsnesDll.snes_get_memory_size(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM);
+			if (size == 0) return;
 			var emudata = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM);
 			Marshal.Copy(data, 0, emudata, size);
 		}
 
 		public void ResetFrameCounter() { }
-		public void SaveStateText(TextWriter writer) { }
-		public void LoadStateText(TextReader reader) { }
-		public void SaveStateBinary(BinaryWriter writer) { }
-		public void LoadStateBinary(BinaryReader reader) { }
-		public byte[] SaveStateBinary() { return new byte[0]; }
+		public void SaveStateText(TextWriter writer)
+		{
+			var temp = SaveStateBinary();
+			temp.SaveAsHex(writer);
+		}
+		public void LoadStateText(TextReader reader)
+		{
+			string hex = reader.ReadLine();
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHex(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+		}
+		
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			int size = LibsnesDll.snes_serialize_size();
+			byte[] buf = new byte[size];
+			fixed (byte* pbuf = &buf[0])
+				LibsnesDll.snes_serialize(new IntPtr(pbuf), size);
+			writer.Write(buf);
+			writer.Flush();
+		}
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			int size = LibsnesDll.snes_serialize_size();
+			var ms = new MemoryStream();
+			reader.BaseStream.CopyTo(ms);
+			var buf = ms.ToArray();
+			fixed (byte* pbuf = &buf[0])
+				LibsnesDll.snes_unserialize(new IntPtr(pbuf), size);
+		}
+		public byte[] SaveStateBinary()
+		{
+			MemoryStream ms = new MemoryStream();
+			BinaryWriter bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
+		}
 
 		// Arbitrary extensible core comm mechanism
 		CoreInputComm IEmulator.CoreInputComm { get; set; }
