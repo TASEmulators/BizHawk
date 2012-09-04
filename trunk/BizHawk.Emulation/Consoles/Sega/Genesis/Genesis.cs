@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public bool DeterministicEmulation { get; set; }
 		public string SystemId { get { return "GEN"; } }
 
-		public byte[] SaveRam
+		public byte[] ReadSaveRam
 		{
 			get { throw new NotImplementedException(); }
 		}

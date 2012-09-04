@@ -1,4 +1,9 @@
-﻿using System;
+﻿//TODO 
+//libsnes needs to be modified to support multiple instances
+//rename snes.dll so nobody thinks it's a stock snes.dll (we'll be editing it substantially at some point)
+//wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailable
+
+using System;
 using System.Linq;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,7 +13,6 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 {
-	//TODO - wrap around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailable
 	public unsafe static class LibsnesDll
 	{
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -59,16 +63,49 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			[MarshalAs(UnmanagedType.LPArray)] byte[] rom_data,
 			int rom_size);
 
-		public enum Device : uint
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.U1)]
+		public static extern SNES_REGION snes_get_region();
+
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern uint snes_get_memory_size(SNES_MEMORY id);
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint="snes_get_memory_data")]
+		public static extern IntPtr snes_get_memory_data(SNES_MEMORY id);
+		
+		public enum SNES_MEMORY : uint
 		{
-			None,
-			Joypad,
-			Multitap,
-			Mouse,
-			SuperScope,
-			Justifier,
-			Justifiers,
-			USART,
+			CARTRIDGE_RAM = 0,
+			CARTRIDGE_RTC = 1,
+			BSX_RAM = 2,
+			BSX_PRAM = 3,
+			SUFAMI_TURBO_A_RAM = 4,
+			SUFAMI_TURBO_B_RAM = 5,
+			GAME_BOY_RAM = 6,
+			GAME_BOY_RTC = 7,
+
+			WRAM = 100,
+			APURAM = 101,
+			VRAM = 102,
+			OAM = 103,
+			CGRAM = 104,
+		}
+
+		public enum SNES_REGION : uint
+		{
+			NTSC = 0,
+			PAL = 1,
+		}
+
+		public enum SNES_DEVICE : uint
+		{
+			NONE = 0,
+			JOYPAD = 1,
+			MULTITAP = 2,
+			MOUSE = 3,
+			SUPER_SCOPE = 4,
+			JUSTIFIER = 5,
+			JUSTIFIERS = 6,
+			SERIAL_CABLE = 7
 		}
 
 		public enum SNES_DEVICE_ID : uint
@@ -88,8 +125,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 	}
 
-	//TODO - libsnes needs to be modified to support multiple instances
-	//TODO - rename snes.dll so nobody thinks it's a stock snes.dll (we'll be editing it substantially at some point)
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
 	{
 		static LibsnesCore()
@@ -140,7 +175,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";
-			if ((LibsnesDll.Device)device == LibsnesDll.Device.Joypad)
+			if ((LibsnesDll.SNES_DEVICE)device == LibsnesDll.SNES_DEVICE.JOYPAD)
 			{
 				switch((LibsnesDll.SNES_DEVICE_ID)id)
 				{
@@ -236,8 +271,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public bool IsLagFrame { get; private set; }
 		public string SystemId { get { return "SNES"; } }
 		public bool DeterministicEmulation { get; set; }
-		public byte[] SaveRam { get { return new byte[0]; } }
-		public bool SaveRamModified { get; set; }
+		public bool SaveRamModified
+		{
+			set { }
+			get
+			{
+				return LibsnesDll.snes_get_memory_size(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM) != 0;
+			}
+		}
+		
+		public byte[] ReadSaveRam { get { return snes_get_memory_data_read(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM); } }
+		public static byte[] snes_get_memory_data_read(LibsnesDll.SNES_MEMORY id)
+		{
+			var size = (int)LibsnesDll.snes_get_memory_size(id);
+			var data = LibsnesDll.snes_get_memory_data(id);
+			var ret = new byte[size];
+			Marshal.Copy(data,ret,0,size);
+			return ret;
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			var size = (int)LibsnesDll.snes_get_memory_size(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM);
+			var emudata = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM);
+			Marshal.Copy(data, 0, emudata, size);
+		}
 
 		public void ResetFrameCounter() { }
 		public void SaveStateText(TextWriter writer) { }

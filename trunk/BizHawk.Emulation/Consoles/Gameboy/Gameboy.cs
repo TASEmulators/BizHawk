@@ -775,7 +775,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }
 
-		public byte[] SaveRam
+		public byte[] ReadSaveRam
 		{
 			get { throw new NotImplementedException(); }
 		}
