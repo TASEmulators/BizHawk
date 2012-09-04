@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         const int CommandCramWrite  = 3;
         const int CommandVsramRead  = 4;
         const int CommandVsramWrite = 5;
-        const int CommandCramRead   = 7;
+        const int CommandCramRead   = 8;
 
         public ushort VdpStatusWord = 0x3400;
         public const int StatusHorizBlanking            = 0x04;
@@ -229,11 +229,15 @@ int orig_addr = VdpDataAddr;
                     VdpDataAddr += Registers[0x0F];
                     break;
                 case CommandVsramRead:
-                    throw new Exception("VSRAM read");
+                    retval = VSRAM[(VdpDataAddr / 2) % 40];
+                    VdpDataAddr += Registers[0x0F];
+                    return retval;
                 case CommandCramRead:
-                    throw new Exception("CRAM read");
+                    retval = CRAM[(VdpDataAddr / 2) % 64];
+                    VdpDataAddr += Registers[0x0F];
+                    return retval;
                 default:
-                    throw new Exception("VRAM read with unexpected code!!!");
+                    throw new Exception("VRAM read with unexpected code!!! " + (VdpDataCode & 0x0F));
             }
 
             Log.Note("VDP","VDP Data Read from {0:X4} returning {1:X4}", orig_addr, retval);
