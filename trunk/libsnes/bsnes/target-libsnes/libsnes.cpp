@@ -11,7 +11,7 @@ struct Interface : public SNES::Interface {
   snes_input_poll_t pinput_poll;
   snes_input_state_t pinput_state;
   string basename;
-  uint16_t *buffer;
+  uint32_t *buffer;
   uint32_t *palette;
 
   void videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan) {
@@ -23,7 +23,7 @@ struct Interface : public SNES::Interface {
 
     for(unsigned y = 0; y < height; y++) {
       const uint32_t *sp = data + y * pitch;
-      uint16_t *dp = buffer + y * pitch;
+      uint32_t *dp = buffer + y * pitch;
       for(unsigned x = 0; x < width; x++) {
         *dp++ = palette[*sp++];
       }
@@ -51,7 +51,7 @@ struct Interface : public SNES::Interface {
   }
 
   Interface() : pvideo_refresh(0), paudio_sample(0), pinput_poll(0), pinput_state(0) {
-    buffer = new uint16_t[512 * 480];
+    buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
 
     //{llll bbbbb ggggg rrrrr} -> { rrrrr ggggg bbbbb }
@@ -59,11 +59,22 @@ struct Interface : public SNES::Interface {
       for(unsigned r = 0; r < 32; r++) {
         for(unsigned g = 0; g < 32; g++) {
           for(unsigned b = 0; b < 32; b++) {
+            //double luma = (double)l / 15.0;
+            //unsigned ar = (luma * r + 0.5);
+            //unsigned ag = (luma * g + 0.5);
+            //unsigned ab = (luma * b + 0.5);
+            //palette[(l << 15) + (r << 10) + (g << 5) + (b << 0)] = (ab << 10) + (ag << 5) + (ar << 0);
+
+						//zero 04-sep-2012 - go ahead and turn this into a pixel format we'll want
             double luma = (double)l / 15.0;
             unsigned ar = (luma * r + 0.5);
             unsigned ag = (luma * g + 0.5);
             unsigned ab = (luma * b + 0.5);
-            palette[(l << 15) + (r << 10) + (g << 5) + (b << 0)] = (ab << 10) + (ag << 5) + (ar << 0);
+						ar = ar * 255 / 31;
+						ag = ag * 255 / 31;
+						ab = ab * 255 / 31;
+						unsigned color = (ab << 16) + (ag << 8) + (ar << 0) | 0xFF000000;
+						palette[(l << 15) + (r << 10) + (g << 5) + (b << 0)] = color;
           }
         }
       }
