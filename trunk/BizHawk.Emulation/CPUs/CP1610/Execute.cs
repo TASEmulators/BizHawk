@@ -90,8 +90,26 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				Register[mem]++;
 		}
 
-		public void Execute()
+		public int Execute()
 		{
+			/*
+			 Take an interrupt if the previous instruction was interruptible,
+			 interrupts are enabled, and IntRM has a falling edge.
+			*/
+			if (FlagI && Interruptible && !IntRM && !Interrupted)
+			{
+				if (logging)
+				{
+					log.WriteLine("------");
+					log.WriteLine();
+					log.WriteLine("Interrupt");
+				}
+				Interrupted = true;
+				Interruptible = false;
+				Indirect_Set(6, 7);
+				RegisterPC = INTERRUPT;
+				return 28;
+			}
 			if (logging)
 			{
 				int addrToAdvance;
@@ -100,16 +118,11 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
 				log.Flush();
 			}
-			if (FlagI && Interruptible && !IntRM)
-			{
-				Indirect_Set(6, 7);
-				RegisterPC = INTERRUPT;
-			}
 			byte dest, src, mem;
 			ushort dest_value, src_value, mem_read, addr, addr_read, offset;
 			int cycles = 0, decle2, decle3, result = 0, ones, carry, status_word, lower, sign, cond, ext;
 			bool branch = false;
-			bool prev_FlagD = FlagD;
+			bool FlagD_prev = FlagD;
 			int opcode = ReadMemory(RegisterPC++) & 0x3FF;
 			switch (opcode)
 			{
@@ -1778,9 +1791,11 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					Interruptible = true;
 					break;
 			}
-			if (FlagD == prev_FlagD)
+			if (FlagD == FlagD_prev)
 				FlagD = false;
-			PendingCycles -= cycles; TotalExecutedCycles += cycles;
+			PendingCycles -= cycles;
+			TotalExecutedCycles += cycles;
+			return cycles;
 		}
 	}
 }
