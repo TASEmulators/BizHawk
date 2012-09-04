@@ -11,7 +11,7 @@ GAMES:
 
 Ahhh! Real monsters - no sound
 Adventures of Mighty Max - crashes memory mapper
-Air Diver - palette issue - suffer from lack of 2cell vscroll
+Air Diver - suffer from lack of 2cell vscroll
 Alien Storm.... gfx glitches. control glitches?
 Altered Beast: start with 0 health, 0 lives???
 Another World .. broken.. (E) tho
@@ -45,6 +45,7 @@ Final Blow - Music messed up
 Fire Shark - Messed up sound
 Flavio's Raster FX Test.. doesnt work
 Foreman for Real doent boot
+Galaxy Force II - minor gfx corruption now...
 Garfield... immediate gfx corruption. debug target.
 Gargoyles... gameplay is nonfunctional
 Gauntlet 4 .. title screen messed. gfx corruption. immediately - debug target.
@@ -56,6 +57,7 @@ Insector X .. title screen gfx issue
 James Pond 3 crash in intro
 Jim Power - gfx glitches
 Jurassic Park 2 - crashes in intro
+Landstalker - Sprite masking on bottom is too high on the screen...
 Lemmings: Sound is royally effed... gfx glitches.
 Marvel Land .. holy shit thats psychadelic
 Mega Bomberman....gfx glitches title screen
@@ -86,7 +88,6 @@ Truxton - Sound is jaaaacked.
 Verytex - gfx issues
 World of Illusion doesnt boot
 Zero Tolerance - gfx bugs that didnt used to happen :(
-
 Zombies At My Neighbors: doesnt boot really
 Zoop doesnt boot
 

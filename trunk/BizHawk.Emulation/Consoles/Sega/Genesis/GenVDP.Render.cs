@@ -244,11 +244,12 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 if (sprite.Y > ScanLine || sprite.Y+sprite.HeightPixels <= ScanLine)
                     goto nextSprite;
-                if (sprite.X + sprite.WidthPixels <= 0) 
+
+                if (sprite.X == -127) // masking code is not super tested
+                    break; // TODO does masking mode 2 really exist?
+
+                if (sprite.X + sprite.WidthPixels <= 0)
                     goto nextSprite;
-                if (sprite.X == -128)
-                    throw new Exception("bleeeh"); // masking code is not really tested
-                    //break; // TODO this satisfies masking mode 1 but not masking mode 2
 
                 if (sprite.HeightCells == 2)
                     sprite.HeightCells = 2;
