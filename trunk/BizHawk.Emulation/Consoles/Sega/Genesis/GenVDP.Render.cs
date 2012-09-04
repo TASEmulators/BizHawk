@@ -307,9 +307,12 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         void FetchSprite(int spriteNo)
         {
+            // Note - X/Y coordinates are 10-bits (3FF) but must be masked to 9-bits (1FF)
+            // In interlace mode this behavior should change
+
             int SatBase = SpriteAttributeTableAddr + (spriteNo*8);
-            sprite.Y = (VRAM[SatBase + 0] | (VRAM[SatBase + 1] << 8) & 0x3FF) - 128;
-            sprite.X = (VRAM[SatBase + 6] | (VRAM[SatBase + 7] << 8) & 0x3FF) - 128;
+            sprite.Y = (VRAM[SatBase + 0] | (VRAM[SatBase + 1] << 8) & 0x1FF) - 128;
+            sprite.X = (VRAM[SatBase + 6] | (VRAM[SatBase + 7] << 8) & 0x1FF) - 128;
             sprite.WidthPixels = SpriteSizeTable[(VRAM[SatBase + 3] >> 2) & 3];
             sprite.HeightPixels = SpriteSizeTable[VRAM[SatBase + 3] & 3];
             sprite.WidthCells = ((VRAM[SatBase + 3] >> 2) & 3) + 1;

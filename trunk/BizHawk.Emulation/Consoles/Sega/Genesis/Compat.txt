@@ -28,13 +28,12 @@ Castle of Illusion - doesn't boot
 Cheese Cat-astrophe - crashes renderer!!
 Chester Cheetah - freezes when starting new game
 Chuck Rock - Music messed up
-Contra Hard Corps: Scrolling is messed up in level 1... used to work. Window seemed to mess things up.
+Contra Hard Corps: Scrolling is messed up in level 1... used to work.
 Crusader of Centy- Text boxes messed up
 Dashin' Desperados .. bottom screen messed up
 Death Duel crashes my renderer... (!)
 Decap Attack - Item select screen messed up
 Double Dragon doesn't boot
-Dragon's Revenge.... ball sprite seems missing? of all the sprites to not show up...
 Devilish/Bad Omen - intro messed up.... interesting debug target
 Dune... freezes in intro
 Eternal Champions... GFX issues, immediately
@@ -43,11 +42,9 @@ Exo Squad - Doesn't boot at all
 F1 World Championship... Gfx issue at bottom of screen... quite cool working game though!
 Fatal Rewind - appears to do a read.w on FFFFFF... that would be an address error. read.l messes up too. Ergo: basically doesnt work.
 Final Blow - Music messed up
-Fire Shark - Messed up sound & Sprites dont render... VERY similar to Truxton. Same engine?
-Flavio's DMA test... DMAs when it shouldnt!!
+Fire Shark - Messed up sound
 Flavio's Raster FX Test.. doesnt work
 Foreman for Real doent boot
-Fun-n-Games fails its fadeouts.  I think its because its trying to read CRAM, but failing. Maybe?
 Garfield... immediate gfx corruption. debug target.
 Gargoyles... gameplay is nonfunctional
 Gauntlet 4 .. title screen messed. gfx corruption. immediately - debug target.
@@ -78,7 +75,6 @@ Shining in the Darkness: Gfx glitches, pretty severe
 Skitchin doesnt boot
 Sonic 2: Aside from lack of interlace mode, the shadows in the special stage are white....?
 Sonic 3 serious gfx glitches
-Sonic Spinball executes a VSRAM read (unimplemented)
 Star Control - Shit gets crazy
 Steel Empire - controls messed up. probably gfx issues also.
 Sub-Terrania some gfx issues in intro
@@ -86,11 +82,11 @@ Super Fantasy Zone: Sound totally boned, missing graphics
 TaleSpin - gfx glitches
 The Humans
 The Immortal
-Truxton - Sprites do not appear to be rendering. which is awesome.
+Truxton - Sound is jaaaacked.
 Verytex - gfx issues
 World of Illusion doesnt boot
 Zero Tolerance - gfx bugs that didnt used to happen :(
-Zero Wing - Sprites arent rendering.......
+
 Zombies At My Neighbors: doesnt boot really
 Zoop doesnt boot
 
@@ -99,7 +95,23 @@ Things that read from VRAM work like 50%-90%, but not 100%. It's frustrating. Ki
 Some games flicker in the rightmost columns. Is this caused by mid-frame mode shifting(32/40 col modes?) Alisia Dragoon is one example.
 --- Havent seen an example of this in a long time. Maybe it's a non-issue.
 
+======================================================
+Fixed Issues: (listed for regression testing purposes)
+======================================================
 
+(Sprites X/Y are 10-bit, but must be masked to 9-bit)
+- Dragon's Revenge.... ball sprite seems missing? of all the sprites to not show up...
+- Fire Shark - Sprites dont render... VERY similar to Truxton. Same engine?
+- Truxton - Sprites do not appear to be rendering. 
+- Zero Wing - Sprites arent rendering.......
+
+Flavio's DMA test... DMAs when it shouldnt!! - Masking off too much of the VDP command code
+
+Fun-n-Games fails its fadeouts.  -- Fixed CRAM reads. I failed math.
+
+Sonic Spinball executes a VSRAM read -- Implemented VSRAM reads.
+
+======================================================
 
 TODO: non-instant DMA emulation
 TODO: Add 68000/VDP interrupt enable delay (one instruction, similar to After Burner/PCE)
