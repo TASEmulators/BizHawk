@@ -2579,10 +2579,10 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gg;*.gen;*.col;*.smc;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gg;*.gen;*.col;*.smc;*.sfc;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
-					"Super NES", "*.smc;%ARCH%",
+					"Super NES", "*.smc;*.sfc;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
@@ -2602,7 +2602,7 @@ namespace BizHawk.MultiClient
 					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.cue;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
-					"Super NES", "*.smc;%ARCH%",
+					"Super NES", "*.smc;*.sfc;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
