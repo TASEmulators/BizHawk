@@ -423,7 +423,7 @@ namespace BizHawk.MultiClient
 		public string MakeInputDisplay()
 		{
 			StringBuilder s;
-			if (Global.MovieSession.Movie.IsPlaying)
+			if (!Global.MovieSession.Movie.IsActive || Global.MovieSession.Movie.IsFinished)
 			{
 				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
 			}

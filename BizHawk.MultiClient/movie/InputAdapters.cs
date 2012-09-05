@@ -168,10 +168,6 @@ namespace BizHawk.MultiClient
 		bool IsBasePressed(string name)
 		{
 			bool ret = Source.IsPressed(name);
-			if (ret)
-			{
-				//int zzz=9;
-			}
 			return ret;
 		}
 
@@ -188,6 +184,8 @@ namespace BizHawk.MultiClient
 					return "|..................................................|.|";
 				case "NES":
 					return "|.|........|........|........|........|";
+				case "SNES":
+					return "|.|............|............|............|............|";
 				case "SMS":
 				case "GG":
 				case "SG":
@@ -203,10 +201,35 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		//adelikat: I"m going to do all controllers like this, so what if it is redundant! It is better than reducing lines of code with convoluted logic that is difficult to expand to support new platforms
+		private string GetSNESControllersAsMnemonic()
+		{
+			StringBuilder input = new StringBuilder("|");
+			input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] : ".");
+			input.Append("|");
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					input.Append(IsBasePressed("P" + button) ? Global.BUTTONS[ControlType][button] : ".");
+				}
+				input.Append("|");
+			}
+
+			return input.ToString();
+		}
+
+
 		public string GetControllersAsMnemonic()
 		{
 			if (Global.Emulator.SystemId == "NULL" || ControlType == "Null Controller")
+			{
 				return "|.|";
+			}
+			else if (Global.Emulator.SystemId == "SNES")
+			{
+				GetSNESControllersAsMnemonic();
+			}
 
 			StringBuilder input = new StringBuilder("|");
 
