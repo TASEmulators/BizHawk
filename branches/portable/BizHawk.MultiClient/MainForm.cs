@@ -2155,8 +2155,8 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void UpdateToolsBefore()
 		{
-			LuaConsole1.LuaImp.FrameRegisterBefore();
 #if WINDOWS
+			LuaConsole1.LuaImp.FrameRegisterBefore();
 			LuaConsole1.ResumeScripts(true);
 			Global.DisplayManager.PreFrameUpdateLuaSource();
 #endif
@@ -2176,7 +2176,9 @@ namespace BizHawk.MultiClient
 		{
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
+#if WINDOWS
 			LuaConsole1.LuaImp.FrameRegisterAfter();
+#endif
 			TAStudio1.UpdateValues();
 		}
 
