@@ -448,8 +448,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// <summary>stores samples that have been converted to 44100hz</summary>
 		Queue<short> AudioOutBuffer = new Queue<short>();
 
-		GCHandle _gc_snes_audio_sample;
-
 		/// <summary>total number of samples (left and right combined) in the InBuffer before we ask for resampling</summary>
 		const int resamplechunk = 1000;
 		/// <summary>actual sampling factor used</summary>
