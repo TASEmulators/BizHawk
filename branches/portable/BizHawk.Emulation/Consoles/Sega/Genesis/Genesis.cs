@@ -1,4 +1,6 @@
-﻿#define MUSASHI
+﻿#if WINDOWS
+#define MUSASHI
+#endif
 
 using System;
 using System.Collections.Generic;
