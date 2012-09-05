@@ -5,13 +5,21 @@ using System.Text;
 
 namespace BizHawk.Emulation.Consoles.Intellivision
 {
-	public sealed class STIC
+	public sealed class STIC : IVideoProvider
 	{
 		private bool Sr1, Sr2, Sst, Fgbg = false;
 		private ushort[] Register = new ushort[64];
 
 		public int TotalExecutedCycles;
 		public int PendingCycles;
+
+		public int[] FrameBuffer = new int[160 * 96];
+		public int[] GetVideoBuffer() { return FrameBuffer; }
+		public int VirtualWidth { get { return 160; } }
+		public int BufferWidth { get { return 160; } }
+		public int VirtualHeight { get { return 192; } }
+		public int BufferHeight { get { return 96; } }
+		public int BackgroundColor { get { return 0; } }
 		
 		public void Reset()
 		{

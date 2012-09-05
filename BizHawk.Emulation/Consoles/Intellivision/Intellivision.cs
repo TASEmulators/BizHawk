@@ -78,6 +78,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public void FrameAdvance(bool render)
 		{
+			Frame++;
 			Cpu.AddPendingCycles(14394 + 3791);
 			while (Cpu.GetPendingCycles() > 0)
 			{
@@ -88,11 +89,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			}
 		}
 
-
-
-		// This is all crap to worry about later.
-
-		public IVideoProvider VideoProvider { get { return new NullEmulator(); } }
+		public IVideoProvider VideoProvider { get { return Stic; } }
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
 
 		public ControllerDefinition ControllerDefinition
@@ -101,12 +98,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		}
 
 		public IController Controller { get; set; }
-
-
-		public int Frame
-		{
-			get { return 0; }
-		}
+		public int Frame { get; set; }
 
 		public int LagCount
 		{
@@ -115,6 +107,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		}
 
 		public bool IsLagFrame { get { return false; } }
+
 		public string SystemId
 		{
 			get { return "INTV"; }
