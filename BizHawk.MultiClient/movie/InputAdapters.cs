@@ -431,13 +431,49 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		//Redundancy beats crazy if logic that makes new consoles annoying to add
+		private void SetSNESControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+
+			Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+				
+				if (mnemonic.Length < srcindex + 3 + Global.BUTTONS[ControlType].Count - 1)
+				{
+					return;
+				}
+
+				int start = 3;
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+			}
+
+		}
+
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string
 		/// </summary>
 		public void SetControllersAsMnemonic(string mnemonic)
 		{
 			if (Global.Emulator.SystemId == "NULL" || ControlType == "Null Controller")
+			{
 				return;
+			}
+			else if (Global.Emulator.SystemId == "SNES")
+			{
+				SetSNESControllersAsMnemonic(mnemonic);
+			}
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 
 			MyBoolButtons.Clear();
