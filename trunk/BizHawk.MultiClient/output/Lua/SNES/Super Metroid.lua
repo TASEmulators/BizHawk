@@ -49,8 +49,6 @@ end
 local function powerbomb()
 	local x = mainmemory.read_u16_le(0xCE2) - mainmemory.read_u16_le(camx)
 	local y = mainmemory.read_u16_le(0xCE4) - mainmemory.read_u16_le(camy)
-	local v1
-	local v2
 	local xrad 
 	local yrad
 	
