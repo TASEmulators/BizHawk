@@ -173,6 +173,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			_gc_snes_audio_sample = GCHandle.Alloc(soundcb);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
 
+			// start up audio resampler
+			resampler.StartSession(resamplingfactor);
+
 			//strip header
 			if ((romData.Length & 0x7FFF) == 512)
 			{
@@ -437,38 +440,44 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// <summary>total number of samples (left and right combined) in the InBuffer before we ask for resampling</summary>
 		const int resamplechunk = 1000;
 		/// <summary>actual sampling factor used</summary>
-		const double sfactor = 44100.0 / 32040.5;
+		const double resamplingfactor = 44100.0 / 32040.5;
 
-		Sound.Utilities.BizhawkResampler resampler = new Sound.Utilities.BizhawkResampler(false, sfactor, sfactor);
+		Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.BizhawkResampler(false);
+		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.CubicResampler();
+		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.LinearResampler();
 
 		Sound.MetaspuSoundProvider metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_Z);
 
 		void snes_audio_sample(ushort left, ushort right)
 		{
+			
 			AudioInBuffer.Enqueue((short)left);
 			AudioInBuffer.Enqueue((short)right);
 
+			/*
 			try
 			{
 				// fixme: i get all sorts of crashes if i do the resampling in here.  what?
 
-				/*
+				
 				if (AudioInBuffer.Count >= resamplechunk)
 				{
-					resampler.process(sfactor, false, AudioInBuffer, AudioOutBuffer);
+					resampler.ResampleChunk(AudioInBuffer, AudioOutBuffer, false);
 					// drain into the metaspu immediately
 					// we could skip this step and drain directly by changing SampleBuffers
 					while (AudioOutBuffer.Count > 0)
 						metaspu.buffer.enqueue_sample(AudioOutBuffer.Dequeue(), AudioOutBuffer.Dequeue());
 				}
-				 */
+				 
 			}
 			catch (Exception e)
 			{
 				System.Windows.Forms.MessageBox.Show(e.ToString());
 				AudioOutBuffer.Clear();
 			}
-
+			 */
+	
+			
 		}
 
 
@@ -480,7 +489,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			if (true)
 			{
-				resampler.process(sfactor, false, AudioInBuffer, AudioOutBuffer);
+				resampler.ResampleChunk(AudioInBuffer, AudioOutBuffer, false);
 
 				// drain into the metaspu immediately
 				// we could skip this step and drain directly by changing SampleBuffers implementation

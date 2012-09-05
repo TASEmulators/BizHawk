@@ -507,37 +507,44 @@ namespace BizHawk.Emulation.Sound.Utilities
 	/// implements a pair of Resamplers that work off of interleaved stereo buffers of shorts
 	/// this is what's used inside most of bizhawk
 	/// </summary>
-	public class BizhawkResampler
+	public class BizhawkResampler : IStereoResampler
 	{
-		private Resampler left;
-		private Resampler right;
+		bool highQuality;
+		double ratio;
 
-		public BizhawkResampler(bool highQuality, double minFactor, double maxFactor)
+		public void StartSession(double ratio)
 		{
-			left = new Resampler(highQuality, minFactor, maxFactor);
-			right = new Resampler(highQuality, minFactor, maxFactor);
+			this.ratio = ratio;
+			left = new Resampler(highQuality, ratio, ratio);
+			right = new Resampler(highQuality, ratio, ratio);
 		}
 
-
-		
-		/// <summary>
-		/// resample some audio.
-		/// </summary>
-		/// <param name="factor">outrate / inrate</param>
-		/// <param name="lastBatch">true to finalize (empty buffers and finish)</param>
-		/// <param name="input">input samples, as interleaved stereo shorts.  in general, all won't be used unless <code>lastbatch = true</code></param>
-		/// <param name="output">recieves output samples, as interleaved stereo shorts</param>
-		/// <returns>true if processing finished; only possible with <code>lastbatch = true</code></returns>
-		public bool process(double factor, bool lastBatch, Queue<short> input, Queue<short> output)
+		public void ResampleChunk(Queue<short> input, Queue<short> output, bool finish)
 		{
 			LeftBuffer lb = new LeftBuffer(input, output);
 
 			SampleBuffers rb = lb.GetRightBuffer();
 
-			bool doneleft = left.process(factor, lb, lastBatch);
-			bool doneright = right.process(factor, rb, lastBatch);
+			bool doneleft = left.process(ratio, lb, finish);
+			bool doneright = right.process(ratio, rb, finish);
 
-			return doneleft && doneright;
+			if (finish)
+			{
+				left = null;
+				right = null;
+			}
+		}
+
+		private Resampler left;
+		private Resampler right;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="highQuality">true for high quality resampling</param>
+		public BizhawkResampler(bool highQuality)
+		{
+			this.highQuality = highQuality;
 		}
 
 		/// <summary>
@@ -635,10 +642,7 @@ namespace BizHawk.Emulation.Sound.Utilities
 					}
 				}
 			}
-
 		}
-
-
 	}
 
 }
