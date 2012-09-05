@@ -98,12 +98,12 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			*/
 			if (FlagI && Interruptible && !IntRM && !Interrupted)
 			{
-				if (logging)
+				if (Logging)
 				{
-					log.WriteLine("------");
-					log.WriteLine();
-					log.WriteLine("Interrupt");
-					log.Flush();
+					Log.WriteLine("------");
+					Log.WriteLine();
+					Log.WriteLine("Interrupt");
+					Log.Flush();
 				}
 				Interrupted = true;
 				Interruptible = false;
@@ -111,13 +111,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				RegisterPC = INTERRUPT;
 				return 28;
 			}
-			if (logging)
+			if (Logging)
 			{
 				int addrToAdvance;
-				log.WriteLine("------");
-				log.WriteLine();
-				log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
-				log.Flush();
+				Log.WriteLine("------");
+				Log.WriteLine();
+				Log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
+				Log.Flush();
 			}
 			byte dest, src, mem;
 			ushort dest_value, src_value, mem_read, addr, addr_read, offset;
@@ -227,7 +227,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x01D:
 				case 0x01E:
 				case 0x01F:
-					throw new NotImplementedException();
 					dest = (byte)(opcode & 0x7);
 					result = (Register[dest] ^ 0xFFFF);
 					Calc_FlagS(result);
@@ -470,7 +469,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x06D:
 				case 0x06E:
 				case 0x06F:
-					throw new NotImplementedException();
 					dest = (byte)(opcode & 0x3);
 					dest_value = Register[dest];
 					sign = dest_value & 0x8000;
@@ -1776,7 +1774,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x3FD:
 				case 0x3FE:
 				case 0x3FF:
-					throw new NotImplementedException();
 					mem = (byte)((opcode >> 3) & 0x7);
 					dest = (byte)(opcode & 0x7);
 					mem_read = Indirect_Get(mem);
