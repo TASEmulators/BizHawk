@@ -43,7 +43,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// an audio proxy used for dumping
 		/// </summary>
-		Emulation.Sound.Utilities.DualSound DumpProxy = null;
+		Emulation.Sound.MetaspuSoundProvider DumpProxy = null;
 		/// <summary>audio timekeeping for video dumping</summary>
 		long SoundRemainder = 0;
 
@@ -2013,7 +2013,8 @@ namespace BizHawk.MultiClient
 					SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
 
 					short[] temp = new short[nsamp * 2];
-					//Global.Emulator.SoundProvider.GetSamples(temp);
+					Global.Emulator.SoundProvider.GetSamples(temp);
+					DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
 					DumpProxy.GetSamples(temp);
 					//genSound = false;
 
@@ -2062,7 +2063,7 @@ namespace BizHawk.MultiClient
 			{
 				// change audio path if dumping is occuring
 				if (DumpProxy != null)
-					Global.Sound.UpdateSound(DumpProxy.secondpin);
+					Global.Sound.UpdateSound(DumpProxy);
 				else
 					Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
 			}
@@ -2981,7 +2982,7 @@ namespace BizHawk.MultiClient
 			}
 
 			// buffersize here is entirely guess
-			DumpProxy = new Emulation.Sound.Utilities.DualSound(Global.Emulator.SoundProvider, 8192);
+			DumpProxy = new Emulation.Sound.MetaspuSoundProvider(Emulation.Sound.ESynchMethod.ESynchMethod_Z);
 			SoundRemainder = 0;
 		}
 
