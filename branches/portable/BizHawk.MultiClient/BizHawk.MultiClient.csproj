@@ -342,32 +342,32 @@
     <Compile Include="tools\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaButton.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaButton.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\LuaDocumentation.cs" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Compile Include="tools\LuaTextBox.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaTextBox.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\LuaWinform.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaWinform.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\LuaWinform.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaWinform.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWinform.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaWriter.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaWriter.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\LuaWriter.designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWriter.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaWriterBox.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaWriterBox.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\LuaWriterColorConfig.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaWriterColorConfig.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\LuaWriterColorConfig.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaWriterColorConfig.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\WatchCommon.cs" />
@@ -418,16 +418,16 @@
     <EmbeddedResource Include="tools\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaFunctionList.resx" Condition=" '$(OS)' == 'Windows_NT' " >
+    <EmbeddedResource Include="tools\LuaFunctionList.resx" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaFunctionList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaWinform.resx" Condition=" '$(OS)' == 'Windows_NT' " >
+    <EmbeddedResource Include="tools\LuaWinform.resx" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWinform.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaWriter.resx" Condition=" '$(OS)' == 'Windows_NT' " >
+    <EmbeddedResource Include="tools\LuaWriter.resx" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWriter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaWriterColorConfig.resx" Condition=" '$(OS)' == 'Windows_NT' " >
+    <EmbeddedResource Include="tools\LuaWriterColorConfig.resx" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\RamWatch.resx">
@@ -487,10 +487,10 @@
     <Compile Include="tools\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaFunctionList.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaFunctionList.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\LuaFunctionList.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' " >
+    <Compile Include="tools\LuaFunctionList.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaFunctionList.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\MemoryPulse.cs" />
@@ -701,10 +701,10 @@
       <DependentUpon>HexEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaConsole.resx" Condition=" '$(OS)' == 'Windows_NT' " >
+    <EmbeddedResource Include="tools\LuaConsole.resx" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaWindow.resx" Condition=" '$(OS)' == 'Windows_NT' " >
+    <EmbeddedResource Include="tools\LuaWindow.resx" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
