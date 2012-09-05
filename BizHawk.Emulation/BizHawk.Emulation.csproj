@@ -357,6 +357,9 @@
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\Utilities\DualSound.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
+    <Compile Include="Sound\Utilities\FilterKit.cs" />
+    <Compile Include="Sound\Utilities\Resampler.cs" />
+    <Compile Include="Sound\Utilities\SampleBuffers.cs" />
     <Compile Include="Sound\VRC6.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
