@@ -193,7 +193,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			string key = "P" + (1 + port) + " ";
 			if ((LibsnesDll.SNES_DEVICE)device == LibsnesDll.SNES_DEVICE.JOYPAD)
 			{
-				switch((LibsnesDll.SNES_DEVICE_ID)id)
+				switch ((LibsnesDll.SNES_DEVICE_ID)id)
 				{
 					case LibsnesDll.SNES_DEVICE_ID.JOYPAD_A: key += "A"; break;
 					case LibsnesDll.SNES_DEVICE_ID.JOYPAD_B: key += "B"; break;
@@ -262,11 +262,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		int IVideoProvider.BackgroundColor { get { return 0; } }
 		int[] IVideoProvider.GetVideoBuffer() { return vidBuffer; }
 		int IVideoProvider.VirtualWidth { get { return vidWidth; } }
-		int IVideoProvider.BufferWidth  { get { return vidWidth; } }
+		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }
 
-		int[] vidBuffer = new int[256*256];
-		int vidWidth=256, vidHeight=256;
+		int[] vidBuffer = new int[256 * 256];
+		int vidWidth = 256, vidHeight = 256;
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
@@ -287,7 +287,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 B", "P1 A", "P1 X", "P1 Y", "P1 L", "P1 R", "Reset",
 				}
 			};
-		
+
 		int timeFrameCounter;
 		public int Frame { get { return timeFrameCounter; } }
 		public int LagCount { get; set; }
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				return LibsnesDll.snes_get_memory_size(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM) != 0;
 			}
 		}
-		
+
 		public byte[] ReadSaveRam { get { return snes_get_memory_data_read(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM); } }
 		public static byte[] snes_get_memory_data_read(LibsnesDll.SNES_MEMORY id)
 		{
@@ -310,7 +310,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if (size == 0) return new byte[0];
 			var data = LibsnesDll.snes_get_memory_data(id);
 			var ret = new byte[size];
-			Marshal.Copy(data,ret,0,size);
+			Marshal.Copy(data, ret, 0, size);
 			return ret;
 		}
 
@@ -335,7 +335,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			state.ReadFromHex(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
-		
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			int size = LibsnesDll.snes_serialize_size();
@@ -376,7 +376,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int mask = size - 1;
 			byte* blockptr = (byte*)block.ToPointer();
 			MemoryDomain md;
-			
+
 			//have to bitmask these somehow because it's unmanaged memory and we would hate to clobber things or make them nondeterministic
 			if (Util.IsPowerOfTwo(size))
 			{
@@ -406,7 +406,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		void SetupMemoryDomains(byte[] romData)
 		{
 			MemoryDomains = new List<MemoryDomain>();
-			
+
 			var romDomain = new MemoryDomain("CARTROM", romData.Length, Endian.Little,
 				(addr) => romData[addr],
 				(addr, value) => romData[addr] = value);
@@ -423,88 +423,88 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public MemoryDomain MainMemory { get; private set; }
 
 
-		Queue<short> AudioBuffer = new Queue<short>();
+
+
+		#region audio stuff
+
+		/// <summary>stores input samples as they come from the libsnes core</summary>
+		Queue<short> AudioInBuffer = new Queue<short>();
+		/// <summary>stores samples that have been converted to 44100hz</summary>
+		Queue<short> AudioOutBuffer = new Queue<short>();
 
 		GCHandle _gc_snes_audio_sample;
+
+		/// <summary>total number of samples (left and right combined) in the InBuffer before we ask for resampling</summary>
+		const int resamplechunk = 1000;
+		/// <summary>actual sampling factor used</summary>
+		const double sfactor = 44100.0 / 32040.5;
+
+		Sound.Utilities.BizhawkResampler resampler = new Sound.Utilities.BizhawkResampler(false, sfactor, sfactor);
+
+		Sound.MetaspuSoundProvider metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_Z);
+
 		void snes_audio_sample(ushort left, ushort right)
 		{
-			AudioBuffer.Enqueue((short)left);
-			AudioBuffer.Enqueue((short)right);
-		}
+			AudioInBuffer.Enqueue((short)left);
+			AudioInBuffer.Enqueue((short)right);
 
-
-		/// <summary>
-		/// basic linear audio resampler. sampling rate is inferred from buffer sizes
-		/// </summary>
-		/// <param name="input">stereo s16</param>
-		/// <param name="output">stereo s16</param>
-		static void LinearDownsampler(short[] input, short[] output)
-		{
-			// TODO - this also appears in YM2612.cs ... move to common if it's found useful
-
-			double samplefactor = (input.Length - 2) / (double)output.Length;
-
-			for (int i = 0; i < output.Length / 2; i++)
+			try
 			{
-				// exact position on input stream
-				double inpos = i * samplefactor;
-				// selected interpolation points and weights
-				int pt0 = (int)inpos; // pt1 = pt0 + 1
-				double wt1 = inpos - pt0; // wt0 = 1 - wt1
-				double wt0 = 1.0 - wt1;
+				// fixme: i get all sorts of crashes if i do the resampling in here.  what?
 
-				output[i * 2 + 0] = (short)(input[pt0 * 2 + 0] * wt0 + input[pt0 * 2 + 2] * wt1);
-				output[i * 2 + 1] = (short)(input[pt0 * 2 + 1] * wt0 + input[pt0 * 2 + 3] * wt1);
+				/*
+				if (AudioInBuffer.Count >= resamplechunk)
+				{
+					resampler.process(sfactor, false, AudioInBuffer, AudioOutBuffer);
+					// drain into the metaspu immediately
+					// we could skip this step and drain directly by changing SampleBuffers
+					while (AudioOutBuffer.Count > 0)
+						metaspu.buffer.enqueue_sample(AudioOutBuffer.Dequeue(), AudioOutBuffer.Dequeue());
+				}
+				 */
 			}
+			catch (Exception e)
+			{
+				System.Windows.Forms.MessageBox.Show(e.ToString());
+				AudioOutBuffer.Clear();
+			}
+
 		}
 
-		// TODO: replace this with something that took more than 5 seconds to write
+
+		//BinaryWriter dbgs = new BinaryWriter(File.Open("dbgwav.raw", FileMode.Create, FileAccess.Write));
+
 		public void GetSamples(short[] samples)
 		{
-			// resample approximately 32k->44k
-			int inputcount = samples.Length * 32040 / 44100;
-			inputcount /= 2;
+			// do resampling here, instead of when the samples are generated; see "fixme" comment in snes_audio_sample()
 
-			if (inputcount < 2) inputcount = 2;
-
-			short[] input = new short[inputcount * 2];
-
-			int i;
-
-			for (i = 0; i < inputcount * 2 && AudioBuffer.Count > 0; i++)
-				input[i] = AudioBuffer.Dequeue();
-			short lastl, lastr;
-			if (i >= 2)
+			if (true)
 			{
-				lastl = input[i - 2];
-				lastr = input[i - 1];
+				resampler.process(sfactor, false, AudioInBuffer, AudioOutBuffer);
+
+				// drain into the metaspu immediately
+				// we could skip this step and drain directly by changing SampleBuffers implementation
+				while (AudioOutBuffer.Count > 0)
+				{
+					short l = AudioOutBuffer.Dequeue();
+					short r = AudioOutBuffer.Dequeue();
+					//metaspu.buffer.enqueue_sample(AudioOutBuffer.Dequeue(), AudioOutBuffer.Dequeue());
+					metaspu.buffer.enqueue_sample(l, r);
+					//dbgs.Write(l);
+					//dbgs.Write(r);
+				}
 			}
-			else
-				lastl = lastr = 0;
-			for (; i < inputcount * 2; )
-			{
-				input[i++] = lastl;
-				input[i++] = lastr;
-			}
-
-
-			LinearDownsampler(input, samples);
-
-			// drop if too many
-			if (AudioBuffer.Count > samples.Length * 3)
-				AudioBuffer.Clear();
+			metaspu.GetSamples(samples);
 		}
 
 		public void DiscardSamples()
 		{
-			AudioBuffer.Clear();
+			metaspu.DiscardSamples();
 		}
 
-		// ignore for now
-		public int MaxVolume
-		{
-			get;
-			set;
-		}
+		public int MaxVolume { get; set; }
+
+		#endregion audio stuff
+
 	}
 }
