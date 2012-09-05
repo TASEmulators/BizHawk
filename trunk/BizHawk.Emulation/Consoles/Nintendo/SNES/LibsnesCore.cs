@@ -458,7 +458,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
-
+		// TODO: replace this with something that took more than 5 seconds to write
 		public void GetSamples(short[] samples)
 		{
 			// resample approximately 32k->44k
@@ -473,8 +473,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			for (i = 0; i < inputcount * 2 && AudioBuffer.Count > 0; i++)
 				input[i] = AudioBuffer.Dequeue();
-			for (; i < inputcount * 2; i++)
-				input[i] = 0;
+			short lastl, lastr;
+			if (i >= 2)
+			{
+				lastl = input[i - 2];
+				lastr = input[i - 1];
+			}
+			else
+				lastl = lastr = 0;
+			for (; i < inputcount * 2; )
+			{
+				input[i++] = lastl;
+				input[i++] = lastr;
+			}
+
 
 			LinearDownsampler(input, samples);
 
