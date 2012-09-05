@@ -144,33 +144,43 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
 	{
+		bool disposed = false;
 		public void Dispose()
 		{
+			if (disposed) return;
+			disposed = true;
+
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(null);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_poll(null);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_state(null);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(null);
+
 			LibsnesDll.snes_term();
-			_gc_snes_video_refresh.Free();
-			_gc_snes_input_poll.Free();
-			_gc_snes_input_state.Free();
-			_gc_snes_audio_sample.Free();
 		}
+
+		//we can only have one active snes core at a time, due to libsnes being so static.
+		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
+		static LibsnesCore CurrLibsnesCore;
 
 		public LibsnesCore(byte[] romData)
 		{
+			//attach this core as the current
+			if(CurrLibsnesCore != null)
+				CurrLibsnesCore.Dispose();
+			CurrLibsnesCore = this;
+
 			LibsnesDll.snes_init();
 
-			var vidcb = new LibsnesDll.snes_video_refresh_t(snes_video_refresh);
-			_gc_snes_video_refresh = GCHandle.Alloc(vidcb);
+			vidcb = new LibsnesDll.snes_video_refresh_t(snes_video_refresh);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(vidcb);
 
-			var pollcb = new LibsnesDll.snes_input_poll_t(snes_input_poll);
-			_gc_snes_input_poll = GCHandle.Alloc(pollcb);
+			pollcb = new LibsnesDll.snes_input_poll_t(snes_input_poll);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_poll(pollcb);
 
-			var inputcb = new LibsnesDll.snes_input_state_t(snes_input_state);
-			_gc_snes_input_state = GCHandle.Alloc(inputcb);
+			inputcb = new LibsnesDll.snes_input_state_t(snes_input_state);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_state(inputcb);
 
-			var soundcb = new LibsnesDll.snes_audio_sample_t(snes_audio_sample);
-			_gc_snes_audio_sample = GCHandle.Alloc(soundcb);
+			soundcb = new LibsnesDll.snes_audio_sample_t(snes_audio_sample);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
 
 			// start up audio resampler
@@ -188,7 +198,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			SetupMemoryDomains(romData);
 		}
 
-		GCHandle _gc_snes_input_state;
+		//must keep references to these so that they wont get garbage collected
+		LibsnesDll.snes_video_refresh_t vidcb;
+		LibsnesDll.snes_input_poll_t pollcb;
+		LibsnesDll.snes_input_state_t inputcb;
+		LibsnesDll.snes_audio_sample_t soundcb;
+
 		ushort snes_input_state(int port, int device, int index, int id)
 		{
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
@@ -219,12 +234,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		}
 
-		GCHandle _gc_snes_input_poll;
 		void snes_input_poll()
 		{
 		}
 
-		GCHandle _gc_snes_video_refresh;
 		void snes_video_refresh(int* data, int width, int height)
 		{
 			vidWidth = width;
