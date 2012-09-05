@@ -12,10 +12,8 @@ namespace BizHawk.MultiClient
 {
 	public partial class RecordMovie : Form
 	{
+		//TODO
 		//Allow relative paths in record textbox
-		//Hook up RecordFrom box
-		//PAL vs NTSC when appropriate (by SystemID)
-		//Other platform specific header lines
 
 		Movie MovieToRecord;
 
@@ -59,7 +57,7 @@ namespace BizHawk.MultiClient
 				}
 				
 				
-				MovieToRecord = new Movie(path, MOVIEMODE.RECORD);
+				MovieToRecord = new Movie(path);
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
@@ -77,7 +75,7 @@ namespace BizHawk.MultiClient
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
-					MovieToRecord.SetStartsFromSavestate(true);
+					MovieToRecord.StartsFromSavestate = true;
 					var temppath = path + ".tmp";
 					var writer = new StreamWriter(temppath);
 					Global.Emulator.SaveStateText(writer);
@@ -124,6 +122,7 @@ namespace BizHawk.MultiClient
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			sfd.DefaultExt = "." + Global.Config.MovieExtension;
 			sfd.FileName = RecordBox.Text;
+			sfd.OverwritePrompt = false;
 			sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
 
 			Global.Sound.StopSound();

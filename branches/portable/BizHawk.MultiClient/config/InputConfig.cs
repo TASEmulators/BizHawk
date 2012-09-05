@@ -19,16 +19,17 @@ namespace BizHawk.MultiClient
 		int prevWidth;
 		int prevHeight;
 		const string ControllerStr = "Configure Controllers - ";
-		public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" };
 		public static readonly Dictionary<string, string[]> CONTROLS = new Dictionary<string, string[]>()
 		{
 			{"Atari", new string[5] { "Up", "Down", "Left", "Right", "Button" } },
 			{"AtariConsoleButtons", new string[2] { "Reset", "Select" } },
 			{"Gameboy", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
+			{"SNES", new string[] { "Up", "Down", "Left", "Right", "A", "B", "X", "Y", "L", "R", "Select", "Start" } },
 			{"PC Engine / SuperGrafx", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
 			{"Sega Genesis", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" } },
 			{"SMS / GG / SG-1000", new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" } },
+			
 			{
 				// TODO: display shift / alpha names too, Also order these like on the calculator
 				"TI-83", new string[50] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON",
@@ -47,7 +48,8 @@ namespace BizHawk.MultiClient
 
 		public static readonly Dictionary<string, int> PADS = new Dictionary<string, int>()
 		{
-			{"Atari", 2}, {"Gameboy", 1}, {"NES", 4}, {"PC Engine / SuperGrafx", 5}, {"Sega Genesis", 1}, {"SMS / GG / SG-1000", 2},
+			{"Atari", 2}, {"Gameboy", 1}, {"NES", 4}, {"PC Engine / SuperGrafx", 5}, {"Sega Genesis", 1}, {"SMS / GG / SG-1000", 2}, 
+			{"SNES", 4},
 			{"TI-83", 1}
 		};
 		private ArrayList Labels;
@@ -130,6 +132,10 @@ namespace BizHawk.MultiClient
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.TI83CalculatorCrop;
 					controller = Global.Config.TI83Controller;
 					break;
+				case "SNES":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
+					controller = Global.Config.SNESController;
+					break;
 				default:
 					return;
 			}
@@ -163,6 +169,9 @@ namespace BizHawk.MultiClient
 						break;
 					case "NES":
 						IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "SNES":
+						IDX_CONTROLLERENABLED.Checked = ((SNESControllerTemplate)mainController[jpad]).Enabled;
 						break;
 					case "PC Engine / SuperGrafx":
 						IDX_CONTROLLERENABLED.Checked = ((PCEControllerTemplate)mainController[jpad]).Enabled;
@@ -216,6 +225,12 @@ namespace BizHawk.MultiClient
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(fieldName).GetValue(obj);
+						break;
+					}
+					case "SNES":
+					{
+						SNESControllerTemplate obj = (SNESControllerTemplate)controller[jpad];
 						field = obj.GetType().GetField(fieldName).GetValue(obj);
 						break;
 					}
@@ -289,6 +304,9 @@ namespace BizHawk.MultiClient
 					controller = Global.Config.NESController;
 					autoController = Global.Config.NESAutoController;
 					break;
+				case "SNES":
+					controller = Global.Config.SNESController;
+					break;
 				case "PC Engine / SuperGrafx":
 					controller = Global.Config.PCEController;
 					autoController = Global.Config.PCEAutoController;
@@ -330,6 +348,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "NES":
 					((NESControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
+				case "SNES":
+					((SNESControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
 				case "PC Engine / SuperGrafx":
 					((PCEControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
@@ -376,6 +397,14 @@ namespace BizHawk.MultiClient
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[prev];
+						FieldInfo buttonField = obj.GetType().GetField(fieldName);
+						field = buttonField.GetValue(obj);
+						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
+					}
+					case "SNES":
+					{
+						SNESControllerTemplate obj = (SNESControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
 						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
@@ -443,6 +472,7 @@ namespace BizHawk.MultiClient
 				Dictionary<string, string> systems = new Dictionary<string, string>()
 				{
 					{"A26", "Atari"}, {"GB", "Gameboy"}, {"GEN", "Sega Genesis"}, {"GG", "SMS / GG / SG-1000"}, {"NES", "NES"},
+					{"SNES", "SNES"},
 					{"PCE", "PC Engine / SuperGrafx"}, {"SG", "SMS / GG / SG-1000"}, {"SGX", "PC Engine / SuperGrafx"},
 					{"SMS", "SMS / GG / SG-1000"}, {"TI83", "TI-83"}
 				};

@@ -274,7 +274,7 @@
 			this.checkUseBackdropColor.AutoSize = true;
 			this.checkUseBackdropColor.Checked = true;
 			this.checkUseBackdropColor.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkUseBackdropColor.Location = new System.Drawing.Point(169, 85);
+			this.checkUseBackdropColor.Location = new System.Drawing.Point(169, 87);
 			this.checkUseBackdropColor.Name = "checkUseBackdropColor";
 			this.checkUseBackdropColor.Size = new System.Drawing.Size(59, 17);
 			this.checkUseBackdropColor.TabIndex = 36;
@@ -324,6 +324,7 @@
 			this.BackgroundColorPanel.Name = "BackgroundColorPanel";
 			this.BackgroundColorPanel.Size = new System.Drawing.Size(20, 16);
 			this.BackgroundColorPanel.TabIndex = 0;
+			this.BackgroundColorPanel.DoubleClick += new System.EventHandler(this.BackgroundColorPanel_DoubleClick);
 			// 
 			// DispBackground
 			// 

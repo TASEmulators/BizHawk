@@ -127,6 +127,10 @@ namespace BizHawk
 
 			switch (ext)
 			{
+				case ".SFC":
+				case ".SMC": 
+					Game.System = "SNES"; 
+					break;
 				case ".SMS": Game.System = "SMS"; break;
 				case ".GG": Game.System = "GG"; break;
 				case ".SG": Game.System = "SG"; break;

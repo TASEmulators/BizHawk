@@ -14,8 +14,8 @@ namespace BizHawk.MultiClient
 	public partial class HexEditor : Form
 	{
 		//TODO:
-		//Add ROM in memory domains, set up logic for saving the rom in SaveFile logic
 		//Increment/Decrement wrapping logic for 4 byte values is messed up
+		//2 & 4 byte text area clicking is off
 
 		int defaultWidth;
 		int defaultHeight;
@@ -42,9 +42,11 @@ namespace BizHawk.MultiClient
 		const int fontHeight = 14;
 		const int fontWidth = 7; //Width of 1 digits
 		string FindStr = "";
-
 		bool loaded = false;
 		
+		byte[] ROM;
+		MemoryDomain ROMDomain;
+
 		// Configurations
 		bool AutoLoad;
 		bool SaveWindowPosition;
@@ -170,12 +172,17 @@ namespace BizHawk.MultiClient
 				for (int j = 0; j < 16; j += DataSize)
 				{
 					if (addr + j < Domain.Size)
+					{
 						rowStr.AppendFormat(DigitFormatString, MakeValue(addr + j));
+					}
 				}
 				rowStr.Append("  | ");
 				for (int k = 0; k < 16; k++)
 				{
-					rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+					if (addr + k < Domain.Size)
+					{
+						rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+					}
 				}
 				rowStr.AppendLine();
 
@@ -313,14 +320,89 @@ namespace BizHawk.MultiClient
 			Refresh();
 		}
 
+		private bool CurrentROMIsArchive()
+		{
+			string path = Global.MainForm.CurrentlyOpenRom;
+			if (path == null)
+			{
+				return false;
+			}
+
+			using (var file = new HawkFile())
+			{
+				file.Open(path);
+
+				if (!file.Exists)
+				{
+					return false;
+				}
+
+				if (file.IsArchive)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		private byte[] GetRomBytes()
+		{
+			byte[] bytes;
+			string path = Global.MainForm.CurrentlyOpenRom;
+			if (path == null)
+			{
+				return null;
+			}
+
+			using (var file = new HawkFile())
+			{
+				file.Open(path);
+
+				if (!file.Exists)
+				{
+					return null;
+				}
+
+				if (file.IsArchive)
+				{
+					var stream = file.GetStream();
+					return Util.ReadAllBytes(stream);
+				}
+				else
+				{
+					return File.ReadAllBytes(path);
+				}
+			}
+
+			return new byte[0];
+		}
+
 		private void SetMemoryDomain(int pos)
 		{
-			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+			if (pos == 999)
+			{
+				ROM = GetRomBytes();
+				if (ROM == null)
+				{
+					ROM = new byte[1] { 0xFF };
+				}
+				
+				ROMDomain = new MemoryDomain("ROM File", ROM.Length, Endian.Little,
+					addr => ROM[addr],
+					(addr, value) => ROM[addr] = value);
+			
+				Domain = ROMDomain;
+			}
+			else if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
 			{
 				SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
 			}
 			UpdateGroupBoxTitle();
 			ResetScrollBar();
+			UpdateValues();
 			MemoryViewerBox.Refresh();
 		}
 
@@ -328,33 +410,41 @@ namespace BizHawk.MultiClient
 		{
 			string memoryDomain = Domain.ToString();
 			string systemID = Global.Emulator.SystemId;
-			MemoryViewerBox.Text = systemID + " " + memoryDomain + "  -  " + (Domain.Size / DataSize).ToString() + " addresses";
+			int addresses = Domain.Size / DataSize;
+			string addressesString = "0x" + string.Format("{0:X8}", addresses).TrimStart('0');
+			//if ((addresses & 0x3FF) == 0)
+			//  addressesString = (addresses >> 10).ToString() + "K";
+			//else addressesString = addresses.ToString();
+			MemoryViewerBox.Text = systemID + " " + memoryDomain + "  -  " + addressesString + " addresses";
 		}
 
 		private void SetMemoryDomainMenu()
 		{
 			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
-			if (Global.Emulator.MemoryDomains.Count > 0)
+			
+			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 			{
-				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				string str = Global.Emulator.MemoryDomains[x].ToString();
+				var item = new ToolStripMenuItem();
+				item.Text = str;
 				{
-					string str = Global.Emulator.MemoryDomains[x].ToString();
-					var item = new ToolStripMenuItem();
-					item.Text = str;
-					{
-						int z = x;
-						item.Click += (o, ev) => SetMemoryDomain(z);
-					}
-					if (x == 0)
-					{
-						SetMemoryDomain(x);
-					}
-					memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
-					domainMenuItems.Add(item);
+					int z = x;
+					item.Click += (o, ev) => SetMemoryDomain(z);
 				}
+				if (x == 0)
+				{
+					SetMemoryDomain(x);
+				}
+				memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+				domainMenuItems.Add(item);
 			}
-			else
-				memoryDomainsToolStripMenuItem.Enabled = false;
+			
+			//Add ROM File memory domain
+			var rom_item = new ToolStripMenuItem();
+			rom_item.Text = "ROM File";
+			rom_item.Click += (o, ev) => SetMemoryDomain(999); //999 will denote ROM file
+			memoryDomainsToolStripMenuItem.DropDownItems.Add(rom_item);
+			domainMenuItems.Add(rom_item);
 		}
 
 
@@ -508,21 +598,21 @@ namespace BizHawk.MultiClient
 		private Watch MakeWatch(int address)
 		{
 			Watch w = new Watch();
-			w.address = address;
-			w.bigendian = BigEndian;
-			w.signed = asigned.HEX;
+			w.Address = address;
+			w.BigEndian = BigEndian;
+			w.Signed = Watch.DISPTYPE.HEX;
 
 			switch (DataSize)
 			{
 				default:
 				case 1:
-					w.type = atype.BYTE;
+					w.Type = Watch.TYPE.BYTE;
 					break;
 				case 2:
-					w.type = atype.WORD;
+					w.Type = Watch.TYPE.WORD;
 					break;
 				case 4:
-					w.type = atype.DWORD;
+					w.Type = Watch.TYPE.DWORD;
 					break;
 			}
 			return w;
@@ -564,27 +654,28 @@ namespace BizHawk.MultiClient
 			if (p >= 0)
 			{
 				Watch w = new Watch();
-				w.address = p;
-				w.value = MakeValue(p);
-				w.bigendian = BigEndian;
-				w.signed = asigned.HEX;
+				w.Address = p;
+				w.Value = MakeValue(p);
+				w.BigEndian = BigEndian;
+				w.Signed = Watch.DISPTYPE.HEX;
+				w.Domain = Domain;
 
 				switch (DataSize)
 				{
 					default:
 					case 1:
-						w.type = atype.BYTE;
+						w.Type = Watch.TYPE.BYTE;
 						break;
 					case 2:
-						w.type = atype.WORD;
+						w.Type = Watch.TYPE.WORD;
 						break;
 					case 4:
-						w.type = atype.DWORD;
+						w.Type = Watch.TYPE.DWORD;
 						break;
 				}
 				
 				RamPoke poke = new RamPoke();
-				poke.SetWatchObject(w, Domain);
+				poke.SetWatchObject(w);
 				poke.location = GetAddressCoordinates(p);
 				Global.Sound.StopSound();
 				poke.ShowDialog();
@@ -595,9 +686,13 @@ namespace BizHawk.MultiClient
 		public int GetPointedAddress()
 		{
 			if (addressOver >= 0)
+			{
 				return addressOver;
+			}
 			else
+			{
 				return -1;  //Negative = no address pointed
+			}
 		}
 
 		public void PokeHighlighted(int value)
@@ -790,9 +885,13 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < domainMenuItems.Count; x++)
 			{
 				if (Domain.Name == domainMenuItems[x].Text)
+				{
 					domainMenuItems[x].Checked = true;
+				}
 				else
+				{
 					domainMenuItems[x].Checked = false;
+				}
 			}
 		}
 
@@ -831,10 +930,14 @@ namespace BizHawk.MultiClient
 
 		private void SaveAsBinary()
 		{
-			var file = GetBinarySaveFileFromUser();
+			SaveFileBinary(GetBinarySaveFileFromUser());
+		}
+
+		private void SaveFileBinary(FileInfo file)
+		{
 			if (file != null)
 			{
-				using(BinaryWriter binWriter = new BinaryWriter(File.Open(file.FullName, FileMode.Create)))
+				using (BinaryWriter binWriter = new BinaryWriter(File.Open(file.FullName, FileMode.Create)))
 				{
 					byte[] dump = new byte[Domain.Size];
 
@@ -869,6 +972,20 @@ namespace BizHawk.MultiClient
 			return file;
 		}
 
+		private string GetSaveFileFilter()
+		{
+			if (Domain.Name == "ROM File")
+			{
+				string extension = Path.GetExtension(Global.MainForm.CurrentlyOpenRom);
+
+				return "Binary (*" + extension + ")|*" +  extension + "|All Files|*.*";
+			}
+			else
+			{
+				return "Binary (*.bin)|*.bin|All Files|*.*";
+			}
+		}
+
 		private FileInfo GetBinarySaveFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
@@ -881,7 +998,7 @@ namespace BizHawk.MultiClient
 
 			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
 
-			sfd.Filter = "Binary (*.bin)|*.bin|All Files|*.*";
+			sfd.Filter = GetSaveFileFilter();
 			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
@@ -926,6 +1043,7 @@ namespace BizHawk.MultiClient
 
 		private int GetPointedAddress(int x, int y)
 		{
+			
 			int address = -1;
 			//Scroll value determines the first row
 			int row = vScrollBar1.Value;
@@ -946,6 +1064,16 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			int column = (x /*- 43*/) / (fontWidth * colWidth);
+
+			//int last = (16 / DataSize);
+			//if (column >= last)
+			//{
+				int start = GetTextOffset() - addrOffset - 50; //This is ugly, needs cleanup but it works!
+				if (x > start)
+				{
+					column = (x - start)  / (fontWidth / DataSize);
+				}
+			//}
 
 			if (row >= 0 && row <= maxRow && column >= 0 && column < (16 / DataSize))
 			{
@@ -1050,6 +1178,32 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private int GetTextOffset()
+		{
+			int start = 0;
+			switch (DataSize)
+			{
+				default:
+				case 1:
+					start = (16 * (fontWidth * 3)) + (50 + addrOffset);
+					break;
+				case 2:
+					start = ((16 / DataSize) * (fontWidth * 5)) + (50 + addrOffset);
+					break;
+				case 4:
+					start = ((16 / DataSize) * (fontWidth * 9)) + (50 + addrOffset);
+					break;
+			}
+			start += (fontWidth * 4);
+			return start;
+		}
+
+		private int GetTextX(int address)
+		{
+			int start = GetTextOffset();
+			return start + ((address % 16) * fontWidth);
+		}
+
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
 			
@@ -1067,25 +1221,46 @@ namespace BizHawk.MultiClient
 			}
 			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 			{
-				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(15 * DataSize, fontHeight));
+				Point point = GetAddressCoordinates(addressHighlighted);
+				int textX = GetTextX(addressHighlighted);
+				Point textpoint = new Point(textX, point.Y);
+
+				Rectangle rect = new Rectangle(point, new Size(15 * DataSize, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
+
+				Rectangle textrect = new Rectangle(textpoint, new Size((8 * DataSize), fontHeight));
+				
 				if (Global.CheatList.IsActiveCheat(Domain, addressHighlighted))
+				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
+					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
+				}
 				else
+				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightColor), rect);
+					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightColor), textrect);
+				}
 			}
 			foreach (int address in SecondaryHighlightedAddresses)
 			{
-				Rectangle rect = new Rectangle(GetAddressCoordinates(address), new Size(15 * DataSize, fontHeight));
+				Point point = GetAddressCoordinates(address);
+				int textX = GetTextX(address);
+				Point textpoint = new Point(textX, point.Y);
+
+				Rectangle rect = new Rectangle(point, new Size(15 * DataSize, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
+
+				Rectangle textrect = new Rectangle(textpoint, new Size(8, fontHeight));
 
 				if (Global.CheatList.IsActiveCheat(Domain, address))
 				{
 					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
+					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
 				}
 				else
 				{
-					e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), rect); //TODO: better color
+					e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), rect);
+					e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), textrect);
 				}
 			}
 			if (HasNibbles())
@@ -2027,6 +2202,40 @@ namespace BizHawk.MultiClient
 			{
 				findNextToolStripMenuItem.Enabled = true;
 				findPrevToolStripMenuItem.Enabled = true;
+			}
+		}
+
+		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (CurrentROMIsArchive())
+			{
+				return;
+			}
+			else
+			{
+				FileInfo file = new FileInfo(Global.MainForm.CurrentlyOpenRom);
+				SaveFileBinary(file);
+			}
+		}
+
+		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Domain.Name == "ROM File")
+			{
+				if (!CurrentROMIsArchive())
+				{
+					saveToolStripMenuItem.Visible = true;
+				}
+				else
+				{
+					saveToolStripMenuItem.Visible = false;
+				}
+
+				saveAsBinaryToolStripMenuItem.Text = "Save as ROM...";
+			}
+			else
+			{
+				saveAsBinaryToolStripMenuItem.Text = "Save as binary...";
 			}
 		}
 	}

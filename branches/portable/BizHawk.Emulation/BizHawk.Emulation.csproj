@@ -114,6 +114,7 @@
     <Compile Include="Consoles\GB\MemoryMap.cs" />
     <Compile Include="Consoles\GB\GB.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
+    <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
@@ -255,6 +256,7 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
     <Compile Include="Consoles\PC Engine\ArcadeCard.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
@@ -289,6 +291,7 @@
     <Compile Include="CPUs\MOS 6502\Disassembler.cs" />
     <Compile Include="CPUs\MOS 6502\Execute.cs" />
     <Compile Include="CPUs\MOS 6502\MOS6502.cs" />
+    <Compile Include="CPUs\Native68000\Musashi.cs" />
     <Compile Include="CPUs\x86\Disassembler.cs" />
     <Compile Include="CPUs\x86\Execute.cs" />
     <Compile Include="CPUs\x86\Timing.cs" />
@@ -348,7 +351,6 @@
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
     <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
-    <Compile Include="Interfaces\ICart.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />

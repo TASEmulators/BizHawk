@@ -16,15 +16,17 @@ namespace BizHawk.MultiClient
 	public class LuaImplementation
 	{
 		public LuaDocumentation docs = new LuaDocumentation();
-		Lua lua = new Lua();
-		LuaConsole Caller;
+		private Lua lua = new Lua();
+		private LuaConsole Caller;
 		public EventWaitHandle LuaWait;
 		public bool isRunning;
 		private int CurrentMemoryDomain = 0; //Main memory by default
 		public bool FrameAdvanceRequested;
-		Lua currThread;
-		LuaFunction savestate_registersavefunc;
-		LuaFunction savestate_registerloadfunc;
+		private Lua currThread;
+		private LuaFunction savestate_registersavefunc;
+		private LuaFunction savestate_registerloadfunc;
+		private LuaFunction frame_registerbeforefunc;
+		private LuaFunction frame_registerafterfunc;
 
 		public void SavestateRegisterSave(string name)
 		{
@@ -36,7 +38,8 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					Global.MainForm.LuaConsole1.WriteToOutputWindow("error running function attached by lua function savestate.registersave" +
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
+						"error running function attached by lua function savestate.registersave" +
 						"\nError message: " + e.Message);
 				}
 			}
@@ -52,7 +55,42 @@ namespace BizHawk.MultiClient
 				}
 				catch (SystemException e)
 				{
-					Global.MainForm.LuaConsole1.WriteToOutputWindow("error running function attached by lua function savestate.registerload" +
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
+						"error running function attached by lua function savestate.registerload" +
+						"\nError message: " + e.Message);
+				}
+			}
+		}
+
+		public void FrameRegisterBefore()
+		{
+			if (frame_registerbeforefunc != null)
+			{
+				try
+				{
+					frame_registerbeforefunc.Call();
+				}
+				catch (SystemException e)
+				{
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
+						"error running function attached by lua function emu.registerbefore" +
+						"\nError message: " + e.Message);
+				}
+			}
+		}
+
+		public void FrameRegisterAfter()
+		{
+			if (frame_registerafterfunc != null)
+			{
+				try
+				{
+					frame_registerafterfunc.Call();
+				}
+				catch (SystemException e)
+				{
+					Global.MainForm.LuaConsole1.WriteToOutputWindow(
+						"error running function attached by lua function emu.registerafter" +
 						"\nError message: " + e.Message);
 				}
 			}
@@ -79,7 +117,8 @@ namespace BizHawk.MultiClient
 			lua.NewTable("console");
 			for (int i = 0; i < ConsoleFunctions.Length; i++)
 			{
-				lua.RegisterFunction("console." + ConsoleFunctions[i], this, this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
+				lua.RegisterFunction("console." + ConsoleFunctions[i], this,
+									 this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
 				docs.Add("console", ConsoleFunctions[i], this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
 			}
 
@@ -107,14 +146,16 @@ namespace BizHawk.MultiClient
 			lua.NewTable("mainmemory");
 			for (int i = 0; i < MainMemoryFunctions.Length; i++)
 			{
-				lua.RegisterFunction("mainmemory." + MainMemoryFunctions[i], this, this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
+				lua.RegisterFunction("mainmemory." + MainMemoryFunctions[i], this,
+									 this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
 				docs.Add("mainmemory", MainMemoryFunctions[i], this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
 			}
 
 			lua.NewTable("savestate");
 			for (int i = 0; i < SaveStateFunctions.Length; i++)
 			{
-				lua.RegisterFunction("savestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
+				lua.RegisterFunction("savestate." + SaveStateFunctions[i], this,
+									 this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
 				docs.Add("savestate", SaveStateFunctions[i], this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
 			}
 
@@ -142,7 +183,8 @@ namespace BizHawk.MultiClient
 			lua.NewTable("client");
 			for (int i = 0; i < MultiClientFunctions.Length; i++)
 			{
-				lua.RegisterFunction("client." + MultiClientFunctions[i], this, this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
+				lua.RegisterFunction("client." + MultiClientFunctions[i], this,
+									 this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
 				docs.Add("client", MultiClientFunctions[i], this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
 			}
 
@@ -152,6 +194,14 @@ namespace BizHawk.MultiClient
 				lua.RegisterFunction("forms." + FormsFunctions[i], this, this.GetType().GetMethod("forms_" + FormsFunctions[i]));
 				docs.Add("forms", FormsFunctions[i], this.GetType().GetMethod("forms_" + FormsFunctions[i]));
 			}
+
+			lua.NewTable("bit");
+			for (int i = 0; i < BitwiseFunctions.Length; i++)
+			{
+				lua.RegisterFunction("bit." + BitwiseFunctions[i], this, this.GetType().GetMethod("bit_" + BitwiseFunctions[i]));
+				docs.Add("bit", BitwiseFunctions[i], this.GetType().GetMethod("bit_" + BitwiseFunctions[i]));
+			}
+
 
 			docs.Sort();
 		}
@@ -180,7 +230,9 @@ namespace BizHawk.MultiClient
 		{
 			if (color.GetType() == typeof(Double))
 			{
-				return System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber));
+				return
+					System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"),
+															System.Globalization.NumberStyles.HexNumber));
 			}
 			else
 			{
@@ -192,6 +244,7 @@ namespace BizHawk.MultiClient
 		{
 			return new System.Drawing.SolidBrush(GetColor(color));
 		}
+
 		public Pen GetPen(object color)
 		{
 			return new System.Drawing.Pen(GetColor(color));
@@ -204,6 +257,7 @@ namespace BizHawk.MultiClient
 		 * variable arguments, declare them as optional and pass
 		 * them to this method.
 		 */
+
 		private object[] LuaVarArgs(params object[] lua_args)
 		{
 			int n = lua_args.Length;
@@ -250,184 +304,209 @@ namespace BizHawk.MultiClient
 		/****************************************************/
 		/*************library definitions********************/
 		/****************************************************/
+
 		public static string[] ConsoleFunctions = new string[]
-		{
-			"output",
-			"log",
-			"clear",
-			"getluafunctionslist",
-		};
+		                                          	{
+		                                          		"output",
+		                                          		"log",
+		                                          		"clear",
+		                                          		"getluafunctionslist",
+		                                          	};
 
 		public static string[] GuiFunctions = new string[]
-		{
-			"text",
-			"alert",
-			"cleartext",
-			"drawPixel",
-			"drawLine",
-			"drawRectangle",
-			"drawEllipse",
-			"drawPolygon",
-			"drawBezier",
-			"drawPie",
-			"drawIcon",
-			"drawImage",
-		};
+		                                      	{
+		                                      		"text",
+		                                      		"alert",
+		                                      		"cleartext",
+		                                      		"drawPixel",
+		                                      		"drawLine",
+													"drawBox",
+		                                      		"drawRectangle",
+		                                      		"drawEllipse",
+		                                      		"drawPolygon",
+		                                      		"drawBezier",
+		                                      		"drawPie",
+		                                      		"drawIcon",
+		                                      		"drawImage",
+		                                      	};
 
 		public static string[] EmuFunctions = new string[]
-		{
-			"frameadvance",
-			"yield",
-			"pause",
-			"unpause",
-			"togglepause",
-			"speedmode",
-			"framecount",
-			"lagcount",
-			"islagged",
-			"getsystemid",
-			"setrenderplanes",
-			"frameskip",
-			"minimizeframeskip",
-			"limitframerate",
-			"displayvsync",
-			"enablerewind"
-		};
+		                                      	{
+		                                      		"frameadvance",
+		                                      		"yield",
+		                                      		"pause",
+		                                      		"unpause",
+		                                      		"togglepause",
+		                                      		"ispaused",
+		                                      		"speedmode",
+		                                      		"framecount",
+		                                      		"lagcount",
+		                                      		"islagged",
+		                                      		"getsystemid",
+		                                      		"setrenderplanes",
+		                                      		"frameskip",
+		                                      		"minimizeframeskip",
+		                                      		"limitframerate",
+		                                      		"displayvsync",
+		                                      		"enablerewind",
+													"registerbefore",
+													"registerafter",
+		                                      	};
 
 		public static string[] MemoryFunctions = new string[]
-		{
-			"usememorydomain",
-			"getmemorydomainlist",
-			"getcurrentmemorydomain",
-			"read_s8",
-			"read_u8",
-			"read_s16_le",
-			"read_s24_le",
-			"read_s32_le",
-			"read_u16_le",
-			"read_u24_le",
-			"read_u32_le",
-			"read_s16_be",
-			"read_s24_be",
-			"read_s32_be",
-			"read_u16_be",
-			"read_u24_be",
-			"read_u32_be",
-			"write_s8",
-			"write_u8",
-			"write_s16_le",
-			"write_s24_le",
-			"write_s32_le",
-			"write_u16_le",
-			"write_u24_le",
-			"write_u32_le",
-			"write_s16_be",
-			"write_s24_be",
-			"write_s32_be",
-			"write_u16_be",
-			"write_u24_be",
-			"write_u32_be",
-			"readbyte",
-			"writebyte",
-			//"registerwrite",
-			//"registerread",
-		};
+		                                         	{
+		                                         		"usememorydomain",
+		                                         		"getmemorydomainlist",
+		                                         		"getcurrentmemorydomain",
+		                                         		"read_s8",
+		                                         		"read_u8",
+		                                         		"read_s16_le",
+		                                         		"read_s24_le",
+		                                         		"read_s32_le",
+		                                         		"read_u16_le",
+		                                         		"read_u24_le",
+		                                         		"read_u32_le",
+		                                         		"read_s16_be",
+		                                         		"read_s24_be",
+		                                         		"read_s32_be",
+		                                         		"read_u16_be",
+		                                         		"read_u24_be",
+		                                         		"read_u32_be",
+		                                         		"write_s8",
+		                                         		"write_u8",
+		                                         		"write_s16_le",
+		                                         		"write_s24_le",
+		                                         		"write_s32_le",
+		                                         		"write_u16_le",
+		                                         		"write_u24_le",
+		                                         		"write_u32_le",
+		                                         		"write_s16_be",
+		                                         		"write_s24_be",
+		                                         		"write_s32_be",
+		                                         		"write_u16_be",
+		                                         		"write_u24_be",
+		                                         		"write_u32_be",
+		                                         		"readbyte",
+		                                         		"writebyte",
+		                                         		//"registerwrite",
+		                                         		//"registerread",
+		                                         	};
 
 		public static string[] MainMemoryFunctions = new string[]
-		{
-			"read_s8",
-			"read_u8",
-			"read_s16_le",
-			"read_s24_le",
-			"read_s32_le",
-			"read_u16_le",
-			"read_u24_le",
-			"read_u32_le",
-			"read_s16_be",
-			"read_s24_be",
-			"read_s32_be",
-			"read_u16_be",
-			"read_u24_be",
-			"read_u32_be",
-			"write_s8",
-			"write_u8",
-			"write_s16_le",
-			"write_s24_le",
-			"write_s32_le",
-			"write_u16_le",
-			"write_u24_le",
-			"write_u32_le",
-			"write_s16_be",
-			"write_s24_be",
-			"write_s32_be",
-			"write_u16_be",
-			"write_u24_be",
-			"write_u32_be",
-			//"registerwrite",
-			//"registerread",
-		};
+		                                             	{
+		                                             		"read_s8",
+		                                             		"read_u8",
+		                                             		"read_s16_le",
+		                                             		"read_s24_le",
+		                                             		"read_s32_le",
+		                                             		"read_u16_le",
+		                                             		"read_u24_le",
+		                                             		"read_u32_le",
+		                                             		"read_s16_be",
+		                                             		"read_s24_be",
+		                                             		"read_s32_be",
+		                                             		"read_u16_be",
+		                                             		"read_u24_be",
+		                                             		"read_u32_be",
+		                                             		"write_s8",
+		                                             		"write_u8",
+		                                             		"write_s16_le",
+		                                             		"write_s24_le",
+		                                             		"write_s32_le",
+		                                             		"write_u16_le",
+		                                             		"write_u24_le",
+		                                             		"write_u32_le",
+		                                             		"write_s16_be",
+		                                             		"write_s24_be",
+		                                             		"write_s32_be",
+		                                             		"write_u16_be",
+		                                             		"write_u24_be",
+		                                             		"write_u32_be",
+		                                             		//"registerwrite",
+		                                             		//"registerread",
+		                                             	};
 
-		public static string[] SaveStateFunctions = new string[] {
-			"saveslot",
-			"loadslot",
-			"save",
-			"load",
-			"registersave",
-			"registerload",
-		};
+		public static string[] SaveStateFunctions = new string[]
+		                                            	{
+		                                            		"saveslot",
+		                                            		"loadslot",
+		                                            		"save",
+		                                            		"load",
+		                                            		"registersave",
+		                                            		"registerload",
+		                                            	};
 
-		public static string[] MovieFunctions = new string[] {
-			"mode",
-			"isloaded",
-			"rerecordcount",
-			"length",
-			"stop",
-			"filename",
-			"getreadonly",
-			"setreadonly",
-			"getrerecordcounting",
-			"setrerecordcounting",
-			"getinput",
-		};
+		public static string[] MovieFunctions = new string[]
+		                                        	{
+		                                        		"mode",
+		                                        		"isloaded",
+		                                        		"rerecordcount",
+		                                        		"length",
+		                                        		"stop",
+		                                        		"filename",
+		                                        		"getreadonly",
+		                                        		"setreadonly",
+		                                        		"getrerecordcounting",
+		                                        		"setrerecordcounting",
+		                                        		"getinput",
+		                                        	};
 
-		public static string[] InputFunctions = new string[] {
-			"get",
-			"getmouse",
-		};
+		public static string[] InputFunctions = new string[]
+		                                        	{
+		                                        		"get",
+		                                        		"getmouse",
+		                                        	};
 
-		public static string[] JoypadFunctions = new string[] {
-			"set",
-			"get",
-			"getimmediate"
-		};
+		public static string[] JoypadFunctions = new string[]
+		                                         	{
+		                                         		"set",
+		                                         		"get",
+		                                         		"getimmediate"
+		                                         	};
 
-		public static string[] MultiClientFunctions = new string[] {
-			"setwindowsize",
-			"openrom",
-			"closerom",
-			"opentoolbox",
-			"openramwatch",
-			"openramsearch",
-			"openrampoke",
-			"openhexeditor",
-			"opentasstudio",
-			"opencheats",
-		};
+		public static string[] MultiClientFunctions = new string[]
+		                                              	{
+		                                              		"setwindowsize",
+		                                              		"openrom",
+		                                              		"closerom",
+		                                              		"opentoolbox",
+		                                              		"openramwatch",
+		                                              		"openramsearch",
+		                                              		"openrampoke",
+		                                              		"openhexeditor",
+		                                              		"opentasstudio",
+		                                              		"opencheats",
+															"screenwidth",
+															"screenheight",
+		                                              	};
 
-		public static string[] FormsFunctions = new string[] {
-				"newform",
-				"destroy",
-				"destroyall",
-				"button",
-				"label",
-				"textbox",
-				"setlocation",
-				"setsize",
-				"settext",
-				"addclick",
-				"clearclicks",
-				"gettext",
-		};
+		public static string[] FormsFunctions = new string[]
+		                                        	{
+		                                        		"newform",
+		                                        		"destroy",
+		                                        		"destroyall",
+		                                        		"button",
+		                                        		"label",
+		                                        		"textbox",
+		                                        		"setlocation",
+		                                        		"setsize",
+		                                        		"settext",
+		                                        		"addclick",
+		                                        		"clearclicks",
+		                                        		"gettext",
+		                                        	};
+
+		public static string[] BitwiseFunctions = new string[]
+		                                          	{
+		                                          		"band",
+		                                          		"lshift",
+		                                          		"rshift",
+		                                          		"rol",
+		                                          		"ror",
+		                                          		"bor",
+		                                          		"bxor",
+		                                          		"bnot",
+		                                          	};
 
 		/****************************************************/
 		/*************function definitions********************/
@@ -466,14 +545,15 @@ namespace BizHawk.MultiClient
 			{
 				list += l.name + "\n";
 			}
-			
+
 			return list;
 		}
 
 		//----------------------------------------------------
 		//Gui library
 		//----------------------------------------------------
-		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object background = null, object forecolor = null, object anchor = null)
+		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object background = null,
+								 object forecolor = null, object anchor = null)
 		{
 			if (!alert)
 			{
@@ -502,10 +582,12 @@ namespace BizHawk.MultiClient
 					a = LuaInt(anchor);
 				}
 			}
-			Global.OSD.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, GetColor(background), GetColor(forecolor), a);
+			Global.OSD.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, GetColor(background), GetColor(forecolor),
+								  a);
 		}
 
-		public void gui_text(object luaX, object luaY, object luaStr, object background = null, object forecolor = null, object anchor = null)
+		public void gui_text(object luaX, object luaY, object luaStr, object background = null, object forecolor = null,
+							 object anchor = null)
 		{
 			do_gui_text(luaX, luaY, luaStr, false, background, forecolor, anchor);
 		}
@@ -577,7 +659,54 @@ namespace BizHawk.MultiClient
 								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
 					}
 				}
-				catch(Exception)
+				catch (Exception)
+				{
+					// need to stop the script from here
+					return;
+				}
+			}
+		}
+
+		public void gui_drawBox(object X, object Y, object X2, object Y2, object line, object background = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					int int_x = LuaInt(X);
+					int int_y = LuaInt(Y);
+					int int_width = LuaInt(X2);
+					int int_height = LuaInt(Y2);
+
+					if (int_x < int_width)
+					{
+						int_width = Math.Abs(int_x - int_width);
+					}
+					else
+					{
+						int_width = int_x - int_width;
+						int_x -= int_width;
+					}
+
+					if (int_y < int_height)
+					{
+						int_height = Math.Abs(int_y - int_height);
+					}
+					else
+					{
+						int_height = int_y - int_height;
+						int_y -= int_height;
+					}
+
+					using (var pen = GetPen(line))
+					{
+						g.DrawRectangle(pen, int_x, int_y, int_width, int_height);
+						if (background != null)
+							using (var brush = GetBrush(background))
+								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
+					}
+				}
+				catch (Exception)
 				{
 					// need to stop the script from here
 					return;
@@ -594,7 +723,7 @@ namespace BizHawk.MultiClient
 				{
 					if (color == null)
 						color = "black";
-					using(var pen = GetPen(color))
+					using (var pen = GetPen(color))
 						g.DrawLine(pen, LuaInt(X), LuaInt(Y), x, LuaInt(Y));
 				}
 				catch (Exception)
@@ -603,6 +732,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
+
 		public void gui_drawLine(object x1, object y1, object x2, object y2, object color = null)
 		{
 			using (var g = luaSurface.GetGraphics())
@@ -611,7 +741,7 @@ namespace BizHawk.MultiClient
 				{
 					if (color == null)
 						color = "black";
-					using(var pen = GetPen(color))
+					using (var pen = GetPen(color))
 						g.DrawLine(pen, LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
 				}
 				catch (Exception)
@@ -693,7 +823,7 @@ namespace BizHawk.MultiClient
 						if (i >= 4)
 							break;
 					}
-					using(var pen = GetPen(color))
+					using (var pen = GetPen(color))
 						g.DrawBezier(pen, Points[0], Points[1], Points[2], Points[3]);
 				}
 				catch (Exception)
@@ -703,18 +833,19 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle, object line, object background = null)
+		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle,
+								object line, object background = null)
 		{
 			using (var g = luaSurface.GetGraphics())
 			{
 				try
 				{
-					using(var pen = GetPen(line))
+					using (var pen = GetPen(line))
 					{
 						g.DrawPie(pen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
 						if (background != null)
 						{
-							using(var brush = GetBrush(background))
+							using (var brush = GetBrush(background))
 								g.FillPie(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
 						}
 					}
@@ -743,10 +874,10 @@ namespace BizHawk.MultiClient
 					{
 						icon = new Icon(Path.ToString());
 					}
-						
+
 					g.DrawIcon(icon, LuaInt(x), LuaInt(y));
 				}
-				catch(Exception)
+				catch (Exception)
 				{
 					return;
 				}
@@ -807,6 +938,11 @@ namespace BizHawk.MultiClient
 		public void emu_togglepause()
 		{
 			Global.MainForm.TogglePause();
+		}
+
+		public bool emu_ispaused()
+		{
+			return Global.MainForm.EmulatorPaused;
 		}
 
 		public int emu_framecount()
@@ -971,6 +1107,16 @@ namespace BizHawk.MultiClient
 				Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
 				Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
 			}
+		}
+
+		public void emu_registerbefore(LuaFunction luaf)
+		{
+			frame_registerbeforefunc = luaf;
+		}
+
+		public void emu_registerafter(LuaFunction luaf)
+		{
+			frame_registerafterfunc = luaf;
 		}
 
 		//----------------------------------------------------
@@ -1528,6 +1674,49 @@ namespace BizHawk.MultiClient
 		}
 
 		//----------------------------------------------------
+		//Bitwise Operator library
+		//----------------------------------------------------
+		public uint bit_band(object val, object amt)
+		{
+			return (uint) (LuaInt(val) & LuaInt(amt));
+		}
+
+		public uint bit_lshift(object val, object amt)
+		{
+			return (uint) (LuaInt(val) << LuaInt(amt));
+		}
+
+		public uint bit_rshift(object val, object amt)
+		{
+			return (uint) (LuaInt(val) >> LuaInt(amt));
+		}
+
+		public uint bit_rol(object val, object amt)
+		{
+			return (uint) ((LuaInt(val) << LuaInt(amt)) | (LuaInt(val) >> (32 - LuaInt(amt))));
+		}
+
+		public uint bit_ror(object val, object amt)
+		{
+			return (uint) ((LuaInt(val) >> LuaInt(amt)) | (LuaInt(val) << (32 - LuaInt(amt))));
+		}
+
+		public uint bit_bor(object val, object amt)
+		{
+			return (uint) (LuaInt(val) | LuaInt(amt));
+		}
+
+		public uint bit_bxor(object val, object amt)
+		{
+			return (uint) (LuaInt(val) ^ LuaInt(amt));
+		}
+
+		public uint bit_bnot(object val)
+		{
+			return (uint) (~LuaInt(val));
+		}
+
+		//----------------------------------------------------
 		//Savestate library
 		//----------------------------------------------------
 		public void savestate_saveslot(object lua_input)
@@ -1601,7 +1790,22 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public string movie_mode()
 		{
-			return Global.MovieSession.Movie.Mode.ToString();
+			if (Global.MovieSession.Movie.IsFinished)
+			{
+				return "FINISHED";
+			}
+			else if (Global.MovieSession.Movie.IsPlaying)
+			{
+				return "PLAY";
+			}
+			else if (Global.MovieSession.Movie.IsRecording)
+			{
+				return "RECORD";
+			}
+			else
+			{
+				return "INACTIVE";
+			}
 		}
 
 		public string movie_rerecordcount()
@@ -1611,20 +1815,24 @@ namespace BizHawk.MultiClient
 
 		public void movie_stop()
 		{
-			Global.MovieSession.Movie.StopMovie();
+			Global.MovieSession.Movie.Stop();
 		}
 
 		public bool movie_isloaded()
 		{
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
-				return false;
-			else
+			if (Global.MovieSession.Movie.IsActive)
+			{
 				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		public int movie_length()
 		{
-			return Global.MovieSession.Movie.LogLength();
+			return Global.MovieSession.Movie.Frames;
 		}
 
 		public string movie_filename()
@@ -1649,7 +1857,7 @@ namespace BizHawk.MultiClient
 		{
 			LuaTable input = lua.NewTable();
 
-			string s = Global.MovieSession.Movie.GetInputFrame(LuaInt(frame));
+			string s = Global.MovieSession.Movie.GetInput(LuaInt(frame));
 			MovieControllerAdapter m = new MovieControllerAdapter();
 			m.Type = Global.MovieSession.MovieControllerAdapter.Type;
 			m.SetControllersAsMnemonic(s);
@@ -1661,15 +1869,15 @@ namespace BizHawk.MultiClient
 
 		public bool movie_getrerecordcounting()
 		{
-			return Global.MovieSession.Movie.RerecordCounting;
+			return Global.MovieSession.Movie.IsCountingRerecords;
 		}
 
 		public void movie_setrerecordcounting(object lua_input)
 		{
 			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
-				Global.MovieSession.Movie.RerecordCounting = true;
+				Global.MovieSession.Movie.IsCountingRerecords = true;
 			else
-				Global.MovieSession.Movie.RerecordCounting = false;
+				Global.MovieSession.Movie.IsCountingRerecords = false;
 		}
 		//----------------------------------------------------
 		//Input library
@@ -1714,19 +1922,29 @@ namespace BizHawk.MultiClient
 
 		public void joypad_set(LuaTable buttons, object controller = null)
 		{
-            foreach (var button in buttons.Keys)
-            {
-                if (Convert.ToBoolean(buttons[button]) == true)
+			foreach (var button in buttons.Keys)
+			{
+				if (Convert.ToBoolean(buttons[button]) == true)
 					if (controller == null)
-                        Global.ClickyVirtualPadController.Click(button.ToString());
-                    else
+						Global.ClickyVirtualPadController.Click(button.ToString());
+					else
 						Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
-            }
+			}
 		}
 
 		//----------------------------------------------------
 		//Client library
 		//----------------------------------------------------
+		public int client_screenwidth()
+		{
+			return Global.RenderPanel.NativeSize.Width;
+		}
+
+		public int client_screenheight()
+		{
+			return Global.RenderPanel.NativeSize.Height;
+		}
+
 		public void client_openrom(object lua_input)
 		{
 			Global.MainForm.LoadRom(lua_input.ToString());
@@ -1796,12 +2014,14 @@ namespace BizHawk.MultiClient
 			Global.MainForm.LoadCheatsWindow();
 		}
 
-		//Winforms
+		//----------------------------------------------------
+		//Winforms library
+		//----------------------------------------------------
 		public List<LuaWinform> LuaForms = new List<LuaWinform>();
 
 		public int forms_newform(object Width = null, object Height = null, object title = null)
 		{
-			
+
 			LuaWinform theForm = new LuaWinform();
 			LuaForms.Add(theForm);
 			if (Width != null && Height != null)
@@ -1909,23 +2129,29 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null)
+		public int forms_button(object form_handle, object caption, LuaFunction lua_event, object X = null, object Y = null, object width = null, object height = null)
 		{
 			LuaWinform form = GetForm(form_handle);
 			if (form == null)
 			{
 				return 0;
 			}
-			
+
 			LuaButton button = new LuaButton();
 			SetText(button, caption);
 			form.Controls.Add(button);
 			form.Control_Events.Add(new LuaWinform.Lua_Event(button.Handle, lua_event));
-			SetLocation(button, X, Y);
+
+			if (X != null && Y != null)
+				SetLocation(button, X, Y);
+
+			if (width != null & height != null)
+				SetSize(button, width, height);
+
 			return (int)button.Handle;
 		}
 
-		public int forms_label(object form_handle, object caption, object X = null, object Y = null)
+		public int forms_label(object form_handle, object caption, object X = null, object Y = null, object width = null, object height = null)
 		{
 			LuaWinform form = GetForm(form_handle);
 			if (form == null)
@@ -1936,7 +2162,12 @@ namespace BizHawk.MultiClient
 			Label label = new Label();
 			SetText(label, caption);
 			form.Controls.Add(label);
-			SetLocation(label, X, Y);
+			if (X != null && Y != null)
+				SetLocation(label, X, Y);
+
+			if (width != null & height != null)
+				SetSize(label, width, height);
+
 			return (int)label.Handle;
 		}
 
@@ -1950,8 +2181,13 @@ namespace BizHawk.MultiClient
 
 			LuaTextBox textbox = new LuaTextBox();
 			SetText(textbox, caption);
-			SetLocation(textbox, X, Y);
-			SetSize(textbox, X, Y);
+
+			if (X != null && Y != null)
+				SetLocation(textbox, X, Y);
+
+			if (width != null & height != null)
+				SetSize(textbox, width, height);
+
 			if (boxtype != null)
 			{
 				switch (boxtype.ToString().ToUpper())
@@ -2042,6 +2278,28 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void forms_setproperty(object handle, object property, object value)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					form.GetType().GetProperty(property.ToString()).SetValue(form, value, null);
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							control.GetType().GetProperty(property.ToString()).SetValue(control, value, null);
+						}
+					}
+				}
+			}
+		}
+
 		public void forms_addclick(object handle, LuaFunction lua_event)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(handle));
@@ -2092,6 +2350,30 @@ namespace BizHawk.MultiClient
 						if (control.Handle == ptr)
 						{
 							return control.Text;
+						}
+					}
+				}
+			}
+
+			return "";
+		}
+
+		public string forms_getproperty(object handle, object property)
+		{
+			IntPtr ptr = new IntPtr(LuaInt(handle));
+			foreach (LuaWinform form in LuaForms)
+			{
+				if (form.Handle == ptr)
+				{
+					return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
+				}
+				else
+				{
+					foreach (Control control in form.Controls)
+					{
+						if (control.Handle == ptr)
+						{
+							return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
 						}
 					}
 				}

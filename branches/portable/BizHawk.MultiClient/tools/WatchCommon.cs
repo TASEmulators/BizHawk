@@ -25,16 +25,20 @@ namespace BizHawk.MultiClient
 
 				for (int x = 0; x < watchList.Count; x++)
 				{
-					str.Append(string.Format("{0:X4}", watchList[x].address) + "\t");
-					str.Append(watchList[x].GetTypeByChar().ToString() + "\t");
-					str.Append(watchList[x].GetSignedByChar().ToString() + "\t");
+					str.Append(string.Format("{0:X4}", watchList[x].Address) + "\t");
+					str.Append(watchList[x].TypeChar.ToString() + "\t");
+					str.Append(watchList[x].SignedChar.ToString() + "\t");
 
-					if (watchList[x].bigendian == true)
+					if (watchList[x].BigEndian == true)
+					{
 						str.Append("1\t");
+					}
 					else
+					{
 						str.Append("0\t");
+					}
 
-					str.Append(watchList[x].notes + "\n");
+					str.Append(watchList[x].Notes + "\n");
 				}
 
 				sw.WriteLine(str.ToString());
@@ -72,7 +76,7 @@ namespace BizHawk.MultiClient
 					if (s.Length >= 8 && s.Substring(0, 8) == "SystemID")
 						continue;
 
-					z = HowMany(s, '\t');
+					z = StringHelpers.HowMany(s, '\t');
 					if (z == 5)
 					{
 						//If 5, then this is a .wch file format made from another emulator, the first column (watch position) is not needed here
@@ -87,7 +91,7 @@ namespace BizHawk.MultiClient
 					temp = s.Substring(0, s.IndexOf('\t'));
 					try
 					{
-						w.address = int.Parse(temp, NumberStyles.HexNumber);
+						w.Address = int.Parse(temp, NumberStyles.HexNumber);
 					}
 					catch
 					{
@@ -114,28 +118,17 @@ namespace BizHawk.MultiClient
 						continue;
 					}
 					if (y == 0)
-						w.bigendian = false;
+						w.BigEndian = false;
 					else
-						w.bigendian = true;
+						w.BigEndian = true;
 
-					w.notes = s.Substring(2, s.Length - 2);   //User notes
+					w.Notes = s.Substring(2, s.Length - 2);   //User notes
 
 					watchList.Add(w);
 				}
 			}
 
 			return true;
-		}
-
-		public static int HowMany(string str, char c)
-		{
-			int count = 0;
-			for (int x = 0; x < str.Length; x++)
-			{
-				if (str[x] == c)
-					count++;
-			}
-			return count;
 		}
 
 		public static int GetDomainPos(string name)

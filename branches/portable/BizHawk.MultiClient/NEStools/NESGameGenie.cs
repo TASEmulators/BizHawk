@@ -383,9 +383,35 @@ namespace BizHawk.MultiClient
 		{
 			Cheat c = new Cheat();
 			c.name = GameGenieCode.Text;
+
+			if (String.IsNullOrWhiteSpace(AddressBox.Text))
+			{
+				return;
+			}
+			else if (String.IsNullOrWhiteSpace(ValueBox.Text))
+			{
+				return;
+			}
 			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 			c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
-			c.domain = Global.Emulator.MemoryDomains[1];
+
+			if (!String.IsNullOrWhiteSpace(CompareBox.Text))
+			{
+				try
+				{
+					c.compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
+				}
+				catch
+				{
+					c.compare = null;
+				}
+			}
+			else
+			{
+				c.compare = null;
+			}
+
+			c.domain = Global.Emulator.MemoryDomains[1]; //System Bus only
 			c.Enable();
 
 			Global.MainForm.Cheats1.AddCheat(c);

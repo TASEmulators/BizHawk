@@ -33,7 +33,7 @@ namespace BizHawk.MultiClient
 
 		string systemID = "NULL";
 		MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
-		List<Watch> watchList = new List<Watch>();
+		List<Watch> Watches = new List<Watch>();
 		string currentFile = "";
 		bool changes = false;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -62,15 +62,16 @@ namespace BizHawk.MultiClient
 		public List<Watch> GetRamWatchList()
 		{
 			List<Watch> w = new List<Watch>();
-			for (int x = 0; x < watchList.Count; x++)
-				w.Add(new Watch(watchList[x]));
-
+			for (int x = 0; x < Watches.Count; x++)
+			{
+				w.Add(new Watch(Watches[x]));
+			}
 			return w;
 		}
 
 		public void DisplayWatchList()
 		{
-			WatchListView.ItemCount = watchList.Count;
+			WatchListView.ItemCount = Watches.Count;
 		}
 
 		public void UpdateValues()
@@ -80,17 +81,17 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			for (int x = 0; x < watchList.Count; x++)
+			for (int x = 0; x < Watches.Count; x++)
 			{
-				watchList[x].PeekAddress(Domain);
+				Watches[x].PeekAddress();
 			}
 
 			if (Global.Config.DisplayRamWatch)
 			{
-				for (int x = 0; x < watchList.Count; x++)
+				for (int x = 0; x < Watches.Count; x++)
 				{
-					bool alert = Global.CheatList.IsActiveCheat(Domain, watchList[x].address);
-					Global.OSD.AddGUIText(watchList[x].ToString(),
+					bool alert = Global.CheatList.IsActiveCheat(Domain, Watches[x].Address);
+					Global.OSD.AddGUIText(Watches[x].ToString(),
 						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Color.Black, Color.White, 0);
 				}
 			}
@@ -106,7 +107,7 @@ namespace BizHawk.MultiClient
 
 		public void AddWatch(Watch w)
 		{
-			watchList.Add(w);
+			Watches.Add(w);
 			Changes();
 			UpdateValues();
 			DisplayWatchList();
@@ -186,80 +187,72 @@ namespace BizHawk.MultiClient
 		
 		private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index >= watchList.Count)
+			if (index >= Watches.Count)
 			{
 				return;
 			}
 
 			if (column == 0)
 			{
-				if (watchList[index].type == atype.SEPARATOR)
+				if (Watches[index].Type == Watch.TYPE.SEPARATOR)
+				{
 					color = this.BackColor;
-				if (Global.CheatList.IsActiveCheat(Domain, watchList[index].address))
+				}
+				if (Global.CheatList.IsActiveCheat(Domain, Watches[index].Address))
+				{
 					color = Color.LightCyan;
+				}
 			}
 		}
 
 		void WatchListView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
-			if (index >= watchList.Count)
+
+			if (Watches[index].Type == Watch.TYPE.SEPARATOR || index >= Watches.Count)
 			{
 				return;
 			}
 
 			if (column == 0)    //Address
 			{
-				if (watchList[index].type != atype.SEPARATOR)
-				{
-					text = watchList[index].address.ToString(addressFormatStr);
-				}
+				text = Watches[index].Address.ToString(addressFormatStr);
 			}
 			if (column == 1) //Value
 			{
-				text = watchList[index].ValueToString();
+				text = Watches[index].ValueString;
 			}
 			if (column == 2) //Prev
 			{
-				if (watchList[index].type != atype.SEPARATOR)
+				switch(Global.Config.RamWatchPrev_Type)
 				{
-					switch(Global.Config.RamWatchPrev_Type)
-					{
-						case 1:
-							text = watchList[index].PrevToString();
-							break;
-						case 2:
-							text = watchList[index].LastChangeToString();
-							break;
-					}
+					case 1:
+						text = Watches[index].PrevString;
+						break;
+					case 2:
+						text = Watches[index].LastChangeString;
+						break;
 				}
 			}
 			if (column == 3) //Change Counts
 			{
-				if (watchList[index].type != atype.SEPARATOR)
-					text = watchList[index].changecount.ToString();
+				text = Watches[index].Changecount.ToString();
 			}
 			if (column == 4) //Diff
 			{
-				if (watchList[index].type != atype.SEPARATOR)
+				switch(Global.Config.RamWatchPrev_Type)
 				{
-					switch(Global.Config.RamWatchPrev_Type)
-					{
-						case 1:
-							text = watchList[index].DiffToString(watchList[index].diffPrev);
-							break;
-						case 2:
-							text = watchList[index].DiffToString(watchList[index].diffLastChange);
-							break;
-					}
+					case 1:
+						text = Watches[index].DiffToString(Watches[index].DiffPrev);
+						break;
+					case 2:
+						text = Watches[index].DiffToString(Watches[index].DiffLastChange);
+						break;
 				}
 			}
 			if (column == 5) //Notes
 			{
-				if (watchList[index].type == atype.SEPARATOR)
-					text = "";
-				else
-					text = watchList[index].notes;
+				text = Watches[index].Notes;
 			}
 		}
 
@@ -319,7 +312,7 @@ namespace BizHawk.MultiClient
 
 			if (result == true || suppressAsk)
 			{
-				watchList.Clear();
+				Watches.Clear();
 				DisplayWatchList();
 				UpdateWatchCount();
 				currentFile = "";
@@ -332,15 +325,15 @@ namespace BizHawk.MultiClient
 
 		private bool SaveWatchFile(string path)
 		{
-			return WatchCommon.SaveWchFile(path, Domain.Name, watchList);
+			return WatchCommon.SaveWchFile(path, Domain.Name, Watches);
 		}
 
 		private void UpdateWatchCount()
 		{
 			int count = 0;
-			foreach (Watch w in watchList)
+			foreach (Watch w in Watches)
 			{
-				if (!(w.type == atype.SEPARATOR))
+				if (!(w.Type == Watch.TYPE.SEPARATOR))
 				{
 					count++;
 				}
@@ -352,11 +345,11 @@ namespace BizHawk.MultiClient
 		public bool LoadWatchFile(string path, bool append)
 		{
 			string domain = "";
-			bool result = WatchCommon.LoadWatchFile(path, append, watchList, out domain);
+			bool result = WatchCommon.LoadWatchFile(path, append, Watches, out domain);
 
 			if (result)
 			{
-				foreach (Watch w in watchList)
+				foreach (Watch w in Watches)
 				{
 					InitializeAddress(w);
 				}
@@ -396,7 +389,7 @@ namespace BizHawk.MultiClient
 			if (r.userSelected == true)
 			{
 				InitializeAddress(r.watch);
-				watchList.Add(r.watch);
+				Watches.Add(r.watch);
 				Changes();
 				UpdateWatchCount();
 				DisplayWatchList();
@@ -405,12 +398,13 @@ namespace BizHawk.MultiClient
 
 		private void InitializeAddress(Watch w)
 		{
-			w.PeekAddress(Domain);
-			w.prev = w.value;
-			w.original = w.value;
-			w.lastchange = w.value;
-			w.lastsearch = w.value;
-			w.changecount = 0;
+			w.Domain = Domain;
+			w.PeekAddress();
+			w.Prev = w.Value;
+			w.Original = w.Value;
+			w.LastChange = w.Value;
+			w.LastSearch = w.Value;
+			w.Changecount = 0;
 		}
 
 		void Changes()
@@ -423,7 +417,7 @@ namespace BizHawk.MultiClient
 		{
 			RamWatchNewWatch r = new RamWatchNewWatch();
 			r.location = GetPromptPoint();
-			r.SetToEditWatch(watchList[pos], "Edit Watch");
+			r.SetToEditWatch(Watches[pos], "Edit Watch");
 			Global.Sound.StopSound();
 			r.ShowDialog();
 			Global.Sound.StartSound();
@@ -431,7 +425,7 @@ namespace BizHawk.MultiClient
 			if (r.userSelected == true)
 			{
 				Changes();
-				watchList[pos] = r.watch;
+				Watches[pos] = r.watch;
 				DisplayWatchList();
 			}
 		}
@@ -452,7 +446,7 @@ namespace BizHawk.MultiClient
 			{
 				foreach (int index in indexes)
 				{
-					watchList.Remove(watchList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
+					Watches.Remove(Watches[indexes[0]]); //index[0] used since each iteration will make this the correct list index
 				}
 				indexes.Clear();
 				DisplayWatchList();
@@ -469,7 +463,7 @@ namespace BizHawk.MultiClient
 				RamWatchNewWatch r = new RamWatchNewWatch();
 				r.location = GetPromptPoint();
 				int x = indexes[0];
-				r.SetToEditWatch(watchList[x], "Duplicate Watch");
+				r.SetToEditWatch(Watches[x], "Duplicate Watch");
 
 				Global.Sound.StopSound();
 				r.ShowDialog();
@@ -479,7 +473,7 @@ namespace BizHawk.MultiClient
 				{
 					InitializeAddress(r.watch);
 					Changes();
-					watchList.Add(r.watch);
+					Watches.Add(r.watch);
 					DisplayWatchList();
 				}
 			}
@@ -498,9 +492,9 @@ namespace BizHawk.MultiClient
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = watchList[index];
-				watchList.Remove(watchList[index]);
-				watchList.Insert(index - 1, temp);
+				temp = Watches[index];
+				Watches.Remove(Watches[index]);
+				Watches.Insert(index - 1, temp);
 
 				//Note: here it will get flagged many times redundantly potentially, 
 				//but this avoids it being flagged falsely when the user did not select an index
@@ -508,12 +502,15 @@ namespace BizHawk.MultiClient
 			}
 			List<int> i = new List<int>();
 			for (int z = 0; z < indexes.Count; z++)
+			{
 				i.Add(indexes[z] - 1);
+			}
 
 			WatchListView.SelectedIndices.Clear();
 			for (int z = 0; z < i.Count; z++)
+			{
 				WatchListView.SelectItem(i[z], true);
-
+			}
 
 			DisplayWatchList();
 		}
@@ -525,13 +522,13 @@ namespace BizHawk.MultiClient
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = watchList[index];
+				temp = Watches[index];
 
-				if (index < watchList.Count - 1)
+				if (index < Watches.Count - 1)
 				{
 
-					watchList.Remove(watchList[index]);
-					watchList.Insert(index + 1, temp);
+					Watches.Remove(Watches[index]);
+					Watches.Insert(index + 1, temp);
 
 				}
 
@@ -754,13 +751,13 @@ namespace BizHawk.MultiClient
 
 			if (InputValidate.IsValidHexNumber(Str))
 			{
-				watchList[e.Item].address = int.Parse(Str, NumberStyles.HexNumber);
+				Watches[e.Item].Address = int.Parse(Str, NumberStyles.HexNumber);
 				EditWatchObject(index);
 			}
 			else
 			{
 				MessageBox.Show("Invalid number!"); //TODO: More parameters and better message
-				WatchListView.Items[index].Text = watchList[index].address.ToString(); //TODO: Why doesn't the list view update to the new value? It won't until something else changes
+				WatchListView.Items[index].Text = Watches[index].Address.ToString(); //TODO: Why doesn't the list view update to the new value? It won't until something else changes
 			}
 		}
 
@@ -817,7 +814,7 @@ namespace BizHawk.MultiClient
 		{
 			Changes();
 			Watch w = new Watch();
-			w.type = atype.SEPARATOR;
+			w.Type = Watch.TYPE.SEPARATOR;
 
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 			int x;
@@ -825,10 +822,12 @@ namespace BizHawk.MultiClient
 			{
 				x = indexes[0];
 				if (indexes[0] > 0)
-					watchList.Insert(indexes[0], w);
+					Watches.Insert(indexes[0], w);
 			}
 			else
-				watchList.Add(w);
+			{
+				Watches.Add(w);
+			}
 			DisplayWatchList();
 		}
 
@@ -884,7 +883,9 @@ namespace BizHawk.MultiClient
 			RamPoke p = new RamPoke();
 			Global.Sound.StartSound();
 			if (indexes.Count > 0)
-				p.SetWatchObject(watchList[indexes[0]], Domain);
+			{
+				p.SetWatchObject(Watches[indexes[0]]);
+			}
 			p.location = GetPromptPoint();
 			p.ShowDialog();
 			UpdateValues();
@@ -979,7 +980,7 @@ namespace BizHawk.MultiClient
 
 				if (indexes.Count == 1)
 				{
-					if (Global.CheatList.IsActiveCheat(Domain, watchList[indexes[0]].address))
+					if (Global.CheatList.IsActiveCheat(Domain, Watches[indexes[0]].Address))
 					{
 						contextMenuStrip1.Items[4].Text = "&Unfreeze address";
 						contextMenuStrip1.Items[4].Image =
@@ -1036,8 +1037,8 @@ namespace BizHawk.MultiClient
 
 		private void ClearChangeCounts()
 		{
-			for (int x = 0; x < watchList.Count; x++)
-				watchList[x].changecount = 0;
+			for (int x = 0; x < Watches.Count; x++)
+				Watches[x].Changecount = 0;
 			DisplayWatchList();
 			MessageLabel.Text = "Change counts cleared";
 		}
@@ -1108,7 +1109,7 @@ namespace BizHawk.MultiClient
 			if (indexes.Count > 0)
 			{
 				Global.MainForm.LoadHexEditor();
-				Global.MainForm.HexEditor1.GoToAddress(watchList[indexes[0]].address);
+				Global.MainForm.HexEditor1.GoToAddress(Watches[indexes[0]].Address);
 			}
 		}
 
@@ -1148,20 +1149,20 @@ namespace BizHawk.MultiClient
 			{
 				for (int i = 0; i < indexes.Count; i++)
 				{
-					switch (watchList[indexes[i]].type)
+					switch (Watches[indexes[i]].Type)
 					{
-						case atype.BYTE:
-							Cheat c = new Cheat("", watchList[indexes[i]].address, (byte)watchList[indexes[i]].value,
+						case Watch.TYPE.BYTE:
+							Cheat c = new Cheat("", Watches[indexes[i]].Address, (byte)Watches[indexes[i]].Value,
 								true, Domain);
 							Global.MainForm.Cheats1.AddCheat(c);
 							break;
-						case atype.WORD:
+						case Watch.TYPE.WORD:
 							{
-								byte low = (byte)(watchList[indexes[i]].value / 256);
-								byte high = (byte)(watchList[indexes[i]].value);
-								int a1 = watchList[indexes[i]].address;
-								int a2 = watchList[indexes[i]].address + 1;
-								if (watchList[indexes[i]].bigendian)
+								byte low = (byte)(Watches[indexes[i]].Value / 256);
+								byte high = (byte)(Watches[indexes[i]].Value);
+								int a1 = Watches[indexes[i]].Address;
+								int a2 = Watches[indexes[i]].Address + 1;
+								if (Watches[indexes[i]].BigEndian)
 								{
 									Cheat c1 = new Cheat("", a1, low, true, Domain);
 									Cheat c2 = new Cheat("", a2, high, true, Domain);
@@ -1177,17 +1178,17 @@ namespace BizHawk.MultiClient
 								}
 							}
 							break;
-						case atype.DWORD:
+						case Watch.TYPE.DWORD:
 							{
-								byte HIWORDhigh = (byte)(watchList[indexes[i]].value / 0x1000000);
-								byte HIWORDlow = (byte)(watchList[indexes[i]].value / 0x10000);
-								byte LOWORDhigh = (byte)(watchList[indexes[i]].value / 0x100);
-								byte LOWORDlow = (byte)(watchList[indexes[i]].value);
-								int a1 = watchList[indexes[i]].address;
-								int a2 = watchList[indexes[i]].address + 1;
-								int a3 = watchList[indexes[i]].address + 2;
-								int a4 = watchList[indexes[i]].address + 3;
-								if (watchList[indexes[i]].bigendian)
+								byte HIWORDhigh = (byte)(Watches[indexes[i]].Value / 0x1000000);
+								byte HIWORDlow = (byte)(Watches[indexes[i]].Value / 0x10000);
+								byte LOWORDhigh = (byte)(Watches[indexes[i]].Value / 0x100);
+								byte LOWORDlow = (byte)(Watches[indexes[i]].Value);
+								int a1 = Watches[indexes[i]].Address;
+								int a2 = Watches[indexes[i]].Address + 1;
+								int a3 = Watches[indexes[i]].Address + 2;
+								int a4 = Watches[indexes[i]].Address + 3;
+								if (Watches[indexes[i]].BigEndian)
 								{
 									Cheat c1 = new Cheat("", a1, HIWORDhigh, true, Domain);
 									Cheat c2 = new Cheat("", a2, HIWORDlow, true, Domain);
@@ -1223,20 +1224,20 @@ namespace BizHawk.MultiClient
 			{
 				for (int i = 0; i < indexes.Count; i++)
 				{
-					switch (watchList[indexes[i]].type)
+					switch (Watches[indexes[i]].Type)
 					{
-						case atype.BYTE:
-							Global.CheatList.Remove(Domain, watchList[indexes[i]].address);
+						case Watch.TYPE.BYTE:
+							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address);
 							break;
-						case atype.WORD:
-							Global.CheatList.Remove(Domain, watchList[indexes[i]].address);
-							Global.CheatList.Remove(Domain, watchList[indexes[i]].address + 1);
+						case Watch.TYPE.WORD:
+							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address);
+							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address + 1);
 							break;
-						case atype.DWORD:
-							Global.CheatList.Remove(Domain, watchList[indexes[i]].address);
-							Global.CheatList.Remove(Domain, watchList[indexes[i]].address + 1);
-							Global.CheatList.Remove(Domain, watchList[indexes[i]].address + 2);
-							Global.CheatList.Remove(Domain, watchList[indexes[i]].address + 3);
+						case Watch.TYPE.DWORD:
+							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address);
+							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address + 1);
+							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address + 2);
+							Global.CheatList.Remove(Domain, Watches[indexes[i]].Address + 3);
 							break;
 					}
 				}
@@ -1398,7 +1399,7 @@ namespace BizHawk.MultiClient
 			string columnName = WatchListView.Columns[columnToOrder].Text;
 			if (sortedCol.CompareTo(columnName) != 0)
 				sortReverse = false;
-			watchList.Sort((x, y) => x.CompareTo(y, columnName, Global.Config.RamWatchPrev_Type == 1 ? prevDef.LASTFRAME : prevDef.LASTCHANGE) * (sortReverse ? -1 : 1));
+			Watches.Sort((x, y) => x.CompareTo(y, columnName, Global.Config.RamWatchPrev_Type == 1 ? Watch.PREVDEF.LASTFRAME : Watch.PREVDEF.LASTCHANGE) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
 			WatchListView.Refresh();
@@ -1426,7 +1427,7 @@ namespace BizHawk.MultiClient
 
 		private void SelectAll()
 		{
-			for (int x = 0; x < watchList.Count; x++)
+			for (int x = 0; x < Watches.Count; x++)
 				WatchListView.SelectItem(x, true);
 		}
 
@@ -1453,7 +1454,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
 			{
-				for (int x = 0; x < watchList.Count; x++)
+				for (int x = 0; x < Watches.Count; x++)
 				{
 					WatchListView.SelectItem(x, true);
 				}

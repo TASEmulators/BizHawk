@@ -18,11 +18,7 @@
                 components.Dispose();
             }
 
-			//Todo remove once save state log memory issues are fixed
-			Global.MovieSession.Movie.TastudioOn = false;
-			Global.MovieSession.Movie.ClearStates();
-
-			Global.MainForm.StopOnFrame = Global.MovieSession.Movie.LogLength();
+			Global.MovieSession.Movie.StateCapturing = false;
 
 			base.Dispose(disposing);
         }

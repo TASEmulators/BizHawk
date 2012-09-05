@@ -9,38 +9,19 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-	public enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
 	public class Movie
 	{
-		public MovieHeader Header = new MovieHeader();
-		public SubtitleList Subtitles = new SubtitleList();
-		public bool MakeBackup = true; //make backup before altering movie
+		#region Constructors
 
-		//Remove this once the memory mangement issues with save states for tastudio has been solved.
-		public bool TastudioOn = false;
-
-		public bool IsText { get; private set; }
-		public string Filename { get; private set; }
-		public MOVIEMODE Mode { get; set; }
-		public int Rerecords { get; private set; }
-		private int Frames;
-		public bool RerecordCounting { get; set; }
-
-		private MovieLog Log = new MovieLog();
-		private int lastLog;
-
-		public bool StartsFromSavestate { get; private set; }
-		public bool Loaded { get; private set; }
-
-		public Movie(string filename, MOVIEMODE m)
+		public Movie(string filename)
 		{
-			Mode = m;
-			lastLog = 0;
+			Mode = MOVIEMODE.INACTIVE;
+			lastlog = 0;
 			Rerecords = 0;
 			this.Filename = filename;
 			IsText = true;
-			Frames = 0;
-			RerecordCounting = true;
+			preload_framecount = 0;
+			IsCountingRerecords = true;
 			StartsFromSavestate = false;
 			if (filename.Length > 0)
 				Loaded = true;
@@ -51,212 +32,257 @@ namespace BizHawk.MultiClient
 			Filename = "";
 			Mode = MOVIEMODE.INACTIVE;
 			IsText = true;
-			Frames = 0;
+			preload_framecount = 0;
 			StartsFromSavestate = false;
 			Loaded = false;
-			RerecordCounting = true;
+			IsCountingRerecords = true;
 		}
 
-		public string SysID()
-		{
-			return Header.GetHeaderLine(MovieHeader.PLATFORM);
-		}
+		#endregion
 
-		public string GUID()
-		{
-			return Header.GetHeaderLine(MovieHeader.GUID);
-		}
+		#region Properties
+		public MovieHeader Header = new MovieHeader();
+		public SubtitleList Subtitles = new SubtitleList();
+		
+		public bool MakeBackup = true; //make backup before altering movie
+		public string Filename;
+		public bool IsCountingRerecords;
+		
+		public bool Loaded { get; private set; }
+		public bool IsText { get; private set; }
 
-		public string GetGameName()
+		public int Rerecords
 		{
-			return Header.GetHeaderLine(MovieHeader.GAMENAME);
-		}
-
-		public int LogLength()
-		{
-			if (Loaded)
-				return Log.MovieLength();
-			else
-				return Frames;
-		}
-
-		public void UpdateFileName(string filename)
-		{
-			this.Filename = filename;
-		}
-
-		public void StopMovie()
-		{
-			if (Mode == MOVIEMODE.RECORD)
-				WriteMovie();
-			Mode = MOVIEMODE.INACTIVE;
-		}
-
-		public void CaptureState()
-		{
-			if (TastudioOn == true)
+			get
 			{
-				byte[] state = Global.Emulator.SaveStateBinary();
-				Log.AddState(state);
+				return rerecords;
+			}
+			set
+			{
+				rerecords = value;
+				Header.SetHeaderLine(MovieHeader.RERECORDS, Rerecords.ToString());
 			}
 		}
 
-		public void ClearStates()
+		public string SysID
 		{
-			Log.ClearStates();
+			get
+			{
+				return Header.GetHeaderLine(MovieHeader.PLATFORM);
+			}
 		}
 
-		public void RewindToFrame(int frame)
+		public string GUID
 		{
-			if (frame <= Global.Emulator.Frame)
+			get
 			{
-				if (frame <= Log.StateFirstIndex())
+				return Header.GetHeaderLine(MovieHeader.GUID);
+			}
+		}
+
+		public string GameName
+		{
+			get
+			{
+				return Header.GetHeaderLine(MovieHeader.GAMENAME);
+			}
+		}
+
+		public int Frames
+		{
+			get
+			{
+				if (Loaded)
 				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
-					if (true == Global.MainForm.EmulatorPaused && 0 != frame)
-					{
-						Global.MainForm.StopOnFrame = frame;
-						Global.MainForm.UnpauseEmulator();
-					}
-					if (MOVIEMODE.RECORD == Mode)
-					{
-						Mode = MOVIEMODE.PLAY;
-						Global.MainForm.RestoreReadWriteOnStop = true;
-					}
+					return Log.Length;
 				}
 				else
 				{
-					if (0 == frame)
-					{
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetInitState())));
-					}
-					else
-					{
-						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
-						Global.MainForm.UpdateFrame = true;
-					}
+					return preload_framecount;
 				}
-			}
-			else
-			{
-				Global.MainForm.StopOnFrame = frame;
-				Global.MainForm.UnpauseEmulator();
 			}
 		}
 
-		public void DeleteFrame(int frame)
+		public bool StartsFromSavestate
 		{
-			if (frame <= StateLastIndex())
+			get
 			{
-				if (frame <= StateFirstIndex())
+				return startsfromsavestate;
+			}
+			set
+			{
+				startsfromsavestate = value;
+				if (value == true)
 				{
-					RewindToFrame(0);
+					Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
 				}
 				else
 				{
-					RewindToFrame(frame);
+					Header.RemoveHeaderLine(MovieHeader.STARTSFROMSAVESTATE);
 				}
 			}
-			Log.DeleteFrame(frame);
 		}
 
-		public int StateFirstIndex()
+		public int StateFirstIndex
 		{
-			return Log.StateFirstIndex();
+			get
+			{
+				return Log.StateFirstIndex;
+			}
 		}
 
-		public int StateLastIndex()
+		public int StateLastIndex
 		{
-			return Log.StateLastIndex();
+			get
+			{
+				return Log.StateLastIndex;
+			}
 		}
 
-		public void ClearSaveRAM()
+		public bool StateCapturing
 		{
-			string x = PathManager.SaveRamPath(Global.Game);
-
-			var file = new FileInfo(PathManager.SaveRamPath(Global.Game));
-			if (file.Exists) file.Delete();
+			get
+			{
+				return statecapturing;
+			}
+			set
+			{
+				statecapturing = value;
+				if (value == false)
+				{
+					Log.ClearStates();
+				}
+				
+			}
 		}
 
-		public void StartNewRecording() { StartNewRecording(true); }
-		public void StartNewRecording(bool truncate)
+		#endregion
+
+		#region Public Mode Methods
+
+		public bool IsPlaying
 		{
-			ClearSaveRAM();
+			get
+			{
+				if (Mode == MOVIEMODE.PLAY || Mode == MOVIEMODE.FINISHED)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		public bool IsRecording
+		{
+			get
+			{
+				if (Mode == MOVIEMODE.RECORD)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		public bool IsActive
+		{
+			get
+			{
+				if (Mode == MOVIEMODE.INACTIVE)
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+		}
+
+		public bool IsFinished
+		{
+			get
+			{
+				if (Mode == MOVIEMODE.FINISHED)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Tells the movie to start recording from the beginning, this will clear sram, and the movie log
+		/// </summary>
+		/// <param name="truncate"></param>
+		public void StartRecording(bool truncate = true)
+		{
+			Global.MainForm.ClearSaveRAM();
 			Mode = MOVIEMODE.RECORD;
-			if (Global.Config.EnableBackupMovies && MakeBackup && Log.MovieLength() > 0)
+			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length > 0)
 			{
 				WriteBackup();
 				MakeBackup = false;
 			}
-			if (truncate) Log.Clear();
+			if (truncate)
+			{
+				Log.Clear();
+			}
 		}
 
 		public void StartPlayback()
 		{
-			ClearSaveRAM();
+			Global.MainForm.ClearSaveRAM();
 			Mode = MOVIEMODE.PLAY;
-			Global.MainForm.StopOnFrame = LogLength();
 		}
 
-		public void ResumeRecording()
+		/// <summary>
+		/// Tells the movie to recording mode
+		/// </summary>
+		public void SwitchToRecord()
 		{
 			Mode = MOVIEMODE.RECORD;
 		}
 
-		public void CommitFrame(int frameNum, IController source)
+
+		/// <summary>
+		/// Tells the movie to go into playback mode
+		/// </summary>
+		public void SwitchToPlay()
 		{
-			//if (Global.Emulator.Frame < Log.Length())
-			//{
-			//    Log.Truncate(Global.Emulator.Frame);
-			//}
-
-			//Note: Truncation here instead of loadstate will make VBA style loadstates
-			//(Where an entire movie is loaded then truncated on the next frame
-			//this allows users to restore a movie with any savestate from that "timeline"
-
-			MnemonicsGenerator mg = new MnemonicsGenerator();
-
-			mg.SetSource(source);
-
-			Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
+			Mode = MOVIEMODE.PLAY;
 		}
 
-		public string GetInputFrame(int frame)
+		public void Stop()
 		{
-			lastLog = frame;
-			if (frame < Log.MovieLength())
-				return Log.GetFrame(frame);
-			else
-				return "";
+			if (Mode == MOVIEMODE.RECORD)
+			{
+				WriteMovie();
+			}
+
+			Mode = MOVIEMODE.INACTIVE;
 		}
 
-		public void ModifyFrame(string record, int frame)
+		public void Finish()
 		{
-			Log.SetFrameAt(frame, record);
+			if (Mode == MOVIEMODE.PLAY)
+			{
+				Mode = MOVIEMODE.FINISHED;
+			}
 		}
+		
+		#endregion
 
-		public void ClearFrame(int frame)
-		{
-			MnemonicsGenerator mg = new MnemonicsGenerator();
-			Log.SetFrameAt(frame, mg.GetEmptyMnemonic());
-		}
-
-		public void AppendFrame(string record)
-		{
-			Log.AddFrame(record);
-		}
-
-		public void InsertFrame(string record, int frame)
-		{
-			Log.AddFrameAt(record, frame);
-		}
-
-		public void InsertBlankFrame(int frame)
-		{
-			MnemonicsGenerator mg = new MnemonicsGenerator();
-			Log.AddFrameAt(mg.GetEmptyMnemonic(), frame);
-		}
+		#region Public File Handling
 
 		public void WriteMovie()
 		{
@@ -278,22 +304,482 @@ namespace BizHawk.MultiClient
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
 			Global.OSD.AddMessage("Backup movie saved to " + BackupName);
 			if (IsText)
+			{
 				WriteText(BackupName);
+			}
 			else
+			{
 				WriteBinary(BackupName);
-
+			}
 		}
+
+		/// <summary>
+		/// Load Header information only for displaying file information in dialogs such as play movie
+		/// </summary>
+		/// <returns></returns>
+		public bool PreLoadText(HawkFile file)
+		{
+			Loaded = false;
+			Header.Clear();
+			Log.Clear();
+			
+			StreamReader sr = new StreamReader(file.GetStream());
+			string str = "";
+            while ((str = sr.ReadLine()) != null)
+				{
+					if (str == "" || Header.AddHeaderFromLine(str))
+						continue;
+					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+						Subtitles.AddSubtitle(str);
+					else if (str[0] == '|')
+					{
+						string frames = sr.ReadToEnd();
+						int length = str.Length;
+						// Account for line breaks of either size.
+						if (frames.IndexOf("\r\n") != -1)
+							length++;
+						length++;
+						// Count the remaining frames and the current one.
+						this.preload_framecount = (frames.Length / length) + 1;
+						break;
+					}
+					else
+						Header.Comments.Add(str);
+				}
+
+			sr.BaseStream.Position = 0; //Reset stream for others to use
+			return true;
+		}
+
+		public bool LoadMovie()
+		{
+			var file = new FileInfo(Filename);
+			if (file.Exists == false)
+			{
+				Loaded = false;
+				return false;
+			}
+
+			return LoadText();
+		}
+
+		#endregion
+
+		#region Public Log Editing
+
+		public string GetInput(int frame)
+		{
+			lastlog = frame;
+			if (frame < Log.Length)
+			{
+				return Log.GetFrame(frame);
+			}
+			else
+			{
+				return "";
+			}
+		}
+
+		public void ModifyFrame(string record, int frame)
+		{
+			Log.SetFrameAt(frame, record);
+		}
+
+		public void ClearFrame(int frame)
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			Log.SetFrameAt(frame, mg.GetEmptyMnemonic());
+		}
+
+		public void AppendFrame(string record)
+		{
+			Log.AppendFrame(record);
+		}
+
+		public void InsertFrame(string record, int frame)
+		{
+			Log.AddFrameAt(frame, record);
+		}
+
+		public void InsertBlankFrame(int frame)
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			Log.AddFrameAt(frame, mg.GetEmptyMnemonic());
+		}
+
+		public void DeleteFrame(int frame)
+		{
+			if (frame <= StateLastIndex)
+			{
+				if (frame <= StateFirstIndex)
+				{
+					RewindToFrame(0);
+				}
+				else
+				{
+					RewindToFrame(frame);
+				}
+			}
+			Log.DeleteFrame(frame);
+		}
+
+		public void TruncateMovie(int frame)
+		{
+			Log.TruncateMovie(frame);
+		}
+
+		#endregion
+
+		#region Public Misc Methods
+
+		public bool FrameLagged(int frame)
+		{
+			return Log.FrameLagged(frame);
+		}
+
+		public void CaptureState()
+		{
+			if (StateCapturing == true)
+			{
+				byte[] state = Global.Emulator.SaveStateBinary();
+				Log.AddState(state);
+			}
+		}
+
+		public void RewindToFrame(int frame)
+		{
+			if (Mode == MOVIEMODE.INACTIVE || Mode == MOVIEMODE.FINISHED)
+			{
+				return;
+			}
+			if (frame <= Global.Emulator.Frame)
+			{
+				if (frame <= Log.StateFirstIndex)
+				{
+					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
+					if (Global.MainForm.EmulatorPaused == true && frame > 0)
+					{
+						Global.MainForm.UnpauseEmulator();
+					}
+					if (MOVIEMODE.RECORD == Mode)
+					{
+						Mode = MOVIEMODE.PLAY;
+						Global.MainForm.RestoreReadWriteOnStop = true;
+					}
+				}
+				else
+				{
+					if (frame == 0)
+					{
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.InitState)));
+					}
+					else
+					{
+						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
+						if (frame - 1 < Log.StateCount)
+						{
+							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+							Global.MainForm.UpdateFrame = true;
+						}
+					}
+				}
+			}
+			else
+			{
+				Global.MainForm.UnpauseEmulator();
+			}
+		}
+
+		public void CommitFrame(int frameNum, IController source)
+		{
+			//if (Global.Emulator.Frame < Log.Length())
+			//{
+			//    Log.Truncate(Global.Emulator.Frame);
+			//}
+
+			//Note: Truncation here instead of loadstate will make VBA style loadstates
+			//(Where an entire movie is loaded then truncated on the next frame
+			//this allows users to restore a movie with any savestate from that "timeline"
+
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			mg.SetSource(source);
+			Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
+		}
+
+		public void DumpLogIntoSavestateText(TextWriter writer)
+		{
+			writer.WriteLine("[Input]");
+			string s = MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID);
+			writer.WriteLine(s);
+			for (int x = 0; x < Log.Length; x++)
+			{
+				writer.WriteLine(Log.GetFrame(x));
+			}
+			writer.WriteLine("[/Input]");
+		}
+
+		public void LoadLogFromSavestateText(string path)
+		{
+			var reader = new StreamReader(path);
+			int stateFrame = 0;
+			//We are in record mode so replace the movie log with the one from the savestate
+			if (!Global.MovieSession.MultiTrack.IsActive)
+			{
+				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length > 0)
+				{
+					WriteBackup();
+					MakeBackup = false;
+				}
+				Log.Clear();
+				while (true)
+				{
+					string line = reader.ReadLine();
+					if (line.Contains(".[NES")) //TODO: Remove debug
+					{
+						MessageBox.Show("OOPS! Corrupted file stream");
+					}
+					if (line == null) break;
+					else if (line.Trim() == "") continue;
+					else if (line == "[Input]") continue;
+					else if (line == "[/Input]") break;
+					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
+					{
+						string[] strs = line.Split('x');
+						try
+						{
+							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+						}
+						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
+					}
+					else if (line.Contains("Frame "))
+					{
+						string[] strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1]);
+						}
+						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
+					}
+					if (line[0] == '|')
+					{
+						Log.AppendFrame(line);
+					}
+				}
+			}
+			else
+			{
+				int i = 0;
+				while (true)
+				{
+					string line = reader.ReadLine();
+					if (line == null) break;
+					else if (line.Trim() == "") continue;
+					else if (line == "[Input]") continue;
+					else if (line == "[/Input]") break;
+					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
+					{
+						string[] strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+						}
+						catch { } //TODO: message?
+					}
+					else if (line.Contains("Frame "))
+					{
+						string[] strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1]);
+						}
+						catch { } //TODO: message?
+					}
+					if (line[0] == '|')
+					{
+						Log.SetFrameAt(i, line);
+						i++;
+					}
+				}
+			}
+			if (stateFrame > 0 && stateFrame < Log.Length)
+			{
+				Log.TruncateStates(stateFrame);
+				Log.TruncateMovie(stateFrame);
+			}
+			Rerecords++;
+			reader.Close();
+		}
+
+		public string GetTime(bool preLoad)
+		{
+			string time = "";
+
+			double seconds;
+			if (preLoad)
+			{
+				seconds = GetSeconds(preload_framecount);
+			}
+			else
+			{
+				seconds = GetSeconds(Log.Length);
+			}
+
+			int hours = ((int)seconds) / 3600;
+			int minutes = (((int)seconds) / 60) % 60;
+			double sec = seconds % 60;
+			if (hours > 0)
+			{
+				time += MakeDigits(hours) + ":";
+			}
+			
+			time += MakeDigits(minutes) + ":";
+			time += Math.Round((decimal)sec, 2).ToString();
+			
+			return time;
+		}
+
+		public bool CheckTimeLines(string path, bool OnlyGUID)
+		{
+			//This function will compare the movie data to the savestate movie data to see if they match
+			var reader = new StreamReader(path);
+
+			MovieLog l = new MovieLog();
+			string line;
+			string GUID;
+			int stateFrame = 0;
+			while (true)
+			{
+				line = reader.ReadLine();
+				if (line == null)
+					return false;
+				if (line.Trim() == "") continue;
+				else if (line.Contains("GUID"))
+				{
+					GUID = ParseHeader(line, MovieHeader.GUID);
+					if (Header.GetHeaderLine(MovieHeader.GUID) != GUID)
+					{
+						//GUID Mismatch error
+						var result = MessageBox.Show(GUID + " : " + Header.GetHeaderLine(MovieHeader.GUID) + "\n" +
+							"The savestate GUID does not match the current movie.  Proceed anyway?", "GUID Mismatch error",
+							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+						if (result == DialogResult.No)
+						{
+							reader.Close();
+							return false;
+						}
+					}
+					else if (OnlyGUID)
+					{
+						reader.Close();
+						return true;
+					}
+				}
+				else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
+				{
+					string[] strs = line.Split('x');
+					try
+					{
+						stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+					}
+					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
+				}
+				else if (line.Contains("Frame "))
+				{
+					string[] strs = line.Split(' ');
+					try
+					{
+						stateFrame = int.Parse(strs[1]);
+					}
+					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
+				}
+				else if (line == "[Input]") continue;
+				else if (line == "[/Input]") break;
+				else if (line[0] == '|')
+					l.AppendFrame(line);
+			}
+
+			reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
+
+			if (OnlyGUID)
+			{
+				reader.Close();
+				return true;
+			}
+
+			if (stateFrame > l.Length) //stateFrame is greater than state input log, so movie finished mode
+			{
+				if (Mode == MOVIEMODE.PLAY || Mode == MOVIEMODE.FINISHED)
+				{
+					Mode = MOVIEMODE.FINISHED;
+					return true;
+				}
+				else
+					return false; //For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
+			}
+			else if (Mode == MOVIEMODE.FINISHED)
+			{
+				Mode = MOVIEMODE.PLAY;
+			}
+
+			if (stateFrame == 0)
+			{
+				stateFrame = l.Length;  //In case the frame count failed to parse, revert to using the entire state input log
+			}
+			if (Log.Length < stateFrame)
+			{
+				//Future event error
+				MessageBox.Show("The savestate is from frame " + l.Length.ToString() + " which is greater than the current movie length of " +
+					Log.Length.ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				reader.Close();
+				return false;
+			}
+			for (int x = 0; x < stateFrame; x++)
+			{
+				string xs = Log.GetFrame(x);
+				string ys = l.GetFrame(x);
+				if (xs != ys)
+				{
+					//TimeLine Error
+					MessageBox.Show("The savestate input does not match the movie input at frame " + (x + 1).ToString() + ".",
+						"Timeline Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					reader.Close();
+					return false;
+				}
+			}
+			reader.Close();
+			return true;
+		}
+
+		#endregion
+
+		#region Private Fields
+
+		private MovieLog Log = new MovieLog();
+		private enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
+		private MOVIEMODE Mode = MOVIEMODE.INACTIVE;
+		private bool statecapturing;
+		private bool startsfromsavestate;
+		private int preload_framecount; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
+		private int lastlog;
+		private int rerecords;
+
+		#endregion
+
+		#region Helpers
 
 		private void WriteText(string file)
 		{
-			if (file.Length == 0) return;	//Nothing to write
-			int length = Log.MovieLength();
-
-			using (StreamWriter sw = new StreamWriter(file))
+			if (file.Length > 0)
 			{
-				Header.WriteText(sw);
-				Subtitles.WriteText(sw);
-				Log.WriteText(sw);
+				int length = Log.Length;
+
+				using (StreamWriter sw = new StreamWriter(file))
+				{
+					Header.WriteText(sw);
+					Subtitles.WriteText(sw);
+					Log.WriteText(sw);
+				}
 			}
 		}
 
@@ -357,7 +843,7 @@ namespace BizHawk.MultiClient
 					}
 					else if (str[0] == '|')
 					{
-						Log.AddFrame(str);
+						Log.AppendFrame(str);
 					}
 					else
 					{
@@ -370,200 +856,9 @@ namespace BizHawk.MultiClient
 
 		}
 
-		/// <summary>
-		/// Load Header information only for displaying file information in dialogs such as play movie
-		/// </summary>
-		/// <returns></returns>
-		public bool PreLoadText(HawkFile file)
-		{
-			Loaded = false;
-			Header.Clear();
-			Log.Clear();
-			
-			StreamReader sr = new StreamReader(file.GetStream());
-			string str = "";
-            while ((str = sr.ReadLine()) != null)
-            {
-                if (str == "" || Header.AddHeaderFromLine(str))
-                    continue;
-                if (str.StartsWith("subtitle") || str.StartsWith("sub"))
-                    Subtitles.AddSubtitle(str);
-                else if (str[0] == '|')
-                {
-                    string frames = sr.ReadToEnd();
-                    int length = str.Length;
-                    // Account for line breaks of either size.
-                    if (frames.IndexOf("\r\n") != -1)
-                        length++;
-                    length++;
-                    // Count the remaining frames and the current one.
-                    this.Frames = (frames.Length / length) + 1;
-                    break;
-                }
-                else
-                    Header.Comments.Add(str);
-            }
-
-			sr.BaseStream.Position = 0; //Reset stream for others to use
-			return true;
-		}
-
 		private bool LoadBinary()
 		{
 			return true;
-		}
-
-		public bool LoadMovie()
-		{
-			var file = new FileInfo(Filename);
-			if (file.Exists == false)
-			{
-				Loaded = false;
-				return false;
-			}
-
-			return LoadText();
-		}
-
-		public void DumpLogIntoSavestateText(TextWriter writer)
-		{
-			writer.WriteLine("[Input]");
-			string s = MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID);
-			writer.WriteLine(s);
-			for (int x = 0; x < Log.MovieLength(); x++)
-				writer.WriteLine(Log.GetFrame(x));
-			writer.WriteLine("[/Input]");
-		}
-
-		public void LoadLogFromSavestateText(string path)
-		{
-			var reader = new StreamReader(path);
-			int stateFrame = 0;
-			//We are in record mode so replace the movie log with the one from the savestate
-			if (!Global.MovieSession.MultiTrack.IsActive)
-			{
-				if (Global.Config.EnableBackupMovies && MakeBackup && Log.MovieLength() > 0)
-				{
-					WriteBackup();
-					MakeBackup = false;
-				}
-				Log.Clear();
-				while (true)
-				{
-					string line = reader.ReadLine();
-					if (line.Contains(".[NES")) //TODO: Remove debug
-					{
-						MessageBox.Show("OOPS! Corrupted file stream");
-					}
-					if (line == null) break;
-					else if (line.Trim() == "") continue;
-					else if (line == "[Input]") continue;
-					else if (line == "[/Input]") break;
-					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
-					{
-						string[] strs = line.Split('x');
-						try
-						{
-							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
-						}
-						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
-					}
-					else if (line.Contains("Frame "))
-					{
-						string[] strs = line.Split(' ');
-						try
-						{
-							stateFrame = int.Parse(strs[1]);
-						}
-						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
-					}
-					if (line[0] == '|')
-					{
-						Log.AddFrame(line);
-					}
-				}
-			}
-			else
-			{
-				int i = 0;
-				while (true)
-				{
-					string line = reader.ReadLine();
-					if (line == null) break;
-					else if (line.Trim() == "") continue;
-					else if (line == "[Input]") continue;
-					else if (line == "[/Input]") break;
-					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
-					{
-						string[] strs = line.Split(' ');
-						try
-						{
-							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
-						}
-						catch { } //TODO: message?
-					}
-					else if (line.Contains("Frame "))
-					{
-						string[] strs = line.Split(' ');
-						try
-						{
-							stateFrame = int.Parse(strs[1]);
-						}
-						catch { } //TODO: message?
-					}
-					if (line[0] == '|')
-					{
-						Log.SetFrameAt(i, line);
-						i++;
-					}
-				}
-			}
-			if (stateFrame > 0 && stateFrame < Log.MovieLength())
-			{
-				Log.TruncateStates(Global.Emulator.Frame);
-			}
-			IncrementRerecords();
-			reader.Close();
-		}
-
-		public void IncrementRerecords()
-		{
-			if (RerecordCounting)
-			{
-				Rerecords++;
-				Header.UpdateRerecordCount(Rerecords);
-			}
-		}
-
-		public void SetRerecords(int value)
-		{
-			Rerecords = value;
-			Header.SetHeaderLine(MovieHeader.RERECORDS, Rerecords.ToString());
-		}
-
-		public void SetMovieFinished()
-		{
-			if (Mode == MOVIEMODE.PLAY)
-				Mode = MOVIEMODE.FINISHED;
-		}
-
-		public string GetTime(bool preLoad)
-		{
-			string time = "";
-
-			double seconds;
-			if (preLoad)
-				seconds = GetSeconds(Frames);
-			else
-				seconds = GetSeconds(Log.MovieLength());
-			int hours = ((int)seconds) / 3600;
-			int minutes = (((int)seconds) / 60) % 60;
-			double sec = seconds % 60;
-			if (hours > 0)
-				time += MakeDigits(hours) + ":";
-			time += MakeDigits(minutes) + ":";
-			time += Math.Round((decimal)sec, 2).ToString();
-			return time;
 		}
 
 		private string MakeDigits(decimal num)
@@ -649,114 +944,17 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		public bool CheckTimeLines(string path, bool OnlyGUID)
+		private static string ParseHeader(string line, string headerName)
 		{
-			//This function will compare the movie data to the savestate movie data to see if they match
-			var reader = new StreamReader(path);
-
-			MovieLog l = new MovieLog();
-			string line;
-			string GUID;
-			int stateFrame = 0;
-			while (true)
-			{
-				line = reader.ReadLine();
-				if (line == null)
-					return false;
-				if (line.Trim() == "") continue;
-				else if (line.Contains("GUID"))
-				{
-					GUID = ParseHeader(line, MovieHeader.GUID);
-					if (Header.GetHeaderLine(MovieHeader.GUID) != GUID)
-					{
-						//GUID Mismatch error
-						var result = MessageBox.Show(GUID + " : " + Header.GetHeaderLine(MovieHeader.GUID) + "\n" +
-							"The savestate GUID does not match the current movie.  Proceed anyway?", "GUID Mismatch error",
-							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-						if (result == DialogResult.No)
-						{
-							reader.Close();
-							return false;
-						}
-					}
-					else if (OnlyGUID)
-					{
-						reader.Close();
-						return true;
-					}
-				}
-				else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
-				{
-					string[] strs = line.Split('x');
-					try
-					{
-						stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
-					}
-					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
-				}
-				else if (line.Contains("Frame "))
-				{
-					string[] strs = line.Split(' ');
-					try
-					{
-						stateFrame = int.Parse(strs[1]);
-					}
-					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
-				}
-				else if (line == "[Input]") continue;
-				else if (line == "[/Input]") break;
-				else if (line[0] == '|')
-					l.AddFrame(line);
-			}
-
-			reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
-
-			if (OnlyGUID)
-			{
-				reader.Close();
-				return true;
-			}
-
-			if (stateFrame > l.MovieLength()) //stateFrame is greater than state input log, so movie finished mode
-			{
-				if (Mode == MOVIEMODE.PLAY || Mode == MOVIEMODE.FINISHED)
-				{
-					Mode = MOVIEMODE.FINISHED;
-					return true;
-				}
-				else
-					return false; //For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
-			}
-
-			if (stateFrame == 0)
-			{
-				stateFrame = l.MovieLength();  //In case the frame count failed to parse, revert to using the entire state input log
-			}
-			if (Log.MovieLength() < stateFrame)
-			{
-				//Future event error
-				MessageBox.Show("The savestate is from frame " + l.MovieLength().ToString() + " which is greater than the current movie length of " +
-					Log.MovieLength().ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				reader.Close();
-				return false;
-			}
-			for (int x = 0; x < stateFrame; x++)
-			{
-				string xs = Log.GetFrame(x);
-				string ys = l.GetFrame(x);
-				if (xs != ys)
-				{
-					//TimeLine Error
-					MessageBox.Show("The savestate input does not match the movie input at frame " + (x + 1).ToString() + ".",
-						"Timeline Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					reader.Close();
-					return false;
-				}
-			}
-			reader.Close();
-			return true;
+			string str;
+			int x = line.LastIndexOf(headerName) + headerName.Length;
+			str = line.Substring(x + 1, line.Length - x - 1);
+			return str;
 		}
+
+		#endregion
+
+		#region ComparisonLogic
 
 		public int CompareTo(Movie Other, string parameter)
 		{
@@ -830,8 +1028,8 @@ namespace BizHawk.MultiClient
 
 		private int CompareSysID(Movie Other)
 		{
-			string otherSysID = Other.SysID();
-			string thisSysID = this.SysID();
+			string otherSysID = Other.SysID;
+			string thisSysID = this.SysID;
 
 			if (thisSysID == null && otherSysID == null)
 				return 0;
@@ -845,8 +1043,8 @@ namespace BizHawk.MultiClient
 
 		private int CompareGameName(Movie Other)
 		{
-			string otherGameName = Other.GetGameName();
-			string thisGameName = this.GetGameName();
+			string otherGameName = Other.GameName;
+			string thisGameName = this.GameName;
 
 			if (thisGameName == null && otherGameName == null)
 				return 0;
@@ -860,34 +1058,23 @@ namespace BizHawk.MultiClient
 
 		private int CompareLength(Movie Other)
 		{
-			int otherLength = Other.Frames;
-			int thisLength = this.Frames;
+			int otherLength = Other.preload_framecount;
+			int thisLength = this.preload_framecount;
 
 			if (thisLength < otherLength)
+			{
 				return -1;
+			}
 			else if (thisLength > otherLength)
+			{
 				return 1;
+			}
 			else
+			{
 				return 0;
+			}
 		}
 
-		private static string ParseHeader(string line, string headerName)
-		{
-			string str;
-			int x = line.LastIndexOf(headerName) + headerName.Length;
-			str = line.Substring(x + 1, line.Length - x - 1);
-			return str;
-		}
-
-		public void SetStartsFromSavestate(bool savestate)
-		{
-			StartsFromSavestate = true;
-			Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
-		}
-
-		public void TruncateMovie(int frame)
-		{
-			Log.TruncateMovie(frame);
-		}
+		#endregion
 	}
 }

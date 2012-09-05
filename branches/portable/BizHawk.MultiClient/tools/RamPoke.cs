@@ -23,28 +23,36 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 		}
 
-		public void SetWatchObject(Watch w, MemoryDomain d)
+		public void SetWatchObject(Watch w)
 		{
 			PopulateMemoryDomainComboBox();
 			watch = new Watch(w);
-			domain = d;
+			domain = w.Domain;
 		}
 
 		private void RamPoke_Load(object sender, EventArgs e)
 		{
-			if (watch.address == 0)
+			if (watch.Address == 0)
 				PopulateMemoryDomainComboBox();
-			SetTypeRadio(watch.type);
-			SetSignedRadio(watch.signed);
-			if (watch.signed == asigned.HEX)
+			SetTypeRadio(watch.Type);
+			SetSignedRadio(watch.Signed);
+			if (watch.Signed == Watch.DISPTYPE.HEX)
+			{
 				ValueHexLabel.Text = "0x";
+			}
 			else
+			{
 				ValueHexLabel.Text = "";
+			}
 
-			if (watch.bigendian == true)
+			if (watch.BigEndian == true)
+			{
 				BigEndianRadio.Checked = true;
+			}
 			else
+			{
 				LittleEndianRadio.Checked = true;
+			}
 
 			SetValueBox();
 			SetAddressBox();
@@ -63,15 +71,15 @@ namespace BizHawk.MultiClient
 		{
 			if (HexRadio.Checked)
 				ValueBox.Text = String.Format("{0:X" +
-					GetValueNumDigits() + "}", watch.value);
+					GetValueNumDigits() + "}", watch.Value);
 			else
-				ValueBox.Text = watch.value.ToString();
+				ValueBox.Text = watch.Value.ToString();
 		}
 
 		private void SetAddressBox()
 		{
 			AddressBox.Text = String.Format("{0:X" +
-				GetNumDigits(watch.address) + "}", watch.address);
+				GetNumDigits(watch.Address) + "}", watch.Address);
 		}
 
 		private void UpdateTitleText()
@@ -79,17 +87,17 @@ namespace BizHawk.MultiClient
 			Text = "Ram Poke - " + domain.ToString();
 		}
 
-		private void SetTypeRadio(atype a)
+		private void SetTypeRadio(Watch.TYPE a)
 		{
 			switch (a)
 			{
-				case atype.BYTE:
+				case Watch.TYPE.BYTE:
 					Byte1Radio.Checked = true;
 					break;
-				case atype.WORD:
+				case Watch.TYPE.WORD:
 					Byte2Radio.Checked = true;
 					break;
-				case atype.DWORD:
+				case Watch.TYPE.DWORD:
 					Byte4Radio.Checked = true;
 					break;
 				default:
@@ -97,17 +105,17 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SetSignedRadio(asigned a)
+		private void SetSignedRadio(Watch.DISPTYPE a)
 		{
 			switch (a)
 			{
-				case asigned.SIGNED:
+				case Watch.DISPTYPE.SIGNED:
 					SignedRadio.Checked = true;
 					break;
-				case asigned.UNSIGNED:
+				case Watch.DISPTYPE.UNSIGNED:
 					UnsignedRadio.Checked = true;
 					break;
-				case asigned.HEX:
+				case Watch.DISPTYPE.HEX:
 					HexRadio.Checked = true;
 					break;
 				default:
@@ -125,7 +133,7 @@ namespace BizHawk.MultiClient
 			//Put user settings in the watch file
 
 			if (InputValidate.IsValidHexNumber(AddressBox.Text))
-				watch.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+				watch.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 			else
 			{
 				MessageBox.Show("Invalid Address, must be a valid hex number", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -135,26 +143,42 @@ namespace BizHawk.MultiClient
 			}
 
 			if (SignedRadio.Checked)
-				watch.signed = asigned.SIGNED;
+			{
+				watch.Signed = Watch.DISPTYPE.SIGNED;
+			}
 			else if (UnsignedRadio.Checked)
-				watch.signed = asigned.UNSIGNED;
+			{
+				watch.Signed = Watch.DISPTYPE.UNSIGNED;
+			}
 			else if (HexRadio.Checked)
-				watch.signed = asigned.HEX;
+			{
+				watch.Signed = Watch.DISPTYPE.HEX;
+			}
 
 			if (Byte1Radio.Checked)
-				watch.type = atype.BYTE;
+			{
+				watch.Type = Watch.TYPE.BYTE;
+			}
 			else if (Byte2Radio.Checked)
-				watch.type = atype.WORD;
+			{
+				watch.Type = Watch.TYPE.WORD;
+			}
 			else if (Byte4Radio.Checked)
-				watch.type = atype.DWORD;
+			{
+				watch.Type = Watch.TYPE.DWORD;
+			}
 
 			if (BigEndianRadio.Checked)
-				watch.bigendian = true;
+			{
+				watch.BigEndian = true;
+			}
 			else if (LittleEndianRadio.Checked)
-				watch.bigendian = false;
+			{
+				watch.BigEndian = false;
+			}
 
-			int x = GetSpecificValue();
-			if (x == -99999999)
+			int? x = GetSpecificValue();
+			if (x != null)
 			{
 				MessageBox.Show("Missing or invalid value", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				ValueBox.Focus();
@@ -162,17 +186,19 @@ namespace BizHawk.MultiClient
 				return;
 			}
 			else
-				watch.value = int.Parse(ValueBox.Text);
-
-			watch.PokeAddress(domain);
+			{
+				watch.Value = int.Parse(ValueBox.Text);
+			}
+			watch.Domain = domain;
+			watch.PokeAddress();
 
 			string value;
 			if (HexRadio.Checked)
-				value = "0x" + String.Format("{0:X" + GetValueNumDigits() + "}", watch.value);
+				value = "0x" + String.Format("{0:X" + GetValueNumDigits() + "}", watch.Value);
 			else
-				value = watch.value.ToString();
+				value = watch.Value.ToString();
 			string address = String.Format("{0:X" + GetNumDigits(domain.Size).ToString()
-				+ "}", watch.address);
+				+ "}", watch.Address);
 
 
 			OutputLabel.Text = value + " written to " + address;
@@ -202,16 +228,24 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private asigned GetDataType()
+		private Watch.DISPTYPE GetDataType()
 		{
 			if (SignedRadio.Checked)
-				return asigned.SIGNED;
+			{
+				return Watch.DISPTYPE.SIGNED;
+			}
 			if (UnsignedRadio.Checked)
-				return asigned.UNSIGNED;
+			{
+				return Watch.DISPTYPE.UNSIGNED;
+			}
 			if (HexRadio.Checked)
-				return asigned.HEX;
-
-			return asigned.UNSIGNED;    //Just in case
+			{
+				return Watch.DISPTYPE.HEX;
+			}
+			else
+			{
+				return Watch.DISPTYPE.UNSIGNED;    //Just in case
+			}
 		}
 
 		private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -228,53 +262,85 @@ namespace BizHawk.MultiClient
 
 			switch (GetDataType())
 			{
-				case asigned.UNSIGNED:
+				case Watch.DISPTYPE.UNSIGNED:
 					if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+					{
 						e.Handled = true;
+					}
 					break;
-				case asigned.SIGNED:
+				case Watch.DISPTYPE.SIGNED:
 					if (!InputValidate.IsValidSignedNumber(e.KeyChar))
+					{
 						e.Handled = true;
+					}
 					break;
-				case asigned.HEX:
+				case Watch.DISPTYPE.HEX:
 					if (!InputValidate.IsValidHexNumber(e.KeyChar))
+					{
 						e.Handled = true;
+					}
 					break;
 			}
 		}
 
-		private atype GetDataSize()
+		private Watch.TYPE GetDataSize()
 		{
 			if (Byte1Radio.Checked)
-				return atype.BYTE;
-			if (Byte2Radio.Checked)
-				return atype.WORD;
-			if (Byte4Radio.Checked)
-				return atype.DWORD;
-
-			return atype.BYTE;
+			{
+				return Watch.TYPE.BYTE;
+			}
+			else if (Byte2Radio.Checked)
+			{
+				return Watch.TYPE.WORD;
+			}
+			else if (Byte4Radio.Checked)
+			{
+				return Watch.TYPE.DWORD;
+			}
+			else
+			{
+				return Watch.TYPE.BYTE;
+			}
 		}
 
-		private int GetSpecificValue()
+		private int? GetSpecificValue()
 		{
 			if (ValueBox.Text == "" || ValueBox.Text == "-") return 0;
 			bool i = false;
 			switch (GetDataType())
 			{
-				case asigned.UNSIGNED:
+				case Watch.DISPTYPE.UNSIGNED:
 					i = InputValidate.IsValidUnsignedNumber(ValueBox.Text);
-					if (!i) return -99999999;
-					return (int)Int64.Parse(ValueBox.Text); //Note: 64 to be safe
-				case asigned.SIGNED:
+					if (!i)
+					{
+						return null;
+					}
+					else
+					{
+						return (int)Int64.Parse(ValueBox.Text); //Note: 64 to be safe
+					}
+				case Watch.DISPTYPE.SIGNED:
 					i = InputValidate.IsValidSignedNumber(ValueBox.Text);
-					if (!i) return -99999999;
-					return (int)Int64.Parse(ValueBox.Text);
-				case asigned.HEX:
+					if (!i)
+					{
+						return null;
+					}
+					else
+					{
+						return (int)Int64.Parse(ValueBox.Text);
+					}
+				case Watch.DISPTYPE.HEX:
 					i = InputValidate.IsValidHexNumber(ValueBox.Text);
-					if (!i) return -99999999;
-					return (int)Int64.Parse(ValueBox.Text, NumberStyles.HexNumber);
+					if (!i)
+					{
+						return null;
+					}
+					else
+					{
+						return (int)Int64.Parse(ValueBox.Text, NumberStyles.HexNumber);
+					}
 			}
-			return -99999999; //What are the odds someone wants to search for this value?
+			return null;
 		}
 
 		private void HexRadio_Click(object sender, EventArgs e)
@@ -300,15 +366,15 @@ namespace BizHawk.MultiClient
 			switch (GetDataSize())
 			{
 				default:
-				case atype.BYTE:
+				case Watch.TYPE.BYTE:
 					if (HexRadio.Checked) return 2;
 					else if (UnsignedRadio.Checked) return 3;
 					else return 4;
-				case atype.WORD:
+				case Watch.TYPE.WORD:
 					if (HexRadio.Checked) return 4;
 					else if (UnsignedRadio.Checked) return 5;
 					else return 6;
-				case atype.DWORD:
+				case Watch.TYPE.DWORD:
 					if (HexRadio.Checked) return 8;
 					else if (UnsignedRadio.Checked) return 10;
 					else return 11;
@@ -343,8 +409,8 @@ namespace BizHawk.MultiClient
 			domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
 			UpdateTitleText();
 			int x = GetNumDigits(domain.Size);
-			watch.address = 0;
-			watch.value = 0;
+			watch.Address = 0;
+			watch.Value = 0;
 			SetAddressBox();
 			SetValueBox();
 			AddressBox.MaxLength = GetNumDigits(domain.Size);

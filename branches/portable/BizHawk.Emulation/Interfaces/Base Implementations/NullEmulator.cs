@@ -41,7 +41,7 @@ namespace BizHawk
 		public int LagCount { get { return 0; } set { return; } }
 		public bool IsLagFrame { get { return false; } }
 
-		public byte[] SaveRam { get { return new byte[0]; } }
+		public byte[] ReadSaveRam { get { return new byte[0]; } }
 		public bool DeterministicEmulation { get; set; }
 		public bool SaveRamModified { get; set; }
 		public void SaveStateText(TextWriter writer) { }

@@ -13,11 +13,12 @@ namespace BizHawk.MultiClient
 {
 	public partial class Cheats : Form
 	{
-		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 		int defaultNameWidth;
 		int defaultAddressWidth;
 		int defaultValueWidth;
+		int defaultCompareWidth;
 		int defaultDomainWidth;
 		int defaultOnWidth;
 
@@ -28,6 +29,7 @@ namespace BizHawk.MultiClient
 			NameBox.Text = "";
 			AddressBox.Text = "";
 			ValueBox.Text = "";
+			CompareBox.Text = "";
 			PopulateMemoryDomainComboBox();
 			AddressBox.MaxLength = GetNumDigits(Global.Emulator.MemoryDomains[0].Size - 1);
 		}
@@ -37,6 +39,14 @@ namespace BizHawk.MultiClient
 			NewCheatList(); //Should be run even if dialog isn't open so cheats system can work
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			ClearFields();
+		}
+
+		public void UpdateValues()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			CheatListView.ItemCount = Global.CheatList.Count;
+			DisplayCheatsList();
+			CheatListView.Refresh();
 		}
 
 		public Cheats()
@@ -61,39 +71,56 @@ namespace BizHawk.MultiClient
 		private void CheatListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			if (Global.CheatList.Cheat(index).address < 0)
+			{
 				color = Color.DarkGray;
-			else if (!Global.CheatList.Cheat(index).IsEnabled())
+			}
+			else if (Global.CheatList.Cheat(index).IsEnabled())
+			{
+				color = Color.LightCyan;
+			}
+			else
+			{
 				color = this.BackColor;
+			}
 		}
 
 		private void CheatListView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
-			if (Global.CheatList.Cheat(index).address == -1)
+			if (Global.CheatList.Cheat(index).address == -1) //Separator
+			{
 				return;
-
-			if (column == 0) //Name
+			}
+			else if (column == 0) //Name
 			{
 				text = Global.CheatList.Cheat(index).name;
 			}
-			if (column == 1) //Address
+			else if (column == 1) //Address
 			{
 				text = Global.CheatList.FormatAddress(Global.CheatList.Cheat(index).address);
 			}
-			if (column == 2) //Value
+			else if (column == 2) //Value
 			{
 				text = String.Format("{0:X2}", Global.CheatList.Cheat(index).value);
 			}
-			if (column == 3) //Domain
+			else if (column == 3) //Compare
+			{
+				text = String.Format("{0:X2}", Global.CheatList.Cheat(index).compare);
+			}
+			else if (column == 5) //Domain
 			{
 				text = Global.CheatList.Cheat(index).domain.Name;
 			}
-			if (column == 4) //Enabled
+			else if (column == 4) //Enabled
 			{
 				if (Global.CheatList.Cheat(index).IsEnabled())
+				{
 					text = "*";
+				}
 				else
+				{
 					text = "";
+				}
 			}
 		}
 
@@ -141,6 +168,10 @@ namespace BizHawk.MultiClient
 
 		public void AddCheat(Cheat c)
 		{
+			if (c == null)
+			{
+				return;
+			}
 			Changes();
 			Global.CheatList.Add(c);
 			Global.OSD.AddMessage("Cheat added.");
@@ -223,11 +254,14 @@ namespace BizHawk.MultiClient
 			defaultNameWidth = CheatListView.Columns[Global.Config.CheatsNameIndex].Width;
 			defaultAddressWidth = CheatListView.Columns[Global.Config.CheatsAddressIndex].Width;
 			defaultValueWidth = CheatListView.Columns[Global.Config.CheatsValueIndex].Width;
-			defaultDomainWidth = CheatListView.Columns[Global.Config.CheatsDomainIndex].Width;
+			defaultCompareWidth = CheatListView.Columns[Global.Config.CheatsCompareIndex].Width;
 			defaultOnWidth = CheatListView.Columns[Global.Config.CheatsOnIndex].Width;
+			defaultDomainWidth = CheatListView.Columns[Global.Config.CheatsDomainIndex].Width;
 
 			if (Global.Config.CheatsSaveWindowPosition && Global.Config.CheatsWndx >= 0 && Global.Config.CheatsWndy >= 0)
+			{
 				Location = new Point(Global.Config.CheatsWndx, Global.Config.CheatsWndy);
+			}
 
 			if (Global.Config.CheatsWidth >= 0 && Global.Config.CheatsHeight >= 0)
 			{
@@ -235,15 +269,29 @@ namespace BizHawk.MultiClient
 			}
 
 			if (Global.Config.CheatsNameWidth > 0)
+			{
 				CheatListView.Columns[Global.Config.CheatsNameIndex].Width = Global.Config.CheatsNameWidth;
+			}
 			if (Global.Config.CheatsAddressWidth > 0)
+			{
 				CheatListView.Columns[Global.Config.CheatsAddressIndex].Width = Global.Config.CheatsAddressWidth;
+			}
 			if (Global.Config.CheatsValueWidth > 0)
+			{
 				CheatListView.Columns[Global.Config.CheatsValueIndex].Width = Global.Config.CheatsValueWidth;
+			}
+			if (Global.Config.CheatsCompareWidth > 0)
+			{
+				CheatListView.Columns[Global.Config.CheatsValueIndex].Width = Global.Config.CheatsCompareWidth;
+			}
 			if (Global.Config.CheatsDomainWidth > 0)
+			{
 				CheatListView.Columns[Global.Config.CheatsDomainIndex].Width = Global.Config.CheatsDomainWidth;
+			}
 			if (Global.Config.CheatsOnWidth > 0)
+			{
 				CheatListView.Columns[Global.Config.CheatsOnIndex].Width = Global.Config.CheatsOnWidth;
+			}
 		}
 
 		public void SaveConfigSettings()
@@ -257,8 +305,9 @@ namespace BizHawk.MultiClient
 			Global.Config.CheatsNameWidth = CheatListView.Columns[Global.Config.CheatsNameIndex].Width;
 			Global.Config.CheatsAddressWidth = CheatListView.Columns[Global.Config.CheatsAddressIndex].Width;
 			Global.Config.CheatsValueWidth = CheatListView.Columns[Global.Config.CheatsValueIndex].Width;
-			Global.Config.CheatsDomainWidth = CheatListView.Columns[Global.Config.CheatsDomainIndex].Width;
+			Global.Config.CheatsCompareWidth = CheatListView.Columns[Global.Config.CheatsCompareIndex].Width;
 			Global.Config.CheatsOnWidth = CheatListView.Columns[Global.Config.CheatsOnIndex].Width;
+			Global.Config.CheatsDomainWidth = CheatListView.Columns[Global.Config.CheatsDomainIndex].Width;
 		}
 
 		public void DisplayCheatsList()
@@ -286,12 +335,15 @@ namespace BizHawk.MultiClient
 			}
 			List<int> i = new List<int>();
 			for (int z = 0; z < indexes.Count; z++)
+			{
 				i.Add(indexes[z] - 1);
+			}
 
 			CheatListView.SelectedIndices.Clear();
 			for (int z = 0; z < i.Count; z++)
+			{
 				CheatListView.SelectItem(i[z], true);
-
+			}
 
 			DisplayCheatsList();
 		}
@@ -320,7 +372,9 @@ namespace BizHawk.MultiClient
 
 			List<int> i = new List<int>();
 			for (int z = 0; z < indexes.Count; z++)
+			{
 				i.Add(indexes[z] + 1);
+			}
 
 			CheatListView.SelectedIndices.Clear();
 			//for (int z = 0; z < i.Count; z++)
@@ -450,7 +504,9 @@ namespace BizHawk.MultiClient
 		private void Save()
 		{
 			if (string.Compare(Global.CheatList.currentCheatFile, "") == 0)
+			{
 				Global.CheatList.currentCheatFile = Global.CheatList.MakeDefaultFilename();
+			}
 
 			Global.CheatList.SaveCheatFile(Global.CheatList.currentCheatFile);
 			MessageLabel.Text = Path.GetFileName(Global.CheatList.currentCheatFile) + " saved.";
@@ -554,16 +610,32 @@ namespace BizHawk.MultiClient
 
 		private Cheat MakeCheat()
 		{
+			if (String.IsNullOrWhiteSpace(AddressBox.Text) || String.IsNullOrWhiteSpace(ValueBox.Text))
+			{
+				return null;
+			}
+			
 			Cheat c = new Cheat();
 			c.name = NameBox.Text;
-			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber); //TODO: validation
-			c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
-			c.domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
-			try { 
+
+			try
+			{
+				c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+				c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
+				if (String.IsNullOrWhiteSpace(CompareBox.Text))
+				{
+					c.compare = null;
+				}
+				else
+				{
+					c.compare = (byte)(int.Parse(CompareBox.Text, NumberStyles.HexNumber));
+				}
+				c.domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
 				c.Enable();
-			} 
-			catch {
-				Global.CheatList.NotSupportedError();
+			}
+			catch
+			{
+				return null;
 			}
 			return c;
 		}
@@ -704,6 +776,7 @@ namespace BizHawk.MultiClient
 				NameBox.Text = Global.CheatList.Cheat(indexes[0]).name;
 				AddressBox.Text = Global.CheatList.FormatAddress(Global.CheatList.Cheat(indexes[0]).address);
 				ValueBox.Text = String.Format("{0:X2}", Global.CheatList.Cheat(indexes[0]).value);
+				CompareBox.Text = String.Format("{0:X2}", Global.CheatList.Cheat(indexes[0]).compare);
 				SetDomainSelection(Global.CheatList.Cheat(indexes[0]).domain.ToString());
 				CheatListView.Refresh();
 			}
@@ -718,6 +791,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.CheatList.Remove(Global.CheatList.Cheat(indexes[0]));
 					Global.CheatList.Add(MakeCheat());
+					Changes();
 				}
 				CheatListView.Refresh();
 			}
@@ -726,33 +800,49 @@ namespace BizHawk.MultiClient
 		private void CheatListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (CheatListView.SelectedIndices.Count > 0)
+			{
 				EditButton.Enabled = true;
+			}
 			else
+			{
 				EditButton.Enabled = false;
+			}
 		}
 
 		private void AddressBox_TextChanged(object sender, EventArgs e)
 		{
 			if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+			{
 				AddCheatButton.Enabled = true;
+			}
 			else
+			{
 				AddCheatButton.Enabled = false;
+			}
 		}
 
 		private void ValueBox_TextChanged(object sender, EventArgs e)
 		{
 			if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+			{
 				AddCheatButton.Enabled = true;
+			}
 			else
+			{
 				AddCheatButton.Enabled = false;
+			}
 		}
 
 		private void NameBox_TextChanged(object sender, EventArgs e)
 		{
 			if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+			{
 				AddCheatButton.Enabled = true;
+			}
 			else
+			{
 				AddCheatButton.Enabled = false;
+			}
 		}
 
 		private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -784,14 +874,16 @@ namespace BizHawk.MultiClient
 			Global.Config.CheatsNameIndex = 0;
 			Global.Config.CheatsAddressIndex = 1;
 			Global.Config.CheatsValueIndex = 2;
-			Global.Config.CheatsDomainIndex = 3;
+			Global.Config.CheatsCompareIndex = 3;
 			Global.Config.CheatsOnIndex = 4;
+			Global.Config.CheatsDomainIndex = 5;
 			ColumnPositionSet();
 			CheatListView.Columns[0].Width = defaultNameWidth;
 			CheatListView.Columns[1].Width = defaultAddressWidth;
 			CheatListView.Columns[2].Width = defaultValueWidth;
-			CheatListView.Columns[3].Width = defaultDomainWidth;
+			CheatListView.Columns[3].Width = defaultCompareWidth;
 			CheatListView.Columns[4].Width = defaultOnWidth;
+			CheatListView.Columns[5].Width = defaultDomainWidth;
 		}
 
 		
@@ -907,8 +999,13 @@ namespace BizHawk.MultiClient
 				Global.Config.CheatsNameIndex += changeIndex;
 			if (Global.Config.CheatsAddressIndex >= lowIndex && Global.Config.CheatsAddressIndex <= highIndex)
 				Global.Config.CheatsAddressIndex += changeIndex;
+			
 			if (Global.Config.CheatsValueIndex >= lowIndex && Global.Config.CheatsValueIndex <= highIndex)
 				Global.Config.CheatsValueIndex += changeIndex;
+
+			if (Global.Config.CheatsCompareIndex >= lowIndex && Global.Config.CheatsCompareIndex <= highIndex)
+				Global.Config.CheatsCompareIndex += changeIndex;
+			
 			if (Global.Config.CheatsDomainIndex >= lowIndex && Global.Config.CheatsDomainIndex <= highIndex)
 				Global.Config.CheatsDomainIndex += changeIndex;
 			if (Global.Config.CheatsOnIndex >= lowIndex && Global.Config.CheatsOnIndex <= highIndex)
@@ -920,10 +1017,13 @@ namespace BizHawk.MultiClient
 				Global.Config.CheatsAddressIndex = e.NewDisplayIndex;
 			else if (header.Text == "Value")
 				Global.Config.CheatsValueIndex = e.NewDisplayIndex;
-			else if (header.Text == "Domain")
-				Global.Config.CheatsDomainIndex = e.NewDisplayIndex;
+			else if (header.Text == "Compare")
+				Global.Config.CheatsCompareIndex = e.NewDisplayIndex;
 			else if (header.Text == "On")
 				Global.Config.CheatsOnIndex = e.NewDisplayIndex;
+			else if (header.Text == "Domain")
+				Global.Config.CheatsDomainIndex = e.NewDisplayIndex;
+			
 		}
 
 		private void ColumnPositionSet()
@@ -931,7 +1031,9 @@ namespace BizHawk.MultiClient
 			List<ColumnHeader> columnHeaders = new List<ColumnHeader>();
 			int i = 0;
 			for (i = 0; i < CheatListView.Columns.Count; i++)
+			{
 				columnHeaders.Add(CheatListView.Columns[i]);
+			}
 
 			CheatListView.Columns.Clear();
 
@@ -945,6 +1047,8 @@ namespace BizHawk.MultiClient
 					column = "Address";
 				else if (Global.Config.CheatsValueIndex == i)
 					column = "Value";
+				else if (Global.Config.CheatsCompareIndex == i)
+					column = "Compare";
 				else if (Global.Config.CheatsDomainIndex == i)
 					column = "Domain";
 				else if (Global.Config.CheatsOnIndex == i)
@@ -1002,7 +1106,9 @@ namespace BizHawk.MultiClient
 		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
+			{
 				CheatListView.SelectItem(x, true);
+			}
 		}
 
 		private void CheatListView_KeyDown(object sender, KeyEventArgs e)
@@ -1025,14 +1131,32 @@ namespace BizHawk.MultiClient
 			//Counts should always be the same, but just in case, let's check
 			int max;
 			if (Global.Emulator.MemoryDomains.Count < DomainComboBox.Items.Count)
+			{
 				max = Global.Emulator.MemoryDomains.Count;
+			}
 			else
+			{
 				max = DomainComboBox.Items.Count;
+			}
 
 			for (int x = 0; x < max; x++)
 			{
 				if (domainStr == DomainComboBox.Items[x].ToString())
+				{
 					DomainComboBox.SelectedIndex = x;
+				}
+			}
+		}
+
+		private void CompareBox_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == '\b')
+			{
+				return;
+			}
+			else if (!InputValidate.IsValidHexNumber(e.KeyChar))
+			{
+				e.Handled = true;
 			}
 		}
 	}

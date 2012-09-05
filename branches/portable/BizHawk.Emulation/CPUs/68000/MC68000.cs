@@ -96,6 +96,8 @@ namespace BizHawk.Emulation.CPUs.M68000
         public Action<int, short> WriteWord;
         public Action<int, int>   WriteLong;
 
+        public Action<int> IrqCallback;
+
         // Initialization
 
         public MC68000()
@@ -141,6 +143,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                     PC = ReadLong((24 + Interrupt) * 4);    // Jump to interrupt vector
                     InterruptMaskLevel = Interrupt;         // Set interrupt mask to level currently being entered
                     Interrupt = 0;                          // "ack" interrupt. Note: this is wrong.
+                    IrqCallback(InterruptMaskLevel);        // Invoke the "Interrupt accepted" callback handler
                 }
 
                 int prevCycles = PendingCycles;

@@ -78,11 +78,11 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public void FrameAdvance(bool render)
 		{
-			Cpu.AddPendingCycles(999);
+			Cpu.AddPendingCycles(14394 + 3791);
 			while (Cpu.GetPendingCycles() > 0)
 			{
-				Cpu.Execute();
-				Stic.Execute();
+				int cycles = Cpu.Execute();
+				Stic.Execute(cycles);
 				Connect();
 				Cpu.LogData();
 			}
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public bool DeterministicEmulation { get; set; }
 
-		public byte[] SaveRam { get { return null; } }
+		public byte[] ReadSaveRam { get { return null; } }
 
 		public bool SaveRamModified
 		{

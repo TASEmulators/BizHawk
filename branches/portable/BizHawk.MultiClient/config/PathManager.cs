@@ -88,6 +88,8 @@ namespace BizHawk.MultiClient
 					return Global.Config.BaseGenesis;
 				case "GB":
 					return Global.Config.BaseGameboy;
+				case "SNES":
+					return Global.Config.BaseSNES;
 				case "NULL":
 				default:
 					return "";
@@ -167,8 +169,8 @@ namespace BizHawk.MultiClient
 			int x = NumParentDirectories(path);
 			if (x > 0)
 			{
-				int y = HowMany(path, ".."+Path.DirectorySeparatorChar);
-				int z = HowMany(workingpath, Path.DirectorySeparatorChar);
+				int y = StringHelpers.HowMany(path, ".."+Path.DirectorySeparatorChar);
+				int z = StringHelpers.HowMany(workingpath, Path.DirectorySeparatorChar);
 				if (y >= z)
 				{
 					//Return drive letter only, working path must be absolute?
@@ -181,34 +183,12 @@ namespace BizHawk.MultiClient
 		public static int NumParentDirectories(string path)
 		{
 			//determine the number of parent directories in path and return result
-			int x = HowMany(path, Path.DirectorySeparatorChar);
+			int x = StringHelpers.HowMany(path, Path.DirectorySeparatorChar);
 			if (x > 0)
 			{
-				return HowMany(path, ".."+Path.DirectorySeparatorChar);
+				return StringHelpers.HowMany(path, ".."+Path.DirectorySeparatorChar);
 			}
 			return 0;
-		}
-
-		public static int HowMany(string str, string s)
-		{
-			int count = 0;
-			for (int x = 0; x < (str.Length - s.Length); x++)
-			{
-				if (str.Substring(x, s.Length) == s)
-					count++;
-			}
-			return count;
-		}
-
-		public static int HowMany(string str, char c)
-		{
-			int count = 0;
-			for (int x = 0; x < str.Length; x++)
-			{
-				if (str[x] == c)
-					count++;
-			}
-			return count;
 		}
 
 		public static bool IsRecent(string path)
@@ -228,6 +208,9 @@ namespace BizHawk.MultiClient
 
 			switch (sysID)
 			{
+				case "SNES":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathSNESROMs, "SNES");
+					break;
 				case "A26":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathAtariROMs, "A26");
 					break;
@@ -289,7 +272,7 @@ namespace BizHawk.MultiClient
 		public static string SaveRamPath(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
-			if (Global.MainForm.MovieActive())
+			if (Global.MovieSession.Movie.IsActive)
 			{
 				
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
@@ -308,6 +291,7 @@ namespace BizHawk.MultiClient
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), name + ".SaveRAM");
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), name + ".SaveRAM");
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), name + ".SaveRAM");
+				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSaveRAM, "SNES"), name + ".SaveRAM");
 				default: return Path.Combine(GetBasePathAbsolute(), name + ".SaveRAM");
 			}
 		}
@@ -328,14 +312,19 @@ namespace BizHawk.MultiClient
 				case "GEN": return MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN");
 				case "NES": return MakeAbsolutePath(Global.Config.PathNESSavestates, "NES");
 				case "TI83": return MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83");
+				case "SNES": return MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES");
 			}
 		}
 
 		public static string SaveStatePrefix(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
-			if (Global.Config.BindSavestatesToMovies && Global.MainForm.MovieActive())
+			
+			if (Global.Config.BindSavestatesToMovies && Global.MovieSession.Movie.IsActive)
+			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+			}
+			
 			switch (game.System)
 			{
 				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26"), name);
@@ -349,6 +338,7 @@ namespace BizHawk.MultiClient
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN"), name);
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSavestates, "NES"), name);
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83"), name);
+				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES"), name);
 			}
 			return "";
 		}
@@ -369,6 +359,7 @@ namespace BizHawk.MultiClient
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisScreenshots, "GEN"), name);
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"), name);
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Screenshots, "TI83"), name);
+				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESScreenshots, "SNES"), name);
 			}
 			return "";
 		}

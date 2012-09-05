@@ -18,6 +18,10 @@ namespace BizHawk.MultiClient
 			NESController[1] = new NESControllerTemplate(false);
 			NESController[2] = new NESControllerTemplate(false);
 			NESController[3] = new NESControllerTemplate(false);
+			SNESController[0] = new SNESControllerTemplate(true);
+			SNESController[1] = new SNESControllerTemplate(false);
+			SNESController[2] = new SNESControllerTemplate(false);
+			SNESController[3] = new SNESControllerTemplate(false);
 			GBController[0] = new GBControllerTemplate(true);
 			GBAutoController[0] = new GBControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
@@ -61,6 +65,13 @@ namespace BizHawk.MultiClient
 		public string PathNESScreenshots = Path.Combine(".", "Screenshots");
 		public string PathNESCheats = Path.Combine(".", "Cheats");
 		public string PathNESPalette = Path.Combine(".", "Palettes");
+
+		public string BaseSNES = Path.Combine(".", "SNES");
+		public string PathSNESROMs = ".";
+		public string PathSNESSavestates = Path.Combine(".", "State");
+		public string PathSNESSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathSNESScreenshots = Path.Combine(".", "Screenshots");
+		public string PathSNESCheats = Path.Combine(".", "Cheats");
 
 		public string BaseSMS = Path.Combine(".", "SMS");
 		public string PathSMSROMs = ".";
@@ -333,6 +344,23 @@ namespace BizHawk.MultiClient
 		public int NESTopLine = 8;
 		public int NESBottomLine = 231;
 
+		// SNES Graphics settings
+		//bsnes allows the layers to be enabled for each priority level.
+		//this may not be important for the bg (there are two priority levels)
+		//but it may be useful for OBJ, so we might want to control them separately
+		public bool SNES_ShowBG1_0 = true;
+		public bool SNES_ShowBG2_0 = true;
+		public bool SNES_ShowBG3_0 = true;
+		public bool SNES_ShowBG4_0 = true;
+		public bool SNES_ShowBG1_1 = true;
+		public bool SNES_ShowBG2_1 = true;
+		public bool SNES_ShowBG3_1 = true;
+		public bool SNES_ShowBG4_1 = true;
+		public bool SNES_ShowOBJ_0 = true;
+		public bool SNES_ShowOBJ_1 = true;
+		public bool SNES_ShowOBJ_2 = true;
+		public bool SNES_ShowOBJ_3 = true;
+
 		// PCE Graphics settings
 		public bool PCEDispBG1 = true;
 		public bool PCEDispOBJ1= true;
@@ -369,13 +397,15 @@ namespace BizHawk.MultiClient
 		public int CheatsNameWidth = -1;
 		public int CheatsAddressWidth = -1;
 		public int CheatsValueWidth = -1;
+		public int CheatsCompareWidth = -1;
 		public int CheatsDomainWidth = -1;
 		public int CheatsOnWidth = -1;
 		public int CheatsNameIndex = 0;
 		public int CheatsAddressIndex = 1;
 		public int CheatsValueIndex = 2;
-		public int CheatsDomainIndex = 3;
+		public int CheatsCompareIndex = 3;
 		public int CheatsOnIndex = 4;
+		public int CheatsDomainIndex = 5;
 
 		// TAStudio Dialog
 		public bool TAStudioSaveWindowPosition = true;
@@ -421,7 +451,8 @@ namespace BizHawk.MultiClient
 		public string RewindBinding = "Shift+R, J1 B5";
 		public string EmulatorPauseBinding = "Pause";
 		public string FrameAdvanceBinding = "F";
-		public string TurboBinding = "Shift+Tab";
+		public string TurboBinding = "";
+		public string MaxTurboBinding = "Shift+Tab";
 		public string ScreenshotBinding = "F12";
 		public string ToggleFullscreenBinding = "Alt+Return";
 		public string QuickSave = "I";
@@ -538,6 +569,9 @@ namespace BizHawk.MultiClient
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
 		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
 
+		//SNES settings
+		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
+
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
 
@@ -646,6 +680,53 @@ namespace BizHawk.MultiClient
 				II = "";
 				Run = "";
 				Select = "";
+			}
+		}
+	}
+
+	public class SNESControllerTemplate
+	{
+		public string Up;
+		public string Down;
+		public string Left;
+		public string Right;
+		public string A;
+		public string B;
+		public string Start;
+		public string Select;
+		public string Y, X, L, R;
+		public bool Enabled;
+		public SNESControllerTemplate() { }
+		public SNESControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Up = "UpArrow, J1 Up";
+				Down = "DownArrow, J1 Down";
+				Left = "LeftArrow, J1 Left";
+				Right = "RightArrow, J1 Right";
+				A = "X, J1 B2";
+				B = "Z, J1 B1";
+				Y = "A, J1 B3";
+				X = "S, J1 B4";
+				L = "Q";
+				R = "W";
+				Start = "Return, J1 B8";
+				Select = "Space, J1 B7";
+			}
+			else
+			{
+				Enabled = false;
+				Up = "";
+				Down = "";
+				Right = "";
+				Left = "";
+				A = "";
+				B = "";
+				Start = "";
+				Select = "";
+				X = Y = L = R = "";
 			}
 		}
 	}

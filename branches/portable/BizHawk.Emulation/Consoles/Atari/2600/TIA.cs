@@ -425,41 +425,121 @@ namespace BizHawk.Emulation.Consoles.Atari
 		public int BufferHeight { get { return 262; } }
 		public int BackgroundColor { get { return 0; } }
 
+		//byte[] snd4 = new byte[2];
+		//byte[] snd4 = new byte[2];
+
+		public struct audio
+		{
+			public byte AUDC;
+			public byte AUDF;
+			public byte AUDV;
+
+			public byte sr4;
+			public byte sr5;
+
+			public byte freqcnt;
+
+			public void run_4()
+			{
+				sr4 = (byte)(((sr4 & 0x0F) != 0) ? (sr4 << 1) | ((((sr4 & 0x08) != 0) ? 1 : 0) ^ (((sr4 & 0x04) != 0) ? 1 : 0)) : 1);
+			}
+
+			public void run_5()
+			{
+				sr5 = (byte)(((sr5 & 0x1F) != 0) ? (sr5 << 1) | (((sr5 & 0x10) != 0) ? 1 : 0) ^ (((sr5 & 0x04) != 0) ? 1 : 0) : 1);
+			}
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("AUDC", ref AUDC);
+				ser.Sync("AUDF", ref AUDF);
+				ser.Sync("AUDV", ref AUDV);
+				ser.Sync("sr4", ref sr4);
+				ser.Sync("sr5", ref sr5);
+			}
+		};
+
+		public audio[] AUD = new audio[2];
+
 		public void GetSamples(short[] samples)
 		{
-			/*
-			int freqDiv = 0;
-			byte myP4 = 0x00;
-
 			short[] moreSamples = new short[1000];
 			for (int i = 0; i < 1000; i++)
 			{
-				if (++freqDiv == (tia.audioFreqDiv * 2))
+				for (int snd = 0; snd < 2; snd++)
+				{
+					if (++AUD[snd].freqcnt == (AUD[snd].AUDF * 2))
+					{
+						AUD[snd].freqcnt = 0;
+						switch (AUD[snd].AUDC)
+						{
+							case 0x00:
+								// Both have a 1 s
+								AUD[snd].sr5 = (byte)(((AUD[snd].sr5 & 0x1F) != 0) ? (AUD[snd].sr5 << 1) | 0x01 : 1);
+								AUD[snd].sr4 = (byte)(((AUD[snd].sr4 & 0x0F) != 0) ? (AUD[snd].sr4 << 1) | 0x01 : 1);
+								break;
+
+							case 0x01:
+								// Both run, but the 5 bit is ignored
+								AUD[snd].run_4();
+								AUD[snd].run_5();
+								break;
+
+							case 0x02:
+								if ((AUD[snd].sr5 & 0x0F) == 0x08)
+								{
+									AUD[snd].run_4();
+									break;
+								}
+
+								AUD[snd].run_5();
+								break;
+
+							case 0x03:
+								if ((AUD[snd].sr5 & 0x10) == 0x10)
+								{
+									AUD[snd].run_4();
+									break;
+								}
+
+								AUD[snd].run_5();
+								break;
+
+							case 0x04:
+								AUD[snd].run_5();
+
+								AUD[snd].sr4 = (byte)(((AUD[snd].sr4 & 0x0F) != 0) ? (AUD[snd].sr4 << 1) | 0x01 : 1);
+								break;
+						}
+
+					}
+					moreSamples[i] = (short)(((AUD[0].sr4 & 0x08) != 0) ? 32767 : 0);
+				}
+				/*if (++freqDiv == (audioFreqDiv * 2))
 				{
 					freqDiv = 0;
 					myP4 = (byte)(((myP4 & 0x0f) != 0) ? ((myP4 << 1) | ((((myP4 & 0x08) != 0) ? 1 : 0) ^ (((myP4 & 0x04) != 0) ? 1 : 0))) : 1);
 				}
 
 				moreSamples[i] = (short)(((myP4 & 0x08) != 0) ? 32767 : 0);
-
+				*/
 			}
 
 			for (int i = 0; i < samples.Length/2; i++)
 			{
 				//samples[i] = 0;
-				if (tia.audioEnabled)
-				{
+				//if (audioEnabled)
+				//{
 					samples[i*2] = moreSamples[(int)(((double)moreSamples.Length / (double)(samples.Length/2)) * i)];
 					//samples[i * 2 + 1] = moreSamples[(int)((moreSamples.Length / (samples.Length / 2)) * i)];
 					//samples[i] = (short)(Math.Sin(((((32000.0 / (tia.audioFreqDiv+1)) / 60.0) * Math.PI) / samples.Length) * i) * MaxVolume + MaxVolume);
-				}
-				else
-				{
-					samples[i] = 0;
-				}
+				//}
+				//else
+				//{
+				//	samples[i] = 0;
+				//}
 			}
 			//samples = tia.samples; 
-			 * */
 		}
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
@@ -965,11 +1045,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{
-
+				AUD[0].AUDC = value;
 			}
 			else if (maskedAddr == 0x17) // AUDF0
 			{
-
+				AUD[0].AUDF = (byte)(value + 1);
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{

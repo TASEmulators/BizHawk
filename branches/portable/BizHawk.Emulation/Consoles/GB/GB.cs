@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			Frame = 0;
 		}
 
-		public byte[] SaveRam { get { throw new NotImplementedException(); } }
+		public byte[] ReadSaveRam { get { throw new NotImplementedException(); } }
 		public bool SaveRamModified { get { return false; } set { } }
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)

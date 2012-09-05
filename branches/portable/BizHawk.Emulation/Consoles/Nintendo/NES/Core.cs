@@ -238,6 +238,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public byte DummyReadMemory(ushort addr) { return 0; }
 
+		private void ApplySystemBusPoke(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				ram[(addr & 0x7FF)] = value;
+			}
+			else if (addr < 0x4000)
+			{
+				ppu.WriteReg((addr & 0x07), value);
+			}
+			else if (addr < 0x4020)
+			{
+				WriteReg(addr, value);
+			}
+			else
+			{
+				ApplyGameGenie(addr, value, null); //Apply a cheat to the remaining regions since they have no direct access, this may not be the best way to handle this situation
+			}
+		}
 
 		public byte ReadMemory(ushort addr)
 		{
@@ -275,13 +294,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//handle breakpoints and stuff.
 			//the idea is that each core can implement its own watch class on an address which will track all the different kinds of monitors and breakpoints and etc.
 			//but since freeze is a common case, it was implemented through its own mechanisms
-			//if (sysbus_watch[addr] != null)
-			//{
-			//    sysbus_watch[addr].Sync();
-			//    ret = sysbus_watch[addr].ApplyGameGenie(ret);
-			//}
+			if (sysbus_watch[addr] != null)
+			{
+				sysbus_watch[addr].Sync();
+				ret = sysbus_watch[addr].ApplyGameGenie(ret);
+			}
 
 			return ret;
+		}
+
+		public void ApplyGameGenie(int addr, byte value, byte? compare)
+		{
+			if (addr < sysbus_watch.Length)
+			{
+				GetWatch(NESWatch.EDomain.Sysbus, addr).SetGameGenie(compare, value);
+			}
+		}
+
+		public void RemoveGameGenie(int addr)
+		{
+			if (addr < sysbus_watch.Length)
+			{
+				GetWatch(NESWatch.EDomain.Sysbus, addr).RemoveGameGenie();
+			}
 		}
 
 		public void WriteMemory(ushort addr, byte value)

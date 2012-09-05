@@ -1,9 +1,13 @@
-﻿using System;
+﻿#define MUSASHI
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.CPUs.M68000;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
+using Native68000;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
@@ -58,6 +62,16 @@ namespace BizHawk.Emulation.Consoles.Sega
 		// 320 are active display, the remaining 160 are horizontal blanking.
 		// A total of 3420 mclks per line, but 2560 mclks are active display and 860 mclks are blanking.
 
+#if MUSASHI
+        VdpCallback _vdp;
+        ReadCallback read8;
+        ReadCallback read16;
+        ReadCallback read32;
+        WriteCallback write8;
+        WriteCallback write16;
+        WriteCallback write32;
+#endif
+
 		public Genesis(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
@@ -75,6 +89,27 @@ namespace BizHawk.Emulation.Consoles.Sega
 			MainCPU.WriteByte = WriteByte;
 			MainCPU.WriteWord = WriteWord;
 			MainCPU.WriteLong = WriteLong;
+            MainCPU.IrqCallback = InterruptCallback;
+
+            // ---------------------- musashi -----------------------
+#if MUSASHI
+            _vdp = vdpcallback;
+            read8 = Read8;
+            read16 = Read16;
+            read32 = Read32;
+            write8 = Write8;
+            write16 = Write16;
+            write32 = Write32;
+
+            Musashi.RegisterVdpCallback(Marshal.GetFunctionPointerForDelegate(_vdp));
+            Musashi.RegisterRead8(Marshal.GetFunctionPointerForDelegate(read8));
+            Musashi.RegisterRead16(Marshal.GetFunctionPointerForDelegate(read16));
+            Musashi.RegisterRead32(Marshal.GetFunctionPointerForDelegate(read32));
+            Musashi.RegisterWrite8(Marshal.GetFunctionPointerForDelegate(write8));
+            Musashi.RegisterWrite16(Marshal.GetFunctionPointerForDelegate(write16));
+            Musashi.RegisterWrite32(Marshal.GetFunctionPointerForDelegate(write32));
+#endif
+            // ---------------------- musashi -----------------------
 
 			SoundCPU.ReadMemory = ReadMemoryZ80;
 			SoundCPU.WriteMemory = WriteMemoryZ80;
@@ -87,48 +122,74 @@ namespace BizHawk.Emulation.Consoles.Sega
 				RomData[i] = rom[i];
 
 			SetupMemoryDomains();
-			MainCPU.Reset();
-		}
+#if MUSASHI
+            Musashi.Init();
+            Musashi.Reset();
+#else
+            MainCPU.Reset();
+#endif
+        }
 
 		public void FrameAdvance(bool render)
 		{
 			lagged = true;
 
-			Frame++;
+            Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(SoundCPU.TotalExecutedCycles);
             YM2612.BeginFrame(SoundCPU.TotalExecutedCycles);
+
+            // Do start-of-frame events
+            VDP.HIntLineCounter = VDP.Registers[10];
+            //VDP.VdpStatusWord &= 
+            unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalBlanking; }
+
 			for (VDP.ScanLine = 0; VDP.ScanLine < 262; VDP.ScanLine++)
 			{
 				//Log.Error("VDP","FRAME {0}, SCANLINE {1}", Frame, VDP.ScanLine);
 
-				if (VDP.ScanLine < 224)
+				if (VDP.ScanLine < VDP.FrameHeight)
 					VDP.RenderLine();
 
-				MainCPU.ExecuteCycles(487); // 488??
-                if (Z80Runnable)
+                Exec68k(365);
+                RunZ80(171);
+
+                // H-Int now?
+
+                VDP.HIntLineCounter--;
+                if (VDP.HIntLineCounter < 0 && VDP.ScanLine < 224) // FIXME
                 {
-                    //Console.WriteLine("running z80");
-                    SoundCPU.ExecuteCycles(228);
-                    SoundCPU.Interrupt = false;
-                } else {
-                    SoundCPU.TotalExecutedCycles += 228; // I emulate the YM2612 synced to Z80 clock, for better or worse. Keep the timer going even if Z80 isn't running.
+                    VDP.HIntLineCounter = VDP.Registers[10];
+                    VDP.VdpStatusWord |= GenVDP.StatusHorizBlanking;
+
+                    if (VDP.HInterruptsEnabled)
+                    {
+                        Set68kIrq(4);
+                        //Console.WriteLine("Fire hint!");
+                    }
+
                 }
 
-				if (VDP.ScanLine == 224)
-				{
-					MainCPU.ExecuteCycles(16);// stupid crap to sync with genesis plus for log testing
-					// End-frame stuff
-					if (VDP.VInterruptEnabled)
-						MainCPU.Interrupt = 6;
+                Exec68k(488 - 365);
+                RunZ80(228 - 171);
 
-					if (Z80Runnable)
-						SoundCPU.Interrupt = true;
+                if (VDP.ScanLine == 224)
+				{
+                    VDP.VdpStatusWord |= GenVDP.StatusVerticalInterruptPending;
+                    VDP.VdpStatusWord |= GenVDP.StatusVerticalBlanking;
+                    Exec68k(16); // this is stupidly wrong.
+					// End-frame stuff
+                    if (VDP.VInterruptEnabled)
+                        Set68kIrq(6);
+
+					SoundCPU.Interrupt = true;
+                    //The INT output is asserted every frame for exactly one scanline, and it can't be disabled. A very short Z80 interrupt routine would be triggered multiple times if it finishes within 228 Z80 clock cycles. I think (but cannot recall the specifics) that some games have delay loops in the interrupt handler for this very reason. 
 				}
 			}
 			PSG.EndFrame(SoundCPU.TotalExecutedCycles);
             YM2612.EndFrame(SoundCPU.TotalExecutedCycles);
 
-			Controller.UpdateControls(Frame++);
+            
+
 			if (lagged)
 			{
 				_lagcount++;
@@ -137,6 +198,46 @@ namespace BizHawk.Emulation.Consoles.Sega
 			else
 				islag = false;
 		}
+
+        void Exec68k(int cycles)
+        {
+#if MUSASHI
+            Musashi.Execute(cycles);
+#else
+            MainCPU.ExecuteCycles(cycles);
+#endif
+        }
+
+        void RunZ80(int cycles)
+        {
+            // I emulate the YM2612 synced to Z80 clock, for better or worse.
+            // So we still need to keep the Z80 cycle count accurate even if the Z80 isn't running.
+
+            if (Z80Runnable)
+                SoundCPU.ExecuteCycles(cycles);
+            else
+                SoundCPU.TotalExecutedCycles += cycles; 
+        }
+
+        void Set68kIrq(int irq)
+        {
+#if MUSASHI
+            Musashi.SetIRQ(irq);
+#else
+            MainCPU.Interrupt = irq;
+#endif
+        }
+
+        int vdpcallback(int level) // Musashi handler
+        {
+            InterruptCallback(level);
+            return -1;
+        }
+
+        void InterruptCallback(int level)
+        {
+            unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalInterruptPending; }
+        }
 
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
@@ -157,7 +258,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public bool DeterministicEmulation { get; set; }
 		public string SystemId { get { return "GEN"; } }
 
-		public byte[] SaveRam
+		public byte[] ReadSaveRam
 		{
 			get { throw new NotImplementedException(); }
 		}
@@ -244,7 +345,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(3);
-			var MainMemoryDomain = new MemoryDomain("68000 RAM", Ram.Length, Endian.Big,
+			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, Endian.Big,
 				addr => Ram[addr & 0xFFFF],
 				(addr, value) => Ram[addr & 0xFFFF] = value);
 			var Z80Domain = new MemoryDomain("Z80 RAM", Z80Ram.Length, Endian.Little,
@@ -255,9 +356,19 @@ namespace BizHawk.Emulation.Consoles.Sega
 				addr => VDP.VRAM[addr & 0xFFFF],
 				(addr, value) => VDP.VRAM[addr & 0xFFFF] = value);
 
+			var RomDomain = new MemoryDomain("Rom Data", RomData.Length, Endian.Big,
+				addr => RomData[addr], //adelikat: For speed considerations, I didn't mask this, every tool that uses memory domains is smart enough not to overflow, if I'm wrong let me know!
+				(addr, value) => RomData[addr & (RomData.Length - 1)] = value);
+
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x1000000, Endian.Big,
+				addr => (byte)ReadByte(addr),
+				(addr, value) => Write8((uint)addr, (uint)value));
+
 			domains.Add(MainMemoryDomain);
 			domains.Add(Z80Domain);
 			domains.Add(VRamDomain);
+			domains.Add(RomDomain);
+			domains.Add(SystemBusDomain);
 			memoryDomains = domains.AsReadOnly();
 		}
 

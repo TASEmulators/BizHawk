@@ -26,9 +26,10 @@ namespace BizHawk.Emulation.Consoles.Sega
             if ((address & 0xFF0000) == 0xA00000)
                 return (sbyte) ReadMemoryZ80((ushort) (address & 0x7FFF));
 
-            if (address >= 0xC00004 && address < 0xC00008)
+            if (address >= 0xC00000 && address < 0xC00010)
             {
-                ushort value = VDP.ReadVdpControl();
+                //Console.WriteLine("byte-reading the VDP. someone is probably stupid.");
+                ushort value = VDP.ReadVdp(address & 0x0E);
                 if ((address & 1) == 0) // read MSB
                     return (sbyte) (value >> 8);
                 return (sbyte) value; // read LSB
@@ -52,11 +53,14 @@ namespace BizHawk.Emulation.Consoles.Sega
                 return (short)((Ram[maskedAddr] << 8) | Ram[maskedAddr + 1]);
             }
 
-            if (address >= 0xC00004 && address < 0xC00008)
-                return (short) VDP.ReadVdpControl();
+            if (address >= 0xC00000 && address < 0xC00010)
+                return (short) VDP.ReadVdp(address & 0x0E);
 
             if (address >= 0xA10000 && address <= 0xA1001F)
                 return (sbyte)ReadIO(address);
+
+            if (address == 0xA11100) // Z80 BUS status
+                return (short)(M68000HasZ80Bus && Z80Reset == false ? 0x0000 : 0x0100);
 
             Console.WriteLine("UNHANDLED READW {0:X6}", address);
             return 0x7DCD;
@@ -120,28 +124,16 @@ namespace BizHawk.Emulation.Consoles.Sega
                 //Console.WriteLine("z80 reset: " + Z80Reset);
                 return;
             }
-            if (address >= 0xC00000)
+            if (address >= 0xC00000 && address < 0xC00010)
             {
                 // when writing to VDP in byte mode, the LSB is duplicated into the MSB
-                switch (address & 0x1F)
-                {
-                    case 0x00:
-                    case 0x02:
-                        //zero 15-feb-2012 -  added latter two ushort casts to kill a warning
-                        VDP.WriteVdpData((ushort) ((ushort)value | ((ushort)value << 8)));
-                        return;
-                    case 0x04:
-                    case 0x06:
-                        //zero 15-feb-2012 -  added latter two ushort casts to kill a warning
-                        VDP.WriteVdpControl((ushort) ((ushort)value | ((ushort)value << 8)));
-                        return;
-                    case 0x11:
-                    case 0x13:
-                    case 0x15:
-                    case 0x17:
-                        PSG.WritePsgData((byte) value, SoundCPU.TotalExecutedCycles);
-                        return;
-                }
+                VDP.WriteVdp(address & 0x1E, (ushort)((ushort)value | ((ushort)value << 8)));
+                return;
+            } 
+            if (address >= 0xC00011 && address <= 0xC00017 && (address & 1) != 0)
+            {
+                PSG.WritePsgData((byte) value, SoundCPU.TotalExecutedCycles);
+                return;
             }
 
             Console.WriteLine("UNHANDLED WRITEB {0:X6}:{1:X2}", address, value);
@@ -211,5 +203,14 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             Console.WriteLine("UNHANDLED WRITEL {0:X6}:{1:X8}", address, value);
         }
+
+        // Mushashi interop test stuff. TODO kill this when we're ready to ditch musashi.
+
+        public uint Read8(uint a) { /*Console.WriteLine("read8 {0:X}", a);*/ return (uint)ReadByte((int)a) & 0xFF; }
+        public uint Read16(uint a) { /*Console.WriteLine("read16 {0:X}", a);*/ return (uint)ReadWord((int)a) & 0xFFFF; }
+        public uint Read32(uint a) { /*Console.WriteLine("read32 {0:X}", a);*/ return (uint)ReadLong((int)a); }
+        public void Write8(uint a, uint v) { /*Console.WriteLine("write8 {0:X}:{1:X2}", a, v);*/ WriteByte((int)a, (sbyte)v); }
+        public void Write16(uint a, uint v) { /*Console.WriteLine("write16 {0:X}:{1:X4}", a, v);*/ WriteWord((int)a, (short)v); }
+        public void Write32(uint a, uint v) { /*Console.WriteLine("write32 {0:X}:{1:X8}", a, v);*/ WriteLong((int)a, (int)v); }
     }
 }

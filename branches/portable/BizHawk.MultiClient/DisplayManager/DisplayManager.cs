@@ -340,16 +340,18 @@ namespace BizHawk.MultiClient
 
 		private string MakeFrameCounter()
 		{
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
+			if (Global.MovieSession.Movie.IsFinished)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.LogLength().ToString() + " (Finished)";
+				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Frames.ToString() + " (Finished)";
 			}
-			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
+			else if (Global.MovieSession.Movie.IsPlaying)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.LogLength().ToString();
+				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Frames.ToString();
 			}
-			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
+			else if (Global.MovieSession.Movie.IsRecording)
+			{
 				return Global.Emulator.Frame.ToString();
+			}
 			else
 			{
 				return Global.Emulator.Frame.ToString();
@@ -382,35 +384,37 @@ namespace BizHawk.MultiClient
 
 		public void DrawMessages(IBlitter g)
 		{
-			//todo - not so much brush object churn?
-
-			messages.RemoveAll(m => m != null && DateTime.Now > m.ExpireAt);
-			int line = 1;
-			for (int i = messages.Count - 1; i >= 0; i--, line++)
+			if (!Global.ClientControls["MaxTurbo"])
 			{
-				float x = 3;
-				float y = g.ClipBounds.Height - (line * 18);
-				g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-				g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
-			}
-			for (int x = 0; x < GUITextList.Count; x++)
-			{
-				try
+				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
+				int line = 1;
+				for (int i = messages.Count - 1; i >= 0; i--, line++)
 				{
-					float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-					float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-
-					g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
-					//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
-
-					if (GUITextList[x].Alert)
-						g.DrawString(GUITextList[x].Message, MessageFont, FixedMessagesColor, posx, posy);
-					else
-						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
+					float x = 3;
+					float y = g.ClipBounds.Height - (line * 18);
+					g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
-				catch (Exception)
+			
+				for (int x = 0; x < GUITextList.Count; x++)
 				{
-					return;
+					try
+					{
+						float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+						float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+
+						g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
+						//g.DrawString(GUITextList[x].Message, MessageFont, Color.Gray, posx + 1, posy + 1);
+
+						if (GUITextList[x].Alert)
+							g.DrawString(GUITextList[x].Message, MessageFont, FixedMessagesColor, posx, posy);
+						else
+							g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
+					}
+					catch (Exception)
+					{
+						return;
+					}
 				}
 			}
 		}
@@ -419,21 +423,30 @@ namespace BizHawk.MultiClient
 		public string MakeInputDisplay()
 		{
 			StringBuilder s;
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
+			if (Global.MovieSession.Movie.IsPlaying)
+			{
 				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
+			}
 			else
-				s = new StringBuilder(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame - 1));
-			s.Replace(".", " ").Replace("|", "").Replace("l", ""); //If l is ever a mnemonic this will squash it.
+			{
+				s = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
+			}
+
+			s.Replace(".", " ").Replace("|", "").Replace("l", ""); //Note: if l is ever a mnemonic this will squash it.  But this is done because on the NES core I put l in the command mnemonic to indicate lag (was a bad a idea)
 			
 			return s.ToString();
 		}
 
 		public string MakeRerecordCount()
 		{
-			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.IsActive)
+			{
 				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords.ToString();
+			}
 			else
+			{
 				return "";
+			}
 		}
 
 		/// <summary>
@@ -455,12 +468,14 @@ namespace BizHawk.MultiClient
 				Color c;
 				float x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, MessageFont, input);
 				float y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, MessageFont, input);
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
+				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsRecording)
 				{
 					c = Color.FromArgb(Global.Config.MovieInput);
 				}
 				else
+				{
 					c = Color.FromArgb(Global.Config.MessagesColor);
+				}
 
 				g.DrawString(input, MessageFont, Color.Black, x+1,y+1);
 				g.DrawString(input, MessageFont, c, x,y);
@@ -511,38 +526,37 @@ namespace BizHawk.MultiClient
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
-			{
-				//TODO
-				//int r = (int)g.ClipBounds.Width;
-				//Point[] p = { new Point(r - 20, 2), 
-				//				new Point(r - 4, 12), 
-				//				new Point(r - 20, 22) };
-				//g.FillPolygon(new SolidBrush(Color.Red), p);
-				//g.DrawPolygon(new Pen(new SolidBrush(Color.Pink)), p);
+			//TODO
+			//if (Global.MovieSession.Movie.IsPlaying)
+			//{
+			//    //int r = (int)g.ClipBounds.Width;
+			//    //Point[] p = { new Point(r - 20, 2), 
+			//    //				new Point(r - 4, 12), 
+			//    //				new Point(r - 20, 22) };
+			//    //g.FillPolygon(new SolidBrush(Color.Red), p);
+			//    //g.DrawPolygon(new Pen(new SolidBrush(Color.Pink)), p);
 
-			}
-			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
-			{
-				//TODO
-				//g.FillEllipse(new SolidBrush(Color.Red), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
-				//g.DrawEllipse(new Pen(new SolidBrush(Color.Pink)), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
-			}
+			//}
+			//else if (Global.MovieSession.Movie.IsRecording)
+			//{
+			//    //g.FillEllipse(new SolidBrush(Color.Red), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
+			//    //g.DrawEllipse(new Pen(new SolidBrush(Color.Pink)), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
+			//}
 
-			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE && Global.Config.DisplaySubtitles)
+			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
 			{
-				
 				List<Subtitle> s = Global.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame);
-				if (s == null) return;
+				if (s == null)
+				{
+					return;
+				}
+
 				for (int i = 0; i < s.Count; i++)
 				{
-					g.DrawString(s[i].Message, MessageFont, Color.Black,
-						s[i].X + 1, s[i].Y + 1);
-					g.DrawString(s[i].Message, MessageFont, Color.FromArgb((int)s[i].Color),
-										s[i].X, s[i].Y);
+					g.DrawString(s[i].Message, MessageFont, Color.Black, s[i].X + 1, s[i].Y + 1);
+					g.DrawString(s[i].Message, MessageFont, Color.FromArgb((int)s[i].Color), s[i].X, s[i].Y);
 				}
 			}
-			 
 		}
 	}
 
@@ -557,6 +571,14 @@ namespace BizHawk.MultiClient
 		volatile bool VsyncToggle = false;
 		volatile bool VsyncRequested = false;
 		SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
+
+
+		DisplaySurface luaEmuSurface = null;
+		public void PreFrameUpdateLuaSource()
+		{
+			luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
+		}
+
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
 			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
@@ -582,7 +604,7 @@ namespace BizHawk.MultiClient
 			int w = currNativeWidth;
 			int h = currNativeHeight;
 
-			DisplaySurface luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
+			
 			DisplaySurface luaSurface = luaNativeSurfaceSet.GetCurrent();
 
 			//do we have anything to do?
@@ -596,7 +618,9 @@ namespace BizHawk.MultiClient
 			Global.RenderPanel.Clear(Color.FromArgb(videoProvider.BackgroundColor));
 			Global.RenderPanel.Render(surfaceToRender);
 			if (luaEmuSurface != null)
+			{
 				Global.RenderPanel.RenderOverlay(luaEmuSurface);
+			}
 
 			RenderOSD();
 

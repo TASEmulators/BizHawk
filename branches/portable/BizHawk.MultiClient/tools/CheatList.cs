@@ -21,6 +21,7 @@ namespace BizHawk.MultiClient
 			var file = new FileInfo(path);
 			if (file.Exists == false) return false;
 
+			int cheatcount = 0;
 			using (StreamReader sr = file.OpenText())
 			{
 				if (!append) currentCheatFile = path;
@@ -32,57 +33,95 @@ namespace BizHawk.MultiClient
 				{
 					Clear();	//Wipe existing list and read from file
 				}
-
 				while ((s = sr.ReadLine()) != null)
 				{
-					if (s.Length < 6) continue;
-					Cheat c = new Cheat();
-					temp = s.Substring(0, s.IndexOf('\t'));   //Address
-					c.address = int.Parse(temp, NumberStyles.HexNumber);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Value
-					temp = s.Substring(0, 2);
-					c.value = byte.Parse(temp, NumberStyles.HexNumber);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y); //Memory Domain
-					temp = s.Substring(0, s.IndexOf('\t'));
-					c.domain = SetDomain(temp);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y); //Enabled
-					y = int.Parse(s[0].ToString());
-
 					try
 					{
+						if (s.Length < 6) continue;
+						Cheat c = new Cheat();
+						temp = s.Substring(0, s.IndexOf('\t'));   //Address
+						c.address = int.Parse(temp, NumberStyles.HexNumber);
+
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y);   //Value
+						temp = s.Substring(0, 2);
+						c.value = byte.Parse(temp, NumberStyles.HexNumber);
+
+						bool comparefailed = false; //adelikat: This is a hack for 1.0.6 to support .cht files made in previous versions before the compare value was implemented
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y);   //Compare
+						temp = s.Substring(0, s.IndexOf('\t'));
+						try
+						{
+							if (temp == "N")
+							{
+								c.compare = null;
+							}
+							else
+							{
+								c.compare = byte.Parse(temp, NumberStyles.HexNumber);
+							}
+						}
+						catch
+						{
+							comparefailed = true;
+							c.domain = SetDomain(temp);
+						}
+
+						if (!comparefailed)
+						{
+							y = s.IndexOf('\t') + 1;
+							s = s.Substring(y, s.Length - y); //Memory Domain
+							temp = s.Substring(0, s.IndexOf('\t'));
+							c.domain = SetDomain(temp);
+						}
+
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y); //Enabled
+						y = int.Parse(s[0].ToString());
+
 						if (y == 0)
+						{
 							c.Disable();
+						}
 						else
+						{
 							c.Enable();
+						}
+
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y); //Name
+						c.name = s;
+
+						cheatcount++;
+						cheatList.Add(c);
 					}
 					catch
 					{
-						NotSupportedError();
+						continue;
 					}
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y); //Name
-					c.name = s;
-
-					cheatList.Add(c);
+					
 				}
-
-				Global.Config.RecentCheats.Add(file.FullName);
-				Changes = false;
 			}
 
 			if (Global.Config.DisableCheatsOnLoad)
 			{
 				for (int x = 0; x < cheatList.Count; x++)
+				{
 					cheatList[x].Disable();
+				}
 			}
-			return true; //TODO
+
+			if (cheatcount > 0)
+			{
+				Changes = false;
+				Global.Config.RecentCheats.Add(file.FullName);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		public void NotSupportedError()
@@ -97,7 +136,9 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 			{
 				if (Global.Emulator.MemoryDomains[x].Name == name)
+				{
 					return Global.Emulator.MemoryDomains[x];
+				}
 			}
 			return Global.Emulator.MemoryDomains[0];
 		}
@@ -194,11 +235,27 @@ namespace BizHawk.MultiClient
 				{
 					str += FormatAddress(cheatList[x].address) + "\t";
 					str += String.Format("{0:X2}", cheatList[x].value) + "\t";
-					str += cheatList[x].domain.Name + "\t";
-					if (cheatList[x].IsEnabled())
-						str += "1\t";
+					
+					if (cheatList[x].compare == null)
+					{
+						str += "N\t";
+					}
 					else
+					{
+						str += String.Format("{0:X2}", cheatList[x].compare) + "\t";
+					}
+					
+					str += cheatList[x].domain.Name + "\t";
+					
+					if (cheatList[x].IsEnabled())
+					{
+						str += "1\t";
+					}
+					else
+					{
 						str += "0\t";
+					}
+					
 					str += cheatList[x].name + "\n";
 				}
 
@@ -252,15 +309,20 @@ namespace BizHawk.MultiClient
 		public bool AttemptLoadCheatFile()
 		{
 			string CheatFile = MakeDefaultFilename();
-
 			var file = new FileInfo(CheatFile);
+			
 			if (file.Exists == false)
+			{
 				return false;
+			}
 			else
 			{
-				LoadCheatFile(CheatFile, false);
-				Global.MainForm.UpdateCheatStatus();
-				return true;
+				bool loaded = LoadCheatFile(CheatFile, false);
+				if (loaded)
+				{
+					Global.MainForm.UpdateCheatStatus();
+				}
+				return loaded;
 			}
 		}
 
@@ -273,7 +335,7 @@ namespace BizHawk.MultiClient
 
 		public void Remove(Cheat c)
 		{
-			MemoryPulse.Remove(c.domain, c.address);
+			c.DisposeOfCheat();
 			cheatList.Remove(c);
 			Global.MainForm.UpdateCheatStatus();
 		}
@@ -292,6 +354,10 @@ namespace BizHawk.MultiClient
 
 		public void Add(Cheat c)
 		{
+			if (c == null)
+			{
+				return;
+			}
 			cheatList.Add(c);
 			Global.MainForm.UpdateCheatStatus();
 		}
@@ -310,8 +376,12 @@ namespace BizHawk.MultiClient
 		public bool HasActiveCheat()
 		{
 			for (int x = 0; x < cheatList.Count; x++)
+			{
 				if (cheatList[x].IsEnabled())
+				{
 					return true;
+				}
+			}
 			return false;
 		}
 	}

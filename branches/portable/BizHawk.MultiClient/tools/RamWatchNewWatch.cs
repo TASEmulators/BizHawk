@@ -13,6 +13,7 @@ namespace BizHawk.MultiClient
 	public partial class RamWatchNewWatch : Form
 	{
 		public Watch watch = new Watch();
+		public MemoryDomain domain = Global.Emulator.MainMemory;
 		public bool userSelected = false;
 		public bool customSetup = false;
 		public Point location = new Point();
@@ -22,17 +23,17 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 		}
 
-		private void SetTypeRadio(atype a)
+		private void SetTypeRadio(Watch.TYPE a)
 		{
 			switch (a)
 			{
-				case atype.BYTE:
+				case Watch.TYPE.BYTE:
 					Byte1Radio.Checked = true;
 					break;
-				case atype.WORD:
+				case Watch.TYPE.WORD:
 					Byte2Radio.Checked = true;
 					break;
-				case atype.DWORD:
+				case Watch.TYPE.DWORD:
 					Byte4Radio.Checked = true;
 					break;
 				default:
@@ -40,17 +41,17 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SetSignedRadio(asigned a)
+		private void SetSignedRadio(Watch.DISPTYPE a)
 		{
 			switch (a)
 			{
-				case asigned.SIGNED:
+				case Watch.DISPTYPE.SIGNED:
 					SignedRadio.Checked = true;
 					break;
-				case asigned.UNSIGNED:
+				case Watch.DISPTYPE.UNSIGNED:
 					UnsignedRadio.Checked = true;
 					break;
-				case asigned.HEX:
+				case Watch.DISPTYPE.HEX:
 					HexRadio.Checked = true;
 					break;
 				default:
@@ -64,16 +65,21 @@ namespace BizHawk.MultiClient
 			this.Text = message;
 			customSetup = true;
 
-			AddressBox.Text = string.Format("{0:X4}", w.address);
-			NotesBox.Text = w.notes;
+			AddressBox.Text = string.Format("{0:X4}", w.Address);
+			NotesBox.Text = w.Notes;
 
-			SetTypeRadio(w.type);
-			SetSignedRadio(w.signed);
+			SetTypeRadio(w.Type);
+			SetSignedRadio(w.Signed);
 
-			if (w.bigendian == true)
+			if (w.BigEndian == true)
 				BigEndianRadio.Checked = true;
 			else
 				LittleEndianRadio.Checked = true;
+		}
+
+		public void SetDomain(MemoryDomain domain)
+		{
+			watch.Domain = domain;
 		}
 
 		public void SetEndian(Endian endian)
@@ -93,13 +99,17 @@ namespace BizHawk.MultiClient
 			if (!customSetup)
 			{
 				Watch w = new Watch();
-				SetTypeRadio(w.type);
-				SetSignedRadio(w.signed);
+				SetTypeRadio(w.Type);
+				SetSignedRadio(w.Signed);
 				AddressBox.Text = "0000";
 			}
 
 			if (location.X > 0 && location.Y > 0)
+			{
 				this.Location = location;
+			}
+
+			PopulateMemoryDomainComboBox();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
@@ -113,7 +123,9 @@ namespace BizHawk.MultiClient
 			//Put user settings in the watch file
 			userSelected = true;
 			if (InputValidate.IsValidHexNumber(AddressBox.Text))
-				watch.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+			{
+				watch.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+			}
 			else
 			{
 				MessageBox.Show("Not a valid address (enter a valid Hex number)", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -124,25 +136,41 @@ namespace BizHawk.MultiClient
 			}
 
 			if (SignedRadio.Checked)
-				watch.signed = asigned.SIGNED;
+			{
+				watch.Signed = Watch.DISPTYPE.SIGNED;
+			}
 			else if (UnsignedRadio.Checked)
-				watch.signed = asigned.UNSIGNED;
+			{
+				watch.Signed = Watch.DISPTYPE.UNSIGNED;
+			}
 			else if (HexRadio.Checked)
-				watch.signed = asigned.HEX;
+			{
+				watch.Signed = Watch.DISPTYPE.HEX;
+			}
 
 			if (Byte1Radio.Checked)
-				watch.type = atype.BYTE;
+			{
+				watch.Type = Watch.TYPE.BYTE;
+			}
 			else if (Byte2Radio.Checked)
-				watch.type = atype.WORD;
+			{
+				watch.Type = Watch.TYPE.WORD;
+			}
 			else if (Byte4Radio.Checked)
-				watch.type = atype.DWORD;
+			{
+				watch.Type = Watch.TYPE.DWORD;
+			}
 
 			if (BigEndianRadio.Checked)
-				watch.bigendian = true;
+			{
+				watch.BigEndian = true;
+			}
 			else if (LittleEndianRadio.Checked)
-				watch.bigendian = false;
-
-			watch.notes = NotesBox.Text;
+			{
+				watch.BigEndian = false;
+			}
+			watch.Domain = domain;
+			watch.Notes = NotesBox.Text;
 
 			this.Close();
 		}
@@ -165,6 +193,62 @@ namespace BizHawk.MultiClient
 
 			if (!InputValidate.IsValidHexNumber(e.KeyChar))
 				e.Handled = true;
+		}
+
+		private void PopulateMemoryDomainComboBox()
+		{
+			DomainComboBox.Items.Clear();
+			if (Global.Emulator.MemoryDomains.Count > 0)
+			{
+				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				{
+					string str = Global.Emulator.MemoryDomains[x].ToString();
+					DomainComboBox.Items.Add(str);
+				}
+			}
+			SetDomainSelection();
+		}
+
+		private int GetNumDigits(Int32 i)
+		{
+			if (i < 0x10000) return 4;
+			if (i < 0x100000) return 5;
+			if (i < 0x1000000) return 6;
+			if (i < 0x10000000) return 7;
+			else return 8;
+		}
+
+		private void SetAddressBox()
+		{
+			AddressBox.Text = String.Format("{0:X" +
+				GetNumDigits(watch.Address) + "}", watch.Address);
+		}
+
+		private void SetDomainSelection()
+		{
+			//Counts should always be the same, but just in case, let's check
+			int max;
+			if (Global.Emulator.MemoryDomains.Count < DomainComboBox.Items.Count)
+				max = Global.Emulator.MemoryDomains.Count;
+			else
+				max = DomainComboBox.Items.Count;
+
+			for (int x = 0; x < max; x++)
+			{
+				if (domain.ToString() == DomainComboBox.Items[x].ToString())
+					DomainComboBox.SelectedIndex = x;
+			}
+		}
+
+		private void DomainComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
+			int x = GetNumDigits(domain.Size);
+			watch.Address = 0;
+			watch.Value = 0;
+			watch.Domain = domain;
+			SetAddressBox();
+			AddressBox.MaxLength = GetNumDigits(domain.Size);
 		}
 	}
 }

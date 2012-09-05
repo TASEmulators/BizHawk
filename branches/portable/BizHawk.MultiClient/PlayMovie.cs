@@ -30,13 +30,21 @@ namespace BizHawk.MultiClient
 		{
 			text = "";
 			if (column == 0) //File
+			{
 				text = Path.GetFileName(MovieList[index].Filename);
+			}
 			if (column == 1) //System
-				text = MovieList[index].SysID();
+			{
+				text = MovieList[index].SysID;
+			}
 			if (column == 2) //Game
-				text = MovieList[index].GetGameName();
+			{
+				text = MovieList[index].GameName;
+			}
 			if (column == 3) //Time
+			{
 				text = MovieList[index].GetTime(true);
+			}
 		}
 
 		private void MovieView_QueryItemBkColor(int index, int column, ref Color color)
@@ -86,9 +94,9 @@ namespace BizHawk.MultiClient
 				{
 					if (file.Extension.ToUpper() == "STATE")
 					{
-						Movie m = new Movie(file.FullName, MOVIEMODE.INACTIVE);
+						Movie m = new Movie(file.FullName);
 						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.LogLength() == 0)
+						if (m.Frames == 0)
 						{
 							MessageBox.Show("No input log detected in this savestate, aborting", "Can not load file", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 							return;
@@ -117,9 +125,9 @@ namespace BizHawk.MultiClient
 					int x = IsDuplicate(filename);
 					if (x == 0)
 					{
-						Movie m = new Movie(file.CanonicalFullPath, MOVIEMODE.INACTIVE);
+						Movie m = new Movie(file.CanonicalFullPath);
 						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.LogLength() > 0)
+						if (m.Frames > 0)
 						{
 							MovieList.Add(m);
 							sortReverse = false;
@@ -159,23 +167,34 @@ namespace BizHawk.MultiClient
 		private int IsDuplicate(string filename)
 		{
 			for (int x = 0; x < MovieList.Count; x++)
+			{
 				if (MovieList[x].Filename == filename)
+				{
 					return x;
+				}
+			}
+
 			return 0;
 		}
 
 		private void PreLoadMovieFile(HawkFile path, bool force)
 		{
-			Movie m = new Movie(path.CanonicalFullPath, MOVIEMODE.INACTIVE);
+			Movie m = new Movie(path.CanonicalFullPath);
 			m.PreLoadText(path);
 			if (path.Extension == ".FM2")
+			{
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+			}
 			else if (path.Extension == ".MC2")
+			{
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
+			}
 			//Don't do this from browse
 			if (m.Header.GetHeaderLine(MovieHeader.GAMENAME) == Global.Game.Name ||
 				Global.Config.PlayMovie_MatchGameName == false || force)
+			{
 				MovieList.Add(m);
+			}
 		}
 
 		private void UpdateList()
@@ -201,7 +220,7 @@ namespace BizHawk.MultiClient
 			//Pull out matching names
 			for (int x = 0; x < MovieList.Count; x++)
 			{
-				if (PathManager.FilesystemSafeName(Global.Game) == MovieList[x].GetGameName())
+				if (PathManager.FilesystemSafeName(Global.Game) == MovieList[x].GameName)
 					Indexes.Add(x);
 			}
 			if (Indexes.Count == 0) return;
