@@ -127,9 +127,6 @@ void snes_set_cartridge_basename(const char *basename) {
 }
 
 void snes_init(void) {
-	//zero 04-sep-2012 - reset harder
-	new(&interface) Interface();
-
   SNES::interface = &interface;
   SNES::system.init();
   SNES::input.connect(SNES::Controller::Port1, SNES::Input::Device::Joypad);
