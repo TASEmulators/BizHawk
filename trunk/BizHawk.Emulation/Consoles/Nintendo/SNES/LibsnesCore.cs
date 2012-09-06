@@ -457,7 +457,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.CubicResampler();
 		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.LinearResampler();
 
-		Sound.MetaspuSoundProvider metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_Z);
+		Sound.MetaspuSoundProvider metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
 
 		void snes_audio_sample(ushort left, ushort right)
 		{
