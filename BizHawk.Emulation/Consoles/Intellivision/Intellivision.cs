@@ -65,9 +65,13 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Cpu.Reset();
 
 			Stic = new STIC();
+			Stic.ReadMemory = ReadMemory;
+			Stic.WriteMemory = WriteMemory;
 			Stic.Reset();
 
 			Psg = new PSG();
+			Psg.ReadMemory = ReadMemory;
+			Psg.WriteMemory = WriteMemory;
 
 			Connect();
 
