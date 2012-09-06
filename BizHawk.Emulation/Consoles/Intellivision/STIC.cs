@@ -189,17 +189,17 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					// Parse data from the card.
 					bool gram = ((card & 0x0800) != 0);
 					int card_num = card >> 3;
-					int fg = card & 0x0004;
+					int fg = card & 0x0007;
 					if (Fgbg)
 					{
 						int bg = ((card >> 9) & 0x0008) |
 							((card >> 11) & 0x0004) |
-							((card >> 9) & 0x0002);
+							((card >> 9) & 0x0003);
 						/*
 						Only 64 of the GROM's cards can be used in FGBG
 						Mode.
 						*/
-						card_num &= 0x0020;
+						card_num &= 0x003F;
 					}
 					else
 					{
@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						if (gram)
 						{
 							// GRAM only has 64 cards.
-							card_num &= 0x0020;
+							card_num &= 0x003F;
 							fg |= (card >> 9) & 0x0008;
 						}
 						else
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 							All of the GROM's 256 cards can be used in Color
 							Stack Mode.
 							*/
-							card_num &= 0x0080;
+							card_num &= 0x00FF;
 					}
 					// Each picture is 8x8 pixels.
 					for (int pict_row = 0; pict_row < 8; pict_row++)
@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						Each picture is stored sequentially in the GROM / GRAM,
 						and so are their rows.
 						*/
-						int row_mem = (card_num * 8) + (pict_row * 8);
+						int row_mem = (card_num * 8) + pict_row;
 						byte row;
 						if (gram)
 							row = (byte)ReadMemory((ushort)(0x3800 +
@@ -237,15 +237,17 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 							// The rightmost column does not get displayed.
 							if (card_col == 19 && pict_col == 0)
 								continue;
+							int pixel = (card_row * 159 * 8) + (card_col * 8) +
+									(pict_row * 159) + (7 - pict_col);
 							// If the pixel is on, give it the FG color.
 							if ((row & 0x1) != 0)
 								/*
 								The pixels go right as the bits get less
 								significant.
 								*/
-								FrameBuffer[((card_row * 159 * 8) + (card_col * 8) +
-									(pict_row * 159) + (7 - pict_col))] =
-									ColorToRGBA(fg);
+								FrameBuffer[pixel] = ColorToRGBA(fg);
+							else
+								FrameBuffer[pixel] = 0x000000;
 							row >>= 1;
 						}
 					}
