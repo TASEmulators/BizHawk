@@ -2015,7 +2015,7 @@ namespace BizHawk.MultiClient
 					short[] temp = new short[nsamp * 2];
 					Global.Emulator.SoundProvider.GetSamples(temp);
 					DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
-					DumpProxy.GetSamples(temp);
+					//DumpProxy.GetSamples(temp);
 					//genSound = false;
 
 					CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
@@ -2982,7 +2982,7 @@ namespace BizHawk.MultiClient
 			}
 
 			// buffersize here is entirely guess
-			DumpProxy = new Emulation.Sound.MetaspuSoundProvider(Emulation.Sound.ESynchMethod.ESynchMethod_Z);
+			DumpProxy = new Emulation.Sound.MetaspuSoundProvider(Emulation.Sound.ESynchMethod.ESynchMethod_V);
 			SoundRemainder = 0;
 		}
 
