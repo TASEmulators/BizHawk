@@ -84,6 +84,11 @@ namespace BizHawk
 
 	public static class Extensions
 	{
+		public static string ToHexString(this int n, int numdigits)
+		{
+			return string.Format("{0:X" + numdigits + "}", n);
+		}
+
 		public static void CopyTo(this Stream src, Stream dest)
 		{
 			int size = (src.CanSeek) ? Math.Min((int)(src.Length - src.Position), 0x2000) : 0x2000;

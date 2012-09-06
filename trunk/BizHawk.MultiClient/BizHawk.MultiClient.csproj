@@ -326,6 +326,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SNESTools\SNESGraphicsDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SNESTools\SNESGraphicsDebugger.Designer.cs">
+      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SNESTools\SNESGraphicsViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\HexColor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -407,6 +416,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SNESTools\SNESGraphicsDebugger.resx">
+      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexColor.resx">
       <DependentUpon>HexColor.cs</DependentUpon>

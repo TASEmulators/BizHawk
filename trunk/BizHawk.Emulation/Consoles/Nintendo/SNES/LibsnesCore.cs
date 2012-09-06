@@ -1,4 +1,6 @@
-﻿//TODO 
+﻿//http://wiki.superfamicom.org/snes/show/Backgrounds
+
+//TODO 
 //libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
 //rename snes.dll so nobody thinks it's a stock snes.dll (we'll be editing it substantially at some point)
 //wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailable
@@ -88,6 +90,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			[MarshalAs(UnmanagedType.U1)]
 			bool enable
 			);
+
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int snes_peek_logical_register(SNES_REG reg);
+
+		public enum SNES_REG : int
+		{
+			//$2105
+			BG_MODE = 0,
+			BG3_PRIORITY = 1,
+			BG1_TILESIZE = 2,
+			BG2_TILESIZE = 3,
+			BG3_TILESIZE = 4,
+			BG4_TILESIZE = 5,
+			//$2107
+			BG1_SCADDR = 10,
+			BG1_SCSIZE = 11,
+			//$2108
+			BG2_SCADDR = 12,
+			BG2_SCSIZE = 13,
+			//$2109
+			BG3_SCADDR = 14,
+			BG3_SCSIZE = 15,
+			//$210A
+			BG4_SCADDR = 16,
+			BG4_SCSIZE = 17,
+			//$210B
+			BG1_TDADDR = 20,
+			BG2_TDADDR = 21,
+			//$210C
+			BG3_TDADDR = 22,
+			BG4_TDADDR = 23
+		}
 		
 		public enum SNES_MEMORY : uint
 		{
@@ -141,6 +175,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			JOYPAD_R = 11
 		}
 	}
+
 
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
 	{
@@ -447,6 +482,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		Queue<short> AudioInBuffer = new Queue<short>();
 		/// <summary>stores samples that have been converted to 44100hz</summary>
 		Queue<short> AudioOutBuffer = new Queue<short>();
+
+		GCHandle _gc_snes_audio_sample;
 
 		/// <summary>total number of samples (left and right combined) in the InBuffer before we ask for resampling</summary>
 		const int resamplechunk = 1000;

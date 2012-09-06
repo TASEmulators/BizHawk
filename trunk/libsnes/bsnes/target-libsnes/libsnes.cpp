@@ -229,6 +229,41 @@ bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size)
 	return temp.type != SnesCartridge::TypeUnknown && temp.type != SnesCartridge::TypeGameBoy;
 }
 
+//zero 05-sep-2012
+int snes_peek_logical_register(int reg)
+{
+	switch(reg)
+	{
+		//$2105
+	case SNES_REG_BG_MODE: return SNES::ppu.regs.bg_mode;
+	case SNES_REG_BG3_PRIORITY: return SNES::ppu.regs.bg3_priority;
+	case SNES_REG_BG1_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG1];
+	case SNES_REG_BG2_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG2];
+	case SNES_REG_BG3_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG3];
+	case SNES_REG_BG4_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG4];
+
+		//$2107
+	case SNES_REG_BG1_SCADDR: return SNES::ppu.regs.bg_scaddr[SNES::PPU::BG1]>>9;
+	case SNES_REG_BG1_SCSIZE: return SNES::ppu.regs.bg_scsize[SNES::PPU::BG1];
+		//$2108
+	case SNES_REG_BG2_SCADDR: return SNES::ppu.regs.bg_scaddr[SNES::PPU::BG2]>>9;
+	case SNES_REG_BG2_SCSIZE: return SNES::ppu.regs.bg_scsize[SNES::PPU::BG2];
+		//$2109
+	case SNES_REG_BG3_SCADDR: return SNES::ppu.regs.bg_scaddr[SNES::PPU::BG3]>>9;
+	case SNES_REG_BG3_SCSIZE: return SNES::ppu.regs.bg_scsize[SNES::PPU::BG3];
+		//$210A
+	case SNES_REG_BG4_SCADDR: return SNES::ppu.regs.bg_scaddr[SNES::PPU::BG4]>>9;
+	case SNES_REG_BG4_SCSIZE: return SNES::ppu.regs.bg_scsize[SNES::PPU::BG4];
+		//$210B
+	case SNES_REG_BG1_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG1]>>13;
+	case SNES_REG_BG2_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG2]>>13;
+		//$210C
+	case SNES_REG_BG3_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG3]>>13;
+	case SNES_REG_BG4_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG4]>>13;
+	}
+	return 0;
+}
+
 bool snes_load_cartridge_normal(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size
 ) {
@@ -413,3 +448,4 @@ unsigned snes_get_memory_size(unsigned id) {
   if(size == -1U) size = 0;
   return size;
 }
+

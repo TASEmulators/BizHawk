@@ -132,6 +132,34 @@ unsigned snes_get_memory_size(unsigned id);
 bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size);
 void snes_set_layer_enable(int layer, int priority, bool enable);
 
+//$2105
+#define SNES_REG_BG_MODE 0
+#define SNES_REG_BG3_PRIORITY 1
+#define SNES_REG_BG1_TILESIZE 2
+#define SNES_REG_BG2_TILESIZE 3
+#define SNES_REG_BG3_TILESIZE 4
+#define SNES_REG_BG4_TILESIZE 5
+//$2107
+#define SNES_REG_BG1_SCADDR 10
+#define SNES_REG_BG1_SCSIZE 11
+//$2108
+#define SNES_REG_BG2_SCADDR 12
+#define SNES_REG_BG2_SCSIZE 13
+//$2109
+#define SNES_REG_BG3_SCADDR 14
+#define SNES_REG_BG3_SCSIZE 15
+//$210A
+#define SNES_REG_BG4_SCADDR 16
+#define SNES_REG_BG4_SCSIZE 17
+//$210B
+#define SNES_REG_BG1_TDADDR 20
+#define SNES_REG_BG2_TDADDR 21
+//$210C
+#define SNES_REG_BG3_TDADDR 22
+#define SNES_REG_BG4_TDADDR 23
+
+int snes_peek_logical_register(int reg);
+
 #ifdef __cplusplus
 }
 #endif
