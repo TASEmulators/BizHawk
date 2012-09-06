@@ -70,6 +70,7 @@ namespace BizHawk.MultiClient
 		public RamWatch RamWatch1 = new RamWatch();
 		public RamSearch RamSearch1 = new RamSearch();
 		public HexEditor HexEditor1 = new HexEditor();
+		public SNESGraphicsDebugger SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
 		public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
 		public NESPPU NESPPU1 = new NESPPU();
 		public NESDebugger NESDebug1 = new NESDebugger();
@@ -2090,6 +2091,7 @@ namespace BizHawk.MultiClient
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
 			GBDebugger.UpdateValues();
+			SNESGraphicsDebugger1.UpdateValues();
 		}
 
 		/// <summary>
@@ -2340,6 +2342,17 @@ namespace BizHawk.MultiClient
 		{
 			NESGameGenie gg = new NESGameGenie();
 			gg.Show();
+		}
+
+		public void LoadSNESGraphicsDebugger()
+		{
+			if (!SNESGraphicsDebugger1.IsHandleCreated || SNESGraphicsDebugger1.IsDisposed)
+			{
+				SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
+				SNESGraphicsDebugger1.Show();
+			}
+			else
+				SNESGraphicsDebugger1.Focus();
 		}
 
 		public void LoadHexEditor()
@@ -3405,5 +3418,6 @@ namespace BizHawk.MultiClient
 			var file = new FileInfo(PathManager.SaveRamPath(Global.Game));
 			if (file.Exists) file.Delete();
 		}
+
 	}
 }

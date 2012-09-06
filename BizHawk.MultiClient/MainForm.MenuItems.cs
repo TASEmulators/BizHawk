@@ -10,6 +10,7 @@ namespace BizHawk.MultiClient
 {
 	partial class MainForm
 	{
+
 		private void recordAVIToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RecordAVI();
@@ -502,6 +503,11 @@ namespace BizHawk.MultiClient
 			{
 				Global.OSD.AddMessage("Rewind disabled");
 			}
+		}
+
+		private void SNESGraphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadSNESGraphicsDebugger();
 		}
 
 		private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
