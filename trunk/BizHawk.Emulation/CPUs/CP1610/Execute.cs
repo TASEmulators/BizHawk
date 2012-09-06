@@ -93,8 +93,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public int Execute()
 		{
 			/*
-			 Take an interrupt if the previous instruction was interruptible,
-			 interrupts are enabled, and IntRM has a falling edge.
+			Take an interrupt if the previous instruction was interruptible,
+			interrupts are enabled, and IntRM has a falling edge.
 			*/
 			if (FlagI && Interruptible && !IntRM && !Interrupted)
 			{
