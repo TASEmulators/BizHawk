@@ -173,7 +173,42 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public int ColorToRGBA(int color)
 		{
-			return 0xFFFFFF;
+			switch (color)
+			{
+				case 0:
+					return 0x000000;
+				case 1:
+					return 0x002DFF;
+				case 2:
+					return 0xFF3D10;
+				case 3:
+					return 0xC9CFAB;
+				case 4:
+					return 0x386B3F;
+				case 5:
+					return 0x00A756;
+				case 6:
+					return 0xFAEA50;
+				case 7:
+					return 0xFFFCFF;
+				case 8:
+					return 0xBDACC8;
+				case 9:
+					return 0x24B8FF;
+				case 10:
+					return 0xFFB41F;
+				case 11:
+					return 0x546E00;
+				case 12:
+					return 0xFF4E57;
+				case 13:
+					return 0xA496FF;
+				case 14:
+					return 0x75CC80;
+				case 15:
+					return 0xB51A58;
+			}
+			throw new ArgumentException("Specified color does not exist.");
 		}
 
 		public void Background()
@@ -217,7 +252,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 							*/
 							card_num &= 0x00FF;
 					}
-					// Each picture is 8x8 pixels.
 					for (int pict_row = 0; pict_row < 8; pict_row++)
 					{
 						/*
