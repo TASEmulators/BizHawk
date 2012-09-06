@@ -219,9 +219,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			{
 				for (int card_col = 0; card_col < 20; card_col++)
 				{
+					int buffer_offset = (card_row * 159 * 8) + (card_col * 8);
 					// The cards are stored sequentially in the System RAM.
-					ushort card = ReadMemory((ushort)(0x0200 +
-						(card_row * 20) + card_col));
+					ushort card = ReadMemory((ushort)(0x0200 + (card_row * 20) + card_col));
 					// Parse data from the card.
 					bool gram = ((card & 0x0800) != 0);
 					int card_num = card >> 3;
@@ -229,13 +229,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					int bg = 0x000000;
 					if (Fgbg)
 					{
-						bg = ((card >> 9) & 0x0008) |
-							((card >> 11) & 0x0004) |
-							((card >> 9) & 0x0003);
-						/*
-						Only 64 of the GROM's cards can be used in FGBG
-						Mode.
-						*/
+						bg = ((card >> 9) & 0x0008) | ((card >> 11) & 0x0004) | ((card >> 9) & 0x0003);
+						// Only 64 of the GROM's cards can be used in FGBG Mode.
 						card_num &= 0x003F;
 					}
 					else
@@ -246,63 +241,82 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						{
 							// GRAM only has 64 cards.
 							card_num &= 0x003F;
-							/*
-							The foreground color has an additional bit when not
-							in Colored Squares mode.
-							*/
+							// The foreground color has an additional bit when not in Colored Squares mode.
 							if (squares)
 								fg |= 0x0008;
 						}
 						else
 						{
-							/*
-							All of the GROM's 256 cards can be used in Color
-							Stack Mode.
-							*/
+							// All of the GROM's 256 cards can be used in Color Stack Mode.
 							card_num &= 0x00FF;
 						}
 						if (!gram && squares)
 						{
-							// TODO: Colored Squares Mode.
+							// Colored Squares Mode.
+							int[] colors = new int[4];
+							colors[0] = fg;
+							colors[1] = (card >> 3) & 0x0007;
+							colors[2] = (card >> 6) & 0x0007;
+							colors[3] = ((card >> 11) & 0x0004) | ((card >> 9) & 0x0003);
+							for (int squares_row = 0; squares_row < 8; squares_row++)
+							{
+								for (int squares_col = 0; squares_col < 8; squares_col++)
+								{
+									// The rightmost column does not get displayed.
+									if (card_col == 19 && squares_col == 7)
+										continue;
+									int color;
+									int pixel = buffer_offset + (squares_row * 159) + squares_col;
+									// Determine the color of the quadrant the pixel is in.
+									if (squares_col < 4)
+									{
+										if (squares_row < 4)
+											color = 0;
+										else
+											color = 2;
+									}
+									else
+									{
+										if (squares_row < 4)
+											color = 1;
+										else
+											color = 3;
+									}
+									FrameBuffer[pixel] = ColorToRGBA(colors[color]);
+								}
+							}
+							continue;
 						}
 						else
 						{
 							if (advance)
 							{
+								// Cycle through the Color Stack registers.
 								ColorSP++;
 								if (ColorSP > 0x002B)
 									ColorSP = 0x0028;
 							}
-							bg = ReadMemory(ColorSP);
+							bg = ReadMemory(ColorSP) & 0x000F;
 						}
 					}
 					for (int pict_row = 0; pict_row < 8; pict_row++)
 					{
-						/*
-						Each picture is stored sequentially in the GROM / GRAM,
-						and so are their rows.
-						*/
+						// Each picture is stored sequentially in the GROM / GRAM, and so are their rows.
 						int row_mem = (card_num * 8) + pict_row;
 						byte row;
 						if (gram)
-							row = (byte)ReadMemory((ushort)(0x3800 +
-								row_mem));
+							row = (byte)ReadMemory((ushort)(0x3800 + row_mem));
 						else
-							row = (byte)ReadMemory((ushort)(0x3000 +
-								row_mem));
+							row = (byte)ReadMemory((ushort)(0x3000 + row_mem));
 						for (int pict_col = 0; pict_col < 8; pict_col++)
 						{
 							// The rightmost column does not get displayed.
 							if (card_col == 19 && pict_col == 0)
 								continue;
-							int pixel = (card_row * 159 * 8) + (card_col * 8) +
-									(pict_row * 159) + (7 - pict_col);
+							int pixel = buffer_offset + (pict_row * 159) + (7 - pict_col);
 							// If the pixel is on, give it the FG color.
 							if ((row & 0x1) != 0)
-								/*
-								The pixels go right as the bits get less
-								significant.
-								*/
+								// The pixels go right as the bits get less significant.
 								FrameBuffer[pixel] = ColorToRGBA(fg);
 							else
 								FrameBuffer[pixel] = ColorToRGBA(bg);
