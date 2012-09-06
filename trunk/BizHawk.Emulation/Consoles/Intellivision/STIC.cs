@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 	{
 		private bool Sr1, Sr2, Sst, Fgbg = false;
 		private ushort[] Register = new ushort[64];
+		private ushort ColorSP = 0x0028;
 
 		public int TotalExecutedCycles;
 		public int PendingCycles;
@@ -225,9 +226,10 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					bool gram = ((card & 0x0800) != 0);
 					int card_num = card >> 3;
 					int fg = card & 0x0007;
+					int bg = 0x000000;
 					if (Fgbg)
 					{
-						int bg = ((card >> 9) & 0x0008) |
+						bg = ((card >> 9) & 0x0008) |
 							((card >> 11) & 0x0004) |
 							((card >> 9) & 0x0003);
 						/*
@@ -239,18 +241,40 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					else
 					{
 						bool advance = ((card & 0x2000) != 0);
+						bool squares = ((card & 0x1000) != 0);
 						if (gram)
 						{
 							// GRAM only has 64 cards.
 							card_num &= 0x003F;
-							fg |= (card >> 9) & 0x0008;
+							/*
+							The foreground color has an additional bit when not
+							in Colored Squares mode.
+							*/
+							if (squares)
+								fg |= 0x0008;
 						}
 						else
+						{
 							/*
 							All of the GROM's 256 cards can be used in Color
 							Stack Mode.
 							*/
 							card_num &= 0x00FF;
+						}
+						if (!gram && squares)
+						{
+							// TODO: Colored Squares Mode.
+						}
+						else
+						{
+							if (advance)
+							{
+								ColorSP++;
+								if (ColorSP > 0x002B)
+									ColorSP = 0x0028;
+							}
+							bg = ReadMemory(ColorSP);
+						}
 					}
 					for (int pict_row = 0; pict_row < 8; pict_row++)
 					{
@@ -281,7 +305,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 								*/
 								FrameBuffer[pixel] = ColorToRGBA(fg);
 							else
-								FrameBuffer[pixel] = 0x000000;
+								FrameBuffer[pixel] = ColorToRGBA(bg);
 							row >>= 1;
 						}
 					}
