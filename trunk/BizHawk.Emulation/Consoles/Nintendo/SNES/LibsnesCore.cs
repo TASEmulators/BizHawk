@@ -490,15 +490,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// <summary>actual sampling factor used</summary>
 		const double resamplingfactor = 44100.0 / 32040.5;
 
-		Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.BizhawkResampler(false);
+		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.BizhawkResampler(false);
+		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.SinkResampler(12);
 		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.CubicResampler();
 		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.LinearResampler();
+		Sound.Utilities.SpeexResampler resampler = new Sound.Utilities.SpeexResampler(6);
 
 		Sound.MetaspuSoundProvider metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
 
 		void snes_audio_sample(ushort left, ushort right)
 		{
-			
+
 			AudioInBuffer.Enqueue((short)left);
 			AudioInBuffer.Enqueue((short)right);
 
@@ -537,8 +539,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			if (true)
 			{
-				resampler.ResampleChunk(AudioInBuffer, AudioOutBuffer, false);
-
+				//lock (AudioInBuffer)
+				//{
+					resampler.ResampleChunk(AudioInBuffer, AudioOutBuffer, false);
+				//}
 				// drain into the metaspu immediately
 				// we could skip this step and drain directly by changing SampleBuffers implementation
 				while (AudioOutBuffer.Count > 0)
