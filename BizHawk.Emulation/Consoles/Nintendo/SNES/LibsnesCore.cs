@@ -306,6 +306,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			LibsnesDll.snes_set_layer_enable(4, 3, CoreInputComm.SNES_ShowOBJ_3);
 
 			//apparently this is one frame?
+			timeFrameCounter++;
 			LibsnesDll.snes_run();
 		}
 
@@ -373,7 +374,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			Marshal.Copy(data, 0, emudata, size);
 		}
 
-		public void ResetFrameCounter() { }
+		public void ResetFrameCounter() { timeFrameCounter = 0; }
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();
