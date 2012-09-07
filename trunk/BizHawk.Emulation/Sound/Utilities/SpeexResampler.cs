@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Sound.Utilities
 	/// <summary>
 	/// junk wrapper around LibSpeexDSP.  quite inefficient.  will be replaced
 	/// </summary>
-	public class SpeexResampler
+	public class SpeexResampler : IDisposable
 	{
 		static class LibSpeexDSP
 		{
@@ -203,6 +203,8 @@ namespace BizHawk.Emulation.Sound.Utilities
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern void speex_resampler_get_output_stride(IntPtr st, ref uint stride);
 
+			/*these two functions don't exist in our version of the dll
+
 			/// <summary>
 			/// Get the latency in input samples introduced by the resampler.
 			/// </summary>
@@ -218,6 +220,8 @@ namespace BizHawk.Emulation.Sound.Utilities
 			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern int speex_resampler_get_output_latency(IntPtr st);
+
+			*/
 
 			/// <summary>
 			/// Make sure that the first samples to go out of the resamplers don't have
@@ -253,21 +257,108 @@ namespace BizHawk.Emulation.Sound.Utilities
 		/// <summary>
 		/// opaque pointer to state
 		/// </summary>
-		IntPtr st;
+		IntPtr st = IntPtr.Zero;
 
-		public SpeexResampler(int quality)
+		/// <summary>
+		/// function to call to dispatch output
+		/// </summary>
+		Action<short[], int> drainer;
+
+		short[] inbuf = new short[512];
+
+		short[] outbuf;
+
+		/// <summary>
+		/// in buffer position in samples (not sample pairs)
+		/// </summary>
+		int inbufpos = 0;
+
+		/// <summary>
+		/// throw an exception based on error state
+		/// </summary>
+		/// <param name="e"></param>
+		static void CheckError(LibSpeexDSP.RESAMPLER_ERR e)
 		{
-			LibSpeexDSP.RESAMPLER_ERR err = 0;
-
-			st = LibSpeexDSP.speex_resampler_init_frac(2, 64081, 88200, 32041, 44100, quality, ref err);
+			switch (e)
+			{
+				case LibSpeexDSP.RESAMPLER_ERR.SUCCESS:
+					return;
+				case LibSpeexDSP.RESAMPLER_ERR.ALLOC_FAILED:
+					throw new InsufficientMemoryException("LibSpeexDSP: Alloc failed");
+				case LibSpeexDSP.RESAMPLER_ERR.BAD_STATE:
+					throw new Exception("LibSpeexDSP: Bad state");
+				case LibSpeexDSP.RESAMPLER_ERR.INVALID_ARG:
+					throw new ArgumentException("LibSpeexDSP: Bad Argument");
+				case LibSpeexDSP.RESAMPLER_ERR.PTR_OVERLAP:
+					throw new Exception("LibSpeexDSP: Buffers cannot overlap");
+			}
 		}
 
-		public void StartSession(double ratio)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="quality">0 to 10</param>
+		/// <param name="rationum">numerator of srate change ratio (inrate / outrate)</param>
+		/// <param name="ratioden">demonenator of srate change ratio (inrate / outrate)</param>
+		/// <param name="sratein">sampling rate in, rounded to nearest hz</param>
+		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
+		/// <param name="drainer">function which accepts output as produced</param>
+		public SpeexResampler(int quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer)
 		{
-			
+			LibSpeexDSP.RESAMPLER_ERR err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
+			st = LibSpeexDSP.speex_resampler_init_frac(2, rationum, ratioden, sratein, srateout, quality, ref err);
+
+			if (st == IntPtr.Zero)
+				throw new Exception("LibSpeexDSP returned null!");
+
+			CheckError(err);
+
+			//System.Windows.Forms.MessageBox.Show(string.Format("inlat: {0} outlat: {1}", LibSpeexDSP.speex_resampler_get_input_latency(st), LibSpeexDSP.speex_resampler_get_output_latency(st)));
+			this.drainer = drainer;
+
+			outbuf = new short[inbuf.Length * ratioden / rationum / 2 * 2 + 128];
+
+			//System.Windows.Forms.MessageBox.Show(string.Format("inbuf: {0} outbuf: {1}", inbuf.Length, outbuf.Length));
+
+		}
+
+		/// <summary>
+		/// add a sample to the queue
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		public void EnqueueSample(short left, short right)
+		{
+			inbuf[inbufpos++] = left;
+			inbuf[inbufpos++] = right;
+
+			if (inbufpos == inbuf.Length)
+				Flush();
 		}
 
 
+		/// <summary>
+		/// flush as many input samples as possible, generating output samples right now
+		/// </summary>
+		public void Flush()
+		{
+			uint inal = (uint)inbufpos / 2;
+
+			uint outal = (uint)outbuf.Length / 2;
+
+			LibSpeexDSP.speex_resampler_process_interleaved_int(st, inbuf, ref inal, outbuf, ref outal);
+
+			// reset inbuf
+
+			Buffer.BlockCopy(inbuf, (int)inal * 2 * sizeof(short), inbuf, 0, inbufpos - (int)inal * 2);
+			inbufpos -= (int)inal * 2;
+
+			// dispatch outbuf
+			drainer(outbuf, (int)outal);
+		}
+
+
+		/*
 		public void ResampleChunk(Queue<short> input, Queue<short> output, bool finish)
 		{
 			while (input.Count > 0)
@@ -307,6 +398,13 @@ namespace BizHawk.Emulation.Sound.Utilities
 					outal--;
 				}
 			}
+		}
+		*/
+
+		public void Dispose()
+		{
+			LibSpeexDSP.speex_resampler_destroy(st);
+			st = IntPtr.Zero;
 		}
 	}
 }

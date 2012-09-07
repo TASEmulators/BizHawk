@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
 
 			// start up audio resampler
-			resampler.StartSession(resamplingfactor);
+			InitAudio();
 
 			//strip header
 			if ((romData.Length & 0x7FFF) == 512)
@@ -479,56 +479,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		#region audio stuff
 
-		/// <summary>stores input samples as they come from the libsnes core</summary>
-		Queue<short> AudioInBuffer = new Queue<short>();
-		/// <summary>stores samples that have been converted to 44100hz</summary>
-		Queue<short> AudioOutBuffer = new Queue<short>();
+		void InitAudio()
+		{
+			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+			resampler = new Sound.Utilities.SpeexResampler(6, 64081, 88200, 32041, 44100, new Action<short[], int>(metaspu.buffer.enqueue_samples));
 
-		GCHandle _gc_snes_audio_sample;
+		}
 
-		/// <summary>total number of samples (left and right combined) in the InBuffer before we ask for resampling</summary>
-		const int resamplechunk = 1000;
-		/// <summary>actual sampling factor used</summary>
-		const double resamplingfactor = 44100.0 / 32040.5;
+		Sound.Utilities.SpeexResampler resampler;
 
-		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.BizhawkResampler(false);
-		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.SinkResampler(12);
-		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.CubicResampler();
-		//Sound.Utilities.IStereoResampler resampler = new Sound.Utilities.LinearResampler();
-		Sound.Utilities.SpeexResampler resampler = new Sound.Utilities.SpeexResampler(6);
-
-		Sound.MetaspuSoundProvider metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+		Sound.MetaspuSoundProvider metaspu;
 
 		void snes_audio_sample(ushort left, ushort right)
 		{
-
-			AudioInBuffer.Enqueue((short)left);
-			AudioInBuffer.Enqueue((short)right);
-
-			/*
-			try
-			{
-				// fixme: i get all sorts of crashes if i do the resampling in here.  what?
-
-				
-				if (AudioInBuffer.Count >= resamplechunk)
-				{
-					resampler.ResampleChunk(AudioInBuffer, AudioOutBuffer, false);
-					// drain into the metaspu immediately
-					// we could skip this step and drain directly by changing SampleBuffers
-					while (AudioOutBuffer.Count > 0)
-						metaspu.buffer.enqueue_sample(AudioOutBuffer.Dequeue(), AudioOutBuffer.Dequeue());
-				}
-				 
-			}
-			catch (Exception e)
-			{
-				System.Windows.Forms.MessageBox.Show(e.ToString());
-				AudioOutBuffer.Clear();
-			}
-			 */
-	
-			
+			resampler.EnqueueSample((short)left, (short)right);			
 		}
 
 
@@ -536,26 +500,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public void GetSamples(short[] samples)
 		{
-			// do resampling here, instead of when the samples are generated; see "fixme" comment in snes_audio_sample()
-
-			if (true)
-			{
-				//lock (AudioInBuffer)
-				//{
-					resampler.ResampleChunk(AudioInBuffer, AudioOutBuffer, false);
-				//}
-				// drain into the metaspu immediately
-				// we could skip this step and drain directly by changing SampleBuffers implementation
-				while (AudioOutBuffer.Count > 0)
-				{
-					short l = AudioOutBuffer.Dequeue();
-					short r = AudioOutBuffer.Dequeue();
-					//metaspu.buffer.enqueue_sample(AudioOutBuffer.Dequeue(), AudioOutBuffer.Dequeue());
-					metaspu.buffer.enqueue_sample(l, r);
-					//dbgs.Write(l);
-					//dbgs.Write(r);
-				}
-			}
+			resampler.Flush();
 			metaspu.GetSamples(samples);
 		}
 
