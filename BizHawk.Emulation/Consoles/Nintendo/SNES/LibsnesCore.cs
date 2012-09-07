@@ -341,7 +341,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			};
 
 		int timeFrameCounter;
-		public int Frame { get { return timeFrameCounter; } }
+		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 		public string SystemId { get { return "SNES"; } }
