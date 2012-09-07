@@ -67,19 +67,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			if (!FlagD)
 			{
 				if (mem != 0x6)
-				{
 					return 8;
-				}
 				else
-				{
 					return 11;
-				}
 			}
 			else
-			{
 				// Double Byte Data.
 				return 10;
-			}
 		}
 
 		public void Indirect_Set(byte mem, byte src)
