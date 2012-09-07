@@ -22,36 +22,26 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Stic.SetSst(Cpu.GetBusAk());
 		}
 
-		public void LoadExecutiveRom()
+		public void LoadExecutiveRom(string path)
 		{
-			FileStream fs = new FileStream("C:/erom.int", FileMode.Open, FileAccess.Read);
-			BinaryReader r = new BinaryReader(fs);
-			byte[] erom = r.ReadBytes(8192);
+			var erom = File.ReadAllBytes(path);
+			if (erom.Length != 8192) throw new ApplicationException("EROM file is wrong size - expected 8192 bytes");
 			int index = 0;
 			// Combine every two bytes into a word.
 			while (index + 1 < erom.Length)
 				ExecutiveRom[index / 2] = (ushort)((erom[index++] << 8) | erom[index++]);
-			r.Close();
-			fs.Close();
 		}
 
-		public void LoadGraphicsRom()
+		public void LoadGraphicsRom(string path)
 		{
-			FileStream fs = new FileStream("C:/grom.int", FileMode.Open, FileAccess.Read);
-			BinaryReader r = new BinaryReader(fs);
-			byte[] grom = r.ReadBytes(2048);
-			for (int index = 0; index < grom.Length; index++)
-				GraphicsRom[index] = grom[index];
-			r.Close();
-			fs.Close();
+			GraphicsRom = File.ReadAllBytes(path);
+			if (GraphicsRom.Length != 2048) throw new ApplicationException("GROM file is wrong size - expected 2048 bytes");
 		}
 
 		public Intellivision(GameInfo game, byte[] rom)
 		{
 			Rom = rom;
 			Game = game;
-			LoadExecutiveRom();
-			LoadGraphicsRom();
 			Cart = new Intellicart();
 			if (Cart.Parse(Rom) == -1)
 			{
