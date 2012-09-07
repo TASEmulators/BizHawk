@@ -646,7 +646,7 @@ namespace BizHawk.MultiClient
 		private void INTVBrowseEROM_Click(object sender, EventArgs e)
 		{
 			BrowseForBios(
-				"Intellivision EROM (*.bin)|*.bin|All Files|*.*",
+				"Intellivision EROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
 				 Global.Config.PathINTVEROM,
 				INTVEROMBox);
 		}
@@ -654,7 +654,7 @@ namespace BizHawk.MultiClient
 		private void INTVBroseGROM_Click(object sender, EventArgs e)
 		{
 			BrowseForBios(
-				"Intellivision GROM (*.bin)|*.bin|All Files|*.*",
+				"Intellivision GROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
 				 Global.Config.PathINTVGROM,
 				INTVGROMBox);
 		}
