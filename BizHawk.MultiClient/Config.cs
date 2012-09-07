@@ -58,6 +58,13 @@ namespace BizHawk.MultiClient
 		public string LastRomPath = ".";
 		public string BasePath = ".";
 
+		public string BaseINTV = Path.Combine(".", "Intellivision");
+		public string PathINTVROMs = ".";
+		public string PathINTVSavestates = Path.Combine(".", "State");
+		public string PathINTVSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathINTVScreenshots = Path.Combine(".", "Screenshots");
+		public string PathINTVCheats = Path.Combine(".", "Cheats");
+
 		public string BaseNES = Path.Combine(".", "NES");
 		public string PathNESROMs = ".";
 		public string PathNESSavestates = Path.Combine(".", "State");
@@ -136,6 +143,8 @@ namespace BizHawk.MultiClient
 
 		//BIOS Paths
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce"); //TODO: better default filename
+		public string PathINTVGROM = Path.Combine(".", "grom.bin");
+		public string PathINTVEROM = Path.Combine(".", "erom.bin");
 
 		public string FFMpegPath = "%exe%/ffmpeg.exe";
 

@@ -20,6 +20,8 @@ namespace BizHawk.MultiClient
 		//Think of other modifiers (perhaps all environment paths?)
 		//If enough modifiers, path boxes can do a pull down of suggestions when user types %
 
+		//also....... this isnt really scalable. we need some more fancy system probably which is data-driven
+
 		//******************
 		//Modifiers
 		//%exe% - path of EXE
@@ -47,6 +49,15 @@ namespace BizHawk.MultiClient
 		{
 			RecentForROMs.Checked = Global.Config.UseRecentForROMs;
 			BasePathBox.Text = Global.Config.BasePath;
+
+			INTVBaseBox.Text = Global.Config.BaseINTV;
+			INTVRomsBox.Text = Global.Config.PathINTVROMs;
+			INTVSavestatesBox.Text = Global.Config.PathINTVSavestates;
+			INTVSaveRAMBox.Text = Global.Config.PathINTVSaveRAM; ;
+			INTVScreenshotsBox.Text = Global.Config.PathINTVScreenshots;
+			INTVCheatsBox.Text = Global.Config.PathINTVCheats;
+			INTVEROMBox.Text = Global.Config.PathINTVEROM;
+			INTVGROMBox.Text = Global.Config.PathINTVGROM;
 
 			NESBaseBox.Text = Global.Config.BaseNES;
 			NESROMsBox.Text = Global.Config.PathNESROMs;
@@ -131,6 +142,14 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
 			Global.Config.BasePath = BasePathBox.Text;
+
+			Global.Config.BaseINTV = INTVBaseBox.Text;
+			Global.Config.PathINTVROMs = INTVRomsBox.Text;
+			Global.Config.PathINTVSavestates = INTVSavestatesBox.Text;
+			Global.Config.PathINTVScreenshots = INTVScreenshotsBox.Text;
+			Global.Config.PathINTVCheats = INTVCheatsBox.Text;
+			Global.Config.PathINTVEROM = INTVEROMBox.Text;
+			Global.Config.PathINTVGROM = INTVGROMBox.Text;
 
 			Global.Config.BaseNES = NESBaseBox.Text;
 			Global.Config.PathNESROMs = NESROMsBox.Text;
@@ -227,58 +246,32 @@ namespace BizHawk.MultiClient
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
-			if (RecentForROMs.Checked)
-			{
-				NESROMsBox.Enabled = false;
-				BrowseNESROMs.Enabled = false;
-				Sega8ROMsBox.Enabled = false;
-				Sega8BrowseROMs.Enabled = false;
-				GGROMBox.Enabled = false;
-				GGROMsDescription.Enabled = false;
-				SGROMsBox.Enabled = false;
-				SGROMsDescription.Enabled = false;
-				GenesisROMsBox.Enabled = false;
-				GenesisBrowseROMs.Enabled = false;
-				PCEROMsBox.Enabled = false;
-				PCEBrowseROMs.Enabled = false;
-				GBROMsBox.Enabled = false;
-				GBBrowseROMs.Enabled = false;
-				TI83ROMsBox.Enabled = false;
-				TI83BrowseROMs.Enabled = false;
+			INTVRomsBox.Enabled = !RecentForROMs.Checked;
+			INTVBrowseROMs.Enabled = !RecentForROMs.Checked;
+			NESROMsBox.Enabled = !RecentForROMs.Checked;
+			BrowseNESROMs.Enabled = !RecentForROMs.Checked;
+			Sega8ROMsBox.Enabled = !RecentForROMs.Checked;
+			Sega8BrowseROMs.Enabled = !RecentForROMs.Checked;
+			GGROMBox.Enabled = !RecentForROMs.Checked;
+			GGROMsDescription.Enabled = !RecentForROMs.Checked;
+			SGROMsBox.Enabled = !RecentForROMs.Checked;
+			SGROMsDescription.Enabled = !RecentForROMs.Checked;
+			GenesisROMsBox.Enabled = !RecentForROMs.Checked;
+			GenesisBrowseROMs.Enabled = !RecentForROMs.Checked;
+			PCEROMsBox.Enabled = !RecentForROMs.Checked;
+			PCEBrowseROMs.Enabled = !RecentForROMs.Checked;
+			GBROMsBox.Enabled = !RecentForROMs.Checked;
+			GBBrowseROMs.Enabled = !RecentForROMs.Checked;
+			TI83ROMsBox.Enabled = !RecentForROMs.Checked;
+			TI83BrowseROMs.Enabled = !RecentForROMs.Checked;
 
-				NESROMsDescription.Enabled = false;
-				Sega8ROMsDescription.Enabled = false;
-				GenesisROMsDescription.Enabled = false;
-				PCEROMsDescription.Enabled = false;
-				GBROMsDescription.Enabled = false;
-				TI83ROMsDescription.Enabled = false;
-			}
-			else
-			{
-				NESROMsBox.Enabled = true;
-				BrowseNESROMs.Enabled = true;
-				Sega8ROMsBox.Enabled = true;
-				Sega8BrowseROMs.Enabled = true;
-				GGROMBox.Enabled = true;
-				GGROMsDescription.Enabled = true;
-				SGROMsBox.Enabled = true;
-				SGROMsDescription.Enabled = true;
-				GenesisROMsBox.Enabled = true;
-				GenesisBrowseROMs.Enabled = true;
-				PCEROMsBox.Enabled = true;
-				PCEBrowseROMs.Enabled = true;
-				GBROMsBox.Enabled = true;
-				GBBrowseROMs.Enabled = true;
-				TI83ROMsBox.Enabled = true;
-				TI83BrowseROMs.Enabled = true;
-
-				NESROMsDescription.Enabled = true;
-				Sega8ROMsDescription.Enabled = true;
-				GenesisROMsDescription.Enabled = true;
-				PCEROMsDescription.Enabled = true;
-				GBROMsDescription.Enabled = true;
-				TI83ROMsDescription.Enabled = true;
-			}
+			INTVROMsDescription.Enabled = !RecentForROMs.Checked;
+			NESROMsDescription.Enabled = !RecentForROMs.Checked;
+			Sega8ROMsDescription.Enabled = !RecentForROMs.Checked;
+			GenesisROMsDescription.Enabled = !RecentForROMs.Checked;
+			PCEROMsDescription.Enabled = !RecentForROMs.Checked;
+			GBROMsDescription.Enabled = !RecentForROMs.Checked;
+			TI83ROMsDescription.Enabled = !RecentForROMs.Checked;
 		}
 
 		private void BrowseFolder(TextBox box, string Name)
@@ -571,23 +564,6 @@ namespace BizHawk.MultiClient
 			BrowseFolder(NESPaletteBox, NESPaletteDescription.Text, "NES");
 		}
 
-		private void PCEBrowseBios_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = Path.GetDirectoryName(Global.Config.PathPCEBios);
-			ofd.Filter = "PCE CD BIOS (*.pce)|*.pce|All Files|*.*";
-			ofd.FileName = Path.GetFileName(Global.Config.PathPCEBios);
-
-			var result = ofd.ShowDialog();
-			if (result != DialogResult.OK)
-				return;
-
-			if (File.Exists(ofd.FileName) == false)
-				return;
-
-			PCEBiosBox.Text = ofd.FileName;
-		}
-
 		private void BrowseAtariBase_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(AtariBaseBox, AtariBaseDescription.Text);
@@ -617,5 +593,83 @@ namespace BizHawk.MultiClient
 		{
 			BrowseFolder(AtariCheatsBox, AtariCheatsDescription.Text, "Atari");
 		}
+
+		private void INTVBrowseBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(INTVBaseBox, INTVBaseDescription.Text);
+		}
+
+		private void INTVBrowseROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(INTVRomsBox, INTVROMsDescription.Text, "INTV");
+		}
+
+		private void INTVBrowseSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(INTVSavestatesBox, INTVSavestatesDescription.Text, "INTV");
+		}
+
+		private void INTVBrowseSaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(INTVSaveRAMBox, INTVSaveRAMDescription.Text, "INTV");
+		}
+
+		private void INTVBrowseScreenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(INTVScreenshotsBox, INTVScreenshotsDescription.Text, "INTV");
+		}
+
+		private void INTVBrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(INTVCheatsBox, INTVCheatsDescription.Text, "INTV");
+		}
+
+		void BrowseForBios(string filter, string config, TextBox tb)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.InitialDirectory = Path.GetDirectoryName(config);
+			ofd.Filter = filter;
+			ofd.FileName = Path.GetFileName(config);
+
+			var result = ofd.ShowDialog();
+			if (result != DialogResult.OK)
+				return;
+
+
+			if (File.Exists(ofd.FileName) == false)
+				return;
+
+			tb.Text = ofd.FileName;
+		}
+
+
+		private void INTVBrowseEROM_Click(object sender, EventArgs e)
+		{
+			BrowseForBios(
+				"Intellivision EROM (*.bin)|*.bin|All Files|*.*",
+				 Global.Config.PathINTVEROM,
+				INTVEROMBox);
+		}
+
+		private void INTVBroseGROM_Click(object sender, EventArgs e)
+		{
+			BrowseForBios(
+				"Intellivision GROM (*.bin)|*.bin|All Files|*.*",
+				 Global.Config.PathINTVGROM,
+				INTVGROMBox);
+		}
+
+
+		private void PCEBrowseBios_Click(object sender, EventArgs e)
+		{
+			BrowseForBios(
+				"PCE CD BIOS (*.pce)|*.pce|All Files|*.*",
+				 Global.Config.PathPCEBios,
+				PCEBiosBox);
+		}
+
+
+
+
 	}
 }

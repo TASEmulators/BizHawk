@@ -1387,8 +1387,18 @@ namespace BizHawk.MultiClient
 								nextEmulator = c;
 								break;
 							case "INTV":
-								Intellivision intv = new Intellivision(game, rom.RomData);
-								nextEmulator = intv;
+								{
+									Intellivision intv = new Intellivision(game, rom.RomData);
+									string eromPath = PathManager.MakeAbsolutePath(Global.Config.PathINTVEROM, "INTV");
+									if (!File.Exists(eromPath))
+										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
+									intv.LoadExecutiveRom(eromPath);
+									string gromPath = PathManager.MakeAbsolutePath(Global.Config.PathINTVGROM, "INTV");
+									if (!File.Exists(gromPath))
+										throw new InvalidOperationException("Specified GROM path does not exist:\n\n" + gromPath);
+									intv.LoadGraphicsRom(gromPath);
+									nextEmulator = intv;
+								}
 								break;
 						}
 					}
