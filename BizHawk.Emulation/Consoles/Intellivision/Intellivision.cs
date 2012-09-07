@@ -96,9 +96,17 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		public IVideoProvider VideoProvider { get { return Stic; } }
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
 
+		public static readonly ControllerDefinition IntellivisionController =
+			new ControllerDefinition
+			{
+				Name = "Intellivision Controller",
+				BoolButtons = {
+				}
+			};
+
 		public ControllerDefinition ControllerDefinition
 		{
-			get { return null; }
+			get { return IntellivisionController; }
 		}
 
 		public IController Controller { get; set; }
