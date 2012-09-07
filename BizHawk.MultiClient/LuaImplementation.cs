@@ -107,6 +107,8 @@ namespace BizHawk.MultiClient
 		public void Close()
 		{
 			lua = new Lua();
+			foreach (var brush in SolidBrushes.Values) brush.Dispose();
+			foreach (var brush in Pens.Values) brush.Dispose();
 		}
 
 		public void LuaRegister(Lua lua)
@@ -240,14 +242,31 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+
+		Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
 		public SolidBrush GetBrush(object color)
 		{
-			return new System.Drawing.SolidBrush(GetColor(color));
+			Color c = GetColor(color);
+			SolidBrush b;
+			if (!SolidBrushes.TryGetValue(c, out b))
+			{
+				b = new SolidBrush(c);
+				SolidBrushes[c] = b;
+			}
+			return b;
 		}
 
+		Dictionary<Color, Pen> Pens = new Dictionary<Color, Pen>();
 		public Pen GetPen(object color)
 		{
-			return new System.Drawing.Pen(GetColor(color));
+			Color c = GetColor(color);
+			Pen p;
+			if (!Pens.TryGetValue(c, out p))
+			{
+				p = new Pen(c);
+				Pens[c] = p;
+			}
+			return p;
 		}
 
 
@@ -651,13 +670,9 @@ namespace BizHawk.MultiClient
 					int int_y = LuaInt(Y);
 					int int_width = LuaInt(width);
 					int int_height = LuaInt(height);
-					using (var pen = GetPen(line))
-					{
-						g.DrawRectangle(pen, int_x, int_y, int_width, int_height);
-						if (background != null)
-							using (var brush = GetBrush(background))
-								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
-					}
+					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
+					if (background != null)
+						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
 				}
 				catch (Exception)
 				{
@@ -698,13 +713,9 @@ namespace BizHawk.MultiClient
 						int_y -= int_height;
 					}
 
-					using (var pen = GetPen(line))
-					{
-						g.DrawRectangle(pen, int_x, int_y, int_width, int_height);
-						if (background != null)
-							using (var brush = GetBrush(background))
-								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
-					}
+					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
+					if (background != null)
+						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
 				}
 				catch (Exception)
 				{
@@ -762,8 +773,8 @@ namespace BizHawk.MultiClient
 						g.DrawEllipse(pen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 						if (background != null)
 						{
-							using (var brush = GetBrush(background))
-								g.FillEllipse(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+							var brush = GetBrush(background);
+							g.FillEllipse(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 						}
 					}
 
@@ -796,8 +807,8 @@ namespace BizHawk.MultiClient
 						g.DrawPolygon(pen, Points);
 						if (background != null)
 						{
-							using (var brush = GetBrush(background))
-								g.FillPolygon(brush, Points);
+							var brush = GetBrush(background);
+							g.FillPolygon(brush, Points);
 						}
 					}
 				}
@@ -845,8 +856,8 @@ namespace BizHawk.MultiClient
 						g.DrawPie(pen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
 						if (background != null)
 						{
-							using (var brush = GetBrush(background))
-								g.FillPie(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
+							var brush = GetBrush(background);
+							g.FillPie(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
 						}
 					}
 
