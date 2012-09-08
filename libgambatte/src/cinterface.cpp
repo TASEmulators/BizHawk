@@ -82,7 +82,7 @@ __declspec(dllexport) int gambatte_isloaded(void *core)
 	return g->isLoaded();
 }
 
-__declspec(dllexport) void gambatte_savesavedate(void *core)
+__declspec(dllexport) void gambatte_savesavedata(void *core)
 {
 	GB *g = (GB *) core;
 	g->saveSavedata();
