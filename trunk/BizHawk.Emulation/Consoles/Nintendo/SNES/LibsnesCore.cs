@@ -191,6 +191,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(null);
 
 			LibsnesDll.snes_term();
+
+			resampler.Dispose();
 		}
 
 		//we can only have one active snes core at a time, due to libsnes being so static.
