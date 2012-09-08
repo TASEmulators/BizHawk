@@ -6,6 +6,9 @@ using System.IO;
 
 namespace BizHawk.Emulation.Consoles.Gambatte
 {
+	/// <summary>
+	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
+	/// </summary>
 	public class Gambatte : IEmulator, IVideoProvider
 	{
 		/// <summary>
@@ -97,19 +100,13 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 
 		public byte[] ReadSaveRam
 		{
-			get { throw new NotImplementedException(); }
+			get { return new byte[0]; }
 		}
 
 		public bool SaveRamModified
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get;
+			set;
 		}
 
 		public void ResetFrameCounter()
@@ -176,6 +173,9 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 
 		#region IVideoProvider
 
+		/// <summary>
+		/// stored image of most recent frame
+		/// </summary>
 		int[] VideoBuffer = new int[160 * 144];
 
 		public int[] GetVideoBuffer()
