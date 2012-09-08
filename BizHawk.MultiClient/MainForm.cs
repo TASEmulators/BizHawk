@@ -1021,6 +1021,7 @@ namespace BizHawk.MultiClient
 			string str = "";
 			switch (system)
 			{
+				case "INTV": str += "Intellivision"; break;
 				case "SG": str += "SG-1000"; break;
 				case "SMS": str += "Sega Master System"; break;
 				case "GG": str += "Game Gear"; break;
@@ -1030,6 +1031,7 @@ namespace BizHawk.MultiClient
 				case "GEN": str += "Genesis"; break;
 				case "TI83": str += "TI-83"; break;
 				case "NES": str += "NES"; break;
+				case "SNES": str += "SNES"; break;
 				case "GB": str += "Game Boy"; break;
 				case "A26": str += "Atari 2600"; break;
 			}
