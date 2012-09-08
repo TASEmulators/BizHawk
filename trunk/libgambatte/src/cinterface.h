@@ -22,7 +22,7 @@ extern "C"
 
 	__declspec(dllexport) int gambatte_isloaded(void *core);
 
-	__declspec(dllexport) void gambatte_savesavedate(void *core);
+	__declspec(dllexport) void gambatte_savesavedata(void *core);
 
 	__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch);
 
