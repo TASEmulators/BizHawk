@@ -119,31 +119,31 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
-			throw new NotImplementedException();
+
 		}
 
 		public void LoadStateText(System.IO.TextReader reader)
 		{
-			throw new NotImplementedException();
+
 		}
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
-			throw new NotImplementedException();
+
 		}
 
 		public void LoadStateBinary(System.IO.BinaryReader reader)
 		{
-			throw new NotImplementedException();
+
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			throw new NotImplementedException();
+			return new byte[0];
 		}
 
 
-		public CoreInputComm CoreInputComm{			get;			set;		}
+		public CoreInputComm CoreInputComm { get; set; }
 
 		CoreOutputComm GbOutputComm = new CoreOutputComm
 		{
