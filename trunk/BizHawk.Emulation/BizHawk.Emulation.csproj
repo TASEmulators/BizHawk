@@ -112,6 +112,7 @@
     <Compile Include="Consoles\Coleco\VDP.Tables.cs" />
     <Compile Include="Consoles\GB\Graphics.cs" />
     <Compile Include="Consoles\GB\Input.cs" />
+    <Compile Include="Consoles\GB\LibGambatte.cs" />
     <Compile Include="Consoles\GB\MemoryMap.cs" />
     <Compile Include="Consoles\GB\GB.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
