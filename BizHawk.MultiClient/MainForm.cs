@@ -3423,10 +3423,19 @@ namespace BizHawk.MultiClient
 
 		public void ClearSaveRAM()
 		{
-			string x = PathManager.SaveRamPath(Global.Game);
-
-			var file = new FileInfo(PathManager.SaveRamPath(Global.Game));
+			//zero says: this is sort of sketchy... but this is no time for rearchitecting
+			string saveRamPath = PathManager.SaveRamPath(Global.Game);
+			var file = new FileInfo(saveRamPath);
 			if (file.Exists) file.Delete();
+
+			try
+			{
+				var sram = new byte[Global.Emulator.ReadSaveRam.Length];
+				if (Global.Emulator is LibsnesCore)
+					((LibsnesCore)Global.Emulator).StoreSaveRam(sram);
+				else Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
+			}
+			catch { }
 		}
 
 	}

@@ -362,6 +362,11 @@ namespace BizHawk.MultiClient
 
 		private void powerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			PowerCycle();
+		}
+
+		void PowerCycle()
+		{
 			LoadRom(CurrentlyOpenRom);
 		}
 
