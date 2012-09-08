@@ -50,11 +50,18 @@ namespace BizHawk.MultiClient
 			var si = gd.ScanScreenInfo();
 
 			txtModeBits.Text = si.Mode.MODE.ToString();
-			txtBG1Bpp.Text = txtScreenBG1Bpp.Text = FormatBpp(si.BG.BG1.Bpp);
+			txtScreenBG1Bpp.Text = FormatBpp(si.BG.BG1.Bpp);
 			txtScreenBG2Bpp.Text = FormatBpp(si.BG.BG2.Bpp);
 			txtScreenBG3Bpp.Text = FormatBpp(si.BG.BG3.Bpp);
 			txtScreenBG4Bpp.Text = FormatBpp(si.BG.BG4.Bpp);
+			txtScreenBG1TSize.Text = FormatBpp(si.BG.BG1.TileSize);
+			txtScreenBG2TSize.Text = FormatBpp(si.BG.BG2.TileSize);
+			txtScreenBG3TSize.Text = FormatBpp(si.BG.BG3.TileSize);
+			txtScreenBG4TSize.Text = FormatBpp(si.BG.BG4.TileSize);
 
+			txtBG1TSizeBits.Text = si.BG.BG1.TILESIZE.ToString();
+			txtBG1TSizeDescr.Text = string.Format("{0}x{0}", si.BG.BG1.TileSize);
+			txtBG1Bpp.Text = FormatBpp(si.BG.BG1.Bpp);
 			txtBG1SizeBits.Text = si.BG.BG1.SCSIZE.ToString();
 			txtBG1SizeInTiles.Text = FormatScreenSizeInTiles(si.BG.BG1.ScreenSize);
 			txtBG1SCAddrBits.Text = si.BG.BG1.SCADDR.ToString();
@@ -62,6 +69,11 @@ namespace BizHawk.MultiClient
 			txtBG1Colors.Text = (1 << si.BG.BG1.Bpp).ToString();
 			txtBG1TDAddrBits.Text = si.BG.BG1.TDADDR.ToString();
 			txtBG1TDAddrDescr.Text = FormatVramAddress(si.BG.BG1.TDADDR << 13);
+			
+			var sizeInPixels = SNESGraphicsDecoder.SizeInTilesForBGSize(si.BG.BG1.ScreenSize);
+			sizeInPixels.Width *= si.BG.BG1.TileSize;
+			sizeInPixels.Height *= si.BG.BG1.TileSize;
+			txtBG1SizeInPixels.Text = string.Format("{0}x{1}", sizeInPixels.Width, sizeInPixels.Height);
 
 			RenderView();
 		}
@@ -83,21 +95,38 @@ namespace BizHawk.MultiClient
 			};
 
 			var gd = new SNESGraphicsDecoder();
+			gd.CacheTiles();
 			string selection = comboDisplayType.SelectedItem as string;
 			if (selection == "Tiles as 2bpp")
 			{
 				allocate(512, 512);
-				gd.DecodeTiles2bpp(pixelptr, stride / 4, 0);
+				gd.RenderTilesToScreen(pixelptr, stride / 4, 2, 0);
 			}
 			if (selection == "Tiles as 4bpp")
 			{
 				allocate(512, 512);
-				gd.DecodeTiles4bpp(pixelptr, stride / 4, 0);
+				gd.RenderTilesToScreen(pixelptr, stride / 4, 4, 0);
 			}
 			if (selection == "Tiles as 8bpp")
 			{
 				allocate(256, 256);
-				gd.DecodeTiles8bpp(pixelptr, stride / 4, 0);
+				gd.RenderTilesToScreen(pixelptr, stride / 4, 8, 0);
+			}
+			if (selection == "BG1" || selection == "BG2" || selection == "BG3" /*|| selection == "BG4"*/)
+			{
+				int bgnum = int.Parse(selection.Substring(2));
+				var si = gd.ScanScreenInfo();
+				var bg = si.BG[bgnum];
+				var dims = bg.ScreenSizeInPixels;
+				allocate(dims.Width, dims.Height);
+				int numPixels = dims.Width * dims.Height;
+				System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
+				
+				var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
+				int paletteStart = 0;
+				gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
+				gd.Paletteize(pixelptr, 0, 0, numPixels);
+				gd.Colorize(pixelptr, 0, numPixels);
 			}
 
 			if (bmp != null)
@@ -112,6 +141,8 @@ namespace BizHawk.MultiClient
 		{
 			UpdateValues();
 		}
+
+
 
 
 	}
