@@ -79,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\bitmap_font.cpp" />
+    <ClCompile Include="src\cinterface.cpp" />
     <ClCompile Include="src\cpu.cpp" />
     <ClCompile Include="src\file\file.cpp" />
     <ClCompile Include="src\gambatte.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="include\gbint.h" />
     <ClInclude Include="include\inputgetter.h" />
     <ClInclude Include="src\bitmap_font.h" />
+    <ClInclude Include="src\cinterface.h" />
     <ClInclude Include="src\counterdef.h" />
     <ClInclude Include="src\cpu.h" />
     <ClInclude Include="src\file\file.h" />

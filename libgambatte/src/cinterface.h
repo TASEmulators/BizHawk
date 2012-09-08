@@ -1,0 +1,48 @@
+#ifndef CINTERFACE_H
+#define CINTERFACE_H
+
+extern "C"
+{
+	__declspec(dllexport) void *gambatte_create();
+	__declspec(dllexport) void gambatte_destroy(void *core);
+
+	__declspec(dllexport) int gambatte_load(void *core, const char *filename, unsigned flags);
+
+	__declspec(dllexport) long gambatte_runfor(void *core, unsigned long *videobuf, int pitch, short *soundbuf, unsigned *samples);
+
+	__declspec(dllexport) void gambatte_reset(void *core);
+
+	__declspec(dllexport) void gambatte_setdmgpalettecolor(void *core, unsigned palnum, unsigned colornum, unsigned rgb32);
+
+	__declspec(dllexport) void gambatte_setinputgetter(void *core, unsigned (*getinput)(void));
+
+	__declspec(dllexport) void gambatte_setsavedir(void *core, const char *sdir);
+
+	__declspec(dllexport) int gambatte_iscgb(void *core);
+
+	__declspec(dllexport) int gambatte_isloaded(void *core);
+
+	__declspec(dllexport) void gambatte_savesavedate(void *core);
+
+	__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch);
+
+	__declspec(dllexport) int gambatte_loadstate(void *core);
+
+	__declspec(dllexport) int gambatte_savestate_file(void *core, const unsigned long *videobuf, int pitch, const char *filepath);
+
+	__declspec(dllexport) int gambatte_loadstate_file(void *core, const char *filepath);
+
+	__declspec(dllexport) void gambatte_selectstate(void *core, int n);
+
+	__declspec(dllexport) int gambatte_currentstate(void *core);
+
+	__declspec(dllexport) const char *gambatte_romtitle(void *core);
+
+	__declspec(dllexport) void gambatte_setgamegenie(void *core, const char *codes);
+
+	__declspec(dllexport) void gambatte_setgameshark(void *core, const char *codes);
+}
+
+
+
+#endif
