@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Emulation.Consoles.GB
+namespace BizHawk.Emulation.Consoles.Gambatte
 {
 	/// <summary>
 	/// static bindings into libgambatte.dll
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="filename">Path to rom image file. Typically a .gbc, .gb, or .zip-file (if zip-support is compiled in).</param>
 		/// <param name="flags">ORed combination of LoadFlags.</param>
-		/// <returns></returns>
+		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_load(IntPtr core, string filename, LoadFlags flags);
 

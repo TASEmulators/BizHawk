@@ -1381,8 +1381,13 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "GB":
+								/*
 								Gameboy gb = new Gameboy(game, rom.FileData, Global.Config.GameBoySkipBIOS);
 								nextEmulator = gb;
+								break;
+								 */
+								Emulation.Consoles.Gambatte.Gambatte gambatte = new Emulation.Consoles.Gambatte.Gambatte(rom.FileData);
+								nextEmulator = gambatte;
 								break;
 							case "COLV":
 								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
