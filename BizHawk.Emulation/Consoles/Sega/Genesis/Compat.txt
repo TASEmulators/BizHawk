@@ -24,29 +24,24 @@ Blood Shot - FPS game - some texture corruption
 Bonkers - substantial gfx corruption
 Buck Rogers crashes in a fun way
 Burning Force - some gfx issues. works way better than it has in the past though!
-Castle of Illusion - doesn't boot
 Cheese Cat-astrophe - crashes renderer!!
 Chester Cheetah - freezes when starting new game
 Chuck Rock - Music messed up
 Contra Hard Corps: Scrolling is messed up in level 1... used to work.
-Crusader of Centy- Text boxes messed up
 Dashin' Desperados .. bottom screen messed up
 Death Duel crashes my renderer... (!)
 Decap Attack - Item select screen messed up
 Double Dragon doesn't boot
 Devilish/Bad Omen - intro messed up.... interesting debug target
 Dune... freezes in intro
-Eternal Champions... GFX issues, immediately
 Exile - Immediate gfx issues... Debug target.
-Exo Squad - Doesn't boot at all
 F1 World Championship... Gfx issue at bottom of screen... quite cool working game though!
 Fatal Rewind - appears to do a read.w on FFFFFF... that would be an address error. read.l messes up too. Ergo: basically doesnt work.
 Final Blow - Music messed up
 Fire Shark - Messed up sound
 Flavio's Raster FX Test.. doesnt work
 Foreman for Real doent boot
-Galaxy Force II - minor gfx corruption now...
-Garfield... immediate gfx corruption. debug target.
+Galaxy Force II - gfx issue in level select screen, and in level-end "shoot the core" part
 Gargoyles... gameplay is nonfunctional
 Gauntlet 4 .. title screen messed. gfx corruption. immediately - debug target.
 Golden Axe - controls are jacked up
@@ -60,7 +55,6 @@ Jurassic Park 2 - crashes in intro
 Landstalker - Sprite masking on bottom is too high on the screen...
 Lemmings: Sound is royally effed... gfx glitches.
 Marvel Land .. holy shit thats psychadelic
-Mega Bomberman....gfx glitches title screen
 Mega Turrican some gfx glitches
 Mortal Kombat...
 MUSHA: Intro music starts too soon. Suffers from lack of 2-cell-vertical-scroll mode.
@@ -70,31 +64,24 @@ Outrun, minor gfx issue. maybe related to h-int timing?
 Outrunners, some gfx issues... but not as bad as you might think!!! apparently doesnt use interlace mode?
 Panorama Cotton still not working right
 Power Monger messed up
-Quackshot doesn't boot.
 RamboIII - intro gfx corrupted - MAYBE GOOD DEBUGGING TARGET
-Road Blasters: was working, now has gfx glitches.
-Shining in the Darkness: Gfx glitches, pretty severe
-Skitchin doesnt boot
+Shining in the Darkness: Check out sprites in the tavern... very odd
 Sonic 2: Aside from lack of interlace mode, the shadows in the special stage are white....?
 Sonic 3 serious gfx glitches
 Star Control - Shit gets crazy
 Steel Empire - controls messed up. probably gfx issues also.
 Sub-Terrania some gfx issues in intro
+Super Hang-On - Sprite priority/masking isnt happening the way its supposed to on the tracks.
 Super Fantasy Zone: Sound totally boned, missing graphics
 TaleSpin - gfx glitches
 The Humans
 The Immortal
 Truxton - Sound is jaaaacked.
 Verytex - gfx issues
-World of Illusion doesnt boot
 Zero Tolerance - gfx bugs that didnt used to happen :(
 Zombies At My Neighbors: doesnt boot really
 Zoop doesnt boot
 
-Things that read from VRAM work like 50%-90%, but not 100%. It's frustrating. Kid Chameleon and Eternal Champions are examples.
-
-Some games flicker in the rightmost columns. Is this caused by mid-frame mode shifting(32/40 col modes?) Alisia Dragoon is one example.
---- Havent seen an example of this in a long time. Maybe it's a non-issue.
 
 ======================================================
 Fixed Issues: (listed for regression testing purposes)
@@ -112,16 +99,27 @@ Fun-n-Games fails its fadeouts.  -- Fixed CRAM reads. I failed math.
 
 Sonic Spinball executes a VSRAM read -- Implemented VSRAM reads.
 
+Bugs related to longword read/write VRAM. Multiple bugs were present including sign-extension and endians and crap.  
+ - Crusader of Centy- Text boxes messed up
+ - Eternal Champions - immediate gfx corruption
+ - Garfield... immediate gfx corruption. debug target.
+ - Kid Chameleon - gfx corruption on bounce bricks and level-end effect
+
+Games to test window calculation on:
+ - Road Blasters (doesnt use window, but Window & Nametable A are at same location)
+ - Out of this World - Same as Road Blasters
+ - Musha,Gaiares - Window at top
+ - Eliminate Down - Window at bottom
+ - Monster World 4, Wonder Boy in Monster World - Window at top - needs window scroll plane size adjustment
+ - D&D Warriors of the Eternal Sun - Window at bottom and at sides
+ - Truxton, Fire Shark - Window on Right
+
 ======================================================
 
 TODO: non-instant DMA emulation
 TODO: Add 68000/VDP interrupt enable delay (one instruction, similar to After Burner/PCE)
 TODO: H-Ints timing possibly not correct... Some game raster effects work, others don't work as expected. (could be HVC tho)
 TODO: Test DMA/ VDP command words.... I'm not at all convinced that VRAM is always correct
-
-TODO: Seems like the Window should be high-priority... or Sprites aren't getting masked or something. Sprites routinely draw over window.
-
-
 
 
 ==============
@@ -143,3 +141,9 @@ Games that require accurate VRAM fill emulation include Thunder Force IV,
  Contra Hard Corps, Revenge of Shinobi, Taiga Drama, and Sword of Vermillion.
 
 Sonic Spinball reads from VSRAM
+
+Games known to use 2-cell vertical scroll mode:
+ - Air Diver
+ - Exo Squad
+ - Contra Hard Corps (giant robot boss on stage 1)
+ - MUSHA (stage 3)

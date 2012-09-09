@@ -16,8 +16,6 @@ namespace BizHawk
 		public byte[] ram = new byte[128];
 		public MapperBase mapper;
 
-		bool resetSignal;
-
 		// The Atari 2600 memory mapper looks something like this...usually
 
 		// N/A  Page #  

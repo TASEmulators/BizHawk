@@ -59,6 +59,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public bool VdpDebug = false;
 
+        public Func<int> GetPC;
+
         public GenVDP()
         {
             WriteVdpRegister(00, 0x04);
@@ -105,7 +107,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void WriteVdpControl(ushort data)
         {
-            Log.Note("VDP", "Control Write {0:X4}", data);
+            Log.Note("VDP", "Control Write {0:X4} (PC={1:X6})", data, GetPC());
 
             if (ControlWordPending == false)
             {
@@ -171,14 +173,14 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void WriteVdpData(ushort data)
         {
-            Log.Note("VDP", "Data port write: {0:X4}", data);
+            Log.Note("VDP", "Data port write: {0:X4} (PC={1:X6})", data, GetPC());
             ControlWordPending = false; 
 
             // byte-swap incoming data when A0 is set
              if ((VdpDataAddr & 1) != 0)
             {
                 data = (ushort)((data >> 8) | (data << 8));
-                Log.Error("VDP", "VRAM byte-swap is happening because A0 is not 0");
+                Log.Error("VDP", "VRAM byte-swap is happening because A0 is not 0. [{0:X4}] = {1:X4}", VdpDataAddr, data);
             }
 
             switch (VdpDataCode & 0xF)

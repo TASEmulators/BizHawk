@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (address >= 0xE00000) // Work RAM
             {
-                maskedAddr = address & 0xFFFF;
+                maskedAddr = address & 0xFFFE;
                 return (short)((Ram[maskedAddr] << 8) | Ram[maskedAddr + 1]);
             }
 
@@ -78,6 +78,14 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 maskedAddr = address & 0xFFFF;
                 return (Ram[maskedAddr] << 24) | (Ram[maskedAddr + 1] << 16) | (Ram[maskedAddr + 2] << 8) | Ram[maskedAddr + 3];
+            }
+
+            if (address >= 0xC00000)
+            {
+                //Console.WriteLine("long-read from VDP");
+                short msw = ReadWord(address);
+                short msl = ReadWord(address + 2);
+                return (msw << 16) | (ushort) msl;
             }
 
             // try to handle certain things separate if they need to be separate? otherwise handle as 2x readwords?
@@ -197,7 +205,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address >= 0xC00000)
             {
                 WriteWord(address, (short)(value >> 16));
-                WriteWord(address, (short)value);
+                WriteWord(address+2, (short)value);
                 return;
             }
 
