@@ -33,44 +33,19 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (GambatteState == IntPtr.Zero)
 				throw new Exception("gambatte_create() returned null???");
 
-			/*
-			// use temp file until we hack up the libgambatte api to take data directly
-
-			using (FileStream fs = new FileStream("gambattetmp.gb", FileMode.OpenOrCreate, FileAccess.Write))
-			{
-				fs.Write(romdata, 0, romdata.Length);
-			}
-
-
-			if (LibGambatte.gambatte_load(GambatteState, "gambattetmp.gb", 0) != 0)
-				throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
-			*/
-
 			if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, 0) != 0)
 				throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
-
 
 			InitSound();
 
 			Frame = 0;
 			LagCount = 0;
+			IsLagFrame = false;
 
 			InputCallback = new LibGambatte.InputGetter(ControllerCallback);
 
 			LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
 		}
-
-		public IVideoProvider VideoProvider
-		{
-			get { return this; }
-		}
-
-		public ISoundProvider SoundProvider
-		{
-			get { return this; }
-		}
-
-
 
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
 		{
@@ -88,11 +63,18 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public IController Controller { get; set; }
 
+		// can when this is called (or not called) be used to give information about lagged frames?
+		LibGambatte.Buttons ControllerCallback()
+		{
+			IsLagFrame = false;
+			return CurrentButtons;
+		}
+
 
 
 		public void FrameAdvance(bool render)
 		{
-			uint nsamp = 35112;
+			uint nsamp = 35112; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
 
 			Controller.UpdateControls(Frame++);
 
@@ -116,17 +98,18 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (Controller["Start"])
 				CurrentButtons |= LibGambatte.Buttons.START;
 
+			// the controller callback will set this to false if it actually gets called during the frame
+			IsLagFrame = true;
+
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
 
 			soundbuffcontains = (int)nsamp;
 
+			if (IsLagFrame)
+				LagCount++;
+
 		}
 
-		// can when this is called (or not called) be used to give information about lagged frames?
-		LibGambatte.Buttons ControllerCallback()
-		{
-			return CurrentButtons;
-		}
 
 
 
@@ -134,10 +117,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public int LagCount { get; set; }
 
-		public bool IsLagFrame
-		{
-			get { return false; }
-		}
+		public bool IsLagFrame { get; private set; }
 
 		public string SystemId
 		{
@@ -159,8 +139,12 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public void ResetFrameCounter()
 		{
-			throw new NotImplementedException();
+			// is this right?
+			Frame = 0;
+			LagCount = 0;
 		}
+
+		#region savestates
 
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
@@ -213,6 +197,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			return ms.ToArray();
 		}
 
+		#endregion
+
 
 		public CoreInputComm CoreInputComm { get; set; }
 
@@ -248,6 +234,11 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		#region IVideoProvider
 
+		public IVideoProvider VideoProvider
+		{
+			get { return this; }
+		}
+
 		/// <summary>
 		/// stored image of most recent frame
 		/// </summary>
@@ -260,7 +251,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public int VirtualWidth
 		{
-			// only sgb changes this
+			// only sgb changes this, which we don't emulate here
 			get { return 160; }
 		}
 
@@ -282,6 +273,11 @@ namespace BizHawk.Emulation.Consoles.GB
 		#endregion
 
 		#region ISoundProvider
+
+		public ISoundProvider SoundProvider
+		{
+			get { return this; }
+		}
 
 		/// <summary>
 		/// sample pairs before resampling
@@ -322,5 +318,6 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public int MaxVolume { get; set; }
 		#endregion
+
 	}
 }
