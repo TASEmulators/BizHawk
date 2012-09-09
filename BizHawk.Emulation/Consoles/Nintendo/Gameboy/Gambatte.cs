@@ -16,6 +16,15 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// </summary>
 		IntPtr GambatteState = IntPtr.Zero;
 
+		/// <summary>
+		/// keep a copy of the input callback delegate so it doesn't get GCed
+		/// </summary>
+		LibGambatte.InputGetter InputCallback;
+
+		/// <summary>
+		/// whatever keys are currently depressed
+		/// </summary>
+		LibGambatte.Buttons CurrentButtons = 0;
 
 		public Gameboy(byte[] romdata)
 		{
@@ -36,6 +45,13 @@ namespace BizHawk.Emulation.Consoles.GB
 
 
 			InitSound();
+
+			Frame = 0;
+			LagCount = 0;
+
+			InputCallback = new LibGambatte.InputGetter(ControllerCallback);
+
+			LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
 		}
 
 		public IVideoProvider VideoProvider
@@ -67,10 +83,32 @@ namespace BizHawk.Emulation.Consoles.GB
 		public IController Controller { get; set; }
 
 
-		
+
 		public void FrameAdvance(bool render)
 		{
 			uint nsamp = 35112;
+
+			Controller.UpdateControls(Frame++);
+
+			// update our local copy of the controller data
+			CurrentButtons = 0;
+
+			if (Controller["Up"])
+				CurrentButtons |= LibGambatte.Buttons.UP;
+			if (Controller["Down"])
+				CurrentButtons |= LibGambatte.Buttons.DOWN;
+			if (Controller["Left"])
+				CurrentButtons |= LibGambatte.Buttons.LEFT;
+			if (Controller["Right"])
+				CurrentButtons |= LibGambatte.Buttons.RIGHT;
+			if (Controller["A"])
+				CurrentButtons |= LibGambatte.Buttons.A;
+			if (Controller["B"])
+				CurrentButtons |= LibGambatte.Buttons.B;
+			if (Controller["Select"])
+				CurrentButtons |= LibGambatte.Buttons.SELECT;
+			if (Controller["Start"])
+				CurrentButtons |= LibGambatte.Buttons.START;
 
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
 
@@ -78,10 +116,15 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		}
 
-		public int Frame
+		// can when this is called (or not called) be used to give information about lagged frames?
+		LibGambatte.Buttons ControllerCallback()
 		{
-			get { return 0; }
+			return CurrentButtons;
 		}
+
+
+
+		public int Frame { get; set; }
 
 		public int LagCount { get; set; }
 
@@ -218,7 +261,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		int soundbuffcontains = 0;
 
 		Sound.Utilities.SpeexResampler resampler;
-		Sound.MetaspuSoundProvider metaspu; 
+		Sound.MetaspuSoundProvider metaspu;
 
 		void InitSound()
 		{
