@@ -74,8 +74,8 @@ public:
 		memory.setOsdElement(osdElement);
 	}
 	
-	int load(const std::string &romfile, bool forceDmg, bool multicartCompat) {
-		return memory.loadROM(romfile, forceDmg, multicartCompat);
+	int load(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat) {
+		return memory.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat);
 	}
 	
 	bool loaded() const { return memory.loaded(); }

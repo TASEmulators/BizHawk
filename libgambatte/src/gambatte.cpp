@@ -88,11 +88,11 @@ void GB::setSaveDir(const std::string &sdir) {
 	p_->cpu.setSaveDir(sdir);
 }
 
-int GB::load(const std::string &romfile, const unsigned flags) {
+int GB::load(const char *romfiledata, unsigned romfilelength, const unsigned flags) {
 	if (p_->cpu.loaded())
 		p_->cpu.saveSavedata();
 	
-	const int failed = p_->cpu.load(romfile, flags & FORCE_DMG, flags & MULTICART_COMPAT);
+	const int failed = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
 	
 	if (!failed) {
 		SaveState state;
