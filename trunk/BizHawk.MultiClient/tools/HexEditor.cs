@@ -350,7 +350,6 @@ namespace BizHawk.MultiClient
 
 		private byte[] GetRomBytes()
 		{
-			byte[] bytes;
 			string path = Global.MainForm.CurrentlyOpenRom;
 			if (path == null)
 			{
@@ -376,8 +375,6 @@ namespace BizHawk.MultiClient
 					return File.ReadAllBytes(path);
 				}
 			}
-
-			return new byte[0];
 		}
 
 		private void SetMemoryDomain(int pos)

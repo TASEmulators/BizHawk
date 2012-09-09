@@ -26,12 +26,6 @@ namespace BizHawk
 			InitializeComponent();
 		}
 
-		private class DiscRecord
-		{
-			public Disc Disc;
-			public string BaseName;
-		}
-
 		private void MainDiscoForm_Load(object sender, EventArgs e)
 		{
 

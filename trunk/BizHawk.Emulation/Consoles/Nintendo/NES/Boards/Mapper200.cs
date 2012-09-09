@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int prg_reg_16k, chr_reg_8k;
 		int prg_bank_mask_16k;
 		int chr_bank_mask_8k;
-		bool low;
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)

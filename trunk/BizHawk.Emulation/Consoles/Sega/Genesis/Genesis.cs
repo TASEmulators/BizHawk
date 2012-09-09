@@ -125,8 +125,10 @@ namespace BizHawk.Emulation.Consoles.Sega
 #if MUSASHI
             Musashi.Init();
             Musashi.Reset();
+            VDP.GetPC = () => Musashi.PC;
 #else
             MainCPU.Reset();
+            VDP.GetPC = () => MainCPU.PC;
 #endif
         }
 
