@@ -68,19 +68,14 @@ namespace BizHawk.Emulation.Consoles.GB
 
 
 		
-		uint[] videoscratch = new uint[160 * 144];
 		public void FrameAdvance(bool render)
 		{
 			uint nsamp = 35112;
 
-			LibGambatte.gambatte_runfor(GambatteState, videoscratch, 160, soundbuff, ref nsamp);
+			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
 
 			soundbuffcontains = (int)nsamp;
 
-			// can't convert uint[] to int[], so we do this instead
-			// TODO: lie in the p/invoke layer and claim unsigned* is really int*
-
-			Buffer.BlockCopy(videoscratch, 0, VideoBuffer, 0, VideoBuffer.Length * sizeof(int));
 		}
 
 		public int Frame
@@ -173,6 +168,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		{
 			LibGambatte.gambatte_destroy(GambatteState);
 			GambatteState = IntPtr.Zero;
+			DisposeSound();
 		}
 
 		#region IVideoProvider
@@ -230,15 +226,15 @@ namespace BizHawk.Emulation.Consoles.GB
 			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, metaspu.buffer.enqueue_samples);
 		}
 
+		void DisposeSound()
+		{
+			resampler.Dispose();
+			resampler = null;
+		}
+
 		public void GetSamples(short[] samples)
 		{
 			resampler.EnqueueSamples(soundbuff, soundbuffcontains);
-			//for (int i = 0; soundbuffcontains >= 0; soundbuffcontains--)
-			//{
-			//	resampler.EnqueueSample(soundbuff[i], soundbuff[i + 1]);
-			//	i += 2;
-			//}
-
 			soundbuffcontains = 0;
 			resampler.Flush();
 			metaspu.GetSamples(samples);

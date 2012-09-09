@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="samples">in: number of stereo samples to produce, out: actual number of samples produced</param>
 		/// <returns>sample number at which the video frame was produced. -1 means no frame was produced.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_runfor(IntPtr core, uint[] videobuf, int pitch, short[] soundbuf, ref uint samples);
+		public static extern int gambatte_runfor(IntPtr core, int[] videobuf, int pitch, short[] soundbuf, ref uint samples);
 
 		/// <summary>
 		/// Reset to initial state.
@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="pitch">distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.</param>
 		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_savestate(IntPtr core, uint[] videobuf, int pitch);
+		public static extern bool gambatte_savestate(IntPtr core, int[] videobuf, int pitch);
 
 		/// <summary>
 		/// Loads emulator state from the state slot selected with selectState().
@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="filepath"></param>
 		/// <returns>success</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_savestate_file(IntPtr core, uint[] videobuf, int pitch, string filepath);
+		public static extern bool gambatte_savestate_file(IntPtr core, int[] videobuf, int pitch, string filepath);
 
 		/// <summary>
 		/// Loads emulator state from the file given by 'filepath'.
