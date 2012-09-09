@@ -16,6 +16,7 @@ using BizHawk.Emulation.Consoles.Coleco;
 using BizHawk.MultiClient.tools;
 using System.Collections.Generic;
 using BizHawk.Emulation.Consoles.Intellivision;
+using BizHawk.Emulation.Consoles.GB;
 
 namespace BizHawk.MultiClient
 {
@@ -772,29 +773,28 @@ namespace BizHawk.MultiClient
 			}
 			Global.AutofireNESControls = anesControls;
 
-            // TODO: wire this up to gambatte instead
-            //var gbControls = new Controller(Gameboy.GbController);
-            //gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
-            //gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
-            //gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
-            //gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
-            //gbControls.BindMulti("A", Global.Config.GBController[0].A);
-            //gbControls.BindMulti("B", Global.Config.GBController[0].B);
-            //gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
-            //gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
-            //Global.GBControls = gbControls;
+            var gbControls = new Controller(Gameboy.GbController);
+            gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
+            gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
+            gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
+            gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
+            gbControls.BindMulti("A", Global.Config.GBController[0].A);
+            gbControls.BindMulti("B", Global.Config.GBController[0].B);
+            gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
+            gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
+            Global.GBControls = gbControls;
 
-            //var agbControls = new AutofireController(Gameboy.GbController);
-            //agbControls.Autofire = true;
-            //agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
-            //agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
-            //agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
-            //agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
-            //agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
-            //agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
-            //agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
-            //agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
-            //Global.AutofireGBControls = agbControls;
+            var agbControls = new AutofireController(Gameboy.GbController);
+            agbControls.Autofire = true;
+            agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
+            agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
+            agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
+            agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
+            agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
+            agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
+            agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
+            agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
+            Global.AutofireGBControls = agbControls;
 
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenesisController[0].Up);
@@ -1380,13 +1380,8 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "GB":
-								/*
-								Gameboy gb = new Gameboy(game, rom.FileData, Global.Config.GameBoySkipBIOS);
+								Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(rom.FileData);
 								nextEmulator = gb;
-								break;
-								 */
-								Emulation.Consoles.Gambatte.Gambatte gambatte = new Emulation.Consoles.Gambatte.Gambatte(rom.FileData);
-								nextEmulator = gambatte;
 								break;
 							case "COLV":
 								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);

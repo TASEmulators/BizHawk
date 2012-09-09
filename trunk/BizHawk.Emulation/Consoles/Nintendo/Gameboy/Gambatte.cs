@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace BizHawk.Emulation.Consoles.Gambatte
+namespace BizHawk.Emulation.Consoles.GB
 {
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
-	public class Gambatte : IEmulator, IVideoProvider, ISoundProvider
+	public class Gameboy : IEmulator, IVideoProvider, ISoundProvider
 	{
 		/// <summary>
 		/// internal gambatte state
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 		IntPtr GambatteState = IntPtr.Zero;
 
 
-		public Gambatte(byte[] romdata)
+		public Gameboy(byte[] romdata)
 		{
 			// use temp file until we hack up the libgambatte api to take data directly
 
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 
 
 
-		static readonly ControllerDefinition GbController = new ControllerDefinition
+		public static readonly ControllerDefinition GbController = new ControllerDefinition
 		{
 			Name = "Gameboy Controller",
 			BoolButtons =
