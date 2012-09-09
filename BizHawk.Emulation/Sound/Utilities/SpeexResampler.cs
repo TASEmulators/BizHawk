@@ -264,7 +264,8 @@ namespace BizHawk.Emulation.Sound.Utilities
 		/// </summary>
 		Action<short[], int> drainer;
 
-		short[] inbuf = new short[512];
+		// TODO: this size is roughly based on how big you can make the buffer before the snes resampling (32040.5 -> 44100) gets screwed up
+		short[] inbuf = new short[512]; //[8192]; // [512];
 
 		short[] outbuf;
 
@@ -334,6 +335,27 @@ namespace BizHawk.Emulation.Sound.Utilities
 
 			if (inbufpos == inbuf.Length)
 				Flush();
+		}
+
+		/// <summary>
+		/// add multiple samples to the queue
+		/// </summary>
+		/// <param name="userbuf">interleaved stereo samples</param>
+		/// <param name="nsamp">number of sample pairs</param>
+		public void EnqueueSamples(short[] userbuf, int nsamp)
+		{
+			int numused = 0;
+			while (numused < nsamp)
+			{
+				int shortstocopy = Math.Min(inbuf.Length - inbufpos, (nsamp - numused) * 2);
+
+				Buffer.BlockCopy(userbuf, numused * 2 * sizeof(short), inbuf, inbufpos * sizeof(short), shortstocopy * sizeof(short));
+				inbufpos += shortstocopy;
+				numused += shortstocopy / 2;
+
+				if (inbufpos == inbuf.Length)
+					Flush();
+			}
 		}
 
 
