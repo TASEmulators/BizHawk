@@ -392,8 +392,8 @@
   <ItemGroup>
     <Content Include="Consoles\Coleco\docs\CV-Sound.txt" />
     <Content Include="Consoles\Coleco\docs\CV-Tech.txt" />
-    <Content Include="Consoles\Nintendo\Docs\sunsoft.txt" />
-    <Content Include="Consoles\Nintendo\Docs\sxrom_notes.txt" />
+    <Content Include="Consoles\Nintendo\NES\Docs\sunsoft.txt" />
+    <Content Include="Consoles\Nintendo\NES\Docs\sxrom_notes.txt" />
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\Genesis\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
@@ -423,9 +423,9 @@
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
-    <None Include="Consoles\Nintendo\Docs\BoardTable.xlsx" />
-    <None Include="Consoles\Nintendo\Docs\MapperCompatibilityList.url" />
-    <None Include="Consoles\Nintendo\Docs\nesasm.pdf" />
+    <None Include="Consoles\Nintendo\NES\Docs\BoardTable.xlsx" />
+    <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
+    <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
