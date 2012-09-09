@@ -115,12 +115,19 @@ namespace BizHawk.Emulation.Consoles.GB
 		}
 
 		/// <summary>
+		/// type of the callback for input state
+		/// </summary>
+		/// <returns>bitfield combination of pressed buttons</returns>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate Buttons InputGetter();
+
+		/// <summary>
 		/// Sets the callback used for getting input state.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="getinput"></param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setinputgetter(IntPtr core, Func<Buttons> getinput);
+		public static extern void gambatte_setinputgetter(IntPtr core, InputGetter getinput);
 
 		/// <summary>
 		/// Sets the directory used for storing save data. The default is the same directory as the ROM Image file.
