@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
-	public class Gambatte : IEmulator, IVideoProvider
+	public class Gambatte : IEmulator, IVideoProvider, ISoundProvider
 	{
 		/// <summary>
 		/// internal gambatte state
@@ -34,6 +34,8 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 			if (LibGambatte.gambatte_load(GambatteState, "gambattetmp.gb", 0) != 0)
 				throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
+
+			InitSound();
 		}
 
 		public IVideoProvider VideoProvider
@@ -43,7 +45,7 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 
 		public ISoundProvider SoundProvider
 		{
-			get { return new NullSound(); }
+			get { return this; }
 		}
 
 
@@ -65,13 +67,15 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 		public IController Controller { get; set; }
 
 
-		short[] soundscratch = new short[(35112 + 2064) * 2];
+		
 		uint[] videoscratch = new uint[160 * 144];
 		public void FrameAdvance(bool render)
 		{
 			uint nsamp = 35112;
 
-			LibGambatte.gambatte_runfor(GambatteState, videoscratch, 160, soundscratch, ref nsamp);
+			LibGambatte.gambatte_runfor(GambatteState, videoscratch, 160, soundbuff, ref nsamp);
+
+			soundbuffcontains = (int)nsamp;
 
 			// can't convert uint[] to int[], so we do this instead
 			// TODO: lie in the p/invoke layer and claim unsigned* is really int*
@@ -144,8 +148,8 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 
 		CoreOutputComm GbOutputComm = new CoreOutputComm
 		{
-			VsyncNum = 60,
-			VsyncDen = 1,
+			VsyncNum = 262144,
+			VsyncDen = 4389,
 			RomStatusAnnotation = "Bizwhackin it up",
 			RomStatusDetails = "LEVAR BURTON"
 		};
@@ -204,6 +208,48 @@ namespace BizHawk.Emulation.Consoles.Gambatte
 			get { return 0; }
 		}
 
+		#endregion
+
+		#region ISoundProvider
+
+		/// <summary>
+		/// sample pairs before resampling
+		/// </summary>
+		short[] soundbuff = new short[(35112 + 2064) * 2];
+		/// <summary>
+		/// how many sample pairs are in soundbuff
+		/// </summary>
+		int soundbuffcontains = 0;
+
+		Sound.Utilities.SpeexResampler resampler;
+		Sound.MetaspuSoundProvider metaspu; 
+
+		void InitSound()
+		{
+			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+			resampler = new Sound.Utilities.SpeexResampler(5, 2097152, 44100, 2097152, 44100, metaspu.buffer.enqueue_samples);
+		}
+
+		public void GetSamples(short[] samples)
+		{
+			resampler.EnqueueSamples(soundbuff, soundbuffcontains);
+			//for (int i = 0; soundbuffcontains >= 0; soundbuffcontains--)
+			//{
+			//	resampler.EnqueueSample(soundbuff[i], soundbuff[i + 1]);
+			//	i += 2;
+			//}
+
+			soundbuffcontains = 0;
+			resampler.Flush();
+			metaspu.GetSamples(samples);
+		}
+
+		public void DiscardSamples()
+		{
+			metaspu.DiscardSamples();
+		}
+
+		public int MaxVolume { get; set; }
 		#endregion
 	}
 }
