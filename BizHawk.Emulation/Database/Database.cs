@@ -136,7 +136,9 @@ namespace BizHawk
 				case ".SG": Game.System = "SG"; break;
 				case ".PCE": Game.System = "PCE"; break;
 				case ".SGX": Game.System = "SGX"; break;
+				case ".GBC":
 				case ".GB": Game.System = "GB"; break;
+
 				case ".BIN":
 				case ".GEN":
 				case ".SMD": Game.System = "GEN"; break;
