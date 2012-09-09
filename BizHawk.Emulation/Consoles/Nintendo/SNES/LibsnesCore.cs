@@ -32,6 +32,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern void snes_run();
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_term();
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_unload_cartridge();
 
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_load_cartridge_normal(
@@ -190,6 +192,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_state(null);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(null);
 
+			LibsnesDll.snes_unload_cartridge();
 			LibsnesDll.snes_term();
 
 			resampler.Dispose();
@@ -231,6 +234,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				romData = newData;
 			}
 			LibsnesDll.snes_load_cartridge_normal(null, romData, romData.Length);
+
+			LibsnesDll.snes_power();
 
 			SetupMemoryDomains(romData);
 		}
