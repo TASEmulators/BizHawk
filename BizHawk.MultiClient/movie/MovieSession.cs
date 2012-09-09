@@ -10,7 +10,6 @@ using BizHawk.Core;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.TurboGrafx;
 using BizHawk.Emulation.Consoles.Calculator;
-using BizHawk.Emulation.Consoles.Gameboy;
 using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient

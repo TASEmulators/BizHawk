@@ -10,7 +10,6 @@ using BizHawk.DiscSystem;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.TurboGrafx;
 using BizHawk.Emulation.Consoles.Calculator;
-using BizHawk.Emulation.Consoles.Gameboy;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Coleco;
@@ -79,7 +78,6 @@ namespace BizHawk.MultiClient
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
-		public Debugger GBDebugger = new Debugger();
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
@@ -774,28 +772,29 @@ namespace BizHawk.MultiClient
 			}
 			Global.AutofireNESControls = anesControls;
 
-			var gbControls = new Controller(Gameboy.GbController);
-			gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
-			gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
-			gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
-			gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
-			gbControls.BindMulti("A", Global.Config.GBController[0].A);
-			gbControls.BindMulti("B", Global.Config.GBController[0].B);
-			gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
-			gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
-			Global.GBControls = gbControls;
+            // TODO: wire this up to gambatte instead
+            //var gbControls = new Controller(Gameboy.GbController);
+            //gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
+            //gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
+            //gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
+            //gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
+            //gbControls.BindMulti("A", Global.Config.GBController[0].A);
+            //gbControls.BindMulti("B", Global.Config.GBController[0].B);
+            //gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
+            //gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
+            //Global.GBControls = gbControls;
 
-			var agbControls = new AutofireController(Gameboy.GbController);
-			agbControls.Autofire = true;
-			agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
-			agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
-			agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
-			agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
-			agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
-			agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
-			agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
-			agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
-			Global.AutofireGBControls = agbControls;
+            //var agbControls = new AutofireController(Gameboy.GbController);
+            //agbControls.Autofire = true;
+            //agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
+            //agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
+            //agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
+            //agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
+            //agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
+            //agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
+            //agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
+            //agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
+            //Global.AutofireGBControls = agbControls;
 
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenesisController[0].Up);
@@ -2107,7 +2106,6 @@ namespace BizHawk.MultiClient
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
-			GBDebugger.UpdateValues();
 			SNESGraphicsDebugger1.UpdateValues();
 		}
 
@@ -2660,7 +2658,6 @@ namespace BizHawk.MultiClient
 			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
-			GBDebugger.Restart();
 			ToolBox1.Restart();
 #if WINDOWS
 			LuaConsole1.Restart();
@@ -3072,20 +3069,6 @@ namespace BizHawk.MultiClient
 #else
 			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
 #endif
-		}
-
-		public void LoadGBDebugger()
-		{
-			if (Global.Emulator is Gameboy)
-			{
-				if (!GBDebugger.IsHandleCreated || GBDebugger.IsDisposed)
-				{
-					GBDebugger.LoadCore(Global.Emulator as Gameboy);
-					GBDebugger.Show();
-				}
-				else
-					GBDebugger.Focus();
-			}
 		}
 
 		public void LoadRamPoke()

@@ -111,11 +111,7 @@
     <Compile Include="Consoles\Coleco\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Coleco\VDP.Tables.cs" />
     <Compile Include="Consoles\Gambatte\Gambatte.cs" />
-    <Compile Include="Consoles\GB\Graphics.cs" />
-    <Compile Include="Consoles\GB\Input.cs" />
     <Compile Include="Consoles\Gambatte\LibGambatte.cs" />
-    <Compile Include="Consoles\GB\MemoryMap.cs" />
-    <Compile Include="Consoles\GB\GB.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
@@ -312,10 +308,6 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
-    <Compile Include="Consoles\Gameboy\Bios.cs" />
-    <Compile Include="Consoles\Gameboy\Gameboy.cs" />
-    <Compile Include="Consoles\Gameboy\Input.cs" />
-    <Compile Include="Consoles\Gameboy\Mappers.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\GameInfo.cs" />

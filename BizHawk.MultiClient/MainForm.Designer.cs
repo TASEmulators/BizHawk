@@ -1928,14 +1928,6 @@
 			this.gBToolStripMenuItem.Text = "GB";
 			this.gBToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gBToolStripMenuItem_DropDownOpened);
 			// 
-			// debuggerToolStripMenuItem1
-			// 
-			this.debuggerToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Bug;
-			this.debuggerToolStripMenuItem1.Name = "debuggerToolStripMenuItem1";
-			this.debuggerToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
-			this.debuggerToolStripMenuItem1.Text = "Debugger";
-			this.debuggerToolStripMenuItem1.Click += new System.EventHandler(this.debuggerToolStripMenuItem1_Click);
-			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
