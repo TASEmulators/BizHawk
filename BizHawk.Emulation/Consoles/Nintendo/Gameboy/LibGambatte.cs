@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Emulation.Consoles.Gambatte
+namespace BizHawk.Emulation.Consoles.GB
 {
 	/// <summary>
 	/// static bindings into libgambatte.dll
