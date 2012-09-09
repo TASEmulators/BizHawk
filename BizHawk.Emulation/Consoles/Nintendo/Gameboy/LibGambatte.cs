@@ -161,23 +161,33 @@ namespace BizHawk.Emulation.Consoles.GB
 		public static extern void gambatte_savesavedata(IntPtr core);
 
 		/// <summary>
-		/// Saves emulator state to the state slot selected with gambatte_selectstate().
-		/// The data will be stored in the directory given by gambatte_setsavedir().
+		/// Saves emulator state to the state to a byte array
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="videobuf">160x144 RGB32 (native endian) video frame buffer or 0. Used for saving a thumbnail.</param>
 		/// <param name="pitch">distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.</param>
-		/// <returns></returns>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_savestate(IntPtr core, int[] videobuf, int pitch);
-
-		/// <summary>
-		/// Loads emulator state from the state slot selected with selectState().
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
+		/// <param name="data">private savestate data returned by the core</param>
+		/// <param name="len">the length of the data in bytes</param>
 		/// <returns>success</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_loadstate(IntPtr core);
+		public static extern bool gambatte_savestate(IntPtr core, int[] videobuf, int pitch, ref IntPtr data, ref uint len);
+
+		/// <summary>
+		/// destroy data returned by gambatte_savestate() to avoid memory leaks
+		/// </summary>
+		/// <param name="data">pointer from gambatte_savestate()</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_savestate_destroy(IntPtr data);
+
+		/// <summary>
+		/// Loads emulator state from the byte array
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="data">savestate data</param>
+		/// <param name="len">length of the savestate data in bytes</param>
+		/// <returns>success</returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool gambatte_loadstate(IntPtr core, byte[] data, uint len);
 
 		/// <summary>
 		/// Saves emulator state to the file given by 'filepath'.
@@ -187,8 +197,8 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="pitch">distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.</param>
 		/// <param name="filepath"></param>
 		/// <returns>success</returns>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_savestate_file(IntPtr core, int[] videobuf, int pitch, string filepath);
+		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		//public static extern bool gambatte_savestate_file(IntPtr core, int[] videobuf, int pitch, string filepath);
 
 		/// <summary>
 		/// Loads emulator state from the file given by 'filepath'.
@@ -196,8 +206,8 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="filepath"></param>
 		/// <returns>success</returns>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gambatte_loadstate_file(IntPtr core, string filepath);
+		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		//public static extern bool gambatte_loadstate_file(IntPtr core, string filepath);
 
 		/// <summary>
 		/// Selects which state slot to save state to or load state from.

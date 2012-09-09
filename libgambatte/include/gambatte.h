@@ -22,6 +22,7 @@
 #include "inputgetter.h"
 #include "gbint.h"
 #include <string>
+#include <sstream>
 
 namespace gambatte {
 enum { BG_PALETTE = 0, SP1_PALETTE = 1, SP2_PALETTE = 2 };
@@ -101,12 +102,12 @@ public:
 	  * @param  pitch distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.
 	  * @return success
 	  */
-	bool saveState(const gambatte::uint_least32_t *videoBuf, int pitch);
+	//bool saveState(const gambatte::uint_least32_t *videoBuf, int pitch);
 	
 	/** Loads emulator state from the state slot selected with selectState().
 	  * @return success
 	  */
-	bool loadState();
+	//bool loadState();
 	
 	/** Saves emulator state to the file given by 'filepath'.
 	  *
@@ -114,12 +115,12 @@ public:
 	  * @param  pitch distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.
 	  * @return success
 	  */
-	bool saveState(const gambatte::uint_least32_t *videoBuf, int pitch, const std::string &filepath);
+	bool saveState(const gambatte::uint_least32_t *videoBuf, int pitch, std::ostream &file);
 	
 	/** Loads emulator state from the file given by 'filepath'.
 	  * @return success
 	  */
-	bool loadState(const std::string &filepath);
+	bool loadState(std::istream &file);
 	
 	/** Selects which state slot to save state to or load state from.
 	  * There are 10 such slots, numbered from 0 to 9 (periodically extended for all n).

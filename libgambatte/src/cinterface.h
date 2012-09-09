@@ -1,6 +1,8 @@
 #ifndef CINTERFACE_H
 #define CINTERFACE_H
 
+// these are all documented on the C# side
+
 extern "C"
 {
 	__declspec(dllexport) void *gambatte_create();
@@ -24,17 +26,18 @@ extern "C"
 
 	__declspec(dllexport) void gambatte_savesavedata(void *core);
 
-	__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch);
+	//__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch);
 
-	__declspec(dllexport) int gambatte_loadstate(void *core);
+	//__declspec(dllexport) int gambatte_loadstate(void *core);
 
-	__declspec(dllexport) int gambatte_savestate_file(void *core, const unsigned long *videobuf, int pitch, const char *filepath);
+	__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch, char **data, unsigned *len);
+	__declspec(dllexport) void gambatte_savestate_destroy(char *data);
 
-	__declspec(dllexport) int gambatte_loadstate_file(void *core, const char *filepath);
+	__declspec(dllexport) int gambatte_loadstate(void *core, const char *data, unsigned len);
 
-	__declspec(dllexport) void gambatte_selectstate(void *core, int n);
+	//__declspec(dllexport) void gambatte_selectstate(void *core, int n);
 
-	__declspec(dllexport) int gambatte_currentstate(void *core);
+	//__declspec(dllexport) int gambatte_currentstate(void *core);
 
 	__declspec(dllexport) const char *gambatte_romtitle(void *core);
 

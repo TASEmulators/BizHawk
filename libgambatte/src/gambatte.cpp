@@ -125,14 +125,14 @@ void GB::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) 
 	p_->cpu.setDmgPaletteColor(palNum, colorNum, rgb32);
 }
 
-bool GB::loadState(const std::string &filepath) {
+bool GB::loadState(std::istream &file) {
 	if (p_->cpu.loaded()) {
 		p_->cpu.saveSavedata();
 		
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		
-		if (StateSaver::loadState(state, filepath)) {
+		if (StateSaver::loadState(state, file)) {
 			p_->cpu.loadState(state);
 			return true;
 		}
@@ -140,7 +140,7 @@ bool GB::loadState(const std::string &filepath) {
 
 	return false;
 }
-
+/*
 bool GB::saveState(const gambatte::uint_least32_t *const videoBuf, const int pitch) {
 	if (saveState(videoBuf, pitch, statePath(p_->cpu.saveBasePath(), p_->stateNo))) {
 		p_->cpu.setOsdElement(newStateSavedOsdElement(p_->stateNo));
@@ -158,13 +158,13 @@ bool GB::loadState() {
 
 	return false;
 }
-
-bool GB::saveState(const gambatte::uint_least32_t *const videoBuf, const int pitch, const std::string &filepath) {
+*/
+bool GB::saveState(const gambatte::uint_least32_t *const videoBuf, const int pitch, std::ostream &file) {
 	if (p_->cpu.loaded()) {
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		p_->cpu.saveState(state);
-		return StateSaver::saveState(state, videoBuf, pitch, filepath);
+		return StateSaver::saveState(state, videoBuf, pitch, file);
 	}
 
 	return false;
