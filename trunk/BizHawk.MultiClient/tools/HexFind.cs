@@ -76,13 +76,13 @@ namespace BizHawk.MultiClient
 
 		private void FindBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '\b')
+			if (HexRadio.Checked)
 			{
-				return;
-			}
-			else if (HexRadio.Checked)
-			{
-				if (!InputValidate.IsValidHexNumber(e.KeyChar))
+				if (e.KeyChar == '\b' || e.KeyChar == 22)
+				{
+					return;
+				}
+				else if (!InputValidate.IsValidHexNumber(e.KeyChar))
 				{
 					e.Handled = true;
 				}
