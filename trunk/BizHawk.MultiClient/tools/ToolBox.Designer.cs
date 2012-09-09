@@ -178,15 +178,7 @@
 			this.KeypadTool.Size = new System.Drawing.Size(63, 20);
 			this.KeypadTool.Text = "Keypad";
 			this.KeypadTool.Click += new System.EventHandler(this.KeyPadTool_Click);
-			// 
-			// GameboyDebuggerTool
-			// 
-			this.GameboyDebuggerTool.Image = global::BizHawk.MultiClient.Properties.Resources.Bug;
-			this.GameboyDebuggerTool.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.GameboyDebuggerTool.Name = "GameboyDebuggerTool";
-			this.GameboyDebuggerTool.Size = new System.Drawing.Size(90, 20);
-			this.GameboyDebuggerTool.Text = "GB Debugger";
-			this.GameboyDebuggerTool.Click += new System.EventHandler(this.toolStripButton6_Click);
+
 			// 
 			// ToolBox
 			// 

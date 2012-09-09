@@ -188,12 +188,6 @@
     </Compile>
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
-    <Compile Include="Gameboy\Debugger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Gameboy\Debugger.Designer.cs">
-      <DependentUpon>Debugger.cs</DependentUpon>
-    </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
@@ -387,10 +381,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Gameboy\Debugger.resx">
-      <DependentUpon>Debugger.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
