@@ -48,13 +48,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                     FrameBuffer[(p*FrameWidth) + i] = Palette[(p*16) + i];
         }
 
-        void RenderScrollAScanline(int xScroll, int yScroll, int nameTableBase, int startPixel, int endPixel)
+        void RenderScrollAScanline(int xScroll, int yScroll, int nameTableBase, int startPixel, int endPixel, bool window)
         {
             const int lowPriority = 2;
             const int highPriority = 5;
             int yTile = ((ScanLine + yScroll) / 8) % NameTableHeight;
             int nameTableWidth = NameTableWidth;
-            if (nameTableBase == NameTableAddrWindow)
+            if (window)
                 nameTableWidth = Display40Mode ? 64 : 32;
 
             // this is hellllla slow. but not optimizing until we implement & understand
@@ -161,24 +161,24 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (ScanLine >= startWindowScanline && ScanLine < endWindowScanline)  // Window takes up whole scanline
             {
-                RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, FrameWidth);
+                RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, FrameWidth, true);
             }
             else if (startWindowPixel != -1) // Window takes up partial scanline
             {
                 if (startWindowPixel == 0) // Window grows from left side
                 {
-                    RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, endWindowPixel);
-                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, endWindowPixel, FrameWidth);
+                    RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, endWindowPixel, true);
+                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, endWindowPixel, FrameWidth, false);
                 }
                 else // Window grows from right side
                 {
-                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, startWindowPixel);
-                    RenderScrollAScanline(0, 0, NameTableAddrWindow, startWindowPixel, FrameWidth);
+                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, startWindowPixel, false);
+                    RenderScrollAScanline(0, 0, NameTableAddrWindow, startWindowPixel, FrameWidth, true);
                 }
             } 
-            else // No window
+            else // No window this scanline
             {   
-                RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, FrameWidth);
+                RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, FrameWidth, false);
             }
         }
 
