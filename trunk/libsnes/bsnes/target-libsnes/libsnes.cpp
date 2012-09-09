@@ -126,32 +126,34 @@ void snes_set_cartridge_basename(const char *basename) {
   interface.basename = basename;
 }
 
-#include <setjmp.h>
-static jmp_buf buf;
- 
-void second(void) {
-    printf("second\n");         // prints
-    longjmp(buf,1);             // jumps back to where setjmp was called - making setjmp now return 1
-}
- 
-void first(void) {
-    second();
-    printf("first\n");          // does not print
-}
- 
-void test() {   
-    if ( ! setjmp(buf) ) {
-        first();                // when executed, setjmp returns 0
-    } else {                    // when longjmp jumps back, setjmp returns 1
-        printf("main\n");       // prints
-    }
- 
-
+template<typename T> inline void reconstruct(T* t) { 
+	t->~T();
+	new(t) T();
 }
 
 void snes_init(void) {
-	test();
   SNES::interface = &interface;
+
+	//because we're tasers and we didnt make this core, and we're paranoid, lets reconstruct everything so we know subsequent runs are as similar as possible
+  reconstruct(&SNES::icd2);
+  reconstruct(&SNES::nss);
+  reconstruct(&SNES::superfx);
+  reconstruct(&SNES::sa1);
+  reconstruct(&SNES::necdsp);
+  reconstruct(&SNES::hitachidsp);
+  reconstruct(&SNES::armdsp);
+  reconstruct(&SNES::bsxsatellaview);
+  reconstruct(&SNES::bsxcartridge);
+  reconstruct(&SNES::bsxflash);
+  reconstruct(&SNES::srtc);
+  reconstruct(&SNES::sdd1);
+  reconstruct(&SNES::spc7110);
+  reconstruct(&SNES::obc1);
+  reconstruct(&SNES::msu1);
+  reconstruct(&SNES::link);
+  reconstruct(&SNES::video);
+  reconstruct(&SNES::audio);
+
   SNES::system.init();
   SNES::input.connect(SNES::Controller::Port1, SNES::Input::Device::Joypad);
   SNES::input.connect(SNES::Controller::Port2, SNES::Input::Device::Joypad);
