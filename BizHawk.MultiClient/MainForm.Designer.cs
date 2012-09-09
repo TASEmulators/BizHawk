@@ -873,7 +873,7 @@
 			this.recordAVIToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.AVI;
 			this.recordAVIToolStripMenuItem.Name = "recordAVIToolStripMenuItem";
 			this.recordAVIToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
-			this.recordAVIToolStripMenuItem.Text = "Record AVI";
+			this.recordAVIToolStripMenuItem.Text = "Record AVI/WAV";
 			this.recordAVIToolStripMenuItem.Click += new System.EventHandler(this.recordAVIToolStripMenuItem_Click);
 			// 
 			// stopAVIToolStripMenuItem
@@ -881,7 +881,7 @@
 			this.stopAVIToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
 			this.stopAVIToolStripMenuItem.Name = "stopAVIToolStripMenuItem";
 			this.stopAVIToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
-			this.stopAVIToolStripMenuItem.Text = "Stop AVI";
+			this.stopAVIToolStripMenuItem.Text = "Stop AVI/WAV";
 			this.stopAVIToolStripMenuItem.Click += new System.EventHandler(this.stopAVIToolStripMenuItem_Click);
 			// 
 			// screenshotToolStripMenuItem

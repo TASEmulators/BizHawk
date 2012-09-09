@@ -571,7 +571,7 @@ namespace BizHawk.MultiClient
 				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor",
 				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input"}
+				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input"}
 		};
 
 		private void InitControls()
@@ -654,8 +654,8 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Increment Player", Global.Config.MTIncrementPlayer);
 			controls.BindMulti("Decrement Player", Global.Config.MTDecrementPlayer);
 			controls.BindMulti("Soft Reset", Global.Config.SoftResetBinding);
-			controls.BindMulti("Record AVI", Global.Config.AVIRecordBinding);
-			controls.BindMulti("Stop AVI", Global.Config.AVIStopBinding);
+			controls.BindMulti("Record AVI/WAV", Global.Config.AVIRecordBinding);
+			controls.BindMulti("Stop AVI/WAV", Global.Config.AVIStopBinding);
 			controls.BindMulti("Toggle Menu", Global.Config.ToggleMenuBinding);
 
 			Global.ClientControls = controls;
@@ -1697,10 +1697,10 @@ namespace BizHawk.MultiClient
 				case "DecreaseWindowSize":
 					DecreaseWIndowSize();
 					break;
-				case "Record AVI":
+				case "Record AVI/WAV":
 					RecordAVI();
 					break;
-				case "Stop AVI":
+				case "Stop AVI/WAV":
 					StopAVI();
 					break;
 				case "ToolBox":
