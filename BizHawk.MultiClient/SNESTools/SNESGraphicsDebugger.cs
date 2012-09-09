@@ -112,21 +112,24 @@ namespace BizHawk.MultiClient
 				allocate(256, 256);
 				gd.RenderTilesToScreen(pixelptr, stride / 4, 8, 0);
 			}
-			if (selection == "BG1" || selection == "BG2" || selection == "BG3" /*|| selection == "BG4"*/)
+			if (selection == "BG1" || selection == "BG2" || selection == "BG3" || selection == "BG4")
 			{
 				int bgnum = int.Parse(selection.Substring(2));
 				var si = gd.ScanScreenInfo();
 				var bg = si.BG[bgnum];
-				var dims = bg.ScreenSizeInPixels;
-				allocate(dims.Width, dims.Height);
-				int numPixels = dims.Width * dims.Height;
-				System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
-				
-				var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
-				int paletteStart = 0;
-				gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
-				gd.Paletteize(pixelptr, 0, 0, numPixels);
-				gd.Colorize(pixelptr, 0, numPixels);
+				if (bg.Enabled)
+				{
+					var dims = bg.ScreenSizeInPixels;
+					allocate(dims.Width, dims.Height);
+					int numPixels = dims.Width * dims.Height;
+					System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
+
+					var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
+					int paletteStart = 0;
+					gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
+					gd.Paletteize(pixelptr, 0, 0, numPixels);
+					gd.Colorize(pixelptr, 0, numPixels);
+				}
 			}
 
 			if (bmp != null)

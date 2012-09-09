@@ -9,11 +9,15 @@ target := ui
 # options += console
 
 # compiler
-c       := $(compiler) -std=gnu99
+c       := $(compiler) -std=gnu99 $(BIZWINCFLAGS)
 cpp     := $(subst cc,++,$(compiler)) -std=gnu++0x
 flags   := -I. -O3 -fomit-frame-pointer
 link    :=
 objects := libco
+
+ifneq ($(BIZWINCFLAGS),)
+  flags := $(BIZWINCFLAGS)
+endif
 
 # profile-guided optimization mode
 # pgo := instrument
