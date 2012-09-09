@@ -110,8 +110,6 @@
     <Compile Include="Consoles\Coleco\VDP.Mode4.cs" />
     <Compile Include="Consoles\Coleco\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Coleco\VDP.Tables.cs" />
-    <Compile Include="Consoles\Gambatte\Gambatte.cs" />
-    <Compile Include="Consoles\Gambatte\LibGambatte.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
@@ -119,6 +117,8 @@
     <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
@@ -390,9 +390,10 @@
     <Compile Include="Sound\Utilities\Waves.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Consoles\Nintendo\Docs\compatibility.txt" />
+    <Content Include="Consoles\Coleco\docs\CV-Sound.txt" />
+    <Content Include="Consoles\Coleco\docs\CV-Tech.txt" />
     <Content Include="Consoles\Nintendo\Docs\sunsoft.txt" />
-    <Content Include="Consoles\Nintendo\Docs\test_status.txt" />
+    <Content Include="Consoles\Nintendo\Docs\sxrom_notes.txt" />
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\Genesis\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
@@ -420,6 +421,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Consoles\Atari\docs\stella.pdf" />
+    <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
+    <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
+    <None Include="Consoles\Nintendo\Docs\BoardTable.xlsx" />
+    <None Include="Consoles\Nintendo\Docs\MapperCompatibilityList.url" />
+    <None Include="Consoles\Nintendo\Docs\nesasm.pdf" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
