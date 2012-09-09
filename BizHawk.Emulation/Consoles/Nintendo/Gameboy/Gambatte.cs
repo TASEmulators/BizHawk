@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		void InitSound()
 		{
 			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
-			resampler = new Sound.Utilities.SpeexResampler(5, 2097152, 44100, 2097152, 44100, metaspu.buffer.enqueue_samples);
+			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, metaspu.buffer.enqueue_samples);
 		}
 
 		public void GetSamples(short[] samples)
