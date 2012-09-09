@@ -52,6 +52,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public class BGInfo
 		{
 			/// <summary>
+			/// Is the layer even enabled?
+			/// </summary>
+			public bool Enabled { get { return Bpp != 0; } }
+
+			/// <summary>
 			/// screen and tiledata register values
 			/// </summary>
 			public int SCADDR, TDADDR;

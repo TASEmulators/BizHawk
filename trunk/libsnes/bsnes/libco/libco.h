@@ -20,11 +20,20 @@ extern "C" {
 #endif
 
 typedef void* cothread_t;
+typedef void (*coentry_t)(void);
 
-cothread_t co_active();
-cothread_t co_create(unsigned int, void (*)(void));
-void co_delete(cothread_t);
-void co_switch(cothread_t);
+#if defined(LIBCO_IMPORT)
+#define LIBCO_IMPORTDECL __declspec(dllimport)
+#elif defined(LIBCO_EXPORT)
+#define LIBCO_IMPORTDECL __declspec(dllexport)
+#else
+#define LIBCO_IMPORTDECL
+#endif
+
+LIBCO_IMPORTDECL cothread_t co_active();
+LIBCO_IMPORTDECL cothread_t co_create(unsigned int, coentry_t);
+LIBCO_IMPORTDECL void co_delete(cothread_t);
+LIBCO_IMPORTDECL void co_switch(cothread_t);
 
 #ifdef __cplusplus
 }
