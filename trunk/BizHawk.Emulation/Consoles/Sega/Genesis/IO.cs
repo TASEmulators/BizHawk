@@ -27,7 +27,7 @@
         {
             offset >>= 1;
             offset &= 0x0F;
-            if (offset >1 )
+            if (offset > 1)
                 Log.Note("CPU", "^^^ IO Read {0}: 00", offset);
             switch (offset)
             {
@@ -55,7 +55,7 @@
 
                 case 0x04: return IOPorts[0].Control;
                 case 0x05: return IOPorts[1].Control;
-                case 0x06: return 0xFF;// return IOPorts[2].Control;   //TODO hack? returning FF fixes revenge of shinobi and strider. investigate later.
+                case 0x06: return IOPorts[2].Control;
 
                 case 0x07: return IOPorts[0].TxData;
                 case 0x08: return IOPorts[0].RxData;
