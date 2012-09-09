@@ -1,5 +1,6 @@
 #include "cinterface.h"
 #include "gambatte.h"
+#include <cstdlib>
 
 using namespace gambatte;
 
@@ -88,6 +89,7 @@ __declspec(dllexport) void gambatte_savesavedata(void *core)
 	g->saveSavedata();
 }
 
+/*
 __declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch)
 {
 	GB *g = (GB *) core;
@@ -99,19 +101,37 @@ __declspec(dllexport) int gambatte_loadstate(void *core)
 	GB *g = (GB *) core;
 	return g->loadState();
 }
+*/
 
-__declspec(dllexport) int gambatte_savestate_file(void *core, const unsigned long *videobuf, int pitch, const char *filepath)
+__declspec(dllexport) int gambatte_savestate(void *core, const unsigned long *videobuf, int pitch, char **data, unsigned *len)
 {
 	GB *g = (GB *) core;
-	return g->saveState(videobuf, pitch, std::string(filepath));
+
+	std::ostringstream os = std::ostringstream(std::ios_base::binary | std::ios_base::out);
+	if (!g->saveState(videobuf, pitch, os))
+		return 0;
+
+	os.flush();
+	std::string s = os.str();
+	char *ret = (char *) std::malloc(s.length());
+	std::memcpy(ret, s.data(), s.length());
+	*len = s.length();
+	*data = ret;
+	return 1;
 }
 
-__declspec(dllexport) int gambatte_loadstate_file(void *core, const char *filepath)
+__declspec(dllexport) void gambatte_savestate_destroy(char *data)
+{
+	std::free(data);
+}
+
+__declspec(dllexport) int gambatte_loadstate(void *core, const char *data, unsigned len)
 {
 	GB *g = (GB *) core;
-	return g->loadState(std::string(filepath));
+	return g->loadState(std::istringstream(std::string(data, len), std::ios_base::binary | std::ios_base::in));
 }
 
+/*
 __declspec(dllexport) void gambatte_selectstate(void *core, int n)
 {
 	GB *g = (GB *) core;
@@ -123,6 +143,7 @@ __declspec(dllexport) int gambatte_currentstate(void *core)
 	GB *g = (GB *) core;
 	return g->currentState();
 }
+*/
 
 static char horriblebuff[64];
 __declspec(dllexport) const char *gambatte_romtitle(void *core)

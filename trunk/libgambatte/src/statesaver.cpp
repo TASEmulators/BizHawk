@@ -22,7 +22,8 @@
 #include <vector>
 #include <cstring>
 #include <algorithm>
-#include <fstream>
+#include <ostream>
+#include <istream>
 
 namespace {
 
@@ -41,8 +42,8 @@ enum AsciiChar {
 
 struct Saver {
 	const char *label;
-	void (*save)(std::ofstream &file, const SaveState &state);
-	void (*load)(std::ifstream &file, SaveState &state);
+	void (*save)(std::ostream &file, const SaveState &state);
+	void (*load)(std::istream &file, SaveState &state);
 	unsigned char labelsize;
 };
 
@@ -50,27 +51,27 @@ static inline bool operator<(const Saver &l, const Saver &r) {
 	return std::strcmp(l.label, r.label) < 0;
 }
 
-static void put24(std::ofstream &file, const unsigned long data) {
+static void put24(std::ostream &file, const unsigned long data) {
 	file.put(data >> 16 & 0xFF);
 	file.put(data >> 8 & 0xFF);
 	file.put(data & 0xFF);
 }
 
-static void put32(std::ofstream &file, const unsigned long data) {
+static void put32(std::ostream &file, const unsigned long data) {
 	file.put(data >> 24 & 0xFF);
 	file.put(data >> 16 & 0xFF);
 	file.put(data >> 8 & 0xFF);
 	file.put(data & 0xFF);
 }
 
-static void write(std::ofstream &file, const unsigned char data) {
+static void write(std::ostream &file, const unsigned char data) {
 	static const char inf[] = { 0x00, 0x00, 0x01 };
 	
 	file.write(inf, sizeof(inf));
 	file.put(data & 0xFF);
 }
 
-static void write(std::ofstream &file, const unsigned short data) {
+static void write(std::ostream &file, const unsigned short data) {
 	static const char inf[] = { 0x00, 0x00, 0x02 };
 	
 	file.write(inf, sizeof(inf));
@@ -78,30 +79,30 @@ static void write(std::ofstream &file, const unsigned short data) {
 	file.put(data & 0xFF);
 }
 
-static void write(std::ofstream &file, const unsigned long data) {
+static void write(std::ostream &file, const unsigned long data) {
 	static const char inf[] = { 0x00, 0x00, 0x04 };
 	
 	file.write(inf, sizeof(inf));
 	put32(file, data);
 }
 
-static inline void write(std::ofstream &file, const bool data) {
+static inline void write(std::ostream &file, const bool data) {
 	write(file, static_cast<unsigned char>(data));
 }
 
-static void write(std::ofstream &file, const unsigned char *data, const unsigned long sz) {
+static void write(std::ostream &file, const unsigned char *data, const unsigned long sz) {
 	put24(file, sz);
 	file.write(reinterpret_cast<const char*>(data), sz);
 }
 
-static void write(std::ofstream &file, const bool *data, const unsigned long sz) {
+static void write(std::ostream &file, const bool *data, const unsigned long sz) {
 	put24(file, sz);
 	
 	for (unsigned long i = 0; i < sz; ++i)
 		file.put(data[i]);
 }
 
-static unsigned long get24(std::ifstream &file) {
+static unsigned long get24(std::istream &file) {
 	unsigned long tmp = file.get() & 0xFF;
 	
 	tmp = tmp << 8 | (file.get() & 0xFF);
@@ -109,7 +110,7 @@ static unsigned long get24(std::ifstream &file) {
 	return tmp << 8 | (file.get() & 0xFF);
 }
 
-static unsigned long read(std::ifstream &file) {
+static unsigned long read(std::istream &file) {
 	unsigned long size = get24(file);
 	
 	if (size > 4) {
@@ -129,23 +130,23 @@ static unsigned long read(std::ifstream &file) {
 	return out;
 }
 
-static inline void read(std::ifstream &file, unsigned char &data) {
+static inline void read(std::istream &file, unsigned char &data) {
 	data = read(file) & 0xFF;
 }
 
-static inline void read(std::ifstream &file, unsigned short &data) {
+static inline void read(std::istream &file, unsigned short &data) {
 	data = read(file) & 0xFFFF;
 }
 
-static inline void read(std::ifstream &file, unsigned long &data) {
+static inline void read(std::istream &file, unsigned long &data) {
 	data = read(file);
 }
 
-static inline void read(std::ifstream &file, bool &data) {
+static inline void read(std::istream &file, bool &data) {
 	data = read(file);
 }
 
-static void read(std::ifstream &file, unsigned char *data, unsigned long sz) {
+static void read(std::istream &file, unsigned char *data, unsigned long sz) {
 	const unsigned long size = get24(file);
 	
 	if (size < sz)
@@ -160,7 +161,7 @@ static void read(std::ifstream &file, unsigned char *data, unsigned long sz) {
 	}
 }
 
-static void read(std::ifstream &file, bool *data, unsigned long sz) {
+static void read(std::istream &file, bool *data, unsigned long sz) {
 	const unsigned long size = get24(file);
 	
 	if (size < sz)
@@ -193,8 +194,8 @@ public:
 };
 
 static void pushSaver(SaverList::list_t &list, const char *label,
-		void (*save)(std::ofstream &file, const SaveState &state),
-		void (*load)(std::ifstream &file, SaveState &state), unsigned labelsize) {
+		void (*save)(std::ostream &file, const SaveState &state),
+		void (*load)(std::istream &file, SaveState &state), unsigned labelsize) {
 	const Saver saver = { label, save, load, labelsize };
 	list.push_back(saver);
 }
@@ -202,8 +203,8 @@ static void pushSaver(SaverList::list_t &list, const char *label,
 SaverList::SaverList() {
 #define ADD(arg) do { \
 	struct Func { \
-		static void save(std::ofstream &file, const SaveState &state) { write(file, state.arg); } \
-		static void load(std::ifstream &file, SaveState &state) { read(file, state.arg); } \
+		static void save(std::ostream &file, const SaveState &state) { write(file, state.arg); } \
+		static void load(std::istream &file, SaveState &state) { read(file, state.arg); } \
 	}; \
 	\
 	pushSaver(list, label, Func::save, Func::load, sizeof label); \
@@ -211,8 +212,8 @@ SaverList::SaverList() {
 
 #define ADDPTR(arg) do { \
 	struct Func { \
-		static void save(std::ofstream &file, const SaveState &state) { write(file, state.arg.get(), state.arg.getSz()); } \
-		static void load(std::ifstream &file, SaveState &state) { read(file, state.arg.ptr, state.arg.getSz()); } \
+		static void save(std::ostream &file, const SaveState &state) { write(file, state.arg.get(), state.arg.getSz()); } \
+		static void load(std::istream &file, SaveState &state) { read(file, state.arg.ptr, state.arg.getSz()); } \
 	}; \
 	\
 	pushSaver(list, label, Func::save, Func::load, sizeof label); \
@@ -220,8 +221,8 @@ SaverList::SaverList() {
 
 #define ADDARRAY(arg) do { \
 	struct Func { \
-		static void save(std::ofstream &file, const SaveState &state) { write(file, state.arg, sizeof(state.arg)); } \
-		static void load(std::ifstream &file, SaveState &state) { read(file, state.arg, sizeof(state.arg)); } \
+		static void save(std::ostream &file, const SaveState &state) { write(file, state.arg, sizeof(state.arg)); } \
+		static void load(std::istream &file, SaveState &state) { read(file, state.arg, sizeof(state.arg)); } \
 	}; \
 	\
 	pushSaver(list, label, Func::save, Func::load, sizeof label); \
@@ -373,7 +374,7 @@ static void blendPxlPairs(PxlSum *const dst, const PxlSum *const sums) {
 	dst->g  = sums[1].g  * 8 + (sums[0].g  - sums[1].g ) * 3;
 }
 
-static void writeSnapShot(std::ofstream &file, const uint_least32_t *pixels, const int pitch) {
+static void writeSnapShot(std::ostream &file, const uint_least32_t *pixels, const int pitch) {
 	put24(file, pixels ? StateSaver::SS_WIDTH * StateSaver::SS_HEIGHT * sizeof(uint_least32_t) : 0);
 	
 	if (pixels) {
@@ -411,8 +412,8 @@ namespace gambatte {
 
 bool StateSaver::saveState(const SaveState &state,
 		const uint_least32_t *const videoBuf,
-		const int pitch, const std::string &filename) {
-	std::ofstream file(filename.c_str(), std::ios_base::binary);
+		const int pitch, std::ostream &file) {
+	//std::ostream file(filename.c_str(), std::ios_base::binary);
 	
 	if (file.fail())
 		return false;
@@ -429,8 +430,8 @@ bool StateSaver::saveState(const SaveState &state,
 	return !file.fail();
 }
 
-bool StateSaver::loadState(SaveState &state, const std::string &filename) {
-	std::ifstream file(filename.c_str(), std::ios_base::binary);
+bool StateSaver::loadState(SaveState &state, std::istream &file) {
+	//std::istream file(filename.c_str(), std::ios_base::binary);
 	
 	if (file.fail() || file.get() != 0)
 		return false;

@@ -158,27 +158,53 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
-
+			var temp = SaveStateBinary();
+			temp.SaveAsHex(writer);
 		}
 
 		public void LoadStateText(System.IO.TextReader reader)
 		{
-
+			string hex = reader.ReadLine();
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHex(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
+			uint nlen = 0;
+			IntPtr ndata = IntPtr.Zero;
 
+			if (!LibGambatte.gambatte_savestate(GambatteState, VideoBuffer, 160, ref ndata, ref nlen))
+				throw new Exception("Gambatte failed to save the savestate!");
+
+			if (nlen == 0)
+				throw new Exception("Gambatte returned a 0-length savestate?");
+
+			byte[] data = new byte[nlen];
+			System.Runtime.InteropServices.Marshal.Copy(ndata, data, 0, (int)nlen);
+			LibGambatte.gambatte_savestate_destroy(ndata);
+
+			writer.Write((int)nlen);
+			writer.Write(data);
 		}
 
 		public void LoadStateBinary(System.IO.BinaryReader reader)
 		{
+			int length = reader.ReadInt32();
+			byte[] data = reader.ReadBytes(length);
 
+			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)length))
+				throw new Exception("Gambatte failed to load the savestate!");
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			return new byte[0];
+			MemoryStream ms = new MemoryStream();
+			BinaryWriter bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
 		}
 
 
