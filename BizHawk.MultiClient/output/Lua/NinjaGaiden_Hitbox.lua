@@ -1,3 +1,5 @@
+--Author Pasky13
+
 --Player
 local px = 0x0086
 local py = 0x008A

@@ -1,3 +1,5 @@
+--Author Pasky13
+
 --Mario
 local mariox = 0x94
 local marioy = 0x96
