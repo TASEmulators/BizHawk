@@ -17,10 +17,10 @@ __declspec(dllexport) void gambatte_destroy(void *core)
 	delete g;
 }
 
-__declspec(dllexport) int gambatte_load(void *core, const char *filename, unsigned flags)
+__declspec(dllexport) int gambatte_load(void *core, const char *romfiledata, unsigned romfilelength, unsigned flags)
 {
 	GB *g = (GB *) core;
-	int ret = g->load(std::string(filename), flags);
+	int ret = g->load(romfiledata, romfilelength, flags);
 	return ret;
 }
 

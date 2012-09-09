@@ -8,7 +8,7 @@ extern "C"
 	__declspec(dllexport) void *gambatte_create();
 	__declspec(dllexport) void gambatte_destroy(void *core);
 
-	__declspec(dllexport) int gambatte_load(void *core, const char *filename, unsigned flags);
+	__declspec(dllexport) int gambatte_load(void *core, const char *romfiledata, unsigned romfilelength, unsigned flags);
 
 	__declspec(dllexport) long gambatte_runfor(void *core, unsigned long *videobuf, int pitch, short *soundbuf, unsigned *samples);
 

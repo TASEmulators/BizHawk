@@ -983,8 +983,8 @@ void Memory::nontrivial_write(const unsigned P, const unsigned data, const unsig
 		ioamhram[P - 0xFE00] = data;
 }
 
-int Memory::loadROM(const std::string &romfile, const bool forceDmg, const bool multicartCompat) {
-	if (const int fail = cart.loadROM(romfile, forceDmg, multicartCompat))
+int Memory::loadROM(const char *romfiledata, unsigned romfilelength, const bool forceDmg, const bool multicartCompat) {
+	if (const int fail = cart.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat))
 		return fail;
 
 	sound.init(cart.isCgb());

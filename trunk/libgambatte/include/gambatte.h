@@ -44,7 +44,7 @@ public:
 	  * @param flags    ORed combination of LoadFlags.
 	  * @return 0 on success, negative value on failure.
 	  */
-	int load(const std::string &romfile, unsigned flags = 0);
+	int load(const char *romfiledata, unsigned romfilelength, unsigned flags = 0);
 	
 	/** Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
 	  * or until a video frame has been drawn.

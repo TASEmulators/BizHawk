@@ -504,11 +504,11 @@ static unsigned pow2ceil(unsigned n) {
 	return n;
 }
 
-int Cartridge::loadROM(const std::string &romfile, const bool forceDmg, const bool multicartCompat) {
-	const std::auto_ptr<File> rom(newFileInstance(romfile));
+int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const bool forceDmg, const bool multicartCompat) {
+	//const std::auto_ptr<File> rom(newFileInstance(romfile));
 
-	if (rom->fail())
-		return -1;
+	//if (rom->fail())
+	//	return -1;
 	
 	unsigned rambanks = 1;
 	unsigned rombanks = 2;
@@ -517,7 +517,11 @@ int Cartridge::loadROM(const std::string &romfile, const bool forceDmg, const bo
 
 	{
 		unsigned char header[0x150];
-		rom->read(reinterpret_cast<char*>(header), sizeof header);
+		//rom->read(reinterpret_cast<char*>(header), sizeof header);
+		if (romfilelength >= sizeof header)
+			std::memcpy(header, romfiledata, sizeof header);
+		else
+			return -1;
 
 		switch (header[0x0147]) {
 		case 0x00: std::puts("Plain ROM loaded."); type = PLAIN; break;
@@ -596,7 +600,7 @@ int Cartridge::loadROM(const std::string &romfile, const bool forceDmg, const bo
 
 	std::printf("rambanks: %u\n", rambanks);
 
-	const std::size_t filesize = rom->size();
+	const std::size_t filesize = romfilelength; //rom->size();
 	rombanks = std::max(pow2ceil(filesize / 0x4000), 2u);
 	std::printf("rombanks: %u\n", static_cast<unsigned>(filesize / 0x4000));
 	
@@ -606,15 +610,16 @@ int Cartridge::loadROM(const std::string &romfile, const bool forceDmg, const bo
 	memptrs.reset(rombanks, rambanks, cgb ? 8 : 2);
 	rtc.set(false, 0);
 
-	rom->rewind();
-	rom->read(reinterpret_cast<char*>(memptrs.romdata()), (filesize / 0x4000) * 0x4000ul);
+	//rom->rewind();
+	//rom->read(reinterpret_cast<char*>(memptrs.romdata()), (filesize / 0x4000) * 0x4000ul);
+	std::memcpy(memptrs.romdata(), romfiledata, (filesize / 0x4000) * 0x4000ul);
 	std::memset(memptrs.romdata() + (filesize / 0x4000) * 0x4000ul, 0xFF, (rombanks - filesize / 0x4000) * 0x4000ul);
 	enforce8bit(memptrs.romdata(), rombanks * 0x4000ul);
 	
-	if (rom->fail())
-		return -1;
+	//if (rom->fail())
+	//	return -1;
 	
-	defaultSaveBasePath = stripExtension(romfile);
+	defaultSaveBasePath = stripExtension("fixmefixme.gb"); //(romfile);
 	
 	switch (type) {
 	case PLAIN: mbc.reset(new Mbc0(memptrs)); break;

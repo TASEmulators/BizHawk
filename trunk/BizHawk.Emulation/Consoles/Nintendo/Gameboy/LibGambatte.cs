@@ -40,11 +40,12 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// Load ROM image.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="filename">Path to rom image file. Typically a .gbc, .gb, or .zip-file (if zip-support is compiled in).</param>
+		/// <param name="romdata">the rom data, can be disposed of once this function returns</param>
+		/// <param name="length">length of romdata in bytes</param>
 		/// <param name="flags">ORed combination of LoadFlags.</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_load(IntPtr core, string filename, LoadFlags flags);
+		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, LoadFlags flags);
 
 		/// <summary>
 		/// Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
@@ -215,16 +216,16 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="n"></param>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_selectstate(IntPtr core, int n);
+		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		//public static extern void gambatte_selectstate(IntPtr core, int n);
 
 		/// <summary>
 		/// Current state slot selected with selectState(). Returns a value between 0 and 9 inclusive.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <returns></returns>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_currentstate(IntPtr core);
+		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		//public static extern int gambatte_currentstate(IntPtr core);
 
 		/// <summary>
 		/// ROM header title of currently loaded ROM image.

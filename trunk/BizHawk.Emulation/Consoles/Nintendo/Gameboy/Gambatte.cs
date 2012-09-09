@@ -28,6 +28,12 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public Gameboy(byte[] romdata)
 		{
+			GambatteState = LibGambatte.gambatte_create();
+
+			if (GambatteState == IntPtr.Zero)
+				throw new Exception("gambatte_create() returned null???");
+
+			/*
 			// use temp file until we hack up the libgambatte api to take data directly
 
 			using (FileStream fs = new FileStream("gambattetmp.gb", FileMode.OpenOrCreate, FileAccess.Write))
@@ -35,12 +41,12 @@ namespace BizHawk.Emulation.Consoles.GB
 				fs.Write(romdata, 0, romdata.Length);
 			}
 
-			GambatteState = LibGambatte.gambatte_create();
-
-			if (GambatteState == IntPtr.Zero)
-				throw new Exception("gambatte_create() returned null???");
 
 			if (LibGambatte.gambatte_load(GambatteState, "gambattetmp.gb", 0) != 0)
+				throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
+			*/
+
+			if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, 0) != 0)
 				throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 
