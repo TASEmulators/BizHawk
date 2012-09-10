@@ -107,6 +107,7 @@
 			this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.WatchListView = new BizHawk.VirtualListView();
 			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Prev = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ChangeCounts = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -126,7 +127,7 @@
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(338, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(359, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -176,8 +177,8 @@
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
-						| System.Windows.Forms.Keys.S)));
+			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
 			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.saveAsToolStripMenuItem.Text = "Save &As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
@@ -642,7 +643,7 @@
             this.MoveDownStripButton1});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(338, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(359, 25);
 			this.toolStrip1.TabIndex = 2;
 			this.toolStrip1.TabStop = true;
 			this.toolStrip1.Text = "toolStrip1";
@@ -795,9 +796,9 @@
 			// WatchListView
 			// 
 			this.WatchListView.AllowColumnReorder = true;
-			this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.WatchListView.AutoArrange = false;
 			this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
@@ -805,6 +806,7 @@
             this.Prev,
             this.ChangeCounts,
             this.Diff,
+            this.DomainColumn,
             this.Notes});
 			this.WatchListView.ContextMenuStrip = this.contextMenuStrip1;
 			this.WatchListView.FullRowSelect = true;
@@ -815,7 +817,7 @@
 			this.WatchListView.Location = new System.Drawing.Point(16, 76);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.selectedItem = -1;
-			this.WatchListView.Size = new System.Drawing.Size(306, 281);
+			this.WatchListView.Size = new System.Drawing.Size(327, 281);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
@@ -828,6 +830,11 @@
 			// Address
 			// 
 			this.Address.Text = "Address";
+			// 
+			// DomainColumn
+			// 
+			this.DomainColumn.Text = "Domain";
+			this.DomainColumn.Width = 55;
 			// 
 			// Value
 			// 
@@ -849,14 +856,12 @@
 			// 
 			// Diff
 			// 
-			this.Diff.DisplayIndex = 5;
 			this.Diff.Text = "Diff";
 			this.Diff.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.Diff.Width = 59;
 			// 
 			// Notes
 			// 
-			this.Notes.DisplayIndex = 4;
 			this.Notes.Text = "Notes";
 			this.Notes.Width = 128;
 			// 
@@ -865,7 +870,7 @@
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(338, 378);
+			this.ClientSize = new System.Drawing.Size(359, 378);
 			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.MemDomainLabel);
 			this.Controls.Add(this.WatchCountLabel);
@@ -977,5 +982,6 @@
 		private System.Windows.Forms.ToolStripMenuItem definePreviousValueAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem previousFrameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem lastChangeToolStripMenuItem;
+		private System.Windows.Forms.ColumnHeader DomainColumn;
     }
 }

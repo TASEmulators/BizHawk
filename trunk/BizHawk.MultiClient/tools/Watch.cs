@@ -664,6 +664,26 @@ namespace BizHawk.MultiClient
 				return this.Notes.CompareTo(Other.Notes);
 		}
 
+		private int CompareDomain(Watch Other)
+		{
+			if (this.Domain == null & Other.Domain == null)
+			{
+				return 0;
+			}
+			else if (this.Domain == null)
+			{
+				return -1;
+			}
+			else if (Other.Domain == null)
+			{
+				return 1;
+			}
+			else
+			{
+				return this.Domain.Name.CompareTo(Other.Domain.Name);
+			}
+		}
+
 		public int CompareTo(Watch Other, string parameter, PREVDEF previous)
 		{
 			int compare = 0;
@@ -681,9 +701,15 @@ namespace BizHawk.MultiClient
 							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
 							{
-								compare = CompareDiff(Other, previous);
+								compare = CompareDomain(Other);
 								if (compare == 0)
-									compare = CompareNotes(Other);
+								{
+									compare = CompareDiff(Other, previous);
+									if (compare == 0)
+									{
+										compare = CompareNotes(Other);
+									}
+								}
 							}
 						}
 					}
@@ -706,7 +732,13 @@ namespace BizHawk.MultiClient
 							{
 								compare = CompareDiff(Other, previous);
 								if (compare == 0)
-									compare = CompareNotes(Other);
+								{
+									compare = CompareDomain(Other);
+									if (compare == 0)
+									{
+										compare = CompareNotes(Other);
+									}
+								}
 							}
 						}
 					}
@@ -752,7 +784,13 @@ namespace BizHawk.MultiClient
 							{
 								compare = CompareDiff(Other, previous);
 								if (compare == 0)
-									compare = CompareNotes(Other);
+								{
+									compare = CompareDomain(Other);
+									if (compare == 0)
+									{
+										compare = CompareNotes(Other);
+									}
+								}
 							}
 						}
 					}
@@ -775,7 +813,38 @@ namespace BizHawk.MultiClient
 							{
 								compare = ComparePrevious(Other, previous);
 								if (compare == 0)
+								{
+									compare = CompareDomain(Other);
+									if (compare == 0)
+									{
+										compare = CompareNotes(Other);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			else if (parameter == "Domain")
+			{
+				compare = CompareDomain(Other);
+				if (compare == 0)
+				{
+					compare = CompareAddress(Other);
+					if (compare == 0)
+					{
+						compare = CompareValue(Other);
+						if (compare == 0)
+						{
+							compare = CompareChanges(Other);
+							if (compare == 0)
+							{
+								compare = ComparePrevious(Other, previous);
+								if (compare == 0)
+								{
 									compare = CompareNotes(Other);
+								}
 							}
 						}
 					}
@@ -798,7 +867,13 @@ namespace BizHawk.MultiClient
 							{
 								compare = ComparePrevious(Other, previous);
 								if (compare == 0)
+								{
 									compare = CompareDiff(Other, previous);
+									if (compare == 0)
+									{
+										compare = CompareDomain(Other);
+									}
+								}
 							}
 						}
 					}

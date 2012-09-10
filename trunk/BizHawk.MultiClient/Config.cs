@@ -267,12 +267,15 @@ namespace BizHawk.MultiClient
 		public int RamWatchChangeWidth = -1;
 		public int RamWatchDiffWidth = -1;
 		public int RamWatchNotesWidth = -1;
+		public int RamWatchDomainWidth = -1;
+		
 		public int RamWatchAddressIndex = 0;
 		public int RamWatchValueIndex = 1;
 		public int RamWatchPrevIndex = 2;
 		public int RamWatchChangeIndex = 3;
 		public int RamWatchDiffIndex = 4;
-		public int RamWatchNotesIndex = 5;
+		public int RamWatchDomainIndex = 5;
+		public int RamWatchNotesIndex = 6;
 		public int RamWatchPrev_Type = 1;
 
 		// RamSearch Settings
