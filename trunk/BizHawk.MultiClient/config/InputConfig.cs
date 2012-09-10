@@ -136,7 +136,7 @@ namespace BizHawk.MultiClient
 					controller = Global.Config.TI83Controller;
 					break;
 				case "SNES":
-					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SNESController;
 					controller = Global.Config.SNESController;
 					break;
 				default:
