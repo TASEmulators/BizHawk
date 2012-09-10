@@ -47,6 +47,7 @@ namespace BizHawk.MultiClient
 			Original = w.Original;
 			LastChange = w.LastChange;
 			LastSearch = w.LastSearch;
+			Domain = w.Domain;
 			Deleted = w.Deleted;
 		}
 

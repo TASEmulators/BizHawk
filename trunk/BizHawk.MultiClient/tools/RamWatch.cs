@@ -382,14 +382,17 @@ namespace BizHawk.MultiClient
 
 			RamWatchNewWatch r = new RamWatchNewWatch();
 			r.location = GetPromptPoint();
-			r.SetEndian(Domain.Endian);
+
+			Watch w = new Watch();
+			w.Domain = Domain;
+			r.SetWatch(w);
 			Global.Sound.StopSound();
 			r.ShowDialog();
 			Global.Sound.StartSound();
-			if (r.userSelected == true)
+			if (r.SelectionWasMade == true)
 			{
-				InitializeAddress(r.watch);
-				Watches.Add(r.watch);
+				InitializeAddress(r.Watch);
+				Watches.Add(r.Watch);
 				Changes();
 				UpdateWatchCount();
 				DisplayWatchList();
@@ -417,15 +420,15 @@ namespace BizHawk.MultiClient
 		{
 			RamWatchNewWatch r = new RamWatchNewWatch();
 			r.location = GetPromptPoint();
-			r.SetToEditWatch(Watches[pos], "Edit Watch");
+			r.SetWatch(Watches[pos], "Edit Watch");
 			Global.Sound.StopSound();
 			r.ShowDialog();
 			Global.Sound.StartSound();
 
-			if (r.userSelected == true)
+			if (r.SelectionWasMade == true)
 			{
 				Changes();
-				Watches[pos] = r.watch;
+				Watches[pos] = r.Watch;
 				DisplayWatchList();
 			}
 		}
@@ -433,8 +436,12 @@ namespace BizHawk.MultiClient
 		void EditWatch()
 		{
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			
 			if (indexes.Count > 0)
+			{
 				EditWatchObject(indexes[0]);
+			}
+
 			UpdateValues();
 		}
 
@@ -462,18 +469,17 @@ namespace BizHawk.MultiClient
 			{
 				RamWatchNewWatch r = new RamWatchNewWatch();
 				r.location = GetPromptPoint();
-				int x = indexes[0];
-				r.SetToEditWatch(Watches[x], "Duplicate Watch");
+				r.SetWatch(Watches[indexes[0]], "Duplicate Watch");
 
 				Global.Sound.StopSound();
 				r.ShowDialog();
 				Global.Sound.StartSound();
 
-				if (r.userSelected == true)
+				if (r.SelectionWasMade == true)
 				{
-					InitializeAddress(r.watch);
+					InitializeAddress(r.Watch);
 					Changes();
-					Watches.Add(r.watch);
+					Watches.Add(r.Watch);
 					DisplayWatchList();
 				}
 			}
