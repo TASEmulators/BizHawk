@@ -23,8 +23,8 @@ namespace BizHawk.MultiClient
 
 	public partial class MainForm : Form
 	{
-		public bool INTERIM = false;
-		public const string EMUVERSION = "Version 1.0.6 interim";
+		public bool INTERIM = true;
+		public const string EMUVERSION = "Version 1.1.0 interim";
 		public const string RELEASEDATE = "June 17, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
@@ -2616,10 +2616,10 @@ namespace BizHawk.MultiClient
 					"Savestate", "*.state",
 					"Atari 2600 (experimental)", "*.a26;*.bin;%ARCH%",
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
-					"Gameboy (experimental)", "*.gb;*.gbc;%ARCH%",
+					"Gameboy", "*.gb;*.gbc;%ARCH%",
 					"Colecovision (very experimental)", "*.col;%ARCH%",
                     "Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
-					"PSX Executables (experimental)", "*.exe",
+					"PSX Executables (very experimental)", "*.exe",
 					"All Files", "*.*");
 			}
 			else
