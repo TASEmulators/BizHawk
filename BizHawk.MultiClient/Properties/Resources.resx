@@ -822,4 +822,7 @@
   <data name="Paste" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Paste.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SNESController" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\SNESController.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
