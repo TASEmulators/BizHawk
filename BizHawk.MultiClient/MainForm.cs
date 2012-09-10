@@ -1642,13 +1642,13 @@ namespace BizHawk.MultiClient
 							if (c >= 'a' && c <= 'z' || c == ' ')
 							{
 								SendAltKeyChar(c);
-								sys_hotkey = true;
+								//sys_hotkey = true;
 							}
 						}
 						if (ie.LogicalButton.Alt && ie.LogicalButton.Button == "Space")
 						{
 							SendPlainAltKey(32);
-							sys_hotkey = true;
+							//sys_hotkey = true;
 						}
 					}
 					//ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
