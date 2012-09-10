@@ -1658,5 +1658,71 @@ namespace BizHawk.MultiClient
 		{
 			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
 		}
+
+		private void graphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadSNESGraphicsDebugger();
+		}
+
+		private void bG1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void bG1ToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void bG2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void bG3ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void oBJ0ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNES_ShowOBJ_0 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void oBJ1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNES_ShowOBJ_1 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void oBJ2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNES_ShowOBJ_2 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void oBJ3ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNES_ShowOBJ_3 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void displayToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			bG0ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG1_1;
+			bG1ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG2_1;
+			bG2ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG3_1;
+			bG3ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG4_1;
+
+			oBJ0ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ_0;
+			oBJ1ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ_1;
+			oBJ2ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ_2;
+			oBJ3ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ_3;
+		}
 	}
 }

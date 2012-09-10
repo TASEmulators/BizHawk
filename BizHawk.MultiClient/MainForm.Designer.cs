@@ -228,6 +228,16 @@
 			this.skipBIOSIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.graphicsDebuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
+			this.displayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.bG0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.bG1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.bG2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.bG3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.oBJ0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.oBJ1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.oBJ2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.oBJ3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.forumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1929,6 +1939,11 @@
 			this.gBToolStripMenuItem.Text = "GB";
 			this.gBToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gBToolStripMenuItem_DropDownOpened);
 			// 
+			// debuggerToolStripMenuItem1
+			// 
+			this.debuggerToolStripMenuItem1.Name = "debuggerToolStripMenuItem1";
+			this.debuggerToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
@@ -1944,6 +1959,8 @@
 			// sNESToolStripMenuItem
 			// 
 			this.sNESToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.displayToolStripMenuItem,
+            this.toolStripSeparator18,
             this.graphicsDebuggerToolStripMenuItem});
 			this.sNESToolStripMenuItem.Name = "sNESToolStripMenuItem";
 			this.sNESToolStripMenuItem.Size = new System.Drawing.Size(46, 19);
@@ -1956,6 +1973,83 @@
 			this.graphicsDebuggerToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.graphicsDebuggerToolStripMenuItem.Text = "Graphics Debugger";
 			this.graphicsDebuggerToolStripMenuItem.Click += new System.EventHandler(this.graphicsDebuggerToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator18
+			// 
+			this.toolStripSeparator18.Name = "toolStripSeparator18";
+			this.toolStripSeparator18.Size = new System.Drawing.Size(172, 6);
+			// 
+			// displayToolStripMenuItem
+			// 
+			this.displayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bG0ToolStripMenuItem,
+            this.bG1ToolStripMenuItem,
+            this.bG2ToolStripMenuItem,
+            this.bG3ToolStripMenuItem,
+            this.oBJ0ToolStripMenuItem,
+            this.oBJ1ToolStripMenuItem,
+            this.oBJ2ToolStripMenuItem,
+            this.oBJ3ToolStripMenuItem});
+			this.displayToolStripMenuItem.Name = "displayToolStripMenuItem";
+			this.displayToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.displayToolStripMenuItem.Text = "Display";
+			this.displayToolStripMenuItem.DropDownOpened += new System.EventHandler(this.displayToolStripMenuItem_DropDownOpened);
+			// 
+			// bG0ToolStripMenuItem
+			// 
+			this.bG0ToolStripMenuItem.Name = "bG0ToolStripMenuItem";
+			this.bG0ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.bG0ToolStripMenuItem.Text = "BG 1";
+			this.bG0ToolStripMenuItem.Click += new System.EventHandler(this.bG1ToolStripMenuItem_Click);
+			// 
+			// bG1ToolStripMenuItem
+			// 
+			this.bG1ToolStripMenuItem.Name = "bG1ToolStripMenuItem";
+			this.bG1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.bG1ToolStripMenuItem.Text = "BG 2";
+			this.bG1ToolStripMenuItem.Click += new System.EventHandler(this.bG1ToolStripMenuItem_Click_1);
+			// 
+			// bG2ToolStripMenuItem
+			// 
+			this.bG2ToolStripMenuItem.Name = "bG2ToolStripMenuItem";
+			this.bG2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.bG2ToolStripMenuItem.Text = "BG 3";
+			this.bG2ToolStripMenuItem.Click += new System.EventHandler(this.bG2ToolStripMenuItem_Click);
+			// 
+			// bG3ToolStripMenuItem
+			// 
+			this.bG3ToolStripMenuItem.Name = "bG3ToolStripMenuItem";
+			this.bG3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.bG3ToolStripMenuItem.Text = "BG 4";
+			this.bG3ToolStripMenuItem.Click += new System.EventHandler(this.bG3ToolStripMenuItem_Click);
+			// 
+			// oBJ0ToolStripMenuItem
+			// 
+			this.oBJ0ToolStripMenuItem.Name = "oBJ0ToolStripMenuItem";
+			this.oBJ0ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.oBJ0ToolStripMenuItem.Text = "OBJ 1";
+			this.oBJ0ToolStripMenuItem.Click += new System.EventHandler(this.oBJ0ToolStripMenuItem_Click);
+			// 
+			// oBJ1ToolStripMenuItem
+			// 
+			this.oBJ1ToolStripMenuItem.Name = "oBJ1ToolStripMenuItem";
+			this.oBJ1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.oBJ1ToolStripMenuItem.Text = "OBJ 2";
+			this.oBJ1ToolStripMenuItem.Click += new System.EventHandler(this.oBJ1ToolStripMenuItem_Click);
+			// 
+			// oBJ2ToolStripMenuItem
+			// 
+			this.oBJ2ToolStripMenuItem.Name = "oBJ2ToolStripMenuItem";
+			this.oBJ2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.oBJ2ToolStripMenuItem.Text = "OBJ 3";
+			this.oBJ2ToolStripMenuItem.Click += new System.EventHandler(this.oBJ2ToolStripMenuItem_Click);
+			// 
+			// oBJ3ToolStripMenuItem
+			// 
+			this.oBJ3ToolStripMenuItem.Name = "oBJ3ToolStripMenuItem";
+			this.oBJ3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.oBJ3ToolStripMenuItem.Text = "OBJ 4";
+			this.oBJ3ToolStripMenuItem.Click += new System.EventHandler(this.oBJ3ToolStripMenuItem_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -2604,6 +2698,16 @@
 		private System.Windows.Forms.ToolStripMenuItem DisplayFilterNoneMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem sNESToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem graphicsDebuggerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
+		private System.Windows.Forms.ToolStripMenuItem displayToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem bG0ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem bG1ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem bG2ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem bG3ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem oBJ0ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem oBJ1ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem oBJ2ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem oBJ3ToolStripMenuItem;
     }
 }
 
