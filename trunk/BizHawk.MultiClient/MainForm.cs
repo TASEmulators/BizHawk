@@ -1627,11 +1627,11 @@ namespace BizHawk.MultiClient
 
 				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
-				//look for client cntrol bindings for this key
+				//look for hotkey bindings for this key
 				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
-					bool sys_hotkey = false;
+					//bool sys_hotkey = false;
 
 					//maybe it is a system alt-key which hasnt been overridden
 					if (ie.EventType == Input.InputEventType.Press)
@@ -1653,17 +1653,22 @@ namespace BizHawk.MultiClient
 					}
 					//ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
 
+					//????????????
 					//no hotkeys or system keys bound this, so mutate it to an unmodified key and assign it for use as a game controller input
 					//(we have a rule that says: modified events may be used for game controller inputs but not hotkeys)
-					if (!sys_hotkey)
-					{
-						var mutated_ie = new Input.InputEvent();
-						mutated_ie.EventType = ie.EventType;
-						mutated_ie.LogicalButton = ie.LogicalButton;
-						mutated_ie.LogicalButton.Modifiers = Input.ModifierKey.None;
-						Global.ControllerInputCoalescer.Receive(mutated_ie);
-					}
+					//if (!sys_hotkey)
+					//{
+					//  var mutated_ie = new Input.InputEvent();
+					//  mutated_ie.EventType = ie.EventType;
+					//  mutated_ie.LogicalButton = ie.LogicalButton;
+					//  mutated_ie.LogicalButton.Modifiers = Input.ModifierKey.None;
+					//  Global.ControllerInputCoalescer.Receive(ie);
+					//}
 				}
+
+				//zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
+				//maybe because it doesnt make sense to me to bind hotkeys and controller inputs to the same keystrokes
+				Global.ControllerInputCoalescer.Receive(ie);
 
 				bool handled = false;
 				if (ie.EventType == Input.InputEventType.Press)
@@ -1674,7 +1679,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				//hotkeys which arent handled as actions get coalesced as pollable buttons
+				//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 				if (!handled)
 				{
 					Global.HotkeyCoalescer.Receive(ie);
