@@ -28,7 +28,6 @@ namespace BizHawk.MultiClient
 		int addressHighlighted = -1;
 		List<int> SecondaryHighlightedAddresses = new List<int>();
 		int addressOver = -1;
-		int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
 		int maxRow = 0;
 		MemoryDomain Domain = new MemoryDomain("NULL", 1024, Endian.Little, addr => { return 0; }, (a, v) => { v = 0; });
 		string info = "";
@@ -1062,15 +1061,11 @@ namespace BizHawk.MultiClient
 			}
 			int column = (x /*- 43*/) / (fontWidth * colWidth);
 
-			//int last = (16 / DataSize);
-			//if (column >= last)
-			//{
-				int start = GetTextOffset() - addrOffset - 50; //This is ugly, needs cleanup but it works!
-				if (x > start)
-				{
-					column = (x - start)  / (fontWidth / DataSize);
-				}
-			//}
+			int start = GetTextOffset() - - 50;
+			if (x > start)
+			{
+				column = (x - start)  / (fontWidth / DataSize);
+			}
 
 			if (row >= 0 && row <= maxRow && column >= 0 && column < (16 / DataSize))
 			{
@@ -1162,16 +1157,15 @@ namespace BizHawk.MultiClient
 
 		private Point GetAddressCoordinates(int address)
 		{
-			addrOffset = (NumDigits % 4) * 9;
 			switch (DataSize)
 			{
 				default:
 				case 1:
-					return new Point(((address % 16) * (fontWidth * 3)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point(((address % 16) * (fontWidth * 3)) + 50, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 2:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 50, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 4:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 50, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 			}
 		}
 
@@ -1182,13 +1176,13 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 1:
-					start = (16 * (fontWidth * 3)) + (50 + addrOffset);
+					start = (16 * (fontWidth * 3)) + 50;
 					break;
 				case 2:
-					start = ((16 / DataSize) * (fontWidth * 5)) + (50 + addrOffset);
+					start = ((16 / DataSize) * (fontWidth * 5)) + 50;
 					break;
 				case 4:
-					start = ((16 / DataSize) * (fontWidth * 9)) + (50 + addrOffset);
+					start = ((16 / DataSize) * (fontWidth * 9)) + 50;
 					break;
 			}
 			start += (fontWidth * 4);
