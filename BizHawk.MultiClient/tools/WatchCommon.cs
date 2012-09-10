@@ -20,14 +20,21 @@ namespace BizHawk.MultiClient
 			using (StreamWriter sw = new StreamWriter(path))
 			{
 				StringBuilder str = new StringBuilder();
-				str.Append("Domain " + domain_name + "\n");
-				str.Append("SystemID " + Global.Emulator.SystemId + "\n");
+				str.Append("Domain ");
+				str.Append(domain_name);
+				str.Append('\n');
+				str.Append("SystemID ");
+				str.Append(Global.Emulator.SystemId);
+				str.Append('\n');
 
 				for (int x = 0; x < watchList.Count; x++)
 				{
-					str.Append(string.Format("{0:X4}", watchList[x].Address) + "\t");
-					str.Append(watchList[x].TypeChar.ToString() + "\t");
-					str.Append(watchList[x].SignedChar.ToString() + "\t");
+					str.Append(string.Format("{0:X4}", watchList[x].Address));
+					str.Append('\t');
+					str.Append(watchList[x].TypeChar);
+					str.Append('\t');
+					str.Append(watchList[x].SignedChar);
+					str.Append('\t');
 
 					if (watchList[x].BigEndian == true)
 					{
@@ -37,8 +44,10 @@ namespace BizHawk.MultiClient
 					{
 						str.Append("0\t");
 					}
-
-					str.Append(watchList[x].Notes + "\n");
+					str.Append(watchList[x].Domain.Name);
+					str.Append('\t');
+					str.Append(watchList[x].Notes);
+					str.Append('\n');
 				}
 
 				sw.WriteLine(str.ToString());
@@ -52,7 +61,8 @@ namespace BizHawk.MultiClient
 			int y, z;
 			var file = new FileInfo(path);
 			if (file.Exists == false) return false;
-
+			bool isBizHawkWatch = true; //Hack to support .wch files from other emulators
+			bool isOldBizHawkWatch = false;
 			using (StreamReader sr = file.OpenText())
 			{
 				int count = 0;
@@ -60,18 +70,25 @@ namespace BizHawk.MultiClient
 				string temp = "";
 
 				if (append == false)
-					watchList.Clear();  //Wipe existing list and read from file
+				{
+					watchList.Clear();
+				}
 
 				while ((s = sr.ReadLine()) != null)
 				{
-					//parse each line and add to watchList
-
 					//.wch files from other emulators start with a number representing the number of watch, that line can be discarded here
 					//Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
-					if (s.Length < 5) continue;
+					if (s.Length < 5)
+					{
+						isBizHawkWatch = false;
+						continue;
+					}
 
 					if (s.Length >= 6 && s.Substring(0, 6) == "Domain")
+					{
 						domain = s.Substring(7, s.Length - 7);
+						isBizHawkWatch = true;
+					}
 
 					if (s.Length >= 8 && s.Substring(0, 8) == "SystemID")
 						continue;
@@ -79,12 +96,25 @@ namespace BizHawk.MultiClient
 					z = StringHelpers.HowMany(s, '\t');
 					if (z == 5)
 					{
-						//If 5, then this is a .wch file format made from another emulator, the first column (watch position) is not needed here
-						y = s.IndexOf('\t') + 1;
-						s = s.Substring(y, s.Length - y);   //5 digit value representing the watch position number
+						//If 5, then this is a post 1.0.5 .wch file
+						if (isBizHawkWatch)
+						{
+							//Do nothing here
+						}
+						else
+						{
+							y = s.IndexOf('\t') + 1;
+							s = s.Substring(y, s.Length - y);   //5 digit value representing the watch position number
+						}
 					}
-					else if (z != 4)
+					else if (z == 4)
+					{
+						isOldBizHawkWatch = true;
+					}
+					else //4 is 1.0.5 and earlier
+					{
 						continue;   //If not 4, something is wrong with this line, ignore it
+					}
 					count++;
 					Watch w = new Watch();
 
@@ -118,9 +148,19 @@ namespace BizHawk.MultiClient
 						continue;
 					}
 					if (y == 0)
+					{
 						w.BigEndian = false;
+					}
 					else
+					{
 						w.BigEndian = true;
+					}
+
+					if (isBizHawkWatch && !isOldBizHawkWatch)
+					{
+						y = s.IndexOf('\t') + 1;
+						s = s.Substring(y, s.Length - y);   //Domain
+					}
 
 					w.Notes = s.Substring(2, s.Length - 2);   //User notes
 
