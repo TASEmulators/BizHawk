@@ -2605,7 +2605,7 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gb;*.gbc;*.gen;*.col;*.smc;*.sfc;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gb;*.gbc;*.gen;*.col;.int;*.smc;*.sfc;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Super NES", "*.smc;*.sfc;%ARCH%",

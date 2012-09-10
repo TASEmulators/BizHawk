@@ -38,8 +38,8 @@ namespace BizHawk.MultiClient
 					case ".GMV":
 						m = ImportGMV(path, out errorMsg, out warningMsg);
 						break;
-					case ".NMV":
-						m = ImportNMV(path, out errorMsg, out warningMsg);
+					case ".LSMV":
+						m = ImportLSMV(path, out errorMsg, out warningMsg);
 						break;
 					case ".MCM":
 						m = ImportMCM(path, out errorMsg, out warningMsg);
@@ -50,6 +50,9 @@ namespace BizHawk.MultiClient
 					case ".MMV":
 						m = ImportMMV(path, out errorMsg, out warningMsg);
 						break;
+					case ".NMV":
+						m = ImportNMV(path, out errorMsg, out warningMsg);
+						break;
 					case ".SMV":
 						m = ImportSMV(path, out errorMsg, out warningMsg);
 						break;
@@ -58,6 +61,9 @@ namespace BizHawk.MultiClient
 						break;
 					case ".VMV":
 						m = ImportVMV(path, out errorMsg, out warningMsg);
+						break;
+					case ".ZMV":
+						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
 				}
 				if (errorMsg == "")
@@ -77,7 +83,7 @@ namespace BizHawk.MultiClient
 		public static bool IsValidMovieExtension(string extension)
 		{
 			string[] extensions = new string[11] {
-				"FCM", "FM2", "FMV", "GMV", "NMV", "MCM", "MC2", "MMV", "SMV", "VBM", "VMV"
+				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "SMV", "VBM", "VMV"
 			};
 			foreach (string ext in extensions)
 				if (extension.ToUpper() == "." + ext)
@@ -837,6 +843,16 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
+		// LSMV file format: http://tasvideos.org/Lsnes/Movieformat.html
+		private static Movie ImportLSMV(string path, out string errorMsg, out string warningMsg)
+		{
+			errorMsg = "";
+			warningMsg = "";
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			// TODO: Import.
+			return m;
+		}
+
 		/*
 		 MCM file format: http://code.google.com/p/mednafen-rr/wiki/MCM
 		 Mednafen-rr switched to MC2 from r261, so see r260 for details.
@@ -1321,7 +1337,7 @@ namespace BizHawk.MultiClient
 					return ImportSMV152(r, path);
 				default:
 				{
-					errorMsg = "SMV version not recognized, 143, 151, and 152 are currently supported.";
+					errorMsg = "SMV version not recognized. 1.43, 1.51, and 1.52 are currently supported.";
 					r.Close();
 					fs.Close();
 					return null;
@@ -1390,6 +1406,7 @@ namespace BizHawk.MultiClient
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.51");
 			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
+			// TODO: Import.
 			return m;
 		}
 
@@ -1399,6 +1416,7 @@ namespace BizHawk.MultiClient
 			uint GUID = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.52");
 			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
+			// TODO: Import.
 			return m;
 		}
 
@@ -1760,6 +1778,16 @@ namespace BizHawk.MultiClient
 			}
 			r.Close();
 			fs.Close();
+			return m;
+		}
+
+		// ZMV file format: http://tasvideos.org/ZMV.html
+		private static Movie ImportZMV(string path, out string errorMsg, out string warningMsg)
+		{
+			errorMsg = "";
+			warningMsg = "";
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
+			// TODO: Import.
 			return m;
 		}
 	}
