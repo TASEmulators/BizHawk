@@ -1090,6 +1090,7 @@ namespace BizHawk.MultiClient
 			sMSToolStripMenuItem.Visible = false;
 			gBToolStripMenuItem.Visible = false;
 			atariToolStripMenuItem.Visible = false;
+			sNESToolStripMenuItem.Visible = false;
 			switch (system)
 			{
 
@@ -1113,6 +1114,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "A26":
 					atariToolStripMenuItem.Visible = true;
+					break;
+				case "SNES":
+					sNESToolStripMenuItem.Visible = true;
 					break;
 				default:
 					break;
@@ -3428,5 +3432,9 @@ namespace BizHawk.MultiClient
 			catch { }
 		}
 
+		private void graphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadSNESGraphicsDebugger();
+		}
 	}
 }
