@@ -47,8 +47,8 @@ struct GB::Priv {
 GB::GB() : p_(new Priv) {}
 
 GB::~GB() {
-	if (p_->cpu.loaded())
-		p_->cpu.saveSavedata();
+	//if (p_->cpu.loaded())
+	//	p_->cpu.saveSavedata();
 	
 	delete p_;
 }
@@ -70,13 +70,24 @@ long GB::runFor(gambatte::uint_least32_t *const videoBuf, const int pitch,
 
 void GB::reset() {
 	if (p_->cpu.loaded()) {
-		p_->cpu.saveSavedata();
+		
+		int length = p_->cpu.saveSavedataLength();
+		char *s;
+		if (length > 0)
+		{
+			s = (char *) std::malloc(length);
+			p_->cpu.saveSavedata(s);
+		}
 		
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode);
 		p_->cpu.loadState(state);
-		p_->cpu.loadSavedata();
+		if (length > 0)
+		{
+			p_->cpu.loadSavedata(s);
+			std::free(s);
+		}
 	}
 }
 
@@ -89,8 +100,8 @@ void GB::setSaveDir(const std::string &sdir) {
 }
 
 int GB::load(const char *romfiledata, unsigned romfilelength, const unsigned flags) {
-	if (p_->cpu.loaded())
-		p_->cpu.saveSavedata();
+	//if (p_->cpu.loaded())
+	//	p_->cpu.saveSavedata();
 	
 	const int failed = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
 	
@@ -99,7 +110,7 @@ int GB::load(const char *romfiledata, unsigned romfilelength, const unsigned fla
 		p_->cpu.setStatePtrs(state);
 		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode = flags & GBA_CGB);
 		p_->cpu.loadState(state);
-		p_->cpu.loadSavedata();
+		//p_->cpu.loadSavedata();
 		
 		p_->stateNo = 1;
 		p_->cpu.setOsdElement(std::auto_ptr<OsdElement>());
@@ -116,9 +127,19 @@ bool GB::isLoaded() const {
 	return p_->cpu.loaded();
 }
 
-void GB::saveSavedata() {
+void GB::saveSavedata(char *dest) {
 	if (p_->cpu.loaded())
-		p_->cpu.saveSavedata();
+		p_->cpu.saveSavedata(dest);
+}
+void GB::loadSavedata(const char *data) {
+	if (p_->cpu.loaded())
+		p_->cpu.loadSavedata(data);
+}
+int GB::saveSavedataLength() {
+	if (p_->cpu.loaded())
+		return p_->cpu.saveSavedataLength();
+	else
+		return -1;
 }
 
 void GB::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) {
@@ -127,7 +148,7 @@ void GB::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) 
 
 bool GB::loadState(std::istream &file) {
 	if (p_->cpu.loaded()) {
-		p_->cpu.saveSavedata();
+	//	p_->cpu.saveSavedata();
 		
 		SaveState state;
 		p_->cpu.setStatePtrs(state);

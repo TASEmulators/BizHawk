@@ -82,8 +82,9 @@ public:
 	void rtcWrite(unsigned data) { rtc.write(data); }
 	unsigned char rtcRead() const { return *rtc.getActive(); }
 	
-	void loadSavedata();
-	void saveSavedata();
+	void loadSavedata(const char *data);
+	int saveSavedataLength();
+	void saveSavedata(char *dest);
 	const std::string saveBasePath() const;
 	void setSaveDir(const std::string &dir);
 	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);

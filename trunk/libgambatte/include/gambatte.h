@@ -92,8 +92,10 @@ public:
 	/** Returns true if a ROM image is loaded. */
 	bool isLoaded() const;
 
-	/** Writes persistent cartridge data to disk. Done implicitly on ROM close. */
-	void saveSavedata();
+	/** Writes persistent cartridge data to disk. NOT Done implicitly on ROM close. */
+	void loadSavedata(const char *data);
+	int saveSavedataLength();
+	void saveSavedata(char *dest);
 	
 	/** Saves emulator state to the state slot selected with selectState().
 	  * The data will be stored in the directory given by setSaveDir().

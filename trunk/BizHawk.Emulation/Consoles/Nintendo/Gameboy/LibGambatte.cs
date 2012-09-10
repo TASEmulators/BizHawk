@@ -155,11 +155,28 @@ namespace BizHawk.Emulation.Consoles.GB
 		public static extern bool gambatte_isloaded(IntPtr core);
 
 		/// <summary>
-		/// Writes persistent cartridge data to disk. Done implicitly on ROM close.
+		/// Get persistant cart memory.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
+		/// <param name="dest">byte buffer to write into.  gambatte_savesavedatalength() bytes will be written</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_savesavedata(IntPtr core);
+		public static extern void gambatte_savesavedata(IntPtr core, byte[] dest);
+
+		/// <summary>
+		/// restore persistant cart memory.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="data">byte buffer to read from.  gambatte_savesavedatalength() bytes will be read</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_loadsavedata(IntPtr core, byte[] data);
+
+		/// <summary>
+		/// get the size of the persistant cart memory block.  this value DEPENDS ON THE PARTICULAR CART LOADED
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <returns>length in bytes.  0 means no internal persistant cart memory</returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_savesavedatalength(IntPtr core);
 
 		/// <summary>
 		/// Saves emulator state to the state to a byte array

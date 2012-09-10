@@ -83,10 +83,30 @@ __declspec(dllexport) int gambatte_isloaded(void *core)
 	return g->isLoaded();
 }
 
+/*
 __declspec(dllexport) void gambatte_savesavedata(void *core)
 {
 	GB *g = (GB *) core;
 	g->saveSavedata();
+}
+*/
+
+__declspec(dllexport) void gambatte_savesavedata(void *core, char *dest)
+{
+	GB *g = (GB *) core;
+	g->saveSavedata(dest);
+}
+
+__declspec(dllexport) void gambatte_loadsavedata(void *core, const char *data)
+{
+	GB *g = (GB *) core;
+	g->loadSavedata(data);
+}
+
+__declspec(dllexport) int gambatte_savesavedatalength(void *core)
+{
+	GB *g = (GB *) core;
+	return g->saveSavedataLength();
 }
 
 /*

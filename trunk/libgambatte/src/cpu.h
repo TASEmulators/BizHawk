@@ -51,8 +51,9 @@ public:
 	void saveState(SaveState &state);
 	void loadState(const SaveState &state);
 	
-	void loadSavedata() { memory.loadSavedata(); }
-	void saveSavedata() { memory.saveSavedata(); }
+	void loadSavedata(const char *data) { memory.loadSavedata(data); }
+	int saveSavedataLength() {return memory.saveSavedataLength(); }
+	void saveSavedata(char *dest) { memory.saveSavedata(dest); }
 	
 	void setVideoBuffer(uint_least32_t *const videoBuf, const int pitch) {
 		memory.setVideoBuffer(videoBuf, pitch);
