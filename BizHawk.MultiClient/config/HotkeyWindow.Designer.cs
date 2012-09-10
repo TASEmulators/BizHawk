@@ -303,7 +303,7 @@
 			this.IDW_MAXTURBO.Location = new System.Drawing.Point(93, 106);
 			this.IDW_MAXTURBO.Name = "IDW_MAXTURBO";
 			this.IDW_MAXTURBO.Size = new System.Drawing.Size(100, 20);
-			this.IDW_MAXTURBO.TabIndex = 110;
+			this.IDW_MAXTURBO.TabIndex = 18;
 			// 
 			// label80
 			// 
@@ -321,7 +321,7 @@
 			this.IDW_ToggleBGInput.Location = new System.Drawing.Point(292, 202);
 			this.IDW_ToggleBGInput.Name = "IDW_ToggleBGInput";
 			this.IDW_ToggleBGInput.Size = new System.Drawing.Size(100, 20);
-			this.IDW_ToggleBGInput.TabIndex = 108;
+			this.IDW_ToggleBGInput.TabIndex = 76;
 			// 
 			// label79
 			// 

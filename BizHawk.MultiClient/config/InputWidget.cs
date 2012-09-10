@@ -18,7 +18,7 @@ namespace BizHawk.MultiClient
 		string wasPressed = "";
 		ToolTip tooltip1 = new ToolTip();
 		public string ButtonName;
-		Color HighlightedColor = Color.Pink;
+		Color HighlightedColor = Color.LightCyan;
 		Color RegularColor = SystemColors.Window;
 
 		[DllImport("user32")]
@@ -44,7 +44,7 @@ namespace BizHawk.MultiClient
 
 		public void FlagDuplicate(string duplicateName)
 		{
-			RegularColor = Color.Cyan;
+			RegularColor = Color.LightCoral;
 			HighlightedColor = Color.Violet;
 			BackColor = RegularColor;
 			tooltip1.SetToolTip(this, "same mapping as " + duplicateName);
@@ -52,7 +52,7 @@ namespace BizHawk.MultiClient
 
 		public void UnflagDuplicate()
 		{
-			HighlightedColor = Color.Pink;
+			HighlightedColor = Color.LightCyan;
 			RegularColor = SystemColors.Window;
 			tooltip1.SetToolTip(this, "");
 		}
