@@ -598,7 +598,7 @@ namespace BizHawk.MultiClient
 			w.Address = address;
 			w.BigEndian = BigEndian;
 			w.Signed = Watch.DISPTYPE.HEX;
-
+			w.Domain = Domain;
 			switch (DataSize)
 			{
 				default:
