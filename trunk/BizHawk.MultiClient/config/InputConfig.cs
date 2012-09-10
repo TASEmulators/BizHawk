@@ -52,6 +52,9 @@ namespace BizHawk.MultiClient
 			{"SNES", 4},
 			{"TI-83", 1}
 		};
+
+		private List<KeyValuePair<string, string>> HotkeyMappingList = new List<KeyValuePair<string, string>>(); //A list of all button mappings and the hotkey they are assigned to
+
 		private ArrayList Labels;
 		private ArrayList TextBoxes;
 		private string CurSelectConsole;
@@ -199,7 +202,7 @@ namespace BizHawk.MultiClient
 				int yoffset = (row * 24);
 				TempLabel.Location = new Point(8 + xoffset, 20 + yoffset);
 				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
+				TempTextBox = new InputWidget(HotkeyMappingList);
 				TempTextBox.Location = new Point(64 + xoffset, 20 + yoffset);
 				TextBoxes.Add(TempTextBox);
 				object field = null;
@@ -459,7 +462,11 @@ namespace BizHawk.MultiClient
 		private void InputConfig_Load(object sender, EventArgs e)
 		{
 			if (Global.MainForm.INTERIM)
+			{
 				SystemComboBox.Items.Add("Atari"); //When Atari is ready, add this in the designer instead
+			}
+
+			HotkeyMappingList = Global.ClientControls.MappingList();
 
 			AutoTab.Checked = Global.Config.InputConfigAutoTab;
 			SetAutoTab();
