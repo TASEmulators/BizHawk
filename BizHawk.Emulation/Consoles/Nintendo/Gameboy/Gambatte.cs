@@ -128,13 +128,39 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public byte[] ReadSaveRam
 		{
-			get { return new byte[0]; }
+			get
+			{
+				int length = LibGambatte.gambatte_savesavedatalength(GambatteState);
+
+				if (length > 0)
+				{
+					byte[] ret = new byte[length];
+					LibGambatte.gambatte_savesavedata(GambatteState, ret);
+					return ret;
+				}
+				else
+					return new byte[0];
+			}
 		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			if (data.Length != LibGambatte.gambatte_savesavedatalength(GambatteState))
+				throw new ArgumentException("Size of saveram data does not match expected!");
+			LibGambatte.gambatte_loadsavedata(GambatteState, data);
+		}
+
 
 		public bool SaveRamModified
 		{
-			get;
-			set;
+			get
+			{
+				if (LibGambatte.gambatte_savesavedatalength(GambatteState) == 0)
+					return false;
+				else
+					return true; // need to wire more stuff into the core to actually know this
+			}
+			set { }
 		}
 
 		public void ResetFrameCounter()

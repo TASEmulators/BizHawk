@@ -655,49 +655,42 @@ static bool hasBattery(const unsigned char headerByte0x147) {
 	}
 }
 
-void Cartridge::loadSavedata() {
-	const std::string &sbp = saveBasePath();
-
+void Cartridge::loadSavedata(const char *data) {
 	if (hasBattery(memptrs.romdata()[0x147])) {
-		std::ifstream file((sbp + ".sav").c_str(), std::ios::binary | std::ios::in);
-
-		if (file.is_open()) {
-			file.read(reinterpret_cast<char*>(memptrs.rambankdata()), memptrs.rambankdataend() - memptrs.rambankdata());
-			enforce8bit(memptrs.rambankdata(), memptrs.rambankdataend() - memptrs.rambankdata());
-		}
+		int length = memptrs.rambankdataend() - memptrs.rambankdata();
+		std::memcpy(memptrs.rambankdata(), data, length);
+		data += length;
+		enforce8bit(memptrs.rambankdata(), length);
 	}
 
 	if (hasRtc(memptrs.romdata()[0x147])) {
-		std::ifstream file((sbp + ".rtc").c_str(), std::ios::binary | std::ios::in);
-
-		if (file.is_open()) {
-			unsigned long basetime = file.get() & 0xFF;
-
-			basetime = basetime << 8 | (file.get() & 0xFF);
-			basetime = basetime << 8 | (file.get() & 0xFF);
-			basetime = basetime << 8 | (file.get() & 0xFF);
-
-			rtc.setBaseTime(basetime);
-		}
+		unsigned long basetime;
+		std::memcpy(&basetime, data, 4);
+		rtc.setBaseTime(basetime);
 	}
 }
 
-void Cartridge::saveSavedata() {
-	const std::string &sbp = saveBasePath();
-
+int Cartridge::saveSavedataLength() {
+	int ret = 0;
 	if (hasBattery(memptrs.romdata()[0x147])) {
-		std::ofstream file((sbp + ".sav").c_str(), std::ios::binary | std::ios::out);
-		file.write(reinterpret_cast<const char*>(memptrs.rambankdata()), memptrs.rambankdataend() - memptrs.rambankdata());
+		ret = memptrs.rambankdataend() - memptrs.rambankdata();
+	}
+	if (hasRtc(memptrs.romdata()[0x147])) {
+		ret += 4;
+	}
+	return ret;
+}
+
+void Cartridge::saveSavedata(char *dest) {
+	if (hasBattery(memptrs.romdata()[0x147])) {
+		int length = memptrs.rambankdataend() - memptrs.rambankdata();
+		std::memcpy(dest, memptrs.rambankdata(), length);
+		dest += length;
 	}
 
 	if (hasRtc(memptrs.romdata()[0x147])) {
-		std::ofstream file((sbp + ".rtc").c_str(), std::ios::binary | std::ios::out);
 		const unsigned long basetime = rtc.getBaseTime();
-
-		file.put(basetime >> 24 & 0xFF);
-		file.put(basetime >> 16 & 0xFF);
-		file.put(basetime >>  8 & 0xFF);
-		file.put(basetime       & 0xFF);
+		std::memcpy(dest, &basetime, 4);
 	}
 }
 

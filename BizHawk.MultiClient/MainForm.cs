@@ -1560,7 +1560,10 @@ namespace BizHawk.MultiClient
 					reader.Read(sram, 0, Global.Emulator.ReadSaveRam.Length);
 				if (Global.Emulator is LibsnesCore)
 					((LibsnesCore)Global.Emulator).StoreSaveRam(sram);
-				else Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
+				else if (Global.Emulator is Gameboy)
+					((Gameboy)Global.Emulator).StoreSaveRam(sram);
+				else
+					Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
 			}
 			catch { }
 		}
