@@ -509,11 +509,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNESGraphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadSNESGraphicsDebugger();
-		}
-
 		private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadHexEditor();
