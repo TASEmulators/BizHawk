@@ -3431,10 +3431,5 @@ namespace BizHawk.MultiClient
 			}
 			catch { }
 		}
-
-		private void graphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadSNESGraphicsDebugger();
-		}
 	}
 }
