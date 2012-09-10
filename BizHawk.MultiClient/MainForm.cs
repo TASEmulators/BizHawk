@@ -23,7 +23,7 @@ namespace BizHawk.MultiClient
 
 	public partial class MainForm : Form
 	{
-		public bool INTERIM = true;
+		public bool INTERIM = false;
 		public const string EMUVERSION = "Version 1.0.6 interim";
 		public const string RELEASEDATE = "June 17, 2012";
 		private Control renderTarget;
@@ -288,6 +288,8 @@ namespace BizHawk.MultiClient
 				OpenLuaConsole();
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
 				LoadPCEBGViewer();
+			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
+				LoadSNESGraphicsDebugger();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);

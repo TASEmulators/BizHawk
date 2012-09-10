@@ -80,9 +80,23 @@
 			this.radioButton12 = new System.Windows.Forms.RadioButton();
 			this.radioButton13 = new System.Windows.Forms.RadioButton();
 			this.label14 = new System.Windows.Forms.Label();
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveScreenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveScreenshotToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.menuStrip1.SuspendLayout();
+			this.groupBox3.SuspendLayout();
+			this.groupBox4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -115,7 +129,7 @@
 			this.groupBox1.Controls.Add(this.txtBG1SizeInTiles);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.txtBG1SizeBits);
-			this.groupBox1.Location = new System.Drawing.Point(12, 102);
+			this.groupBox1.Location = new System.Drawing.Point(18, 120);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(230, 189);
 			this.groupBox1.TabIndex = 3;
@@ -422,7 +436,7 @@
 			this.groupBox2.Controls.Add(this.label6);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label5);
-			this.groupBox2.Location = new System.Drawing.Point(12, 11);
+			this.groupBox2.Location = new System.Drawing.Point(12, 34);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(230, 80);
 			this.groupBox2.TabIndex = 16;
@@ -496,7 +510,7 @@
             "Tiles as 2bpp (@40K)",
             "Tiles as 4bpp (@0K)",
             "Tiles as 4bpp (@32K)"});
-			this.comboDisplayType.Location = new System.Drawing.Point(472, 8);
+			this.comboDisplayType.Location = new System.Drawing.Point(94, 15);
 			this.comboDisplayType.Name = "comboDisplayType";
 			this.comboDisplayType.Size = new System.Drawing.Size(195, 21);
 			this.comboDisplayType.TabIndex = 18;
@@ -506,7 +520,7 @@
 			// 
 			this.radioButton1.AutoSize = true;
 			this.radioButton1.Enabled = false;
-			this.radioButton1.Location = new System.Drawing.Point(588, 103);
+			this.radioButton1.Location = new System.Drawing.Point(210, 110);
 			this.radioButton1.Name = "radioButton1";
 			this.radioButton1.Size = new System.Drawing.Size(46, 17);
 			this.radioButton1.TabIndex = 19;
@@ -518,7 +532,7 @@
 			// 
 			this.radioButton2.AutoSize = true;
 			this.radioButton2.Enabled = false;
-			this.radioButton2.Location = new System.Drawing.Point(640, 103);
+			this.radioButton2.Location = new System.Drawing.Point(262, 110);
 			this.radioButton2.Name = "radioButton2";
 			this.radioButton2.Size = new System.Drawing.Size(46, 17);
 			this.radioButton2.TabIndex = 20;
@@ -530,7 +544,7 @@
 			// 
 			this.radioButton3.AutoSize = true;
 			this.radioButton3.Enabled = false;
-			this.radioButton3.Location = new System.Drawing.Point(692, 103);
+			this.radioButton3.Location = new System.Drawing.Point(314, 110);
 			this.radioButton3.Name = "radioButton3";
 			this.radioButton3.Size = new System.Drawing.Size(46, 17);
 			this.radioButton3.TabIndex = 21;
@@ -542,7 +556,7 @@
 			// 
 			this.radioButton4.AutoSize = true;
 			this.radioButton4.Enabled = false;
-			this.radioButton4.Location = new System.Drawing.Point(744, 103);
+			this.radioButton4.Location = new System.Drawing.Point(366, 110);
 			this.radioButton4.Name = "radioButton4";
 			this.radioButton4.Size = new System.Drawing.Size(46, 17);
 			this.radioButton4.TabIndex = 22;
@@ -554,7 +568,7 @@
 			// 
 			this.radioButton5.AutoSize = true;
 			this.radioButton5.Enabled = false;
-			this.radioButton5.Location = new System.Drawing.Point(384, 102);
+			this.radioButton5.Location = new System.Drawing.Point(6, 109);
 			this.radioButton5.Name = "radioButton5";
 			this.radioButton5.Size = new System.Drawing.Size(49, 17);
 			this.radioButton5.TabIndex = 23;
@@ -566,7 +580,7 @@
 			// 
 			this.radioButton6.AutoSize = true;
 			this.radioButton6.Enabled = false;
-			this.radioButton6.Location = new System.Drawing.Point(384, 79);
+			this.radioButton6.Location = new System.Drawing.Point(6, 86);
 			this.radioButton6.Name = "radioButton6";
 			this.radioButton6.Size = new System.Drawing.Size(76, 17);
 			this.radioButton6.TabIndex = 24;
@@ -578,7 +592,7 @@
 			// 
 			this.radioButton7.AutoSize = true;
 			this.radioButton7.Enabled = false;
-			this.radioButton7.Location = new System.Drawing.Point(384, 56);
+			this.radioButton7.Location = new System.Drawing.Point(6, 63);
 			this.radioButton7.Name = "radioButton7";
 			this.radioButton7.Size = new System.Drawing.Size(82, 17);
 			this.radioButton7.TabIndex = 25;
@@ -590,7 +604,7 @@
 			// 
 			this.radioButton8.AutoSize = true;
 			this.radioButton8.Enabled = false;
-			this.radioButton8.Location = new System.Drawing.Point(384, 35);
+			this.radioButton8.Location = new System.Drawing.Point(6, 42);
 			this.radioButton8.Name = "radioButton8";
 			this.radioButton8.Size = new System.Drawing.Size(82, 17);
 			this.radioButton8.TabIndex = 26;
@@ -602,7 +616,7 @@
 			// 
 			this.radioButton9.AutoSize = true;
 			this.radioButton9.Enabled = false;
-			this.radioButton9.Location = new System.Drawing.Point(384, 12);
+			this.radioButton9.Location = new System.Drawing.Point(6, 19);
 			this.radioButton9.Name = "radioButton9";
 			this.radioButton9.Size = new System.Drawing.Size(82, 17);
 			this.radioButton9.TabIndex = 27;
@@ -614,7 +628,7 @@
 			// 
 			this.radioButton10.AutoSize = true;
 			this.radioButton10.Enabled = false;
-			this.radioButton10.Location = new System.Drawing.Point(465, 103);
+			this.radioButton10.Location = new System.Drawing.Point(87, 110);
 			this.radioButton10.Name = "radioButton10";
 			this.radioButton10.Size = new System.Drawing.Size(49, 17);
 			this.radioButton10.TabIndex = 28;
@@ -626,7 +640,7 @@
 			// 
 			this.radioButton11.AutoSize = true;
 			this.radioButton11.Enabled = false;
-			this.radioButton11.Location = new System.Drawing.Point(465, 56);
+			this.radioButton11.Location = new System.Drawing.Point(87, 63);
 			this.radioButton11.Name = "radioButton11";
 			this.radioButton11.Size = new System.Drawing.Size(82, 17);
 			this.radioButton11.TabIndex = 29;
@@ -638,7 +652,7 @@
 			// 
 			this.radioButton12.AutoSize = true;
 			this.radioButton12.Enabled = false;
-			this.radioButton12.Location = new System.Drawing.Point(465, 79);
+			this.radioButton12.Location = new System.Drawing.Point(87, 86);
 			this.radioButton12.Name = "radioButton12";
 			this.radioButton12.Size = new System.Drawing.Size(76, 17);
 			this.radioButton12.TabIndex = 30;
@@ -650,7 +664,7 @@
 			// 
 			this.radioButton13.AutoSize = true;
 			this.radioButton13.Enabled = false;
-			this.radioButton13.Location = new System.Drawing.Point(535, 103);
+			this.radioButton13.Location = new System.Drawing.Point(157, 110);
 			this.radioButton13.Name = "radioButton13";
 			this.radioButton13.Size = new System.Drawing.Size(49, 17);
 			this.radioButton13.TabIndex = 31;
@@ -661,16 +675,121 @@
 			// label14
 			// 
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(939, 158);
+			this.label14.Location = new System.Drawing.Point(808, 187);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(114, 13);
 			this.label14.TabIndex = 32;
 			this.label14.Text = "Palette goes over here";
 			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.optionsToolStripMenuItem});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(933, 24);
+			this.menuStrip1.TabIndex = 33;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.viewer);
+			this.groupBox3.Location = new System.Drawing.Point(274, 177);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(528, 533);
+			this.groupBox3.TabIndex = 34;
+			this.groupBox3.TabStop = false;
+			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.radioButton9);
+			this.groupBox4.Controls.Add(this.comboDisplayType);
+			this.groupBox4.Controls.Add(this.radioButton1);
+			this.groupBox4.Controls.Add(this.radioButton2);
+			this.groupBox4.Controls.Add(this.radioButton13);
+			this.groupBox4.Controls.Add(this.radioButton3);
+			this.groupBox4.Controls.Add(this.radioButton12);
+			this.groupBox4.Controls.Add(this.radioButton4);
+			this.groupBox4.Controls.Add(this.radioButton11);
+			this.groupBox4.Controls.Add(this.radioButton5);
+			this.groupBox4.Controls.Add(this.radioButton10);
+			this.groupBox4.Controls.Add(this.radioButton6);
+			this.groupBox4.Controls.Add(this.radioButton7);
+			this.groupBox4.Controls.Add(this.radioButton8);
+			this.groupBox4.Location = new System.Drawing.Point(274, 34);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(528, 137);
+			this.groupBox4.TabIndex = 35;
+			this.groupBox4.TabStop = false;
+			// 
+			// optionsToolStripMenuItem
+			// 
+			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoloadToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem});
+			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+			this.optionsToolStripMenuItem.Text = "&Options";
+			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
+			// 
+			// fileToolStripMenuItem
+			// 
+			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveScreenshotAsToolStripMenuItem,
+            this.saveScreenshotToClipboardToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.exitToolStripMenuItem});
+			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Text = "&File";
+			// 
+			// saveScreenshotAsToolStripMenuItem
+			// 
+			this.saveScreenshotAsToolStripMenuItem.Enabled = false;
+			this.saveScreenshotAsToolStripMenuItem.Name = "saveScreenshotAsToolStripMenuItem";
+			this.saveScreenshotAsToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+			this.saveScreenshotAsToolStripMenuItem.Text = "Save Screenshot &As...";
+			// 
+			// saveScreenshotToClipboardToolStripMenuItem
+			// 
+			this.saveScreenshotToClipboardToolStripMenuItem.Enabled = false;
+			this.saveScreenshotToClipboardToolStripMenuItem.Name = "saveScreenshotToClipboardToolStripMenuItem";
+			this.saveScreenshotToClipboardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+			this.saveScreenshotToClipboardToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+			this.saveScreenshotToClipboardToolStripMenuItem.Text = "Save Screenshot to Clipboard";
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(267, 6);
+			// 
+			// exitToolStripMenuItem
+			// 
+			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+			this.exitToolStripMenuItem.Text = "E&xit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			// 
+			// autoloadToolStripMenuItem
+			// 
+			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.autoloadToolStripMenuItem.Text = "Auto-load";
+			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
+			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "&Save Window Position";
+			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			// 
 			// viewer
 			// 
 			this.viewer.BackColor = System.Drawing.Color.Transparent;
-			this.viewer.Location = new System.Drawing.Point(384, 129);
+			this.viewer.Location = new System.Drawing.Point(8, 14);
 			this.viewer.Name = "viewer";
 			this.viewer.Size = new System.Drawing.Size(512, 512);
 			this.viewer.TabIndex = 17;
@@ -680,31 +799,26 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1215, 650);
+			this.ClientSize = new System.Drawing.Size(933, 727);
+			this.Controls.Add(this.groupBox4);
+			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.label14);
-			this.Controls.Add(this.radioButton13);
-			this.Controls.Add(this.radioButton12);
-			this.Controls.Add(this.radioButton11);
-			this.Controls.Add(this.radioButton10);
-			this.Controls.Add(this.radioButton9);
-			this.Controls.Add(this.radioButton8);
-			this.Controls.Add(this.radioButton7);
-			this.Controls.Add(this.radioButton6);
-			this.Controls.Add(this.radioButton5);
-			this.Controls.Add(this.radioButton4);
-			this.Controls.Add(this.radioButton3);
-			this.Controls.Add(this.radioButton2);
-			this.Controls.Add(this.radioButton1);
-			this.Controls.Add(this.comboDisplayType);
-			this.Controls.Add(this.viewer);
 			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.menuStrip1);
+			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "SNESGraphicsDebugger";
 			this.Text = "SNES Graphics Debugger";
+			this.Load += new System.EventHandler(this.SNESGraphicsDebugger_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.menuStrip1.ResumeLayout(false);
+			this.menuStrip1.PerformLayout();
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -765,5 +879,16 @@
 		private System.Windows.Forms.TextBox txtScreenBG3TSize;
 		private System.Windows.Forms.TextBox txtScreenBG2TSize;
 		private System.Windows.Forms.TextBox txtScreenBG1TSize;
+		private System.Windows.Forms.MenuStrip menuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveScreenshotAsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveScreenshotToClipboardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
 	}
 }
