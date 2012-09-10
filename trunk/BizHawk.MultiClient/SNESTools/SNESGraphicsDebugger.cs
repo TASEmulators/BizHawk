@@ -12,11 +12,15 @@ namespace BizHawk.MultiClient
 {
 	public unsafe partial class SNESGraphicsDebugger : Form
 	{
+		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		int defaultHeight;
+
 		SwappableDisplaySurfaceSet surfaceSet = new SwappableDisplaySurfaceSet();
 
 		public SNESGraphicsDebugger()
 		{
 			InitializeComponent();
+			Closing += (o, e) => SaveConfigSettings();
 			comboDisplayType.SelectedIndex = 0;
 		}
 
@@ -145,8 +149,42 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 		}
 
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
 
+		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadSNESGraphicsDebugger;
+			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SNESGraphicsDebuggerSaveWindowPosition;
+		}
 
+		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadSNESGraphicsDebugger ^= true;
+		}
 
+		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SNESGraphicsDebuggerSaveWindowPosition ^= true;
+		}
+
+		private void SNESGraphicsDebugger_Load(object sender, EventArgs e)
+		{
+			defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = this.Size.Height;
+
+			if (Global.Config.SNESGraphicsDebuggerSaveWindowPosition && Global.Config.SNESGraphicsDebuggerWndx >= 0 && Global.Config.SNESGraphicsDebuggerWndy >= 0)
+			{
+				this.Location = new Point(Global.Config.SNESGraphicsDebuggerWndx, Global.Config.SNESGraphicsDebuggerWndy);
+			}
+		}
+
+		private void SaveConfigSettings()
+		{
+			Global.Config.SNESGraphicsDebuggerWndx = this.Location.X;
+			Global.Config.SNESGraphicsDebuggerWndy = this.Location.Y;
+		}
 	}
 }

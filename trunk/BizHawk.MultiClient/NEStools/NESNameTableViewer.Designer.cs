@@ -30,7 +30,6 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.screenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveImageClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,6 +68,7 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
 			this.groupBox1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -87,18 +87,6 @@
 			this.groupBox1.Size = new System.Drawing.Size(545, 513);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
-			// 
-			// NameTableView
-			// 
-			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
-			this.NameTableView.ContextMenuStrip = this.contextMenuStrip1;
-			this.NameTableView.Location = new System.Drawing.Point(17, 19);
-			this.NameTableView.Name = "NameTableView";
-			this.NameTableView.Size = new System.Drawing.Size(512, 480);
-			this.NameTableView.TabIndex = 0;
-			this.NameTableView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NESNameTableViewer_KeyDown);
-			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
-			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
 			// 
 			// contextMenuStrip1
 			// 
@@ -157,7 +145,7 @@
 			// 
 			this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
 			this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-			this.screenshotToolStripMenuItem.Text = "Save Screenshot As...";
+			this.screenshotToolStripMenuItem.Text = "Save Screenshot &As...";
 			this.screenshotToolStripMenuItem.Click += new System.EventHandler(this.screenshotToolStripMenuItem_Click);
 			// 
 			// screenshotToClipboardToolStripMenuItem
@@ -452,6 +440,18 @@
 			this.RefreshRate.TabIndex = 0;
 			this.RefreshRate.TickFrequency = 4;
 			this.RefreshRate.Value = 1;
+			// 
+			// NameTableView
+			// 
+			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
+			this.NameTableView.ContextMenuStrip = this.contextMenuStrip1;
+			this.NameTableView.Location = new System.Drawing.Point(17, 19);
+			this.NameTableView.Name = "NameTableView";
+			this.NameTableView.Size = new System.Drawing.Size(512, 480);
+			this.NameTableView.TabIndex = 0;
+			this.NameTableView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NESNameTableViewer_KeyDown);
+			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
+			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
 			// 
 			// NESNameTableViewer
 			// 

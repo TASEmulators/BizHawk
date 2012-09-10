@@ -356,6 +356,13 @@ namespace BizHawk.MultiClient
 		public int NESTopLine = 8;
 		public int NESBottomLine = 231;
 
+		// SNES Graphics Debugger Dialog Settings
+		public bool AutoLoadSNESGraphicsDebugger = false;
+		public bool SNESGraphicsDebuggerSaveWindowPosition = true;
+		public int SNESGraphicsDebuggerWndx = -1;
+		public int SNESGraphicsDebuggerWndy = -1;
+		public int SNESGraphicsDebuggerRefreshRate = 4;
+
 		// SNES Graphics settings
 		//bsnes allows the layers to be enabled for each priority level.
 		//this may not be important for the bg (there are two priority levels)
