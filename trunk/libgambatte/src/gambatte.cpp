@@ -142,6 +142,13 @@ int GB::saveSavedataLength() {
 		return -1;
 }
 
+bool GB::getMemoryArea(int which, unsigned char **data, int *length) {
+	if (p_->cpu.loaded())
+		return p_->cpu.getMemoryArea(which, data, length);
+	else
+		return false;
+}
+
 void GB::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) {
 	p_->cpu.setDmgPaletteColor(palNum, colorNum, rgb32);
 }

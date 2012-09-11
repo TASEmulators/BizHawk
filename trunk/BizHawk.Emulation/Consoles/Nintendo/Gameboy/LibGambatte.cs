@@ -268,5 +268,26 @@ namespace BizHawk.Emulation.Consoles.GB
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setgameshark(IntPtr core, string codes);
 
+		/// <summary>
+		/// memory areas that gambatte_getmemoryarea() can return
+		/// </summary>
+		public enum MemoryAreas : int
+		{
+			vram = 0,
+			rom = 1,
+			wram = 2,
+			rambank = 3,
+		}
+
+		/// <summary>
+		/// get pointer to internal memory areas, for debugging purposes
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="which">which memory area to access</param>
+		/// <param name="data">pointer to the start of the area</param>
+		/// <param name="length">valid length of the area, in bytes</param>
+		/// <returns>success</returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool gambatte_getmemoryarea(IntPtr core, MemoryAreas which, ref IntPtr data, ref int length);
 	}
 }

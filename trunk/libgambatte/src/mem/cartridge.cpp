@@ -694,6 +694,35 @@ void Cartridge::saveSavedata(char *dest) {
 	}
 }
 
+bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length)
+{
+	if (!data || !length)
+		return false;
+
+	switch (which)
+	{
+	case 0:
+		*data = memptrs.vramdata();
+		*length = memptrs.vramdataend() - memptrs.vramdata();
+		return true;
+	case 1:
+		*data = memptrs.romdata();
+		*length = memptrs.romdataend() - memptrs.romdata();
+		return true;
+	case 2:
+		*data = memptrs.wramdata(0);
+		*length = memptrs.wramdataend() - memptrs.wramdata(0);
+		return true;
+	case 3:
+		*data = memptrs.rambankdata();
+		*length = memptrs.rambankdataend() - memptrs.rambankdata();
+		return true;
+	default:
+		return false;
+	}
+	return false;
+}
+
 static int asHex(const char c) {
 	return c >= 'A' ? c - 'A' + 0xA : c - '0';
 }

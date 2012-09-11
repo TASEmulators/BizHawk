@@ -46,6 +46,8 @@ extern "C"
 	__declspec(dllexport) void gambatte_setgamegenie(void *core, const char *codes);
 
 	__declspec(dllexport) void gambatte_setgameshark(void *core, const char *codes);
+
+	__declspec(dllexport) int gambatte_getmemoryarea(void *core, int which, unsigned char **data, int *length);
 }
 
 
