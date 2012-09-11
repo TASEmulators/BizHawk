@@ -203,6 +203,11 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			writer.Write((int)nlen);
 			writer.Write(data);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
 		}
 
 		public void LoadStateBinary(System.IO.BinaryReader reader)
@@ -212,6 +217,11 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)length))
 				throw new Exception("Gambatte failed to load the savestate!");
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			LagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
 		}
 
 		public byte[] SaveStateBinary()
