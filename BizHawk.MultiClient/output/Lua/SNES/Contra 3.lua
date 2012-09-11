@@ -37,8 +37,8 @@ local function check_offscreen(pos,val)
 end
 
 local function draw_invuln(x,y,xrad,yrad)
-	gui.drawLine(x + (xrad / 2), y, x + (xrad / 2), y + yrad)
-	gui.drawLine(x, y + (yrad / 2), x + xrad, y + (yrad / 2)) 
+	gui.drawLine(x + (xrad / 2), y, x + (xrad / 2), y + yrad,0xFFFFFFFF)
+	gui.drawLine(x, y + (yrad / 2), x + xrad, y + (yrad / 2),0xFFFFFFFF) 
 end
 
 local function Player()
