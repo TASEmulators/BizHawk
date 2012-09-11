@@ -276,7 +276,9 @@ namespace BizHawk.Emulation.Consoles.GB
 			vram = 0,
 			rom = 1,
 			wram = 2,
-			rambank = 3,
+			cartram = 3,
+			oam = 4,
+			hram = 5
 		}
 
 		/// <summary>

@@ -1003,4 +1003,24 @@ void Memory::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned lon
 	display.setDmgPaletteColor(palNum, colorNum, rgb32);
 }
 
+bool Memory::getMemoryArea(int which, unsigned char **data, int *length) {
+	if (!data || !length)
+		return false;
+
+	switch (which)
+	{
+	case 4: // oam
+		*data = &ioamhram[0];
+		*length = 160;
+		return true;
+	case 5: // hram
+		*data = &ioamhram[384];
+		*length = 127;
+		return true;
+	default: // pass to cartridge
+		return cart.getMemoryArea(which, data, length);
+	}
+}
+
+
 }

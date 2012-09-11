@@ -339,8 +339,10 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, which, ref data, ref length))
 				throw new Exception("gambatte_getmemoryarea() failed!");
 
-			if (data == IntPtr.Zero || length <= 0)
+			// if length == 0, it's an empty block; (usually rambank on some carts); that's ok
+			if (data == IntPtr.Zero && length > 0)
 				throw new Exception("bad return from gambatte_getmemoryarea()");
+			
 
 			MemoryRefreshers[i] = new MemoryRefresher(data, length);
 
@@ -349,17 +351,18 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		void InitMemoryDomains()
 		{
-			MemoryDomains = new MemoryDomain[4];
-			MemoryRefreshers = new MemoryRefresher[4];
+			MemoryDomains = new MemoryDomain[6];
+			MemoryRefreshers = new MemoryRefresher[6];
 
-			CreateMemoryDomain(LibGambatte.MemoryAreas.rambank);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram);
 			CreateMemoryDomain(LibGambatte.MemoryAreas.rom);
 			CreateMemoryDomain(LibGambatte.MemoryAreas.vram);
 			CreateMemoryDomain(LibGambatte.MemoryAreas.wram);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.oam);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.hram);
 
 			// fixme: other code brokenly assumes that MainMemory is MemoryDomains[0]
 			// (here, we'd want it to be MemoryDomains[2])
-
 			var tmp = MemoryDomains[2];
 			MemoryDomains[2] = MemoryDomains[0];
 			MemoryDomains[0] = tmp;	
