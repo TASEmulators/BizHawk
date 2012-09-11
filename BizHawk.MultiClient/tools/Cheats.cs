@@ -1029,43 +1029,34 @@ namespace BizHawk.MultiClient
 		private void ColumnPositionSet()
 		{
 			List<ColumnHeader> columnHeaders = new List<ColumnHeader>();
-			int i = 0;
-			for (i = 0; i < CheatListView.Columns.Count; i++)
+			
+			for (int i = 0; i < CheatListView.Columns.Count; i++)
 			{
 				columnHeaders.Add(CheatListView.Columns[i]);
 			}
 
 			CheatListView.Columns.Clear();
 
-			i = 0;
-			do
+			List<KeyValuePair<int, string>> columnSettings = new List<KeyValuePair<int, string>>();
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Name"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Address"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Value"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Compare"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Domain"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "On"));
+
+			columnSettings = columnSettings.OrderBy(s => s.Key).ToList();
+
+			for (int i = 0; i < columnSettings.Count; i++)
 			{
-				string column = "";
-				if (Global.Config.CheatsNameIndex == i)
-					column = "Name";
-				else if (Global.Config.CheatsAddressIndex == i)
-					column = "Address";
-				else if (Global.Config.CheatsValueIndex == i)
-					column = "Value";
-				else if (Global.Config.CheatsCompareIndex == i)
-					column = "Compare";
-				else if (Global.Config.CheatsDomainIndex == i)
-					column = "Domain";
-				else if (Global.Config.CheatsOnIndex == i)
-					column = "On";
-
-				for (int k = 0; k < columnHeaders.Count(); k++)
+				for (int j = 0; j < columnHeaders.Count; j++)
 				{
-					if (columnHeaders[k].Text == column)
+					if (columnSettings[i].Value == columnHeaders[j].Text)
 					{
-						CheatListView.Columns.Add(columnHeaders[k]);
-						columnHeaders.Remove(columnHeaders[k]);
-						break;
-
+						CheatListView.Columns.Add(columnHeaders[j]);
 					}
 				}
-				i++;
-			} while (columnHeaders.Count() > 0);
+			}
 		}
 
 		private void Cheats_DragEnter(object sender, DragEventArgs e)
