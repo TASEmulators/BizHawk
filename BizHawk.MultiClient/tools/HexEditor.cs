@@ -252,6 +252,10 @@ namespace BizHawk.MultiClient
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			SetMemoryDomainMenu(); //Calls update routines
 			ResetScrollBar();
+
+			SetDataSize(DataSize);
+			UpdateValues();
+			AddressLabel.Text = GenerateAddressString();
 		}
 
 		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
