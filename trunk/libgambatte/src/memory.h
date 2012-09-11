@@ -83,7 +83,7 @@ public:
 	void saveSavedata(char *dest) { cart.saveSavedata(dest); }
 	const std::string saveBasePath() const { return cart.saveBasePath(); }
 	
-	bool getMemoryArea(int which, unsigned char **data, int *length) { return cart.getMemoryArea(which, data, length); }
+	bool getMemoryArea(int which, unsigned char **data, int *length); // { return cart.getMemoryArea(which, data, length); }
 
 	void setOsdElement(std::auto_ptr<OsdElement> osdElement) {
 		display.setOsdElement(osdElement);

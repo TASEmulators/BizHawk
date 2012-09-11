@@ -97,7 +97,7 @@ public:
 	int saveSavedataLength();
 	void saveSavedata(char *dest);
 	
-	// 0 = vram, 1 = rom, 2 = wram, 3 = rambank
+	// 0 = vram, 1 = rom, 2 = wram, 3 = cartram, 4 = oam, 5 = hram
 	bool getMemoryArea(int which, unsigned char **data, int *length);
 
 	/** Saves emulator state to the state slot selected with selectState().

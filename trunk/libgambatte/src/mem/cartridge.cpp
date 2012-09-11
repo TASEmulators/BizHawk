@@ -694,8 +694,7 @@ void Cartridge::saveSavedata(char *dest) {
 	}
 }
 
-bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length)
-{
+bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length) {
 	if (!data || !length)
 		return false;
 
@@ -717,6 +716,7 @@ bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length)
 		*data = memptrs.rambankdata();
 		*length = memptrs.rambankdataend() - memptrs.rambankdata();
 		return true;
+
 	default:
 		return false;
 	}
