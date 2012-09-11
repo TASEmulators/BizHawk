@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			InputCallback = new LibGambatte.InputGetter(ControllerCallback);
 
 			LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
+
+			InitMemoryDomains();
 		}
 
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
@@ -251,15 +253,54 @@ namespace BizHawk.Emulation.Consoles.GB
 			get { return GbOutputComm; }
 		}
 
-		public IList<MemoryDomain> MemoryDomains
+
+		MemoryDomain CreateMemoryDomain(LibGambatte.MemoryAreas which)
 		{
-			get { throw new NotImplementedException(); }
+			IntPtr data = IntPtr.Zero;
+			int length = 0;
+
+			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, which, ref data, ref length))
+				throw new Exception("gambatte_getmemoryarea() failed!");
+
+			if (data == IntPtr.Zero || length <= 0)
+				throw new Exception("bad return from gambatte_getmemoryarea()");
+
+			Func<int, byte> peeker = delegate(int addr)
+			{
+				if (addr >= length || addr < 0)
+					throw new ArgumentOutOfRangeException();
+				byte[] result = new byte[1];
+				System.Runtime.InteropServices.Marshal.Copy(data + addr, result, 0, 1);
+				return result[0];
+			};
+
+			Action<int, byte> poker = delegate(int addr, byte val)
+			{
+				if (addr >= length || addr < 0)
+					throw new ArgumentOutOfRangeException();
+				byte[] source = new byte[1];
+				source[0] = val;
+				System.Runtime.InteropServices.Marshal.Copy(source, 0, data + addr, 1);
+			};
+			return new MemoryDomain(which.ToString(), length, Endian.Little, peeker, poker);
 		}
 
-		public MemoryDomain MainMemory
+		void InitMemoryDomains()
 		{
-			get { throw new NotImplementedException(); }
+			MemoryDomains = new MemoryDomain[4];
+
+			MemoryDomains[0] = CreateMemoryDomain(LibGambatte.MemoryAreas.rambank);
+			MemoryDomains[1] = CreateMemoryDomain(LibGambatte.MemoryAreas.rom);
+			MemoryDomains[2] = CreateMemoryDomain(LibGambatte.MemoryAreas.vram);
+			MemoryDomains[3] = CreateMemoryDomain(LibGambatte.MemoryAreas.wram);
+
+			// what is this supposed to be, exactly?
+			MainMemory = MemoryDomains[1];
 		}
+
+		public IList<MemoryDomain> MemoryDomains { get; private set; }
+
+		public MemoryDomain MainMemory { get; private set; }
 
 		public void Dispose()
 		{

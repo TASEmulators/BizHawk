@@ -55,6 +55,8 @@ public:
 	int saveSavedataLength() {return memory.saveSavedataLength(); }
 	void saveSavedata(char *dest) { memory.saveSavedata(dest); }
 	
+	bool getMemoryArea(int which, unsigned char **data, int *length) { return memory.getMemoryArea(which, data, length); }
+
 	void setVideoBuffer(uint_least32_t *const videoBuf, const int pitch) {
 		memory.setVideoBuffer(videoBuf, pitch);
 	}

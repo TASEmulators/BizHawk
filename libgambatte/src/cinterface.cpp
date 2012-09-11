@@ -187,3 +187,8 @@ __declspec(dllexport) void gambatte_setgameshark(void *core, const char *codes)
 	g->setGameShark(std::string(codes));
 }
 
+__declspec(dllexport) int gambatte_getmemoryarea(void *core, int which, unsigned char **data, int *length)
+{
+	GB *g = (GB *) core;
+	return g->getMemoryArea(which, data, length);
+}
