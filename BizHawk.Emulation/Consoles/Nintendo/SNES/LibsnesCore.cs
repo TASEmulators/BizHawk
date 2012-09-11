@@ -278,6 +278,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		void snes_input_poll()
 		{
+			IsLagFrame = false;
 		}
 
 		void snes_video_refresh(int* data, int width, int height)
@@ -312,9 +313,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			LibsnesDll.snes_set_layer_enable(4, 2, CoreInputComm.SNES_ShowOBJ_2);
 			LibsnesDll.snes_set_layer_enable(4, 3, CoreInputComm.SNES_ShowOBJ_3);
 
+			// if the input poll callback is called, it will set this to false
+			IsLagFrame = true;
+
 			//apparently this is one frame?
 			timeFrameCounter++;
 			LibsnesDll.snes_run();
+
+			if (IsLagFrame)
+				LagCount++;
 
 			//SNESGraphicsDecoder dec = new SNESGraphicsDecoder();
 			//64x64 @ 4k
