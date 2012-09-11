@@ -454,16 +454,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			fixed (byte* pbuf = &buf[0])
 				LibsnesDll.snes_serialize(new IntPtr(pbuf), size);
 			writer.Write(buf);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
+
 			writer.Flush();
 		}
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int size = LibsnesDll.snes_serialize_size();
-			var ms = new MemoryStream();
-			reader.BaseStream.CopyTo(ms);
-			var buf = ms.ToArray();
+
+			byte[] buf = reader.ReadBytes(size);
 			fixed (byte* pbuf = &buf[0])
 				LibsnesDll.snes_unserialize(new IntPtr(pbuf), size);
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			LagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
 		}
 		public byte[] SaveStateBinary()
 		{
