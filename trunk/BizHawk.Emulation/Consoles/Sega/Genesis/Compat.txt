@@ -52,7 +52,6 @@ Insector X .. title screen gfx issue
 James Pond 3 crash in intro
 Jim Power - gfx glitches
 Jurassic Park 2 - crashes in intro
-Landstalker - Sprite masking on bottom is too high on the screen...
 Lemmings: Sound is royally effed... gfx glitches.
 Marvel Land .. holy shit thats psychadelic
 Mega Turrican some gfx glitches
@@ -67,6 +66,7 @@ Power Monger messed up
 RamboIII - intro gfx corrupted - MAYBE GOOD DEBUGGING TARGET
 Shining in the Darkness: Check out sprites in the tavern... very odd
 Sonic 2: Aside from lack of interlace mode, the shadows in the special stage are white....?
+Sonic 2: Something still amiss with title screen sprite masking
 Sonic 3 serious gfx glitches
 Star Control - Shit gets crazy
 Steel Empire - controls messed up. probably gfx issues also.
@@ -141,6 +141,13 @@ Games that require accurate VRAM fill emulation include Thunder Force IV,
  Contra Hard Corps, Revenge of Shinobi, Taiga Drama, and Sword of Vermillion.
 
 Sonic Spinball reads from VSRAM
+
+Games to test for sprite masking/overflow:
+ - Sonic 1 title screen (uses overflow to mask)
+ - Sonic 2 title screen (uses sprite mask modes)
+ - Galaxy Force 2 level select (uses sprite mask)
+ - Landstalker sprite masking (chests and such)
+ - Nemesis test rom
 
 Games known to use 2-cell vertical scroll mode:
  - Air Diver

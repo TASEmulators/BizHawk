@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             int yTile = ((ScanLine + yScroll) / 8) % NameTableHeight;
             int nameTableWidth = NameTableWidth;
             if (window)
-                nameTableWidth = Display40Mode ? 64 : 32;
+                nameTableWidth = (DisplayWidth == 40) ? 64 : 32;
 
             // this is hellllla slow. but not optimizing until we implement & understand
             // all scrolling modes, shadow & hilight, etc.
@@ -237,6 +237,10 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             int scanLineBase = ScanLine * FrameWidth;
             int processedSprites = 0;
+            int processedSpritesThisLine = 0;
+            int processedDotsThisLine = 0;
+            bool spriteMaskPrecursor = false;
+
             // This is incredibly unoptimized. TODO...
 
             FetchSprite(0);
@@ -245,8 +249,14 @@ namespace BizHawk.Emulation.Consoles.Sega
                 if (sprite.Y > ScanLine || sprite.Y+sprite.HeightPixels <= ScanLine)
                     goto nextSprite;
 
-                if (sprite.X == -127) // masking code is not super tested
-                    break; // TODO does masking mode 2 really exist?
+                processedSpritesThisLine++;
+                processedDotsThisLine += sprite.WidthPixels;
+
+                if (sprite.X > -128)
+                    spriteMaskPrecursor = true;
+
+                if (sprite.X == -128 && spriteMaskPrecursor)
+                    break; // apply sprite mask
 
                 if (sprite.X + sprite.WidthPixels <= 0)
                     goto nextSprite;
@@ -300,7 +310,13 @@ namespace BizHawk.Emulation.Consoles.Sega
             nextSprite:
                 if (sprite.Link == 0)
                     break;
-                if (++processedSprites > 80)
+                if (++processedSprites >= SpriteLimit)
+                    break;
+                if (processedSpritesThisLine >= SpritePerLineLimit)
+                    break;
+                if (processedDotsThisLine >= DotsPerLineLimit)
+                    break;
+                if (DisplayWidth == 32 && sprite.Link >= 64)
                     break;
                 FetchSprite(sprite.Link);
             }
