@@ -441,12 +441,13 @@ namespace BizHawk.Emulation.Consoles.GB
 		int soundbuffcontains = 0;
 
 		Sound.Utilities.SpeexResampler resampler;
-		Sound.MetaspuSoundProvider metaspu;
+		ISoundProvider metaspu;
 
 		void InitSound()
 		{
-			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+			var metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
 			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, metaspu.buffer.enqueue_samples);
+			this.metaspu = new Sound.Utilities.DCFilter(metaspu);// metaspu;
 		}
 
 		void DisposeSound()

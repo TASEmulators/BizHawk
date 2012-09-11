@@ -350,6 +350,7 @@
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />
+    <Compile Include="Sound\Utilities\DCFilter.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
     <Compile Include="Sound\Utilities\SpeexResampler.cs" />
     <Compile Include="Sound\VRC6.cs" />
