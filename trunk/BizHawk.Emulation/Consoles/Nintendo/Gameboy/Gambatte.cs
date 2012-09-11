@@ -103,7 +103,16 @@ namespace BizHawk.Emulation.Consoles.GB
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
 
+			// download any modified data to the core
+			foreach (var r in MemoryRefreshers)
+				r.RefreshWrite();
+
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
+
+			// upload any modified data to the memory domains
+
+			foreach (var r in MemoryRefreshers)
+				r.RefreshRead();
 
 			soundbuffcontains = (int)nsamp;
 
@@ -253,11 +262,79 @@ namespace BizHawk.Emulation.Consoles.GB
 			get { return GbOutputComm; }
 		}
 
+		#region MemoryDomains
 
-		MemoryDomain CreateMemoryDomain(LibGambatte.MemoryAreas which)
+		class MemoryRefresher
+		{
+			IntPtr data;
+			int length;
+
+			byte[] CachedMemory;
+
+			public MemoryRefresher(IntPtr data, int length)
+			{
+				this.data = data;
+				this.length = length;
+				CachedMemory = new byte[length];
+
+				writeneeded = false;
+				readneeded = false;
+			}
+
+			bool readneeded;
+			bool writeneeded;
+
+			/// <summary>
+			/// reads data from native core to managed buffer
+			/// </summary>
+			public void RefreshRead()
+			{
+				readneeded = true;
+			}
+
+			/// <summary>
+			/// writes data from managed buffer back to core
+			/// </summary>
+			public void RefreshWrite()
+			{
+				if (writeneeded)
+				{
+					System.Runtime.InteropServices.Marshal.Copy(CachedMemory, 0, data, length);
+					writeneeded = false;
+				}
+			}
+
+			public byte Peek(int addr)
+			{
+				if (readneeded)
+				{
+					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
+					readneeded = false;
+				}
+				return CachedMemory[addr];
+			}
+			public void Poke(int addr, byte val)
+			{
+				// a poke without any peek is certainly legal.  we need to update read, because writeneeded = true means that
+				// all of this data will be downloaded before the next frame.  so everything but that which was poked needs to
+				// be up to date.
+				if (readneeded)
+				{
+					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
+					readneeded = false;
+				}
+				CachedMemory[addr] = val;
+				writeneeded = true;
+			}
+		}
+
+
+		void CreateMemoryDomain(LibGambatte.MemoryAreas which)
 		{
 			IntPtr data = IntPtr.Zero;
 			int length = 0;
+
+			int i = (int)which;
 
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, which, ref data, ref length))
 				throw new Exception("gambatte_getmemoryarea() failed!");
@@ -265,42 +342,37 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (data == IntPtr.Zero || length <= 0)
 				throw new Exception("bad return from gambatte_getmemoryarea()");
 
-			Func<int, byte> peeker = delegate(int addr)
-			{
-				if (addr >= length || addr < 0)
-					throw new ArgumentOutOfRangeException();
-				byte[] result = new byte[1];
-				System.Runtime.InteropServices.Marshal.Copy(data + addr, result, 0, 1);
-				return result[0];
-			};
+			MemoryRefreshers[i] = new MemoryRefresher(data, length);
 
-			Action<int, byte> poker = delegate(int addr, byte val)
-			{
-				if (addr >= length || addr < 0)
-					throw new ArgumentOutOfRangeException();
-				byte[] source = new byte[1];
-				source[0] = val;
-				System.Runtime.InteropServices.Marshal.Copy(source, 0, data + addr, 1);
-			};
-			return new MemoryDomain(which.ToString(), length, Endian.Little, peeker, poker);
+			MemoryDomains[i] = new MemoryDomain(which.ToString(), length, Endian.Little, MemoryRefreshers[i].Peek, MemoryRefreshers[i].Poke);
 		}
 
 		void InitMemoryDomains()
 		{
 			MemoryDomains = new MemoryDomain[4];
+			MemoryRefreshers = new MemoryRefresher[4];
 
-			MemoryDomains[0] = CreateMemoryDomain(LibGambatte.MemoryAreas.rambank);
-			MemoryDomains[1] = CreateMemoryDomain(LibGambatte.MemoryAreas.rom);
-			MemoryDomains[2] = CreateMemoryDomain(LibGambatte.MemoryAreas.vram);
-			MemoryDomains[3] = CreateMemoryDomain(LibGambatte.MemoryAreas.wram);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.rambank);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.rom);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.vram);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.wram);
 
-			// what is this supposed to be, exactly?
-			MainMemory = MemoryDomains[1];
+			// fixme: other code brokenly assumes that MainMemory is MemoryDomains[0]
+			// (here, we'd want it to be MemoryDomains[2])
+
+			var tmp = MemoryDomains[2];
+			MemoryDomains[2] = MemoryDomains[0];
+			MemoryDomains[0] = tmp;	
+			MainMemory = MemoryDomains[0];
 		}
 
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
 
 		public MemoryDomain MainMemory { get; private set; }
+
+		MemoryRefresher[] MemoryRefreshers;
+
+		#endregion
 
 		public void Dispose()
 		{

@@ -41,6 +41,7 @@ namespace BizHawk
 
 		// ----- Client Debugging API stuff -----
 		IList<MemoryDomain> MemoryDomains { get; }
+		// this MUST BE the same as MemoryDomains[0], else DRAGONS
 		MemoryDomain MainMemory { get; }
 	}
 
