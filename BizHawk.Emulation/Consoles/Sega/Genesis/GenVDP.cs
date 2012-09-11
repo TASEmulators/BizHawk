@@ -26,7 +26,6 @@ namespace BizHawk.Emulation.Consoles.Sega
         public bool     VInterruptEnabled    { get { return (Registers[1]  & 0x20) != 0; } }
         public bool     DmaEnabled           { get { return (Registers[1]  & 0x10) != 0; } }
         public bool     CellBasedVertScroll  { get { return (Registers[11] & 0x08) != 0; } }
-        public bool     Display40Mode        { get { return (Registers[12] & 0x81) != 0; } }
 
         public bool     InDisplayPeriod      { get { return ScanLine < 224 && DisplayEnabled; } }
 
@@ -37,6 +36,11 @@ namespace BizHawk.Emulation.Consoles.Sega
         ushort HScrollTableAddr;
         int    NameTableWidth = 32;
         int    NameTableHeight = 32;
+
+        int    DisplayWidth;
+        int    SpriteLimit;
+        int    SpritePerLineLimit;
+        int    DotsPerLineLimit;
 
         bool   ControlWordPending;
         ushort VdpDataAddr;
@@ -340,19 +344,25 @@ int orig_addr = VdpDataAddr;
                     if ((data & 0x81) == 0)
                     {
                         // Display is 32 cells wide
-                        if (FrameWidth != 256)
+                        if (DisplayWidth != 32)
                         {
                             FrameBuffer = new int[256*224];
                             FrameWidth = 256;
-                            //Log.Note("VDP", "SWITCH TO 32 CELL WIDE MODE");
+                            DisplayWidth = 32;
+                            SpriteLimit = 64;
+                            SpritePerLineLimit = 16;
+                            DotsPerLineLimit = 256;
                         }
                     } else {
                         // Display is 40 cells wide
-                        if (FrameWidth != 320)
+                        if (DisplayWidth != 40)
                         {
                             FrameBuffer = new int[320*224];
                             FrameWidth = 320;
-                            //Log.Note("VDP", "SWITCH TO 40 CELL WIDE MODE");
+                            DisplayWidth = 40;
+                            SpriteLimit = 80;
+                            SpritePerLineLimit = 20;
+                            DotsPerLineLimit = 320;
                         }
                     }
                     break;
