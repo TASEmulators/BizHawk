@@ -93,8 +93,8 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// 
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="palnum">0 <= palNum < 3. One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.</param>
-		/// <param name="colornum">0 <= colorNum < 4</param>
+		/// <param name="palnum">in [0, 2]: One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.</param>
+		/// <param name="colornum">in [0, 3]</param>
 		/// <param name="rgb32"></param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setdmgpalettecolor(IntPtr core, PalType palnum, uint colornum, uint rgb32);

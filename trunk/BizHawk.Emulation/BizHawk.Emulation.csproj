@@ -117,6 +117,12 @@
     <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\ColorChooserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\ColorChooserForm.Designer.cs">
+      <DependentUpon>ColorChooserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
@@ -427,6 +433,11 @@
     <None Include="Consoles\Nintendo\NES\Docs\BoardTable.xlsx" />
     <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
     <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Consoles\Nintendo\Gameboy\ColorChooserForm.resx">
+      <DependentUpon>ColorChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
