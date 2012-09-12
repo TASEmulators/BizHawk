@@ -82,8 +82,8 @@ namespace BizHawk.MultiClient
 		// Return whether or not the type of file provided can currently be imported.
 		public static bool IsValidMovieExtension(string extension)
 		{
-			string[] extensions = new string[11] {
-				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "SMV", "VBM", "VMV"
+			string[] extensions = new string[13] {
+				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "ZMV"
 			};
 			foreach (string ext in extensions)
 				if (extension.ToUpper() == "." + ext)
@@ -849,7 +849,22 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			// TODO: Import.
+			HawkFile hf = new HawkFile(path);
+			// .LSMV movies are .zip files containing data files.
+			if (!hf.IsArchive)
+			{
+				errorMsg = "This is not an archive.";
+				return null;
+			}
+			foreach (var item in hf.ArchiveItems)
+			{
+				if (item.name == "input")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string input = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+				}
+			}
 			return m;
 		}
 
