@@ -208,6 +208,35 @@ namespace BizHawk.MultiClient
 		}
 
 		/// <summary>
+		/// binds the specified ArchiveItem which you should have gotten by interrogating an archive hawkfile
+		/// </summary>
+		public HawkFile BindArchiveMember(ArchiveItem item)
+		{
+			return BindArchiveMember(item.index);
+		}
+
+		/// <summary>
+		/// finds an ArchiveItem with the specified name (path) within the archive; returns null if it doesnt exist
+		/// </summary>
+		public ArchiveItem FindArchiveMember(string name)
+		{
+			foreach (var ai in ArchiveItems)
+				if (ai.name == name)
+					return ai;
+			return null;
+		}
+
+		/// <summary>
+		/// binds a path within the archive; returns null if that path didnt exist.
+		/// </summary>
+		public HawkFile BindArchiveMember(string name)
+		{
+			var ai = FindArchiveMember(name);
+			if (ai == null) return null;
+			else return BindArchiveMember(ai);
+		}
+
+		/// <summary>
 		/// binds the selected archive index
 		/// </summary>
 		public HawkFile BindArchiveMember(int archiveIndex)
