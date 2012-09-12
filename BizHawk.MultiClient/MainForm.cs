@@ -3435,9 +3435,21 @@ namespace BizHawk.MultiClient
 				var sram = new byte[Global.Emulator.ReadSaveRam.Length];
 				if (Global.Emulator is LibsnesCore)
 					((LibsnesCore)Global.Emulator).StoreSaveRam(sram);
-				else Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
+				else if (Global.Emulator is Gameboy)
+					// todo: i don't like this at all.  there's no guarantee that a 0-filled sram is even an accurate clear?
+					throw new Exception("Please fix me!");
+				else
+					Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
 			}
 			catch { }
+		}
+
+		private void changeDMGPalettesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Gameboy)
+			{
+				((Gameboy)Global.Emulator).EditDMGColors(this);
+			}
 		}
 	}
 }
