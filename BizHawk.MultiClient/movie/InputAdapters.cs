@@ -211,7 +211,8 @@ namespace BizHawk.MultiClient
 			{
 				foreach (string button in Global.BUTTONS[ControlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + button) ? Global.BUTTONS[ControlType][button] : ".");
+					
+					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
 				}
 				input.Append("|");
 			}
@@ -228,7 +229,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (Global.Emulator.SystemId == "SNES")
 			{
-				GetSNESControllersAsMnemonic();
+				return GetSNESControllersAsMnemonic();
 			}
 
 			StringBuilder input = new StringBuilder("|");
