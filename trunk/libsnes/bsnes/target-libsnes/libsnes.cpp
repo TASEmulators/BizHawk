@@ -14,6 +14,9 @@ struct Interface : public SNES::Interface {
   uint32_t *buffer;
   uint32_t *palette;
 
+	//zero 11-sep-2012
+	time_t randomSeed() { return 0; }
+
   void videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan) {
     unsigned width = hires ? 512 : 256;
     unsigned height = overscan ? 239 : 224;
