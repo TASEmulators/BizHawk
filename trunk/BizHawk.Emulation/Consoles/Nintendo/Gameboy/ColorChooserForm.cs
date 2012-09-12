@@ -137,5 +137,41 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 				}
 			}
 		}
+
+		Color betweencolor(Color left, Color right, double pos)
+		{
+			int R = (int)(right.R * pos + left.R * (1.0 - pos) + 0.5);
+			int G = (int)(right.G * pos + left.G * (1.0 - pos) + 0.5);
+			int B = (int)(right.B * pos + left.B * (1.0 - pos) + 0.5);
+			int A = (int)(right.A * pos + left.A * (1.0 - pos) + 0.5);
+
+			return Color.FromArgb(A, R, G, B);
+		}
+
+		void interpolate_colors(int firstindex, int lastindex)
+		{
+			for (int i = firstindex + 1; i < lastindex; i++)
+			{
+				double pos = (double)(i - firstindex) / (double)(lastindex - firstindex);
+				colors[i] = betweencolor(colors[firstindex], colors[lastindex], pos);
+			}
+			SetColorsOnce();
+			RefreshColors(true);
+		}
+
+		private void button3_Click(object sender, EventArgs e)
+		{
+			interpolate_colors(0, 3);
+		}
+
+		private void button4_Click(object sender, EventArgs e)
+		{
+			interpolate_colors(4, 7);
+		}
+
+		private void button5_Click(object sender, EventArgs e)
+		{
+			interpolate_colors(8, 11);
+		}
 	}
 }
