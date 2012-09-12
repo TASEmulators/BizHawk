@@ -106,6 +106,12 @@ namespace BizHawk.MultiClient
 					buttons = new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 					controller = "PC Engine Controller";
 					break;
+				case ".LSMV":
+					buttons = new string[12] {
+						"B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R"
+					};
+					controller = "SNES Controller";
+					break;
 			}
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
@@ -144,13 +150,23 @@ namespace BizHawk.MultiClient
 				}
 			}
 			/*
-			 Skip the first two sections of the split, which consist of everything before the starting | and the
-			 command. Do not use the section after the last |. In other words, get the sections for the players.
+			 Skip the first two sections of the split, which consist of everything before the starting | and the command.
+			 Do not use the section after the last |. In other words, get the sections for the players.
 			*/
-			for (int section = 2; section < sections.Length - 1; section++)
+			int start = 2;
+			int end = sections.Length - 1;
+			int player_offset = -1;
+			if (Path.GetExtension(path).ToUpper() == ".LSMV")
+			{
+				// LSNES frames don't start or end with a |.
+				start--;
+				end++;
+				player_offset++;
+			}
+			for (int section = start; section < end; section++)
 			{
 				// The player number is one less than the section number for the reasons explained above.
-				int player = section - 1;
+				int player = section + player_offset;
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
 					sections[section].Length == buttons.Length &&
@@ -863,6 +879,14 @@ namespace BizHawk.MultiClient
 					hf.BindArchiveMember(item.index);
 					var stream = hf.GetStream();
 					string input = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					int lineNum = 0;
+					using (StringReader reader = new StringReader(input))
+					{
+						lineNum++;
+						string line;
+						while ((line = reader.ReadLine()) != null)
+							m = ImportTextFrame(line, lineNum, m, path, ref warningMsg);
+					}
 				}
 			}
 			return m;
