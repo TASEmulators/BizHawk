@@ -207,7 +207,7 @@ namespace BizHawk.MultiClient
 
 		public bool FrameLagged(int frame)
 		{
-			if (frame >= StateFirstIndex && frame <= StateLastIndex)
+			if (frame >= StateFirstIndex && frame <= StateLastIndex && frame <= StateRecords.Count)
 			{
 				return StateRecords[frame].Lagged;
 			}
