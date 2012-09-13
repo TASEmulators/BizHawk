@@ -137,6 +137,7 @@ namespace BizHawk.MultiClient
 		public string PathAtariCheats = Path.Combine(".", "Cheats");
 
 		public string MoviesPath = Path.Combine(".", "Movies");
+		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
 		public string LuaPath = Path.Combine(".", "Lua");
 		public string WatchPath = ".";
 		public string AVIPath = ".";

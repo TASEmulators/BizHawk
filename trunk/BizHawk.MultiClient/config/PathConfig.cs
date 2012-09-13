@@ -124,6 +124,7 @@ namespace BizHawk.MultiClient
 			AtariCheatsBox.Text = Global.Config.PathAtariCheats;
 
 			MoviesBox.Text = Global.Config.MoviesPath;
+			MovieBackupsBox.Text = Global.Config.MoviesBackupPath;
 			LuaBox.Text = Global.Config.LuaPath;
 			WatchBox.Text = Global.Config.WatchPath;
 			AVIBox.Text = Global.Config.AVIPath;
@@ -216,6 +217,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathAtariCheats = AtariCheatsBox.Text;
 
 			Global.Config.MoviesPath = MoviesBox.Text;
+			Global.Config.MoviesBackupPath = MovieBackupsBox.Text;
 			Global.Config.LuaPath = LuaBox.Text;
 			Global.Config.WatchPath = WatchBox.Text;
 			Global.Config.AVIPath = AVIBox.Text;
@@ -668,8 +670,9 @@ namespace BizHawk.MultiClient
 				PCEBiosBox);
 		}
 
-
-
-
+		private void BrowseMovieBackups_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(MovieBackupsBox, MovieBackupsDescription.Text);
+		}
 	}
 }

@@ -299,9 +299,13 @@ namespace BizHawk.MultiClient
 		{
 			if (!Loaded) return;
 			if (Filename == "") return;
-			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
+
 			string BackupName = Filename;
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
+			BackupName = Global.Config.MoviesBackupPath + "\\" + Path.GetFileName(BackupName);
+
+			Directory.CreateDirectory(new FileInfo(BackupName).Directory.FullName);
+
 			Global.OSD.AddMessage("Backup movie saved to " + BackupName);
 			if (IsText)
 			{

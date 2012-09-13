@@ -252,6 +252,9 @@
 			this.BaseDescription = new System.Windows.Forms.Label();
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
 			this.SaveButton = new System.Windows.Forms.Button();
+			this.MovieBackupsBox = new System.Windows.Forms.TextBox();
+			this.BrowseMovieBackups = new System.Windows.Forms.Button();
+			this.MovieBackupsDescription = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -293,7 +296,7 @@
 			// 
 			this.WatchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.WatchBox.Location = new System.Drawing.Point(13, 89);
+			this.WatchBox.Location = new System.Drawing.Point(13, 105);
 			this.WatchBox.Name = "WatchBox";
 			this.WatchBox.Size = new System.Drawing.Size(332, 20);
 			this.WatchBox.TabIndex = 124;
@@ -302,7 +305,7 @@
 			// 
 			this.WatchDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.WatchDescription.AutoSize = true;
-			this.WatchDescription.Location = new System.Drawing.Point(385, 93);
+			this.WatchDescription.Location = new System.Drawing.Point(385, 110);
 			this.WatchDescription.Name = "WatchDescription";
 			this.WatchDescription.Size = new System.Drawing.Size(71, 13);
 			this.WatchDescription.TabIndex = 17;
@@ -312,7 +315,7 @@
 			// 
 			this.BrowseWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseWatch.Image = ((System.Drawing.Image)(resources.GetObject("BrowseWatch.Image")));
-			this.BrowseWatch.Location = new System.Drawing.Point(353, 89);
+			this.BrowseWatch.Location = new System.Drawing.Point(353, 105);
 			this.BrowseWatch.Name = "BrowseWatch";
 			this.BrowseWatch.Size = new System.Drawing.Size(26, 23);
 			this.BrowseWatch.TabIndex = 125;
@@ -353,7 +356,7 @@
 			// 
 			this.LuaBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.LuaBox.Location = new System.Drawing.Point(13, 59);
+			this.LuaBox.Location = new System.Drawing.Point(13, 75);
 			this.LuaBox.Name = "LuaBox";
 			this.LuaBox.Size = new System.Drawing.Size(332, 20);
 			this.LuaBox.TabIndex = 122;
@@ -362,7 +365,7 @@
 			// 
 			this.LuaDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.LuaDescription.AutoSize = true;
-			this.LuaDescription.Location = new System.Drawing.Point(385, 63);
+			this.LuaDescription.Location = new System.Drawing.Point(385, 82);
 			this.LuaDescription.Name = "LuaDescription";
 			this.LuaDescription.Size = new System.Drawing.Size(25, 13);
 			this.LuaDescription.TabIndex = 9;
@@ -372,7 +375,7 @@
 			// 
 			this.BrowseLua.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseLua.Image = ((System.Drawing.Image)(resources.GetObject("BrowseLua.Image")));
-			this.BrowseLua.Location = new System.Drawing.Point(353, 59);
+			this.BrowseLua.Location = new System.Drawing.Point(353, 75);
 			this.BrowseLua.Name = "BrowseLua";
 			this.BrowseLua.Size = new System.Drawing.Size(26, 23);
 			this.BrowseLua.TabIndex = 123;
@@ -624,7 +627,7 @@
 			this.AVIBox.AcceptsReturn = true;
 			this.AVIBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.AVIBox.Location = new System.Drawing.Point(13, 119);
+			this.AVIBox.Location = new System.Drawing.Point(13, 135);
 			this.AVIBox.Name = "AVIBox";
 			this.AVIBox.Size = new System.Drawing.Size(332, 20);
 			this.AVIBox.TabIndex = 126;
@@ -634,7 +637,7 @@
 			// 
 			this.AVIDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AVIDescription.AutoSize = true;
-			this.AVIDescription.Location = new System.Drawing.Point(385, 123);
+			this.AVIDescription.Location = new System.Drawing.Point(385, 138);
 			this.AVIDescription.Name = "AVIDescription";
 			this.AVIDescription.Size = new System.Drawing.Size(60, 13);
 			this.AVIDescription.TabIndex = 22;
@@ -644,7 +647,7 @@
 			// 
 			this.BrowseAVI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseAVI.Image = ((System.Drawing.Image)(resources.GetObject("BrowseAVI.Image")));
-			this.BrowseAVI.Location = new System.Drawing.Point(353, 119);
+			this.BrowseAVI.Location = new System.Drawing.Point(353, 135);
 			this.BrowseAVI.Name = "BrowseAVI";
 			this.BrowseAVI.Size = new System.Drawing.Size(26, 23);
 			this.BrowseAVI.TabIndex = 127;
@@ -2653,6 +2656,9 @@
 			// 
 			// tabPage7
 			// 
+			this.tabPage7.Controls.Add(this.MovieBackupsBox);
+			this.tabPage7.Controls.Add(this.BrowseMovieBackups);
+			this.tabPage7.Controls.Add(this.MovieBackupsDescription);
 			this.tabPage7.Controls.Add(this.AVIBox);
 			this.tabPage7.Controls.Add(this.MoviesBox);
 			this.tabPage7.Controls.Add(this.AVIDescription);
@@ -2723,6 +2729,36 @@
 			this.SaveButton.Text = "&Save";
 			this.SaveButton.UseVisualStyleBackColor = true;
 			this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
+			// 
+			// MovieBackupsBox
+			// 
+			this.MovieBackupsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.MovieBackupsBox.Location = new System.Drawing.Point(13, 49);
+			this.MovieBackupsBox.Name = "MovieBackupsBox";
+			this.MovieBackupsBox.Size = new System.Drawing.Size(332, 20);
+			this.MovieBackupsBox.TabIndex = 129;
+			// 
+			// BrowseMovieBackups
+			// 
+			this.BrowseMovieBackups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseMovieBackups.Image = ((System.Drawing.Image)(resources.GetObject("BrowseMovieBackups.Image")));
+			this.BrowseMovieBackups.Location = new System.Drawing.Point(353, 49);
+			this.BrowseMovieBackups.Name = "BrowseMovieBackups";
+			this.BrowseMovieBackups.Size = new System.Drawing.Size(26, 23);
+			this.BrowseMovieBackups.TabIndex = 130;
+			this.BrowseMovieBackups.UseVisualStyleBackColor = true;
+			this.BrowseMovieBackups.Click += new System.EventHandler(this.BrowseMovieBackups_Click);
+			// 
+			// MovieBackupsDescription
+			// 
+			this.MovieBackupsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.MovieBackupsDescription.AutoSize = true;
+			this.MovieBackupsDescription.Location = new System.Drawing.Point(385, 53);
+			this.MovieBackupsDescription.Name = "MovieBackupsDescription";
+			this.MovieBackupsDescription.Size = new System.Drawing.Size(80, 13);
+			this.MovieBackupsDescription.TabIndex = 128;
+			this.MovieBackupsDescription.Text = "Movie backups";
 			// 
 			// PathConfig
 			// 
@@ -2997,5 +3033,8 @@
 		private System.Windows.Forms.Button INTVBrowseSaveRAM;
 		private System.Windows.Forms.Label INTVSaveRAMDescription;
 		private System.Windows.Forms.TextBox INTVSaveRAMBox;
+		private System.Windows.Forms.TextBox MovieBackupsBox;
+		private System.Windows.Forms.Button BrowseMovieBackups;
+		private System.Windows.Forms.Label MovieBackupsDescription;
     }
 }
