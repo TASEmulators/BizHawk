@@ -1656,7 +1656,7 @@ namespace BizHawk.MultiClient
 
 		private void gBToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
+			//skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
 		}
 
 		private void graphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)

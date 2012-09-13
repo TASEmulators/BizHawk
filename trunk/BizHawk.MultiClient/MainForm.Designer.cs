@@ -225,7 +225,7 @@
 			this.gBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.debuggerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.skipBIOSIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.changeDMGPalettesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.displayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bG0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -281,7 +281,6 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.changeDMGPalettesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -1934,7 +1933,6 @@
 			this.gBToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.debuggerToolStripMenuItem1,
             this.toolStripSeparator8,
-            this.skipBIOSIntroToolStripMenuItem,
             this.changeDMGPalettesToolStripMenuItem});
 			this.gBToolStripMenuItem.Name = "gBToolStripMenuItem";
 			this.gBToolStripMenuItem.Size = new System.Drawing.Size(32, 17);
@@ -1951,12 +1949,12 @@
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
 			this.toolStripSeparator8.Size = new System.Drawing.Size(187, 6);
 			// 
-			// skipBIOSIntroToolStripMenuItem
+			// changeDMGPalettesToolStripMenuItem
 			// 
-			this.skipBIOSIntroToolStripMenuItem.Name = "skipBIOSIntroToolStripMenuItem";
-			this.skipBIOSIntroToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-			this.skipBIOSIntroToolStripMenuItem.Text = "Skip BIOS Intro";
-			this.skipBIOSIntroToolStripMenuItem.Click += new System.EventHandler(this.skipBIOSIntroToolStripMenuItem_Click);
+			this.changeDMGPalettesToolStripMenuItem.Name = "changeDMGPalettesToolStripMenuItem";
+			this.changeDMGPalettesToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.changeDMGPalettesToolStripMenuItem.Text = "Change DMG Palettes...";
+			this.changeDMGPalettesToolStripMenuItem.Click += new System.EventHandler(this.changeDMGPalettesToolStripMenuItem_Click);
 			// 
 			// sNESToolStripMenuItem
 			// 
@@ -2417,13 +2415,6 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
-			// changeDMGPalettesToolStripMenuItem
-			// 
-			this.changeDMGPalettesToolStripMenuItem.Name = "changeDMGPalettesToolStripMenuItem";
-			this.changeDMGPalettesToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-			this.changeDMGPalettesToolStripMenuItem.Text = "Change DMG Palettes...";
-			this.changeDMGPalettesToolStripMenuItem.Click += new System.EventHandler(this.changeDMGPalettesToolStripMenuItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2689,7 +2680,6 @@
 		private System.Windows.Forms.ToolStripMenuItem p0DifficultyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rightDifficultyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-		private System.Windows.Forms.ToolStripMenuItem skipBIOSIntroToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem enableRewindToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem enableContextMenuToolStripMenuItem;
