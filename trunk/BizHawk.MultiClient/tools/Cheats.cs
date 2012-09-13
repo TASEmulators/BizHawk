@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
 
+using BizHawk.Emulation.Consoles.Nintendo;
+
 namespace BizHawk.MultiClient
 {
 	public partial class Cheats : Form
@@ -39,6 +41,7 @@ namespace BizHawk.MultiClient
 			NewCheatList(); //Should be run even if dialog isn't open so cheats system can work
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			ClearFields();
+			ToggleGameGenieButtons();
 		}
 
 		public void UpdateValues()
@@ -129,6 +132,22 @@ namespace BizHawk.MultiClient
 			if (i < 0x10000) return 4;
 			if (i < 0x1000000) return 6;
 			else return 8;
+		}
+
+		private void ToggleGameGenieButtons()
+		{
+			if (Global.Emulator is NES)
+			{
+				toolStripButtonLoadGameGenie.Visible = true;
+				toolStripSeparator7.Visible = true;
+				openGameGenieEncoderDecoderToolStripMenuItem.Visible = true;
+			}
+			else
+			{
+				toolStripButtonLoadGameGenie.Visible = false;
+				toolStripSeparator7.Visible = false;
+				openGameGenieEncoderDecoderToolStripMenuItem.Visible = false;
+			}
 		}
 
 		private void Cheats_Load(object sender, EventArgs e)
@@ -1149,6 +1168,16 @@ namespace BizHawk.MultiClient
 			{
 				e.Handled = true;
 			}
+		}
+
+		private void openGameGenieEncoderDecoderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.LoadGameGenieEC();
+		}
+
+		private void toolStripButton1_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.LoadGameGenieEC();
 		}
 	}
 }
