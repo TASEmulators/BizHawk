@@ -108,9 +108,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 				dlg.Color = colors[i];
 
 				// custom colors are ints, not Color structs?
+				// and they don't work right unless the alpha bits are set to 0
 				int[] customs = new int[12];
 				for (int j = 0; j < customs.Length; j++)
-					customs[j] = colors[j].ToArgb();
+					customs[j] = colors[j].ToArgb() & 0xffffff;
 
 				dlg.CustomColors = customs;
 				dlg.FullOpen = true;
