@@ -12,8 +12,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class RamPoke : Form
 	{
-		//TODO:
-		//If signed/unsigned/hex radios selected, auto-change the value box
 		public Watch watch = new Watch();
 		public MemoryDomain domain = Global.Emulator.MainMemory;
 		public Point location = new Point();
@@ -65,6 +63,7 @@ namespace BizHawk.MultiClient
 
 			UpdateTitleText();
 			SetDomainSelection();
+			FormatValue();
 		}
 
 		private void SetValueBox()
@@ -347,18 +346,24 @@ namespace BizHawk.MultiClient
 		{
 			ValueHexLabel.Text = "0x";
 			ValueBox.MaxLength = GetValueNumDigits();
+			watch.Signed = Watch.DISPTYPE.HEX;
+			FormatValue();
 		}
 
 		private void UnsignedRadio_Click(object sender, EventArgs e)
 		{
 			ValueHexLabel.Text = "";
 			ValueBox.MaxLength = GetValueNumDigits();
+			watch.Signed = Watch.DISPTYPE.UNSIGNED;
+			FormatValue();
 		}
 
 		private void SignedRadio_Click(object sender, EventArgs e)
 		{
 			ValueHexLabel.Text = "";
 			ValueBox.MaxLength = GetValueNumDigits();
+			watch.Signed = Watch.DISPTYPE.SIGNED;
+			FormatValue();
 		}
 
 		private int GetValueNumDigits()
@@ -430,6 +435,11 @@ namespace BizHawk.MultiClient
 				if (domain.ToString() == DomainComboBox.Items[x].ToString())
 					DomainComboBox.SelectedIndex = x;
 			}
+		}
+
+		private void FormatValue()
+		{
+			ValueBox.Text = watch.ValueString;
 		}
 	}
 }
