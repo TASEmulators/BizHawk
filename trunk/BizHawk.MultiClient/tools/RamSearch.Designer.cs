@@ -341,14 +341,14 @@
             this.freezeAddressToolStripMenuItem1,
             this.viewInHexEditorToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(175, 186);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(216, 164);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// startNewSearchToolStripMenuItem
 			// 
 			this.startNewSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
 			this.startNewSearchToolStripMenuItem.Name = "startNewSearchToolStripMenuItem";
-			this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.startNewSearchToolStripMenuItem.Text = "&Start New Search";
 			this.startNewSearchToolStripMenuItem.Click += new System.EventHandler(this.startNewSearchToolStripMenuItem_Click);
 			// 
@@ -356,20 +356,21 @@
 			// 
 			this.searchToolStripMenuItem2.Image = global::BizHawk.MultiClient.Properties.Resources.search;
 			this.searchToolStripMenuItem2.Name = "searchToolStripMenuItem2";
-			this.searchToolStripMenuItem2.Size = new System.Drawing.Size(174, 22);
+			this.searchToolStripMenuItem2.Size = new System.Drawing.Size(215, 22);
 			this.searchToolStripMenuItem2.Text = "&Search";
 			this.searchToolStripMenuItem2.Click += new System.EventHandler(this.searchToolStripMenuItem2_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(171, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(212, 6);
 			// 
 			// removeSelectedToolStripMenuItem1
 			// 
 			this.removeSelectedToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeSelectedToolStripMenuItem1.Name = "removeSelectedToolStripMenuItem1";
-			this.removeSelectedToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
+			this.removeSelectedToolStripMenuItem1.ShortcutKeyDisplayString = "Del";
+			this.removeSelectedToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
 			this.removeSelectedToolStripMenuItem1.Text = "Remove Selected";
 			this.removeSelectedToolStripMenuItem1.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem1_Click);
 			// 
@@ -377,7 +378,8 @@
 			// 
 			this.addToRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.addToRamWatchToolStripMenuItem.Name = "addToRamWatchToolStripMenuItem";
-			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.addToRamWatchToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
+			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.addToRamWatchToolStripMenuItem.Text = "Add to Ram Watch";
 			this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
 			// 
@@ -385,7 +387,8 @@
 			// 
 			this.pokeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem1.Name = "pokeAddressToolStripMenuItem1";
-			this.pokeAddressToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
+			this.pokeAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+P";
+			this.pokeAddressToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
 			this.pokeAddressToolStripMenuItem1.Text = "Poke Address";
 			this.pokeAddressToolStripMenuItem1.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem1_Click);
 			// 
@@ -393,14 +396,15 @@
 			// 
 			this.freezeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem1.Name = "freezeAddressToolStripMenuItem1";
-			this.freezeAddressToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
+			this.freezeAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+F";
+			this.freezeAddressToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
 			this.freezeAddressToolStripMenuItem1.Text = "Freeze Address";
 			this.freezeAddressToolStripMenuItem1.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem1_Click);
 			// 
 			// viewInHexEditorToolStripMenuItem
 			// 
 			this.viewInHexEditorToolStripMenuItem.Name = "viewInHexEditorToolStripMenuItem";
-			this.viewInHexEditorToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.viewInHexEditorToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.viewInHexEditorToolStripMenuItem.Text = "View in Hex Editor";
 			this.viewInHexEditorToolStripMenuItem.Click += new System.EventHandler(this.viewInHexEditorToolStripMenuItem_Click);
 			// 
