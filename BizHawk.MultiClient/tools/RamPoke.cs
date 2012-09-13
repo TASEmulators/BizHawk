@@ -178,7 +178,7 @@ namespace BizHawk.MultiClient
 			}
 
 			int? x = GetSpecificValue();
-			if (x != null)
+			if (x == null)
 			{
 				MessageBox.Show("Missing or invalid value", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				ValueBox.Focus();
