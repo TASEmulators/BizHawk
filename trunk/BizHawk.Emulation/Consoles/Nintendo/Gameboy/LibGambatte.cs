@@ -283,6 +283,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		/// <summary>
 		/// get pointer to internal memory areas, for debugging purposes
+		/// so long as you don't write to it, you should be completely sync-safe
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="which">which memory area to access</param>
@@ -291,5 +292,25 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <returns>success</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gambatte_getmemoryarea(IntPtr core, MemoryAreas which, ref IntPtr data, ref int length);
+
+		/// <summary>
+		/// read a single byte from the cpu bus.  this includes all ram, rom, mmio, etc, as it is visible to the cpu (including mappers).
+		/// while there is no cycle cost to these reads, there may be other side effects!  use at your own risk.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">system bus address</param>
+		/// <returns>byte read</returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte gambatte_cpuread(IntPtr core, ushort addr);
+
+		/// <summary>
+		/// write a single byte to the cpu bus.  while there is no cycle cost to these writes, there can be quite a few side effects.
+		/// use at your own risk.
+		/// </summary>
+		/// <param name="core">opaque state pointe</param>
+		/// <param name="addr">system bus address</param>
+		/// <param name="val">byte to write</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_cpuwrite(IntPtr core, ushort addr, byte val);
 	}
 }

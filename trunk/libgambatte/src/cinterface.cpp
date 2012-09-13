@@ -192,3 +192,15 @@ __declspec(dllexport) int gambatte_getmemoryarea(void *core, int which, unsigned
 	GB *g = (GB *) core;
 	return g->getMemoryArea(which, data, length);
 }
+
+__declspec(dllexport) unsigned char gambatte_cpuread(void *core, unsigned short addr)
+{
+	GB *g = (GB *) core;
+	return g->ExternalRead(addr);
+}
+
+__declspec(dllexport) void gambatte_cpuwrite(void *core, unsigned short addr, unsigned char val)
+{
+	GB *g = (GB *) core;
+	g->ExternalWrite(addr, val);
+}

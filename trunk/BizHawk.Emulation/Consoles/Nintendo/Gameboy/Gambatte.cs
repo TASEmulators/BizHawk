@@ -334,38 +334,46 @@ namespace BizHawk.Emulation.Consoles.GB
 			IntPtr data = IntPtr.Zero;
 			int length = 0;
 
-			int i = (int)which;
-
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, which, ref data, ref length))
 				throw new Exception("gambatte_getmemoryarea() failed!");
 
 			// if length == 0, it's an empty block; (usually rambank on some carts); that's ok
+			// TODO: when length == 0, should we simply not add the memory domain at all?
 			if (data == IntPtr.Zero && length > 0)
 				throw new Exception("bad return from gambatte_getmemoryarea()");
-			
 
-			MemoryRefreshers[i] = new MemoryRefresher(data, length);
+			var refresher = new MemoryRefresher(data, length);
 
-			MemoryDomains[i] = new MemoryDomain(which.ToString(), length, Endian.Little, MemoryRefreshers[i].Peek, MemoryRefreshers[i].Poke);
+			MemoryRefreshers.Add(refresher);
+
+			MemoryDomains.Add(new MemoryDomain(which.ToString(), length, Endian.Little, refresher.Peek, refresher.Poke));
 		}
 
 		void InitMemoryDomains()
 		{
-			MemoryDomains = new MemoryDomain[6];
-			MemoryRefreshers = new MemoryRefresher[6];
+			MemoryDomains = new List<MemoryDomain>();
+			MemoryRefreshers = new List<MemoryRefresher>();
 
-			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.wram);
 			CreateMemoryDomain(LibGambatte.MemoryAreas.rom);
 			CreateMemoryDomain(LibGambatte.MemoryAreas.vram);
-			CreateMemoryDomain(LibGambatte.MemoryAreas.wram);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram);
 			CreateMemoryDomain(LibGambatte.MemoryAreas.oam);
 			CreateMemoryDomain(LibGambatte.MemoryAreas.hram);
 
-			// fixme: other code brokenly assumes that MainMemory is MemoryDomains[0]
-			// (here, we'd want it to be MemoryDomains[2])
-			var tmp = MemoryDomains[2];
-			MemoryDomains[2] = MemoryDomains[0];
-			MemoryDomains[0] = tmp;	
+			// also add a special memory domain for the system bus, where calls get sent directly to the core each time
+
+			MemoryDomains.Add(new MemoryDomain("sysbus", 65536, Endian.Little,
+				delegate(int addr)
+				{
+					return LibGambatte.gambatte_cpuread(GambatteState, (ushort)addr);
+				},
+				delegate(int addr, byte val)
+				{
+					LibGambatte.gambatte_cpuwrite(GambatteState, (ushort)addr, val);
+				}));
+
+			// this is the wram area and matches the bizhawk convention for what MainMemory means
 			MainMemory = MemoryDomains[0];
 		}
 
@@ -373,7 +381,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public MemoryDomain MainMemory { get; private set; }
 
-		MemoryRefresher[] MemoryRefreshers;
+		List <MemoryRefresher> MemoryRefreshers;
 
 		#endregion
 

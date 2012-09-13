@@ -147,6 +147,10 @@ public:
 	  * @param codes Game Shark codes in format 01HHHHHH;01HHHHHH;... where H is [0-9]|[A-F]
 	  */
 	void setGameShark(const std::string &codes);
+
+	unsigned char ExternalRead(unsigned short addr);
+	void ExternalWrite(unsigned short addr, unsigned char val);
+
 	
 private:
 	struct Priv;
