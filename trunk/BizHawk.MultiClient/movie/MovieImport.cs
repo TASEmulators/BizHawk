@@ -12,6 +12,7 @@ namespace BizHawk.MultiClient
 	public static class MovieImport
 	{
 		public const string COMMENT = "comment";
+		public const string COREORIGIN = "CoreOrigin";
 		public const string EMULATIONORIGIN = "emuOrigin";
 		public const string MOVIEORIGIN = "MovieOrigin";
 		public const string SYNCHACK = "SyncHack";
@@ -91,8 +92,26 @@ namespace BizHawk.MultiClient
 			return false;
 		}
 
+		// Reduce all whitespace to single spaces.
+		private static string SingleSpaces(string line)
+		{
+			line = line.Replace("\t", " ");
+			line = line.Replace("\n", " ");
+			line = line.Replace("\r", " ");
+			line = line.Replace("\r\n", " ");
+			string prev;
+			do
+			{
+				prev = line;
+				line = line.Replace("  ", " ");
+			}
+			while (prev != line);
+			return line;
+		}
+
 		// Import a frame from a text-based format.
-		private static Movie ImportTextFrame(string line, int lineNum, Movie m, string path, ref string warningMsg)
+		private static Movie ImportTextFrame(string line, int lineNum, Movie m, string path, ref string warningMsg,
+			ref string errorMsg)
 		{
 			string[] buttons = new string[] { };
 			string controller = "";
@@ -119,7 +138,7 @@ namespace BizHawk.MultiClient
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
-			if (Path.GetExtension(path).ToUpper() == ".FM2" && sections[1].Length != 0)
+			if (Path.GetExtension(path).ToUpper() == ".FM2" && sections.Length >= 2 && sections[1].Length != 0)
 			{
 				controllers["Reset"] = (sections[1][0] == '1');
 				// Get the first invalid command warning message that arises.
@@ -148,6 +167,24 @@ namespace BizHawk.MultiClient
 					if (warningMsg != "")
 						warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
 				}
+			}
+			if (Path.GetExtension(path).ToUpper() == ".LSMV" && sections.Length != 0)
+			{
+				string flags = sections[0];
+				char[] off = { '.', ' ', '\t', '\n' };
+				if (flags.Length == 0 || off.Contains(flags[0]))
+				{
+					errorMsg = "Subframes are not supported.";
+					return null;
+				}
+				bool reset = (flags.Length >= 2 && !off.Contains(flags[1]));
+				flags = SingleSpaces(flags.Substring(2));
+				if (reset && ((flags.Length >= 2 && flags[1] != '0') || (flags.Length >= 4 && flags[3] != '0')))
+				{
+					errorMsg = "Delayed resets are not supported.";
+					return null;
+				}
+				controllers["Reset"] = reset;
 			}
 			/*
 			 Skip the first two sections of the split, which consist of everything before the starting | and the command.
@@ -185,30 +222,30 @@ namespace BizHawk.MultiClient
 		}
 
 		// Import a subtitle from a text-based format.
-		private static Movie ImportTextSubtitle(string line, Movie m)
+		private static Movie ImportTextSubtitle(string line, Movie m, string path)
 		{
-			Subtitle s = new Subtitle();
-			// Reduce all whitespace to single spaces.
-			line = line.Replace("\t", " ");
-			line = line.Replace("\n", " ");
-			line = line.Replace("\r", " ");
-			line = line.Replace("\r\n", " ");
-			string prev;
-			do
-			{
-				prev = line;
-				line = line.Replace("  ", " ");
-			}
-			while (prev != line);
+			line = SingleSpaces(line);
 			// The header name, frame, and message are separated by whitespace.
 			int first = line.IndexOf(' ');
 			int second = line.IndexOf(' ', first + 1);
 			if (first != -1 && second != -1)
 			{
 				// Concatenate the frame and message with default values for the additional fields.
-				string frame = line.Substring(first + 1, second - first - 1);
-				string message = line.Substring(second + 1).Trim();
-				m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
+				string frame;
+				string message;
+				string length;
+				if (Path.GetExtension(path).ToUpper() != ".LSMV")
+				{
+					frame = line.Substring(first + 1, second - first - 1);
+					length = "200";
+				}
+				else
+				{
+					frame = line.Substring(0, first);
+					length = line.Substring(first + 1, second - first - 1);
+				}
+				message = line.Substring(second + 1).Trim();
+				m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message);
 			}
 			return m;
 		}
@@ -243,9 +280,16 @@ namespace BizHawk.MultiClient
 				if (line == "")
 					continue;
 				else if (line[0] == '|')
-					m = ImportTextFrame(line, lineNum, m, path, ref warningMsg);
+				{
+					m = ImportTextFrame(line, lineNum, m, path, ref warningMsg, ref errorMsg);
+					if (errorMsg != "")
+					{
+						sr.Close();
+						return null;
+					}
+				}
 				else if (line.ToLower().StartsWith("sub"))
-					m = ImportTextSubtitle(line, m);
+					m = ImportTextSubtitle(line, m, path);
 				else if (line.ToLower().StartsWith("emuversion"))
 					m.Header.Comments.Add(EMULATIONORIGIN + " " + emulator + " version " + ParseHeader(line, "emuVersion"));
 				else if (line.ToLower().StartsWith("version"))
@@ -408,9 +452,9 @@ namespace BizHawk.MultiClient
 			/*
 			 bit 2:
 			 * if "0", NTSC timing
-			 * if "1", PAL timing
-			 Starting with version 0.98.12 released on September 19, 2004, a PAL flag was added to the header but
-			 unfortunately it is not reliable - the emulator does not take the PAL setting from the ROM, but from a user
+			 * if "1", "PAL" timing
+			 Starting with version 0.98.12 released on September 19, 2004, a "PAL" flag was added to the header but
+			 unfortunately it is not reliable - the emulator does not take the "PAL" setting from the ROM, but from a user
 			 preference. This means that this site cannot calculate movie lengths reliably.
 			*/
 			bool pal = (((flags >> 2) & 1) == 1);
@@ -692,7 +736,7 @@ namespace BizHawk.MultiClient
 				return m;
 			}
 			/*
-			 The file format has no means of identifying NTSC/PAL. It is always assumed that the game is NTSC - that is, 60
+			 The file format has no means of identifying NTSC/"PAL". It is always assumed that the game is NTSC - that is, 60
 			 fps.
 			*/
 			m.Header.SetHeaderLine("PAL", "False");
@@ -782,7 +826,7 @@ namespace BizHawk.MultiClient
 			byte flags = r.ReadByte();
 			/*
 			 bit 7 (most significant): if "1", movie runs at 50 frames per second; if "0", movie runs at 60 frames per second
-			 The file format has no means of identifying NTSC/PAL, but the FPS can still be derived from the header.
+			 The file format has no means of identifying NTSC/"PAL", but the FPS can still be derived from the header.
 			*/
 			bool pal = (((flags >> 7) & 1) == 1);
 			m.Header.SetHeaderLine("PAL", pal.ToString());
@@ -872,14 +916,62 @@ namespace BizHawk.MultiClient
 				errorMsg = "This is not an archive.";
 				return null;
 			}
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "SNES");
 			foreach (var item in hf.ArchiveItems)
 			{
-				if (item.name == "gamename")
+				if (item.name == "authors")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string authors = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					string author_list = "";
+					string author_last = "";
+					using (StringReader reader = new StringReader(authors))
+					{
+						string line;
+						// Each author is on a different line.
+						while ((line = reader.ReadLine()) != null)
+						{
+							string author = line.Trim();
+							if (author != "")
+							{
+								if (author_last != "")
+									author_list += author_last + ", ";
+								author_last = author;
+							}
+						}
+					}
+					if (author_list != "")
+						author_list += "and ";
+					if (author_last != "")
+						author_list += author_last;
+					m.Header.SetHeaderLine(MovieHeader.AUTHOR, author_list);
+					hf.Unbind();
+				}
+				else if (item.name == "coreversion")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string coreversion = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.Comments.Add(COREORIGIN + " " + coreversion);
+					hf.Unbind();
+				}
+				else if (item.name == "gamename")
 				{
 					hf.BindArchiveMember(item.index);
 					var stream = hf.GetStream();
 					string gamename = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					m.Header.SetHeaderLine(MovieHeader.GAMENAME, gamename);
+					hf.Unbind();
+				}
+				else if (item.name == "gametype")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string gametype = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					// TODO: Handle the other types.
+					bool pal = (gametype == "snes_ntsc");
+					m.Header.SetHeaderLine("PAL", pal.ToString());
 					hf.Unbind();
 				}
 				else if (item.name == "input")
@@ -893,9 +985,21 @@ namespace BizHawk.MultiClient
 						lineNum++;
 						string line;
 						while ((line = reader.ReadLine()) != null)
-							m = ImportTextFrame(line, lineNum, m, path, ref warningMsg);
+						{
+							m = ImportTextFrame(line, lineNum, m, path, ref warningMsg, ref errorMsg);
+							if (errorMsg != "")
+							{
+								hf.Unbind();
+								return null;
+							}
+						}
 					}
 					hf.Unbind();
+				}
+				else if (item.name.StartsWith("moviesram."))
+				{
+					errorMsg = "Movies that begin with SRAM are not supported.";
+					return null;
 				}
 				else if (item.name == "rerecords")
 				{
@@ -913,6 +1017,40 @@ namespace BizHawk.MultiClient
 						rerecordCount = 0;
 					}
 					m.Rerecords = rerecordCount;
+					hf.Unbind();
+				}
+				else if (item.name == "rom.sha256")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string rom = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine("SHA256", rom);
+					hf.Unbind();
+				}
+				else if (item.name == "savestate")
+				{
+					errorMsg = "Movies that begin with a savestate are not supported.";
+					return null;
+				}
+				else if (item.name == "subtitles")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string subtitles = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					using (StringReader reader = new StringReader(subtitles))
+					{
+						string line;
+						while ((line = reader.ReadLine()) != null)
+							m = ImportTextSubtitle(line, m, path);
+					}
+					hf.Unbind();
+				}
+				else if (item.name == "systemid")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string systemid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.Comments.Add(EMULATIONORIGIN + " " + systemid);
 					hf.Unbind();
 				}
 			}
@@ -993,7 +1131,7 @@ namespace BizHawk.MultiClient
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// 099 103-byte   Padding 0s
 			r.ReadBytes(103);
-			// TODO: Verify if NTSC/PAL mode used for the movie can be detected or not.
+			// TODO: Verify if NTSC/"PAL" mode used for the movie can be detected or not.
 			// 100 variable   Input data
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
@@ -1092,7 +1230,7 @@ namespace BizHawk.MultiClient
 			// 0060: 4-byte little endian flags
 			byte flags = r.ReadByte();
 			// bit 0: unused
-			// bit 1: PAL
+			// bit 1: "PAL"
 			bool pal = (((flags >> 1) & 1) == 1);
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			// bit 2: Japan
@@ -1316,7 +1454,7 @@ namespace BizHawk.MultiClient
 			/*
 			 bit 7: Framerate
 			 * if "0", NTSC timing
-			 * if "1", PAL timing
+			 * if "1", "PAL" timing
 			*/
 			bool pal = (((data >> 7) & 1) == 1);
 			m.Header.SetHeaderLine("PAL", pal.ToString());
@@ -1530,13 +1668,24 @@ namespace BizHawk.MultiClient
 			// bit 1: if "1", movie starts from reset with an embedded SRAM
 			bool startfromsram = (((flags >> 1) & 1) == 1);
 			// other: reserved, set to 0
-			// We can't start from either save option.
-			if (startfromquicksave || startfromsram)
+			// (If both bits 0 and 1 are "1", the movie file is invalid)
+			if (startfromquicksave && startfromsram)
 			{
-				errorMsg = "Movies that begin with a save are not supported.";
-				// (If both bits 0 and 1 are "1", the movie file is invalid)
-				if (startfromquicksave && startfromsram)
-					errorMsg = "This is not a valid .VBM file.";
+				errorMsg = "This is not a valid .VBM file.";
+				r.Close();
+				fs.Close();
+				return null;
+			}
+			if (startfromquicksave)
+			{
+				errorMsg = "Movies that begin with a savestate are not supported.";
+				r.Close();
+				fs.Close();
+				return null;
+			}
+			if (startfromsram)
+			{
+				errorMsg = "Movies that begin with SRAM are not supported.";
 				r.Close();
 				fs.Close();
 				return null;
@@ -1782,7 +1931,7 @@ namespace BizHawk.MultiClient
 			022 BYTE    FrameIRQ                // FrameIRQ not allowed
 			*/
 			r.ReadBytes(3);
-			// 023 1-byte flag: 0=NTSC (60 Hz), 1=PAL (50 Hz)
+			// 023 1-byte flag: 0=NTSC (60 Hz), 1="PAL" (50 Hz)
 			bool pal = (r.ReadByte() == 1);
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			/*
