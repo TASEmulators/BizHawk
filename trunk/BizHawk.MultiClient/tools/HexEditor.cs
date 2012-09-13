@@ -560,10 +560,10 @@ namespace BizHawk.MultiClient
 					Header.Text = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
 					break;
 				case 2:
-					Header.Text = "         0    2    4    6    8    A    C    E";
+					Header.Text = "       0    2    4    6    8    A    C    E";
 					break;
 				case 4:
-					Header.Text = "             0        4        8        C";
+					Header.Text = "       0        4        8        C";
 					break;
 			}
 			NumDigits = GetNumDigits(Domain.Size);
