@@ -874,7 +874,15 @@ namespace BizHawk.MultiClient
 			}
 			foreach (var item in hf.ArchiveItems)
 			{
-				if (item.name == "input")
+				if (item.name == "gamename")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string gamename = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(MovieHeader.GAMENAME, gamename);
+					hf.Unbind();
+				}
+				else if (item.name == "input")
 				{
 					hf.BindArchiveMember(item.index);
 					var stream = hf.GetStream();
@@ -887,6 +895,25 @@ namespace BizHawk.MultiClient
 						while ((line = reader.ReadLine()) != null)
 							m = ImportTextFrame(line, lineNum, m, path, ref warningMsg);
 					}
+					hf.Unbind();
+				}
+				else if (item.name == "rerecords")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string rerecords = Encoding.UTF8.GetString(Util.ReadAllBytes(stream));
+					int rerecordCount;
+					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
+					try
+					{
+						rerecordCount = int.Parse(rerecords);
+					}
+					catch
+					{
+						rerecordCount = 0;
+					}
+					m.Rerecords = rerecordCount;
+					hf.Unbind();
 				}
 			}
 			return m;
