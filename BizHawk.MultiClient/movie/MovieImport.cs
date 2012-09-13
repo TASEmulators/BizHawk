@@ -496,7 +496,7 @@ namespace BizHawk.MultiClient
 				gameBytes.Add(r.ReadByte());
 			// Advance past null byte.
 			r.ReadByte();
-			string gameName = System.Text.Encoding.UTF8.GetString(gameBytes.ToArray());
+			string gameName = Encoding.UTF8.GetString(gameBytes.ToArray());
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			/*
 			 After the header comes "metadata", which is UTF8-coded movie title string. The metadata begins after the ROM
@@ -508,7 +508,7 @@ namespace BizHawk.MultiClient
 				authorBytes.Add(r.ReadByte());
 			// Advance past null byte.
 			r.ReadByte();
-			string author = System.Text.Encoding.UTF8.GetString(authorBytes.ToArray());
+			string author = Encoding.UTF8.GetString(authorBytes.ToArray());
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
@@ -1519,96 +1519,138 @@ namespace BizHawk.MultiClient
 			warningMsg = "";
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
-
-			byte[] signatureBytes = new byte[4];
-			for (int x = 0; x < 4; x++)
-				signatureBytes[x] = r.ReadByte();
-			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
-			if (signature.Substring(0, 3) != "SMV")
+			// 000 4-byte signature: 53 4D 56 1A "SMV\x1A"
+			string signature = r.ReadStringFixedAscii(4);
+			if (signature != "SMV\x1A")
 			{
 				errorMsg = "This is not a valid .SMV file.";
 				r.Close();
 				fs.Close();
 				return null;
 			}
-
+			// 004 4-byte little-endian unsigned int: version number
 			uint version = r.ReadUInt32();
+			Movie m;
 			switch (version)
 			{
 				case 1:
-					return ImportSMV143(r, path);
+					m = ImportSMV143(r, path, out errorMsg, out warningMsg);
+					break;
 				case 4:
-					return ImportSMV151(r, path);
+					m = ImportSMV151(r, path, out errorMsg, out warningMsg);
+					break;
 				case 5:
-					return ImportSMV152(r, path);
+					m = ImportSMV152(r, path, out errorMsg, out warningMsg);
+					break;
 				default:
-				{
 					errorMsg = "SMV version not recognized. 1.43, 1.51, and 1.52 are currently supported.";
 					r.Close();
 					fs.Close();
 					return null;
-				}
 			}
+			r.Close();
+			fs.Close();
+			return m;
 		}
 
 		// SMV 1.43 file format: http://code.google.com/p/snes9x-rr/wiki/SMV143
-		private static Movie ImportSMV143(BinaryReader r, string path)
+		private static Movie ImportSMV143(BinaryReader r, string path, out string errorMsg, out string warningMsg)
 		{
+			errorMsg = "";
+			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			uint GUID = r.ReadUInt32();
-			m.Header.SetHeaderLine(MovieHeader.GUID, GUID.ToString()); //TODO: format to hex string
+			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.43");
+			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
+			/*
+			 008 4-byte little-endian integer: movie "uid" - identifies the movie-savestate relationship, also used as the
+			 recording time in Unix epoch format
+			*/
+			uint uid = r.ReadUInt32();
+			m.Header.SetHeaderLine(MovieHeader.GUID, String.Format("{0:X8}", uid) + "-0000-0000-0000-000000000000");
+			// 00C 4-byte little-endian unsigned int: rerecord count
 			m.Rerecords = (int)r.ReadUInt32();
-
+			// 010 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
-			byte ControllerFlags = r.ReadByte();
-
-			int numControllers;
-			if (((ControllerFlags >> 4) & 1) == 1)
-				numControllers = 5;
-			else if (((ControllerFlags >> 3) & 1) == 1)
-				numControllers = 4;
-			else if (((ControllerFlags >> 2) & 1) == 1)
-				numControllers = 3;
-			else if (((ControllerFlags >> 1) & 1) == 1)
-				numControllers = 2;
-			else
-				numControllers = 1;
-
-			byte MovieFlags = r.ReadByte();
-
-			if ((MovieFlags & 1) == 0)
-				return null; //TODO: Savestate movies not supported error
-
-			if (((MovieFlags >> 1) & 1) == 1)
-				m.Header.SetHeaderLine("PAL", "True");
-
-			byte SyncOptions = r.ReadByte();
-			byte SyncOptions2 = r.ReadByte();
-			//TODO: these
-
-			uint SavestateOffset = r.ReadUInt32();
-			uint FrameDataOffset = r.ReadUInt32();
-
-			//TODO: get extra rom info
-
-			r.BaseStream.Position = FrameDataOffset;
+			// 014 1-byte flags "controller mask"
+			byte flags = r.ReadByte();
+			int controllers = 0;
+			/*
+			 * bit 0: controller 1 in use
+			 * bit 1: controller 2 in use
+			 * bit 2: controller 3 in use
+			 * bit 3: controller 4 in use
+			 * bit 4: controller 5 in use
+			 * other: reserved, set to 0
+			*/
+			for (int controller = 1; controller <= 5; controller++)
+				if (((flags >> (controller - 1)) & 0x1) != 0)
+					controllers++;
+			// 015 1-byte flags "movie options"
+			flags = r.ReadByte();
+			/*
+				 bit 0:
+					 if "0", movie begins from an embedded "quicksave" snapshot
+					 if "1", a SRAM is included instead of a quicksave; movie begins from reset
+			*/
+			if ((flags & 0x1) == 0)
+			{
+				errorMsg = "Movies that begin with a savestate are not supported.";
+				r.Close();
+				return null;
+			}
+			// bit 1: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
+			bool pal = (((flags >> 1) & 0x1) != 0);
+			m.Header.SetHeaderLine("PAL", pal.ToString());
+			// other: reserved, set to 0
+			/*
+			 016 1-byte flags "sync options":
+				 bit 0: MOVIE_SYNC2_INIT_FASTROM
+				 other: reserved, set to 0
+			*/
+			r.ReadByte();
+			/*
+			 017 1-byte flags "sync options":
+				 bit 0: MOVIE_SYNC_DATA_EXISTS
+					 if "1", all sync options flags are defined.
+					 if "0", all sync options flags have no meaning.
+				 bit 1: MOVIE_SYNC_WIP1TIMING
+				 bit 2: MOVIE_SYNC_LEFTRIGHT
+				 bit 3: MOVIE_SYNC_VOLUMEENVX
+				 bit 4: MOVIE_SYNC_FAKEMUTE
+				 bit 5: MOVIE_SYNC_SYNCSOUND
+				 bit 6: MOVIE_SYNC_HASROMINFO
+					 if "1", there is extra ROM info located right in between of the metadata and the savestate.
+				 bit 7: set to 0.
+			*/
+			uint savestateOffset = r.ReadByte();
+			// 018 4-byte little-endian unsigned int: offset to the savestate inside file
+			r.ReadUInt32();
+			// 01C 4-byte little-endian unsigned int: offset to the controller data inside file
+			uint firstFrameOffset = r.ReadUInt32();
+			/*
+			 After the header comes "metadata", which is UTF16-coded movie title string (author info). The metadata begins
+			 from position 32 (0x20) and ends at <savestate_offset - length_of_extra_rom_info_in_bytes>.
+			*/
+			string metadata = Encoding.Unicode.GetString(r.ReadBytes((int)(savestateOffset - 0x20)));
+			r.BaseStream.Position = firstFrameOffset;
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
 				//TODO: FF FF for all controllers = Reset
 				//string frame = "|0|";
-				for (int controller = 1; controller <= numControllers; controller++)
+				for (int controller = 1; controller <= controllers; controller++)
 				{
 					ushort fd = r.ReadUInt16();
 				}
 			}
-			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.43");
-			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
+			r.Close();
 			return m;
 		}
 
 		// SMV 1.51 file format: http://code.google.com/p/snes9x-rr/wiki/SMV151
-		private static Movie ImportSMV151(BinaryReader r, string path)
+		private static Movie ImportSMV151(BinaryReader r, string path, out string errorMsg, out string warningMsg)
 		{
+			errorMsg = "";
+			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.51");
 			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
@@ -1616,8 +1658,10 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		private static Movie ImportSMV152(BinaryReader r, string path)
+		private static Movie ImportSMV152(BinaryReader r, string path, out string errorMsg, out string warningMsg)
 		{
+			errorMsg = "";
+			warningMsg = "";
 			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			uint GUID = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.52");
@@ -1657,7 +1701,7 @@ namespace BizHawk.MultiClient
 			 recording time in Unix epoch format
 			*/
 			uint uid = r.ReadUInt32();
-			m.Header.SetHeaderLine(MovieHeader.GUID, String.Format("{0:x8}", uid) + "-0000-0000-0000-000000000000");
+			m.Header.SetHeaderLine(MovieHeader.GUID, String.Format("{0:X8}", uid) + "-0000-0000-0000-000000000000");
 			// 00C 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
