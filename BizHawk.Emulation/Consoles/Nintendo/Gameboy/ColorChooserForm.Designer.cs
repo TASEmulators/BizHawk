@@ -43,22 +43,12 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-			this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-			this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
 			this.label7 = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
-			this.panel13 = new System.Windows.Forms.Panel();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
 			this.button5 = new System.Windows.Forms.Button();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// panel1
@@ -68,7 +58,7 @@
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(40, 32);
 			this.panel1.TabIndex = 0;
-			this.panel1.Click += new System.EventHandler(this.panel12_Click);
+			this.panel1.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel2
 			// 
@@ -77,7 +67,7 @@
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(40, 32);
 			this.panel2.TabIndex = 1;
-			this.panel2.Click += new System.EventHandler(this.panel12_Click);
+			this.panel2.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel3
 			// 
@@ -86,7 +76,7 @@
 			this.panel3.Name = "panel3";
 			this.panel3.Size = new System.Drawing.Size(40, 32);
 			this.panel3.TabIndex = 2;
-			this.panel3.Click += new System.EventHandler(this.panel12_Click);
+			this.panel3.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel4
 			// 
@@ -95,7 +85,7 @@
 			this.panel4.Name = "panel4";
 			this.panel4.Size = new System.Drawing.Size(40, 32);
 			this.panel4.TabIndex = 3;
-			this.panel4.Click += new System.EventHandler(this.panel12_Click);
+			this.panel4.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel5
 			// 
@@ -104,7 +94,7 @@
 			this.panel5.Name = "panel5";
 			this.panel5.Size = new System.Drawing.Size(40, 32);
 			this.panel5.TabIndex = 4;
-			this.panel5.Click += new System.EventHandler(this.panel12_Click);
+			this.panel5.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel6
 			// 
@@ -113,7 +103,7 @@
 			this.panel6.Name = "panel6";
 			this.panel6.Size = new System.Drawing.Size(40, 32);
 			this.panel6.TabIndex = 5;
-			this.panel6.Click += new System.EventHandler(this.panel12_Click);
+			this.panel6.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel7
 			// 
@@ -122,7 +112,7 @@
 			this.panel7.Name = "panel7";
 			this.panel7.Size = new System.Drawing.Size(40, 32);
 			this.panel7.TabIndex = 6;
-			this.panel7.Click += new System.EventHandler(this.panel12_Click);
+			this.panel7.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel8
 			// 
@@ -131,7 +121,7 @@
 			this.panel8.Name = "panel8";
 			this.panel8.Size = new System.Drawing.Size(40, 32);
 			this.panel8.TabIndex = 7;
-			this.panel8.Click += new System.EventHandler(this.panel12_Click);
+			this.panel8.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel9
 			// 
@@ -140,7 +130,7 @@
 			this.panel9.Name = "panel9";
 			this.panel9.Size = new System.Drawing.Size(40, 32);
 			this.panel9.TabIndex = 8;
-			this.panel9.Click += new System.EventHandler(this.panel12_Click);
+			this.panel9.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel10
 			// 
@@ -149,7 +139,7 @@
 			this.panel10.Name = "panel10";
 			this.panel10.Size = new System.Drawing.Size(40, 32);
 			this.panel10.TabIndex = 9;
-			this.panel10.Click += new System.EventHandler(this.panel12_Click);
+			this.panel10.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel11
 			// 
@@ -158,7 +148,7 @@
 			this.panel11.Name = "panel11";
 			this.panel11.Size = new System.Drawing.Size(40, 32);
 			this.panel11.TabIndex = 10;
-			this.panel11.Click += new System.EventHandler(this.panel12_Click);
+			this.panel11.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// panel12
 			// 
@@ -167,7 +157,7 @@
 			this.panel12.Name = "panel12";
 			this.panel12.Size = new System.Drawing.Size(40, 32);
 			this.panel12.TabIndex = 11;
-			this.panel12.Click += new System.EventHandler(this.panel12_Click);
+			this.panel12.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
 			// 
 			// label1
 			// 
@@ -195,72 +185,6 @@
 			this.label3.Size = new System.Drawing.Size(27, 13);
 			this.label3.TabIndex = 14;
 			this.label3.Text = "SP2";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(21, 150);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(15, 13);
-			this.label4.TabIndex = 15;
-			this.label4.Text = "R";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(21, 176);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(15, 13);
-			this.label5.TabIndex = 16;
-			this.label5.Text = "G";
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(22, 202);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(14, 13);
-			this.label6.TabIndex = 17;
-			this.label6.Text = "B";
-			// 
-			// numericUpDown1
-			// 
-			this.numericUpDown1.Location = new System.Drawing.Point(42, 148);
-			this.numericUpDown1.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numericUpDown1.Name = "numericUpDown1";
-			this.numericUpDown1.Size = new System.Drawing.Size(120, 20);
-			this.numericUpDown1.TabIndex = 18;
-			this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
-			// 
-			// numericUpDown2
-			// 
-			this.numericUpDown2.Location = new System.Drawing.Point(42, 174);
-			this.numericUpDown2.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numericUpDown2.Name = "numericUpDown2";
-			this.numericUpDown2.Size = new System.Drawing.Size(120, 20);
-			this.numericUpDown2.TabIndex = 19;
-			this.numericUpDown2.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
-			// 
-			// numericUpDown3
-			// 
-			this.numericUpDown3.Location = new System.Drawing.Point(42, 200);
-			this.numericUpDown3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numericUpDown3.Name = "numericUpDown3";
-			this.numericUpDown3.Size = new System.Drawing.Size(120, 20);
-			this.numericUpDown3.TabIndex = 20;
-			this.numericUpDown3.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
 			// 
 			// label7
 			// 
@@ -290,13 +214,6 @@
 			this.button2.TabIndex = 23;
 			this.button2.Text = "Cancel";
 			this.button2.UseVisualStyleBackColor = true;
-			// 
-			// panel13
-			// 
-			this.panel13.Location = new System.Drawing.Point(168, 150);
-			this.panel13.Name = "panel13";
-			this.panel13.Size = new System.Drawing.Size(52, 70);
-			this.panel13.TabIndex = 24;
 			// 
 			// button3
 			// 
@@ -336,16 +253,9 @@
 			this.Controls.Add(this.button5);
 			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);
-			this.Controls.Add(this.panel13);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.label7);
-			this.Controls.Add(this.numericUpDown3);
-			this.Controls.Add(this.numericUpDown2);
-			this.Controls.Add(this.numericUpDown1);
-			this.Controls.Add(this.label6);
-			this.Controls.Add(this.label5);
-			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
@@ -363,9 +273,6 @@
 			this.Controls.Add(this.panel1);
 			this.Name = "ColorChooserForm";
 			this.Text = "ColorChooserForm";
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -388,16 +295,9 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.NumericUpDown numericUpDown1;
-		private System.Windows.Forms.NumericUpDown numericUpDown2;
-		private System.Windows.Forms.NumericUpDown numericUpDown3;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.Panel panel13;
 		private System.Windows.Forms.Button button3;
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Button button5;
