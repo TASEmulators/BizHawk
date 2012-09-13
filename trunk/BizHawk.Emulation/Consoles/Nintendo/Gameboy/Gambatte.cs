@@ -329,7 +329,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		}
 
 
-		void CreateMemoryDomain(LibGambatte.MemoryAreas which)
+		void CreateMemoryDomain(LibGambatte.MemoryAreas which, string name)
 		{
 			IntPtr data = IntPtr.Zero;
 			int length = 0;
@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			MemoryRefreshers.Add(refresher);
 
-			MemoryDomains.Add(new MemoryDomain(which.ToString(), length, Endian.Little, refresher.Peek, refresher.Poke));
+			MemoryDomains.Add(new MemoryDomain(name, length, Endian.Little, refresher.Peek, refresher.Poke));
 		}
 
 		void InitMemoryDomains()
@@ -354,16 +354,16 @@ namespace BizHawk.Emulation.Consoles.GB
 			MemoryDomains = new List<MemoryDomain>();
 			MemoryRefreshers = new List<MemoryRefresher>();
 
-			CreateMemoryDomain(LibGambatte.MemoryAreas.wram);
-			CreateMemoryDomain(LibGambatte.MemoryAreas.rom);
-			CreateMemoryDomain(LibGambatte.MemoryAreas.vram);
-			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram);
-			CreateMemoryDomain(LibGambatte.MemoryAreas.oam);
-			CreateMemoryDomain(LibGambatte.MemoryAreas.hram);
+			CreateMemoryDomain(LibGambatte.MemoryAreas.wram, "WRAM");
+			CreateMemoryDomain(LibGambatte.MemoryAreas.rom, "ROM");
+			CreateMemoryDomain(LibGambatte.MemoryAreas.vram, "VRAM");
+			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram, "Cart RAM");
+			CreateMemoryDomain(LibGambatte.MemoryAreas.oam, "OAM");
+			CreateMemoryDomain(LibGambatte.MemoryAreas.hram, "HRAM");
 
 			// also add a special memory domain for the system bus, where calls get sent directly to the core each time
 
-			MemoryDomains.Add(new MemoryDomain("sysbus", 65536, Endian.Little,
+			MemoryDomains.Add(new MemoryDomain("System Bus", 65536, Endian.Little,
 				delegate(int addr)
 				{
 					return LibGambatte.gambatte_cpuread(GambatteState, (ushort)addr);
