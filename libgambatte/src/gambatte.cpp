@@ -149,6 +149,19 @@ bool GB::getMemoryArea(int which, unsigned char **data, int *length) {
 		return false;
 }
 
+unsigned char GB::ExternalRead(unsigned short addr) {
+	if (p_->cpu.loaded())
+		return p_->cpu.ExternalRead(addr);
+	else
+		return 0;
+}
+
+void GB::ExternalWrite(unsigned short addr, unsigned char val) {
+	if (p_->cpu.loaded())
+		p_->cpu.ExternalWrite(addr, val);
+}
+
+
 void GB::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) {
 	p_->cpu.setDmgPaletteColor(palNum, colorNum, rgb32);
 }

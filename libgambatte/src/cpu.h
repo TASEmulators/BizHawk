@@ -95,6 +95,10 @@ public:
 	
 	void setGameGenie(const std::string &codes) { memory.setGameGenie(codes); }
 	void setGameShark(const std::string &codes) { memory.setGameShark(codes); }
+
+	unsigned char ExternalRead(unsigned short addr) { return memory.read(addr, cycleCounter_); }
+	void ExternalWrite(unsigned short addr, unsigned char val) { memory.write(addr, val, cycleCounter_); }
+
 };
 
 }
