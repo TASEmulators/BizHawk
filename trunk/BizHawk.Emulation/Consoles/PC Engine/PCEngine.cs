@@ -209,14 +209,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			//    it in the least intrusive and most honest way we can.
 
 			if (game["HBlankPeriod"])
-				VDC1.HBlankCycles = int.Parse(game.OptionValue("HBlankPeriod"));
+				VDC1.HBlankCycles = game.GetIntValue("HBlankPeriod");
 
 			// This is also a hack. Proper multi-res/TV emulation will be a native-code core feature.
 
 			if (game["MultiResHack"])
-			{
-				VDC1.MultiResHack = int.Parse(game.OptionValue("MultiResHack"));
-			}
+				VDC1.MultiResHack = game.GetIntValue("MultiResHack");
 
 			Cpu.ResetPC();
 			SetupMemoryDomains();

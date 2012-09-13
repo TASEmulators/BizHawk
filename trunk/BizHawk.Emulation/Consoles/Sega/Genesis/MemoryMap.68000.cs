@@ -8,8 +8,15 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             address &= 0x00FFFFFF;
 
-            if (address < 0x400000)
+            if (address < 0x200000)
                 return (sbyte) RomData[address];
+
+            if (address < 0x400000)
+            {
+                if (SaveRamEnabled && address >= SaveRamStartOffset && address < SaveRamEndOffset)
+                    return (sbyte) SaveRAM[address - SaveRamStartOffset];
+                return (sbyte)RomData[address];
+            }
 
             if (address >= 0xE00000)
                 return (sbyte) Ram[address & 0xFFFF];
@@ -141,6 +148,13 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address >= 0xC00011 && address <= 0xC00017 && (address & 1) != 0)
             {
                 PSG.WritePsgData((byte) value, SoundCPU.TotalExecutedCycles);
+                return;
+            }
+
+            if (SaveRamEnabled && address >= SaveRamStartOffset && address < SaveRamEndOffset)
+            {
+                SaveRAM[address - SaveRamStartOffset] = (byte) value;
+                SaveRamModified = true;
                 return;
             }
 

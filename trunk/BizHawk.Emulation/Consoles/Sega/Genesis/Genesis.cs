@@ -130,6 +130,13 @@ namespace BizHawk.Emulation.Consoles.Sega
             MainCPU.Reset();
             VDP.GetPC = () => MainCPU.PC;
 #endif
+            InitializeCartHardware(game);
+        }
+
+        void InitializeCartHardware(GameInfo game)
+        {
+            LogCartInfo();
+            InitializeSaveRam(game);
         }
 
 		public void FrameAdvance(bool render)
@@ -260,22 +267,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public bool DeterministicEmulation { get; set; }
 		public string SystemId { get { return "GEN"; } }
 
-		public byte[] ReadSaveRam
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				return false; // TODO implement
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
+		
 
         public void SaveStateText(TextWriter writer)
         {

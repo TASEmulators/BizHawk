@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 
 namespace BizHawk
 {
@@ -86,6 +87,16 @@ namespace BizHawk
 				return Options[option];
 			return null;
 		}
+
+        public int GetIntValue(string option)
+        {
+            return int.Parse(Options[option]);
+        }
+
+        public int GetHexValue(string option)
+        {
+            return int.Parse(Options[option], NumberStyles.HexNumber);
+        }
 
 		public ICollection<string> GetOptions()
 		{
