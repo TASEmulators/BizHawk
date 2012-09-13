@@ -472,21 +472,23 @@ namespace BizHawk.MultiClient
 			LuaText.ZoomFactor = Global.Config.LuaWriterZoom;
 			ZoomLabel.Text = string.Format("Zoom: {0}%", LuaText.ZoomFactor * 100);
 			GenerateLibraryRegex();
+			
 			if (!String.IsNullOrWhiteSpace(CurrentFile))
 			{
 				LoadCurrentFile();
+				NoChanges();
 			}
 			else if (!Global.Config.LuaWriterStartEmpty)
 			{
 				LuaText.Text = "while true do\n\t\n\temu.frameadvance()\nend";
 				LuaText.SelectionStart = 15;
+				Changes();
 			}
 			else
 				startWithEmptyScriptToolStripMenuItem.Checked = true;
 
 			UpdateLineNumber();
 			ProcessText();
-			NoChanges();
 		}
 
 		private void NoChanges()
@@ -526,27 +528,30 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!String.IsNullOrWhiteSpace(CurrentFile))
-			{
-				SaveScript();
-			}
-			else if (changes)
-			{
-				SaveScriptAs();
-			}
+			SaveScript();
 			MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
 		}
 
 		private void SaveScript()
 		{
-			var file = new FileInfo(CurrentFile);
-
-			using (StreamWriter sw = new StreamWriter(CurrentFile))
+			if (String.IsNullOrWhiteSpace(CurrentFile))
 			{
-				sw.Write(LuaText.Text);
+				SaveScriptAs();
 			}
-
-			NoChanges();
+			else
+			{
+				var file = new FileInfo(CurrentFile);
+				if (!file.Exists)
+				{
+					SaveScriptAs();
+				}
+				using (StreamWriter sw = new StreamWriter(CurrentFile))
+				{
+					sw.Write(LuaText.Text);
+				}
+				MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
+				NoChanges();
+			}
 		}
 
 		private void SaveScriptAs()
@@ -564,7 +569,7 @@ namespace BizHawk.MultiClient
 		public static FileInfo GetSaveFileFromUser(string currentFile)
 		{
 			var sfd = new SaveFileDialog();
-			if (currentFile.Length > 0)
+			if (!String.IsNullOrWhiteSpace(currentFile))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
