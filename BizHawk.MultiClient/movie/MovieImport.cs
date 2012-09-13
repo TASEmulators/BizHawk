@@ -171,7 +171,7 @@ namespace BizHawk.MultiClient
 			if (Path.GetExtension(path).ToUpper() == ".LSMV" && sections.Length != 0)
 			{
 				string flags = sections[0];
-				char[] off = { '.', ' ', '\t', '\n' };
+				char[] off = { '.', ' ', '\t', '\n', '\r' };
 				if (flags.Length == 0 || off.Contains(flags[0]))
 				{
 					errorMsg = "Subframes are not supported.";
@@ -986,6 +986,8 @@ namespace BizHawk.MultiClient
 						string line;
 						while ((line = reader.ReadLine()) != null)
 						{
+							if (line == "")
+								continue;
 							m = ImportTextFrame(line, lineNum, m, path, ref warningMsg, ref errorMsg);
 							if (errorMsg != "")
 							{
