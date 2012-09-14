@@ -160,9 +160,12 @@ namespace BizHawk.MultiClient
 					{
 						y = s.IndexOf('\t') + 1;
 						s = s.Substring(y, s.Length - y);   //Domain
+						temp = s.Substring(0, s.IndexOf('\t'));
+						w.Domain = Global.Emulator.MemoryDomains[GetDomainPos(temp)];
 					}
 
-					w.Notes = s.Substring(2, s.Length - 2);   //User notes
+					y = s.IndexOf('\t') + 1;
+					w.Notes = s.Substring(y, s.Length - y);   //User notes
 
 					watchList.Add(w);
 				}
