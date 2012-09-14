@@ -60,11 +60,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			{
 				case "PCE":
 					systemid = "PCE";
-					Type = NecSystemType.TurboGrafx; 
+					Type = NecSystemType.TurboGrafx;
 					break;
 				case "SGX":
 					systemid = "SGX";
-					Type = NecSystemType.SuperGrafx; 
+					Type = NecSystemType.SuperGrafx;
 					break;
 			}
 			Init(game, rom);
@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
 		public void FrameAdvance(bool render)
 		{
-            lagged = true;
+			lagged = true;
 			Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
@@ -275,9 +275,23 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		public string Region { get; set; }
 		public bool DeterministicEmulation { get; set; }
 
-		public byte[] ReadSaveRam() { return (byte[])BRAM.Clone(); }
-		public void StoreSaveRam(byte[] data) { Array.Copy(data, BRAM, data.Length); }
-		public void ClearSaveRam() { BRAM = new byte[BRAM.Length]; }
+		public byte[] ReadSaveRam()
+		{
+			if (BRAM != null)
+				return (byte[])BRAM.Clone();
+			else
+				return null;
+		}
+		public void StoreSaveRam(byte[] data)
+		{
+			if (BRAM != null)
+				Array.Copy(data, BRAM, data.Length);
+		}
+		public void ClearSaveRam()
+		{
+			if (BRAM != null)
+				BRAM = new byte[BRAM.Length];
+		}
 		public bool SaveRamModified { get; set; }
 
 		public void SaveStateText(TextWriter writer)
@@ -290,11 +304,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 				writer.Write("PopulousRAM ");
 				PopulousRAM.SaveAsHex(writer);
 			}
-            if (BRAM != null)
-            {
-                writer.Write("BRAM ");
-                BRAM.SaveAsHex(writer);
-            }
+			if (BRAM != null)
+			{
+				writer.Write("BRAM ");
+				BRAM.SaveAsHex(writer);
+			}
 			writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("Lag {0}", _lagcount);
 			writer.WriteLine("IsLag {0}", islag);
@@ -302,7 +316,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 				writer.WriteLine("SF2MapperLatch " + SF2MapperLatch);
 			writer.WriteLine("IOBuffer {0:X2}", IOBuffer);
 			writer.Write("CdIoPorts "); CdIoPorts.SaveAsHex(writer);
-            writer.WriteLine("BramLocked {0}", BramLocked);
+			writer.WriteLine("BramLocked {0}", BramLocked);
 			writer.WriteLine();
 
 			if (SuperGrafx)
@@ -401,7 +415,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			{
 				writer.Write(Ram);
 				writer.Write(CdIoPorts);
-                writer.Write(BramLocked);
+				writer.Write(BramLocked);
 				if (BRAM != null)
 					writer.Write(BRAM);
 				if (PopulousRAM != null)
@@ -447,7 +461,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			{
 				Ram = reader.ReadBytes(0x2000);
 				CdIoPorts = reader.ReadBytes(16); RefreshIRQ2();
-                BramLocked = reader.ReadBoolean();
+				BramLocked = reader.ReadBoolean();
 				if (BRAM != null)
 					BRAM = reader.ReadBytes(0x800);
 				if (PopulousRAM != null)
@@ -490,7 +504,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		public byte[] SaveStateBinary()
 		{
 			int buflen = 75908;
-            if (SuperGrafx) buflen += 90700;
+			if (SuperGrafx) buflen += 90700;
 			if (BramEnabled) buflen += 2048;
 			if (PopulousRAM != null) buflen += 0x8000;
 			if (SuperRam != null) buflen += 0x30000;
