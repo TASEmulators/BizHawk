@@ -23,10 +23,9 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        public byte[] ReadSaveRam // TODO if you're going to rename this to ReadSaveRam, refactor it to be a method, not a property.
-		{
-            get { return SaveRAM; }
-		}
+		public byte[] ReadSaveRam() { return (byte[])SaveRAM.Clone(); }
+		public void StoreSaveRam(byte[] data) { Array.Copy(data, SaveRAM, data.Length); }
+		public void ClearSaveRam() { SaveRAM = new byte[SaveRAM.Length]; }
 
 		public bool SaveRamModified { get; set; }
     }

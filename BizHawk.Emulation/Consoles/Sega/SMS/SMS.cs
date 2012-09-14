@@ -31,7 +31,9 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public byte[] SaveRAM = new byte[BankSize * 2];
 		public byte SaveRamBank;
 
-		public byte[] ReadSaveRam { get { return SaveRAM; } }
+		public byte[] ReadSaveRam() { return (byte[])SaveRAM.Clone(); }
+		public void StoreSaveRam(byte[] data) { Array.Copy(data, SaveRAM, data.Length); }
+		public void ClearSaveRam() { SaveRAM = new byte[SaveRAM.Length]; }
 		public bool SaveRamModified { get; set; }
 
 		// Machine resources

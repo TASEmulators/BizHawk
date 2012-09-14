@@ -275,11 +275,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		public string Region { get; set; }
 		public bool DeterministicEmulation { get; set; }
 
-		public byte[] ReadSaveRam
-		{
-			get { return BRAM; }
-		}
-
+		public byte[] ReadSaveRam() { return (byte[])BRAM.Clone(); }
+		public void StoreSaveRam(byte[] data) { Array.Copy(data, BRAM, data.Length); }
+		public void ClearSaveRam() { BRAM = new byte[BRAM.Length]; }
 		public bool SaveRamModified { get; set; }
 
 		public void SaveStateText(TextWriter writer)

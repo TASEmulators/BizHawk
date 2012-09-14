@@ -414,7 +414,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
-		public byte[] ReadSaveRam { get { return snes_get_memory_data_read(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM); } }
+		public byte[] ReadSaveRam()
+		{ 
+			return snes_get_memory_data_read(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM);
+		}
+
 		public static byte[] snes_get_memory_data_read(LibsnesDll.SNES_MEMORY id)
 		{
 			var size = (int)LibsnesDll.snes_get_memory_size(id);
@@ -431,6 +435,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if (size == 0) return;
 			var emudata = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM);
 			Marshal.Copy(data, 0, emudata, size);
+		}
+
+		public void ClearSaveRam()
+		{
+			byte[] cleardata = new byte[(int)LibsnesDll.snes_get_memory_size(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM)];
+			StoreSaveRam(cleardata);
 		}
 
 		public void ResetFrameCounter() { timeFrameCounter = 0; }

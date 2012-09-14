@@ -21,11 +21,21 @@ namespace BizHawk
 		bool DeterministicEmulation { get; set; }
 
 		/// <summary>
-		/// Don't edit this data, it may be useless as it may be a copy or some compiled data.
-		/// use StoreSaveRam if you want to store sram into the core.
-		/// Well, this rule is being violated. This comment is just a reminder that this is a bad architecture
+		/// return a copy of the saveram.  editing it won't do you any good unless you later call StoreSaveRam()
 		/// </summary>
-		byte[] ReadSaveRam { get; }
+		byte[] ReadSaveRam();
+
+		/// <summary>
+		/// store new saveram to the emu core.  the data should be the same size as the return from ReadSaveRam()
+		/// </summary>
+		void StoreSaveRam(byte[] data);
+
+		/// <summary>
+		/// reset saveram to a standard initial state
+		/// </summary>
+		void ClearSaveRam();
+
+
 		bool SaveRamModified { get; set; }
 
 		void ResetFrameCounter();
