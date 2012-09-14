@@ -3436,8 +3436,7 @@ namespace BizHawk.MultiClient
 				if (Global.Emulator is LibsnesCore)
 					((LibsnesCore)Global.Emulator).StoreSaveRam(sram);
 				else if (Global.Emulator is Gameboy)
-					// todo: i don't like this at all.  there's no guarantee that a 0-filled sram is even an accurate clear?
-					throw new Exception("Please fix me!");
+					((Gameboy)Global.Emulator).ClearSaveRam();
 				else
 					Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
 			}
