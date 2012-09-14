@@ -397,14 +397,13 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		// Remove the NULL characters from a string.
-		private static string RemoveNull(string original)
+		// Ends the string where a NULL character is found.
+		private static string NullTerminated(string str)
 		{
-			string translated = "";
-			for (int character = 0; character < original.Length; character++)
-				if (original[character] != '\0')
-					translated += original[character];
-			return translated;
+			int pos = str.IndexOf('\0');
+			if (pos != -1)
+				str = str.Substring(0, pos);
+			return str;
 		}
 
 		// FCM file format: http://code.google.com/p/fceu/wiki/FCM
@@ -722,11 +721,11 @@ namespace BizHawk.MultiClient
 			// 00E 2-byte little-endian unsigned int: unknown, set to 0000
 			r.ReadInt16();
 			// 010 64-byte zero-terminated emulator identifier string
-			string emuVersion = RemoveNull(r.ReadStringFixedAscii(64));
+			string emuVersion = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header.Comments.Add(EMULATIONORIGIN + " Famtasia version " + emuVersion);
 			m.Header.Comments.Add(MOVIEORIGIN + " .FMV");
 			// 050 64-byte zero-terminated movie title string
-			string description = RemoveNull(r.ReadStringFixedAscii(64));
+			string description = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header.Comments.Add(COMMENT + " " + description);
 			if (!controller1 && !controller2 && !FDS)
 			{
@@ -843,7 +842,7 @@ namespace BizHawk.MultiClient
 			// Unknown.
 			r.ReadByte();
 			// 018 40-byte zero-terminated ASCII movie name string
-			string description = RemoveNull(r.ReadStringFixedAscii(40));
+			string description = NullTerminated(r.ReadStringFixedAscii(40));
 			m.Header.Comments.Add(COMMENT + " " + description);
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
@@ -1091,13 +1090,13 @@ namespace BizHawk.MultiClient
 			r.ReadBytes(16);
 			m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
 			// 030 64-byte    Filename of the ROM used (with extension)
-			string gameName = RemoveNull(r.ReadStringFixedAscii(64));
+			string gameName = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 070 uint32     Re-record Count
 			uint rerecordCount = r.ReadUInt32();
 			m.Rerecords = (int)rerecordCount;
 			// 074 5-byte     Console indicator (pce, ngp, pcfx, wswan)
-			string platform = RemoveNull(r.ReadStringFixedAscii(5));
+			string platform = NullTerminated(r.ReadStringFixedAscii(5));
 			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>()
 			{
 				{
@@ -1129,7 +1128,7 @@ namespace BizHawk.MultiClient
 			string name = (string)platforms[platform]["name"];
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, name);
 			// 079 32-byte    Author name
-			string author = RemoveNull(r.ReadStringFixedAscii(32));
+			string author = NullTerminated(r.ReadStringFixedAscii(32));
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// 099 103-byte   Padding 0s
 			r.ReadBytes(103);
@@ -1227,7 +1226,7 @@ namespace BizHawk.MultiClient
 			// 001c: 4-byte little endian unsigned int: size of input packet
 			r.ReadUInt32();
 			// 0020-005f: string: author info (UTF-8)
-			string author = RemoveNull(r.ReadStringFixedAscii(64));
+			string author = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// 0060: 4-byte little endian flags
 			byte flags = r.ReadByte();
@@ -1253,7 +1252,7 @@ namespace BizHawk.MultiClient
 			// bits 4-31: unused
 			r.ReadBytes(3);
 			// 0064-00e3: string: rom name (ASCII)
-			string gameName = RemoveNull(r.ReadStringFixedAscii(128));
+			string gameName = NullTerminated(r.ReadStringFixedAscii(128));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 00e4-00f3: binary: rom MD5 digest
 			byte[] MD5 = r.ReadBytes(16);
@@ -1467,7 +1466,7 @@ namespace BizHawk.MultiClient
 			 008 4-byte little-endian unsigned int: length of movie description
 			 00C (variable) null-terminated UTF-8 text, movie description (currently not implemented)
 			*/
-			string movieDescription = RemoveNull(r.ReadStringFixedAscii((int)r.ReadUInt32()));
+			string movieDescription = NullTerminated(r.ReadStringFixedAscii((int)r.ReadUInt32()));
 			m.Header.Comments.Add(COMMENT + " " + movieDescription);
 			// ... 4-byte little-endian unsigned int: length of controller data in bytes
 			uint length = r.ReadUInt32();
@@ -1550,6 +1549,7 @@ namespace BizHawk.MultiClient
 			}
 			r.Close();
 			fs.Close();
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "SNES");
 			return m;
 		}
 
@@ -1573,7 +1573,7 @@ namespace BizHawk.MultiClient
 			uint frameCount = r.ReadUInt32();
 			// 014 1-byte flags "controller mask"
 			byte flags = r.ReadByte();
-			int controllers = 0;
+			int players = 0;
 			/*
 			 * bit 0: controller 1 in use
 			 * bit 1: controller 2 in use
@@ -1584,7 +1584,7 @@ namespace BizHawk.MultiClient
 			*/
 			for (int controller = 1; controller <= 5; controller++)
 				if (((flags >> (controller - 1)) & 0x1) != 0)
-					controllers++;
+					players++;
 			// 015 1-byte flags "movie options"
 			flags = r.ReadByte();
 			/*
@@ -1637,7 +1637,7 @@ namespace BizHawk.MultiClient
 			 from position 32 (0x20) and ends at <savestate_offset - length_of_extra_rom_info_in_bytes>.
 			*/
 			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - 0x20));
-			string author = Encoding.Unicode.GetString(metadata).Trim();
+			string author = NullTerminated(Encoding.Unicode.GetString(metadata).Trim());
 			if (author != "")
 				m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			if (extraRomInfo == 30)
@@ -1646,18 +1646,61 @@ namespace BizHawk.MultiClient
 				r.ReadBytes(3);
 				int crc32 = r.ReadInt32(); // TODO: Validate.
 				// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
-				string gameName = RemoveNull(Encoding.UTF8.GetString(r.ReadBytes(23)));
+				string gameName = NullTerminated(Encoding.UTF8.GetString(r.ReadBytes(23)));
 				m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			}
 			r.BaseStream.Position = firstFrameOffset;
-			for (int frame = 1; frame <= frameCount; frame++)
+			SimpleController controllers = new SimpleController();
+			controllers.Type = new ControllerDefinition();
+			controllers.Type.Name = "SNES Controller";
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			/*
+			 01 00 (reserved)
+			 02 00 (reserved)
+			 04 00 (reserved)
+			 08 00 (reserved)
+			 10 00 R
+			 20 00 L
+			 40 00 X
+			 80 00 A
+			 00 01 Right
+			 00 02 Left
+			 00 04 Down
+			 00 08 Up
+			 00 10 Start
+			 00 20 Select
+			 00 40 Y
+			 00 80 B
+			*/
+			string[] buttons = new string[12] {
+				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
+			};
+			for (int frame = 0; frame <= frameCount; frame++)
 			{
-				//TODO: FF FF for all controllers = Reset
-				//string frame = "|0|";
-				for (int controller = 1; controller <= controllers; controller++)
+				controllers["Reset"] = true;
+				for (int player = 1; player <= players; player++)
 				{
-					ushort fd = r.ReadUInt16();
+					/*
+					 Each frame consists of 2 bytes per controller. So if there are 3 controllers, a frame is 6 bytes and
+					 if there is only 1 controller, a frame is 2 bytes.
+					*/
+					byte controllerState1 = r.ReadByte();
+					byte controllerState2 = r.ReadByte();
+					/*
+					 In the reset-recording patch, a frame that contains the value FF FF for every controller denotes a
+					 reset. The reset is done through the S9xSoftReset routine.
+					*/
+					if (controllerState1 != 0xFF || controllerState2 != 0xFF)
+						controllers["Reset"] = false;
+					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
+					for (int button = 0; button < buttons.Length; button++)
+						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
 				}
+				// The controller data contains <number_of_frames + 1> frames.
+				if (frame == 0)
+					continue;
+				mg.SetSource(controllers);
+				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
 			r.Close();
 			return m;
@@ -1838,7 +1881,7 @@ namespace BizHawk.MultiClient
 			 024 12-byte character array: the internal game title of the ROM used while recording, not necessarily
 			 null-terminated (ASCII?)
 			*/
-			string gameName = RemoveNull(r.ReadStringFixedAscii(12));
+			string gameName = NullTerminated(r.ReadStringFixedAscii(12));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 030 1-byte unsigned char: minor version/revision number of current VBM version, the latest is "1"
 			byte minorVersion = r.ReadByte();
@@ -1856,10 +1899,10 @@ namespace BizHawk.MultiClient
 			// 03C 4-byte little-endian unsigned int: offset to the controller data inside file
 			uint firstFrameOffset = r.ReadUInt32();
 			// After the header is 192 bytes of text. The first 64 of these 192 bytes are for the author's name (or names).
-			string author = RemoveNull(r.ReadStringFixedAscii(64));
+			string author = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// The following 128 bytes are for a description of the movie. Both parts must be null-terminated.
-			string movieDescription = RemoveNull(r.ReadStringFixedAscii(128));
+			string movieDescription = NullTerminated(r.ReadStringFixedAscii(128));
 			m.Header.Comments.Add(COMMENT + " " + movieDescription);
 			/*
 			 TODO: implement start data. There are no specifics on the googlecode page as to how long the SRAM or savestate
@@ -1870,6 +1913,7 @@ namespace BizHawk.MultiClient
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "Gameboy Controller";
+			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 00 A
 			 * 02 00 B
@@ -1918,6 +1962,8 @@ namespace BizHawk.MultiClient
 				}
 				// TODO: Handle the additional controllers.
 				r.ReadBytes((players - 1) * 2);
+				mg.SetSource(controllers);
+				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
 			r.Close();
 			fs.Close();

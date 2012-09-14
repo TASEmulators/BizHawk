@@ -258,11 +258,11 @@ namespace BizHawk.MultiClient
 
 		public string GetControllersAsMnemonic()
 		{
-			if (Global.Emulator.SystemId == "NULL" || ControlType == "Null Controller")
+			if (ControlType == "Null Controller")
 			{
 				return "|.|";
 			}
-			else if (Global.Emulator.SystemId == "SNES")
+			else if (ControlType == "SNES Controller")
 			{
 				return GetSNESControllersAsMnemonic();
 			}
@@ -502,11 +502,11 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void SetControllersAsMnemonic(string mnemonic)
 		{
-			if (Global.Emulator.SystemId == "NULL" || ControlType == "Null Controller")
+			if (ControlType == "Null Controller")
 			{
 				return;
 			}
-			else if (Global.Emulator.SystemId == "SNES")
+			else if (ControlType == "SNES Controller")
 			{
 				SetSNESControllersAsMnemonic(mnemonic);
 			}
