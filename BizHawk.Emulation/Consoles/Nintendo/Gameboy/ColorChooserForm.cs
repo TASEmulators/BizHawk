@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 {
@@ -126,13 +127,66 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 			}
 		}
 
+		/// <summary>
+		/// load gambatte-style .pal file
+		/// </summary>
+		/// <param name="f"></param>
+		/// <returns>null on failure</returns>
+		public static int[] LoadPalFile(TextReader f)
+		{
+			Dictionary<string, int> lines = new Dictionary<string, int>();
+
+			string line;
+			while ((line = f.ReadLine()) != null)
+			{
+				int i = line.IndexOf('=');
+				if (i < 0)
+					continue;
+				try
+				{
+					lines.Add(line.Substring(0, i), int.Parse(line.Substring(i + 1)));
+				}
+				catch (FormatException)
+				{
+				}
+			}
+
+			int[] ret = new int[12];
+			try
+			{
+				ret[0] = lines["Background0"];
+				ret[1] = lines["Background1"];
+				ret[2] = lines["Background2"];
+				ret[3] = lines["Background3"];
+				ret[4] = lines["Sprite%2010"];
+				ret[5] = lines["Sprite%2011"];
+				ret[6] = lines["Sprite%2012"];
+				ret[7] = lines["Sprite%2013"];
+				ret[8] = lines["Sprite%2020"];
+				ret[9] = lines["Sprite%2021"];
+				ret[10] = lines["Sprite%2022"];
+				ret[11] = lines["Sprite%2023"];
+			}
+			catch (KeyNotFoundException)
+			{
+				return null;
+			}
+			return ret;
+		}
+
+		void SetAllColors(int[] colors)
+		{
+			// fix alpha to 255 in created color objects, else problems
+			for (int i = 0; i < this.colors.Length; i++)
+				this.colors[i] = Color.FromArgb(255, Color.FromArgb(colors[i]));
+			RefreshAllBackdrops();
+		}
+
 		public static bool DoColorChooserFormDialog(int[] colors)
 		{
 			using (var dlg = new ColorChooserForm())
 			{
-				for (int i = 0; i < dlg.colors.Length; i++)
-					dlg.colors[i] = Color.FromArgb(255, Color.FromArgb(colors[i]));
-				dlg.RefreshAllBackdrops();
+				dlg.SetAllColors(colors);
 
 				var result = dlg.ShowDialog();
 				if (result != DialogResult.OK)
@@ -146,6 +200,62 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 					return true;
 				}
 			}
+		}
+
+		void LoadColorFile(string filename)
+		{
+			try
+			{
+				using (StreamReader f = new StreamReader(filename))
+				{
+					int[] newcolors = LoadPalFile(f);
+					if (newcolors == null)
+						throw new Exception();
+
+					SetAllColors(newcolors);
+				}
+			}
+			catch
+			{
+				MessageBox.Show(this, "Error loading .pal file!");
+			}
+		}
+
+
+		private void button6_Click(object sender, EventArgs e)
+		{
+			using (var ofd = new OpenFileDialog())
+			{
+				//ofd.InitialDirectory =
+				ofd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
+				ofd.RestoreDirectory = true;
+
+				var result = ofd.ShowDialog(this);
+				if (result != System.Windows.Forms.DialogResult.OK)
+					return;
+
+				LoadColorFile(ofd.FileName);
+			}
+		}
+
+		private void ColorChooserForm_DragDrop(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+				if (files.Length > 1)
+					return;
+				LoadColorFile(files[0]);
+			}
+		}
+
+		private void ColorChooserForm_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+				e.Effect = DragDropEffects.Move;
+			else
+				e.Effect = DragDropEffects.None;
 		}
 	}
 }

@@ -430,6 +430,10 @@ namespace BizHawk.Emulation.Consoles.GB
 			get { return 0; }
 		}
 
+		#endregion
+
+		#region palette
+
 		/// <summary>
 		/// palette colors to display in dmg mode
 		/// </summary>
@@ -463,9 +467,6 @@ namespace BizHawk.Emulation.Consoles.GB
 			for (int i = 0; i < dmgcolors.Length; i++)
 				LibGambatte.gambatte_setdmgpalettecolor(GambatteState, (LibGambatte.PalType)(i / 4), (uint)i % 4, (uint)dmgcolors[i]);
 		}
-
-
-
 
 		#endregion
 
