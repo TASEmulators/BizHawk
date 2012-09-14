@@ -253,8 +253,8 @@ namespace BizHawk.Emulation.Consoles.GB
 		{
 			VsyncNum = 262144,
 			VsyncDen = 4389,
-			RomStatusAnnotation = "Bizwhackin it up",
-			RomStatusDetails = "LEVAR BURTON"
+			RomStatusAnnotation = null, //"Bizwhackin it up",
+			RomStatusDetails = null, //"LEVAR BURTON",
 		};
 
 		public CoreOutputComm CoreOutputComm
