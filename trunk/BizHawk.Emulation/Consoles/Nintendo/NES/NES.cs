@@ -303,14 +303,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public bool DeterministicEmulation { get { return true; } set { } }
 
-		public byte[] ReadSaveRam
+
+
+		public byte[] ReadSaveRam()
 		{
-			get
-			{
-				if (board == null) return null;
-				return board.SaveRam;
-			}
+			if (board == null || board.SaveRam == null)
+				return null;
+			return (byte[])board.SaveRam.Clone();	
 		}
+		public void StoreSaveRam(byte[] data)
+		{
+			if (board == null || board.SaveRam == null)
+				return;
+			Array.Copy(data, board.SaveRam, data.Length);
+		}
+
+		public void ClearSaveRam()
+		{
+			if (board == null || board.SaveRam == null)
+				return;
+			for (int i = 0; i < board.SaveRam.Length; i++)
+				board.SaveRam[i] = 0;
+		}
+
 		public bool SaveRamModified
 		{
 			get { if (board == null) return false; if (board.SaveRam == null) return false; return true; }

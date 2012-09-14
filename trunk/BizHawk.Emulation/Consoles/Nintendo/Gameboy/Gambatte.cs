@@ -137,21 +137,18 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public bool DeterministicEmulation { get; set; }
 
-		public byte[] ReadSaveRam
+		public byte[] ReadSaveRam()
 		{
-			get
-			{
-				int length = LibGambatte.gambatte_savesavedatalength(GambatteState);
+			int length = LibGambatte.gambatte_savesavedatalength(GambatteState);
 
-				if (length > 0)
-				{
-					byte[] ret = new byte[length];
-					LibGambatte.gambatte_savesavedata(GambatteState, ret);
-					return ret;
-				}
-				else
-					return new byte[0];
+			if (length > 0)
+			{
+				byte[] ret = new byte[length];
+				LibGambatte.gambatte_savesavedata(GambatteState, ret);
+				return ret;
 			}
+			else
+				return new byte[0];
 		}
 
 		public void StoreSaveRam(byte[] data)

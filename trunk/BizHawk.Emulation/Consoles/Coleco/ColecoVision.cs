@@ -70,9 +70,12 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		private int _lagcount = 0;
 		private int _frame = 0;
 
-		public byte[] ReadSaveRam { get { return new byte[0]; } }
-		public bool DeterministicEmulation { get; set; }
+		public byte[] ReadSaveRam() { return null; }
+		public void StoreSaveRam(byte[] data) { }
+		public void ClearSaveRam() { }
 		public bool SaveRamModified { get; set; }
+
+		public bool DeterministicEmulation { get; set; }
 		public void SaveStateText(TextWriter writer) { SyncState(Serializer.CreateTextWriter(writer)); }
 		public void LoadStateText(TextReader reader) { SyncState(Serializer.CreateTextReader(reader)); }
 		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }

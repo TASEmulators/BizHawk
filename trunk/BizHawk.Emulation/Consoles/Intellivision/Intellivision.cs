@@ -117,8 +117,10 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public bool DeterministicEmulation { get; set; }
 
-		public byte[] ReadSaveRam { get { return null; } }
 
+		public byte[] ReadSaveRam() { return null; }
+		public void StoreSaveRam(byte[] data) { }
+		public void ClearSaveRam() { }
 		public bool SaveRamModified
 		{
 			get { return false; }

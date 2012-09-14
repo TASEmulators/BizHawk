@@ -478,7 +478,9 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public bool DeterministicEmulation { get { return true; } set { } }
 
-		public byte[] ReadSaveRam { get { return null; } }
+		public byte[] ReadSaveRam() { return null; }
+		public void StoreSaveRam(byte[] data) { }
+		public void ClearSaveRam() { }
 		public bool SaveRamModified
 		{
 			get { return false; }

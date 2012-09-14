@@ -1555,6 +1555,7 @@ namespace BizHawk.MultiClient
 			//zero says: this is sort of sketchy... but this is no time for rearchitecting
 			try
 			{
+				/*
 				var sram = new byte[Global.Emulator.ReadSaveRam.Length];
 				using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
 					reader.Read(sram, 0, Global.Emulator.ReadSaveRam.Length);
@@ -1564,6 +1565,11 @@ namespace BizHawk.MultiClient
 					((Gameboy)Global.Emulator).StoreSaveRam(sram);
 				else
 					Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
+				 */
+				var sram = new byte[Global.Emulator.ReadSaveRam().Length];
+				using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
+					reader.Read(sram, 0, sram.Length);
+				Global.Emulator.StoreSaveRam(sram);
 			}
 			catch { }
 		}
@@ -1590,8 +1596,13 @@ namespace BizHawk.MultiClient
 				f.Directory.Create();
 
 			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-			int len = Util.SaveRamBytesUsed(Global.Emulator.ReadSaveRam);
-			writer.Write(Global.Emulator.ReadSaveRam, 0, len);
+
+			var saveram = Global.Emulator.ReadSaveRam();
+
+			// this assumes that the default state of the core's sram is 0-filled, so don't do
+			// int len = Util.SaveRamBytesUsed(saveram);
+			int len = saveram.Length;
+			writer.Write(saveram, 0, len);
 			writer.Close();
 		}
 
@@ -3432,6 +3443,7 @@ namespace BizHawk.MultiClient
 
 			try
 			{
+				/*
 				var sram = new byte[Global.Emulator.ReadSaveRam.Length];
 				if (Global.Emulator is LibsnesCore)
 					((LibsnesCore)Global.Emulator).StoreSaveRam(sram);
@@ -3439,6 +3451,8 @@ namespace BizHawk.MultiClient
 					((Gameboy)Global.Emulator).ClearSaveRam();
 				else
 					Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
+				 */
+				Global.Emulator.ClearSaveRam();
 			}
 			catch { }
 		}

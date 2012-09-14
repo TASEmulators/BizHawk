@@ -64,9 +64,12 @@ namespace BizHawk
 		private int _lagcount = 0;
 		private int _frame = 0;
 
-		public byte[] ReadSaveRam { get { return new byte[0]; } }
-		public bool DeterministicEmulation { get; set; }
+		public byte[] ReadSaveRam() { return null; }
+		public void StoreSaveRam(byte[] data) { }
+		public void ClearSaveRam() { }
 		public bool SaveRamModified { get; set; }
+
+		public bool DeterministicEmulation { get; set; }
 		public void SaveStateText(TextWriter writer) { SyncState(Serializer.CreateTextWriter(writer)); }
 		public void LoadStateText(TextReader reader) { SyncState(Serializer.CreateTextReader(reader)); }
 		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
@@ -80,7 +83,7 @@ namespace BizHawk
 			bw.Flush();
 			return ms.ToArray();
 		}
-		
+
 		private IList<MemoryDomain> memoryDomains;
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
