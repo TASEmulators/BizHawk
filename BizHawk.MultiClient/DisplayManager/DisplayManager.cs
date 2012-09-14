@@ -505,8 +505,8 @@ namespace BizHawk.MultiClient
 				{
 					float x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
 					float y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
-					g.DrawString(MakeLagCounter(), AlertFont, Color.Black, x + 1, y + 1);
-					g.DrawString(MakeLagCounter(), AlertFont, FixedAlertMessageColor,x, y);
+					g.DrawString(counter, AlertFont, Color.Black, x + 1, y + 1);
+					g.DrawString(counter, AlertFont, FixedAlertMessageColor, x, y);
 				}
 				else
 				{
@@ -524,6 +524,18 @@ namespace BizHawk.MultiClient
 				float y = GetY(g, Global.Config.DispRecy, Global.Config.DispRecanchor, MessageFont, rerec);
 				g.DrawString(rerec, MessageFont, Color.Black, x + 1, y + 1);
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
+			}
+
+			if (Global.ClientControls["Autohold"])
+			{
+				StringBuilder disp = new StringBuilder("Held: ");
+				foreach (string s in Global.StickyXORAdapter.CurrentStickies)
+				{
+					disp.Append(s);
+					disp.Append(' ');
+				}
+
+				g.DrawString(disp.ToString(), MessageFont, Color.White, GetX(g, 0, 3, MessageFont, disp.ToString()), 0);
 			}
 
 			//TODO
