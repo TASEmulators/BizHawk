@@ -543,6 +543,8 @@ namespace BizHawk.MultiClient
 		public string ToggleMenuBinding = "";
 		public string IncreaseWindowSize = "Alt+UpArrow";
 		public string DecreaseWindowSize = "Alt+DownArrow";
+		public string AutoholdBinding = "";
+		public string AutoholdClear = "";
 
 		// NES Sound settings
 		public bool NESEnableSquare1 = true;

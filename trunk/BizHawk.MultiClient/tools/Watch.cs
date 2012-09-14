@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
@@ -418,6 +419,34 @@ namespace BizHawk.MultiClient
 			if (diff >= 0)
 				converted = "+" + converted;
 			return converted;
+		}
+
+		public void TrySetValue(string value)
+		{
+			switch (Signed)
+			{
+				case DISPTYPE.SIGNED:
+					try
+					{
+						Value = int.Parse(value);
+					}
+					catch { }
+					break;
+				case DISPTYPE.UNSIGNED:
+					try
+					{
+						Value = (int)uint.Parse(value);
+					}
+					catch { }
+					break;
+				case DISPTYPE.HEX:
+					try
+					{
+						Value = int.Parse(value, NumberStyles.HexNumber);
+					}
+					catch { }
+					break;
+			}
 		}
 
 		#endregion

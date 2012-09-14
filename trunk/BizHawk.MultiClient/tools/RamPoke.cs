@@ -63,6 +63,53 @@ namespace BizHawk.MultiClient
 
 			UpdateTitleText();
 			SetDomainSelection();
+
+			SetValueBoxProperties();
+		}
+
+		private void SetValueBoxProperties()
+		{
+			switch (watch.Signed)
+			{
+				case Watch.DISPTYPE.SIGNED:
+					SignedRadio.Checked = true;
+					ValueHexLabel.Text = "";
+					break;
+				case Watch.DISPTYPE.UNSIGNED:
+					UnsignedRadio.Checked = true;
+					ValueHexLabel.Text = "";
+					break;
+				case Watch.DISPTYPE.HEX:
+					ValueHexLabel.Text = "0x";
+					HexRadio.Checked = true;
+					break;
+			}
+
+			ValueBox.MaxLength = GetValueNumDigits();
+			FormatValue();
+		}
+
+		private void HexRadio_Click(object sender, EventArgs e)
+		{
+			ValueHexLabel.Text = "0x";
+			ValueBox.MaxLength = GetValueNumDigits();
+			watch.Signed = Watch.DISPTYPE.HEX;
+			FormatValue();
+		}
+
+		private void UnsignedRadio_Click(object sender, EventArgs e)
+		{
+			ValueHexLabel.Text = "";
+			ValueBox.MaxLength = GetValueNumDigits();
+			watch.Signed = Watch.DISPTYPE.UNSIGNED;
+			FormatValue();
+		}
+
+		private void SignedRadio_Click(object sender, EventArgs e)
+		{
+			ValueHexLabel.Text = "";
+			ValueBox.MaxLength = GetValueNumDigits();
+			watch.Signed = Watch.DISPTYPE.SIGNED;
 			FormatValue();
 		}
 
@@ -186,7 +233,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				watch.Value = int.Parse(ValueBox.Text);
+				watch.TrySetValue(ValueBox.Text);
 			}
 			watch.Domain = domain;
 			watch.PokeAddress();
@@ -218,13 +265,38 @@ namespace BizHawk.MultiClient
 		private void ValueBox_Leave(object sender, EventArgs e)
 		{
 			ValueBox.Text = ValueBox.Text.Replace(" ", "");
-			if (!InputValidate.IsValidUnsignedNumber(ValueBox.Text))
+
+			switch (watch.Signed)
 			{
-				ValueBox.Focus();
-				ValueBox.SelectAll();
-				ToolTip t = new ToolTip();
-				t.Show("Must be a valid unsigned decimal value", ValueBox, 5000);
+				case Watch.DISPTYPE.UNSIGNED:
+					if (!InputValidate.IsValidUnsignedNumber(ValueBox.Text))
+					{
+						ValueBox.Focus();
+						ValueBox.SelectAll();
+						ToolTip t = new ToolTip();
+						t.Show("Must be a valid unsigned decimal value", ValueBox, 5000);
+					}
+					break;
+				case Watch.DISPTYPE.SIGNED:
+					if (!InputValidate.IsValidSignedNumber(ValueBox.Text))
+					{
+						ValueBox.Focus();
+						ValueBox.SelectAll();
+						ToolTip t = new ToolTip();
+						t.Show("Must be a valid signed decimal value", ValueBox, 5000);
+					}
+					break;
+				case Watch.DISPTYPE.HEX:
+					if (!InputValidate.IsValidHexNumber(ValueBox.Text))
+					{
+						ValueBox.Focus();
+						ValueBox.SelectAll();
+						ToolTip t = new ToolTip();
+						t.Show("Must be a valid hexadecimal decimal value", ValueBox, 5000);
+					}
+					break;
 			}
+			
 		}
 
 		private Watch.DISPTYPE GetDataType()
@@ -342,30 +414,6 @@ namespace BizHawk.MultiClient
 			return null;
 		}
 
-		private void HexRadio_Click(object sender, EventArgs e)
-		{
-			ValueHexLabel.Text = "0x";
-			ValueBox.MaxLength = GetValueNumDigits();
-			watch.Signed = Watch.DISPTYPE.HEX;
-			FormatValue();
-		}
-
-		private void UnsignedRadio_Click(object sender, EventArgs e)
-		{
-			ValueHexLabel.Text = "";
-			ValueBox.MaxLength = GetValueNumDigits();
-			watch.Signed = Watch.DISPTYPE.UNSIGNED;
-			FormatValue();
-		}
-
-		private void SignedRadio_Click(object sender, EventArgs e)
-		{
-			ValueHexLabel.Text = "";
-			ValueBox.MaxLength = GetValueNumDigits();
-			watch.Signed = Watch.DISPTYPE.SIGNED;
-			FormatValue();
-		}
-
 		private int GetValueNumDigits()
 		{
 			switch (GetDataSize())
@@ -439,6 +487,8 @@ namespace BizHawk.MultiClient
 
 		private void FormatValue()
 		{
+			watch.Signed = GetDataType();
+			watch.TrySetValue(ValueBox.Text);
 			ValueBox.Text = watch.ValueString;
 		}
 	}

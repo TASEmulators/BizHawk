@@ -124,6 +124,7 @@ namespace BizHawk.MultiClient
 		public IController Source;
 
 		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+		public bool Locked = false; //Pretty much a hack, 
 
 		public bool IsPressed(string button) { return this[button]; }
 		public float GetFloat(string name) { return 0.0f; } //TODO
@@ -153,6 +154,40 @@ namespace BizHawk.MultiClient
 		{
 			return stickySet.Contains(button);
 		}
+
+		public HashSet<string> CurrentStickies
+		{
+			get
+			{
+				return stickySet;
+			}
+		}
+
+		public void ClearStickies()
+		{
+			stickySet.Clear();
+		}
+
+		public void MassToggleStickyState(List<string> buttons)
+		{
+			foreach (string button in buttons)
+			{
+				if (!JustPressed.Contains(button))
+				{
+					if (stickySet.Contains(button))
+					{
+						stickySet.Remove(button);
+					}
+					else
+					{
+						stickySet.Add(button);
+					}
+				}
+			}
+			JustPressed = buttons;
+		}
+
+		private List<string> JustPressed = new List<string>();
 	}
 
 	public class MnemonicsGenerator

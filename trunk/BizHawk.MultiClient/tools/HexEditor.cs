@@ -686,6 +686,7 @@ namespace BizHawk.MultiClient
 				Global.Sound.StopSound();
 				poke.ShowDialog();
 				Global.Sound.StartSound();
+				UpdateValues();
 			}
 		}
 
@@ -2238,6 +2239,16 @@ namespace BizHawk.MultiClient
 			{
 				saveAsBinaryToolStripMenuItem.Text = "Save as binary...";
 			}
+		}
+
+		private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PokeAddress();
+		}
+
+		private void pokeAddressToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			PokeAddress();
 		}
 	}
 } 

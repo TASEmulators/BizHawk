@@ -243,6 +243,7 @@
 			// 
 			// ValueBox
 			// 
+			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.ValueBox.Location = new System.Drawing.Point(73, 57);
 			this.ValueBox.MaxLength = 9;
 			this.ValueBox.Name = "ValueBox";

@@ -107,6 +107,23 @@ namespace BizHawk.MultiClient
 
 			return list;
 		}
+
+		public List<string> PressedButtons
+		{
+			get
+			{
+				List<string> list = new List<string>();
+				foreach (var button in buttons)
+				{
+					if (button.Value)
+					{
+						list.Add(button.Key);
+					}
+				}
+
+				return list;
+			}
+		}
 	}
 
 	public class AutofireController : IController
@@ -225,6 +242,23 @@ namespace BizHawk.MultiClient
 		public void IncrementStarts()
 		{
 			foreach (var key in buttonStarts.Keys.ToArray()) buttonStarts[key]++;
+		}
+
+		public List<string> PressedButtons
+		{
+			get
+			{
+				List<string> list = new List<string>();
+				foreach (var button in buttons)
+				{
+					if (button.Value)
+					{
+						list.Add(button.Key);
+					}
+				}
+
+				return list;
+			}
 		}
 	}
 }

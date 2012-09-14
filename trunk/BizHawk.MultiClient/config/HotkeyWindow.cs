@@ -99,6 +99,8 @@ namespace BizHawk.MultiClient.tools
 			IDW_IncSpeed.SetBindings(Global.Config.IncreaseSpeedBinding);
 			IDW_DecSpeed.SetBindings(Global.Config.DecreaseSpeedBinding);
 			IDW_ToggleBGInput.SetBindings(Global.Config.ToggleBackgroundInput);
+			IDW_Autohold.SetBindings(Global.Config.AutoholdBinding);
+			IDW_ClearAutohold.SetBindings(Global.Config.AutoholdClear);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -206,6 +208,10 @@ namespace BizHawk.MultiClient.tools
 			Global.Config.IncreaseSpeedBinding = IDW_IncSpeed.Text;
 			Global.Config.DecreaseSpeedBinding = IDW_DecSpeed.Text;
 			Global.Config.ToggleBackgroundInput = IDW_ToggleBGInput.Text;
+
+			Global.Config.AutoholdBinding = IDW_Autohold.Text;
+			Global.Config.AutoholdClear = IDW_ClearAutohold.Text;
+
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
