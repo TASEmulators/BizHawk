@@ -128,6 +128,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 		}
 
 		/// <summary>
+		/// ini keys for gambatte palette file
+		/// </summary>
+		static string[] paletteinikeys =
+		{
+			"Background0",
+			"Background1",
+			"Background2",
+			"Background3",
+			"Sprite%2010",
+			"Sprite%2011",
+			"Sprite%2012",
+			"Sprite%2013",
+			"Sprite%2020",
+			"Sprite%2021",
+			"Sprite%2022",
+			"Sprite%2023"
+		};
+
+		/// <summary>
 		/// load gambatte-style .pal file
 		/// </summary>
 		/// <param name="f"></param>
@@ -154,24 +173,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 			int[] ret = new int[12];
 			try
 			{
-				ret[0] = lines["Background0"];
-				ret[1] = lines["Background1"];
-				ret[2] = lines["Background2"];
-				ret[3] = lines["Background3"];
-				ret[4] = lines["Sprite%2010"];
-				ret[5] = lines["Sprite%2011"];
-				ret[6] = lines["Sprite%2012"];
-				ret[7] = lines["Sprite%2013"];
-				ret[8] = lines["Sprite%2020"];
-				ret[9] = lines["Sprite%2021"];
-				ret[10] = lines["Sprite%2022"];
-				ret[11] = lines["Sprite%2023"];
+				for (int i = 0; i < 12; i++)
+					ret[i] = lines[paletteinikeys[i]];
 			}
 			catch (KeyNotFoundException)
 			{
 				return null;
 			}
 			return ret;
+		}
+
+		/// <summary>
+		/// save gambatte-style palette file
+		/// </summary>
+		/// <param name="f"></param>
+		/// <param name="colors"></param>
+		public static void SavePalFile(TextWriter f, int[] colors)
+		{
+			f.WriteLine("[General]");
+			for (int i = 0; i < 12; i++)
+				f.WriteLine(string.Format("{0}={1}", paletteinikeys[i], colors[i]));
 		}
 
 		void SetAllColors(int[] colors)
@@ -221,6 +242,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 			}
 		}
 
+		void SaveColorFile(string filename)
+		{
+			try
+			{
+				using (StreamWriter f = new StreamWriter(filename))
+				{
+					int[] savecolors = new int[12];
+					for (int i = 0; i < 12; i++)
+						// clear alpha because gambatte color files don't usually contain it
+						savecolors[i] = colors[i].ToArgb() & 0xffffff;
+					SavePalFile(f, savecolors);
+				}
+			}
+			catch
+			{
+				MessageBox.Show(this, "Error saving .pal file!");
+			}
+		}
 
 		private void button6_Click(object sender, EventArgs e)
 		{
@@ -256,6 +295,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 				e.Effect = DragDropEffects.Move;
 			else
 				e.Effect = DragDropEffects.None;
+		}
+
+		private void button7_Click(object sender, EventArgs e)
+		{
+			using (var sfd = new SaveFileDialog())
+			{
+				//ofd.InitialDirectory =
+				sfd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
+				sfd.RestoreDirectory = true;
+
+				var result = sfd.ShowDialog(this);
+				if (result != System.Windows.Forms.DialogResult.OK)
+					return;
+
+				SaveColorFile(sfd.FileName);
+			}
 		}
 	}
 }
