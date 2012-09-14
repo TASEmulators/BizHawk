@@ -1622,16 +1622,27 @@ namespace BizHawk.MultiClient
 					 if "1", there is extra ROM info located right in between of the metadata and the savestate.
 				 bit 7: set to 0.
 			*/
-			uint savestateOffset = r.ReadByte();
+			flags = r.ReadByte();
+			/*
+			 Extra ROM info is always positioned right before the savestate. Its size is 30 bytes if MOVIE_SYNC_HASROMINFO
+			 is used (and MOVIE_SYNC_DATA_EXISTS is set), 0 bytes otherwise.
+			*/
+			int extraRomInfo = (((flags >> 6) & 0x1) != 0 && (flags & 0x1) != 0) ? 30 : 0;
 			// 018 4-byte little-endian unsigned int: offset to the savestate inside file
-			r.ReadUInt32();
+			uint savestateOffset = r.ReadUInt32();
 			// 01C 4-byte little-endian unsigned int: offset to the controller data inside file
 			uint firstFrameOffset = r.ReadUInt32();
 			/*
 			 After the header comes "metadata", which is UTF16-coded movie title string (author info). The metadata begins
 			 from position 32 (0x20) and ends at <savestate_offset - length_of_extra_rom_info_in_bytes>.
 			*/
-			string metadata = Encoding.Unicode.GetString(r.ReadBytes((int)(savestateOffset - 0x20)));
+			string metadata = Encoding.Unicode.GetString(r.ReadBytes((int)(savestateOffset - extraRomInfo - 0x20))); // TODO: Handle.
+			// 000 3 bytes of zero padding: 00 00 00 003 4-byte integer: CRC32 of the ROM 007 23-byte ascii string
+			r.ReadBytes(3);
+			int crc32 = r.ReadInt32(); // TODO: Validate.
+			// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
+			string gameName = RemoveNull(Encoding.UTF8.GetString(r.ReadBytes(23)));
+			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			r.BaseStream.Position = firstFrameOffset;
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
