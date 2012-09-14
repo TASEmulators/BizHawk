@@ -1636,13 +1636,19 @@ namespace BizHawk.MultiClient
 			 After the header comes "metadata", which is UTF16-coded movie title string (author info). The metadata begins
 			 from position 32 (0x20) and ends at <savestate_offset - length_of_extra_rom_info_in_bytes>.
 			*/
-			string metadata = Encoding.Unicode.GetString(r.ReadBytes((int)(savestateOffset - extraRomInfo - 0x20))); // TODO: Handle.
-			// 000 3 bytes of zero padding: 00 00 00 003 4-byte integer: CRC32 of the ROM 007 23-byte ascii string
-			r.ReadBytes(3);
-			int crc32 = r.ReadInt32(); // TODO: Validate.
-			// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
-			string gameName = RemoveNull(Encoding.UTF8.GetString(r.ReadBytes(23)));
-			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
+			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - 0x20));
+			string author = Encoding.Unicode.GetString(metadata).Trim();
+			if (author != "")
+				m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
+			if (extraRomInfo == 30)
+			{
+				// 000 3 bytes of zero padding: 00 00 00 003 4-byte integer: CRC32 of the ROM 007 23-byte ascii string
+				r.ReadBytes(3);
+				int crc32 = r.ReadInt32(); // TODO: Validate.
+				// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
+				string gameName = RemoveNull(Encoding.UTF8.GetString(r.ReadBytes(23)));
+				m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
+			}
 			r.BaseStream.Position = firstFrameOffset;
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
