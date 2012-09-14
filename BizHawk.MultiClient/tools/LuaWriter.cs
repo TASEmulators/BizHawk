@@ -562,7 +562,7 @@ namespace BizHawk.MultiClient
 				CurrentFile = file.FullName;
 				SaveScript();
 				MessageLabel.Text = Path.GetFileName(CurrentFile) + " saved.";
-				Global.Config.RecentWatches.Add(file.FullName);
+				Global.Config.RecentLua.Add(file.FullName);
 			}
 		}
 
