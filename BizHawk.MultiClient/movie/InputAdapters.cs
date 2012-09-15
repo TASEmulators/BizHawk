@@ -395,7 +395,7 @@ namespace BizHawk.MultiClient
 			StringBuilder input = new StringBuilder("|");
 
 			if (
-				ControlType == "Genesis 3-Button Controller" || ControlType == "Gameboy Controller" ||
+				ControlType == "Genesis 3-Button Controller" || // ControlType == "Gameboy Controller" ||
 				ControlType == "PC Engine Controller"
 			)
 			{
@@ -406,7 +406,7 @@ namespace BizHawk.MultiClient
 				input.Append(IsBasePressed("Reset") ? "r" : ".");
 				input.Append(IsBasePressed("Select") ? "s" : ".");
 			}
-			if (ControlType == "NES Controller")
+			if (ControlType == "NES Controller" || ControlType == "Gameboy Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] : ".");
 			}
@@ -644,6 +644,11 @@ namespace BizHawk.MultiClient
 			{
 				if (mnemonic.Length < 2) return;
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
+			}
+			if (ControlType == "Gameboy Controller")
+			{
+				if (mnemonic.Length < 2) return;
+				Force("Reset", mnemonic[1] != '.');
 			}
 			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller")
 			{
