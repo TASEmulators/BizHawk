@@ -127,9 +127,6 @@
   <data name="GENController" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\GENController.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="NESController" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\config\ControllerImages\NESController.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="PCEngineController" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\PCEngineController.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -609,9 +606,6 @@
   <data name="TI83Calculator" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\TI83Calculator.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TI83CalculatorCrop" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\config\ControllerImages\TI83CalculatorCrop.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="whiteTriUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\whiteTriUp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -822,7 +816,13 @@
   <data name="Paste" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Paste.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SNESController" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\config\ControllerImages\SNESController.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="NES_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\NES_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SNES_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\SNES_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TI83_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\TI83_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
