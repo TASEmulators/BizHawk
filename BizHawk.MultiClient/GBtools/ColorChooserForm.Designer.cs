@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
+﻿namespace BizHawk.MultiClient.GBtools
 {
 	partial class ColorChooserForm
 	{
