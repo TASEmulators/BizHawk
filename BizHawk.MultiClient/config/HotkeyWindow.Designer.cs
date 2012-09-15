@@ -31,6 +31,8 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyWindow));
 			this.hotkeyTabs = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.label83 = new System.Windows.Forms.Label();
+			this.AutoholdLabel = new System.Windows.Forms.Label();
 			this.label81 = new System.Windows.Forms.Label();
 			this.label80 = new System.Windows.Forms.Label();
 			this.label79 = new System.Windows.Forms.Label();
@@ -94,7 +96,6 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.HR = new BizHawk.Core.HorizontalLine();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.label67 = new System.Windows.Forms.Label();
 			this.label66 = new System.Windows.Forms.Label();
@@ -119,8 +120,7 @@
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
-			this.AutoholdLabel = new System.Windows.Forms.Label();
-			this.label83 = new System.Windows.Forms.Label();
+			this.HR = new BizHawk.Core.HorizontalLine();
 			this.IDW_ClearAutohold = new BizHawk.MultiClient.InputWidget();
 			this.IDW_Autohold = new BizHawk.MultiClient.InputWidget();
 			this.IDW_MAXTURBO = new BizHawk.MultiClient.InputWidget();
@@ -295,10 +295,28 @@
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// label83
+			// 
+			this.label83.AutoSize = true;
+			this.label83.Location = new System.Drawing.Point(6, 278);
+			this.label83.Name = "label83";
+			this.label83.Size = new System.Drawing.Size(76, 13);
+			this.label83.TabIndex = 115;
+			this.label83.Text = "Clear Autohold";
+			// 
+			// AutoholdLabel
+			// 
+			this.AutoholdLabel.AutoSize = true;
+			this.AutoholdLabel.Location = new System.Drawing.Point(6, 254);
+			this.AutoholdLabel.Name = "AutoholdLabel";
+			this.AutoholdLabel.Size = new System.Drawing.Size(49, 13);
+			this.AutoholdLabel.TabIndex = 114;
+			this.AutoholdLabel.Text = "Autohold";
+			// 
 			// label81
 			// 
 			this.label81.AutoSize = true;
-			this.label81.Location = new System.Drawing.Point(6, 112);
+			this.label81.Location = new System.Drawing.Point(6, 110);
 			this.label81.Name = "label81";
 			this.label81.Size = new System.Drawing.Size(35, 13);
 			this.label81.TabIndex = 111;
@@ -316,7 +334,7 @@
 			// label79
 			// 
 			this.label79.AutoSize = true;
-			this.label79.Location = new System.Drawing.Point(401, 205);
+			this.label79.Location = new System.Drawing.Point(402, 134);
 			this.label79.Name = "label79";
 			this.label79.Size = new System.Drawing.Size(87, 13);
 			this.label79.TabIndex = 107;
@@ -325,7 +343,7 @@
 			// label78
 			// 
 			this.label78.AutoSize = true;
-			this.label78.Location = new System.Drawing.Point(404, 182);
+			this.label78.Location = new System.Drawing.Point(402, 110);
 			this.label78.Name = "label78";
 			this.label78.Size = new System.Drawing.Size(82, 13);
 			this.label78.TabIndex = 105;
@@ -334,7 +352,7 @@
 			// label76
 			// 
 			this.label76.AutoSize = true;
-			this.label76.Location = new System.Drawing.Point(408, 158);
+			this.label76.Location = new System.Drawing.Point(402, 86);
 			this.label76.Name = "label76";
 			this.label76.Size = new System.Drawing.Size(83, 13);
 			this.label76.TabIndex = 103;
@@ -343,7 +361,7 @@
 			// label75
 			// 
 			this.label75.AutoSize = true;
-			this.label75.Location = new System.Drawing.Point(407, 134);
+			this.label75.Location = new System.Drawing.Point(402, 62);
 			this.label75.Name = "label75";
 			this.label75.Size = new System.Drawing.Size(79, 13);
 			this.label75.TabIndex = 102;
@@ -352,7 +370,7 @@
 			// label74
 			// 
 			this.label74.AutoSize = true;
-			this.label74.Location = new System.Drawing.Point(408, 112);
+			this.label74.Location = new System.Drawing.Point(207, 230);
 			this.label74.Name = "label74";
 			this.label74.Size = new System.Drawing.Size(70, 13);
 			this.label74.TabIndex = 99;
@@ -361,7 +379,7 @@
 			// label73
 			// 
 			this.label73.AutoSize = true;
-			this.label73.Location = new System.Drawing.Point(408, 86);
+			this.label73.Location = new System.Drawing.Point(402, 38);
 			this.label73.Name = "label73";
 			this.label73.Size = new System.Drawing.Size(49, 13);
 			this.label73.TabIndex = 97;
@@ -370,7 +388,7 @@
 			// label72
 			// 
 			this.label72.AutoSize = true;
-			this.label72.Location = new System.Drawing.Point(407, 62);
+			this.label72.Location = new System.Drawing.Point(402, 14);
 			this.label72.Name = "label72";
 			this.label72.Size = new System.Drawing.Size(62, 13);
 			this.label72.TabIndex = 96;
@@ -379,7 +397,7 @@
 			// label71
 			// 
 			this.label71.AutoSize = true;
-			this.label71.Location = new System.Drawing.Point(6, 160);
+			this.label71.Location = new System.Drawing.Point(6, 158);
 			this.label71.Name = "label71";
 			this.label71.Size = new System.Drawing.Size(57, 13);
 			this.label71.TabIndex = 61;
@@ -388,7 +406,7 @@
 			// label70
 			// 
 			this.label70.AutoSize = true;
-			this.label70.Location = new System.Drawing.Point(6, 136);
+			this.label70.Location = new System.Drawing.Point(6, 134);
 			this.label70.Name = "label70";
 			this.label70.Size = new System.Drawing.Size(79, 13);
 			this.label70.TabIndex = 59;
@@ -397,7 +415,7 @@
 			// label69
 			// 
 			this.label69.AutoSize = true;
-			this.label69.Location = new System.Drawing.Point(407, 38);
+			this.label69.Location = new System.Drawing.Point(207, 278);
 			this.label69.Name = "label69";
 			this.label69.Size = new System.Drawing.Size(73, 13);
 			this.label69.TabIndex = 28;
@@ -406,7 +424,7 @@
 			// label68
 			// 
 			this.label68.AutoSize = true;
-			this.label68.Location = new System.Drawing.Point(408, 14);
+			this.label68.Location = new System.Drawing.Point(207, 254);
 			this.label68.Name = "label68";
 			this.label68.Size = new System.Drawing.Size(59, 13);
 			this.label68.TabIndex = 26;
@@ -442,7 +460,7 @@
 			// label59
 			// 
 			this.label59.AutoSize = true;
-			this.label59.Location = new System.Drawing.Point(206, 112);
+			this.label59.Location = new System.Drawing.Point(207, 110);
 			this.label59.Name = "label59";
 			this.label59.Size = new System.Drawing.Size(64, 13);
 			this.label59.TabIndex = 18;
@@ -505,7 +523,7 @@
 			// label35
 			// 
 			this.label35.AutoSize = true;
-			this.label35.Location = new System.Drawing.Point(6, 184);
+			this.label35.Location = new System.Drawing.Point(6, 182);
 			this.label35.Name = "label35";
 			this.label35.Size = new System.Drawing.Size(61, 13);
 			this.label35.TabIndex = 2;
@@ -932,13 +950,6 @@
 			this.label1.TabIndex = 62;
 			this.label1.Text = "Save State 1";
 			// 
-			// HR
-			// 
-			this.HR.Location = new System.Drawing.Point(10, 251);
-			this.HR.Name = "HR";
-			this.HR.Size = new System.Drawing.Size(558, 2);
-			this.HR.TabIndex = 0;
-			// 
 			// tabPage3
 			// 
 			this.tabPage3.Controls.Add(this.IDW_TOGGLEREADONLY);
@@ -1199,41 +1210,30 @@
 			this.AutoTabCheckBox.UseVisualStyleBackColor = true;
 			this.AutoTabCheckBox.CheckedChanged += new System.EventHandler(this.AutoTabCheckBox_CheckedChanged);
 			// 
-			// AutoholdLabel
+			// HR
 			// 
-			this.AutoholdLabel.AutoSize = true;
-			this.AutoholdLabel.Location = new System.Drawing.Point(6, 259);
-			this.AutoholdLabel.Name = "AutoholdLabel";
-			this.AutoholdLabel.Size = new System.Drawing.Size(49, 13);
-			this.AutoholdLabel.TabIndex = 114;
-			this.AutoholdLabel.Text = "Autohold";
-			// 
-			// label83
-			// 
-			this.label83.AutoSize = true;
-			this.label83.Location = new System.Drawing.Point(6, 285);
-			this.label83.Name = "label83";
-			this.label83.Size = new System.Drawing.Size(76, 13);
-			this.label83.TabIndex = 115;
-			this.label83.Text = "Clear Autohold";
+			this.HR.Location = new System.Drawing.Point(10, 251);
+			this.HR.Name = "HR";
+			this.HR.Size = new System.Drawing.Size(558, 2);
+			this.HR.TabIndex = 0;
 			// 
 			// IDW_ClearAutohold
 			// 
 			this.IDW_ClearAutohold.AcceptsTab = true;
 			this.IDW_ClearAutohold.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_ClearAutohold.Location = new System.Drawing.Point(93, 282);
+			this.IDW_ClearAutohold.Location = new System.Drawing.Point(93, 274);
 			this.IDW_ClearAutohold.Name = "IDW_ClearAutohold";
 			this.IDW_ClearAutohold.Size = new System.Drawing.Size(100, 20);
-			this.IDW_ClearAutohold.TabIndex = 113;
+			this.IDW_ClearAutohold.TabIndex = 42;
 			// 
 			// IDW_Autohold
 			// 
 			this.IDW_Autohold.AcceptsTab = true;
 			this.IDW_Autohold.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_Autohold.Location = new System.Drawing.Point(93, 256);
+			this.IDW_Autohold.Location = new System.Drawing.Point(93, 250);
 			this.IDW_Autohold.Name = "IDW_Autohold";
 			this.IDW_Autohold.Size = new System.Drawing.Size(100, 20);
-			this.IDW_Autohold.TabIndex = 112;
+			this.IDW_Autohold.TabIndex = 41;
 			// 
 			// IDW_MAXTURBO
 			// 
@@ -1257,7 +1257,7 @@
 			// 
 			this.IDW_DecSpeed.AcceptsTab = true;
 			this.IDW_DecSpeed.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_DecSpeed.Location = new System.Drawing.Point(494, 202);
+			this.IDW_DecSpeed.Location = new System.Drawing.Point(492, 130);
 			this.IDW_DecSpeed.Name = "IDW_DecSpeed";
 			this.IDW_DecSpeed.Size = new System.Drawing.Size(100, 20);
 			this.IDW_DecSpeed.TabIndex = 106;
@@ -1266,7 +1266,7 @@
 			// 
 			this.IDW_IncSpeed.AcceptsTab = true;
 			this.IDW_IncSpeed.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_IncSpeed.Location = new System.Drawing.Point(494, 178);
+			this.IDW_IncSpeed.Location = new System.Drawing.Point(492, 106);
 			this.IDW_IncSpeed.Name = "IDW_IncSpeed";
 			this.IDW_IncSpeed.Size = new System.Drawing.Size(100, 20);
 			this.IDW_IncSpeed.TabIndex = 104;
@@ -1275,7 +1275,7 @@
 			// 
 			this.IDW_DecreaseWindowSize.AcceptsTab = true;
 			this.IDW_DecreaseWindowSize.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_DecreaseWindowSize.Location = new System.Drawing.Point(494, 154);
+			this.IDW_DecreaseWindowSize.Location = new System.Drawing.Point(492, 82);
 			this.IDW_DecreaseWindowSize.Name = "IDW_DecreaseWindowSize";
 			this.IDW_DecreaseWindowSize.Size = new System.Drawing.Size(100, 20);
 			this.IDW_DecreaseWindowSize.TabIndex = 101;
@@ -1284,7 +1284,7 @@
 			// 
 			this.IDW_IncreaseWindowSize.AcceptsTab = true;
 			this.IDW_IncreaseWindowSize.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_IncreaseWindowSize.Location = new System.Drawing.Point(494, 130);
+			this.IDW_IncreaseWindowSize.Location = new System.Drawing.Point(492, 58);
 			this.IDW_IncreaseWindowSize.Name = "IDW_IncreaseWindowSize";
 			this.IDW_IncreaseWindowSize.Size = new System.Drawing.Size(100, 20);
 			this.IDW_IncreaseWindowSize.TabIndex = 100;
@@ -1293,16 +1293,16 @@
 			// 
 			this.IDW_ToggleMenu.AcceptsTab = true;
 			this.IDW_ToggleMenu.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_ToggleMenu.Location = new System.Drawing.Point(494, 106);
+			this.IDW_ToggleMenu.Location = new System.Drawing.Point(292, 226);
 			this.IDW_ToggleMenu.Name = "IDW_ToggleMenu";
 			this.IDW_ToggleMenu.Size = new System.Drawing.Size(100, 20);
-			this.IDW_ToggleMenu.TabIndex = 98;
+			this.IDW_ToggleMenu.TabIndex = 77;
 			// 
 			// IDW_StopAVI
 			// 
 			this.IDW_StopAVI.AcceptsTab = true;
 			this.IDW_StopAVI.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_StopAVI.Location = new System.Drawing.Point(494, 82);
+			this.IDW_StopAVI.Location = new System.Drawing.Point(492, 34);
 			this.IDW_StopAVI.Name = "IDW_StopAVI";
 			this.IDW_StopAVI.Size = new System.Drawing.Size(100, 20);
 			this.IDW_StopAVI.TabIndex = 95;
@@ -1311,7 +1311,7 @@
 			// 
 			this.IDW_RecordAVI.AcceptsTab = true;
 			this.IDW_RecordAVI.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_RecordAVI.Location = new System.Drawing.Point(494, 58);
+			this.IDW_RecordAVI.Location = new System.Drawing.Point(492, 10);
 			this.IDW_RecordAVI.Name = "IDW_RecordAVI";
 			this.IDW_RecordAVI.Size = new System.Drawing.Size(100, 20);
 			this.IDW_RecordAVI.TabIndex = 90;
@@ -1338,7 +1338,7 @@
 			// 
 			this.IDW_VOLDOWN.AcceptsTab = true;
 			this.IDW_VOLDOWN.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_VOLDOWN.Location = new System.Drawing.Point(494, 34);
+			this.IDW_VOLDOWN.Location = new System.Drawing.Point(292, 274);
 			this.IDW_VOLDOWN.Name = "IDW_VOLDOWN";
 			this.IDW_VOLDOWN.Size = new System.Drawing.Size(100, 20);
 			this.IDW_VOLDOWN.TabIndex = 85;
@@ -1347,10 +1347,10 @@
 			// 
 			this.IDW_VOLUP.AcceptsTab = true;
 			this.IDW_VOLUP.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_VOLUP.Location = new System.Drawing.Point(494, 10);
+			this.IDW_VOLUP.Location = new System.Drawing.Point(292, 250);
 			this.IDW_VOLUP.Name = "IDW_VOLUP";
 			this.IDW_VOLUP.Size = new System.Drawing.Size(100, 20);
-			this.IDW_VOLUP.TabIndex = 80;
+			this.IDW_VOLUP.TabIndex = 78;
 			// 
 			// IDW_InputDisplay
 			// 
@@ -1455,7 +1455,7 @@
 			// 
 			this.IDW_HARDRESET.AcceptsTab = true;
 			this.IDW_HARDRESET.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_HARDRESET.Location = new System.Drawing.Point(93, 180);
+			this.IDW_HARDRESET.Location = new System.Drawing.Point(93, 178);
 			this.IDW_HARDRESET.Name = "IDW_HARDRESET";
 			this.IDW_HARDRESET.Size = new System.Drawing.Size(100, 20);
 			this.IDW_HARDRESET.TabIndex = 30;
@@ -1473,7 +1473,7 @@
 			// 
 			this.IDW_QuickLoad.AcceptsTab = true;
 			this.IDW_QuickLoad.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_QuickLoad.Location = new System.Drawing.Point(93, 204);
+			this.IDW_QuickLoad.Location = new System.Drawing.Point(93, 202);
 			this.IDW_QuickLoad.Name = "IDW_QuickLoad";
 			this.IDW_QuickLoad.Size = new System.Drawing.Size(100, 20);
 			this.IDW_QuickLoad.TabIndex = 35;
@@ -1482,7 +1482,7 @@
 			// 
 			this.IDW_QuickSave.AcceptsTab = true;
 			this.IDW_QuickSave.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_QuickSave.Location = new System.Drawing.Point(93, 230);
+			this.IDW_QuickSave.Location = new System.Drawing.Point(93, 226);
 			this.IDW_QuickSave.Name = "IDW_QuickSave";
 			this.IDW_QuickSave.Size = new System.Drawing.Size(100, 20);
 			this.IDW_QuickSave.TabIndex = 40;
