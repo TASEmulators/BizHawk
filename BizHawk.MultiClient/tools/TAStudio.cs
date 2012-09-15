@@ -282,6 +282,32 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(Pads[2]);
 					ControllerBox.Controls.Add(Pads[3]);
 					break;
+				case "SNES":
+					VirtualPadSNES snespad1 = new VirtualPadSNES();
+					snespad1.Location = new Point(8, 19);
+					snespad1.Controller = "P1";
+					VirtualPadSNES snespad2 = new VirtualPadSNES();
+					snespad2.Location = new Point(188, 19);
+					snespad2.Controller = "P2";
+					VirtualPadSNES snespad3 = new VirtualPadSNES();
+					snespad3.Location = new Point(8, 95);
+					snespad3.Controller = "P3";
+					VirtualPadSNES snespad4 = new VirtualPadSNES();
+					snespad4.Location = new Point(188, 95);
+					snespad4.Controller = "P4";
+					VirtualPadSNESControl snescontrolpad = new VirtualPadSNESControl();
+					snescontrolpad.Location = new Point(8, 170);
+					Pads.Add(snescontrolpad);
+					Pads.Add(snespad1);
+					Pads.Add(snespad2);
+					Pads.Add(snespad3);
+					Pads.Add(snespad4);
+					ControllerBox.Controls.Add(Pads[0]);
+					ControllerBox.Controls.Add(Pads[1]);
+					ControllerBox.Controls.Add(Pads[2]);
+					ControllerBox.Controls.Add(Pads[3]);
+					ControllerBox.Controls.Add(Pads[4]);
+					break;
 				case "GB":
 					VirtualPadGB gbpad1 = new VirtualPadGB();
 					gbpad1.Location = new Point(8, 19);

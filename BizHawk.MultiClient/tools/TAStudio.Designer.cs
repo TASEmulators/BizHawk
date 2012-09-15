@@ -490,7 +490,7 @@
 			this.ControllerBox.ContextMenuStrip = this.ControllersContext;
 			this.ControllerBox.Location = new System.Drawing.Point(300, 144);
 			this.ControllerBox.Name = "ControllerBox";
-			this.ControllerBox.Size = new System.Drawing.Size(367, 197);
+			this.ControllerBox.Size = new System.Drawing.Size(367, 207);
 			this.ControllerBox.TabIndex = 4;
 			this.ControllerBox.TabStop = false;
 			this.ControllerBox.Text = "Controllers";
