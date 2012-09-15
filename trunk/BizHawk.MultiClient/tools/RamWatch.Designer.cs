@@ -63,6 +63,7 @@
 			this.showPreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.diffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.domainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.definePreviousValueAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previousFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -113,7 +114,7 @@
 			this.Diff = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Notes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.domainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showDomainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -411,6 +412,13 @@
 			this.diffToolStripMenuItem.Text = "Difference";
 			this.diffToolStripMenuItem.Click += new System.EventHandler(this.diffToolStripMenuItem_Click);
 			// 
+			// domainToolStripMenuItem
+			// 
+			this.domainToolStripMenuItem.Name = "domainToolStripMenuItem";
+			this.domainToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.domainToolStripMenuItem.Text = "Domain";
+			this.domainToolStripMenuItem.Click += new System.EventHandler(this.domainToolStripMenuItem_Click);
+			// 
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -490,9 +498,10 @@
             this.toolStripSeparator2,
             this.showChangeCountsToolStripMenuItem1,
             this.showPreviousValueToolStripMenuItem1,
-            this.showDifferenceToolStripMenuItem});
+            this.showDifferenceToolStripMenuItem,
+            this.showDomainToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(189, 280);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(189, 324);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// editToolStripMenuItem
@@ -867,12 +876,12 @@
 			this.Notes.Text = "Notes";
 			this.Notes.Width = 128;
 			// 
-			// domainToolStripMenuItem
+			// showDomainToolStripMenuItem
 			// 
-			this.domainToolStripMenuItem.Name = "domainToolStripMenuItem";
-			this.domainToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.domainToolStripMenuItem.Text = "Domain";
-			this.domainToolStripMenuItem.Click += new System.EventHandler(this.domainToolStripMenuItem_Click);
+			this.showDomainToolStripMenuItem.Name = "showDomainToolStripMenuItem";
+			this.showDomainToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.showDomainToolStripMenuItem.Text = "Show Domain";
+			this.showDomainToolStripMenuItem.Click += new System.EventHandler(this.showDomainToolStripMenuItem_Click);
 			// 
 			// RamWatch
 			// 
@@ -993,5 +1002,6 @@
 		private System.Windows.Forms.ToolStripMenuItem lastChangeToolStripMenuItem;
 		private System.Windows.Forms.ColumnHeader DomainColumn;
 		private System.Windows.Forms.ToolStripMenuItem domainToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showDomainToolStripMenuItem;
     }
 }
