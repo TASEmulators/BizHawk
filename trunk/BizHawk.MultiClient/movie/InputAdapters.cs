@@ -200,6 +200,12 @@ namespace BizHawk.MultiClient
 
 		public IController Source;
 
+		public void SetOnOffPatternFromConfig()
+		{
+			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
+			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+		}
+
 		public AutoFireStickyXORAdapter()
 		{
 			//On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
