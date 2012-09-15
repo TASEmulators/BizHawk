@@ -108,6 +108,7 @@ namespace BizHawk.MultiClient
 			GBSaveRAMBox.Text = Global.Config.PathGBSaveRAM;
 			GBScreenshotsBox.Text = Global.Config.PathGBScreenshots;
 			GBCheatsBox.Text = Global.Config.PathGBCheats;
+			GBPalettesBox.Text = Global.Config.PathGBPalettes;
 
 			TI83BaseBox.Text = Global.Config.BaseTI83;
 			TI83ROMsBox.Text = Global.Config.PathTI83ROMs;
@@ -201,6 +202,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathGBSaveRAM = GBSaveRAMBox.Text;
 			Global.Config.PathGBScreenshots = GBScreenshotsBox.Text;
 			Global.Config.PathGBCheats = GBCheatsBox.Text;
+			Global.Config.PathGBPalettes = GBPalettesBox.Text;
 
 			Global.Config.BaseTI83 = TI83BaseBox.Text;
 			Global.Config.PathTI83ROMs = TI83ROMsBox.Text;
@@ -673,6 +675,11 @@ namespace BizHawk.MultiClient
 		private void BrowseMovieBackups_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(MovieBackupsBox, MovieBackupsDescription.Text);
+		}
+
+		private void GBBrowsePalettes_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBPalettesBox, GBPalettesDescription.Text);
 		}
 	}
 }

@@ -121,6 +121,7 @@ namespace BizHawk.MultiClient
 		public string PathGBSaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathGBScreenshots = Path.Combine(".", "Screenshots");
 		public string PathGBCheats = Path.Combine(".", "Cheats");
+		public string PathGBPalettes = Path.Combine(".", "Palettes");
 
 		public string BaseTI83 = Path.Combine(".", "TI83");
 		public string PathTI83ROMs = ".";
@@ -143,7 +144,7 @@ namespace BizHawk.MultiClient
 		public string AVIPath = ".";
 
 		//BIOS Paths
-		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce"); //TODO: better default filename
+		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
 
