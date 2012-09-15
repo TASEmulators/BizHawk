@@ -1647,7 +1647,7 @@ namespace BizHawk.MultiClient
 			 from position 32 (0x20 (0x40 for 1.51 and up)) and ends at <savestate_offset -
 			 length_of_extra_rom_info_in_bytes>.
 			*/
-			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - 0x20));
+			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - ((version != "1.43") ? 0x40 : 0x20)));
 			string author = NullTerminated(Encoding.Unicode.GetString(metadata).Trim());
 			if (author != "")
 				m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
