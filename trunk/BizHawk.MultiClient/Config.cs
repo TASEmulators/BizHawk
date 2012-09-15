@@ -601,6 +601,9 @@ namespace BizHawk.MultiClient
 		//GB settings
 		public GBControllerTemplate[] GBController = new GBControllerTemplate[1];
 		public GBControllerTemplate[] GBAutoController = new GBControllerTemplate[1];
+		public bool GB_ForceDMG = false;
+		public bool GB_GBACGB = false;
+		public bool GB_MulticartCompat = false;
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;

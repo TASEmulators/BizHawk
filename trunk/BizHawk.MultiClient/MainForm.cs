@@ -1399,7 +1399,10 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "GB":
-								Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(rom.FileData);
+								if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
+								if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
+								if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
+								Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(game, rom.FileData);
 								nextEmulator = gb;
 								break;
 							case "COLV":
@@ -3490,6 +3493,21 @@ namespace BizHawk.MultiClient
 			{
 				((Gameboy)Global.Emulator).EditDMGColors(this);
 			}
+		}
+
+		private void forceDMGModeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_ForceDMG ^= true;
+		}
+
+		private void gBAInCGBModeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_GBACGB ^= true;
+		}
+
+		private void multicartCompatibilityToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_MulticartCompat ^= true;
 		}
 	}
 }
