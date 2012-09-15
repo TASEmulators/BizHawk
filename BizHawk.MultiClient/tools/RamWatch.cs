@@ -1045,6 +1045,16 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[13].Text = "Hide difference value";
 			else
 				contextMenuStrip1.Items[13].Text = "Show difference value";
+
+			if (Global.Config.RamWatchShowDomainColumn)
+			{
+				showDomainToolStripMenuItem.Text = "Hide domain";
+			}
+			else
+			{
+				showDomainToolStripMenuItem.Text = "Show domain";
+			}
+			
 		}
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1614,10 +1624,20 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void domainToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SetDomain()
 		{
 			Global.Config.RamWatchShowDomainColumn ^= true;
 			SetDomainColumn(Global.Config.RamWatchShowDomainColumn);
+		}
+
+		private void domainToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetDomain();
+		}
+
+		private void showDomainToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetDomain();
 		}
 	}
 }
