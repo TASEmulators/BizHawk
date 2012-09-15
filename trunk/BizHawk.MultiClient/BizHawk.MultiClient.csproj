@@ -758,7 +758,6 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="config\ControllerImages\NESController.png" />
     <None Include="images\TurboFastForward.png" />
     <None Include="images\cheat.png" />
     <None Include="images\Cheats.ico" />
@@ -768,7 +767,6 @@
     <None Include="images\Pause.png" />
     <None Include="images\Play.png" />
     <None Include="config\ControllerImages\TI83Calculator.png" />
-    <None Include="config\ControllerImages\TI83CalculatorCrop.png" />
     <None Include="images\whiteTriUp.png" />
     <None Include="images\whiteTriDown.png" />
     <None Include="images\whiteTriLeft.png" />
@@ -836,8 +834,6 @@
     <None Include="images\console16x16.png" />
     <None Include="images\Import.png" />
     <None Include="images\atari_controller.png" />
-    <None Include="config\ControllerImages\snes-controlpad.jpg" />
-    <None Include="config\ControllerImages\SNESController.jpg" />
     <None Include="config\ControllerImages\NES_Controller.png" />
     <None Include="config\ControllerImages\SNES_Controller.png" />
     <None Include="config\ControllerImages\TI83_Controller.png" />
