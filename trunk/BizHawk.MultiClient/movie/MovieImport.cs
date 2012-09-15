@@ -808,6 +808,7 @@ namespace BizHawk.MultiClient
 				fs.Close();
 				return null;
 			}
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "Genesis");
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
 			string version = r.ReadStringFixedAscii(1);
 			m.Header.Comments.Add(MOVIEORIGIN + " .GMV version " + version);
@@ -1180,7 +1181,6 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = ImportText(path, out errorMsg, out warningMsg);
-			// TODO: PCECD equivalent.
 			return m;
 		}
 
@@ -1516,6 +1516,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
+			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 53 4D 56 1A "SMV\x1A"
@@ -1527,19 +1528,20 @@ namespace BizHawk.MultiClient
 				fs.Close();
 				return null;
 			}
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "SNES");
 			// 004 4-byte little-endian unsigned int: version number
-			uint version = r.ReadUInt32();
-			Movie m;
-			switch (version)
+			uint versionNumber = r.ReadUInt32();
+			string version;
+			switch (versionNumber)
 			{
 				case 1:
-					m = ImportSMV143(r, path, out errorMsg, out warningMsg);
+					version = "1.43";
 					break;
 				case 4:
-					m = ImportSMV151(r, path, out errorMsg, out warningMsg);
+					version = "1.51";
 					break;
 				case 5:
-					m = ImportSMV152(r, path, out errorMsg, out warningMsg);
+					version = "1.52";
 					break;
 				default:
 					errorMsg = "SMV version not recognized. 1.43, 1.51, and 1.52 are currently supported.";
@@ -1547,19 +1549,7 @@ namespace BizHawk.MultiClient
 					fs.Close();
 					return null;
 			}
-			r.Close();
-			fs.Close();
-			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "SNES");
-			return m;
-		}
-
-		// SMV 1.43 file format: http://code.google.com/p/snes9x-rr/wiki/SMV143
-		private static Movie ImportSMV143(BinaryReader r, string path, out string errorMsg, out string warningMsg)
-		{
-			errorMsg = "";
-			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.43");
+			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version " + version);
 			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
 			/*
 			 008 4-byte little-endian integer: movie "uid" - identifies the movie-savestate relationship, also used as the
@@ -1572,7 +1562,7 @@ namespace BizHawk.MultiClient
 			// 010 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 014 1-byte flags "controller mask"
-			byte flags = r.ReadByte();
+			byte controllerFlags = r.ReadByte();
 			int players = 0;
 			/*
 			 * bit 0: controller 1 in use
@@ -1583,23 +1573,24 @@ namespace BizHawk.MultiClient
 			 * other: reserved, set to 0
 			*/
 			for (int controller = 1; controller <= 5; controller++)
-				if (((flags >> (controller - 1)) & 0x1) != 0)
+				if (((controllerFlags >> (controller - 1)) & 0x1) != 0)
 					players++;
 			// 015 1-byte flags "movie options"
-			flags = r.ReadByte();
+			byte movieFlags = r.ReadByte();
 			/*
 				 bit 0:
 					 if "0", movie begins from an embedded "quicksave" snapshot
 					 if "1", a SRAM is included instead of a quicksave; movie begins from reset
 			*/
-			if ((flags & 0x1) == 0)
+			if ((movieFlags & 0x1) == 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
 				r.Close();
+				fs.Close();
 				return null;
 			}
 			// bit 1: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
-			bool pal = (((flags >> 1) & 0x1) != 0);
+			bool pal = (((movieFlags >> 1) & 0x1) != 0);
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			// other: reserved, set to 0
 			/*
@@ -1622,19 +1613,39 @@ namespace BizHawk.MultiClient
 					 if "1", there is extra ROM info located right in between of the metadata and the savestate.
 				 bit 7: set to 0.
 			*/
-			flags = r.ReadByte();
+			byte syncFlags = r.ReadByte();
 			/*
 			 Extra ROM info is always positioned right before the savestate. Its size is 30 bytes if MOVIE_SYNC_HASROMINFO
 			 is used (and MOVIE_SYNC_DATA_EXISTS is set), 0 bytes otherwise.
 			*/
-			int extraRomInfo = (((flags >> 6) & 0x1) != 0 && (flags & 0x1) != 0) ? 30 : 0;
+			int extraRomInfo = (((syncFlags >> 6) & 0x1) != 0 && (syncFlags & 0x1) != 0) ? 30 : 0;
 			// 018 4-byte little-endian unsigned int: offset to the savestate inside file
 			uint savestateOffset = r.ReadUInt32();
 			// 01C 4-byte little-endian unsigned int: offset to the controller data inside file
 			uint firstFrameOffset = r.ReadUInt32();
+			int[] controllerTypes = new int[2];
+			// The (.SMV 1.51 and up) header has an additional 32 bytes at the end
+			if (version != "1.43")
+			{
+				// 020 4-byte little-endian unsigned int: number of input samples, primarily for peripheral-using games
+				r.ReadBytes(4);
+				/*
+				 024 2 1-byte unsigned ints: what type of controller is plugged into ports 1 and 2 respectively: 0=NONE,
+				 1=JOYPAD, 2=MOUSE, 3=SUPERSCOPE, 4=JUSTIFIER, 5=MULTITAP
+				*/
+				controllerTypes[0] = r.ReadByte();
+				controllerTypes[1] = r.ReadByte();
+				// 026 4 1-byte signed ints: controller IDs of port 1, or -1 for unplugged
+				r.ReadBytes(4);
+				// 02A 4 1-byte signed ints: controller IDs of port 2, or -1 for unplugged
+				r.ReadBytes(4);
+				// 02E 18 bytes: reserved for future use
+				r.ReadBytes(18);
+			}
 			/*
 			 After the header comes "metadata", which is UTF16-coded movie title string (author info). The metadata begins
-			 from position 32 (0x20) and ends at <savestate_offset - length_of_extra_rom_info_in_bytes>.
+			 from position 32 (0x20 (0x40 for 1.51 and up)) and ends at <savestate_offset -
+			 length_of_extra_rom_info_in_bytes>.
 			*/
 			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - 0x20));
 			string author = NullTerminated(Encoding.Unicode.GetString(metadata).Trim());
@@ -1644,7 +1655,8 @@ namespace BizHawk.MultiClient
 			{
 				// 000 3 bytes of zero padding: 00 00 00 003 4-byte integer: CRC32 of the ROM 007 23-byte ascii string
 				r.ReadBytes(3);
-				int crc32 = r.ReadInt32(); // TODO: Validate.
+				int crc32 = r.ReadInt32();
+				m.Header.SetHeaderLine("CRC32", crc32.ToString());
 				// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
 				string gameName = NullTerminated(Encoding.UTF8.GetString(r.ReadBytes(23)));
 				m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
@@ -1692,6 +1704,48 @@ namespace BizHawk.MultiClient
 					*/
 					if (controllerState1 != 0xFF || controllerState2 != 0xFF)
 						controllers["Reset"] = false;
+					/*
+					 While the meaning of controller data (for 1.51 and up) for a single standard SNES controller pad
+					 remains the same, each frame of controller data can contain additional bytes if input for peripherals
+					 is being recorded.
+					*/
+					if (version != "1.43")
+					{
+						string peripheral = "";
+						switch (controllerTypes[player - 1])
+						{
+							// NONE
+							case 0:
+								continue;
+							// JOYPAD
+							case 1:
+								break;
+							// MOUSE
+							case 2:
+								peripheral = "Mouse";
+								// 5*num_mouse_ports
+								r.ReadBytes(5);
+								break;
+							// SUPERSCOPE
+							case 3:
+								peripheral = "Super Scope";
+								// 6*num_superscope_ports
+								r.ReadBytes(6);
+								break;
+							// JUSTIFIER
+							case 4:
+								peripheral = "Justifier";
+								// 11*num_justifier_ports
+								r.ReadBytes(11);
+								break;
+							// MULTITAP
+							case 5:
+								peripheral = "Multitap";
+								break;
+						}
+						if (warningMsg != "" && peripheral != "")
+							warningMsg = peripheral;
+					}
 					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
 					for (int button = 0; button < buttons.Length; button++)
 						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
@@ -1703,30 +1757,7 @@ namespace BizHawk.MultiClient
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
 			r.Close();
-			return m;
-		}
-
-		// SMV 1.51 file format: http://code.google.com/p/snes9x-rr/wiki/SMV151
-		private static Movie ImportSMV151(BinaryReader r, string path, out string errorMsg, out string warningMsg)
-		{
-			errorMsg = "";
-			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.51");
-			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
-			// TODO: Import.
-			return m;
-		}
-
-		private static Movie ImportSMV152(BinaryReader r, string path, out string errorMsg, out string warningMsg)
-		{
-			errorMsg = "";
-			warningMsg = "";
-			Movie m = new Movie(path + "." + Global.Config.MovieExtension);
-			uint GUID = r.ReadUInt32();
-			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.52");
-			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
-			// TODO: Import.
+			fs.Close();
 			return m;
 		}
 
@@ -1887,15 +1918,20 @@ namespace BizHawk.MultiClient
 			byte minorVersion = r.ReadByte();
 			m.Header.Comments.Add(MOVIEORIGIN + " .VBM version " + majorVersion + "." + minorVersion);
 			m.Header.Comments.Add(EMULATIONORIGIN + " Visual Boy Advance");
+			// 031 1-byte unsigned char: the internal CRC of the ROM used while recording
+			r.ReadByte();
 			/*
-			 031 1-byte unsigned char: the internal CRC of the ROM used while recording
-			 032 2-byte little-endian unsigned short: the internal Checksum of the ROM used while recording, or a calculated
-			 CRC16 of the BIOS if GBA
+			 032 2-byte little-endian unsigned short: the internal Checksum of the ROM used while recording, or a
+			 calculated CRC16 of the BIOS if GBA
+			*/
+			r.ReadBytes(2);
+			/*
 			 034 4-byte little-endian unsigned int: the Game Code of the ROM used while recording, or the Unit Code if not
 			 GBA
-			 038 4-byte little-endian unsigned int: offset to the savestate or SRAM inside file, set to 0 if unused
 			*/
-			r.ReadBytes(11);
+			r.ReadBytes(4);
+			// 038 4-byte little-endian unsigned int: offset to the savestate or SRAM inside file, set to 0 if unused
+			r.ReadBytes(4);
 			// 03C 4-byte little-endian unsigned int: offset to the controller data inside file
 			uint firstFrameOffset = r.ReadUInt32();
 			// After the header is 192 bytes of text. The first 64 of these 192 bytes are for the author's name (or names).
@@ -1904,11 +1940,6 @@ namespace BizHawk.MultiClient
 			// The following 128 bytes are for a description of the movie. Both parts must be null-terminated.
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii(128));
 			m.Header.Comments.Add(COMMENT + " " + movieDescription);
-			/*
-			 TODO: implement start data. There are no specifics on the googlecode page as to how long the SRAM or savestate
-			 should be.
-			*/
-			// If there is no "Start Data", this will probably begin at byte 0x100 in the file, but this is not guaranteed.
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
@@ -1987,6 +2018,7 @@ namespace BizHawk.MultiClient
 				fs.Close();
 				return null;
 			}
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
 			// 00C 2-byte little-endian integer: movie version 0x0400
 			ushort version = r.ReadUInt16();
 			m.Header.Comments.Add(MOVIEORIGIN + " .VMV version " + version);
