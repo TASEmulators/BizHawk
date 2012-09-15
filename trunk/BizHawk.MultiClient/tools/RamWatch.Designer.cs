@@ -107,12 +107,13 @@
 			this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.WatchListView = new BizHawk.VirtualListView();
 			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Prev = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ChangeCounts = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Diff = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Notes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.domainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -380,7 +381,8 @@
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showPreviousValueToolStripMenuItem,
             this.showChangeCountsToolStripMenuItem,
-            this.diffToolStripMenuItem});
+            this.diffToolStripMenuItem,
+            this.domainToolStripMenuItem});
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
 			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.viewToolStripMenuItem.Text = "&View";
@@ -831,11 +833,6 @@
 			// 
 			this.Address.Text = "Address";
 			// 
-			// DomainColumn
-			// 
-			this.DomainColumn.Text = "Domain";
-			this.DomainColumn.Width = 55;
-			// 
 			// Value
 			// 
 			this.Value.Text = "Value";
@@ -860,10 +857,22 @@
 			this.Diff.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.Diff.Width = 59;
 			// 
+			// DomainColumn
+			// 
+			this.DomainColumn.Text = "Domain";
+			this.DomainColumn.Width = 55;
+			// 
 			// Notes
 			// 
 			this.Notes.Text = "Notes";
 			this.Notes.Width = 128;
+			// 
+			// domainToolStripMenuItem
+			// 
+			this.domainToolStripMenuItem.Name = "domainToolStripMenuItem";
+			this.domainToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.domainToolStripMenuItem.Text = "Domain";
+			this.domainToolStripMenuItem.Click += new System.EventHandler(this.domainToolStripMenuItem_Click);
 			// 
 			// RamWatch
 			// 
@@ -983,5 +992,6 @@
 		private System.Windows.Forms.ToolStripMenuItem previousFrameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem lastChangeToolStripMenuItem;
 		private System.Windows.Forms.ColumnHeader DomainColumn;
+		private System.Windows.Forms.ToolStripMenuItem domainToolStripMenuItem;
     }
 }
