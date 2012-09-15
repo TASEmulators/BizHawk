@@ -280,7 +280,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				//ofd.InitialDirectory =
+				ofd.InitialDirectory = Global.Config.PathGBPalettes;
 				ofd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				ofd.RestoreDirectory = true;
 
@@ -316,7 +316,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			using (var sfd = new SaveFileDialog())
 			{
-				//ofd.InitialDirectory =
+				sfd.InitialDirectory = Global.Config.PathGBPalettes;
 				sfd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				sfd.RestoreDirectory = true;
 
