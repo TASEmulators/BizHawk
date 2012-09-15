@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
+namespace BizHawk.MultiClient.GBtools
 {
 	public partial class ColorChooserForm : Form
 	{
@@ -18,6 +18,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 		}
 
 		Color[] colors = new Color[12];
+
+		/// <summary>
+		/// gambatte's default dmg colors
+		/// </summary>
+		static readonly int[] DefaultColors =
+		{
+			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
+			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
+			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
+		};
+
 
 		private void RefreshAllBackdrops()
 		{
@@ -203,21 +214,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Gameboy
 			RefreshAllBackdrops();
 		}
 
-		public static bool DoColorChooserFormDialog(int[] colors)
+		public static bool DoColorChooserFormDialog(Action<int[]> ColorUpdater, IWin32Window parent)
 		{
 			using (var dlg = new ColorChooserForm())
 			{
-				dlg.SetAllColors(colors);
+				//if (colors != null)
+				//	dlg.SetAllColors(colors);
+				dlg.SetAllColors(DefaultColors);
 
-				var result = dlg.ShowDialog();
+				var result = dlg.ShowDialog(parent);
 				if (result != DialogResult.OK)
 				{
 					return false;
 				}
 				else
 				{
-					for (int i = 0; i < dlg.colors.Length; i++)
-						colors[i] = dlg.colors[i].ToArgb();
+					int[] colorints = new int[12];
+					for (int i = 0; i < 12; i++)
+						colorints[i] = dlg.colors[i].ToArgb();
+					ColorUpdater(colorints);
 					return true;
 				}
 			}

@@ -3529,7 +3529,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is Gameboy)
 			{
-				((Gameboy)Global.Emulator).EditDMGColors(this);
+				GBtools.ColorChooserForm.DoColorChooserFormDialog(((Gameboy)Global.Emulator).ChangeDMGColors, this);
 			}
 		}
 

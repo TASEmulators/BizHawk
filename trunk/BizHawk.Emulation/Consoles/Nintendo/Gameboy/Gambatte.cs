@@ -82,7 +82,14 @@ namespace BizHawk.Emulation.Consoles.GB
 			return CurrentButtons;
 		}
 
-
+		/// <summary>
+		/// true if the emulator is currently emulating CGB
+		/// </summary>
+		/// <returns></returns>
+		public bool IsCGBMode()
+		{
+			return (LibGambatte.gambatte_iscgb(GambatteState));
+		}
 
 		public void FrameAdvance(bool render)
 		{
@@ -462,37 +469,12 @@ namespace BizHawk.Emulation.Consoles.GB
 		#region palette
 
 		/// <summary>
-		/// palette colors to display in dmg mode
-		/// </summary>
-		int[] dmgcolors = { // these are gambatte's default colors
-			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
-			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
-			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
-						  };
-
-		/// <summary>
-		/// pops up a modal dialog which allows dmg palettes
-		/// </summary>
-		/// <param name="parent"></param>
-		public void EditDMGColors(System.Windows.Forms.IWin32Window parent)
-		{
-			int[] tempcolors = (int[])dmgcolors.Clone();
-
-			// fixme: everything gets all un-fun in msvs when folders don't match namespaces
-			if (BizHawk.Emulation.Consoles.Nintendo.Gameboy.ColorChooserForm.DoColorChooserFormDialog(tempcolors))
-			{
-				dmgcolors = tempcolors;
-				SendColorsToCore();
-			}
-		}
-
-		/// <summary>
 		/// update gambatte core's internal colors
 		/// </summary>
-		void SendColorsToCore()
+		public void ChangeDMGColors(int[] colors)
 		{
-			for (int i = 0; i < dmgcolors.Length; i++)
-				LibGambatte.gambatte_setdmgpalettecolor(GambatteState, (LibGambatte.PalType)(i / 4), (uint)i % 4, (uint)dmgcolors[i]);
+			for (int i = 0; i < 12; i++)
+				LibGambatte.gambatte_setdmgpalettecolor(GambatteState, (LibGambatte.PalType)(i / 4), (uint)i % 4, (uint)colors[i]);
 		}
 
 		#endregion
