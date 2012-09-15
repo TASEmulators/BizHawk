@@ -190,6 +190,125 @@ namespace BizHawk.MultiClient
 		private List<string> JustPressed = new List<string>();
 	}
 
+	public class AutoFireStickyXORAdapter : IController
+	{
+		public int On { get; set; }
+		public int Off { get; set; }
+		public WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
+		
+		private HashSet<string> stickySet = new HashSet<string>();
+
+		public IController Source;
+
+		public AutoFireStickyXORAdapter()
+		{
+			//On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
+			//Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+			On = 1;
+			Off = 1;
+		}
+
+		public bool IsPressed(string button)
+		{
+			if (stickySet.Contains(button))
+			{
+				int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
+				if (a < On)
+					return this[button];
+				else
+					return false;
+			}
+			else
+			{
+				return Source[button];
+			}
+		}
+
+		public bool this[string button]
+		{
+			get
+			{
+				bool source = Source[button];
+				if (source)
+				{
+				}
+				if (stickySet.Contains(button))
+				{
+
+
+					int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
+					if (a < On)
+					{
+						source ^= true;
+					}
+					else
+					{
+						source ^= false;
+					}
+				}
+				
+				return source;
+			}
+			set { throw new InvalidOperationException(); }
+		}
+
+
+
+
+		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+		public bool Locked = false; //Pretty much a hack, 
+
+
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+
+		public void SetSticky(string button, bool isSticky)
+		{
+			if (isSticky)
+				stickySet.Add(button);
+			else stickySet.Remove(button);
+		}
+
+		public bool IsSticky(string button)
+		{
+			return stickySet.Contains(button);
+		}
+
+		public HashSet<string> CurrentStickies
+		{
+			get
+			{
+				return stickySet;
+			}
+		}
+
+		public void ClearStickies()
+		{
+			stickySet.Clear();
+		}
+
+		public void MassToggleStickyState(List<string> buttons)
+		{
+			foreach (string button in buttons)
+			{
+				if (!JustPressed.Contains(button))
+				{
+					if (stickySet.Contains(button))
+					{
+						stickySet.Remove(button);
+					}
+					else
+					{
+						stickySet.Add(button);
+					}
+				}
+			}
+			JustPressed = buttons;
+		}
+
+		private List<string> JustPressed = new List<string>();
+	}
+
 	public class MnemonicsGenerator
 	{
 		IController Source;

@@ -1932,7 +1932,7 @@
             this.changeDMGPalettesToolStripMenuItem});
 			this.gBToolStripMenuItem.Name = "gBToolStripMenuItem";
 			this.gBToolStripMenuItem.Size = new System.Drawing.Size(34, 19);
-			this.gBToolStripMenuItem.Text = "GB";
+			this.gBToolStripMenuItem.Text = "&GB";
 			this.gBToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gBToolStripMenuItem_DropDownOpened);
 			// 
 			// changeDMGPalettesToolStripMenuItem
