@@ -375,6 +375,12 @@
     <Compile Include="tools\LuaWriterColorConfig.Designer.cs">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadGB.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadGBControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\WatchCommon.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>

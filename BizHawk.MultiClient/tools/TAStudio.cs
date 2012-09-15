@@ -282,6 +282,17 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(Pads[2]);
 					ControllerBox.Controls.Add(Pads[3]);
 					break;
+				case "GB":
+					VirtualPadGB gbpad1 = new VirtualPadGB();
+					gbpad1.Location = new Point(8, 19);
+					gbpad1.Controller = "";
+					Pads.Add(gbpad1);
+					ControllerBox.Controls.Add(Pads[0]);
+					VirtualPadGBControl gbcontrolpad = new VirtualPadGBControl();
+					gbcontrolpad.Location = new Point(8, 109);
+					Pads.Add(gbcontrolpad);
+					ControllerBox.Controls.Add(Pads[1]);
+					break;
 			}
 		}
 
