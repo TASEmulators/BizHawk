@@ -613,6 +613,7 @@ namespace BizHawk.MultiClient
 		public bool GB_ForceDMG = false;
 		public bool GB_GBACGB = false;
 		public bool GB_MulticartCompat = false;
+		public string GB_PaletteFile = "";
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;

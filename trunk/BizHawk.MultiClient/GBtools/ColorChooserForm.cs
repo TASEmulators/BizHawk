@@ -12,12 +12,21 @@ namespace BizHawk.MultiClient.GBtools
 {
 	public partial class ColorChooserForm : Form
 	{
-		public ColorChooserForm()
+		ColorChooserForm()
 		{
 			InitializeComponent();
 		}
 
 		Color[] colors = new Color[12];
+
+		/// <summary>
+		/// the most recently loaded or saved palette file
+		/// </summary>
+		string currentfile;
+		/// <summary>
+		/// whether currentfile has been modified
+		/// </summary>
+		bool filemodified;
 
 		/// <summary>
 		/// gambatte's default dmg colors
@@ -132,8 +141,13 @@ namespace BizHawk.MultiClient.GBtools
 
 				if (result == System.Windows.Forms.DialogResult.OK)
 				{
-					colors[i] = dlg.Color;
-					sender.BackColor = colors[i];
+					if (colors[i] != dlg.Color)
+					{
+						colors[i] = dlg.Color;
+						sender.BackColor = colors[i];
+						filemodified = true;
+						label4.Text = "Current palette file (modified):";
+					}
 				}
 			}
 		}
@@ -220,7 +234,16 @@ namespace BizHawk.MultiClient.GBtools
 			{
 				//if (colors != null)
 				//	dlg.SetAllColors(colors);
+
 				dlg.SetAllColors(DefaultColors);
+				dlg.textBox1.Text = "(none)";
+				dlg.currentfile = "";
+				dlg.filemodified = false;
+
+				if (!string.IsNullOrEmpty(Global.Config.GB_PaletteFile))
+				{
+					dlg.LoadColorFile(Global.Config.GB_PaletteFile, false);
+				}
 
 				var result = dlg.ShowDialog(parent);
 				if (result != DialogResult.OK)
@@ -233,12 +256,13 @@ namespace BizHawk.MultiClient.GBtools
 					for (int i = 0; i < 12; i++)
 						colorints[i] = dlg.colors[i].ToArgb();
 					ColorUpdater(colorints);
+					Global.Config.GB_PaletteFile = dlg.currentfile;
 					return true;
 				}
 			}
 		}
 
-		void LoadColorFile(string filename)
+		void LoadColorFile(string filename, bool alert)
 		{
 			try
 			{
@@ -249,11 +273,16 @@ namespace BizHawk.MultiClient.GBtools
 						throw new Exception();
 
 					SetAllColors(newcolors);
+					textBox1.Text = Path.GetFileName(filename);
+					currentfile = filename;
+					filemodified = false;
+					label4.Text = "Current palette file:";
 				}
 			}
 			catch
 			{
-				MessageBox.Show(this, "Error loading .pal file!");
+				if (alert)
+					MessageBox.Show(this, "Error loading .pal file!");
 			}
 		}
 
@@ -268,6 +297,9 @@ namespace BizHawk.MultiClient.GBtools
 						// clear alpha because gambatte color files don't usually contain it
 						savecolors[i] = colors[i].ToArgb() & 0xffffff;
 					SavePalFile(f, savecolors);
+					currentfile = filename;
+					filemodified = false;
+					label4.Text = "Current palette file:";
 				}
 			}
 			catch
@@ -288,7 +320,7 @@ namespace BizHawk.MultiClient.GBtools
 				if (result != System.Windows.Forms.DialogResult.OK)
 					return;
 
-				LoadColorFile(ofd.FileName);
+				LoadColorFile(ofd.FileName, true);
 			}
 		}
 
@@ -300,7 +332,7 @@ namespace BizHawk.MultiClient.GBtools
 
 				if (files.Length > 1)
 					return;
-				LoadColorFile(files[0]);
+				LoadColorFile(files[0], true);
 			}
 		}
 
@@ -316,9 +348,10 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			using (var sfd = new SaveFileDialog())
 			{
-				sfd.InitialDirectory = Global.Config.PathGBPalettes;
+				sfd.InitialDirectory = Path.GetDirectoryName(currentfile);
 				sfd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				sfd.RestoreDirectory = true;
+				sfd.FileName = Path.GetFileName(currentfile);
 
 				var result = sfd.ShowDialog(this);
 				if (result != System.Windows.Forms.DialogResult.OK)
@@ -326,6 +359,10 @@ namespace BizHawk.MultiClient.GBtools
 
 				SaveColorFile(sfd.FileName);
 			}
+		}
+
+		private void OK_Click(object sender, EventArgs e)
+		{
 		}
 	}
 }

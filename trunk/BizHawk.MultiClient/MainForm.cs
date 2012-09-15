@@ -1416,6 +1416,16 @@ namespace BizHawk.MultiClient
 								if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
 								Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(game, rom.FileData);
 								nextEmulator = gb;
+								try
+								{
+									using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
+									{
+										int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
+										if (colors != null)
+											gb.ChangeDMGColors(colors);
+									}
+								}
+								catch { }
 								break;
 							case "COLV":
 								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
