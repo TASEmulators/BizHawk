@@ -26,14 +26,24 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// </summary>
 		LibGambatte.Buttons CurrentButtons = 0;
 
-		public Gameboy(byte[] romdata)
+		public Gameboy(GameInfo game, byte[] romdata)
 		{
 			GambatteState = LibGambatte.gambatte_create();
 
 			if (GambatteState == IntPtr.Zero)
 				throw new Exception("gambatte_create() returned null???");
 
-			if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, 0) != 0)
+			LibGambatte.LoadFlags flags = 0;
+
+			if (game["ForceDMG"])
+				flags |= LibGambatte.LoadFlags.FORCE_DMG;
+			if (game["GBACGB"])
+				flags |= LibGambatte.LoadFlags.GBA_CGB;
+			if (game["MulitcartCompat"])
+				flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
+
+
+			if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, flags) != 0)
 				throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 			InitSound();
