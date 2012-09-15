@@ -139,6 +139,7 @@ namespace BizHawk.MultiClient
 			SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
 			SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
 			SetDiffColumn(Global.Config.RamWatchShowDiffColumn);
+			SetDomainColumn(Global.Config.RamWatchShowDomainColumn);
 
 			if (Global.Config.RamWatchAddressWidth > 0)
 			{
@@ -811,6 +812,7 @@ namespace BizHawk.MultiClient
 			showChangeCountsToolStripMenuItem.Checked = true;
 			Global.Config.RamWatchShowChangeColumn = true;
 			Global.Config.RamWatchShowDiffColumn = false;
+			Global.Config.RamWatchShowDomainColumn = true;
 			WatchListView.Columns[0].Width = 60;
 			WatchListView.Columns[1].Width = 59;
 			WatchListView.Columns[2].Width = 0;
@@ -1109,6 +1111,21 @@ namespace BizHawk.MultiClient
 			}
 
 		}
+
+		private void SetDomainColumn(bool show)
+		{
+			Global.Config.RamWatchShowDomainColumn = show;
+			domainToolStripMenuItem.Checked = show;
+			if (show)
+			{
+				WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width = 55;
+			}
+			else
+			{
+				WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width = 0;
+			}
+		}
+
 		private void SetChangesColumn(bool show)
 		{
 			Global.Config.RamWatchShowChangeColumn = show;
@@ -1556,6 +1573,7 @@ namespace BizHawk.MultiClient
 			showPreviousValueToolStripMenuItem.Checked = Global.Config.RamWatchShowPrevColumn;
 			showChangeCountsToolStripMenuItem.Checked = Global.Config.RamWatchShowChangeColumn;
 			diffToolStripMenuItem.Checked = Global.Config.RamWatchShowDiffColumn;
+			domainToolStripMenuItem.Checked = Global.Config.RamWatchShowDomainColumn;
 		}
 
 		private void showDifferenceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1594,6 +1612,12 @@ namespace BizHawk.MultiClient
 					lastChangeToolStripMenuItem.Checked = true;
 					break;
 			}
+		}
+
+		private void domainToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowDomainColumn ^= true;
+			SetDomainColumn(Global.Config.RamWatchShowDomainColumn);
 		}
 	}
 }

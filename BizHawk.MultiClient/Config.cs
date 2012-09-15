@@ -262,6 +262,7 @@ namespace BizHawk.MultiClient
 		public bool RamWatchShowChangeColumn = true;
 		public bool RamWatchShowPrevColumn = false;
 		public bool RamWatchShowDiffColumn = false;
+		public bool RamWatchShowDomainColumn = true;
 		public int RamWatchAddressWidth = -1;
 		public int RamWatchValueWidth = -1;
 		public int RamWatchPrevWidth = -1;
