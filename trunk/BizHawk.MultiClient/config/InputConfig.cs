@@ -112,7 +112,7 @@ namespace BizHawk.MultiClient
 					autoController = Global.Config.GBAutoController;
 					break;
 				case "NES":
-					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NES_Controller;
 					controller = Global.Config.NESController;
 					autoController = Global.Config.NESAutoController;
 					break;
@@ -132,11 +132,11 @@ namespace BizHawk.MultiClient
 					autoController = Global.Config.SMSAutoController;
 					break;
 				case "TI-83":
-					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.TI83CalculatorCrop;
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.TI83_Controller;
 					controller = Global.Config.TI83Controller;
 					break;
 				case "SNES":
-					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SNESController;
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SNES_Controller;
 					controller = Global.Config.SNESController;
 					break;
 				default:

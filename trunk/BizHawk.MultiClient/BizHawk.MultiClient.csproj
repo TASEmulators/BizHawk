@@ -838,6 +838,9 @@
     <None Include="images\atari_controller.png" />
     <None Include="config\ControllerImages\snes-controlpad.jpg" />
     <None Include="config\ControllerImages\SNESController.jpg" />
+    <None Include="config\ControllerImages\NES_Controller.png" />
+    <None Include="config\ControllerImages\SNES_Controller.png" />
+    <None Include="config\ControllerImages\TI83_Controller.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <Content Include="output\gamedb_sega_md.txt" />
