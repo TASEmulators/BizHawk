@@ -45,11 +45,13 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
-			this.button3 = new System.Windows.Forms.Button();
-			this.button4 = new System.Windows.Forms.Button();
-			this.button5 = new System.Windows.Forms.Button();
-			this.button6 = new System.Windows.Forms.Button();
-			this.button7 = new System.Windows.Forms.Button();
+			this.buttonInterpolateBG = new System.Windows.Forms.Button();
+			this.buttonInterpolateSP1 = new System.Windows.Forms.Button();
+			this.buttonInterpolateSP2 = new System.Windows.Forms.Button();
+			this.buttonLoad = new System.Windows.Forms.Button();
+			this.buttonSave = new System.Windows.Forms.Button();
+			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.label4 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// panel1
@@ -191,73 +193,94 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.OK.Location = new System.Drawing.Point(145, 211);
+			this.OK.Location = new System.Drawing.Point(140, 221);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 22;
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
+			this.OK.Click += new System.EventHandler(this.OK_Click);
 			// 
 			// Cancel
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(226, 211);
+			this.Cancel.Location = new System.Drawing.Point(221, 221);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 23;
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			// 
-			// button3
+			// buttonInterpolateBG
 			// 
-			this.button3.Location = new System.Drawing.Point(226, 22);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(75, 23);
-			this.button3.TabIndex = 25;
-			this.button3.Text = "Interpolate";
-			this.button3.UseVisualStyleBackColor = true;
-			this.button3.Click += new System.EventHandler(this.button3_Click);
+			this.buttonInterpolateBG.Location = new System.Drawing.Point(226, 22);
+			this.buttonInterpolateBG.Name = "buttonInterpolateBG";
+			this.buttonInterpolateBG.Size = new System.Drawing.Size(75, 23);
+			this.buttonInterpolateBG.TabIndex = 25;
+			this.buttonInterpolateBG.Text = "Interpolate";
+			this.buttonInterpolateBG.UseVisualStyleBackColor = true;
+			this.buttonInterpolateBG.Click += new System.EventHandler(this.button3_Click);
 			// 
-			// button4
+			// buttonInterpolateSP1
 			// 
-			this.button4.Location = new System.Drawing.Point(226, 61);
-			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(75, 23);
-			this.button4.TabIndex = 26;
-			this.button4.Text = "Interpolate";
-			this.button4.UseVisualStyleBackColor = true;
-			this.button4.Click += new System.EventHandler(this.button4_Click);
+			this.buttonInterpolateSP1.Location = new System.Drawing.Point(226, 61);
+			this.buttonInterpolateSP1.Name = "buttonInterpolateSP1";
+			this.buttonInterpolateSP1.Size = new System.Drawing.Size(75, 23);
+			this.buttonInterpolateSP1.TabIndex = 26;
+			this.buttonInterpolateSP1.Text = "Interpolate";
+			this.buttonInterpolateSP1.UseVisualStyleBackColor = true;
+			this.buttonInterpolateSP1.Click += new System.EventHandler(this.button4_Click);
 			// 
-			// button5
+			// buttonInterpolateSP2
 			// 
-			this.button5.Location = new System.Drawing.Point(226, 98);
-			this.button5.Name = "button5";
-			this.button5.Size = new System.Drawing.Size(75, 23);
-			this.button5.TabIndex = 27;
-			this.button5.Text = "Interpolate";
-			this.button5.UseVisualStyleBackColor = true;
-			this.button5.Click += new System.EventHandler(this.button5_Click);
+			this.buttonInterpolateSP2.Location = new System.Drawing.Point(226, 98);
+			this.buttonInterpolateSP2.Name = "buttonInterpolateSP2";
+			this.buttonInterpolateSP2.Size = new System.Drawing.Size(75, 23);
+			this.buttonInterpolateSP2.TabIndex = 27;
+			this.buttonInterpolateSP2.Text = "Interpolate";
+			this.buttonInterpolateSP2.UseVisualStyleBackColor = true;
+			this.buttonInterpolateSP2.Click += new System.EventHandler(this.button5_Click);
 			// 
-			// button6
+			// buttonLoad
 			// 
-			this.button6.Location = new System.Drawing.Point(42, 137);
-			this.button6.Name = "button6";
-			this.button6.Size = new System.Drawing.Size(60, 23);
-			this.button6.TabIndex = 28;
-			this.button6.Text = "Load...";
-			this.button6.UseVisualStyleBackColor = true;
-			this.button6.Click += new System.EventHandler(this.button6_Click);
+			this.buttonLoad.Location = new System.Drawing.Point(42, 137);
+			this.buttonLoad.Name = "buttonLoad";
+			this.buttonLoad.Size = new System.Drawing.Size(60, 23);
+			this.buttonLoad.TabIndex = 28;
+			this.buttonLoad.Text = "Load...";
+			this.buttonLoad.UseVisualStyleBackColor = true;
+			this.buttonLoad.Click += new System.EventHandler(this.button6_Click);
 			// 
-			// button7
+			// buttonSave
 			// 
-			this.button7.Location = new System.Drawing.Point(114, 137);
-			this.button7.Name = "button7";
-			this.button7.Size = new System.Drawing.Size(60, 23);
-			this.button7.TabIndex = 29;
-			this.button7.Text = "Save...";
-			this.button7.UseVisualStyleBackColor = true;
-			this.button7.Click += new System.EventHandler(this.button7_Click);
+			this.buttonSave.Location = new System.Drawing.Point(114, 137);
+			this.buttonSave.Name = "buttonSave";
+			this.buttonSave.Size = new System.Drawing.Size(60, 23);
+			this.buttonSave.TabIndex = 29;
+			this.buttonSave.Text = "Save...";
+			this.buttonSave.UseVisualStyleBackColor = true;
+			this.buttonSave.Click += new System.EventHandler(this.button7_Click);
+			// 
+			// textBox1
+			// 
+			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox1.Location = new System.Drawing.Point(17, 195);
+			this.textBox1.Name = "textBox1";
+			this.textBox1.ReadOnly = true;
+			this.textBox1.Size = new System.Drawing.Size(279, 20);
+			this.textBox1.TabIndex = 30;
+			// 
+			// label4
+			// 
+			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(14, 179);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(95, 13);
+			this.label4.TabIndex = 31;
+			this.label4.Text = "Current palette file:";
 			// 
 			// ColorChooserForm
 			// 
@@ -266,12 +289,14 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(315, 244);
-			this.Controls.Add(this.button7);
-			this.Controls.Add(this.button6);
-			this.Controls.Add(this.button5);
-			this.Controls.Add(this.button4);
-			this.Controls.Add(this.button3);
+			this.ClientSize = new System.Drawing.Size(310, 254);
+			this.Controls.Add(this.label4);
+			this.Controls.Add(this.textBox1);
+			this.Controls.Add(this.buttonSave);
+			this.Controls.Add(this.buttonLoad);
+			this.Controls.Add(this.buttonInterpolateSP2);
+			this.Controls.Add(this.buttonInterpolateSP1);
+			this.Controls.Add(this.buttonInterpolateBG);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.label3);
@@ -318,10 +343,12 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.Button Cancel;
-		private System.Windows.Forms.Button button3;
-		private System.Windows.Forms.Button button4;
-		private System.Windows.Forms.Button button5;
-		private System.Windows.Forms.Button button6;
-		private System.Windows.Forms.Button button7;
+		private System.Windows.Forms.Button buttonInterpolateBG;
+		private System.Windows.Forms.Button buttonInterpolateSP1;
+		private System.Windows.Forms.Button buttonInterpolateSP2;
+		private System.Windows.Forms.Button buttonLoad;
+		private System.Windows.Forms.Button buttonSave;
+		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.Label label4;
 	}
 }
