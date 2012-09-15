@@ -247,11 +247,45 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private int? GetDomainInt(string name)
+		{
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			{
+				if (Global.Emulator.MemoryDomains[i].Name == name)
+				{
+					return i;
+				}
+			}
+
+			return null;
+		}
+
 		public void Restart()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
+			
+			int? theDomain = null;
+			if (Domain.Name.ToLower() == "rom file")
+			{
+				theDomain = 999;
+			}
+			else
+			{
+				theDomain = GetDomainInt(Domain.Name);
+			}
+			
+			
+			
 			SetMemoryDomainMenu(); //Calls update routines
+
+			if (theDomain != null)
+			{
+				SetMemoryDomain(theDomain ?? 0);
+			}
+			
+			
 			ResetScrollBar();
+
 
 			SetDataSize(DataSize);
 			UpdateValues();
