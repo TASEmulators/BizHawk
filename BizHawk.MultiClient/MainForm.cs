@@ -164,6 +164,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
+			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 #if WINDOWS
 			Global.Sound = new Sound(Handle, Global.DSound);
 #else
