@@ -101,6 +101,14 @@ namespace BizHawk.MultiClient.tools
 			IDW_ToggleBGInput.SetBindings(Global.Config.ToggleBackgroundInput);
 			IDW_Autohold.SetBindings(Global.Config.AutoholdBinding);
 			IDW_ClearAutohold.SetBindings(Global.Config.AutoholdClear);
+			IDW_SNES_ToggleBG1.SetBindings(Global.Config.ToggleSNESBG1Binding);
+			IDW_SNES_ToggleBG2.SetBindings(Global.Config.ToggleSNESBG2Binding);
+			IDW_SNES_ToggleBG3.SetBindings(Global.Config.ToggleSNESBG3Binding);
+			IDW_SNES_ToggleBG4.SetBindings(Global.Config.ToggleSNESBG4Binding);
+			IDW_SNES_ToggleOBJ1.SetBindings(Global.Config.ToggleSNESOBJ1Binding);
+			IDW_SNES_ToggleOBJ2.SetBindings(Global.Config.ToggleSNESOBJ2Binding);
+			IDW_SNES_ToggleOBJ3.SetBindings(Global.Config.ToggleSNESOBJ3Binding);
+			IDW_SNES_ToggleOBJ4.SetBindings(Global.Config.ToggleSNESOBJ4Binding);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -211,6 +219,15 @@ namespace BizHawk.MultiClient.tools
 
 			Global.Config.AutoholdBinding = IDW_Autohold.Text;
 			Global.Config.AutoholdClear = IDW_ClearAutohold.Text;
+
+			Global.Config.ToggleSNESBG1Binding = IDW_SNES_ToggleBG1.Text;
+			Global.Config.ToggleSNESBG2Binding = IDW_SNES_ToggleBG2.Text;
+			Global.Config.ToggleSNESBG3Binding = IDW_SNES_ToggleBG3.Text;
+			Global.Config.ToggleSNESBG4Binding = IDW_SNES_ToggleBG4.Text;
+			Global.Config.ToggleSNESOBJ1Binding = IDW_SNES_ToggleOBJ1.Text;
+			Global.Config.ToggleSNESOBJ2Binding = IDW_SNES_ToggleOBJ2.Text;
+			Global.Config.ToggleSNESOBJ3Binding = IDW_SNES_ToggleOBJ3.Text;
+			Global.Config.ToggleSNESOBJ4Binding = IDW_SNES_ToggleOBJ4.Text;
 
 			this.DialogResult = DialogResult.OK;
 			this.Close();

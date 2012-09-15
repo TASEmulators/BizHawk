@@ -377,10 +377,10 @@ namespace BizHawk.MultiClient
 		public bool SNES_ShowBG2_1 = true;
 		public bool SNES_ShowBG3_1 = true;
 		public bool SNES_ShowBG4_1 = true;
-		public bool SNES_ShowOBJ_0 = true;
-		public bool SNES_ShowOBJ_1 = true;
-		public bool SNES_ShowOBJ_2 = true;
-		public bool SNES_ShowOBJ_3 = true;
+		public bool SNES_ShowOBJ1 = true;
+		public bool SNES_ShowOBJ2 = true;
+		public bool SNES_ShowOBJ3 = true;
+		public bool SNES_ShowOBJ4 = true;
 
 		// PCE Graphics settings
 		public bool PCEDispBG1 = true;
@@ -546,6 +546,14 @@ namespace BizHawk.MultiClient
 		public string DecreaseWindowSize = "Alt+DownArrow";
 		public string AutoholdBinding = "";
 		public string AutoholdClear = "";
+		public string ToggleSNESBG1Binding = "";
+		public string ToggleSNESBG2Binding = "";
+		public string ToggleSNESBG3Binding = "";
+		public string ToggleSNESBG4Binding = "";
+		public string ToggleSNESOBJ1Binding = "";
+		public string ToggleSNESOBJ2Binding = "";
+		public string ToggleSNESOBJ3Binding = "";
+		public string ToggleSNESOBJ4Binding = "";
 
 		// NES Sound settings
 		public bool NESEnableSquare1 = true;
