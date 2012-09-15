@@ -353,10 +353,10 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_1;
 			Global.CoreInputComm.SNES_ShowBG4_0 = Global.Config.SNES_ShowBG4_0;
 			Global.CoreInputComm.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_1;
-			Global.CoreInputComm.SNES_ShowOBJ_0 = Global.Config.SNES_ShowOBJ_0;
-			Global.CoreInputComm.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ_1;
-			Global.CoreInputComm.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ_2;
-			Global.CoreInputComm.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ_3;
+			Global.CoreInputComm.SNES_ShowOBJ_0 = Global.Config.SNES_ShowOBJ1;
+			Global.CoreInputComm.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ2;
+			Global.CoreInputComm.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ3;
+			Global.CoreInputComm.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ4;
 		}
 
 		void SyncPresentationMode()
@@ -583,12 +583,24 @@ namespace BizHawk.MultiClient
 				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
-				"Autohold", "Clear Autohold"}
+				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
+				"SNES Toggle OBJ 4" }
 		};
 
 		private void InitControls()
 		{
 			var controls = new Controller(ClientControlsDef);
+
+			controls.BindMulti("SNES Toggle BG 1", Global.Config.ToggleSNESBG1Binding);
+			controls.BindMulti("SNES Toggle BG 2", Global.Config.ToggleSNESBG2Binding);
+			controls.BindMulti("SNES Toggle BG 3", Global.Config.ToggleSNESBG3Binding);
+			controls.BindMulti("SNES Toggle BG 4", Global.Config.ToggleSNESBG4Binding);
+
+			controls.BindMulti("SNES Toggle OBJ 1", Global.Config.ToggleSNESOBJ1Binding);
+			controls.BindMulti("SNES Toggle OBJ 2", Global.Config.ToggleSNESOBJ2Binding);
+			controls.BindMulti("SNES Toggle OBJ 3", Global.Config.ToggleSNESOBJ3Binding);
+			controls.BindMulti("SNES Toggle OBJ 4", Global.Config.ToggleSNESOBJ4Binding);
+
 			controls.BindMulti("IncreaseWindowSize", Global.Config.IncreaseWindowSize);
 			controls.BindMulti("DecreaseWindowSize", Global.Config.DecreaseWindowSize);
 			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
@@ -1743,6 +1755,32 @@ namespace BizHawk.MultiClient
 			{
 				default:
 					return false;
+
+				case "SNES Toggle BG 1":
+					SNES_ToggleBG1();
+					break;
+				case "SNES Toggle BG 2":
+					SNES_ToggleBG2();
+					break;
+				case "SNES Toggle BG 3":
+					SNES_ToggleBG3();
+					break;
+				case "SNES Toggle BG 4":
+					SNES_ToggleBG4();
+					break;
+				case "SNES Toggle OBJ 1":
+					SNES_ToggleOBJ1();
+					break;
+				case "SNES Toggle OBJ 2":
+					SNES_ToggleOBJ2();
+					break;
+				case "SNES Toggle OBJ 3":
+					SNES_ToggleOBJ3();
+					break;
+				case "SNES Toggle OBJ 4":
+					SNES_ToggleOBJ4();
+					break;
+
 				case "Clear Autohold":
 					ClearAutohold();
 					break;
