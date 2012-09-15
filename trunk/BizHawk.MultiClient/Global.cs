@@ -177,6 +177,8 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public static StickyXORAdapter StickyXORAdapter = new StickyXORAdapter();
 
+		public static AutoFireStickyXORAdapter AutofireStickyXORAdapter = new AutoFireStickyXORAdapter();
+
 		/// <summary>
 		/// will OR together two IControllers
 		/// </summary>

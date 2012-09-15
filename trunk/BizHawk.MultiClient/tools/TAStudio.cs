@@ -502,7 +502,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void ClearVirtualPadHolds()
+		public void ClearVirtualPadHolds()
 		{
 			foreach (var controller in ControllerBox.Controls)
 			{

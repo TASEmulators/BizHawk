@@ -535,6 +535,13 @@ namespace BizHawk.MultiClient
 					disp.Append(' ');
 				}
 
+				foreach (string s in Global.AutofireStickyXORAdapter.CurrentStickies)
+				{
+					disp.Append("Auto-");
+					disp.Append(s);
+					disp.Append(' ');
+				}
+
 				g.DrawString(disp.ToString(), MessageFont, Color.White, GetX(g, 0, 3, MessageFont, disp.ToString()), 0);
 			}
 

@@ -462,8 +462,16 @@ namespace BizHawk.MultiClient
 				ProcessInput();
 				Global.ClientControls.LatchFromPhysical(Global.HotkeyCoalescer);
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
+
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
+
+				if (Global.ClientControls["Autohold"])
+				{
+					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
+				}
+
 				Global.ClickyVirtualPadController.FrameTick();
 
 #if WINDOWS
@@ -573,7 +581,8 @@ namespace BizHawk.MultiClient
 				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor",
 				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input"}
+				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
+				"Autohold", "Clear Autohold"}
 		};
 
 		private void InitControls()
@@ -659,6 +668,8 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Record AVI/WAV", Global.Config.AVIRecordBinding);
 			controls.BindMulti("Stop AVI/WAV", Global.Config.AVIStopBinding);
 			controls.BindMulti("Toggle Menu", Global.Config.ToggleMenuBinding);
+			controls.BindMulti("Autohold", Global.Config.AutoholdBinding);
+			controls.BindMulti("Clear Autohold", Global.Config.AutoholdClear);
 
 			Global.ClientControls = controls;
 
@@ -1193,8 +1204,9 @@ namespace BizHawk.MultiClient
 			Global.UD_LR_ControllerAdapter.Source = Global.OrControllerAdapter;
 
 			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
+			Global.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
 
-			Global.MultitrackRewiringControllerAdapter.Source = Global.StickyXORAdapter;
+			Global.MultitrackRewiringControllerAdapter.Source = Global.AutofireStickyXORAdapter;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
 			Global.ControllerOutput.Source = Global.MovieOutputHardpoint;
 
@@ -1489,6 +1501,9 @@ namespace BizHawk.MultiClient
 
 				CaptureRewindState();
 
+				Global.StickyXORAdapter.ClearStickies();
+				Global.AutofireStickyXORAdapter.ClearStickies();
+
 				return true;
 			}
 		}
@@ -1709,6 +1724,14 @@ namespace BizHawk.MultiClient
 
 		}
 
+		private void ClearAutohold()
+		{
+			Global.StickyXORAdapter.ClearStickies();
+			Global.AutofireStickyXORAdapter.ClearStickies();
+			TAStudio1.ClearVirtualPadHolds();
+			Global.OSD.AddMessage("Autohold keys cleared");
+		}
+
 		bool CheckHotkey(string trigger)
 		{
 			//todo - could have these in a table somehow ?
@@ -1716,6 +1739,9 @@ namespace BizHawk.MultiClient
 			{
 				default:
 					return false;
+				case "Clear Autohold":
+					ClearAutohold();
+					break;
 				case "IncreaseWindowSize":
 					IncreaseWindowSize();
 					break;
