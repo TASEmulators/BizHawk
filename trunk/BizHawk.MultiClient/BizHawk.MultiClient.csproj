@@ -381,6 +381,12 @@
     <Compile Include="tools\VirtualPadGBControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPadSNES.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSNESControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\WatchCommon.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
