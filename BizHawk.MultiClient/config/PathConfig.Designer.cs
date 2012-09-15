@@ -247,14 +247,17 @@
 			this.INTVSaveRAMDescription = new System.Windows.Forms.Label();
 			this.INTVSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.MovieBackupsBox = new System.Windows.Forms.TextBox();
+			this.BrowseMovieBackups = new System.Windows.Forms.Button();
+			this.MovieBackupsDescription = new System.Windows.Forms.Label();
 			this.BasePathBox = new System.Windows.Forms.TextBox();
 			this.BrowseBase = new System.Windows.Forms.Button();
 			this.BaseDescription = new System.Windows.Forms.Label();
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
 			this.SaveButton = new System.Windows.Forms.Button();
-			this.MovieBackupsBox = new System.Windows.Forms.TextBox();
-			this.BrowseMovieBackups = new System.Windows.Forms.Button();
-			this.MovieBackupsDescription = new System.Windows.Forms.Label();
+			this.GBPalettesDescription = new System.Windows.Forms.Label();
+			this.GBBrowsePalettes = new System.Windows.Forms.Button();
+			this.GBPalettesBox = new System.Windows.Forms.TextBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -1755,6 +1758,9 @@
 			// 
 			// tabPage5
 			// 
+			this.tabPage5.Controls.Add(this.GBPalettesBox);
+			this.tabPage5.Controls.Add(this.GBBrowsePalettes);
+			this.tabPage5.Controls.Add(this.GBPalettesDescription);
 			this.tabPage5.Controls.Add(this.GBCheatsDescription);
 			this.tabPage5.Controls.Add(this.GBBrowseCheats);
 			this.tabPage5.Controls.Add(this.GBCheatsBox);
@@ -2678,6 +2684,36 @@
 			this.tabPage7.Text = "Tools";
 			this.tabPage7.UseVisualStyleBackColor = true;
 			// 
+			// MovieBackupsBox
+			// 
+			this.MovieBackupsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.MovieBackupsBox.Location = new System.Drawing.Point(13, 49);
+			this.MovieBackupsBox.Name = "MovieBackupsBox";
+			this.MovieBackupsBox.Size = new System.Drawing.Size(332, 20);
+			this.MovieBackupsBox.TabIndex = 129;
+			// 
+			// BrowseMovieBackups
+			// 
+			this.BrowseMovieBackups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseMovieBackups.Image = ((System.Drawing.Image)(resources.GetObject("BrowseMovieBackups.Image")));
+			this.BrowseMovieBackups.Location = new System.Drawing.Point(353, 49);
+			this.BrowseMovieBackups.Name = "BrowseMovieBackups";
+			this.BrowseMovieBackups.Size = new System.Drawing.Size(26, 23);
+			this.BrowseMovieBackups.TabIndex = 130;
+			this.BrowseMovieBackups.UseVisualStyleBackColor = true;
+			this.BrowseMovieBackups.Click += new System.EventHandler(this.BrowseMovieBackups_Click);
+			// 
+			// MovieBackupsDescription
+			// 
+			this.MovieBackupsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.MovieBackupsDescription.AutoSize = true;
+			this.MovieBackupsDescription.Location = new System.Drawing.Point(385, 53);
+			this.MovieBackupsDescription.Name = "MovieBackupsDescription";
+			this.MovieBackupsDescription.Size = new System.Drawing.Size(80, 13);
+			this.MovieBackupsDescription.TabIndex = 128;
+			this.MovieBackupsDescription.Text = "Movie backups";
+			// 
 			// BasePathBox
 			// 
 			this.BasePathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -2730,35 +2766,35 @@
 			this.SaveButton.UseVisualStyleBackColor = true;
 			this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
 			// 
-			// MovieBackupsBox
+			// GBPalettesDescription
 			// 
-			this.MovieBackupsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.GBPalettesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.GBPalettesDescription.AutoSize = true;
+			this.GBPalettesDescription.Location = new System.Drawing.Point(385, 213);
+			this.GBPalettesDescription.Name = "GBPalettesDescription";
+			this.GBPalettesDescription.Size = new System.Drawing.Size(40, 13);
+			this.GBPalettesDescription.TabIndex = 102;
+			this.GBPalettesDescription.Text = "Palette";
+			// 
+			// GBBrowsePalettes
+			// 
+			this.GBBrowsePalettes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.GBBrowsePalettes.Image = ((System.Drawing.Image)(resources.GetObject("GBBrowsePalettes.Image")));
+			this.GBBrowsePalettes.Location = new System.Drawing.Point(353, 209);
+			this.GBBrowsePalettes.Name = "GBBrowsePalettes";
+			this.GBBrowsePalettes.Size = new System.Drawing.Size(26, 23);
+			this.GBBrowsePalettes.TabIndex = 103;
+			this.GBBrowsePalettes.UseVisualStyleBackColor = true;
+			this.GBBrowsePalettes.Click += new System.EventHandler(this.GBBrowsePalettes_Click);
+			// 
+			// GBPalettesBox
+			// 
+			this.GBPalettesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.MovieBackupsBox.Location = new System.Drawing.Point(13, 49);
-			this.MovieBackupsBox.Name = "MovieBackupsBox";
-			this.MovieBackupsBox.Size = new System.Drawing.Size(332, 20);
-			this.MovieBackupsBox.TabIndex = 129;
-			// 
-			// BrowseMovieBackups
-			// 
-			this.BrowseMovieBackups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BrowseMovieBackups.Image = ((System.Drawing.Image)(resources.GetObject("BrowseMovieBackups.Image")));
-			this.BrowseMovieBackups.Location = new System.Drawing.Point(353, 49);
-			this.BrowseMovieBackups.Name = "BrowseMovieBackups";
-			this.BrowseMovieBackups.Size = new System.Drawing.Size(26, 23);
-			this.BrowseMovieBackups.TabIndex = 130;
-			this.BrowseMovieBackups.UseVisualStyleBackColor = true;
-			this.BrowseMovieBackups.Click += new System.EventHandler(this.BrowseMovieBackups_Click);
-			// 
-			// MovieBackupsDescription
-			// 
-			this.MovieBackupsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.MovieBackupsDescription.AutoSize = true;
-			this.MovieBackupsDescription.Location = new System.Drawing.Point(385, 53);
-			this.MovieBackupsDescription.Name = "MovieBackupsDescription";
-			this.MovieBackupsDescription.Size = new System.Drawing.Size(80, 13);
-			this.MovieBackupsDescription.TabIndex = 128;
-			this.MovieBackupsDescription.Text = "Movie backups";
+			this.GBPalettesBox.Location = new System.Drawing.Point(12, 209);
+			this.GBPalettesBox.Name = "GBPalettesBox";
+			this.GBPalettesBox.Size = new System.Drawing.Size(332, 20);
+			this.GBPalettesBox.TabIndex = 104;
 			// 
 			// PathConfig
 			// 
@@ -3036,5 +3072,8 @@
 		private System.Windows.Forms.TextBox MovieBackupsBox;
 		private System.Windows.Forms.Button BrowseMovieBackups;
 		private System.Windows.Forms.Label MovieBackupsDescription;
+		private System.Windows.Forms.TextBox GBPalettesBox;
+		private System.Windows.Forms.Button GBBrowsePalettes;
+		private System.Windows.Forms.Label GBPalettesDescription;
     }
 }
