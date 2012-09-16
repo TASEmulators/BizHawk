@@ -130,9 +130,10 @@ namespace BizHawk.MultiClient.GBtools
 
 				// custom colors are ints, not Color structs?
 				// and they don't work right unless the alpha bits are set to 0
+				// and the rgb order is switched
 				int[] customs = new int[12];
 				for (int j = 0; j < customs.Length; j++)
-					customs[j] = colors[j].ToArgb() & 0xffffff;
+					customs[j] = colors[j].R | colors[j].G << 8 | colors[j].B << 16;
 
 				dlg.CustomColors = customs;
 				dlg.FullOpen = true;
@@ -300,6 +301,7 @@ namespace BizHawk.MultiClient.GBtools
 					currentfile = filename;
 					filemodified = false;
 					label4.Text = "Current palette file:";
+					textBox1.Text = Path.GetFileName(filename);
 				}
 			}
 			catch
