@@ -488,11 +488,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void ColorPanel_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		private void XNumeric_Click(object sender, EventArgs e)
 		{
 			XNumericChange();
@@ -503,19 +498,28 @@ namespace BizHawk.MultiClient
 			YNumericChange();
 		}
 
+		private void ColorPanel_Click(object sender, EventArgs e)
+		{
+			if (MessageColorDialog.ShowDialog() == DialogResult.OK)
+				SetColorBox();
+		}
+
 		private void AlertColorPanel_Click(object sender, EventArgs e)
 		{
-
+			if (AlertColorDialog.ShowDialog() == DialogResult.OK)
+				SetColorBox();
 		}
 
 		private void LInputColorPanel_Click(object sender, EventArgs e)
 		{
-
+			if (LInputColorDialog.ShowDialog() == DialogResult.OK)
+				SetColorBox();
 		}
 
 		private void MovieInputColor_Click(object sender, EventArgs e)
 		{
-
+			if (MovieInputColorDialog.ShowDialog() == DialogResult.OK)
+				SetColorBox();
 		}
 	}
 }
