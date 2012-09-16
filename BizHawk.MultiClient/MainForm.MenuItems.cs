@@ -362,10 +362,10 @@ namespace BizHawk.MultiClient
 
 		private void powerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PowerCycle();
+			RebootCore();
 		}
 
-		void PowerCycle()
+		void RebootCore()
 		{
 			LoadRom(CurrentlyOpenRom);
 		}
@@ -1478,14 +1478,14 @@ namespace BizHawk.MultiClient
 
 		private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			powerToolStripMenuItem.Enabled = !IsNullEmulator();
+			rebootCoreToolStripMenuItem.Enabled = !IsNullEmulator();
 			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset");
 
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
 			if (didMenuPause) pauseToolStripMenuItem.Checked = wasPaused;
 
 			pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.EmulatorPauseBinding;
-			powerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HardResetBinding;
+			rebootCoreToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RebootCoreResetBinding;
 			resetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SoftResetBinding;
 		}
 
