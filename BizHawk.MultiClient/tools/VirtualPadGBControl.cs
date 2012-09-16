@@ -117,7 +117,6 @@ namespace BizHawk.MultiClient
 			}
 
 			B1.Checked = false;
-			B2.Checked = false;
 
 			Global.StickyXORAdapter.SetSticky("Reset", false);
 		}
