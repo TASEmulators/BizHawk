@@ -329,7 +329,7 @@
 			this.MovieInputColor.Name = "MovieInputColor";
 			this.MovieInputColor.Size = new System.Drawing.Size(20, 20);
 			this.MovieInputColor.TabIndex = 9;
-			this.MovieInputColor.DoubleClick += new System.EventHandler(this.MovieInputColor_DoubleClick);
+			this.MovieInputColor.Click += new System.EventHandler(this.MovieInputColor_Click);
 			// 
 			// LInputColorPanel
 			// 
@@ -338,7 +338,7 @@
 			this.LInputColorPanel.Name = "LInputColorPanel";
 			this.LInputColorPanel.Size = new System.Drawing.Size(20, 20);
 			this.LInputColorPanel.TabIndex = 7;
-			this.LInputColorPanel.DoubleClick += new System.EventHandler(this.LInputColorPanel_DoubleClick);
+			this.LInputColorPanel.Click += new System.EventHandler(this.LInputColorPanel_Click);
 			// 
 			// AlertColorPanel
 			// 
@@ -347,7 +347,7 @@
 			this.AlertColorPanel.Name = "AlertColorPanel";
 			this.AlertColorPanel.Size = new System.Drawing.Size(20, 20);
 			this.AlertColorPanel.TabIndex = 7;
-			this.AlertColorPanel.DoubleClick += new System.EventHandler(this.AlertColorPanel_DoubleClick);
+			this.AlertColorPanel.Click += new System.EventHandler(this.AlertColorPanel_Click);
 			// 
 			// ColorPanel
 			// 
@@ -356,7 +356,7 @@
 			this.ColorPanel.Name = "ColorPanel";
 			this.ColorPanel.Size = new System.Drawing.Size(20, 20);
 			this.ColorPanel.TabIndex = 7;
-			this.ColorPanel.DoubleClick += new System.EventHandler(this.ColorPanel_DoubleClick);
+			this.ColorPanel.Click += new System.EventHandler(this.ColorPanel_Click);
 			// 
 			// label7
 			// 
@@ -441,6 +441,10 @@
 			this.ColorText.ReadOnly = true;
 			this.ColorText.Size = new System.Drawing.Size(59, 20);
 			this.ColorText.TabIndex = 2;
+			// 
+			// MessageColorDialog
+			// 
+			this.MessageColorDialog.FullOpen = true;
 			// 
 			// Cancel
 			// 
@@ -601,6 +605,18 @@
 			this.TL.TabStop = true;
 			this.TL.UseVisualStyleBackColor = true;
 			this.TL.Click += new System.EventHandler(this.TL_CheckedChanged);
+			// 
+			// AlertColorDialog
+			// 
+			this.AlertColorDialog.FullOpen = true;
+			// 
+			// LInputColorDialog
+			// 
+			this.LInputColorDialog.FullOpen = true;
+			// 
+			// MovieInputColorDialog
+			// 
+			this.MovieInputColorDialog.FullOpen = true;
 			// 
 			// MessageConfig
 			// 
