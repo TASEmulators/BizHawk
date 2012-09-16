@@ -209,7 +209,14 @@ namespace BizHawk.MultiClient
 		{
 			if (frame >= StateFirstIndex && frame <= StateLastIndex && frame <= StateRecords.Count)
 			{
-				return StateRecords[frame].Lagged;
+				if (frame < StateRecords.Count)
+				{
+					return StateRecords[frame].Lagged;
+				}
+				else
+				{
+					return false;
+				}
 			}
 			else
 			{
