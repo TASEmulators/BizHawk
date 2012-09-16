@@ -8,7 +8,6 @@ using BizHawk.Emulation.CPUs.Z80;
 
 namespace BizHawk.Emulation.Consoles.Calculator
 {
-	[CoreVersion("0.8.1", FriendlyName = "TI-83")]
 	public class TI83 : IEmulator
 	{
 		//hardware

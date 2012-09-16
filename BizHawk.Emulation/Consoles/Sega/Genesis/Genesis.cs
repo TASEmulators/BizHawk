@@ -11,7 +11,6 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-	[CoreVersion("0.0.0.1", FriendlyName = "MegaHawk")]
 	public sealed partial class Genesis : IEmulator
 	{
 		private int _lagcount = 0;

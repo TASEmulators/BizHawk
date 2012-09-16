@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
 	public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
 
-	[CoreVersion("1.2.1", FriendlyName = "TurboHawk16")]
 	public sealed partial class PCEngine : IEmulator
 	{
 		// ROM

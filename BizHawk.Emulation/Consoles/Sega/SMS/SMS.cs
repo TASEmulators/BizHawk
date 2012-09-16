@@ -16,7 +16,6 @@ using BizHawk.Emulation.Sound;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-    [CoreVersion("1.0.1", FriendlyName = "Sega 8-bit")]
 	public sealed partial class SMS : IEmulator
 	{
 		// Constants
