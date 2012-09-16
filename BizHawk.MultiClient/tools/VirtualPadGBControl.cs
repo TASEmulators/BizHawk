@@ -29,7 +29,7 @@ namespace BizHawk.MultiClient
 			this.B1.AutoSize = true;
 			this.B1.Location = ButtonPoints[0];
 			this.B1.TabIndex = 5;
-			this.B1.Text = "Reset";
+			this.B1.Text = "Power";
 			this.B1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.B1.UseVisualStyleBackColor = true;
 			this.B1.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
@@ -97,7 +97,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == B1)
 			{
-				Global.StickyXORAdapter.SetSticky("Reset", B1.Checked);
+				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
 				if (B1.Checked == true)
 				{
 					B1.BackColor = Color.Pink;
@@ -118,7 +118,7 @@ namespace BizHawk.MultiClient
 
 			B1.Checked = false;
 
-			Global.StickyXORAdapter.SetSticky("Reset", false);
+			Global.StickyXORAdapter.SetSticky("Power", false);
 		}
 	}
 }

@@ -375,6 +375,11 @@ namespace BizHawk.MultiClient
 			SoftReset();
 		}
 
+		private void hardResetToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			HardReset();
+		}
+
 		private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (EmulatorPaused == true)
@@ -1480,6 +1485,7 @@ namespace BizHawk.MultiClient
 		{
 			rebootCoreToolStripMenuItem.Enabled = !IsNullEmulator();
 			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset");
+			hardResetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power");
 
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
 			if (didMenuPause) pauseToolStripMenuItem.Checked = wasPaused;
