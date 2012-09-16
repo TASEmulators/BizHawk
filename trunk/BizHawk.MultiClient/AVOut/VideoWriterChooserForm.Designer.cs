@@ -47,6 +47,7 @@
 			this.tableLayoutPanel1.SetColumnSpan(this.listBox1, 2);
 			this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listBox1.FormattingEnabled = true;
+			this.listBox1.IntegralHeight = false;
 			this.listBox1.Location = new System.Drawing.Point(3, 3);
 			this.listBox1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.listBox1.Name = "listBox1";
