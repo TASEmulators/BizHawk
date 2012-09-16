@@ -29,7 +29,6 @@ namespace BizHawk.MultiClient
 		{
 			VideoWriterChooserForm dlg = new VideoWriterChooserForm();
 
-			dlg.label1.Text = "Description:";
 			dlg.label2.Text = "";
 
 			dlg.listBox1.BeginUpdate();
