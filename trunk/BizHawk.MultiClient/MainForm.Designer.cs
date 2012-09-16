@@ -284,6 +284,7 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.hardResetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -975,7 +976,8 @@
             this.pauseToolStripMenuItem,
             this.rebootCoreToolStripMenuItem,
             this.toolStripSeparator1,
-            this.resetToolStripMenuItem});
+            this.resetToolStripMenuItem,
+            this.hardResetToolStripMenuItem});
 			this.emulationToolStripMenuItem.Name = "emulationToolStripMenuItem";
 			this.emulationToolStripMenuItem.Size = new System.Drawing.Size(73, 19);
 			this.emulationToolStripMenuItem.Text = "&Emulation";
@@ -2445,6 +2447,13 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
+			// hardResetToolStripMenuItem
+			// 
+			this.hardResetToolStripMenuItem.Name = "hardResetToolStripMenuItem";
+			this.hardResetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.hardResetToolStripMenuItem.Text = "&Hard Reset";
+			this.hardResetToolStripMenuItem.Click += new System.EventHandler(this.hardResetToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2741,6 +2750,7 @@
 		private System.Windows.Forms.ToolStripMenuItem gBAInCGBModeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem multicartCompatibilityToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private System.Windows.Forms.ToolStripMenuItem hardResetToolStripMenuItem;
     }
 }
 
