@@ -406,9 +406,13 @@ namespace BizHawk.MultiClient
 				input.Append(IsBasePressed("Reset") ? "r" : ".");
 				input.Append(IsBasePressed("Select") ? "s" : ".");
 			}
-			if (ControlType == "NES Controller" || ControlType == "Gameboy Controller")
+			if (ControlType == "NES Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] : ".");
+			}
+			if (ControlType == "Gameboy Controller")
+			{
+				input.Append(IsBasePressed("Power") ? Global.COMMANDS[ControlType]["Power"] : ".");
 			}
 			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller")
 			{
@@ -648,7 +652,7 @@ namespace BizHawk.MultiClient
 			if (ControlType == "Gameboy Controller")
 			{
 				if (mnemonic.Length < 2) return;
-				Force("Reset", mnemonic[1] != '.');
+				Force("Power", mnemonic[1] != '.');
 			}
 			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller")
 			{

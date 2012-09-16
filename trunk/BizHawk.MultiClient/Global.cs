@@ -118,7 +118,7 @@ namespace BizHawk.MultiClient
 		public static readonly Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>()
 		{
 			{"Atari 2600 Basic Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
-			{"Gameboy Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
+			{"Gameboy Controller", new Dictionary<string, string>() {{"Power", "P"}}},
 			{"Genesis 3-Button Controller", new Dictionary<string, string>() {}},
 			{"NES Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
 			{"SNES Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
