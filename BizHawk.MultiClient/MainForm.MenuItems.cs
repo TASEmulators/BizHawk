@@ -1493,6 +1493,7 @@ namespace BizHawk.MultiClient
 			pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.EmulatorPauseBinding;
 			rebootCoreToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RebootCoreResetBinding;
 			resetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SoftResetBinding;
+			hardResetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HardResetBinding;
 		}
 
 		private void pCEToolStripMenuItem_DropDownOpened(object sender, EventArgs e)

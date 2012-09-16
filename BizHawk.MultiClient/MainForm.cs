@@ -584,7 +584,7 @@ namespace BizHawk.MultiClient
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
 				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4" }
+				"SNES Toggle OBJ 4", "Reboot Core" }
 		};
 
 		private void InitControls()
@@ -605,7 +605,8 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("DecreaseWindowSize", Global.Config.DecreaseWindowSize);
 			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
 			controls.BindMulti("Rewind", Global.Config.RewindBinding);
-			controls.BindMulti("Hard Reset", Global.Config.RebootCoreResetBinding);
+			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
+			controls.BindMulti("Reboot Core", Global.Config.RebootCoreResetBinding);
 			controls.BindMulti("Emulator Pause", Global.Config.EmulatorPauseBinding);
 			controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
 			controls.BindMulti("Increase Speed", Global.Config.IncreaseSpeedBinding);
@@ -1833,7 +1834,7 @@ namespace BizHawk.MultiClient
 					Global.OSD.AddMessage("Unthrottled: " + unthrottled);
 					break;
 
-				case "Hard Reset":
+				case "Reboot Core":
 					{
 						bool autoSaveState = Global.Config.AutoSavestates;
 						Global.Config.AutoSavestates = false;
@@ -1842,6 +1843,9 @@ namespace BizHawk.MultiClient
 						break;
 					}
 
+				case "Hard Reset":
+					HardReset();
+					break;
 				case "Screenshot":
 					TakeScreenshot();
 					break;

@@ -468,6 +468,7 @@ namespace BizHawk.MultiClient
 		public string ToggleBackgroundInput = "";
 		public string IncreaseSpeedBinding = "Equals";
 		public string DecreaseSpeedBinding = "Minus";
+		public string HardResetBinding = "";
 		public string RebootCoreResetBinding = "Ctrl+R";
 		public string FastForwardBinding = "Tab, J1 B6";
 		public string RewindBinding = "Shift+R, J1 B5";
