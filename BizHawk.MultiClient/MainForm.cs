@@ -763,8 +763,8 @@ namespace BizHawk.MultiClient
 				snesControls.BindMulti("P" + (i + 1) + " Y", Global.Config.SNESController[i].Y);
 				snesControls.BindMulti("P" + (i + 1) + " L", Global.Config.SNESController[i].L);
 				snesControls.BindMulti("P" + (i + 1) + " R", Global.Config.SNESController[i].R);
-				snesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.NESController[i].Select);
-				snesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESController[i].Start);
+				snesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.SNESController[i].Select);
+				snesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.SNESController[i].Start);
 			}
 			Global.SNESControls = snesControls;
 
