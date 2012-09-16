@@ -8,7 +8,6 @@ using BizHawk.Emulation.CPUs.M6502;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	[CoreVersion("0.9.9.9",FriendlyName="NESHawk")]
 	public partial class NES : IEmulator
 	{
 		//hardware/state

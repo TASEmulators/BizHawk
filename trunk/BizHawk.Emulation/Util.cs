@@ -43,44 +43,6 @@ namespace BizHawk
 		}
 	}
 
-	[AttributeUsage(AttributeTargets.Class)]
-	public class CoreVersion : Attribute
-	{
-		public CoreVersion(string version)
-		{
-			this.Version = version;
-		}
-
-		public string Version { get; set; }
-		public string FriendlyName { get; set; }
-	}
-
-	public static class Introspection
-	{
-		public class CoreInfo
-		{
-			public string ClassName, Version, FriendlyName;
-		}
-
-		public static List<CoreInfo> GetCoreInfo()
-		{
-			var ret = new List<CoreInfo>();
-			//scan types in this assembly to find ones that implement boards to add them to the list
-			foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
-			{
-				var attrs = type.GetCustomAttributes(typeof(CoreVersion), true);
-				if (attrs.Length == 0) continue;
-				var cv = (CoreVersion)attrs[0];
-				var ci = new CoreInfo();
-				ci.ClassName = type.Name;
-				ci.FriendlyName = cv.FriendlyName;
-				if (string.IsNullOrEmpty(ci.FriendlyName)) ci.FriendlyName = ci.ClassName;
-				ci.Version = cv.Version;
-				ret.Add(ci);
-			}
-			return ret;
-		}
-	}
 
 	public static class Extensions
 	{
