@@ -46,6 +46,9 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, flags) != 0)
 				throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
+			// set real default colors (before anyone mucks with them at all)
+			ChangeDMGColors(new int[] { 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157 });
+			
 			InitSound();
 
 			Frame = 0;
