@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_power();
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_reset();
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_run();
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_term();
@@ -187,6 +189,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if (disposed) return;
 			disposed = true;
 
+			disposedSaveRam = ReadSaveRam();
+
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(null);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_poll(null);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_state(null);
@@ -197,6 +201,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			resampler.Dispose();
 		}
+		//save the save memory before disposing the core, so we can pull from it in the future after the core is terminated
+		//that will be necessary to get it saving to disk
+		byte[] disposedSaveRam;
+
 
 		//we can only have one active snes core at a time, due to libsnes being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
@@ -300,6 +308,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public void FrameAdvance(bool render)
 		{
+			bool resetSignal = Controller["Reset"];
+			if (resetSignal) LibsnesDll.snes_reset();
+
+			bool powerSignal = Controller["Power"];
+			if (powerSignal) LibsnesDll.snes_power();
+
 			LibsnesDll.snes_set_layer_enable(0, 0, CoreInputComm.SNES_ShowBG1_0);
 			LibsnesDll.snes_set_layer_enable(0, 1, CoreInputComm.SNES_ShowBG1_1);
 			LibsnesDll.snes_set_layer_enable(1, 0, CoreInputComm.SNES_ShowBG2_0);
@@ -392,7 +406,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			{
 				Name = "SNES Controller",
 				BoolButtons = {
-					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 B", "P1 A", "P1 X", "P1 Y", "P1 L", "P1 R", "Reset",
+					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 B", "P1 A", "P1 X", "P1 Y", "P1 L", "P1 R", "Reset", "Power",
 					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 B", "P2 A", "P2 X", "P2 Y", "P2 L", "P2 R",
 					"P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Select", "P3 Start", "P3 B", "P3 A", "P3 X", "P3 Y", "P3 L", "P3 R",
 					"P4 Up", "P4 Down", "P4 Left", "P4 Right", "P4 Select", "P4 Start", "P4 B", "P4 A", "P4 X", "P4 Y", "P4 L", "P4 R",
@@ -415,7 +429,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		public byte[] ReadSaveRam()
-		{ 
+		{
+			if (disposedSaveRam != null) return disposedSaveRam;
 			return snes_get_memory_data_read(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM);
 		}
 
