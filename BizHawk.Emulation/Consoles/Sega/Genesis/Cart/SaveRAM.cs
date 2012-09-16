@@ -14,7 +14,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         void InitializeSaveRam(GameInfo game)
         {
-            // TODO if eeprom in use, abort saveram check
+            if (EepromEnabled) 
+                return;
 
             if (game["DisableSaveRam"] || RH_SRamPresent == false)
                 return;
@@ -32,11 +33,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             SaveRamLength = (SaveRamEndOffset - SaveRamStartOffset) + 1;
 
             if (SaveRamEveryOtherByte)
-            {
-                SaveRamStartOffset &= 0xFFFFFE;
-                SaveRamEndOffset &= 0xFFFFFE;
                 SaveRamLength = ((SaveRamEndOffset - SaveRamStartOffset) / 2) + 1;
-            }
 
             SaveRAM = new byte[SaveRamLength];
 
