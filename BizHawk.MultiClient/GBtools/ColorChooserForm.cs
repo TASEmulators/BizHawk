@@ -31,12 +31,23 @@ namespace BizHawk.MultiClient.GBtools
 		/// <summary>
 		/// gambatte's default dmg colors
 		/// </summary>
-		static readonly int[] DefaultColors =
+		static readonly int[] DefaultCGBColors =
 		{
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
 		};
+
+		/// <summary>
+		/// bsnes's default dmg colors with slight tweaking
+		/// </summary>
+		static readonly int[] DefaultDMGColors =
+		{
+			10798341, 8956165, 1922333, 337157,
+			10798341, 8956165, 1922333, 337157,
+			10798341, 8956165, 1922333, 337157,
+		};
+
 
 
 		private void RefreshAllBackdrops()
@@ -236,7 +247,7 @@ namespace BizHawk.MultiClient.GBtools
 				//if (colors != null)
 				//	dlg.SetAllColors(colors);
 
-				dlg.SetAllColors(DefaultColors);
+				dlg.SetAllColors(DefaultDMGColors);
 				dlg.textBox1.Text = "(none)";
 				dlg.currentfile = "";
 				dlg.filemodified = false;
@@ -379,7 +390,15 @@ namespace BizHawk.MultiClient.GBtools
 			textBox1.Text = "(none)";
 			currentfile = "";
 			filemodified = false;
-			SetAllColors(DefaultColors);
+			SetAllColors(DefaultDMGColors);
+		}
+
+		private void DefaultButtonCGB_Click(object sender, EventArgs e)
+		{
+			textBox1.Text = "(none)";
+			currentfile = "";
+			filemodified = false;
+			SetAllColors(DefaultCGBColors);
 		}
 	}
 }

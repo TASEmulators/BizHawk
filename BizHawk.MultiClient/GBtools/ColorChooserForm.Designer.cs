@@ -53,6 +53,7 @@
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.DefaultButton = new System.Windows.Forms.Button();
+			this.DefaultButtonCGB = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// panel1
@@ -194,7 +195,7 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.OK.Location = new System.Drawing.Point(140, 221);
+			this.OK.Location = new System.Drawing.Point(143, 221);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 22;
@@ -206,7 +207,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(221, 221);
+			this.Cancel.Location = new System.Drawing.Point(224, 221);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 23;
@@ -245,7 +246,7 @@
 			// 
 			// buttonLoad
 			// 
-			this.buttonLoad.Location = new System.Drawing.Point(42, 137);
+			this.buttonLoad.Location = new System.Drawing.Point(17, 137);
 			this.buttonLoad.Name = "buttonLoad";
 			this.buttonLoad.Size = new System.Drawing.Size(60, 23);
 			this.buttonLoad.TabIndex = 28;
@@ -255,7 +256,7 @@
 			// 
 			// buttonSave
 			// 
-			this.buttonSave.Location = new System.Drawing.Point(112, 137);
+			this.buttonSave.Location = new System.Drawing.Point(83, 137);
 			this.buttonSave.Name = "buttonSave";
 			this.buttonSave.Size = new System.Drawing.Size(60, 23);
 			this.buttonSave.TabIndex = 29;
@@ -265,13 +266,13 @@
 			// 
 			// textBox1
 			// 
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox1.BackColor = System.Drawing.SystemColors.Control;
 			this.textBox1.Location = new System.Drawing.Point(17, 195);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
-			this.textBox1.Size = new System.Drawing.Size(279, 20);
+			this.textBox1.Size = new System.Drawing.Size(282, 20);
 			this.textBox1.TabIndex = 30;
 			// 
 			// label4
@@ -286,13 +287,23 @@
 			// 
 			// DefaultButton
 			// 
-			this.DefaultButton.Location = new System.Drawing.Point(178, 137);
+			this.DefaultButton.Location = new System.Drawing.Point(149, 137);
 			this.DefaultButton.Name = "DefaultButton";
 			this.DefaultButton.Size = new System.Drawing.Size(60, 23);
 			this.DefaultButton.TabIndex = 32;
 			this.DefaultButton.Text = "&Default";
 			this.DefaultButton.UseVisualStyleBackColor = true;
 			this.DefaultButton.Click += new System.EventHandler(this.DefaultButton_Click);
+			// 
+			// DefaultButtonCGB
+			// 
+			this.DefaultButtonCGB.Location = new System.Drawing.Point(215, 137);
+			this.DefaultButtonCGB.Name = "DefaultButtonCGB";
+			this.DefaultButtonCGB.Size = new System.Drawing.Size(75, 23);
+			this.DefaultButtonCGB.TabIndex = 33;
+			this.DefaultButtonCGB.Text = "Default &CGB";
+			this.DefaultButtonCGB.UseVisualStyleBackColor = true;
+			this.DefaultButtonCGB.Click += new System.EventHandler(this.DefaultButtonCGB_Click);
 			// 
 			// ColorChooserForm
 			// 
@@ -301,7 +312,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(310, 254);
+			this.ClientSize = new System.Drawing.Size(313, 254);
+			this.Controls.Add(this.DefaultButtonCGB);
 			this.Controls.Add(this.DefaultButton);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.textBox1);
@@ -364,5 +376,6 @@
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Button DefaultButton;
+		private System.Windows.Forms.Button DefaultButtonCGB;
 	}
 }
