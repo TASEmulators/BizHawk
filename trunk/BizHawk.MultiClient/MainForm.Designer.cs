@@ -104,7 +104,7 @@
 			this.emulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.powerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.rebootCoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.windowFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -224,10 +224,11 @@
 			this.p0DifficultyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rightDifficultyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.changeDMGPalettesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.forceDMGModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gBAInCGBModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.multicartCompatibilityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.changeDMGPalettesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.displayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bG0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -283,7 +284,6 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -973,8 +973,8 @@
 			// 
 			this.emulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pauseToolStripMenuItem,
+            this.rebootCoreToolStripMenuItem,
             this.toolStripSeparator1,
-            this.powerToolStripMenuItem,
             this.resetToolStripMenuItem});
 			this.emulationToolStripMenuItem.Name = "emulationToolStripMenuItem";
 			this.emulationToolStripMenuItem.Size = new System.Drawing.Size(73, 19);
@@ -985,26 +985,26 @@
 			// 
 			this.pauseToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
 			this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.pauseToolStripMenuItem.Text = "&Pause";
 			this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(136, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
-			// powerToolStripMenuItem
+			// rebootCoreToolStripMenuItem
 			// 
-			this.powerToolStripMenuItem.Name = "powerToolStripMenuItem";
-			this.powerToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-			this.powerToolStripMenuItem.Text = "Power Cycle";
-			this.powerToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
+			this.rebootCoreToolStripMenuItem.Name = "rebootCoreToolStripMenuItem";
+			this.rebootCoreToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rebootCoreToolStripMenuItem.Text = "Reboot Core";
+			this.rebootCoreToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
 			// 
 			// resetToolStripMenuItem
 			// 
 			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-			this.resetToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.resetToolStripMenuItem.Text = "&Reset";
 			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
 			// 
@@ -1952,13 +1952,6 @@
 			this.gBToolStripMenuItem.Text = "&GB";
 			this.gBToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gBToolStripMenuItem_DropDownOpened);
 			// 
-			// changeDMGPalettesToolStripMenuItem
-			// 
-			this.changeDMGPalettesToolStripMenuItem.Name = "changeDMGPalettesToolStripMenuItem";
-			this.changeDMGPalettesToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-			this.changeDMGPalettesToolStripMenuItem.Text = "Change DMG Palettes...";
-			this.changeDMGPalettesToolStripMenuItem.Click += new System.EventHandler(this.changeDMGPalettesToolStripMenuItem_Click);
-			// 
 			// forceDMGModeToolStripMenuItem
 			// 
 			this.forceDMGModeToolStripMenuItem.Name = "forceDMGModeToolStripMenuItem";
@@ -1979,6 +1972,18 @@
 			this.multicartCompatibilityToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.multicartCompatibilityToolStripMenuItem.Text = "Multicart Compatibility";
 			this.multicartCompatibilityToolStripMenuItem.Click += new System.EventHandler(this.multicartCompatibilityToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(195, 6);
+			// 
+			// changeDMGPalettesToolStripMenuItem
+			// 
+			this.changeDMGPalettesToolStripMenuItem.Name = "changeDMGPalettesToolStripMenuItem";
+			this.changeDMGPalettesToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+			this.changeDMGPalettesToolStripMenuItem.Text = "Change DMG Palettes...";
+			this.changeDMGPalettesToolStripMenuItem.Click += new System.EventHandler(this.changeDMGPalettesToolStripMenuItem_Click);
 			// 
 			// sNESToolStripMenuItem
 			// 
@@ -2439,11 +2444,6 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
-			// toolStripSeparator8
-			// 
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(195, 6);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2508,7 +2508,7 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem powerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rebootCoreToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;

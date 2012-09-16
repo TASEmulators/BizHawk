@@ -605,7 +605,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("DecreaseWindowSize", Global.Config.DecreaseWindowSize);
 			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
 			controls.BindMulti("Rewind", Global.Config.RewindBinding);
-			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
+			controls.BindMulti("Hard Reset", Global.Config.RebootCoreResetBinding);
 			controls.BindMulti("Emulator Pause", Global.Config.EmulatorPauseBinding);
 			controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
 			controls.BindMulti("Increase Speed", Global.Config.IncreaseSpeedBinding);

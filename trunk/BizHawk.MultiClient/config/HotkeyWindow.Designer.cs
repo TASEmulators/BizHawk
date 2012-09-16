@@ -212,14 +212,14 @@
 			this.IDW_SNES_ToggleBG3 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SNES_ToggleBG2 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SNES_ToggleBG1 = new BizHawk.MultiClient.InputWidget();
+			this.IDW_SNES_ToggleOBJ4 = new BizHawk.MultiClient.InputWidget();
+			this.IDW_SNES_ToggleOBJ3 = new BizHawk.MultiClient.InputWidget();
+			this.IDW_SNES_ToggleOBJ2 = new BizHawk.MultiClient.InputWidget();
+			this.IDW_SNES_ToggleOBJ1 = new BizHawk.MultiClient.InputWidget();
 			this.IDB_SAVE = new System.Windows.Forms.Button();
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
-			this.IDW_SNES_ToggleOBJ1 = new BizHawk.MultiClient.InputWidget();
-			this.IDW_SNES_ToggleOBJ2 = new BizHawk.MultiClient.InputWidget();
-			this.IDW_SNES_ToggleOBJ4 = new BizHawk.MultiClient.InputWidget();
-			this.IDW_SNES_ToggleOBJ3 = new BizHawk.MultiClient.InputWidget();
 			this.hotkeyTabs.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -598,9 +598,9 @@
 			this.label35.AutoSize = true;
 			this.label35.Location = new System.Drawing.Point(6, 182);
 			this.label35.Name = "label35";
-			this.label35.Size = new System.Drawing.Size(61, 13);
+			this.label35.Size = new System.Drawing.Size(67, 13);
 			this.label35.TabIndex = 2;
-			this.label35.Text = "Hard Reset";
+			this.label35.Text = "Reboot Core";
 			// 
 			// label34
 			// 
@@ -1958,23 +1958,14 @@
 			this.obj1label.TabIndex = 116;
 			this.obj1label.Text = "Toggle OBJ 1";
 			// 
-			// IDW_SNES_ToggleBG1
+			// IDW_SNES_ToggleBG4
 			// 
-			this.IDW_SNES_ToggleBG1.AcceptsTab = true;
-			this.IDW_SNES_ToggleBG1.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SNES_ToggleBG1.Location = new System.Drawing.Point(93, 10);
-			this.IDW_SNES_ToggleBG1.Name = "IDW_SNES_ToggleBG1";
-			this.IDW_SNES_ToggleBG1.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SNES_ToggleBG1.TabIndex = 200;
-			// 
-			// IDW_SNES_ToggleBG2
-			// 
-			this.IDW_SNES_ToggleBG2.AcceptsTab = true;
-			this.IDW_SNES_ToggleBG2.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SNES_ToggleBG2.Location = new System.Drawing.Point(93, 34);
-			this.IDW_SNES_ToggleBG2.Name = "IDW_SNES_ToggleBG2";
-			this.IDW_SNES_ToggleBG2.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SNES_ToggleBG2.TabIndex = 205;
+			this.IDW_SNES_ToggleBG4.AcceptsTab = true;
+			this.IDW_SNES_ToggleBG4.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleBG4.Location = new System.Drawing.Point(93, 82);
+			this.IDW_SNES_ToggleBG4.Name = "IDW_SNES_ToggleBG4";
+			this.IDW_SNES_ToggleBG4.Size = new System.Drawing.Size(100, 20);
+			this.IDW_SNES_ToggleBG4.TabIndex = 215;
 			// 
 			// IDW_SNES_ToggleBG3
 			// 
@@ -1985,14 +1976,59 @@
 			this.IDW_SNES_ToggleBG3.Size = new System.Drawing.Size(100, 20);
 			this.IDW_SNES_ToggleBG3.TabIndex = 210;
 			// 
-			// IDW_SNES_ToggleBG4
+			// IDW_SNES_ToggleBG2
 			// 
-			this.IDW_SNES_ToggleBG4.AcceptsTab = true;
-			this.IDW_SNES_ToggleBG4.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SNES_ToggleBG4.Location = new System.Drawing.Point(93, 82);
-			this.IDW_SNES_ToggleBG4.Name = "IDW_SNES_ToggleBG4";
-			this.IDW_SNES_ToggleBG4.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SNES_ToggleBG4.TabIndex = 215;
+			this.IDW_SNES_ToggleBG2.AcceptsTab = true;
+			this.IDW_SNES_ToggleBG2.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleBG2.Location = new System.Drawing.Point(93, 34);
+			this.IDW_SNES_ToggleBG2.Name = "IDW_SNES_ToggleBG2";
+			this.IDW_SNES_ToggleBG2.Size = new System.Drawing.Size(100, 20);
+			this.IDW_SNES_ToggleBG2.TabIndex = 205;
+			// 
+			// IDW_SNES_ToggleBG1
+			// 
+			this.IDW_SNES_ToggleBG1.AcceptsTab = true;
+			this.IDW_SNES_ToggleBG1.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleBG1.Location = new System.Drawing.Point(93, 10);
+			this.IDW_SNES_ToggleBG1.Name = "IDW_SNES_ToggleBG1";
+			this.IDW_SNES_ToggleBG1.Size = new System.Drawing.Size(100, 20);
+			this.IDW_SNES_ToggleBG1.TabIndex = 200;
+			// 
+			// IDW_SNES_ToggleOBJ4
+			// 
+			this.IDW_SNES_ToggleOBJ4.AcceptsTab = true;
+			this.IDW_SNES_ToggleOBJ4.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleOBJ4.Location = new System.Drawing.Point(93, 178);
+			this.IDW_SNES_ToggleOBJ4.Name = "IDW_SNES_ToggleOBJ4";
+			this.IDW_SNES_ToggleOBJ4.Size = new System.Drawing.Size(100, 20);
+			this.IDW_SNES_ToggleOBJ4.TabIndex = 265;
+			// 
+			// IDW_SNES_ToggleOBJ3
+			// 
+			this.IDW_SNES_ToggleOBJ3.AcceptsTab = true;
+			this.IDW_SNES_ToggleOBJ3.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleOBJ3.Location = new System.Drawing.Point(93, 154);
+			this.IDW_SNES_ToggleOBJ3.Name = "IDW_SNES_ToggleOBJ3";
+			this.IDW_SNES_ToggleOBJ3.Size = new System.Drawing.Size(100, 20);
+			this.IDW_SNES_ToggleOBJ3.TabIndex = 260;
+			// 
+			// IDW_SNES_ToggleOBJ2
+			// 
+			this.IDW_SNES_ToggleOBJ2.AcceptsTab = true;
+			this.IDW_SNES_ToggleOBJ2.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleOBJ2.Location = new System.Drawing.Point(93, 130);
+			this.IDW_SNES_ToggleOBJ2.Name = "IDW_SNES_ToggleOBJ2";
+			this.IDW_SNES_ToggleOBJ2.Size = new System.Drawing.Size(100, 20);
+			this.IDW_SNES_ToggleOBJ2.TabIndex = 255;
+			// 
+			// IDW_SNES_ToggleOBJ1
+			// 
+			this.IDW_SNES_ToggleOBJ1.AcceptsTab = true;
+			this.IDW_SNES_ToggleOBJ1.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleOBJ1.Location = new System.Drawing.Point(93, 106);
+			this.IDW_SNES_ToggleOBJ1.Name = "IDW_SNES_ToggleOBJ1";
+			this.IDW_SNES_ToggleOBJ1.Size = new System.Drawing.Size(100, 20);
+			this.IDW_SNES_ToggleOBJ1.TabIndex = 250;
 			// 
 			// IDB_SAVE
 			// 
@@ -2036,42 +2072,6 @@
 			this.AutoTabCheckBox.Text = "Auto Tab";
 			this.AutoTabCheckBox.UseVisualStyleBackColor = true;
 			this.AutoTabCheckBox.CheckedChanged += new System.EventHandler(this.AutoTabCheckBox_CheckedChanged);
-			// 
-			// IDW_SNES_OBJ1
-			// 
-			this.IDW_SNES_ToggleOBJ1.AcceptsTab = true;
-			this.IDW_SNES_ToggleOBJ1.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SNES_ToggleOBJ1.Location = new System.Drawing.Point(93, 106);
-			this.IDW_SNES_ToggleOBJ1.Name = "IDW_SNES_OBJ1";
-			this.IDW_SNES_ToggleOBJ1.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SNES_ToggleOBJ1.TabIndex = 250;
-			// 
-			// IDW_SNES_OBJ2
-			// 
-			this.IDW_SNES_ToggleOBJ2.AcceptsTab = true;
-			this.IDW_SNES_ToggleOBJ2.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SNES_ToggleOBJ2.Location = new System.Drawing.Point(93, 130);
-			this.IDW_SNES_ToggleOBJ2.Name = "IDW_SNES_OBJ2";
-			this.IDW_SNES_ToggleOBJ2.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SNES_ToggleOBJ2.TabIndex = 255;
-			// 
-			// IDW_SNES_OBJ3
-			// 
-			this.IDW_SNES_ToggleOBJ3.AcceptsTab = true;
-			this.IDW_SNES_ToggleOBJ3.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SNES_ToggleOBJ3.Location = new System.Drawing.Point(93, 154);
-			this.IDW_SNES_ToggleOBJ3.Name = "IDW_SNES_OBJ3";
-			this.IDW_SNES_ToggleOBJ3.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SNES_ToggleOBJ3.TabIndex = 260;
-			// 
-			// IDW_SNES_OBJ4
-			// 
-			this.IDW_SNES_ToggleOBJ4.AcceptsTab = true;
-			this.IDW_SNES_ToggleOBJ4.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SNES_ToggleOBJ4.Location = new System.Drawing.Point(93, 178);
-			this.IDW_SNES_ToggleOBJ4.Name = "IDW_SNES_OBJ4";
-			this.IDW_SNES_ToggleOBJ4.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SNES_ToggleOBJ4.TabIndex = 265;
 			// 
 			// HotkeyWindow
 			// 
