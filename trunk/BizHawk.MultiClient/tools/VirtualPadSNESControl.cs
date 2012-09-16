@@ -36,7 +36,6 @@ namespace BizHawk.MultiClient
 			this.B1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.B1.UseVisualStyleBackColor = true;
 			this.B1.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
-			this.B1.Enabled = false; //Until a hard reset is emulated by SNESHawk
 			this.B1.ForeColor = Color.Red;
 
 			this.B2 = new CheckBox();
@@ -88,7 +87,18 @@ namespace BizHawk.MultiClient
 		public override string GetMnemonic()
 		{
 			StringBuilder input = new StringBuilder("");
-			input.Append(B2.Checked ? "r" : ".");
+			if (B1.Checked)
+			{
+				input.Append('P');
+			}
+			else if (B2.Checked)
+			{
+				input.Append('r');
+			}
+			else
+			{
+				input.Append('.');
+			}
 			input.Append("|");
 			return input.ToString();
 		}
@@ -96,9 +106,13 @@ namespace BizHawk.MultiClient
 		public override void SetButtons(string buttons)
 		{
 			if (buttons.Length < 1) return;
-			if (buttons[0] == '.' || buttons[0] == 'l' || buttons[0] == '0')
+			if (buttons[0] == '.' || buttons[0] == '0')
 			{
 				B2.Checked = false;
+			}
+			else if (buttons[0] == 'P')
+			{
+				B1.Checked = true;
 			}
 			else
 			{
@@ -111,6 +125,18 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.SystemId != "SNES")
 			{
 				return;
+			}
+			else if (sender == B1)
+			{
+				Global.StickyXORAdapter.SetSticky("Power", B1.Checked);
+				if (B1.Checked == true)
+				{
+					B1.BackColor = Color.Pink;
+				}
+				else
+				{
+					B1.BackColor = SystemColors.Control;
+				}
 			}
 			else if (sender == B2)
 			{
@@ -137,6 +163,7 @@ namespace BizHawk.MultiClient
 				B1.Checked = false;
 				B2.Checked = false;
 				Global.StickyXORAdapter.SetSticky("Reset", false);
+				Global.StickyXORAdapter.SetSticky("Power", false);
 			}
 		}
 	}
