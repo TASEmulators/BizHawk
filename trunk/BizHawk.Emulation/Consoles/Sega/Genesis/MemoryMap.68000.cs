@@ -14,7 +14,12 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address < 0x400000)
             {
                 if (SaveRamEnabled && address >= SaveRamStartOffset && address < SaveRamEndOffset)
-                    return (sbyte) SaveRAM[address - SaveRamStartOffset];
+                {
+                    if (SaveRamEveryOtherByte)
+                        return (sbyte) SaveRAM[(address - SaveRamStartOffset) >> 1];
+                    else
+                        return (sbyte) SaveRAM[address - SaveRamStartOffset];
+                }
                 return (sbyte)RomData[address];
             }
 
@@ -153,7 +158,11 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (SaveRamEnabled && address >= SaveRamStartOffset && address < SaveRamEndOffset)
             {
-                SaveRAM[address - SaveRamStartOffset] = (byte) value;
+                if (SaveRamEveryOtherByte)
+                    SaveRAM[(address - SaveRamStartOffset) >> 1] = (byte) value;
+                else
+                    SaveRAM[address - SaveRamStartOffset] = (byte) value;
+                
                 SaveRamModified = true;
                 return;
             }
