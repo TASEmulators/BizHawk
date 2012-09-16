@@ -312,7 +312,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				ofd.InitialDirectory = Global.Config.PathGBPalettes;
+				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathGBPalettes, "GB");
 				ofd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				ofd.RestoreDirectory = true;
 
@@ -348,11 +348,18 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			using (var sfd = new SaveFileDialog())
 			{
-				sfd.InitialDirectory = Path.GetDirectoryName(currentfile);
+				if (!String.IsNullOrWhiteSpace(currentfile))
+				{
+					sfd.InitialDirectory = Path.GetDirectoryName(currentfile);
+					sfd.FileName = Path.GetFileName(currentfile);
+				}
+				else
+				{
+					sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathGBPalettes, "GB");
+					sfd.FileName = Global.Game.Name + ".pal";
+				}
 				sfd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				sfd.RestoreDirectory = true;
-				sfd.FileName = Path.GetFileName(currentfile);
-
 				var result = sfd.ShowDialog(this);
 				if (result != System.Windows.Forms.DialogResult.OK)
 					return;
