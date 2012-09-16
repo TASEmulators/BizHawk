@@ -2934,10 +2934,6 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
 				Global.ClickyVirtualPadController.Click("Reset");
-				if (!Global.MovieSession.Movie.IsActive && Global.Emulator is NES)
-				{
-					Global.Emulator.ResetFrameCounter();
-				}
 			}
 		}
 
@@ -2947,10 +2943,6 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
 			{
 				Global.ClickyVirtualPadController.Click("Power");
-				if (!Global.MovieSession.Movie.IsActive)
-				{
-					Global.Emulator.ResetFrameCounter();
-				}
 			}
 		}
 
