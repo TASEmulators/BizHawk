@@ -50,6 +50,9 @@
 			// 
 			// listBox1
 			// 
+			this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.listBox1.FormattingEnabled = true;
 			this.listBox1.Location = new System.Drawing.Point(5, 23);
 			this.listBox1.Name = "listBox1";
@@ -59,6 +62,7 @@
 			// 
 			// label2
 			// 
+			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(7, 176);
 			this.label2.Name = "label2";
@@ -68,6 +72,7 @@
 			// 
 			// label3
 			// 
+			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(6, 193);
 			this.label3.MaximumSize = new System.Drawing.Size(260, 0);
@@ -77,6 +82,7 @@
 			// 
 			// label4
 			// 
+			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(10, 255);
 			this.label4.Name = "label4";
@@ -86,6 +92,8 @@
 			// 
 			// textBox1
 			// 
+			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox1.Location = new System.Drawing.Point(8, 273);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
@@ -94,6 +102,7 @@
 			// 
 			// button1
 			// 
+			this.button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.button1.Location = new System.Drawing.Point(65, 314);
 			this.button1.Name = "button1";
@@ -104,6 +113,7 @@
 			// 
 			// button2
 			// 
+			this.button2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.button2.Location = new System.Drawing.Point(146, 314);
 			this.button2.Name = "button2";
@@ -114,6 +124,7 @@
 			// 
 			// label5
 			// 
+			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(159, 176);
 			this.label5.Name = "label5";
@@ -137,6 +148,7 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.listBox1);
 			this.Controls.Add(this.label1);
+			this.MinimumSize = new System.Drawing.Size(300, 360);
 			this.Name = "FFmpegWriterForm";
 			this.Text = "Choose Video Format";
 			this.ResumeLayout(false);

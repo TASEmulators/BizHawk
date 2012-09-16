@@ -339,6 +339,7 @@
 			this.Controls.Add(this.panel3);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
+			this.MinimumSize = new System.Drawing.Size(310, 264);
 			this.Name = "ColorChooserForm";
 			this.ShowIcon = false;
 			this.Text = "Gameboy Palette Config";
