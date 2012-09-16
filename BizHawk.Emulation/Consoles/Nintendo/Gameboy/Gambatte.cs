@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			Name = "Gameboy Controller",
 			BoolButtons =
 			{
-				"Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Reset"
+				"Up", "Down", "Left", "Right", "A", "B", "Select", "Start", "Power"
 			}
 		};
 
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			foreach (var r in MemoryRefreshers)
 				r.RefreshWrite();
 
-			if (Controller["Reset"])
+			if (Controller["Power"])
 				LibGambatte.gambatte_reset(GambatteState);
 
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
