@@ -366,6 +366,16 @@ namespace BizHawk.MultiClient
 		{
 			StringBuilder input = new StringBuilder("|");
 			input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] : ".");
+
+			if (IsBasePressed("Power"))
+			{
+				input.Append(Global.COMMANDS[ControlType]["Power"]);
+			}
+			else if (IsBasePressed("Reset"))
+			{
+				input.Append(Global.COMMANDS[ControlType]["Reset"]);
+			}
+
 			input.Append("|");
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
@@ -608,6 +618,16 @@ namespace BizHawk.MultiClient
 			}
 
 			Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
+
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+			{
+				Force("Reset", true);
+			}
+			
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
 				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
