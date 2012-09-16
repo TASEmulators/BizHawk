@@ -167,6 +167,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                 return;
             }
 
+            if (EepromEnabled && (address == SclAddr || address == SdaInAddr))
+            {
+                WriteByteEeprom(address, (byte) value);
+                return;
+
+            }
+
             Console.WriteLine("UNHANDLED WRITEB {0:X6}:{1:X2}", address, value);
         }
 

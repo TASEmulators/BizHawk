@@ -136,6 +136,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         void InitializeCartHardware(GameInfo game)
         {
             LogCartInfo();
+            InitializeEeprom(game);
             InitializeSaveRam(game);
         }
 
