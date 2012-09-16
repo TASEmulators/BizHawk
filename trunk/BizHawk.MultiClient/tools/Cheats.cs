@@ -163,7 +163,7 @@ namespace BizHawk.MultiClient
 			{
 				default:
 					break;
-				case "GB":
+				case "UglyBrokenCore":
 					AddCheatGroup.Enabled = false;
 					CheatListView.Enabled = false;
 					MessageLabel.Text = Global.Emulator.SystemId + " not supported.";
