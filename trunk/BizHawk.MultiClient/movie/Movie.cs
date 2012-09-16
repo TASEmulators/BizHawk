@@ -720,20 +720,7 @@ namespace BizHawk.MultiClient
 				return true;
 			}
 
-			if (stateFrame > l.Length) //stateFrame is greater than state input log, so movie finished mode
-			{
-				if (Mode == MOVIEMODE.PLAY || Mode == MOVIEMODE.FINISHED)
-				{
-					Mode = MOVIEMODE.FINISHED;
-					return true;
-				}
-				else
-					return false; //For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
-			}
-			else if (Mode == MOVIEMODE.FINISHED)
-			{
-				Mode = MOVIEMODE.PLAY;
-			}
+			
 
 			if (stateFrame == 0)
 			{
@@ -760,6 +747,24 @@ namespace BizHawk.MultiClient
 					return false;
 				}
 			}
+
+
+
+			if (stateFrame > l.Length) //stateFrame is greater than state input log, so movie finished mode
+			{
+				if (Mode == MOVIEMODE.PLAY || Mode == MOVIEMODE.FINISHED)
+				{
+					Mode = MOVIEMODE.FINISHED;
+					return true;
+				}
+				else
+					return false; //For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
+			}
+			else if (Mode == MOVIEMODE.FINISHED)
+			{
+				Mode = MOVIEMODE.PLAY;
+			}
+
 			reader.Close();
 			return true;
 		}
