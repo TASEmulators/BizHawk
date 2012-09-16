@@ -29,6 +29,11 @@ namespace BizHawk.MultiClient
 		public const string FOURSCORE = "FourScore";
 		public const string SHA1 = "SHA1";
 
+		//Gameboy Settings that affect sync
+		public const string GB_FORCEDMG = "Force_DMG_Mode";
+		public const string GB_GBA_IN_CGB = "GBA_In_CGB";
+
+
 		public static string MovieVersion = "BizHawk v0.0.1";
 
 		public static string MakeGUID()
