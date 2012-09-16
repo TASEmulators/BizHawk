@@ -547,10 +547,6 @@ namespace BizHawk.MultiClient
 				while (true)
 				{
 					string line = reader.ReadLine();
-					if (line.Contains(".[NES")) //TODO: Remove debug
-					{
-						MessageBox.Show("OOPS! Corrupted file stream");
-					}
 					if (line == null) break;
 					else if (line.Trim() == "") continue;
 					else if (line == "[Input]") continue;
@@ -618,6 +614,12 @@ namespace BizHawk.MultiClient
 			{
 				Log.TruncateStates(stateFrame);
 				Log.TruncateMovie(stateFrame);
+			}
+			else if (stateFrame > Log.Length) //Post movie savestate
+			{
+				Log.TruncateStates(Log.Length);
+				Log.TruncateMovie(Log.Length);
+				Mode = MOVIEMODE.FINISHED;
 			}
 			Rerecords++;
 			reader.Close();
