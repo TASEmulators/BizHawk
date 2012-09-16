@@ -341,7 +341,7 @@
 			this.Controls.Add(this.panel1);
 			this.Name = "ColorChooserForm";
 			this.ShowIcon = false;
-			this.Text = "Gameboy Pallete Config";
+			this.Text = "Gameboy Palette Config";
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragEnter);
 			this.ResumeLayout(false);
