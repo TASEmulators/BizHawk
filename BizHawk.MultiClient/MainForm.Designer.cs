@@ -103,8 +103,8 @@
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.emulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.rebootCoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.windowFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -989,23 +989,24 @@
 			this.pauseToolStripMenuItem.Text = "&Pause";
 			this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
 			// 
+			// rebootCoreToolStripMenuItem
+			// 
+			this.rebootCoreToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.reboot;
+			this.rebootCoreToolStripMenuItem.Name = "rebootCoreToolStripMenuItem";
+			this.rebootCoreToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rebootCoreToolStripMenuItem.Text = "&Reboot Core";
+			this.rebootCoreToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
-			// rebootCoreToolStripMenuItem
-			// 
-			this.rebootCoreToolStripMenuItem.Name = "rebootCoreToolStripMenuItem";
-			this.rebootCoreToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.rebootCoreToolStripMenuItem.Text = "Reboot Core";
-			this.rebootCoreToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
-			// 
 			// resetToolStripMenuItem
 			// 
 			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
 			this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.resetToolStripMenuItem.Text = "&Reset";
+			this.resetToolStripMenuItem.Text = "&Soft Reset";
 			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
 			// 
 			// viewToolStripMenuItem

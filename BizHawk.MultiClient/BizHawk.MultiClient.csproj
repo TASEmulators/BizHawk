@@ -860,6 +860,7 @@
     <None Include="config\ControllerImages\TI83_Controller.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
+    <None Include="images\reboot.png" />
     <Content Include="output\gamedb_sega_md.txt" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
