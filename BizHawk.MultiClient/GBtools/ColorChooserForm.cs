@@ -371,5 +371,13 @@ namespace BizHawk.MultiClient.GBtools
 		private void OK_Click(object sender, EventArgs e)
 		{
 		}
+
+		private void DefaultButton_Click(object sender, EventArgs e)
+		{
+			textBox1.Text = "(none)";
+			currentfile = "";
+			filemodified = false;
+			SetAllColors(DefaultColors);
+		}
 	}
 }
