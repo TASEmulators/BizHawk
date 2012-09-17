@@ -30,7 +30,12 @@
 		{
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.rbBG4 = new System.Windows.Forms.RadioButton();
+			this.rbBG3 = new System.Windows.Forms.RadioButton();
+			this.rbBG2 = new System.Windows.Forms.RadioButton();
+			this.rbBG1 = new System.Windows.Forms.RadioButton();
 			this.txtBG1TSizeDescr = new System.Windows.Forms.TextBox();
+			this.comboBGProps = new System.Windows.Forms.ComboBox();
 			this.label15 = new System.Windows.Forms.Label();
 			this.txtBG1TSizeBits = new System.Windows.Forms.TextBox();
 			this.label13 = new System.Windows.Forms.Label();
@@ -81,16 +86,16 @@
 			this.radioButton13 = new System.Windows.Forms.RadioButton();
 			this.label14 = new System.Windows.Forms.Label();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveScreenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveScreenshotToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -110,7 +115,12 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.rbBG4);
+			this.groupBox1.Controls.Add(this.rbBG3);
+			this.groupBox1.Controls.Add(this.rbBG2);
+			this.groupBox1.Controls.Add(this.rbBG1);
 			this.groupBox1.Controls.Add(this.txtBG1TSizeDescr);
+			this.groupBox1.Controls.Add(this.comboBGProps);
 			this.groupBox1.Controls.Add(this.label15);
 			this.groupBox1.Controls.Add(this.txtBG1TSizeBits);
 			this.groupBox1.Controls.Add(this.label13);
@@ -129,16 +139,64 @@
 			this.groupBox1.Controls.Add(this.txtBG1SizeInTiles);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.txtBG1SizeBits);
-			this.groupBox1.Location = new System.Drawing.Point(18, 120);
+			this.groupBox1.Location = new System.Drawing.Point(12, 120);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(230, 189);
+			this.groupBox1.Size = new System.Drawing.Size(230, 205);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "BG1";
+			this.groupBox1.Text = "BG";
+			// 
+			// rbBG4
+			// 
+			this.rbBG4.AutoSize = true;
+			this.rbBG4.Location = new System.Drawing.Point(175, 42);
+			this.rbBG4.Name = "rbBG4";
+			this.rbBG4.Size = new System.Drawing.Size(46, 17);
+			this.rbBG4.TabIndex = 35;
+			this.rbBG4.TabStop = true;
+			this.rbBG4.Text = "BG4";
+			this.rbBG4.UseVisualStyleBackColor = true;
+			this.rbBG4.CheckedChanged += new System.EventHandler(this.rbBGX_CheckedChanged);
+			// 
+			// rbBG3
+			// 
+			this.rbBG3.AutoSize = true;
+			this.rbBG3.Location = new System.Drawing.Point(123, 42);
+			this.rbBG3.Name = "rbBG3";
+			this.rbBG3.Size = new System.Drawing.Size(46, 17);
+			this.rbBG3.TabIndex = 34;
+			this.rbBG3.TabStop = true;
+			this.rbBG3.Text = "BG3";
+			this.rbBG3.UseVisualStyleBackColor = true;
+			this.rbBG3.CheckedChanged += new System.EventHandler(this.rbBGX_CheckedChanged);
+			// 
+			// rbBG2
+			// 
+			this.rbBG2.AutoSize = true;
+			this.rbBG2.Location = new System.Drawing.Point(175, 19);
+			this.rbBG2.Name = "rbBG2";
+			this.rbBG2.Size = new System.Drawing.Size(46, 17);
+			this.rbBG2.TabIndex = 33;
+			this.rbBG2.TabStop = true;
+			this.rbBG2.Text = "BG2";
+			this.rbBG2.UseVisualStyleBackColor = true;
+			this.rbBG2.CheckedChanged += new System.EventHandler(this.rbBGX_CheckedChanged);
+			// 
+			// rbBG1
+			// 
+			this.rbBG1.AutoSize = true;
+			this.rbBG1.Location = new System.Drawing.Point(123, 19);
+			this.rbBG1.Name = "rbBG1";
+			this.rbBG1.Size = new System.Drawing.Size(46, 17);
+			this.rbBG1.TabIndex = 32;
+			this.rbBG1.TabStop = true;
+			this.rbBG1.Text = "BG1";
+			this.rbBG1.UseVisualStyleBackColor = true;
+			this.rbBG1.CheckedChanged += new System.EventHandler(this.rbBGX_CheckedChanged);
 			// 
 			// txtBG1TSizeDescr
 			// 
-			this.txtBG1TSizeDescr.Location = new System.Drawing.Point(83, 43);
+			this.txtBG1TSizeDescr.Location = new System.Drawing.Point(83, 86);
 			this.txtBG1TSizeDescr.Multiline = true;
 			this.txtBG1TSizeDescr.Name = "txtBG1TSizeDescr";
 			this.txtBG1TSizeDescr.ReadOnly = true;
@@ -146,10 +204,25 @@
 			this.txtBG1TSizeDescr.TabIndex = 23;
 			this.txtBG1TSizeDescr.Text = "16x16";
 			// 
+			// comboBGProps
+			// 
+			this.comboBGProps.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBGProps.FormattingEnabled = true;
+			this.comboBGProps.Items.AddRange(new object[] {
+            "BG1",
+            "BG2",
+            "BG3",
+            "BG4"});
+			this.comboBGProps.Location = new System.Drawing.Point(6, 19);
+			this.comboBGProps.Name = "comboBGProps";
+			this.comboBGProps.Size = new System.Drawing.Size(108, 21);
+			this.comboBGProps.TabIndex = 32;
+			this.comboBGProps.SelectedIndexChanged += new System.EventHandler(this.comboBGProps_SelectedIndexChanged);
+			// 
 			// label15
 			// 
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(33, 46);
+			this.label15.Location = new System.Drawing.Point(33, 89);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(34, 13);
 			this.label15.TabIndex = 22;
@@ -158,7 +231,7 @@
 			// txtBG1TSizeBits
 			// 
 			this.txtBG1TSizeBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1TSizeBits.Location = new System.Drawing.Point(5, 42);
+			this.txtBG1TSizeBits.Location = new System.Drawing.Point(5, 85);
 			this.txtBG1TSizeBits.Multiline = true;
 			this.txtBG1TSizeBits.Name = "txtBG1TSizeBits";
 			this.txtBG1TSizeBits.ReadOnly = true;
@@ -169,7 +242,7 @@
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(156, 23);
+			this.label13.Location = new System.Drawing.Point(156, 66);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(36, 13);
 			this.label13.TabIndex = 20;
@@ -177,7 +250,7 @@
 			// 
 			// txtBG1Colors
 			// 
-			this.txtBG1Colors.Location = new System.Drawing.Point(83, 21);
+			this.txtBG1Colors.Location = new System.Drawing.Point(83, 64);
 			this.txtBG1Colors.Multiline = true;
 			this.txtBG1Colors.Name = "txtBG1Colors";
 			this.txtBG1Colors.ReadOnly = true;
@@ -187,7 +260,7 @@
 			// 
 			// txtBG1Bpp
 			// 
-			this.txtBG1Bpp.Location = new System.Drawing.Point(6, 19);
+			this.txtBG1Bpp.Location = new System.Drawing.Point(6, 62);
 			this.txtBG1Bpp.Multiline = true;
 			this.txtBG1Bpp.Name = "txtBG1Bpp";
 			this.txtBG1Bpp.ReadOnly = true;
@@ -198,7 +271,7 @@
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(33, 21);
+			this.label12.Location = new System.Drawing.Point(33, 64);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(32, 13);
 			this.label12.TabIndex = 17;
@@ -206,7 +279,7 @@
 			// 
 			// txtBG1TDAddrDescr
 			// 
-			this.txtBG1TDAddrDescr.Location = new System.Drawing.Point(84, 135);
+			this.txtBG1TDAddrDescr.Location = new System.Drawing.Point(84, 178);
 			this.txtBG1TDAddrDescr.Multiline = true;
 			this.txtBG1TDAddrDescr.Name = "txtBG1TDAddrDescr";
 			this.txtBG1TDAddrDescr.ReadOnly = true;
@@ -217,7 +290,7 @@
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(34, 140);
+			this.label11.Location = new System.Drawing.Point(34, 183);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(47, 13);
 			this.label11.TabIndex = 14;
@@ -225,7 +298,7 @@
 			// 
 			// txtBG1SCAddrDescr
 			// 
-			this.txtBG1SCAddrDescr.Location = new System.Drawing.Point(84, 114);
+			this.txtBG1SCAddrDescr.Location = new System.Drawing.Point(84, 157);
 			this.txtBG1SCAddrDescr.Multiline = true;
 			this.txtBG1SCAddrDescr.Name = "txtBG1SCAddrDescr";
 			this.txtBG1SCAddrDescr.ReadOnly = true;
@@ -236,7 +309,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(156, 92);
+			this.label9.Location = new System.Drawing.Point(156, 135);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(34, 13);
 			this.label9.TabIndex = 9;
@@ -245,7 +318,7 @@
 			// txtBG1TDAddrBits
 			// 
 			this.txtBG1TDAddrBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1TDAddrBits.Location = new System.Drawing.Point(6, 137);
+			this.txtBG1TDAddrBits.Location = new System.Drawing.Point(6, 180);
 			this.txtBG1TDAddrBits.Multiline = true;
 			this.txtBG1TDAddrBits.Name = "txtBG1TDAddrBits";
 			this.txtBG1TDAddrBits.ReadOnly = true;
@@ -256,7 +329,7 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(34, 117);
+			this.label10.Location = new System.Drawing.Point(34, 160);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(46, 13);
 			this.label10.TabIndex = 11;
@@ -264,7 +337,7 @@
 			// 
 			// txtBG1SizeInPixels
 			// 
-			this.txtBG1SizeInPixels.Location = new System.Drawing.Point(83, 89);
+			this.txtBG1SizeInPixels.Location = new System.Drawing.Point(83, 132);
 			this.txtBG1SizeInPixels.Multiline = true;
 			this.txtBG1SizeInPixels.Name = "txtBG1SizeInPixels";
 			this.txtBG1SizeInPixels.ReadOnly = true;
@@ -275,7 +348,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(156, 70);
+			this.label3.Location = new System.Drawing.Point(156, 113);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(32, 13);
 			this.label3.TabIndex = 7;
@@ -284,7 +357,7 @@
 			// txtBG1SCAddrBits
 			// 
 			this.txtBG1SCAddrBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1SCAddrBits.Location = new System.Drawing.Point(6, 114);
+			this.txtBG1SCAddrBits.Location = new System.Drawing.Point(6, 157);
 			this.txtBG1SCAddrBits.Multiline = true;
 			this.txtBG1SCAddrBits.Name = "txtBG1SCAddrBits";
 			this.txtBG1SCAddrBits.ReadOnly = true;
@@ -294,7 +367,7 @@
 			// 
 			// txtBG1SizeInTiles
 			// 
-			this.txtBG1SizeInTiles.Location = new System.Drawing.Point(84, 67);
+			this.txtBG1SizeInTiles.Location = new System.Drawing.Point(84, 110);
 			this.txtBG1SizeInTiles.Multiline = true;
 			this.txtBG1SizeInTiles.Name = "txtBG1SizeInTiles";
 			this.txtBG1SizeInTiles.ReadOnly = true;
@@ -305,7 +378,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(34, 70);
+			this.label2.Location = new System.Drawing.Point(34, 113);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(27, 13);
 			this.label2.TabIndex = 4;
@@ -314,7 +387,7 @@
 			// txtBG1SizeBits
 			// 
 			this.txtBG1SizeBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1SizeBits.Location = new System.Drawing.Point(6, 67);
+			this.txtBG1SizeBits.Location = new System.Drawing.Point(6, 110);
 			this.txtBG1SizeBits.Multiline = true;
 			this.txtBG1SizeBits.Name = "txtBG1SizeBits";
 			this.txtBG1SizeBits.ReadOnly = true;
@@ -692,6 +765,69 @@
 			this.menuStrip1.TabIndex = 33;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
+			// fileToolStripMenuItem
+			// 
+			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveScreenshotAsToolStripMenuItem,
+            this.saveScreenshotToClipboardToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.exitToolStripMenuItem});
+			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+			this.fileToolStripMenuItem.Text = "&File";
+			// 
+			// saveScreenshotAsToolStripMenuItem
+			// 
+			this.saveScreenshotAsToolStripMenuItem.Enabled = false;
+			this.saveScreenshotAsToolStripMenuItem.Name = "saveScreenshotAsToolStripMenuItem";
+			this.saveScreenshotAsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+			this.saveScreenshotAsToolStripMenuItem.Text = "Save Screenshot &As...";
+			// 
+			// saveScreenshotToClipboardToolStripMenuItem
+			// 
+			this.saveScreenshotToClipboardToolStripMenuItem.Enabled = false;
+			this.saveScreenshotToClipboardToolStripMenuItem.Name = "saveScreenshotToClipboardToolStripMenuItem";
+			this.saveScreenshotToClipboardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+			this.saveScreenshotToClipboardToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+			this.saveScreenshotToClipboardToolStripMenuItem.Text = "Save Screenshot to Clipboard";
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(263, 6);
+			// 
+			// exitToolStripMenuItem
+			// 
+			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+			this.exitToolStripMenuItem.Text = "E&xit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			// 
+			// optionsToolStripMenuItem
+			// 
+			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoloadToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem});
+			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+			this.optionsToolStripMenuItem.Text = "&Options";
+			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
+			// 
+			// autoloadToolStripMenuItem
+			// 
+			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.autoloadToolStripMenuItem.Text = "Auto-load";
+			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
+			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "&Save Window Position";
+			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			// 
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.viewer);
@@ -722,69 +858,6 @@
 			this.groupBox4.Size = new System.Drawing.Size(528, 137);
 			this.groupBox4.TabIndex = 35;
 			this.groupBox4.TabStop = false;
-			// 
-			// optionsToolStripMenuItem
-			// 
-			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.autoloadToolStripMenuItem,
-            this.saveWindowPositionToolStripMenuItem});
-			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-			this.optionsToolStripMenuItem.Text = "&Options";
-			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
-			// 
-			// fileToolStripMenuItem
-			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveScreenshotAsToolStripMenuItem,
-            this.saveScreenshotToClipboardToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.exitToolStripMenuItem});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-			this.fileToolStripMenuItem.Text = "&File";
-			// 
-			// saveScreenshotAsToolStripMenuItem
-			// 
-			this.saveScreenshotAsToolStripMenuItem.Enabled = false;
-			this.saveScreenshotAsToolStripMenuItem.Name = "saveScreenshotAsToolStripMenuItem";
-			this.saveScreenshotAsToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
-			this.saveScreenshotAsToolStripMenuItem.Text = "Save Screenshot &As...";
-			// 
-			// saveScreenshotToClipboardToolStripMenuItem
-			// 
-			this.saveScreenshotToClipboardToolStripMenuItem.Enabled = false;
-			this.saveScreenshotToClipboardToolStripMenuItem.Name = "saveScreenshotToClipboardToolStripMenuItem";
-			this.saveScreenshotToClipboardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.saveScreenshotToClipboardToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
-			this.saveScreenshotToClipboardToolStripMenuItem.Text = "Save Screenshot to Clipboard";
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(267, 6);
-			// 
-			// exitToolStripMenuItem
-			// 
-			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
-			this.exitToolStripMenuItem.Text = "E&xit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-			// 
-			// autoloadToolStripMenuItem
-			// 
-			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.autoloadToolStripMenuItem.Text = "Auto-load";
-			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
-			// 
-			// saveWindowPositionToolStripMenuItem
-			// 
-			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.saveWindowPositionToolStripMenuItem.Text = "&Save Window Position";
-			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// viewer
 			// 
@@ -890,5 +963,10 @@
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
+		private System.Windows.Forms.RadioButton rbBG4;
+		private System.Windows.Forms.RadioButton rbBG3;
+		private System.Windows.Forms.RadioButton rbBG2;
+		private System.Windows.Forms.RadioButton rbBG1;
+		private System.Windows.Forms.ComboBox comboBGProps;
 	}
 }
