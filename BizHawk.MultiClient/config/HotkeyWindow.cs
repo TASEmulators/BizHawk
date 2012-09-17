@@ -11,6 +11,8 @@ namespace BizHawk.MultiClient.tools
 {
 	public partial class HotkeyWindow : Form
 	{
+		private List<KeyValuePair<string, string>> HotkeyMappingList = new List<KeyValuePair<string, string>>(); //A list of all button mappings and the hotkey they are assigned to
+
 		public HotkeyWindow()
 		{
 			InitializeComponent();
@@ -260,6 +262,8 @@ namespace BizHawk.MultiClient.tools
 
 		private void HotkeyWindow_Load(object sender, EventArgs e)
 		{
+			HotkeyMappingList = Global.ClientControls.MappingList();
+			SetConflictLists();
 			AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
 			SetAutoTab();
 		}
@@ -268,6 +272,22 @@ namespace BizHawk.MultiClient.tools
 		{
 			Global.Config.HotkeyConfigAutoTab = AutoTabCheckBox.Checked;
 			SetAutoTab();
+		}
+
+		private void SetConflictLists()
+		{
+			//adelikat: TODO: set up the conflict list, but it is going to have to be updated and checked on the fly as the user changes the mappings
+			//for (int i = 0; i < hotkeyTabs.TabPages.Count; i++)
+			//{
+			//    for (int j = 0; j < hotkeyTabs.TabPages[i].Controls.Count; j++)
+			//    {
+			//        if (hotkeyTabs.TabPages[i].Controls[j] is InputWidget)
+			//        {
+			//            InputWidget w = hotkeyTabs.TabPages[i].Controls[j] as InputWidget;
+			//            w.SetConflictList(HotkeyMappingList);
+			//        }
+			//    }
+			//}
 		}
 
 		private void SetAutoTab()
