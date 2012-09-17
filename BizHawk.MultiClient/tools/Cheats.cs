@@ -152,6 +152,7 @@ namespace BizHawk.MultiClient
 
 		private void Cheats_Load(object sender, EventArgs e)
 		{
+			ToggleGameGenieButtons();
 			LoadConfigSettings();
 			PopulateMemoryDomainComboBox();
 			AddressBox.MaxLength = GetNumDigits(Global.Emulator.MainMemory.Size - 1);
