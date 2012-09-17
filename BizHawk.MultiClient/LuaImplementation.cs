@@ -513,6 +513,8 @@ namespace BizHawk.MultiClient
 		                                        		"addclick",
 		                                        		"clearclicks",
 		                                        		"gettext",
+														"setproperty",
+														"getproperty",
 		                                        	};
 
 		public static string[] BitwiseFunctions = new string[]
@@ -2283,7 +2285,7 @@ namespace BizHawk.MultiClient
 			{
 				if (form.Handle == ptr)
 				{
-					form.GetType().GetProperty(property.ToString()).SetValue(form, value, null);
+					form.GetType().GetProperty(property.ToString()).SetValue(form, Convert.ChangeType(value, form.GetType().GetProperty(property.ToString()).PropertyType), null);
 				}
 				else
 				{
@@ -2291,7 +2293,7 @@ namespace BizHawk.MultiClient
 					{
 						if (control.Handle == ptr)
 						{
-							control.GetType().GetProperty(property.ToString()).SetValue(control, value, null);
+							control.GetType().GetProperty(property.ToString()).SetValue(control, Convert.ChangeType(value, form.GetType().GetProperty(property.ToString()).PropertyType), null);
 						}
 					}
 				}
@@ -2334,23 +2336,30 @@ namespace BizHawk.MultiClient
 
 		public string forms_gettext(object handle)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			try
 			{
-				if (form.Handle == ptr)
+				IntPtr ptr = new IntPtr(LuaInt(handle));
+				foreach (LuaWinform form in LuaForms)
 				{
-					return form.Text;
-				}
-				else
-				{
-					foreach (Control control in form.Controls)
+					if (form.Handle == ptr)
 					{
-						if (control.Handle == ptr)
+						return form.Text;
+					}
+					else
+					{
+						foreach (Control control in form.Controls)
 						{
-							return control.Text;
+							if (control.Handle == ptr)
+							{
+								return control.Text;
+							}
 						}
 					}
 				}
+			}
+			catch (Exception ex)
+			{
+				console_output(ex.Message);
 			}
 
 			return "";
@@ -2358,23 +2367,30 @@ namespace BizHawk.MultiClient
 
 		public string forms_getproperty(object handle, object property)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			try
 			{
-				if (form.Handle == ptr)
+				IntPtr ptr = new IntPtr(LuaInt(handle));
+				foreach (LuaWinform form in LuaForms)
 				{
-					return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
-				}
-				else
-				{
-					foreach (Control control in form.Controls)
+					if (form.Handle == ptr)
 					{
-						if (control.Handle == ptr)
+						return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
+					}
+					else
+					{
+						foreach (Control control in form.Controls)
 						{
-							return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
+							if (control.Handle == ptr)
+							{
+								return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
+							}
 						}
 					}
 				}
+			}
+			catch (Exception ex)
+			{
+				console_output(ex.Message);
 			}
 
 			return "";
