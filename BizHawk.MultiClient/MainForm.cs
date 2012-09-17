@@ -2932,6 +2932,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
 				Global.ClickyVirtualPadController.Click("Reset");
+				Global.OSD.AddMessage("Reset button pressed.");
 			}
 		}
 
@@ -2941,6 +2942,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
 			{
 				Global.ClickyVirtualPadController.Click("Power");
+				Global.OSD.AddMessage("Power button pressed.");
 			}
 		}
 
