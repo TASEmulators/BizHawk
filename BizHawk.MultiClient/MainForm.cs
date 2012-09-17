@@ -2378,7 +2378,10 @@ namespace BizHawk.MultiClient
 		{
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 			if (File.Exists(path) == false)
+			{
+				Global.OSD.AddMessage("Unable to load " + name + ".State");
 				return;
+			}
 
 			LoadStateFile(path, name);
 			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
