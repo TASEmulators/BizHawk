@@ -22,6 +22,7 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
 			comboDisplayType.SelectedIndex = 0;
+			comboBGProps.SelectedIndex = 0;
 		}
 
 		string FormatBpp(int bpp)
@@ -63,20 +64,22 @@ namespace BizHawk.MultiClient
 			txtScreenBG3TSize.Text = FormatBpp(si.BG.BG3.TileSize);
 			txtScreenBG4TSize.Text = FormatBpp(si.BG.BG4.TileSize);
 
-			txtBG1TSizeBits.Text = si.BG.BG1.TILESIZE.ToString();
-			txtBG1TSizeDescr.Text = string.Format("{0}x{0}", si.BG.BG1.TileSize);
-			txtBG1Bpp.Text = FormatBpp(si.BG.BG1.Bpp);
-			txtBG1SizeBits.Text = si.BG.BG1.SCSIZE.ToString();
-			txtBG1SizeInTiles.Text = FormatScreenSizeInTiles(si.BG.BG1.ScreenSize);
-			txtBG1SCAddrBits.Text = si.BG.BG1.SCADDR.ToString();
-			txtBG1SCAddrDescr.Text = FormatVramAddress(si.BG.BG1.SCADDR << 9);
-			txtBG1Colors.Text = (1 << si.BG.BG1.Bpp).ToString();
-			txtBG1TDAddrBits.Text = si.BG.BG1.TDADDR.ToString();
-			txtBG1TDAddrDescr.Text = FormatVramAddress(si.BG.BG1.TDADDR << 13);
-			
-			var sizeInPixels = SNESGraphicsDecoder.SizeInTilesForBGSize(si.BG.BG1.ScreenSize);
-			sizeInPixels.Width *= si.BG.BG1.TileSize;
-			sizeInPixels.Height *= si.BG.BG1.TileSize;
+			int bgnum = comboBGProps.SelectedIndex + 1;
+
+			txtBG1TSizeBits.Text = si.BG[bgnum].TILESIZE.ToString();
+			txtBG1TSizeDescr.Text = string.Format("{0}x{0}", si.BG[bgnum].TileSize);
+			txtBG1Bpp.Text = FormatBpp(si.BG[bgnum].Bpp);
+			txtBG1SizeBits.Text = si.BG[bgnum].SCSIZE.ToString();
+			txtBG1SizeInTiles.Text = FormatScreenSizeInTiles(si.BG[bgnum].ScreenSize);
+			txtBG1SCAddrBits.Text = si.BG[bgnum].SCADDR.ToString();
+			txtBG1SCAddrDescr.Text = FormatVramAddress(si.BG[bgnum].SCADDR << 9);
+			txtBG1Colors.Text = (1 << si.BG[bgnum].Bpp).ToString();
+			txtBG1TDAddrBits.Text = si.BG[bgnum].TDADDR.ToString();
+			txtBG1TDAddrDescr.Text = FormatVramAddress(si.BG[bgnum].TDADDR << 13);
+
+			var sizeInPixels = SNESGraphicsDecoder.SizeInTilesForBGSize(si.BG[bgnum].ScreenSize);
+			sizeInPixels.Width *= si.BG[bgnum].TileSize;
+			sizeInPixels.Height *= si.BG[bgnum].TileSize;
 			txtBG1SizeInPixels.Text = string.Format("{0}x{1}", sizeInPixels.Width, sizeInPixels.Height);
 
 			RenderView();
@@ -185,6 +188,34 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.SNESGraphicsDebuggerWndx = this.Location.X;
 			Global.Config.SNESGraphicsDebuggerWndy = this.Location.Y;
+		}
+
+		bool suppression = false;
+		private void rbBGX_CheckedChanged(object sender, EventArgs e)
+		{
+			if (suppression) return;
+			//sync the comboBGProps dropdown with the result of this check
+			suppression = true;
+			if (rbBG1.Checked) comboBGProps.SelectedIndex = 0;
+			if (rbBG2.Checked) comboBGProps.SelectedIndex = 1;
+			if (rbBG3.Checked) comboBGProps.SelectedIndex = 2;
+			if (rbBG4.Checked) comboBGProps.SelectedIndex = 3;
+			suppression = false;
+			UpdateValues();
+		}
+
+		private void comboBGProps_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (suppression) return;
+
+			//sync the radiobuttons with this selection
+			suppression = true;
+			if (comboBGProps.SelectedIndex == 0) rbBG1.Checked = true;
+			if (comboBGProps.SelectedIndex == 1) rbBG2.Checked = true;
+			if (comboBGProps.SelectedIndex == 2) rbBG3.Checked = true;
+			if (comboBGProps.SelectedIndex == 3) rbBG4.Checked = true;
+			suppression = false;
+			UpdateValues();
 		}
 	}
 }

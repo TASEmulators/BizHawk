@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			for (int mty = 0; mty < dims.Height; mty++)
 			{
-				for (int mtx = 0; mtx < dims.Height; mtx++)
+				for (int mtx = 0; mtx < dims.Width; mtx++)
 				{
 					for (int tx = 0; tx < count8x8; tx++)
 					{
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int blocksw = blockDims.Width;
 			int blocksh = blockDims.Height;
 			int width = blockDims.Width * 32;
-			int height = blockDims.Width * 32;
+			int height = blockDims.Height * 32;
 			TileEntry[] buf = new TileEntry[width*height];
 
 			for (int by = 0; by < blocksh; by++)
@@ -324,7 +324,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			for (int i = 0; i < numpixels; i++)
 			{
-				buf[offset + i] = cgram[startcolor + buf[offset + i]];
+				buf[offset + i] = cgram[startcolor + buf[offset + i]] & 0x7FFF; //unfortunate that we have to mask this here.. maybe do it in a more optimal spot when we port it to c++
 			}
 		}
 		public void Colorize(int* buf, int offset, int numpixels)
