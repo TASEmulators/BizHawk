@@ -12,6 +12,7 @@ Still some lesser issues with cancelling a fadeout. Otherwise CDDA is working no
 
 - JANSHIN DENSETSU sets the T flag prior to an LDA instruction; MANY TIMES (ie it doesnt seem to be an accident).
   Unclear if T flag actually affects LDA instruction.
+- Gradius II sets T flag prior to an STZ instruction. Unclear if T-flag affects STZ instruction.
 - Ryuuko no Ken is all messed up, and I don't super care :|
 - Record of Lodoss War wont start game from title screen
 - Valis: Screen is black during entire intro section

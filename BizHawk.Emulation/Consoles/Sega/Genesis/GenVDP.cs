@@ -522,6 +522,39 @@ int orig_addr = VdpDataAddr;
                 WriteVdpRegister(i, Registers[i]);
         }
 
+        public void SaveStateBinary(BinaryWriter writer)
+        {
+            writer.Write(VRAM);
+            writer.Write(CRAM);
+            writer.Write(VSRAM);
+            writer.Write(Registers);
+
+            writer.Write(ControlWordPending);
+            writer.Write(DmaFillModePending);
+            writer.Write(VdpDataAddr);
+            writer.Write(VdpDataCode);
+        }
+
+        public void LoadStateBinary(BinaryReader reader)
+        {
+            VRAM = reader.ReadBytes(VRAM.Length);
+            CRAM = reader.ReadUInt16s(CRAM.Length);
+            VSRAM = reader.ReadUInt16s(VSRAM.Length);
+            Registers = reader.ReadBytes(Registers.Length);
+
+            ControlWordPending = reader.ReadBoolean();
+            DmaFillModePending = reader.ReadBoolean();
+            VdpDataAddr = reader.ReadUInt16();
+            VdpDataCode = reader.ReadByte();
+
+            for (int i = 0; i < CRAM.Length; i++)
+                ProcessPalette(i);
+            for (int i = 0; i < VRAM.Length; i++)
+                UpdatePatternBuffer(i);
+            for (int i = 0; i < Registers.Length; i++)
+                WriteVdpRegister(i, Registers[i]);
+        }
+
         #endregion
     }
 }

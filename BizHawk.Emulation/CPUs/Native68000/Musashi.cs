@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Native68000
 {
@@ -49,6 +50,9 @@ namespace Native68000
         public static extern int QueryCpuState(int regcode);
 
         [DllImport("MusashiDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetCpuState(int regcode, int value);
+
+        [DllImport("MusashiDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int GetCyclesRemaining();
 
         public static int D0 { get { return QueryCpuState(0); } }
@@ -72,5 +76,17 @@ namespace Native68000
         public static int PC { get { return QueryCpuState(16); } }
         public static int SR { get { return QueryCpuState(17); } }
         public static int SP { get { return QueryCpuState(18); } }
+
+        public static void SaveStateBinary(BinaryWriter writer)
+        {
+            for (int i=0; i<31; i++)
+                writer.Write(QueryCpuState(i));
+        }
+
+        public static void LoadStateBinary(BinaryReader reader)
+        {
+            for (int i = 0; i < 31; i++)
+                SetCpuState(i, reader.ReadInt32());
+        }
     }
 }
