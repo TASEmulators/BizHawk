@@ -443,7 +443,7 @@ namespace BizHawk.MultiClient
 			 * if "0", movie begins from an embedded "quicksave" snapshot
 			 * if "1", movie begins from reset or power-on[1]
 			*/
-			if (((flags >> 1) & 1) == 0)
+			if (((flags >> 1) & 0x1) == 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
 				r.Close();
@@ -458,10 +458,10 @@ namespace BizHawk.MultiClient
 			 unfortunately it is not reliable - the emulator does not take the "PAL" setting from the ROM, but from a user
 			 preference. This means that this site cannot calculate movie lengths reliably.
 			*/
-			bool pal = (((flags >> 2) & 1) == 1);
+			bool pal = (((flags >> 2) & 0x1) != 0);
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			// other: reserved, set to 0
-			bool syncHack = (((flags >> 4) & 1) == 1);
+			bool syncHack = (((flags >> 4) & 0x1) != 0);
 			m.Header.Comments.Add(SYNCHACK + " " + syncHack.ToString());
 			// 009 1-byte flags: reserved, set to 0
 			r.ReadByte();
@@ -527,7 +527,7 @@ namespace BizHawk.MultiClient
 				string mnemonic = mg.GetControllersAsMnemonic();
 				byte update = r.ReadByte();
 				// aa: Number of delta bytes to follow
-				int delta = (update >> 5) & 3;
+				int delta = (update >> 5) & 0x3;
 				int frames = 0;
 				/*
 				 The delta byte(s) indicate the number of emulator frames between this update and the next update. It is
@@ -551,7 +551,7 @@ namespace BizHawk.MultiClient
 					}
 					frames--;
 				}
-				if (((update >> 7) & 1) == 1)
+				if (((update >> 7) & 0x1) != 0)
 				{
 					// Control update: 1aabbbbb
 					bool reset = false;
@@ -625,7 +625,7 @@ namespace BizHawk.MultiClient
 					 Controller update: 0aabbccc
 					 * bb: Gamepad number minus one (?)
 					*/
-					int player = ((update >> 3) & 3) + 1;
+					int player = ((update >> 3) & 0x3) + 1;
 					if (player > 2)
 						fourscore = true;
 					/*
@@ -639,7 +639,7 @@ namespace BizHawk.MultiClient
 					 * 6	  Left
 					 * 7	  Right
 					*/
-					int button = update & 7;
+					int button = update & 0x7;
 					/*
 					 The controller update toggles the affected input. Controller update data is emitted to the movie file
 					 only when the state of the controller changes.
@@ -683,7 +683,7 @@ namespace BizHawk.MultiClient
 			// 004 1-byte flags:
 			byte flags = r.ReadByte();
 			// bit 7: 0=reset-based, 1=savestate-based
-			if (((flags >> 2) & 1) == 1)
+			if (((flags >> 2) & 0x1) != 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
 				r.Close();
@@ -695,7 +695,7 @@ namespace BizHawk.MultiClient
 			flags = r.ReadByte();
 			// bit 5: is a FDS recording
 			bool FDS;
-			if (((flags >> 5) & 1) == 1)
+			if (((flags >> 5) & 0x1) != 0)
 			{
 				FDS = true;
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "FDS");
@@ -706,9 +706,9 @@ namespace BizHawk.MultiClient
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
 			}
 			// bit 6: uses controller 2
-			bool controller2 = (((flags >> 6) & 1) == 1);
+			bool controller2 = (((flags >> 6) & 0x1) != 0);
 			// bit 7: uses controller 1
-			bool controller1 = (((flags >> 7) & 1) == 1);
+			bool controller1 = (((flags >> 7) & 0x1) != 0);
 			// other bits: unknown, set to 0
 			// 006 4-byte little-endian unsigned int: unknown, set to 00000000
 			r.ReadInt32();
@@ -781,7 +781,7 @@ namespace BizHawk.MultiClient
 					byte controllerState = r.ReadByte();
 					if (player != 3)
 						for (int button = 0; button < buttons.Length; button++)
-							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
+							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
 					else
 						warningMsg = "FDS commands are not properly supported.";
 				}
@@ -831,10 +831,10 @@ namespace BizHawk.MultiClient
 			 second The file format has no means of identifying NTSC/"PAL", but the FPS can still be derived from the
 			 header.
 			*/
-			bool pal = (((flags >> 7) & 1) == 1);
+			bool pal = (((flags >> 7) & 0x1) != 0);
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			// bit 6: if "1", movie requires a savestate.
-			if (((flags >> 6) & 1) == 1)
+			if (((flags >> 6) & 0x1) != 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
 				r.Close();
@@ -842,7 +842,7 @@ namespace BizHawk.MultiClient
 				return null;
 			}
 			// bit 5: if "1", movie is 3-player movie; if "0", movie is 2-player movie
-			bool threePlayers = (((flags >> 5) & 1) == 1);
+			bool threePlayers = (((flags >> 5) & 0x1) != 0);
 			// Unknown.
 			r.ReadByte();
 			// 018 40-byte zero-terminated ASCII movie name string
@@ -890,14 +890,14 @@ namespace BizHawk.MultiClient
 					// * is controller 3 if a 3-player movie, or XYZ-mode if a 2-player movie.
 					if (player != 3 || threePlayers)
 						for (int button = 0; button < buttons.Length; button++)
-							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 0);
+							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) == 0);
 					else
 						for (int button = 0; button < other.Length; button++)
 						{
 							if (player1Config == "6")
-								controllers["P1 " + other[button]] = (((controllerState >> button) & 1) == 0);
+								controllers["P1 " + other[button]] = (((controllerState >> button) & 0x1) == 0);
 							if (player2Config == "6")
-								controllers["P2 " + other[button]] = (((controllerState >> (button + 4)) & 1) == 0);
+								controllers["P2 " + other[button]] = (((controllerState >> (button + 4)) & 0x1) == 0);
 						}
 				}
 				mg.SetSource(controllers);
@@ -1167,7 +1167,7 @@ namespace BizHawk.MultiClient
 						r.ReadByte();
 					ushort controllerState = r.ReadByte();
 					for (int button = 0; button < buttons.Length; button++)
-						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
+						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
 				}
 				r.ReadByte();
 				if (platform == "nes" && warningMsg == "")
@@ -1237,14 +1237,14 @@ namespace BizHawk.MultiClient
 			byte flags = r.ReadByte();
 			// bit 0: unused
 			// bit 1: "PAL"
-			bool pal = (((flags >> 1) & 1) == 1);
+			bool pal = (((flags >> 1) & 0x1) != 0);
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			// bit 2: Japan
-			bool japan = (((flags >> 2) & 1) == 1);
+			bool japan = (((flags >> 2) & 0x1) != 0);
 			m.Header.SetHeaderLine("Japan", japan.ToString());
 			// bit 3: Game Gear (version 1.16+)
 			bool gamegear;
-			if (((flags >> 3) & 1) == 1)
+			if (((flags >> 3) & 0x1) != 0)
 			{
 				gamegear = true;
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "GG");
@@ -1289,11 +1289,11 @@ namespace BizHawk.MultiClient
 				{
 					byte controllerState = r.ReadByte();
 					for (int button = 0; button < buttons.Length; button++)
-						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
+						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
 					if (player == 1)
 						controllers["Pause"] = (
-							(((controllerState >> 6) & 1) == 1 && (!gamegear)) ||
-							(((controllerState >> 7) & 1) == 1 && gamegear)
+							(((controllerState >> 6) & 0x1) != 0 && (!gamegear)) ||
+							(((controllerState >> 7) & 0x1) != 0 && gamegear)
 						);
 				}
 				mg.SetSource(controllers);
@@ -1382,7 +1382,7 @@ namespace BizHawk.MultiClient
 				 per frame. Nintendulator's Four-Score recording is seemingly broken.
 				*/
 				for (int controller = 1; controller < masks.Length; controller++)
-					masks[controller - 1] = (((controller2 >> (controller - 1)) & 1) == 1);
+					masks[controller - 1] = (((controller2 >> (controller - 1)) & 0x1) != 0);
 				warningMsg = "Nintendulator's Four Score recording is seemingly broken.";
 			}
 			else
@@ -1462,7 +1462,7 @@ namespace BizHawk.MultiClient
 			 * if "0", NTSC timing
 			 * if "1", "PAL" timing
 			*/
-			bool pal = (((data >> 7) & 1) == 1);
+			bool pal = (((data >> 7) & 0x1) != 0);
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			// 004 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
@@ -1505,7 +1505,7 @@ namespace BizHawk.MultiClient
 					byte controllerState = r.ReadByte();
 					if (player != 5)
 						for (int button = 0; button < buttons.Length; button++)
-							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
+							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
 					else if (warningMsg == "")
 						warningMsg = "Extra input is not properly supported.";
 				}
@@ -1757,7 +1757,7 @@ namespace BizHawk.MultiClient
 						for (int button = 0; button < buttons.Length; button++)
 						{
 							controllers["P" + player + " " + buttons[button]] = (
-								((controllerState >> button) & 1) == 1
+								((controllerState >> button) & 0x1) != 0
 							);
 						}
 					else if (warningMsg != "")
@@ -1814,9 +1814,9 @@ namespace BizHawk.MultiClient
 			// 014 1-byte flags: (movie start flags)
 			byte flags = r.ReadByte();
 			// bit 0: if "1", movie starts from an embedded "quicksave" snapshot
-			bool startfromquicksave = ((flags & 1) == 1);
+			bool startfromquicksave = ((flags & 0x1) != 0);
 			// bit 1: if "1", movie starts from reset with an embedded SRAM
-			bool startfromsram = (((flags >> 1) & 1) == 1);
+			bool startfromsram = (((flags >> 1) & 0x1) != 0);
 			// other: reserved, set to 0
 			// (If both bits 0 and 1 are "1", the movie file is invalid)
 			if (startfromquicksave && startfromsram)
@@ -1862,11 +1862,11 @@ namespace BizHawk.MultiClient
 			// 016 1-byte flags: system flags (game always runs at 60 frames/sec)
 			flags = r.ReadByte();
 			// bit 0: if "1", movie is for the GBA system
-			bool is_gba = ((flags & 1) == 1);
+			bool is_gba = ((flags & 0x1) != 0);
 			// bit 1: if "1", movie is for the GBC system
-			bool is_gbc = (((flags >> 1) & 1) == 1);
+			bool is_gbc = (((flags >> 1) & 0x1) != 0);
 			// bit 2: if "1", movie is for the SGB system
-			bool is_sgb = (((flags >> 2) & 1) == 1);
+			bool is_sgb = (((flags >> 2) & 0x1) != 0);
 			// other: reserved, set to 0
 			// (At most one of bits 0, 1, 2 can be "1")
 			if (!(is_gba ^ is_gbc ^ is_sgb) && (is_gba || is_gbc || is_sgb))
@@ -1894,7 +1894,7 @@ namespace BizHawk.MultiClient
 			 * bit 2: (rtcEnable) if "1", the emulator "real time clock" feature was enabled.
 			*/
 			// bit 3: (unsupported) must be "0" or the movie file is considered invalid (legacy).
-			if (((flags >> 3) & 1) == 1)
+			if (((flags >> 3) & 0x1) != 0)
 			{
 				errorMsg = "This is not a valid .VBM file.";
 				r.Close();
@@ -1990,12 +1990,12 @@ namespace BizHawk.MultiClient
 				*/
 				ushort controllerState = r.ReadUInt16();
 				for (int button = 0; button < buttons.Length; button++)
-					controllers[buttons[button]] = (((controllerState >> button) & 1) == 1);
+					controllers[buttons[button]] = (((controllerState >> button) & 0x1) != 0);
 				// TODO: Handle the other buttons.
 				if (warningMsg == "")
 				{
 					for (int button = 0; button < other.Length; button++)
-						if (((controllerState >> (button + 8)) & 1) == 1)
+						if (((controllerState >> (button + 8)) & 0x1) != 0)
 						{
 							warningMsg = other[button];
 							break;
@@ -2058,7 +2058,7 @@ namespace BizHawk.MultiClient
 			 If the movie version is < 0x400, or the "from-reset" flag is not set, a savestate is loaded from the movie.
 			 Otherwise, the savestate is ignored.
 			*/
-			if (version < 0x400 || ((flags >> 6) & 1) == 0)
+			if (version < 0x400 || ((flags >> 6) & 0x1) == 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
 				r.Close();
@@ -2067,6 +2067,8 @@ namespace BizHawk.MultiClient
 			}
 			/*
 			 bit 7: disable rerecording
+			 For the other control bytes, if a key from 1P to 4P (whichever one) is entirely ON, the following 4 bytes
+			 becomes the controller data. TODO: Figure out what this means.
 			 Other bits: reserved, set to 0
 			*/
 			// 014 DWORD   Ext0;                   // ROM:program CRC  FDS:program ID
@@ -2131,20 +2133,88 @@ namespace BizHawk.MultiClient
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
 				/*
-				 For the other control bytes, if a key from 1P to 4P (whichever one) is entirely ON, the following 4 bytes
-				 becomes the controller data (TODO: Figure out what this means).
 				 Each frame consists of 1 or more bytes. Controller 1 takes 1 byte, controller 2 takes 1 byte, controller
 				 3 takes 1 byte, and controller 4 takes 1 byte. If all four exist, the frame is 4 bytes. For example, if
 				 the movie only has controller 1 data, a frame is 1 byte.
 				*/
+				controllers["Reset"] = false;
 				for (int player = 1; player <= controllersUsed.Length; player++)
 				{
 					if (!controllersUsed[player - 1])
 						continue;
-					// TODO: Check for commands: Lines 207-239 of Nesmock.
 					byte controllerState = r.ReadByte();
+					if (controllerState >= 0xF0)
+					{
+						if (controllerState == 0xF0)
+						{
+							ushort command = r.ReadUInt16();
+							string commandName = "";
+							if ((command & 0xFF00) == 0)
+								switch (command & 0x00FF)
+								{
+									// NESCMD_NONE
+									case 0:
+										break;
+									// NESCMD_HWRESET
+									case 1:
+										controllers["Reset"] = true;
+										break;
+									// NESCMD_SWRESET
+									case 2:
+										controllers["Reset"] = true;
+										break;
+									// NESCMD_EXCONTROLLER
+									case 3:
+										commandName = "NESCMD_EXCONTROLLER, 0";
+										break;
+									// NESCMD_DISK_THROTTLE_ON
+									case 4:
+										commandName = "NESCMD_DISK_THROTTLE_ON, 0";
+										break;
+									// NESCMD_DISK_THROTTLE_OFF
+									case 5:
+										commandName = "NESCMD_DISK_THROTTLE_OFF, 0";
+										break;
+									// NESCMD_DISK_EJECT
+									case 6:
+										commandName = "NESCMD_DISK_EJECT, 0";
+										break;
+									// NESCMD_DISK_0A
+									case 7:
+										commandName = "NESCMD_DISK_0A, 0";
+										break;
+									// NESCMD_DISK_0B
+									case 8:
+										commandName = "NESCMD_DISK_0B, 0";
+										break;
+									// NESCMD_DISK_1A
+									case 9:
+										commandName = "NESCMD_DISK_1A, 0";
+										break;
+									// NESCMD_DISK_1B
+									case 10:
+										commandName = "NESCMD_DISK_1B, 0";
+										break;
+									default:
+										commandName = "invalid command";
+										break;
+								}
+							else
+								commandName = "NESCMD_EXCONTROLLER, " + (command & 0xFF00);
+							if (warningMsg != "" && commandName != "")
+								warningMsg = "Unable to run command \"" + commandName + "\".";
+						}
+						else if (controllerState == 0xF3)
+						{
+							uint dwdata = r.ReadUInt32();
+							// TODO: Make a clearer warning message.
+							if (warningMsg != "")
+								warningMsg = "Unable to run SetSyncExData(" + dwdata + ").";
+						}
+						controllerState = r.ReadByte();
+					}
 					for (int button = 0; button < buttons.Length; button++)
-						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
+						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
 				}
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
