@@ -1568,7 +1568,6 @@ namespace BizHawk.MultiClient
 			uint frameCount = r.ReadUInt32();
 			// 014 1-byte flags "controller mask"
 			byte controllerFlags = r.ReadByte();
-			int players = 0;
 			/*
 			 * bit 0: controller 1 in use
 			 * bit 1: controller 2 in use
@@ -1581,9 +1580,9 @@ namespace BizHawk.MultiClient
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "SNES Controller";
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			for (int controller = 1; controller <= Global.PLAYERS[controllers.Type.Name]; controller++)
-				if (((controllerFlags >> (controller - 1)) & 0x1) != 0)
-					players++;
+			bool[] controllersUsed = new bool[5];
+			for (int controller = 1; controller <= controllersUsed.Length; controller++)
+				controllersUsed[controller - 1] = (((controllerFlags >> (controller - 1)) & 0x1) != 0);
 			// 015 1-byte flags "movie options"
 			byte movieFlags = r.ReadByte();
 			/*
@@ -1695,8 +1694,10 @@ namespace BizHawk.MultiClient
 			for (int frame = 0; frame <= frameCount; frame++)
 			{
 				controllers["Reset"] = true;
-				for (int player = 1; player <= players; player++)
+				for (int player = 1; player <= controllersUsed.Length; player++)
 				{
+					if (!controllersUsed[player - 1])
+						continue;
 					/*
 					 Each frame consists of 2 bytes per controller. So if there are 3 controllers, a frame is 6 bytes and
 					 if there is only 1 controller, a frame is 2 bytes.
@@ -1714,7 +1715,7 @@ namespace BizHawk.MultiClient
 					 remains the same, each frame of controller data can contain additional bytes if input for peripherals
 					 is being recorded.
 					*/
-					if (version != "1.43")
+					if (version != "1.43" && player <= controllerTypes.Length)
 					{
 						string peripheral = "";
 						switch (controllerTypes[player - 1])
@@ -1752,8 +1753,15 @@ namespace BizHawk.MultiClient
 							warningMsg = "Unable to import " + peripheral + ".";
 					}
 					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
-					for (int button = 0; button < buttons.Length; button++)
-						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
+					if (player <= Global.PLAYERS[controllers.Type.Name])
+						for (int button = 0; button < buttons.Length; button++)
+						{
+							controllers["P" + player + " " + buttons[button]] = (
+								((controllerState >> button) & 1) == 1
+							);
+						}
+					else if (warningMsg != "")
+						warningMsg = "Controller " + player + " not supported.";
 				}
 				// The controller data contains <number_of_frames + 1> frames.
 				if (frame == 0)
@@ -1833,28 +1841,23 @@ namespace BizHawk.MultiClient
 				return null;
 			}
 			// 015 1-byte flags: controller flags
-			flags = r.ReadByte();
-			// TODO: Handle the additional controllers.
-			int players = 0;
-			// bit 0: controller 1 in use
-			if ((flags & 1) == 1)
-				players++;
-			else
+			byte controllerFlags = r.ReadByte();
+			/*
+			 * bit 0: controller 1 in use
+			 * bit 1: controller 2 in use (SGB games can be 2-player multiplayer)
+			 * bit 2: controller 3 in use (SGB games can be 3- or 4-player multiplayer with multitap)
+			 * bit 3: controller 4 in use (SGB games can be 3- or 4-player multiplayer with multitap)
+			*/
+			bool[] controllersUsed = new bool[4];
+			for (int controller = 1; controller <= controllersUsed.Length; controller++)
+				controllersUsed[controller - 1] = (((controllerFlags >> (controller - 1)) & 0x1) != 0);
+			if (!controllersUsed[0])
 			{
 				errorMsg = "Controller 1 must be in use.";
 				r.Close();
 				fs.Close();
 				return null;
 			}
-			// bit 1: controller 2 in use (SGB games can be 2-player multiplayer)
-			if (((flags >> 1) & 1) == 1)
-				players++;
-			// bit 2: controller 3 in use (SGB games can be 3- or 4-player multiplayer with multitap)
-			if (((flags >> 2) & 1) == 1)
-				players++;
-			// bit 3: controller 4 in use (SGB games can be 3- or 4-player multiplayer with multitap)
-			if (((flags >> 3) & 1) == 1)
-				players++;
 			// other: reserved
 			// 016 1-byte flags: system flags (game always runs at 60 frames/sec)
 			flags = r.ReadByte();
@@ -2001,7 +2004,9 @@ namespace BizHawk.MultiClient
 						warningMsg = "Unable to import " + warningMsg + " at frame " + frame + ".";
 				}
 				// TODO: Handle the additional controllers.
-				r.ReadBytes((players - 1) * 2);
+				for (int player = 2; player <= controllersUsed.Length; player++)
+					if (controllersUsed[player - 1])
+						r.ReadBytes(2);
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
@@ -2037,15 +2042,16 @@ namespace BizHawk.MultiClient
 			m.Header.Comments.Add(COMMENT + " Record version " + recordVersion);
 			// 010 4-byte flags (control byte)
 			uint flags = r.ReadUInt32();
-			// bit 0: controller 1 in use
-			bool controller1 = ((flags & 1) == 1);
-			// bit 1: controller 2 in use
-			bool controller2 = (((flags >> 1) & 1) == 1);
-			// bit 2: controller 3 in use
-			bool controller3 = (((flags >> 2) & 1) == 1);
-			// bit 3: controller 4 in use
-			bool controller4 = (((flags >> 3) & 1) == 1);
-			bool fourscore = (controller3 || controller4);
+			/*
+			 * bit 0: controller 1 in use
+			 * bit 1: controller 2 in use
+			 * bit 2: controller 3 in use
+			 * bit 3: controller 4 in use
+			*/
+			bool[] controllersUsed = new bool[4];
+			for (int controller = 1; controller <= controllersUsed.Length; controller++)
+				controllersUsed[controller - 1] = (((flags >> (controller - 1)) & 0x1) != 0);
+			bool fourscore = (controllersUsed[2] || controllersUsed[3]);
 			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
 			/*
 			 bit 6: 1=reset-based, 0=savestate-based (movie version <= 0x300 is always savestate-based)
@@ -2099,7 +2105,7 @@ namespace BizHawk.MultiClient
 			// 03C 4-byte little-endian integer: CRC (CRC excluding this data(to prevent cheating))
 			int crc32 = r.ReadInt32();
 			m.Header.SetHeaderLine("CRC32", crc32.ToString());
-			if (!controller1 && !controller2 && !controller3 && !controller4)
+			if (!controllersUsed[0] && !controllersUsed[1] && !controllersUsed[2] && !controllersUsed[3])
 			{
 				warningMsg = "No input recorded.";
 				r.Close();
@@ -2122,7 +2128,6 @@ namespace BizHawk.MultiClient
 			 * 80 Right
 			*/
 			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
-			bool[] masks = new bool[4] {controller1, controller2, controller3, controller4};
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
 				/*
@@ -2132,9 +2137,9 @@ namespace BizHawk.MultiClient
 				 3 takes 1 byte, and controller 4 takes 1 byte. If all four exist, the frame is 4 bytes. For example, if
 				 the movie only has controller 1 data, a frame is 1 byte.
 				*/
-				for (int player = 1; player <= masks.Length; player++)
+				for (int player = 1; player <= controllersUsed.Length; player++)
 				{
-					if (!masks[player - 1])
+					if (!controllersUsed[player - 1])
 						continue;
 					// TODO: Check for commands: Lines 207-239 of Nesmock.
 					byte controllerState = r.ReadByte();
@@ -2181,16 +2186,16 @@ namespace BizHawk.MultiClient
 			r.ReadBytes(4);
 			// 015 4-byte little-endian unsigned int: number of frames advanced step by step
 			r.ReadBytes(4);
-			// 016 1-byte: average recording frames per second
-			r.ReadByte();
-			// 020 4-byte little-endian unsigned int: number of key combos
+			// 019 1-byte: average recording frames per second
+			r.ReadBytes(1);
+			// 01A 4-byte little-endian unsigned int: number of key combos
 			r.ReadBytes(4);
 			// 01E 2-byte little-endian unsigned int: number of internal chapters
 			r.ReadBytes(2);
 			// 020 2-byte little-endian unsigned int: length of the author name field in bytes
 			ushort authorSize = r.ReadUInt16();
 			// 022 3-byte little-endian unsigned int: size of an uncompressed save state in bytes
-			r.ReadBytes(3);
+			uint savestateSize = (uint)(r.ReadByte() | (r.ReadByte() << 8) | (r.ReadByte() << 16));
 			/*
 			 025 1-byte flags: initial input configuration
 				 bit 7: first input enabled
@@ -2207,10 +2212,18 @@ namespace BizHawk.MultiClient
 				warningMsg = "Super Scope";
 			controllerFlags >>= 1;
 			if ((controllerFlags & 0x1) != 0 && warningMsg != "")
-				warningMsg = "Mouse";
+				warningMsg = "Second Mouse";
+			controllerFlags >>= 1;
+			if ((controllerFlags & 0x1) != 0 && warningMsg != "")
+				warningMsg = "First Mouse";
 			controllerFlags >>= 1;
 			if (warningMsg != "")
 				warningMsg = "Unable to import " + warningMsg + ".";
+			bool[] controllersUsed = new bool[5];
+			for (int controller = 1; controller <= controllersUsed.Length; controller++)
+				controllersUsed[controllersUsed.Length - controller] = (
+					((controllerFlags >> (controller - 1)) & 0x1) != 0
+				);
 			// 026 1-byte: reserved
 			r.ReadByte();
 			// 027 1-byte flags:
@@ -2246,6 +2259,8 @@ namespace BizHawk.MultiClient
 			 specifies size
 			*/
 			r.ReadBytes(3);
+			// Next follows a ZST format savestate.
+			r.ReadBytes((int)savestateSize);
 			return m;
 		}
 	}
