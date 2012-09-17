@@ -1484,11 +1484,32 @@ namespace BizHawk.MultiClient
 		private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			rebootCoreToolStripMenuItem.Enabled = !IsNullEmulator();
-			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset");
-			hardResetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power");
+
+			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
+					(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished))
+			{
+				resetToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				resetToolStripMenuItem.Enabled = false;
+			}
+
+			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
+				(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished))
+			{
+				hardResetToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				hardResetToolStripMenuItem.Enabled = false;
+			}
 
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
-			if (didMenuPause) pauseToolStripMenuItem.Checked = wasPaused;
+			if (didMenuPause)
+			{
+				pauseToolStripMenuItem.Checked = wasPaused;
+			}
 
 			pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.EmulatorPauseBinding;
 			rebootCoreToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RebootCoreResetBinding;

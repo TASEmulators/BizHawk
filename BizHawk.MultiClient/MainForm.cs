@@ -2931,8 +2931,11 @@ namespace BizHawk.MultiClient
 			//is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
-				Global.ClickyVirtualPadController.Click("Reset");
-				Global.OSD.AddMessage("Reset button pressed.");
+				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				{
+					Global.ClickyVirtualPadController.Click("Reset");
+					Global.OSD.AddMessage("Reset button pressed.");
+				}
 			}
 		}
 
@@ -2941,8 +2944,11 @@ namespace BizHawk.MultiClient
 			//is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
 			{
-				Global.ClickyVirtualPadController.Click("Power");
-				Global.OSD.AddMessage("Power button pressed.");
+				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				{
+					Global.ClickyVirtualPadController.Click("Power");
+					Global.OSD.AddMessage("Power button pressed.");
+				}
 			}
 		}
 
