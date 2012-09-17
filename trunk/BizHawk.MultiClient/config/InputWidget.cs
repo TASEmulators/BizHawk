@@ -105,6 +105,13 @@ namespace BizHawk.MultiClient
 			ReadKeys();
 		}
 
+		public void EraseMappings()
+		{
+			ClearBindings();
+			HideConflicts();
+			Text = "";
+		}
+
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
