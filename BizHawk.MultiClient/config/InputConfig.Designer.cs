@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputConfig));
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
@@ -41,9 +42,12 @@
 			this.AllowLR = new System.Windows.Forms.CheckBox();
 			this.AutoTab = new System.Windows.Forms.CheckBox();
 			this.label38 = new System.Windows.Forms.Label();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearMappingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
 			this.ControllerSelectGroupBox.SuspendLayout();
 			this.SystemGroupBox.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// OK
@@ -74,6 +78,7 @@
 			this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.ButtonsGroupBox.ContextMenuStrip = this.contextMenuStrip1;
 			this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 84);
 			this.ButtonsGroupBox.Name = "ButtonsGroupBox";
 			this.ButtonsGroupBox.Size = new System.Drawing.Size(238, 304);
@@ -190,6 +195,20 @@
 			this.label38.TabIndex = 9;
 			this.label38.Text = "* Escape clears a key mapping";
 			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearMappingsToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(158, 26);
+			// 
+			// clearMappingsToolStripMenuItem
+			// 
+			this.clearMappingsToolStripMenuItem.Name = "clearMappingsToolStripMenuItem";
+			this.clearMappingsToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+			this.clearMappingsToolStripMenuItem.Text = "&Clear Mappings";
+			this.clearMappingsToolStripMenuItem.Click += new System.EventHandler(this.clearMappingsToolStripMenuItem_Click);
+			// 
 			// InputConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -218,6 +237,7 @@
 			this.ControllerSelectGroupBox.ResumeLayout(false);
 			this.ControllerSelectGroupBox.PerformLayout();
 			this.SystemGroupBox.ResumeLayout(false);
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -237,5 +257,7 @@
         private System.Windows.Forms.CheckBox AllowLR;
 		private System.Windows.Forms.CheckBox AutoTab;
 		private System.Windows.Forms.Label label38;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem clearMappingsToolStripMenuItem;
     }
 }

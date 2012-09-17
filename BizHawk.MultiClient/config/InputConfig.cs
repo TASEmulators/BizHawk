@@ -578,5 +578,17 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
+
+		private void clearMappingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			for (int i = 0; i < ButtonsGroupBox.Controls.Count; i++)
+			{
+				if (ButtonsGroupBox.Controls[i] is InputWidget)
+				{
+					InputWidget w = ButtonsGroupBox.Controls[i] as InputWidget;
+					w.EraseMappings();
+				}
+			}
+		}
 	}
 }
