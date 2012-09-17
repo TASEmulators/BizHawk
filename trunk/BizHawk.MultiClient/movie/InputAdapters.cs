@@ -365,7 +365,6 @@ namespace BizHawk.MultiClient
 		private string GetSNESControllersAsMnemonic()
 		{
 			StringBuilder input = new StringBuilder("|");
-			input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] : ".");
 
 			if (IsBasePressed("Power"))
 			{
@@ -616,8 +615,6 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-
-			Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
 
 			if (mnemonic[1] == 'P')
 			{
