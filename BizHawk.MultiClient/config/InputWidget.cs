@@ -115,6 +115,7 @@ namespace BizHawk.MultiClient
 				if (TempBindingStr == "Escape")
 				{
 					ClearBindings();
+					HideConflicts();
 					Increment();
 					return;
 				}
@@ -240,8 +241,10 @@ namespace BizHawk.MultiClient
 
 		public void ClearBindings()
 		{
-			for (int x = 0; x < MaxBind; x++)
-				Bindings[x] = "";
+			for (int i = 0; i < MaxBind; i++)
+			{
+				Bindings[i] = "";
+			}
 		}
 
 		public void UpdateLabel()
