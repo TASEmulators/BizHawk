@@ -305,7 +305,7 @@ namespace BizHawk
 				bw.Write(buffer[i]);
 		}
 
-		public static int[] ReadInts(this BinaryReader br, int num)
+		public static int[] ReadInt32s(this BinaryReader br, int num)
 		{
 			int[] ret = new int[num];
 			for (int i = 0; i < num; i++)
@@ -313,7 +313,7 @@ namespace BizHawk
 			return ret;
 		}
 
-		public static short[] ReadShorts(this BinaryReader br, int num)
+		public static short[] ReadInt16s(this BinaryReader br, int num)
 		{
 			short[] ret = new short[num];
 			for (int i = 0; i < num; i++)
@@ -321,6 +321,13 @@ namespace BizHawk
 			return ret;
 		}
 
+        public static ushort[] ReadUInt16s(this BinaryReader br, int num)
+        {
+            ushort[] ret = new ushort[num];
+            for (int i = 0; i < num; i++)
+                ret[i] = br.ReadUInt16();
+            return ret;
+        }
 
 		public static void ReadFromHex(this byte[] buffer, string hex)
 		{
