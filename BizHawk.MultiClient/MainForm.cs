@@ -467,7 +467,8 @@ namespace BizHawk.MultiClient
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
 				}
 
-				Global.ClickyVirtualPadController.FrameTick();
+				if (!EmulatorPaused)
+					Global.ClickyVirtualPadController.FrameTick();
 
 #if WINDOWS
 				LuaConsole1.ResumeScripts(false);
