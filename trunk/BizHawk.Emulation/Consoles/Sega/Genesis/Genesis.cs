@@ -271,6 +271,15 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void SaveStateText(TextWriter writer)
         {
+            var buf = new byte[141485 + SaveRAM.Length];
+            var stream = new MemoryStream(buf);
+            var bwriter = new BinaryWriter(stream);
+            SaveStateBinary(bwriter);
+            
+            writer.WriteLine("Version 1");
+            writer.Write("BigFatBlob ");
+            buf.SaveAsHex(writer);
+
             /*writer.WriteLine("[MegaDrive]");
             MainCPU.SaveStateText(writer, "Main68K");
             SoundCPU.SaveStateText(writer);
@@ -288,6 +297,14 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void LoadStateText(TextReader reader)
         {
+            var buf = new byte[141485 + SaveRAM.Length];
+            var version = reader.ReadLine();
+            if (version != "Version 1")
+                throw new Exception("Not a valid state vesrion! sorry! your state is bad! Robust states will be added later!");
+            var omgstate = reader.ReadLine().Split(' ')[1];
+            buf.ReadFromHex(omgstate);
+            LoadStateBinary(new BinaryReader(new MemoryStream(buf)));
+
             /*while (true)
             {
                 string[] args = reader.ReadLine().Split(' ');
@@ -323,17 +340,20 @@ namespace BizHawk.Emulation.Consoles.Sega
             SoundCPU.SaveStateBinary(writer);   // 46
             PSG.SaveStateBinary(writer);        // 15
             VDP.SaveStateBinary(writer);        // 65781
-            YM2612.SaveStateBinary(writer);     // 35
-
+            YM2612.SaveStateBinary(writer);     // 1785
+            
             writer.Write(Ram);                  // 65535
             writer.Write(Z80Ram);               // 8192
 
             writer.Write(Frame);                // 4
-            // lag counter crap TODO
             writer.Write(M68000HasZ80Bus);      // 1
             writer.Write(Z80Reset);             // 1
 
-            // TODO Saveram/EEPROM
+            if (SaveRAM.Length > 0)
+                writer.Write(SaveRAM);
+
+            // TODO: EEPROM/cart HW state
+            // TODO: lag counter crap
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -354,7 +374,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		public byte[] SaveStateBinary()
 		{
-            var buf = new byte[141485];
+            var buf = new byte[141485+SaveRAM.Length];
             var stream = new MemoryStream(buf);
             var writer = new BinaryWriter(stream);
             SaveStateBinary(writer);
