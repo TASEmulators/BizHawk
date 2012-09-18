@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void SaveStateText(TextWriter writer)
         {
-            var buf = new byte[141485 + SaveRAM.Length];
+            var buf = new byte[141501 + SaveRAM.Length];
             var stream = new MemoryStream(buf);
             var bwriter = new BinaryWriter(stream);
             SaveStateBinary(bwriter);
@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void LoadStateText(TextReader reader)
         {
-            var buf = new byte[141485 + SaveRAM.Length];
+            var buf = new byte[141501 + SaveRAM.Length];
             var version = reader.ReadLine();
             if (version != "Version 1")
                 throw new Exception("Not a valid state vesrion! sorry! your state is bad! Robust states will be added later!");
@@ -348,6 +348,15 @@ namespace BizHawk.Emulation.Consoles.Sega
             writer.Write(Frame);                // 4
             writer.Write(M68000HasZ80Bus);      // 1
             writer.Write(Z80Reset);             // 1
+            writer.Write(BankRegion);           // 4
+
+            for (int i = 0; i < 3; i++)
+            {
+                writer.Write(IOPorts[i].Data);
+                writer.Write(IOPorts[i].TxData);
+                writer.Write(IOPorts[i].RxData);
+                writer.Write(IOPorts[i].SCtrl);
+            }
 
             if (SaveRAM.Length > 0)
                 writer.Write(SaveRAM);
@@ -370,11 +379,23 @@ namespace BizHawk.Emulation.Consoles.Sega
             Frame = reader.ReadInt32();
             M68000HasZ80Bus = reader.ReadBoolean();
             Z80Reset = reader.ReadBoolean();
+            BankRegion = reader.ReadInt32();
+
+            for (int i = 0; i < 3; i++)
+            {
+                IOPorts[i].Data   = reader.ReadByte();
+                IOPorts[i].TxData = reader.ReadByte();
+                IOPorts[i].RxData = reader.ReadByte();
+                IOPorts[i].SCtrl  = reader.ReadByte();
+            }
+
+            if (SaveRAM.Length > 0)
+                SaveRAM = reader.ReadBytes(SaveRAM.Length);
 		}
 
 		public byte[] SaveStateBinary()
 		{
-            var buf = new byte[141485+SaveRAM.Length];
+            var buf = new byte[141501+SaveRAM.Length];
             var stream = new MemoryStream(buf);
             var writer = new BinaryWriter(stream);
             SaveStateBinary(writer);
