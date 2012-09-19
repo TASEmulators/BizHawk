@@ -338,7 +338,9 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
+#if MUSASHI
             Musashi.SaveStateBinary(writer);    // 124  
+#endif
             SoundCPU.SaveStateBinary(writer);   // 46
             PSG.SaveStateBinary(writer);        // 15
             VDP.SaveStateBinary(writer);        // 65781
@@ -369,8 +371,10 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
+#if MUSASHI
             Musashi.LoadStateBinary(reader);
-            SoundCPU.LoadStateBinary(reader);
+#endif
+			SoundCPU.LoadStateBinary(reader);
             PSG.LoadStateBinary(reader);
             VDP.LoadStateBinary(reader);
             YM2612.LoadStateBinary(reader);
