@@ -2244,6 +2244,7 @@ namespace BizHawk.MultiClient
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "SNES");
 			// 003 2-byte little-endian unsigned int: zsnes version number
 			short version = r.ReadInt16();
+			m.Header.Comments.Add(EMULATIONORIGIN + " ZSNES version " + version);
 			// 005 4-byte little-endian integer: CRC32 of the ROM
 			int crc32 = r.ReadInt32();
 			m.Header.SetHeaderLine("CRC32", crc32.ToString());
@@ -2257,7 +2258,7 @@ namespace BizHawk.MultiClient
 			// 015 4-byte little-endian unsigned int: number of frames advanced step by step
 			r.ReadBytes(4);
 			// 019 1-byte: average recording frames per second
-			r.ReadBytes(1);
+			r.ReadByte();
 			// 01A 4-byte little-endian unsigned int: number of key combos
 			r.ReadBytes(4);
 			// 01E 2-byte little-endian unsigned int: number of internal chapters
@@ -2265,9 +2266,11 @@ namespace BizHawk.MultiClient
 			// 020 2-byte little-endian unsigned int: length of the author name field in bytes
 			ushort authorSize = r.ReadUInt16();
 			// 022 3-byte little-endian unsigned int: size of an uncompressed save state in bytes
-			uint savestateSize = (uint)(r.ReadByte() | (r.ReadByte() << 8) | (r.ReadByte() << 16));
+			r.ReadBytes(3);
+			// 025 1-byte: reserved
+			r.ReadByte();
 			/*
-			 025 1-byte flags: initial input configuration
+			 026 1-byte flags: initial input configuration
 				 bit 7: first input enabled
 				 bit 6: second input enabled
 				 bit 5: third input enabled
@@ -2294,8 +2297,6 @@ namespace BizHawk.MultiClient
 				controllersUsed[controllersUsed.Length - controller] = (
 					((controllerFlags >> (controller - 1)) & 0x1) != 0
 				);
-			// 026 1-byte: reserved
-			r.ReadByte();
 			// 027 1-byte flags:
 			byte movieFlags = r.ReadByte();
 			byte begins = (byte)(movieFlags & 0xC0);
@@ -2328,7 +2329,7 @@ namespace BizHawk.MultiClient
 			 028 3-byte little-endian unsigned int: initial save state size, highest bit specifies compression, next 23
 			 specifies size
 			*/
-			r.ReadBytes(3);
+			uint savestateSize = (uint)(r.ReadByte() | (r.ReadByte() << 8) | ((r.ReadByte() << 16) & 0x80));
 			// Next follows a ZST format savestate.
 			r.ReadBytes((int)savestateSize);
 			return m;
