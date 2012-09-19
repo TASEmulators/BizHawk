@@ -1761,6 +1761,7 @@ namespace BizHawk.MultiClient
 							);
 						}
 					else if (warningMsg != "")
+						// TODO: Move this to the controllers used check.
 						warningMsg = "Controller " + player + " not supported.";
 				}
 				// The controller data contains <number_of_frames + 1> frames.
@@ -2262,7 +2263,7 @@ namespace BizHawk.MultiClient
 			// 01A 4-byte little-endian unsigned int: number of key combos
 			r.ReadBytes(4);
 			// 01E 2-byte little-endian unsigned int: number of internal chapters
-			r.ReadBytes(2);
+			ushort internalChapters = r.ReadUInt16();
 			// 020 2-byte little-endian unsigned int: length of the author name field in bytes
 			ushort authorSize = r.ReadUInt16();
 			// 022 3-byte little-endian unsigned int: size of an uncompressed save state in bytes
@@ -2276,18 +2277,21 @@ namespace BizHawk.MultiClient
 				 bit 5: third input enabled
 				 bit 4: fourth input enabled
 				 bit 3: fifth input enabled
-				 bit 2: first mouse input enabled
-				 bit 1: second mouse input enabled
-				 bit 0: super scope input enabled
+				 bit 2: mouse in first port
+				 bit 1: mouse in second port
+				 bit 0: super scope in second port
 			*/
 			byte controllerFlags = r.ReadByte();
-			if ((controllerFlags & 0x1) != 0)
+			bool superScope = ((controllerFlags & 0x1) != 0);
+			if (superScope)
 				warningMsg = "Super Scope";
 			controllerFlags >>= 1;
-			if ((controllerFlags & 0x1) != 0 && warningMsg != "")
+			bool secondMouse = ((controllerFlags & 0x1) != 0);
+			if (secondMouse && warningMsg != "")
 				warningMsg = "Second Mouse";
 			controllerFlags >>= 1;
-			if ((controllerFlags & 0x1) != 0 && warningMsg != "")
+			bool firstMouse = ((controllerFlags & 0x1) != 0);
+			if (firstMouse && warningMsg != "")
 				warningMsg = "First Mouse";
 			controllerFlags >>= 1;
 			if (warningMsg != "")
@@ -2332,6 +2336,131 @@ namespace BizHawk.MultiClient
 			uint savestateSize = (uint)(r.ReadByte() | (r.ReadByte() << 8) | ((r.ReadByte() << 16) & 0x80));
 			// Next follows a ZST format savestate.
 			r.ReadBytes((int)savestateSize);
+			SimpleController controllers = new SimpleController();
+			controllers.Type = new ControllerDefinition();
+			controllers.Type.Name = "SNES Controller";
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			// R, L, X, A, Right, Left, Down, Up, Start, Select, Y, B. TODO: Confirm.
+			string[] buttons = new string[12] {
+				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
+			};
+			int events = (int)(frameCount + internalChapters);
+			int frames = 1;
+			// TODO: Fix this!
+			for (int e = 1; e <= events; e++)
+			{
+				controllers["Reset"] = false;
+				/*
+				 000 1-byte flags:
+					 bit 7: "1" if controller 1 changed, "0" otherwise
+					 bit 6: "1" if controller 2 changed, "0" otherwise
+					 bit 5: "1" if controller 3 changed, "0" otherwise
+					 bit 4: "1" if controller 4 changed, "0" otherwise
+					 bit 3: "1" if controller 5 changed, "0" otherwise
+					 bit 2: "1" if this is a "chapter" update, "0" if it's a "controller" update
+					 bit 1: "1" if this is RLE data instead of any of the above
+					 bit 0: "1" if this is command data instead any of the above
+				*/
+				byte flag = r.ReadByte();
+				if ((flag & 0x1) != 0)
+				{
+					/*
+					 If the event is a command, the other seven bits define the command. The command could be "reset now"
+					 or similar things.
+					*/
+					flag >>= 1;
+					if (flag == 0x0)
+						controllers["Reset"] = true;
+					// TODO: Other commands.
+				}
+				else if (((flag >> 1) & 0x1) != 0)
+				{
+					// If the event is RLE data, next follows 4 bytes which is the frame to repeat current input till.
+					uint frame = r.ReadUInt32();
+					mg.SetSource(controllers);
+					for (; frames <= frame; frames++)
+					{
+						m.AppendFrame(mg.GetControllersAsMnemonic());
+						e++;
+					}
+				}
+				else if (((flag >> 2) & 0x1) != 0)
+				{
+					/*
+					 If the event is a "chapter" update, the packet follows with a ZST format savestate. Using a header of:
+						000 3-byte little endian unsigned int: save state size in format defined above
+					*/
+					savestateSize = (uint)(r.ReadByte() | (r.ReadByte() << 8) | ((r.ReadByte() << 16) & 0x80));
+					// 001 above size: save state
+					r.ReadBytes((int)savestateSize);
+					// above size+001 4-byte little endian unsigned int: frame number save state loads to
+					r.ReadBytes(4);
+					// above size+005 2-byte: controller status bit field, see below
+					r.ReadBytes(2);
+					// above size+007 9-byte: previous controller input bits
+					r.ReadBytes(9);
+				}
+				else
+				{
+					flag >>= 3;
+					/*
+					 If the event is a "controller" update, next comes the controller data for each changed controller, 12
+					 bits per controller, or 20 bits in the case of the super scope, zeropadding up to full bytes. The
+					 minimum length of the controller data is 2 bytes, and the maximum length is 9 bytes.
+					*/
+					byte leftOver = 0x0;
+					for (int player = 1; player <= controllersUsed.Length; player++)
+					{
+						// If the controller is enabled and has changed:
+						if (controllersUsed[controllersUsed.Length - player] &&
+							(((flag >> (player - 1)) & 0x1) != 0))
+						{
+							byte controllerState1 = r.ReadByte();
+							uint controllerState;
+							if (leftOver == 0x0)
+							{
+								byte controllerState2 = r.ReadByte();
+								if (player == 2 && superScope)
+								{
+									byte controllerState3 = r.ReadByte();
+									controllerState = (uint)(((controllerState1 << 16) & 0x0F0000) |
+										(controllerState2 << 8) | controllerState3);
+								}
+								else
+									controllerState = (uint)(((controllerState1 << 8) & 0x0F00) | controllerState2);
+								leftOver = (byte)((controllerState1 >> 4) & 0x0F);
+							}
+							else if ((leftOver & 0xF0) == leftOver)
+							{
+								if (player == 2 && superScope)
+								{
+									byte controllerState2 = r.ReadByte();
+									controllerState = (uint)((leftOver << 16) | (controllerState1 << 8) |
+										controllerState2);
+								}
+								else
+									controllerState = (uint)((leftOver << 8) | controllerState1);
+							}
+							else
+								throw new ArgumentException("Unexpected number of leftover bits.");
+							if (player <= Global.PLAYERS[controllers.Type.Name])
+								if (player != 2 || !superScope)
+									for (int button = 0; button < buttons.Length; button++)
+									{
+										controllers["P" + player + " " + buttons[button]] = (
+											((controllerState >> button) & 0x1) != 0
+										);
+									}
+							else if (warningMsg != "")
+								// TODO: Move this to the controllers used check.
+								warningMsg = "Controller " + player + " not supported.";
+						}
+					}
+					mg.SetSource(controllers);
+					m.AppendFrame(mg.GetControllersAsMnemonic());
+					frames++;
+				}
+			}
 			return m;
 		}
 	}
