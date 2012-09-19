@@ -260,6 +260,13 @@ namespace BizHawk.MultiClient
 			return null;
 		}
 
+		public void SetDomain(MemoryDomain domain)
+		{
+			Domain = domain;
+			int? theDomain = GetDomainInt(Domain.Name);
+			SetMemoryDomain(theDomain ?? 0);
+		}
+
 		public void Restart()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
