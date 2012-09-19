@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.IO;
 
 namespace BizHawk.Emulation.Sound
 {
@@ -1053,11 +1054,6 @@ namespace BizHawk.Emulation.Sound
             return value - Math.Floor(value);
         }
 
-		/// <summary>
-		/// basic linear audio resampler. sampling rate is inferred from buffer sizes
-		/// </summary>
-		/// <param name="input">stereo s16</param>
-		/// <param name="output">stereo s16</param>
 		static void LinearDownsampler(short[] input, short[] output)
 		{
 			double samplefactor = input.Length / (double)output.Length;
@@ -1162,5 +1158,134 @@ namespace BizHawk.Emulation.Sound
 
         public void DiscardSamples() { }
         public int MaxVolume { get; set; }
+
+        // ====================================================================================
+        //                                     Save States
+        // ====================================================================================
+
+        public void SaveStateBinary(BinaryWriter writer)
+        {
+            writer.Write(TimerAPeriod);
+            writer.Write(TimerBPeriod);
+            writer.Write(TimerATripped);
+            writer.Write(TimerBTripped);
+            writer.Write(TimerAResetClock);
+            writer.Write(TimerBResetClock);
+            writer.Write(TimerALastReset);
+            writer.Write(TimerBLastReset);
+            writer.Write(TimerControl27);
+            writer.Write(egDivisorCounter);
+            writer.Write(egCycleCounter);
+            
+            writer.Write(PartSelect);
+            writer.Write(RegisterSelect);
+            writer.Write(DacEnable);
+            writer.Write(DacValue);
+
+            for (int i = 0; i < 6; i++)
+                ChannelSaveStateBinary(writer, Channels[i]);
+        }
+
+        public void LoadStateBinary(BinaryReader reader)
+        {
+            TimerAPeriod = reader.ReadInt32();
+            TimerBPeriod = reader.ReadInt32();
+            TimerATripped = reader.ReadBoolean();
+            TimerBTripped = reader.ReadBoolean();
+            TimerAResetClock = reader.ReadInt32();
+            TimerBResetClock = reader.ReadInt32();
+            TimerALastReset = reader.ReadInt32();
+            TimerBLastReset = reader.ReadInt32();
+            TimerControl27 = reader.ReadByte();
+            egDivisorCounter = reader.ReadInt32();
+            egCycleCounter = reader.ReadInt32();
+
+            PartSelect = reader.ReadByte();
+            RegisterSelect = reader.ReadByte();
+            DacEnable = reader.ReadBoolean();
+            DacValue = reader.ReadByte();
+
+            for (int i = 0; i < 6; i++)
+                ChannelLoadStateBinary(reader, Channels[i]);
+        }
+
+        void ChannelSaveStateBinary(BinaryWriter writer, Channel c)
+        {
+            // TODO reduce size of state via casting
+            writer.Write(c.FrequencyNumber);
+            writer.Write(c.Block);
+            writer.Write(c.Feedback);
+            writer.Write(c.Algorithm);
+            writer.Write(c.SpecialMode);
+            writer.Write(c.LeftOutput);
+            writer.Write(c.RightOutput);
+            writer.Write(c.AMS_AmplitudeModulationSensitivity);
+            writer.Write(c.FMS_FrequencyModulationSensitivity);
+
+            for (int i = 0; i < 4; i++)
+                OperatorSaveStateBinary(writer, c.Operators[i]);
+        }
+
+        void ChannelLoadStateBinary(BinaryReader reader, Channel c)
+        {
+            c.FrequencyNumber = reader.ReadInt32();
+            c.Block = reader.ReadInt32();
+            c.Feedback = reader.ReadInt32();
+            c.Algorithm = reader.ReadInt32();
+            c.SpecialMode = reader.ReadBoolean();
+            c.LeftOutput = reader.ReadBoolean();
+            c.RightOutput = reader.ReadBoolean();
+            c.AMS_AmplitudeModulationSensitivity = reader.ReadInt32();
+            c.FMS_FrequencyModulationSensitivity = reader.ReadInt32();
+
+            for (int i = 0; i < 4; i++)
+                OperatorLoadStateBinary(reader, c.Operators[i]);
+        }
+
+        void OperatorSaveStateBinary(BinaryWriter writer, Operator op)
+        {
+            // TODO, size of states could be shrunken by using casts.
+            writer.Write(op.TL_TotalLevel);
+            writer.Write(op.SL_SustainLevel);
+            writer.Write(op.AR_AttackRate);
+            writer.Write(op.DR_DecayRate);
+            writer.Write(op.SR_SustainRate);
+            writer.Write(op.RR_ReleaseRate);
+            writer.Write(op.KS_KeyScale);
+            writer.Write(op.SSG_EG);
+            writer.Write(op.DT_Detune);
+            writer.Write(op.MUL_Multiple);
+            writer.Write(op.AM_AmplitudeModulation);
+            writer.Write(op.FrequencyNumber);
+            writer.Write(op.Block);
+            writer.Write(op.KeyCode);
+            writer.Write(op.Rks);
+            writer.Write(op.PhaseCounter);
+            writer.Write((byte)op.EnvelopeState);
+            writer.Write(op.EgAttenuation);
+        }
+
+        void OperatorLoadStateBinary(BinaryReader reader, Operator op)
+        {
+            op.TL_TotalLevel = reader.ReadInt32();
+            op.SL_SustainLevel = reader.ReadInt32();
+            op.AR_AttackRate = reader.ReadInt32();
+            op.DR_DecayRate = reader.ReadInt32();
+            op.SR_SustainRate = reader.ReadInt32();
+            op.RR_ReleaseRate = reader.ReadInt32();
+            op.KS_KeyScale = reader.ReadInt32();
+            op.SSG_EG = reader.ReadInt32();
+            op.DT_Detune = reader.ReadInt32();
+            op.MUL_Multiple = reader.ReadInt32();
+            op.AM_AmplitudeModulation = reader.ReadBoolean();
+
+            op.FrequencyNumber = reader.ReadInt32();
+            op.Block = reader.ReadInt32();
+            op.KeyCode = reader.ReadInt32();
+            op.Rks = reader.ReadInt32();
+            op.PhaseCounter = reader.ReadInt32();
+            op.EnvelopeState = (EnvelopeState)Enum.ToObject(typeof(EnvelopeState), reader.ReadByte());
+            op.EgAttenuation = reader.ReadInt32();
+        }
     }
 }

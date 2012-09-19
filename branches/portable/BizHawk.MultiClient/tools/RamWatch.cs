@@ -29,6 +29,7 @@ namespace BizHawk.MultiClient
 		int defaultPrevWidth;
 		int defaultChangeWidth;
 		int defaultDiffWidth;
+		int defaultDomainWidth;
 		int NotesWidth;
 
 		string systemID = "NULL";
@@ -101,8 +102,6 @@ namespace BizHawk.MultiClient
 			WatchListView.BlazingFast = true;
 			WatchListView.Refresh();
 			WatchListView.BlazingFast = false;
-
-			
 		}
 
 		public void AddWatch(Watch w)
@@ -124,11 +123,14 @@ namespace BizHawk.MultiClient
 			defaultPrevWidth = WatchListView.Columns[Global.Config.RamWatchPrevIndex].Width;
 			defaultChangeWidth = WatchListView.Columns[Global.Config.RamWatchChangeIndex].Width;
 			defaultDiffWidth = WatchListView.Columns[Global.Config.RamWatchDiffIndex].Width;
+			defaultDomainWidth = WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width;
 			NotesWidth = WatchListView.Columns[Global.Config.RamWatchNotesIndex].Width;
 
 
 			if (Global.Config.RamWatchSaveWindowPosition && Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
+			{
 				Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
+			}
 
 			if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
 			{
@@ -137,18 +139,36 @@ namespace BizHawk.MultiClient
 			SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
 			SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
 			SetDiffColumn(Global.Config.RamWatchShowDiffColumn);
+			SetDomainColumn(Global.Config.RamWatchShowDomainColumn);
+
 			if (Global.Config.RamWatchAddressWidth > 0)
+			{
 				WatchListView.Columns[Global.Config.RamWatchAddressIndex].Width = Global.Config.RamWatchAddressWidth;
+			}
 			if (Global.Config.RamWatchValueWidth > 0)
+			{
 				WatchListView.Columns[Global.Config.RamWatchValueIndex].Width = Global.Config.RamWatchValueWidth;
+			}
 			if (Global.Config.RamWatchPrevWidth > 0)
+			{
 				WatchListView.Columns[Global.Config.RamWatchPrevIndex].Width = Global.Config.RamWatchPrevWidth;
+			}
 			if (Global.Config.RamWatchChangeWidth > 0)
+			{
 				WatchListView.Columns[Global.Config.RamWatchChangeIndex].Width = Global.Config.RamWatchChangeWidth;
+			}
 			if (Global.Config.RamWatchDiffWidth > 0)
+			{
 				WatchListView.Columns[Global.Config.RamWatchDiffIndex].Width = Global.Config.RamWatchDiffWidth;
+			}
+			if (Global.Config.RamWatchDomainWidth > 0)
+			{
+				WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width = Global.Config.RamWatchDomainWidth;
+			}
 			if (Global.Config.RamWatchNotesWidth > 0)
+			{
 				WatchListView.Columns[Global.Config.RamWatchNotesIndex].Width = Global.Config.RamWatchNotesWidth;
+			}
 		}
 
 		public void SaveConfigSettings()
@@ -159,6 +179,7 @@ namespace BizHawk.MultiClient
 			Global.Config.RamWatchPrevWidth = WatchListView.Columns[Global.Config.RamWatchPrevIndex].Width;
 			Global.Config.RamWatchChangeWidth = WatchListView.Columns[Global.Config.RamWatchChangeIndex].Width;
 			Global.Config.RamWatchDiffWidth = WatchListView.Columns[Global.Config.RamWatchDiffIndex].Width;
+			Global.Config.RamWatchDomainWidth = WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width;
 			Global.Config.RamWatchNotesWidth = WatchListView.Columns[Global.Config.RamWatchNotesIndex].Width;
 
 			Global.Config.RamWatchWndx = this.Location.X;
@@ -214,45 +235,53 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			if (column == 0)    //Address
+			switch(column)
 			{
-				text = Watches[index].Address.ToString(addressFormatStr);
-			}
-			if (column == 1) //Value
-			{
-				text = Watches[index].ValueString;
-			}
-			if (column == 2) //Prev
-			{
-				switch(Global.Config.RamWatchPrev_Type)
-				{
-					case 1:
-						text = Watches[index].PrevString;
-						break;
-					case 2:
-						text = Watches[index].LastChangeString;
-						break;
-				}
-			}
-			if (column == 3) //Change Counts
-			{
-				text = Watches[index].Changecount.ToString();
-			}
-			if (column == 4) //Diff
-			{
-				switch(Global.Config.RamWatchPrev_Type)
-				{
-					case 1:
-						text = Watches[index].DiffToString(Watches[index].DiffPrev);
-						break;
-					case 2:
-						text = Watches[index].DiffToString(Watches[index].DiffLastChange);
-						break;
-				}
-			}
-			if (column == 5) //Notes
-			{
-				text = Watches[index].Notes;
+				case 0:
+					text = Watches[index].Address.ToString(addressFormatStr);
+					break;
+				case 1:
+					switch(Global.Config.RamWatchPrev_Type)
+					{
+						case 1:
+							text = Watches[index].PrevString;
+							break;
+						case 2:
+							text = Watches[index].LastChangeString;
+							break;
+					}
+					break;
+				case 2:
+					switch (Global.Config.RamWatchPrev_Type)
+					{
+						case 1:
+							text = Watches[index].PrevString;
+							break;
+						case 2:
+							text = Watches[index].LastChangeString;
+							break;
+					}
+					break;
+				case 3:
+					text = Watches[index].Changecount.ToString();
+					break;
+				case 4:
+					switch (Global.Config.RamWatchPrev_Type)
+					{
+						case 1:
+							text = Watches[index].DiffToString(Watches[index].DiffPrev);
+							break;
+						case 2:
+							text = Watches[index].DiffToString(Watches[index].DiffLastChange);
+							break;
+					}
+					break;
+				case 5:
+					text = Watches[index].Domain.Name;
+					break;
+				case 6:
+					text = Watches[index].Notes;
+					break;
 			}
 		}
 
@@ -382,14 +411,17 @@ namespace BizHawk.MultiClient
 
 			RamWatchNewWatch r = new RamWatchNewWatch();
 			r.location = GetPromptPoint();
-			r.SetEndian(Domain.Endian);
+
+			Watch w = new Watch();
+			w.Domain = Domain;
+			r.SetWatch(w);
 			Global.Sound.StopSound();
 			r.ShowDialog();
 			Global.Sound.StartSound();
-			if (r.userSelected == true)
+			if (r.SelectionWasMade == true)
 			{
-				InitializeAddress(r.watch);
-				Watches.Add(r.watch);
+				InitializeAddress(r.Watch);
+				Watches.Add(r.Watch);
 				Changes();
 				UpdateWatchCount();
 				DisplayWatchList();
@@ -398,7 +430,6 @@ namespace BizHawk.MultiClient
 
 		private void InitializeAddress(Watch w)
 		{
-			w.Domain = Domain;
 			w.PeekAddress();
 			w.Prev = w.Value;
 			w.Original = w.Value;
@@ -417,15 +448,15 @@ namespace BizHawk.MultiClient
 		{
 			RamWatchNewWatch r = new RamWatchNewWatch();
 			r.location = GetPromptPoint();
-			r.SetToEditWatch(Watches[pos], "Edit Watch");
+			r.SetWatch(Watches[pos], "Edit Watch");
 			Global.Sound.StopSound();
 			r.ShowDialog();
 			Global.Sound.StartSound();
 
-			if (r.userSelected == true)
+			if (r.SelectionWasMade == true)
 			{
 				Changes();
-				Watches[pos] = r.watch;
+				Watches[pos] = r.Watch;
 				DisplayWatchList();
 			}
 		}
@@ -433,8 +464,12 @@ namespace BizHawk.MultiClient
 		void EditWatch()
 		{
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			
 			if (indexes.Count > 0)
+			{
 				EditWatchObject(indexes[0]);
+			}
+
 			UpdateValues();
 		}
 
@@ -462,18 +497,17 @@ namespace BizHawk.MultiClient
 			{
 				RamWatchNewWatch r = new RamWatchNewWatch();
 				r.location = GetPromptPoint();
-				int x = indexes[0];
-				r.SetToEditWatch(Watches[x], "Duplicate Watch");
+				r.SetWatch(Watches[indexes[0]], "Duplicate Watch");
 
 				Global.Sound.StopSound();
 				r.ShowDialog();
 				Global.Sound.StartSound();
 
-				if (r.userSelected == true)
+				if (r.SelectionWasMade == true)
 				{
-					InitializeAddress(r.watch);
+					InitializeAddress(r.Watch);
 					Changes();
-					Watches.Add(r.watch);
+					Watches.Add(r.Watch);
 					DisplayWatchList();
 				}
 			}
@@ -778,12 +812,14 @@ namespace BizHawk.MultiClient
 			showChangeCountsToolStripMenuItem.Checked = true;
 			Global.Config.RamWatchShowChangeColumn = true;
 			Global.Config.RamWatchShowDiffColumn = false;
+			Global.Config.RamWatchShowDomainColumn = true;
 			WatchListView.Columns[0].Width = 60;
 			WatchListView.Columns[1].Width = 59;
 			WatchListView.Columns[2].Width = 0;
 			WatchListView.Columns[3].Width = 55;
 			WatchListView.Columns[4].Width = 0;
-			WatchListView.Columns[5].Width = 128;
+			WatchListView.Columns[5].Width = 55;
+			WatchListView.Columns[6].Width = 128;
 			Global.Config.DisplayRamWatch = false;
 			Global.Config.RamWatchSaveWindowPosition = false;
 		}
@@ -1009,6 +1045,16 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[13].Text = "Hide difference value";
 			else
 				contextMenuStrip1.Items[13].Text = "Show difference value";
+
+			if (Global.Config.RamWatchShowDomainColumn)
+			{
+				showDomainToolStripMenuItem.Text = "Hide domain";
+			}
+			else
+			{
+				showDomainToolStripMenuItem.Text = "Show domain";
+			}
+			
 		}
 
 		private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1066,11 +1112,30 @@ namespace BizHawk.MultiClient
 			Global.Config.RamWatchShowDiffColumn = show;
 			diffToolStripMenuItem.Checked = show;
 			if (show)
+			{
 				WatchListView.Columns[Global.Config.RamWatchDiffIndex].Width = 59;
+			}
 			else
+			{
 				WatchListView.Columns[Global.Config.RamWatchDiffIndex].Width = 0;
+			}
 
 		}
+
+		private void SetDomainColumn(bool show)
+		{
+			Global.Config.RamWatchShowDomainColumn = show;
+			domainToolStripMenuItem.Checked = show;
+			if (show)
+			{
+				WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width = 55;
+			}
+			else
+			{
+				WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width = 0;
+			}
+		}
+
 		private void SetChangesColumn(bool show)
 		{
 			Global.Config.RamWatchShowChangeColumn = show;
@@ -1109,6 +1174,7 @@ namespace BizHawk.MultiClient
 			if (indexes.Count > 0)
 			{
 				Global.MainForm.LoadHexEditor();
+				Global.MainForm.HexEditor1.SetDomain(Watches[indexes[0]].Domain);
 				Global.MainForm.HexEditor1.GoToAddress(Watches[indexes[0]].Address);
 			}
 		}
@@ -1335,30 +1401,62 @@ namespace BizHawk.MultiClient
 			}
 
 			if (Global.Config.RamWatchAddressIndex >= lowIndex && Global.Config.RamWatchAddressIndex <= highIndex)
+			{
 				Global.Config.RamWatchAddressIndex += changeIndex;
+			}
 			if (Global.Config.RamWatchValueIndex >= lowIndex && Global.Config.RamWatchValueIndex <= highIndex)
+			{
 				Global.Config.RamWatchValueIndex += changeIndex;
+			}
 			if (Global.Config.RamWatchPrevIndex >= lowIndex && Global.Config.RamWatchPrevIndex <= highIndex)
+			{
 				Global.Config.RamWatchPrevIndex += changeIndex;
+			}
 			if (Global.Config.RamWatchChangeIndex >= lowIndex && Global.Config.RamWatchChangeIndex <= highIndex)
+			{
 				Global.Config.RamWatchChangeIndex += changeIndex;
+			}
 			if (Global.Config.RamWatchDiffIndex >= lowIndex && Global.Config.RamWatchDiffIndex <= highIndex)
+			{
 				Global.Config.RamWatchDiffIndex += changeIndex;
+			}
+			if (Global.Config.RamWatchDomainIndex >= lowIndex && Global.Config.RamWatchDomainIndex <= highIndex)
+			{
+				Global.Config.RamWatchDomainIndex += changeIndex;
+			}
 			if (Global.Config.RamWatchNotesIndex >= lowIndex && Global.Config.RamWatchNotesIndex <= highIndex)
+			{
 				Global.Config.RamWatchNotesIndex += changeIndex;
+			}
 
 			if (header.Text == "Address")
+			{
 				Global.Config.RamWatchAddressIndex = e.NewDisplayIndex;
+			}
 			else if (header.Text == "Value")
+			{
 				Global.Config.RamWatchValueIndex = e.NewDisplayIndex;
+			}
 			else if (header.Text == "Prev")
+			{
 				Global.Config.RamWatchPrevIndex = e.NewDisplayIndex;
+			}
 			else if (header.Text == "Changes")
+			{
 				Global.Config.RamWatchChangeIndex = e.NewDisplayIndex;
+			}
 			else if (header.Text == "Diff")
+			{
 				Global.Config.RamWatchDiffIndex = e.NewDisplayIndex;
+			}
+			else if (header.Text == "Domain")
+			{
+				Global.Config.RamWatchDomainIndex = e.NewDisplayIndex;
+			}
 			else if (header.Text == "Notes")
+			{
 				Global.Config.RamWatchNotesIndex = e.NewDisplayIndex;
+			}
 		}
 
 		private void ColumnPositionSet()
@@ -1377,6 +1475,7 @@ namespace BizHawk.MultiClient
 			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchPrevIndex, "Prev"));
 			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchChangeIndex, "Changes"));
 			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchDiffIndex, "Diff"));
+			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchDomainIndex, "Domain"));
 			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchNotesIndex, "Notes"));
 
 			columnSettings = columnSettings.OrderBy(s => s.Key).ToList();
@@ -1398,7 +1497,9 @@ namespace BizHawk.MultiClient
 		{
 			string columnName = WatchListView.Columns[columnToOrder].Text;
 			if (sortedCol.CompareTo(columnName) != 0)
+			{
 				sortReverse = false;
+			}
 			Watches.Sort((x, y) => x.CompareTo(y, columnName, Global.Config.RamWatchPrev_Type == 1 ? Watch.PREVDEF.LASTFRAME : Watch.PREVDEF.LASTCHANGE) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
@@ -1483,6 +1584,7 @@ namespace BizHawk.MultiClient
 			showPreviousValueToolStripMenuItem.Checked = Global.Config.RamWatchShowPrevColumn;
 			showChangeCountsToolStripMenuItem.Checked = Global.Config.RamWatchShowChangeColumn;
 			diffToolStripMenuItem.Checked = Global.Config.RamWatchShowDiffColumn;
+			domainToolStripMenuItem.Checked = Global.Config.RamWatchShowDomainColumn;
 		}
 
 		private void showDifferenceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1521,6 +1623,22 @@ namespace BizHawk.MultiClient
 					lastChangeToolStripMenuItem.Checked = true;
 					break;
 			}
+		}
+
+		private void SetDomain()
+		{
+			Global.Config.RamWatchShowDomainColumn ^= true;
+			SetDomainColumn(Global.Config.RamWatchShowDomainColumn);
+		}
+
+		private void domainToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetDomain();
+		}
+
+		private void showDomainToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetDomain();
 		}
 	}
 }

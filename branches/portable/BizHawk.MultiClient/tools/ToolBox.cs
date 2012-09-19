@@ -8,7 +8,6 @@ using System.Text;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Calculator;
-using BizHawk.Emulation.Consoles.Gameboy;
 
 namespace BizHawk.MultiClient
 {
@@ -56,15 +55,6 @@ namespace BizHawk.MultiClient
 			else
 			{
 				KeypadTool.Visible = false;
-			}
-
-			if (Global.Emulator is Gameboy)
-			{
-				GameboyDebuggerTool.Visible = true;
-			}
-			else
-			{
-				GameboyDebuggerTool.Visible = false;
 			}
 		}
 
@@ -129,11 +119,6 @@ namespace BizHawk.MultiClient
 		private void TAStudioButton_Click(object sender, EventArgs e)
 		{
 			Global.MainForm.LoadTAStudio();
-		}
-
-		private void toolStripButton6_Click(object sender, EventArgs e)
-		{
-			Global.MainForm.LoadGBDebugger();
 		}
 	}
 }

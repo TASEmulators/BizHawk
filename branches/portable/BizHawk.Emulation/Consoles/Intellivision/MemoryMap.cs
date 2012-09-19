@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						break;
 					break;
 				case 0x1000:
-					core = ExecutiveRom[addr - 0x1000];
+					core = (ushort)(ExecutiveRom[addr - 0x1000] & 0x3FF);
 					break;
 				case 0x3000:
 					if (addr <= 0x37FF)

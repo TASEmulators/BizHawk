@@ -11,12 +11,15 @@ namespace BizHawk.MultiClient.tools
 {
 	public partial class HotkeyWindow : Form
 	{
+		private List<KeyValuePair<string, string>> HotkeyMappingList = new List<KeyValuePair<string, string>>(); //A list of all button mappings and the hotkey they are assigned to
+
 		public HotkeyWindow()
 		{
 			InitializeComponent();
 
 			IDW_FRAMEADVANCE.SetBindings(Global.Config.FrameAdvanceBinding);
 			IDW_PAUSE.SetBindings(Global.Config.EmulatorPauseBinding);
+			IDW_REBOOTCORE.SetBindings(Global.Config.RebootCoreResetBinding);
 			IDW_HARDRESET.SetBindings(Global.Config.HardResetBinding);
 			IDW_REWIND.SetBindings(Global.Config.RewindBinding);
 			IDW_UNTHROTTLE.SetBindings(Global.Config.TurboBinding);
@@ -99,6 +102,16 @@ namespace BizHawk.MultiClient.tools
 			IDW_IncSpeed.SetBindings(Global.Config.IncreaseSpeedBinding);
 			IDW_DecSpeed.SetBindings(Global.Config.DecreaseSpeedBinding);
 			IDW_ToggleBGInput.SetBindings(Global.Config.ToggleBackgroundInput);
+			IDW_Autohold.SetBindings(Global.Config.AutoholdBinding);
+			IDW_ClearAutohold.SetBindings(Global.Config.AutoholdClear);
+			IDW_SNES_ToggleBG1.SetBindings(Global.Config.ToggleSNESBG1Binding);
+			IDW_SNES_ToggleBG2.SetBindings(Global.Config.ToggleSNESBG2Binding);
+			IDW_SNES_ToggleBG3.SetBindings(Global.Config.ToggleSNESBG3Binding);
+			IDW_SNES_ToggleBG4.SetBindings(Global.Config.ToggleSNESBG4Binding);
+			IDW_SNES_ToggleOBJ1.SetBindings(Global.Config.ToggleSNESOBJ1Binding);
+			IDW_SNES_ToggleOBJ2.SetBindings(Global.Config.ToggleSNESOBJ2Binding);
+			IDW_SNES_ToggleOBJ3.SetBindings(Global.Config.ToggleSNESOBJ3Binding);
+			IDW_SNES_ToggleOBJ4.SetBindings(Global.Config.ToggleSNESOBJ4Binding);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -122,6 +135,7 @@ namespace BizHawk.MultiClient.tools
 
 			Global.Config.FastForwardBinding = IDW_FASTFORWARD.Text;
 			Global.Config.FrameAdvanceBinding = IDW_FRAMEADVANCE.Text;
+			Global.Config.RebootCoreResetBinding = IDW_REBOOTCORE.Text;
 			Global.Config.HardResetBinding = IDW_HARDRESET.Text;
 			Global.Config.RewindBinding = IDW_REWIND.Text;
 			Global.Config.TurboBinding = IDW_UNTHROTTLE.Text;
@@ -206,6 +220,19 @@ namespace BizHawk.MultiClient.tools
 			Global.Config.IncreaseSpeedBinding = IDW_IncSpeed.Text;
 			Global.Config.DecreaseSpeedBinding = IDW_DecSpeed.Text;
 			Global.Config.ToggleBackgroundInput = IDW_ToggleBGInput.Text;
+
+			Global.Config.AutoholdBinding = IDW_Autohold.Text;
+			Global.Config.AutoholdClear = IDW_ClearAutohold.Text;
+
+			Global.Config.ToggleSNESBG1Binding = IDW_SNES_ToggleBG1.Text;
+			Global.Config.ToggleSNESBG2Binding = IDW_SNES_ToggleBG2.Text;
+			Global.Config.ToggleSNESBG3Binding = IDW_SNES_ToggleBG3.Text;
+			Global.Config.ToggleSNESBG4Binding = IDW_SNES_ToggleBG4.Text;
+			Global.Config.ToggleSNESOBJ1Binding = IDW_SNES_ToggleOBJ1.Text;
+			Global.Config.ToggleSNESOBJ2Binding = IDW_SNES_ToggleOBJ2.Text;
+			Global.Config.ToggleSNESOBJ3Binding = IDW_SNES_ToggleOBJ3.Text;
+			Global.Config.ToggleSNESOBJ4Binding = IDW_SNES_ToggleOBJ4.Text;
+
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
@@ -235,6 +262,8 @@ namespace BizHawk.MultiClient.tools
 
 		private void HotkeyWindow_Load(object sender, EventArgs e)
 		{
+			HotkeyMappingList = Global.ClientControls.MappingList();
+			SetConflictLists();
 			AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
 			SetAutoTab();
 		}
@@ -243,6 +272,22 @@ namespace BizHawk.MultiClient.tools
 		{
 			Global.Config.HotkeyConfigAutoTab = AutoTabCheckBox.Checked;
 			SetAutoTab();
+		}
+
+		private void SetConflictLists()
+		{
+			//adelikat: TODO: set up the conflict list, but it is going to have to be updated and checked on the fly as the user changes the mappings
+			//for (int i = 0; i < hotkeyTabs.TabPages.Count; i++)
+			//{
+			//    for (int j = 0; j < hotkeyTabs.TabPages[i].Controls.Count; j++)
+			//    {
+			//        if (hotkeyTabs.TabPages[i].Controls[j] is InputWidget)
+			//        {
+			//            InputWidget w = hotkeyTabs.TabPages[i].Controls[j] as InputWidget;
+			//            w.SetConflictList(HotkeyMappingList);
+			//        }
+			//    }
+			//}
 		}
 
 		private void SetAutoTab()

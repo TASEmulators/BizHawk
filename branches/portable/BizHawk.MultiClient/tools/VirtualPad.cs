@@ -11,7 +11,7 @@ namespace BizHawk.MultiClient
 	public class VirtualPad : Panel
 	{
 		
-		public Point[] ButtonPoints = new Point[8];
+		public Point[] ButtonPoints = new Point[16];
 		
 
 		public CheckBox PU;

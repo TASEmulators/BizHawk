@@ -3,13 +3,14 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Calculator;
-using BizHawk.Emulation.Consoles.Gameboy;
 using System.Drawing.Imaging;
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
 namespace BizHawk.MultiClient
 {
 	partial class MainForm
 	{
+
 		private void recordAVIToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 #if WINDOWS
@@ -371,12 +372,22 @@ namespace BizHawk.MultiClient
 
 		private void powerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			RebootCore();
+		}
+
+		void RebootCore()
+		{
 			LoadRom(CurrentlyOpenRom);
 		}
 
 		private void resetToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SoftReset();
+		}
+
+		private void hardResetToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			HardReset();
 		}
 
 		private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1189,11 +1200,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void debuggerToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			Global.MainForm.LoadGBDebugger();
-		}
-
 		private void tAStudioToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadTAStudio();
@@ -1324,6 +1330,7 @@ namespace BizHawk.MultiClient
 			backupSavestatesToolStripMenuItem.Checked = Global.Config.BackupSavestates;
 			autoSavestatesToolStripMenuItem.Checked = Global.Config.AutoSavestates;
 			saveScreenshotWithSavestatesToolStripMenuItem.Checked = Global.Config.SaveScreenshotWithStates;
+			frameAdvanceSkipLagFramesToolStripMenuItem.Checked = Global.Config.SkipLagFrame;
 		}
 
 		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1510,15 +1517,38 @@ namespace BizHawk.MultiClient
 
 		private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			powerToolStripMenuItem.Enabled = !IsNullEmulator();
-			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset");
+			rebootCoreToolStripMenuItem.Enabled = !IsNullEmulator();
+
+			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
+					(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished))
+			{
+				resetToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				resetToolStripMenuItem.Enabled = false;
+			}
+
+			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
+				(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished))
+			{
+				hardResetToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				hardResetToolStripMenuItem.Enabled = false;
+			}
 
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
-			if (didMenuPause) pauseToolStripMenuItem.Checked = wasPaused;
+			if (didMenuPause)
+			{
+				pauseToolStripMenuItem.Checked = wasPaused;
+			}
 
 			pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.EmulatorPauseBinding;
-			powerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HardResetBinding;
+			rebootCoreToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RebootCoreResetBinding;
 			resetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SoftResetBinding;
+			hardResetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HardResetBinding;
 		}
 
 		private void pCEToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1692,7 +1722,211 @@ namespace BizHawk.MultiClient
 
 		private void gBToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
+			// the palettes have no effect when CGB mode is active
+			if (Global.Emulator is Emulation.Consoles.GB.Gameboy)
+			{
+				changeDMGPalettesToolStripMenuItem.Enabled =
+					!((Emulation.Consoles.GB.Gameboy)Global.Emulator).IsCGBMode();
+			}
+
+			//skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
+			forceDMGModeToolStripMenuItem.Checked = Global.Config.GB_ForceDMG;
+			gBAInCGBModeToolStripMenuItem.Checked = Global.Config.GB_GBACGB;
+			multicartCompatibilityToolStripMenuItem.Checked = Global.Config.GB_MulticartCompat;
+		}
+
+		private void graphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadSNESGraphicsDebugger();
+		}
+
+		private void SNES_ToggleBG1()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
+				SyncCoreInputComm();
+				if (Global.Config.SNES_ShowBG1_1)
+				{
+					Global.OSD.AddMessage("BG 1 Layer On");
+				}
+				else
+				{
+					Global.OSD.AddMessage("BG 1 Layer Off");
+				}
+			}
+		}
+
+		private void SNES_ToggleBG2()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
+				SyncCoreInputComm();
+				if (Global.Config.SNES_ShowBG2_1)
+				{
+					Global.OSD.AddMessage("BG 2 Layer On");
+				}
+				else
+				{
+					Global.OSD.AddMessage("BG 2 Layer Off");
+				}
+			}
+		}
+
+		private void SNES_ToggleBG3()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
+				SyncCoreInputComm();
+				if (Global.Config.SNES_ShowBG3_1)
+				{
+					Global.OSD.AddMessage("BG 3 Layer On");
+				}
+				else
+				{
+					Global.OSD.AddMessage("BG 3 Layer Off");
+				}
+			}
+		}
+
+		private void SNES_ToggleBG4()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
+				SyncCoreInputComm();
+				if (Global.Config.SNES_ShowBG4_1)
+				{
+					Global.OSD.AddMessage("BG 4 Layer On");
+				}
+				else
+				{
+					Global.OSD.AddMessage("BG 4 Layer Off");
+				}
+			}
+		}
+
+		private void SNES_ToggleOBJ1()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowOBJ1 ^= true;
+				SyncCoreInputComm();
+				if (Global.Config.SNES_ShowOBJ1)
+				{
+					Global.OSD.AddMessage("OBJ 1 Layer On");
+				}
+				else
+				{
+					Global.OSD.AddMessage("OBJ 1 Layer Off");
+				}
+			}
+		}
+
+		private void SNES_ToggleOBJ2()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowOBJ2 ^= true;
+				SyncCoreInputComm();
+				if (Global.Config.SNES_ShowOBJ2)
+				{
+					Global.OSD.AddMessage("OBJ 2 Layer On");
+				}
+				else
+				{
+					Global.OSD.AddMessage("OBJ 2 Layer Off");
+				}
+			}
+		}
+
+		private void SNES_ToggleOBJ3()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowOBJ3 ^= true;
+				SyncCoreInputComm();
+				if (Global.Config.SNES_ShowOBJ3)
+				{
+					Global.OSD.AddMessage("OBJ 3 Layer On");
+				}
+				else
+				{
+					Global.OSD.AddMessage("OBJ 3 Layer Off");
+				}
+			}
+		}
+
+		private void SNES_ToggleOBJ4()
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.Config.SNES_ShowOBJ4 ^= true;
+				SyncCoreInputComm();
+				if (Global.Config.SNES_ShowOBJ4)
+				{
+					Global.OSD.AddMessage("OBJ 4 Layer On");
+				}
+				else
+				{
+					Global.OSD.AddMessage("OBJ 4 Layer Off");
+				}
+			}
+		}
+
+		private void bG1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleBG1();
+		}
+
+		private void bG1ToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			SNES_ToggleBG2();
+		}
+
+		private void bG2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleBG3();
+		}
+
+		private void bG3ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleBG4();
+		}
+
+		private void oBJ0ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleOBJ1();
+		}
+
+		private void oBJ1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleOBJ2();
+		}
+
+		private void oBJ2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleOBJ3();
+		}
+
+		private void oBJ3ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SNES_ToggleOBJ4();
+		}
+
+		private void displayToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			bG0ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG1_1;
+			bG1ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG2_1;
+			bG2ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG3_1;
+			bG3ToolStripMenuItem.Checked = Global.Config.SNES_ShowBG4_1;
+
+			oBJ0ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ1;
+			oBJ1ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ2;
+			oBJ2ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ3;
+			oBJ3ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ4;
 		}
 	}
 }

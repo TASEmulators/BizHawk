@@ -57,6 +57,11 @@ namespace BizHawk.MultiClient
 
 		private void GameGenieCode_KeyPress(object sender, KeyPressEventArgs e)
 		{
+			if (e.KeyChar == '\b' || e.KeyChar == 22)
+			{
+				return;
+			}
+			
 			//Make uppercase
 			if (e.KeyChar >= 97 && e.KeyChar < 123)
 				e.KeyChar -= (char)32;

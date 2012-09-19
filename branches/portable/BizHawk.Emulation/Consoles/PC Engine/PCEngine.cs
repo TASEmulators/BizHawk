@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
 	public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
 
-	[CoreVersion("1.2.1", FriendlyName = "TurboHawk16")]
 	public sealed partial class PCEngine : IEmulator
 	{
 		// ROM
@@ -60,11 +59,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			{
 				case "PCE":
 					systemid = "PCE";
-					Type = NecSystemType.TurboGrafx; 
+					Type = NecSystemType.TurboGrafx;
 					break;
 				case "SGX":
 					systemid = "SGX";
-					Type = NecSystemType.SuperGrafx; 
+					Type = NecSystemType.SuperGrafx;
 					break;
 			}
 			Init(game, rom);
@@ -209,14 +208,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			//    it in the least intrusive and most honest way we can.
 
 			if (game["HBlankPeriod"])
-				VDC1.HBlankCycles = int.Parse(game.OptionValue("HBlankPeriod"));
+				VDC1.HBlankCycles = game.GetIntValue("HBlankPeriod");
 
 			// This is also a hack. Proper multi-res/TV emulation will be a native-code core feature.
 
 			if (game["MultiResHack"])
-			{
-				VDC1.MultiResHack = int.Parse(game.OptionValue("MultiResHack"));
-			}
+				VDC1.MultiResHack = game.GetIntValue("MultiResHack");
 
 			Cpu.ResetPC();
 			SetupMemoryDomains();
@@ -237,7 +234,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
 		public void FrameAdvance(bool render)
 		{
-            lagged = true;
+			lagged = true;
 			Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
@@ -277,11 +274,23 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		public string Region { get; set; }
 		public bool DeterministicEmulation { get; set; }
 
-		public byte[] ReadSaveRam
+		public byte[] ReadSaveRam()
 		{
-			get { return BRAM; }
+			if (BRAM != null)
+				return (byte[])BRAM.Clone();
+			else
+				return null;
 		}
-
+		public void StoreSaveRam(byte[] data)
+		{
+			if (BRAM != null)
+				Array.Copy(data, BRAM, data.Length);
+		}
+		public void ClearSaveRam()
+		{
+			if (BRAM != null)
+				BRAM = new byte[BRAM.Length];
+		}
 		public bool SaveRamModified { get; set; }
 
 		public void SaveStateText(TextWriter writer)
@@ -294,11 +303,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 				writer.Write("PopulousRAM ");
 				PopulousRAM.SaveAsHex(writer);
 			}
-            if (BRAM != null)
-            {
-                writer.Write("BRAM ");
-                BRAM.SaveAsHex(writer);
-            }
+			if (BRAM != null)
+			{
+				writer.Write("BRAM ");
+				BRAM.SaveAsHex(writer);
+			}
 			writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("Lag {0}", _lagcount);
 			writer.WriteLine("IsLag {0}", islag);
@@ -306,7 +315,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 				writer.WriteLine("SF2MapperLatch " + SF2MapperLatch);
 			writer.WriteLine("IOBuffer {0:X2}", IOBuffer);
 			writer.Write("CdIoPorts "); CdIoPorts.SaveAsHex(writer);
-            writer.WriteLine("BramLocked {0}", BramLocked);
+			writer.WriteLine("BramLocked {0}", BramLocked);
 			writer.WriteLine();
 
 			if (SuperGrafx)
@@ -405,7 +414,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			{
 				writer.Write(Ram);
 				writer.Write(CdIoPorts);
-                writer.Write(BramLocked);
+				writer.Write(BramLocked);
 				if (BRAM != null)
 					writer.Write(BRAM);
 				if (PopulousRAM != null)
@@ -451,7 +460,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			{
 				Ram = reader.ReadBytes(0x2000);
 				CdIoPorts = reader.ReadBytes(16); RefreshIRQ2();
-                BramLocked = reader.ReadBoolean();
+				BramLocked = reader.ReadBoolean();
 				if (BRAM != null)
 					BRAM = reader.ReadBytes(0x800);
 				if (PopulousRAM != null)
@@ -494,7 +503,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		public byte[] SaveStateBinary()
 		{
 			int buflen = 75908;
-            if (SuperGrafx) buflen += 90700;
+			if (SuperGrafx) buflen += 90700;
 			if (BramEnabled) buflen += 2048;
 			if (PopulousRAM != null) buflen += 0x8000;
 			if (SuperRam != null) buflen += 0x30000;

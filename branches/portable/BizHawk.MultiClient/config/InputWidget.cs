@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace BizHawk.MultiClient
 {
@@ -18,8 +19,20 @@ namespace BizHawk.MultiClient
 		string wasPressed = "";
 		ToolTip tooltip1 = new ToolTip();
 		public string ButtonName;
-		Color HighlightedColor = Color.Pink;
-		Color RegularColor = SystemColors.Window;
+		Color _highlight_color = Color.LightCyan;
+		Color _no_highlight_color = SystemColors.Window;
+
+		private void Highlight()
+		{
+			BackColor = _highlight_color;
+		}
+
+		private void UnHighlight()
+		{
+			BackColor = _no_highlight_color;
+		}
+
+		private List<KeyValuePair<string, string>> ConflictLookup = new List<KeyValuePair<string, string>>();
 
 		[DllImport("user32")]
 		private static extern bool HideCaret(IntPtr hWnd);
@@ -32,6 +45,15 @@ namespace BizHawk.MultiClient
 			tooltip1.AutoPopDelay = 2000;
 		}
 
+		public InputWidget(List<KeyValuePair<string, string>> conflictList)
+		{
+			this.ContextMenu = new ContextMenu();
+			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
+			InitializeBindings();
+			tooltip1.AutoPopDelay = 2000;
+			ConflictLookup = conflictList;
+		}
+
 		public InputWidget(int maxBindings)
 		{
 			this.ContextMenu = new ContextMenu();
@@ -42,19 +64,9 @@ namespace BizHawk.MultiClient
 			tooltip1.AutoPopDelay = 2000;
 		}
 
-		public void FlagDuplicate(string duplicateName)
+		public void SetConflictList(List<KeyValuePair<string, string>> conflictLookup)
 		{
-			RegularColor = Color.Cyan;
-			HighlightedColor = Color.Violet;
-			BackColor = RegularColor;
-			tooltip1.SetToolTip(this, "same mapping as " + duplicateName);
-		}
-
-		public void UnflagDuplicate()
-		{
-			HighlightedColor = Color.Pink;
-			RegularColor = SystemColors.Window;
-			tooltip1.SetToolTip(this, "");
+			ConflictLookup = conflictLookup;
 		}
 
 #if WINDOWS
@@ -95,6 +107,13 @@ namespace BizHawk.MultiClient
 			ReadKeys();
 		}
 
+		public void EraseMappings()
+		{
+			ClearBindings();
+			HideConflicts();
+			Text = "";
+		}
+
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
@@ -105,6 +124,7 @@ namespace BizHawk.MultiClient
 				if (TempBindingStr == "Escape")
 				{
 					ClearBindings();
+					HideConflicts();
 					Increment();
 					return;
 				}
@@ -117,12 +137,60 @@ namespace BizHawk.MultiClient
 					Bindings[pos] = TempBindingStr;
 				}
 				wasPressed = TempBindingStr;
+
+				DoConflictCheck();
+
 				UpdateLabel();
 				Increment();
 			}
 		}
 
-		public bool IsDuplicate(string binding)
+		private string Conflicts = "";
+
+		private void DoConflictCheck()
+		{
+			StringBuilder conflicts = new StringBuilder(); ;
+			foreach (KeyValuePair<string, string> conflict in ConflictLookup)
+			{
+				foreach (string binding in Bindings)
+				{
+					if (conflict.Key == binding)
+					{
+						conflicts.Append(binding);
+						conflicts.Append(" conflicts with Hotkey - "); //Ideally we don't hardcode Hotkey, we may want to check mappings on specific controllers or unforeseen things
+						conflicts.Append(conflict.Value);
+						conflicts.Append('\n');
+					}
+				}
+			}
+			Conflicts = conflicts.ToString();
+
+			if (String.IsNullOrWhiteSpace(Conflicts))
+			{
+				HideConflicts();
+			}
+			else
+			{
+				ShowConflicts();
+			}
+		}
+
+		private void ShowConflicts()
+		{
+			_no_highlight_color = Color.LightCoral;
+			_highlight_color = Color.Violet;
+			tooltip1.SetToolTip(this, Conflicts);
+		}
+
+		private void HideConflicts()
+		{
+			_highlight_color = Color.LightCyan;
+			_no_highlight_color = SystemColors.Window;
+			tooltip1.SetToolTip(this, "");
+		}
+
+		//Checks if the key is already mapped to this widget
+		private bool IsDuplicate(string binding)
 		{
 			for (int x = 0; x < MaxBind; x++)
 			{
@@ -182,8 +250,10 @@ namespace BizHawk.MultiClient
 
 		public void ClearBindings()
 		{
-			for (int x = 0; x < MaxBind; x++)
-				Bindings[x] = "";
+			for (int i = 0; i < MaxBind; i++)
+			{
+				Bindings[i] = "";
+			}
 		}
 
 		public void UpdateLabel()
@@ -280,13 +350,12 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 			HideCaret(this.Handle);
 #endif
-			BackColor = HighlightedColor;
+			Highlight();
 		}
 
 		protected override void OnLostFocus(EventArgs e)
 		{
-			UnflagDuplicate();
-			BackColor = RegularColor;
+			UnHighlight();
 			base.OnLostFocus(e);
 		}
 

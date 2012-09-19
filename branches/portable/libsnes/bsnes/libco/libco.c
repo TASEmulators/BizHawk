@@ -4,8 +4,12 @@
   license: public domain
 */
 
-#if defined(__GNUC__) && defined(__i386__)
-  #include "x86.c"
+#if (defined(__ARM_EABI__) || defined(__ARMCC_VERSION) )
+  #include "sjlj-multi.c"
+#elif defined(__GNUC__) && defined(__i386__)
+  #if !defined(LIBCO_MSVC)
+    #include "x86.c"
+  #endif
 #elif defined(__GNUC__) && defined(__amd64__)
   #include "amd64.c"
 #elif defined(__GNUC__) && defined(_ARCH_PPC)

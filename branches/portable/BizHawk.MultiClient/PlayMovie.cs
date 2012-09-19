@@ -289,10 +289,18 @@ namespace BizHawk.MultiClient
 			string extension = "*." + Global.Config.MovieExtension;
 			foreach (string f in Directory.GetFiles(d, "*." + Global.Config.MovieExtension))
 				AddMovieToList(f, false);
-			foreach (string f in Directory.GetFiles(d, "*.tas"))
-				AddMovieToList(f, false);
-			foreach (string f in Directory.GetFiles(d, "*.bkm"))
-				AddMovieToList(f, false);
+
+			if (Global.Config.MovieExtension != "*.tas")
+			{
+				foreach (string f in Directory.GetFiles(d, "*.tas"))
+					AddMovieToList(f, false);
+			}
+			else if (Global.Config.MovieExtension != "*.bkm")
+			{
+				foreach (string f in Directory.GetFiles(d, "*.bkm"))
+					AddMovieToList(f, false);
+			}
+
 			if (Global.Config.PlayMovie_ShowStateFiles)
 			{
 				foreach (string f in Directory.GetFiles(d, "*.state"))

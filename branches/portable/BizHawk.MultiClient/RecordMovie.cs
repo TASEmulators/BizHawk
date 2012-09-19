@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+using BizHawk.Emulation.Consoles.GB;
+
 namespace BizHawk.MultiClient
 {
 	public partial class RecordMovie : Form
@@ -71,7 +73,15 @@ namespace BizHawk.MultiClient
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.SHA1, Global.Game.Hash);
 				}
 				else
+				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
+				}
+
+				if (Global.Emulator is Gameboy)
+				{
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_FORCEDMG, Global.Config.GB_ForceDMG.ToString());
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_GBA_IN_CGB, Global.Config.GB_GBACGB.ToString());
+				}
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{

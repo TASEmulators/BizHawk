@@ -14,6 +14,9 @@ struct Interface : public SNES::Interface {
   uint32_t *buffer;
   uint32_t *palette;
 
+	//zero 11-sep-2012
+	time_t randomSeed() { return 0; }
+
   void videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan) {
     unsigned width = hires ? 512 : 256;
     unsigned height = overscan ? 239 : 224;
@@ -126,11 +129,34 @@ void snes_set_cartridge_basename(const char *basename) {
   interface.basename = basename;
 }
 
-void snes_init(void) {
-	//zero 04-sep-2012 - reset harder
-	new(&interface) Interface();
+template<typename T> inline void reconstruct(T* t) { 
+	t->~T();
+	new(t) T();
+}
 
+void snes_init(void) {
   SNES::interface = &interface;
+
+	//because we're tasers and we didnt make this core, and we're paranoid, lets reconstruct everything so we know subsequent runs are as similar as possible
+  reconstruct(&SNES::icd2);
+  reconstruct(&SNES::nss);
+  reconstruct(&SNES::superfx);
+  reconstruct(&SNES::sa1);
+  reconstruct(&SNES::necdsp);
+  reconstruct(&SNES::hitachidsp);
+  reconstruct(&SNES::armdsp);
+  reconstruct(&SNES::bsxsatellaview);
+  reconstruct(&SNES::bsxcartridge);
+  reconstruct(&SNES::bsxflash);
+  reconstruct(&SNES::srtc);
+  reconstruct(&SNES::sdd1);
+  reconstruct(&SNES::spc7110);
+  reconstruct(&SNES::obc1);
+  reconstruct(&SNES::msu1);
+  reconstruct(&SNES::link);
+  reconstruct(&SNES::video);
+  reconstruct(&SNES::audio);
+
   SNES::system.init();
   SNES::input.connect(SNES::Controller::Port1, SNES::Input::Device::Joypad);
   SNES::input.connect(SNES::Controller::Port2, SNES::Input::Device::Joypad);
@@ -230,6 +256,41 @@ bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size)
 	//tries to determine whether this rom is a snes rom - BUT THIS TRIES TO ACCEPT EVERYTHING! so we cant really use it
 	SnesCartridge temp(rom_data, rom_size);
 	return temp.type != SnesCartridge::TypeUnknown && temp.type != SnesCartridge::TypeGameBoy;
+}
+
+//zero 05-sep-2012
+int snes_peek_logical_register(int reg)
+{
+	switch(reg)
+	{
+		//$2105
+	case SNES_REG_BG_MODE: return SNES::ppu.regs.bg_mode;
+	case SNES_REG_BG3_PRIORITY: return SNES::ppu.regs.bg3_priority;
+	case SNES_REG_BG1_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG1];
+	case SNES_REG_BG2_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG2];
+	case SNES_REG_BG3_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG3];
+	case SNES_REG_BG4_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG4];
+
+		//$2107
+	case SNES_REG_BG1_SCADDR: return SNES::ppu.regs.bg_scaddr[SNES::PPU::BG1]>>9;
+	case SNES_REG_BG1_SCSIZE: return SNES::ppu.regs.bg_scsize[SNES::PPU::BG1];
+		//$2108
+	case SNES_REG_BG2_SCADDR: return SNES::ppu.regs.bg_scaddr[SNES::PPU::BG2]>>9;
+	case SNES_REG_BG2_SCSIZE: return SNES::ppu.regs.bg_scsize[SNES::PPU::BG2];
+		//$2109
+	case SNES_REG_BG3_SCADDR: return SNES::ppu.regs.bg_scaddr[SNES::PPU::BG3]>>9;
+	case SNES_REG_BG3_SCSIZE: return SNES::ppu.regs.bg_scsize[SNES::PPU::BG3];
+		//$210A
+	case SNES_REG_BG4_SCADDR: return SNES::ppu.regs.bg_scaddr[SNES::PPU::BG4]>>9;
+	case SNES_REG_BG4_SCSIZE: return SNES::ppu.regs.bg_scsize[SNES::PPU::BG4];
+		//$210B
+	case SNES_REG_BG1_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG1]>>13;
+	case SNES_REG_BG2_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG2]>>13;
+		//$210C
+	case SNES_REG_BG3_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG3]>>13;
+	case SNES_REG_BG4_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG4]>>13;
+	}
+	return 0;
 }
 
 bool snes_load_cartridge_normal(
@@ -416,3 +477,4 @@ unsigned snes_get_memory_size(unsigned id) {
   if(size == -1U) size = 0;
   return size;
 }
+

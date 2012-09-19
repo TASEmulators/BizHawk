@@ -203,10 +203,6 @@ namespace BizHawk.MultiClient
 						{
 							return false;	//GUID Error
 						}
-						else if (Global.MovieSession.Movie.IsFinished)
-						{
-							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-						}
 						else
 						{
 							Global.MovieSession.Movie.StartRecording();

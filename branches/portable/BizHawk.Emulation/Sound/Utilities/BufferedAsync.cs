@@ -13,6 +13,21 @@ namespace BizHawk.Emulation.Sound
     // distributing error to most frames tends to result in persistently distorted audio, especially when
     // sample playback is involved.
 
+
+	/*
+	 * Why use this, when each core has it's own Async sound output?
+	 * 
+	 * It is true that each emulation core provides its own async sound output, either through directly
+	 * rendering to arbitrary buffers (pce not turbocd, sms), or using one of the metaspus (nes, turbocd).
+	 * 
+	 * Unfortunately, the vecna metaspu is not perfect, and for maintaining near-realtime playback (the usual
+	 * situation which we want to optimize for), it simply sounds better with a BufferedAsync on top of it.
+	 * 
+	 * TODO: BufferedAsync has some hard coded parameters that assume FPS = 60.  make that more generalized.
+	 * TODO: For systems that _really_ don't need BufferedAsync (pce not turbocd, sms), make a way to signal
+	 *       that and then bypass the BufferedAsync.
+	 */
+
     public sealed class BufferedAsync : ISoundProvider
     {
         public ISoundProvider BaseSoundProvider;

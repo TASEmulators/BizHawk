@@ -43,6 +43,10 @@ namespace BizHawk.Emulation.Sound
 		void clear();
 		
 		//returns the number of samples actually supplied, which may not match the number requested
+		// ^^ what the hell is that supposed to mean.
+		// the entire point of an ISynchronzingAudioBuffer
+		// is to provide exact amounts of output samples,
+		// even when the input provided varies....
 		int output_samples(short[] buf, int samples_requested);
 	};
 

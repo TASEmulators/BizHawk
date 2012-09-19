@@ -108,10 +108,6 @@
     <Compile Include="Consoles\Coleco\VDP.Mode4.cs" />
     <Compile Include="Consoles\Coleco\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Coleco\VDP.Tables.cs" />
-    <Compile Include="Consoles\GB\Graphics.cs" />
-    <Compile Include="Consoles\GB\Input.cs" />
-    <Compile Include="Consoles\GB\MemoryMap.cs" />
-    <Compile Include="Consoles\GB\GB.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
@@ -119,6 +115,8 @@
     <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
@@ -256,12 +254,16 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
     <Compile Include="Consoles\PC Engine\ArcadeCard.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
     <Compile Include="Consoles\PC Engine\TurboCD.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Input.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Sega.cs" />
@@ -307,10 +309,6 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
-    <Compile Include="Consoles\Gameboy\Bios.cs" />
-    <Compile Include="Consoles\Gameboy\Gameboy.cs" />
-    <Compile Include="Consoles\Gameboy\Input.cs" />
-    <Compile Include="Consoles\Gameboy\Mappers.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\GameInfo.cs" />
@@ -353,8 +351,9 @@
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />
-    <Compile Include="Sound\Utilities\DualSound.cs" />
+    <Compile Include="Sound\Utilities\DCFilter.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
+    <Compile Include="Sound\Utilities\SpeexResampler.cs" />
     <Compile Include="Sound\VRC6.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
@@ -393,9 +392,10 @@
     <Compile Include="Sound\Utilities\Waves.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Consoles\Nintendo\Docs\compatibility.txt" />
-    <Content Include="Consoles\Nintendo\Docs\sunsoft.txt" />
-    <Content Include="Consoles\Nintendo\Docs\test_status.txt" />
+    <Content Include="Consoles\Coleco\docs\CV-Sound.txt" />
+    <Content Include="Consoles\Coleco\docs\CV-Tech.txt" />
+    <Content Include="Consoles\Nintendo\NES\Docs\sunsoft.txt" />
+    <Content Include="Consoles\Nintendo\NES\Docs\sxrom_notes.txt" />
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\Genesis\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
@@ -423,6 +423,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Consoles\Atari\docs\stella.pdf" />
+    <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
+    <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
+    <None Include="Consoles\Nintendo\NES\Docs\BoardTable.xlsx" />
+    <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
+    <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

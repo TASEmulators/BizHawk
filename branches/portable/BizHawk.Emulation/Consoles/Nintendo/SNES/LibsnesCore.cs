@@ -1,4 +1,6 @@
-﻿//TODO 
+﻿//http://wiki.superfamicom.org/snes/show/Backgrounds
+
+//TODO 
 //libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
 //rename snes.dll so nobody thinks it's a stock snes.dll (we'll be editing it substantially at some point)
 //wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailable
@@ -27,9 +29,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_power();
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_reset();
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_run();
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_term();
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_unload_cartridge();
 
 		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_load_cartridge_normal(
@@ -88,6 +94,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			[MarshalAs(UnmanagedType.U1)]
 			bool enable
 			);
+
+		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int snes_peek_logical_register(SNES_REG reg);
+
+		public enum SNES_REG : int
+		{
+			//$2105
+			BG_MODE = 0,
+			BG3_PRIORITY = 1,
+			BG1_TILESIZE = 2,
+			BG2_TILESIZE = 3,
+			BG3_TILESIZE = 4,
+			BG4_TILESIZE = 5,
+			//$2107
+			BG1_SCADDR = 10,
+			BG1_SCSIZE = 11,
+			//$2108
+			BG2_SCADDR = 12,
+			BG2_SCSIZE = 13,
+			//$2109
+			BG3_SCADDR = 14,
+			BG3_SCSIZE = 15,
+			//$210A
+			BG4_SCADDR = 16,
+			BG4_SCSIZE = 17,
+			//$210B
+			BG1_TDADDR = 20,
+			BG2_TDADDR = 21,
+			//$210C
+			BG3_TDADDR = 22,
+			BG4_TDADDR = 23
+		}
 		
 		public enum SNES_MEMORY : uint
 		{
@@ -142,36 +180,59 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 	}
 
+
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
 	{
+		bool disposed = false;
 		public void Dispose()
 		{
+			if (disposed) return;
+			disposed = true;
+
+			disposedSaveRam = ReadSaveRam();
+
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(null);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_poll(null);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_state(null);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(null);
+
+			LibsnesDll.snes_unload_cartridge();
 			LibsnesDll.snes_term();
-			_gc_snes_video_refresh.Free();
-			_gc_snes_input_poll.Free();
-			_gc_snes_input_state.Free();
-			_gc_snes_audio_sample.Free();
+
+			resampler.Dispose();
 		}
+		//save the save memory before disposing the core, so we can pull from it in the future after the core is terminated
+		//that will be necessary to get it saving to disk
+		byte[] disposedSaveRam;
+
+
+		//we can only have one active snes core at a time, due to libsnes being so static.
+		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
+		static LibsnesCore CurrLibsnesCore;
 
 		public LibsnesCore(byte[] romData)
 		{
+			//attach this core as the current
+			if(CurrLibsnesCore != null)
+				CurrLibsnesCore.Dispose();
+			CurrLibsnesCore = this;
+
 			LibsnesDll.snes_init();
 
-			var vidcb = new LibsnesDll.snes_video_refresh_t(snes_video_refresh);
-			_gc_snes_video_refresh = GCHandle.Alloc(vidcb);
+			vidcb = new LibsnesDll.snes_video_refresh_t(snes_video_refresh);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(vidcb);
 
-			var pollcb = new LibsnesDll.snes_input_poll_t(snes_input_poll);
-			_gc_snes_input_poll = GCHandle.Alloc(pollcb);
+			pollcb = new LibsnesDll.snes_input_poll_t(snes_input_poll);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_poll(pollcb);
 
-			var inputcb = new LibsnesDll.snes_input_state_t(snes_input_state);
-			_gc_snes_input_state = GCHandle.Alloc(inputcb);
+			inputcb = new LibsnesDll.snes_input_state_t(snes_input_state);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_state(inputcb);
 
-			var soundcb = new LibsnesDll.snes_audio_sample_t(snes_audio_sample);
-			_gc_snes_audio_sample = GCHandle.Alloc(soundcb);
+			soundcb = new LibsnesDll.snes_audio_sample_t(snes_audio_sample);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
+
+			// start up audio resampler
+			InitAudio();
 
 			//strip header
 			if ((romData.Length & 0x7FFF) == 512)
@@ -182,10 +243,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 			LibsnesDll.snes_load_cartridge_normal(null, romData, romData.Length);
 
+			LibsnesDll.snes_power();
+
 			SetupMemoryDomains(romData);
 		}
 
-		GCHandle _gc_snes_input_state;
+		//must keep references to these so that they wont get garbage collected
+		LibsnesDll.snes_video_refresh_t vidcb;
+		LibsnesDll.snes_input_poll_t pollcb;
+		LibsnesDll.snes_input_state_t inputcb;
+		LibsnesDll.snes_audio_sample_t soundcb;
+
 		ushort snes_input_state(int port, int device, int index, int id)
 		{
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
@@ -193,7 +261,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			string key = "P" + (1 + port) + " ";
 			if ((LibsnesDll.SNES_DEVICE)device == LibsnesDll.SNES_DEVICE.JOYPAD)
 			{
-				switch((LibsnesDll.SNES_DEVICE_ID)id)
+				switch ((LibsnesDll.SNES_DEVICE_ID)id)
 				{
 					case LibsnesDll.SNES_DEVICE_ID.JOYPAD_A: key += "A"; break;
 					case LibsnesDll.SNES_DEVICE_ID.JOYPAD_B: key += "B"; break;
@@ -216,12 +284,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		}
 
-		GCHandle _gc_snes_input_poll;
 		void snes_input_poll()
 		{
+			IsLagFrame = false;
 		}
 
-		GCHandle _gc_snes_video_refresh;
 		void snes_video_refresh(int* data, int width, int height)
 		{
 			vidWidth = width;
@@ -241,6 +308,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public void FrameAdvance(bool render)
 		{
+			bool resetSignal = Controller["Reset"];
+			if (resetSignal) LibsnesDll.snes_reset();
+
+			bool powerSignal = Controller["Power"];
+			if (powerSignal) LibsnesDll.snes_power();
+
 			LibsnesDll.snes_set_layer_enable(0, 0, CoreInputComm.SNES_ShowBG1_0);
 			LibsnesDll.snes_set_layer_enable(0, 1, CoreInputComm.SNES_ShowBG1_1);
 			LibsnesDll.snes_set_layer_enable(1, 0, CoreInputComm.SNES_ShowBG2_0);
@@ -254,19 +327,68 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			LibsnesDll.snes_set_layer_enable(4, 2, CoreInputComm.SNES_ShowOBJ_2);
 			LibsnesDll.snes_set_layer_enable(4, 3, CoreInputComm.SNES_ShowOBJ_3);
 
+			// if the input poll callback is called, it will set this to false
+			IsLagFrame = true;
+
 			//apparently this is one frame?
+			timeFrameCounter++;
 			LibsnesDll.snes_run();
+
+			if (IsLagFrame)
+				LagCount++;
+
+			//SNESGraphicsDecoder dec = new SNESGraphicsDecoder();
+			//64x64 @ 4k
+			//var bw = new BinaryWriter(File.OpenWrite("c:\\dump\\tiles.raw"));
+			//var tiles = dec.FetchTilemap(0x4000, SNESGraphicsDecoder.ScreenSize.ABCD_64x64);
+			//foreach (var te in tiles)
+			//{
+			//  bw.Write(te.tilenum);
+			//  bw.Write((byte)0);
+			//}
+			//bw.Flush();
+			//bw.BaseStream.Close();
+
+			//render tilemap
+			//dec.CacheTiles();
+			//int[] bgScreen = new int[tiles.Length * 64];
+			//fixed (int* pbgScreen = &bgScreen[0])
+			//{
+			//  dec.DecodeScreen(pbgScreen, tiles, 0x0000, SNESGraphicsDecoder.ScreenSize.ABCD_64x64, 4, false, 0);
+			//  dec.Paletteize(pbgScreen, 0, 0, bgScreen.Length);
+			//  dec.Colorize(pbgScreen, 0, bgScreen.Length);
+			//}
+			////dec.TrueDecodeTilesNBpp(4);
+			//dec.CacheTiles();
+			//var fs = File.OpenWrite("c:\\dump\\tiles.raw");
+			//for (int i = 0; i < bgScreen.Length; i++)
+			//{
+			//  fs.WriteByte((byte)((bgScreen[i] >> 0) & 0xFF));
+			//  fs.WriteByte((byte)((bgScreen[i] >> 8) & 0xFF));
+			//  fs.WriteByte((byte)((bgScreen[i] >> 16) & 0xFF));
+			//}
+			//fs.Close();
+
+			//using (var bmp = new System.Drawing.Bitmap(16, 16))
+			//{
+			//  for (int i = 0; i < 256; i++)
+			//  {
+			//    ushort u = dec.cgram[i];
+			//    bmp.SetPixel(i % 16, i / 16, System.Drawing.Color.FromArgb(SNESGraphicsDecoder.colortable[491520 + u]));
+			//  }
+			//  bmp.Save("c:\\dump\\palette.png");
+			//}
 		}
 
 		//video provider
 		int IVideoProvider.BackgroundColor { get { return 0; } }
 		int[] IVideoProvider.GetVideoBuffer() { return vidBuffer; }
 		int IVideoProvider.VirtualWidth { get { return vidWidth; } }
-		int IVideoProvider.BufferWidth  { get { return vidWidth; } }
+		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }
 
-		int[] vidBuffer = new int[256*256];
-		int vidWidth=256, vidHeight=256;
+		int[] vidBuffer = new int[256 * 256];
+		int vidWidth = 256, vidHeight = 256;
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
@@ -284,12 +406,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			{
 				Name = "SNES Controller",
 				BoolButtons = {
-					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 B", "P1 A", "P1 X", "P1 Y", "P1 L", "P1 R", "Reset",
+					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 B", "P1 A", "P1 X", "P1 Y", "P1 L", "P1 R", "Reset", "Power",
+					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 B", "P2 A", "P2 X", "P2 Y", "P2 L", "P2 R",
+					"P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Select", "P3 Start", "P3 B", "P3 A", "P3 X", "P3 Y", "P3 L", "P3 R",
+					"P4 Up", "P4 Down", "P4 Left", "P4 Right", "P4 Select", "P4 Start", "P4 B", "P4 A", "P4 X", "P4 Y", "P4 L", "P4 R",
 				}
 			};
-		
+
 		int timeFrameCounter;
-		public int Frame { get { return timeFrameCounter; } }
+		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 		public string SystemId { get { return "SNES"; } }
@@ -302,15 +427,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				return LibsnesDll.snes_get_memory_size(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM) != 0;
 			}
 		}
-		
-		public byte[] ReadSaveRam { get { return snes_get_memory_data_read(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM); } }
+
+		public byte[] ReadSaveRam()
+		{
+			if (disposedSaveRam != null) return disposedSaveRam;
+			return snes_get_memory_data_read(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM);
+		}
+
 		public static byte[] snes_get_memory_data_read(LibsnesDll.SNES_MEMORY id)
 		{
 			var size = (int)LibsnesDll.snes_get_memory_size(id);
 			if (size == 0) return new byte[0];
 			var data = LibsnesDll.snes_get_memory_data(id);
 			var ret = new byte[size];
-			Marshal.Copy(data,ret,0,size);
+			Marshal.Copy(data, ret, 0, size);
 			return ret;
 		}
 
@@ -322,7 +452,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			Marshal.Copy(data, 0, emudata, size);
 		}
 
-		public void ResetFrameCounter() { }
+		public void ClearSaveRam()
+		{
+			byte[] cleardata = new byte[(int)LibsnesDll.snes_get_memory_size(LibsnesDll.SNES_MEMORY.CARTRIDGE_RAM)];
+			StoreSaveRam(cleardata);
+		}
+
+		public void ResetFrameCounter() { timeFrameCounter = 0; }
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();
@@ -335,7 +471,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			state.ReadFromHex(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
-		
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			int size = LibsnesDll.snes_serialize_size();
@@ -343,16 +479,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			fixed (byte* pbuf = &buf[0])
 				LibsnesDll.snes_serialize(new IntPtr(pbuf), size);
 			writer.Write(buf);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
+
 			writer.Flush();
 		}
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int size = LibsnesDll.snes_serialize_size();
-			var ms = new MemoryStream();
-			reader.BaseStream.CopyTo(ms);
-			var buf = ms.ToArray();
+
+			byte[] buf = reader.ReadBytes(size);
 			fixed (byte* pbuf = &buf[0])
 				LibsnesDll.snes_unserialize(new IntPtr(pbuf), size);
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			LagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
 		}
 		public byte[] SaveStateBinary()
 		{
@@ -376,7 +522,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int mask = size - 1;
 			byte* blockptr = (byte*)block.ToPointer();
 			MemoryDomain md;
-			
+
 			//have to bitmask these somehow because it's unmanaged memory and we would hate to clobber things or make them nondeterministic
 			if (Util.IsPowerOfTwo(size))
 			{
@@ -406,7 +552,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		void SetupMemoryDomains(byte[] romData)
 		{
 			MemoryDomains = new List<MemoryDomain>();
-			
+
 			var romDomain = new MemoryDomain("CARTROM", romData.Length, Endian.Little,
 				(addr) => romData[addr],
 				(addr, value) => romData[addr] = value);
@@ -423,76 +569,43 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public MemoryDomain MainMemory { get; private set; }
 
 
-		Queue<short> AudioBuffer = new Queue<short>();
 
-		GCHandle _gc_snes_audio_sample;
+
+		#region audio stuff
+
+		void InitAudio()
+		{
+			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+			resampler = new Sound.Utilities.SpeexResampler(6, 64081, 88200, 32041, 44100, new Action<short[], int>(metaspu.buffer.enqueue_samples));
+
+		}
+
+		Sound.Utilities.SpeexResampler resampler;
+
+		Sound.MetaspuSoundProvider metaspu;
+
 		void snes_audio_sample(ushort left, ushort right)
 		{
-			AudioBuffer.Enqueue((short)left);
-			AudioBuffer.Enqueue((short)right);
+			resampler.EnqueueSample((short)left, (short)right);			
 		}
 
 
-		/// <summary>
-		/// basic linear audio resampler. sampling rate is inferred from buffer sizes
-		/// </summary>
-		/// <param name="input">stereo s16</param>
-		/// <param name="output">stereo s16</param>
-		static void LinearDownsampler(short[] input, short[] output)
-		{
-			// TODO - this also appears in YM2612.cs ... move to common if it's found useful
-
-			double samplefactor = (input.Length - 2) / (double)output.Length;
-
-			for (int i = 0; i < output.Length / 2; i++)
-			{
-				// exact position on input stream
-				double inpos = i * samplefactor;
-				// selected interpolation points and weights
-				int pt0 = (int)inpos; // pt1 = pt0 + 1
-				double wt1 = inpos - pt0; // wt0 = 1 - wt1
-				double wt0 = 1.0 - wt1;
-
-				output[i * 2 + 0] = (short)(input[pt0 * 2 + 0] * wt0 + input[pt0 * 2 + 2] * wt1);
-				output[i * 2 + 1] = (short)(input[pt0 * 2 + 1] * wt0 + input[pt0 * 2 + 3] * wt1);
-			}
-		}
-
+		//BinaryWriter dbgs = new BinaryWriter(File.Open("dbgwav.raw", FileMode.Create, FileAccess.Write));
 
 		public void GetSamples(short[] samples)
 		{
-			// resample approximately 32k->44k
-			int inputcount = samples.Length * 32040 / 44100;
-			inputcount /= 2;
-
-			if (inputcount < 2) inputcount = 2;
-
-			short[] input = new short[inputcount * 2];
-
-			int i;
-
-			for (i = 0; i < inputcount * 2 && AudioBuffer.Count > 0; i++)
-				input[i] = AudioBuffer.Dequeue();
-			for (; i < inputcount * 2; i++)
-				input[i] = 0;
-
-			LinearDownsampler(input, samples);
-
-			// drop if too many
-			if (AudioBuffer.Count > samples.Length * 3)
-				AudioBuffer.Clear();
+			resampler.Flush();
+			metaspu.GetSamples(samples);
 		}
 
 		public void DiscardSamples()
 		{
-			AudioBuffer.Clear();
+			metaspu.DiscardSamples();
 		}
 
-		// ignore for now
-		public int MaxVolume
-		{
-			get;
-			set;
-		}
+		public int MaxVolume { get; set; }
+
+		#endregion audio stuff
+
 	}
 }

@@ -40,6 +40,8 @@ namespace BizHawk.Core
 			SetStyle(ControlStyles.DoubleBuffer, false);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserMouse, true);
+
+			SetBitmap(new Bitmap(2, 2));
 		}
 
 

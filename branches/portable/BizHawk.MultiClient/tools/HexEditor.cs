@@ -22,13 +22,12 @@ namespace BizHawk.MultiClient
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		int RowsVisible = 0;
 		int NumDigits = 4;
-		string NumDigitsStr = "{0:X4}  ";
-		string DigitFormatString = "{0:X2} ";
+		string NumDigitsStr = "{0:X4}";
+		string DigitFormatString = "{0:X2}";
 		char[] nibbles = { 'G', 'G', 'G', 'G' , 'G', 'G', 'G', 'G'};    //G = off 0-9 & A-F are acceptable values
 		int addressHighlighted = -1;
 		List<int> SecondaryHighlightedAddresses = new List<int>();
 		int addressOver = -1;
-		int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
 		int maxRow = 0;
 		MemoryDomain Domain = new MemoryDomain("NULL", 1024, Endian.Little, addr => { return 0; }, (a, v) => { v = 0; });
 		string info = "";
@@ -151,8 +150,14 @@ namespace BizHawk.MultiClient
 				addr = (row << 4);
 				if (addr >= Domain.Size)
 					break;
-				addrStr.AppendFormat(NumDigitsStr, addr);
+
+				if (NumDigits == 4)
+				{
+					addrStr.Append("  "); //Hack to line things up better between 4 and 6
+				}
+				addrStr.Append(String.Format("{0:X" + NumDigits + "}", addr));
 				addrStr.Append('\n');
+				
 			}
 
 			return addrStr.ToString();
@@ -242,11 +247,56 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private int? GetDomainInt(string name)
+		{
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
+			{
+				if (Global.Emulator.MemoryDomains[i].Name == name)
+				{
+					return i;
+				}
+			}
+
+			return null;
+		}
+
+		public void SetDomain(MemoryDomain domain)
+		{
+			Domain = domain;
+			int? theDomain = GetDomainInt(Domain.Name);
+			SetMemoryDomain(theDomain ?? 0);
+		}
+
 		public void Restart()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
+			
+			int? theDomain = null;
+			if (Domain.Name.ToLower() == "rom file")
+			{
+				theDomain = 999;
+			}
+			else
+			{
+				theDomain = GetDomainInt(Domain.Name);
+			}
+			
+			
+			
 			SetMemoryDomainMenu(); //Calls update routines
+
+			if (theDomain != null)
+			{
+				SetMemoryDomain(theDomain ?? 0);
+			}
+			
+			
 			ResetScrollBar();
+
+
+			SetDataSize(DataSize);
+			UpdateValues();
+			AddressLabel.Text = GenerateAddressString();
 		}
 
 		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -350,7 +400,6 @@ namespace BizHawk.MultiClient
 
 		private byte[] GetRomBytes()
 		{
-			byte[] bytes;
 			string path = Global.MainForm.CurrentlyOpenRom;
 			if (path == null)
 			{
@@ -376,8 +425,6 @@ namespace BizHawk.MultiClient
 					return File.ReadAllBytes(path);
 				}
 			}
-
-			return new byte[0];
 		}
 
 		private void SetMemoryDomain(int pos)
@@ -554,10 +601,10 @@ namespace BizHawk.MultiClient
 					Header.Text = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
 					break;
 				case 2:
-					Header.Text = "         0    2    4    6    8    A    C    E";
+					Header.Text = "       0    2    4    6    8    A    C    E";
 					break;
 				case 4:
-					Header.Text = "             0        4        8        C";
+					Header.Text = "       0        4        8        C";
 					break;
 			}
 			NumDigits = GetNumDigits(Domain.Size);
@@ -601,7 +648,7 @@ namespace BizHawk.MultiClient
 			w.Address = address;
 			w.BigEndian = BigEndian;
 			w.Signed = Watch.DISPTYPE.HEX;
-
+			w.Domain = Domain;
 			switch (DataSize)
 			{
 				default:
@@ -680,6 +727,7 @@ namespace BizHawk.MultiClient
 				Global.Sound.StopSound();
 				poke.ShowDialog();
 				Global.Sound.StartSound();
+				UpdateValues();
 			}
 		}
 
@@ -1065,15 +1113,11 @@ namespace BizHawk.MultiClient
 			}
 			int column = (x /*- 43*/) / (fontWidth * colWidth);
 
-			//int last = (16 / DataSize);
-			//if (column >= last)
-			//{
-				int start = GetTextOffset() - addrOffset - 50; //This is ugly, needs cleanup but it works!
-				if (x > start)
-				{
-					column = (x - start)  / (fontWidth / DataSize);
-				}
-			//}
+			int start = GetTextOffset() - 50;
+			if (x > start)
+			{
+				column = (x - start)  / (fontWidth / DataSize);
+			}
 
 			if (row >= 0 && row <= maxRow && column >= 0 && column < (16 / DataSize))
 			{
@@ -1165,16 +1209,15 @@ namespace BizHawk.MultiClient
 
 		private Point GetAddressCoordinates(int address)
 		{
-			addrOffset = (NumDigits % 4) * 9;
 			switch (DataSize)
 			{
 				default:
 				case 1:
-					return new Point(((address % 16) * (fontWidth * 3)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point(((address % 16) * (fontWidth * 3)) + 57, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 2:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 57, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 4:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 57, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 			}
 		}
 
@@ -1185,13 +1228,13 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 1:
-					start = (16 * (fontWidth * 3)) + (50 + addrOffset);
+					start = (16 * (fontWidth * 3)) + 57;
 					break;
 				case 2:
-					start = ((16 / DataSize) * (fontWidth * 5)) + (50 + addrOffset);
+					start = ((16 / DataSize) * (fontWidth * 5)) + 57;
 					break;
 				case 4:
-					start = ((16 / DataSize) * (fontWidth * 9)) + (50 + addrOffset);
+					start = ((16 / DataSize) * (fontWidth * 9)) + 57;
 					break;
 			}
 			start += (fontWidth * 4);
@@ -2237,6 +2280,16 @@ namespace BizHawk.MultiClient
 			{
 				saveAsBinaryToolStripMenuItem.Text = "Save as binary...";
 			}
+		}
+
+		private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PokeAddress();
+		}
+
+		private void pokeAddressToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			PokeAddress();
 		}
 	}
 } 

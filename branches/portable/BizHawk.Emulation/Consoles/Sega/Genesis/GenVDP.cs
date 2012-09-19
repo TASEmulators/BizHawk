@@ -26,7 +26,6 @@ namespace BizHawk.Emulation.Consoles.Sega
         public bool     VInterruptEnabled    { get { return (Registers[1]  & 0x20) != 0; } }
         public bool     DmaEnabled           { get { return (Registers[1]  & 0x10) != 0; } }
         public bool     CellBasedVertScroll  { get { return (Registers[11] & 0x08) != 0; } }
-        public bool     Display40Mode        { get { return (Registers[12] & 0x81) != 0; } }
 
         public bool     InDisplayPeriod      { get { return ScanLine < 224 && DisplayEnabled; } }
 
@@ -37,6 +36,11 @@ namespace BizHawk.Emulation.Consoles.Sega
         ushort HScrollTableAddr;
         int    NameTableWidth = 32;
         int    NameTableHeight = 32;
+
+        int    DisplayWidth;
+        int    SpriteLimit;
+        int    SpritePerLineLimit;
+        int    DotsPerLineLimit;
 
         bool   ControlWordPending;
         ushort VdpDataAddr;
@@ -58,6 +62,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         public const int StatusVerticalInterruptPending = 0x80;
 
         public bool VdpDebug = false;
+
+        public Func<int> GetPC;
 
         public GenVDP()
         {
@@ -105,7 +111,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void WriteVdpControl(ushort data)
         {
-            Log.Note("VDP", "Control Write {0:X4}", data);
+            Log.Note("VDP", "Control Write {0:X4} (PC={1:X6})", data, GetPC());
 
             if (ControlWordPending == false)
             {
@@ -171,14 +177,14 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void WriteVdpData(ushort data)
         {
-            Log.Note("VDP", "Data port write: {0:X4}", data);
+            Log.Note("VDP", "Data port write: {0:X4} (PC={1:X6})", data, GetPC());
             ControlWordPending = false; 
 
             // byte-swap incoming data when A0 is set
              if ((VdpDataAddr & 1) != 0)
             {
                 data = (ushort)((data >> 8) | (data << 8));
-                Log.Error("VDP", "VRAM byte-swap is happening because A0 is not 0");
+                Log.Error("VDP", "VRAM byte-swap is happening because A0 is not 0. [{0:X4}] = {1:X4}", VdpDataAddr, data);
             }
 
             switch (VdpDataCode & 0xF)
@@ -338,19 +344,25 @@ int orig_addr = VdpDataAddr;
                     if ((data & 0x81) == 0)
                     {
                         // Display is 32 cells wide
-                        if (FrameWidth != 256)
+                        if (DisplayWidth != 32)
                         {
                             FrameBuffer = new int[256*224];
                             FrameWidth = 256;
-                            //Log.Note("VDP", "SWITCH TO 32 CELL WIDE MODE");
+                            DisplayWidth = 32;
+                            SpriteLimit = 64;
+                            SpritePerLineLimit = 16;
+                            DotsPerLineLimit = 256;
                         }
                     } else {
                         // Display is 40 cells wide
-                        if (FrameWidth != 320)
+                        if (DisplayWidth != 40)
                         {
                             FrameBuffer = new int[320*224];
                             FrameWidth = 320;
-                            //Log.Note("VDP", "SWITCH TO 40 CELL WIDE MODE");
+                            DisplayWidth = 40;
+                            SpriteLimit = 80;
+                            SpritePerLineLimit = 20;
+                            DotsPerLineLimit = 320;
                         }
                     }
                     break;
@@ -501,6 +513,39 @@ int orig_addr = VdpDataAddr;
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
+
+            for (int i = 0; i < CRAM.Length; i++)
+                ProcessPalette(i);
+            for (int i = 0; i < VRAM.Length; i++)
+                UpdatePatternBuffer(i);
+            for (int i = 0; i < Registers.Length; i++)
+                WriteVdpRegister(i, Registers[i]);
+        }
+
+        public void SaveStateBinary(BinaryWriter writer)
+        {
+            writer.Write(VRAM);
+            writer.Write(CRAM);
+            writer.Write(VSRAM);
+            writer.Write(Registers);
+
+            writer.Write(ControlWordPending);
+            writer.Write(DmaFillModePending);
+            writer.Write(VdpDataAddr);
+            writer.Write(VdpDataCode);
+        }
+
+        public void LoadStateBinary(BinaryReader reader)
+        {
+            VRAM = reader.ReadBytes(VRAM.Length);
+            CRAM = reader.ReadUInt16s(CRAM.Length);
+            VSRAM = reader.ReadUInt16s(VSRAM.Length);
+            Registers = reader.ReadBytes(Registers.Length);
+
+            ControlWordPending = reader.ReadBoolean();
+            DmaFillModePending = reader.ReadBoolean();
+            VdpDataAddr = reader.ReadUInt16();
+            VdpDataCode = reader.ReadByte();
 
             for (int i = 0; i < CRAM.Length; i++)
                 ProcessPalette(i);

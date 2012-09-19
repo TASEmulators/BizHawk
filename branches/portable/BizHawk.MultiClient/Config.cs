@@ -58,6 +58,13 @@ namespace BizHawk.MultiClient
 		public string LastRomPath = ".";
 		public string BasePath = ".";
 
+		public string BaseINTV = Path.Combine(".", "Intellivision");
+		public string PathINTVROMs = ".";
+		public string PathINTVSavestates = Path.Combine(".", "State");
+		public string PathINTVSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathINTVScreenshots = Path.Combine(".", "Screenshots");
+		public string PathINTVCheats = Path.Combine(".", "Cheats");
+
 		public string BaseNES = Path.Combine(".", "NES");
 		public string PathNESROMs = ".";
 		public string PathNESSavestates = Path.Combine(".", "State");
@@ -114,6 +121,7 @@ namespace BizHawk.MultiClient
 		public string PathGBSaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathGBScreenshots = Path.Combine(".", "Screenshots");
 		public string PathGBCheats = Path.Combine(".", "Cheats");
+		public string PathGBPalettes = Path.Combine(".", "Palettes");
 
 		public string BaseTI83 = Path.Combine(".", "TI83");
 		public string PathTI83ROMs = ".";
@@ -130,12 +138,15 @@ namespace BizHawk.MultiClient
 		public string PathAtariCheats = Path.Combine(".", "Cheats");
 
 		public string MoviesPath = Path.Combine(".", "Movies");
+		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
 		public string LuaPath = Path.Combine(".", "Lua");
 		public string WatchPath = ".";
 		public string AVIPath = ".";
 
 		//BIOS Paths
-		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce"); //TODO: better default filename
+		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
+		public string PathINTVGROM = Path.Combine(".", "grom.bin");
+		public string PathINTVEROM = Path.Combine(".", "erom.bin");
 
 		public string FFMpegPath = "%exe%/ffmpeg.exe";
 
@@ -252,18 +263,22 @@ namespace BizHawk.MultiClient
 		public bool RamWatchShowChangeColumn = true;
 		public bool RamWatchShowPrevColumn = false;
 		public bool RamWatchShowDiffColumn = false;
+		public bool RamWatchShowDomainColumn = true;
 		public int RamWatchAddressWidth = -1;
 		public int RamWatchValueWidth = -1;
 		public int RamWatchPrevWidth = -1;
 		public int RamWatchChangeWidth = -1;
 		public int RamWatchDiffWidth = -1;
 		public int RamWatchNotesWidth = -1;
+		public int RamWatchDomainWidth = -1;
+		
 		public int RamWatchAddressIndex = 0;
 		public int RamWatchValueIndex = 1;
 		public int RamWatchPrevIndex = 2;
 		public int RamWatchChangeIndex = 3;
 		public int RamWatchDiffIndex = 4;
-		public int RamWatchNotesIndex = 5;
+		public int RamWatchDomainIndex = 5;
+		public int RamWatchNotesIndex = 6;
 		public int RamWatchPrev_Type = 1;
 
 		// RamSearch Settings
@@ -344,6 +359,13 @@ namespace BizHawk.MultiClient
 		public int NESTopLine = 8;
 		public int NESBottomLine = 231;
 
+		// SNES Graphics Debugger Dialog Settings
+		public bool AutoLoadSNESGraphicsDebugger = false;
+		public bool SNESGraphicsDebuggerSaveWindowPosition = true;
+		public int SNESGraphicsDebuggerWndx = -1;
+		public int SNESGraphicsDebuggerWndy = -1;
+		public int SNESGraphicsDebuggerRefreshRate = 4;
+
 		// SNES Graphics settings
 		//bsnes allows the layers to be enabled for each priority level.
 		//this may not be important for the bg (there are two priority levels)
@@ -356,10 +378,10 @@ namespace BizHawk.MultiClient
 		public bool SNES_ShowBG2_1 = true;
 		public bool SNES_ShowBG3_1 = true;
 		public bool SNES_ShowBG4_1 = true;
-		public bool SNES_ShowOBJ_0 = true;
-		public bool SNES_ShowOBJ_1 = true;
-		public bool SNES_ShowOBJ_2 = true;
-		public bool SNES_ShowOBJ_3 = true;
+		public bool SNES_ShowOBJ1 = true;
+		public bool SNES_ShowOBJ2 = true;
+		public bool SNES_ShowOBJ3 = true;
+		public bool SNES_ShowOBJ4 = true;
 
 		// PCE Graphics settings
 		public bool PCEDispBG1 = true;
@@ -446,7 +468,8 @@ namespace BizHawk.MultiClient
 		public string ToggleBackgroundInput = "";
 		public string IncreaseSpeedBinding = "Equals";
 		public string DecreaseSpeedBinding = "Minus";
-		public string HardResetBinding = "Ctrl+R";
+		public string HardResetBinding = "";
+		public string RebootCoreResetBinding = "Ctrl+R";
 		public string FastForwardBinding = "Tab, J1 B6";
 		public string RewindBinding = "Shift+R, J1 B5";
 		public string EmulatorPauseBinding = "Pause";
@@ -523,6 +546,16 @@ namespace BizHawk.MultiClient
 		public string ToggleMenuBinding = "";
 		public string IncreaseWindowSize = "Alt+UpArrow";
 		public string DecreaseWindowSize = "Alt+DownArrow";
+		public string AutoholdBinding = "";
+		public string AutoholdClear = "";
+		public string ToggleSNESBG1Binding = "";
+		public string ToggleSNESBG2Binding = "";
+		public string ToggleSNESBG3Binding = "";
+		public string ToggleSNESBG4Binding = "";
+		public string ToggleSNESOBJ1Binding = "";
+		public string ToggleSNESOBJ2Binding = "";
+		public string ToggleSNESOBJ3Binding = "";
+		public string ToggleSNESOBJ4Binding = "";
 
 		// NES Sound settings
 		public bool NESEnableSquare1 = true;
@@ -578,6 +611,10 @@ namespace BizHawk.MultiClient
 		//GB settings
 		public GBControllerTemplate[] GBController = new GBControllerTemplate[1];
 		public GBControllerTemplate[] GBAutoController = new GBControllerTemplate[1];
+		public bool GB_ForceDMG = false;
+		public bool GB_GBACGB = false;
+		public bool GB_MulticartCompat = false;
+		public string GB_PaletteFile = "";
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;

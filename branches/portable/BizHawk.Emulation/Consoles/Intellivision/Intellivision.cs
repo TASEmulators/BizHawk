@@ -22,36 +22,26 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Stic.SetSst(Cpu.GetBusAk());
 		}
 
-		public void LoadExecutiveRom()
+		public void LoadExecutiveRom(string path)
 		{
-			FileStream fs = new FileStream("C:/erom.int", FileMode.Open, FileAccess.Read);
-			BinaryReader r = new BinaryReader(fs);
-			byte[] erom = r.ReadBytes(8192);
+			var erom = File.ReadAllBytes(path);
+			if (erom.Length != 8192) throw new ApplicationException("EROM file is wrong size - expected 8192 bytes");
 			int index = 0;
 			// Combine every two bytes into a word.
 			while (index + 1 < erom.Length)
 				ExecutiveRom[index / 2] = (ushort)((erom[index++] << 8) | erom[index++]);
-			r.Close();
-			fs.Close();
 		}
 
-		public void LoadGraphicsRom()
+		public void LoadGraphicsRom(string path)
 		{
-			FileStream fs = new FileStream("C:/grom.int", FileMode.Open, FileAccess.Read);
-			BinaryReader r = new BinaryReader(fs);
-			byte[] grom = r.ReadBytes(2048);
-			for (int index = 0; index < grom.Length; index++)
-				GraphicsRom[index] = grom[index];
-			r.Close();
-			fs.Close();
+			GraphicsRom = File.ReadAllBytes(path);
+			if (GraphicsRom.Length != 2048) throw new ApplicationException("GROM file is wrong size - expected 2048 bytes");
 		}
 
 		public Intellivision(GameInfo game, byte[] rom)
 		{
 			Rom = rom;
 			Game = game;
-			LoadExecutiveRom();
-			LoadGraphicsRom();
 			Cart = new Intellicart();
 			if (Cart.Parse(Rom) == -1)
 			{
@@ -65,9 +55,13 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Cpu.Reset();
 
 			Stic = new STIC();
+			Stic.ReadMemory = ReadMemory;
+			Stic.WriteMemory = WriteMemory;
 			Stic.Reset();
 
 			Psg = new PSG();
+			Psg.ReadMemory = ReadMemory;
+			Psg.WriteMemory = WriteMemory;
 
 			Connect();
 
@@ -78,6 +72,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public void FrameAdvance(bool render)
 		{
+			Frame++;
 			Cpu.AddPendingCycles(14394 + 3791);
 			while (Cpu.GetPendingCycles() > 0)
 			{
@@ -88,25 +83,24 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			}
 		}
 
-
-
-		// This is all crap to worry about later.
-
-		public IVideoProvider VideoProvider { get { return new NullEmulator(); } }
+		public IVideoProvider VideoProvider { get { return Stic; } }
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
+
+		public static readonly ControllerDefinition IntellivisionController =
+			new ControllerDefinition
+			{
+				Name = "Intellivision Controller",
+				BoolButtons = {
+				}
+			};
 
 		public ControllerDefinition ControllerDefinition
 		{
-			get { return null; }
+			get { return IntellivisionController; }
 		}
 
 		public IController Controller { get; set; }
-
-
-		public int Frame
-		{
-			get { return 0; }
-		}
+		public int Frame { get; set; }
 
 		public int LagCount
 		{
@@ -115,6 +109,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		}
 
 		public bool IsLagFrame { get { return false; } }
+
 		public string SystemId
 		{
 			get { return "INTV"; }
@@ -122,8 +117,10 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public bool DeterministicEmulation { get; set; }
 
-		public byte[] ReadSaveRam { get { return null; } }
 
+		public byte[] ReadSaveRam() { return null; }
+		public void StoreSaveRam(byte[] data) { }
+		public void ClearSaveRam() { }
 		public bool SaveRamModified
 		{
 			get { return false; }

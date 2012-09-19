@@ -63,6 +63,7 @@
 			this.showPreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.diffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.domainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.definePreviousValueAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previousFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,7 +112,9 @@
 			this.Prev = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ChangeCounts = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Diff = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Notes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.showDomainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -126,7 +129,7 @@
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(338, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(359, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -176,8 +179,8 @@
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
-						| System.Windows.Forms.Keys.S)));
+			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
 			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.saveAsToolStripMenuItem.Text = "Save &As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
@@ -379,7 +382,8 @@
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showPreviousValueToolStripMenuItem,
             this.showChangeCountsToolStripMenuItem,
-            this.diffToolStripMenuItem});
+            this.diffToolStripMenuItem,
+            this.domainToolStripMenuItem});
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
 			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.viewToolStripMenuItem.Text = "&View";
@@ -407,6 +411,13 @@
 			this.diffToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.diffToolStripMenuItem.Text = "Difference";
 			this.diffToolStripMenuItem.Click += new System.EventHandler(this.diffToolStripMenuItem_Click);
+			// 
+			// domainToolStripMenuItem
+			// 
+			this.domainToolStripMenuItem.Name = "domainToolStripMenuItem";
+			this.domainToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.domainToolStripMenuItem.Text = "Domain";
+			this.domainToolStripMenuItem.Click += new System.EventHandler(this.domainToolStripMenuItem_Click);
 			// 
 			// optionsToolStripMenuItem
 			// 
@@ -487,9 +498,10 @@
             this.toolStripSeparator2,
             this.showChangeCountsToolStripMenuItem1,
             this.showPreviousValueToolStripMenuItem1,
-            this.showDifferenceToolStripMenuItem});
+            this.showDifferenceToolStripMenuItem,
+            this.showDomainToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(189, 280);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(189, 324);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// editToolStripMenuItem
@@ -642,7 +654,7 @@
             this.MoveDownStripButton1});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(338, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(359, 25);
 			this.toolStrip1.TabIndex = 2;
 			this.toolStrip1.TabStop = true;
 			this.toolStrip1.Text = "toolStrip1";
@@ -795,9 +807,9 @@
 			// WatchListView
 			// 
 			this.WatchListView.AllowColumnReorder = true;
-			this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.WatchListView.AutoArrange = false;
 			this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
@@ -805,6 +817,7 @@
             this.Prev,
             this.ChangeCounts,
             this.Diff,
+            this.DomainColumn,
             this.Notes});
 			this.WatchListView.ContextMenuStrip = this.contextMenuStrip1;
 			this.WatchListView.FullRowSelect = true;
@@ -815,7 +828,7 @@
 			this.WatchListView.Location = new System.Drawing.Point(16, 76);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.selectedItem = -1;
-			this.WatchListView.Size = new System.Drawing.Size(306, 281);
+			this.WatchListView.Size = new System.Drawing.Size(327, 281);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
@@ -849,23 +862,33 @@
 			// 
 			// Diff
 			// 
-			this.Diff.DisplayIndex = 5;
 			this.Diff.Text = "Diff";
 			this.Diff.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.Diff.Width = 59;
 			// 
+			// DomainColumn
+			// 
+			this.DomainColumn.Text = "Domain";
+			this.DomainColumn.Width = 55;
+			// 
 			// Notes
 			// 
-			this.Notes.DisplayIndex = 4;
 			this.Notes.Text = "Notes";
 			this.Notes.Width = 128;
+			// 
+			// showDomainToolStripMenuItem
+			// 
+			this.showDomainToolStripMenuItem.Name = "showDomainToolStripMenuItem";
+			this.showDomainToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.showDomainToolStripMenuItem.Text = "Show Domain";
+			this.showDomainToolStripMenuItem.Click += new System.EventHandler(this.showDomainToolStripMenuItem_Click);
 			// 
 			// RamWatch
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(338, 378);
+			this.ClientSize = new System.Drawing.Size(359, 378);
 			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.MemDomainLabel);
 			this.Controls.Add(this.WatchCountLabel);
@@ -977,5 +1000,8 @@
 		private System.Windows.Forms.ToolStripMenuItem definePreviousValueAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem previousFrameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem lastChangeToolStripMenuItem;
+		private System.Windows.Forms.ColumnHeader DomainColumn;
+		private System.Windows.Forms.ToolStripMenuItem domainToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showDomainToolStripMenuItem;
     }
 }

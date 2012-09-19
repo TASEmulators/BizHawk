@@ -243,11 +243,12 @@
 			// 
 			// ValueBox
 			// 
+			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.ValueBox.Location = new System.Drawing.Point(73, 57);
 			this.ValueBox.MaxLength = 9;
 			this.ValueBox.Name = "ValueBox";
 			this.ValueBox.Size = new System.Drawing.Size(80, 20);
-			this.ValueBox.TabIndex = 3;
+			this.ValueBox.TabIndex = 1;
 			this.ValueBox.Text = "0000";
 			this.ValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValueBox_KeyPress);
 			this.ValueBox.Leave += new System.EventHandler(this.ValueBox_Leave);

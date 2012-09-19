@@ -410,9 +410,9 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap NESController {
+        internal static System.Drawing.Bitmap NES_Controller {
             get {
-                object obj = ResourceManager.GetObject("NESController", resourceCulture);
+                object obj = ResourceManager.GetObject("NES_Controller", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -496,6 +496,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap ReadOnly {
             get {
                 object obj = ResourceManager.GetObject("ReadOnly", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap reboot {
+            get {
+                object obj = ResourceManager.GetObject("reboot", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -591,6 +598,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap SNES_Controller {
+            get {
+                object obj = ResourceManager.GetObject("SNES_Controller", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Stop {
             get {
                 object obj = ResourceManager.GetObject("Stop", resourceCulture);
@@ -612,16 +626,16 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap TI83Calculator {
+        internal static System.Drawing.Bitmap TI83_Controller {
             get {
-                object obj = ResourceManager.GetObject("TI83Calculator", resourceCulture);
+                object obj = ResourceManager.GetObject("TI83_Controller", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap TI83CalculatorCrop {
+        internal static System.Drawing.Bitmap TI83Calculator {
             get {
-                object obj = ResourceManager.GetObject("TI83CalculatorCrop", resourceCulture);
+                object obj = ResourceManager.GetObject("TI83Calculator", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

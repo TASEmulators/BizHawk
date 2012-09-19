@@ -8,8 +8,20 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             address &= 0x00FFFFFF;
 
-            if (address < 0x400000)
+            if (address < 0x200000)
                 return (sbyte) RomData[address];
+
+            if (address < 0x400000)
+            {
+                if (SaveRamEnabled && address >= SaveRamStartOffset && address < SaveRamEndOffset)
+                {
+                    if (SaveRamEveryOtherByte)
+                        return (sbyte) SaveRAM[(address - SaveRamStartOffset) >> 1];
+                    else
+                        return (sbyte) SaveRAM[address - SaveRamStartOffset];
+                }
+                return (sbyte)RomData[address];
+            }
 
             if (address >= 0xE00000)
                 return (sbyte) Ram[address & 0xFFFF];
@@ -49,7 +61,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (address >= 0xE00000) // Work RAM
             {
-                maskedAddr = address & 0xFFFF;
+                maskedAddr = address & 0xFFFE;
                 return (short)((Ram[maskedAddr] << 8) | Ram[maskedAddr + 1]);
             }
 
@@ -78,6 +90,14 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 maskedAddr = address & 0xFFFF;
                 return (Ram[maskedAddr] << 24) | (Ram[maskedAddr + 1] << 16) | (Ram[maskedAddr + 2] << 8) | Ram[maskedAddr + 3];
+            }
+
+            if (address >= 0xC00000)
+            {
+                //Console.WriteLine("long-read from VDP");
+                short msw = ReadWord(address);
+                short msl = ReadWord(address + 2);
+                return (msw << 16) | (ushort) msl;
             }
 
             // try to handle certain things separate if they need to be separate? otherwise handle as 2x readwords?
@@ -134,6 +154,24 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 PSG.WritePsgData((byte) value, SoundCPU.TotalExecutedCycles);
                 return;
+            }
+
+            if (SaveRamEnabled && address >= SaveRamStartOffset && address < SaveRamEndOffset)
+            {
+                if (SaveRamEveryOtherByte)
+                    SaveRAM[(address - SaveRamStartOffset) >> 1] = (byte) value;
+                else
+                    SaveRAM[address - SaveRamStartOffset] = (byte) value;
+                
+                SaveRamModified = true;
+                return;
+            }
+
+            if (EepromEnabled && (address == SclAddr || address == SdaInAddr))
+            {
+                WriteByteEeprom(address, (byte) value);
+                return;
+
             }
 
             Console.WriteLine("UNHANDLED WRITEB {0:X6}:{1:X2}", address, value);
@@ -197,7 +235,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address >= 0xC00000)
             {
                 WriteWord(address, (short)(value >> 16));
-                WriteWord(address, (short)value);
+                WriteWord(address+2, (short)value);
                 return;
             }
 

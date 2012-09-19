@@ -16,7 +16,6 @@ using BizHawk.Emulation.Sound;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-    [CoreVersion("1.0.1", FriendlyName = "Sega 8-bit")]
 	public sealed partial class SMS : IEmulator
 	{
 		// Constants
@@ -31,7 +30,23 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public byte[] SaveRAM = new byte[BankSize * 2];
 		public byte SaveRamBank;
 
-		public byte[] ReadSaveRam { get { return SaveRAM; } }
+		public byte[] ReadSaveRam()
+		{
+			if (SaveRAM != null)
+				return (byte[])SaveRAM.Clone();
+			else
+				return null;
+		}
+		public void StoreSaveRam(byte[] data)
+		{
+			if (SaveRAM != null)
+				Array.Copy(data, SaveRAM, data.Length);
+		}
+		public void ClearSaveRam()
+		{
+			if (SaveRAM != null)
+				SaveRAM = new byte[SaveRAM.Length];
+		}
 		public bool SaveRamModified { get; set; }
 
 		// Machine resources

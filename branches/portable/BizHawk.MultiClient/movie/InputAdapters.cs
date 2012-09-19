@@ -124,6 +124,7 @@ namespace BizHawk.MultiClient
 		public IController Source;
 
 		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+		public bool Locked = false; //Pretty much a hack, 
 
 		public bool IsPressed(string button) { return this[button]; }
 		public float GetFloat(string name) { return 0.0f; } //TODO
@@ -153,6 +154,165 @@ namespace BizHawk.MultiClient
 		{
 			return stickySet.Contains(button);
 		}
+
+		public HashSet<string> CurrentStickies
+		{
+			get
+			{
+				return stickySet;
+			}
+		}
+
+		public void ClearStickies()
+		{
+			stickySet.Clear();
+		}
+
+		public void MassToggleStickyState(List<string> buttons)
+		{
+			foreach (string button in buttons)
+			{
+				if (!JustPressed.Contains(button))
+				{
+					if (stickySet.Contains(button))
+					{
+						stickySet.Remove(button);
+					}
+					else
+					{
+						stickySet.Add(button);
+					}
+				}
+			}
+			JustPressed = buttons;
+		}
+
+		private List<string> JustPressed = new List<string>();
+	}
+
+	public class AutoFireStickyXORAdapter : IController
+	{
+		public int On { get; set; }
+		public int Off { get; set; }
+		public WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
+		
+		private HashSet<string> stickySet = new HashSet<string>();
+
+		public IController Source;
+
+		public void SetOnOffPatternFromConfig()
+		{
+			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
+			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+		}
+
+		public AutoFireStickyXORAdapter()
+		{
+			//On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
+			//Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+			On = 1;
+			Off = 1;
+		}
+
+		public bool IsPressed(string button)
+		{
+			if (stickySet.Contains(button))
+			{
+				int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
+				if (a < On)
+					return this[button];
+				else
+					return false;
+			}
+			else
+			{
+				return Source[button];
+			}
+		}
+
+		public bool this[string button]
+		{
+			get
+			{
+				bool source = Source[button];
+				if (source)
+				{
+				}
+				if (stickySet.Contains(button))
+				{
+
+
+					int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
+					if (a < On)
+					{
+						source ^= true;
+					}
+					else
+					{
+						source ^= false;
+					}
+				}
+				
+				return source;
+			}
+			set { throw new InvalidOperationException(); }
+		}
+
+
+
+
+		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+		public bool Locked = false; //Pretty much a hack, 
+
+
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+
+		public void SetSticky(string button, bool isSticky)
+		{
+			if (isSticky)
+				stickySet.Add(button);
+			else stickySet.Remove(button);
+		}
+
+		public bool IsSticky(string button)
+		{
+			return stickySet.Contains(button);
+		}
+
+		public HashSet<string> CurrentStickies
+		{
+			get
+			{
+				return stickySet;
+			}
+		}
+
+		public void ClearStickies()
+		{
+			stickySet.Clear();
+		}
+
+		public void MassToggleStickyState(List<string> buttons)
+		{
+			foreach (string button in buttons)
+			{
+				if (!JustPressed.Contains(button))
+				{
+					if (stickySet.Contains(button))
+					{
+						stickySet.Remove(button);
+					}
+					else
+					{
+						stickySet.Add(button);
+					}
+				}
+			}
+			JustPressed = buttons;
+		}
+
+		private List<string> JustPressed = new List<string>();
 	}
 
 	public class MnemonicsGenerator
@@ -168,10 +328,6 @@ namespace BizHawk.MultiClient
 		bool IsBasePressed(string name)
 		{
 			bool ret = Source.IsPressed(name);
-			if (ret)
-			{
-				//int zzz=9;
-			}
 			return ret;
 		}
 
@@ -188,6 +344,8 @@ namespace BizHawk.MultiClient
 					return "|..................................................|.|";
 				case "NES":
 					return "|.|........|........|........|........|";
+				case "SNES":
+					return "|.|............|............|............|............|";
 				case "SMS":
 				case "GG":
 				case "SG":
@@ -203,15 +361,50 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		//adelikat: I"m going to do all controllers like this, so what if it is redundant! It is better than reducing lines of code with convoluted logic that is difficult to expand to support new platforms
+		private string GetSNESControllersAsMnemonic()
+		{
+			StringBuilder input = new StringBuilder("|");
+
+			if (IsBasePressed("Power"))
+			{
+				input.Append(Global.COMMANDS[ControlType]["Power"]);
+			}
+			else if (IsBasePressed("Reset"))
+			{
+				input.Append(Global.COMMANDS[ControlType]["Reset"]);
+			}
+
+			input.Append("|");
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					
+					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
+				}
+				input.Append("|");
+			}
+
+			return input.ToString();
+		}
+
+
 		public string GetControllersAsMnemonic()
 		{
-			if (Global.Emulator.SystemId == "NULL" || ControlType == "Null Controller")
+			if (ControlType == "Null Controller")
+			{
 				return "|.|";
+			}
+			else if (ControlType == "SNES Controller")
+			{
+				return GetSNESControllersAsMnemonic();
+			}
 
 			StringBuilder input = new StringBuilder("|");
 
 			if (
-				ControlType == "Genesis 3-Button Controller" || ControlType == "Gameboy Controller" ||
+				ControlType == "Genesis 3-Button Controller" || // ControlType == "Gameboy Controller" ||
 				ControlType == "PC Engine Controller"
 			)
 			{
@@ -225,6 +418,10 @@ namespace BizHawk.MultiClient
 			if (ControlType == "NES Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] : ".");
+			}
+			if (ControlType == "Gameboy Controller")
+			{
+				input.Append(IsBasePressed("Power") ? Global.COMMANDS[ControlType]["Power"] : ".");
 			}
 			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller")
 			{
@@ -408,13 +605,57 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		//Redundancy beats crazy if logic that makes new consoles annoying to add
+		private void SetSNESControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+			{
+				Force("Reset", true);
+			}
+			
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+				
+				if (mnemonic.Length < srcindex + 3 + Global.BUTTONS[ControlType].Count - 1)
+				{
+					return;
+				}
+
+				int start = 3;
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+			}
+
+		}
+
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string
 		/// </summary>
 		public void SetControllersAsMnemonic(string mnemonic)
 		{
-			if (Global.Emulator.SystemId == "NULL" || ControlType == "Null Controller")
+			if (ControlType == "Null Controller")
+			{
 				return;
+			}
+			else if (ControlType == "SNES Controller")
+			{
+				SetSNESControllersAsMnemonic(mnemonic);
+			}
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 
 			MyBoolButtons.Clear();
@@ -424,6 +665,11 @@ namespace BizHawk.MultiClient
 			{
 				if (mnemonic.Length < 2) return;
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
+			}
+			if (ControlType == "Gameboy Controller")
+			{
+				if (mnemonic.Length < 2) return;
+				Force("Power", mnemonic[1] != '.');
 			}
 			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller")
 			{

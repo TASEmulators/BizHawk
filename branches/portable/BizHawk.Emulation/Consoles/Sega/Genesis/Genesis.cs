@@ -13,7 +13,6 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-	[CoreVersion("0.0.0.1", FriendlyName = "MegaHawk")]
 	public sealed partial class Genesis : IEmulator
 	{
 		private int _lagcount = 0;
@@ -127,9 +126,19 @@ namespace BizHawk.Emulation.Consoles.Sega
 #if MUSASHI
             Musashi.Init();
             Musashi.Reset();
+            VDP.GetPC = () => Musashi.PC;
 #else
             MainCPU.Reset();
+            VDP.GetPC = () => MainCPU.PC;
 #endif
+            InitializeCartHardware(game);
+        }
+
+        void InitializeCartHardware(GameInfo game)
+        {
+            LogCartInfo();
+            InitializeEeprom(game);
+            InitializeSaveRam(game);
         }
 
 		public void FrameAdvance(bool render)
@@ -260,26 +269,20 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public bool DeterministicEmulation { get; set; }
 		public string SystemId { get { return "GEN"; } }
 
-		public byte[] ReadSaveRam
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				return false; // TODO implement
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
+		
 
         public void SaveStateText(TextWriter writer)
         {
-            writer.WriteLine("[MegaDrive]");
+            var buf = new byte[141501 + SaveRAM.Length];
+            var stream = new MemoryStream(buf);
+            var bwriter = new BinaryWriter(stream);
+            SaveStateBinary(bwriter);
+            
+            writer.WriteLine("Version 1");
+            writer.Write("BigFatBlob ");
+            buf.SaveAsHex(writer);
+
+            /*writer.WriteLine("[MegaDrive]");
             MainCPU.SaveStateText(writer, "Main68K");
             SoundCPU.SaveStateText(writer);
             PSG.SaveStateText(writer);
@@ -291,14 +294,20 @@ namespace BizHawk.Emulation.Consoles.Sega
             Ram.SaveAsHex(writer);
             writer.Write("Z80RAM ");
             Z80Ram.SaveAsHex(writer);
-            
-
-            writer.WriteLine("[/MegaDrive]");
+            writer.WriteLine("[/MegaDrive]");*/
         }
 
         public void LoadStateText(TextReader reader)
         {
-            while (true)
+            var buf = new byte[141501 + SaveRAM.Length];
+            var version = reader.ReadLine();
+            if (version != "Version 1")
+                throw new Exception("Not a valid state vesrion! sorry! your state is bad! Robust states will be added later!");
+            var omgstate = reader.ReadLine().Split(' ')[1];
+            buf.ReadFromHex(omgstate);
+            LoadStateBinary(new BinaryReader(new MemoryStream(buf)));
+
+            /*while (true)
             {
                 string[] args = reader.ReadLine().Split(' ');
                 if (args[0].Trim() == "") continue;
@@ -324,22 +333,77 @@ namespace BizHawk.Emulation.Consoles.Sega
                     VDP.LoadStateText(reader);
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-            }
+            }*/
         }
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			//throw new NotImplementedException();
+            Musashi.SaveStateBinary(writer);    // 124  
+            SoundCPU.SaveStateBinary(writer);   // 46
+            PSG.SaveStateBinary(writer);        // 15
+            VDP.SaveStateBinary(writer);        // 65781
+            YM2612.SaveStateBinary(writer);     // 1785
+            
+            writer.Write(Ram);                  // 65535
+            writer.Write(Z80Ram);               // 8192
+
+            writer.Write(Frame);                // 4
+            writer.Write(M68000HasZ80Bus);      // 1
+            writer.Write(Z80Reset);             // 1
+            writer.Write(BankRegion);           // 4
+
+            for (int i = 0; i < 3; i++)
+            {
+                writer.Write(IOPorts[i].Data);
+                writer.Write(IOPorts[i].TxData);
+                writer.Write(IOPorts[i].RxData);
+                writer.Write(IOPorts[i].SCtrl);
+            }
+
+            if (SaveRAM.Length > 0)
+                writer.Write(SaveRAM);
+
+            // TODO: EEPROM/cart HW state
+            // TODO: lag counter crap
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			//throw new NotImplementedException();
+            Musashi.LoadStateBinary(reader);
+            SoundCPU.LoadStateBinary(reader);
+            PSG.LoadStateBinary(reader);
+            VDP.LoadStateBinary(reader);
+            YM2612.LoadStateBinary(reader);
+
+            Ram = reader.ReadBytes(Ram.Length);
+            Z80Ram = reader.ReadBytes(Z80Ram.Length);
+
+            Frame = reader.ReadInt32();
+            M68000HasZ80Bus = reader.ReadBoolean();
+            Z80Reset = reader.ReadBoolean();
+            BankRegion = reader.ReadInt32();
+
+            for (int i = 0; i < 3; i++)
+            {
+                IOPorts[i].Data   = reader.ReadByte();
+                IOPorts[i].TxData = reader.ReadByte();
+                IOPorts[i].RxData = reader.ReadByte();
+                IOPorts[i].SCtrl  = reader.ReadByte();
+            }
+
+            if (SaveRAM.Length > 0)
+                SaveRAM = reader.ReadBytes(SaveRAM.Length);
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			return new byte[0];
+            var buf = new byte[141501+SaveRAM.Length];
+            var stream = new MemoryStream(buf);
+            var writer = new BinaryWriter(stream);
+            SaveStateBinary(writer);
+            //Console.WriteLine("buf len = {0}", stream.Position);
+            writer.Close();
+            return buf;
 		}
 
 		IList<MemoryDomain> memoryDomains;

@@ -1,4 +1,0 @@
-BizHawk 1.0.1a
-Release Date: 03/09/2012
-Release notes:
-Hex Editor - change Add Watch hotkey from A to Ctrl+W

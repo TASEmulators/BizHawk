@@ -1,0 +1,1 @@
+rm bsnes/obj/*.o

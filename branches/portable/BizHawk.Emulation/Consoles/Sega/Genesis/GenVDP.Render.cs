@@ -48,14 +48,14 @@ namespace BizHawk.Emulation.Consoles.Sega
                     FrameBuffer[(p*FrameWidth) + i] = Palette[(p*16) + i];
         }
 
-        void RenderScrollAScanline(int xScroll, int yScroll, int nameTableBase, int startPixel, int endPixel)
+        void RenderScrollAScanline(int xScroll, int yScroll, int nameTableBase, int startPixel, int endPixel, bool window)
         {
             const int lowPriority = 2;
             const int highPriority = 5;
             int yTile = ((ScanLine + yScroll) / 8) % NameTableHeight;
             int nameTableWidth = NameTableWidth;
-            if (nameTableBase == NameTableAddrWindow)
-                nameTableWidth = Display40Mode ? 64 : 32;
+            if (window)
+                nameTableWidth = (DisplayWidth == 40) ? 64 : 32;
 
             // this is hellllla slow. but not optimizing until we implement & understand
             // all scrolling modes, shadow & hilight, etc.
@@ -161,24 +161,24 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (ScanLine >= startWindowScanline && ScanLine < endWindowScanline)  // Window takes up whole scanline
             {
-                RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, FrameWidth);
+                RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, FrameWidth, true);
             }
             else if (startWindowPixel != -1) // Window takes up partial scanline
             {
                 if (startWindowPixel == 0) // Window grows from left side
                 {
-                    RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, endWindowPixel);
-                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, endWindowPixel, FrameWidth);
+                    RenderScrollAScanline(0, 0, NameTableAddrWindow, 0, endWindowPixel, true);
+                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, endWindowPixel, FrameWidth, false);
                 }
                 else // Window grows from right side
                 {
-                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, startWindowPixel);
-                    RenderScrollAScanline(0, 0, NameTableAddrWindow, startWindowPixel, FrameWidth);
+                    RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, startWindowPixel, false);
+                    RenderScrollAScanline(0, 0, NameTableAddrWindow, startWindowPixel, FrameWidth, true);
                 }
             } 
-            else // No window
+            else // No window this scanline
             {   
-                RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, FrameWidth);
+                RenderScrollAScanline(hscroll, vscroll, NameTableAddrA, 0, FrameWidth, false);
             }
         }
 
@@ -237,6 +237,10 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             int scanLineBase = ScanLine * FrameWidth;
             int processedSprites = 0;
+            int processedSpritesThisLine = 0;
+            int processedDotsThisLine = 0;
+            bool spriteMaskPrecursor = false;
+
             // This is incredibly unoptimized. TODO...
 
             FetchSprite(0);
@@ -245,8 +249,14 @@ namespace BizHawk.Emulation.Consoles.Sega
                 if (sprite.Y > ScanLine || sprite.Y+sprite.HeightPixels <= ScanLine)
                     goto nextSprite;
 
-                if (sprite.X == -127) // masking code is not super tested
-                    break; // TODO does masking mode 2 really exist?
+                processedSpritesThisLine++;
+                processedDotsThisLine += sprite.WidthPixels;
+
+                if (sprite.X > -128)
+                    spriteMaskPrecursor = true;
+
+                if (sprite.X == -128 && spriteMaskPrecursor)
+                    break; // apply sprite mask
 
                 if (sprite.X + sprite.WidthPixels <= 0)
                     goto nextSprite;
@@ -300,7 +310,13 @@ namespace BizHawk.Emulation.Consoles.Sega
             nextSprite:
                 if (sprite.Link == 0)
                     break;
-                if (++processedSprites > 80)
+                if (++processedSprites >= SpriteLimit)
+                    break;
+                if (processedSpritesThisLine >= SpritePerLineLimit)
+                    break;
+                if (processedDotsThisLine >= DotsPerLineLimit)
+                    break;
+                if (DisplayWidth == 32 && sprite.Link >= 64)
                     break;
                 FetchSprite(sprite.Link);
             }

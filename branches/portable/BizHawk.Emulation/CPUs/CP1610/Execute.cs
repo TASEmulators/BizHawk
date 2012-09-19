@@ -67,19 +67,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			if (!FlagD)
 			{
 				if (mem != 0x6)
-				{
 					return 8;
-				}
 				else
-				{
 					return 11;
-				}
 			}
 			else
-			{
 				// Double Byte Data.
 				return 10;
-			}
 		}
 
 		public void Indirect_Set(byte mem, byte src)
@@ -93,17 +87,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public int Execute()
 		{
 			/*
-			 Take an interrupt if the previous instruction was interruptible,
-			 interrupts are enabled, and IntRM has a falling edge.
+			 Take an interrupt if the previous instruction was interruptible, interrupts are enabled, and IntRM has a
+			 falling edge.
 			*/
 			if (FlagI && Interruptible && !IntRM && !Interrupted)
 			{
-				if (logging)
+				if (Logging)
 				{
-					log.WriteLine("------");
-					log.WriteLine();
-					log.WriteLine("Interrupt");
-					log.Flush();
+					Log.WriteLine("------");
+					Log.WriteLine();
+					Log.WriteLine("Interrupt");
+					Log.Flush();
 				}
 				Interrupted = true;
 				Interruptible = false;
@@ -111,13 +105,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				RegisterPC = INTERRUPT;
 				return 28;
 			}
-			if (logging)
+			if (Logging)
 			{
 				int addrToAdvance;
-				log.WriteLine("------");
-				log.WriteLine();
-				log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
-				log.Flush();
+				Log.WriteLine("------");
+				Log.WriteLine();
+				Log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
+				Log.Flush();
 			}
 			byte dest, src, mem;
 			ushort dest_value, src_value, mem_read, addr, addr_read, offset;
@@ -227,7 +221,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x01D:
 				case 0x01E:
 				case 0x01F:
-					throw new NotImplementedException();
 					dest = (byte)(opcode & 0x7);
 					result = (Register[dest] ^ 0xFFFF);
 					Calc_FlagS(result);
@@ -246,19 +239,19 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x026:
 				case 0x027:
 					throw new NotImplementedException();
-					dest = (byte)(opcode & 0x7);
-					dest_value = Register[dest];
-					ones = (dest_value ^ 0xFFFF);
-					result = ones + 1;
-					Calc_FlagC(result);
-					Calc_FlagO_Add(ones, 1, result);
-					result &= 0xFFFF;
-					Calc_FlagS(result);
-					Calc_FlagZ(result);
-					Register[dest] = (ushort)result;
-					cycles = 6;
-					Interruptible = true;
-					break;
+                    //dest = (byte)(opcode & 0x7);
+                    //dest_value = Register[dest];
+                    //ones = (dest_value ^ 0xFFFF);
+                    //result = ones + 1;
+                    //Calc_FlagC(result);
+                    //Calc_FlagO_Add(ones, 1, result);
+                    //result &= 0xFFFF;
+                    //Calc_FlagS(result);
+                    //Calc_FlagZ(result);
+                    //Register[dest] = (ushort)result;
+                    //cycles = 6;
+                    //Interruptible = true;
+                    //break;
 				// ADCR
 				case 0x028:
 				case 0x029:
@@ -269,19 +262,19 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x02E:
 				case 0x02F:
 					throw new NotImplementedException();
-					dest = (byte)(opcode & 0x7);
-					dest_value = Register[dest];
-					carry = FlagC ? 1 : 0;
-					result = dest_value + carry;
-					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, carry, result);
-					result &= 0xFFFF;
-					Calc_FlagS(result);
-					Calc_FlagZ(result);
-					Register[dest] = (ushort)result;
-					cycles = 6;
-					Interruptible = true;
-					break;
+                    //dest = (byte)(opcode & 0x7);
+                    //dest_value = Register[dest];
+                    //carry = FlagC ? 1 : 0;
+                    //result = dest_value + carry;
+                    //Calc_FlagC(result);
+                    //Calc_FlagO_Add(dest_value, carry, result);
+                    //result &= 0xFFFF;
+                    //Calc_FlagS(result);
+                    //Calc_FlagZ(result);
+                    //Register[dest] = (ushort)result;
+                    //cycles = 6;
+                    //Interruptible = true;
+                    //break;
 				// GSWD
 				case 0x030:
 				case 0x031:
@@ -470,7 +463,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x06D:
 				case 0x06E:
 				case 0x06F:
-					throw new NotImplementedException();
 					dest = (byte)(opcode & 0x3);
 					dest_value = Register[dest];
 					sign = dest_value & 0x8000;
@@ -930,15 +922,15 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x1BE:
 				case 0x1BF:
 					throw new NotImplementedException();
-					src = (byte)((opcode >> 3) & 0x7);
-					dest = (byte)(opcode & 0x7);
-					result = Register[dest] & Register[src];
-					Calc_FlagS(result);
-					Calc_FlagZ(result);
-					Register[dest] = (ushort)result;
-					cycles = 6;
-					Interruptible = true;
-					break;
+                    //src = (byte)((opcode >> 3) & 0x7);
+                    //dest = (byte)(opcode & 0x7);
+                    //result = Register[dest] & Register[src];
+                    //Calc_FlagS(result);
+                    //Calc_FlagZ(result);
+                    //Register[dest] = (ushort)result;
+                    //cycles = 6;
+                    //Interruptible = true;
+                    //break;
 				// XORR
 				case 0x1C0:
 				case 0x1C1:
@@ -1429,21 +1421,21 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x306:
 				case 0x307:
 					throw new NotImplementedException();
-					dest = (byte)(opcode & 0x7);
-					addr = ReadMemory(RegisterPC++);
-					dest_value = Register[dest];
-					addr_read = ReadMemory(addr);
-					twos = (0xFFFF ^ addr_read) + 1;
-					result = dest_value + twos;
-					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, addr_read, result);
-					result &= 0xFFFF;
-					Calc_FlagS(result);
-					Calc_FlagZ(result);
-					Register[dest] = (ushort)result;
-					cycles = 10;
-					Interruptible = true;
-					break;
+                    //dest = (byte)(opcode & 0x7);
+                    //addr = ReadMemory(RegisterPC++);
+                    //dest_value = Register[dest];
+                    //addr_read = ReadMemory(addr);
+                    //twos = (0xFFFF ^ addr_read) + 1;
+                    //result = dest_value + twos;
+                    //Calc_FlagC(result);
+                    //Calc_FlagO_Add(dest_value, addr_read, result);
+                    //result &= 0xFFFF;
+                    //Calc_FlagS(result);
+                    //Calc_FlagZ(result);
+                    //Register[dest] = (ushort)result;
+                    //cycles = 10;
+                    //Interruptible = true;
+                    //break;
 				// SUB@
 				case 0x308:
 				case 0x309:
@@ -1620,17 +1612,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x386:
 				case 0x387:
 					throw new NotImplementedException();
-					dest = (byte)(opcode & 0x7);
-					addr = ReadMemory(RegisterPC++);
-					dest_value = Register[dest];
-					addr_read = ReadMemory(addr);
-					result = dest_value & addr_read;
-					Calc_FlagS(result);
-					Calc_FlagZ(result);
-					Register[dest] = (ushort)result;
-					cycles = 10;
-					Interruptible = true;
-					break;
+                    //dest = (byte)(opcode & 0x7);
+                    //addr = ReadMemory(RegisterPC++);
+                    //dest_value = Register[dest];
+                    //addr_read = ReadMemory(addr);
+                    //result = dest_value & addr_read;
+                    //Calc_FlagS(result);
+                    //Calc_FlagZ(result);
+                    //Register[dest] = (ushort)result;
+                    //cycles = 10;
+                    //Interruptible = true;
+                    //break;
 				// AND@
 				case 0x388:
 				case 0x389:
@@ -1708,17 +1700,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x3C6:
 				case 0x3C7:
 					throw new NotImplementedException();
-					dest = (byte)(opcode & 0x7);
-					addr = ReadMemory(RegisterPC++);
-					dest_value = Register[dest];
-					addr_read = ReadMemory(addr);
-					result = dest_value ^ addr_read;
-					Calc_FlagS(result);
-					Calc_FlagZ(result);
-					Register[dest] = (ushort)result;
-					cycles = 10;
-					Interruptible = true;
-					break;
+                    //dest = (byte)(opcode & 0x7);
+                    //addr = ReadMemory(RegisterPC++);
+                    //dest_value = Register[dest];
+                    //addr_read = ReadMemory(addr);
+                    //result = dest_value ^ addr_read;
+                    //Calc_FlagS(result);
+                    //Calc_FlagZ(result);
+                    //Register[dest] = (ushort)result;
+                    //cycles = 10;
+                    //Interruptible = true;
+                    //break;
 				// XOR@
 				case 0x3C8:
 				case 0x3C9:
@@ -1776,7 +1768,6 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x3FD:
 				case 0x3FE:
 				case 0x3FF:
-					throw new NotImplementedException();
 					mem = (byte)((opcode >> 3) & 0x7);
 					dest = (byte)(opcode & 0x7);
 					mem_read = Indirect_Get(mem);

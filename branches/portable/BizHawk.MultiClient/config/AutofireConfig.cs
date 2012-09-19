@@ -40,6 +40,7 @@ namespace BizHawk.MultiClient
 			Global.AutoFireController.On = Global.Config.AutofireOn = (int)OnNumeric.Value;
 			Global.AutoFireController.Off = Global.Config.AutofireOff = (int)OffNumeric.Value;
 			Global.Config.AutofireLagFrames = LagFrameCheck.Checked;
+			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 			this.Close();
 		}
 

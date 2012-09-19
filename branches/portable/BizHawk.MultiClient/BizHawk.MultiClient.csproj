@@ -192,11 +192,11 @@
     </Compile>
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
-    <Compile Include="Gameboy\Debugger.cs">
+    <Compile Include="GBtools\ColorChooserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Gameboy\Debugger.Designer.cs">
-      <DependentUpon>Debugger.cs</DependentUpon>
+    <Compile Include="GBtools\ColorChooserForm.designer.cs">
+      <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="HawkFile.cs" />
@@ -330,6 +330,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SNESTools\SNESGraphicsDebugger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SNESTools\SNESGraphicsDebugger.Designer.cs">
+      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SNESTools\SNESGraphicsViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\HexColor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -370,6 +379,18 @@
     <Compile Include="tools\LuaWriterColorConfig.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadGB.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadGBControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSNES.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSNESControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\WatchCommon.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
@@ -383,9 +404,8 @@
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Gameboy\Debugger.resx">
-      <DependentUpon>Debugger.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="GBtools\ColorChooserForm.resx">
+      <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -411,6 +431,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SNESTools\SNESGraphicsDebugger.resx">
+      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexColor.resx">
       <DependentUpon>HexColor.cs</DependentUpon>
@@ -760,7 +783,6 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="config\ControllerImages\NESController.png" />
     <None Include="images\TurboFastForward.png" />
     <None Include="images\cheat.png" />
     <None Include="images\Cheats.ico" />
@@ -770,7 +792,6 @@
     <None Include="images\Pause.png" />
     <None Include="images\Play.png" />
     <None Include="config\ControllerImages\TI83Calculator.png" />
-    <None Include="config\ControllerImages\TI83CalculatorCrop.png" />
     <None Include="images\whiteTriUp.png" />
     <None Include="images\whiteTriDown.png" />
     <None Include="images\whiteTriLeft.png" />
@@ -838,8 +859,12 @@
     <None Include="images\console16x16.png" />
     <None Include="images\Import.png" />
     <None Include="images\atari_controller.png" />
+    <None Include="config\ControllerImages\NES_Controller.png" />
+    <None Include="config\ControllerImages\SNES_Controller.png" />
+    <None Include="config\ControllerImages\TI83_Controller.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
+    <None Include="images\reboot.png" />
     <Content Include="output\gamedb_sega_md.txt" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />

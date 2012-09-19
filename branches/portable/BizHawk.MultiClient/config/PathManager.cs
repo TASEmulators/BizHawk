@@ -68,6 +68,8 @@ namespace BizHawk.MultiClient
 		{
 			switch (system)
 			{
+				case "INTV":
+					return Global.Config.BaseINTV;
 				case "A26":
 					return Global.Config.BaseAtari;
 				case "NES":
@@ -208,6 +210,9 @@ namespace BizHawk.MultiClient
 
 			switch (sysID)
 			{
+				case "INTV":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathSNESROMs, "INTV");
+					break;
 				case "SNES":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathSNESROMs, "SNES");
 					break;
@@ -280,6 +285,7 @@ namespace BizHawk.MultiClient
 
 			switch (game.System)
 			{
+				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSaveRAM, "INTV"), name + ".SaveRAM");
 				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSaveRAM, "A26"), name + ".SaveRAM");
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), name + ".SaveRAM");
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), name + ".SaveRAM");
@@ -301,6 +307,7 @@ namespace BizHawk.MultiClient
 			switch (game.System)
 			{
 				default: return GetRomsPath(game.System);
+				case "INTV": return MakeAbsolutePath(Global.Config.PathAtariSavestates, "INTV");
 				case "A26": return MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26");
 				case "SMS": return MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS");
 				case "GG": return MakeAbsolutePath(Global.Config.PathGGSavestates, "GG");
@@ -327,6 +334,7 @@ namespace BizHawk.MultiClient
 			
 			switch (game.System)
 			{
+				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSavestates, "INTV"), name);
 				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26"), name);
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS"), name);
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSavestates, "GG"), name);
@@ -348,6 +356,7 @@ namespace BizHawk.MultiClient
 			string name = FilesystemSafeName(game);
 			switch (game.System)
 			{
+				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariScreenshots, "INTV"), name);
 				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariScreenshots, "A26"), name);
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSScreenshots, "SMS"), name);
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGScreenshots, "GG"), name);

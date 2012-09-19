@@ -88,8 +88,43 @@ namespace BizHawk.MultiClient
 			foreach (string control in controlbindings)
 				bindings[button].Add(control.Trim());
 		}
-	}
 
+		/// <summary>
+		/// Returns a list of all keys mapped and the name of the button they are mapped to
+		/// </summary>
+		/// <returns></returns>
+		public List<KeyValuePair<string, string>> MappingList()
+		{
+			List<KeyValuePair<string, string>> list = new List<KeyValuePair<string, string>>();
+
+			foreach (KeyValuePair<string, List<string>> key in bindings)
+			{
+				foreach (string binding in key.Value)
+				{
+					list.Add(new KeyValuePair<string, string>(binding, key.Key));
+				}
+			}
+
+			return list;
+		}
+
+		public List<string> PressedButtons
+		{
+			get
+			{
+				List<string> list = new List<string>();
+				foreach (var button in buttons)
+				{
+					if (button.Value)
+					{
+						list.Add(button.Key);
+					}
+				}
+
+				return list;
+			}
+		}
+	}
 
 	public class AutofireController : IController
 	{
@@ -207,6 +242,23 @@ namespace BizHawk.MultiClient
 		public void IncrementStarts()
 		{
 			foreach (var key in buttonStarts.Keys.ToArray()) buttonStarts[key]++;
+		}
+
+		public List<string> PressedButtons
+		{
+			get
+			{
+				List<string> list = new List<string>();
+				foreach (var button in buttons)
+				{
+					if (button.Value)
+					{
+						list.Add(button.Key);
+					}
+				}
+
+				return list;
+			}
 		}
 	}
 }

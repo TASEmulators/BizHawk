@@ -11,9 +11,6 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-	//TODO:
-	//Remove AppendMapping and TruncateMapping functions
-
 	public partial class InputConfig : Form
 	{
 		int prevWidth;
@@ -25,7 +22,7 @@ namespace BizHawk.MultiClient
 			{"AtariConsoleButtons", new string[2] { "Reset", "Select" } },
 			{"Gameboy", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
-			{"SNES", new string[] { "Up", "Down", "Left", "Right", "A", "B", "X", "Y", "L", "R", "Select", "Start" } },
+			{"SNES", new string[] { "Up", "Down", "Left", "Right", "B", "A", "X", "Y", "L", "R", "Select", "Start" } },
 			{"PC Engine / SuperGrafx", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
 			{"Sega Genesis", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" } },
 			{"SMS / GG / SG-1000", new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" } },
@@ -52,6 +49,9 @@ namespace BizHawk.MultiClient
 			{"SNES", 4},
 			{"TI-83", 1}
 		};
+
+		private List<KeyValuePair<string, string>> HotkeyMappingList = new List<KeyValuePair<string, string>>(); //A list of all button mappings and the hotkey they are assigned to
+
 		private ArrayList Labels;
 		private ArrayList TextBoxes;
 		private string CurSelectConsole;
@@ -78,16 +78,6 @@ namespace BizHawk.MultiClient
 			Input.Instance.EnableIgnoreModifiers = false;
 		}
 
-		private string AppendButtonMapping(string button, string oldmap)
-		{
-			//adelikat: Another relic, remove this
-			//int x = oldmap.LastIndexOf(',');
-			//if (x != -1)
-			//	return oldmap.Substring(0, x + 2) + button;
-			//else
-			return button;
-		}
-
 		private void Do(string platform)
 		{
 			Label TempLabel;
@@ -109,7 +99,7 @@ namespace BizHawk.MultiClient
 					autoController = Global.Config.GBAutoController;
 					break;
 				case "NES":
-					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NES_Controller;
 					controller = Global.Config.NESController;
 					autoController = Global.Config.NESAutoController;
 					break;
@@ -129,11 +119,11 @@ namespace BizHawk.MultiClient
 					autoController = Global.Config.SMSAutoController;
 					break;
 				case "TI-83":
-					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.TI83CalculatorCrop;
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.TI83_Controller;
 					controller = Global.Config.TI83Controller;
 					break;
 				case "SNES":
-					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SNES_Controller;
 					controller = Global.Config.SNESController;
 					break;
 				default:
@@ -199,7 +189,7 @@ namespace BizHawk.MultiClient
 				int yoffset = (row * 24);
 				TempLabel.Location = new Point(8 + xoffset, 20 + yoffset);
 				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
+				TempTextBox = new InputWidget(HotkeyMappingList);
 				TempTextBox.Location = new Point(64 + xoffset, 20 + yoffset);
 				TextBoxes.Add(TempTextBox);
 				object field = null;
@@ -376,14 +366,14 @@ namespace BizHawk.MultiClient
 						Atari2600ConsoleButtonsTemplate o = (Atari2600ConsoleButtonsTemplate)controller[0];
 						FieldInfo buttonF = o.GetType().GetField(fieldName);
 						field = buttonF.GetValue(o);
-						buttonF.SetValue(o, AppendButtonMapping(TempBox.Text, (string)field));
+						buttonF.SetValue(o, TempBox.Text);
 						break;
 					case "Atari":
 					{
 						Atari2600ControllerTemplate obj = (Atari2600ControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
-						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						buttonField.SetValue(obj, TempBox.Text);
 						break;
 					}
 					case "Gameboy":
@@ -391,7 +381,7 @@ namespace BizHawk.MultiClient
 						GBControllerTemplate obj = (GBControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
-						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						buttonField.SetValue(obj, TempBox.Text);
 						break;
 					}
 					case "NES":
@@ -399,7 +389,7 @@ namespace BizHawk.MultiClient
 						NESControllerTemplate obj = (NESControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
-						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						buttonField.SetValue(obj, TempBox.Text);
 						break;
 					}
 					case "SNES":
@@ -407,7 +397,7 @@ namespace BizHawk.MultiClient
 						SNESControllerTemplate obj = (SNESControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
-						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						buttonField.SetValue(obj, TempBox.Text);
 						break;
 					}
 					case "PC Engine / SuperGrafx":
@@ -415,7 +405,7 @@ namespace BizHawk.MultiClient
 						PCEControllerTemplate obj = (PCEControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
-						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						buttonField.SetValue(obj, TempBox.Text);
 						break;
 					}
 					case "Sega Genesis":
@@ -423,7 +413,7 @@ namespace BizHawk.MultiClient
 						GenControllerTemplate obj = (GenControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
-						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						buttonField.SetValue(obj, TempBox.Text);
 						break;
 					}
 					case "SMS / GG / SG-1000":
@@ -433,12 +423,12 @@ namespace BizHawk.MultiClient
 							SMSControllerTemplate obj = (SMSControllerTemplate)controller[prev];
 							FieldInfo buttonField = obj.GetType().GetField(fieldName);
 							field = buttonField.GetValue(obj);
-							buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+							buttonField.SetValue(obj, TempBox.Text);
 						}
 						else if (button == 6)
-							Global.Config.SmsPause = AppendButtonMapping(TempBox.Text, Global.Config.SmsPause);
+							Global.Config.SmsPause = TempBox.Text;
 						else
-							Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
+							Global.Config.SmsReset = TempBox.Text;
 						break;
 					}
 					case "TI-83":
@@ -446,7 +436,7 @@ namespace BizHawk.MultiClient
 						TI83ControllerTemplate obj = (TI83ControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(TI83CONTROLS[button]);
 						field = buttonField.GetValue(obj);
-						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						buttonField.SetValue(obj, TempBox.Text);
 						break;
 					}
 				}
@@ -459,7 +449,11 @@ namespace BizHawk.MultiClient
 		private void InputConfig_Load(object sender, EventArgs e)
 		{
 			if (Global.MainForm.INTERIM)
+			{
 				SystemComboBox.Items.Add("Atari"); //When Atari is ready, add this in the designer instead
+			}
+
+			HotkeyMappingList = Global.ClientControls.MappingList();
 
 			AutoTab.Checked = Global.Config.InputConfigAutoTab;
 			SetAutoTab();
@@ -581,6 +575,18 @@ namespace BizHawk.MultiClient
 				{
 					InputWidget w = ButtonsGroupBox.Controls[x] as InputWidget;
 					w.AutoTab = AutoTab.Checked;
+				}
+			}
+		}
+
+		private void clearMappingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			for (int i = 0; i < ButtonsGroupBox.Controls.Count; i++)
+			{
+				if (ButtonsGroupBox.Controls[i] is InputWidget)
+				{
+					InputWidget w = ButtonsGroupBox.Controls[i] as InputWidget;
+					w.EraseMappings();
 				}
 			}
 		}

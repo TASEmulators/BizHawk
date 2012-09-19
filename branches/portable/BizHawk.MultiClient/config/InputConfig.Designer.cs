@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputConfig));
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
@@ -41,15 +42,18 @@
 			this.AllowLR = new System.Windows.Forms.CheckBox();
 			this.AutoTab = new System.Windows.Forms.CheckBox();
 			this.label38 = new System.Windows.Forms.Label();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearMappingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
 			this.ControllerSelectGroupBox.SuspendLayout();
 			this.SystemGroupBox.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(259, 329);
+			this.OK.Location = new System.Drawing.Point(334, 365);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -61,7 +65,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(342, 329);
+			this.Cancel.Location = new System.Drawing.Point(415, 365);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -74,9 +78,10 @@
 			this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.ButtonsGroupBox.ContextMenuStrip = this.contextMenuStrip1;
 			this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 84);
 			this.ButtonsGroupBox.Name = "ButtonsGroupBox";
-			this.ButtonsGroupBox.Size = new System.Drawing.Size(241, 268);
+			this.ButtonsGroupBox.Size = new System.Drawing.Size(238, 304);
 			this.ButtonsGroupBox.TabIndex = 2;
 			this.ButtonsGroupBox.TabStop = false;
 			this.ButtonsGroupBox.Text = "Buttons";
@@ -86,9 +91,9 @@
 			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.ControllerImage.Location = new System.Drawing.Point(259, 84);
+			this.ControllerImage.Location = new System.Drawing.Point(256, 84);
 			this.ControllerImage.Name = "ControllerImage";
-			this.ControllerImage.Size = new System.Drawing.Size(169, 214);
+			this.ControllerImage.Size = new System.Drawing.Size(234, 250);
 			this.ControllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.ControllerImage.TabIndex = 3;
 			this.ControllerImage.TabStop = false;
@@ -101,7 +106,7 @@
 			this.ControllerSelectGroupBox.Controls.Add(this.ControllComboBox);
 			this.ControllerSelectGroupBox.Location = new System.Drawing.Point(13, 28);
 			this.ControllerSelectGroupBox.Name = "ControllerSelectGroupBox";
-			this.ControllerSelectGroupBox.Size = new System.Drawing.Size(240, 50);
+			this.ControllerSelectGroupBox.Size = new System.Drawing.Size(237, 50);
 			this.ControllerSelectGroupBox.TabIndex = 4;
 			this.ControllerSelectGroupBox.TabStop = false;
 			this.ControllerSelectGroupBox.Text = "Controller";
@@ -133,7 +138,7 @@
 			// 
 			this.SystemGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SystemGroupBox.Controls.Add(this.SystemComboBox);
-			this.SystemGroupBox.Location = new System.Drawing.Point(259, 28);
+			this.SystemGroupBox.Location = new System.Drawing.Point(256, 28);
 			this.SystemGroupBox.Name = "SystemGroupBox";
 			this.SystemGroupBox.Size = new System.Drawing.Size(158, 50);
 			this.SystemGroupBox.TabIndex = 6;
@@ -146,7 +151,7 @@
 			this.SystemComboBox.FormattingEnabled = true;
 			this.SystemComboBox.Items.AddRange(new object[] {
             "NES",
-						"SNES",
+            "SNES",
             "Gameboy",
             "SMS / GG / SG-1000",
             "Sega Genesis",
@@ -162,7 +167,7 @@
 			// 
 			this.AllowLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AllowLR.AutoSize = true;
-			this.AllowLR.Location = new System.Drawing.Point(259, 304);
+			this.AllowLR.Location = new System.Drawing.Point(383, 342);
 			this.AllowLR.Name = "AllowLR";
 			this.AllowLR.Size = new System.Drawing.Size(107, 17);
 			this.AllowLR.TabIndex = 7;
@@ -184,11 +189,25 @@
 			// 
 			this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(9, 356);
+			this.label38.Location = new System.Drawing.Point(9, 392);
 			this.label38.Name = "label38";
 			this.label38.Size = new System.Drawing.Size(153, 13);
 			this.label38.TabIndex = 9;
 			this.label38.Text = "* Escape clears a key mapping";
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearMappingsToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(158, 26);
+			// 
+			// clearMappingsToolStripMenuItem
+			// 
+			this.clearMappingsToolStripMenuItem.Name = "clearMappingsToolStripMenuItem";
+			this.clearMappingsToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+			this.clearMappingsToolStripMenuItem.Text = "&Clear Mappings";
+			this.clearMappingsToolStripMenuItem.Click += new System.EventHandler(this.clearMappingsToolStripMenuItem_Click);
 			// 
 			// InputConfig
 			// 
@@ -196,7 +215,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(440, 378);
+			this.ClientSize = new System.Drawing.Size(502, 414);
 			this.Controls.Add(this.label38);
 			this.Controls.Add(this.AutoTab);
 			this.Controls.Add(this.AllowLR);
@@ -220,6 +239,7 @@
 			this.ControllerSelectGroupBox.ResumeLayout(false);
 			this.ControllerSelectGroupBox.PerformLayout();
 			this.SystemGroupBox.ResumeLayout(false);
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -239,5 +259,7 @@
         private System.Windows.Forms.CheckBox AllowLR;
 		private System.Windows.Forms.CheckBox AutoTab;
 		private System.Windows.Forms.Label label38;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem clearMappingsToolStripMenuItem;
     }
 }

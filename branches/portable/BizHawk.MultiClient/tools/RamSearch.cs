@@ -2604,6 +2604,7 @@ namespace BizHawk.MultiClient
 			if (indexes.Count > 0)
 			{
 				Global.MainForm.LoadHexEditor();
+				Global.MainForm.HexEditor1.SetDomain(Searches[indexes[0]].Domain);
 				Global.MainForm.HexEditor1.GoToAddress(Searches[indexes[0]].Address);
 			}
 		}

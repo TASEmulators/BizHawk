@@ -420,12 +420,6 @@ namespace BizHawk.MultiClient
 			SetPositionInfo();
 		}
 
-		private void ColorPanel_DoubleClick(object sender, EventArgs e)
-		{
-			if (MessageColorDialog.ShowDialog() == DialogResult.OK)
-				SetColorBox();
-		}
-
 		private void TL_CheckedChanged(object sender, EventArgs e)
 		{
 			if (TL.Checked)
@@ -504,19 +498,25 @@ namespace BizHawk.MultiClient
 			YNumericChange();
 		}
 
-		private void AlertColorPanel_DoubleClick(object sender, EventArgs e)
+		private void ColorPanel_Click(object sender, EventArgs e)
+		{
+			if (MessageColorDialog.ShowDialog() == DialogResult.OK)
+				SetColorBox();
+		}
+
+		private void AlertColorPanel_Click(object sender, EventArgs e)
 		{
 			if (AlertColorDialog.ShowDialog() == DialogResult.OK)
 				SetColorBox();
 		}
 
-		private void LInputColorPanel_DoubleClick(object sender, EventArgs e)
+		private void LInputColorPanel_Click(object sender, EventArgs e)
 		{
 			if (LInputColorDialog.ShowDialog() == DialogResult.OK)
 				SetColorBox();
 		}
 
-		private void MovieInputColor_DoubleClick(object sender, EventArgs e)
+		private void MovieInputColor_Click(object sender, EventArgs e)
 		{
 			if (MovieInputColorDialog.ShowDialog() == DialogResult.OK)
 				SetColorBox();

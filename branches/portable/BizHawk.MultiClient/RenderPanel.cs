@@ -562,7 +562,6 @@ namespace BizHawk.MultiClient
 	class UIDisplay
 	{
 		public string Message;
-		public DateTime ExpireAt;
 		public int X;
 		public int Y;
 		public bool Alert;

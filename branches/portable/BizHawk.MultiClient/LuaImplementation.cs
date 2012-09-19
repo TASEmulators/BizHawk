@@ -107,6 +107,8 @@ namespace BizHawk.MultiClient
 		public void Close()
 		{
 			lua = new Lua();
+			foreach (var brush in SolidBrushes.Values) brush.Dispose();
+			foreach (var brush in Pens.Values) brush.Dispose();
 		}
 
 		public void LuaRegister(Lua lua)
@@ -240,14 +242,31 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+
+		Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
 		public SolidBrush GetBrush(object color)
 		{
-			return new System.Drawing.SolidBrush(GetColor(color));
+			Color c = GetColor(color);
+			SolidBrush b;
+			if (!SolidBrushes.TryGetValue(c, out b))
+			{
+				b = new SolidBrush(c);
+				SolidBrushes[c] = b;
+			}
+			return b;
 		}
 
+		Dictionary<Color, Pen> Pens = new Dictionary<Color, Pen>();
 		public Pen GetPen(object color)
 		{
-			return new System.Drawing.Pen(GetColor(color));
+			Color c = GetColor(color);
+			Pen p;
+			if (!Pens.TryGetValue(c, out p))
+			{
+				p = new Pen(c);
+				Pens[c] = p;
+			}
+			return p;
 		}
 
 
@@ -494,6 +513,8 @@ namespace BizHawk.MultiClient
 		                                        		"addclick",
 		                                        		"clearclicks",
 		                                        		"gettext",
+														"setproperty",
+														"getproperty",
 		                                        	};
 
 		public static string[] BitwiseFunctions = new string[]
@@ -651,12 +672,10 @@ namespace BizHawk.MultiClient
 					int int_y = LuaInt(Y);
 					int int_width = LuaInt(width);
 					int int_height = LuaInt(height);
-					using (var pen = GetPen(line))
+					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
+					if (background != null)
 					{
-						g.DrawRectangle(pen, int_x, int_y, int_width, int_height);
-						if (background != null)
-							using (var brush = GetBrush(background))
-								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
+						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
 					}
 				}
 				catch (Exception)
@@ -698,12 +717,10 @@ namespace BizHawk.MultiClient
 						int_y -= int_height;
 					}
 
-					using (var pen = GetPen(line))
+					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
+					if (background != null)
 					{
-						g.DrawRectangle(pen, int_x, int_y, int_width, int_height);
-						if (background != null)
-							using (var brush = GetBrush(background))
-								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
+						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
 					}
 				}
 				catch (Exception)
@@ -721,10 +738,7 @@ namespace BizHawk.MultiClient
 				float x = LuaInt(X) + 0.1F;
 				try
 				{
-					if (color == null)
-						color = "black";
-					using (var pen = GetPen(color))
-						g.DrawLine(pen, LuaInt(X), LuaInt(Y), x, LuaInt(Y));
+					g.DrawLine(GetPen(color ?? "black"), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
 				}
 				catch (Exception)
 				{
@@ -739,10 +753,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					if (color == null)
-						color = "black";
-					using (var pen = GetPen(color))
-						g.DrawLine(pen, LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
+					g.DrawLine(GetPen(color ?? "black"), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
 				}
 				catch (Exception)
 				{
@@ -757,16 +768,12 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					using (var pen = GetPen(line))
+					g.DrawEllipse(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					if (background != null)
 					{
-						g.DrawEllipse(pen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
-						if (background != null)
-						{
-							using (var brush = GetBrush(background))
-								g.FillEllipse(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
-						}
+						var brush = GetBrush(background);
+						g.FillEllipse(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					}
-
 				}
 				catch (Exception)
 				{
@@ -791,14 +798,11 @@ namespace BizHawk.MultiClient
 						i++;
 					}
 
-					using (var pen = GetPen(line))
+					g.DrawPolygon(GetPen(line), Points);
+					if (background != null)
 					{
-						g.DrawPolygon(pen, Points);
-						if (background != null)
-						{
-							using (var brush = GetBrush(background))
-								g.FillPolygon(brush, Points);
-						}
+						var brush = GetBrush(background);
+						g.FillPolygon(brush, Points);
 					}
 				}
 				catch (Exception)
@@ -823,8 +827,8 @@ namespace BizHawk.MultiClient
 						if (i >= 4)
 							break;
 					}
-					using (var pen = GetPen(color))
-						g.DrawBezier(pen, Points[0], Points[1], Points[2], Points[3]);
+					
+					g.DrawBezier(GetPen(color), Points[0], Points[1], Points[2], Points[3]);
 				}
 				catch (Exception)
 				{
@@ -840,16 +844,12 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					using (var pen = GetPen(line))
+					g.DrawPie(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
+					if (background != null)
 					{
-						g.DrawPie(pen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
-						if (background != null)
-						{
-							using (var brush = GetBrush(background))
-								g.FillPie(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
-						}
+						var brush = GetBrush(background);
+						g.FillPie(brush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
 					}
-
 				}
 				catch (Exception)
 				{
@@ -2285,7 +2285,7 @@ namespace BizHawk.MultiClient
 			{
 				if (form.Handle == ptr)
 				{
-					form.GetType().GetProperty(property.ToString()).SetValue(form, value, null);
+					form.GetType().GetProperty(property.ToString()).SetValue(form, Convert.ChangeType(value, form.GetType().GetProperty(property.ToString()).PropertyType), null);
 				}
 				else
 				{
@@ -2293,7 +2293,7 @@ namespace BizHawk.MultiClient
 					{
 						if (control.Handle == ptr)
 						{
-							control.GetType().GetProperty(property.ToString()).SetValue(control, value, null);
+							control.GetType().GetProperty(property.ToString()).SetValue(control, Convert.ChangeType(value, form.GetType().GetProperty(property.ToString()).PropertyType), null);
 						}
 					}
 				}
@@ -2336,23 +2336,30 @@ namespace BizHawk.MultiClient
 
 		public string forms_gettext(object handle)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			try
 			{
-				if (form.Handle == ptr)
+				IntPtr ptr = new IntPtr(LuaInt(handle));
+				foreach (LuaWinform form in LuaForms)
 				{
-					return form.Text;
-				}
-				else
-				{
-					foreach (Control control in form.Controls)
+					if (form.Handle == ptr)
 					{
-						if (control.Handle == ptr)
+						return form.Text;
+					}
+					else
+					{
+						foreach (Control control in form.Controls)
 						{
-							return control.Text;
+							if (control.Handle == ptr)
+							{
+								return control.Text;
+							}
 						}
 					}
 				}
+			}
+			catch (Exception ex)
+			{
+				console_output(ex.Message);
 			}
 
 			return "";
@@ -2360,23 +2367,30 @@ namespace BizHawk.MultiClient
 
 		public string forms_getproperty(object handle, object property)
 		{
-			IntPtr ptr = new IntPtr(LuaInt(handle));
-			foreach (LuaWinform form in LuaForms)
+			try
 			{
-				if (form.Handle == ptr)
+				IntPtr ptr = new IntPtr(LuaInt(handle));
+				foreach (LuaWinform form in LuaForms)
 				{
-					return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
-				}
-				else
-				{
-					foreach (Control control in form.Controls)
+					if (form.Handle == ptr)
 					{
-						if (control.Handle == ptr)
+						return form.GetType().GetProperty(property.ToString()).GetValue(form, null).ToString();
+					}
+					else
+					{
+						foreach (Control control in form.Controls)
 						{
-							return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
+							if (control.Handle == ptr)
+							{
+								return control.GetType().GetProperty(property.ToString()).GetValue(control, null).ToString();
+							}
 						}
 					}
 				}
+			}
+			catch (Exception ex)
+			{
+				console_output(ex.Message);
 			}
 
 			return "";
