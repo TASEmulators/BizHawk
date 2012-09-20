@@ -194,6 +194,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				videoProvider.left = 0;
 				videoProvider.right = 255;
 			}
+			
+			CoreOutputComm.ScreenLogicalOffsetX = videoProvider.left;
 		}
 
 		MyVideoProvider videoProvider;
