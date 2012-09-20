@@ -309,7 +309,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			// speedup when sound rendering is not needed
-			dropaudio = !rendersound;
+			if (!rendersound)
+				LibsnesDll.snes_set_audio_sample(null);
+			else
+				LibsnesDll.snes_set_audio_sample(soundcb);
 
 			bool resetSignal = Controller["Reset"];
 			if (resetSignal) LibsnesDll.snes_reset();
@@ -576,9 +579,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		#region audio stuff
 
-		/// <summary>if true, audio from the core is lost to the sands of time</summary>
-		bool dropaudio = false;
-
 		void InitAudio()
 		{
 			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
@@ -592,8 +592,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		void snes_audio_sample(ushort left, ushort right)
 		{
-			if (!dropaudio)
-				resampler.EnqueueSample((short)left, (short)right);			
+			resampler.EnqueueSample((short)left, (short)right);			
 		}
 
 
