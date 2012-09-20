@@ -33,6 +33,6 @@
 		public string RomStatusAnnotation;
 		public string RomStatusDetails;
 
-	
+		public int ScreenLogicalOffsetX, ScreenLogicalOffsetY;
 	}
 }

@@ -583,6 +583,8 @@ namespace BizHawk.MultiClient
 				if (background == null)
 					background = "black";
 			}
+			int dx = LuaInt(luaX);
+			int dy = LuaInt(luaY);
 			int a = 0;
 			if (anchor != null)
 			{
@@ -603,7 +605,13 @@ namespace BizHawk.MultiClient
 					a = LuaInt(anchor);
 				}
 			}
-			Global.OSD.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, GetColor(background), GetColor(forecolor),
+			else
+			{
+				dx += Global.Emulator.CoreOutputComm.ScreenLogicalOffsetX;
+				dy += Global.Emulator.CoreOutputComm.ScreenLogicalOffsetY;
+			}
+
+			Global.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor),
 								  a);
 		}
 
@@ -664,7 +672,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void gui_drawRectangle(object X, object Y, object width, object height, object line, object background = null)
 		{
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				try
 				{
@@ -688,7 +696,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawBox(object X, object Y, object X2, object Y2, object line, object background = null)
 		{
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				try
 				{
@@ -733,7 +741,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawPixel(object X, object Y, object color = null)
 		{
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				float x = LuaInt(X) + 0.1F;
 				try
@@ -749,7 +757,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawLine(object x1, object y1, object x2, object y2, object color = null)
 		{
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				try
 				{
@@ -764,7 +772,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawEllipse(object X, object Y, object width, object height, object line, object background = null)
 		{
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				try
 				{
@@ -786,7 +794,7 @@ namespace BizHawk.MultiClient
 		public void gui_drawPolygon(LuaTable points, object line, object background = null)
 		{
 			//this is a test
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				try
 				{
@@ -812,9 +820,19 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		Graphics GetGraphics()
+		{
+			var g = luaSurface.GetGraphics();
+			int tx = Global.Emulator.CoreOutputComm.ScreenLogicalOffsetX;
+			int ty = Global.Emulator.CoreOutputComm.ScreenLogicalOffsetY;
+			if (tx != 0 || ty != 0)
+				g.Transform.Translate(tx, ty);
+			return g;
+		}
+
 		public void gui_drawBezier(LuaTable points, object color)
 		{
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				try
 				{
@@ -840,7 +858,7 @@ namespace BizHawk.MultiClient
 		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle,
 								object line, object background = null)
 		{
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				try
 				{
@@ -861,7 +879,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawIcon(object Path, object x, object y, object width = null, object height = null)
 		{
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				try
 				{
@@ -886,7 +904,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawImage(object Path, object x, object y, object width = null, object height = null)
 		{
-			using (var g = luaSurface.GetGraphics())
+			using (var g = GetGraphics())
 			{
 				try
 				{
