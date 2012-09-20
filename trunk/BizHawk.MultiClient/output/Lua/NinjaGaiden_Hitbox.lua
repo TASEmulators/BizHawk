@@ -34,24 +34,24 @@ local function Ryu()
 		--Spin slash check
 		if subwep == 0x85 then
 			if mainmemory.read_u8(0x83) >= 0x0C and mainmemory.read_u8(0x83) <= 0x0F then 
-				gui.drawBox(x+9,y-8-8,x-9,y-8-yrad,0xFFFFFF00,0x60FFFF00)
+				gui.drawBox(x+9,y-8,x-9,y-yrad,0xFFFFFF00,0x60FFFF00)
 			end
 		end
 		--Check if Ryu is attacking with sword 7 = stand/jump, A = crouching
 		if swdactive == 7 or swdactive == 0x0A then
 			if flip == 0 then
-				gui.drawBox(x,y-8-yrad,x+0x20,y-8-yrad+0x10,0xFFFFFFFF,0x60FFFFFF)
+				gui.drawBox(x,y-yrad,x+0x20,y-yrad+0x10,0xFFFFFFFF,0x60FFFFFF)
 			else
-				gui.drawBox(x,y-8-yrad,x-0x20,y-8-yrad+0x10,0xFFFFFFFF,0x60FFFFFF)
+				gui.drawBox(x,y-yrad,x-0x20,y-yrad+0x10,0xFFFFFFFF,0x60FFFFFF)
 			end
 		end
 		-- Check spinning flame subweapon
 		if subwep == 0x84 then
 			if mainmemory.read_u8(0x4C8) > 0 then
-				gui.drawBox(x+9,y-8-8,x-9,y-8-yrad,0xFFFFFF00,0x60FFFF00)
+				gui.drawBox(x+9,y-8,x-9,y-yrad,0xFFFFFF00,0x60FFFF00)
 			end
 		end
-		gui.drawLine(x,y-8,x,y-8-yrad,0xFF0000FF)
+		gui.drawLine(x,y,x,y-yrad,0xFF0000FF)
 end
 
 local function weapons()
@@ -62,7 +62,7 @@ local function weapons()
 			local x = mainmemory.read_u8(projxbase + i)
 			local y = mainmemory.read_u8(projybase + i)
 			local xrad = memory.read_u8(0x1E605 + wtype)
-			gui.drawBox(x+xrad,y-8,x-xrad,y-8-xrad,0xFFFF00FF,0x60FF00FF)
+			gui.drawBox(x+xrad,y,x-xrad,y-xrad,0xFFFF00FF,0x60FF00FF)
 		end
 	end
 end
@@ -76,8 +76,8 @@ local function enemies()
 			local y = mainmemory.read_u8(ey + i)
 			local xrad = memory.readbyte(0x3300 + offset)
 			local yrad = memory.readbyte(0x3400 + offset)
-			gui.drawBox(x+xrad,y-8,x-xrad,y-8-yrad,0xFFFF0000,0x60FF0000)
-			gui.drawLine(x,y-8,x,y-8-yrad,0xFFFFFF00)
+			gui.drawBox(x+xrad,y,x-xrad,y-yrad,0xFFFF0000,0x60FF0000)
+			gui.drawLine(x,y,x,y-yrad,0xFFFFFF00)
 		end
 	end
 end
@@ -90,8 +90,8 @@ local function objects()
 			if active == 0 then
 				x = mainmemory.read_u8(ox + i)
 				y = mainmemory.read_u8(oy + i)
-				gui.drawLine(x,y-8,x,y-8-0x10,0xFF00FFF0)
-				gui.drawBox(x-0x0C,y-8,x+0x0C,y-8-0x10,0xFF00FFF0,0x6000FFF0)
+				gui.drawLine(x,y,x,y-0x10,0xFF00FFF0)
+				gui.drawBox(x-0x0C,y,x+0x0C,y-0x10,0xFF00FFF0,0x6000FFF0)
 			end
 		end
 	end
