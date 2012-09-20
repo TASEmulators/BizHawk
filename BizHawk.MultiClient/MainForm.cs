@@ -2116,7 +2116,7 @@ namespace BizHawk.MultiClient
 
 				//=======================================
 				MemoryPulse.Pulse();
-				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
+				Global.Emulator.FrameAdvance(!throttle.skipnextframe, !Global.ClientControls["MaxTurbo"]);
 				MemoryPulse.Pulse();
 				//=======================================
 				if (CurrAviWriter != null)
