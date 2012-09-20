@@ -155,7 +155,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public void FillFrameBuffer()
 			{
-				int backdrop = emu.CoreInputComm.NES_BackdropColor;
+				int backdrop = 0;
+				if (emu.CoreInputComm != null)
+					backdrop = emu.CoreInputComm.NES_BackdropColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
 
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
@@ -196,6 +198,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			
 			CoreOutputComm.ScreenLogicalOffsetX = videoProvider.left;
+			videoProvider.FillFrameBuffer();
 		}
 
 		MyVideoProvider videoProvider;
