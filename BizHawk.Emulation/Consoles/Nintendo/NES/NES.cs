@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public int BackgroundColor { get { return 0; } }
 		}
 
-		public int FirstDrawLine { get { return videoProvider.top; } set { videoProvider.top = value; } }
+		public int FirstDrawLine { get { return videoProvider.top; } set { videoProvider.top = value; CoreOutputComm.ScreenLogicalOffsetY = videoProvider.top; } }
 		public int LastDrawLine { get { return videoProvider.bottom; } set { videoProvider.bottom = value; } }
 
 		public void SetClipLeftAndRight(bool clip)
