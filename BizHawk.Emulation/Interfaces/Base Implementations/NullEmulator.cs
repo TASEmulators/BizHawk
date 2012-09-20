@@ -28,7 +28,7 @@ namespace BizHawk
 			Frame = 0;
 		}
 
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			if (render == false) return;
 			for (int i = 0; i < 256 * 192; i++)

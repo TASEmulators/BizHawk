@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			cpu.WriteMemory = WriteMemory;
 		}
 
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			_frame++;
 			_islag = true;

@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				}
 		}
 
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			bool resetSignal = Controller["Reset"];
 			if (resetSignal) LibsnesDll.snes_reset();
