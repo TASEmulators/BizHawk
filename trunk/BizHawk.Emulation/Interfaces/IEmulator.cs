@@ -14,7 +14,7 @@ namespace BizHawk
 
 		// note that most cores expect you to call SoundProvider.GetSamples() after each FrameAdvance()
 		// please do this, even when rendersound = false
-		void FrameAdvance(bool render, bool rendersound);
+		void FrameAdvance(bool render, bool rendersound = true);
 
 		int Frame { get; }
 		int LagCount { get; set; }
