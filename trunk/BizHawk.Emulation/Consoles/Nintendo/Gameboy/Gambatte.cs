@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			return (LibGambatte.gambatte_iscgb(GambatteState));
 		}
 
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			uint nsamp = 35112; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
 
@@ -137,7 +137,10 @@ namespace BizHawk.Emulation.Consoles.GB
 			foreach (var r in MemoryRefreshers)
 				r.RefreshRead();
 
-			soundbuffcontains = (int)nsamp;
+			if (rendersound)
+				soundbuffcontains = (int)nsamp;
+			else
+				soundbuffcontains = 0;
 
 			if (IsLagFrame)
 				LagCount++;
@@ -516,10 +519,13 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public void GetSamples(short[] samples)
 		{
-			resampler.EnqueueSamples(soundbuff, soundbuffcontains);
-			soundbuffcontains = 0;
-			resampler.Flush();
-			metaspu.GetSamples(samples);
+			if (soundbuffcontains > 0)
+			{
+				resampler.EnqueueSamples(soundbuff, soundbuffcontains);
+				soundbuffcontains = 0;
+				resampler.Flush();
+				metaspu.GetSamples(samples);
+			}
 		}
 
 		public void DiscardSamples()

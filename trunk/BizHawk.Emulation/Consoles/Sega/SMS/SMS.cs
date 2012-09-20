@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 			}
 		}
 
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
 			Controller.UpdateControls(Frame++);

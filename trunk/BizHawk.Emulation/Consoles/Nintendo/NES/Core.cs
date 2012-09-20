@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 		bool resetSignal;
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			videoProvider.FillFrameBuffer();
 

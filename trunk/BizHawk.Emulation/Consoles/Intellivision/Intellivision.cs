@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Cpu.LogData();
 		}
 
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			Frame++;
 			Cpu.AddPendingCycles(14394 + 3791);

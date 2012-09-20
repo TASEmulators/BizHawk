@@ -1999,7 +1999,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed)
 			{
-				Global.Emulator.FrameAdvance(true);
+				Global.Emulator.FrameAdvance(true, true);
 			}
 
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
@@ -2116,7 +2116,7 @@ namespace BizHawk.MultiClient
 
 				//=======================================
 				MemoryPulse.Pulse();
-				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
+				Global.Emulator.FrameAdvance(!throttle.skipnextframe, true);
 				MemoryPulse.Pulse();
 				//=======================================
 				if (CurrAviWriter != null)
@@ -3278,7 +3278,7 @@ namespace BizHawk.MultiClient
 				for (int j = 0; j < frameskip; j++)
 				{
 					StepRunLoop_Core();
-					Global.Emulator.FrameAdvance(true); //Frame advance
+					Global.Emulator.FrameAdvance(true, true); //Frame advance
 					//Global.RenderPanel.Render(Global.Emulator.VideoProvider);
 
 					if (gifSpeed > 0)
