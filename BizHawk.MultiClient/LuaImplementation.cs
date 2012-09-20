@@ -607,8 +607,8 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				dx += Global.Emulator.CoreOutputComm.ScreenLogicalOffsetX;
-				dy += Global.Emulator.CoreOutputComm.ScreenLogicalOffsetY;
+				dx -= Global.Emulator.CoreOutputComm.ScreenLogicalOffsetX;
+				dy -= Global.Emulator.CoreOutputComm.ScreenLogicalOffsetY;
 			}
 
 			Global.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor),
@@ -826,7 +826,11 @@ namespace BizHawk.MultiClient
 			int tx = Global.Emulator.CoreOutputComm.ScreenLogicalOffsetX;
 			int ty = Global.Emulator.CoreOutputComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)
-				g.Transform.Translate(tx, ty);
+			{
+				var transform = g.Transform;
+				transform.Translate(-tx, -ty);
+				g.Transform = transform;
+			}
 			return g;
 		}
 
