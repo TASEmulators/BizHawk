@@ -138,35 +138,53 @@ namespace BizHawk.MultiClient
 			if (selection == "Tiles as 2bpp")
 			{
 				allocate(512, 512);
-				gd.RenderTilesToScreen(pixelptr, stride / 4, 2, 0);
+				gd.RenderTilesToScreen(pixelptr, 64, 64, stride / 4, 2, 0);
 			}
 			if (selection == "Tiles as 4bpp")
 			{
 				allocate(512, 512);
-				gd.RenderTilesToScreen(pixelptr, stride / 4, 4, 0);
+				gd.RenderTilesToScreen(pixelptr, 64, 32, stride / 4, 4, 0);
 			}
 			if (selection == "Tiles as 8bpp")
 			{
 				allocate(256, 256);
-				gd.RenderTilesToScreen(pixelptr, stride / 4, 8, 0);
+				gd.RenderTilesToScreen(pixelptr, 32, 32, stride / 4, 8, 0);
+			}
+			if (selection == "Tiles as Mode7")
+			{
+				//256 tiles
+				allocate(128, 128);
+				gd.RenderMode7TilesToScreen(pixelptr, stride / 4);
 			}
 			if (selection == "BG1" || selection == "BG2" || selection == "BG3" || selection == "BG4")
 			{
 				int bgnum = int.Parse(selection.Substring(2));
 				var si = gd.ScanScreenInfo();
 				var bg = si.BG[bgnum];
+
 				if (bg.Enabled)
 				{
-					var dims = bg.ScreenSizeInPixels;
-					allocate(dims.Width, dims.Height);
-					int numPixels = dims.Width * dims.Height;
-					System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
+					if (bgnum == 1 && si.Mode.MODE == 7)
+					{
+						allocate(1024, 1024);
+						gd.DecodeMode7BG(pixelptr, stride / 4);
+						int numPixels = 128 * 128 * 8 * 8;
+						gd.Paletteize(pixelptr, 0, 0, numPixels);
+						gd.Colorize(pixelptr, 0, numPixels);
+					}
+					else
+					{
+						var dims = bg.ScreenSizeInPixels;
+						allocate(dims.Width, dims.Height);
+						int numPixels = dims.Width * dims.Height;
+						System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
 
-					var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
-					int paletteStart = 0;
-					gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
-					gd.Paletteize(pixelptr, 0, 0, numPixels);
-					gd.Colorize(pixelptr, 0, numPixels);
+						var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
+						int paletteStart = 0;
+						gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
+						gd.Paletteize(pixelptr, 0, 0, numPixels);
+						gd.Colorize(pixelptr, 0, numPixels);
+					}
 				}
 			}
 
