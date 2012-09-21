@@ -84,7 +84,6 @@
 			this.radioButton11 = new System.Windows.Forms.RadioButton();
 			this.radioButton12 = new System.Windows.Forms.RadioButton();
 			this.radioButton13 = new System.Windows.Forms.RadioButton();
-			this.label14 = new System.Windows.Forms.Label();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveScreenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,12 +95,32 @@
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.radioButton14 = new System.Windows.Forms.RadioButton();
+			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.tabctrlDetails = new System.Windows.Forms.TabControl();
+			this.tpPalette = new System.Windows.Forms.TabPage();
+			this.txtPaletteDetailsAddress = new System.Windows.Forms.TextBox();
+			this.txtPaletteDetailsIndex = new System.Windows.Forms.TextBox();
+			this.lblDetailsOBJOrBG = new System.Windows.Forms.Label();
+			this.txtPaletteDetailsIndexHex = new System.Windows.Forms.TextBox();
+			this.txtDetailsPaletteColorRGB = new System.Windows.Forms.TextBox();
+			this.txtDetailsPaletteColorHex = new System.Windows.Forms.TextBox();
+			this.txtDetailsPaletteColor = new System.Windows.Forms.TextBox();
+			this.pnDetailsPaletteColor = new System.Windows.Forms.Panel();
+			this.lblDetailsPaletteAddress = new System.Windows.Forms.Label();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.label17 = new System.Windows.Forms.Label();
+			this.label18 = new System.Windows.Forms.Label();
+			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
+			this.groupBox5.SuspendLayout();
+			this.tabctrlDetails.SuspendLayout();
+			this.tpPalette.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -139,9 +158,9 @@
 			this.groupBox1.Controls.Add(this.txtBG1SizeInTiles);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.txtBG1SizeBits);
-			this.groupBox1.Location = new System.Drawing.Point(12, 120);
+			this.groupBox1.Location = new System.Drawing.Point(6, 27);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(230, 205);
+			this.groupBox1.Size = new System.Drawing.Size(224, 205);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "BG";
@@ -509,9 +528,9 @@
 			this.groupBox2.Controls.Add(this.label6);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label5);
-			this.groupBox2.Location = new System.Drawing.Point(12, 34);
+			this.groupBox2.Location = new System.Drawing.Point(236, 32);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(230, 80);
+			this.groupBox2.Size = new System.Drawing.Size(210, 122);
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Screen";
@@ -567,8 +586,11 @@
 			// 
 			// comboDisplayType
 			// 
+			this.comboDisplayType.DropDownHeight = 200;
 			this.comboDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboDisplayType.FormattingEnabled = true;
+			this.comboDisplayType.IntegralHeight = false;
+			this.comboDisplayType.ItemHeight = 13;
 			this.comboDisplayType.Items.AddRange(new object[] {
             "BG1",
             "BG2",
@@ -583,9 +605,9 @@
             "Tiles as 2bpp (@40K)",
             "Tiles as 4bpp (@0K)",
             "Tiles as 4bpp (@32K)"});
-			this.comboDisplayType.Location = new System.Drawing.Point(94, 15);
+			this.comboDisplayType.Location = new System.Drawing.Point(94, 9);
 			this.comboDisplayType.Name = "comboDisplayType";
-			this.comboDisplayType.Size = new System.Drawing.Size(195, 21);
+			this.comboDisplayType.Size = new System.Drawing.Size(162, 21);
 			this.comboDisplayType.TabIndex = 18;
 			this.comboDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboDisplayType_SelectedIndexChanged);
 			// 
@@ -593,7 +615,7 @@
 			// 
 			this.radioButton1.AutoSize = true;
 			this.radioButton1.Enabled = false;
-			this.radioButton1.Location = new System.Drawing.Point(210, 110);
+			this.radioButton1.Location = new System.Drawing.Point(264, 10);
 			this.radioButton1.Name = "radioButton1";
 			this.radioButton1.Size = new System.Drawing.Size(46, 17);
 			this.radioButton1.TabIndex = 19;
@@ -605,7 +627,7 @@
 			// 
 			this.radioButton2.AutoSize = true;
 			this.radioButton2.Enabled = false;
-			this.radioButton2.Location = new System.Drawing.Point(262, 110);
+			this.radioButton2.Location = new System.Drawing.Point(264, 31);
 			this.radioButton2.Name = "radioButton2";
 			this.radioButton2.Size = new System.Drawing.Size(46, 17);
 			this.radioButton2.TabIndex = 20;
@@ -617,7 +639,7 @@
 			// 
 			this.radioButton3.AutoSize = true;
 			this.radioButton3.Enabled = false;
-			this.radioButton3.Location = new System.Drawing.Point(314, 110);
+			this.radioButton3.Location = new System.Drawing.Point(264, 54);
 			this.radioButton3.Name = "radioButton3";
 			this.radioButton3.Size = new System.Drawing.Size(46, 17);
 			this.radioButton3.TabIndex = 21;
@@ -629,7 +651,7 @@
 			// 
 			this.radioButton4.AutoSize = true;
 			this.radioButton4.Enabled = false;
-			this.radioButton4.Location = new System.Drawing.Point(366, 110);
+			this.radioButton4.Location = new System.Drawing.Point(264, 77);
 			this.radioButton4.Name = "radioButton4";
 			this.radioButton4.Size = new System.Drawing.Size(46, 17);
 			this.radioButton4.TabIndex = 22;
@@ -641,7 +663,7 @@
 			// 
 			this.radioButton5.AutoSize = true;
 			this.radioButton5.Enabled = false;
-			this.radioButton5.Location = new System.Drawing.Point(6, 109);
+			this.radioButton5.Location = new System.Drawing.Point(6, 100);
 			this.radioButton5.Name = "radioButton5";
 			this.radioButton5.Size = new System.Drawing.Size(49, 17);
 			this.radioButton5.TabIndex = 23;
@@ -653,7 +675,7 @@
 			// 
 			this.radioButton6.AutoSize = true;
 			this.radioButton6.Enabled = false;
-			this.radioButton6.Location = new System.Drawing.Point(6, 86);
+			this.radioButton6.Location = new System.Drawing.Point(6, 77);
 			this.radioButton6.Name = "radioButton6";
 			this.radioButton6.Size = new System.Drawing.Size(76, 17);
 			this.radioButton6.TabIndex = 24;
@@ -665,7 +687,7 @@
 			// 
 			this.radioButton7.AutoSize = true;
 			this.radioButton7.Enabled = false;
-			this.radioButton7.Location = new System.Drawing.Point(6, 63);
+			this.radioButton7.Location = new System.Drawing.Point(6, 54);
 			this.radioButton7.Name = "radioButton7";
 			this.radioButton7.Size = new System.Drawing.Size(82, 17);
 			this.radioButton7.TabIndex = 25;
@@ -677,7 +699,7 @@
 			// 
 			this.radioButton8.AutoSize = true;
 			this.radioButton8.Enabled = false;
-			this.radioButton8.Location = new System.Drawing.Point(6, 42);
+			this.radioButton8.Location = new System.Drawing.Point(6, 33);
 			this.radioButton8.Name = "radioButton8";
 			this.radioButton8.Size = new System.Drawing.Size(82, 17);
 			this.radioButton8.TabIndex = 26;
@@ -689,7 +711,7 @@
 			// 
 			this.radioButton9.AutoSize = true;
 			this.radioButton9.Enabled = false;
-			this.radioButton9.Location = new System.Drawing.Point(6, 19);
+			this.radioButton9.Location = new System.Drawing.Point(6, 10);
 			this.radioButton9.Name = "radioButton9";
 			this.radioButton9.Size = new System.Drawing.Size(82, 17);
 			this.radioButton9.TabIndex = 27;
@@ -701,7 +723,7 @@
 			// 
 			this.radioButton10.AutoSize = true;
 			this.radioButton10.Enabled = false;
-			this.radioButton10.Location = new System.Drawing.Point(87, 110);
+			this.radioButton10.Location = new System.Drawing.Point(87, 101);
 			this.radioButton10.Name = "radioButton10";
 			this.radioButton10.Size = new System.Drawing.Size(49, 17);
 			this.radioButton10.TabIndex = 28;
@@ -713,7 +735,7 @@
 			// 
 			this.radioButton11.AutoSize = true;
 			this.radioButton11.Enabled = false;
-			this.radioButton11.Location = new System.Drawing.Point(87, 63);
+			this.radioButton11.Location = new System.Drawing.Point(87, 54);
 			this.radioButton11.Name = "radioButton11";
 			this.radioButton11.Size = new System.Drawing.Size(82, 17);
 			this.radioButton11.TabIndex = 29;
@@ -725,7 +747,7 @@
 			// 
 			this.radioButton12.AutoSize = true;
 			this.radioButton12.Enabled = false;
-			this.radioButton12.Location = new System.Drawing.Point(87, 86);
+			this.radioButton12.Location = new System.Drawing.Point(87, 77);
 			this.radioButton12.Name = "radioButton12";
 			this.radioButton12.Size = new System.Drawing.Size(76, 17);
 			this.radioButton12.TabIndex = 30;
@@ -737,22 +759,13 @@
 			// 
 			this.radioButton13.AutoSize = true;
 			this.radioButton13.Enabled = false;
-			this.radioButton13.Location = new System.Drawing.Point(157, 110);
+			this.radioButton13.Location = new System.Drawing.Point(157, 101);
 			this.radioButton13.Name = "radioButton13";
 			this.radioButton13.Size = new System.Drawing.Size(49, 17);
 			this.radioButton13.TabIndex = 31;
 			this.radioButton13.TabStop = true;
 			this.radioButton13.Text = "8bpp";
 			this.radioButton13.UseVisualStyleBackColor = true;
-			// 
-			// label14
-			// 
-			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(808, 187);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(114, 13);
-			this.label14.TabIndex = 32;
-			this.label14.Text = "Palette goes over here";
 			// 
 			// menuStrip1
 			// 
@@ -761,7 +774,7 @@
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(933, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(905, 24);
 			this.menuStrip1.TabIndex = 33;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -831,7 +844,7 @@
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.viewer);
-			this.groupBox3.Location = new System.Drawing.Point(274, 177);
+			this.groupBox3.Location = new System.Drawing.Point(331, 157);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(528, 533);
 			this.groupBox3.TabIndex = 34;
@@ -839,6 +852,7 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.radioButton14);
 			this.groupBox4.Controls.Add(this.radioButton9);
 			this.groupBox4.Controls.Add(this.comboDisplayType);
 			this.groupBox4.Controls.Add(this.radioButton1);
@@ -853,11 +867,191 @@
 			this.groupBox4.Controls.Add(this.radioButton6);
 			this.groupBox4.Controls.Add(this.radioButton7);
 			this.groupBox4.Controls.Add(this.radioButton8);
-			this.groupBox4.Location = new System.Drawing.Point(274, 34);
+			this.groupBox4.Location = new System.Drawing.Point(452, 33);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(528, 137);
+			this.groupBox4.Size = new System.Drawing.Size(316, 121);
 			this.groupBox4.TabIndex = 35;
 			this.groupBox4.TabStop = false;
+			// 
+			// radioButton14
+			// 
+			this.radioButton14.AutoSize = true;
+			this.radioButton14.Enabled = false;
+			this.radioButton14.Location = new System.Drawing.Point(264, 98);
+			this.radioButton14.Name = "radioButton14";
+			this.radioButton14.Size = new System.Drawing.Size(45, 17);
+			this.radioButton14.TabIndex = 32;
+			this.radioButton14.TabStop = true;
+			this.radioButton14.Text = "OBJ";
+			this.radioButton14.UseVisualStyleBackColor = true;
+			// 
+			// groupBox5
+			// 
+			this.groupBox5.Controls.Add(this.paletteViewer);
+			this.groupBox5.Location = new System.Drawing.Point(6, 378);
+			this.groupBox5.Name = "groupBox5";
+			this.groupBox5.Size = new System.Drawing.Size(319, 328);
+			this.groupBox5.TabIndex = 36;
+			this.groupBox5.TabStop = false;
+			this.groupBox5.Text = "Palette";
+			// 
+			// tabctrlDetails
+			// 
+			this.tabctrlDetails.Controls.Add(this.tpPalette);
+			this.tabctrlDetails.Controls.Add(this.tabPage2);
+			this.tabctrlDetails.Location = new System.Drawing.Point(6, 238);
+			this.tabctrlDetails.Name = "tabctrlDetails";
+			this.tabctrlDetails.SelectedIndex = 0;
+			this.tabctrlDetails.Size = new System.Drawing.Size(319, 134);
+			this.tabctrlDetails.TabIndex = 0;
+			// 
+			// tpPalette
+			// 
+			this.tpPalette.Controls.Add(this.txtPaletteDetailsAddress);
+			this.tpPalette.Controls.Add(this.txtPaletteDetailsIndex);
+			this.tpPalette.Controls.Add(this.lblDetailsOBJOrBG);
+			this.tpPalette.Controls.Add(this.txtPaletteDetailsIndexHex);
+			this.tpPalette.Controls.Add(this.txtDetailsPaletteColorRGB);
+			this.tpPalette.Controls.Add(this.txtDetailsPaletteColorHex);
+			this.tpPalette.Controls.Add(this.txtDetailsPaletteColor);
+			this.tpPalette.Controls.Add(this.pnDetailsPaletteColor);
+			this.tpPalette.Controls.Add(this.lblDetailsPaletteAddress);
+			this.tpPalette.Location = new System.Drawing.Point(4, 22);
+			this.tpPalette.Name = "tpPalette";
+			this.tpPalette.Padding = new System.Windows.Forms.Padding(3);
+			this.tpPalette.Size = new System.Drawing.Size(311, 108);
+			this.tpPalette.TabIndex = 0;
+			this.tpPalette.Text = "Palette";
+			this.tpPalette.UseVisualStyleBackColor = true;
+			// 
+			// txtPaletteDetailsAddress
+			// 
+			this.txtPaletteDetailsAddress.Location = new System.Drawing.Point(131, 22);
+			this.txtPaletteDetailsAddress.Multiline = true;
+			this.txtPaletteDetailsAddress.Name = "txtPaletteDetailsAddress";
+			this.txtPaletteDetailsAddress.ReadOnly = true;
+			this.txtPaletteDetailsAddress.Size = new System.Drawing.Size(39, 18);
+			this.txtPaletteDetailsAddress.TabIndex = 42;
+			this.txtPaletteDetailsAddress.Text = "$1FE";
+			// 
+			// txtPaletteDetailsIndex
+			// 
+			this.txtPaletteDetailsIndex.Location = new System.Drawing.Point(139, 2);
+			this.txtPaletteDetailsIndex.Multiline = true;
+			this.txtPaletteDetailsIndex.Name = "txtPaletteDetailsIndex";
+			this.txtPaletteDetailsIndex.ReadOnly = true;
+			this.txtPaletteDetailsIndex.Size = new System.Drawing.Size(31, 18);
+			this.txtPaletteDetailsIndex.TabIndex = 41;
+			this.txtPaletteDetailsIndex.Text = "127";
+			// 
+			// lblDetailsOBJOrBG
+			// 
+			this.lblDetailsOBJOrBG.AutoSize = true;
+			this.lblDetailsOBJOrBG.Location = new System.Drawing.Point(41, 4);
+			this.lblDetailsOBJOrBG.Name = "lblDetailsOBJOrBG";
+			this.lblDetailsOBJOrBG.Size = new System.Drawing.Size(63, 13);
+			this.lblDetailsOBJOrBG.TabIndex = 40;
+			this.lblDetailsOBJOrBG.Text = "OBJ Palette";
+			// 
+			// txtPaletteDetailsIndexHex
+			// 
+			this.txtPaletteDetailsIndexHex.Location = new System.Drawing.Point(110, 2);
+			this.txtPaletteDetailsIndexHex.Multiline = true;
+			this.txtPaletteDetailsIndexHex.Name = "txtPaletteDetailsIndexHex";
+			this.txtPaletteDetailsIndexHex.ReadOnly = true;
+			this.txtPaletteDetailsIndexHex.Size = new System.Drawing.Size(26, 18);
+			this.txtPaletteDetailsIndexHex.TabIndex = 39;
+			this.txtPaletteDetailsIndexHex.Text = "$7F";
+			// 
+			// txtDetailsPaletteColorRGB
+			// 
+			this.txtDetailsPaletteColorRGB.Location = new System.Drawing.Point(3, 83);
+			this.txtDetailsPaletteColorRGB.Multiline = true;
+			this.txtDetailsPaletteColorRGB.Name = "txtDetailsPaletteColorRGB";
+			this.txtDetailsPaletteColorRGB.ReadOnly = true;
+			this.txtDetailsPaletteColorRGB.Size = new System.Drawing.Size(86, 18);
+			this.txtDetailsPaletteColorRGB.TabIndex = 38;
+			this.txtDetailsPaletteColorRGB.Text = "(255, 255, 255)";
+			// 
+			// txtDetailsPaletteColorHex
+			// 
+			this.txtDetailsPaletteColorHex.Location = new System.Drawing.Point(3, 62);
+			this.txtDetailsPaletteColorHex.Multiline = true;
+			this.txtDetailsPaletteColorHex.Name = "txtDetailsPaletteColorHex";
+			this.txtDetailsPaletteColorHex.ReadOnly = true;
+			this.txtDetailsPaletteColorHex.Size = new System.Drawing.Size(86, 18);
+			this.txtDetailsPaletteColorHex.TabIndex = 37;
+			this.txtDetailsPaletteColorHex.Text = "#FFFFFF";
+			// 
+			// txtDetailsPaletteColor
+			// 
+			this.txtDetailsPaletteColor.Location = new System.Drawing.Point(3, 41);
+			this.txtDetailsPaletteColor.Multiline = true;
+			this.txtDetailsPaletteColor.Name = "txtDetailsPaletteColor";
+			this.txtDetailsPaletteColor.ReadOnly = true;
+			this.txtDetailsPaletteColor.Size = new System.Drawing.Size(86, 18);
+			this.txtDetailsPaletteColor.TabIndex = 36;
+			this.txtDetailsPaletteColor.Text = "$7FFF";
+			// 
+			// pnDetailsPaletteColor
+			// 
+			this.pnDetailsPaletteColor.BackColor = System.Drawing.Color.Red;
+			this.pnDetailsPaletteColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pnDetailsPaletteColor.Location = new System.Drawing.Point(3, 4);
+			this.pnDetailsPaletteColor.Name = "pnDetailsPaletteColor";
+			this.pnDetailsPaletteColor.Size = new System.Drawing.Size(32, 32);
+			this.pnDetailsPaletteColor.TabIndex = 3;
+			this.pnDetailsPaletteColor.DoubleClick += new System.EventHandler(this.pnDetailsPaletteColor_DoubleClick);
+			// 
+			// lblDetailsPaletteAddress
+			// 
+			this.lblDetailsPaletteAddress.AutoSize = true;
+			this.lblDetailsPaletteAddress.Location = new System.Drawing.Point(41, 24);
+			this.lblDetailsPaletteAddress.Name = "lblDetailsPaletteAddress";
+			this.lblDetailsPaletteAddress.Size = new System.Drawing.Size(90, 13);
+			this.lblDetailsPaletteAddress.TabIndex = 1;
+			this.lblDetailsPaletteAddress.Text = "CGRAM Address ";
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(311, 108);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "tabPage2";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// label17
+			// 
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(774, 102);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(120, 52);
+			this.label17.TabIndex = 37;
+			this.label17.Text = "Todo: make BG display\r\narea resizeable for \r\npeople with big monitors\r\nto get up " +
+    "to 1024x1024";
+			// 
+			// label18
+			// 
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(233, 162);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(70, 26);
+			this.label18.TabIndex = 38;
+			this.label18.Text = "Todo: BG pal\r\ninfo";
+			// 
+			// paletteViewer
+			// 
+			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
+			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
+			this.paletteViewer.Name = "paletteViewer";
+			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
+			this.paletteViewer.TabIndex = 18;
+			this.paletteViewer.TabStop = false;
+			this.paletteViewer.MouseEnter += new System.EventHandler(this.paletteViewer_MouseEnter);
+			this.paletteViewer.MouseLeave += new System.EventHandler(this.paletteViewer_MouseLeave);
+			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
 			// 
 			// viewer
 			// 
@@ -872,11 +1066,14 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(933, 727);
+			this.ClientSize = new System.Drawing.Size(905, 727);
+			this.Controls.Add(this.label18);
+			this.Controls.Add(this.label17);
+			this.Controls.Add(this.tabctrlDetails);
+			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.label14);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
@@ -892,6 +1089,10 @@
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
+			this.groupBox5.ResumeLayout(false);
+			this.tabctrlDetails.ResumeLayout(false);
+			this.tpPalette.ResumeLayout(false);
+			this.tpPalette.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -943,7 +1144,6 @@
 		private System.Windows.Forms.RadioButton radioButton11;
 		private System.Windows.Forms.RadioButton radioButton12;
 		private System.Windows.Forms.RadioButton radioButton13;
-		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.TextBox txtBG1TSizeDescr;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.TextBox txtBG1TSizeBits;
@@ -968,5 +1168,22 @@
 		private System.Windows.Forms.RadioButton rbBG2;
 		private System.Windows.Forms.RadioButton rbBG1;
 		private System.Windows.Forms.ComboBox comboBGProps;
+		private SNESGraphicsViewer paletteViewer;
+		private System.Windows.Forms.GroupBox groupBox5;
+		private System.Windows.Forms.RadioButton radioButton14;
+		private System.Windows.Forms.TabControl tabctrlDetails;
+		private System.Windows.Forms.TabPage tpPalette;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.Panel pnDetailsPaletteColor;
+		private System.Windows.Forms.Label lblDetailsPaletteAddress;
+		private System.Windows.Forms.Label label17;
+		private System.Windows.Forms.Label label18;
+		private System.Windows.Forms.TextBox txtDetailsPaletteColorRGB;
+		private System.Windows.Forms.TextBox txtDetailsPaletteColorHex;
+		private System.Windows.Forms.TextBox txtDetailsPaletteColor;
+		private System.Windows.Forms.TextBox txtPaletteDetailsAddress;
+		private System.Windows.Forms.TextBox txtPaletteDetailsIndex;
+		private System.Windows.Forms.Label lblDetailsOBJOrBG;
+		private System.Windows.Forms.TextBox txtPaletteDetailsIndexHex;
 	}
 }
