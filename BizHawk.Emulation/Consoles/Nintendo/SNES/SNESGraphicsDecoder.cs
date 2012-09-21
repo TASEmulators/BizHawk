@@ -234,6 +234,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		/// <summary>
+		/// decodes a mode7 BG. youll still need to paletteize and colorize it.
+		/// </summary>
+		public void DecodeMode7BG(int* screen, int stride)
+		{
+			int[] tileCache = _tileCache[7];
+			for (int ty = 0, tidx = 0; ty < 128; ty++)
+			{
+				for (int tx = 0; tx < 128; tx++, tidx++)
+				{
+					int tileEntry = vram[tidx * 2];
+					int src = tileEntry * 64;
+					for (int py = 0, pix=src; py < 8; py++)
+					{
+						for (int px = 0; px < 8; px++, pix++)
+						{
+							int dst = (ty * 8 + py) * stride + (tx * 8 + px);
+							int srcData = tileCache[pix];
+							screen[dst] = srcData;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// decodes a BG. youll still need to paletteize and colorize it.
 		/// someone else has to take care of calculating the starting color from the mode and layer number.
 		/// </summary>
@@ -340,7 +365,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		int[][] _tileCache = new int[9][];
 
 		/// <summary>
-		/// Caches all tiles at the 2bpp, 4bpp, and 8bpp decoded states
+		/// Caches all tiles at the 2bpp, 4bpp, and 8bpp decoded states.
+		/// we COULD defer this til we need it, you know. sort of a cool idea, not too hard
 		/// </summary>
 		public void CacheTiles()
 		{
@@ -356,6 +382,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			//merge 2bpp tiles into 4bpp and 8bpp
 			CacheTiles_Merge(2);
 			CacheTiles_Merge(4);
+			CacheTilesMode7();
+		}
+
+		public void CacheTilesMode7()
+		{
+			int numtiles = 256;
+			int[] tiles = new int[8 * 8 * numtiles];
+			_tileCache[7] = tiles;
+			for (int i = 0, j=0; i < numtiles; i++)
+			{
+				for (int y = 0; y < 8; y++)
+					for (int x = 0; x < 8; x++, j++)
+						tiles[j] = vram[j * 2 + 1];
+			}
 		}
 
 		/// <summary>
@@ -373,10 +413,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			for (int i = 0; i < numtiles; i++)
 			{
-				if (i == 512)
-				{
-					int zzz = 9;
-				}
 				int srcAddr = i * 128;
 				int dstAddr = i * 64;
 				for (int p = 0; p < 64; p++)
@@ -403,30 +439,46 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
-		public static Dimensions GetDimensionsForTileScreen(int bpp)
+		/// <summary>
+		/// renders the mode7 tiles to a screen with the predefined size.
+		/// </summary>
+		public void RenderMode7TilesToScreen(int* screen, int stride)
 		{
-			if (bpp == 2) return new Dimensions(512, 512);
-			if (bpp == 4) return new Dimensions(512, 256);
-			if (bpp == 8) return new Dimensions(256, 256);
-			throw new ApplicationException("weird");
+			int numTiles = 256;
+			int tilesWide = 16;
+			int[] tilebuf = _tileCache[7];
+			for (int i = 0; i < numTiles; i++)
+			{
+				int ty = i / tilesWide;
+				int tx = i % tilesWide;
+				int dstOfs = (ty * 8) * stride + tx * 8;
+				int srcOfs = i * 64;
+				for (int y = 0, p = 0; y < 8; y++)
+					for (int x = 0; x < 8; x++, p++)
+					{
+						screen[dstOfs + y * stride + x] = tilebuf[srcOfs + p];
+					}
+			}
+
+			int numPixels = numTiles * 8 * 8;
+			Paletteize(screen, 0, 0, numPixels);
+			Colorize(screen, 0, numPixels);
 		}
 
 		/// <summary>
-		/// renders the tiles to a screen with the predefined size
+		/// renders the tiles to a screen of the crudely specified size.
 		/// we might need 16x16 unscrambling and some other perks here eventually.
 		/// provide a start color to use as the basis for the palette
 		/// </summary>
-		public void RenderTilesToScreen(int* screen, int stride, int bpp, int startcolor)
+		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor)
 		{
-			var dims = GetDimensionsForTileScreen(bpp);
-			int tilesw = dims.Width / 8;
 			int numTiles = 8192 / bpp;
 			int[] tilebuf = _tileCache[bpp];
 			for (int i = 0; i < numTiles; i++)
 			{
-				int ty = i / tilesw;
-				int tx = i % tilesw;
-				int dstOfs = (ty*8) * stride + tx*8;
+				int ty = i / tilesWide;
+				int tx = i % tilesWide;
+				int dstOfs = (ty * 8) * stride + tx * 8;
 				int srcOfs = i * 64;
 				for (int y = 0,p=0; y < 8; y++)
 					for (int x = 0; x < 8; x++,p++)

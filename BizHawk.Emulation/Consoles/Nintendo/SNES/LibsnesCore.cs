@@ -342,48 +342,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			if (IsLagFrame)
 				LagCount++;
-
-			//SNESGraphicsDecoder dec = new SNESGraphicsDecoder();
-			//64x64 @ 4k
-			//var bw = new BinaryWriter(File.OpenWrite("c:\\dump\\tiles.raw"));
-			//var tiles = dec.FetchTilemap(0x4000, SNESGraphicsDecoder.ScreenSize.ABCD_64x64);
-			//foreach (var te in tiles)
-			//{
-			//  bw.Write(te.tilenum);
-			//  bw.Write((byte)0);
-			//}
-			//bw.Flush();
-			//bw.BaseStream.Close();
-
-			//render tilemap
-			//dec.CacheTiles();
-			//int[] bgScreen = new int[tiles.Length * 64];
-			//fixed (int* pbgScreen = &bgScreen[0])
-			//{
-			//  dec.DecodeScreen(pbgScreen, tiles, 0x0000, SNESGraphicsDecoder.ScreenSize.ABCD_64x64, 4, false, 0);
-			//  dec.Paletteize(pbgScreen, 0, 0, bgScreen.Length);
-			//  dec.Colorize(pbgScreen, 0, bgScreen.Length);
-			//}
-			////dec.TrueDecodeTilesNBpp(4);
-			//dec.CacheTiles();
-			//var fs = File.OpenWrite("c:\\dump\\tiles.raw");
-			//for (int i = 0; i < bgScreen.Length; i++)
-			//{
-			//  fs.WriteByte((byte)((bgScreen[i] >> 0) & 0xFF));
-			//  fs.WriteByte((byte)((bgScreen[i] >> 8) & 0xFF));
-			//  fs.WriteByte((byte)((bgScreen[i] >> 16) & 0xFF));
-			//}
-			//fs.Close();
-
-			//using (var bmp = new System.Drawing.Bitmap(16, 16))
-			//{
-			//  for (int i = 0; i < 256; i++)
-			//  {
-			//    ushort u = dec.cgram[i];
-			//    bmp.SetPixel(i % 16, i / 16, System.Drawing.Color.FromArgb(SNESGraphicsDecoder.colortable[491520 + u]));
-			//  }
-			//  bmp.Save("c:\\dump\\palette.png");
-			//}
 		}
 
 		//video provider

@@ -113,6 +113,7 @@
 			this.label18 = new System.Windows.Forms.Label();
 			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.radioButton15 = new System.Windows.Forms.RadioButton();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -599,6 +600,7 @@
             "Tiles as 2bpp",
             "Tiles as 4bpp",
             "Tiles as 8bpp",
+            "Tiles as Mode7",
             "Tiles as 2bpp (@0K)",
             "Tiles as 2bpp (@16K)",
             "Tiles as 2bpp (@24K)",
@@ -759,7 +761,7 @@
 			// 
 			this.radioButton13.AutoSize = true;
 			this.radioButton13.Enabled = false;
-			this.radioButton13.Location = new System.Drawing.Point(157, 101);
+			this.radioButton13.Location = new System.Drawing.Point(169, 100);
 			this.radioButton13.Name = "radioButton13";
 			this.radioButton13.Size = new System.Drawing.Size(49, 17);
 			this.radioButton13.TabIndex = 31;
@@ -852,6 +854,7 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.radioButton15);
 			this.groupBox4.Controls.Add(this.radioButton14);
 			this.groupBox4.Controls.Add(this.radioButton9);
 			this.groupBox4.Controls.Add(this.comboDisplayType);
@@ -1062,6 +1065,18 @@
 			this.viewer.TabIndex = 17;
 			this.viewer.TabStop = false;
 			// 
+			// radioButton15
+			// 
+			this.radioButton15.AutoSize = true;
+			this.radioButton15.Enabled = false;
+			this.radioButton15.Location = new System.Drawing.Point(169, 83);
+			this.radioButton15.Name = "radioButton15";
+			this.radioButton15.Size = new System.Drawing.Size(58, 17);
+			this.radioButton15.TabIndex = 33;
+			this.radioButton15.TabStop = true;
+			this.radioButton15.Text = "Mode7";
+			this.radioButton15.UseVisualStyleBackColor = true;
+			// 
 			// SNESGraphicsDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1185,5 +1200,6 @@
 		private System.Windows.Forms.TextBox txtPaletteDetailsIndex;
 		private System.Windows.Forms.Label lblDetailsOBJOrBG;
 		private System.Windows.Forms.TextBox txtPaletteDetailsIndexHex;
+		private System.Windows.Forms.RadioButton radioButton15;
 	}
 }
