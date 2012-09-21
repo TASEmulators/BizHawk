@@ -23,6 +23,8 @@ namespace BizHawk.MultiClient
 			Closing += (o, e) => SaveConfigSettings();
 			comboDisplayType.SelectedIndex = 0;
 			comboBGProps.SelectedIndex = 0;
+
+			tabctrlDetails.SelectedIndex = 1;
 		}
 
 		string FormatBpp(int bpp)
@@ -83,6 +85,35 @@ namespace BizHawk.MultiClient
 			txtBG1SizeInPixels.Text = string.Format("{0}x{1}", sizeInPixels.Width, sizeInPixels.Height);
 
 			RenderView();
+			RenderPalette();
+		}
+
+		int[] lastPalette;
+
+		void RenderPalette()
+		{
+			var gd = new SNESGraphicsDecoder();
+			lastPalette = gd.GetPalette();
+
+			int pixsize = 16*16 + 3*17;
+			var bmp = new Bitmap(pixsize, pixsize, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			using (var g = Graphics.FromImage(bmp))
+			{
+				for (int y = 0; y < 16; y++)
+				{
+					for (int x = 0; x < 16; x++)
+					{
+						int rgb555 = lastPalette[y * 16 + x];
+						int color = gd.Colorize(rgb555);
+						using (var brush = new SolidBrush(Color.FromArgb(color)))
+						{
+							g.FillRectangle(brush, new Rectangle(3+x * 19, 3+y * 19, 16, 16));
+						}
+					}
+				}
+			}
+
+			paletteViewer.SetBitmap(bmp);
 		}
 
 		//todo - something smarter to cycle through bitmaps without repeatedly trashing them (use the dispose callback on the viewer)
@@ -217,5 +248,55 @@ namespace BizHawk.MultiClient
 			suppression = false;
 			UpdateValues();
 		}
+
+		void ClearDetails()
+		{
+			//grpDetails.Text = "Details";
+		}
+
+		private void paletteViewer_MouseEnter(object sender, EventArgs e)
+		{
+			tabctrlDetails.SelectedIndex = 0;
+		}
+
+		private void paletteViewer_MouseLeave(object sender, EventArgs e)
+		{
+			ClearDetails();
+		}
+
+		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
+		{
+			var pt = e.Location;
+			pt.X -= 3;
+			pt.Y -= 3;
+			int tx = pt.X / 19;
+			int ty = pt.Y / 19;
+			int colorNum = ty*16+tx;
+			
+			int rgb555 = lastPalette[colorNum];
+			var gd = new SNESGraphicsDecoder();
+			int color = gd.Colorize(rgb555);
+			pnDetailsPaletteColor.BackColor = Color.FromArgb(color);
+
+			txtDetailsPaletteColor.Text = string.Format("${0:X4}", rgb555);
+			txtDetailsPaletteColorHex.Text = string.Format("#{0:X6}", color & 0xFFFFFF);
+			txtDetailsPaletteColorRGB.Text = string.Format("({0},{1},{2})", (color >> 16) & 0xFF, (color >> 8) & 0xFF, (color & 0xFF));
+
+			if (colorNum < 128) lblDetailsOBJOrBG.Text = "BG Palette"; else lblDetailsOBJOrBG.Text = "OBJ Palette";
+
+			txtPaletteDetailsIndexHex.Text = string.Format("${0:X2}", colorNum & 0x7F);
+			txtPaletteDetailsIndex.Text = string.Format("{0}", colorNum & 0x7F);
+			txtPaletteDetailsAddress.Text = string.Format("${0:X3}", colorNum * 2);
+		}
+
+		private void pnDetailsPaletteColor_DoubleClick(object sender, EventArgs e)
+		{
+			//not workign real well...
+			//var cd = new ColorDialog();
+			//cd.Color = pnDetailsPaletteColor.BackColor;
+			//cd.ShowDialog(this);
+		}
+
+
 	}
 }
