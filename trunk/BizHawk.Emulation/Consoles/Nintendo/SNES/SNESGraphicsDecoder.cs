@@ -268,8 +268,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 								{
 									int px = x;
 									int py = y;
-									if (te.flags.HasFlag(TileEntryFlags.Horz)) px = 7 - x;
-									if (te.flags.HasFlag(TileEntryFlags.Vert)) py = 7 - y;
+									if ((te.flags & TileEntryFlags.Horz) != 0) px = 7 - x;
+									if ((te.flags & TileEntryFlags.Vert) != 0) py = 7 - y;
 									int dstX = (mtx * count8x8 + tx) * 8 + px;
 									int dstY = (mty * count8x8 + ty) * 8 + py;
 									int dstOfs = dstY * stride + dstX;
