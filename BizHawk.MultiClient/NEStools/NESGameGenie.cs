@@ -228,7 +228,7 @@ namespace BizHawk.MultiClient
 
 				int x = GameGenieCode.SelectionStart;
 				GameGenieCode.Text = GameGenieCode.Text.Insert(x, code);
-				GameGenieCode.SelectionStart = x;
+				GameGenieCode.SelectionStart = x + 1;
 				Encoding.Checked = false;
 			}
 		}
