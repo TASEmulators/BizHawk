@@ -868,7 +868,7 @@ namespace BizHawk.MultiClient
 							}
 							else
 							{
-								Searches[x].Deleted = false;
+								Searches[x].Deleted = true;
 							}
 						}
 					}
