@@ -1751,7 +1751,7 @@ namespace BizHawk.MultiClient
 								peripheral = "Multitap";
 								break;
 						}
-						if (warningMsg != "" && peripheral != "")
+						if (peripheral != "" && warningMsg == "")
 							warningMsg = "Unable to import " + peripheral + ".";
 					}
 					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
@@ -1762,7 +1762,7 @@ namespace BizHawk.MultiClient
 								((controllerState >> button) & 0x1) != 0
 							);
 						}
-					else if (warningMsg != "")
+					else if (warningMsg == "")
 						warningMsg = "Controller " + player + " not supported.";
 				}
 				// The controller data contains <number_of_frames + 1> frames.
@@ -2203,14 +2203,14 @@ namespace BizHawk.MultiClient
 								}
 							else
 								commandName = "NESCMD_EXCONTROLLER, " + (command & 0xFF00);
-							if (warningMsg != "" && commandName != "")
+							if (commandName != "" && warningMsg == "")
 								warningMsg = "Unable to run command \"" + commandName + "\".";
 						}
 						else if (controllerState == 0xF3)
 						{
 							uint dwdata = r.ReadUInt32();
 							// TODO: Make a clearer warning message.
-							if (warningMsg != "")
+							if (warningMsg == "")
 								warningMsg = "Unable to run SetSyncExData(" + dwdata + ").";
 						}
 						controllerState = r.ReadByte();
@@ -2283,20 +2283,21 @@ namespace BizHawk.MultiClient
 				 bit 0: super scope in second port
 			*/
 			byte controllerFlags = r.ReadByte();
+			string peripheral = "";
 			bool superScope = ((controllerFlags & 0x1) != 0);
 			if (superScope)
-				warningMsg = "Super Scope";
+				peripheral = "Super Scope";
 			controllerFlags >>= 1;
 			bool secondMouse = ((controllerFlags & 0x1) != 0);
-			if (secondMouse && warningMsg != "")
-				warningMsg = "Second Mouse";
+			if (secondMouse && peripheral == "")
+				peripheral = "Second Mouse";
 			controllerFlags >>= 1;
 			bool firstMouse = ((controllerFlags & 0x1) != 0);
-			if (firstMouse && warningMsg != "")
-				warningMsg = "First Mouse";
+			if (firstMouse && peripheral == "")
+				peripheral = "First Mouse";
 			controllerFlags >>= 1;
-			if (warningMsg != "")
-				warningMsg = "Unable to import " + warningMsg + ".";
+			if (peripheral != "")
+				warningMsg = "Unable to import " + peripheral + ".";
 			bool[] controllersUsed = new bool[5];
 			for (int controller = 1; controller <= controllersUsed.Length; controller++)
 				controllersUsed[controllersUsed.Length - controller] = (
@@ -2343,7 +2344,7 @@ namespace BizHawk.MultiClient
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			// R, L, X, A, Right, Left, Down, Up, Start, Select, Y, B. TODO: Confirm.
 			string[] buttons = new string[12] {
-				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
+				"R", "L", "X", "A", "Right", "Left", "Down", "Up", "Start", "Select", "Y", "B"
 			};
 			int events = (int)(frameCount + internalChapters);
 			int frames = 1;
@@ -2378,6 +2379,8 @@ namespace BizHawk.MultiClient
 				{
 					// If the event is RLE data, next follows 4 bytes which is the frame to repeat current input till.
 					uint frame = r.ReadUInt32();
+					if (frame > frameCount)
+						continue;
 					mg.SetSource(controllers);
 					for (; frames <= frame; frames++)
 					{
@@ -2412,9 +2415,8 @@ namespace BizHawk.MultiClient
 					byte leftOver = 0x0;
 					for (int player = 1; player <= controllersUsed.Length; player++)
 					{
-						// If the controller is enabled and has changed:
-						if (controllersUsed[controllersUsed.Length - player] &&
-							(((flag >> (player - 1)) & 0x1) != 0))
+						// If the controller has changed:
+						if (((flag >> (controllersUsed.Length - player)) & 0x1) != 0)
 						{
 							byte controllerState1 = r.ReadByte();
 							uint controllerState;
@@ -2431,7 +2433,7 @@ namespace BizHawk.MultiClient
 									controllerState = (uint)(((controllerState1 << 8) & 0x0F00) | controllerState2);
 								leftOver = (byte)((controllerState1 >> 4) & 0x0F);
 							}
-							else if ((leftOver & 0xF0) == leftOver)
+							else if ((leftOver & 0x0F) == leftOver)
 							{
 								if (player == 2 && superScope)
 								{
@@ -2445,14 +2447,16 @@ namespace BizHawk.MultiClient
 							else
 								throw new ArgumentException("Unexpected number of leftover bits.");
 							if (player <= Global.PLAYERS[controllers.Type.Name])
-								if (player != 2 || !superScope)
+							{
+								if (controllersUsed[player - 1] && (player != 2 || !superScope))
 									for (int button = 0; button < buttons.Length; button++)
 									{
 										controllers["P" + player + " " + buttons[button]] = (
 											((controllerState >> button) & 0x1) != 0
 										);
 									}
-							else if (warningMsg != "")
+							}
+							else if (warningMsg == "")
 								warningMsg = "Controller " + player + " not supported.";
 						}
 					}
