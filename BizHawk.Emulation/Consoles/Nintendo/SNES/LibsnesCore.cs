@@ -523,7 +523,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		// ----- Client Debugging API stuff -----
 		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesDll.SNES_MEMORY id, Endian endian)
 		{
-			IntPtr block = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.WRAM);
+			IntPtr block = LibsnesDll.snes_get_memory_data(id);
 			int size = LibsnesDll.snes_get_memory_size(id);
 			int mask = size - 1;
 			byte* blockptr = (byte*)block.ToPointer();
