@@ -374,6 +374,10 @@ namespace BizHawk.MultiClient
 			{
 				input.Append(Global.COMMANDS[ControlType]["Reset"]);
 			}
+			else
+			{
+				input.Append('.');
+			}
 
 			input.Append("|");
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
