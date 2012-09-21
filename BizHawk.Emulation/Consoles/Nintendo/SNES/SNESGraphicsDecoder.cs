@@ -247,6 +247,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int tileSizeBytes = 8 * bpp;
 			int baseTileNum = tiledataBaseAddr / tileSizeBytes;
 			int[] tileCache = _tileCache[bpp];
+			int tileCacheMask = tileCache.Length - 1;
 
 			int screenWidth = dims.Width * count8x8 * 8;
 
@@ -258,7 +259,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					{
 						for (int ty = 0; ty < count8x8; ty++)
 						{
-							int mapIndex = (mty * count8x8 + ty) * dims.Width + mtx * count8x8 + tx;
+							int mapIndex = mty * dims.Width + mtx;
 							var te = map[mapIndex];
 							int tileNum = te.tilenum + tx + ty * 16 + baseTileNum;
 							int srcOfs = tileNum * 64;
@@ -273,7 +274,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 									int dstX = (mtx * count8x8 + tx) * 8 + px;
 									int dstY = (mty * count8x8 + ty) * 8 + py;
 									int dstOfs = dstY * stride + dstX;
-									int color = tileCache[srcOfs++];
+									int color = tileCache[srcOfs & tileCacheMask];
+									srcOfs++;
 									color += te.palette * ncolors;
 									color += paletteStart;
 									screen[dstOfs] = color;
@@ -286,7 +288,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		/// <summary>
-		/// fetches a tilemap. this is simple; apparently only the screen size (shape) is a factor
+		/// fetches a tilemap. this is simple; apparently only the screen size (shape) is a factor (not the tile size)
 		/// </summary>
 		public TileEntry[] FetchTilemap(int addr, ScreenSize size)
 		{
@@ -367,10 +369,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int numtiles = 8192 / toBpp;
 			int[] tilesDst = new int[8 * 8 * numtiles];
 			_tileCache[toBpp] = tilesDst;
-			int[] tilesSrc = _tileCache[2];
+			int[] tilesSrc = _tileCache[fromBpp];
 
 			for (int i = 0; i < numtiles; i++)
 			{
+				if (i == 512)
+				{
+					int zzz = 9;
+				}
 				int srcAddr = i * 128;
 				int dstAddr = i * 64;
 				for (int p = 0; p < 64; p++)
