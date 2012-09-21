@@ -138,6 +138,13 @@ namespace BizHawk.Core
 
 		Bitmap bmp;
 
+		/// <summary>bit of a hack; use at your own risk</summary>
+		/// <returns>you probably shouldn't modify this?</returns>
+		public Bitmap GetBitmap()
+		{
+			return bmp;
+		}
+
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
 

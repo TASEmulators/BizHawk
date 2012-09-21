@@ -2132,7 +2132,34 @@ namespace BizHawk.MultiClient
 					//DumpProxy.GetSamples(temp);
 					//genSound = false;
 
-					CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+					// TODO: WRAP ME IN SOME UI SETTING
+					if (true)
+					{
+						// this code captures the emu display with OSD and lua composited onto it.
+
+						// it's slow and a bit hackish; a better solution is to create a new
+						// "dummy render" class that implements IRenderer, IBlitter, and possibly
+						// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
+
+						var c = new RetainedViewportPanel();
+						// this size can be different for showing off stretching or filters
+						c.Width = Global.Emulator.VideoProvider.BufferWidth;
+						c.Height = Global.Emulator.VideoProvider.BufferHeight;
+						var s = new SysdrawingRenderPanel(c);
+						
+						Global.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, s);
+
+						var b = new AVOut.BmpVideoProvder(c.GetBitmap());
+
+						CurrAviWriter.AddFrame(b);
+
+						s.Dispose();
+						c.Dispose();
+					}
+					else
+					{
+						CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+					}
 					CurrAviWriter.AddSamples(temp);
 
 					if (autoDumpLength > 0)
