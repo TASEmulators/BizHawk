@@ -595,7 +595,7 @@ namespace BizHawk.MultiClient
 
 		private void HandleDefaultImage(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right)
+			if (Control.ModifierKeys == Keys.Shift) //if (e.Button == MouseButtons.Right)
 			{
 				ZoomBoxDefaultImage = ZoomBox.Image as Bitmap;
 			}
