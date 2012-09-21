@@ -64,6 +64,8 @@ namespace BizHawk.MultiClient
 						m = ImportVMV(path, out errorMsg, out warningMsg);
 						break;
 					case ".ZMV":
+						if (!Global.MainForm.INTERIM)
+							return m;
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
 				}
@@ -1761,7 +1763,6 @@ namespace BizHawk.MultiClient
 							);
 						}
 					else if (warningMsg != "")
-						// TODO: Move this to the controllers used check.
 						warningMsg = "Controller " + player + " not supported.";
 				}
 				// The controller data contains <number_of_frames + 1> frames.
@@ -2452,7 +2453,6 @@ namespace BizHawk.MultiClient
 										);
 									}
 							else if (warningMsg != "")
-								// TODO: Move this to the controllers used check.
 								warningMsg = "Controller " + player + " not supported.";
 						}
 					}
