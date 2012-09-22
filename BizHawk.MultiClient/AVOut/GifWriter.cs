@@ -11,21 +11,55 @@ namespace BizHawk.MultiClient.AVOut
 	{
 		public class GifToken : IDisposable
 		{
+			private int _frameskip, _framedelay;
+
 			/// <summary>
 			/// how many frames to skip for each frame deposited
 			/// </summary>
-			public int frameskip { get; private set; }
+			public int frameskip
+			{
+				get { return _frameskip; }
+				private set
+				{
+					if (value < 0)
+						_frameskip = 0;
+					else if (value > 999)
+						_frameskip = 999;
+					else
+						_frameskip = value;
+				}
+			}
+
+			/// <summary>
+			/// how long to delay between each gif frame (units of 10ms, -1 = auto)
+			/// </summary>
+			public int framedelay
+			{
+				get { return _framedelay; }
+				private set
+				{
+					if (value < -1)
+						_framedelay = -1;
+					else if (value > 100)
+						_framedelay = 100;
+					else
+						_framedelay = value;
+				}
+			}
+
 			public void Dispose() { }
 
-			public GifToken(int frameskip)
+			public GifToken(int frameskip, int framedelay)
 			{
 				this.frameskip = frameskip;
+				this.framedelay = framedelay;
 			}
 
 			public static GifToken LoadFromConfig()
 			{
-				GifToken ret = new GifToken(0);
+				GifToken ret = new GifToken(0, 0);
 				ret.frameskip = Global.Config.GifWriterFrameskip;
+				ret.framedelay = Global.Config.GifWriterDelay;
 				return ret;
 			}
 		}
@@ -143,7 +177,11 @@ namespace BizHawk.MultiClient.AVOut
 		{
 			if (token == null)
 				return;
-			int delay = (100 * fpsden * (token.frameskip + 1) + (fpsnum / 2)) / fpsnum;
+			int delay;
+			if (token.framedelay == -1)
+				delay = (100 * fpsden * (token.frameskip + 1) + (fpsnum / 2)) / fpsnum;
+			else
+				delay = token.framedelay;
 			Delay[0] = (byte)(delay & 0xff);
 			Delay[1] = (byte)(delay >> 8 & 0xff);
 		}

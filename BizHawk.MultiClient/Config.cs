@@ -328,6 +328,7 @@ namespace BizHawk.MultiClient
 		public string FFmpegCustomCommand = "-c:a foo -c:v bar -f baz";
 		public string AVICodecToken = "";
 		public int GifWriterFrameskip = 3;
+		public int GifWriterDelay = -1;
 
 		// NESPPU Settings
 		public bool AutoLoadNESPPU = false;
