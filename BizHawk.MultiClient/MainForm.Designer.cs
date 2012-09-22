@@ -92,6 +92,8 @@
 			this.AVIWAVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.recordAVIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stopAVIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
+			this.captureOSDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.screenshotF12ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.screenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,6 +101,8 @@
 			this.animatedGIFConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.makeAnimatedGIFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.makeAnimatedGifAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
+			this.captureOSDToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.emulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -285,8 +289,6 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
-			this.captureOSDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -904,6 +906,18 @@
 			this.stopAVIToolStripMenuItem.Text = "Stop AVI/WAV";
 			this.stopAVIToolStripMenuItem.Click += new System.EventHandler(this.stopAVIToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator19
+			// 
+			this.toolStripSeparator19.Name = "toolStripSeparator19";
+			this.toolStripSeparator19.Size = new System.Drawing.Size(160, 6);
+			// 
+			// captureOSDToolStripMenuItem
+			// 
+			this.captureOSDToolStripMenuItem.Name = "captureOSDToolStripMenuItem";
+			this.captureOSDToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.captureOSDToolStripMenuItem.Text = "Capture OSD";
+			this.captureOSDToolStripMenuItem.Click += new System.EventHandler(this.captureOSDToolStripMenuItem_Click);
+			// 
 			// screenshotToolStripMenuItem
 			// 
 			this.screenshotToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -912,10 +926,13 @@
             this.screenshotClipboardToolStripMenuItem,
             this.animatedGIFConfigToolStripMenuItem,
             this.makeAnimatedGIFToolStripMenuItem,
-            this.makeAnimatedGifAsToolStripMenuItem});
+            this.makeAnimatedGifAsToolStripMenuItem,
+            this.toolStripSeparator20,
+            this.captureOSDToolStripMenuItem1});
 			this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
 			this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.screenshotToolStripMenuItem.Text = "Screenshot";
+			this.screenshotToolStripMenuItem.DropDownOpening += new System.EventHandler(this.screenshotToolStripMenuItem_DropDownOpening);
 			// 
 			// screenshotF12ToolStripMenuItem
 			// 
@@ -960,6 +977,18 @@
 			this.makeAnimatedGifAsToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
 			this.makeAnimatedGifAsToolStripMenuItem.Text = "Make Animated Gif As..";
 			this.makeAnimatedGifAsToolStripMenuItem.Click += new System.EventHandler(this.makeAnimatedGifAsToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator20
+			// 
+			this.toolStripSeparator20.Name = "toolStripSeparator20";
+			this.toolStripSeparator20.Size = new System.Drawing.Size(242, 6);
+			// 
+			// captureOSDToolStripMenuItem1
+			// 
+			this.captureOSDToolStripMenuItem1.Name = "captureOSDToolStripMenuItem1";
+			this.captureOSDToolStripMenuItem1.Size = new System.Drawing.Size(245, 22);
+			this.captureOSDToolStripMenuItem1.Text = "Capture OSD";
+			this.captureOSDToolStripMenuItem1.Click += new System.EventHandler(this.captureOSDToolStripMenuItem1_Click);
 			// 
 			// toolStripSeparator4
 			// 
@@ -2458,18 +2487,6 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
-			// toolStripSeparator19
-			// 
-			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(160, 6);
-			// 
-			// captureOSDToolStripMenuItem
-			// 
-			this.captureOSDToolStripMenuItem.Name = "captureOSDToolStripMenuItem";
-			this.captureOSDToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-			this.captureOSDToolStripMenuItem.Text = "Capture OSD";
-			this.captureOSDToolStripMenuItem.Click += new System.EventHandler(this.captureOSDToolStripMenuItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2769,6 +2786,8 @@
 		private System.Windows.Forms.ToolStripMenuItem hardResetToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
 		private System.Windows.Forms.ToolStripMenuItem captureOSDToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator20;
+		private System.Windows.Forms.ToolStripMenuItem captureOSDToolStripMenuItem1;
     }
 }
 
