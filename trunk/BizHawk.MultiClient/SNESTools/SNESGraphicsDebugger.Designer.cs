@@ -115,6 +115,8 @@
 			this.nudScanline = new System.Windows.Forms.NumericUpDown();
 			this.sliderScanline = new System.Windows.Forms.TrackBar();
 			this.label19 = new System.Windows.Forms.Label();
+			this.txtPaletteDetailsIndexSpecific = new System.Windows.Forms.TextBox();
+			this.txtPaletteDetailsIndexHexSpecific = new System.Windows.Forms.TextBox();
 			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.groupBox1.SuspendLayout();
@@ -928,6 +930,8 @@
 			// 
 			// tpPalette
 			// 
+			this.tpPalette.Controls.Add(this.txtPaletteDetailsIndexSpecific);
+			this.tpPalette.Controls.Add(this.txtPaletteDetailsIndexHexSpecific);
 			this.tpPalette.Controls.Add(this.txtPaletteDetailsAddress);
 			this.tpPalette.Controls.Add(this.txtPaletteDetailsIndex);
 			this.tpPalette.Controls.Add(this.lblDetailsOBJOrBG);
@@ -947,17 +951,17 @@
 			// 
 			// txtPaletteDetailsAddress
 			// 
-			this.txtPaletteDetailsAddress.Location = new System.Drawing.Point(131, 22);
+			this.txtPaletteDetailsAddress.Location = new System.Drawing.Point(41, 22);
 			this.txtPaletteDetailsAddress.Multiline = true;
 			this.txtPaletteDetailsAddress.Name = "txtPaletteDetailsAddress";
 			this.txtPaletteDetailsAddress.ReadOnly = true;
-			this.txtPaletteDetailsAddress.Size = new System.Drawing.Size(39, 18);
+			this.txtPaletteDetailsAddress.Size = new System.Drawing.Size(58, 18);
 			this.txtPaletteDetailsAddress.TabIndex = 42;
 			this.txtPaletteDetailsAddress.Text = "$1FE";
 			// 
 			// txtPaletteDetailsIndex
 			// 
-			this.txtPaletteDetailsIndex.Location = new System.Drawing.Point(139, 2);
+			this.txtPaletteDetailsIndex.Location = new System.Drawing.Point(68, 3);
 			this.txtPaletteDetailsIndex.Multiline = true;
 			this.txtPaletteDetailsIndex.Name = "txtPaletteDetailsIndex";
 			this.txtPaletteDetailsIndex.ReadOnly = true;
@@ -967,16 +971,16 @@
 			// 
 			// lblDetailsOBJOrBG
 			// 
-			this.lblDetailsOBJOrBG.AutoSize = true;
-			this.lblDetailsOBJOrBG.Location = new System.Drawing.Point(41, 4);
+			this.lblDetailsOBJOrBG.Location = new System.Drawing.Point(100, 5);
 			this.lblDetailsOBJOrBG.Name = "lblDetailsOBJOrBG";
-			this.lblDetailsOBJOrBG.Size = new System.Drawing.Size(63, 13);
+			this.lblDetailsOBJOrBG.Size = new System.Drawing.Size(72, 13);
 			this.lblDetailsOBJOrBG.TabIndex = 40;
-			this.lblDetailsOBJOrBG.Text = "OBJ Palette";
+			this.lblDetailsOBJOrBG.Text = "(OBJ Palette:)";
+			this.lblDetailsOBJOrBG.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// txtPaletteDetailsIndexHex
 			// 
-			this.txtPaletteDetailsIndexHex.Location = new System.Drawing.Point(110, 2);
+			this.txtPaletteDetailsIndexHex.Location = new System.Drawing.Point(41, 3);
 			this.txtPaletteDetailsIndexHex.Multiline = true;
 			this.txtPaletteDetailsIndexHex.Name = "txtPaletteDetailsIndexHex";
 			this.txtPaletteDetailsIndexHex.ReadOnly = true;
@@ -986,31 +990,31 @@
 			// 
 			// txtDetailsPaletteColorRGB
 			// 
-			this.txtDetailsPaletteColorRGB.Location = new System.Drawing.Point(3, 83);
+			this.txtDetailsPaletteColorRGB.Location = new System.Drawing.Point(3, 84);
 			this.txtDetailsPaletteColorRGB.Multiline = true;
 			this.txtDetailsPaletteColorRGB.Name = "txtDetailsPaletteColorRGB";
 			this.txtDetailsPaletteColorRGB.ReadOnly = true;
-			this.txtDetailsPaletteColorRGB.Size = new System.Drawing.Size(86, 18);
+			this.txtDetailsPaletteColorRGB.Size = new System.Drawing.Size(96, 18);
 			this.txtDetailsPaletteColorRGB.TabIndex = 38;
 			this.txtDetailsPaletteColorRGB.Text = "(255, 255, 255)";
 			// 
 			// txtDetailsPaletteColorHex
 			// 
-			this.txtDetailsPaletteColorHex.Location = new System.Drawing.Point(3, 62);
+			this.txtDetailsPaletteColorHex.Location = new System.Drawing.Point(3, 63);
 			this.txtDetailsPaletteColorHex.Multiline = true;
 			this.txtDetailsPaletteColorHex.Name = "txtDetailsPaletteColorHex";
 			this.txtDetailsPaletteColorHex.ReadOnly = true;
-			this.txtDetailsPaletteColorHex.Size = new System.Drawing.Size(86, 18);
+			this.txtDetailsPaletteColorHex.Size = new System.Drawing.Size(96, 18);
 			this.txtDetailsPaletteColorHex.TabIndex = 37;
 			this.txtDetailsPaletteColorHex.Text = "#FFFFFF";
 			// 
 			// txtDetailsPaletteColor
 			// 
-			this.txtDetailsPaletteColor.Location = new System.Drawing.Point(3, 41);
+			this.txtDetailsPaletteColor.Location = new System.Drawing.Point(3, 42);
 			this.txtDetailsPaletteColor.Multiline = true;
 			this.txtDetailsPaletteColor.Name = "txtDetailsPaletteColor";
 			this.txtDetailsPaletteColor.ReadOnly = true;
-			this.txtDetailsPaletteColor.Size = new System.Drawing.Size(86, 18);
+			this.txtDetailsPaletteColor.Size = new System.Drawing.Size(96, 18);
 			this.txtDetailsPaletteColor.TabIndex = 36;
 			this.txtDetailsPaletteColor.Text = "$7FFF";
 			// 
@@ -1027,7 +1031,7 @@
 			// lblDetailsPaletteAddress
 			// 
 			this.lblDetailsPaletteAddress.AutoSize = true;
-			this.lblDetailsPaletteAddress.Location = new System.Drawing.Point(41, 24);
+			this.lblDetailsPaletteAddress.Location = new System.Drawing.Point(102, 25);
 			this.lblDetailsPaletteAddress.Name = "lblDetailsPaletteAddress";
 			this.lblDetailsPaletteAddress.Size = new System.Drawing.Size(90, 13);
 			this.lblDetailsPaletteAddress.TabIndex = 1;
@@ -1097,6 +1101,26 @@
 			this.label19.Size = new System.Drawing.Size(48, 13);
 			this.label19.TabIndex = 41;
 			this.label19.Text = "Scanline";
+			// 
+			// txtPaletteDetailsIndexSpecific
+			// 
+			this.txtPaletteDetailsIndexSpecific.Location = new System.Drawing.Point(200, 3);
+			this.txtPaletteDetailsIndexSpecific.Multiline = true;
+			this.txtPaletteDetailsIndexSpecific.Name = "txtPaletteDetailsIndexSpecific";
+			this.txtPaletteDetailsIndexSpecific.ReadOnly = true;
+			this.txtPaletteDetailsIndexSpecific.Size = new System.Drawing.Size(31, 18);
+			this.txtPaletteDetailsIndexSpecific.TabIndex = 44;
+			this.txtPaletteDetailsIndexSpecific.Text = "127";
+			// 
+			// txtPaletteDetailsIndexHexSpecific
+			// 
+			this.txtPaletteDetailsIndexHexSpecific.Location = new System.Drawing.Point(173, 3);
+			this.txtPaletteDetailsIndexHexSpecific.Multiline = true;
+			this.txtPaletteDetailsIndexHexSpecific.Name = "txtPaletteDetailsIndexHexSpecific";
+			this.txtPaletteDetailsIndexHexSpecific.ReadOnly = true;
+			this.txtPaletteDetailsIndexHexSpecific.Size = new System.Drawing.Size(26, 18);
+			this.txtPaletteDetailsIndexHexSpecific.TabIndex = 43;
+			this.txtPaletteDetailsIndexHexSpecific.Text = "$7F";
 			// 
 			// paletteViewer
 			// 
@@ -1250,5 +1274,7 @@
 		private System.Windows.Forms.NumericUpDown nudScanline;
 		private System.Windows.Forms.TrackBar sliderScanline;
 		private System.Windows.Forms.Label label19;
+		private System.Windows.Forms.TextBox txtPaletteDetailsIndexSpecific;
+		private System.Windows.Forms.TextBox txtPaletteDetailsIndexHexSpecific;
 	}
 }

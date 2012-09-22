@@ -355,10 +355,12 @@ namespace BizHawk.MultiClient
 			txtDetailsPaletteColorHex.Text = string.Format("#{0:X6}", color & 0xFFFFFF);
 			txtDetailsPaletteColorRGB.Text = string.Format("({0},{1},{2})", (color >> 16) & 0xFF, (color >> 8) & 0xFF, (color & 0xFF));
 
-			if (colorNum < 128) lblDetailsOBJOrBG.Text = "BG Palette"; else lblDetailsOBJOrBG.Text = "OBJ Palette";
-
-			txtPaletteDetailsIndexHex.Text = string.Format("${0:X2}", colorNum & 0x7F);
-			txtPaletteDetailsIndex.Text = string.Format("{0}", colorNum & 0x7F);
+			if (colorNum < 128) lblDetailsOBJOrBG.Text = "(BG Palette:)"; else lblDetailsOBJOrBG.Text = "(OBJ Palette:)";
+			txtPaletteDetailsIndexHex.Text = string.Format("${0:X2}", colorNum);
+			txtPaletteDetailsIndexHexSpecific.Text = string.Format("${0:X2}", colorNum & 0x7F);
+			txtPaletteDetailsIndex.Text = string.Format("{0}", colorNum);
+			txtPaletteDetailsIndexSpecific.Text = string.Format("{0}", colorNum & 0x7F);
+			
 			txtPaletteDetailsAddress.Text = string.Format("${0:X3}", colorNum * 2);
 		}
 
