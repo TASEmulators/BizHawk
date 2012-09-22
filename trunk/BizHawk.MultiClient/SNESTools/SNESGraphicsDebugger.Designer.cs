@@ -231,7 +231,7 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(1086, 576);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(1086, 673);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// panel1
@@ -246,7 +246,7 @@
 			this.panel1.Controls.Add(this.tabctrlDetails);
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(558, 564);
+			this.panel1.Size = new System.Drawing.Size(558, 672);
 			this.panel1.TabIndex = 0;
 			// 
 			// groupBox3
@@ -255,7 +255,7 @@
 			this.groupBox3.Controls.Add(this.label19);
 			this.groupBox3.Controls.Add(this.nudScanline);
 			this.groupBox3.Controls.Add(this.sliderScanline);
-			this.groupBox3.Location = new System.Drawing.Point(3, 0);
+			this.groupBox3.Location = new System.Drawing.Point(323, 0);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(57, 191);
 			this.groupBox3.TabIndex = 46;
@@ -328,7 +328,7 @@
 			this.groupBox2.Controls.Add(this.label6);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label5);
-			this.groupBox2.Location = new System.Drawing.Point(3, 191);
+			this.groupBox2.Location = new System.Drawing.Point(0, 0);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(229, 122);
 			this.groupBox2.TabIndex = 16;
@@ -516,7 +516,7 @@
 			this.groupBox1.Controls.Add(this.txtBG1SizeInTiles);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.txtBG1SizeBits);
-			this.groupBox1.Location = new System.Drawing.Point(3, 316);
+			this.groupBox1.Location = new System.Drawing.Point(0, 125);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(229, 245);
 			this.groupBox1.TabIndex = 3;
@@ -797,7 +797,7 @@
 			this.groupBox4.Controls.Add(this.radioButton4);
 			this.groupBox4.Controls.Add(this.radioButton5);
 			this.groupBox4.Controls.Add(this.radioButton10);
-			this.groupBox4.Location = new System.Drawing.Point(66, 0);
+			this.groupBox4.Location = new System.Drawing.Point(386, 0);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(166, 191);
 			this.groupBox4.TabIndex = 35;
@@ -1003,9 +1003,9 @@
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.paletteViewer);
-			this.groupBox5.Location = new System.Drawing.Point(236, 149);
+			this.groupBox5.Location = new System.Drawing.Point(236, 342);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(319, 344);
+			this.groupBox5.Size = new System.Drawing.Size(319, 327);
 			this.groupBox5.TabIndex = 36;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Palette";
@@ -1014,7 +1014,7 @@
 			// 
 			this.tabctrlDetails.Controls.Add(this.tpPalette);
 			this.tabctrlDetails.Controls.Add(this.tabPage2);
-			this.tabctrlDetails.Location = new System.Drawing.Point(238, 0);
+			this.tabctrlDetails.Location = new System.Drawing.Point(236, 193);
 			this.tabctrlDetails.Name = "tabctrlDetails";
 			this.tabctrlDetails.SelectedIndex = 0;
 			this.tabctrlDetails.Size = new System.Drawing.Size(317, 147);
@@ -1154,7 +1154,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(313, 121);
+			this.tabPage2.Size = new System.Drawing.Size(309, 121);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "tabPage2";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -1168,7 +1168,7 @@
 			this.panel2.Location = new System.Drawing.Point(567, 3);
 			this.panel2.Name = "panel2";
 			this.tableLayoutPanel1.SetRowSpan(this.panel2, 2);
-			this.panel2.Size = new System.Drawing.Size(516, 570);
+			this.panel2.Size = new System.Drawing.Size(516, 667);
 			this.panel2.TabIndex = 1;
 			// 
 			// label14
@@ -1234,7 +1234,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1086, 600);
+			this.ClientSize = new System.Drawing.Size(1086, 697);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
