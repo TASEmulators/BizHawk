@@ -2254,7 +2254,7 @@ namespace BizHawk.MultiClient
 
 		void TakeScreenshotToClipboard()
 		{
-			using (var img = MakeScreenshotImage())
+			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
 				System.Windows.Forms.Clipboard.SetImage(img);
 			}
@@ -2279,7 +2279,7 @@ namespace BizHawk.MultiClient
 			var fi = new FileInfo(path);
 			if (fi.Directory.Exists == false)
 				fi.Directory.Create();
-			using (var img = MakeScreenshotImage())
+			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
 				img.Save(fi.FullName, ImageFormat.Png);
 			}
@@ -3298,10 +3298,10 @@ namespace BizHawk.MultiClient
 
 			#region Get the Images for the File
 			int totalFrames = (gifSpeed > 0 ? num_images : (num_images * (gifSpeed * -1)));
-			images.Add(Global.Config.AVI_CaptureOSD ? CaptureOSD() : MakeScreenshotImage());
+			images.Add(Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage());
 			while (images.Count < totalFrames)
 			{
-				tempImage = Global.Config.AVI_CaptureOSD ? CaptureOSD() : MakeScreenshotImage();
+				tempImage = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage();
 				if (gifSpeed < 0)
 					for (speedTracker = 0; speedTracker > gifSpeed; speedTracker--)
 						images.Add(tempImage); //If the speed of the animation is to be slowed down, then add that many copies
@@ -3588,6 +3588,16 @@ namespace BizHawk.MultiClient
 			{
 				GBtools.ColorChooserForm.DoColorChooserFormDialog(((Gameboy)Global.Emulator).ChangeDMGColors, this);
 			}
+		}
+
+		private void captureOSDToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			Global.Config.Screenshot_CaptureOSD ^= true;
+		}
+
+		private void screenshotToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+		{
+			captureOSDToolStripMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
 		}
 	}
 }

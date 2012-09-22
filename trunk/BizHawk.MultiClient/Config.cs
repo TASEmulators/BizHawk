@@ -182,6 +182,7 @@ namespace BizHawk.MultiClient
 		public string MovieExtension = "bkm";
 		public bool SupressAskSave = false;
 		public bool AVI_CaptureOSD = false;
+		public bool Screenshot_CaptureOSD = false;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
