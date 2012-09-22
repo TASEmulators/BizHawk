@@ -393,7 +393,8 @@ namespace BizHawk.MultiClient
 
 		void SyncViewerSize()
 		{
-			if (rbQuadAll.Checked)
+			if (check2x.Checked)
+
 				viewer.Size = new Size(1024, 1024);
 			else
 				viewer.Size = new Size(512, 512);
@@ -402,6 +403,11 @@ namespace BizHawk.MultiClient
 		private void checkScanlineControl_CheckedChanged(object sender, EventArgs e)
 		{
 			SyncCore();
+		}
+
+		private void check2x_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncViewerSize();
 		}
 	}
 }
