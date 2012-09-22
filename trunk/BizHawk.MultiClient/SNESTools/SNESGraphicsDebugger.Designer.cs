@@ -28,6 +28,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SNESGraphicsDebugger));
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveScreenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -126,6 +128,10 @@
 			this.lblDetailsPaletteAddress = new System.Windows.Forms.Label();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.panel2 = new System.Windows.Forms.Panel();
+			this.label14 = new System.Windows.Forms.Label();
+			this.label17 = new System.Windows.Forms.Label();
+			this.check2x = new System.Windows.Forms.CheckBox();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.menuStrip1.SuspendLayout();
@@ -238,9 +244,12 @@
 			// 
 			this.panel1.AutoSize = true;
 			this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.panel1.Controls.Add(this.label17);
+			this.panel1.Controls.Add(this.label14);
 			this.panel1.Controls.Add(this.groupBox3);
 			this.panel1.Controls.Add(this.groupBox2);
 			this.panel1.Controls.Add(this.groupBox1);
+			this.panel1.Controls.Add(this.grpQuadrants);
 			this.panel1.Controls.Add(this.groupBox4);
 			this.panel1.Controls.Add(this.groupBox5);
 			this.panel1.Controls.Add(this.tabctrlDetails);
@@ -268,6 +277,7 @@
 			this.checkScanlineControl.Name = "checkScanlineControl";
 			this.checkScanlineControl.Size = new System.Drawing.Size(15, 14);
 			this.checkScanlineControl.TabIndex = 42;
+			this.toolTip1.SetToolTip(this.checkScanlineControl, resources.GetString("checkScanlineControl.ToolTip"));
 			this.checkScanlineControl.UseVisualStyleBackColor = true;
 			this.checkScanlineControl.CheckedChanged += new System.EventHandler(this.checkScanlineControl_CheckedChanged);
 			// 
@@ -782,9 +792,9 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.check2x);
 			this.groupBox4.Controls.Add(this.radioButton15);
 			this.groupBox4.Controls.Add(this.radioButton14);
-			this.groupBox4.Controls.Add(this.grpQuadrants);
 			this.groupBox4.Controls.Add(this.radioButton9);
 			this.groupBox4.Controls.Add(this.comboDisplayType);
 			this.groupBox4.Controls.Add(this.radioButton1);
@@ -836,7 +846,8 @@
 			this.grpQuadrants.Controls.Add(this.rbQuadAll);
 			this.grpQuadrants.Controls.Add(this.rbQuad1);
 			this.grpQuadrants.Controls.Add(this.rbQuad0);
-			this.grpQuadrants.Location = new System.Drawing.Point(227, 7);
+			this.grpQuadrants.Enabled = false;
+			this.grpQuadrants.Location = new System.Drawing.Point(116, 431);
 			this.grpQuadrants.Name = "grpQuadrants";
 			this.grpQuadrants.Size = new System.Drawing.Size(44, 53);
 			this.grpQuadrants.TabIndex = 44;
@@ -1249,6 +1260,44 @@
 			this.panel2.Size = new System.Drawing.Size(516, 621);
 			this.panel2.TabIndex = 1;
 			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(114, 425);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(46, 13);
+			this.label14.TabIndex = 47;
+			this.label14.Text = "disabled";
+			// 
+			// label17
+			// 
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(113, 487);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(61, 13);
+			this.label17.TabIndex = 48;
+			this.label17.Text = "deprecated";
+			// 
+			// check2x
+			// 
+			this.check2x.Appearance = System.Windows.Forms.Appearance.Button;
+			this.check2x.Location = new System.Drawing.Point(231, 10);
+			this.check2x.Name = "check2x";
+			this.check2x.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.check2x.Size = new System.Drawing.Size(39, 21);
+			this.check2x.TabIndex = 45;
+			this.check2x.Text = "1024";
+			this.toolTip1.SetToolTip(this.check2x, "Sets graphics viewport size to 1024 (unchecked is 512).\r\nContent will be scaled t" +
+        "o fill specified size");
+			this.check2x.UseVisualStyleBackColor = true;
+			this.check2x.CheckedChanged += new System.EventHandler(this.check2x_CheckedChanged);
+			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutoPopDelay = 5000;
+			this.toolTip1.InitialDelay = 250;
+			this.toolTip1.ReshowDelay = 100;
+			// 
 			// paletteViewer
 			// 
 			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
@@ -1286,6 +1335,7 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudScanline)).EndInit();
@@ -1410,5 +1460,9 @@
 		private SNESGraphicsViewer viewer;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.CheckBox checkScanlineControl;
+		private System.Windows.Forms.Label label17;
+		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.CheckBox check2x;
 	}
 }
