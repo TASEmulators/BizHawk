@@ -67,6 +67,13 @@ namespace BizHawk.MultiClient
 			NESCheatsBox.Text = Global.Config.PathNESCheats;
 			NESPaletteBox.Text = Global.Config.PathNESPalette;
 
+			SNESBaseBox.Text = Global.Config.BaseSNES;
+			SNESROMsBox.Text = Global.Config.PathSNESROMs;
+			SNESSavestatesBox.Text = Global.Config.PathSNESSavestates;
+			SNESSaveRAMBox.Text = Global.Config.PathSNESSaveRAM;
+			SNESScreenshotsBox.Text = Global.Config.PathSNESScreenshots;
+			SNESCheatsBox.Text = Global.Config.PathSNESCheats;
+
 			Sega8BaseBox.Text = Global.Config.BaseSMS;
 			Sega8ROMsBox.Text = Global.Config.PathSMSROMs;
 			Sega8SavestatesBox.Text = Global.Config.PathSMSSavestates;
@@ -160,6 +167,13 @@ namespace BizHawk.MultiClient
 			Global.Config.PathNESScreenshots = NESScreenshotsBox.Text;
 			Global.Config.PathNESCheats = NESCheatsBox.Text;
 			Global.Config.PathNESPalette = NESPaletteBox.Text;
+
+			Global.Config.BaseSNES = SNESBaseBox.Text;
+			Global.Config.PathSNESROMs = SNESROMsBox.Text;
+			Global.Config.PathSNESSavestates = SNESSavestatesBox.Text;
+			Global.Config.PathSNESSaveRAM = SNESSaveRAMBox.Text;
+			Global.Config.PathSNESScreenshots = SNESScreenshotsBox.Text;
+			Global.Config.PathSNESCheats = SNESCheatsBox.Text;
 
 			Global.Config.BaseSMS = Sega8BaseBox.Text;
 			Global.Config.PathSMSROMs = Sega8ROMsBox.Text;
@@ -680,6 +694,31 @@ namespace BizHawk.MultiClient
 		private void GBBrowsePalettes_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(GBPalettesBox, GBPalettesDescription.Text);
+		}
+
+		private void BrowseSNESBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SNESBaseBox, SNESBaseDescription.Text);
+		}
+
+		private void BrowseSNESROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SNESROMsBox, SNESROMsDescription.Text, "SNES");
+		}
+
+		private void BrowseSNESSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SNESSavestatesBox, SNESSavestatesDescription.Text, "SNES");
+		}
+
+		private void button5_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SNESSaveRAMBox, SNESSaveRAMDescription.Text, "SNES");
+		}
+
+		private void SNESBrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SNESCheatsBox, SNESCheatsDescription.Text, "SNES");
 		}
 	}
 }
