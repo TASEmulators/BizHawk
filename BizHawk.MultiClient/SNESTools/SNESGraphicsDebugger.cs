@@ -1,4 +1,6 @@
-﻿using System;
+﻿//TODO - disable scanline controls if box is unchecked
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -25,6 +27,7 @@ namespace BizHawk.MultiClient
 			comboBGProps.SelectedIndex = 0;
 
 			tabctrlDetails.SelectedIndex = 1;
+			SyncViewerSize();
 		}
 
 		LibsnesCore currentSnesCore;
@@ -59,6 +62,7 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsAfter()
 		{
 			SyncCore();
+			if (!checkScanlineControl.Checked) UpdateValues();
 		}
 
 		public void UpdateToolsLoadstate()
@@ -93,8 +97,13 @@ namespace BizHawk.MultiClient
 
 			currentSnesCore = core;
 
-			if(currentSnesCore != null)
-				currentSnesCore.ScanlineHookManager.Register(this, ScanlineHook);
+			if (currentSnesCore != null)
+			{
+				if (checkScanlineControl.Checked)
+					currentSnesCore.ScanlineHookManager.Register(this, ScanlineHook);
+				else
+					currentSnesCore.ScanlineHookManager.Unregister(this);
+			}
 		}
 
 		void ScanlineHook(int line)
@@ -141,34 +150,6 @@ namespace BizHawk.MultiClient
 
 			RenderView();
 			RenderPalette();
-		}
-
-		int[] lastPalette;
-
-		void RenderPalette()
-		{
-			var gd = new SNESGraphicsDecoder();
-			lastPalette = gd.GetPalette();
-
-			int pixsize = 16*16 + 3*17;
-			var bmp = new Bitmap(pixsize, pixsize, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			using (var g = Graphics.FromImage(bmp))
-			{
-				for (int y = 0; y < 16; y++)
-				{
-					for (int x = 0; x < 16; x++)
-					{
-						int rgb555 = lastPalette[y * 16 + x];
-						int color = gd.Colorize(rgb555);
-						using (var brush = new SolidBrush(Color.FromArgb(color)))
-						{
-							g.FillRectangle(brush, new Rectangle(3+x * 19, 3+y * 19, 16, 16));
-						}
-					}
-				}
-			}
-
-			paletteViewer.SetBitmap(bmp);
 		}
 
 		//todo - something smarter to cycle through bitmaps without repeatedly trashing them (use the dispose callback on the viewer)
@@ -337,14 +318,47 @@ namespace BizHawk.MultiClient
 			ClearDetails();
 		}
 
+		const int paletteCellSize = 17;
+		const int paletteCellSpacing = 3;
+
+		int[] lastPalette;
+
+		void RenderPalette()
+		{
+			var gd = new SNESGraphicsDecoder();
+			lastPalette = gd.GetPalette();
+
+			int pixsize = paletteCellSize * 16 + paletteCellSpacing * 17;
+			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
+			var bmp = new Bitmap(pixsize, pixsize, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			using (var g = Graphics.FromImage(bmp))
+			{
+				for (int y = 0; y < 16; y++)
+				{
+					for (int x = 0; x < 16; x++)
+					{
+						int rgb555 = lastPalette[y * 16 + x];
+						int color = gd.Colorize(rgb555);
+						using (var brush = new SolidBrush(Color.FromArgb(color)))
+						{
+							g.FillRectangle(brush, new Rectangle(3 + x * cellTotalSize, 3 + y * cellTotalSize, paletteCellSize, paletteCellSize));
+						}
+					}
+				}
+			}
+
+			paletteViewer.SetBitmap(bmp);
+		}
+
 		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
 		{
 			var pt = e.Location;
-			pt.X -= 3;
-			pt.Y -= 3;
-			int tx = pt.X / 19;
-			int ty = pt.Y / 19;
-			int colorNum = ty*16+tx;
+			pt.X -= paletteCellSpacing;
+			pt.Y -= paletteCellSpacing;
+			int tx = pt.X / (paletteCellSize + paletteCellSpacing);
+			int ty = pt.Y / (paletteCellSize + paletteCellSpacing);
+			if (tx >= 16 || ty >= 16) return;
+			int colorNum = ty * 16 + tx;
 			
 			int rgb555 = lastPalette[colorNum];
 			var gd = new SNESGraphicsDecoder();
@@ -372,5 +386,22 @@ namespace BizHawk.MultiClient
 			//cd.ShowDialog(this);
 		}
 
+		private void rbQuad_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncViewerSize();
+		}
+
+		void SyncViewerSize()
+		{
+			if (rbQuadAll.Checked)
+				viewer.Size = new Size(1024, 1024);
+			else
+				viewer.Size = new Size(512, 512);
+		}
+
+		private void checkScanlineControl_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncCore();
+		}
 	}
 }
