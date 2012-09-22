@@ -27,6 +27,15 @@ namespace BizHawk.MultiClient
 			tabctrlDetails.SelectedIndex = 1;
 		}
 
+		LibsnesCore currentSnesCore;
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+			if (currentSnesCore != null)
+				currentSnesCore.ScanlineHookManager.Unregister(this);
+			currentSnesCore = null;
+		}
+
 		string FormatBpp(int bpp)
 		{
 			if (bpp == 0) return "---";
@@ -47,11 +56,57 @@ namespace BizHawk.MultiClient
 			else return string.Format("@{0} ({1}K)", address.ToHexString(4), address / 1024);
 		}
 
-		public void UpdateValues()
+		public void UpdateToolsAfter()
+		{
+			SyncCore();
+		}
+
+		public void UpdateToolsLoadstate()
+		{
+			SyncCore();
+			UpdateValues();
+		}
+
+		private void nudScanline_ValueChanged(object sender, EventArgs e)
+		{
+			if (suppression) return;
+			SyncCore();
+			suppression = true;
+			sliderScanline.Value = 224 - (int)nudScanline.Value;
+			suppression = false;
+		}
+
+		private void sliderScanline_ValueChanged(object sender, EventArgs e)
+		{
+			if (suppression) return;
+			SyncCore();
+			suppression = true;
+			nudScanline.Value = 224 - sliderScanline.Value;
+			suppression = false;
+		}
+
+		void SyncCore()
+		{
+			LibsnesCore core = Global.Emulator as LibsnesCore;
+			if (currentSnesCore != core && currentSnesCore != null)
+				currentSnesCore.ScanlineHookManager.Unregister(this);
+
+			currentSnesCore = core;
+
+			if(currentSnesCore != null)
+				currentSnesCore.ScanlineHookManager.Register(this, ScanlineHook);
+		}
+
+		void ScanlineHook(int line)
+		{
+			int target = (int)nudScanline.Value;
+			if (target == line) UpdateValues();
+		}
+
+		void UpdateValues()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
-			var snes = Global.Emulator as LibsnesCore;
-			if (snes == null) return;
+			if (currentSnesCore == null) return;
 
 			var gd = new SNESGraphicsDecoder();
 			var si = gd.ScanScreenInfo();
@@ -314,7 +369,6 @@ namespace BizHawk.MultiClient
 			//cd.Color = pnDetailsPaletteColor.BackColor;
 			//cd.ShowDialog(this);
 		}
-
 
 	}
 }

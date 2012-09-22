@@ -7,6 +7,9 @@ struct Interface {
   virtual void message(const string &text);
   virtual time_t currentTime();
   virtual time_t randomSeed();
+
+	//zero 27-sep-2012
+	virtual void scanlineStart(int line) = 0;
 };
 
 extern Interface *interface;

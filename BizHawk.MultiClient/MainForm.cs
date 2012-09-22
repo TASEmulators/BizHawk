@@ -2210,7 +2210,11 @@ namespace BizHawk.MultiClient
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
-			SNESGraphicsDebugger1.UpdateValues();
+		}
+
+		public void UpdateToolsLoadstate()
+		{
+			SNESGraphicsDebugger1.UpdateToolsLoadstate();
 		}
 
 		/// <summary>
@@ -2222,6 +2226,7 @@ namespace BizHawk.MultiClient
 			//frame of execution in its list view.
 			LuaConsole1.LuaImp.FrameRegisterAfter();
 			TAStudio1.UpdateValues();
+			SNESGraphicsDebugger1.UpdateToolsAfter();
 		}
 
 		private unsafe Image MakeScreenshotImage()
@@ -2376,6 +2381,7 @@ namespace BizHawk.MultiClient
 				Global.OSD.ClearGUIText();
 				UpdateToolsBefore();
 				UpdateToolsAfter();
+				UpdateToolsLoadstate();
 				Global.OSD.AddMessage("Loaded state: " + name);
 			}
 			else
