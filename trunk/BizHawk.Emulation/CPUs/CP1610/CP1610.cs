@@ -8,7 +8,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		private const ushort RESET = 0x1000;
 		private const ushort INTERRUPT = 0x1004;
 
-		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, IntRM, BusRq, BusAk, MSync, Interruptible, Interrupted;
+		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, IntRM, BusRq, BusAk, Interruptible, Interrupted;
+		//private bool MSync;
 		private ushort[] Register = new ushort[8];
 		private ushort RegisterSP { get { return Register[6]; } set { Register[6] = value; } }
 		private ushort RegisterPC { get { return Register[7]; } set { Register[7] = value; } }
@@ -80,7 +81,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			Log.WriteLine("INTRM = {0}", IntRM);
 			Log.WriteLine("BUSRQ = {0}", BusRq);
 			Log.WriteLine("BUSAK = {0}", BusAk);
-			Log.WriteLine("MSYNC = {0}", MSync);
+			//Log.WriteLine("MSYNC = {0}", MSync);
 			Log.Flush();
 		}
 	}
