@@ -109,7 +109,8 @@ namespace BizHawk
 				new JMDWriter(),
 				new WavWriterV(),
 				new FFmpegWriter(),
-				new NutWriter()
+				new NutWriter(),
+				new BizHawk.MultiClient.AVOut.GifWriter()
 			};
 			return ret;
 		}
