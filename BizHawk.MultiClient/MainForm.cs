@@ -2132,8 +2132,7 @@ namespace BizHawk.MultiClient
 					//DumpProxy.GetSamples(temp);
 					//genSound = false;
 
-					// TODO: WRAP ME IN SOME UI SETTING
-					if (true)
+					if (Global.Config.AVI_CaptureOSD)
 					{
 						// this code captures the emu display with OSD and lua composited onto it.
 
@@ -3583,21 +3582,6 @@ namespace BizHawk.MultiClient
 			{
 				GBtools.ColorChooserForm.DoColorChooserFormDialog(((Gameboy)Global.Emulator).ChangeDMGColors, this);
 			}
-		}
-
-		private void forceDMGModeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_ForceDMG ^= true;
-		}
-
-		private void gBAInCGBModeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_GBACGB ^= true;
-		}
-
-		private void multicartCompatibilityToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_MulticartCompat ^= true;
 		}
 	}
 }
