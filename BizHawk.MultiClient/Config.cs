@@ -750,8 +750,8 @@ namespace BizHawk.MultiClient
 				B = "Z, J1 B1";
 				Y = "A, J1 B3";
 				X = "S, J1 B4";
-				L = "Q";
-				R = "W";
+				L = "W";
+				R = "E";
 				Start = "Return, J1 B8";
 				Select = "Space, J1 B7";
 			}
