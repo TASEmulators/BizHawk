@@ -1,4 +1,5 @@
 ﻿//TODO - disable scanline controls if box is unchecked
+//TODO - overhaul the BG display box if its mode7 or direct color (mode7 more important)
 
 using System;
 using System.Collections.Generic;
@@ -171,22 +172,22 @@ namespace BizHawk.MultiClient
 			var gd = new SNESGraphicsDecoder();
 			gd.CacheTiles();
 			string selection = comboDisplayType.SelectedItem as string;
-			if (selection == "Tiles as 2bpp")
+			if (selection == "2bpp tiles")
 			{
 				allocate(512, 512);
 				gd.RenderTilesToScreen(pixelptr, 64, 64, stride / 4, 2, 0);
 			}
-			if (selection == "Tiles as 4bpp")
+			if (selection == "4bpp tiles")
 			{
 				allocate(512, 512);
 				gd.RenderTilesToScreen(pixelptr, 64, 32, stride / 4, 4, 0);
 			}
-			if (selection == "Tiles as 8bpp")
+			if (selection == "8bpp tiles")
 			{
 				allocate(256, 256);
 				gd.RenderTilesToScreen(pixelptr, 32, 32, stride / 4, 8, 0);
 			}
-			if (selection == "Tiles as Mode7")
+			if (selection == "Mode7 tiles")
 			{
 				//256 tiles
 				allocate(128, 128);
@@ -318,7 +319,7 @@ namespace BizHawk.MultiClient
 			ClearDetails();
 		}
 
-		const int paletteCellSize = 17;
+		const int paletteCellSize = 16;
 		const int paletteCellSpacing = 3;
 
 		int[] lastPalette;

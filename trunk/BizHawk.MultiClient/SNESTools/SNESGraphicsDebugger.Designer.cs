@@ -98,20 +98,14 @@
 			this.rbQuadAll = new System.Windows.Forms.RadioButton();
 			this.rbQuad1 = new System.Windows.Forms.RadioButton();
 			this.rbQuad0 = new System.Windows.Forms.RadioButton();
-			this.radioButton9 = new System.Windows.Forms.RadioButton();
 			this.comboDisplayType = new System.Windows.Forms.ComboBox();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.radioButton13 = new System.Windows.Forms.RadioButton();
 			this.radioButton3 = new System.Windows.Forms.RadioButton();
-			this.radioButton12 = new System.Windows.Forms.RadioButton();
 			this.radioButton4 = new System.Windows.Forms.RadioButton();
-			this.radioButton11 = new System.Windows.Forms.RadioButton();
 			this.radioButton5 = new System.Windows.Forms.RadioButton();
 			this.radioButton10 = new System.Windows.Forms.RadioButton();
-			this.radioButton6 = new System.Windows.Forms.RadioButton();
-			this.radioButton7 = new System.Windows.Forms.RadioButton();
-			this.radioButton8 = new System.Windows.Forms.RadioButton();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.tabctrlDetails = new System.Windows.Forms.TabControl();
 			this.tpPalette = new System.Windows.Forms.TabPage();
@@ -157,7 +151,7 @@
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(1102, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(1086, 24);
 			this.menuStrip1.TabIndex = 33;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -237,25 +231,22 @@
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(1102, 627);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(1086, 576);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// panel1
 			// 
 			this.panel1.AutoSize = true;
 			this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.panel1.Controls.Add(this.label17);
-			this.panel1.Controls.Add(this.label14);
 			this.panel1.Controls.Add(this.groupBox3);
 			this.panel1.Controls.Add(this.groupBox2);
 			this.panel1.Controls.Add(this.groupBox1);
-			this.panel1.Controls.Add(this.grpQuadrants);
 			this.panel1.Controls.Add(this.groupBox4);
 			this.panel1.Controls.Add(this.groupBox5);
 			this.panel1.Controls.Add(this.tabctrlDetails);
 			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(574, 626);
+			this.panel1.Size = new System.Drawing.Size(558, 564);
 			this.panel1.TabIndex = 0;
 			// 
 			// groupBox3
@@ -264,16 +255,16 @@
 			this.groupBox3.Controls.Add(this.label19);
 			this.groupBox3.Controls.Add(this.nudScanline);
 			this.groupBox3.Controls.Add(this.sliderScanline);
-			this.groupBox3.Location = new System.Drawing.Point(232, 3);
+			this.groupBox3.Location = new System.Drawing.Point(3, 0);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(57, 272);
+			this.groupBox3.Size = new System.Drawing.Size(57, 191);
 			this.groupBox3.TabIndex = 46;
 			this.groupBox3.TabStop = false;
 			// 
 			// checkScanlineControl
 			// 
 			this.checkScanlineControl.AutoSize = true;
-			this.checkScanlineControl.Location = new System.Drawing.Point(4, 249);
+			this.checkScanlineControl.Location = new System.Drawing.Point(3, 171);
 			this.checkScanlineControl.Name = "checkScanlineControl";
 			this.checkScanlineControl.Size = new System.Drawing.Size(15, 14);
 			this.checkScanlineControl.TabIndex = 42;
@@ -312,7 +303,7 @@
 			this.sliderScanline.Maximum = 224;
 			this.sliderScanline.Name = "sliderScanline";
 			this.sliderScanline.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.sliderScanline.Size = new System.Drawing.Size(30, 228);
+			this.sliderScanline.Size = new System.Drawing.Size(30, 144);
 			this.sliderScanline.TabIndex = 40;
 			this.sliderScanline.Text = "label14";
 			this.sliderScanline.TickFrequency = 16;
@@ -337,9 +328,9 @@
 			this.groupBox2.Controls.Add(this.label6);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label5);
-			this.groupBox2.Location = new System.Drawing.Point(5, 3);
+			this.groupBox2.Location = new System.Drawing.Point(3, 191);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(224, 122);
+			this.groupBox2.Size = new System.Drawing.Size(229, 122);
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Screen";
@@ -525,9 +516,9 @@
 			this.groupBox1.Controls.Add(this.txtBG1SizeInTiles);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.txtBG1SizeBits);
-			this.groupBox1.Location = new System.Drawing.Point(5, 126);
+			this.groupBox1.Location = new System.Drawing.Point(3, 316);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(224, 272);
+			this.groupBox1.Size = new System.Drawing.Size(229, 245);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "BG";
@@ -792,26 +783,23 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.label17);
 			this.groupBox4.Controls.Add(this.check2x);
 			this.groupBox4.Controls.Add(this.radioButton15);
 			this.groupBox4.Controls.Add(this.radioButton14);
-			this.groupBox4.Controls.Add(this.radioButton9);
+			this.groupBox4.Controls.Add(this.label14);
 			this.groupBox4.Controls.Add(this.comboDisplayType);
 			this.groupBox4.Controls.Add(this.radioButton1);
+			this.groupBox4.Controls.Add(this.grpQuadrants);
 			this.groupBox4.Controls.Add(this.radioButton2);
 			this.groupBox4.Controls.Add(this.radioButton13);
 			this.groupBox4.Controls.Add(this.radioButton3);
-			this.groupBox4.Controls.Add(this.radioButton12);
 			this.groupBox4.Controls.Add(this.radioButton4);
-			this.groupBox4.Controls.Add(this.radioButton11);
 			this.groupBox4.Controls.Add(this.radioButton5);
 			this.groupBox4.Controls.Add(this.radioButton10);
-			this.groupBox4.Controls.Add(this.radioButton6);
-			this.groupBox4.Controls.Add(this.radioButton7);
-			this.groupBox4.Controls.Add(this.radioButton8);
-			this.groupBox4.Location = new System.Drawing.Point(294, 3);
+			this.groupBox4.Location = new System.Drawing.Point(66, 0);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(277, 121);
+			this.groupBox4.Size = new System.Drawing.Size(166, 191);
 			this.groupBox4.TabIndex = 35;
 			this.groupBox4.TabStop = false;
 			// 
@@ -819,7 +807,7 @@
 			// 
 			this.radioButton15.AutoSize = true;
 			this.radioButton15.Enabled = false;
-			this.radioButton15.Location = new System.Drawing.Point(6, 31);
+			this.radioButton15.Location = new System.Drawing.Point(56, 83);
 			this.radioButton15.Name = "radioButton15";
 			this.radioButton15.Size = new System.Drawing.Size(58, 17);
 			this.radioButton15.TabIndex = 33;
@@ -831,7 +819,7 @@
 			// 
 			this.radioButton14.AutoSize = true;
 			this.radioButton14.Enabled = false;
-			this.radioButton14.Location = new System.Drawing.Point(170, 98);
+			this.radioButton14.Location = new System.Drawing.Point(6, 100);
 			this.radioButton14.Name = "radioButton14";
 			this.radioButton14.Size = new System.Drawing.Size(45, 17);
 			this.radioButton14.TabIndex = 32;
@@ -847,7 +835,7 @@
 			this.grpQuadrants.Controls.Add(this.rbQuad1);
 			this.grpQuadrants.Controls.Add(this.rbQuad0);
 			this.grpQuadrants.Enabled = false;
-			this.grpQuadrants.Location = new System.Drawing.Point(116, 431);
+			this.grpQuadrants.Location = new System.Drawing.Point(88, 117);
 			this.grpQuadrants.Name = "grpQuadrants";
 			this.grpQuadrants.Size = new System.Drawing.Size(44, 53);
 			this.grpQuadrants.TabIndex = 44;
@@ -905,18 +893,6 @@
 			this.rbQuad0.UseVisualStyleBackColor = true;
 			this.rbQuad0.CheckedChanged += new System.EventHandler(this.rbQuad_CheckedChanged);
 			// 
-			// radioButton9
-			// 
-			this.radioButton9.AutoSize = true;
-			this.radioButton9.Enabled = false;
-			this.radioButton9.Location = new System.Drawing.Point(88, 49);
-			this.radioButton9.Name = "radioButton9";
-			this.radioButton9.Size = new System.Drawing.Size(82, 17);
-			this.radioButton9.TabIndex = 27;
-			this.radioButton9.TabStop = true;
-			this.radioButton9.Text = "2bpp @32K";
-			this.radioButton9.UseVisualStyleBackColor = true;
-			// 
 			// comboDisplayType
 			// 
 			this.comboDisplayType.DropDownHeight = 200;
@@ -929,19 +905,14 @@
             "BG2",
             "BG3",
             "BG4",
-            "Tiles as 2bpp",
-            "Tiles as 4bpp",
-            "Tiles as 8bpp",
-            "Tiles as Mode7",
-            "Tiles as 2bpp (@0K)",
-            "Tiles as 2bpp (@16K)",
-            "Tiles as 2bpp (@24K)",
-            "Tiles as 2bpp (@40K)",
-            "Tiles as 4bpp (@0K)",
-            "Tiles as 4bpp (@32K)"});
+            "OBJ",
+            "2bpp tiles",
+            "4bpp tiles",
+            "8bpp tiles",
+            "Mode7 tiles"});
 			this.comboDisplayType.Location = new System.Drawing.Point(6, 8);
 			this.comboDisplayType.Name = "comboDisplayType";
-			this.comboDisplayType.Size = new System.Drawing.Size(158, 21);
+			this.comboDisplayType.Size = new System.Drawing.Size(107, 21);
 			this.comboDisplayType.TabIndex = 18;
 			this.comboDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboDisplayType_SelectedIndexChanged);
 			// 
@@ -949,7 +920,7 @@
 			// 
 			this.radioButton1.AutoSize = true;
 			this.radioButton1.Enabled = false;
-			this.radioButton1.Location = new System.Drawing.Point(170, 10);
+			this.radioButton1.Location = new System.Drawing.Point(6, 35);
 			this.radioButton1.Name = "radioButton1";
 			this.radioButton1.Size = new System.Drawing.Size(46, 17);
 			this.radioButton1.TabIndex = 19;
@@ -961,7 +932,7 @@
 			// 
 			this.radioButton2.AutoSize = true;
 			this.radioButton2.Enabled = false;
-			this.radioButton2.Location = new System.Drawing.Point(170, 31);
+			this.radioButton2.Location = new System.Drawing.Point(6, 51);
 			this.radioButton2.Name = "radioButton2";
 			this.radioButton2.Size = new System.Drawing.Size(46, 17);
 			this.radioButton2.TabIndex = 20;
@@ -973,7 +944,7 @@
 			// 
 			this.radioButton13.AutoSize = true;
 			this.radioButton13.Enabled = false;
-			this.radioButton13.Location = new System.Drawing.Point(6, 48);
+			this.radioButton13.Location = new System.Drawing.Point(56, 67);
 			this.radioButton13.Name = "radioButton13";
 			this.radioButton13.Size = new System.Drawing.Size(49, 17);
 			this.radioButton13.TabIndex = 31;
@@ -985,7 +956,7 @@
 			// 
 			this.radioButton3.AutoSize = true;
 			this.radioButton3.Enabled = false;
-			this.radioButton3.Location = new System.Drawing.Point(170, 54);
+			this.radioButton3.Location = new System.Drawing.Point(6, 67);
 			this.radioButton3.Name = "radioButton3";
 			this.radioButton3.Size = new System.Drawing.Size(46, 17);
 			this.radioButton3.TabIndex = 21;
@@ -993,23 +964,11 @@
 			this.radioButton3.Text = "BG3";
 			this.radioButton3.UseVisualStyleBackColor = true;
 			// 
-			// radioButton12
-			// 
-			this.radioButton12.AutoSize = true;
-			this.radioButton12.Enabled = false;
-			this.radioButton12.Location = new System.Drawing.Point(6, 102);
-			this.radioButton12.Name = "radioButton12";
-			this.radioButton12.Size = new System.Drawing.Size(76, 17);
-			this.radioButton12.TabIndex = 30;
-			this.radioButton12.TabStop = true;
-			this.radioButton12.Text = "4bpp @0K";
-			this.radioButton12.UseVisualStyleBackColor = true;
-			// 
 			// radioButton4
 			// 
 			this.radioButton4.AutoSize = true;
 			this.radioButton4.Enabled = false;
-			this.radioButton4.Location = new System.Drawing.Point(170, 77);
+			this.radioButton4.Location = new System.Drawing.Point(6, 83);
 			this.radioButton4.Name = "radioButton4";
 			this.radioButton4.Size = new System.Drawing.Size(46, 17);
 			this.radioButton4.TabIndex = 22;
@@ -1017,23 +976,11 @@
 			this.radioButton4.Text = "BG4";
 			this.radioButton4.UseVisualStyleBackColor = true;
 			// 
-			// radioButton11
-			// 
-			this.radioButton11.AutoSize = true;
-			this.radioButton11.Enabled = false;
-			this.radioButton11.Location = new System.Drawing.Point(6, 84);
-			this.radioButton11.Name = "radioButton11";
-			this.radioButton11.Size = new System.Drawing.Size(82, 17);
-			this.radioButton11.TabIndex = 29;
-			this.radioButton11.TabStop = true;
-			this.radioButton11.Text = "4bpp @32K";
-			this.radioButton11.UseVisualStyleBackColor = true;
-			// 
 			// radioButton5
 			// 
 			this.radioButton5.AutoSize = true;
 			this.radioButton5.Enabled = false;
-			this.radioButton5.Location = new System.Drawing.Point(88, 31);
+			this.radioButton5.Location = new System.Drawing.Point(56, 35);
 			this.radioButton5.Name = "radioButton5";
 			this.radioButton5.Size = new System.Drawing.Size(49, 17);
 			this.radioButton5.TabIndex = 23;
@@ -1045,7 +992,7 @@
 			// 
 			this.radioButton10.AutoSize = true;
 			this.radioButton10.Enabled = false;
-			this.radioButton10.Location = new System.Drawing.Point(6, 66);
+			this.radioButton10.Location = new System.Drawing.Point(56, 51);
 			this.radioButton10.Name = "radioButton10";
 			this.radioButton10.Size = new System.Drawing.Size(49, 17);
 			this.radioButton10.TabIndex = 28;
@@ -1053,48 +1000,12 @@
 			this.radioButton10.Text = "4bpp";
 			this.radioButton10.UseVisualStyleBackColor = true;
 			// 
-			// radioButton6
-			// 
-			this.radioButton6.AutoSize = true;
-			this.radioButton6.Enabled = false;
-			this.radioButton6.Location = new System.Drawing.Point(88, 102);
-			this.radioButton6.Name = "radioButton6";
-			this.radioButton6.Size = new System.Drawing.Size(76, 17);
-			this.radioButton6.TabIndex = 24;
-			this.radioButton6.TabStop = true;
-			this.radioButton6.Text = "2bpp @0K";
-			this.radioButton6.UseVisualStyleBackColor = true;
-			// 
-			// radioButton7
-			// 
-			this.radioButton7.AutoSize = true;
-			this.radioButton7.Enabled = false;
-			this.radioButton7.Location = new System.Drawing.Point(88, 84);
-			this.radioButton7.Name = "radioButton7";
-			this.radioButton7.Size = new System.Drawing.Size(82, 17);
-			this.radioButton7.TabIndex = 25;
-			this.radioButton7.TabStop = true;
-			this.radioButton7.Text = "2bpp @16K";
-			this.radioButton7.UseVisualStyleBackColor = true;
-			// 
-			// radioButton8
-			// 
-			this.radioButton8.AutoSize = true;
-			this.radioButton8.Enabled = false;
-			this.radioButton8.Location = new System.Drawing.Point(88, 66);
-			this.radioButton8.Name = "radioButton8";
-			this.radioButton8.Size = new System.Drawing.Size(82, 17);
-			this.radioButton8.TabIndex = 26;
-			this.radioButton8.TabStop = true;
-			this.radioButton8.Text = "2bpp @24K";
-			this.radioButton8.UseVisualStyleBackColor = true;
-			// 
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.paletteViewer);
-			this.groupBox5.Location = new System.Drawing.Point(233, 279);
+			this.groupBox5.Location = new System.Drawing.Point(236, 149);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(338, 344);
+			this.groupBox5.Size = new System.Drawing.Size(319, 344);
 			this.groupBox5.TabIndex = 36;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Palette";
@@ -1103,10 +1014,10 @@
 			// 
 			this.tabctrlDetails.Controls.Add(this.tpPalette);
 			this.tabctrlDetails.Controls.Add(this.tabPage2);
-			this.tabctrlDetails.Location = new System.Drawing.Point(296, 127);
+			this.tabctrlDetails.Location = new System.Drawing.Point(238, 0);
 			this.tabctrlDetails.Name = "tabctrlDetails";
 			this.tabctrlDetails.SelectedIndex = 0;
-			this.tabctrlDetails.Size = new System.Drawing.Size(275, 147);
+			this.tabctrlDetails.Size = new System.Drawing.Size(317, 147);
 			this.tabctrlDetails.TabIndex = 0;
 			// 
 			// tpPalette
@@ -1125,9 +1036,9 @@
 			this.tpPalette.Location = new System.Drawing.Point(4, 22);
 			this.tpPalette.Name = "tpPalette";
 			this.tpPalette.Padding = new System.Windows.Forms.Padding(3);
-			this.tpPalette.Size = new System.Drawing.Size(267, 121);
+			this.tpPalette.Size = new System.Drawing.Size(309, 121);
 			this.tpPalette.TabIndex = 0;
-			this.tpPalette.Text = "Palette";
+			this.tpPalette.Text = "Color";
 			this.tpPalette.UseVisualStyleBackColor = true;
 			// 
 			// txtPaletteDetailsIndexSpecific
@@ -1243,7 +1154,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(267, 121);
+			this.tabPage2.Size = new System.Drawing.Size(313, 121);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "tabPage2";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -1254,16 +1165,16 @@
 			this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panel2.Controls.Add(this.viewer);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel2.Location = new System.Drawing.Point(583, 3);
+			this.panel2.Location = new System.Drawing.Point(567, 3);
 			this.panel2.Name = "panel2";
 			this.tableLayoutPanel1.SetRowSpan(this.panel2, 2);
-			this.panel2.Size = new System.Drawing.Size(516, 621);
+			this.panel2.Size = new System.Drawing.Size(516, 570);
 			this.panel2.TabIndex = 1;
 			// 
 			// label14
 			// 
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(114, 425);
+			this.label14.Location = new System.Drawing.Point(85, 111);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(46, 13);
 			this.label14.TabIndex = 47;
@@ -1272,7 +1183,7 @@
 			// label17
 			// 
 			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(113, 487);
+			this.label17.Location = new System.Drawing.Point(84, 173);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(61, 13);
 			this.label17.TabIndex = 48;
@@ -1281,7 +1192,7 @@
 			// check2x
 			// 
 			this.check2x.Appearance = System.Windows.Forms.Appearance.Button;
-			this.check2x.Location = new System.Drawing.Point(231, 10);
+			this.check2x.Location = new System.Drawing.Point(119, 8);
 			this.check2x.Name = "check2x";
 			this.check2x.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.check2x.Size = new System.Drawing.Size(39, 21);
@@ -1301,9 +1212,9 @@
 			// paletteViewer
 			// 
 			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
-			this.paletteViewer.Location = new System.Drawing.Point(7, 15);
+			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
 			this.paletteViewer.Name = "paletteViewer";
-			this.paletteViewer.Size = new System.Drawing.Size(323, 323);
+			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
 			this.paletteViewer.TabIndex = 18;
 			this.paletteViewer.TabStop = false;
 			this.paletteViewer.MouseEnter += new System.EventHandler(this.paletteViewer_MouseEnter);
@@ -1323,7 +1234,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1102, 651);
+			this.ClientSize = new System.Drawing.Size(1086, 600);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
@@ -1335,7 +1246,6 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudScanline)).EndInit();
@@ -1424,20 +1334,14 @@
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.RadioButton radioButton15;
 		private System.Windows.Forms.RadioButton radioButton14;
-		private System.Windows.Forms.RadioButton radioButton9;
 		private System.Windows.Forms.ComboBox comboDisplayType;
 		private System.Windows.Forms.RadioButton radioButton1;
 		private System.Windows.Forms.RadioButton radioButton2;
 		private System.Windows.Forms.RadioButton radioButton13;
 		private System.Windows.Forms.RadioButton radioButton3;
-		private System.Windows.Forms.RadioButton radioButton12;
 		private System.Windows.Forms.RadioButton radioButton4;
-		private System.Windows.Forms.RadioButton radioButton11;
 		private System.Windows.Forms.RadioButton radioButton5;
 		private System.Windows.Forms.RadioButton radioButton10;
-		private System.Windows.Forms.RadioButton radioButton6;
-		private System.Windows.Forms.RadioButton radioButton7;
-		private System.Windows.Forms.RadioButton radioButton8;
 		private System.Windows.Forms.TrackBar sliderScanline;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private SNESGraphicsViewer paletteViewer;
