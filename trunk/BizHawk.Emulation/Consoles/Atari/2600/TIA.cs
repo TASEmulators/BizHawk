@@ -853,6 +853,17 @@ namespace BizHawk.Emulation.Consoles.Atari
 				scanlinesBuffer.Add(scanline);
 				scanline = new uint[160];
 			}
+			if (scanlinesBuffer.Count >= 1024)
+			{
+				/* if a rom never toggles vsync, FrameAdvance() will hang while consuming
+				 * huge amounts of ram.  this is most certainly due to emulation defects
+				 * that need to be fixed; but it's preferable to not crash the emulator
+				 * in such situations
+				 */
+				outputFrame();
+				scanlinesBuffer.Clear();
+				frameComplete = true;
+			}
 		}
 
 		// TODO: Remove the magic numbers from this function to allow for a variable height screen
