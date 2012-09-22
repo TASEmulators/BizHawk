@@ -2134,26 +2134,7 @@ namespace BizHawk.MultiClient
 
 					if (Global.Config.AVI_CaptureOSD)
 					{
-						// this code captures the emu display with OSD and lua composited onto it.
-
-						// it's slow and a bit hackish; a better solution is to create a new
-						// "dummy render" class that implements IRenderer, IBlitter, and possibly
-						// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
-
-						var c = new RetainedViewportPanel();
-						// this size can be different for showing off stretching or filters
-						c.Width = Global.Emulator.VideoProvider.BufferWidth;
-						c.Height = Global.Emulator.VideoProvider.BufferHeight;
-						var s = new SysdrawingRenderPanel(c);
-						
-						Global.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, s);
-
-						var b = new AVOut.BmpVideoProvder(c.GetBitmap());
-
-						CurrAviWriter.AddFrame(b);
-
-						s.Dispose();
-						c.Dispose();
+						CurrAviWriter.AddFrame(new AVOut.BmpVideoProvder(CaptureOSD()));
 					}
 					else
 					{
@@ -3261,6 +3242,31 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		/// <summary>
+		/// sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
+		/// </summary>
+		Bitmap CaptureOSD()
+		{
+			// this code captures the emu display with OSD and lua composited onto it.
+			// it's slow and a bit hackish; a better solution is to create a new
+			// "dummy render" class that implements IRenderer, IBlitter, and possibly
+			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
+
+			var c = new RetainedViewportPanel();
+			// this size can be different for showing off stretching or filters
+			c.Width = Global.Emulator.VideoProvider.BufferWidth;
+			c.Height = Global.Emulator.VideoProvider.BufferHeight;
+			var s = new SysdrawingRenderPanel(c);
+
+			Global.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, s);
+
+			Bitmap ret = (Bitmap)c.GetBitmap().Clone();
+
+			s.Dispose();
+			c.Dispose();
+			return ret;
+		}
+
 		#region Animaged Gifs
 		/// <summary>
 		/// Creates Animated Gifs
@@ -3292,10 +3298,10 @@ namespace BizHawk.MultiClient
 
 			#region Get the Images for the File
 			int totalFrames = (gifSpeed > 0 ? num_images : (num_images * (gifSpeed * -1)));
-			images.Add(MakeScreenshotImage());
+			images.Add(Global.Config.AVI_CaptureOSD ? CaptureOSD() : MakeScreenshotImage());
 			while (images.Count < totalFrames)
 			{
-				tempImage = MakeScreenshotImage();
+				tempImage = Global.Config.AVI_CaptureOSD ? CaptureOSD() : MakeScreenshotImage();
 				if (gifSpeed < 0)
 					for (speedTracker = 0; speedTracker > gifSpeed; speedTracker--)
 						images.Add(tempImage); //If the speed of the animation is to be slowed down, then add that many copies
