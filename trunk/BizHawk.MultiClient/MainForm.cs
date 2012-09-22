@@ -24,7 +24,7 @@ namespace BizHawk.MultiClient
 	public partial class MainForm : Form
 	{
 		public bool INTERIM = true;
-		public const string EMUVERSION = "Version 1.1.0 interim";
+		public const string EMUVERSION = "Version 1.1.1 interim";
 		public const string RELEASEDATE = "September 22, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
