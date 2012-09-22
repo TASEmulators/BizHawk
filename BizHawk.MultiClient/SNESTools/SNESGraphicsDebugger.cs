@@ -1,5 +1,7 @@
 ﻿//TODO - disable scanline controls if box is unchecked
 //TODO - overhaul the BG display box if its mode7 or direct color (mode7 more important)
+//TODO - draw `1024` label in red if your content is being scaled down.
+//TODO - maybe draw a label (in lieu of above, also) showing what scale the content is at: 2x or 1x or 1/2x
 
 using System;
 using System.Collections.Generic;
@@ -151,6 +153,7 @@ namespace BizHawk.MultiClient
 
 			RenderView();
 			RenderPalette();
+			UpdateColorDetails();
 		}
 
 		//todo - something smarter to cycle through bitmaps without repeatedly trashing them (use the dispose callback on the viewer)
@@ -323,6 +326,7 @@ namespace BizHawk.MultiClient
 		const int paletteCellSpacing = 3;
 
 		int[] lastPalette;
+		int lastColorNum = 0;
 
 		void RenderPalette()
 		{
@@ -351,17 +355,9 @@ namespace BizHawk.MultiClient
 			paletteViewer.SetBitmap(bmp);
 		}
 
-		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
+		void UpdateColorDetails()
 		{
-			var pt = e.Location;
-			pt.X -= paletteCellSpacing;
-			pt.Y -= paletteCellSpacing;
-			int tx = pt.X / (paletteCellSize + paletteCellSpacing);
-			int ty = pt.Y / (paletteCellSize + paletteCellSpacing);
-			if (tx >= 16 || ty >= 16) return;
-			int colorNum = ty * 16 + tx;
-			
-			int rgb555 = lastPalette[colorNum];
+			int rgb555 = lastPalette[lastColorNum];
 			var gd = new SNESGraphicsDecoder();
 			int color = gd.Colorize(rgb555);
 			pnDetailsPaletteColor.BackColor = Color.FromArgb(color);
@@ -370,13 +366,25 @@ namespace BizHawk.MultiClient
 			txtDetailsPaletteColorHex.Text = string.Format("#{0:X6}", color & 0xFFFFFF);
 			txtDetailsPaletteColorRGB.Text = string.Format("({0},{1},{2})", (color >> 16) & 0xFF, (color >> 8) & 0xFF, (color & 0xFF));
 
-			if (colorNum < 128) lblDetailsOBJOrBG.Text = "(BG Palette:)"; else lblDetailsOBJOrBG.Text = "(OBJ Palette:)";
-			txtPaletteDetailsIndexHex.Text = string.Format("${0:X2}", colorNum);
-			txtPaletteDetailsIndexHexSpecific.Text = string.Format("${0:X2}", colorNum & 0x7F);
-			txtPaletteDetailsIndex.Text = string.Format("{0}", colorNum);
-			txtPaletteDetailsIndexSpecific.Text = string.Format("{0}", colorNum & 0x7F);
-			
-			txtPaletteDetailsAddress.Text = string.Format("${0:X3}", colorNum * 2);
+			if (lastColorNum < 128) lblDetailsOBJOrBG.Text = "(BG Palette:)"; else lblDetailsOBJOrBG.Text = "(OBJ Palette:)";
+			txtPaletteDetailsIndexHex.Text = string.Format("${0:X2}", lastColorNum);
+			txtPaletteDetailsIndexHexSpecific.Text = string.Format("${0:X2}", lastColorNum & 0x7F);
+			txtPaletteDetailsIndex.Text = string.Format("{0}", lastColorNum);
+			txtPaletteDetailsIndexSpecific.Text = string.Format("{0}", lastColorNum & 0x7F);
+
+			txtPaletteDetailsAddress.Text = string.Format("${0:X3}", lastColorNum * 2);
+		}
+
+		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
+		{
+			var pt = e.Location;
+			pt.X -= paletteCellSpacing;
+			pt.Y -= paletteCellSpacing;
+			int tx = pt.X / (paletteCellSize + paletteCellSpacing);
+			int ty = pt.Y / (paletteCellSize + paletteCellSpacing);
+			if (tx >= 16 || ty >= 16) return;
+			lastColorNum = ty * 16 + tx;
+			UpdateColorDetails();
 		}
 
 		private void pnDetailsPaletteColor_DoubleClick(object sender, EventArgs e)
