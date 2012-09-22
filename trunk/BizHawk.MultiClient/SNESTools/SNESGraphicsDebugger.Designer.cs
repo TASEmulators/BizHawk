@@ -95,6 +95,7 @@
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.radioButton15 = new System.Windows.Forms.RadioButton();
 			this.radioButton14 = new System.Windows.Forms.RadioButton();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.tabctrlDetails = new System.Windows.Forms.TabControl();
@@ -111,9 +112,11 @@
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.label17 = new System.Windows.Forms.Label();
 			this.label18 = new System.Windows.Forms.Label();
+			this.nudScanline = new System.Windows.Forms.NumericUpDown();
+			this.sliderScanline = new System.Windows.Forms.TrackBar();
+			this.label19 = new System.Windows.Forms.Label();
 			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
-			this.radioButton15 = new System.Windows.Forms.RadioButton();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -122,6 +125,8 @@
 			this.groupBox5.SuspendLayout();
 			this.tabctrlDetails.SuspendLayout();
 			this.tpPalette.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudScanline)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.sliderScanline)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -136,6 +141,7 @@
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.rbBG4);
+			this.groupBox1.Controls.Add(this.label18);
 			this.groupBox1.Controls.Add(this.rbBG3);
 			this.groupBox1.Controls.Add(this.rbBG2);
 			this.groupBox1.Controls.Add(this.rbBG1);
@@ -876,6 +882,18 @@
 			this.groupBox4.TabIndex = 35;
 			this.groupBox4.TabStop = false;
 			// 
+			// radioButton15
+			// 
+			this.radioButton15.AutoSize = true;
+			this.radioButton15.Enabled = false;
+			this.radioButton15.Location = new System.Drawing.Point(169, 83);
+			this.radioButton15.Name = "radioButton15";
+			this.radioButton15.Size = new System.Drawing.Size(58, 17);
+			this.radioButton15.TabIndex = 33;
+			this.radioButton15.TabStop = true;
+			this.radioButton15.Text = "Mode7";
+			this.radioButton15.UseVisualStyleBackColor = true;
+			// 
 			// radioButton14
 			// 
 			this.radioButton14.AutoSize = true;
@@ -891,7 +909,7 @@
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.paletteViewer);
-			this.groupBox5.Location = new System.Drawing.Point(6, 378);
+			this.groupBox5.Location = new System.Drawing.Point(6, 387);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(319, 328);
 			this.groupBox5.TabIndex = 36;
@@ -905,7 +923,7 @@
 			this.tabctrlDetails.Location = new System.Drawing.Point(6, 238);
 			this.tabctrlDetails.Name = "tabctrlDetails";
 			this.tabctrlDetails.SelectedIndex = 0;
-			this.tabctrlDetails.Size = new System.Drawing.Size(319, 134);
+			this.tabctrlDetails.Size = new System.Drawing.Size(282, 143);
 			this.tabctrlDetails.TabIndex = 0;
 			// 
 			// tpPalette
@@ -922,7 +940,7 @@
 			this.tpPalette.Location = new System.Drawing.Point(4, 22);
 			this.tpPalette.Name = "tpPalette";
 			this.tpPalette.Padding = new System.Windows.Forms.Padding(3);
-			this.tpPalette.Size = new System.Drawing.Size(311, 108);
+			this.tpPalette.Size = new System.Drawing.Size(274, 117);
 			this.tpPalette.TabIndex = 0;
 			this.tpPalette.Text = "Palette";
 			this.tpPalette.UseVisualStyleBackColor = true;
@@ -1020,7 +1038,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(311, 108);
+			this.tabPage2.Size = new System.Drawing.Size(274, 117);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "tabPage2";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -1038,11 +1056,47 @@
 			// label18
 			// 
 			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(233, 162);
+			this.label18.Location = new System.Drawing.Point(161, 170);
 			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(70, 26);
+			this.label18.Size = new System.Drawing.Size(56, 26);
 			this.label18.TabIndex = 38;
-			this.label18.Text = "Todo: BG pal\r\ninfo";
+			this.label18.Text = "Todo: BG \r\npal info";
+			// 
+			// nudScanline
+			// 
+			this.nudScanline.Location = new System.Drawing.Point(242, 159);
+			this.nudScanline.Maximum = new decimal(new int[] {
+            224,
+            0,
+            0,
+            0});
+			this.nudScanline.Name = "nudScanline";
+			this.nudScanline.Size = new System.Drawing.Size(77, 20);
+			this.nudScanline.TabIndex = 39;
+			this.nudScanline.ValueChanged += new System.EventHandler(this.nudScanline_ValueChanged);
+			// 
+			// sliderScanline
+			// 
+			this.sliderScanline.AutoSize = false;
+			this.sliderScanline.Location = new System.Drawing.Point(294, 180);
+			this.sliderScanline.Maximum = 224;
+			this.sliderScanline.Name = "sliderScanline";
+			this.sliderScanline.Orientation = System.Windows.Forms.Orientation.Vertical;
+			this.sliderScanline.Size = new System.Drawing.Size(30, 210);
+			this.sliderScanline.TabIndex = 40;
+			this.sliderScanline.Text = "label14";
+			this.sliderScanline.TickFrequency = 16;
+			this.sliderScanline.Value = 224;
+			this.sliderScanline.ValueChanged += new System.EventHandler(this.sliderScanline_ValueChanged);
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(242, 182);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(48, 13);
+			this.label19.TabIndex = 41;
+			this.label19.Text = "Scanline";
 			// 
 			// paletteViewer
 			// 
@@ -1065,24 +1119,14 @@
 			this.viewer.TabIndex = 17;
 			this.viewer.TabStop = false;
 			// 
-			// radioButton15
-			// 
-			this.radioButton15.AutoSize = true;
-			this.radioButton15.Enabled = false;
-			this.radioButton15.Location = new System.Drawing.Point(169, 83);
-			this.radioButton15.Name = "radioButton15";
-			this.radioButton15.Size = new System.Drawing.Size(58, 17);
-			this.radioButton15.TabIndex = 33;
-			this.radioButton15.TabStop = true;
-			this.radioButton15.Text = "Mode7";
-			this.radioButton15.UseVisualStyleBackColor = true;
-			// 
 			// SNESGraphicsDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(905, 727);
-			this.Controls.Add(this.label18);
+			this.Controls.Add(this.label19);
+			this.Controls.Add(this.sliderScanline);
+			this.Controls.Add(this.nudScanline);
 			this.Controls.Add(this.label17);
 			this.Controls.Add(this.tabctrlDetails);
 			this.Controls.Add(this.groupBox5);
@@ -1108,6 +1152,8 @@
 			this.tabctrlDetails.ResumeLayout(false);
 			this.tpPalette.ResumeLayout(false);
 			this.tpPalette.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudScanline)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.sliderScanline)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1201,5 +1247,8 @@
 		private System.Windows.Forms.Label lblDetailsOBJOrBG;
 		private System.Windows.Forms.TextBox txtPaletteDetailsIndexHex;
 		private System.Windows.Forms.RadioButton radioButton15;
+		private System.Windows.Forms.NumericUpDown nudScanline;
+		private System.Windows.Forms.TrackBar sliderScanline;
+		private System.Windows.Forms.Label label19;
 	}
 }

@@ -2,7 +2,7 @@
 
 //TODO 
 //libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
-//rename snes.dll so nobody thinks it's a stock snes.dll (we'll be editing it substantially at some point)
+// edit - this is a lot of work
 //wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailable
 
 using System;
@@ -17,27 +17,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 {
 	public unsafe static class LibsnesDll
 	{
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern string snes_library_id();
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int snes_library_revision_major();
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int snes_library_revision_minor();
 
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_init();
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_power();
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_reset();
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_run();
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_term();
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_unload_cartridge();
 
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_load_cartridge_normal(
 			[MarshalAs(UnmanagedType.LPStr)]
 			string rom_xml, 
@@ -53,49 +53,53 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public delegate ushort snes_input_state_t(int port, int device, int index, int id);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_audio_sample_t(ushort left, ushort right);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void snes_scanlineStart_t(int line);
 
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_video_refresh(snes_video_refresh_t video_refresh);
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_input_poll(snes_input_poll_t input_poll);
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_input_state(snes_input_state_t input_state);
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_audio_sample(snes_audio_sample_t audio_sample);
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_scanlineStart(snes_scanlineStart_t scanlineStart);
 
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.U1)]
 		public static extern bool snes_check_cartridge(
 			[MarshalAs(UnmanagedType.LPArray)] byte[] rom_data,
 			int rom_size);
 
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.U1)]
 		public static extern SNES_REGION snes_get_region();
 
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int snes_get_memory_size(SNES_MEMORY id);
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr snes_get_memory_data(SNES_MEMORY id);
 
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int snes_serialize_size();
     
 		[return: MarshalAs(UnmanagedType.U1)]
-    [DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern bool snes_serialize(IntPtr data, int size);
 		
 		[return: MarshalAs(UnmanagedType.U1)]
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool snes_unserialize(IntPtr data, int size);
 
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_layer_enable(int layer, int priority,
 			[MarshalAs(UnmanagedType.U1)]
 			bool enable
 			);
 
-		[DllImport("snes.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int snes_peek_logical_register(SNES_REG reg);
 
 		public enum SNES_REG : int
@@ -180,7 +184,43 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 	}
 
+	public class ScanlineHookManager
+	{
+		public void Register(object tag, Action<int> callback)
+		{
+			var rr = new RegistrationRecord();
+			rr.tag = tag;
+			rr.callback = callback;
 
+			Unregister(tag);
+			records.Add(rr);
+			OnHooksChanged();
+		}
+
+		public int HookCount { get { return records.Count; } }
+
+		public virtual void OnHooksChanged() { }
+
+		public void Unregister(object tag)
+		{
+			records.RemoveAll((r) => r.tag == tag);
+		}
+
+		public void HandleScanline(int scanline)
+		{
+			foreach (var rr in records) rr.callback(scanline);
+		}
+
+		List<RegistrationRecord> records = new List<RegistrationRecord>();
+
+		class RegistrationRecord
+		{
+			public object tag;
+			public int scanline;
+			public Action<int> callback;
+		}
+	}
+	
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
 	{
 		bool disposed = false;
@@ -195,6 +235,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_poll(null);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_state(null);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(null);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_scanlineStart(null);
 
 			LibsnesDll.snes_unload_cartridge();
 			LibsnesDll.snes_term();
@@ -205,10 +246,35 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		//that will be necessary to get it saving to disk
 		byte[] disposedSaveRam;
 
-
 		//we can only have one active snes core at a time, due to libsnes being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
 		static LibsnesCore CurrLibsnesCore;
+
+		public class MyScanlineHookManager : ScanlineHookManager
+		{
+			public MyScanlineHookManager(LibsnesCore core)
+			{
+				this.core = core;
+			}
+			LibsnesCore core;
+
+			public override void OnHooksChanged()
+			{
+				core.OnScanlineHooksChanged();
+			}
+		}
+		public MyScanlineHookManager ScanlineHookManager;
+		void OnScanlineHooksChanged()
+		{
+			if (disposed) return;
+			if (ScanlineHookManager.HookCount == 0) LibsnesDll.snes_set_scanlineStart(null);
+			else LibsnesDll.snes_set_scanlineStart(scanlineStart_cb);
+		}
+
+		void snes_scanlineStart(int line)
+		{
+			ScanlineHookManager.HandleScanline(line);
+		}
 
 		public LibsnesCore(byte[] romData)
 		{
@@ -216,6 +282,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if(CurrLibsnesCore != null)
 				CurrLibsnesCore.Dispose();
 			CurrLibsnesCore = this;
+
+			ScanlineHookManager = new MyScanlineHookManager(this);
 
 			LibsnesDll.snes_init();
 
@@ -230,6 +298,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			soundcb = new LibsnesDll.snes_audio_sample_t(snes_audio_sample);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
+
+			scanlineStart_cb = new LibsnesDll.snes_scanlineStart_t(snes_scanlineStart);
 
 			// start up audio resampler
 			InitAudio();
@@ -253,6 +323,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		LibsnesDll.snes_input_poll_t pollcb;
 		LibsnesDll.snes_input_state_t inputcb;
 		LibsnesDll.snes_audio_sample_t soundcb;
+		LibsnesDll.snes_scanlineStart_t scanlineStart_cb;
 
 		ushort snes_input_state(int port, int device, int index, int id)
 		{

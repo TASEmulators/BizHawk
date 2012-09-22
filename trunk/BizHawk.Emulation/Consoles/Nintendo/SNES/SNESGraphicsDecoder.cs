@@ -245,6 +245,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				{
 					int tileEntry = vram[tidx * 2];
 					int src = tileEntry * 64;
+					if (tileEntry != 0)
+					{
+						int zzz = 9;
+					}
 					for (int py = 0, pix=src; py < 8; py++)
 					{
 						for (int px = 0; px < 8; px++, pix++)
