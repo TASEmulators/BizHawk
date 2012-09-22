@@ -271,7 +271,7 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			return ".wav writer";
+			return "WAV writer";
 		}
 
 		public string WriterDescription()
