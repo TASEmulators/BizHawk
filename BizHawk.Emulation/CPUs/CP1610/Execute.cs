@@ -115,7 +115,8 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			}
 			byte dest, src, mem;
 			ushort dest_value, src_value, mem_read, addr, addr_read, offset;
-			int cycles = 0, decle2, decle3, result = 0, ones, twos, carry, status_word, lower, sign, cond, ext;
+			int cycles = 0, decle2, decle3, result = 0, twos, status_word, lower, sign, cond, ext;
+			//int ones, carry;
 			bool branch = false;
 			bool FlagD_prev = FlagD;
 			int opcode = ReadMemory(RegisterPC++) & 0x3FF;
