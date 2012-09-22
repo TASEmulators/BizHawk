@@ -234,7 +234,7 @@ namespace BizHawk.MultiClient.AVOut
 
 		public override string ToString()
 		{
-			return "gif writer";
+			return "GIF writer";
 		}
 	}
 }

@@ -263,7 +263,7 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			return "ffmpeg writer";
+			return "FFmpeg writer";
 		}
 
 		public string WriterDescription()

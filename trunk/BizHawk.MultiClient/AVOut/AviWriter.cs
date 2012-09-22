@@ -789,7 +789,7 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			return "avi writer";
+			return "AVI writer";
 		}
 
 		public string WriterDescription()
