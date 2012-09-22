@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         public bool     DisplayEnabled       { get { return (Registers[1]  & 0x40) != 0; } }
         public bool     VInterruptEnabled    { get { return (Registers[1]  & 0x20) != 0; } }
         public bool     DmaEnabled           { get { return (Registers[1]  & 0x10) != 0; } }
-        public bool     CellBasedVertScroll  { get { return (Registers[11] & 0x08) != 0; } }
+        public bool     CellBasedVertScroll  { get { return (Registers[11] & 0x04) != 0; } }
 
         public bool     InDisplayPeriod      { get { return ScanLine < 224 && DisplayEnabled; } }
 
