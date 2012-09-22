@@ -215,6 +215,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						var dims = bg.ScreenSizeInPixels;
+						dims.Height = dims.Width = Math.Max(dims.Width, dims.Height);
 						allocate(dims.Width, dims.Height);
 						int numPixels = dims.Width * dims.Height;
 						System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
