@@ -87,6 +87,7 @@
 			this.showChangeCountsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.showPreviousValueToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.showDifferenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showDomainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.WatchCountLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
@@ -114,7 +115,7 @@
 			this.Diff = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Notes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.showDomainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.unfreezeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -490,6 +491,7 @@
             this.duplicateToolStripMenuItem,
             this.pokeToolStripMenuItem,
             this.freezeToolStripMenuItem,
+            this.unfreezeAllToolStripMenuItem,
             this.viewInHexEditorToolStripMenuItem,
             this.toolStripSeparator6,
             this.insertSeperatorToolStripMenuItem,
@@ -501,7 +503,7 @@
             this.showDifferenceToolStripMenuItem,
             this.showDomainToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(189, 324);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(189, 346);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// editToolStripMenuItem
@@ -605,6 +607,13 @@
 			this.showDifferenceToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.showDifferenceToolStripMenuItem.Text = "Show Difference";
 			this.showDifferenceToolStripMenuItem.Click += new System.EventHandler(this.showDifferenceToolStripMenuItem_Click);
+			// 
+			// showDomainToolStripMenuItem
+			// 
+			this.showDomainToolStripMenuItem.Name = "showDomainToolStripMenuItem";
+			this.showDomainToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.showDomainToolStripMenuItem.Text = "Show Domain";
+			this.showDomainToolStripMenuItem.Click += new System.EventHandler(this.showDomainToolStripMenuItem_Click);
 			// 
 			// WatchCountLabel
 			// 
@@ -876,12 +885,12 @@
 			this.Notes.Text = "Notes";
 			this.Notes.Width = 128;
 			// 
-			// showDomainToolStripMenuItem
+			// unfreezeAllToolStripMenuItem
 			// 
-			this.showDomainToolStripMenuItem.Name = "showDomainToolStripMenuItem";
-			this.showDomainToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-			this.showDomainToolStripMenuItem.Text = "Show Domain";
-			this.showDomainToolStripMenuItem.Click += new System.EventHandler(this.showDomainToolStripMenuItem_Click);
+			this.unfreezeAllToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
+			this.unfreezeAllToolStripMenuItem.Name = "unfreezeAllToolStripMenuItem";
+			this.unfreezeAllToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.unfreezeAllToolStripMenuItem.Text = "Unfreeze &All";
 			// 
 			// RamWatch
 			// 
@@ -1003,5 +1012,6 @@
 		private System.Windows.Forms.ColumnHeader DomainColumn;
 		private System.Windows.Forms.ToolStripMenuItem domainToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showDomainToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem unfreezeAllToolStripMenuItem;
     }
 }
