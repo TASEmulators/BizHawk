@@ -176,6 +176,8 @@ namespace BizHawk.MultiClient
 					cheatList.Remove(cheatList[x]);
 				}
 			}
+
+			Global.OSD.AddMessage("Cheat removed");
 		}
 
 		public string CheatsPath
