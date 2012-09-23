@@ -81,6 +81,7 @@
 			this.GameGenieCode.Size = new System.Drawing.Size(86, 20);
 			this.GameGenieCode.TabIndex = 20;
 			this.GameGenieCode.TextChanged += new System.EventHandler(this.GameGenieCode_TextChanged);
+			this.GameGenieCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameGenieCode_KeyDown);
 			this.GameGenieCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GameGenieCode_KeyPress);
 			// 
 			// GameGenieCodeBox
@@ -437,34 +438,34 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
 			// 
 			// autoloadToolStripMenuItem
 			// 
 			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.autoloadToolStripMenuItem.Text = "Auto-load";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
 			// saveWindowPositionToolStripMenuItem
 			// 
 			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -472,7 +473,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(302, 266);
+			this.ClientSize = new System.Drawing.Size(302, 263);
 			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.Encoding);
 			this.Controls.Add(this.groupBox1);

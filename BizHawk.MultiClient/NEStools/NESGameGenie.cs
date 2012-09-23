@@ -386,6 +386,11 @@ namespace BizHawk.MultiClient
 
 		private void AddCheat_Click(object sender, EventArgs e)
 		{
+			AddCheatClick();
+		}
+
+		private void AddCheatClick()
+		{
 			Cheat c = new Cheat();
 			c.name = GameGenieCode.Text;
 
@@ -441,6 +446,17 @@ namespace BizHawk.MultiClient
 		{
 			autoloadToolStripMenuItem.Checked = Global.Config.NESGGAutoload;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESGGSaveWindowPosition;
+		}
+
+		private void GameGenieCode_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyData == Keys.Enter)
+			{
+				if (AddCheat.Enabled)
+				{
+					AddCheatClick();
+				}
+			}
 		}
 	}
 }
