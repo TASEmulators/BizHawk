@@ -792,9 +792,13 @@ namespace BizHawk.MultiClient
 		public int GetHighlightedAddress()
 		{
 			if (addressHighlighted >= 0)
+			{
 				return addressHighlighted;
+			}
 			else
+			{
 				return -1; //Negative = no address highlighted
+			}
 		}
 
 		private bool IsFrozen(int address)
@@ -824,6 +828,10 @@ namespace BizHawk.MultiClient
 					FreezeAddress(addr);
 				}
 			}
+
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.Cheats1.UpdateValues();
 		}
 
 		private void UnFreezeAddress(int address)
@@ -1640,6 +1648,10 @@ namespace BizHawk.MultiClient
 		{
 			Global.MainForm.Cheats1.RemoveAllCheats();
 			MemoryViewerBox.Refresh();
+
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.Cheats1.UpdateValues();
 		}
 
 		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)

@@ -2295,6 +2295,9 @@ namespace BizHawk.MultiClient
 				}
 
 				UpdateValues();
+				Global.MainForm.HexEditor1.UpdateValues();
+				Global.MainForm.RamWatch1.UpdateValues();
+				Global.MainForm.Cheats1.UpdateValues();
 			}
 		}
 
@@ -2372,6 +2375,9 @@ namespace BizHawk.MultiClient
 				}
 
 				UpdateValues();
+				Global.MainForm.HexEditor1.UpdateValues();
+				Global.MainForm.RamWatch1.UpdateValues();
+				Global.MainForm.Cheats1.UpdateValues();
 			}
 		}
 
@@ -2661,6 +2667,10 @@ namespace BizHawk.MultiClient
 		{
 			Global.MainForm.Cheats1.RemoveAllCheats();
 			UpdateValues();
+
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
+			Global.MainForm.Cheats1.UpdateValues();
 		}
 	}
 }

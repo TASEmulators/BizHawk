@@ -73,17 +73,20 @@ namespace BizHawk.MultiClient
 
 		private void CheatListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (Global.CheatList.Cheat(index).address < 0)
+			if (index < Global.CheatList.Count)
 			{
-				color = Color.DarkGray;
-			}
-			else if (Global.CheatList.Cheat(index).IsEnabled())
-			{
-				color = Color.LightCyan;
-			}
-			else
-			{
-				color = this.BackColor;
+				if (Global.CheatList.Cheat(index).address < 0)
+				{
+					color = Color.DarkGray;
+				}
+				else if (Global.CheatList.Cheat(index).IsEnabled())
+				{
+					color = Color.LightCyan;
+				}
+				else
+				{
+					color = this.BackColor;
+				}
 			}
 		}
 
@@ -198,6 +201,10 @@ namespace BizHawk.MultiClient
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			DisplayCheatsList();
 			CheatListView.Refresh();
+
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
 		}
 
 		public void RemoveCheat(Cheat c)
@@ -210,6 +217,9 @@ namespace BizHawk.MultiClient
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			DisplayCheatsList();
 			CheatListView.Refresh();
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
 		}
 
 		public void LoadCheatFromRecent(string file)
@@ -779,6 +789,10 @@ namespace BizHawk.MultiClient
 					}
 				}
 				CheatListView.Refresh();
+
+				Global.MainForm.RamWatch1.UpdateValues();
+				Global.MainForm.RamSearch1.UpdateValues();
+				Global.MainForm.HexEditor1.UpdateValues();
 			}
 			UpdateNumberOfCheats();
 		}
