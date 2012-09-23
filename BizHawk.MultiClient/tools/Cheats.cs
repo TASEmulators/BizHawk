@@ -113,11 +113,11 @@ namespace BizHawk.MultiClient
 			{
 				text = String.Format("{0:X2}", Global.CheatList.Cheat(index).compare);
 			}
-			else if (column == 5) //Domain
+			else if (column == 4) //Domain
 			{
 				text = Global.CheatList.Cheat(index).domain.Name;
 			}
-			else if (column == 4) //Enabled
+			else if (column == 5) //Enabled
 			{
 				if (Global.CheatList.Cheat(index).IsEnabled())
 				{
