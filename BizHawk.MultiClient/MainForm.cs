@@ -326,7 +326,7 @@ namespace BizHawk.MultiClient
 			base.Dispose(disposing);
 		}
 
-		void SyncCoreInputComm()
+		public void SyncCoreInputComm()
 		{
 			Global.CoreInputComm.NES_BackdropColor = Global.Config.NESBackgroundColor;
 			Global.CoreInputComm.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
