@@ -222,21 +222,11 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		#region savestates
 
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
+		/// <summary>
+		/// handles the core-portion of savestating
+		/// </summary>
+		/// <returns>private binary data corresponding to a savestate</returns>
+		byte[] SaveCoreBinary()
 		{
 			uint nlen = 0;
 			IntPtr ndata = IntPtr.Zero;
@@ -251,7 +241,40 @@ namespace BizHawk.Emulation.Consoles.GB
 			System.Runtime.InteropServices.Marshal.Copy(ndata, data, 0, (int)nlen);
 			LibGambatte.gambatte_savestate_destroy(ndata);
 
-			writer.Write((int)nlen);
+			return data;
+		}
+
+		/// <summary>
+		/// handles the core portion of loadstating
+		/// </summary>
+		/// <param name="data">private binary data previously returned from SaveCoreBinary()</param>
+		void LoadCoreBinary(byte[] data)
+		{
+			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)data.Length))
+				throw new Exception("Gambatte failed to load the savestate!");
+		}
+	
+		public void SaveStateText(System.IO.TextWriter writer)
+		{
+			var temp = SaveStateBinary();
+			temp.SaveAsHex(writer);
+			// write extra copy of stuff we don't use
+			writer.WriteLine("Frame {0}", Frame);
+		}
+
+		public void LoadStateText(System.IO.TextReader reader)
+		{
+			string hex = reader.ReadLine();
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHex(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+		}
+
+		public void SaveStateBinary(System.IO.BinaryWriter writer)
+		{
+			byte[] data = SaveCoreBinary();
+
+			writer.Write(data.Length);
 			writer.Write(data);
 
 			// other variables
@@ -265,8 +288,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			int length = reader.ReadInt32();
 			byte[] data = reader.ReadBytes(length);
 
-			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)length))
-				throw new Exception("Gambatte failed to load the savestate!");
+			LoadCoreBinary(data);
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
