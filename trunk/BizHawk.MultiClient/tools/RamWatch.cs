@@ -998,53 +998,93 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 			if (indexes.Count == 0)
 			{
-				contextMenuStrip1.Items[0].Visible = false;
-				contextMenuStrip1.Items[1].Visible = false;
-				contextMenuStrip1.Items[2].Visible = false;
-				contextMenuStrip1.Items[3].Visible = false;
-				contextMenuStrip1.Items[4].Visible = false;
-				contextMenuStrip1.Items[5].Visible = false;
-				contextMenuStrip1.Items[6].Visible = false;
-				contextMenuStrip1.Items[8].Visible = false;
-				contextMenuStrip1.Items[9].Visible = false;
+				editToolStripMenuItem.Visible = false;
+				removeToolStripMenuItem.Visible = false;
+				duplicateToolStripMenuItem.Visible = false;
+				pokeToolStripMenuItem.Visible = false;
+				freezeToolStripMenuItem.Visible = false;
+				viewInHexEditorToolStripMenuItem.Visible = false;
+				toolStripSeparator6.Visible = false;
+				insertSeperatorToolStripMenuItem.Visible = false;
+				moveUpToolStripMenuItem1.Visible = false;
+				moveDownToolStripMenuItem1.Visible = false;
+				toolStripSeparator2.Visible = false;
 
 			}
 			else
 			{
-				for (int x = 0; x < contextMenuStrip1.Items.Count; x++)
-					contextMenuStrip1.Items[x].Visible = true;
+				for (int i = 0; i < contextMenuStrip1.Items.Count; i++)
+				{
+					contextMenuStrip1.Items[i].Visible = true;
+				}
 
 				if (indexes.Count == 1)
 				{
 					if (Global.CheatList.IsActiveCheat(Domain, Watches[indexes[0]].Address))
 					{
-						contextMenuStrip1.Items[4].Text = "&Unfreeze address";
-						contextMenuStrip1.Items[4].Image =
+						freezeToolStripMenuItem.Text = "&Unfreeze address";
+						freezeToolStripMenuItem.Image =
 							BizHawk.MultiClient.Properties.Resources.Unfreeze;
 					}
 					else
 					{
-						contextMenuStrip1.Items[4].Text = "&Freeze address";
-						contextMenuStrip1.Items[4].Image =
+						freezeToolStripMenuItem.Text = "&Freeze address";
+						freezeToolStripMenuItem.Image =
+							BizHawk.MultiClient.Properties.Resources.Freeze;
+					}
+				}
+				else
+				{
+					bool allCheats = true;
+					foreach (int i in indexes)
+					{
+						if (!Global.CheatList.IsActiveCheat(Domain, Watches[i].Address))
+						{
+							allCheats = false;
+						}
+					}
+
+					if (allCheats)
+					{
+						freezeToolStripMenuItem.Text = "&Unfreeze address";
+						freezeToolStripMenuItem.Image =
+							BizHawk.MultiClient.Properties.Resources.Unfreeze;
+					}
+					else
+					{
+						freezeToolStripMenuItem.Text = "&Freeze address";
+						freezeToolStripMenuItem.Image =
 							BizHawk.MultiClient.Properties.Resources.Freeze;
 					}
 				}
 			}
 
 			if (Global.Config.RamWatchShowChangeColumn)
-				contextMenuStrip1.Items[11].Text = "Hide change counts";
+			{
+				showChangeCountsToolStripMenuItem1.Text = "Hide change counts";
+			}
 			else
-				contextMenuStrip1.Items[11].Text = "Show change counts";
+			{
+				showChangeCountsToolStripMenuItem1.Text = "Show change counts";
+			}
 
 			if (Global.Config.RamWatchShowPrevColumn)
-				contextMenuStrip1.Items[12].Text = "Hide previous value";
+			{
+				showPreviousValueToolStripMenuItem1.Text = "Hide previous value";
+			}
 			else
-				contextMenuStrip1.Items[12].Text = "Show previous value";
+			{
+				showPreviousValueToolStripMenuItem1.Text = "Show previous value";
+			}
 
 			if (Global.Config.RamWatchShowDiffColumn)
-				contextMenuStrip1.Items[13].Text = "Hide difference value";
+			{
+				showDifferenceToolStripMenuItem.Text = "Hide difference value";
+			}
 			else
-				contextMenuStrip1.Items[13].Text = "Show difference value";
+			{
+				showDifferenceToolStripMenuItem.Text = "Show difference value";
+			}
 
 			if (Global.Config.RamWatchShowDomainColumn)
 			{
@@ -1053,6 +1093,15 @@ namespace BizHawk.MultiClient
 			else
 			{
 				showDomainToolStripMenuItem.Text = "Show domain";
+			}
+
+			if (Global.CheatList.HasActiveCheats)
+			{
+				unfreezeAllToolStripMenuItem.Visible = true;
+			}
+			else
+			{
+				unfreezeAllToolStripMenuItem.Visible = false;
 			}
 			
 		}
