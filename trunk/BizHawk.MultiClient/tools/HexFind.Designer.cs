@@ -42,6 +42,7 @@
 			this.FindBox.Name = "FindBox";
 			this.FindBox.Size = new System.Drawing.Size(156, 20);
 			this.FindBox.TabIndex = 0;
+			this.FindBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FindBox_KeyDown);
 			this.FindBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FindBox_KeyPress);
 			// 
 			// Find_Prev

@@ -110,5 +110,13 @@ namespace BizHawk.MultiClient
 		{
 			ChangeCasing();
 		}
+
+		private void FindBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyData == Keys.Enter)
+			{
+				Global.MainForm.HexEditor1.FindNext(GetFindBoxChars());
+			}
+		}
 	}
 }
