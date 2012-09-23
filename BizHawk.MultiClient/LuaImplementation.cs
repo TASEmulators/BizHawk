@@ -209,7 +209,7 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < NESFunctions.Length; i++)
 			{
 				lua.RegisterFunction("nes." + NESFunctions[i], this, this.GetType().GetMethod("nes_" + NESFunctions[i]));
-				docs.Add("bit", NESFunctions[i], this.GetType().GetMethod("nes_" + NESFunctions[i]));
+				docs.Add("nes", NESFunctions[i], this.GetType().GetMethod("nes_" + NESFunctions[i]));
 			}
 
 			docs.Sort();
@@ -539,8 +539,10 @@ namespace BizHawk.MultiClient
 		public static string[] NESFunctions = new string[]
 		                                          	{
 		                                          		"setscanlines",
-														"nes_gettopscanline",
-														"nes_getbottomscanline",
+														"gettopscanline",
+														"getbottomscanline",
+														"getclipleftandright",
+														"setclipleftandright",
 		                                          	};
 		/****************************************************/
 		/*************function definitions********************/
@@ -2450,57 +2452,58 @@ namespace BizHawk.MultiClient
 
 		public void nes_setscanlines(object top, object bottom)
 		{
+			
+			int first = LuaInt(top);
+			int last = LuaInt(bottom);
+			if (first > 127)
+			{
+				first = 127;
+			}
+			else if (first < 0)
+			{
+				first = 0;
+			}
+
+			if (last > 239)
+			{
+				last = 239;
+			}
+			else if (last < 128)
+			{
+				last = 128;
+			}
+
+			Global.Config.NESTopLine = first;
+			Global.Config.NESBottomLine = last;
+			
 			if (Global.Emulator is NES)
 			{
-				int first = LuaInt(top);
-				int last = LuaInt(bottom);
-				if (first > 127)
-				{
-					first = 127;
-				}
-				else if (first < 0)
-				{
-					first = 0;
-				}
-
-				if (last > 239)
-				{
-					last = 239;
-				}
-				else if (last < 128)
-				{
-					last = 128;
-				}
-
-				Global.Config.NESTopLine = first;
 				(Global.Emulator as NES).FirstDrawLine = first;
-
-				Global.Config.NESBottomLine = last;
 				(Global.Emulator as NES).LastDrawLine = last;
 			}
 		}
 
 		public int nes_gettopscanline()
 		{
-			if (Global.Emulator is NES)
-			{
-				return Global.Config.NESTopLine;
-			}
-			else
-			{
-				return 0;
-			}
+			return Global.Config.NESTopLine;
 		}
 
 		public int nes_getbottomscanline()
 		{
+			return Global.Config.NESBottomLine;
+		}
+
+		public bool nes_getclipleftandright()
+		{
+			return Global.Config.NESClipLeftAndRight;
+		}
+
+		public void nes_setclipleftandright(bool leftandright)
+		{
+			Global.Config.NESClipLeftAndRight = leftandright;
 			if (Global.Emulator is NES)
 			{
-				return Global.Config.NESBottomLine;
-			}
-			else
-			{
-				return 0;
+				(Global.Emulator as NES).SetClipLeftAndRight(leftandright);
 			}
 		}
 	}
