@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             InitializeSaveRam(game);
         }
 
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
 

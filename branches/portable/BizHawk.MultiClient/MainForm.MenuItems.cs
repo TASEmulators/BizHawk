@@ -1150,6 +1150,7 @@ namespace BizHawk.MultiClient
 		{
 			recordAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.AVIRecordBinding;
 			stopAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.AVIStopBinding;
+			captureOSDToolStripMenuItem.Checked = Global.Config.AVI_CaptureOSD;
 
 			if (CurrAviWriter == null)
 			{
@@ -1927,6 +1928,26 @@ namespace BizHawk.MultiClient
 			oBJ1ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ2;
 			oBJ2ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ3;
 			oBJ3ToolStripMenuItem.Checked = Global.Config.SNES_ShowOBJ4;
+		}
+
+		private void captureOSDToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AVI_CaptureOSD ^= true;
+		}
+
+		private void forceDMGModeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_ForceDMG ^= true;
+		}
+
+		private void gBAInCGBModeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_GBACGB ^= true;
+		}
+
+		private void multicartCompatibilityToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_MulticartCompat ^= true;
 		}
 	}
 }

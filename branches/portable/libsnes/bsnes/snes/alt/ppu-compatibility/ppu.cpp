@@ -84,6 +84,8 @@ void PPU::scanline() {
     regs.range_over = false;
   }
 
+	interface->scanlineStart(line);
+
   if(line == 1) {
     //mosaic reset
     for(int bg = BG1; bg <= BG4; bg++) regs.bg_y[bg] = 1;

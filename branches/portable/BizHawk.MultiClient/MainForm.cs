@@ -24,8 +24,8 @@ namespace BizHawk.MultiClient
 	public partial class MainForm : Form
 	{
 		public bool INTERIM = true;
-		public const string EMUVERSION = "Version 1.1.0 interim";
-		public const string RELEASEDATE = "June 17, 2012";
+		public const string EMUVERSION = "Version 1.1.1 interim";
+		public const string RELEASEDATE = "September 22, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -2193,7 +2193,7 @@ namespace BizHawk.MultiClient
 
 				//=======================================
 				MemoryPulse.Pulse();
-				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
+				Global.Emulator.FrameAdvance(!throttle.skipnextframe, !Global.ClientControls["MaxTurbo"] || CurrAviWriter != null);
 				MemoryPulse.Pulse();
 				//=======================================
 				if (CurrAviWriter != null)
@@ -2209,7 +2209,14 @@ namespace BizHawk.MultiClient
 					//DumpProxy.GetSamples(temp);
 					//genSound = false;
 
-					CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+					if (Global.Config.AVI_CaptureOSD)
+					{
+						CurrAviWriter.AddFrame(new AVOut.BmpVideoProvder(CaptureOSD()));
+					}
+					else
+					{
+						CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+					}
 					CurrAviWriter.AddSamples(temp);
 
 					if (autoDumpLength > 0)
@@ -2280,7 +2287,11 @@ namespace BizHawk.MultiClient
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
-			SNESGraphicsDebugger1.UpdateValues();
+		}
+
+		public void UpdateToolsLoadstate()
+		{
+			SNESGraphicsDebugger1.UpdateToolsLoadstate();
 		}
 
 		/// <summary>
@@ -2294,6 +2305,7 @@ namespace BizHawk.MultiClient
 			LuaConsole1.LuaImp.FrameRegisterAfter();
 #endif
 			TAStudio1.UpdateValues();
+			SNESGraphicsDebugger1.UpdateToolsAfter();
 		}
 
 		private unsafe Image MakeScreenshotImage()
@@ -2326,7 +2338,7 @@ namespace BizHawk.MultiClient
 
 		void TakeScreenshotToClipboard()
 		{
-			using (var img = MakeScreenshotImage())
+			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
 				System.Windows.Forms.Clipboard.SetImage(img);
 			}
@@ -2351,7 +2363,7 @@ namespace BizHawk.MultiClient
 			var fi = new FileInfo(path);
 			if (fi.Directory.Exists == false)
 				fi.Directory.Create();
-			using (var img = MakeScreenshotImage())
+			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
 				img.Save(fi.FullName, ImageFormat.Png);
 			}
@@ -2452,6 +2464,7 @@ namespace BizHawk.MultiClient
 				Global.OSD.ClearGUIText();
 				UpdateToolsBefore();
 				UpdateToolsAfter();
+				UpdateToolsLoadstate();
 				Global.OSD.AddMessage("Loaded state: " + name);
 			}
 			else
@@ -2833,10 +2846,11 @@ namespace BizHawk.MultiClient
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.cue;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.rom;*.cue;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Super NES", "*.smc;*.sfc;%ARCH%",
+					"Gameboy", "*.gb;*.gbc;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
@@ -3365,6 +3379,31 @@ namespace BizHawk.MultiClient
 			RunLoopBlocked = false;
 		}
 
+		/// <summary>
+		/// sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
+		/// </summary>
+		Bitmap CaptureOSD()
+		{
+			// this code captures the emu display with OSD and lua composited onto it.
+			// it's slow and a bit hackish; a better solution is to create a new
+			// "dummy render" class that implements IRenderer, IBlitter, and possibly
+			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
+
+			var c = new RetainedViewportPanel();
+			// this size can be different for showing off stretching or filters
+			c.Width = Global.Emulator.VideoProvider.BufferWidth;
+			c.Height = Global.Emulator.VideoProvider.BufferHeight;
+			var s = new SysdrawingRenderPanel(c);
+
+			Global.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, s);
+
+			Bitmap ret = (Bitmap)c.GetBitmap().Clone();
+
+			s.Dispose();
+			c.Dispose();
+			return ret;
+		}
+
 		#region Animaged Gifs
 		/// <summary>
 		/// Creates Animated Gifs
@@ -3396,10 +3435,10 @@ namespace BizHawk.MultiClient
 
 			#region Get the Images for the File
 			int totalFrames = (gifSpeed > 0 ? num_images : (num_images * (gifSpeed * -1)));
-			images.Add(MakeScreenshotImage());
+			images.Add(Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage());
 			while (images.Count < totalFrames)
 			{
-				tempImage = MakeScreenshotImage();
+				tempImage = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage();
 				if (gifSpeed < 0)
 					for (speedTracker = 0; speedTracker > gifSpeed; speedTracker--)
 						images.Add(tempImage); //If the speed of the animation is to be slowed down, then add that many copies
@@ -3694,19 +3733,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void forceDMGModeToolStripMenuItem_Click(object sender, EventArgs e)
+		private void captureOSDToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			Global.Config.GB_ForceDMG ^= true;
+			Global.Config.Screenshot_CaptureOSD ^= true;
 		}
 
-		private void gBAInCGBModeToolStripMenuItem_Click(object sender, EventArgs e)
+		private void screenshotToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
-			Global.Config.GB_GBACGB ^= true;
-		}
-
-		private void multicartCompatibilityToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_MulticartCompat ^= true;
+			captureOSDToolStripMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
 		}
 	}
 }

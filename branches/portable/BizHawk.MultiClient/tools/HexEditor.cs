@@ -125,7 +125,6 @@ namespace BizHawk.MultiClient
 			SetDataSize(DataSize);
 			UpdateValues();
 			loaded = true;
-			AddressLabel.Text = GenerateAddressString();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -138,6 +137,7 @@ namespace BizHawk.MultiClient
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 
 			AddressesLabel.Text = GenerateMemoryViewString();
+			AddressLabel.Text = GenerateAddressString();
 		}
 
 		public string GenerateAddressString()
@@ -1068,25 +1068,12 @@ namespace BizHawk.MultiClient
 		{
 			RowsVisible = ((MemoryViewerBox.Height - (fontHeight * 2) - (fontHeight / 2)) / fontHeight);
 			int totalRows = Domain.Size / 16;
-			int MaxRows = (totalRows - RowsVisible) + 16;
-
-			if (MaxRows > 0)
-			{
-				vScrollBar1.Visible = true;
-				if (vScrollBar1.Value > MaxRows)
-					vScrollBar1.Value = MaxRows;
-				vScrollBar1.Maximum = MaxRows;
-			}
-			else
-				vScrollBar1.Visible = false;
+			
+			vScrollBar1.Maximum = totalRows - 1;
+			vScrollBar1.LargeChange = RowsVisible;
+			vScrollBar1.Visible = totalRows > RowsVisible;
 
 			AddressLabel.Text = GenerateAddressString();
-		}
-
-		private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
-		{
-			this.SetUpScrollBar();
-			UpdateValues();
 		}
 
 		private int GetPointedAddress(int x, int y)
@@ -1667,27 +1654,20 @@ namespace BizHawk.MultiClient
 
 		private void HexEditor_MouseWheel(object sender, MouseEventArgs e)
 		{
+			int delta = 0;
 			if (e.Delta > 0)
-			{
-				if (vScrollBar1.Value > vScrollBar1.Minimum)
-				{
-					vScrollBar1.Value--;
-					MemoryViewerBox.Refresh();
-					AddressLabel.Text = GenerateAddressString();
-					UpdateValues();
-				}
-			}
+				delta = -1;
 			else if (e.Delta < 0)
+				delta = 1;
+
+			int newValue = vScrollBar1.Value + delta;
+			if(newValue < vScrollBar1.Minimum) newValue = vScrollBar1.Minimum;
+			if(newValue > vScrollBar1.Maximum - vScrollBar1.LargeChange + 1) newValue = vScrollBar1.Maximum - vScrollBar1.LargeChange + 1;
+			if(newValue != vScrollBar1.Value)
 			{
-				if (vScrollBar1.Value < vScrollBar1.Maximum)
-				{
-					vScrollBar1.Value++;
-					MemoryViewerBox.Refresh();
-					AddressLabel.Text = GenerateAddressString();
-					UpdateValues();
-				}
+				vScrollBar1.Value = newValue;
+				MemoryViewerBox.Refresh();
 			}
-			
 		}
 
 		private void IncrementAddress()
@@ -2291,5 +2271,12 @@ namespace BizHawk.MultiClient
 		{
 			PokeAddress();
 		}
+
+		private void vScrollBar1_ValueChanged(object sender, EventArgs e)
+		{
+			UpdateValues();
+		}
+
+
 	}
 } 

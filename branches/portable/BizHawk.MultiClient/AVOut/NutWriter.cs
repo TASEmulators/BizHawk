@@ -128,7 +128,7 @@ namespace BizHawk.MultiClient
 
 		public override string ToString()
 		{
-			return ".nut writer";
+			return "NUT writer";
 		}
 
 		public string WriterDescription()

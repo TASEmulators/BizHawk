@@ -234,6 +234,35 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		/// <summary>
+		/// decodes a mode7 BG. youll still need to paletteize and colorize it.
+		/// </summary>
+		public void DecodeMode7BG(int* screen, int stride)
+		{
+			int[] tileCache = _tileCache[7];
+			for (int ty = 0, tidx = 0; ty < 128; ty++)
+			{
+				for (int tx = 0; tx < 128; tx++, tidx++)
+				{
+					int tileEntry = vram[tidx * 2];
+					int src = tileEntry * 64;
+					if (tileEntry != 0)
+					{
+						int zzz = 9;
+					}
+					for (int py = 0, pix=src; py < 8; py++)
+					{
+						for (int px = 0; px < 8; px++, pix++)
+						{
+							int dst = (ty * 8 + py) * stride + (tx * 8 + px);
+							int srcData = tileCache[pix];
+							screen[dst] = srcData;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// decodes a BG. youll still need to paletteize and colorize it.
 		/// someone else has to take care of calculating the starting color from the mode and layer number.
 		/// </summary>
@@ -247,6 +276,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int tileSizeBytes = 8 * bpp;
 			int baseTileNum = tiledataBaseAddr / tileSizeBytes;
 			int[] tileCache = _tileCache[bpp];
+			int tileCacheMask = tileCache.Length - 1;
 
 			int screenWidth = dims.Width * count8x8 * 8;
 
@@ -258,7 +288,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					{
 						for (int ty = 0; ty < count8x8; ty++)
 						{
-							int mapIndex = (mty * count8x8 + ty) * dims.Width + mtx * count8x8 + tx;
+							int mapIndex = mty * dims.Width + mtx;
 							var te = map[mapIndex];
 							int tileNum = te.tilenum + tx + ty * 16 + baseTileNum;
 							int srcOfs = tileNum * 64;
@@ -268,12 +298,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 								{
 									int px = x;
 									int py = y;
-									if (te.flags.HasFlag(TileEntryFlags.Horz)) px = 7 - x;
-									if (te.flags.HasFlag(TileEntryFlags.Vert)) py = 7 - y;
+									if ((te.flags & TileEntryFlags.Horz) != 0) px = 7 - x;
+									if ((te.flags & TileEntryFlags.Vert) != 0) py = 7 - y;
 									int dstX = (mtx * count8x8 + tx) * 8 + px;
 									int dstY = (mty * count8x8 + ty) * 8 + py;
 									int dstOfs = dstY * stride + dstX;
-									int color = tileCache[srcOfs++];
+									int color = tileCache[srcOfs & tileCacheMask];
+									srcOfs++;
 									color += te.palette * ncolors;
 									color += paletteStart;
 									screen[dstOfs] = color;
@@ -286,7 +317,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		/// <summary>
-		/// fetches a tilemap. this is simple; apparently only the screen size (shape) is a factor
+		/// fetches a tilemap. this is simple; apparently only the screen size (shape) is a factor (not the tile size)
 		/// </summary>
 		public TileEntry[] FetchTilemap(int addr, ScreenSize size)
 		{
@@ -338,7 +369,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		int[][] _tileCache = new int[9][];
 
 		/// <summary>
-		/// Caches all tiles at the 2bpp, 4bpp, and 8bpp decoded states
+		/// Caches all tiles at the 2bpp, 4bpp, and 8bpp decoded states.
+		/// we COULD defer this til we need it, you know. sort of a cool idea, not too hard
 		/// </summary>
 		public void CacheTiles()
 		{
@@ -354,6 +386,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			//merge 2bpp tiles into 4bpp and 8bpp
 			CacheTiles_Merge(2);
 			CacheTiles_Merge(4);
+			CacheTilesMode7();
+		}
+
+		public void CacheTilesMode7()
+		{
+			int numtiles = 256;
+			int[] tiles = new int[8 * 8 * numtiles];
+			_tileCache[7] = tiles;
+			for (int i = 0, j=0; i < numtiles; i++)
+			{
+				for (int y = 0; y < 8; y++)
+					for (int x = 0; x < 8; x++, j++)
+						tiles[j] = vram[j * 2 + 1];
+			}
 		}
 
 		/// <summary>
@@ -367,7 +413,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int numtiles = 8192 / toBpp;
 			int[] tilesDst = new int[8 * 8 * numtiles];
 			_tileCache[toBpp] = tilesDst;
-			int[] tilesSrc = _tileCache[2];
+			int[] tilesSrc = _tileCache[fromBpp];
 
 			for (int i = 0; i < numtiles; i++)
 			{
@@ -397,30 +443,46 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
-		public static Dimensions GetDimensionsForTileScreen(int bpp)
+		/// <summary>
+		/// renders the mode7 tiles to a screen with the predefined size.
+		/// </summary>
+		public void RenderMode7TilesToScreen(int* screen, int stride)
 		{
-			if (bpp == 2) return new Dimensions(512, 512);
-			if (bpp == 4) return new Dimensions(512, 256);
-			if (bpp == 8) return new Dimensions(256, 256);
-			throw new ApplicationException("weird");
+			int numTiles = 256;
+			int tilesWide = 16;
+			int[] tilebuf = _tileCache[7];
+			for (int i = 0; i < numTiles; i++)
+			{
+				int ty = i / tilesWide;
+				int tx = i % tilesWide;
+				int dstOfs = (ty * 8) * stride + tx * 8;
+				int srcOfs = i * 64;
+				for (int y = 0, p = 0; y < 8; y++)
+					for (int x = 0; x < 8; x++, p++)
+					{
+						screen[dstOfs + y * stride + x] = tilebuf[srcOfs + p];
+					}
+			}
+
+			int numPixels = numTiles * 8 * 8;
+			Paletteize(screen, 0, 0, numPixels);
+			Colorize(screen, 0, numPixels);
 		}
 
 		/// <summary>
-		/// renders the tiles to a screen with the predefined size
+		/// renders the tiles to a screen of the crudely specified size.
 		/// we might need 16x16 unscrambling and some other perks here eventually.
 		/// provide a start color to use as the basis for the palette
 		/// </summary>
-		public void RenderTilesToScreen(int* screen, int stride, int bpp, int startcolor)
+		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor)
 		{
-			var dims = GetDimensionsForTileScreen(bpp);
-			int tilesw = dims.Width / 8;
 			int numTiles = 8192 / bpp;
 			int[] tilebuf = _tileCache[bpp];
 			for (int i = 0; i < numTiles; i++)
 			{
-				int ty = i / tilesw;
-				int tx = i % tilesw;
-				int dstOfs = (ty*8) * stride + tx*8;
+				int ty = i / tilesWide;
+				int tx = i % tilesWide;
+				int dstOfs = (ty * 8) * stride + tx * 8;
 				int srcOfs = i * 64;
 				for (int y = 0,p=0; y < 8; y++)
 					for (int x = 0; x < 8; x++,p++)
@@ -434,157 +496,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			Colorize(screen, 0, numPixels);
 		}
 
+		public int Colorize(int rgb555)
+		{
+			return colortable[491520 + rgb555];
+		}
+
+		/// <summary>
+		/// returns the current palette, transformed into an int array, for more convenience
+		/// </summary>
+		public int[] GetPalette()
+		{
+			var ret = new int[256];
+			for (int i = 0; i < 256; i++)
+				ret[i] = cgram[i] & 0x7FFF;
+			return ret;
+		}
 	
 	
 	} //class SNESGraphicsDecoder
 } //namespace
-
-
-//GraphicsDecoder dec = new GraphicsDecoder();
-//int[] tilebuf = new int[8 * 8];
-//int[] screen = new int[64*64*8*8];
-//for (int i = 0; i < 64 * 64; i++)
-//{
-//  dec.Decode8x8x2bpp(tilebuf, 0, 16 * i);
-//  int ty = i / 64;
-//  int tx = i % 64;
-//  ty *= 8;
-//  tx *= 8;
-//  for(int y=0;y<8;y++)
-//    for (int x = 0; x < 8; x++)
-//    {
-//      screen[(ty + y) * 512 + tx + x] = tilebuf[y * 8 + x];
-//    }
-//}
-//dec.Paletteize2bpp(screen, 0, 0, 64 * 64 * 8 * 8);
-//dec.Colorize(screen, 0, 64 * 64 * 8 * 8);
-//MemoryStream ms = new MemoryStream();
-//foreach (int i in screen)
-//{
-//  ms.WriteByte((byte)(i & 0xFF));
-//  ms.WriteByte((byte)((i >> 8) & 0xFF));
-//  ms.WriteByte((byte)((i >> 16) & 0xFF));
-//}
-//File.WriteAllBytes("c:\\dump\\file" + ctr, ms.ToArray());
-//ctr++;
-
-
-		//public void Decode8x8x4bpp(int[] buf, int offset, int addr, int stride=8)
-		//{
-		//  for (int y = 0; y < 8; y++)
-		//  {
-		//    byte val = vram[addr + 17];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * stride + x] = val >> (7 - x) & 1;
-		//    val = vram[addr + 16];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * stride + x] = (buf[offset + y * stride + x] << 1) | (val >> (7 - x) & 1);
-		//    val = vram[addr + 1];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * stride + x] = (buf[offset + y * stride + x] << 1) | (val >> (7 - x) & 1);
-		//    val = vram[addr + 0];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * stride + x] = (buf[offset + y * stride + x] << 1) | (val >> (7 - x) & 1);
-		//    addr += 2;
-		//  }
-		//}
-
-		//public void Decode8x8x8bpp(int[] buf, int offset, int addr, int stride=8)
-		//{
-		//  for (int y = 0; y < 8; y++)
-		//  {
-		//    byte val = vram[addr + 49];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * 8 + x] = (val >> (7 - x) & 1);
-		//    val = vram[addr + 48];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * 8 + x] = (buf[offset + y * 8 + x] << 1) | (val >> (7 - x) & 1);
-		//    val = vram[addr + 33];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * 8 + x] = (buf[offset + y * 8 + x] << 1) | (val >> (7 - x) & 1);
-		//    val = vram[addr + 32];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * 8 + x] = (buf[offset + y * 8 + x] << 1) | (val >> (7 - x) & 1);
-		//    val = vram[addr + 17];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * 8 + x] = (buf[offset + y * 8 + x] << 1) | (val >> (7 - x) & 1);
-		//    val = vram[addr + 16];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * 8 + x] = (buf[offset + y * 8 + x] << 1) | (val >> (7 - x) & 1);
-		//    val = vram[addr + 1];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * 8 + x] = (buf[offset + y * 8 + x] << 1) | (val >> (7 - x) & 1);
-		//    val = vram[addr + 0];
-		//    for (int x = 0; x < 8; x++) buf[offset + y * 8 + x] = val >> (7 - x) & 1;
-		//    addr += 2;
-		//  }
-		//}
-
-
-	///// <summary>
-	//  /// decodes all the tiles in vram as if they were 2bpp tiles to a 64x64 tile (512x512 pixel) screen
-	//  /// </summary>
-	//  public void DecodeTiles2bpp(int* screen, int stride, int startcolor)
-	//  {
-	//    //cant handle this with our speed optimized routines
-	//    Debug.Assert(stride == 512);
-			
-	//    int[] tilebuf = new int[8 * 8];
-	//    for (int i = 0; i < 64 * 64; i++)
-	//    {
-	//      Decode8x8x2bpp(tilebuf, 0, 16 * i);
-	//      int ty = i / 64;
-	//      int tx = i % 64;
-	//      ty *= 8;
-	//      tx *= 8;
-	//      for (int y = 0; y < 8; y++)
-	//        for (int x = 0; x < 8; x++)
-	//        {
-	//          screen[(ty + y) * stride + tx + x] = tilebuf[y * 8 + x];
-	//        }
-	//    }
-
-	//    Paletteize(screen, 0, startcolor, 64 * 64 * 8 * 8);
-	//    Colorize(screen, 0, 64 * 64 * 8 * 8);
-	//  }
-
-	//  /// <summary>
-	//  /// decodes all the tiles in vram as if they were 4bpp tiles to a 64x32 tile (512x256 pixel) screen
-	//  /// </summary>
-	//  public void DecodeTiles4bpp(int* screen, int stride, int startcolor)
-	//  {
-	//    ////cant handle this with our speed optimized routines
-	//    //Debug.Assert(stride == 512);
-
-	//    //for (int i = 0; i < 64 * 32; i++)
-	//    //{
-	//    //  int ty = i / 64;
-	//    //  int tx = i % 64;
-	//    //  ty *= 8;
-	//    //  tx *= 8;
-	//    //  for (int y = 0; y < 8; y++)
-	//    //    for (int x = 0; x < 8; x++)
-	//    //    {
-	//    //      screen[(ty + y) * stride + tx + x] = tilebuf[y * 8 + x];
-	//    //    }
-	//    //}
-
-	//    //Paletteize(screen, 0, startcolor, 64 * 32 * 8 * 8);
-	//    //Colorize(screen, 0, 64 * 32 * 8 * 8);
-	//  }
-
-	//  /// <summary>
-	//  /// decodes all the tiles in vram as if they were 4bpp tiles to a 32x32 tile (256x256 pixel) screen
-	//  /// </summary>
-	//  public void DecodeTiles8bpp(int* screen, int stride, int startcolor)
-	//  {
-	//    ////cant handle this with our speed optimized routines
-	//    //Debug.Assert(stride == 256);
-
-	//    //int[] tilebuf = new int[8 * 8];
-	//    //for (int i = 0; i < 32 * 32; i++)
-	//    //{
-	//    //  Decode8x8x8bpp(tilebuf, 0, 64 * i);
-	//    //  int ty = i / 32;
-	//    //  int tx = i % 32;
-	//    //  ty *= 8;
-	//    //  tx *= 8;
-	//    //  for (int y = 0; y < 8; y++)
-	//    //    for (int x = 0; x < 8; x++)
-	//    //    {
-	//    //      screen[(ty + y) * stride + tx + x] = tilebuf[y * 8 + x];
-	//    //    }
-	//    //}
-
-	//    //Paletteize(screen, 0, startcolor, 32 * 32 * 8 * 8);
-	//    //Colorize(screen, 0, 32 * 32 * 8 * 8);
-	//  }

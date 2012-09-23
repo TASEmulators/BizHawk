@@ -152,7 +152,7 @@ namespace BizHawk
 
 		}
 
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			_frame++;
 			_islag = true;

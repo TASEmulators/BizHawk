@@ -14,6 +14,12 @@ namespace BizHawk.MultiClient
 
 		public void StartNewMovie(Movie m, bool record)
 		{
+			//If a movie is already loaded, save it before starting a new movie
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Global.MovieSession.Movie.WriteMovie();
+			}
+			
 			Global.MovieSession = new MovieSession();
 			Global.MovieSession.Movie = m;
 			RewireInputChain();

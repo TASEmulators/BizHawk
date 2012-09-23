@@ -33,11 +33,13 @@
 			this.PatternGroup = new System.Windows.Forms.GroupBox();
 			this.Table1PaletteLabel = new System.Windows.Forms.Label();
 			this.Table0PaletteLabel = new System.Windows.Forms.Label();
+			this.PatternView = new BizHawk.MultiClient.PatternViewer();
 			this.PatternContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.saveImageToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.imageToClipboardToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.refreshToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.PalettesGroup = new System.Windows.Forms.GroupBox();
+			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
 			this.PaletteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.imageToClipboardToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,6 +55,7 @@
 			this.ValueLabel = new System.Windows.Forms.Label();
 			this.AddressLabel = new System.Windows.Forms.Label();
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
+			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
 			this.SpriteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.saveImageToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.imageToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,9 +99,6 @@
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoLoadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
-			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
-			this.PatternView = new BizHawk.MultiClient.PatternViewer();
 			this.PatternGroup.SuspendLayout();
 			this.PatternContext.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
@@ -143,6 +143,19 @@
 			this.Table0PaletteLabel.TabIndex = 1;
 			this.Table0PaletteLabel.Text = "Palette: 0";
 			// 
+			// PatternView
+			// 
+			this.PatternView.BackColor = System.Drawing.Color.Transparent;
+			this.PatternView.ContextMenuStrip = this.PatternContext;
+			this.PatternView.Location = new System.Drawing.Point(7, 20);
+			this.PatternView.Name = "PatternView";
+			this.PatternView.Size = new System.Drawing.Size(256, 128);
+			this.PatternView.TabIndex = 0;
+			this.PatternView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatternView_Click);
+			this.PatternView.MouseEnter += new System.EventHandler(this.PatternView_MouseEnter);
+			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
+			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
+			// 
 			// PatternContext
 			// 
 			this.PatternContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -182,6 +195,19 @@
 			this.PalettesGroup.TabIndex = 1;
 			this.PalettesGroup.TabStop = false;
 			this.PalettesGroup.Text = "Palettes";
+			// 
+			// PaletteView
+			// 
+			this.PaletteView.BackColor = System.Drawing.Color.Transparent;
+			this.PaletteView.ContextMenuStrip = this.PaletteContext;
+			this.PaletteView.Location = new System.Drawing.Point(6, 19);
+			this.PaletteView.Name = "PaletteView";
+			this.PaletteView.Size = new System.Drawing.Size(256, 32);
+			this.PaletteView.TabIndex = 0;
+			this.PaletteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseClick);
+			this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
+			this.PaletteView.MouseLeave += new System.EventHandler(this.PaletteView_MouseLeave);
+			this.PaletteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseMove);
 			// 
 			// PaletteContext
 			// 
@@ -236,9 +262,9 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(6, 31);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(163, 13);
+			this.label2.Size = new System.Drawing.Size(159, 13);
 			this.label2.TabIndex = 10;
-			this.label2.Text = "Right-click to remember selection";
+			this.label2.Text = "Shift-click to remember selection";
 			// 
 			// Value5Label
 			// 
@@ -320,6 +346,19 @@
 			this.SpriteViewerBox.TabIndex = 5;
 			this.SpriteViewerBox.TabStop = false;
 			this.SpriteViewerBox.Text = "Sprites";
+			// 
+			// SpriteView
+			// 
+			this.SpriteView.BackColor = System.Drawing.Color.Transparent;
+			this.SpriteView.ContextMenuStrip = this.SpriteContext;
+			this.SpriteView.Location = new System.Drawing.Point(6, 18);
+			this.SpriteView.Name = "SpriteView";
+			this.SpriteView.Size = new System.Drawing.Size(256, 96);
+			this.SpriteView.TabIndex = 0;
+			this.SpriteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseClick);
+			this.SpriteView.MouseEnter += new System.EventHandler(this.SpriteView_MouseEnter);
+			this.SpriteView.MouseLeave += new System.EventHandler(this.SpriteView_MouseLeave);
+			this.SpriteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseMove);
 			// 
 			// SpriteContext
 			// 
@@ -438,63 +477,63 @@
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
 			// savePaletteScreenshotToolStripMenuItem
 			// 
 			this.savePaletteScreenshotToolStripMenuItem.Name = "savePaletteScreenshotToolStripMenuItem";
-			this.savePaletteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.savePaletteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.savePaletteScreenshotToolStripMenuItem.Text = "Save Palette Screenshot...";
 			this.savePaletteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.savePaletteScreenshotToolStripMenuItem_Click);
 			// 
 			// savePatternScreenshotToolStripMenuItem
 			// 
 			this.savePatternScreenshotToolStripMenuItem.Name = "savePatternScreenshotToolStripMenuItem";
-			this.savePatternScreenshotToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.savePatternScreenshotToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.savePatternScreenshotToolStripMenuItem.Text = "Save Pattern Screenshot...";
 			// 
 			// saveSpriteScreenshotToolStripMenuItem
 			// 
 			this.saveSpriteScreenshotToolStripMenuItem.Name = "saveSpriteScreenshotToolStripMenuItem";
-			this.saveSpriteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.saveSpriteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.saveSpriteScreenshotToolStripMenuItem.Text = "Save Sprite Screenshot...";
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(209, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(203, 6);
 			// 
 			// savePaletteToClipboardToolStripMenuItem
 			// 
 			this.savePaletteToClipboardToolStripMenuItem.Name = "savePaletteToClipboardToolStripMenuItem";
-			this.savePaletteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.savePaletteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.savePaletteToClipboardToolStripMenuItem.Text = "Copy Palette to Clipboard";
 			this.savePaletteToClipboardToolStripMenuItem.Click += new System.EventHandler(this.savePaletteToClipboardToolStripMenuItem_Click);
 			// 
 			// copyPatternToClipboardToolStripMenuItem
 			// 
 			this.copyPatternToClipboardToolStripMenuItem.Name = "copyPatternToClipboardToolStripMenuItem";
-			this.copyPatternToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.copyPatternToClipboardToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.copyPatternToClipboardToolStripMenuItem.Text = "Copy Pattern to Clipboard";
 			this.copyPatternToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyPatternToClipboardToolStripMenuItem_Click);
 			// 
 			// copySpriteToClipboardToolStripMenuItem
 			// 
 			this.copySpriteToClipboardToolStripMenuItem.Name = "copySpriteToClipboardToolStripMenuItem";
-			this.copySpriteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.copySpriteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.copySpriteToClipboardToolStripMenuItem.Text = "Copy Sprite to Clipboard";
 			this.copySpriteToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copySpriteToClipboardToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(209, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -504,7 +543,7 @@
             this.table0PaletteToolStripMenuItem,
             this.table1PaletteToolStripMenuItem1});
 			this.patternToolStripMenuItem.Name = "patternToolStripMenuItem";
-			this.patternToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+			this.patternToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
 			this.patternToolStripMenuItem.Text = "&Pattern";
 			this.patternToolStripMenuItem.DropDownOpened += new System.EventHandler(this.toolStripDropDownButton2_DropDownOpened);
 			// 
@@ -520,7 +559,7 @@
             this.Table0P6,
             this.Table0P7});
 			this.table0PaletteToolStripMenuItem.Name = "table0PaletteToolStripMenuItem";
-			this.table0PaletteToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+			this.table0PaletteToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.table0PaletteToolStripMenuItem.Text = "Table 0 Palette";
 			// 
 			// Table0P0
@@ -591,7 +630,7 @@
             this.Table1P6,
             this.Table1P7});
 			this.table1PaletteToolStripMenuItem1.Name = "table1PaletteToolStripMenuItem1";
-			this.table1PaletteToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
+			this.table1PaletteToolStripMenuItem1.Size = new System.Drawing.Size(146, 22);
 			this.table1PaletteToolStripMenuItem1.Text = "Table 1 Palette";
 			// 
 			// Table1P0
@@ -656,62 +695,23 @@
             this.autoLoadToolStripMenuItem1,
             this.saveWindowPositionToolStripMenuItem1});
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
 			this.settingsToolStripMenuItem.Text = "&Settings";
 			this.settingsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.toolStripDropDownButton1_DropDownOpened);
 			// 
 			// autoLoadToolStripMenuItem1
 			// 
 			this.autoLoadToolStripMenuItem1.Name = "autoLoadToolStripMenuItem1";
-			this.autoLoadToolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
+			this.autoLoadToolStripMenuItem1.Size = new System.Drawing.Size(179, 22);
 			this.autoLoadToolStripMenuItem1.Text = "Auto-load";
 			this.autoLoadToolStripMenuItem1.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
 			// saveWindowPositionToolStripMenuItem1
 			// 
 			this.saveWindowPositionToolStripMenuItem1.Name = "saveWindowPositionToolStripMenuItem1";
-			this.saveWindowPositionToolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
+			this.saveWindowPositionToolStripMenuItem1.Size = new System.Drawing.Size(179, 22);
 			this.saveWindowPositionToolStripMenuItem1.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem1.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
-			// 
-			// SpriteView
-			// 
-			this.SpriteView.BackColor = System.Drawing.Color.Transparent;
-			this.SpriteView.ContextMenuStrip = this.SpriteContext;
-			this.SpriteView.Location = new System.Drawing.Point(6, 18);
-			this.SpriteView.Name = "SpriteView";
-			this.SpriteView.Size = new System.Drawing.Size(256, 96);
-			this.SpriteView.TabIndex = 0;
-			this.SpriteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseClick);
-			this.SpriteView.MouseEnter += new System.EventHandler(this.SpriteView_MouseEnter);
-			this.SpriteView.MouseLeave += new System.EventHandler(this.SpriteView_MouseLeave);
-			this.SpriteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseMove);
-			// 
-			// PaletteView
-			// 
-			this.PaletteView.BackColor = System.Drawing.Color.Transparent;
-			this.PaletteView.ContextMenuStrip = this.PaletteContext;
-			this.PaletteView.Location = new System.Drawing.Point(6, 19);
-			this.PaletteView.Name = "PaletteView";
-			this.PaletteView.Size = new System.Drawing.Size(256, 32);
-			this.PaletteView.TabIndex = 0;
-			this.PaletteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseClick);
-			this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
-			this.PaletteView.MouseLeave += new System.EventHandler(this.PaletteView_MouseLeave);
-			this.PaletteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseMove);
-			// 
-			// PatternView
-			// 
-			this.PatternView.BackColor = System.Drawing.Color.Transparent;
-			this.PatternView.ContextMenuStrip = this.PatternContext;
-			this.PatternView.Location = new System.Drawing.Point(7, 20);
-			this.PatternView.Name = "PatternView";
-			this.PatternView.Size = new System.Drawing.Size(256, 128);
-			this.PatternView.TabIndex = 0;
-			this.PatternView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatternView_Click);
-			this.PatternView.MouseEnter += new System.EventHandler(this.PatternView_MouseEnter);
-			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
-			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
 			// 
 			// NESPPU
 			// 

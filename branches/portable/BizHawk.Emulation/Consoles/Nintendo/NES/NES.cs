@@ -155,7 +155,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public void FillFrameBuffer()
 			{
-				int backdrop = emu.CoreInputComm.NES_BackdropColor;
+				int backdrop = 0;
+				if (emu.CoreInputComm != null)
+					backdrop = emu.CoreInputComm.NES_BackdropColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
 
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
@@ -179,7 +181,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public int BackgroundColor { get { return 0; } }
 		}
 
-		public int FirstDrawLine { get { return videoProvider.top; } set { videoProvider.top = value; } }
+		public int FirstDrawLine { get { return videoProvider.top; } set { videoProvider.top = value; CoreOutputComm.ScreenLogicalOffsetY = videoProvider.top; } }
 		public int LastDrawLine { get { return videoProvider.bottom; } set { videoProvider.bottom = value; } }
 
 		public void SetClipLeftAndRight(bool clip)
@@ -194,6 +196,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				videoProvider.left = 0;
 				videoProvider.right = 255;
 			}
+			
+			CoreOutputComm.ScreenLogicalOffsetX = videoProvider.left;
+			videoProvider.FillFrameBuffer();
 		}
 
 		MyVideoProvider videoProvider;

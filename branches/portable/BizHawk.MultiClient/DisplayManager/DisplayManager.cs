@@ -598,17 +598,27 @@ namespace BizHawk.MultiClient
 			luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
 		}
 
+		/// <summary>update Global.RenderPanel from the passed IVideoProvider</summary>
 		public void UpdateSource(IVideoProvider videoProvider)
+		{
+			UpdateSourceEx(videoProvider, Global.RenderPanel);
+		}
+
+		/// <summary>
+		/// update the passed IRenderer with the passed IVideoProvider
+		/// </summary>
+		/// <param name="videoProvider"></param>
+		/// <param name="renderPanel">also must implement IBlitter</param>
+		public void UpdateSourceEx(IVideoProvider videoProvider, IRenderer renderPanel)
 		{
 			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
 			newPendingSurface.AcceptIntArray(videoProvider.GetVideoBuffer());
 			sourceSurfaceSet.SetPending(newPendingSurface);
 		
-			var renderPanel = Global.RenderPanel;
 			if (renderPanel == null) return;
 
-			currNativeWidth = Global.RenderPanel.NativeSize.Width;
-			currNativeHeight = Global.RenderPanel.NativeSize.Height;
+			currNativeWidth = renderPanel.NativeSize.Width;
+			currNativeHeight = renderPanel.NativeSize.Height;
 
 			currentSourceSurface = sourceSurfaceSet.GetCurrent();
 
@@ -634,16 +644,16 @@ namespace BizHawk.MultiClient
 			DisplaySurface surfaceToRender = filteredSurface;
 			if (surfaceToRender == null) surfaceToRender = currentSourceSurface;
 
-			Global.RenderPanel.Clear(Color.FromArgb(videoProvider.BackgroundColor));
-			Global.RenderPanel.Render(surfaceToRender);
+			renderPanel.Clear(Color.FromArgb(videoProvider.BackgroundColor));
+			renderPanel.Render(surfaceToRender);
 			if (luaEmuSurface != null)
 			{
-				Global.RenderPanel.RenderOverlay(luaEmuSurface);
+				renderPanel.RenderOverlay(luaEmuSurface);
 			}
 
-			RenderOSD();
+			RenderOSD((IBlitter)renderPanel);
 
-			Global.RenderPanel.Present();
+			renderPanel.Present();
 
 			if (filteredSurface != null)
 				filteredSurface.Dispose();
@@ -700,13 +710,13 @@ namespace BizHawk.MultiClient
 		{
 		}
 
-		void RenderOSD()
+		void RenderOSD(IBlitter renderPanel)
 		{
-			Global.OSD.Begin((IBlitter)Global.RenderPanel);
-			((IBlitter)Global.RenderPanel).Open();
-			Global.OSD.DrawScreenInfo((IBlitter)Global.RenderPanel);
-			Global.OSD.DrawMessages((IBlitter)Global.RenderPanel);
-			((IBlitter)Global.RenderPanel).Close();
+			Global.OSD.Begin(renderPanel);
+			renderPanel.Open();
+			Global.OSD.DrawScreenInfo(renderPanel);
+			Global.OSD.DrawMessages(renderPanel);
+			renderPanel.Close();
 		}
 
 		void CheckFilter()

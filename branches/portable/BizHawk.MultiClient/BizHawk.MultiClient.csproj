@@ -118,12 +118,20 @@
       <DependentUpon>ArchiveChooser.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\AviWriter.cs" />
+    <Compile Include="AVOut\BmpVideoProvder.cs" />
     <Compile Include="AVOut\FFmpegWriter.cs" />
     <Compile Include="AVOut\FFmpegWriterForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AVOut\FFmpegWriterForm.Designer.cs">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AVOut\GifWriter.cs" />
+    <Compile Include="AVOut\GifWriterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AVOut\GifWriterForm.Designer.cs">
+      <DependentUpon>GifWriterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\IVideoWriter.cs" />
     <Compile Include="AVOut\JMDForm.cs">
@@ -394,6 +402,9 @@
     <Compile Include="tools\WatchCommon.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AVOut\GifWriterForm.resx">
+      <DependentUpon>GifWriterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AVOut\JMDForm.resx">
       <DependentUpon>JMDForm.cs</DependentUpon>

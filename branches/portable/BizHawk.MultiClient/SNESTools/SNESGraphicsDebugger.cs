@@ -1,4 +1,9 @@
-﻿using System;
+﻿//TODO - disable scanline controls if box is unchecked
+//TODO - overhaul the BG display box if its mode7 or direct color (mode7 more important)
+//TODO - draw `1024` label in red if your content is being scaled down.
+//TODO - maybe draw a label (in lieu of above, also) showing what scale the content is at: 2x or 1x or 1/2x
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -23,6 +28,18 @@ namespace BizHawk.MultiClient
 			Closing += (o, e) => SaveConfigSettings();
 			comboDisplayType.SelectedIndex = 0;
 			comboBGProps.SelectedIndex = 0;
+
+			tabctrlDetails.SelectedIndex = 1;
+			SyncViewerSize();
+		}
+
+		LibsnesCore currentSnesCore;
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+			if (currentSnesCore != null)
+				currentSnesCore.ScanlineHookManager.Unregister(this);
+			currentSnesCore = null;
 		}
 
 		string FormatBpp(int bpp)
@@ -45,11 +62,63 @@ namespace BizHawk.MultiClient
 			else return string.Format("@{0} ({1}K)", address.ToHexString(4), address / 1024);
 		}
 
-		public void UpdateValues()
+		public void UpdateToolsAfter()
+		{
+			SyncCore();
+			if (!checkScanlineControl.Checked) UpdateValues();
+		}
+
+		public void UpdateToolsLoadstate()
+		{
+			SyncCore();
+			UpdateValues();
+		}
+
+		private void nudScanline_ValueChanged(object sender, EventArgs e)
+		{
+			if (suppression) return;
+			SyncCore();
+			suppression = true;
+			sliderScanline.Value = 224 - (int)nudScanline.Value;
+			suppression = false;
+		}
+
+		private void sliderScanline_ValueChanged(object sender, EventArgs e)
+		{
+			if (suppression) return;
+			SyncCore();
+			suppression = true;
+			nudScanline.Value = 224 - sliderScanline.Value;
+			suppression = false;
+		}
+
+		void SyncCore()
+		{
+			LibsnesCore core = Global.Emulator as LibsnesCore;
+			if (currentSnesCore != core && currentSnesCore != null)
+				currentSnesCore.ScanlineHookManager.Unregister(this);
+
+			currentSnesCore = core;
+
+			if (currentSnesCore != null)
+			{
+				if (checkScanlineControl.Checked)
+					currentSnesCore.ScanlineHookManager.Register(this, ScanlineHook);
+				else
+					currentSnesCore.ScanlineHookManager.Unregister(this);
+			}
+		}
+
+		void ScanlineHook(int line)
+		{
+			int target = (int)nudScanline.Value;
+			if (target == line) UpdateValues();
+		}
+
+		void UpdateValues()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
-			var snes = Global.Emulator as LibsnesCore;
-			if (snes == null) return;
+			if (currentSnesCore == null) return;
 
 			var gd = new SNESGraphicsDecoder();
 			var si = gd.ScanScreenInfo();
@@ -83,6 +152,8 @@ namespace BizHawk.MultiClient
 			txtBG1SizeInPixels.Text = string.Format("{0}x{1}", sizeInPixels.Width, sizeInPixels.Height);
 
 			RenderView();
+			RenderPalette();
+			UpdateColorDetails();
 		}
 
 		//todo - something smarter to cycle through bitmaps without repeatedly trashing them (use the dispose callback on the viewer)
@@ -104,38 +175,57 @@ namespace BizHawk.MultiClient
 			var gd = new SNESGraphicsDecoder();
 			gd.CacheTiles();
 			string selection = comboDisplayType.SelectedItem as string;
-			if (selection == "Tiles as 2bpp")
+			if (selection == "2bpp tiles")
 			{
 				allocate(512, 512);
-				gd.RenderTilesToScreen(pixelptr, stride / 4, 2, 0);
+				gd.RenderTilesToScreen(pixelptr, 64, 64, stride / 4, 2, 0);
 			}
-			if (selection == "Tiles as 4bpp")
+			if (selection == "4bpp tiles")
 			{
 				allocate(512, 512);
-				gd.RenderTilesToScreen(pixelptr, stride / 4, 4, 0);
+				gd.RenderTilesToScreen(pixelptr, 64, 32, stride / 4, 4, 0);
 			}
-			if (selection == "Tiles as 8bpp")
+			if (selection == "8bpp tiles")
 			{
 				allocate(256, 256);
-				gd.RenderTilesToScreen(pixelptr, stride / 4, 8, 0);
+				gd.RenderTilesToScreen(pixelptr, 32, 32, stride / 4, 8, 0);
+			}
+			if (selection == "Mode7 tiles")
+			{
+				//256 tiles
+				allocate(128, 128);
+				gd.RenderMode7TilesToScreen(pixelptr, stride / 4);
 			}
 			if (selection == "BG1" || selection == "BG2" || selection == "BG3" || selection == "BG4")
 			{
 				int bgnum = int.Parse(selection.Substring(2));
 				var si = gd.ScanScreenInfo();
 				var bg = si.BG[bgnum];
+
 				if (bg.Enabled)
 				{
-					var dims = bg.ScreenSizeInPixels;
-					allocate(dims.Width, dims.Height);
-					int numPixels = dims.Width * dims.Height;
-					System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
+					if (bgnum == 1 && si.Mode.MODE == 7)
+					{
+						allocate(1024, 1024);
+						gd.DecodeMode7BG(pixelptr, stride / 4);
+						int numPixels = 128 * 128 * 8 * 8;
+						gd.Paletteize(pixelptr, 0, 0, numPixels);
+						gd.Colorize(pixelptr, 0, numPixels);
+					}
+					else
+					{
+						var dims = bg.ScreenSizeInPixels;
+						dims.Height = dims.Width = Math.Max(dims.Width, dims.Height);
+						allocate(dims.Width, dims.Height);
+						int numPixels = dims.Width * dims.Height;
+						System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
 
-					var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
-					int paletteStart = 0;
-					gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
-					gd.Paletteize(pixelptr, 0, 0, numPixels);
-					gd.Colorize(pixelptr, 0, numPixels);
+						var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
+						int paletteStart = 0;
+						gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
+						gd.Paletteize(pixelptr, 0, 0, numPixels);
+						gd.Colorize(pixelptr, 0, numPixels);
+					}
 				}
 			}
 
@@ -216,6 +306,118 @@ namespace BizHawk.MultiClient
 			if (comboBGProps.SelectedIndex == 3) rbBG4.Checked = true;
 			suppression = false;
 			UpdateValues();
+		}
+
+		void ClearDetails()
+		{
+			//grpDetails.Text = "Details";
+		}
+
+		private void paletteViewer_MouseEnter(object sender, EventArgs e)
+		{
+			tabctrlDetails.SelectedIndex = 0;
+		}
+
+		private void paletteViewer_MouseLeave(object sender, EventArgs e)
+		{
+			ClearDetails();
+		}
+
+		const int paletteCellSize = 16;
+		const int paletteCellSpacing = 3;
+
+		int[] lastPalette;
+		int lastColorNum = 0;
+
+		void RenderPalette()
+		{
+			var gd = new SNESGraphicsDecoder();
+			lastPalette = gd.GetPalette();
+
+			int pixsize = paletteCellSize * 16 + paletteCellSpacing * 17;
+			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
+			var bmp = new Bitmap(pixsize, pixsize, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			using (var g = Graphics.FromImage(bmp))
+			{
+				for (int y = 0; y < 16; y++)
+				{
+					for (int x = 0; x < 16; x++)
+					{
+						int rgb555 = lastPalette[y * 16 + x];
+						int color = gd.Colorize(rgb555);
+						using (var brush = new SolidBrush(Color.FromArgb(color)))
+						{
+							g.FillRectangle(brush, new Rectangle(3 + x * cellTotalSize, 3 + y * cellTotalSize, paletteCellSize, paletteCellSize));
+						}
+					}
+				}
+			}
+
+			paletteViewer.SetBitmap(bmp);
+		}
+
+		void UpdateColorDetails()
+		{
+			int rgb555 = lastPalette[lastColorNum];
+			var gd = new SNESGraphicsDecoder();
+			int color = gd.Colorize(rgb555);
+			pnDetailsPaletteColor.BackColor = Color.FromArgb(color);
+
+			txtDetailsPaletteColor.Text = string.Format("${0:X4}", rgb555);
+			txtDetailsPaletteColorHex.Text = string.Format("#{0:X6}", color & 0xFFFFFF);
+			txtDetailsPaletteColorRGB.Text = string.Format("({0},{1},{2})", (color >> 16) & 0xFF, (color >> 8) & 0xFF, (color & 0xFF));
+
+			if (lastColorNum < 128) lblDetailsOBJOrBG.Text = "(BG Palette:)"; else lblDetailsOBJOrBG.Text = "(OBJ Palette:)";
+			txtPaletteDetailsIndexHex.Text = string.Format("${0:X2}", lastColorNum);
+			txtPaletteDetailsIndexHexSpecific.Text = string.Format("${0:X2}", lastColorNum & 0x7F);
+			txtPaletteDetailsIndex.Text = string.Format("{0}", lastColorNum);
+			txtPaletteDetailsIndexSpecific.Text = string.Format("{0}", lastColorNum & 0x7F);
+
+			txtPaletteDetailsAddress.Text = string.Format("${0:X3}", lastColorNum * 2);
+		}
+
+		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
+		{
+			var pt = e.Location;
+			pt.X -= paletteCellSpacing;
+			pt.Y -= paletteCellSpacing;
+			int tx = pt.X / (paletteCellSize + paletteCellSpacing);
+			int ty = pt.Y / (paletteCellSize + paletteCellSpacing);
+			if (tx >= 16 || ty >= 16) return;
+			lastColorNum = ty * 16 + tx;
+			UpdateColorDetails();
+		}
+
+		private void pnDetailsPaletteColor_DoubleClick(object sender, EventArgs e)
+		{
+			//not workign real well...
+			//var cd = new ColorDialog();
+			//cd.Color = pnDetailsPaletteColor.BackColor;
+			//cd.ShowDialog(this);
+		}
+
+		private void rbQuad_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncViewerSize();
+		}
+
+		void SyncViewerSize()
+		{
+			if (check2x.Checked)
+
+				viewer.Size = new Size(1024, 1024);
+			else
+				viewer.Size = new Size(512, 512);
+		}
+
+		private void checkScanlineControl_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncCore();
+		}
+
+		private void check2x_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncViewerSize();
 		}
 	}
 }

@@ -40,6 +40,13 @@ struct Interface : public SNES::Interface {
     if(paudio_sample) return paudio_sample(left, right);
   }
 
+	//zero 27-sep-2012
+	snes_scanlineStart_t pScanlineStart;
+	void scanlineStart(int line)
+	{
+		if(pScanlineStart) pScanlineStart((int)line);
+	}
+
   int16_t inputPoll(bool port, SNES::Input::Device device, unsigned index, unsigned id) {
     if(pinput_state) return pinput_state(port?1:0, (unsigned)device, index, id);
     return 0;
@@ -249,6 +256,11 @@ void snes_cheat_set(unsigned index, bool enable, const char *code) {
   SNES::cheat.synchronize();
 }
 
+//zero 21-sep-2012
+void snes_set_scanlineStart(snes_scanlineStart_t cb)
+{
+	interface.pScanlineStart = cb;
+}
 
 //zero 03-sep-2012
 bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size)

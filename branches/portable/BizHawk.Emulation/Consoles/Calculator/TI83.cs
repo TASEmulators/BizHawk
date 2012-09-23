@@ -419,7 +419,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		//configuration
 		ushort startPC;
 
-		public void FrameAdvance(bool render)
+		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
 			//I eyeballed this speed

@@ -181,6 +181,8 @@ namespace BizHawk.MultiClient
 		public bool SkipLagFrame = false;
 		public string MovieExtension = "bkm";
 		public bool SupressAskSave = false;
+		public bool AVI_CaptureOSD = false;
+		public bool Screenshot_CaptureOSD = false;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
@@ -325,6 +327,8 @@ namespace BizHawk.MultiClient
 		public string FFmpegFormat = "";
 		public string FFmpegCustomCommand = "-c:a foo -c:v bar -f baz";
 		public string AVICodecToken = "";
+		public int GifWriterFrameskip = 3;
+		public int GifWriterDelay = -1;
 
 		// NESPPU Settings
 		public bool AutoLoadNESPPU = false;
@@ -747,8 +751,8 @@ namespace BizHawk.MultiClient
 				B = "Z, J1 B1";
 				Y = "A, J1 B3";
 				X = "S, J1 B4";
-				L = "Q";
-				R = "W";
+				L = "W";
+				R = "E";
 				Start = "Return, J1 B8";
 				Select = "Space, J1 B7";
 			}
