@@ -1592,7 +1592,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateCheatStatus()
 		{
-			if (Global.CheatList.HasActiveCheat())
+			if (Global.CheatList.HasActiveCheats)
 			{
 				CheatStatus.ToolTipText = "Cheats are currently active";
 				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Freeze;
