@@ -942,9 +942,13 @@ namespace BizHawk.MultiClient
 		public void DisableAllCheats()
 		{
 			if (Global.CheatList.cheatList.Count > 0)
+			{
 				Global.OSD.AddMessage("All cheats disabled.");
+			}
 			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
+			{
 				Global.CheatList.cheatList[x].Disable();
+			}
 			MemoryPulse.Clear();
 			CheatListView.Refresh();
 			UpdateNumberOfCheats();
@@ -957,6 +961,7 @@ namespace BizHawk.MultiClient
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			CheatListView.Refresh();
 			UpdateNumberOfCheats();
+			Global.OSD.AddMessage("All cheats removed");
 		}
 
 		private void disableAllCheatsToolStripMenuItem_Click(object sender, EventArgs e)

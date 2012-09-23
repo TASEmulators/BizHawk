@@ -53,8 +53,10 @@
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.removeSelectedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pokeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.pokeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.unfreezeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.viewInHexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -337,11 +339,13 @@
             this.toolStripSeparator9,
             this.removeSelectedToolStripMenuItem1,
             this.addToRamWatchToolStripMenuItem,
-            this.pokeAddressToolStripMenuItem1,
             this.freezeAddressToolStripMenuItem1,
+            this.pokeAddressToolStripMenuItem1,
+            this.unfreezeAllToolStripMenuItem,
+            this.toolStripSeparator12,
             this.viewInHexEditorToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(216, 164);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(216, 214);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// startNewSearchToolStripMenuItem
@@ -383,6 +387,15 @@
 			this.addToRamWatchToolStripMenuItem.Text = "Add to Ram Watch";
 			this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
 			// 
+			// freezeAddressToolStripMenuItem1
+			// 
+			this.freezeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
+			this.freezeAddressToolStripMenuItem1.Name = "freezeAddressToolStripMenuItem1";
+			this.freezeAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+F";
+			this.freezeAddressToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
+			this.freezeAddressToolStripMenuItem1.Text = "Freeze Address";
+			this.freezeAddressToolStripMenuItem1.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem1_Click);
+			// 
 			// pokeAddressToolStripMenuItem1
 			// 
 			this.pokeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
@@ -392,14 +405,18 @@
 			this.pokeAddressToolStripMenuItem1.Text = "Poke Address";
 			this.pokeAddressToolStripMenuItem1.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem1_Click);
 			// 
-			// freezeAddressToolStripMenuItem1
+			// unfreezeAllToolStripMenuItem
 			// 
-			this.freezeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
-			this.freezeAddressToolStripMenuItem1.Name = "freezeAddressToolStripMenuItem1";
-			this.freezeAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+F";
-			this.freezeAddressToolStripMenuItem1.Size = new System.Drawing.Size(215, 22);
-			this.freezeAddressToolStripMenuItem1.Text = "Freeze Address";
-			this.freezeAddressToolStripMenuItem1.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem1_Click);
+			this.unfreezeAllToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
+			this.unfreezeAllToolStripMenuItem.Name = "unfreezeAllToolStripMenuItem";
+			this.unfreezeAllToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.unfreezeAllToolStripMenuItem.Text = "Unfreeze &All";
+			this.unfreezeAllToolStripMenuItem.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator12
+			// 
+			this.toolStripSeparator12.Name = "toolStripSeparator12";
+			this.toolStripSeparator12.Size = new System.Drawing.Size(212, 6);
 			// 
 			// viewInHexEditorToolStripMenuItem
 			// 
@@ -1385,5 +1402,7 @@
 		private System.Windows.Forms.ToolStripMenuItem sinceLastChangeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autoloadDialogToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+		private System.Windows.Forms.ToolStripMenuItem unfreezeAllToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
     }
 }

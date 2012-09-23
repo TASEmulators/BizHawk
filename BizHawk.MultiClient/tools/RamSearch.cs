@@ -2437,6 +2437,15 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+
+			if (Global.CheatList.HasActiveCheats)
+			{
+				unfreezeAllToolStripMenuItem.Visible = true;
+			}
+			else
+			{
+				unfreezeAllToolStripMenuItem.Visible = false;
+			}
 		}
 
 		private void removeSelectedToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2646,6 +2655,12 @@ namespace BizHawk.MultiClient
 		private void autoloadDialogToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoLoadRamSearch ^= true;
+		}
+
+		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.Cheats1.RemoveAllCheats();
+			UpdateValues();
 		}
 	}
 }
