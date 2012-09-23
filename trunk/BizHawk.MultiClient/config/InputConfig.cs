@@ -590,5 +590,10 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
+
+		private void InputConfig_Shown(object sender, EventArgs e)
+		{
+			SetFocus();
+		}
 	}
 }
