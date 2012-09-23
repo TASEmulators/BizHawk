@@ -141,6 +141,7 @@ namespace BizHawk
 
 				case ".BIN":
 				case ".GEN":
+                case ".MD":
 				case ".SMD": Game.System = "GEN"; break;
 				case ".NES": Game.System = "NES"; break;
 				case ".A26": Game.System = "A26"; break;
