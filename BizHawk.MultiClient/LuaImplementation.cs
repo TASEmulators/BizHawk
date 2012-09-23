@@ -354,6 +354,7 @@ namespace BizHawk.MultiClient
 		                                      		"drawPie",
 		                                      		"drawIcon",
 		                                      		"drawImage",
+													"addmessage",
 		                                      	};
 
 		public static string[] EmuFunctions = new string[]
@@ -644,6 +645,11 @@ namespace BizHawk.MultiClient
 		public void gui_cleartext()
 		{
 			Global.OSD.ClearGUIText();
+		}
+
+		public void gui_addmessage(object luaStr)
+		{
+			Global.OSD.AddMessage(luaStr.ToString());
 		}
 
 		public DisplaySurface luaSurface;
