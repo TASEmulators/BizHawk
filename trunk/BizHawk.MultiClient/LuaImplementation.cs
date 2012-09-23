@@ -7,9 +7,10 @@ using System.IO;
 using LuaInterface;
 using System.Windows.Forms;
 using System.Drawing;
-using BizHawk.MultiClient.tools;
 using System.Threading;
 
+using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.MultiClient.tools;
 
 namespace BizHawk.MultiClient
 {
@@ -204,6 +205,12 @@ namespace BizHawk.MultiClient
 				docs.Add("bit", BitwiseFunctions[i], this.GetType().GetMethod("bit_" + BitwiseFunctions[i]));
 			}
 
+			lua.NewTable("nes");
+			for (int i = 0; i < NESFunctions.Length; i++)
+			{
+				lua.RegisterFunction("nes." + NESFunctions[i], this, this.GetType().GetMethod("nes_" + NESFunctions[i]));
+				docs.Add("bit", NESFunctions[i], this.GetType().GetMethod("nes_" + NESFunctions[i]));
+			}
 
 			docs.Sort();
 		}
@@ -529,6 +536,12 @@ namespace BizHawk.MultiClient
 		                                          		"bnot",
 		                                          	};
 
+		public static string[] NESFunctions = new string[]
+		                                          	{
+		                                          		"setscanlines",
+														"nes_gettopscanline",
+														"nes_getbottomscanline",
+		                                          	};
 		/****************************************************/
 		/*************function definitions********************/
 		/****************************************************/
@@ -2429,7 +2442,66 @@ namespace BizHawk.MultiClient
 			buttons[MouseButtons.XButton1.ToString()] = Control.MouseButtons & MouseButtons.XButton1;
 			buttons[MouseButtons.XButton2.ToString()] = Control.MouseButtons & MouseButtons.XButton2;
 			return buttons;
+		}
 
+		//----------------------------------------------------
+		//NES library
+		//----------------------------------------------------
+
+		public void nes_setscanlines(object top, object bottom)
+		{
+			if (Global.Emulator is NES)
+			{
+				int first = LuaInt(top);
+				int last = LuaInt(bottom);
+				if (first > 127)
+				{
+					first = 127;
+				}
+				else if (first < 0)
+				{
+					first = 0;
+				}
+
+				if (last > 239)
+				{
+					last = 239;
+				}
+				else if (last < 128)
+				{
+					last = 128;
+				}
+
+				Global.Config.NESTopLine = first;
+				(Global.Emulator as NES).FirstDrawLine = first;
+
+				Global.Config.NESBottomLine = last;
+				(Global.Emulator as NES).LastDrawLine = last;
+			}
+		}
+
+		public int nes_gettopscanline()
+		{
+			if (Global.Emulator is NES)
+			{
+				return Global.Config.NESTopLine;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+
+		public int nes_getbottomscanline()
+		{
+			if (Global.Emulator is NES)
+			{
+				return Global.Config.NESBottomLine;
+			}
+			else
+			{
+				return 0;
+			}
 		}
 	}
 }
