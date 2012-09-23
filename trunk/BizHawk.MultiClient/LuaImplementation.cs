@@ -544,6 +544,10 @@ namespace BizHawk.MultiClient
 														"getbottomscanline",
 														"getclipleftandright",
 														"setclipleftandright",
+														"getdispbackground",
+														"setdispbackground",
+														"getdispsprites",
+														"setdispsprites",
 		                                          	};
 		/****************************************************/
 		/*************function definitions********************/
@@ -2511,6 +2515,28 @@ namespace BizHawk.MultiClient
 			{
 				(Global.Emulator as NES).SetClipLeftAndRight(leftandright);
 			}
+		}
+
+		public bool nes_getdispbackground()
+		{
+			return Global.Config.NESDispBackground;
+		}
+
+		public void nes_setdispbackground(bool show)
+		{
+			Global.Config.NESDispBackground = show;
+			Global.MainForm.SyncCoreInputComm();
+		}
+
+		public bool nes_getdispsprites()
+		{
+			return Global.Config.NESDispSprites;
+		}
+
+		public void nes_setdispsprites(bool show)
+		{
+			Global.Config.NESDispSprites = show;
+			Global.MainForm.SyncCoreInputComm();
 		}
 	}
 }
