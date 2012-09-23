@@ -10,6 +10,7 @@ struct Interface : public SNES::Interface {
   snes_audio_sample_t paudio_sample;
   snes_input_poll_t pinput_poll;
   snes_input_state_t pinput_state;
+  snes_input_notify_t pinput_notify;
   string basename;
   uint32_t *buffer;
   uint32_t *palette;
@@ -52,6 +53,10 @@ struct Interface : public SNES::Interface {
     return 0;
   }
 
+  void inputNotify(int index) {
+    if (pinput_notify) pinput_notify(index);
+  }
+  
   void message(const string &text) {
     print(text, "\n");
   }
@@ -60,7 +65,7 @@ struct Interface : public SNES::Interface {
     return { basename, hint };
   }
 
-  Interface() : pvideo_refresh(0), paudio_sample(0), pinput_poll(0), pinput_state(0) {
+  Interface() : pvideo_refresh(0), paudio_sample(0), pinput_poll(0), pinput_state(0), pinput_notify(0) {
     buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
 
@@ -126,6 +131,10 @@ void snes_set_input_poll(snes_input_poll_t input_poll) {
 
 void snes_set_input_state(snes_input_state_t input_state) {
   interface.pinput_state = input_state;
+}
+
+void snes_set_input_notify(snes_input_notify_t input_notify) {
+  interface.pinput_notify = input_notify;
 }
 
 void snes_set_controller_port_device(bool port, unsigned device) {

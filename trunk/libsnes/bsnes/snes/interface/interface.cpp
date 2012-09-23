@@ -14,6 +14,9 @@ int16_t Interface::inputPoll(bool port, Input::Device device, unsigned index, un
   return 0;
 }
 
+void Interface::inputNotify(int index) {
+}
+
 void Interface::message(const string &text) {
   print(text, "\n");
 }
