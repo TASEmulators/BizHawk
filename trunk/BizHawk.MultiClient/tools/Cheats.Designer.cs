@@ -54,6 +54,8 @@
 			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.disableAllCheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.openGameGenieEncoderDecoderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LoadCheatFileByGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveCheatsOnCloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,6 +75,7 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonLoadGameGenie = new System.Windows.Forms.ToolStripButton();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.AddCheatGroup = new System.Windows.Forms.GroupBox();
 			this.label7 = new System.Windows.Forms.Label();
@@ -102,9 +105,6 @@
 			this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.disableAllCheatsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripButtonLoadGameGenie = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-			this.openGameGenieEncoderDecoderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CheatsMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.AddCheatGroup.SuspendLayout();
@@ -323,6 +323,18 @@
 			this.disableAllCheatsToolStripMenuItem.Text = "Disable all Cheats";
 			this.disableAllCheatsToolStripMenuItem.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(230, 6);
+			// 
+			// openGameGenieEncoderDecoderToolStripMenuItem
+			// 
+			this.openGameGenieEncoderDecoderToolStripMenuItem.Name = "openGameGenieEncoderDecoderToolStripMenuItem";
+			this.openGameGenieEncoderDecoderToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.openGameGenieEncoderDecoderToolStripMenuItem.Text = "Game Genie Encoder/Decoder";
+			this.openGameGenieEncoderDecoderToolStripMenuItem.Click += new System.EventHandler(this.openGameGenieEncoderDecoderToolStripMenuItem_Click);
+			// 
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -495,6 +507,17 @@
 			this.toolStripButtonMoveDown.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButtonMoveDown.Text = "Move Down";
 			this.toolStripButtonMoveDown.Click += new System.EventHandler(this.toolStripButtonMoveDown_Click);
+			// 
+			// toolStripButtonLoadGameGenie
+			// 
+			this.toolStripButtonLoadGameGenie.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonLoadGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadGameGenie.Image")));
+			this.toolStripButtonLoadGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonLoadGameGenie.Name = "toolStripButtonLoadGameGenie";
+			this.toolStripButtonLoadGameGenie.Size = new System.Drawing.Size(75, 22);
+			this.toolStripButtonLoadGameGenie.Text = "Game Genie";
+			this.toolStripButtonLoadGameGenie.ToolTipText = "Open the Game Genie Encoder/Decoder";
+			this.toolStripButtonLoadGameGenie.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
 			// MessageLabel
 			// 
@@ -741,6 +764,7 @@
 			// On
 			// 
 			this.On.Text = "On";
+			this.On.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.On.Width = 40;
 			// 
 			// Domain
@@ -780,29 +804,6 @@
 			this.disableAllCheatsToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
 			this.disableAllCheatsToolStripMenuItem1.Text = "Disable All Cheats";
 			this.disableAllCheatsToolStripMenuItem1.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem1_Click);
-			// 
-			// toolStripButtonLoadGameGenie
-			// 
-			this.toolStripButtonLoadGameGenie.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.toolStripButtonLoadGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadGameGenie.Image")));
-			this.toolStripButtonLoadGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButtonLoadGameGenie.Name = "toolStripButtonLoadGameGenie";
-			this.toolStripButtonLoadGameGenie.Size = new System.Drawing.Size(75, 22);
-			this.toolStripButtonLoadGameGenie.Text = "Game Genie";
-			this.toolStripButtonLoadGameGenie.ToolTipText = "Open the Game Genie Encoder/Decoder";
-			this.toolStripButtonLoadGameGenie.Click += new System.EventHandler(this.toolStripButton1_Click);
-			// 
-			// toolStripSeparator7
-			// 
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(230, 6);
-			// 
-			// openGameGenieEncoderDecoderToolStripMenuItem
-			// 
-			this.openGameGenieEncoderDecoderToolStripMenuItem.Name = "openGameGenieEncoderDecoderToolStripMenuItem";
-			this.openGameGenieEncoderDecoderToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.openGameGenieEncoderDecoderToolStripMenuItem.Text = "Game Genie Encoder/Decoder";
-			this.openGameGenieEncoderDecoderToolStripMenuItem.Click += new System.EventHandler(this.openGameGenieEncoderDecoderToolStripMenuItem_Click);
 			// 
 			// Cheats
 			// 
