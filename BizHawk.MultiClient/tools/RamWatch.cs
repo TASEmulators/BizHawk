@@ -1242,9 +1242,13 @@ namespace BizHawk.MultiClient
 		private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (sender.ToString().Contains("Unfreeze"))
+			{
 				UnfreezeAddress();
+			}
 			else
+			{
 				FreezeAddress();
+			}
 		}
 
 		private int WORDGetLowerByte(int value)
@@ -1330,6 +1334,10 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+			UpdateValues();
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
+			Global.MainForm.Cheats1.UpdateValues();
 		}
 
 		private void UnfreezeAddress()
@@ -1357,6 +1365,10 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+			UpdateValues();
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
+			Global.MainForm.Cheats1.UpdateValues();
 		}
 
 		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1688,6 +1700,16 @@ namespace BizHawk.MultiClient
 		private void showDomainToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SetDomain();
+		}
+
+		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.Cheats1.RemoveAllCheats();
+			UpdateValues(); 
+			
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
+			Global.MainForm.Cheats1.UpdateValues();
 		}
 	}
 }
