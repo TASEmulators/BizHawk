@@ -204,14 +204,14 @@ uint8 CPU::mmio_r4217() {
   return status.rdmpy >> 8;
 }
 
-uint8 CPU::mmio_r4218() { return status.joy1 >> 0; }  //JOY1L
-uint8 CPU::mmio_r4219() { return status.joy1 >> 8; }  //JOY1H
-uint8 CPU::mmio_r421a() { return status.joy2 >> 0; }  //JOY2L
-uint8 CPU::mmio_r421b() { return status.joy2 >> 8; }  //JOY2H
-uint8 CPU::mmio_r421c() { return status.joy3 >> 0; }  //JOY3L
-uint8 CPU::mmio_r421d() { return status.joy3 >> 8; }  //JOY3H
-uint8 CPU::mmio_r421e() { return status.joy4 >> 0; }  //JOY4L
-uint8 CPU::mmio_r421f() { return status.joy4 >> 8; }  //JOY4H
+uint8 CPU::mmio_r4218() { interface->inputNotify(8); return status.joy1 >> 0; }  //JOY1L
+uint8 CPU::mmio_r4219() { interface->inputNotify(9); return status.joy1 >> 8; }  //JOY1H
+uint8 CPU::mmio_r421a() { interface->inputNotify(10); return status.joy2 >> 0; }  //JOY2L
+uint8 CPU::mmio_r421b() { interface->inputNotify(11); return status.joy2 >> 8; }  //JOY2H
+uint8 CPU::mmio_r421c() { interface->inputNotify(12); return status.joy3 >> 0; }  //JOY3L
+uint8 CPU::mmio_r421d() { interface->inputNotify(13); return status.joy3 >> 8; }  //JOY3H
+uint8 CPU::mmio_r421e() { interface->inputNotify(14); return status.joy4 >> 0; }  //JOY4L
+uint8 CPU::mmio_r421f() { interface->inputNotify(15); return status.joy4 >> 8; }  //JOY4H
 
 //DMAPx
 uint8 CPU::mmio_r43x0(uint8 i) {

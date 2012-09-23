@@ -52,6 +52,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate ushort snes_input_state_t(int port, int device, int index, int id);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void snes_input_notify_t(int index);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_audio_sample_t(ushort left, ushort right);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_scanlineStart_t(int line);
@@ -62,6 +64,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern void snes_set_input_poll(snes_input_poll_t input_poll);
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_input_state(snes_input_state_t input_state);
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_input_notify(snes_input_notify_t input_notify);
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_audio_sample(snes_audio_sample_t audio_sample);
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -296,6 +300,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			inputcb = new LibsnesDll.snes_input_state_t(snes_input_state);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_state(inputcb);
 
+			notifycb = new LibsnesDll.snes_input_notify_t(snes_input_notify);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_notify(notifycb);
+
 			soundcb = new LibsnesDll.snes_audio_sample_t(snes_audio_sample);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
 
@@ -322,6 +329,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		LibsnesDll.snes_video_refresh_t vidcb;
 		LibsnesDll.snes_input_poll_t pollcb;
 		LibsnesDll.snes_input_state_t inputcb;
+		LibsnesDll.snes_input_notify_t notifycb;
 		LibsnesDll.snes_audio_sample_t soundcb;
 		LibsnesDll.snes_scanlineStart_t scanlineStart_cb;
 
@@ -356,6 +364,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		void snes_input_poll()
+		{
+			// libsnes.cpp calls this on every video refresh regardless of any underlying anything, so...
+			//IsLagFrame = false;
+		}
+
+		void snes_input_notify(int index)
 		{
 			IsLagFrame = false;
 		}
