@@ -548,6 +548,8 @@ namespace BizHawk.MultiClient
 														"setdispbackground",
 														"getdispsprites",
 														"setdispsprites",
+														"addgamegenie",
+														"removegamegenie",
 		                                          	};
 		/****************************************************/
 		/*************function definitions********************/
@@ -2537,6 +2539,51 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.NESDispSprites = show;
 			Global.MainForm.SyncCoreInputComm();
+		}
+
+		public void nes_addgamegenie(string code)
+		{
+			if (Global.Emulator is NES)
+			{
+				NESGameGenie gg = new NESGameGenie();
+				gg.DecodeGameGenieCode(code);
+				if (gg.address > 0 && gg.value > 0)
+				{
+					Cheat c = new Cheat();
+					c.name = code;
+					c.domain = Global.Emulator.MemoryDomains[1];
+					c.address = gg.address;
+					c.value = (byte)gg.value;
+					if (gg.compare != -1)
+					{
+						c.compare = (byte)gg.compare;
+					}
+					c.Enable();
+					Global.MainForm.Cheats1.AddCheat(c);
+				}
+			}
+		}
+
+		public void nes_removegamegenie(string code)
+		{
+			if (Global.Emulator is NES)
+			{
+				NESGameGenie gg = new NESGameGenie();
+				gg.DecodeGameGenieCode(code);
+				if (gg.address > 0 && gg.value > 0)
+				{
+					Cheat c = new Cheat();
+					c.name = code;
+					c.domain = Global.Emulator.MemoryDomains[1];
+					c.address = gg.address;
+					c.value = (byte)gg.value;
+					if (gg.compare != -1)
+					{
+						c.compare = (byte)gg.compare;
+					}
+					Global.CheatList.RemoveCheat(Global.Emulator.MemoryDomains[1], c.address);
+				}
+			}
 		}
 	}
 }

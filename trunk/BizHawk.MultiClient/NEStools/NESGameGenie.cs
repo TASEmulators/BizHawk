@@ -13,19 +13,16 @@ namespace BizHawk.MultiClient
 {
 	public partial class NESGameGenie : Form
 	{
-		int address = -1;
-		int value = -1;
-		int compare = -1;
+		public int address = -1;
+		public int value = -1;
+		public int compare = -1;
 		Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
 
 		public NESGameGenie()
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
-		}
 
-		private void NESGameGenie_Load(object sender, EventArgs e)
-		{
 			GameGenieTable.Add('A', 0);     //0000
 			GameGenieTable.Add('P', 1);     //0001
 			GameGenieTable.Add('Z', 2);     //0010
@@ -42,7 +39,10 @@ namespace BizHawk.MultiClient
 			GameGenieTable.Add('S', 13);    //1101
 			GameGenieTable.Add('V', 14);    //1110
 			GameGenieTable.Add('N', 15);    //1111
+		}
 
+		private void NESGameGenie_Load(object sender, EventArgs e)
+		{
 			AddCheat.Enabled = false;
 
 			if (Global.Config.NESGGSaveWindowPosition && Global.Config.NESGGWndx >= 0 && Global.Config.NESGGWndy >= 0)
@@ -82,7 +82,7 @@ namespace BizHawk.MultiClient
 			return (value >> bit) & 1;
 		}
 
-		private void DecodeGameGenieCode(string code)
+		public void DecodeGameGenieCode(string code)
 		{
 			//char 3 bit 3 denotes the code length.
 			if (code.Length == 6)
