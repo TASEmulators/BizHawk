@@ -310,12 +310,17 @@ int snes_peek_logical_register(int reg)
 		//$210C
 	case SNES_REG_BG3_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG3]>>13;
 	case SNES_REG_BG4_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG4]>>13;
-
+		//$2133 SETINI
 	case SNES_REG_SETINI_MODE7_EXTBG: return SNES::ppu.regs.mode7_extbg?1:0;
 	case SNES_REG_SETINI_HIRES: return SNES::ppu.regs.pseudo_hires?1:0;
 	case SNES_REG_SETINI_OVERSCAN: return SNES::ppu.regs.overscan?1:0;
 	case SNES_REG_SETINI_OBJ_INTERLACE: return SNES::ppu.regs.oam_interlace?1:0;
 	case SNES_REG_SETINI_SCREEN_INTERLACE: return SNES::ppu.regs.interlace?1:0;
+		//$2130 CGWSEL
+	case SNES_REG_CGWSEL_COLORMASK: return SNES::ppu.regs.color_mask;
+	case SNES_REG_CGWSEL_COLORSUBMASK: return SNES::ppu.regs.color_mask;
+	case SNES_REG_CGWSEL_ADDSUBMODE: return SNES::ppu.regs.addsub_mode?1:0;
+	case SNES_REG_CGWSEL_DIRECTCOLOR: return SNES::ppu.regs.direct_color?1:0;
 	}
 	return 0;
 }

@@ -130,6 +130,10 @@ namespace BizHawk.MultiClient
 			checkScreenObjInterlace.Checked = si.SETINI_ObjInterlace;
 			checkScreenInterlace.Checked = si.SETINI_ScreenInterlace;
 
+			txtScreenCGWSEL_ColorMask.Text = si.CGWSEL_ColorMask.ToString();
+			txtScreenCGWSEL_ColorSubMask.Text = si.CGWSEL_ColorSubMask.ToString();
+			txtScreenCGWSEL_MathFixed.Text = si.CGWSEL_AddSubMode.ToString();
+			checkScreenCGWSEL_DirectColor.Checked = si.CGWSEL_DirectColor;
 
 			txtModeBits.Text = si.Mode.MODE.ToString();
 			txtScreenBG1Bpp.Text = FormatBpp(si.BG.BG1.Bpp);
@@ -151,6 +155,7 @@ namespace BizHawk.MultiClient
 			txtBG1SCAddrBits.Text = si.BG[bgnum].SCADDR.ToString();
 			txtBG1SCAddrDescr.Text = FormatVramAddress(si.BG[bgnum].SCADDR << 9);
 			txtBG1Colors.Text = (1 << si.BG[bgnum].Bpp).ToString();
+			if (si.BG[bgnum].Bpp == 8 && si.CGWSEL_DirectColor) txtBG1Colors.Text = "(Direct Color)";
 			txtBG1TDAddrBits.Text = si.BG[bgnum].TDADDR.ToString();
 			txtBG1TDAddrDescr.Text = FormatVramAddress(si.BG[bgnum].TDADDR << 13);
 
@@ -202,13 +207,19 @@ namespace BizHawk.MultiClient
 			{
 				//256 tiles
 				allocate(128, 128);
-				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, false);
+				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, false, false);
 			}
 			if (selection == "Mode7Ext tiles")
 			{
 				//256 tiles
 				allocate(128, 128);
-				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, true);
+				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, true, false);
+			}
+			if (selection == "Mode7 tiles (DC)")
+			{
+				//256 tiles
+				allocate(128, 128);
+				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, false, true);
 			}
 			if (selection == "BG1" || selection == "BG2" || selection == "BG3" || selection == "BG4")
 			{
@@ -219,6 +230,9 @@ namespace BizHawk.MultiClient
 				bool handled = false;
 				if (bg.Enabled)
 				{
+					//TODO - directColor in normal BG renderer
+					bool DirectColor = si.CGWSEL_DirectColor && bg.Bpp == 8; //any exceptions?
+					int numPixels = 0;
 					if (si.Mode.MODE == 7)
 					{
 						bool mode7 = bgnum == 1;
@@ -228,9 +242,9 @@ namespace BizHawk.MultiClient
 							handled = true;
 							allocate(1024, 1024);
 							gd.DecodeMode7BG(pixelptr, stride / 4, mode7extbg);
-							int numPixels = 128 * 128 * 8 * 8;
-							gd.Paletteize(pixelptr, 0, 0, numPixels);
-							gd.Colorize(pixelptr, 0, numPixels);
+							numPixels = 128 * 128 * 8 * 8;
+							if (DirectColor) gd.DirectColorify(pixelptr, numPixels);
+							else gd.Paletteize(pixelptr, 0, 0, numPixels);
 						}
 					}
 					else
@@ -239,15 +253,16 @@ namespace BizHawk.MultiClient
 						var dims = bg.ScreenSizeInPixels;
 						dims.Height = dims.Width = Math.Max(dims.Width, dims.Height);
 						allocate(dims.Width, dims.Height);
-						int numPixels = dims.Width * dims.Height;
+						numPixels = dims.Width * dims.Height;
 						System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
 
 						var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
 						int paletteStart = 0;
 						gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
 						gd.Paletteize(pixelptr, 0, 0, numPixels);
-						gd.Colorize(pixelptr, 0, numPixels);
 					}
+
+					gd.Colorize(pixelptr, 0, numPixels);
 				}
 			}
 

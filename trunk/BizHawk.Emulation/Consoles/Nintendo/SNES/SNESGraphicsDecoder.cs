@@ -2,6 +2,9 @@
 //http://board.zsnes.com/phpBB3/viewtopic.php?f=10&t=13029&start=75 yoshis island offset per tile demos. and other demos of advanced modes
 //but we wont worry about offset per tile modes here.
 
+//helpful detailed reg list
+//http://wiki.superfamicom.org/snes/show/Registers
+
 using System;
 using System.Linq;
 using System.Diagnostics;
@@ -143,6 +146,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public bool SETINI_ObjInterlace { private set; get; }
 			public bool SETINI_ScreenInterlace { private set; get; }
 
+			public int CGWSEL_ColorMask { private set; get; }
+			public int CGWSEL_ColorSubMask { private set; get; }
+			public int CGWSEL_AddSubMode { private set; get; }
+			public bool CGWSEL_DirectColor { private set; get; }
+
 			public static ScreenInfo GetScreenInfo()
 			{
 				var si = new ScreenInfo();
@@ -152,6 +160,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.SETINI_Overscan = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_OVERSCAN) == 1;
 				si.SETINI_ObjInterlace = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_OBJ_INTERLACE) == 1;
 				si.SETINI_ScreenInterlace = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_SCREEN_INTERLACE) == 1;
+
+				si.CGWSEL_ColorMask = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_COLORMASK);
+				si.CGWSEL_ColorSubMask = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_COLORSUBMASK);
+				si.CGWSEL_AddSubMode = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_ADDSUBMODE);
+				si.CGWSEL_DirectColor = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_DIRECTCOLOR) == 1;
 
 				si.Mode.MODE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG_MODE);
 				si.BG.BG1.Bpp = ModeBpps[si.Mode.MODE, 0];
@@ -202,10 +215,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return ScreenInfo.GetScreenInfo();
 		}
 
+
 		//the same basic color table that libsnes uses to convert from snes 555 to rgba32
 		public static int[] colortable = new int[16 * 32768];
+		static int[] directColorTable = new int[256]; //8bpp gfx -> rgb555
 		static SNESGraphicsDecoder()
 		{
+			//make directColorTable
+			for (int i = 0; i < 256; i++)
+			{
+				int r = i & 7;
+				int g = (i >> 3) & 7;
+				int b = (i >> 6) & 3;
+				r <<= 2;
+				g <<= 2;
+				b <<= 3;
+				int color = (b << 10) | (g << 5) | r;
+				directColorTable[i] = color;
+			}
+
+			//make colortable
+			//this is unlikely to change, so maybe we could precompute it to save bootup time.. benchmark it.
+			//alternatively, we could drag it out of libsneshawk dll
 			for (int l = 0; l < 16; l++)
 			{
 				for (int r = 0; r < 32; r++)
@@ -476,7 +507,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// <summary>
 		/// renders the mode7 tiles to a screen with the predefined size.
 		/// </summary>
-		public void RenderMode7TilesToScreen(int* screen, int stride, bool ext)
+		public void RenderMode7TilesToScreen(int* screen, int stride, bool ext, bool directColor)
 		{
 			int numTiles = 256;
 			int tilesWide = 16;
@@ -488,14 +519,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				int dstOfs = (ty * 8) * stride + tx * 8;
 				int srcOfs = i * 64;
 				for (int y = 0, p = 0; y < 8; y++)
+				{
 					for (int x = 0; x < 8; x++, p++)
 					{
 						screen[dstOfs + y * stride + x] = tilebuf[srcOfs + p];
 					}
+				}
 			}
 
 			int numPixels = numTiles * 8 * 8;
-			Paletteize(screen, 0, 0, numPixels);
+			if (directColor) DirectColorify(screen, numPixels);
+			else Paletteize(screen, 0, 0, numPixels);
 			Colorize(screen, 0, numPixels);
 		}
 
@@ -540,6 +574,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			for (int i = 0; i < 256; i++)
 				ret[i] = cgram[i] & 0x7FFF;
 			return ret;
+		}
+
+		public void DirectColorify(int* screen, int numPixels)
+		{
+			for (int i = 0; i < numPixels; i++)
+				screen[i] = directColorTable[screen[i]];
+
 		}
 	
 	
