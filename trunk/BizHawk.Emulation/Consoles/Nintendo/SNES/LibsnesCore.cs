@@ -389,17 +389,37 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			vidWidth = width;
 			vidHeight = height;
+			//if we are in high-res mode, we get double width. so, lets double the height here to keep it square.
+			//TODO - does interlacing have something to do with the correct way to handle this? need an example that turns it on.
+			int yskip = 1;
+			if (width == 512)
+			{
+				vidHeight *= 2;
+				yskip = 2;
+			}
 			int size = vidWidth * vidHeight;
 			if (vidBuffer.Length != size)
 				vidBuffer = new int[size];
+
 			for (int y = 0; y < height; y++)
 				for (int x = 0; x < width; x++)
 				{
 					int si = y * 1024 + x;
-					int di = y * vidWidth + x;
+					int di = y * vidWidth * yskip + x;
 					int rgb = data[si];
 					vidBuffer[di] = rgb;
 				}
+
+			//alternate scanlines
+			if (width == 512)
+				for (int y = 0; y < height; y++)
+					for (int x = 0; x < width; x++)
+					{
+						int si = y * 1024 + x;
+						int di = y * vidWidth * yskip + x + 512;
+						int rgb = data[si];
+						vidBuffer[di] = rgb;
+					}
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
