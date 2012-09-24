@@ -28,6 +28,8 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public Gameboy(GameInfo game, byte[] romdata)
 		{
+			ThrowExceptionForBadRom(romdata);
+
 			GambatteState = LibGambatte.gambatte_create();
 
 			if (GambatteState == IntPtr.Zero)
@@ -147,8 +149,58 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		}
 
+		/// <summary>
+		/// throw exception with intelligible message on some kinds of bad rom
+		/// </summary>
+		/// <param name="romdata"></param>
+		static void ThrowExceptionForBadRom(byte[] romdata)
+		{
+			if (romdata.Length < 0x148)
+				throw new Exception("ROM is far too small to be a valid GB\\GBC rom!");
 
+			switch (romdata[0x147])
+			{
+				case 0x00: break;
+				case 0x01: break;
+				case 0x02: break;
+				case 0x03: break;
+				case 0x05: break;
+				case 0x06: break;
+				case 0x08: break;
+				case 0x09: break;
 
+				case 0x0b: throw new Exception("\"MM01\" Mapper not supported!");
+				case 0x0c: throw new Exception("\"MM01\" Mapper not supported!");
+				case 0x0d: throw new Exception("\"MM01\" Mapper not supported!");
+
+				case 0x0f: break;
+				case 0x10: break;
+				case 0x11: break;
+				case 0x12: break;
+				case 0x13: break;
+
+				case 0x15: throw new Exception("\"MBC4\" Mapper not supported!");
+				case 0x16: throw new Exception("\"MBC4\" Mapper not supported!");
+				case 0x17: throw new Exception("\"MBC4\" Mapper not supported!");
+
+				case 0x19: break;
+				case 0x1a: break;
+				case 0x1b: break;
+				case 0x1c: break; // rumble
+				case 0x1d: break; // rumble
+				case 0x1e: break; // rumble
+
+				case 0x20: throw new Exception("\"MBC6\" Mapper not supported!");
+				case 0x22: throw new Exception("\"MBC7\" Mapper not supported!");
+
+				case 0xfc: throw new Exception("\"Pocket Camera\" Mapper not supported!");
+				case 0xfd: throw new Exception("\"Bandai TAMA5\" Mapper not supported!");
+				case 0xfe: throw new Exception("\"HuC3\" Mapper not supported!");
+				case 0xff: break;
+				default: throw new Exception(string.Format("Unknown mapper: {0:x2}", romdata[0x147]));
+			}
+			return;
+		}
 
 		public int Frame { get; set; }
 
