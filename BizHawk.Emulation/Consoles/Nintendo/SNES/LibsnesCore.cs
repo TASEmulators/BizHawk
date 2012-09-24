@@ -132,7 +132,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			BG2_TDADDR = 21,
 			//$210C
 			BG3_TDADDR = 22,
-			BG4_TDADDR = 23
+			BG4_TDADDR = 23,
+			//$2133 SETINI
+			SETINI_MODE7_EXTBG = 30,
+			SETINI_HIRES = 31,
+			SETINI_OVERSCAN = 32,
+			SETINI_OBJ_INTERLACE = 33,
+			SETINI_SCREEN_INTERLACE = 34
 		}
 		
 		public enum SNES_MEMORY : uint

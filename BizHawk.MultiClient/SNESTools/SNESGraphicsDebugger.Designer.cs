@@ -90,16 +90,19 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.txtBG1SizeBits = new System.Windows.Forms.TextBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.label17 = new System.Windows.Forms.Label();
+			this.check2x = new System.Windows.Forms.CheckBox();
 			this.radioButton15 = new System.Windows.Forms.RadioButton();
 			this.radioButton14 = new System.Windows.Forms.RadioButton();
+			this.label14 = new System.Windows.Forms.Label();
+			this.comboDisplayType = new System.Windows.Forms.ComboBox();
+			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.grpQuadrants = new System.Windows.Forms.GroupBox();
 			this.rbQuad3 = new System.Windows.Forms.RadioButton();
 			this.rbQuad2 = new System.Windows.Forms.RadioButton();
 			this.rbQuadAll = new System.Windows.Forms.RadioButton();
 			this.rbQuad1 = new System.Windows.Forms.RadioButton();
 			this.rbQuad0 = new System.Windows.Forms.RadioButton();
-			this.comboDisplayType = new System.Windows.Forms.ComboBox();
-			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.radioButton13 = new System.Windows.Forms.RadioButton();
 			this.radioButton3 = new System.Windows.Forms.RadioButton();
@@ -122,10 +125,19 @@
 			this.lblDetailsPaletteAddress = new System.Windows.Forms.Label();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.panel2 = new System.Windows.Forms.Panel();
-			this.label14 = new System.Windows.Forms.Label();
-			this.label17 = new System.Windows.Forms.Label();
-			this.check2x = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.label20 = new System.Windows.Forms.Label();
+			this.checkScreenExtbg = new System.Windows.Forms.CheckBox();
+			this.label21 = new System.Windows.Forms.Label();
+			this.label18391 = new System.Windows.Forms.Label();
+			this.checkScreenHires = new System.Windows.Forms.CheckBox();
+			this.label198129381279841 = new System.Windows.Forms.Label();
+			this.checkScreenOverscan = new System.Windows.Forms.CheckBox();
+			this.label123812831 = new System.Windows.Forms.Label();
+			this.checkScreenObjInterlace = new System.Windows.Forms.CheckBox();
+			this.label2193813 = new System.Windows.Forms.Label();
+			this.checkScreenInterlace = new System.Windows.Forms.CheckBox();
+			this.radioButton6 = new System.Windows.Forms.RadioButton();
 			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.menuStrip1.SuspendLayout();
@@ -312,6 +324,17 @@
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.label2193813);
+			this.groupBox2.Controls.Add(this.checkScreenInterlace);
+			this.groupBox2.Controls.Add(this.label123812831);
+			this.groupBox2.Controls.Add(this.checkScreenObjInterlace);
+			this.groupBox2.Controls.Add(this.label198129381279841);
+			this.groupBox2.Controls.Add(this.checkScreenOverscan);
+			this.groupBox2.Controls.Add(this.label18391);
+			this.groupBox2.Controls.Add(this.checkScreenHires);
+			this.groupBox2.Controls.Add(this.label21);
+			this.groupBox2.Controls.Add(this.checkScreenExtbg);
+			this.groupBox2.Controls.Add(this.label20);
 			this.groupBox2.Controls.Add(this.label16);
 			this.groupBox2.Controls.Add(this.txtScreenBG4TSize);
 			this.groupBox2.Controls.Add(this.txtScreenBG3TSize);
@@ -330,7 +353,7 @@
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Location = new System.Drawing.Point(0, 0);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(229, 122);
+			this.groupBox2.Size = new System.Drawing.Size(229, 160);
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Screen";
@@ -516,7 +539,7 @@
 			this.groupBox1.Controls.Add(this.txtBG1SizeInTiles);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.txtBG1SizeBits);
-			this.groupBox1.Location = new System.Drawing.Point(0, 125);
+			this.groupBox1.Location = new System.Drawing.Point(0, 166);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(229, 245);
 			this.groupBox1.TabIndex = 3;
@@ -704,7 +727,7 @@
 			// txtBG1TDAddrBits
 			// 
 			this.txtBG1TDAddrBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1TDAddrBits.Location = new System.Drawing.Point(6, 180);
+			this.txtBG1TDAddrBits.Location = new System.Drawing.Point(5, 180);
 			this.txtBG1TDAddrBits.Multiline = true;
 			this.txtBG1TDAddrBits.Name = "txtBG1TDAddrBits";
 			this.txtBG1TDAddrBits.ReadOnly = true;
@@ -743,7 +766,7 @@
 			// txtBG1SCAddrBits
 			// 
 			this.txtBG1SCAddrBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1SCAddrBits.Location = new System.Drawing.Point(6, 157);
+			this.txtBG1SCAddrBits.Location = new System.Drawing.Point(5, 157);
 			this.txtBG1SCAddrBits.Multiline = true;
 			this.txtBG1SCAddrBits.Name = "txtBG1SCAddrBits";
 			this.txtBG1SCAddrBits.ReadOnly = true;
@@ -773,7 +796,7 @@
 			// txtBG1SizeBits
 			// 
 			this.txtBG1SizeBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1SizeBits.Location = new System.Drawing.Point(6, 110);
+			this.txtBG1SizeBits.Location = new System.Drawing.Point(5, 110);
 			this.txtBG1SizeBits.Multiline = true;
 			this.txtBG1SizeBits.Name = "txtBG1SizeBits";
 			this.txtBG1SizeBits.ReadOnly = true;
@@ -783,6 +806,7 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.radioButton6);
 			this.groupBox4.Controls.Add(this.label17);
 			this.groupBox4.Controls.Add(this.check2x);
 			this.groupBox4.Controls.Add(this.radioButton15);
@@ -802,6 +826,29 @@
 			this.groupBox4.Size = new System.Drawing.Size(166, 191);
 			this.groupBox4.TabIndex = 35;
 			this.groupBox4.TabStop = false;
+			// 
+			// label17
+			// 
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(84, 173);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(61, 13);
+			this.label17.TabIndex = 48;
+			this.label17.Text = "deprecated";
+			// 
+			// check2x
+			// 
+			this.check2x.Appearance = System.Windows.Forms.Appearance.Button;
+			this.check2x.Location = new System.Drawing.Point(119, 8);
+			this.check2x.Name = "check2x";
+			this.check2x.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.check2x.Size = new System.Drawing.Size(39, 21);
+			this.check2x.TabIndex = 45;
+			this.check2x.Text = "1024";
+			this.toolTip1.SetToolTip(this.check2x, "Sets graphics viewport size to 1024 (unchecked is 512).\r\nContent will be scaled t" +
+        "o fill specified size");
+			this.check2x.UseVisualStyleBackColor = true;
+			this.check2x.CheckedChanged += new System.EventHandler(this.check2x_CheckedChanged);
 			// 
 			// radioButton15
 			// 
@@ -826,6 +873,51 @@
 			this.radioButton14.TabStop = true;
 			this.radioButton14.Text = "OBJ";
 			this.radioButton14.UseVisualStyleBackColor = true;
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(41, 127);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(46, 13);
+			this.label14.TabIndex = 47;
+			this.label14.Text = "disabled";
+			// 
+			// comboDisplayType
+			// 
+			this.comboDisplayType.DropDownHeight = 200;
+			this.comboDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboDisplayType.FormattingEnabled = true;
+			this.comboDisplayType.IntegralHeight = false;
+			this.comboDisplayType.ItemHeight = 13;
+			this.comboDisplayType.Items.AddRange(new object[] {
+            "BG1",
+            "BG2",
+            "BG3",
+            "BG4",
+            "OBJ",
+            "2bpp tiles",
+            "4bpp tiles",
+            "8bpp tiles",
+            "Mode7 tiles",
+            "Mode7Ext tiles"});
+			this.comboDisplayType.Location = new System.Drawing.Point(6, 8);
+			this.comboDisplayType.Name = "comboDisplayType";
+			this.comboDisplayType.Size = new System.Drawing.Size(107, 21);
+			this.comboDisplayType.TabIndex = 18;
+			this.comboDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboDisplayType_SelectedIndexChanged);
+			// 
+			// radioButton1
+			// 
+			this.radioButton1.AutoSize = true;
+			this.radioButton1.Enabled = false;
+			this.radioButton1.Location = new System.Drawing.Point(6, 35);
+			this.radioButton1.Name = "radioButton1";
+			this.radioButton1.Size = new System.Drawing.Size(46, 17);
+			this.radioButton1.TabIndex = 19;
+			this.radioButton1.TabStop = true;
+			this.radioButton1.Text = "BG1";
+			this.radioButton1.UseVisualStyleBackColor = true;
 			// 
 			// grpQuadrants
 			// 
@@ -892,41 +984,6 @@
 			this.rbQuad0.TabStop = true;
 			this.rbQuad0.UseVisualStyleBackColor = true;
 			this.rbQuad0.CheckedChanged += new System.EventHandler(this.rbQuad_CheckedChanged);
-			// 
-			// comboDisplayType
-			// 
-			this.comboDisplayType.DropDownHeight = 200;
-			this.comboDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboDisplayType.FormattingEnabled = true;
-			this.comboDisplayType.IntegralHeight = false;
-			this.comboDisplayType.ItemHeight = 13;
-			this.comboDisplayType.Items.AddRange(new object[] {
-            "BG1",
-            "BG2",
-            "BG3",
-            "BG4",
-            "OBJ",
-            "2bpp tiles",
-            "4bpp tiles",
-            "8bpp tiles",
-            "Mode7 tiles"});
-			this.comboDisplayType.Location = new System.Drawing.Point(6, 8);
-			this.comboDisplayType.Name = "comboDisplayType";
-			this.comboDisplayType.Size = new System.Drawing.Size(107, 21);
-			this.comboDisplayType.TabIndex = 18;
-			this.comboDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboDisplayType_SelectedIndexChanged);
-			// 
-			// radioButton1
-			// 
-			this.radioButton1.AutoSize = true;
-			this.radioButton1.Enabled = false;
-			this.radioButton1.Location = new System.Drawing.Point(6, 35);
-			this.radioButton1.Name = "radioButton1";
-			this.radioButton1.Size = new System.Drawing.Size(46, 17);
-			this.radioButton1.TabIndex = 19;
-			this.radioButton1.TabStop = true;
-			this.radioButton1.Text = "BG1";
-			this.radioButton1.UseVisualStyleBackColor = true;
 			// 
 			// radioButton2
 			// 
@@ -1171,43 +1228,127 @@
 			this.panel2.Size = new System.Drawing.Size(516, 667);
 			this.panel2.TabIndex = 1;
 			// 
-			// label14
-			// 
-			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(85, 111);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(46, 13);
-			this.label14.TabIndex = 47;
-			this.label14.Text = "disabled";
-			// 
-			// label17
-			// 
-			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(84, 173);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(61, 13);
-			this.label17.TabIndex = 48;
-			this.label17.Text = "deprecated";
-			// 
-			// check2x
-			// 
-			this.check2x.Appearance = System.Windows.Forms.Appearance.Button;
-			this.check2x.Location = new System.Drawing.Point(119, 8);
-			this.check2x.Name = "check2x";
-			this.check2x.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.check2x.Size = new System.Drawing.Size(39, 21);
-			this.check2x.TabIndex = 45;
-			this.check2x.Text = "1024";
-			this.toolTip1.SetToolTip(this.check2x, "Sets graphics viewport size to 1024 (unchecked is 512).\r\nContent will be scaled t" +
-        "o fill specified size");
-			this.check2x.UseVisualStyleBackColor = true;
-			this.check2x.CheckedChanged += new System.EventHandler(this.check2x_CheckedChanged);
-			// 
 			// toolTip1
 			// 
 			this.toolTip1.AutoPopDelay = 5000;
 			this.toolTip1.InitialDelay = 250;
 			this.toolTip1.ReshowDelay = 100;
+			// 
+			// label20
+			// 
+			this.label20.AutoSize = true;
+			this.label20.Location = new System.Drawing.Point(1, 50);
+			this.label20.Name = "label20";
+			this.label20.Size = new System.Drawing.Size(42, 13);
+			this.label20.TabIndex = 21;
+			this.label20.Text = "SETINI";
+			// 
+			// checkScreenExtbg
+			// 
+			this.checkScreenExtbg.AutoSize = true;
+			this.checkScreenExtbg.Enabled = false;
+			this.checkScreenExtbg.Location = new System.Drawing.Point(10, 66);
+			this.checkScreenExtbg.Name = "checkScreenExtbg";
+			this.checkScreenExtbg.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenExtbg.TabIndex = 22;
+			this.checkScreenExtbg.UseVisualStyleBackColor = true;
+			// 
+			// label21
+			// 
+			this.label21.AutoSize = true;
+			this.label21.Location = new System.Drawing.Point(24, 66);
+			this.label21.Name = "label21";
+			this.label21.Size = new System.Drawing.Size(43, 13);
+			this.label21.TabIndex = 23;
+			this.label21.Text = "EXTBG";
+			// 
+			// label18391
+			// 
+			this.label18391.AutoSize = true;
+			this.label18391.Location = new System.Drawing.Point(24, 80);
+			this.label18391.Name = "label18391";
+			this.label18391.Size = new System.Drawing.Size(40, 13);
+			this.label18391.TabIndex = 25;
+			this.label18391.Text = "HIRES";
+			// 
+			// checkScreenHires
+			// 
+			this.checkScreenHires.AutoSize = true;
+			this.checkScreenHires.Enabled = false;
+			this.checkScreenHires.Location = new System.Drawing.Point(10, 80);
+			this.checkScreenHires.Name = "checkScreenHires";
+			this.checkScreenHires.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenHires.TabIndex = 24;
+			this.checkScreenHires.UseVisualStyleBackColor = true;
+			// 
+			// label198129381279841
+			// 
+			this.label198129381279841.AutoSize = true;
+			this.label198129381279841.Location = new System.Drawing.Point(24, 94);
+			this.label198129381279841.Name = "label198129381279841";
+			this.label198129381279841.Size = new System.Drawing.Size(47, 13);
+			this.label198129381279841.TabIndex = 27;
+			this.label198129381279841.Text = "O.SCAN";
+			// 
+			// checkScreenOverscan
+			// 
+			this.checkScreenOverscan.AutoSize = true;
+			this.checkScreenOverscan.Enabled = false;
+			this.checkScreenOverscan.Location = new System.Drawing.Point(10, 94);
+			this.checkScreenOverscan.Name = "checkScreenOverscan";
+			this.checkScreenOverscan.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenOverscan.TabIndex = 26;
+			this.checkScreenOverscan.UseVisualStyleBackColor = true;
+			// 
+			// label123812831
+			// 
+			this.label123812831.AutoSize = true;
+			this.label123812831.Location = new System.Drawing.Point(24, 107);
+			this.label123812831.Name = "label123812831";
+			this.label123812831.Size = new System.Drawing.Size(49, 13);
+			this.label123812831.TabIndex = 29;
+			this.label123812831.Text = "O.INTLC";
+			// 
+			// checkScreenObjInterlace
+			// 
+			this.checkScreenObjInterlace.AutoSize = true;
+			this.checkScreenObjInterlace.Enabled = false;
+			this.checkScreenObjInterlace.Location = new System.Drawing.Point(10, 107);
+			this.checkScreenObjInterlace.Name = "checkScreenObjInterlace";
+			this.checkScreenObjInterlace.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenObjInterlace.TabIndex = 28;
+			this.checkScreenObjInterlace.UseVisualStyleBackColor = true;
+			// 
+			// label2193813
+			// 
+			this.label2193813.AutoSize = true;
+			this.label2193813.Location = new System.Drawing.Point(24, 120);
+			this.label2193813.Name = "label2193813";
+			this.label2193813.Size = new System.Drawing.Size(48, 13);
+			this.label2193813.TabIndex = 31;
+			this.label2193813.Text = "S.INTLC";
+			// 
+			// checkScreenInterlace
+			// 
+			this.checkScreenInterlace.AutoSize = true;
+			this.checkScreenInterlace.Enabled = false;
+			this.checkScreenInterlace.Location = new System.Drawing.Point(10, 120);
+			this.checkScreenInterlace.Name = "checkScreenInterlace";
+			this.checkScreenInterlace.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenInterlace.TabIndex = 30;
+			this.checkScreenInterlace.UseVisualStyleBackColor = true;
+			// 
+			// radioButton6
+			// 
+			this.radioButton6.AutoSize = true;
+			this.radioButton6.Enabled = false;
+			this.radioButton6.Location = new System.Drawing.Point(56, 99);
+			this.radioButton6.Name = "radioButton6";
+			this.radioButton6.Size = new System.Drawing.Size(73, 17);
+			this.radioButton6.TabIndex = 49;
+			this.radioButton6.TabStop = true;
+			this.radioButton6.Text = "Mode7Ext";
+			this.radioButton6.UseVisualStyleBackColor = true;
 			// 
 			// paletteViewer
 			// 
@@ -1368,5 +1509,17 @@
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.CheckBox check2x;
+		private System.Windows.Forms.Label label21;
+		private System.Windows.Forms.CheckBox checkScreenExtbg;
+		private System.Windows.Forms.Label label20;
+		private System.Windows.Forms.Label label18391;
+		private System.Windows.Forms.CheckBox checkScreenHires;
+		private System.Windows.Forms.Label label198129381279841;
+		private System.Windows.Forms.CheckBox checkScreenOverscan;
+		private System.Windows.Forms.Label label123812831;
+		private System.Windows.Forms.CheckBox checkScreenObjInterlace;
+		private System.Windows.Forms.Label label2193813;
+		private System.Windows.Forms.CheckBox checkScreenInterlace;
+		private System.Windows.Forms.RadioButton radioButton6;
 	}
 }
