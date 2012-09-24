@@ -659,6 +659,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							sample_address = user_address;
 							sample_length = user_length;
 							out_deltacounter = 64;
+							if (out_silence) // if the DMC buffer was empty...
+							{
+								timer = 0; // reset frequency counter so next Run() will cause output
+								out_bits_remaining = 0; // reset buffercount so next Run() will cause fetch
+							}
 						}
 					}
 					//irq is acknowledged or sure to be clear, in either case
@@ -730,7 +735,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ser.Sync("sequence_reset_pending", ref sequence_reset_pending);
 				ser.Sync("sequencer_irq_clear_pending", ref sequencer_irq_clear_pending);
 				ser.Sync("sequencer_irq_assert", ref sequencer_irq_assert);
-	
+
 				pulse[0].SyncState(ser);
 				pulse[1].SyncState(ser);
 				triangle.SyncState(ser);
