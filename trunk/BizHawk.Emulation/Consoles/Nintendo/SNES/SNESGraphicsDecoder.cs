@@ -136,6 +136,52 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public BGInfos BG = new BGInfos();
 
 			public ModeInfo Mode = new ModeInfo();
+
+			public bool SETINI_Mode7ExtBG { private set; get; }
+			public bool SETINI_HiRes { private set; get; }
+			public bool SETINI_Overscan { private set; get; }
+			public bool SETINI_ObjInterlace { private set; get; }
+			public bool SETINI_ScreenInterlace { private set; get; }
+
+			public static ScreenInfo GetScreenInfo()
+			{
+				var si = new ScreenInfo();
+
+				si.SETINI_Mode7ExtBG = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_MODE7_EXTBG) == 1;
+				si.SETINI_HiRes = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_HIRES) == 1;
+				si.SETINI_Overscan = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_OVERSCAN) == 1;
+				si.SETINI_ObjInterlace = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_OBJ_INTERLACE) == 1;
+				si.SETINI_ScreenInterlace = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_SCREEN_INTERLACE) == 1;
+
+				si.Mode.MODE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG_MODE);
+				si.BG.BG1.Bpp = ModeBpps[si.Mode.MODE, 0];
+				si.BG.BG2.Bpp = ModeBpps[si.Mode.MODE, 1];
+				si.BG.BG3.Bpp = ModeBpps[si.Mode.MODE, 2];
+				si.BG.BG4.Bpp = ModeBpps[si.Mode.MODE, 3];
+
+				if (si.Mode.MODE == 7 && si.SETINI_Mode7ExtBG)
+					si.BG.BG2.Bpp = 7;
+
+				si.BG.BG1.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_TILESIZE);
+				si.BG.BG2.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TILESIZE);
+				si.BG.BG3.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_TILESIZE);
+				si.BG.BG4.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_TILESIZE);
+
+				si.BG.BG1.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_SCSIZE);
+				si.BG.BG2.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_SCSIZE);
+				si.BG.BG3.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_SCSIZE);
+				si.BG.BG4.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_SCSIZE);
+				si.BG.BG1.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_SCADDR);
+				si.BG.BG2.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_SCADDR);
+				si.BG.BG3.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_SCADDR);
+				si.BG.BG4.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_SCADDR);
+				si.BG.BG1.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_TDADDR);
+				si.BG.BG2.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TDADDR);
+				si.BG.BG3.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_TDADDR);
+				si.BG.BG4.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_TDADDR);
+
+				return si;
+			}
 		}
 
 		static int[,] ModeBpps = new[,] {
@@ -153,33 +199,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public ScreenInfo ScanScreenInfo()
 		{
-			var si = new ScreenInfo();
-
-			si.Mode.MODE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG_MODE);
-			si.BG.BG1.Bpp = ModeBpps[si.Mode.MODE, 0];
-			si.BG.BG2.Bpp = ModeBpps[si.Mode.MODE, 1];
-			si.BG.BG3.Bpp = ModeBpps[si.Mode.MODE, 2];
-			si.BG.BG4.Bpp = ModeBpps[si.Mode.MODE, 3];
-
-			si.BG.BG1.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_TILESIZE);
-			si.BG.BG2.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TILESIZE);
-			si.BG.BG3.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_TILESIZE);
-			si.BG.BG4.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_TILESIZE);
-
-			si.BG.BG1.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_SCSIZE);
-			si.BG.BG2.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_SCSIZE);
-			si.BG.BG3.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_SCSIZE);
-			si.BG.BG4.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_SCSIZE);
-			si.BG.BG1.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_SCADDR);
-			si.BG.BG2.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_SCADDR);
-			si.BG.BG3.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_SCADDR);
-			si.BG.BG4.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_SCADDR);
-			si.BG.BG1.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_TDADDR);
-			si.BG.BG2.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TDADDR);
-			si.BG.BG3.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_TDADDR);
-			si.BG.BG4.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_TDADDR);
-
-			return si;
+			return ScreenInfo.GetScreenInfo();
 		}
 
 		//the same basic color table that libsnes uses to convert from snes 555 to rgba32
@@ -236,19 +256,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// <summary>
 		/// decodes a mode7 BG. youll still need to paletteize and colorize it.
 		/// </summary>
-		public void DecodeMode7BG(int* screen, int stride)
+		public void DecodeMode7BG(int* screen, int stride, bool extBg)
 		{
-			int[] tileCache = _tileCache[7];
+			int[] tileCache = _tileCache[extBg?17:7];
 			for (int ty = 0, tidx = 0; ty < 128; ty++)
 			{
 				for (int tx = 0; tx < 128; tx++, tidx++)
 				{
 					int tileEntry = vram[tidx * 2];
 					int src = tileEntry * 64;
-					if (tileEntry != 0)
-					{
-						int zzz = 9;
-					}
 					for (int py = 0, pix=src; py < 8; py++)
 					{
 						for (int px = 0; px < 8; px++, pix++)
@@ -366,7 +382,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
-		int[][] _tileCache = new int[9][];
+		int[][] _tileCache = new int[18][];
 
 		/// <summary>
 		/// Caches all tiles at the 2bpp, 4bpp, and 8bpp decoded states.
@@ -387,6 +403,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CacheTiles_Merge(2);
 			CacheTiles_Merge(4);
 			CacheTilesMode7();
+			CacheTilesMode7ExtBg();
 		}
 
 		public void CacheTilesMode7()
@@ -401,6 +418,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 						tiles[j] = vram[j * 2 + 1];
 			}
 		}
+
+
+		void CacheTilesMode7ExtBg()
+		{
+			int numtiles = 256;
+			int[] tiles = new int[8 * 8 * numtiles];
+			_tileCache[17] = tiles;
+			int[] mode7tiles = _tileCache[7];
+			int numPixels = numtiles*8*8;
+			for (int i = 0; i < numPixels; i++)
+				tiles[i] = mode7tiles[i] & 0x7F;
+		}
+
 
 		/// <summary>
 		/// merges one type of tiles with another to create the higher-order bitdepth.
@@ -446,11 +476,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// <summary>
 		/// renders the mode7 tiles to a screen with the predefined size.
 		/// </summary>
-		public void RenderMode7TilesToScreen(int* screen, int stride)
+		public void RenderMode7TilesToScreen(int* screen, int stride, bool ext)
 		{
 			int numTiles = 256;
 			int tilesWide = 16;
-			int[] tilebuf = _tileCache[7];
+			int[] tilebuf = _tileCache[ext?17:7];
 			for (int i = 0; i < numTiles; i++)
 			{
 				int ty = i / tilesWide;

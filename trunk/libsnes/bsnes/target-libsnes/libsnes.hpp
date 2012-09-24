@@ -161,6 +161,12 @@ void snes_set_scanlineStart(snes_scanlineStart_t);
 //$210C
 #define SNES_REG_BG3_TDADDR 22
 #define SNES_REG_BG4_TDADDR 23
+//$2133 SETINI
+#define SNES_REG_SETINI_MODE7_EXTBG 30
+#define SNES_REG_SETINI_HIRES 31
+#define SNES_REG_SETINI_OVERSCAN 32
+#define SNES_REG_SETINI_OBJ_INTERLACE 33
+#define SNES_REG_SETINI_SCREEN_INTERLACE 34
 
 int snes_peek_logical_register(int reg);
 

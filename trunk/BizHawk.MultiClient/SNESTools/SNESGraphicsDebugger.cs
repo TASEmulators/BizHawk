@@ -86,6 +86,7 @@ namespace BizHawk.MultiClient
 		private void sliderScanline_ValueChanged(object sender, EventArgs e)
 		{
 			if (suppression) return;
+			checkScanlineControl.Checked = true;
 			SyncCore();
 			suppression = true;
 			nudScanline.Value = 224 - sliderScanline.Value;
@@ -122,6 +123,13 @@ namespace BizHawk.MultiClient
 
 			var gd = new SNESGraphicsDecoder();
 			var si = gd.ScanScreenInfo();
+
+			checkScreenExtbg.Checked = si.SETINI_Mode7ExtBG;
+			checkScreenHires.Checked = si.SETINI_HiRes;
+			checkScreenOverscan.Checked = si.SETINI_Overscan;
+			checkScreenObjInterlace.Checked = si.SETINI_ObjInterlace;
+			checkScreenInterlace.Checked = si.SETINI_ScreenInterlace;
+
 
 			txtModeBits.Text = si.Mode.MODE.ToString();
 			txtScreenBG1Bpp.Text = FormatBpp(si.BG.BG1.Bpp);
@@ -194,7 +202,13 @@ namespace BizHawk.MultiClient
 			{
 				//256 tiles
 				allocate(128, 128);
-				gd.RenderMode7TilesToScreen(pixelptr, stride / 4);
+				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, false);
+			}
+			if (selection == "Mode7Ext tiles")
+			{
+				//256 tiles
+				allocate(128, 128);
+				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, true);
 			}
 			if (selection == "BG1" || selection == "BG2" || selection == "BG3" || selection == "BG4")
 			{
@@ -202,18 +216,26 @@ namespace BizHawk.MultiClient
 				var si = gd.ScanScreenInfo();
 				var bg = si.BG[bgnum];
 
+				bool handled = false;
 				if (bg.Enabled)
 				{
-					if (bgnum == 1 && si.Mode.MODE == 7)
+					if (si.Mode.MODE == 7)
 					{
-						allocate(1024, 1024);
-						gd.DecodeMode7BG(pixelptr, stride / 4);
-						int numPixels = 128 * 128 * 8 * 8;
-						gd.Paletteize(pixelptr, 0, 0, numPixels);
-						gd.Colorize(pixelptr, 0, numPixels);
+						bool mode7 = bgnum == 1;
+						bool mode7extbg = (bgnum == 2 && si.SETINI_Mode7ExtBG);
+						if(mode7 || mode7extbg)
+						{
+							handled = true;
+							allocate(1024, 1024);
+							gd.DecodeMode7BG(pixelptr, stride / 4, mode7extbg);
+							int numPixels = 128 * 128 * 8 * 8;
+							gd.Paletteize(pixelptr, 0, 0, numPixels);
+							gd.Colorize(pixelptr, 0, numPixels);
+						}
 					}
 					else
 					{
+						handled = true;
 						var dims = bg.ScreenSizeInPixels;
 						dims.Height = dims.Width = Math.Max(dims.Width, dims.Height);
 						allocate(dims.Width, dims.Height);
@@ -419,5 +441,7 @@ namespace BizHawk.MultiClient
 		{
 			SyncViewerSize();
 		}
+
+
 	}
 }
