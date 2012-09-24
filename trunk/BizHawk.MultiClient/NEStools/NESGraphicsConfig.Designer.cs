@@ -54,6 +54,7 @@
 			this.DispBackground = new System.Windows.Forms.CheckBox();
 			this.DispSprites = new System.Windows.Forms.CheckBox();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
+			this.RestoreDefaultsButton = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LastLineNumeric)).BeginInit();
@@ -68,7 +69,7 @@
 			this.OK.Location = new System.Drawing.Point(213, 372);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
-			this.OK.TabIndex = 40;
+			this.OK.TabIndex = 70;
 			this.OK.Text = "&Ok";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.OK_Click);
@@ -80,7 +81,7 @@
 			this.Cancel.Location = new System.Drawing.Point(294, 372);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 45;
+			this.Cancel.TabIndex = 75;
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			// 
@@ -90,7 +91,7 @@
 			this.AllowMoreSprites.Location = new System.Drawing.Point(143, 17);
 			this.AllowMoreSprites.Name = "AllowMoreSprites";
 			this.AllowMoreSprites.Size = new System.Drawing.Size(203, 17);
-			this.AllowMoreSprites.TabIndex = 15;
+			this.AllowMoreSprites.TabIndex = 23;
 			this.AllowMoreSprites.Text = "Allow more than 8 sprites per scanline";
 			this.AllowMoreSprites.UseVisualStyleBackColor = true;
 			// 
@@ -174,7 +175,7 @@
 			this.btnAreaFull.Location = new System.Drawing.Point(12, 99);
 			this.btnAreaFull.Name = "btnAreaFull";
 			this.btnAreaFull.Size = new System.Drawing.Size(94, 23);
-			this.btnAreaFull.TabIndex = 26;
+			this.btnAreaFull.TabIndex = 40;
 			this.btnAreaFull.Text = "Full [0,239]";
 			this.btnAreaFull.UseVisualStyleBackColor = true;
 			this.btnAreaFull.Click += new System.EventHandler(this.btnAreaFull_Click);
@@ -184,7 +185,7 @@
 			this.btnAreaStandard.Location = new System.Drawing.Point(12, 71);
 			this.btnAreaStandard.Name = "btnAreaStandard";
 			this.btnAreaStandard.Size = new System.Drawing.Size(94, 23);
-			this.btnAreaStandard.TabIndex = 25;
+			this.btnAreaStandard.TabIndex = 35;
 			this.btnAreaStandard.Text = "Standard [8,231]";
 			this.btnAreaStandard.UseVisualStyleBackColor = true;
 			this.btnAreaStandard.Click += new System.EventHandler(this.btnAreaStandard_Click);
@@ -222,7 +223,7 @@
             0});
 			this.LastLineNumeric.Name = "LastLineNumeric";
 			this.LastLineNumeric.Size = new System.Drawing.Size(47, 20);
-			this.LastLineNumeric.TabIndex = 22;
+			this.LastLineNumeric.TabIndex = 28;
 			this.LastLineNumeric.Value = new decimal(new int[] {
             128,
             0,
@@ -247,7 +248,7 @@
 			this.ClipLeftAndRightCheckBox.Location = new System.Drawing.Point(143, 47);
 			this.ClipLeftAndRightCheckBox.Name = "ClipLeftAndRightCheckBox";
 			this.ClipLeftAndRightCheckBox.Size = new System.Drawing.Size(186, 17);
-			this.ClipLeftAndRightCheckBox.TabIndex = 20;
+			this.ClipLeftAndRightCheckBox.TabIndex = 30;
 			this.ClipLeftAndRightCheckBox.Text = "Clip Left and Right Sides (8 pixels)";
 			this.ClipLeftAndRightCheckBox.UseVisualStyleBackColor = true;
 			// 
@@ -277,7 +278,7 @@
 			this.checkUseBackdropColor.Location = new System.Drawing.Point(169, 87);
 			this.checkUseBackdropColor.Name = "checkUseBackdropColor";
 			this.checkUseBackdropColor.Size = new System.Drawing.Size(59, 17);
-			this.checkUseBackdropColor.TabIndex = 36;
+			this.checkUseBackdropColor.TabIndex = 60;
 			this.checkUseBackdropColor.Text = "Enable";
 			this.checkUseBackdropColor.UseVisualStyleBackColor = true;
 			// 
@@ -286,7 +287,7 @@
 			this.ChangeBGColor.Location = new System.Drawing.Point(111, 83);
 			this.ChangeBGColor.Name = "ChangeBGColor";
 			this.ChangeBGColor.Size = new System.Drawing.Size(52, 23);
-			this.ChangeBGColor.TabIndex = 35;
+			this.ChangeBGColor.TabIndex = 55;
 			this.ChangeBGColor.Text = "Change";
 			this.ChangeBGColor.UseVisualStyleBackColor = true;
 			this.ChangeBGColor.Click += new System.EventHandler(this.ChangeBGColor_Click);
@@ -298,7 +299,7 @@
 			this.BackGroundColorNumber.Name = "BackGroundColorNumber";
 			this.BackGroundColorNumber.ReadOnly = true;
 			this.BackGroundColorNumber.Size = new System.Drawing.Size(59, 20);
-			this.BackGroundColorNumber.TabIndex = 5;
+			this.BackGroundColorNumber.TabIndex = 53;
 			// 
 			// label2
 			// 
@@ -334,7 +335,7 @@
 			this.DispBackground.Location = new System.Drawing.Point(7, 42);
 			this.DispBackground.Name = "DispBackground";
 			this.DispBackground.Size = new System.Drawing.Size(78, 17);
-			this.DispBackground.TabIndex = 30;
+			this.DispBackground.TabIndex = 50;
 			this.DispBackground.Text = "Display BG";
 			this.DispBackground.UseVisualStyleBackColor = true;
 			// 
@@ -346,9 +347,20 @@
 			this.DispSprites.Location = new System.Drawing.Point(7, 19);
 			this.DispSprites.Name = "DispSprites";
 			this.DispSprites.Size = new System.Drawing.Size(95, 17);
-			this.DispSprites.TabIndex = 25;
+			this.DispSprites.TabIndex = 45;
 			this.DispSprites.Text = "Display Sprites";
 			this.DispSprites.UseVisualStyleBackColor = true;
+			// 
+			// RestoreDefaultsButton
+			// 
+			this.RestoreDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.RestoreDefaultsButton.Location = new System.Drawing.Point(12, 372);
+			this.RestoreDefaultsButton.Name = "RestoreDefaultsButton";
+			this.RestoreDefaultsButton.Size = new System.Drawing.Size(102, 23);
+			this.RestoreDefaultsButton.TabIndex = 65;
+			this.RestoreDefaultsButton.Text = "&Restore Defaults";
+			this.RestoreDefaultsButton.UseVisualStyleBackColor = true;
+			this.RestoreDefaultsButton.Click += new System.EventHandler(this.RestoreDefaultsButton_Click);
 			// 
 			// NESGraphicsConfig
 			// 
@@ -357,6 +369,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(373, 396);
+			this.Controls.Add(this.RestoreDefaultsButton);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -412,5 +425,6 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button btnAreaFull;
 		private System.Windows.Forms.Button btnAreaStandard;
+		private System.Windows.Forms.Button RestoreDefaultsButton;
 	}
 }

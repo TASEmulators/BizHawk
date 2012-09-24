@@ -30,6 +30,11 @@ namespace BizHawk.MultiClient
 		private void NESGraphicsConfig_Load(object sender, EventArgs e)
 		{
 			nes = Global.Emulator as NES;
+			LoadStuff();
+		}
+
+		private void LoadStuff()
+		{
 			FirstLineNumeric.Value = Global.Config.NESTopLine;
 			LastLineNumeric.Value = Global.Config.NESBottomLine;
 			AllowMoreSprites.Checked = Global.Config.NESAllowMoreThanEightSprites;
@@ -133,6 +138,21 @@ namespace BizHawk.MultiClient
 		private void BackgroundColorPanel_DoubleClick(object sender, EventArgs e)
 		{
 			ChangeBG();
+		}
+
+		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
+		{
+			FirstLineNumeric.Value = 8;
+			LastLineNumeric.Value = 231;
+			AllowMoreSprites.Checked = false;
+			ClipLeftAndRightCheckBox.Checked = false;
+			AutoLoadPalette.Checked = true;
+			PalettePath.Text = "";
+			DispSprites.Checked = true;
+			DispBackground.Checked = true;
+			BGColorDialog.Color = Color.FromArgb(unchecked(0 | (int)0xFF000000));
+			checkUseBackdropColor.Checked = false;
+			SetColorBox();
 		}
 	}
 }
