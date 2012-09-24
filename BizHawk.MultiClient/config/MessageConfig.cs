@@ -361,6 +361,7 @@ namespace BizHawk.MultiClient
 			LagLabel.Text = DispLagx.ToString() + ", " + DispLagy.ToString();
 			InpLabel.Text = DispInpx.ToString() + ", " + DispInpy.ToString();
 			RerecLabel.Text = DispRecx.ToString() + ", " + DispRecy.ToString();
+			MultitrackLabel.Text = DispMultix.ToString() + ", " + DispMultiy.ToString();
 			MessLabel.Text = "0, 0";
 		}
 
@@ -376,6 +377,8 @@ namespace BizHawk.MultiClient
 			Global.Config.DispInpy = 24;
 			Global.Config.DispRecx = 0;
 			Global.Config.DispRecy = 48;
+			Global.Config.DispMultix = 36;
+			Global.Config.DispMultiy = 0;
 			
 			Global.Config.MessagesColor = -1;
 			Global.Config.AlertMessageColor = -65536;
@@ -397,6 +400,7 @@ namespace BizHawk.MultiClient
 			Global.Config.DispLaganchor = 0;
 			Global.Config.DispInpanchor = 0;
 			Global.Config.DispRecanchor = 0;
+			Global.Config.DispMultianchor = 0;
 
 			DispFPSx = Global.Config.DispFPSx;
 			DispFPSy = Global.Config.DispFPSy;
@@ -408,12 +412,15 @@ namespace BizHawk.MultiClient
 			DispInpy = Global.Config.DispInpy;
 			DispRecx = Global.Config.DispRecx;
 			DispRecy = Global.Config.DispRecy;
+			DispMultix = Global.Config.DispMultix;
+			DispMultiy = Global.Config.DispMultiy;
 
 			DispFPSanchor = Global.Config.DispFPSanchor;
 			DispFrameanchor = Global.Config.DispFrameanchor;
 			DispLaganchor = Global.Config.DispLaganchor;
 			DispInputanchor = Global.Config.DispInpanchor;
 			DispRecanchor = Global.Config.DispRecanchor;
+			DispMultiAnchor = Global.Config.DispMultianchor;
 			
 			SetMaxXY();
 			SetColorBox();
