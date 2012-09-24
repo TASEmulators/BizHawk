@@ -167,6 +167,11 @@ void snes_set_scanlineStart(snes_scanlineStart_t);
 #define SNES_REG_SETINI_OVERSCAN 32
 #define SNES_REG_SETINI_OBJ_INTERLACE 33
 #define SNES_REG_SETINI_SCREEN_INTERLACE 34
+//$2130 CGWSEL
+#define SNES_REG_CGWSEL_COLORMASK 40
+#define SNES_REG_CGWSEL_COLORSUBMASK 41
+#define SNES_REG_CGWSEL_ADDSUBMODE 42
+#define SNES_REG_CGWSEL_DIRECTCOLOR 43
 
 int snes_peek_logical_register(int reg);
 
