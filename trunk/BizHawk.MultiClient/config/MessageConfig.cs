@@ -288,8 +288,10 @@ namespace BizHawk.MultiClient
 		private void PositionPanel_Paint(object sender, PaintEventArgs e)
 		{
 			Pen p = new Pen(brush);
-			e.Graphics.DrawLine(p, new Point(px - 2, py - 2), new Point(px + 2, py + 2));
-			e.Graphics.DrawLine(p, new Point(px + 2, py - 2), new Point(px - 2, py + 2));
+			e.Graphics.DrawLine(p, new Point(px - 4, py - 4), new Point(px + 4, py + 4));
+			e.Graphics.DrawLine(p, new Point(px + 4, py - 4), new Point(px - 4, py + 4));
+			Rectangle rect = new Rectangle(px - 4, py - 4, 8, 8);
+			e.Graphics.DrawRectangle(p, rect);
 		}
 
 		private void PositionPanel_MouseDown(object sender, MouseEventArgs e)
