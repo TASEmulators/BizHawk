@@ -229,6 +229,9 @@ namespace BizHawk.MultiClient
 		public int DispRamWatchy = 70;
 		public bool DisplayRamWatch = false;
 		public bool ShowMenuInFullscreen = false;
+		public int DispMessagex = 3;
+		public int DispMessagey = 0;
+		public int DispMessageanchor = 2;
 
 		// Sound options
 		public bool SoundEnabled = true;

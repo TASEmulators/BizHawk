@@ -214,7 +214,6 @@
 			// MessagesRadio
 			// 
 			this.MessagesRadio.AutoSize = true;
-			this.MessagesRadio.Enabled = false;
 			this.MessagesRadio.Location = new System.Drawing.Point(6, 114);
 			this.MessagesRadio.Name = "MessagesRadio";
 			this.MessagesRadio.Size = new System.Drawing.Size(73, 17);
