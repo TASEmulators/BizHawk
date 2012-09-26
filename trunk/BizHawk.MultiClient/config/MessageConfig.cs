@@ -305,10 +305,34 @@ namespace BizHawk.MultiClient
 
 		private void PositionPanel_Paint(object sender, PaintEventArgs e)
 		{
+			int x = 0;
+			int y = 0;
+
+			if (TL.Checked)
+			{
+				x = px;
+				y = py;
+			}
+			else if (TR.Checked)
+			{
+				x = (int)XNumeric.Maximum - px;
+				y = py;
+			}
+			else if (BL.Checked)
+			{
+				x = px;
+				y = (int)YNumeric.Maximum - py;
+			}
+			else if (BR.Checked)
+			{
+				x = (int)XNumeric.Maximum - px;
+				y = (int)YNumeric.Maximum - py;
+			}
+
 			Pen p = new Pen(brush);
-			e.Graphics.DrawLine(p, new Point(px - 4, py - 4), new Point(px + 4, py + 4));
-			e.Graphics.DrawLine(p, new Point(px + 4, py - 4), new Point(px - 4, py + 4));
-			Rectangle rect = new Rectangle(px - 4, py - 4, 8, 8);
+			e.Graphics.DrawLine(p, new Point(x - 4, y - 4), new Point(x + 4, y + 4));
+			e.Graphics.DrawLine(p, new Point(x + 4, y - 4), new Point(x - 4, y + 4));
+			Rectangle rect = new Rectangle(x - 4, y - 4, 8, 8);
 			e.Graphics.DrawRectangle(p, rect);
 		}
 
@@ -518,6 +542,7 @@ namespace BizHawk.MultiClient
 			{
 				SetAnchorValue(0);
 			}
+			PositionPanel.Refresh();
 		}
 
 		private void TR_CheckedChanged(object sender, EventArgs e)
@@ -526,6 +551,7 @@ namespace BizHawk.MultiClient
 			{
 				SetAnchorValue(1);
 			}
+			PositionPanel.Refresh();
 		}
 
 		private void BL_CheckedChanged(object sender, EventArgs e)
@@ -534,6 +560,7 @@ namespace BizHawk.MultiClient
 			{
 				SetAnchorValue(2);
 			}
+			PositionPanel.Refresh();
 		}
 
 		private void BR_CheckedChanged(object sender, EventArgs e)
@@ -542,6 +569,7 @@ namespace BizHawk.MultiClient
 			{
 				SetAnchorValue(3);
 			}
+			PositionPanel.Refresh();
 		}
 
 		private void XNumeric_Click(object sender, EventArgs e)
