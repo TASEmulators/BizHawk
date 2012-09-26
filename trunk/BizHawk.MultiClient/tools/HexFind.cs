@@ -74,21 +74,6 @@ namespace BizHawk.MultiClient
 			Global.MainForm.HexEditor1.FindNext(GetFindBoxChars());
 		}
 
-		private void FindBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (HexRadio.Checked)
-			{
-				if (e.KeyChar == '\b' || e.KeyChar == 22)
-				{
-					return;
-				}
-				else if (!InputValidate.IsValidHexNumber(e.KeyChar))
-				{
-					e.Handled = true;
-				}
-			}
-		}
-
 		private void ChangeCasing()
 		{
 			if (HexRadio.Checked)

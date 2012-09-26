@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.FindBox = new System.Windows.Forms.TextBox();
+			this.FindBox = new BizHawk.HexTextBox();
 			this.Find_Prev = new System.Windows.Forms.Button();
 			this.Find_Next = new System.Windows.Forms.Button();
 			this.HexRadio = new System.Windows.Forms.RadioButton();
@@ -37,13 +37,11 @@
 			// 
 			// FindBox
 			// 
-			this.FindBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.FindBox.Location = new System.Drawing.Point(13, 12);
 			this.FindBox.Name = "FindBox";
 			this.FindBox.Size = new System.Drawing.Size(156, 20);
 			this.FindBox.TabIndex = 0;
 			this.FindBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FindBox_KeyDown);
-			this.FindBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FindBox_KeyPress);
 			// 
 			// Find_Prev
 			// 
@@ -111,7 +109,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.TextBox FindBox;
+		private HexTextBox FindBox;
 		private System.Windows.Forms.Button Find_Prev;
 		private System.Windows.Forms.Button Find_Next;
 		private System.Windows.Forms.RadioButton HexRadio;
