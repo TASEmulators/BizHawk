@@ -125,7 +125,7 @@
 			this.CompareToBox = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.NumberOfChangesBox = new System.Windows.Forms.TextBox();
-			this.SpecificAddressBox = new System.Windows.Forms.TextBox();
+			this.SpecificAddressBox = new HexTextBox();
 			this.SpecificValueBox = new System.Windows.Forms.TextBox();
 			this.NumberOfChangesRadio = new System.Windows.Forms.RadioButton();
 			this.SpecificAddressRadio = new System.Windows.Forms.RadioButton();
@@ -1039,7 +1039,6 @@
 			this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
 			this.SpecificAddressBox.TabIndex = 26;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.SpecificAddressBox_TextChanged);
-			this.SpecificAddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpecificAddressBox_KeyPress);
 			this.SpecificAddressBox.Leave += new System.EventHandler(this.SpecificAddressBox_Leave);
 			// 
 			// SpecificValueBox
@@ -1320,7 +1319,7 @@
         private System.Windows.Forms.RadioButton SpecificValueRadio;
         private System.Windows.Forms.RadioButton PreviousValueRadio;
         private System.Windows.Forms.TextBox NumberOfChangesBox;
-        private System.Windows.Forms.TextBox SpecificAddressBox;
+        private HexTextBox SpecificAddressBox;
         private System.Windows.Forms.TextBox SpecificValueBox;
         private System.Windows.Forms.ToolStripSplitButton EndiantoolSplitButton;
         private System.Windows.Forms.ToolStripMenuItem bigEndianToolStripMenuItem;

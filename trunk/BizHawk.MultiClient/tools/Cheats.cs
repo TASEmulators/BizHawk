@@ -881,22 +881,35 @@ namespace BizHawk.MultiClient
 
 		private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '\b') return;
-			if (!InputValidate.IsValidHexNumber(e.KeyChar))
+			if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+			{
+				return;
+			}
+			else if (!InputValidate.IsValidHexNumber(e.KeyChar))
+			{
 				e.Handled = true;
+			}
 		}
 
 		private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '\b') return;
-			if (!InputValidate.IsValidHexNumber(e.KeyChar))
+			if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+			{
+				return;
+			}
+			else if (!InputValidate.IsValidHexNumber(e.KeyChar))
+			{
 				e.Handled = true;
+			}
 		}
 
 		private void CheatListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
 		{
 			if (e.Label == null) //If no change
+			{
 				return;
+			}
+
 			string Str = e.Label;
 			int index = e.Item;
 			Global.CheatList.cheatList[e.Item].name = Str;
@@ -1180,7 +1193,7 @@ namespace BizHawk.MultiClient
 
 		private void CompareBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '\b')
+			if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 			{
 				return;
 			}
