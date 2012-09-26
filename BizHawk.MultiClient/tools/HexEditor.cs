@@ -1941,9 +1941,9 @@ namespace BizHawk.MultiClient
 			return values;
 		}
 
-		public void FindNext(string value)
+		public void FindNext(string value, Boolean last)
 		{
-			int found = 0;
+			int found = -1;
 
 			string search = value.Replace(" ", "").ToUpper();
 			if (search.Length == 0)
@@ -1980,18 +1980,22 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			if (found > 0)
+			if (found > -1)
 			{
 				HighlightSecondaries(search, found);
 				GoToAddress(found);
 				FindStr = search;
 				MemoryViewerBox.Focus();
 			}
+			else if (last == false)  // Search the opposite direction if not found
+			{
+				FindPrev(value, true);
+			}
 		}
 
-		public void FindPrev(string value)
+		public void FindPrev(string value, Boolean last)
 		{
-			int found = 0;
+			int found = -1;
 
 			string search = value.Replace(" ", "").ToUpper();
 			if (search.Length == 0)
@@ -2024,12 +2028,16 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			if (found > 0)
+			if (found > -1)
 			{
 				HighlightSecondaries(search, found);
 				GoToAddress(found);
 				FindStr = search;
 				MemoryViewerBox.Focus();
+			}
+			else if (last == false) // Search the opposite direction if not found
+			{
+				FindPrev(value, true);
 			}
 		}
 
@@ -2221,12 +2229,12 @@ namespace BizHawk.MultiClient
 
 		private void findNextToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FindNext(FindStr);
+			FindNext(FindStr, false);
 		}
 
 		private void findPrevToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FindPrev(FindStr);
+			FindPrev(FindStr, false);
 		}
 
 		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
