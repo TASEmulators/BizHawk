@@ -469,21 +469,24 @@ namespace BizHawk.MultiClient
 		{
 			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
 			
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
 			{
-				string str = Global.Emulator.MemoryDomains[x].ToString();
-				var item = new ToolStripMenuItem();
-				item.Text = str;
+				if (Global.Emulator.MemoryDomains[i].Size > 0)
 				{
-					int z = x;
-					item.Click += (o, ev) => SetMemoryDomain(z);
+					string str = Global.Emulator.MemoryDomains[i].ToString();
+					var item = new ToolStripMenuItem();
+					item.Text = str;
+					{
+						int z = i;
+						item.Click += (o, ev) => SetMemoryDomain(z);
+					}
+					if (i == 0)
+					{
+						SetMemoryDomain(i);
+					}
+					memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+					domainMenuItems.Add(item);
 				}
-				if (x == 0)
-				{
-					SetMemoryDomain(x);
-				}
-				memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
-				domainMenuItems.Add(item);
 			}
 			
 			//Add ROM File memory domain
