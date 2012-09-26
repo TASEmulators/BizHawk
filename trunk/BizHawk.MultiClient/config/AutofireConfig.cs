@@ -41,6 +41,8 @@ namespace BizHawk.MultiClient
 			Global.AutoFireController.Off = Global.Config.AutofireOff = (int)OffNumeric.Value;
 			Global.Config.AutofireLagFrames = LagFrameCheck.Checked;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
+
+			Global.OSD.AddMessage("Autofire settings saved");
 			this.Close();
 		}
 

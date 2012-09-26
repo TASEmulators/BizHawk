@@ -214,6 +214,7 @@ namespace BizHawk.MultiClient
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
+			Global.OSD.AddMessage("Message settings saved");
 			this.Close();
 		}
 

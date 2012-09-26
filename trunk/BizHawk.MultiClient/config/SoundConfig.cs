@@ -33,6 +33,7 @@ namespace BizHawk.MultiClient
 			Global.Sound.ChangeVolume(Global.Config.SoundVolume);
 			Global.Sound.UpdateSoundSettings();
 			Global.Sound.StartSound();
+			Global.OSD.AddMessage("Sound settings saved");
 			this.Close();
 		}
 

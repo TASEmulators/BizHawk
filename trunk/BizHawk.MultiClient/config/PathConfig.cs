@@ -252,6 +252,7 @@ namespace BizHawk.MultiClient
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
+			Global.OSD.AddMessage("Path settings saved");
 			this.Close();
 		}
 
