@@ -110,6 +110,9 @@
     <Compile Include="FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="HexTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="InputConfigBase.cs">
       <SubType>Form</SubType>
     </Compile>
