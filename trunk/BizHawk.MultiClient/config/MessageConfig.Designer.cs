@@ -77,6 +77,7 @@
 			this.AlertColorDialog = new System.Windows.Forms.ColorDialog();
 			this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
+			this.StackMessagesCheckbox = new System.Windows.Forms.CheckBox();
 			this.MessageTypeBox.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
@@ -617,6 +618,16 @@
 			// 
 			this.MovieInputColorDialog.FullOpen = true;
 			// 
+			// StackMessagesCheckbox
+			// 
+			this.StackMessagesCheckbox.AutoSize = true;
+			this.StackMessagesCheckbox.Location = new System.Drawing.Point(195, 411);
+			this.StackMessagesCheckbox.Name = "StackMessagesCheckbox";
+			this.StackMessagesCheckbox.Size = new System.Drawing.Size(105, 17);
+			this.StackMessagesCheckbox.TabIndex = 7;
+			this.StackMessagesCheckbox.Text = "Stack Messages";
+			this.StackMessagesCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// MessageConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -624,6 +635,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(612, 469);
+			this.Controls.Add(this.StackMessagesCheckbox);
 			this.Controls.Add(this.ResetDefaultsButton);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.groupBox2);
@@ -645,6 +657,7 @@
 			this.PositionGroupBox.ResumeLayout(false);
 			this.PositionGroupBox.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 
@@ -699,5 +712,6 @@
 		private System.Windows.Forms.ColorDialog MovieInputColorDialog;
 		private System.Windows.Forms.Label MultitrackLabel;
 		private System.Windows.Forms.RadioButton MultitrackRadio;
+		private System.Windows.Forms.CheckBox StackMessagesCheckbox;
     }
 }

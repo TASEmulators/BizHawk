@@ -388,22 +388,45 @@ namespace BizHawk.MultiClient
 			{
 				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
 				int line = 1;
-				for (int i = messages.Count - 1; i >= 0; i--, line++)
+				if (Global.Config.StackOSDMessages)
 				{
-					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
-					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
-					if (Global.Config.DispMessageanchor < 2)
+					for (int i = messages.Count - 1; i >= 0; i--, line++)
 					{
-						y += ((line - 1) * 18);
+						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
+						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
+						if (Global.Config.DispMessageanchor < 2)
+						{
+							y += ((line - 1) * 18);
+						}
+						else
+						{
+							y -= ((line - 1) * 18);
+						}
+						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 					}
-					else
-					{
-						y -= ((line -1) * 18);
-					}
-					g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
-			
+				else
+				{
+					if (messages.Count > 0)
+					{
+						int i = messages.Count - 1;
+						
+						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
+						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, MessageFont, messages[i].Message);
+						if (Global.Config.DispMessageanchor < 2)
+						{
+							y += ((line - 1) * 18);
+						}
+						else
+						{
+							y -= ((line - 1) * 18);
+						}
+						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
+					}
+				}
+
 				for (int x = 0; x < GUITextList.Count; x++)
 				{
 					try

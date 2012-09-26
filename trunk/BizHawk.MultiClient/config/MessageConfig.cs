@@ -64,6 +64,7 @@ namespace BizHawk.MultiClient
 			MovieInputColorDialog.Color = Color.FromArgb(MovieInput);
 			SetColorBox();
 			SetPositionInfo();
+			StackMessagesCheckbox.Checked = Global.Config.StackOSDMessages;
 		}
 
 		private void SetMaxXY()
@@ -209,6 +210,8 @@ namespace BizHawk.MultiClient
 			Global.Config.DispRecanchor = DispRecanchor;
 			Global.Config.DispMultianchor = DispMultiAnchor;
 			Global.Config.DispMessageanchor = DispMessageAnchor;
+
+			Global.Config.StackOSDMessages = StackMessagesCheckbox.Checked;
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -443,6 +446,8 @@ namespace BizHawk.MultiClient
 			SetMaxXY();
 			SetColorBox();
 			SetPositionInfo();
+
+			StackMessagesCheckbox.Checked = Global.Config.StackOSDMessages = true;
 		}
 
 		private void SetAnchorValue(int value)
