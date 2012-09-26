@@ -12,7 +12,6 @@ namespace BizHawk.MultiClient
 	public partial class MessageConfig : Form
 	{
 		//TODO: 
-		//Make a checkbox to enable/disable the stacking effect of message label
 		//Deal with typing into Numerics properly
 
 		int DispFPSx = Global.Config.DispFPSx;
