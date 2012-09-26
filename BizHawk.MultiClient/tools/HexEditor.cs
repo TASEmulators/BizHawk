@@ -1941,7 +1941,7 @@ namespace BizHawk.MultiClient
 			return values;
 		}
 
-		public void FindNext(string value, Boolean last)
+		public void FindNext(string value, Boolean wrap)
 		{
 			int found = -1;
 
@@ -1987,13 +1987,13 @@ namespace BizHawk.MultiClient
 				FindStr = search;
 				MemoryViewerBox.Focus();
 			}
-			else if (last == false)  // Search the opposite direction if not found
+			else if (wrap == false)  // Search the opposite direction if not found
 			{
 				FindPrev(value, true);
 			}
 		}
 
-		public void FindPrev(string value, Boolean last)
+		public void FindPrev(string value, Boolean wrap)
 		{
 			int found = -1;
 
@@ -2035,7 +2035,7 @@ namespace BizHawk.MultiClient
 				FindStr = search;
 				MemoryViewerBox.Focus();
 			}
-			else if (last == false) // Search the opposite direction if not found
+			else if (wrap == false) // Search the opposite direction if not found
 			{
 				FindPrev(value, true);
 			}
