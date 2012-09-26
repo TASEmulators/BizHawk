@@ -446,6 +446,8 @@ namespace BizHawk.MultiClient
 				Label TempLabel = Labels[button] as Label;
 				TempLabel.Dispose();
 			}
+
+			Global.OSD.AddMessage("Controller settings saved");
 		}
 
 		private void InputConfig_Load(object sender, EventArgs e)
