@@ -156,6 +156,7 @@ namespace BizHawk.MultiClient
 		public string FFMpegPath = "%exe%/ffmpeg.exe";
 
 		// General Client Settings
+		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
 		public int TargetDisplayFilter = 0;
 		public bool AutoLoadMostRecentRom = false;
