@@ -30,7 +30,7 @@
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamPoke));
 			this.label1 = new System.Windows.Forms.Label();
-			this.AddressBox = new System.Windows.Forms.TextBox();
+			this.AddressBox = new HexTextBox();
 			this.DataTypeGroupBox = new System.Windows.Forms.GroupBox();
 			this.HexRadio = new System.Windows.Forms.RadioButton();
 			this.UnsignedRadio = new System.Windows.Forms.RadioButton();
@@ -73,7 +73,6 @@
 			this.AddressBox.Size = new System.Drawing.Size(80, 20);
 			this.AddressBox.TabIndex = 2;
 			this.AddressBox.Text = "0000";
-			this.AddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AddressBox_KeyPress);
 			this.AddressBox.Leave += new System.EventHandler(this.AddressBox_Leave);
 			// 
 			// DataTypeGroupBox
@@ -321,7 +320,7 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox AddressBox;
+        private HexTextBox AddressBox;
         private System.Windows.Forms.GroupBox DataTypeGroupBox;
         private System.Windows.Forms.RadioButton SignedRadio;
         private System.Windows.Forms.RadioButton UnsignedRadio;

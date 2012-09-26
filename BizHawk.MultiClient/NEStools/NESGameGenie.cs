@@ -57,19 +57,16 @@ namespace BizHawk.MultiClient
 
 		private void GameGenieCode_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '\b' || e.KeyChar == 22)
-			{
-				return;
-			}
-			
 			//Make uppercase
 			if (e.KeyChar >= 97 && e.KeyChar < 123)
 				e.KeyChar -= (char)32;
 
 			if (!(GameGenieTable.ContainsKey(e.KeyChar)))
 			{
-				if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
+				if (!(e.KeyChar == (char)Keys.Back) || e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+				{
 					e.Handled = true;
+				}
 			}
 			else
 			{
@@ -231,53 +228,6 @@ namespace BizHawk.MultiClient
 				GameGenieCode.SelectionStart = x + 1;
 				Encoding.Checked = false;
 			}
-		}
-
-		private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
-			{
-				if (InputValidate.IsValidHexNumber(e.KeyChar))
-				{
-					Encoding.Checked = true;
-				}
-				else
-					e.Handled = true;
-			}
-			else
-				Encoding.Checked = true;
-		}
-
-		private void CompareBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
-			{
-				if (InputValidate.IsValidHexNumber(e.KeyChar))
-				{
-
-					Encoding.Checked = true;
-				}
-				else
-					e.Handled = true;
-			}
-			else
-				Encoding.Checked = true;
-		}
-
-		private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
-			{
-				if (InputValidate.IsValidHexNumber(e.KeyChar))
-				{
-
-					Encoding.Checked = true;
-				}
-				else
-					e.Handled = true;
-			}
-			else
-				Encoding.Checked = true;
 		}
 
 		private void AddressBox_TextChanged(object sender, EventArgs e)

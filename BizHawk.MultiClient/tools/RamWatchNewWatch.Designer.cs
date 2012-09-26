@@ -31,7 +31,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamWatchNewWatch));
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.AddressBox = new System.Windows.Forms.TextBox();
+			this.AddressBox = new HexTextBox();
 			this.NotesBox = new System.Windows.Forms.TextBox();
 			this.DataTypeGroupBox = new System.Windows.Forms.GroupBox();
 			this.HexRadio = new System.Windows.Forms.RadioButton();
@@ -80,7 +80,6 @@
 			this.AddressBox.Size = new System.Drawing.Size(100, 20);
 			this.AddressBox.TabIndex = 2;
 			this.AddressBox.Text = "00000000";
-			this.AddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AddressBox_KeyPress);
 			this.AddressBox.Leave += new System.EventHandler(this.AddressBox_Leave);
 			// 
 			// NotesBox
@@ -293,7 +292,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox AddressBox;
+        private HexTextBox AddressBox;
         private System.Windows.Forms.TextBox NotesBox;
         private System.Windows.Forms.GroupBox DataTypeGroupBox;
         private System.Windows.Forms.RadioButton SignedRadio;

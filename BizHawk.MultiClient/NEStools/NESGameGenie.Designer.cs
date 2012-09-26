@@ -33,9 +33,9 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.CompareBox = new System.Windows.Forms.TextBox();
-			this.ValueBox = new System.Windows.Forms.TextBox();
-			this.AddressBox = new System.Windows.Forms.TextBox();
+			this.CompareBox = new HexTextBox();
+			this.ValueBox = new HexTextBox();
+			this.AddressBox = new HexTextBox();
 			this.AddCheat = new System.Windows.Forms.Button();
 			this.ButtonPanel = new System.Windows.Forms.Panel();
 			this.N = new System.Windows.Forms.Button();
@@ -131,7 +131,6 @@
 			this.CompareBox.Size = new System.Drawing.Size(27, 20);
 			this.CompareBox.TabIndex = 22;
 			this.CompareBox.TextChanged += new System.EventHandler(this.CompareBox_TextChanged);
-			this.CompareBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CompareBox_KeyPress);
 			// 
 			// ValueBox
 			// 
@@ -143,7 +142,6 @@
 			this.ValueBox.Size = new System.Drawing.Size(27, 20);
 			this.ValueBox.TabIndex = 23;
 			this.ValueBox.TextChanged += new System.EventHandler(this.ValueBox_TextChanged);
-			this.ValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValueBox_KeyPress);
 			// 
 			// AddressBox
 			// 
@@ -155,7 +153,6 @@
 			this.AddressBox.Size = new System.Drawing.Size(39, 20);
 			this.AddressBox.TabIndex = 21;
 			this.AddressBox.TextChanged += new System.EventHandler(this.AddressBox_TextChanged);
-			this.AddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AddressBox_KeyPress);
 			// 
 			// AddCheat
 			// 
@@ -509,9 +506,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox CompareBox;
-        private System.Windows.Forms.TextBox ValueBox;
-        private System.Windows.Forms.TextBox AddressBox;
+        private HexTextBox CompareBox;
+        private HexTextBox ValueBox;
+        private HexTextBox AddressBox;
         private System.Windows.Forms.Button AddCheat;
         private System.Windows.Forms.Panel ButtonPanel;
         private System.Windows.Forms.Button L;

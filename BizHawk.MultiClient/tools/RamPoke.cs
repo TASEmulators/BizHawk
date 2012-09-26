@@ -319,14 +319,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == '\b') return;
-
-			if (!InputValidate.IsValidHexNumber(e.KeyChar))
-				e.Handled = true;
-		}
-
 		private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (e.KeyChar == '\b') return;

@@ -114,19 +114,6 @@ namespace BizHawk.MultiClient
 			this.Close();
 		}
 
-		private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == '\b' || e.KeyChar == 22)
-			{
-				return;
-			}
-
-			if (!InputValidate.IsValidHexNumber(e.KeyChar))
-			{
-				e.Handled = true;
-			}
-		}
-
 		private void AddressBox_Leave(object sender, EventArgs e)
 		{
 			AddressBox.Text = AddressBox.Text.Replace(" ", "");
