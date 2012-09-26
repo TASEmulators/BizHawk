@@ -62,6 +62,12 @@ namespace BizHawk.Emulation.Consoles.GB
 			LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
 
 			InitMemoryDomains();
+
+			GbOutputComm.RomStatusDetails = string.Format("{0}\nSHA1:{1}\nMD5:{2}\n",
+				game.Name,
+				Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(romdata)),
+				Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romdata))
+				);
 		}
 
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
