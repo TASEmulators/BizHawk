@@ -125,6 +125,7 @@ namespace BizHawk.MultiClient
 				case "SNES":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SNES_Controller;
 					controller = Global.Config.SNESController;
+					autoController = Global.Config.SNESAutoController;
 					break;
 				default:
 					return;
@@ -296,6 +297,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "SNES":
 					controller = Global.Config.SNESController;
+					autoController = Global.Config.SNESAutoController;
 					break;
 				case "PC Engine / SuperGrafx":
 					controller = Global.Config.PCEController;

@@ -747,7 +747,7 @@ namespace BizHawk.MultiClient
 
 			var snesControls = new Controller(LibsnesCore.SNESController);
 
-			for (int i = 0; i < 2 /*TODO*/; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				snesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.SNESController[i].Up);
 				snesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.SNESController[i].Down);
@@ -764,8 +764,28 @@ namespace BizHawk.MultiClient
 			}
 			Global.SNESControls = snesControls;
 
-			var nesControls = new Controller(NES.NESController);
 
+			var asnesControls = new AutofireController(LibsnesCore.SNESController);
+			asnesControls.Autofire = true;
+			for (int i = 0; i < 4; i++)
+			{
+				asnesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.SNESAutoController[i].Up);
+				asnesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.SNESAutoController[i].Down);
+				asnesControls.BindMulti("P" + (i + 1) + " Left", Global.Config.SNESAutoController[i].Left);
+				asnesControls.BindMulti("P" + (i + 1) + " Right", Global.Config.SNESAutoController[i].Right);
+				asnesControls.BindMulti("P" + (i + 1) + " A", Global.Config.SNESAutoController[i].A);
+				asnesControls.BindMulti("P" + (i + 1) + " B", Global.Config.SNESAutoController[i].B);
+				asnesControls.BindMulti("P" + (i + 1) + " X", Global.Config.SNESAutoController[i].X);
+				asnesControls.BindMulti("P" + (i + 1) + " Y", Global.Config.SNESAutoController[i].Y);
+				asnesControls.BindMulti("P" + (i + 1) + " L", Global.Config.SNESAutoController[i].L);
+				asnesControls.BindMulti("P" + (i + 1) + " R", Global.Config.SNESAutoController[i].R);
+				asnesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.SNESAutoController[i].Select);
+				asnesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.SNESAutoController[i].Start);
+			}
+			Global.AutofireSNESControls = asnesControls;
+
+
+			var nesControls = new Controller(NES.NESController);
 			for (int i = 0; i < 2 /*TODO*/; i++)
 			{
 				nesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESController[i].Up);
@@ -1186,6 +1206,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "SNES":
 					Global.ActiveController = Global.SNESControls;
+					Global.AutoFireController = Global.AutofireSNESControls;
 					break;
 				case "GB":
 					Global.ActiveController = Global.GBControls;
@@ -2725,7 +2746,7 @@ namespace BizHawk.MultiClient
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;%ARCH%",
 					"Colecovision (very experimental)", "*.col;%ARCH%",
-                    "Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
+					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 					"PSX Executables (very experimental)", "*.exe",
 					"All Files", "*.*");
 			}

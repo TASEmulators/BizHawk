@@ -12,12 +12,8 @@ namespace BizHawk.MultiClient
 	public partial class MessageConfig : Form
 	{
 		//TODO: 
-		//Implement message position as a variable
 		//Make a checkbox to enable/disable the stacking effect of message label
 		//Deal with typing into Numerics properly
-		//Have some method of binding a display object to top/bottom/left/right instead of an absolute position
-		//Bug: restore defaults doesn't restore the y value of whatever radio is checked
-		//Implement Multitrack messages counter config
 
 		int DispFPSx = Global.Config.DispFPSx;
 		int DispFPSy = Global.Config.DispFPSy;
