@@ -573,7 +573,8 @@ namespace BizHawk.MultiClient
 					disp.Append(' ');
 				}
 
-				g.DrawString(disp.ToString(), MessageFont, Color.White, GetX(g, 0, 3, MessageFont, disp.ToString()), 0);
+				g.DrawString(disp.ToString(), MessageFont, Color.White, GetX(g, Global.Config.DispAutoholdx, Global.Config.DispAutoholdanchor, MessageFont, 
+					disp.ToString()), GetY(g, Global.Config.DispAutoholdy, Global.Config.DispAutoholdanchor, MessageFont, disp.ToString()));
 			}
 
 			//TODO

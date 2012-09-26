@@ -31,6 +31,8 @@ namespace BizHawk.MultiClient
 		int DispMultiy = Global.Config.DispMultiy;
 		int DispMessagex = Global.Config.DispMessagex;
 		int DispMessagey = Global.Config.DispMessagey;
+		int DispAutoholdx = Global.Config.DispAutoholdx;
+		int DispAutoholdy = Global.Config.DispAutoholdy;
 
 		int MessageColor = Global.Config.MessagesColor;
 		int AlertColor = Global.Config.AlertMessageColor;
@@ -43,6 +45,7 @@ namespace BizHawk.MultiClient
 		int DispRecanchor = Global.Config.DispRecanchor;
 		int DispMultiAnchor = Global.Config.DispMultianchor;
 		int DispMessageAnchor = Global.Config.DispMessageanchor;
+		int DispAutoholdAnchor = Global.Config.DispAutoholdanchor;
 
 		public Brush brush = Brushes.Black;
 		int px = 0;
@@ -174,6 +177,14 @@ namespace BizHawk.MultiClient
 				py = DispMultiy;
 				SetAnchorRadio(DispMultiAnchor);
 			}
+			else if (AutoholdRadio.Checked)
+			{
+				XNumeric.Value = DispAutoholdx;
+				YNumeric.Value = DispAutoholdy;
+				px = DispAutoholdx;
+				py = DispAutoholdy;
+				SetAnchorRadio(DispAutoholdAnchor);
+			}
 
 			PositionPanel.Refresh();
 			XNumeric.Refresh();
@@ -197,6 +208,8 @@ namespace BizHawk.MultiClient
 			Global.Config.DispMultiy = DispMultiy;
 			Global.Config.DispMessagex = DispMessagex;
 			Global.Config.DispMessagey = DispMessagey;
+			Global.Config.DispAutoholdx = DispAutoholdx;
+			Global.Config.DispAutoholdy = DispAutoholdy;
 
 			Global.Config.MessagesColor = MessageColor;
 			Global.Config.AlertMessageColor = AlertColor;
@@ -209,6 +222,7 @@ namespace BizHawk.MultiClient
 			Global.Config.DispRecanchor = DispRecanchor;
 			Global.Config.DispMultianchor = DispMultiAnchor;
 			Global.Config.DispMessageanchor = DispMessageAnchor;
+			Global.Config.DispAutoholdanchor = DispAutoholdAnchor;
 
 			Global.Config.StackOSDMessages = StackMessagesCheckbox.Checked;
 		}
@@ -251,6 +265,11 @@ namespace BizHawk.MultiClient
 		}
 
 		private void MultitrackRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			SetPositionInfo();
+		}
+
+		private void AutoholdRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			SetPositionInfo();
 		}
@@ -350,10 +369,6 @@ namespace BizHawk.MultiClient
 				DispInpx = px;
 				DispInpy = py;
 			}
-			else if (MessagesRadio.Checked)
-			{
-				//TODO
-			}
 			else if (RerecordsRadio.Checked)
 			{
 				DispRecx = px;
@@ -369,6 +384,11 @@ namespace BizHawk.MultiClient
 				DispMessagex = px;
 				DispMessagey = py;
 			}
+			else if (AutoholdRadio.Checked)
+			{
+				DispAutoholdx = px;
+				DispAutoholdy = py;
+			}
 
 			FpsPosLabel.Text = DispFPSx.ToString() + ", " + DispFPSy.ToString();
 			FCLabel.Text = DispFrameCx.ToString() + ", " + DispFrameCy.ToString();
@@ -377,6 +397,7 @@ namespace BizHawk.MultiClient
 			RerecLabel.Text = DispRecx.ToString() + ", " + DispRecy.ToString();
 			MultitrackLabel.Text = DispMultix.ToString() + ", " + DispMultiy.ToString();
 			MessLabel.Text = DispMessagex.ToString() + ", " + DispMessagey.ToString();
+			AutoholdLabel.Text = DispAutoholdx.ToString() + ", " + DispAutoholdy.ToString();
 		}
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
@@ -395,6 +416,8 @@ namespace BizHawk.MultiClient
 			Global.Config.DispMultiy = 0;
 			Global.Config.DispMessagex = 3;
 			Global.Config.DispMessagey = 0;
+			Global.Config.DispAutoholdx = 0;
+			Global.Config.DispAutoholdy = 0;
 
 			Global.Config.MessagesColor = -1;
 			Global.Config.AlertMessageColor = -65536;
@@ -418,6 +441,7 @@ namespace BizHawk.MultiClient
 			Global.Config.DispRecanchor = 0;
 			Global.Config.DispMultianchor = 0;
 			Global.Config.DispMessageanchor = 2;
+			Global.Config.DispAutoholdanchor = 1;
 
 			DispFPSx = Global.Config.DispFPSx;
 			DispFPSy = Global.Config.DispFPSy;
@@ -433,6 +457,8 @@ namespace BizHawk.MultiClient
 			DispMultiy = Global.Config.DispMultiy;
 			DispMessagex = Global.Config.DispMessagex;
 			DispMessagey = Global.Config.DispMessagey;
+			DispAutoholdx = Global.Config.DispAutoholdx;
+			DispAutoholdy = Global.Config.DispAutoholdy;
 
 			DispFPSanchor = Global.Config.DispFPSanchor;
 			DispFrameanchor = Global.Config.DispFrameanchor;
@@ -441,6 +467,7 @@ namespace BizHawk.MultiClient
 			DispRecanchor = Global.Config.DispRecanchor;
 			DispMultiAnchor = Global.Config.DispMultianchor;
 			DispMessageAnchor = Global.Config.DispMessageanchor;
+			DispAutoholdAnchor = Global.Config.DispAutoholdanchor;
 
 			SetMaxXY();
 			SetColorBox();
@@ -478,6 +505,10 @@ namespace BizHawk.MultiClient
 			else if (MultitrackRadio.Checked)
 			{
 				DispMultiAnchor = value;
+			}
+			else if (AutoholdRadio.Checked)
+			{
+				DispAutoholdAnchor = value;
 			}
 		}
 

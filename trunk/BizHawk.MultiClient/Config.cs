@@ -239,6 +239,9 @@ namespace BizHawk.MultiClient
 		public int DispMessagex = 3;
 		public int DispMessagey = 0;
 		public int DispMessageanchor = 2;
+		public int DispAutoholdx = 0;
+		public int DispAutoholdy = 0;
+		public int DispAutoholdanchor = 1;
 
 		// Sound options
 		public bool SoundEnabled = true;
