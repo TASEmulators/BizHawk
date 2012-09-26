@@ -152,6 +152,7 @@ namespace BizHawk.MultiClient
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
+		public string PathSGBRom = Path.Combine(".", "Super Game Boy (UE) (V1.2) [!].smc");
 
 		public string FFMpegPath = "%exe%/ffmpeg.exe";
 
@@ -629,6 +630,7 @@ namespace BizHawk.MultiClient
 		public bool GB_GBACGB = false;
 		public bool GB_MulticartCompat = false;
 		public string GB_PaletteFile = "";
+		public bool GB_AsSGB = false;
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;

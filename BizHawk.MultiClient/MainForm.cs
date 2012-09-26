@@ -1158,6 +1158,11 @@ namespace BizHawk.MultiClient
 					atariToolStripMenuItem.Visible = true;
 					break;
 				case "SNES":
+					sNESToolStripMenuItem.Text = "&SNES";
+					sNESToolStripMenuItem.Visible = true;
+					break;
+				case "SGB":
+					sNESToolStripMenuItem.Text = "&SGB";
 					sNESToolStripMenuItem.Visible = true;
 					break;
 				default:
@@ -1375,8 +1380,8 @@ namespace BizHawk.MultiClient
 						switch (game.System)
 						{
 							case "SNES":
-								nextEmulator = new LibsnesCore(rom.FileData);
 								game.System = "SNES";
+								nextEmulator = new LibsnesCore(game, rom.FileData);
 								break;
 							case "SMS":
 							case "SG":
@@ -1428,21 +1433,32 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "GB":
-								if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
-								if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
-								if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-								Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(game, rom.FileData);
-								nextEmulator = gb;
-								try
+								if (!Global.Config.GB_AsSGB)
 								{
-									using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
+									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
+									if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
+									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
+									Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(game, rom.FileData);
+									nextEmulator = gb;
+									try
 									{
-										int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
-										if (colors != null)
-											gb.ChangeDMGColors(colors);
+										using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
+										{
+											int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
+											if (colors != null)
+												gb.ChangeDMGColors(colors);
+										}
 									}
+									catch { }
 								}
-								catch { }
+								else
+								{
+									// todo: get these bioses into a gamedb??
+									byte[] sgbrom = File.ReadAllBytes(PathManager.MakeAbsolutePath(Global.Config.PathSGBRom, "SGB"));
+									game.AddOption("SGB");
+									game.System = "SGB";
+									nextEmulator = new LibsnesCore(game, rom.FileData, sgbrom);
+								}
 								break;
 							case "COLV":
 								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
@@ -3626,6 +3642,27 @@ namespace BizHawk.MultiClient
 		private void screenshotToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
 			captureOSDToolStripMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
+		}
+
+		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Global.Emulator.SystemId == "SGB")
+			{
+				loadGBInSGBToolStripMenuItem.Visible = true;
+				loadGBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
+			}
+			else
+				loadGBInSGBToolStripMenuItem.Visible = false;
+		}
+
+		private void loadGBInSGBToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			loadGBInSGBToolStripMenuItem_Click(sender, e);
+		}
+
+		private void loadGBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
 		}
 	}
 }
