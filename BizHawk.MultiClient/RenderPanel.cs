@@ -443,11 +443,14 @@ namespace BizHawk.MultiClient
 			{
 				// Wait until device is available or user gets annoyed and closes app
 				Result r;
+				// it can take a while for the device to be ready again, so avoid sound looping during the wait
+				if (Global.Sound != null) Global.Sound.StopSound();
 				do
 				{
 					r = Device.TestCooperativeLevel();
 					Thread.Sleep(100);
 				} while (r == ResultCode.DeviceLost);
+				if (Global.Sound != null) Global.Sound.StartSound();
 
 				// lets try recovery!
 				DestroyDevice();
@@ -501,6 +504,7 @@ namespace BizHawk.MultiClient
 
 		public void Present()
 		{
+			// Present() is the most likely place to get DeviceLost, so we need to wrap it
 			RenderWrapper(_Present);
 		}
 
