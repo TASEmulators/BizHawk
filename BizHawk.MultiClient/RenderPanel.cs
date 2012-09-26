@@ -501,6 +501,11 @@ namespace BizHawk.MultiClient
 
 		public void Present()
 		{
+			RenderWrapper(_Present);
+		}
+
+		private void _Present()
+		{
 			Device.Present(SlimDX.Direct3D9.Present.None);
 			vsyncEvent.Set();
 		}
