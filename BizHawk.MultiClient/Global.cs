@@ -37,6 +37,7 @@ namespace BizHawk.MultiClient
 
 		public static AutofireController AutofireNullControls;
 		public static AutofireController AutofireNESControls;
+		public static AutofireController AutofireSNESControls;
 		public static AutofireController AutofireSMSControls;
 		public static AutofireController AutofirePCEControls;
 		public static AutofireController AutofireGBControls;

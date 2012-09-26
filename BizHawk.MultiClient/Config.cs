@@ -49,6 +49,11 @@ namespace BizHawk.MultiClient
 			PCEAutoController[3] = new PCEControllerTemplate(false);
 			PCEAutoController[4] = new PCEControllerTemplate(false);
 
+			SNESAutoController[0] = new SNESControllerTemplate(false);
+			SNESAutoController[1] = new SNESControllerTemplate(false);
+			SNESAutoController[2] = new SNESControllerTemplate(false);
+			SNESAutoController[3] = new SNESControllerTemplate(false);
+
 			ColecoController = new ColecoVisionControllerTemplate(true);
 
 		}
@@ -611,6 +616,7 @@ namespace BizHawk.MultiClient
 
 		//SNES settings
 		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
+		public SNESControllerTemplate[] SNESAutoController = new SNESControllerTemplate[4];
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
