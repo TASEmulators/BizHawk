@@ -38,12 +38,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern void snes_unload_cartridge();
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void snes_load_cartridge_normal(
+		[return: MarshalAs(UnmanagedType.U1)]
+		public static extern bool snes_load_cartridge_normal(
 			[MarshalAs(UnmanagedType.LPStr)]
 			string rom_xml, 
 			[MarshalAs(UnmanagedType.LPArray)]
 			byte[] rom_data, 
-			int rom_size);
+			uint rom_size);
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.U1)]
+		public static extern bool snes_load_cartridge_super_game_boy(
+			[MarshalAs(UnmanagedType.LPStr)]
+			string rom_xml,
+			[MarshalAs(UnmanagedType.LPArray)]
+			byte[] rom_data,
+			uint rom_size,
+			[MarshalAs(UnmanagedType.LPStr)]
+			string dmg_xml,
+			[MarshalAs(UnmanagedType.LPArray)]
+			byte[] dmg_data,
+			uint dmg_size);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_video_refresh_t(int *data, int width, int height);
@@ -291,7 +306,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			ScanlineHookManager.HandleScanline(line);
 		}
 
-		public LibsnesCore(byte[] romData)
+		public LibsnesCore(GameInfo game, byte[] romData, byte[] sgbRomData = null)
 		{
 			//attach this core as the current
 			if(CurrLibsnesCore != null)
@@ -329,8 +344,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				Array.Copy(romData, 512, newData, 0, newData.Length);
 				romData = newData;
 			}
-			LibsnesDll.snes_load_cartridge_normal(null, romData, romData.Length);
 
+			if (game["SGB"])
+			{
+				SystemId = "SGB";
+				if (!LibsnesDll.snes_load_cartridge_super_game_boy(null, sgbRomData, (uint)sgbRomData.Length, null, romData, (uint)romData.Length))
+					throw new Exception("snes_load_cartridge_super_game_boy() failed");
+			}
+			else
+			{
+				SystemId = "SNES";
+				if (!LibsnesDll.snes_load_cartridge_normal(null, romData, (uint)romData.Length))
+					throw new Exception("snes_load_cartridge_normal() failed");
+			}
 			LibsnesDll.snes_power();
 
 			SetupMemoryDomains(romData);
@@ -497,7 +523,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
-		public string SystemId { get { return "SNES"; } }
+		public string SystemId { get; private set; }
 		public bool DeterministicEmulation { get; set; }
 		public bool SaveRamModified
 		{

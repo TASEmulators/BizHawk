@@ -1698,6 +1698,8 @@ namespace BizHawk.MultiClient
 			forceDMGModeToolStripMenuItem.Checked = Global.Config.GB_ForceDMG;
 			gBAInCGBModeToolStripMenuItem.Checked = Global.Config.GB_GBACGB;
 			multicartCompatibilityToolStripMenuItem.Checked = Global.Config.GB_MulticartCompat;
+
+			loadGBInSGBToolStripMenuItem1.Checked = Global.Config.GB_AsSGB;
 		}
 
 		private void graphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
