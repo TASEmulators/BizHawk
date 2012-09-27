@@ -355,10 +355,33 @@ namespace BizHawk.MultiClient
 			if (my < 0) my = 0;
 			if (mx > XNumeric.Maximum) mx = (int)XNumeric.Maximum;
 			if (my > YNumeric.Maximum) my = (int)YNumeric.Maximum;
+
+
+			if (TL.Checked)
+			{
+				//Do nothing
+			}
+			else if (TR.Checked)
+			{
+				mx = (int)XNumeric.Maximum - mx;
+			}
+			else if (BL.Checked)
+			{
+				my = (int)YNumeric.Maximum - my;
+			}
+			else if (BR.Checked)
+			{
+				mx = (int)XNumeric.Maximum - mx;
+				my = (int)YNumeric.Maximum - my;
+			}
+
 			XNumeric.Value = mx;
 			YNumeric.Value = my;
 			px = mx;
 			py = my;
+			
+			
+			
 			PositionPanel.Refresh();
 			SetPositionLabels();
 		}
