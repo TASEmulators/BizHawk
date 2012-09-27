@@ -113,6 +113,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern bool snes_unserialize(IntPtr data, int size);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int snes_poll_message();
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_dequeue_message(IntPtr strBuffer);
+
+		public static bool HasMessage { get { return snes_poll_message() != -1; } }
+
+		public static string DequeueMessage()
+		{
+			int len = snes_poll_message();
+			sbyte* temp = stackalloc sbyte[len + 1];
+			temp[len] = 0;
+			snes_dequeue_message(new IntPtr(temp));
+			return new string(temp);
+		}
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_layer_enable(int layer, int priority,
 			[MarshalAs(UnmanagedType.U1)]
 			bool enable
@@ -481,6 +498,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			//apparently this is one frame?
 			timeFrameCounter++;
 			LibsnesDll.snes_run();
+
+			while (LibsnesDll.HasMessage)
+				Console.WriteLine(LibsnesDll.DequeueMessage());
 
 			if (IsLagFrame)
 				LagCount++;

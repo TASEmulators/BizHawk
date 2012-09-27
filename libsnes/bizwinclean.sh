@@ -1,1 +1,2 @@
-rm bsnes/obj/*.o
+rm -r bsnes/obj
+rm -r bsnes/out

@@ -135,6 +135,10 @@ bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size);
 void snes_set_layer_enable(int layer, int priority, bool enable);
 typedef void (*snes_scanlineStart_t)(int);
 void snes_set_scanlineStart(snes_scanlineStart_t);
+//returns -1 if no messages, messagelength if there is one
+int snes_poll_message();
+//give us a buffer of messagelength and we'll dequeue a message into it. you better take care of the null pointer
+void snes_dequeue_message(char* buffer);
 
 //$2105
 #define SNES_REG_BG_MODE 0
