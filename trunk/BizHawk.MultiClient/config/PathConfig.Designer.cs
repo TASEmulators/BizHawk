@@ -280,6 +280,9 @@
 			this.BaseDescription = new System.Windows.Forms.Label();
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
 			this.SaveButton = new System.Windows.Forms.Button();
+			this.SNESFirmwaresDescription = new System.Windows.Forms.Label();
+			this.SNESBrowseFirmwares = new System.Windows.Forms.Button();
+			this.SNESFirmwaresBox = new System.Windows.Forms.TextBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage12.SuspendLayout();
@@ -829,6 +832,9 @@
 			// 
 			// tabPage12
 			// 
+			this.tabPage12.Controls.Add(this.SNESFirmwaresDescription);
+			this.tabPage12.Controls.Add(this.SNESBrowseFirmwares);
+			this.tabPage12.Controls.Add(this.SNESFirmwaresBox);
 			this.tabPage12.Controls.Add(this.SNESBaseBox);
 			this.tabPage12.Controls.Add(this.SNESSGBDescription);
 			this.tabPage12.Controls.Add(this.SNESBrowseSGB);
@@ -3058,6 +3064,36 @@
 			this.SaveButton.UseVisualStyleBackColor = true;
 			this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
 			// 
+			// SNESFirmwaresDescription
+			// 
+			this.SNESFirmwaresDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SNESFirmwaresDescription.AutoSize = true;
+			this.SNESFirmwaresDescription.Location = new System.Drawing.Point(474, 240);
+			this.SNESFirmwaresDescription.Name = "SNESFirmwaresDescription";
+			this.SNESFirmwaresDescription.Size = new System.Drawing.Size(54, 13);
+			this.SNESFirmwaresDescription.TabIndex = 94;
+			this.SNESFirmwaresDescription.Text = "Firmwares";
+			// 
+			// SNESBrowseFirmwares
+			// 
+			this.SNESBrowseFirmwares.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SNESBrowseFirmwares.Image = ((System.Drawing.Image)(resources.GetObject("SNESBrowseFirmwares.Image")));
+			this.SNESBrowseFirmwares.Location = new System.Drawing.Point(442, 237);
+			this.SNESBrowseFirmwares.Name = "SNESBrowseFirmwares";
+			this.SNESBrowseFirmwares.Size = new System.Drawing.Size(26, 23);
+			this.SNESBrowseFirmwares.TabIndex = 93;
+			this.SNESBrowseFirmwares.UseVisualStyleBackColor = true;
+			this.SNESBrowseFirmwares.Click += new System.EventHandler(this.SNESBrowseFirmwares_Click);
+			// 
+			// SNESFirmwaresBox
+			// 
+			this.SNESFirmwaresBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SNESFirmwaresBox.Location = new System.Drawing.Point(13, 237);
+			this.SNESFirmwaresBox.Name = "SNESFirmwaresBox";
+			this.SNESFirmwaresBox.Size = new System.Drawing.Size(421, 20);
+			this.SNESFirmwaresBox.TabIndex = 92;
+			// 
 			// PathConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -3361,5 +3397,8 @@
 		private System.Windows.Forms.Label SNESSGBDescription;
 		private System.Windows.Forms.Button SNESBrowseSGB;
 		private System.Windows.Forms.TextBox SNESSGBBox;
+		private System.Windows.Forms.Label SNESFirmwaresDescription;
+		private System.Windows.Forms.Button SNESBrowseFirmwares;
+		private System.Windows.Forms.TextBox SNESFirmwaresBox;
     }
 }
