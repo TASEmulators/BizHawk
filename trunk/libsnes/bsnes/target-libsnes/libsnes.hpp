@@ -139,6 +139,8 @@ void snes_set_scanlineStart(snes_scanlineStart_t);
 int snes_poll_message();
 //give us a buffer of messagelength and we'll dequeue a message into it. you better take care of the null pointer
 void snes_dequeue_message(char* buffer);
+typedef const char* (*snes_path_request_t)(int slot, const char* hint);
+void snes_set_path_request(snes_path_request_t path_request);
 
 //$2105
 #define SNES_REG_BG_MODE 0

@@ -38,6 +38,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern void snes_unload_cartridge();
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_cartridge_basename(string basename);
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.U1)]
 		public static extern bool snes_load_cartridge_normal(
 			[MarshalAs(UnmanagedType.LPStr)]
@@ -72,6 +75,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public delegate void snes_audio_sample_t(ushort left, ushort right);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_scanlineStart_t(int line);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate string snes_path_request_t(int slot, string hint);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_video_refresh(snes_video_refresh_t video_refresh);
@@ -85,6 +90,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern void snes_set_audio_sample(snes_audio_sample_t audio_sample);
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_scanlineStart(snes_scanlineStart_t scanlineStart);
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_path_request(snes_path_request_t scanlineStart);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.U1)]
@@ -323,7 +330,30 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			ScanlineHookManager.HandleScanline(line);
 		}
 
-		public LibsnesCore(GameInfo game, byte[] romData, byte[] sgbRomData = null)
+		string snes_path_request_t(int slot, string hint)
+		{
+			//every rom requests this byuu homemade rom
+			if (hint == "msu1.rom") return "";
+
+			//build romfilename
+			string test = Path.Combine(CoreInputComm.SNES_FirmwarePath ?? "", hint);
+
+			//does it exist?
+			if (!File.Exists(test))
+			{
+				System.Windows.Forms.MessageBox.Show("libsneshawk is requesting a firmware file which could not be found. make sure it's in your snes firmwares folder. the name is: " + hint);
+				return "";
+			}
+
+			//return the path we built
+			return test;
+		}
+
+		public LibsnesCore()
+		{
+		}
+
+		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData)
 		{
 			//attach this core as the current
 			if(CurrLibsnesCore != null)
@@ -333,6 +363,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
 			LibsnesDll.snes_init();
+
+			//LibsnesDll.snes_set_cartridge_basename(@);
 
 			vidcb = new LibsnesDll.snes_video_refresh_t(snes_video_refresh);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(vidcb);
@@ -348,6 +380,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			soundcb = new LibsnesDll.snes_audio_sample_t(snes_audio_sample);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
+
+			pathRequest_cb = new LibsnesDll.snes_path_request_t(snes_path_request_t);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_path_request(pathRequest_cb);
+
 
 			scanlineStart_cb = new LibsnesDll.snes_scanlineStart_t(snes_scanlineStart);
 
@@ -386,6 +422,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		LibsnesDll.snes_input_notify_t notifycb;
 		LibsnesDll.snes_audio_sample_t soundcb;
 		LibsnesDll.snes_scanlineStart_t scanlineStart_cb;
+		LibsnesDll.snes_path_request_t pathRequest_cb;
 
 		ushort snes_input_state(int port, int device, int index, int id)
 		{

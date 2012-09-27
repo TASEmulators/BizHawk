@@ -14,6 +14,7 @@ struct Interface : public SNES::Interface {
   snes_input_poll_t pinput_poll;
   snes_input_state_t pinput_state;
   snes_input_notify_t pinput_notify;
+	snes_path_request_t ppath_request;
   string basename;
   uint32_t *buffer;
   uint32_t *palette;
@@ -67,11 +68,18 @@ struct Interface : public SNES::Interface {
 		messages.push(text);
   }
 
-  string path(SNES::Cartridge::Slot slot, const string &hint) {
+  string path(SNES::Cartridge::Slot slot, const string &hint)
+	{
+		if(ppath_request)
+		{
+			const char* path = ppath_request((int)slot, (const char*)hint);
+			return path;
+		}
     return { basename, hint };
+
   }
 
-  Interface() : pvideo_refresh(0), paudio_sample(0), pinput_poll(0), pinput_state(0), pinput_notify(0) {
+  Interface() : pvideo_refresh(0), paudio_sample(0), pinput_poll(0), pinput_state(0), pinput_notify(0), ppath_request(0) {
     buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
 
@@ -141,6 +149,11 @@ void snes_set_input_state(snes_input_state_t input_state) {
 
 void snes_set_input_notify(snes_input_notify_t input_notify) {
   interface.pinput_notify = input_notify;
+}
+
+void snes_set_path_request(snes_path_request_t path_request)
+{
+	 interface.ppath_request = path_request;
 }
 
 void snes_set_controller_port_device(bool port, unsigned device) {
