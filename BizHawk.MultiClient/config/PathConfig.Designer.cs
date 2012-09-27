@@ -79,13 +79,13 @@
 			this.NESBaseDescription = new System.Windows.Forms.Label();
 			this.BrowseNESBase = new System.Windows.Forms.Button();
 			this.tabPage12 = new System.Windows.Forms.TabPage();
+			this.SNESBaseBox = new System.Windows.Forms.TextBox();
 			this.SNESSGBDescription = new System.Windows.Forms.Label();
 			this.SNESBrowseSGB = new System.Windows.Forms.Button();
 			this.SNESSGBBox = new System.Windows.Forms.TextBox();
 			this.SNESCheatsDescription = new System.Windows.Forms.Label();
 			this.SNESBrowseCheats = new System.Windows.Forms.Button();
 			this.SNESCheatsBox = new System.Windows.Forms.TextBox();
-			this.SNESBaseBox = new System.Windows.Forms.TextBox();
 			this.SNESBaseDescription = new System.Windows.Forms.Label();
 			this.BrowseSNESBase = new System.Windows.Forms.Button();
 			this.SNESROMsBox = new System.Windows.Forms.TextBox();
@@ -101,17 +101,17 @@
 			this.SNESSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.BrowseSNESROMs = new System.Windows.Forms.Button();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.Sega8BaseBox = new System.Windows.Forms.TextBox();
 			this.Sega8CheatsDescription = new System.Windows.Forms.Label();
 			this.Sega8BrowseCheats = new System.Windows.Forms.Button();
 			this.Sega8CheatsBox = new System.Windows.Forms.TextBox();
-			this.Sega8BaseBox = new System.Windows.Forms.TextBox();
 			this.Sega8BaseDescription = new System.Windows.Forms.Label();
 			this.Sega8BrowseBase = new System.Windows.Forms.Button();
 			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.SGBaseBox = new System.Windows.Forms.TextBox();
 			this.SGCheatsDescription = new System.Windows.Forms.Label();
 			this.SGBrowseCheats = new System.Windows.Forms.Button();
 			this.SGCheatsBox = new System.Windows.Forms.TextBox();
-			this.SGBaseBox = new System.Windows.Forms.TextBox();
 			this.SGBaseDescription = new System.Windows.Forms.Label();
 			this.SGBrowseBase = new System.Windows.Forms.Button();
 			this.SGROMsBox = new System.Windows.Forms.TextBox();
@@ -127,10 +127,10 @@
 			this.SGSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.SGROMsBrowse = new System.Windows.Forms.Button();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.GGBaseBox = new System.Windows.Forms.TextBox();
 			this.GGCheatsDescription = new System.Windows.Forms.Label();
 			this.GGBrowseCheats = new System.Windows.Forms.Button();
 			this.GGCheatsBox = new System.Windows.Forms.TextBox();
-			this.GGBaseBox = new System.Windows.Forms.TextBox();
 			this.GGScreenshotsBox = new System.Windows.Forms.TextBox();
 			this.GGBaseDescription = new System.Windows.Forms.Label();
 			this.GGScreenshotsDescription = new System.Windows.Forms.Label();
@@ -146,10 +146,10 @@
 			this.GGSaveRAMDescription = new System.Windows.Forms.Label();
 			this.GGSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.GenesisBaseBox = new System.Windows.Forms.TextBox();
 			this.GenesisCheatsDescription = new System.Windows.Forms.Label();
 			this.GenesisBrowseCheats = new System.Windows.Forms.Button();
 			this.GenesisCheatsBox = new System.Windows.Forms.TextBox();
-			this.GenesisBaseBox = new System.Windows.Forms.TextBox();
 			this.GenesisScreenshotsBox = new System.Windows.Forms.TextBox();
 			this.GenesisBrowseSaveRAM = new System.Windows.Forms.Button();
 			this.GenesisBrowseROMs = new System.Windows.Forms.Button();
@@ -165,13 +165,13 @@
 			this.GenesisBrowseScreenshots = new System.Windows.Forms.Button();
 			this.GenesisROMsBox = new System.Windows.Forms.TextBox();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.PCEBaseBox = new System.Windows.Forms.TextBox();
 			this.PCEBiosDescription = new System.Windows.Forms.Label();
 			this.PCEBrowseBios = new System.Windows.Forms.Button();
 			this.PCEBiosBox = new System.Windows.Forms.TextBox();
 			this.PCECheatsDescription = new System.Windows.Forms.Label();
 			this.PCEBrowseCheats = new System.Windows.Forms.Button();
 			this.PCECheatsBox = new System.Windows.Forms.TextBox();
-			this.PCEBaseBox = new System.Windows.Forms.TextBox();
 			this.PCEScreenshotsBox = new System.Windows.Forms.TextBox();
 			this.PCEBaseDescription = new System.Windows.Forms.Label();
 			this.PCEScreenshotsDescription = new System.Windows.Forms.Label();
@@ -187,13 +187,13 @@
 			this.PCESaveRAMDescription = new System.Windows.Forms.Label();
 			this.PCESaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.GBBaseBox = new System.Windows.Forms.TextBox();
 			this.GBPalettesBox = new System.Windows.Forms.TextBox();
 			this.GBBrowsePalettes = new System.Windows.Forms.Button();
 			this.GBPalettesDescription = new System.Windows.Forms.Label();
 			this.GBCheatsDescription = new System.Windows.Forms.Label();
 			this.GBBrowseCheats = new System.Windows.Forms.Button();
 			this.GBCheatsBox = new System.Windows.Forms.TextBox();
-			this.GBBaseBox = new System.Windows.Forms.TextBox();
 			this.GBScreenshotsBox = new System.Windows.Forms.TextBox();
 			this.GBBaseDescription = new System.Windows.Forms.Label();
 			this.GBScreenshotsDescription = new System.Windows.Forms.Label();
@@ -209,10 +209,10 @@
 			this.GBSaveRAMDescription = new System.Windows.Forms.Label();
 			this.GBSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPage6 = new System.Windows.Forms.TabPage();
+			this.TI83BaseBox = new System.Windows.Forms.TextBox();
 			this.TI83CheatsDescription = new System.Windows.Forms.Label();
 			this.TI83BrowseBox = new System.Windows.Forms.Button();
 			this.TI83CheatsBox = new System.Windows.Forms.TextBox();
-			this.TI83BaseBox = new System.Windows.Forms.TextBox();
 			this.TI83ScreenshotsBox = new System.Windows.Forms.TextBox();
 			this.TI83BaseDescription = new System.Windows.Forms.Label();
 			this.TI83ScreenshotsDescription = new System.Windows.Forms.Label();
@@ -228,10 +228,10 @@
 			this.TI83SaveRAMDescription = new System.Windows.Forms.Label();
 			this.TI83SaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPage10 = new System.Windows.Forms.TabPage();
+			this.AtariBaseBox = new System.Windows.Forms.TextBox();
 			this.AtariCheatsDescription = new System.Windows.Forms.Label();
 			this.AtariBrowseCheats = new System.Windows.Forms.Button();
 			this.AtariCheatsBox = new System.Windows.Forms.TextBox();
-			this.AtariBaseBox = new System.Windows.Forms.TextBox();
 			this.AtariBaseDescription = new System.Windows.Forms.Label();
 			this.BrowseAtariBase = new System.Windows.Forms.Button();
 			this.AtariROMsBox = new System.Windows.Forms.TextBox();
@@ -247,6 +247,7 @@
 			this.AtariSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.BrowseAtariROMs = new System.Windows.Forms.Button();
 			this.tabPage11 = new System.Windows.Forms.TabPage();
+			this.INTVBaseBox = new System.Windows.Forms.TextBox();
 			this.INTVGROMDescription = new System.Windows.Forms.Label();
 			this.INTVBroseGROM = new System.Windows.Forms.Button();
 			this.INTVGROMBox = new System.Windows.Forms.TextBox();
@@ -256,7 +257,6 @@
 			this.INTVCheatsDescription = new System.Windows.Forms.Label();
 			this.INTVBrowseCheats = new System.Windows.Forms.Button();
 			this.INTVCheatsBox = new System.Windows.Forms.TextBox();
-			this.INTVBaseBox = new System.Windows.Forms.TextBox();
 			this.INTVScreenshotsBox = new System.Windows.Forms.TextBox();
 			this.INTVBaseDescription = new System.Windows.Forms.Label();
 			this.INTVScreenshotsDescription = new System.Windows.Forms.Label();
@@ -324,14 +324,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.WatchBox.Location = new System.Drawing.Point(13, 105);
 			this.WatchBox.Name = "WatchBox";
-			this.WatchBox.Size = new System.Drawing.Size(364, 20);
+			this.WatchBox.Size = new System.Drawing.Size(421, 20);
 			this.WatchBox.TabIndex = 135;
 			// 
 			// WatchDescription
 			// 
 			this.WatchDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.WatchDescription.AutoSize = true;
-			this.WatchDescription.Location = new System.Drawing.Point(417, 110);
+			this.WatchDescription.Location = new System.Drawing.Point(474, 110);
 			this.WatchDescription.Name = "WatchDescription";
 			this.WatchDescription.Size = new System.Drawing.Size(71, 13);
 			this.WatchDescription.TabIndex = 17;
@@ -341,7 +341,7 @@
 			// 
 			this.BrowseWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseWatch.Image = ((System.Drawing.Image)(resources.GetObject("BrowseWatch.Image")));
-			this.BrowseWatch.Location = new System.Drawing.Point(385, 105);
+			this.BrowseWatch.Location = new System.Drawing.Point(442, 105);
 			this.BrowseWatch.Name = "BrowseWatch";
 			this.BrowseWatch.Size = new System.Drawing.Size(26, 23);
 			this.BrowseWatch.TabIndex = 138;
@@ -354,14 +354,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.MoviesBox.Location = new System.Drawing.Point(13, 21);
 			this.MoviesBox.Name = "MoviesBox";
-			this.MoviesBox.Size = new System.Drawing.Size(364, 20);
+			this.MoviesBox.Size = new System.Drawing.Size(421, 20);
 			this.MoviesBox.TabIndex = 120;
 			// 
 			// MoviesDescription
 			// 
 			this.MoviesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MoviesDescription.AutoSize = true;
-			this.MoviesDescription.Location = new System.Drawing.Point(417, 25);
+			this.MoviesDescription.Location = new System.Drawing.Point(474, 25);
 			this.MoviesDescription.Name = "MoviesDescription";
 			this.MoviesDescription.Size = new System.Drawing.Size(41, 13);
 			this.MoviesDescription.TabIndex = 13;
@@ -371,7 +371,7 @@
 			// 
 			this.BrowseMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseMovies.Image = ((System.Drawing.Image)(resources.GetObject("BrowseMovies.Image")));
-			this.BrowseMovies.Location = new System.Drawing.Point(385, 21);
+			this.BrowseMovies.Location = new System.Drawing.Point(442, 21);
 			this.BrowseMovies.Name = "BrowseMovies";
 			this.BrowseMovies.Size = new System.Drawing.Size(26, 23);
 			this.BrowseMovies.TabIndex = 121;
@@ -384,14 +384,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.LuaBox.Location = new System.Drawing.Point(13, 75);
 			this.LuaBox.Name = "LuaBox";
-			this.LuaBox.Size = new System.Drawing.Size(364, 20);
+			this.LuaBox.Size = new System.Drawing.Size(421, 20);
 			this.LuaBox.TabIndex = 130;
 			// 
 			// LuaDescription
 			// 
 			this.LuaDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.LuaDescription.AutoSize = true;
-			this.LuaDescription.Location = new System.Drawing.Point(417, 82);
+			this.LuaDescription.Location = new System.Drawing.Point(474, 82);
 			this.LuaDescription.Name = "LuaDescription";
 			this.LuaDescription.Size = new System.Drawing.Size(25, 13);
 			this.LuaDescription.TabIndex = 9;
@@ -401,7 +401,7 @@
 			// 
 			this.BrowseLua.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseLua.Image = ((System.Drawing.Image)(resources.GetObject("BrowseLua.Image")));
-			this.BrowseLua.Location = new System.Drawing.Point(385, 75);
+			this.BrowseLua.Location = new System.Drawing.Point(442, 75);
 			this.BrowseLua.Name = "BrowseLua";
 			this.BrowseLua.Size = new System.Drawing.Size(26, 23);
 			this.BrowseLua.TabIndex = 133;
@@ -534,14 +534,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8ScreenshotsBox.Location = new System.Drawing.Point(13, 149);
 			this.Sega8ScreenshotsBox.Name = "Sega8ScreenshotsBox";
-			this.Sega8ScreenshotsBox.Size = new System.Drawing.Size(364, 20);
+			this.Sega8ScreenshotsBox.Size = new System.Drawing.Size(421, 20);
 			this.Sega8ScreenshotsBox.TabIndex = 23;
 			// 
 			// Sega8ScreenshotsDescription
 			// 
 			this.Sega8ScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8ScreenshotsDescription.AutoSize = true;
-			this.Sega8ScreenshotsDescription.Location = new System.Drawing.Point(417, 153);
+			this.Sega8ScreenshotsDescription.Location = new System.Drawing.Point(474, 153);
 			this.Sega8ScreenshotsDescription.Name = "Sega8ScreenshotsDescription";
 			this.Sega8ScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
 			this.Sega8ScreenshotsDescription.TabIndex = 17;
@@ -551,7 +551,7 @@
 			// 
 			this.Sega8BrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8BrowseScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("Sega8BrowseScreenshots.Image")));
-			this.Sega8BrowseScreenshots.Location = new System.Drawing.Point(385, 149);
+			this.Sega8BrowseScreenshots.Location = new System.Drawing.Point(442, 149);
 			this.Sega8BrowseScreenshots.Name = "Sega8BrowseScreenshots";
 			this.Sega8BrowseScreenshots.Size = new System.Drawing.Size(26, 23);
 			this.Sega8BrowseScreenshots.TabIndex = 24;
@@ -564,14 +564,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8ROMsBox.Location = new System.Drawing.Point(13, 59);
 			this.Sega8ROMsBox.Name = "Sega8ROMsBox";
-			this.Sega8ROMsBox.Size = new System.Drawing.Size(364, 20);
+			this.Sega8ROMsBox.Size = new System.Drawing.Size(421, 20);
 			this.Sega8ROMsBox.TabIndex = 17;
 			// 
 			// Sega8ROMsDescription
 			// 
 			this.Sega8ROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8ROMsDescription.AutoSize = true;
-			this.Sega8ROMsDescription.Location = new System.Drawing.Point(417, 63);
+			this.Sega8ROMsDescription.Location = new System.Drawing.Point(474, 63);
 			this.Sega8ROMsDescription.Name = "Sega8ROMsDescription";
 			this.Sega8ROMsDescription.Size = new System.Drawing.Size(37, 13);
 			this.Sega8ROMsDescription.TabIndex = 13;
@@ -581,7 +581,7 @@
 			// 
 			this.Sega8BrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8BrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("Sega8BrowseROMs.Image")));
-			this.Sega8BrowseROMs.Location = new System.Drawing.Point(385, 59);
+			this.Sega8BrowseROMs.Location = new System.Drawing.Point(442, 59);
 			this.Sega8BrowseROMs.Name = "Sega8BrowseROMs";
 			this.Sega8BrowseROMs.Size = new System.Drawing.Size(26, 23);
 			this.Sega8BrowseROMs.TabIndex = 18;
@@ -594,14 +594,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8SaveRAMBox.Location = new System.Drawing.Point(13, 119);
 			this.Sega8SaveRAMBox.Name = "Sega8SaveRAMBox";
-			this.Sega8SaveRAMBox.Size = new System.Drawing.Size(364, 20);
+			this.Sega8SaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.Sega8SaveRAMBox.TabIndex = 21;
 			// 
 			// Sega8SaveRAMDescription
 			// 
 			this.Sega8SaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8SaveRAMDescription.AutoSize = true;
-			this.Sega8SaveRAMDescription.Location = new System.Drawing.Point(417, 123);
+			this.Sega8SaveRAMDescription.Location = new System.Drawing.Point(474, 123);
 			this.Sega8SaveRAMDescription.Name = "Sega8SaveRAMDescription";
 			this.Sega8SaveRAMDescription.Size = new System.Drawing.Size(59, 13);
 			this.Sega8SaveRAMDescription.TabIndex = 9;
@@ -611,7 +611,7 @@
 			// 
 			this.Sega8BrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8BrowseSaveRAM.Image = ((System.Drawing.Image)(resources.GetObject("Sega8BrowseSaveRAM.Image")));
-			this.Sega8BrowseSaveRAM.Location = new System.Drawing.Point(385, 119);
+			this.Sega8BrowseSaveRAM.Location = new System.Drawing.Point(442, 119);
 			this.Sega8BrowseSaveRAM.Name = "Sega8BrowseSaveRAM";
 			this.Sega8BrowseSaveRAM.Size = new System.Drawing.Size(26, 23);
 			this.Sega8BrowseSaveRAM.TabIndex = 22;
@@ -624,14 +624,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8SavestatesBox.Location = new System.Drawing.Point(13, 89);
 			this.Sega8SavestatesBox.Name = "Sega8SavestatesBox";
-			this.Sega8SavestatesBox.Size = new System.Drawing.Size(364, 20);
+			this.Sega8SavestatesBox.Size = new System.Drawing.Size(421, 20);
 			this.Sega8SavestatesBox.TabIndex = 19;
 			// 
 			// Sega8SavestatesDescription
 			// 
 			this.Sega8SavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8SavestatesDescription.AutoSize = true;
-			this.Sega8SavestatesDescription.Location = new System.Drawing.Point(417, 93);
+			this.Sega8SavestatesDescription.Location = new System.Drawing.Point(474, 93);
 			this.Sega8SavestatesDescription.Name = "Sega8SavestatesDescription";
 			this.Sega8SavestatesDescription.Size = new System.Drawing.Size(60, 13);
 			this.Sega8SavestatesDescription.TabIndex = 5;
@@ -641,7 +641,7 @@
 			// 
 			this.Sega8BrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8BrowseSavestates.Image = ((System.Drawing.Image)(resources.GetObject("Sega8BrowseSavestates.Image")));
-			this.Sega8BrowseSavestates.Location = new System.Drawing.Point(385, 89);
+			this.Sega8BrowseSavestates.Location = new System.Drawing.Point(442, 89);
 			this.Sega8BrowseSavestates.Name = "Sega8BrowseSavestates";
 			this.Sega8BrowseSavestates.Size = new System.Drawing.Size(26, 23);
 			this.Sega8BrowseSavestates.TabIndex = 20;
@@ -655,14 +655,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.AVIBox.Location = new System.Drawing.Point(13, 135);
 			this.AVIBox.Name = "AVIBox";
-			this.AVIBox.Size = new System.Drawing.Size(364, 20);
+			this.AVIBox.Size = new System.Drawing.Size(421, 20);
 			this.AVIBox.TabIndex = 140;
 			// 
 			// AVIDescription
 			// 
 			this.AVIDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AVIDescription.AutoSize = true;
-			this.AVIDescription.Location = new System.Drawing.Point(417, 138);
+			this.AVIDescription.Location = new System.Drawing.Point(474, 138);
 			this.AVIDescription.Name = "AVIDescription";
 			this.AVIDescription.Size = new System.Drawing.Size(60, 13);
 			this.AVIDescription.TabIndex = 22;
@@ -672,7 +672,7 @@
 			// 
 			this.BrowseAVI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseAVI.Image = ((System.Drawing.Image)(resources.GetObject("BrowseAVI.Image")));
-			this.BrowseAVI.Location = new System.Drawing.Point(385, 135);
+			this.BrowseAVI.Location = new System.Drawing.Point(442, 135);
 			this.BrowseAVI.Name = "BrowseAVI";
 			this.BrowseAVI.Size = new System.Drawing.Size(26, 23);
 			this.BrowseAVI.TabIndex = 145;
@@ -857,6 +857,15 @@
 			this.tabPage12.Text = "SNES";
 			this.tabPage12.UseVisualStyleBackColor = true;
 			// 
+			// SNESBaseBox
+			// 
+			this.SNESBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SNESBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.SNESBaseBox.Name = "SNESBaseBox";
+			this.SNESBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.SNESBaseBox.TabIndex = 27;
+			// 
 			// SNESSGBDescription
 			// 
 			this.SNESSGBDescription.AutoSize = true;
@@ -915,15 +924,6 @@
 			this.SNESCheatsBox.Name = "SNESCheatsBox";
 			this.SNESCheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.SNESCheatsBox.TabIndex = 40;
-			// 
-			// SNESBaseBox
-			// 
-			this.SNESBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.SNESBaseBox.Location = new System.Drawing.Point(13, 21);
-			this.SNESBaseBox.Name = "SNESBaseBox";
-			this.SNESBaseBox.Size = new System.Drawing.Size(421, 20);
-			this.SNESBaseBox.TabIndex = 27;
 			// 
 			// SNESBaseDescription
 			// 
@@ -1093,11 +1093,20 @@
 			this.tabPage2.Text = "SMS";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
+			// Sega8BaseBox
+			// 
+			this.Sega8BaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.Sega8BaseBox.Location = new System.Drawing.Point(13, 21);
+			this.Sega8BaseBox.Name = "Sega8BaseBox";
+			this.Sega8BaseBox.Size = new System.Drawing.Size(421, 20);
+			this.Sega8BaseBox.TabIndex = 15;
+			// 
 			// Sega8CheatsDescription
 			// 
 			this.Sega8CheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8CheatsDescription.AutoSize = true;
-			this.Sega8CheatsDescription.Location = new System.Drawing.Point(417, 183);
+			this.Sega8CheatsDescription.Location = new System.Drawing.Point(474, 183);
 			this.Sega8CheatsDescription.Name = "Sega8CheatsDescription";
 			this.Sega8CheatsDescription.Size = new System.Drawing.Size(40, 13);
 			this.Sega8CheatsDescription.TabIndex = 26;
@@ -1107,7 +1116,7 @@
 			// 
 			this.Sega8BrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8BrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("Sega8BrowseCheats.Image")));
-			this.Sega8BrowseCheats.Location = new System.Drawing.Point(385, 179);
+			this.Sega8BrowseCheats.Location = new System.Drawing.Point(442, 179);
 			this.Sega8BrowseCheats.Name = "Sega8BrowseCheats";
 			this.Sega8BrowseCheats.Size = new System.Drawing.Size(26, 23);
 			this.Sega8BrowseCheats.TabIndex = 26;
@@ -1120,23 +1129,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8CheatsBox.Location = new System.Drawing.Point(13, 179);
 			this.Sega8CheatsBox.Name = "Sega8CheatsBox";
-			this.Sega8CheatsBox.Size = new System.Drawing.Size(364, 20);
+			this.Sega8CheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.Sega8CheatsBox.TabIndex = 25;
-			// 
-			// Sega8BaseBox
-			// 
-			this.Sega8BaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.Sega8BaseBox.Location = new System.Drawing.Point(13, 21);
-			this.Sega8BaseBox.Name = "Sega8BaseBox";
-			this.Sega8BaseBox.Size = new System.Drawing.Size(364, 20);
-			this.Sega8BaseBox.TabIndex = 15;
 			// 
 			// Sega8BaseDescription
 			// 
 			this.Sega8BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8BaseDescription.AutoSize = true;
-			this.Sega8BaseDescription.Location = new System.Drawing.Point(417, 25);
+			this.Sega8BaseDescription.Location = new System.Drawing.Point(474, 25);
 			this.Sega8BaseDescription.Name = "Sega8BaseDescription";
 			this.Sega8BaseDescription.Size = new System.Drawing.Size(31, 13);
 			this.Sega8BaseDescription.TabIndex = 21;
@@ -1146,7 +1146,7 @@
 			// 
 			this.Sega8BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Sega8BrowseBase.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
-			this.Sega8BrowseBase.Location = new System.Drawing.Point(385, 21);
+			this.Sega8BrowseBase.Location = new System.Drawing.Point(442, 21);
 			this.Sega8BrowseBase.Name = "Sega8BrowseBase";
 			this.Sega8BrowseBase.Size = new System.Drawing.Size(26, 23);
 			this.Sega8BrowseBase.TabIndex = 16;
@@ -1180,11 +1180,20 @@
 			this.tabPage9.Text = "SG-1000";
 			this.tabPage9.UseVisualStyleBackColor = true;
 			// 
+			// SGBaseBox
+			// 
+			this.SGBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SGBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.SGBaseBox.Name = "SGBaseBox";
+			this.SGBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.SGBaseBox.TabIndex = 30;
+			// 
 			// SGCheatsDescription
 			// 
 			this.SGCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGCheatsDescription.AutoSize = true;
-			this.SGCheatsDescription.Location = new System.Drawing.Point(417, 183);
+			this.SGCheatsDescription.Location = new System.Drawing.Point(474, 183);
 			this.SGCheatsDescription.Name = "SGCheatsDescription";
 			this.SGCheatsDescription.Size = new System.Drawing.Size(40, 13);
 			this.SGCheatsDescription.TabIndex = 41;
@@ -1194,7 +1203,7 @@
 			// 
 			this.SGBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGBrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("SGBrowseCheats.Image")));
-			this.SGBrowseCheats.Location = new System.Drawing.Point(385, 179);
+			this.SGBrowseCheats.Location = new System.Drawing.Point(442, 179);
 			this.SGBrowseCheats.Name = "SGBrowseCheats";
 			this.SGBrowseCheats.Size = new System.Drawing.Size(26, 23);
 			this.SGBrowseCheats.TabIndex = 42;
@@ -1208,23 +1217,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGCheatsBox.Location = new System.Drawing.Point(13, 179);
 			this.SGCheatsBox.Name = "SGCheatsBox";
-			this.SGCheatsBox.Size = new System.Drawing.Size(364, 20);
+			this.SGCheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.SGCheatsBox.TabIndex = 41;
-			// 
-			// SGBaseBox
-			// 
-			this.SGBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.SGBaseBox.Location = new System.Drawing.Point(13, 21);
-			this.SGBaseBox.Name = "SGBaseBox";
-			this.SGBaseBox.Size = new System.Drawing.Size(364, 20);
-			this.SGBaseBox.TabIndex = 30;
 			// 
 			// SGBaseDescription
 			// 
 			this.SGBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGBaseDescription.AutoSize = true;
-			this.SGBaseDescription.Location = new System.Drawing.Point(417, 25);
+			this.SGBaseDescription.Location = new System.Drawing.Point(474, 25);
 			this.SGBaseDescription.Name = "SGBaseDescription";
 			this.SGBaseDescription.Size = new System.Drawing.Size(31, 13);
 			this.SGBaseDescription.TabIndex = 38;
@@ -1234,7 +1234,7 @@
 			// 
 			this.SGBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGBrowseBase.Image = ((System.Drawing.Image)(resources.GetObject("SGBrowseBase.Image")));
-			this.SGBrowseBase.Location = new System.Drawing.Point(385, 21);
+			this.SGBrowseBase.Location = new System.Drawing.Point(442, 21);
 			this.SGBrowseBase.Name = "SGBrowseBase";
 			this.SGBrowseBase.Size = new System.Drawing.Size(26, 23);
 			this.SGBrowseBase.TabIndex = 31;
@@ -1247,7 +1247,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGROMsBox.Location = new System.Drawing.Point(13, 59);
 			this.SGROMsBox.Name = "SGROMsBox";
-			this.SGROMsBox.Size = new System.Drawing.Size(364, 20);
+			this.SGROMsBox.Size = new System.Drawing.Size(421, 20);
 			this.SGROMsBox.TabIndex = 32;
 			// 
 			// SGScreenshotsBox
@@ -1256,14 +1256,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGScreenshotsBox.Location = new System.Drawing.Point(13, 149);
 			this.SGScreenshotsBox.Name = "SGScreenshotsBox";
-			this.SGScreenshotsBox.Size = new System.Drawing.Size(364, 20);
+			this.SGScreenshotsBox.Size = new System.Drawing.Size(421, 20);
 			this.SGScreenshotsBox.TabIndex = 39;
 			// 
 			// SGBrowseSavestates
 			// 
 			this.SGBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGBrowseSavestates.Image = ((System.Drawing.Image)(resources.GetObject("SGBrowseSavestates.Image")));
-			this.SGBrowseSavestates.Location = new System.Drawing.Point(385, 89);
+			this.SGBrowseSavestates.Location = new System.Drawing.Point(442, 89);
 			this.SGBrowseSavestates.Name = "SGBrowseSavestates";
 			this.SGBrowseSavestates.Size = new System.Drawing.Size(26, 23);
 			this.SGBrowseSavestates.TabIndex = 35;
@@ -1274,7 +1274,7 @@
 			// 
 			this.SGScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGScreenshotsDescription.AutoSize = true;
-			this.SGScreenshotsDescription.Location = new System.Drawing.Point(417, 153);
+			this.SGScreenshotsDescription.Location = new System.Drawing.Point(474, 153);
 			this.SGScreenshotsDescription.Name = "SGScreenshotsDescription";
 			this.SGScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
 			this.SGScreenshotsDescription.TabIndex = 35;
@@ -1284,7 +1284,7 @@
 			// 
 			this.SGSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGSavestatesDescription.AutoSize = true;
-			this.SGSavestatesDescription.Location = new System.Drawing.Point(417, 93);
+			this.SGSavestatesDescription.Location = new System.Drawing.Point(474, 93);
 			this.SGSavestatesDescription.Name = "SGSavestatesDescription";
 			this.SGSavestatesDescription.Size = new System.Drawing.Size(60, 13);
 			this.SGSavestatesDescription.TabIndex = 26;
@@ -1294,7 +1294,7 @@
 			// 
 			this.SGBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGBrowseScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("SGBrowseScreenshots.Image")));
-			this.SGBrowseScreenshots.Location = new System.Drawing.Point(385, 149);
+			this.SGBrowseScreenshots.Location = new System.Drawing.Point(442, 149);
 			this.SGBrowseScreenshots.Name = "SGBrowseScreenshots";
 			this.SGBrowseScreenshots.Size = new System.Drawing.Size(26, 23);
 			this.SGBrowseScreenshots.TabIndex = 40;
@@ -1307,14 +1307,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGSavestatesBox.Location = new System.Drawing.Point(13, 89);
 			this.SGSavestatesBox.Name = "SGSavestatesBox";
-			this.SGSavestatesBox.Size = new System.Drawing.Size(364, 20);
+			this.SGSavestatesBox.Size = new System.Drawing.Size(421, 20);
 			this.SGSavestatesBox.TabIndex = 34;
 			// 
 			// SGBrowseSaveRAM
 			// 
 			this.SGBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGBrowseSaveRAM.Image = ((System.Drawing.Image)(resources.GetObject("SGBrowseSaveRAM.Image")));
-			this.SGBrowseSaveRAM.Location = new System.Drawing.Point(385, 119);
+			this.SGBrowseSaveRAM.Location = new System.Drawing.Point(442, 119);
 			this.SGBrowseSaveRAM.Name = "SGBrowseSaveRAM";
 			this.SGBrowseSaveRAM.Size = new System.Drawing.Size(26, 23);
 			this.SGBrowseSaveRAM.TabIndex = 38;
@@ -1325,7 +1325,7 @@
 			// 
 			this.SGSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGSaveRAMDescription.AutoSize = true;
-			this.SGSaveRAMDescription.Location = new System.Drawing.Point(417, 123);
+			this.SGSaveRAMDescription.Location = new System.Drawing.Point(474, 123);
 			this.SGSaveRAMDescription.Name = "SGSaveRAMDescription";
 			this.SGSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
 			this.SGSaveRAMDescription.TabIndex = 29;
@@ -1335,7 +1335,7 @@
 			// 
 			this.SGROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGROMsDescription.AutoSize = true;
-			this.SGROMsDescription.Location = new System.Drawing.Point(417, 63);
+			this.SGROMsDescription.Location = new System.Drawing.Point(474, 63);
 			this.SGROMsDescription.Name = "SGROMsDescription";
 			this.SGROMsDescription.Size = new System.Drawing.Size(37, 13);
 			this.SGROMsDescription.TabIndex = 32;
@@ -1347,14 +1347,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGSaveRAMBox.Location = new System.Drawing.Point(13, 119);
 			this.SGSaveRAMBox.Name = "SGSaveRAMBox";
-			this.SGSaveRAMBox.Size = new System.Drawing.Size(364, 20);
+			this.SGSaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.SGSaveRAMBox.TabIndex = 36;
 			// 
 			// SGROMsBrowse
 			// 
 			this.SGROMsBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SGROMsBrowse.Image = ((System.Drawing.Image)(resources.GetObject("SGROMsBrowse.Image")));
-			this.SGROMsBrowse.Location = new System.Drawing.Point(385, 59);
+			this.SGROMsBrowse.Location = new System.Drawing.Point(442, 59);
 			this.SGROMsBrowse.Name = "SGROMsBrowse";
 			this.SGROMsBrowse.Size = new System.Drawing.Size(26, 23);
 			this.SGROMsBrowse.TabIndex = 33;
@@ -1388,11 +1388,20 @@
 			this.tabPage8.Text = "G. Gear";
 			this.tabPage8.UseVisualStyleBackColor = true;
 			// 
+			// GGBaseBox
+			// 
+			this.GGBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.GGBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.GGBaseBox.Name = "GGBaseBox";
+			this.GGBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.GGBaseBox.TabIndex = 43;
+			// 
 			// GGCheatsDescription
 			// 
 			this.GGCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGCheatsDescription.AutoSize = true;
-			this.GGCheatsDescription.Location = new System.Drawing.Point(417, 183);
+			this.GGCheatsDescription.Location = new System.Drawing.Point(474, 183);
 			this.GGCheatsDescription.Name = "GGCheatsDescription";
 			this.GGCheatsDescription.Size = new System.Drawing.Size(40, 13);
 			this.GGCheatsDescription.TabIndex = 44;
@@ -1402,7 +1411,7 @@
 			// 
 			this.GGBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGBrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("GGBrowseCheats.Image")));
-			this.GGBrowseCheats.Location = new System.Drawing.Point(385, 179);
+			this.GGBrowseCheats.Location = new System.Drawing.Point(442, 179);
 			this.GGBrowseCheats.Name = "GGBrowseCheats";
 			this.GGBrowseCheats.Size = new System.Drawing.Size(26, 23);
 			this.GGBrowseCheats.TabIndex = 54;
@@ -1415,17 +1424,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGCheatsBox.Location = new System.Drawing.Point(13, 179);
 			this.GGCheatsBox.Name = "GGCheatsBox";
-			this.GGCheatsBox.Size = new System.Drawing.Size(364, 20);
+			this.GGCheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.GGCheatsBox.TabIndex = 53;
-			// 
-			// GGBaseBox
-			// 
-			this.GGBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.GGBaseBox.Location = new System.Drawing.Point(13, 21);
-			this.GGBaseBox.Name = "GGBaseBox";
-			this.GGBaseBox.Size = new System.Drawing.Size(364, 20);
-			this.GGBaseBox.TabIndex = 43;
 			// 
 			// GGScreenshotsBox
 			// 
@@ -1433,14 +1433,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGScreenshotsBox.Location = new System.Drawing.Point(13, 149);
 			this.GGScreenshotsBox.Name = "GGScreenshotsBox";
-			this.GGScreenshotsBox.Size = new System.Drawing.Size(364, 20);
+			this.GGScreenshotsBox.Size = new System.Drawing.Size(421, 20);
 			this.GGScreenshotsBox.TabIndex = 51;
 			// 
 			// GGBaseDescription
 			// 
 			this.GGBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGBaseDescription.AutoSize = true;
-			this.GGBaseDescription.Location = new System.Drawing.Point(417, 25);
+			this.GGBaseDescription.Location = new System.Drawing.Point(474, 25);
 			this.GGBaseDescription.Name = "GGBaseDescription";
 			this.GGBaseDescription.Size = new System.Drawing.Size(31, 13);
 			this.GGBaseDescription.TabIndex = 41;
@@ -1450,7 +1450,7 @@
 			// 
 			this.GGScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGScreenshotsDescription.AutoSize = true;
-			this.GGScreenshotsDescription.Location = new System.Drawing.Point(417, 153);
+			this.GGScreenshotsDescription.Location = new System.Drawing.Point(474, 153);
 			this.GGScreenshotsDescription.Name = "GGScreenshotsDescription";
 			this.GGScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
 			this.GGScreenshotsDescription.TabIndex = 38;
@@ -1460,7 +1460,7 @@
 			// 
 			this.GGBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGBrowseBase.Image = ((System.Drawing.Image)(resources.GetObject("GGBrowseBase.Image")));
-			this.GGBrowseBase.Location = new System.Drawing.Point(385, 21);
+			this.GGBrowseBase.Location = new System.Drawing.Point(442, 21);
 			this.GGBrowseBase.Name = "GGBrowseBase";
 			this.GGBrowseBase.Size = new System.Drawing.Size(26, 23);
 			this.GGBrowseBase.TabIndex = 44;
@@ -1471,7 +1471,7 @@
 			// 
 			this.GGBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGBrowseScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("GGBrowseScreenshots.Image")));
-			this.GGBrowseScreenshots.Location = new System.Drawing.Point(385, 149);
+			this.GGBrowseScreenshots.Location = new System.Drawing.Point(442, 149);
 			this.GGBrowseScreenshots.Name = "GGBrowseScreenshots";
 			this.GGBrowseScreenshots.Size = new System.Drawing.Size(26, 23);
 			this.GGBrowseScreenshots.TabIndex = 52;
@@ -1484,14 +1484,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGROMBox.Location = new System.Drawing.Point(13, 59);
 			this.GGROMBox.Name = "GGROMBox";
-			this.GGROMBox.Size = new System.Drawing.Size(364, 20);
+			this.GGROMBox.Size = new System.Drawing.Size(421, 20);
 			this.GGROMBox.TabIndex = 45;
 			// 
 			// GGBrowseSavestates
 			// 
 			this.GGBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGBrowseSavestates.Image = ((System.Drawing.Image)(resources.GetObject("GGBrowseSavestates.Image")));
-			this.GGBrowseSavestates.Location = new System.Drawing.Point(385, 89);
+			this.GGBrowseSavestates.Location = new System.Drawing.Point(442, 89);
 			this.GGBrowseSavestates.Name = "GGBrowseSavestates";
 			this.GGBrowseSavestates.Size = new System.Drawing.Size(26, 23);
 			this.GGBrowseSavestates.TabIndex = 48;
@@ -1502,7 +1502,7 @@
 			// 
 			this.GGSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGSavestatesDescription.AutoSize = true;
-			this.GGSavestatesDescription.Location = new System.Drawing.Point(417, 93);
+			this.GGSavestatesDescription.Location = new System.Drawing.Point(474, 93);
 			this.GGSavestatesDescription.Name = "GGSavestatesDescription";
 			this.GGSavestatesDescription.Size = new System.Drawing.Size(60, 13);
 			this.GGSavestatesDescription.TabIndex = 29;
@@ -1512,7 +1512,7 @@
 			// 
 			this.GGROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGROMsDescription.AutoSize = true;
-			this.GGROMsDescription.Location = new System.Drawing.Point(417, 63);
+			this.GGROMsDescription.Location = new System.Drawing.Point(474, 63);
 			this.GGROMsDescription.Name = "GGROMsDescription";
 			this.GGROMsDescription.Size = new System.Drawing.Size(37, 13);
 			this.GGROMsDescription.TabIndex = 35;
@@ -1524,14 +1524,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGSavestatesBox.Location = new System.Drawing.Point(13, 89);
 			this.GGSavestatesBox.Name = "GGSavestatesBox";
-			this.GGSavestatesBox.Size = new System.Drawing.Size(364, 20);
+			this.GGSavestatesBox.Size = new System.Drawing.Size(421, 20);
 			this.GGSavestatesBox.TabIndex = 47;
 			// 
 			// GGBrowseROMs
 			// 
 			this.GGBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGBrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("GGBrowseROMs.Image")));
-			this.GGBrowseROMs.Location = new System.Drawing.Point(385, 59);
+			this.GGBrowseROMs.Location = new System.Drawing.Point(442, 59);
 			this.GGBrowseROMs.Name = "GGBrowseROMs";
 			this.GGBrowseROMs.Size = new System.Drawing.Size(26, 23);
 			this.GGBrowseROMs.TabIndex = 46;
@@ -1542,7 +1542,7 @@
 			// 
 			this.GGBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGBrowseSaveRAM.Image = ((System.Drawing.Image)(resources.GetObject("GGBrowseSaveRAM.Image")));
-			this.GGBrowseSaveRAM.Location = new System.Drawing.Point(385, 119);
+			this.GGBrowseSaveRAM.Location = new System.Drawing.Point(442, 119);
 			this.GGBrowseSaveRAM.Name = "GGBrowseSaveRAM";
 			this.GGBrowseSaveRAM.Size = new System.Drawing.Size(26, 23);
 			this.GGBrowseSaveRAM.TabIndex = 50;
@@ -1553,7 +1553,7 @@
 			// 
 			this.GGSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGSaveRAMDescription.AutoSize = true;
-			this.GGSaveRAMDescription.Location = new System.Drawing.Point(417, 123);
+			this.GGSaveRAMDescription.Location = new System.Drawing.Point(474, 123);
 			this.GGSaveRAMDescription.Name = "GGSaveRAMDescription";
 			this.GGSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
 			this.GGSaveRAMDescription.TabIndex = 32;
@@ -1565,7 +1565,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GGSaveRAMBox.Location = new System.Drawing.Point(13, 119);
 			this.GGSaveRAMBox.Name = "GGSaveRAMBox";
-			this.GGSaveRAMBox.Size = new System.Drawing.Size(364, 20);
+			this.GGSaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.GGSaveRAMBox.TabIndex = 49;
 			// 
 			// tabPage3
@@ -1594,6 +1594,15 @@
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Genesis";
 			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// GenesisBaseBox
+			// 
+			this.GenesisBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.GenesisBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.GenesisBaseBox.Name = "GenesisBaseBox";
+			this.GenesisBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.GenesisBaseBox.TabIndex = 60;
 			// 
 			// GenesisCheatsDescription
 			// 
@@ -1624,15 +1633,6 @@
 			this.GenesisCheatsBox.Name = "GenesisCheatsBox";
 			this.GenesisCheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.GenesisCheatsBox.TabIndex = 70;
-			// 
-			// GenesisBaseBox
-			// 
-			this.GenesisBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.GenesisBaseBox.Location = new System.Drawing.Point(13, 21);
-			this.GenesisBaseBox.Name = "GenesisBaseBox";
-			this.GenesisBaseBox.Size = new System.Drawing.Size(421, 20);
-			this.GenesisBaseBox.TabIndex = 60;
 			// 
 			// GenesisScreenshotsBox
 			// 
@@ -1805,6 +1805,15 @@
 			this.tabPage4.Text = "PC Engine";
 			this.tabPage4.UseVisualStyleBackColor = true;
 			// 
+			// PCEBaseBox
+			// 
+			this.PCEBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.PCEBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.PCEBaseBox.Name = "PCEBaseBox";
+			this.PCEBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.PCEBaseBox.TabIndex = 77;
+			// 
 			// PCEBiosDescription
 			// 
 			this.PCEBiosDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -1864,15 +1873,6 @@
 			this.PCECheatsBox.Name = "PCECheatsBox";
 			this.PCECheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.PCECheatsBox.TabIndex = 87;
-			// 
-			// PCEBaseBox
-			// 
-			this.PCEBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PCEBaseBox.Location = new System.Drawing.Point(13, 21);
-			this.PCEBaseBox.Name = "PCEBaseBox";
-			this.PCEBaseBox.Size = new System.Drawing.Size(421, 20);
-			this.PCEBaseBox.TabIndex = 77;
 			// 
 			// PCEScreenshotsBox
 			// 
@@ -2048,20 +2048,29 @@
 			this.tabPage5.Text = "Gameboy";
 			this.tabPage5.UseVisualStyleBackColor = true;
 			// 
+			// GBBaseBox
+			// 
+			this.GBBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.GBBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.GBBaseBox.Name = "GBBaseBox";
+			this.GBBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.GBBaseBox.TabIndex = 90;
+			// 
 			// GBPalettesBox
 			// 
 			this.GBPalettesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBPalettesBox.Location = new System.Drawing.Point(12, 209);
 			this.GBPalettesBox.Name = "GBPalettesBox";
-			this.GBPalettesBox.Size = new System.Drawing.Size(364, 20);
+			this.GBPalettesBox.Size = new System.Drawing.Size(421, 20);
 			this.GBPalettesBox.TabIndex = 103;
 			// 
 			// GBBrowsePalettes
 			// 
 			this.GBBrowsePalettes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBBrowsePalettes.Image = ((System.Drawing.Image)(resources.GetObject("GBBrowsePalettes.Image")));
-			this.GBBrowsePalettes.Location = new System.Drawing.Point(385, 209);
+			this.GBBrowsePalettes.Location = new System.Drawing.Point(442, 209);
 			this.GBBrowsePalettes.Name = "GBBrowsePalettes";
 			this.GBBrowsePalettes.Size = new System.Drawing.Size(26, 23);
 			this.GBBrowsePalettes.TabIndex = 104;
@@ -2072,7 +2081,7 @@
 			// 
 			this.GBPalettesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBPalettesDescription.AutoSize = true;
-			this.GBPalettesDescription.Location = new System.Drawing.Point(417, 213);
+			this.GBPalettesDescription.Location = new System.Drawing.Point(474, 213);
 			this.GBPalettesDescription.Name = "GBPalettesDescription";
 			this.GBPalettesDescription.Size = new System.Drawing.Size(40, 13);
 			this.GBPalettesDescription.TabIndex = 102;
@@ -2082,7 +2091,7 @@
 			// 
 			this.GBCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBCheatsDescription.AutoSize = true;
-			this.GBCheatsDescription.Location = new System.Drawing.Point(417, 183);
+			this.GBCheatsDescription.Location = new System.Drawing.Point(474, 183);
 			this.GBCheatsDescription.Name = "GBCheatsDescription";
 			this.GBCheatsDescription.Size = new System.Drawing.Size(40, 13);
 			this.GBCheatsDescription.TabIndex = 39;
@@ -2092,7 +2101,7 @@
 			// 
 			this.GBBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBBrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("GBBrowseCheats.Image")));
-			this.GBBrowseCheats.Location = new System.Drawing.Point(385, 179);
+			this.GBBrowseCheats.Location = new System.Drawing.Point(442, 179);
 			this.GBBrowseCheats.Name = "GBBrowseCheats";
 			this.GBBrowseCheats.Size = new System.Drawing.Size(26, 23);
 			this.GBBrowseCheats.TabIndex = 101;
@@ -2105,17 +2114,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBCheatsBox.Location = new System.Drawing.Point(13, 179);
 			this.GBCheatsBox.Name = "GBCheatsBox";
-			this.GBCheatsBox.Size = new System.Drawing.Size(364, 20);
+			this.GBCheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.GBCheatsBox.TabIndex = 100;
-			// 
-			// GBBaseBox
-			// 
-			this.GBBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.GBBaseBox.Location = new System.Drawing.Point(13, 21);
-			this.GBBaseBox.Name = "GBBaseBox";
-			this.GBBaseBox.Size = new System.Drawing.Size(364, 20);
-			this.GBBaseBox.TabIndex = 90;
 			// 
 			// GBScreenshotsBox
 			// 
@@ -2123,14 +2123,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBScreenshotsBox.Location = new System.Drawing.Point(13, 149);
 			this.GBScreenshotsBox.Name = "GBScreenshotsBox";
-			this.GBScreenshotsBox.Size = new System.Drawing.Size(364, 20);
+			this.GBScreenshotsBox.Size = new System.Drawing.Size(421, 20);
 			this.GBScreenshotsBox.TabIndex = 98;
 			// 
 			// GBBaseDescription
 			// 
 			this.GBBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBBaseDescription.AutoSize = true;
-			this.GBBaseDescription.Location = new System.Drawing.Point(417, 25);
+			this.GBBaseDescription.Location = new System.Drawing.Point(474, 25);
 			this.GBBaseDescription.Name = "GBBaseDescription";
 			this.GBBaseDescription.Size = new System.Drawing.Size(31, 13);
 			this.GBBaseDescription.TabIndex = 36;
@@ -2140,7 +2140,7 @@
 			// 
 			this.GBScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBScreenshotsDescription.AutoSize = true;
-			this.GBScreenshotsDescription.Location = new System.Drawing.Point(417, 153);
+			this.GBScreenshotsDescription.Location = new System.Drawing.Point(474, 153);
 			this.GBScreenshotsDescription.Name = "GBScreenshotsDescription";
 			this.GBScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
 			this.GBScreenshotsDescription.TabIndex = 33;
@@ -2150,7 +2150,7 @@
 			// 
 			this.GBBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBBrowseBase.Image = ((System.Drawing.Image)(resources.GetObject("GBBrowseBase.Image")));
-			this.GBBrowseBase.Location = new System.Drawing.Point(385, 21);
+			this.GBBrowseBase.Location = new System.Drawing.Point(442, 21);
 			this.GBBrowseBase.Name = "GBBrowseBase";
 			this.GBBrowseBase.Size = new System.Drawing.Size(26, 23);
 			this.GBBrowseBase.TabIndex = 91;
@@ -2161,7 +2161,7 @@
 			// 
 			this.GBBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBBrowseScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("GBBrowseScreenshots.Image")));
-			this.GBBrowseScreenshots.Location = new System.Drawing.Point(385, 149);
+			this.GBBrowseScreenshots.Location = new System.Drawing.Point(442, 149);
 			this.GBBrowseScreenshots.Name = "GBBrowseScreenshots";
 			this.GBBrowseScreenshots.Size = new System.Drawing.Size(26, 23);
 			this.GBBrowseScreenshots.TabIndex = 99;
@@ -2174,14 +2174,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBROMsBox.Location = new System.Drawing.Point(13, 59);
 			this.GBROMsBox.Name = "GBROMsBox";
-			this.GBROMsBox.Size = new System.Drawing.Size(364, 20);
+			this.GBROMsBox.Size = new System.Drawing.Size(421, 20);
 			this.GBROMsBox.TabIndex = 92;
 			// 
 			// GBBrowseSavestates
 			// 
 			this.GBBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBBrowseSavestates.Image = ((System.Drawing.Image)(resources.GetObject("GBBrowseSavestates.Image")));
-			this.GBBrowseSavestates.Location = new System.Drawing.Point(385, 89);
+			this.GBBrowseSavestates.Location = new System.Drawing.Point(442, 89);
 			this.GBBrowseSavestates.Name = "GBBrowseSavestates";
 			this.GBBrowseSavestates.Size = new System.Drawing.Size(26, 23);
 			this.GBBrowseSavestates.TabIndex = 95;
@@ -2192,7 +2192,7 @@
 			// 
 			this.GBSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBSavestatesDescription.AutoSize = true;
-			this.GBSavestatesDescription.Location = new System.Drawing.Point(417, 93);
+			this.GBSavestatesDescription.Location = new System.Drawing.Point(474, 93);
 			this.GBSavestatesDescription.Name = "GBSavestatesDescription";
 			this.GBSavestatesDescription.Size = new System.Drawing.Size(60, 13);
 			this.GBSavestatesDescription.TabIndex = 24;
@@ -2202,7 +2202,7 @@
 			// 
 			this.GBROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBROMsDescription.AutoSize = true;
-			this.GBROMsDescription.Location = new System.Drawing.Point(417, 63);
+			this.GBROMsDescription.Location = new System.Drawing.Point(474, 63);
 			this.GBROMsDescription.Name = "GBROMsDescription";
 			this.GBROMsDescription.Size = new System.Drawing.Size(37, 13);
 			this.GBROMsDescription.TabIndex = 30;
@@ -2214,14 +2214,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBSavestatesBox.Location = new System.Drawing.Point(13, 89);
 			this.GBSavestatesBox.Name = "GBSavestatesBox";
-			this.GBSavestatesBox.Size = new System.Drawing.Size(364, 20);
+			this.GBSavestatesBox.Size = new System.Drawing.Size(421, 20);
 			this.GBSavestatesBox.TabIndex = 94;
 			// 
 			// GBBrowseROMs
 			// 
 			this.GBBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBBrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("GBBrowseROMs.Image")));
-			this.GBBrowseROMs.Location = new System.Drawing.Point(385, 59);
+			this.GBBrowseROMs.Location = new System.Drawing.Point(442, 59);
 			this.GBBrowseROMs.Name = "GBBrowseROMs";
 			this.GBBrowseROMs.Size = new System.Drawing.Size(26, 23);
 			this.GBBrowseROMs.TabIndex = 93;
@@ -2232,7 +2232,7 @@
 			// 
 			this.GBBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBBrowseSaveRAM.Image = ((System.Drawing.Image)(resources.GetObject("GBBrowseSaveRAM.Image")));
-			this.GBBrowseSaveRAM.Location = new System.Drawing.Point(385, 119);
+			this.GBBrowseSaveRAM.Location = new System.Drawing.Point(442, 119);
 			this.GBBrowseSaveRAM.Name = "GBBrowseSaveRAM";
 			this.GBBrowseSaveRAM.Size = new System.Drawing.Size(26, 23);
 			this.GBBrowseSaveRAM.TabIndex = 97;
@@ -2243,7 +2243,7 @@
 			// 
 			this.GBSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBSaveRAMDescription.AutoSize = true;
-			this.GBSaveRAMDescription.Location = new System.Drawing.Point(417, 123);
+			this.GBSaveRAMDescription.Location = new System.Drawing.Point(474, 123);
 			this.GBSaveRAMDescription.Name = "GBSaveRAMDescription";
 			this.GBSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
 			this.GBSaveRAMDescription.TabIndex = 27;
@@ -2255,7 +2255,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBSaveRAMBox.Location = new System.Drawing.Point(13, 119);
 			this.GBSaveRAMBox.Name = "GBSaveRAMBox";
-			this.GBSaveRAMBox.Size = new System.Drawing.Size(364, 20);
+			this.GBSaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.GBSaveRAMBox.TabIndex = 96;
 			// 
 			// tabPage6
@@ -2285,11 +2285,20 @@
 			this.tabPage6.Text = "TI83";
 			this.tabPage6.UseVisualStyleBackColor = true;
 			// 
+			// TI83BaseBox
+			// 
+			this.TI83BaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TI83BaseBox.Location = new System.Drawing.Point(13, 21);
+			this.TI83BaseBox.Name = "TI83BaseBox";
+			this.TI83BaseBox.Size = new System.Drawing.Size(421, 20);
+			this.TI83BaseBox.TabIndex = 102;
+			// 
 			// TI83CheatsDescription
 			// 
 			this.TI83CheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83CheatsDescription.AutoSize = true;
-			this.TI83CheatsDescription.Location = new System.Drawing.Point(417, 183);
+			this.TI83CheatsDescription.Location = new System.Drawing.Point(474, 183);
 			this.TI83CheatsDescription.Name = "TI83CheatsDescription";
 			this.TI83CheatsDescription.Size = new System.Drawing.Size(40, 13);
 			this.TI83CheatsDescription.TabIndex = 39;
@@ -2299,7 +2308,7 @@
 			// 
 			this.TI83BrowseBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83BrowseBox.Image = ((System.Drawing.Image)(resources.GetObject("TI83BrowseBox.Image")));
-			this.TI83BrowseBox.Location = new System.Drawing.Point(385, 179);
+			this.TI83BrowseBox.Location = new System.Drawing.Point(442, 179);
 			this.TI83BrowseBox.Name = "TI83BrowseBox";
 			this.TI83BrowseBox.Size = new System.Drawing.Size(26, 23);
 			this.TI83BrowseBox.TabIndex = 113;
@@ -2312,17 +2321,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83CheatsBox.Location = new System.Drawing.Point(13, 179);
 			this.TI83CheatsBox.Name = "TI83CheatsBox";
-			this.TI83CheatsBox.Size = new System.Drawing.Size(364, 20);
+			this.TI83CheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.TI83CheatsBox.TabIndex = 112;
-			// 
-			// TI83BaseBox
-			// 
-			this.TI83BaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TI83BaseBox.Location = new System.Drawing.Point(13, 21);
-			this.TI83BaseBox.Name = "TI83BaseBox";
-			this.TI83BaseBox.Size = new System.Drawing.Size(364, 20);
-			this.TI83BaseBox.TabIndex = 102;
 			// 
 			// TI83ScreenshotsBox
 			// 
@@ -2330,14 +2330,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83ScreenshotsBox.Location = new System.Drawing.Point(13, 149);
 			this.TI83ScreenshotsBox.Name = "TI83ScreenshotsBox";
-			this.TI83ScreenshotsBox.Size = new System.Drawing.Size(364, 20);
+			this.TI83ScreenshotsBox.Size = new System.Drawing.Size(421, 20);
 			this.TI83ScreenshotsBox.TabIndex = 110;
 			// 
 			// TI83BaseDescription
 			// 
 			this.TI83BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83BaseDescription.AutoSize = true;
-			this.TI83BaseDescription.Location = new System.Drawing.Point(417, 25);
+			this.TI83BaseDescription.Location = new System.Drawing.Point(474, 25);
 			this.TI83BaseDescription.Name = "TI83BaseDescription";
 			this.TI83BaseDescription.Size = new System.Drawing.Size(31, 13);
 			this.TI83BaseDescription.TabIndex = 36;
@@ -2347,7 +2347,7 @@
 			// 
 			this.TI83ScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83ScreenshotsDescription.AutoSize = true;
-			this.TI83ScreenshotsDescription.Location = new System.Drawing.Point(417, 153);
+			this.TI83ScreenshotsDescription.Location = new System.Drawing.Point(474, 153);
 			this.TI83ScreenshotsDescription.Name = "TI83ScreenshotsDescription";
 			this.TI83ScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
 			this.TI83ScreenshotsDescription.TabIndex = 33;
@@ -2357,7 +2357,7 @@
 			// 
 			this.TI83BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83BrowseBase.Image = ((System.Drawing.Image)(resources.GetObject("TI83BrowseBase.Image")));
-			this.TI83BrowseBase.Location = new System.Drawing.Point(385, 21);
+			this.TI83BrowseBase.Location = new System.Drawing.Point(442, 21);
 			this.TI83BrowseBase.Name = "TI83BrowseBase";
 			this.TI83BrowseBase.Size = new System.Drawing.Size(26, 23);
 			this.TI83BrowseBase.TabIndex = 103;
@@ -2368,7 +2368,7 @@
 			// 
 			this.TI83BrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83BrowseScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("TI83BrowseScreenshots.Image")));
-			this.TI83BrowseScreenshots.Location = new System.Drawing.Point(385, 149);
+			this.TI83BrowseScreenshots.Location = new System.Drawing.Point(442, 149);
 			this.TI83BrowseScreenshots.Name = "TI83BrowseScreenshots";
 			this.TI83BrowseScreenshots.Size = new System.Drawing.Size(26, 23);
 			this.TI83BrowseScreenshots.TabIndex = 111;
@@ -2382,14 +2382,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83ROMsBox.Location = new System.Drawing.Point(13, 59);
 			this.TI83ROMsBox.Name = "TI83ROMsBox";
-			this.TI83ROMsBox.Size = new System.Drawing.Size(364, 20);
+			this.TI83ROMsBox.Size = new System.Drawing.Size(421, 20);
 			this.TI83ROMsBox.TabIndex = 104;
 			// 
 			// TI83BrowseSavestates
 			// 
 			this.TI83BrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83BrowseSavestates.Image = ((System.Drawing.Image)(resources.GetObject("TI83BrowseSavestates.Image")));
-			this.TI83BrowseSavestates.Location = new System.Drawing.Point(385, 89);
+			this.TI83BrowseSavestates.Location = new System.Drawing.Point(442, 89);
 			this.TI83BrowseSavestates.Name = "TI83BrowseSavestates";
 			this.TI83BrowseSavestates.Size = new System.Drawing.Size(26, 23);
 			this.TI83BrowseSavestates.TabIndex = 107;
@@ -2400,7 +2400,7 @@
 			// 
 			this.TI83SavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83SavestatesDescription.AutoSize = true;
-			this.TI83SavestatesDescription.Location = new System.Drawing.Point(417, 93);
+			this.TI83SavestatesDescription.Location = new System.Drawing.Point(474, 93);
 			this.TI83SavestatesDescription.Name = "TI83SavestatesDescription";
 			this.TI83SavestatesDescription.Size = new System.Drawing.Size(60, 13);
 			this.TI83SavestatesDescription.TabIndex = 24;
@@ -2410,7 +2410,7 @@
 			// 
 			this.TI83ROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83ROMsDescription.AutoSize = true;
-			this.TI83ROMsDescription.Location = new System.Drawing.Point(417, 63);
+			this.TI83ROMsDescription.Location = new System.Drawing.Point(474, 63);
 			this.TI83ROMsDescription.Name = "TI83ROMsDescription";
 			this.TI83ROMsDescription.Size = new System.Drawing.Size(37, 13);
 			this.TI83ROMsDescription.TabIndex = 30;
@@ -2422,14 +2422,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83SavestatesBox.Location = new System.Drawing.Point(13, 89);
 			this.TI83SavestatesBox.Name = "TI83SavestatesBox";
-			this.TI83SavestatesBox.Size = new System.Drawing.Size(364, 20);
+			this.TI83SavestatesBox.Size = new System.Drawing.Size(421, 20);
 			this.TI83SavestatesBox.TabIndex = 106;
 			// 
 			// TI83BrowseROMs
 			// 
 			this.TI83BrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83BrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("TI83BrowseROMs.Image")));
-			this.TI83BrowseROMs.Location = new System.Drawing.Point(385, 59);
+			this.TI83BrowseROMs.Location = new System.Drawing.Point(442, 59);
 			this.TI83BrowseROMs.Name = "TI83BrowseROMs";
 			this.TI83BrowseROMs.Size = new System.Drawing.Size(26, 23);
 			this.TI83BrowseROMs.TabIndex = 105;
@@ -2440,7 +2440,7 @@
 			// 
 			this.TI83BrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83BrowseSaveRAM.Image = ((System.Drawing.Image)(resources.GetObject("TI83BrowseSaveRAM.Image")));
-			this.TI83BrowseSaveRAM.Location = new System.Drawing.Point(385, 119);
+			this.TI83BrowseSaveRAM.Location = new System.Drawing.Point(442, 119);
 			this.TI83BrowseSaveRAM.Name = "TI83BrowseSaveRAM";
 			this.TI83BrowseSaveRAM.Size = new System.Drawing.Size(26, 23);
 			this.TI83BrowseSaveRAM.TabIndex = 109;
@@ -2451,7 +2451,7 @@
 			// 
 			this.TI83SaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83SaveRAMDescription.AutoSize = true;
-			this.TI83SaveRAMDescription.Location = new System.Drawing.Point(417, 123);
+			this.TI83SaveRAMDescription.Location = new System.Drawing.Point(474, 123);
 			this.TI83SaveRAMDescription.Name = "TI83SaveRAMDescription";
 			this.TI83SaveRAMDescription.Size = new System.Drawing.Size(59, 13);
 			this.TI83SaveRAMDescription.TabIndex = 27;
@@ -2464,7 +2464,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TI83SaveRAMBox.Location = new System.Drawing.Point(13, 119);
 			this.TI83SaveRAMBox.Name = "TI83SaveRAMBox";
-			this.TI83SaveRAMBox.Size = new System.Drawing.Size(364, 20);
+			this.TI83SaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.TI83SaveRAMBox.TabIndex = 108;
 			// 
 			// tabPage10
@@ -2494,11 +2494,20 @@
 			this.tabPage10.Text = "Atari";
 			this.tabPage10.UseVisualStyleBackColor = true;
 			// 
+			// AtariBaseBox
+			// 
+			this.AtariBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.AtariBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.AtariBaseBox.Name = "AtariBaseBox";
+			this.AtariBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.AtariBaseBox.TabIndex = 27;
+			// 
 			// AtariCheatsDescription
 			// 
 			this.AtariCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariCheatsDescription.AutoSize = true;
-			this.AtariCheatsDescription.Location = new System.Drawing.Point(417, 183);
+			this.AtariCheatsDescription.Location = new System.Drawing.Point(474, 183);
 			this.AtariCheatsDescription.Name = "AtariCheatsDescription";
 			this.AtariCheatsDescription.Size = new System.Drawing.Size(40, 13);
 			this.AtariCheatsDescription.TabIndex = 44;
@@ -2508,7 +2517,7 @@
 			// 
 			this.AtariBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariBrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("AtariBrowseCheats.Image")));
-			this.AtariBrowseCheats.Location = new System.Drawing.Point(385, 179);
+			this.AtariBrowseCheats.Location = new System.Drawing.Point(442, 179);
 			this.AtariBrowseCheats.Name = "AtariBrowseCheats";
 			this.AtariBrowseCheats.Size = new System.Drawing.Size(26, 23);
 			this.AtariBrowseCheats.TabIndex = 41;
@@ -2522,23 +2531,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariCheatsBox.Location = new System.Drawing.Point(13, 179);
 			this.AtariCheatsBox.Name = "AtariCheatsBox";
-			this.AtariCheatsBox.Size = new System.Drawing.Size(364, 20);
+			this.AtariCheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.AtariCheatsBox.TabIndex = 40;
-			// 
-			// AtariBaseBox
-			// 
-			this.AtariBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.AtariBaseBox.Location = new System.Drawing.Point(13, 21);
-			this.AtariBaseBox.Name = "AtariBaseBox";
-			this.AtariBaseBox.Size = new System.Drawing.Size(364, 20);
-			this.AtariBaseBox.TabIndex = 27;
 			// 
 			// AtariBaseDescription
 			// 
 			this.AtariBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariBaseDescription.AutoSize = true;
-			this.AtariBaseDescription.Location = new System.Drawing.Point(417, 25);
+			this.AtariBaseDescription.Location = new System.Drawing.Point(474, 25);
 			this.AtariBaseDescription.Name = "AtariBaseDescription";
 			this.AtariBaseDescription.Size = new System.Drawing.Size(31, 13);
 			this.AtariBaseDescription.TabIndex = 43;
@@ -2548,7 +2548,7 @@
 			// 
 			this.BrowseAtariBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseAtariBase.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
-			this.BrowseAtariBase.Location = new System.Drawing.Point(385, 21);
+			this.BrowseAtariBase.Location = new System.Drawing.Point(442, 21);
 			this.BrowseAtariBase.Name = "BrowseAtariBase";
 			this.BrowseAtariBase.Size = new System.Drawing.Size(26, 23);
 			this.BrowseAtariBase.TabIndex = 28;
@@ -2561,7 +2561,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariROMsBox.Location = new System.Drawing.Point(13, 59);
 			this.AtariROMsBox.Name = "AtariROMsBox";
-			this.AtariROMsBox.Size = new System.Drawing.Size(364, 20);
+			this.AtariROMsBox.Size = new System.Drawing.Size(421, 20);
 			this.AtariROMsBox.TabIndex = 30;
 			// 
 			// AtariScreenshotsBox
@@ -2570,14 +2570,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariScreenshotsBox.Location = new System.Drawing.Point(13, 149);
 			this.AtariScreenshotsBox.Name = "AtariScreenshotsBox";
-			this.AtariScreenshotsBox.Size = new System.Drawing.Size(364, 20);
+			this.AtariScreenshotsBox.Size = new System.Drawing.Size(421, 20);
 			this.AtariScreenshotsBox.TabIndex = 37;
 			// 
 			// BrowseAtariSavestates
 			// 
 			this.BrowseAtariSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseAtariSavestates.Image = ((System.Drawing.Image)(resources.GetObject("BrowseAtariSavestates.Image")));
-			this.BrowseAtariSavestates.Location = new System.Drawing.Point(385, 89);
+			this.BrowseAtariSavestates.Location = new System.Drawing.Point(442, 89);
 			this.BrowseAtariSavestates.Name = "BrowseAtariSavestates";
 			this.BrowseAtariSavestates.Size = new System.Drawing.Size(26, 23);
 			this.BrowseAtariSavestates.TabIndex = 33;
@@ -2588,7 +2588,7 @@
 			// 
 			this.AtariScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariScreenshotsDescription.AutoSize = true;
-			this.AtariScreenshotsDescription.Location = new System.Drawing.Point(417, 153);
+			this.AtariScreenshotsDescription.Location = new System.Drawing.Point(474, 153);
 			this.AtariScreenshotsDescription.Name = "AtariScreenshotsDescription";
 			this.AtariScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
 			this.AtariScreenshotsDescription.TabIndex = 42;
@@ -2598,7 +2598,7 @@
 			// 
 			this.AtariSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariSavestatesDescription.AutoSize = true;
-			this.AtariSavestatesDescription.Location = new System.Drawing.Point(417, 93);
+			this.AtariSavestatesDescription.Location = new System.Drawing.Point(474, 93);
 			this.AtariSavestatesDescription.Name = "AtariSavestatesDescription";
 			this.AtariSavestatesDescription.Size = new System.Drawing.Size(60, 13);
 			this.AtariSavestatesDescription.TabIndex = 29;
@@ -2608,7 +2608,7 @@
 			// 
 			this.BrowseAtariScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseAtariScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("BrowseAtariScreenshots.Image")));
-			this.BrowseAtariScreenshots.Location = new System.Drawing.Point(385, 149);
+			this.BrowseAtariScreenshots.Location = new System.Drawing.Point(442, 149);
 			this.BrowseAtariScreenshots.Name = "BrowseAtariScreenshots";
 			this.BrowseAtariScreenshots.Size = new System.Drawing.Size(26, 23);
 			this.BrowseAtariScreenshots.TabIndex = 38;
@@ -2621,14 +2621,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariSavestatesBox.Location = new System.Drawing.Point(13, 89);
 			this.AtariSavestatesBox.Name = "AtariSavestatesBox";
-			this.AtariSavestatesBox.Size = new System.Drawing.Size(364, 20);
+			this.AtariSavestatesBox.Size = new System.Drawing.Size(421, 20);
 			this.AtariSavestatesBox.TabIndex = 32;
 			// 
 			// BrowseAtariSaveRAM
 			// 
 			this.BrowseAtariSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseAtariSaveRAM.Image = ((System.Drawing.Image)(resources.GetObject("BrowseAtariSaveRAM.Image")));
-			this.BrowseAtariSaveRAM.Location = new System.Drawing.Point(385, 119);
+			this.BrowseAtariSaveRAM.Location = new System.Drawing.Point(442, 119);
 			this.BrowseAtariSaveRAM.Name = "BrowseAtariSaveRAM";
 			this.BrowseAtariSaveRAM.Size = new System.Drawing.Size(26, 23);
 			this.BrowseAtariSaveRAM.TabIndex = 36;
@@ -2639,7 +2639,7 @@
 			// 
 			this.AtariSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariSaveRAMDescription.AutoSize = true;
-			this.AtariSaveRAMDescription.Location = new System.Drawing.Point(417, 123);
+			this.AtariSaveRAMDescription.Location = new System.Drawing.Point(474, 123);
 			this.AtariSaveRAMDescription.Name = "AtariSaveRAMDescription";
 			this.AtariSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
 			this.AtariSaveRAMDescription.TabIndex = 35;
@@ -2649,7 +2649,7 @@
 			// 
 			this.AtariROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariROMsDescription.AutoSize = true;
-			this.AtariROMsDescription.Location = new System.Drawing.Point(417, 63);
+			this.AtariROMsDescription.Location = new System.Drawing.Point(474, 63);
 			this.AtariROMsDescription.Name = "AtariROMsDescription";
 			this.AtariROMsDescription.Size = new System.Drawing.Size(37, 13);
 			this.AtariROMsDescription.TabIndex = 39;
@@ -2661,14 +2661,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.AtariSaveRAMBox.Location = new System.Drawing.Point(13, 119);
 			this.AtariSaveRAMBox.Name = "AtariSaveRAMBox";
-			this.AtariSaveRAMBox.Size = new System.Drawing.Size(364, 20);
+			this.AtariSaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.AtariSaveRAMBox.TabIndex = 34;
 			// 
 			// BrowseAtariROMs
 			// 
 			this.BrowseAtariROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseAtariROMs.Image = ((System.Drawing.Image)(resources.GetObject("BrowseAtariROMs.Image")));
-			this.BrowseAtariROMs.Location = new System.Drawing.Point(385, 59);
+			this.BrowseAtariROMs.Location = new System.Drawing.Point(442, 59);
 			this.BrowseAtariROMs.Name = "BrowseAtariROMs";
 			this.BrowseAtariROMs.Size = new System.Drawing.Size(26, 23);
 			this.BrowseAtariROMs.TabIndex = 31;
@@ -2709,11 +2709,20 @@
 			this.tabPage11.Text = "Int.V.";
 			this.tabPage11.UseVisualStyleBackColor = true;
 			// 
+			// INTVBaseBox
+			// 
+			this.INTVBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.INTVBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.INTVBaseBox.Name = "INTVBaseBox";
+			this.INTVBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.INTVBaseBox.TabIndex = 98;
+			// 
 			// INTVGROMDescription
 			// 
 			this.INTVGROMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVGROMDescription.AutoSize = true;
-			this.INTVGROMDescription.Location = new System.Drawing.Point(481, 240);
+			this.INTVGROMDescription.Location = new System.Drawing.Point(474, 243);
 			this.INTVGROMDescription.Name = "INTVGROMDescription";
 			this.INTVGROMDescription.Size = new System.Drawing.Size(40, 13);
 			this.INTVGROMDescription.TabIndex = 115;
@@ -2723,7 +2732,7 @@
 			// 
 			this.INTVBroseGROM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVBroseGROM.Image = ((System.Drawing.Image)(resources.GetObject("INTVBroseGROM.Image")));
-			this.INTVBroseGROM.Location = new System.Drawing.Point(449, 237);
+			this.INTVBroseGROM.Location = new System.Drawing.Point(442, 239);
 			this.INTVBroseGROM.Name = "INTVBroseGROM";
 			this.INTVBroseGROM.Size = new System.Drawing.Size(26, 23);
 			this.INTVBroseGROM.TabIndex = 114;
@@ -2734,7 +2743,7 @@
 			// 
 			this.INTVGROMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.INTVGROMBox.Location = new System.Drawing.Point(20, 237);
+			this.INTVGROMBox.Location = new System.Drawing.Point(13, 239);
 			this.INTVGROMBox.Name = "INTVGROMBox";
 			this.INTVGROMBox.Size = new System.Drawing.Size(421, 20);
 			this.INTVGROMBox.TabIndex = 113;
@@ -2743,7 +2752,7 @@
 			// 
 			this.INTVEROMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVEROMDescription.AutoSize = true;
-			this.INTVEROMDescription.Location = new System.Drawing.Point(481, 211);
+			this.INTVEROMDescription.Location = new System.Drawing.Point(474, 213);
 			this.INTVEROMDescription.Name = "INTVEROMDescription";
 			this.INTVEROMDescription.Size = new System.Drawing.Size(39, 13);
 			this.INTVEROMDescription.TabIndex = 112;
@@ -2753,7 +2762,7 @@
 			// 
 			this.INTVBrowseEROM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVBrowseEROM.Image = ((System.Drawing.Image)(resources.GetObject("INTVBrowseEROM.Image")));
-			this.INTVBrowseEROM.Location = new System.Drawing.Point(449, 208);
+			this.INTVBrowseEROM.Location = new System.Drawing.Point(442, 209);
 			this.INTVBrowseEROM.Name = "INTVBrowseEROM";
 			this.INTVBrowseEROM.Size = new System.Drawing.Size(26, 23);
 			this.INTVBrowseEROM.TabIndex = 111;
@@ -2764,7 +2773,7 @@
 			// 
 			this.INTVEROMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.INTVEROMBox.Location = new System.Drawing.Point(20, 208);
+			this.INTVEROMBox.Location = new System.Drawing.Point(13, 209);
 			this.INTVEROMBox.Name = "INTVEROMBox";
 			this.INTVEROMBox.Size = new System.Drawing.Size(421, 20);
 			this.INTVEROMBox.TabIndex = 110;
@@ -2773,7 +2782,7 @@
 			// 
 			this.INTVCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVCheatsDescription.AutoSize = true;
-			this.INTVCheatsDescription.Location = new System.Drawing.Point(481, 182);
+			this.INTVCheatsDescription.Location = new System.Drawing.Point(474, 183);
 			this.INTVCheatsDescription.Name = "INTVCheatsDescription";
 			this.INTVCheatsDescription.Size = new System.Drawing.Size(40, 13);
 			this.INTVCheatsDescription.TabIndex = 97;
@@ -2783,7 +2792,7 @@
 			// 
 			this.INTVBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVBrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("INTVBrowseCheats.Image")));
-			this.INTVBrowseCheats.Location = new System.Drawing.Point(449, 178);
+			this.INTVBrowseCheats.Location = new System.Drawing.Point(442, 179);
 			this.INTVBrowseCheats.Name = "INTVBrowseCheats";
 			this.INTVBrowseCheats.Size = new System.Drawing.Size(26, 23);
 			this.INTVBrowseCheats.TabIndex = 109;
@@ -2794,26 +2803,17 @@
 			// 
 			this.INTVCheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.INTVCheatsBox.Location = new System.Drawing.Point(20, 178);
+			this.INTVCheatsBox.Location = new System.Drawing.Point(13, 179);
 			this.INTVCheatsBox.Name = "INTVCheatsBox";
 			this.INTVCheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.INTVCheatsBox.TabIndex = 108;
-			// 
-			// INTVBaseBox
-			// 
-			this.INTVBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.INTVBaseBox.Location = new System.Drawing.Point(20, 20);
-			this.INTVBaseBox.Name = "INTVBaseBox";
-			this.INTVBaseBox.Size = new System.Drawing.Size(421, 20);
-			this.INTVBaseBox.TabIndex = 98;
 			// 
 			// INTVScreenshotsBox
 			// 
 			this.INTVScreenshotsBox.AcceptsReturn = true;
 			this.INTVScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.INTVScreenshotsBox.Location = new System.Drawing.Point(20, 148);
+			this.INTVScreenshotsBox.Location = new System.Drawing.Point(13, 149);
 			this.INTVScreenshotsBox.Name = "INTVScreenshotsBox";
 			this.INTVScreenshotsBox.Size = new System.Drawing.Size(421, 20);
 			this.INTVScreenshotsBox.TabIndex = 106;
@@ -2822,7 +2822,7 @@
 			// 
 			this.INTVBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVBaseDescription.AutoSize = true;
-			this.INTVBaseDescription.Location = new System.Drawing.Point(481, 24);
+			this.INTVBaseDescription.Location = new System.Drawing.Point(474, 25);
 			this.INTVBaseDescription.Name = "INTVBaseDescription";
 			this.INTVBaseDescription.Size = new System.Drawing.Size(31, 13);
 			this.INTVBaseDescription.TabIndex = 96;
@@ -2832,7 +2832,7 @@
 			// 
 			this.INTVScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVScreenshotsDescription.AutoSize = true;
-			this.INTVScreenshotsDescription.Location = new System.Drawing.Point(481, 152);
+			this.INTVScreenshotsDescription.Location = new System.Drawing.Point(474, 153);
 			this.INTVScreenshotsDescription.Name = "INTVScreenshotsDescription";
 			this.INTVScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
 			this.INTVScreenshotsDescription.TabIndex = 95;
@@ -2842,7 +2842,7 @@
 			// 
 			this.INTVBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVBrowseBase.Image = ((System.Drawing.Image)(resources.GetObject("INTVBrowseBase.Image")));
-			this.INTVBrowseBase.Location = new System.Drawing.Point(449, 20);
+			this.INTVBrowseBase.Location = new System.Drawing.Point(442, 21);
 			this.INTVBrowseBase.Name = "INTVBrowseBase";
 			this.INTVBrowseBase.Size = new System.Drawing.Size(26, 23);
 			this.INTVBrowseBase.TabIndex = 99;
@@ -2853,7 +2853,7 @@
 			// 
 			this.INTVBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVBrowseScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("INTVBrowseScreenshots.Image")));
-			this.INTVBrowseScreenshots.Location = new System.Drawing.Point(449, 148);
+			this.INTVBrowseScreenshots.Location = new System.Drawing.Point(442, 149);
 			this.INTVBrowseScreenshots.Name = "INTVBrowseScreenshots";
 			this.INTVBrowseScreenshots.Size = new System.Drawing.Size(26, 23);
 			this.INTVBrowseScreenshots.TabIndex = 107;
@@ -2865,7 +2865,7 @@
 			this.INTVRomsBox.AcceptsReturn = true;
 			this.INTVRomsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.INTVRomsBox.Location = new System.Drawing.Point(20, 58);
+			this.INTVRomsBox.Location = new System.Drawing.Point(13, 59);
 			this.INTVRomsBox.Name = "INTVRomsBox";
 			this.INTVRomsBox.Size = new System.Drawing.Size(421, 20);
 			this.INTVRomsBox.TabIndex = 100;
@@ -2874,7 +2874,7 @@
 			// 
 			this.INTVBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVBrowseSavestates.Image = ((System.Drawing.Image)(resources.GetObject("INTVBrowseSavestates.Image")));
-			this.INTVBrowseSavestates.Location = new System.Drawing.Point(449, 88);
+			this.INTVBrowseSavestates.Location = new System.Drawing.Point(442, 89);
 			this.INTVBrowseSavestates.Name = "INTVBrowseSavestates";
 			this.INTVBrowseSavestates.Size = new System.Drawing.Size(26, 23);
 			this.INTVBrowseSavestates.TabIndex = 103;
@@ -2885,7 +2885,7 @@
 			// 
 			this.INTVSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVSavestatesDescription.AutoSize = true;
-			this.INTVSavestatesDescription.Location = new System.Drawing.Point(481, 92);
+			this.INTVSavestatesDescription.Location = new System.Drawing.Point(474, 93);
 			this.INTVSavestatesDescription.Name = "INTVSavestatesDescription";
 			this.INTVSavestatesDescription.Size = new System.Drawing.Size(60, 13);
 			this.INTVSavestatesDescription.TabIndex = 92;
@@ -2895,7 +2895,7 @@
 			// 
 			this.INTVROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVROMsDescription.AutoSize = true;
-			this.INTVROMsDescription.Location = new System.Drawing.Point(481, 62);
+			this.INTVROMsDescription.Location = new System.Drawing.Point(474, 63);
 			this.INTVROMsDescription.Name = "INTVROMsDescription";
 			this.INTVROMsDescription.Size = new System.Drawing.Size(37, 13);
 			this.INTVROMsDescription.TabIndex = 94;
@@ -2906,7 +2906,7 @@
 			this.INTVSavestatesBox.AcceptsTab = true;
 			this.INTVSavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.INTVSavestatesBox.Location = new System.Drawing.Point(20, 88);
+			this.INTVSavestatesBox.Location = new System.Drawing.Point(13, 89);
 			this.INTVSavestatesBox.Name = "INTVSavestatesBox";
 			this.INTVSavestatesBox.Size = new System.Drawing.Size(421, 20);
 			this.INTVSavestatesBox.TabIndex = 102;
@@ -2915,7 +2915,7 @@
 			// 
 			this.INTVBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVBrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("INTVBrowseROMs.Image")));
-			this.INTVBrowseROMs.Location = new System.Drawing.Point(449, 58);
+			this.INTVBrowseROMs.Location = new System.Drawing.Point(442, 59);
 			this.INTVBrowseROMs.Name = "INTVBrowseROMs";
 			this.INTVBrowseROMs.Size = new System.Drawing.Size(26, 23);
 			this.INTVBrowseROMs.TabIndex = 101;
@@ -2926,7 +2926,7 @@
 			// 
 			this.INTVBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVBrowseSaveRAM.Image = ((System.Drawing.Image)(resources.GetObject("INTVBrowseSaveRAM.Image")));
-			this.INTVBrowseSaveRAM.Location = new System.Drawing.Point(449, 118);
+			this.INTVBrowseSaveRAM.Location = new System.Drawing.Point(442, 119);
 			this.INTVBrowseSaveRAM.Name = "INTVBrowseSaveRAM";
 			this.INTVBrowseSaveRAM.Size = new System.Drawing.Size(26, 23);
 			this.INTVBrowseSaveRAM.TabIndex = 105;
@@ -2937,7 +2937,7 @@
 			// 
 			this.INTVSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.INTVSaveRAMDescription.AutoSize = true;
-			this.INTVSaveRAMDescription.Location = new System.Drawing.Point(481, 122);
+			this.INTVSaveRAMDescription.Location = new System.Drawing.Point(474, 123);
 			this.INTVSaveRAMDescription.Name = "INTVSaveRAMDescription";
 			this.INTVSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
 			this.INTVSaveRAMDescription.TabIndex = 93;
@@ -2947,7 +2947,7 @@
 			// 
 			this.INTVSaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.INTVSaveRAMBox.Location = new System.Drawing.Point(20, 118);
+			this.INTVSaveRAMBox.Location = new System.Drawing.Point(13, 119);
 			this.INTVSaveRAMBox.Name = "INTVSaveRAMBox";
 			this.INTVSaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.INTVSaveRAMBox.TabIndex = 104;
@@ -2982,14 +2982,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.MovieBackupsBox.Location = new System.Drawing.Point(13, 49);
 			this.MovieBackupsBox.Name = "MovieBackupsBox";
-			this.MovieBackupsBox.Size = new System.Drawing.Size(364, 20);
+			this.MovieBackupsBox.Size = new System.Drawing.Size(421, 20);
 			this.MovieBackupsBox.TabIndex = 125;
 			// 
 			// BrowseMovieBackups
 			// 
 			this.BrowseMovieBackups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseMovieBackups.Image = ((System.Drawing.Image)(resources.GetObject("BrowseMovieBackups.Image")));
-			this.BrowseMovieBackups.Location = new System.Drawing.Point(385, 49);
+			this.BrowseMovieBackups.Location = new System.Drawing.Point(442, 49);
 			this.BrowseMovieBackups.Name = "BrowseMovieBackups";
 			this.BrowseMovieBackups.Size = new System.Drawing.Size(26, 23);
 			this.BrowseMovieBackups.TabIndex = 128;
@@ -3000,7 +3000,7 @@
 			// 
 			this.MovieBackupsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MovieBackupsDescription.AutoSize = true;
-			this.MovieBackupsDescription.Location = new System.Drawing.Point(417, 53);
+			this.MovieBackupsDescription.Location = new System.Drawing.Point(474, 53);
 			this.MovieBackupsDescription.Name = "MovieBackupsDescription";
 			this.MovieBackupsDescription.Size = new System.Drawing.Size(80, 13);
 			this.MovieBackupsDescription.TabIndex = 128;
