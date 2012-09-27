@@ -336,7 +336,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if (hint == "msu1.rom") return "";
 
 			//build romfilename
-			string test = Path.Combine(CoreInputComm.SNES_FirmwarePath ?? "", hint);
+			string test = Path.Combine(CoreInputComm.SNES_FirmwaresPath ?? "", hint);
 
 			//does it exist?
 			if (!File.Exists(test))
