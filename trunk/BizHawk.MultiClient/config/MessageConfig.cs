@@ -71,9 +71,9 @@ namespace BizHawk.MultiClient
 
 		private void SetMaxXY()
 		{
-			XNumeric.Maximum = Global.Emulator.VideoProvider.BufferWidth - 8;
-			YNumeric.Maximum = Global.Emulator.VideoProvider.BufferHeight - 8;
-			PositionPanel.Size = new Size(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+			XNumeric.Maximum = Global.Emulator.VideoProvider.BufferWidth - 12;
+			YNumeric.Maximum = Global.Emulator.VideoProvider.BufferHeight - 12;
+			PositionPanel.Size = new Size(Global.Emulator.VideoProvider.BufferWidth + 2, Global.Emulator.VideoProvider.BufferHeight + 2);
 
 			int width;
 			if (Global.Emulator.VideoProvider.BufferWidth > 128)
@@ -331,9 +331,9 @@ namespace BizHawk.MultiClient
 			}
 
 			Pen p = new Pen(brush);
-			e.Graphics.DrawLine(p, new Point(x - 4, y - 4), new Point(x + 4, y + 4));
-			e.Graphics.DrawLine(p, new Point(x + 4, y - 4), new Point(x - 4, y + 4));
-			Rectangle rect = new Rectangle(x - 4, y - 4, 8, 8);
+			e.Graphics.DrawLine(p, new Point(x, y), new Point(x + 8, y + 8));
+			e.Graphics.DrawLine(p, new Point(x + 8, y), new Point(x, y + 8));
+			Rectangle rect = new Rectangle(x, y, 8, 8);
 			e.Graphics.DrawRectangle(p, rect);
 		}
 
