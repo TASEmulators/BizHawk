@@ -2202,7 +2202,7 @@
 			this.PlayRecordStatus.Name = "PlayRecordStatus";
 			this.PlayRecordStatus.ShowDropDownArrow = false;
 			this.PlayRecordStatus.Size = new System.Drawing.Size(20, 20);
-			this.PlayRecordStatus.Text = "Movie is in play mode";
+			this.PlayRecordStatus.Text = "No movie is active";
 			// 
 			// PauseStrip
 			// 
