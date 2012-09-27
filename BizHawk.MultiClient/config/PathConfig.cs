@@ -248,6 +248,7 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
+			Global.OSD.AddMessage("Path config aborted");
 			this.Close();
 		}
 

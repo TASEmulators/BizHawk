@@ -115,6 +115,7 @@ namespace BizHawk.MultiClient.tools
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
+			Global.OSD.AddMessage("Hotkey config aborted");
 			this.Close();
 		}
 
