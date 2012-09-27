@@ -112,8 +112,8 @@ namespace BizHawk.MultiClient
 		}
 
 		// Import a frame from a text-based format.
-		private static Movie ImportTextFrame(string line, int lineNum, Movie m, string path, ref string warningMsg,
-			ref string errorMsg)
+		private static Movie ImportTextFrame(string line, int lineNum, Movie m, string path, string platform,
+			ref string warningMsg, ref string errorMsg)
 		{
 			string[] buttons = new string[] { };
 			string controller = "";
@@ -132,6 +132,11 @@ namespace BizHawk.MultiClient
 						"B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R"
 					};
 					controller = "SNES Controller";
+					if (platform == "GB" || platform == "GBC")
+					{
+						buttons = new string[8] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
+						controller = "Gameboy Controller";
+					}
 					break;
 			}
 			SimpleController controllers = new SimpleController();
@@ -176,15 +181,17 @@ namespace BizHawk.MultiClient
 				char[] off = { '.', ' ', '\t', '\n', '\r' };
 				if (flags.Length == 0 || off.Contains(flags[0]))
 				{
-					errorMsg = "Subframes are not supported.";
-					return null;
+					if (warningMsg == "")
+						warningMsg = "Unable to import subframe.";
+					return m;
 				}
 				bool reset = (flags.Length >= 2 && !off.Contains(flags[1]));
 				flags = SingleSpaces(flags.Substring(2));
 				if (reset && ((flags.Length >= 2 && flags[1] != '0') || (flags.Length >= 4 && flags[3] != '0')))
 				{
-					errorMsg = "Delayed resets are not supported.";
-					return null;
+					if (warningMsg == "")
+						warningMsg = "Unable to import delayed reset.";
+					return m;
 				}
 				controllers["Reset"] = reset;
 			}
@@ -206,6 +213,10 @@ namespace BizHawk.MultiClient
 			{
 				// The player number is one less than the section number for the reasons explained above.
 				int player = section + player_offset;
+				string prefix = "P" + (player).ToString() + " ";
+				// Gameboy doesn't currently have a prefix saying which player the input is for.
+				if (controllers.Type.Name == "Gameboy Controller")
+					prefix = "";
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
 					sections[section].Length == buttons.Length &&
@@ -213,9 +224,7 @@ namespace BizHawk.MultiClient
 				)
 					for (int button = 0; button < buttons.Length; button++)
 						// Consider the button pressed so long as its spot is not occupied by a ".".
-						controllers["P" + (player).ToString() + " " + buttons[button]] = (
-							sections[section][button] != '.'
-						);
+						controllers[prefix + buttons[button]] = (sections[section][button] != '.');
 			}
 			// Convert the data for the controllers to a mnemonic and add it as a frame.
 			mg.SetSource(controllers);
@@ -283,7 +292,7 @@ namespace BizHawk.MultiClient
 					continue;
 				else if (line[0] == '|')
 				{
-					m = ImportTextFrame(line, lineNum, m, path, ref warningMsg, ref errorMsg);
+					m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg, ref errorMsg);
 					if (errorMsg != "")
 					{
 						sr.Close();
@@ -921,7 +930,7 @@ namespace BizHawk.MultiClient
 				errorMsg = "This is not an archive.";
 				return null;
 			}
-			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "SNES");
+			string platform = "SNES";
 			foreach (var item in hf.ArchiveItems)
 			{
 				if (item.name == "authors")
@@ -975,7 +984,21 @@ namespace BizHawk.MultiClient
 					var stream = hf.GetStream();
 					string gametype = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					// TODO: Handle the other types.
-					bool pal = (gametype == "snes_ntsc");
+					switch (gametype)
+					{
+						case "gdmg":
+							platform = "GB";
+							break;
+						case "ggbc":
+						case "ggbca":
+							platform = "GBC";
+							break;
+						case "sgb_ntsc":
+						case "sgb_pal":
+							platform = "SGB";
+							break;
+					}
+					bool pal = (gametype == "snes_pal" || gametype == "sgb_pal");
 					m.Header.SetHeaderLine("PAL", pal.ToString());
 					hf.Unbind();
 				}
@@ -993,7 +1016,7 @@ namespace BizHawk.MultiClient
 						{
 							if (line == "")
 								continue;
-							m = ImportTextFrame(line, lineNum, m, path, ref warningMsg, ref errorMsg);
+							m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg, ref errorMsg);
 							if (errorMsg != "")
 							{
 								hf.Unbind();
@@ -1005,9 +1028,16 @@ namespace BizHawk.MultiClient
 				}
 				else if (item.name.StartsWith("moviesram."))
 				{
-					errorMsg = "Movies that begin with SRAM are not supported.";
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					byte[] moviesram = Util.ReadAllBytes(stream);
+					if (moviesram.Length != 0)
+					{
+						errorMsg = "Movies that begin with SRAM are not supported.";
+						hf.Unbind();
+						return null;
+					}
 					hf.Unbind();
-					return null;
 				}
 				else if (item.name == "rerecords")
 				{
@@ -1062,6 +1092,7 @@ namespace BizHawk.MultiClient
 					hf.Unbind();
 				}
 			}
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
 			return m;
 		}
 
