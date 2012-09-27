@@ -1380,8 +1380,13 @@ namespace BizHawk.MultiClient
 						switch (game.System)
 						{
 							case "SNES":
-								game.System = "SNES";
-								nextEmulator = new LibsnesCore(game, rom.FileData);
+								{
+									game.System = "SNES";
+									var snes = new LibsnesCore();
+									nextEmulator = snes;
+									nextEmulator.CoreInputComm = Global.CoreInputComm;
+									snes.Load(game, rom.FileData, null);
+								}
 								break;
 							case "SMS":
 							case "SG":
@@ -1457,7 +1462,9 @@ namespace BizHawk.MultiClient
 									byte[] sgbrom = File.ReadAllBytes(PathManager.MakeAbsolutePath(Global.Config.PathSGBRom, "SGB"));
 									game.AddOption("SGB");
 									game.System = "SGB";
-									nextEmulator = new LibsnesCore(game, rom.FileData, sgbrom);
+									var snes = new LibsnesCore();
+									nextEmulator = snes;
+									snes.Load(game, rom.FileData, sgbrom);
 								}
 								break;
 							case "COLV":
