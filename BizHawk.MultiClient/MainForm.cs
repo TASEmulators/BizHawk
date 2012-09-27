@@ -339,7 +339,7 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG;
 			Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
-			Global.CoreInputComm.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
+			Global.CoreInputComm.SNES_FirmwarePath = PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			Global.CoreInputComm.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			Global.CoreInputComm.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			Global.CoreInputComm.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
