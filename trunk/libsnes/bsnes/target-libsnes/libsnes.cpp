@@ -3,6 +3,9 @@
 
 #include <nall/snes/cartridge.hpp>
 #include <nall/gameboy/cartridge.hpp>
+
+#include <queue>
+
 using namespace nall;
 
 struct Interface : public SNES::Interface {
@@ -17,6 +20,9 @@ struct Interface : public SNES::Interface {
 
 	//zero 11-sep-2012
 	time_t randomSeed() { return 0; }
+
+	//zero 26-sep-2012
+	std::queue<nall::string> messages;
 
   void videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan) {
     unsigned width = hires ? 512 : 256;
@@ -58,7 +64,7 @@ struct Interface : public SNES::Interface {
   }
   
   void message(const string &text) {
-    print(text, "\n");
+		messages.push(text);
   }
 
   string path(SNES::Cartridge::Slot slot, const string &hint) {
@@ -510,3 +516,14 @@ unsigned snes_get_memory_size(unsigned id) {
   return size;
 }
 
+int snes_poll_message()
+{
+	if(interface.messages.size() == 0) return -1;
+	return interface.messages.front().length();
+}
+void snes_dequeue_message(char* buffer)
+{
+	int len = interface.messages.front().length();
+	memcpy(buffer,(const char*)interface.messages.front(),len);
+	interface.messages.pop();
+}
