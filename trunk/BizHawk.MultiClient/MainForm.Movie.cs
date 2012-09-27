@@ -63,11 +63,11 @@ namespace BizHawk.MultiClient
 				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.RecordHS;
 				PlayRecordStatus.ToolTipText = "Movie is in record mode";
 			}
-			else
+			else if (!Global.MovieSession.Movie.IsActive)
 			{
 				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name;
 				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
-				PlayRecordStatus.ToolTipText = "";
+				PlayRecordStatus.ToolTipText = "No movie is active";
 			}
 		}
 
@@ -118,8 +118,8 @@ namespace BizHawk.MultiClient
 			{
 				Global.MovieSession.Movie.Stop();
 				Global.OSD.AddMessage(message);
-				SetMainformMovieInfo();
 				Global.MainForm.ReadOnly = true;
+				SetMainformMovieInfo();
 			}
 		}
 
