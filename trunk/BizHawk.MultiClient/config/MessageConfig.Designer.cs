@@ -30,6 +30,8 @@
         {
 			this.OK = new System.Windows.Forms.Button();
 			this.MessageTypeBox = new System.Windows.Forms.GroupBox();
+			this.AutoholdLabel = new System.Windows.Forms.Label();
+			this.AutoholdRadio = new System.Windows.Forms.RadioButton();
 			this.MultitrackLabel = new System.Windows.Forms.Label();
 			this.MultitrackRadio = new System.Windows.Forms.RadioButton();
 			this.RerecLabel = new System.Windows.Forms.Label();
@@ -78,8 +80,6 @@
 			this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.StackMessagesCheckbox = new System.Windows.Forms.CheckBox();
-			this.AutoholdRadio = new System.Windows.Forms.RadioButton();
-			this.AutoholdLabel = new System.Windows.Forms.Label();
 			this.MessageTypeBox.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
@@ -122,6 +122,28 @@
 			this.MessageTypeBox.TabIndex = 2;
 			this.MessageTypeBox.TabStop = false;
 			this.MessageTypeBox.Text = "Message Type";
+			// 
+			// AutoholdLabel
+			// 
+			this.AutoholdLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.AutoholdLabel.AutoSize = true;
+			this.AutoholdLabel.Location = new System.Drawing.Point(126, 188);
+			this.AutoholdLabel.Name = "AutoholdLabel";
+			this.AutoholdLabel.Size = new System.Drawing.Size(49, 13);
+			this.AutoholdLabel.TabIndex = 15;
+			this.AutoholdLabel.Text = "255, 255";
+			// 
+			// AutoholdRadio
+			// 
+			this.AutoholdRadio.AutoSize = true;
+			this.AutoholdRadio.Location = new System.Drawing.Point(6, 186);
+			this.AutoholdRadio.Name = "AutoholdRadio";
+			this.AutoholdRadio.Size = new System.Drawing.Size(67, 17);
+			this.AutoholdRadio.TabIndex = 14;
+			this.AutoholdRadio.TabStop = true;
+			this.AutoholdRadio.Text = "Autohold";
+			this.AutoholdRadio.UseVisualStyleBackColor = true;
+			this.AutoholdRadio.CheckedChanged += new System.EventHandler(this.AutoholdRadio_CheckedChanged);
 			// 
 			// MultitrackLabel
 			// 
@@ -505,6 +527,7 @@
             0,
             0});
 			this.XNumeric.Click += new System.EventHandler(this.XNumeric_Click);
+			this.XNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.XNumeric_KeyUp);
 			// 
 			// YNumeric
 			// 
@@ -524,6 +547,7 @@
             0,
             0});
 			this.YNumeric.Click += new System.EventHandler(this.YNumeric_Click);
+			this.YNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.YNumeric_KeyUp);
 			// 
 			// label1
 			// 
@@ -631,28 +655,6 @@
 			this.StackMessagesCheckbox.TabIndex = 7;
 			this.StackMessagesCheckbox.Text = "Stack Messages";
 			this.StackMessagesCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// AutoholdRadio
-			// 
-			this.AutoholdRadio.AutoSize = true;
-			this.AutoholdRadio.Location = new System.Drawing.Point(6, 186);
-			this.AutoholdRadio.Name = "AutoholdRadio";
-			this.AutoholdRadio.Size = new System.Drawing.Size(67, 17);
-			this.AutoholdRadio.TabIndex = 14;
-			this.AutoholdRadio.TabStop = true;
-			this.AutoholdRadio.Text = "Autohold";
-			this.AutoholdRadio.UseVisualStyleBackColor = true;
-			this.AutoholdRadio.CheckedChanged += new System.EventHandler(this.AutoholdRadio_CheckedChanged);
-			// 
-			// AutoholdLabel
-			// 
-			this.AutoholdLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.AutoholdLabel.AutoSize = true;
-			this.AutoholdLabel.Location = new System.Drawing.Point(126, 188);
-			this.AutoholdLabel.Name = "AutoholdLabel";
-			this.AutoholdLabel.Size = new System.Drawing.Size(49, 13);
-			this.AutoholdLabel.TabIndex = 15;
-			this.AutoholdLabel.Text = "255, 255";
 			// 
 			// MessageConfig
 			// 

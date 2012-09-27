@@ -11,9 +11,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class MessageConfig : Form
 	{
-		//TODO: 
-		//Deal with typing into Numerics properly
-
 		int DispFPSx = Global.Config.DispFPSx;
 		int DispFPSy = Global.Config.DispFPSy;
 		int DispFrameCx = Global.Config.DispFrameCx;
@@ -636,6 +633,16 @@ namespace BizHawk.MultiClient
 			{
 				SetColorBox();
 			}
+		}
+
+		private void XNumeric_KeyUp(object sender, KeyEventArgs e)
+		{
+			XNumericChange();
+		}
+
+		private void YNumeric_KeyUp(object sender, KeyEventArgs e)
+		{
+			YNumericChange();
 		}
 	}
 }
