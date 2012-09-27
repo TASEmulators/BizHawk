@@ -300,10 +300,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							//if we already have maxsprites, then this new one causes an overflow,
 							//set the flag and bail out.
 							//should we set this flag anyway??
-							if (oamcount >= 8 && reg_2001.PPUON && !nes.CoreInputComm.NES_UnlimitedSprites)
+							if (oamcount >= 8 && reg_2001.PPUON)
 							{
 								Reg2002_objoverflow = true;
-								break;
+								if(!nes.CoreInputComm.NES_UnlimitedSprites)
+									break;
 							}
 							//just copy some bytes into the internal sprite buffer
 							TempOAM* oam = &oams[scanslot_lshift + oamcount];
