@@ -261,8 +261,7 @@ namespace BizHawk.MultiClient
 
 		private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			//TODO: make base text box Controls[0] so this will focus on it
-			//tabControl1.TabPages[tabControl1.SelectedIndex].Controls[0].Focus(); 
+			tabControl1.TabPages[tabControl1.SelectedIndex].Controls[0].Focus(); 
 		}
 
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
