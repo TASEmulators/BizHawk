@@ -3316,6 +3316,7 @@ namespace BizHawk.MultiClient
 
 			s.Dispose();
 			c.Dispose();
+
 			return ret;
 		}
 
