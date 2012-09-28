@@ -286,6 +286,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ser.Sync("mode_cnt", ref mode_cnt);
 					ser.Sync("period_cnt", ref period_cnt);
 
+					ser.Sync("len_cnt", ref len_cnt);
+
 					ser.Sync("lenctr_en", ref lenctr_en);
 
 					ser.Sync("shift_register", ref shift_register);
@@ -741,6 +743,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				triangle.SyncState(ser);
 				noise.SyncState(ser);
 				dmc.SyncState(ser);
+				SyncIRQ();
 			}
 
 			PulseUnit[] pulse = { new PulseUnit(0), new PulseUnit(1) };
