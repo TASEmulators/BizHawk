@@ -43,6 +43,7 @@ void CPU::mmio_w4016(uint8 data) {
 uint8 CPU::mmio_r4016() {
   uint8 r = regs.mdr & 0xfc;
   r |= input.port1->data();
+  if (!status.auto_joypad_poll) interface->inputNotify(0);
   return r;
 }
 
@@ -53,6 +54,7 @@ uint8 CPU::mmio_r4016() {
 uint8 CPU::mmio_r4017() {
   uint8 r = (regs.mdr & 0xe0) | 0x1c;
   r |= input.port2->data();
+  if (!status.auto_joypad_poll) interface->inputNotify(1);
   return r;
 }
 
