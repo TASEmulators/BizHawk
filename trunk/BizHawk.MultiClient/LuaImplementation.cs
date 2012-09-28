@@ -548,6 +548,8 @@ namespace BizHawk.MultiClient
 														"setdispbackground",
 														"getdispsprites",
 														"setdispsprites",
+														"getallowmorethaneightsprites",
+														"setallowmorethaneightsprites",
 														"addgamegenie",
 														"removegamegenie",
 		                                          	};
@@ -2539,6 +2541,20 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.NESDispSprites = show;
 			Global.MainForm.SyncCoreInputComm();
+		}
+
+		public bool nes_getallowmorethaneightsprites()
+		{
+			return Global.Config.NESAllowMoreThanEightSprites;
+		}
+
+		public void nes_setallowmorethaneightsprites(bool allow)
+		{
+			Global.Config.NESAllowMoreThanEightSprites = allow;
+			if (Global.Emulator is NES)
+			{
+				(Global.Emulator as NES).CoreInputComm.NES_UnlimitedSprites = allow;
+			}
 		}
 
 		public void nes_addgamegenie(string code)
