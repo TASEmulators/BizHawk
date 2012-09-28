@@ -1343,7 +1343,18 @@ namespace BizHawk.MultiClient
 
 		private void HexEditor_KeyDown(object sender, KeyEventArgs e)
 		{
-			int newHighlighted;
+            if (e.Control && e.KeyCode == Keys.G)
+            {
+                GoToSpecifiedAddress();
+                return;
+            }
+            if (e.Control && e.KeyCode == Keys.P)
+            {
+                PokeAddress();
+                return;
+            }
+            
+            int newHighlighted;
 			switch (e.KeyCode)
 			{
 				case Keys.Up:
@@ -1506,14 +1517,44 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+
+		private bool IsHexKeyCode(char key)
+		{
+			if (key >= 48 && key <= 57) //0-9
+			{
+				return true;
+			}
+			else if (key >= 65 && key <= 70) //A-F
+			{
+				return true;
+			}
+			else if (key >= 96 && key <= 106) //0-9 Numpad
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		//Winform key events suck at the numberpad, so this is necessary
+		private char ForceCorrectKeyString(Keys keycode)
+		{
+			if ((int)keycode >= 96 && (int)keycode <= 106)
+			{
+				return (char)((int)keycode - 48);
+			}
+			else
+			{
+				return (char)keycode;
+			}
+		}
+
 		private void HexEditor_KeyUp(object sender, KeyEventArgs e)
 		{
-			if (!InputValidate.IsValidHexNumber(((char)e.KeyCode).ToString()))
+			if (!IsHexKeyCode((char)e.KeyCode))
 			{
-				if (e.Control && e.KeyCode == Keys.G)
-					GoToSpecifiedAddress();
-				if (e.Control && e.KeyCode == Keys.P)
-					PokeAddress();
 				e.Handled = true;
 				return;
 			}
@@ -1529,12 +1570,12 @@ namespace BizHawk.MultiClient
 				case 1:
 					if (nibbles[0] == 'G')
 					{
-						nibbles[0] = (char)e.KeyCode;
+						nibbles[0] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[0].ToString();
 					}
 					else
 					{
-						string temp = nibbles[0].ToString() + ((char)e.KeyCode).ToString();
+						string temp = nibbles[0].ToString() + ForceCorrectKeyString(e.KeyCode).ToString();
 						byte x = byte.Parse(temp, NumberStyles.HexNumber);
 						Domain.PokeByte(addressHighlighted, x);
 						ClearNibbles();
@@ -1545,17 +1586,17 @@ namespace BizHawk.MultiClient
 				case 2:
 					if (nibbles[0] == 'G')
 					{
-						nibbles[0] = (char)e.KeyCode;
+						nibbles[0] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[0].ToString();
 					}
 					else if (nibbles[1] == 'G')
 					{
-						nibbles[1] = (char)e.KeyCode;
+						nibbles[1] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[1].ToString();
 					}
 					else if (nibbles[2] == 'G')
 					{
-						nibbles[2] = (char)e.KeyCode;
+						nibbles[2] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[2].ToString();
 					}
 					else if (nibbles[3] == 'G')
@@ -1575,37 +1616,37 @@ namespace BizHawk.MultiClient
 				case 4:
 					if (nibbles[0] == 'G')
 					{
-						nibbles[0] = (char)e.KeyCode;
+						nibbles[0] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[0].ToString();
 					}
 					else if (nibbles[1] == 'G')
 					{
-						nibbles[1] = (char)e.KeyCode;
+						nibbles[1] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[1].ToString();
 					}
 					else if (nibbles[2] == 'G')
 					{
-						nibbles[2] = (char)e.KeyCode;
+						nibbles[2] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[2].ToString();
 					}
 					else if (nibbles[3] == 'G')
 					{
-						nibbles[3] = (char)e.KeyCode;
+						nibbles[3] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[3].ToString();
 					}
 					else if (nibbles[4] == 'G')
 					{
-						nibbles[4] = (char)e.KeyCode;
+						nibbles[4] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[4].ToString();
 					}
 					else if (nibbles[5] == 'G')
 					{
-						nibbles[5] = (char)e.KeyCode;
+						nibbles[5] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[5].ToString();
 					}
 					else if (nibbles[6] == 'G')
 					{
-						nibbles[6] = (char)e.KeyCode;
+						nibbles[6] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[6].ToString();
 					}
 					else if (nibbles[7] == 'G')
@@ -1619,7 +1660,7 @@ namespace BizHawk.MultiClient
 						string temp3 = nibbles[4].ToString() + nibbles[5].ToString();
 						byte x3 = byte.Parse(temp3, NumberStyles.HexNumber);
 
-						string temp4 = nibbles[6].ToString() + ((char)e.KeyCode).ToString();
+						string temp4 = nibbles[6].ToString() + ForceCorrectKeyString(e.KeyCode).ToString();
 						byte x4 = byte.Parse(temp4, NumberStyles.HexNumber);
 
 						PokeWord(addressHighlighted, x1, x2);
