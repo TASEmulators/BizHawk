@@ -2134,7 +2134,7 @@ namespace BizHawk.MultiClient
 			string value = ValueString(GetHighlightedAddress());
 			foreach (int x in SecondaryHighlightedAddresses)
 			{
-				value += MakeValue(x);
+                value += ValueString(x);
 			}
 			if (!String.IsNullOrWhiteSpace(value))
 			{
