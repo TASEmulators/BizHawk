@@ -309,12 +309,13 @@ namespace BizHawk.MultiClient
 
 		private void BrowseFolder(TextBox box, string Name, string System)
 		{
-			FolderBrowserEx f = new FolderBrowserEx();
-			f.Description = "Set the directory for " + Name;
-			f.SelectedPath = PathManager.MakeAbsolutePath(box.Text, System);
-			DialogResult result = f.ShowDialog();
+			folderBrowserDialog1.Description = "Set the directory for " + Name;
+			folderBrowserDialog1.SelectedPath = PathManager.MakeAbsolutePath(box.Text, System);
+			DialogResult result = folderBrowserDialog1.ShowDialog();
 			if (result == DialogResult.OK)
-				box.Text = f.SelectedPath;
+			{
+				box.Text = folderBrowserDialog1.SelectedPath;
+			}
 		}
 
 		private void BrowseWatch_Click(object sender, EventArgs e)
