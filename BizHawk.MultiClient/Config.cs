@@ -424,6 +424,7 @@ namespace BizHawk.MultiClient
 		public bool GameBoySkipBIOS = true;
 
 		// Cheats Dialog
+		public bool Cheats_ValuesAsHex = true;
 		public bool AutoLoadCheats = false;
 		public bool CheatsSaveWindowPosition = true;
 		public bool DisableCheatsOnLoad = false;
