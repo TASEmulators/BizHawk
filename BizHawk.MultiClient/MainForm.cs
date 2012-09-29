@@ -3673,5 +3673,10 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.GB_AsSGB ^= true;
 		}
+
+		private void MainForm_Resize(object sender, EventArgs e)
+		{
+			Global.RenderPanel.Resized = true;
+		}
 	}
 }
