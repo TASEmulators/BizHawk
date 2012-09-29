@@ -1469,7 +1469,17 @@ namespace BizHawk.MultiClient
 								else
 								{
 									// todo: get these bioses into a gamedb??
-									byte[] sgbrom = File.ReadAllBytes(PathManager.MakeAbsolutePath(Global.Config.PathSGBRom, "SGB"));
+									byte[] sgbrom;
+									try
+									{
+										sgbrom = File.ReadAllBytes(PathManager.MakeAbsolutePath(Global.Config.PathSGBRom, "SGB"));
+									}
+									catch (Exception)
+									{
+										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
+										Global.Config.GB_AsSGB = false;
+										throw;
+									}
 									game.AddOption("SGB");
 									game.System = "SGB";
 									var snes = new LibsnesCore();
