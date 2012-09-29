@@ -310,6 +310,9 @@ namespace BizHawk.Emulation.Consoles.GB
 		{
 			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)data.Length))
 				throw new Exception("Gambatte failed to load the savestate!");
+			// since a savestate has been loaded, all memory domain data is now dirty
+			foreach (var r in MemoryRefreshers)
+				r.RefreshRead();
 		}
 	
 		public void SaveStateText(System.IO.TextWriter writer)
