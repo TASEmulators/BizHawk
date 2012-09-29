@@ -1211,6 +1211,7 @@ namespace BizHawk.MultiClient
 					Global.AutoFireController = Global.AutofireNESControls;
 					break;
 				case "SNES":
+				case "SGB":
 					Global.ActiveController = Global.SNESControls;
 					Global.AutoFireController = Global.AutofireSNESControls;
 					break;
