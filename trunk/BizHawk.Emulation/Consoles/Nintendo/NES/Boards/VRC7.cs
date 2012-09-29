@@ -128,7 +128,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int len = samples.Length;
 			for (int i = 0; i < len; i++)
 			{
-				samples[i] = (short)((samples[i] >> 1) + (fmsamples[i] >> 1));
+				short fmsamp = fmsamples[i];
+				samples[i] = (short)(samples[i] + fmsamp);
 			}
 		}
 

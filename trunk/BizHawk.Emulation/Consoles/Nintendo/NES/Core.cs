@@ -40,6 +40,65 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public void SetNoise(bool enabled) { apu.EnableNoise = enabled; }
 		public void SetDMC(bool enabled) { apu.EnableDMC = enabled; }
 
+		public void Dispose()
+		{
+			if (magicSoundProvider != null) magicSoundProvider.Dispose();
+			magicSoundProvider = null;
+		}
+
+		class MagicSoundProvider : ISoundProvider, IDisposable
+		{
+			Sound.Utilities.SpeexResampler resampler;
+			ISoundProvider output;
+			NES nes;
+
+			public MagicSoundProvider(NES nes)
+			{
+				this.nes = nes;
+				var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+				//1.789773mhz NTSC
+				resampler = new Sound.Utilities.SpeexResampler(2, 1789773, 44100*APU.DECIMATIONFACTOR, 1789773, 44100, actualMetaspu.buffer.enqueue_samples);
+				output = new Sound.Utilities.DCFilter(actualMetaspu);
+			}
+
+			Random r = new Random();
+			public void GetSamples(short[] samples)
+			{
+				var monosampbuf = nes.apu.squeue.ToArray(2);
+				nes.apu.squeue.Clear();
+				if (monosampbuf.Length > 0)
+				{
+					var stereosampbuf = new short[monosampbuf.Length * 2];
+					for (int i = 0; i < monosampbuf.Length; i++)
+					{
+						stereosampbuf[i * 2 + 0] = monosampbuf[i];
+						stereosampbuf[i * 2 + 1] = monosampbuf[i];
+					}
+					resampler.EnqueueSamples(stereosampbuf, monosampbuf.Length);
+					resampler.Flush();
+					output.GetSamples(samples);
+				}
+
+				//mix in the cart's extra sound circuit
+				nes.board.ApplyCustomAudio(samples);
+			}
+
+			public void DiscardSamples()
+			{
+				output.DiscardSamples();
+			}
+
+			public int MaxVolume { get; set; }
+
+			public void Dispose()
+			{
+				resampler.Dispose();
+				resampler = null;
+			}
+		}
+		MagicSoundProvider magicSoundProvider;
+
+
 		public void HardReset()
 		{
 			cpu = new MOS6502X();
@@ -48,12 +107,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.WriteMemory = WriteMemory;
 			cpu.BCD_Enabled = false;
 			ppu = new PPU(this);
-			apu = new APU(this);
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
 			ports = new IPortDevice[2];
 			ports[0] = new JoypadPortDevice(this,0);
 			ports[1] = new JoypadPortDevice(this,1);
+
+			apu = new APU(this);
+			if (magicSoundProvider != null) magicSoundProvider.Dispose();
+			magicSoundProvider = new MagicSoundProvider(this);
 
 			//fceux uses this technique, which presumably tricks some games into thinking the memory is randomized
 			for (int i = 0; i < 0x800; i++)
