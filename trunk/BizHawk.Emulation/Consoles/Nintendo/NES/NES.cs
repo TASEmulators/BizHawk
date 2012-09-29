@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				int ret = value & 1;
 				value >>= 1;
-				return (byte)ret;
+				return (byte)(ret | nes.DB);
 			}
 			public override void Update()
 			{
@@ -621,7 +621,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncState(Serializer ser)
 		{
+			int version = 2;
 			ser.BeginSection("NES");
+			ser.Sync("version", ref version);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("IsLag", ref islag);
@@ -639,6 +641,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
 			ppu.SyncState(ser);
 			apu.SyncState(ser);
+			if (version >= 2)
+				ser.Sync("DB", ref DB);
+
 			ser.EndSection();
 		}
 

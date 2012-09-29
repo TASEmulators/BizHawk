@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		INESBoard board; //the board hardware that is currently driving things
 		public bool SoundOn = true;
-		int sprdma_countdown; //used to 
+		int sprdma_countdown;
 		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
 
 		//irq state management
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					{
 						//its weird that this is 514.. normally itd be 512 (and people would say its wrong) or 513 (and people would say its right)
 						//but 514 passes test 4-irq_and_dma
-						cpu_deadcounter = 514;
+						cpu_deadcounter += 514;
 					}
 				}
 
@@ -259,6 +259,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		//old data bus values from previous reads
+		public byte DB;
+
 		public byte ReadMemory(ushort addr)
 		{
 			byte ret;
@@ -300,6 +303,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				sysbus_watch[addr].Sync();
 				ret = sysbus_watch[addr].ApplyGameGenie(ret);
 			}
+
+			DB = ret;
 
 			return ret;
 		}
