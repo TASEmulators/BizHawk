@@ -178,16 +178,19 @@ namespace BizHawk.MultiClient
 		private void smsEnableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsEnableFM ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void smsOverclockWhenKnownSafeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsAllowOverlock ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void smsForceStereoSeparationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsForceStereoSeparation ^= true;
+			FlagNeedsReboot();
 		}
 
         private void smsSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1910,16 +1913,19 @@ namespace BizHawk.MultiClient
 		private void forceDMGModeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_ForceDMG ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void gBAInCGBModeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_GBACGB ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void multicartCompatibilityToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_MulticartCompat ^= true;
+			FlagNeedsReboot();
 		}
 	}
 }
