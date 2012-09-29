@@ -105,6 +105,7 @@
 			this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.disableAllCheatsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.showValuesAsHexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CheatsMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.AddCheatGroup.SuspendLayout();
@@ -341,6 +342,7 @@
             this.LoadCheatFileByGameToolStripMenuItem,
             this.saveCheatsOnCloseToolStripMenuItem,
             this.CheatsOnOffLoadToolStripMenuItem,
+            this.showValuesAsHexToolStripMenuItem,
             this.autoloadDialogToolStripMenuItem,
             this.saveWindowPositionToolStripMenuItem,
             this.toolStripSeparator5,
@@ -779,13 +781,13 @@
             this.removeSelectedToolStripMenuItem,
             this.disableAllCheatsToolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(171, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(169, 70);
 			// 
 			// toggleToolStripMenuItem
 			// 
 			this.toggleToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh1;
 			this.toggleToolStripMenuItem.Name = "toggleToolStripMenuItem";
-			this.toggleToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.toggleToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
 			this.toggleToolStripMenuItem.Text = "Toggle";
 			this.toggleToolStripMenuItem.Click += new System.EventHandler(this.toggleToolStripMenuItem_Click);
 			// 
@@ -793,7 +795,7 @@
 			// 
 			this.removeSelectedToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
-			this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
 			this.removeSelectedToolStripMenuItem.Text = "Remove Selected";
 			this.removeSelectedToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem_Click);
 			// 
@@ -801,9 +803,16 @@
 			// 
 			this.disableAllCheatsToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
 			this.disableAllCheatsToolStripMenuItem1.Name = "disableAllCheatsToolStripMenuItem1";
-			this.disableAllCheatsToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
+			this.disableAllCheatsToolStripMenuItem1.Size = new System.Drawing.Size(168, 22);
 			this.disableAllCheatsToolStripMenuItem1.Text = "Disable All Cheats";
 			this.disableAllCheatsToolStripMenuItem1.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem1_Click);
+			// 
+			// showValuesAsHexToolStripMenuItem
+			// 
+			this.showValuesAsHexToolStripMenuItem.Name = "showValuesAsHexToolStripMenuItem";
+			this.showValuesAsHexToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.showValuesAsHexToolStripMenuItem.Text = "Show Values as Hex";
+			this.showValuesAsHexToolStripMenuItem.Click += new System.EventHandler(this.showValuesAsHexToolStripMenuItem_Click);
 			// 
 			// Cheats
 			// 
@@ -914,5 +923,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 		private System.Windows.Forms.ToolStripMenuItem openGameGenieEncoderDecoderToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton toolStripButtonLoadGameGenie;
+		private System.Windows.Forms.ToolStripMenuItem showValuesAsHexToolStripMenuItem;
     }
 }
