@@ -116,6 +116,7 @@ namespace BizHawk.MultiClient
 			{
 				Changes = false;
 				Global.Config.RecentCheats.Add(file.FullName);
+				Global.MainForm.UpdateCheatStatus();
 				return true;
 			}
 			else

@@ -1588,7 +1588,10 @@ namespace BizHawk.MultiClient
 
 		private void FreezeStatus_Click(object sender, EventArgs e)
 		{
-			LoadCheatsWindow();
+			if (CheatStatus.Visible)
+			{
+				LoadCheatsWindow();
+			}
 		}
 
 		public void UpdateCheatStatus()
@@ -1597,11 +1600,13 @@ namespace BizHawk.MultiClient
 			{
 				CheatStatus.ToolTipText = "Cheats are currently active";
 				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Freeze;
+				CheatStatus.Visible = true;
 			}
 			else
 			{
 				CheatStatus.ToolTipText = "";
 				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+				CheatStatus.Visible = false;
 			}
 		}
 

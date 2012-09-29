@@ -69,12 +69,15 @@ namespace BizHawk.MultiClient
 			{
 				MemoryPulse.Add(domain, address, value, compare);
 			}
+
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public void Disable()
 		{
 			enabled = false;
 			DisposeOfCheat();
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public void DisposeOfCheat()
