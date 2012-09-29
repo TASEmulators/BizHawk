@@ -37,7 +37,7 @@ namespace BizHawk.MultiClient
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
-
+		public bool NeedsReboot = false;
 		//avi/wav state
 		IVideoWriter CurrAviWriter = null;
 		/// <summary>
@@ -1676,6 +1676,8 @@ namespace BizHawk.MultiClient
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.MovieSession.Movie.Stop();
+			NeedsReboot = false;
+			SetRebootIconStatus();
 		}
 
 		private static void SaveRam()
@@ -3524,6 +3526,7 @@ namespace BizHawk.MultiClient
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusbarIcon();
 			UpdateCheatStatus();
+			SetRebootIconStatus();
 		}
 
 		private void IncreaseWindowSize()
@@ -3701,6 +3704,7 @@ namespace BizHawk.MultiClient
 		private void loadGBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void MainForm_Resize(object sender, EventArgs e)
@@ -3720,6 +3724,30 @@ namespace BizHawk.MultiClient
 				Global.OSD.AddMessage("Backup saveram disabled");
 			}
 
+		}
+
+		private void toolStripStatusLabel2_Click(object sender, EventArgs e)
+		{
+			RebootCore();
+		}
+
+		private void SetRebootIconStatus()
+		{
+			if (NeedsReboot)
+			{
+				RebootStatusBarIcon.Visible = true;
+			}
+			else
+			{
+				RebootStatusBarIcon.Visible = false;
+			}
+		}
+
+		private void FlagNeedsReboot()
+		{
+			NeedsReboot = true;
+			SetRebootIconStatus();
+			Global.OSD.AddMessage("Core reboot needed for this setting");
 		}
 	}
 }

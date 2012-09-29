@@ -268,6 +268,7 @@
 			this.StatusSlot9 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.StatusSlot10 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.CheatStatus = new System.Windows.Forms.ToolStripStatusLabel();
+			this.RebootStatusBarIcon = new System.Windows.Forms.ToolStripStatusLabel();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.cmiOpenRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiLoadLastRom = new System.Windows.Forms.ToolStripMenuItem();
@@ -2164,6 +2165,7 @@
             this.EmuStatus,
             this.PlayRecordStatus,
             this.PauseStrip,
+            this.RebootStatusBarIcon,
             this.AVIStatusLabel,
             this.toolStripStatusLabel1,
             this.StatusSlot1,
@@ -2314,6 +2316,17 @@
 			this.CheatStatus.Name = "CheatStatus";
 			this.CheatStatus.Size = new System.Drawing.Size(0, 17);
 			this.CheatStatus.Click += new System.EventHandler(this.FreezeStatus_Click);
+			// 
+			// RebootStatusBarIcon
+			// 
+			this.RebootStatusBarIcon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.RebootStatusBarIcon.Image = global::BizHawk.MultiClient.Properties.Resources.reboot;
+			this.RebootStatusBarIcon.Name = "RebootStatusBarIcon";
+			this.RebootStatusBarIcon.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.RebootStatusBarIcon.Size = new System.Drawing.Size(16, 17);
+			this.RebootStatusBarIcon.Text = "Reboot";
+			this.RebootStatusBarIcon.ToolTipText = "A reboot of the core is needed for a setting change to take affect";
+			this.RebootStatusBarIcon.Click += new System.EventHandler(this.toolStripStatusLabel2_Click);
 			// 
 			// contextMenuStrip1
 			// 
@@ -2778,6 +2791,7 @@
 		private System.Windows.Forms.ToolStripMenuItem loadGBInSGBToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem loadGBInSGBToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem backupSaveramToolStripMenuItem;
+		private System.Windows.Forms.ToolStripStatusLabel RebootStatusBarIcon;
     }
 }
 
