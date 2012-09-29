@@ -918,5 +918,13 @@ namespace BizHawk.MultiClient
 					break;
 			}
 		}
+
+		private void TASView_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Middle)
+			{
+				Global.MainForm.TogglePause();
+			}
+		}
 	}
 }
