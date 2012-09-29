@@ -645,6 +645,7 @@
 			this.TASView.Click += new System.EventHandler(this.TASView_Click);
 			this.TASView.DoubleClick += new System.EventHandler(this.TASView_DoubleClick);
 			this.TASView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TASView_KeyDown);
+			this.TASView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseUp);
 			this.TASView.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.TASView_MouseWheel);
 			// 
 			// Frame
