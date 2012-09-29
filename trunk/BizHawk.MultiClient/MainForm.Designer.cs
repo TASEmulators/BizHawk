@@ -313,7 +313,7 @@
 			this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(470, 40);
+			this.menuStrip1.Size = new System.Drawing.Size(470, 38);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			this.menuStrip1.MenuActivate += new System.EventHandler(this.menuStrip1_MenuActivate);
@@ -2487,9 +2487,7 @@
 			this.Controls.Add(this.StatusSlot0);
 			this.Controls.Add(this.menuStrip1);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MainMenuStrip = this.menuStrip1;
-			this.MaximizeBox = false;
 			this.Name = "MainForm";
 			this.Text = "BizHawk";
 			this.Activated += new System.EventHandler(this.MainForm_Activated);
@@ -2497,6 +2495,7 @@
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.Shown += new System.EventHandler(this.MainForm_Shown);
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseClick);
+			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.StatusSlot0.ResumeLayout(false);
