@@ -25,8 +25,12 @@ namespace BizHawk.Emulation.Sound.Utilities
 		Queue<short> buffer;
 
 		const int depth = 65536;
-
-		public DCFilter(ISoundProvider input)
+		
+		/// <summary>
+		/// if input == null, run in detatched push mode
+		/// </summary>
+		/// <param name="input"></param>
+		public DCFilter(ISoundProvider input = null)
 		{
 			this.input = input;
 			this.buffer = new Queue<short>(depth * 2);
@@ -45,13 +49,13 @@ namespace BizHawk.Emulation.Sound.Utilities
 			input = null;
 			return ret;
 		}
-
-		public void GetSamples(short[] samples)
+		
+		/// <summary>
+		/// pass a set of samples through the filter.  should not be mixed with pull (ISoundProvider) mode
+		/// </summary>
+		public void PushThroughSamples(short[] samples, int length)
 		{
-
-			input.GetSamples(samples);
-
-			for (int i = 0; i < samples.Length; i += 2)
+			for (int i = 0; i < length; i += 2)
 			{
 				sumL -= buffer.Dequeue();
 				sumR -= buffer.Dequeue();
@@ -78,6 +82,12 @@ namespace BizHawk.Emulation.Sound.Utilities
 					samples[i + 1] = (short)bigR;
 
 			}
+		}
+
+		public void GetSamples(short[] samples)
+		{
+			input.GetSamples(samples);
+			PushThroughSamples(samples, samples.Length);
 		}
 
 		public void DiscardSamples()
