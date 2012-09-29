@@ -298,6 +298,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap GenesisControllerIcon {
+            get {
+                object obj = ResourceManager.GetObject("GenesisControllerIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap GreenCheck {
             get {
                 object obj = ResourceManager.GetObject("GreenCheck", resourceCulture);
@@ -601,6 +608,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap SNES_Controller {
             get {
                 object obj = ResourceManager.GetObject("SNES_Controller", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SNESControllerIcon {
+            get {
+                object obj = ResourceManager.GetObject("SNESControllerIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
