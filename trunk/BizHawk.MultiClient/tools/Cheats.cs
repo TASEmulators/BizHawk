@@ -593,7 +593,7 @@ namespace BizHawk.MultiClient
 			UpdateNumberOfCheats();
 			MessageLabel.Text = Path.GetFileName(Global.CheatList.currentCheatFile);
 			DisplayCheatsList();
-			return true; //TODO
+			return true;
 		}
 
 		

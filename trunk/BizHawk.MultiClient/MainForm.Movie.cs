@@ -56,18 +56,21 @@ namespace BizHawk.MultiClient
 				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
 				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Play;
 				PlayRecordStatus.ToolTipText = "Movie is in playback mode";
+				PlayRecordStatus.Visible = true;
 			}
 			else if (Global.MovieSession.Movie.IsRecording)
 			{
 				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
 				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.RecordHS;
 				PlayRecordStatus.ToolTipText = "Movie is in record mode";
+				PlayRecordStatus.Visible = true;
 			}
 			else if (!Global.MovieSession.Movie.IsActive)
 			{
 				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name;
 				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 				PlayRecordStatus.ToolTipText = "No movie is active";
+				PlayRecordStatus.Visible = false;
 			}
 		}
 

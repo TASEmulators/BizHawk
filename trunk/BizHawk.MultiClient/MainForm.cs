@@ -51,7 +51,7 @@ namespace BizHawk.MultiClient
 		bool exit;
 		bool runloop_frameProgress;
 		DateTime FrameAdvanceTimestamp = DateTime.MinValue;
-		public bool EmulatorPaused;
+		public bool EmulatorPaused { get; private set; }
 		public EventWaitHandle MainWait;
 		int runloop_fps;
 		int runloop_last_fps;
@@ -509,27 +509,35 @@ namespace BizHawk.MultiClient
 		public void PauseEmulator()
 		{
 			EmulatorPaused = true;
-			PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
+			
+
 		}
 
 		public void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
-			PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+		}
+
+		private void SetPauseStatusbarIcon()
+		{
+			if (EmulatorPaused)
+			{
+				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
+				PauseStrip.Visible = true;
+				PauseStrip.ToolTipText = "Emulator Paused";
+			}
+			else
+			{
+				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+				PauseStrip.Visible = false;
+				PauseStrip.ToolTipText = "";
+			}
 		}
 
 		public void TogglePause()
 		{
 			EmulatorPaused ^= true;
-			if (EmulatorPaused)
-			{
-				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
-			}
-			else
-			{
-				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
-			}
-
+			SetPauseStatusbarIcon();
 		}
 
 		private void LoadRomFromRecent(string rom)
@@ -3184,6 +3192,7 @@ namespace BizHawk.MultiClient
 				Global.OSD.AddMessage("A/V capture started");
 				AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.AVI;
 				AVIStatusLabel.ToolTipText = "A/V capture in progress";
+				AVIStatusLabel.Visible = true;
 			}
 			catch
 			{
@@ -3210,6 +3219,7 @@ namespace BizHawk.MultiClient
 			Global.OSD.AddMessage("AVI capture stopped");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
+			AVIStatusLabel.Visible = false;
 			DumpProxy = null; // return to normal sound output
 			SoundRemainder = 0;
 		}
@@ -3508,6 +3518,12 @@ namespace BizHawk.MultiClient
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+
+			//Hide Status bar icons
+			PlayRecordStatus.Visible = false;
+			AVIStatusLabel.Visible = false;
+			SetPauseStatusbarIcon();
+			UpdateCheatStatus();
 		}
 
 		private void IncreaseWindowSize()
