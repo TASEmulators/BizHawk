@@ -3615,10 +3615,11 @@ namespace BizHawk.MultiClient
 		public void ClearSaveRAM()
 		{
 			//zero says: this is sort of sketchy... but this is no time for rearchitecting
+			/*
 			string saveRamPath = PathManager.SaveRamPath(Global.Game);
 			var file = new FileInfo(saveRamPath);
 			if (file.Exists) file.Delete();
-
+			*/
 			try
 			{
 				/*
