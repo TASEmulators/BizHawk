@@ -188,11 +188,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual byte ReadWRAM(int addr) {
 				if (wram != null)
 					return wram[addr & wram_mask];
-				else return 0xFF;
+				else return NES.DB;
 			}
 
 			public virtual void WriteEXP(int addr, byte value) { }
-			public virtual byte ReadEXP(int addr) { return 0xFF; }
+			public virtual byte ReadEXP(int addr) { 
+				return NES.DB;
+			}
 
 			public virtual void WritePPU(int addr, byte value)
 			{

@@ -1,4 +1,5 @@
 ﻿//TODO - so many integers in the square wave output keep us from exactly unbiasing the waveform. also other waves probably
+//TODO - DMC cpu suspending - http://forums.nesdev.com/viewtopic.php?p=62690#p62690
 
 using System;
 using System.IO;
@@ -592,6 +593,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						Clock();
 					}
 
+					SyncSample();
+				}
+
+				void SyncSample()
+				{
 					if (out_silence)
 						sample = 0;
 					else
@@ -599,13 +605,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						sample = out_deltacounter;
 						sample -= 64; //unbias;
 					}
-				}
-
-				void SyncSample()
-				{
-					//sample = (out_deltacounter - 64) / 4;
-					//Console.WriteLine("dmc sample: {0}", sample);
-					//sample -= 64; //unbias
 				}
 
 				void Clock()
@@ -692,6 +691,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							break;
 						case 1:
 							out_deltacounter = val & 0x7F;
+							out_silence = false;
 							//apu.nes.LogLine("~~ out_deltacounter set to {0}", out_deltacounter);
 							SyncSample();
 							break;
