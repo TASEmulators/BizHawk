@@ -869,9 +869,11 @@
     <None Include="config\ControllerImages\NES_Controller.png" />
     <None Include="config\ControllerImages\SNES_Controller.png" />
     <None Include="config\ControllerImages\TI83_Controller.png" />
+    <None Include="images\GenesisControllerIcon.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
+    <None Include="images\SNESControllerIcon.png" />
     <Content Include="output\gamedb_sega_md.txt" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
