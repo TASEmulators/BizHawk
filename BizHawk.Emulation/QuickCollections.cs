@@ -65,6 +65,20 @@ namespace BizHawk
             size++;
         }
 
+				public T[] ToArray(int elemSize)
+				{
+					T[] ret = new T[size];
+					int todo;
+					if (tail > head) todo = tail - head;
+					else todo = buffer.Length - head;
+					Buffer.BlockCopy(buffer, head, ret, 0, elemSize * todo);
+					int todo2;
+					if (tail < head) todo2 = tail;
+					else todo2 = 0;
+					if (todo2 != 0) Buffer.BlockCopy(buffer, 0, ret, todo, elemSize * todo2);
+					return ret;
+				}
+
         public T Dequeue()
         {
             if (size == 0)

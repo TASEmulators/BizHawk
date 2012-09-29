@@ -203,7 +203,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		MyVideoProvider videoProvider;
 		public IVideoProvider VideoProvider { get { return videoProvider; } }
-		public ISoundProvider SoundProvider { get { return apu; } }
+		public ISoundProvider SoundProvider { get { return magicSoundProvider; } }
 
 		public static readonly ControllerDefinition NESController =
 			new ControllerDefinition
@@ -641,6 +641,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
 			ppu.SyncState(ser);
 			apu.SyncState(ser);
+
 			if (version >= 2)
 				ser.Sync("DB", ref DB);
 
@@ -660,8 +661,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			bw.Flush();
 			return ms.ToArray();
 		}
-
-		public void Dispose() { }
 	}
 }
 

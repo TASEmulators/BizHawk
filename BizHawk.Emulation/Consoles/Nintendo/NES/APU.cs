@@ -1,4 +1,7 @@
-﻿//TODO - so many integers in the square wave output keep us from exactly unbiasing the waveform. also other waves probably
+﻿//TODO - so many integers in the square wave output keep us from exactly unbiasing the waveform. also other waves probably. consider improving the unbiasing.
+//ALSO - consider whether we should even be doing it: the nonlinear-mixing behaviour probably depends on those biases being there. 
+//if we have a better high-pass filter somewhere then we might could cope with the weird biases 
+//(mix higher integer precision with the non-linear mixer and then highpass filter befoure outputting s16s)
 //TODO - DMC cpu suspending - http://forums.nesdev.com/viewtopic.php?p=62690#p62690
 
 using System;
@@ -20,9 +23,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	partial class NES
 	{
-		public class APU : ISoundProvider
+		public class APU 
 		{
-			public static bool CFG_USE_METASPU = true;
 			public static bool CFG_DECLICK = true;
 
 			public bool EnableSquare1 = false;
@@ -30,7 +32,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public bool EnableTriangle = true;
 			public bool EnableNoise = false;
 			public bool EnableDMC = true;
-
 
 			NES nes;
 			public APU(NES nes)
@@ -545,6 +546,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					out_silence = true;
 					timer_reload = DMC_RATE_NTSC[0];
 					sample_buffer_filled = false;
+					out_deltacounter = 64;
+					out_bits_remaining = 0;
 				}
 
 				bool irq_enabled;
@@ -559,7 +562,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int out_shift, out_bits_remaining, out_deltacounter;
 				bool out_silence;
 
-				public int sample;
+				public int sample { get { return out_deltacounter - 64; } }
 
 				public void SyncState(Serializer ser)
 				{
@@ -581,6 +584,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ser.Sync("out_deltacounter", ref out_deltacounter);
 					ser.Sync("out_silence", ref out_silence);
 
+					int sample = 0; //junk
 					ser.Sync("sample", ref sample);
 				}
 
@@ -592,23 +596,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						timer = timer_reload;
 						Clock();
 					}
-
-					SyncSample();
 				}
 
-				void SyncSample()
-				{
-					if (out_silence)
-						sample = 0;
-					else
-					{
-						sample = out_deltacounter;
-						sample -= 64; //unbias;
-					}
-				}
 
 				void Clock()
 				{
+					//If the silence flag is clear, bit 0 of the shift register is applied to the counter as follows: 
+					//if bit 0 is clear and the delta-counter is greater than 1, the counter is decremented by 2; 
+					//otherwise, if bit 0 is set and the delta-counter is less than 126, the counter is incremented by 2
 					if (!out_silence)
 					{
 						//apply current sample bit to delta counter
@@ -622,51 +617,63 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							if (out_deltacounter > 1)
 								out_deltacounter -= 2;
 						}
-						//SyncSample();
-						out_shift >>= 1;
 						//apu.nes.LogLine("dmc out sample: {0}", out_deltacounter);
 					}
 
+					//The right shift register is clocked. 
+					out_shift >>= 1;
+
+					//The bits-remaining counter is decremented. If it becomes zero, a new cycle is started. 
 					if (out_bits_remaining == 0)
 					{
+						//The bits-remaining counter is loaded with 8. 
 						out_bits_remaining = 7;
-						if (sample_length > 0)
+						//If the sample buffer is empty then the silence flag is set
+						if (!sample_buffer_filled)
 						{
-							if (sample_buffer_filled)
-							{
-								out_silence = false;
-								out_shift = sample_buffer;
-								sample_buffer_filled = false;
-								//TODO - cpu/apu DMC reads need to be emulated better!
-							}
-							Fetch();
+							out_silence = true;
+							//out_deltacounter = 64; //gonna go out on a limb here and guess this gets reset. could make some things pop, though, if they dont end at 0.
 						}
-						else out_silence = true;
+						else
+						//otherwise, the silence flag is cleared and the sample buffer is emptied into the shift register. 
+						{
+							out_silence = false;
+							out_shift = sample_buffer;
+							sample_buffer_filled = false;
+						}
 					}
-					else
-						out_bits_remaining--;
+					else out_bits_remaining--;
+
+						
+					//Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
+					if (!sample_buffer_filled && sample_length > 0)
+						Fetch();
 				}
 
 				public void set_lenctr_en(bool en)
 				{
 					if (!en)
-						//disable playback
+					{
+						//If the DMC bit is clear, the DMC bytes remaining will be set to 0 
 						sample_length = 0;
+						//and the DMC will silence when it empties.
+						//  (what does this mean? does out_deltacounter get reset to 0? maybe just that the out_silence flag gets set, but this is natural)
+					}
 					else
 					{
-						//only start playback if sample length is 0 (playback is stopped
+						//only start playback if playback is stopped
 						if (sample_length == 0)
 						{
 							sample_address = user_address;
 							sample_length = user_length;
-							out_deltacounter = 64;
-							if (out_silence) // if the DMC buffer was empty...
+							if (out_silence)
 							{
-								timer = 0; // reset frequency counter so next Run() will cause output
-								out_bits_remaining = 0; // reset buffercount so next Run() will cause fetch
+								timer = 0;
+								out_bits_remaining = 0;
 							}
 						}
 					}
+
 					//irq is acknowledged or sure to be clear, in either case
 					apu.dmc_irq = false;
 					apu.SyncIRQ();
@@ -691,9 +698,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							break;
 						case 1:
 							out_deltacounter = val & 0x7F;
-							out_silence = false;
 							//apu.nes.LogLine("~~ out_deltacounter set to {0}", out_deltacounter);
-							SyncSample();
 							break;
 						case 2:
 							user_address = 0xC000 | (val << 6);
@@ -706,6 +711,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public void Fetch()
 				{
+					//TODO - cpu/apu DMC reads need to be emulated better!
 					sample_buffer = apu.nes.ReadMemory((ushort)sample_address);
 					sample_buffer_filled = true;
 					sample_address = (ushort)(sample_address + 1);
@@ -719,6 +725,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						}
 						else if (irq_enabled) apu.dmc_irq = true;
 					}
+					//Console.WriteLine("fetching dmc byte: {0:X2}", sample_buffer);
 				}
 			}
 
@@ -944,10 +951,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
-			public void DiscardSamples()
-			{
-				metaspu.buffer.clear();
-			}
+			//public void DiscardSamples()
+			//{
+			//  metaspu.buffer.clear();
+			//}
 
 			int toggle = 0;
 			public void RunOne()
@@ -958,33 +965,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				noise.Run();
 				dmc.Run();
 
-				int s_pulse0 = pulse[0].sample;
-				int s_pulse1 = pulse[1].sample;
-				int s_tri = triangle.sample;
-				int s_noise = noise.sample;
-				int s_dmc = dmc.sample;
-				//int s_ext = 0; //gamepak
-
-				if (!EnableSquare1) s_pulse0 = 0;
-				if (!EnableSquare2) s_pulse1 = 0;
-				if (!EnableTriangle) s_tri = 0;
-				if (!EnableNoise) s_noise = 0;
-				if (!EnableDMC) s_dmc = 0;
-
-				//s_pulse0 = 0;
-				//s_pulse1 = 0;
-				//s_tri = 0;
-				//s_noise = 0;
-				//s_dmc = 0;
-
-				const float NOISEADJUST = 0.5f;
-				float pulse_out = 0.00752f * (s_pulse0 + s_pulse1);
-				float tnd_out = 0.00851f * s_tri + 0.00494f * NOISEADJUST * s_noise + 0.00335f * s_dmc;
-				float output = pulse_out + tnd_out;
-
-				int mix = (int)(50000 * output);
-
-				EmitSample(mix);
+				EmitSample();
 
 				//this (and the similar line below) is a crude hack
 				//we should be generating logic to suppress the $4015 clear when the assert signal is set instead
@@ -1022,81 +1003,60 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//we want the changes to affect it on the *next* cycle.
 			}
 
-			double accumulate;
-			double timer;
-			Queue<int> squeue = new Queue<int>();
-			int last_hwsamp;
-			int panic_sample, panic_count;
-			void EmitSample(int samp)
+			int loopy = 0;
+			public const int DECIMATIONFACTOR = 20;
+			const int QUEUESIZE = 1789773 / DECIMATIONFACTOR; //1 second, should be enough
+			public QuickQueue<short> squeue = new QuickQueue<short>(QUEUESIZE);
+			void EmitSample()
 			{
-				//kill the annoying hum that is a consequence of the shitty code below
-				if (samp == panic_sample)
-					panic_count++;
-				else panic_count = 0;
-				if (panic_count > 178977)
-					samp = 0;
-				else
-					panic_sample = samp;
-
-				int this_samp = samp;
-				const double kMixRate = 44100.0 / 1789772.0;
-				const double kInvMixRate = (1 / kMixRate);
-				timer += kMixRate;
-				accumulate += samp;
-				if (timer <= 1)
-					return;
-
-				accumulate -= samp;
-				timer -= 1;
-				double ratio = (timer / kMixRate);
-				double fractional = (this_samp - last_hwsamp) * ratio;
-				double factional_remainder = (this_samp - last_hwsamp) * (1 - ratio);
-				accumulate += fractional;
-
-				//accumulate *= 436; //32768/(15*4) -- adjust later for other sound channels
-				int outsamp = (int)(accumulate / kInvMixRate);
-				if (CFG_USE_METASPU)
-					metaspu.buffer.enqueue_sample((short)outsamp, (short)outsamp);
-				else squeue.Enqueue(outsamp);
-				accumulate = factional_remainder;
-
-				last_hwsamp = this_samp;
-			}
-
-			MetaspuSoundProvider metaspu = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
-			public int MaxVolume { get; set; } // not supported
-
-			void ISoundProvider.GetSamples(short[] samples)
-			{
-				if (CFG_USE_METASPU)
+				//here we throw out 19/20 of the samples, for an easy speedup... blech.
+				loopy++;
+				if (loopy == DECIMATIONFACTOR)
 				{
-					metaspu.GetSamples(samples);
-					//foreach(short sample in samples) bw.Write((short)sample);
-				}
-				else
-					MyGetSamples(samples);
+					loopy = 0;
 
-				//mix in the cart's extra sound circuit
-				nes.board.ApplyCustomAudio(samples);
-			}
+					int s_pulse0 = pulse[0].sample;
+					int s_pulse1 = pulse[1].sample;
+					int s_tri = triangle.sample;
+					int s_noise = noise.sample;
+					int s_dmc = dmc.sample;
+					//int s_ext = 0; //gamepak
 
-			//static BinaryWriter bw = new BinaryWriter(new FileStream("d:\\out.raw",FileMode.Create,FileAccess.Write,FileShare.Read));
-			void MyGetSamples(short[] samples)
-			{
-				//Console.WriteLine("a: {0} with todo: {1}",squeue.Count,samples.Length/2);
+					if (!EnableSquare1) s_pulse0 = 0;
+					if (!EnableSquare2) s_pulse1 = 0;
+					if (!EnableTriangle) s_tri = 0;
+					if (!EnableNoise) s_noise = 0;
+					if (!EnableDMC) s_dmc = 0;
 
-				for (int i = 0; i < (samples.Length >> 1); i++)
-				{
-					int samp = 0;
-					if (squeue.Count != 0)
-						samp = squeue.Dequeue();
+					const float NOISEADJUST = 0.5f;
 
-					samples[(i << 1) + 0] = (short)(samp);
-					samples[(i << 1) + 1] = (short)(samp);
-					//bw.Write((short)samp);
+					//linear approximation
+					float pulse_out = 0.00752f * (s_pulse0 + s_pulse1);
+					float tnd_out = 0.00851f * s_tri + 0.00494f * NOISEADJUST * s_noise + 0.00335f * s_dmc;
+					float output = pulse_out + tnd_out;
+					//this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
+					int mix = (int)(50000 * output);
+
+					//more properly correct
+					//float pulse_out, tnd_out;
+					//if (s_pulse0 == 0 && s_pulse1 == 0)
+					//  pulse_out = 0;
+					//else pulse_out = 95.88f / ((8128.0f / (s_pulse0 + s_pulse1)) + 100.0f);
+					//if (s_tri == 0 && s_noise == 0 && s_dmc == 0)
+					//  tnd_out = 0;
+					//else tnd_out = 159.79f / (1 / ((s_tri / 8227.0f) + (s_noise / 12241.0f * NOISEADJUST) + (s_dmc / 22638.0f)) + 100);
+					//float output = pulse_out + tnd_out;
+					//output = output * 2 - 1;
+					//this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
+					//int mix = (int)(20000 * output);
+
+
+					
+					if (squeue.Count < QUEUESIZE)
+						squeue.Enqueue((short)mix);
 				}
 			}
-
+			
 		} //class APU
 
 
