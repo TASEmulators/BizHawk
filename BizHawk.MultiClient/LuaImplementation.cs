@@ -449,6 +449,7 @@ namespace BizHawk.MultiClient
 		                                             		"write_u16_be",
 		                                             		"write_u24_be",
 		                                             		"write_u32_be",
+															"readbyterange",
 		                                             		//"registerwrite",
 		                                             		//"registerread",
 		                                             	};
@@ -593,7 +594,6 @@ namespace BizHawk.MultiClient
 
 			return list;
 		}
-
 		//----------------------------------------------------
 		//Gui library
 		//----------------------------------------------------
@@ -1474,6 +1474,22 @@ namespace BizHawk.MultiClient
 			int addr = LuaInt(lua_addr);
 			uint v = LuaUInt(lua_v);
 			MM_W_U8(addr, v);
+		}
+
+		public LuaTable mainmemory_readbyterange(object address, object length)
+		{
+			int l = LuaInt(length);
+			int addr = LuaInt(address);
+			int last_addr = l + addr;
+			LuaTable table = lua.NewTable();
+			for (int i = addr; i <= last_addr; i++)
+			{
+				string a = String.Format("{0:X2}", i);
+				byte v = Global.Emulator.MainMemory.PeekByte(i);
+				string vs = String.Format("{0:X2}", (int)v);
+				table[a] = vs;
+			}
+			return table;
 		}
 
 		public int mainmemory_read_s8(object lua_addr)

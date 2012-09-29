@@ -902,7 +902,7 @@ namespace BizHawk.MultiClient
 			ClearOutput();
 		}
 
-		private void ClearOutput()
+		public void ClearOutput()
 		{
 			OutputBox.Text = "";
 		}
