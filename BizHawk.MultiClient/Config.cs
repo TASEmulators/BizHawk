@@ -178,6 +178,7 @@ namespace BizHawk.MultiClient
 		public bool InputConfigAutoTab = true;
 		public bool ShowLogWindow = false;
 		public bool BackupSavestates = true;
+		public bool BackupSaveram = true;
 		public bool AutoSavestates = false;
 		public bool SaveScreenshotWithStates = true;
 		public int AutofireOn = 1;
