@@ -585,19 +585,27 @@ namespace BizHawk.Emulation.Consoles.GB
 		int soundbuffcontains = 0;
 
 		Sound.Utilities.SpeexResampler resampler;
-		ISoundProvider metaspu;
+		Sound.MetaspuSoundProvider metaspu;
+
+		Sound.Utilities.DCFilter dcfilter;
 
 		void InitSound()
 		{
-			var metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
-			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, metaspu.buffer.enqueue_samples);
-			this.metaspu = new Sound.Utilities.DCFilter(metaspu);// metaspu;
+			dcfilter = new Sound.Utilities.DCFilter();
+			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, LoadThroughSamples);
 		}
 
 		void DisposeSound()
 		{
 			resampler.Dispose();
 			resampler = null;
+		}
+
+		void LoadThroughSamples(short[] buff, int length)
+		{
+			dcfilter.PushThroughSamples(buff, length * 2);
+			metaspu.buffer.enqueue_samples(buff, length);
 		}
 
 		public void GetSamples(short[] samples)
