@@ -53,7 +53,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(334, 365);
+			this.OK.Location = new System.Drawing.Point(361, 365);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -65,7 +65,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(415, 365);
+			this.Cancel.Location = new System.Drawing.Point(442, 365);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -75,9 +75,9 @@
 			// 
 			// ButtonsGroupBox
 			// 
-			this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ButtonsGroupBox.ContextMenuStrip = this.contextMenuStrip1;
 			this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 84);
 			this.ButtonsGroupBox.Name = "ButtonsGroupBox";
@@ -102,20 +102,21 @@
 			// 
 			// ControllerImage
 			// 
-			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.ControllerImage.Location = new System.Drawing.Point(256, 84);
 			this.ControllerImage.Name = "ControllerImage";
-			this.ControllerImage.Size = new System.Drawing.Size(234, 250);
+			this.ControllerImage.Size = new System.Drawing.Size(261, 250);
 			this.ControllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.ControllerImage.TabIndex = 3;
 			this.ControllerImage.TabStop = false;
 			// 
 			// ControllerSelectGroupBox
 			// 
-			this.ControllerSelectGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.ControllerSelectGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerSelectGroupBox.Controls.Add(this.IDX_CONTROLLERENABLED);
 			this.ControllerSelectGroupBox.Controls.Add(this.ControllComboBox);
 			this.ControllerSelectGroupBox.Location = new System.Drawing.Point(13, 28);
@@ -181,7 +182,7 @@
 			// 
 			this.AllowLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AllowLR.AutoSize = true;
-			this.AllowLR.Location = new System.Drawing.Point(383, 342);
+			this.AllowLR.Location = new System.Drawing.Point(410, 342);
 			this.AllowLR.Name = "AllowLR";
 			this.AllowLR.Size = new System.Drawing.Size(107, 17);
 			this.AllowLR.TabIndex = 7;
@@ -215,13 +216,13 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(502, 414);
+			this.ClientSize = new System.Drawing.Size(529, 414);
 			this.Controls.Add(this.label38);
 			this.Controls.Add(this.AutoTab);
 			this.Controls.Add(this.AllowLR);
-			this.Controls.Add(this.SystemGroupBox);
 			this.Controls.Add(this.ControllerSelectGroupBox);
 			this.Controls.Add(this.ControllerImage);
+			this.Controls.Add(this.SystemGroupBox);
 			this.Controls.Add(this.ButtonsGroupBox);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
