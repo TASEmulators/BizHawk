@@ -224,6 +224,7 @@ namespace BizHawk.MultiClient
 				{
 					var pad = GamePad.Devices[i];
 					string jname = "J" + (i + 1) + " ";
+					/*
 					HandleButton(jname + "Up", pad.Up);
 					HandleButton(jname + "Down", pad.Down);
 					HandleButton(jname + "Left", pad.Left);
@@ -231,6 +232,9 @@ namespace BizHawk.MultiClient
 
 					for (int b = 0; b < pad.Buttons.Length; b++)
 						HandleButton(jname + "B" + (b + 1), pad.Buttons[b]);
+					 */
+					for (int b = 0; b < pad.NumButtons; b++)
+						HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
 				}
 
 				bool swallow = !Global.MainForm.AllowInput;
