@@ -1677,6 +1677,17 @@ namespace BizHawk.MultiClient
 			if (f.Directory.Exists == false)
 				f.Directory.Create();
 
+			//Make backup first
+			if (Global.Config.BackupSaveram && f.Exists == true)
+			{
+				string backup = path + ".bak";
+				var backupFile = new FileInfo(backup);
+				if (backupFile.Exists == true)
+					backupFile.Delete();
+				f.CopyTo(backup);
+			}
+
+
 			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
 
 			var saveram = Global.Emulator.ReadSaveRam();
@@ -3678,6 +3689,20 @@ namespace BizHawk.MultiClient
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
 			Global.RenderPanel.Resized = true;
+		}
+
+		private void backupSaveramToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.BackupSaveram ^= true;
+			if (Global.Config.BackupSaveram)
+			{
+				Global.OSD.AddMessage("Backup saveram enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Backup saveram disabled");
+			}
+
 		}
 	}
 }
