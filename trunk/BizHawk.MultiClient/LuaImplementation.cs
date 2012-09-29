@@ -450,6 +450,7 @@ namespace BizHawk.MultiClient
 		                                             		"write_u24_be",
 		                                             		"write_u32_be",
 															"readbyterange",
+															"writebyterange",
 		                                             		//"registerwrite",
 		                                             		//"registerread",
 		                                             	};
@@ -1490,6 +1491,17 @@ namespace BizHawk.MultiClient
 				table[a] = vs;
 			}
 			return table;
+		}
+
+		public void mainmemory_writebyterange(LuaTable memoryblock)
+		{
+			foreach (var address in memoryblock.Keys)
+			{
+				int a = LuaInt(address);
+				int v = LuaInt(memoryblock[address]);
+
+				Global.Emulator.MainMemory.PokeByte(a, (byte)v);
+			}
 		}
 
 		public int mainmemory_read_s8(object lua_addr)
