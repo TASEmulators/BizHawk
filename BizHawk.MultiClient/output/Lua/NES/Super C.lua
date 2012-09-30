@@ -9,7 +9,6 @@ local projxbase = 0x588
 local projybase = 0x578
 
 --Enemies
-local etype = 0xC6
 local ex = 0x53C
 local ey = 0x522
 
