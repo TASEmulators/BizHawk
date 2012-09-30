@@ -44,11 +44,12 @@
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.BrowseBox = new System.Windows.Forms.Button();
+			this.FileBox = new System.Windows.Forms.TextBox();
 			this.ToFileRadio = new System.Windows.Forms.RadioButton();
 			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
 			this.ClearButton = new System.Windows.Forms.Button();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
-			this.CloseButton = new System.Windows.Forms.Button();
 			this.TracerBox.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -123,21 +124,22 @@
 			// 
 			// saveLogToolStripMenuItem
 			// 
-			this.saveLogToolStripMenuItem.Enabled = false;
+			this.saveLogToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
 			this.saveLogToolStripMenuItem.Name = "saveLogToolStripMenuItem";
-			this.saveLogToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.saveLogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.saveLogToolStripMenuItem.Text = "&Save Log";
+			this.saveLogToolStripMenuItem.Click += new System.EventHandler(this.saveLogToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -181,18 +183,43 @@
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.BrowseBox);
+			this.groupBox2.Controls.Add(this.FileBox);
 			this.groupBox2.Controls.Add(this.ToFileRadio);
 			this.groupBox2.Controls.Add(this.ToWindowRadio);
 			this.groupBox2.Controls.Add(this.ClearButton);
 			this.groupBox2.Controls.Add(this.LoggingEnabled);
 			this.groupBox2.Location = new System.Drawing.Point(12, 477);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(530, 50);
+			this.groupBox2.Size = new System.Drawing.Size(620, 50);
 			this.groupBox2.TabIndex = 3;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Control";
+			// 
+			// BrowseBox
+			// 
+			this.BrowseBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseBox.Location = new System.Drawing.Point(477, 19);
+			this.BrowseBox.Name = "BrowseBox";
+			this.BrowseBox.Size = new System.Drawing.Size(54, 23);
+			this.BrowseBox.TabIndex = 5;
+			this.BrowseBox.Text = "&Browse";
+			this.BrowseBox.UseVisualStyleBackColor = true;
+			this.BrowseBox.Visible = false;
+			this.BrowseBox.Click += new System.EventHandler(this.BrowseBox_Click);
+			// 
+			// FileBox
+			// 
+			this.FileBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.FileBox.Location = new System.Drawing.Point(229, 20);
+			this.FileBox.Name = "FileBox";
+			this.FileBox.ReadOnly = true;
+			this.FileBox.Size = new System.Drawing.Size(242, 20);
+			this.FileBox.TabIndex = 4;
+			this.FileBox.Visible = false;
 			// 
 			// ToFileRadio
 			// 
@@ -219,9 +246,10 @@
 			// 
 			// ClearButton
 			// 
-			this.ClearButton.Location = new System.Drawing.Point(449, 19);
+			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ClearButton.Location = new System.Drawing.Point(564, 19);
 			this.ClearButton.Name = "ClearButton";
-			this.ClearButton.Size = new System.Drawing.Size(75, 23);
+			this.ClearButton.Size = new System.Drawing.Size(47, 23);
 			this.ClearButton.TabIndex = 1;
 			this.ClearButton.Text = "&Clear";
 			this.ClearButton.UseVisualStyleBackColor = true;
@@ -239,30 +267,17 @@
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
 			// 
-			// CloseButton
-			// 
-			this.CloseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.CloseButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CloseButton.Location = new System.Drawing.Point(548, 496);
-			this.CloseButton.Name = "CloseButton";
-			this.CloseButton.Size = new System.Drawing.Size(75, 23);
-			this.CloseButton.TabIndex = 4;
-			this.CloseButton.Text = "&Close";
-			this.CloseButton.UseVisualStyleBackColor = true;
-			this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
-			// 
 			// TraceLogger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.CloseButton;
 			this.ClientSize = new System.Drawing.Size(644, 539);
-			this.Controls.Add(this.CloseButton);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.TracerBox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
+			this.MinimumSize = new System.Drawing.Size(400, 230);
 			this.Name = "TraceLogger";
 			this.Text = "TraceLogger";
 			this.Load += new System.EventHandler(this.TraceLogger_Load);
@@ -292,11 +307,12 @@
 		private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
 		private VirtualListView TraceView;
 		public System.Windows.Forms.ColumnHeader Script;
-		private System.Windows.Forms.Button CloseButton;
 		private System.Windows.Forms.ToolStripMenuItem setMaxWindowLinesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
 		private System.Windows.Forms.RadioButton ToFileRadio;
 		private System.Windows.Forms.RadioButton ToWindowRadio;
+		private System.Windows.Forms.TextBox FileBox;
+		private System.Windows.Forms.Button BrowseBox;
 	}
 }
