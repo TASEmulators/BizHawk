@@ -41,6 +41,7 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.ClearButton = new System.Windows.Forms.Button();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
+			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.groupBox1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -52,11 +53,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TraceView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
+            this.columnHeader1,
+            this.columnHeader2});
 			this.TraceView.FullRowSelect = true;
 			this.TraceView.GridLines = true;
 			this.TraceView.HideSelection = false;
 			this.TraceView.ItemCount = 0;
+			this.TraceView.LabelEdit = true;
 			this.TraceView.Location = new System.Drawing.Point(9, 16);
 			this.TraceView.Name = "TraceView";
 			this.TraceView.selectedItem = -1;
@@ -69,7 +72,7 @@
 			// columnHeader1
 			// 
 			this.columnHeader1.Text = "Instructions";
-			this.columnHeader1.Width = 316;
+			this.columnHeader1.Width = 275;
 			// 
 			// groupBox1
 			// 
@@ -202,5 +205,6 @@
 		private System.Windows.Forms.CheckBox LoggingEnabled;
 		private System.Windows.Forms.Button ClearButton;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
+		private System.Windows.Forms.ColumnHeader columnHeader2;
 	}
 }

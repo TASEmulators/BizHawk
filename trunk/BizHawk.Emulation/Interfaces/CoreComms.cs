@@ -1,4 +1,5 @@
-﻿namespace BizHawk
+﻿using System.Text;
+namespace BizHawk
 {
 	public class CoreInputComm
 	{
@@ -16,8 +17,7 @@
 		/// <summary>
 		/// if this is set, then the cpu should dump trace info to CpuTraceStream
 		/// </summary>
-		public bool CpuTraceEnable;
-		public System.IO.StreamWriter CpuTraceStream;
+		public TraceBuffer Tracer = new TraceBuffer();
 	}
 
 	public class CoreOutputComm
@@ -37,5 +37,53 @@
 		public int ScreenLogicalOffsetX, ScreenLogicalOffsetY;
 
 		public bool CpuTraceAvailable = false;
+	}
+
+	public class TraceBuffer
+	{
+		public string TakeContents()
+		{
+			string s = buffer.ToString();
+			buffer.Clear();
+			return s;
+		}
+
+		public string Contents
+		{
+			get
+			{
+				return buffer.ToString();
+			}
+		}
+
+		public void Put(string content)
+		{
+			if (logging)
+			{
+				buffer.Append(content);
+				buffer.Append('\n');
+			}
+		}
+
+		public TraceBuffer()
+		{
+			buffer = new StringBuilder();
+		}
+
+		public bool Enabled
+		{
+			get
+			{
+				return logging;
+			}
+
+			set
+			{
+				logging = value;
+			}
+		}
+
+		private StringBuilder buffer;
+		private bool logging = false;
 	}
 }

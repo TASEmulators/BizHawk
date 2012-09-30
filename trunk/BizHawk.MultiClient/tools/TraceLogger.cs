@@ -41,7 +41,7 @@ namespace BizHawk.MultiClient
 		{
 			ClearList();
 			LoggingEnabled.Checked = true;
-			//Global.CoreInputComm.CpuTraceEnable = true;
+			Global.CoreInputComm.Tracer.Enabled = true;
 		}
 
 		public void UpdateValues()
@@ -75,7 +75,7 @@ namespace BizHawk.MultiClient
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.CoreInputComm.CpuTraceEnable = LoggingEnabled.Checked;
+			Global.CoreInputComm.Tracer.Enabled = LoggingEnabled.Checked;
 		}
 
 		private void ClearButton_Click(object sender, EventArgs e)
@@ -85,11 +85,12 @@ namespace BizHawk.MultiClient
 
 		private void DoInstructions()
 		{
-			//using (Global.CoreInputComm.CpuTraceStream)
-			//{
-				Instructions.Add("FART 0x15");
-				TraceView.ItemCount = Instructions.Count;
-			//}
+			string[] instructions = Global.CoreInputComm.Tracer.TakeContents().Split('\n');
+			foreach (string s in instructions)
+			{
+				Instructions.Add(s);
+			}
+			TraceView.ItemCount = Instructions.Count;
 		}
 	}
 }
