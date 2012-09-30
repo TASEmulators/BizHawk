@@ -35,5 +35,7 @@
 		public string RomStatusDetails;
 
 		public int ScreenLogicalOffsetX, ScreenLogicalOffsetY;
+
+		public bool CpuTraceAvailable = false;
 	}
 }
