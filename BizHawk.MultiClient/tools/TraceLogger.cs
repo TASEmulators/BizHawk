@@ -12,10 +12,10 @@ namespace BizHawk.MultiClient
 {
 	public partial class TraceLogger : Form
 	{
-		//Save to file - saves what's on screen to disk (defaults to the current log file)
-		//Show file that is being logged to
-		//Browse button to set file
 		//Refresh rate slider
+		//Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
+		//Remember window size
+		//Show a message that file was saved, when using the save menu item
 
 		List<string> Instructions = new List<string>();
 		FileInfo LogFile;
@@ -229,6 +229,8 @@ namespace BizHawk.MultiClient
 		{
 			if (ToFileRadio.Checked)
 			{
+				FileBox.Visible = true;
+				BrowseBox.Visible = true;
 				string name = PathManager.FilesystemSafeName(Global.Game);
 				string filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.LogPath, ""), name) + ".txt";
 				LogFile = new FileInfo(filename);
@@ -245,10 +247,15 @@ namespace BizHawk.MultiClient
 				{
 					LogFile.Create();
 				}
+
+				FileBox.Text = LogFile.FullName;
 			}
 			else
 			{
 				CloseFile();
+				FileBox.Visible = false;
+				BrowseBox.Visible = false;
+
 			}
 
 			SetTracerBoxTitle();
@@ -256,6 +263,7 @@ namespace BizHawk.MultiClient
 
 		private void CloseFile()
 		{
+			//TODO: save the remaining instructions in CoreComm
 		}
 
 		private void TraceView_KeyDown(object sender, KeyEventArgs e)
@@ -274,6 +282,73 @@ namespace BizHawk.MultiClient
 					}
 					blob.Remove(blob.Length - 1, 1); //Lazy way to not have a line break at the end
 					Clipboard.SetDataObject(blob.ToString());
+				}
+			}
+		}
+
+		private void BrowseBox_Click(object sender, EventArgs e)
+		{
+			var file = GetFileFromUser();
+			if (file != null)
+			{
+				LogFile = file;
+				FileBox.Text = LogFile.FullName;
+			}
+		}
+
+		private FileInfo GetFileFromUser()
+		{
+			var sfd = new SaveFileDialog();
+			if (LogFile == null)
+			{
+				string name = PathManager.FilesystemSafeName(Global.Game);
+				sfd.FileName = name + ".txt";
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LogPath, "");
+			}
+			else if (!String.IsNullOrWhiteSpace(LogFile.FullName))
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.InitialDirectory = Path.GetDirectoryName(LogFile.FullName);
+			}
+			else
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LogPath, "");
+			}
+
+			sfd.Filter = "Text Files (*.txt)|*.txt|Log Files (*.log)|*.log|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			Global.Sound.StopSound();
+
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+			{
+				return null;
+			}
+			else
+			{
+				return new FileInfo(sfd.FileName);
+				
+			}
+		}
+
+		private void saveLogToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var file = GetFileFromUser();
+			if (file != null)
+			{
+				DumpListToDisk(file);
+			}
+		}
+
+		private void DumpListToDisk(FileInfo file)
+		{
+			using (StreamWriter sw = new StreamWriter(file.FullName))
+			{
+				foreach (string s in Instructions)
+				{
+					sw.WriteLine(s);
 				}
 			}
 		}
