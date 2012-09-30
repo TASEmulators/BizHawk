@@ -70,6 +70,7 @@ namespace BizHawk.MultiClient
 		public RamWatch RamWatch1 = new RamWatch();
 		public RamSearch RamSearch1 = new RamSearch();
 		public HexEditor HexEditor1 = new HexEditor();
+		public TraceLogger TraceLogger1 = new TraceLogger();
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
 		public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
 		public NESPPU NESPPU1 = new NESPPU();
@@ -2304,6 +2305,7 @@ namespace BizHawk.MultiClient
 			LuaConsole1.LuaImp.FrameRegisterAfter();
 			TAStudio1.UpdateValues();
 			SNESGraphicsDebugger1.UpdateToolsAfter();
+			TraceLogger1.UpdateValues();
 		}
 
 		private unsafe Image MakeScreenshotImage()
@@ -2569,6 +2571,17 @@ namespace BizHawk.MultiClient
 			}
 			else
 				HexEditor1.Focus();
+		}
+
+		public void LoadTraceLogger()
+		{
+			if (!TraceLogger1.IsHandleCreated || TraceLogger1.IsDisposed)
+			{
+				TraceLogger1 = new TraceLogger();
+				TraceLogger1.Show();
+			}
+			else
+				TraceLogger1.Focus();
 		}
 
 		public void LoadToolBox()
@@ -2888,6 +2901,7 @@ namespace BizHawk.MultiClient
 			CloseForm(Cheats1);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);
+			CloseForm(TraceLogger1);
 #if WINDOWS
 			CloseForm(LuaConsole1);
 #endif
@@ -3758,6 +3772,11 @@ namespace BizHawk.MultiClient
 			NeedsReboot = true;
 			SetRebootIconStatus();
 			Global.OSD.AddMessage("Core reboot needed for this setting");
+		}
+
+		private void traceLoggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadTraceLogger();
 		}
 	}
 }

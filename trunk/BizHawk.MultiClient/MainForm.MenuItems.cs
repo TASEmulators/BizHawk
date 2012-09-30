@@ -621,6 +621,15 @@ namespace BizHawk.MultiClient
 			luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LuaConsole;
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.Cheats;
 			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.TASTudio;
+
+			if (INTERIM)
+			{
+				traceLoggerToolStripMenuItem.Visible = true;
+			}
+			else
+			{
+				traceLoggerToolStripMenuItem.Visible = false;
+			}
 		}
 
 		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
