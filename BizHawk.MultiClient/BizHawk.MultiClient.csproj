@@ -160,6 +160,15 @@
     <Compile Include="config\AutofireConfig.Designer.cs">
       <DependentUpon>AutofireConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig.Designer.cs">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ControllerConfig\NESGamePad.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -414,6 +423,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ControllerConfig.resx">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
