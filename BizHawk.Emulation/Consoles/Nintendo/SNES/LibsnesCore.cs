@@ -46,9 +46,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[return: MarshalAs(UnmanagedType.U1)]
 		public static extern bool snes_load_cartridge_normal(
 			[MarshalAs(UnmanagedType.LPStr)]
-			string rom_xml, 
+			string rom_xml,
 			[MarshalAs(UnmanagedType.LPArray)]
-			byte[] rom_data, 
+			byte[] rom_data,
 			uint rom_size);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			uint dmg_size);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void snes_video_refresh_t(int *data, int width, int height);
+		public delegate void snes_video_refresh_t(int* data, int width, int height);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_input_poll_t();
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -112,11 +112,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int snes_serialize_size();
-    
+
 		[return: MarshalAs(UnmanagedType.U1)]
-    [DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern bool snes_serialize(IntPtr data, int size);
-		
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool snes_serialize(IntPtr data, int size);
+
 		[return: MarshalAs(UnmanagedType.U1)]
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool snes_unserialize(IntPtr data, int size);
@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CGWSEL_ADDSUBMODE = 42,
 			CGWSEL_DIRECTCOLOR = 43,
 		}
-		
+
 		public enum SNES_MEMORY : uint
 		{
 			CARTRIDGE_RAM = 0,
@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CGRAM = 104,
 		}
 
-		public enum SNES_REGION : uint
+		public enum SNES_REGION : byte
 		{
 			NTSC = 0,
 			PAL = 1,
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public Action<int> callback;
 		}
 	}
-	
+
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
 	{
 		bool disposed = false;
@@ -358,7 +358,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData)
 		{
 			//attach this core as the current
-			if(CurrLibsnesCore != null)
+			if (CurrLibsnesCore != null)
 				CurrLibsnesCore.Dispose();
 			CurrLibsnesCore = this;
 
@@ -412,6 +412,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				if (!LibsnesDll.snes_load_cartridge_normal(null, romData, (uint)romData.Length))
 					throw new Exception("snes_load_cartridge_normal() failed");
 			}
+
+			if (LibsnesDll.snes_get_region() == LibsnesDll.SNES_REGION.NTSC)
+				CoreOutputComm.VsyncNum = 60;
+			else
+				CoreOutputComm.VsyncNum = 50;
+			CoreOutputComm.VsyncDen = 1;
+
 			LibsnesDll.snes_power();
 
 			SetupMemoryDomains(romData);
@@ -774,7 +781,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		void snes_audio_sample(ushort left, ushort right)
 		{
-			resampler.EnqueueSample((short)left, (short)right);			
+			resampler.EnqueueSample((short)left, (short)right);
 		}
 
 
