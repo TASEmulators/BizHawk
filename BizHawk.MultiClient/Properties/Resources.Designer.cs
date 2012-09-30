@@ -472,6 +472,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap pencil {
+            get {
+                object obj = ResourceManager.GetObject("pencil", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Play {
             get {
                 object obj = ResourceManager.GetObject("Play", resourceCulture);

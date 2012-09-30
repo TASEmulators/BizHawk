@@ -883,6 +883,7 @@
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
     <None Include="images\SNESControllerIcon.png" />
+    <None Include="images\pencil.png" />
     <Content Include="output\gamedb_sega_md.txt" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
