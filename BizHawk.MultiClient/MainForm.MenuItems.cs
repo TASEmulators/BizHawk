@@ -196,21 +196,25 @@ namespace BizHawk.MultiClient
         private void smsSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.SmsSpriteLimit ^= true;
+			FlagNeedsReboot();
         }
 
         private void pceAlwaysPerformSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.PceSpriteLimit ^= true;
+			FlagNeedsReboot();
         }
 
         private void pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.PceEqualizeVolume ^= true;
+			FlagNeedsReboot();
         }
 
         private void pceArcadeCardRewindEnableHackToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.PceArcadeCardRewindHack ^= true;
+			FlagNeedsReboot();
         }
 
         private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
