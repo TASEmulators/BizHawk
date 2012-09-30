@@ -335,6 +335,15 @@ namespace BizHawk.MultiClient
 		public Color HexHighlightColor = Color.Pink;
 		public Color HexHighlightFreezeColor = Color.Violet;
 
+		//Trace Logger Settings
+		public bool TraceLoggerAutoLoad = false;
+		public bool TraceLoggerSaveWindowPosition = true;
+		public int TraceLoggerMaxLines = 100000;
+		public int TraceLoggerWndx = -1;
+		public int TraceLoggerWndy = -1;
+		public int TraceLoggerWidth = -1;
+		public int TraceLoggerHeight = -1;
+
 		// Video dumping settings
 		public string VideoWriter = "";
 		public int JMDCompression = 3;
