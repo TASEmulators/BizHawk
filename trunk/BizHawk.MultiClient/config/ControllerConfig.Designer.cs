@@ -55,11 +55,20 @@
 			this.tabControl4 = new System.Windows.Forms.TabControl();
 			this.tabPage31 = new System.Windows.Forms.TabPage();
 			this.tabPage32 = new System.Windows.Forms.TabPage();
+			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.tabControl9 = new System.Windows.Forms.TabControl();
+			this.tabPage52 = new System.Windows.Forms.TabPage();
+			this.tabPage53 = new System.Windows.Forms.TabPage();
+			this.tabPage54 = new System.Windows.Forms.TabPage();
+			this.tabPage55 = new System.Windows.Forms.TabPage();
+			this.tabPage56 = new System.Windows.Forms.TabPage();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.tabControl5 = new System.Windows.Forms.TabControl();
 			this.tabPage33 = new System.Windows.Forms.TabPage();
 			this.tabPage34 = new System.Windows.Forms.TabPage();
 			this.Console = new System.Windows.Forms.TabPage();
+			this.tabPage51 = new System.Windows.Forms.TabPage();
+			this.tabPage57 = new System.Windows.Forms.TabPage();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
 			this.tabControl6 = new System.Windows.Forms.TabControl();
 			this.tabPage36 = new System.Windows.Forms.TabPage();
@@ -77,31 +86,40 @@
 			this.tabPage46 = new System.Windows.Forms.TabPage();
 			this.tabPage47 = new System.Windows.Forms.TabPage();
 			this.tabPage48 = new System.Windows.Forms.TabPage();
+			this.tabPage35 = new System.Windows.Forms.TabPage();
+			this.tabPage58 = new System.Windows.Forms.TabPage();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
 			this.tabControl8 = new System.Windows.Forms.TabControl();
 			this.tabPage49 = new System.Windows.Forms.TabPage();
 			this.tabPage50 = new System.Windows.Forms.TabPage();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
-			this.tabPage9 = new System.Windows.Forms.TabPage();
-			this.tabControl9 = new System.Windows.Forms.TabControl();
-			this.tabPage52 = new System.Windows.Forms.TabPage();
-			this.tabPage53 = new System.Windows.Forms.TabPage();
-			this.tabPage54 = new System.Windows.Forms.TabPage();
-			this.tabPage55 = new System.Windows.Forms.TabPage();
-			this.tabPage56 = new System.Windows.Forms.TabPage();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
-			this.tabPage51 = new System.Windows.Forms.TabPage();
-			this.tabPage57 = new System.Windows.Forms.TabPage();
-			this.tabPage35 = new System.Windows.Forms.TabPage();
-			this.tabPage58 = new System.Windows.Forms.TabPage();
+			this.NESAutofire1Panel = new BizHawk.MultiClient.NESGamePad();
+			this.NESAutofire2Panel = new BizHawk.MultiClient.NESGamePad();
+			this.NESAutofire3Panel = new BizHawk.MultiClient.NESGamePad();
+			this.NESAutofire4Panel = new BizHawk.MultiClient.NESGamePad();
+			this.NESController1Panel = new BizHawk.MultiClient.NESGamePad();
+			this.NESController2Panel = new BizHawk.MultiClient.NESGamePad();
+			this.NESController3Panel = new BizHawk.MultiClient.NESGamePad();
+			this.NESController4Panel = new BizHawk.MultiClient.NESGamePad();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabControl2.SuspendLayout();
+			this.tabPage13.SuspendLayout();
+			this.tabPage14.SuspendLayout();
+			this.tabPage15.SuspendLayout();
+			this.tabPage16.SuspendLayout();
+			this.tabPage18.SuspendLayout();
+			this.tabPage19.SuspendLayout();
+			this.tabPage20.SuspendLayout();
+			this.tabPage21.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.tabControl3.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.tabControl4.SuspendLayout();
+			this.tabPage9.SuspendLayout();
+			this.tabControl9.SuspendLayout();
 			this.tabPage4.SuspendLayout();
 			this.tabControl5.SuspendLayout();
 			this.tabPage5.SuspendLayout();
@@ -110,8 +128,6 @@
 			this.tabControl7.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			this.tabControl8.SuspendLayout();
-			this.tabPage9.SuspendLayout();
-			this.tabControl9.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -161,45 +177,49 @@
 			this.tabControl2.Location = new System.Drawing.Point(17, 15);
 			this.tabControl2.Name = "tabControl2";
 			this.tabControl2.SelectedIndex = 0;
-			this.tabControl2.Size = new System.Drawing.Size(546, 404);
+			this.tabControl2.Size = new System.Drawing.Size(453, 404);
 			this.tabControl2.TabIndex = 0;
 			// 
 			// tabPage13
 			// 
+			this.tabPage13.Controls.Add(this.NESController1Panel);
 			this.tabPage13.Location = new System.Drawing.Point(4, 22);
 			this.tabPage13.Name = "tabPage13";
 			this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage13.Size = new System.Drawing.Size(320, 252);
+			this.tabPage13.Size = new System.Drawing.Size(445, 378);
 			this.tabPage13.TabIndex = 0;
-			this.tabPage13.Text = "Controller 1";
+			this.tabPage13.Text = "Pad 1";
 			this.tabPage13.UseVisualStyleBackColor = true;
 			// 
 			// tabPage14
 			// 
+			this.tabPage14.Controls.Add(this.NESController2Panel);
 			this.tabPage14.Location = new System.Drawing.Point(4, 22);
 			this.tabPage14.Name = "tabPage14";
 			this.tabPage14.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage14.Size = new System.Drawing.Size(320, 252);
+			this.tabPage14.Size = new System.Drawing.Size(538, 378);
 			this.tabPage14.TabIndex = 1;
-			this.tabPage14.Text = "Controller 2";
+			this.tabPage14.Text = "Pad 2";
 			this.tabPage14.UseVisualStyleBackColor = true;
 			// 
 			// tabPage15
 			// 
+			this.tabPage15.Controls.Add(this.NESController3Panel);
 			this.tabPage15.Location = new System.Drawing.Point(4, 22);
 			this.tabPage15.Name = "tabPage15";
-			this.tabPage15.Size = new System.Drawing.Size(320, 252);
+			this.tabPage15.Size = new System.Drawing.Size(538, 378);
 			this.tabPage15.TabIndex = 2;
-			this.tabPage15.Text = "Controller 3";
+			this.tabPage15.Text = "Pad 3";
 			this.tabPage15.UseVisualStyleBackColor = true;
 			// 
 			// tabPage16
 			// 
+			this.tabPage16.Controls.Add(this.NESController4Panel);
 			this.tabPage16.Location = new System.Drawing.Point(4, 22);
 			this.tabPage16.Name = "tabPage16";
-			this.tabPage16.Size = new System.Drawing.Size(320, 252);
+			this.tabPage16.Size = new System.Drawing.Size(538, 378);
 			this.tabPage16.TabIndex = 3;
-			this.tabPage16.Text = "Controller 4";
+			this.tabPage16.Text = "Pad 4";
 			this.tabPage16.UseVisualStyleBackColor = true;
 			// 
 			// tabPage17
@@ -213,36 +233,40 @@
 			// 
 			// tabPage18
 			// 
+			this.tabPage18.Controls.Add(this.NESAutofire1Panel);
 			this.tabPage18.Location = new System.Drawing.Point(4, 22);
 			this.tabPage18.Name = "tabPage18";
-			this.tabPage18.Size = new System.Drawing.Size(320, 252);
+			this.tabPage18.Size = new System.Drawing.Size(538, 378);
 			this.tabPage18.TabIndex = 5;
 			this.tabPage18.Text = "Autofire 1";
 			this.tabPage18.UseVisualStyleBackColor = true;
 			// 
 			// tabPage19
 			// 
+			this.tabPage19.Controls.Add(this.NESAutofire2Panel);
 			this.tabPage19.Location = new System.Drawing.Point(4, 22);
 			this.tabPage19.Name = "tabPage19";
-			this.tabPage19.Size = new System.Drawing.Size(320, 252);
+			this.tabPage19.Size = new System.Drawing.Size(538, 378);
 			this.tabPage19.TabIndex = 6;
 			this.tabPage19.Text = "Autofire 2";
 			this.tabPage19.UseVisualStyleBackColor = true;
 			// 
 			// tabPage20
 			// 
+			this.tabPage20.Controls.Add(this.NESAutofire3Panel);
 			this.tabPage20.Location = new System.Drawing.Point(4, 22);
 			this.tabPage20.Name = "tabPage20";
-			this.tabPage20.Size = new System.Drawing.Size(320, 252);
+			this.tabPage20.Size = new System.Drawing.Size(538, 378);
 			this.tabPage20.TabIndex = 7;
 			this.tabPage20.Text = "Autofire 3";
 			this.tabPage20.UseVisualStyleBackColor = true;
 			// 
 			// tabPage21
 			// 
+			this.tabPage21.Controls.Add(this.NESAutofire4Panel);
 			this.tabPage21.Location = new System.Drawing.Point(4, 22);
 			this.tabPage21.Name = "tabPage21";
-			this.tabPage21.Size = new System.Drawing.Size(320, 252);
+			this.tabPage21.Size = new System.Drawing.Size(538, 378);
 			this.tabPage21.TabIndex = 8;
 			this.tabPage21.Text = "Autofire 4";
 			this.tabPage21.UseVisualStyleBackColor = true;
@@ -292,7 +316,7 @@
 			this.tabPage23.Location = new System.Drawing.Point(4, 22);
 			this.tabPage23.Name = "tabPage23";
 			this.tabPage23.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage23.Size = new System.Drawing.Size(546, 238);
+			this.tabPage23.Size = new System.Drawing.Size(538, 372);
 			this.tabPage23.TabIndex = 1;
 			this.tabPage23.Text = "Controller 2";
 			this.tabPage23.UseVisualStyleBackColor = true;
@@ -301,7 +325,7 @@
 			// 
 			this.tabPage24.Location = new System.Drawing.Point(4, 22);
 			this.tabPage24.Name = "tabPage24";
-			this.tabPage24.Size = new System.Drawing.Size(546, 238);
+			this.tabPage24.Size = new System.Drawing.Size(538, 372);
 			this.tabPage24.TabIndex = 2;
 			this.tabPage24.Text = "Controller 3";
 			this.tabPage24.UseVisualStyleBackColor = true;
@@ -310,7 +334,7 @@
 			// 
 			this.tabPage25.Location = new System.Drawing.Point(4, 22);
 			this.tabPage25.Name = "tabPage25";
-			this.tabPage25.Size = new System.Drawing.Size(546, 238);
+			this.tabPage25.Size = new System.Drawing.Size(538, 372);
 			this.tabPage25.TabIndex = 3;
 			this.tabPage25.Text = "Controller 4";
 			this.tabPage25.UseVisualStyleBackColor = true;
@@ -319,7 +343,7 @@
 			// 
 			this.tabPage26.Location = new System.Drawing.Point(4, 22);
 			this.tabPage26.Name = "tabPage26";
-			this.tabPage26.Size = new System.Drawing.Size(546, 238);
+			this.tabPage26.Size = new System.Drawing.Size(538, 372);
 			this.tabPage26.TabIndex = 4;
 			this.tabPage26.Text = "Console";
 			this.tabPage26.UseVisualStyleBackColor = true;
@@ -328,7 +352,7 @@
 			// 
 			this.tabPage27.Location = new System.Drawing.Point(4, 22);
 			this.tabPage27.Name = "tabPage27";
-			this.tabPage27.Size = new System.Drawing.Size(546, 238);
+			this.tabPage27.Size = new System.Drawing.Size(538, 372);
 			this.tabPage27.TabIndex = 5;
 			this.tabPage27.Text = "Autofire 1";
 			this.tabPage27.UseVisualStyleBackColor = true;
@@ -337,7 +361,7 @@
 			// 
 			this.tabPage28.Location = new System.Drawing.Point(4, 22);
 			this.tabPage28.Name = "tabPage28";
-			this.tabPage28.Size = new System.Drawing.Size(546, 238);
+			this.tabPage28.Size = new System.Drawing.Size(538, 372);
 			this.tabPage28.TabIndex = 6;
 			this.tabPage28.Text = "Autofire 2";
 			this.tabPage28.UseVisualStyleBackColor = true;
@@ -346,7 +370,7 @@
 			// 
 			this.tabPage29.Location = new System.Drawing.Point(4, 22);
 			this.tabPage29.Name = "tabPage29";
-			this.tabPage29.Size = new System.Drawing.Size(546, 238);
+			this.tabPage29.Size = new System.Drawing.Size(538, 372);
 			this.tabPage29.TabIndex = 7;
 			this.tabPage29.Text = "Autofire 3";
 			this.tabPage29.UseVisualStyleBackColor = true;
@@ -355,7 +379,7 @@
 			// 
 			this.tabPage30.Location = new System.Drawing.Point(4, 22);
 			this.tabPage30.Name = "tabPage30";
-			this.tabPage30.Size = new System.Drawing.Size(546, 238);
+			this.tabPage30.Size = new System.Drawing.Size(538, 372);
 			this.tabPage30.TabIndex = 8;
 			this.tabPage30.Text = "Autofire 4";
 			this.tabPage30.UseVisualStyleBackColor = true;
@@ -395,10 +419,82 @@
 			this.tabPage32.Location = new System.Drawing.Point(4, 22);
 			this.tabPage32.Name = "tabPage32";
 			this.tabPage32.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage32.Size = new System.Drawing.Size(545, 232);
+			this.tabPage32.Size = new System.Drawing.Size(371, 372);
 			this.tabPage32.TabIndex = 1;
 			this.tabPage32.Text = "Autofire 1";
 			this.tabPage32.UseVisualStyleBackColor = true;
+			// 
+			// tabPage9
+			// 
+			this.tabPage9.Controls.Add(this.tabControl9);
+			this.tabPage9.Location = new System.Drawing.Point(4, 22);
+			this.tabPage9.Name = "tabPage9";
+			this.tabPage9.Size = new System.Drawing.Size(787, 425);
+			this.tabPage9.TabIndex = 8;
+			this.tabPage9.Text = "Genesis";
+			this.tabPage9.UseVisualStyleBackColor = true;
+			// 
+			// tabControl9
+			// 
+			this.tabControl9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.tabControl9.Controls.Add(this.tabPage52);
+			this.tabControl9.Controls.Add(this.tabPage53);
+			this.tabControl9.Controls.Add(this.tabPage54);
+			this.tabControl9.Controls.Add(this.tabPage55);
+			this.tabControl9.Controls.Add(this.tabPage56);
+			this.tabControl9.Location = new System.Drawing.Point(12, 21);
+			this.tabControl9.Name = "tabControl9";
+			this.tabControl9.SelectedIndex = 0;
+			this.tabControl9.Size = new System.Drawing.Size(442, 401);
+			this.tabControl9.TabIndex = 0;
+			// 
+			// tabPage52
+			// 
+			this.tabPage52.Location = new System.Drawing.Point(4, 22);
+			this.tabPage52.Name = "tabPage52";
+			this.tabPage52.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage52.Size = new System.Drawing.Size(434, 375);
+			this.tabPage52.TabIndex = 0;
+			this.tabPage52.Text = "Controller 1";
+			this.tabPage52.UseVisualStyleBackColor = true;
+			// 
+			// tabPage53
+			// 
+			this.tabPage53.Location = new System.Drawing.Point(4, 22);
+			this.tabPage53.Name = "tabPage53";
+			this.tabPage53.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage53.Size = new System.Drawing.Size(434, 375);
+			this.tabPage53.TabIndex = 1;
+			this.tabPage53.Text = "Controller 2";
+			this.tabPage53.UseVisualStyleBackColor = true;
+			// 
+			// tabPage54
+			// 
+			this.tabPage54.Location = new System.Drawing.Point(4, 22);
+			this.tabPage54.Name = "tabPage54";
+			this.tabPage54.Size = new System.Drawing.Size(434, 375);
+			this.tabPage54.TabIndex = 2;
+			this.tabPage54.Text = "Console";
+			this.tabPage54.UseVisualStyleBackColor = true;
+			// 
+			// tabPage55
+			// 
+			this.tabPage55.Location = new System.Drawing.Point(4, 22);
+			this.tabPage55.Name = "tabPage55";
+			this.tabPage55.Size = new System.Drawing.Size(434, 375);
+			this.tabPage55.TabIndex = 3;
+			this.tabPage55.Text = "Autofire 1";
+			this.tabPage55.UseVisualStyleBackColor = true;
+			// 
+			// tabPage56
+			// 
+			this.tabPage56.Location = new System.Drawing.Point(4, 22);
+			this.tabPage56.Name = "tabPage56";
+			this.tabPage56.Size = new System.Drawing.Size(434, 375);
+			this.tabPage56.TabIndex = 4;
+			this.tabPage56.Text = "Autofire 2";
+			this.tabPage56.UseVisualStyleBackColor = true;
 			// 
 			// tabPage4
 			// 
@@ -440,7 +536,7 @@
 			this.tabPage34.Location = new System.Drawing.Point(4, 22);
 			this.tabPage34.Name = "tabPage34";
 			this.tabPage34.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage34.Size = new System.Drawing.Size(338, 363);
+			this.tabPage34.Size = new System.Drawing.Size(338, 375);
 			this.tabPage34.TabIndex = 1;
 			this.tabPage34.Text = "Controller 1";
 			this.tabPage34.UseVisualStyleBackColor = true;
@@ -449,10 +545,28 @@
 			// 
 			this.Console.Location = new System.Drawing.Point(4, 22);
 			this.Console.Name = "Console";
-			this.Console.Size = new System.Drawing.Size(338, 363);
+			this.Console.Size = new System.Drawing.Size(338, 375);
 			this.Console.TabIndex = 2;
 			this.Console.Text = "Console";
 			this.Console.UseVisualStyleBackColor = true;
+			// 
+			// tabPage51
+			// 
+			this.tabPage51.Location = new System.Drawing.Point(4, 22);
+			this.tabPage51.Name = "tabPage51";
+			this.tabPage51.Size = new System.Drawing.Size(338, 375);
+			this.tabPage51.TabIndex = 3;
+			this.tabPage51.Text = "Autofire 1";
+			this.tabPage51.UseVisualStyleBackColor = true;
+			// 
+			// tabPage57
+			// 
+			this.tabPage57.Location = new System.Drawing.Point(4, 22);
+			this.tabPage57.Name = "tabPage57";
+			this.tabPage57.Size = new System.Drawing.Size(338, 375);
+			this.tabPage57.TabIndex = 4;
+			this.tabPage57.Text = "Autofire 2";
+			this.tabPage57.UseVisualStyleBackColor = true;
 			// 
 			// tabPage5
 			// 
@@ -497,37 +611,37 @@
 			// 
 			// tabPage37
 			// 
-			this.tabPage37.Location = new System.Drawing.Point(4, 22);
+			this.tabPage37.Location = new System.Drawing.Point(4, 40);
 			this.tabPage37.Name = "tabPage37";
 			this.tabPage37.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage37.Size = new System.Drawing.Size(366, 372);
+			this.tabPage37.Size = new System.Drawing.Size(366, 354);
 			this.tabPage37.TabIndex = 1;
 			this.tabPage37.Text = "Controller 2";
 			this.tabPage37.UseVisualStyleBackColor = true;
 			// 
 			// tabPage38
 			// 
-			this.tabPage38.Location = new System.Drawing.Point(4, 22);
+			this.tabPage38.Location = new System.Drawing.Point(4, 40);
 			this.tabPage38.Name = "tabPage38";
-			this.tabPage38.Size = new System.Drawing.Size(366, 372);
+			this.tabPage38.Size = new System.Drawing.Size(366, 354);
 			this.tabPage38.TabIndex = 2;
 			this.tabPage38.Text = "Controller 3";
 			this.tabPage38.UseVisualStyleBackColor = true;
 			// 
 			// tabPage39
 			// 
-			this.tabPage39.Location = new System.Drawing.Point(4, 22);
+			this.tabPage39.Location = new System.Drawing.Point(4, 40);
 			this.tabPage39.Name = "tabPage39";
-			this.tabPage39.Size = new System.Drawing.Size(366, 372);
+			this.tabPage39.Size = new System.Drawing.Size(366, 354);
 			this.tabPage39.TabIndex = 3;
 			this.tabPage39.Text = "Controller 4";
 			this.tabPage39.UseVisualStyleBackColor = true;
 			// 
 			// tabPage40
 			// 
-			this.tabPage40.Location = new System.Drawing.Point(4, 22);
+			this.tabPage40.Location = new System.Drawing.Point(4, 40);
 			this.tabPage40.Name = "tabPage40";
-			this.tabPage40.Size = new System.Drawing.Size(366, 372);
+			this.tabPage40.Size = new System.Drawing.Size(366, 354);
 			this.tabPage40.TabIndex = 4;
 			this.tabPage40.Text = "Controller 5";
 			this.tabPage40.UseVisualStyleBackColor = true;
@@ -631,6 +745,24 @@
 			this.tabPage48.Text = "Console";
 			this.tabPage48.UseVisualStyleBackColor = true;
 			// 
+			// tabPage35
+			// 
+			this.tabPage35.Location = new System.Drawing.Point(4, 22);
+			this.tabPage35.Name = "tabPage35";
+			this.tabPage35.Size = new System.Drawing.Size(432, 375);
+			this.tabPage35.TabIndex = 3;
+			this.tabPage35.Text = "Autofire 1";
+			this.tabPage35.UseVisualStyleBackColor = true;
+			// 
+			// tabPage58
+			// 
+			this.tabPage58.Location = new System.Drawing.Point(4, 22);
+			this.tabPage58.Name = "tabPage58";
+			this.tabPage58.Size = new System.Drawing.Size(432, 375);
+			this.tabPage58.TabIndex = 4;
+			this.tabPage58.Text = "Autofire 2";
+			this.tabPage58.UseVisualStyleBackColor = true;
+			// 
 			// tabPage7
 			// 
 			this.tabPage7.Controls.Add(this.tabControl8);
@@ -680,78 +812,6 @@
 			this.tabPage8.Text = "TI-83";
 			this.tabPage8.UseVisualStyleBackColor = true;
 			// 
-			// tabPage9
-			// 
-			this.tabPage9.Controls.Add(this.tabControl9);
-			this.tabPage9.Location = new System.Drawing.Point(4, 22);
-			this.tabPage9.Name = "tabPage9";
-			this.tabPage9.Size = new System.Drawing.Size(787, 425);
-			this.tabPage9.TabIndex = 8;
-			this.tabPage9.Text = "Genesis";
-			this.tabPage9.UseVisualStyleBackColor = true;
-			// 
-			// tabControl9
-			// 
-			this.tabControl9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.tabControl9.Controls.Add(this.tabPage52);
-			this.tabControl9.Controls.Add(this.tabPage53);
-			this.tabControl9.Controls.Add(this.tabPage54);
-			this.tabControl9.Controls.Add(this.tabPage55);
-			this.tabControl9.Controls.Add(this.tabPage56);
-			this.tabControl9.Location = new System.Drawing.Point(12, 21);
-			this.tabControl9.Name = "tabControl9";
-			this.tabControl9.SelectedIndex = 0;
-			this.tabControl9.Size = new System.Drawing.Size(442, 401);
-			this.tabControl9.TabIndex = 0;
-			// 
-			// tabPage52
-			// 
-			this.tabPage52.Location = new System.Drawing.Point(4, 22);
-			this.tabPage52.Name = "tabPage52";
-			this.tabPage52.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage52.Size = new System.Drawing.Size(434, 375);
-			this.tabPage52.TabIndex = 0;
-			this.tabPage52.Text = "Controller 1";
-			this.tabPage52.UseVisualStyleBackColor = true;
-			// 
-			// tabPage53
-			// 
-			this.tabPage53.Location = new System.Drawing.Point(4, 22);
-			this.tabPage53.Name = "tabPage53";
-			this.tabPage53.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage53.Size = new System.Drawing.Size(434, 375);
-			this.tabPage53.TabIndex = 1;
-			this.tabPage53.Text = "Controller 2";
-			this.tabPage53.UseVisualStyleBackColor = true;
-			// 
-			// tabPage54
-			// 
-			this.tabPage54.Location = new System.Drawing.Point(4, 22);
-			this.tabPage54.Name = "tabPage54";
-			this.tabPage54.Size = new System.Drawing.Size(434, 375);
-			this.tabPage54.TabIndex = 2;
-			this.tabPage54.Text = "Console";
-			this.tabPage54.UseVisualStyleBackColor = true;
-			// 
-			// tabPage55
-			// 
-			this.tabPage55.Location = new System.Drawing.Point(4, 22);
-			this.tabPage55.Name = "tabPage55";
-			this.tabPage55.Size = new System.Drawing.Size(434, 375);
-			this.tabPage55.TabIndex = 3;
-			this.tabPage55.Text = "Autofire 1";
-			this.tabPage55.UseVisualStyleBackColor = true;
-			// 
-			// tabPage56
-			// 
-			this.tabPage56.Location = new System.Drawing.Point(4, 22);
-			this.tabPage56.Name = "tabPage56";
-			this.tabPage56.Size = new System.Drawing.Size(434, 375);
-			this.tabPage56.TabIndex = 4;
-			this.tabPage56.Text = "Autofire 2";
-			this.tabPage56.UseVisualStyleBackColor = true;
-			// 
 			// Cancel
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -773,41 +833,61 @@
 			this.OK.Text = "&Ok";
 			this.OK.UseVisualStyleBackColor = true;
 			// 
-			// tabPage51
+			// NESAutofire1Panel
 			// 
-			this.tabPage51.Location = new System.Drawing.Point(4, 22);
-			this.tabPage51.Name = "tabPage51";
-			this.tabPage51.Size = new System.Drawing.Size(338, 363);
-			this.tabPage51.TabIndex = 3;
-			this.tabPage51.Text = "Autofire 1";
-			this.tabPage51.UseVisualStyleBackColor = true;
+			this.NESAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire1Panel.Name = "NESAutofire1Panel";
+			this.NESAutofire1Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire1Panel.TabIndex = 0;
 			// 
-			// tabPage57
+			// NESAutofire2Panel
 			// 
-			this.tabPage57.Location = new System.Drawing.Point(4, 22);
-			this.tabPage57.Name = "tabPage57";
-			this.tabPage57.Size = new System.Drawing.Size(338, 363);
-			this.tabPage57.TabIndex = 4;
-			this.tabPage57.Text = "Autofire 2";
-			this.tabPage57.UseVisualStyleBackColor = true;
+			this.NESAutofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire2Panel.Name = "NESAutofire2Panel";
+			this.NESAutofire2Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire2Panel.TabIndex = 0;
 			// 
-			// tabPage35
+			// NESAutofire3Panel
 			// 
-			this.tabPage35.Location = new System.Drawing.Point(4, 22);
-			this.tabPage35.Name = "tabPage35";
-			this.tabPage35.Size = new System.Drawing.Size(432, 375);
-			this.tabPage35.TabIndex = 3;
-			this.tabPage35.Text = "Autofire 1";
-			this.tabPage35.UseVisualStyleBackColor = true;
+			this.NESAutofire3Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire3Panel.Name = "NESAutofire3Panel";
+			this.NESAutofire3Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire3Panel.TabIndex = 0;
 			// 
-			// tabPage58
+			// NESAutofire4Panel
 			// 
-			this.tabPage58.Location = new System.Drawing.Point(4, 22);
-			this.tabPage58.Name = "tabPage58";
-			this.tabPage58.Size = new System.Drawing.Size(432, 375);
-			this.tabPage58.TabIndex = 4;
-			this.tabPage58.Text = "Autofire 2";
-			this.tabPage58.UseVisualStyleBackColor = true;
+			this.NESAutofire4Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire4Panel.Name = "NESAutofire4Panel";
+			this.NESAutofire4Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire4Panel.TabIndex = 0;
+			// 
+			// NESController1Panel
+			// 
+			this.NESController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController1Panel.Name = "NESController1Panel";
+			this.NESController1Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController1Panel.TabIndex = 0;
+			// 
+			// NESController2Panel
+			// 
+			this.NESController2Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController2Panel.Name = "NESController2Panel";
+			this.NESController2Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController2Panel.TabIndex = 0;
+			// 
+			// NESController3Panel
+			// 
+			this.NESController3Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController3Panel.Name = "NESController3Panel";
+			this.NESController3Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController3Panel.TabIndex = 0;
+			// 
+			// NESController4Panel
+			// 
+			this.NESController4Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController4Panel.Name = "NESController4Panel";
+			this.NESController4Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController4Panel.TabIndex = 0;
 			// 
 			// ControllerConfig
 			// 
@@ -825,10 +905,20 @@
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabControl2.ResumeLayout(false);
+			this.tabPage13.ResumeLayout(false);
+			this.tabPage14.ResumeLayout(false);
+			this.tabPage15.ResumeLayout(false);
+			this.tabPage16.ResumeLayout(false);
+			this.tabPage18.ResumeLayout(false);
+			this.tabPage19.ResumeLayout(false);
+			this.tabPage20.ResumeLayout(false);
+			this.tabPage21.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);
 			this.tabControl3.ResumeLayout(false);
 			this.tabPage3.ResumeLayout(false);
 			this.tabControl4.ResumeLayout(false);
+			this.tabPage9.ResumeLayout(false);
+			this.tabControl9.ResumeLayout(false);
 			this.tabPage4.ResumeLayout(false);
 			this.tabControl5.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
@@ -837,8 +927,6 @@
 			this.tabControl7.ResumeLayout(false);
 			this.tabPage7.ResumeLayout(false);
 			this.tabControl8.ResumeLayout(false);
-			this.tabPage9.ResumeLayout(false);
-			this.tabControl9.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -912,5 +1000,13 @@
 		private System.Windows.Forms.TabPage tabPage57;
 		private System.Windows.Forms.TabPage tabPage35;
 		private System.Windows.Forms.TabPage tabPage58;
+		private NESGamePad NESController1Panel;
+		private NESGamePad NESController2Panel;
+		private NESGamePad NESController3Panel;
+		private NESGamePad NESController4Panel;
+		private NESGamePad NESAutofire1Panel;
+		private NESGamePad NESAutofire2Panel;
+		private NESGamePad NESAutofire3Panel;
+		private NESGamePad NESAutofire4Panel;
 	}
 }
