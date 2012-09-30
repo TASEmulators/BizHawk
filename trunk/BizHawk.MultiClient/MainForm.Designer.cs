@@ -193,6 +193,7 @@
 			this.rAMSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rAMPokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.hexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.traceLoggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tAStudioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.luaConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -289,7 +290,6 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.traceLoggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -1710,6 +1710,14 @@
 			this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
 			this.hexEditorToolStripMenuItem.Click += new System.EventHandler(this.hexEditorToolStripMenuItem_Click);
 			// 
+			// traceLoggerToolStripMenuItem
+			// 
+			this.traceLoggerToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.pencil;
+			this.traceLoggerToolStripMenuItem.Name = "traceLoggerToolStripMenuItem";
+			this.traceLoggerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.traceLoggerToolStripMenuItem.Text = "Trace &Logger";
+			this.traceLoggerToolStripMenuItem.Click += new System.EventHandler(this.traceLoggerToolStripMenuItem_Click);
+			// 
 			// tAStudioToolStripMenuItem
 			// 
 			this.tAStudioToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
@@ -2493,13 +2501,6 @@
 			this.cmiShowMenu.Size = new System.Drawing.Size(203, 22);
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
-			// 
-			// traceLoggerToolStripMenuItem
-			// 
-			this.traceLoggerToolStripMenuItem.Name = "traceLoggerToolStripMenuItem";
-			this.traceLoggerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.traceLoggerToolStripMenuItem.Text = "Trace &Logger";
-			this.traceLoggerToolStripMenuItem.Click += new System.EventHandler(this.traceLoggerToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
