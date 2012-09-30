@@ -9,7 +9,7 @@ namespace BizHawk.MultiClient
 	{
 		// ********************************** Static interface **********************************
 
-		private static DirectInput dinput;
+		static DirectInput dinput;
 		public static List<GamePad> Devices;
 
 		public static void Initialize()
@@ -21,7 +21,10 @@ namespace BizHawk.MultiClient
 
 			foreach (DeviceInstance device in dinput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly))
 			{
-				var joystick = new Joystick(dinput, device.InstanceGuid);
+                if (device.ProductName.Contains("XBOX 360"))
+                    continue; // Don't input XBOX 360 controllers into here; we'll process them via XInput.
+				
+                var joystick = new Joystick(dinput, device.InstanceGuid);
 				joystick.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 				foreach (DeviceObjectInstance deviceObject in joystick.GetObjects())
 				{
@@ -43,12 +46,12 @@ namespace BizHawk.MultiClient
 
 		// ********************************** Instance Members **********************************
 
-		private readonly string name;
-		private readonly Guid guid;
-		private readonly Joystick joystick;
-		private JoystickState state = new JoystickState();
+		readonly string name;
+		readonly Guid guid;
+		readonly Joystick joystick;
+		JoystickState state = new JoystickState();
 
-		private GamePad(string name, Guid guid, Joystick joystick)
+		GamePad(string name, Guid guid, Joystick joystick)
 		{
 			this.name = name;
 			this.guid = guid;
@@ -180,10 +183,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-
-
-		/// Note that this does not appear to work at this time. I probably need to have more infos.
-		/// </summary>
+		// Note that this does not appear to work at this time. I probably need to have more infos.
 		public void SetVibration(int left, int right)
 		{
 			int[] temp1, temp2;
