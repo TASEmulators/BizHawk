@@ -1,4 +1,6 @@
-﻿//http://wiki.superfamicom.org/snes/show/Backgrounds
+﻿//TODO - add serializer, add interlace field variable to serializer
+
+//http://wiki.superfamicom.org/snes/show/Backgrounds
 
 //TODO 
 //libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
@@ -465,10 +467,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			IsLagFrame = false;
 		}
 
+		int field = 0;
 		void snes_video_refresh(int* data, int width, int height)
 		{
 			vidWidth = width;
 			vidHeight = height;
+
 			//if we are in high-res mode, we get double width. so, lets double the height here to keep it square.
 			//TODO - does interlacing have something to do with the correct way to handle this? need an example that turns it on.
 			int yskip = 1;
@@ -477,14 +481,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				vidHeight *= 2;
 				yskip = 2;
 			}
+
+			int srcPitch = 1024;
+			int srcStart = 0;
+
+			//for interlaced mode, we're gonna alternate fields. you know, like we're supposed to
+			bool interlaced = (height == 478 || height == 448);
+			if (interlaced)
+			{
+				srcPitch = 1024;
+				if (field == 1)
+					srcStart = 512; //start on second field
+				//really only half as high as the video output
+				vidHeight /= 2;
+				height /= 2;
+				//alternate fields
+				field ^= 1;
+			}
+
 			int size = vidWidth * vidHeight;
 			if (vidBuffer.Length != size)
 				vidBuffer = new int[size];
 
+
 			for (int y = 0; y < height; y++)
 				for (int x = 0; x < width; x++)
 				{
-					int si = y * 1024 + x;
+					int si = y * srcPitch + x + srcStart;
 					int di = y * vidWidth * yskip + x;
 					int rgb = data[si];
 					vidBuffer[di] = rgb;
