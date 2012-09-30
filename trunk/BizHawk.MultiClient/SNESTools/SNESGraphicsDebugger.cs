@@ -31,6 +31,7 @@ namespace BizHawk.MultiClient
 
 			tabctrlDetails.SelectedIndex = 1;
 			SyncViewerSize();
+			SyncColorSelection();
 		}
 
 		LibsnesCore currentSnesCore;
@@ -177,7 +178,7 @@ namespace BizHawk.MultiClient
 			int* pixelptr = null;
 			int stride = 0;
 
-			Action<int,int> allocate = (w, h) =>
+			Action<int, int> allocate = (w, h) =>
 			{
 				bmp = new Bitmap(w, h);
 				bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -191,17 +192,17 @@ namespace BizHawk.MultiClient
 			if (selection == "2bpp tiles")
 			{
 				allocate(512, 512);
-				gd.RenderTilesToScreen(pixelptr, 64, 64, stride / 4, 2, 0);
+				gd.RenderTilesToScreen(pixelptr, 64, 64, stride / 4, 2, currPaletteSelection.start);
 			}
 			if (selection == "4bpp tiles")
 			{
 				allocate(512, 512);
-				gd.RenderTilesToScreen(pixelptr, 64, 32, stride / 4, 4, 0);
+				gd.RenderTilesToScreen(pixelptr, 64, 32, stride / 4, 4, currPaletteSelection.start);
 			}
 			if (selection == "8bpp tiles")
 			{
 				allocate(256, 256);
-				gd.RenderTilesToScreen(pixelptr, 32, 32, stride / 4, 8, 0);
+				gd.RenderTilesToScreen(pixelptr, 32, 32, stride / 4, 8, currPaletteSelection.start);
 			}
 			if (selection == "Mode7 tiles")
 			{
@@ -237,7 +238,7 @@ namespace BizHawk.MultiClient
 					{
 						bool mode7 = bgnum == 1;
 						bool mode7extbg = (bgnum == 2 && si.SETINI_Mode7ExtBG);
-						if(mode7 || mode7extbg)
+						if (mode7 || mode7extbg)
 						{
 							handled = true;
 							allocate(1024, 1024);
@@ -276,6 +277,7 @@ namespace BizHawk.MultiClient
 
 		private void comboDisplayType_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			SyncColorSelection();
 			UpdateValues();
 		}
 
@@ -350,21 +352,72 @@ namespace BizHawk.MultiClient
 			//grpDetails.Text = "Details";
 		}
 
-		private void paletteViewer_MouseEnter(object sender, EventArgs e)
-		{
-			tabctrlDetails.SelectedIndex = 0;
-		}
-
-		private void paletteViewer_MouseLeave(object sender, EventArgs e)
-		{
-			ClearDetails();
-		}
 
 		const int paletteCellSize = 16;
 		const int paletteCellSpacing = 3;
 
 		int[] lastPalette;
 		int lastColorNum = 0;
+		int selectedColorNum = 0;
+		PaletteSelection currPaletteSelection;
+
+		Rectangle GetPaletteRegion(int start, int num)
+		{
+			var ret = new Rectangle();
+			ret.X = start % 16;
+			ret.Y = start / 16;
+			ret.Width = num;
+			ret.Height = num/16;
+			if (ret.Height == 0) ret.Height = 1;
+			if (ret.Width > 16) ret.Width = 16;
+			return ret;
+		}
+
+		void DrawPaletteRegion(Graphics g, Color color, Rectangle region)
+		{
+			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
+
+			int x = paletteCellSpacing + region.X * cellTotalSize - 2;
+			int y = paletteCellSpacing + region.Y * cellTotalSize - 2;
+			int width = cellTotalSize * region.Width;
+			int height = cellTotalSize * region.Height;
+
+			var rect = new Rectangle(x, y, width, height);
+			using (var pen = new Pen(color))
+				g.DrawRectangle(pen, rect);
+		}
+
+		class PaletteSelection
+		{
+			public int start, size;
+		}
+
+		//if a tile set is being displayed, this will adapt the user's color selection into a palette to be used for rendering the tiles
+		PaletteSelection GetPaletteSelectionForTileDisplay(int colorSelection)
+		{
+			int bpp = 0;
+			string selection = comboDisplayType.SelectedItem as string;
+			if (selection == "2bpp tiles") bpp=2;
+			if (selection == "4bpp tiles") bpp=4;
+			if (selection == "8bpp tiles") bpp=8;
+			if (selection == "Mode7 tiles") bpp=8;
+			if (selection == "Mode7Ext tiles") bpp = 7;
+			
+			PaletteSelection ret = new PaletteSelection();
+			if(bpp == 0) return ret;
+
+			//mode7 ext is fixed to use the top 128 colors
+			if (bpp == 7)
+			{
+				ret.size = 128;
+				ret.start = 0;
+				return ret;
+			}
+			
+			ret.size = 1 << bpp;
+			ret.start = colorSelection & (~(ret.size - 1));
+			return ret;
+		}
 
 		void RenderPalette()
 		{
@@ -384,9 +437,20 @@ namespace BizHawk.MultiClient
 						int color = gd.Colorize(rgb555);
 						using (var brush = new SolidBrush(Color.FromArgb(color)))
 						{
-							g.FillRectangle(brush, new Rectangle(3 + x * cellTotalSize, 3 + y * cellTotalSize, paletteCellSize, paletteCellSize));
+							g.FillRectangle(brush, new Rectangle(paletteCellSpacing + x * cellTotalSize, paletteCellSpacing + y * cellTotalSize, paletteCellSize, paletteCellSize));
 						}
 					}
+				}
+
+				//draw selection boxes:
+				//first, draw the current selection
+				var region = GetPaletteRegion(selectedColorNum, 1);
+				DrawPaletteRegion(g, Color.Red, region);
+				var palSelection = GetPaletteSelectionForTileDisplay(selectedColorNum);
+				if (palSelection.size != 0)
+				{
+					region = GetPaletteRegion(palSelection.start, palSelection.size);
+					DrawPaletteRegion(g, Color.FromArgb(192,255,255,255), region);
 				}
 			}
 
@@ -413,16 +477,56 @@ namespace BizHawk.MultiClient
 			txtPaletteDetailsAddress.Text = string.Format("${0:X3}", lastColorNum * 2);
 		}
 
-		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
+
+		private void paletteViewer_MouseDown(object sender, MouseEventArgs e)
 		{
-			var pt = e.Location;
+
+		}
+
+		private void paletteViewer_MouseEnter(object sender, EventArgs e)
+		{
+			tabctrlDetails.SelectedIndex = 0;
+		}
+
+		private void paletteViewer_MouseLeave(object sender, EventArgs e)
+		{
+			ClearDetails();
+		}
+
+		bool TranslatePaletteCoord(Point pt, out Point outpoint)
+		{
 			pt.X -= paletteCellSpacing;
 			pt.Y -= paletteCellSpacing;
 			int tx = pt.X / (paletteCellSize + paletteCellSpacing);
 			int ty = pt.Y / (paletteCellSize + paletteCellSpacing);
-			if (tx >= 16 || ty >= 16) return;
-			lastColorNum = ty * 16 + tx;
+			outpoint = new Point(tx, ty);
+			if (tx >= 16 || ty >= 16) return false;
+			return true;
+		}
+
+		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
+		{
+			Point pt;
+			bool valid = TranslatePaletteCoord(e.Location, out pt);
+			if (!valid) return;
+			lastColorNum = pt.Y * 16 + pt.X;
 			UpdateColorDetails();
+		}
+
+		private void paletteViewer_MouseClick(object sender, MouseEventArgs e)
+		{
+			Point pt;
+			bool valid = TranslatePaletteCoord(e.Location, out pt);
+			if (!valid) return;
+			selectedColorNum = pt.Y * 16 + pt.X;
+
+			SyncColorSelection();
+			UpdateValues();
+		}
+
+		void SyncColorSelection()
+		{
+			currPaletteSelection = GetPaletteSelectionForTileDisplay(selectedColorNum);
 		}
 
 		private void pnDetailsPaletteColor_DoubleClick(object sender, EventArgs e)
@@ -456,6 +560,7 @@ namespace BizHawk.MultiClient
 		{
 			SyncViewerSize();
 		}
+
 
 
 	}
