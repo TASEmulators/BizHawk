@@ -235,7 +235,19 @@ void System::reset() {
 
 void System::scanline() {
   video.scanline();
-  if(cpu.vcounter() == 241) scheduler.exit(Scheduler::ExitReason::FrameEvent);
+  /*
+   * the idea is to have the frame boundary (for framestep tasing) come as soon as possible
+   * after the end of a visible frame, so it comes before the input poll.
+   * the old number was constant 241, which is at a very odd time for NTSC.
+   * the new numbers are the minimum possible to still capture a full frame; any lower,
+   * and the last scanline(s) of the frame are still from the old frame.
+   */
+  int stopline;
+  if (ppu.overscan()) // (region != Region::NTSC)
+    stopline = 240;
+  else
+    stopline = 225;
+  if(cpu.vcounter() == stopline) scheduler.exit(Scheduler::ExitReason::FrameEvent);
 }
 
 void System::frame() {
