@@ -499,8 +499,8 @@ namespace BizHawk.MultiClient
 		public string DecreaseSpeedBinding = "Minus";
 		public string HardResetBinding = "";
 		public string RebootCoreResetBinding = "Ctrl+R";
-		public string FastForwardBinding = "Tab, J1 B6";
-		public string RewindBinding = "Shift+R, J1 B5";
+		public string FastForwardBinding = "Tab, X1 RightShoulder";
+		public string RewindBinding = "Shift+R, X1 LeftShoulder";
 		public string EmulatorPauseBinding = "Pause";
 		public string FrameAdvanceBinding = "F";
 		public string TurboBinding = "";
@@ -600,7 +600,7 @@ namespace BizHawk.MultiClient
 		public bool SmsSpriteLimit = false;
 
 		public string SmsReset = "C";
-		public string SmsPause = "V, J1 B8";
+		public string SmsPause = "V, X1 Start";
 		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
 
@@ -691,12 +691,12 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "UpArrow, J1 Up";
-				Down = "DownArrow, J1 Down";
-				Left = "LeftArrow, J1 Left";
-				Right = "RightArrow, J1 Right";
-				B1 = "Z, J1 B1";
-				B2 = "X, J1 B2";
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				B1 = "Z, X1 A";
+				B2 = "X, X1 B";
 			}
 			else
 			{
@@ -728,14 +728,14 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "UpArrow, J1 Up";
-				Down = "DownArrow, J1 Down";
-				Left = "LeftArrow, J1 Left";
-				Right = "RightArrow, J1 Right";
-				I = "Z, J1 B2";
-				II = "X, J1 B1";
-				Run = "C, J1 B8";
-				Select = "V, J1 B7";
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				I = "Z, X1 B";
+				II = "X, X1 A";
+				Run = "C, X1 Start";
+				Select = "V, X1 Back";
 			}
 			else
 			{
@@ -770,18 +770,18 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "UpArrow, J1 Up";
-				Down = "DownArrow, J1 Down";
-				Left = "LeftArrow, J1 Left";
-				Right = "RightArrow, J1 Right";
-				A = "X, J1 B2";
-				B = "Z, J1 B1";
-				Y = "A, J1 B3";
-				X = "S, J1 B4";
-				L = "W";
-				R = "E";
-				Start = "Return, J1 B8";
-				Select = "Space, J1 B7";
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				A = "X, X1 B";
+				B = "Z, X1 A";
+				Y = "A, X1 X";
+				X = "S, X1 Y";
+				L = "W, X1 LeftTrigger";
+				R = "E, X1 RightTrigger";
+				Start = "Return, X1 Start";
+				Select = "Space, X1 Back";
 			}
 			else
 			{
@@ -816,14 +816,14 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "UpArrow, J1 Up";
-				Down = "DownArrow, J1 Down";
-				Left = "LeftArrow, J1 Left";
-				Right = "RightArrow, J1 Right";
-				A = "X, J1 B2";
-				B = "Z, J1 B1";
-				Start = "Return, J1 B8";
-				Select = "Space, J1 B7";
+                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				A = "X, X1 B";
+				B = "Z, X1 A";
+				Start = "Return, X1 Start";
+				Select = "Space, X1 Back";
 			}
 			else
 			{
@@ -857,14 +857,14 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "UpArrow, J1 Up";
-				Down = "DownArrow, J1 Down";
-				Left = "LeftArrow, J1 Left";
-				Right = "RightArrow, J1 Right";
-				A = "X, J1 B2";
-				B = "Z, J1 B1";
-				Start = "Return, J1 B8";
-				Select = "Space, J1 B7";
+                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				A = "X, X1 B";
+				B = "Z, X1 A";
+				Start = "Return, X1 Start";
+				Select = "Space, X1 Back";
 			}
 			else
 			{
@@ -899,14 +899,14 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "UpArrow, J1 Up";
-				Down = "DownArrow, J1 Down";
-				Left = "LeftArrow, J1 Left";
-				Right = "RightArrow, J1 Right";
-				A = "Z, J1 B1";
-				B = "X, J1 B3";
-				C = "C, J1 B4";
-				Start = "Return, J1 B8";
+                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				A = "Z, X1 A";
+				B = "X, X1 X";
+				C = "C, X1 Y";
+				Start = "Return, X1 Start";
 			}
 		}
 	}
@@ -926,11 +926,11 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "UpArrow, J1 Up";
-				Down = "DownArrow, J1 Down";
-				Left = "LeftArrow, J1 Left";
-				Right = "RightArrow, J1 Right";
-				Button = "Z, J1 B1";
+                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				Button = "Z, X1 A";
 			}
 		}
 	}
@@ -983,10 +983,10 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "UpArrow, J1 Up";
-				Down = "DownArrow, J1 Down";
-				Left = "LeftArrow, J1 Left";
-				Right = "RightArrow, J1 Right";
+                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
 				L1 = "Z, J1 B1";
 				L2 = "X, J1 B2";
 				R1 = "C, J1 B1";
