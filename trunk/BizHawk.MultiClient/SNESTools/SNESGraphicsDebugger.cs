@@ -26,6 +26,22 @@ namespace BizHawk.MultiClient
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
+
+			var displayTypeItems = new List<DisplayTypeItem>();
+			displayTypeItems.Add(new DisplayTypeItem("BG1", eDisplayType.BG1));
+			displayTypeItems.Add(new DisplayTypeItem("BG1", eDisplayType.BG1));
+			displayTypeItems.Add(new DisplayTypeItem("BG2",eDisplayType.BG2));
+			displayTypeItems.Add(new DisplayTypeItem("BG3",eDisplayType.BG3));
+			displayTypeItems.Add(new DisplayTypeItem("BG4",eDisplayType.BG4));
+			displayTypeItems.Add(new DisplayTypeItem("OBJ",eDisplayType.OBJ));
+			displayTypeItems.Add(new DisplayTypeItem("2bpp tiles",eDisplayType.Tiles2bpp));
+			displayTypeItems.Add(new DisplayTypeItem("4bpp tiles",eDisplayType.Tiles4bpp));
+			displayTypeItems.Add(new DisplayTypeItem("8bpp tiles",eDisplayType.Tiles8bpp));
+			displayTypeItems.Add(new DisplayTypeItem("Mode7 tiles",eDisplayType.TilesMode7));
+			displayTypeItems.Add(new DisplayTypeItem("Mode7Ext tiles",eDisplayType.TilesMode7Ext));
+			displayTypeItems.Add(new DisplayTypeItem("Mode7 tiles (DC)", eDisplayType.TilesMode7DC));
+
+			comboDisplayType.DataSource = displayTypeItems;
 			comboDisplayType.SelectedIndex = 0;
 			comboBGProps.SelectedIndex = 0;
 
@@ -170,6 +186,8 @@ namespace BizHawk.MultiClient
 			UpdateColorDetails();
 		}
 
+		eDisplayType CurrDisplaySelection { get { return (comboDisplayType.SelectedValue as eDisplayType?).Value; } }
+
 		//todo - something smarter to cycle through bitmaps without repeatedly trashing them (use the dispose callback on the viewer)
 		void RenderView()
 		{
@@ -188,43 +206,43 @@ namespace BizHawk.MultiClient
 
 			var gd = new SNESGraphicsDecoder();
 			gd.CacheTiles();
-			string selection = comboDisplayType.SelectedItem as string;
-			if (selection == "2bpp tiles")
+			var selection = CurrDisplaySelection;
+			if (selection == eDisplayType.Tiles2bpp)
 			{
 				allocate(512, 512);
 				gd.RenderTilesToScreen(pixelptr, 64, 64, stride / 4, 2, currPaletteSelection.start);
 			}
-			if (selection == "4bpp tiles")
+			if (selection == eDisplayType.Tiles4bpp)
 			{
 				allocate(512, 512);
 				gd.RenderTilesToScreen(pixelptr, 64, 32, stride / 4, 4, currPaletteSelection.start);
 			}
-			if (selection == "8bpp tiles")
+			if (selection == eDisplayType.Tiles8bpp)
 			{
 				allocate(256, 256);
 				gd.RenderTilesToScreen(pixelptr, 32, 32, stride / 4, 8, currPaletteSelection.start);
 			}
-			if (selection == "Mode7 tiles")
+			if (selection == eDisplayType.TilesMode7)
 			{
 				//256 tiles
 				allocate(128, 128);
 				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, false, false);
 			}
-			if (selection == "Mode7Ext tiles")
+			if (selection == eDisplayType.TilesMode7Ext)
 			{
 				//256 tiles
 				allocate(128, 128);
 				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, true, false);
 			}
-			if (selection == "Mode7 tiles (DC)")
+			if (selection == eDisplayType.TilesMode7DC)
 			{
 				//256 tiles
 				allocate(128, 128);
 				gd.RenderMode7TilesToScreen(pixelptr, stride / 4, false, true);
 			}
-			if (selection == "BG1" || selection == "BG2" || selection == "BG3" || selection == "BG4")
+			if (IsDisplayTypeBG(selection))
 			{
-				int bgnum = int.Parse(selection.Substring(2));
+				int bgnum = (int)selection;
 				var si = gd.ScanScreenInfo();
 				var bg = si.BG[bgnum];
 
@@ -274,6 +292,23 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		enum eDisplayType
+		{
+			BG1=1, BG2=2, BG3=3, BG4=4, OBJ, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC
+		}
+		static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
+		static int DisplayTypeBGNum(eDisplayType type) { if(IsDisplayTypeBG(type)) return (int)type; else return -1; }
+
+		class DisplayTypeItem
+		{
+			public eDisplayType type { get; set; }
+			public string descr { get; set; }
+			public DisplayTypeItem(string descr, eDisplayType type)
+			{
+				this.type = type;
+				this.descr = descr;
+			}
+		}
 
 		private void comboDisplayType_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -359,7 +394,7 @@ namespace BizHawk.MultiClient
 		int[] lastPalette;
 		int lastColorNum = 0;
 		int selectedColorNum = 0;
-		PaletteSelection currPaletteSelection;
+		SNESGraphicsDecoder.PaletteSelection currPaletteSelection;
 
 		Rectangle GetPaletteRegion(int start, int num)
 		{
@@ -367,10 +402,16 @@ namespace BizHawk.MultiClient
 			ret.X = start % 16;
 			ret.Y = start / 16;
 			ret.Width = num;
-			ret.Height = num/16;
+			ret.Height = num / 16;
 			if (ret.Height == 0) ret.Height = 1;
 			if (ret.Width > 16) ret.Width = 16;
 			return ret;
+		}
+
+		Rectangle GetPaletteRegion(SNESGraphicsDecoder.PaletteSelection sel)
+		{
+			int start = sel.start, num = sel.size;
+			return GetPaletteRegion(start, num);
 		}
 
 		void DrawPaletteRegion(Graphics g, Color color, Rectangle region)
@@ -387,23 +428,18 @@ namespace BizHawk.MultiClient
 				g.DrawRectangle(pen, rect);
 		}
 
-		class PaletteSelection
-		{
-			public int start, size;
-		}
-
 		//if a tile set is being displayed, this will adapt the user's color selection into a palette to be used for rendering the tiles
-		PaletteSelection GetPaletteSelectionForTileDisplay(int colorSelection)
+		SNESGraphicsDecoder.PaletteSelection GetPaletteSelectionForTileDisplay(int colorSelection)
 		{
 			int bpp = 0;
-			string selection = comboDisplayType.SelectedItem as string;
-			if (selection == "2bpp tiles") bpp=2;
-			if (selection == "4bpp tiles") bpp=4;
-			if (selection == "8bpp tiles") bpp=8;
-			if (selection == "Mode7 tiles") bpp=8;
-			if (selection == "Mode7Ext tiles") bpp = 7;
-			
-			PaletteSelection ret = new PaletteSelection();
+			var selection = CurrDisplaySelection;
+			if (selection == eDisplayType.Tiles2bpp) bpp=2;
+			if (selection == eDisplayType.Tiles4bpp) bpp = 4;
+			if (selection == eDisplayType.Tiles8bpp) bpp = 8;
+			if (selection == eDisplayType.TilesMode7) bpp = 8;
+			if (selection == eDisplayType.TilesMode7Ext) bpp = 7;
+
+			SNESGraphicsDecoder.PaletteSelection ret = new SNESGraphicsDecoder.PaletteSelection();
 			if(bpp == 0) return ret;
 
 			//mode7 ext is fixed to use the top 128 colors
@@ -446,10 +482,18 @@ namespace BizHawk.MultiClient
 				//first, draw the current selection
 				var region = GetPaletteRegion(selectedColorNum, 1);
 				DrawPaletteRegion(g, Color.Red, region);
-				var palSelection = GetPaletteSelectionForTileDisplay(selectedColorNum);
-				if (palSelection.size != 0)
+				//next, draw the rectangle that advises you which colors could possibly be used for a bg
+				if (IsDisplayTypeBG(CurrDisplaySelection))
 				{
-					region = GetPaletteRegion(palSelection.start, palSelection.size);
+					var si = gd.ScanScreenInfo();
+					var ps = si.BG[DisplayTypeBGNum(CurrDisplaySelection)].PaletteSelection;
+					region = GetPaletteRegion(ps);
+					DrawPaletteRegion(g, Color.FromArgb(192, 128, 255, 255), region);
+				}
+				//finally, draw the palette the user has chosen, in case he's viewing tiles
+				if (currPaletteSelection.size != 0)
+				{
+					region = GetPaletteRegion(currPaletteSelection.start, currPaletteSelection.size);
 					DrawPaletteRegion(g, Color.FromArgb(192,255,255,255), region);
 				}
 			}
