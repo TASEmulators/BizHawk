@@ -626,13 +626,13 @@ namespace BizHawk.MultiClient
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.Cheats;
 			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.TASTudio;
 
-			if (INTERIM)
+			if (INTERIM && Global.Emulator.CoreOutputComm.CpuTraceAvailable)
 			{
-				traceLoggerToolStripMenuItem.Visible = true;
+				traceLoggerToolStripMenuItem.Enabled = true;
 			}
 			else
 			{
-				traceLoggerToolStripMenuItem.Visible = false;
+				traceLoggerToolStripMenuItem.Enabled = false;
 			}
 		}
 

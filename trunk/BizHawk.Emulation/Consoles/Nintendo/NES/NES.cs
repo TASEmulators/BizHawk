@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public NES(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
+			CoreOutputComm.CpuTraceAvailable = true;
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
