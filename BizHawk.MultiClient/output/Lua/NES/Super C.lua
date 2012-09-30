@@ -47,7 +47,7 @@ end
 local function bullets()
 	-- P1
 	if mainmemory.read_u8(0xC6) ~= 0 then
-		for i = 0,4,1 do
+		for i = 0,9,1 do
 			local x = mainmemory.read_u8(projxbase + i)
 			local y = mainmemory.read_u8(projybase + i)
 			
