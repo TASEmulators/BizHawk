@@ -345,6 +345,7 @@ namespace BizHawk.MultiClient
 				case "NES":
 					return "|.|........|........|........|........|";
 				case "SNES":
+				case "SGB":
 					return "|.|............|............|............|............|";
 				case "SMS":
 				case "GG":
