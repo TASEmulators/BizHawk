@@ -422,6 +422,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			LibsnesDll.snes_power();
 
 			SetupMemoryDomains(romData);
+
+			// disallow any future modifications to the DeterministicEmulation parameter, and set initial deterministic savestate
+			_DeterministicEmulationProtected = true;
+			if (DeterministicEmulation)
+				CoreSaveStateInternal(true);
 		}
 
 		//must keep references to these so that they wont get garbage collected
@@ -571,6 +576,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			if (IsLagFrame)
 				LagCount++;
+
+			if (DeterministicEmulation)
+			{
+				// save the one internal savestate for this frame now
+				CoreSaveStateInternal(true);
+			}
 		}
 
 		//video provider
@@ -611,7 +622,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 		public string SystemId { get; private set; }
-		public bool DeterministicEmulation { get; set; }
+
+
+		bool _DeterministicEmulation = false;
+		bool _DeterministicEmulationProtected = false;
+		public bool DeterministicEmulation
+		{
+			get { return _DeterministicEmulation; }
+			set
+			{
+				if (_DeterministicEmulationProtected)
+					throw new Exception("snes: DeterministicEmulation must be set before load!");
+				_DeterministicEmulation = value;
+			}
+		}
+
+
 		public bool SaveRamModified
 		{
 			set { }
@@ -669,10 +695,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			int size = LibsnesDll.snes_serialize_size();
-			byte[] buf = new byte[size];
-			fixed (byte* pbuf = &buf[0])
-				LibsnesDll.snes_serialize(new IntPtr(pbuf), size);
+			byte[] buf = CoreSaveState();
 			writer.Write(buf);
 
 			// other variables
@@ -685,10 +708,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int size = LibsnesDll.snes_serialize_size();
-
 			byte[] buf = reader.ReadBytes(size);
-			fixed (byte* pbuf = &buf[0])
-				LibsnesDll.snes_unserialize(new IntPtr(pbuf), size);
+			CoreLoadState(buf);
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -702,6 +723,52 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
+		}
+
+		/// <summary>
+		/// handle the unmanaged part of loadstating
+		/// </summary>
+		void CoreLoadState(byte[] data)
+		{
+			int size = LibsnesDll.snes_serialize_size();
+			if (data.Length != size)
+				throw new Exception("Libsnes internal savestate size mismatch!");		
+			fixed (byte* pbuf = &data[0])
+				LibsnesDll.snes_unserialize(new IntPtr(pbuf), size);
+		}
+		/// <summary>
+		/// handle the unmanaged part of savestating
+		/// </summary>
+		byte[] CoreSaveState()
+		{
+			if (!DeterministicEmulation)
+				return CoreSaveStateInternal(false);
+			else
+				return savestatebuff;
+		}
+
+		/// <summary>
+		/// most recent internal savestate, for deterministic mode
+		/// </summary>
+		byte[] savestatebuff;
+
+		/// <summary>
+		/// internal function handling savestate
+		/// this can cause determinism problems if called improperly!
+		/// </summary>
+		byte[] CoreSaveStateInternal(bool store)
+		{
+			int size = LibsnesDll.snes_serialize_size();
+			byte[] buf = new byte[size];
+			fixed (byte* pbuf = &buf[0])
+				LibsnesDll.snes_serialize(new IntPtr(pbuf), size);
+			if (store)
+			{
+				savestatebuff = buf;
+				return null;
+			}
+			else
+				return buf;
 		}
 
 		// Arbitrary extensible core comm mechanism
