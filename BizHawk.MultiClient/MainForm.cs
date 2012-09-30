@@ -2687,33 +2687,37 @@ namespace BizHawk.MultiClient
 
 		public void FrameBufferResized()
 		{
-			var video = Global.Emulator.VideoProvider;
-			int zoom = Global.Config.TargetZoomFactor;
-			var area = Screen.FromControl(this).WorkingArea;
-
-			int borderWidth = Size.Width - renderTarget.Size.Width;
-			int borderHeight = Size.Height - renderTarget.Size.Height;
-
-			// start at target zoom and work way down until we find acceptable zoom
-			for (; zoom >= 1; zoom--)
+			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
+			for (int i = 0; i < 2; i++)
 			{
-				if ((((video.BufferWidth * zoom) + borderWidth) < area.Width) && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
-					break;
-			}
+				var video = Global.Emulator.VideoProvider;
+				int zoom = Global.Config.TargetZoomFactor;
+				var area = Screen.FromControl(this).WorkingArea;
 
-			// Change size
-			Size = new Size((video.BufferWidth * zoom) + borderWidth, (video.BufferHeight * zoom + borderHeight));
-			PerformLayout();
-			Global.RenderPanel.Resized = true;
+				int borderWidth = Size.Width - renderTarget.Size.Width;
+				int borderHeight = Size.Height - renderTarget.Size.Height;
 
-			// Is window off the screen at this size?
-			if (area.Contains(Bounds) == false)
-			{
-				if (Bounds.Right > area.Right) // Window is off the right edge
-					Location = new Point(area.Right - Size.Width, Location.Y);
+				// start at target zoom and work way down until we find acceptable zoom
+				for (; zoom >= 1; zoom--)
+				{
+					if ((((video.BufferWidth * zoom) + borderWidth) < area.Width) && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+						break;
+				}
 
-				if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
-					Location = new Point(Location.X, area.Bottom - Size.Height);
+				// Change size
+				Size = new Size((video.BufferWidth * zoom) + borderWidth, (video.BufferHeight * zoom + borderHeight));
+				PerformLayout();
+				Global.RenderPanel.Resized = true;
+
+				// Is window off the screen at this size?
+				if (area.Contains(Bounds) == false)
+				{
+					if (Bounds.Right > area.Right) // Window is off the right edge
+						Location = new Point(area.Right - Size.Width, Location.Y);
+
+					if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
+						Location = new Point(Location.X, area.Bottom - Size.Height);
+				}
 			}
 		}
 
