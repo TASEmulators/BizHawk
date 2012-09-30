@@ -29,7 +29,6 @@ namespace BizHawk.MultiClient
 
 			var displayTypeItems = new List<DisplayTypeItem>();
 			displayTypeItems.Add(new DisplayTypeItem("BG1", eDisplayType.BG1));
-			displayTypeItems.Add(new DisplayTypeItem("BG1", eDisplayType.BG1));
 			displayTypeItems.Add(new DisplayTypeItem("BG2",eDisplayType.BG2));
 			displayTypeItems.Add(new DisplayTypeItem("BG3",eDisplayType.BG3));
 			displayTypeItems.Add(new DisplayTypeItem("BG4",eDisplayType.BG4));
@@ -181,6 +180,7 @@ namespace BizHawk.MultiClient
 			sizeInPixels.Height *= si.BG[bgnum].TileSize;
 			txtBG1SizeInPixels.Text = string.Format("{0}x{1}", sizeInPixels.Width, sizeInPixels.Height);
 
+			SyncColorSelection();
 			RenderView();
 			RenderPalette();
 			UpdateColorDetails();
@@ -312,8 +312,10 @@ namespace BizHawk.MultiClient
 
 		private void comboDisplayType_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			SyncColorSelection();
 			UpdateValues();
+			//change the bg props viewer to match
+			if (IsDisplayTypeBG(CurrDisplaySelection))
+				comboBGProps.SelectedIndex = DisplayTypeBGNum(CurrDisplaySelection) - 1;
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
