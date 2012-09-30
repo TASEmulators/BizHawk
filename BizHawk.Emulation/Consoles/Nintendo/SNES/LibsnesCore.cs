@@ -573,8 +573,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }
 
-		int[] vidBuffer = new int[256 * 256];
-		int vidWidth = 256, vidHeight = 256;
+		int[] vidBuffer = new int[256 * 224];
+		int vidWidth = 256, vidHeight = 224;
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
