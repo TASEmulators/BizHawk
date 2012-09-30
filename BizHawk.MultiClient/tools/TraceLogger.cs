@@ -12,10 +12,10 @@ namespace BizHawk.MultiClient
 {
 	public partial class TraceLogger : Form
 	{
-		//Log files as a path config option
 		//Save to file - saves what's on screen to disk (defaults to the current log file)
 		//Show file that is being logged to
 		//Browse button to set file
+		//Refresh rate slider
 
 		List<string> Instructions = new List<string>();
 		FileInfo LogFile;
@@ -230,7 +230,7 @@ namespace BizHawk.MultiClient
 			if (ToFileRadio.Checked)
 			{
 				string name = PathManager.FilesystemSafeName(Global.Game);
-				string filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.WatchPath, ""), name) + ".txt";
+				string filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.LogPath, ""), name) + ".txt";
 				LogFile = new FileInfo(filename);
 				if (!LogFile.Directory.Exists)
 				{

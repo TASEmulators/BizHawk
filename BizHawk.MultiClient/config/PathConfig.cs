@@ -138,6 +138,7 @@ namespace BizHawk.MultiClient
 			LuaBox.Text = Global.Config.LuaPath;
 			WatchBox.Text = Global.Config.WatchPath;
 			AVIBox.Text = Global.Config.AVIPath;
+			LogBox.Text = Global.Config.LogPath;
 
 			PCEBiosBox.Text = Global.Config.PathPCEBios;
 
@@ -241,6 +242,7 @@ namespace BizHawk.MultiClient
 			Global.Config.LuaPath = LuaBox.Text;
 			Global.Config.WatchPath = WatchBox.Text;
 			Global.Config.AVIPath = AVIBox.Text;
+			Global.Config.LogPath = LogBox.Text;
 
 			Global.Config.PathPCEBios = PCEBiosBox.Text;
 
@@ -739,6 +741,11 @@ namespace BizHawk.MultiClient
 		private void SNESBrowseFirmwares_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(SNESFirmwaresBox, SNESFirmwaresDescription.Text);
+		}
+
+		private void BrowseLog_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(LogBox, LogDescription.Text);
 		}
 	}
 }
