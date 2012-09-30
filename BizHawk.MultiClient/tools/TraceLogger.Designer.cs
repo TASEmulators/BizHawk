@@ -39,14 +39,16 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.setMaxWindowLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.ToFileRadio = new System.Windows.Forms.RadioButton();
+			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
 			this.ClearButton = new System.Windows.Forms.Button();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
 			this.CloseButton = new System.Windows.Forms.Button();
-			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.setMaxWindowLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.TracerBox.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -150,6 +152,18 @@
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
 			// 
+			// setMaxWindowLinesToolStripMenuItem
+			// 
+			this.setMaxWindowLinesToolStripMenuItem.Name = "setMaxWindowLinesToolStripMenuItem";
+			this.setMaxWindowLinesToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.setMaxWindowLinesToolStripMenuItem.Text = "&Set Max Window Lines...";
+			this.setMaxWindowLinesToolStripMenuItem.Click += new System.EventHandler(this.setMaxWindowLinesToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(198, 6);
+			// 
 			// autoloadToolStripMenuItem
 			// 
 			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
@@ -157,22 +171,54 @@
 			this.autoloadToolStripMenuItem.Text = "&Autoload";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "&Save Window Position";
+			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			// 
 			// groupBox2
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+			this.groupBox2.Controls.Add(this.ToFileRadio);
+			this.groupBox2.Controls.Add(this.ToWindowRadio);
 			this.groupBox2.Controls.Add(this.ClearButton);
 			this.groupBox2.Controls.Add(this.LoggingEnabled);
 			this.groupBox2.Location = new System.Drawing.Point(12, 477);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(218, 50);
+			this.groupBox2.Size = new System.Drawing.Size(530, 50);
 			this.groupBox2.TabIndex = 3;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Control";
 			// 
+			// ToFileRadio
+			// 
+			this.ToFileRadio.AutoSize = true;
+			this.ToFileRadio.Location = new System.Drawing.Point(173, 22);
+			this.ToFileRadio.Name = "ToFileRadio";
+			this.ToFileRadio.Size = new System.Drawing.Size(50, 17);
+			this.ToFileRadio.TabIndex = 3;
+			this.ToFileRadio.Text = "to file";
+			this.ToFileRadio.UseVisualStyleBackColor = true;
+			this.ToFileRadio.CheckedChanged += new System.EventHandler(this.ToFileRadio_CheckedChanged);
+			// 
+			// ToWindowRadio
+			// 
+			this.ToWindowRadio.AutoSize = true;
+			this.ToWindowRadio.Checked = true;
+			this.ToWindowRadio.Location = new System.Drawing.Point(94, 22);
+			this.ToWindowRadio.Name = "ToWindowRadio";
+			this.ToWindowRadio.Size = new System.Drawing.Size(73, 17);
+			this.ToWindowRadio.TabIndex = 2;
+			this.ToWindowRadio.TabStop = true;
+			this.ToWindowRadio.Text = "to window";
+			this.ToWindowRadio.UseVisualStyleBackColor = true;
+			// 
 			// ClearButton
 			// 
-			this.ClearButton.Location = new System.Drawing.Point(121, 19);
+			this.ClearButton.Location = new System.Drawing.Point(449, 19);
 			this.ClearButton.Name = "ClearButton";
 			this.ClearButton.Size = new System.Drawing.Size(75, 23);
 			this.ClearButton.TabIndex = 1;
@@ -186,9 +232,9 @@
 			this.LoggingEnabled.AutoSize = true;
 			this.LoggingEnabled.Location = new System.Drawing.Point(9, 19);
 			this.LoggingEnabled.Name = "LoggingEnabled";
-			this.LoggingEnabled.Size = new System.Drawing.Size(97, 23);
+			this.LoggingEnabled.Size = new System.Drawing.Size(55, 23);
 			this.LoggingEnabled.TabIndex = 0;
-			this.LoggingEnabled.Text = "&Logging Enabled";
+			this.LoggingEnabled.Text = "&Logging";
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
 			// 
@@ -203,25 +249,6 @@
 			this.CloseButton.Text = "&Close";
 			this.CloseButton.UseVisualStyleBackColor = true;
 			this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
-			// 
-			// saveWindowPositionToolStripMenuItem
-			// 
-			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-			this.saveWindowPositionToolStripMenuItem.Text = "&Save Window Position";
-			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
-			// 
-			// setMaxWindowLinesToolStripMenuItem
-			// 
-			this.setMaxWindowLinesToolStripMenuItem.Name = "setMaxWindowLinesToolStripMenuItem";
-			this.setMaxWindowLinesToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-			this.setMaxWindowLinesToolStripMenuItem.Text = "&Set Max Window Lines...";
-			this.setMaxWindowLinesToolStripMenuItem.Click += new System.EventHandler(this.setMaxWindowLinesToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(198, 6);
 			// 
 			// TraceLogger
 			// 
@@ -268,5 +295,7 @@
 		private System.Windows.Forms.ToolStripMenuItem setMaxWindowLinesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
+		private System.Windows.Forms.RadioButton ToFileRadio;
+		private System.Windows.Forms.RadioButton ToWindowRadio;
 	}
 }

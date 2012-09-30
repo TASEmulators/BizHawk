@@ -6,12 +6,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace BizHawk.MultiClient
 {
 	public partial class TraceLogger : Form
 	{
 		List<string> Instructions = new List<string>();
+		FileInfo LogFile;
 
 		public TraceLogger()
 		{
@@ -64,7 +66,6 @@ namespace BizHawk.MultiClient
 		public void UpdateValues()
 		{
 			DoInstructions();
-			SetTracerBoxTitle();
 		}
 
 		public void Restart()
@@ -80,6 +81,7 @@ namespace BizHawk.MultiClient
 					ClearList();
 				}
 				else
+
 				{
 					this.Close();
 				}
@@ -110,6 +112,27 @@ namespace BizHawk.MultiClient
 
 		private void DoInstructions()
 		{
+			if (ToWindowRadio.Checked)
+			{
+				LogToWindow();
+				SetTracerBoxTitle();
+			}
+			else
+			{
+				LogToFile();
+			}
+		}
+
+		private void LogToFile()
+		{
+			using (StreamWriter sw = new StreamWriter(LogFile.FullName, true))
+			{
+				sw.Write(Global.CoreInputComm.Tracer.TakeContents());
+			}
+		}
+
+		private void LogToWindow()
+		{
 			string[] instructions = Global.CoreInputComm.Tracer.TakeContents().Split('\n');
 			if (!String.IsNullOrWhiteSpace(instructions[0]))
 			{
@@ -118,14 +141,15 @@ namespace BizHawk.MultiClient
 					Instructions.Add(s);
 				}
 
-				if (Instructions.Count >= Global.Config.TraceLoggerMaxLines)
-				{
-					int x = Instructions.Count - Global.Config.TraceLoggerMaxLines;
-					Instructions.RemoveRange(0, x);
-				}
-
-				TraceView.ItemCount = Instructions.Count;
+				
 			}
+			if (Instructions.Count >= Global.Config.TraceLoggerMaxLines)
+			{
+				int x = Instructions.Count - Global.Config.TraceLoggerMaxLines;
+				Instructions.RemoveRange(0, x);
+			}
+
+			TraceView.ItemCount = Instructions.Count;
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -170,7 +194,11 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.CoreInputComm.Tracer.Enabled)
 			{
-				if (Instructions.Count > 0)
+				if (ToFileRadio.Checked)
+				{
+					TracerBox.Text = "Trace log - logging to file...";
+				}
+				else if (Instructions.Count > 0)
 				{
 					TracerBox.Text = "Trace log - logging - " + Instructions.Count.ToString() + " instructions";
 				}
@@ -190,6 +218,39 @@ namespace BizHawk.MultiClient
 					TracerBox.Text = "Trace log";
 				}
 			}
+		}
+
+		private void ToFileRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			if (ToFileRadio.Checked)
+			{
+				string name = PathManager.FilesystemSafeName(Global.Game);
+				string filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.WatchPath, ""), name) + ".txt";
+				LogFile = new FileInfo(filename);
+				if (!LogFile.Directory.Exists)
+				{
+					LogFile.Directory.Create();
+				}
+				if (LogFile.Exists)
+				{
+					LogFile.Delete();
+					LogFile.Create();
+				}
+				else
+				{
+					LogFile.Create();
+				}
+			}
+			else
+			{
+				CloseFile();
+			}
+
+			SetTracerBoxTitle();
+		}
+
+		private void CloseFile()
+		{
 		}
 	}
 }
