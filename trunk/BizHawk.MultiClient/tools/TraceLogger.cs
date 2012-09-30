@@ -36,7 +36,14 @@ namespace BizHawk.MultiClient
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
 		{
-			text = Instructions[index];
+			if (index < Instructions.Count)
+			{
+				text = Instructions[index];
+			}
+			else
+			{
+				text = "";
+			}
 		}
 
 		private void TraceLogger_Load(object sender, EventArgs e)
@@ -66,6 +73,7 @@ namespace BizHawk.MultiClient
 		private void ClearList()
 		{
 			Instructions.Clear();
+			TraceView.ItemCount = 0;
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -101,6 +109,11 @@ namespace BizHawk.MultiClient
 		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			autoloadToolStripMenuItem.Checked = Global.Config.TraceLoggerAutoLoad;
+		}
+
+		private void CloseButton_Click(object sender, EventArgs e)
+		{
+			Close();
 		}
 	}
 }
