@@ -278,9 +278,9 @@ namespace BizHawk.MultiClient
 					foreach (int x in indexes)
 					{
 						blob.Append(Instructions[x]);
-						blob.Append('\n');
+						blob.Append("\r\n");
 					}
-					blob.Remove(blob.Length - 1, 1); //Lazy way to not have a line break at the end
+					blob.Remove(blob.Length - 2, 2); //Lazy way to not have a line break at the end
 					Clipboard.SetDataObject(blob.ToString());
 				}
 			}
