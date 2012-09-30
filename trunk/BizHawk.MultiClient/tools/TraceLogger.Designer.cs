@@ -87,6 +87,7 @@
 			this.TraceView.TabIndex = 4;
 			this.TraceView.UseCompatibleStateImageBehavior = false;
 			this.TraceView.View = System.Windows.Forms.View.Details;
+			this.TraceView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TraceView_KeyDown);
 			// 
 			// Script
 			// 

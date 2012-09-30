@@ -12,6 +12,11 @@ namespace BizHawk.MultiClient
 {
 	public partial class TraceLogger : Form
 	{
+		//Log files as a path config option
+		//Save to file - saves what's on screen to disk (defaults to the current log file)
+		//Show file that is being logged to
+		//Browse button to set file
+
 		List<string> Instructions = new List<string>();
 		FileInfo LogFile;
 
@@ -251,6 +256,26 @@ namespace BizHawk.MultiClient
 
 		private void CloseFile()
 		{
+		}
+
+		private void TraceView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control && e.KeyCode == Keys.C)
+			{
+				ListView.SelectedIndexCollection indexes = TraceView.SelectedIndices;
+
+				if (indexes.Count > 0)
+				{
+					StringBuilder blob = new StringBuilder();
+					foreach (int x in indexes)
+					{
+						blob.Append(Instructions[x]);
+						blob.Append('\n');
+					}
+					blob.Remove(blob.Length - 1, 1); //Lazy way to not have a line break at the end
+					Clipboard.SetDataObject(blob.ToString());
+				}
+			}
 		}
 	}
 }
