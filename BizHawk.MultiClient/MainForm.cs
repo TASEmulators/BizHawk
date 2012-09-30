@@ -286,6 +286,8 @@ namespace BizHawk.MultiClient
 				LoadPCEBGViewer();
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
 				LoadSNESGraphicsDebugger();
+			if (Global.Config.TraceLoggerAutoLoad)
+				LoadTraceLogger();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
