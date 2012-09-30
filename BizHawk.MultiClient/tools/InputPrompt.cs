@@ -77,7 +77,7 @@ namespace BizHawk.MultiClient
 				case InputType.TEXT:
 					break;
 				case InputType.HEX:
-					if (e.KeyChar == '\b')
+					if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 					{
 						return;
 					}
@@ -87,7 +87,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case InputType.SIGNED:
-					if (e.KeyChar == '\b')
+					if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 					{
 						return;
 					}
@@ -97,7 +97,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case InputType.UNSIGNED:
-					if (e.KeyChar == '\b')
+					if (e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
 					{
 						return;
 					}
