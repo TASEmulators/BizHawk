@@ -148,6 +148,7 @@ namespace BizHawk.MultiClient
 		public string LuaPath = Path.Combine(".", "Lua");
 		public string WatchPath = ".";
 		public string AVIPath = ".";
+		public string LogPath = ".";
 
 		//BIOS Paths
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
