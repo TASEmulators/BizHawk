@@ -206,14 +206,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//configuration
 		protected int prg_mask, chr_mask;
 		protected int vram_mask;
+		const int pputimeout = 4; // i don't know if this is right, but anything lower will not boot Bill & Ted
 
 		//state
 		public MMC1 mmc1;
+		/// <summary>number of cycles since last WritePRG()</summary>
+		uint ppuclock;
+
+		public override void ClockPPU()
+		{
+			ppuclock++;
+		}
 
 		public override void WritePRG(int addr, byte value)
 		{
-			mmc1.Write(addr, value);
-			SetMirrorType(mmc1.mirror); //often redundant, but gets the job done
+			// mmc1 ignores subsequent writes that are very close together
+			if (ppuclock >= pputimeout)
+			{
+				ppuclock = 0;
+				mmc1.Write(addr, value);
+				SetMirrorType(mmc1.mirror); //often redundant, but gets the job done
+			}
 		}
 
 		public override byte ReadPRG(int addr)
@@ -255,6 +268,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			base.SyncState(ser);
 			mmc1.SyncState(ser);
+			ser.Sync("ppuclock", ref ppuclock);
 		}
 	
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -342,6 +356,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			vram_mask = (Cart.vram_size*1024) - 1;
 			chr_mask = (Cart.chr_size / 8 * 2) - 1;
 			SetMirrorType(mmc1.mirror);
+			ppuclock = pputimeout;
 		}
 
 	} //class SxROM
