@@ -16,15 +16,17 @@ namespace BizHawk.MultiClient
 		public TraceLogger()
 		{
 			InitializeComponent();
+			
 			TraceView.QueryItemText += new QueryItemTextHandler(TraceView_QueryItemText);
 			TraceView.QueryItemBkColor += new QueryItemBkColorHandler(TraceView_QueryItemBkColor);
 			TraceView.VirtualMode = true;
+
 			Closing += (o, e) => SaveConfigSettings();
 		}
 
 		public void SaveConfigSettings()
 		{
-			//TODO
+			Global.CoreInputComm.Tracer.Enabled = false;
 		}
 
 		private void TraceView_QueryItemBkColor(int index, int column, ref Color color)
@@ -34,11 +36,7 @@ namespace BizHawk.MultiClient
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
 		{
-			int x = 0;
-			x++;
-			int y = 0;
 			text = Instructions[index];
-			y = x + text.Length;
 		}
 
 		private void TraceLogger_Load(object sender, EventArgs e)
@@ -51,7 +49,6 @@ namespace BizHawk.MultiClient
 		public void UpdateValues()
 		{
 			DoInstructions();
-			TraceView.Refresh();
 		}
 
 		public void Restart()
@@ -69,7 +66,6 @@ namespace BizHawk.MultiClient
 		private void ClearList()
 		{
 			Instructions.Clear();
-			TraceView.Clear();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
