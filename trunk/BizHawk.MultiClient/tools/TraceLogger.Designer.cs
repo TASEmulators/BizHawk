@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TraceLogger));
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.TracerBox = new System.Windows.Forms.GroupBox();
 			this.TraceView = new BizHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -44,23 +44,26 @@
 			this.ClearButton = new System.Windows.Forms.Button();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
 			this.CloseButton = new System.Windows.Forms.Button();
-			this.groupBox1.SuspendLayout();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.setMaxWindowLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.TracerBox.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// groupBox1
+			// TracerBox
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.TracerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox1.Controls.Add(this.TraceView);
-			this.groupBox1.Location = new System.Drawing.Point(12, 27);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(620, 444);
-			this.groupBox1.TabIndex = 1;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Trace log";
+			this.TracerBox.Controls.Add(this.TraceView);
+			this.TracerBox.Location = new System.Drawing.Point(12, 27);
+			this.TracerBox.Name = "TracerBox";
+			this.TracerBox.Size = new System.Drawing.Size(620, 444);
+			this.TracerBox.TabIndex = 1;
+			this.TracerBox.TabStop = false;
+			this.TracerBox.Text = "Trace log";
 			// 
 			// TraceView
 			// 
@@ -138,7 +141,10 @@
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.autoloadToolStripMenuItem});
+            this.setMaxWindowLinesToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.autoloadToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
@@ -147,7 +153,7 @@
 			// autoloadToolStripMenuItem
 			// 
 			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.autoloadToolStripMenuItem.Text = "&Autoload";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
@@ -198,6 +204,25 @@
 			this.CloseButton.UseVisualStyleBackColor = true;
 			this.CloseButton.Click += new System.EventHandler(this.CloseButton_Click);
 			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "&Save Window Position";
+			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			// 
+			// setMaxWindowLinesToolStripMenuItem
+			// 
+			this.setMaxWindowLinesToolStripMenuItem.Name = "setMaxWindowLinesToolStripMenuItem";
+			this.setMaxWindowLinesToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.setMaxWindowLinesToolStripMenuItem.Text = "&Set Max Window Lines...";
+			this.setMaxWindowLinesToolStripMenuItem.Click += new System.EventHandler(this.setMaxWindowLinesToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(198, 6);
+			// 
 			// TraceLogger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -206,14 +231,14 @@
 			this.ClientSize = new System.Drawing.Size(644, 539);
 			this.Controls.Add(this.CloseButton);
 			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.TracerBox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "TraceLogger";
 			this.Text = "TraceLogger";
 			this.Load += new System.EventHandler(this.TraceLogger_Load);
-			this.groupBox1.ResumeLayout(false);
+			this.TracerBox.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
@@ -225,7 +250,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.GroupBox TracerBox;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
@@ -240,5 +265,8 @@
 		private VirtualListView TraceView;
 		public System.Windows.Forms.ColumnHeader Script;
 		private System.Windows.Forms.Button CloseButton;
+		private System.Windows.Forms.ToolStripMenuItem setMaxWindowLinesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
 	}
 }
