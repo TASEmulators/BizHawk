@@ -206,6 +206,7 @@
     <Compile Include="HawkFile.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Compile Include="Input\GamePad360.cs" />
     <Compile Include="Input\Input.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
