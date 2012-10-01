@@ -3790,5 +3790,10 @@ namespace BizHawk.MultiClient
 		{
 			LoadTraceLogger();
 		}
+
+		private void blurryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DispBlurry ^= true;
+		}
 	}
 }

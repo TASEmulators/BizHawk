@@ -1303,6 +1303,7 @@ namespace BizHawk.MultiClient
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.DisplayGDI;
+			blurryToolStripMenuItem.Checked = Global.Config.DispBlurry;
 			miSuppressGuiLayer.Checked = Global.Config.SuppressGui;
 			showMenuInFullScreenToolStripMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
 			runInBackgroundToolStripMenuItem.Checked = Global.Config.RunInBackground;

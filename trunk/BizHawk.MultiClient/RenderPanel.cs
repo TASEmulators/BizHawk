@@ -493,8 +493,16 @@ namespace BizHawk.MultiClient
 			SpriteFlags flags = SpriteFlags.None;
 			if (overlay) flags |= SpriteFlags.AlphaBlend;
 			Sprite.Begin(flags);
-			Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
-			Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
+			if (Global.Config.DispBlurry)
+			{
+				Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
+				Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
+			}
+			else
+			{
+				Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
+				Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
+			}
 			Sprite.Transform = Matrix.Scaling(finalScale, finalScale, 0f);
 			Sprite.Draw(Texture.Texture, new Rectangle(0, 0, surface.Width, surface.Height), new Vector3(surface.Width / 2f, surface.Height / 2f, 0), new Vector3(backingControl.Size.Width / 2f / finalScale, backingControl.Size.Height / 2f / finalScale, 0), Color.White);
 			Sprite.End();
