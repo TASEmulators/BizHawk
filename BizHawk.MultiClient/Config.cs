@@ -245,6 +245,7 @@ namespace BizHawk.MultiClient
 		public int DispAutoholdx = 0;
 		public int DispAutoholdy = 0;
 		public int DispAutoholdanchor = 1;
+		public bool DispBlurry = false; // make display look ugly
 
 		// Sound options
 		public bool SoundEnabled = true;
