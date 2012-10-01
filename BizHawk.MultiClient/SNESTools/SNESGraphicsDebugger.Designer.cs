@@ -131,6 +131,7 @@
 			this.radioButton5 = new System.Windows.Forms.RadioButton();
 			this.radioButton10 = new System.Windows.Forms.RadioButton();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.tabctrlDetails = new System.Windows.Forms.TabControl();
 			this.tpPalette = new System.Windows.Forms.TabPage();
 			this.txtPaletteDetailsIndexSpecific = new System.Windows.Forms.TextBox();
@@ -144,11 +145,11 @@
 			this.lblDetailsOBJOrBG = new System.Windows.Forms.Label();
 			this.pnDetailsPaletteColor = new System.Windows.Forms.Panel();
 			this.lblDetailsPaletteAddress = new System.Windows.Forms.Label();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.tpTile = new System.Windows.Forms.TabPage();
 			this.viewerPanel = new System.Windows.Forms.Panel();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -162,6 +163,7 @@
 			this.groupBox5.SuspendLayout();
 			this.tabctrlDetails.SuspendLayout();
 			this.tpPalette.SuspendLayout();
+			this.tpTile.SuspendLayout();
 			this.viewerPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -1292,10 +1294,21 @@
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Palette";
 			// 
+			// paletteViewer
+			// 
+			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
+			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
+			this.paletteViewer.Name = "paletteViewer";
+			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
+			this.paletteViewer.TabIndex = 18;
+			this.paletteViewer.TabStop = false;
+			this.paletteViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseClick);
+			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
+			// 
 			// tabctrlDetails
 			// 
 			this.tabctrlDetails.Controls.Add(this.tpPalette);
-			this.tabctrlDetails.Controls.Add(this.tabPage2);
+			this.tabctrlDetails.Controls.Add(this.tpTile);
 			this.tabctrlDetails.Location = new System.Drawing.Point(236, 193);
 			this.tabctrlDetails.Name = "tabctrlDetails";
 			this.tabctrlDetails.SelectedIndex = 0;
@@ -1431,15 +1444,16 @@
 			this.lblDetailsPaletteAddress.TabIndex = 1;
 			this.lblDetailsPaletteAddress.Text = "CGRAM Address ";
 			// 
-			// tabPage2
+			// tpTile
 			// 
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(309, 121);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "tabPage2";
-			this.tabPage2.UseVisualStyleBackColor = true;
+			this.tpTile.Controls.Add(this.viewerTile);
+			this.tpTile.Location = new System.Drawing.Point(4, 22);
+			this.tpTile.Name = "tpTile";
+			this.tpTile.Padding = new System.Windows.Forms.Padding(3);
+			this.tpTile.Size = new System.Drawing.Size(309, 121);
+			this.tpTile.TabIndex = 1;
+			this.tpTile.Text = "Tile";
+			this.tpTile.UseVisualStyleBackColor = true;
 			// 
 			// viewerPanel
 			// 
@@ -1453,26 +1467,6 @@
 			this.viewerPanel.Size = new System.Drawing.Size(516, 667);
 			this.viewerPanel.TabIndex = 1;
 			// 
-			// toolTip1
-			// 
-			this.toolTip1.AutoPopDelay = 5000;
-			this.toolTip1.InitialDelay = 250;
-			this.toolTip1.ReshowDelay = 100;
-			// 
-			// paletteViewer
-			// 
-			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
-			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
-			this.paletteViewer.Name = "paletteViewer";
-			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
-			this.paletteViewer.TabIndex = 18;
-			this.paletteViewer.TabStop = false;
-			this.paletteViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseClick);
-			this.paletteViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseDown);
-			this.paletteViewer.MouseEnter += new System.EventHandler(this.paletteViewer_MouseEnter);
-			this.paletteViewer.MouseLeave += new System.EventHandler(this.paletteViewer_MouseLeave);
-			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
-			// 
 			// viewer
 			// 
 			this.viewer.BackColor = System.Drawing.Color.Transparent;
@@ -1484,6 +1478,21 @@
 			this.viewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseDown);
 			this.viewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseMove);
 			this.viewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseUp);
+			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutoPopDelay = 5000;
+			this.toolTip1.InitialDelay = 250;
+			this.toolTip1.ReshowDelay = 100;
+			// 
+			// viewerTile
+			// 
+			this.viewerTile.BackColor = System.Drawing.Color.Transparent;
+			this.viewerTile.Location = new System.Drawing.Point(6, 6);
+			this.viewerTile.Name = "viewerTile";
+			this.viewerTile.Size = new System.Drawing.Size(64, 64);
+			this.viewerTile.TabIndex = 19;
+			this.viewerTile.TabStop = false;
 			// 
 			// SNESGraphicsDebugger
 			// 
@@ -1517,6 +1526,7 @@
 			this.tabctrlDetails.ResumeLayout(false);
 			this.tpPalette.ResumeLayout(false);
 			this.tpPalette.PerformLayout();
+			this.tpTile.ResumeLayout(false);
 			this.viewerPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -1614,7 +1624,7 @@
 		private System.Windows.Forms.Label lblDetailsOBJOrBG;
 		private System.Windows.Forms.Panel pnDetailsPaletteColor;
 		private System.Windows.Forms.Label lblDetailsPaletteAddress;
-		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.TabPage tpTile;
 		private System.Windows.Forms.Panel viewerPanel;
 		private SNESGraphicsViewer viewer;
 		private System.Windows.Forms.GroupBox groupBox3;
@@ -1644,5 +1654,6 @@
 		private System.Windows.Forms.Label label23;
 		private System.Windows.Forms.Label label27;
 		private System.Windows.Forms.CheckBox checkScreenCGWSEL_DirectColor;
+		private SNESGraphicsViewer viewerTile;
 	}
 }

@@ -26,6 +26,8 @@ namespace BizHawk.MultiClient
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
+			viewerTile.ScaleImage = true;
+			viewer.ScaleImage = false;
 
 			var displayTypeItems = new List<DisplayTypeItem>();
 			displayTypeItems.Add(new DisplayTypeItem("BG1", eDisplayType.BG1));
@@ -81,12 +83,17 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsAfter()
 		{
 			SyncCore();
-			if (!checkScanlineControl.Checked) UpdateValues();
+			if (!checkScanlineControl.Checked)
+			{
+				RegenerateData();
+				UpdateValues();
+			}
 		}
 
 		public void UpdateToolsLoadstate()
 		{
 			SyncCore();
+			RegenerateData();
 			UpdateValues();
 		}
 
@@ -129,16 +136,29 @@ namespace BizHawk.MultiClient
 		void ScanlineHook(int line)
 		{
 			int target = (int)nudScanline.Value;
-			if (target == line) UpdateValues();
+			if (target == line)
+			{
+				RegenerateData();
+				UpdateValues();
+			}
+		}
+
+		SNESGraphicsDecoder gd = new SNESGraphicsDecoder();
+		SNESGraphicsDecoder.ScreenInfo si;
+
+		void RegenerateData()
+		{
+			gd = null;
+			if (currentSnesCore == null) return;
+			gd = new SNESGraphicsDecoder();
+			gd.CacheTiles();
+			si = gd.ScanScreenInfo();
 		}
 
 		void UpdateValues()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (currentSnesCore == null) return;
-
-			var gd = new SNESGraphicsDecoder();
-			var si = gd.ScanScreenInfo();
 
 			checkScreenExtbg.Checked = si.SETINI_Mode7ExtBG;
 			checkScreenHires.Checked = si.SETINI_HiRes;
@@ -183,6 +203,7 @@ namespace BizHawk.MultiClient
 			SyncColorSelection();
 			RenderView();
 			RenderPalette();
+			RenderTileView();
 			UpdateColorDetails();
 		}
 
@@ -204,8 +225,6 @@ namespace BizHawk.MultiClient
 				stride = bmpdata.Stride;
 			};
 
-			var gd = new SNESGraphicsDecoder();
-			gd.CacheTiles();
 			var selection = CurrDisplaySelection;
 			if (selection == eDisplayType.Tiles2bpp)
 			{
@@ -313,6 +332,7 @@ namespace BizHawk.MultiClient
 		private void comboDisplayType_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			UpdateValues();
+
 			//change the bg props viewer to match
 			if (IsDisplayTypeBG(CurrDisplaySelection))
 				comboBGProps.SelectedIndex = DisplayTypeBGNum(CurrDisplaySelection) - 1;
@@ -524,21 +544,6 @@ namespace BizHawk.MultiClient
 		}
 
 
-		private void paletteViewer_MouseDown(object sender, MouseEventArgs e)
-		{
-
-		}
-
-		private void paletteViewer_MouseEnter(object sender, EventArgs e)
-		{
-			tabctrlDetails.SelectedIndex = 0;
-		}
-
-		private void paletteViewer_MouseLeave(object sender, EventArgs e)
-		{
-			ClearDetails();
-		}
-
 		bool TranslatePaletteCoord(Point pt, out Point outpoint)
 		{
 			pt.X -= paletteCellSpacing;
@@ -548,15 +553,6 @@ namespace BizHawk.MultiClient
 			outpoint = new Point(tx, ty);
 			if (tx >= 16 || ty >= 16) return false;
 			return true;
-		}
-
-		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
-		{
-			Point pt;
-			bool valid = TranslatePaletteCoord(e.Location, out pt);
-			if (!valid) return;
-			lastColorNum = pt.Y * 16 + pt.X;
-			UpdateColorDetails();
 		}
 
 		private void paletteViewer_MouseClick(object sender, MouseEventArgs e)
@@ -641,8 +637,80 @@ namespace BizHawk.MultiClient
 				y += dy;
 				viewerPanel.AutoScrollPosition = new Point(-x, -y);
 			}
+			else
+			{
+				UpdateViewerMouseover(e.Location);
+			}
 		}
 
+		int currViewingTile = -1;
+		int currViewingTileBpp = -1;
+		void RenderTileView(bool force=false)
+		{
+			bool valid = currViewingTile != -1;
+			if (!valid && !force) return;
+
+			int bpp = currViewingTileBpp;
+
+			var bmp = new Bitmap(8, 8, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			if(valid) gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, currViewingTile, 1);
+			bmp.UnlockBits(bmpdata);
+			viewerTile.SetBitmap(bmp);
+		}
+
+		void UpdateViewerMouseover(Point loc)
+		{
+			currViewingTile = -1;
+			currViewingTileBpp = -1;
+			int tx = loc.X / 8;
+			int ty = loc.Y / 8;
+			switch (CurrDisplaySelection)
+			{
+			  case eDisplayType.Tiles4bpp:
+					currViewingTileBpp = 4;
+					currViewingTile = ty * 64 + tx;
+					if (currViewingTile < 0 || currViewingTile >= (8192 / currViewingTileBpp))
+						currViewingTile = -1;
+					break;
+			}
+
+			RenderTileView(true);
+		}
+
+		private void viewer_MouseEnter(object sender, EventArgs e)
+		{
+			tabctrlDetails.SelectedIndex = 1;
+		}
+
+		private void viewer_MouseLeave(object sender, EventArgs e)
+		{
+			ClearDetails();
+		}
+
+		private void paletteViewer_MouseDown(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		private void paletteViewer_MouseEnter(object sender, EventArgs e)
+		{
+			tabctrlDetails.SelectedIndex = 0;
+		}
+
+		private void paletteViewer_MouseLeave(object sender, EventArgs e)
+		{
+			ClearDetails();
+		}
+
+		private void paletteViewer_MouseMove(object sender, MouseEventArgs e)
+		{
+			Point pt;
+			bool valid = TranslatePaletteCoord(e.Location, out pt);
+			if (!valid) return;
+			lastColorNum = pt.Y * 16 + pt.X;
+			UpdateColorDetails();
+		}
 
 
 	}
