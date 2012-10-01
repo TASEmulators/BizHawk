@@ -17,6 +17,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 	public unsafe class SNESGraphicsDecoder
 	{
+
+		public class PaletteSelection
+		{
+			public PaletteSelection() { }
+			public PaletteSelection(int start, int size)
+			{
+				this.start = start;
+				this.size = size;
+			}
+			public int start, size;
+		}
+
 		public struct Dimensions
 		{
 			public Dimensions(int w, int h) { Width = w; Height = h; }
@@ -70,6 +82,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public int SCSIZE;
 
 			/// <summary>
+			/// which Mode this BG came from
+			/// </summary>
+			public int Mode;
+
+			/// <summary>
 			/// the address of the screen data
 			/// </summary>
 			public int ScreenAddr { get { return SCADDR << 9; } }
@@ -114,6 +131,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					return new Dimensions(ScreenSizeInTiles.Width * TileSize, ScreenSizeInTiles.Height * TileSize);
 				}
 			}
+
+			/// <summary>
+			/// returns information about what colors could possibly be used for this bg
+			/// </summary>
+			public PaletteSelection PaletteSelection;
+
 		}
 
 		public class BGInfos
@@ -192,6 +215,63 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.BG.BG2.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TDADDR);
 				si.BG.BG3.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_TDADDR);
 				si.BG.BG4.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_TDADDR);
+
+				for (int i = 1; i <= 4; i++)
+					si.BG[i].Mode = si.Mode.MODE;
+
+				//determine which colors each BG could use
+				switch (si.Mode.MODE)
+				{
+					case 0:
+						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 32);
+						si.BG.BG2.PaletteSelection = new PaletteSelection(32, 32);
+						si.BG.BG3.PaletteSelection = new PaletteSelection(64, 32);
+						si.BG.BG4.PaletteSelection = new PaletteSelection(96, 32);
+						break;
+					case 1:
+						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
+						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
+						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 32);
+						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+						break;
+					case 2:
+						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
+						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
+						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+						break;
+					case 3:
+						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 256);
+						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
+						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+						break;
+					case 4:
+						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 256);
+						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 32);
+						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+						break;
+					case 5:
+						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
+						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 32);
+						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+						break;
+					case 6:
+						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 128);
+						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 32);
+						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+						break;
+					case 7:
+						si.BG.BG1.PaletteSelection = new PaletteSelection(0, 256);
+						si.BG.BG2.PaletteSelection = new PaletteSelection(0, 128);
+						si.BG.BG3.PaletteSelection = new PaletteSelection(0, 0);
+						si.BG.BG4.PaletteSelection = new PaletteSelection(0, 0);
+						break;
+
+				}
 
 				return si;
 			}
