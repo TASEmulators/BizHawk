@@ -116,8 +116,11 @@ namespace BizHawk.MultiClient
 		{
 			Input.Instance.Update();
 			string TempBindingStr = Input.Instance.GetNextPressedButtonOrNull();
-			if (wasPressed != "" && TempBindingStr == wasPressed) return;
-			if (TempBindingStr != null)
+			if (wasPressed != "" && TempBindingStr == wasPressed)
+			{
+				return;
+			}
+			else if (TempBindingStr != null)
 			{
 				if (TempBindingStr == "Escape")
 				{
