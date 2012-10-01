@@ -182,7 +182,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		Queue<InputEvent> InputEvents = new Queue<InputEvent>();
+		Queue<InputEvent> InputEvents = new Queue<InputEvent>(); 
 		public InputEvent DequeueEvent()
 		{
 			lock (this)

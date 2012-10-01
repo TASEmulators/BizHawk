@@ -38,6 +38,18 @@ namespace BizHawk.MultiClient
 			SetAutoTab(true);
 		}
 
+		protected override void OnShown(EventArgs e)
+		{
+			Input.Instance.EnableIgnoreModifiers = true;
+			base.OnShown(e);
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+			Input.Instance.EnableIgnoreModifiers = false;
+		}
+
 		private void SetAutoTab(bool setting)
 		{
 			foreach (Control control1 in tabControl1.TabPages)
