@@ -637,7 +637,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			get { return _DeterministicEmulation; }
 			set
 			{
-				if (_DeterministicEmulationProtected)
+				if (_DeterministicEmulationProtected && value != _DeterministicEmulation)
 					throw new Exception("snes: DeterministicEmulation must be set before load!");
 				_DeterministicEmulation = value;
 			}
@@ -762,19 +762,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// internal function handling savestate
 		/// this can cause determinism problems if called improperly!
 		/// </summary>
-		byte[] CoreSaveStateInternal(bool store)
+		byte[] CoreSaveStateInternal(bool cache)
 		{
 			int size = LibsnesDll.snes_serialize_size();
 			byte[] buf = new byte[size];
 			fixed (byte* pbuf = &buf[0])
 				LibsnesDll.snes_serialize(new IntPtr(pbuf), size);
-			if (store)
+			if (cache)
 			{
 				savestatebuff = buf;
 				return null;
 			}
 			else
+			{
+				savestatebuff = null;
 				return buf;
+			}
 		}
 
 		// Arbitrary extensible core comm mechanism
