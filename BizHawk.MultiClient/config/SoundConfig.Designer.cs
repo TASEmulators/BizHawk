@@ -35,6 +35,7 @@
 			this.SoundVolGroup = new System.Windows.Forms.GroupBox();
 			this.SoundVolBar = new System.Windows.Forms.TrackBar();
 			this.SoundVolNumeric = new System.Windows.Forms.NumericUpDown();
+			this.ThrottlecheckBox = new System.Windows.Forms.CheckBox();
 			this.SoundVolGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).BeginInit();
@@ -117,6 +118,16 @@
 			this.SoundVolNumeric.TabIndex = 0;
 			this.SoundVolNumeric.ValueChanged += new System.EventHandler(this.SoundVolNumeric_ValueChanged);
 			// 
+			// ThrottlecheckBox
+			// 
+			this.ThrottlecheckBox.AutoSize = true;
+			this.ThrottlecheckBox.Location = new System.Drawing.Point(147, 58);
+			this.ThrottlecheckBox.Name = "ThrottlecheckBox";
+			this.ThrottlecheckBox.Size = new System.Drawing.Size(96, 17);
+			this.ThrottlecheckBox.TabIndex = 5;
+			this.ThrottlecheckBox.Text = "Sound Throttle";
+			this.ThrottlecheckBox.UseVisualStyleBackColor = true;
+			// 
 			// SoundConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -124,6 +135,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(287, 244);
+			this.Controls.Add(this.ThrottlecheckBox);
 			this.Controls.Add(this.SoundVolGroup);
 			this.Controls.Add(this.MuteFrameAdvance);
 			this.Controls.Add(this.SoundOnCheckBox);
@@ -152,5 +164,6 @@
         private System.Windows.Forms.GroupBox SoundVolGroup;
         private System.Windows.Forms.NumericUpDown SoundVolNumeric;
         private System.Windows.Forms.TrackBar SoundVolBar;
+		private System.Windows.Forms.CheckBox ThrottlecheckBox;
     }
 }

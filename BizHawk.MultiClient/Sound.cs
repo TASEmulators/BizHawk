@@ -130,18 +130,41 @@ namespace BizHawk.MultiClient
 			}
 
 			int samplesNeeded = SNDDXGetAudioSpace() * 2;
-			if (samplesNeeded == 0)
-				return;
+			short[] samples;
 
-			short[] samples = new short[samplesNeeded];
+			if (Global.Config.SoundThrottle)
+			{
+				if (DSoundBuffer == null) return; // can cause SNDDXGetAudioSpace() = 0
+				int samplesWanted = 2 * (int) (44100.0 / Global.Emulator.CoreOutputComm.VsyncRate);
+
+				while (samplesNeeded < samplesWanted)
+				{
+					System.Threading.Thread.Yield(); // TODO: much better sleeping
+					samplesNeeded = SNDDXGetAudioSpace() * 2;
+				}
+				samplesNeeded = samplesWanted;
+				samples = new short[samplesNeeded];
+				// no semisync
+				if (!Muted)
+					soundProvider.GetSamples(samples);
+				else
+					soundProvider.DiscardSamples();
+			}
+			else
+			{
+				if (samplesNeeded == 0)
+					return;
+				samples = new short[samplesNeeded];
+				if (soundProvider != null && Muted == false)
+				{
+					semisync.BaseSoundProvider = soundProvider;
+					semisync.GetSamples(samples);
+				}
+				else soundProvider.DiscardSamples();
+			}
+			
 			//Console.WriteLine(samplesNeeded/2);
 
-			if (soundProvider != null && Muted == false)
-			{
-				semisync.BaseSoundProvider = soundProvider;
-				semisync.GetSamples(samples);
-			}
-			else soundProvider.DiscardSamples();
 
 			int cursor = soundoffset;
 			for (int i = 0; i < samples.Length; i++)

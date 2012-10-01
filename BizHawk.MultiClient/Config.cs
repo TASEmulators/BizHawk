@@ -251,6 +251,7 @@ namespace BizHawk.MultiClient
 		public bool SoundEnabled = true;
 		public bool MuteFrameAdvance = true;
 		public int SoundVolume = 100; //Range 0-100
+		public bool SoundThrottle = false;
 
 		// Log Window
 		public bool LogWindowSaveWindowPosition = true;

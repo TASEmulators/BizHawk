@@ -20,6 +20,7 @@ namespace BizHawk.MultiClient
 		{
 			SoundOnCheckBox.Checked = Global.Config.SoundEnabled;
 			MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
+			ThrottlecheckBox.Checked = Global.Config.SoundThrottle;
 			SoundVolBar.Value = Global.Config.SoundVolume;
 			SoundVolNumeric.Value = Global.Config.SoundVolume;
 			UpdateSoundDialog();
@@ -30,6 +31,7 @@ namespace BizHawk.MultiClient
 			Global.Config.SoundEnabled = SoundOnCheckBox.Checked;
 			Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
 			Global.Config.SoundVolume = SoundVolBar.Value;
+			Global.Config.SoundThrottle = ThrottlecheckBox.Checked;
 			Global.Sound.ChangeVolume(Global.Config.SoundVolume);
 			Global.Sound.UpdateSoundSettings();
 			Global.Sound.StartSound();
@@ -64,11 +66,13 @@ namespace BizHawk.MultiClient
 			{
 				SoundVolGroup.Enabled = true;
 				MuteFrameAdvance.Enabled = true;
+				ThrottlecheckBox.Enabled = true;
 			}
 			else
 			{
 				SoundVolGroup.Enabled = false;
 				MuteFrameAdvance.Enabled = false;
+				ThrottlecheckBox.Enabled = false;
 			}
 		}
 	}
