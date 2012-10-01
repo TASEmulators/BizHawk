@@ -8,6 +8,9 @@ namespace BizHawk.Emulation.CPUs.H6280
 {
     public partial class HuC6280
     {
+        public bool Debug;
+        public Action<string> Logger;
+
         public void Execute(int cycles)
         {
             sbyte rel8;
@@ -55,6 +58,8 @@ namespace BizHawk.Emulation.CPUs.H6280
 
                 IRQControlByte = IRQNextControlByte;
                 LagIFlag = FlagI;
+
+                if (Debug) Logger(State());
 
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)
