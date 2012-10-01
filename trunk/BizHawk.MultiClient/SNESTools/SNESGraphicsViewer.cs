@@ -21,15 +21,9 @@ namespace BizHawk.MultiClient
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			Display(e.Graphics);
 			base.OnPaint(e);
 		}
 
-		void Display(Graphics g)
-		{
-			g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-			g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-		}
 
 		
 		//todo - screenshot?

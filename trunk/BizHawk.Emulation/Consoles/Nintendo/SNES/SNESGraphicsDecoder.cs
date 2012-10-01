@@ -530,6 +530,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
+		//not being used.. do we need it?
+		public int[] GetCachedTile(int bpp, int tilenum)
+		{
+			int[] ret = new int[8 * 8];
+			int idx = tilenum * 64;
+			for (int i = 0; i < 64; i++)
+				ret[i] = _tileCache[bpp][idx + i];
+			return ret;
+		}
 
 		void CacheTilesMode7ExtBg()
 		{
@@ -618,16 +627,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// we might need 16x16 unscrambling and some other perks here eventually.
 		/// provide a start color to use as the basis for the palette
 		/// </summary>
-		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor)
+		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1)
 		{
-			int numTiles = 8192 / bpp;
+			if(numTiles == -1)
+				numTiles = 8192 / bpp;
 			int[] tilebuf = _tileCache[bpp];
 			for (int i = 0; i < numTiles; i++)
 			{
+				int tnum = startTile + i;
 				int ty = i / tilesWide;
 				int tx = i % tilesWide;
 				int dstOfs = (ty * 8) * stride + tx * 8;
-				int srcOfs = i * 64;
+				int srcOfs = tnum * 64;
 				for (int y = 0,p=0; y < 8; y++)
 					for (int x = 0; x < 8; x++,p++)
 					{
