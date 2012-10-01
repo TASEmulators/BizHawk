@@ -68,7 +68,7 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 			KeyInput.Initialize();
 			GamePad.Initialize();
-            GamePad360.Initialize();
+			GamePad360.Initialize();
 #endif
 			Instance = new Input();
 		}
