@@ -145,7 +145,7 @@
 			this.pnDetailsPaletteColor = new System.Windows.Forms.Panel();
 			this.lblDetailsPaletteAddress = new System.Windows.Forms.Label();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.panel2 = new System.Windows.Forms.Panel();
+			this.viewerPanel = new System.Windows.Forms.Panel();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
@@ -162,7 +162,7 @@
 			this.groupBox5.SuspendLayout();
 			this.tabctrlDetails.SuspendLayout();
 			this.tpPalette.SuspendLayout();
-			this.panel2.SuspendLayout();
+			this.viewerPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -245,7 +245,7 @@
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.viewerPanel, 1, 0);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -1441,17 +1441,17 @@
 			this.tabPage2.Text = "tabPage2";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
-			// panel2
+			// viewerPanel
 			// 
-			this.panel2.AutoScroll = true;
-			this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.panel2.Controls.Add(this.viewer);
-			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel2.Location = new System.Drawing.Point(567, 3);
-			this.panel2.Name = "panel2";
-			this.tableLayoutPanel1.SetRowSpan(this.panel2, 2);
-			this.panel2.Size = new System.Drawing.Size(516, 667);
-			this.panel2.TabIndex = 1;
+			this.viewerPanel.AutoScroll = true;
+			this.viewerPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.viewerPanel.Controls.Add(this.viewer);
+			this.viewerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.viewerPanel.Location = new System.Drawing.Point(567, 3);
+			this.viewerPanel.Name = "viewerPanel";
+			this.tableLayoutPanel1.SetRowSpan(this.viewerPanel, 2);
+			this.viewerPanel.Size = new System.Drawing.Size(516, 667);
+			this.viewerPanel.TabIndex = 1;
 			// 
 			// toolTip1
 			// 
@@ -1481,6 +1481,9 @@
 			this.viewer.Size = new System.Drawing.Size(512, 512);
 			this.viewer.TabIndex = 38;
 			this.viewer.TabStop = false;
+			this.viewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseDown);
+			this.viewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseMove);
+			this.viewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseUp);
 			// 
 			// SNESGraphicsDebugger
 			// 
@@ -1514,7 +1517,7 @@
 			this.tabctrlDetails.ResumeLayout(false);
 			this.tpPalette.ResumeLayout(false);
 			this.tpPalette.PerformLayout();
-			this.panel2.ResumeLayout(false);
+			this.viewerPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1612,7 +1615,7 @@
 		private System.Windows.Forms.Panel pnDetailsPaletteColor;
 		private System.Windows.Forms.Label lblDetailsPaletteAddress;
 		private System.Windows.Forms.TabPage tabPage2;
-		private System.Windows.Forms.Panel panel2;
+		private System.Windows.Forms.Panel viewerPanel;
 		private SNESGraphicsViewer viewer;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.CheckBox checkScanlineControl;
