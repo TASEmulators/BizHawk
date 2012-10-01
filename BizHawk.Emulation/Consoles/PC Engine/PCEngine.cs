@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		public PCEngine(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
+            CoreOutputComm.CpuTraceAvailable = true;
 
 			switch (game.System)
 			{
@@ -86,6 +87,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			VDC1 = new VDC(this, Cpu, VCE);
 			PSG = new HuC6280PSG();
 			SCSI = new ScsiCDBus(this, disc);
+
+            Cpu.Logger = (s) => CoreInputComm.Tracer.Put(s);
 
 			if (TurboGrafx)
 			{
@@ -238,6 +241,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
+            Cpu.Debug = CoreInputComm.Tracer.Enabled;
+                        
 			if (SuperGrafx)
 				VPC.ExecFrame(render);
 			else
