@@ -414,10 +414,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 
 			if (LibsnesDll.snes_get_region() == LibsnesDll.SNES_REGION.NTSC)
-				CoreOutputComm.VsyncNum = 60;
+			{
+				//similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
+				CoreOutputComm.VsyncNum = 21477272;
+				CoreOutputComm.VsyncDen = 4 * 341 * 262;
+			}
 			else
+			{
 				CoreOutputComm.VsyncNum = 50;
-			CoreOutputComm.VsyncDen = 1;
+				CoreOutputComm.VsyncDen = 1;
+			}
 
 			LibsnesDll.snes_power();
 
