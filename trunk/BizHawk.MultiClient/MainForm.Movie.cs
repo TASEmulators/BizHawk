@@ -24,7 +24,7 @@ namespace BizHawk.MultiClient
 			Global.MovieSession.Movie = m;
 			RewireInputChain();
 
-			LoadRom(Global.MainForm.CurrentlyOpenRom);
+			LoadRom(Global.MainForm.CurrentlyOpenRom, true);
 			if (!record)
 			{
 				Global.MovieSession.Movie.LoadMovie();
@@ -90,7 +90,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				LoadRom(CurrentlyOpenRom);
+				LoadRom(CurrentlyOpenRom, true);
 				if (Global.MovieSession.Movie.StartsFromSavestate)
 				{
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));

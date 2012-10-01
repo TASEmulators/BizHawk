@@ -1274,7 +1274,7 @@ namespace BizHawk.MultiClient
 				Global.MovieOutputHardpoint.Source = Global.MovieInputSourceAdapter;
 		}
 
-		public bool LoadRom(string path)
+		public bool LoadRom(string path, bool deterministicemulation = false)
 		{
 			if (path == null) return false;
 			using (var file = new HawkFile())
@@ -1401,6 +1401,7 @@ namespace BizHawk.MultiClient
 								{
 									game.System = "SNES";
 									var snes = new LibsnesCore();
+									if (deterministicemulation) snes.DeterministicEmulation = true;
 									nextEmulator = snes;
 									nextEmulator.CoreInputComm = Global.CoreInputComm;
 									snes.Load(game, rom.FileData, null);
@@ -1491,6 +1492,7 @@ namespace BizHawk.MultiClient
 									game.AddOption("SGB");
 									game.System = "SGB";
 									var snes = new LibsnesCore();
+									if (deterministicemulation) snes.DeterministicEmulation = true;
 									nextEmulator = snes;
 									snes.Load(game, rom.FileData, sgbrom);
 								}
@@ -1527,6 +1529,8 @@ namespace BizHawk.MultiClient
 				}
 
 				if (nextEmulator == null) throw new Exception();
+
+				if (deterministicemulation) nextEmulator.DeterministicEmulation = true;
 
 				CloseGame();
 				Global.Emulator.Dispose();
