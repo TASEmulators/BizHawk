@@ -607,6 +607,42 @@ namespace BizHawk.MultiClient
 			SyncViewerSize();
 		}
 
+		bool viewerPan = false;
+		Point panStartLocation;
+		private void viewer_MouseDown(object sender, MouseEventArgs e)
+		{
+			viewer.Capture = true;
+			if ((e.Button & System.Windows.Forms.MouseButtons.Middle) != 0)
+			{
+				viewerPan = true;
+				panStartLocation = viewer.PointToScreen(e.Location);
+				this.Cursor = Cursors.Hand;
+			}
+		}
+
+		private void viewer_MouseUp(object sender, MouseEventArgs e)
+		{
+			viewerPan = false;
+			viewer.Capture = false;
+		}
+
+		private void viewer_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (viewerPan)
+			{
+				var loc = viewer.PointToScreen(e.Location);
+				int dx = loc.X - panStartLocation.X;
+				int dy = loc.Y - panStartLocation.Y;
+				panStartLocation = loc;
+
+				int x = viewerPanel.AutoScrollPosition.X;
+				int y = viewerPanel.AutoScrollPosition.Y;
+				x += dx;
+				y += dy;
+				viewerPanel.AutoScrollPosition = new Point(-x, -y);
+			}
+		}
+
 
 
 	}
