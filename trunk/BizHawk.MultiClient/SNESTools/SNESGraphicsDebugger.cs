@@ -643,24 +643,56 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		class TileViewerBGState
+		{
+			public SNESGraphicsDecoder.TileEntry entry;
+			public int bgnum;
+		}
+		TileViewerBGState currTileViewerBGState;
 		int currViewingTile = -1;
 		int currViewingTileBpp = -1;
 		void RenderTileView(bool force=false)
 		{
+			//TODO - blech - handle invalid some other way with a dedicated black-setter
 			bool valid = currViewingTile != -1;
+			valid |= (currTileViewerBGState != null);
 			if (!valid && !force) return;
 
-			int bpp = currViewingTileBpp;
+			if (currTileViewerBGState != null)
+			{
+				//view a BG tile (no mode7 support yet) - itd be nice if we could generalize this code a bit
+				//TODO - choose correct palette (commonize that code)
+				int paletteStart = 0;
+				var bmp = new Bitmap(8, 8, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				var bgs = currTileViewerBGState;
+				var oneTileEntry = new SNESGraphicsDecoder.TileEntry[] { bgs.entry };
+				if (valid)
+				{
+					gd.DecodeBG((int*)bmpdata.Scan0, bmpdata.Stride / 4, oneTileEntry, si.BG[bgs.bgnum].TiledataAddr, SNESGraphicsDecoder.ScreenSize.Hacky_1x1, si.BG[bgs.bgnum].Bpp, 8, paletteStart);
+					gd.Paletteize((int*)bmpdata.Scan0, 0, 0, 64);
+					gd.Colorize((int*)bmpdata.Scan0, 0, 64);
+				}
 
-			var bmp = new Bitmap(8, 8, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			if(valid) gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, currViewingTile, 1);
-			bmp.UnlockBits(bmpdata);
-			viewerTile.SetBitmap(bmp);
+				bmp.UnlockBits(bmpdata);
+				viewerTile.SetBitmap(bmp);
+			}
+			else
+			{
+				//view a tileset tile
+				int bpp = currViewingTileBpp;
+
+				var bmp = new Bitmap(8, 8, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				if (valid) gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, currViewingTile, 1);
+				bmp.UnlockBits(bmpdata);
+				viewerTile.SetBitmap(bmp);
+			}
 		}
 
 		void UpdateViewerMouseover(Point loc)
 		{
+			currTileViewerBGState = null;
 			currViewingTile = -1;
 			currViewingTileBpp = -1;
 			int tx = loc.X / 8;
@@ -672,6 +704,31 @@ namespace BizHawk.MultiClient
 					currViewingTile = ty * 64 + tx;
 					if (currViewingTile < 0 || currViewingTile >= (8192 / currViewingTileBpp))
 						currViewingTile = -1;
+					break;
+				case eDisplayType.BG1:
+				case eDisplayType.BG2:
+				case eDisplayType.BG3:
+				case eDisplayType.BG4:
+					{
+						var bg = si.BG[(int)CurrDisplaySelection];
+						var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
+						if (bg.TileSize == 16) { tx /= 2; ty /= 2; } //worry about this later. need to pass a different flag into `currViewingTile`
+
+						int tloc = ty * bg.ScreenSizeInTiles.Width + tx;
+						if (tloc > map.Length) break;
+
+						currTileViewerBGState = new TileViewerBGState();
+						currTileViewerBGState.bgnum = (int)CurrDisplaySelection;
+						currTileViewerBGState.entry = map[tloc];
+
+						//public void DecodeBG(int* screen, int stride, TileEntry[] map, int tiledataBaseAddr, ScreenSize size, int bpp, int tilesize, int paletteStart)
+
+
+						//var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
+						//int paletteStart = 0;
+						//gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
+						//gd.Paletteize(pixelptr, 0, 0, numPixels);
+					}
 					break;
 			}
 
