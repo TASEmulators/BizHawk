@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BizHawk.MultiClient.tools
+namespace BizHawk.MultiClient
 {
 	public partial class HotkeyWindow : Form
 	{
