@@ -20,8 +20,11 @@ namespace BizHawk.MultiClient
 		{
 			NESController1Panel.ControllerNumber = 1;
 			NESController1Panel.Autofire = false;
+			NESController1Panel.Load();
 			NESController2Panel.ControllerNumber = 2;
 			NESController2Panel.Autofire = false;
+			NESController2Panel.Load();
+			
 			NESController3Panel.ControllerNumber = 3;
 			NESController3Panel.Autofire = false;
 			NESController4Panel.ControllerNumber = 4;
@@ -72,6 +75,21 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+		}
+
+		private void OK_Click(object sender, EventArgs e)
+		{
+			NESController1Panel.Save();
+			NESController2Panel.Save();
+
+			Global.OSD.AddMessage("Controller settings saved");
+			Close();
+		}
+
+		private void Cancel_Click(object sender, EventArgs e)
+		{
+			Global.OSD.AddMessage("Controller config aborted");
+			Close();
 		}
 	}
 }

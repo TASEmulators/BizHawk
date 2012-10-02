@@ -414,6 +414,11 @@ namespace BizHawk.MultiClient
 			{
 				ControllerConfig c = new ControllerConfig();
 				c.ShowDialog();
+				if (c.DialogResult == DialogResult.OK)
+				{
+					InitControls();
+					SyncControls();
+				}
 			}
 			else
 			{
@@ -430,7 +435,7 @@ namespace BizHawk.MultiClient
 
 		private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			BizHawk.MultiClient.tools.HotkeyWindow h = new BizHawk.MultiClient.tools.HotkeyWindow();
+			HotkeyWindow h = new HotkeyWindow();
 			h.ShowDialog();
 			if (h.DialogResult == DialogResult.OK)
 			{
