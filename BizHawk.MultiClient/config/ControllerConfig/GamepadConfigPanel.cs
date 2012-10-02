@@ -14,11 +14,14 @@ namespace BizHawk.MultiClient
 		public bool Autofire = false;
 
 		public int InputMarginLeft = 0;
-		public int LabelPadding = 20;
+		public int LabelPadding = 10;
 
 		public int MarginTop = 0;
 		public int Spacing = 30;
 		public int InputSize = 200;
+
+		protected List<InputWidget> Inputs = new List<InputWidget>();
+		protected List<Label> Labels = new List<Label>();
 
 		public GamepadConfigPanel()
 		{
@@ -31,17 +34,18 @@ namespace BizHawk.MultiClient
 		{
 			for (int i = 0; i < buttons.Count; i++)
 			{
-				int pos = i + 1;
-
 				InputWidget iw = new InputWidget();
-				iw.Location = new Point(InputMarginLeft, MarginTop + (pos * Spacing));
+				iw.Location = new Point(InputMarginLeft, MarginTop + (i * Spacing));
 				iw.Size = new Size(InputSize, 23);
+				iw.TabIndex = i;
 				Controls.Add(iw);
+				Inputs.Add(iw);
 
 				Label l = new Label();
-				l.Location = new Point(InputMarginLeft + InputSize + LabelPadding, MarginTop + (pos * Spacing) + 3);
+				l.Location = new Point(InputMarginLeft + InputSize + LabelPadding, MarginTop + (i * Spacing) + 3);
 				l.Text = buttons[i];
 				Controls.Add(l);
+				Labels.Add(l);
 			}
 		}
 
