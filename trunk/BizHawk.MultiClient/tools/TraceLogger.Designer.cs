@@ -86,6 +86,7 @@
 			this.TraceView.selectedItem = -1;
 			this.TraceView.Size = new System.Drawing.Size(603, 414);
 			this.TraceView.TabIndex = 4;
+			this.TraceView.TabStop = false;
 			this.TraceView.UseCompatibleStateImageBehavior = false;
 			this.TraceView.View = System.Windows.Forms.View.Details;
 			this.TraceView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TraceView_KeyDown);
@@ -126,20 +127,20 @@
 			// 
 			this.saveLogToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
 			this.saveLogToolStripMenuItem.Name = "saveLogToolStripMenuItem";
-			this.saveLogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveLogToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.saveLogToolStripMenuItem.Text = "&Save Log";
 			this.saveLogToolStripMenuItem.Click += new System.EventHandler(this.saveLogToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -204,7 +205,7 @@
 			this.BrowseBox.Location = new System.Drawing.Point(477, 19);
 			this.BrowseBox.Name = "BrowseBox";
 			this.BrowseBox.Size = new System.Drawing.Size(54, 23);
-			this.BrowseBox.TabIndex = 5;
+			this.BrowseBox.TabIndex = 20;
 			this.BrowseBox.Text = "&Browse";
 			this.BrowseBox.UseVisualStyleBackColor = true;
 			this.BrowseBox.Visible = false;
@@ -218,7 +219,8 @@
 			this.FileBox.Name = "FileBox";
 			this.FileBox.ReadOnly = true;
 			this.FileBox.Size = new System.Drawing.Size(242, 20);
-			this.FileBox.TabIndex = 4;
+			this.FileBox.TabIndex = 15;
+			this.FileBox.TabStop = false;
 			this.FileBox.Visible = false;
 			// 
 			// ToFileRadio
@@ -227,7 +229,7 @@
 			this.ToFileRadio.Location = new System.Drawing.Point(173, 22);
 			this.ToFileRadio.Name = "ToFileRadio";
 			this.ToFileRadio.Size = new System.Drawing.Size(50, 17);
-			this.ToFileRadio.TabIndex = 3;
+			this.ToFileRadio.TabIndex = 10;
 			this.ToFileRadio.Text = "to file";
 			this.ToFileRadio.UseVisualStyleBackColor = true;
 			this.ToFileRadio.CheckedChanged += new System.EventHandler(this.ToFileRadio_CheckedChanged);
@@ -239,7 +241,7 @@
 			this.ToWindowRadio.Location = new System.Drawing.Point(94, 22);
 			this.ToWindowRadio.Name = "ToWindowRadio";
 			this.ToWindowRadio.Size = new System.Drawing.Size(73, 17);
-			this.ToWindowRadio.TabIndex = 2;
+			this.ToWindowRadio.TabIndex = 5;
 			this.ToWindowRadio.TabStop = true;
 			this.ToWindowRadio.Text = "to window";
 			this.ToWindowRadio.UseVisualStyleBackColor = true;
@@ -250,7 +252,7 @@
 			this.ClearButton.Location = new System.Drawing.Point(564, 19);
 			this.ClearButton.Name = "ClearButton";
 			this.ClearButton.Size = new System.Drawing.Size(47, 23);
-			this.ClearButton.TabIndex = 1;
+			this.ClearButton.TabIndex = 25;
 			this.ClearButton.Text = "&Clear";
 			this.ClearButton.UseVisualStyleBackColor = true;
 			this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
@@ -262,7 +264,7 @@
 			this.LoggingEnabled.Location = new System.Drawing.Point(9, 19);
 			this.LoggingEnabled.Name = "LoggingEnabled";
 			this.LoggingEnabled.Size = new System.Drawing.Size(55, 23);
-			this.LoggingEnabled.TabIndex = 0;
+			this.LoggingEnabled.TabIndex = 1;
 			this.LoggingEnabled.Text = "&Logging";
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);

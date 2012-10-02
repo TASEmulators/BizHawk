@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient
 		public enum InputType { HEX, UNSIGNED, SIGNED, TEXT };
 		public bool UserOK;    //Will be true if the user selects Ok
 		public string UserText = "";   //What the user selected
-
+		public Point _Location = new Point(-1, -1);
 		private InputType itype = InputType.TEXT;
 
 		public InputType TextInputType
@@ -53,7 +53,10 @@ namespace BizHawk.MultiClient
 
 		private void InputPrompt_Load(object sender, EventArgs e)
 		{
-
+			if (_Location.X > 0 && _Location.Y > 0)
+			{
+				this.Location = _Location;
+			}
 		}
 
 		private void OK_Click(object sender, EventArgs e)
