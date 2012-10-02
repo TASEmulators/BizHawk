@@ -3358,6 +3358,12 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+
+
+		// workaround for possible memory leak in SysdrawingRenderPanel
+		RetainedViewportPanel captureosd_rvp;
+		SysdrawingRenderPanel captureosd_srp;
+
 		/// <summary>
 		/// sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
 		/// </summary>
@@ -3368,18 +3374,20 @@ namespace BizHawk.MultiClient
 			// "dummy render" class that implements IRenderer, IBlitter, and possibly
 			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
 
-			var c = new RetainedViewportPanel();
+			if (captureosd_rvp == null)
+			{
+				captureosd_rvp = new RetainedViewportPanel();
+				captureosd_srp = new SysdrawingRenderPanel(captureosd_rvp);
+			}
+
 			// this size can be different for showing off stretching or filters
-			c.Width = Global.Emulator.VideoProvider.BufferWidth;
-			c.Height = Global.Emulator.VideoProvider.BufferHeight;
-			var s = new SysdrawingRenderPanel(c);
+			captureosd_rvp.Width = Global.Emulator.VideoProvider.BufferWidth;
+			captureosd_rvp.Height = Global.Emulator.VideoProvider.BufferHeight;
 
-			Global.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, s);
 
-			Bitmap ret = (Bitmap)c.GetBitmap().Clone();
+			Global.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, captureosd_srp);
 
-			s.Dispose();
-			c.Dispose();
+			Bitmap ret = (Bitmap)captureosd_rvp.GetBitmap().Clone();
 
 			return ret;
 		}
