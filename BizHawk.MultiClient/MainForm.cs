@@ -1752,8 +1752,8 @@ namespace BizHawk.MultiClient
 
 				//modals that need to capture input for binding purposes get input, of course
 				if (Form.ActiveForm is InputConfig) return true;
-				if (Form.ActiveForm is tools.HotkeyWindow) return true;
-
+				if (Form.ActiveForm is HotkeyWindow) return true;
+				if (Form.ActiveForm is ControllerConfig) return true;
 				//if no form is active on this process, then the background input setting applies
 				if (Form.ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
 
