@@ -139,7 +139,7 @@ namespace BizHawk.MultiClient
 
 				while (samplesNeeded < samplesWanted)
 				{
-					System.Threading.Thread.Yield(); // TODO: much better sleeping
+					System.Threading.Thread.Sleep((samplesWanted - samplesNeeded) / 88); // let audio clock control sleep time
 					samplesNeeded = SNDDXGetAudioSpace() * 2;
 				}
 				samplesNeeded = samplesWanted;
