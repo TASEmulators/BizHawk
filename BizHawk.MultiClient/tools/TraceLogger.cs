@@ -178,12 +178,21 @@ namespace BizHawk.MultiClient
 			Global.Config.TraceLoggerSaveWindowPosition ^= true;
 		}
 
+		private Point GetPromptPoint()
+		{
+			Point p = new Point(TraceView.Location.X + 30, TraceView.Location.Y + 30);
+			Point q = new Point();
+			q = PointToScreen(p);
+			return q;
+		}
+
 		private void setMaxWindowLinesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			InputPrompt p = new InputPrompt();
 			p.SetMessage("Max lines to display in the window");
 			p.SetInitialValue(Global.Config.TraceLoggerMaxLines.ToString());
 			p.TextInputType = InputPrompt.InputType.UNSIGNED;
+			p._Location = GetPromptPoint();
 			DialogResult result =  p.ShowDialog();
 			if (p.UserOK)
 			{
