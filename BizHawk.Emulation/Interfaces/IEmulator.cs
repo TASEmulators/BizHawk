@@ -20,7 +20,8 @@ namespace BizHawk
 		int LagCount { get; set; }
 		bool IsLagFrame { get; }
 		string SystemId { get; }
-		bool DeterministicEmulation { get; set; }
+		/// <summary>if you want to set this, look in the emulator's constructor or Load() method</summary>
+		bool DeterministicEmulation { get; }
 
 		/// <summary>
 		/// return a copy of the saveram.  editing it won't do you any good unless you later call StoreSaveRam()

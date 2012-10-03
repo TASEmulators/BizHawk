@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public void ClearSaveRam() { }
 		public bool SaveRamModified { get; set; }
 
-		public bool DeterministicEmulation { get; set; }
+		public bool DeterministicEmulation { get { return true; } }
 		public void SaveStateText(TextWriter writer) { SyncState(Serializer.CreateTextWriter(writer)); }
 		public void LoadStateText(TextReader reader) { SyncState(Serializer.CreateTextReader(reader)); }
 		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }

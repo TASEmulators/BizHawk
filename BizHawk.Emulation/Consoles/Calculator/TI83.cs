@@ -475,7 +475,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }
 
-		public bool DeterministicEmulation { get { return true; } set { } }
+		public bool DeterministicEmulation { get { return true; } }
 
 		public byte[] ReadSaveRam() { return null; }
 		public void StoreSaveRam(byte[] data) { }

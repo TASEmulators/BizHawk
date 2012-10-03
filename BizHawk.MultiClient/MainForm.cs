@@ -1401,10 +1401,9 @@ namespace BizHawk.MultiClient
 								{
 									game.System = "SNES";
 									var snes = new LibsnesCore();
-									if (deterministicemulation) snes.DeterministicEmulation = true;
 									nextEmulator = snes;
 									nextEmulator.CoreInputComm = Global.CoreInputComm;
-									snes.Load(game, rom.FileData, null);
+									snes.Load(game, rom.FileData, null, deterministicemulation);
 								}
 								break;
 							case "SMS":
@@ -1492,9 +1491,8 @@ namespace BizHawk.MultiClient
 									game.AddOption("SGB");
 									game.System = "SGB";
 									var snes = new LibsnesCore();
-									if (deterministicemulation) snes.DeterministicEmulation = true;
 									nextEmulator = snes;
-									snes.Load(game, rom.FileData, sgbrom);
+									snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
 								}
 								break;
 							case "COLV":
@@ -1529,8 +1527,6 @@ namespace BizHawk.MultiClient
 				}
 
 				if (nextEmulator == null) throw new Exception();
-
-				if (deterministicemulation) nextEmulator.DeterministicEmulation = true;
 
 				CloseGame();
 				Global.Emulator.Dispose();
