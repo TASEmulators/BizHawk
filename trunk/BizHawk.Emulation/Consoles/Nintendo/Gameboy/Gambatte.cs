@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			get { return "GB"; }
 		}
 
-		public bool DeterministicEmulation { get; set; }
+		public bool DeterministicEmulation { get { return true; } }
 
 		public byte[] ReadSaveRam()
 		{

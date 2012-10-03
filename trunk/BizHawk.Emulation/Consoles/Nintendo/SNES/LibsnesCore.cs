@@ -360,7 +360,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 		}
 
-		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData)
+		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData, bool DeterministicEmulation)
 		{
 			//attach this core as the current
 			if (CurrLibsnesCore != null)
@@ -434,9 +434,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			SetupMemoryDomains(romData);
 
-			// disallow any future modifications to the DeterministicEmulation parameter, and set initial deterministic savestate
-			_DeterministicEmulationProtected = true;
-			if (DeterministicEmulation)
+			this.DeterministicEmulation = DeterministicEmulation;
+			if (DeterministicEmulation) // save frame-0 savestate now
 				CoreSaveStateInternal(true);
 		}
 
@@ -634,18 +633,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public bool IsLagFrame { get; private set; }
 		public string SystemId { get; private set; }
 
-
-		bool _DeterministicEmulation = false;
-		bool _DeterministicEmulationProtected = false;
 		public bool DeterministicEmulation
 		{
-			get { return _DeterministicEmulation; }
-			set
-			{
-				if (_DeterministicEmulationProtected && value != _DeterministicEmulation)
-					throw new Exception("snes: DeterministicEmulation must be set before load!");
-				_DeterministicEmulation = value;
-			}
+			get;
+			private set;
 		}
 
 

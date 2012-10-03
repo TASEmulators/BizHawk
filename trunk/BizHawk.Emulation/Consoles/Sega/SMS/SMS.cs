@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		byte Port3F = 0xFF;
 
 		public DisplayType DisplayType { get; set; }
-		public bool DeterministicEmulation { get; set; }
+		public bool DeterministicEmulation { get { return true; } }
 
 		public SMS(GameInfo game, byte[] rom)
 		{

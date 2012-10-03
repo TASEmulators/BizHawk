@@ -277,7 +277,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
 		public string SystemId { get { return systemid; } }
 		public string Region { get; set; }
-		public bool DeterministicEmulation { get; set; }
+		public bool DeterministicEmulation { get { return true; } }
 
 		public byte[] ReadSaveRam()
 		{
