@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			InitMemoryDomains();
 
-			GbOutputComm.RomStatusDetails = string.Format("{0}\nSHA1:{1}\nMD5:{2}\n",
+			GbOutputComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 				game.Name,
 				Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(romdata)),
 				Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romdata))
