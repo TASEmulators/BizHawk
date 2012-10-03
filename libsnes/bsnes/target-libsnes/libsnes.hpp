@@ -142,6 +142,10 @@ void snes_dequeue_message(char* buffer);
 typedef const char* (*snes_path_request_t)(int slot, const char* hint);
 void snes_set_path_request(snes_path_request_t path_request);
 
+// system bus implementation
+uint8_t bus_read(unsigned addr);
+void bus_write(unsigned addr, uint8_t val);
+
 //$2105
 #define SNES_REG_BG_MODE 0
 #define SNES_REG_BG3_PRIORITY 1
