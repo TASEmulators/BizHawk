@@ -841,9 +841,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			MakeMemoryDomain("CGRAM", LibsnesDll.SNES_MEMORY.CGRAM, Endian.Little);
 			MakeMemoryDomain("APURAM", LibsnesDll.SNES_MEMORY.APURAM, Endian.Little);
 
-			MemoryDomains.Add(new MemoryDomain("BUS", 0x1000000, Endian.Little,
-				(addr) => LibsnesDll.bus_read((uint)addr),
-				(addr, val) => LibsnesDll.bus_write((uint)addr, val)));
+			if (!DeterministicEmulation)
+				MemoryDomains.Add(new MemoryDomain("BUS", 0x1000000, Endian.Little,
+					(addr) => LibsnesDll.bus_read((uint)addr),
+					(addr, val) => LibsnesDll.bus_write((uint)addr, val)));
 		}
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
 		public MemoryDomain MainMemory { get; private set; }
