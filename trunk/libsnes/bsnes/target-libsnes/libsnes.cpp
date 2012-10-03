@@ -529,6 +529,13 @@ unsigned snes_get_memory_size(unsigned id) {
   return size;
 }
 
+uint8_t bus_read(unsigned addr) {
+  return SNES::bus.read(addr);
+}
+void bus_write(unsigned addr, uint8_t val) {
+  SNES::bus.write(addr, val);
+}
+
 int snes_poll_message()
 {
 	if(interface.messages.size() == 0) return -1;

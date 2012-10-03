@@ -111,6 +111,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern IntPtr snes_get_memory_data(SNES_MEMORY id);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte bus_read(uint addr);
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void bus_write(uint addr, byte val);
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int snes_serialize_size();
 
 		[return: MarshalAs(UnmanagedType.U1)]
@@ -835,6 +840,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			MakeMemoryDomain("OAM", LibsnesDll.SNES_MEMORY.OAM, Endian.Little);
 			MakeMemoryDomain("CGRAM", LibsnesDll.SNES_MEMORY.CGRAM, Endian.Little);
 			MakeMemoryDomain("APURAM", LibsnesDll.SNES_MEMORY.APURAM, Endian.Little);
+
+			MemoryDomains.Add(new MemoryDomain("BUS", 0x1000000, Endian.Little,
+				(addr) => LibsnesDll.bus_read((uint)addr),
+				(addr, val) => LibsnesDll.bus_write((uint)addr, val)));
 		}
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
 		public MemoryDomain MainMemory { get; private set; }
