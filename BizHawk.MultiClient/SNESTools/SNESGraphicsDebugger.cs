@@ -83,7 +83,7 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsAfter()
 		{
 			SyncCore();
-			if (!checkScanlineControl.Checked)
+			if (this.Visible && !checkScanlineControl.Checked)
 			{
 				RegenerateData();
 				UpdateValues();
@@ -126,7 +126,7 @@ namespace BizHawk.MultiClient
 
 			if (currentSnesCore != null)
 			{
-				if (checkScanlineControl.Checked)
+				if (this.Visible && checkScanlineControl.Checked)
 					currentSnesCore.ScanlineHookManager.Register(this, ScanlineHook);
 				else
 					currentSnesCore.ScanlineHookManager.Unregister(this);
