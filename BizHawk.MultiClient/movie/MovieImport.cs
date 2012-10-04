@@ -22,8 +22,13 @@ namespace BizHawk.MultiClient
 		public const string MD5 = "MD5";
 		public const string MOVIEORIGIN = "MovieOrigin";
 		public const string PAL = "PAL";
+		public const string PORT1 = "port1";
+		public const string PORT2 = "port2";
+		public const string PROJECTID = "ProjectID";
 		public const string SHA256 = "SHA256";
 		public const string SUPERGAMEBOYMODE = "SuperGameBoyMode";
+		public const string STARTSECOND = "StartSecond";
+		public const string STARTSUBSECOND = "StartSubSecond";
 		public const string SYNCHACK = "SyncHack";
 		public const string UNITCODE = "UnitCode";
 
@@ -1049,6 +1054,30 @@ namespace BizHawk.MultiClient
 					}
 					hf.Unbind();
 				}
+				else if (item.name == "port1")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string port1 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(PORT1, port1);
+					hf.Unbind();
+				}
+				else if (item.name == "port2")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string port2 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(PORT2, port2);
+					hf.Unbind();
+				}
+				else if (item.name == "projectid")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string projectid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(PROJECTID, projectid);
+					hf.Unbind();
+				}
 				else if (item.name == "rerecords")
 				{
 					hf.BindArchiveMember(item.index);
@@ -1067,12 +1096,14 @@ namespace BizHawk.MultiClient
 					m.Rerecords = rerecordCount;
 					hf.Unbind();
 				}
-				else if (item.name == "rom.sha256")
+				else if (item.name.EndsWith(".sha256"))
 				{
 					hf.BindArchiveMember(item.index);
 					var stream = hf.GetStream();
 					string rom = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
-					m.Header.SetHeaderLine(SHA256, rom);
+					int pos = item.name.LastIndexOf(".sha256");
+					string name = item.name.Substring(0, pos);
+					m.Header.SetHeaderLine(SHA256 + "_" + name, rom);
 					hf.Unbind();
 				}
 				else if (item.name == "savestate")
@@ -1091,6 +1122,22 @@ namespace BizHawk.MultiClient
 						while ((line = reader.ReadLine()) != null)
 							m = ImportTextSubtitle(line, m, path);
 					}
+					hf.Unbind();
+				}
+				else if (item.name == "starttime.second")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string startSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(STARTSECOND, startSecond);
+					hf.Unbind();
+				}
+				else if (item.name == "starttime.subsecond")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string startSubSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(STARTSUBSECOND, startSubSecond);
 					hf.Unbind();
 				}
 				else if (item.name == "systemid")
