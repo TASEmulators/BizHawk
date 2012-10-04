@@ -235,23 +235,15 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			switch(column)
+			switch (column)
 			{
-				case 0:
+				case 0: // address
 					text = Watches[index].Address.ToString(addressFormatStr);
 					break;
-				case 1:
-					switch(Global.Config.RamWatchPrev_Type)
-					{
-						case 1:
-							text = Watches[index].PrevString;
-							break;
-						case 2:
-							text = Watches[index].LastChangeString;
-							break;
-					}
+				case 1: // value
+					text = Watches[index].ValueString;
 					break;
-				case 2:
+				case 2: // prev
 					switch (Global.Config.RamWatchPrev_Type)
 					{
 						case 1:
@@ -262,10 +254,10 @@ namespace BizHawk.MultiClient
 							break;
 					}
 					break;
-				case 3:
+				case 3: // changes
 					text = Watches[index].Changecount.ToString();
 					break;
-				case 4:
+				case 4: // diff
 					switch (Global.Config.RamWatchPrev_Type)
 					{
 						case 1:
@@ -276,10 +268,10 @@ namespace BizHawk.MultiClient
 							break;
 					}
 					break;
-				case 5:
+				case 5: // domain
 					text = Watches[index].Domain.Name;
 					break;
-				case 6:
+				case 6: // notes
 					text = Watches[index].Notes;
 					break;
 			}
