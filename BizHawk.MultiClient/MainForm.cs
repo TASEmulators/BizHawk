@@ -2290,9 +2290,6 @@ namespace BizHawk.MultiClient
 			LuaConsole1.ResumeScripts(true);
 			Global.DisplayManager.PreFrameUpdateLuaSource();
 #endif
-			RamWatch1.UpdateValues();
-			RamSearch1.UpdateValues();
-			HexEditor1.UpdateValues();
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
@@ -2308,6 +2305,9 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void UpdateToolsAfter()
 		{
+			RamWatch1.UpdateValues();
+			RamSearch1.UpdateValues();
+			HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
 			LuaConsole1.LuaImp.FrameRegisterAfter();
