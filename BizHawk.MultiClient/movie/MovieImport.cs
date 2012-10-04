@@ -13,9 +13,19 @@ namespace BizHawk.MultiClient
 	{
 		public const string COMMENT = "comment";
 		public const string COREORIGIN = "CoreOrigin";
+		public const string CRC16 = "CRC16";
+		public const string CRC32 = "CRC32";
 		public const string EMULATIONORIGIN = "emuOrigin";
+		public const string GAMECODE = "GameCode";
+		public const string INTERNALCHECKSUM = "InternalChecksum";
+		public const string JAPAN = "Japan";
+		public const string MD5 = "MD5";
 		public const string MOVIEORIGIN = "MovieOrigin";
+		public const string PAL = "PAL";
+		public const string SHA256 = "SHA256";
+		public const string SUPERGAMEBOYMODE = "SuperGameBoyMode";
 		public const string SYNCHACK = "SyncHack";
+		public const string UNITCODE = "UnitCode";
 
 		// Attempt to import another type of movie file into a movie object.
 		public static Movie ImportFile(string path, out string errorMsg, out string warningMsg)
@@ -323,9 +333,9 @@ namespace BizHawk.MultiClient
 				else if (line.ToLower().StartsWith("romchecksum"))
 				{
 					string blob = ParseHeader(line, "romChecksum");
-					byte[] MD5 = DecodeBlob(blob);
-					if (MD5 != null && MD5.Length == 16)
-						m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
+					byte[] md5 = DecodeBlob(blob);
+					if (md5 != null && md5.Length == 16)
+						m.Header.SetHeaderLine(MD5, BizHawk.Util.BytesToHexString(md5).ToLower());
 					else
 						warningMsg = "Bad ROM checksum.";
 				}
@@ -360,7 +370,7 @@ namespace BizHawk.MultiClient
 				else if (line.ToLower().StartsWith("palflag"))
 				{
 					bool pal = (ParseHeader(line, "palFlag") == "1");
-					m.Header.SetHeaderLine("PAL", pal.ToString());
+					m.Header.SetHeaderLine(PAL, pal.ToString());
 				}
 				else if (line.ToLower().StartsWith("fourscore"))
 				{
@@ -470,7 +480,7 @@ namespace BizHawk.MultiClient
 			 preference. This means that this site cannot calculate movie lengths reliably.
 			*/
 			bool pal = (((flags >> 2) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// other: reserved, set to 0
 			bool syncHack = (((flags >> 4) & 0x1) != 0);
 			m.Header.Comments.Add(SYNCHACK + " " + syncHack.ToString());
@@ -497,8 +507,8 @@ namespace BizHawk.MultiClient
 			// 01C 4-byte little-endian unsigned int: offset to the controller data inside file
 			uint firstFrameOffset = r.ReadUInt32();
 			// 020 16-byte md5sum of the ROM used
-			byte[] MD5 = r.ReadBytes(16);
-			m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
+			byte[] md5 = r.ReadBytes(16);
+			m.Header.SetHeaderLine(MD5, BizHawk.Util.BytesToHexString(md5).ToLower());
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion.ToString());
@@ -751,7 +761,7 @@ namespace BizHawk.MultiClient
 			 The file format has no means of identifying NTSC/"PAL". It is always assumed that the game is NTSC - that is,
 			 60 fps.
 			*/
-			m.Header.SetHeaderLine("PAL", "False");
+			m.Header.SetHeaderLine(PAL, "False");
 			// 090 frame data begins here
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
@@ -843,7 +853,7 @@ namespace BizHawk.MultiClient
 			 header.
 			*/
 			bool pal = (((flags >> 7) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// bit 6: if "1", movie requires a savestate.
 			if (((flags >> 6) & 0x1) != 0)
 			{
@@ -999,7 +1009,7 @@ namespace BizHawk.MultiClient
 							break;
 					}
 					bool pal = (gametype == "snes_pal" || gametype == "sgb_pal");
-					m.Header.SetHeaderLine("PAL", pal.ToString());
+					m.Header.SetHeaderLine(PAL, pal.ToString());
 					hf.Unbind();
 				}
 				else if (item.name == "input")
@@ -1062,7 +1072,7 @@ namespace BizHawk.MultiClient
 					hf.BindArchiveMember(item.index);
 					var stream = hf.GetStream();
 					string rom = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
-					m.Header.SetHeaderLine("SHA256", rom);
+					m.Header.SetHeaderLine(SHA256, rom);
 					hf.Unbind();
 				}
 				else if (item.name == "savestate")
@@ -1123,10 +1133,10 @@ namespace BizHawk.MultiClient
 			uint version = r.ReadUInt32();
 			m.Header.Comments.Add(MOVIEORIGIN + " .MCM version " + version);
 			// 010 32-byte    MD5 of the ROM used
-			byte[] MD5 = r.ReadBytes(16);
+			byte[] md5 = r.ReadBytes(16);
 			// Discard the second 16 bytes.
 			r.ReadBytes(16);
-			m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
+			m.Header.SetHeaderLine(MD5, BizHawk.Util.BytesToHexString(md5).ToLower());
 			// 030 64-byte    Filename of the ROM used (with extension)
 			string gameName = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
@@ -1271,10 +1281,10 @@ namespace BizHawk.MultiClient
 			// bit 0: unused
 			// bit 1: "PAL"
 			bool pal = (((flags >> 1) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// bit 2: Japan
 			bool japan = (((flags >> 2) & 0x1) != 0);
-			m.Header.SetHeaderLine("Japan", japan.ToString());
+			m.Header.SetHeaderLine(JAPAN, japan.ToString());
 			// bit 3: Game Gear (version 1.16+)
 			bool gamegear;
 			if (((flags >> 3) & 0x1) != 0)
@@ -1293,8 +1303,8 @@ namespace BizHawk.MultiClient
 			string gameName = NullTerminated(r.ReadStringFixedAscii(128));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 00e4-00f3: binary: rom MD5 digest
-			byte[] MD5 = r.ReadBytes(16);
-			m.Header.SetHeaderLine("MD5", String.Format("{0:x8}", BizHawk.Util.BytesToHexString(MD5).ToLower()));
+			byte[] md5 = r.ReadBytes(16);
+			m.Header.SetHeaderLine(MD5, String.Format("{0:x8}", BizHawk.Util.BytesToHexString(md5).ToLower()));
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "SMS Controller";
@@ -1496,7 +1506,7 @@ namespace BizHawk.MultiClient
 			 * if "1", "PAL" timing
 			*/
 			bool pal = (((data >> 7) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// 004 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
 			m.Rerecords = (int)rerecordCount;
@@ -1632,7 +1642,7 @@ namespace BizHawk.MultiClient
 			}
 			// bit 1: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
 			bool pal = (((movieFlags >> 1) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// other: reserved, set to 0
 			/*
 			 016 1-byte flags "sync options":
@@ -1697,7 +1707,7 @@ namespace BizHawk.MultiClient
 				// 000 3 bytes of zero padding: 00 00 00 003 4-byte integer: CRC32 of the ROM 007 23-byte ascii string
 				r.ReadBytes(3);
 				int crc32 = r.ReadInt32();
-				m.Header.SetHeaderLine("CRC32", crc32.ToString());
+				m.Header.SetHeaderLine(CRC32, crc32.ToString());
 				// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
 				string gameName = NullTerminated(Encoding.UTF8.GetString(r.ReadBytes(23)));
 				m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
@@ -1916,7 +1926,7 @@ namespace BizHawk.MultiClient
 			if (is_gbc)
 				platform = "GBC";
 			if (is_sgb)
-				platform = "SGB";
+				m.Header.Comments.Add(SUPERGAMEBOYMODE + " True");
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
 			// 017 1-byte flags: (values of some boolean emulator options)
 			flags = r.ReadByte();
@@ -1965,16 +1975,22 @@ namespace BizHawk.MultiClient
 			 032 2-byte little-endian unsigned short: the internal Checksum of the ROM used while recording, or a
 			 calculated CRC16 of the BIOS if GBA
 			*/
-			ushort checksum = r.ReadUInt16();
+			ushort checksum_crc16 = r.ReadUInt16();
 			/*
 			 034 4-byte little-endian unsigned int: the Game Code of the ROM used while recording, or the Unit Code if not
 			 GBA
 			*/
-			uint gameCode = r.ReadUInt32();
+			uint gameCode_unitCode = r.ReadUInt32();
 			if (platform == "GBA")
-				m.Header.SetHeaderLine("GameCode", gameCode.ToString());
+			{
+				m.Header.SetHeaderLine(CRC16, checksum_crc16.ToString());
+				m.Header.SetHeaderLine(GAMECODE, gameCode_unitCode.ToString());
+			}
 			else
-				m.Header.SetHeaderLine("Checksum", checksum.ToString());
+			{
+				m.Header.SetHeaderLine(INTERNALCHECKSUM, checksum_crc16.ToString());
+				m.Header.SetHeaderLine(UNITCODE, gameCode_unitCode.ToString());
+			}
 			// 038 4-byte little-endian unsigned int: offset to the savestate or SRAM inside file, set to 0 if unused
 			r.ReadBytes(4);
 			// 03C 4-byte little-endian unsigned int: offset to the controller data inside file
@@ -2126,7 +2142,7 @@ namespace BizHawk.MultiClient
 			r.ReadByte();
 			// 023 1-byte flag: 0=NTSC (60 Hz), 1="PAL" (50 Hz)
 			bool pal = (r.ReadByte() == 1);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// 024 8-bytes: reserved, set to 0
 			r.ReadBytes(8);
 			// 02C 4-byte little-endian integer: save state start offset
@@ -2139,7 +2155,7 @@ namespace BizHawk.MultiClient
 			uint frameCount = r.ReadUInt32();
 			// 03C 4-byte little-endian integer: CRC (CRC excluding this data(to prevent cheating))
 			int crc32 = r.ReadInt32();
-			m.Header.SetHeaderLine("CRC32", crc32.ToString());
+			m.Header.SetHeaderLine(CRC32, crc32.ToString());
 			if (!controllersUsed[0] && !controllersUsed[1] && !controllersUsed[2] && !controllersUsed[3])
 			{
 				warningMsg = "No input recorded.";
@@ -2280,7 +2296,7 @@ namespace BizHawk.MultiClient
 			m.Header.Comments.Add(EMULATIONORIGIN + " ZSNES version " + version);
 			// 005 4-byte little-endian integer: CRC32 of the ROM
 			int crc32 = r.ReadInt32();
-			m.Header.SetHeaderLine("CRC32", crc32.ToString());
+			m.Header.SetHeaderLine(CRC32, crc32.ToString());
 			// 009 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 00D 4-byte little-endian unsigned int: number of rerecords
@@ -2360,7 +2376,7 @@ namespace BizHawk.MultiClient
 			// if "11", movie begins from power-on with SRAM clear
 			// bit 5: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
 			bool pal = (((movieFlags >> 5) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// other: reserved, set to 0
 			/*
 			 028 3-byte little-endian unsigned int: initial save state size, highest bit specifies compression, next 23
