@@ -1488,7 +1488,7 @@ namespace BizHawk.MultiClient
 										}
 										else
 										{
-											MessageBox.Show("Couldn't open sgb.smc from the configured SNES firmwares path, which is:\n\n" + PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES") + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
+											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES") + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
 											Global.Config.GB_AsSGB = false;
 											game.System = "GB";
 											goto RETRY;
@@ -1502,6 +1502,7 @@ namespace BizHawk.MultiClient
 									}
 									if (sgbrom != null)
 									{
+										game.System = "SNES";
 										game.AddOption("SGB");
 										var snes = new LibsnesCore();
 										nextEmulator = snes;

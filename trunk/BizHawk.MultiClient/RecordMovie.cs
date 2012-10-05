@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Emulation.Consoles.GB;
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
 namespace BizHawk.MultiClient
 {
@@ -81,6 +82,11 @@ namespace BizHawk.MultiClient
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_FORCEDMG, Global.Config.GB_ForceDMG.ToString());
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_GBA_IN_CGB, Global.Config.GB_GBACGB.ToString());
+				}
+
+				if (Global.Emulator is LibsnesCore)
+				{
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, Global.Config.GB_ForceDMG.ToString());
 				}
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
