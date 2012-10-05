@@ -84,9 +84,6 @@
 			this.SNESBrowseFirmwares = new System.Windows.Forms.Button();
 			this.SNESFirmwaresBox = new System.Windows.Forms.TextBox();
 			this.SNESBaseBox = new System.Windows.Forms.TextBox();
-			this.SNESSGBDescription = new System.Windows.Forms.Label();
-			this.SNESBrowseSGB = new System.Windows.Forms.Button();
-			this.SNESSGBBox = new System.Windows.Forms.TextBox();
 			this.SNESCheatsDescription = new System.Windows.Forms.Label();
 			this.SNESBrowseCheats = new System.Windows.Forms.Button();
 			this.SNESCheatsBox = new System.Windows.Forms.TextBox();
@@ -844,9 +841,6 @@
 			this.tabPage12.Controls.Add(this.SNESBrowseFirmwares);
 			this.tabPage12.Controls.Add(this.SNESFirmwaresBox);
 			this.tabPage12.Controls.Add(this.SNESBaseBox);
-			this.tabPage12.Controls.Add(this.SNESSGBDescription);
-			this.tabPage12.Controls.Add(this.SNESBrowseSGB);
-			this.tabPage12.Controls.Add(this.SNESSGBBox);
 			this.tabPage12.Controls.Add(this.SNESCheatsDescription);
 			this.tabPage12.Controls.Add(this.SNESBrowseCheats);
 			this.tabPage12.Controls.Add(this.SNESCheatsBox);
@@ -875,7 +869,7 @@
 			// 
 			this.SNESFirmwaresDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SNESFirmwaresDescription.AutoSize = true;
-			this.SNESFirmwaresDescription.Location = new System.Drawing.Point(474, 240);
+			this.SNESFirmwaresDescription.Location = new System.Drawing.Point(474, 211);
 			this.SNESFirmwaresDescription.Name = "SNESFirmwaresDescription";
 			this.SNESFirmwaresDescription.Size = new System.Drawing.Size(54, 13);
 			this.SNESFirmwaresDescription.TabIndex = 94;
@@ -885,7 +879,7 @@
 			// 
 			this.SNESBrowseFirmwares.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SNESBrowseFirmwares.Image = ((System.Drawing.Image)(resources.GetObject("SNESBrowseFirmwares.Image")));
-			this.SNESBrowseFirmwares.Location = new System.Drawing.Point(442, 237);
+			this.SNESBrowseFirmwares.Location = new System.Drawing.Point(442, 208);
 			this.SNESBrowseFirmwares.Name = "SNESBrowseFirmwares";
 			this.SNESBrowseFirmwares.Size = new System.Drawing.Size(26, 23);
 			this.SNESBrowseFirmwares.TabIndex = 93;
@@ -896,7 +890,7 @@
 			// 
 			this.SNESFirmwaresBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.SNESFirmwaresBox.Location = new System.Drawing.Point(13, 237);
+			this.SNESFirmwaresBox.Location = new System.Drawing.Point(13, 208);
 			this.SNESFirmwaresBox.Name = "SNESFirmwaresBox";
 			this.SNESFirmwaresBox.Size = new System.Drawing.Size(421, 20);
 			this.SNESFirmwaresBox.TabIndex = 92;
@@ -909,34 +903,6 @@
 			this.SNESBaseBox.Name = "SNESBaseBox";
 			this.SNESBaseBox.Size = new System.Drawing.Size(421, 20);
 			this.SNESBaseBox.TabIndex = 27;
-			// 
-			// SNESSGBDescription
-			// 
-			this.SNESSGBDescription.AutoSize = true;
-			this.SNESSGBDescription.Location = new System.Drawing.Point(474, 214);
-			this.SNESSGBDescription.Name = "SNESSGBDescription";
-			this.SNESSGBDescription.Size = new System.Drawing.Size(54, 13);
-			this.SNESSGBDescription.TabIndex = 47;
-			this.SNESSGBDescription.Text = "SGB Rom";
-			// 
-			// SNESBrowseSGB
-			// 
-			this.SNESBrowseSGB.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
-			this.SNESBrowseSGB.Location = new System.Drawing.Point(442, 209);
-			this.SNESBrowseSGB.Name = "SNESBrowseSGB";
-			this.SNESBrowseSGB.Size = new System.Drawing.Size(26, 23);
-			this.SNESBrowseSGB.TabIndex = 46;
-			this.SNESBrowseSGB.UseVisualStyleBackColor = true;
-			this.SNESBrowseSGB.Click += new System.EventHandler(this.SNESBrowseSGB_Click);
-			// 
-			// SNESSGBBox
-			// 
-			this.SNESSGBBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.SNESSGBBox.Location = new System.Drawing.Point(13, 211);
-			this.SNESSGBBox.Name = "SNESSGBBox";
-			this.SNESSGBBox.Size = new System.Drawing.Size(421, 20);
-			this.SNESSGBBox.TabIndex = 45;
 			// 
 			// SNESCheatsDescription
 			// 
@@ -3458,9 +3424,6 @@
 		private System.Windows.Forms.Label SNESROMsDescription;
 		private System.Windows.Forms.TextBox SNESSaveRAMBox;
 		private System.Windows.Forms.Button BrowseSNESROMs;
-		private System.Windows.Forms.Label SNESSGBDescription;
-		private System.Windows.Forms.Button SNESBrowseSGB;
-		private System.Windows.Forms.TextBox SNESSGBBox;
 		private System.Windows.Forms.Label SNESFirmwaresDescription;
 		private System.Windows.Forms.Button SNESBrowseFirmwares;
 		private System.Windows.Forms.TextBox SNESFirmwaresBox;

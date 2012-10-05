@@ -154,7 +154,6 @@ namespace BizHawk.MultiClient
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
-		public string PathSGBRom = Path.Combine(".", "Super Game Boy (UE) (V1.2) [!].smc");
 
 		public string FFMpegPath = "%exe%/ffmpeg.exe";
 
