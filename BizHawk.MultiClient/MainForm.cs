@@ -1179,7 +1179,8 @@ namespace BizHawk.MultiClient
 					sNESToolStripMenuItem.Visible = true;
 					break;
 				case "SGB":
-					sNESToolStripMenuItem.Text = "&SGB";
+					if((Global.Emulator as LibsnesCore).IsSGB)
+						sNESToolStripMenuItem.Text = "&SGB";
 					sNESToolStripMenuItem.Visible = true;
 					break;
 				default:
@@ -1227,7 +1228,6 @@ namespace BizHawk.MultiClient
 					Global.AutoFireController = Global.AutofireNESControls;
 					break;
 				case "SNES":
-				case "SGB":
 					Global.ActiveController = Global.SNESControls;
 					Global.AutoFireController = Global.AutofireSNESControls;
 					break;
@@ -1395,6 +1395,7 @@ namespace BizHawk.MultiClient
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 
+					RETRY:
 						switch (game.System)
 						{
 							case "SNES":
@@ -1476,11 +1477,22 @@ namespace BizHawk.MultiClient
 								}
 								else
 								{
-									// todo: get these bioses into a gamedb??
-									byte[] sgbrom;
+									// todo: get these bioses into a gamedb?? then we could demand different filenames for different regions?
+									string sgbromPath = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
+									byte[] sgbrom = null;
 									try
 									{
-										sgbrom = File.ReadAllBytes(PathManager.MakeAbsolutePath(Global.Config.PathSGBRom, "SGB"));
+										if (File.Exists(sgbromPath))
+										{
+											sgbrom = File.ReadAllBytes(sgbromPath);
+										}
+										else
+										{
+											MessageBox.Show("Couldn't open sgb.smc from the configured SNES firmwares path, which is:\n\n" + PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES") + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
+											Global.Config.GB_AsSGB = false;
+											game.System = "GB";
+											goto RETRY;
+										}
 									}
 									catch (Exception)
 									{
@@ -1488,11 +1500,13 @@ namespace BizHawk.MultiClient
 										Global.Config.GB_AsSGB = false;
 										throw;
 									}
-									game.AddOption("SGB");
-									game.System = "SGB";
-									var snes = new LibsnesCore();
-									nextEmulator = snes;
-									snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
+									if (sgbrom != null)
+									{
+										game.AddOption("SGB");
+										var snes = new LibsnesCore();
+										nextEmulator = snes;
+										snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
+									}
 								}
 								break;
 							case "COLV":
@@ -3731,7 +3745,7 @@ namespace BizHawk.MultiClient
 
 		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Global.Emulator.SystemId == "SGB")
+			if ((Global.Emulator as LibsnesCore).IsSGB)
 			{
 				loadGBInSGBToolStripMenuItem.Visible = true;
 				loadGBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;

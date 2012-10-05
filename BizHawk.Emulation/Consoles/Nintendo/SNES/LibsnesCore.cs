@@ -284,6 +284,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
 	{
+		public bool IsSGB { get; private set; }
+
 		bool disposed = false;
 		public void Dispose()
 		{
@@ -337,7 +339,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			ScanlineHookManager.HandleScanline(line);
 		}
 
-		string snes_path_request_t(int slot, string hint)
+		string snes_path_request(int slot, string hint)
 		{
 			//every rom requests this byuu homemade rom
 			if (hint == "msu1.rom") return "";
@@ -348,7 +350,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			//does it exist?
 			if (!File.Exists(test))
 			{
-				System.Windows.Forms.MessageBox.Show("libsneshawk is requesting a firmware file which could not be found. make sure it's in your snes firmwares folder. the name is: " + hint);
+				System.Windows.Forms.MessageBox.Show("The SNES core is referencing a firmware file which could not be found. Please make sure it's in your configured SNES firmwares folder. The referenced filename is: " + hint);
 				return "";
 			}
 
@@ -388,7 +390,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			soundcb = new LibsnesDll.snes_audio_sample_t(snes_audio_sample);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
 
-			pathRequest_cb = new LibsnesDll.snes_path_request_t(snes_path_request_t);
+			pathRequest_cb = new LibsnesDll.snes_path_request_t(snes_path_request);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_path_request(pathRequest_cb);
 
 
@@ -407,7 +409,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			if (game["SGB"])
 			{
-				SystemId = "SGB";
+				IsSGB = true;
+				SystemId = "SNES";
 				if (!LibsnesDll.snes_load_cartridge_super_game_boy(null, sgbRomData, (uint)sgbRomData.Length, null, romData, (uint)romData.Length))
 					throw new Exception("snes_load_cartridge_super_game_boy() failed");
 			}

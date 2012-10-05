@@ -73,7 +73,6 @@ namespace BizHawk.MultiClient
 			SNESSaveRAMBox.Text = Global.Config.PathSNESSaveRAM;
 			SNESScreenshotsBox.Text = Global.Config.PathSNESScreenshots;
 			SNESCheatsBox.Text = Global.Config.PathSNESCheats;
-			SNESSGBBox.Text = Global.Config.PathSGBRom;
 			SNESFirmwaresBox.Text = Global.Config.PathSNESFirmwares;
 
 			Sega8BaseBox.Text = Global.Config.BaseSMS;
@@ -177,7 +176,6 @@ namespace BizHawk.MultiClient
 			Global.Config.PathSNESSaveRAM = SNESSaveRAMBox.Text;
 			Global.Config.PathSNESScreenshots = SNESScreenshotsBox.Text;
 			Global.Config.PathSNESCheats = SNESCheatsBox.Text;
-			Global.Config.PathSGBRom = SNESSGBBox.Text;
 			Global.Config.PathSNESFirmwares = SNESFirmwaresBox.Text;
 
 			Global.Config.BaseSMS = Sega8BaseBox.Text;
@@ -727,15 +725,6 @@ namespace BizHawk.MultiClient
 		private void SNESBrowseCheats_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(SNESCheatsBox, SNESCheatsDescription.Text, "SNES");
-		}
-
-		private void SNESBrowseSGB_Click(object sender, EventArgs e)
-		{
-			BrowseForBios(
-				"SGB Rom (*.smc;*.sfc)|*.smc;*.sfc|All Files|*.*",
-				 Global.Config.PathSGBRom,
-				SNESSGBBox);
-
 		}
 
 		private void SNESBrowseFirmwares_Click(object sender, EventArgs e)
