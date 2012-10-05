@@ -28,6 +28,7 @@ namespace BizHawk.MultiClient
 		public const string STARTSFROMSAVESTATE = "StartsFromSavestate";
 		public const string FOURSCORE = "FourScore";
 		public const string SHA1 = "SHA1";
+		public const string FIRMWARESHA1 = "FirmwareSHA1";
 
 		//Gameboy Settings that affect sync
 		public const string GB_FORCEDMG = "Force_DMG_Mode";
