@@ -8,6 +8,7 @@ namespace BizHawk
 		public bool NES_ShowBG, NES_ShowOBJ;
 		public bool PCE_ShowBG1, PCE_ShowOBJ1, PCE_ShowBG2, PCE_ShowOBJ2;
 		public bool SMS_ShowBG, SMS_ShowOBJ;
+        public bool GG_ShowClippedRegions;
 
 		public string SNES_FirmwaresPath;
 		public bool SNES_ShowBG1_0, SNES_ShowBG2_0, SNES_ShowBG3_0, SNES_ShowBG4_0;
