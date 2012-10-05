@@ -86,7 +86,7 @@ namespace BizHawk.MultiClient
 
 				if (Global.Emulator is LibsnesCore)
 				{
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, Global.Config.GB_ForceDMG.ToString());
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, ((Global.Emulator) as LibsnesCore).IsSGB.ToString());
 				}
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
