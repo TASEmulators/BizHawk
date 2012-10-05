@@ -1010,7 +1010,8 @@ namespace BizHawk.MultiClient
 							break;
 						case "sgb_ntsc":
 						case "sgb_pal":
-							platform = "SGB";
+							platform = "SNES";
+							m.Header.SetHeaderLine(MovieHeader.SGB, true.ToString());
 							break;
 					}
 					bool pal = (gametype == "snes_pal" || gametype == "sgb_pal");
