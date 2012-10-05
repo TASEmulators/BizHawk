@@ -199,6 +199,12 @@
     <Compile Include="config\PathConfig.Designer.cs">
       <DependentUpon>PathConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PathInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PathInfo.Designer.cs">
+      <DependentUpon>PathInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PathManager.cs" />
     <Compile Include="config\SoundConfig.cs">
       <SubType>Form</SubType>
@@ -432,6 +438,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\PathInfo.resx">
+      <DependentUpon>PathInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GBtools\ColorChooserForm.resx">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
