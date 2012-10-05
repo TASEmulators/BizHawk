@@ -1385,6 +1385,8 @@ namespace BizHawk.MultiClient
 									if (Global.Config.PceEqualizeVolume) game.AddOption("EqualizeVolumes");
 									if (Global.Config.PceArcadeCardRewindHack) game.AddOption("ArcadeRewindHack");
 
+									game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData));
+
 									nextEmulator = new PCEngine(game, disc, rom.RomData);
 									break;
 								}
@@ -1506,6 +1508,7 @@ namespace BizHawk.MultiClient
 										game.AddOption("SGB");
 										var snes = new LibsnesCore();
 										nextEmulator = snes;
+										game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
 										snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
 									}
 								}

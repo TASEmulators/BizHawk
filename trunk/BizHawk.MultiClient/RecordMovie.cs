@@ -58,8 +58,8 @@ namespace BizHawk.MultiClient
 					if (result == System.Windows.Forms.DialogResult.Cancel)
 						return;
 				}
-				
-				
+
+
 				MovieToRecord = new Movie(path);
 
 				//Header
@@ -72,6 +72,8 @@ namespace BizHawk.MultiClient
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, PathManager.FilesystemSafeName(Global.Game));
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.SHA1, Global.Game.Hash);
+					if (Global.Game.FirmwareHash != null)
+						MovieToRecord.Header.SetHeaderLine(MovieHeader.FIRMWARESHA1, Global.Game.FirmwareHash);
 				}
 				else
 				{
@@ -123,7 +125,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 				MessageBox.Show("Please select a movie to record", "File selection error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			
+
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
