@@ -2429,7 +2429,7 @@ namespace BizHawk.MultiClient
 			 028 3-byte little-endian unsigned int: initial save state size, highest bit specifies compression, next 23
 			 specifies size
 			*/
-			uint savestateSize = (uint)(r.ReadByte() | (r.ReadByte() << 8) | ((r.ReadByte() << 16) & 0x80));
+			uint savestateSize = (uint)((r.ReadByte() | (r.ReadByte() << 8) | (r.ReadByte() << 16)) & 0x7FFFFF);
 			// Next follows a ZST format savestate.
 			r.ReadBytes((int)savestateSize);
 			SimpleController controllers = new SimpleController();
@@ -2442,7 +2442,6 @@ namespace BizHawk.MultiClient
 			};
 			int events = (int)(frameCount + internalChapters);
 			int frames = 1;
-			// TODO: Fix this!
 			for (int e = 1; e <= events; e++)
 			{
 				controllers["Reset"] = false;
@@ -2474,7 +2473,7 @@ namespace BizHawk.MultiClient
 					// If the event is RLE data, next follows 4 bytes which is the frame to repeat current input till.
 					uint frame = r.ReadUInt32();
 					if (frame > frameCount)
-						continue;
+						throw new ArgumentException("Invalid handling of RLE data.");
 					mg.SetSource(controllers);
 					for (; frames <= frame; frames++)
 					{
@@ -2488,7 +2487,7 @@ namespace BizHawk.MultiClient
 					 If the event is a "chapter" update, the packet follows with a ZST format savestate. Using a header of:
 						000 3-byte little endian unsigned int: save state size in format defined above
 					*/
-					savestateSize = (uint)(r.ReadByte() | (r.ReadByte() << 8) | ((r.ReadByte() << 16) & 0x80));
+					savestateSize = (uint)((r.ReadByte() | (r.ReadByte() << 8) | (r.ReadByte() << 16)) & 0x7FFFFF);
 					// 001 above size: save state
 					r.ReadBytes((int)savestateSize);
 					// above size+001 4-byte little endian unsigned int: frame number save state loads to
@@ -2508,7 +2507,6 @@ namespace BizHawk.MultiClient
 					*/
 					byte leftOver = 0x0;
 					for (int player = 1; player <= controllersUsed.Length; player++)
-					{
 						// If the controller has changed:
 						if (((flag >> (controllersUsed.Length - player)) & 0x1) != 0)
 						{
@@ -2544,16 +2542,13 @@ namespace BizHawk.MultiClient
 							{
 								if (controllersUsed[player - 1] && (player != 2 || !superScope))
 									for (int button = 0; button < buttons.Length; button++)
-									{
 										controllers["P" + player + " " + buttons[button]] = (
 											((controllerState >> button) & 0x1) != 0
 										);
-									}
 							}
 							else if (warningMsg == "")
 								warningMsg = "Controller " + player + " not supported.";
 						}
-					}
 					mg.SetSource(controllers);
 					m.AppendFrame(mg.GetControllersAsMnemonic());
 					frames++;
