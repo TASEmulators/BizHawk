@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                             GameGearFrameBuffer[(y * 160) + x] = FrameBuffer[((y + yStart) * 256) + x + 48];
                 }
 
-                if (Sms.CoreInputComm.GG_HighlightActiveRegion && Sms.CoreInputComm.GG_ShowClippedRegions)
+                if (Sms.CoreInputComm.GG_HighlightActiveDisplayRegion && Sms.CoreInputComm.GG_ShowClippedRegions)
                 {
                     // Top 24 scanlines
                     for (int y = 0; y < 24; y++)
