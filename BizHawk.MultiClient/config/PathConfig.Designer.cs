@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PathConfig));
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
@@ -275,6 +276,9 @@
 			this.INTVSaveRAMDescription = new System.Windows.Forms.Label();
 			this.INTVSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.LogDescription = new System.Windows.Forms.Label();
+			this.BrowseLog = new System.Windows.Forms.Button();
+			this.LogBox = new System.Windows.Forms.TextBox();
 			this.MovieBackupsBox = new System.Windows.Forms.TextBox();
 			this.BrowseMovieBackups = new System.Windows.Forms.Button();
 			this.MovieBackupsDescription = new System.Windows.Forms.Label();
@@ -284,9 +288,9 @@
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-			this.LogBox = new System.Windows.Forms.TextBox();
-			this.BrowseLog = new System.Windows.Forms.Button();
-			this.LogDescription = new System.Windows.Forms.Label();
+			this.button1 = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage12.SuspendLayout();
@@ -3019,6 +3023,37 @@
 			this.tabPage7.Text = "Tools";
 			this.tabPage7.UseVisualStyleBackColor = true;
 			// 
+			// LogDescription
+			// 
+			this.LogDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.LogDescription.AutoSize = true;
+			this.LogDescription.Location = new System.Drawing.Point(474, 175);
+			this.LogDescription.Name = "LogDescription";
+			this.LogDescription.Size = new System.Drawing.Size(65, 13);
+			this.LogDescription.TabIndex = 148;
+			this.LogDescription.Text = "Debug Logs";
+			// 
+			// BrowseLog
+			// 
+			this.BrowseLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseLog.Image = ((System.Drawing.Image)(resources.GetObject("BrowseLog.Image")));
+			this.BrowseLog.Location = new System.Drawing.Point(442, 171);
+			this.BrowseLog.Name = "BrowseLog";
+			this.BrowseLog.Size = new System.Drawing.Size(26, 23);
+			this.BrowseLog.TabIndex = 147;
+			this.BrowseLog.UseVisualStyleBackColor = true;
+			this.BrowseLog.Click += new System.EventHandler(this.BrowseLog_Click);
+			// 
+			// LogBox
+			// 
+			this.LogBox.AcceptsReturn = true;
+			this.LogBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.LogBox.Location = new System.Drawing.Point(13, 171);
+			this.LogBox.Name = "LogBox";
+			this.LogBox.Size = new System.Drawing.Size(421, 20);
+			this.LogBox.TabIndex = 146;
+			// 
 			// MovieBackupsBox
 			// 
 			this.MovieBackupsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -3101,36 +3136,25 @@
 			this.SaveButton.UseVisualStyleBackColor = true;
 			this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
 			// 
-			// LogBox
+			// button1
 			// 
-			this.LogBox.AcceptsReturn = true;
-			this.LogBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.LogBox.Location = new System.Drawing.Point(13, 171);
-			this.LogBox.Name = "LogBox";
-			this.LogBox.Size = new System.Drawing.Size(421, 20);
-			this.LogBox.TabIndex = 146;
+			this.button1.Image = global::BizHawk.MultiClient.Properties.Resources.Help;
+			this.button1.Location = new System.Drawing.Point(459, 57);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(26, 23);
+			this.button1.TabIndex = 203;
+			this.toolTip1.SetToolTip(this.button1, "A list of special symbols useable for paths");
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
-			// BrowseLog
+			// label1
 			// 
-			this.BrowseLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BrowseLog.Image = ((System.Drawing.Image)(resources.GetObject("BrowseLog.Image")));
-			this.BrowseLog.Location = new System.Drawing.Point(442, 171);
-			this.BrowseLog.Name = "BrowseLog";
-			this.BrowseLog.Size = new System.Drawing.Size(26, 23);
-			this.BrowseLog.TabIndex = 147;
-			this.BrowseLog.UseVisualStyleBackColor = true;
-			this.BrowseLog.Click += new System.EventHandler(this.BrowseLog_Click);
-			// 
-			// LogDescription
-			// 
-			this.LogDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.LogDescription.AutoSize = true;
-			this.LogDescription.Location = new System.Drawing.Point(474, 175);
-			this.LogDescription.Name = "LogDescription";
-			this.LogDescription.Size = new System.Drawing.Size(65, 13);
-			this.LogDescription.TabIndex = 148;
-			this.LogDescription.Text = "Debug Logs";
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(491, 64);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(97, 13);
+			this.label1.TabIndex = 204;
+			this.label1.Text = "Special Commands";
 			// 
 			// PathConfig
 			// 
@@ -3139,6 +3163,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(599, 449);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this.SaveButton);
 			this.Controls.Add(this.RecentForROMs);
 			this.Controls.Add(this.BasePathBox);
@@ -3442,5 +3468,8 @@
 		private System.Windows.Forms.Label LogDescription;
 		private System.Windows.Forms.Button BrowseLog;
 		private System.Windows.Forms.TextBox LogBox;
+		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ToolTip toolTip1;
     }
 }
