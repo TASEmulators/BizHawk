@@ -3110,9 +3110,9 @@
 			this.BaseDescription.AutoSize = true;
 			this.BaseDescription.Location = new System.Drawing.Point(526, 30);
 			this.BaseDescription.Name = "BaseDescription";
-			this.BaseDescription.Size = new System.Drawing.Size(63, 13);
+			this.BaseDescription.Size = new System.Drawing.Size(64, 13);
 			this.BaseDescription.TabIndex = 25;
-			this.BaseDescription.Text = "Base Folder";
+			this.BaseDescription.Text = "Global Base";
 			// 
 			// RecentForROMs
 			// 
