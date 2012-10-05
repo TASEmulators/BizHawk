@@ -289,10 +289,60 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (mode == VdpMode.GameGear)
             {
-                int yStart = (FrameHeight - 144)/2;
-                for (int y = 0; y < 144; y++)
-                    for (int x = 0; x < 160; x++)
-                        GameGearFrameBuffer[(y * 160) + x] = FrameBuffer[((y + yStart) * 256) + x + 48];
+                if (Sms.CoreInputComm.GG_ShowClippedRegions == false) 
+                {
+                    int yStart = (FrameHeight - 144)/2;
+                    for (int y = 0; y < 144; y++)
+                        for (int x = 0; x < 160; x++)
+                            GameGearFrameBuffer[(y * 160) + x] = FrameBuffer[((y + yStart) * 256) + x + 48];
+                }
+
+                if (Sms.CoreInputComm.GG_HighlightActiveRegion && Sms.CoreInputComm.GG_ShowClippedRegions)
+                {
+                    // Top 24 scanlines
+                    for (int y = 0; y < 24; y++)
+                    {
+                        for (int x = 0; x < 256; x++)
+                        {
+                            int frameOffset = (y * 256) + x;
+                            int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+                            FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
+                        }
+                    }
+
+                    // Bottom 24 scanlines
+                    for (int y = 168; y < 192; y++)
+                    {
+                        for (int x = 0; x < 256; x++)
+                        {
+                            int frameOffset = (y * 256) + x;
+                            int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+                            FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
+                        }
+                    }
+
+                    // Left 48 pixels
+                    for (int y = 24; y < 168; y++)
+                    {
+                        for (int x = 0; x < 48; x++)
+                        {
+                            int frameOffset = (y * 256) + x;
+                            int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+                            FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
+                        }
+                    }
+
+                    // Right 48 pixels
+                    for (int y = 24; y < 168; y++)
+                    {
+                        for (int x = 208; x < 256; x++)
+                        {
+                            int frameOffset = (y * 256) + x;
+                            int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+                            FrameBuffer[frameOffset] = (int)((uint)p | 0x80000000);
+                        }
+                    }
+                }
             }
         }
     }
