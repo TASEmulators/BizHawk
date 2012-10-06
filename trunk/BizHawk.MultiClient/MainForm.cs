@@ -1140,8 +1140,11 @@ namespace BizHawk.MultiClient
 		private void HandlePlatformMenus()
 		{
 			string system = "";
+
 			if (Global.Game != null)
+			{
 				system = Global.Game.System;
+			}
 
 			tI83ToolStripMenuItem.Visible = false;
 			NESToolStripMenuItem.Visible = false;
@@ -1165,7 +1168,15 @@ namespace BizHawk.MultiClient
 					pCEToolStripMenuItem.Visible = true;
 					break;
 				case "SMS":
+					sMSToolStripMenuItem.Text = "SMS";
+					sMSToolStripMenuItem.Visible = true;
+					break;
 				case "SG":
+					sMSToolStripMenuItem.Text = "SG";
+					sMSToolStripMenuItem.Visible = true;
+					break;
+				case "GG":
+					sMSToolStripMenuItem.Text = "GG";
 					sMSToolStripMenuItem.Visible = true;
 					break;
 				case "GB":
@@ -3820,6 +3831,12 @@ namespace BizHawk.MultiClient
 		private void blurryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DispBlurry ^= true;
+		}
+
+		private void showClippedRegionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GGShowClippedRegions ^= true;
+			Global.CoreInputComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
 		}
 	}
 }

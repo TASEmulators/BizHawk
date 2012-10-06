@@ -291,6 +291,8 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.showClippedRegionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -1242,7 +1244,7 @@
 			// 
 			this.controllersToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
 			this.controllersToolStripMenuItem.Name = "controllersToolStripMenuItem";
-			this.controllersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.controllersToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.controllersToolStripMenuItem.Text = "&Controllers...";
 			this.controllersToolStripMenuItem.Click += new System.EventHandler(this.controllersToolStripMenuItem_Click);
 			// 
@@ -1250,7 +1252,7 @@
 			// 
 			this.hotkeysToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.HotKeys;
 			this.hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
-			this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.hotkeysToolStripMenuItem.Text = "&Hotkeys...";
 			this.hotkeysToolStripMenuItem.Click += new System.EventHandler(this.hotkeysToolStripMenuItem_Click);
 			// 
@@ -1258,7 +1260,7 @@
 			// 
 			this.messagesToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MessageConfig;
 			this.messagesToolStripMenuItem.Name = "messagesToolStripMenuItem";
-			this.messagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.messagesToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.messagesToolStripMenuItem.Text = "&Messages...";
 			this.messagesToolStripMenuItem.Click += new System.EventHandler(this.messagesToolStripMenuItem_Click);
 			// 
@@ -1266,7 +1268,7 @@
 			// 
 			this.pathsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CopyFolderHS;
 			this.pathsToolStripMenuItem.Name = "pathsToolStripMenuItem";
-			this.pathsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.pathsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.pathsToolStripMenuItem.Text = "Paths...";
 			this.pathsToolStripMenuItem.Click += new System.EventHandler(this.pathsToolStripMenuItem_Click);
 			// 
@@ -1274,7 +1276,7 @@
 			// 
 			this.soundToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.AudioHS;
 			this.soundToolStripMenuItem.Name = "soundToolStripMenuItem";
-			this.soundToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.soundToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.soundToolStripMenuItem.Text = "&Sound...";
 			this.soundToolStripMenuItem.Click += new System.EventHandler(this.soundToolStripMenuItem_Click);
 			// 
@@ -1282,14 +1284,14 @@
 			// 
 			this.autofireToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Lightning;
 			this.autofireToolStripMenuItem.Name = "autofireToolStripMenuItem";
-			this.autofireToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.autofireToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.autofireToolStripMenuItem.Text = "&Autofire...";
 			this.autofireToolStripMenuItem.Click += new System.EventHandler(this.autofireToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(138, 6);
 			// 
 			// enableToolStripMenuItem
 			// 
@@ -1302,7 +1304,7 @@
             this.frameAdvanceSkipLagFramesToolStripMenuItem,
             this.backupSaveramToolStripMenuItem});
 			this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
-			this.enableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.enableToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.enableToolStripMenuItem.Text = "&Enable";
 			this.enableToolStripMenuItem.DropDownOpened += new System.EventHandler(this.enableToolStripMenuItem_DropDownOpened);
 			// 
@@ -1373,7 +1375,7 @@
             this.toolStripSeparator23,
             this.logWindowAsConsoleToolStripMenuItem});
 			this.gUIToolStripMenuItem.Name = "gUIToolStripMenuItem";
-			this.gUIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.gUIToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.gUIToolStripMenuItem.Text = "GUI";
 			this.gUIToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gUIToolStripMenuItem_DropDownOpened);
 			// 
@@ -1495,7 +1497,7 @@
             this.miSpeed150,
             this.miSpeed200});
 			this.frameSkipToolStripMenuItem.Name = "frameSkipToolStripMenuItem";
-			this.frameSkipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.frameSkipToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.frameSkipToolStripMenuItem.Text = "Speed/Skip";
 			this.frameSkipToolStripMenuItem.DropDownOpened += new System.EventHandler(this.frameSkipToolStripMenuItem_DropDownOpened);
 			// 
@@ -1638,13 +1640,13 @@
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator10.Size = new System.Drawing.Size(138, 6);
 			// 
 			// saveConfigToolStripMenuItem
 			// 
 			this.saveConfigToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Save;
 			this.saveConfigToolStripMenuItem.Name = "saveConfigToolStripMenuItem";
-			this.saveConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveConfigToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.saveConfigToolStripMenuItem.Text = "Save Config";
 			this.saveConfigToolStripMenuItem.Click += new System.EventHandler(this.saveConfigToolStripMenuItem_Click);
 			// 
@@ -1652,7 +1654,7 @@
 			// 
 			this.loadConfigToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.LoadConfig;
 			this.loadConfigToolStripMenuItem.Name = "loadConfigToolStripMenuItem";
-			this.loadConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.loadConfigToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.loadConfigToolStripMenuItem.Text = "Load Config";
 			// 
 			// toolsToolStripMenuItem
@@ -1879,6 +1881,8 @@
             this.smsOverclockWhenKnownSafeToolStripMenuItem,
             this.smsForceStereoSeparationToolStripMenuItem,
             this.smsSpriteLimitToolStripMenuItem,
+            this.showClippedRegionsToolStripMenuItem,
+            this.toolStripSeparator24,
             this.smsGraphicsSettingsToolStripMenuItem});
 			this.sMSToolStripMenuItem.Name = "sMSToolStripMenuItem";
 			this.sMSToolStripMenuItem.Size = new System.Drawing.Size(42, 19);
@@ -1889,35 +1893,35 @@
 			// 
 			this.smsEnableFMChipToolStripMenuItem.Name = "smsEnableFMChipToolStripMenuItem";
 			this.smsEnableFMChipToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-			this.smsEnableFMChipToolStripMenuItem.Text = "Enable FM Chip";
+			this.smsEnableFMChipToolStripMenuItem.Text = "&Enable FM Chip";
 			this.smsEnableFMChipToolStripMenuItem.Click += new System.EventHandler(this.smsEnableFMChipToolStripMenuItem_Click);
 			// 
 			// smsOverclockWhenKnownSafeToolStripMenuItem
 			// 
 			this.smsOverclockWhenKnownSafeToolStripMenuItem.Name = "smsOverclockWhenKnownSafeToolStripMenuItem";
 			this.smsOverclockWhenKnownSafeToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-			this.smsOverclockWhenKnownSafeToolStripMenuItem.Text = "Overclock when Known Safe";
+			this.smsOverclockWhenKnownSafeToolStripMenuItem.Text = "&Overclock when Known Safe";
 			this.smsOverclockWhenKnownSafeToolStripMenuItem.Click += new System.EventHandler(this.smsOverclockWhenKnownSafeToolStripMenuItem_Click);
 			// 
 			// smsForceStereoSeparationToolStripMenuItem
 			// 
 			this.smsForceStereoSeparationToolStripMenuItem.Name = "smsForceStereoSeparationToolStripMenuItem";
 			this.smsForceStereoSeparationToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-			this.smsForceStereoSeparationToolStripMenuItem.Text = "Force Stereo Separation";
+			this.smsForceStereoSeparationToolStripMenuItem.Text = "&Force Stereo Separation";
 			this.smsForceStereoSeparationToolStripMenuItem.Click += new System.EventHandler(this.smsForceStereoSeparationToolStripMenuItem_Click);
 			// 
 			// smsSpriteLimitToolStripMenuItem
 			// 
 			this.smsSpriteLimitToolStripMenuItem.Name = "smsSpriteLimitToolStripMenuItem";
 			this.smsSpriteLimitToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-			this.smsSpriteLimitToolStripMenuItem.Text = "Sprite Limit";
+			this.smsSpriteLimitToolStripMenuItem.Text = "Sprite &Limit";
 			this.smsSpriteLimitToolStripMenuItem.Click += new System.EventHandler(this.smsSpriteLimitToolStripMenuItem_Click);
 			// 
 			// smsGraphicsSettingsToolStripMenuItem
 			// 
 			this.smsGraphicsSettingsToolStripMenuItem.Name = "smsGraphicsSettingsToolStripMenuItem";
 			this.smsGraphicsSettingsToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-			this.smsGraphicsSettingsToolStripMenuItem.Text = "Graphics Settings";
+			this.smsGraphicsSettingsToolStripMenuItem.Text = "&Graphics Settings...";
 			this.smsGraphicsSettingsToolStripMenuItem.Click += new System.EventHandler(this.smsGraphicsSettingsToolStripMenuItem_Click);
 			// 
 			// tI83ToolStripMenuItem
@@ -2511,6 +2515,18 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
+			// showClippedRegionsToolStripMenuItem
+			// 
+			this.showClippedRegionsToolStripMenuItem.Name = "showClippedRegionsToolStripMenuItem";
+			this.showClippedRegionsToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+			this.showClippedRegionsToolStripMenuItem.Text = "&Show Clipped Regions";
+			this.showClippedRegionsToolStripMenuItem.Click += new System.EventHandler(this.showClippedRegionsToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator24
+			// 
+			this.toolStripSeparator24.Name = "toolStripSeparator24";
+			this.toolStripSeparator24.Size = new System.Drawing.Size(221, 6);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2813,6 +2829,8 @@
 		private System.Windows.Forms.ToolStripStatusLabel RebootStatusBarIcon;
 		private System.Windows.Forms.ToolStripMenuItem traceLoggerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem blurryToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showClippedRegionsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator24;
     }
 }
 
