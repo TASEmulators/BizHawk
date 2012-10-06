@@ -79,8 +79,6 @@ namespace BizHawk.MultiClient
 						m = ImportVMV(path, out errorMsg, out warningMsg);
 						break;
 					case ".ZMV":
-						if (!Global.MainForm.INTERIM)
-							return m;
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
 				}
@@ -2359,7 +2357,7 @@ namespace BizHawk.MultiClient
 			// 01A 4-byte little-endian unsigned int: number of key combos
 			r.ReadBytes(4);
 			// 01E 2-byte little-endian unsigned int: number of internal chapters
-			ushort internalChapters = r.ReadUInt16();
+			ushort internalChaptersCount = r.ReadUInt16();
 			// 020 2-byte little-endian unsigned int: length of the author name field in bytes
 			ushort authorSize = r.ReadUInt16();
 			// 022 3-byte little-endian unsigned int: size of an uncompressed save state in bytes
@@ -2393,11 +2391,6 @@ namespace BizHawk.MultiClient
 			controllerFlags >>= 1;
 			if (peripheral != "")
 				warningMsg = "Unable to import " + peripheral + ".";
-			bool[] controllersUsed = new bool[5];
-			for (int controller = 1; controller <= controllersUsed.Length; controller++)
-				controllersUsed[controllersUsed.Length - controller] = (
-					((controllerFlags >> (controller - 1)) & 0x1) != 0
-				);
 			// 027 1-byte flags:
 			byte movieFlags = r.ReadByte();
 			byte begins = (byte)(movieFlags & 0xC0);
@@ -2439,13 +2432,12 @@ namespace BizHawk.MultiClient
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			// R, L, X, A, Right, Left, Down, Up, Start, Select, Y, B. TODO: Confirm.
 			string[] buttons = new string[12] {
-				"R", "L", "X", "A", "Right", "Left", "Down", "Up", "Start", "Select", "Y", "B"
+				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
 			};
-			int events = (int)(frameCount + internalChapters);
 			int frames = 1;
-			for (int e = 1; e <= events; e++)
+			int internalChapters = 1;
+			while (frames <= frameCount || internalChapters <= internalChaptersCount)
 			{
-				controllers["Reset"] = false;
 				/*
 				 000 1-byte flags:
 					 bit 7: "1" if controller 1 changed, "0" otherwise
@@ -2466,7 +2458,13 @@ namespace BizHawk.MultiClient
 					*/
 					flag >>= 1;
 					if (flag == 0x0)
+					{
 						controllers["Reset"] = true;
+						mg.SetSource(controllers);
+						m.AppendFrame(mg.GetControllersAsMnemonic());
+						frames++;
+						controllers["Reset"] = false;
+					}
 					// TODO: Other commands.
 				}
 				else if (((flag >> 1) & 0x1) != 0)
@@ -2474,13 +2472,10 @@ namespace BizHawk.MultiClient
 					// If the event is RLE data, next follows 4 bytes which is the frame to repeat current input till.
 					uint frame = r.ReadUInt32();
 					if (frame > frameCount)
-						throw new ArgumentException("Invalid handling of RLE data.");
+						throw new ArgumentException("RLE data repeats for frames beyond the total frame count.");
 					mg.SetSource(controllers);
 					for (; frames <= frame; frames++)
-					{
 						m.AppendFrame(mg.GetControllersAsMnemonic());
-						e++;
-					}
 				}
 				else if (((flag >> 2) & 0x1) != 0)
 				{
@@ -2497,6 +2492,7 @@ namespace BizHawk.MultiClient
 					r.ReadBytes(2);
 					// above size+007 9-byte: previous controller input bits
 					r.ReadBytes(9);
+					internalChapters++;
 				}
 				else
 				{
@@ -2506,42 +2502,44 @@ namespace BizHawk.MultiClient
 					 bits per controller, or 20 bits in the case of the super scope, zeropadding up to full bytes. The
 					 minimum length of the controller data is 2 bytes, and the maximum length is 9 bytes.
 					*/
-					byte leftOver = 0x0;
-					for (int player = 1; player <= controllersUsed.Length; player++)
+					bool leftOver = false;
+					byte leftOverValue = 0x0;
+					for (int player = 1; player <= 5; player++)
 						// If the controller has changed:
-						if (((flag >> (controllersUsed.Length - player)) & 0x1) != 0)
+						if (((flag >> (5 - player)) & 0x1) != 0)
 						{
 							byte controllerState1 = r.ReadByte();
 							uint controllerState;
-							if (leftOver == 0x0)
+							if (!leftOver)
 							{
 								byte controllerState2 = r.ReadByte();
 								if (player == 2 && superScope)
 								{
 									byte controllerState3 = r.ReadByte();
-									controllerState = (uint)(((controllerState1 << 16) & 0x0F0000) |
-										(controllerState2 << 8) | controllerState3);
+									controllerState = (uint)((controllerState1 | (controllerState2 << 8) |
+										(controllerState3 << 12)) & 0x0FFFFF);
+									leftOverValue = (byte)((controllerState3 >> 4) & 0x0F);
 								}
 								else
-									controllerState = (uint)(((controllerState1 << 8) & 0x0F00) | controllerState2);
-								leftOver = (byte)((controllerState1 >> 4) & 0x0F);
+								{
+									controllerState = (uint)((controllerState1 | (controllerState2 << 4)) & 0x0FFF);
+									leftOverValue = (byte)((controllerState2 >> 4) & 0x0F);
+								}
 							}
-							else if ((leftOver & 0x0F) == leftOver)
+							else
 							{
+								controllerState = (uint)((controllerState1 >> 4) | (leftOverValue << 4) |
+										((controllerState1 << 8) & 0x0F00));
 								if (player == 2 && superScope)
 								{
 									byte controllerState2 = r.ReadByte();
-									controllerState = (uint)((leftOver << 16) | (controllerState1 << 8) |
-										controllerState2);
+									controllerState |= (uint)(controllerState2 << 12);
 								}
-								else
-									controllerState = (uint)((leftOver << 8) | controllerState1);
 							}
-							else
-								throw new ArgumentException("Unexpected number of leftover bits.");
+							leftOver = !leftOver;
 							if (player <= Global.PLAYERS[controllers.Type.Name])
 							{
-								if (controllersUsed[player - 1] && (player != 2 || !superScope))
+								if (player != 2 || !superScope)
 									for (int button = 0; button < buttons.Length; button++)
 										controllers["P" + player + " " + buttons[button]] = (
 											((controllerState >> button) & 0x1) != 0
