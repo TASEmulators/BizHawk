@@ -219,6 +219,8 @@
 			this.smsOverclockWhenKnownSafeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.smsForceStereoSeparationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.smsSpriteLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showClippedRegionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
 			this.smsGraphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tI83ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.keypadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -291,8 +293,7 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.showClippedRegionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
+			this.highlightActiveDisplayRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -1882,6 +1883,7 @@
             this.smsForceStereoSeparationToolStripMenuItem,
             this.smsSpriteLimitToolStripMenuItem,
             this.showClippedRegionsToolStripMenuItem,
+            this.highlightActiveDisplayRegionToolStripMenuItem,
             this.toolStripSeparator24,
             this.smsGraphicsSettingsToolStripMenuItem});
 			this.sMSToolStripMenuItem.Name = "sMSToolStripMenuItem";
@@ -1892,35 +1894,47 @@
 			// smsEnableFMChipToolStripMenuItem
 			// 
 			this.smsEnableFMChipToolStripMenuItem.Name = "smsEnableFMChipToolStripMenuItem";
-			this.smsEnableFMChipToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+			this.smsEnableFMChipToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
 			this.smsEnableFMChipToolStripMenuItem.Text = "&Enable FM Chip";
 			this.smsEnableFMChipToolStripMenuItem.Click += new System.EventHandler(this.smsEnableFMChipToolStripMenuItem_Click);
 			// 
 			// smsOverclockWhenKnownSafeToolStripMenuItem
 			// 
 			this.smsOverclockWhenKnownSafeToolStripMenuItem.Name = "smsOverclockWhenKnownSafeToolStripMenuItem";
-			this.smsOverclockWhenKnownSafeToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+			this.smsOverclockWhenKnownSafeToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
 			this.smsOverclockWhenKnownSafeToolStripMenuItem.Text = "&Overclock when Known Safe";
 			this.smsOverclockWhenKnownSafeToolStripMenuItem.Click += new System.EventHandler(this.smsOverclockWhenKnownSafeToolStripMenuItem_Click);
 			// 
 			// smsForceStereoSeparationToolStripMenuItem
 			// 
 			this.smsForceStereoSeparationToolStripMenuItem.Name = "smsForceStereoSeparationToolStripMenuItem";
-			this.smsForceStereoSeparationToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+			this.smsForceStereoSeparationToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
 			this.smsForceStereoSeparationToolStripMenuItem.Text = "&Force Stereo Separation";
 			this.smsForceStereoSeparationToolStripMenuItem.Click += new System.EventHandler(this.smsForceStereoSeparationToolStripMenuItem_Click);
 			// 
 			// smsSpriteLimitToolStripMenuItem
 			// 
 			this.smsSpriteLimitToolStripMenuItem.Name = "smsSpriteLimitToolStripMenuItem";
-			this.smsSpriteLimitToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+			this.smsSpriteLimitToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
 			this.smsSpriteLimitToolStripMenuItem.Text = "Sprite &Limit";
 			this.smsSpriteLimitToolStripMenuItem.Click += new System.EventHandler(this.smsSpriteLimitToolStripMenuItem_Click);
+			// 
+			// showClippedRegionsToolStripMenuItem
+			// 
+			this.showClippedRegionsToolStripMenuItem.Name = "showClippedRegionsToolStripMenuItem";
+			this.showClippedRegionsToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+			this.showClippedRegionsToolStripMenuItem.Text = "&Show Clipped Regions";
+			this.showClippedRegionsToolStripMenuItem.Click += new System.EventHandler(this.showClippedRegionsToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator24
+			// 
+			this.toolStripSeparator24.Name = "toolStripSeparator24";
+			this.toolStripSeparator24.Size = new System.Drawing.Size(238, 6);
 			// 
 			// smsGraphicsSettingsToolStripMenuItem
 			// 
 			this.smsGraphicsSettingsToolStripMenuItem.Name = "smsGraphicsSettingsToolStripMenuItem";
-			this.smsGraphicsSettingsToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+			this.smsGraphicsSettingsToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
 			this.smsGraphicsSettingsToolStripMenuItem.Text = "&Graphics Settings...";
 			this.smsGraphicsSettingsToolStripMenuItem.Click += new System.EventHandler(this.smsGraphicsSettingsToolStripMenuItem_Click);
 			// 
@@ -2515,17 +2529,12 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
-			// showClippedRegionsToolStripMenuItem
+			// highlightActiveDisplayRegionToolStripMenuItem
 			// 
-			this.showClippedRegionsToolStripMenuItem.Name = "showClippedRegionsToolStripMenuItem";
-			this.showClippedRegionsToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-			this.showClippedRegionsToolStripMenuItem.Text = "&Show Clipped Regions";
-			this.showClippedRegionsToolStripMenuItem.Click += new System.EventHandler(this.showClippedRegionsToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator24
-			// 
-			this.toolStripSeparator24.Name = "toolStripSeparator24";
-			this.toolStripSeparator24.Size = new System.Drawing.Size(221, 6);
+			this.highlightActiveDisplayRegionToolStripMenuItem.Name = "highlightActiveDisplayRegionToolStripMenuItem";
+			this.highlightActiveDisplayRegionToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+			this.highlightActiveDisplayRegionToolStripMenuItem.Text = "&Highlight Active Display Region";
+			this.highlightActiveDisplayRegionToolStripMenuItem.Click += new System.EventHandler(this.highlightActiveDisplayRegionToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -2831,6 +2840,7 @@
 		private System.Windows.Forms.ToolStripMenuItem blurryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showClippedRegionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator24;
+		private System.Windows.Forms.ToolStripMenuItem highlightActiveDisplayRegionToolStripMenuItem;
     }
 }
 
