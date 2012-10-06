@@ -2317,8 +2317,11 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void UpdateToolsBefore()
 		{
-			
+#if WINDOWS
+			LuaConsole1.StartLuaDrawing();
 			LuaConsole1.LuaImp.FrameRegisterBefore();
+			
+#endif
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
@@ -2335,18 +2338,24 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsAfter()
 		{
 #if WINDOWS
+			
 			LuaConsole1.ResumeScripts(true);
-			Global.DisplayManager.PreFrameUpdateLuaSource();
+			
 #endif
 			RamWatch1.UpdateValues();
 			RamSearch1.UpdateValues();
 			HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
-			LuaConsole1.LuaImp.FrameRegisterAfter();
+			
 			TAStudio1.UpdateValues();
 			SNESGraphicsDebugger1.UpdateToolsAfter();
 			TraceLogger1.UpdateValues();
+#if WINDOWS
+			LuaConsole1.LuaImp.FrameRegisterAfter();
+			Global.DisplayManager.PreFrameUpdateLuaSource();
+			LuaConsole1.EndLuaDrawing();
+#endif
 		}
 
 		private unsafe Image MakeScreenshotImage()
