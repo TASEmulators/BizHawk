@@ -27,6 +27,14 @@ local function hex(val)
 	return val
 end
 
+function findbit(p) 
+	return 2 ^ (p - 1)
+end
+
+function hasbit(x, p) 
+	return x % (p + p) >= p 
+end
+
 memory.usememorydomain("PRG ROM")
 
 local function formatstring(adr)
@@ -85,24 +93,64 @@ local function player()
 	
 end
 
-local function enemy()
+local function objects()
 	local x 
 	local y 
 	local l
-
+	local box
+	local active
+	local fill 
+	local outl 
+	local isoob
+	local etype
 	for i = 2,19,1 do
+		active = mainmemory.read_u8(0x3D8 + i)
+		isoob = mainmemory.read_u8(oob + i)
+		etype = mainmemory.read_u8(0x3B4 + i)
 		
-		if mainmemory.read_u8(0x3B4 + i) > 0 then
-			if bit.rshift(bit.band(mainmemory.read_u8(oob + i),0xF0),4) ~= 8 then
-				box = buildbox(i)
-				x = mainmemory.read_u8(ex + i)
-				y = mainmemory.read_u8(ey + i)
-				l = mainmemory.read_u8(el + i)
-				gui.drawBox(x - box[3],y+box[1]+box[2],x+box[3],y+box[1]-box[2],0xFFFF0000,0x40FF0000)
-				if show_elife == true then
-					gui.text((x - 8) * xm, (y - 28) * ym, "HP: " .. l)
+		if etype > 0 and etype ~= 0x43 and etype ~= 0x1E and etype ~= 0x2A then
+			box = buildbox(i)
+			x = mainmemory.read_u8(ex + i)
+			y = mainmemory.read_u8(ey + i)
+			l = mainmemory.read_u8(el + i)
+			if hasbit(active,findbit(1)) and not hasbit(active,findbit(8)) then  -- Enemy
+				
+				if bit.rshift(bit.band(isoob,0xF0),4) ~= 8 and bit.rshift(bit.band(isoob,0xF0),4) ~= 4 then  -- If not offscreen
+					if show_elife == true then
+						gui.text((x-8) * xm,(y-28) * ym,"HP: " .. l)
+					end
 				end
+				fill = 0x40FF0000
+				outl = 0xFFFF0000
+			elseif hasbit(active,findbit(8)) and hasbit(active,findbit(1)) then -- Hidden enemy, no active box
+				outl = 0x40FF0000
+				fill = 0x00FF0000
+				
+				if bit.rshift(bit.band(isoob,0xF0),4) ~= 8 and bit.rshift(bit.band(isoob,0xF0),4) ~= 4 then  -- If not offscreen
+					if show_elife == true then
+						gui.text((x-8) * xm,(y-28) * ym,"HP: " .. l)
+					end
+				end
+			elseif hasbit(active,findbit(8)) and hasbit(active,findbit(2)) then  -- Simon's projectiles
+				outl = 0xFF00FFFF
+				fill = 0x4000FFFF
+			elseif not hasbit(active,findbit(8)) and hasbit(active,(2)) then -- Enemy projectile
+				outl = 0xFFFFFF00
+				fill = 0x40FFFF00
+			elseif hasbit(active,findbit(8)) and not hasbit(active,findbit(2)) then  -- Inactive box
+				outl = 0
+				fill = 0
+			elseif hasbit(active,findbit(7)) then -- NPC
+				outl = 0xFFFF00FF
+				fill = 0x40FF00FF
+			elseif hasbit(active,findbit(3)) then -- Item pickups
+				outl = 0xFFFFA500
+				fill = 0x40FFA500
 			end
+			if bit.rshift(bit.band(isoob,0xF0),4) ~= 8 and bit.rshift(bit.band(isoob,0xF0),4) ~= 4 then  -- If not offscreen
+				gui.drawBox(x - box[3],y+box[1]+box[2],x+box[3],y+box[1]-box[2],outl,fill)
+			end
+
 		end
 		
 	end
@@ -139,6 +187,6 @@ while true do
 		HUD()
 	end
 	player()
-	enemy()
+	objects()
 	emu.frameadvance()
 end
