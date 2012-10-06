@@ -3383,7 +3383,7 @@ namespace BizHawk.MultiClient
 			foreach (string fn in ofd.FileNames)
 			{
 				var file = new FileInfo(fn);
-
+				string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 				string errorMsg = "";
 				string warningMsg = "";
 				Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
@@ -3392,7 +3392,12 @@ namespace BizHawk.MultiClient
 				if (warningMsg.Length > 0)
 					Global.OSD.AddMessage(warningMsg);
 				else
-					Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as ." + Global.Config.MovieExtension);
+					Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
+					                      Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
+					if (!Directory.Exists(d))
+						Directory.CreateDirectory(d);
+					File.Copy(fn + "." + Global.Config.MovieExtension, d + "\\" + Path.GetFileNameWithoutExtension(fn) + "." + Global.Config.MovieExtension,true);
+					File.Delete(fn + "." + Global.Config.MovieExtension);
 			}
 		}
 
