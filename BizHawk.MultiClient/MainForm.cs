@@ -3396,7 +3396,7 @@ namespace BizHawk.MultiClient
 					                      Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
 					if (!Directory.Exists(d))
 						Directory.CreateDirectory(d);
-					File.Copy(fn + "." + Global.Config.MovieExtension, d + "\\" + Path.GetFileNameWithoutExtension(fn) + "." + Global.Config.MovieExtension,true);
+					File.Copy(fn + "." + Global.Config.MovieExtension, d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension,true);
 					File.Delete(fn + "." + Global.Config.MovieExtension);
 			}
 		}
