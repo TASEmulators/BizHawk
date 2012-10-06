@@ -2318,10 +2318,6 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsBefore()
 		{
 			LuaConsole1.LuaImp.FrameRegisterBefore();
-#if WINDOWS
-			LuaConsole1.ResumeScripts(true);
-			Global.DisplayManager.PreFrameUpdateLuaSource();
-#endif
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
@@ -2337,6 +2333,10 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void UpdateToolsAfter()
 		{
+#if WINDOWS
+			LuaConsole1.ResumeScripts(true);
+			Global.DisplayManager.PreFrameUpdateLuaSource();
+#endif
 			RamWatch1.UpdateValues();
 			RamSearch1.UpdateValues();
 			HexEditor1.UpdateValues();
