@@ -2430,7 +2430,20 @@ namespace BizHawk.MultiClient
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "SNES Controller";
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			// R, L, X, A, Right, Left, Down, Up, Start, Select, Y, B. TODO: Confirm.
+			/*
+			 * bit 11: A
+			 * bit 10: X
+			 * bit 9:  L
+			 * bit 8:  R
+			 * bit 7:  B
+			 * bit 6:  Y
+			 * bit 5:  Select
+			 * bit 4:  Start
+			 * bit 3:  Up
+			 * bit 2:  Down
+			 * bit 1:  Left
+			 * bit 0:  Right
+			*/
 			string[] buttons = new string[12] {
 				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
 			};
@@ -2462,7 +2475,6 @@ namespace BizHawk.MultiClient
 						controllers["Reset"] = true;
 						mg.SetSource(controllers);
 						m.AppendFrame(mg.GetControllersAsMnemonic());
-						frames++;
 						controllers["Reset"] = false;
 					}
 					// TODO: Other commands.
@@ -2508,6 +2520,36 @@ namespace BizHawk.MultiClient
 						// If the controller has changed:
 						if (((flag >> (5 - player)) & 0x1) != 0)
 						{
+							/*
+							 For example, if this frame contained input for controllers 1 and 2:
+								 byte 1:
+									 bit 7:  P1 B
+									 bit 6:  P1 Y
+									 bit 5:  P1 Select
+									 bit 4:  P1 Start
+									 bit 3:  P1 Up
+									 bit 2:  P1 Down
+									 bit 1:  P1 Left
+									 bit 0:  P1 Right
+								 byte 2:
+									 bit 7:  P2 B
+									 bit 6:  P2 Y
+									 bit 5:  P2 Select
+									 bit 4:  P2 Start
+									 bit 3:  P1 A
+									 bit 2:  P1 X
+									 bit 1:  P1 L
+									 bit 0:  P1 R
+								 byte 3:
+									 bit 7:  P2 Up
+									 bit 6:  P2 Down
+									 bit 5:  P2 Left
+									 bit 4:  P2 Right
+									 bit 3:  P2 A
+									 bit 2:  P2 X
+									 bit 1:  P2 L
+									 bit 0:  P2 R
+							*/
 							byte controllerState1 = r.ReadByte();
 							uint controllerState;
 							if (!leftOver)
@@ -2529,7 +2571,7 @@ namespace BizHawk.MultiClient
 							else
 							{
 								controllerState = (uint)((controllerState1 >> 4) | (leftOverValue << 4) |
-										((controllerState1 << 8) & 0x0F00));
+									((controllerState1 << 8) & 0x0F00));
 								if (player == 2 && superScope)
 								{
 									byte controllerState2 = r.ReadByte();
@@ -2553,6 +2595,10 @@ namespace BizHawk.MultiClient
 					frames++;
 				}
 			}
+			r.BaseStream.Position = r.BaseStream.Length - authorSize;
+			// Last in the file comes the author name field, which is an UTF-8 encoded text string.
+			string author = Encoding.UTF8.GetString(r.ReadBytes(authorSize));
+			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			return m;
 		}
 	}
