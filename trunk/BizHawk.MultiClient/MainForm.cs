@@ -1473,6 +1473,7 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "GB":
+							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
 									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
