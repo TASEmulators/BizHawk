@@ -1,3 +1,5 @@
+using System;
+
 namespace BizHawk.Emulation.CPUs.Z80 
 {
 	public partial class Z80A 
@@ -10,6 +12,9 @@ namespace BizHawk.Emulation.CPUs.Z80
 
 		private int pendingCycles;
 		public int PendingCycles { get { return pendingCycles; } set { pendingCycles = value; } }
+
+        public bool Debug;
+        public Action<string> Logger;
 
 		/// <summary>
 		/// Runs the CPU for a particular number of clock cycles.
@@ -30,13 +35,18 @@ namespace BizHawk.Emulation.CPUs.Z80
             {
                 Interruptable = true;
 
-				if (halted) 
+				if (halted)
                 {
-					++RegR;
-					totalExecutedCycles += 4; pendingCycles -= 4;
-				} else {
-					++RegR;
 
+                    ++RegR;
+					totalExecutedCycles += 4; pendingCycles -= 4;
+
+				} else {
+
+                    if (Debug)
+                        Logger(State());
+                    
+                    ++RegR;
 					switch (ReadMemory(RegPC.Word++)) 
                     {
 						case 0x00: // NOP
@@ -11631,5 +11641,28 @@ namespace BizHawk.Emulation.CPUs.Z80
 				}
 			}
 		}
+        
+        // TODO, not super thrilled with the existing Z80 disassembler, lets see if we can find something decent to replace it with
+        Disassembler Disassembler = new Disassembler();
+
+        public string State()
+        {
+            ushort tempPC = RegPC.Word;
+            //ushort pc = RegPC.Word;
+            //string str = disasm.Disassemble(() => ReadMemory(pc++));
+            string a = string.Format("{0:X4}  {1:X2} {2} ", RegPC.Word, ReadMemory(RegPC.Word), Disassembler.Disassemble(() => ReadMemory(tempPC++)).PadRight(41));
+            string b = string.Format("AF:{0:X4} BC:{1:X4} DE:{2:X4} HL:{3:X4} IX:{4:X4} IY:{5:X4} SP:{6:X4} Cy:{7}", RegAF.Word, RegBC.Word, RegDE.Word, RegHL.Word, RegIX.Word, RegIY.Word, RegSP.Word, TotalExecutedCycles);
+            string val = a + b + "   ";
+            
+            if (RegFlagC) val = val + "C";
+            if (RegFlagN) val = val + "N";
+            if (RegFlagP) val = val + "P";
+            if (RegFlag3) val = val + "3";
+            if (RegFlagH) val = val + "H";
+            if (RegFlag5) val = val + "5";
+            if (RegFlagZ) val = val + "Z";
+            if (RegFlagS) val = val + "S";
+            return val;
+        }
 	}
 }
