@@ -15,6 +15,7 @@
 #include gamedb_sega_md.txt
 #include gamedb_a2600.txt
 #include gamedb_gb.txt
+#include gamedb_gbc.txt
 #include gamedb_snes.txt
 
 ; ************ TI-83 ************
