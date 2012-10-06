@@ -598,6 +598,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
+		public DisplayType DisplayType
+		{
+			get
+			{
+				if (LibsnesDll.snes_get_region() == LibsnesDll.SNES_REGION.NTSC)
+					return BizHawk.DisplayType.NTSC;
+				else
+					return BizHawk.DisplayType.PAL;
+			}
+		}
+
 		//video provider
 		int IVideoProvider.BackgroundColor { get { return 0; } }
 		int[] IVideoProvider.GetVideoBuffer() { return vidBuffer; }
