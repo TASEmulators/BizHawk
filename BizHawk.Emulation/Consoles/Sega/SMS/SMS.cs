@@ -84,7 +84,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 		    IsGameGear = game.System == "GG";
 		    RomData = rom;
 			CoreOutputComm = new CoreOutputComm();
-
+            CoreOutputComm.CpuTraceAvailable = true;
+            
             if (RomData.Length % BankSize != 0)
                 Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
             RomBanks = (byte)(RomData.Length / BankSize);
@@ -194,6 +195,9 @@ namespace BizHawk.Emulation.Consoles.Sega
 			lagged = true;
 			Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
+            Cpu.Debug = CoreInputComm.Tracer.Enabled;
+            if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreInputComm/CoreOutputComm first
+                Cpu.Logger = (s) => CoreInputComm.Tracer.Put(s);
 
 			if (IsGameGear == false)
 				Cpu.NonMaskableInterrupt = Controller["Pause"];
