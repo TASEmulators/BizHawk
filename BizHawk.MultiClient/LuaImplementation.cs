@@ -1190,7 +1190,8 @@ namespace BizHawk.MultiClient
 					}
 				};
 			}
-
+			else
+				Global.Emulator.CoreInputComm.InputCallback = null;
 		}
 
 		//----------------------------------------------------
