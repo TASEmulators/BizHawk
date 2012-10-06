@@ -2606,6 +2606,7 @@ namespace BizHawk.MultiClient
 			if (!SNESGraphicsDebugger1.IsHandleCreated || SNESGraphicsDebugger1.IsDisposed)
 			{
 				SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
+				SNESGraphicsDebugger1.UpdateToolsLoadstate();
 				SNESGraphicsDebugger1.Show();
 			}
 			else
