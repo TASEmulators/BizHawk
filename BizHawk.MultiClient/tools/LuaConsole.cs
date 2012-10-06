@@ -840,18 +840,19 @@ namespace BizHawk.MultiClient
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
+			LuaImp.gui_drawNewEmu();
 			for (int i = 0; i < luaList.Count; i++)
 			{
 				try
 				{
-					LuaImp.gui_drawNewEmu();
 					//LuaImp.gui_clearGraphics();
 					if (luaList[i].Enabled && luaList[i].Thread != null && !(luaList[i].Paused))
 					{
 						bool prohibit = false;
 						if (luaList[i].FrameWaiting && !includeFrameWaiters)
+						{
 							prohibit = true;
-
+						}
 						if (!prohibit)
 						{
 							var result = LuaImp.ResumeScript(luaList[i].Thread);
@@ -859,7 +860,6 @@ namespace BizHawk.MultiClient
 							luaList[i].FrameWaiting = result.WaitForFrame;
 						}
 					}
-					LuaImp.gui_drawFinishEmu();
 				}
 				catch (Exception ex)
 				{
@@ -872,6 +872,7 @@ namespace BizHawk.MultiClient
 					else MessageBox.Show(ex.ToString());
 				}
 			}
+			LuaImp.gui_drawFinishEmu();
 		}
 
 		public bool IsRunning()
