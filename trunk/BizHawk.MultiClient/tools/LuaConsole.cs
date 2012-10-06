@@ -755,7 +755,7 @@ namespace BizHawk.MultiClient
 		private void luaFunctionsListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Sound.StopSound();
-			new LuaFunctionList().ShowDialog();
+			new LuaFunctionList().Show();
 			Global.Sound.StartSound();
 		}
 
