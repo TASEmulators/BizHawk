@@ -251,6 +251,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		byte read_joyport(int addr)
 		{
+			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			//read joystick port
 			//many todos here
 			lagged = false;

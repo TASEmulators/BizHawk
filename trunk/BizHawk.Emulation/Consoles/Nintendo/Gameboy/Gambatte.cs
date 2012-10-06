@@ -86,9 +86,9 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public IController Controller { get; set; }
 
-		// can when this is called (or not called) be used to give information about lagged frames?
 		LibGambatte.Buttons ControllerCallback()
 		{
+			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			IsLagFrame = false;
 			return CurrentButtons;
 		}

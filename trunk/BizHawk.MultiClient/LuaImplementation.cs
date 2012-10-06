@@ -378,6 +378,7 @@ namespace BizHawk.MultiClient
 		                                      		"enablerewind",
 													"registerbefore",
 													"registerafter",
+													"on_snoop",
 		                                      	};
 
 		public static string[] MemoryFunctions = new string[]
@@ -1169,6 +1170,27 @@ namespace BizHawk.MultiClient
 		public void emu_registerafter(LuaFunction luaf)
 		{
 			frame_registerafterfunc = luaf;
+		}
+
+		public void emu_on_snoop(LuaFunction luaf)
+		{
+			if (luaf != null)
+			{
+				Global.Emulator.CoreInputComm.InputCallback = delegate()
+				{
+					try
+					{
+						luaf.Call();
+					}
+					catch (SystemException e)
+					{
+						Global.MainForm.LuaConsole1.WriteToOutputWindow(
+							"error running function attached by lua function emu.on_snoop" +
+							"\nError message: " + e.Message);
+					}
+				};
+			}
+
 		}
 
 		//----------------------------------------------------
