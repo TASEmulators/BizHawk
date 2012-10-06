@@ -659,6 +659,7 @@ namespace BizHawk.MultiClient
 			else if (ControlType == "SNES Controller")
 			{
 				SetSNESControllersAsMnemonic(mnemonic);
+				return;
 			}
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 
