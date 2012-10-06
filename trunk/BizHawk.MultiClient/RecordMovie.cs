@@ -10,6 +10,8 @@ using System.IO;
 
 using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
+using BizHawk.Emulation.Consoles.Sega;
+using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
@@ -89,7 +91,26 @@ namespace BizHawk.MultiClient
 				if (Global.Emulator is LibsnesCore)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, ((Global.Emulator) as LibsnesCore).IsSGB.ToString());
+					if ((Global.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
+					{
+						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+					}
 				}
+				else if (Global.Emulator is SMS)
+				{
+					if ((Global.Emulator as SMS).DisplayType == DisplayType.PAL)
+					{
+						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+					}
+				}
+				else if (Global.Emulator is NES)
+				{
+					if ((Global.Emulator as NES).DisplayType == DisplayType.PAL)
+					{
+						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+					}
+				}
+
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
