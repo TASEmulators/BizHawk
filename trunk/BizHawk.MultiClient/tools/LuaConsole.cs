@@ -840,39 +840,42 @@ namespace BizHawk.MultiClient
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			if (LuaImp.luaSurface == null)
+			if (luaList != null && luaList.Count > 0)
 			{
-				LuaImp.gui_drawNewEmu();
-			}
-			for (int i = 0; i < luaList.Count; i++)
-			{
-				try
+				if (LuaImp.luaSurface == null)
 				{
-					//LuaImp.gui_clearGraphics();
-					if (luaList[i].Enabled && luaList[i].Thread != null && !(luaList[i].Paused))
-					{
-						bool prohibit = false;
-						if (luaList[i].FrameWaiting && !includeFrameWaiters)
-						{
-							prohibit = true;
-						}
-						if (!prohibit)
-						{
-							var result = LuaImp.ResumeScript(luaList[i].Thread);
-							if (result.Terminated) luaList[i].Stop();
-							luaList[i].FrameWaiting = result.WaitForFrame;
-						}
-					}
+					LuaImp.gui_drawNewEmu();
 				}
-				catch (Exception ex)
+				for (int i = 0; i < luaList.Count; i++)
 				{
-					if (ex is LuaInterface.LuaScriptException || ex is LuaInterface.LuaException)
+					try
 					{
-						luaList[i].Enabled = false;
-						luaList[i].Thread = null;
-						AddText(ex.ToString());
+						//LuaImp.gui_clearGraphics();
+						if (luaList[i].Enabled && luaList[i].Thread != null && !(luaList[i].Paused))
+						{
+							bool prohibit = false;
+							if (luaList[i].FrameWaiting && !includeFrameWaiters)
+							{
+								prohibit = true;
+							}
+							if (!prohibit)
+							{
+								var result = LuaImp.ResumeScript(luaList[i].Thread);
+								if (result.Terminated) luaList[i].Stop();
+								luaList[i].FrameWaiting = result.WaitForFrame;
+							}
+						}
 					}
-					else MessageBox.Show(ex.ToString());
+					catch (Exception ex)
+					{
+						if (ex is LuaInterface.LuaScriptException || ex is LuaInterface.LuaException)
+						{
+							luaList[i].Enabled = false;
+							luaList[i].Thread = null;
+							AddText(ex.ToString());
+						}
+						else MessageBox.Show(ex.ToString());
+					}
 				}
 			}
 			//LuaImp.gui_drawFinishEmu();
@@ -880,12 +883,18 @@ namespace BizHawk.MultiClient
 
 		public void StartLuaDrawing()
 		{
-			LuaImp.gui_drawNewEmu();
+			if (luaList != null && luaList.Count > 0)
+			{
+				LuaImp.gui_drawNewEmu();
+			}
 		}
 
 		public void EndLuaDrawing()
 		{
-			LuaImp.gui_drawFinishEmu();
+			if (luaList != null && luaList.Count > 0)
+			{
+				LuaImp.gui_drawFinishEmu();
+			}
 		}
 
 		public bool IsRunning()
