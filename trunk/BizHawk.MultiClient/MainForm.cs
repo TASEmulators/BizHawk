@@ -2317,6 +2317,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void UpdateToolsBefore()
 		{
+			
 			LuaConsole1.LuaImp.FrameRegisterBefore();
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
