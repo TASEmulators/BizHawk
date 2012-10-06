@@ -64,6 +64,81 @@ console.output("Description: Shows stats and information on screen and can even 
 console.output("\nHotkeys: ");
 console.output("Toggle Hand of player 2: \nH/J");
 console.output("Toggle Hand of player 1: \nK/L");
+
+function P1BoostHitter()
+	mainmemory.write_u16_le(0x062B, mainmemory.read_u16_le(0x062B) + 128);
+end
+
+function P1DropHitter()
+	mainmemory.write_u16_le(0x062B, mainmemory.read_u16_le(0x062B) - 128);
+end
+
+function P2BoostHitter()
+	mainmemory.write_u16_le(0x063B, mainmemory.read_u16_le(0x063B) + 128);
+end
+
+function P2DropHitter()
+	mainmemory.write_u16_le(0x063B, mainmemory.read_u16_le(0x063B) - 128);
+end
+
+function SwitchP1LHand()
+	if (inningtb == 0x10) then	
+		mainmemory.write_u8(0x0607, 0)
+	end
+	if (inningtb == 0) then
+		mainmemory.write_u8(0x0627, 0)
+	end
+end
+
+function SwitchP1RHand()
+	if (inningtb == 0x10) then	
+		mainmemory.write_u8(0x0607, 1)
+	end
+	if (inningtb == 0) then
+		mainmemory.write_u8(0x0627, 1)
+	end
+end
+
+function SwitchP2LHand()
+	if (inningtb == 0x0) then	
+		mainmemory.write_u8(0x0617, 0)
+	end
+	if (inningtb == 0x10) then
+		mainmemory.write_u8(0x0637, 0)
+	end
+end
+
+function SwitchP2RHand()
+	if (inningtb == 0x0) then	
+		mainmemory.write_u8(0x0617, 1)
+	end
+	if (inningtb == 0x10) then
+		mainmemory.write_u8(0x0637, 1)
+	end
+end
+
+h_window = forms.newform(345, 205, "RBI Lua");
+
+label_p1switch = forms.label(h_window, "Player 1", 10, 5);
+
+label_p1switch = forms.label(h_window, "Switch Player Hand", 10, 35);
+h_toggleP1L = forms.button(h_window, "Left", SwitchP1LHand, 10, 60, 50, 23);
+h_toggleP1R = forms.button(h_window, "Right", SwitchP1RHand, 70, 60, 50, 23);
+label_p1switch = forms.label(h_window, "Batter Power", 10, 100);
+h_toggleP1R = forms.button(h_window, "More!", P1BoostHitter, 10, 125, 50, 23);
+h_toggleP1R = forms.button(h_window, "Less", P1DropHitter, 70, 125, 50, 23);
+
+label_p2switch = forms.label(h_window, "Player 2", 160, 5);
+label_p2switch = forms.label(h_window, "Switch Player Hand", 160, 35);
+h_toggleP2L = forms.button(h_window, "Left", SwitchP2LHand, 160, 60, 50, 23);
+h_toggleP2R = forms.button(h_window, "Right", SwitchP2RHand, 160, 60, 50, 23);
+label_p2switch = forms.label(h_window, "Batter Power", 160, 100);
+h_toggleP2R = forms.button(h_window, "More!", P2BoostHitter, 160, 125, 50, 23);
+h_toggleP2R = forms.button(h_window, "Less", P2DropHitter, 220, 125, 50, 23);
+
+
+
+
 while true do
 
 mainmemory.write_u8(0x0726, 0)	--Turn of inning music
@@ -76,40 +151,20 @@ i = input.get();
 
 --Switch P1 batter hands
 if (i.K == true) then
-	if (inningtb == 0x10) then	
-		mainmemory.write_u8(0x0607, 0)
-	end
-	if (inningtb == 0) then
-		mainmemory.write_u8(0x0627, 0)
-	end
+	SwitchP1LHand()
 end
 	
 if (i.L == true) then
-	if (inningtb == 0x10) then	
-		mainmemory.write_u8(0x0607, 1)
-	end
-	if (inningtb == 0) then
-		mainmemory.write_u8(0x0627, 1)
-	end
+	SwitchP1RHand();
 end
 
 --Switch P2 batter hands
 if (i.H == true) then
-	if (inningtb == 0x0) then	
-		mainmemory.write_u8(0x0617, 0)
-	end
-	if (inningtb == 0x10) then
-		mainmemory.write_u8(0x0637, 0)
-	end
+	SwitchP2LHand();
 end
 	
 if (i.J == true) then
-	if (inningtb == 0x0) then	
-		mainmemory.write_u8(0x0617, 1)
-	end
-	if (inningtb == 0x10) then
-		mainmemory.write_u8(0x0637, 1)
-	end
+	SwitchP2RHand();
 end
 	
 PitchingScreen = mainmemory.read_u8(PitchingScreenAddr);
