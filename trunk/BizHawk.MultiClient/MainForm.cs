@@ -1183,6 +1183,7 @@ namespace BizHawk.MultiClient
 					sMSToolStripMenuItem.Visible = true;
 					break;
 				case "GB":
+				case "GBC":
 					gBToolStripMenuItem.Visible = true;
 					break;
 				case "A26":
@@ -1246,6 +1247,7 @@ namespace BizHawk.MultiClient
 					Global.AutoFireController = Global.AutofireSNESControls;
 					break;
 				case "GB":
+				case "GBC":
 					Global.ActiveController = Global.GBControls;
 					Global.AutoFireController = Global.AutofireGBControls;
 					break;
