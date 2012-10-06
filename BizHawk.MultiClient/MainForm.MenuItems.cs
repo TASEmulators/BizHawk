@@ -1562,6 +1562,25 @@ namespace BizHawk.MultiClient
 			smsOverclockWhenKnownSafeToolStripMenuItem.Checked = Global.Config.SmsAllowOverlock;
 			smsForceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
 			smsSpriteLimitToolStripMenuItem.Checked = Global.Config.SmsSpriteLimit;
+			showClippedRegionsToolStripMenuItem.Checked = Global.Config.GGShowClippedRegions;
+
+			if (Global.Game.System == "GG")
+			{
+				smsEnableFMChipToolStripMenuItem.Visible = false;
+				smsOverclockWhenKnownSafeToolStripMenuItem.Visible = false;
+				smsForceStereoSeparationToolStripMenuItem.Visible = false;
+
+				showClippedRegionsToolStripMenuItem.Visible = true;
+			}
+			else
+			{
+				smsEnableFMChipToolStripMenuItem.Visible = true;
+				smsOverclockWhenKnownSafeToolStripMenuItem.Visible = true;
+				smsForceStereoSeparationToolStripMenuItem.Visible = true;
+
+				showClippedRegionsToolStripMenuItem.Visible = false;
+			}
+
 		}
 
 		protected override void OnClosed(EventArgs e)

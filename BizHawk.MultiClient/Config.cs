@@ -600,6 +600,7 @@ namespace BizHawk.MultiClient
 		public bool SmsAllowOverlock = false;
 		public bool SmsForceStereoSeparation = false;
 		public bool SmsSpriteLimit = false;
+		public bool GGShowClippedRegions = false;
 
 		public string SmsReset = "C";
 		public string SmsPause = "V, X1 Start";
