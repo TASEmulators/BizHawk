@@ -20,6 +20,11 @@ namespace BizHawk
 		/// if this is set, then the cpu should dump trace info to CpuTraceStream
 		/// </summary>
 		public TraceBuffer Tracer = new TraceBuffer();
+
+		/// <summary>
+		/// for emu.on_snoop()
+		/// </summary>
+		public System.Action InputCallback;
 	}
 
 	public class CoreOutputComm

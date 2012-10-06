@@ -39,6 +39,7 @@
 
 		byte ReadInput()
 		{
+			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			byte value = 0x3F;
 
 			int player = SelectedController + 1;

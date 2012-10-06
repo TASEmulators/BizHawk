@@ -453,6 +453,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		ushort snes_input_state(int port, int device, int index, int id)
 		{
+			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";
@@ -483,8 +484,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		void snes_input_poll()
 		{
-			// libsnes.cpp calls this on every video refresh regardless of any underlying anything, so...
-			//IsLagFrame = false;
+			// this doesn't actually correspond to anything in the underlying bsnes;
+			// it gets called once per frame with video_refresh() and has nothing to do with anything
 		}
 
 		void snes_input_notify(int index)
