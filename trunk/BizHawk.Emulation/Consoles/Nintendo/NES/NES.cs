@@ -135,6 +135,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 
+		public DisplayType DisplayType { get { return BizHawk.DisplayType.NTSC; } }
+
 		class MyVideoProvider : IVideoProvider
 		{
 			public int top = 8;
