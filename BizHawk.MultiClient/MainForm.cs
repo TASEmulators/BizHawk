@@ -1549,7 +1549,7 @@ namespace BizHawk.MultiClient
 					}
 
 					if (nextEmulator == null)
-						throw new Exception();
+						throw new Exception("No core could load the rom.");
 					nextEmulator.CoreInputComm = Global.CoreInputComm;
 				}
 				catch (Exception ex)
@@ -1558,7 +1558,7 @@ namespace BizHawk.MultiClient
 					return false;
 				}
 
-				if (nextEmulator == null) throw new Exception();
+				if (nextEmulator == null) throw new Exception("No core could load the rom.");
 
 				CloseGame();
 				Global.Emulator.Dispose();
