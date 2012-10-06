@@ -840,7 +840,10 @@ namespace BizHawk.MultiClient
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			LuaImp.gui_drawNewEmu();
+			if (LuaImp.luaSurface == null)
+			{
+				LuaImp.gui_drawNewEmu();
+			}
 			for (int i = 0; i < luaList.Count; i++)
 			{
 				try
@@ -872,6 +875,16 @@ namespace BizHawk.MultiClient
 					else MessageBox.Show(ex.ToString());
 				}
 			}
+			//LuaImp.gui_drawFinishEmu();
+		}
+
+		public void StartLuaDrawing()
+		{
+			LuaImp.gui_drawNewEmu();
+		}
+
+		public void EndLuaDrawing()
+		{
 			LuaImp.gui_drawFinishEmu();
 		}
 
