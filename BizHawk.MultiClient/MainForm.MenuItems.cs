@@ -1563,6 +1563,7 @@ namespace BizHawk.MultiClient
 			smsForceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
 			smsSpriteLimitToolStripMenuItem.Checked = Global.Config.SmsSpriteLimit;
 			showClippedRegionsToolStripMenuItem.Checked = Global.Config.GGShowClippedRegions;
+			highlightActiveDisplayRegionToolStripMenuItem.Checked = Global.Config.GGHighlightActiveDisplayRegion;
 
 			if (Global.Game.System == "GG")
 			{
@@ -1571,6 +1572,7 @@ namespace BizHawk.MultiClient
 				smsForceStereoSeparationToolStripMenuItem.Visible = false;
 
 				showClippedRegionsToolStripMenuItem.Visible = true;
+				highlightActiveDisplayRegionToolStripMenuItem.Visible = true;
 			}
 			else
 			{
@@ -1579,6 +1581,7 @@ namespace BizHawk.MultiClient
 				smsForceStereoSeparationToolStripMenuItem.Visible = true;
 
 				showClippedRegionsToolStripMenuItem.Visible = false;
+				highlightActiveDisplayRegionToolStripMenuItem.Visible = false;
 			}
 
 		}

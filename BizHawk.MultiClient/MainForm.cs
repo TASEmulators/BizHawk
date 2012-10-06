@@ -360,6 +360,9 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ2;
 			Global.CoreInputComm.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ3;
 			Global.CoreInputComm.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ4;
+
+			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+			Global.CoreInputComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
 		}
 
 		void SyncPresentationMode()
@@ -3837,6 +3840,12 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.GGShowClippedRegions ^= true;
 			Global.CoreInputComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+		}
+
+		private void highlightActiveDisplayRegionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GGHighlightActiveDisplayRegion ^= true;
+			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 		}
 	}
 }
