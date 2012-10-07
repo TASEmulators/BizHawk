@@ -3118,17 +3118,106 @@ namespace BizHawk.MultiClient
 		public void UpdateStatusSlots()
 		{
 			StateSlots.Update();
-			StatusSlot1.Enabled = StateSlots.HasSlot(1);
-			StatusSlot2.Enabled = StateSlots.HasSlot(2);
-			StatusSlot3.Enabled = StateSlots.HasSlot(3);
-			StatusSlot4.Enabled = StateSlots.HasSlot(4);
-			StatusSlot5.Enabled = StateSlots.HasSlot(5);
-			StatusSlot6.Enabled = StateSlots.HasSlot(6);
-			StatusSlot7.Enabled = StateSlots.HasSlot(7);
-			StatusSlot8.Enabled = StateSlots.HasSlot(8);
-			StatusSlot9.Enabled = StateSlots.HasSlot(9);
-			StatusSlot10.Enabled = StateSlots.HasSlot(0);
 
+			if (StateSlots.HasSlot(1))
+			{
+				StatusSlot1.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot1.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(2))
+			{
+				StatusSlot2.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot2.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(3))
+			{
+				StatusSlot3.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot3.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(3))
+			{
+				StatusSlot3.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot3.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(4))
+			{
+				StatusSlot4.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot4.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(5))
+			{
+				StatusSlot5.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot5.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(6))
+			{
+				StatusSlot6.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot6.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(7))
+			{
+				StatusSlot7.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot7.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(8))
+			{
+				StatusSlot8.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot8.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(9))
+			{
+				StatusSlot9.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot9.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(0))
+			{
+				StatusSlot0.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot0.ForeColor = Color.Gray;
+			}
+			
 			StatusSlot1.BackColor = SystemColors.Control;
 			StatusSlot2.BackColor = SystemColors.Control;
 			StatusSlot3.BackColor = SystemColors.Control;
