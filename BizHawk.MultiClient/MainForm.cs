@@ -1094,6 +1094,7 @@ namespace BizHawk.MultiClient
 				case "NES": str += "NES"; break;
 				case "SNES": str += "SNES"; break;
 				case "GB": str += "Game Boy"; break;
+				case "GBC": str += "Game Boy Color"; break;
 				case "A26": str += "Atari 2600"; break;
 			}
 
