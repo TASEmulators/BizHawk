@@ -3140,16 +3140,16 @@ namespace BizHawk.MultiClient
 			StatusSlot9.BackColor = SystemColors.Control;
 			StatusSlot10.BackColor = SystemColors.Control;
 
-			if (Global.Config.SaveSlot == 0) StatusSlot10.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 1) StatusSlot1.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 2) StatusSlot2.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 3) StatusSlot3.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 4) StatusSlot4.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 5) StatusSlot5.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 6) StatusSlot6.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 7) StatusSlot7.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 8) StatusSlot8.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 0) StatusSlot10.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 1) StatusSlot1.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 2) StatusSlot2.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 3) StatusSlot3.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 4) StatusSlot4.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 5) StatusSlot5.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 6) StatusSlot6.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 7) StatusSlot7.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 8) StatusSlot8.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlDark;
 		}
 
 		/// <summary>
