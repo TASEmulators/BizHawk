@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public NES(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
+			CoreOutputComm.CpuTraceAvailable = true;
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
@@ -134,6 +135,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 
+		public DisplayType DisplayType { get { return BizHawk.DisplayType.NTSC; } }
+
 		class MyVideoProvider : IVideoProvider
 		{
 			public int top = 8;
@@ -203,7 +206,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		MyVideoProvider videoProvider;
 		public IVideoProvider VideoProvider { get { return videoProvider; } }
-		public ISoundProvider SoundProvider { get { return apu; } }
+		public ISoundProvider SoundProvider { get { return magicSoundProvider; } }
 
 		public static readonly ControllerDefinition NESController =
 			new ControllerDefinition
@@ -268,7 +271,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				int ret = value & 1;
 				value >>= 1;
-				return (byte)ret;
+				return (byte)(ret | nes.DB);
 			}
 			public override void Update()
 			{
@@ -306,7 +309,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }
 
-		public bool DeterministicEmulation { get { return true; } set { } }
+		public bool DeterministicEmulation { get { return true; } }
 
 
 
@@ -621,7 +624,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncState(Serializer ser)
 		{
+			int version = 2;
 			ser.BeginSection("NES");
+			ser.Sync("version", ref version);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("IsLag", ref islag);
@@ -639,6 +644,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
 			ppu.SyncState(ser);
 			apu.SyncState(ser);
+
+			if (version >= 2)
+				ser.Sync("DB", ref DB);
+
 			ser.EndSection();
 		}
 
@@ -655,8 +664,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			bw.Flush();
 			return ms.ToArray();
 		}
-
-		public void Dispose() { }
 	}
 }
 

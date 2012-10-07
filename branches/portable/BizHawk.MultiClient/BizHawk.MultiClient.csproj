@@ -164,6 +164,18 @@
     <Compile Include="config\AutofireConfig.Designer.cs">
       <DependentUpon>AutofireConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig.Designer.cs">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ControllerConfig\GamepadConfigPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig\NESGamePad.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -191,6 +203,12 @@
     <Compile Include="config\PathConfig.Designer.cs">
       <DependentUpon>PathConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PathInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PathInfo.Designer.cs">
+      <DependentUpon>PathInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PathManager.cs" />
     <Compile Include="config\SoundConfig.cs">
       <SubType>Form</SubType>
@@ -210,6 +228,7 @@
     <Compile Include="HawkFile.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Compile Include="Input\GamePad360.cs" />
     <Compile Include="Input\Input.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
@@ -387,6 +406,12 @@
     <Compile Include="tools\LuaWriterColorConfig.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\TraceLogger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TraceLogger.Designer.cs">
+      <DependentUpon>TraceLogger.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPadGB.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -412,8 +437,14 @@
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\ControllerConfig.resx">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\PathInfo.resx">
+      <DependentUpon>PathInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GBtools\ColorChooserForm.resx">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
@@ -727,6 +758,9 @@
       <DependentUpon>Cheats.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\TraceLogger.resx">
+      <DependentUpon>TraceLogger.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPad.resx">
       <DependentUpon>VirtualPad.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -873,9 +907,12 @@
     <None Include="config\ControllerImages\NES_Controller.png" />
     <None Include="config\ControllerImages\SNES_Controller.png" />
     <None Include="config\ControllerImages\TI83_Controller.png" />
+    <None Include="images\GenesisControllerIcon.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
+    <None Include="images\SNESControllerIcon.png" />
+    <None Include="images\pencil.png" />
     <Content Include="output\gamedb_sega_md.txt" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />

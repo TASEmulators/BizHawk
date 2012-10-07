@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Calculator;
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
 namespace BizHawk.MultiClient
 {
@@ -55,6 +56,15 @@ namespace BizHawk.MultiClient
 			else
 			{
 				KeypadTool.Visible = false;
+			}
+
+			if (Global.Emulator is LibsnesCore)
+			{
+				SNESGraphicsDebuggerButton.Visible = true;
+			}
+			else
+			{
+				SNESGraphicsDebuggerButton.Visible = false;
 			}
 		}
 
@@ -111,14 +121,23 @@ namespace BizHawk.MultiClient
 
 		private void KeyPadTool_Click(object sender, EventArgs e)
 		{
-			if (!(Global.Emulator is TI83))
-				return;
-			Global.MainForm.LoadTI83KeyPad();
+			if (Global.Emulator is TI83)
+			{
+				Global.MainForm.LoadTI83KeyPad();
+			}
 		}
 
 		private void TAStudioButton_Click(object sender, EventArgs e)
 		{
 			Global.MainForm.LoadTAStudio();
+		}
+
+		private void SNESGraphicsDebuggerButton_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is LibsnesCore)
+			{
+				Global.MainForm.LoadSNESGraphicsDebugger();
+			}
 		}
 	}
 }

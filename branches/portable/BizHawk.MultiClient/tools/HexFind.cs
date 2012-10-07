@@ -66,27 +66,12 @@ namespace BizHawk.MultiClient
 
 		private void Find_Prev_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.HexEditor1.FindPrev(GetFindBoxChars());
+			Global.MainForm.HexEditor1.FindPrev(GetFindBoxChars(), false);
 		}
 
 		private void Find_Next_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.HexEditor1.FindNext(GetFindBoxChars());
-		}
-
-		private void FindBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (HexRadio.Checked)
-			{
-				if (e.KeyChar == '\b' || e.KeyChar == 22)
-				{
-					return;
-				}
-				else if (!InputValidate.IsValidHexNumber(e.KeyChar))
-				{
-					e.Handled = true;
-				}
-			}
+			Global.MainForm.HexEditor1.FindNext(GetFindBoxChars(), false);
 		}
 
 		private void ChangeCasing()
@@ -109,6 +94,14 @@ namespace BizHawk.MultiClient
 		private void TextRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			ChangeCasing();
+		}
+
+		private void FindBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyData == Keys.Enter)
+			{
+				Global.MainForm.HexEditor1.FindNext(GetFindBoxChars(), false);
+			}
 		}
 	}
 }

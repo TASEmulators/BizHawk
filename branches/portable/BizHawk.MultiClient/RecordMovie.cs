@@ -9,6 +9,9 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Emulation.Consoles.GB;
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
+using BizHawk.Emulation.Consoles.Sega;
+using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
@@ -57,8 +60,8 @@ namespace BizHawk.MultiClient
 					if (result == System.Windows.Forms.DialogResult.Cancel)
 						return;
 				}
-				
-				
+
+
 				MovieToRecord = new Movie(path);
 
 				//Header
@@ -71,6 +74,8 @@ namespace BizHawk.MultiClient
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, PathManager.FilesystemSafeName(Global.Game));
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.SHA1, Global.Game.Hash);
+					if (Global.Game.FirmwareHash != null)
+						MovieToRecord.Header.SetHeaderLine(MovieHeader.FIRMWARESHA1, Global.Game.FirmwareHash);
 				}
 				else
 				{
@@ -82,6 +87,30 @@ namespace BizHawk.MultiClient
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_FORCEDMG, Global.Config.GB_ForceDMG.ToString());
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GB_GBA_IN_CGB, Global.Config.GB_GBACGB.ToString());
 				}
+
+				if (Global.Emulator is LibsnesCore)
+				{
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.SGB, ((Global.Emulator) as LibsnesCore).IsSGB.ToString());
+					if ((Global.Emulator as LibsnesCore).DisplayType == DisplayType.PAL)
+					{
+						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+					}
+				}
+				else if (Global.Emulator is SMS)
+				{
+					if ((Global.Emulator as SMS).DisplayType == DisplayType.PAL)
+					{
+						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+					}
+				}
+				else if (Global.Emulator is NES)
+				{
+					if ((Global.Emulator as NES).DisplayType == DisplayType.PAL)
+					{
+						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
+					}
+				}
+
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
@@ -117,7 +146,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 				MessageBox.Show("Please select a movie to record", "File selection error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			
+
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)

@@ -73,6 +73,7 @@ namespace BizHawk.MultiClient
 			SNESSaveRAMBox.Text = Global.Config.PathSNESSaveRAM;
 			SNESScreenshotsBox.Text = Global.Config.PathSNESScreenshots;
 			SNESCheatsBox.Text = Global.Config.PathSNESCheats;
+			SNESFirmwaresBox.Text = Global.Config.PathSNESFirmwares;
 
 			Sega8BaseBox.Text = Global.Config.BaseSMS;
 			Sega8ROMsBox.Text = Global.Config.PathSMSROMs;
@@ -136,14 +137,16 @@ namespace BizHawk.MultiClient
 			LuaBox.Text = Global.Config.LuaPath;
 			WatchBox.Text = Global.Config.WatchPath;
 			AVIBox.Text = Global.Config.AVIPath;
+			LogBox.Text = Global.Config.LogPath;
 
 			PCEBiosBox.Text = Global.Config.PathPCEBios;
 
 			if (!Global.MainForm.INTERIM)
 			{
-				var TABPage1 = tabControl1.TabPages[8]; //Hide Atari
+				var TABPage1 = tabControl1.TabPages[10]; //Hide Int. V
 				tabControl1.Controls.Remove(TABPage1);
-				
+				var TABPage2 = tabControl1.TabPages[9]; //Hide Atari
+				tabControl1.Controls.Remove(TABPage2);
 			}
 		}
 
@@ -174,6 +177,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathSNESSaveRAM = SNESSaveRAMBox.Text;
 			Global.Config.PathSNESScreenshots = SNESScreenshotsBox.Text;
 			Global.Config.PathSNESCheats = SNESCheatsBox.Text;
+			Global.Config.PathSNESFirmwares = SNESFirmwaresBox.Text;
 
 			Global.Config.BaseSMS = Sega8BaseBox.Text;
 			Global.Config.PathSMSROMs = Sega8ROMsBox.Text;
@@ -237,6 +241,7 @@ namespace BizHawk.MultiClient
 			Global.Config.LuaPath = LuaBox.Text;
 			Global.Config.WatchPath = WatchBox.Text;
 			Global.Config.AVIPath = AVIBox.Text;
+			Global.Config.LogPath = LogBox.Text;
 
 			Global.Config.PathPCEBios = PCEBiosBox.Text;
 
@@ -246,19 +251,20 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
+			Global.OSD.AddMessage("Path config aborted");
 			this.Close();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
+			Global.OSD.AddMessage("Path settings saved");
 			this.Close();
 		}
 
 		private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			//TODO: make base text box Controls[0] so this will focus on it
-			//tabControl1.TabPages[tabControl1.SelectedIndex].Controls[0].Focus(); 
+			tabControl1.TabPages[tabControl1.SelectedIndex].Controls[0].Focus(); 
 		}
 
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
@@ -304,12 +310,13 @@ namespace BizHawk.MultiClient
 
 		private void BrowseFolder(TextBox box, string Name, string System)
 		{
-			FolderBrowserEx f = new FolderBrowserEx();
-			f.Description = "Set the directory for " + Name;
-			f.SelectedPath = PathManager.MakeAbsolutePath(box.Text, System);
-			DialogResult result = f.ShowDialog();
+			folderBrowserDialog1.Description = "Set the directory for " + Name;
+			folderBrowserDialog1.SelectedPath = PathManager.MakeAbsolutePath(box.Text, System);
+			DialogResult result = folderBrowserDialog1.ShowDialog();
 			if (result == DialogResult.OK)
-				box.Text = f.SelectedPath;
+			{
+				box.Text = folderBrowserDialog1.SelectedPath;
+			}
 		}
 
 		private void BrowseWatch_Click(object sender, EventArgs e)
@@ -718,6 +725,21 @@ namespace BizHawk.MultiClient
 		private void SNESBrowseCheats_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(SNESCheatsBox, SNESCheatsDescription.Text, "SNES");
+		}
+
+		private void SNESBrowseFirmwares_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SNESFirmwaresBox, SNESFirmwaresDescription.Text);
+		}
+
+		private void BrowseLog_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(LogBox, LogDescription.Text);
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			new PathInfo().Show();
 		}
 	}
 }

@@ -71,6 +71,7 @@ typedef void (*snes_video_refresh_t)(const uint32_t *data, unsigned width, unsig
 typedef void (*snes_audio_sample_t)(uint16_t left, uint16_t right);
 typedef void (*snes_input_poll_t)(void);
 typedef int16_t (*snes_input_state_t)(unsigned port, unsigned device, unsigned index, unsigned id);
+typedef void (*snes_input_notify_t)(int index);
 
 const char* snes_library_id(void);
 unsigned snes_library_revision_major(void);
@@ -80,6 +81,7 @@ void snes_set_video_refresh(snes_video_refresh_t);
 void snes_set_audio_sample(snes_audio_sample_t);
 void snes_set_input_poll(snes_input_poll_t);
 void snes_set_input_state(snes_input_state_t);
+void snes_set_input_notify(snes_input_notify_t);
 
 void snes_set_controller_port_device(bool port, unsigned device);
 void snes_set_cartridge_basename(const char *basename);
@@ -133,6 +135,16 @@ bool snes_check_cartridge(const uint8_t *rom_data, unsigned rom_size);
 void snes_set_layer_enable(int layer, int priority, bool enable);
 typedef void (*snes_scanlineStart_t)(int);
 void snes_set_scanlineStart(snes_scanlineStart_t);
+//returns -1 if no messages, messagelength if there is one
+int snes_poll_message();
+//give us a buffer of messagelength and we'll dequeue a message into it. you better take care of the null pointer
+void snes_dequeue_message(char* buffer);
+typedef const char* (*snes_path_request_t)(int slot, const char* hint);
+void snes_set_path_request(snes_path_request_t path_request);
+
+// system bus implementation
+uint8_t bus_read(unsigned addr);
+void bus_write(unsigned addr, uint8_t val);
 
 //$2105
 #define SNES_REG_BG_MODE 0
@@ -159,6 +171,17 @@ void snes_set_scanlineStart(snes_scanlineStart_t);
 //$210C
 #define SNES_REG_BG3_TDADDR 22
 #define SNES_REG_BG4_TDADDR 23
+//$2133 SETINI
+#define SNES_REG_SETINI_MODE7_EXTBG 30
+#define SNES_REG_SETINI_HIRES 31
+#define SNES_REG_SETINI_OVERSCAN 32
+#define SNES_REG_SETINI_OBJ_INTERLACE 33
+#define SNES_REG_SETINI_SCREEN_INTERLACE 34
+//$2130 CGWSEL
+#define SNES_REG_CGWSEL_COLORMASK 40
+#define SNES_REG_CGWSEL_COLORSUBMASK 41
+#define SNES_REG_CGWSEL_ADDSUBMODE 42
+#define SNES_REG_CGWSEL_DIRECTCOLOR 43
 
 int snes_peek_logical_register(int reg);
 

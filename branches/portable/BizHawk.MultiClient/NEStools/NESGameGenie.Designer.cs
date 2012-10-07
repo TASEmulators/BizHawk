@@ -33,9 +33,9 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.CompareBox = new System.Windows.Forms.TextBox();
-			this.ValueBox = new System.Windows.Forms.TextBox();
-			this.AddressBox = new System.Windows.Forms.TextBox();
+			this.CompareBox = new HexTextBox();
+			this.ValueBox = new HexTextBox();
+			this.AddressBox = new HexTextBox();
 			this.AddCheat = new System.Windows.Forms.Button();
 			this.ButtonPanel = new System.Windows.Forms.Panel();
 			this.N = new System.Windows.Forms.Button();
@@ -81,6 +81,7 @@
 			this.GameGenieCode.Size = new System.Drawing.Size(86, 20);
 			this.GameGenieCode.TabIndex = 20;
 			this.GameGenieCode.TextChanged += new System.EventHandler(this.GameGenieCode_TextChanged);
+			this.GameGenieCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameGenieCode_KeyDown);
 			this.GameGenieCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GameGenieCode_KeyPress);
 			// 
 			// GameGenieCodeBox
@@ -130,7 +131,6 @@
 			this.CompareBox.Size = new System.Drawing.Size(27, 20);
 			this.CompareBox.TabIndex = 22;
 			this.CompareBox.TextChanged += new System.EventHandler(this.CompareBox_TextChanged);
-			this.CompareBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CompareBox_KeyPress);
 			// 
 			// ValueBox
 			// 
@@ -142,7 +142,6 @@
 			this.ValueBox.Size = new System.Drawing.Size(27, 20);
 			this.ValueBox.TabIndex = 23;
 			this.ValueBox.TextChanged += new System.EventHandler(this.ValueBox_TextChanged);
-			this.ValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValueBox_KeyPress);
 			// 
 			// AddressBox
 			// 
@@ -154,7 +153,6 @@
 			this.AddressBox.Size = new System.Drawing.Size(39, 20);
 			this.AddressBox.TabIndex = 21;
 			this.AddressBox.TextChanged += new System.EventHandler(this.AddressBox_TextChanged);
-			this.AddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AddressBox_KeyPress);
 			// 
 			// AddCheat
 			// 
@@ -437,34 +435,34 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
 			// 
 			// autoloadToolStripMenuItem
 			// 
 			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.autoloadToolStripMenuItem.Text = "Auto-load";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
 			// saveWindowPositionToolStripMenuItem
 			// 
 			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -472,7 +470,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(302, 266);
+			this.ClientSize = new System.Drawing.Size(302, 263);
 			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.Encoding);
 			this.Controls.Add(this.groupBox1);
@@ -508,9 +506,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox CompareBox;
-        private System.Windows.Forms.TextBox ValueBox;
-        private System.Windows.Forms.TextBox AddressBox;
+        private HexTextBox CompareBox;
+        private HexTextBox ValueBox;
+        private HexTextBox AddressBox;
         private System.Windows.Forms.Button AddCheat;
         private System.Windows.Forms.Panel ButtonPanel;
         private System.Windows.Forms.Button L;

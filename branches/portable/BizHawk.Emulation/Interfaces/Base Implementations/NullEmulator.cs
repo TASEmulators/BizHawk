@@ -44,7 +44,7 @@ namespace BizHawk
 		public byte[] ReadSaveRam() { return null; }
 		public void StoreSaveRam(byte[] data) { }
 		public void ClearSaveRam() { }
-		public bool DeterministicEmulation { get; set; }
+		public bool DeterministicEmulation { get { return true; } }
 		public bool SaveRamModified { get; set; }
 		public void SaveStateText(TextWriter writer) { }
 		public void LoadStateText(TextReader reader) { }

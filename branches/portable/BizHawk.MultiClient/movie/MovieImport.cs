@@ -13,9 +13,24 @@ namespace BizHawk.MultiClient
 	{
 		public const string COMMENT = "comment";
 		public const string COREORIGIN = "CoreOrigin";
+		public const string CRC16 = "CRC16";
+		public const string CRC32 = "CRC32";
 		public const string EMULATIONORIGIN = "emuOrigin";
+		public const string GAMECODE = "GameCode";
+		public const string INTERNALCHECKSUM = "InternalChecksum";
+		public const string JAPAN = "Japan";
+		public const string MD5 = "MD5";
 		public const string MOVIEORIGIN = "MovieOrigin";
+		public const string PAL = "PAL";
+		public const string PORT1 = "port1";
+		public const string PORT2 = "port2";
+		public const string PROJECTID = "ProjectID";
+		public const string SHA256 = "SHA256";
+		public const string SUPERGAMEBOYMODE = "SuperGameBoyMode";
+		public const string STARTSECOND = "StartSecond";
+		public const string STARTSUBSECOND = "StartSubSecond";
 		public const string SYNCHACK = "SyncHack";
+		public const string UNITCODE = "UnitCode";
 
 		// Attempt to import another type of movie file into a movie object.
 		public static Movie ImportFile(string path, out string errorMsg, out string warningMsg)
@@ -64,8 +79,6 @@ namespace BizHawk.MultiClient
 						m = ImportVMV(path, out errorMsg, out warningMsg);
 						break;
 					case ".ZMV":
-						if (!Global.MainForm.INTERIM)
-							return m;
 						m = ImportZMV(path, out errorMsg, out warningMsg);
 						break;
 				}
@@ -112,8 +125,8 @@ namespace BizHawk.MultiClient
 		}
 
 		// Import a frame from a text-based format.
-		private static Movie ImportTextFrame(string line, int lineNum, Movie m, string path, ref string warningMsg,
-			ref string errorMsg)
+		private static Movie ImportTextFrame(string line, int lineNum, Movie m, string path, string platform,
+			ref string warningMsg, ref string errorMsg)
 		{
 			string[] buttons = new string[] { };
 			string controller = "";
@@ -132,6 +145,11 @@ namespace BizHawk.MultiClient
 						"B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R"
 					};
 					controller = "SNES Controller";
+					if (platform == "GB" || platform == "GBC")
+					{
+						buttons = new string[8] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
+						controller = "Gameboy Controller";
+					}
 					break;
 			}
 			SimpleController controllers = new SimpleController();
@@ -176,15 +194,17 @@ namespace BizHawk.MultiClient
 				char[] off = { '.', ' ', '\t', '\n', '\r' };
 				if (flags.Length == 0 || off.Contains(flags[0]))
 				{
-					errorMsg = "Subframes are not supported.";
-					return null;
+					if (warningMsg == "")
+						warningMsg = "Unable to import subframe.";
+					return m;
 				}
 				bool reset = (flags.Length >= 2 && !off.Contains(flags[1]));
 				flags = SingleSpaces(flags.Substring(2));
 				if (reset && ((flags.Length >= 2 && flags[1] != '0') || (flags.Length >= 4 && flags[3] != '0')))
 				{
-					errorMsg = "Delayed resets are not supported.";
-					return null;
+					if (warningMsg == "")
+						warningMsg = "Unable to import delayed reset.";
+					return m;
 				}
 				controllers["Reset"] = reset;
 			}
@@ -206,6 +226,10 @@ namespace BizHawk.MultiClient
 			{
 				// The player number is one less than the section number for the reasons explained above.
 				int player = section + player_offset;
+				string prefix = "P" + (player).ToString() + " ";
+				// Gameboy doesn't currently have a prefix saying which player the input is for.
+				if (controllers.Type.Name == "Gameboy Controller")
+					prefix = "";
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
 					sections[section].Length == buttons.Length &&
@@ -213,9 +237,7 @@ namespace BizHawk.MultiClient
 				)
 					for (int button = 0; button < buttons.Length; button++)
 						// Consider the button pressed so long as its spot is not occupied by a ".".
-						controllers["P" + (player).ToString() + " " + buttons[button]] = (
-							sections[section][button] != '.'
-						);
+						controllers[prefix + buttons[button]] = (sections[section][button] != '.');
 			}
 			// Convert the data for the controllers to a mnemonic and add it as a frame.
 			mg.SetSource(controllers);
@@ -283,7 +305,7 @@ namespace BizHawk.MultiClient
 					continue;
 				else if (line[0] == '|')
 				{
-					m = ImportTextFrame(line, lineNum, m, path, ref warningMsg, ref errorMsg);
+					m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg, ref errorMsg);
 					if (errorMsg != "")
 					{
 						sr.Close();
@@ -314,9 +336,9 @@ namespace BizHawk.MultiClient
 				else if (line.ToLower().StartsWith("romchecksum"))
 				{
 					string blob = ParseHeader(line, "romChecksum");
-					byte[] MD5 = DecodeBlob(blob);
-					if (MD5 != null && MD5.Length == 16)
-						m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
+					byte[] md5 = DecodeBlob(blob);
+					if (md5 != null && md5.Length == 16)
+						m.Header.SetHeaderLine(MD5, BizHawk.Util.BytesToHexString(md5).ToLower());
 					else
 						warningMsg = "Bad ROM checksum.";
 				}
@@ -351,7 +373,7 @@ namespace BizHawk.MultiClient
 				else if (line.ToLower().StartsWith("palflag"))
 				{
 					bool pal = (ParseHeader(line, "palFlag") == "1");
-					m.Header.SetHeaderLine("PAL", pal.ToString());
+					m.Header.SetHeaderLine(PAL, pal.ToString());
 				}
 				else if (line.ToLower().StartsWith("fourscore"))
 				{
@@ -461,7 +483,7 @@ namespace BizHawk.MultiClient
 			 preference. This means that this site cannot calculate movie lengths reliably.
 			*/
 			bool pal = (((flags >> 2) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// other: reserved, set to 0
 			bool syncHack = (((flags >> 4) & 0x1) != 0);
 			m.Header.Comments.Add(SYNCHACK + " " + syncHack.ToString());
@@ -488,8 +510,8 @@ namespace BizHawk.MultiClient
 			// 01C 4-byte little-endian unsigned int: offset to the controller data inside file
 			uint firstFrameOffset = r.ReadUInt32();
 			// 020 16-byte md5sum of the ROM used
-			byte[] MD5 = r.ReadBytes(16);
-			m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
+			byte[] md5 = r.ReadBytes(16);
+			m.Header.SetHeaderLine(MD5, BizHawk.Util.BytesToHexString(md5).ToLower());
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion.ToString());
@@ -742,7 +764,7 @@ namespace BizHawk.MultiClient
 			 The file format has no means of identifying NTSC/"PAL". It is always assumed that the game is NTSC - that is,
 			 60 fps.
 			*/
-			m.Header.SetHeaderLine("PAL", "False");
+			m.Header.SetHeaderLine(PAL, "False");
 			// 090 frame data begins here
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
@@ -834,7 +856,7 @@ namespace BizHawk.MultiClient
 			 header.
 			*/
 			bool pal = (((flags >> 7) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// bit 6: if "1", movie requires a savestate.
 			if (((flags >> 6) & 0x1) != 0)
 			{
@@ -921,7 +943,7 @@ namespace BizHawk.MultiClient
 				errorMsg = "This is not an archive.";
 				return null;
 			}
-			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "SNES");
+			string platform = "SNES";
 			foreach (var item in hf.ArchiveItems)
 			{
 				if (item.name == "authors")
@@ -975,8 +997,23 @@ namespace BizHawk.MultiClient
 					var stream = hf.GetStream();
 					string gametype = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
 					// TODO: Handle the other types.
-					bool pal = (gametype == "snes_ntsc");
-					m.Header.SetHeaderLine("PAL", pal.ToString());
+					switch (gametype)
+					{
+						case "gdmg":
+							platform = "GB";
+							break;
+						case "ggbc":
+						case "ggbca":
+							platform = "GBC";
+							break;
+						case "sgb_ntsc":
+						case "sgb_pal":
+							platform = "SNES";
+							m.Header.SetHeaderLine(MovieHeader.SGB, true.ToString());
+							break;
+					}
+					bool pal = (gametype == "snes_pal" || gametype == "sgb_pal");
+					m.Header.SetHeaderLine(PAL, pal.ToString());
 					hf.Unbind();
 				}
 				else if (item.name == "input")
@@ -993,7 +1030,7 @@ namespace BizHawk.MultiClient
 						{
 							if (line == "")
 								continue;
-							m = ImportTextFrame(line, lineNum, m, path, ref warningMsg, ref errorMsg);
+							m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg, ref errorMsg);
 							if (errorMsg != "")
 							{
 								hf.Unbind();
@@ -1005,9 +1042,40 @@ namespace BizHawk.MultiClient
 				}
 				else if (item.name.StartsWith("moviesram."))
 				{
-					errorMsg = "Movies that begin with SRAM are not supported.";
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					byte[] moviesram = Util.ReadAllBytes(stream);
+					if (moviesram.Length != 0)
+					{
+						errorMsg = "Movies that begin with SRAM are not supported.";
+						hf.Unbind();
+						return null;
+					}
 					hf.Unbind();
-					return null;
+				}
+				else if (item.name == "port1")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string port1 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(PORT1, port1);
+					hf.Unbind();
+				}
+				else if (item.name == "port2")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string port2 = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(PORT2, port2);
+					hf.Unbind();
+				}
+				else if (item.name == "projectid")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string projectid = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(PROJECTID, projectid);
+					hf.Unbind();
 				}
 				else if (item.name == "rerecords")
 				{
@@ -1027,12 +1095,14 @@ namespace BizHawk.MultiClient
 					m.Rerecords = rerecordCount;
 					hf.Unbind();
 				}
-				else if (item.name == "rom.sha256")
+				else if (item.name.EndsWith(".sha256"))
 				{
 					hf.BindArchiveMember(item.index);
 					var stream = hf.GetStream();
 					string rom = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
-					m.Header.SetHeaderLine("SHA256", rom);
+					int pos = item.name.LastIndexOf(".sha256");
+					string name = item.name.Substring(0, pos);
+					m.Header.SetHeaderLine(SHA256 + "_" + name, rom);
 					hf.Unbind();
 				}
 				else if (item.name == "savestate")
@@ -1053,6 +1123,22 @@ namespace BizHawk.MultiClient
 					}
 					hf.Unbind();
 				}
+				else if (item.name == "starttime.second")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string startSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(STARTSECOND, startSecond);
+					hf.Unbind();
+				}
+				else if (item.name == "starttime.subsecond")
+				{
+					hf.BindArchiveMember(item.index);
+					var stream = hf.GetStream();
+					string startSubSecond = Encoding.UTF8.GetString(Util.ReadAllBytes(stream)).Trim();
+					m.Header.SetHeaderLine(STARTSUBSECOND, startSubSecond);
+					hf.Unbind();
+				}
 				else if (item.name == "systemid")
 				{
 					hf.BindArchiveMember(item.index);
@@ -1062,6 +1148,7 @@ namespace BizHawk.MultiClient
 					hf.Unbind();
 				}
 			}
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
 			return m;
 		}
 
@@ -1092,10 +1179,10 @@ namespace BizHawk.MultiClient
 			uint version = r.ReadUInt32();
 			m.Header.Comments.Add(MOVIEORIGIN + " .MCM version " + version);
 			// 010 32-byte    MD5 of the ROM used
-			byte[] MD5 = r.ReadBytes(16);
+			byte[] md5 = r.ReadBytes(16);
 			// Discard the second 16 bytes.
 			r.ReadBytes(16);
-			m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
+			m.Header.SetHeaderLine(MD5, BizHawk.Util.BytesToHexString(md5).ToLower());
 			// 030 64-byte    Filename of the ROM used (with extension)
 			string gameName = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
@@ -1240,10 +1327,10 @@ namespace BizHawk.MultiClient
 			// bit 0: unused
 			// bit 1: "PAL"
 			bool pal = (((flags >> 1) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// bit 2: Japan
 			bool japan = (((flags >> 2) & 0x1) != 0);
-			m.Header.SetHeaderLine("Japan", japan.ToString());
+			m.Header.SetHeaderLine(JAPAN, japan.ToString());
 			// bit 3: Game Gear (version 1.16+)
 			bool gamegear;
 			if (((flags >> 3) & 0x1) != 0)
@@ -1262,8 +1349,8 @@ namespace BizHawk.MultiClient
 			string gameName = NullTerminated(r.ReadStringFixedAscii(128));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 00e4-00f3: binary: rom MD5 digest
-			byte[] MD5 = r.ReadBytes(16);
-			m.Header.SetHeaderLine("MD5", String.Format("{0:x8}", BizHawk.Util.BytesToHexString(MD5).ToLower()));
+			byte[] md5 = r.ReadBytes(16);
+			m.Header.SetHeaderLine(MD5, String.Format("{0:x8}", BizHawk.Util.BytesToHexString(md5).ToLower()));
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "SMS Controller";
@@ -1465,7 +1552,7 @@ namespace BizHawk.MultiClient
 			 * if "1", "PAL" timing
 			*/
 			bool pal = (((data >> 7) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// 004 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
 			m.Rerecords = (int)rerecordCount;
@@ -1601,7 +1688,7 @@ namespace BizHawk.MultiClient
 			}
 			// bit 1: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
 			bool pal = (((movieFlags >> 1) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// other: reserved, set to 0
 			/*
 			 016 1-byte flags "sync options":
@@ -1666,7 +1753,7 @@ namespace BizHawk.MultiClient
 				// 000 3 bytes of zero padding: 00 00 00 003 4-byte integer: CRC32 of the ROM 007 23-byte ascii string
 				r.ReadBytes(3);
 				int crc32 = r.ReadInt32();
-				m.Header.SetHeaderLine("CRC32", crc32.ToString());
+				m.Header.SetHeaderLine(CRC32, crc32.ToString());
 				// the game name copied from the ROM, truncated to 23 bytes (the game name in the ROM is 21 bytes)
 				string gameName = NullTerminated(Encoding.UTF8.GetString(r.ReadBytes(23)));
 				m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
@@ -1885,7 +1972,7 @@ namespace BizHawk.MultiClient
 			if (is_gbc)
 				platform = "GBC";
 			if (is_sgb)
-				platform = "SGB";
+				m.Header.Comments.Add(SUPERGAMEBOYMODE + " True");
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
 			// 017 1-byte flags: (values of some boolean emulator options)
 			flags = r.ReadByte();
@@ -1934,16 +2021,22 @@ namespace BizHawk.MultiClient
 			 032 2-byte little-endian unsigned short: the internal Checksum of the ROM used while recording, or a
 			 calculated CRC16 of the BIOS if GBA
 			*/
-			ushort checksum = r.ReadUInt16();
+			ushort checksum_crc16 = r.ReadUInt16();
 			/*
 			 034 4-byte little-endian unsigned int: the Game Code of the ROM used while recording, or the Unit Code if not
 			 GBA
 			*/
-			uint gameCode = r.ReadUInt32();
+			uint gameCode_unitCode = r.ReadUInt32();
 			if (platform == "GBA")
-				m.Header.SetHeaderLine("GameCode", gameCode.ToString());
+			{
+				m.Header.SetHeaderLine(CRC16, checksum_crc16.ToString());
+				m.Header.SetHeaderLine(GAMECODE, gameCode_unitCode.ToString());
+			}
 			else
-				m.Header.SetHeaderLine("Checksum", checksum.ToString());
+			{
+				m.Header.SetHeaderLine(INTERNALCHECKSUM, checksum_crc16.ToString());
+				m.Header.SetHeaderLine(UNITCODE, gameCode_unitCode.ToString());
+			}
 			// 038 4-byte little-endian unsigned int: offset to the savestate or SRAM inside file, set to 0 if unused
 			r.ReadBytes(4);
 			// 03C 4-byte little-endian unsigned int: offset to the controller data inside file
@@ -2095,7 +2188,7 @@ namespace BizHawk.MultiClient
 			r.ReadByte();
 			// 023 1-byte flag: 0=NTSC (60 Hz), 1="PAL" (50 Hz)
 			bool pal = (r.ReadByte() == 1);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// 024 8-bytes: reserved, set to 0
 			r.ReadBytes(8);
 			// 02C 4-byte little-endian integer: save state start offset
@@ -2108,7 +2201,7 @@ namespace BizHawk.MultiClient
 			uint frameCount = r.ReadUInt32();
 			// 03C 4-byte little-endian integer: CRC (CRC excluding this data(to prevent cheating))
 			int crc32 = r.ReadInt32();
-			m.Header.SetHeaderLine("CRC32", crc32.ToString());
+			m.Header.SetHeaderLine(CRC32, crc32.ToString());
 			if (!controllersUsed[0] && !controllersUsed[1] && !controllersUsed[2] && !controllersUsed[3])
 			{
 				warningMsg = "No input recorded.";
@@ -2249,7 +2342,7 @@ namespace BizHawk.MultiClient
 			m.Header.Comments.Add(EMULATIONORIGIN + " ZSNES version " + version);
 			// 005 4-byte little-endian integer: CRC32 of the ROM
 			int crc32 = r.ReadInt32();
-			m.Header.SetHeaderLine("CRC32", crc32.ToString());
+			m.Header.SetHeaderLine(CRC32, crc32.ToString());
 			// 009 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 00D 4-byte little-endian unsigned int: number of rerecords
@@ -2264,7 +2357,7 @@ namespace BizHawk.MultiClient
 			// 01A 4-byte little-endian unsigned int: number of key combos
 			r.ReadBytes(4);
 			// 01E 2-byte little-endian unsigned int: number of internal chapters
-			ushort internalChapters = r.ReadUInt16();
+			ushort internalChaptersCount = r.ReadUInt16();
 			// 020 2-byte little-endian unsigned int: length of the author name field in bytes
 			ushort authorSize = r.ReadUInt16();
 			// 022 3-byte little-endian unsigned int: size of an uncompressed save state in bytes
@@ -2298,11 +2391,6 @@ namespace BizHawk.MultiClient
 			controllerFlags >>= 1;
 			if (peripheral != "")
 				warningMsg = "Unable to import " + peripheral + ".";
-			bool[] controllersUsed = new bool[5];
-			for (int controller = 1; controller <= controllersUsed.Length; controller++)
-				controllersUsed[controllersUsed.Length - controller] = (
-					((controllerFlags >> (controller - 1)) & 0x1) != 0
-				);
 			// 027 1-byte flags:
 			byte movieFlags = r.ReadByte();
 			byte begins = (byte)(movieFlags & 0xC0);
@@ -2329,29 +2417,40 @@ namespace BizHawk.MultiClient
 			// if "11", movie begins from power-on with SRAM clear
 			// bit 5: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
 			bool pal = (((movieFlags >> 5) & 0x1) != 0);
-			m.Header.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine(PAL, pal.ToString());
 			// other: reserved, set to 0
 			/*
 			 028 3-byte little-endian unsigned int: initial save state size, highest bit specifies compression, next 23
 			 specifies size
 			*/
-			uint savestateSize = (uint)(r.ReadByte() | (r.ReadByte() << 8) | ((r.ReadByte() << 16) & 0x80));
+			uint savestateSize = (uint)((r.ReadByte() | (r.ReadByte() << 8) | (r.ReadByte() << 16)) & 0x7FFFFF);
 			// Next follows a ZST format savestate.
 			r.ReadBytes((int)savestateSize);
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "SNES Controller";
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			// R, L, X, A, Right, Left, Down, Up, Start, Select, Y, B. TODO: Confirm.
+			/*
+			 * bit 11: A
+			 * bit 10: X
+			 * bit 9:  L
+			 * bit 8:  R
+			 * bit 7:  B
+			 * bit 6:  Y
+			 * bit 5:  Select
+			 * bit 4:  Start
+			 * bit 3:  Up
+			 * bit 2:  Down
+			 * bit 1:  Left
+			 * bit 0:  Right
+			*/
 			string[] buttons = new string[12] {
-				"R", "L", "X", "A", "Right", "Left", "Down", "Up", "Start", "Select", "Y", "B"
+				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
 			};
-			int events = (int)(frameCount + internalChapters);
 			int frames = 1;
-			// TODO: Fix this!
-			for (int e = 1; e <= events; e++)
+			int internalChapters = 1;
+			while (frames <= frameCount || internalChapters <= internalChaptersCount)
 			{
-				controllers["Reset"] = false;
 				/*
 				 000 1-byte flags:
 					 bit 7: "1" if controller 1 changed, "0" otherwise
@@ -2372,7 +2471,12 @@ namespace BizHawk.MultiClient
 					*/
 					flag >>= 1;
 					if (flag == 0x0)
+					{
 						controllers["Reset"] = true;
+						mg.SetSource(controllers);
+						m.AppendFrame(mg.GetControllersAsMnemonic());
+						controllers["Reset"] = false;
+					}
 					// TODO: Other commands.
 				}
 				else if (((flag >> 1) & 0x1) != 0)
@@ -2380,13 +2484,10 @@ namespace BizHawk.MultiClient
 					// If the event is RLE data, next follows 4 bytes which is the frame to repeat current input till.
 					uint frame = r.ReadUInt32();
 					if (frame > frameCount)
-						continue;
+						throw new ArgumentException("RLE data repeats for frames beyond the total frame count.");
 					mg.SetSource(controllers);
 					for (; frames <= frame; frames++)
-					{
 						m.AppendFrame(mg.GetControllersAsMnemonic());
-						e++;
-					}
 				}
 				else if (((flag >> 2) & 0x1) != 0)
 				{
@@ -2394,7 +2495,7 @@ namespace BizHawk.MultiClient
 					 If the event is a "chapter" update, the packet follows with a ZST format savestate. Using a header of:
 						000 3-byte little endian unsigned int: save state size in format defined above
 					*/
-					savestateSize = (uint)(r.ReadByte() | (r.ReadByte() << 8) | ((r.ReadByte() << 16) & 0x80));
+					savestateSize = (uint)((r.ReadByte() | (r.ReadByte() << 8) | (r.ReadByte() << 16)) & 0x7FFFFF);
 					// 001 above size: save state
 					r.ReadBytes((int)savestateSize);
 					// above size+001 4-byte little endian unsigned int: frame number save state loads to
@@ -2403,6 +2504,7 @@ namespace BizHawk.MultiClient
 					r.ReadBytes(2);
 					// above size+007 9-byte: previous controller input bits
 					r.ReadBytes(9);
+					internalChapters++;
 				}
 				else
 				{
@@ -2412,59 +2514,91 @@ namespace BizHawk.MultiClient
 					 bits per controller, or 20 bits in the case of the super scope, zeropadding up to full bytes. The
 					 minimum length of the controller data is 2 bytes, and the maximum length is 9 bytes.
 					*/
-					byte leftOver = 0x0;
-					for (int player = 1; player <= controllersUsed.Length; player++)
-					{
+					bool leftOver = false;
+					byte leftOverValue = 0x0;
+					for (int player = 1; player <= 5; player++)
 						// If the controller has changed:
-						if (((flag >> (controllersUsed.Length - player)) & 0x1) != 0)
+						if (((flag >> (5 - player)) & 0x1) != 0)
 						{
+							/*
+							 For example, if this frame contained input for controllers 1 and 2:
+								 byte 1:
+									 bit 7:  P1 B
+									 bit 6:  P1 Y
+									 bit 5:  P1 Select
+									 bit 4:  P1 Start
+									 bit 3:  P1 Up
+									 bit 2:  P1 Down
+									 bit 1:  P1 Left
+									 bit 0:  P1 Right
+								 byte 2:
+									 bit 7:  P2 B
+									 bit 6:  P2 Y
+									 bit 5:  P2 Select
+									 bit 4:  P2 Start
+									 bit 3:  P1 A
+									 bit 2:  P1 X
+									 bit 1:  P1 L
+									 bit 0:  P1 R
+								 byte 3:
+									 bit 7:  P2 Up
+									 bit 6:  P2 Down
+									 bit 5:  P2 Left
+									 bit 4:  P2 Right
+									 bit 3:  P2 A
+									 bit 2:  P2 X
+									 bit 1:  P2 L
+									 bit 0:  P2 R
+							*/
 							byte controllerState1 = r.ReadByte();
 							uint controllerState;
-							if (leftOver == 0x0)
+							if (!leftOver)
 							{
 								byte controllerState2 = r.ReadByte();
 								if (player == 2 && superScope)
 								{
 									byte controllerState3 = r.ReadByte();
-									controllerState = (uint)(((controllerState1 << 16) & 0x0F0000) |
-										(controllerState2 << 8) | controllerState3);
+									controllerState = (uint)((controllerState1 | (controllerState2 << 8) |
+										(controllerState3 << 12)) & 0x0FFFFF);
+									leftOverValue = (byte)((controllerState3 >> 4) & 0x0F);
 								}
 								else
-									controllerState = (uint)(((controllerState1 << 8) & 0x0F00) | controllerState2);
-								leftOver = (byte)((controllerState1 >> 4) & 0x0F);
+								{
+									controllerState = (uint)((controllerState1 | (controllerState2 << 4)) & 0x0FFF);
+									leftOverValue = (byte)((controllerState2 >> 4) & 0x0F);
+								}
 							}
-							else if ((leftOver & 0x0F) == leftOver)
+							else
 							{
+								controllerState = (uint)((controllerState1 >> 4) | (leftOverValue << 4) |
+									((controllerState1 << 8) & 0x0F00));
 								if (player == 2 && superScope)
 								{
 									byte controllerState2 = r.ReadByte();
-									controllerState = (uint)((leftOver << 16) | (controllerState1 << 8) |
-										controllerState2);
+									controllerState |= (uint)(controllerState2 << 12);
 								}
-								else
-									controllerState = (uint)((leftOver << 8) | controllerState1);
 							}
-							else
-								throw new ArgumentException("Unexpected number of leftover bits.");
+							leftOver = !leftOver;
 							if (player <= Global.PLAYERS[controllers.Type.Name])
 							{
-								if (controllersUsed[player - 1] && (player != 2 || !superScope))
+								if (player != 2 || !superScope)
 									for (int button = 0; button < buttons.Length; button++)
-									{
 										controllers["P" + player + " " + buttons[button]] = (
 											((controllerState >> button) & 0x1) != 0
 										);
-									}
 							}
 							else if (warningMsg == "")
 								warningMsg = "Controller " + player + " not supported.";
 						}
-					}
 					mg.SetSource(controllers);
 					m.AppendFrame(mg.GetControllersAsMnemonic());
 					frames++;
 				}
 			}
+			r.BaseStream.Position = r.BaseStream.Length - authorSize;
+			// Last in the file comes the author name field, which is an UTF-8 encoded text string.
+			string author = Encoding.UTF8.GetString(r.ReadBytes(authorSize));
+			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			return m;
 		}
 	}

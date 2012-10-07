@@ -11,14 +11,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class MessageConfig : Form
 	{
-		//TODO: 
-		//Implement message position as a variable
-		//Make a checkbox to enable/disable the stacking effect of message label
-		//Deal with typing into Numerics properly
-		//Have some method of binding a display object to top/bottom/left/right instead of an absolute position
-		//Bug: restore defaults doesn't restore the y value of whatever radio is checked
-		//Implement Multitrack messages counter config
-
 		int DispFPSx = Global.Config.DispFPSx;
 		int DispFPSy = Global.Config.DispFPSy;
 		int DispFrameCx = Global.Config.DispFrameCx;
@@ -34,6 +26,10 @@ namespace BizHawk.MultiClient
 		int DispRecy = Global.Config.DispRecy;
 		int DispMultix = Global.Config.DispMultix;
 		int DispMultiy = Global.Config.DispMultiy;
+		int DispMessagex = Global.Config.DispMessagex;
+		int DispMessagey = Global.Config.DispMessagey;
+		int DispAutoholdx = Global.Config.DispAutoholdx;
+		int DispAutoholdy = Global.Config.DispAutoholdy;
 
 		int MessageColor = Global.Config.MessagesColor;
 		int AlertColor = Global.Config.AlertMessageColor;
@@ -45,6 +41,8 @@ namespace BizHawk.MultiClient
 		int DispInputanchor = Global.Config.DispInpanchor;
 		int DispRecanchor = Global.Config.DispRecanchor;
 		int DispMultiAnchor = Global.Config.DispMultianchor;
+		int DispMessageAnchor = Global.Config.DispMessageanchor;
+		int DispAutoholdAnchor = Global.Config.DispAutoholdanchor;
 
 		public Brush brush = Brushes.Black;
 		int px = 0;
@@ -65,13 +63,14 @@ namespace BizHawk.MultiClient
 			MovieInputColorDialog.Color = Color.FromArgb(MovieInput);
 			SetColorBox();
 			SetPositionInfo();
+			StackMessagesCheckbox.Checked = Global.Config.StackOSDMessages;
 		}
 
 		private void SetMaxXY()
 		{
-			XNumeric.Maximum = Global.Emulator.VideoProvider.BufferWidth - 8;
-			YNumeric.Maximum = Global.Emulator.VideoProvider.BufferHeight - 8;
-			PositionPanel.Size = new Size(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+			XNumeric.Maximum = Global.Emulator.VideoProvider.BufferWidth - 12;
+			YNumeric.Maximum = Global.Emulator.VideoProvider.BufferHeight - 12;
+			PositionPanel.Size = new Size(Global.Emulator.VideoProvider.BufferWidth + 2, Global.Emulator.VideoProvider.BufferHeight + 2);
 
 			int width;
 			if (Global.Emulator.VideoProvider.BufferWidth > 128)
@@ -153,10 +152,11 @@ namespace BizHawk.MultiClient
 			}
 			else if (MessagesRadio.Checked)
 			{
-				XNumeric.Value = 0;
-				YNumeric.Value = 0;
-				px = 0;
-				py = 0;
+				XNumeric.Value = DispMessagex;
+				YNumeric.Value = DispMessagey;
+				px = DispMessagex;
+				py = DispMessagey;
+				SetAnchorRadio(DispMessageAnchor);
 			}
 			else if (RerecordsRadio.Checked)
 			{
@@ -173,6 +173,14 @@ namespace BizHawk.MultiClient
 				px = DispMultix;
 				py = DispMultiy;
 				SetAnchorRadio(DispMultiAnchor);
+			}
+			else if (AutoholdRadio.Checked)
+			{
+				XNumeric.Value = DispAutoholdx;
+				YNumeric.Value = DispAutoholdy;
+				px = DispAutoholdx;
+				py = DispAutoholdy;
+				SetAnchorRadio(DispAutoholdAnchor);
 			}
 
 			PositionPanel.Refresh();
@@ -195,6 +203,10 @@ namespace BizHawk.MultiClient
 			Global.Config.DispRecy = DispRecy;
 			Global.Config.DispMultix = DispMultix;
 			Global.Config.DispMultiy = DispMultiy;
+			Global.Config.DispMessagex = DispMessagex;
+			Global.Config.DispMessagey = DispMessagey;
+			Global.Config.DispAutoholdx = DispAutoholdx;
+			Global.Config.DispAutoholdy = DispAutoholdy;
 
 			Global.Config.MessagesColor = MessageColor;
 			Global.Config.AlertMessageColor = AlertColor;
@@ -206,11 +218,16 @@ namespace BizHawk.MultiClient
 			Global.Config.DispInpanchor = DispInputanchor;
 			Global.Config.DispRecanchor = DispRecanchor;
 			Global.Config.DispMultianchor = DispMultiAnchor;
+			Global.Config.DispMessageanchor = DispMessageAnchor;
+			Global.Config.DispAutoholdanchor = DispAutoholdAnchor;
+
+			Global.Config.StackOSDMessages = StackMessagesCheckbox.Checked;
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
+			Global.OSD.AddMessage("Message settings saved");
 			this.Close();
 		}
 
@@ -249,6 +266,11 @@ namespace BizHawk.MultiClient
 			SetPositionInfo();
 		}
 
+		private void AutoholdRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			SetPositionInfo();
+		}
+
 		private void XNumericChange()
 		{
 			px = (int)XNumeric.Value;
@@ -265,6 +287,7 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
+			Global.OSD.AddMessage("Message config aborted");
 			this.Close();
 		}
 
@@ -280,9 +303,35 @@ namespace BizHawk.MultiClient
 
 		private void PositionPanel_Paint(object sender, PaintEventArgs e)
 		{
+			int x = 0;
+			int y = 0;
+
+			if (TL.Checked)
+			{
+				x = px;
+				y = py;
+			}
+			else if (TR.Checked)
+			{
+				x = (int)XNumeric.Maximum - px;
+				y = py;
+			}
+			else if (BL.Checked)
+			{
+				x = px;
+				y = (int)YNumeric.Maximum - py;
+			}
+			else if (BR.Checked)
+			{
+				x = (int)XNumeric.Maximum - px;
+				y = (int)YNumeric.Maximum - py;
+			}
+
 			Pen p = new Pen(brush);
-			e.Graphics.DrawLine(p, new Point(px - 2, py - 2), new Point(px + 2, py + 2));
-			e.Graphics.DrawLine(p, new Point(px + 2, py - 2), new Point(px - 2, py + 2));
+			e.Graphics.DrawLine(p, new Point(x, y), new Point(x + 8, y + 8));
+			e.Graphics.DrawLine(p, new Point(x + 8, y), new Point(x, y + 8));
+			Rectangle rect = new Rectangle(x, y, 8, 8);
+			e.Graphics.DrawRectangle(p, rect);
 		}
 
 		private void PositionPanel_MouseDown(object sender, MouseEventArgs e)
@@ -304,10 +353,33 @@ namespace BizHawk.MultiClient
 			if (my < 0) my = 0;
 			if (mx > XNumeric.Maximum) mx = (int)XNumeric.Maximum;
 			if (my > YNumeric.Maximum) my = (int)YNumeric.Maximum;
+
+
+			if (TL.Checked)
+			{
+				//Do nothing
+			}
+			else if (TR.Checked)
+			{
+				mx = (int)XNumeric.Maximum - mx;
+			}
+			else if (BL.Checked)
+			{
+				my = (int)YNumeric.Maximum - my;
+			}
+			else if (BR.Checked)
+			{
+				mx = (int)XNumeric.Maximum - mx;
+				my = (int)YNumeric.Maximum - my;
+			}
+
 			XNumeric.Value = mx;
 			YNumeric.Value = my;
 			px = mx;
 			py = my;
+			
+			
+			
 			PositionPanel.Refresh();
 			SetPositionLabels();
 		}
@@ -342,10 +414,6 @@ namespace BizHawk.MultiClient
 				DispInpx = px;
 				DispInpy = py;
 			}
-			else if (MessagesRadio.Checked)
-			{
-				//TODO
-			}
 			else if (RerecordsRadio.Checked)
 			{
 				DispRecx = px;
@@ -356,12 +424,25 @@ namespace BizHawk.MultiClient
 				DispMultix = px;
 				DispMultiy = py;
 			}
+			else if (MessagesRadio.Checked)
+			{
+				DispMessagex = px;
+				DispMessagey = py;
+			}
+			else if (AutoholdRadio.Checked)
+			{
+				DispAutoholdx = px;
+				DispAutoholdy = py;
+			}
+
 			FpsPosLabel.Text = DispFPSx.ToString() + ", " + DispFPSy.ToString();
 			FCLabel.Text = DispFrameCx.ToString() + ", " + DispFrameCy.ToString();
 			LagLabel.Text = DispLagx.ToString() + ", " + DispLagy.ToString();
 			InpLabel.Text = DispInpx.ToString() + ", " + DispInpy.ToString();
 			RerecLabel.Text = DispRecx.ToString() + ", " + DispRecy.ToString();
-			MessLabel.Text = "0, 0";
+			MultitrackLabel.Text = DispMultix.ToString() + ", " + DispMultiy.ToString();
+			MessLabel.Text = DispMessagex.ToString() + ", " + DispMessagey.ToString();
+			AutoholdLabel.Text = DispAutoholdx.ToString() + ", " + DispAutoholdy.ToString();
 		}
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
@@ -376,7 +457,13 @@ namespace BizHawk.MultiClient
 			Global.Config.DispInpy = 24;
 			Global.Config.DispRecx = 0;
 			Global.Config.DispRecy = 48;
-			
+			Global.Config.DispMultix = 36;
+			Global.Config.DispMultiy = 0;
+			Global.Config.DispMessagex = 3;
+			Global.Config.DispMessagey = 0;
+			Global.Config.DispAutoholdx = 0;
+			Global.Config.DispAutoholdy = 0;
+
 			Global.Config.MessagesColor = -1;
 			Global.Config.AlertMessageColor = -65536;
 			Global.Config.LastInputColor = -23296;
@@ -397,6 +484,9 @@ namespace BizHawk.MultiClient
 			Global.Config.DispLaganchor = 0;
 			Global.Config.DispInpanchor = 0;
 			Global.Config.DispRecanchor = 0;
+			Global.Config.DispMultianchor = 0;
+			Global.Config.DispMessageanchor = 2;
+			Global.Config.DispAutoholdanchor = 1;
 
 			DispFPSx = Global.Config.DispFPSx;
 			DispFPSy = Global.Config.DispFPSy;
@@ -408,84 +498,99 @@ namespace BizHawk.MultiClient
 			DispInpy = Global.Config.DispInpy;
 			DispRecx = Global.Config.DispRecx;
 			DispRecy = Global.Config.DispRecy;
+			DispMultix = Global.Config.DispMultix;
+			DispMultiy = Global.Config.DispMultiy;
+			DispMessagex = Global.Config.DispMessagex;
+			DispMessagey = Global.Config.DispMessagey;
+			DispAutoholdx = Global.Config.DispAutoholdx;
+			DispAutoholdy = Global.Config.DispAutoholdy;
 
 			DispFPSanchor = Global.Config.DispFPSanchor;
 			DispFrameanchor = Global.Config.DispFrameanchor;
 			DispLaganchor = Global.Config.DispLaganchor;
 			DispInputanchor = Global.Config.DispInpanchor;
 			DispRecanchor = Global.Config.DispRecanchor;
-			
+			DispMultiAnchor = Global.Config.DispMultianchor;
+			DispMessageAnchor = Global.Config.DispMessageanchor;
+			DispAutoholdAnchor = Global.Config.DispAutoholdanchor;
+
 			SetMaxXY();
 			SetColorBox();
 			SetPositionInfo();
+
+			StackMessagesCheckbox.Checked = Global.Config.StackOSDMessages = true;
+		}
+
+		private void SetAnchorValue(int value)
+		{
+			if (FPSRadio.Checked)
+			{
+				DispFPSanchor = value;
+			}
+			else if (FrameCounterRadio.Checked)
+			{
+				DispFrameanchor = value;
+			}
+			else if (LagCounterRadio.Checked)
+			{
+				DispLaganchor = value;
+			}
+			else if (InputDisplayRadio.Checked)
+			{
+				DispInputanchor = value;
+			}
+			else if (MessagesRadio.Checked)
+			{
+				DispMessageAnchor = value;
+			}
+			else if (RerecordsRadio.Checked)
+			{
+				DispRecanchor = value;
+			}
+			else if (MultitrackRadio.Checked)
+			{
+				DispMultiAnchor = value;
+			}
+			else if (AutoholdRadio.Checked)
+			{
+				DispAutoholdAnchor = value;
+			}
 		}
 
 		private void TL_CheckedChanged(object sender, EventArgs e)
 		{
 			if (TL.Checked)
 			{
-				if (FPSRadio.Checked)
-					DispFPSanchor = 0;
-				else if (FrameCounterRadio.Checked)
-					DispFrameanchor = 0;
-				else if (LagCounterRadio.Checked)
-					DispLaganchor = 0;
-				else if (InputDisplayRadio.Checked)
-					DispInputanchor = 0;
-				else if (RerecordsRadio.Checked)
-					DispRecanchor = 0;
+				SetAnchorValue(0);
 			}
+			PositionPanel.Refresh();
 		}
 
 		private void TR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (TR.Checked)
 			{
-				if (FPSRadio.Checked)
-					DispFPSanchor = 1;
-				else if (FrameCounterRadio.Checked)
-					DispFrameanchor = 1;
-				else if (LagCounterRadio.Checked)
-					DispLaganchor = 1;
-				else if (InputDisplayRadio.Checked)
-					DispInputanchor = 1;
-				else if (RerecordsRadio.Checked)
-					DispRecanchor = 1;
+				SetAnchorValue(1);
 			}
+			PositionPanel.Refresh();
 		}
 
 		private void BL_CheckedChanged(object sender, EventArgs e)
 		{
 			if (BL.Checked)
 			{
-				if (FPSRadio.Checked)
-					DispFPSanchor = 2;
-				else if (FrameCounterRadio.Checked)
-					DispFrameanchor = 2;
-				else if (LagCounterRadio.Checked)
-					DispLaganchor = 2;
-				else if (InputDisplayRadio.Checked)
-					DispInputanchor = 2;
-				else if (RerecordsRadio.Checked)
-					DispRecanchor = 2;
+				SetAnchorValue(2);
 			}
+			PositionPanel.Refresh();
 		}
 
 		private void BR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (BR.Checked)
 			{
-				if (FPSRadio.Checked)
-					DispFPSanchor = 3;
-				else if (FrameCounterRadio.Checked)
-					DispFrameanchor = 3;
-				else if (LagCounterRadio.Checked)
-					DispLaganchor = 3;
-				else if (InputDisplayRadio.Checked)
-					DispInputanchor = 3;
-				else if (RerecordsRadio.Checked)
-					DispRecanchor = 3;
+				SetAnchorValue(3);
 			}
+			PositionPanel.Refresh();
 		}
 
 		private void XNumeric_Click(object sender, EventArgs e)
@@ -501,25 +606,43 @@ namespace BizHawk.MultiClient
 		private void ColorPanel_Click(object sender, EventArgs e)
 		{
 			if (MessageColorDialog.ShowDialog() == DialogResult.OK)
+			{
 				SetColorBox();
+			}
 		}
 
 		private void AlertColorPanel_Click(object sender, EventArgs e)
 		{
 			if (AlertColorDialog.ShowDialog() == DialogResult.OK)
+			{
 				SetColorBox();
+			}
 		}
 
 		private void LInputColorPanel_Click(object sender, EventArgs e)
 		{
 			if (LInputColorDialog.ShowDialog() == DialogResult.OK)
+			{
 				SetColorBox();
+			}
 		}
 
 		private void MovieInputColor_Click(object sender, EventArgs e)
 		{
 			if (MovieInputColorDialog.ShowDialog() == DialogResult.OK)
+			{
 				SetColorBox();
+			}
+		}
+
+		private void XNumeric_KeyUp(object sender, KeyEventArgs e)
+		{
+			XNumericChange();
+		}
+
+		private void YNumeric_KeyUp(object sender, KeyEventArgs e)
+		{
+			YNumericChange();
 		}
 	}
 }

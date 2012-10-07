@@ -3,6 +3,9 @@
 
 #include <nall/snes/cartridge.hpp>
 #include <nall/gameboy/cartridge.hpp>
+
+#include <queue>
+
 using namespace nall;
 
 struct Interface : public SNES::Interface {
@@ -10,12 +13,17 @@ struct Interface : public SNES::Interface {
   snes_audio_sample_t paudio_sample;
   snes_input_poll_t pinput_poll;
   snes_input_state_t pinput_state;
+  snes_input_notify_t pinput_notify;
+	snes_path_request_t ppath_request;
   string basename;
   uint32_t *buffer;
   uint32_t *palette;
 
 	//zero 11-sep-2012
 	time_t randomSeed() { return 0; }
+
+	//zero 26-sep-2012
+	std::queue<nall::string> messages;
 
   void videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan) {
     unsigned width = hires ? 512 : 256;
@@ -52,15 +60,26 @@ struct Interface : public SNES::Interface {
     return 0;
   }
 
+  void inputNotify(int index) {
+    if (pinput_notify) pinput_notify(index);
+  }
+  
   void message(const string &text) {
-    print(text, "\n");
+		messages.push(text);
   }
 
-  string path(SNES::Cartridge::Slot slot, const string &hint) {
+  string path(SNES::Cartridge::Slot slot, const string &hint)
+	{
+		if(ppath_request)
+		{
+			const char* path = ppath_request((int)slot, (const char*)hint);
+			return path;
+		}
     return { basename, hint };
+
   }
 
-  Interface() : pvideo_refresh(0), paudio_sample(0), pinput_poll(0), pinput_state(0) {
+  Interface() : pvideo_refresh(0), paudio_sample(0), pinput_poll(0), pinput_state(0), pinput_notify(0), ppath_request(0) {
     buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
 
@@ -126,6 +145,15 @@ void snes_set_input_poll(snes_input_poll_t input_poll) {
 
 void snes_set_input_state(snes_input_state_t input_state) {
   interface.pinput_state = input_state;
+}
+
+void snes_set_input_notify(snes_input_notify_t input_notify) {
+  interface.pinput_notify = input_notify;
+}
+
+void snes_set_path_request(snes_path_request_t path_request)
+{
+	 interface.ppath_request = path_request;
 }
 
 void snes_set_controller_port_device(bool port, unsigned device) {
@@ -301,6 +329,17 @@ int snes_peek_logical_register(int reg)
 		//$210C
 	case SNES_REG_BG3_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG3]>>13;
 	case SNES_REG_BG4_TDADDR: return SNES::ppu.regs.bg_tdaddr[SNES::PPU::BG4]>>13;
+		//$2133 SETINI
+	case SNES_REG_SETINI_MODE7_EXTBG: return SNES::ppu.regs.mode7_extbg?1:0;
+	case SNES_REG_SETINI_HIRES: return SNES::ppu.regs.pseudo_hires?1:0;
+	case SNES_REG_SETINI_OVERSCAN: return SNES::ppu.regs.overscan?1:0;
+	case SNES_REG_SETINI_OBJ_INTERLACE: return SNES::ppu.regs.oam_interlace?1:0;
+	case SNES_REG_SETINI_SCREEN_INTERLACE: return SNES::ppu.regs.interlace?1:0;
+		//$2130 CGWSEL
+	case SNES_REG_CGWSEL_COLORMASK: return SNES::ppu.regs.color_mask;
+	case SNES_REG_CGWSEL_COLORSUBMASK: return SNES::ppu.regs.color_mask;
+	case SNES_REG_CGWSEL_ADDSUBMODE: return SNES::ppu.regs.addsub_mode?1:0;
+	case SNES_REG_CGWSEL_DIRECTCOLOR: return SNES::ppu.regs.direct_color?1:0;
 	}
 	return 0;
 }
@@ -490,3 +529,21 @@ unsigned snes_get_memory_size(unsigned id) {
   return size;
 }
 
+uint8_t bus_read(unsigned addr) {
+  return SNES::bus.read(addr);
+}
+void bus_write(unsigned addr, uint8_t val) {
+  SNES::bus.write(addr, val);
+}
+
+int snes_poll_message()
+{
+	if(interface.messages.size() == 0) return -1;
+	return interface.messages.front().length();
+}
+void snes_dequeue_message(char* buffer)
+{
+	int len = interface.messages.front().length();
+	memcpy(buffer,(const char*)interface.messages.front(),len);
+	interface.messages.pop();
+}

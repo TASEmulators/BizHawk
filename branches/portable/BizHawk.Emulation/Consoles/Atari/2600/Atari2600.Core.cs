@@ -183,6 +183,7 @@ namespace BizHawk
 
 		public byte ReadControls1()
 		{
+			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			byte value = 0xFF;
 
 			if (Controller["P1 Up"]) value &= 0xEF;
@@ -196,6 +197,7 @@ namespace BizHawk
 
 		public byte ReadControls2()
 		{
+			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			byte value = 0xFF;
 
 			if (Controller["P2 Up"]) value &= 0xEF;

@@ -7,9 +7,10 @@ using System.IO;
 using LuaInterface;
 using System.Windows.Forms;
 using System.Drawing;
-using BizHawk.MultiClient.tools;
 using System.Threading;
 
+using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.MultiClient.tools;
 
 namespace BizHawk.MultiClient
 {
@@ -204,6 +205,12 @@ namespace BizHawk.MultiClient
 				docs.Add("bit", BitwiseFunctions[i], this.GetType().GetMethod("bit_" + BitwiseFunctions[i]));
 			}
 
+			lua.NewTable("nes");
+			for (int i = 0; i < NESFunctions.Length; i++)
+			{
+				lua.RegisterFunction("nes." + NESFunctions[i], this, this.GetType().GetMethod("nes_" + NESFunctions[i]));
+				docs.Add("nes", NESFunctions[i], this.GetType().GetMethod("nes_" + NESFunctions[i]));
+			}
 
 			docs.Sort();
 		}
@@ -347,6 +354,7 @@ namespace BizHawk.MultiClient
 		                                      		"drawPie",
 		                                      		"drawIcon",
 		                                      		"drawImage",
+													"addmessage",
 		                                      	};
 
 		public static string[] EmuFunctions = new string[]
@@ -368,8 +376,9 @@ namespace BizHawk.MultiClient
 		                                      		"limitframerate",
 		                                      		"displayvsync",
 		                                      		"enablerewind",
-													"registerbefore",
-													"registerafter",
+													//"registerbefore",
+													//"registerafter",
+													"on_snoop",
 		                                      	};
 
 		public static string[] MemoryFunctions = new string[]
@@ -441,6 +450,8 @@ namespace BizHawk.MultiClient
 		                                             		"write_u16_be",
 		                                             		"write_u24_be",
 		                                             		"write_u32_be",
+															"readbyterange",
+															"writebyterange",
 		                                             		//"registerwrite",
 		                                             		//"registerread",
 		                                             	};
@@ -529,6 +540,22 @@ namespace BizHawk.MultiClient
 		                                          		"bnot",
 		                                          	};
 
+		public static string[] NESFunctions = new string[]
+		                                          	{
+		                                          		"setscanlines",
+														"gettopscanline",
+														"getbottomscanline",
+														"getclipleftandright",
+														"setclipleftandright",
+														"getdispbackground",
+														"setdispbackground",
+														"getdispsprites",
+														"setdispsprites",
+														"getallowmorethaneightsprites",
+														"setallowmorethaneightsprites",
+														"addgamegenie",
+														"removegamegenie",
+		                                          	};
 		/****************************************************/
 		/*************function definitions********************/
 		/****************************************************/
@@ -569,7 +596,6 @@ namespace BizHawk.MultiClient
 
 			return list;
 		}
-
 		//----------------------------------------------------
 		//Gui library
 		//----------------------------------------------------
@@ -629,6 +655,11 @@ namespace BizHawk.MultiClient
 		public void gui_cleartext()
 		{
 			Global.OSD.ClearGUIText();
+		}
+
+		public void gui_addmessage(object luaStr)
+		{
+			Global.OSD.AddMessage(luaStr.ToString());
 		}
 
 		public DisplaySurface luaSurface;
@@ -1141,6 +1172,28 @@ namespace BizHawk.MultiClient
 			frame_registerafterfunc = luaf;
 		}
 
+		public void emu_on_snoop(LuaFunction luaf)
+		{
+			if (luaf != null)
+			{
+				Global.Emulator.CoreInputComm.InputCallback = delegate()
+				{
+					try
+					{
+						luaf.Call();
+					}
+					catch (SystemException e)
+					{
+						Global.MainForm.LuaConsole1.WriteToOutputWindow(
+							"error running function attached by lua function emu.on_snoop" +
+							"\nError message: " + e.Message);
+					}
+				};
+			}
+			else
+				Global.Emulator.CoreInputComm.InputCallback = null;
+		}
+
 		//----------------------------------------------------
 		//Memory library
 		//----------------------------------------------------
@@ -1445,6 +1498,33 @@ namespace BizHawk.MultiClient
 			int addr = LuaInt(lua_addr);
 			uint v = LuaUInt(lua_v);
 			MM_W_U8(addr, v);
+		}
+
+		public LuaTable mainmemory_readbyterange(object address, object length)
+		{
+			int l = LuaInt(length);
+			int addr = LuaInt(address);
+			int last_addr = l + addr;
+			LuaTable table = lua.NewTable();
+			for (int i = addr; i <= last_addr; i++)
+			{
+				string a = String.Format("{0:X2}", i);
+				byte v = Global.Emulator.MainMemory.PeekByte(i);
+				string vs = String.Format("{0:X2}", (int)v);
+				table[a] = vs;
+			}
+			return table;
+		}
+
+		public void mainmemory_writebyterange(LuaTable memoryblock)
+		{
+			foreach (var address in memoryblock.Keys)
+			{
+				int a = LuaInt(address);
+				int v = LuaInt(memoryblock[address]);
+
+				Global.Emulator.MainMemory.PokeByte(a, (byte)v);
+			}
 		}
 
 		public int mainmemory_read_s8(object lua_addr)
@@ -2429,7 +2509,148 @@ namespace BizHawk.MultiClient
 			buttons[MouseButtons.XButton1.ToString()] = Control.MouseButtons & MouseButtons.XButton1;
 			buttons[MouseButtons.XButton2.ToString()] = Control.MouseButtons & MouseButtons.XButton2;
 			return buttons;
+		}
 
+		//----------------------------------------------------
+		//NES library
+		//----------------------------------------------------
+
+		public void nes_setscanlines(object top, object bottom)
+		{
+			
+			int first = LuaInt(top);
+			int last = LuaInt(bottom);
+			if (first > 127)
+			{
+				first = 127;
+			}
+			else if (first < 0)
+			{
+				first = 0;
+			}
+
+			if (last > 239)
+			{
+				last = 239;
+			}
+			else if (last < 128)
+			{
+				last = 128;
+			}
+
+			Global.Config.NESTopLine = first;
+			Global.Config.NESBottomLine = last;
+			
+			if (Global.Emulator is NES)
+			{
+				(Global.Emulator as NES).FirstDrawLine = first;
+				(Global.Emulator as NES).LastDrawLine = last;
+			}
+		}
+
+		public int nes_gettopscanline()
+		{
+			return Global.Config.NESTopLine;
+		}
+
+		public int nes_getbottomscanline()
+		{
+			return Global.Config.NESBottomLine;
+		}
+
+		public bool nes_getclipleftandright()
+		{
+			return Global.Config.NESClipLeftAndRight;
+		}
+
+		public void nes_setclipleftandright(bool leftandright)
+		{
+			Global.Config.NESClipLeftAndRight = leftandright;
+			if (Global.Emulator is NES)
+			{
+				(Global.Emulator as NES).SetClipLeftAndRight(leftandright);
+			}
+		}
+
+		public bool nes_getdispbackground()
+		{
+			return Global.Config.NESDispBackground;
+		}
+
+		public void nes_setdispbackground(bool show)
+		{
+			Global.Config.NESDispBackground = show;
+			Global.MainForm.SyncCoreInputComm();
+		}
+
+		public bool nes_getdispsprites()
+		{
+			return Global.Config.NESDispSprites;
+		}
+
+		public void nes_setdispsprites(bool show)
+		{
+			Global.Config.NESDispSprites = show;
+			Global.MainForm.SyncCoreInputComm();
+		}
+
+		public bool nes_getallowmorethaneightsprites()
+		{
+			return Global.Config.NESAllowMoreThanEightSprites;
+		}
+
+		public void nes_setallowmorethaneightsprites(bool allow)
+		{
+			Global.Config.NESAllowMoreThanEightSprites = allow;
+			if (Global.Emulator is NES)
+			{
+				(Global.Emulator as NES).CoreInputComm.NES_UnlimitedSprites = allow;
+			}
+		}
+
+		public void nes_addgamegenie(string code)
+		{
+			if (Global.Emulator is NES)
+			{
+				NESGameGenie gg = new NESGameGenie();
+				gg.DecodeGameGenieCode(code);
+				if (gg.address > 0 && gg.value > 0)
+				{
+					Cheat c = new Cheat();
+					c.name = code;
+					c.domain = Global.Emulator.MemoryDomains[1];
+					c.address = gg.address;
+					c.value = (byte)gg.value;
+					if (gg.compare != -1)
+					{
+						c.compare = (byte)gg.compare;
+					}
+					c.Enable();
+					Global.MainForm.Cheats1.AddCheat(c);
+				}
+			}
+		}
+
+		public void nes_removegamegenie(string code)
+		{
+			if (Global.Emulator is NES)
+			{
+				NESGameGenie gg = new NESGameGenie();
+				gg.DecodeGameGenieCode(code);
+				if (gg.address > 0 && gg.value > 0)
+				{
+					Cheat c = new Cheat();
+					c.name = code;
+					c.domain = Global.Emulator.MemoryDomains[1];
+					c.address = gg.address;
+					c.value = (byte)gg.value;
+					if (gg.compare != -1)
+					{
+						c.compare = (byte)gg.compare;
+					}
+					Global.CheatList.RemoveCheat(Global.Emulator.MemoryDomains[1], c.address);
+				}
+			}
 		}
 	}
 }

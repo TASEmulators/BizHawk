@@ -9,7 +9,7 @@ namespace BizHawk.MultiClient
 	{
 		// ********************************** Static interface **********************************
 
-		private static DirectInput dinput;
+		static DirectInput dinput;
 		public static List<GamePad> Devices;
 
 		public static void Initialize()
@@ -21,7 +21,10 @@ namespace BizHawk.MultiClient
 
 			foreach (DeviceInstance device in dinput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly))
 			{
-				var joystick = new Joystick(dinput, device.InstanceGuid);
+                if (device.ProductName.Contains("XBOX 360"))
+                    continue; // Don't input XBOX 360 controllers into here; we'll process them via XInput.
+				
+                var joystick = new Joystick(dinput, device.InstanceGuid);
 				joystick.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 				foreach (DeviceObjectInstance deviceObject in joystick.GetObjects())
 				{
@@ -43,19 +46,18 @@ namespace BizHawk.MultiClient
 
 		// ********************************** Instance Members **********************************
 
-		private readonly string name;
-		private readonly Guid guid;
-		private readonly Joystick joystick;
-		private JoystickState state = new JoystickState();
-		private bool[] buttons;
-		private int[] pov;
+		readonly string name;
+		readonly Guid guid;
+		readonly Joystick joystick;
+		JoystickState state = new JoystickState();
 
-		private GamePad(string name, Guid guid, Joystick joystick)
+		GamePad(string name, Guid guid, Joystick joystick)
 		{
 			this.name = name;
 			this.guid = guid;
 			this.joystick = joystick;
 			Update();
+			InitializeCallbacks();
 		}
 
 		public void Update()
@@ -67,76 +69,121 @@ namespace BizHawk.MultiClient
 
 			state = joystick.GetCurrentState();
 			if (Result.Last.IsFailure)
+				// do something?
 				return;
+		}
 
-			buttons = state.GetButtons();
-			pov = state.GetPointOfViewControllers();
+		/// <summary>FOR DEBUGGING ONLY</summary>
+		public JoystickState GetInternalState()
+		{
+			return state;
 		}
 
 		public string Name { get { return name; } }
 		public Guid Guid { get { return guid; } }
 
-		public float X { get { return state.X / 1000f; } }
-		public float Y { get { return state.Y / 1000f; } }
-		public float Z { get { return state.Z / 1000f; } }
 
-		public bool[] Buttons { get { return buttons; } }
-
-		public bool Up
+		public string ButtonName(int index)
 		{
-			get
+			return names[index];
+		}
+		public bool Pressed(int index)
+		{
+			return actions[index]();
+		}
+		public int NumButtons { get; private set; }
+
+		List<string> names = new List<string>();
+		List<Func<bool>> actions = new List<Func<bool>>();
+
+		void AddItem(string name, Func<bool> callback)
+		{
+			names.Add(name);
+			actions.Add(callback);
+			NumButtons++;
+		}
+
+		void InitializeCallbacks()
+		{
+			const int dzp = 400;
+			const int dzn = -400;
+
+			names.Clear();
+			actions.Clear();
+			NumButtons = 0;
+
+			AddItem("AccelerationX+", () => state.AccelerationX >= dzp);
+			AddItem("AccelerationX-", () => state.AccelerationX <= dzn);
+			AddItem("AccelerationY+", () => state.AccelerationY >= dzp);
+			AddItem("AccelerationY-", () => state.AccelerationY <= dzn);
+			AddItem("AccelerationZ+", () => state.AccelerationZ >= dzp);
+			AddItem("AccelerationZ-", () => state.AccelerationZ <= dzn);
+			AddItem("AngularAccelerationX+", () => state.AngularAccelerationX >= dzp);
+			AddItem("AngularAccelerationX-", () => state.AngularAccelerationX <= dzn);
+			AddItem("AngularAccelerationY+", () => state.AngularAccelerationY >= dzp);
+			AddItem("AngularAccelerationY-", () => state.AngularAccelerationY <= dzn);
+			AddItem("AngularAccelerationZ+", () => state.AngularAccelerationZ >= dzp);
+			AddItem("AngularAccelerationZ-", () => state.AngularAccelerationZ <= dzn);
+			AddItem("AngularVelocityX+", () => state.AngularVelocityX >= dzp);
+			AddItem("AngularVelocityX-", () => state.AngularVelocityX <= dzn);
+			AddItem("AngularVelocityY+", () => state.AngularVelocityY >= dzp);
+			AddItem("AngularVelocityY-", () => state.AngularVelocityY <= dzn);
+			AddItem("AngularVelocityZ+", () => state.AngularVelocityZ >= dzp);
+			AddItem("AngularVelocityZ-", () => state.AngularVelocityZ <= dzn);
+			AddItem("ForceX+", () => state.ForceX >= dzp);
+			AddItem("ForceX-", () => state.ForceX <= dzn);
+			AddItem("ForceY+", () => state.ForceY >= dzp);
+			AddItem("ForceY-", () => state.ForceY <= dzn);
+			AddItem("ForceZ+", () => state.ForceZ >= dzp);
+			AddItem("ForceZ-", () => state.ForceZ <= dzn);
+			AddItem("RotationX+", () => state.RotationX >= dzp);
+			AddItem("RotationX-", () => state.RotationX <= dzn);
+			AddItem("RotationY+", () => state.RotationY >= dzp);
+			AddItem("RotationY-", () => state.RotationY <= dzn);
+			AddItem("RotationZ+", () => state.RotationZ >= dzp);
+			AddItem("RotationZ-", () => state.RotationZ <= dzn);
+			AddItem("TorqueX+", () => state.TorqueX >= dzp);
+			AddItem("TorqueX-", () => state.TorqueX <= dzn);
+			AddItem("TorqueY+", () => state.TorqueY >= dzp);
+			AddItem("TorqueY-", () => state.TorqueY <= dzn);
+			AddItem("TorqueZ+", () => state.TorqueZ >= dzp);
+			AddItem("TorqueZ-", () => state.TorqueZ <= dzn);
+			AddItem("VelocityX+", () => state.VelocityX >= dzp);
+			AddItem("VelocityX-", () => state.VelocityX <= dzn);
+			AddItem("VelocityY+", () => state.VelocityY >= dzp);
+			AddItem("VelocityY-", () => state.VelocityY <= dzn);
+			AddItem("VelocityZ+", () => state.VelocityZ >= dzp);
+			AddItem("VelocityZ-", () => state.VelocityZ <= dzn);
+			AddItem("X+", () => state.X >= dzp);
+			AddItem("X-", () => state.X <= dzn);
+			AddItem("Y+", () => state.Y >= dzp);
+			AddItem("Y-", () => state.Y <= dzn);
+			AddItem("Z+", () => state.Z >= dzp);
+			AddItem("Z-", () => state.Z <= dzn);
+
+			// i don't know what the "Slider"s do, so they're omitted for the moment
+
+			for (int i = 0; i < state.GetButtons().Length; i++)
 			{
-				if (state.Y < -250 || state.RotationY < -250)
-					return true;
-				foreach (int p in pov)
-					if (p.In(0, 4500, 31500))
-						return true;
-				return false;
+				int j = i;
+				AddItem(string.Format("B{0}", i + 1), () => state.IsPressed(j));
+			}
+
+			for (int i = 0; i < state.GetPointOfViewControllers().Length; i++)
+			{
+				int j = i;
+				AddItem(string.Format("POV{0}U", i + 1),
+					() => { int t = state.GetPointOfViewControllers()[j]; return (t >= 0 && t <= 4500) || (t >= 31500 && t < 36000); });
+				AddItem(string.Format("POV{0}D", i + 1),
+					() => { int t = state.GetPointOfViewControllers()[j]; return t >= 13500 && t <= 22500; });
+				AddItem(string.Format("POV{0}L", i + 1),
+					() => { int t = state.GetPointOfViewControllers()[j]; return t >= 22500 && t <= 31500; });
+				AddItem(string.Format("POV{0}R", i + 1),
+					() => { int t = state.GetPointOfViewControllers()[j]; return t >= 4500 && t <= 13500; });
 			}
 		}
 
-		public bool Down
-		{
-			get
-			{
-				if (state.Y > 250 || state.RotationY > 250)
-					return true;
-				foreach (int p in pov)
-					if (p.In(13500, 18000, 22500))
-						return true;
-				return false;
-			}
-		}
-
-		public bool Left
-		{
-			get
-			{
-				if (state.X < -250 || state.RotationX < -250)
-					return true;
-				foreach (int p in pov)
-					if (p.In(22500, 27000, 31500))
-						return true;
-				return false;
-			}
-		}
-
-		public bool Right
-		{
-			get
-			{
-				if (state.X > 250 || state.RotationX > 250)
-					return true;
-				foreach (int p in pov)
-					if (p.In(4500, 9000, 13500))
-						return true;
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// Note that this does not appear to work at this time. I probably need to have more infos.
-		/// </summary>
+		// Note that this does not appear to work at this time. I probably need to have more infos.
 		public void SetVibration(int left, int right)
 		{
 			int[] temp1, temp2;

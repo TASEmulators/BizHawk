@@ -13,19 +13,16 @@ namespace BizHawk.MultiClient
 {
 	public partial class NESGameGenie : Form
 	{
-		int address = -1;
-		int value = -1;
-		int compare = -1;
+		public int address = -1;
+		public int value = -1;
+		public int compare = -1;
 		Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
 
 		public NESGameGenie()
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
-		}
 
-		private void NESGameGenie_Load(object sender, EventArgs e)
-		{
 			GameGenieTable.Add('A', 0);     //0000
 			GameGenieTable.Add('P', 1);     //0001
 			GameGenieTable.Add('Z', 2);     //0010
@@ -42,7 +39,10 @@ namespace BizHawk.MultiClient
 			GameGenieTable.Add('S', 13);    //1101
 			GameGenieTable.Add('V', 14);    //1110
 			GameGenieTable.Add('N', 15);    //1111
+		}
 
+		private void NESGameGenie_Load(object sender, EventArgs e)
+		{
 			AddCheat.Enabled = false;
 
 			if (Global.Config.NESGGSaveWindowPosition && Global.Config.NESGGWndx >= 0 && Global.Config.NESGGWndy >= 0)
@@ -57,19 +57,16 @@ namespace BizHawk.MultiClient
 
 		private void GameGenieCode_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '\b' || e.KeyChar == 22)
-			{
-				return;
-			}
-			
 			//Make uppercase
 			if (e.KeyChar >= 97 && e.KeyChar < 123)
 				e.KeyChar -= (char)32;
 
 			if (!(GameGenieTable.ContainsKey(e.KeyChar)))
 			{
-				if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
+				if (!(e.KeyChar == (char)Keys.Back) || e.KeyChar == '\b' || e.KeyChar == 22 || e.KeyChar == 1 || e.KeyChar == 3)
+				{
 					e.Handled = true;
+				}
 			}
 			else
 			{
@@ -82,7 +79,7 @@ namespace BizHawk.MultiClient
 			return (value >> bit) & 1;
 		}
 
-		private void DecodeGameGenieCode(string code)
+		public void DecodeGameGenieCode(string code)
 		{
 			//char 3 bit 3 denotes the code length.
 			if (code.Length == 6)
@@ -233,53 +230,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
-			{
-				if (InputValidate.IsValidHexNumber(e.KeyChar))
-				{
-					Encoding.Checked = true;
-				}
-				else
-					e.Handled = true;
-			}
-			else
-				Encoding.Checked = true;
-		}
-
-		private void CompareBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
-			{
-				if (InputValidate.IsValidHexNumber(e.KeyChar))
-				{
-
-					Encoding.Checked = true;
-				}
-				else
-					e.Handled = true;
-			}
-			else
-				Encoding.Checked = true;
-		}
-
-		private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
-			{
-				if (InputValidate.IsValidHexNumber(e.KeyChar))
-				{
-
-					Encoding.Checked = true;
-				}
-				else
-					e.Handled = true;
-			}
-			else
-				Encoding.Checked = true;
-		}
-
 		private void AddressBox_TextChanged(object sender, EventArgs e)
 		{
 			if (Encoding.Checked && AddressBox.Text.Length > 0)
@@ -386,6 +336,11 @@ namespace BizHawk.MultiClient
 
 		private void AddCheat_Click(object sender, EventArgs e)
 		{
+			AddCheatClick();
+		}
+
+		private void AddCheatClick()
+		{
 			Cheat c = new Cheat();
 			c.name = GameGenieCode.Text;
 
@@ -441,6 +396,17 @@ namespace BizHawk.MultiClient
 		{
 			autoloadToolStripMenuItem.Checked = Global.Config.NESGGAutoload;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESGGSaveWindowPosition;
+		}
+
+		private void GameGenieCode_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyData == Keys.Enter)
+			{
+				if (AddCheat.Enabled)
+				{
+					AddCheatClick();
+				}
+			}
 		}
 	}
 }

@@ -31,13 +31,13 @@ namespace BizHawk.Core
 			threadPaint.Start();
 		}
 
-		public RetainedViewportPanel()
+		public RetainedViewportPanel(bool doubleBuffer = false)
 		{
 			CreateHandle();
 			
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, false);
+			SetStyle(ControlStyles.DoubleBuffer, doubleBuffer);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserMouse, true);
 
@@ -61,6 +61,8 @@ namespace BizHawk.Core
 			CleanupDisposeQueue();
 		}
 
+		public bool ScaleImage = true;
+
 		void DoPaint()
 		{
 			if (bmp != null)
@@ -71,7 +73,21 @@ namespace BizHawk.Core
 					g.InterpolationMode = InterpolationMode.NearestNeighbor;
 					g.CompositingMode = CompositingMode.SourceCopy;
 					g.CompositingQuality = CompositingQuality.HighSpeed;
-					g.DrawImage(bmp, 0, 0, Width, Height);
+					if (ScaleImage)
+					{
+						g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+						g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+						g.DrawImage(bmp, 0, 0, Width, Height);
+					}
+					else
+					{
+						using (var sb = new SolidBrush(Color.Black))
+						{
+							g.FillRectangle(sb, bmp.Width, 0, Width - bmp.Width, Height);
+							g.FillRectangle(sb, 0, bmp.Height, bmp.Width, Height - bmp.Height);
+						}
+						g.DrawImageUnscaled(bmp, 0, 0);
+					}
 				}
 			}
 

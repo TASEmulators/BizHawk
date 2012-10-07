@@ -755,7 +755,7 @@ namespace BizHawk.MultiClient
 		private void luaFunctionsListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Sound.StopSound();
-			new LuaFunctionList().ShowDialog();
+			new LuaFunctionList().Show();
 			Global.Sound.StartSound();
 		}
 
@@ -840,38 +840,61 @@ namespace BizHawk.MultiClient
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			for (int i = 0; i < luaList.Count; i++)
+			if (luaList != null && luaList.Count > 0)
 			{
-				try
+				if (LuaImp.luaSurface == null)
 				{
 					LuaImp.gui_drawNewEmu();
-					//LuaImp.gui_clearGraphics();
-					if (luaList[i].Enabled && luaList[i].Thread != null && !(luaList[i].Paused))
+				}
+				for (int i = 0; i < luaList.Count; i++)
+				{
+					try
 					{
-						bool prohibit = false;
-						if (luaList[i].FrameWaiting && !includeFrameWaiters)
-							prohibit = true;
-
-						if (!prohibit)
+						//LuaImp.gui_clearGraphics();
+						if (luaList[i].Enabled && luaList[i].Thread != null && !(luaList[i].Paused))
 						{
-							var result = LuaImp.ResumeScript(luaList[i].Thread);
-							if (result.Terminated) luaList[i].Stop();
-							luaList[i].FrameWaiting = result.WaitForFrame;
+							bool prohibit = false;
+							if (luaList[i].FrameWaiting && !includeFrameWaiters)
+							{
+								prohibit = true;
+							}
+							if (!prohibit)
+							{
+								var result = LuaImp.ResumeScript(luaList[i].Thread);
+								if (result.Terminated) luaList[i].Stop();
+								luaList[i].FrameWaiting = result.WaitForFrame;
+							}
 						}
 					}
-					LuaImp.gui_drawFinishEmu();
-				}
-				catch (Exception ex)
-				{
-					if (ex is LuaInterface.LuaScriptException || ex is LuaInterface.LuaException)
+					catch (Exception ex)
 					{
-						luaList[i].Enabled = false;
-						luaList[i].Thread = null;
-						AddText(ex.ToString());
+						if (ex is LuaInterface.LuaScriptException || ex is LuaInterface.LuaException)
+						{
+							luaList[i].Enabled = false;
+							luaList[i].Thread = null;
+							AddText(ex.ToString());
+						}
+						else MessageBox.Show(ex.ToString());
 					}
-					else MessageBox.Show(ex.ToString());
 				}
 			}
+			LuaImp.gui_drawFinishEmu();
+		}
+
+		public void StartLuaDrawing()
+		{
+			//if (luaList != null && luaList.Count > 0)
+			//{
+			//    LuaImp.gui_drawNewEmu();
+			//}
+		}
+
+		public void EndLuaDrawing()
+		{
+			//if (luaList != null && luaList.Count > 0)
+			//{
+			//    LuaImp.gui_drawFinishEmu();
+			//}
 		}
 
 		public bool IsRunning()
@@ -902,7 +925,7 @@ namespace BizHawk.MultiClient
 			ClearOutput();
 		}
 
-		private void ClearOutput()
+		public void ClearOutput()
 		{
 			OutputBox.Text = "";
 		}

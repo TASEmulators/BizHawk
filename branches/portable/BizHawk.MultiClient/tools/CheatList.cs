@@ -116,6 +116,7 @@ namespace BizHawk.MultiClient
 			{
 				Changes = false;
 				Global.Config.RecentCheats.Add(file.FullName);
+				Global.MainForm.UpdateCheatStatus();
 				return true;
 			}
 			else
@@ -176,6 +177,8 @@ namespace BizHawk.MultiClient
 					cheatList.Remove(cheatList[x]);
 				}
 			}
+
+			Global.OSD.AddMessage("Cheat removed");
 		}
 
 		public string CheatsPath
@@ -373,16 +376,19 @@ namespace BizHawk.MultiClient
 			Global.MainForm.UpdateCheatStatus();
 		}
 
-		public bool HasActiveCheat()
+		public bool HasActiveCheats
 		{
-			for (int x = 0; x < cheatList.Count; x++)
+			get
 			{
-				if (cheatList[x].IsEnabled())
+				for (int x = 0; x < cheatList.Count; x++)
 				{
-					return true;
+					if (cheatList[x].IsEnabled())
+					{
+						return true;
+					}
 				}
+				return false;
 			}
-			return false;
 		}
 	}
 }

@@ -72,6 +72,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 		public byte ReadControls()
 		{
+			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			byte value = 0xFF;
 
 			if (Controller["P1 Up"]) value &= 0xFF; //TODO;

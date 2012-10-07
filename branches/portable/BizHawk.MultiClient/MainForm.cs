@@ -24,8 +24,8 @@ namespace BizHawk.MultiClient
 	public partial class MainForm : Form
 	{
 		public bool INTERIM = true;
-		public const string EMUVERSION = "Version 1.1.1 interim";
-		public const string RELEASEDATE = "September 22, 2012";
+		public const string EMUVERSION = "Version 1.1.2 (interim)";
+		public const string RELEASEDATE = "October 06, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -37,7 +37,7 @@ namespace BizHawk.MultiClient
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
-
+		public bool NeedsReboot = false;
 		//avi/wav state
 		IVideoWriter CurrAviWriter = null;
 		/// <summary>
@@ -54,7 +54,7 @@ namespace BizHawk.MultiClient
 		public bool exit;
 		bool runloop_frameProgress;
 		DateTime FrameAdvanceTimestamp = DateTime.MinValue;
-		public bool EmulatorPaused;
+		public bool EmulatorPaused { get; private set; }
 		public EventWaitHandle MainWait;
 		int runloop_fps;
 		int runloop_last_fps;
@@ -73,6 +73,7 @@ namespace BizHawk.MultiClient
 		public RamWatch RamWatch1 = new RamWatch();
 		public RamSearch RamSearch1 = new RamSearch();
 		public HexEditor HexEditor1 = new HexEditor();
+		public TraceLogger TraceLogger1 = new TraceLogger();
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
 		public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
 		public NESPPU NESPPU1 = new NESPPU();
@@ -313,6 +314,13 @@ namespace BizHawk.MultiClient
 				LoadPCEBGViewer();
 			if (Global.Config.AutoLoadSNESGraphicsDebugger && Global.Emulator is LibsnesCore)
 				LoadSNESGraphicsDebugger();
+			if (Global.Config.TraceLoggerAutoLoad)
+			{
+				if (Global.Emulator.CoreOutputComm.CpuTraceAvailable)
+				{
+					LoadTraceLogger();
+				}
+			}
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
@@ -358,7 +366,7 @@ namespace BizHawk.MultiClient
 			base.Dispose(disposing);
 		}
 
-		void SyncCoreInputComm()
+		public void SyncCoreInputComm()
 		{
 			Global.CoreInputComm.NES_BackdropColor = Global.Config.NESBackgroundColor;
 			Global.CoreInputComm.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
@@ -371,6 +379,7 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG;
 			Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
+			Global.CoreInputComm.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			Global.CoreInputComm.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			Global.CoreInputComm.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			Global.CoreInputComm.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
@@ -383,6 +392,9 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ2;
 			Global.CoreInputComm.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ3;
 			Global.CoreInputComm.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ4;
+
+			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+			Global.CoreInputComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
 		}
 
 		void SyncPresentationMode()
@@ -558,31 +570,38 @@ namespace BizHawk.MultiClient
 		public void PauseEmulator()
 		{
 			EmulatorPaused = true;
-			this.Invoke(() =>
-            {
-                PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
-            });
+			
+
 		}
 
 		public void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
+		}
+
+		private void SetPauseStatusbarIcon()
+		{
 			this.Invoke(() =>
-            {
-				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			{
+				if (EmulatorPaused)
+				{
+					PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
+					PauseStrip.Visible = true;
+					PauseStrip.ToolTipText = "Emulator Paused";
+				}
+				else
+				{
+					PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+					PauseStrip.Visible = false;
+					PauseStrip.ToolTipText = "";
+				}
 			});
 		}
 
 		public void TogglePause()
 		{
 			EmulatorPaused ^= true;
-			this.Invoke(() =>
-            {
-				if (EmulatorPaused)
-					PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
-				else
-					PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
-			});
+			SetPauseStatusbarIcon();
 		}
 
 		private void LoadRomFromRecent(string rom)
@@ -805,7 +824,7 @@ namespace BizHawk.MultiClient
 
 			var snesControls = new Controller(LibsnesCore.SNESController);
 
-			for (int i = 0; i < 2 /*TODO*/; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				snesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.SNESController[i].Up);
 				snesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.SNESController[i].Down);
@@ -822,8 +841,28 @@ namespace BizHawk.MultiClient
 			}
 			Global.SNESControls = snesControls;
 
-			var nesControls = new Controller(NES.NESController);
 
+			var asnesControls = new AutofireController(LibsnesCore.SNESController);
+			asnesControls.Autofire = true;
+			for (int i = 0; i < 4; i++)
+			{
+				asnesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.SNESAutoController[i].Up);
+				asnesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.SNESAutoController[i].Down);
+				asnesControls.BindMulti("P" + (i + 1) + " Left", Global.Config.SNESAutoController[i].Left);
+				asnesControls.BindMulti("P" + (i + 1) + " Right", Global.Config.SNESAutoController[i].Right);
+				asnesControls.BindMulti("P" + (i + 1) + " A", Global.Config.SNESAutoController[i].A);
+				asnesControls.BindMulti("P" + (i + 1) + " B", Global.Config.SNESAutoController[i].B);
+				asnesControls.BindMulti("P" + (i + 1) + " X", Global.Config.SNESAutoController[i].X);
+				asnesControls.BindMulti("P" + (i + 1) + " Y", Global.Config.SNESAutoController[i].Y);
+				asnesControls.BindMulti("P" + (i + 1) + " L", Global.Config.SNESAutoController[i].L);
+				asnesControls.BindMulti("P" + (i + 1) + " R", Global.Config.SNESAutoController[i].R);
+				asnesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.SNESAutoController[i].Select);
+				asnesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.SNESAutoController[i].Start);
+			}
+			Global.AutofireSNESControls = asnesControls;
+
+
+			var nesControls = new Controller(NES.NESController);
 			for (int i = 0; i < 2 /*TODO*/; i++)
 			{
 				nesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESController[i].Up);
@@ -1166,8 +1205,11 @@ namespace BizHawk.MultiClient
 		private void HandlePlatformMenus()
 		{
 			string system = "";
+
 			if (Global.Game != null)
+			{
 				system = Global.Game.System;
+			}
 
 			tI83ToolStripMenuItem.Visible = false;
 			NESToolStripMenuItem.Visible = false;
@@ -1191,16 +1233,30 @@ namespace BizHawk.MultiClient
 					pCEToolStripMenuItem.Visible = true;
 					break;
 				case "SMS":
+					sMSToolStripMenuItem.Text = "SMS";
+					sMSToolStripMenuItem.Visible = true;
+					break;
 				case "SG":
+					sMSToolStripMenuItem.Text = "SG";
+					sMSToolStripMenuItem.Visible = true;
+					break;
+				case "GG":
+					sMSToolStripMenuItem.Text = "GG";
 					sMSToolStripMenuItem.Visible = true;
 					break;
 				case "GB":
+				case "GBC":
 					gBToolStripMenuItem.Visible = true;
 					break;
 				case "A26":
 					atariToolStripMenuItem.Visible = true;
 					break;
 				case "SNES":
+				case "SGB":
+					if ((Global.Emulator as LibsnesCore).IsSGB)
+						sNESToolStripMenuItem.Text = "&SGB";
+					else
+						sNESToolStripMenuItem.Text = "&SNES";
 					sNESToolStripMenuItem.Visible = true;
 					break;
 				default:
@@ -1249,8 +1305,10 @@ namespace BizHawk.MultiClient
 					break;
 				case "SNES":
 					Global.ActiveController = Global.SNESControls;
+					Global.AutoFireController = Global.AutofireSNESControls;
 					break;
 				case "GB":
+				case "GBC":
 					Global.ActiveController = Global.GBControls;
 					Global.AutoFireController = Global.AutofireGBControls;
 					break;
@@ -1293,12 +1351,12 @@ namespace BizHawk.MultiClient
 				Global.MovieOutputHardpoint.Source = Global.MovieInputSourceAdapter;
 		}
 
-		public bool LoadRom(string path)
+		public bool LoadRom(string path, bool deterministicemulation = false)
 		{
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM", "INT" };
+				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "ROM", "INT", "GBC" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1414,6 +1472,8 @@ namespace BizHawk.MultiClient
 									if (Global.Config.PceEqualizeVolume) game.AddOption("EqualizeVolumes");
 									if (Global.Config.PceArcadeCardRewindHack) game.AddOption("ArcadeRewindHack");
 
+									game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData));
+
 									nextEmulator = new PCEngine(game, disc, rom.RomData);
 									break;
 								}
@@ -1424,11 +1484,17 @@ namespace BizHawk.MultiClient
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 
+					RETRY:
 						switch (game.System)
 						{
 							case "SNES":
-								nextEmulator = new LibsnesCore(rom.FileData);
-								game.System = "SNES";
+								{
+									game.System = "SNES";
+									var snes = new LibsnesCore();
+									nextEmulator = snes;
+									nextEmulator.CoreInputComm = Global.CoreInputComm;
+									snes.Load(game, rom.FileData, null, deterministicemulation);
+								}
 								break;
 							case "SMS":
 							case "SG":
@@ -1480,21 +1546,60 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "GB":
-								if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
-								if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
-								if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-								Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(game, rom.FileData);
-								nextEmulator = gb;
-								try
+							case "GBC":
+								if (!Global.Config.GB_AsSGB)
 								{
-									using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
+									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
+									if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
+									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
+									Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(game, rom.FileData);
+									nextEmulator = gb;
+									try
 									{
-										int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
-										if (colors != null)
-											gb.ChangeDMGColors(colors);
+										using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
+										{
+											int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
+											if (colors != null)
+												gb.ChangeDMGColors(colors);
+										}
+									}
+									catch { }
+								}
+								else
+								{
+									// todo: get these bioses into a gamedb?? then we could demand different filenames for different regions?
+									string sgbromPath = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
+									byte[] sgbrom = null;
+									try
+									{
+										if (File.Exists(sgbromPath))
+										{
+											sgbrom = File.ReadAllBytes(sgbromPath);
+										}
+										else
+										{
+											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES") + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
+											Global.Config.GB_AsSGB = false;
+											game.System = "GB";
+											goto RETRY;
+										}
+									}
+									catch (Exception)
+									{
+										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
+										Global.Config.GB_AsSGB = false;
+										throw;
+									}
+									if (sgbrom != null)
+									{
+										game.System = "SNES";
+										game.AddOption("SGB");
+										var snes = new LibsnesCore();
+										nextEmulator = snes;
+										game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
+										snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
 									}
 								}
-								catch { }
 								break;
 							case "COLV":
 								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
@@ -1518,7 +1623,7 @@ namespace BizHawk.MultiClient
 					}
 
 					if (nextEmulator == null)
-						throw new Exception();
+						throw new Exception("No core could load the rom.");
 					nextEmulator.CoreInputComm = Global.CoreInputComm;
 				}
 				catch (Exception ex)
@@ -1529,7 +1634,7 @@ namespace BizHawk.MultiClient
 					return false;
 				}
 
-				if (nextEmulator == null) throw new Exception();
+				if (nextEmulator == null) throw new Exception("No core could load the rom.");
 
 				CloseGame();
 				Global.Emulator.Dispose();
@@ -1580,6 +1685,7 @@ namespace BizHawk.MultiClient
 				TAStudio1.Restart();
 				Cheats1.Restart();
 				ToolBox1.Restart();
+				TraceLogger1.Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
@@ -1697,6 +1803,8 @@ namespace BizHawk.MultiClient
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.MovieSession.Movie.Stop();
+			NeedsReboot = false;
+			SetRebootIconStatus();
 		}
 
 		private static void SaveRam()
@@ -1706,6 +1814,17 @@ namespace BizHawk.MultiClient
 			var f = new FileInfo(path);
 			if (f.Directory.Exists == false)
 				f.Directory.Create();
+
+			//Make backup first
+			if (Global.Config.BackupSaveram && f.Exists == true)
+			{
+				string backup = path + ".bak";
+				var backupFile = new FileInfo(backup);
+				if (backupFile.Exists == true)
+					backupFile.Delete();
+				f.CopyTo(backup);
+			}
+
 
 			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
 
@@ -1737,8 +1856,8 @@ namespace BizHawk.MultiClient
 
 				//modals that need to capture input for binding purposes get input, of course
 				if (Form.ActiveForm is InputConfig) return true;
-				if (Form.ActiveForm is tools.HotkeyWindow) return true;
-
+				if (Form.ActiveForm is HotkeyWindow) return true;
+				if (Form.ActiveForm is ControllerConfig) return true;
 				//if no form is active on this process, then the background input setting applies
 				if (Form.ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
 
@@ -2277,13 +2396,10 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsBefore()
 		{
 #if WINDOWS
+			LuaConsole1.StartLuaDrawing();
 			LuaConsole1.LuaImp.FrameRegisterBefore();
-			LuaConsole1.ResumeScripts(true);
-			Global.DisplayManager.PreFrameUpdateLuaSource();
+			
 #endif
-			RamWatch1.UpdateValues();
-			RamSearch1.UpdateValues();
-			HexEditor1.UpdateValues();
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
@@ -2299,13 +2415,24 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void UpdateToolsAfter()
 		{
+#if WINDOWS
+			
+			LuaConsole1.ResumeScripts(true);
+			
+#endif
+			RamWatch1.UpdateValues();
+			RamSearch1.UpdateValues();
+			HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
-#if WINDOWS
-			LuaConsole1.LuaImp.FrameRegisterAfter();
-#endif
 			TAStudio1.UpdateValues();
 			SNESGraphicsDebugger1.UpdateToolsAfter();
+			TraceLogger1.UpdateValues();
+#if WINDOWS
+			LuaConsole1.LuaImp.FrameRegisterAfter();
+			Global.DisplayManager.PreFrameUpdateLuaSource();
+			LuaConsole1.EndLuaDrawing();
+#endif
 		}
 
 		private unsafe Image MakeScreenshotImage()
@@ -2568,6 +2695,7 @@ namespace BizHawk.MultiClient
 			if (!SNESGraphicsDebugger1.IsHandleCreated || SNESGraphicsDebugger1.IsDisposed)
 			{
 				SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
+				SNESGraphicsDebugger1.UpdateToolsLoadstate();
 				SNESGraphicsDebugger1.Show();
 			}
 			else
@@ -2585,6 +2713,17 @@ namespace BizHawk.MultiClient
 			}
 			else
 				HexEditor1.Focus();
+		}
+
+		public void LoadTraceLogger()
+		{
+			if (!TraceLogger1.IsHandleCreated || TraceLogger1.IsDisposed)
+			{
+				TraceLogger1 = new TraceLogger();
+				TraceLogger1.Show();
+			}
+			else
+				TraceLogger1.Focus();
 		}
 
 		public void LoadToolBox()
@@ -2703,33 +2842,37 @@ namespace BizHawk.MultiClient
 		
 		public void FrameBufferResized()
 		{
-			var video = Global.Emulator.VideoProvider;
-			int zoom = Global.Config.TargetZoomFactor;
-			var area = Screen.FromControl(this).WorkingArea;
-
-			int borderWidth = Size.Width - renderTarget.Size.Width;
-			int borderHeight = Size.Height - renderTarget.Size.Height;
-
-			// start at target zoom and work way down until we find acceptable zoom
-			for (; zoom >= 1; zoom--)
+			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
+			for (int i = 0; i < 2; i++)
 			{
-				if ((((video.BufferWidth * zoom) + borderWidth) < area.Width) && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
-					break;
-			}
+				var video = Global.Emulator.VideoProvider;
+				int zoom = Global.Config.TargetZoomFactor;
+				var area = Screen.FromControl(this).WorkingArea;
 
-			// Change size
-			Size = new Size((video.BufferWidth * zoom) + borderWidth, (video.BufferHeight * zoom + borderHeight));
-			PerformLayout();
-			Global.RenderPanel.Resized = true;
+				int borderWidth = Size.Width - renderTarget.Size.Width;
+				int borderHeight = Size.Height - renderTarget.Size.Height;
 
-			// Is window off the screen at this size?
-			if (area.Contains(Bounds) == false)
-			{
-				if (Bounds.Right > area.Right) // Window is off the right edge
-					Location = new Point(area.Right - Size.Width, Location.Y);
+				// start at target zoom and work way down until we find acceptable zoom
+				for (; zoom >= 1; zoom--)
+				{
+					if ((((video.BufferWidth * zoom) + borderWidth) < area.Width) && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+						break;
+				}
 
-				if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
-					Location = new Point(Location.X, area.Bottom - Size.Height);
+				// Change size
+				Size = new Size((video.BufferWidth * zoom) + borderWidth, (video.BufferHeight * zoom + borderHeight));
+				PerformLayout();
+				Global.RenderPanel.Resized = true;
+
+				// Is window off the screen at this size?
+				if (area.Contains(Bounds) == false)
+				{
+					if (Bounds.Right > area.Right) // Window is off the right edge
+						Location = new Point(area.Right - Size.Width, Location.Y);
+
+					if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
+						Location = new Point(Location.X, area.Bottom - Size.Height);
+				}
 			}
 		}
 
@@ -2826,7 +2969,7 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gb;*.gbc;*.gen;*.col;.int;*.smc;*.sfc;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Super NES", "*.smc;*.sfc;%ARCH%",
@@ -2836,17 +2979,17 @@ namespace BizHawk.MultiClient
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
 					"Atari 2600 (experimental)", "*.a26;*.bin;%ARCH%",
-					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
+					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;%ARCH%",
 					"Colecovision (very experimental)", "*.col;%ARCH%",
-                    "Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
+					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 					"PSX Executables (very experimental)", "*.exe",
 					"All Files", "*.*");
 			}
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.rom;*.cue;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.rom;*.cue;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Super NES", "*.smc;*.sfc;%ARCH%",
@@ -2856,7 +2999,7 @@ namespace BizHawk.MultiClient
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
-					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
+					"Genesis (experimental)", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
 					"All Files", "*.*");
 			}
 			ofd.RestoreDirectory = false;
@@ -2927,6 +3070,7 @@ namespace BizHawk.MultiClient
 			CloseForm(Cheats1);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);
+			CloseForm(TraceLogger1);
 #if WINDOWS
 			CloseForm(LuaConsole1);
 #endif
@@ -3247,6 +3391,7 @@ namespace BizHawk.MultiClient
 				Global.OSD.AddMessage("A/V capture started");
 				AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.AVI;
 				AVIStatusLabel.ToolTipText = "A/V capture in progress";
+				AVIStatusLabel.Visible = true;
 			}
 			catch
 			{
@@ -3273,7 +3418,8 @@ namespace BizHawk.MultiClient
 			Global.OSD.AddMessage("AVI capture stopped");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
-            DumpProxy = null; // return to normal sound output
+			AVIStatusLabel.Visible = false;
+			DumpProxy = null; // return to normal sound output
 			SoundRemainder = 0;
 		}
 
@@ -3365,7 +3511,7 @@ namespace BizHawk.MultiClient
 			foreach (string fn in ofd.FileNames)
 			{
 				var file = new FileInfo(fn);
-
+				string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 				string errorMsg = "";
 				string warningMsg = "";
 				Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
@@ -3374,10 +3520,21 @@ namespace BizHawk.MultiClient
 				if (warningMsg.Length > 0)
 					Global.OSD.AddMessage(warningMsg);
 				else
-					Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as ." + Global.Config.MovieExtension);
+					Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
+					                      Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
+					if (!Directory.Exists(d))
+						Directory.CreateDirectory(d);
+					File.Copy(fn + "." + Global.Config.MovieExtension, d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension,true);
+					File.Delete(fn + "." + Global.Config.MovieExtension);
 			}
 			RunLoopBlocked = false;
 		}
+
+
+
+		// workaround for possible memory leak in SysdrawingRenderPanel
+		RetainedViewportPanel captureosd_rvp;
+		SysdrawingRenderPanel captureosd_srp;
 
 		/// <summary>
 		/// sort of like MakeScreenShot(), but with OSD and LUA captured as well.  slow and bad.
@@ -3389,18 +3546,21 @@ namespace BizHawk.MultiClient
 			// "dummy render" class that implements IRenderer, IBlitter, and possibly
 			// IVideoProvider, and pass that to DisplayManager.UpdateSourceEx()
 
-			var c = new RetainedViewportPanel();
+			if (captureosd_rvp == null)
+			{
+				captureosd_rvp = new RetainedViewportPanel();
+				captureosd_srp = new SysdrawingRenderPanel(captureosd_rvp);
+			}
+
 			// this size can be different for showing off stretching or filters
-			c.Width = Global.Emulator.VideoProvider.BufferWidth;
-			c.Height = Global.Emulator.VideoProvider.BufferHeight;
-			var s = new SysdrawingRenderPanel(c);
+			captureosd_rvp.Width = Global.Emulator.VideoProvider.BufferWidth;
+			captureosd_rvp.Height = Global.Emulator.VideoProvider.BufferHeight;
 
-			Global.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, s);
 
-			Bitmap ret = (Bitmap)c.GetBitmap().Clone();
+			Global.DisplayManager.UpdateSourceEx(Global.Emulator.VideoProvider, captureosd_srp);
 
-			s.Dispose();
-			c.Dispose();
+			Bitmap ret = (Bitmap)captureosd_rvp.GetBitmap().Clone();
+
 			return ret;
 		}
 
@@ -3586,6 +3746,13 @@ namespace BizHawk.MultiClient
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+
+			//Hide Status bar icons
+			PlayRecordStatus.Visible = false;
+			AVIStatusLabel.Visible = false;
+			SetPauseStatusbarIcon();
+			UpdateCheatStatus();
+			SetRebootIconStatus();
 		}
 
 		private void IncreaseWindowSize()
@@ -3705,10 +3872,11 @@ namespace BizHawk.MultiClient
 		public void ClearSaveRAM()
 		{
 			//zero says: this is sort of sketchy... but this is no time for rearchitecting
+			/*
 			string saveRamPath = PathManager.SaveRamPath(Global.Game);
 			var file = new FileInfo(saveRamPath);
 			if (file.Exists) file.Delete();
-
+			*/
 			try
 			{
 				/*
@@ -3741,6 +3909,93 @@ namespace BizHawk.MultiClient
 		private void screenshotToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
 			captureOSDToolStripMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
+		}
+
+		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if ((Global.Emulator as LibsnesCore).IsSGB)
+			{
+				loadGBInSGBToolStripMenuItem.Visible = true;
+				loadGBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
+			}
+			else
+				loadGBInSGBToolStripMenuItem.Visible = false;
+		}
+
+		private void loadGBInSGBToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			loadGBInSGBToolStripMenuItem_Click(sender, e);
+		}
+
+		private void loadGBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void MainForm_Resize(object sender, EventArgs e)
+		{
+			Global.RenderPanel.Resized = true;
+		}
+
+		private void backupSaveramToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.BackupSaveram ^= true;
+			if (Global.Config.BackupSaveram)
+			{
+				Global.OSD.AddMessage("Backup saveram enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Backup saveram disabled");
+			}
+
+		}
+
+		private void toolStripStatusLabel2_Click(object sender, EventArgs e)
+		{
+			RebootCore();
+		}
+
+		private void SetRebootIconStatus()
+		{
+			if (NeedsReboot)
+			{
+				RebootStatusBarIcon.Visible = true;
+			}
+			else
+			{
+				RebootStatusBarIcon.Visible = false;
+			}
+		}
+
+		private void FlagNeedsReboot()
+		{
+			NeedsReboot = true;
+			SetRebootIconStatus();
+			Global.OSD.AddMessage("Core reboot needed for this setting");
+		}
+
+		private void traceLoggerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadTraceLogger();
+		}
+
+		private void blurryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DispBlurry ^= true;
+		}
+
+		private void showClippedRegionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GGShowClippedRegions ^= true;
+			Global.CoreInputComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+		}
+
+		private void highlightActiveDisplayRegionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GGHighlightActiveDisplayRegion ^= true;
+			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 		}
 	}
 }

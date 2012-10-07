@@ -42,7 +42,9 @@ namespace BizHawk.MultiClient
 		const int fontWidth = 7; //Width of 1 digits
 		string FindStr = "";
 		bool loaded = false;
-		
+
+		bool MouseIsDown = false;
+
 		byte[] ROM;
 		MemoryDomain ROMDomain;
 
@@ -469,21 +471,24 @@ namespace BizHawk.MultiClient
 		{
 			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
 			
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+			for (int i = 0; i < Global.Emulator.MemoryDomains.Count; i++)
 			{
-				string str = Global.Emulator.MemoryDomains[x].ToString();
-				var item = new ToolStripMenuItem();
-				item.Text = str;
+				if (Global.Emulator.MemoryDomains[i].Size > 0)
 				{
-					int z = x;
-					item.Click += (o, ev) => SetMemoryDomain(z);
+					string str = Global.Emulator.MemoryDomains[i].ToString();
+					var item = new ToolStripMenuItem();
+					item.Text = str;
+					{
+						int z = i;
+						item.Click += (o, ev) => SetMemoryDomain(z);
+					}
+					if (i == 0)
+					{
+						SetMemoryDomain(i);
+					}
+					memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+					domainMenuItems.Add(item);
 				}
-				if (x == 0)
-				{
-					SetMemoryDomain(x);
-				}
-				memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
-				domainMenuItems.Add(item);
 			}
 			
 			//Add ROM File memory domain
@@ -792,9 +797,13 @@ namespace BizHawk.MultiClient
 		public int GetHighlightedAddress()
 		{
 			if (addressHighlighted >= 0)
+			{
 				return addressHighlighted;
+			}
 			else
+			{
 				return -1; //Negative = no address highlighted
+			}
 		}
 
 		private bool IsFrozen(int address)
@@ -824,6 +833,10 @@ namespace BizHawk.MultiClient
 					FreezeAddress(addr);
 				}
 			}
+
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.Cheats1.UpdateValues();
 		}
 
 		private void UnFreezeAddress(int address)
@@ -1129,61 +1142,38 @@ namespace BizHawk.MultiClient
 			addressOver = GetPointedAddress(e.X, e.Y);
 			Pointedx = e.X;
 			Pointedy = e.Y;
+
+			if (MouseIsDown)
+			{
+				DoShiftClick();
+				MemoryViewerBox.Refresh();
+			}
 		}
 
 		private void AddressesLabel_MouseClick(object sender, MouseEventArgs e)
 		{
-			int addressOver = GetPointedAddress(e.X, e.Y);
+			
+		}
+
+		private void DoShiftClick()
+		{
 			if (addressOver >= 0)
 			{
-				if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+				SecondaryHighlightedAddresses.Clear();
+				if (addressOver < addressHighlighted)
 				{
-					if (addressOver == addressHighlighted)
+					for (int x = addressOver; x < addressHighlighted; x++)
 					{
-						ClearHighlighted();
-					}
-					else if (SecondaryHighlightedAddresses.Contains(addressOver))
-					{
-						SecondaryHighlightedAddresses.Remove(addressOver);
-					}
-					else
-					{
-						SecondaryHighlightedAddresses.Add(addressOver);
+						SecondaryHighlightedAddresses.Add(x);
 					}
 				}
-				else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+				else if (addressOver > addressHighlighted)
 				{
-					if (addressOver >= 0)
+					for (int x = addressHighlighted + DataSize; x <= addressOver; x++)
 					{
-						SecondaryHighlightedAddresses.Clear();
-						if (addressOver < addressHighlighted)
-						{
-							for (int x = addressOver; x < addressHighlighted; x++)
-							{
-								SecondaryHighlightedAddresses.Add(x);
-							}
-						}
-						else if (addressOver > addressHighlighted)
-						{
-							for (int x = addressHighlighted + DataSize; x <= addressOver; x++)
-							{
-								SecondaryHighlightedAddresses.Add(x);
-							}
-						}
+						SecondaryHighlightedAddresses.Add(x);
 					}
 				}
-				else if (addressOver == addressHighlighted)
-				{
-					ClearHighlighted();
-				}
-				else
-				{
-					SetHighlighted(addressOver);
-					SecondaryHighlightedAddresses.Clear();
-					FindStr = "";
-				}
-
-				MemoryViewerBox.Refresh();
 			}
 		}
 
@@ -1332,7 +1322,18 @@ namespace BizHawk.MultiClient
 
 		private void HexEditor_KeyDown(object sender, KeyEventArgs e)
 		{
-			int newHighlighted;
+            if (e.Control && e.KeyCode == Keys.G)
+            {
+                GoToSpecifiedAddress();
+                return;
+            }
+            if (e.Control && e.KeyCode == Keys.P)
+            {
+                PokeAddress();
+                return;
+            }
+            
+            int newHighlighted;
 			switch (e.KeyCode)
 			{
 				case Keys.Up:
@@ -1484,6 +1485,10 @@ namespace BizHawk.MultiClient
 					if (e.Modifiers == Keys.Control)
 						AddToRamWatch();
 					break;
+				case Keys.Escape:
+					SecondaryHighlightedAddresses.Clear();
+					ClearHighlighted();
+					break;
 			}
 		}
 
@@ -1495,14 +1500,44 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+
+		private bool IsHexKeyCode(char key)
+		{
+			if (key >= 48 && key <= 57) //0-9
+			{
+				return true;
+			}
+			else if (key >= 65 && key <= 70) //A-F
+			{
+				return true;
+			}
+			else if (key >= 96 && key <= 106) //0-9 Numpad
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		//Winform key events suck at the numberpad, so this is necessary
+		private char ForceCorrectKeyString(Keys keycode)
+		{
+			if ((int)keycode >= 96 && (int)keycode <= 106)
+			{
+				return (char)((int)keycode - 48);
+			}
+			else
+			{
+				return (char)keycode;
+			}
+		}
+
 		private void HexEditor_KeyUp(object sender, KeyEventArgs e)
 		{
-			if (!InputValidate.IsValidHexNumber(((char)e.KeyCode).ToString()))
+			if (!IsHexKeyCode((char)e.KeyCode))
 			{
-				if (e.Control && e.KeyCode == Keys.G)
-					GoToSpecifiedAddress();
-				if (e.Control && e.KeyCode == Keys.P)
-					PokeAddress();
 				e.Handled = true;
 				return;
 			}
@@ -1518,12 +1553,12 @@ namespace BizHawk.MultiClient
 				case 1:
 					if (nibbles[0] == 'G')
 					{
-						nibbles[0] = (char)e.KeyCode;
+						nibbles[0] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[0].ToString();
 					}
 					else
 					{
-						string temp = nibbles[0].ToString() + ((char)e.KeyCode).ToString();
+						string temp = nibbles[0].ToString() + ForceCorrectKeyString(e.KeyCode).ToString();
 						byte x = byte.Parse(temp, NumberStyles.HexNumber);
 						Domain.PokeByte(addressHighlighted, x);
 						ClearNibbles();
@@ -1534,17 +1569,17 @@ namespace BizHawk.MultiClient
 				case 2:
 					if (nibbles[0] == 'G')
 					{
-						nibbles[0] = (char)e.KeyCode;
+						nibbles[0] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[0].ToString();
 					}
 					else if (nibbles[1] == 'G')
 					{
-						nibbles[1] = (char)e.KeyCode;
+						nibbles[1] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[1].ToString();
 					}
 					else if (nibbles[2] == 'G')
 					{
-						nibbles[2] = (char)e.KeyCode;
+						nibbles[2] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[2].ToString();
 					}
 					else if (nibbles[3] == 'G')
@@ -1564,37 +1599,37 @@ namespace BizHawk.MultiClient
 				case 4:
 					if (nibbles[0] == 'G')
 					{
-						nibbles[0] = (char)e.KeyCode;
+						nibbles[0] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[0].ToString();
 					}
 					else if (nibbles[1] == 'G')
 					{
-						nibbles[1] = (char)e.KeyCode;
+						nibbles[1] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[1].ToString();
 					}
 					else if (nibbles[2] == 'G')
 					{
-						nibbles[2] = (char)e.KeyCode;
+						nibbles[2] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[2].ToString();
 					}
 					else if (nibbles[3] == 'G')
 					{
-						nibbles[3] = (char)e.KeyCode;
+						nibbles[3] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[3].ToString();
 					}
 					else if (nibbles[4] == 'G')
 					{
-						nibbles[4] = (char)e.KeyCode;
+						nibbles[4] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[4].ToString();
 					}
 					else if (nibbles[5] == 'G')
 					{
-						nibbles[5] = (char)e.KeyCode;
+						nibbles[5] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[5].ToString();
 					}
 					else if (nibbles[6] == 'G')
 					{
-						nibbles[6] = (char)e.KeyCode;
+						nibbles[6] = ForceCorrectKeyString(e.KeyCode);
 						info = nibbles[6].ToString();
 					}
 					else if (nibbles[7] == 'G')
@@ -1608,7 +1643,7 @@ namespace BizHawk.MultiClient
 						string temp3 = nibbles[4].ToString() + nibbles[5].ToString();
 						byte x3 = byte.Parse(temp3, NumberStyles.HexNumber);
 
-						string temp4 = nibbles[6].ToString() + ((char)e.KeyCode).ToString();
+						string temp4 = nibbles[6].ToString() + ForceCorrectKeyString(e.KeyCode).ToString();
 						byte x4 = byte.Parse(temp4, NumberStyles.HexNumber);
 
 						PokeWord(addressHighlighted, x1, x2);
@@ -1640,6 +1675,10 @@ namespace BizHawk.MultiClient
 		{
 			Global.MainForm.Cheats1.RemoveAllCheats();
 			MemoryViewerBox.Refresh();
+
+			Global.MainForm.RamSearch1.UpdateValues();
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.Cheats1.UpdateValues();
 		}
 
 		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1926,9 +1965,9 @@ namespace BizHawk.MultiClient
 			return values;
 		}
 
-		public void FindNext(string value)
+		public void FindNext(string value, Boolean wrap)
 		{
-			int found = 0;
+			int found = -1;
 
 			string search = value.Replace(" ", "").ToUpper();
 			if (search.Length == 0)
@@ -1965,18 +2004,22 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			if (found > 0)
+			if (found > -1)
 			{
 				HighlightSecondaries(search, found);
 				GoToAddress(found);
 				FindStr = search;
 				MemoryViewerBox.Focus();
 			}
+			else if (wrap == false)  // Search the opposite direction if not found
+			{
+				FindPrev(value, true);
+			}
 		}
 
-		public void FindPrev(string value)
+		public void FindPrev(string value, Boolean wrap)
 		{
-			int found = 0;
+			int found = -1;
 
 			string search = value.Replace(" ", "").ToUpper();
 			if (search.Length == 0)
@@ -2009,12 +2052,16 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			if (found > 0)
+			if (found > -1)
 			{
 				HighlightSecondaries(search, found);
 				GoToAddress(found);
 				FindStr = search;
 				MemoryViewerBox.Focus();
+			}
+			else if (wrap == false) // Search the opposite direction if not found
+			{
+				FindPrev(value, true);
 			}
 		}
 
@@ -2111,7 +2158,7 @@ namespace BizHawk.MultiClient
 			string value = ValueString(GetHighlightedAddress());
 			foreach (int x in SecondaryHighlightedAddresses)
 			{
-				value += MakeValue(x);
+				value += ValueString(x);
 			}
 			if (!String.IsNullOrWhiteSpace(value))
 			{
@@ -2206,12 +2253,12 @@ namespace BizHawk.MultiClient
 
 		private void findNextToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FindNext(FindStr);
+			FindNext(FindStr, false);
 		}
 
 		private void findPrevToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FindPrev(FindStr);
+			FindPrev(FindStr, false);
 		}
 
 		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2277,6 +2324,50 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 		}
 
+		private void AddressesLabel_MouseDown(object sender, MouseEventArgs e)
+		{
+			int addressOver = GetPointedAddress(e.X, e.Y);
+			if (addressOver >= 0)
+			{
+				if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+				{
+					if (addressOver == addressHighlighted)
+					{
+						ClearHighlighted();
+					}
+					else if (SecondaryHighlightedAddresses.Contains(addressOver))
+					{
+						SecondaryHighlightedAddresses.Remove(addressOver);
+					}
+					else
+					{
+						SecondaryHighlightedAddresses.Add(addressOver);
+					}
+				}
+				else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+				{
+					DoShiftClick();
+				}
+				//else if (addressOver == addressHighlighted)
+				//{
+				//    ClearHighlighted();
+				//}
+				else
+				{
+					SetHighlighted(addressOver);
+					SecondaryHighlightedAddresses.Clear();
+					FindStr = "";
+				}
 
+				MemoryViewerBox.Refresh();
+			}
+
+			MouseIsDown = true;
+		}
+
+		private void AddressesLabel_MouseUp(object sender, MouseEventArgs e)
+		{
+			MouseIsDown = false;
+		}
 	}
 } 

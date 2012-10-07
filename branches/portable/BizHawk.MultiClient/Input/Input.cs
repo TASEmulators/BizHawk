@@ -74,6 +74,7 @@ namespace BizHawk.MultiClient
 			KeyInput.Initialize();
 #if WINDOWS
 			GamePad.Initialize(); //Todo: Use OpenTK.Input.Gamepad on Mono
+			GamePad360.Initialize();
 #endif
 			Instance = new Input();
 		}
@@ -190,7 +191,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		Queue<InputEvent> InputEvents = new Queue<InputEvent>();
+		Queue<InputEvent> InputEvents = new Queue<InputEvent>(); 
 		public InputEvent DequeueEvent()
 		{
 			lock (this)
@@ -214,7 +215,8 @@ namespace BizHawk.MultiClient
 			{
 				KeyInput.Update();
 #if WINDOWS
-				GamePad.UpdateAll();
+                GamePad.UpdateAll();
+                GamePad360.UpdateAll();                
 #endif
 
 				_Modifiers = KeyInput.GetModifierKeysAsKeys();
@@ -238,18 +240,23 @@ namespace BizHawk.MultiClient
 				}
 #endif
 #if WINDOWS
+                //analyze xinput
+                for (int i = 0; i < GamePad360.Devices.Count; i++)
+                {
+                    var pad = GamePad360.Devices[i];
+                    string xname = "X" + (i + 1) + " ";
+                    for (int b = 0; b < pad.NumButtons; b++)
+                        HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
+                }
+
 				//analyze joysticks
 				for (int i = 0; i < GamePad.Devices.Count; i++)
 				{
 					var pad = GamePad.Devices[i];
 					string jname = "J" + (i + 1) + " ";
-					HandleButton(jname + "Up", pad.Up);
-					HandleButton(jname + "Down", pad.Down);
-					HandleButton(jname + "Left", pad.Left);
-					HandleButton(jname + "Right", pad.Right);
-
-					for (int b = 0; b < pad.Buttons.Length; b++)
-						HandleButton(jname + "B" + (b + 1), pad.Buttons[b]);
+					
+                    for (int b = 0; b < pad.NumButtons; b++)
+						HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
 				}
 #endif
 				bool swallow = !Global.MainForm.AllowInput;

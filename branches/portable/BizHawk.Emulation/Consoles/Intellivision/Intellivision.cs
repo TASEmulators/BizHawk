@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			get { return "INTV"; }
 		}
 
-		public bool DeterministicEmulation { get; set; }
+		public bool DeterministicEmulation { get { return true; } }
 
 
 		public byte[] ReadSaveRam() { return null; }

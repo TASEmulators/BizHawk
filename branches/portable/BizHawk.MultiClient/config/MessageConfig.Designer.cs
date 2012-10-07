@@ -30,6 +30,8 @@
         {
 			this.OK = new System.Windows.Forms.Button();
 			this.MessageTypeBox = new System.Windows.Forms.GroupBox();
+			this.AutoholdLabel = new System.Windows.Forms.Label();
+			this.AutoholdRadio = new System.Windows.Forms.RadioButton();
 			this.MultitrackLabel = new System.Windows.Forms.Label();
 			this.MultitrackRadio = new System.Windows.Forms.RadioButton();
 			this.RerecLabel = new System.Windows.Forms.Label();
@@ -77,6 +79,7 @@
 			this.AlertColorDialog = new System.Windows.Forms.ColorDialog();
 			this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
+			this.StackMessagesCheckbox = new System.Windows.Forms.CheckBox();
 			this.MessageTypeBox.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
@@ -97,6 +100,8 @@
 			// 
 			// MessageTypeBox
 			// 
+			this.MessageTypeBox.Controls.Add(this.AutoholdLabel);
+			this.MessageTypeBox.Controls.Add(this.AutoholdRadio);
 			this.MessageTypeBox.Controls.Add(this.MultitrackLabel);
 			this.MessageTypeBox.Controls.Add(this.MultitrackRadio);
 			this.MessageTypeBox.Controls.Add(this.RerecLabel);
@@ -113,16 +118,38 @@
 			this.MessageTypeBox.Controls.Add(this.FPSRadio);
 			this.MessageTypeBox.Location = new System.Drawing.Point(12, 12);
 			this.MessageTypeBox.Name = "MessageTypeBox";
-			this.MessageTypeBox.Size = new System.Drawing.Size(177, 187);
+			this.MessageTypeBox.Size = new System.Drawing.Size(177, 216);
 			this.MessageTypeBox.TabIndex = 2;
 			this.MessageTypeBox.TabStop = false;
 			this.MessageTypeBox.Text = "Message Type";
 			// 
+			// AutoholdLabel
+			// 
+			this.AutoholdLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.AutoholdLabel.AutoSize = true;
+			this.AutoholdLabel.Location = new System.Drawing.Point(126, 188);
+			this.AutoholdLabel.Name = "AutoholdLabel";
+			this.AutoholdLabel.Size = new System.Drawing.Size(49, 13);
+			this.AutoholdLabel.TabIndex = 15;
+			this.AutoholdLabel.Text = "255, 255";
+			// 
+			// AutoholdRadio
+			// 
+			this.AutoholdRadio.AutoSize = true;
+			this.AutoholdRadio.Location = new System.Drawing.Point(6, 186);
+			this.AutoholdRadio.Name = "AutoholdRadio";
+			this.AutoholdRadio.Size = new System.Drawing.Size(67, 17);
+			this.AutoholdRadio.TabIndex = 14;
+			this.AutoholdRadio.TabStop = true;
+			this.AutoholdRadio.Text = "Autohold";
+			this.AutoholdRadio.UseVisualStyleBackColor = true;
+			this.AutoholdRadio.CheckedChanged += new System.EventHandler(this.AutoholdRadio_CheckedChanged);
+			// 
 			// MultitrackLabel
 			// 
-			this.MultitrackLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.MultitrackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MultitrackLabel.AutoSize = true;
-			this.MultitrackLabel.Location = new System.Drawing.Point(126, 163);
+			this.MultitrackLabel.Location = new System.Drawing.Point(126, 164);
 			this.MultitrackLabel.Name = "MultitrackLabel";
 			this.MultitrackLabel.Size = new System.Drawing.Size(49, 13);
 			this.MultitrackLabel.TabIndex = 13;
@@ -131,7 +158,7 @@
 			// MultitrackRadio
 			// 
 			this.MultitrackRadio.AutoSize = true;
-			this.MultitrackRadio.Location = new System.Drawing.Point(6, 161);
+			this.MultitrackRadio.Location = new System.Drawing.Point(6, 162);
 			this.MultitrackRadio.Name = "MultitrackRadio";
 			this.MultitrackRadio.Size = new System.Drawing.Size(71, 17);
 			this.MultitrackRadio.TabIndex = 12;
@@ -142,9 +169,9 @@
 			// 
 			// RerecLabel
 			// 
-			this.RerecLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.RerecLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.RerecLabel.AutoSize = true;
-			this.RerecLabel.Location = new System.Drawing.Point(126, 141);
+			this.RerecLabel.Location = new System.Drawing.Point(126, 140);
 			this.RerecLabel.Name = "RerecLabel";
 			this.RerecLabel.Size = new System.Drawing.Size(49, 13);
 			this.RerecLabel.TabIndex = 11;
@@ -153,7 +180,7 @@
 			// RerecordsRadio
 			// 
 			this.RerecordsRadio.AutoSize = true;
-			this.RerecordsRadio.Location = new System.Drawing.Point(6, 137);
+			this.RerecordsRadio.Location = new System.Drawing.Point(6, 138);
 			this.RerecordsRadio.Name = "RerecordsRadio";
 			this.RerecordsRadio.Size = new System.Drawing.Size(74, 17);
 			this.RerecordsRadio.TabIndex = 10;
@@ -163,7 +190,7 @@
 			// 
 			// MessLabel
 			// 
-			this.MessLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.MessLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MessLabel.AutoSize = true;
 			this.MessLabel.Location = new System.Drawing.Point(126, 116);
 			this.MessLabel.Name = "MessLabel";
@@ -173,7 +200,7 @@
 			// 
 			// InpLabel
 			// 
-			this.InpLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.InpLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.InpLabel.AutoSize = true;
 			this.InpLabel.Location = new System.Drawing.Point(126, 92);
 			this.InpLabel.Name = "InpLabel";
@@ -183,7 +210,7 @@
 			// 
 			// LagLabel
 			// 
-			this.LagLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.LagLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.LagLabel.AutoSize = true;
 			this.LagLabel.Location = new System.Drawing.Point(126, 68);
 			this.LagLabel.Name = "LagLabel";
@@ -193,7 +220,7 @@
 			// 
 			// FCLabel
 			// 
-			this.FCLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.FCLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.FCLabel.AutoSize = true;
 			this.FCLabel.Location = new System.Drawing.Point(126, 44);
 			this.FCLabel.Name = "FCLabel";
@@ -203,7 +230,7 @@
 			// 
 			// FpsPosLabel
 			// 
-			this.FpsPosLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.FpsPosLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.FpsPosLabel.AutoSize = true;
 			this.FpsPosLabel.Location = new System.Drawing.Point(126, 20);
 			this.FpsPosLabel.Name = "FpsPosLabel";
@@ -214,7 +241,6 @@
 			// MessagesRadio
 			// 
 			this.MessagesRadio.AutoSize = true;
-			this.MessagesRadio.Enabled = false;
 			this.MessagesRadio.Location = new System.Drawing.Point(6, 114);
 			this.MessagesRadio.Name = "MessagesRadio";
 			this.MessagesRadio.Size = new System.Drawing.Size(73, 17);
@@ -287,9 +313,9 @@
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label3);
 			this.groupBox2.Controls.Add(this.ColorText);
-			this.groupBox2.Location = new System.Drawing.Point(12, 205);
+			this.groupBox2.Location = new System.Drawing.Point(12, 234);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(177, 252);
+			this.groupBox2.Size = new System.Drawing.Size(177, 223);
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Message Colors";
@@ -501,6 +527,7 @@
             0,
             0});
 			this.XNumeric.Click += new System.EventHandler(this.XNumeric_Click);
+			this.XNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.XNumeric_KeyUp);
 			// 
 			// YNumeric
 			// 
@@ -520,6 +547,7 @@
             0,
             0});
 			this.YNumeric.Click += new System.EventHandler(this.YNumeric_Click);
+			this.YNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.YNumeric_KeyUp);
 			// 
 			// label1
 			// 
@@ -618,6 +646,16 @@
 			// 
 			this.MovieInputColorDialog.FullOpen = true;
 			// 
+			// StackMessagesCheckbox
+			// 
+			this.StackMessagesCheckbox.AutoSize = true;
+			this.StackMessagesCheckbox.Location = new System.Drawing.Point(195, 411);
+			this.StackMessagesCheckbox.Name = "StackMessagesCheckbox";
+			this.StackMessagesCheckbox.Size = new System.Drawing.Size(105, 17);
+			this.StackMessagesCheckbox.TabIndex = 7;
+			this.StackMessagesCheckbox.Text = "Stack Messages";
+			this.StackMessagesCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// MessageConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -625,6 +663,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(612, 469);
+			this.Controls.Add(this.StackMessagesCheckbox);
 			this.Controls.Add(this.ResetDefaultsButton);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.groupBox2);
@@ -646,6 +685,7 @@
 			this.PositionGroupBox.ResumeLayout(false);
 			this.PositionGroupBox.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 
@@ -700,5 +740,8 @@
 		private System.Windows.Forms.ColorDialog MovieInputColorDialog;
 		private System.Windows.Forms.Label MultitrackLabel;
 		private System.Windows.Forms.RadioButton MultitrackRadio;
+		private System.Windows.Forms.CheckBox StackMessagesCheckbox;
+		private System.Windows.Forms.Label AutoholdLabel;
+		private System.Windows.Forms.RadioButton AutoholdRadio;
     }
 }

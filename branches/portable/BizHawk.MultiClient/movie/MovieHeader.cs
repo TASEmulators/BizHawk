@@ -28,10 +28,13 @@ namespace BizHawk.MultiClient
 		public const string STARTSFROMSAVESTATE = "StartsFromSavestate";
 		public const string FOURSCORE = "FourScore";
 		public const string SHA1 = "SHA1";
+		public const string FIRMWARESHA1 = "FirmwareSHA1";
+		public const string PAL = "PAL";
 
 		//Gameboy Settings that affect sync
 		public const string GB_FORCEDMG = "Force_DMG_Mode";
 		public const string GB_GBA_IN_CGB = "GBA_In_CGB";
+		public const string SGB = "SGB"; //a snes movie will set this to indicate that it's actually SGB
 
 
 		public static string MovieVersion = "BizHawk v0.0.1";

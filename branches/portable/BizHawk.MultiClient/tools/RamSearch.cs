@@ -2095,14 +2095,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SpecificAddressBox_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == '\b') return;
-
-			if (!InputValidate.IsValidHexNumber(e.KeyChar))
-				e.Handled = true;
-		}
-
 		private void NumberOfChangesBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (e.KeyChar == '\b') return;
@@ -2293,6 +2285,11 @@ namespace BizHawk.MultiClient
 							break;
 					}
 				}
+
+				UpdateValues();
+				Global.MainForm.HexEditor1.UpdateValues();
+				Global.MainForm.RamWatch1.UpdateValues();
+				Global.MainForm.Cheats1.UpdateValues();
 			}
 		}
 
@@ -2368,6 +2365,11 @@ namespace BizHawk.MultiClient
 							break;
 					}
 				}
+
+				UpdateValues();
+				Global.MainForm.HexEditor1.UpdateValues();
+				Global.MainForm.RamWatch1.UpdateValues();
+				Global.MainForm.Cheats1.UpdateValues();
 			}
 		}
 
@@ -2381,31 +2383,66 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
 			if (indexes.Count == 0)
 			{
-				contextMenuStrip1.Items[3].Visible = false;
-				contextMenuStrip1.Items[4].Visible = false;
-				contextMenuStrip1.Items[5].Visible = false;
-				contextMenuStrip1.Items[6].Visible = false;
+				removeSelectedToolStripMenuItem1.Visible = false;
+				addToRamWatchToolStripMenuItem.Visible = false;
+				pokeAddressToolStripMenuItem1.Visible = false;
+				freezeAddressToolStripMenuItem1.Visible = false;
 			}
 			else
 			{
-				for (int x = 0; x < contextMenuStrip1.Items.Count; x++)
-					contextMenuStrip1.Items[x].Visible = true;
+				for (int i = 0; i < contextMenuStrip1.Items.Count; i++)
+				{
+					contextMenuStrip1.Items[i].Visible = true;
+				}
 
 				if (indexes.Count == 1)
 				{
 					if (Global.CheatList.IsActiveCheat(Domain, Searches[indexes[0]].Address))
 					{
-						contextMenuStrip1.Items[6].Text = "&Unfreeze address";
-						contextMenuStrip1.Items[6].Image =
+						freezeAddressToolStripMenuItem1.Text = "&Unfreeze address";
+						freezeAddressToolStripMenuItem1.Image =
 							BizHawk.MultiClient.Properties.Resources.Unfreeze;
 					}
 					else
 					{
-						contextMenuStrip1.Items[6].Text = "&Freeze address";
-						contextMenuStrip1.Items[6].Image =
+						freezeAddressToolStripMenuItem1.Text = "&Freeze address";
+						freezeAddressToolStripMenuItem1.Image =
 							BizHawk.MultiClient.Properties.Resources.Freeze;
 					}
 				}
+				else
+				{
+					bool allCheats = true;
+					foreach (int i in indexes)
+					{
+						if (!Global.CheatList.IsActiveCheat(Domain, Searches[i].Address))
+						{
+							allCheats = false;
+						}
+					}
+
+					if (allCheats)
+					{
+						freezeAddressToolStripMenuItem1.Text = "&Unfreeze address";
+						freezeAddressToolStripMenuItem1.Image =
+							BizHawk.MultiClient.Properties.Resources.Unfreeze;
+					}
+					else
+					{
+						freezeAddressToolStripMenuItem1.Text = "&Freeze address";
+						freezeAddressToolStripMenuItem1.Image =
+							BizHawk.MultiClient.Properties.Resources.Freeze;
+					}
+				}
+			}
+
+			if (Global.CheatList.HasActiveCheats)
+			{
+				unfreezeAllToolStripMenuItem.Visible = true;
+			}
+			else
+			{
+				unfreezeAllToolStripMenuItem.Visible = false;
 			}
 		}
 
@@ -2427,9 +2464,13 @@ namespace BizHawk.MultiClient
 		private void freezeAddressToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			if (sender.ToString().Contains("Unfreeze"))
+			{
 				UnfreezeAddress();
+			}
 			else
+			{
 				FreezeAddress();
+			}
 		}
 
 		private void CheckDomainMenuItems()
@@ -2612,6 +2653,16 @@ namespace BizHawk.MultiClient
 		private void autoloadDialogToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoLoadRamSearch ^= true;
+		}
+
+		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.Cheats1.RemoveAllCheats();
+			UpdateValues();
+
+			Global.MainForm.RamWatch1.UpdateValues();
+			Global.MainForm.HexEditor1.UpdateValues();
+			Global.MainForm.Cheats1.UpdateValues();
 		}
 	}
 }

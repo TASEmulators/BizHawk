@@ -491,18 +491,30 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public int[] GetVideoBuffer()
         {
-            return mode == VdpMode.SMS ? FrameBuffer : GameGearFrameBuffer;
+            if (mode == VdpMode.SMS || Sms.CoreInputComm.GG_ShowClippedRegions)
+                return FrameBuffer;
+            return GameGearFrameBuffer;
         }
 
         public int VirtualWidth { get { return BufferWidth; } }
         public int BufferWidth
         {
-            get { return mode == VdpMode.SMS ? 256 : 160; }
+            get 
+            {
+                if (mode == VdpMode.SMS || Sms.CoreInputComm.GG_ShowClippedRegions)
+                    return 256;
+                return 160; // GameGear
+            }
         }
 
         public int BufferHeight
         {
-            get { return mode == VdpMode.SMS ? FrameHeight : 144; }
+            get 
+            {
+                if (mode == VdpMode.SMS || Sms.CoreInputComm.GG_ShowClippedRegions)
+                    return FrameHeight;
+                return 144; // GameGear
+            }
         }
 
         public int BackgroundColor

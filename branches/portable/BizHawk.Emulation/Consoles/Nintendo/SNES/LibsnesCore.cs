@@ -1,4 +1,6 @@
-﻿//http://wiki.superfamicom.org/snes/show/Backgrounds
+﻿//TODO - add serializer, add interlace field variable to serializer
+
+//http://wiki.superfamicom.org/snes/show/Backgrounds
 
 //TODO 
 //libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
@@ -38,23 +40,45 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern void snes_unload_cartridge();
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void snes_load_cartridge_normal(
+		public static extern void snes_set_cartridge_basename(string basename);
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.U1)]
+		public static extern bool snes_load_cartridge_normal(
 			[MarshalAs(UnmanagedType.LPStr)]
-			string rom_xml, 
+			string rom_xml,
 			[MarshalAs(UnmanagedType.LPArray)]
-			byte[] rom_data, 
-			int rom_size);
+			byte[] rom_data,
+			uint rom_size);
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.U1)]
+		public static extern bool snes_load_cartridge_super_game_boy(
+			[MarshalAs(UnmanagedType.LPStr)]
+			string rom_xml,
+			[MarshalAs(UnmanagedType.LPArray)]
+			byte[] rom_data,
+			uint rom_size,
+			[MarshalAs(UnmanagedType.LPStr)]
+			string dmg_xml,
+			[MarshalAs(UnmanagedType.LPArray)]
+			byte[] dmg_data,
+			uint dmg_size);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void snes_video_refresh_t(int *data, int width, int height);
+		public delegate void snes_video_refresh_t(int* data, int width, int height);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_input_poll_t();
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate ushort snes_input_state_t(int port, int device, int index, int id);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void snes_input_notify_t(int index);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_audio_sample_t(ushort left, ushort right);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void snes_scanlineStart_t(int line);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate string snes_path_request_t(int slot, string hint);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_video_refresh(snes_video_refresh_t video_refresh);
@@ -63,9 +87,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_input_state(snes_input_state_t input_state);
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_input_notify(snes_input_notify_t input_notify);
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_audio_sample(snes_audio_sample_t audio_sample);
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_scanlineStart(snes_scanlineStart_t scanlineStart);
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_path_request(snes_path_request_t scanlineStart);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.U1)]
@@ -83,15 +111,37 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static extern IntPtr snes_get_memory_data(SNES_MEMORY id);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte bus_read(uint addr);
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void bus_write(uint addr, byte val);
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int snes_serialize_size();
-    
+
 		[return: MarshalAs(UnmanagedType.U1)]
-    [DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern bool snes_serialize(IntPtr data, int size);
-		
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool snes_serialize(IntPtr data, int size);
+
 		[return: MarshalAs(UnmanagedType.U1)]
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool snes_unserialize(IntPtr data, int size);
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int snes_poll_message();
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_dequeue_message(IntPtr strBuffer);
+
+		public static bool HasMessage { get { return snes_poll_message() != -1; } }
+
+		public static string DequeueMessage()
+		{
+			int len = snes_poll_message();
+			sbyte* temp = stackalloc sbyte[len + 1];
+			temp[len] = 0;
+			snes_dequeue_message(new IntPtr(temp));
+			return new string(temp);
+		}
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_layer_enable(int layer, int priority,
@@ -128,9 +178,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			BG2_TDADDR = 21,
 			//$210C
 			BG3_TDADDR = 22,
-			BG4_TDADDR = 23
+			BG4_TDADDR = 23,
+			//$2133 SETINI
+			SETINI_MODE7_EXTBG = 30,
+			SETINI_HIRES = 31,
+			SETINI_OVERSCAN = 32,
+			SETINI_OBJ_INTERLACE = 33,
+			SETINI_SCREEN_INTERLACE = 34,
+			//$2130 CGWSEL
+			CGWSEL_COLORMASK = 40,
+			CGWSEL_COLORSUBMASK = 41,
+			CGWSEL_ADDSUBMODE = 42,
+			CGWSEL_DIRECTCOLOR = 43,
 		}
-		
+
 		public enum SNES_MEMORY : uint
 		{
 			CARTRIDGE_RAM = 0,
@@ -149,7 +210,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CGRAM = 104,
 		}
 
-		public enum SNES_REGION : uint
+		public enum SNES_REGION : byte
 		{
 			NTSC = 0,
 			PAL = 1,
@@ -220,9 +281,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public Action<int> callback;
 		}
 	}
-	
+
 	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
 	{
+		public bool IsSGB { get; private set; }
+
 		bool disposed = false;
 		public void Dispose()
 		{
@@ -276,16 +339,41 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			ScanlineHookManager.HandleScanline(line);
 		}
 
-		public LibsnesCore(byte[] romData)
+		string snes_path_request(int slot, string hint)
+		{
+			//every rom requests this byuu homemade rom
+			if (hint == "msu1.rom") return "";
+
+			//build romfilename
+			string test = Path.Combine(CoreInputComm.SNES_FirmwaresPath ?? "", hint);
+
+			//does it exist?
+			if (!File.Exists(test))
+			{
+				System.Windows.Forms.MessageBox.Show("The SNES core is referencing a firmware file which could not be found. Please make sure it's in your configured SNES firmwares folder. The referenced filename is: " + hint);
+				return "";
+			}
+
+			//return the path we built
+			return test;
+		}
+
+		public LibsnesCore()
+		{
+		}
+
+		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData, bool DeterministicEmulation)
 		{
 			//attach this core as the current
-			if(CurrLibsnesCore != null)
+			if (CurrLibsnesCore != null)
 				CurrLibsnesCore.Dispose();
 			CurrLibsnesCore = this;
 
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
 			LibsnesDll.snes_init();
+
+			//LibsnesDll.snes_set_cartridge_basename(@);
 
 			vidcb = new LibsnesDll.snes_video_refresh_t(snes_video_refresh);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(vidcb);
@@ -296,8 +384,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			inputcb = new LibsnesDll.snes_input_state_t(snes_input_state);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_state(inputcb);
 
+			notifycb = new LibsnesDll.snes_input_notify_t(snes_input_notify);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_input_notify(notifycb);
+
 			soundcb = new LibsnesDll.snes_audio_sample_t(snes_audio_sample);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(soundcb);
+
+			pathRequest_cb = new LibsnesDll.snes_path_request_t(snes_path_request);
+			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_path_request(pathRequest_cb);
+
 
 			scanlineStart_cb = new LibsnesDll.snes_scanlineStart_t(snes_scanlineStart);
 
@@ -311,22 +406,54 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				Array.Copy(romData, 512, newData, 0, newData.Length);
 				romData = newData;
 			}
-			LibsnesDll.snes_load_cartridge_normal(null, romData, romData.Length);
+
+			if (game["SGB"])
+			{
+				IsSGB = true;
+				SystemId = "SNES";
+				if (!LibsnesDll.snes_load_cartridge_super_game_boy(null, sgbRomData, (uint)sgbRomData.Length, null, romData, (uint)romData.Length))
+					throw new Exception("snes_load_cartridge_super_game_boy() failed");
+			}
+			else
+			{
+				SystemId = "SNES";
+				if (!LibsnesDll.snes_load_cartridge_normal(null, romData, (uint)romData.Length))
+					throw new Exception("snes_load_cartridge_normal() failed");
+			}
+
+			if (LibsnesDll.snes_get_region() == LibsnesDll.SNES_REGION.NTSC)
+			{
+				//similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
+				CoreOutputComm.VsyncNum = 21477272;
+				CoreOutputComm.VsyncDen = 4 * 341 * 262;
+			}
+			else
+			{
+				CoreOutputComm.VsyncNum = 50;
+				CoreOutputComm.VsyncDen = 1;
+			}
 
 			LibsnesDll.snes_power();
 
 			SetupMemoryDomains(romData);
+
+			this.DeterministicEmulation = DeterministicEmulation;
+			if (DeterministicEmulation) // save frame-0 savestate now
+				CoreSaveStateInternal(true);
 		}
 
 		//must keep references to these so that they wont get garbage collected
 		LibsnesDll.snes_video_refresh_t vidcb;
 		LibsnesDll.snes_input_poll_t pollcb;
 		LibsnesDll.snes_input_state_t inputcb;
+		LibsnesDll.snes_input_notify_t notifycb;
 		LibsnesDll.snes_audio_sample_t soundcb;
 		LibsnesDll.snes_scanlineStart_t scanlineStart_cb;
+		LibsnesDll.snes_path_request_t pathRequest_cb;
 
 		ushort snes_input_state(int port, int device, int index, int id)
 		{
+			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";
@@ -357,24 +484,71 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		void snes_input_poll()
 		{
+			// this doesn't actually correspond to anything in the underlying bsnes;
+			// it gets called once per frame with video_refresh() and has nothing to do with anything
+		}
+
+		void snes_input_notify(int index)
+		{
 			IsLagFrame = false;
 		}
 
+		int field = 0;
 		void snes_video_refresh(int* data, int width, int height)
 		{
 			vidWidth = width;
 			vidHeight = height;
+
+			//if we are in high-res mode, we get double width. so, lets double the height here to keep it square.
+			//TODO - does interlacing have something to do with the correct way to handle this? need an example that turns it on.
+			int yskip = 1;
+			if (width == 512)
+			{
+				vidHeight *= 2;
+				yskip = 2;
+			}
+
+			int srcPitch = 1024;
+			int srcStart = 0;
+
+			//for interlaced mode, we're gonna alternate fields. you know, like we're supposed to
+			bool interlaced = (height == 478 || height == 448);
+			if (interlaced)
+			{
+				srcPitch = 1024;
+				if (field == 1)
+					srcStart = 512; //start on second field
+				//really only half as high as the video output
+				vidHeight /= 2;
+				height /= 2;
+				//alternate fields
+				field ^= 1;
+			}
+
 			int size = vidWidth * vidHeight;
 			if (vidBuffer.Length != size)
 				vidBuffer = new int[size];
+
+
 			for (int y = 0; y < height; y++)
 				for (int x = 0; x < width; x++)
 				{
-					int si = y * 1024 + x;
-					int di = y * vidWidth + x;
+					int si = y * srcPitch + x + srcStart;
+					int di = y * vidWidth * yskip + x;
 					int rgb = data[si];
 					vidBuffer[di] = rgb;
 				}
+
+			//alternate scanlines
+			if (width == 512)
+				for (int y = 0; y < height; y++)
+					for (int x = 0; x < width; x++)
+					{
+						int si = y * 1024 + x;
+						int di = y * vidWidth * yskip + x + 512;
+						int rgb = data[si];
+						vidBuffer[di] = rgb;
+					}
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
@@ -411,8 +585,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			timeFrameCounter++;
 			LibsnesDll.snes_run();
 
+			while (LibsnesDll.HasMessage)
+				Console.WriteLine(LibsnesDll.DequeueMessage());
+
 			if (IsLagFrame)
 				LagCount++;
+
+			if (DeterministicEmulation)
+			{
+				// save the one internal savestate for this frame now
+				CoreSaveStateInternal(true);
+			}
+		}
+
+		public DisplayType DisplayType
+		{
+			get
+			{
+				if (LibsnesDll.snes_get_region() == LibsnesDll.SNES_REGION.NTSC)
+					return BizHawk.DisplayType.NTSC;
+				else
+					return BizHawk.DisplayType.PAL;
+			}
 		}
 
 		//video provider
@@ -422,8 +616,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }
 
-		int[] vidBuffer = new int[256 * 256];
-		int vidWidth = 256, vidHeight = 256;
+		int[] vidBuffer = new int[256 * 224];
+		int vidWidth = 256, vidHeight = 224;
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
@@ -452,8 +646,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
-		public string SystemId { get { return "SNES"; } }
-		public bool DeterministicEmulation { get; set; }
+		public string SystemId { get; private set; }
+
+		public bool DeterministicEmulation
+		{
+			get;
+			private set;
+		}
+
+
 		public bool SaveRamModified
 		{
 			set { }
@@ -498,6 +699,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			var temp = SaveStateBinary();
 			temp.SaveAsHex(writer);
+			// write extra copy of stuff we don't use
+			writer.WriteLine("Frame {0}", Frame);
 		}
 		public void LoadStateText(TextReader reader)
 		{
@@ -509,10 +712,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			int size = LibsnesDll.snes_serialize_size();
-			byte[] buf = new byte[size];
-			fixed (byte* pbuf = &buf[0])
-				LibsnesDll.snes_serialize(new IntPtr(pbuf), size);
+			byte[] buf = CoreSaveState();
 			writer.Write(buf);
 
 			// other variables
@@ -525,10 +725,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int size = LibsnesDll.snes_serialize_size();
-
 			byte[] buf = reader.ReadBytes(size);
-			fixed (byte* pbuf = &buf[0])
-				LibsnesDll.snes_unserialize(new IntPtr(pbuf), size);
+			CoreLoadState(buf);
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -542,6 +740,55 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
+		}
+
+		/// <summary>
+		/// handle the unmanaged part of loadstating
+		/// </summary>
+		void CoreLoadState(byte[] data)
+		{
+			int size = LibsnesDll.snes_serialize_size();
+			if (data.Length != size)
+				throw new Exception("Libsnes internal savestate size mismatch!");		
+			fixed (byte* pbuf = &data[0])
+				LibsnesDll.snes_unserialize(new IntPtr(pbuf), size);
+		}
+		/// <summary>
+		/// handle the unmanaged part of savestating
+		/// </summary>
+		byte[] CoreSaveState()
+		{
+			if (!DeterministicEmulation)
+				return CoreSaveStateInternal(false);
+			else
+				return savestatebuff;
+		}
+
+		/// <summary>
+		/// most recent internal savestate, for deterministic mode
+		/// </summary>
+		byte[] savestatebuff;
+
+		/// <summary>
+		/// internal function handling savestate
+		/// this can cause determinism problems if called improperly!
+		/// </summary>
+		byte[] CoreSaveStateInternal(bool cache)
+		{
+			int size = LibsnesDll.snes_serialize_size();
+			byte[] buf = new byte[size];
+			fixed (byte* pbuf = &buf[0])
+				LibsnesDll.snes_serialize(new IntPtr(pbuf), size);
+			if (cache)
+			{
+				savestatebuff = buf;
+				return null;
+			}
+			else
+			{
+				savestatebuff = null;
+				return buf;
+			}
 		}
 
 		// Arbitrary extensible core comm mechanism
@@ -599,6 +846,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			MakeMemoryDomain("OAM", LibsnesDll.SNES_MEMORY.OAM, Endian.Little);
 			MakeMemoryDomain("CGRAM", LibsnesDll.SNES_MEMORY.CGRAM, Endian.Little);
 			MakeMemoryDomain("APURAM", LibsnesDll.SNES_MEMORY.APURAM, Endian.Little);
+
+			if (!DeterministicEmulation)
+				MemoryDomains.Add(new MemoryDomain("BUS", 0x1000000, Endian.Little,
+					(addr) => LibsnesDll.bus_read((uint)addr),
+					(addr, val) => LibsnesDll.bus_write((uint)addr, val)));
 		}
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
 		public MemoryDomain MainMemory { get; private set; }
@@ -621,7 +873,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		void snes_audio_sample(ushort left, ushort right)
 		{
-			resampler.EnqueueSample((short)left, (short)right);			
+			resampler.EnqueueSample((short)left, (short)right);
 		}
 
 

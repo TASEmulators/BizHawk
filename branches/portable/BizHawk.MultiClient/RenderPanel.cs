@@ -446,11 +446,14 @@ namespace BizHawk.MultiClient
 			{
 				// Wait until device is available or user gets annoyed and closes app
 				Result r;
+				// it can take a while for the device to be ready again, so avoid sound looping during the wait
+				if (Global.Sound != null) Global.Sound.StopSound();
 				do
 				{
 					r = Device.TestCooperativeLevel();
 					Thread.Sleep(100);
 				} while (r == ResultCode.DeviceLost);
+				if (Global.Sound != null) Global.Sound.StartSound();
 
 				// lets try recovery!
 				DestroyDevice();
@@ -493,8 +496,16 @@ namespace BizHawk.MultiClient
 			SpriteFlags flags = SpriteFlags.None;
 			if (overlay) flags |= SpriteFlags.AlphaBlend;
 			Sprite.Begin(flags);
-			Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
-			Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
+			if (Global.Config.DispBlurry)
+			{
+				Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
+				Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
+			}
+			else
+			{
+				Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
+				Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
+			}
 			Sprite.Transform = Matrix.Scaling(finalScale, finalScale, 0f);
 			Sprite.Draw(Texture.Texture, new Rectangle(0, 0, surface.Width, surface.Height), new Vector3(surface.Width / 2f, surface.Height / 2f, 0), new Vector3(backingControl.Size.Width / 2f / finalScale, backingControl.Size.Height / 2f / finalScale, 0), Color.White);
 			Sprite.End();
@@ -503,6 +514,12 @@ namespace BizHawk.MultiClient
 		}
 
 		public void Present()
+		{
+			// Present() is the most likely place to get DeviceLost, so we need to wrap it
+			RenderWrapper(_Present);
+		}
+
+		private void _Present()
 		{
 			Device.Present(SlimDX.Direct3D9.Present.None);
 			vsyncEvent.Set();

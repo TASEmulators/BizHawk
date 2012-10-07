@@ -56,6 +56,7 @@
 			this.addToRamWatchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unfreezeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.customColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,6 +75,7 @@
 			this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unfreezeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.pokeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.incrementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.decrementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,8 +86,6 @@
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
-			this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pokeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -174,7 +174,7 @@
 			this.copyToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Duplicate;
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.copyToolStripMenuItem.Text = "&Copy";
 			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			// 
@@ -183,20 +183,20 @@
 			this.pasteToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Paste;
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.pasteToolStripMenuItem.Text = "&Paste";
 			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(143, 6);
 			// 
 			// findToolStripMenuItem1
 			// 
 			this.findToolStripMenuItem1.Name = "findToolStripMenuItem1";
 			this.findToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.findToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.findToolStripMenuItem1.Size = new System.Drawing.Size(146, 22);
 			this.findToolStripMenuItem1.Text = "&Find...";
 			this.findToolStripMenuItem1.Click += new System.EventHandler(this.findToolStripMenuItem1_Click);
 			// 
@@ -204,7 +204,7 @@
 			// 
 			this.findNextToolStripMenuItem.Name = "findNextToolStripMenuItem";
 			this.findNextToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-			this.findNextToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.findNextToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.findNextToolStripMenuItem.Text = "Find Next";
 			this.findNextToolStripMenuItem.Click += new System.EventHandler(this.findNextToolStripMenuItem_Click);
 			// 
@@ -212,7 +212,7 @@
 			// 
 			this.findPrevToolStripMenuItem.Name = "findPrevToolStripMenuItem";
 			this.findPrevToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-			this.findPrevToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.findPrevToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.findPrevToolStripMenuItem.Text = "Find Prev";
 			this.findPrevToolStripMenuItem.Click += new System.EventHandler(this.findPrevToolStripMenuItem_Click);
 			// 
@@ -317,6 +317,15 @@
 			this.unfreezeAllToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.unfreezeAllToolStripMenuItem.Text = "Unfreeze All";
 			this.unfreezeAllToolStripMenuItem.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem_Click);
+			// 
+			// pokeAddressToolStripMenuItem
+			// 
+			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
+			this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+			this.pokeAddressToolStripMenuItem.Text = "&Poke Address";
+			this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
 			// 
 			// settingsToolStripMenuItem
 			// 
@@ -467,6 +476,15 @@
 			this.unfreezeAllToolStripMenuItem1.Text = "&Unfreeze All";
 			this.unfreezeAllToolStripMenuItem1.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem1_Click);
 			// 
+			// pokeAddressToolStripMenuItem1
+			// 
+			this.pokeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+			this.pokeAddressToolStripMenuItem1.Name = "pokeAddressToolStripMenuItem1";
+			this.pokeAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+P";
+			this.pokeAddressToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
+			this.pokeAddressToolStripMenuItem1.Text = "&Poke Address";
+			this.pokeAddressToolStripMenuItem1.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem1_Click);
+			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
@@ -551,8 +569,10 @@
 			this.AddressesLabel.TabIndex = 0;
 			this.AddressesLabel.Text = "RAM";
 			this.AddressesLabel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseClick);
+			this.AddressesLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseDown);
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
+			this.AddressesLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseUp);
 			// 
 			// Header
 			// 
@@ -563,24 +583,6 @@
 			this.Header.Size = new System.Drawing.Size(35, 13);
 			this.Header.TabIndex = 2;
 			this.Header.Text = "label1";
-			// 
-			// pokeAddressToolStripMenuItem
-			// 
-			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
-			this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
-			this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
-			this.pokeAddressToolStripMenuItem.Text = "&Poke Address";
-			this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
-			// 
-			// pokeAddressToolStripMenuItem1
-			// 
-			this.pokeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
-			this.pokeAddressToolStripMenuItem1.Name = "pokeAddressToolStripMenuItem1";
-			this.pokeAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+P";
-			this.pokeAddressToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
-			this.pokeAddressToolStripMenuItem1.Text = "&Poke Address";
-			this.pokeAddressToolStripMenuItem1.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem1_Click);
 			// 
 			// HexEditor
 			// 

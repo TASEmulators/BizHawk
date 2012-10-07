@@ -19,7 +19,19 @@ namespace BizHawk.Emulation.Sound
         public YM2413()
         {
             MaxVolume = short.MaxValue;
-			opll = OPLL_new(3579545, 44100);
+			opll = OPLL_new(3579545, 44100, 0);
+		}
+
+		public enum ChipType
+		{
+			Default = 0,
+			VRC7 = 1,
+			YMF281B = 2
+		};
+		public YM2413(ChipType type)
+		{
+			MaxVolume = short.MaxValue;
+			opll = OPLL_new(3579545, 44100, (int)type);
 		}
 
 				public void SyncState(Serializer ser)
@@ -896,7 +908,7 @@ namespace BizHawk.Emulation.Sound
             }
         }
 
-        OPLL OPLL_new(uint clk, uint rate)
+        OPLL OPLL_new(uint clk, uint rate, int type)
         {
             OPLL opll = new OPLL();
             int i;
@@ -909,7 +921,7 @@ namespace BizHawk.Emulation.Sound
             opll.mask = 0;
 
             OPLL_reset(opll);
-            OPLL_reset_patch(opll, 0);
+            OPLL_reset_patch(opll, type);
 
             return opll;
         }

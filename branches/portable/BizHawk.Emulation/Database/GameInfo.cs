@@ -29,6 +29,7 @@ namespace BizHawk
 		public string Hash;
 		public RomStatus Status = RomStatus.NotInDatabase;
 		public bool NotInDatabase = true;
+		public string FirmwareHash;
 
 		Dictionary<string, string> Options = new Dictionary<string, string>();
 

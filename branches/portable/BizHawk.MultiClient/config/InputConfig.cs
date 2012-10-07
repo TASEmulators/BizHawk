@@ -125,6 +125,7 @@ namespace BizHawk.MultiClient
 				case "SNES":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SNES_Controller;
 					controller = Global.Config.SNESController;
+					autoController = Global.Config.SNESAutoController;
 					break;
 				default:
 					return;
@@ -296,6 +297,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "SNES":
 					controller = Global.Config.SNESController;
+					autoController = Global.Config.SNESAutoController;
 					break;
 				case "PC Engine / SuperGrafx":
 					controller = Global.Config.PCEController;
@@ -444,6 +446,8 @@ namespace BizHawk.MultiClient
 				Label TempLabel = Labels[button] as Label;
 				TempLabel.Dispose();
 			}
+
+			Global.OSD.AddMessage("Controller settings saved");
 		}
 
 		private void InputConfig_Load(object sender, EventArgs e)
@@ -490,6 +494,7 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
+			Global.OSD.AddMessage("Controller config aborted");
 			this.Close();
 		}
 
@@ -589,6 +594,11 @@ namespace BizHawk.MultiClient
 					w.EraseMappings();
 				}
 			}
+		}
+
+		private void InputConfig_Shown(object sender, EventArgs e)
+		{
+			SetFocus();
 		}
 	}
 }

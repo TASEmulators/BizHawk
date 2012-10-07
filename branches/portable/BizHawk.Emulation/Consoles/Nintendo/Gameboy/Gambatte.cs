@@ -28,6 +28,8 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public Gameboy(GameInfo game, byte[] romdata)
 		{
+			ThrowExceptionForBadRom(romdata);
+
 			GambatteState = LibGambatte.gambatte_create();
 
 			if (GambatteState == IntPtr.Zero)
@@ -60,6 +62,12 @@ namespace BizHawk.Emulation.Consoles.GB
 			LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
 
 			InitMemoryDomains();
+
+			GbOutputComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
+				game.Name,
+				Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(romdata)),
+				Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romdata))
+				);
 		}
 
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
@@ -78,9 +86,9 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public IController Controller { get; set; }
 
-		// can when this is called (or not called) be used to give information about lagged frames?
 		LibGambatte.Buttons ControllerCallback()
 		{
+			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			IsLagFrame = false;
 			return CurrentButtons;
 		}
@@ -147,8 +155,58 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		}
 
+		/// <summary>
+		/// throw exception with intelligible message on some kinds of bad rom
+		/// </summary>
+		/// <param name="romdata"></param>
+		static void ThrowExceptionForBadRom(byte[] romdata)
+		{
+			if (romdata.Length < 0x148)
+				throw new Exception("ROM is far too small to be a valid GB\\GBC rom!");
 
+			switch (romdata[0x147])
+			{
+				case 0x00: break;
+				case 0x01: break;
+				case 0x02: break;
+				case 0x03: break;
+				case 0x05: break;
+				case 0x06: break;
+				case 0x08: break;
+				case 0x09: break;
 
+				case 0x0b: throw new Exception("\"MM01\" Mapper not supported!");
+				case 0x0c: throw new Exception("\"MM01\" Mapper not supported!");
+				case 0x0d: throw new Exception("\"MM01\" Mapper not supported!");
+
+				case 0x0f: break;
+				case 0x10: break;
+				case 0x11: break;
+				case 0x12: break;
+				case 0x13: break;
+
+				case 0x15: throw new Exception("\"MBC4\" Mapper not supported!");
+				case 0x16: throw new Exception("\"MBC4\" Mapper not supported!");
+				case 0x17: throw new Exception("\"MBC4\" Mapper not supported!");
+
+				case 0x19: break;
+				case 0x1a: break;
+				case 0x1b: break;
+				case 0x1c: break; // rumble
+				case 0x1d: break; // rumble
+				case 0x1e: break; // rumble
+
+				case 0x20: throw new Exception("\"MBC6\" Mapper not supported!");
+				case 0x22: throw new Exception("\"MBC7\" Mapper not supported!");
+
+				case 0xfc: throw new Exception("\"Pocket Camera\" Mapper not supported!");
+				case 0xfd: throw new Exception("\"Bandai TAMA5\" Mapper not supported!");
+				case 0xfe: throw new Exception("\"HuC3\" Mapper not supported!");
+				case 0xff: break;
+				default: throw new Exception(string.Format("Unknown mapper: {0:x2}", romdata[0x147]));
+			}
+			return;
+		}
 
 		public int Frame { get; set; }
 
@@ -161,7 +219,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			get { return "GB"; }
 		}
 
-		public bool DeterministicEmulation { get; set; }
+		public bool DeterministicEmulation { get { return true; } }
 
 		public byte[] ReadSaveRam()
 		{
@@ -222,21 +280,11 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		#region savestates
 
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
+		/// <summary>
+		/// handles the core-portion of savestating
+		/// </summary>
+		/// <returns>private binary data corresponding to a savestate</returns>
+		byte[] SaveCoreBinary()
 		{
 			uint nlen = 0;
 			IntPtr ndata = IntPtr.Zero;
@@ -251,7 +299,43 @@ namespace BizHawk.Emulation.Consoles.GB
 			System.Runtime.InteropServices.Marshal.Copy(ndata, data, 0, (int)nlen);
 			LibGambatte.gambatte_savestate_destroy(ndata);
 
-			writer.Write((int)nlen);
+			return data;
+		}
+
+		/// <summary>
+		/// handles the core portion of loadstating
+		/// </summary>
+		/// <param name="data">private binary data previously returned from SaveCoreBinary()</param>
+		void LoadCoreBinary(byte[] data)
+		{
+			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)data.Length))
+				throw new Exception("Gambatte failed to load the savestate!");
+			// since a savestate has been loaded, all memory domain data is now dirty
+			foreach (var r in MemoryRefreshers)
+				r.RefreshRead();
+		}
+	
+		public void SaveStateText(System.IO.TextWriter writer)
+		{
+			var temp = SaveStateBinary();
+			temp.SaveAsHex(writer);
+			// write extra copy of stuff we don't use
+			writer.WriteLine("Frame {0}", Frame);
+		}
+
+		public void LoadStateText(System.IO.TextReader reader)
+		{
+			string hex = reader.ReadLine();
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHex(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+		}
+
+		public void SaveStateBinary(System.IO.BinaryWriter writer)
+		{
+			byte[] data = SaveCoreBinary();
+
+			writer.Write(data.Length);
 			writer.Write(data);
 
 			// other variables
@@ -265,8 +349,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			int length = reader.ReadInt32();
 			byte[] data = reader.ReadBytes(length);
 
-			if (!LibGambatte.gambatte_loadstate(GambatteState, data, (uint)length))
-				throw new Exception("Gambatte failed to load the savestate!");
+			LoadCoreBinary(data);
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -502,19 +585,27 @@ namespace BizHawk.Emulation.Consoles.GB
 		int soundbuffcontains = 0;
 
 		Sound.Utilities.SpeexResampler resampler;
-		ISoundProvider metaspu;
+		Sound.MetaspuSoundProvider metaspu;
+
+		Sound.Utilities.DCFilter dcfilter;
 
 		void InitSound()
 		{
-			var metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
-			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, metaspu.buffer.enqueue_samples);
-			this.metaspu = new Sound.Utilities.DCFilter(metaspu);// metaspu;
+			dcfilter = new Sound.Utilities.DCFilter();
+			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, LoadThroughSamples);
 		}
 
 		void DisposeSound()
 		{
 			resampler.Dispose();
 			resampler = null;
+		}
+
+		void LoadThroughSamples(short[] buff, int length)
+		{
+			dcfilter.PushThroughSamples(buff, length * 2);
+			metaspu.buffer.enqueue_samples(buff, length);
 		}
 
 		public void GetSamples(short[] samples)

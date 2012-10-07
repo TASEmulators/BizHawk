@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BizHawk.MultiClient.tools
+namespace BizHawk.MultiClient
 {
 	public partial class HotkeyWindow : Form
 	{
@@ -115,6 +115,7 @@ namespace BizHawk.MultiClient.tools
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
+			Global.OSD.AddMessage("Hotkey config aborted");
 			this.Close();
 		}
 
@@ -132,7 +133,6 @@ namespace BizHawk.MultiClient.tools
 
 		private void IDB_SAVE_Click(object sender, EventArgs e)
 		{
-
 			Global.Config.FastForwardBinding = IDW_FASTFORWARD.Text;
 			Global.Config.FrameAdvanceBinding = IDW_FRAMEADVANCE.Text;
 			Global.Config.RebootCoreResetBinding = IDW_REBOOTCORE.Text;
@@ -233,6 +233,7 @@ namespace BizHawk.MultiClient.tools
 			Global.Config.ToggleSNESOBJ3Binding = IDW_SNES_ToggleOBJ3.Text;
 			Global.Config.ToggleSNESOBJ4Binding = IDW_SNES_ToggleOBJ4.Text;
 
+			Global.OSD.AddMessage("Hotkey settings saved");
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}

@@ -186,36 +186,43 @@ namespace BizHawk.MultiClient
 		private void smsEnableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsEnableFM ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void smsOverclockWhenKnownSafeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsAllowOverlock ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void smsForceStereoSeparationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsForceStereoSeparation ^= true;
+			FlagNeedsReboot();
 		}
 
         private void smsSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.SmsSpriteLimit ^= true;
+			FlagNeedsReboot();
         }
 
         private void pceAlwaysPerformSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.PceSpriteLimit ^= true;
+			FlagNeedsReboot();
         }
 
         private void pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.PceEqualizeVolume ^= true;
+			FlagNeedsReboot();
         }
 
         private void pceArcadeCardRewindEnableHackToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.PceArcadeCardRewindHack ^= true;
+			FlagNeedsReboot();
         }
 
         private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
@@ -415,22 +422,37 @@ namespace BizHawk.MultiClient
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            RunLoopBlocked = true;
-			InputConfig i = new InputConfig();
-			i.ShowDialog();
-			//re-initialize controls in case anything was changed
-			if (i.DialogResult == DialogResult.OK)
+			if (false)
 			{
-				InitControls();
-				SyncControls();
+				RunLoopBlocked = true;
+				ControllerConfig c = new ControllerConfig();
+				c.ShowDialog();
+				RunLoopBlocked = false;
+				if (c.DialogResult == DialogResult.OK)
+				{
+					InitControls();
+					SyncControls();
+				}
 			}
-            RunLoopBlocked = false;
+			else
+			{
+				RunLoopBlocked = true;
+				InputConfig i = new InputConfig();
+				i.ShowDialog();
+				RunLoopBlocked = false;
+				//re-initialize controls in case anything was changed
+				if (i.DialogResult == DialogResult.OK)
+				{
+					InitControls();
+					SyncControls();
+				}
+			}
 		}
 
 		private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            RunLoopBlocked = true;
-			BizHawk.MultiClient.tools.HotkeyWindow h = new BizHawk.MultiClient.tools.HotkeyWindow();
+			RunLoopBlocked = true;
+			HotkeyWindow h = new HotkeyWindow();
 			h.ShowDialog();
 			if (h.DialogResult == DialogResult.OK)
 			{
@@ -634,6 +656,15 @@ namespace BizHawk.MultiClient
 			luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LuaConsole;
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.Cheats;
 			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.TASTudio;
+
+			if (Global.Emulator.CoreOutputComm.CpuTraceAvailable)
+			{
+				traceLoggerToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				traceLoggerToolStripMenuItem.Enabled = false;
+			}
 		}
 
 		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1313,6 +1344,7 @@ namespace BizHawk.MultiClient
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.DisplayGDI;
+			blurryToolStripMenuItem.Checked = Global.Config.DispBlurry;
 			miSuppressGuiLayer.Checked = Global.Config.SuppressGui;
 			showMenuInFullScreenToolStripMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
 			runInBackgroundToolStripMenuItem.Checked = Global.Config.RunInBackground;
@@ -1332,6 +1364,7 @@ namespace BizHawk.MultiClient
 			autoSavestatesToolStripMenuItem.Checked = Global.Config.AutoSavestates;
 			saveScreenshotWithSavestatesToolStripMenuItem.Checked = Global.Config.SaveScreenshotWithStates;
 			frameAdvanceSkipLagFramesToolStripMenuItem.Checked = Global.Config.SkipLagFrame;
+			backupSaveramToolStripMenuItem.Checked = Global.Config.BackupSaveram;
 		}
 
 		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1565,6 +1598,28 @@ namespace BizHawk.MultiClient
 			smsOverclockWhenKnownSafeToolStripMenuItem.Checked = Global.Config.SmsAllowOverlock;
 			smsForceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
 			smsSpriteLimitToolStripMenuItem.Checked = Global.Config.SmsSpriteLimit;
+			showClippedRegionsToolStripMenuItem.Checked = Global.Config.GGShowClippedRegions;
+			highlightActiveDisplayRegionToolStripMenuItem.Checked = Global.Config.GGHighlightActiveDisplayRegion;
+
+			if (Global.Game.System == "GG")
+			{
+				smsEnableFMChipToolStripMenuItem.Visible = false;
+				smsOverclockWhenKnownSafeToolStripMenuItem.Visible = false;
+				smsForceStereoSeparationToolStripMenuItem.Visible = false;
+
+				showClippedRegionsToolStripMenuItem.Visible = true;
+				highlightActiveDisplayRegionToolStripMenuItem.Visible = true;
+			}
+			else
+			{
+				smsEnableFMChipToolStripMenuItem.Visible = true;
+				smsOverclockWhenKnownSafeToolStripMenuItem.Visible = true;
+				smsForceStereoSeparationToolStripMenuItem.Visible = true;
+
+				showClippedRegionsToolStripMenuItem.Visible = false;
+				highlightActiveDisplayRegionToolStripMenuItem.Visible = false;
+			}
+
 		}
 
 		protected override void OnClosed(EventArgs e)
@@ -1621,20 +1676,25 @@ namespace BizHawk.MultiClient
 
 		private void FreezeStatus_Click(object sender, EventArgs e)
 		{
-			LoadCheatsWindow();
+			if (CheatStatus.Visible)
+			{
+				LoadCheatsWindow();
+			}
 		}
 
 		public void UpdateCheatStatus()
 		{
-			if (Global.CheatList.HasActiveCheat())
+			if (Global.CheatList.HasActiveCheats)
 			{
 				CheatStatus.ToolTipText = "Cheats are currently active";
 				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Freeze;
+				CheatStatus.Visible = true;
 			}
 			else
 			{
 				CheatStatus.ToolTipText = "";
 				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+				CheatStatus.Visible = false;
 			}
 		}
 
@@ -1734,6 +1794,8 @@ namespace BizHawk.MultiClient
 			forceDMGModeToolStripMenuItem.Checked = Global.Config.GB_ForceDMG;
 			gBAInCGBModeToolStripMenuItem.Checked = Global.Config.GB_GBACGB;
 			multicartCompatibilityToolStripMenuItem.Checked = Global.Config.GB_MulticartCompat;
+
+			loadGBInSGBToolStripMenuItem1.Checked = Global.Config.GB_AsSGB;
 		}
 
 		private void graphicsDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1938,16 +2000,19 @@ namespace BizHawk.MultiClient
 		private void forceDMGModeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_ForceDMG ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void gBAInCGBModeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_GBACGB ^= true;
+			FlagNeedsReboot();
 		}
 
 		private void multicartCompatibilityToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_MulticartCompat ^= true;
+			FlagNeedsReboot();
 		}
 	}
 }
