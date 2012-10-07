@@ -376,8 +376,8 @@ namespace BizHawk.MultiClient
 		                                      		"limitframerate",
 		                                      		"displayvsync",
 		                                      		"enablerewind",
-													"registerbefore",
-													"registerafter",
+													//"registerbefore",
+													//"registerafter",
 													"on_snoop",
 		                                      	};
 
