@@ -13,7 +13,6 @@ using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Coleco;
-using BizHawk.MultiClient.tools;
 using System.Collections.Generic;
 using BizHawk.Emulation.Consoles.Intellivision;
 using BizHawk.Emulation.Consoles.GB;
@@ -74,7 +73,9 @@ namespace BizHawk.MultiClient
 		public RamSearch RamSearch1 = new RamSearch();
 		public HexEditor HexEditor1 = new HexEditor();
 		public TraceLogger TraceLogger1 = new TraceLogger();
+#if SNES
 		public SNESGraphicsDebugger SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
+#endif
 		public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
 		public NESPPU NESPPU1 = new NESPPU();
 		public NESDebugger NESDebug1 = new NESDebugger();
@@ -2407,7 +2408,9 @@ namespace BizHawk.MultiClient
 
 		public void UpdateToolsLoadstate()
 		{
+#if SNES
 			SNESGraphicsDebugger1.UpdateToolsLoadstate();
+#endif
 		}
 
 		/// <summary>
@@ -2426,7 +2429,9 @@ namespace BizHawk.MultiClient
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
 			TAStudio1.UpdateValues();
+#if SNES
 			SNESGraphicsDebugger1.UpdateToolsAfter();
+#endif
 			TraceLogger1.UpdateValues();
 #if WINDOWS
 			LuaConsole1.LuaImp.FrameRegisterAfter();
@@ -2692,6 +2697,7 @@ namespace BizHawk.MultiClient
 
 		public void LoadSNESGraphicsDebugger()
 		{
+#if SNES
 			if (!SNESGraphicsDebugger1.IsHandleCreated || SNESGraphicsDebugger1.IsDisposed)
 			{
 				SNESGraphicsDebugger1 = new SNESGraphicsDebugger();
@@ -2700,6 +2706,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 				SNESGraphicsDebugger1.Focus();
+#endif
 		}
 
 		public void LoadHexEditor()
@@ -2992,8 +2999,10 @@ namespace BizHawk.MultiClient
 					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.rom;*.cue;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
+#if WINDOWS
 					"Super NES", "*.smc;*.sfc;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;%ARCH%",
+#endif
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
@@ -3935,7 +3944,8 @@ namespace BizHawk.MultiClient
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			Global.RenderPanel.Resized = true;
+			if(Global.RenderPanel != null)
+				Global.RenderPanel.Resized = true;
 		}
 
 		private void backupSaveramToolStripMenuItem_Click(object sender, EventArgs e)

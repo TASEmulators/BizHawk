@@ -31,7 +31,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">WINDOWS</DefineConstants>
+    <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">WINDOWS;SNES</DefineConstants>
     <ReleaseVersion>1.0.3</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -228,7 +228,7 @@
     <Compile Include="HawkFile.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Compile Include="Input\GamePad360.cs" />
+    <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">

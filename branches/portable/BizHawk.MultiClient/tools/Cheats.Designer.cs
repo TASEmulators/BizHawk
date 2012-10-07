@@ -521,7 +521,9 @@
 			// toolStripButtonLoadGameGenie
 			// 
 			this.toolStripButtonLoadGameGenie.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+#if WINDOWS
 			this.toolStripButtonLoadGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadGameGenie.Image")));
+#endif
 			this.toolStripButtonLoadGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonLoadGameGenie.Name = "toolStripButtonLoadGameGenie";
 			this.toolStripButtonLoadGameGenie.Size = new System.Drawing.Size(75, 22);
