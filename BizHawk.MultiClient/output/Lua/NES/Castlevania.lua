@@ -1,3 +1,4 @@
+--Author Pasky13
 local px = 0x38C
 local py = 0x354
 local pl = 0x45
@@ -39,11 +40,11 @@ end
 
 local function buildbox(i)
 	local box = {0,0}  -- xrad/yrad
-	local offset = mainmemory.read_u8(0x434 + i)
+	local dracform = mainmemory.read_u8(0x434 + i)
 		
 	if offset == 0x1D then
-		offset = mainmemory.read_u8(0x7A)
-		if offset == 0 then
+		dracform = mainmemory.read_u8(0x7A)
+		if dracform == 1 then
 			offset = 0x30 * 2
 		else
 			offset = offset * 2
@@ -61,10 +62,12 @@ local function getcolor(x)
 	local color = {0,0} -- Fill/Outline
 	if x >= 0x28 and x < 0x30 then
 		color = {0x40FFA500,0xFFFFA500}
-	elseif x >= 0x30 and x <= 0x33 then
+	elseif x >= 0x30 and x <= 0x35 then
 		return color
 	elseif x == 0x17 then -- Simon subweapon
 		color = {0x4000FFFF,0xFF00FFFF}
+	elseif x == 0x1D then -- dracula invuln box
+		color = {0x40FF0000,0xFFFFFFFF}
 	else
 		color = {0x40FF0000,0xFFFF0000}
 	end
@@ -82,13 +85,17 @@ local function objects()
 	
 	for i = 3,20,1 do
 		oob = mainmemory.read_u8(0x300 + i)
-		if oob == 0 then
+		if oob == 0 or oob == 0x80 then
 			box = buildbox(i)
 			etype = mainmemory.read_u8(0x434 + i)
 			c = getcolor(etype)
 			x = mainmemory.read_u8(ex + i)
 			y = mainmemory.read_u8(ey + i)
 			gui.drawBox(x+box[1],y+box[2],x-box[1],y-box[2],c[2],c[1])
+			if etype == 0x1D then -- if dracula's invuln box
+				gui.drawLine(x+box[1],y,x-box[1],y,0xFFFFFFFF)
+				gui.drawLine(x,y+box[2],x,y-box[2],0xFFFFFFFF)
+			end
 		end
 	end
 end
