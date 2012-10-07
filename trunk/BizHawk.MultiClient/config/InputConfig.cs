@@ -470,7 +470,7 @@ namespace BizHawk.MultiClient
 				Dictionary<string, string> systems = new Dictionary<string, string>()
 				{
 					{"A26", "Atari"}, {"GB", "Gameboy"}, {"GEN", "Sega Genesis"}, {"GG", "SMS / GG / SG-1000"}, {"NES", "NES"},
-					{"SNES", "SNES"},
+					{"SNES", "SNES"}, {"GBC", "Gameboy"},
 					{"PCE", "PC Engine / SuperGrafx"}, {"SG", "SMS / GG / SG-1000"}, {"SGX", "PC Engine / SuperGrafx"},
 					{"SMS", "SMS / GG / SG-1000"}, {"TI83", "TI-83"}
 				};
