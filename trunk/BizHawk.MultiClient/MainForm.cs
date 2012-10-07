@@ -1190,12 +1190,11 @@ namespace BizHawk.MultiClient
 					atariToolStripMenuItem.Visible = true;
 					break;
 				case "SNES":
-					sNESToolStripMenuItem.Text = "&SNES";
-					sNESToolStripMenuItem.Visible = true;
-					break;
 				case "SGB":
-					if((Global.Emulator as LibsnesCore).IsSGB)
+					if ((Global.Emulator as LibsnesCore).IsSGB)
 						sNESToolStripMenuItem.Text = "&SGB";
+					else
+						sNESToolStripMenuItem.Text = "&SNES";
 					sNESToolStripMenuItem.Visible = true;
 					break;
 				default:
