@@ -639,7 +639,7 @@ namespace BizHawk.MultiClient
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.Cheats;
 			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.TASTudio;
 
-			if (INTERIM && Global.Emulator.CoreOutputComm.CpuTraceAvailable)
+			if (Global.Emulator.CoreOutputComm.CpuTraceAvailable)
 			{
 				traceLoggerToolStripMenuItem.Enabled = true;
 			}
