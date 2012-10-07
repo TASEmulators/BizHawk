@@ -220,6 +220,7 @@
 			this.smsForceStereoSeparationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.smsSpriteLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showClippedRegionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.highlightActiveDisplayRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
 			this.smsGraphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tI83ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -293,7 +294,6 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.highlightActiveDisplayRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -1926,6 +1926,13 @@
 			this.showClippedRegionsToolStripMenuItem.Text = "&Show Clipped Regions";
 			this.showClippedRegionsToolStripMenuItem.Click += new System.EventHandler(this.showClippedRegionsToolStripMenuItem_Click);
 			// 
+			// highlightActiveDisplayRegionToolStripMenuItem
+			// 
+			this.highlightActiveDisplayRegionToolStripMenuItem.Name = "highlightActiveDisplayRegionToolStripMenuItem";
+			this.highlightActiveDisplayRegionToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+			this.highlightActiveDisplayRegionToolStripMenuItem.Text = "&Highlight Active Display Region";
+			this.highlightActiveDisplayRegionToolStripMenuItem.Click += new System.EventHandler(this.highlightActiveDisplayRegionToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator24
 			// 
 			this.toolStripSeparator24.Name = "toolStripSeparator24";
@@ -2294,70 +2301,70 @@
 			this.StatusSlot1.Name = "StatusSlot1";
 			this.StatusSlot1.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot1.Text = "1";
-			this.StatusSlot1.Click += new System.EventHandler(this.StatusSlot1_Click);
+			this.StatusSlot1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot1_MouseUp);
 			// 
 			// StatusSlot2
 			// 
 			this.StatusSlot2.Name = "StatusSlot2";
 			this.StatusSlot2.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot2.Text = "2";
-			this.StatusSlot2.Click += new System.EventHandler(this.StatusSlot2_Click);
+			this.StatusSlot2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot2_MouseUp);
 			// 
 			// StatusSlot3
 			// 
 			this.StatusSlot3.Name = "StatusSlot3";
 			this.StatusSlot3.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot3.Text = "3";
-			this.StatusSlot3.Click += new System.EventHandler(this.StatusSlot3_Click);
+			this.StatusSlot3.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot3_MouseUp);
 			// 
 			// StatusSlot4
 			// 
 			this.StatusSlot4.Name = "StatusSlot4";
 			this.StatusSlot4.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot4.Text = "4";
-			this.StatusSlot4.Click += new System.EventHandler(this.StatusSlot4_Click);
+			this.StatusSlot4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot4_MouseUp);
 			// 
 			// StatusSlot5
 			// 
 			this.StatusSlot5.Name = "StatusSlot5";
 			this.StatusSlot5.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot5.Text = "5";
-			this.StatusSlot5.Click += new System.EventHandler(this.StatusSlot5_Click);
+			this.StatusSlot5.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot5_MouseUp);
 			// 
 			// StatusSlot6
 			// 
 			this.StatusSlot6.Name = "StatusSlot6";
 			this.StatusSlot6.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot6.Text = "6";
-			this.StatusSlot6.Click += new System.EventHandler(this.StatusSlot6_Click);
+			this.StatusSlot6.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot6_MouseUp);
 			// 
 			// StatusSlot7
 			// 
 			this.StatusSlot7.Name = "StatusSlot7";
 			this.StatusSlot7.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot7.Text = "7";
-			this.StatusSlot7.Click += new System.EventHandler(this.StatusSlot7_Click);
+			this.StatusSlot7.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot7_MouseUp);
 			// 
 			// StatusSlot8
 			// 
 			this.StatusSlot8.Name = "StatusSlot8";
 			this.StatusSlot8.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot8.Text = "8";
-			this.StatusSlot8.Click += new System.EventHandler(this.StatusSlot8_Click);
+			this.StatusSlot8.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot8_MouseUp);
 			// 
 			// StatusSlot9
 			// 
 			this.StatusSlot9.Name = "StatusSlot9";
 			this.StatusSlot9.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot9.Text = "9";
-			this.StatusSlot9.Click += new System.EventHandler(this.StatusSlot9_Click);
+			this.StatusSlot9.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot9_MouseUp);
 			// 
 			// StatusSlot10
 			// 
 			this.StatusSlot10.Name = "StatusSlot10";
 			this.StatusSlot10.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot10.Text = "0";
-			this.StatusSlot10.Click += new System.EventHandler(this.StatusSlot10_Click);
+			this.StatusSlot10.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot10_MouseUp);
 			// 
 			// CheatStatus
 			// 
@@ -2528,13 +2535,6 @@
 			this.cmiShowMenu.Size = new System.Drawing.Size(203, 22);
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
-			// 
-			// highlightActiveDisplayRegionToolStripMenuItem
-			// 
-			this.highlightActiveDisplayRegionToolStripMenuItem.Name = "highlightActiveDisplayRegionToolStripMenuItem";
-			this.highlightActiveDisplayRegionToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
-			this.highlightActiveDisplayRegionToolStripMenuItem.Text = "&Highlight Active Display Region";
-			this.highlightActiveDisplayRegionToolStripMenuItem.Click += new System.EventHandler(this.highlightActiveDisplayRegionToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
