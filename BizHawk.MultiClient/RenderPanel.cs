@@ -218,7 +218,7 @@ namespace BizHawk.MultiClient
 			using (var g = Graphics.FromImage(tempBuffer.PeekBitmap()))
 			{
 				g.PixelOffsetMode = sysdrawing2d.PixelOffsetMode.HighSpeed;
-				g.InterpolationMode = sysdrawing2d.InterpolationMode.NearestNeighbor;
+				g.InterpolationMode = Global.Config.DispBlurry ? sysdrawing2d.InterpolationMode.Bilinear : sysdrawing2d.InterpolationMode.NearestNeighbor;
 				if (transparent) g.CompositingMode = sysdrawing2d.CompositingMode.SourceOver;
 				else g.CompositingMode = sysdrawing2d.CompositingMode.SourceCopy;
 				g.CompositingQuality = sysdrawing2d.CompositingQuality.HighSpeed;
