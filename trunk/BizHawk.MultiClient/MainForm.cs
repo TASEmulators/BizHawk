@@ -1580,6 +1580,15 @@ namespace BizHawk.MultiClient
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
 
+				if (Global.Emulator.CoreOutputComm.RomStatusDetails == null)
+				{
+					Global.Emulator.CoreOutputComm.RomStatusDetails =
+						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
+						game.Name,
+						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData)),
+						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom.RomData)));
+				}
+
 				//restarts the lua console if a different rom is loaded.
 				//im not really a fan of how this is done..
 				if (Global.Config.RecentRoms.IsEmpty() || Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)

@@ -77,6 +77,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
 			Init(game, rom);
+			// the default RomStatusDetails don't do anything with Disc
+			CoreOutputComm.RomStatusDetails = string.Format(
+				"{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
 		}
 
 		void Init(GameInfo game, byte[] rom)
