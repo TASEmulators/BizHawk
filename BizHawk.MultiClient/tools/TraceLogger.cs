@@ -15,7 +15,6 @@ namespace BizHawk.MultiClient
 		//Refresh rate slider
 		//Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
 		//Remember window size
-		//Show a message that file was saved, when using the save menu item
 
 		List<string> Instructions = new List<string>();
 		FileInfo LogFile;
@@ -86,7 +85,6 @@ namespace BizHawk.MultiClient
 					ClearList();
 				}
 				else
-
 				{
 					this.Close();
 				}
@@ -97,6 +95,7 @@ namespace BizHawk.MultiClient
 		{
 			Instructions.Clear();
 			TraceView.ItemCount = 0;
+			SetTracerBoxTitle();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -348,6 +347,7 @@ namespace BizHawk.MultiClient
 			if (file != null)
 			{
 				DumpListToDisk(file);
+				Global.OSD.AddMessage("Log dumped to " + file.FullName);
 			}
 		}
 

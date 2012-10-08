@@ -1258,7 +1258,7 @@ namespace BizHawk.MultiClient
 		private void loadConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, Global.Config);
-			Global.OSD.AddMessage("Saved loaded");
+			Global.OSD.AddMessage("Config file loaded");
 		}
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)

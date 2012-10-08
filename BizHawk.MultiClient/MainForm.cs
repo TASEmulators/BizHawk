@@ -3955,5 +3955,10 @@ namespace BizHawk.MultiClient
 			Global.Config.GGHighlightActiveDisplayRegion ^= true;
 			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 		}
+
+		private void loadConfigToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
