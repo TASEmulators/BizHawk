@@ -286,6 +286,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 	{
 		public bool IsSGB { get; private set; }
 
+		/// <summary>disable all external callbacks.  the front end should not even know the core is frame advancing</summary>
+		bool nocallbacks = false;
+
 		bool disposed = false;
 		public void Dispose()
 		{
@@ -439,7 +442,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			this.DeterministicEmulation = DeterministicEmulation;
 			if (DeterministicEmulation) // save frame-0 savestate now
-				CoreSaveStateInternal(true);
+			{
+				MemoryStream ms = new MemoryStream();
+				BinaryWriter bw = new BinaryWriter(ms);
+				bw.Write(CoreSaveState());
+				bw.Write(true); // framezero, so no controller follows and don't frameadvance on load
+				bw.Close();
+				savestatebuff = ms.ToArray();
+			}
 		}
 
 		//must keep references to these so that they wont get garbage collected
@@ -453,7 +463,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		ushort snes_input_state(int port, int device, int index, int id)
 		{
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (!nocallbacks && CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";
@@ -553,6 +563,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
+			// for deterministic emulation, save the state we're going to use before frame advance
+			// don't do this during nocallbacks though, since it's already been done
+			if (!nocallbacks && DeterministicEmulation)
+			{
+				MemoryStream ms = new MemoryStream();
+				BinaryWriter bw = new BinaryWriter(ms);
+				bw.Write(CoreSaveState());
+				bw.Write(false); // not framezero
+				SnesSaveController ssc = new SnesSaveController();
+				ssc.CopyFrom(Controller);
+				ssc.Serialize(bw);
+				bw.Close();
+				savestatebuff = ms.ToArray();
+			}
+
 			// speedup when sound rendering is not needed
 			if (!rendersound)
 				LibsnesDll.snes_set_audio_sample(null);
@@ -591,11 +616,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if (IsLagFrame)
 				LagCount++;
 
-			if (DeterministicEmulation)
-			{
-				// save the one internal savestate for this frame now
-				CoreSaveStateInternal(true);
-			}
 		}
 
 		public DisplayType DisplayType
@@ -695,6 +715,104 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		public void ResetFrameCounter() { timeFrameCounter = 0; }
+
+		#region savestates
+
+		/// <summary>
+		/// can freeze a copy of a controller input set and serialize\deserialize it
+		/// </summary>
+		class SnesSaveController : IController
+		{
+			// this is all rather general, so perhaps should be moved out of LibsnesCore
+
+			ControllerDefinition def;
+
+			public SnesSaveController()
+			{
+				this.def = null;
+			}
+
+			public SnesSaveController(ControllerDefinition def)
+			{
+				this.def = def;
+			}
+
+			WorkingDictionary<string, float> buttons = new WorkingDictionary<string,float>();
+
+			/// <summary>
+			/// invalid until CopyFrom has been called
+			/// </summary>
+			public ControllerDefinition Type
+			{
+				get { return def; }
+			}
+
+			public void Serialize(BinaryWriter b)
+			{
+				b.Write(buttons.Keys.Count);
+				foreach (var k in buttons.Keys)
+				{
+					b.Write(k);
+					b.Write(buttons[k]);
+				}
+			}
+
+			/// <summary>
+			/// no checking to see if the deserialized controls match any definition
+			/// </summary>
+			/// <param name="b"></param>
+			public void DeSerialize(BinaryReader b)
+			{
+				buttons.Clear();
+				int numbuttons = b.ReadInt32();
+				for (int i = 0; i < numbuttons; i++)
+				{
+					string k = b.ReadString();
+					float v = b.ReadSingle();
+					buttons.Add(k, v);
+				}
+			}
+			
+			/// <summary>
+			/// this controller's definition changes to that of source
+			/// </summary>
+			/// <param name="source"></param>
+			public void CopyFrom(IController source)
+			{
+				this.def = source.Type;
+				buttons.Clear();
+				foreach (var k in def.BoolButtons)
+					buttons.Add(k, source.IsPressed(k) ? 1.0f : 0);
+				foreach (var k in def.FloatControls)
+				{
+					if (buttons.Keys.Contains(k))
+						throw new Exception("name collision between bool and float lists!");
+					buttons.Add(k, source.GetFloat(k));
+				}
+			}
+
+			public bool this[string button]
+			{
+				get { return buttons[button] != 0; }
+			}
+
+			public bool IsPressed(string button)
+			{
+				return buttons[button] != 0;
+			}
+
+			public float GetFloat(string name)
+			{
+				return buttons[name];
+			}
+
+			public void UpdateControls(int frame)
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();
@@ -712,8 +830,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			byte[] buf = CoreSaveState();
-			writer.Write(buf);
+			if (!DeterministicEmulation)
+				writer.Write(CoreSaveState());
+			else
+				writer.Write(savestatebuff);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -727,6 +847,30 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int size = LibsnesDll.snes_serialize_size();
 			byte[] buf = reader.ReadBytes(size);
 			CoreLoadState(buf);
+
+			if (DeterministicEmulation) // deserialize controller and fast-foward now
+			{
+				// reconstruct savestatebuff at the same time to avoid a costly core serialize
+				MemoryStream ms = new MemoryStream();
+				BinaryWriter bw = new BinaryWriter(ms);
+				bw.Write(buf);
+				bool framezero = reader.ReadBoolean();
+				bw.Write(framezero);
+				if (!framezero)
+				{
+					SnesSaveController ssc = new SnesSaveController(ControllerDefinition);
+					ssc.DeSerialize(reader);
+					IController tmp = this.Controller;
+					this.Controller = ssc;
+					nocallbacks = true;
+					FrameAdvance(false, false);
+					nocallbacks = false;
+					this.Controller = tmp;
+					ssc.Serialize(bw);
+				}
+				bw.Close();
+				savestatebuff = ms.ToArray();
+			}
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -758,38 +902,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// </summary>
 		byte[] CoreSaveState()
 		{
-			if (!DeterministicEmulation)
-				return CoreSaveStateInternal(false);
-			else
-				return savestatebuff;
-		}
-
-		/// <summary>
-		/// most recent internal savestate, for deterministic mode
-		/// </summary>
-		byte[] savestatebuff;
-
-		/// <summary>
-		/// internal function handling savestate
-		/// this can cause determinism problems if called improperly!
-		/// </summary>
-		byte[] CoreSaveStateInternal(bool cache)
-		{
 			int size = LibsnesDll.snes_serialize_size();
 			byte[] buf = new byte[size];
 			fixed (byte* pbuf = &buf[0])
 				LibsnesDll.snes_serialize(new IntPtr(pbuf), size);
-			if (cache)
-			{
-				savestatebuff = buf;
-				return null;
-			}
-			else
-			{
-				savestatebuff = null;
-				return buf;
-			}
+			return buf;
 		}
+
+		/// <summary>
+		/// most recent internal savestate, for deterministic mode ONLY
+		/// </summary>
+		byte[] savestatebuff;
+
+		#endregion
 
 		// Arbitrary extensible core comm mechanism
 		public CoreInputComm CoreInputComm { get; set; }
