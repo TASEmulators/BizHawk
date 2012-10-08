@@ -485,6 +485,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					case LibsnesDll.SNES_DEVICE_ID.JOYPAD_R: key += "R"; break;
 					case LibsnesDll.SNES_DEVICE_ID.JOYPAD_SELECT: key += "Select"; break;
 					case LibsnesDll.SNES_DEVICE_ID.JOYPAD_START: key += "Start"; break;
+					default: return 0;
 				}
 
 				return (ushort)(Controller[key] ? 1 : 0);
