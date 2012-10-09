@@ -68,7 +68,7 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			ProcessText();
+			// ProcessText();   // Commenting out until it's fixed to not scroll everything all the time
 			hasChanged = false;
 		}
 
@@ -670,36 +670,21 @@ namespace BizHawk.MultiClient
 				{
 					List<string> libfunctions = Global.MainForm.LuaConsole1.LuaImp.docs.GetFunctionsByLibrary(currentword);
 
-					int x = 0;
-					int y = 0;
+					// Position autocomplete box near the cursor's current position
+                    int x = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).X + LuaText.Location.X + 5;
+                    int y = LuaText.GetPositionFromCharIndex(LuaText.SelectionStart).Y + LuaText.Location.Y + (int)LuaText.Font.GetHeight() + 5;  // One row down
+					AutoCompleteView.Location = new Point(x, y);
 
-					int currentRow;
-					int currentColumn;
-					int fontHeight;
-					int topRow;
-
-					currentRow = LuaText.GetLineFromCharIndex(LuaText.SelectionStart);   //Currently selected row
-					topRow = 0;  //Need to figure this out, maybe LuaText.AutoScrollOffset?
-					currentColumn = LuaText.SelectionStart - LuaText.GetFirstCharIndexFromLine(currentRow);
-					fontHeight = (int)LuaText.Font.GetHeight();   //Explicilty cast to int
-
-					// Vertical position of auto complete box:
-					// This still needs to take into account the current scroll height of the box.  Currently it only will look correct when scrolled all the way to the top.
-					// ((Current row - Top row in view) + 1 to make it below the row) * (fontHeight + spaceBetweenLines)) + (Location of the top of the textbox in relation to overall control)
-					x = ((currentRow - topRow + 1) * (fontHeight + 1)) + LuaText.Location.Y;
-
-					// Horizontal position of auto complete box:
-					// (Width of each character in current font on the current line) + (Location of the left of the textbox in relation to overall control)
-					y = (currentColumn * (fontHeight / 2)) + LuaText.Location.X;  //    ¯\(°_o)/¯  Super-crude estimate for now, doesn't work great
-
-					AutoCompleteView.Location = new Point(y, x);
-					AutoCompleteView.Items.Clear();
+                    // Populate list with available options
+                    AutoCompleteView.Items.Clear();
 					foreach (string function in libfunctions)
 					{
 						ListViewItem item = new ListViewItem(function);
 						AutoCompleteView.Items.Add(item);
 					}
-					AutoCompleteView.Visible = true;  //Show window after it has been positioned and set up
+
+                    // Show window after it has been positioned and set up
+                    AutoCompleteView.Visible = true;  
 				}
 			}
 
