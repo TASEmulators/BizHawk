@@ -46,6 +46,9 @@ namespace BizHawk.MultiClient
 
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config());
 
+			// this will look in subdirectory "dll" to load pinvoked stuff
+			Win32.SetDllDirectory("dll");
+
 #if WINDOWS
 			try { Global.DSound = new DirectSound(); }
 			catch
