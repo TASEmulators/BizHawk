@@ -39,14 +39,15 @@ namespace BizHawk
 			return new GameInfo(cgi);
 		}
 
-		static void LoadDatabase_Escape(string line)
+		static void LoadDatabase_Escape(string line, string path)
 		{
 			if (!line.ToUpper().StartsWith("#INCLUDE")) return;
 			line = line.Substring(8).TrimStart();
-			if (File.Exists(line))
+			string filename = Path.Combine(path, line);
+			if (File.Exists(filename))
 			{
-				Console.WriteLine("loaded external game database {0}", line);
-				LoadDatabase(line);
+				Console.WriteLine("loading external game database {0}", line);
+				LoadDatabase(filename);
 			}
 			else
 				Console.WriteLine("BENIGN: missing external game database {0}", line);
@@ -64,7 +65,7 @@ namespace BizHawk
 						if (line.StartsWith(";")) continue; //comment
 						if (line.StartsWith("#"))
 						{
-							LoadDatabase_Escape(line);
+							LoadDatabase_Escape(line, Path.GetDirectoryName(path));
 							continue;
 						}
 						if (line.Trim().Length == 0) continue;
