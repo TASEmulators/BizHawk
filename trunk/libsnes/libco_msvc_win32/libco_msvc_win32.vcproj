@@ -89,7 +89,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(TargetPath) ..\..\BizHawk.MultiClient\output"
+				CommandLine="copy $(TargetPath) ..\..\BizHawk.MultiClient\output\dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -166,7 +166,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(TargetPath) ..\..\BizHawk.MultiClient\output"
+				CommandLine="copy $(TargetPath) ..\..\BizHawk.MultiClient\output\dll"
 			/>
 		</Configuration>
 	</Configurations>
