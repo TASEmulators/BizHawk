@@ -148,6 +148,52 @@ namespace BizHawk.MultiClient
 				var TABPage2 = tabControl1.TabPages[9]; //Hide Atari
 				tabControl1.Controls.Remove(TABPage2);
 			}
+
+			switch (Global.Game.System)
+			{
+				case "NES":
+					tabControl1.SelectTab(0);
+					break;
+				case "SNES":
+				case "SGB":
+					tabControl1.SelectTab(1);
+					break;
+				case "SMS":
+					tabControl1.SelectTab(2);
+					break;
+				case "SG":
+					tabControl1.SelectTab(3);
+					break;
+				case "GG":
+					tabControl1.SelectTab(4);
+					break;
+				case "GEN":
+					tabControl1.SelectTab(5);
+					break;
+				case "PCE":
+				case "PCECD":
+				case "SGX":
+					tabControl1.SelectTab(6);
+					break;
+				case "GB":
+				case "GBC":
+					tabControl1.SelectTab(7);
+					break;
+				case "TI83":
+					tabControl1.SelectTab(8);
+					break;
+				case "A26":
+					tabControl1.SelectTab(9);
+					break;
+				case "INTV":
+					tabControl1.SelectTab(10);
+					break;
+				case "NULL":
+					tabControl1.SelectTab(11);
+					break;
+
+
+			}
 		}
 
 		private void SaveSettings()
