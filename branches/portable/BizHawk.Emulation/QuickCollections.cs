@@ -71,7 +71,8 @@ namespace BizHawk
 					int todo;
 					if (tail > head) todo = tail - head;
 					else todo = buffer.Length - head;
-					Buffer.BlockCopy(buffer, head, ret, 0, elemSize * todo);
+					if(size > 0)
+						Buffer.BlockCopy(buffer, head, ret, 0, elemSize * todo);
 					int todo2;
 					if (tail < head) todo2 = tail;
 					else todo2 = 0;
