@@ -123,7 +123,7 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm = new CoreInputComm();
 			SyncCoreInputComm();
 
-			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), @"gamedb\gamedb.txt"));
+			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			SyncPresentationMode();
 
