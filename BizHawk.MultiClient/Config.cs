@@ -155,7 +155,7 @@ namespace BizHawk.MultiClient
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
 
-		public string FFMpegPath = "%exe%/ffmpeg.exe";
+		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
 		// General Client Settings
 		public bool StackOSDMessages = true;
