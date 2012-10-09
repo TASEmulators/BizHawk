@@ -39,6 +39,8 @@ namespace BizHawk.MultiClient
 		void CaptureRewindState64K()
 		{
 			byte[] CurrentState = Global.Emulator.SaveStateBinary();
+			if (CurrentState.Length != LastState.Length)
+				throw new System.Exception(string.Format("Rewind error: Savestate size mismatch:{0} old {1} new", LastState.Length, CurrentState.Length));
 			int beginChangeSequence = -1;
 			bool inChangeSequence = false;
 			var ms = new MemoryStream();
@@ -83,6 +85,8 @@ namespace BizHawk.MultiClient
 		void CaptureRewindStateLarge()
 		{
 			byte[] CurrentState = Global.Emulator.SaveStateBinary();
+			if (CurrentState.Length != LastState.Length)
+				throw new System.Exception(string.Format("Rewind error: Savestate size mismatch:{0} old {1} new", LastState.Length, CurrentState.Length));
 			int beginChangeSequence = -1;
 			bool inChangeSequence = false;
 			var ms = new MemoryStream();

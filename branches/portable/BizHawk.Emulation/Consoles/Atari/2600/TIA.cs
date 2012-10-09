@@ -430,8 +430,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public struct audio
 		{
+			/// <summary>noise/division control</summary>
 			public byte AUDC;
+			/// <summary>frequency divider</summary>
 			public byte AUDF;
+			/// <summary>volume</summary>
 			public byte AUDV;
 
 			public byte sr4;
@@ -463,8 +466,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public void GetSamples(short[] samples)
 		{
-			short[] moreSamples = new short[1000];
-			for (int i = 0; i < 1000; i++)
+			short[] moreSamples = new short[523];
+			for (int i = 0; i < moreSamples.Length; i++)
 			{
 				for (int snd = 0; snd < 2; snd++)
 				{
@@ -513,7 +516,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 						}
 
 					}
-					moreSamples[i] = (short)(((AUD[0].sr4 & 0x08) != 0) ? 32767 : 0);
+					moreSamples[i] += (short)(((AUD[snd].sr4 & 0x08) != 0) ? AUD[snd].AUDV * 1092 : 0);
 				}
 				/*if (++freqDiv == (audioFreqDiv * 2))
 				{
@@ -525,21 +528,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 				*/
 			}
 
-			for (int i = 0; i < samples.Length/2; i++)
+			for (int i = 0; i < samples.Length / 2; i++)
 			{
-				//samples[i] = 0;
-				//if (audioEnabled)
-				//{
-					samples[i*2] = moreSamples[(int)(((double)moreSamples.Length / (double)(samples.Length/2)) * i)];
-					//samples[i * 2 + 1] = moreSamples[(int)((moreSamples.Length / (samples.Length / 2)) * i)];
-					//samples[i] = (short)(Math.Sin(((((32000.0 / (tia.audioFreqDiv+1)) / 60.0) * Math.PI) / samples.Length) * i) * MaxVolume + MaxVolume);
-				//}
-				//else
-				//{
-				//	samples[i] = 0;
-				//}
+				samples[i * 2] = moreSamples[(int)(((double)moreSamples.Length / (double)(samples.Length / 2)) * i)];
+				samples[i * 2 + 1] = samples[i * 2];
 			}
-			//samples = tia.samples; 
 		}
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
@@ -1056,11 +1049,27 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{
-				AUD[0].AUDC = value;
+				AUD[0].AUDC = (byte)(value & 15);
+			}
+			else if (maskedAddr == 0x16) // AUDC1
+			{
+				AUD[1].AUDC = (byte)(value & 15);
 			}
 			else if (maskedAddr == 0x17) // AUDF0
 			{
-				AUD[0].AUDF = (byte)(value + 1);
+				AUD[0].AUDF = (byte)((value & 31) + 1);
+			}
+			else if (maskedAddr == 0x18) // AUDF1
+			{
+				AUD[1].AUDF = (byte)((value & 31) + 1);
+			}
+			else if (maskedAddr == 0x19) // AUDV0
+			{
+				AUD[0].AUDV = (byte)(value & 15);
+			}
+			else if (maskedAddr == 0x1A) // AUDV1
+			{
+				AUD[1].AUDV = (byte)(value & 15);
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{

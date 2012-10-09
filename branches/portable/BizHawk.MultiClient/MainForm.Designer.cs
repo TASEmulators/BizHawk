@@ -220,6 +220,7 @@
 			this.smsForceStereoSeparationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.smsSpriteLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showClippedRegionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.highlightActiveDisplayRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
 			this.smsGraphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tI83ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -293,7 +294,6 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.highlightActiveDisplayRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -1246,7 +1246,7 @@
 			// 
 			this.controllersToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
 			this.controllersToolStripMenuItem.Name = "controllersToolStripMenuItem";
-			this.controllersToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.controllersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.controllersToolStripMenuItem.Text = "&Controllers...";
 			this.controllersToolStripMenuItem.Click += new System.EventHandler(this.controllersToolStripMenuItem_Click);
 			// 
@@ -1254,7 +1254,7 @@
 			// 
 			this.hotkeysToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.HotKeys;
 			this.hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
-			this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.hotkeysToolStripMenuItem.Text = "&Hotkeys...";
 			this.hotkeysToolStripMenuItem.Click += new System.EventHandler(this.hotkeysToolStripMenuItem_Click);
 			// 
@@ -1262,7 +1262,7 @@
 			// 
 			this.messagesToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MessageConfig;
 			this.messagesToolStripMenuItem.Name = "messagesToolStripMenuItem";
-			this.messagesToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.messagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.messagesToolStripMenuItem.Text = "&Messages...";
 			this.messagesToolStripMenuItem.Click += new System.EventHandler(this.messagesToolStripMenuItem_Click);
 			// 
@@ -1270,7 +1270,7 @@
 			// 
 			this.pathsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CopyFolderHS;
 			this.pathsToolStripMenuItem.Name = "pathsToolStripMenuItem";
-			this.pathsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.pathsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.pathsToolStripMenuItem.Text = "Paths...";
 			this.pathsToolStripMenuItem.Click += new System.EventHandler(this.pathsToolStripMenuItem_Click);
 			// 
@@ -1278,7 +1278,7 @@
 			// 
 			this.soundToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.AudioHS;
 			this.soundToolStripMenuItem.Name = "soundToolStripMenuItem";
-			this.soundToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.soundToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.soundToolStripMenuItem.Text = "&Sound...";
 			this.soundToolStripMenuItem.Click += new System.EventHandler(this.soundToolStripMenuItem_Click);
 			// 
@@ -1286,14 +1286,14 @@
 			// 
 			this.autofireToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Lightning;
 			this.autofireToolStripMenuItem.Name = "autofireToolStripMenuItem";
-			this.autofireToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.autofireToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.autofireToolStripMenuItem.Text = "&Autofire...";
 			this.autofireToolStripMenuItem.Click += new System.EventHandler(this.autofireToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(138, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
 			// 
 			// enableToolStripMenuItem
 			// 
@@ -1306,7 +1306,7 @@
             this.frameAdvanceSkipLagFramesToolStripMenuItem,
             this.backupSaveramToolStripMenuItem});
 			this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
-			this.enableToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.enableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.enableToolStripMenuItem.Text = "&Enable";
 			this.enableToolStripMenuItem.DropDownOpened += new System.EventHandler(this.enableToolStripMenuItem_DropDownOpened);
 			// 
@@ -1377,7 +1377,7 @@
             this.toolStripSeparator23,
             this.logWindowAsConsoleToolStripMenuItem});
 			this.gUIToolStripMenuItem.Name = "gUIToolStripMenuItem";
-			this.gUIToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.gUIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.gUIToolStripMenuItem.Text = "GUI";
 			this.gUIToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gUIToolStripMenuItem_DropDownOpened);
 			// 
@@ -1499,7 +1499,7 @@
             this.miSpeed150,
             this.miSpeed200});
 			this.frameSkipToolStripMenuItem.Name = "frameSkipToolStripMenuItem";
-			this.frameSkipToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.frameSkipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.frameSkipToolStripMenuItem.Text = "Speed/Skip";
 			this.frameSkipToolStripMenuItem.DropDownOpened += new System.EventHandler(this.frameSkipToolStripMenuItem_DropDownOpened);
 			// 
@@ -1642,13 +1642,13 @@
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(138, 6);
+			this.toolStripSeparator10.Size = new System.Drawing.Size(149, 6);
 			// 
 			// saveConfigToolStripMenuItem
 			// 
 			this.saveConfigToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Save;
 			this.saveConfigToolStripMenuItem.Name = "saveConfigToolStripMenuItem";
-			this.saveConfigToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.saveConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.saveConfigToolStripMenuItem.Text = "Save Config";
 			this.saveConfigToolStripMenuItem.Click += new System.EventHandler(this.saveConfigToolStripMenuItem_Click);
 			// 
@@ -1656,8 +1656,9 @@
 			// 
 			this.loadConfigToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.LoadConfig;
 			this.loadConfigToolStripMenuItem.Name = "loadConfigToolStripMenuItem";
-			this.loadConfigToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.loadConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.loadConfigToolStripMenuItem.Text = "Load Config";
+			this.loadConfigToolStripMenuItem.Click += new System.EventHandler(this.loadConfigToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
 			// 
@@ -1926,6 +1927,13 @@
 			this.showClippedRegionsToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
 			this.showClippedRegionsToolStripMenuItem.Text = "&Show Clipped Regions";
 			this.showClippedRegionsToolStripMenuItem.Click += new System.EventHandler(this.showClippedRegionsToolStripMenuItem_Click);
+			// 
+			// highlightActiveDisplayRegionToolStripMenuItem
+			// 
+			this.highlightActiveDisplayRegionToolStripMenuItem.Name = "highlightActiveDisplayRegionToolStripMenuItem";
+			this.highlightActiveDisplayRegionToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+			this.highlightActiveDisplayRegionToolStripMenuItem.Text = "&Highlight Active Display Region";
+			this.highlightActiveDisplayRegionToolStripMenuItem.Click += new System.EventHandler(this.highlightActiveDisplayRegionToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator24
 			// 
@@ -2295,70 +2303,70 @@
 			this.StatusSlot1.Name = "StatusSlot1";
 			this.StatusSlot1.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot1.Text = "1";
-			this.StatusSlot1.Click += new System.EventHandler(this.StatusSlot1_Click);
+			this.StatusSlot1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot1_MouseUp);
 			// 
 			// StatusSlot2
 			// 
 			this.StatusSlot2.Name = "StatusSlot2";
 			this.StatusSlot2.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot2.Text = "2";
-			this.StatusSlot2.Click += new System.EventHandler(this.StatusSlot2_Click);
+			this.StatusSlot2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot2_MouseUp);
 			// 
 			// StatusSlot3
 			// 
 			this.StatusSlot3.Name = "StatusSlot3";
 			this.StatusSlot3.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot3.Text = "3";
-			this.StatusSlot3.Click += new System.EventHandler(this.StatusSlot3_Click);
+			this.StatusSlot3.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot3_MouseUp);
 			// 
 			// StatusSlot4
 			// 
 			this.StatusSlot4.Name = "StatusSlot4";
 			this.StatusSlot4.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot4.Text = "4";
-			this.StatusSlot4.Click += new System.EventHandler(this.StatusSlot4_Click);
+			this.StatusSlot4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot4_MouseUp);
 			// 
 			// StatusSlot5
 			// 
 			this.StatusSlot5.Name = "StatusSlot5";
 			this.StatusSlot5.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot5.Text = "5";
-			this.StatusSlot5.Click += new System.EventHandler(this.StatusSlot5_Click);
+			this.StatusSlot5.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot5_MouseUp);
 			// 
 			// StatusSlot6
 			// 
 			this.StatusSlot6.Name = "StatusSlot6";
 			this.StatusSlot6.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot6.Text = "6";
-			this.StatusSlot6.Click += new System.EventHandler(this.StatusSlot6_Click);
+			this.StatusSlot6.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot6_MouseUp);
 			// 
 			// StatusSlot7
 			// 
 			this.StatusSlot7.Name = "StatusSlot7";
 			this.StatusSlot7.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot7.Text = "7";
-			this.StatusSlot7.Click += new System.EventHandler(this.StatusSlot7_Click);
+			this.StatusSlot7.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot7_MouseUp);
 			// 
 			// StatusSlot8
 			// 
 			this.StatusSlot8.Name = "StatusSlot8";
 			this.StatusSlot8.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot8.Text = "8";
-			this.StatusSlot8.Click += new System.EventHandler(this.StatusSlot8_Click);
+			this.StatusSlot8.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot8_MouseUp);
 			// 
 			// StatusSlot9
 			// 
 			this.StatusSlot9.Name = "StatusSlot9";
 			this.StatusSlot9.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot9.Text = "9";
-			this.StatusSlot9.Click += new System.EventHandler(this.StatusSlot9_Click);
+			this.StatusSlot9.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot9_MouseUp);
 			// 
 			// StatusSlot10
 			// 
 			this.StatusSlot10.Name = "StatusSlot10";
 			this.StatusSlot10.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot10.Text = "0";
-			this.StatusSlot10.Click += new System.EventHandler(this.StatusSlot10_Click);
+			this.StatusSlot10.MouseUp += new System.Windows.Forms.MouseEventHandler(this.StatusSlot10_MouseUp);
 			// 
 			// CheatStatus
 			// 
@@ -2529,13 +2537,6 @@
 			this.cmiShowMenu.Size = new System.Drawing.Size(203, 22);
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
-			// 
-			// highlightActiveDisplayRegionToolStripMenuItem
-			// 
-			this.highlightActiveDisplayRegionToolStripMenuItem.Name = "highlightActiveDisplayRegionToolStripMenuItem";
-			this.highlightActiveDisplayRegionToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
-			this.highlightActiveDisplayRegionToolStripMenuItem.Text = "&Highlight Active Display Region";
-			this.highlightActiveDisplayRegionToolStripMenuItem.Click += new System.EventHandler(this.highlightActiveDisplayRegionToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 

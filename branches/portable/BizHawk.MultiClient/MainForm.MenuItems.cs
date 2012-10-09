@@ -1195,17 +1195,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void StatusSlot1_Click(object sender, EventArgs e) { LoadState("QuickSave1"); }
-		private void StatusSlot2_Click(object sender, EventArgs e) { LoadState("QuickSave2"); }
-		private void StatusSlot3_Click(object sender, EventArgs e) { LoadState("QuickSave3"); }
-		private void StatusSlot4_Click(object sender, EventArgs e) { LoadState("QuickSave4"); }
-		private void StatusSlot5_Click(object sender, EventArgs e) { LoadState("QuickSave5"); }
-		private void StatusSlot6_Click(object sender, EventArgs e) { LoadState("QuickSave6"); }
-		private void StatusSlot7_Click(object sender, EventArgs e) { LoadState("QuickSave7"); }
-		private void StatusSlot8_Click(object sender, EventArgs e) { LoadState("QuickSave8"); }
-		private void StatusSlot9_Click(object sender, EventArgs e) { LoadState("QuickSave9"); }
-		private void StatusSlot10_Click(object sender, EventArgs e) { LoadState("QuickSave0"); }
-
 		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Global.MovieSession.Movie.IsActive)
@@ -1305,7 +1294,7 @@ namespace BizHawk.MultiClient
 		private void loadConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, Global.Config);
-			Global.OSD.AddMessage("Saved loaded");
+			Global.OSD.AddMessage("Config file loaded");
 		}
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2013,6 +2002,156 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.GB_MulticartCompat ^= true;
 			FlagNeedsReboot();
+		}
+
+		private void StatusSlot1_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(1))
+				{
+					LoadState("QuickSave1");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave1");
+			}
+		}
+
+		private void StatusSlot2_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(2))
+				{
+					LoadState("QuickSave2");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave2");
+			}
+		}
+
+		private void StatusSlot3_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(3))
+				{
+					LoadState("QuickSave3");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave3");
+			}
+		}
+
+		private void StatusSlot4_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(4))
+				{
+					LoadState("QuickSave4");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave4");
+			}
+		}
+
+		private void StatusSlot5_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(5))
+				{
+					LoadState("QuickSave5");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave5");
+			}
+		}
+
+		private void StatusSlot6_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(6))
+				{
+					LoadState("QuickSave6");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave6");
+			}
+		}
+
+		private void StatusSlot7_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(7))
+				{
+					LoadState("QuickSave7");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave7");
+			}
+		}
+
+		private void StatusSlot8_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(8))
+				{
+					LoadState("QuickSave8");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave8");
+			}
+		}
+
+		private void StatusSlot9_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(9))
+				{
+					LoadState("QuickSave9");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave9");
+			}
+		}
+
+		private void StatusSlot10_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (StateSlots.HasSlot(0))
+				{
+					LoadState("QuickSave0");
+				}
+			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				SaveState("QuickSave0");
+			}
 		}
 	}
 }

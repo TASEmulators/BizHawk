@@ -1655,6 +1655,15 @@ namespace BizHawk.MultiClient
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
 
+				if (Global.Emulator.CoreOutputComm.RomStatusDetails == null)
+				{
+					Global.Emulator.CoreOutputComm.RomStatusDetails =
+						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
+						game.Name,
+						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData)),
+						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom.RomData)));
+				}
+
 				//restarts the lua console if a different rom is loaded.
 				//im not really a fan of how this is done..
 				if (Global.Config.RecentRoms.IsEmpty() || Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
@@ -3243,17 +3252,106 @@ namespace BizHawk.MultiClient
 		public void UpdateStatusSlots()
 		{
 			StateSlots.Update();
-			StatusSlot1.Enabled = StateSlots.HasSlot(1);
-			StatusSlot2.Enabled = StateSlots.HasSlot(2);
-			StatusSlot3.Enabled = StateSlots.HasSlot(3);
-			StatusSlot4.Enabled = StateSlots.HasSlot(4);
-			StatusSlot5.Enabled = StateSlots.HasSlot(5);
-			StatusSlot6.Enabled = StateSlots.HasSlot(6);
-			StatusSlot7.Enabled = StateSlots.HasSlot(7);
-			StatusSlot8.Enabled = StateSlots.HasSlot(8);
-			StatusSlot9.Enabled = StateSlots.HasSlot(9);
-			StatusSlot10.Enabled = StateSlots.HasSlot(0);
 
+			if (StateSlots.HasSlot(1))
+			{
+				StatusSlot1.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot1.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(2))
+			{
+				StatusSlot2.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot2.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(3))
+			{
+				StatusSlot3.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot3.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(3))
+			{
+				StatusSlot3.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot3.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(4))
+			{
+				StatusSlot4.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot4.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(5))
+			{
+				StatusSlot5.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot5.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(6))
+			{
+				StatusSlot6.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot6.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(7))
+			{
+				StatusSlot7.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot7.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(8))
+			{
+				StatusSlot8.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot8.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(9))
+			{
+				StatusSlot9.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot9.ForeColor = Color.Gray;
+			}
+
+			if (StateSlots.HasSlot(0))
+			{
+				StatusSlot0.ForeColor = Color.Black;
+			}
+			else
+			{
+				StatusSlot0.ForeColor = Color.Gray;
+			}
+			
 			StatusSlot1.BackColor = SystemColors.Control;
 			StatusSlot2.BackColor = SystemColors.Control;
 			StatusSlot3.BackColor = SystemColors.Control;
@@ -3265,16 +3363,16 @@ namespace BizHawk.MultiClient
 			StatusSlot9.BackColor = SystemColors.Control;
 			StatusSlot10.BackColor = SystemColors.Control;
 
-			if (Global.Config.SaveSlot == 0) StatusSlot10.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 1) StatusSlot1.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 2) StatusSlot2.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 3) StatusSlot3.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 4) StatusSlot4.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 5) StatusSlot5.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 6) StatusSlot6.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 7) StatusSlot7.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 8) StatusSlot8.BackColor = SystemColors.ControlLightLight;
-			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 0) StatusSlot10.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 1) StatusSlot1.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 2) StatusSlot2.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 3) StatusSlot3.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 4) StatusSlot4.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 5) StatusSlot5.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 6) StatusSlot6.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 7) StatusSlot7.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 8) StatusSlot8.BackColor = SystemColors.ControlDark;
+			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlDark;
 		}
 
 		/// <summary>
@@ -4007,6 +4105,11 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.GGHighlightActiveDisplayRegion ^= true;
 			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+		}
+
+		private void loadConfigToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
