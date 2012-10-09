@@ -91,7 +91,7 @@ namespace BizHawk
 						Game.MetaData = items.Length >= 6 ? items[5] : null;
 
 						if (db.ContainsKey(Game.Hash))
-							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on {1}", Game.Hash, Game.Name);
+							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", Game.Hash, Game.Name, db[Game.Hash].Name);
 
 						db[Game.Hash] = Game;
 					}
