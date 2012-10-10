@@ -32,6 +32,8 @@ namespace BizHawk.Emulation.Sound.Utilities
 		/// <param name="input"></param>
 		public DCFilter(ISoundProvider input = null, int filterwidth = 65536)
 		{
+			if (filterwidth < 1 || filterwidth > 65536)
+				throw new ArgumentOutOfRangeException();
 			this.input = input;
 			this.depth = filterwidth;
 			this.buffer = new Queue<short>(depth * 2);
