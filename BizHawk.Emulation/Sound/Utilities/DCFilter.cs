@@ -24,15 +24,16 @@ namespace BizHawk.Emulation.Sound.Utilities
 
 		Queue<short> buffer;
 
-		const int depth = 65536;
+		int depth;
 		
 		/// <summary>
 		/// if input == null, run in detatched push mode
 		/// </summary>
 		/// <param name="input"></param>
-		public DCFilter(ISoundProvider input = null)
+		public DCFilter(ISoundProvider input = null, int filterwidth = 65536)
 		{
 			this.input = input;
+			this.depth = filterwidth;
 			this.buffer = new Queue<short>(depth * 2);
 			for (int i = 0; i < depth * 2; i++)
 				buffer.Enqueue(0);
@@ -65,8 +66,8 @@ namespace BizHawk.Emulation.Sound.Utilities
 				sumR += R;
 				buffer.Enqueue(L);
 				buffer.Enqueue(R);
-				int bigL = L - (sumL >> 16); // / depth;
-				int bigR = R - (sumR >> 16); // / depth;
+				int bigL = L - sumL / depth;
+				int bigR = R - sumR / depth;
 				// check for clipping
 				if (bigL > 32767)
 					samples[i] = 32767;
