@@ -510,7 +510,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			/// <returns>16 bit audio sample</returns>
 			public short cycle()
 			{
-				if (++freqcnt == (AUDF * 2))
+				if (++freqcnt == AUDF)
 				{
 					freqcnt = 0;
 					switch (AUDC)
