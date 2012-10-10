@@ -430,7 +430,7 @@ namespace BizHawk.MultiClient
 		void SyncThrottle()
 		{
 			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward || Global.ClientControls["MaxTurbo"];
-			Global.ForceNoVsync = unthrottled || fastforward;
+			Global.ForceNoThrottle = unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);

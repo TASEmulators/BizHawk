@@ -132,7 +132,7 @@ namespace BizHawk.MultiClient
 			int samplesNeeded = SNDDXGetAudioSpace() * 2;
 			short[] samples;
 
-			if (Global.Config.SoundThrottle)
+			if (Global.Config.SoundThrottle && !Global.ForceNoThrottle)
 			{
 				if (DSoundBuffer == null) return; // can cause SNDDXGetAudioSpace() = 0
 				int samplesWanted = 2 * (int) (0.8 + 44100.0 / Global.Emulator.CoreOutputComm.VsyncRate);
