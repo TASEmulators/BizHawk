@@ -80,36 +80,42 @@ namespace BizHawk.MultiClient
 			return (byte)(((PPUBus[address] >> (7 - bit)) & 1));
 		}
 
+		bool ForceChange = false;
+		bool CheckChange()
+		{
+			bool changed = false;
+			for (int x = 0; x < 0x20; x++)
+			{
+				PALRAMprev[x] = PALRAM[x];
+				PALRAM[x] = Nes.ppu.PALRAM[x];
+				if (PALRAM[x] != PALRAMprev[x])
+				{
+					changed = true;
+				}
+			}
+
+			for (int x = 0; x < 0x2000; x++)
+			{
+				PPUBusprev[x] = PPUBus[x];
+				PPUBus[x] = Nes.ppu.ppubus_peek(x);
+				if (PPUBus[x] != PPUBusprev[x])
+				{
+					changed = true;
+				}
+			}
+
+			if (ForceChange) return true;
+
+			return changed;
+		}
+
 		unsafe void Generate(bool now = false)
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 
 			if (Global.Emulator.Frame % RefreshRate.Value == 0 || now)
 			{
-				bool Changed = false;
-
-				for (int x = 0; x < 0x20; x++)
-				{
-					PALRAMprev[x] = PALRAM[x];
-					PALRAM[x] = Nes.ppu.PALRAM[x];
-					if (PALRAM[x] != PALRAMprev[x])
-					{
-						Changed = true;
-					}
-				}
-				
-				if (!Changed)
-				{
-					for (int x = 0; x < 0x2000; x++)
-					{
-						PPUBusprev[x] = PPUBus[x];
-						PPUBus[x] = Nes.ppu.ppubus_peek(x);
-						if (PPUBus[x] != PPUBusprev[x])
-						{
-							Changed = true;
-						}
-					}
-				}
+				bool Changed = CheckChange();
 
 				int b0 = 0;
 				int b1 = 0;
@@ -118,6 +124,8 @@ namespace BizHawk.MultiClient
 
 				if (Changed)
 				{
+					ForceChange = false;
+
 					//Pattern Viewer
 					int pal;
 					for (int x = 0; x < 16; x++)
@@ -336,13 +344,14 @@ namespace BizHawk.MultiClient
 					PatternView.Pal1++;
 					if (PatternView.Pal1 > 7) PatternView.Pal1 = 0;
 				}
-				UpdateTableLabels();
+				UpdatePaletteSelection();
 			}
 			HandleDefaultImage(e);
 		}
 
-		private void UpdateTableLabels()
+		private void UpdatePaletteSelection()
 		{
+			ForceChange = true;
 			Table0PaletteLabel.Text = "Palette: " + PatternView.Pal0;
 			Table1PaletteLabel.Text = "Palette: " + PatternView.Pal1;
 		}
@@ -517,7 +526,7 @@ namespace BizHawk.MultiClient
 			if (sender == Table1P6) PatternView.Pal1 = 6;
 			if (sender == Table1P7) PatternView.Pal1 = 7;
 
-			UpdateTableLabels();
+			UpdatePaletteSelection();
 		}
 
 		private void txtScanline_TextChanged(object sender, EventArgs e)
