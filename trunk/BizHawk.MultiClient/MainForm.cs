@@ -316,6 +316,8 @@ namespace BizHawk.MultiClient
 			{
 				RecordAVI(cmdDumpType, cmdDumpName);
 			}
+
+			UpdateStatusSlots();
 		}
 
 		/// <summary>
