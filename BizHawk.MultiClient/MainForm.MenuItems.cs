@@ -1263,7 +1263,6 @@ namespace BizHawk.MultiClient
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			miDisplayVsync.Checked = Global.Config.LimitFramerate;
 			miAutoMinimizeSkipping.Checked = Global.Config.AutoMinimizeSkipping;
 			miLimitFramerate.Checked = Global.Config.LimitFramerate;
 			miDisplayVsync.Checked = Global.Config.DisplayVSync;
