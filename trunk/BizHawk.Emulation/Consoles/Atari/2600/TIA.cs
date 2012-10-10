@@ -425,31 +425,172 @@ namespace BizHawk.Emulation.Consoles.Atari
 		public int BufferHeight { get { return 262; } }
 		public int BackgroundColor { get { return 0; } }
 
-		//byte[] snd4 = new byte[2];
-		//byte[] snd4 = new byte[2];
-
-		public struct audio
+		public class audio
 		{
 			/// <summary>noise/division control</summary>
-			public byte AUDC;
+			public byte AUDC = 0;
 			/// <summary>frequency divider</summary>
-			public byte AUDF;
+			public byte AUDF = 1;
 			/// <summary>volume</summary>
-			public byte AUDV;
+			public byte AUDV = 0;
 
-			public byte sr4;
-			public byte sr5;
+			/// <summary>2 state counter</summary>
+			bool sr1 = true;
+			/// <summary>4 bit shift register</summary>
+			int sr4 = 0x0f;
+			/// <summary>5 bit shift register</summary>
+			int sr5 = 0x1f;
+			/// <summary>3 state counter</summary>
+			int sr3 = 2;
 
-			public byte freqcnt;
+			/// <summary>counter based off AUDF</summary>
+			byte freqcnt = 0;
 
-			public void run_4()
+			/// <summary>latched audio value</summary>
+			bool on = true;
+
+			bool run_3()
 			{
-				sr4 = (byte)(((sr4 & 0x0F) != 0) ? (sr4 << 1) | ((((sr4 & 0x08) != 0) ? 1 : 0) ^ (((sr4 & 0x04) != 0) ? 1 : 0)) : 1);
+				sr3++;
+				if (sr3 == 3)
+				{
+					sr3 = 0;
+					return true;
+				}
+				return false;
 			}
 
-			public void run_5()
+			bool run_4()
 			{
-				sr5 = (byte)(((sr5 & 0x1F) != 0) ? (sr5 << 1) | (((sr5 & 0x10) != 0) ? 1 : 0) ^ (((sr5 & 0x04) != 0) ? 1 : 0) : 1);
+				bool ret = (sr4 & 1) != 0;
+				bool c = (sr4 & 1) != 0 ^ (sr4 & 2) != 0;
+				sr4 = (sr4 >> 1) | (c ? 8 : 0);
+				return ret;
+			}
+
+			bool run_5()
+			{
+				bool ret = (sr5 & 1) != 0;
+				bool c = (sr5 & 1) != 0 ^ (sr5 & 4) != 0;
+				sr5 = (sr5 >> 1) | (c ? 16 : 0);
+				return ret;
+			}
+
+			bool one_4()
+			{
+				bool ret = (sr4 & 1) != 0;
+				sr4 = (sr4 >> 1) | 8;
+				return ret;
+			}
+			bool one_5()
+			{
+				bool ret = (sr5 & 1) != 0;
+				sr5 = (sr5 >> 1) | 16;
+				return ret;
+			}
+
+			bool run_1()
+			{
+				sr1 = !sr1;
+				return !sr1;
+			}
+
+			bool run_9()
+			{
+				bool ret = (sr4 & 1) != 0;
+				bool c = (sr5 & 1) != 0 ^ (sr4 & 1) != 0;
+				sr4 = (sr4 >> 1) | ((sr5 & 1) != 0 ? 8 : 0);
+				sr5 = (sr5 >> 1) | (c ? 16 : 0);
+				return ret;
+			}
+
+			/// <summary>
+			/// call me approx 31k times a second
+			/// </summary>
+			/// <returns>16 bit audio sample</returns>
+			public short cycle()
+			{
+				if (++freqcnt == (AUDF * 2))
+				{
+					freqcnt = 0;
+					switch (AUDC)
+					{
+						case 0x00:
+						case 0x0b:
+							// Both have a 1 s
+							one_5();
+							on = one_4();
+							break;
+
+						case 0x01:
+							// Both run, but the 5 bit is ignored
+							on = run_4();
+							run_5();
+							break;
+
+						case 0x02:
+							if ((sr5 & 0x0f) == 0 || (sr5 & 0x0f) == 0x0f)
+							{
+								on = run_4();
+								break;
+							}
+							run_5();
+							break;
+
+						case 0x03:
+							if (run_5())
+							{
+								on = run_4();
+								break;
+							}
+							break;
+
+						case 0x04:
+							run_5();
+							one_4();
+							on = run_1();
+							break;
+
+						case 0x05:
+							one_5();
+							run_4();
+							on = run_1();
+							break;
+
+						case 0x06:
+						case 0x0a:
+							run_4(); // ???
+							run_5();
+							if ((sr5 & 0x0f) == 0)
+								on = false;
+							else if ((sr5 & 0x0f) == 0x0f)
+								on = true;
+							break;
+
+						case 0x07:
+						case 0x09:
+							run_4(); // ???
+							on = run_5();
+							break;
+						case 0x08:
+							on = run_9();
+							break;
+						case 0x0c:
+						case 0x0d:
+							if (run_3())
+								on = run_1();
+							break;
+						case 0x0e:
+							if (run_3())
+								goto case 0x06;
+							break;
+						case 0x0f:
+							if (run_3())
+								goto case 0x07;
+							break;
+					}
+				}
+				return (short)(on ? AUDV * 1092 : 0);
 			}
 
 			public void SyncState(Serializer ser)
@@ -457,12 +598,16 @@ namespace BizHawk.Emulation.Consoles.Atari
 				ser.Sync("AUDC", ref AUDC);
 				ser.Sync("AUDF", ref AUDF);
 				ser.Sync("AUDV", ref AUDV);
+				ser.Sync("sr1", ref sr1);
+				ser.Sync("sr3", ref sr3);
 				ser.Sync("sr4", ref sr4);
 				ser.Sync("sr5", ref sr5);
+				ser.Sync("freqcnt", ref freqcnt);
+				ser.Sync("on", ref on);
 			}
-		};
+		}
 
-		public audio[] AUD = new audio[2];
+		public audio[] AUD = { new audio(), new audio() };
 
 		public void GetSamples(short[] samples)
 		{
@@ -471,52 +616,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				for (int snd = 0; snd < 2; snd++)
 				{
-					if (++AUD[snd].freqcnt == (AUD[snd].AUDF * 2))
-					{
-						AUD[snd].freqcnt = 0;
-						switch (AUD[snd].AUDC)
-						{
-							case 0x00:
-								// Both have a 1 s
-								AUD[snd].sr5 = (byte)(((AUD[snd].sr5 & 0x1F) != 0) ? (AUD[snd].sr5 << 1) | 0x01 : 1);
-								AUD[snd].sr4 = (byte)(((AUD[snd].sr4 & 0x0F) != 0) ? (AUD[snd].sr4 << 1) | 0x01 : 1);
-								break;
-
-							case 0x01:
-								// Both run, but the 5 bit is ignored
-								AUD[snd].run_4();
-								AUD[snd].run_5();
-								break;
-
-							case 0x02:
-								if ((AUD[snd].sr5 & 0x0F) == 0x08)
-								{
-									AUD[snd].run_4();
-									break;
-								}
-
-								AUD[snd].run_5();
-								break;
-
-							case 0x03:
-								if ((AUD[snd].sr5 & 0x10) == 0x10)
-								{
-									AUD[snd].run_4();
-									break;
-								}
-
-								AUD[snd].run_5();
-								break;
-
-							case 0x04:
-								AUD[snd].run_5();
-
-								AUD[snd].sr4 = (byte)(((AUD[snd].sr4 & 0x0F) != 0) ? (AUD[snd].sr4 << 1) | 0x01 : 1);
-								break;
-						}
-
-					}
-					moreSamples[i] += (short)(((AUD[snd].sr4 & 0x08) != 0) ? AUD[snd].AUDV * 1092 : 0);
+					moreSamples[i] += AUD[snd].cycle();
+					//moreSamples[i] += (short)(((AUD[snd].sr4 & 0x08) != 0) ? AUD[snd].AUDV * 1092 : 0);
 				}
 				/*if (++freqDiv == (audioFreqDiv * 2))
 				{
