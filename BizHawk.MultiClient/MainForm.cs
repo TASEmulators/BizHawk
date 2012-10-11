@@ -2153,11 +2153,6 @@ namespace BizHawk.MultiClient
 
 		void StepRunLoop_Core()
 		{
-			bool ff = Global.ClientControls["Fast Forward"] || Global.ClientControls["MaxTurbo"];
-			bool fff = Global.ClientControls["MaxTurbo"];
-			bool updateFpsString = (runloop_last_ff != ff);
-			runloop_last_ff = ff;
-
 			bool runFrame = false;
 			runloop_frameadvance = false;
 			DateTime now = DateTime.Now;
@@ -2165,11 +2160,6 @@ namespace BizHawk.MultiClient
 
 			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
-
-			if (!fff)
-			{
-				UpdateToolsBefore();
-			}
 
 			if (Global.Config.SkipLagFrame && Global.Emulator.IsLagFrame && frameProgressTimeElapsed)
 			{
@@ -2245,6 +2235,16 @@ namespace BizHawk.MultiClient
 			bool coreskipaudio = false;
 			if (runFrame)
 			{
+				bool ff = Global.ClientControls["Fast Forward"] || Global.ClientControls["MaxTurbo"];
+				bool fff = Global.ClientControls["MaxTurbo"];
+				bool updateFpsString = (runloop_last_ff != ff);
+				runloop_last_ff = ff;
+
+				if (!fff)
+				{
+					UpdateToolsBefore();
+				}
+
 				runloop_fps++;
 				//client input-related duties
 				Global.OSD.ClearGUIText();
