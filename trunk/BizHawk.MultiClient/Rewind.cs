@@ -46,7 +46,7 @@ namespace BizHawk.MultiClient
 			if (CurrentState.Length != LastState.Length)
 			{
 				writer.Write(true); // full state
-				writer.Write(CurrentState);
+				writer.Write(LastState);
 			}
 			else
 			{
@@ -99,7 +99,7 @@ namespace BizHawk.MultiClient
 			if (CurrentState.Length != LastState.Length)
 			{
 				writer.Write(true); // full state
-				writer.Write(CurrentState);
+				writer.Write(LastState);
 			}
 			else
 			{
