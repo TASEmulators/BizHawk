@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 	}
 
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISoundProvider
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider
 	{
 		public bool IsSGB { get; private set; }
 
@@ -643,7 +643,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		int vidWidth = 256, vidHeight = 224;
 
 		public IVideoProvider VideoProvider { get { return this; } }
-		public ISoundProvider SoundProvider { get { return this; } }
 
 		public ControllerDefinition ControllerDefinition { get { return SNESController; } }
 		IController controller;
@@ -992,39 +991,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		#region audio stuff
 
-		void InitAudio()
-		{
-			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
-			resampler = new Sound.Utilities.SpeexResampler(6, 64081, 88200, 32041, 44100, new Action<short[], int>(metaspu.buffer.enqueue_samples));
-
-		}
-
 		Sound.Utilities.SpeexResampler resampler;
 
-		Sound.MetaspuSoundProvider metaspu;
+		void InitAudio()
+		{
+			resampler = new Sound.Utilities.SpeexResampler(6, 64081, 88200, 32041, 44100);
+		}
 
 		void snes_audio_sample(ushort left, ushort right)
 		{
 			resampler.EnqueueSample((short)left, (short)right);
 		}
 
-
-		//BinaryWriter dbgs = new BinaryWriter(File.Open("dbgwav.raw", FileMode.Create, FileAccess.Write));
-
-		public void GetSamples(short[] samples)
-		{
-			resampler.Flush();
-			metaspu.GetSamples(samples);
-		}
-
-		public void DiscardSamples()
-		{
-			metaspu.DiscardSamples();
-		}
-
-		public int MaxVolume { get; set; }
+		public ISoundProvider SoundProvider { get { return null; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return resampler; } }
+		public bool StartAsyncSound() { return false; }
+		public void EndAsyncSound() { }
 
 		#endregion audio stuff
-
 	}
 }

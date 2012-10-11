@@ -8,6 +8,11 @@ namespace BizHawk
 	{
 		IVideoProvider VideoProvider { get; }
 		ISoundProvider SoundProvider { get; }
+		ISyncSoundProvider SyncSoundProvider { get; }
+		/// <summary></summary>
+		/// <returns>false if core doesn't support async sound</returns>
+		bool StartAsyncSound();
+		void EndAsyncSound();
 
 		ControllerDefinition ControllerDefinition { get; }
 		IController Controller { get; set; }

@@ -260,6 +260,9 @@ namespace BizHawk.Emulation.Consoles.Sega
 		{
 			get { return SoundMixer; }
 		}
+		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(SoundMixer, 735); } }
+		public bool StartAsyncSound() { return true; }
+		public void EndAsyncSound() { }
 
 		public int Frame { get; set; }
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }

@@ -353,6 +353,7 @@
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
     <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
+    <Compile Include="Interfaces\ISyncSoundProvider.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />

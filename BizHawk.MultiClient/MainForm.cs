@@ -40,6 +40,7 @@ namespace BizHawk.MultiClient
 		public bool NeedsReboot = false;
 		//avi/wav state
 		IVideoWriter CurrAviWriter = null;
+		ISoundProvider AviSoundInput = null;
 		/// <summary>
 		/// an audio proxy used for dumping
 		/// </summary>
@@ -1645,7 +1646,38 @@ namespace BizHawk.MultiClient
 				Global.StickyXORAdapter.ClearStickies();
 				Global.AutofireStickyXORAdapter.ClearStickies();
 
+				RewireSound();
+
 				return true;
+			}
+		}
+
+		void RewireSound()
+		{
+			if (DumpProxy != null)
+			{
+				// we're video dumping, so async mode only and use the DumpProxy.
+				// note that the avi dumper has already rewired the emulator itself in this case.
+				Global.Sound.SetAsyncInputPin(DumpProxy);
+			}
+			else if (Global.Config.SoundThrottle)
+			{
+				// for sound throttle, use sync mode
+				Global.Emulator.EndAsyncSound();
+				Global.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
+			}
+			else
+			{
+				// for vsync\clock throttle modes, use async
+				if (!Global.Emulator.StartAsyncSound())
+				{
+					// if the core doesn't support async mode, use a standard vecna wrapper
+					Global.Sound.SetAsyncInputPin(new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V));
+				}
+				else
+				{
+					Global.Sound.SetAsyncInputPin(Global.Emulator.SoundProvider);
+				}
 			}
 		}
 
@@ -2259,10 +2291,8 @@ namespace BizHawk.MultiClient
 					SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
 
 					short[] temp = new short[nsamp * 2];
-					Global.Emulator.SoundProvider.GetSamples(temp);
+					AviSoundInput.GetSamples(temp);
 					DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
-					//DumpProxy.GetSamples(temp);
-					//genSound = false;
 
 					if (Global.Config.AVI_CaptureOSD)
 					{
@@ -2314,14 +2344,10 @@ namespace BizHawk.MultiClient
 
 			if (genSound)
 			{
-				// change audio path if dumping is occuring
-				if (DumpProxy != null)
-					Global.Sound.UpdateSound(DumpProxy);
-				else
-					Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
+				Global.Sound.UpdateSound();
 			}
 			else
-				Global.Sound.UpdateSound(NullSound.SilenceProvider);
+				Global.Sound.UpdateSilence();
 		}
 
 		
@@ -3377,6 +3403,7 @@ namespace BizHawk.MultiClient
 				AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.AVI;
 				AVIStatusLabel.ToolTipText = "A/V capture in progress";
 				AVIStatusLabel.Visible = true;
+				
 			}
 			catch
 			{
@@ -3385,9 +3412,14 @@ namespace BizHawk.MultiClient
 				throw;
 			}
 
-			// buffersize here is entirely guess
+			// do sound rewire.  the plan is to eventually have AVI writing support syncsound input, but it doesn't for the moment
+			if (!Global.Emulator.StartAsyncSound())
+				AviSoundInput = new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V);
+			else
+				AviSoundInput = Global.Emulator.SoundProvider;
 			DumpProxy = new Emulation.Sound.MetaspuSoundProvider(Emulation.Sound.ESynchMethod.ESynchMethod_V);
 			SoundRemainder = 0;
+			RewireSound();
 		}
 
 		public void StopAVI()
@@ -3395,6 +3427,7 @@ namespace BizHawk.MultiClient
 			if (CurrAviWriter == null)
 			{
 				DumpProxy = null;
+				RewireSound();
 				return;
 			}
 			CurrAviWriter.CloseFile();
@@ -3404,8 +3437,10 @@ namespace BizHawk.MultiClient
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
+			AviSoundInput = null;
 			DumpProxy = null; // return to normal sound output
 			SoundRemainder = 0;
+			RewireSound();
 		}
 
 		private void SwapBackupSavestate(string path)
