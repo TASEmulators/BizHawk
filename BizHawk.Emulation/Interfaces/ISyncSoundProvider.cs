@@ -14,6 +14,9 @@
 		void DiscardSamples();
 	}
 
+	/// <summary>
+	/// wraps an ISyncSoundProvider around an ISoundProvider
+	/// </summary>
 	public class FakeSyncSound : ISyncSoundProvider
 	{
 		ISoundProvider source;
@@ -22,7 +25,7 @@
 		/// 
 		/// </summary>
 		/// <param name="source"></param>
-		/// <param name="spf">number of sample pairs to request for each call</param>
+		/// <param name="spf">number of sample pairs to request and provide on each GetSamples() call</param>
 		public FakeSyncSound(ISoundProvider source, int spf)
 		{
 			this.source = source;
