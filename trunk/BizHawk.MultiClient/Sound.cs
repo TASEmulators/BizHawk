@@ -176,11 +176,12 @@ namespace BizHawk.MultiClient
 
 				samplesProvided = 2 * nsampgot;
 
-				while (samplesNeeded < samplesProvided)
-				{
-					System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / 88); // let audio clock control sleep time
-					samplesNeeded = SNDDXGetAudioSpace() * 2;
-				}
+				if (!Global.ForceNoThrottle)
+					while (samplesNeeded < samplesProvided)
+					{
+						System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / 88); // let audio clock control sleep time
+						samplesNeeded = SNDDXGetAudioSpace() * 2;
+					}
 			}
 			else if (asyncsoundProvider != null)
 			{
@@ -189,8 +190,8 @@ namespace BizHawk.MultiClient
 				samples = new short[samplesNeeded];
 				//if (asyncsoundProvider != null && Muted == false)
 				//{
-					semisync.BaseSoundProvider = asyncsoundProvider;
-					semisync.GetSamples(samples);
+				semisync.BaseSoundProvider = asyncsoundProvider;
+				semisync.GetSamples(samples);
 				//}
 				//else asyncsoundProvider.DiscardSamples();
 				samplesProvided = samplesNeeded;
