@@ -207,6 +207,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		MyVideoProvider videoProvider;
 		public IVideoProvider VideoProvider { get { return videoProvider; } }
 		public ISoundProvider SoundProvider { get { return magicSoundProvider; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(magicSoundProvider, 734); } }
+		public bool StartAsyncSound() { return true; }
+		public void EndAsyncSound() { }
 
 		public static readonly ControllerDefinition NESController =
 			new ControllerDefinition

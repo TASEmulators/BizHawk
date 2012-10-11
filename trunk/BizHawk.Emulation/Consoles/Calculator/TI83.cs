@@ -393,6 +393,9 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			get { return new MyVideoProvider(this); } }
 
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(NullSound.SilenceProvider, 735); } }
+		public bool StartAsyncSound() { return true; }
+		public void EndAsyncSound() { }
 
 		public static readonly ControllerDefinition TI83Controller =
 			new ControllerDefinition

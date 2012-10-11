@@ -140,7 +140,9 @@ namespace BizHawk.MultiClient
 		private void soundToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SoundConfig s = new SoundConfig();
-			s.ShowDialog();
+			var result = s.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK)
+				RewireSound();
 		}
 
 		private void zoomMenuItem_Click(object sender, EventArgs e)
