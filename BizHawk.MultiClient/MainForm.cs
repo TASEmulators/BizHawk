@@ -2242,6 +2242,7 @@ namespace BizHawk.MultiClient
 			}
 
 			bool genSound = false;
+			bool coreskipaudio = false;
 			if (runFrame)
 			{
 				runloop_fps++;
@@ -2278,9 +2279,10 @@ namespace BizHawk.MultiClient
 
 				HandleMovieOnFrameLoop();
 
+				coreskipaudio = Global.ClientControls["MaxTurbo"] && CurrAviWriter == null;
 				//=======================================
 				MemoryPulse.Pulse();
-				Global.Emulator.FrameAdvance(!throttle.skipnextframe, !Global.ClientControls["MaxTurbo"] || CurrAviWriter != null);
+				Global.Emulator.FrameAdvance(!throttle.skipnextframe, !coreskipaudio);
 				MemoryPulse.Pulse();
 				//=======================================
 				if (CurrAviWriter != null)
@@ -2342,7 +2344,7 @@ namespace BizHawk.MultiClient
 				UpdateFrame = false;
 			}
 
-			if (genSound)
+			if (genSound && !coreskipaudio)
 			{
 				Global.Sound.UpdateSound();
 			}
