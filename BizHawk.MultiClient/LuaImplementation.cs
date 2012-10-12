@@ -212,6 +212,13 @@ namespace BizHawk.MultiClient
 				docs.Add("nes", NESFunctions[i], this.GetType().GetMethod("nes_" + NESFunctions[i]));
 			}
 
+			lua.NewTable("event");
+			for (int i = 0; i < EventFunctions.Length; i++)
+			{
+				lua.RegisterFunction("event." + EventFunctions[i], this, this.GetType().GetMethod("event_" + EventFunctions[i]));
+				docs.Add("event", EventFunctions[i], this.GetType().GetMethod("event_" + EventFunctions[i]));
+			}
+
 			docs.Sort();
 		}
 
@@ -556,6 +563,17 @@ namespace BizHawk.MultiClient
 														"addgamegenie",
 														"removegamegenie",
 		                                          	};
+
+		public static string[] EventFunctions = new string[]
+													{
+														"onloadstate",
+														"onsavestate",
+														"onframestart",
+														"onframeend",
+														//"onmemoryread",
+														//"onmemorywrite",
+														"oninputpoll",
+													};
 		/****************************************************/
 		/*************function definitions********************/
 		/****************************************************/
@@ -2651,6 +2669,31 @@ namespace BizHawk.MultiClient
 					Global.CheatList.RemoveCheat(Global.Emulator.MemoryDomains[1], c.address);
 				}
 			}
+		}
+
+		public void event_onsavestate(LuaFunction luaf)
+		{
+			savestate_registersave(luaf);
+		}
+
+		public void event_onloadstate(LuaFunction luaf)
+		{
+			savestate_registerload(luaf);
+		}
+
+		public void event_onframestart(LuaFunction luaf)
+		{
+			emu_registerbefore(luaf);
+		}
+
+		public void event_onframeend(LuaFunction luaf)
+		{
+			emu_registerafter(luaf);
+		}
+
+		public void event_oninputpoll(LuaFunction luaf)
+		{
+			emu_on_snoop(luaf);
 		}
 	}
 }
