@@ -55,7 +55,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					addr &= 0x1FFF;
 					VRAM[addr] = value;
 				}
-				else base.WritePPU(addr, value);
+				//else
+					// if this address is mapped to chrrom and not chrram, the write just does nothing
+					//base.WritePPU(addr, value);					
 			}
 			else
 				base.WritePPU(addr, value);
