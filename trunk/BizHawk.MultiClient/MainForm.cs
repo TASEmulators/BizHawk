@@ -2950,6 +2950,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator();
 			Global.Game = GameInfo.GetNullGame();
 			MemoryPulse.Clear();
+			RewireSound();
 			RamSearch1.Restart();
 			RamWatch1.Restart();
 			HexEditor1.Restart();
