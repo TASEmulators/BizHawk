@@ -26,8 +26,8 @@ namespace BizHawk.MultiClient
 		private Lua currThread;
 		private LuaFunction savestate_registersavefunc;
 		private LuaFunction savestate_registerloadfunc;
-		private LuaFunction frame_registerbeforefunc;
-		private LuaFunction frame_registerafterfunc;
+		private LuaFunction frame_startfunc;
+		private LuaFunction frame_endfunc;
 
 		public void SavestateRegisterSave(string name)
 		{
@@ -65,11 +65,11 @@ namespace BizHawk.MultiClient
 
 		public void FrameRegisterBefore()
 		{
-			if (frame_registerbeforefunc != null)
+			if (frame_startfunc != null)
 			{
 				try
 				{
-					frame_registerbeforefunc.Call();
+					frame_startfunc.Call();
 				}
 				catch (SystemException e)
 				{
@@ -82,11 +82,11 @@ namespace BizHawk.MultiClient
 
 		public void FrameRegisterAfter()
 		{
-			if (frame_registerafterfunc != null)
+			if (frame_endfunc != null)
 			{
 				try
 				{
-					frame_registerafterfunc.Call();
+					frame_endfunc.Call();
 				}
 				catch (SystemException e)
 				{
@@ -383,8 +383,6 @@ namespace BizHawk.MultiClient
 		                                      		"limitframerate",
 		                                      		"displayvsync",
 		                                      		"enablerewind",
-													"registerbefore",
-													"registerafter",
 													"on_snoop",
 		                                      	};
 
@@ -1178,16 +1176,6 @@ namespace BizHawk.MultiClient
 				Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
 				Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
 			}
-		}
-
-		public void emu_registerbefore(LuaFunction luaf)
-		{
-			frame_registerbeforefunc = luaf;
-		}
-
-		public void emu_registerafter(LuaFunction luaf)
-		{
-			frame_registerafterfunc = luaf;
 		}
 
 		public void emu_on_snoop(LuaFunction luaf)
@@ -2683,12 +2671,12 @@ namespace BizHawk.MultiClient
 
 		public void event_onframestart(LuaFunction luaf)
 		{
-			emu_registerbefore(luaf);
+			frame_startfunc = luaf;
 		}
 
 		public void event_onframeend(LuaFunction luaf)
 		{
-			emu_registerafter(luaf);
+			frame_endfunc = luaf;
 		}
 
 		public void event_oninputpoll(LuaFunction luaf)
