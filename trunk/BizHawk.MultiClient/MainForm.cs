@@ -2951,6 +2951,7 @@ namespace BizHawk.MultiClient
 			Global.Game = GameInfo.GetNullGame();
 			MemoryPulse.Clear();
 			RewireSound();
+			ResetRewindBuffer();
 			RamSearch1.Restart();
 			RamWatch1.Restart();
 			HexEditor1.Restart();
