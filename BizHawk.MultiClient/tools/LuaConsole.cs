@@ -885,7 +885,8 @@ namespace BizHawk.MultiClient
 		{
 			if (luaList != null && luaList.Count > 0)
 			{
-				LuaImp.gui_drawNewEmu();
+				if (LuaImp.luaSurface == null)
+					LuaImp.gui_drawNewEmu();
 			}
 		}
 
