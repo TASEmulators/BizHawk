@@ -878,23 +878,23 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-			LuaImp.gui_drawFinishEmu();
+			//LuaImp.gui_drawFinishEmu();
 		}
 
 		public void StartLuaDrawing()
 		{
-			//if (luaList != null && luaList.Count > 0)
-			//{
-			//    LuaImp.gui_drawNewEmu();
-			//}
+			if (luaList != null && luaList.Count > 0)
+			{
+				LuaImp.gui_drawNewEmu();
+			}
 		}
 
 		public void EndLuaDrawing()
 		{
-			//if (luaList != null && luaList.Count > 0)
-			//{
-			//    LuaImp.gui_drawFinishEmu();
-			//}
+			if (luaList != null && luaList.Count > 0)
+			{
+				LuaImp.gui_drawFinishEmu();
+			}
 		}
 
 		public bool IsRunning()
