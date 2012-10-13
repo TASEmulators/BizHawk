@@ -94,12 +94,24 @@ namespace BizHawk
 
 		public byte ReadMemory(ushort addr)
 		{
-			return mapper.ReadMemory((ushort)(addr&0x1FFF));
+			byte temp = mapper.ReadMemory((ushort)(addr&0x1FFF));
+
+			if (CoreInputComm.MemoryCallbackSystem.ReadCallback != null)
+			{
+				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
+			}
+
+			return temp;
 		}
 
 		public void WriteMemory(ushort addr, byte value)
 		{
 			mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
+
+			if (CoreInputComm.MemoryCallbackSystem.WriteCallback != null)
+			{
+				CoreInputComm.MemoryCallbackSystem.WriteCallback();
+			}
 		}
 
 		public void HardReset()
