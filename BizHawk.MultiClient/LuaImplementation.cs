@@ -725,7 +725,7 @@ namespace BizHawk.MultiClient
 					int int_y = LuaInt(Y);
 					int int_width = LuaInt(width);
 					int int_height = LuaInt(height);
-					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
+					g.DrawRectangle(GetPen(line ?? "white"), int_x, int_y, int_width, int_height);
 					if (background != null)
 					{
 						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
@@ -791,7 +791,7 @@ namespace BizHawk.MultiClient
 				float x = LuaInt(X) + 0.1F;
 				try
 				{
-					g.DrawLine(GetPen(color ?? "black"), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
+					g.DrawLine(GetPen(color ?? "white"), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
 				}
 				catch (Exception)
 				{
@@ -806,7 +806,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					g.DrawLine(GetPen(color ?? "black"), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
+					g.DrawLine(GetPen(color ?? "white"), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
 				}
 				catch (Exception)
 				{
@@ -821,7 +821,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					g.DrawEllipse(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					g.DrawEllipse(GetPen(line ?? "white"), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					if (background != null)
 					{
 						var brush = GetBrush(background);
