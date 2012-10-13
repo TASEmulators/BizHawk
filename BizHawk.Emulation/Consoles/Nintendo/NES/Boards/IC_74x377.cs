@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_8k;
 		bool bus_conflict = true;
+		bool bus_conflict_50282 = false;
 
 		//state
 		int prg_bank_32k, chr_bank_8k;
@@ -29,6 +30,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case "COLORDREAMS-74*377":
 					AssertPrg(32,64,128); AssertChr(16,32,64,128); AssertVram(0); AssertWram(0);
+					break;
+
+			
+				case "AGCI-50282": // death race
+				case "MAPPER144":
+					bus_conflict_50282 = true;
+					bus_conflict = false;
+					SetMirrorType(Cart.pad_h, Cart.pad_v);
 					break;
 
 				default:
@@ -56,6 +65,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePRG(int addr, byte value)
 		{
+			if (bus_conflict_50282)
+			{
+				// this is what fceux does
+				//if (addr == 0)
+				//	return;
+				// this is what nesdev wiki does. seems to give same results as above?
+				value = (byte)((value | 1) & ReadPRG(addr));
+			}
 			if (bus_conflict)
 			{
 				byte old_value = value;
