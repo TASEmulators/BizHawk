@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					// the cart actually has 0k vram, but due to massive abuse of the ines format, is labeled as 8k
 					// supposed vram is (correctly) not used in our implementation
 					AssertPrg(8, 16, 32); AssertChr(0); /*AssertVram(0);*/ AssertWram(0);
+					Cart.vram_size = 0; // force vram size 0
 					break;
 				default:
 					return false;
@@ -30,15 +31,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.inesmirroring)
 			{
 				case 1: // VA10 to PA10
+					// pattern: ABABABAB
+					// nametable: ABAB (vertical)
 					chr_addr_mask = 1 << 10;
 					break;
 				case 0: // VA10 to PA11
+					// pattern: AABBAABB
+					// nametable: AABB (horizontal)
 					chr_addr_mask = 1 << 11;
 					break;
 				case 2: // VA10 to PA12
+					// pattern: AAAABBBB
+					// nametable: AAAA (one screen A)
 					chr_addr_mask = 1 << 12;
 					break;
 				case 3: // VA10 to PA13
+					// pattern: AAAAAAAA
+					// nametable: BBBB (one screen B)
 					chr_addr_mask = 1 << 13;
 					break;
 				default:
