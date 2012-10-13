@@ -306,6 +306,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public byte pad_h, pad_v, mapper;
 			public bool wram_battery;
 			public bool bad;
+			/// <summary>in [0,3]; combination of bits 0 and 3 of flags6.  try not to use; will be null for bootgod-identified roms always</summary>
+			public int? inesmirroring;
 
 			public string board_type;
 			public string pcb;

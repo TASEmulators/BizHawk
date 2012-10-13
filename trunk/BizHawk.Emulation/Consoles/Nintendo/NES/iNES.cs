@@ -79,9 +79,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				mapper |= (ROM_type2 & 0xF0);
 				ret.mapper = (byte)mapper;
 				int mirroring = (ROM_type & 1);
-				if ((ROM_type & 8) != 0) mirroring = 2;
+				if ((ROM_type & 8) != 0) mirroring += 2;
 				if (mirroring == 0) ret.pad_v = 1;
 				else if (mirroring == 1) ret.pad_h = 1;
+				ret.inesmirroring = mirroring;
 				ret.prg_size = (short)(ROM_size * 16);
 				if (ret.prg_size == 0)
 					ret.prg_size = 256 * 16;
