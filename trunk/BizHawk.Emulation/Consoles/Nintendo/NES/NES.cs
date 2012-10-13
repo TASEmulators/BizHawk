@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			CoreOutputComm = new CoreOutputComm();
 			CoreOutputComm.CpuTraceAvailable = true;
+			CoreInputComm = new BizHawk.CoreInputComm();
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);

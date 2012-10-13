@@ -457,8 +457,6 @@ namespace BizHawk.MultiClient
 		                                             		"write_u32_be",
 															"readbyterange",
 															"writebyterange",
-		                                             		//"registerwrite",
-		                                             		//"registerread",
 		                                             	};
 
 		public static string[] SaveStateFunctions = new string[]
@@ -568,8 +566,8 @@ namespace BizHawk.MultiClient
 														"onsavestate",
 														"onframestart",
 														"onframeend",
-														//"onmemoryread",
-														//"onmemorywrite",
+														"onmemoryread",
+														"onmemorywrite",
 														"oninputpoll",
 													};
 		/****************************************************/
@@ -2682,6 +2680,80 @@ namespace BizHawk.MultiClient
 		public void event_oninputpoll(LuaFunction luaf)
 		{
 			emu_on_snoop(luaf);
+		}
+
+		public void event_onmemoryread(LuaFunction luaf, object address = null)
+		{
+			//TODO: allow a list of addresses
+			if (luaf != null)
+			{
+				int? _addr;
+				if (address == null)
+				{
+					_addr = null;
+				}
+				else
+				{
+					_addr = LuaInt(address);
+				}
+
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.ReadAddr = _addr;
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.ReadCallback = delegate()
+				{
+					try
+					{
+						luaf.Call();
+					}
+					catch (SystemException e)
+					{
+						Global.MainForm.LuaConsole1.WriteToOutputWindow(
+							"error running function attached by lua function event.onmemoryread" +
+							"\nError message: " + e.Message);
+					}
+				};
+	
+			}
+			else
+			{
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.ReadCallback = null;
+			}
+		}
+
+
+		public void event_onmemorywrite(LuaFunction luaf, object address = null)
+		{
+			//TODO: allow a list of addresses
+			if (luaf != null)
+			{
+				int? _addr;
+				if (address == null)
+				{
+					_addr = null;
+				}
+				else
+				{
+					_addr = LuaInt(address);
+				}
+
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.WriteAddr = _addr;
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.WriteCallback = delegate()
+				{
+					try
+					{
+						luaf.Call();
+					}
+					catch (SystemException e)
+					{
+						Global.MainForm.LuaConsole1.WriteToOutputWindow(
+							"error running function attached by lua function event.onmemoryread" +
+							"\nError message: " + e.Message);
+					}
+				};
+			}
+			else
+			{
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.WriteCallback = null;
+			}
 		}
 	}
 }
