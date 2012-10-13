@@ -22,20 +22,26 @@
 			byte ret;
 			if (address < 1024)
 				ret = RomData[address];
-			if (address < BankSize)
+			else if (address < BankSize)
 				ret = RomData[(RomBank0 * BankSize) + address];
-			if (address < BankSize * 2)
+			else if (address < BankSize * 2)
 				ret = RomData[(RomBank1 * BankSize) + (address & BankSizeMask)];
-			if (address < BankSize * 3)
+			else if (address < BankSize * 3)
 			{
 				switch (SaveRamBank)
 				{
 					case 0: ret = RomData[(RomBank2 * BankSize) + (address & BankSizeMask)]; break;
 					case 1: ret = SaveRAM[address & BankSizeMask]; break;
 					case 2: ret = SaveRAM[BankSize + (address & BankSizeMask)]; break;
+					default:
+						ret = SystemRam[address & RamSizeMask];
+						break;
 				}
 			}
-			ret = SystemRam[address & RamSizeMask];
+			else
+			{
+				ret = SystemRam[address & RamSizeMask];
+			}
 
 			if (CoreInputComm.MemoryCallbackSystem.ReadCallback != null)
 			{
