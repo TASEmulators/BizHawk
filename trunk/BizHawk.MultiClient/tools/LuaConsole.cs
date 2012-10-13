@@ -79,7 +79,7 @@ namespace BizHawk.MultiClient
 					color = Color.IndianRed;
 			}
 
-            UpdateNumberOfScripts();
+			UpdateNumberOfScripts();
 		}
 
 		private void LuaListView_QueryItemText(int index, int column, out string text)
@@ -103,10 +103,10 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-            newStripButton1.Visible = Global.MainForm.INTERIM;
-            newScriptToolStripMenuItem.Visible = Global.MainForm.INTERIM;
-            newStripButton1.Enabled = Global.MainForm.INTERIM;
-            newScriptToolStripMenuItem.Enabled = Global.MainForm.INTERIM;
+			newStripButton1.Visible = Global.MainForm.INTERIM;
+			newScriptToolStripMenuItem.Visible = Global.MainForm.INTERIM;
+			newStripButton1.Enabled = Global.MainForm.INTERIM;
+			newScriptToolStripMenuItem.Enabled = Global.MainForm.INTERIM;
 		}
 
 		private void StopScript(int x)
@@ -968,7 +968,7 @@ namespace BizHawk.MultiClient
 			{
 				SaveSession(file.FullName);
 				currentSessionFile = file.FullName;
-                OutputMessages.Text = Path.GetFileName(currentSessionFile) + " saved.";
+				OutputMessages.Text = Path.GetFileName(currentSessionFile) + " saved.";
 				Global.Config.RecentLuaSession.Add(file.FullName);
 				Changes(false);
 			}
@@ -983,21 +983,21 @@ namespace BizHawk.MultiClient
 				string str = "";
 				for (int i = 0; i < luaList.Count; i++)
 				{
-                    if (!luaList[i].IsSeparator)
-                    {
-                        if (luaList[i].Enabled)
-                            str += "1 ";
-                        else
-                            str += "0 ";
+					if (!luaList[i].IsSeparator)
+					{
+						if (luaList[i].Enabled)
+							str += "1 ";
+						else
+							str += "0 ";
 
-                        str += luaList[i].Path + "\n";
-                    }
-                    else
-                    {
-                        str += "---\n";
-                    }
+						str += luaList[i].Path + "\n";
+					}
+					else
+					{
+						str += "---\n";
+					}
 				}
-                sw.Write(str);
+				sw.Write(str);
 			}
 
 			Changes(false);
@@ -1066,7 +1066,7 @@ namespace BizHawk.MultiClient
 				RunLuaScripts();
 				DisplayLuaList();
 				//ClearOutput();
-                LuaListView.Refresh();
+				LuaListView.Refresh();
 				currentSessionFile = file;
 				Changes(false);
 			}
