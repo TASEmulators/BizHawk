@@ -1862,7 +1862,7 @@ namespace BizHawk.MultiClient
 			if (x < 0 || x > 9)
 				return;
 
-			Global.MainForm.LoadState("QuickLoad" + x.ToString());
+			Global.MainForm.LoadState("QuickLoad" + x.ToString(), true);
 		}
 
 		public void savestate_save(object lua_input)
@@ -1879,7 +1879,7 @@ namespace BizHawk.MultiClient
 		{
 			if (lua_input.GetType() == typeof(string))
 			{
-				Global.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()));
+				Global.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()), true);
 			}
 		}
 

@@ -2357,12 +2357,13 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Update all tools that are frame dependent like Ram Search before processing
 		/// </summary>
-		public void UpdateToolsBefore()
+		public void UpdateToolsBefore(bool fromLua = false)
 		{
 #if WINDOWS
-			LuaConsole1.StartLuaDrawing();
+			if (!fromLua)
+				LuaConsole1.StartLuaDrawing();
 			LuaConsole1.LuaImp.FrameRegisterBefore();
-			
+
 #endif
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
@@ -2377,26 +2378,29 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Update all tools that are frame dependent like Ram Search after processing
 		/// </summary>
-		public void UpdateToolsAfter()
+		public void UpdateToolsAfter(bool fromLua = false)
 		{
 #if WINDOWS
-			
-			LuaConsole1.ResumeScripts(true);
-			
+			if (!fromLua)
+				LuaConsole1.ResumeScripts(true);
+
 #endif
 			RamWatch1.UpdateValues();
 			RamSearch1.UpdateValues();
 			HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
-			
+
 			TAStudio1.UpdateValues();
 			SNESGraphicsDebugger1.UpdateToolsAfter();
 			TraceLogger1.UpdateValues();
 #if WINDOWS
 			LuaConsole1.LuaImp.FrameRegisterAfter();
-			Global.DisplayManager.PreFrameUpdateLuaSource();
-			LuaConsole1.EndLuaDrawing();
+			if (!fromLua)
+			{
+				Global.DisplayManager.PreFrameUpdateLuaSource();
+				LuaConsole1.EndLuaDrawing();
+			}
 #endif
 		}
 
@@ -2528,7 +2532,7 @@ namespace BizHawk.MultiClient
 			SaveStateFile(writer, sfd.FileName, false);
 		}
 
-		public void LoadStateFile(string path, string name)
+		public void LoadStateFile(string path, string name, bool fromLua = false)
 		{
 			if (HandleMovieLoadState(path))
 			{
@@ -2550,16 +2554,17 @@ namespace BizHawk.MultiClient
 
 				reader.Close();
 				Global.OSD.ClearGUIText();
-				UpdateToolsBefore();
-				UpdateToolsAfter();
+				UpdateToolsBefore(fromLua);
+				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
 				Global.OSD.AddMessage("Loaded state: " + name);
+				LuaConsole1.LuaImp.SavestateRegisterLoad(name);
 			}
 			else
 				Global.OSD.AddMessage("Loadstate error!");
 		}
 
-		public void LoadState(string name)
+		public void LoadState(string name, bool fromLua = false)
 		{
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 			if (File.Exists(path) == false)
@@ -2568,8 +2573,7 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			LoadStateFile(path, name);
-			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
+			LoadStateFile(path, name, fromLua);
 		}
 
 		private void LoadStateAs()
