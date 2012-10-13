@@ -523,7 +523,7 @@ namespace BizHawk.MultiClient
 		public void PauseEmulator()
 		{
 			EmulatorPaused = true;
-			
+
 
 		}
 
@@ -838,28 +838,28 @@ namespace BizHawk.MultiClient
 			}
 			Global.AutofireNESControls = anesControls;
 
-            var gbControls = new Controller(Gameboy.GbController);
-            gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
-            gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
-            gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
-            gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
-            gbControls.BindMulti("A", Global.Config.GBController[0].A);
-            gbControls.BindMulti("B", Global.Config.GBController[0].B);
-            gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
-            gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
-            Global.GBControls = gbControls;
+			var gbControls = new Controller(Gameboy.GbController);
+			gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
+			gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
+			gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
+			gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
+			gbControls.BindMulti("A", Global.Config.GBController[0].A);
+			gbControls.BindMulti("B", Global.Config.GBController[0].B);
+			gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
+			gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
+			Global.GBControls = gbControls;
 
-            var agbControls = new AutofireController(Gameboy.GbController);
-            agbControls.Autofire = true;
-            agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
-            agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
-            agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
-            agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
-            agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
-            agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
-            agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
-            agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
-            Global.AutofireGBControls = agbControls;
+			var agbControls = new AutofireController(Gameboy.GbController);
+			agbControls.Autofire = true;
+			agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
+			agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
+			agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
+			agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
+			agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
+			agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
+			agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
+			agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
+			Global.AutofireGBControls = agbControls;
 
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenesisController[0].Up);
@@ -2352,7 +2352,7 @@ namespace BizHawk.MultiClient
 				Global.Sound.UpdateSilence();
 		}
 
-		
+
 
 		/// <summary>
 		/// Update all tools that are frame dependent like Ram Search before processing
@@ -3262,7 +3262,7 @@ namespace BizHawk.MultiClient
 			{
 				StatusSlot0.ForeColor = Color.Gray;
 			}
-			
+
 			StatusSlot1.BackColor = SystemColors.Control;
 			StatusSlot2.BackColor = SystemColors.Control;
 			StatusSlot3.BackColor = SystemColors.Control;
@@ -3411,7 +3411,7 @@ namespace BizHawk.MultiClient
 				AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.AVI;
 				AVIStatusLabel.ToolTipText = "A/V capture in progress";
 				AVIStatusLabel.Visible = true;
-				
+
 			}
 			catch
 			{
@@ -3540,11 +3540,11 @@ namespace BizHawk.MultiClient
 					Global.OSD.AddMessage(warningMsg);
 				else
 					Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
-					                      Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
-					if (!Directory.Exists(d))
-						Directory.CreateDirectory(d);
-					File.Copy(fn + "." + Global.Config.MovieExtension, d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension,true);
-					File.Delete(fn + "." + Global.Config.MovieExtension);
+										  Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
+				if (!Directory.Exists(d))
+					Directory.CreateDirectory(d);
+				File.Copy(fn + "." + Global.Config.MovieExtension, d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension, true);
+				File.Delete(fn + "." + Global.Config.MovieExtension);
 			}
 		}
 
