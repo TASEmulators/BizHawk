@@ -894,7 +894,7 @@ namespace BizHawk.MultiClient
 						if (i >= 4)
 							break;
 					}
-					
+
 					g.DrawBezier(GetPen(color), Points[0], Points[1], Points[2], Points[3]);
 				}
 				catch (Exception)
@@ -1784,42 +1784,42 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public uint bit_band(object val, object amt)
 		{
-			return (uint) (LuaInt(val) & LuaInt(amt));
+			return (uint)(LuaInt(val) & LuaInt(amt));
 		}
 
 		public uint bit_lshift(object val, object amt)
 		{
-			return (uint) (LuaInt(val) << LuaInt(amt));
+			return (uint)(LuaInt(val) << LuaInt(amt));
 		}
 
 		public uint bit_rshift(object val, object amt)
 		{
-			return (uint) (LuaInt(val) >> LuaInt(amt));
+			return (uint)(LuaInt(val) >> LuaInt(amt));
 		}
 
 		public uint bit_rol(object val, object amt)
 		{
-			return (uint) ((LuaInt(val) << LuaInt(amt)) | (LuaInt(val) >> (32 - LuaInt(amt))));
+			return (uint)((LuaInt(val) << LuaInt(amt)) | (LuaInt(val) >> (32 - LuaInt(amt))));
 		}
 
 		public uint bit_ror(object val, object amt)
 		{
-			return (uint) ((LuaInt(val) >> LuaInt(amt)) | (LuaInt(val) << (32 - LuaInt(amt))));
+			return (uint)((LuaInt(val) >> LuaInt(amt)) | (LuaInt(val) << (32 - LuaInt(amt))));
 		}
 
 		public uint bit_bor(object val, object amt)
 		{
-			return (uint) (LuaInt(val) | LuaInt(amt));
+			return (uint)(LuaInt(val) | LuaInt(amt));
 		}
 
 		public uint bit_bxor(object val, object amt)
 		{
-			return (uint) (LuaInt(val) ^ LuaInt(amt));
+			return (uint)(LuaInt(val) ^ LuaInt(amt));
 		}
 
 		public uint bit_bnot(object val)
 		{
-			return (uint) (~LuaInt(val));
+			return (uint)(~LuaInt(val));
 		}
 
 		//----------------------------------------------------
@@ -2521,7 +2521,7 @@ namespace BizHawk.MultiClient
 
 		public void nes_setscanlines(object top, object bottom)
 		{
-			
+
 			int first = LuaInt(top);
 			int last = LuaInt(bottom);
 			if (first > 127)
@@ -2544,7 +2544,7 @@ namespace BizHawk.MultiClient
 
 			Global.Config.NESTopLine = first;
 			Global.Config.NESBottomLine = last;
-			
+
 			if (Global.Emulator is NES)
 			{
 				(Global.Emulator as NES).FirstDrawLine = first;
@@ -2711,7 +2711,7 @@ namespace BizHawk.MultiClient
 							"\nError message: " + e.Message);
 					}
 				};
-	
+
 			}
 			else
 			{
