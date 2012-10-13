@@ -788,5 +788,10 @@ namespace BizHawk.MultiClient
 		{
 			new PathInfo().Show();
 		}
+
+		private void BrowseSNESSaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SNESSaveRAMBox, SNESSaveRAMDescription.Text);
+		}
 	}
 }

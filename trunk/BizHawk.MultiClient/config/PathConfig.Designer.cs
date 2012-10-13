@@ -1034,6 +1034,7 @@
 			this.BrowseSNESSaveRAM.Size = new System.Drawing.Size(26, 23);
 			this.BrowseSNESSaveRAM.TabIndex = 36;
 			this.BrowseSNESSaveRAM.UseVisualStyleBackColor = true;
+			this.BrowseSNESSaveRAM.Click += new System.EventHandler(this.BrowseSNESSaveRAM_Click);
 			// 
 			// SNESSaveRAMDescription
 			// 
