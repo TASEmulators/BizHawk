@@ -739,7 +739,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void gui_drawBox(object X, object Y, object X2, object Y2, object line, object background = null)
+		public void gui_drawBox(object X, object Y, object X2, object Y2, object line = null, object background = null)
 		{
 			using (var g = GetGraphics())
 			{
@@ -770,7 +770,7 @@ namespace BizHawk.MultiClient
 						int_y -= int_height;
 					}
 
-					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
+					g.DrawRectangle(GetPen(line ?? "white"), int_x, int_y, int_width, int_height);
 					if (background != null)
 					{
 						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
