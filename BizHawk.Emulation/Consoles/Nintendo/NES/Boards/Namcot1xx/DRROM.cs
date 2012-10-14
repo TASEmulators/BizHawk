@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "NES-DRROM": //gauntlet (U)
+				case "TENGEN-800004": // gauntlet (Unl)
 					AssertPrg(128); AssertChr(64); AssertVram(2); AssertWram(0);
 					break;
 				default:
