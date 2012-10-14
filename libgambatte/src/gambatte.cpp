@@ -95,6 +95,14 @@ void GB::setInputGetter(InputGetter *getInput) {
 	p_->cpu.setInputGetter(getInput);
 }
 
+void GB::setReadCallback(void (*callback)(unsigned)) {
+	p_->cpu.setReadCallback(callback);
+}
+
+void GB::setWriteCallback(void (*callback)(unsigned)) {
+	p_->cpu.setWriteCallback(callback);
+}
+
 void GB::setSaveDir(const std::string &sdir) {
 	p_->cpu.setSaveDir(sdir);
 }

@@ -65,6 +65,18 @@ __declspec(dllexport) void gambatte_setinputgetter(void *core, unsigned (*getinp
 	g->setInputGetter(cig);
 }
 
+__declspec(dllexport) void gambatte_setreadcallback(void *core, void (*callback)(unsigned))
+{
+	GB *g = (GB *) core;
+	g->setReadCallback(callback);
+}
+
+__declspec(dllexport) void gambatte_setwritecallback(void *core, void (*callback)(unsigned))
+{
+	GB *g = (GB *) core;
+	g->setWriteCallback(callback);
+}
+
 __declspec(dllexport) void gambatte_setsavedir(void *core, const char *sdir)
 {
 	GB *g = (GB *) core;

@@ -33,6 +33,9 @@ class Memory {
 	Cartridge cart;
 	unsigned char ioamhram[0x200];
 	
+	void (*readCallback)(unsigned);
+	void (*writeCallback)(unsigned);
+
 	InputGetter *getInput;
 	unsigned long divLastUpdate;
 	unsigned long lastOamDmaUpdate;
@@ -111,6 +114,8 @@ public:
 	}
 
 	unsigned read(const unsigned P, const unsigned long cycleCounter) {
+		if (readCallback)
+			readCallback(P);
 		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_read(P, cycleCounter);
 	}
 
@@ -119,6 +124,8 @@ public:
 			cart.wmem(P >> 12)[P] = data;
 		} else
 			nontrivial_write(P, data, cycleCounter);
+		if (writeCallback)
+			writeCallback(P);
 	}
 	
 	void ff_write(const unsigned P, const unsigned data, const unsigned long cycleCounter) {
@@ -136,6 +143,13 @@ public:
 
 	void setInputGetter(InputGetter *getInput) {
 		this->getInput = getInput;
+	}
+
+	void setReadCallback(void (*callback)(unsigned)) {
+		this->readCallback = callback;
+	}
+	void setWriteCallback(void (*callback)(unsigned)) {
+		this->writeCallback = callback;
 	}
 
 	void setEndtime(unsigned long cc, unsigned long inc);
