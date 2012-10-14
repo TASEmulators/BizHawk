@@ -99,7 +99,19 @@ namespace BizHawk
 	public class MemoryCallbackSystem
 	{
 		public int? ReadAddr = null;
-		public System.Action ReadCallback = null;
+		private System.Action ReadCallback = null;
+		public void SetReadCallback(System.Action func)
+		{
+			ReadCallback = func;
+		}
+
+		public bool HasRead
+		{
+			get
+			{
+				return ReadCallback != null;
+			}
+		}
 
 		public void TriggerRead(int addr)
 		{
@@ -120,7 +132,19 @@ namespace BizHawk
 		}
 
 		public int? WriteAddr = null;
-		public System.Action WriteCallback = null;
+		private System.Action WriteCallback = null;
+		public void SetWriteCallback(System.Action func)
+		{
+			WriteCallback = func;
+		}
+
+		public bool HasWrite
+		{
+			get
+			{
+				return WriteCallback != null;
+			}
+		}
 
 		public void TriggerWrite(int addr)
 		{

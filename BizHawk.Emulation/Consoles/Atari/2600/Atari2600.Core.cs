@@ -96,7 +96,7 @@ namespace BizHawk
 		{
 			byte temp = mapper.ReadMemory((ushort)(addr&0x1FFF));
 
-			if (CoreInputComm.MemoryCallbackSystem.ReadCallback != null)
+			if (CoreInputComm.MemoryCallbackSystem.HasRead)
 			{
 				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
 			}
@@ -108,9 +108,9 @@ namespace BizHawk
 		{
 			mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
 
-			if (CoreInputComm.MemoryCallbackSystem.WriteCallback != null)
+			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
 			{
-				CoreInputComm.MemoryCallbackSystem.WriteCallback();
+				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 		}
 

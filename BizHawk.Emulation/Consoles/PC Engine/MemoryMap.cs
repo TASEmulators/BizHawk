@@ -33,7 +33,7 @@
 				return 0xFF;
 			}
 
-			if (CoreInputComm.MemoryCallbackSystem.ReadCallback != null)
+			if (CoreInputComm.MemoryCallbackSystem.HasRead)
 			{
 				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
 			}
@@ -74,9 +74,9 @@
 			else
 				Log.Error("MEM", "UNHANDLED WRITE: {0:X6}:{1:X2}", addr, value);
 
-			if (CoreInputComm.MemoryCallbackSystem.WriteCallback != null)
+			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
 			{
-				CoreInputComm.MemoryCallbackSystem.WriteCallback();
+				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 		}
 	}

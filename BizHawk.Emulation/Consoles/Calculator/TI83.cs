@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				ret = rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
 			else ret = ram[addr - 0x8000];
 
-			if (CoreInputComm.MemoryCallbackSystem.ReadCallback != null)
+			if (CoreInputComm.MemoryCallbackSystem.HasRead)
 			{
 				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
 			}
@@ -55,9 +55,9 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				return; //other rom page
 			else ram[addr - 0x8000] = value;
 
-			if (CoreInputComm.MemoryCallbackSystem.WriteCallback != null)
+			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
 			{
-				CoreInputComm.MemoryCallbackSystem.WriteCallback();
+				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 		}
 

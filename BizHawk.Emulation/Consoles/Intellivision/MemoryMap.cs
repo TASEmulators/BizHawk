@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						break;
 			}
 
-			if (CoreInputComm.MemoryCallbackSystem.ReadCallback != null)
+			if (CoreInputComm.MemoryCallbackSystem.HasRead)
 			{
 				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
 			}
@@ -286,9 +286,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					}
 			}
 
-			if (CoreInputComm.MemoryCallbackSystem.WriteCallback != null)
+			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
 			{
-				CoreInputComm.MemoryCallbackSystem.WriteCallback();
+				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 
 			return (cart || stic || psg);
