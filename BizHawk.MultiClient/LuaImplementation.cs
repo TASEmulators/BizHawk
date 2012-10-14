@@ -2698,11 +2698,11 @@ namespace BizHawk.MultiClient
 				}
 
 				Global.Emulator.CoreInputComm.MemoryCallbackSystem.ReadAddr = _addr;
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetReadCallback(delegate()
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetReadCallback(delegate(uint addr)
 				{
 					try
 					{
-						luaf.Call();
+						luaf.Call(addr);
 					}
 					catch (SystemException e)
 					{
@@ -2736,11 +2736,11 @@ namespace BizHawk.MultiClient
 				}
 
 				Global.Emulator.CoreInputComm.MemoryCallbackSystem.WriteAddr = _addr;
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetWriteCallback(delegate()
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetWriteCallback(delegate(uint addr)
 				{
 					try
 					{
-						luaf.Call();
+						luaf.Call(addr);
 					}
 					catch (SystemException e)
 					{
