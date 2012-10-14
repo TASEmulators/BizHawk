@@ -234,6 +234,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m89.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m93.cs" />
