@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	// a number of boards used by Sachen (and others?)
 	// 32K prgrom blocks and 8k chrrom blocks
 	// behavior gleamed from FCEUX
-	// "Qi Wang - Chinese Chess (MGC-001) (Ch) [!]" and "Twin Eagle (Sachen) [!]" seem to have problems
+	// "Qi Wang - Chinese Chess (MGC-001) (Ch) [!]" and "Twin Eagle (Sachen) [!]" seem to have problems; the latter needs PAL
 	public class SachenSimple : NES.NESBoardBase
 	{
 		Action<byte> ExpWrite = null;
