@@ -78,7 +78,6 @@ namespace BizHawk.Emulation.Consoles.GB
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_reset(IntPtr core);
 
-
 		/// <summary>
 		/// palette type for gambatte_setdmgpalettecolor
 		/// </summary>
@@ -129,6 +128,29 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="getinput"></param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setinputgetter(IntPtr core, InputGetter getinput);
+
+		/// <summary>
+		/// type of the read\write memory callbacks
+		/// </summary>
+		/// <param name="address">the address which the cpu is read\writing</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void MemoryCallback(uint address);
+
+		/// <summary>
+		/// set a callback to occur immediately BEFORE EVERY cpu read
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">null to clear</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setreadcallback(IntPtr core, MemoryCallback callback);
+
+		/// <summary>
+		/// set a callback to occur immediately AFTER EVERY cpu write
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">null to clear</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setwritecallback(IntPtr core, MemoryCallback callback);
 
 		/// <summary>
 		/// Sets the directory used for storing save data. The default is the same directory as the ROM Image file.

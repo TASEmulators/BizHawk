@@ -138,6 +138,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (Controller["Power"])
 				LibGambatte.gambatte_reset(GambatteState);
 
+			RefreshMemoryCallbacks();
+
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
 
 			// upload any modified data to the memory domains
@@ -221,6 +223,8 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public bool DeterministicEmulation { get { return true; } }
 
+		#region saveram
+
 		public byte[] ReadSaveRam()
 		{
 			int length = LibGambatte.gambatte_savesavedatalength(GambatteState);
@@ -270,6 +274,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			}
 			set { }
 		}
+
+		#endregion
 
 		public void ResetFrameCounter()
 		{
@@ -368,6 +374,33 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		#endregion
 
+		#region memorycallback
+
+		LibGambatte.MemoryCallback readcb;
+		LibGambatte.MemoryCallback writecb;
+
+		void RefreshMemoryCallbacks()
+		{
+			var mcs = CoreInputComm.MemoryCallbackSystem;
+
+			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
+
+			if (mcs.HasRead)
+				readcb = delegate(uint addr) { mcs.TriggerRead((int)addr); RefreshMemoryCallbacks(); };
+			else
+				readcb = null;
+			if (mcs.HasWrite)
+				writecb = delegate(uint addr) { mcs.TriggerWrite((int)addr); RefreshMemoryCallbacks(); };
+			else
+				writecb = null;
+
+			LibGambatte.gambatte_setreadcallback(GambatteState, readcb);
+			LibGambatte.gambatte_setwritecallback(GambatteState, writecb);
+		}
+	
+
+
+		#endregion
 
 		public CoreInputComm CoreInputComm { get; set; }
 

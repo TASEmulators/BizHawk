@@ -27,6 +27,8 @@ namespace gambatte {
 
 Memory::Memory(const Interrupter &interrupter_in)
 : getInput(0),
+  readCallback(0),
+  writeCallback(0),
   divLastUpdate(0),
   lastOamDmaUpdate(DISABLED_TIME),
   display(ioamhram, 0, VideoInterruptRequester(&intreq)),
