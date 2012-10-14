@@ -99,8 +99,8 @@ namespace BizHawk
 	public class MemoryCallbackSystem
 	{
 		public int? ReadAddr = null;
-		private System.Action ReadCallback = null;
-		public void SetReadCallback(System.Action func)
+		private System.Action<uint> ReadCallback = null;
+		public void SetReadCallback(System.Action<uint> func)
 		{
 			ReadCallback = func;
 		}
@@ -121,19 +121,19 @@ namespace BizHawk
 				{
 					if (ReadAddr == addr)
 					{
-						ReadCallback();
+						ReadCallback((uint)addr);
 					}
 				}
 				else
 				{
-					ReadCallback();
+					ReadCallback((uint)addr);
 				}
 			}
 		}
 
 		public int? WriteAddr = null;
-		private System.Action WriteCallback = null;
-		public void SetWriteCallback(System.Action func)
+		private System.Action<uint> WriteCallback = null;
+		public void SetWriteCallback(System.Action<uint> func)
 		{
 			WriteCallback = func;
 		}
@@ -154,12 +154,12 @@ namespace BizHawk
 				{
 					if (WriteAddr == addr)
 					{
-						WriteCallback();
+						WriteCallback((uint)addr);
 					}
 				}
 				else
 				{
-					WriteCallback();
+					WriteCallback((uint)addr);
 				}
 			}
 		}
