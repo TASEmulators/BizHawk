@@ -2698,7 +2698,7 @@ namespace BizHawk.MultiClient
 				}
 
 				Global.Emulator.CoreInputComm.MemoryCallbackSystem.ReadAddr = _addr;
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.ReadCallback = delegate()
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetReadCallback(delegate()
 				{
 					try
 					{
@@ -2710,12 +2710,12 @@ namespace BizHawk.MultiClient
 							"error running function attached by lua function event.onmemoryread" +
 							"\nError message: " + e.Message);
 					}
-				};
+				});
 
 			}
 			else
 			{
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.ReadCallback = null;
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetReadCallback(null);
 			}
 		}
 
@@ -2736,7 +2736,7 @@ namespace BizHawk.MultiClient
 				}
 
 				Global.Emulator.CoreInputComm.MemoryCallbackSystem.WriteAddr = _addr;
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.WriteCallback = delegate()
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetWriteCallback(delegate()
 				{
 					try
 					{
@@ -2748,11 +2748,11 @@ namespace BizHawk.MultiClient
 							"error running function attached by lua function event.onmemoryread" +
 							"\nError message: " + e.Message);
 					}
-				};
+				});
 			}
 			else
 			{
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.WriteCallback = null;
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetWriteCallback(null);
 			}
 		}
 	}
