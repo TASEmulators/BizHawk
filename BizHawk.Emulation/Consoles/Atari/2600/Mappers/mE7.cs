@@ -53,18 +53,40 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 					return core.rom[toggle * 2 * 1024 + (addr & 0x7FF)];
 				}
 			}
-			else if (addr < 0x1800) return core.rom[toggle * 2 * 1024 + (addr & 0x7FF)];
-			else if (addr < 0x1A00) return rambank1[toggle * 256 + (addr & 0x255)];
-			else if (addr < 0x2000) 
-				return core.rom[14848 + (addr & 0x5FF)]; //Fixed to last 1.5K
-			else return base.ReadMemory(addr);
+			else if (addr < 0x1800)
+			{
+				return core.rom[toggle * 2 * 1024 + (addr & 0x7FF)];
+			}
+			else if (addr < 0x1A00)
+			{
+				return rambank1[toggle * 256 + (addr & 0x255)];
+			}
+			else if (addr < 0x2000)
+			{
+				addr -= 0x1A00;
+				addr &= 0x5FF;
+				return core.rom[14848 + addr]; //Fixed to last 1.5K
+			}
+			else
+			{
+				return base.ReadMemory(addr);
+			}
 		}
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			Address(addr);
-			if (addr < 0x1000) base.WriteMemory(addr, value);
-			else if (addr < 0x1400) rambank0[addr & 0x3FF] = value;
-			else if (addr >= 0x1800 && addr < 0x2000) rambank0[(addr & 0xFF) + (rambank1_toggle * 0x100)] = value;
+			if (addr < 0x1000)
+			{
+				base.WriteMemory(addr, value);
+			}
+			else if (addr < 0x1400)
+			{
+				rambank0[addr & 0x3FF] = value;
+			}
+			else if (addr >= 0x1800 && addr < 0x2000)
+			{
+				rambank0[(addr & 0xFF) + (rambank1_toggle * 0x100)] = value;
+			}
 		}
 
 		public override void SyncState(Serializer ser)
