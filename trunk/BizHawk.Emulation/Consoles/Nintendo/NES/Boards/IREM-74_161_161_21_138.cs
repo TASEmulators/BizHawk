@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Mapper 77
 	//Napoleon Senki
 
+	//the 4screen implementation is a bit of a guess, but it seems to work
+
 	class IREM_74_161_161_21_138 : NES.NESBoardBase
 	{
 		int chr, prg;
@@ -24,7 +26,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return false;
 			}
 
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
 
@@ -44,12 +46,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x0800)
-			{
 				return VROM[addr + (chr * 0x0800)];
-			}
 			else if (addr < 0x2000)
 				return VRAM[addr];
+			else if (addr < 0x2800)
+				return VRAM[addr & 0x7ff];
 			else return base.ReadPPU(addr);
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x0800)
+				return;
+			else if (addr < 0x2000)
+				VRAM[addr] = value;
+			else if (addr < 0x2800)
+				VRAM[addr & 0x7ff] = value;
+			else base.WritePPU(addr, value);
 		}
 
 		public override byte ReadPRG(int addr)
