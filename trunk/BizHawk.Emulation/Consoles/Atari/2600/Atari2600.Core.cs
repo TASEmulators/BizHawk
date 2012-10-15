@@ -123,8 +123,10 @@ namespace BizHawk
 				case "2K": mapper = new m2K(); break;
 				case "CV": mapper = new mCV(); break;
 				case "F8": mapper = new mF8(); break;
-				case "F6": case "F6SC": mapper = new mF6(); break;
-				case "F4": case "F4SC": mapper = new mF4(); break;
+				case "F6":
+				case "F6SC": mapper = new mF6(); break;
+				case "F4":
+				case "F4SC": mapper = new mF4(); break;
 				case "FE": mapper = new mFE(); break;
 				case "E0": mapper = new mE0(); break;
 				case "3F": mapper = new m3F(); break;
@@ -165,6 +167,13 @@ namespace BizHawk
 			cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); //set the initial PC
 			//cpu.PC = 0x0000; //set the initial PC
 
+			// show mapper class on romstatusdetails
+			CoreOutputComm.RomStatusDetails =
+						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
+						game.Name,
+						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom)),
+						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom)),
+						mapper.GetType().ToString());
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
