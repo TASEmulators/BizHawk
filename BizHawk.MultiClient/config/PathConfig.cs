@@ -642,27 +642,27 @@ namespace BizHawk.MultiClient
 
 		private void BrowseAtariROMs_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariROMsBox, AtariROMsDescription.Text, "Atari");
+			BrowseFolder(AtariROMsBox, AtariROMsDescription.Text, "A26");
 		}
 
 		private void BrowseAtariSavestates_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariSavestatesBox, AtariSavestatesDescription.Text, "Atari");
+			BrowseFolder(AtariSavestatesBox, AtariSavestatesDescription.Text, "A26");
 		}
 
 		private void BrowseAtariSaveRAM_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariSaveRAMBox, AtariSaveRAMDescription.Text, "Atari");
+			BrowseFolder(AtariSaveRAMBox, AtariSaveRAMDescription.Text, "A26");
 		}
 
 		private void BrowseAtariScreenshots_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariScreenshotsBox, AtariScreenshotsDescription.Text, "Atari");
+			BrowseFolder(AtariScreenshotsBox, AtariScreenshotsDescription.Text, "A26");
 		}
 
 		private void AtariBrowseCheats_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariCheatsBox, AtariCheatsDescription.Text, "Atari");
+			BrowseFolder(AtariCheatsBox, AtariCheatsDescription.Text, "A26");
 		}
 
 		private void INTVBrowseBase_Click(object sender, EventArgs e)
