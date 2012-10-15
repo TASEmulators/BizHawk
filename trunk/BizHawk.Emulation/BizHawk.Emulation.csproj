@@ -198,6 +198,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MLT-MAX15.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\HKROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper012.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper037.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper044.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper052.cs" />
