@@ -2326,43 +2326,46 @@ namespace BizHawk.MultiClient
 
 		private void AddressesLabel_MouseDown(object sender, MouseEventArgs e)
 		{
-			int addressOver = GetPointedAddress(e.X, e.Y);
-			if (addressOver >= 0)
+			if (e.Button == MouseButtons.Left)
 			{
-				if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+				int addressOver = GetPointedAddress(e.X, e.Y);
+				if (addressOver >= 0)
 				{
-					if (addressOver == addressHighlighted)
+					if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
 					{
-						ClearHighlighted();
+						if (addressOver == addressHighlighted)
+						{
+							ClearHighlighted();
+						}
+						else if (SecondaryHighlightedAddresses.Contains(addressOver))
+						{
+							SecondaryHighlightedAddresses.Remove(addressOver);
+						}
+						else
+						{
+							SecondaryHighlightedAddresses.Add(addressOver);
+						}
 					}
-					else if (SecondaryHighlightedAddresses.Contains(addressOver))
+					else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
 					{
-						SecondaryHighlightedAddresses.Remove(addressOver);
+						DoShiftClick();
 					}
+					//else if (addressOver == addressHighlighted)
+					//{
+					//    ClearHighlighted();
+					//}
 					else
 					{
-						SecondaryHighlightedAddresses.Add(addressOver);
+						SetHighlighted(addressOver);
+						SecondaryHighlightedAddresses.Clear();
+						FindStr = "";
 					}
-				}
-				else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-				{
-					DoShiftClick();
-				}
-				//else if (addressOver == addressHighlighted)
-				//{
-				//    ClearHighlighted();
-				//}
-				else
-				{
-					SetHighlighted(addressOver);
-					SecondaryHighlightedAddresses.Clear();
-					FindStr = "";
+
+					MemoryViewerBox.Refresh();
 				}
 
-				MemoryViewerBox.Refresh();
+				MouseIsDown = true;
 			}
-
-			MouseIsDown = true;
 		}
 
 		private void AddressesLabel_MouseUp(object sender, MouseEventArgs e)
