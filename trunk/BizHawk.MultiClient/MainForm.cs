@@ -889,13 +889,16 @@ namespace BizHawk.MultiClient
 			a2600Controls.BindMulti("P1 Right", Global.Config.Atari2600Controller[0].Right);
 			a2600Controls.BindMulti("P1 Down", Global.Config.Atari2600Controller[0].Down);
 			a2600Controls.BindMulti("P1 Button", Global.Config.Atari2600Controller[0].Button);
+			
 			a2600Controls.BindMulti("P2 Up", Global.Config.Atari2600Controller[1].Up);
 			a2600Controls.BindMulti("P2 Left", Global.Config.Atari2600Controller[1].Left);
 			a2600Controls.BindMulti("P2 Right", Global.Config.Atari2600Controller[1].Right);
 			a2600Controls.BindMulti("P2 Down", Global.Config.Atari2600Controller[1].Down);
 			a2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
+			
 			a2600Controls.BindMulti("Reset", Global.Config.Atari2600ConsoleButtons[0].Reset);
 			a2600Controls.BindMulti("Select", Global.Config.Atari2600ConsoleButtons[0].Select);
+			
 			Global.Atari2600Controls = a2600Controls;
 
 			var autofireA2600Controls = new AutofireController(Atari2600.Atari2600ControllerDefinition);
@@ -904,11 +907,13 @@ namespace BizHawk.MultiClient
 			autofireA2600Controls.BindMulti("P1 Right", Global.Config.Atari2600AutoController[0].Right);
 			autofireA2600Controls.BindMulti("P1 Down", Global.Config.Atari2600AutoController[0].Down);
 			autofireA2600Controls.BindMulti("P1 Button", Global.Config.Atari2600AutoController[0].Button);
+			
 			autofireA2600Controls.BindMulti("P2 Up", Global.Config.Atari2600AutoController[1].Up);
 			autofireA2600Controls.BindMulti("P2 Left", Global.Config.Atari2600AutoController[1].Left);
 			autofireA2600Controls.BindMulti("P2 Right", Global.Config.Atari2600AutoController[1].Right);
 			autofireA2600Controls.BindMulti("P2 Down", Global.Config.Atari2600AutoController[1].Down);
-			autofireA2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
+			autofireA2600Controls.BindMulti("P2 Button", Global.Config.Atari2600AutoController[1].Button);
+			
 			Global.AutofireAtari2600Controls = autofireA2600Controls;
 
 			var colecoControls = new Controller(ColecoVision.ColecoVisionControllerDefinition);
