@@ -15,6 +15,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(64); AssertChr(64); AssertVram(8); AssertWram(0);
 					AssertBattery(false);
 					break;
+				case "NES-TR1ROM": // Gauntlet variant (untested!)
+					break;
 				default:
 					return false;
 			}
