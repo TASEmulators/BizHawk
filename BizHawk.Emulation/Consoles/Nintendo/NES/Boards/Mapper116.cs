@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			mmc1.SyncState(ser);
 			mmc3.SyncState(ser);
 			vrc2.SyncState(ser);
+			base.SyncState(ser);
 			SyncIRQ(mmc3.mmc3.irq_pending);
 		}
 
