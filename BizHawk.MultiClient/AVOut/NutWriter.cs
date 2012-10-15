@@ -41,9 +41,10 @@ namespace BizHawk.MultiClient
 
 		public void OpenFile(string baseName)
 		{
-			this.baseName = System.IO.Path.GetFileNameWithoutExtension(baseName);
+			this.baseName = System.IO.Path.Combine(
+				System.IO.Path.GetDirectoryName(baseName),
+				System.IO.Path.GetFileNameWithoutExtension(baseName));
 			segment = 0;
-
 
 			startsegment();
 		}
