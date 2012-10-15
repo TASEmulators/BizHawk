@@ -152,6 +152,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_19.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_SS8806.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper015.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper027.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper038.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper040.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper045.cs" />
