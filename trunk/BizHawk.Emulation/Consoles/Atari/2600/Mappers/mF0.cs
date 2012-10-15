@@ -36,6 +36,8 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr < 0x1000) base.WriteMemory(addr, value);
+			else if (addr == 0x1ff0)
+				Increment();
 		}
 
 		public override void SyncState(Serializer ser)
