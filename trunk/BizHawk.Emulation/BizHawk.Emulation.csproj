@@ -265,6 +265,7 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Unif.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
