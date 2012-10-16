@@ -55,12 +55,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret = base.ReadPPU(addr);
 
 			// latch processes for the next read
-			switch (addr & 0x3ff0)
+			switch (addr & 0x3ff8)
 			{
 				case 0x0fd0: latch0 = false; break;
-				case 0x0fe0: latch0 = true; break;
+				case 0x0fe8: latch0 = true; break;
 				case 0x1fd0: latch1 = false; break;
-				case 0x1fe0: latch1 = true; break;
+				case 0x1fe8: latch1 = true; break;
 			}
 			return ret;
 		}
