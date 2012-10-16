@@ -128,6 +128,11 @@ namespace BizHawk
 
 			switch (ext)
 			{
+				case ".NES":
+				case ".UNF":
+				case ".FDS":
+					Game.System = "NES";
+					break;
 				case ".SFC":
 				case ".SMC": 
 					Game.System = "SNES"; 
@@ -144,7 +149,6 @@ namespace BizHawk
 				case ".GEN":
                 case ".MD":
 				case ".SMD": Game.System = "GEN"; break;
-				case ".NES": Game.System = "NES"; break;
 				case ".A26": Game.System = "A26"; break;
 				case ".COL": Game.System = "COLV"; break;
 				case ".ROM":

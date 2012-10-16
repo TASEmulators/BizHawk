@@ -262,12 +262,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			protected void AssertVram(params int[] vram) { Assert_memtype(Cart.vram_size, "vram", vram); }
 			protected void Assert_memtype(int value, string name, int[] valid)
 			{
+				if (DisableConfigAsserts) return;
 				foreach (int i in valid) if (value == i) return;
 				Assert(false, "unhandled {0} size of {1}", name,value);
 			}
 			protected void AssertBattery(bool has_bat) { Assert(Cart.wram_battery == has_bat); }
 
 			public virtual void ApplyCustomAudio(short[] samples) { }
+
+			public bool DisableConfigAsserts = false;
 		}
 
 		//this will be used to track classes that implement boards
@@ -340,10 +343,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			nes.cart = cart;
 			foreach (var type in INESBoardImplementors)
 			{
-				INESBoard board = (INESBoard)Activator.CreateInstance(type);
-				board.Create(nes);
-				if (board.Configure(origin))
-					return type;
+				using (NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type))
+				{
+					//unif demands that the boards set themselves up with expected legal values based on the board size
+					//except, i guess, for the rom/chr sizes. go figure.
+					//so, disable the asserts here
+					if (origin == EDetectionOrigin.UNIF)
+						board.DisableConfigAsserts = true;
+
+					board.Create(nes);
+					if (board.Configure(origin))
+					{
+						return type;
+					}
+				}
 			}
 			return null;
 		}

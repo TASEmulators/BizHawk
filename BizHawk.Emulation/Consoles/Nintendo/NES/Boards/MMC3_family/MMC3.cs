@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void Dispose()
 		{
-			mmc3.Dispose();
+			if(mmc3 != null) mmc3.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
