@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				else
 					return VROM[addr | chr << 13];
 			}
-			else			
+			else
 				return base.ReadPPU(addr);
 		}
 	}
