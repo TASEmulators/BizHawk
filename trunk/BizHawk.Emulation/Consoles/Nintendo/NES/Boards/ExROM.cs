@@ -576,4 +576,3 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	}
 }
-
