@@ -67,18 +67,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				switch (tmp[0])
 				{
 					case 0: // hmirror
-						ci.pad_h = 1;
-						ci.pad_v = 0;
-						break;
-					case 1: // vmirror
 						ci.pad_h = 0;
 						ci.pad_v = 1;
+						break;
+					case 1: // vmirror
+						ci.pad_h = 1;
+						ci.pad_v = 0;
 						break;
 				}
 			}
 
 			if (chunks.TryGetValue("MAPR", out tmp))
 				ci.board_type = Encoding.ASCII.GetString(tmp);
+			ci.board_type = ci.board_type.TrimEnd('\0');
+			ci.board_type = "UNIF_" + ci.board_type;
 
 			// is there any way using System.Security.Cryptography.SHA1 to compute the hash of
 			// prg concatentated with chr?  i couldn't figure it out, so this implementation is dumb
@@ -88,7 +90,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ms.Write(chrrom, 0, chrrom.Length);
 				ms.Close();
 				byte[] all = ms.ToArray();
-				ci.sha1 = Util.Hash_SHA1(all, 0, all.Length);
+				ci.sha1 = "sha1:" + Util.Hash_SHA1(all, 0, all.Length);
 			}
 		}
 

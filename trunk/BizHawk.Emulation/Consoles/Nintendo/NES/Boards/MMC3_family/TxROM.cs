@@ -85,6 +85,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
 					AssertBattery(false);
 					break;
+				case "UNIF_TSROM":
+					Cart.wram_size = 8;
+					Cart.wram_battery = false;
+					break;
 				case "ACCLAIM-MC-ACC": //alien 3 (U)
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
@@ -93,6 +97,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
+
+
 				default:
 					return false;
 			}

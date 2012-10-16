@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		string game_name; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		INESBoard board; //the board hardware that is currently driving things
+		EDetectionOrigin origin = EDetectionOrigin.None;
 		public bool SoundOn = true;
 		int sprdma_countdown;
 		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
