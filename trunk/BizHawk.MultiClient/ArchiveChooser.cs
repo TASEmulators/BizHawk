@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,8 +20,11 @@ namespace BizHawk.MultiClient
 				var lvi = new ListViewItem();
 				lvi.Tag = item;
 				lvi.SubItems.Add(new ListViewItem.ListViewSubItem());
-				lvi.Text = Util.FormatFileSize(item.size);
-				lvi.SubItems[1].Text = item.name;
+				lvi.Text = item.name;
+				long size = item.size;
+				if (size % 1024 == 16 && Path.GetExtension(item.name).ToUpper() == ".NES")
+					size -= 16;
+				lvi.SubItems[1].Text = Util.FormatFileSize(size);
 				lvMembers.Items.Add(lvi);
 			}
 
@@ -117,19 +121,6 @@ namespace BizHawk.MultiClient
 		private void ArchiveChooser_Load(object sender, EventArgs e)
 		{
 			lvMembers.Items[0].Selected = true;
-		}
-
-		private void lvMembers_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.D1) SetItem(1);
-			if (e.KeyCode == Keys.D2) SetItem(2);
-			if (e.KeyCode == Keys.D3) SetItem(3);
-			if (e.KeyCode == Keys.D4) SetItem(4);
-			if (e.KeyCode == Keys.D5) SetItem(5);
-			if (e.KeyCode == Keys.D6) SetItem(6);
-			if (e.KeyCode == Keys.D7) SetItem(7);
-			if (e.KeyCode == Keys.D8) SetItem(8);
-			if (e.KeyCode == Keys.D9) SetItem(9);
 		}
 
 		private void SetItem(int num)
