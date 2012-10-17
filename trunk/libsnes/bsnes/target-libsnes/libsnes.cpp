@@ -25,6 +25,13 @@ struct Interface : public SNES::Interface {
 	//zero 26-sep-2012
 	std::queue<nall::string> messages;
 
+	//zero 17-oct-2012
+	int backdropColor;
+	int getBackdropColor()
+	{
+		return backdropColor;
+	}
+
   void videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan) {
     unsigned width = hires ? 512 : 256;
     unsigned height = overscan ? 239 : 224;
@@ -79,7 +86,15 @@ struct Interface : public SNES::Interface {
 
   }
 
-  Interface() : pvideo_refresh(0), paudio_sample(0), pinput_poll(0), pinput_state(0), pinput_notify(0), ppath_request(0) {
+  Interface() : 
+			pvideo_refresh(0), 
+			paudio_sample(0), 
+			pinput_poll(0), 
+			pinput_state(0), 
+			pinput_notify(0), 
+			ppath_request(0),
+			backdropColor(-1)
+	{
     buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
 
@@ -546,4 +561,9 @@ void snes_dequeue_message(char* buffer)
 	int len = interface.messages.front().length();
 	memcpy(buffer,(const char*)interface.messages.front(),len);
 	interface.messages.pop();
+}
+
+void snes_set_backdropColor(int color)
+{
+	interface.backdropColor = color;
 }

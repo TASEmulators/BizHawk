@@ -12,6 +12,9 @@ struct Interface {
 
 	//zero 27-sep-2012
 	virtual void scanlineStart(int line) = 0;
+
+	//zero 17-oct-2012
+	virtual int getBackdropColor();
 };
 
 extern Interface *interface;

@@ -31,4 +31,9 @@ time_t Interface::randomSeed()
   return time(0);
 }
 
+int Interface::getBackdropColor()
+{
+	return -1;
+}
+
 }

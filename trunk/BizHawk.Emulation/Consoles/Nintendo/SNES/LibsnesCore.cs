@@ -150,6 +150,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_backdropColor(int backdropColor);
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int snes_peek_logical_register(SNES_REG reg);
 
 		public enum SNES_REG : int
