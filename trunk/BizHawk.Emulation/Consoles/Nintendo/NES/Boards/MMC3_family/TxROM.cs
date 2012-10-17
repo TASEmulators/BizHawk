@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
+	[NES.INESBoardImplPriority]
 	public class TxROM : MMC3Board_Base
 	{
 		public override void WritePRG(int addr, byte value)

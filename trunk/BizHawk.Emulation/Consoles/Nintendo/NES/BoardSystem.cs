@@ -280,9 +280,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		[AttributeUsage(AttributeTargets.Class)]
 		public class INESBoardImplCancelAttribute : Attribute { }
 		static List<Type> INESBoardImplementors = new List<Type>();
+		//flags it as being priority, i.e. in the top of the list
+		[AttributeUsage(AttributeTargets.Class)]
+		public class INESBoardImplPriorityAttribute : Attribute { }
 
 		static NES()
 		{
+			var highPriority = new List<Type>();
+			var normalPriority = new List<Type>();
+
 			//scan types in this assembly to find ones that implement boards to add them to the list
 			foreach (Type type in typeof(NES).Assembly.GetTypes())
 			{
@@ -291,8 +297,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (type.IsAbstract) continue;
 				var cancelAttrs = type.GetCustomAttributes(typeof(INESBoardImplCancelAttribute), true);
 				if (cancelAttrs.Length != 0) continue;
-				INESBoardImplementors.Add(type);
+				var priorityAttrs = type.GetCustomAttributes(typeof(INESBoardImplPriorityAttribute), true);
+				if (priorityAttrs.Length != 0)
+					highPriority.Add(type);
+				else normalPriority.Add(type);
 			}
+
+			INESBoardImplementors.AddRange(highPriority);
+			INESBoardImplementors.AddRange(normalPriority);
 		}
 
 		/// <summary>
