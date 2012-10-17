@@ -70,7 +70,7 @@ namespace BizHawk.MultiClient
 				if (controller.IsPressed(button))
 				{
 					buttons[button] = true;
-					Console.WriteLine(button);
+					//Console.WriteLine(button);
 				}
 			}
 		}
