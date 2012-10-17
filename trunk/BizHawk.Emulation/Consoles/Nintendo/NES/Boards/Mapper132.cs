@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "MAPPER132":
+				case "UNIF_UNL-22211":
 					break;
 				default:
 					return false;

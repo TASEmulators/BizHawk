@@ -32,6 +32,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NAMCOT-3301":
 				case "HVC-HROM": //Donkey Kong Jr. (J)
 				case "JALECO-JF-01": //Exerion (J)
+				case "UNIF_NES-NROM-256": // Locksmith
+				case "UNIF_NES-NROM-128": // various
 					AssertPrg(8, 16, 32); AssertChr(8); AssertVram(0); AssertWram(0, 8);
 					break;
 
