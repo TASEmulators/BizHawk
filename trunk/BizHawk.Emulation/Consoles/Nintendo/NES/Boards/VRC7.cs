@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		Func<int, int> remap;
 
 		//state
-		BizHawk.Emulation.Sound.YM2413 fm = new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
+		BizHawk.Emulation.Sound.YM2413 fm; //= new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
 
 		ByteBuffer prg_banks_8k = new ByteBuffer(4);
 		ByteBuffer chr_banks_1k = new ByteBuffer(8);
@@ -78,6 +78,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SetMirrorType(EMirrorType.Vertical);
 
 			prg_banks_8k[3] = (byte)(0xFF & prg_bank_mask_8k);
+
+			fm = new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
 
 			return true;
 		}
