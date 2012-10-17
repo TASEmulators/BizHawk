@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	//TODO - bus conflicts
 
+	[NES.INESBoardImplPriority]
 	public class GxROM : NES.NESBoardBase
 	{
 		//configuraton

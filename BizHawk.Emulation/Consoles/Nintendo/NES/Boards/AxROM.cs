@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//generally mapper7
 
+	[NES.INESBoardImplPriority]
 	public class AxROM : NES.NESBoardBase
 	{
 		//configuration

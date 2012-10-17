@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
+	[NES.INESBoardImplPriority]
 	public class NROM : NES.NESBoardBase
 	{
 		//configuration
