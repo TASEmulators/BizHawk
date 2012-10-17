@@ -237,6 +237,7 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\NanJing.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NES-EVENT.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\NovelDiamond.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
       <SubType>Code</SubType>
     </Compile>
