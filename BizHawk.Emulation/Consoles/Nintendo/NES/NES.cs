@@ -458,6 +458,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				unif = new Unif(new MemoryStream(file));
 				hash_sha1 = unif.GetCartInfo().sha1;
 				hash_sha1_several.Add(hash_sha1);
+				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
 			}
 			else
 			{
