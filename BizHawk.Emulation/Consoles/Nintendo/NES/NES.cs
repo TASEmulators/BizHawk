@@ -598,7 +598,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			LoadWriteLine("END NES rom analysis");
 			LoadWriteLine("------");
 
-			board = (INESBoard)Activator.CreateInstance(boardType);
+			board = CreateBoardInstance(boardType);
 
 			cart = choice;
 			board.Create(this);

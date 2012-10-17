@@ -284,6 +284,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		[AttributeUsage(AttributeTargets.Class)]
 		public class INESBoardImplPriorityAttribute : Attribute { }
 
+		static INESBoard CreateBoardInstance(Type boardType)
+		{
+			var board = (INESBoard)Activator.CreateInstance(boardType);
+			lock (INESBoardImplementors)
+			{
+				//put the one we chose at the top of the list, for quicker access in the future
+				int x = INESBoardImplementors.IndexOf(boardType);
+				//(swap)
+				var temp = INESBoardImplementors[0];
+				INESBoardImplementors[0] = boardType;
+				INESBoardImplementors[x] = temp;
+			}
+			return board;
+		}
+
+
 		static NES()
 		{
 			var highPriority = new List<Type>();
@@ -353,23 +369,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			NES nes = new NES();
 			nes.cart = cart;
-			foreach (var type in INESBoardImplementors)
-			{
-				using (NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type))
+			lock(INESBoardImplementors)
+				foreach (var type in INESBoardImplementors)
 				{
-					//unif demands that the boards set themselves up with expected legal values based on the board size
-					//except, i guess, for the rom/chr sizes. go figure.
-					//so, disable the asserts here
-					if (origin == EDetectionOrigin.UNIF)
-						board.DisableConfigAsserts = true;
-
-					board.Create(nes);
-					if (board.Configure(origin))
+					using (NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type))
 					{
-						return type;
+						//unif demands that the boards set themselves up with expected legal values based on the board size
+						//except, i guess, for the rom/chr sizes. go figure.
+						//so, disable the asserts here
+						if (origin == EDetectionOrigin.UNIF)
+							board.DisableConfigAsserts = true;
+
+						board.Create(nes);
+						if (board.Configure(origin))
+						{
+							return type;
+						}
 					}
 				}
-			}
 			return null;
 		}
 
