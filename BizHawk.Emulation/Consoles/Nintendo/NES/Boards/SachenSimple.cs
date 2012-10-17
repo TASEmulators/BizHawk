@@ -26,12 +26,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case "MAPPER146":
 				case "UNL-SA-016-1M":
+				case "UNIF_UNL-SA-016-1M":
 					ExpWrite = SA0161M_Write;
 					break;
 				case "MAPPER145":
 					ExpWrite = SA72007_Write;
 					break;
 				case "MAPPER133":
+				case "UNIF_UNL-SA-72008":
 					ExpWrite = SA72008_Write;
 					break;
 				case "MAPPER160":
@@ -41,6 +43,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					PrgWrite = SA72007_Write;
 					break;
 				case "MAPPER148":
+				case "UNIF_UNL-SA-0037":
 					PrgWrite = SA0161M_Write;
 					break;
 				default:

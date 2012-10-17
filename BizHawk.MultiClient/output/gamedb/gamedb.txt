@@ -109,6 +109,8 @@ sha1:6143D80047FFC17C752078C622A44C3E0CB7466E	B	Dong Fang de Chuan Shuo - The Hy
 ;wrong vram info
 sha1:32D71DD6C5A8D78A918FE1B9D6D6C4A570D9652D		Oeka Kids - Anpanman no Hiragana Daisuki (J)	NES		board=MAPPER096;VRAM=32
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;it works, so don't laugh
+sha1:203523818A348361584CDEBE47AEB860808757FC	U	Jurassic Boy 2 (Sachen)	NES		board=NES-TR1ROM;VRAM=8
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;mmc3 homebrews that need chip specification
