@@ -82,6 +82,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ci.board_type = ci.board_type.TrimEnd('\0');
 			ci.board_type = "UNIF_" + ci.board_type;
 
+			if (chunks.TryGetValue("BATR", out tmp))
+				// apparently, this chunk just existing means battery is yes
+				ci.wram_battery = true;
+
 			// is there any way using System.Security.Cryptography.SHA1 to compute the hash of
 			// prg concatentated with chr?  i couldn't figure it out, so this implementation is dumb
 			{
