@@ -24,6 +24,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case "MAPPER007":
 					bus_conflict = false;
+					AssertVram(8); AssertWram(0);
 					break;
 
 				case "NES-ANROM": //marble madness
