@@ -73,8 +73,8 @@
 			// lvMembers
 			// 
 			this.lvMembers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colSize,
-            this.colName});
+            this.colName,
+            this.colSize});
 			this.lvMembers.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lvMembers.FullRowSelect = true;
 			this.lvMembers.GridLines = true;
@@ -85,14 +85,15 @@
 			this.lvMembers.UseCompatibleStateImageBehavior = false;
 			this.lvMembers.View = System.Windows.Forms.View.Details;
 			this.lvMembers.ItemActivate += new System.EventHandler(this.lvMembers_ItemActivate);
-			this.lvMembers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvMembers_KeyDown);
 			// 
 			// colSize
 			// 
+			this.colSize.DisplayIndex = 0;
 			this.colSize.Text = "Size";
 			// 
 			// colName
 			// 
+			this.colName.DisplayIndex = 1;
 			this.colName.Text = "Name";
 			this.colName.Width = 409;
 			// 
