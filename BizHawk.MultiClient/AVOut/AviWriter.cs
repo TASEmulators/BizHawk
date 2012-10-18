@@ -193,7 +193,14 @@ namespace BizHawk.MultiClient
 			currSegment = new AviWriterSegment();
 			nameProvider.MoveNext();
 			currSegment.OpenFile(nameProvider.Current, parameters, currVideoCodecToken);
-			currSegment.OpenStreams();
+			try
+			{
+				currSegment.OpenStreams();
+			}
+			catch // will automatically try again with 32 bit
+			{
+				currSegment.OpenStreams();
+			}
 		}
 
 		/// <summary>
@@ -224,7 +231,7 @@ namespace BizHawk.MultiClient
 		class Parameters
 		{
 			public int width, height;
-			public void PopulateBITMAPINFOHEADER(ref Win32.BITMAPINFOHEADER bmih)
+			public void PopulateBITMAPINFOHEADER24(ref Win32.BITMAPINFOHEADER bmih)
 			{
 				bmih.Init();
 				bmih.biPlanes = 1;
@@ -232,6 +239,16 @@ namespace BizHawk.MultiClient
 				bmih.biHeight = height;
 				bmih.biWidth = width;
 				bmih.biSizeImage = (uint)(3 * width * height);
+			}
+
+			public void PopulateBITMAPINFOHEADER32(ref Win32.BITMAPINFOHEADER bmih)
+			{
+				bmih.Init();
+				bmih.biPlanes = 1;
+				bmih.biBitCount = 32;
+				bmih.biHeight = height;
+				bmih.biWidth = width;
+				bmih.biSizeImage = (uint)(4 * width * height);
 			}
 
 			public bool has_audio;
@@ -510,6 +527,8 @@ namespace BizHawk.MultiClient
 			IntPtr pAviFile, pAviRawVideoStream, pAviRawAudioStream, pAviCompressedVideoStream;
 			IntPtr pGlobalBuf;
 			int pGlobalBuf_size;
+			/// <summary>are we sending 32 bit RGB to avi or 24?</summary>
+			bool bit32 = false;
 
 			/// <summary>
 			/// there is just ony global buf. this gets it and makes sure its big enough. don't get all re-entrant on it!
@@ -577,7 +596,7 @@ namespace BizHawk.MultiClient
 				//initialize the video stream
 				Win32.AVISTREAMINFOW vidstream_header = new Win32.AVISTREAMINFOW();
 				Win32.BITMAPINFOHEADER bmih = new Win32.BITMAPINFOHEADER();
-				parameters.PopulateBITMAPINFOHEADER(ref bmih);
+				parameters.PopulateBITMAPINFOHEADER24(ref bmih);
 				vidstream_header.fccType = Win32.mmioFOURCC("vids");
 				vidstream_header.dwRate = parameters.fps;
 				vidstream_header.dwScale = parameters.fps_scale;
@@ -649,9 +668,13 @@ namespace BizHawk.MultiClient
 
 				//set the compressed video stream input format
 				Win32.BITMAPINFOHEADER bmih = new Win32.BITMAPINFOHEADER();
-				parameters.PopulateBITMAPINFOHEADER(ref bmih);
+				if (bit32)
+					parameters.PopulateBITMAPINFOHEADER32(ref bmih);
+				else
+					parameters.PopulateBITMAPINFOHEADER24(ref bmih);
 				if (Win32.FAILED(Win32.AVIStreamSetFormat(pAviCompressedVideoStream, 0, ref bmih, Marshal.SizeOf(bmih))))
 				{
+					bit32 = true; // we'll try again
 					CloseStreams();
 					throw new InvalidOperationException("Failed setting compressed video stream input format");
 				}
@@ -700,7 +723,8 @@ namespace BizHawk.MultiClient
 			/// </summary>
 			public void CloseStreams()
 			{
-				FlushBufferedAudio();
+				if (pAviRawAudioStream != IntPtr.Zero)
+					FlushBufferedAudio();
 				if (pAviCompressedVideoStream != IntPtr.Zero)
 				{
 					Win32.AVIStreamRelease(pAviCompressedVideoStream);
@@ -755,37 +779,70 @@ namespace BizHawk.MultiClient
 				int w = source.BufferWidth;
 				int h = source.BufferHeight;
 
-				IntPtr buf = GetStaticGlobalBuf(todo * 3);
-
-				int[] buffer = source.GetVideoBuffer();
-				fixed (int* buffer_ptr = &buffer[0])
+				if (!bit32)
 				{
-					byte* bytes_ptr = (byte*)buf.ToPointer();
+					IntPtr buf = GetStaticGlobalBuf(todo * 3);
+
+					int[] buffer = source.GetVideoBuffer();
+					fixed (int* buffer_ptr = &buffer[0])
 					{
-						byte* bp = bytes_ptr;
-
-						for (int idx = w * h - w, y = 0; y < h; y++)
+						byte* bytes_ptr = (byte*)buf.ToPointer();
 						{
-							for (int x = 0; x < w; x++, idx++)
+							byte* bp = bytes_ptr;
+
+							for (int idx = w * h - w, y = 0; y < h; y++)
 							{
-								int r = (buffer[idx] >> 0) & 0xFF;
-								int g = (buffer[idx] >> 8) & 0xFF;
-								int b = (buffer[idx] >> 16) & 0xFF;
-								*bp++ = (byte)r;
-								*bp++ = (byte)g;
-								*bp++ = (byte)b;
+								for (int x = 0; x < w; x++, idx++)
+								{
+									int r = (buffer[idx] >> 0) & 0xFF;
+									int g = (buffer[idx] >> 8) & 0xFF;
+									int b = (buffer[idx] >> 16) & 0xFF;
+									*bp++ = (byte)r;
+									*bp++ = (byte)g;
+									*bp++ = (byte)b;
+								}
+								idx -= w * 2;
 							}
-							idx -= w * 2;
+
+							int bytes_written;
+							int ret = Win32.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, Win32.AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
+							outStatus.video_bytes += bytes_written;
+							outStatus.video_frames++;
 						}
-
-						int bytes_written;
-						int ret = Win32.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, Win32.AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
-						outStatus.video_bytes += bytes_written;
-						outStatus.video_frames++;
 					}
-
 				}
+				else // 32 bit
+				{
+					IntPtr buf = GetStaticGlobalBuf(todo * 4);
+					int[] buffer = source.GetVideoBuffer();
+					fixed (int* buffer_ptr = &buffer[0])
+					{
+						byte* bytes_ptr = (byte*)buf.ToPointer();
+						{
+							byte* bp = bytes_ptr;
 
+							for (int idx = w * h - w, y = 0; y < h; y++)
+							{
+								for (int x = 0; x < w; x++, idx++)
+								{
+									int r = (buffer[idx] >> 0) & 0xFF;
+									int g = (buffer[idx] >> 8) & 0xFF;
+									int b = (buffer[idx] >> 16) & 0xFF;
+									*bp++ = (byte)r;
+									*bp++ = (byte)g;
+									*bp++ = (byte)b;
+									*bp++ = 0;
+								}
+								idx -= w * 2;
+							}
+
+							int bytes_written;
+							int ret = Win32.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, Win32.AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
+							outStatus.video_bytes += bytes_written;
+							outStatus.video_frames++;
+						}
+					}
+				}
 			}
 		}
 
