@@ -136,10 +136,11 @@ namespace BizHawk.MultiClient
 
 		public void AddFrame(IVideoProvider source)
 		{
-			if (!workerT.IsAlive)
-				// signal some sort of error?
-				return;
-			threadQ.Add(new VideoCopy(source));
+			while (!threadQ.TryAdd(new VideoCopy(source), 1000))
+			{
+				if (!workerT.IsAlive)
+					throw new Exception("AVI Worker thread died!");
+			}
 		}
 		void AddFrameEx(IVideoProvider source)
 		{
@@ -151,13 +152,15 @@ namespace BizHawk.MultiClient
 
 		public void AddSamples(short[] samples)
 		{
-			if (!workerT.IsAlive)
-				// signal some sort of error?
-				return;
 			// as MainForm.cs is written now, samples is all ours (nothing else will use it for anything)
 			// but that's a bad assumption to make and could change in the future, so copy it since we're passing to another thread
-			threadQ.Add((short[])samples.Clone());
+			while (!threadQ.TryAdd((short[])samples.Clone(), 1000))
+			{
+				if (!workerT.IsAlive)
+					throw new Exception("AVI Worker thread died!");
+			}
 		}
+
 		void AddSamplesEx(short[] samples)
 		{
 			ConsiderLengthSegment();
