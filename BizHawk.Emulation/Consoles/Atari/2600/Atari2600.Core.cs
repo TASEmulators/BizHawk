@@ -253,7 +253,7 @@ namespace BizHawk
 			if (bw) value &= 0xF7;
 			if (p0difficulty) value &= 0xBF;
 			if (p1difficulty) value &= 0x7F;
-
+			_islag = false;
 			return value;
 		}
 	}
