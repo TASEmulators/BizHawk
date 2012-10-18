@@ -65,6 +65,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Random r = new Random();
 			public void GetSamples(short[] samples)
 			{
+				if (nes.apu.squeue.Count == 0)
+					return;
 				var monosampbuf = nes.apu.squeue.ToArray(2);
 				nes.apu.squeue.Clear();
 				if (monosampbuf.Length > 0)

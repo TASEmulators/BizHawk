@@ -2301,15 +2301,19 @@ namespace BizHawk.MultiClient
 					AviSoundInput.GetSamples(temp);
 					DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
 
-					if (Global.Config.AVI_CaptureOSD)
+					try
 					{
-						CurrAviWriter.AddFrame(new AVOut.BmpVideoProvder(CaptureOSD()));
+						if (Global.Config.AVI_CaptureOSD)
+							CurrAviWriter.AddFrame(new AVOut.BmpVideoProvder(CaptureOSD()));
+						else
+							CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+						CurrAviWriter.AddSamples(temp);
 					}
-					else
+					catch (Exception e)
 					{
-						CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+						MessageBox.Show("Video dumping died:\n\n" + e.ToString());
+						AbortAVI();
 					}
-					CurrAviWriter.AddSamples(temp);
 
 					if (autoDumpLength > 0)
 					{
@@ -3431,6 +3435,26 @@ namespace BizHawk.MultiClient
 			else
 				AviSoundInput = Global.Emulator.SoundProvider;
 			DumpProxy = new Emulation.Sound.MetaspuSoundProvider(Emulation.Sound.ESynchMethod.ESynchMethod_V);
+			SoundRemainder = 0;
+			RewireSound();
+		}
+
+		void AbortAVI()
+		{
+			if (CurrAviWriter == null)
+			{
+				DumpProxy = null;
+				RewireSound();
+				return;
+			}
+			CurrAviWriter.Dispose();
+			CurrAviWriter = null;
+			Global.OSD.AddMessage("AVI capture aborted");
+			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			AVIStatusLabel.ToolTipText = "";
+			AVIStatusLabel.Visible = false;
+			AviSoundInput = null;
+			DumpProxy = null; // return to normal sound output
 			SoundRemainder = 0;
 			RewireSound();
 		}
