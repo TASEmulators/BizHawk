@@ -2287,7 +2287,7 @@ namespace BizHawk.MultiClient
 				coreskipaudio = Global.ClientControls["MaxTurbo"] && CurrAviWriter == null;
 				//=======================================
 				MemoryPulse.Pulse();
-				Global.Emulator.FrameAdvance(!throttle.skipnextframe, !coreskipaudio);
+				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
 				MemoryPulse.Pulse();
 				//=======================================
 				if (CurrAviWriter != null)
