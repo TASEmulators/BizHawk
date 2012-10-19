@@ -368,6 +368,16 @@ namespace BizHawk.MultiClient
 			{
 				this.Location = new Point(Global.Config.SNESGraphicsDebuggerWndx, Global.Config.SNESGraphicsDebuggerWndy);
 			}
+
+			checkBackdropColor.Checked = Global.Config.SNESGraphicsUseUserBackdropColor;
+			if (Global.Config.SNESGraphicsUserBackdropColor != -1)
+			{
+				pnBackdropColor.BackColor = Color.FromArgb(Global.Config.SNESGraphicsUserBackdropColor);
+			}
+			if (checkBackdropColor.Checked)
+			{
+				SyncBackdropColor();
+			}
 		}
 
 		private void SaveConfigSettings()
@@ -790,6 +800,7 @@ namespace BizHawk.MultiClient
 
 		private void checkBackdropColor_CheckedChanged(object sender, EventArgs e)
 		{
+			Global.Config.SNESGraphicsUseUserBackdropColor = checkBackdropColor.Checked;
 			SyncBackdropColor();
 		}
 
@@ -800,6 +811,7 @@ namespace BizHawk.MultiClient
 			if (cd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
 			{
 				pnBackdropColor.BackColor = cd.Color;
+				Global.Config.SNESGraphicsUserBackdropColor = pnBackdropColor.BackColor.ToArgb();
 				SyncBackdropColor();
 			}
 		}
