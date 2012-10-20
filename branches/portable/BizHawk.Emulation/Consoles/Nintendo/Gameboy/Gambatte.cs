@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Consoles.GB
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
-	public class Gameboy : IEmulator, IVideoProvider, ISoundProvider
+	public class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		/// <summary>
 		/// internal gambatte state
@@ -138,6 +138,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (Controller["Power"])
 				LibGambatte.gambatte_reset(GambatteState);
 
+			RefreshMemoryCallbacks();
+
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
 
 			// upload any modified data to the memory domains
@@ -221,6 +223,8 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public bool DeterministicEmulation { get { return true; } }
 
+		#region saveram
+
 		public byte[] ReadSaveRam()
 		{
 			int length = LibGambatte.gambatte_savesavedatalength(GambatteState);
@@ -270,6 +274,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			}
 			set { }
 		}
+
+		#endregion
 
 		public void ResetFrameCounter()
 		{
@@ -368,6 +374,33 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		#endregion
 
+		#region memorycallback
+
+		LibGambatte.MemoryCallback readcb;
+		LibGambatte.MemoryCallback writecb;
+
+		void RefreshMemoryCallbacks()
+		{
+			var mcs = CoreInputComm.MemoryCallbackSystem;
+
+			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
+
+			if (mcs.HasRead)
+				readcb = delegate(uint addr) { mcs.TriggerRead((int)addr); RefreshMemoryCallbacks(); };
+			else
+				readcb = null;
+			if (mcs.HasWrite)
+				writecb = delegate(uint addr) { mcs.TriggerWrite((int)addr); RefreshMemoryCallbacks(); };
+			else
+				writecb = null;
+
+			LibGambatte.gambatte_setreadcallback(GambatteState, readcb);
+			LibGambatte.gambatte_setwritecallback(GambatteState, writecb);
+		}
+	
+
+
+		#endregion
 
 		public CoreInputComm CoreInputComm { get; set; }
 
@@ -572,8 +605,11 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public ISoundProvider SoundProvider
 		{
-			get { return this; }
+			get { return null; }
 		}
+		public ISyncSoundProvider SyncSoundProvider { get { return dcfilter; } }
+		public bool StartAsyncSound() { return false; }
+		public void EndAsyncSound() { }
 
 		/// <summary>
 		/// sample pairs before resampling
@@ -585,15 +621,12 @@ namespace BizHawk.Emulation.Consoles.GB
 		int soundbuffcontains = 0;
 
 		Sound.Utilities.SpeexResampler resampler;
-		Sound.MetaspuSoundProvider metaspu;
-
 		Sound.Utilities.DCFilter dcfilter;
 
 		void InitSound()
 		{
-			dcfilter = new Sound.Utilities.DCFilter();
-			metaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
-			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, LoadThroughSamples);
+			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, null, this);
+			dcfilter = new Sound.Utilities.DCFilter(resampler, 65536);
 		}
 
 		void DisposeSound()
@@ -602,29 +635,16 @@ namespace BizHawk.Emulation.Consoles.GB
 			resampler = null;
 		}
 
-		void LoadThroughSamples(short[] buff, int length)
-		{
-			dcfilter.PushThroughSamples(buff, length * 2);
-			metaspu.buffer.enqueue_samples(buff, length);
-		}
-
-		public void GetSamples(short[] samples)
-		{
-			if (soundbuffcontains > 0)
-			{
-				resampler.EnqueueSamples(soundbuff, soundbuffcontains);
-				soundbuffcontains = 0;
-				resampler.Flush();
-				metaspu.GetSamples(samples);
-			}
-		}
-
 		public void DiscardSamples()
 		{
-			metaspu.DiscardSamples();
+			soundbuffcontains = 0;
 		}
 
-		public int MaxVolume { get; set; }
+		public void GetSamples(out short[] samples, out int nsamp)
+		{
+			samples = soundbuff;
+			nsamp = soundbuffcontains;
+		}
 		#endregion
 
 	}

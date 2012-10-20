@@ -26,8 +26,8 @@ namespace BizHawk.MultiClient
 		private Lua currThread;
 		private LuaFunction savestate_registersavefunc;
 		private LuaFunction savestate_registerloadfunc;
-		private LuaFunction frame_registerbeforefunc;
-		private LuaFunction frame_registerafterfunc;
+		private LuaFunction frame_startfunc;
+		private LuaFunction frame_endfunc;
 
 		public void SavestateRegisterSave(string name)
 		{
@@ -65,11 +65,11 @@ namespace BizHawk.MultiClient
 
 		public void FrameRegisterBefore()
 		{
-			if (frame_registerbeforefunc != null)
+			if (frame_startfunc != null)
 			{
 				try
 				{
-					frame_registerbeforefunc.Call();
+					frame_startfunc.Call();
 				}
 				catch (SystemException e)
 				{
@@ -82,11 +82,11 @@ namespace BizHawk.MultiClient
 
 		public void FrameRegisterAfter()
 		{
-			if (frame_registerafterfunc != null)
+			if (frame_endfunc != null)
 			{
 				try
 				{
-					frame_registerafterfunc.Call();
+					frame_endfunc.Call();
 				}
 				catch (SystemException e)
 				{
@@ -210,6 +210,13 @@ namespace BizHawk.MultiClient
 			{
 				lua.RegisterFunction("nes." + NESFunctions[i], this, this.GetType().GetMethod("nes_" + NESFunctions[i]));
 				docs.Add("nes", NESFunctions[i], this.GetType().GetMethod("nes_" + NESFunctions[i]));
+			}
+
+			lua.NewTable("event");
+			for (int i = 0; i < EventFunctions.Length; i++)
+			{
+				lua.RegisterFunction("event." + EventFunctions[i], this, this.GetType().GetMethod("event_" + EventFunctions[i]));
+				docs.Add("event", EventFunctions[i], this.GetType().GetMethod("event_" + EventFunctions[i]));
 			}
 
 			docs.Sort();
@@ -376,8 +383,6 @@ namespace BizHawk.MultiClient
 		                                      		"limitframerate",
 		                                      		"displayvsync",
 		                                      		"enablerewind",
-													//"registerbefore",
-													//"registerafter",
 													"on_snoop",
 		                                      	};
 
@@ -452,8 +457,6 @@ namespace BizHawk.MultiClient
 		                                             		"write_u32_be",
 															"readbyterange",
 															"writebyterange",
-		                                             		//"registerwrite",
-		                                             		//"registerread",
 		                                             	};
 
 		public static string[] SaveStateFunctions = new string[]
@@ -556,6 +559,17 @@ namespace BizHawk.MultiClient
 														"addgamegenie",
 														"removegamegenie",
 		                                          	};
+
+		public static string[] EventFunctions = new string[]
+													{
+														"onloadstate",
+														"onsavestate",
+														"onframestart",
+														"onframeend",
+														"onmemoryread",
+														"onmemorywrite",
+														"oninputpoll",
+													};
 		/****************************************************/
 		/*************function definitions********************/
 		/****************************************************/
@@ -711,7 +725,7 @@ namespace BizHawk.MultiClient
 					int int_y = LuaInt(Y);
 					int int_width = LuaInt(width);
 					int int_height = LuaInt(height);
-					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
+					g.DrawRectangle(GetPen(line ?? "white"), int_x, int_y, int_width, int_height);
 					if (background != null)
 					{
 						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
@@ -725,7 +739,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void gui_drawBox(object X, object Y, object X2, object Y2, object line, object background = null)
+		public void gui_drawBox(object X, object Y, object X2, object Y2, object line = null, object background = null)
 		{
 			using (var g = GetGraphics())
 			{
@@ -756,7 +770,7 @@ namespace BizHawk.MultiClient
 						int_y -= int_height;
 					}
 
-					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
+					g.DrawRectangle(GetPen(line ?? "white"), int_x, int_y, int_width, int_height);
 					if (background != null)
 					{
 						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
@@ -777,7 +791,7 @@ namespace BizHawk.MultiClient
 				float x = LuaInt(X) + 0.1F;
 				try
 				{
-					g.DrawLine(GetPen(color ?? "black"), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
+					g.DrawLine(GetPen(color ?? "white"), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
 				}
 				catch (Exception)
 				{
@@ -792,7 +806,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					g.DrawLine(GetPen(color ?? "black"), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
+					g.DrawLine(GetPen(color ?? "white"), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
 				}
 				catch (Exception)
 				{
@@ -807,7 +821,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					g.DrawEllipse(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					g.DrawEllipse(GetPen(line ?? "white"), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					if (background != null)
 					{
 						var brush = GetBrush(background);
@@ -880,7 +894,7 @@ namespace BizHawk.MultiClient
 						if (i >= 4)
 							break;
 					}
-					
+
 					g.DrawBezier(GetPen(color), Points[0], Points[1], Points[2], Points[3]);
 				}
 				catch (Exception)
@@ -1160,16 +1174,6 @@ namespace BizHawk.MultiClient
 				Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
 				Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
 			}
-		}
-
-		public void emu_registerbefore(LuaFunction luaf)
-		{
-			frame_registerbeforefunc = luaf;
-		}
-
-		public void emu_registerafter(LuaFunction luaf)
-		{
-			frame_registerafterfunc = luaf;
 		}
 
 		public void emu_on_snoop(LuaFunction luaf)
@@ -1780,42 +1784,42 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public uint bit_band(object val, object amt)
 		{
-			return (uint) (LuaInt(val) & LuaInt(amt));
+			return (uint)(LuaInt(val) & LuaInt(amt));
 		}
 
 		public uint bit_lshift(object val, object amt)
 		{
-			return (uint) (LuaInt(val) << LuaInt(amt));
+			return (uint)(LuaInt(val) << LuaInt(amt));
 		}
 
 		public uint bit_rshift(object val, object amt)
 		{
-			return (uint) (LuaInt(val) >> LuaInt(amt));
+			return (uint)(LuaInt(val) >> LuaInt(amt));
 		}
 
 		public uint bit_rol(object val, object amt)
 		{
-			return (uint) ((LuaInt(val) << LuaInt(amt)) | (LuaInt(val) >> (32 - LuaInt(amt))));
+			return (uint)((LuaInt(val) << LuaInt(amt)) | (LuaInt(val) >> (32 - LuaInt(amt))));
 		}
 
 		public uint bit_ror(object val, object amt)
 		{
-			return (uint) ((LuaInt(val) >> LuaInt(amt)) | (LuaInt(val) << (32 - LuaInt(amt))));
+			return (uint)((LuaInt(val) >> LuaInt(amt)) | (LuaInt(val) << (32 - LuaInt(amt))));
 		}
 
 		public uint bit_bor(object val, object amt)
 		{
-			return (uint) (LuaInt(val) | LuaInt(amt));
+			return (uint)(LuaInt(val) | LuaInt(amt));
 		}
 
 		public uint bit_bxor(object val, object amt)
 		{
-			return (uint) (LuaInt(val) ^ LuaInt(amt));
+			return (uint)(LuaInt(val) ^ LuaInt(amt));
 		}
 
 		public uint bit_bnot(object val)
 		{
-			return (uint) (~LuaInt(val));
+			return (uint)(~LuaInt(val));
 		}
 
 		//----------------------------------------------------
@@ -1856,7 +1860,7 @@ namespace BizHawk.MultiClient
 			if (x < 0 || x > 9)
 				return;
 
-			Global.MainForm.LoadState("QuickLoad" + x.ToString());
+			Global.MainForm.LoadState("QuickLoad" + x.ToString(), true);
 		}
 
 		public void savestate_save(object lua_input)
@@ -1873,7 +1877,7 @@ namespace BizHawk.MultiClient
 		{
 			if (lua_input.GetType() == typeof(string))
 			{
-				Global.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()));
+				Global.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()), true);
 			}
 		}
 
@@ -2517,7 +2521,7 @@ namespace BizHawk.MultiClient
 
 		public void nes_setscanlines(object top, object bottom)
 		{
-			
+
 			int first = LuaInt(top);
 			int last = LuaInt(bottom);
 			if (first > 127)
@@ -2540,7 +2544,7 @@ namespace BizHawk.MultiClient
 
 			Global.Config.NESTopLine = first;
 			Global.Config.NESBottomLine = last;
-			
+
 			if (Global.Emulator is NES)
 			{
 				(Global.Emulator as NES).FirstDrawLine = first;
@@ -2650,6 +2654,105 @@ namespace BizHawk.MultiClient
 					}
 					Global.CheatList.RemoveCheat(Global.Emulator.MemoryDomains[1], c.address);
 				}
+			}
+		}
+
+		public void event_onsavestate(LuaFunction luaf)
+		{
+			savestate_registersave(luaf);
+		}
+
+		public void event_onloadstate(LuaFunction luaf)
+		{
+			savestate_registerload(luaf);
+		}
+
+		public void event_onframestart(LuaFunction luaf)
+		{
+			frame_startfunc = luaf;
+		}
+
+		public void event_onframeend(LuaFunction luaf)
+		{
+			frame_endfunc = luaf;
+		}
+
+		public void event_oninputpoll(LuaFunction luaf)
+		{
+			emu_on_snoop(luaf);
+		}
+
+		public void event_onmemoryread(LuaFunction luaf, object address = null)
+		{
+			//TODO: allow a list of addresses
+			if (luaf != null)
+			{
+				int? _addr;
+				if (address == null)
+				{
+					_addr = null;
+				}
+				else
+				{
+					_addr = LuaInt(address);
+				}
+
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.ReadAddr = _addr;
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetReadCallback(delegate(uint addr)
+				{
+					try
+					{
+						luaf.Call(addr);
+					}
+					catch (SystemException e)
+					{
+						Global.MainForm.LuaConsole1.WriteToOutputWindow(
+							"error running function attached by lua function event.onmemoryread" +
+							"\nError message: " + e.Message);
+					}
+				});
+
+			}
+			else
+			{
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetReadCallback(null);
+			}
+		}
+
+
+		public void event_onmemorywrite(LuaFunction luaf, object address = null)
+		{
+			//TODO: allow a list of addresses
+			if (luaf != null)
+			{
+				int? _addr;
+				if (address == null)
+				{
+					_addr = null;
+				}
+				else
+				{
+					_addr = LuaInt(address);
+				}
+
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.WriteAddr = _addr;
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetWriteCallback(delegate(uint addr)
+				{
+					try
+					{
+						luaf.Call(addr);
+					}
+					catch (SystemException e)
+					{
+						Global.MainForm.LuaConsole1.WriteToOutputWindow(
+							"error running function attached by lua function event.onmemoryread" +
+							"\nError message: " + e.Message);
+					}
+				});
+			}
+			else
+			{
+				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetWriteCallback(null);
 			}
 		}
 	}

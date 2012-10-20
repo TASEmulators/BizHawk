@@ -262,12 +262,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			protected void AssertVram(params int[] vram) { Assert_memtype(Cart.vram_size, "vram", vram); }
 			protected void Assert_memtype(int value, string name, int[] valid)
 			{
+				if (DisableConfigAsserts) return;
 				foreach (int i in valid) if (value == i) return;
 				Assert(false, "unhandled {0} size of {1}", name,value);
 			}
 			protected void AssertBattery(bool has_bat) { Assert(Cart.wram_battery == has_bat); }
 
 			public virtual void ApplyCustomAudio(short[] samples) { }
+
+			public bool DisableConfigAsserts = false;
 		}
 
 		//this will be used to track classes that implement boards
@@ -277,9 +280,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		[AttributeUsage(AttributeTargets.Class)]
 		public class INESBoardImplCancelAttribute : Attribute { }
 		static List<Type> INESBoardImplementors = new List<Type>();
+		//flags it as being priority, i.e. in the top of the list
+		[AttributeUsage(AttributeTargets.Class)]
+		public class INESBoardImplPriorityAttribute : Attribute { }
+
+		static INESBoard CreateBoardInstance(Type boardType)
+		{
+			var board = (INESBoard)Activator.CreateInstance(boardType);
+			lock (INESBoardImplementors)
+			{
+				//put the one we chose at the top of the list, for quicker access in the future
+				int x = INESBoardImplementors.IndexOf(boardType);
+				//(swap)
+				var temp = INESBoardImplementors[0];
+				INESBoardImplementors[0] = boardType;
+				INESBoardImplementors[x] = temp;
+			}
+			return board;
+		}
+
 
 		static NES()
 		{
+			var highPriority = new List<Type>();
+			var normalPriority = new List<Type>();
+
 			//scan types in this assembly to find ones that implement boards to add them to the list
 			foreach (Type type in typeof(NES).Assembly.GetTypes())
 			{
@@ -288,8 +313,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (type.IsAbstract) continue;
 				var cancelAttrs = type.GetCustomAttributes(typeof(INESBoardImplCancelAttribute), true);
 				if (cancelAttrs.Length != 0) continue;
-				INESBoardImplementors.Add(type);
+				var priorityAttrs = type.GetCustomAttributes(typeof(INESBoardImplPriorityAttribute), true);
+				if (priorityAttrs.Length != 0)
+					highPriority.Add(type);
+				else normalPriority.Add(type);
 			}
+
+			INESBoardImplementors.AddRange(highPriority);
+			INESBoardImplementors.AddRange(normalPriority);
 		}
 
 		/// <summary>
@@ -306,6 +337,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public byte pad_h, pad_v, mapper;
 			public bool wram_battery;
 			public bool bad;
+			/// <summary>in [0,3]; combination of bits 0 and 3 of flags6.  try not to use; will be null for bootgod-identified roms always</summary>
+			public int? inesmirroring;
 
 			public string board_type;
 			public string pcb;
@@ -336,13 +369,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			NES nes = new NES();
 			nes.cart = cart;
-			foreach (var type in INESBoardImplementors)
-			{
-				INESBoard board = (INESBoard)Activator.CreateInstance(type);
-				board.Create(nes);
-				if (board.Configure(origin))
-					return type;
-			}
+			lock(INESBoardImplementors)
+				foreach (var type in INESBoardImplementors)
+				{
+					using (NESBoardBase board = (NESBoardBase)Activator.CreateInstance(type))
+					{
+						//unif demands that the boards set themselves up with expected legal values based on the board size
+						//except, i guess, for the rom/chr sizes. go figure.
+						//so, disable the asserts here
+						if (origin == EDetectionOrigin.UNIF)
+							board.DisableConfigAsserts = true;
+
+						board.Create(nes);
+						if (board.Configure(origin))
+						{
+							return type;
+						}
+					}
+				}
 			return null;
 		}
 
@@ -379,6 +423,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			game.name = gi.Name;
 			cart.DB_GameInfo = gi;
 			cart.game = game;
+			if (!dict.ContainsKey("board"))
+				throw new Exception("NES gamedb entries must have a board identifier!");
 			cart.board_type = dict["board"];
 			cart.prg_size = -1;
 			cart.vram_size = -1;

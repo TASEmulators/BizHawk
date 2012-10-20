@@ -58,10 +58,11 @@ namespace BizHawk.MultiClient
 
 		public void OpenFile(string baseName)
 		{
-			string s = System.IO.Path.GetFileNameWithoutExtension(baseName);
-			ext = System.IO.Path.GetExtension(baseName);
+			this.baseName = System.IO.Path.Combine(
+				System.IO.Path.GetDirectoryName(baseName),
+				System.IO.Path.GetFileNameWithoutExtension(baseName));
 
-			this.baseName = s;
+			this.ext = System.IO.Path.GetExtension(baseName);
 
 			segment = 0;
 			OpenFileSegment();
@@ -73,7 +74,11 @@ namespace BizHawk.MultiClient
 		void OpenFileSegment()
 		{
 			ffmpeg = new Process();
-			ffmpeg.StartInfo.FileName = "ffmpeg";
+#if WINDOWS
+			ffmpeg.StartInfo.FileName = System.IO.Path.Combine(PathManager.GetBasePathAbsolute(), "dll", "ffmpeg.exe");
+#else
+			ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
+#endif
 
 			string filename = String.Format("{0}_{1,4:D4}{2}", baseName, segment, ext);
 

@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Bump 'n' Jump
 	//Cybernoid
 
+	[NES.INESBoardImplPriority]
 	public class CNROM : NES.NESBoardBase
 	{
 		//configuration
@@ -37,6 +38,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 
 				case "NES-CNROM": //adventure island
+				case "UNIF_NES-CNROM": // some of these should be bus_conflict = false because UNIF is bad
 				case "HVC-CNROM":
 					bus_conflict = true;
 					AssertPrg(16, 32); AssertChr(8,16,32,64);

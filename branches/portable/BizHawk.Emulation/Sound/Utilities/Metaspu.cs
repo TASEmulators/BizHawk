@@ -3,6 +3,39 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Sound
 {
+	/// <summary>
+	/// uses Metaspu to have an ISyncSoundProvider input to a ISoundProvider
+	/// </summary>
+	public class MetaspuAsync : ISoundProvider
+	{
+		ISynchronizingAudioBuffer buffer;
+		ISyncSoundProvider input;
+		public MetaspuAsync(ISyncSoundProvider input, ESynchMethod method)
+		{
+			buffer = Metaspu.metaspu_construct(method);
+			this.input = input;
+		}
+
+		public void GetSamples(short[] samples)
+		{
+			short[] sampin;
+			int numsamp;
+			input.GetSamples(out sampin, out numsamp);
+			buffer.enqueue_samples(sampin, numsamp);
+			buffer.output_samples(samples, samples.Length / 2);
+		}
+
+		public void DiscardSamples()
+		{
+			input.DiscardSamples();
+			buffer.clear();
+		}
+
+		public int MaxVolume { get; set; }
+	}
+
+
+
 	public class MetaspuSoundProvider : ISoundProvider
 	{
 		public ISynchronizingAudioBuffer buffer;

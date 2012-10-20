@@ -145,8 +145,52 @@ namespace BizHawk.MultiClient
 			{
 				var TABPage1 = tabControl1.TabPages[10]; //Hide Int. V
 				tabControl1.Controls.Remove(TABPage1);
-				var TABPage2 = tabControl1.TabPages[9]; //Hide Atari
-				tabControl1.Controls.Remove(TABPage2);
+			}
+
+			switch (Global.Game.System)
+			{
+				case "NES":
+					tabControl1.SelectTab(0);
+					break;
+				case "SNES":
+				case "SGB":
+					tabControl1.SelectTab(1);
+					break;
+				case "SMS":
+					tabControl1.SelectTab(2);
+					break;
+				case "SG":
+					tabControl1.SelectTab(3);
+					break;
+				case "GG":
+					tabControl1.SelectTab(4);
+					break;
+				case "GEN":
+					tabControl1.SelectTab(5);
+					break;
+				case "PCE":
+				case "PCECD":
+				case "SGX":
+					tabControl1.SelectTab(6);
+					break;
+				case "GB":
+				case "GBC":
+					tabControl1.SelectTab(7);
+					break;
+				case "TI83":
+					tabControl1.SelectTab(8);
+					break;
+				case "A26":
+					tabControl1.SelectTab(9);
+					break;
+				case "INTV":
+					tabControl1.SelectTab(10);
+					break;
+				case "NULL":
+					tabControl1.SelectTab(11);
+					break;
+
+
 			}
 		}
 
@@ -596,27 +640,27 @@ namespace BizHawk.MultiClient
 
 		private void BrowseAtariROMs_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariROMsBox, AtariROMsDescription.Text, "Atari");
+			BrowseFolder(AtariROMsBox, AtariROMsDescription.Text, "A26");
 		}
 
 		private void BrowseAtariSavestates_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariSavestatesBox, AtariSavestatesDescription.Text, "Atari");
+			BrowseFolder(AtariSavestatesBox, AtariSavestatesDescription.Text, "A26");
 		}
 
 		private void BrowseAtariSaveRAM_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariSaveRAMBox, AtariSaveRAMDescription.Text, "Atari");
+			BrowseFolder(AtariSaveRAMBox, AtariSaveRAMDescription.Text, "A26");
 		}
 
 		private void BrowseAtariScreenshots_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariScreenshotsBox, AtariScreenshotsDescription.Text, "Atari");
+			BrowseFolder(AtariScreenshotsBox, AtariScreenshotsDescription.Text, "A26");
 		}
 
 		private void AtariBrowseCheats_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariCheatsBox, AtariCheatsDescription.Text, "Atari");
+			BrowseFolder(AtariCheatsBox, AtariCheatsDescription.Text, "A26");
 		}
 
 		private void INTVBrowseBase_Click(object sender, EventArgs e)
@@ -740,6 +784,11 @@ namespace BizHawk.MultiClient
 		private void button1_Click(object sender, EventArgs e)
 		{
 			new PathInfo().Show();
+		}
+
+		private void BrowseSNESSaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SNESSaveRAMBox, SNESSaveRAMDescription.Text);
 		}
 	}
 }

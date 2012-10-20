@@ -457,11 +457,15 @@ namespace BizHawk.MultiClient
 		private void IncludeSubDirectories_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.PlayMovie_IncludeSubdir = IncludeSubDirectories.Checked;
+			ScanFiles();
+			PreHighlightMovie();
 		}
 
 		private void ShowStateFiles_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.PlayMovie_ShowStateFiles = ShowStateFiles.Checked;
+			ScanFiles();
+			PreHighlightMovie();
 		}
 
 		private void Scan_Click(object sender, EventArgs e)
@@ -473,6 +477,8 @@ namespace BizHawk.MultiClient
 		private void MatchGameNameCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.PlayMovie_MatchGameName = MatchGameNameCheckBox.Checked;
+			ScanFiles();
+			PreHighlightMovie();
 		}
 
 	}

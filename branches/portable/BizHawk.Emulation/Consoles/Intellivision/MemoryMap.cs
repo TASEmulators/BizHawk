@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			ushort? stic = Stic.ReadSTIC(addr);
 			ushort? psg = Psg.ReadPSG(addr);
 			ushort? core = null;
+
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
@@ -113,6 +114,12 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						// Write-only Graphics RAM.
 						break;
 			}
+
+			if (CoreInputComm.MemoryCallbackSystem.HasRead)
+			{
+				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
+			}
+
 			if (cart != null)
 				return (ushort)cart;
 			else if (stic != null)
@@ -278,6 +285,12 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						return true;
 					}
 			}
+
+			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
+			{
+				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
+			}
+
 			return (cart || stic || psg);
 		}
 	}

@@ -368,6 +368,16 @@ namespace BizHawk.MultiClient
 			{
 				this.Location = new Point(Global.Config.SNESGraphicsDebuggerWndx, Global.Config.SNESGraphicsDebuggerWndy);
 			}
+
+			checkBackdropColor.Checked = Global.Config.SNESGraphicsUseUserBackdropColor;
+			if (Global.Config.SNESGraphicsUserBackdropColor != -1)
+			{
+				pnBackdropColor.BackColor = Color.FromArgb(Global.Config.SNESGraphicsUserBackdropColor);
+			}
+			if (checkBackdropColor.Checked)
+			{
+				SyncBackdropColor();
+			}
 		}
 
 		private void SaveConfigSettings()
@@ -767,6 +777,43 @@ namespace BizHawk.MultiClient
 			if (!valid) return;
 			lastColorNum = pt.Y * 16 + pt.X;
 			UpdateColorDetails();
+		}
+
+		void SyncBackdropColor()
+		{
+			if (checkBackdropColor.Checked)
+			{
+				int r = pnBackdropColor.BackColor.R;
+				int g = pnBackdropColor.BackColor.G;
+				int b = pnBackdropColor.BackColor.B;
+				r >>= 3;
+				g >>= 3;
+				b >>= 3;
+				int col = r | (g << 5) | (b << 10);
+				LibsnesDll.snes_set_backdropColor(col);
+			}
+			else
+			{
+				LibsnesDll.snes_set_backdropColor(-1);
+			}
+		}
+
+		private void checkBackdropColor_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.SNESGraphicsUseUserBackdropColor = checkBackdropColor.Checked;
+			SyncBackdropColor();
+		}
+
+		private void pnBackdropColor_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			var cd = new ColorDialog();
+			cd.Color = pnBackdropColor.BackColor;
+			if (cd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+			{
+				pnBackdropColor.BackColor = cd.Color;
+				Global.Config.SNESGraphicsUserBackdropColor = pnBackdropColor.BackColor.ToArgb();
+				SyncBackdropColor();
+			}
 		}
 
 

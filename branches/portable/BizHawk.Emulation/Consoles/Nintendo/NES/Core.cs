@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		string game_name; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		INESBoard board; //the board hardware that is currently driving things
+		EDetectionOrigin origin = EDetectionOrigin.None;
 		public bool SoundOn = true;
 		int sprdma_countdown;
 		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
@@ -64,6 +65,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Random r = new Random();
 			public void GetSamples(short[] samples)
 			{
+				if (nes.apu.squeue.Count == 0)
+					return;
 				var monosampbuf = nes.apu.squeue.ToArray(2);
 				nes.apu.squeue.Clear();
 				if (monosampbuf.Length > 0)
@@ -369,6 +372,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret = sysbus_watch[addr].ApplyGameGenie(ret);
 			}
 
+			if (CoreInputComm.MemoryCallbackSystem.HasRead)
+			{
+				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
+			}
+
 			DB = ret;
 
 			return ret;
@@ -419,6 +427,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else
 			{
 				board.WritePRG(addr - 0x8000, value);
+			}
+
+			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
+			{
+				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 		}
 

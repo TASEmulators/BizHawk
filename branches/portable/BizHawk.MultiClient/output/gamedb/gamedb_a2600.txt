@@ -2686,5 +2686,14 @@ sha1:bcdbbb6f3858fe59cd429aea98ca83f085411d50		Zelda (2003) (Kyle Pittman) (Adve
 sha1:533a5c90839ddb9d78d785026bf10e7c314b6cbf		Zero Patrol by Charles Morgan (Moon Patrol Hack)	A26		m=F8
 sha1:230453ffbefb68a47da686f92bfb4ed470537f93		Zi - The Flie Buster (2002) (Fernando Mora) (PD)	A26		m=4K
 sha1:feb6bd37e5d722bd080433587972b980afff5fa5		Zoo Fun (HomeVision)	A26		m=4K
-sha1:e9cbd1348c7c2e6f7a1ed174554fc144f291debc		Ko Avgn - Ntsc - 2009-08-16	A26		m=F4					
-sha1:080deaf5fe7c0e3b132365bfe9e8003becf3498d		Ko Avgn - Ntsc - 2009-08-16	A26		m=F4					
+sha1:e9cbd1348c7c2e6f7a1ed174554fc144f291debc		Ko Avgn - Ntsc - 2009-08-16	A26		m=F4
+sha1:080deaf5fe7c0e3b132365bfe9e8003becf3498d		Ko Avgn - Ntsc - 2009-08-16	A26		m=F4
+sha1:63C12146C183BCCBF05C0044A961DC40790E3212		Pleiades (1983) (UA Limited) (Prototype)	A26		m=UA
+sha1:86BBE6E62DACF6E5CD771BD9249C4ED51BF60092		dungeon_rc4	A26		m=F4
+sha1:C11F59AE0ECD376AF52AE57B5BE8B6F039DE0D0E		MegaBoy (X07 Bankswitching Conversion) (2008) (Fred Quimby)	A26		m=X07
+sha1:54399CE15B443E789B8537306BC5AC3BB48B888D		MegaBoy (EF Bankswitching Conversion) (2008) (Fred Quimby)	A26		m=EF
+sha1:3797959E4A3236B6562CE15AF7D96633F6720FC8		Fu Kung! - 2 Dancing Babies Demo (3F Bankswitching) (Andrew Davie)	A26		m=3F
+sha1:95D67B058EC40E8C5525365714D221E4C6B3C97D		Ruby Runner Demo (4A50 Bankswitching) (2006) (John Payson) (WIP)	A26		m=4A50
+sha1:9CD8217DCCBE60F9A25A930D614EE5384F432A83		Boulder Dash (2005) (Andrew Davie) (WIP)	A26		m=3E
+sha1:00CCF622E7BA4D0A39DCBABAB771CE815B0FB8FE		Boulder Dash (2005) (Andrew Davie) (WIP) (PAL	A26		m=3E
+sha1:650DA2339D41D1D2F180A6CAFE8DC311AC588ACD		Boulder Dash Intro Tune (2005) (Erik Ehrling)	A26		m=3E

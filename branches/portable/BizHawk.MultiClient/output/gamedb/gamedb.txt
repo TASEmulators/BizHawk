@@ -75,7 +75,7 @@ sha1:536D623BA02A622BDE8E2D7D514AE9785B5E0357	H	Punch Out!! Kirby (Hack) (U)	NES
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;obscure and unlicensed roms which are not likely to be in bootgod's DB anytime soon but which are nonetheless "good" as far as things go
 ;people like these games (especially vast quantities of chinese oddities) so its important to add them here as good
-sha1:D09EF8127C64CBE817B45DF33C4D43E7B441E381		Final Fantasy V (Unl)	NES		board=MAPPER164;PRG=512;CHR=0;WRAM=8;PRAM=8
+sha1:D09EF8127C64CBE817B45DF33C4D43E7B441E381		Final Fantasy V (Unl)	NES		board=MAPPER164;PRG=512;CHR=0;WRAM=8;PRAM=8;PAD_V=1
 sha1:92D9695FEB774F60965A8303CFE3E6AAEE7B7B62		Magic Dragon (Unl)	NES		board=MAPPER107;PRG=128;CHR=64;WRAM=8;PAD_H=1
 sha1:6DF9AECF5787C0833B0F05A9A83D0E58A6153977		Rumblestation 15-in-1 (Unl)	NES		board=MAPPER046;PRG=1024;CHR=1024;WRAM=0
 sha1:E4BFD5AB3C3649DBD36B9A7280CF431641BCBCEC		Peek-A-Boo Poker (Unl)	NES		board=NES-CNROM;PRG=32;CHR=24;WRAM=0
@@ -109,6 +109,8 @@ sha1:6143D80047FFC17C752078C622A44C3E0CB7466E	B	Dong Fang de Chuan Shuo - The Hy
 ;wrong vram info
 sha1:32D71DD6C5A8D78A918FE1B9D6D6C4A570D9652D		Oeka Kids - Anpanman no Hiragana Daisuki (J)	NES		board=MAPPER096;VRAM=32
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;it works, so don't laugh
+sha1:203523818A348361584CDEBE47AEB860808757FC	U	Jurassic Boy 2 (Sachen)	NES		board=NES-TR1ROM;VRAM=8
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;mmc3 homebrews that need chip specification

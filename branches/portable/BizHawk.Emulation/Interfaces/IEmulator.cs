@@ -7,12 +7,26 @@ namespace BizHawk
 	public interface IEmulator : IDisposable
 	{
 		IVideoProvider VideoProvider { get; }
+		/// <summary>
+		/// sound provider for async operation.  this is optional, and is only required after StartAsyncSound() is called and returns true
+		/// </summary>
 		ISoundProvider SoundProvider { get; }
+		/// <summary>
+		/// sound provider for sync operation.  this is manditory
+		/// </summary>
+		ISyncSoundProvider SyncSoundProvider { get; }
+		/// <summary>start async operation.  (on construct, sync operation is assumed).</summary>
+		/// <returns>false if core doesn't support async sound; SyncSoundProvider will continue to be used in that case</returns>
+		bool StartAsyncSound();
+		/// <summary>
+		/// end async operation, returning to sync operation.  after this, all sound requests will go to the SyncSoundProvider
+		/// </summary>
+		void EndAsyncSound();
 
 		ControllerDefinition ControllerDefinition { get; }
 		IController Controller { get; set; }
 
-		// note that most cores expect you to call SoundProvider.GetSamples() after each FrameAdvance()
+		// note that some? cores expect you to call SoundProvider.GetSamples() after each FrameAdvance()
 		// please do this, even when rendersound = false
 		void FrameAdvance(bool render, bool rendersound = true);
 

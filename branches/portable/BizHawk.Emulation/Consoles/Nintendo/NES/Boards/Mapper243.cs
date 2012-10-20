@@ -63,6 +63,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "MAPPER243":
+				case "UNIF_UNL-Sachen-74LS374N": // seems to have some problems
 					break;
 				default:
 					return false;

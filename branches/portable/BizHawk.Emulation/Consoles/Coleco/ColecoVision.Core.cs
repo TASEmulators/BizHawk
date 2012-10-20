@@ -18,24 +18,34 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 		public byte ReadMemory(ushort addr)
 		{
+			byte ret;
 			if (addr < 0x2000)
 			{
-				return rom[addr];
+				ret = rom[addr];
 			}
 			else if (addr >= 0x2000 && addr < 0x6000)
 			{
-				return expansion[addr];
+				ret =  expansion[addr];
 			}
 			else if (addr >= 0x6000 && addr < 0x8000)
 			{
-				return ram[addr & 1023];
+				ret =  ram[addr & 1023];
 			}
 			else if (addr >= 0x8000)
 			{
-				return cartridgeslot[addr];
+				ret = cartridgeslot[addr];
+			}
+			else
+			{
+				ret = 0xFF;
 			}
 
-			else return 0xFF;
+			if (CoreInputComm.MemoryCallbackSystem.HasRead)
+			{
+				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
+			}
+
+			return ret;
 		}
 
 		public void WriteMemory(ushort addr, byte value)
@@ -43,6 +53,11 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			if (addr >= 0x6000 && addr < 0x8000)
 			{
 				ram[addr] = value;
+			}
+
+			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
+			{
+				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 		}
 

@@ -155,7 +155,7 @@ namespace BizHawk.MultiClient
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
 
-		public string FFMpegPath = "%exe%/ffmpeg.exe";
+		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
 		// General Client Settings
 		public bool StackOSDMessages = true;
@@ -290,7 +290,7 @@ namespace BizHawk.MultiClient
 		public int RamWatchDiffWidth = -1;
 		public int RamWatchNotesWidth = -1;
 		public int RamWatchDomainWidth = -1;
-		
+
 		public int RamWatchAddressIndex = 0;
 		public int RamWatchValueIndex = 1;
 		public int RamWatchPrevIndex = 2;
@@ -395,6 +395,8 @@ namespace BizHawk.MultiClient
 		public int SNESGraphicsDebuggerWndx = -1;
 		public int SNESGraphicsDebuggerWndy = -1;
 		public int SNESGraphicsDebuggerRefreshRate = 4;
+		public bool SNESGraphicsUseUserBackdropColor = false;
+		public int SNESGraphicsUserBackdropColor = -1;
 
 		// SNES Graphics settings
 		//bsnes allows the layers to be enabled for each priority level.
@@ -415,9 +417,9 @@ namespace BizHawk.MultiClient
 
 		// PCE Graphics settings
 		public bool PCEDispBG1 = true;
-		public bool PCEDispOBJ1= true;
+		public bool PCEDispOBJ1 = true;
 		public bool PCEDispBG2 = true;
-		public bool PCEDispOBJ2= true;
+		public bool PCEDispOBJ2 = true;
 
 		// PCE BG Viewer settings
 		public bool PCEBGViewerSaveWIndowPosition = true;
@@ -663,15 +665,15 @@ namespace BizHawk.MultiClient
 		public int LuaWriterBackColor = -1;
 
 		public int LuaKeyWordColor = -16776961;
-        public bool LuaKeyWordBold = false;
+		public bool LuaKeyWordBold = false;
 		public int LuaCommentColor = -16744448;
-        public bool LuaCommentBold = false;
+		public bool LuaCommentBold = false;
 		public int LuaStringColor = -8355712;
-        public bool LuaStringBold = false;
+		public bool LuaStringBold = false;
 		public int LuaSymbolColor = -16777216;
-        public bool LuaSymbolBold = false;
-        public int LuaLibraryColor = -16711681;
-        public bool LuaLibraryBold = false;
+		public bool LuaSymbolBold = false;
+		public int LuaLibraryColor = -16711681;
+		public bool LuaLibraryBold = false;
 		public int LuaDecimalColor = -23296;
 		public bool LuaDecimalBold = false;
 		public float LuaWriterFontSize = 11;
@@ -820,10 +822,10 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
 				A = "X, X1 B";
 				B = "Z, X1 A";
 				Start = "Return, X1 Start";
@@ -861,10 +863,10 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
 				A = "X, X1 B";
 				B = "Z, X1 A";
 				Start = "Return, X1 Start";
@@ -903,10 +905,10 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
 				A = "Z, X1 A";
 				B = "X, X1 X";
 				C = "C, X1 Y";
@@ -930,10 +932,10 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
 				Button = "Z, X1 A";
 			}
 		}
@@ -967,7 +969,7 @@ namespace BizHawk.MultiClient
 		public string L2 = "";
 		public string R1 = "";
 		public string R2 = "";
-		
+
 		public string _1 = "";
 		public string _2 = "";
 		public string _3 = "";
@@ -987,10 +989,10 @@ namespace BizHawk.MultiClient
 			if (defaults)
 			{
 				Enabled = true;
-                Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-                Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-                Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-                Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
 				L1 = "Z, J1 B1";
 				L2 = "X, J1 B2";
 				R1 = "C, J1 B1";

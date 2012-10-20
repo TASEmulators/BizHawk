@@ -131,7 +131,6 @@
 			this.radioButton5 = new System.Windows.Forms.RadioButton();
 			this.radioButton10 = new System.Windows.Forms.RadioButton();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.tabctrlDetails = new System.Windows.Forms.TabControl();
 			this.tpPalette = new System.Windows.Forms.TabPage();
 			this.txtPaletteDetailsIndexSpecific = new System.Windows.Forms.TextBox();
@@ -147,9 +146,13 @@
 			this.lblDetailsPaletteAddress = new System.Windows.Forms.Label();
 			this.tpTile = new System.Windows.Forms.TabPage();
 			this.viewerPanel = new System.Windows.Forms.Panel();
-			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.checkBackdropColor = new System.Windows.Forms.CheckBox();
+			this.pnBackdropColor = new System.Windows.Forms.Panel();
+			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.label24 = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -261,6 +264,9 @@
 			// 
 			this.panel1.AutoSize = true;
 			this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.panel1.Controls.Add(this.label24);
+			this.panel1.Controls.Add(this.pnBackdropColor);
+			this.panel1.Controls.Add(this.checkBackdropColor);
 			this.panel1.Controls.Add(this.groupBox3);
 			this.panel1.Controls.Add(this.groupBox2);
 			this.panel1.Controls.Add(this.groupBox1);
@@ -1294,17 +1300,6 @@
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Palette";
 			// 
-			// paletteViewer
-			// 
-			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
-			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
-			this.paletteViewer.Name = "paletteViewer";
-			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
-			this.paletteViewer.TabIndex = 18;
-			this.paletteViewer.TabStop = false;
-			this.paletteViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseClick);
-			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
-			// 
 			// tabctrlDetails
 			// 
 			this.tabctrlDetails.Controls.Add(this.tpPalette);
@@ -1467,6 +1462,52 @@
 			this.viewerPanel.Size = new System.Drawing.Size(516, 667);
 			this.viewerPanel.TabIndex = 1;
 			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutoPopDelay = 5000;
+			this.toolTip1.InitialDelay = 250;
+			this.toolTip1.ReshowDelay = 100;
+			// 
+			// checkBackdropColor
+			// 
+			this.checkBackdropColor.AutoSize = true;
+			this.checkBackdropColor.Location = new System.Drawing.Point(278, 25);
+			this.checkBackdropColor.Name = "checkBackdropColor";
+			this.checkBackdropColor.Size = new System.Drawing.Size(15, 14);
+			this.checkBackdropColor.TabIndex = 47;
+			this.checkBackdropColor.UseVisualStyleBackColor = true;
+			this.checkBackdropColor.CheckedChanged += new System.EventHandler(this.checkBackdropColor_CheckedChanged);
+			// 
+			// pnBackdropColor
+			// 
+			this.pnBackdropColor.BackColor = System.Drawing.Color.Red;
+			this.pnBackdropColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pnBackdropColor.Location = new System.Drawing.Point(240, 7);
+			this.pnBackdropColor.Name = "pnBackdropColor";
+			this.pnBackdropColor.Size = new System.Drawing.Size(32, 32);
+			this.pnBackdropColor.TabIndex = 48;
+			this.pnBackdropColor.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pnBackdropColor_MouseDoubleClick);
+			// 
+			// paletteViewer
+			// 
+			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
+			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
+			this.paletteViewer.Name = "paletteViewer";
+			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
+			this.paletteViewer.TabIndex = 18;
+			this.paletteViewer.TabStop = false;
+			this.paletteViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseClick);
+			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
+			// 
+			// viewerTile
+			// 
+			this.viewerTile.BackColor = System.Drawing.Color.Transparent;
+			this.viewerTile.Location = new System.Drawing.Point(6, 6);
+			this.viewerTile.Name = "viewerTile";
+			this.viewerTile.Size = new System.Drawing.Size(64, 64);
+			this.viewerTile.TabIndex = 19;
+			this.viewerTile.TabStop = false;
+			// 
 			// viewer
 			// 
 			this.viewer.BackColor = System.Drawing.Color.Transparent;
@@ -1479,20 +1520,14 @@
 			this.viewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseMove);
 			this.viewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseUp);
 			// 
-			// toolTip1
+			// label24
 			// 
-			this.toolTip1.AutoPopDelay = 5000;
-			this.toolTip1.InitialDelay = 250;
-			this.toolTip1.ReshowDelay = 100;
-			// 
-			// viewerTile
-			// 
-			this.viewerTile.BackColor = System.Drawing.Color.Transparent;
-			this.viewerTile.Location = new System.Drawing.Point(6, 6);
-			this.viewerTile.Name = "viewerTile";
-			this.viewerTile.Size = new System.Drawing.Size(64, 64);
-			this.viewerTile.TabIndex = 19;
-			this.viewerTile.TabStop = false;
+			this.label24.AutoSize = true;
+			this.label24.Location = new System.Drawing.Point(237, 42);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(78, 13);
+			this.label24.TabIndex = 49;
+			this.label24.Text = "User Backdrop";
 			// 
 			// SNESGraphicsDebugger
 			// 
@@ -1510,6 +1545,7 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudScanline)).EndInit();
@@ -1655,5 +1691,8 @@
 		private System.Windows.Forms.Label label27;
 		private System.Windows.Forms.CheckBox checkScreenCGWSEL_DirectColor;
 		private SNESGraphicsViewer viewerTile;
+		private System.Windows.Forms.Panel pnBackdropColor;
+		private System.Windows.Forms.CheckBox checkBackdropColor;
+		private System.Windows.Forms.Label label24;
 	}
 }

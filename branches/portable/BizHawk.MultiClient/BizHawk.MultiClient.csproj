@@ -417,6 +417,9 @@
     <Compile Include="tools\VirtualPadGBControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPadGen3Button.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\VirtualPadSNES.cs">
       <SubType>Component</SubType>
     </Compile>

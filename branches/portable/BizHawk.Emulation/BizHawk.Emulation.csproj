@@ -30,6 +30,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -150,17 +151,29 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_19.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_SS8806.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper015.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper027.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper038.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper040.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper041.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper042.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper045.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper057.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper058.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper069.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper090.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper091.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper101.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper108.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper116.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper120.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper132.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper143.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper156.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper164.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper168.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper176.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper177.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper178.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper180.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper193.cs" />
@@ -168,6 +181,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper201.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper203.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper207.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper218.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper225.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper226.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper227.cs" />
@@ -189,11 +203,13 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MLT-MAX15.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\HKROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper012.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper037.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper044.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper052.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper074.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper115.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper165.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper182.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper189.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper191.cs" />
@@ -221,10 +237,12 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\NanJing.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NES-EVENT.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\NovelDiamond.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m89.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m93.cs" />
@@ -255,6 +273,7 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Unif.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
@@ -350,6 +369,7 @@
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
     <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
+    <Compile Include="Interfaces\ISyncSoundProvider.cs" />
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />

@@ -39,14 +39,15 @@ namespace BizHawk
 			return new GameInfo(cgi);
 		}
 
-		static void LoadDatabase_Escape(string line)
+		static void LoadDatabase_Escape(string line, string path)
 		{
 			if (!line.ToUpper().StartsWith("#INCLUDE")) return;
 			line = line.Substring(8).TrimStart();
-			if (File.Exists(line))
+			string filename = Path.Combine(path, line);
+			if (File.Exists(filename))
 			{
-				Console.WriteLine("loaded external game database {0}", line);
-				LoadDatabase(line);
+				Console.WriteLine("loading external game database {0}", line);
+				LoadDatabase(filename);
 			}
 			else
 				Console.WriteLine("BENIGN: missing external game database {0}", line);
@@ -64,7 +65,7 @@ namespace BizHawk
 						if (line.StartsWith(";")) continue; //comment
 						if (line.StartsWith("#"))
 						{
-							LoadDatabase_Escape(line);
+							LoadDatabase_Escape(line, Path.GetDirectoryName(path));
 							continue;
 						}
 						if (line.Trim().Length == 0) continue;
@@ -90,7 +91,7 @@ namespace BizHawk
 						Game.MetaData = items.Length >= 6 ? items[5] : null;
 
 						if (db.ContainsKey(Game.Hash))
-							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on {1}", Game.Hash, Game.Name);
+							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", Game.Hash, Game.Name, db[Game.Hash].Name);
 
 						db[Game.Hash] = Game;
 					}
@@ -127,6 +128,11 @@ namespace BizHawk
 
 			switch (ext)
 			{
+				case ".NES":
+				case ".UNF":
+				case ".FDS":
+					Game.System = "NES";
+					break;
 				case ".SFC":
 				case ".SMC": 
 					Game.System = "SNES"; 
@@ -143,7 +149,6 @@ namespace BizHawk
 				case ".GEN":
                 case ".MD":
 				case ".SMD": Game.System = "GEN"; break;
-				case ".NES": Game.System = "NES"; break;
 				case ".A26": Game.System = "A26"; break;
 				case ".COL": Game.System = "COLV"; break;
 				case ".ROM":

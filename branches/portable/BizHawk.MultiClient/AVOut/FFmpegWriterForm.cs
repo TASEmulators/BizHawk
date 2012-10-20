@@ -67,7 +67,7 @@ namespace BizHawk.MultiClient
 				{
 					new FormatPreset("Uncompressed AVI", "AVI file with uncompressed audio and video.  Very large.", "-c:a pcm_s16le -c:v rawvideo -f avi", false, "avi"),
 					new FormatPreset("Xvid", "AVI file with xvid video and mp3 audio.", "-c:a libmp3lame -c:v libxvid -f avi", false, "avi"),
-					new FormatPreset("Lossless Compressed AVI", "AVI file with zlib video and uncompressed audio.", "-c:a pcm_s16le -c:v zlib -f avi", false, "avi"),
+					//new FormatPreset("Lossless Compressed AVI", "AVI file with zlib video and uncompressed audio.", "-c:a pcm_s16le -c:v zlib -f avi", false, "avi"),
 					new FormatPreset("FLV", "avc+aac in flash container.", "-c:a libvo_aacenc -c:v libx264 -f flv", false, "flv"),
 					new FormatPreset("Matroska Lossless", "MKV file with lossless video and audio", "-c:a pcm_s16le -c:v libx264rgb -crf 0 -f matroska", false, "mkv"),
 					new FormatPreset("Matroska", "MKV file with h264 + vorbis", "-c:a libvorbis -c:v libx264 -f matroska", false, "mkv"),

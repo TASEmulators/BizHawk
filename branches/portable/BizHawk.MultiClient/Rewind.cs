@@ -39,41 +39,48 @@ namespace BizHawk.MultiClient
 		void CaptureRewindState64K()
 		{
 			byte[] CurrentState = Global.Emulator.SaveStateBinary();
-			if (CurrentState.Length != LastState.Length)
-				throw new System.Exception(string.Format("Rewind error: Savestate size mismatch:{0} old {1} new", LastState.Length, CurrentState.Length));
 			int beginChangeSequence = -1;
 			bool inChangeSequence = false;
 			var ms = new MemoryStream();
 			var writer = new BinaryWriter(ms);
-			for (int i = 0; i < CurrentState.Length; i++)
+			if (CurrentState.Length != LastState.Length)
 			{
-				if (inChangeSequence == false)
+				writer.Write(true); // full state
+				writer.Write(LastState);
+			}
+			else
+			{
+				writer.Write(false); // delta state
+				for (int i = 0; i < CurrentState.Length; i++)
 				{
-					if (i >= LastState.Length)
+					if (inChangeSequence == false)
+					{
+						if (i >= LastState.Length)
+							continue;
+						if (CurrentState[i] == LastState[i])
+							continue;
+
+						inChangeSequence = true;
+						beginChangeSequence = i;
 						continue;
+					}
+
+					if (i - beginChangeSequence == 254 || i == CurrentState.Length - 1)
+					{
+						writer.Write((byte)(i - beginChangeSequence + 1));
+						writer.Write((ushort)beginChangeSequence);
+						writer.Write(LastState, beginChangeSequence, i - beginChangeSequence + 1);
+						inChangeSequence = false;
+						continue;
+					}
+
 					if (CurrentState[i] == LastState[i])
-						continue;
-
-					inChangeSequence = true;
-					beginChangeSequence = i;
-					continue;
-				}
-
-				if (i - beginChangeSequence == 254 || i == CurrentState.Length - 1)
-				{
-					writer.Write((byte)(i - beginChangeSequence + 1));
-					writer.Write((ushort)beginChangeSequence);
-					writer.Write(LastState, beginChangeSequence, i - beginChangeSequence + 1);
-					inChangeSequence = false;
-					continue;
-				}
-
-				if (CurrentState[i] == LastState[i])
-				{
-					writer.Write((byte)(i - beginChangeSequence));
-					writer.Write((ushort)beginChangeSequence);
-					writer.Write(LastState, beginChangeSequence, i - beginChangeSequence);
-					inChangeSequence = false;
+					{
+						writer.Write((byte)(i - beginChangeSequence));
+						writer.Write((ushort)beginChangeSequence);
+						writer.Write(LastState, beginChangeSequence, i - beginChangeSequence);
+						inChangeSequence = false;
+					}
 				}
 			}
 			LastState = CurrentState;
@@ -85,41 +92,48 @@ namespace BizHawk.MultiClient
 		void CaptureRewindStateLarge()
 		{
 			byte[] CurrentState = Global.Emulator.SaveStateBinary();
-			if (CurrentState.Length != LastState.Length)
-				throw new System.Exception(string.Format("Rewind error: Savestate size mismatch:{0} old {1} new", LastState.Length, CurrentState.Length));
 			int beginChangeSequence = -1;
 			bool inChangeSequence = false;
 			var ms = new MemoryStream();
 			var writer = new BinaryWriter(ms);
-			for (int i = 0; i < CurrentState.Length; i++)
+			if (CurrentState.Length != LastState.Length)
 			{
-				if (inChangeSequence == false)
+				writer.Write(true); // full state
+				writer.Write(LastState);
+			}
+			else
+			{
+				writer.Write(false); // delta state
+				for (int i = 0; i < CurrentState.Length; i++)
 				{
-					if (i >= LastState.Length)
+					if (inChangeSequence == false)
+					{
+						if (i >= LastState.Length)
+							continue;
+						if (CurrentState[i] == LastState[i])
+							continue;
+
+						inChangeSequence = true;
+						beginChangeSequence = i;
 						continue;
+					}
+
+					if (i - beginChangeSequence == 254 || i == CurrentState.Length - 1)
+					{
+						writer.Write((byte)(i - beginChangeSequence + 1));
+						writer.Write(beginChangeSequence);
+						writer.Write(LastState, beginChangeSequence, i - beginChangeSequence + 1);
+						inChangeSequence = false;
+						continue;
+					}
+
 					if (CurrentState[i] == LastState[i])
-						continue;
-
-					inChangeSequence = true;
-					beginChangeSequence = i;
-					continue;
-				}
-
-				if (i - beginChangeSequence == 254 || i == CurrentState.Length - 1)
-				{
-					writer.Write((byte)(i - beginChangeSequence + 1));
-					writer.Write(beginChangeSequence);
-					writer.Write(LastState, beginChangeSequence, i - beginChangeSequence + 1);
-					inChangeSequence = false;
-					continue;
-				}
-
-				if (CurrentState[i] == LastState[i])
-				{
-					writer.Write((byte)(i - beginChangeSequence));
-					writer.Write(beginChangeSequence);
-					writer.Write(LastState, beginChangeSequence, i - beginChangeSequence);
-					inChangeSequence = false;
+					{
+						writer.Write((byte)(i - beginChangeSequence));
+						writer.Write(beginChangeSequence);
+						writer.Write(LastState, beginChangeSequence, i - beginChangeSequence);
+						inChangeSequence = false;
+					}
 				}
 			}
 			LastState = CurrentState;
@@ -131,36 +145,52 @@ namespace BizHawk.MultiClient
 		{
 			var ms = RewindBuf.Pop();
 			var reader = new BinaryReader(ms);
-			var output = new MemoryStream(LastState);
-			while (ms.Position < ms.Length - 1)
+			bool fullstate = reader.ReadBoolean();
+			if (fullstate)
 			{
-				byte len = reader.ReadByte();
-				ushort offset = reader.ReadUInt16();
-				output.Position = offset;
-				output.Write(ms.GetBuffer(), (int)ms.Position, len);
-				ms.Position += len;
+				Global.Emulator.LoadStateBinary(reader);
 			}
-			reader.Close();
-			output.Position = 0;
-			Global.Emulator.LoadStateBinary(new BinaryReader(output));
+			else
+			{
+				var output = new MemoryStream(LastState);
+				while (ms.Position < ms.Length - 1)
+				{
+					byte len = reader.ReadByte();
+					ushort offset = reader.ReadUInt16();
+					output.Position = offset;
+					output.Write(ms.GetBuffer(), (int)ms.Position, len);
+					ms.Position += len;
+				}
+				reader.Close();
+				output.Position = 0;
+				Global.Emulator.LoadStateBinary(new BinaryReader(output));
+			}
 		}
 
 		void RewindLarge()
 		{
 			var ms = RewindBuf.Pop();
 			var reader = new BinaryReader(ms);
-			var output = new MemoryStream(LastState);
-			while (ms.Position < ms.Length - 1)
+			bool fullstate = reader.ReadBoolean();
+			if (fullstate)
 			{
-				byte len = reader.ReadByte();
-				int offset = reader.ReadInt32();
-				output.Position = offset;
-				output.Write(ms.GetBuffer(), (int)ms.Position, len);
-				ms.Position += len;
+				Global.Emulator.LoadStateBinary(reader);
 			}
-			reader.Close();
-			output.Position = 0;
-			Global.Emulator.LoadStateBinary(new BinaryReader(output));
+			else
+			{
+				var output = new MemoryStream(LastState);
+				while (ms.Position < ms.Length - 1)
+				{
+					byte len = reader.ReadByte();
+					int offset = reader.ReadInt32();
+					output.Position = offset;
+					output.Write(ms.GetBuffer(), (int)ms.Position, len);
+					ms.Position += len;
+				}
+				reader.Close();
+				output.Position = 0;
+				Global.Emulator.LoadStateBinary(new BinaryReader(output));
+			}
 		}
 
 		public void Rewind(int frames)

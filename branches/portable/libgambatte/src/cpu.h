@@ -64,6 +64,14 @@ public:
 	void setInputGetter(InputGetter *getInput) {
 		memory.setInputGetter(getInput);
 	}
+
+	void setReadCallback(void (*callback)(unsigned)) {
+		memory.setReadCallback(callback);
+	}
+
+	void setWriteCallback(void (*callback)(unsigned)) {
+		memory.setWriteCallback(callback);
+	}
 	
 	void setSaveDir(const std::string &sdir) {
 		memory.setSaveDir(sdir);

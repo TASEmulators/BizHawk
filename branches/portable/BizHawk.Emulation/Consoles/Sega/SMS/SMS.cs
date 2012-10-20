@@ -353,6 +353,9 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		ISoundProvider ActiveSoundProvider;
 		public ISoundProvider SoundProvider { get { return ActiveSoundProvider; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(ActiveSoundProvider, 735); } }
+		public bool StartAsyncSound() { return true; }
+		public void EndAsyncSound() { }
 
 		public string SystemId { get { return "SMS"; } }
 

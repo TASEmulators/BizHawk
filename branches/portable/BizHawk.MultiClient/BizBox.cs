@@ -32,5 +32,17 @@ namespace BizHawk.MultiClient
 			Text = " BizHawk  (SVN r" + SubWCRev.SVN_REV + ")";
 			VersionLabel.Text = MainForm.EMUVERSION + "  Released " + MainForm.RELEASEDATE;
 		}
+
+		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			this.linkLabel1.LinkVisited = true;
+			System.Diagnostics.Process.Start("http://byuu.org/bsnes/");
+		}
+
+		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			this.linkLabel1.LinkVisited = true;
+			System.Diagnostics.Process.Start("http://gambatte.sourceforge.net/");
+		}
 	}
 }

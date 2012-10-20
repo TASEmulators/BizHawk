@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			prg_regs_8k.Dispose();
 			chr_regs_2k.Dispose();
-			mmc3.Dispose();
+			if(mmc3 != null) mmc3.Dispose();
 			base.Dispose();
 		}
 

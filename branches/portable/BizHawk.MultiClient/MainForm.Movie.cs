@@ -19,7 +19,7 @@ namespace BizHawk.MultiClient
 			{
 				Global.MovieSession.Movie.WriteMovie();
 			}
-			
+
 			Global.MovieSession = new MovieSession();
 			Global.MovieSession.Movie = m;
 			RewireInputChain();
@@ -137,10 +137,10 @@ namespace BizHawk.MultiClient
 			{
 				return true;
 			}
-			
+
 			else if (Global.MovieSession.Movie.IsRecording)
 			{
-				
+
 				if (ReadOnly)
 				{
 					if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
@@ -238,7 +238,7 @@ namespace BizHawk.MultiClient
 			{
 				Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 			}
-			
+
 			else if (Global.MovieSession.Movie.IsFinished)
 			{
 				if (Global.Emulator.Frame < Global.MovieSession.Movie.Frames) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie

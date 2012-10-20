@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
+	[NES.INESBoardImplPriority]
 	public class TVROM : MMC3Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -14,6 +15,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-TVROM": //rad racer II (U)
 					AssertPrg(64); AssertChr(64); AssertVram(8); AssertWram(0);
 					AssertBattery(false);
+					break;
+				case "NES-TR1ROM": // Gauntlet variant (untested!)
 					break;
 				default:
 					return false;

@@ -39,6 +39,11 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				ret = rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
 			else ret = ram[addr - 0x8000];
 
+			if (CoreInputComm.MemoryCallbackSystem.HasRead)
+			{
+				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
+			}
+
 			return ret;
 		}
 
@@ -49,6 +54,11 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			else if (addr < 0x8000)
 				return; //other rom page
 			else ram[addr - 0x8000] = value;
+
+			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
+			{
+				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
+			}
 		}
 
 		public void WriteHardware(ushort addr, byte value)
@@ -393,6 +403,9 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			get { return new MyVideoProvider(this); } }
 
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(NullSound.SilenceProvider, 735); } }
+		public bool StartAsyncSound() { return true; }
+		public void EndAsyncSound() { }
 
 		public static readonly ControllerDefinition TI83Controller =
 			new ControllerDefinition

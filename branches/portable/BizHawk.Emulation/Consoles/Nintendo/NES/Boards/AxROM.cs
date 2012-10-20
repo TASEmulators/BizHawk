@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//generally mapper7
 
+	[NES.INESBoardImplPriority]
 	public class AxROM : NES.NESBoardBase
 	{
 		//configuration
@@ -23,6 +24,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case "MAPPER007":
 					bus_conflict = false;
+					Cart.vram_size = 8;
 					break;
 
 				case "NES-ANROM": //marble madness

@@ -25,6 +25,8 @@ namespace BizHawk
 		/// for emu.on_snoop()
 		/// </summary>
 		public System.Action InputCallback;
+
+		public MemoryCallbackSystem MemoryCallbackSystem = new MemoryCallbackSystem();
 	}
 
 	public class CoreOutputComm
@@ -92,5 +94,74 @@ namespace BizHawk
 
 		private StringBuilder buffer;
 		private bool logging = false;
+	}
+
+	public class MemoryCallbackSystem
+	{
+		public int? ReadAddr = null;
+		private System.Action<uint> ReadCallback = null;
+		public void SetReadCallback(System.Action<uint> func)
+		{
+			ReadCallback = func;
+		}
+
+		public bool HasRead
+		{
+			get
+			{
+				return ReadCallback != null;
+			}
+		}
+
+		public void TriggerRead(int addr)
+		{
+			if (ReadCallback != null)
+			{
+				if (ReadAddr != null)
+				{
+					if (ReadAddr == addr)
+					{
+						ReadCallback((uint)addr);
+					}
+				}
+				else
+				{
+					ReadCallback((uint)addr);
+				}
+			}
+		}
+
+		public int? WriteAddr = null;
+		private System.Action<uint> WriteCallback = null;
+		public void SetWriteCallback(System.Action<uint> func)
+		{
+			WriteCallback = func;
+		}
+
+		public bool HasWrite
+		{
+			get
+			{
+				return WriteCallback != null;
+			}
+		}
+
+		public void TriggerWrite(int addr)
+		{
+			if (WriteCallback != null)
+			{
+				if (WriteAddr != null)
+				{
+					if (WriteAddr == addr)
+					{
+						WriteCallback((uint)addr);
+					}
+				}
+				else
+				{
+					WriteCallback((uint)addr);
+				}
+			}
+		}
 	}
 }

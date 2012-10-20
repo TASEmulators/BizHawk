@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Sound.Utilities
 	/// <summary>
 	/// junk wrapper around LibSpeexDSP.  quite inefficient.  will be replaced
 	/// </summary>
-	public class SpeexResampler : IDisposable
+	public class SpeexResampler : IDisposable, ISyncSoundProvider
 	{
 		static class LibSpeexDSP
 		{
@@ -269,6 +269,13 @@ namespace BizHawk.Emulation.Sound.Utilities
 
 		short[] outbuf;
 
+		// for ISyncSoundProvider
+		short[] outbuf2 = new short[16];
+		int outbuf2pos = 0;
+
+		// to accept an ISyncSoundProvder input
+		ISyncSoundProvider input;
+
 		/// <summary>
 		/// in buffer position in samples (not sample pairs)
 		/// </summary>
@@ -306,8 +313,9 @@ namespace BizHawk.Emulation.Sound.Utilities
 		/// <param name="ratioden">demonenator of srate change ratio (inrate / outrate)</param>
 		/// <param name="sratein">sampling rate in, rounded to nearest hz</param>
 		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
-		/// <param name="drainer">function which accepts output as produced</param>
-		public SpeexResampler(int quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer)
+		/// <param name="drainer">function which accepts output as produced. if null, act as an ISyncSoundProvider</param>
+		/// <param name="input">source to take input from when output is requested. if null, no autofetching</param>
+		public SpeexResampler(int quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISyncSoundProvider input = null)
 		{
 #if WINDOWS
 			LibSpeexDSP.RESAMPLER_ERR err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
@@ -319,8 +327,14 @@ namespace BizHawk.Emulation.Sound.Utilities
 			CheckError(err);
 #endif
 
-			//System.Windows.Forms.MessageBox.Show(string.Format("inlat: {0} outlat: {1}", LibSpeexDSP.speex_resampler_get_input_latency(st), LibSpeexDSP.speex_resampler_get_output_latency(st)));
-			this.drainer = drainer;
+			if (drainer != null && input != null)
+				throw new ArgumentException("Can't autofetch without being an ISyncSoundProvider?");
+
+			if (drainer != null)
+				this.drainer = drainer;
+			else
+				this.drainer = InternalDrain;
+			this.input = input;
 
 			outbuf = new short[inbuf.Length * ratioden / rationum / 2 * 2 + 128];
 
@@ -378,8 +392,12 @@ namespace BizHawk.Emulation.Sound.Utilities
 
 			// reset inbuf
 
-			Buffer.BlockCopy(inbuf, (int)inal * 2 * sizeof(short), inbuf, 0, inbufpos - (int)inal * 2);
-			inbufpos -= (int)inal * 2;
+			if (inal != inbufpos / 2)
+				throw new Exception("Speexresampler didn't eat the whole array?");
+			inbufpos = 0;
+
+			//Buffer.BlockCopy(inbuf, (int)inal * 2 * sizeof(short), inbuf, 0, inbufpos - (int)inal * 2);
+			//inbufpos -= (int)inal * 2;
 
 			// dispatch outbuf
 			drainer(outbuf, (int)outal);
@@ -412,56 +430,44 @@ namespace BizHawk.Emulation.Sound.Utilities
 #endif
 		}
 
-
-		/*
-		public void ResampleChunk(Queue<short> input, Queue<short> output, bool finish)
-		{
-			while (input.Count > 0)
-			{
-				short[] ina = input.ToArray();
-
-				short[] outa = new short[8192];
-
-				uint inal = (uint)ina.Length / 2;
-				uint outal = (uint)outa.Length / 2;
-
-				// very important: feeding too big a buffer at once causes garbage to come back
-				// don't know what "too big a buffer" is in general
-				if (inal > 512) inal = 512;
-
-
-				LibSpeexDSP.speex_resampler_process_interleaved_int(st, ina, ref inal, outa, ref outal);
-
-
-				while (inal > 0)
-				{
-					input.Dequeue();
-					input.Dequeue();
-					inal--;
-				}
-
-				int i = 0;
-				if (outal == 0)
-				{
-					// resampler refuses to make more data; bail
-					return;
-				}
-				while (outal > 0)
-				{
-					output.Enqueue(outa[i++]);
-					output.Enqueue(outa[i++]);
-					outal--;
-				}
-			}
-		}
-		*/
-
 		public void Dispose()
 		{
 #if WINDOWS
 			LibSpeexDSP.speex_resampler_destroy(st);
 #endif
-			st = IntPtr.Zero;
+            st = IntPtr.Zero;
+		}
+
+		void InternalDrain(short[] buf, int nsamp)
+		{
+			if (outbuf2pos + nsamp * 2 > outbuf2.Length)
+			{
+				short[] newbuf = new short[outbuf2pos + nsamp * 2];
+				Buffer.BlockCopy(outbuf2, 0, newbuf, 0, outbuf2pos * sizeof(short));
+				outbuf2 = newbuf;
+			}
+			Buffer.BlockCopy(buf, 0, outbuf2, outbuf2pos * sizeof(short), nsamp * 2 * sizeof(short));
+			outbuf2pos += nsamp * 2;
+		}
+
+		public void GetSamples(out short[] samples, out int nsamp)
+		{
+			if (input != null)
+			{
+				short[] sampin;
+				int nsampin;
+				input.GetSamples(out sampin, out nsampin);
+				EnqueueSamples(sampin, nsampin);
+			}
+			Flush();
+			nsamp = outbuf2pos / 2;
+			samples = outbuf2;
+			outbuf2pos = 0;
+		}
+
+		public void DiscardSamples()
+		{
+			outbuf2pos = 0;
 		}
 	}
 }

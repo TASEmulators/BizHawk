@@ -15,7 +15,7 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 	public class Sound : IDisposable
 	{
-		public bool Muted = false;
+		private bool Muted = false;
 		private bool disposed = false;
 
 		private SecondarySoundBuffer DSoundBuffer;
@@ -25,6 +25,9 @@ namespace BizHawk.MultiClient
 		public bool needDiscard;
 
 		private BufferedAsync semisync = new BufferedAsync();
+
+		private ISoundProvider asyncsoundProvider;
+		private ISyncSoundProvider syncsoundProvider;
 
 		public Sound(IntPtr handle, DirectSound device)
 		{
@@ -97,6 +100,20 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void SetSyncInputPin(ISyncSoundProvider source)
+		{
+			syncsoundProvider = source;
+			asyncsoundProvider = null;
+			semisync.DiscardSamples();
+		}
+
+		public void SetAsyncInputPin(ISoundProvider source)
+		{
+			syncsoundProvider = null;
+			asyncsoundProvider = source;
+			semisync.BaseSoundProvider = source;
+		}
+
 		static int circularDist(int from, int to, int size)
 		{
 			if (size == 0)
@@ -124,53 +141,69 @@ namespace BizHawk.MultiClient
 			return curToPlay / 4;
 		}
 
-		public void UpdateSound(ISoundProvider soundProvider)
+		public void UpdateSilence()
+		{
+			Muted = true;
+			UpdateSound();
+			Muted = false;
+		}
+
+		public void UpdateSound()
 		{
 			if (Global.Config.SoundEnabled == false || disposed)
 			{
-				soundProvider.DiscardSamples();
+				if (asyncsoundProvider != null) asyncsoundProvider.DiscardSamples();
+				if (syncsoundProvider != null) syncsoundProvider.DiscardSamples();
 				return;
 			}
 
 			int samplesNeeded = SNDDXGetAudioSpace() * 2;
 			short[] samples;
 
-			if (Global.Config.SoundThrottle)
-			{
-				if (DSoundBuffer == null) return; // can cause SNDDXGetAudioSpace() = 0
-				int samplesWanted = 2 * (int) (0.8 + 44100.0 / Global.Emulator.CoreOutputComm.VsyncRate);
+			int samplesProvided = 0;
 
-				while (samplesNeeded < samplesWanted)
-				{
-					System.Threading.Thread.Sleep((samplesWanted - samplesNeeded) / 88); // let audio clock control sleep time
-					samplesNeeded = SNDDXGetAudioSpace() * 2;
-				}
-				samplesNeeded = samplesWanted;
-				samples = new short[samplesNeeded];
-				// no semisync
-				if (!Muted)
-					soundProvider.GetSamples(samples);
-				else
-					soundProvider.DiscardSamples();
-			}
-			else
+
+			if (Muted)
 			{
 				if (samplesNeeded == 0)
 					return;
 				samples = new short[samplesNeeded];
-				if (soundProvider != null && Muted == false)
-				{
-					semisync.BaseSoundProvider = soundProvider;
-					semisync.GetSamples(samples);
-				}
-				else soundProvider.DiscardSamples();
+				samplesProvided = samplesNeeded;
 			}
+			else if (syncsoundProvider != null)
+			{
+				if (DSoundBuffer == null) return; // can cause SNDDXGetAudioSpace() = 0
+				int nsampgot;
+
+				syncsoundProvider.GetSamples(out samples, out nsampgot);
+
+				samplesProvided = 2 * nsampgot;
+
+				if (!Global.ForceNoThrottle)
+					while (samplesNeeded < samplesProvided)
+					{
+						System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / 88); // let audio clock control sleep time
+						samplesNeeded = SNDDXGetAudioSpace() * 2;
+					}
+			}
+			else if (asyncsoundProvider != null)
+			{
+				if (samplesNeeded == 0)
+					return;
+				samples = new short[samplesNeeded];
+				//if (asyncsoundProvider != null && Muted == false)
+				//{
+				semisync.BaseSoundProvider = asyncsoundProvider;
+				semisync.GetSamples(samples);
+				//}
+				//else asyncsoundProvider.DiscardSamples();
+				samplesProvided = samplesNeeded;
+			}
+			else
+				return;
 			
-			//Console.WriteLine(samplesNeeded/2);
-
-
 			int cursor = soundoffset;
-			for (int i = 0; i < samples.Length; i++)
+			for (int i = 0; i < samplesProvided; i++)
 			{
 				short s = samples[i];
 				SoundBuffer[cursor++] = (byte)(s & 0xFF);
@@ -182,7 +215,7 @@ namespace BizHawk.MultiClient
 
 			DSoundBuffer.Write(SoundBuffer, 0, LockFlags.EntireBuffer);
 
-			soundoffset += samplesNeeded * 2;
+			soundoffset += samplesProvided * 2;
 			soundoffset %= BufferSize;
 		}
 

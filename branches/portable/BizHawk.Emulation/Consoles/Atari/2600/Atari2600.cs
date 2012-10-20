@@ -12,7 +12,10 @@ namespace BizHawk
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return tia; } }
-		public ISoundProvider SoundProvider { get { return tia; } }
+		public ISoundProvider SoundProvider { get { return dcfilter; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(dcfilter, 735); } }
+		public bool StartAsyncSound() { return true; }
+		public void EndAsyncSound() { }
 
 		public Atari2600(GameInfo game, byte[] rom)
 		{

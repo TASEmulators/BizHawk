@@ -83,6 +83,9 @@ public:
 	/** Sets the callback used for getting input state. */
 	void setInputGetter(InputGetter *getInput);
 	
+	void setReadCallback(void (*callback)(unsigned));
+	void setWriteCallback(void (*callback)(unsigned));
+
 	/** Sets the directory used for storing save data. The default is the same directory as the ROM Image file. */
 	void setSaveDir(const std::string &sdir);
 	

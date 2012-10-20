@@ -23,8 +23,8 @@ namespace BizHawk.MultiClient
 	public partial class MainForm : Form
 	{
 		public bool INTERIM = true;
-		public const string EMUVERSION = "Version 1.1.2";
-		public const string RELEASEDATE = "October 07, 2012";
+		public const string EMUVERSION = "Version 1.2.0";
+		public const string RELEASEDATE = "October 20, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -39,6 +39,7 @@ namespace BizHawk.MultiClient
 		public bool NeedsReboot = false;
 		//avi/wav state
 		IVideoWriter CurrAviWriter = null;
+		ISoundProvider AviSoundInput = null;
 		/// <summary>
 		/// an audio proxy used for dumping
 		/// </summary>
@@ -125,14 +126,14 @@ namespace BizHawk.MultiClient
 			//we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
 			{
-				using (HawkFile NesCartFile = new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "NesCarts.7z")).BindFirst())
+				using (HawkFile NesCartFile = new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
 					return Util.ReadAllBytes(NesCartFile.GetStream());
 			};
 			Global.MainForm = this;
 			Global.CoreInputComm = new CoreInputComm();
 			SyncCoreInputComm();
 
-			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb.txt"));
+			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			SyncPresentationMode();
 
@@ -349,6 +350,8 @@ namespace BizHawk.MultiClient
 			{
 				RecordAVI(cmdDumpType, cmdDumpName);
 			}
+
+			UpdateStatusSlots();
 		}
 
 		/// <summary>
@@ -478,7 +481,7 @@ namespace BizHawk.MultiClient
 		void SyncThrottle()
 		{
 			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward || Global.ClientControls["MaxTurbo"];
-			Global.ForceNoVsync = unthrottled || fastforward;
+			Global.ForceNoThrottle = unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
@@ -571,7 +574,7 @@ namespace BizHawk.MultiClient
 		public void PauseEmulator()
 		{
 			EmulatorPaused = true;
-			
+
 
 		}
 
@@ -893,28 +896,28 @@ namespace BizHawk.MultiClient
 			}
 			Global.AutofireNESControls = anesControls;
 
-            var gbControls = new Controller(Gameboy.GbController);
-            gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
-            gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
-            gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
-            gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
-            gbControls.BindMulti("A", Global.Config.GBController[0].A);
-            gbControls.BindMulti("B", Global.Config.GBController[0].B);
-            gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
-            gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
-            Global.GBControls = gbControls;
+			var gbControls = new Controller(Gameboy.GbController);
+			gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
+			gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
+			gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
+			gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
+			gbControls.BindMulti("A", Global.Config.GBController[0].A);
+			gbControls.BindMulti("B", Global.Config.GBController[0].B);
+			gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
+			gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
+			Global.GBControls = gbControls;
 
-            var agbControls = new AutofireController(Gameboy.GbController);
-            agbControls.Autofire = true;
-            agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
-            agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
-            agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
-            agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
-            agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
-            agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
-            agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
-            agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
-            Global.AutofireGBControls = agbControls;
+			var agbControls = new AutofireController(Gameboy.GbController);
+			agbControls.Autofire = true;
+			agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
+			agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
+			agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
+			agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
+			agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
+			agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
+			agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
+			agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
+			Global.AutofireGBControls = agbControls;
 
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenesisController[0].Up);
@@ -944,13 +947,16 @@ namespace BizHawk.MultiClient
 			a2600Controls.BindMulti("P1 Right", Global.Config.Atari2600Controller[0].Right);
 			a2600Controls.BindMulti("P1 Down", Global.Config.Atari2600Controller[0].Down);
 			a2600Controls.BindMulti("P1 Button", Global.Config.Atari2600Controller[0].Button);
+			
 			a2600Controls.BindMulti("P2 Up", Global.Config.Atari2600Controller[1].Up);
 			a2600Controls.BindMulti("P2 Left", Global.Config.Atari2600Controller[1].Left);
 			a2600Controls.BindMulti("P2 Right", Global.Config.Atari2600Controller[1].Right);
 			a2600Controls.BindMulti("P2 Down", Global.Config.Atari2600Controller[1].Down);
 			a2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
+			
 			a2600Controls.BindMulti("Reset", Global.Config.Atari2600ConsoleButtons[0].Reset);
 			a2600Controls.BindMulti("Select", Global.Config.Atari2600ConsoleButtons[0].Select);
+			
 			Global.Atari2600Controls = a2600Controls;
 
 			var autofireA2600Controls = new AutofireController(Atari2600.Atari2600ControllerDefinition);
@@ -959,11 +965,13 @@ namespace BizHawk.MultiClient
 			autofireA2600Controls.BindMulti("P1 Right", Global.Config.Atari2600AutoController[0].Right);
 			autofireA2600Controls.BindMulti("P1 Down", Global.Config.Atari2600AutoController[0].Down);
 			autofireA2600Controls.BindMulti("P1 Button", Global.Config.Atari2600AutoController[0].Button);
+			
 			autofireA2600Controls.BindMulti("P2 Up", Global.Config.Atari2600AutoController[1].Up);
 			autofireA2600Controls.BindMulti("P2 Left", Global.Config.Atari2600AutoController[1].Left);
 			autofireA2600Controls.BindMulti("P2 Right", Global.Config.Atari2600AutoController[1].Right);
 			autofireA2600Controls.BindMulti("P2 Down", Global.Config.Atari2600AutoController[1].Down);
-			autofireA2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
+			autofireA2600Controls.BindMulti("P2 Button", Global.Config.Atari2600AutoController[1].Button);
+			
 			Global.AutofireAtari2600Controls = autofireA2600Controls;
 
 			var colecoControls = new Controller(ColecoVision.ColecoVisionControllerDefinition);
@@ -1358,7 +1366,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "ROM", "INT", "GBC" };
+				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "ROM", "INT", "GBC", "UNF" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1718,7 +1726,38 @@ namespace BizHawk.MultiClient
 				Global.StickyXORAdapter.ClearStickies();
 				Global.AutofireStickyXORAdapter.ClearStickies();
 
+				RewireSound();
+
 				return true;
+			}
+		}
+
+		void RewireSound()
+		{
+			if (DumpProxy != null)
+			{
+				// we're video dumping, so async mode only and use the DumpProxy.
+				// note that the avi dumper has already rewired the emulator itself in this case.
+				Global.Sound.SetAsyncInputPin(DumpProxy);
+			}
+			else if (Global.Config.SoundThrottle)
+			{
+				// for sound throttle, use sync mode
+				Global.Emulator.EndAsyncSound();
+				Global.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
+			}
+			else
+			{
+				// for vsync\clock throttle modes, use async
+				if (!Global.Emulator.StartAsyncSound())
+				{
+					// if the core doesn't support async mode, use a standard vecna wrapper
+					Global.Sound.SetAsyncInputPin(new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V));
+				}
+				else
+				{
+					Global.Sound.SetAsyncInputPin(Global.Emulator.SoundProvider);
+				}
 			}
 		}
 
@@ -2275,21 +2314,22 @@ namespace BizHawk.MultiClient
 			}
 
 			bool genSound = false;
+			bool coreskipaudio = false;
 			if (runFrame)
 			{
-				runloop_fps++;
-				
 				bool ff = Global.ClientControls["Fast Forward"] || Global.ClientControls["MaxTurbo"];
 				bool fff = Global.ClientControls["MaxTurbo"];
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
-				
-				//client input-related duties
-				Global.OSD.ClearGUIText();
+
 				if (!fff)
 				{
 					UpdateToolsBefore();
 				}
+
+				runloop_fps++;
+				//client input-related duties
+				Global.OSD.ClearGUIText();
 
 				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
 				{
@@ -2321,9 +2361,10 @@ namespace BizHawk.MultiClient
 
 				HandleMovieOnFrameLoop();
 
+				coreskipaudio = Global.ClientControls["MaxTurbo"] && CurrAviWriter == null;
 				//=======================================
 				MemoryPulse.Pulse();
-				Global.Emulator.FrameAdvance(!throttle.skipnextframe, !Global.ClientControls["MaxTurbo"] || CurrAviWriter != null);
+				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
 				MemoryPulse.Pulse();
 				//=======================================
 				if (CurrAviWriter != null)
@@ -2334,20 +2375,22 @@ namespace BizHawk.MultiClient
 					SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
 
 					short[] temp = new short[nsamp * 2];
-					Global.Emulator.SoundProvider.GetSamples(temp);
+					AviSoundInput.GetSamples(temp);
 					DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
-					//DumpProxy.GetSamples(temp);
-					//genSound = false;
 
-					if (Global.Config.AVI_CaptureOSD)
+					try
 					{
-						CurrAviWriter.AddFrame(new AVOut.BmpVideoProvder(CaptureOSD()));
+						if (Global.Config.AVI_CaptureOSD)
+							CurrAviWriter.AddFrame(new AVOut.BmpVideoProvder(CaptureOSD()));
+						else
+							CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+						CurrAviWriter.AddSamples(temp);
 					}
-					else
+					catch (Exception e)
 					{
-						CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+						MessageBox.Show("Video dumping died:\n\n" + e.ToString());
+						AbortAVI();
 					}
-					CurrAviWriter.AddSamples(temp);
 
 					if (autoDumpLength > 0)
 					{
@@ -2387,29 +2430,26 @@ namespace BizHawk.MultiClient
 				UpdateFrame = false;
 			}
 
-			if (genSound)
+			if (genSound && !coreskipaudio)
 			{
-				// change audio path if dumping is occuring
-				if (DumpProxy != null)
-					Global.Sound.UpdateSound(DumpProxy);
-				else
-					Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
+				Global.Sound.UpdateSound();
 			}
 			else
-				Global.Sound.UpdateSound(NullSound.SilenceProvider);
+				Global.Sound.UpdateSilence();
 		}
 
-		
+
 
 		/// <summary>
 		/// Update all tools that are frame dependent like Ram Search before processing
 		/// </summary>
-		public void UpdateToolsBefore()
+		public void UpdateToolsBefore(bool fromLua = false)
 		{
 #if WINDOWS
-			LuaConsole1.StartLuaDrawing();
+			if (!fromLua)
+				LuaConsole1.StartLuaDrawing();
 			LuaConsole1.LuaImp.FrameRegisterBefore();
-			
+
 #endif
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
@@ -2426,18 +2466,19 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Update all tools that are frame dependent like Ram Search after processing
 		/// </summary>
-		public void UpdateToolsAfter()
+		public void UpdateToolsAfter(bool fromLua = false)
 		{
 #if WINDOWS
-			
-			LuaConsole1.ResumeScripts(true);
-			
+			if (!fromLua)
+				LuaConsole1.ResumeScripts(true);
+
 #endif
 			RamWatch1.UpdateValues();
 			RamSearch1.UpdateValues();
 			HexEditor1.UpdateValues();
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
+
 			TAStudio1.UpdateValues();
 #if SNES
 			SNESGraphicsDebugger1.UpdateToolsAfter();
@@ -2445,8 +2486,11 @@ namespace BizHawk.MultiClient
 			TraceLogger1.UpdateValues();
 #if WINDOWS
 			LuaConsole1.LuaImp.FrameRegisterAfter();
-			Global.DisplayManager.PreFrameUpdateLuaSource();
-			LuaConsole1.EndLuaDrawing();
+			if (!fromLua)
+			{
+				Global.DisplayManager.PreFrameUpdateLuaSource();
+				LuaConsole1.EndLuaDrawing();
+			}
 #endif
 		}
 
@@ -2582,7 +2626,7 @@ namespace BizHawk.MultiClient
 			SaveStateFile(writer, sfd.FileName, false);
 		}
 
-		public void LoadStateFile(string path, string name)
+		public void LoadStateFile(string path, string name, bool fromLua = false)
 		{
 			if (HandleMovieLoadState(path))
 			{
@@ -2604,16 +2648,17 @@ namespace BizHawk.MultiClient
 
 				reader.Close();
 				Global.OSD.ClearGUIText();
-				UpdateToolsBefore();
-				UpdateToolsAfter();
+				UpdateToolsBefore(fromLua);
+				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
 				Global.OSD.AddMessage("Loaded state: " + name);
+				LuaConsole1.LuaImp.SavestateRegisterLoad(name);
 			}
 			else
 				Global.OSD.AddMessage("Loadstate error!");
 		}
 
-		public void LoadState(string name)
+		public void LoadState(string name, bool fromLua = false)
 		{
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 			if (File.Exists(path) == false)
@@ -2622,10 +2667,8 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			LoadStateFile(path, name);
-#if WINDOWS
-			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
-#endif
+			LoadStateFile(path, name, fromLua);
+
 		}
 
 		private void LoadStateAs()
@@ -2995,7 +3038,7 @@ namespace BizHawk.MultiClient
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
-					"Atari 2600 (experimental)", "*.a26;*.bin;%ARCH%",
+					"Atari 2600", "*.a26;*.bin;%ARCH%",
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;%ARCH%",
 					"Colecovision (very experimental)", "*.col;%ARCH%",
@@ -3006,7 +3049,7 @@ namespace BizHawk.MultiClient
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.rom;*.cue;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.rom;*.cue;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 #if WINDOWS
@@ -3015,6 +3058,7 @@ namespace BizHawk.MultiClient
 #endif
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
+					"Atari 2600", "*.a26;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
@@ -3041,6 +3085,8 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator();
 			Global.Game = GameInfo.GetNullGame();
 			MemoryPulse.Clear();
+			RewireSound();
+			ResetRewindBuffer();
 			RamSearch1.Restart();
 			RamWatch1.Restart();
 			HexEditor1.Restart();
@@ -3351,7 +3397,7 @@ namespace BizHawk.MultiClient
 			{
 				StatusSlot0.ForeColor = Color.Gray;
 			}
-			
+
 			StatusSlot1.BackColor = SystemColors.Control;
 			StatusSlot2.BackColor = SystemColors.Control;
 			StatusSlot3.BackColor = SystemColors.Control;
@@ -3500,6 +3546,7 @@ namespace BizHawk.MultiClient
 				AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.AVI;
 				AVIStatusLabel.ToolTipText = "A/V capture in progress";
 				AVIStatusLabel.Visible = true;
+
 			}
 			catch
 			{
@@ -3508,18 +3555,44 @@ namespace BizHawk.MultiClient
 				throw;
 			}
 
-			// buffersize here is entirely guess
+			// do sound rewire.  the plan is to eventually have AVI writing support syncsound input, but it doesn't for the moment
+			if (!Global.Emulator.StartAsyncSound())
+				AviSoundInput = new Emulation.Sound.MetaspuAsync(Global.Emulator.SyncSoundProvider, Emulation.Sound.ESynchMethod.ESynchMethod_V);
+			else
+				AviSoundInput = Global.Emulator.SoundProvider;
 			DumpProxy = new Emulation.Sound.MetaspuSoundProvider(Emulation.Sound.ESynchMethod.ESynchMethod_V);
 			SoundRemainder = 0;
+			RewireSound();
+		}
+
+		void AbortAVI()
+		{
+			if (CurrAviWriter == null)
+			{
+				DumpProxy = null;
+				RewireSound();
+				return;
+			}
+			CurrAviWriter.Dispose();
+			CurrAviWriter = null;
+			Global.OSD.AddMessage("AVI capture aborted");
+			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			AVIStatusLabel.ToolTipText = "";
+			AVIStatusLabel.Visible = false;
+			AviSoundInput = null;
+			DumpProxy = null; // return to normal sound output
+			SoundRemainder = 0;
+			RewireSound();
 		}
 
 		public void StopAVI()
 		{
-            if (CurrAviWriter == null)
-            {
-                DumpProxy = null;
-                return;
-            }
+			if (CurrAviWriter == null)
+			{
+				DumpProxy = null;
+				RewireSound();
+				return;
+			}
 			CurrAviWriter.CloseFile();
 			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
@@ -3527,8 +3600,10 @@ namespace BizHawk.MultiClient
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
+			AviSoundInput = null;
 			DumpProxy = null; // return to normal sound output
 			SoundRemainder = 0;
+			RewireSound();
 		}
 
 		private void SwapBackupSavestate(string path)
@@ -3629,11 +3704,11 @@ namespace BizHawk.MultiClient
 					Global.OSD.AddMessage(warningMsg);
 				else
 					Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
-					                      Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
-					if (!Directory.Exists(d))
-						Directory.CreateDirectory(d);
-					File.Copy(fn + "." + Global.Config.MovieExtension, d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension,true);
-					File.Delete(fn + "." + Global.Config.MovieExtension);
+										  Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
+				if (!Directory.Exists(d))
+					Directory.CreateDirectory(d);
+				File.Copy(fn + "." + Global.Config.MovieExtension, d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension, true);
+				File.Delete(fn + "." + Global.Config.MovieExtension);
 			}
 			RunLoopBlocked = false;
 		}

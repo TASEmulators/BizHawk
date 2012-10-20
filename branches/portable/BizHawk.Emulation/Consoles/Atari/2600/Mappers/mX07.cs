@@ -38,6 +38,50 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 
 	class mX07 : MapperBase
 	{
+		int rombank_2k = 0;
 
+		public override byte ReadMemory(ushort addr)
+		{
+			Address(addr);
+			if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+			else
+			{
+				return core.rom[(rombank_2k << 12) + (addr & 0xFFF)];
+			}
+		}
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			Address(addr);
+			if (addr < 0x1000) base.WriteMemory(addr, value);
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("rombank_2k", ref rombank_2k);
+		}
+
+		void Address(ushort addr)
+		{
+			if ((addr & 0x180F) == 0x080D)
+			{
+				bank((addr & 0xF0) >> 4);
+			}
+			else if ((addr & 0x1880) == 0)
+			{
+				if ((rombank_2k & 0xE) == 0xE)
+				{
+					bank(((addr & 0x40) >> 6) | (rombank_2k & 0xE));
+				}
+			}
+		}
+
+		private void bank(int bank)
+		{
+			rombank_2k = (bank & 0x0F);
+		}
 	}
 }

@@ -107,7 +107,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void Dispose()
 		{
-			mapper.Dispose();
+			if(mapper != null)
+				mapper.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
