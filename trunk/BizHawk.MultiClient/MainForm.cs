@@ -24,8 +24,8 @@ namespace BizHawk.MultiClient
 	public partial class MainForm : Form
 	{
 		public bool INTERIM = true;
-		public const string EMUVERSION = "Version 1.1.2";
-		public const string RELEASEDATE = "October 07, 2012";
+		public const string EMUVERSION = "Version 1.2.0";
+		public const string RELEASEDATE = "October 20, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -2921,7 +2921,7 @@ namespace BizHawk.MultiClient
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
-					"Atari 2600 (experimental)", "*.a26;*.bin;%ARCH%",
+					"Atari 2600", "*.a26;*.bin;%ARCH%",
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;%ARCH%",
 					"Colecovision (very experimental)", "*.col;%ARCH%",
@@ -2932,13 +2932,14 @@ namespace BizHawk.MultiClient
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.rom;*.cue;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.rom;*.cue;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Super NES", "*.smc;*.sfc;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
+					"Atari 2600", "*.a26;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",

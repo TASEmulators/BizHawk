@@ -452,10 +452,7 @@ namespace BizHawk.MultiClient
 
 		private void InputConfig_Load(object sender, EventArgs e)
 		{
-			if (Global.MainForm.INTERIM)
-			{
-				SystemComboBox.Items.Add("Atari"); //When Atari is ready, add this in the designer instead
-			}
+			SystemComboBox.Items.Add("Atari"); //TODO: add this to the designer instead
 
 			HotkeyMappingList = Global.ClientControls.MappingList();
 

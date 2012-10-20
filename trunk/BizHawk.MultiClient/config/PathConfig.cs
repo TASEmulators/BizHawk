@@ -145,8 +145,6 @@ namespace BizHawk.MultiClient
 			{
 				var TABPage1 = tabControl1.TabPages[10]; //Hide Int. V
 				tabControl1.Controls.Remove(TABPage1);
-				var TABPage2 = tabControl1.TabPages[9]; //Hide Atari
-				tabControl1.Controls.Remove(TABPage2);
 			}
 
 			switch (Global.Game.System)
