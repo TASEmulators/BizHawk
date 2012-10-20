@@ -257,7 +257,7 @@ namespace BizHawk.MultiClient
 		}
 	}
 #else
-	// Dummy implementation for non-Windows platforms for now.
+	//OpenAL implementation for other platforms
 	public class Sound
 	{
 		public bool Muted = false;
@@ -265,6 +265,9 @@ namespace BizHawk.MultiClient
 		private AudioContext _audContext;
 		private int _audSource;
 		private const int BUFFER_SIZE = 735 * 2 * 2; // 1/60th of a second, 2 bytes per sample, 2 channels;
+		private ISoundProvider asyncsoundProvider;
+		private ISyncSoundProvider syncsoundProvider;
+		private BufferedAsync semisync = new BufferedAsync();
 
 		public Sound()
 		{
@@ -283,7 +286,7 @@ namespace BizHawk.MultiClient
 					AL.SourceQueueBuffer(_audSource, buffer);
 				}
 			} 
-			catch( AudioException e)
+			catch(AudioException e)
 			{ 
 				System.Windows.Forms.MessageBox.Show("Unable to initalize sound. That's too bad.");
 			}
@@ -309,20 +312,67 @@ namespace BizHawk.MultiClient
 
 		int SNDDXGetAudioSpace()
 		{
-			return 0;
+			return BUFFER_SIZE>>2;
 		}
 
-		public void UpdateSound(ISoundProvider soundProvider)
+		public void UpdateSilence()
 		{
-			int amtToFill;
+			Muted = true;
+			UpdateSound();
+			Muted = false;
+		}
+
+		public void UpdateSound()
+		{
+			if (Global.Config.SoundEnabled == false)
+			{
+				if (asyncsoundProvider != null) asyncsoundProvider.DiscardSamples();
+				if (syncsoundProvider != null) syncsoundProvider.DiscardSamples();
+				return;
+			}
+			int amtToFill = 0;
 			AL.GetSource(_audSource, ALGetSourcei.BuffersProcessed, out amtToFill);
 			for(int i=0; i<amtToFill; i++)
 			{
+				int samplesNeeded = SNDDXGetAudioSpace() * 2;
+				int samplesProvided = 0;
+				short[] samples;
+
+				if (Muted)
+				{
+					if (samplesNeeded == 0)
+						return;
+					samples = new short[samplesNeeded];
+					samplesProvided = samplesNeeded;
+				}
+				else if (syncsoundProvider != null)
+				{
+					int nsampgot;
+					syncsoundProvider.GetSamples(out samples, out nsampgot);
+					samplesProvided = 2 * nsampgot;
+					
+					if (!Global.ForceNoThrottle)
+						while (samplesNeeded < samplesProvided)
+					{
+						System.Threading.Thread.Sleep((samplesProvided - samplesNeeded) / 88); // let audio clock control sleep time
+						samplesNeeded = SNDDXGetAudioSpace() * 2;
+					}
+				}
+				else if (asyncsoundProvider != null)
+				{
+					if (samplesNeeded == 0)
+						return;
+					samples = new short[samplesNeeded];
+					semisync.BaseSoundProvider = asyncsoundProvider;
+					semisync.GetSamples(samples);
+					samplesProvided = samplesNeeded;
+				}
+				else
+					return;
+
+				AL.GetSource(_audSource, ALGetSourcei.BuffersProcessed, out amtToFill);
 				int buffer = AL.SourceUnqueueBuffer(_audSource);
-				short[] samples = new short[BUFFER_SIZE>>1];
-				soundProvider.GetSamples(samples);
-				
-				AL.BufferData(buffer, ALFormat.Stereo16, samples, BUFFER_SIZE, 44100);	
+				AL.BufferData(buffer, ALFormat.Stereo16, samples, samplesProvided*2, 44100);	
 				AL.SourceQueueBuffer(_audSource, buffer);
 			}
 			if(AL.GetSourceState(_audSource) != ALSourceState.Playing)
@@ -354,6 +404,20 @@ namespace BizHawk.MultiClient
 				else
 					n.SoundOn = true;
 			}
+		}
+
+		public void SetSyncInputPin(ISyncSoundProvider source)
+		{
+			syncsoundProvider = source;
+			asyncsoundProvider = null;
+			semisync.DiscardSamples();
+		}
+		
+		public void SetAsyncInputPin(ISoundProvider source)
+		{
+			syncsoundProvider = null;
+			asyncsoundProvider = source;
+			semisync.BaseSoundProvider = source;
 		}
 	}
 #endif

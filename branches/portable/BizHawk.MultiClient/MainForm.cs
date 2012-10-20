@@ -2652,7 +2652,9 @@ namespace BizHawk.MultiClient
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
 				Global.OSD.AddMessage("Loaded state: " + name);
+#if WINDOWS
 				LuaConsole1.LuaImp.SavestateRegisterLoad(name);
+#endif
 			}
 			else
 				Global.OSD.AddMessage("Loadstate error!");
