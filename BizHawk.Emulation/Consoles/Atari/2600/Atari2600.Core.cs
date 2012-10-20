@@ -265,5 +265,6 @@ namespace BizHawk
 		public virtual byte ReadMemory(ushort addr) { return core.BaseReadMemory(addr); }
 		public virtual void WriteMemory(ushort addr, byte value) { core.BaseWriteMemory(addr, value); }
 		public virtual void SyncState(Serializer ser) { }
+		public virtual void Dispose() { }
 	}
 }
