@@ -62,8 +62,15 @@ namespace BizHawk.MultiClient
 
 		public void Update()
 		{
-			if (joystick.Acquire().IsFailure)
+			try
+			{
+				if (joystick.Acquire().IsFailure)
+					return;
+			}
+			catch
+			{
 				return;
+			}
 			if (joystick.Poll().IsFailure)
 				return;
 
