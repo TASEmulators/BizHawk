@@ -2902,6 +2902,7 @@ namespace BizHawk.MultiClient
 			return str;
 		}
 
+		int LastOpenRomFilter = 0;
 		private void OpenROM()
 		{
 			var ofd = new OpenFileDialog();
@@ -2946,8 +2947,10 @@ namespace BizHawk.MultiClient
 					"Genesis (experimental)", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
 					"All Files", "*.*");
 			}
+			
 			ofd.RestoreDirectory = false;
-
+			ofd.FilterIndex = LastOpenRomFilter;
+			
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
 			Global.Sound.StartSound();
@@ -2955,6 +2958,7 @@ namespace BizHawk.MultiClient
 				return;
 			var file = new FileInfo(ofd.FileName);
 			Global.Config.LastRomPath = file.DirectoryName;
+			LastOpenRomFilter = ofd.FilterIndex;
 			LoadRom(file.FullName);
 		}
 
