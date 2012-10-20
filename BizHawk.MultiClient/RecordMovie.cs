@@ -115,7 +115,7 @@ namespace BizHawk.MultiClient
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
 					MovieToRecord.StartsFromSavestate = true;
-					var temppath = path + ".tmp";
+					var temppath = path;
 					var writer = new StreamWriter(temppath);
 					Global.Emulator.SaveStateText(writer);
 					writer.Close();
@@ -135,17 +135,20 @@ namespace BizHawk.MultiClient
 								MovieToRecord.Header.Comments.Add(str);
 						}
 					}
-					file.Delete();
 				}
 				Global.MainForm.StartNewMovie(MovieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
 				if (DefaultAuthorCheckBox.Checked)
+				{
 					Global.Config.DefaultAuthor = AuthorBox.Text;
+				}
 				this.Close();
 			}
 			else
+			{
 				MessageBox.Show("Please select a movie to record", "File selection error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 
 		}
 
