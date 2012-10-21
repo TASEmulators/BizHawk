@@ -154,6 +154,7 @@ namespace BizHawk.MultiClient
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
+		public string PathFDSBios = Path.Combine(".", "disksys.rom");
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
