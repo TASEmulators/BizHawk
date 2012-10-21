@@ -66,6 +66,7 @@ namespace BizHawk.MultiClient
 			NESScreenshotsBox.Text = Global.Config.PathNESScreenshots;
 			NESCheatsBox.Text = Global.Config.PathNESCheats;
 			NESPaletteBox.Text = Global.Config.PathNESPalette;
+			NESFDSBiosBox.Text = Global.Config.PathFDSBios;
 
 			SNESBaseBox.Text = Global.Config.BaseSNES;
 			SNESROMsBox.Text = Global.Config.PathSNESROMs;
@@ -214,6 +215,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathNESScreenshots = NESScreenshotsBox.Text;
 			Global.Config.PathNESCheats = NESCheatsBox.Text;
 			Global.Config.PathNESPalette = NESPaletteBox.Text;
+			Global.Config.PathFDSBios = NESFDSBiosBox.Text;
 
 			Global.Config.BaseSNES = SNESBaseBox.Text;
 			Global.Config.PathSNESROMs = SNESROMsBox.Text;
@@ -790,6 +792,11 @@ namespace BizHawk.MultiClient
 		private void BrowseSNESSaveRAM_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(SNESSaveRAMBox, SNESSaveRAMDescription.Text);
+		}
+
+		private void NESBrowseFDSBios_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(NESFDSBiosBox, NESFDSBiosDescription.Text);
 		}
 	}
 }

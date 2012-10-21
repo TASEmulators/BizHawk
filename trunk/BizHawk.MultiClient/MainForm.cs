@@ -1468,7 +1468,12 @@ namespace BizHawk.MultiClient
 								break;
 							case "NES":
 								{
-									NES nes = new NES(game, rom.FileData);
+									string biosPath = PathManager.MakeAbsolutePath(Global.Config.PathFDSBios, "NES");
+									byte[] bios = null;
+									if (File.Exists(biosPath))
+										bios = File.ReadAllBytes(biosPath);
+
+									NES nes = new NES(game, rom.FileData, bios);
 									nes.SoundOn = Global.Config.SoundEnabled;
 									nes.FirstDrawLine = Global.Config.NESTopLine;
 									nes.LastDrawLine = Global.Config.NESBottomLine;
@@ -1580,7 +1585,8 @@ namespace BizHawk.MultiClient
 				if (game.System == "NES")
 				{
 					NES nes = Global.Emulator as NES;
-					Global.Game.Name = nes.GameName;
+					if (nes.GameName != null)
+						Global.Game.Name = nes.GameName;
 					Global.Game.Status = nes.RomStatus;
 					SetNESSoundChannels();
 				}

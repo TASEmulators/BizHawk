@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public NES(GameInfo game, byte[] rom)
+		public NES(GameInfo game, byte[] rom, byte[] fdsbios = null)
 		{
 			CoreOutputComm = new CoreOutputComm();
 			CoreOutputComm.CpuTraceAvailable = true;
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
-			Init(game, rom);
+			Init(game, rom, fdsbios);
 		}
 
 		private NES()
@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public enum EDetectionOrigin
 		{
-			None, BootGodDB, GameDB, INES, UNIF
+			None, BootGodDB, GameDB, INES, UNIF, FDS
 		}
 
 		StringWriter LoadReport;
@@ -434,7 +434,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public unsafe void Init(GameInfo gameInfo, byte[] rom)
+		public unsafe void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
 		{
 			LoadReport = new StringWriter();
 			LoadWriteLine("------");
@@ -459,6 +459,34 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				hash_sha1 = unif.GetCartInfo().sha1;
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
+			}
+			else if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("FDS\x1A")))
+			{
+				// there's not much else to do with FDS images other than to feed them to the board
+				origin = EDetectionOrigin.FDS;
+				LoadWriteLine("Found FDS header.");
+				if (fdsbios == null)
+					throw new Exception("Missing FDS Bios!");
+				cart = new CartInfo();
+				var fdsboard = new FDS();
+				fdsboard.biosrom = fdsbios;
+				fdsboard.Create(this);
+				fdsboard.Configure(origin);
+
+				board = fdsboard;
+
+				//create the vram and wram if necessary
+				if (cart.wram_size != 0)
+					board.WRAM = new byte[cart.wram_size * 1024];
+				if (cart.vram_size != 0)
+					board.VRAM = new byte[cart.vram_size * 1024];
+
+				board.PostConfigure();
+
+				HardReset();
+				SetupMemoryDomains();
+
+				return;
 			}
 			else
 			{
