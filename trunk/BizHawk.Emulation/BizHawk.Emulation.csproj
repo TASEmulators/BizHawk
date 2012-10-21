@@ -269,6 +269,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\VsUnisys.cs" />
     <Compile Include="Consoles\Nintendo\NES\Core.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
+    <Compile Include="Consoles\Nintendo\NES\FDS\RamAdapter.cs" />
     <Compile Include="Consoles\Nintendo\NES\iNES.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
     <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />
