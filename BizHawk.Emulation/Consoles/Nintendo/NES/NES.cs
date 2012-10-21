@@ -470,6 +470,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart = new CartInfo();
 				var fdsboard = new FDS();
 				fdsboard.biosrom = fdsbios;
+				fdsboard.diskimage = rom;
 				fdsboard.Create(this);
 				fdsboard.Configure(origin);
 
