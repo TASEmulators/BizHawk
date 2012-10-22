@@ -1471,7 +1471,17 @@ namespace BizHawk.MultiClient
 									string biosPath = PathManager.MakeAbsolutePath(Global.Config.PathFDSBios, "NES");
 									byte[] bios = null;
 									if (File.Exists(biosPath))
+									{
 										bios = File.ReadAllBytes(biosPath);
+										// ines header + 24KB of garbage + actual bios + 8KB of garbage
+										if (bios.Length == 40976)
+										{
+											MessageBox.Show(this, "Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
+											byte[] tmp = new byte[8192];
+											Buffer.BlockCopy(bios, 16 + 8192 * 3, tmp, 0, 8192);
+											bios = tmp;
+										}
+									}
 
 									NES nes = new NES(game, rom.FileData, bios);
 									nes.SoundOn = Global.Config.SoundEnabled;
