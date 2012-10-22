@@ -83,6 +83,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WriteEXP(int addr, byte value)
 		{
+
+			Console.WriteLine("W{0:x4}:{1:x2} {2:x4}", addr + 0x4000, value, NES.cpu.PC);
+
 			switch (addr)
 			{
 				case 0x0020:
@@ -113,7 +116,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x0025:
 					if (diskenable)
 						diskdrive.Write4025(value);
-					SetMirrorType((value & 8) != 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
+					SetMirrorType((value & 8) == 0 ? EMirrorType.Vertical : EMirrorType.Horizontal);
 					break;
 				case 0x0026:
 					if (diskenable)
@@ -161,6 +164,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 			}
 			diskirq = diskdrive.irq;
+			if (addr != 0x0032)
+				Console.WriteLine("R{0:x4}:{1:x2} {2:x4}", addr + 0x4000, ret, NES.cpu.PC);
 			return ret;
 		}
 
