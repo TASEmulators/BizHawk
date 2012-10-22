@@ -266,15 +266,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			for (int i = 0; i < samples.Length; i += 2)
 			{
+				// worst imaginable resampling
 				int pos = i * samplebuffpos / samples.Length;
+				int samp = samplebuff[pos] * 20 - 20160;
+				samp += samples[i];
+				if (samp > 32767)
+					samples[i] = 32767;
+				else if (samp < -32768)
+					samples[i] = -32768;
+				else
+					samples[i] = (short)samp;
 
-				short samp = (short)(samplebuff[pos] * 20 - 20160);
-				// nothing for clipping, and the worst imaginable resampling
-				samples[i] += samp;
-				samples[i + 1] += samp;
-
+				// NES audio is mono, so this should be identical anyway
+				samples[i + 1] = samples[i];
 			}
-			Console.WriteLine("##{0}##", samplebuffpos);
+			//Console.WriteLine("##{0}##", samplebuffpos);
 			samplebuffpos = 0;
 		}
 	}
