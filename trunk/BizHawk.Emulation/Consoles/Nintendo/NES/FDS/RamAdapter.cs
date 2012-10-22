@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			// the current circulating .fds dumps are horribly broken.  here we attempt to fix them up as best as possible.
 			// todo: implement CRC.  since the RamAdapter itself doesn't implement it, broken is not a problem
+			// since its not contained in dumps, no way to be sure that the implementation is right
 
 			MemoryStream inp = new MemoryStream(inputdisk, false);
 			BinaryReader br = new BinaryReader(inp);
@@ -282,7 +283,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case RamAdapterState.SPINUP:
 						state = RamAdapterState.RUNNING;
 						SetCycles();
-						transferreset = false;
+						//transferreset = false; // this definitely does not happen.
 						//numcrc = 0;
 						Console.WriteLine("FDS: Spin up complete!  Disk is running");
 						break;
@@ -302,7 +303,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		byte readreglatch;
 		byte writereglatch;
 
-		bool bytetransferflag = false;
+		bool _bytetransferflag;
+		bool bytetransferflag { get { return _bytetransferflag; } set { _bytetransferflag = value; } }
 
 		bool lookingforendofgap = false;
 
