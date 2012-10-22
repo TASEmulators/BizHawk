@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			if ((value & 1) != 0) // start motor
 			{
-				if (state != RamAdapterState.RUNNING)
+				if (state == RamAdapterState.IDLE)
 				{
 					state = RamAdapterState.SPINUP;
 					SetCycles();
