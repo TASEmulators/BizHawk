@@ -116,9 +116,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			byte[] realside = FixFDSSide(side);
 			Insert(realside, 65500 * 8, writeprotect);
+			//File.WriteAllBytes("fdsdebug.bin", realside);
 		}
-
-
 
 		// all timings are in terms of PPU cycles (@5.37mhz)
 		int cycleswaiting = 0;
@@ -143,13 +142,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (state)
 			{
 				case RamAdapterState.RUNNING:
-					cycleswaiting = 56;
+					cycleswaiting = 56; //82;
 					break;
 				case RamAdapterState.INSERTING:
-					cycleswaiting = 50000;
+					cycleswaiting = 5000000;
 					break;
 				case RamAdapterState.SPINUP:
-					cycleswaiting = 200;
+					cycleswaiting = 2000;
 					break;
 				case RamAdapterState.IDLE:
 					cycleswaiting = 50000;
@@ -171,10 +170,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public bool irq;
 
+		/// <summary>true if 4025.1 is set to true</summary>
+		bool transferreset = false;
+
 		// control reg
 		public void Write4025(byte value)
 		{
-			cached4025 = value;
+			
 
 			if ((value & 1) != 0) // start motor
 			{
@@ -184,7 +186,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					SetCycles();
 				}
 			}
+			if ((value & 2) != 0)
+				transferreset = true;
+			if ((cached4025 & 0x40) == 0 && (value & 0x40) != 0)
+				lookingforendofgap = true;
 			irq = false; // ??
+
+			cached4025 = value;
 		}
 
 		// some bits come from outside RamAdapter
@@ -206,19 +214,30 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ret;
 		}
 
+		/// <summary>
+		/// DEBUG ONLY
+		/// </summary>
+		int lastreaddiskpos;
+
 		public byte Read4031()
 		{
 			bytetransferflag = false;
 			irq = false; //??
-			return readreg;
+			Console.WriteLine("{0:x2} @{1}", readreglatch, lastreaddiskpos);
+			// it seems very hard to avoid this situation, hence the switch to latched shift regs
+			//if (readregpos != 0)
+			//{
+			//	Console.WriteLine("FDS == BIT MISSED ==");
+			//}
+			return readreglatch;
 		}
 
 		public byte Read4032()
 		{
 			byte ret = 0xff;
-			if (disk != null)
+			if (disk != null && state != RamAdapterState.INSERTING)
 				ret &= unchecked((byte)~0x01);
-			if ((cached4025 & 2) == 0 && (state == RamAdapterState.RUNNING || state == RamAdapterState.IDLE))
+			if (!transferreset && (state == RamAdapterState.RUNNING || state == RamAdapterState.IDLE))
 				ret &= unchecked((byte)~0x02);
 
 			return ret;
@@ -235,7 +254,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				switch (state)
 				{
 					case RamAdapterState.RUNNING:
-						if ((cached4025 & 2) != 0) // run head to end of disk
+						if (transferreset) // run head to end of disk
 							MoveDummy();
 						else if ((cached4025 & 4) != 0) // read mode
 							Read();
@@ -243,8 +262,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							Write();
 						if (diskpos == disksize)
 						{
+							Console.WriteLine("FDS: End of Disk");
 							state = RamAdapterState.RESET;
-							cached4025 &= unchecked((byte)~2); // clear "run head to end of disk"
+							transferreset = false;
+							//numcrc = 0;
 						}
 						SetCycles();
 						break;
@@ -254,10 +275,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						state = RamAdapterState.IDLE;
 						diskpos = 0;
 						SetCycles();
+						transferreset = false;
+						//numcrc = 0;
+						Console.WriteLine("FDS: Return or Insert Complete");
 						break;
 					case RamAdapterState.SPINUP:
 						state = RamAdapterState.RUNNING;
 						SetCycles();
+						transferreset = false;
+						//numcrc = 0;
+						Console.WriteLine("FDS: Spin up complete!  Disk is running");
 						break;
 
 					case RamAdapterState.IDLE:
@@ -272,8 +299,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		byte writereg;
 		int readregpos;
 		int writeregpos;
+		byte readreglatch;
+		byte writereglatch;
 
 		bool bytetransferflag = false;
+
+		bool lookingforendofgap = false;
+
+		/// <summary>number of CRC bytes read/written</summary>
+		//int numcrc;
 
 		void Read()
 		{
@@ -281,15 +315,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			diskpos++;
 
-			if ((cached4025 & 0x40) != 0) // looking for end of gap
+			if (lookingforendofgap /*(cached4025 & 0x40) != 0*/ && (cached4025 & 0x10) == 0) // looking for end of gap, but not when CRC is active
 			{
 				if (bit == 1) // found!
 				{
-					cached4025 &= unchecked((byte)~0x40); // stop looking for end of gap
+					Console.WriteLine("FDS: End of Gap @{0}", diskpos);
+
+					lookingforendofgap = false;//cached4025 &= unchecked((byte)~0x40); // stop looking for end of gap
 					readregpos = 0;
-					bytetransferflag = true;
-					if ((cached4025 & 0x80) != 0)
-						irq = true;
+					//bytetransferflag = true;
+					//if ((cached4025 & 0x80) != 0)
+					//	irq = true;
 				}
 				// else continue scanning gap
 			}
@@ -301,9 +337,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (readregpos == 8)
 				{
 					readregpos = 0;
-					bytetransferflag = true;
-					if ((cached4025 & 0x80) != 0)
-						irq = true;
+					//if ((cached4025 & 0x10) == 0) // not in CRC
+					//{
+						bytetransferflag = true;
+						if ((cached4025 & 0x80) != 0)
+							irq = true;
+						lastreaddiskpos = diskpos;
+						//Console.WriteLine("{0:x2} {1} @{2}", readreg, (cached4025 & 0x80) != 0 ? "RAISE" : "    ", diskpos);
+						readreglatch = readreg;
+					//}
+					//else // when in CRC, don't send results back to user
+					//{
+						if ((cached4025 & 0x10) != 0)
+						{
+							Console.WriteLine("FDS: crc byte {0:x2} @{1}", readreg, diskpos);
+							cached4025 &= unchecked((byte)~0x10); // clear CRC reading
+						}
+					//}
 				}
 			}
 		}
