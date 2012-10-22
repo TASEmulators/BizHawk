@@ -5,6 +5,12 @@ using System.Text;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
+	/*
+	 * http://sourceforge.net/p/fceultra/code/2696/tree/fceu/src/fds.cpp - only used for timer info
+	 * http://nesdev.com/FDS%20technical%20reference.txt - implementation is mostly a combination of
+	 * http://wiki.nesdev.com/w/index.php/Family_Computer_Disk_System - these two documents
+	 * http://nesdev.com/diskspec.txt - not useless
+	 */
 	[NES.INESBoardImplCancel]
 	public class FDS : NES.NESBoardBase
 	{
@@ -77,7 +83,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		
 		int timerlatch;
 		int timervalue;
-		bool timeractive;
+		byte timerreg;
 
 		byte reg4026;
 
@@ -94,16 +100,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					timerirq = false;
 					break;
 				case 0x0021:
-					timerlatch &= 0xff00;
+					timerlatch &= 0x00ff;
 					timerlatch |= value << 8;
 					timerirq = false;
 					break;
 				case 0x0022:
-					if ((value & 1) != 0)
-					{
-						timeractive = true;
-						timervalue = timerlatch * 3;
-					}
+					timerreg = (byte)(value & 3);
+					timervalue = timerlatch * 3;
 					break;
 				case 0x0023:
 					diskenable = (value & 1) != 0;
@@ -171,12 +174,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void ClockPPU()
 		{
-			if (timeractive)
+			if ((timerreg & 2) != 0 && timervalue > 0)
 			{
 				timervalue--;
 				if (timervalue == 0)
 				{
-					timeractive = false;
+					if ((timerreg & 1) != 0)
+					{
+						timervalue = timerlatch * 3;
+					}
+					else
+					{
+						timerreg &= unchecked((byte)~2);
+						timervalue = 0;
+						timerlatch = 0;
+					}
 					timerirq = true;
 				}
 			}
