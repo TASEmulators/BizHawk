@@ -24,8 +24,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		/// </summary>
 		public byte[] diskimage;
 
-
 		RamAdapter diskdrive;
+		FDSAudio audio;
+		int audioclock;
 
 		// as we have [INESBoardImplCancel], this will only be called with an fds disk image
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -40,6 +41,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Cart.board_type = "FAMICOM_DISK_SYSTEM";
 
 			diskdrive = new RamAdapter();
+			audio = new FDSAudio();
 
 			InsertSide(0);
 
@@ -89,8 +91,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WriteEXP(int addr, byte value)
 		{
-
 			Console.WriteLine("W{0:x4}:{1:x2} {2:x4}", addr + 0x4000, value, NES.cpu.PC);
+
+			if (addr >= 0x0040)
+			{
+				audio.WriteReg(addr + 0x4000, value);
+				return;
+			}
 
 			switch (addr)
 			{
@@ -132,6 +139,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadEXP(int addr)
 		{
 			byte ret = NES.DB;
+
+			if (addr >= 0x0040)
+				return audio.ReadReg(addr + 0x4000, ret);
 
 			switch (addr)
 			{
@@ -194,6 +204,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			diskdrive.Clock();
 			diskirq = diskdrive.irq;
+			audioclock++;
+			if (audioclock == 3)
+			{
+				audioclock = 0;
+				audio.Clock();
+			}
 		}
 
 		public override byte ReadWRAM(int addr)
@@ -220,6 +236,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				WRAM[addr + 0x2000] = value;
 		}
 
-
+		public override void ApplyCustomAudio(short[] samples)
+		{
+			audio.ApplyCustomAudio(samples);
+		}
 	}
 }
