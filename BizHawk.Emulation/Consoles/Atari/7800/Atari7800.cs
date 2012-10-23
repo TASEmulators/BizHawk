@@ -85,8 +85,9 @@ namespace BizHawk
 			}
 		};
 
-		public Atari7800(GameInfo game, byte[] rom, byte[] bios, byte[] highscoreBIOS)
+		public Atari7800(GameInfo game, byte[] rom, byte[] ntsc_bios, byte[] pal_bios, byte[] highscoreBIOS)
 		{
+			//TODO: store both the ntsc bios and the pal bios
 			var domains = new List<MemoryDomain>(1);
 			domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr => 0xFF, null)); //TODO
 			memoryDomains = domains.AsReadOnly();
@@ -95,9 +96,10 @@ namespace BizHawk
 			this.rom = rom;
 			this.game = game;
 			this.hsbios = highscoreBIOS;
-			BIOS = new Bios7800(bios);
+			NTSC_BIOS = new Bios7800(ntsc_bios);
+			PAL_BIOS = new Bios7800(pal_bios);
 			videoProvider = new MyVideoProvider(this);
-			soundProvider = new MySoundProvider(); //TODO
+			soundProvider = new MySoundProvider(this); //TODO
 			HardReset();
 		}
 
@@ -121,7 +123,7 @@ namespace BizHawk
 			DeserializationContext george = new DeserializationContext(blah);
 			NullLogger logger = new NullLogger();
 			HSC7800 hsc7800 = new HSC7800(hsbios, new byte[4096]); //TODO: why should I have to feed it ram? how much?
-			theMachine = new Machine7800NTSC(cart, BIOS, hsc7800, logger);
+			theMachine = new Machine7800NTSC(cart, NTSC_BIOS, hsc7800, logger);
 			//TODO: clean up, the hs and bios are passed in, the bios has an object AND byte array in the core, and naming is inconsistent
 		}
 
@@ -183,6 +185,11 @@ namespace BizHawk
 
 		class MySoundProvider : ISoundProvider
 		{
+			Atari7800 emu;
+			public MySoundProvider(Atari7800 emu)
+			{
+				this.emu = emu;
+			}
 			public int MaxVolume { get { return 0; } set { } }
 			public void DiscardSamples()
 			{
