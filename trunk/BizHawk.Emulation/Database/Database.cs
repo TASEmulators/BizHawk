@@ -150,6 +150,7 @@ namespace BizHawk
                 case ".MD":
 				case ".SMD": Game.System = "GEN"; break;
 				case ".A26": Game.System = "A26"; break;
+				case ".A78": Game.System = "A78"; break;
 				case ".COL": Game.System = "COLV"; break;
 				case ".ROM":
 				case ".INT": Game.System = "INTV"; break;

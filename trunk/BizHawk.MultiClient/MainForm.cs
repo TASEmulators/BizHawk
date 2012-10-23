@@ -1303,7 +1303,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "ROM", "INT", "GBC", "UNF" };
+				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "ROM", "INT", "GBC", "UNF", "A78" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1570,6 +1570,13 @@ namespace BizHawk.MultiClient
 									intv.LoadGraphicsRom(gromPath);
 									nextEmulator = intv;
 								}
+								break;
+							case "A78":
+								string biospath = Global.Config.PathAtari7800NTSCBIOS; //TODO
+								byte[] BIOS7800 = File.ReadAllBytes(biospath);
+								byte[] HighScoreBIOS = File.ReadAllBytes("C:\\Repos\\7800highscore.bin");
+								Atari7800 a78 = new Atari7800(game, rom.RomData, BIOS7800, HighScoreBIOS);
+								nextEmulator = a78;
 								break;
 						}
 					}
