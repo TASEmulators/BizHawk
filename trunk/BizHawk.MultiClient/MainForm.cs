@@ -1573,10 +1573,15 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "A78":
-								string biospath = Global.Config.PathAtari7800NTSCBIOS; //TODO
-								byte[] BIOS7800 = File.ReadAllBytes(biospath);
-								byte[] HighScoreBIOS = File.ReadAllBytes("C:\\Repos\\7800highscore.bin");
-								Atari7800 a78 = new Atari7800(game, rom.RomData, BIOS7800, HighScoreBIOS);
+								string ntsc_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800NTSCBIOS, "A78");
+								string pal_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800PALBIOS, "A78"); 
+								string hsbiospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800HighScoreBIOS, "A78");
+								//7800TODO: pass in PAL BIOS path as well now and let the core decide which to use
+								byte[] NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
+								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
+								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);
+								
+								Atari7800 a78 = new Atari7800(game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS);
 								nextEmulator = a78;
 								break;
 						}

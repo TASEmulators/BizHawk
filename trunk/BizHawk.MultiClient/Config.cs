@@ -155,7 +155,9 @@ namespace BizHawk.MultiClient
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
 		public string PathFDSBios = Path.Combine(".", "disksys.rom");
-		public string PathAtari7800NTSCBIOS = Path.Combine("C:\\Repos", "7800NTSCBIOS.bin");
+		public string PathAtari7800NTSCBIOS = Path.Combine(".", "7800NTSCBIOS.bin");
+		public string PathAtari7800PALBIOS = Path.Combine(".", "7800PALBIOS.bin");
+		public string PathAtari7800HighScoreBIOS = Path.Combine(".", "7800highscore.bin");
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 

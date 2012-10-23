@@ -71,6 +71,7 @@ namespace BizHawk.MultiClient
 				case "INTV":
 					return Global.Config.BaseINTV;
 				case "A26":
+				case "A78": //7800TODO: make its own path settings
 					return Global.Config.BaseAtari;
 				case "NES":
 					return Global.Config.BaseNES;
