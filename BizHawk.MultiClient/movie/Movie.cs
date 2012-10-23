@@ -50,6 +50,21 @@ namespace BizHawk.MultiClient
 		
 		public bool Loaded { get; private set; }
 		public bool IsText { get; private set; }
+		public int LoopOffset = -1;
+		public bool Loop
+		{
+			get
+			{
+				if (LoopOffset >= 0)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
 
 		public int Rerecords
 		{
@@ -94,7 +109,14 @@ namespace BizHawk.MultiClient
 			{
 				if (Loaded)
 				{
-					return Log.Length;
+					if (Loop)
+					{
+						return 999999; //TODO: rethink this, maybe return a nullable int, and on the client side check for null and act accordingly
+					}
+					else
+					{
+						return Log.Length;
+					}
 				}
 				else
 				{
@@ -383,9 +405,21 @@ namespace BizHawk.MultiClient
 		public string GetInput(int frame)
 		{
 			lastlog = frame;
-			if (frame < Log.Length)
+			
+			int getframe;
+
+			if (Loop)
 			{
-				return Log.GetFrame(frame);
+				getframe = (frame % Log.Length);
+			}
+			else
+			{
+				getframe = frame;
+			}
+
+			if (getframe < Log.Length)
+			{
+				return Log.GetFrame(getframe);
 			}
 			else
 			{
@@ -797,6 +831,13 @@ namespace BizHawk.MultiClient
 				using (StreamWriter sw = new StreamWriter(file))
 				{
 					Header.WriteText(sw);
+
+					//TODO: clean this up
+					if (LoopOffset >= 0)
+					{
+						sw.WriteLine("LoopOffset " + LoopOffset.ToString());
+					}
+
 					Subtitles.WriteText(sw);
 					Log.WriteText(sw);
 				}
@@ -853,10 +894,23 @@ namespace BizHawk.MultiClient
 						if (str == "1")
 							StartsFromSavestate = true;
 					}
+					else if (str.Contains("LoopOffset"))
+					{
+						str = ParseHeader(str, "LoopOffset");
+						try
+						{
+							LoopOffset = int.Parse(str);
+						}
+						catch
+						{
+							//Do nothing
+						}
+					}
 
 					if (Header.AddHeaderFromLine(str))
 						continue;
 
+					
 					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
