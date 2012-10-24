@@ -16,8 +16,10 @@ namespace BizHawk
 			_islag = true;
 
 			//TODO
-			FrameBuffer fb = new FrameBuffer(0, 262); //TODO: 262 is NTSC
+			FrameBuffer fb = new FrameBuffer(262, 320); //TODO: 262 is NTSC
 			theMachine.ComputeNextFrame(fb);
+
+			
 			if (_islag)
 			{
 				LagCount++;
@@ -114,7 +116,7 @@ namespace BizHawk
 						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom)),
 						"TODO");
 
-			cart = new CartA2K(rom); //TODO: mapper selection system
+			cart = new Cart7848(rom); //TODO: mapper selection system
 			
 			int[] bob = new int[] { 0, 0, 0 };
 
@@ -159,7 +161,6 @@ namespace BizHawk
 			public void FillFrameBuffer() //TODO: don't recalculate consantly, fill this on frame advance instead
 			{
 				FrameBuffer fb = emu.theMachine.CreateFrameBuffer();
-				
 
 				for (int i = 0; i < 262; i++)
 				{
