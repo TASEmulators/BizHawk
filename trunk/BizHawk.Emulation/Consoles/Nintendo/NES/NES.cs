@@ -591,10 +591,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					origin = EDetectionOrigin.GameDB;
 					LoadWriteLine("Chose board from bizhawk gamedb: " + choice.board_type);
 					//gamedb entries that dont specify prg/chr sizes can infer it from the ines header
-					if (choice.prg_size == -1) choice.prg_size = iNesHeaderInfo.prg_size;
-					if (choice.chr_size == -1) choice.chr_size = iNesHeaderInfo.chr_size;
-					if (choice.vram_size == -1) choice.vram_size = iNesHeaderInfo.vram_size;
-					if (choice.wram_size == -1) choice.wram_size = iNesHeaderInfo.wram_size;
+					if (iNesHeaderInfo != null)
+					{
+						if (choice.prg_size == -1) choice.prg_size = iNesHeaderInfo.prg_size;
+						if (choice.chr_size == -1) choice.chr_size = iNesHeaderInfo.chr_size;
+						if (choice.vram_size == -1) choice.vram_size = iNesHeaderInfo.vram_size;
+						if (choice.wram_size == -1) choice.wram_size = iNesHeaderInfo.wram_size;
+					}
+					else if (unif != null)
+					{
+						if (choice.prg_size == -1) choice.prg_size = unif.GetCartInfo().prg_size;
+						if (choice.chr_size == -1) choice.chr_size = unif.GetCartInfo().chr_size;
+						// unif has no wram\vram sizes; hope the board impl can figure it out...
+						if (choice.vram_size == -1) choice.vram_size = 0;
+						if (choice.wram_size == -1) choice.wram_size = 0;
+					}
+
 				}
 			}
 			else
