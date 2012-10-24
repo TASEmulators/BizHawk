@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public bool frameComplete;
 		byte hsyncCnt = 0;
+		int capChargeStart = 0;
+		bool capCharging = false;
 
 		static byte CXP0 = 0x01;
 		static byte CXP1 = 0x02;
@@ -1014,6 +1016,19 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				return (byte)((((player0.collisions & CXP1) != 0) ? 0x80 : 0x00) | (((player0.missile.collisions & CXM1) != 0) ? 0x40 : 0x00));
 			}
+			else if (maskedAddr == 0x08) // INPT0
+			{
+				// Changing the hard coded value will change the paddle position. The range seems to be roughly 0-56000 according to values from stella
+				// 6105 roughly centers the paddle in Breakout
+				if (capCharging && core.cpu.TotalExecutedCycles - capChargeStart >= 6105)
+				{
+					return 0x80;
+				}
+				else
+				{
+					return 0x00;
+				}
+			}
 			else if (maskedAddr == 0x0C) // INPT4
 			{
 				return (byte)((core.ReadControls1() & 0x08) != 0 ? 0x80 : 0x00);
@@ -1057,6 +1072,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x01) // VBLANK
 			{
 				vblankEnabled = (value & 0x02) != 0;
+				capCharging = (value & 0x80) == 0;
+				if ((value & 0x80) == 0)
+				{
+					capChargeStart = core.cpu.TotalExecutedCycles;
+				}
 			}
 			else if (maskedAddr == 0x02) // WSYNC
 			{
