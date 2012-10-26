@@ -1052,7 +1052,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					// Frame is complete, output to buffer
 					vsyncEnabled = true;
 				}
-				else
+				else if (vsyncEnabled)
 				{
 					// When VSYNC is disabled, this will be the first line of the new frame
 
