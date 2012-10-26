@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WriteEXP(int addr, byte value)
 		{
-			Console.WriteLine("W{0:x4}:{1:x2} {2:x4}", addr + 0x4000, value, NES.cpu.PC);
+			//Console.WriteLine("W{0:x4}:{1:x2} {2:x4}", addr + 0x4000, value, NES.cpu.PC);
 
 			if (addr >= 0x0040)
 			{
@@ -177,8 +177,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 			}
 			diskirq = diskdrive.irq;
-			if (addr != 0x0032)
-				Console.WriteLine("R{0:x4}:{1:x2} {2:x4}", addr + 0x4000, ret, NES.cpu.PC);
+			//if (addr != 0x0032)
+			//	Console.WriteLine("R{0:x4}:{1:x2} {2:x4}", addr + 0x4000, ret, NES.cpu.PC);
 			return ret;
 		}
 

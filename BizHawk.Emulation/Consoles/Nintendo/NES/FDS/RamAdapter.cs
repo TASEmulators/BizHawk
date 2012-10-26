@@ -96,6 +96,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			disk = null;
 			state = RamAdapterState.IDLE;
 			SetCycles();
+			Console.WriteLine("FDS: Disk ejected");
 		}
 
 		public void Insert(byte[] side, int bitlength, bool writeprotect)
@@ -106,6 +107,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			this.writeprotect = writeprotect;
 			state = RamAdapterState.INSERTING;
 			SetCycles();
+			Console.WriteLine("FDS: Disk Inserted");
 		}
 
 		/// <summary>
@@ -177,11 +179,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		// control reg
 		public void Write4025(byte value)
 		{
-			
-
 			if ((value & 1) != 0) // start motor
 			{
-				if (state == RamAdapterState.IDLE)
+				if (state == RamAdapterState.IDLE && disk != null) // no spinup when no disk
 				{
 					state = RamAdapterState.SPINUP;
 					SetCycles();
@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			bytetransferflag = false;
 			irq = false; //??
-			Console.WriteLine("{0:x2} @{1}", readreglatch, lastreaddiskpos);
+			//Console.WriteLine("{0:x2} @{1}", readreglatch, lastreaddiskpos);
 			// it seems very hard to avoid this situation, hence the switch to latched shift regs
 			//if (readregpos != 0)
 			//{

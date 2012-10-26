@@ -262,6 +262,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ret;
 		}
 
+		Sound.Utilities.DCFilter dc = new Sound.Utilities.DCFilter(4096);
+
 		public void ApplyCustomAudio(short[] samples)
 		{
 			for (int i = 0; i < samples.Length; i += 2)
@@ -282,6 +284,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			//Console.WriteLine("##{0}##", samplebuffpos);
 			samplebuffpos = 0;
+
+			dc.PushThroughSamples(samples, samples.Length);
 		}
 	}
 }
