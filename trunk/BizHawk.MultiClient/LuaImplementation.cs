@@ -511,6 +511,7 @@ namespace BizHawk.MultiClient
 		                                              		"opencheats",
 															"screenwidth",
 															"screenheight",
+															"screenshot",
 		                                              	};
 
 		public static string[] FormsFunctions = new string[]
@@ -2041,6 +2042,18 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Client library
 		//----------------------------------------------------
+		public void client_screenshot(object path = null)
+		{
+			if (path == null)
+			{
+				Global.MainForm.TakeScreenshot();
+			}
+			else
+			{
+				Global.MainForm.TakeScreenshot(path.ToString());
+			}
+		}
+
 		public int client_screenwidth()
 		{
 			return Global.RenderPanel.NativeSize.Width;
