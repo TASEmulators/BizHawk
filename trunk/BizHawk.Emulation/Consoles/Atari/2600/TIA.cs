@@ -1158,15 +1158,15 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x12) // RESM0
 			{
-				player0.missile.hPosCnt = 160 - 4;
+				player0.missile.hPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
 			}
 			else if (maskedAddr == 0x13) // RESM1
 			{
-				player1.missile.hPosCnt = 160 - 4;
+				player1.missile.hPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
 			}
 			else if (maskedAddr == 0x14) // RESBL
 			{
-				ball.hPosCnt = 160-4;
+				ball.hPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{
