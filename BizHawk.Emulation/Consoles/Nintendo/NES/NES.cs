@@ -406,6 +406,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				domains.Add(WRAM);
 			}
 
+			if (board is FDS)
+			{
+				domains.Add((board as FDS).GetDiskPeeker());
+			}
+
 			memoryDomains = domains.AsReadOnly();
 		}
 

@@ -122,6 +122,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//File.WriteAllBytes("fdsdebug.bin", realside);
 		}
 
+		/// <summary>
+		/// memorydomain debugging
+		/// </summary>
+		public int NumBytes { get { return 65500; } }
+		/// <summary>
+		/// memorydomain debugging
+		/// </summary>
+		/// <param name="addr"></param>
+		/// <returns></returns>
+		public byte PeekData(int addr)
+		{
+			if (disk != null && disk.Length > addr)
+				return disk[addr];
+			else
+				return 0xff;
+		}
+
 		// all timings are in terms of PPU cycles (@5.37mhz)
 		int cycleswaiting = 0;
 
@@ -142,22 +159,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SetCycles()
 		{
+			// these are mostly guesses
 			switch (state)
 			{
-				case RamAdapterState.RUNNING:
-					cycleswaiting = 56; //82;
+				case RamAdapterState.RUNNING: // matches of-quoted 96khz data transfer rate
+					// time to read/write one bit
+					cycleswaiting = 56;
 					break;
-				case RamAdapterState.INSERTING:
-					cycleswaiting = 5000000;
+				case RamAdapterState.INSERTING: // 298ms
+					// time for the disk drive to engage on disk after inserting
+					cycleswaiting = 1600000;
 					break;
-				case RamAdapterState.SPINUP:
-					cycleswaiting = 2000;
+				case RamAdapterState.SPINUP: // 199ms
+					// time for motor to spinup and start
+					cycleswaiting = 1070000;
 					break;
-				case RamAdapterState.IDLE:
+				case RamAdapterState.IDLE: // irrelevant
 					cycleswaiting = 50000;
 					break;
-				case RamAdapterState.RESET:
-					cycleswaiting = 50000;
+				case RamAdapterState.RESET: // 1200ms
+					// time for motor to re-park after reaching end of drive
+					cycleswaiting = 6443100;
 					break;
 			}
 		}
@@ -166,7 +188,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public void Write4024(byte value)
 		{
 			bytetransferflag = false;
-			//irq = false; //??
+			writereglatch = value;
 		}
 
 		byte cached4025;
@@ -190,7 +212,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if ((value & 2) != 0)
 				transferreset = true;
 			if ((cached4025 & 0x40) == 0 && (value & 0x40) != 0)
+			{
 				lookingforendofgap = true;
+
+				if ((value & 4) == 0)
+				{
+					// write mode: reload and go
+					writeregpos = 0;
+					writereg = writereglatch;
+					bytetransferflag = true;
+					// irq?
+					Console.WriteLine("FDS: Startwrite @{0} Reload {1:x2}", diskpos, writereglatch);
+				}
+			}
+
+
 			irq = false; // ??
 
 			cached4025 = value;
@@ -240,6 +276,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret &= unchecked((byte)~0x01);
 			if (!transferreset && (state == RamAdapterState.RUNNING || state == RamAdapterState.IDLE))
 				ret &= unchecked((byte)~0x02);
+			if (disk != null && state != RamAdapterState.INSERTING && !writeprotect)
+				ret &= unchecked((byte)~0x04);
 
 			return ret;
 		}
@@ -345,7 +383,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						if ((cached4025 & 0x80) != 0)
 							irq = true;
 						lastreaddiskpos = diskpos;
-						//Console.WriteLine("{0:x2} {1} @{2}", readreg, (cached4025 & 0x80) != 0 ? "RAISE" : "    ", diskpos);
+						Console.WriteLine("{0:x2} {1} @{2}", readreg, (cached4025 & 0x80) != 0 ? "RAISE" : "    ", diskpos);
 						readreglatch = readreg;
 					//}
 					//else // when in CRC, don't send results back to user
@@ -362,6 +400,52 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void Write()
 		{
+			if (writeprotect)
+			{
+				diskpos++;
+				return;
+			}
+
+			bool bittowrite = false;
+
+			// the variable is named for its function in read mode; in write mode, when not set,
+			// write an endless stream of zeroes.
+			if (!lookingforendofgap)
+			{
+				bittowrite = false;
+			}
+			else
+			{
+				bittowrite = (writereg & (1 << writeregpos)) != 0;
+				writeregpos++;
+				if (writeregpos == 8)
+				{
+					writeregpos = 0;
+					writereg = writereglatch;
+					bytetransferflag = true;
+					if ((cached4025 & 0x80) != 0)
+						irq = true;
+					Console.WriteLine("FDS: Write @{0} Reload {1:x2}", diskpos + 1, writereglatch);
+
+
+					// it seems that after a successful CRC, the writereg is reset to 0 value.  this is needed?
+					// TODO: actually write the CRC (2 bytes)
+					if ((cached4025 & 0x10) != 0)
+					{
+						Console.WriteLine("FDS: write clear CRC", readreg, diskpos);
+						cached4025 &= unchecked((byte)~0x10); // clear CRC reading
+						//writereg = 0; // don't do this
+						writereglatch = 0; //??
+					}
+
+				}
+			}
+
+			var tmp = disk[diskpos >> 3];
+			tmp &= unchecked((byte)~(1 << (diskpos & 7)));
+			if (bittowrite)
+				tmp |= (byte)(1 << (diskpos & 7));
+			disk[diskpos >> 3] = tmp;
 			diskpos++;
 		}
 
