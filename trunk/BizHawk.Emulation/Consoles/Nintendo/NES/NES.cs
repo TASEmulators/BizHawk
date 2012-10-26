@@ -25,6 +25,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsbios);
+			ControllerDefinition = new ControllerDefinition(NESController);
+			if (board is FDS)
+			{
+				var b = board as FDS;
+				ControllerDefinition.BoolButtons.Add("FDS Eject");
+				for (int i = 0; i < b.NumSides; i++)
+					ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
+			}
 		}
 
 		private NES()
@@ -222,7 +230,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			};
 
-		public ControllerDefinition ControllerDefinition { get { return NESController; } }
+		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		IController controller;
 		public IController Controller

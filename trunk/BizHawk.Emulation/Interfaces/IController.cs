@@ -7,6 +7,19 @@ namespace BizHawk
 		public string Name;
 		public List<string> BoolButtons = new List<string>();
 		public List<string> FloatControls = new List<string>();
+		/// <summary>
+		/// copy
+		/// </summary>
+		/// <param name="source"></param>
+		public ControllerDefinition(ControllerDefinition source)
+		{
+			this.Name = source.Name;
+			foreach (var s in source.BoolButtons)
+				this.BoolButtons.Add(s);
+			foreach (var s in source.FloatControls)
+				this.FloatControls.Add(s);
+		}
+		public ControllerDefinition() { }
 	}
 
 	public interface IController

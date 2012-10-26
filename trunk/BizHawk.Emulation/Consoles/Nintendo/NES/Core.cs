@@ -148,6 +148,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//if (resetSignal)
 				//Controller.UnpressButton("Reset");   TODO fix this
 			resetSignal = Controller["Reset"];
+
+			if (board is FDS)
+			{
+				var b = board as FDS;
+				if (Controller["FDS Eject"])
+					b.Eject();
+				for (int i = 0; i < b.NumSides; i++)
+					if (Controller["FDS Insert " + i])
+						b.InsertSide(i);
+			}
+
 			ppu.FrameAdvance();
 			if (lagged)
 			{
