@@ -31,6 +31,7 @@ namespace BizHawk.MultiClient
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
+		int stopOnFrame = 0;
 
 		public bool Engaged; //When engaged the Client will listen to TAStudio for input
 		List<VirtualPad> Pads = new List<VirtualPad>();
@@ -103,11 +104,32 @@ namespace BizHawk.MultiClient
 							Pads[2].SetButtons(str.Substring(21, 8));
 							Pads[3].SetButtons(str.Substring(30, 8));
 							break;
+						case "TI83":
+							Pads[0].SetButtons(str.Substring(2,50));
+							break;
+						case "SNES":
+							Pads[0].SetButtons(str.Substring(3, 12));
+							Pads[1].SetButtons(str.Substring(16, 12));
+							Pads[2].SetButtons(str.Substring(29, 12));
+							Pads[3].SetButtons(str.Substring(42, 12));
+							break;
+						case "GEN":
+							Pads[0].SetButtons(str.Substring(3, 8));
+							Pads[1].SetButtons(str.Substring(12, 8));
+							break;
+						case "GB":
+							Pads[0].SetButtons(str.Substring(3,8));
+							break;
 						default:
 							break;
 					}
 				}
 				TASView.BlazingFast = false;
+			}
+
+			if (Global.Emulator.Frame < this.stopOnFrame)
+			{
+				Global.MainForm.PressFrameAdvance = true;
 			}
 		}
 
@@ -140,7 +162,7 @@ namespace BizHawk.MultiClient
 			{
 				color = Color.LightGreen;
 			}
-			else if (index == Global.Emulator.Frame)
+			if (index == Global.Emulator.Frame)
 			{
 				color = Color.LightBlue;
 			}
@@ -297,11 +319,11 @@ namespace BizHawk.MultiClient
 					snespad4.Controller = "P4";
 					VirtualPadSNESControl snescontrolpad = new VirtualPadSNESControl();
 					snescontrolpad.Location = new Point(8, 170);
-					Pads.Add(snescontrolpad);
 					Pads.Add(snespad1);
 					Pads.Add(snespad2);
 					Pads.Add(snespad3);
 					Pads.Add(snespad4);
+					Pads.Add(snescontrolpad);
 					ControllerBox.Controls.Add(Pads[0]);
 					ControllerBox.Controls.Add(Pads[1]);
 					ControllerBox.Controls.Add(Pads[2]);
@@ -411,6 +433,7 @@ namespace BizHawk.MultiClient
 
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
+			this.stopOnFrame = 0;
 			if (Global.MovieSession.Movie.IsFinished || !Global.MovieSession.Movie.IsActive)
 			{
 				Global.MainForm.Rewind(1);
@@ -595,7 +618,17 @@ namespace BizHawk.MultiClient
 
 		private void TASView_DoubleClick(object sender, EventArgs e)
 		{
-			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
+			if (TASView.selectedItem <= Global.Emulator.Frame)
+			{
+				this.stopOnFrame = 0;
+				Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
+			}
+			else
+			{
+				this.stopOnFrame = TASView.selectedItem;
+				Global.MainForm.PressFrameAdvance = true;
+			}
+
 			UpdateValues();
 		}
 
@@ -634,6 +667,8 @@ namespace BizHawk.MultiClient
 			//if ((Control.MouseButtons & MouseButtons.Middle) > 0) //adelikat: TODO: right-click + mouse wheel won't work because in this dialog, right-click freezes emulation in the main window.  Why? Hex Editor doesn't do this for instance
 			if ((Control.ModifierKeys & Keys.Control) > 0)
 			{
+				this.stopOnFrame = 0;
+
 				if (e.Delta > 0) //Scroll up
 				{
 					Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
