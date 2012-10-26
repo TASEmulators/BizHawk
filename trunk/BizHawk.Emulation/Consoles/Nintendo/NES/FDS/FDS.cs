@@ -67,7 +67,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			byte[] buf = new byte[65500];
 			Buffer.BlockCopy(diskimage, 16 + side * 65500, buf, 0, 65500);
-			diskdrive.InsertBrokenImage(buf, true);
+			diskdrive.InsertBrokenImage(buf, false /*true*/);
+		}
+
+		public MemoryDomain GetDiskPeeker()
+		{
+			return new MemoryDomain("FDS SIDE", diskdrive.NumBytes, Endian.Little, diskdrive.PeekData, null);
 		}
 
 		void SetIRQ()
@@ -91,7 +96,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WriteEXP(int addr, byte value)
 		{
-			//Console.WriteLine("W{0:x4}:{1:x2} {2:x4}", addr + 0x4000, value, NES.cpu.PC);
+			//if (addr == 0x0025)
+			//	Console.WriteLine("W{0:x4}:{1:x2} {2:x4}", addr + 0x4000, value, NES.cpu.PC);
 
 			if (addr >= 0x0040)
 			{
