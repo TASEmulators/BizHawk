@@ -313,8 +313,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if (state == RamAdapterState.IDLE && disk != null) // no spinup when no disk
 				{
-					state = RamAdapterState.SPINUP;
-					SetCycles();
+					// this isn't right, despite the fact that without it some games seem to cycle the disk needlessly??
+					//if ((cached4025 & 1) != 0)
+					//	Console.WriteLine("FDS: Ignoring spurious spinup");
+					//else
+					//{
+						state = RamAdapterState.SPINUP;
+						SetCycles();
+					//}
 				}
 			}
 			if ((value & 2) != 0)
