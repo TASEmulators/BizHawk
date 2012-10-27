@@ -512,6 +512,8 @@ namespace BizHawk.MultiClient
 															"screenwidth",
 															"screenheight",
 															"screenshot",
+															"screenshottoclipboard",
+															"setscreenshotosd",
 		                                              	};
 
 		public static string[] FormsFunctions = new string[]
@@ -2052,6 +2054,16 @@ namespace BizHawk.MultiClient
 			{
 				Global.MainForm.TakeScreenshot(path.ToString());
 			}
+		}
+
+		public void client_screenshottoclipboard()
+		{
+			Global.MainForm.TakeScreenshotToClipboard();
+		}
+
+		public void client_setscreenshotosd(bool value)
+		{
+			Global.Config.Screenshot_CaptureOSD = value;
 		}
 
 		public int client_screenwidth()

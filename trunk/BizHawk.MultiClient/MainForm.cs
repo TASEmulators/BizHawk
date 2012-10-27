@@ -2469,7 +2469,7 @@ namespace BizHawk.MultiClient
 			return image;
 		}
 
-		void TakeScreenshotToClipboard()
+		public void TakeScreenshotToClipboard()
 		{
 			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
