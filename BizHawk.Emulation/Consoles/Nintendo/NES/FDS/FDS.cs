@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
@@ -22,7 +23,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		/// <summary>
 		/// .fds disk image
 		/// </summary>
-		public byte[] diskimage;
+		byte[] diskimage;
+
+		/// <summary>
+		/// should only be called once, before emulation begins
+		/// </summary>
+		/// <param name="diskimage"></param>
+		public void SetDiskImage(byte[] diskimage)
+		{
+			this.diskimage = diskimage;
+			diskdiffs = new byte[NumSides][];
+		}
+
 
 		RamAdapter diskdrive;
 		FDSAudio audio;
@@ -50,6 +62,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return true;
 		}
 
+		// with a bit of change, these methods could work with a better disk format
+
 		public int NumSides
 		{
 			get
@@ -60,7 +74,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void Eject()
 		{
-			diskdrive.Eject();
+			if (currentside != null)
+			{
+				diskdiffs[(int)currentside] = diskdrive.MakeDiff();
+				diskdrive.Eject();
+				currentside = null;
+			}
 		}
 
 		public void InsertSide(int side)
@@ -68,7 +87,78 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte[] buf = new byte[65500];
 			Buffer.BlockCopy(diskimage, 16 + side * 65500, buf, 0, 65500);
 			diskdrive.InsertBrokenImage(buf, false /*true*/);
+			if (diskdiffs[side] != null)
+				diskdrive.ApplyDiff(diskdiffs[side]);
+			currentside = side;
 		}
+
+		int? currentside = null;
+
+		byte[][] diskdiffs;
+
+		public byte[] ReadSaveRam()
+		{
+			// update diff for currently loaded disk first!
+			if (currentside != null)
+				diskdiffs[(int)currentside] = diskdrive.MakeDiff();
+			MemoryStream ms = new MemoryStream();
+			BinaryWriter bw = new BinaryWriter(ms);
+			bw.Write(Encoding.ASCII.GetBytes("FDSS"));
+			bw.Write(NumSides);
+			for (int i = 0; i < NumSides; i++)
+			{
+				if (diskdiffs[i] != null)
+				{
+					bw.Write(diskdiffs[i].Length);
+					bw.Write(diskdiffs[i]);
+				}
+				else
+				{
+					bw.Write((int)0);
+				}
+			}
+			bw.Close();
+			return ms.ToArray();
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			// it's strange to modify a disk that's in the process of being read.
+			// but in fact, StoreSaveRam() is only called once right at startup, so this is no big deal
+			//if (currentside != null)
+			//	throw new Exception("FDS Saveram: Can't load when a disk is active!");
+			MemoryStream ms = new MemoryStream(data, false);
+			BinaryReader br = new BinaryReader(ms);
+			byte[] cmp = Encoding.ASCII.GetBytes("FDSS");
+			byte[] tmp = br.ReadBytes(cmp.Length);
+			if (!cmp.SequenceEqual(tmp))
+				throw new Exception("FDS Saveram: bad header");
+			int n = br.ReadInt32();
+			if (n != NumSides)
+				throw new Exception("FDS Saveram: wrong number of sides");
+			for (int i = 0; i < NumSides; i++)
+			{
+				int l = br.ReadInt32();
+				if (l > 0)
+					diskdiffs[i] = br.ReadBytes(l);
+				else
+					diskdiffs[i] = null;
+			}
+			if (currentside != null && diskdiffs[(int)currentside] != null)
+				diskdrive.ApplyDiff(diskdiffs[(int)currentside]);
+		}
+
+		public void ClearSaveRam()
+		{
+			if (currentside != null)
+				throw new Exception("FDS Saveram: Can't clear when a disk is active!");
+			for (int i = 0; i < diskdiffs.Length; i++)
+				diskdiffs[i] = null;
+		}
+
+		public override byte[] SaveRam
+		{ get { throw new Exception("FDS Saveram: Must access with method api!"); } }
+
 
 		public MemoryDomain GetDiskPeeker()
 		{
