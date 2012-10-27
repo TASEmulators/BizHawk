@@ -327,12 +327,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public byte[] ReadSaveRam()
 		{
+			if (board is FDS)
+				return (board as FDS).ReadSaveRam();
+
 			if (board == null || board.SaveRam == null)
 				return null;
 			return (byte[])board.SaveRam.Clone();	
 		}
 		public void StoreSaveRam(byte[] data)
 		{
+			if (board is FDS)
+			{
+				(board as FDS).StoreSaveRam(data);
+				return;
+			}
+
 			if (board == null || board.SaveRam == null)
 				return;
 			Array.Copy(data, board.SaveRam, data.Length);
@@ -340,6 +349,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void ClearSaveRam()
 		{
+			if (board is FDS)
+			{
+				(board as FDS).ClearSaveRam();
+				return;
+			}
+
 			if (board == null || board.SaveRam == null)
 				return;
 			for (int i = 0; i < board.SaveRam.Length; i++)
@@ -348,7 +363,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public bool SaveRamModified
 		{
-			get { if (board == null) return false; if (board.SaveRam == null) return false; return true; }
+			get
+			{
+				if (board == null) return false;
+				if (board is FDS) return true;
+				if (board.SaveRam == null) return false;
+				return true;
+			}
 			set { }
 		}
 
@@ -374,7 +395,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			domains.Add(CIRAMdomain);
 			domains.Add(OAMdoman);
 
-			if (board.SaveRam != null)
+			if (!(board is FDS) && board.SaveRam != null)
 			{
 				var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, Endian.Little,
 					addr => board.SaveRam[addr], (addr, value) => board.SaveRam[addr] = value);
@@ -483,7 +504,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart = new CartInfo();
 				var fdsboard = new FDS();
 				fdsboard.biosrom = fdsbios;
-				fdsboard.diskimage = rom;
+				fdsboard.SetDiskImage(rom);
 				fdsboard.Create(this);
 				fdsboard.Configure(origin);
 
