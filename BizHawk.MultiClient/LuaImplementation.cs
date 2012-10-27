@@ -1863,7 +1863,7 @@ namespace BizHawk.MultiClient
 			if (x < 0 || x > 9)
 				return;
 
-			Global.MainForm.LoadState("QuickLoad" + x.ToString(), true);
+			Global.MainForm.LoadState("QuickSave" + x.ToString(), true);
 		}
 
 		public void savestate_save(object lua_input)
