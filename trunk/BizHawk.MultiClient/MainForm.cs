@@ -1792,7 +1792,7 @@ namespace BizHawk.MultiClient
 					reader.Read(sram, 0, sram.Length);
 				Global.Emulator.StoreSaveRam(sram);
 			}
-			catch { }
+			catch (IOException) { }
 		}
 
 		private void CloseGame()
