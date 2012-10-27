@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				// worst imaginable resampling
 				int pos = i * samplebuffpos / samples.Length;
-				int samp = samplebuff[pos] * 20 - 20160;
+				int samp = samplebuff[pos] * 6 - 12096;
 				samp += samples[i];
 				if (samp > 32767)
 					samples[i] = 32767;
