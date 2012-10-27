@@ -15,10 +15,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			for (int i = 0; i < pregap - 1; i++)
 				dest.WriteByte(0);
+			ushort crc = 0;
 			dest.WriteByte(0x80); // end of gap marker
-			dest.Write(data, 0, data.Length);
-			dest.WriteByte(0xff); // CRC (todo)
-			dest.WriteByte(0xff); 
+			crc = CCITT_8(crc, 0x80);
+			for (int i = 0; i < data.Length; i++)
+			{
+				dest.WriteByte(data[i]);
+				crc = CCITT_8(crc, data[i]);
+			}
+			dest.WriteByte((byte)(crc & 0xff));
+			dest.WriteByte((byte)(crc >> 8)); 
 		}
 
 		static byte[] FixFDSSide(byte[] inputdisk)
@@ -79,6 +85,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte[] tmp = ret.GetBuffer(); // don't care too much about actual "length" since extra is all 0
 			Array.Resize(ref tmp, 65500); // might truncate
 			return tmp;
+		}
+
+		static ushort CCITT(ushort crc, int bit)
+		{
+			int bitc = crc & 1;
+			crc >>= 1;
+			if ((bitc ^ bit) != 0)
+				crc ^= 0x8408;
+			return crc;
+		}
+
+		static ushort CCITT_8(ushort crc, byte b)
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				int bit = (b >> i) & 1;
+				crc = CCITT(crc, bit);
+			}
+			return crc;
 		}
 
 
@@ -189,6 +214,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			bytetransferflag = false;
 			writereglatch = value;
+			//Console.WriteLine("!!4024:{0:x2}", value);
 		}
 
 		byte cached4025;
@@ -197,6 +223,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		/// <summary>true if 4025.1 is set to true</summary>
 		bool transferreset = false;
+
+		ushort crc = 0;
 
 		// control reg
 		public void Write4025(byte value)
@@ -223,6 +251,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					bytetransferflag = true;
 					// irq?
 					Console.WriteLine("FDS: Startwrite @{0} Reload {1:x2}", diskpos, writereglatch);
+					crc = 0;
+					writecomputecrc = true;
 				}
 			}
 
@@ -230,6 +260,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			irq = false; // ??
 
 			cached4025 = value;
+			if ((cached4025 & 4) == 0)
+				if ((cached4025 & 0x10) != 0)
+					Console.WriteLine("FDS: Starting CRC");
 		}
 
 		// some bits come from outside RamAdapter
@@ -238,7 +271,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte ret = 0;
 			if (bytetransferflag)
 				ret |= 0x02;
-			// bit 4 always 0: CRC not implemented
+			if (crc != 0)
+				ret |= 0x10;
 			if (diskpos == disksize)
 				ret |= 0x40; // end of disk
 			if (disk != null && !writeprotect)
@@ -346,8 +380,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		bool lookingforendofgap = false;
 
-		/// <summary>number of CRC bytes read/written</summary>
-		//int numcrc;
+		/// <summary>
+		/// true if data being written to disk is currently being computed in CRC
+		/// </summary>
+		bool writecomputecrc; // this has to be latched because the "flush CRC" call comes in the middle of a byte, of course
 
 		void Read()
 		{
@@ -363,6 +399,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 					lookingforendofgap = false;//cached4025 &= unchecked((byte)~0x40); // stop looking for end of gap
 					readregpos = 0;
+					crc = 0;
+					// the first '1' is included in the CRC
+					crc = CCITT(crc, 1);
 					//bytetransferflag = true;
 					//if ((cached4025 & 0x80) != 0)
 					//	irq = true;
@@ -371,29 +410,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else // reading actual data
 			{
+				crc = CCITT(crc, bit);
 				readreg &= (byte)~(1 << readregpos);
 				readreg |= (byte)(bit << readregpos);
 				readregpos++;
 				if (readregpos == 8)
 				{
 					readregpos = 0;
-					//if ((cached4025 & 0x10) == 0) // not in CRC
-					//{
-						bytetransferflag = true;
-						if ((cached4025 & 0x80) != 0)
-							irq = true;
-						lastreaddiskpos = diskpos;
-						Console.WriteLine("{0:x2} {1} @{2}", readreg, (cached4025 & 0x80) != 0 ? "RAISE" : "    ", diskpos);
-						readreglatch = readreg;
-					//}
-					//else // when in CRC, don't send results back to user
-					//{
-						if ((cached4025 & 0x10) != 0)
-						{
-							Console.WriteLine("FDS: crc byte {0:x2} @{1}", readreg, diskpos);
-							cached4025 &= unchecked((byte)~0x10); // clear CRC reading
-						}
-					//}
+
+					bytetransferflag = true;
+					if ((cached4025 & 0x80) != 0)
+						irq = true;
+					lastreaddiskpos = diskpos;
+					//Console.WriteLine("{0:x2} {1} @{2}", readreg, (cached4025 & 0x80) != 0 ? "RAISE" : "    ", diskpos);
+					readreglatch = readreg;
+
+					if ((cached4025 & 0x10) != 0)
+					{
+						Console.WriteLine("FDS: crc byte {0:x2} @{1}", readreg, diskpos);
+						cached4025 &= unchecked((byte)~0x10); // clear CRC reading.  no real effect other than to silence debug??
+						Console.WriteLine("FDS: Final CRC {0:x4}", crc);
+					}
 				}
 			}
 		}
@@ -417,6 +454,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else
 			{
 				bittowrite = (writereg & (1 << writeregpos)) != 0;
+				//if ((cached4025 & 0x10) == 0)
+				if (writecomputecrc)
+					crc = CCITT(crc, bittowrite ? 1 : 0);
 				writeregpos++;
 				if (writeregpos == 8)
 				{
@@ -427,15 +467,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						irq = true;
 					Console.WriteLine("FDS: Write @{0} Reload {1:x2}", diskpos + 1, writereglatch);
 
-
-					// it seems that after a successful CRC, the writereg is reset to 0 value.  this is needed?
-					// TODO: actually write the CRC (2 bytes)
 					if ((cached4025 & 0x10) != 0)
 					{
 						Console.WriteLine("FDS: write clear CRC", readreg, diskpos);
-						cached4025 &= unchecked((byte)~0x10); // clear CRC reading
-						//writereg = 0; // don't do this
-						writereglatch = 0; //??
+						
+						if (crc == 0)
+						{
+							cached4025 &= unchecked((byte)~0x10); // clear CRC reading
+							Console.WriteLine("FDS: write CRC commit finished");
+							// it seems that after a successful CRC, the writereglatch is reset to 0 value.  this is needed?
+							writereglatch = 0;
+						}
+
+						Console.WriteLine("{0:x4}", crc);
+						writereg = (byte)crc;
+						Console.WriteLine("{0:x2}", writereg);
+						crc >>= 8;
+						Console.WriteLine("{0:x4}", crc);
+						// loaded the first CRC byte to write, so stop computing CRC on data
+						writecomputecrc = false;
 					}
 
 				}
