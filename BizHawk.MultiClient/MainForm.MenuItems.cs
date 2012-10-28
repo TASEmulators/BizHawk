@@ -1020,6 +1020,7 @@ namespace BizHawk.MultiClient
 					cmiMakeMovieBackup.Visible = true;
 					cmiViewSubtitles.Visible = true;
 					cmiViewComments.Visible = true;
+					saveMovieToolStripMenuItem1.Visible = true;
 					toolStripSeparator_afterMovie.Visible = true;
 					if (ReadOnly == true)
 					{
@@ -1046,6 +1047,7 @@ namespace BizHawk.MultiClient
 					cmiViewComments.Visible = false;
 					toolStripSeparator_afterMovie.Visible = true;
 					cmiAddSubtitle.Visible = false;
+					saveMovieToolStripMenuItem1.Visible = false;
 				}
 
 				cmiUndoSavestate.Visible = true;
@@ -1251,6 +1253,7 @@ namespace BizHawk.MultiClient
 			playMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayMovieBinding;
 			stopMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.StopMovieBinding;
 			playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayBeginningBinding;
+			saveMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveMovieBinding;
 		}
 
 		private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)

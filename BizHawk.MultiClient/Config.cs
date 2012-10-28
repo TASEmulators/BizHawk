@@ -593,6 +593,7 @@ namespace BizHawk.MultiClient
 		public string ToggleSNESOBJ2Binding = "";
 		public string ToggleSNESOBJ3Binding = "";
 		public string ToggleSNESOBJ4Binding = "";
+		public string SaveMovieBinding = "";
 
 		// NES Sound settings
 		public bool NESEnableSquare1 = true;

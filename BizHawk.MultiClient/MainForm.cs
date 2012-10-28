@@ -602,7 +602,7 @@ namespace BizHawk.MultiClient
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
 				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4", "Reboot Core" }
+				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie" }
 		};
 
 		private void InitControls()
@@ -618,7 +618,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("SNES Toggle OBJ 2", Global.Config.ToggleSNESOBJ2Binding);
 			controls.BindMulti("SNES Toggle OBJ 3", Global.Config.ToggleSNESOBJ3Binding);
 			controls.BindMulti("SNES Toggle OBJ 4", Global.Config.ToggleSNESOBJ4Binding);
-
+			controls.BindMulti("Save Movie", Global.Config.SaveMovieBinding);
 			controls.BindMulti("IncreaseWindowSize", Global.Config.IncreaseWindowSize);
 			controls.BindMulti("DecreaseWindowSize", Global.Config.DecreaseWindowSize);
 			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
@@ -2022,7 +2022,9 @@ namespace BizHawk.MultiClient
 				case "SNES Toggle OBJ 4":
 					SNES_ToggleOBJ4();
 					break;
-
+				case "Save Movie":
+					SaveMovie();
+					break;
 				case "Clear Autohold":
 					ClearAutohold();
 					break;
@@ -4119,11 +4121,21 @@ namespace BizHawk.MultiClient
 
 		private void saveMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			SaveMovie();
+		}
+
+		private void SaveMovie()
+		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.WriteMovie();
 				Global.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
 			}
+		}
+
+		private void saveMovieToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			SaveMovie();
 		}
 	}
 }
