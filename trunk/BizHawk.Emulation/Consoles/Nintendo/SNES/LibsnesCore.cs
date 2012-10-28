@@ -360,6 +360,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				return "";
 			}
 
+			Console.WriteLine("Served libsnes request for firmware \"{0}\" with \"{1}\"", hint, test);
+
 			//return the path we built
 			return test;
 		}
