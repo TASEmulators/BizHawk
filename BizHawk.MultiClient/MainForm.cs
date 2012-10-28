@@ -1174,6 +1174,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "NES":
 					NESToolStripMenuItem.Visible = true;
+					NESFDSMenuControls();
 					break;
 				case "PCE":
 				case "PCECD":
@@ -1209,6 +1210,42 @@ namespace BizHawk.MultiClient
 					break;
 				default:
 					break;
+			}
+		}
+
+		void NESFDSMenuAdd(string name, string button, string msg)
+		{
+			fDSToolStripMenuItem.Visible = true;
+			fDSToolStripMenuItem.DropDownItems.Add(name, null, delegate(object sender, EventArgs e)
+			{
+				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
+				{
+					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+					{
+						Global.ClickyVirtualPadController.Click(button);
+						Global.OSD.AddMessage(msg);
+					}
+				}
+
+			}
+			);
+		}
+
+		void NESFDSMenuControls()
+		{
+
+			// ugly and hacky
+			fDSToolStripMenuItem.Visible = false;
+			fDSToolStripMenuItem.DropDownItems.Clear();
+			var ss = Global.Emulator.ControllerDefinition.BoolButtons;
+
+			if (ss.Contains("FDS Eject"))
+				NESFDSMenuAdd("Eject Disk", "FDS Eject", "FDS Disk Ejected.");
+			for (int i = 0; i < 16; i++)
+			{
+				string s = "FDS Insert " + i;
+				if (ss.Contains(s))
+					NESFDSMenuAdd("Insert Disk " + i, s, "FDS Disk " + i + " inserted.");
 			}
 		}
 
@@ -1267,7 +1304,9 @@ namespace BizHawk.MultiClient
 					Global.ActiveController = Global.NullControls;
 					break;
 			}
-
+			// allow propogating controls that are in the current controller definition but not in the prebaked one
+			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
+			Global.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);			
 			RewireInputChain();
 		}
 
