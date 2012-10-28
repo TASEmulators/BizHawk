@@ -4116,5 +4116,14 @@ namespace BizHawk.MultiClient
 		{
 
 		}
+
+		private void saveMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Global.MovieSession.Movie.WriteMovie();
+				Global.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
+			}
+		}
 	}
 }

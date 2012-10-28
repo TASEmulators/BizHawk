@@ -308,19 +308,36 @@ namespace BizHawk.MultiClient
 
 		public void WriteMovie()
 		{
-			if (!Loaded) return;
-			if (Filename == "") return;
+			if (!Loaded)
+			{
+				return;
+			}
+			else if (Filename == "")
+			{
+				return;
+			}
+			
 			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
 			if (IsText)
+			{
 				WriteText(Filename);
+			}
 			else
+			{
 				WriteBinary(Filename);
+			}
 		}
 
 		public void WriteBackup()
 		{
-			if (!Loaded) return;
-			if (Filename == "") return;
+			if (!Loaded)
+			{
+				return;
+			}
+			else if (Filename == "")
+			{
+				return;
+			}
 
 			string BackupName = Filename;
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
