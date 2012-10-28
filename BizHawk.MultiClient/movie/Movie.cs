@@ -410,7 +410,14 @@ namespace BizHawk.MultiClient
 
 			if (Loop)
 			{
-				getframe = (frame % Log.Length);
+				if (frame < Log.Length)
+				{
+					getframe = frame;
+				}
+				else
+				{
+					getframe = ((frame - LoopOffset) % (Log.Length - LoopOffset)) + LoopOffset;
+				}
 			}
 			else
 			{
@@ -894,7 +901,11 @@ namespace BizHawk.MultiClient
 						if (str == "1")
 							StartsFromSavestate = true;
 					}
-					else if (str.Contains("LoopOffset"))
+
+					if (Header.AddHeaderFromLine(str))
+						continue;
+
+					if (str.Contains("LoopOffset"))
 					{
 						str = ParseHeader(str, "LoopOffset");
 						try
@@ -906,12 +917,7 @@ namespace BizHawk.MultiClient
 							//Do nothing
 						}
 					}
-
-					if (Header.AddHeaderFromLine(str))
-						continue;
-
-					
-					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
 					}
