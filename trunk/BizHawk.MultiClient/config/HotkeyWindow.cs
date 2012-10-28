@@ -112,6 +112,7 @@ namespace BizHawk.MultiClient
 			IDW_SNES_ToggleOBJ2.SetBindings(Global.Config.ToggleSNESOBJ2Binding);
 			IDW_SNES_ToggleOBJ3.SetBindings(Global.Config.ToggleSNESOBJ3Binding);
 			IDW_SNES_ToggleOBJ4.SetBindings(Global.Config.ToggleSNESOBJ4Binding);
+			IDW_SaveMovie.SetBindings(Global.Config.SaveMovieBinding);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -214,6 +215,7 @@ namespace BizHawk.MultiClient
 			Global.Config.AVIRecordBinding = IDW_RecordAVI.Text;
 			Global.Config.AVIStopBinding = IDW_StopAVI.Text;
 			Global.Config.ToggleMenuBinding = IDW_ToggleMenu.Text;
+			Global.Config.SaveMovieBinding = IDW_SaveMovie.Text;
 
 			Global.Config.IncreaseWindowSize = IDW_IncreaseWindowSize.Text;
 			Global.Config.DecreaseWindowSize = IDW_DecreaseWindowSize.Text;

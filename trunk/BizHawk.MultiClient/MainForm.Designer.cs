@@ -86,6 +86,7 @@
 			this.stopMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.playFromBeginningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.importMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
 			this.bindSavestatesToMoviesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.automaticallyBackupMoviesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -295,7 +296,7 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -866,6 +867,14 @@
 			this.importMovieToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.importMovieToolStripMenuItem.Text = "Import Movies...";
 			this.importMovieToolStripMenuItem.Click += new System.EventHandler(this.importMovieToolStripMenuItem_Click);
+			// 
+			// saveMovieToolStripMenuItem
+			// 
+			this.saveMovieToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.saveMovieToolStripMenuItem.Name = "saveMovieToolStripMenuItem";
+			this.saveMovieToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+			this.saveMovieToolStripMenuItem.Text = "&Save Movie";
+			this.saveMovieToolStripMenuItem.Click += new System.EventHandler(this.saveMovieToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator14
 			// 
@@ -2398,6 +2407,7 @@
             this.cmiViewSubtitles,
             this.cmiAddSubtitle,
             this.cmiViewComments,
+            this.saveMovieToolStripMenuItem1,
             this.toolStripSeparator_afterMovie,
             this.cmiUndoSavestate,
             this.cmiSeparator20,
@@ -2406,7 +2416,7 @@
             this.cmiCloseRom,
             this.cmiShowMenu});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(204, 374);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(204, 418);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
@@ -2547,13 +2557,13 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
-			// saveMovieToolStripMenuItem
+			// saveMovieToolStripMenuItem1
 			// 
-			this.saveMovieToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
-			this.saveMovieToolStripMenuItem.Name = "saveMovieToolStripMenuItem";
-			this.saveMovieToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-			this.saveMovieToolStripMenuItem.Text = "&Save Movie";
-			this.saveMovieToolStripMenuItem.Click += new System.EventHandler(this.saveMovieToolStripMenuItem_Click);
+			this.saveMovieToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
+			this.saveMovieToolStripMenuItem1.Name = "saveMovieToolStripMenuItem1";
+			this.saveMovieToolStripMenuItem1.Size = new System.Drawing.Size(203, 22);
+			this.saveMovieToolStripMenuItem1.Text = "Save Movie";
+			this.saveMovieToolStripMenuItem1.Click += new System.EventHandler(this.saveMovieToolStripMenuItem1_Click);
 			// 
 			// MainForm
 			// 
@@ -2862,6 +2872,7 @@
 		private System.Windows.Forms.ToolStripMenuItem highlightActiveDisplayRegionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fDSToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveMovieToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveMovieToolStripMenuItem1;
     }
 }
 
