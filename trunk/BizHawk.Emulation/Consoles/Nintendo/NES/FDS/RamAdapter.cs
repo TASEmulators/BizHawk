@@ -128,8 +128,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("originaldisk", ref originaldisk, false);
-			ser.Sync("disk", ref disk, false);
+			ser.Sync("originaldisk", ref originaldisk, true);
+			ser.Sync("disk", ref disk, true);
 			ser.Sync("diskpos", ref diskpos);
 			ser.Sync("disksize", ref disksize);
 			ser.Sync("writeprotect", ref writeprotect);
