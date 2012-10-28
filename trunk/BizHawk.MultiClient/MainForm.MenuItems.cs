@@ -1233,11 +1233,13 @@ namespace BizHawk.MultiClient
 			{
 				stopMovieToolStripMenuItem.Enabled = true;
 				playFromBeginningToolStripMenuItem.Enabled = true;
+				saveMovieToolStripMenuItem.Enabled = true;
 			}
 			else
 			{
 				stopMovieToolStripMenuItem.Enabled = false;
 				playFromBeginningToolStripMenuItem.Enabled = false;
+				saveMovieToolStripMenuItem.Enabled = false;
 			}
 
 			readonlyToolStripMenuItem.Checked = ReadOnly;
