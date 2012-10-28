@@ -798,5 +798,10 @@ namespace BizHawk.MultiClient
 		{
 			BrowseFolder(NESFDSBiosBox, NESFDSBiosDescription.Text);
 		}
+
+		private void SNESFirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/SnesFirmwares.html");
+		}
 	}
 }
