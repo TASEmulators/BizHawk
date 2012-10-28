@@ -15,15 +15,73 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	[NES.INESBoardImplCancel]
 	public class FDS : NES.NESBoardBase
 	{
-		/// <summary>
-		/// fds bios image; should be 8192 bytes
-		/// </summary>
+		#region configuration
+		/// <summary>FDS bios image; should be 8192 bytes</summary>
 		public byte[] biosrom;
-
-		/// <summary>
-		/// .fds disk image
-		/// </summary>
+		/// <summary>.FDS disk image</summary>
 		byte[] diskimage;
+		#endregion
+
+		#region state
+		RamAdapter diskdrive;
+		FDSAudio audio;
+		/// <summary>0-2, how many ppu cycles since audio was last triggered</summary>
+		int audioclock;
+		/// <summary>currently loaded side of the .FDS image, 0 based</summary>
+		int? currentside = null;
+		/// <summary>collection of diffs (as provided by the RamAdapter) for each side in the .FDS image</summary>
+		byte[][] diskdiffs;
+
+		bool _diskirq;
+		bool _timerirq;
+
+		/// <summary>disk io ports enabled; see 4023.0</summary>
+		bool diskenable = false;
+		/// <summary>sound io ports enabled; see 4023.1</summary>
+		bool soundenable = false;
+		/// <summary>read on 4033, write on 4026</summary>
+		byte reg4026;
+
+		/// <summary>timer reload</summary>
+		int timerlatch;
+		/// <summary>timer current value</summary>
+		int timervalue;
+		/// <summary>4022.0,1</summary>
+		byte timerreg;
+		#endregion
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.BeginSection("FDS");
+			ser.BeginSection("RamAdapter");
+			diskdrive.SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("audio");
+			audio.SyncState(ser);
+			ser.EndSection();
+			ser.Sync("audioclock", ref audioclock);			
+			{
+				// silly little hack
+				int tmp = currentside != null ? (int)currentside : 1234567;
+				ser.Sync("currentside", ref tmp);
+				currentside = tmp == 1234567 ? null : (int?)tmp;
+			}
+			for (int i = 0; i < NumSides; i++)
+				ser.Sync("diskdiffs" + i, ref diskdiffs[i], false);
+			ser.Sync("_timerirq", ref _timerirq);
+			ser.Sync("_diskirq", ref _diskirq);
+			ser.Sync("diskenable", ref diskenable);
+			ser.Sync("soundenable", ref soundenable);
+			ser.Sync("reg4026", ref reg4026);
+			ser.Sync("timerlatch", ref timerlatch);
+			ser.Sync("timervalue", ref timervalue);
+			ser.Sync("timerreg", ref timerreg);
+			ser.EndSection();
+
+			SetIRQ();
+		}
+
 
 		/// <summary>
 		/// should only be called once, before emulation begins
@@ -34,11 +92,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			this.diskimage = diskimage;
 			diskdiffs = new byte[NumSides][];
 		}
-
-
-		RamAdapter diskdrive;
-		FDSAudio audio;
-		int audioclock;
 
 		// as we have [INESBoardImplCancel], this will only be called with an fds disk image
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -56,21 +109,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			audio = new FDSAudio();
 
 			InsertSide(0);
-
-			// set mirroring
-
+			// set mirroring??
 			return true;
 		}
 
 		// with a bit of change, these methods could work with a better disk format
 
-		public int NumSides
-		{
-			get
-			{
-				return diskimage[4];
-			}
-		}
+		public int NumSides { get { return diskimage[4]; } }
 
 		public void Eject()
 		{
@@ -84,6 +129,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void InsertSide(int side)
 		{
+			if (side >= NumSides)
+				throw new ArgumentOutOfRangeException();
 			byte[] buf = new byte[65500];
 			Buffer.BlockCopy(diskimage, 16 + side * 65500, buf, 0, 65500);
 			diskdrive.InsertBrokenImage(buf, false /*true*/);
@@ -91,10 +138,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				diskdrive.ApplyDiff(diskdiffs[side]);
 			currentside = side;
 		}
-
-		int? currentside = null;
-
-		byte[][] diskdiffs;
 
 		public byte[] ReadSaveRam()
 		{
@@ -169,20 +212,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			IRQSignal = _diskirq || _timerirq;
 		}
-		bool _diskirq;
-		bool _timerirq;
 		bool diskirq { get { return _diskirq; } set { _diskirq = value; SetIRQ(); } }
 		bool timerirq { get { return _timerirq; } set { _timerirq = value; SetIRQ(); } }
 
-		bool diskenable = false;
-		bool soundenable = false;
 
 		
-		int timerlatch;
-		int timervalue;
-		byte timerreg;
 
-		byte reg4026;
 
 		public override void WriteEXP(int addr, byte value)
 		{
@@ -268,7 +303,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					if (diskenable)
 					{
 						ret = reg4026;
-						ret &= 0x80; // set battery flag
+						// uncomment to set low battery flag
+						// ret &= 0x7f;
 					}
 					break;
 			}

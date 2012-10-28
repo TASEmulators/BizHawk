@@ -8,6 +8,53 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	// http://wiki.nesdev.com/w/index.php/FDS_audio
 	public class FDSAudio
 	{
+		public void SyncState(Serializer ser)
+		{
+			// no need to sync the DCFilter or the samplebuff
+			ser.Sync("waveram", ref waveram, false);
+			ser.Sync("waverampos", ref waverampos);
+
+			ser.Sync("volumespd", ref volumespd);
+			ser.Sync("r4080_6", ref r4080_6);
+			ser.Sync("r4080_7", ref r4080_7);
+
+			ser.Sync("frequency", ref frequency);
+			ser.Sync("r4083_6", ref r4083_6);
+			ser.Sync("r4083_7", ref r4083_7);
+
+			ser.Sync("sweepspd", ref sweepspd);
+			ser.Sync("r4084_6", ref r4084_6);
+			ser.Sync("r4084_7", ref r4084_7);
+
+			ser.Sync("sweepbias", ref sweepbias);
+
+			ser.Sync("modfreq", ref modfreq);
+			ser.Sync("r4087_7", ref r4087_7);
+
+			ser.Sync("modtable", ref modtable, false);
+			ser.Sync("modtablepos", ref modtablepos);
+
+			ser.Sync("mastervol_num", ref mastervol_num);
+			ser.Sync("mastervol_den", ref mastervol_den);
+			ser.Sync("waveram_writeenable", ref waveram_writeenable);
+
+			ser.Sync("envspeed", ref envspeed);
+
+			ser.Sync("volumeclock", ref volumeclock);
+			ser.Sync("sweepclock", ref sweepclock);
+			ser.Sync("modclock", ref modclock);
+			ser.Sync("mainclock", ref mainclock);
+
+			ser.Sync("modoutput", ref modoutput);
+
+			ser.Sync("volumegain", ref volumegain);
+			ser.Sync("sweepgain", ref sweepgain);
+
+			ser.Sync("waveramoutput", ref waveramoutput);
+
+			ser.Sync("latchedoutput", ref latchedoutput);
+		}
+
 		//4040:407f
 		byte[] waveram = new byte[64];
 		int waverampos;

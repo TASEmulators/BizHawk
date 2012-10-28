@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	/// </summary>
 	public class RamAdapter
 	{
+		#region fix broken images
+
 		static void WriteBlock(Stream dest, byte[] data, int pregap)
 		{
 			for (int i = 0; i < pregap - 1; i++)
@@ -87,6 +89,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return tmp;
 		}
 
+		#endregion
+
+		#region crc
+
 		/// <summary>
 		/// advance a 16 bit CRC register with 1 new input bit.  x.25 standard
 		/// </summary>
@@ -118,6 +124,41 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return crc;
 		}
 
+		#endregion
+
+		public void SyncState(Serializer ser)
+		{
+			ser.Sync("originaldisk", ref originaldisk, false);
+			ser.Sync("disk", ref disk, false);
+			ser.Sync("diskpos", ref diskpos);
+			ser.Sync("disksize", ref disksize);
+			ser.Sync("writeprotect", ref writeprotect);
+
+			ser.Sync("cycleswaiting", ref cycleswaiting);
+			{
+				int tmp = (int)state;
+				ser.Sync("state", ref tmp);
+				state = (RamAdapterState)tmp;
+			}
+			ser.Sync("cached4025", ref cached4025);
+			ser.Sync("irq", ref irq);
+			ser.Sync("transferreset", ref transferreset);
+
+			ser.Sync("crc", ref crc);
+			ser.Sync("writecomputecrc", ref writecomputecrc);
+
+			ser.Sync("readreg", ref readreg);
+			ser.Sync("writereg", ref writereg);
+			ser.Sync("readregpos", ref readregpos);
+			ser.Sync("writeregpos", ref writeregpos);
+			ser.Sync("readreglatch", ref readreglatch);
+			ser.Sync("writereglatch", ref writereglatch);
+
+			ser.Sync("bytetransferflag", ref bytetransferflag);
+			ser.Sync("lookingforendofgap", ref lookingforendofgap);
+		}
+
+		#region state
 		/// <summary>the original contents of this disk when it was loaded.  for virtual saveram diff</summary>
 		byte[] originaldisk = null;
 		/// <summary>currently loaded disk side (ca 65k bytes)</summary>
@@ -128,6 +169,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int disksize;
 		/// <summary>true if current disk is writeprotected</summary>
 		bool writeprotect = true;
+
+		/// <summary>ppu cycles until next action</summary>
+		int cycleswaiting = 0;
+		/// <summary>physical state of the drive</summary>
+		RamAdapterState state = RamAdapterState.IDLE;
+
+		/// <summary>cached 4025 write; can be modified internally by some things</summary>
+		byte cached4025;
+		/// <summary>can be raised on byte transfer complete</summary>
+		public bool irq;
+		/// <summary>true if 4025.1 is set to true</summary>
+		bool transferreset = false;
+
+		/// <summary>
+		/// 16 bit CRC register.  in normal operation, will become all 0 on finishing a read (see x.25 spec for more details)
+		/// </summary>
+		ushort crc = 0;
+		/// <summary>true if data being written to disk is currently being computed in CRC</summary>
+		bool writecomputecrc; // this has to be latched because the "flush CRC" call comes in the middle of a byte, of course
+
+		// read and write shift regs, with bit positions and latched values for reload
+		byte readreg;
+		byte writereg;
+		int readregpos;
+		int writeregpos;
+		byte readreglatch;
+		byte writereglatch;
+
+		bool bytetransferflag;
+		bool lookingforendofgap = false;
+
+		#endregion
 
 		/// <summary>
 		/// eject the loaded disk
@@ -221,11 +294,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 		// all timings are in terms of PPU cycles (@5.37mhz)
-		/// <summary>
-		/// ppu cycles until next action
-		/// </summary>
-		int cycleswaiting = 0;
-
 		enum RamAdapterState
 		{
 			/// <summary>moving over the disk</summary>
@@ -239,10 +307,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			/// <summary>nothing happening</summary>
 			IDLE,
 		};
-		/// <summary>
-		/// physical state of the drive
-		/// </summary>
-		RamAdapterState state = RamAdapterState.IDLE;
 
 		/// <summary>
 		/// set cycleswaiting param after a state change
@@ -285,23 +349,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//Console.WriteLine("!!4024:{0:x2}", value);
 		}
 
-		/// <summary>
-		/// cached 4025 write; can be modified internally by some things
-		/// </summary>
-		byte cached4025;
-
-		/// <summary>
-		/// can be raised on byte transfer complete
-		/// </summary>
-		public bool irq;
-
-		/// <summary>true if 4025.1 is set to true</summary>
-		bool transferreset = false;
-
-		/// <summary>
-		/// 16 bit CRC register.  in normal operation, will become all 0 on finishing a read (see x.25 spec for more details)
-		/// </summary>
-		ushort crc = 0;
 
 		/// <summary>
 		/// control reg
@@ -373,11 +420,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			return ret;
 		}
-
-		/// <summary>
-		/// DEBUG ONLY
-		/// </summary>
-		int lastreaddiskpos;
 
 		/// <summary>
 		/// more status stuff
@@ -463,22 +505,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		// read and write shift regs, with bit positions and latched values for reload
-		byte readreg;
-		byte writereg;
-		int readregpos;
-		int writeregpos;
-		byte readreglatch;
-		byte writereglatch;
-	
-		bool bytetransferflag;
-
-		bool lookingforendofgap = false;
-
-		/// <summary>
-		/// true if data being written to disk is currently being computed in CRC
-		/// </summary>
-		bool writecomputecrc; // this has to be latched because the "flush CRC" call comes in the middle of a byte, of course
 
 		void Read()
 		{
@@ -516,7 +542,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					bytetransferflag = true;
 					if ((cached4025 & 0x80) != 0)
 						irq = true;
-					lastreaddiskpos = diskpos;
+					//lastreaddiskpos = diskpos;
 					//Console.WriteLine("{0:x2} {1} @{2}", readreg, (cached4025 & 0x80) != 0 ? "RAISE" : "    ", diskpos);
 					readreglatch = readreg;
 
