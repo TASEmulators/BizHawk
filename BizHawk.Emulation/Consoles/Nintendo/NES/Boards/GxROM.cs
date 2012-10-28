@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return false;
 			}
 
-			prg_mask = (Cart.prg_size/8/2) - 1;
+			prg_mask = (Cart.prg_size / 32) - 1;
 			chr_mask = (Cart.chr_size / 8) - 1;
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
