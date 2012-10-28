@@ -208,6 +208,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		protected int prg_mask, chr_mask;
 		protected int vram_mask;
 		const int pputimeout = 4; // i don't know if this is right, but anything lower will not boot Bill & Ted
+		bool disablemirror = false; // mapper 171: mmc1 without mirroring control
 
 		//state
 		public MMC1 mmc1;
@@ -226,7 +227,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				ppuclock = 0;
 				mmc1.Write(addr, value);
-				SetMirrorType(mmc1.mirror); //often redundant, but gets the job done
+				if (!disablemirror)
+					SetMirrorType(mmc1.mirror); //often redundant, but gets the job done
 			}
 		}
 
@@ -279,6 +281,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "MAPPER116_HACKY":
 					break;
 				case "MAPPER001":
+					break;
+				case "MAPPER171": // Tui Do Woo Ma Jeung
+					AssertPrg(32); AssertChr(32); Cart.wram_size = 0;
+					disablemirror = true;
+					SetMirrorType(Cart.pad_h, Cart.pad_v);
 					break;
 				case "NES-SAROM": //dragon warrior
 					AssertPrg(64); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8); 
@@ -356,7 +363,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_mask = (Cart.prg_size / 16) - 1;
 			vram_mask = (Cart.vram_size*1024) - 1;
 			chr_mask = (Cart.chr_size / 8 * 2) - 1;
-			SetMirrorType(mmc1.mirror);
+			if (!disablemirror)
+				SetMirrorType(mmc1.mirror);
 			ppuclock = pputimeout;
 		}
 
