@@ -80,9 +80,11 @@
 			this.toolStripItem_SelectAll = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.truncateMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.ControllerBox = new System.Windows.Forms.GroupBox();
-			this.ControllersContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.ClipboardDisplay = new System.Windows.Forms.Label();
+			this.SelectionDisplay = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
 			this.toolStrip1 = new ToolStripEx();
 			this.RewindToBeginning = new System.Windows.Forms.ToolStripButton();
 			this.RewindButton = new System.Windows.Forms.ToolStripButton();
@@ -96,16 +98,10 @@
 			this.TASView = new BizHawk.VirtualListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.ClipboardDisplay = new System.Windows.Forms.Label();
-			this.SelectionDisplay = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
-			this.ControllersContext.SuspendLayout();
-			this.toolStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -116,7 +112,7 @@
             this.settingsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(686, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(460, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -344,7 +340,6 @@
 			this.clearVirtualPadsToolStripMenuItem.Name = "clearVirtualPadsToolStripMenuItem";
 			this.clearVirtualPadsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.clearVirtualPadsToolStripMenuItem.Text = "Clear controller &holds";
-			this.clearVirtualPadsToolStripMenuItem.Click += new System.EventHandler(this.clearVirtualPadsToolStripMenuItem_Click);
 			// 
 			// settingsToolStripMenuItem
 			// 
@@ -484,30 +479,55 @@
 			this.truncateMovieToolStripMenuItem1.Text = "&Truncate Movie";
 			this.truncateMovieToolStripMenuItem1.Click += new System.EventHandler(this.truncateMovieToolStripMenuItem1_Click);
 			// 
-			// ControllerBox
+			// groupBox1
 			// 
-			this.ControllerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ControllerBox.ContextMenuStrip = this.ControllersContext;
-			this.ControllerBox.Location = new System.Drawing.Point(300, 144);
-			this.ControllerBox.Name = "ControllerBox";
-			this.ControllerBox.Size = new System.Drawing.Size(367, 207);
-			this.ControllerBox.TabIndex = 4;
-			this.ControllerBox.TabStop = false;
-			this.ControllerBox.Text = "Controllers";
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.ClipboardDisplay);
+			this.groupBox1.Controls.Add(this.SelectionDisplay);
+			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Location = new System.Drawing.Point(302, 55);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(146, 83);
+			this.groupBox1.TabIndex = 5;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Slicer";
 			// 
-			// ControllersContext
+			// ClipboardDisplay
 			// 
-			this.ControllersContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearToolStripMenuItem1});
-			this.ControllersContext.Name = "ControllersContext";
-			this.ControllersContext.Size = new System.Drawing.Size(136, 26);
+			this.ClipboardDisplay.AutoSize = true;
+			this.ClipboardDisplay.Location = new System.Drawing.Point(68, 36);
+			this.ClipboardDisplay.Name = "ClipboardDisplay";
+			this.ClipboardDisplay.Size = new System.Drawing.Size(31, 13);
+			this.ClipboardDisplay.TabIndex = 3;
+			this.ClipboardDisplay.Text = "none";
 			// 
-			// clearToolStripMenuItem1
+			// SelectionDisplay
 			// 
-			this.clearToolStripMenuItem1.Name = "clearToolStripMenuItem1";
-			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
-			this.clearToolStripMenuItem1.Text = "&Clear Holds";
-			this.clearToolStripMenuItem1.Click += new System.EventHandler(this.clearToolStripMenuItem1_Click);
+			this.SelectionDisplay.AutoSize = true;
+			this.SelectionDisplay.Location = new System.Drawing.Point(68, 19);
+			this.SelectionDisplay.Name = "SelectionDisplay";
+			this.SelectionDisplay.Size = new System.Drawing.Size(31, 13);
+			this.SelectionDisplay.TabIndex = 2;
+			this.SelectionDisplay.Text = "none";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(8, 36);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(54, 13);
+			this.label2.TabIndex = 1;
+			this.label2.Text = "Clipboard:";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(8, 19);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(54, 13);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Selection:";
 			// 
 			// toolStrip1
 			// 
@@ -657,67 +677,16 @@
 			this.Log.Text = "Log";
 			this.Log.Width = 201;
 			// 
-			// groupBox1
-			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox1.Controls.Add(this.ClipboardDisplay);
-			this.groupBox1.Controls.Add(this.SelectionDisplay);
-			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Location = new System.Drawing.Point(300, 55);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(367, 83);
-			this.groupBox1.TabIndex = 5;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Slicer";
-			// 
-			// ClipboardDisplay
-			// 
-			this.ClipboardDisplay.AutoSize = true;
-			this.ClipboardDisplay.Location = new System.Drawing.Point(68, 36);
-			this.ClipboardDisplay.Name = "ClipboardDisplay";
-			this.ClipboardDisplay.Size = new System.Drawing.Size(31, 13);
-			this.ClipboardDisplay.TabIndex = 3;
-			this.ClipboardDisplay.Text = "none";
-			// 
-			// SelectionDisplay
-			// 
-			this.SelectionDisplay.AutoSize = true;
-			this.SelectionDisplay.Location = new System.Drawing.Point(68, 19);
-			this.SelectionDisplay.Name = "SelectionDisplay";
-			this.SelectionDisplay.Size = new System.Drawing.Size(31, 13);
-			this.SelectionDisplay.TabIndex = 2;
-			this.SelectionDisplay.Text = "none";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(8, 36);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(54, 13);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "Clipboard:";
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(8, 19);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(54, 13);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Selection:";
-			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(686, 519);
-			this.Controls.Add(this.groupBox1);
+			this.ClientSize = new System.Drawing.Size(460, 519);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.ReadOnlyCheckBox);
 			this.Controls.Add(this.TASView);
-			this.Controls.Add(this.ControllerBox);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(437, 148);
@@ -727,11 +696,10 @@
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
-			this.ControllersContext.ResumeLayout(false);
-			this.toolStrip1.ResumeLayout(false);
-			this.toolStrip1.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			this.toolStrip1.ResumeLayout(false);
+			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -773,15 +741,12 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem ContextMenu_Insert;
 		private System.Windows.Forms.ToolStripMenuItem toolStripItem_SelectAll;
-		private System.Windows.Forms.GroupBox ControllerBox;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripButton StopButton;
 		private System.Windows.Forms.ToolStripMenuItem updatePadsOnMovePlaybackToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 		private System.Windows.Forms.ToolStripMenuItem clearVirtualPadsToolStripMenuItem;
-		private System.Windows.Forms.ContextMenuStrip ControllersContext;
-		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem1;
         private System.Windows.Forms.ToolStripButton FastForward;
         private System.Windows.Forms.ToolStripButton TurboFastForward;
 		private System.Windows.Forms.ToolStripMenuItem ContextMenu_Delete;

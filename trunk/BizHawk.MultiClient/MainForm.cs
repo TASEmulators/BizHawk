@@ -1997,7 +1997,6 @@ namespace BizHawk.MultiClient
 		{
 			Global.StickyXORAdapter.ClearStickies();
 			Global.AutofireStickyXORAdapter.ClearStickies();
-			TAStudio1.ClearVirtualPadHolds();
 			VirtualPadForm1.ClearVirtualPadHolds();
 			Global.OSD.AddMessage("Autohold keys cleared");
 		}
