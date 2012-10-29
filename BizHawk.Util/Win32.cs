@@ -439,9 +439,6 @@ namespace BizHawk
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		public static extern bool SetDllDirectory(string lpPathName);
 	}
 
 }
