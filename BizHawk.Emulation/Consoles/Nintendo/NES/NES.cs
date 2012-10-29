@@ -427,10 +427,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				domains.Add(WRAM);
 			}
 
+			// if there were more boards with special ram sets, we'd want to do something more general
 			if (board is FDS)
-			{
 				domains.Add((board as FDS).GetDiskPeeker());
-			}
+			else if (board is ExROM)
+				domains.Add((board as ExROM).GetExRAM());
 
 			memoryDomains = domains.AsReadOnly();
 		}

@@ -44,6 +44,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		byte product_low, product_high;
 		int last_nt_read;
 
+		public MemoryDomain GetExRAM()
+		{
+			return new MemoryDomain("ExRAM", EXRAM.Length, Endian.Little, (addr) => EXRAM[addr], (addr, val) => EXRAM[addr] = val);
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
