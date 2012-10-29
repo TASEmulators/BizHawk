@@ -269,5 +269,10 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.VirtualPadSaveWindowPosition ^= true;
 		}
+
+		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearVirtualPadHolds();
+		}
 	}
 }

@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VirtualPadForm));
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -37,11 +38,15 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StickyBox = new System.Windows.Forms.CheckBox();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ControllerBox
 			// 
+			this.ControllerBox.ContextMenuStrip = this.contextMenuStrip1;
 			this.ControllerBox.Location = new System.Drawing.Point(9, 26);
 			this.ControllerBox.Name = "ControllerBox";
 			this.ControllerBox.Size = new System.Drawing.Size(367, 207);
@@ -110,6 +115,20 @@
 			this.StickyBox.UseVisualStyleBackColor = true;
 			this.StickyBox.CheckedChanged += new System.EventHandler(this.StickyBox_CheckedChanged);
 			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(102, 26);
+			// 
+			// clearToolStripMenuItem
+			// 
+			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+			this.clearToolStripMenuItem.Text = "&Clear";
+			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+			// 
 			// VirtualPadForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -127,6 +146,7 @@
 			this.Load += new System.EventHandler(this.VirtualPadForm_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -142,5 +162,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.CheckBox StickyBox;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
 	}
 }
