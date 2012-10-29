@@ -146,7 +146,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						Global.MovieSession.Movie.WriteMovie();
-						Global.MovieSession.Movie.StartPlayback();
+						Global.MovieSession.Movie.SwitchToPlay();
 						SetMainformMovieInfo();
 					}
 				}
@@ -196,7 +196,7 @@ namespace BizHawk.MultiClient
 						}
 						else
 						{
-							Global.MovieSession.Movie.StartPlayback();
+							Global.MovieSession.Movie.SwitchToPlay();
 							SetMainformMovieInfo();
 						}
 					}
@@ -239,7 +239,7 @@ namespace BizHawk.MultiClient
 			{
 				if (Global.Emulator.Frame < Global.MovieSession.Movie.Frames) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
-					Global.MovieSession.Movie.StartPlayback();
+					Global.MovieSession.Movie.SwitchToPlay();
 					Global.MovieSession.LatchInputFromLog();
 				}
 				else

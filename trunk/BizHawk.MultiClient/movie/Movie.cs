@@ -282,6 +282,7 @@ namespace BizHawk.MultiClient
 		public void SwitchToPlay()
 		{
 			Mode = MOVIEMODE.PLAY;
+			WriteMovie();
 		}
 
 		public void Stop()
