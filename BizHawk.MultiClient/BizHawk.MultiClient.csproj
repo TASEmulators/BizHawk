@@ -408,6 +408,12 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadForm.Designer.cs">
+      <DependentUpon>VirtualPadForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPadGB.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -507,6 +513,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="tools\VirtualPadForm.resx">
+      <DependentUpon>VirtualPadForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -475,6 +475,13 @@ namespace BizHawk.MultiClient
 		public int TASHeight = -1;
 		public bool TASUpdatePads = true;
 
+		// VirtualPad Dialog
+		public bool VirtualPadSaveWindowPosition = true;
+		public bool AutoloadVirtualPad = false;
+		public bool VirtualPadSticky = true;
+		public int VPadWndx = -1;
+		public int VPadWndy = -1;
+
 		// NES Game Genie Encoder/Decoder
 		public bool NESGGAutoload = false;
 		public bool NESGGSaveWindowPosition = true;

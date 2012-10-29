@@ -47,6 +47,7 @@ namespace BizHawk.MultiClient
 			}
 			SetMainformMovieInfo();
 			TAStudio1.Restart();
+			VirtualPadForm1.Restart();
 		}
 
 		public void SetMainformMovieInfo()
