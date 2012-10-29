@@ -439,7 +439,7 @@ namespace BizHawk.MultiClient
 				Global.MainForm.Rewind(1);
 				if (Global.Emulator.Frame <= Global.MovieSession.Movie.Frames)
 				{
-					Global.MovieSession.Movie.StartPlayback();
+					Global.MovieSession.Movie.SwitchToPlay();
 				}
 			}
 			else
