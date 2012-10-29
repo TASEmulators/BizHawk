@@ -373,7 +373,9 @@ namespace BizHawk.MultiClient
 			defaultHeight = Size.Height;
 
 			if (Global.Config.TAStudioSaveWindowPosition && Global.Config.TASWndx >= 0 && Global.Config.TASWndy >= 0)
+			{
 				this.Location = new Point(Global.Config.TASWndx, Global.Config.TASWndy);
+			}
 
 			if (Global.Config.TASWidth >= 0 && Global.Config.TASHeight >= 0)
 			{

@@ -81,6 +81,7 @@ namespace BizHawk.MultiClient
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
+		public VirtualPadForm VirtualPadForm1 = new VirtualPadForm();
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
@@ -279,8 +280,17 @@ namespace BizHawk.MultiClient
 				LoadNESDebugger();
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 				LoadGameGenieEC();
+
 			if (Global.Config.AutoloadTAStudio)
+			{
 				LoadTAStudio();
+			}
+
+			if (Global.Config.AutoloadVirtualPad)
+			{
+				LoadVirtualPads();
+			}
+
 			if (Global.Config.AutoLoadLuaConsole)
 				OpenLuaConsole();
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
@@ -1694,6 +1704,7 @@ namespace BizHawk.MultiClient
 				PCEBGViewer1.Restart();
 				TI83KeyPad1.Restart();
 				TAStudio1.Restart();
+				VirtualPadForm1.Restart();
 				Cheats1.Restart();
 				ToolBox1.Restart();
 				TraceLogger1.Restart();
@@ -1987,6 +1998,7 @@ namespace BizHawk.MultiClient
 			Global.StickyXORAdapter.ClearStickies();
 			Global.AutofireStickyXORAdapter.ClearStickies();
 			TAStudio1.ClearVirtualPadHolds();
+			VirtualPadForm1.ClearVirtualPadHolds();
 			Global.OSD.AddMessage("Autohold keys cleared");
 		}
 
@@ -2470,6 +2482,7 @@ namespace BizHawk.MultiClient
 			//frame of execution in its list view.
 
 			TAStudio1.UpdateValues();
+			VirtualPadForm1.UpdateValues();
 			SNESGraphicsDebugger1.UpdateToolsAfter();
 			TraceLogger1.UpdateValues();
 #if WINDOWS
@@ -3089,6 +3102,7 @@ namespace BizHawk.MultiClient
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);
 			CloseForm(TraceLogger1);
+			CloseForm(VirtualPadForm1);
 #if WINDOWS
 			CloseForm(LuaConsole1);
 #endif
@@ -3198,6 +3212,17 @@ namespace BizHawk.MultiClient
 			}
 			else
 				TAStudio1.Focus();
+		}
+
+		public void LoadVirtualPads()
+		{
+			if (!VirtualPadForm1.IsHandleCreated || VirtualPadForm1.IsDisposed)
+			{
+				VirtualPadForm1 = new VirtualPadForm();
+				VirtualPadForm1.Show();
+			}
+			else
+				VirtualPadForm1.Focus();
 		}
 
 		private void VolumeUp()
@@ -4136,6 +4161,11 @@ namespace BizHawk.MultiClient
 		private void saveMovieToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			SaveMovie();
+		}
+
+		private void virtualPadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadVirtualPads();
 		}
 	}
 }
