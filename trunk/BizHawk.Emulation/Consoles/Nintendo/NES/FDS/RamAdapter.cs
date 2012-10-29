@@ -318,22 +318,32 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case RamAdapterState.RUNNING: // matches of-quoted 96khz data transfer rate
 					// time to read/write one bit
+					/* "transfer rate of 96.4kHz"*/
 					cycleswaiting = 56;
 					break;
-				case RamAdapterState.INSERTING: // 298ms
+				case RamAdapterState.INSERTING: // 100ms
 					// time for the disk drive to engage on disk after inserting
-					cycleswaiting = 1600000;
+					// i know there are no servos or anything that have to engage, just a few
+					// springs; so this time is likely rather short
+					cycleswaiting = 535000;
 					break;
 				case RamAdapterState.SPINUP: // 199ms
 					// time for motor to spinup and start
+					// it's difficult to say how long this time is exactly, as the time the
+					// motor spends spinning up is merged with the disk pre-gap, so we don't
+					// know how long each is individually
 					cycleswaiting = 1070000;
 					break;
 				case RamAdapterState.IDLE: // irrelevant
-					cycleswaiting = 50000;
+					cycleswaiting = 100000;
 					break;
-				case RamAdapterState.RESET: // 1200ms
+				case RamAdapterState.RESET: // 100ms
 					// time for motor to re-park after reaching end of drive
-					cycleswaiting = 6443100;
+					/* "It's a spring which will pull the reading head next to the outer edge of
+					 * the disk (you can clearly hear a click when this happens), so it's hard to
+					 * know exactly, but it's almost instantaneous (compared to the 6-7 seconds
+					 * required for moving in the other direction)."*/				
+					cycleswaiting = 535000;
 					break;
 			}
 		}
