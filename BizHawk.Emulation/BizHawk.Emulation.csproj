@@ -83,6 +83,7 @@
     <Compile Include="Consoles\Atari\2600\Mappers\m3E.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3F.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m4A50.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mDPC.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mE0.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mE7.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mEF.cs" />

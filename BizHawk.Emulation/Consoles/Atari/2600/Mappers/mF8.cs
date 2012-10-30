@@ -27,13 +27,13 @@ namespace BizHawk
 
 		class mF8 : MapperBase
 		{
-			int toggle = 0;
+			int bank_4k = 0;
 
 			public override byte ReadMemory(ushort addr)
 			{
 				Address(addr);
 				if (addr < 0x1000) return base.ReadMemory(addr);
-				return core.rom[toggle*4*1024 + (addr&0xFFF)];
+				return core.rom[(bank_4k << 12) + (addr&0xFFF)];
 			}
 			public override void WriteMemory(ushort addr, byte value)
 			{
@@ -44,13 +44,13 @@ namespace BizHawk
 			public override void SyncState(Serializer ser)
 			{
 				base.SyncState(ser);
-				ser.Sync("toggle", ref toggle);
+				ser.Sync("toggle", ref bank_4k);
 			}
 
 			void Address(ushort addr)
 			{
-				if (addr == 0x1FF8) toggle = 0;
-				else if (addr == 0x1FF9) toggle = 1;
+				if (addr == 0x1FF8) bank_4k = 0;
+				else if (addr == 0x1FF9) bank_4k = 1;
 			}
 		}
 	}
