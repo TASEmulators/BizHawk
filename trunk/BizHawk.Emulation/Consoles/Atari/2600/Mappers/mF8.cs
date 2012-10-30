@@ -28,6 +28,7 @@ namespace BizHawk
 		class mF8 : MapperBase
 		{
 			int bank_4k = 0;
+			
 
 			public override byte ReadMemory(ushort addr)
 			{
@@ -44,7 +45,8 @@ namespace BizHawk
 			public override void SyncState(Serializer ser)
 			{
 				base.SyncState(ser);
-				ser.Sync("toggle", ref bank_4k);
+				ser.Sync("bank_4k", ref bank_4k);
+				
 			}
 
 			void Address(ushort addr)
