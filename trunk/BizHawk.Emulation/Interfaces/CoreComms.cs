@@ -16,6 +16,8 @@ namespace BizHawk
 		public bool SNES_ShowBG1_1, SNES_ShowBG2_1, SNES_ShowBG3_1, SNES_ShowBG4_1;
 		public bool SNES_ShowOBJ_0, SNES_ShowOBJ_1, SNES_ShowOBJ_2, SNES_ShowOBJ_3;
 
+		public bool Atari2600_ShowBG, Atari2600_ShowPlayer1, Atari2600_ShowPlayer2, Atari2600_ShowMissle1, Atari2600_ShowMissle2, Atari2600_ShowBall;
+
 		/// <summary>
 		/// if this is set, then the cpu should dump trace info to CpuTraceStream
 		/// </summary>
