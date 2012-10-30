@@ -143,6 +143,7 @@ namespace BizHawk
 				case "EF": mapper = new mEF(); break;
 				case "X07": mapper = new mX07(); break;
 				case "4A50": mapper = new m4A50(); break;
+				case "DPC": mapper = new mDPC(); break;
 
 				default: throw new InvalidOperationException("mapper not supported: " + game.GetOptionsDict()["m"]);
 			}
