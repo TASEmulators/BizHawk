@@ -234,6 +234,13 @@
 			this.bWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.p0DifficultyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rightDifficultyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
+			this.showBGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showPlayer1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showPlayer2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showMissle1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showMissle2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showBallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.forceDMGModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gBAInCGBModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1696,20 +1703,20 @@
 			// 
 			this.toolBoxToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.ToolBox;
 			this.toolBoxToolStripMenuItem.Name = "toolBoxToolStripMenuItem";
-			this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.toolBoxToolStripMenuItem.Text = "&Tool Box";
 			this.toolBoxToolStripMenuItem.Click += new System.EventHandler(this.toolBoxToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator12.Size = new System.Drawing.Size(140, 6);
 			// 
 			// rAMWatchToolStripMenuItem
 			// 
 			this.rAMWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
-			this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
 			this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
 			// 
@@ -1717,7 +1724,7 @@
 			// 
 			this.rAMSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.search;
 			this.rAMSearchToolStripMenuItem.Name = "rAMSearchToolStripMenuItem";
-			this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
 			this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
 			// 
@@ -1725,7 +1732,7 @@
 			// 
 			this.rAMPokeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.rAMPokeToolStripMenuItem.Name = "rAMPokeToolStripMenuItem";
-			this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
 			this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.RAMPokeToolStripMenuItem_Click);
 			// 
@@ -1733,7 +1740,7 @@
 			// 
 			this.hexEditorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.hexEditorToolStripMenuItem.Name = "hexEditorToolStripMenuItem";
-			this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
 			this.hexEditorToolStripMenuItem.Click += new System.EventHandler(this.hexEditorToolStripMenuItem_Click);
 			// 
@@ -1741,7 +1748,7 @@
 			// 
 			this.traceLoggerToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.pencil;
 			this.traceLoggerToolStripMenuItem.Name = "traceLoggerToolStripMenuItem";
-			this.traceLoggerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.traceLoggerToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.traceLoggerToolStripMenuItem.Text = "Trace &Logger";
 			this.traceLoggerToolStripMenuItem.Click += new System.EventHandler(this.traceLoggerToolStripMenuItem_Click);
 			// 
@@ -1749,7 +1756,7 @@
 			// 
 			this.tAStudioToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
 			this.tAStudioToolStripMenuItem.Name = "tAStudioToolStripMenuItem";
-			this.tAStudioToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.tAStudioToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.tAStudioToolStripMenuItem.Text = "&TAStudio";
 			this.tAStudioToolStripMenuItem.Click += new System.EventHandler(this.tAStudioToolStripMenuItem_Click);
 			// 
@@ -1757,20 +1764,20 @@
 			// 
 			this.virtualPadToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
 			this.virtualPadToolStripMenuItem.Name = "virtualPadToolStripMenuItem";
-			this.virtualPadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.virtualPadToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.virtualPadToolStripMenuItem.Text = "Virtual Pad";
 			this.virtualPadToolStripMenuItem.Click += new System.EventHandler(this.virtualPadToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
 			this.toolStripSeparator11.Name = "toolStripSeparator11";
-			this.toolStripSeparator11.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator11.Size = new System.Drawing.Size(140, 6);
 			// 
 			// luaConsoleToolStripMenuItem
 			// 
 			this.luaConsoleToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Lua;
 			this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
-			this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.luaConsoleToolStripMenuItem.Text = "Lua Console";
 			this.luaConsoleToolStripMenuItem.Click += new System.EventHandler(this.luaConsoleToolStripMenuItem_Click);
 			// 
@@ -1778,7 +1785,7 @@
 			// 
 			this.cheatsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.cheatsToolStripMenuItem.Name = "cheatsToolStripMenuItem";
-			this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.cheatsToolStripMenuItem.Text = "Cheats";
 			this.cheatsToolStripMenuItem.Click += new System.EventHandler(this.cheatsToolStripMenuItem_Click);
 			// 
@@ -2013,7 +2020,14 @@
 			this.atariToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.bWToolStripMenuItem,
             this.p0DifficultyToolStripMenuItem,
-            this.rightDifficultyToolStripMenuItem});
+            this.rightDifficultyToolStripMenuItem,
+            this.toolStripSeparator26,
+            this.showBGToolStripMenuItem,
+            this.showPlayer1ToolStripMenuItem,
+            this.showPlayer2ToolStripMenuItem,
+            this.showMissle1ToolStripMenuItem,
+            this.showMissle2ToolStripMenuItem,
+            this.showBallToolStripMenuItem});
 			this.atariToolStripMenuItem.Name = "atariToolStripMenuItem";
 			this.atariToolStripMenuItem.Size = new System.Drawing.Size(44, 19);
 			this.atariToolStripMenuItem.Text = "&Atari";
@@ -2039,6 +2053,53 @@
 			this.rightDifficultyToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.rightDifficultyToolStripMenuItem.Text = "Right Difficulty";
 			this.rightDifficultyToolStripMenuItem.Click += new System.EventHandler(this.rightDifficultyToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator26
+			// 
+			this.toolStripSeparator26.Name = "toolStripSeparator26";
+			this.toolStripSeparator26.Size = new System.Drawing.Size(150, 6);
+			// 
+			// showBGToolStripMenuItem
+			// 
+			this.showBGToolStripMenuItem.Name = "showBGToolStripMenuItem";
+			this.showBGToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.showBGToolStripMenuItem.Text = "Show BG";
+			this.showBGToolStripMenuItem.Click += new System.EventHandler(this.showBGToolStripMenuItem_Click);
+			// 
+			// showPlayer1ToolStripMenuItem
+			// 
+			this.showPlayer1ToolStripMenuItem.Name = "showPlayer1ToolStripMenuItem";
+			this.showPlayer1ToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.showPlayer1ToolStripMenuItem.Text = "Show Player 1";
+			this.showPlayer1ToolStripMenuItem.Click += new System.EventHandler(this.showPlayer1ToolStripMenuItem_Click);
+			// 
+			// showPlayer2ToolStripMenuItem
+			// 
+			this.showPlayer2ToolStripMenuItem.Name = "showPlayer2ToolStripMenuItem";
+			this.showPlayer2ToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.showPlayer2ToolStripMenuItem.Text = "Show Player 2";
+			this.showPlayer2ToolStripMenuItem.Click += new System.EventHandler(this.showPlayer2ToolStripMenuItem_Click);
+			// 
+			// showMissle1ToolStripMenuItem
+			// 
+			this.showMissle1ToolStripMenuItem.Name = "showMissle1ToolStripMenuItem";
+			this.showMissle1ToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.showMissle1ToolStripMenuItem.Text = "Show Missle 1";
+			this.showMissle1ToolStripMenuItem.Click += new System.EventHandler(this.showMissle1ToolStripMenuItem_Click);
+			// 
+			// showMissle2ToolStripMenuItem
+			// 
+			this.showMissle2ToolStripMenuItem.Name = "showMissle2ToolStripMenuItem";
+			this.showMissle2ToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.showMissle2ToolStripMenuItem.Text = "Show Missle 2";
+			this.showMissle2ToolStripMenuItem.Click += new System.EventHandler(this.showMissle2ToolStripMenuItem_Click);
+			// 
+			// showBallToolStripMenuItem
+			// 
+			this.showBallToolStripMenuItem.Name = "showBallToolStripMenuItem";
+			this.showBallToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.showBallToolStripMenuItem.Text = "Show Ball";
+			this.showBallToolStripMenuItem.Click += new System.EventHandler(this.showBallToolStripMenuItem_Click);
 			// 
 			// gBToolStripMenuItem
 			// 
@@ -2884,6 +2945,13 @@
 		private System.Windows.Forms.ToolStripMenuItem saveMovieToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveMovieToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem virtualPadToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
+		private System.Windows.Forms.ToolStripMenuItem showBGToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showPlayer1ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showPlayer2ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showMissle1ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showMissle2ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showBallToolStripMenuItem;
     }
 }
 

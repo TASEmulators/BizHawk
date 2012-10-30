@@ -1731,6 +1731,13 @@ namespace BizHawk.MultiClient
 			bWToolStripMenuItem.Checked = Global.Config.Atari2600_BW;
 			p0DifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_LeftDifficulty;
 			rightDifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_RightDifficulty;
+
+			showBGToolStripMenuItem.Checked = Global.Config.Atari2600_ShowBG;
+			showPlayer1ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayer1;
+			showPlayer2ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayer2;
+			showMissle1ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowMissle1;
+			showMissle2ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowMissle2;
+			showBallToolStripMenuItem.Checked = Global.Config.Atari2600_ShowBall;
 		}
 
 		private void skipBIOSIntroToolStripMenuItem_Click(object sender, EventArgs e)

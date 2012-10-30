@@ -692,6 +692,14 @@ namespace BizHawk.MultiClient
 		public string LuaWriterFont = "Courier New";
 		public float LuaWriterZoom = 1;
 		public bool LuaWriterStartEmpty = false;
+
+		//Atari 2600 Settings
+		public bool Atari2600_ShowBG = true;
+		public bool Atari2600_ShowPlayer1 = true;
+		public bool Atari2600_ShowPlayer2 = true;
+		public bool Atari2600_ShowMissle1 = true;
+		public bool Atari2600_ShowMissle2 = true;
+		public bool Atari2600_ShowBall = true;
 	}
 
 	public class SMSControllerTemplate

@@ -376,6 +376,13 @@ namespace BizHawk.MultiClient
 
 			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 			Global.CoreInputComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+
+			 Global.CoreInputComm.Atari2600_ShowBG = Global.Config.Atari2600_ShowBG;
+			Global.CoreInputComm.Atari2600_ShowPlayer1 = Global.Config.Atari2600_ShowPlayer1;
+			Global.CoreInputComm.Atari2600_ShowPlayer2 = Global.Config.Atari2600_ShowPlayer2;
+			Global.CoreInputComm.Atari2600_ShowMissle1 = Global.Config.Atari2600_ShowMissle1;
+			Global.CoreInputComm.Atari2600_ShowMissle2 = Global.Config.Atari2600_ShowMissle2;
+			Global.CoreInputComm.Atari2600_ShowBall = Global.Config.Atari2600_ShowBall;
 		}
 
 		void SyncPresentationMode()
@@ -4165,6 +4172,42 @@ namespace BizHawk.MultiClient
 		private void virtualPadToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadVirtualPads();
+		}
+
+		private void showBGToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowBG ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showPlayer1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayer1 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showPlayer2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayer2 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showMissle1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowMissle1 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showMissle2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowMissle2 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showBallToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowBall ^= true;
+			SyncCoreInputComm();
 		}
 	}
 }
