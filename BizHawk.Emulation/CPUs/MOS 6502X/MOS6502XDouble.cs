@@ -199,8 +199,10 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 		public void SyncState(Serializer ser)
 		{
+			// doesn't work quite as expected because you can't rewind a ser
 			SyncUp();
 			m.SyncState(ser);
+			n.SyncState(ser);
 			SyncUp();
 		}
 
