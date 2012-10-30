@@ -305,6 +305,7 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.showPlayfieldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -2023,6 +2024,7 @@
             this.rightDifficultyToolStripMenuItem,
             this.toolStripSeparator26,
             this.showBGToolStripMenuItem,
+            this.showPlayfieldToolStripMenuItem,
             this.showPlayer1ToolStripMenuItem,
             this.showPlayer2ToolStripMenuItem,
             this.showMissle1ToolStripMenuItem,
@@ -2636,6 +2638,13 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
+			// showPlayfieldToolStripMenuItem
+			// 
+			this.showPlayfieldToolStripMenuItem.Name = "showPlayfieldToolStripMenuItem";
+			this.showPlayfieldToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.showPlayfieldToolStripMenuItem.Text = "Show Playfield";
+			this.showPlayfieldToolStripMenuItem.Click += new System.EventHandler(this.showPlayfieldToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2952,6 +2961,7 @@
 		private System.Windows.Forms.ToolStripMenuItem showMissle1ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showMissle2ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showBallToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showPlayfieldToolStripMenuItem;
     }
 }
 

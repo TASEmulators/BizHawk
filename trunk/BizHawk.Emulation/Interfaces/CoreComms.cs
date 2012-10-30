@@ -8,15 +8,15 @@ namespace BizHawk
 		public bool NES_ShowBG, NES_ShowOBJ;
 		public bool PCE_ShowBG1, PCE_ShowOBJ1, PCE_ShowBG2, PCE_ShowOBJ2;
 		public bool SMS_ShowBG, SMS_ShowOBJ;
-        public bool GG_ShowClippedRegions;
-        public bool GG_HighlightActiveDisplayRegion;
+		public bool GG_ShowClippedRegions;
+		public bool GG_HighlightActiveDisplayRegion;
 
 		public string SNES_FirmwaresPath;
 		public bool SNES_ShowBG1_0, SNES_ShowBG2_0, SNES_ShowBG3_0, SNES_ShowBG4_0;
 		public bool SNES_ShowBG1_1, SNES_ShowBG2_1, SNES_ShowBG3_1, SNES_ShowBG4_1;
 		public bool SNES_ShowOBJ_0, SNES_ShowOBJ_1, SNES_ShowOBJ_2, SNES_ShowOBJ_3;
 
-		public bool Atari2600_ShowBG, Atari2600_ShowPlayer1, Atari2600_ShowPlayer2, Atari2600_ShowMissle1, Atari2600_ShowMissle2, Atari2600_ShowBall;
+		public bool Atari2600_ShowBG, Atari2600_ShowPlayer1, Atari2600_ShowPlayer2, Atari2600_ShowMissle1, Atari2600_ShowMissle2, Atari2600_ShowBall, Atari2600_ShowPF;
 
 		/// <summary>
 		/// if this is set, then the cpu should dump trace info to CpuTraceStream

@@ -700,6 +700,7 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_ShowMissle1 = true;
 		public bool Atari2600_ShowMissle2 = true;
 		public bool Atari2600_ShowBall = true;
+		public bool Atari2600_ShowPlayfield = true;
 	}
 
 	public class SMSControllerTemplate

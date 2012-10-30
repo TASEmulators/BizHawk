@@ -704,7 +704,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					pixelColor = palette[playField.bkColor];
 				}
 
-				if ((collisions & CXPF) != 0) // && core.CoreInputComm.Atari2600_ShowPF)
+				if ((collisions & CXPF) != 0 && core.CoreInputComm.Atari2600_ShowPF)
 				{
 					if (playField.score)
 					{
