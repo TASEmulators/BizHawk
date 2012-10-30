@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 {
 	public sealed partial class MOS6502X
 	{
-		public MOS6502X()
+		public MOS6502X(Action<System.Runtime.InteropServices.GCHandle> DisposeBuilder = null)
 		{
 			Reset();
 		}
@@ -167,6 +167,19 @@ namespace BizHawk.Emulation.CPUs.M6502
 		public Func<ushort, byte> ReadMemory;
 		public Func<ushort, byte> DummyReadMemory;
 		public Action<ushort, byte> WriteMemory;
+
+		public void SetCallbacks
+		(
+			Func<ushort, byte> ReadMemory,
+			Func<ushort, byte> DummyReadMemory,
+			Action<ushort, byte> WriteMemory,
+			Action<System.Runtime.InteropServices.GCHandle> DisposeBuilder
+		)
+		{
+			this.ReadMemory = ReadMemory;
+			this.DummyReadMemory = DummyReadMemory;
+			this.WriteMemory = WriteMemory;
+		}
 
 		public ushort ReadWord(ushort address)
 		{
