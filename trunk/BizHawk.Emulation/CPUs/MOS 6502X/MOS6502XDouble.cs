@@ -201,6 +201,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 		{
 			SyncUp();
 			m.SyncState(ser);
+			SyncUp();
 		}
 
 		public string Disassemble(ushort pc, out int bytesToAdvance) { bytesToAdvance = 1; return "FOOBAR"; }
