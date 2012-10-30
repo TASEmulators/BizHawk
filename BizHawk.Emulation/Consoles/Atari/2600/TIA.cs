@@ -768,7 +768,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					}
 				}
 
-				if (playField.priority && (collisions & CXPF) != 0) // && core.CoreInputComm.Atari2600_ShowPF)
+				if (playField.priority && (collisions & CXPF) != 0 && core.CoreInputComm.Atari2600_ShowPF)
 				{
 					if (playField.score)
 					{
