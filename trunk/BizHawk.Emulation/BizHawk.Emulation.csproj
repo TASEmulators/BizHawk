@@ -302,6 +302,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper112.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper154.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper206.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namco163Audio.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namcot1xx.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NAMCOT_m19_m210.cs">
       <SubType>Code</SubType>
