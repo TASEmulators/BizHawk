@@ -1738,6 +1738,7 @@ namespace BizHawk.MultiClient
 			showMissle1ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowMissle1;
 			showMissle2ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowMissle2;
 			showBallToolStripMenuItem.Checked = Global.Config.Atari2600_ShowBall;
+			showPlayfieldToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayfield;
 		}
 
 		private void skipBIOSIntroToolStripMenuItem_Click(object sender, EventArgs e)
