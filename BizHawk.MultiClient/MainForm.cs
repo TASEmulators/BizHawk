@@ -1192,7 +1192,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "NES":
 					NESToolStripMenuItem.Visible = true;
-					NESFDSMenuControls();
+					NESSpeicalMenuControls();
 					break;
 				case "PCE":
 				case "PCECD":
@@ -1231,10 +1231,10 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		void NESFDSMenuAdd(string name, string button, string msg)
+		void NESSpeicalMenuAdd(string name, string button, string msg)
 		{
-			fDSToolStripMenuItem.Visible = true;
-			fDSToolStripMenuItem.DropDownItems.Add(name, null, delegate(object sender, EventArgs e)
+			nESSpeicalToolStripMenuItem.Visible = true;
+			nESSpeicalToolStripMenuItem.DropDownItems.Add(name, null, delegate(object sender, EventArgs e)
 			{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
 				{
@@ -1249,22 +1249,25 @@ namespace BizHawk.MultiClient
 			);
 		}
 
-		void NESFDSMenuControls()
+		void NESSpeicalMenuControls()
 		{
 
 			// ugly and hacky
-			fDSToolStripMenuItem.Visible = false;
-			fDSToolStripMenuItem.DropDownItems.Clear();
+			nESSpeicalToolStripMenuItem.Visible = false;
+			nESSpeicalToolStripMenuItem.DropDownItems.Clear();
 			var ss = Global.Emulator.ControllerDefinition.BoolButtons;
-
 			if (ss.Contains("FDS Eject"))
-				NESFDSMenuAdd("Eject Disk", "FDS Eject", "FDS Disk Ejected.");
+				NESSpeicalMenuAdd("Eject Disk", "FDS Eject", "FDS Disk Ejected.");
 			for (int i = 0; i < 16; i++)
 			{
 				string s = "FDS Insert " + i;
 				if (ss.Contains(s))
-					NESFDSMenuAdd("Insert Disk " + i, s, "FDS Disk " + i + " inserted.");
+					NESSpeicalMenuAdd("Insert Disk " + i, s, "FDS Disk " + i + " inserted.");
 			}
+			if (ss.Contains("VS Coin 1"))
+				NESSpeicalMenuAdd("Insert Coin 1", "VS Coin 1", "Coin 1 inserted.");
+			if (ss.Contains("VS Coin 2"))
+				NESSpeicalMenuAdd("Insert Coin 2", "VS Coin 2", "Coin 2 inserted.");
 		}
 
 		void SyncControls()

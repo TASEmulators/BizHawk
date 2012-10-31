@@ -429,6 +429,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (!dict.ContainsKey("board"))
 				throw new Exception("NES gamedb entries must have a board identifier!");
 			cart.board_type = dict["board"];
+			if (dict.ContainsKey("system"))
+				cart.system = dict["system"];
 			cart.prg_size = -1;
 			cart.vram_size = -1;
 			cart.wram_size = -1;

@@ -30,6 +30,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public bool SoundOn = true;
 		int sprdma_countdown;
 		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
+		/// <summary>if true, use VS. system arrangement of $4016..$4020</summary>
+		bool vs_io = false;
+		bool vs_coin1;
+		bool vs_coin2;
 
 		//irq state management
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; } }
@@ -148,11 +152,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					magicSoundProvider = new MagicSoundProvider(this, 1789773);
 					break;
 				// there's no official name for these in bootgod, not sure what we should use
-				case "PC10":
+				//case "PC10"://TODO
 				case "VS":
 					ppu.region = PPU.Region.RGB;
 					cpu_sequence = cpu_sequence_NTSC;
 					magicSoundProvider = new MagicSoundProvider(this, 1789773);
+					vs_io = true;
 					break;
 				// this is in bootgod, but not used at all
 				case "Dendy":
@@ -207,6 +212,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				for (int i = 0; i < b.NumSides; i++)
 					if (Controller["FDS Insert " + i])
 						b.InsertSide(i);
+			}
+			if (vs_io)
+			{
+				if (Controller["VS Coin 1"])
+					vs_coin1 = true;
+				if (Controller["VS Coin 2"])
+					vs_coin2 = true;
 			}
 
 			ppu.FrameAdvance();
@@ -307,6 +319,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x4016:
 					ports[0].Write(val & 1);
 					ports[1].Write(val & 1);
+					if (vs_io && board is Mapper099)
+					{
+						// happily, there aren't any other "VS exceptions" like this
+						var b = board as Mapper099;
+						b.Signal4016(val >> 2 & 1);
+					}
 					break;
 				case 0x4017: apu.WriteReg(addr, val); break;
 				default:
@@ -322,9 +340,45 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//many todos here
 			lagged = false;
 			byte ret;
-			if(addr == 0x4016)
-				ret = ports[0].Read();
-			else ret = ports[1].Read();
+			if (addr == 0x4016)
+				ret = ports[vs_io ? 1 : 0].Read();
+			else
+				ret = ports[vs_io ? 0 : 1].Read();
+			if (vs_io)
+			{
+				if (addr == 0x4016)
+				{
+					// clear bits 2-6
+					ret &= 0x83;
+					if (false) // service switch
+						ret |= 0x04;
+					if (false) // DIP1
+						ret |= 0x08;
+					if (false) // DIP2
+						ret |= 0x10;
+					if (vs_coin1)
+						ret |= 0x20;
+					if (vs_coin2)
+						ret |= 0x40;
+				}
+				else
+				{
+					// clear bits 2-7
+					ret &= 0x03;
+					if (false) // DIP3
+						ret |= 0x04;
+					if (false) // DIP4
+						ret |= 0x08;
+					if (false) // DIP5
+						ret |= 0x10;
+					if (false) // DIP6
+						ret |= 0x20;
+					if (false) // DIP7
+						ret |= 0x40;
+					if (false) // DIP8
+						ret |= 0x80;
+				}
+			}
 			return ret;
 		}
 
@@ -481,6 +535,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else if (addr < 0x6000)
 			{
+				Console.WriteLine("{0:x4}:{1:x2}", addr, value);
+				if (vs_io && addr == 0x4020 && (value & 1) != 0)
+				{
+					// acknowledge coin insertion
+					vs_coin1 = false;
+					vs_coin2 = false;
+				}
 				board.WriteEXP(addr - 0x4000, value);
 			}
 			else if (addr < 0x8000)

@@ -33,6 +33,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				for (int i = 0; i < b.NumSides; i++)
 					ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
 			}
+			if (vs_io)
+			{
+				ControllerDefinition.BoolButtons.Add("VS Coin 1");
+				ControllerDefinition.BoolButtons.Add("VS Coin 2");
+			}
 		}
 
 		private NES()
@@ -759,6 +764,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("cpu_step", ref cpu_step);
 			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
 			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
+			if (vs_io)
+			{
+				ser.Sync("vs_coin1", ref vs_coin1);
+				ser.Sync("vs_coin2", ref vs_coin2);
+			}
 			board.SyncState(ser);
 			if (board is NESBoardBase && !((NESBoardBase)board).SyncStateFlag)
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
