@@ -25,8 +25,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		#region state
 		RamAdapter diskdrive;
 		FDSAudio audio;
-		/// <summary>0-2, how many ppu cycles since audio was last triggered</summary>
-		int audioclock;
 		/// <summary>currently loaded side of the .FDS image, 0 based</summary>
 		int? currentside = null;
 		/// <summary>collection of diffs (as provided by the RamAdapter) for each side in the .FDS image</summary>
@@ -60,7 +58,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.BeginSection("audio");
 			audio.SyncState(ser);
 			ser.EndSection();
-			ser.Sync("audioclock", ref audioclock);			
 			{
 				// silly little hack
 				int tmp = currentside != null ? (int)currentside : 1234567;
@@ -216,9 +213,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool timerirq { get { return _timerirq; } set { _timerirq = value; SetIRQ(); } }
 
 
-		
-
-
 		public override void WriteEXP(int addr, byte value)
 		{
 			//if (addr == 0x0025)
@@ -244,7 +238,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case 0x0022:
 					timerreg = (byte)(value & 3);
-					timervalue = timerlatch * 3;
+					timervalue = timerlatch;
 					break;
 				case 0x0023:
 					diskenable = (value & 1) != 0;
@@ -314,7 +308,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ret;
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
 			if ((timerreg & 2) != 0 && timervalue > 0)
 			{
@@ -323,7 +317,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					if ((timerreg & 1) != 0)
 					{
-						timervalue = timerlatch * 3;
+						timervalue = timerlatch;
 					}
 					else
 					{
@@ -334,14 +328,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					timerirq = true;
 				}
 			}
+			audio.Clock();
+		}
+
+		public override void ClockPPU()
+		{
 			diskdrive.Clock();
 			diskirq = diskdrive.irq;
-			audioclock++;
-			if (audioclock == 3)
-			{
-				audioclock = 0;
-				audio.Clock();
-			}
 		}
 
 		public override byte ReadWRAM(int addr)

@@ -23,6 +23,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			
 			//gets called once per PPU clock, for boards with complex behaviour which must be monitoring clock (i.e. mmc3 irq counter)
 			void ClockPPU();
+			//gets called once per CPU clock; typically for boards with M2 counters
+			void ClockCPU();
 
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr); byte PeekPPU(int addr);
@@ -72,6 +74,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public abstract bool Configure(NES.EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
+			public virtual void ClockCPU() { }
 
 			public CartInfo Cart { get { return NES.cart; } }
 			public NES NES { get; set; }

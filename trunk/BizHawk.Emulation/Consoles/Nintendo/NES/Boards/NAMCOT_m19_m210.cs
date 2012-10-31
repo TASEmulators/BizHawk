@@ -302,21 +302,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else irq_counter++;
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
 			if (irq_enabled)
 			{
-				irq_cycles--;
-				if (irq_cycles == 0)
-				{
-					irq_cycles += 3;
+				//irq_cycles--;
+				//if (irq_cycles == 0)
+				//{
+					//irq_cycles += 3;
 					ClockIRQ();
-				}
+				//}
 			}
 			if (audio != null)
 			{
 				audio_cycles++;
-				if (audio_cycles == 15 * 3)
+				if (audio_cycles == 15)
 				{
 					audio_cycles = 0;
 					audio.Clock();

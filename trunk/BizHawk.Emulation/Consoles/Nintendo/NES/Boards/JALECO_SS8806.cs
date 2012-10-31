@@ -220,12 +220,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
-			ppuclock++;
-			if (ppuclock == 3)
-			{
-				ppuclock = 0;
+			//ppuclock++;
+			//if (ppuclock == 3)
+			//{
+				//ppuclock = 0;
 				if (!irqcountpaused)
 				{
 					int newclock = irqclock - 1;
@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					else
 						irqclock = newclock;
 				}
-			}
+			//}
 		}
 
 		/// <summary>

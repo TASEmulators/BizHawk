@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return true;
 		}
 
-
+		/*
 		public override void ClockPPU()
 		{
 			clock_counter++;
@@ -76,12 +76,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ClockCPU();
 				clock_counter = 0;
 			}
-		}
+		}*/
 
-		void ClockCPU()
+		public override void ClockCPU()
 		{
-			if(irq_counter==0) return;
-			if(!irq_counter_enabled) return;
+			if (irq_counter == 0) return;
+			if (!irq_counter_enabled) return;
 			irq_counter--;
 			if (irq_counter != 0) return;
 			irq_asserted = true;
