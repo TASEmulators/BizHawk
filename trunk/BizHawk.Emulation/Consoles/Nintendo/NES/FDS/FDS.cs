@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Cart.vram_size = 8;
 			Cart.wram_size = 32;
 			Cart.wram_battery = false;
-			Cart.system = "FDS";
+			Cart.system = "Famicom";
 			Cart.board_type = "FAMICOM_DISK_SYSTEM";
 
 			diskdrive = new RamAdapter();
