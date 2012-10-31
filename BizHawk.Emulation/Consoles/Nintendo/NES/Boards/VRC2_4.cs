@@ -311,7 +311,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				irq_counter++;
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
 			if (type == 2) return;
 			if (!irq_enabled) return;
@@ -319,12 +319,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (irq_mode)
 			{
 				ClockIRQ();
-				throw new InvalidOperationException("needed a test case for this; you found one!");
+				//throw new InvalidOperationException("needed a test case for this; you found one!");
 			}
 			else
 			{
-				irq_prescaler--;
-				if (irq_prescaler == 0)
+				irq_prescaler -= 3;
+				if (irq_prescaler <= 0)
 				{
 					irq_prescaler += 341;
 					ClockIRQ();
