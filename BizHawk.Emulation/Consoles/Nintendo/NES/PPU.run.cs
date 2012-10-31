@@ -132,10 +132,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				bool nmi_destiny = reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
 				runppu(3);
 				if (nmi_destiny) TriggerNMI();
-				if (PAL)
-					runppu(70 * (kLineTime) - delay);
-				else
-					runppu(20 * (kLineTime) - delay);
+				runppu(postNMIlines * kLineTime - delay);
 
 				//this seems to run just before the dummy scanline begins
 				clear_2002();
@@ -441,7 +438,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//equivelant of half a memory access cycle) before repeating the whole
 					//pixel/scanline rendering process. If the scanline being rendered is the very
 					//first one on every second frame, then this delay simply doesn't exist.
-					if (sl == 0 && idleSynch && evenOddDestiny && !PAL)
+					if (sl == 0 && idleSynch && evenOddDestiny && chopdot)
 					{ }
 					else
 						runppu(1);
@@ -449,8 +446,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				ppur.status.sl = 241;
 
-				//idle for one line
-				runppu(kLineTime);
+				//idle for pre NMI lines
+				runppu(preNMIlines * kLineTime);
 
 			} //FrameAdvance
 
@@ -463,12 +460,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//should write to those regs during that time, it needs
 				//to wait for vblank
 				ppur.status.sl = 241;
-				if (PAL)
-					runppu(70 * kLineTime);
-				else
-					runppu(20 * kLineTime);
+				runppu(postNMIlines * kLineTime);
 				ppur.status.sl = 0;
-				runppu(242 * kLineTime);
+				runppu(241 * kLineTime);
+				runppu(preNMIlines * kLineTime);
 				--ppudead;
 			}
 		}

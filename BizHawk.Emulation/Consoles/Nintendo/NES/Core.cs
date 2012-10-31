@@ -129,6 +129,51 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			apu = new APU(this);
 			if (magicSoundProvider != null) magicSoundProvider.Dispose();
 			magicSoundProvider = new MagicSoundProvider(this);
+			
+			// set up region
+			if (!string.IsNullOrEmpty(cart.system))
+			{
+				switch (cart.system)
+				{
+					case "NES-PAL":
+					case "NES-PAL-A":
+					case "NES-PAL-B":
+						ppu.region = PPU.Region.PAL;
+						CoreOutputComm.VsyncNum = 50;
+						CoreOutputComm.VsyncDen = 1;
+						cpu_sequence = cpu_sequence_PAL;
+						break;
+					case "NES-NTSC":
+					case "Famicom":
+						ppu.region = PPU.Region.NTSC;
+						cpu_sequence = cpu_sequence_NTSC;
+						break;
+					// there's no official name for these in bootgod, not sure what we should use
+					case "PC10":
+					case "VS":
+						ppu.region = PPU.Region.RGB;
+						cpu_sequence = cpu_sequence_NTSC;
+						break;
+					// this is in bootgod, but not used at all
+					case "Dendy":
+						ppu.region = PPU.Region.Dendy;
+						CoreOutputComm.VsyncNum = 50;
+						CoreOutputComm.VsyncDen = 1;
+						cpu_sequence = cpu_sequence_NTSC;
+						break;
+					default:
+						Console.WriteLine("Unrecognized NES region \"{0}\"!  Defaulting to NTSC.");
+						ppu.region = PPU.Region.NTSC;
+						cpu_sequence = cpu_sequence_NTSC;
+						break;
+				}
+			}
+			else
+			{
+				Console.WriteLine("Unknown NES region!  Defaulting to NTSC.");
+				ppu.region = PPU.Region.NTSC;
+				cpu_sequence = cpu_sequence_NTSC;
+			}
 
 			//fceux uses this technique, which presumably tricks some games into thinking the memory is randomized
 			for (int i = 0; i < 0x800; i++)
@@ -186,13 +231,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//sequence of ppu clocks per cpu clock: 4,3,3,3,3
 		//NTSC:
 		//sequence of ppu clocks per cpu clock: 3
+		ByteBuffer cpu_sequence;
 		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3});
 		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3});
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
 		protected void RunCpuOne()
 		{
 			cpu_stepcounter++;
-			if (cpu_stepcounter == cpu_sequence_NTSC[cpu_step])
+			if (cpu_stepcounter == cpu_sequence[cpu_step])
 			{
 				cpu_step++;
 				cpu_step &= 31;

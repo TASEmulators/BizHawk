@@ -13,6 +13,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		public partial class PPU
 		{
+			// this only handles region differences within the PPU
+			int preNMIlines;
+			int postNMIlines;
+			bool chopdot;
+			public enum Region { NTSC, PAL, Dendy, RGB };
+			Region _region;
+			public Region region { set { _region = value; SyncRegion(); } get { return _region; } }
+			void SyncRegion()
+			{
+				switch (region)
+				{
+					case Region.NTSC:
+						preNMIlines = 1; postNMIlines = 20; chopdot = true; break;
+					case Region.PAL:
+						preNMIlines = 1; postNMIlines = 70; chopdot = false; break;
+					case Region.Dendy:
+						preNMIlines = 51; postNMIlines = 20; chopdot = false; break;
+					case Region.RGB:
+						preNMIlines = 1; postNMIlines = 20; chopdot = false; break;
+				}
+			}
+
 			public class DebugCallback
 			{
 				public int Scanline;
@@ -169,7 +191,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			//hack
-			public bool PAL = false;
+			//public bool PAL = false;
 			//bool SPRITELIMIT = true;
 	
 		}
