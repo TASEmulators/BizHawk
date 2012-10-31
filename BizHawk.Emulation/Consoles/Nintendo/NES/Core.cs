@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//hardware/state
 		// any of the 3 cpus are drop in replacements
-		//public MOS6502X cpu;
-		public MOS6502X_CPP cpu;
+		public MOS6502X cpu;
+		//public MOS6502X_CPP cpu;
 		//public MOS6502XDouble cpu;
 		// dispose list as the native core can't keep track of its own stuff
 		List<System.Runtime.InteropServices.GCHandle> DisposeList = new List<System.Runtime.InteropServices.GCHandle>();
@@ -114,8 +114,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void HardReset()
 		{
-			//cpu = new MOS6502X((h) => DisposeList.Add(h));			
-			cpu = new MOS6502X_CPP((h) => DisposeList.Add(h));
+			cpu = new MOS6502X((h) => DisposeList.Add(h));			
+			//cpu = new MOS6502X_CPP((h) => DisposeList.Add(h));
 			//cpu = new MOS6502XDouble((h) => DisposeList.Add(h));
 			cpu.SetCallbacks(ReadMemory, ReadMemory, WriteMemory, (h) => DisposeList.Add(h));
 			cpu.BCD_Enabled = false;
