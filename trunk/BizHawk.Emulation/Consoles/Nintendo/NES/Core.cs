@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void HardReset()
 		{
-			cpu = new MOS6502X((h) => DisposeList.Add(h));			
+			cpu = new MOS6502X((h) => DisposeList.Add(h));
 			//cpu = new MOS6502X_CPP((h) => DisposeList.Add(h));
 			//cpu = new MOS6502XDouble((h) => DisposeList.Add(h));
 			cpu.SetCallbacks(ReadMemory, ReadMemory, WriteMemory, (h) => DisposeList.Add(h));
@@ -123,62 +123,51 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
 			ports = new IPortDevice[2];
-			ports[0] = new JoypadPortDevice(this,0);
-			ports[1] = new JoypadPortDevice(this,1);
+			ports[0] = new JoypadPortDevice(this, 0);
+			ports[1] = new JoypadPortDevice(this, 1);
 
 			apu = new APU(this);
 			if (magicSoundProvider != null) magicSoundProvider.Dispose();
-			//magicSoundProvider = new MagicSoundProvider(this);
-			
+
 			// set up region
-			if (!string.IsNullOrEmpty(cart.system))
+			switch (cart.system)
 			{
-				switch (cart.system)
-				{
-					case "NES-PAL":
-					case "NES-PAL-A":
-					case "NES-PAL-B":
-						ppu.region = PPU.Region.PAL;
-						CoreOutputComm.VsyncNum = 50;
-						CoreOutputComm.VsyncDen = 1;
-						cpu_sequence = cpu_sequence_PAL;
-						magicSoundProvider = new MagicSoundProvider(this, 1662607);
-						break;
-					case "NES-NTSC":
-					case "Famicom":
-						ppu.region = PPU.Region.NTSC;
-						cpu_sequence = cpu_sequence_NTSC;
-						magicSoundProvider = new MagicSoundProvider(this, 1789773);
-						break;
-					// there's no official name for these in bootgod, not sure what we should use
-					case "PC10":
-					case "VS":
-						ppu.region = PPU.Region.RGB;
-						cpu_sequence = cpu_sequence_NTSC;
-						magicSoundProvider = new MagicSoundProvider(this, 1789773);
-						break;
-					// this is in bootgod, but not used at all
-					case "Dendy":
-						ppu.region = PPU.Region.Dendy;
-						CoreOutputComm.VsyncNum = 50;
-						CoreOutputComm.VsyncDen = 1;
-						cpu_sequence = cpu_sequence_NTSC;
-						magicSoundProvider = new MagicSoundProvider(this, 1773448);
-						break;
-					default:
-						Console.WriteLine("Unrecognized NES region \"{0}\"!  Defaulting to NTSC.");
-						ppu.region = PPU.Region.NTSC;
-						cpu_sequence = cpu_sequence_NTSC;
-						magicSoundProvider = new MagicSoundProvider(this, 1789773);
-						break;
-				}
-			}
-			else
-			{
-				Console.WriteLine("Unknown NES region!  Defaulting to NTSC.");
-				ppu.region = PPU.Region.NTSC;
-				cpu_sequence = cpu_sequence_NTSC;
-				magicSoundProvider = new MagicSoundProvider(this, 1789773);
+				case "NES-PAL":
+				case "NES-PAL-A":
+				case "NES-PAL-B":
+					ppu.region = PPU.Region.PAL;
+					CoreOutputComm.VsyncNum = 50;
+					CoreOutputComm.VsyncDen = 1;
+					cpu_sequence = cpu_sequence_PAL;
+					magicSoundProvider = new MagicSoundProvider(this, 1662607);
+					break;
+				case "NES-NTSC":
+				case "Famicom":
+					ppu.region = PPU.Region.NTSC;
+					cpu_sequence = cpu_sequence_NTSC;
+					magicSoundProvider = new MagicSoundProvider(this, 1789773);
+					break;
+				// there's no official name for these in bootgod, not sure what we should use
+				case "PC10":
+				case "VS":
+					ppu.region = PPU.Region.RGB;
+					cpu_sequence = cpu_sequence_NTSC;
+					magicSoundProvider = new MagicSoundProvider(this, 1789773);
+					break;
+				// this is in bootgod, but not used at all
+				case "Dendy":
+					ppu.region = PPU.Region.Dendy;
+					CoreOutputComm.VsyncNum = 50;
+					CoreOutputComm.VsyncDen = 1;
+					cpu_sequence = cpu_sequence_NTSC;
+					magicSoundProvider = new MagicSoundProvider(this, 1773448);
+					break;
+				case null:
+					Console.WriteLine("Unknown NES system!  Defaulting to NTSC.");
+					goto case "NES-NTSC";
+				default:
+					Console.WriteLine("Unrecognized NES system \"{0}\"!  Defaulting to NTSC.", cart.system);
+					goto case "NES-NTSC";
 			}
 
 			//fceux uses this technique, which presumably tricks some games into thinking the memory is randomized
