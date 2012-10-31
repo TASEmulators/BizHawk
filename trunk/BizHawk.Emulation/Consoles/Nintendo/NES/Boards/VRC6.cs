@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				irq_counter++;
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
 			if (!irq_enabled) return;
 
@@ -253,8 +253,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else
 			{
-				irq_prescaler--;
-				if (irq_prescaler == 0)
+				irq_prescaler -= 3;
+				if (irq_prescaler <= 0)
 				{
 					irq_prescaler += 341;
 					ClockIRQ();
