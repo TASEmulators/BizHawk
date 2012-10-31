@@ -177,6 +177,17 @@ namespace BizHawk.Emulation.CPUs.M6502
 			oldright = sssn;
 		}
 
+		void MtoN()
+		{
+			StringWriter sm = new StringWriter();
+			Serializer ssm = new Serializer(sm);
+			m.SyncState(ssm);
+			sm.Flush();
+			StringReader sn = new StringReader(sm.ToString());
+			Serializer ssn = new Serializer(sn);
+			n.SyncState(ssn);
+		}
+
 		public string State()
 		{
 			SyncUp();
@@ -201,8 +212,17 @@ namespace BizHawk.Emulation.CPUs.M6502
 		{
 			// doesn't work quite as expected because you can't rewind a ser
 			SyncUp();
-			m.SyncState(ser);
-			n.SyncState(ser);
+			if (ser.IsWriter)
+			{
+				// since SyncUp() guarantees that states are the same, we only need write one
+				m.SyncState(ser);
+			}
+			else
+			{
+				// daisy chain the state
+				m.SyncState(ser);
+				MtoN();
+			}
 			SyncUp();
 		}
 
