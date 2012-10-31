@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					}
 
 					// Reset missile, if desired
-					if (scanCnt == 0x04 && missile.resetToPlayer)
+					if (scanCnt == 0x04 && hPosCnt <= 16 && missile.resetToPlayer)
 					{
 						missile.hPosCnt = 0;
 					}
