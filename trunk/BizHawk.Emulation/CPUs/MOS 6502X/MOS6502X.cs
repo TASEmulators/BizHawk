@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 	{
 		public MOS6502X(Action<System.Runtime.InteropServices.GCHandle> DisposeBuilder = null)
 		{
+			InitOpcodeHandlers();
 			Reset();
 		}
 
