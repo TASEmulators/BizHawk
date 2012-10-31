@@ -64,12 +64,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ISoundProvider output;
 			NES nes;
 
-			public MagicSoundProvider(NES nes)
+			public MagicSoundProvider(NES nes, uint infreq)
 			{
 				this.nes = nes;
 				var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
 				//1.789773mhz NTSC
-				resampler = new Sound.Utilities.SpeexResampler(2, 1789773, 44100*APU.DECIMATIONFACTOR, 1789773, 44100, actualMetaspu.buffer.enqueue_samples);
+				resampler = new Sound.Utilities.SpeexResampler(2, infreq, 44100 * APU.DECIMATIONFACTOR, infreq, 44100, actualMetaspu.buffer.enqueue_samples);
 				output = new Sound.Utilities.DCFilter(actualMetaspu);
 			}
 
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			apu = new APU(this);
 			if (magicSoundProvider != null) magicSoundProvider.Dispose();
-			magicSoundProvider = new MagicSoundProvider(this);
+			//magicSoundProvider = new MagicSoundProvider(this);
 			
 			// set up region
 			if (!string.IsNullOrEmpty(cart.system))
@@ -142,17 +142,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						CoreOutputComm.VsyncNum = 50;
 						CoreOutputComm.VsyncDen = 1;
 						cpu_sequence = cpu_sequence_PAL;
+						magicSoundProvider = new MagicSoundProvider(this, 1662607);
 						break;
 					case "NES-NTSC":
 					case "Famicom":
 						ppu.region = PPU.Region.NTSC;
 						cpu_sequence = cpu_sequence_NTSC;
+						magicSoundProvider = new MagicSoundProvider(this, 1789773);
 						break;
 					// there's no official name for these in bootgod, not sure what we should use
 					case "PC10":
 					case "VS":
 						ppu.region = PPU.Region.RGB;
 						cpu_sequence = cpu_sequence_NTSC;
+						magicSoundProvider = new MagicSoundProvider(this, 1789773);
 						break;
 					// this is in bootgod, but not used at all
 					case "Dendy":
@@ -160,11 +163,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						CoreOutputComm.VsyncNum = 50;
 						CoreOutputComm.VsyncDen = 1;
 						cpu_sequence = cpu_sequence_NTSC;
+						magicSoundProvider = new MagicSoundProvider(this, 1773448);
 						break;
 					default:
 						Console.WriteLine("Unrecognized NES region \"{0}\"!  Defaulting to NTSC.");
 						ppu.region = PPU.Region.NTSC;
 						cpu_sequence = cpu_sequence_NTSC;
+						magicSoundProvider = new MagicSoundProvider(this, 1789773);
 						break;
 				}
 			}
@@ -173,6 +178,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Console.WriteLine("Unknown NES region!  Defaulting to NTSC.");
 				ppu.region = PPU.Region.NTSC;
 				cpu_sequence = cpu_sequence_NTSC;
+				magicSoundProvider = new MagicSoundProvider(this, 1789773);
 			}
 
 			//fceux uses this technique, which presumably tricks some games into thinking the memory is randomized
