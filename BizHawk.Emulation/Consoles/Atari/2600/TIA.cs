@@ -1169,11 +1169,58 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x10) // RESP0
 			{
-				player0.resetCnt = 0;
+				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
+				if (hsyncCnt < 69)
+				{
+					player0.hPosCnt = 0;
+					player0.resetCnt = 0;
+					player0.reset = true;
+				}
+				else if (hsyncCnt == 69)
+				{
+					player0.resetCnt = 3;
+				}
+				else if (hsyncCnt == 72)
+				{
+					player0.resetCnt = 2;
+				}
+				else if (hsyncCnt == 75)
+				{
+					player0.resetCnt = 1;
+				}
+				else
+				{
+					player0.resetCnt = 0;
+				}
+				//player0.resetCnt = 0;
 			}
 			else if (maskedAddr == 0x11) // RESP1
 			{
-				player1.resetCnt = 0;
+				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
+				// This fixes some graphic glitches with Frostbite
+				if (hsyncCnt < 69)
+				{
+					player1.hPosCnt = 0;
+					player1.resetCnt = 0;
+					player1.reset = true;
+				}
+				else if (hsyncCnt == 69)
+				{
+					player1.resetCnt = 3;
+				}
+				else if (hsyncCnt == 72)
+				{
+					player1.resetCnt = 2;
+				}
+				else if (hsyncCnt == 75)
+				{
+					player1.resetCnt = 1;
+				}
+				else
+				{
+					player1.resetCnt = 0;
+				}
+				//player1.resetCnt = 0;
 			}
 			else if (maskedAddr == 0x12) // RESM0
 			{
