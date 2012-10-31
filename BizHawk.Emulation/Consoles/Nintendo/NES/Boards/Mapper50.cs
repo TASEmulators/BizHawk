@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.SyncIRQ(irq_ready);
 		}
 
-		private void IRQ_Tick()
+		public override void  ClockCPU()
 		{
 			if (irq_enable)
 			{
@@ -100,6 +100,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		/*
 		public override void ClockPPU()
 		{
 			ppu_cyclecount++;
@@ -109,6 +110,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				IRQ_Tick();
 				base.ClockPPU();
 			}
-		}
+		}*/
 	}
 }

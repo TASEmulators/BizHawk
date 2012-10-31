@@ -59,14 +59,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
 			if (irqactive)
 			{
 				irqcnt++;
-				if (irqcnt >= 4096 * 3)
+				if (irqcnt >= 4096)
 				{
-					irqcnt = 4096 * 3;
+					irqcnt = 4096;
 					IRQSignal = true;
 				}
 			}

@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			IRQSignal = irq_asserted;
 		}
 
-		void ClockCPU()
+		public override void ClockCPU()
 		{
 			irq_counter--;
 			if (irq_counter == 0x0000)
@@ -179,6 +179,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		/*
 		public override void ClockPPU()
 		{
 			clock_counter++;
@@ -187,7 +188,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ClockCPU();
 				clock_counter = 0;
 			}
-		}
+		}*/
 
 		public override byte ReadPRG(int addr)
 		{

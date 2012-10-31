@@ -222,6 +222,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 
 				apu.RunOne();
+				board.ClockCPU();
 				ppu.PostCpuInstructionOne();
 			}
 		}

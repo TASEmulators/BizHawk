@@ -79,16 +79,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ROM[addr | prg << 13];
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
 			if (irqenable)
 			{
 				irqcnt++;
 
-				if (irqcnt >= 32768 * 3)
-					irqcnt -= 32768 * 3;
+				if (irqcnt >= 32768)
+					irqcnt -= 32768;
 
-				IRQSignal = irqcnt >= 24576 * 3;
+				IRQSignal = irqcnt >= 24576;
 			}
 		}
 
