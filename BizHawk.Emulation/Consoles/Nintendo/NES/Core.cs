@@ -535,7 +535,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else if (addr < 0x6000)
 			{
-				Console.WriteLine("{0:x4}:{1:x2}", addr, value);
 				if (vs_io && addr == 0x4020 && (value & 1) != 0)
 				{
 					// acknowledge coin insertion
