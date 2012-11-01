@@ -1646,7 +1646,7 @@ namespace BizHawk.MultiClient
 								nextEmulator = a78;
 								break;
 							case "C64":
-								C64 c64 = new C64(game, rom.RomData); //TODO: need to load in BIOSes?
+								C64 c64 = new C64(game, rom.RomData, rom.Extension); //TODO: need to load in BIOSes?
 								nextEmulator = c64;
 								break;
 						}
