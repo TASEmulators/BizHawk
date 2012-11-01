@@ -74,9 +74,9 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 			}
 			else if (addr < 0x2000)
 			{
-				addr -= 0x1A00;
-				addr &= 0x5FF;
-				int offset = core.rom.Length - 0x0600;
+				addr -= 0x1800;
+				addr &= 0x7FF;
+				int offset = core.rom.Length - 0x0800;
 				return core.rom[offset + addr]; //Fixed to last 1.5K
 			}
 			else
