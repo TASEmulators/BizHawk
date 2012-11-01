@@ -400,6 +400,11 @@ namespace BizHawk.MultiClient
 			{
 				return "|.|";
 			}
+			if (ControlType == "Atari 7800 Basic Controller")
+			{
+				return "|.|"; //TODO
+			}
+
 			else if (ControlType == "SNES Controller")
 			{
 				return GetSNESControllersAsMnemonic();
