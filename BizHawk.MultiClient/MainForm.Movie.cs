@@ -253,12 +253,25 @@ namespace BizHawk.MultiClient
 			{
 				if (Global.Emulator.Frame >= Global.MovieSession.Movie.Frames)
 				{
-					Global.MovieSession.Movie.Finish();
+					if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed)
+					{
+						Global.MovieSession.Movie.CaptureState();
+						Global.MovieSession.LatchInputFromLog();
+						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+					}
+					else
+					{
+						Global.MovieSession.Movie.Finish();
+					}
 				}
 				else
 				{
 					Global.MovieSession.Movie.CaptureState();
 					Global.MovieSession.LatchInputFromLog();
+					if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed)
+					{
+						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+					}
 				}
 			}
 
