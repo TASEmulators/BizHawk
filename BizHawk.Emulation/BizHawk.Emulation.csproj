@@ -76,6 +76,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Buffer.cs" />
+    <Compile Include="Computers\Commodore64\C64.core.cs" />
+    <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />
@@ -516,6 +518,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Computers\Commodore64\docs\" />
     <Folder Include="Consoles\PSX\" />
   </ItemGroup>
   <ItemGroup>

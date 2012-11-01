@@ -154,6 +154,12 @@ namespace BizHawk
 				case ".COL": Game.System = "COLV"; break;
 				case ".ROM":
 				case ".INT": Game.System = "INTV"; break;
+				case ".PRG":
+				case ".D64":
+				case ".G64":
+				case ".CRT":
+					Game.System = "C64";
+					break;
 			}
 
 			Game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');
