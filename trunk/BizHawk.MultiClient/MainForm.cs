@@ -17,6 +17,7 @@ using BizHawk.MultiClient.tools;
 using System.Collections.Generic;
 using BizHawk.Emulation.Consoles.Intellivision;
 using BizHawk.Emulation.Consoles.GB;
+using BizHawk.Emulation.Computers.Commodore64;
 
 namespace BizHawk.MultiClient
 {
@@ -1123,6 +1124,7 @@ namespace BizHawk.MultiClient
 				case "GBC": str += "Game Boy Color"; break;
 				case "A26": str += "Atari 2600"; break;
 				case "A78": str += "Atari 7800"; break;
+				case "C64": str += "Commodore 64"; break;
 			}
 
 			if (INTERIM) str += " (interim)";
@@ -1364,7 +1366,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78" };
+				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "C64" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1642,6 +1644,9 @@ namespace BizHawk.MultiClient
 								
 								Atari7800 a78 = new Atari7800(game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS);
 								nextEmulator = a78;
+								break;
+							case "C64":
+								C64 c64 = new C64(game, rom.RomData); //TODO: need to load in BIOSes?
 								break;
 						}
 					}
@@ -3005,7 +3010,7 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Super NES", "*.smc;*.sfc;%ARCH%",
@@ -3021,6 +3026,7 @@ namespace BizHawk.MultiClient
 					"Colecovision (very experimental)", "*.col;%ARCH%",
 					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 					"PSX Executables (very experimental)", "*.exe",
+					"Commodore 64 (very experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 					"All Files", "*.*");
 			}
 			else
