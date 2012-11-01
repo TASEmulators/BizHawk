@@ -8,6 +8,7 @@ namespace BizHawk.MultiClient
 		public byte[] RomData;
 		public byte[] FileData;
 		public GameInfo GameInfo;
+		public string Extension;
 
 		private const int BankSize = 1024;
 
@@ -22,7 +23,7 @@ namespace BizHawk.MultiClient
 
 			var stream = file.GetStream();
 			FileData = Util.ReadAllBytes(stream);
-
+			Extension = file.Extension;
 			// if we're offset exactly 512 bytes from a 1024-byte boundary, 
 			// assume we have a header of that size. Otherwise, assume it's just all rom.
 			// Other 'recognized' header sizes may need to be added.

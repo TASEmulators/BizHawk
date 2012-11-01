@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class  C64 : IEmulator
 	{
-		public C64(GameInfo game, byte[] rom)
+		public C64(GameInfo game, byte[] rom, string romextension)
 		{
 			videoProvider = new MyVideoProvider(this);
 			SetupMemoryDomains();
