@@ -195,6 +195,8 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
 				string str = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame);
