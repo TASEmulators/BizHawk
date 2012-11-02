@@ -269,7 +269,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					cpu.IRQ = _irq_apu || board.IRQSignal;
 					if (CoreInputComm.Tracer.Enabled)
 					{
-						CoreInputComm.Tracer.Put(cpu.State());
+						CoreInputComm.Tracer.Put(cpu.TraceState());
 					}
 					cpu.ExecuteOne();
 				}

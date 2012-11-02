@@ -23,6 +23,7 @@ namespace BizHawk
 			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value));
 			memoryDomains = domains.AsReadOnly();
 			CoreOutputComm = new CoreOutputComm();
+			CoreOutputComm.CpuTraceAvailable = true;
 			CoreInputComm = new CoreInputComm();
 			this.rom = rom;
 			this.game = game;

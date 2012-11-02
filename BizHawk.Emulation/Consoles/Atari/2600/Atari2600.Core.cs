@@ -215,6 +215,8 @@ namespace BizHawk
 				tia.execute(1);
 
 				m6532.timer.tick();
+				if (CoreInputComm.Tracer.Enabled)
+					CoreInputComm.Tracer.Put(cpu.TraceState());
 				cpu.ExecuteOne();
 				//if (cpu.PendingCycles <= 0)
 				//{
