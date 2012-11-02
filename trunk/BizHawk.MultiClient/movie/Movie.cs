@@ -515,6 +515,7 @@ namespace BizHawk.MultiClient
 			{
 				byte[] state = Global.Emulator.SaveStateBinary();
 				Log.AddState(state);
+				GC.Collect();
 			}
 		}
 
