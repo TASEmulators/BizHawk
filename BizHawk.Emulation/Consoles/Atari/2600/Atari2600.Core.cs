@@ -104,6 +104,15 @@ namespace BizHawk
 			return temp;
 		}
 
+		public byte PeekMemory(ushort addr)
+		{
+			//TODO - this is dangerous, because at least, the lag flag can get set by a read
+
+			byte temp = mapper.ReadMemory((ushort)(addr & 0x1FFF));
+
+			return temp;
+		}
+
 		public void WriteMemory(ushort addr, byte value)
 		{
 			mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
@@ -154,6 +163,7 @@ namespace BizHawk
 			//cpu.debug = true;
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
+			cpu.PeekMemory = PeekMemory;
 			cpu.DummyReadMemory = ReadMemory;
 
 			// Setup TIA

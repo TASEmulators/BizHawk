@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu = new MOS6502X((h) => DisposeList.Add(h));
 			//cpu = new MOS6502X_CPP((h) => DisposeList.Add(h));
 			//cpu = new MOS6502XDouble((h) => DisposeList.Add(h));
-			cpu.SetCallbacks(ReadMemory, ReadMemory, WriteMemory, (h) => DisposeList.Add(h));
+			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory, (h) => DisposeList.Add(h));
 			cpu.BCD_Enabled = false;
 			ppu = new PPU(this);
 			ram = new byte[0x800];
@@ -303,6 +303,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return 0xFF;
 		}
 
+		public byte PeekReg(int addr)
+		{
+			switch (addr)
+			{
+				case 0x4000: case 0x4001: case 0x4002: case 0x4003:
+				case 0x4004: case 0x4005: case 0x4006: case 0x4007:
+				case 0x4008: case 0x4009: case 0x400A: case 0x400B:
+				case 0x400C: case 0x400D: case 0x400E: case 0x400F:
+				case 0x4010: case 0x4011: case 0x4012: case 0x4013:
+					return apu.PeekReg(addr);
+				case 0x4014: /*OAM DMA*/ break;
+				case 0x4015: return apu.PeekReg(addr); 
+				case 0x4016:
+				case 0x4017:
+					return peek_joyport(addr);
+				default:
+					//Console.WriteLine("read register: {0:x4}", addr);
+					break;
+
+			}
+			return 0xFF;
+		}
+
 		void WriteReg(int addr, byte val)
 		{
 			switch (addr)
@@ -336,14 +359,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		byte read_joyport(int addr)
 		{
 			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			return handle_read_joyport(addr, false);
+		}
+
+		byte peek_joyport(int addr)
+		{
+			return handle_read_joyport(addr, true);
+		}
+
+		byte handle_read_joyport(int addr, bool peek)
+		{
 			//read joystick port
 			//many todos here
 			lagged = false;
 			byte ret;
 			if (addr == 0x4016)
-				ret = ports[vs_io ? 1 : 0].Read();
+				ret = ports[vs_io ? 1 : 0].Read(peek);
 			else
-				ret = ports[vs_io ? 0 : 1].Read();
+				ret = ports[vs_io ? 0 : 1].Read(peek);
 			if (vs_io)
 			{
 				if (addr == 0x4016)
@@ -442,6 +475,39 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				ApplyGameGenie(addr, value, null); //Apply a cheat to the remaining regions since they have no direct access, this may not be the best way to handle this situation
 			}
+		}
+
+		public byte PeekMemory(ushort addr)
+		{
+			byte ret;
+
+			if (addr >= 0x4020)
+			{
+				ret = board.PeekCart(addr); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+			}
+			else if (addr < 0x0800)
+			{
+				ret = ram[addr];
+			}
+			else if (addr < 0x1000)
+			{
+				ret = ram[addr & 0x7FF];
+			}
+			else if (addr < 0x4000)
+			{
+				ret = ppu.ReadReg(addr & 7);
+			}
+			else if (addr < 0x4020)
+			{
+				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
+			}
+			else
+			{
+				throw new Exception("Woopsie-doodle!");
+				ret = 0xFF;
+			}
+
+			return ret;
 		}
 
 		//old data bus values from previous reads
