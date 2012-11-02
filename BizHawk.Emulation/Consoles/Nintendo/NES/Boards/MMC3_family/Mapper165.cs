@@ -39,6 +39,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("latch1", ref latch1);
 		}
 
+		// same as ReadPPU, but doesn't process latches
+		public override byte PeekPPU(int addr)
+		{
+			byte ret;
+			if (addr < 0x2000)
+			{
+
+				int bank = mmc3.regs[addr < 0x1000 ? latch0 ? 1 : 0 : latch1 ? 4 : 2];
+				if (bank == 0)
+					ret = VRAM[addr & 0xfff];
+				else
+					ret = VROM[(addr & 0xfff) + (((bank >> 2) & real_chr_mask) << 12)];
+			}
+			else
+				ret = base.ReadPPU(addr);
+			return ret;
+		}
+
 		public override byte ReadPPU(int addr)
 		{
 			byte ret;
