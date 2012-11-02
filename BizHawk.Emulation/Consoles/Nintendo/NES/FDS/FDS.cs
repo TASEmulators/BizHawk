@@ -308,6 +308,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ret;
 		}
 
+		public override byte PeekCart(int addr)
+		{
+			if (addr >= 0x6000)
+				return base.PeekCart(addr);
+			else
+				return 0; // lazy
+		}
+
 		public override void ClockCPU()
 		{
 			if ((timerreg & 2) != 0 && timervalue > 0)
