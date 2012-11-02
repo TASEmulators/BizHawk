@@ -999,8 +999,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 				}
 			}
 		}
-
-		public byte ReadMemory(ushort addr)
+		
+		public byte ReadMemory(ushort addr, bool peek)
 		{
 			ushort maskedAddr = (ushort)(addr & 0x000F);
 			if (maskedAddr == 0x00) // CXM0P
@@ -1050,11 +1050,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x0C) // INPT4
 			{
-				return (byte)((core.ReadControls1() & 0x08) != 0 ? 0x80 : 0x00);
+				return (byte)((core.ReadControls1(peek) & 0x08) != 0 ? 0x80 : 0x00);
 			}
 			else if (maskedAddr == 0x0D) // INPT5
 			{
-				return (byte)((core.ReadControls2() & 0x08) != 0 ? 0x80 : 0x00);
+				return (byte)((core.ReadControls2(peek) & 0x08) != 0 ? 0x80 : 0x00);
 			}
 
 			return 0x00;

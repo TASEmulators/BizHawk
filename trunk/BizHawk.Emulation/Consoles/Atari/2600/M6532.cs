@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			timer.prescalerCount = 1 << timer.prescalerShift;
 		}
 
-		public byte ReadMemory(ushort addr)
+		public byte ReadMemory(ushort addr, bool peek)
 		{
 			// Register Select (?)
 			bool RS = (addr & 0x0200) != 0;
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				{
 					// Read Output reg A
 					// Combine readings from player 1 and player 2
-					byte temp = (byte)(core.ReadControls1() & 0xF0 | ((core.ReadControls2() >> 4) & 0x0F));
+					byte temp = (byte)(core.ReadControls1(peek) & 0xF0 | ((core.ReadControls2(peek) >> 4) & 0x0F));
 					temp = (byte)(temp & ~ddra);
 					return temp;
 				}
@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				else if (registerAddr == 0x02)
 				{
 					// Read Output reg B
-					byte temp = core.ReadConsoleSwitches();
+					byte temp = core.ReadConsoleSwitches(peek);
 					temp = (byte)(temp & ~ddrb);
 					return temp;
 
