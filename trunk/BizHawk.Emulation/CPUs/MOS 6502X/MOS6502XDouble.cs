@@ -34,6 +34,12 @@ namespace BizHawk.Emulation.CPUs.M6502
 				reads.Enqueue(ret);
 				return ret;
 			},
+			delegate(ushort addr)
+			{
+				byte ret = PeekMemory(addr);
+				reads.Enqueue(ret);
+				return ret;
+			},
 			delegate(ushort addr, byte value)
 			{
 				writes.Enqueue(value);
@@ -108,18 +114,21 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 		public Func<ushort, byte> ReadMemory; //{ set { m.ReadMemory = value; n.ReadMemory = value; } }
 		public Func<ushort, byte> DummyReadMemory; //{ set { m.DummyReadMemory = value; n.DummyReadMemory = value; } }
+		public Func<ushort, byte> PeekMemory; //{ set { m.ReadMemory = value; n.ReadMemory = value; } }
 		public Action<ushort, byte> WriteMemory; //{ set { m.WriteMemory = value; n.WriteMemory = value; } }
 
 		public void SetCallbacks
 		(
 			Func<ushort, byte> ReadMemory,
 			Func<ushort, byte> DummyReadMemory,
+			Func<ushort, byte> PeekMemory,
 			Action<ushort, byte> WriteMemory,
 			Action<System.Runtime.InteropServices.GCHandle> DisposeBuilder
 		)
 		{
 			this.ReadMemory = ReadMemory;
 			this.DummyReadMemory = DummyReadMemory;
+			this.PeekMemory = PeekMemory;
 			this.WriteMemory = WriteMemory;
 		}
 

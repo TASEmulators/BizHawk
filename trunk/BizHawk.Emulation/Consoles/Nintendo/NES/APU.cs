@@ -926,13 +926,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
-			public byte ReadReg(int addr)
+
+			public byte PeekReg(int addr)
 			{
 				switch (addr)
 				{
 					case 0x4015:
 						{
-							//notice a missing bit here. should properly emulate with empty bus
+							//notice a missing bit here. should properly emulate with empty / Data bus
 							//if an interrupt flag was set at the same moment of the read, it will read back as 1 but it will not be cleared. 
 							int dmc_nonzero = dmc.IsLenCntNonZero() ? 1 : 0;
 							int noise_nonzero = noise.IsLenCntNonZero() ? 1 : 0;
@@ -940,10 +941,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							int pulse1_nonzero = pulse[1].IsLenCntNonZero() ? 1 : 0;
 							int pulse0_nonzero = pulse[0].IsLenCntNonZero() ? 1 : 0;
 							int ret = ((dmc_irq ? 1 : 0) << 7) | ((sequencer_irq ? 1 : 0) << 6) | (dmc_nonzero << 4) | (noise_nonzero << 3) | (tri_nonzero << 2) | (pulse1_nonzero << 1) | (pulse0_nonzero);
+							return (byte)ret;
+						}
+					default:
+						//don't return 0xFF here or SMB will break
+						return 0x00;
+				}
+			}
+
+			public byte ReadReg(int addr)
+			{
+				switch (addr)
+				{
+					case 0x4015:
+						{
+							byte ret = PeekReg(0x4015);
 							//Console.WriteLine("{0} {1,5} $4015 clear irq, was at {2}", nes.Frame, sequencer_counter, sequencer_irq);
 							sequencer_irq = false;
 							SyncIRQ();
-							return (byte)ret;
+							return ret;
 						}
 					default:
 						//don't return 0xFF here or SMB will break

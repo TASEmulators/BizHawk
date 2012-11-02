@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 		public string State()
 		{
 			int notused;
-			string a = string.Format("{0:X4}  {1:X2} {2} ", PC, ReadMemory(PC), Disassemble(PC, out notused)).PadRight(30);
+			string a = string.Format("{0:X4}  {1:X2} {2} ", PC, PeekMemory(PC), Disassemble(PC, out notused)).PadRight(30);
 			string b = string.Format("A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}", A, X, Y, P, S, TotalExecutedCycles);
 			string val = a + b + "   ";
 			if (FlagN) val = val + "N";
@@ -167,18 +167,21 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 		public Func<ushort, byte> ReadMemory;
 		public Func<ushort, byte> DummyReadMemory;
+		public Func<ushort, byte> PeekMemory;
 		public Action<ushort, byte> WriteMemory;
 
 		public void SetCallbacks
 		(
 			Func<ushort, byte> ReadMemory,
 			Func<ushort, byte> DummyReadMemory,
+			Func<ushort, byte> PeekMemory,
 			Action<ushort, byte> WriteMemory,
 			Action<System.Runtime.InteropServices.GCHandle> DisposeBuilder
 		)
 		{
 			this.ReadMemory = ReadMemory;
 			this.DummyReadMemory = DummyReadMemory;
+			this.PeekMemory = PeekMemory;
 			this.WriteMemory = WriteMemory;
 		}
 

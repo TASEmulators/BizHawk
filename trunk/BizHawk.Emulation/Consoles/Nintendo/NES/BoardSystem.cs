@@ -26,6 +26,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//gets called once per CPU clock; typically for boards with M2 counters
 			void ClockCPU();
 
+			byte PeekCart(int addr);
+
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr); byte PeekPPU(int addr);
 			void AddressPPU(int addr);
@@ -234,6 +236,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					return NES.CIRAM[ApplyMirroring(addr)];
 				}
+			}
+
+			/// <summary>
+			/// derived classes should override this if they have peek-unsafe logic
+			/// </summary>
+			public virtual byte PeekCart(int addr)
+			{
+				byte ret;
+				if (addr >= 0x8000)
+				{
+					ret = ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+				}
+				else if (addr < 0x6000)
+				{
+					ret = ReadEXP(addr - 0x4000);
+				}
+				else
+				{
+					ret = ReadWRAM(addr - 0x6000);
+				}
+
+				return ret;
 			}
 
 			public virtual byte[] SaveRam

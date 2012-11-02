@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		interface IPortDevice
 		{
 			void Write(int value);
-			byte Read();
+			byte Read(bool peek);
 			void Update();
 		}
 
@@ -284,10 +284,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					Strobe();
 				state = value;
 			}
-			public override byte Read()
+			public override byte Read(bool peek)
 			{
 				int ret = value & 1;
-				value >>= 1;
+				if(!peek) value >>= 1;
 				return (byte)(ret | nes.DB);
 			}
 			public override void Update()
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual void Write(int value)
 			{
 			}
-			public virtual byte Read()
+			public virtual byte Read(bool peek)
 			{
 				return 0xFF;
 			}
