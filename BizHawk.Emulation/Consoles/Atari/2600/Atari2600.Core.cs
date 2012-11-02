@@ -63,11 +63,28 @@ namespace BizHawk
 			addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
-				return tia.ReadMemory(addr);
+				return tia.ReadMemory(addr, false);
 			}
 			else if ((addr & 0x1080) == 0x0080)
 			{
-				return m6532.ReadMemory(addr);
+				return m6532.ReadMemory(addr, false);
+			}
+			else
+			{
+				return rom[addr & 0x0FFF];
+			}
+		}
+
+		public byte BasePeekMemory(ushort addr)
+		{
+			addr = (ushort)(addr & 0x1FFF);
+			if ((addr & 0x1080) == 0)
+			{
+				return tia.ReadMemory(addr, true);
+			}
+			else if ((addr & 0x1080) == 0x0080)
+			{
+				return m6532.ReadMemory(addr, true);
 			}
 			else
 			{
@@ -106,8 +123,6 @@ namespace BizHawk
 
 		public byte PeekMemory(ushort addr)
 		{
-			//TODO - this is dangerous, because at least, the lag flag can get set by a read
-
 			byte temp = mapper.ReadMemory((ushort)(addr & 0x1FFF));
 
 			return temp;
@@ -217,7 +232,7 @@ namespace BizHawk
 			//if (render == false) return;
 		}
 
-		public byte ReadControls1()
+		public byte ReadControls1(bool peek)
 		{
 			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			byte value = 0xFF;
@@ -227,11 +242,11 @@ namespace BizHawk
 			if (Controller["P1 Left"]) value &= 0xBF;
 			if (Controller["P1 Right"]) value &= 0x7F;
 			if (Controller["P1 Button"]) value &= 0xF7;
-			_islag = false;
+			if(!peek) _islag = false;
 			return value;
 		}
 
-		public byte ReadControls2()
+		public byte ReadControls2(bool peek)
 		{
 			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
 			byte value = 0xFF;
@@ -241,7 +256,7 @@ namespace BizHawk
 			if (Controller["P2 Left"]) value &= 0xBF;
 			if (Controller["P2 Right"]) value &= 0x7F;
 			if (Controller["P2 Button"]) value &= 0xF7;
-			_islag = false;
+			if (!peek) _islag = false;
 			return value;
 		}
 
@@ -253,8 +268,9 @@ namespace BizHawk
 		public void SetP0Diff(bool setting) { p0difficulty = setting; }
 		public void SetP1Diff(bool setting) { p1difficulty = setting; }
 
-		public byte ReadConsoleSwitches()
+		public byte ReadConsoleSwitches(bool peek)
 		{
+			//TODO - zeromus isnt sure this should clear the lag flag
 			byte value = 0xFF;
 
 			bool select = Controller["Select"];
@@ -265,7 +281,7 @@ namespace BizHawk
 			if (bw) value &= 0xF7;
 			if (p0difficulty) value &= 0xBF;
 			if (p1difficulty) value &= 0x7F;
-			_islag = false;
+			if(!peek) _islag = false;
 			return value;
 		}
 	}
@@ -274,6 +290,7 @@ namespace BizHawk
 	{
 		public Atari2600 core;
 		public virtual byte ReadMemory(ushort addr) { return core.BaseReadMemory(addr); }
+		public virtual byte PeekMemory(ushort addr) { return core.BasePeekMemory(addr); }
 		public virtual void WriteMemory(ushort addr, byte value) { core.BaseWriteMemory(addr, value); }
 		public virtual void SyncState(Serializer ser) { }
 		public virtual void Dispose() { }
