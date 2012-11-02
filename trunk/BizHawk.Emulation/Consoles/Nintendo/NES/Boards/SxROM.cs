@@ -207,25 +207,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//configuration
 		protected int prg_mask, chr_mask;
 		protected int vram_mask;
-		const int pputimeout = 4; // i don't know if this is right, but anything lower will not boot Bill & Ted
 		bool disablemirror = false; // mapper 171: mmc1 without mirroring control
 
 		//state
 		public MMC1 mmc1;
-		/// <summary>number of cycles since last WritePRG()</summary>
-		uint ppuclock;
-
-		public override void ClockPPU()
-		{
-			ppuclock++;
-		}
+		/// <summary>cpu cyle when the last MMC1 serial write occured</summary>
+		int lastwritecycle;
 
 		public override void WritePRG(int addr, byte value)
 		{
 			// mmc1 ignores subsequent writes that are very close together
-			if (ppuclock >= pputimeout)
+			if (NES.cpu.TotalExecutedCycles - lastwritecycle != 1)
 			{
-				ppuclock = 0;
+				lastwritecycle = NES.cpu.TotalExecutedCycles;
 				mmc1.Write(addr, value);
 				if (!disablemirror)
 					SetMirrorType(mmc1.mirror); //often redundant, but gets the job done
@@ -271,7 +265,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			base.SyncState(ser);
 			mmc1.SyncState(ser);
-			ser.Sync("ppuclock", ref ppuclock);
+			ser.Sync("lastwritecycle", ref lastwritecycle);
 		}
 	
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -365,7 +359,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr_mask = (Cart.chr_size / 8 * 2) - 1;
 			if (!disablemirror)
 				SetMirrorType(mmc1.mirror);
-			ppuclock = pputimeout;
 		}
 
 	} //class SxROM
