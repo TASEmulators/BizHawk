@@ -153,6 +153,21 @@ namespace BizHawk.Emulation.Consoles.GB
 		public static extern void gambatte_setwritecallback(IntPtr core, MemoryCallback callback);
 
 		/// <summary>
+		/// type of the cpu trace callback
+		/// </summary>
+		/// <param name="data">cpu state</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void TraceCallback(IntPtr state);
+
+		/// <summary>
+		/// set a callback to occur immediately BEFORE each opcode is executed
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">null to clear</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_settracecallback(IntPtr core, TraceCallback callback);
+
+		/// <summary>
 		/// Sets the directory used for storing save data. The default is the same directory as the ROM Image file.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
