@@ -139,6 +139,11 @@ namespace BizHawk.Emulation.Consoles.GB
 				LibGambatte.gambatte_reset(GambatteState);
 
 			RefreshMemoryCallbacks();
+			if (CoreInputComm.Tracer.Enabled)
+				tracecb = MakeTrace;
+			else
+				tracecb = null;
+			LibGambatte.gambatte_settracecallback(GambatteState, tracecb);
 
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
 
@@ -410,11 +415,37 @@ namespace BizHawk.Emulation.Consoles.GB
 			VsyncDen = 4389,
 			RomStatusAnnotation = null, //"Bizwhackin it up",
 			RomStatusDetails = null, //"LEVAR BURTON",
+			CpuTraceAvailable = true
 		};
 
 		public CoreOutputComm CoreOutputComm
 		{
 			get { return GbOutputComm; }
+		}
+
+		LibGambatte.TraceCallback tracecb;
+
+		void MakeTrace(IntPtr _s)
+		{
+			int[] s = new int[13];
+			System.Runtime.InteropServices.Marshal.Copy(_s, s, 0, 13);
+
+			CoreInputComm.Tracer.Put(string.Format(
+				"{1:x4} {12:x2} SP:{2:x2} A:{3:x2} B:{4:x2} C:{5:x2} D:{6:x2} E:{7:x2} F:{8:x2} H:{9:x2} L:{10:x2} {11} Cy:{0}",
+				s[0],
+				s[1] & 0xffff,
+				s[2] & 0xffff,
+				s[3] & 0xff,
+				s[4] & 0xff,
+				s[5] & 0xff,
+				s[6] & 0xff,
+				s[7] & 0xff,
+				s[8] & 0xff,
+				s[9] & 0xff,
+				s[10] & 0xff,
+				s[11] != 0 ? "skip" : "",
+				s[12] & 0xff
+			));
 		}
 
 		#region MemoryDomains

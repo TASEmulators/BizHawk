@@ -39,6 +39,8 @@ class CPU {
 	
 	void process(unsigned long cycles);
 	
+	void (*tracecallback)(void *);
+
 public:
 	
 	CPU();
@@ -71,6 +73,10 @@ public:
 
 	void setWriteCallback(void (*callback)(unsigned)) {
 		memory.setWriteCallback(callback);
+	}
+
+	void setTraceCallback(void (*callback)(void *)) {
+		tracecallback = callback;
 	}
 	
 	void setSaveDir(const std::string &sdir) {
