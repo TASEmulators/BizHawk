@@ -11,12 +11,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		public C64(GameInfo game, byte[] rom, string romextension)
 		{
-            inputFile = rom;
-            SetupMemoryDomains();
-            CoreOutputComm = new CoreOutputComm();
-            CoreInputComm = new CoreInputComm();
-            HardReset();
-            videoProvider = new MyVideoProvider(vic);
+			inputFile = rom;
+			SetupMemoryDomains();
+			CoreOutputComm = new CoreOutputComm();
+			CoreInputComm = new CoreInputComm();
+			HardReset();
+			videoProvider = new MyVideoProvider(vic);
 		}
 
 		public string SystemId { get { return "C64"; } }
@@ -88,23 +88,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			_frame++;
 			_islag = true;
 
-            int cyclesPerSecond = (14318181 / 14 / 60);
+			int cyclesPerSecond = (14318181 / 14 / 60);
 
-            for (int i = 0; i < cyclesPerSecond; i++)
-            {
-                if (vicSignal.Interrupt || cia1.interrupt || cia2.interrupt)
-                {
-                    cpu.IRQ = true;
-                }
-                if (vicSignal.AllowCpu)
-                {
-                    cpu.ExecuteOne();
-                }
-                vic.PerformCycle();
-                sid.PerformCycle();
-                cia1.PerformCycle();
-                cia2.PerformCycle();
-            }
+			for (int i = 0; i < cyclesPerSecond; i++)
+			{
+				if (vicSignal.Interrupt || cia1.interrupt || cia2.interrupt)
+				{
+					cpu.IRQ = true;
+				}
+				if (vicSignal.AllowCpu)
+				{
+					cpu.ExecuteOne();
+				}
+				vic.PerformCycle();
+				sid.PerformCycle();
+				cia1.PerformCycle();
+				cia2.PerformCycle();
+			}
 
 			if (_islag)
 			{
@@ -129,20 +129,20 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			VicII vic;
 			public MyVideoProvider(VicII vic)
 			{
-                this.vic = vic;
+				this.vic = vic;
 
-                buffer = new int[vic.visibleWidth * vic.visibleHeight];
-                top = 0;
-                bottom = vic.visibleHeight - 1;
-                left = 0;
-                right = vic.visibleWidth - 1;
+				buffer = new int[vic.visibleWidth * vic.visibleHeight];
+				top = 0;
+				bottom = vic.visibleHeight - 1;
+				left = 0;
+				right = vic.visibleWidth - 1;
 			}
 
 			int[] buffer; 
 
 			public void FillFrameBuffer() 
 			{
-                Array.Copy(vic.buffer, buffer, buffer.Length);
+				Array.Copy(vic.buffer, buffer, buffer.Length);
 			}
 
 			public int[] GetVideoBuffer()
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(1);
-            domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(PeekMemoryInt), new Action<int,byte>(PokeMemoryInt))); //TODO
+			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(PeekMemoryInt), new Action<int,byte>(PokeMemoryInt))); //TODO
 			memoryDomains = domains.AsReadOnly();
 		}
 
