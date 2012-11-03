@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
             for (int i = 0; i < cyclesPerSecond; i++)
             {
-                if (vicSignal.Interrupt)
+                if (vicSignal.Interrupt || cia1.interrupt || cia2.interrupt)
                 {
                     cpu.IRQ = true;
                 }
@@ -131,11 +131,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
                 this.vic = vic;
 
-                buffer = new int[vic.rasterWidth * vic.rasterTotalLines];
+                buffer = new int[vic.visibleWidth * vic.visibleHeight];
                 top = 0;
-                bottom = vic.rasterTotalLines-1;
+                bottom = vic.visibleHeight - 1;
                 left = 0;
-                right = vic.rasterWidth-1;
+                right = vic.visibleWidth - 1;
 			}
 
 			int[] buffer; 
