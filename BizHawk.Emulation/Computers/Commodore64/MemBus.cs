@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-    public enum MemoryBusDesignation
+    public enum MemoryDesignation
     {
         Disabled,
         RAM,
@@ -25,17 +25,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
         Expansion2
     }
 
-    public class MemoryBusLayout
+    public class MemoryLayout
     {
-        public MemoryBusDesignation Mem1000 = MemoryBusDesignation.RAM;
-        public MemoryBusDesignation Mem8000 = MemoryBusDesignation.RAM;
-        public MemoryBusDesignation MemA000 = MemoryBusDesignation.RAM;
-        public MemoryBusDesignation MemC000 = MemoryBusDesignation.RAM;
-        public MemoryBusDesignation MemD000 = MemoryBusDesignation.RAM;
-        public MemoryBusDesignation MemE000 = MemoryBusDesignation.RAM;
+        public MemoryDesignation Mem1000 = MemoryDesignation.RAM;
+        public MemoryDesignation Mem8000 = MemoryDesignation.RAM;
+        public MemoryDesignation MemA000 = MemoryDesignation.RAM;
+        public MemoryDesignation MemC000 = MemoryDesignation.RAM;
+        public MemoryDesignation MemD000 = MemoryDesignation.RAM;
+        public MemoryDesignation MemE000 = MemoryDesignation.RAM;
     }
 
-    public class MemoryBus
+    public class Memory
     {
         // chips
         public Cia cia1;
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
         public bool exRomPin = true;
         public bool gamePin = true;
         public byte[] kernalRom;
-        public MemoryBusLayout layout;
+        public MemoryLayout layout;
 
         // ram
         public byte[] colorRam;
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
         public bool readTrigger = true;
         public bool writeTrigger = true;
 
-        public MemoryBus(string sourceFolder, VicII newVic, Sid newSid, Cia newCia1, Cia newCia2)
+        public Memory(string sourceFolder, VicII newVic, Sid newSid, Cia newCia1, Cia newCia2)
         {
             ram = new byte[0x10000];
             WipeMemory();
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
             cpu00 = 0x2F;
             cpu01 = 0x37;
 
-            layout = new MemoryBusLayout();
+            layout = new MemoryLayout();
             UpdateLayout();
         }
 
@@ -119,13 +119,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
         {
         }
 
-        public MemoryBusDesignation GetDesignation(ushort addr)
+        public MemoryDesignation GetDesignation(ushort addr)
         {
-            MemoryBusDesignation result;
+            MemoryDesignation result;
 
             if (addr < 0x1000)
             {
-                result = MemoryBusDesignation.RAM;
+                result = MemoryDesignation.RAM;
             }
             else if (addr < 0x8000)
             {
@@ -152,36 +152,36 @@ namespace BizHawk.Emulation.Computers.Commodore64
                 result = layout.MemE000;
             }
 
-            if (result == MemoryBusDesignation.IO)
+            if (result == MemoryDesignation.IO)
             {
                 addr &= 0x0FFF;
                 if (addr < 0x0400)
                 {
-                    result = MemoryBusDesignation.Vic;
+                    result = MemoryDesignation.Vic;
                 }
                 else if (addr < 0x0800)
                 {
-                    result = MemoryBusDesignation.Sid;
+                    result = MemoryDesignation.Sid;
                 }
                 else if (addr < 0x0C00)
                 {
-                    result = MemoryBusDesignation.ColorRam;
+                    result = MemoryDesignation.ColorRam;
                 }
                 else if (addr < 0x0D00)
                 {
-                    result = MemoryBusDesignation.Cia1;
+                    result = MemoryDesignation.Cia1;
                 }
                 else if (addr < 0x0E00)
                 {
-                    result = MemoryBusDesignation.Cia2;
+                    result = MemoryDesignation.Cia2;
                 }
                 else if (addr < 0x0F00)
                 {
-                    result = MemoryBusDesignation.Expansion1;
+                    result = MemoryDesignation.Expansion1;
                 }
                 else
                 {
-                    result = MemoryBusDesignation.Expansion2;
+                    result = MemoryDesignation.Expansion2;
                 }
             }
 
@@ -202,47 +202,47 @@ namespace BizHawk.Emulation.Computers.Commodore64
             }
             else
             {
-                MemoryBusDesignation des = GetDesignation(addr);
+                MemoryDesignation des = GetDesignation(addr);
 
                 switch (des)
                 {
-                    case MemoryBusDesignation.Basic:
+                    case MemoryDesignation.Basic:
                         result = basicRom[addr & 0x1FFF];
                         break;
-                    case MemoryBusDesignation.Character:
+                    case MemoryDesignation.Character:
                         result = charRom[addr & 0x0FFF];
                         break;
-                    case MemoryBusDesignation.Vic:
+                    case MemoryDesignation.Vic:
                         result = vic.regs[addr & 0x3F];
                         break;
-                    case MemoryBusDesignation.Sid:
+                    case MemoryDesignation.Sid:
                         result = sid.regs[addr & 0x1F];
                         break;
-                    case MemoryBusDesignation.ColorRam:
+                    case MemoryDesignation.ColorRam:
                         result = colorRam[addr & 0x03FF];
                         break;
-                    case MemoryBusDesignation.Cia1:
+                    case MemoryDesignation.Cia1:
                         result = cia1.regs[addr & 0x0F];
                         break;
-                    case MemoryBusDesignation.Cia2:
+                    case MemoryDesignation.Cia2:
                         result = cia2.regs[addr & 0x0F];
                         break;
-                    case MemoryBusDesignation.Expansion1:
+                    case MemoryDesignation.Expansion1:
                         result = 0;
                         break;
-                    case MemoryBusDesignation.Expansion2:
+                    case MemoryDesignation.Expansion2:
                         result = 0;
                         break;
-                    case MemoryBusDesignation.Kernal:
+                    case MemoryDesignation.Kernal:
                         result = kernalRom[addr & 0x1FFF];
                         break;
-                    case MemoryBusDesignation.RAM:
+                    case MemoryDesignation.RAM:
                         result = ram[addr];
                         break;
-                    case MemoryBusDesignation.ROMHi:
+                    case MemoryDesignation.ROMHi:
                         result = cart.chips[0].data[addr & cart.chips[0].romMask];
                         break;
-                    case MemoryBusDesignation.ROMLo:
+                    case MemoryDesignation.ROMLo:
                         result = cart.chips[0].data[addr & cart.chips[0].romMask];
                         break;
                     default:
@@ -268,47 +268,47 @@ namespace BizHawk.Emulation.Computers.Commodore64
             }
             else
             {
-                MemoryBusDesignation des = GetDesignation(addr);
+                MemoryDesignation des = GetDesignation(addr);
 
                 switch (des)
                 {
-                    case MemoryBusDesignation.Basic:
+                    case MemoryDesignation.Basic:
                         result = basicRom[addr & 0x1FFF];
                         break;
-                    case MemoryBusDesignation.Character:
+                    case MemoryDesignation.Character:
                         result = charRom[addr & 0x0FFF];
                         break;
-                    case MemoryBusDesignation.Vic:
+                    case MemoryDesignation.Vic:
                         result = vic.Read(addr);
                         break;
-                    case MemoryBusDesignation.Sid:
+                    case MemoryDesignation.Sid:
                         result = sid.Read(addr);
                         break;
-                    case MemoryBusDesignation.ColorRam:
+                    case MemoryDesignation.ColorRam:
                         result = ReadColorRam(addr);
                         break;
-                    case MemoryBusDesignation.Cia1:
+                    case MemoryDesignation.Cia1:
                         result = cia1.Read(addr);
                         break;
-                    case MemoryBusDesignation.Cia2:
+                    case MemoryDesignation.Cia2:
                         result = cia2.Read(addr);
                         break;
-                    case MemoryBusDesignation.Expansion1:
+                    case MemoryDesignation.Expansion1:
                         result = 0;
                         break;
-                    case MemoryBusDesignation.Expansion2:
+                    case MemoryDesignation.Expansion2:
                         result = 0;
                         break;
-                    case MemoryBusDesignation.Kernal:
+                    case MemoryDesignation.Kernal:
                         result = kernalRom[addr & 0x1FFF];
                         break;
-                    case MemoryBusDesignation.RAM:
+                    case MemoryDesignation.RAM:
                         result = ram[addr];
                         break;
-                    case MemoryBusDesignation.ROMHi:
+                    case MemoryDesignation.ROMHi:
                         result = cart.Read(addr);
                         break;
-                    case MemoryBusDesignation.ROMLo:
+                    case MemoryDesignation.ROMLo:
                         result = cart.Read(addr);
                         break;
                     default:
@@ -333,84 +333,84 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
             if (loRom && hiRom && exRomPin && gamePin)
             {
-                layout.Mem1000 = MemoryBusDesignation.RAM;
-                layout.Mem8000 = MemoryBusDesignation.RAM;
-                layout.MemA000 = MemoryBusDesignation.Basic;
-                layout.MemC000 = MemoryBusDesignation.RAM;
-                layout.MemD000 = ioEnable ? MemoryBusDesignation.IO : MemoryBusDesignation.Character;
-                layout.MemE000 = MemoryBusDesignation.Kernal;
+                layout.Mem1000 = MemoryDesignation.RAM;
+                layout.Mem8000 = MemoryDesignation.RAM;
+                layout.MemA000 = MemoryDesignation.Basic;
+                layout.MemC000 = MemoryDesignation.RAM;
+                layout.MemD000 = ioEnable ? MemoryDesignation.IO : MemoryDesignation.Character;
+                layout.MemE000 = MemoryDesignation.Kernal;
             }
             else if (loRom && !hiRom && exRomPin)
             {
-                layout.Mem1000 = MemoryBusDesignation.RAM;
-                layout.Mem8000 = MemoryBusDesignation.RAM;
-                layout.MemA000 = MemoryBusDesignation.RAM;
-                layout.MemC000 = MemoryBusDesignation.RAM;
-                layout.MemD000 = ioEnable ? MemoryBusDesignation.IO : MemoryBusDesignation.Character;
-                layout.MemE000 = MemoryBusDesignation.RAM;
+                layout.Mem1000 = MemoryDesignation.RAM;
+                layout.Mem8000 = MemoryDesignation.RAM;
+                layout.MemA000 = MemoryDesignation.RAM;
+                layout.MemC000 = MemoryDesignation.RAM;
+                layout.MemD000 = ioEnable ? MemoryDesignation.IO : MemoryDesignation.Character;
+                layout.MemE000 = MemoryDesignation.RAM;
             }
             else if (loRom && !hiRom && !exRomPin && !gamePin)
             {
-                layout.Mem1000 = MemoryBusDesignation.RAM;
-                layout.Mem8000 = MemoryBusDesignation.RAM;
-                layout.MemA000 = MemoryBusDesignation.RAM;
-                layout.MemC000 = MemoryBusDesignation.RAM;
-                layout.MemD000 = ioEnable ? MemoryBusDesignation.IO : MemoryBusDesignation.RAM;
-                layout.MemE000 = MemoryBusDesignation.RAM;
+                layout.Mem1000 = MemoryDesignation.RAM;
+                layout.Mem8000 = MemoryDesignation.RAM;
+                layout.MemA000 = MemoryDesignation.RAM;
+                layout.MemC000 = MemoryDesignation.RAM;
+                layout.MemD000 = ioEnable ? MemoryDesignation.IO : MemoryDesignation.RAM;
+                layout.MemE000 = MemoryDesignation.RAM;
             }
             else if ((!loRom && hiRom && gamePin) || (!loRom && !hiRom && !exRomPin))
             {
-                layout.Mem1000 = MemoryBusDesignation.RAM;
-                layout.Mem8000 = MemoryBusDesignation.RAM;
-                layout.MemA000 = MemoryBusDesignation.RAM;
-                layout.MemC000 = MemoryBusDesignation.RAM;
-                layout.MemD000 = ioEnable ? MemoryBusDesignation.IO : MemoryBusDesignation.Character;
-                layout.MemE000 = MemoryBusDesignation.Kernal;
+                layout.Mem1000 = MemoryDesignation.RAM;
+                layout.Mem8000 = MemoryDesignation.RAM;
+                layout.MemA000 = MemoryDesignation.RAM;
+                layout.MemC000 = MemoryDesignation.RAM;
+                layout.MemD000 = ioEnable ? MemoryDesignation.IO : MemoryDesignation.Character;
+                layout.MemE000 = MemoryDesignation.Kernal;
             }
             else if (!loRom && !hiRom && gamePin)
             {
-                layout.Mem1000 = MemoryBusDesignation.RAM;
-                layout.Mem8000 = MemoryBusDesignation.RAM;
-                layout.MemA000 = MemoryBusDesignation.RAM;
-                layout.MemC000 = MemoryBusDesignation.RAM;
-                layout.MemD000 = MemoryBusDesignation.RAM;
-                layout.MemE000 = MemoryBusDesignation.RAM;
+                layout.Mem1000 = MemoryDesignation.RAM;
+                layout.Mem8000 = MemoryDesignation.RAM;
+                layout.MemA000 = MemoryDesignation.RAM;
+                layout.MemC000 = MemoryDesignation.RAM;
+                layout.MemD000 = MemoryDesignation.RAM;
+                layout.MemE000 = MemoryDesignation.RAM;
             }
             else if (loRom && hiRom && gamePin && !exRomPin)
             {
-                layout.Mem1000 = MemoryBusDesignation.RAM;
-                layout.Mem8000 = MemoryBusDesignation.ROMLo;
-                layout.MemA000 = MemoryBusDesignation.Basic;
-                layout.MemC000 = MemoryBusDesignation.RAM;
-                layout.MemD000 = ioEnable ? MemoryBusDesignation.IO : MemoryBusDesignation.Character;
-                layout.MemE000 = MemoryBusDesignation.Kernal;
+                layout.Mem1000 = MemoryDesignation.RAM;
+                layout.Mem8000 = MemoryDesignation.ROMLo;
+                layout.MemA000 = MemoryDesignation.Basic;
+                layout.MemC000 = MemoryDesignation.RAM;
+                layout.MemD000 = ioEnable ? MemoryDesignation.IO : MemoryDesignation.Character;
+                layout.MemE000 = MemoryDesignation.Kernal;
             }
             else if (!loRom && hiRom && !gamePin && !exRomPin)
             {
-                layout.Mem1000 = MemoryBusDesignation.RAM;
-                layout.Mem8000 = MemoryBusDesignation.RAM;
-                layout.MemA000 = MemoryBusDesignation.ROMHi;
-                layout.MemC000 = MemoryBusDesignation.RAM;
-                layout.MemD000 = ioEnable ? MemoryBusDesignation.IO : MemoryBusDesignation.Character;
-                layout.MemE000 = MemoryBusDesignation.Kernal;
+                layout.Mem1000 = MemoryDesignation.RAM;
+                layout.Mem8000 = MemoryDesignation.RAM;
+                layout.MemA000 = MemoryDesignation.ROMHi;
+                layout.MemC000 = MemoryDesignation.RAM;
+                layout.MemD000 = ioEnable ? MemoryDesignation.IO : MemoryDesignation.Character;
+                layout.MemE000 = MemoryDesignation.Kernal;
             }
             else if (loRom && hiRom && !gamePin && !exRomPin)
             {
-                layout.Mem1000 = MemoryBusDesignation.RAM;
-                layout.Mem8000 = MemoryBusDesignation.ROMLo;
-                layout.MemA000 = MemoryBusDesignation.ROMHi;
-                layout.MemC000 = MemoryBusDesignation.RAM;
-                layout.MemD000 = ioEnable ? MemoryBusDesignation.IO : MemoryBusDesignation.Character;
-                layout.MemE000 = MemoryBusDesignation.Kernal;
+                layout.Mem1000 = MemoryDesignation.RAM;
+                layout.Mem8000 = MemoryDesignation.ROMLo;
+                layout.MemA000 = MemoryDesignation.ROMHi;
+                layout.MemC000 = MemoryDesignation.RAM;
+                layout.MemD000 = ioEnable ? MemoryDesignation.IO : MemoryDesignation.Character;
+                layout.MemE000 = MemoryDesignation.Kernal;
             }
             else if (!gamePin && exRomPin)
             {
-                layout.Mem1000 = MemoryBusDesignation.Disabled;
-                layout.Mem8000 = MemoryBusDesignation.ROMLo;
-                layout.MemA000 = MemoryBusDesignation.Disabled;
-                layout.MemC000 = MemoryBusDesignation.Disabled;
-                layout.MemD000 = MemoryBusDesignation.IO;
-                layout.MemE000 = MemoryBusDesignation.ROMHi;
+                layout.Mem1000 = MemoryDesignation.Disabled;
+                layout.Mem8000 = MemoryDesignation.ROMLo;
+                layout.MemA000 = MemoryDesignation.Disabled;
+                layout.MemC000 = MemoryDesignation.Disabled;
+                layout.MemD000 = MemoryDesignation.IO;
+                layout.MemE000 = MemoryDesignation.ROMHi;
             }
         }
 
@@ -444,30 +444,30 @@ namespace BizHawk.Emulation.Computers.Commodore64
             }
             else
             {
-                MemoryBusDesignation des = GetDesignation(addr);
+                MemoryDesignation des = GetDesignation(addr);
 
                 switch (des)
                 {
-                    case MemoryBusDesignation.Vic:
+                    case MemoryDesignation.Vic:
                         vic.Write(addr, val);
                         break;
-                    case MemoryBusDesignation.Sid:
+                    case MemoryDesignation.Sid:
                         sid.Write(addr, val);
                         break;
-                    case MemoryBusDesignation.ColorRam:
+                    case MemoryDesignation.ColorRam:
                         colorRam[addr & 0x03FF] = (byte)(val & 0x0F);
                         break;
-                    case MemoryBusDesignation.Cia1:
+                    case MemoryDesignation.Cia1:
                         cia1.Write(addr, val);
                         break;
-                    case MemoryBusDesignation.Cia2:
+                    case MemoryDesignation.Cia2:
                         cia2.Write(addr, val);
                         break;
-                    case MemoryBusDesignation.Expansion1:
+                    case MemoryDesignation.Expansion1:
                         break;
-                    case MemoryBusDesignation.Expansion2:
+                    case MemoryDesignation.Expansion2:
                         break;
-                    case MemoryBusDesignation.RAM:
+                    case MemoryDesignation.RAM:
                         ram[addr] = val;
                         break;
                     default:
