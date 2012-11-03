@@ -549,11 +549,8 @@ namespace BizHawk.MultiClient
 					else
 					{
 						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						if (frame - 1 < Log.StateCount)
-						{
-							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
-							Global.MainForm.UpdateFrame = true;
-						}
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+						Global.MainForm.UpdateFrame = true;
 					}
 				}
 			}
