@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
         public Cia cia1;
         public Cia cia2;
 		public MOS6502X cpu;
-        public MemoryBus mem;
+        public Memory mem;
         public Sid sid;
         public VicII vic;
         public VicSignals vicSignal;
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
             // initialize memory (this must be done AFTER all other chips are initialized)
             string romPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "C64Kernal");
-            mem = new MemoryBus(romPath, vic, sid, cia1, cia2);
+            mem = new Memory(romPath, vic, sid, cia1, cia2);
             cia2.ReadPortA = mem.CIA2ReadPortA;
             cia2.ReadPortB = mem.CIA2ReadPortB;
             cia2.WritePortA = mem.CIA2WritePortA;
