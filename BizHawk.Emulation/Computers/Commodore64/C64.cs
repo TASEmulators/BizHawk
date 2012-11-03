@@ -54,9 +54,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void LoadStateText(TextReader reader) { } //TODO
 		public void SaveStateBinary(BinaryWriter bw) { } //TODO
 		public void LoadStateBinary(BinaryReader br) { } //TODO
-		public ControllerDefinition ControllerDefinition { get { return Atari7800ControllerDefinition; } }
+		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
 		public IController Controller { get; set; }
-		public static readonly ControllerDefinition Atari7800ControllerDefinition = new ControllerDefinition
+		public static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Commodore 64 Controller", //TODO
 			BoolButtons =
