@@ -56,6 +56,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
         public MemoryLayout layout;
 
         // ram
+        public byte cia2A;
+        public byte cia2B;
         public byte[] colorRam;
         public byte[] ram;
         public ushort vicOffset;
@@ -103,20 +105,26 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         public byte CIA2ReadPortA()
         {
-            return 0;
+            return cia2A;
         }
 
         public byte CIA2ReadPortB()
         {
-            return 0;
+            return cia2B;
         }
 
         public void CIA2WritePortA(byte val, byte direction)
         {
+            cia2A &= (byte)~direction;
+            cia2A |= (byte)(val & direction);
+
+            vicOffset = (ushort)((cia2A & 0x03) << 14);
         }
 
         public void CIA2WritePortB(byte val, byte direction)
         {
+            cia2B &= (byte)~direction;
+            cia2B |= (byte)(val & direction);
         }
 
         public MemoryDesignation GetDesignation(ushort addr)
