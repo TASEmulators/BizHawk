@@ -118,6 +118,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		// same as readppu but without processing latches
+		public override byte PeekPPU(int addr)
+		{
+			int side = addr >> 12;
+			int tile = (addr >> 4) & 0xFF;
+			if (addr < 0x2000)
+			{
+				int reg = side * 2 + chr_latches[side];
+				int ofs = addr & ((1 << 12) - 1);
+				int bank_4k = chr_banks_4k[reg];
+				addr = (bank_4k << 12) | ofs;
+				return VROM[addr];
+			}
+			else
+				return base.ReadPPU(addr);
+		}
+
 		public override byte ReadPPU(int addr)
 		{
 			int side = addr>>12;
