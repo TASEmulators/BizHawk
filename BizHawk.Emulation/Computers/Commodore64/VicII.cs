@@ -153,8 +153,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
             if (rasterInterruptEnabled && (rasterOffsetY == rasterInterruptLine) && (rasterOffsetX == 0))
             {
-                // removed for now
-                //rasterInterrupt = true;
+                rasterInterrupt = true;
             }
 
             interrupt = 

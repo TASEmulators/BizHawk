@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
                         result = sid.Read(addr);
                         break;
                     case MemoryBusDesignation.ColorRam:
-                        result = (byte)((busData & 0xF0) | (colorRam[addr & 0x03FF]));
+                        result = ReadColorRam(addr);
                         break;
                     case MemoryBusDesignation.Cia1:
                         result = cia1.Read(addr);
@@ -299,6 +299,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
             busData = result;
             return result;
+        }
+
+        public byte ReadColorRam(ushort addr)
+        {
+            return (byte)((busData & 0xF0) | (colorRam[addr & 0x03FF]));
         }
 
         public void UpdateLayout()
@@ -388,6 +393,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
                 layout.MemD000 = MemoryBusDesignation.IO;
                 layout.MemE000 = MemoryBusDesignation.ROMHi;
             }
+        }
+
+        public byte VicRead(ushort addr)
+        {
+            return Read(addr);
         }
 
         public void WipeMemory()
