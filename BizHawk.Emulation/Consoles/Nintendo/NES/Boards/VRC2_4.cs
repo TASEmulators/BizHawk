@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		Func<int, int> remap;
 		Func<int, int> fix_chr;
 		int type;
+		bool latch6k_exists = false;
 
 		//state
 		public int[] prg_bank_reg_8k = new int[2];
@@ -29,6 +30,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		byte irq_counter;
 		int irq_prescaler;
 		public int extra_vrom;
+		int latch6k_value;
 
 		public override void Dispose()
 		{
@@ -50,7 +52,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_prescaler", ref irq_prescaler);
 			ser.Sync("extra_vrom", ref extra_vrom);
-
+			if (latch6k_exists)
+				ser.Sync("latch6k_value", ref latch6k_value);
 			SyncPRG();
 			SyncCHR();
 			SyncIRQ();
@@ -123,6 +126,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "KONAMI-VRC-2":
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					type = 2;
+					latch6k_exists = true;
 					if (Cart.pcb == "350926")
 						//likely VRC2b [mapper 23]
 						remap = (addr) => addr;
@@ -132,12 +136,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						remap = (addr) => ((addr & 0xF000) | ((addr & 1) << 1) | ((addr & 2) >> 1));
 						fix_chr = (b) => (b >> 1);
 					}
-					else throw new Exception("Unknown PCB type for VRC2");
+					else if (Cart.pcb == "LROG009-00") // Contra (J)
+					{
+						remap = (addr) => addr;
+					}
+					else
+						throw new Exception(string.Format("Unknown PCB type for VRC2: \"{0}\"", Cart.pcb));
 					break;
 				default:
 					return false;
 			}
-
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
@@ -332,5 +340,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		// a single bit of data can be read at 6000:6fff on some VRC2 carts without wram
+		// games will lock if they can't do this
+		// this isn't a problem in many emus, because if you put wram at 6000:7fff unconditionally, it works.
+		public override byte ReadWRAM(int addr)
+		{
+			if (!latch6k_exists)
+				return base.ReadWRAM(addr);
+			else if (addr >= 0x1000)
+				return NES.DB;
+			else
+				return (byte)(NES.DB & 0xfe | latch6k_value);
+		}
+
+		public override void WriteWRAM(int addr, byte value)
+		{
+			if (!latch6k_exists)
+				base.WriteWRAM(addr, value);
+			else if (addr < 0x1000)
+				latch6k_value = value & 1;
+		}
 	}
 }
