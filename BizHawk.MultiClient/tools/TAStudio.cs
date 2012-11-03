@@ -413,13 +413,14 @@ namespace BizHawk.MultiClient
 
 		private void TASView_DoubleClick(object sender, EventArgs e)
 		{
-			if (TASView.selectedItem <= Global.Emulator.Frame)
+			if (TASView.selectedItem <= Global.MovieSession.Movie.StateLastIndex)
 			{
 				this.stopOnFrame = 0;
 				Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
 			}
 			else
 			{
+				Global.MovieSession.Movie.RewindToFrame(Global.MovieSession.Movie.StateLastIndex);
 				this.stopOnFrame = TASView.selectedItem;
 				Global.MainForm.PressFrameAdvance = true;
 			}

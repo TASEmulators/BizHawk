@@ -557,6 +557,11 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+			else if (frame <= Log.StateLastIndex)
+			{
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+				Global.MainForm.UpdateFrame = true;
+			}
 			else
 			{
 				Global.MainForm.UnpauseEmulator();
