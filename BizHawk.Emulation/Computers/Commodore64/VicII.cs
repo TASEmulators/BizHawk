@@ -39,17 +39,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
         };
 
         // interrupts
-        public bool interrupt;
-        public bool lightPenInterrupt;
+        public bool interrupt = true;
+        public bool lightPenInterrupt = true;
         public bool lightPenInterruptEnabled;
-        public bool rasterInterrupt;
+        public bool rasterInterrupt = true;
         public bool rasterInterruptEnabled;
-        public bool spriteBackgroundInterrupt;
+        public bool spriteBackgroundInterrupt = true;
         public bool spriteBackgroundInterruptEnabled;
-        public bool spriteSpriteInterrupt;
+        public bool spriteSpriteInterrupt = true;
         public bool spriteSpriteInterruptEnabled;
 
         // memory
+        public bool characterFetch;
+        public int characterFetchOffset;
         public int characterMemoryOffset;
         public int screenMemoryOffset;
 
@@ -61,22 +63,35 @@ namespace BizHawk.Emulation.Computers.Commodore64
         public int[] backgroundColor;
         public bool backgroundMode;
         public bool bitmapMode;
+        public int borderBottom;
         public int borderColor;
-        public bool borderOn;
+        public int borderLeft;
+        public bool borderOnHorizontal;
+        public bool borderOnVertical;
+        public int borderRight;
+        public int borderTop;
         public byte[] charBuffer;
         public bool extendHeight;
         public bool extendWidth;
         public int horizontalScroll;
         public bool multiColorMode;
         public int rasterInterruptLine;
+        public int rasterLineLeft;
         public int rasterOffset;
         public int rasterOffsetX;
         public int rasterOffsetY;
         public int rasterTotalLines;
         public int rasterWidth;
+        public int renderOffset;
         public bool screenEnabled;
         public int verticalScroll;
+        public int visibleBottom;
         public int visibleHeight;
+        public int visibleLeft;
+        public bool visibleRenderX;
+        public bool visibleRenderY;
+        public int visibleRight;
+        public int visibleTop;
         public int visibleWidth;
 
         // sprites
@@ -104,8 +119,20 @@ namespace BizHawk.Emulation.Computers.Commodore64
                 case VicIIMode.NTSC:
                     rasterWidth = 512;
                     rasterTotalLines = 263;
-                    visibleWidth = 368;
-                    visibleHeight = 235;
+                    rasterLineLeft = 0x19C;
+                    visibleLeft = 0x1E9;
+                    visibleRight = 0x18B;
+                    visibleTop = 0x41;
+                    visibleBottom = 0x13;
+                    visibleRenderX = false;
+                    visibleRenderY = true;
+                    visibleWidth = 418;
+                    visibleHeight = 217;
+                    renderOffset = 0;
+                    borderLeft = 0x018;
+                    borderRight = 0x158;
+                    borderTop = 0x033;
+                    borderBottom = 0x0FA;
                     break;
                 case VicIIMode.PAL:
                     break;
@@ -116,6 +143,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
             // initialize raster
             backgroundColor = new int[4];
             charBuffer = new byte[40];
+            rasterOffsetX = rasterLineLeft;
+            rasterOffsetY = 0;
 
             // initialize sprites
             spriteBackgroundCollision = new bool[8];
@@ -135,9 +164,24 @@ namespace BizHawk.Emulation.Computers.Commodore64
             bufferSize = buffer.Length;
 
             // initialize registers
+            HardReset();
+        }
+
+        public void HardReset()
+        {
+            // power on state
             regs = new byte[0x40];
+            Write(0x0016, 0xC0);
+            Write(0x0018, 0x01);
+            Write(0x0019, 0x71);
+            Write(0x001A, 0xF0);
+            for (ushort i = 0x0020; i <= 0x002E; i++)
+                Write(i, 0xF0);
+
+            // unused registers always return FF
             for (int i = 0x2F; i <= 0x3F; i++)
-                regs[i] = 0xFF;
+                regs[i] = 0xFF; 
+
             UpdateRegs();
         }
 
@@ -149,12 +193,54 @@ namespace BizHawk.Emulation.Computers.Commodore64
         public void PerformCycle()
         {
             for (int i = 0; i < 8; i++)
-                WritePixel(borderColor);
-
-            if (rasterInterruptEnabled && (rasterOffsetY == rasterInterruptLine) && (rasterOffsetX == 0))
             {
-                rasterInterrupt = true;
+                if (rasterOffsetX == visibleLeft)
+                    visibleRenderX = true;
+                if (rasterOffsetX == visibleRight)
+                    visibleRenderX = false;
+                if (rasterOffsetX == borderLeft)
+                    borderOnHorizontal = false;
+                if (rasterOffsetX == borderRight)
+                    borderOnHorizontal = true;
+
+                if (borderOnVertical || borderOnHorizontal)
+                {
+                    WritePixel(borderColor);
+                }
+                else
+                {
+                    WritePixel(backgroundColor[0]);
+                }
+
+                rasterOffsetX++;
+                if (rasterOffsetX == rasterWidth)
+                    rasterOffsetX = 0;
+
+                if (rasterOffsetX == rasterLineLeft)
+                {
+                    rasterOffsetY++;
+
+                    if (rasterOffsetY == visibleTop)
+                        visibleRenderY = true;
+                    if (rasterOffsetY == visibleBottom)
+                        visibleRenderY = false;
+                    if (rasterOffsetY == borderTop)
+                        borderOnVertical = false;
+                    if (rasterOffsetY == borderBottom)
+                        borderOnVertical = true;
+                    if (rasterOffsetY == rasterTotalLines)
+                    {
+                        rasterOffsetY = 0;
+                        renderOffset = 0;
+                    }
+
+                    if (rasterInterruptEnabled && (rasterOffsetY == rasterInterruptLine))
+                    {
+                        rasterInterrupt = true;
+                    }
+                }
             }
+
 
             interrupt = 
                 (rasterInterrupt & rasterInterruptEnabled) |
@@ -204,7 +290,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
             bool allowWrite = true;
             addr &= 0x3F;
 
-            switch (addr & 0x3F)
+            switch (addr)
             {
                 case 0x00:
                 case 0x02:
@@ -390,13 +476,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         private void WritePixel(int value)
         {
-            buffer[rasterOffset] = palette[value];
-            rasterOffset++;
-            if (rasterOffset >= bufferSize)
-                rasterOffset = 0;
-
-            rasterOffsetX = (rasterOffset & 0x1FF);
-            rasterOffsetY = (rasterOffset >> 9);
+            if (visibleRenderX && visibleRenderY)
+            {
+                value &= 0x0F;
+                buffer[renderOffset++] = palette[value];
+            }
         }
     }
 

@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
             Cartridge cart = new Cartridge(inputFile);
             if (cart.valid)
             {
-                mem.ApplyCartridge(cart);
+                //mem.ApplyCartridge(cart);
             }
 
             // initialize cpu (hard reset vector)
