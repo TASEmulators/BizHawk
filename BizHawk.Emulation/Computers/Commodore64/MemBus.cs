@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
         // ram
         public byte[] colorRam;
         public byte[] ram;
-        public int vicOffset;
+        public ushort vicOffset;
 
         // registers
         public byte busData;
@@ -416,7 +416,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
         public byte VicRead(ushort addr)
         {
-            return Read(addr);
+            addr = (ushort)(addr & 0x1FFF);
+            if (addr >= 0x1000 && addr < 0x2000)
+                return charRom[addr & 0x0FFF];
+            else
+                return ram[addr | vicOffset];
         }
 
         public void WipeMemory()

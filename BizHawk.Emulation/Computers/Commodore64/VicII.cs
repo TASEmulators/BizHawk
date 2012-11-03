@@ -71,6 +71,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
         public int borderRight;
         public int borderTop;
         public byte[] charBuffer;
+        public int charBufferOffset;
         public bool extendHeight;
         public bool extendWidth;
         public int horizontalScroll;
@@ -240,7 +241,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
                     }
                 }
             }
-
 
             interrupt = 
                 (rasterInterrupt & rasterInterruptEnabled) |
