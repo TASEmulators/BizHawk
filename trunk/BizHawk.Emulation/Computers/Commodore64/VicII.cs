@@ -233,13 +233,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
                     break;
                 case 0x10:
                     spriteX[0] = (spriteX[0] & 0xFF) | ((val & 0x01) << 8);
-                    spriteX[1] = (spriteX[1] & 0xFF) | ((val & 0x02) << 8);
-                    spriteX[2] = (spriteX[2] & 0xFF) | ((val & 0x04) << 8);
-                    spriteX[3] = (spriteX[3] & 0xFF) | ((val & 0x08) << 8);
-                    spriteX[4] = (spriteX[4] & 0xFF) | ((val & 0x10) << 8);
-                    spriteX[5] = (spriteX[5] & 0xFF) | ((val & 0x20) << 8);
-                    spriteX[6] = (spriteX[6] & 0xFF) | ((val & 0x40) << 8);
-                    spriteX[7] = (spriteX[7] & 0xFF) | ((val & 0x80) << 8);
+                    spriteX[1] = (spriteX[1] & 0xFF) | ((val & 0x02) << 7);
+                    spriteX[2] = (spriteX[2] & 0xFF) | ((val & 0x04) << 6);
+                    spriteX[3] = (spriteX[3] & 0xFF) | ((val & 0x08) << 5);
+                    spriteX[4] = (spriteX[4] & 0xFF) | ((val & 0x10) << 4);
+                    spriteX[5] = (spriteX[5] & 0xFF) | ((val & 0x20) << 3);
+                    spriteX[6] = (spriteX[6] & 0xFF) | ((val & 0x40) << 2);
+                    spriteX[7] = (spriteX[7] & 0xFF) | ((val & 0x80) << 1);
                     break;
                 case 0x11:
                     verticalScroll = val & 0x07;
