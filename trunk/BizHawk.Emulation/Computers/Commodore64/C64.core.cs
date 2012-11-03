@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cpu.DummyReadMemory = PeekMemory;
 
             // initialize cia timers
-            cia1 = new Cia();
-            cia2 = new Cia();
+            cia1 = new Cia(Cia.DummyReadPort, Cia.DummyReadPort, Cia.DummyWritePort, Cia.DummyWritePort);
+            cia2 = new Cia(Cia.DummyReadPort, Cia.DummyReadPort, Cia.DummyWritePort, Cia.DummyWritePort);
 
             // initialize vic
             vicSignal = new VicSignals();
