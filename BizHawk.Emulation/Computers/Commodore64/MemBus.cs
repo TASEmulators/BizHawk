@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
         // ram
         public byte[] colorRam;
         public byte[] ram;
+        public int vicOffset;
 
         // registers
         public byte busData;
@@ -98,6 +99,24 @@ namespace BizHawk.Emulation.Computers.Commodore64
             exRomPin = cart.exRomPin;
             gamePin = cart.gamePin;
             UpdateLayout();
+        }
+
+        public byte CIA2ReadPortA()
+        {
+            return 0;
+        }
+
+        public byte CIA2ReadPortB()
+        {
+            return 0;
+        }
+
+        public void CIA2WritePortA(byte val, byte direction)
+        {
+        }
+
+        public void CIA2WritePortB(byte val, byte direction)
+        {
         }
 
         public MemoryBusDesignation GetDesignation(ushort addr)

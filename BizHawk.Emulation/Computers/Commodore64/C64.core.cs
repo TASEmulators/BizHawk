@@ -44,12 +44,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
             // initialize memory (this must be done AFTER all other chips are initialized)
             string romPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "C64Kernal");
             mem = new MemoryBus(romPath, vic, sid, cia1, cia2);
+            cia2.ReadPortA = mem.CIA2ReadPortA;
+            cia2.ReadPortB = mem.CIA2ReadPortB;
+            cia2.WritePortA = mem.CIA2WritePortA;
+            cia2.WritePortB = mem.CIA2WritePortB;
 
             // initialize media
             Cartridge cart = new Cartridge(inputFile);
             if (cart.valid)
             {
-                //mem.ApplyCartridge(cart);
+                mem.ApplyCartridge(cart);
             }
 
             // initialize cpu (hard reset vector)
