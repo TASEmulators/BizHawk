@@ -204,6 +204,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_161_32.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper028.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CNROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CPROM.cs">
       <SubType>Code</SubType>
