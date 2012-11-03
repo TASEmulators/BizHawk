@@ -78,6 +78,11 @@
     <Compile Include="Buffer.cs" />
     <Compile Include="Computers\Commodore64\C64.core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge.cs" />
+    <Compile Include="Computers\Commodore64\Cia.cs" />
+    <Compile Include="Computers\Commodore64\MemBus.cs" />
+    <Compile Include="Computers\Commodore64\Sid.cs" />
+    <Compile Include="Computers\Commodore64\VicII.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />

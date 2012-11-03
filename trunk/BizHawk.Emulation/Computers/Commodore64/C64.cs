@@ -11,11 +11,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		public C64(GameInfo game, byte[] rom, string romextension)
 		{
-			videoProvider = new MyVideoProvider(this);
-			SetupMemoryDomains();
-			CoreOutputComm = new CoreOutputComm();
-			CoreInputComm = new CoreInputComm();
-			HardReset();
+            inputFile = rom;
+            SetupMemoryDomains();
+            CoreOutputComm = new CoreOutputComm();
+            CoreInputComm = new CoreInputComm();
+            HardReset();
+            videoProvider = new MyVideoProvider(vic);
 		}
 
 		public string SystemId { get { return "C64"; } }
@@ -45,7 +46,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		}
 
 		/*TODO*/
-		public int[] frameBuffer = new int[256 * 192]; //TODO
 		public ISyncSoundProvider SyncSoundProvider { get { return null; } } //TODO
 		public bool StartAsyncSound() { return true; } //TODO
 		public void EndAsyncSound() { } //TODO
@@ -58,12 +58,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public IController Controller { get; set; }
 		public static readonly ControllerDefinition Atari7800ControllerDefinition = new ControllerDefinition
 		{
-			Name = "Atari 7800 Basic Controller", //TODO
+			Name = "Commodore 64 Controller", //TODO
 			BoolButtons =
 			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", 
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button", 
-				"Reset", "Select"
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button" 
 			}
 		};
 
@@ -89,8 +88,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			_frame++;
 			_islag = true;
 
-			//TODO
-			//Do stuff here
+            int cyclesPerSecond = (14318181 / 14 / 60);
+
+            for (int i = 0; i < cyclesPerSecond; i++)
+            {
+                if (vicSignal.Interrupt)
+                {
+                    cpu.IRQ = true;
+                }
+                if (vicSignal.AllowCpu)
+                {
+                    cpu.ExecuteOne();
+                }
+                vic.PerformCycle();
+                sid.PerformCycle();
+                cia1.PerformCycle();
+                cia2.PerformCycle();
+            }
 
 			if (_islag)
 			{
@@ -104,27 +118,31 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private MySoundProvider soundProvider;
 		private MyVideoProvider videoProvider;
+
 		class MyVideoProvider : IVideoProvider
 		{
-			public int top = 0; //TODO
-			public int bottom = 262; //TODO
-			public int left = 0; //TODO
-			public int right = 320; //TODO
+			public int top;
+			public int bottom;
+			public int left;
+			public int right;
 
-			C64 emu;
-			public MyVideoProvider(C64 emu)
+			VicII vic;
+			public MyVideoProvider(VicII vic)
 			{
-				this.emu = emu;
+                this.vic = vic;
+
+                buffer = new int[vic.rasterWidth * vic.rasterTotalLines];
+                top = 0;
+                bottom = vic.rasterTotalLines-1;
+                left = 0;
+                right = vic.rasterWidth-1;
 			}
 
-			int[] buffer = new int[262 * 320]; 
+			int[] buffer; 
 
 			public void FillFrameBuffer() 
 			{
-				for (int i = 0; i < buffer.Length; i++)
-				{
-					buffer[i] = 0; //TODO
-				}
+                Array.Copy(vic.buffer, buffer, buffer.Length);
 			}
 
 			public int[] GetVideoBuffer()
@@ -141,7 +159,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr => 0xFF, null)); //TODO
+            domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(PeekMemoryInt), new Action<int,byte>(PokeMemoryInt))); //TODO
 			memoryDomains = domains.AsReadOnly();
 		}
 
