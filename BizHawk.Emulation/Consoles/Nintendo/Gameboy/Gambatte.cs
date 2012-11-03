@@ -446,7 +446,8 @@ namespace BizHawk.Emulation.Consoles.GB
 				s[10] & 0xff,
 				s[11] != 0 ? "skip" : "",
 				s[12] & 0xff,
-				CPUs.Z80GB.Disassembler.DAsm((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
+				//CPUs.Z80GB.Disassembler.DAsm((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
+				CPUs.Z80GB.NewDisassembler.Disassemble((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
 			));
 		}
 

@@ -403,6 +403,7 @@
     <Compile Include="CPUs\Z80-GB\Disassembler.cs" />
     <Compile Include="CPUs\Z80-GB\Execute.cs" />
     <Compile Include="CPUs\Z80-GB\Interrupts.cs" />
+    <Compile Include="CPUs\Z80-GB\NewDisassembler.cs" />
     <Compile Include="CPUs\Z80-GB\Registers.cs" />
     <Compile Include="CPUs\Z80-GB\Tables.cs" />
     <Compile Include="CPUs\Z80-GB\Z80.cs" />
