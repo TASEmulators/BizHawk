@@ -75,6 +75,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="Buffer.cs" />
     <Compile Include="Computers\Commodore64\C64.core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
@@ -366,6 +369,8 @@
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
     <Compile Include="Consoles\PC Engine\TurboCD.cs" />
+    <Compile Include="Consoles\PSX\LibMednahawkDll.cs" />
+    <Compile Include="Consoles\PSX\Octoshock.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
@@ -526,8 +531,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Computers\Commodore64\docs\" />
-    <Folder Include="Consoles\PSX\" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
