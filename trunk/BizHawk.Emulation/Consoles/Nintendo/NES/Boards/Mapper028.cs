@@ -38,6 +38,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_mask_16k = Cart.prg_size / 16 - 1;
 			Cart.wram_size = 0;
 			Cart.vram_size = 32;
+			// the only part of initial state that is important is that
+			// C000:FFFF contains the tail end of the rom
+			outer = 63;
+			prg = 15;
+			Sync();
 			return true;
 		}
 
