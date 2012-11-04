@@ -1,4 +1,7 @@
-﻿namespace BizHawk.DiscSystem
+﻿//Currently, this is stolen somewhat from blargg's code. probably LGPL. I think? originally it came from mednafen, and then I think mednafen may have changed to use another.
+//sorry for the confusion! it'd be nice to have some nice MIT licensed CD algorithms codes.. at least, we can keep these bullshit licensed ones here to a/b test when rewriting.
+
+namespace BizHawk.DiscSystem
 {
 	static class ECM
 	{

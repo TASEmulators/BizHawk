@@ -29,8 +29,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion(VersionInfo.MAINVERSION + "." + SubWCRev.SVN_REV)]
 [assembly: AssemblyFileVersion(VersionInfo.MAINVERSION + "." + SubWCRev.SVN_REV)]
-
-public static class VersionInfo
-{
-	public const string MAINVERSION = "1.2.0";
-}

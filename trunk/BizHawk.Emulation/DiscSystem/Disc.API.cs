@@ -150,37 +150,37 @@ namespace BizHawk.DiscSystem
 
 		// converts LBA to minute:second:frame format.
 		//TODO - somewhat redundant with Timestamp, which is due for refactoring into something not cue-related
-        public static void ConvertLBAtoMSF(int lba, out byte m, out byte s, out byte f)
-        {
-            lba += 150;
-            m = (byte) (lba / 75 / 60);
-            s = (byte) ((lba - (m * 75 * 60)) / 75);
-            f = (byte) (lba - (m * 75 * 60) - (s * 75));
-        }
+		public static void ConvertLBAtoMSF(int lba, out byte m, out byte s, out byte f)
+		{
+			lba += 150;
+			m = (byte)(lba / 75 / 60);
+			s = (byte)((lba - (m * 75 * 60)) / 75);
+			f = (byte)(lba - (m * 75 * 60) - (s * 75));
+		}
 
-        // converts MSF to LBA offset
-        public static int ConvertMSFtoLBA(byte m, byte s, byte f)
-        {
-            return f + (s*75) + (m*75*60) - 150;
-        }
+		// converts MSF to LBA offset
+		public static int ConvertMSFtoLBA(byte m, byte s, byte f)
+		{
+			return f + (s * 75) + (m * 75 * 60) - 150;
+		}
 
-        // gets an identifying hash. hashes the first 512 sectors of 
-        // the first data track on the disc.
-        public string GetHash()
-        {
-            byte[] buffer = new byte[512*2352];
-            foreach (var track in TOC.Sessions[0].Tracks)
-            {
-                if (track.TrackType == ETrackType.Audio)
-                    continue;
+		// gets an identifying hash. hashes the first 512 sectors of 
+		// the first data track on the disc.
+		public string GetHash()
+		{
+			byte[] buffer = new byte[512 * 2352];
+			foreach (var track in TOC.Sessions[0].Tracks)
+			{
+				if (track.TrackType == ETrackType.Audio)
+					continue;
 
-                int lba_len = Math.Min(track.length_aba, 512);
-                for (int s=0; s<512 && s<track.length_aba; s++)
-                    ReadABA_2352(track.Indexes[1].aba + s, buffer, s*2352);
+				int lba_len = Math.Min(track.length_aba, 512);
+				for (int s = 0; s < 512 && s < track.length_aba; s++)
+					ReadABA_2352(track.Indexes[1].aba + s, buffer, s * 2352);
 
-                return Util.Hash_MD5(buffer, 0, lba_len*2352);
-            }
-            return "no data track found";
-        }
+				return Util.Hash_MD5(buffer, 0, lba_len * 2352);
+			}
+			return "no data track found";
+		}
 	}
 }

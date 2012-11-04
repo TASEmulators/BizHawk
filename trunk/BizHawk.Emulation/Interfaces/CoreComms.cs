@@ -11,6 +11,7 @@ namespace BizHawk
 		public bool GG_ShowClippedRegions;
 		public bool GG_HighlightActiveDisplayRegion;
 
+		public string PSX_FirmwaresPath;
 		public string SNES_FirmwaresPath;
 		public bool SNES_ShowBG1_0, SNES_ShowBG2_0, SNES_ShowBG3_0, SNES_ShowBG4_0;
 		public bool SNES_ShowBG1_1, SNES_ShowBG2_1, SNES_ShowBG3_1, SNES_ShowBG4_1;
@@ -42,6 +43,8 @@ namespace BizHawk
 		}
 		public int VsyncNum = 60;
 		public int VsyncDen = 1;
+
+		//a core should set these if you wish to provide rom status information yourself. otherwise it will be calculated by the frontend in a way you may not like, using RomGame-related concepts.
 		public string RomStatusAnnotation;
 		public string RomStatusDetails;
 

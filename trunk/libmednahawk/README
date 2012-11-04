@@ -1,0 +1,22 @@
+Compilation notes:
+	gcc is generally required(Intel's compiler might work), and the compilers specified via CC and CXX must be the same
+	version.
+
+	Using gcc 4.4.x(or newer, though Mednafen doesn't get as much testing with newer versions) is recommended; anything
+	older than gcc 4.2.x may not work, and gcc 4.2.x has a nasty code generation bug that may pop up and trigger a
+	program abort in an internal compiler regression test routine in Mednafen; though there is now some logic in the
+	configure script to try to choose optimization options that won't trigger the bad code generation.
+
+	Reportedly, passing:	--build=x86_64-apple-darwin`uname -r`
+	to the configure script is necessary for building on Mac OS X to work properly.
+
+
+
+Some notes on the source code:
+
+	The following system headers are included by including "mednafen.h", and always will be, so don't include them manually.
+		assert.h	(included in "types.h")
+		inttypes.h	(included in "types.h")
+		stdlib.h
+		stdio.h
+		string.h

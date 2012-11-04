@@ -143,6 +143,14 @@ namespace BizHawk.MultiClient
 		public string PathAtariScreenshots = Path.Combine(".", "Screenshots");
 		public string PathAtariCheats = Path.Combine(".", "Cheats");
 
+		public string BasePSX = Path.Combine(".", "PSX");
+		public string PathPSXROMs = ".";
+		public string PathPSXSavestates = Path.Combine(".", "State");
+		public string PathPSXSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathPSXScreenshots = Path.Combine(".", "Screenshots");
+		public string PathPSXCheats = Path.Combine(".", "Cheats");
+		public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
+
 		public string MoviesPath = Path.Combine(".", "Movies");
 		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
 		public string LuaPath = Path.Combine(".", "Lua");

@@ -361,6 +361,8 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG;
 			Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
+			Global.CoreInputComm.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
+
 			Global.CoreInputComm.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			Global.CoreInputComm.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			Global.CoreInputComm.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
@@ -1433,14 +1435,34 @@ namespace BizHawk.MultiClient
 							// In the future we need to do something smarter, possibly including simply asking the user
 							// what system the game is for.
 
-							game = new GameInfo();
-							game.System = "PCECD";
-							game.Name = Path.GetFileNameWithoutExtension(file.Name);
-							game.Hash = hash;
+							if (System.Windows.Forms.SystemInformation.ComputerName == "ZERO-XP")
+							{
+								game = new GameInfo();
+								game.System = "PSX";
+								game.Name = Path.GetFileNameWithoutExtension(file.Name);
+								game.Hash = hash;
+							}
+							else
+							{
+								game = new GameInfo();
+								game.System = "PCECD";
+								game.Name = Path.GetFileNameWithoutExtension(file.Name);
+								game.Hash = hash;
+							}
 						}
 
 						switch (game.System)
 						{
+							case "PSX":
+								{
+									var psx = new BizHawk.Emulation.Consoles.PSX.Octoshock();
+									nextEmulator = psx;
+									psx.CoreInputComm = Global.CoreInputComm;
+									psx.LoadCuePath(file.CanonicalFullPath);
+									nextEmulator.CoreOutputComm.RomStatusDetails = "PSX etc.";
+								}
+								break;
+
 							case "PCE":
 							case "PCECD":
 								{
