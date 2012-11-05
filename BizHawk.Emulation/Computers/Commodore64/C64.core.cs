@@ -32,7 +32,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initialize cia timers
 			cia0 = new Cia(signal);
+			cia0.ports[0] = new DirectionalDataPort(0x00, 0x00);
+			cia0.ports[1] = new DirectionalDataPort(0x00, 0x00);
 			cia1 = new Cia(signal);
+			cia1.ports[0] = new DirectionalDataPort(0x00, 0x00);
+			cia1.ports[1] = new DirectionalDataPort(0x00, 0x00);
 
 			// initialize vic
 			signal = new ChipSignals();
@@ -99,6 +103,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool CpuAEC { get { return _VicAECOutput; } }
 		public bool CpuIRQ { get { return _VicIRQOutput | _CiaIRQOutput[0] | _CiaIRQOutput[1]; } }
 		public bool CpuRDY { get { return _VicBAOutput; } }
+		public bool LPOutput { get { return _VicLPInput; } set { _VicLPInput = value; } }
 		public bool VicAEC { get { return _VicAECOutput; } set { _VicAECOutput = value; } }
 		public bool VicBA { get { return _VicBAOutput; } set { _VicBAOutput = value; } }
 		public bool VicIRQ { get { return _VicIRQOutput; } set { _VicIRQOutput = value; } }

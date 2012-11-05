@@ -19,10 +19,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		Vic,
 		Sid,
 		ColorRam,
+		Cia0,
 		Cia1,
-		Cia2,
-		Expansion1,
-		Expansion2
+		Expansion0,
+		Expansion1
 	}
 
 	public class MemoryLayout
@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	public class Memory
 	{
 		// chips
+		public Cia cia0;
 		public Cia cia1;
-		public Cia cia2;
 		public VicII vic;
 		public Sid sid;
 
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool readTrigger = true;
 		public bool writeTrigger = true;
 
-		public Memory(string sourceFolder, VicII newVic, Sid newSid, Cia newCia1, Cia newCia2)
+		public Memory(string sourceFolder, VicII newVic, Sid newSid, Cia newCia0, Cia newCia1)
 		{
 			ram = new byte[0x10000];
 			WipeMemory();
@@ -84,9 +84,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			vic = newVic;
 			sid = newSid;
+			cia0 = newCia0;
 			cia1 = newCia1;
-			cia2 = newCia2;
-			cpuPort = new DirectionalDataPort(0x2F, 0x37);
+			cpuPort = new DirectionalDataPort(0x37, 0x2F);
 
 			layout = new MemoryLayout();
 			UpdateLayout();
@@ -175,19 +175,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 				else if (addr < 0x0D00)
 				{
-					result = MemoryDesignation.Cia1;
+					result = MemoryDesignation.Cia0;
 				}
 				else if (addr < 0x0E00)
 				{
-					result = MemoryDesignation.Cia2;
+					result = MemoryDesignation.Cia1;
 				}
 				else if (addr < 0x0F00)
 				{
-					result = MemoryDesignation.Expansion1;
+					result = MemoryDesignation.Expansion0;
 				}
 				else
 				{
-					result = MemoryDesignation.Expansion2;
+					result = MemoryDesignation.Expansion1;
 				}
 			}
 
@@ -227,16 +227,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case MemoryDesignation.ColorRam:
 						result = colorRam[addr & 0x03FF];
 						break;
+					case MemoryDesignation.Cia0:
+						result = cia0.regs[addr & 0x0F];
+						break;
 					case MemoryDesignation.Cia1:
 						result = cia1.regs[addr & 0x0F];
 						break;
-					case MemoryDesignation.Cia2:
-						result = cia2.regs[addr & 0x0F];
-						break;
-					case MemoryDesignation.Expansion1:
+					case MemoryDesignation.Expansion0:
 						result = 0;
 						break;
-					case MemoryDesignation.Expansion2:
+					case MemoryDesignation.Expansion1:
 						result = 0;
 						break;
 					case MemoryDesignation.Kernal:
@@ -293,16 +293,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case MemoryDesignation.ColorRam:
 						result = ReadColorRam(addr);
 						break;
+					case MemoryDesignation.Cia0:
+						result = cia0.Read(addr);
+						break;
 					case MemoryDesignation.Cia1:
 						result = cia1.Read(addr);
 						break;
-					case MemoryDesignation.Cia2:
-						result = cia2.Read(addr);
-						break;
-					case MemoryDesignation.Expansion1:
+					case MemoryDesignation.Expansion0:
 						result = 0;
 						break;
-					case MemoryDesignation.Expansion2:
+					case MemoryDesignation.Expansion1:
 						result = 0;
 						break;
 					case MemoryDesignation.Kernal:
@@ -467,15 +467,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case MemoryDesignation.ColorRam:
 						colorRam[addr & 0x03FF] = (byte)(val & 0x0F);
 						break;
+					case MemoryDesignation.Cia0:
+						cia0.Write(addr, val);
+						break;
 					case MemoryDesignation.Cia1:
 						cia1.Write(addr, val);
 						break;
-					case MemoryDesignation.Cia2:
-						cia2.Write(addr, val);
+					case MemoryDesignation.Expansion0:
 						break;
 					case MemoryDesignation.Expansion1:
-						break;
-					case MemoryDesignation.Expansion2:
 						break;
 					case MemoryDesignation.RAM:
 						ram[addr] = val;

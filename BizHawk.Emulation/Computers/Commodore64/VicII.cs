@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result |= (MxE[7] ? 0x80 : 0x00);
 						break;
 					case 0x16:
-						result &= 0xBF;
+						result &= 0xC0;
 						result |= XSCROLL & 0x07;
 						result |= (CSEL ? 0x08 : 0x00);
 						result |= (MCM ? 0x10 : 0x00);
@@ -347,7 +347,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						IMBC = ((val & 0x02) != 0x00);
 						IMMC = ((val & 0x04) != 0x00);
 						ILP = ((val & 0x08) != 0x00);
-						IRQ = ((val & 0x80) != 0x00);
 						break;
 					case 0x1A:
 						ERST = ((val & 0x01) != 0x00);
@@ -470,6 +469,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool borderOnVertical;
 		public int borderRight;
 		public int borderTop;
+		public int cycle;
+		public bool displayEnabled;
 		public int rasterInterruptLine;
 		public int rasterLineLeft;
 		public int rasterOffset;
@@ -501,12 +502,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					rasterTotalLines = 263;
 					rasterLineLeft = 0x19C;
 					visibleLeft = 0x1E9;
-					visibleRight = 0x18B;
+					visibleRight = 0x159;
 					visibleTop = 0x41;
 					visibleBottom = 0x13;
 					visibleRenderX = false;
-					visibleRenderY = true;
-					visibleWidth = 418;
+					visibleRenderY = false;
+					visibleWidth = 368;
 					visibleHeight = 217;
 					renderOffset = 0;
 					characterFetchOffset = rasterWidth - 3;
@@ -519,6 +520,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initialize raster
 			rasterOffsetX = rasterLineLeft;
+			borderOnHorizontal = true;
+			borderOnVertical = true;
 
 			// initialize buffer
 			buffer = new int[rasterWidth * rasterTotalLines];
@@ -531,12 +534,94 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void HardReset()
 		{
 			regs = new VicIIRegs();
+			signal.VicBA = true;
+			signal.VicIRQ = false;
 			UpdateBorder();
 		}
 
 		public void PerformCycle()
 		{
+			// display enable check on line $30
+			if (regs.RASTER == 0x30)
+			{
+				displayEnabled = (displayEnabled | regs.DEN);
+			}
 
+			// pixel clock is 8x the VIC clock
+			for (int i = 0; i < 8; i++)
+			{
+				int pixel;
+
+				// process raster position
+				if (rasterOffsetX >= rasterWidth)
+				{
+					// reset to the left side
+					rasterOffsetX -= rasterWidth;
+					regs.RASTER = rasterOffset >> 9;
+					cycle = 0;
+
+					// if vblank, reset the raster position
+					if (regs.RASTER == rasterTotalLines)
+					{
+						rasterOffset = 0;
+						regs.RASTER = 0;
+						regs.VCBASE = 0;
+						renderOffset = 0;
+						displayEnabled = false;
+					}
+
+					// check to see if we are within viewing area Y
+					if (regs.RASTER == visibleTop)
+						visibleRenderY = true;
+					if (regs.RASTER == visibleBottom)
+						visibleRenderY = false;
+
+					// check to see if we are on a horizontal border
+					if (displayEnabled && (regs.RASTER == borderTop || regs.RASTER == borderBottom))
+						borderOnHorizontal = !borderOnHorizontal;
+
+					// check for raster IRQ
+					if (regs.RASTER == rasterInterruptLine)
+						regs.IRST = true;
+				}
+
+				// check to see if we are within viewing area X
+				if (rasterOffsetX == visibleLeft)
+					visibleRenderX = true;
+				if (rasterOffsetX == visibleRight)
+					visibleRenderX = false;
+
+				// check to see if we are on a vertical border
+				if (rasterOffsetX == borderLeft)
+					borderOnVertical = false;
+				if (rasterOffsetX == borderRight)
+					borderOnVertical = true;
+
+				// draw the border if it is on, otherwise draw the screen
+				if (borderOnHorizontal || borderOnVertical)
+					pixel = regs.EC;
+				else
+					pixel = regs.BxC[0];
+
+				// plot the pixel if within visible range
+				if (visibleRenderX && visibleRenderY)
+				{
+					WritePixel(pixel);
+				}
+
+				// increment raster position
+				rasterOffset++;
+				rasterOffsetX++;
+			}
+
+			// check for anything that would've triggered an interrupt and raise the flag if so
+			if ((regs.IRST & regs.ERST) || (regs.IMMC & regs.EMMC) || (regs.IMBC & regs.EMBC) || (regs.ILP & regs.ELP))
+			{
+				regs.IRQ = true;
+			}
+
+			signal.VicIRQ = regs.IRQ;
+			cycle++;
 		}
 
 		public byte Read(ushort addr)
@@ -565,7 +650,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			borderTop = regs.RSEL ? 0x033 : 0x037;
 			borderBottom = regs.RSEL ? 0x0FA : 0x0F6;
 			borderLeft = regs.CSEL ? 0x018 : 0x01F;
-			borderRight = regs.CSEL ? 0x14E : 0x157;
+			borderRight = regs.CSEL ? 0x157 : 0x14E;
 		}
 
 		public void Write(ushort addr, byte val)
@@ -592,6 +677,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					regs[addr] = val;
 					UpdateBorder();
 					break;
+				case 0x19:
+					// only allow clearing of these flags
+					if ((val & 0x01) == 0x00)
+						regs.IRST = false;
+					if ((val & 0x02) == 0x00)
+						regs.IMBC = false;
+					if ((val & 0x04) == 0x00)
+						regs.IMMC = false;
+					if ((val & 0x08) == 0x00)
+						regs.ILP = false;
+					break;
 				case 0x1E:
 				case 0x1F:
 					// can't write to these regs
@@ -604,11 +700,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void WritePixel(int value)
 		{
-			if (visibleRenderX && visibleRenderY)
-			{
-				value &= 0x0F;
-				buffer[renderOffset++] = palette[value];
-			}
+			buffer[renderOffset++] = palette[value];
 		}
 	}
 }

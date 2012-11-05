@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool SPMODE;
 		public bool[] START = new bool[2];
 		public int[] T = new int[2];
+		public int[] TLATCH = new int[2];
 		public int TOD10;
 		public bool TODIN;
 		public int TODHR;
@@ -45,10 +46,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			signal = newSignal;
 
 			// power on state
-			this[0x04] = 0xFF;
-			this[0x05] = 0xFF;
-			this[0x06] = 0xFF;
-			this[0x07] = 0xFF;
+			TLATCH[0] = 0xFFFF;
+			TLATCH[1] = 0xFFFF;
+			T[0] = TLATCH[0];
+			T[1] = TLATCH[1];
+
 			this[0x0B] = 0x01;
 		}
 
@@ -223,24 +225,68 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	public class Cia
 	{
 		public int intMask;
+		public bool lastCNT;
+		public byte[] outputBitMask;
 		public DirectionalDataPort[] ports;
 		public CiaRegs regs;
 		public ChipSignals signal;
+		public bool thisCNT;
+		public bool[] underflow;
+
+		public Func<bool> ReadSerial;
+		public Action<bool> WriteSerial;
 
 		public Cia(ChipSignals newSignal)
 		{
 			signal = newSignal;
+			ReadSerial = ReadSerialDummy;
+			WriteSerial = WriteSerialDummy;
 			HardReset();
 		}
 
 		public void HardReset()
 		{
+			outputBitMask = new byte[] { 0x40, 0x80 };
 			ports = new DirectionalDataPort[2];
 			regs = new CiaRegs(signal, ports);
+			underflow = new bool[2];
 		}
 
 		public void PerformCycle()
 		{
+			lastCNT = thisCNT;
+			thisCNT = ReadSerial();
+
+			for (int i = 0; i < 2; i++)
+			{
+				if (regs.START[i])
+				{
+					TimerTick(i);
+					if (regs.PBON[i])
+					{
+						// output the clock data to port B
+
+						if (regs.OUTMODE[i])
+						{
+							// clear bit if set
+							ports[1].Data &= (byte)~outputBitMask[i];
+						}
+						if (underflow[i])
+						{
+							if (regs.OUTMODE[i])
+							{
+								// toggle bit
+								ports[1].Data ^= outputBitMask[i];
+							}
+							else
+							{
+								// set for a cycle
+								ports[1].Data |= outputBitMask[i];
+							}
+						}
+					}
+				}
+			}
 		}
 
 		public byte Read(ushort addr)
@@ -259,14 +305,83 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		private bool ReadSerialDummy()
+		{
+			return false;
+		}
+
+		public void TimerDec(int index)
+		{
+			int timer = regs.T[index];
+			timer--;
+			if (timer < 0)
+			{
+				underflow[index] = true;
+				if (regs.RUNMODE[index])
+				{
+					// one shot timer
+					regs.START[index] = false;
+				}
+				timer = regs.TLATCH[index];
+			}
+			else
+			{
+				underflow[index] = false;
+			}
+
+			regs.T[index] = timer;
+		}
+
 		public void TimerTick(int index)
 		{
+			switch (regs.INMODE[index])
+			{
+				case 0:
+					TimerDec(index);
+					break;
+				case 1:
+					if (thisCNT & !lastCNT)
+						TimerDec(index);
+					break;
+				case 2:
+					if (underflow[0])
+						TimerDec(index);
+					break;
+				case 3:
+					if (underflow[0] || (thisCNT & !lastCNT))
+						TimerDec(index);
+					break;
+			}
 		}
 
 		public void Write(ushort addr, byte val)
 		{
 			switch (addr)
 			{
+				case 0x04:
+					regs.TLATCH[0] &= 0xFF00;
+					regs.TLATCH[0] |= val;
+					if (regs.LOAD[0])
+						regs.T[0] = regs.TLATCH[0];
+					break;
+				case 0x05:
+					regs.TLATCH[0] &= 0xFF;
+					regs.TLATCH[0] |= (int)val << 8;
+					if (regs.LOAD[0] || !regs.START[0])
+						regs.T[0] = regs.TLATCH[0];
+					break;
+				case 0x06:
+					regs.TLATCH[1] &= 0xFF00;
+					regs.TLATCH[1] |= val;
+					if (regs.LOAD[1])
+						regs.T[1] = regs.TLATCH[1];
+					break;
+				case 0x07:
+					regs.TLATCH[1] &= 0xFF;
+					regs.TLATCH[1] |= (int)val << 8;
+					if (regs.LOAD[1] || !regs.START[1])
+						regs.T[1] = regs.TLATCH[1];
+					break;
 				case 0x08:
 					if (regs.ALARM)
 						regs.ALARM10 = val & 0x0F;
@@ -304,6 +419,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					break;
 			}
 			
+		}
+
+		private void WriteSerialDummy(bool val)
+		{
+			// do nothing
 		}
 	}
 }
