@@ -49,15 +49,6 @@
     <Filter Include="src\hw_cpu\z80-fuse">
       <UniqueIdentifier>{a3e7626e-55bc-4387-b374-de3b4c608880}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\hw_sound">
-      <UniqueIdentifier>{abc744d2-84b0-4a48-854b-7c1a92fd277e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\hw_sound\ym2612">
-      <UniqueIdentifier>{3726dd22-b931-47f4-a2d3-29683b41b727}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\hw_sound\sms_apu">
-      <UniqueIdentifier>{9fad4099-1fba-4cc2-8866-ad9be1671961}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\desa68">
       <UniqueIdentifier>{f36488fc-db6a-4348-84ad-94128fb86fbf}</UniqueIdentifier>
     </Filter>
@@ -420,12 +411,6 @@
     <ClCompile Include="src\hw_cpu\z80-fuse\z80_ops.cpp">
       <Filter>src\hw_cpu\z80-fuse</Filter>
     </ClCompile>
-    <ClCompile Include="src\hw_sound\ym2612\Ym2612_Emu.cpp">
-      <Filter>src\hw_sound\ym2612</Filter>
-    </ClCompile>
-    <ClCompile Include="src\hw_sound\sms_apu\Sms_Apu.cpp">
-      <Filter>src\hw_sound\sms_apu</Filter>
-    </ClCompile>
     <ClCompile Include="src\desa68\desa68.c">
       <Filter>src\desa68</Filter>
     </ClCompile>
@@ -777,15 +762,6 @@
     </ClInclude>
     <ClInclude Include="src\hw_cpu\z80-fuse\z80.h">
       <Filter>src\hw_cpu\z80-fuse</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hw_sound\ym2612\Ym2612_Emu.h">
-      <Filter>src\hw_sound\ym2612</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hw_sound\sms_apu\Sms_Apu.h">
-      <Filter>src\hw_sound\sms_apu</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hw_sound\sms_apu\Sms_Oscs.h">
-      <Filter>src\hw_sound\sms_apu</Filter>
     </ClInclude>
     <ClInclude Include="src\desa68\desa68.h">
       <Filter>src\desa68</Filter>
