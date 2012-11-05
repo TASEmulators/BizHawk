@@ -489,7 +489,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				ret = ram[addr];
 			}
-			else if (addr < 0x1000)
+			else if (addr < 0x2000)
 			{
 				ret = ram[addr & 0x7FF];
 			}
@@ -525,7 +525,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				ret = ram[addr];
 			}
-			else if (addr < 0x1000)
+			else if (addr < 0x2000)
 			{
 				ret = ram[addr & 0x7FF];
 			}
