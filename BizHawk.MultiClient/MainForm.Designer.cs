@@ -306,6 +306,7 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.gPUViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -2118,7 +2119,8 @@
             this.multicartCompatibilityToolStripMenuItem,
             this.toolStripSeparator8,
             this.changeDMGPalettesToolStripMenuItem,
-            this.loadGBInSGBToolStripMenuItem1});
+            this.loadGBInSGBToolStripMenuItem1,
+            this.gPUViewerToolStripMenuItem});
 			this.gBToolStripMenuItem.Name = "gBToolStripMenuItem";
 			this.gBToolStripMenuItem.Size = new System.Drawing.Size(32, 17);
 			this.gBToolStripMenuItem.Text = "&GB";
@@ -2645,6 +2647,13 @@
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
+			// gPUViewerToolStripMenuItem
+			// 
+			this.gPUViewerToolStripMenuItem.Name = "gPUViewerToolStripMenuItem";
+			this.gPUViewerToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.gPUViewerToolStripMenuItem.Text = "GPU Viewer";
+			this.gPUViewerToolStripMenuItem.Click += new System.EventHandler(this.gPUViewerToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2962,6 +2971,7 @@
 		private System.Windows.Forms.ToolStripMenuItem showMissle2ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showBallToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showPlayfieldToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem gPUViewerToolStripMenuItem;
     }
 }
 
