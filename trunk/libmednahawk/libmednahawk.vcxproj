@@ -312,8 +312,6 @@
     </ClCompile>
     <ClCompile Include="src\hw_cpu\z80-fuse\z80.cpp" />
     <ClCompile Include="src\hw_cpu\z80-fuse\z80_ops.cpp" />
-    <ClCompile Include="src\hw_sound\ym2612\Ym2612_Emu.cpp" />
-    <ClCompile Include="src\hw_sound\sms_apu\Sms_Apu.cpp" />
     <ClCompile Include="src\desa68\desa68.c" />
     <ClCompile Include="netplay_stub.cpp" />
   </ItemGroup>
@@ -437,9 +435,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="src\hw_cpu\z80-fuse\z80.h" />
-    <ClInclude Include="src\hw_sound\ym2612\Ym2612_Emu.h" />
-    <ClInclude Include="src\hw_sound\sms_apu\Sms_Apu.h" />
-    <ClInclude Include="src\hw_sound\sms_apu\Sms_Oscs.h" />
     <ClInclude Include="src\desa68\desa68.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="inttypes.h" />
