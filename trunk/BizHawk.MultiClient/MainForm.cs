@@ -77,6 +77,7 @@ namespace BizHawk.MultiClient
 		public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
 		public NESPPU NESPPU1 = new NESPPU();
 		public NESDebugger NESDebug1 = new NESDebugger();
+		public GBtools.GBGPUView GBGPUView1 = new GBtools.GBGPUView();
 		public PCEBGViewer PCEBGViewer1 = new PCEBGViewer();
 		public Cheats Cheats1 = new Cheats();
 		public ToolBox ToolBox1 = new ToolBox();
@@ -2497,6 +2498,7 @@ namespace BizHawk.MultiClient
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
+			GBGPUView1.UpdateValues();
 		}
 
 		public void UpdateToolsLoadstate()
@@ -2866,6 +2868,17 @@ namespace BizHawk.MultiClient
 				PCEBGViewer1.Focus();
 		}
 
+		public void LoadGBGPUView()
+		{
+			if (!GBGPUView1.IsHandleCreated || GBGPUView1.IsDisposed)
+			{
+				GBGPUView1 = new GBtools.GBGPUView();
+				GBGPUView1.Show();
+			}
+			else
+				GBGPUView1.Focus();
+		}
+
 		public void LoadTI83KeyPad()
 		{
 			if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
@@ -3099,6 +3112,7 @@ namespace BizHawk.MultiClient
 			NESPPU1.Restart();
 			NESNameTableViewer1.Restart();
 			NESDebug1.Restart();
+			GBGPUView1.Restart();
 			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
@@ -3137,6 +3151,7 @@ namespace BizHawk.MultiClient
 			CloseForm(NESNameTableViewer1);
 			CloseForm(NESPPU1);
 			CloseForm(NESDebug1);
+			CloseForm(GBGPUView1);
 			CloseForm(PCEBGViewer1);
 			CloseForm(Cheats1);
 			CloseForm(TI83KeyPad1);
@@ -4248,6 +4263,11 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.Atari2600_ShowPlayfield ^= true;
 			SyncCoreInputComm();
+		}
+
+		private void gPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGBGPUView();
 		}
 	}
 }

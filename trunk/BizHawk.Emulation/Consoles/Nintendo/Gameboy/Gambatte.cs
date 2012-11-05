@@ -145,6 +145,16 @@ namespace BizHawk.Emulation.Consoles.GB
 				tracecb = null;
 			LibGambatte.gambatte_settracecallback(GambatteState, tracecb);
 
+			// todo: have the gambatte core actually call this at an appropriate time
+			if (scanlinecallback != null)
+			{
+				IntPtr vram = IntPtr.Zero;
+				int vramlength = 0;
+				if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref vram, ref vramlength))
+					throw new Exception();
+				scanlinecallback(vram, vramlength, LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
+			}
+
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
 
 			// upload any modified data to the memory domains
@@ -572,6 +582,34 @@ namespace BizHawk.Emulation.Consoles.GB
 		public MemoryDomain MainMemory { get; private set; }
 
 		List <MemoryRefresher> MemoryRefreshers;
+
+		#endregion
+
+		#region ppudebug
+		/// <summary>
+		/// a callback to be registered at a particular scanline
+		/// </summary>
+		/// <param name="vram"></param>
+		/// <param name="vramlength">length of vram in bytes</param>
+		/// <param name="lcdc">current LCDC status</param>
+		public delegate void ScanlineCallback(IntPtr vram, int vramlength, int lcdc);
+
+		ScanlineCallback scanlinecallback;
+
+		/// <summary>
+		/// set up callback
+		/// </summary>
+		/// <param name="callback"></param>
+		/// <param name="line">scanline</param>
+		public void SetScanlineCallback(ScanlineCallback callback, int line)
+		{
+			if (callback == null)
+				this.scanlinecallback = null;
+			else if (line < 0 || line > 153)
+				throw new ArgumentOutOfRangeException("line must be in [0, 153]");
+			else
+				this.scanlinecallback = callback;
+		}
 
 		#endregion
 
