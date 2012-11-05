@@ -16,6 +16,12 @@ namespace BizHawk.MultiClient.GBtools
 		public GBGPUView()
 		{
 			InitializeComponent();
+			bmpViewBG.ChangeBitmapSize(256, 256);
+			bmpViewWin.ChangeBitmapSize(256, 256);
+			bmpViewTiles1.ChangeBitmapSize(128, 192);
+			bmpViewTiles2.ChangeBitmapSize(128, 192);
+			bmpViewBGPal.ChangeBitmapSize(8, 4);
+			bmpViewSPPal.ChangeBitmapSize(8, 4);
 		}
 
 		public void Restart()
@@ -31,6 +37,8 @@ namespace BizHawk.MultiClient.GBtools
 				bmpViewWin.Clear();
 				bmpViewTiles1.Clear();
 				bmpViewTiles2.Clear();
+				bmpViewBGPal.Clear();
+				bmpViewSPPal.Clear();
 			}
 			else
 			{
@@ -109,9 +117,6 @@ namespace BizHawk.MultiClient.GBtools
 
 		static unsafe void DrawBGCGB(Bitmap b, IntPtr _map, IntPtr _tiles, bool wrap, IntPtr _pal)
 		{
-			if (b.Width != 256 || b.Height != 256)
-				throw new Exception("GPUView screwed up.");
-
 			var lockdata = b.LockBits(new Rectangle(0, 0, 256, 256), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			byte* map = (byte*)_map;
 			int* dest = (int*)lockdata.Scan0;
@@ -144,9 +149,6 @@ namespace BizHawk.MultiClient.GBtools
 
 		static unsafe void DrawBGDMG(Bitmap b, IntPtr _map, IntPtr _tiles, bool wrap, IntPtr _pal)
 		{
-			if (b.Width != 256 || b.Height != 256)
-				throw new Exception("GPUView screwed up.");
-
 			var lockdata = b.LockBits(new Rectangle(0, 0, 256, 256), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			byte* map = (byte*)_map;
 			int* dest = (int*)lockdata.Scan0;
@@ -189,6 +191,26 @@ namespace BizHawk.MultiClient.GBtools
 				}
 				dest -= 128;
 				dest += pitch * 8;
+			}
+			b.UnlockBits(lockdata);
+		}
+
+		static unsafe void DrawPal(Bitmap b, IntPtr _pal)
+		{
+			var lockdata = b.LockBits(new Rectangle(0, 0, 8, 4), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			int* dest = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+			int* pal = (int*)_pal;
+
+			for (int px = 0; px < 8; px++)
+			{
+				for (int py = 0; py < 4; py++)
+				{
+					*dest = *pal++;
+					dest += pitch;
+				}
+				dest -= pitch * 4;
+				dest++;
 			}
 			b.UnlockBits(lockdata);
 		}
@@ -253,6 +275,11 @@ namespace BizHawk.MultiClient.GBtools
 				DrawTiles(bmpViewTiles2.bmp, vram + 0x2000, bgpal);
 				bmpViewTiles2.Refresh();
 			}
+
+			DrawPal(bmpViewBGPal.bmp, bgpal);
+			DrawPal(bmpViewSPPal.bmp, sppal);
+			bmpViewBGPal.Refresh();
+			bmpViewSPPal.Refresh();
 		}
 
 		private void GBGPUView_FormClosed(object sender, FormClosedEventArgs e)

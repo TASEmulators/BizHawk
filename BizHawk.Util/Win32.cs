@@ -442,6 +442,9 @@ namespace BizHawk
 
 		[DllImport("Kernel32.dll", EntryPoint = "RtlZeroMemory", SetLastError = false)]
 		public static extern void ZeroMemory(IntPtr dest, uint size);
+
+		[DllImport("msvcrt.dll", EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+		public static extern IntPtr MemSet(IntPtr dest, int c, uint count);
 	}
 
 }
