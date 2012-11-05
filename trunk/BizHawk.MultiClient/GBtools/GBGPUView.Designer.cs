@@ -40,6 +40,8 @@
 			this.bmpViewTiles1 = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewWin = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewBG = new BizHawk.MultiClient.GBtools.BmpView();
+			this.bmpViewOAM = new BizHawk.MultiClient.GBtools.BmpView();
+			this.label7 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -150,11 +152,30 @@
 			this.bmpViewBG.TabIndex = 4;
 			this.bmpViewBG.Text = "bmpView1";
 			// 
+			// bmpViewOAM
+			// 
+			this.bmpViewOAM.BackColor = System.Drawing.Color.Transparent;
+			this.bmpViewOAM.Location = new System.Drawing.Point(12, 300);
+			this.bmpViewOAM.Name = "bmpViewOAM";
+			this.bmpViewOAM.Size = new System.Drawing.Size(320, 16);
+			this.bmpViewOAM.TabIndex = 14;
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(9, 284);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(31, 13);
+			this.label7.TabIndex = 15;
+			this.label7.Text = "OAM";
+			// 
 			// GBGPUView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(951, 414);
+			this.Controls.Add(this.label7);
+			this.Controls.Add(this.bmpViewOAM);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.bmpViewSPPal);
@@ -190,5 +211,7 @@
 		private BmpView bmpViewSPPal;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label6;
+		private BmpView bmpViewOAM;
+		private System.Windows.Forms.Label label7;
 	}
 }

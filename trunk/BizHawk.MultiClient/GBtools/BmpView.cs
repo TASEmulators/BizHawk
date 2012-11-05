@@ -23,7 +23,13 @@ namespace BizHawk.MultiClient.GBtools
 			SetStyle(ControlStyles.Opaque, true);
 			this.BackColor = Color.Transparent;
 			this.Paint += new PaintEventHandler(BmpView_Paint);
+			this.SizeChanged += new EventHandler(BmpView_SizeChanged);
 			ChangeBitmapSize(1, 1);
+		}
+
+		void BmpView_SizeChanged(object sender, EventArgs e)
+		{
+			scaled = !(bmp.Width == Width && bmp.Height == Height);
 		}
 
 		void BmpView_Paint(object sender, PaintEventArgs e)
@@ -48,9 +54,14 @@ namespace BizHawk.MultiClient.GBtools
 		public void ChangeBitmapSize(int w, int h)
 		{
 			if (bmp != null)
+			{
+				if (w == bmp.Width && h == bmp.Height)
+					return;
 				bmp.Dispose();
+			}
 			bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			scaled = !(w == Width && h == Height);
+			BmpView_SizeChanged(null, null);
+			Refresh();
 		}
 
 		public void Clear()

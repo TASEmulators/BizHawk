@@ -151,13 +151,15 @@ namespace BizHawk.Emulation.Consoles.GB
 				IntPtr vram = IntPtr.Zero;
 				IntPtr bgpal = IntPtr.Zero;
 				IntPtr sppal = IntPtr.Zero;
+				IntPtr oam = IntPtr.Zero;
 				int unused = 0;
 				if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref vram, ref unused)
 					|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.bgpal, ref bgpal, ref unused)
-					|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.sppal, ref sppal, ref unused))
+					|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.sppal, ref sppal, ref unused)
+					|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.oam, ref oam, ref unused))
 					throw new Exception();
 
-				scanlinecallback(vram, IsCGBMode(), LibGambatte.gambatte_cpuread(GambatteState, 0xff40), bgpal, sppal);
+				scanlinecallback(vram, IsCGBMode(), LibGambatte.gambatte_cpuread(GambatteState, 0xff40), bgpal, sppal, oam);
 			}
 
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
@@ -599,7 +601,8 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="lcdc"></param>
 		/// <param name="bgpal"></param>
 		/// <param name="sppal"></param>
-		public delegate void ScanlineCallback(IntPtr vram, bool cgb, int lcdc, IntPtr bgpal, IntPtr sppal);
+		/// <param name="oam"></param>
+		public delegate void ScanlineCallback(IntPtr vram, bool cgb, int lcdc, IntPtr bgpal, IntPtr sppal, IntPtr oam);
 
 		ScanlineCallback scanlinecallback;
 

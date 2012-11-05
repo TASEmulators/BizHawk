@@ -316,7 +316,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			cartram = 3,
 			oam = 4,
 			hram = 5,
-			// these last two aren't returning native memory area data
+			// these last two aren't returning native memory area data, but instead converted RGB32 colors
 			bgpal = 6,
 			sppal = 7
 		}
