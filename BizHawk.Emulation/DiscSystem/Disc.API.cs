@@ -92,6 +92,30 @@ namespace BizHawk.DiscSystem
 			Array.Copy(temp, 16, buffer, offset, 2048);
 		}
 
+		/// <summary>
+		/// reads logical data from a flat disc address space
+		/// useful for plucking data from a known location on the disc
+		/// </summary>
+		public void ReadLBA_2352_Flat(long disc_offset, byte[] buffer, int offset, int length)
+		{
+			int secsize = 2352;
+			byte[] lba_buf = new byte[secsize];
+			while(length > 0)
+			{
+				int lba = (int)(disc_offset / secsize);
+				int lba_within = (int)(disc_offset % secsize);
+				int todo = length;
+				int remains_in_lba = secsize - lba_within;
+				if (remains_in_lba < todo)
+					todo = remains_in_lba;
+				ReadLBA_2352(lba, lba_buf, 0);
+				Array.Copy(lba_buf, lba_within, buffer, offset, todo);
+				offset += todo;
+				length -= todo;
+				lba_within = 0;
+			}
+		}
+
 
 		/// <summary>
 		/// Returns a SectorEntry from which you can retrieve various interesting pieces of information about the sector.

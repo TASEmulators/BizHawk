@@ -1435,12 +1435,13 @@ namespace BizHawk.MultiClient
 							// In the future we need to do something smarter, possibly including simply asking the user
 							// what system the game is for.
 
-							if (System.Windows.Forms.SystemInformation.ComputerName == "ZERO-XP")
+							if (BizHawk.Emulation.Consoles.PSX.Octoshock.CheckIsPSX(disc))
 							{
 								game = new GameInfo();
 								game.System = "PSX";
 								game.Name = Path.GetFileNameWithoutExtension(file.Name);
 								game.Hash = hash;
+								disc.Dispose();
 							}
 							else
 							{
