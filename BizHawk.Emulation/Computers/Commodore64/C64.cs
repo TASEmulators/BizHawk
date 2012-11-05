@@ -92,11 +92,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			for (int i = 0; i < cyclesPerSecond; i++)
 			{
-				if (vicSignal.Interrupt || cia1.interrupt || cia2.interrupt)
+				if (signal.CpuIRQ)
 				{
 					cpu.IRQ = true;
 				}
-				if (vicSignal.AllowCpu)
+				if (signal.CpuRDY)
 				{
 					cpu.ExecuteOne();
 				}

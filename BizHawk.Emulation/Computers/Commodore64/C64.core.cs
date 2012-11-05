@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public Memory mem;
 		public Sid sid;
 		public VicII vic;
-		public VicSignals vicSignal;
+		public ChipSignals signal;
 
 		private void HardReset()
 		{
@@ -35,8 +35,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cia2 = new Cia(Cia.DummyReadPort, Cia.DummyReadPort, Cia.DummyWritePort, Cia.DummyWritePort);
 
 			// initialize vic
-			vicSignal = new VicSignals();
-			vic = new VicII(vicSignal, VicIIMode.NTSC);
+			signal = new ChipSignals();
+			vic = new VicII(signal, VicIIMode.NTSC);
 
 			// initialize sid
 			sid = new Sid();
@@ -87,5 +87,22 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			mem.Write(addr, value);
 		}
+	}
+
+	public class ChipSignals
+	{
+		private bool[] _CiaIRQOutput = new bool[2];
+		private bool _VicAECOutput;
+		private bool _VicBAOutput;
+		private bool _VicIRQOutput;
+		private bool _VicLPInput;
+
+		public bool CpuAEC { get { return _VicAECOutput; } }
+		public bool CpuIRQ { get { return _VicIRQOutput | _CiaIRQOutput[0] | _CiaIRQOutput[1]; } }
+		public bool CpuRDY { get { return _VicBAOutput; } }
+		public bool VicAEC { get { return _VicAECOutput; } set { _VicAECOutput = value; } }
+		public bool VicBA { get { return _VicBAOutput; } set { _VicBAOutput = value; } }
+		public bool VicIRQ { get { return _VicIRQOutput; } set { _VicIRQOutput = value; } }
+		public bool VicLP { get { return _VicLPInput; } }
 	}
 }
