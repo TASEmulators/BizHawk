@@ -250,6 +250,9 @@ public:
 	
 	bool isCgb() const { return ppu.cgb(); }
 	bool isDoubleSpeed() const { return ppu.lyCounter().isDoubleSpeed(); }
+
+	unsigned long *bgPalette() { return ppu.bgPalette(); }
+	unsigned long *spPalette() { return ppu.spPalette(); }
 };
 
 }
