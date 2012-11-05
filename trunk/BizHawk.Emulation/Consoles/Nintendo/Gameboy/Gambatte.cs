@@ -145,24 +145,9 @@ namespace BizHawk.Emulation.Consoles.GB
 				tracecb = null;
 			LibGambatte.gambatte_settracecallback(GambatteState, tracecb);
 
-			// todo: have the gambatte core actually call this at an appropriate time
-			if (scanlinecallback != null)
-			{
-				IntPtr vram = IntPtr.Zero;
-				IntPtr bgpal = IntPtr.Zero;
-				IntPtr sppal = IntPtr.Zero;
-				IntPtr oam = IntPtr.Zero;
-				int unused = 0;
-				if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref vram, ref unused)
-					|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.bgpal, ref bgpal, ref unused)
-					|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.sppal, ref sppal, ref unused)
-					|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.oam, ref oam, ref unused))
-					throw new Exception();
-
-				scanlinecallback(vram, IsCGBMode(), LibGambatte.gambatte_cpuread(GambatteState, 0xff40), bgpal, sppal, oam);
-			}
-
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
+
+			Console.WriteLine("===");
 
 			// upload any modified data to the memory domains
 
@@ -593,18 +578,36 @@ namespace BizHawk.Emulation.Consoles.GB
 		#endregion
 
 		#region ppudebug
+		public bool GetGPUMemoryAreas(out IntPtr vram, out IntPtr bgpal, out IntPtr sppal, out IntPtr oam)
+		{
+			IntPtr _vram = IntPtr.Zero;
+			IntPtr _bgpal = IntPtr.Zero;
+			IntPtr _sppal = IntPtr.Zero;
+			IntPtr _oam = IntPtr.Zero;
+			int unused = 0;
+			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref _vram, ref unused)
+				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.bgpal, ref _bgpal, ref unused)
+				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.sppal, ref _sppal, ref unused)
+				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.oam, ref _oam, ref unused))
+			{
+				vram = IntPtr.Zero;
+				bgpal = IntPtr.Zero;
+				sppal = IntPtr.Zero;
+				oam = IntPtr.Zero;
+				return false;
+			}
+			vram = _vram;
+			bgpal = _bgpal;
+			sppal = _sppal;
+			oam = _oam;
+			return true;
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="vram"></param>
-		/// <param name="cgb"></param>
-		/// <param name="lcdc"></param>
-		/// <param name="bgpal"></param>
-		/// <param name="sppal"></param>
-		/// <param name="oam"></param>
-		public delegate void ScanlineCallback(IntPtr vram, bool cgb, int lcdc, IntPtr bgpal, IntPtr sppal, IntPtr oam);
-
-		ScanlineCallback scanlinecallback;
+		/// <param name="lcdc">current value of register $ff40 (LCDC)</param>
+		public delegate void ScanlineCallback(int lcdc);
 
 		/// <summary>
 		/// set up callback
@@ -613,13 +616,24 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="line">scanline</param>
 		public void SetScanlineCallback(ScanlineCallback callback, int line)
 		{
+			if (GambatteState == IntPtr.Zero)
+				// not sure how this is being reached.  tried the debugger...
+				return;
 			if (callback == null)
-				this.scanlinecallback = null;
+				scanlinecb = null;
 			else if (line < 0 || line > 153)
 				throw new ArgumentOutOfRangeException("line must be in [0, 153]");
 			else
-				this.scanlinecallback = callback;
+				scanlinecb = delegate()
+				{
+					callback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
+					//callback(0);
+				};
+
+			LibGambatte.gambatte_setscanlinecallback(GambatteState, scanlinecb, 0);
 		}
+
+		LibGambatte.ScanlineCallback scanlinecb;
 
 		#endregion
 

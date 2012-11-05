@@ -150,6 +150,9 @@ class LCD {
 	void doCgbBgColorChange(unsigned index, unsigned data, unsigned long cycleCounter);
 	void doCgbSpColorChange(unsigned index, unsigned data, unsigned long cycleCounter);
 
+	void (*scanlinecallback)();
+	int scanlinecallbacksl;
+
 public:
 	LCD(const unsigned char *oamram, const unsigned char *vram_in, VideoInterruptRequester memEventRequester);
 	void reset(const unsigned char *oamram, const unsigned char *vram, bool cgb);
@@ -253,6 +256,8 @@ public:
 
 	unsigned long *bgPalette() { return ppu.bgPalette(); }
 	unsigned long *spPalette() { return ppu.spPalette(); }
+
+	void setScanlineCallback(void (*callback)(), int sl) { scanlinecallback = callback; scanlinecallbacksl = sl; }
 };
 
 }

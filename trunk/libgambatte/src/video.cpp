@@ -71,7 +71,9 @@ LCD::LCD(const unsigned char *const oamram, const unsigned char *const vram, con
 	eventTimes_(memEventRequester),
 	statReg(0),
 	m2IrqStatReg_(0),
-	m1IrqStatReg_(0)
+	m1IrqStatReg_(0),
+	scanlinecallback(0),
+	scanlinecallbacksl(0)
 {
 	std::memset( bgpData, 0, sizeof  bgpData);
 	std::memset(objpData, 0, sizeof objpData);
@@ -772,6 +774,8 @@ inline void LCD::event() {
 	case LY_COUNT:
 		ppu.doLyCountEvent();
 		eventTimes_.set<LY_COUNT>(ppu.lyCounter().time());
+		if (scanlinecallback && ppu.lyCounter().ly() == scanlinecallbacksl)
+			scanlinecallback();
 		break;
 	}
 }
