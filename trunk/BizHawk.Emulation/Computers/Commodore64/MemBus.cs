@@ -64,6 +64,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// registers
 		public byte busData;
+		public DirectionalDataPort cia0PortA = new DirectionalDataPort(0xFF, 0x00);
+		public DirectionalDataPort cia0PortB = new DirectionalDataPort(0xFF, 0x00);
+		public DirectionalDataPort cia1PortA = new DirectionalDataPort(0x7F, 0x00);
+		public DirectionalDataPort cia1PortB = new DirectionalDataPort(0xFF, 0x00);
 		public DirectionalDataPort cpuPort;
 		public bool readTrigger = true;
 		public bool writeTrigger = true;
@@ -86,6 +90,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			sid = newSid;
 			cia0 = newCia0;
 			cia1 = newCia1;
+			cia0.ports[0] = cia0PortA;
+			cia0.ports[1] = cia0PortB;
+			cia1.ports[0] = cia1PortA;
+			cia1.ports[1] = cia1PortB;
 			cpuPort = new DirectionalDataPort(0x37, 0x2F);
 
 			layout = new MemoryLayout();
@@ -99,30 +107,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			exRomPin = cart.exRomPin;
 			gamePin = cart.gamePin;
 			UpdateLayout();
-		}
-
-		public byte CIA2ReadPortA()
-		{
-			return cia2A;
-		}
-
-		public byte CIA2ReadPortB()
-		{
-			return cia2B;
-		}
-
-		public void CIA2WritePortA(byte val, byte direction)
-		{
-			cia2A &= (byte)~direction;
-			cia2A |= (byte)(val & direction);
-
-			vicOffset = (ushort)((cia2A & 0x03) << 14);
-		}
-
-		public void CIA2WritePortB(byte val, byte direction)
-		{
-			cia2B &= (byte)~direction;
-			cia2B |= (byte)(val & direction);
 		}
 
 		public MemoryDesignation GetDesignation(ushort addr)
@@ -425,9 +409,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			addr = (ushort)(addr & 0x1FFF);
 			if (addr >= 0x1000 && addr < 0x2000)
+			{
 				return charRom[addr & 0x0FFF];
+			}
 			else
-				return ram[addr | vicOffset];
+			{
+				int baseAddr = (3 - (cia1PortA.Data & 0x03)) << 14;
+				return ram[addr | baseAddr];
+			}
 		}
 
 		public void WipeMemory()

@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				{
 					cpu.IRQ = true;
 				}
-				if (signal.CpuRDY)
+				if (signal.CpuAEC)
 				{
 					cpu.ExecuteOne();
 				}
