@@ -46,6 +46,13 @@ namespace BizHawk.MultiClient.GBtools
 				return;
 			bmp = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 		}
-		
+
+		public void Clear()
+		{
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			Win32.ZeroMemory(lockdata.Scan0, (uint)(lockdata.Height * lockdata.Stride));
+			bmp.UnlockBits(lockdata);
+			Refresh();
+		}
 	}
 }
