@@ -16,7 +16,6 @@ namespace BizHawk.MultiClient.GBtools
 		public GBGPUView()
 		{
 			InitializeComponent();
-
 		}
 
 		public void Restart()
@@ -24,10 +23,20 @@ namespace BizHawk.MultiClient.GBtools
 			if (Global.Emulator is Emulation.Consoles.GB.Gameboy)
 			{
 				gb = Global.Emulator as Emulation.Consoles.GB.Gameboy;
+				if (gb.IsCGBMode())
+					label4.Enabled = true;
+				else
+					label4.Enabled = false;
+				bmpViewBG.Clear();
+				bmpViewWin.Clear();
+				bmpViewTiles1.Clear();
+				bmpViewTiles2.Clear();
 			}
 			else
 			{
-				this.Close();
+				gb = null;
+				if (Visible)
+					Close();
 			}
 		}
 
@@ -162,6 +171,28 @@ namespace BizHawk.MultiClient.GBtools
 			b.UnlockBits(lockdata);
 		}
 
+		static unsafe void DrawTiles(Bitmap b, IntPtr _tiles, IntPtr _pal)
+		{
+			var lockdata = b.LockBits(new Rectangle(0, 0, 128, 192), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			int* dest = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+			int* pal = (int*)_pal;
+			byte* tile = (byte*)_tiles;
+
+			for (int ty = 0; ty < 24; ty++)
+			{
+				for (int tx = 0; tx < 16; tx++)
+				{
+					DrawTileDMG(tile, dest, pitch, pal);
+					tile += 16;
+					dest += 8;
+				}
+				dest -= 128;
+				dest += pitch * 8;
+			}
+			b.UnlockBits(lockdata);
+		}
+
 		void ScanlineCallback(IntPtr vram, bool cgb, int lcdc, IntPtr bgpal, IntPtr sppal)
 		{
 			// set alpha on all pixels
@@ -176,6 +207,7 @@ namespace BizHawk.MultiClient.GBtools
 					p[i] |= unchecked((int)0xff000000);
 			}
 
+			// bg maps
 			if (!cgb)
 			{
 				DrawBGDMG(
@@ -210,6 +242,17 @@ namespace BizHawk.MultiClient.GBtools
 			}
 			bmpViewBG.Refresh();
 			bmpViewWin.Refresh();
+
+			// tile display
+			// TODO: user selects palette to use, instead of fixed palette 0
+			// or possibly "smart" where, if a tile is in use, it's drawn with one of the palettes actually being used with it?
+			DrawTiles(bmpViewTiles1.bmp, vram, bgpal);
+			bmpViewTiles1.Refresh();
+			if (cgb)
+			{
+				DrawTiles(bmpViewTiles2.bmp, vram + 0x2000, bgpal);
+				bmpViewTiles2.Refresh();
+			}
 		}
 
 		private void GBGPUView_FormClosed(object sender, FormClosedEventArgs e)
@@ -223,7 +266,7 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void GBGPUView_Load(object sender, EventArgs e)
 		{
-			gb = Global.Emulator as Emulation.Consoles.GB.Gameboy;
+			Restart();
 		}
 	}
 }

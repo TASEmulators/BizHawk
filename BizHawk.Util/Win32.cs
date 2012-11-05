@@ -439,6 +439,9 @@ namespace BizHawk
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+
+		[DllImport("Kernel32.dll", EntryPoint = "RtlZeroMemory", SetLastError = false)]
+		public static extern void ZeroMemory(IntPtr dest, uint size);
 	}
 
 }
