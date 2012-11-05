@@ -102,8 +102,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 				vic.PerformCycle();
 				sid.PerformCycle();
+				cia0.PerformCycle();
 				cia1.PerformCycle();
-				cia2.PerformCycle();
 			}
 
 			if (_islag)
