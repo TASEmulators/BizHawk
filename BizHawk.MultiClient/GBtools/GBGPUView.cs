@@ -13,6 +13,15 @@ namespace BizHawk.MultiClient.GBtools
 	{
 		Emulation.Consoles.GB.Gameboy gb;
 
+		// gambatte doesn't modify these memory locations unless you reconstruct, so we can store
+		IntPtr vram;
+		IntPtr bgpal;
+		IntPtr sppal;
+		IntPtr oam;
+
+		bool cgb; // set once at start
+		int lcdc; // set at each callback
+
 		public GBGPUView()
 		{
 			InitializeComponent();
@@ -30,7 +39,16 @@ namespace BizHawk.MultiClient.GBtools
 			if (Global.Emulator is Emulation.Consoles.GB.Gameboy)
 			{
 				gb = Global.Emulator as Emulation.Consoles.GB.Gameboy;
-				if (gb.IsCGBMode())
+				cgb = gb.IsCGBMode();
+				lcdc = 0;
+				if (!gb.GetGPUMemoryAreas(out vram, out bgpal, out sppal, out oam))
+				{
+					gb = null;
+					if (Visible)
+						Close();
+				}
+
+				if (cgb)
 					label4.Enabled = true;
 				else
 					label4.Enabled = false;
@@ -302,8 +320,9 @@ namespace BizHawk.MultiClient.GBtools
 			b.UnlockBits(lockdata);
 		}
 
-		void ScanlineCallback(IntPtr vram, bool cgb, int lcdc, IntPtr bgpal, IntPtr sppal, IntPtr oam)
+		void ScanlineCallback(int lcdc)
 		{
+			this.lcdc = lcdc;
 			// set alpha on all pixels
 			unsafe
 			{

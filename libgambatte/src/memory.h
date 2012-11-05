@@ -66,6 +66,9 @@ class Memory {
 	void nontrivial_ff_write(unsigned P, unsigned data, unsigned long cycleCounter);
 	void nontrivial_write(unsigned P, unsigned data, unsigned long cycleCounter);
 	
+	unsigned nontrivial_peek(unsigned P);
+	unsigned nontrivial_ff_peek(unsigned P);
+
 	void updateSerial(unsigned long cc);
 	void updateTimaIrq(unsigned long cc);
 	void updateIrqs(unsigned long cc);
@@ -119,6 +122,10 @@ public:
 		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_read(P, cycleCounter);
 	}
 
+	unsigned peek(const unsigned P) {
+		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_peek(P);
+	}
+
 	void write(const unsigned P, const unsigned data, const unsigned long cycleCounter) {
 		if (cart.wmem(P >> 12)) {
 			cart.wmem(P >> 12)[P] = data;
@@ -150,6 +157,10 @@ public:
 	}
 	void setWriteCallback(void (*callback)(unsigned)) {
 		this->writeCallback = callback;
+	}
+
+	void setScanlineCallback(void (*callback)(), int sl) {
+		display.setScanlineCallback(callback, sl);
 	}
 
 	void setEndtime(unsigned long cc, unsigned long inc);

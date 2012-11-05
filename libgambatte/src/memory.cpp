@@ -570,6 +570,32 @@ unsigned Memory::nontrivial_read(const unsigned P, const unsigned long cycleCoun
 	return ioamhram[P - 0xFE00];
 }
 
+unsigned Memory::nontrivial_peek(const unsigned P) {
+	if (P < 0xC000) {
+		if (P < 0x8000)
+			return cart.romdata(P >> 14)[P];
+
+		if (P < 0xA000) {
+			return cart.vrambankptr()[P];
+		}
+
+		if (cart.rsrambankptr())
+			return cart.rsrambankptr()[P];
+
+		return cart.rtcRead(); // verified side-effect free
+	}
+	if (P < 0xFE00)
+		return cart.wramdata(P >> 12 & 1)[P & 0xFFF];
+	if (P >= 0xFF00 && P < 0xFF80)
+		return nontrivial_ff_peek(P);
+	return ioamhram[P - 0xFE00];
+}
+
+unsigned Memory::nontrivial_ff_peek(const unsigned P) {
+	// some regs may be somewhat wrong with this
+	return ioamhram[P - 0xFE00];
+}
+
 void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned long cycleCounter) {
 	if (lastOamDmaUpdate != DISABLED_TIME)
 		updateOamDma(cycleCounter);
