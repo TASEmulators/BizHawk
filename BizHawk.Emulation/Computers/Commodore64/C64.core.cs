@@ -105,7 +105,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool CpuRDY { get { return _VicBAOutput; } }
 		public bool LPOutput { get { return _VicLPInput; } set { _VicLPInput = value; } }
 		public bool VicAEC { get { return _VicAECOutput; } set { _VicAECOutput = value; } }
-		public bool VicBA { get { return _VicBAOutput; } set { _VicBAOutput = value; } }
 		public bool VicIRQ { get { return _VicIRQOutput; } set { _VicIRQOutput = value; } }
 		public bool VicLP { get { return _VicLPInput; } }
 	}

@@ -432,6 +432,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		}
 	}
 
+	public enum VicIITask
+	{
+		Idle,
+		VideoMatrix,
+		CharGen,
+		SpritePointer,
+		SpriteData,
+		DramRefresh
+	}
+
 	public class VicII
 	{
 		// buffer
@@ -463,12 +473,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int characterFetchOffset;
 
 		// raster
+		public bool badLine;
 		public int borderBottom;
 		public int borderLeft;
 		public bool borderOnHorizontal;
 		public bool borderOnVertical;
 		public int borderRight;
 		public int borderTop;
+		public byte[] characterMemory;
 		public int cycle;
 		public bool displayEnabled;
 		public int rasterInterruptLine;
@@ -477,7 +489,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int rasterOffsetX;
 		public int rasterTotalLines;
 		public int rasterWidth;
+		public int refreshAddress;
 		public int renderOffset;
+		public byte[,] spriteData;
+		public ushort[] spritePointers;
+		public VicIITask task;
+		public int totalCycles;
 		public int visibleBottom;
 		public int visibleHeight;
 		public int visibleLeft;
@@ -510,7 +527,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					visibleWidth = 368;
 					visibleHeight = 217;
 					renderOffset = 0;
-					characterFetchOffset = rasterWidth - 3;
 					break;
 				case VicIIMode.PAL:
 					break;
@@ -522,29 +538,122 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			rasterOffsetX = rasterLineLeft;
 			borderOnHorizontal = true;
 			borderOnVertical = true;
+			totalCycles = rasterWidth / 8;
 
 			// initialize buffer
 			buffer = new int[rasterWidth * rasterTotalLines];
 			bufferSize = buffer.Length;
 
+			// initialize sprites
+			spritePointers = new ushort[8];
+			spriteData = new byte[8, 64];
+
 			// initialize registers
 			HardReset();
 		}
 
+		private void GetSpriteData(int index)
+		{
+			ushort offset = (ushort)(regs.VM + 0x3F8 + index);
+			spritePointers[index] = (ushort)(regs.VM + (mem.VicRead(offset) * 64));
+			for (ushort i = 0; i < 64; i++)
+				spriteData[index, i] = mem.VicRead((ushort)(spritePointers[index] + i));
+		}
+
 		public void HardReset()
 		{
+			refreshAddress = 0x3FFF;
 			regs = new VicIIRegs();
-			signal.VicBA = true;
+			signal.VicAEC = true;
 			signal.VicIRQ = false;
 			UpdateBorder();
 		}
 
 		public void PerformCycle()
 		{
+
 			// display enable check on line $30
 			if (regs.RASTER == 0x30)
 			{
 				displayEnabled = (displayEnabled | regs.DEN);
+			}
+
+			// badline calculation (for when the VIC must pause the CPU to get character data)
+			badLine = (regs.YSCROLL == (regs.RASTER & 0x07) && displayEnabled);
+
+			// decide what to do this cycle
+			if (cycle >= 0 && cycle < 10)
+			{
+				// fetch sprite data 3-7
+				int index = (cycle >> 1) + 3;
+				if (regs.MxE[index])
+				{
+					signal.VicAEC = false;
+					if ((cycle & 0x01) == 0x00)
+					{
+						GetSpriteData(index);
+					}
+				}
+				else
+				{
+					signal.VicAEC = true;
+				}
+			}
+			else if (cycle >= 10 && cycle < 15)
+			{
+				// dram refresh
+				mem.VicRead((ushort)refreshAddress);
+				refreshAddress = (refreshAddress - 1) & 0xFF;
+				refreshAddress |= 0x3F00;
+
+				// VIC internal register reset on cycle 13
+				if (cycle == 13)
+				{
+					regs.VC = regs.VCBASE;
+				}
+			}
+			else if (cycle >= 15 && cycle < 55)
+			{
+				if (badLine)
+				{
+					// fetch video data
+					signal.VicAEC = false;
+
+				}
+				else
+				{
+					signal.VicAEC = true;
+				}
+			}
+			else if (cycle == 57)
+			{
+				// increment VIC row counter
+				if (regs.RC == 7)
+				{
+					regs.VCBASE = regs.VC;
+				}
+				regs.RC = (regs.RC + 1) & 0x07;
+				if (badLine)
+				{
+					regs.RC = 0;
+				}
+			}
+			else if (cycle >= totalCycles - 6)
+			{
+				// fetch sprite data 0-2
+				int index = (cycle - (totalCycles - 6)) >> 1;
+				if (regs.MxE[index])
+				{
+					signal.VicAEC = false;
+					if ((cycle & 0x01) == 0x00)
+					{
+						GetSpriteData(index);
+					}
+				}
+				else
+				{
+					signal.VicAEC = true;
+				}
 			}
 
 			// pixel clock is 8x the VIC clock
@@ -568,6 +677,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						regs.VCBASE = 0;
 						renderOffset = 0;
 						displayEnabled = false;
+						refreshAddress = 0x3FFF;
 					}
 
 					// check to see if we are within viewing area Y
@@ -643,6 +753,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			return result;
+		}
+
+		public bool SpriteOnLine(int index)
+		{
+			return false;
 		}
 
 		public void UpdateBorder()
