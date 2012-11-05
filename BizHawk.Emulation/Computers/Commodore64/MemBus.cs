@@ -64,8 +64,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// registers
 		public byte busData;
-		public byte cpu00;      // register $00
-		public byte cpu01;      // register $01
+		public DirectionalDataPort cpuPort;
 		public bool readTrigger = true;
 		public bool writeTrigger = true;
 
@@ -87,8 +86,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			sid = newSid;
 			cia1 = newCia1;
 			cia2 = newCia2;
-			cpu00 = 0x2F;
-			cpu01 = 0x37;
+			cpuPort = new DirectionalDataPort(0x2F, 0x37);
 
 			layout = new MemoryLayout();
 			UpdateLayout();
@@ -202,11 +200,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			if (addr == 0x0000)
 			{
-				result = cpu00;
+				result = cpuPort.Direction;
 			}
 			else if (addr == 0x0001)
 			{
-				result = cpu01;
+				result = cpuPort.Data;
 			}
 			else
 			{
@@ -268,11 +266,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			if (addr == 0x0000)
 			{
-				result = cpu00;
+				result = cpuPort.Direction;
 			}
 			else if (addr == 0x0001)
 			{
-				result = cpu01;
+				result = cpuPort.Data;
 			}
 			else
 			{
@@ -335,9 +333,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void UpdateLayout()
 		{
-			bool loRom = ((cpu01 & 0x01) != 0);
-			bool hiRom = ((cpu01 & 0x02) != 0);
-			bool ioEnable = ((cpu01 & 0x04) != 0);
+			byte cpuData = cpuPort.Data;
+			bool loRom = ((cpuData & 0x01) != 0);
+			bool hiRom = ((cpuData & 0x02) != 0);
+			bool ioEnable = ((cpuData & 0x04) != 0);
 
 			if (loRom && hiRom && exRomPin && gamePin)
 			{
@@ -446,12 +445,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			if (addr == 0x0000)
 			{
-				cpu00 = val;
+				cpuPort.Direction = val;
 			}
 			else if (addr == 0x0001)
 			{
-				cpu01 &= (byte)(~cpu00);
-				cpu01 |= (byte)(cpu00 & val);
+				cpuPort.Data = val;
 				UpdateLayout();
 			}
 			else

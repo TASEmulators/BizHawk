@@ -15,8 +15,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte[] inputFile;
 
 		// chipset
+		public Cia cia0;
 		public Cia cia1;
-		public Cia cia2;
 		public MOS6502X cpu;
 		public Memory mem;
 		public Sid sid;
@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cpu.DummyReadMemory = PeekMemory;
 
 			// initialize cia timers
-			cia1 = new Cia(Cia.DummyReadPort, Cia.DummyReadPort, Cia.DummyWritePort, Cia.DummyWritePort);
-			cia2 = new Cia(Cia.DummyReadPort, Cia.DummyReadPort, Cia.DummyWritePort, Cia.DummyWritePort);
+			cia0 = new Cia(signal);
+			cia1 = new Cia(signal);
 
 			// initialize vic
 			signal = new ChipSignals();
@@ -43,14 +43,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initialize memory (this must be done AFTER all other chips are initialized)
 			string romPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "C64Kernal");
-			mem = new Memory(romPath, vic, sid, cia1, cia2);
+			mem = new Memory(romPath, vic, sid, cia0, cia1);
 			vic.mem = mem;
-
-			// initialize ports
-			cia2.ReadPortA = mem.CIA2ReadPortA;
-			cia2.ReadPortB = mem.CIA2ReadPortB;
-			cia2.WritePortA = mem.CIA2WritePortA;
-			cia2.WritePortB = mem.CIA2WritePortB;
 
 			// initialize media
 			Cartridge cart = new Cartridge(inputFile);
@@ -91,12 +85,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 	public class ChipSignals
 	{
+		private bool[] _CiaSerialInput = new bool[2];
 		private bool[] _CiaIRQOutput = new bool[2];
 		private bool _VicAECOutput;
 		private bool _VicBAOutput;
 		private bool _VicIRQOutput;
 		private bool _VicLPInput;
 
+		public bool CiaIRQ0 { get { return _CiaIRQOutput[0]; } set { _CiaIRQOutput[0] = value; } }
+		public bool CiaIRQ1 { get { return _CiaIRQOutput[1]; } set { _CiaIRQOutput[1] = value; } }
+		public bool CiaSerial0 { get { return _CiaSerialInput[0]; } }
+		public bool CiaSerial1 { get { return _CiaSerialInput[1]; } }
 		public bool CpuAEC { get { return _VicAECOutput; } }
 		public bool CpuIRQ { get { return _VicIRQOutput | _CiaIRQOutput[0] | _CiaIRQOutput[1]; } }
 		public bool CpuRDY { get { return _VicBAOutput; } }

@@ -44,7 +44,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int[] MxY = new int[8];
 		public bool[] MxYE = new bool[8];
 		public int RASTER;
-		public int RASTERX;
 		public int RC;
 		public bool RES;
 		public bool RSEL;
@@ -465,11 +464,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int characterFetchOffset;
 
 		// raster
-		public int[] backgroundColor; // B0C
-		public bool backgroundMode; // ECM
-		public bool bitmapMode; // BMM
 		public int borderBottom;
-		public int borderColor;
 		public int borderLeft;
 		public bool borderOnHorizontal;
 		public bool borderOnVertical;
@@ -479,13 +474,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int rasterLineLeft;
 		public int rasterOffset;
 		public int rasterOffsetX;
-		public int rasterOffsetY; // RASTER, RST8
 		public int rasterTotalLines;
 		public int rasterWidth;
 		public int renderOffset;
-		public bool resetBit; // RES
-		public bool screenEnabled; // DEN
-		public int verticalScroll; // YSCROLL
 		public int visibleBottom;
 		public int visibleHeight;
 		public int visibleLeft;
@@ -495,9 +486,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int visibleTop;
 		public int visibleWidth;
 
-		public ChipSignals signal;
 		public Memory mem;
 		public VicIIRegs regs;
+		public ChipSignals signal;
 
 		public VicII(ChipSignals newSignal, VicIIMode videoMode)
 		{
@@ -527,9 +518,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			// initialize raster
-			backgroundColor = new int[4];
 			rasterOffsetX = rasterLineLeft;
-			rasterOffsetY = 0;
 
 			// initialize buffer
 			buffer = new int[rasterWidth * rasterTotalLines];
@@ -547,6 +536,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void PerformCycle()
 		{
+
 		}
 
 		public byte Read(ushort addr)
