@@ -22,6 +22,21 @@ namespace BizHawk.Emulation.Consoles.PSX
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
+		public static bool CheckIsPSX(DiscSystem.Disc disc)
+		{
+			bool ret = false;
+
+			byte[] buf = new byte[59];
+			disc.ReadLBA_2352_Flat(0x24D8, buf, 0, 59);
+			string sig = System.Text.ASCIIEncoding.ASCII.GetString(buf);
+
+			//this string is considered highly unlikely to exist anywhere besides a psx disc
+			if (sig == "          Licensed  by          Sony Computer Entertainment")
+				ret = true;
+
+			return ret;
+		}
+
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
 		static Octoshock CurrOctoshockCore;
