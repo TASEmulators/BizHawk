@@ -315,7 +315,10 @@ namespace BizHawk.Emulation.Consoles.GB
 			wram = 2,
 			cartram = 3,
 			oam = 4,
-			hram = 5
+			hram = 5,
+			// these last two aren't returning native memory area data
+			bgpal = 6,
+			sppal = 7
 		}
 
 		/// <summary>

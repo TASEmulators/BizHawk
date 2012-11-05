@@ -1742,6 +1742,7 @@ namespace BizHawk.MultiClient
 				NESPPU1.Restart();
 				NESNameTableViewer1.Restart();
 				NESDebug1.Restart();
+				GBGPUView1.Restart();
 				PCEBGViewer1.Restart();
 				TI83KeyPad1.Restart();
 				TAStudio1.Restart();

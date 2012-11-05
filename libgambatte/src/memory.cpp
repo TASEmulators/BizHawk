@@ -1019,6 +1019,14 @@ bool Memory::getMemoryArea(int which, unsigned char **data, int *length) {
 		*data = &ioamhram[384];
 		*length = 127;
 		return true;
+	case 6: // bgpal
+		*data = (unsigned char *)display.bgPalette();
+		*length = 32;
+		return true;
+	case 7: // sppal
+		*data = (unsigned char *)display.spPalette();
+		*length = 32;
+		return true;
 	default: // pass to cartridge
 		return cart.getMemoryArea(which, data, length);
 	}

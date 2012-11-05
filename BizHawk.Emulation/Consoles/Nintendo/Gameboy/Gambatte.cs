@@ -149,10 +149,15 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (scanlinecallback != null)
 			{
 				IntPtr vram = IntPtr.Zero;
-				int vramlength = 0;
-				if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref vram, ref vramlength))
+				IntPtr bgpal = IntPtr.Zero;
+				IntPtr sppal = IntPtr.Zero;
+				int unused = 0;
+				if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref vram, ref unused)
+					|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.bgpal, ref bgpal, ref unused)
+					|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.sppal, ref sppal, ref unused))
 					throw new Exception();
-				scanlinecallback(vram, vramlength, LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
+
+				scanlinecallback(vram, IsCGBMode(), LibGambatte.gambatte_cpuread(GambatteState, 0xff40), bgpal, sppal);
 			}
 
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
@@ -587,12 +592,14 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		#region ppudebug
 		/// <summary>
-		/// a callback to be registered at a particular scanline
+		/// 
 		/// </summary>
 		/// <param name="vram"></param>
-		/// <param name="vramlength">length of vram in bytes</param>
-		/// <param name="lcdc">current LCDC status</param>
-		public delegate void ScanlineCallback(IntPtr vram, int vramlength, int lcdc);
+		/// <param name="cgb"></param>
+		/// <param name="lcdc"></param>
+		/// <param name="bgpal"></param>
+		/// <param name="sppal"></param>
+		public delegate void ScanlineCallback(IntPtr vram, bool cgb, int lcdc, IntPtr bgpal, IntPtr sppal);
 
 		ScanlineCallback scanlinecallback;
 
