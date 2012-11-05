@@ -22,6 +22,7 @@ namespace BizHawk.MultiClient.GBtools
 			bmpViewTiles2.ChangeBitmapSize(128, 192);
 			bmpViewBGPal.ChangeBitmapSize(8, 4);
 			bmpViewSPPal.ChangeBitmapSize(8, 4);
+			bmpViewOAM.ChangeBitmapSize(320, 16);
 		}
 
 		public void Restart()
@@ -62,7 +63,14 @@ namespace BizHawk.MultiClient.GBtools
 					gb.SetScanlineCallback(null, 0);
 		}
 
-		static unsafe void DrawTileDMG(byte* tile, int* dest, int pitch, int *pal)
+		/// <summary>
+		/// draw a single 2bpp tile
+		/// </summary>
+		/// <param name="tile">16 byte 2bpp 8x8 tile (gb format)</param>
+		/// <param name="dest">top left origin on 32bit bitmap</param>
+		/// <param name="pitch">pitch of bitmap in 4 byte units</param>
+		/// <param name="pal">4 palette colors</param>
+		static unsafe void DrawTile(byte* tile, int* dest, int pitch, int *pal)
 		{
 			for (int y = 0; y < 8; y++)
 			{
@@ -82,7 +90,16 @@ namespace BizHawk.MultiClient.GBtools
 			}
 		}
 
-		static unsafe void DrawTileCGB(byte* tile, int* dest, int pitch, int* pal, bool hflip, bool vflip)
+		/// <summary>
+		/// draw a single 2bpp tile, with hflip and vflip
+		/// </summary>
+		/// <param name="tile">16 byte 2bpp 8x8 tile (gb format)</param>
+		/// <param name="dest">top left origin on 32bit bitmap</param>
+		/// <param name="pitch">pitch of bitmap in 4 byte units</param>
+		/// <param name="pal">4 palette colors</param>
+		/// <param name="hflip">true to flip horizontally</param>
+		/// <param name="vflip">true to flip vertically</param>
+		static unsafe void DrawTileHV(byte* tile, int* dest, int pitch, int* pal, bool hflip, bool vflip)
 		{
 			if (vflip)
 				dest += pitch * 7;
@@ -115,6 +132,14 @@ namespace BizHawk.MultiClient.GBtools
 			}
 		}
 
+		/// <summary>
+		/// draw a bg map, cgb format
+		/// </summary>
+		/// <param name="b">bitmap to draw to, should be 256x256</param>
+		/// <param name="_map">tilemap, 32x32 bytes. extended tilemap assumed to be @+8k</param>
+		/// <param name="_tiles">base tiledata location. second bank tiledata assumed to be @+8k</param>
+		/// <param name="wrap">true if tileindexes are s8 (not u8)</param>
+		/// <param name="_pal">8 palettes (4 colors each)</param>
 		static unsafe void DrawBGCGB(Bitmap b, IntPtr _map, IntPtr _tiles, bool wrap, IntPtr _pal)
 		{
 			var lockdata = b.LockBits(new Rectangle(0, 0, 256, 256), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -137,7 +162,7 @@ namespace BizHawk.MultiClient.GBtools
 
 					int* thispal = pal + 4 * (tileext & 7);
 
-					DrawTileCGB(tile, dest, pitch, thispal, tileext.Bit(5), tileext.Bit(6));
+					DrawTileHV(tile, dest, pitch, thispal, tileext.Bit(5), tileext.Bit(6));
 					map++;
 					dest += 8;
 				}
@@ -147,6 +172,14 @@ namespace BizHawk.MultiClient.GBtools
 			b.UnlockBits(lockdata);
 		}
 
+		/// <summary>
+		/// draw a bg map, dmg format
+		/// </summary>
+		/// <param name="b">bitmap to draw to, should be 256x256</param>
+		/// <param name="_map">tilemap, 32x32 bytes</param>
+		/// <param name="_tiles">base tiledata location</param>
+		/// <param name="wrap">true if tileindexes are s8 (not u8)</param>
+		/// <param name="_pal">1 palette (4 colors)</param>
 		static unsafe void DrawBGDMG(Bitmap b, IntPtr _map, IntPtr _tiles, bool wrap, IntPtr _pal)
 		{
 			var lockdata = b.LockBits(new Rectangle(0, 0, 256, 256), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -163,7 +196,7 @@ namespace BizHawk.MultiClient.GBtools
 					if (wrap && tileindex >= 128)
 						tileindex -= 256;
 					byte* tile = (byte*)(_tiles + tileindex * 16);
-					DrawTileDMG(tile, dest, pitch, pal);
+					DrawTile(tile, dest, pitch, pal);
 					map++;
 					dest += 8;
 				}
@@ -173,6 +206,12 @@ namespace BizHawk.MultiClient.GBtools
 			b.UnlockBits(lockdata);
 		}
 
+		/// <summary>
+		/// draw a full bank of 384 tiles
+		/// </summary>
+		/// <param name="b">bitmap to draw to, should be 128x192</param>
+		/// <param name="_tiles">base tile address</param>
+		/// <param name="_pal">single palette to use on all tiles</param>
 		static unsafe void DrawTiles(Bitmap b, IntPtr _tiles, IntPtr _pal)
 		{
 			var lockdata = b.LockBits(new Rectangle(0, 0, 128, 192), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -185,7 +224,7 @@ namespace BizHawk.MultiClient.GBtools
 			{
 				for (int tx = 0; tx < 16; tx++)
 				{
-					DrawTileDMG(tile, dest, pitch, pal);
+					DrawTile(tile, dest, pitch, pal);
 					tile += 16;
 					dest += 8;
 				}
@@ -195,14 +234,62 @@ namespace BizHawk.MultiClient.GBtools
 			b.UnlockBits(lockdata);
 		}
 
-		static unsafe void DrawPal(Bitmap b, IntPtr _pal)
+		/// <summary>
+		/// draw oam data
+		/// </summary>
+		/// <param name="b">bitmap to draw to.  should be 320x8 (!tall), 320x16 (tall)</param>
+		/// <param name="_oam">oam data, 4 * 40 bytes</param>
+		/// <param name="_tiles">base tiledata location. cgb: second bank tiledata assumed to be @+8k</param>
+		/// <param name="_pal">2 (dmg) or 8 (cgb) palettes</param>
+		/// <param name="tall">true for 8x16 sprites; else 8x8</param>
+		/// <param name="cgb">true for cgb (more palettes, second bank tiles)</param>
+		static unsafe void DrawOam(Bitmap b, IntPtr _oam, IntPtr _tiles, IntPtr _pal, bool tall, bool cgb)
 		{
-			var lockdata = b.LockBits(new Rectangle(0, 0, 8, 4), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockdata = b.LockBits(new Rectangle(0, 0, 320, tall ? 16 : 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			int* dest = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+			int* pal = (int*)_pal;
+			byte *oam = (byte*)_oam;
+
+			for (int s = 0; s < 40; s++)
+			{
+				oam += 2; // ypos, xpos
+				int tileindex = *oam++;
+				int flags = *oam++;
+				bool vflip = flags.Bit(6);
+				bool hflip = flags.Bit(5);
+				if (tall)
+					// i assume 8x16 vflip flips the whole thing, not just each tile?
+					if (vflip)
+						tileindex |= 1;
+					else
+						tileindex &= 0xfe;
+				byte* tile = (byte*)(_tiles + tileindex * 16);
+				int* thispal = pal + 4 * (cgb ? flags & 7 : flags >> 4 & 1);
+				if (cgb && flags.Bit(3))
+					tile += 8192;
+				DrawTileHV(tile, dest, pitch, thispal, hflip, vflip);
+				if (tall)
+					DrawTileHV((byte*)((int)tile ^ 16), dest + pitch * 8, pitch, thispal, hflip, vflip);
+				dest += 8;
+			}
+			b.UnlockBits(lockdata);
+		}
+
+		/// <summary>
+		/// draw a palette directly
+		/// </summary>
+		/// <param name="b">bitmap to draw to.  should be numpals x 4</param>
+		/// <param name="_pal">start of palettes</param>
+		/// <param name="numpals">number of palettes (not colors)</param>
+		static unsafe void DrawPal(Bitmap b, IntPtr _pal, int numpals)
+		{
+			var lockdata = b.LockBits(new Rectangle(0, 0, numpals, 4), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
 			int* pal = (int*)_pal;
 
-			for (int px = 0; px < 8; px++)
+			for (int px = 0; px < numpals; px++)
 			{
 				for (int py = 0; py < 4; py++)
 				{
@@ -215,7 +302,7 @@ namespace BizHawk.MultiClient.GBtools
 			b.UnlockBits(lockdata);
 		}
 
-		void ScanlineCallback(IntPtr vram, bool cgb, int lcdc, IntPtr bgpal, IntPtr sppal)
+		void ScanlineCallback(IntPtr vram, bool cgb, int lcdc, IntPtr bgpal, IntPtr sppal, IntPtr oam)
 		{
 			// set alpha on all pixels
 			unsafe
@@ -276,10 +363,47 @@ namespace BizHawk.MultiClient.GBtools
 				bmpViewTiles2.Refresh();
 			}
 
-			DrawPal(bmpViewBGPal.bmp, bgpal);
-			DrawPal(bmpViewSPPal.bmp, sppal);
+			// palettes
+			if (cgb)
+			{
+				bmpViewBGPal.ChangeBitmapSize(8, 4);
+				if (bmpViewBGPal.Width != 128)
+					bmpViewBGPal.Width = 128;
+				bmpViewSPPal.ChangeBitmapSize(8, 4);
+				if (bmpViewSPPal.Width != 128)
+					bmpViewSPPal.Width = 128;
+				DrawPal(bmpViewBGPal.bmp, bgpal, 8);
+				DrawPal(bmpViewSPPal.bmp, sppal, 8);
+			}
+			else
+			{
+				bmpViewBGPal.ChangeBitmapSize(1, 4);
+				if (bmpViewBGPal.Width != 16)
+					bmpViewBGPal.Width = 16;
+				bmpViewSPPal.ChangeBitmapSize(2, 4);
+				if (bmpViewSPPal.Width != 32)
+					bmpViewSPPal.Width = 32;
+				DrawPal(bmpViewBGPal.bmp, bgpal, 1);
+				DrawPal(bmpViewSPPal.bmp, sppal, 2);
+			}
 			bmpViewBGPal.Refresh();
 			bmpViewSPPal.Refresh();
+
+			// oam
+			if (lcdc.Bit(2)) // 8x16
+			{
+				bmpViewOAM.ChangeBitmapSize(320, 16);
+				if (bmpViewOAM.Height != 16)
+					bmpViewOAM.Height = 16;
+			}
+			else
+			{
+				bmpViewOAM.ChangeBitmapSize(320, 8);
+				if (bmpViewOAM.Height != 8)
+					bmpViewOAM.Height = 8;
+			}
+			DrawOam(bmpViewOAM.bmp, oam, vram, sppal, lcdc.Bit(2), cgb);
+			bmpViewOAM.Refresh();
 		}
 
 		private void GBGPUView_FormClosed(object sender, FormClosedEventArgs e)
