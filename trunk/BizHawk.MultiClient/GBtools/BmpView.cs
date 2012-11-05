@@ -11,7 +11,8 @@ namespace BizHawk.MultiClient.GBtools
 {
 	public partial class BmpView : Control
 	{
-		public Bitmap bmp;
+		public Bitmap bmp { get; private set; }
+		bool scaled;
 
 		public BmpView()
 		{
@@ -22,37 +23,49 @@ namespace BizHawk.MultiClient.GBtools
 			SetStyle(ControlStyles.Opaque, true);
 			this.BackColor = Color.Transparent;
 			this.Paint += new PaintEventHandler(BmpView_Paint);
-			this.SizeChanged += new EventHandler(BmpView_SizeChanged);
+			ChangeBitmapSize(1, 1);
 		}
 
 		void BmpView_Paint(object sender, PaintEventArgs e)
 		{
-			if (bmp != null)
+			if (scaled)
 			{
 				e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 				e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+				e.Graphics.DrawImage(bmp, 0, 0, Width, Height);
+			}
+			else
+			{
 				e.Graphics.DrawImageUnscaled(bmp, 0, 0);
 			}
 		}
 
-		void BmpView_SizeChanged(object sender, EventArgs e)
+		public void ChangeBitmapSize(Size s)
+		{
+			ChangeBitmapSize(s.Width, s.Height);
+		}
+
+		public void ChangeBitmapSize(int w, int h)
 		{
 			if (bmp != null)
-			{
 				bmp.Dispose();
-				bmp = null;
-			}
-			if (Width == 0 || Height == 0)
-				return;
-			bmp = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			bmp = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			scaled = !(w == Width && h == Height);
 		}
 
 		public void Clear()
 		{
 			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			Win32.ZeroMemory(lockdata.Scan0, (uint)(lockdata.Height * lockdata.Stride));
+			//Win32.ZeroMemory(lockdata.Scan0, (uint)(lockdata.Height * lockdata.Stride));
+			Win32.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
 			bmp.UnlockBits(lockdata);
 			Refresh();
 		}
+
+		// kill unused props
+		[Browsable(false)]
+		public override Color BackColor { get { return base.BackColor; } set { base.BackColor = value; } }
+		[Browsable(false)]
+		public override string Text { get { return base.Text; } set { base.Text = value; } }
 	}
 }
