@@ -62,6 +62,7 @@ namespace BizHawk.MultiClient.GBtools
 				bmpViewTiles2.Clear();
 				bmpViewBGPal.Clear();
 				bmpViewSPPal.Clear();
+				cbscanline_emu = -4; // force refresh
 			}
 			else
 			{
@@ -78,7 +79,7 @@ namespace BizHawk.MultiClient.GBtools
 		/// <summary>
 		/// what was last passed to the emu core
 		/// </summary>
-		int cbscanline_emu = -4;
+		int cbscanline_emu = -4; // force refresh
 
 		/// <summary>
 		/// put me in ToolsBefore
