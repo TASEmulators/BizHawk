@@ -426,7 +426,18 @@ namespace BizHawk.MultiClient
 			}
 			if (ControlType == "NES Controller")
 			{
-				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] : ".");
+				if (IsBasePressed("Power"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["Power"]);
+				}
+				else if (IsBasePressed("Reset"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["Reset"]);
+				}
+				else
+				{
+					input.Append('.');
+				}
 			}
 			if (ControlType == "Gameboy Controller")
 			{
@@ -673,7 +684,19 @@ namespace BizHawk.MultiClient
 			int start = 3;
 			if (ControlType == "NES Controller")
 			{
-				if (mnemonic.Length < 2) return;
+				if (mnemonic.Length < 2)
+				{
+					return;
+				}
+				else if (mnemonic[1] == 'P')
+				{
+					Force("Power", true);
+				}
+				else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+				{
+					Force("Reset", true);
+				}
+				
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
 			}
 			if (ControlType == "Gameboy Controller")
