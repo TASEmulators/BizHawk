@@ -16,15 +16,24 @@ namespace BizHawk.MultiClient.GBtools
 
 		public BmpView()
 		{
-			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, true);
-			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-			SetStyle(ControlStyles.Opaque, true);
-			this.BackColor = Color.Transparent;
-			this.Paint += new PaintEventHandler(BmpView_Paint);
-			this.SizeChanged += new EventHandler(BmpView_SizeChanged);
-			ChangeBitmapSize(1, 1);
+			if (System.Diagnostics.Process.GetCurrentProcess().ProcessName == "devenv")
+			{
+				// in the designer
+				this.BackColor = Color.Black;
+				SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+			}
+			else
+			{
+				SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+				SetStyle(ControlStyles.UserPaint, true);
+				SetStyle(ControlStyles.DoubleBuffer, true);
+				SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+				SetStyle(ControlStyles.Opaque, true);
+				this.BackColor = Color.Transparent;
+				this.Paint += new PaintEventHandler(BmpView_Paint);
+				this.SizeChanged += new EventHandler(BmpView_SizeChanged);
+				ChangeBitmapSize(1, 1);
+			}
 		}
 
 		void BmpView_SizeChanged(object sender, EventArgs e)
@@ -75,7 +84,7 @@ namespace BizHawk.MultiClient.GBtools
 
 		// kill unused props
 		[Browsable(false)]
-		public override Color BackColor { get { return base.BackColor; } set { base.BackColor = value; } }
+		public override Color BackColor { get { return base.BackColor; } set { base.BackColor = Color.Black; } }
 		[Browsable(false)]
 		public override string Text { get { return base.Text; } set { base.Text = value; } }
 	}

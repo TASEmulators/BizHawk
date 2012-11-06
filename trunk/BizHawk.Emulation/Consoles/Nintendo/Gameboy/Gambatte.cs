@@ -162,6 +162,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (IsLagFrame)
 				LagCount++;
 
+			if (endofframecallback != null)
+				endofframecallback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
 		}
 
 		/// <summary>
@@ -613,27 +615,36 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// set up callback
 		/// </summary>
 		/// <param name="callback"></param>
-		/// <param name="line">scanline</param>
+		/// <param name="line">scanline. -1 = end of frame, -2 = RIGHT NOW</param>
 		public void SetScanlineCallback(ScanlineCallback callback, int line)
 		{
 			if (GambatteState == IntPtr.Zero)
 				// not sure how this is being reached.  tried the debugger...
 				return;
-			if (callback == null)
+			endofframecallback = null;
+			if (callback == null || line == -1 || line == -2)
+			{
 				scanlinecb = null;
-			else if (line < 0 || line > 153)
-				throw new ArgumentOutOfRangeException("line must be in [0, 153]");
-			else
+				LibGambatte.gambatte_setscanlinecallback(GambatteState, null, 0);
+				if (line == -1)
+					endofframecallback = callback;
+				else if (line == -2)
+					callback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
+			}
+			else if (line >= 0 && line <= 153)
+			{
 				scanlinecb = delegate()
 				{
 					callback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
-					//callback(0);
 				};
-
-			LibGambatte.gambatte_setscanlinecallback(GambatteState, scanlinecb, 0);
+				LibGambatte.gambatte_setscanlinecallback(GambatteState, scanlinecb, line);
+			}
+			else
+				throw new ArgumentOutOfRangeException("line must be in [0, 153]");
 		}
 
 		LibGambatte.ScanlineCallback scanlinecb;
+		ScanlineCallback endofframecallback;
 
 		#endregion
 
