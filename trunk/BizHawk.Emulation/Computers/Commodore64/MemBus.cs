@@ -60,7 +60,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte cia2B;
 		public byte[] colorRam;
 		public byte[] ram;
-		public ushort vicOffset;
 
 		// registers
 		public byte busData;
@@ -440,15 +439,30 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public byte VicRead(ushort addr)
 		{
-			addr = (ushort)(addr & 0x1FFF);
+			addr = (ushort)(addr & 0x3FFF);
 			if (addr >= 0x1000 && addr < 0x2000)
 			{
 				return charRom[addr & 0x0FFF];
 			}
 			else
 			{
-				int baseAddr = (3 - (cia1PortA.Data & 0x03)) << 14;
-				return ram[addr | baseAddr];
+				int baseAddr = 0;
+				switch (cia1PortA.Data & 0x03)
+				{
+					case 0:
+						baseAddr = 0xC000 | addr;
+						break;
+					case 1:
+						baseAddr = 0x8000 | addr;
+						break;
+					case 2:
+						baseAddr = 0x4000 | addr;
+						break;
+					default:
+						baseAddr = addr;
+						break;
+				}
+				return ram[(ushort)baseAddr];
 			}
 		}
 
