@@ -570,7 +570,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void GetBitmapData()
 		{
-			ushort offset = (ushort)((regs.CB << 11) + (characterMemory[characterIndex] * 8) + characterRow);
+			int cMemIndex = characterMemory[characterIndex];
+			if (regs.ECM)
+				cMemIndex &= 0x3F;
+			ushort offset = (ushort)((regs.CB << 11) + (cMemIndex * 8) + characterRow);
 			bitmapData = mem.VicRead(offset);
 		}
 
@@ -861,7 +864,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// extra color text mode
 		private int Plot100(int offset)
 		{
-			return regs.BxC[0];
+			byte charData = bitmapData;
+			charData <<= offset;
+			if ((charData & 0x80) != 0x00)
+				return colorMemory[characterIndex];
+			else
+				return characterMemory[characterIndex] >> 6;
 		}
 
 		// invalid mode
