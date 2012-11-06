@@ -797,11 +797,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				rasterOffsetX++;
 			}
 
-			// check for anything that would've triggered an interrupt and raise the flag if so
-			if ((regs.IRST & regs.ERST) || (regs.IMMC & regs.EMMC) || (regs.IMBC & regs.EMBC) || (regs.ILP & regs.ELP))
-			{
-				regs.IRQ = true;
-			}
+			UpdateInterrupts();
 
 			signal.VicIRQ = regs.IRQ;
 
@@ -920,6 +916,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			borderRight = regs.CSEL ? 0x157 : 0x14E;
 		}
 
+		public void UpdateInterrupts()
+		{
+			// check for anything that would've triggered an interrupt and raise the flag if so
+			regs.IRQ = ((regs.IRST & regs.ERST) || (regs.IMMC & regs.EMMC) || (regs.IMBC & regs.EMBC) || (regs.ILP & regs.ELP));
+		}
+
 		public void Write(ushort addr, byte val)
 		{
 			addr &= 0x3F;
@@ -946,14 +948,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					break;
 				case 0x19:
 					// only allow clearing of these flags
-					if ((val & 0x01) == 0x00)
+					if ((val & 0x01) != 0x00)
 						regs.IRST = false;
-					if ((val & 0x02) == 0x00)
+					if ((val & 0x02) != 0x00)
 						regs.IMBC = false;
-					if ((val & 0x04) == 0x00)
+					if ((val & 0x04) != 0x00)
 						regs.IMMC = false;
-					if ((val & 0x08) == 0x00)
+					if ((val & 0x08) != 0x00)
 						regs.ILP = false;
+					UpdateInterrupts();
 					break;
 				case 0x1E:
 				case 0x1F:
