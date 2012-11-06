@@ -412,7 +412,7 @@ namespace BizHawk.MultiClient
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (true)
+			if (false)
 			{
 				ControllerConfig c = new ControllerConfig();
 				c.ShowDialog();
