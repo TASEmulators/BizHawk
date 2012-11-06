@@ -103,6 +103,7 @@
 			this.NESAutofire2Panel = new BizHawk.MultiClient.NESGamePad();
 			this.NESAutofire3Panel = new BizHawk.MultiClient.NESGamePad();
 			this.NESAutofire4Panel = new BizHawk.MultiClient.NESGamePad();
+			this.NESConsolePad = new BizHawk.MultiClient.NESConsoleButtons();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabControl2.SuspendLayout();
@@ -110,6 +111,7 @@
 			this.tabPage14.SuspendLayout();
 			this.tabPage15.SuspendLayout();
 			this.tabPage16.SuspendLayout();
+			this.tabPage17.SuspendLayout();
 			this.tabPage18.SuspendLayout();
 			this.tabPage19.SuspendLayout();
 			this.tabPage20.SuspendLayout();
@@ -224,6 +226,7 @@
 			// 
 			// tabPage17
 			// 
+			this.tabPage17.Controls.Add(this.NESConsolePad);
 			this.tabPage17.Location = new System.Drawing.Point(4, 22);
 			this.tabPage17.Name = "tabPage17";
 			this.tabPage17.Size = new System.Drawing.Size(445, 378);
@@ -891,6 +894,13 @@
 			this.NESAutofire4Panel.Size = new System.Drawing.Size(392, 332);
 			this.NESAutofire4Panel.TabIndex = 0;
 			// 
+			// NESConsolePad
+			// 
+			this.NESConsolePad.Location = new System.Drawing.Point(14, 13);
+			this.NESConsolePad.Name = "NESConsolePad";
+			this.NESConsolePad.Size = new System.Drawing.Size(392, 332);
+			this.NESConsolePad.TabIndex = 1;
+			// 
 			// ControllerConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -911,6 +921,7 @@
 			this.tabPage14.ResumeLayout(false);
 			this.tabPage15.ResumeLayout(false);
 			this.tabPage16.ResumeLayout(false);
+			this.tabPage17.ResumeLayout(false);
 			this.tabPage18.ResumeLayout(false);
 			this.tabPage19.ResumeLayout(false);
 			this.tabPage20.ResumeLayout(false);
@@ -1010,5 +1021,6 @@
 		private NESGamePad NESAutofire2Panel;
 		private NESGamePad NESAutofire3Panel;
 		private NESGamePad NESAutofire4Panel;
+		private NESConsoleButtons NESConsolePad;
 	}
 }

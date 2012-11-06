@@ -172,6 +172,9 @@
     <Compile Include="config\ControllerConfig\GamepadConfigPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="config\ControllerConfig\NESConsoleButtons.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="config\ControllerConfig\NESGamePad.cs">
       <SubType>Component</SubType>
     </Compile>

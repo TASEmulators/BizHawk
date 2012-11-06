@@ -829,7 +829,6 @@ namespace BizHawk.MultiClient
 			}
 			Global.AutofireSNESControls = asnesControls;
 
-
 			var nesControls = new Controller(NES.NESController);
 			for (int i = 0; i < 2 /*TODO*/; i++)
 			{
@@ -842,6 +841,10 @@ namespace BizHawk.MultiClient
 				nesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.NESController[i].Select);
 				nesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESController[i].Start);
 			}
+
+			nesControls.BindMulti("Reset", Global.Config.NESReset);
+			nesControls.BindMulti("Power", Global.Config.NESPower);
+
 			Global.NESControls = nesControls;
 
 			var anesControls = new AutofireController(NES.NESController);

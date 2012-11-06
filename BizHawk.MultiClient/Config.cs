@@ -627,6 +627,7 @@ namespace BizHawk.MultiClient
 
 		public string SmsReset = "C";
 		public string SmsPause = "V, X1 Start";
+
 		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
 
@@ -653,7 +654,6 @@ namespace BizHawk.MultiClient
 		public ColecoVisionControllerTemplate ColecoController = new ColecoVisionControllerTemplate(true);
 
 		//NES settings
-		//public string NESReset = "Backspace";
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
 		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
 
@@ -709,6 +709,10 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_ShowMissle2 = true;
 		public bool Atari2600_ShowBall = true;
 		public bool Atari2600_ShowPlayfield = true;
+
+		//NES Console buttons
+		public string NESReset = "";
+		public string NESPower = "";
 	}
 
 	public class SMSControllerTemplate
