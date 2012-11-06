@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public VicII vic;
 		public ChipSignals signal;
 
-		private void HardReset()
+		public void HardReset()
 		{
 			cpu = new MOS6502X();
 			cpu.ReadMemory = ReadMemory;
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			sid = new Sid();
 
 			// initialize memory (this must be done AFTER all other chips are initialized)
-			string romPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "C64Kernal");
+			string romPath = CoreInputComm.C64_FirmwaresPath;
 			mem = new Memory(romPath, vic, sid, cia0, cia1);
 			vic.mem = mem;
 
@@ -73,6 +73,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					}
 					break;
 			}
+
+			videoProvider = new MyVideoProvider(vic);
 		}
 
 		public byte PeekMemory(ushort addr)

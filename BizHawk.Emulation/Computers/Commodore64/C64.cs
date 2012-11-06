@@ -16,8 +16,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			SetupMemoryDomains();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
-			HardReset();
-			videoProvider = new MyVideoProvider(vic);
 		}
 
 		public string SystemId { get { return "C64"; } }

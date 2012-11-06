@@ -364,6 +364,8 @@ namespace BizHawk.MultiClient
 
 			Global.CoreInputComm.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
 
+			Global.CoreInputComm.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
+
 			Global.CoreInputComm.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			Global.CoreInputComm.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			Global.CoreInputComm.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
@@ -1673,7 +1675,9 @@ namespace BizHawk.MultiClient
 								nextEmulator = a78;
 								break;
 							case "C64":
-								C64 c64 = new C64(game, rom.RomData, rom.Extension); //TODO: need to load in BIOSes?
+								C64 c64 = new C64(game, rom.RomData, rom.Extension);
+								c64.CoreInputComm = Global.CoreInputComm;
+								c64.HardReset();
 								nextEmulator = c64;
 								break;
 						}

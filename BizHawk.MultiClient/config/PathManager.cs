@@ -68,6 +68,8 @@ namespace BizHawk.MultiClient
 		{
 			switch (system)
 			{
+				case "C64":
+					return Global.Config.BaseC64;
 				case "PSX":
 					return Global.Config.BasePSX;
 				case "INTV":
@@ -214,6 +216,9 @@ namespace BizHawk.MultiClient
 
 			switch (sysID)
 			{
+				case "C64":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathC64ROMs, "C64");
+					break;
 				case "PSX":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathPSXROMs, "PSX");
 					break;
@@ -306,6 +311,7 @@ namespace BizHawk.MultiClient
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), name + ".SaveRAM");
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSaveRAM, "SNES"), name + ".SaveRAM");
 				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSaveRAM, "PSX"), name + ".SaveRAM");
+				case "C64": return Path.Combine(MakeAbsolutePath(Global.Config.PathC64SaveRAM, "C64"), name + ".SaveRAM");
 				default: return Path.Combine(GetBasePathAbsolute(), name + ".SaveRAM");
 			}
 		}
@@ -329,6 +335,7 @@ namespace BizHawk.MultiClient
 				case "TI83": return MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83");
 				case "SNES": return MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES");
 				case "PSX": return MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX");
+				case "C64": return MakeAbsolutePath(Global.Config.PathC64Savestates, "C64");
 			}
 		}
 
@@ -357,6 +364,7 @@ namespace BizHawk.MultiClient
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83"), name);
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES"), name);
 				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX"), name);
+				case "C64": return Path.Combine(MakeAbsolutePath(Global.Config.PathC64Savestates, "C64"), name);
 			}
 			return "";
 		}
@@ -380,6 +388,7 @@ namespace BizHawk.MultiClient
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Screenshots, "TI83"), name);
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESScreenshots, "SNES"), name);
 				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXScreenshots, "PSX"), name);
+				case "C64": return Path.Combine(MakeAbsolutePath(Global.Config.PathC64Screenshots, "C64"), name);
 			}
 			return "";
 		}
