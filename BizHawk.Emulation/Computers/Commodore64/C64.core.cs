@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// source
 		public Cartridge cart;
 		public bool cartInserted;
+		public string extension;
 		public byte[] inputFile;
 
 		// chipset
@@ -50,15 +51,28 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			mem = new Memory(romPath, vic, sid, cia0, cia1);
 			vic.mem = mem;
 
-			// initialize media
-			Cartridge cart = new Cartridge(inputFile);
-			if (cart.valid)
-			{
-				mem.ApplyCartridge(cart);
-			}
-
 			// initialize cpu (hard reset vector)
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) + (ReadMemory(0xFFFD) << 8));
+
+			// initialize media
+			switch (extension.ToUpper())
+			{
+				case @".PRG":
+					if (inputFile.Length > 2)
+					{
+						mem.ApplyMemory(inputFile);
+						// idle vector
+						cpu.PC = (ushort)2064;
+					}
+					break;
+				case @".CRT":
+					Cartridge cart = new Cartridge(inputFile);
+					if (cart.valid)
+					{
+						mem.ApplyCartridge(cart);
+					}
+					break;
+			}
 		}
 
 		public byte PeekMemory(ushort addr)
