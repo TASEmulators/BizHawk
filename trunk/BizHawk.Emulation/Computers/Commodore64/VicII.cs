@@ -444,7 +444,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 	public class VicII
 	{
-		// buffer
+		// graphics buffer
 		public int[] buffer;
 		public int bufferSize;
 
@@ -469,9 +469,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			Colors.ARGB(0x95, 0x95, 0x95)
 		};
 
-		// memory
-		public int characterFetchOffset;
-
 		// raster
 		public bool badLine;
 		public int borderBottom;
@@ -481,6 +478,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int borderRight;
 		public int borderTop;
 		public byte[] characterMemory;
+		public byte[] colorMemory;
 		public int cycle;
 		public bool displayEnabled;
 		public int rasterInterruptLine;
@@ -552,6 +550,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			HardReset();
 		}
 
+		private void GetScreenData(int index)
+		{
+			ushort offset = (ushort)(regs.VM + regs.VC);
+			characterMemory[index] = mem.VicRead(offset);
+			colorMemory[index] = mem.colorRam[regs.VC];
+		}
+
 		private void GetSpriteData(int index)
 		{
 			ushort offset = (ushort)(regs.VM + 0x3F8 + index);
@@ -579,7 +584,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			// badline calculation (for when the VIC must pause the CPU to get character data)
-			badLine = (regs.YSCROLL == (regs.RASTER & 0x07) && displayEnabled);
+			if (regs.RASTER >= 0x030 && regs.RASTER < 0x0F8)
+				badLine = (regs.YSCROLL == (regs.RASTER & 0x07) && displayEnabled);
+			else
+				badLine = false;
 
 			// decide what to do this cycle
 			if (cycle >= 0 && cycle < 10)
@@ -610,6 +618,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				if (cycle == 13)
 				{
 					regs.VC = regs.VCBASE;
+					regs.VMLI = 0;
+					if (badLine)
+						regs.RC = 0;
 				}
 			}
 			else if (cycle >= 15 && cycle < 55)
@@ -618,12 +629,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				{
 					// fetch video data
 					signal.VicAEC = false;
-
+					GetScreenData(cycle - 15);
 				}
 				else
 				{
 					signal.VicAEC = true;
 				}
+				regs.VC++;
+				regs.VMLI++;
 			}
 			else if (cycle == 57)
 			{
@@ -654,6 +667,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				{
 					signal.VicAEC = true;
 				}
+			}
+			else
+			{
+				// idle
+
 			}
 
 			// pixel clock is 8x the VIC clock
