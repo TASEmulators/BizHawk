@@ -32,6 +32,7 @@ namespace BizHawk.MultiClient.GBtools
 			bmpViewBGPal.ChangeBitmapSize(8, 4);
 			bmpViewSPPal.ChangeBitmapSize(8, 4);
 			bmpViewOAM.ChangeBitmapSize(320, 16);
+			bmpViewDetails.ChangeBitmapSize(8, 16);
 
 			hScrollBarScanline.Value = 0;
 			hScrollBarScanline_ValueChanged(null, null); // not firing in this case??
@@ -62,6 +63,8 @@ namespace BizHawk.MultiClient.GBtools
 				bmpViewTiles2.Clear();
 				bmpViewBGPal.Clear();
 				bmpViewSPPal.Clear();
+				bmpViewOAM.Clear();
+				bmpViewDetails.Clear();
 				cbscanline_emu = -4; // force refresh
 			}
 			else
@@ -72,45 +75,8 @@ namespace BizHawk.MultiClient.GBtools
 			}
 		}
 
-		/// <summary>
-		/// 0..153: scanline number. -1: frame.  -2: manual
-		/// </summary>
-		int cbscanline;
-		/// <summary>
-		/// what was last passed to the emu core
-		/// </summary>
-		int cbscanline_emu = -4; // force refresh
 
-		/// <summary>
-		/// put me in ToolsBefore
-		/// </summary>
-		public void UpdateValues()
-		{
-			if (!this.IsHandleCreated || this.IsDisposed)
-				return;
-			if (gb != null)
-			{
-				if (!this.Visible)
-				{
-					if (cbscanline_emu != -2)
-					{
-						cbscanline_emu = -2;
-						gb.SetScanlineCallback(null, 0);
-					}
-				}
-				else
-				{
-					if (cbscanline != cbscanline_emu)
-					{
-						cbscanline_emu = cbscanline;
-						if (cbscanline == -2)
-							gb.SetScanlineCallback(null, 0);
-						else
-							gb.SetScanlineCallback(ScanlineCallback, cbscanline);
-					}
-				}
-			}
-		}
+		#region drawing primitives
 
 		/// <summary>
 		/// draw a single 2bpp tile
@@ -351,6 +317,8 @@ namespace BizHawk.MultiClient.GBtools
 			b.UnlockBits(lockdata);
 		}
 
+		#endregion
+
 		void ScanlineCallback(int lcdc)
 		{
 			this.lcdc = lcdc;
@@ -470,6 +438,8 @@ namespace BizHawk.MultiClient.GBtools
 			Restart();
 		}
 
+		#region refresh
+
 		private void radioButtonRefreshFrame_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
 		private void radioButtonRefreshScanline_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
 		private void radioButtonRefreshManual_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
@@ -509,5 +479,226 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			labelScanline.Text = ((hScrollBarScanline.Value + 145) % 154).ToString();
 		}
+
+		/// <summary>
+		/// 0..153: scanline number. -1: frame.  -2: manual
+		/// </summary>
+		int cbscanline;
+		/// <summary>
+		/// what was last passed to the emu core
+		/// </summary>
+		int cbscanline_emu = -4; // force refresh
+
+		/// <summary>
+		/// put me in ToolsBefore
+		/// </summary>
+		public void UpdateValues()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed)
+				return;
+			if (gb != null)
+			{
+				if (!this.Visible)
+				{
+					if (cbscanline_emu != -2)
+					{
+						cbscanline_emu = -2;
+						gb.SetScanlineCallback(null, 0);
+					}
+				}
+				else
+				{
+					if (cbscanline != cbscanline_emu)
+					{
+						cbscanline_emu = cbscanline;
+						if (cbscanline == -2)
+							gb.SetScanlineCallback(null, 0);
+						else
+							gb.SetScanlineCallback(ScanlineCallback, cbscanline);
+					}
+				}
+			}
+		}
+
+		#endregion
+
+		#region mouseovers
+
+		string freeze_label;
+		Bitmap freeze_bmp;
+		string freeze_details;
+
+		void SaveFreeze()
+		{
+			freeze_label = groupBoxDetails.Text;
+			if (freeze_bmp != null)
+				freeze_bmp.Dispose();
+			freeze_bmp = (Bitmap)bmpViewDetails.bmp.Clone();
+			freeze_details = labelDetails.Text;
+		}
+
+		void LoadFreeze()
+		{
+			groupBoxDetails.Text = freeze_label;
+			bmpViewDetails.Height = freeze_bmp.Height * 8;
+			bmpViewDetails.ChangeBitmapSize(freeze_bmp.Size);
+			using (var g = Graphics.FromImage(bmpViewDetails.bmp))
+				g.DrawImageUnscaled(freeze_bmp, 0, 0);
+			labelDetails.Text = freeze_details;
+			bmpViewDetails.Refresh();
+		}
+
+		unsafe void TilemapMouseover(int x, int y, bool win)
+		{
+			bmpViewDetails.ChangeBitmapSize(8, 8);
+			if (bmpViewDetails.Height != 64)
+				bmpViewDetails.Height = 64;
+			var sb = new StringBuilder();
+			bool secondmap = win ? lcdc.Bit(6) : lcdc.Bit(3);
+			int mapoffs = secondmap ? 0x1c00 : 0x1800;
+			x /= 8;
+			y /= 8;
+			mapoffs += y * 32 + x;
+			byte *mapbase = (byte *)vram + mapoffs;
+			int tileindex = mapbase[0];
+			if (win || !lcdc.Bit(4)) // 0x9000 base
+				if (tileindex < 128)
+					tileindex += 256; // compute all if from 0x8000 base
+			int tileoffs = tileindex * 16;
+			var lockdata = bmpViewDetails.bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			if (!cgb)
+			{
+				sb.AppendLine(string.Format("{0} Map ({1},{2}) @{3:x4}", win ? "Win" : "BG", x, y, mapoffs + 0x8000));
+				sb.AppendLine(string.Format("  Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
+				DrawTile((byte*)vram + tileoffs, (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)bgpal);
+			}
+			else
+			{
+				int tileext = mapbase[8192];
+
+				sb.AppendLine(string.Format("{0} Map ({1},{2}) @{3:x4}", win ? "Win" : "BG", x, y, mapoffs + 0x8000));
+				sb.AppendLine(string.Format("  Tile #{0} @{2}:{1:x4}", tileindex, tileoffs + 0x8000, tileext.Bit(3) ? 1 : 0));
+				sb.AppendLine(string.Format("  Palette {0}", tileext & 7));
+				sb.AppendLine(string.Format("  Flags {0}{1}{2}", tileext.Bit(5) ? 'H' : ' ', tileext.Bit(6) ? 'V' : ' ', tileext.Bit(7) ? 'P' : ' '));
+				DrawTileHV((byte*)vram + tileoffs + (tileext.Bit(3) ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)bgpal + 4 * (tileext & 7), tileext.Bit(5), tileext.Bit(6));
+			}
+			bmpViewDetails.bmp.UnlockBits(lockdata);
+			labelDetails.Text = sb.ToString();
+			bmpViewDetails.Refresh();
+		}
+
+		private void bmpViewBG_MouseEnter(object sender, EventArgs e)
+		{
+			SaveFreeze();
+			groupBoxDetails.Text = "Details - Background";
+		}
+
+		private void bmpViewBG_MouseLeave(object sender, EventArgs e)
+		{
+			LoadFreeze();
+		}
+
+		private void bmpViewBG_MouseMove(object sender, MouseEventArgs e)
+		{
+			TilemapMouseover(e.X, e.Y, false);
+		}
+
+		private void bmpViewWin_MouseEnter(object sender, EventArgs e)
+		{
+			SaveFreeze();
+			groupBoxDetails.Text = "Details - Window";
+		}
+
+		private void bmpViewWin_MouseLeave(object sender, EventArgs e)
+		{
+			LoadFreeze();
+		}
+
+		private void bmpViewWin_MouseMove(object sender, MouseEventArgs e)
+		{
+			TilemapMouseover(e.X, e.Y, true);
+		}
+
+		private void bmpViewTiles1_MouseEnter(object sender, EventArgs e)
+		{
+			SaveFreeze();
+			groupBoxDetails.Text = "Details - Tiles";
+		}
+
+		private void bmpViewTiles1_MouseLeave(object sender, EventArgs e)
+		{
+			LoadFreeze();
+		}
+
+		private void bmpViewTiles1_MouseMove(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		private void bmpViewTiles2_MouseEnter(object sender, EventArgs e)
+		{
+			SaveFreeze();
+			groupBoxDetails.Text = "Details - Tiles";
+		}
+
+		private void bmpViewTiles2_MouseLeave(object sender, EventArgs e)
+		{
+			LoadFreeze();
+		}
+
+		private void bmpViewTiles2_MouseMove(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		private void bmpViewBGPal_MouseEnter(object sender, EventArgs e)
+		{
+			SaveFreeze();
+			groupBoxDetails.Text = "Details - Palette";
+		}
+
+		private void bmpViewBGPal_MouseLeave(object sender, EventArgs e)
+		{
+			LoadFreeze();
+		}
+
+		private void bmpViewBGPal_Move(object sender, EventArgs e)
+		{
+
+		}
+
+		private void bmpViewSPPal_MouseEnter(object sender, EventArgs e)
+		{
+			SaveFreeze();
+			groupBoxDetails.Text = "Details - Palette";
+		}
+
+		private void bmpViewSPPal_MouseLeave(object sender, EventArgs e)
+		{
+			LoadFreeze();
+		}
+
+		private void bmpViewSPPal_MouseMove(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		private void bmpViewOAM_MouseEnter(object sender, EventArgs e)
+		{
+			SaveFreeze();
+			groupBoxDetails.Text = "Details - Sprite";
+		}
+
+		private void bmpViewOAM_MouseLeave(object sender, EventArgs e)
+		{
+			LoadFreeze();
+		}
+
+		private void bmpViewOAM_MouseMove(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		#endregion
 	}
 }
