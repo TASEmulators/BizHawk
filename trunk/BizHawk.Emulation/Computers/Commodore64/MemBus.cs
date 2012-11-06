@@ -72,15 +72,29 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool readTrigger = true;
 		public bool writeTrigger = true;
 
+		void HandleFirmwareError(string file)
+		{
+			System.Windows.Forms.MessageBox.Show("the C64 core is referencing a firmware file which could not be found. Please make sure it's in your configured C64 firmwares folder. The referenced filename is: " + file);
+			throw new FileNotFoundException();
+		}
+
 		public Memory(string sourceFolder, VicII newVic, Sid newSid, Cia newCia0, Cia newCia1)
 		{
 			string basicFile = "basic";
 			string charFile = "chargen";
 			string kernalFile = "kernal";
 
-			basicRom = File.ReadAllBytes(Path.Combine(sourceFolder, basicFile));
-			charRom = File.ReadAllBytes(Path.Combine(sourceFolder, charFile));
-			kernalRom = File.ReadAllBytes(Path.Combine(sourceFolder, kernalFile));
+			string basicPath = Path.Combine(sourceFolder, basicFile);
+			string charPath = Path.Combine(sourceFolder, charFile);
+			string kernalPath = Path.Combine(sourceFolder, kernalFile);
+
+			if (!File.Exists(basicPath)) HandleFirmwareError(basicFile);
+			if (!File.Exists(charPath)) HandleFirmwareError(charFile);
+			if (!File.Exists(kernalPath)) HandleFirmwareError(kernalFile);
+
+			basicRom = File.ReadAllBytes(basicPath);
+			charRom = File.ReadAllBytes(charPath);
+			kernalRom = File.ReadAllBytes(kernalPath);
 
 			vic = newVic;
 			sid = newSid;
