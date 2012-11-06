@@ -117,7 +117,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool CiaSerial0 { get { return _CiaSerialInput[0]; } }
 		public bool CiaSerial1 { get { return _CiaSerialInput[1]; } }
 		public bool CpuAEC { get { return _VicAECOutput; } }
-		public bool CpuIRQ { get { return _VicIRQOutput | _CiaIRQOutput[0] | _CiaIRQOutput[1]; } }
+		public bool CpuIRQ { get { return _VicIRQOutput | _CiaIRQOutput[0]; } }
+		public bool CpuNMI { get { return _CiaIRQOutput[1]; } }
 		public bool CpuRDY { get { return _VicBAOutput; } }
 		public bool LPOutput { get { return _VicLPInput; } set { _VicLPInput = value; } }
 		public bool VicAEC { get { return _VicAECOutput; } set { _VicAECOutput = value; } }
