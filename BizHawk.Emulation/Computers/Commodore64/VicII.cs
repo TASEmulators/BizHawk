@@ -850,31 +850,37 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		// standard bitmap mode
 		private int Plot010(int offset)
 		{
 			return regs.BxC[0];
 		}
 
+		// multicolor bitmap mode
 		private int Plot011(int offset)
 		{
 			return regs.BxC[0];
 		}
 
+		// extra color text mode
 		private int Plot100(int offset)
 		{
 			return regs.BxC[0];
 		}
 
+		// invalid mode
 		private int Plot101(int offset)
 		{
 			return regs.BxC[0];
 		}
 
+		// invalid mode
 		private int Plot110(int offset)
 		{
 			return regs.BxC[0];
 		}
 
+		// invalid mode
 		private int Plot111(int offset)
 		{
 			return regs.BxC[0];
