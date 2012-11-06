@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ports[0] = new JoypadPortDevice(this, 0);
 			ports[1] = new JoypadPortDevice(this, 1);
 
-			apu = new APU(this);
+			apu = new APU(this, apu);
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
 

@@ -34,10 +34,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public bool EnableDMC = true;
 
 			NES nes;
-			public APU(NES nes)
+			public APU(NES nes, APU old = null)
 			{
 				this.nes = nes;
 				dmc = new DMCUnit(this);
+				if (old != null)
+				{
+					EnableSquare1 = old.EnableSquare1;
+					EnableSquare2 = old.EnableSquare2;
+					EnableTriangle = old.EnableTriangle;
+					EnableNoise = old.EnableNoise;
+					EnableDMC = old.EnableDMC;
+				}
 			}
 
 			static int[] DMC_RATE_NTSC = { 428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 84, 72, 54 };
