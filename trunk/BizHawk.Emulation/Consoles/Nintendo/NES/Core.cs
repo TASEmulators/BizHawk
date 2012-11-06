@@ -131,7 +131,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ports[1] = new JoypadPortDevice(this, 1);
 
 			apu = new APU(this);
-			if (magicSoundProvider != null) magicSoundProvider.Dispose();
+			// don't replace the magicSoundProvider on reset, as it's not needed
+			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
 
 			// set up region
 			switch (cart.system)
@@ -143,20 +144,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					CoreOutputComm.VsyncNum = 50;
 					CoreOutputComm.VsyncDen = 1;
 					cpu_sequence = cpu_sequence_PAL;
-					magicSoundProvider = new MagicSoundProvider(this, 1662607);
+					if (magicSoundProvider == null)
+						magicSoundProvider = new MagicSoundProvider(this, 1662607);
 					break;
 				case "NES-NTSC":
 				case "Famicom":
 					ppu.region = PPU.Region.NTSC;
 					cpu_sequence = cpu_sequence_NTSC;
-					magicSoundProvider = new MagicSoundProvider(this, 1789773);
+					if (magicSoundProvider == null)
+						magicSoundProvider = new MagicSoundProvider(this, 1789773);
 					break;
 				// there's no official name for these in bootgod, not sure what we should use
 				//case "PC10"://TODO
 				case "VS":
 					ppu.region = PPU.Region.RGB;
 					cpu_sequence = cpu_sequence_NTSC;
-					magicSoundProvider = new MagicSoundProvider(this, 1789773);
+					if (magicSoundProvider == null)
+						magicSoundProvider = new MagicSoundProvider(this, 1789773);
 					vs_io = true;
 					break;
 				// this is in bootgod, but not used at all
@@ -165,7 +169,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					CoreOutputComm.VsyncNum = 50;
 					CoreOutputComm.VsyncDen = 1;
 					cpu_sequence = cpu_sequence_NTSC;
-					magicSoundProvider = new MagicSoundProvider(this, 1773448);
+					if (magicSoundProvider == null)
+						magicSoundProvider = new MagicSoundProvider(this, 1773448);
 					break;
 				case null:
 					Console.WriteLine("Unknown NES system!  Defaulting to NTSC.");
