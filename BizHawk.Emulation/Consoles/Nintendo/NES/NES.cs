@@ -487,7 +487,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			List<string> hash_sha1_several = new List<string>();
 			string hash_sha1 = null, hash_md5 = null;
 			Unif unif = null;
-			
+
 			origin = EDetectionOrigin.None;
 
 			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
@@ -525,8 +525,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				board.PostConfigure();
 
 				HardReset();
-				SetupMemoryDomains();
-
 				return;
 			}
 			else
@@ -576,7 +574,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				LoadWriteLine("Could not locate game in nescartdb");
 				if (USE_DATABASE)
 				{
-					if(hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
+					if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
 					if (choice == null)
 					{
 						choice = IdentifyFromGameDB(hash_sha1);
@@ -590,7 +588,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						LoadWriteLine("Using information from UNIF header");
 						choice = unif.GetCartInfo();
 						choice.game = new NESGameInfo();
-						choice.game.name = gameInfo.Name; 
+						choice.game.name = gameInfo.Name;
 						origin = EDetectionOrigin.UNIF;
 					}
 					if (iNesHeaderInfo != null)
@@ -744,7 +742,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			board.PostConfigure();
 
 			HardReset();
-				SetupMemoryDomains();
 		}
 
 		void SyncState(Serializer ser)

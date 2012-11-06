@@ -326,6 +326,44 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return board;
 		}
 
+		void BoardSystemHardReset()
+		{
+			INESBoard newboard;
+			// fds has a unique activation setup
+			if (board is FDS)
+			{
+				var newfds = new FDS();
+				var oldfds = board as FDS;
+				newfds.biosrom = oldfds.biosrom;
+				newfds.SetDiskImage(oldfds.GetDiskImage());
+				newboard = newfds;
+			}
+			else
+			{
+				newboard = CreateBoardInstance(board.GetType());
+			}
+			newboard.Create(this);
+			newboard.Configure(origin);
+			newboard.ROM = board.ROM;
+			newboard.VROM = board.VROM;
+			if (board.WRAM != null)
+				newboard.WRAM = new byte[board.WRAM.Length];
+			if (board.VRAM != null)
+				newboard.VRAM = new byte[board.VRAM.Length];
+			newboard.PostConfigure();
+			// the old board's sram must be restored
+			if (newboard is FDS)
+			{
+				var newfds = newboard as FDS;
+				var oldfds = board as FDS;
+				newfds.StoreSaveRam(oldfds.ReadSaveRam());
+			}
+			else if (board.SaveRam != null)
+			{
+				Buffer.BlockCopy(board.SaveRam, 0, newboard.SaveRam, 0, board.SaveRam.Length);
+			}
+		}
+
 
 		static NES()
 		{
