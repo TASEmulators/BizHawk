@@ -32,6 +32,10 @@ namespace BizHawk.MultiClient.GBtools
 			bmpViewBGPal.ChangeBitmapSize(8, 4);
 			bmpViewSPPal.ChangeBitmapSize(8, 4);
 			bmpViewOAM.ChangeBitmapSize(320, 16);
+
+			hScrollBarScanline.Value = 0;
+			hScrollBarScanline_ValueChanged(null, null); // not firing in this case??
+			radioButtonRefreshFrame.Checked = true;
 		}
 
 		public void Restart()
@@ -68,6 +72,15 @@ namespace BizHawk.MultiClient.GBtools
 		}
 
 		/// <summary>
+		/// 0..153: scanline number. -1: frame.  -2: manual
+		/// </summary>
+		int cbscanline;
+		/// <summary>
+		/// what was last passed to the emu core
+		/// </summary>
+		int cbscanline_emu = -4;
+
+		/// <summary>
 		/// put me in ToolsBefore
 		/// </summary>
 		public void UpdateValues()
@@ -75,10 +88,27 @@ namespace BizHawk.MultiClient.GBtools
 			if (!this.IsHandleCreated || this.IsDisposed)
 				return;
 			if (gb != null)
-				if (this.Visible)
-					gb.SetScanlineCallback(ScanlineCallback, 0);
+			{
+				if (!this.Visible)
+				{
+					if (cbscanline_emu != -2)
+					{
+						cbscanline_emu = -2;
+						gb.SetScanlineCallback(null, 0);
+					}
+				}
 				else
-					gb.SetScanlineCallback(null, 0);
+				{
+					if (cbscanline != cbscanline_emu)
+					{
+						cbscanline_emu = cbscanline;
+						if (cbscanline == -2)
+							gb.SetScanlineCallback(null, 0);
+						else
+							gb.SetScanlineCallback(ScanlineCallback, cbscanline);
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -88,7 +118,7 @@ namespace BizHawk.MultiClient.GBtools
 		/// <param name="dest">top left origin on 32bit bitmap</param>
 		/// <param name="pitch">pitch of bitmap in 4 byte units</param>
 		/// <param name="pal">4 palette colors</param>
-		static unsafe void DrawTile(byte* tile, int* dest, int pitch, int *pal)
+		static unsafe void DrawTile(byte* tile, int* dest, int pitch, int* pal)
 		{
 			for (int y = 0; y < 8; y++)
 			{
@@ -207,7 +237,7 @@ namespace BizHawk.MultiClient.GBtools
 			int* pal = (int*)_pal;
 
 			for (int ty = 0; ty < 32; ty++)
-			{			
+			{
 				for (int tx = 0; tx < 32; tx++)
 				{
 					int tileindex = map[0];
@@ -267,7 +297,7 @@ namespace BizHawk.MultiClient.GBtools
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
 			int* pal = (int*)_pal;
-			byte *oam = (byte*)_oam;
+			byte* oam = (byte*)_oam;
 
 			for (int s = 0; s < 40; s++)
 			{
@@ -437,6 +467,46 @@ namespace BizHawk.MultiClient.GBtools
 		private void GBGPUView_Load(object sender, EventArgs e)
 		{
 			Restart();
+		}
+
+		private void radioButtonRefreshFrame_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
+		private void radioButtonRefreshScanline_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
+		private void radioButtonRefreshManual_CheckedChanged(object sender, EventArgs e) { ComputeRefreshValues(); }
+
+		void ComputeRefreshValues()
+		{
+			if (radioButtonRefreshFrame.Checked)
+			{
+				labelScanline.Enabled = false;
+				hScrollBarScanline.Enabled = false;
+				buttonRefresh.Enabled = false;
+				cbscanline = -1;
+			}
+			else if (radioButtonRefreshScanline.Checked)
+			{
+				labelScanline.Enabled = true;
+				hScrollBarScanline.Enabled = true;
+				buttonRefresh.Enabled = false;
+				cbscanline = (hScrollBarScanline.Value + 145) % 154;
+			}
+			else if (radioButtonRefreshManual.Checked)
+			{
+				labelScanline.Enabled = false;
+				hScrollBarScanline.Enabled = false;
+				buttonRefresh.Enabled = true;
+				cbscanline = -2;
+			}
+		}
+
+		private void buttonRefresh_Click(object sender, EventArgs e)
+		{
+			if (cbscanline == -2 && gb != null)
+				gb.SetScanlineCallback(ScanlineCallback, -2);
+		}
+
+		private void hScrollBarScanline_ValueChanged(object sender, EventArgs e)
+		{
+			labelScanline.Text = ((hScrollBarScanline.Value + 145) % 154).ToString();
 		}
 	}
 }
