@@ -188,6 +188,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 		bool resetSignal;
+		bool hardResetSignal;
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
@@ -198,11 +199,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				apu.NESSoftReset();
 				//need to study what happens to ppu and apu and stuff..
 			}
+			else if (hardResetSignal)
+			{
+				HardReset();
+			}
 
 			Controller.UpdateControls(Frame++);
 			//if (resetSignal)
 				//Controller.UnpressButton("Reset");   TODO fix this
 			resetSignal = Controller["Reset"];
+			hardResetSignal = Controller["Power"];
 
 			if (board is FDS)
 			{
