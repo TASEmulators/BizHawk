@@ -813,6 +813,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			vBlank = !visibleRenderY;
 		}
 
+		// standard text mode
 		private int Plot000(int offset)
 		{
 			byte charData = bitmapData;
@@ -823,9 +824,30 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				return regs.BxC[0];
 		}
 
+		// multicolor text mode
 		private int Plot001(int offset)
 		{
-			return regs.BxC[0];
+			if ((colorMemory[characterIndex] & 0x08) != 0x00)
+			{
+				byte charData = bitmapData;
+				offset |= 0x01;
+				offset ^= 0x01;
+				charData <<= offset;
+				charData >>= 6;
+				switch (charData)
+				{
+					case 0:
+					case 1:
+					case 2:
+						return regs.BxC[charData];
+					default:
+						return colorMemory[characterIndex];
+				}
+			}
+			else
+			{
+				return Plot000(offset);
+			}
 		}
 
 		private int Plot010(int offset)
