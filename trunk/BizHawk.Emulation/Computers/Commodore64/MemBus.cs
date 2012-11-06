@@ -74,9 +74,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public Memory(string sourceFolder, VicII newVic, Sid newSid, Cia newCia0, Cia newCia1)
 		{
-			ram = new byte[0x10000];
-			WipeMemory();
-
 			string basicFile = "basic";
 			string charFile = "chargen";
 			string kernalFile = "kernal";
@@ -84,7 +81,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			basicRom = File.ReadAllBytes(Path.Combine(sourceFolder, basicFile));
 			charRom = File.ReadAllBytes(Path.Combine(sourceFolder, charFile));
 			kernalRom = File.ReadAllBytes(Path.Combine(sourceFolder, kernalFile));
-			colorRam = new byte[0x1000];
 
 			vic = newVic;
 			sid = newSid;
@@ -94,10 +90,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cia0.ports[1] = cia0PortB;
 			cia1.ports[0] = cia1PortA;
 			cia1.ports[1] = cia1PortB;
-			cpuPort = new DirectionalDataPort(0x37, 0x2F);
 
-			layout = new MemoryLayout();
-			UpdateLayout();
+			HardReset();
 		}
 
 		public void ApplyCartridge(Cartridge newCart)
@@ -107,6 +101,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			exRomPin = cart.exRomPin;
 			gamePin = cart.gamePin;
 			UpdateLayout();
+		}
+
+		public void ApplyMemory(byte[] newMemory)
+		{
+			int address = newMemory[1];
+			address <<= 8;
+			address |= newMemory[0];
+
+			int count = newMemory.Length;
+
+			for (int i = 2; i < count; i++)
+			{
+				Write((ushort)(address & 0xFFFF), newMemory[i]);
+				address++;
+			}
 		}
 
 		public MemoryDesignation GetDesignation(ushort addr)
@@ -176,6 +185,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			return result;
+		}
+
+		public void HardReset()
+		{
+			ram = new byte[0x10000];
+			colorRam = new byte[0x1000];
+			WipeMemory();
+			cpuPort = new DirectionalDataPort(0x37, 0x2F);
+			layout = new MemoryLayout();
+			UpdateLayout();
 		}
 
 		public byte Peek(ushort addr)
@@ -427,6 +446,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					ram[i + j] = 0x00;
 				for (int j = 0x40; j < 0x80; j++)
 					ram[i + j] = 0xFF;
+			}
+			for (int i = 0; i < 0x1000; i++)
+			{
+				colorRam[i] = 0x0E;
 			}
 		}
 

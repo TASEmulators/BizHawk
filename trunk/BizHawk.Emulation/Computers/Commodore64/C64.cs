@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public C64(GameInfo game, byte[] rom, string romextension)
 		{
 			inputFile = rom;
+			extension = romextension;
 			SetupMemoryDomains();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();

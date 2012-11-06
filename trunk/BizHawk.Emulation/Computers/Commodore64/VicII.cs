@@ -471,16 +471,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// raster
 		public bool badLine;
+		public byte bitmapData;
+		public byte bitmapDataMask;
 		public int borderBottom;
 		public int borderLeft;
 		public bool borderOnHorizontal;
 		public bool borderOnVertical;
 		public int borderRight;
 		public int borderTop;
+		public int characterIndex;
 		public byte[] characterMemory;
+		public int characterRow;
 		public byte[] colorMemory;
 		public int cycle;
+		public int cycleLeft;
 		public bool displayEnabled;
+		public bool hBlank;
+		public bool idle;
 		public int rasterInterruptLine;
 		public int rasterLineLeft;
 		public int rasterOffset;
@@ -490,9 +497,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int refreshAddress;
 		public int renderOffset;
 		public byte[,] spriteData;
+		public int spriteFetchCycle;
 		public ushort[] spritePointers;
 		public VicIITask task;
 		public int totalCycles;
+		public bool vBlank;
 		public int visibleBottom;
 		public int visibleHeight;
 		public int visibleLeft;
@@ -506,6 +515,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public VicIIRegs regs;
 		public ChipSignals signal;
 
+		private delegate int PlotterDelegate(int offset);
+		private PlotterDelegate Plotter;
+
 		public VicII(ChipSignals newSignal, VicIIMode videoMode)
 		{
 			signal = newSignal;
@@ -513,17 +525,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (videoMode)
 			{
 				case VicIIMode.NTSC:
-					rasterWidth = 512;
+					totalCycles = 65;
 					rasterTotalLines = 263;
 					rasterLineLeft = 0x19C;
-					visibleLeft = 0x1E9;
-					visibleRight = 0x159;
-					visibleTop = 0x41;
-					visibleBottom = 0x13;
+					cycleLeft = 0;
+					spriteFetchCycle = 58;
+					visibleLeft = 0x19C; //0x1E9;
+					visibleRight = 0x19C;
+					visibleTop = 0x000; //0x041;
+					visibleBottom = 0x000; //0x013;
 					visibleRenderX = false;
 					visibleRenderY = false;
-					visibleWidth = 368;
-					visibleHeight = 217;
+					visibleWidth = 0x208; //418;
+					visibleHeight = 263; //235;
 					renderOffset = 0;
 					break;
 				case VicIIMode.PAL:
@@ -533,34 +547,44 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			// initialize raster
+			rasterWidth = totalCycles * 8;
 			rasterOffsetX = rasterLineLeft;
 			borderOnHorizontal = true;
 			borderOnVertical = true;
-			totalCycles = rasterWidth / 8;
 
 			// initialize buffer
-			buffer = new int[rasterWidth * rasterTotalLines];
+			buffer = new int[visibleWidth * visibleHeight];
 			bufferSize = buffer.Length;
 
 			// initialize sprites
 			spritePointers = new ushort[8];
 			spriteData = new byte[8, 64];
 
+			// initialize screen buffer
+			characterMemory = new byte[41];
+			colorMemory = new byte[41];
+
 			// initialize registers
 			HardReset();
 		}
 
+		private void GetBitmapData()
+		{
+			ushort offset = (ushort)((regs.CB << 11) + (characterMemory[characterIndex] * 8) + characterRow);
+			bitmapData = mem.VicRead(offset);
+		}
+
 		private void GetScreenData(int index)
 		{
-			ushort offset = (ushort)(regs.VM + regs.VC);
+			ushort offset = (ushort)((regs.VM << 10)  + regs.VC);
 			characterMemory[index] = mem.VicRead(offset);
 			colorMemory[index] = mem.colorRam[regs.VC];
 		}
 
 		private void GetSpriteData(int index)
 		{
-			ushort offset = (ushort)(regs.VM + 0x3F8 + index);
-			spritePointers[index] = (ushort)(regs.VM + (mem.VicRead(offset) * 64));
+			ushort offset = (ushort)((regs.VM << 10) + 0x3F8 + index);
+			spritePointers[index] = (ushort)((regs.VM << 10) + (mem.VicRead(offset) * 64));
 			for (ushort i = 0; i < 64; i++)
 				spriteData[index, i] = mem.VicRead((ushort)(spritePointers[index] + i));
 		}
@@ -576,6 +600,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void PerformCycle()
 		{
+			characterIndex = regs.VMLI;
+			characterRow = regs.RC;
+
+			// reset VC and VCBASE if on scan 0
+			if (regs.RASTER == 0x00)
+			{
+				regs.VCBASE = 0;
+				regs.VC = 0;
+			}
 
 			// display enable check on line $30
 			if (regs.RASTER == 0x30)
@@ -619,8 +652,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				{
 					regs.VC = regs.VCBASE;
 					regs.VMLI = 0;
-					if (badLine)
-						regs.RC = 0;
+					characterIndex = 0;
 				}
 			}
 			else if (cycle >= 15 && cycle < 55)
@@ -635,6 +667,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				{
 					signal.VicAEC = true;
 				}
+				GetBitmapData();
 				regs.VC++;
 				regs.VMLI++;
 			}
@@ -643,18 +676,20 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				// increment VIC row counter
 				if (regs.RC == 7)
 				{
-					regs.VCBASE = regs.VC;
+					if (!borderOnHorizontal)
+						regs.VCBASE = regs.VC;
 				}
 				regs.RC = (regs.RC + 1) & 0x07;
+
 				if (badLine)
 				{
 					regs.RC = 0;
 				}
 			}
-			else if (cycle >= totalCycles - 6)
+			else if (cycle >= spriteFetchCycle)
 			{
 				// fetch sprite data 0-2
-				int index = (cycle - (totalCycles - 6)) >> 1;
+				int index = (cycle - spriteFetchCycle) >> 1;
 				if (regs.MxE[index])
 				{
 					signal.VicAEC = false;
@@ -674,9 +709,27 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			}
 
-			// pixel clock is 8x the VIC clock
+			// determine the plot mode
+			if (!regs.ECM && !regs.BMM && !regs.MCM)
+				Plotter = Plot000;
+			else if (!regs.ECM && !regs.BMM && regs.MCM)
+				Plotter = Plot001;
+			else if (!regs.ECM && regs.BMM && !regs.MCM)
+				Plotter = Plot010;
+			else if (!regs.ECM && regs.BMM && regs.MCM)
+				Plotter = Plot011;
+			else if (regs.ECM && !regs.BMM && !regs.MCM)
+				Plotter = Plot100;
+			else if (regs.ECM && !regs.BMM && regs.MCM)
+				Plotter = Plot101;
+			else if (regs.ECM && regs.BMM && !regs.MCM)
+				Plotter = Plot110;
+			else
+				Plotter = Plot111;
+
 			for (int i = 0; i < 8; i++)
 			{
+				// pixel clock is 8x the VIC clock
 				int pixel;
 
 				// process raster position
@@ -684,25 +737,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				{
 					// reset to the left side
 					rasterOffsetX -= rasterWidth;
-					regs.RASTER = rasterOffset >> 9;
-					cycle = 0;
+					regs.RASTER++;
 
 					// if vblank, reset the raster position
 					if (regs.RASTER == rasterTotalLines)
 					{
 						rasterOffset = 0;
 						regs.RASTER = 0;
-						regs.VCBASE = 0;
 						renderOffset = 0;
 						displayEnabled = false;
 						refreshAddress = 0x3FFF;
 					}
 
 					// check to see if we are within viewing area Y
-					if (regs.RASTER == visibleTop)
-						visibleRenderY = true;
 					if (regs.RASTER == visibleBottom)
 						visibleRenderY = false;
+					if (regs.RASTER == visibleTop)
+						visibleRenderY = true;
 
 					// check to see if we are on a horizontal border
 					if (displayEnabled && (regs.RASTER == borderTop || regs.RASTER == borderBottom))
@@ -714,10 +765,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 
 				// check to see if we are within viewing area X
-				if (rasterOffsetX == visibleLeft)
-					visibleRenderX = true;
 				if (rasterOffsetX == visibleRight)
 					visibleRenderX = false;
+				if (rasterOffsetX == visibleLeft)
+					visibleRenderX = true;
 
 				// check to see if we are on a vertical border
 				if (rasterOffsetX == borderLeft)
@@ -727,9 +778,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 				// draw the border if it is on, otherwise draw the screen
 				if (borderOnHorizontal || borderOnVertical)
+				{
 					pixel = regs.EC;
+				}
 				else
-					pixel = regs.BxC[0];
+				{
+					pixel = Plotter(i);
+				}
 
 				// plot the pixel if within visible range
 				if (visibleRenderX && visibleRenderY)
@@ -749,7 +804,58 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			signal.VicIRQ = regs.IRQ;
+
 			cycle++;
+			if (cycle == totalCycles)
+				cycle = 0;
+
+			hBlank = !visibleRenderX;
+			vBlank = !visibleRenderY;
+		}
+
+		private int Plot000(int offset)
+		{
+			byte charData = bitmapData;
+			charData <<= offset;
+			if ((charData & 0x80) != 0x00)
+				return colorMemory[characterIndex];
+			else
+				return regs.BxC[0];
+		}
+
+		private int Plot001(int offset)
+		{
+			return regs.BxC[0];
+		}
+
+		private int Plot010(int offset)
+		{
+			return regs.BxC[0];
+		}
+
+		private int Plot011(int offset)
+		{
+			return regs.BxC[0];
+		}
+
+		private int Plot100(int offset)
+		{
+			return regs.BxC[0];
+		}
+
+		private int Plot101(int offset)
+		{
+			return regs.BxC[0];
+		}
+
+		private int Plot110(int offset)
+		{
+			return regs.BxC[0];
+		}
+
+		private int Plot111(int offset)
+		{
+			return regs.BxC[0];
 		}
 
 		public byte Read(ushort addr)
