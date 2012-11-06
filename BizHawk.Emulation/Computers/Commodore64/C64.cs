@@ -91,10 +91,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			for (int i = 0; i < cyclesPerSecond; i++)
 			{
-				if (signal.CpuIRQ)
-				{
-					cpu.IRQ = true;
-				}
+				cpu.IRQ = signal.CpuIRQ;
+				cpu.NMI = signal.CpuNMI;
 				if (signal.CpuAEC)
 				{
 					cpu.ExecuteOne();
