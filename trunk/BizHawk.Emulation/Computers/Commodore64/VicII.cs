@@ -840,7 +840,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 2:
 						return regs.BxC[charData];
 					default:
-						return colorMemory[characterIndex];
+						return colorMemory[characterIndex] & 0x07;
 				}
 			}
 			else
@@ -869,7 +869,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			if ((charData & 0x80) != 0x00)
 				return colorMemory[characterIndex];
 			else
-				return characterMemory[characterIndex] >> 6;
+				return regs.BxC[characterMemory[characterIndex] >> 6];
 		}
 
 		// invalid mode
