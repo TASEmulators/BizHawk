@@ -130,9 +130,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ports[0] = new JoypadPortDevice(this, 0);
 			ports[1] = new JoypadPortDevice(this, 1);
 
+			BoardSystemHardReset();
+
 			apu = new APU(this, apu);
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
+
 
 			// set up region
 			switch (cart.system)
@@ -185,6 +188,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if ((i & 4) != 0) ram[i] = 0xFF; else ram[i] = 0x00;
 			}
+
+			SetupMemoryDomains();
 
 			//in this emulator, reset takes place instantaneously
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));

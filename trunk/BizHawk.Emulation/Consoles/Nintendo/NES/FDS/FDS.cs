@@ -90,6 +90,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			diskdiffs = new byte[NumSides][];
 		}
 
+		/// <summary>
+		/// returns the currently set disk image.  no effect on emulation (provided the image is not modified).
+		/// </summary>
+		/// <returns></returns>
+		public byte[] GetDiskImage()
+		{
+			return diskimage;
+		}
+
 		// as we have [INESBoardImplCancel], this will only be called with an fds disk image
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
