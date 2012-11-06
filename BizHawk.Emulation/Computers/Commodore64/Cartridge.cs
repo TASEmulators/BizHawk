@@ -56,6 +56,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					type <<= 8;
 					type |= reader.ReadByte();
 
+					if (type != 0x0000)
+					{
+						// the emulator does not support anything other than type 0 right now
+						valid = false;
+						return;
+					}
+
 					exRomPin = (reader.ReadByte() == 1);
 					gamePin = (reader.ReadByte() == 1);
 
@@ -123,6 +130,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 					valid = (chips.Count > 0);
 				}
+				reader.Close();
+				source.Dispose();
 			}
 		}
 
