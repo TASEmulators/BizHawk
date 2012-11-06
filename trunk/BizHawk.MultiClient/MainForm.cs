@@ -545,13 +545,13 @@ namespace BizHawk.MultiClient
 		public void PauseEmulator()
 		{
 			EmulatorPaused = true;
-
-
+			SetPauseStatusbarIcon();
 		}
 
 		public void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
+			SetPauseStatusbarIcon();
 		}
 
 		private void SetPauseStatusbarIcon()
