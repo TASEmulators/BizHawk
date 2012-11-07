@@ -409,7 +409,6 @@
     <Compile Include="CPUs\x86\Execute.cs" />
     <Compile Include="CPUs\x86\Timing.cs" />
     <Compile Include="CPUs\x86\x86.cs" />
-    <Compile Include="CPUs\Z80-GB\Disassembler.cs" />
     <Compile Include="CPUs\Z80-GB\Execute.cs" />
     <Compile Include="CPUs\Z80-GB\Interrupts.cs" />
     <Compile Include="CPUs\Z80-GB\NewDisassembler.cs" />
