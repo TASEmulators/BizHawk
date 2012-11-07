@@ -480,9 +480,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int borderRight;
 		public int borderTop;
 		public int characterColumn;
+		public byte characterData;
 		public int characterIndex;
 		public byte[] characterMemory;
 		public bool charactersEnabled;
+		public byte colorData;
 		public byte[] colorMemory;
 		public int cycle;
 		public int cycleLeft;
@@ -499,7 +501,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int renderOffset;
 		public byte[,] spriteData;
 		public int spriteFetchCycle;
+		public int spriteFetchIndex;
 		public ushort[] spritePointers;
+		public int spriteFetchStartCycle;
 		public VicIITask task;
 		public int totalCycles;
 		public bool vBlank;
@@ -530,13 +534,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					rasterTotalLines = 263;
 					rasterLineLeft = 0x19C;
 					cycleLeft = 0;
-					spriteFetchCycle = 58;
+					spriteFetchCycle = 59;
 					visibleLeft = 0x008;
 					visibleRight = 0x168;
 					visibleTop = 0x023; //0x041;
 					visibleBottom = 0x004; //0x013;
 					visibleRenderX = false;
-					visibleRenderY = true;
+					visibleRenderY = false;
 					visibleWidth = 352;
 					visibleHeight = 232;
 					renderOffset = 0;
@@ -562,48 +566,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			spriteData = new byte[8, 64];
 
 			// initialize screen buffer
-			characterMemory = new byte[41];
-			colorMemory = new byte[41];
-			characterIndex = -1;
-			charactersEnabled = false;
+			characterMemory = new byte[40];
+			colorMemory = new byte[40];
 
 			// initialize registers
 			HardReset();
 		}
 
-		private void GetBitmapData()
-		{
-			if (characterIndex < 0 || characterIndex >= 40)
-				bitmapData = 0;
-			else
-			{
-				int cMemIndex = characterMemory[characterIndex];
-				if (regs.ECM)
-					cMemIndex &= 0x3F;
-				ushort offset = (ushort)((regs.CB << 11) + (cMemIndex * 8) + regs.RC);
-				bitmapData = mem.VicRead(offset);
-			}
-		}
-
-		private void GetScreenData(int index)
-		{
-			ushort offset = (ushort)((regs.VM << 10)  + regs.VC);
-			characterMemory[index] = mem.VicRead(offset);
-			colorMemory[index] = mem.colorRam[regs.VC];
-		}
-
-		private void GetSpriteData(int index)
-		{
-			ushort offset = (ushort)((regs.VM << 10) + 0x3F8 + index);
-			spritePointers[index] = (ushort)((regs.VM << 10) + (mem.VicRead(offset) * 64));
-			for (ushort i = 0; i < 64; i++)
-				spriteData[index, i] = mem.VicRead((ushort)(spritePointers[index] + i));
-		}
-
 		public void HardReset()
 		{
+			idle = true;
 			refreshAddress = 0x3FFF;
 			regs = new VicIIRegs();
+			regs.RC = 7;
 			signal.VicAEC = true;
 			signal.VicIRQ = false;
 			UpdateBorder();
@@ -611,20 +586,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void PerformCycle()
 		{
-			// reset VC and VCBASE if on scan 0
-			if (regs.RASTER == 0x00)
-			{
-				regs.VCBASE = 0;
-				regs.VC = 0;
-			}
-
-			// display enable check on line $30
-			if (regs.RASTER == 0x30)
-			{
+			// display enable check on line 030 (this must be run every cycle)
+			if (regs.RASTER == 0x030)
 				displayEnabled = (displayEnabled | regs.DEN);
-			}
 
-			// badline calculation (for when the VIC must pause the CPU to get character data)
+			// badline check
 			if (regs.RASTER >= 0x030 && regs.RASTER < 0x0F8)
 				badLine = ((regs.YSCROLL == (regs.RASTER & 0x07)) && displayEnabled);
 			else
@@ -633,44 +599,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			if (badLine)
 				idle = false;
 
-			// decide what to do this cycle
-			if (cycle == 0)
+			// these actions are exclusive
+			if ((regs.RASTER == 0x000 && cycle == 1) || (regs.RASTER > 0x000 && cycle == 0))
 			{
-				// if vblank, reset the raster position
-				regs.RASTER++;
-				if (regs.RASTER == rasterTotalLines)
-				{
-					rasterOffset = 0;
-					regs.RASTER = 0;
-					renderOffset = 0;
-					displayEnabled = false;
-					refreshAddress = 0x3FFF;
-				}
-				// check to see if we are within viewing area Y
-				if (regs.RASTER == visibleBottom)
-					visibleRenderY = false;
-				if (regs.RASTER == visibleTop)
-					visibleRenderY = true;
-				// check for raster IRQ
+				// IRQ is processed on cycle 1 of line 0 and cycle 0 on all other lines
 				if (regs.RASTER == rasterInterruptLine)
 					regs.IRST = true;
-			}
-			else if (cycle >= 1 && cycle < 10)
-			{
-				// fetch sprite data 3-7
-				int index = (cycle >> 1) + 3;
-				if (regs.MxE[index])
-				{
-					signal.VicAEC = false;
-					if ((cycle & 0x01) == 0x00)
-					{
-						GetSpriteData(index);
-					}
-				}
-				else
-				{
-					signal.VicAEC = true;
-				}
 			}
 			else if (cycle >= 10 && cycle < 15)
 			{
@@ -678,71 +612,61 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				mem.VicRead((ushort)refreshAddress);
 				refreshAddress = (refreshAddress - 1) & 0xFF;
 				refreshAddress |= 0x3F00;
-
-				// VIC internal register reset on cycle 13
-				if (cycle == 13)
-				{
-					regs.VC = regs.VCBASE;
-					regs.VMLI = 0;
-					characterIndex = -4;
-					characterColumn = 0;
-					if (badLine)
-					{
-						regs.RC = 0;
-					}
-				}
 			}
 			else if (cycle >= 15 && cycle < 55)
 			{
+				// screen memory c-access
 				if (badLine)
-				{
-					// fetch video data
-					signal.VicAEC = false;
-					GetScreenData(cycle - 15);
-				}
-				else
-				{
-					signal.VicAEC = true;
-				}
-				regs.VC++;
-				regs.VMLI++;
+					PerformCycleScreenFetch();
+			}
+			else if (cycle == 55)
+			{
+				//signal.VicAEC = true;
 			}
 			else if (cycle == 57)
 			{
-				// increment VIC row counter
 				if (regs.RC == 7)
 				{
 					idle = true;
 					regs.VCBASE = regs.VC;
 				}
-				else
-				{
+				if (!idle)
 					regs.RC = (regs.RC + 1) & 0x07;
-				}
-			}
-			else if (cycle >= spriteFetchCycle)
-			{
-				// fetch sprite data 0-2
-				int index = (cycle - spriteFetchCycle) >> 1;
-				if (regs.MxE[index])
-				{
-					signal.VicAEC = false;
-					if ((cycle & 0x01) == 0x00)
-					{
-						GetSpriteData(index);
-					}
-				}
-				else
-				{
-					signal.VicAEC = true;
-				}
-			}
-			else
-			{
-				// idle
-
 			}
 
+			// these actions can fall within the other ranges
+			if (cycle == 13)
+			{
+				regs.VC = regs.VCBASE;
+				regs.VMLI = 0;
+				characterColumn = 0;
+				if (badLine)
+				{
+					regs.RC = 0;
+				}
+				bitmapData = 0;
+				colorData = 0;
+				characterData = 0;
+			}
+			else if (cycle == spriteFetchStartCycle)
+			{
+				spriteFetchIndex = 0;
+			}
+
+			// sprite fetch
+			if (spriteFetchIndex < 8)
+			{
+				
+				PerformCycleSpriteFetch(spriteFetchIndex, spriteFetchCycle);
+				spriteFetchCycle++;
+				if (spriteFetchCycle >= 2)
+				{
+					spriteFetchCycle = 0;
+					spriteFetchIndex++;
+				}
+			}
+
+			// border check
 			if (cycle == 63)
 			{
 				if ((regs.RASTER == borderTop) && (regs.DEN))
@@ -751,6 +675,75 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					borderOnVertical = true;
 			}
 
+			PerformCycleRender();
+
+			// increment cycle
+			cycle++;
+			if (cycle == totalCycles)
+			{
+				cycle = 0;
+				PerformCycleAdvanceRaster();
+			}
+
+			UpdateInterrupts();
+			signal.VicIRQ = regs.IRQ;
+		}
+
+		private void PerformCycleAdvanceRaster()
+		{
+			regs.RASTER++;
+
+			// if we reach the bottom, reset to the top
+			if (regs.RASTER == rasterTotalLines)
+			{
+				regs.RASTER = 0;
+				regs.VCBASE = 0;
+				displayEnabled = false;
+			}
+
+			// check to see if we are within viewing area Y
+			if (regs.RASTER == visibleBottom)
+			{
+				visibleRenderY = false;
+				renderOffset = 0;
+			}
+			if (regs.RASTER == visibleTop)
+				visibleRenderY = true;
+		}
+
+		private void PerformCycleGraphicFetch()
+		{
+			if (idle)
+			{
+				if (regs.ECM)
+					mem.VicRead(0x39FF);
+				else
+					mem.VicRead(0x3FFF);
+			}
+			else
+			{
+				characterIndex = regs.VMLI - 1;
+				if (characterIndex < 0 || characterIndex >= 40)
+				{
+					bitmapData = 0;
+					colorData = 0;
+					characterData = 0;
+				}
+				else
+				{
+					characterData = characterMemory[characterIndex];
+					if (regs.ECM)
+						characterData &= 0x3F;
+					bitmapData = mem.VicRead((ushort)((regs.CB << 11) + (characterData * 8) + regs.RC));
+					colorData = colorMemory[characterIndex];
+				}
+				regs.VC++;
+				regs.VMLI++;
+			}
+		}
+
+		private void PerformCycleRender()
+		{
 			// determine the plot mode
 			if (!regs.ECM && !regs.BMM && !regs.MCM)
 				Plotter = Plot000;
@@ -771,21 +764,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			for (int i = 0; i < 8; i++)
 			{
-				if ((rasterOffsetX & 0x07) == regs.XSCROLL)
+				// draw screen memory if needed
+				if (!idle && cycle >= 15 && cycle < 55)
 				{
-					characterColumn = 0;
-					characterIndex++;
-					GetBitmapData();
-				}
-
-				// pixel clock is 8x the VIC clock
-				int pixel;
-
-				// process raster position
-				if (rasterOffsetX >= rasterWidth)
-				{
-					// reset to the left side
-					rasterOffsetX -= rasterWidth;
+					if ((rasterOffsetX & 0x07) == regs.XSCROLL)
+					{
+						characterColumn = 0;
+						PerformCycleGraphicFetch();
+					}
 				}
 
 				// check to see if we are within viewing area X
@@ -797,7 +783,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				// check to see if we are at the border
 				if (rasterOffsetX == borderRight)
 					borderOnMain = true;
-
 				if (rasterOffsetX == borderLeft)
 				{
 					if (regs.RASTER == borderBottom)
@@ -808,46 +793,38 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						borderOnMain = false;
 				}
 
-				// draw the border if it is on, otherwise draw the screen
-				if (borderOnMain || borderOnVertical)
-				{
-					pixel = regs.EC;
-				}
-				else
-				{
-					if (characterIndex >= 0 && characterIndex < 40)
-						pixel = Plotter();
-					else
-						pixel = regs.BxC[0];
-				}
-
-				// plot the pixel if within visible range
+				// render pixel
 				if (visibleRenderX && visibleRenderY)
 				{
-					/*
-					if (regs.RC == 0x00)
-						pixel ^= 0x08;
-					if ((regs.RASTER & 0x07) == regs.YSCROLL)
-						pixel ^= 0x01;*/
-					WritePixel(pixel);
+					if (borderOnMain || borderOnVertical)
+						WritePixel(regs.EC);
+					else
+						WritePixel(Plotter());
 				}
-
-				// increment raster position
+				characterColumn++;
 				rasterOffset++;
 				rasterOffsetX++;
-				characterColumn++;
+				if (rasterOffsetX == rasterWidth)
+				{
+					rasterOffsetX -= rasterWidth;
+				}
 			}
 
-			UpdateInterrupts();
+		}
 
-			signal.VicIRQ = regs.IRQ;
+		private void PerformCycleScreenFetch()
+		{
+			ushort offset = (ushort)((regs.VM << 10) + regs.VC);
+			characterMemory[regs.VMLI] = mem.VicRead(offset);
+			colorMemory[regs.VMLI] = mem.colorRam[regs.VC];
+		}
 
-			cycle++;
-			if (cycle == totalCycles)
-				cycle = 0;
-
-			hBlank = !visibleRenderX;
-			vBlank = !visibleRenderY;
+		private void PerformCycleSpriteFetch(int index, int fetchCycle)
+		{
+			ushort offset = (ushort)((regs.VM << 10) + 0x3F8 + index);
+			spritePointers[index] = (ushort)((regs.VM << 10) + (mem.VicRead(offset) * 64));
+			for (ushort i = 0; i < 64; i++)
+				spriteData[index, i] = mem.VicRead((ushort)(spritePointers[index] + i));
 		}
 
 		// standard text mode
@@ -858,7 +835,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				byte charData = bitmapData;
 				charData <<= characterColumn;
 				if ((charData & 0x80) != 0x00)
-					return colorMemory[characterIndex];
+					return colorData;
 			}
 			return regs.BxC[0];
 		}
@@ -868,7 +845,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			if (characterColumn >= 0)
 			{
-				if ((colorMemory[characterIndex] & 0x08) != 0x00)
+				if ((colorData & 0x08) != 0x00)
 				{
 					int offset = characterColumn;
 					byte charData = bitmapData;
@@ -883,7 +860,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						case 2:
 							return regs.BxC[charData];
 						default:
-							return colorMemory[characterIndex] & 0x07;
+							return colorData & 0x07;
 					}
 				}
 				else
@@ -914,9 +891,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				byte charData = bitmapData;
 				charData <<= characterColumn;
 				if ((charData & 0x80) != 0x00)
-					return colorMemory[characterIndex];
+					return colorData;
 				else
-					return regs.BxC[characterMemory[characterIndex] >> 6];
+					return regs.BxC[characterData >> 6];
 			}
 			return regs.BxC[0];
 		}
