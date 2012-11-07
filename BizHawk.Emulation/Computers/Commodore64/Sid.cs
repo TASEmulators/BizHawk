@@ -11,13 +11,28 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		Sid8580
 	}
 
+	public class SidRegs
+	{
+		public SidRegs()
+		{
+			// power on state
+		}
+
+		public byte this[int addr]
+		{
+			get;
+			set;
+		}
+
+	}
+
 	public class Sid
 	{
-		public byte[] regs;
+		public SidRegs regs;
 
 		public Sid()
 		{
-			regs = new byte[0x20];
+			regs = new SidRegs();
 		}
 
 		public void PerformCycle()
