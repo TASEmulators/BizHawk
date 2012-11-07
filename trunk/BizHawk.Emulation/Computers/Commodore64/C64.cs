@@ -89,6 +89,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			int cyclesPerSecond = (14318181 / 14 / 60);
 
+			foreach (IMedia media in mediaAttached)
+			{
+				if (!media.Loaded() && media.Ready())
+				{
+					media.Apply(mem);
+				}
+			}
+
 			for (int i = 0; i < cyclesPerSecond; i++)
 			{
 				cpu.IRQ = signal.CpuIRQ;
