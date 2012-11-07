@@ -481,9 +481,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int borderTop;
 		public int characterColumn;
 		public byte characterData;
+		public byte characterDataBus;
 		public byte[] characterMemory;
 		public bool charactersEnabled;
 		public byte colorData;
+		public byte colorDataBus;
 		public byte[] colorMemory;
 		public int cycle;
 		public int cycleLeft;
@@ -577,8 +579,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void Fetch000C()
 		{
 			int cAddress = (regs.VM << 10) | regs.VC;
-			characterData = mem.VicRead((ushort)cAddress);
-			colorData = mem.colorRam[regs.VC];
+			characterDataBus = mem.VicRead((ushort)cAddress);
+			colorDataBus = mem.colorRam[regs.VC];
 		}
 		public void Fetch000G()
 		{
@@ -662,8 +664,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// idle fetch
 		public void FetchIdleC()
 		{
-			characterData = 0;
-			colorData = 0;
+			characterDataBus = 0;
+			colorDataBus = 0;
 		}
 		public void FetchIdleG()
 		{
@@ -721,8 +723,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				if (badLine)
 				{
 					FetchC();
-					characterMemory[regs.VMLI] = characterData;
-					colorMemory[regs.VMLI] = colorData;
+					colorMemory[regs.VMLI] = colorDataBus;
+					characterMemory[regs.VMLI] = characterDataBus;
 				}
 			}
 			else if (cycle == 55)
