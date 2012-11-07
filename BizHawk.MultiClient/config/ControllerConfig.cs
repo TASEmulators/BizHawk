@@ -18,25 +18,31 @@ namespace BizHawk.MultiClient
 
 		private void ControllerConfig_Load(object sender, EventArgs e)
 		{
-			NESController1Panel.ControllerNumber = 1;
-			NESController1Panel.Autofire = false;
-			NESController1Panel.Load();
-			NESController2Panel.ControllerNumber = 2;
-			NESController2Panel.Autofire = false;
-			NESController2Panel.Load();
+			NESController1Panel.LoadSettings(Global.Config.NESController[0]);
+			NESController2Panel.LoadSettings(Global.Config.NESController[1]);
+			NESController3Panel.LoadSettings(Global.Config.NESController[2]);
+			NESController4Panel.LoadSettings(Global.Config.NESController[3]);
+
+			//NESController1Panel.ControllerNumber = 1;
+			//NESController1Panel.Autofire = false;
+			//NESController1Panel.Load();
+			//NESController2Panel.ControllerNumber = 2;
+			//NESController2Panel.Autofire = false;
+			//NESController2Panel.Load();
 			
-			NESController3Panel.ControllerNumber = 3;
-			NESController3Panel.Autofire = false;
-			NESController4Panel.ControllerNumber = 4;
-			NESController4Panel.Autofire = false;
-			NESAutofire1Panel.ControllerNumber = 1;
-			NESAutofire1Panel.Autofire = false;
-			NESAutofire2Panel.ControllerNumber = 2;
-			NESAutofire2Panel.Autofire = false;
-			NESAutofire3Panel.ControllerNumber = 3;
-			NESAutofire3Panel.Autofire = false;
-			NESAutofire4Panel.ControllerNumber = 4;
-			NESAutofire4Panel.Autofire = false;
+			//NESController3Panel.ControllerNumber = 3;
+			//NESController3Panel.Autofire = false;
+			//NESController4Panel.ControllerNumber = 4;
+			//NESController4Panel.Autofire = false;
+			//NESAutofire1Panel.ControllerNumber = 1;
+			//NESAutofire1Panel.Autofire = false;
+			//NESAutofire2Panel.ControllerNumber = 2;
+			//NESAutofire2Panel.Autofire = false;
+			//NESAutofire3Panel.ControllerNumber = 3;
+			//NESAutofire3Panel.Autofire = false;
+			//NESAutofire4Panel.ControllerNumber = 4;
+			//NESAutofire4Panel.Autofire = false;
+
 
 			SetAutoTab(true);
 		}
@@ -81,6 +87,8 @@ namespace BizHawk.MultiClient
 		{
 			NESController1Panel.Save();
 			NESController2Panel.Save();
+			NESController3Panel.Save();
+			NESController4Panel.Save();
 
 			Global.OSD.AddMessage("Controller settings saved");
 			Close();

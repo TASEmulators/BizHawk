@@ -169,6 +169,12 @@
     <Compile Include="config\ControllerConfig.Designer.cs">
       <DependentUpon>ControllerConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ControllerConfig\ControllerConfigPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
+      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\ControllerConfig\GamepadConfigPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -459,6 +465,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig.resx">
       <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
+      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
