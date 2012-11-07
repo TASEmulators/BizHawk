@@ -12,8 +12,7 @@ namespace BizHawk.MultiClient
 	public partial class ControllerConfig : Form
 	{
 		//TODO: autoab
-		//enable L+R
-		
+
 		public ControllerConfig()
 		{
 			InitializeComponent();
@@ -21,6 +20,8 @@ namespace BizHawk.MultiClient
 
 		private void ControllerConfig_Load(object sender, EventArgs e)
 		{
+			AllowLR.Checked = Global.Config.AllowUD_LR;
+
 			NESController1Panel.LoadSettings(Global.Config.NESController[0]);
 			NESController2Panel.LoadSettings(Global.Config.NESController[1]);
 			NESController3Panel.LoadSettings(Global.Config.NESController[2]);
@@ -61,11 +62,12 @@ namespace BizHawk.MultiClient
 			PCEAutofire4Panel.LoadSettings(Global.Config.PCEAutoController[3]);
 			PCEAutofire5Panel.LoadSettings(Global.Config.PCEAutoController[4]);
 
-
 			Atari2600Controller1Panel.LoadSettings(Global.Config.Atari2600Controller[0]);
 			Atari2600Controller2Panel.LoadSettings(Global.Config.Atari2600Controller[1]);
 			Atari2600Autofire1Panel.LoadSettings(Global.Config.Atari2600AutoController[0]);
 			Atari2600Autofire2Panel.LoadSettings(Global.Config.Atari2600AutoController[1]);
+
+			TI83ControllerPanel.LoadSettings(Global.Config.TI83Controller[0]);
 
 			SetAutoTab(true);
 		}
@@ -108,6 +110,8 @@ namespace BizHawk.MultiClient
 
 		private void OK_Click(object sender, EventArgs e)
 		{
+			Global.Config.AllowUD_LR = AllowLR.Checked;
+
 			foreach (Control control1 in tabControl1.TabPages)
 			{
 				if (control1 is TabPage)
