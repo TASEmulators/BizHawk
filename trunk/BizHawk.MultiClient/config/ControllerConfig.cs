@@ -25,6 +25,27 @@ namespace BizHawk.MultiClient
 			NESController2Panel.LoadSettings(Global.Config.NESController[1]);
 			NESController3Panel.LoadSettings(Global.Config.NESController[2]);
 			NESController4Panel.LoadSettings(Global.Config.NESController[3]);
+			NESAutofire1Panel.LoadSettings(Global.Config.NESAutoController[0]);
+			NESAutofire2Panel.LoadSettings(Global.Config.NESAutoController[1]);
+			NESAutofire3Panel.LoadSettings(Global.Config.NESAutoController[2]);
+			NESAutofire4Panel.LoadSettings(Global.Config.NESAutoController[3]);
+
+			SNESController1Panel.LoadSettings(Global.Config.SNESController[0]);
+			SNESController2Panel.LoadSettings(Global.Config.SNESController[1]);
+			SNESController3Panel.LoadSettings(Global.Config.SNESController[2]);
+			SNESController4Panel.LoadSettings(Global.Config.SNESController[3]);
+			SNESAutofire1Panel.LoadSettings(Global.Config.SNESAutoController[0]);
+			SNESAutofire2Panel.LoadSettings(Global.Config.SNESAutoController[1]);
+			SNESAutofire3Panel.LoadSettings(Global.Config.SNESAutoController[2]);
+			SNESAutofire4Panel.LoadSettings(Global.Config.SNESAutoController[3]);
+
+			GBController1Panel.LoadSettings(Global.Config.GBController[0]);
+			GBAutofire1Panel.LoadSettings(Global.Config.GBAutoController[0]);
+
+			SMSController1Panel.LoadSettings(Global.Config.SMSController[0]);
+			SMSController2Panel.LoadSettings(Global.Config.SMSController[1]);
+			SMSAutofire1Panel.LoadSettings(Global.Config.SMSAutoController[0]);
+			SMSAutofire2Panel.LoadSettings(Global.Config.SMSAutoController[1]);
 
 			SetAutoTab(true);
 		}
@@ -69,13 +90,33 @@ namespace BizHawk.MultiClient
 		{
 			foreach (Control control1 in tabControl1.TabPages)
 			{
-				if (control1 is TabControl)
+				if (control1 is TabPage)
 				{
-					foreach (Control control2 in (control1 as TabControl).TabPages)
+					foreach (Control control2 in control1.Controls)
 					{
 						if (control2 is ControllerConfigPanel)
 						{
 							(control2 as ControllerConfigPanel).Save();
+						}
+						else if (control2 is TabControl)
+						{
+							foreach (Control control3 in (control2 as TabControl).TabPages)
+							{
+								if (control3 is TabPage)
+								{
+									foreach (Control control4 in control3.Controls)
+									{
+										if (control4 is ControllerConfigPanel)
+										{
+											(control4 as ControllerConfigPanel).Save();
+										}
+									}
+								}
+								else if (control3 is ControllerConfigPanel)
+								{
+									(control3 as ControllerConfigPanel).Save();
+								}
+							}
 						}
 					}
 				}

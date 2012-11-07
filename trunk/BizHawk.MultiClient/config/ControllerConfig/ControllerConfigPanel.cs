@@ -14,9 +14,7 @@ namespace BizHawk.MultiClient
 	{
 		object ControllerConfigObject; //Object that values will be saved to (In Config.cs)
 
-		public static List<string> buttons = new List<string>();
-		public int ControllerNumber = 1;
-		public bool Autofire = false;
+		public List<string> buttons = new List<string>();
 
 		public int InputMarginLeft = 0;
 		public int LabelPadding = 10;
