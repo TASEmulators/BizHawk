@@ -481,7 +481,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int borderTop;
 		public int characterColumn;
 		public byte characterData;
-		public int characterIndex;
 		public byte[] characterMemory;
 		public bool charactersEnabled;
 		public byte colorData;
@@ -520,6 +519,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public VicIIRegs regs;
 		public ChipSignals signal;
 
+		private Action FetchC;
+		private Action FetchG;
 		private Func<int> Plotter;
 
 		public VicII(ChipSignals newSignal, VicIIMode videoMode)
@@ -572,6 +573,107 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			HardReset();
 		}
 
+		// standard text mode
+		public void Fetch000C()
+		{
+			int cAddress = (regs.VM << 10) | regs.VC;
+			characterData = mem.VicRead((ushort)cAddress);
+			colorData = mem.colorRam[regs.VC];
+		}
+		public void Fetch000G()
+		{
+			int gAddress = (regs.CB << 11) | (characterData << 3) | regs.RC;
+			bitmapData = mem.VicRead((ushort)gAddress);
+		}
+
+		// multicolor text mode (same as standard text mode)
+		public void Fetch001C()
+		{
+			Fetch000C();
+		}
+		public void Fetch001G()
+		{
+			Fetch000G();
+		}
+
+		// standard bitmap mode
+		public void Fetch010C()
+		{
+			Fetch000C();
+		}
+		public void Fetch010G()
+		{
+			int gAddress = ((regs.CB & 0x4) << 11) | (regs.VC << 3) | regs.RC;
+			bitmapData = mem.VicRead((ushort)gAddress);
+		}
+
+		// multicolor bitmap mode (same as standard bitmap mode)
+		public void Fetch011C()
+		{
+			Fetch000C();
+		}
+		public void Fetch011G()
+		{
+			Fetch010G();
+		}
+
+		// extra color text mode
+		public void Fetch100C()
+		{
+			Fetch000C();
+		}
+		public void Fetch100G()
+		{
+			int gAddress = (regs.CB << 11) | ((characterData & 0x3F) << 3) | regs.RC;
+			bitmapData = mem.VicRead((ushort)gAddress);
+		}
+
+		// invalid text mode 101
+		public void Fetch101C()
+		{
+			Fetch000C();
+		}
+		public void Fetch101G()
+		{
+			Fetch100G();
+		}
+
+		// invalid bitmap mode 110
+		public void Fetch110C()
+		{
+			Fetch000C();
+		}
+		public void Fetch110G()
+		{
+			int gAddress = ((regs.CB & 0x4) << 11) | ((regs.VC & 0x33F) << 3) | regs.RC;
+			bitmapData = mem.VicRead((ushort)gAddress);
+		}
+
+		// invalid bitmap mode 111
+		public void Fetch111C()
+		{
+			Fetch000C();
+		}
+		public void Fetch111G()
+		{
+			Fetch110G();
+		}
+
+		// idle fetch
+		public void FetchIdleC()
+		{
+			characterData = 0;
+			colorData = 0;
+		}
+		public void FetchIdleG()
+		{
+			if (regs.ECM)
+				mem.VicRead(0x39FF);
+			else
+				mem.VicRead(0x3FFF);
+		}
+
+
 		public void HardReset()
 		{
 			idle = true;
@@ -617,7 +719,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				// screen memory c-access
 				if (badLine)
-					PerformCycleScreenFetch();
+				{
+					FetchC();
+					characterMemory[regs.VMLI] = characterData;
+					colorMemory[regs.VMLI] = colorData;
+				}
 			}
 			else if (cycle == 55)
 			{
@@ -711,37 +817,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				visibleRenderY = true;
 		}
 
-		private void PerformCycleGraphicFetch()
-		{
-			if (idle)
-			{
-				if (regs.ECM)
-					mem.VicRead(0x39FF);
-				else
-					mem.VicRead(0x3FFF);
-			}
-			else
-			{
-				characterIndex = regs.VMLI;
-				if (characterIndex < 0 || characterIndex >= 40)
-				{
-					bitmapData = 0;
-					colorData = 0;
-					characterData = 0;
-				}
-				else
-				{
-					characterData = characterMemory[characterIndex];
-					if (regs.ECM)
-						characterData &= 0x3F;
-					bitmapData = mem.VicRead((ushort)((regs.CB << 11) + (characterData * 8) + regs.RC));
-					colorData = colorMemory[characterIndex];
-				}
-				regs.VC++;
-				regs.VMLI++;
-			}
-		}
-
 		private void PerformCycleRender()
 		{
 			for (int i = 0; i < 8; i++)
@@ -753,7 +828,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					if (regs.XSCROLL == (rasterOffsetX & 0x7))
 					{
 						characterColumn = 0;
-						PerformCycleGraphicFetch();
+						characterData = characterMemory[regs.VMLI];
+						colorData = colorMemory[regs.VMLI];
+						FetchG();
+						regs.VC++;
+						regs.VMLI++;
 					}
 				}
 
@@ -795,13 +874,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		}
 
-		private void PerformCycleScreenFetch()
-		{
-			ushort offset = (ushort)((regs.VM << 10) + regs.VC);
-			characterMemory[regs.VMLI] = mem.VicRead(offset);
-			colorMemory[regs.VMLI] = mem.colorRam[regs.VC];
-		}
-
 		private void PerformCycleSpriteFetch(int index, int fetchCycle)
 		{
 			ushort offset = (ushort)((regs.VM << 10) + 0x3F8 + index);
@@ -838,11 +910,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					charData >>= 6;
 					switch (charData)
 					{
-						case 0:
 						case 1:
+							return regs.BxC[1];
 						case 2:
-							return regs.BxC[charData];
-						default:
+							return regs.BxC[2];
+						case 3:
 							return colorData & 0x07;
 					}
 				}
@@ -857,12 +929,37 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// standard bitmap mode
 		private int Plot010()
 		{
-			return regs.BxC[0];
+			if (characterColumn >= 0)
+			{
+				byte charData = bitmapData;
+				charData <<= characterColumn;
+				if ((charData & 0x80) != 0x00)
+					return characterData >> 4;
+			}
+			return characterData & 0xF;
 		}
 
 		// multicolor bitmap mode
 		private int Plot011()
 		{
+			if (characterColumn >= 0)
+			{
+				int offset = characterColumn;
+				byte charData = bitmapData;
+				offset |= 0x01;
+				offset ^= 0x01;
+				charData <<= offset;
+				charData >>= 6;
+				switch (charData)
+				{
+					case 1:
+						return characterData & 0xF;
+					case 2:
+						return characterData >> 4;
+					case 3:
+						return colorData & 0xF;
+				}
+			}
 			return regs.BxC[0];
 		}
 
@@ -936,23 +1033,55 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void UpdatePlotter()
 		{
-			// determine the plot mode
+			// determine the plot and fetch mode
 			if (!regs.ECM && !regs.BMM && !regs.MCM)
+			{
+				FetchC = Fetch000C;
+				FetchG = Fetch000G;
 				Plotter = Plot000;
+			}
 			else if (!regs.ECM && !regs.BMM && regs.MCM)
+			{
+				FetchC = Fetch001C;
+				FetchG = Fetch001G;
 				Plotter = Plot001;
+			}
 			else if (!regs.ECM && regs.BMM && !regs.MCM)
+			{
+				FetchC = Fetch010C;
+				FetchG = Fetch010G;
 				Plotter = Plot010;
+			}
 			else if (!regs.ECM && regs.BMM && regs.MCM)
+			{
+				FetchC = Fetch011C;
+				FetchG = Fetch011G;
 				Plotter = Plot011;
+			}
 			else if (regs.ECM && !regs.BMM && !regs.MCM)
+			{
+				FetchC = Fetch100C;
+				FetchG = Fetch100G;
 				Plotter = Plot100;
+			}
 			else if (regs.ECM && !regs.BMM && regs.MCM)
+			{
+				FetchC = Fetch101C;
+				FetchG = Fetch101G;
 				Plotter = Plot101;
+			}
 			else if (regs.ECM && regs.BMM && !regs.MCM)
+			{
+				FetchC = Fetch110C;
+				FetchG = Fetch110G;
 				Plotter = Plot110;
+			}
 			else
+			{
+				FetchC = Fetch111C;
+				FetchG = Fetch111G;
 				Plotter = Plot111;
+			}
 		}
 
 		public void Write(ushort addr, byte val)
