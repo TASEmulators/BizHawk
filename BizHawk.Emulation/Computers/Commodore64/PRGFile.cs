@@ -52,7 +52,22 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			//mem[0x0277] = 0x0D;
 			//mem[0x0278] = 0x0D;
 
-			cpu.PC = 2064;
+			if (data[0x05] == 0x00 && data[0x06] == 0x9E)
+			{
+				// sys command
+				int sysAddress = 0;
+				int sysIndex = 0x07;
+				while (data[sysIndex] != 0)
+				{
+					sysAddress *= 10;
+					sysAddress += (data[sysIndex] & 0xF);
+					sysIndex++;
+				}
+				if (sysAddress > 0 && sysAddress < 0x10000)
+				{
+					cpu.PC = (ushort)sysAddress;
+				}
+			}
 
 			loaded = true;
 		}
