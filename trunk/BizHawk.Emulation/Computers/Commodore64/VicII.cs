@@ -520,8 +520,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public VicIIRegs regs;
 		public ChipSignals signal;
 
-		private delegate int PlotterDelegate();
-		private PlotterDelegate Plotter;
+		private Func<int> Plotter;
 
 		public VicII(ChipSignals newSignal, VicIIMode videoMode)
 		{
@@ -534,7 +533,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					rasterTotalLines = 263;
 					rasterLineLeft = 0x19C;
 					cycleLeft = 0;
-					spriteFetchCycle = 59;
+					spriteFetchStartCycle = 55;
 					visibleLeft = 0x008;
 					visibleRight = 0x168;
 					visibleTop = 0x023; //0x041;
@@ -582,6 +581,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			signal.VicAEC = true;
 			signal.VicIRQ = false;
 			UpdateBorder();
+			UpdatePlotter();
 		}
 
 		public void PerformCycle()
@@ -613,7 +613,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				refreshAddress = (refreshAddress - 1) & 0xFF;
 				refreshAddress |= 0x3F00;
 			}
-			else if (cycle >= 15 && cycle < 55)
+			else if (cycle >= 16 && cycle < 56)
 			{
 				// screen memory c-access
 				if (badLine)
@@ -722,7 +722,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 			else
 			{
-				characterIndex = regs.VMLI - 1;
+				characterIndex = regs.VMLI;
 				if (characterIndex < 0 || characterIndex >= 40)
 				{
 					bitmapData = 0;
@@ -744,30 +744,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void PerformCycleRender()
 		{
-			// determine the plot mode
-			if (!regs.ECM && !regs.BMM && !regs.MCM)
-				Plotter = Plot000;
-			else if (!regs.ECM && !regs.BMM && regs.MCM)
-				Plotter = Plot001;
-			else if (!regs.ECM && regs.BMM && !regs.MCM)
-				Plotter = Plot010;
-			else if (!regs.ECM && regs.BMM && regs.MCM)
-				Plotter = Plot011;
-			else if (regs.ECM && !regs.BMM && !regs.MCM)
-				Plotter = Plot100;
-			else if (regs.ECM && !regs.BMM && regs.MCM)
-				Plotter = Plot101;
-			else if (regs.ECM && regs.BMM && !regs.MCM)
-				Plotter = Plot110;
-			else
-				Plotter = Plot111;
-
 			for (int i = 0; i < 8; i++)
 			{
 				// draw screen memory if needed
-				if (!idle && cycle >= 15 && cycle < 55)
+				if (!idle && cycle >= 16 && cycle < 56)
 				{
-					if ((rasterOffsetX & 0x07) == regs.XSCROLL)
+					// todo: implement XSCROLL properly
+					if (regs.XSCROLL == (rasterOffsetX & 0x7))
 					{
 						characterColumn = 0;
 						PerformCycleGraphicFetch();
@@ -937,23 +920,39 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return result;
 		}
 
-		public bool SpriteOnLine(int index)
-		{
-			return false;
-		}
-
-		public void UpdateBorder()
+		private void UpdateBorder()
 		{
 			borderTop = regs.RSEL ? 0x033 : 0x037;
-			borderBottom = regs.RSEL ? 0x0FA : 0x0F6;
+			borderBottom = regs.RSEL ? 0x0FB : 0x0F7;
 			borderLeft = regs.CSEL ? 0x018 : 0x01F;
-			borderRight = regs.CSEL ? 0x157 : 0x14E;
+			borderRight = regs.CSEL ? 0x158 : 0x14F;
 		}
 
-		public void UpdateInterrupts()
+		private void UpdateInterrupts()
 		{
 			// check for anything that would've triggered an interrupt and raise the flag if so
 			regs.IRQ = ((regs.IRST & regs.ERST) || (regs.IMMC & regs.EMMC) || (regs.IMBC & regs.EMBC) || (regs.ILP & regs.ELP));
+		}
+
+		private void UpdatePlotter()
+		{
+			// determine the plot mode
+			if (!regs.ECM && !regs.BMM && !regs.MCM)
+				Plotter = Plot000;
+			else if (!regs.ECM && !regs.BMM && regs.MCM)
+				Plotter = Plot001;
+			else if (!regs.ECM && regs.BMM && !regs.MCM)
+				Plotter = Plot010;
+			else if (!regs.ECM && regs.BMM && regs.MCM)
+				Plotter = Plot011;
+			else if (regs.ECM && !regs.BMM && !regs.MCM)
+				Plotter = Plot100;
+			else if (regs.ECM && !regs.BMM && regs.MCM)
+				Plotter = Plot101;
+			else if (regs.ECM && regs.BMM && !regs.MCM)
+				Plotter = Plot110;
+			else
+				Plotter = Plot111;
 		}
 
 		public void Write(ushort addr, byte val)
@@ -970,6 +969,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					val |= (byte)(regs[addr] & 0x80);
 					regs[addr] = val;
 					UpdateBorder();
+					UpdatePlotter();
 					break;
 				case 0x12:
 					// raster interrupt lower 8 bits
@@ -979,6 +979,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				case 0x16:
 					regs[addr] = val;
 					UpdateBorder();
+					UpdatePlotter();
 					break;
 				case 0x19:
 					// only allow clearing of these flags
