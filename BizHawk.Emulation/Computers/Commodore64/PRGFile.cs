@@ -52,16 +52,33 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			//mem[0x0277] = 0x0D;
 			//mem[0x0278] = 0x0D;
 
-			if (data[0x05] == 0x00 && data[0x06] == 0x9E)
+			if (data[0x06] == 0x9E)
 			{
 				// sys command
+				bool isNumber = false;
 				int sysAddress = 0;
 				int sysIndex = 0x07;
 				while (data[sysIndex] != 0)
 				{
-					sysAddress *= 10;
-					sysAddress += (data[sysIndex] & 0xF);
-					sysIndex++;
+					if (!isNumber)
+					{
+						if (data[sysIndex] >= 0x30 && data[sysIndex] <= 0x39)
+						{
+							isNumber = true;
+						}
+						else
+						{
+							sysIndex++;
+						}
+					}
+					if (isNumber)
+					{
+						sysAddress *= 10;
+						sysAddress += (data[sysIndex] & 0xF);
+						sysIndex++;
+						if (data[sysIndex] < 0x30 || data[sysIndex] > 0x39)
+							break;
+					}
 				}
 				if (sysAddress > 0 && sysAddress < 0x10000)
 				{
