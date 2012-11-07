@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int type;
 	}
 
-	public class Cartridge
+	public class Cartridge : IMedia
 	{
 		public List<CartridgeChip> chips;
 		public bool exRomPin;
@@ -23,6 +23,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int type;
 		public bool valid;
 		public int version;
+
+		private bool loaded;
 
 		public Cartridge(byte[] rom)
 		{
@@ -135,10 +137,29 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		public void Apply(Memory mem)
+		{
+			mem.cart = this;
+			mem.exRomPin = exRomPin;
+			mem.gamePin = gamePin;
+			mem.UpdateLayout();
+			loaded = true;
+		}
+
+		public bool Loaded()
+		{
+			return loaded;
+		}
+
 		public byte Read(ushort addr)
 		{
 			CartridgeChip currentChip = chips[0];
 			return currentChip.data[addr & currentChip.romMask];
+		}
+
+		public bool Ready()
+		{
+			return true;
 		}
 
 		public void Write(ushort addr, byte val)

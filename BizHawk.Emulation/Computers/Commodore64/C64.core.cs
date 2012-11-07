@@ -11,9 +11,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		// source
 		public Cartridge cart;
-		public bool cartInserted;
 		public string extension;
 		public byte[] inputFile;
+		public List<IMedia> mediaAttached = new List<IMedia>();
 
 		// chipset
 		public Cia cia0;
@@ -59,18 +59,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				case @".PRG":
 					if (inputFile.Length > 2)
-					{
-						mem.ApplyMemory(inputFile);
-						// idle vector
-						cpu.PC = (ushort)2064;
-					}
+						mediaAttached.Add(new PRGFile(inputFile, mem, cpu));
 					break;
 				case @".CRT":
 					Cartridge cart = new Cartridge(inputFile);
 					if (cart.valid)
-					{
-						mem.ApplyCartridge(cart);
-					}
+						mediaAttached.Add(cart);
 					break;
 			}
 

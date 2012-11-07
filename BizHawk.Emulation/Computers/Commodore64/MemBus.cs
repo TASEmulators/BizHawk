@@ -45,7 +45,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// storage
 		public Cartridge cart;
-		public bool cartInserted = false;
 
 		// roms
 		public byte[] basicRom;
@@ -107,27 +106,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			HardReset();
 		}
 
-		public void ApplyCartridge(Cartridge newCart)
+		public byte this[ushort index]
 		{
-			cart = newCart;
-			cartInserted = true;
-			exRomPin = cart.exRomPin;
-			gamePin = cart.gamePin;
-			UpdateLayout();
-		}
-
-		public void ApplyMemory(byte[] newMemory)
-		{
-			int address = newMemory[1];
-			address <<= 8;
-			address |= newMemory[0];
-
-			int count = newMemory.Length;
-
-			for (int i = 2; i < count; i++)
+			get
 			{
-				Write((ushort)(address & 0xFFFF), newMemory[i]);
-				address++;
+				return ram[index];
+			}
+			set
+			{
+				ram[index] = value;
 			}
 		}
 
