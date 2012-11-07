@@ -175,15 +175,7 @@
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\ControllerConfig\GamepadConfigPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig\NESConsoleButtons.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig\NESGamePad.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="config\ControllerConfig\NESConsoleButtons.cs" />
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
     </Compile>

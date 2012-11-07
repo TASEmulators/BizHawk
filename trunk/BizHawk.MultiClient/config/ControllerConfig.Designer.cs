@@ -32,22 +32,14 @@
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage13 = new System.Windows.Forms.TabPage();
-			this.NESController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage14 = new System.Windows.Forms.TabPage();
-			this.NESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage15 = new System.Windows.Forms.TabPage();
-			this.NESController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage16 = new System.Windows.Forms.TabPage();
-			this.NESController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage17 = new System.Windows.Forms.TabPage();
 			this.tabPage18 = new System.Windows.Forms.TabPage();
-			this.NESAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage19 = new System.Windows.Forms.TabPage();
-			this.NESAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage20 = new System.Windows.Forms.TabPage();
-			this.NESAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage21 = new System.Windows.Forms.TabPage();
-			this.NESAutofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.tabControl3 = new System.Windows.Forms.TabControl();
 			this.tabPage22 = new System.Windows.Forms.TabPage();
@@ -103,6 +95,16 @@
 			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
+			this.ControllerImage = new System.Windows.Forms.PictureBox();
+			this.NESController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESAutofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.label38 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabControl2.SuspendLayout();
@@ -128,6 +130,7 @@
 			this.tabControl7.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			this.tabControl8.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -152,6 +155,7 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.ControllerImage);
 			this.tabPage1.Controls.Add(this.tabControl2);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
@@ -191,13 +195,6 @@
 			this.tabPage13.Text = "Pad 1";
 			this.tabPage13.UseVisualStyleBackColor = true;
 			// 
-			// NESController1Panel
-			// 
-			this.NESController1Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESController1Panel.Name = "NESController1Panel";
-			this.NESController1Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESController1Panel.TabIndex = 0;
-			// 
 			// tabPage14
 			// 
 			this.tabPage14.Controls.Add(this.NESController2Panel);
@@ -209,13 +206,6 @@
 			this.tabPage14.Text = "Pad 2";
 			this.tabPage14.UseVisualStyleBackColor = true;
 			// 
-			// NESController2Panel
-			// 
-			this.NESController2Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESController2Panel.Name = "NESController2Panel";
-			this.NESController2Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESController2Panel.TabIndex = 0;
-			// 
 			// tabPage15
 			// 
 			this.tabPage15.Controls.Add(this.NESController3Panel);
@@ -226,13 +216,6 @@
 			this.tabPage15.Text = "Pad 3";
 			this.tabPage15.UseVisualStyleBackColor = true;
 			// 
-			// NESController3Panel
-			// 
-			this.NESController3Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESController3Panel.Name = "NESController3Panel";
-			this.NESController3Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESController3Panel.TabIndex = 0;
-			// 
 			// tabPage16
 			// 
 			this.tabPage16.Controls.Add(this.NESController4Panel);
@@ -242,13 +225,6 @@
 			this.tabPage16.TabIndex = 3;
 			this.tabPage16.Text = "Pad 4";
 			this.tabPage16.UseVisualStyleBackColor = true;
-			// 
-			// NESController4Panel
-			// 
-			this.NESController4Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESController4Panel.Name = "NESController4Panel";
-			this.NESController4Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESController4Panel.TabIndex = 0;
 			// 
 			// tabPage17
 			// 
@@ -269,13 +245,6 @@
 			this.tabPage18.Text = "Autofire 1";
 			this.tabPage18.UseVisualStyleBackColor = true;
 			// 
-			// NESAutofire1Panel
-			// 
-			this.NESAutofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESAutofire1Panel.Name = "NESAutofire1Panel";
-			this.NESAutofire1Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESAutofire1Panel.TabIndex = 0;
-			// 
 			// tabPage19
 			// 
 			this.tabPage19.Controls.Add(this.NESAutofire2Panel);
@@ -285,13 +254,6 @@
 			this.tabPage19.TabIndex = 6;
 			this.tabPage19.Text = "Autofire 2";
 			this.tabPage19.UseVisualStyleBackColor = true;
-			// 
-			// NESAutofire2Panel
-			// 
-			this.NESAutofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESAutofire2Panel.Name = "NESAutofire2Panel";
-			this.NESAutofire2Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESAutofire2Panel.TabIndex = 0;
 			// 
 			// tabPage20
 			// 
@@ -303,13 +265,6 @@
 			this.tabPage20.Text = "Autofire 3";
 			this.tabPage20.UseVisualStyleBackColor = true;
 			// 
-			// NESAutofire3Panel
-			// 
-			this.NESAutofire3Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESAutofire3Panel.Name = "NESAutofire3Panel";
-			this.NESAutofire3Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESAutofire3Panel.TabIndex = 0;
-			// 
 			// tabPage21
 			// 
 			this.tabPage21.Controls.Add(this.NESAutofire4Panel);
@@ -319,13 +274,6 @@
 			this.tabPage21.TabIndex = 8;
 			this.tabPage21.Text = "Autofire 4";
 			this.tabPage21.UseVisualStyleBackColor = true;
-			// 
-			// NESAutofire4Panel
-			// 
-			this.NESAutofire4Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESAutofire4Panel.Name = "NESAutofire4Panel";
-			this.NESAutofire4Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESAutofire4Panel.TabIndex = 0;
 			// 
 			// tabPage2
 			// 
@@ -891,6 +839,86 @@
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.OK_Click);
 			// 
+			// ControllerImage
+			// 
+			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.ControllerImage.Image = global::BizHawk.MultiClient.Properties.Resources.NES_Controller;
+			this.ControllerImage.Location = new System.Drawing.Point(485, 37);
+			this.ControllerImage.Name = "ControllerImage";
+			this.ControllerImage.Size = new System.Drawing.Size(284, 125);
+			this.ControllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.ControllerImage.TabIndex = 4;
+			this.ControllerImage.TabStop = false;
+			// 
+			// NESController1Panel
+			// 
+			this.NESController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController1Panel.Name = "NESController1Panel";
+			this.NESController1Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController1Panel.TabIndex = 0;
+			// 
+			// NESController2Panel
+			// 
+			this.NESController2Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController2Panel.Name = "NESController2Panel";
+			this.NESController2Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController2Panel.TabIndex = 0;
+			// 
+			// NESController3Panel
+			// 
+			this.NESController3Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController3Panel.Name = "NESController3Panel";
+			this.NESController3Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController3Panel.TabIndex = 0;
+			// 
+			// NESController4Panel
+			// 
+			this.NESController4Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController4Panel.Name = "NESController4Panel";
+			this.NESController4Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController4Panel.TabIndex = 0;
+			// 
+			// NESAutofire1Panel
+			// 
+			this.NESAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire1Panel.Name = "NESAutofire1Panel";
+			this.NESAutofire1Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire1Panel.TabIndex = 0;
+			// 
+			// NESAutofire2Panel
+			// 
+			this.NESAutofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire2Panel.Name = "NESAutofire2Panel";
+			this.NESAutofire2Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire2Panel.TabIndex = 0;
+			// 
+			// NESAutofire3Panel
+			// 
+			this.NESAutofire3Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire3Panel.Name = "NESAutofire3Panel";
+			this.NESAutofire3Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire3Panel.TabIndex = 0;
+			// 
+			// NESAutofire4Panel
+			// 
+			this.NESAutofire4Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire4Panel.Name = "NESAutofire4Panel";
+			this.NESAutofire4Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire4Panel.TabIndex = 0;
+			// 
+			// label38
+			// 
+			this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label38.AutoSize = true;
+			this.label38.Location = new System.Drawing.Point(13, 483);
+			this.label38.Name = "label38";
+			this.label38.Size = new System.Drawing.Size(153, 13);
+			this.label38.TabIndex = 10;
+			this.label38.Text = "* Escape clears a key mapping";
+			// 
 			// ControllerConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -898,6 +926,7 @@
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(823, 513);
 			this.ControlBox = false;
+			this.Controls.Add(this.label38);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.tabControl1);
@@ -929,7 +958,9 @@
 			this.tabControl7.ResumeLayout(false);
 			this.tabPage7.ResumeLayout(false);
 			this.tabControl8.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -1010,5 +1041,7 @@
 		private ControllerConfigPanel NESAutofire2Panel;
 		private ControllerConfigPanel NESAutofire3Panel;
 		private ControllerConfigPanel NESAutofire4Panel;
+		private System.Windows.Forms.PictureBox ControllerImage;
+		private System.Windows.Forms.Label label38;
 	}
 }
