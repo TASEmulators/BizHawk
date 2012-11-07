@@ -78,7 +78,7 @@ namespace BizHawk.MultiClient
 			{
 				FieldInfo buttonF = ControllerConfigObject.GetType().GetField(buttons[button]);
 				object field = ControllerConfigObject.GetType().GetField(buttons[button]).GetValue(ControllerConfigObject);
-				Inputs[button].Text = field.ToString();
+				Inputs[button].SetBindings(field.ToString());
 			}
 		}
 
