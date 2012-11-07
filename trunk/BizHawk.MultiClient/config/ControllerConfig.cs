@@ -42,10 +42,30 @@ namespace BizHawk.MultiClient
 			GBController1Panel.LoadSettings(Global.Config.GBController[0]);
 			GBAutofire1Panel.LoadSettings(Global.Config.GBAutoController[0]);
 
+			GenesisController1Panel.LoadSettings(Global.Config.GenesisController[0]);
+			GenesisAutofire1Panel.LoadSettings(Global.Config.GenesisAutoController[0]);
+
 			SMSController1Panel.LoadSettings(Global.Config.SMSController[0]);
 			SMSController2Panel.LoadSettings(Global.Config.SMSController[1]);
 			SMSAutofire1Panel.LoadSettings(Global.Config.SMSAutoController[0]);
 			SMSAutofire2Panel.LoadSettings(Global.Config.SMSAutoController[1]);
+
+			PCEController1Panel.LoadSettings(Global.Config.PCEController[0]);
+			PCEController2Panel.LoadSettings(Global.Config.PCEController[1]);
+			PCEController3Panel.LoadSettings(Global.Config.PCEController[2]);
+			PCEController4Panel.LoadSettings(Global.Config.PCEController[3]);
+			PCEController5Panel.LoadSettings(Global.Config.PCEController[4]);
+			PCEAutofire1Panel.LoadSettings(Global.Config.PCEAutoController[0]);
+			PCEAutofire2Panel.LoadSettings(Global.Config.PCEAutoController[1]);
+			PCEAutofire3Panel.LoadSettings(Global.Config.PCEAutoController[2]);
+			PCEAutofire4Panel.LoadSettings(Global.Config.PCEAutoController[3]);
+			PCEAutofire5Panel.LoadSettings(Global.Config.PCEAutoController[4]);
+
+
+			Atari2600Controller1Panel.LoadSettings(Global.Config.Atari2600Controller[0]);
+			Atari2600Controller2Panel.LoadSettings(Global.Config.Atari2600Controller[1]);
+			Atari2600Autofire1Panel.LoadSettings(Global.Config.Atari2600AutoController[0]);
+			Atari2600Autofire2Panel.LoadSettings(Global.Config.Atari2600AutoController[1]);
 
 			SetAutoTab(true);
 		}
