@@ -646,6 +646,51 @@ namespace BizHawk.MultiClient.GBtools
 			bmpViewDetails.Refresh();
 		}
 
+		unsafe void SpriteMouseover(int x, int y)
+		{
+			bool tall = lcdc.Bit(2);
+			x /= 8;
+			y /= 8;
+			bmpViewDetails.ChangeBitmapSize(8, tall ? 16 : 8);
+			if (bmpViewDetails.Height != bmpViewDetails.bmp.Height * 8)
+				bmpViewDetails.Height = bmpViewDetails.bmp.Height * 8;
+			var sb = new StringBuilder();
+
+			byte* oament = (byte*)oam + 4 * x;
+			int sy = oament[0];
+			int sx = oament[1];
+			int tilenum = oament[2];
+			int flags = oament[3];
+			bool hflip = flags.Bit(5);
+			bool vflip = flags.Bit(6);
+			if (tall)
+				tilenum = vflip ? tilenum | 1 : tilenum & ~1;
+			int tileoffs = tilenum * 16;
+			sb.AppendLine(string.Format("Sprite #{0} @{1:x4}", x, 4 * x + 0xfe00));
+			sb.AppendLine(string.Format("  (x,y) = ({0},{1})", sx, sy));
+			var lockdata = bmpViewDetails.bmp.LockBits(new Rectangle(0, 0, 8, tall ? 16 : 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			if (cgb)
+			{
+				sb.AppendLine(string.Format("  Tile #{0} @{2}:{1:x4}", y == 1 ? tilenum ^ 1 : tilenum, tileoffs + 0x8000, flags.Bit(3) ? 1 : 0));
+				sb.AppendLine(string.Format("  Palette {0}", flags & 7));
+				DrawTileHV((byte*)vram + tileoffs + (flags.Bit(3) ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)sppal + 4 * (flags & 7), hflip, vflip);
+				if (tall)
+					DrawTileHV((byte*)vram + (tileoffs ^ 16) + (flags.Bit(3) ? 8192 : 0), (int*)(lockdata.Scan0 + lockdata.Stride * 8), lockdata.Stride / sizeof(int), (int*)sppal + 4 * (flags & 7), hflip, vflip);
+			}
+			else
+			{
+				sb.AppendLine(string.Format("  Tile #{0} @{1:x4}", y == 1 ? tilenum ^ 1 : tilenum, tileoffs + 0x8000));
+				sb.AppendLine(string.Format("  Palette {0}", flags.Bit(4) ? 1 : 0));
+				DrawTileHV((byte*)vram + tileoffs, (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)sppal + (flags.Bit(4) ? 4 : 0), hflip, vflip);
+				if (tall)
+					DrawTileHV((byte*)vram + (tileoffs ^ 16), (int*)(lockdata.Scan0 + lockdata.Stride * 8), lockdata.Stride / sizeof(int), (int*)sppal + 4 * (flags.Bit(4) ? 4 : 0), hflip, vflip);
+			}
+			sb.AppendLine(string.Format("  Flags {0}{1}{2}", hflip ? 'H' : ' ', vflip ? 'V' : ' ', flags.Bit(7) ? 'P' : ' '));
+			bmpViewDetails.bmp.UnlockBits(lockdata);
+			labelDetails.Text = sb.ToString();
+			bmpViewDetails.Refresh();
+		}
+
 		private void bmpViewBG_MouseEnter(object sender, EventArgs e)
 		{
 			SaveFreeze();
@@ -761,7 +806,7 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewOAM_MouseMove(object sender, MouseEventArgs e)
 		{
-
+			SpriteMouseover(e.X, e.Y);
 		}
 
 		#endregion
