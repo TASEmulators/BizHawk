@@ -548,6 +548,65 @@ namespace BizHawk.MultiClient.GBtools
 			bmpViewDetails.Refresh();
 		}
 
+		unsafe void PaletteMouseover(int x, int y, bool sprite)
+		{
+			bmpViewDetails.ChangeBitmapSize(8, 10);
+			if (bmpViewDetails.Height != 80)
+				bmpViewDetails.Height = 80;
+			var sb = new StringBuilder();
+			x /= 16;
+			y /= 16;
+			int *pal = (int*)(sprite ? sppal : bgpal) + x * 4;
+			int color = pal[y];
+
+			sb.AppendLine(string.Format("Palette {0}", x));
+			sb.AppendLine(string.Format("Color {0}", y));
+			sb.AppendLine(string.Format("(R,G,B) = ({0},{1},{2})", color >> 16 & 255, color >> 8 & 255, color & 255));
+
+			var lockdata = bmpViewDetails.bmp.LockBits(new Rectangle(0, 0, 8, 10), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			int* dest = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+			
+			for (int py = 0; py < 10; py++)
+			{
+				for (int px = 0; px < 8; px++)
+				{
+					if (py < 8)
+						*dest++ = color;
+					else
+						*dest++ = pal[px / 2];
+				}
+				dest -= 8;
+				dest += pitch;
+			}
+			bmpViewDetails.bmp.UnlockBits(lockdata);
+			labelDetails.Text = sb.ToString();
+			bmpViewDetails.Refresh();
+		}
+
+		unsafe void TileMouseover(int x, int y, bool secondbank)
+		{
+			// todo: draw with a specific palette
+			bmpViewDetails.ChangeBitmapSize(8, 8);
+			if (bmpViewDetails.Height != 64)
+				bmpViewDetails.Height = 64;
+			var sb = new StringBuilder();
+			x /= 8;
+			y /= 8;
+			int tileindex = y * 16 + x;
+			int tileoffs = tileindex * 16;
+			if (cgb)
+				sb.AppendLine(string.Format("Tile #{0} @{2}:{1:x4}", tileindex, tileoffs + 0x8000, secondbank ? 1 : 0));
+			else
+				sb.AppendLine(string.Format("Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
+
+			var lockdata = bmpViewDetails.bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			DrawTile((byte*)vram + tileoffs + (secondbank ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)bgpal);
+			bmpViewDetails.bmp.UnlockBits(lockdata);
+			labelDetails.Text = sb.ToString();
+			bmpViewDetails.Refresh();
+		}
+
 		unsafe void TilemapMouseover(int x, int y, bool win)
 		{
 			bmpViewDetails.ChangeBitmapSize(8, 8);
@@ -632,23 +691,29 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewTiles1_MouseMove(object sender, MouseEventArgs e)
 		{
-
+			TileMouseover(e.X, e.Y, false);
 		}
 
 		private void bmpViewTiles2_MouseEnter(object sender, EventArgs e)
 		{
+			if (!cgb)
+				return;
 			SaveFreeze();
 			groupBoxDetails.Text = "Details - Tiles";
 		}
 
 		private void bmpViewTiles2_MouseLeave(object sender, EventArgs e)
 		{
+			if (!cgb)
+				return;
 			LoadFreeze();
 		}
 
 		private void bmpViewTiles2_MouseMove(object sender, MouseEventArgs e)
 		{
-
+			if (!cgb)
+				return;
+			TileMouseover(e.X, e.Y, true);
 		}
 
 		private void bmpViewBGPal_MouseEnter(object sender, EventArgs e)
@@ -662,9 +727,9 @@ namespace BizHawk.MultiClient.GBtools
 			LoadFreeze();
 		}
 
-		private void bmpViewBGPal_Move(object sender, EventArgs e)
+		private void bmpViewBGPal_MouseMove(object sender, MouseEventArgs e)
 		{
-
+			PaletteMouseover(e.X, e.Y, false);
 		}
 
 		private void bmpViewSPPal_MouseEnter(object sender, EventArgs e)
@@ -680,7 +745,7 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewSPPal_MouseMove(object sender, MouseEventArgs e)
 		{
-
+			PaletteMouseover(e.X, e.Y, true);
 		}
 
 		private void bmpViewOAM_MouseEnter(object sender, EventArgs e)
@@ -700,5 +765,6 @@ namespace BizHawk.MultiClient.GBtools
 		}
 
 		#endregion
+
 	}
 }
