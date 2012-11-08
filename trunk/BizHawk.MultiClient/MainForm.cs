@@ -877,6 +877,7 @@ namespace BizHawk.MultiClient
 			gbControls.BindMulti("B", Global.Config.GBController[0].B);
 			gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
 			gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
+			gbControls.BindMulti("Power", Global.Config.GBController[0].Power);
 			Global.GBControls = gbControls;
 
 			var agbControls = new AutofireController(Gameboy.GbController);
