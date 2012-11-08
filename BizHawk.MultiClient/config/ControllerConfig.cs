@@ -84,6 +84,7 @@ namespace BizHawk.MultiClient
 			TI83ControllerPanel.InputSize = 110;
 			TI83ControllerPanel.LabelPadding = 5;
 			TI83ControllerPanel.ColumnWidth = 170;
+			TI83ControllerPanel.LabelWidth = 50;
 			TI83ControllerPanel.LoadSettings(Global.Config.TI83Controller[0]);
 
 			C64Controller1Panel.LoadSettings(Global.Config.C64Joysticks[0]);

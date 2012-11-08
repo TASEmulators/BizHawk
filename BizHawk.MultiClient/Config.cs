@@ -737,6 +737,10 @@ namespace BizHawk.MultiClient
 	{
 		public string Reset = "";
 		public string Power = "";
+		public string FDS_Eject = "";
+		public string FDS_Insert = "";
+		public string VS_Coin_1 = "";
+		public string VS_Coin_2 = "";
 	}
 
 	public class SMSConsoleButtonTemplate

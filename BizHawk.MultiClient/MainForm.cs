@@ -849,6 +849,9 @@ namespace BizHawk.MultiClient
 
 			nesControls.BindMulti("Reset", Global.Config.NESConsoleButtons.Reset);
 			nesControls.BindMulti("Power", Global.Config.NESConsoleButtons.Power);
+			nesControls.BindMulti("FDS Eject", Global.Config.NESConsoleButtons.FDS_Eject);
+			nesControls.BindMulti("VS Coin 1", Global.Config.NESConsoleButtons.VS_Coin_1);
+			nesControls.BindMulti("VS Coin 2", Global.Config.NESConsoleButtons.VS_Coin_2);
 
 			Global.NESControls = nesControls;
 

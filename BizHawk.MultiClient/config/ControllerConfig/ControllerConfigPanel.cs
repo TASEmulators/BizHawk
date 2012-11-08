@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
 		public int Spacing = 30;
 		public int InputSize = 200;
 		public int ColumnWidth = 220;
+		public int LabelWidth = 100;
 
 		protected List<InputWidget> Inputs = new List<InputWidget>();
 		protected List<Label> Labels = new List<Label>();
@@ -91,13 +92,6 @@ namespace BizHawk.MultiClient
 
 		private void Startup()
 		{
-			if (buttons.Count > 30)
-			{
-				int xx = 0;
-				xx++;
-				int yy = xx;
-				yy++;
-			}
 			int x = InputMarginLeft;
 			int y = MarginTop - Spacing; ;
 			for (int i = 0; i < buttons.Count; i++)
@@ -118,8 +112,8 @@ namespace BizHawk.MultiClient
 
 				Label l = new Label();
 				l.Location = new Point(x + InputSize + LabelPadding, y + 3);
-				l.Text = buttons[i].Trim();
-				l.Width = 50;
+				l.Text = buttons[i].Replace('_', ' ').Trim();
+				l.Width = LabelWidth;
 				Controls.Add(l);
 				Labels.Add(l);
 			}
