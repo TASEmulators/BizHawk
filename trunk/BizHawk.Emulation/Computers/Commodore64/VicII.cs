@@ -492,6 +492,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool displayEnabled;
 		public bool hBlank;
 		public bool idle;
+		public int[] pixelBuffer = new int[12];
+		public int pixelBufferIndex = 0;
 		public int rasterInterruptLine;
 		public int rasterLineLeft;
 		public int rasterOffset;
@@ -503,6 +505,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte[,] spriteData;
 		public int spriteFetchCycle;
 		public int spriteFetchIndex;
+		public bool spriteForeground;
 		public ushort[] spritePointers;
 		public int spriteFetchStartCycle;
 		public VicIITask task;
@@ -623,7 +626,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				mem.VicRead(0x3FFF);
 		}
 
-
 		public void HardReset()
 		{
 			idle = true;
@@ -665,7 +667,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				refreshAddress = (refreshAddress - 1) & 0xFF;
 				refreshAddress |= 0x3F00;
 			}
-			else if (cycle >= 16 && cycle < 56)
+			else if (cycle >= 15 && cycle < 55)
 			{
 				// screen memory c-access
 				if (badLine)
@@ -674,10 +676,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					colorMemory[regs.VMLI] = colorDataBus;
 					characterMemory[regs.VMLI] = characterDataBus;
 				}
+				signal.VicAEC = !badLine;
 			}
-			else if (cycle == 55)
+			else if (cycle == 56)
 			{
-				//signal.VicAEC = true;
+				signal.VicAEC = true;
 			}
 			else if (cycle == 57)
 			{
@@ -772,7 +775,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			for (int i = 0; i < 8; i++)
 			{
 				// draw screen memory if needed
-				if (!idle && cycle >= 16 && cycle < 56)
+				if (!idle && cycle >= 15 && cycle < 55)
 				{
 					// todo: implement XSCROLL properly
 					// comparing to (rasterOffsetX & 0x7) seems to align
@@ -809,14 +812,35 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						borderOnMain = false;
 				}
 
-				// render pixel
+				// send pixel to bitmap
 				if (visibleRenderX && visibleRenderY)
 				{
 					if (borderOnMain || borderOnVertical)
+					{
 						WritePixel(regs.EC);
+					}
 					else
-						WritePixel(Plotter());
+					{
+						WritePixel(pixelBuffer[pixelBufferIndex]);
+					}
 				}
+
+				// process 12 pixel delay
+				if (idle)
+				{
+					pixelBuffer[pixelBufferIndex] = regs.BxC[0];
+				}
+				else
+				{
+					pixelBuffer[pixelBufferIndex] = Plotter();
+				}
+				pixelBufferIndex++;
+				if (pixelBufferIndex == 12)
+				{
+					pixelBufferIndex = 0;
+				}
+
+				// advance raster X
 				characterColumn++;
 				rasterOffset++;
 				rasterOffsetX++;
@@ -844,8 +868,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				byte charData = bitmapData;
 				charData <<= characterColumn;
 				if ((charData & 0x80) != 0x00)
+				{
+					spriteForeground = true;
 					return colorData;
+				}
 			}
+			spriteForeground = false;
 			return regs.BxC[0];
 		}
 
@@ -865,10 +893,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					switch (charData)
 					{
 						case 1:
+							spriteForeground = false;
 							return regs.BxC[1];
 						case 2:
+							spriteForeground = true;
 							return regs.BxC[2];
 						case 3:
+							spriteForeground = true;
 							return colorData & 0x07;
 					}
 				}
@@ -877,6 +908,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					return Plot000();
 				}
 			}
+			spriteForeground = false;
 			return regs.BxC[0];
 		}
 
@@ -888,8 +920,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				byte charData = bitmapData;
 				charData <<= characterColumn;
 				if ((charData & 0x80) != 0x00)
+				{
+					spriteForeground = true;
 					return characterData >> 4;
+				}
 			}
+			spriteForeground = false;
 			return characterData & 0xF;
 		}
 
@@ -907,13 +943,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				switch (charData)
 				{
 					case 1:
+						spriteForeground = false;
 						return characterData & 0xF;
 					case 2:
+						spriteForeground = true;
 						return characterData >> 4;
 					case 3:
+						spriteForeground = true;
 						return colorData & 0xF;
 				}
 			}
+			spriteForeground = false;
 			return regs.BxC[0];
 		}
 
@@ -925,26 +965,33 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				byte charData = bitmapData;
 				charData <<= characterColumn;
 				if ((charData & 0x80) != 0x00)
+				{
+					spriteForeground = true;
 					return colorData;
+				}
 				else
+				{
+					spriteForeground = false;
 					return regs.BxC[characterData >> 6];
+				}
 			}
+			spriteForeground = false;
 			return regs.BxC[0];
 		}
 
-		// invalid mode
+		// invalid mode (TODO: implement)
 		private int Plot101()
 		{
 			return regs.BxC[0];
 		}
 
-		// invalid mode
+		// invalid mode (TODO: implement)
 		private int Plot110()
 		{
 			return regs.BxC[0];
 		}
 
-		// invalid mode
+		// invalid mode (TODO: implement)
 		private int Plot111()
 		{
 			return regs.BxC[0];
