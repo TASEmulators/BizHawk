@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public interface IMedia
 	{
-		void Apply(Memory mem);
+		void Apply();
 		bool Loaded();
 		bool Ready();
 	}

@@ -228,7 +228,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = sid.regs[addr & 0x1F];
 						break;
 					case MemoryDesignation.ColorRam:
-						result = colorRam[addr & 0x03FF];
+						result = (byte)(colorRam[addr & 0x03FF] | (busData & 0xF0));
 						break;
 					case MemoryDesignation.Cia0:
 						result = cia0.regs[addr & 0x0F];
@@ -249,10 +249,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = ram[addr];
 						break;
 					case MemoryDesignation.ROMHi:
-						result = cart.chips[0].data[addr & cart.chips[0].romMask];
+						result = cart.chips[cart.bank].data[addr & cart.chips[cart.bank].romMask];
 						break;
 					case MemoryDesignation.ROMLo:
-						result = cart.chips[0].data[addr & cart.chips[0].romMask];
+						result = cart.chips[cart.bank].data[addr & cart.chips[cart.bank].romMask];
 						break;
 					default:
 						return 0;
@@ -303,7 +303,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = cia1.Read(addr);
 						break;
 					case MemoryDesignation.Expansion0:
-						result = 0;
+						if (cart != null)
+							result = cart.ReadPort(addr);
+						else
+							result = 0;
 						break;
 					case MemoryDesignation.Expansion1:
 						result = 0;
@@ -455,6 +458,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void WipeMemory()
 		{
+			// memory is striped in sections 00/FF
 			for (int i = 0; i < 0x10000; i += 0x80)
 			{
 				for (int j = 0; j < 0x40; j++)
@@ -501,6 +505,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						cia1.Write(addr, val);
 						break;
 					case MemoryDesignation.Expansion0:
+						if (cart != null)
+							cart.WritePort(addr, val);
 						break;
 					case MemoryDesignation.Expansion1:
 						break;

@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			data = file;
 		}
 
-		public void Apply(Memory mem)
+		public void Apply()
 		{
 			int address = data[1];
 			address <<= 8;
@@ -33,24 +33,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				mem.Write((ushort)(address & 0xFFFF), data[i]);
 				address++;
 			}
-
-			//// "RUN"
-			//mem[0x04F0] = 0x12;
-			//mem[0x04F1] = 0x15;
-			//mem[0x04F2] = 0x0E;
-			
-			//// set cursor to be right after run (3, 6)
-			//mem[0x00C9] = 0x06;
-			//mem[0x00CA] = 0x03;
-			//mem[0x00D3] = 0x03;
-			//mem[0x00D6] = 0x06;
-
-			//// set keyboard buffer
-			//mem[0x00C5] = 0x0D;
-			//mem[0x00C6] = 0x02;
-			//mem[0x00CB] = 0x0D;
-			//mem[0x0277] = 0x0D;
-			//mem[0x0278] = 0x0D;
 
 			if (data[0x06] == 0x9E)
 			{

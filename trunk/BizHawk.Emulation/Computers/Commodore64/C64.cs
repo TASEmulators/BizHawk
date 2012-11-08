@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				if (!media.Loaded() && media.Ready())
 				{
-					media.Apply(mem);
+					media.Apply();
 				}
 			}
 
