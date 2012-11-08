@@ -1053,7 +1053,7 @@ namespace BizHawk.MultiClient
 			autofireC64Controls.BindMulti("P2 Down", Global.Config.C64AutoJoysticks[1].Down);
 			autofireC64Controls.BindMulti("P2 Button", Global.Config.C64AutoJoysticks[1].Button);
 
-			Global.AutofireAtari2600Controls = autofireC64Controls;
+			Global.AutofireCommodore64Controls = autofireC64Controls;
 		}
 
 		private static void FormDragEnter(object sender, DragEventArgs e)
