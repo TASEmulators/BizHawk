@@ -900,6 +900,7 @@ namespace BizHawk.MultiClient
 			genControls.BindMulti("P1 B", Global.Config.GenesisController[0].B);
 			genControls.BindMulti("P1 C", Global.Config.GenesisController[0].C);
 			genControls.BindMulti("P1 Start", Global.Config.GenesisController[0].Start);
+			genControls.BindMulti("Reset", Global.Config.GenesisConsoleButtons.Reset);
 			Global.GenControls = genControls;
 
 			var agenControls = new AutofireController(Genesis.GenesisController);

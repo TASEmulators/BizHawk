@@ -59,6 +59,7 @@ namespace BizHawk.MultiClient
 			NESConsoleButtons = new NESConsoleButtonTemplate();
 			SNESConsoleButtons = new NESConsoleButtonTemplate();
 			SMSConsoleButtons = new SMSConsoleButtonTemplate();
+			GenesisConsoleButtons = new GenConsoleButtonTemplate();
 		}
 
 		// Directories
@@ -650,6 +651,7 @@ namespace BizHawk.MultiClient
 		// Genesis Settings
 		public GenControllerTemplate[] GenesisController = new GenControllerTemplate[1];
 		public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
+		public GenConsoleButtonTemplate GenesisConsoleButtons = new GenConsoleButtonTemplate();
 
 		//Atari 2600 Settings
 		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[2];
@@ -732,6 +734,11 @@ namespace BizHawk.MultiClient
 	{
 		public string Reset = "C";
 		public string Pause = "V, X1 Start";
+	}
+
+	public class GenConsoleButtonTemplate
+	{
+		public string Reset = "";
 	}
 
 	public class SMSControllerTemplate
@@ -865,8 +872,8 @@ namespace BizHawk.MultiClient
 		public string Right;
 		public string A;
 		public string B;
-		public string Start;
 		public string Select;
+		public string Start;
 		public bool Enabled;
 		public NESControllerTemplate() { }
 		public NESControllerTemplate(bool defaults)
