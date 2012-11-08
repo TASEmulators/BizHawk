@@ -588,77 +588,25 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			bitmapData = mem.VicRead((ushort)gAddress);
 		}
 
-		// multicolor text mode (same as standard text mode)
-		public void Fetch001C()
-		{
-			Fetch000C();
-		}
-		public void Fetch001G()
-		{
-			Fetch000G();
-		}
-
 		// standard bitmap mode
-		public void Fetch010C()
-		{
-			Fetch000C();
-		}
 		public void Fetch010G()
 		{
 			int gAddress = ((regs.CB & 0x4) << 11) | (regs.VC << 3) | regs.RC;
 			bitmapData = mem.VicRead((ushort)gAddress);
 		}
 
-		// multicolor bitmap mode (same as standard bitmap mode)
-		public void Fetch011C()
-		{
-			Fetch000C();
-		}
-		public void Fetch011G()
-		{
-			Fetch010G();
-		}
-
 		// extra color text mode
-		public void Fetch100C()
-		{
-			Fetch000C();
-		}
 		public void Fetch100G()
 		{
 			int gAddress = (regs.CB << 11) | ((characterData & 0x3F) << 3) | regs.RC;
 			bitmapData = mem.VicRead((ushort)gAddress);
 		}
 
-		// invalid text mode 101
-		public void Fetch101C()
-		{
-			Fetch000C();
-		}
-		public void Fetch101G()
-		{
-			Fetch100G();
-		}
-
 		// invalid bitmap mode 110
-		public void Fetch110C()
-		{
-			Fetch000C();
-		}
 		public void Fetch110G()
 		{
 			int gAddress = ((regs.CB & 0x4) << 11) | ((regs.VC & 0x33F) << 3) | regs.RC;
 			bitmapData = mem.VicRead((ushort)gAddress);
-		}
-
-		// invalid bitmap mode 111
-		public void Fetch111C()
-		{
-			Fetch000C();
-		}
-		public void Fetch111G()
-		{
-			Fetch110G();
 		}
 
 		// idle fetch
@@ -1048,44 +996,44 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 			else if (!regs.ECM && !regs.BMM && regs.MCM)
 			{
-				FetchC = Fetch001C;
-				FetchG = Fetch001G;
+				FetchC = Fetch000C;
+				FetchG = Fetch000G;
 				Plotter = Plot001;
 			}
 			else if (!regs.ECM && regs.BMM && !regs.MCM)
 			{
-				FetchC = Fetch010C;
+				FetchC = Fetch000C;
 				FetchG = Fetch010G;
 				Plotter = Plot010;
 			}
 			else if (!regs.ECM && regs.BMM && regs.MCM)
 			{
-				FetchC = Fetch011C;
-				FetchG = Fetch011G;
+				FetchC = Fetch000C;
+				FetchG = Fetch010G;
 				Plotter = Plot011;
 			}
 			else if (regs.ECM && !regs.BMM && !regs.MCM)
 			{
-				FetchC = Fetch100C;
+				FetchC = Fetch000C;
 				FetchG = Fetch100G;
 				Plotter = Plot100;
 			}
 			else if (regs.ECM && !regs.BMM && regs.MCM)
 			{
-				FetchC = Fetch101C;
-				FetchG = Fetch101G;
+				FetchC = Fetch000C;
+				FetchG = Fetch100G;
 				Plotter = Plot101;
 			}
 			else if (regs.ECM && regs.BMM && !regs.MCM)
 			{
-				FetchC = Fetch110C;
+				FetchC = Fetch000C;
 				FetchG = Fetch110G;
 				Plotter = Plot110;
 			}
 			else
 			{
-				FetchC = Fetch111C;
-				FetchG = Fetch111G;
+				FetchC = Fetch000C;
+				FetchG = Fetch110G;
 				Plotter = Plot111;
 			}
 		}
