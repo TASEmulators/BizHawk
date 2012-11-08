@@ -9,6 +9,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class  C64 : IEmulator
 	{
+		// input
+		private IController controller;
+
 		// source
 		public Cartridge cart;
 		public string extension;
@@ -18,6 +21,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// chipset
 		public Cia cia0;
 		public Cia cia1;
+		public byte cia0portAData;
+		public byte cia0portBData;
 		public MOS6502X cpu;
 		public Memory mem;
 		public Sid sid;
@@ -91,6 +96,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void PokeMemoryInt(int addr, byte val)
 		{
 			// todo
+		}
+
+		public void PollInput()
+		{
+			cia0portAData = 0xFF;
+			cia0portBData = 0xFF;
+
+			if (Controller["P1 Up"]) cia0portBData &= 0xFE;
+			if (Controller["P1 Down"]) cia0portBData &= 0xFD;
+			if (Controller["P1 Left"]) cia0portBData &= 0xFB;
+			if (Controller["P1 Right"]) cia0portBData &= 0xF7;
+			if (Controller["P1 Button"]) cia0portBData &= 0xEF;
+			if (Controller["P2 Up"]) cia0portAData &= 0xFE;
+			if (Controller["P2 Down"]) cia0portAData &= 0xFD;
+			if (Controller["P2 Left"]) cia0portAData &= 0xFB;
+			if (Controller["P2 Right"]) cia0portAData &= 0xF7;
+			if (Controller["P2 Button"]) cia0portAData &= 0xEF;
 		}
 
 		public byte ReadMemory(ushort addr)
