@@ -827,7 +827,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				if (!idle && cycle >= 16 && cycle < 56)
 				{
 					// todo: implement XSCROLL properly
-					if (regs.XSCROLL == (rasterOffsetX & 0x7))
+					// comparing to (rasterOffsetX & 0x7) seems to align
+					// properly but smooth scrolling is not possible
+					// comparing to i works but then the screen
+					// is not aligned anymore...
+					if (regs.XSCROLL == i)
 					{
 						characterColumn = 0;
 						characterData = characterMemory[regs.VMLI];
