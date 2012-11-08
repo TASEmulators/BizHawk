@@ -276,6 +276,11 @@
 			this.INTVSaveRAMDescription = new System.Windows.Forms.Label();
 			this.INTVSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPageC64 = new System.Windows.Forms.TabPage();
+			this.C64BrowseFirmwares = new System.Windows.Forms.Button();
+			this.C64FirmwaresBox = new System.Windows.Forms.TextBox();
+			this.C64CheatsDescription = new System.Windows.Forms.Label();
+			this.C64BrowseCheats = new System.Windows.Forms.Button();
+			this.C64CheatsBox = new System.Windows.Forms.TextBox();
 			this.C64ScreenshotsDescription = new System.Windows.Forms.Label();
 			this.BrowseC64Screenshots = new System.Windows.Forms.Button();
 			this.C64ScreenshotsBox = new System.Windows.Forms.TextBox();
@@ -304,12 +309,7 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.C64CheatsDescription = new System.Windows.Forms.Label();
-			this.C64BrowseCheats = new System.Windows.Forms.Button();
-			this.C64CheatsBox = new System.Windows.Forms.TextBox();
-			this.C64BrowseFirmwares = new System.Windows.Forms.Button();
-			this.C64FirmwaresBox = new System.Windows.Forms.TextBox();
-			this.C64FirmwaresDescription = new System.Windows.Forms.Label();
+			this.C64FirmwaresDescription = new System.Windows.Forms.LinkLabel();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage12.SuspendLayout();
@@ -2733,12 +2733,12 @@
 			this.AtariSaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.AtariSaveRAMBox.TabIndex = 34;
 			// 
-			// BrowseAtariROMs
+			// AtariBrowseROMs
 			// 
 			this.AtariBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.AtariBrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("BrowseAtariROMs.Image")));
+			this.AtariBrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("AtariBrowseROMs.Image")));
 			this.AtariBrowseROMs.Location = new System.Drawing.Point(442, 59);
-			this.AtariBrowseROMs.Name = "BrowseAtariROMs";
+			this.AtariBrowseROMs.Name = "AtariBrowseROMs";
 			this.AtariBrowseROMs.Size = new System.Drawing.Size(26, 23);
 			this.AtariBrowseROMs.TabIndex = 31;
 			this.AtariBrowseROMs.UseVisualStyleBackColor = true;
@@ -3048,6 +3048,56 @@
 			this.tabPageC64.Text = "C64";
 			this.tabPageC64.UseVisualStyleBackColor = true;
 			// 
+			// C64BrowseFirmwares
+			// 
+			this.C64BrowseFirmwares.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.C64BrowseFirmwares.Image = ((System.Drawing.Image)(resources.GetObject("C64BrowseFirmwares.Image")));
+			this.C64BrowseFirmwares.Location = new System.Drawing.Point(442, 179);
+			this.C64BrowseFirmwares.Name = "C64BrowseFirmwares";
+			this.C64BrowseFirmwares.Size = new System.Drawing.Size(26, 23);
+			this.C64BrowseFirmwares.TabIndex = 95;
+			this.C64BrowseFirmwares.UseVisualStyleBackColor = true;
+			this.C64BrowseFirmwares.Click += new System.EventHandler(this.C64BrowseFirmwares_Click);
+			// 
+			// C64FirmwaresBox
+			// 
+			this.C64FirmwaresBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.C64FirmwaresBox.Location = new System.Drawing.Point(13, 179);
+			this.C64FirmwaresBox.Name = "C64FirmwaresBox";
+			this.C64FirmwaresBox.Size = new System.Drawing.Size(421, 20);
+			this.C64FirmwaresBox.TabIndex = 94;
+			// 
+			// C64CheatsDescription
+			// 
+			this.C64CheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.C64CheatsDescription.AutoSize = true;
+			this.C64CheatsDescription.Location = new System.Drawing.Point(474, 153);
+			this.C64CheatsDescription.Name = "C64CheatsDescription";
+			this.C64CheatsDescription.Size = new System.Drawing.Size(40, 13);
+			this.C64CheatsDescription.TabIndex = 55;
+			this.C64CheatsDescription.Text = "Cheats";
+			// 
+			// C64BrowseCheats
+			// 
+			this.C64BrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.C64BrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("C64BrowseCheats.Image")));
+			this.C64BrowseCheats.Location = new System.Drawing.Point(442, 149);
+			this.C64BrowseCheats.Name = "C64BrowseCheats";
+			this.C64BrowseCheats.Size = new System.Drawing.Size(26, 23);
+			this.C64BrowseCheats.TabIndex = 57;
+			this.C64BrowseCheats.UseVisualStyleBackColor = true;
+			this.C64BrowseCheats.Click += new System.EventHandler(this.C64BrowseCheats_Click);
+			// 
+			// C64CheatsBox
+			// 
+			this.C64CheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.C64CheatsBox.Location = new System.Drawing.Point(13, 149);
+			this.C64CheatsBox.Name = "C64CheatsBox";
+			this.C64CheatsBox.Size = new System.Drawing.Size(421, 20);
+			this.C64CheatsBox.TabIndex = 56;
+			// 
 			// C64ScreenshotsDescription
 			// 
 			this.C64ScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -3328,65 +3378,16 @@
 			this.label1.TabIndex = 204;
 			this.label1.Text = "Special Commands";
 			// 
-			// C64CheatsDescription
-			// 
-			this.C64CheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.C64CheatsDescription.AutoSize = true;
-			this.C64CheatsDescription.Location = new System.Drawing.Point(474, 153);
-			this.C64CheatsDescription.Name = "C64CheatsDescription";
-			this.C64CheatsDescription.Size = new System.Drawing.Size(40, 13);
-			this.C64CheatsDescription.TabIndex = 55;
-			this.C64CheatsDescription.Text = "Cheats";
-			// 
-			// C64BrowseCheats
-			// 
-			this.C64BrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.C64BrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("C64BrowseCheats.Image")));
-			this.C64BrowseCheats.Location = new System.Drawing.Point(442, 149);
-			this.C64BrowseCheats.Name = "C64BrowseCheats";
-			this.C64BrowseCheats.Size = new System.Drawing.Size(26, 23);
-			this.C64BrowseCheats.TabIndex = 57;
-			this.C64BrowseCheats.UseVisualStyleBackColor = true;
-			this.C64BrowseCheats.Click += new System.EventHandler(this.C64BrowseCheats_Click);
-			// 
-			// C64CheatsBox
-			// 
-			this.C64CheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.C64CheatsBox.Location = new System.Drawing.Point(13, 149);
-			this.C64CheatsBox.Name = "C64CheatsBox";
-			this.C64CheatsBox.Size = new System.Drawing.Size(421, 20);
-			this.C64CheatsBox.TabIndex = 56;
-			// 
-			// C64BrowseFirmwares
-			// 
-			this.C64BrowseFirmwares.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.C64BrowseFirmwares.Image = ((System.Drawing.Image)(resources.GetObject("C64BrowseFirmwares.Image")));
-			this.C64BrowseFirmwares.Location = new System.Drawing.Point(442, 179);
-			this.C64BrowseFirmwares.Name = "C64BrowseFirmwares";
-			this.C64BrowseFirmwares.Size = new System.Drawing.Size(26, 23);
-			this.C64BrowseFirmwares.TabIndex = 95;
-			this.C64BrowseFirmwares.UseVisualStyleBackColor = true;
-			this.C64BrowseFirmwares.Click += new System.EventHandler(this.C64BrowseFirmwares_Click);
-			// 
-			// C64FirmwaresBox
-			// 
-			this.C64FirmwaresBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.C64FirmwaresBox.Location = new System.Drawing.Point(13, 179);
-			this.C64FirmwaresBox.Name = "C64FirmwaresBox";
-			this.C64FirmwaresBox.Size = new System.Drawing.Size(421, 20);
-			this.C64FirmwaresBox.TabIndex = 94;
-			// 
 			// C64FirmwaresDescription
 			// 
-			this.C64FirmwaresDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.C64FirmwaresDescription.AutoSize = true;
 			this.C64FirmwaresDescription.Location = new System.Drawing.Point(474, 183);
 			this.C64FirmwaresDescription.Name = "C64FirmwaresDescription";
 			this.C64FirmwaresDescription.Size = new System.Drawing.Size(54, 13);
-			this.C64FirmwaresDescription.TabIndex = 96;
+			this.C64FirmwaresDescription.TabIndex = 97;
+			this.C64FirmwaresDescription.TabStop = true;
 			this.C64FirmwaresDescription.Text = "Firmwares";
+			this.C64FirmwaresDescription.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.C64FirmwaresDescription_LinkClicked);
 			// 
 			// PathConfig
 			// 
@@ -3721,8 +3722,8 @@
 		private System.Windows.Forms.Label C64CheatsDescription;
 		private System.Windows.Forms.Button C64BrowseCheats;
 		private System.Windows.Forms.TextBox C64CheatsBox;
-		private System.Windows.Forms.Label C64FirmwaresDescription;
 		private System.Windows.Forms.Button C64BrowseFirmwares;
 		private System.Windows.Forms.TextBox C64FirmwaresBox;
+		private System.Windows.Forms.LinkLabel C64FirmwaresDescription;
     }
 }
