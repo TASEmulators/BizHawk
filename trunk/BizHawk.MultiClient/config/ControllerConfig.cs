@@ -32,6 +32,14 @@ namespace BizHawk.MultiClient
 			NESAutofire3Panel.LoadSettings(Global.Config.NESAutoController[2]);
 			NESAutofire4Panel.LoadSettings(Global.Config.NESAutoController[3]);
 
+			SNESController1Panel.Spacing = 25;
+			SNESController2Panel.Spacing = 25;
+			SNESController3Panel.Spacing = 25;
+			SNESController4Panel.Spacing = 25;
+			SNESAutofire1Panel.Spacing = 25;
+			SNESAutofire2Panel.Spacing = 25;
+			SNESAutofire3Panel.Spacing = 25;
+			SNESAutofire4Panel.Spacing = 25;
 			SNESController1Panel.LoadSettings(Global.Config.SNESController[0]);
 			SNESController2Panel.LoadSettings(Global.Config.SNESController[1]);
 			SNESController3Panel.LoadSettings(Global.Config.SNESController[2]);
@@ -70,6 +78,10 @@ namespace BizHawk.MultiClient
 			Atari2600Autofire1Panel.LoadSettings(Global.Config.Atari2600AutoController[0]);
 			Atari2600Autofire2Panel.LoadSettings(Global.Config.Atari2600AutoController[1]);
 
+			TI83ControllerPanel.Spacing = 24;
+			TI83ControllerPanel.InputSize = 110;
+			TI83ControllerPanel.LabelPadding = 5;
+			TI83ControllerPanel.ColumnWidth = 170;
 			TI83ControllerPanel.LoadSettings(Global.Config.TI83Controller[0]);
 
 			SetAutoTab(true);

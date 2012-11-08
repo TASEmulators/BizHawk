@@ -250,9 +250,7 @@
 			// 
 			// ControllerImage
 			// 
-			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.ControllerImage.Image = global::BizHawk.MultiClient.Properties.Resources.NES_Controller;
 			this.ControllerImage.Location = new System.Drawing.Point(485, 37);
@@ -1040,8 +1038,7 @@
 			// 
 			// pictureBox7
 			// 
-			this.pictureBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+			this.pictureBox7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.pictureBox7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.pictureBox7.Image = global::BizHawk.MultiClient.Properties.Resources.TI83_Controller;
@@ -1385,9 +1382,12 @@
 			// 
 			// TI83ControllerPanel
 			// 
-			this.TI83ControllerPanel.Location = new System.Drawing.Point(12, 18);
+			this.TI83ControllerPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TI83ControllerPanel.Location = new System.Drawing.Point(11, 8);
 			this.TI83ControllerPanel.Name = "TI83ControllerPanel";
-			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 404);
+			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 414);
 			this.TI83ControllerPanel.TabIndex = 1;
 			// 
 			// ControllerConfig
