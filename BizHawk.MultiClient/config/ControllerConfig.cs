@@ -26,6 +26,7 @@ namespace BizHawk.MultiClient
 			NESController2Panel.LoadSettings(Global.Config.NESController[1]);
 			NESController3Panel.LoadSettings(Global.Config.NESController[2]);
 			NESController4Panel.LoadSettings(Global.Config.NESController[3]);
+			NESConsoleButtons.LoadSettings(Global.Config.NESConsoleButtons);
 			NESAutofire1Panel.LoadSettings(Global.Config.NESAutoController[0]);
 			NESAutofire2Panel.LoadSettings(Global.Config.NESAutoController[1]);
 			NESAutofire3Panel.LoadSettings(Global.Config.NESAutoController[2]);
@@ -48,6 +49,7 @@ namespace BizHawk.MultiClient
 
 			SMSController1Panel.LoadSettings(Global.Config.SMSController[0]);
 			SMSController2Panel.LoadSettings(Global.Config.SMSController[1]);
+			SMSConsoleButtons.LoadSettings(Global.Config.SMSConsoleButtons);
 			SMSAutofire1Panel.LoadSettings(Global.Config.SMSAutoController[0]);
 			SMSAutofire2Panel.LoadSettings(Global.Config.SMSAutoController[1]);
 
@@ -64,11 +66,11 @@ namespace BizHawk.MultiClient
 
 			Atari2600Controller1Panel.LoadSettings(Global.Config.Atari2600Controller[0]);
 			Atari2600Controller2Panel.LoadSettings(Global.Config.Atari2600Controller[1]);
+			Atari2600ConsoleButtons.LoadSettings(Global.Config.Atari2600ConsoleButtons[0]);
 			Atari2600Autofire1Panel.LoadSettings(Global.Config.Atari2600AutoController[0]);
 			Atari2600Autofire2Panel.LoadSettings(Global.Config.Atari2600AutoController[1]);
 
 			TI83ControllerPanel.LoadSettings(Global.Config.TI83Controller[0]);
-			NESConsoleButtons.LoadSettings(Global.Config.NESConsoleButtons);
 
 			SetAutoTab(true);
 		}
@@ -155,6 +157,7 @@ namespace BizHawk.MultiClient
 			}
 
 			Global.OSD.AddMessage("Controller settings saved");
+			this.DialogResult = DialogResult.OK;
 			Close();
 		}
 

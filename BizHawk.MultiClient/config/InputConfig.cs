@@ -245,9 +245,9 @@ namespace BizHawk.MultiClient
 							field = obj.GetType().GetField(fieldName).GetValue(obj);
 						}
 						else if (button == 6)
-							field = Global.Config.SmsPause;
+							field = Global.Config.SMSConsoleButtons.Pause;
 						else
-							field = Global.Config.SmsReset;
+							field = Global.Config.SMSConsoleButtons.Reset;
 						break;
 					}
 					case "TI-83":
@@ -428,9 +428,9 @@ namespace BizHawk.MultiClient
 							buttonField.SetValue(obj, TempBox.Text);
 						}
 						else if (button == 6)
-							Global.Config.SmsPause = TempBox.Text;
+							Global.Config.SMSConsoleButtons.Pause = TempBox.Text;
 						else
-							Global.Config.SmsReset = TempBox.Text;
+							Global.Config.SMSConsoleButtons.Reset = TempBox.Text;
 						break;
 					}
 					case "TI-83":
