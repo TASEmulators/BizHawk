@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void SaveStateBinary(BinaryWriter bw) { } //TODO
 		public void LoadStateBinary(BinaryReader br) { } //TODO
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-		public IController Controller { get; set; }
+		public IController Controller { get { return controller; } set { controller = value; } }
 		public static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Commodore 64 Controller", //TODO
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			_frame++;
 			_islag = true;
 
-			int cyclesPerSecond = (14318181 / 14 / 60);
+			const int cyclesPerFrame = (14318181 / 14 / 60);
 
 			foreach (IMedia media in mediaAttached)
 			{
@@ -97,8 +97,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 
-			for (int i = 0; i < cyclesPerSecond; i++)
+			PollInput();
+
+			for (int i = 0; i < cyclesPerFrame; i++)
 			{
+				mem.cia0PortA.Data = cia0portAData;
+				mem.cia0PortB.Data = cia0portBData;
 				cpu.IRQ = signal.CpuIRQ;
 				cpu.NMI = signal.CpuNMI;
 				if (signal.CpuAEC)

@@ -28,5 +28,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				_data |= (value & Direction);
 			}
 		}
+
+		public void ForceSetData(byte newData)
+		{
+			_data = newData;
+		}
 	}
 }
