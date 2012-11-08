@@ -841,7 +841,7 @@ namespace BizHawk.MultiClient
 
 		private void SNESFirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/SnesFirmwares.html");
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
 		}
 
 		private void BrowseC64Base_Click(object sender, EventArgs e)
@@ -872,6 +872,11 @@ namespace BizHawk.MultiClient
 		private void C64BrowseFirmwares_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(C64FirmwaresBox, C64FirmwaresDescription.Text);
+		}
+
+		private void C64FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
 		}
 	}
 }
