@@ -29,10 +29,10 @@ namespace BizHawk.MultiClient
 			GenesisController[0] = new GenControllerTemplate(true);
 			GenesisAutoController[0] = new GenControllerTemplate(false);
 
-			Atari2600Controller[0] = new Atari2600ControllerTemplate(true);
-			Atari2600Controller[1] = new Atari2600ControllerTemplate(false);
-			Atari2600AutoController[0] = new Atari2600ControllerTemplate(false);
-			Atari2600AutoController[1] = new Atari2600ControllerTemplate(false);
+			Atari2600Controller[0] = new SingleButtonJoyStickTemplate(true);
+			Atari2600Controller[1] = new SingleButtonJoyStickTemplate(false);
+			Atari2600AutoController[0] = new SingleButtonJoyStickTemplate(false);
+			Atari2600AutoController[1] = new SingleButtonJoyStickTemplate(false);
 			Atari2600ConsoleButtons[0] = new Atari2600ConsoleButtonsTemplate(true);
 
 			NESAutoController[0] = new NESControllerTemplate(false);
@@ -55,6 +55,11 @@ namespace BizHawk.MultiClient
 			SNESAutoController[3] = new SNESControllerTemplate(false);
 
 			ColecoController = new ColecoVisionControllerTemplate(true);
+
+			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true);
+			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
+			C64AutoJoysticks[0] = new SingleButtonJoyStickTemplate(false);
+			C64AutoJoysticks[1] = new SingleButtonJoyStickTemplate(false);
 
 			NESConsoleButtons = new NESConsoleButtonTemplate();
 			SNESConsoleButtons = new NESConsoleButtonTemplate();
@@ -654,8 +659,8 @@ namespace BizHawk.MultiClient
 		public GenConsoleButtonTemplate GenesisConsoleButtons = new GenConsoleButtonTemplate();
 
 		//Atari 2600 Settings
-		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[2];
-		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[2];
+		public SingleButtonJoyStickTemplate[] Atari2600Controller = new SingleButtonJoyStickTemplate[2];
+		public SingleButtonJoyStickTemplate[] Atari2600AutoController = new SingleButtonJoyStickTemplate[2];
 		public Atari2600ConsoleButtonsTemplate[] Atari2600ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
 		public bool Atari2600_BW = false;
 		public bool Atari2600_LeftDifficulty = true;
@@ -685,6 +690,10 @@ namespace BizHawk.MultiClient
 		public bool GB_MulticartCompat = false;
 		public string GB_PaletteFile = "";
 		public bool GB_AsSGB = false;
+
+		//Commodore 64 Settings
+		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
+		public SingleButtonJoyStickTemplate[] C64AutoJoysticks = new SingleButtonJoyStickTemplate[2]; 
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;
@@ -979,7 +988,7 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class Atari2600ControllerTemplate
+	public class SingleButtonJoyStickTemplate
 	{
 		public string Up = "";
 		public string Down = "";
@@ -988,8 +997,8 @@ namespace BizHawk.MultiClient
 		public string Button = "";
 		public bool Enabled;
 
-		public Atari2600ControllerTemplate() { }
-		public Atari2600ControllerTemplate(bool defaults)
+		public SingleButtonJoyStickTemplate() { }
+		public SingleButtonJoyStickTemplate(bool defaults)
 		{
 			if (defaults)
 			{
