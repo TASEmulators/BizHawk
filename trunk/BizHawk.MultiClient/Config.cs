@@ -56,6 +56,7 @@ namespace BizHawk.MultiClient
 
 			ColecoController = new ColecoVisionControllerTemplate(true);
 
+			NESConsoleButtons = new NESConsoleButtonTemplate(); ;
 		}
 
 		// Directories
@@ -664,6 +665,7 @@ namespace BizHawk.MultiClient
 		//NES settings
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
 		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
+		public NESConsoleButtonTemplate NESConsoleButtons = new NESConsoleButtonTemplate();
 
 		//SNES settings
 		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
@@ -717,10 +719,12 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_ShowMissle2 = true;
 		public bool Atari2600_ShowBall = true;
 		public bool Atari2600_ShowPlayfield = true;
+	}
 
-		//NES Console buttons
-		public string NESReset = "";
-		public string NESPower = "";
+	public class NESConsoleButtonTemplate
+	{
+		public string NESResetBindings = "";
+		public string NESPowerBindings = "";
 	}
 
 	public class SMSControllerTemplate
