@@ -1022,6 +1022,35 @@ namespace BizHawk.MultiClient
 			TI83Controls.BindMulti("MODE", Global.Config.TI83Controller[0].MODE);
 			TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].DEL);
 			Global.TI83Controls = TI83Controls;
+
+			var CommodoreControls = new Controller(C64.C64ControllerDefinition);
+			CommodoreControls.BindMulti("P1 Up", Global.Config.C64Joysticks[0].Up);
+			CommodoreControls.BindMulti("P1 Left", Global.Config.C64Joysticks[0].Left);
+			CommodoreControls.BindMulti("P1 Right", Global.Config.C64Joysticks[0].Right);
+			CommodoreControls.BindMulti("P1 Down", Global.Config.C64Joysticks[0].Down);
+			CommodoreControls.BindMulti("P1 Button", Global.Config.C64Joysticks[0].Button);
+
+			CommodoreControls.BindMulti("P2 Up", Global.Config.C64Joysticks[1].Up);
+			CommodoreControls.BindMulti("P2 Left", Global.Config.C64Joysticks[1].Left);
+			CommodoreControls.BindMulti("P2 Right", Global.Config.C64Joysticks[1].Right);
+			CommodoreControls.BindMulti("P2 Down", Global.Config.C64Joysticks[1].Down);
+			CommodoreControls.BindMulti("P2 Button", Global.Config.C64Joysticks[1].Button);
+			Global.Commodore64Controls = CommodoreControls;
+
+			var autofireC64Controls = new AutofireController(C64.C64ControllerDefinition);
+			autofireC64Controls.BindMulti("P1 Up", Global.Config.C64AutoJoysticks[0].Up);
+			autofireC64Controls.BindMulti("P1 Left", Global.Config.C64AutoJoysticks[0].Left);
+			autofireC64Controls.BindMulti("P1 Right", Global.Config.C64AutoJoysticks[0].Right);
+			autofireC64Controls.BindMulti("P1 Down", Global.Config.C64AutoJoysticks[0].Down);
+			autofireC64Controls.BindMulti("P1 Button", Global.Config.C64AutoJoysticks[0].Button);
+
+			autofireC64Controls.BindMulti("P2 Up", Global.Config.C64AutoJoysticks[1].Up);
+			autofireC64Controls.BindMulti("P2 Left", Global.Config.C64AutoJoysticks[1].Left);
+			autofireC64Controls.BindMulti("P2 Right", Global.Config.C64AutoJoysticks[1].Right);
+			autofireC64Controls.BindMulti("P2 Down", Global.Config.C64AutoJoysticks[1].Down);
+			autofireC64Controls.BindMulti("P2 Button", Global.Config.C64AutoJoysticks[1].Button);
+
+			Global.AutofireAtari2600Controls = autofireC64Controls;
 		}
 
 		private static void FormDragEnter(object sender, DragEventArgs e)
@@ -1335,6 +1364,10 @@ namespace BizHawk.MultiClient
 					break;
 				case "COLV":
 					Global.ActiveController = Global.ColecoControls;
+					break;
+				case "C64":
+					Global.ActiveController = Global.Commodore64Controls;
+					Global.AutoFireController = Global.AutofireCommodore64Controls;
 					break;
 				default:
 					Global.ActiveController = Global.NullControls;

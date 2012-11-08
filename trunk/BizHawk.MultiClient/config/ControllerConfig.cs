@@ -86,6 +86,11 @@ namespace BizHawk.MultiClient
 			TI83ControllerPanel.ColumnWidth = 170;
 			TI83ControllerPanel.LoadSettings(Global.Config.TI83Controller[0]);
 
+			C64Controller1Panel.LoadSettings(Global.Config.C64Joysticks[0]);
+			C64Controller2Panel.LoadSettings(Global.Config.C64Joysticks[1]);
+			C64Autofire1Panel.LoadSettings(Global.Config.C64AutoJoysticks[0]);
+			C64Autofire2Panel.LoadSettings(Global.Config.C64AutoJoysticks[1]);
+
 			SetAutoTab(true);
 		}
 

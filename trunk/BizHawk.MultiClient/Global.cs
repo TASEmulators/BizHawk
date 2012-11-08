@@ -33,6 +33,7 @@ namespace BizHawk.MultiClient
 		public static Controller Atari2600Controls;
 		public static Controller NullControls;
 		public static Controller ColecoControls;
+		public static Controller Commodore64Controls;
 		public static CheatList CheatList;
 
 		public static AutofireController AutofireNullControls;
@@ -43,6 +44,7 @@ namespace BizHawk.MultiClient
 		public static AutofireController AutofireGBControls;
 		public static AutofireController AutofireGenControls;
 		public static AutofireController AutofireAtari2600Controls;
+		public static AutofireController AutofireCommodore64Controls;
 
 		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>()
 		{
