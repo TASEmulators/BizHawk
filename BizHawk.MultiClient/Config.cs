@@ -913,8 +913,9 @@ namespace BizHawk.MultiClient
 		public string Right;
 		public string A;
 		public string B;
-		public string Start;
 		public string Select;
+		public string Start;
+		public string Power = "";
 		public bool Enabled;
 		public GBControllerTemplate() { }
 		public GBControllerTemplate(bool defaults)
@@ -930,6 +931,7 @@ namespace BizHawk.MultiClient
 				B = "Z, X1 A";
 				Start = "Return, X1 Start";
 				Select = "Space, X1 Back";
+				Power = "";
 			}
 			else
 			{
@@ -942,6 +944,7 @@ namespace BizHawk.MultiClient
 				B = "";
 				Start = "";
 				Select = "";
+				Power = "";
 			}
 		}
 	}
