@@ -118,6 +118,7 @@
 			this.SNESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.SNESController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.SNESController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.SNESAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.SNESAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.SNESAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
@@ -147,7 +148,7 @@
 			this.Atari2600Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Atari2600Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.SNESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GenesisConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
@@ -182,6 +183,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
 			this.tabControl9.SuspendLayout();
 			this.tabPage52.SuspendLayout();
+			this.tabPage54.SuspendLayout();
 			this.tabPage55.SuspendLayout();
 			this.tabPage4.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -630,6 +632,7 @@
 			// 
 			// tabPage54
 			// 
+			this.tabPage54.Controls.Add(this.GenesisConsoleButtons);
 			this.tabPage54.Location = new System.Drawing.Point(4, 22);
 			this.tabPage54.Name = "tabPage54";
 			this.tabPage54.Size = new System.Drawing.Size(434, 375);
@@ -1187,6 +1190,13 @@
 			this.SNESController4Panel.Size = new System.Drawing.Size(392, 332);
 			this.SNESController4Panel.TabIndex = 3;
 			// 
+			// SNESConsoleButtons
+			// 
+			this.SNESConsoleButtons.Location = new System.Drawing.Point(15, 13);
+			this.SNESConsoleButtons.Name = "SNESConsoleButtons";
+			this.SNESConsoleButtons.Size = new System.Drawing.Size(368, 125);
+			this.SNESConsoleButtons.TabIndex = 1;
+			// 
 			// SNESAutofire1Panel
 			// 
 			this.SNESAutofire1Panel.Location = new System.Drawing.Point(16, 19);
@@ -1393,12 +1403,12 @@
 			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 414);
 			this.TI83ControllerPanel.TabIndex = 1;
 			// 
-			// SNESConsoleButtons
+			// GenesisConsoleButtons
 			// 
-			this.SNESConsoleButtons.Location = new System.Drawing.Point(15, 13);
-			this.SNESConsoleButtons.Name = "SNESConsoleButtons";
-			this.SNESConsoleButtons.Size = new System.Drawing.Size(368, 125);
-			this.SNESConsoleButtons.TabIndex = 1;
+			this.GenesisConsoleButtons.Location = new System.Drawing.Point(13, 14);
+			this.GenesisConsoleButtons.Name = "GenesisConsoleButtons";
+			this.GenesisConsoleButtons.Size = new System.Drawing.Size(368, 125);
+			this.GenesisConsoleButtons.TabIndex = 1;
 			// 
 			// ControllerConfig
 			// 
@@ -1449,6 +1459,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
 			this.tabControl9.ResumeLayout(false);
 			this.tabPage52.ResumeLayout(false);
+			this.tabPage54.ResumeLayout(false);
 			this.tabPage55.ResumeLayout(false);
 			this.tabPage4.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -1610,5 +1621,6 @@
 		private ControllerConfigPanel SMSConsoleButtons;
 		private ControllerConfigPanel Atari2600ConsoleButtons;
 		private ControllerConfigPanel SNESConsoleButtons;
+		private ControllerConfigPanel GenesisConsoleButtons;
 	}
 }

@@ -55,6 +55,7 @@ namespace BizHawk.MultiClient
 
 			GenesisController1Panel.LoadSettings(Global.Config.GenesisController[0]);
 			GenesisAutofire1Panel.LoadSettings(Global.Config.GenesisAutoController[0]);
+			GenesisConsoleButtons.LoadSettings(Global.Config.GenesisConsoleButtons);
 
 			SMSController1Panel.LoadSettings(Global.Config.SMSController[0]);
 			SMSController2Panel.LoadSettings(Global.Config.SMSController[1]);
