@@ -44,6 +44,7 @@ namespace BizHawk.MultiClient
 			SNESController2Panel.LoadSettings(Global.Config.SNESController[1]);
 			SNESController3Panel.LoadSettings(Global.Config.SNESController[2]);
 			SNESController4Panel.LoadSettings(Global.Config.SNESController[3]);
+			SNESConsoleButtons.LoadSettings(Global.Config.SNESConsoleButtons);
 			SNESAutofire1Panel.LoadSettings(Global.Config.SNESAutoController[0]);
 			SNESAutofire2Panel.LoadSettings(Global.Config.SNESAutoController[1]);
 			SNESAutofire3Panel.LoadSettings(Global.Config.SNESAutoController[2]);

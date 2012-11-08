@@ -809,6 +809,9 @@ namespace BizHawk.MultiClient
 				snesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.SNESController[i].Select);
 				snesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.SNESController[i].Start);
 			}
+
+			snesControls.BindMulti("Reset", Global.Config.SNESConsoleButtons.Reset);
+			snesControls.BindMulti("Power", Global.Config.SNESConsoleButtons.Power);
 			Global.SNESControls = snesControls;
 
 
