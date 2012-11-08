@@ -59,6 +59,7 @@
 			this.tabPage31 = new System.Windows.Forms.TabPage();
 			this.tabPage32 = new System.Windows.Forms.TabPage();
 			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.pictureBox6 = new System.Windows.Forms.PictureBox();
 			this.tabControl9 = new System.Windows.Forms.TabControl();
 			this.tabPage52 = new System.Windows.Forms.TabPage();
 			this.tabPage53 = new System.Windows.Forms.TabPage();
@@ -99,10 +100,10 @@
 			this.tabPage49 = new System.Windows.Forms.TabPage();
 			this.tabPage50 = new System.Windows.Forms.TabPage();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.pictureBox7 = new System.Windows.Forms.PictureBox();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
-			this.pictureBox6 = new System.Windows.Forms.PictureBox();
 			this.AllowLR = new System.Windows.Forms.CheckBox();
 			this.NESController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.NESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
@@ -143,7 +144,7 @@
 			this.Atari2600Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Atari2600Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.pictureBox7 = new System.Windows.Forms.PictureBox();
+			this.NESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
@@ -152,6 +153,7 @@
 			this.tabPage14.SuspendLayout();
 			this.tabPage15.SuspendLayout();
 			this.tabPage16.SuspendLayout();
+			this.tabPage17.SuspendLayout();
 			this.tabPage18.SuspendLayout();
 			this.tabPage19.SuspendLayout();
 			this.tabPage20.SuspendLayout();
@@ -173,6 +175,7 @@
 			this.tabPage31.SuspendLayout();
 			this.tabPage32.SuspendLayout();
 			this.tabPage9.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
 			this.tabControl9.SuspendLayout();
 			this.tabPage52.SuspendLayout();
 			this.tabPage55.SuspendLayout();
@@ -206,7 +209,6 @@
 			this.tabPage7.SuspendLayout();
 			this.tabControl8.SuspendLayout();
 			this.tabPage8.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -319,6 +321,7 @@
 			// 
 			// tabPage17
 			// 
+			this.tabPage17.Controls.Add(this.NESConsoleButtons);
 			this.tabPage17.Location = new System.Drawing.Point(4, 22);
 			this.tabPage17.Name = "tabPage17";
 			this.tabPage17.Size = new System.Drawing.Size(445, 378);
@@ -569,6 +572,20 @@
 			this.tabPage9.TabIndex = 8;
 			this.tabPage9.Text = "Genesis";
 			this.tabPage9.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox6
+			// 
+			this.pictureBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox6.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox6.Image = global::BizHawk.MultiClient.Properties.Resources.GENController;
+			this.pictureBox6.Location = new System.Drawing.Point(472, 43);
+			this.pictureBox6.Name = "pictureBox6";
+			this.pictureBox6.Size = new System.Drawing.Size(261, 305);
+			this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox6.TabIndex = 4;
+			this.pictureBox6.TabStop = false;
 			// 
 			// tabControl9
 			// 
@@ -1015,6 +1032,20 @@
 			this.tabPage8.Text = "TI-83";
 			this.tabPage8.UseVisualStyleBackColor = true;
 			// 
+			// pictureBox7
+			// 
+			this.pictureBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox7.Image = global::BizHawk.MultiClient.Properties.Resources.TI83_Controller;
+			this.pictureBox7.Location = new System.Drawing.Point(593, 18);
+			this.pictureBox7.Name = "pictureBox7";
+			this.pictureBox7.Size = new System.Drawing.Size(186, 273);
+			this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox7.TabIndex = 4;
+			this.pictureBox7.TabStop = false;
+			// 
 			// Cancel
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1047,20 +1078,6 @@
 			this.label38.Size = new System.Drawing.Size(153, 13);
 			this.label38.TabIndex = 10;
 			this.label38.Text = "* Escape clears a key mapping";
-			// 
-			// pictureBox6
-			// 
-			this.pictureBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox6.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pictureBox6.Image = global::BizHawk.MultiClient.Properties.Resources.GENController;
-			this.pictureBox6.Location = new System.Drawing.Point(472, 43);
-			this.pictureBox6.Name = "pictureBox6";
-			this.pictureBox6.Size = new System.Drawing.Size(261, 305);
-			this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.pictureBox6.TabIndex = 4;
-			this.pictureBox6.TabStop = false;
 			// 
 			// AllowLR
 			// 
@@ -1346,19 +1363,12 @@
 			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 404);
 			this.TI83ControllerPanel.TabIndex = 1;
 			// 
-			// pictureBox7
+			// NESConsoleButtons
 			// 
-			this.pictureBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pictureBox7.Image = global::BizHawk.MultiClient.Properties.Resources.TI83_Controller;
-			this.pictureBox7.Location = new System.Drawing.Point(593, 18);
-			this.pictureBox7.Name = "pictureBox7";
-			this.pictureBox7.Size = new System.Drawing.Size(186, 273);
-			this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.pictureBox7.TabIndex = 4;
-			this.pictureBox7.TabStop = false;
+			this.NESConsoleButtons.Location = new System.Drawing.Point(30, 25);
+			this.NESConsoleButtons.Name = "NESConsoleButtons";
+			this.NESConsoleButtons.Size = new System.Drawing.Size(100, 20);
+			this.NESConsoleButtons.TabIndex = 0;
 			// 
 			// ControllerConfig
 			// 
@@ -1383,6 +1393,8 @@
 			this.tabPage14.ResumeLayout(false);
 			this.tabPage15.ResumeLayout(false);
 			this.tabPage16.ResumeLayout(false);
+			this.tabPage17.ResumeLayout(false);
+			this.tabPage17.PerformLayout();
 			this.tabPage18.ResumeLayout(false);
 			this.tabPage19.ResumeLayout(false);
 			this.tabPage20.ResumeLayout(false);
@@ -1404,6 +1416,7 @@
 			this.tabPage31.ResumeLayout(false);
 			this.tabPage32.ResumeLayout(false);
 			this.tabPage9.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
 			this.tabControl9.ResumeLayout(false);
 			this.tabPage52.ResumeLayout(false);
 			this.tabPage55.ResumeLayout(false);
@@ -1437,7 +1450,6 @@
 			this.tabPage7.ResumeLayout(false);
 			this.tabControl8.ResumeLayout(false);
 			this.tabPage8.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -1562,5 +1574,6 @@
 		private System.Windows.Forms.CheckBox AllowLR;
 		private ControllerConfigPanel TI83ControllerPanel;
 		private System.Windows.Forms.PictureBox pictureBox7;
+		private BizHawk.MultiClient.ControllerConfigPanel NESConsoleButtons;
 	}
 }

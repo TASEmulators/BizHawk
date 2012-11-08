@@ -68,6 +68,7 @@ namespace BizHawk.MultiClient
 			Atari2600Autofire2Panel.LoadSettings(Global.Config.Atari2600AutoController[1]);
 
 			TI83ControllerPanel.LoadSettings(Global.Config.TI83Controller[0]);
+			NESConsoleButtons.LoadSettings(Global.Config.NESConsoleButtons);
 
 			SetAutoTab(true);
 		}
