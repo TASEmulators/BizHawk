@@ -99,6 +99,8 @@
 			this.tabControl8 = new System.Windows.Forms.TabControl();
 			this.tabPage49 = new System.Windows.Forms.TabPage();
 			this.tabPage50 = new System.Windows.Forms.TabPage();
+			this.tabPage10 = new System.Windows.Forms.TabPage();
+			this.tabPage11 = new System.Windows.Forms.TabPage();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.pictureBox7 = new System.Windows.Forms.PictureBox();
 			this.Cancel = new System.Windows.Forms.Button();
@@ -148,13 +150,11 @@
 			this.Atari2600ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Atari2600Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Atari2600Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage10 = new System.Windows.Forms.TabPage();
-			this.tabPage11 = new System.Windows.Forms.TabPage();
 			this.C64Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.C64Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.C64Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.C64Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
@@ -224,10 +224,10 @@
 			this.tabControl8.SuspendLayout();
 			this.tabPage49.SuspendLayout();
 			this.tabPage50.SuspendLayout();
-			this.tabPage8.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.tabPage10.SuspendLayout();
 			this.tabPage11.SuspendLayout();
+			this.tabPage8.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -1045,6 +1045,26 @@
 			this.tabPage50.Text = "Joy 2";
 			this.tabPage50.UseVisualStyleBackColor = true;
 			// 
+			// tabPage10
+			// 
+			this.tabPage10.Controls.Add(this.C64Autofire1Panel);
+			this.tabPage10.Location = new System.Drawing.Point(4, 22);
+			this.tabPage10.Name = "tabPage10";
+			this.tabPage10.Size = new System.Drawing.Size(532, 361);
+			this.tabPage10.TabIndex = 2;
+			this.tabPage10.Text = "Autojoy 1";
+			this.tabPage10.UseVisualStyleBackColor = true;
+			// 
+			// tabPage11
+			// 
+			this.tabPage11.Controls.Add(this.C64Autofire2Panel);
+			this.tabPage11.Location = new System.Drawing.Point(4, 22);
+			this.tabPage11.Name = "tabPage11";
+			this.tabPage11.Size = new System.Drawing.Size(532, 361);
+			this.tabPage11.TabIndex = 3;
+			this.tabPage11.Text = "Autojoy 2";
+			this.tabPage11.UseVisualStyleBackColor = true;
+			// 
 			// tabPage8
 			// 
 			this.tabPage8.Controls.Add(this.pictureBox7);
@@ -1145,7 +1165,7 @@
 			// 
 			this.NESConsoleButtons.Location = new System.Drawing.Point(13, 12);
 			this.NESConsoleButtons.Name = "NESConsoleButtons";
-			this.NESConsoleButtons.Size = new System.Drawing.Size(368, 125);
+			this.NESConsoleButtons.Size = new System.Drawing.Size(368, 341);
 			this.NESConsoleButtons.TabIndex = 0;
 			// 
 			// NESAutofire1Panel
@@ -1414,36 +1434,6 @@
 			this.Atari2600Autofire2Panel.Size = new System.Drawing.Size(369, 332);
 			this.Atari2600Autofire2Panel.TabIndex = 3;
 			// 
-			// TI83ControllerPanel
-			// 
-			this.TI83ControllerPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TI83ControllerPanel.Location = new System.Drawing.Point(11, 8);
-			this.TI83ControllerPanel.Name = "TI83ControllerPanel";
-			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 414);
-			this.TI83ControllerPanel.TabIndex = 1;
-			// 
-			// tabPage10
-			// 
-			this.tabPage10.Controls.Add(this.C64Autofire1Panel);
-			this.tabPage10.Location = new System.Drawing.Point(4, 22);
-			this.tabPage10.Name = "tabPage10";
-			this.tabPage10.Size = new System.Drawing.Size(532, 361);
-			this.tabPage10.TabIndex = 2;
-			this.tabPage10.Text = "Autojoy 1";
-			this.tabPage10.UseVisualStyleBackColor = true;
-			// 
-			// tabPage11
-			// 
-			this.tabPage11.Controls.Add(this.C64Autofire2Panel);
-			this.tabPage11.Location = new System.Drawing.Point(4, 22);
-			this.tabPage11.Name = "tabPage11";
-			this.tabPage11.Size = new System.Drawing.Size(532, 361);
-			this.tabPage11.TabIndex = 3;
-			this.tabPage11.Text = "Autojoy 2";
-			this.tabPage11.UseVisualStyleBackColor = true;
-			// 
 			// C64Controller1Panel
 			// 
 			this.C64Controller1Panel.Location = new System.Drawing.Point(6, 6);
@@ -1471,6 +1461,16 @@
 			this.C64Autofire2Panel.Name = "C64Autofire2Panel";
 			this.C64Autofire2Panel.Size = new System.Drawing.Size(369, 332);
 			this.C64Autofire2Panel.TabIndex = 4;
+			// 
+			// TI83ControllerPanel
+			// 
+			this.TI83ControllerPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TI83ControllerPanel.Location = new System.Drawing.Point(11, 8);
+			this.TI83ControllerPanel.Name = "TI83ControllerPanel";
+			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 414);
+			this.TI83ControllerPanel.TabIndex = 1;
 			// 
 			// ControllerConfig
 			// 
@@ -1556,10 +1556,10 @@
 			this.tabControl8.ResumeLayout(false);
 			this.tabPage49.ResumeLayout(false);
 			this.tabPage50.ResumeLayout(false);
-			this.tabPage8.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.tabPage10.ResumeLayout(false);
 			this.tabPage11.ResumeLayout(false);
+			this.tabPage8.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
