@@ -109,6 +109,7 @@
 			this.NESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.NESController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.NESController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.NESAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.NESAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.NESAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
@@ -127,6 +128,7 @@
 			this.GenesisAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.SMSController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.SMSController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SMSConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.SMSAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.SMSAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.PCEController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
@@ -141,10 +143,10 @@
 			this.PCEAutofire5Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Atari2600Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Atari2600Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari2600ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Atari2600Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Atari2600Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.NESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
@@ -184,6 +186,7 @@
 			this.tabControl5.SuspendLayout();
 			this.tabPage33.SuspendLayout();
 			this.tabPage34.SuspendLayout();
+			this.Console.SuspendLayout();
 			this.tabPage51.SuspendLayout();
 			this.tabPage57.SuspendLayout();
 			this.tabPage5.SuspendLayout();
@@ -204,6 +207,7 @@
 			this.tabControl7.SuspendLayout();
 			this.tabPage46.SuspendLayout();
 			this.tabPage47.SuspendLayout();
+			this.tabPage48.SuspendLayout();
 			this.tabPage35.SuspendLayout();
 			this.tabPage58.SuspendLayout();
 			this.tabPage7.SuspendLayout();
@@ -715,6 +719,7 @@
 			// 
 			// Console
 			// 
+			this.Console.Controls.Add(this.SMSConsoleButtons);
 			this.Console.Location = new System.Drawing.Point(4, 22);
 			this.Console.Name = "Console";
 			this.Console.Size = new System.Drawing.Size(338, 375);
@@ -954,6 +959,7 @@
 			// 
 			// tabPage48
 			// 
+			this.tabPage48.Controls.Add(this.Atari2600ConsoleButtons);
 			this.tabPage48.Location = new System.Drawing.Point(4, 22);
 			this.tabPage48.Name = "tabPage48";
 			this.tabPage48.Size = new System.Drawing.Size(381, 375);
@@ -1118,6 +1124,13 @@
 			this.NESController4Panel.Size = new System.Drawing.Size(392, 332);
 			this.NESController4Panel.TabIndex = 0;
 			// 
+			// NESConsoleButtons
+			// 
+			this.NESConsoleButtons.Location = new System.Drawing.Point(13, 12);
+			this.NESConsoleButtons.Name = "NESConsoleButtons";
+			this.NESConsoleButtons.Size = new System.Drawing.Size(368, 125);
+			this.NESConsoleButtons.TabIndex = 0;
+			// 
 			// NESAutofire1Panel
 			// 
 			this.NESAutofire1Panel.Location = new System.Drawing.Point(10, 10);
@@ -1244,6 +1257,13 @@
 			this.SMSController2Panel.Size = new System.Drawing.Size(326, 332);
 			this.SMSController2Panel.TabIndex = 2;
 			// 
+			// SMSConsoleButtons
+			// 
+			this.SMSConsoleButtons.Location = new System.Drawing.Point(3, 3);
+			this.SMSConsoleButtons.Name = "SMSConsoleButtons";
+			this.SMSConsoleButtons.Size = new System.Drawing.Size(332, 125);
+			this.SMSConsoleButtons.TabIndex = 1;
+			// 
 			// SMSAutofire1Panel
 			// 
 			this.SMSAutofire1Panel.Location = new System.Drawing.Point(3, 3);
@@ -1342,6 +1362,13 @@
 			this.Atari2600Controller2Panel.Size = new System.Drawing.Size(369, 332);
 			this.Atari2600Controller2Panel.TabIndex = 2;
 			// 
+			// Atari2600ConsoleButtons
+			// 
+			this.Atari2600ConsoleButtons.Location = new System.Drawing.Point(10, 12);
+			this.Atari2600ConsoleButtons.Name = "Atari2600ConsoleButtons";
+			this.Atari2600ConsoleButtons.Size = new System.Drawing.Size(359, 125);
+			this.Atari2600ConsoleButtons.TabIndex = 1;
+			// 
 			// Atari2600Autofire1Panel
 			// 
 			this.Atari2600Autofire1Panel.Location = new System.Drawing.Point(6, 21);
@@ -1362,13 +1389,6 @@
 			this.TI83ControllerPanel.Name = "TI83ControllerPanel";
 			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 404);
 			this.TI83ControllerPanel.TabIndex = 1;
-			// 
-			// NESConsoleButtons
-			// 
-			this.NESConsoleButtons.Location = new System.Drawing.Point(30, 25);
-			this.NESConsoleButtons.Name = "NESConsoleButtons";
-			this.NESConsoleButtons.Size = new System.Drawing.Size(100, 20);
-			this.NESConsoleButtons.TabIndex = 0;
 			// 
 			// ControllerConfig
 			// 
@@ -1394,7 +1414,6 @@
 			this.tabPage15.ResumeLayout(false);
 			this.tabPage16.ResumeLayout(false);
 			this.tabPage17.ResumeLayout(false);
-			this.tabPage17.PerformLayout();
 			this.tabPage18.ResumeLayout(false);
 			this.tabPage19.ResumeLayout(false);
 			this.tabPage20.ResumeLayout(false);
@@ -1425,6 +1444,7 @@
 			this.tabControl5.ResumeLayout(false);
 			this.tabPage33.ResumeLayout(false);
 			this.tabPage34.ResumeLayout(false);
+			this.Console.ResumeLayout(false);
 			this.tabPage51.ResumeLayout(false);
 			this.tabPage57.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
@@ -1445,6 +1465,7 @@
 			this.tabControl7.ResumeLayout(false);
 			this.tabPage46.ResumeLayout(false);
 			this.tabPage47.ResumeLayout(false);
+			this.tabPage48.ResumeLayout(false);
 			this.tabPage35.ResumeLayout(false);
 			this.tabPage58.ResumeLayout(false);
 			this.tabPage7.ResumeLayout(false);
@@ -1575,5 +1596,7 @@
 		private ControllerConfigPanel TI83ControllerPanel;
 		private System.Windows.Forms.PictureBox pictureBox7;
 		private BizHawk.MultiClient.ControllerConfigPanel NESConsoleButtons;
+		private ControllerConfigPanel SMSConsoleButtons;
+		private ControllerConfigPanel Atari2600ConsoleButtons;
 	}
 }

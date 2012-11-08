@@ -56,7 +56,8 @@ namespace BizHawk.MultiClient
 
 			ColecoController = new ColecoVisionControllerTemplate(true);
 
-			NESConsoleButtons = new NESConsoleButtonTemplate(); ;
+			NESConsoleButtons = new NESConsoleButtonTemplate();
+			SMSConsoleButtons = new SMSConsoleButtonTemplate();
 		}
 
 		// Directories
@@ -634,11 +635,9 @@ namespace BizHawk.MultiClient
 		public bool GGShowClippedRegions = false;
 		public bool GGHighlightActiveDisplayRegion = false;
 
-		public string SmsReset = "C";
-		public string SmsPause = "V, X1 Start";
-
 		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
+		public SMSConsoleButtonTemplate SMSConsoleButtons = new SMSConsoleButtonTemplate();
 
 		// PCEngine Settings
 		public bool PceSpriteLimit = false;
@@ -723,8 +722,14 @@ namespace BizHawk.MultiClient
 
 	public class NESConsoleButtonTemplate
 	{
-		public string NESResetBindings = "";
-		public string NESPowerBindings = "";
+		public string Reset = "";
+		public string Power = "";
+	}
+
+	public class SMSConsoleButtonTemplate
+	{
+		public string Reset = "C";
+		public string Pause = "V, X1 Start";
 	}
 
 	public class SMSControllerTemplate

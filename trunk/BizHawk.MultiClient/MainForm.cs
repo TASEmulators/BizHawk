@@ -733,8 +733,8 @@ namespace BizHawk.MultiClient
 			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
 
 			var smsControls = new Controller(SMS.SmsController);
-			smsControls.BindMulti("Reset", Global.Config.SmsReset);
-			smsControls.BindMulti("Pause", Global.Config.SmsPause);
+			smsControls.BindMulti("Reset", Global.Config.SMSConsoleButtons.Reset);
+			smsControls.BindMulti("Pause", Global.Config.SMSConsoleButtons.Pause);
 			for (int i = 0; i < 2; i++)
 			{
 				smsControls.BindMulti(string.Format("P{0} Up", i + 1), Global.Config.SMSController[i].Up);
@@ -748,8 +748,8 @@ namespace BizHawk.MultiClient
 
 			var asmsControls = new AutofireController(SMS.SmsController);
 			asmsControls.Autofire = true;
-			asmsControls.BindMulti("Reset", Global.Config.SmsReset);
-			asmsControls.BindMulti("Pause", Global.Config.SmsPause);
+			asmsControls.BindMulti("Reset", Global.Config.SMSConsoleButtons.Reset);
+			asmsControls.BindMulti("Pause", Global.Config.SMSConsoleButtons.Pause);
 			for (int i = 0; i < 2; i++)
 			{
 				asmsControls.BindMulti(string.Format("P{0} Up", i + 1), Global.Config.SMSAutoController[i].Up);
@@ -844,8 +844,8 @@ namespace BizHawk.MultiClient
 				nesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESController[i].Start);
 			}
 
-			nesControls.BindMulti("Reset", Global.Config.NESConsoleButtons.NESResetBindings);
-			nesControls.BindMulti("Power", Global.Config.NESConsoleButtons.NESPowerBindings);
+			nesControls.BindMulti("Reset", Global.Config.NESConsoleButtons.Reset);
+			nesControls.BindMulti("Power", Global.Config.NESConsoleButtons.Power);
 
 			Global.NESControls = nesControls;
 
