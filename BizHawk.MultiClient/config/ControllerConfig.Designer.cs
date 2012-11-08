@@ -147,6 +147,7 @@
 			this.Atari2600Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Atari2600Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
@@ -167,6 +168,7 @@
 			this.tabPage23.SuspendLayout();
 			this.tabPage24.SuspendLayout();
 			this.tabPage25.SuspendLayout();
+			this.tabPage26.SuspendLayout();
 			this.tabPage27.SuspendLayout();
 			this.tabPage28.SuspendLayout();
 			this.tabPage29.SuspendLayout();
@@ -460,6 +462,7 @@
 			// 
 			// tabPage26
 			// 
+			this.tabPage26.Controls.Add(this.SNESConsoleButtons);
 			this.tabPage26.Location = new System.Drawing.Point(4, 22);
 			this.tabPage26.Name = "tabPage26";
 			this.tabPage26.Size = new System.Drawing.Size(445, 372);
@@ -1390,6 +1393,13 @@
 			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 414);
 			this.TI83ControllerPanel.TabIndex = 1;
 			// 
+			// SNESConsoleButtons
+			// 
+			this.SNESConsoleButtons.Location = new System.Drawing.Point(15, 13);
+			this.SNESConsoleButtons.Name = "SNESConsoleButtons";
+			this.SNESConsoleButtons.Size = new System.Drawing.Size(368, 125);
+			this.SNESConsoleButtons.TabIndex = 1;
+			// 
 			// ControllerConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1425,6 +1435,7 @@
 			this.tabPage23.ResumeLayout(false);
 			this.tabPage24.ResumeLayout(false);
 			this.tabPage25.ResumeLayout(false);
+			this.tabPage26.ResumeLayout(false);
 			this.tabPage27.ResumeLayout(false);
 			this.tabPage28.ResumeLayout(false);
 			this.tabPage29.ResumeLayout(false);
@@ -1598,5 +1609,6 @@
 		private BizHawk.MultiClient.ControllerConfigPanel NESConsoleButtons;
 		private ControllerConfigPanel SMSConsoleButtons;
 		private ControllerConfigPanel Atari2600ConsoleButtons;
+		private ControllerConfigPanel SNESConsoleButtons;
 	}
 }

@@ -57,6 +57,7 @@ namespace BizHawk.MultiClient
 			ColecoController = new ColecoVisionControllerTemplate(true);
 
 			NESConsoleButtons = new NESConsoleButtonTemplate();
+			SNESConsoleButtons = new NESConsoleButtonTemplate();
 			SMSConsoleButtons = new SMSConsoleButtonTemplate();
 		}
 
@@ -669,6 +670,7 @@ namespace BizHawk.MultiClient
 		//SNES settings
 		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
 		public SNESControllerTemplate[] SNESAutoController = new SNESControllerTemplate[4];
+		public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
