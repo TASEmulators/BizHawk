@@ -62,9 +62,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						mediaAttached.Add(new PRGFile(inputFile, mem, cpu));
 					break;
 				case @".CRT":
-					Cartridge cart = new Cartridge(inputFile);
-					if (cart.valid)
+					Cartridge newCart = new Cartridge(inputFile, mem);
+					if (newCart.valid)
+					{
+						cart = newCart;
 						mediaAttached.Add(cart);
+					}
+					else
+					{
+						cart = null;
+					}
 					break;
 			}
 

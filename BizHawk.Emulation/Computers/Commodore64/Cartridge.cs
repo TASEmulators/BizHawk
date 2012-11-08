@@ -15,19 +15,26 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int type;
 	}
 
-	public class Cartridge : IMedia
+	public partial class Cartridge : IMedia
 	{
+		public Func<ushort, byte> Read;
+		public Func<ushort, byte> ReadPort;
+		public Action<ushort, byte> WritePort;
+
 		public List<CartridgeChip> chips;
 		public bool exRomPin;
 		public bool gamePin;
+		public CartridgeChip selectedChip;
 		public int type;
 		public bool valid;
 		public int version;
 
 		private bool loaded;
+		private Memory mem;
 
-		public Cartridge(byte[] rom)
+		public Cartridge(byte[] rom, Memory memory)
 		{
+			mem = memory;
 			chips = new List<CartridgeChip>();
 
 			if (rom.Length >= 0x50)
@@ -131,18 +138,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					}
 
 					valid = (chips.Count > 0);
+
+					if (valid)
+						UpdateMapper();
 				}
 				reader.Close();
 				source.Dispose();
 			}
 		}
 
-		public void Apply(Memory mem)
+		public void Apply()
 		{
 			mem.cart = this;
-			mem.exRomPin = exRomPin;
-			mem.gamePin = gamePin;
-			mem.UpdateLayout();
+			UpdateRomPins();
 			loaded = true;
 		}
 
@@ -151,10 +159,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return loaded;
 		}
 
-		public byte Read(ushort addr)
+		private byte ReadDummy(ushort addr)
 		{
-			CartridgeChip currentChip = chips[0];
-			return currentChip.data[addr & currentChip.romMask];
+			return 0;
 		}
 
 		public bool Ready()
@@ -162,9 +169,31 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return true;
 		}
 
-		public void Write(ushort addr, byte val)
+		private void UpdateMapper()
 		{
-			// can't write to rom but we can process DE00/DF00 here
+			Read = ReadDummy;
+			ReadPort = ReadDummy;
+			WritePort = WriteDummy;
+
+			switch (type)
+			{
+				case 0x0000:
+					Read = Read0000;
+					ReadPort = ReadPort0000;
+					WritePort = WritePort0000;
+					break;
+			}
+		}
+
+		private void UpdateRomPins()
+		{
+			mem.exRomPin = exRomPin;
+			mem.gamePin = gamePin;
+			mem.UpdateLayout();
+		}
+
+		private void WriteDummy(ushort addr, byte val)
+		{
 		}
 	}
 }
