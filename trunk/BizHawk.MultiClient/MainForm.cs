@@ -282,6 +282,8 @@ namespace BizHawk.MultiClient
 				LoadNESDebugger();
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 				LoadGameGenieEC();
+			if (Global.Config.AutoLoadGBGPUView && Global.Emulator is Gameboy)
+				LoadGBGPUView();
 
 			if (Global.Config.AutoloadTAStudio)
 			{

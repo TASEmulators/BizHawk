@@ -61,6 +61,9 @@
 			this.bmpViewTiles2 = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewBG = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewWin = new BizHawk.MultiClient.GBtools.BmpView();
+			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.checkBoxAutoLoad = new System.Windows.Forms.CheckBox();
+			this.checkBoxSavePos = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -69,6 +72,7 @@
 			this.groupBoxDetails.SuspendLayout();
 			this.groupBoxMemory.SuspendLayout();
 			this.groupBox6.SuspendLayout();
+			this.groupBox7.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -435,11 +439,45 @@
 			this.bmpViewWin.MouseLeave += new System.EventHandler(this.bmpViewWin_MouseLeave);
 			this.bmpViewWin.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewWin_MouseMove);
 			// 
+			// groupBox7
+			// 
+			this.groupBox7.Controls.Add(this.checkBoxSavePos);
+			this.groupBox7.Controls.Add(this.checkBoxAutoLoad);
+			this.groupBox7.Location = new System.Drawing.Point(350, 312);
+			this.groupBox7.Name = "groupBox7";
+			this.groupBox7.Size = new System.Drawing.Size(192, 41);
+			this.groupBox7.TabIndex = 24;
+			this.groupBox7.TabStop = false;
+			this.groupBox7.Text = "Config";
+			// 
+			// checkBoxAutoLoad
+			// 
+			this.checkBoxAutoLoad.AutoSize = true;
+			this.checkBoxAutoLoad.Location = new System.Drawing.Point(6, 19);
+			this.checkBoxAutoLoad.Name = "checkBoxAutoLoad";
+			this.checkBoxAutoLoad.Size = new System.Drawing.Size(75, 17);
+			this.checkBoxAutoLoad.TabIndex = 0;
+			this.checkBoxAutoLoad.Text = "Auto-Load";
+			this.checkBoxAutoLoad.UseVisualStyleBackColor = true;
+			this.checkBoxAutoLoad.CheckedChanged += new System.EventHandler(this.checkBoxAutoLoad_CheckedChanged);
+			// 
+			// checkBoxSavePos
+			// 
+			this.checkBoxSavePos.AutoSize = true;
+			this.checkBoxSavePos.Location = new System.Drawing.Point(87, 19);
+			this.checkBoxSavePos.Name = "checkBoxSavePos";
+			this.checkBoxSavePos.Size = new System.Drawing.Size(90, 17);
+			this.checkBoxSavePos.TabIndex = 1;
+			this.checkBoxSavePos.Text = "Save position";
+			this.checkBoxSavePos.UseVisualStyleBackColor = true;
+			this.checkBoxSavePos.CheckedChanged += new System.EventHandler(this.checkBoxSavePos_CheckedChanged);
+			// 
 			// GBGPUView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(834, 524);
+			this.Controls.Add(this.groupBox7);
 			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.groupBoxMemory);
 			this.Controls.Add(this.groupBoxDetails);
@@ -451,6 +489,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "GBGPUView";
 			this.Text = "GameBoy GPU Viewer";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GBGPUView_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GBGPUView_FormClosed);
 			this.Load += new System.EventHandler(this.GBGPUView_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GBGPUView_KeyDown);
@@ -469,6 +508,8 @@
 			this.groupBoxMemory.PerformLayout();
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox6.PerformLayout();
+			this.groupBox7.ResumeLayout(false);
+			this.groupBox7.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -508,5 +549,8 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.Label labelClipboard;
+		private System.Windows.Forms.GroupBox groupBox7;
+		private System.Windows.Forms.CheckBox checkBoxSavePos;
+		private System.Windows.Forms.CheckBox checkBoxAutoLoad;
 	}
 }
