@@ -736,10 +736,10 @@ namespace BizHawk.MultiClient
 	{
 		public string Reset = "";
 		public string Power = "";
-		public string FDS_Eject = "";
-		public string FDS_Insert = "";
-		public string VS_Coin_1 = "";
-		public string VS_Coin_2 = "";
+		//public string FDS_Eject = ""; //Not supporting this for now
+		//public string FDS_Insert = ""; //Need to support inserting of disk 1,2,3,4,etc so not supporting this for now
+		//public string VS_Coin_1 = ""; //Not supported yet
+		//public string VS_Coin_2 = ""; //Not supported yet
 	}
 
 	public class SMSConsoleButtonTemplate
