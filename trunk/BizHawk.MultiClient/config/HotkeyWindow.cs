@@ -122,14 +122,14 @@ namespace BizHawk.MultiClient
 
 		protected override void OnShown(EventArgs e)
 		{
-			Input.Instance.EnableIgnoreModifiers = true;
+			//Input.Instance.EnableIgnoreModifiers = true;
 			base.OnShown(e);
 		}
 
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			Input.Instance.EnableIgnoreModifiers = false;
+			//Input.Instance.EnableIgnoreModifiers = false;
 		}
 
 		private void IDB_SAVE_Click(object sender, EventArgs e)
