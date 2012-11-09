@@ -463,7 +463,7 @@ namespace BizHawk.MultiClient
 				s = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
 			}
 
-			s.Replace(".", " ").Replace("|", "").Replace("l", ""); //Note: if l is ever a mnemonic this will squash it.  But this is done because on the NES core I put l in the command mnemonic to indicate lag (was a bad a idea)
+			s.Replace(".", " ").Replace("|", "");
 			
 			return s.ToString();
 		}
