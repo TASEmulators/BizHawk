@@ -9,9 +9,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		static string[,] keyboardMatrix = new string[,]
 		{
-			{"Key Insert/Delete", "Key Return", "Key Cursor Left/Right", "Key F7", "Key F1", "Key F3", "Key F5", "Cursor Up/Down"},
+			{"Key Insert/Delete", "Key Return", "Key Cursor Left/Right", "Key F7", "Key F1", "Key F3", "Key F5", "Key Cursor Up/Down"},
 			{"Key 3", "Key W", "Key A", "Key 4", "Key Z", "Key S", "Key E", "Key Left Shift"},
-
+			{"Key 5", "Key R", "Key D", "Key 6", "Key C", "Key F", "Key T", "Key X"},
+			{"Key 7", "Key Y", "Key G", "Key 8", "Key B", "Key H", "Key U", "Key V"},
+			{"Key 9", "Key I", "Key J", "Key 0", "Key M", "Key K", "Key O", "Key N"},
+			{"Key Plus", "Key P", "Key L", "Key Minus", "Key Period", "Key Colon", "Key At", "Key Comma"},
+			{"Key Pound", "Key Asterisk", "Key Semicolon", "Key Clear/Home", "Key Right Shift", "Key Equal", "Key Up Arrow", "Key Slash"},
+			{"Key 1", "Key Left Arrow", "Key Control", "Key 2", "Key Space", "Key Commodore", "Key Q", "Key Run/Stop"}
 		};
 
 		static string[,] joystickMatrix = new string[,]
@@ -20,19 +25,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button"}
 		};
 
-		private IController controller;
-		private byte[] joystickLatch = new byte[2];
-		private byte keyboardColumnData;
-		private byte[] keyboardLatch = new byte[8];
-		private byte keyboardRowData;
+		public IController controller;
 
-		public Input(IController newController, Cia newCia)
+		private byte[] joystickLatch = new byte[2];
+		private byte keyboardColumnData = 0xFF;
+		private byte[] keyboardLatch = new byte[8];
+		private byte keyboardRowData = 0xFF;
+		private DirectionalDataPort[] ports;
+
+		public Input(DirectionalDataPort[] newPorts)
 		{
-			controller = newController;
+			ports = newPorts;
 
 			// attach input to a CIA I/O port
-			newCia.ports[0].WritePort = WritePortA;
-			newCia.ports[1].WritePort = WritePortB;
+			ports[0].WritePort = WritePortA;
+			ports[1].WritePort = WritePortB;
 		}
 
 		private byte GetJoystickBits(int index)
@@ -66,18 +73,41 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				joystickLatch[i] = GetJoystickBits(i);
 			for (int i = 0; i < 8; i++)
 				keyboardLatch[i] = GetKeyboardBits(i);
+			UpdatePortData();
+		}
+
+		private void UpdatePortData()
+		{
+			int keyboardShift = keyboardRowData;
+			byte port0result = 0xFF;
+			byte port1result = 0xFF;
+
+			port0result = (byte)(keyboardColumnData & joystickLatch[1]);
+
+			for (int i = 0; i < 8; i++)
+			{
+				if ((keyboardShift & 0x01) == 0x00)
+					port1result &= keyboardLatch[i];
+				keyboardShift >>= 1;
+			}
+			port1result &= joystickLatch[0];
+
+			ports[0].SetRemoteData(port0result);
+			ports[1].SetRemoteData(port1result);
 		}
 
 		public void WritePortA(byte data)
 		{
 			// keyboard matrix column select
 			keyboardColumnData = data;
+			UpdatePortData();
 		}
 
 		public void WritePortB(byte data)
 		{
 			// keyboard matrix row select
 			keyboardRowData = data;
+			UpdatePortData();
 		}
 	}
 }

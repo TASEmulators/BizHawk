@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	public partial class  C64 : IEmulator
 	{
 		// input
-		private IController controller;
+		public Input input;
 
 		// source
 		public Cartridge cart;
@@ -21,8 +21,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// chipset
 		public Cia cia0;
 		public Cia cia1;
-		public byte cia0portAData;
-		public byte cia0portBData;
 		public MOS6502X cpu;
 		public Memory mem;
 		public Sid sid;
@@ -31,6 +29,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void HardReset()
 		{
+			// initalize cpu
 			cpu = new MOS6502X();
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
@@ -56,8 +55,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			mem = new Memory(romPath, vic, sid, cia0, cia1);
 			vic.mem = mem;
 
-			// initialize cpu (hard reset vector)
+			// initialize cpu hard reset vector
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) + (ReadMemory(0xFFFD) << 8));
+
+			// initailize input
+			input = new Input(cia0.ports);
 
 			// initialize media
 			switch (extension.ToUpper())
@@ -100,6 +102,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void PollInput()
 		{
+			input.Poll();
+
+			/*
 			cia0portAData = 0xFF;
 			cia0portBData = 0xFF;
 
@@ -113,6 +118,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			if (Controller["P2 Left"]) cia0portAData &= 0xFB;
 			if (Controller["P2 Right"]) cia0portAData &= 0xF7;
 			if (Controller["P2 Button"]) cia0portAData &= 0xEF;
+			*/
+
+
 		}
 
 		public byte ReadMemory(ushort addr)
