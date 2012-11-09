@@ -11,6 +11,10 @@ namespace BizHawk.MultiClient.GBtools
 {
 	public partial class GBGPUView : Form
 	{
+		// TODO: freeze semantics are a bit weird: details for a mouseover or freeze are taken from the current
+		// state, not the state at the last callback (and so can be quite different when update is set to manual).
+		// I'm not quite sure what's the best thing to do...
+
 		Emulation.Consoles.GB.Gameboy gb;
 
 		// gambatte doesn't modify these memory locations unless you reconstruct, so we can store
@@ -40,6 +44,11 @@ namespace BizHawk.MultiClient.GBtools
 			hScrollBarScanline.Value = 0;
 			hScrollBarScanline_ValueChanged(null, null); // not firing in this case??
 			radioButtonRefreshFrame.Checked = true;
+
+			KeyPreview = true;
+
+			messagetimer.Interval = 5000;
+			messagetimer.Tick += new EventHandler(messagetimer_Tick);
 		}
 
 		public void Restart()
@@ -572,7 +581,7 @@ namespace BizHawk.MultiClient.GBtools
 			var sb = new StringBuilder();
 			x /= 16;
 			y /= 16;
-			int *pal = (int*)(sprite ? sppal : bgpal) + x * 4;
+			int* pal = (int*)(sprite ? sppal : bgpal) + x * 4;
 			int color = pal[y];
 
 			sb.AppendLine(string.Format("Palette {0}", x));
@@ -582,7 +591,7 @@ namespace BizHawk.MultiClient.GBtools
 			var lockdata = bmpViewDetails.bmp.LockBits(new Rectangle(0, 0, 8, 10), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
-			
+
 			for (int py = 0; py < 10; py++)
 			{
 				for (int px = 0; px < 8; px++)
@@ -634,7 +643,7 @@ namespace BizHawk.MultiClient.GBtools
 			x /= 8;
 			y /= 8;
 			mapoffs += y * 32 + x;
-			byte *mapbase = (byte *)vram + mapoffs;
+			byte* mapbase = (byte*)vram + mapoffs;
 			int tileindex = mapbase[0];
 			if (win || !lcdc.Bit(4)) // 0x9000 base
 				if (tileindex < 128)
@@ -840,5 +849,42 @@ namespace BizHawk.MultiClient.GBtools
 			}
 		}
 
+		#region copyimage
+
+		Timer messagetimer = new Timer();
+
+		private void GBGPUView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (Control.ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			{
+				// find the control under the mouse
+				Point m = System.Windows.Forms.Cursor.Position;
+				Control top = this;
+				Control found = null;
+				do
+				{
+					found = top.GetChildAtPoint(top.PointToClient(m));
+					top = found;
+				} while (found != null && found.HasChildren);
+
+				if (found != null && found is BmpView)
+				{
+					Clipboard.SetImage((found as BmpView).bmp);
+					labelClipboard.Text = found.Text + " copied to clipboard.";
+					messagetimer.Stop();
+					messagetimer.Start();
+				}
+			}
+
+		}
+
+		void messagetimer_Tick(object sender, EventArgs e)
+		{
+			messagetimer.Stop();
+			labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
+		}
+
+
+		#endregion
 	}
 }

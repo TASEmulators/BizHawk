@@ -85,7 +85,7 @@ namespace BizHawk.MultiClient.GBtools
 		// kill unused props
 		[Browsable(false)]
 		public override Color BackColor { get { return base.BackColor; } set { base.BackColor = Color.Black; } }
-		[Browsable(false)]
-		public override string Text { get { return base.Text; } set { base.Text = value; } }
+		//[Browsable(false)]
+		//public override string Text { get { return base.Text; } set { base.Text = value; } }
 	}
 }
