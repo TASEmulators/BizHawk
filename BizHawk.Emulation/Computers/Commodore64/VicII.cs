@@ -31,8 +31,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool IRST;
 		public int LPX;
 		public int LPY;
+		public int[] MC = new int[8]; // (internal)
+		public int[] MCBASE = new int[8]; // (internal)
 		public bool MCM;
+		public bool[] MD = new bool[8]; // (internal)
+		public bool[] MDMA = new bool[8]; // (internal)
 		public int[] MMx = new int[2];
+		public int[] MPTR = new int[8]; // (internal)
+		public Int32[] MSR = new Int32[8]; // (internal)
+		public bool[] MSRA = new bool[8]; // (internal)
+		public int[] MSRC = new int[8]; // (internal)
 		public int[] MxC = new int[8];
 		public bool[] MxD = new bool[8];
 		public bool[] MxDP = new bool[8];
@@ -43,14 +51,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool[] MxXE = new bool[8];
 		public int[] MxY = new int[8];
 		public bool[] MxYE = new bool[8];
+		public bool[] MYE = new bool[8]; // (internal)
 		public int RASTER;
-		public int RC;
+		public int RC; // (internal)
 		public bool RES;
 		public bool RSEL;
-		public int VC;
-		public int VCBASE;
+		public int VC; // (internal)
+		public int VCBASE; // (internal)
 		public int VM;
-		public int VMLI;
+		public int VMLI; // (internal)
 		public int XSCROLL;
 		public int YSCROLL;
 
@@ -489,11 +498,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte[] colorMemory;
 		public int cycle;
 		public int cycleLeft;
+		public bool dataForeground;
 		public bool displayEnabled;
 		public bool hBlank;
 		public bool idle;
-		public int[] pixelBuffer = new int[12];
-		public int pixelBufferIndex = 0;
+		public int[] pixelBuffer;
+		public bool[] pixelBufferForeground;
+		public int pixelBufferIndex;
 		public int rasterInterruptLine;
 		public int rasterLineLeft;
 		public int rasterOffset;
@@ -502,12 +513,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int rasterWidth;
 		public int refreshAddress;
 		public int renderOffset;
-		public byte[,] spriteData;
-		public int spriteFetchCycle;
+		public int spriteFetchStartCycle;
 		public int spriteFetchIndex;
 		public bool spriteForeground;
-		public ushort[] spritePointers;
-		public int spriteFetchStartCycle;
 		public VicIITask task;
 		public int totalCycles;
 		public bool vBlank;
@@ -539,7 +547,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					rasterTotalLines = 263;
 					rasterLineLeft = 0x19C;
 					cycleLeft = 0;
-					spriteFetchStartCycle = 55;
+					spriteFetchStartCycle = 59;
 					visibleLeft = 0x008;
 					visibleRight = 0x168;
 					visibleTop = 0x023; //0x041;
@@ -566,15 +574,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			buffer = new int[visibleWidth * visibleHeight];
 			bufferSize = buffer.Length;
 
-			// initialize sprites
-			spritePointers = new ushort[8];
-			spriteData = new byte[8, 64];
-
 			// initialize screen buffer
 			characterMemory = new byte[40];
 			colorMemory = new byte[40];
+			pixelBuffer = new int[12];
+			pixelBufferForeground = new bool[12];
+			pixelBufferIndex = 0;
 
 			// initialize registers
+			spriteFetchIndex = 0;
 			HardReset();
 		}
 
@@ -636,6 +644,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			signal.VicIRQ = false;
 			UpdateBorder();
 			UpdatePlotter();
+			spriteFetchIndex = 17;
 		}
 
 		public void PerformCycle()
@@ -653,6 +662,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			if (badLine)
 				idle = false;
 
+			// sprite Y stretch flipflop
+			for (int i = 0; i < 8; i++)
+				if (!regs.MxYE[i])
+					regs.MYE[i] = true;
+
 			// these actions are exclusive
 			if ((regs.RASTER == 0x000 && cycle == 1) || (regs.RASTER > 0x000 && cycle == 0))
 			{
@@ -666,6 +680,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				mem.VicRead((ushort)refreshAddress);
 				refreshAddress = (refreshAddress - 1) & 0xFF;
 				refreshAddress |= 0x3F00;
+
+				// VC reset
+				if (cycle == 13)
+				{
+					regs.VC = regs.VCBASE;
+					regs.VMLI = 0;
+					characterColumn = 0;
+					if (badLine)
+					{
+						regs.RC = 0;
+					}
+					bitmapData = 0;
+					colorData = 0;
+					characterData = 0;
+				}
 			}
 			else if (cycle >= 15 && cycle < 55)
 			{
@@ -678,12 +707,29 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 				signal.VicAEC = !badLine;
 			}
-			else if (cycle == 56)
+			else if (cycle == 55)
 			{
+				// reenable cpu if disabled
 				signal.VicAEC = true;
+
+				// sprite comparison
+				for (int i = 0; i < 8; i++)
+				{
+					if (regs.MxYE[i])
+						regs.MYE[i] = !regs.MYE[i];
+
+					if (regs.MxE[i] == true && regs.MxY[i] == (regs.RASTER & 0xFF) && regs.MDMA[i] == false)
+					{
+						regs.MDMA[i] = true;
+						regs.MCBASE[i] = 0;
+						if (regs.MxYE[i])
+							regs.MYE[i] = false;
+					}
+				}
 			}
 			else if (cycle == 57)
 			{
+				// row counter processing
 				if (regs.RC == 7)
 				{
 					idle = true;
@@ -691,38 +737,79 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 				if (!idle)
 					regs.RC = (regs.RC + 1) & 0x07;
+
+				// sprite MC processing
+				for (int i = 0; i < 8; i++)
+				{
+					regs.MC[i] = regs.MCBASE[i];
+					if (regs.MDMA[i] && regs.MxY[i] == (regs.RASTER & 0xFF))
+						regs.MD[i] = true;
+				}
 			}
 
-			// these actions can fall within the other ranges
-			if (cycle == 13)
+			// MCBASE reset if applicable
+			if (cycle == 15)
 			{
-				regs.VC = regs.VCBASE;
-				regs.VMLI = 0;
-				characterColumn = 0;
-				if (badLine)
+				for (int i = 0; i < 8; i++)
 				{
-					regs.RC = 0;
+					if (regs.MYE[i])
+					{
+						regs.MCBASE[i] += 3;
+						if (regs.MCBASE[i] == 63)
+						{
+							regs.MD[i] = false;
+							regs.MDMA[i] = false;
+						}
+					}
 				}
-				bitmapData = 0;
-				colorData = 0;
-				characterData = 0;
-			}
-			else if (cycle == spriteFetchStartCycle)
-			{
-				spriteFetchIndex = 0;
 			}
 
 			// sprite fetch
-			if (spriteFetchIndex < 8)
+			if (cycle == spriteFetchStartCycle)
 			{
-				
-				PerformCycleSpriteFetch(spriteFetchIndex, spriteFetchCycle);
-				spriteFetchCycle++;
-				if (spriteFetchCycle >= 2)
+				spriteFetchIndex = 0;
+			}
+			if (spriteFetchIndex < 16)
+			{
+				int spriteIndex = spriteFetchIndex >> 1;
+
+				if ((spriteFetchIndex & 1) == 0)
 				{
-					spriteFetchCycle = 0;
-					spriteFetchIndex++;
+					// first half of the fetch cycle, always fetch pointer
+					ushort pointerOffset = (ushort)((regs.VM << 10) + 0x3F8 + spriteIndex);
+					regs.MPTR[spriteIndex] = mem.VicRead(pointerOffset);
+					
+					// also fetch upper 8 bits if enabled
+					//signal.VicAEC = regs.MDMA[spriteIndex];
+					if (regs.MDMA[spriteIndex])
+					{
+						regs.MSRC[spriteIndex] = 24;
+						regs.MSR[spriteIndex] = mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
+						regs.MSR[spriteIndex] <<= 8;
+						regs.MC[spriteIndex]++;
+					}
 				}
+				else
+				{
+					// second half of the fetch cycle
+					//signal.VicAEC = regs.MDMA[spriteIndex];
+					if (regs.MDMA[spriteIndex])
+					{
+						for (int i = 0; i < 2; i++)
+						{
+							regs.MSR[spriteIndex] |= mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
+							regs.MSR[spriteIndex] <<= 8;
+							regs.MC[spriteIndex]++;
+						}
+					}
+				}
+				spriteFetchIndex++;
+			}
+			else if (spriteFetchIndex == 16)
+			{
+				// set AEC after sprite fetches
+				//signal.VicAEC = true;
+				spriteFetchIndex++;
 			}
 
 			// border check
@@ -772,16 +859,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void PerformCycleRender()
 		{
+			int spritePixel;
+			int inputPixel;
+			int outputPixel;
+			int spritePixelOwner;
+
 			for (int i = 0; i < 8; i++)
 			{
+				spritePixelOwner = -1;
 				// draw screen memory if needed
 				if (!idle && cycle >= 15 && cycle < 55)
 				{
-					// todo: implement XSCROLL properly
-					// comparing to (rasterOffsetX & 0x7) seems to align
-					// properly but smooth scrolling is not possible
-					// comparing to i works but then the screen
-					// is not aligned anymore...
 					if (regs.XSCROLL == i)
 					{
 						characterColumn = 0;
@@ -812,6 +900,102 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						borderOnMain = false;
 				}
 
+				// render plotter
+				if (idle)
+				{
+					inputPixel = regs.BxC[0];
+				}
+				else
+				{
+					inputPixel = Plotter();
+				}
+
+				// render sprites
+				outputPixel = pixelBuffer[pixelBufferIndex];
+
+				for (int j = 0; j < 8; j++)
+				{
+					int spriteBits;
+					if (regs.MxX[j] == rasterOffsetX)
+					{
+						regs.MSRA[j] = true;
+						regs.MSRC[j] = 24;
+					}
+					if (regs.MD[j] && regs.MSRA[j])
+					{
+						// multicolor consumes two bits per pixel
+						if (regs.MxMC[j])
+						{
+							spriteBits = (int)((regs.MSR[j] >> 30) & 0x3);
+							if ((regs.MxXE[j] == false) || (rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1))
+							{
+								regs.MSR[j] <<= 2;
+								regs.MSRC[j]--;
+							}
+						}
+						else
+						{
+							spriteBits = (int)((regs.MSR[j] >> 30) & 0x2);
+							//
+							if ((regs.MxXE[j] == false) || (rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1))
+							{
+								regs.MSR[j] <<= 1;
+								regs.MSRC[j]--;
+							}
+						}
+
+						// if not transparent, process collisions and color
+						if (spriteBits != 0)
+						{
+							switch (spriteBits)
+							{
+								case 1:
+									spritePixel = regs.MMx[0];
+									break;
+								case 2:
+									spritePixel = regs.MxC[j];
+									break;
+								case 3:
+									spritePixel = regs.MMx[1];
+									break;
+								default:
+									// this should never happen but VS needs this
+									spritePixel = 0;
+									break;
+							}
+
+							// process collisions if the border is off
+							if (!borderOnVertical)
+							{
+								if (spritePixelOwner == -1)
+								{
+									spritePixelOwner = j;
+									if (regs.MxDP[j] || (!regs.MxDP[j] && !pixelBufferForeground[pixelBufferIndex]))
+									{
+										outputPixel = spritePixel;
+									}
+								}
+								else
+								{
+									// a sprite already occupies this space
+									//regs.MxM[spritePixelOwner] = true;
+									//regs.MxM[j] = true;
+									//regs.IMMC = true;
+								}
+								if (dataForeground)
+								{
+									//regs.MxD[j] = true;
+									//regs.IMBC = true;
+								}
+							}
+						}
+						if (regs.MSRC[j] == 0)
+							regs.MSRA[j] = false;
+					}
+
+
+				}
+
 				// send pixel to bitmap
 				if (visibleRenderX && visibleRenderY)
 				{
@@ -821,19 +1005,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					}
 					else
 					{
-						WritePixel(pixelBuffer[pixelBufferIndex]);
+						WritePixel(outputPixel);
 					}
 				}
 
 				// process 12 pixel delay
-				if (idle)
-				{
-					pixelBuffer[pixelBufferIndex] = regs.BxC[0];
-				}
-				else
-				{
-					pixelBuffer[pixelBufferIndex] = Plotter();
-				}
+				pixelBuffer[pixelBufferIndex] = inputPixel;
+				pixelBufferForeground[pixelBufferIndex] = dataForeground;
 				pixelBufferIndex++;
 				if (pixelBufferIndex == 12)
 				{
@@ -852,14 +1030,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		}
 
-		private void PerformCycleSpriteFetch(int index, int fetchCycle)
-		{
-			ushort offset = (ushort)((regs.VM << 10) + 0x3F8 + index);
-			spritePointers[index] = (ushort)((regs.VM << 10) + (mem.VicRead(offset) * 64));
-			for (ushort i = 0; i < 64; i++)
-				spriteData[index, i] = mem.VicRead((ushort)(spritePointers[index] + i));
-		}
-
 		// standard text mode
 		private int Plot000()
 		{
@@ -869,11 +1039,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				charData <<= characterColumn;
 				if ((charData & 0x80) != 0x00)
 				{
-					spriteForeground = true;
+					dataForeground = true;
 					return colorData;
 				}
 			}
-			spriteForeground = false;
+			dataForeground = false;
 			return regs.BxC[0];
 		}
 
@@ -893,13 +1063,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					switch (charData)
 					{
 						case 1:
-							spriteForeground = false;
+							dataForeground = false;
 							return regs.BxC[1];
 						case 2:
-							spriteForeground = true;
+							dataForeground = true;
 							return regs.BxC[2];
 						case 3:
-							spriteForeground = true;
+							dataForeground = true;
 							return colorData & 0x07;
 					}
 				}
@@ -908,7 +1078,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					return Plot000();
 				}
 			}
-			spriteForeground = false;
+			dataForeground = false;
 			return regs.BxC[0];
 		}
 
@@ -921,11 +1091,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				charData <<= characterColumn;
 				if ((charData & 0x80) != 0x00)
 				{
-					spriteForeground = true;
+					dataForeground = true;
 					return characterData >> 4;
 				}
 			}
-			spriteForeground = false;
+			dataForeground = false;
 			return characterData & 0xF;
 		}
 
@@ -943,17 +1113,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				switch (charData)
 				{
 					case 1:
-						spriteForeground = false;
+						dataForeground = false;
 						return characterData & 0xF;
 					case 2:
-						spriteForeground = true;
+						dataForeground = true;
 						return characterData >> 4;
 					case 3:
-						spriteForeground = true;
+						dataForeground = true;
 						return colorData & 0xF;
 				}
 			}
-			spriteForeground = false;
+			dataForeground = false;
 			return regs.BxC[0];
 		}
 
@@ -966,16 +1136,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				charData <<= characterColumn;
 				if ((charData & 0x80) != 0x00)
 				{
-					spriteForeground = true;
+					dataForeground = true;
 					return colorData;
 				}
 				else
 				{
-					spriteForeground = false;
+					dataForeground = false;
 					return regs.BxC[characterData >> 6];
 				}
 			}
-			spriteForeground = false;
+			dataForeground = false;
 			return regs.BxC[0];
 		}
 
@@ -1005,10 +1175,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (addr)
 			{
 				case 0x1E:
-				case 0x1F:
-					// collision regs clear after read
+					// clear after read
 					result = regs[addr];
 					regs[addr] = 0x00;
+					regs.IMMC = false;
+					break;
+				case 0x1F:
+					// clear after read
+					result = regs[addr];
+					regs[addr] = 0x00;
+					regs.IMBC = false;
 					break;
 				default:
 					result = regs[addr];
