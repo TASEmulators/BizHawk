@@ -416,12 +416,55 @@ namespace BizHawk.MultiClient
 			{
 				input.Append(".");
 			}
-			if (ControlType == "Atari 2600 Basic Controller")
+			else if (ControlType == "Atari 2600 Basic Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? "r" : ".");
 				input.Append(IsBasePressed("Select") ? "s" : ".");
 			}
-			if (ControlType == "NES Controller" || ControlType == "Genesis 3-Button Controller")
+			else if (ControlType == "NES Controller")
+			{
+				if (IsBasePressed("Power"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["Power"]);
+				}
+				else if (IsBasePressed("Reset"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["Reset"]);
+				}
+				else if (IsBasePressed("FDS Eject"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["FDS Eject"]);
+				}
+				else if (IsBasePressed("FDS Insert 0"))
+				{
+					input.Append("0");
+				}
+				else if (IsBasePressed("FDS Insert 1"))
+				{
+					input.Append("1");
+				}
+				else if (IsBasePressed("FDS Insert 2"))
+				{
+					input.Append("2");
+				}
+				else if (IsBasePressed("FDS Insert 3"))
+				{
+					input.Append("3");
+				}
+				else if (IsBasePressed("VS Coin 1"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["VS Coin 1"]);
+				}
+				else if (IsBasePressed("VS Coin 2"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["VS Coin 2"]);
+				}
+				else
+				{
+					input.Append('.');
+				}
+			}
+			else if (ControlType == "Genesis 3-Button Controller")
 			{
 				if (IsBasePressed("Power"))
 				{
@@ -436,14 +479,15 @@ namespace BizHawk.MultiClient
 					input.Append('.');
 				}
 			}
-			if (ControlType == "Gameboy Controller")
+			else if (ControlType == "Gameboy Controller")
 			{
 				input.Append(IsBasePressed("Power") ? Global.COMMANDS[ControlType]["Power"] : ".");
 			}
-			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller")
+			else if (ControlType != "SMS Controller" && ControlType != "TI83 Controller")
 			{
 				input.Append("|");
 			}
+			
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
 				string prefix = "";
@@ -689,12 +733,38 @@ namespace BizHawk.MultiClient
 				{
 					Force("Power", true);
 				}
-				else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+				else if (mnemonic[1] == 'E')
+				{
+					Force("FDS Eject", true);
+				}
+				else if (mnemonic[1] == '0')
+				{
+					Force("FDS Insert 0", true);
+				}
+				else if (mnemonic[1] == '1')
+				{
+					Force("FDS Insert 1", true);
+				}
+				else if (mnemonic[1] == '2')
+				{
+					Force("FDS Insert 2", true);
+				}
+				else if (mnemonic[1] == '3')
+				{
+					Force("FDS Insert 3", true);
+				}
+				else if (mnemonic[1] == 'c')
+				{
+					Force("VS Coin 1", true);
+				}
+				else if (mnemonic[1] == 'C')
+				{
+					Force("VS Coin 2", true);
+				}
+				else if (mnemonic[1] != '.')
 				{
 					Force("Reset", true);
 				}
-				
-				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
 			}
 			if (ControlType == "Gameboy Controller")
 			{
