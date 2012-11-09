@@ -586,6 +586,29 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			HardReset();
 		}
 
+		// increment raster line
+		private void AdvanceRaster()
+		{
+			regs.RASTER++;
+
+			// if we reach the bottom, reset to the top
+			if (regs.RASTER == rasterTotalLines)
+			{
+				regs.RASTER = 0;
+				regs.VCBASE = 0;
+				displayEnabled = false;
+			}
+
+			// check to see if we are within viewing area Y
+			if (regs.RASTER == visibleBottom)
+			{
+				visibleRenderY = false;
+				renderOffset = 0;
+			}
+			if (regs.RASTER == visibleTop)
+				visibleRenderY = true;
+		}
+
 		// standard text mode
 		public void Fetch000C()
 		{
@@ -648,6 +671,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		}
 
 		public void PerformCycle()
+		{
+			ProcessDisplayRegisters();
+			RenderCycle();
+
+			// increment cycle
+			cycle++;
+			if (cycle == totalCycles)
+			{
+				cycle = 0;
+				AdvanceRaster();
+			}
+
+			UpdateInterrupts();
+			signal.VicIRQ = regs.IRQ;
+		}
+
+		private void ProcessDisplayRegisters()
 		{
 			// display enable check on line 030 (this must be run every cycle)
 			if (regs.RASTER == 0x030)
@@ -778,7 +818,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					// first half of the fetch cycle, always fetch pointer
 					ushort pointerOffset = (ushort)((regs.VM << 10) + 0x3F8 + spriteIndex);
 					regs.MPTR[spriteIndex] = mem.VicRead(pointerOffset);
-					
+
 					// also fetch upper 8 bits if enabled
 					//signal.VicAEC = regs.MDMA[spriteIndex];
 					if (regs.MDMA[spriteIndex])
@@ -820,44 +860,179 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				if (regs.RASTER == borderBottom)
 					borderOnVertical = true;
 			}
-
-			PerformCycleRender();
-
-			// increment cycle
-			cycle++;
-			if (cycle == totalCycles)
-			{
-				cycle = 0;
-				PerformCycleAdvanceRaster();
-			}
-
-			UpdateInterrupts();
-			signal.VicIRQ = regs.IRQ;
 		}
 
-		private void PerformCycleAdvanceRaster()
+		// standard text mode
+		private int Plot000()
 		{
-			regs.RASTER++;
-
-			// if we reach the bottom, reset to the top
-			if (regs.RASTER == rasterTotalLines)
+			if (characterColumn >= 0)
 			{
-				regs.RASTER = 0;
-				regs.VCBASE = 0;
-				displayEnabled = false;
+				byte charData = bitmapData;
+				charData <<= characterColumn;
+				if ((charData & 0x80) != 0x00)
+				{
+					dataForeground = true;
+					return colorData;
+				}
 			}
-
-			// check to see if we are within viewing area Y
-			if (regs.RASTER == visibleBottom)
-			{
-				visibleRenderY = false;
-				renderOffset = 0;
-			}
-			if (regs.RASTER == visibleTop)
-				visibleRenderY = true;
+			dataForeground = false;
+			return regs.BxC[0];
 		}
 
-		private void PerformCycleRender()
+		// multicolor text mode
+		private int Plot001()
+		{
+			if (characterColumn >= 0)
+			{
+				if ((colorData & 0x08) != 0x00)
+				{
+					int offset = characterColumn;
+					byte charData = bitmapData;
+					offset |= 0x01;
+					offset ^= 0x01;
+					charData <<= offset;
+					charData >>= 6;
+					switch (charData)
+					{
+						case 1:
+							dataForeground = false;
+							return regs.BxC[1];
+						case 2:
+							dataForeground = true;
+							return regs.BxC[2];
+						case 3:
+							dataForeground = true;
+							return colorData & 0x07;
+					}
+				}
+				else
+				{
+					return Plot000();
+				}
+			}
+			dataForeground = false;
+			return regs.BxC[0];
+		}
+
+		// standard bitmap mode
+		private int Plot010()
+		{
+			if (characterColumn >= 0)
+			{
+				byte charData = bitmapData;
+				charData <<= characterColumn;
+				if ((charData & 0x80) != 0x00)
+				{
+					dataForeground = true;
+					return characterData >> 4;
+				}
+			}
+			dataForeground = false;
+			return characterData & 0xF;
+		}
+
+		// multicolor bitmap mode
+		private int Plot011()
+		{
+			if (characterColumn >= 0)
+			{
+				int offset = characterColumn;
+				byte charData = bitmapData;
+				offset |= 0x01;
+				offset ^= 0x01;
+				charData <<= offset;
+				charData >>= 6;
+				switch (charData)
+				{
+					case 1:
+						dataForeground = false;
+						return characterData & 0xF;
+					case 2:
+						dataForeground = true;
+						return characterData >> 4;
+					case 3:
+						dataForeground = true;
+						return colorData & 0xF;
+				}
+			}
+			dataForeground = false;
+			return regs.BxC[0];
+		}
+
+		// extra color text mode
+		private int Plot100()
+		{
+			if (characterColumn >= 0)
+			{
+				byte charData = bitmapData;
+				charData <<= characterColumn;
+				if ((charData & 0x80) != 0x00)
+				{
+					dataForeground = true;
+					return colorData;
+				}
+				else
+				{
+					dataForeground = false;
+					return regs.BxC[characterData >> 6];
+				}
+			}
+			dataForeground = false;
+			return regs.BxC[0];
+		}
+
+		// invalid mode (TODO: implement collision)
+		// this mode always outputs black
+		private int Plot101()
+		{
+			dataForeground = false;
+			return 0;
+		}
+
+		// invalid mode (TODO: implement collision)
+		// this mode always outputs black
+		private int Plot110()
+		{
+			dataForeground = false;
+			return 0;
+		}
+
+		// invalid mode (TODO: implement collision)
+		// this mode always outputs black
+		private int Plot111()
+		{
+			dataForeground = false;
+			return 0;
+		}
+
+		public byte Read(ushort addr)
+		{
+			byte result = 0;
+			addr &= 0x3F;
+
+			switch (addr)
+			{
+				case 0x1E:
+					// clear after read
+					result = regs[addr];
+					regs[addr] = 0x00;
+					regs.IMMC = false;
+					break;
+				case 0x1F:
+					// clear after read
+					result = regs[addr];
+					regs[addr] = 0x00;
+					regs.IMBC = false;
+					break;
+				default:
+					result = regs[addr];
+					break;
+			}
+
+			return result;
+		}
+
+		private void RenderCycle()
 		{
 			int inputPixel;
 			int outputPixel;
@@ -1023,171 +1198,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					rasterOffsetX -= rasterWidth;
 				}
 			}
-
-		}
-
-		// standard text mode
-		private int Plot000()
-		{
-			if (characterColumn >= 0)
-			{
-				byte charData = bitmapData;
-				charData <<= characterColumn;
-				if ((charData & 0x80) != 0x00)
-				{
-					dataForeground = true;
-					return colorData;
-				}
-			}
-			dataForeground = false;
-			return regs.BxC[0];
-		}
-
-		// multicolor text mode
-		private int Plot001()
-		{
-			if (characterColumn >= 0)
-			{
-				if ((colorData & 0x08) != 0x00)
-				{
-					int offset = characterColumn;
-					byte charData = bitmapData;
-					offset |= 0x01;
-					offset ^= 0x01;
-					charData <<= offset;
-					charData >>= 6;
-					switch (charData)
-					{
-						case 1:
-							dataForeground = false;
-							return regs.BxC[1];
-						case 2:
-							dataForeground = true;
-							return regs.BxC[2];
-						case 3:
-							dataForeground = true;
-							return colorData & 0x07;
-					}
-				}
-				else
-				{
-					return Plot000();
-				}
-			}
-			dataForeground = false;
-			return regs.BxC[0];
-		}
-
-		// standard bitmap mode
-		private int Plot010()
-		{
-			if (characterColumn >= 0)
-			{
-				byte charData = bitmapData;
-				charData <<= characterColumn;
-				if ((charData & 0x80) != 0x00)
-				{
-					dataForeground = true;
-					return characterData >> 4;
-				}
-			}
-			dataForeground = false;
-			return characterData & 0xF;
-		}
-
-		// multicolor bitmap mode
-		private int Plot011()
-		{
-			if (characterColumn >= 0)
-			{
-				int offset = characterColumn;
-				byte charData = bitmapData;
-				offset |= 0x01;
-				offset ^= 0x01;
-				charData <<= offset;
-				charData >>= 6;
-				switch (charData)
-				{
-					case 1:
-						dataForeground = false;
-						return characterData & 0xF;
-					case 2:
-						dataForeground = true;
-						return characterData >> 4;
-					case 3:
-						dataForeground = true;
-						return colorData & 0xF;
-				}
-			}
-			dataForeground = false;
-			return regs.BxC[0];
-		}
-
-		// extra color text mode
-		private int Plot100()
-		{
-			if (characterColumn >= 0)
-			{
-				byte charData = bitmapData;
-				charData <<= characterColumn;
-				if ((charData & 0x80) != 0x00)
-				{
-					dataForeground = true;
-					return colorData;
-				}
-				else
-				{
-					dataForeground = false;
-					return regs.BxC[characterData >> 6];
-				}
-			}
-			dataForeground = false;
-			return regs.BxC[0];
-		}
-
-		// invalid mode (TODO: implement)
-		private int Plot101()
-		{
-			return regs.BxC[0];
-		}
-
-		// invalid mode (TODO: implement)
-		private int Plot110()
-		{
-			return regs.BxC[0];
-		}
-
-		// invalid mode (TODO: implement)
-		private int Plot111()
-		{
-			return regs.BxC[0];
-		}
-
-		public byte Read(ushort addr)
-		{
-			byte result = 0;
-			addr &= 0x3F;
-
-			switch (addr)
-			{
-				case 0x1E:
-					// clear after read
-					result = regs[addr];
-					regs[addr] = 0x00;
-					regs.IMMC = false;
-					break;
-				case 0x1F:
-					// clear after read
-					result = regs[addr];
-					regs[addr] = 0x00;
-					regs.IMBC = false;
-					break;
-				default:
-					result = regs[addr];
-					break;
-			}
-
-			return result;
 		}
 
 		private void UpdateBorder()
