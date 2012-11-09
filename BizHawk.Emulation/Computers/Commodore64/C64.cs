@@ -101,8 +101,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			for (int i = 0; i < cyclesPerFrame; i++)
 			{
-				mem.cia0PortA.Data = cia0portAData;
-				mem.cia0PortB.Data = cia0portBData;
 				cpu.IRQ = signal.CpuIRQ;
 				cpu.NMI = signal.CpuNMI;
 				if (signal.CpuAEC)

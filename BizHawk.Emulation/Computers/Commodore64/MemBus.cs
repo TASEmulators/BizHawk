@@ -62,8 +62,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// registers
 		public byte busData;
-		public DirectionalDataPort cia0PortA = new DirectionalDataPort(0xFF, 0x00);
-		public DirectionalDataPort cia0PortB = new DirectionalDataPort(0xFF, 0x00);
 		public DirectionalDataPort cia1PortA = new DirectionalDataPort(0x7F, 0x00);
 		public DirectionalDataPort cia1PortB = new DirectionalDataPort(0xFF, 0x00);
 		public DirectionalDataPort cpuPort;
@@ -98,8 +96,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			sid = newSid;
 			cia0 = newCia0;
 			cia1 = newCia1;
-			cia0.ports[0] = cia0PortA;
-			cia0.ports[1] = cia0PortB;
 			cia1.ports[0] = cia1PortA;
 			cia1.ports[1] = cia1PortB;
 
