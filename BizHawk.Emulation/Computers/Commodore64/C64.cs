@@ -54,14 +54,22 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void SaveStateBinary(BinaryWriter bw) { } //TODO
 		public void LoadStateBinary(BinaryReader br) { } //TODO
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-		public IController Controller { get { return controller; } set { controller = value; } }
+		public IController Controller { get { return input.controller; } set { input.controller = value; } }
 		public static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Commodore 64 Controller", //TODO
 			BoolButtons =
 			{
+				"Key Insert/Delete", "Key Return", "Key Cursor Left/Right", "Key F7", "Key F1", "Key F3", "Key F5", "Key Cursor Up/Down",
+				"Key 3", "Key W", "Key A", "Key 4", "Key Z", "Key S", "Key E", "Key Left Shift",
+				"Key 5", "Key R", "Key D", "Key 6", "Key C", "Key F", "Key T", "Key X",
+				"Key 7", "Key Y", "Key G", "Key 8", "Key B", "Key H", "Key U", "Key V",
+				"Key 9", "Key I", "Key J", "Key 0", "Key M", "Key K", "Key O", "Key N",
+				"Key Plus", "Key P", "Key L", "Key Minus", "Key Period", "Key Colon", "Key At", "Key Comma",
+				"Key Pound", "Key Asterisk", "Key Semicolon", "Key Clear/Home", "Key Right Shift", "Key Equal", "Key Up Arrow", "Key Slash",
+				"Key 1", "Key Left Arrow", "Key Control", "Key 2", "Key Space", "Key Commodore", "Key Q", "Key Run/Stop",
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button" 
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button"
 			}
 		};
 

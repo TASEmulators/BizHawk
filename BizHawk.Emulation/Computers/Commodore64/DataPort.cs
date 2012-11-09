@@ -33,6 +33,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		public void SetRemoteData(byte val)
+		{
+			_data = val;
+		}
+
 		private void WritePortDummy(byte val)
 		{
 		}
