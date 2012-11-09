@@ -979,7 +979,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 										regs.MxM[j] = true;
 										regs.IMMC = true;
 									}
-									if (dataForeground)
+									if (pixelBufferForeground[pixelBufferIndex])
 									{
 										regs.MxD[j] = true;
 										regs.IMBC = true;
