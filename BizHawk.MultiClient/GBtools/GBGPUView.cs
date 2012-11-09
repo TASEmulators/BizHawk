@@ -49,6 +49,9 @@ namespace BizHawk.MultiClient.GBtools
 
 			messagetimer.Interval = 5000;
 			messagetimer.Tick += new EventHandler(messagetimer_Tick);
+
+			checkBoxAutoLoad.Checked = Global.Config.AutoLoadGBGPUView;
+			checkBoxSavePos.Checked = Global.Config.GBGPUViewSaveWindowPosition;
 		}
 
 		public void Restart()
@@ -449,6 +452,12 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void GBGPUView_Load(object sender, EventArgs e)
 		{
+			if (Global.Config.GBGPUViewSaveWindowPosition)
+			{
+				Point p = new Point(Global.Config.GBGPUViewWndx, Global.Config.GBGPUViewWndy);
+				if (p.X >= 0 && p.Y >= 0)
+					Location = p;
+			}
 			Restart();
 		}
 
@@ -886,5 +895,21 @@ namespace BizHawk.MultiClient.GBtools
 
 
 		#endregion
+
+		private void GBGPUView_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Global.Config.GBGPUViewWndx = Location.X;
+			Global.Config.GBGPUViewWndy = Location.Y;
+		}
+
+		private void checkBoxAutoLoad_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadGBGPUView = (sender as CheckBox).Checked;
+		}
+
+		private void checkBoxSavePos_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.GBGPUViewSaveWindowPosition = (sender as CheckBox).Checked;
+		}
 	}
 }

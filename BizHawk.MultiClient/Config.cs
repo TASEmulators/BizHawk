@@ -417,6 +417,13 @@ namespace BizHawk.MultiClient
 		public int NESTopLine = 8;
 		public int NESBottomLine = 231;
 
+		// gb gpu view settings
+		public bool AutoLoadGBGPUView = false;
+		public bool GBGPUViewSaveWindowPosition = true;
+		public int GBGPUViewWndx = -1;
+		public int GBGPUViewWndy = -1;
+
+
 		// SNES Graphics Debugger Dialog Settings
 		public bool AutoLoadSNESGraphicsDebugger = false;
 		public bool SNESGraphicsDebuggerSaveWindowPosition = true;
