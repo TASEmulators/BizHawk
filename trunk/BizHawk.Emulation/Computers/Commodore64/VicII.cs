@@ -859,9 +859,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void PerformCycleRender()
 		{
-			int spritePixel;
 			int inputPixel;
 			int outputPixel;
+			int spriteBits;
+			int spritePixel;
 			int spritePixelOwner;
 
 			for (int i = 0; i < 8; i++)
@@ -902,98 +903,93 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 				// render plotter
 				if (idle)
-				{
 					inputPixel = regs.BxC[0];
-				}
 				else
-				{
 					inputPixel = Plotter();
-				}
 
 				// render sprites
 				outputPixel = pixelBuffer[pixelBufferIndex];
 
 				for (int j = 0; j < 8; j++)
 				{
-					int spriteBits;
-					if (regs.MxX[j] == rasterOffsetX)
+					if (regs.MD[j])
 					{
-						regs.MSRA[j] = true;
-						regs.MSRC[j] = 24;
-					}
-					if (regs.MD[j] && regs.MSRA[j])
-					{
-						// multicolor consumes two bits per pixel
-						if (regs.MxMC[j])
+						if (regs.MxX[j] == rasterOffsetX)
 						{
-							spriteBits = (int)((regs.MSR[j] >> 30) & 0x3);
-							if ((regs.MxXE[j] == false) || (rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1))
-							{
-								regs.MSR[j] <<= 2;
-								regs.MSRC[j]--;
-							}
+							regs.MSRA[j] = true;
+							regs.MSRC[j] = 25;
 						}
-						else
+						if (regs.MSRA[j])
 						{
-							spriteBits = (int)((regs.MSR[j] >> 30) & 0x2);
-							//
-							if ((regs.MxXE[j] == false) || (rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1))
+							// multicolor consumes two bits per pixel and is forced wide
+							if (regs.MxMC[j])
 							{
-								regs.MSR[j] <<= 1;
-								regs.MSRC[j]--;
-							}
-						}
-
-						// if not transparent, process collisions and color
-						if (spriteBits != 0)
-						{
-							switch (spriteBits)
-							{
-								case 1:
-									spritePixel = regs.MMx[0];
-									break;
-								case 2:
-									spritePixel = regs.MxC[j];
-									break;
-								case 3:
-									spritePixel = regs.MMx[1];
-									break;
-								default:
-									// this should never happen but VS needs this
-									spritePixel = 0;
-									break;
-							}
-
-							// process collisions if the border is off
-							if (!borderOnVertical)
-							{
-								if (spritePixelOwner == -1)
+								spriteBits = (int)((regs.MSR[j] >> 30) & 0x3);
+								if ((rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1))
 								{
-									spritePixelOwner = j;
-									if (regs.MxDP[j] || (!regs.MxDP[j] && !pixelBufferForeground[pixelBufferIndex]))
+									regs.MSR[j] <<= 2;
+									regs.MSRC[j]--;
+								}
+							}
+							else
+							{
+								spriteBits = (int)((regs.MSR[j] >> 30) & 0x2);
+								if ((!regs.MxXE[j]) || (rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1))
+								{
+									regs.MSR[j] <<= 1;
+									regs.MSRC[j]--;
+								}
+							}
+
+							// if not transparent, process collisions and color
+							if (spriteBits != 0)
+							{
+								switch (spriteBits)
+								{
+									case 1:
+										spritePixel = regs.MMx[0];
+										break;
+									case 2:
+										spritePixel = regs.MxC[j];
+										break;
+									case 3:
+										spritePixel = regs.MMx[1];
+										break;
+									default:
+										// this should never happen but VS needs this
+										spritePixel = 0;
+										break;
+								}
+
+								// process collisions if the border is off
+								if (!borderOnVertical)
+								{
+									if (spritePixelOwner == -1)
 									{
-										outputPixel = spritePixel;
+										spritePixelOwner = j;
+										if (!regs.MxDP[j] || (!pixelBufferForeground[pixelBufferIndex]))
+										{
+											outputPixel = spritePixel;
+										}
+									}
+									else
+									{
+										// a sprite already occupies this space
+										regs.MxM[spritePixelOwner] = true;
+										regs.MxM[j] = true;
+										regs.IMMC = true;
+									}
+									if (dataForeground)
+									{
+										regs.MxD[j] = true;
+										regs.IMBC = true;
 									}
 								}
-								else
-								{
-									// a sprite already occupies this space
-									//regs.MxM[spritePixelOwner] = true;
-									//regs.MxM[j] = true;
-									//regs.IMMC = true;
-								}
-								if (dataForeground)
-								{
-									//regs.MxD[j] = true;
-									//regs.IMBC = true;
-								}
 							}
+							if (regs.MSRC[j] == 0)
+								regs.MSRA[j] = false;
 						}
-						if (regs.MSRC[j] == 0)
-							regs.MSRA[j] = false;
 					}
-
-
 				}
 
 				// send pixel to bitmap
