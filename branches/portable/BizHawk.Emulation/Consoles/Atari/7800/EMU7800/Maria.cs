@@ -739,7 +739,7 @@ namespace EMU7800.Core
                 for (var j = 0; j < BufferElement.SIZE; j++, s++)
                 {
                     var colorIndex = LineRAM[s];
-                    bufferElement[j] = Registers[BACKGRND + ((colorIndex & 3) == 0 ? 0 : colorIndex)];
+                    bufferElement[j] = Registers[BACKGRND + ((colorIndex & 3) == 0 ? (byte)0 : colorIndex)];
                 }
                 M.FrameBuffer.VideoBuffer[fbi] = bufferElement;
                 if (++fbi == M.FrameBuffer.VideoBufferElementLength)

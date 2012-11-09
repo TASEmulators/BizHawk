@@ -424,7 +424,7 @@ namespace BizHawk.MultiClient
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			
+			RunLoopBlocked = true;
 			ControllerConfig c = new ControllerConfig();
 			c.ShowDialog();
 			if (c.DialogResult == DialogResult.OK)
@@ -432,6 +432,7 @@ namespace BizHawk.MultiClient
 				InitControls();
 				SyncControls();
 			}
+			RunLoopBlocked = false;
 		}
 
 		private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
