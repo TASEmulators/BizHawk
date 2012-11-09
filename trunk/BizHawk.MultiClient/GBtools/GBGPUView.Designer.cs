@@ -37,6 +37,7 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.hScrollBarScanline = new System.Windows.Forms.HScrollBar();
@@ -49,6 +50,8 @@
 			this.labelDetails = new System.Windows.Forms.Label();
 			this.groupBoxMemory = new System.Windows.Forms.GroupBox();
 			this.labelMemory = new System.Windows.Forms.Label();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.labelClipboard = new System.Windows.Forms.Label();
 			this.bmpViewMemory = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewDetails = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewOAM = new BizHawk.MultiClient.GBtools.BmpView();
@@ -58,7 +61,6 @@
 			this.bmpViewTiles2 = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewBG = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewWin = new BizHawk.MultiClient.GBtools.BmpView();
-			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -66,6 +68,7 @@
 			this.groupBox5.SuspendLayout();
 			this.groupBoxDetails.SuspendLayout();
 			this.groupBoxMemory.SuspendLayout();
+			this.groupBox6.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -161,6 +164,15 @@
 			this.groupBox3.TabIndex = 18;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Palettes";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(6, 99);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(266, 13);
+			this.label7.TabIndex = 14;
+			this.label7.Text = "Left-click a palette to use it for drawing the tiles display.";
 			// 
 			// groupBox4
 			// 
@@ -294,6 +306,25 @@
 			this.labelMemory.TabIndex = 0;
 			this.labelMemory.Text = "Right-click an item to display it here.";
 			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.labelClipboard);
+			this.groupBox6.Location = new System.Drawing.Point(548, 469);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(274, 43);
+			this.groupBox6.TabIndex = 23;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "Copy to Clipboard";
+			// 
+			// labelClipboard
+			// 
+			this.labelClipboard.AutoSize = true;
+			this.labelClipboard.Location = new System.Drawing.Point(7, 23);
+			this.labelClipboard.Name = "labelClipboard";
+			this.labelClipboard.Size = new System.Drawing.Size(212, 13);
+			this.labelClipboard.TabIndex = 0;
+			this.labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
+			// 
 			// bmpViewMemory
 			// 
 			this.bmpViewMemory.BackColor = System.Drawing.Color.Black;
@@ -301,6 +332,7 @@
 			this.bmpViewMemory.Name = "bmpViewMemory";
 			this.bmpViewMemory.Size = new System.Drawing.Size(64, 128);
 			this.bmpViewMemory.TabIndex = 1;
+			this.bmpViewMemory.Text = "Details (memory)";
 			// 
 			// bmpViewDetails
 			// 
@@ -309,6 +341,7 @@
 			this.bmpViewDetails.Name = "bmpViewDetails";
 			this.bmpViewDetails.Size = new System.Drawing.Size(64, 128);
 			this.bmpViewDetails.TabIndex = 0;
+			this.bmpViewDetails.Text = "Details (mouseover)";
 			this.bmpViewDetails.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
 			// 
 			// bmpViewOAM
@@ -318,6 +351,7 @@
 			this.bmpViewOAM.Name = "bmpViewOAM";
 			this.bmpViewOAM.Size = new System.Drawing.Size(320, 16);
 			this.bmpViewOAM.TabIndex = 14;
+			this.bmpViewOAM.Text = "Sprites";
 			this.bmpViewOAM.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
 			this.bmpViewOAM.MouseEnter += new System.EventHandler(this.bmpViewOAM_MouseEnter);
 			this.bmpViewOAM.MouseLeave += new System.EventHandler(this.bmpViewOAM_MouseLeave);
@@ -330,7 +364,7 @@
 			this.bmpViewBGPal.Name = "bmpViewBGPal";
 			this.bmpViewBGPal.Size = new System.Drawing.Size(128, 64);
 			this.bmpViewBGPal.TabIndex = 10;
-			this.bmpViewBGPal.Text = "bmpView1";
+			this.bmpViewBGPal.Text = "Background palettes";
 			this.bmpViewBGPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
 			this.bmpViewBGPal.MouseEnter += new System.EventHandler(this.bmpViewBGPal_MouseEnter);
 			this.bmpViewBGPal.MouseLeave += new System.EventHandler(this.bmpViewBGPal_MouseLeave);
@@ -343,7 +377,7 @@
 			this.bmpViewSPPal.Name = "bmpViewSPPal";
 			this.bmpViewSPPal.Size = new System.Drawing.Size(128, 64);
 			this.bmpViewSPPal.TabIndex = 11;
-			this.bmpViewSPPal.Text = "bmpView2";
+			this.bmpViewSPPal.Text = "Sprite palettes";
 			this.bmpViewSPPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
 			this.bmpViewSPPal.MouseEnter += new System.EventHandler(this.bmpViewSPPal_MouseEnter);
 			this.bmpViewSPPal.MouseLeave += new System.EventHandler(this.bmpViewSPPal_MouseLeave);
@@ -356,7 +390,7 @@
 			this.bmpViewTiles1.Name = "bmpViewTiles1";
 			this.bmpViewTiles1.Size = new System.Drawing.Size(128, 192);
 			this.bmpViewTiles1.TabIndex = 6;
-			this.bmpViewTiles1.Text = "bmpView1";
+			this.bmpViewTiles1.Text = "Tiles 1";
 			this.bmpViewTiles1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
 			this.bmpViewTiles1.MouseEnter += new System.EventHandler(this.bmpViewTiles1_MouseEnter);
 			this.bmpViewTiles1.MouseLeave += new System.EventHandler(this.bmpViewTiles1_MouseLeave);
@@ -369,7 +403,7 @@
 			this.bmpViewTiles2.Name = "bmpViewTiles2";
 			this.bmpViewTiles2.Size = new System.Drawing.Size(128, 192);
 			this.bmpViewTiles2.TabIndex = 7;
-			this.bmpViewTiles2.Text = "bmpView2";
+			this.bmpViewTiles2.Text = "Tiles 2";
 			this.bmpViewTiles2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
 			this.bmpViewTiles2.MouseEnter += new System.EventHandler(this.bmpViewTiles2_MouseEnter);
 			this.bmpViewTiles2.MouseLeave += new System.EventHandler(this.bmpViewTiles2_MouseLeave);
@@ -382,7 +416,7 @@
 			this.bmpViewBG.Name = "bmpViewBG";
 			this.bmpViewBG.Size = new System.Drawing.Size(256, 256);
 			this.bmpViewBG.TabIndex = 4;
-			this.bmpViewBG.Text = "bmpView1";
+			this.bmpViewBG.Text = "Background";
 			this.bmpViewBG.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
 			this.bmpViewBG.MouseEnter += new System.EventHandler(this.bmpViewBG_MouseEnter);
 			this.bmpViewBG.MouseLeave += new System.EventHandler(this.bmpViewBG_MouseLeave);
@@ -395,26 +429,18 @@
 			this.bmpViewWin.Name = "bmpViewWin";
 			this.bmpViewWin.Size = new System.Drawing.Size(256, 256);
 			this.bmpViewWin.TabIndex = 5;
-			this.bmpViewWin.Text = "bmpView2";
+			this.bmpViewWin.Text = "Window";
 			this.bmpViewWin.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpView_MouseClick);
 			this.bmpViewWin.MouseEnter += new System.EventHandler(this.bmpViewWin_MouseEnter);
 			this.bmpViewWin.MouseLeave += new System.EventHandler(this.bmpViewWin_MouseLeave);
 			this.bmpViewWin.MouseMove += new System.Windows.Forms.MouseEventHandler(this.bmpViewWin_MouseMove);
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(6, 99);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(266, 13);
-			this.label7.TabIndex = 14;
-			this.label7.Text = "Left-click a palette to use it for drawing the tiles display.";
 			// 
 			// GBGPUView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(834, 524);
+			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.groupBoxMemory);
 			this.Controls.Add(this.groupBoxDetails);
 			this.Controls.Add(this.groupBox5);
@@ -427,6 +453,7 @@
 			this.Text = "GameBoy GPU Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GBGPUView_FormClosed);
 			this.Load += new System.EventHandler(this.GBGPUView_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GBGPUView_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
@@ -440,6 +467,8 @@
 			this.groupBoxDetails.PerformLayout();
 			this.groupBoxMemory.ResumeLayout(false);
 			this.groupBoxMemory.PerformLayout();
+			this.groupBox6.ResumeLayout(false);
+			this.groupBox6.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -477,5 +506,7 @@
 		private System.Windows.Forms.Label labelMemory;
 		private BmpView bmpViewMemory;
 		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.GroupBox groupBox6;
+		private System.Windows.Forms.Label labelClipboard;
 	}
 }
