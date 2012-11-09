@@ -7,13 +7,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public class DirectionalDataPort
 	{
-		private int _data;
+		protected byte _data;
 		public byte Direction;
+		public Action<byte> WritePort;
 
 		public DirectionalDataPort(byte initData, byte initDirection)
 		{
 			_data = initData;
 			Direction = initDirection;
+			WritePort = WritePortDummy;
+			WritePort(_data);
 		}
 
 		public byte Data
@@ -24,14 +27,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 			set
 			{
-				_data &= ~Direction;
-				_data |= (value & Direction);
+				_data &= (byte)~Direction;
+				_data |= (byte)(value & Direction);
+				WritePort(_data);
 			}
 		}
 
-		public void ForceSetData(byte newData)
+		private void WritePortDummy(byte val)
 		{
-			_data = newData;
 		}
 	}
 }
