@@ -44,6 +44,13 @@ namespace BizHawk.MultiClient
 				device.Update();
 		}
 
+		public static void CloseAll()
+		{
+			foreach (var device in Devices)
+				device.joystick.Dispose();
+			Devices.Clear();
+		}
+
 		// ********************************** Instance Members **********************************
 
 		readonly string name;
