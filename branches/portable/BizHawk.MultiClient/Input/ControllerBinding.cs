@@ -17,6 +17,8 @@ namespace BizHawk.MultiClient
 		}
 
 		public ControllerDefinition Type { get { return type; } }
+		/// <summary>don't do this</summary>
+		public void ForceType(ControllerDefinition newtype) { this.type = newtype; }
 		public bool this[string button] { get { return IsPressed(button); } }
 		public bool IsPressed(string button)
 		{
@@ -65,14 +67,17 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void OR_FromLogical(IController controller)
 		{
-			foreach (string button in type.BoolButtons)
-			{
-				if (controller.IsPressed(button))
+			// change: or from each button that the other input controller has
+			//foreach (string button in type.BoolButtons)
+			if (controller.Type != null)
+				foreach (string button in controller.Type.BoolButtons)
 				{
-					buttons[button] = true;
-					//Console.WriteLine(button);
+					if (controller.IsPressed(button))
+					{
+						buttons[button] = true;
+						//Console.WriteLine(button);
+					}
 				}
-			}
 		}
 
 		public void BindButton(string button, string control)

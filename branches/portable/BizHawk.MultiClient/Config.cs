@@ -29,10 +29,10 @@ namespace BizHawk.MultiClient
 			GenesisController[0] = new GenControllerTemplate(true);
 			GenesisAutoController[0] = new GenControllerTemplate(false);
 
-			Atari2600Controller[0] = new Atari2600ControllerTemplate(true);
-			Atari2600Controller[1] = new Atari2600ControllerTemplate(false);
-			Atari2600AutoController[0] = new Atari2600ControllerTemplate(false);
-			Atari2600AutoController[1] = new Atari2600ControllerTemplate(false);
+			Atari2600Controller[0] = new SingleButtonJoyStickTemplate(true);
+			Atari2600Controller[1] = new SingleButtonJoyStickTemplate(false);
+			Atari2600AutoController[0] = new SingleButtonJoyStickTemplate(false);
+			Atari2600AutoController[1] = new SingleButtonJoyStickTemplate(false);
 			Atari2600ConsoleButtons[0] = new Atari2600ConsoleButtonsTemplate(true);
 
 			NESAutoController[0] = new NESControllerTemplate(false);
@@ -56,6 +56,15 @@ namespace BizHawk.MultiClient
 
 			ColecoController = new ColecoVisionControllerTemplate(true);
 
+			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true);
+			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
+			C64AutoJoysticks[0] = new SingleButtonJoyStickTemplate(false);
+			C64AutoJoysticks[1] = new SingleButtonJoyStickTemplate(false);
+
+			NESConsoleButtons = new NESConsoleButtonTemplate();
+			SNESConsoleButtons = new NESConsoleButtonTemplate();
+			SMSConsoleButtons = new SMSConsoleButtonTemplate();
+			GenesisConsoleButtons = new GenConsoleButtonTemplate();
 		}
 
 		// Directories
@@ -143,6 +152,21 @@ namespace BizHawk.MultiClient
 		public string PathAtariScreenshots = Path.Combine(".", "Screenshots");
 		public string PathAtariCheats = Path.Combine(".", "Cheats");
 
+		public string BaseC64 = Path.Combine(".", "C64");
+		public string PathC64ROMs = ".";
+		public string PathC64Savestates = Path.Combine(".", "State");
+		public string PathC64Screenshots = Path.Combine(".", "Screenshots");
+		public string PathC64Cheats = Path.Combine(".", "Cheats");
+		public string PathC64Firmwares = Path.Combine(".", "Firmwares");
+
+		public string BasePSX = Path.Combine(".", "PSX");
+		public string PathPSXROMs = ".";
+		public string PathPSXSavestates = Path.Combine(".", "State");
+		public string PathPSXSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathPSXScreenshots = Path.Combine(".", "Screenshots");
+		public string PathPSXCheats = Path.Combine(".", "Cheats");
+		public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
+
 		public string MoviesPath = Path.Combine(".", "Movies");
 		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
 		public string LuaPath = Path.Combine(".", "Lua");
@@ -154,6 +178,10 @@ namespace BizHawk.MultiClient
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
+		public string PathFDSBios = Path.Combine(".", "disksys.rom");
+		public string PathAtari7800NTSCBIOS = Path.Combine(".", "7800NTSCBIOS.bin");
+		public string PathAtari7800PALBIOS = Path.Combine(".", "7800PALBIOS.bin");
+		public string PathAtari7800HighScoreBIOS = Path.Combine(".", "7800highscore.bin");
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
@@ -471,6 +499,13 @@ namespace BizHawk.MultiClient
 		public int TASHeight = -1;
 		public bool TASUpdatePads = true;
 
+		// VirtualPad Dialog
+		public bool VirtualPadSaveWindowPosition = true;
+		public bool AutoloadVirtualPad = false;
+		public bool VirtualPadSticky = true;
+		public int VPadWndx = -1;
+		public int VPadWndy = -1;
+
 		// NES Game Genie Encoder/Decoder
 		public bool NESGGAutoload = false;
 		public bool NESGGSaveWindowPosition = true;
@@ -589,6 +624,7 @@ namespace BizHawk.MultiClient
 		public string ToggleSNESOBJ2Binding = "";
 		public string ToggleSNESOBJ3Binding = "";
 		public string ToggleSNESOBJ4Binding = "";
+		public string SaveMovieBinding = "";
 
 		// NES Sound settings
 		public bool NESEnableSquare1 = true;
@@ -605,10 +641,9 @@ namespace BizHawk.MultiClient
 		public bool GGShowClippedRegions = false;
 		public bool GGHighlightActiveDisplayRegion = false;
 
-		public string SmsReset = "C";
-		public string SmsPause = "V, X1 Start";
 		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
+		public SMSConsoleButtonTemplate SMSConsoleButtons = new SMSConsoleButtonTemplate();
 
 		// PCEngine Settings
 		public bool PceSpriteLimit = false;
@@ -620,10 +655,11 @@ namespace BizHawk.MultiClient
 		// Genesis Settings
 		public GenControllerTemplate[] GenesisController = new GenControllerTemplate[1];
 		public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
+		public GenConsoleButtonTemplate GenesisConsoleButtons = new GenConsoleButtonTemplate();
 
 		//Atari 2600 Settings
-		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[2];
-		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[2];
+		public SingleButtonJoyStickTemplate[] Atari2600Controller = new SingleButtonJoyStickTemplate[2];
+		public SingleButtonJoyStickTemplate[] Atari2600AutoController = new SingleButtonJoyStickTemplate[2];
 		public Atari2600ConsoleButtonsTemplate[] Atari2600ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
 		public bool Atari2600_BW = false;
 		public bool Atari2600_LeftDifficulty = true;
@@ -633,13 +669,14 @@ namespace BizHawk.MultiClient
 		public ColecoVisionControllerTemplate ColecoController = new ColecoVisionControllerTemplate(true);
 
 		//NES settings
-		//public string NESReset = "Backspace";
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
 		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
+		public NESConsoleButtonTemplate NESConsoleButtons = new NESConsoleButtonTemplate();
 
 		//SNES settings
 		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
 		public SNESControllerTemplate[] SNESAutoController = new SNESControllerTemplate[4];
+		public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
@@ -652,6 +689,10 @@ namespace BizHawk.MultiClient
 		public bool GB_MulticartCompat = false;
 		public string GB_PaletteFile = "";
 		public bool GB_AsSGB = false;
+
+		//Commodore 64 Settings
+		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
+		public SingleButtonJoyStickTemplate[] C64AutoJoysticks = new SingleButtonJoyStickTemplate[2]; 
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;
@@ -680,6 +721,36 @@ namespace BizHawk.MultiClient
 		public string LuaWriterFont = "Courier New";
 		public float LuaWriterZoom = 1;
 		public bool LuaWriterStartEmpty = false;
+
+		//Atari 2600 Settings
+		public bool Atari2600_ShowBG = true;
+		public bool Atari2600_ShowPlayer1 = true;
+		public bool Atari2600_ShowPlayer2 = true;
+		public bool Atari2600_ShowMissle1 = true;
+		public bool Atari2600_ShowMissle2 = true;
+		public bool Atari2600_ShowBall = true;
+		public bool Atari2600_ShowPlayfield = true;
+	}
+
+	public class NESConsoleButtonTemplate
+	{
+		public string Reset = "";
+		public string Power = "";
+		public string FDS_Eject = "";
+		public string FDS_Insert = "";
+		public string VS_Coin_1 = "";
+		public string VS_Coin_2 = "";
+	}
+
+	public class SMSConsoleButtonTemplate
+	{
+		public string Reset = "C";
+		public string Pause = "V, X1 Start";
+	}
+
+	public class GenConsoleButtonTemplate
+	{
+		public string Reset = "";
 	}
 
 	public class SMSControllerTemplate
@@ -813,8 +884,8 @@ namespace BizHawk.MultiClient
 		public string Right;
 		public string A;
 		public string B;
-		public string Start;
 		public string Select;
+		public string Start;
 		public bool Enabled;
 		public NESControllerTemplate() { }
 		public NESControllerTemplate(bool defaults)
@@ -854,8 +925,9 @@ namespace BizHawk.MultiClient
 		public string Right;
 		public string A;
 		public string B;
-		public string Start;
 		public string Select;
+		public string Start;
+		public string Power = "";
 		public bool Enabled;
 		public GBControllerTemplate() { }
 		public GBControllerTemplate(bool defaults)
@@ -871,6 +943,7 @@ namespace BizHawk.MultiClient
 				B = "Z, X1 A";
 				Start = "Return, X1 Start";
 				Select = "Space, X1 Back";
+				Power = "";
 			}
 			else
 			{
@@ -883,6 +956,7 @@ namespace BizHawk.MultiClient
 				B = "";
 				Start = "";
 				Select = "";
+				Power = "";
 			}
 		}
 	}
@@ -917,7 +991,7 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class Atari2600ControllerTemplate
+	public class SingleButtonJoyStickTemplate
 	{
 		public string Up = "";
 		public string Down = "";
@@ -926,8 +1000,8 @@ namespace BizHawk.MultiClient
 		public string Button = "";
 		public bool Enabled;
 
-		public Atari2600ControllerTemplate() { }
-		public Atari2600ControllerTemplate(bool defaults)
+		public SingleButtonJoyStickTemplate() { }
+		public SingleButtonJoyStickTemplate(bool defaults)
 		{
 			if (defaults)
 			{

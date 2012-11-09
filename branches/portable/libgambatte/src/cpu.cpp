@@ -38,7 +38,8 @@ CPU::CPU()
   E(0xD8),
   H(0x01),
   L(0x4D),
-  skip(false)
+  skip(false),
+  tracecallback(0)
 {
 }
 
@@ -520,7 +521,27 @@ void CPU::process(const unsigned long cycles) {
 		} else while (cycleCounter < memory.nextEventTime()) {
 			unsigned char opcode;
 			
-			PC_READ(opcode);
+			if (tracecallback) {
+				int result[13];
+				result[0] = cycleCounter;
+				result[1] = PC;
+				result[2] = SP;
+				result[3] = A;
+				result[4] = B;
+				result[5] = C;
+				result[6] = D;
+				result[7] = E;
+				result[8] = F();
+				result[9] = H;
+				result[10] = L;
+				result[11] = skip;
+				PC_READ(opcode);
+				result[12] = opcode;
+				tracecallback((void *)result);
+			}
+			else {
+				PC_READ(opcode);
+			}
 			
 			if (skip) {
 				PC = (PC - 1) & 0xFFFF;

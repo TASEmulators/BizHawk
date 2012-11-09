@@ -352,7 +352,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 		}
 
-		public byte ReadMemory(ushort addr)
+		public byte ReadMemory(ushort addr, bool peek)
 		{
 			ushort maskedAddr = (ushort)(addr & 0x000F);
 			Console.WriteLine("TIA read:  " + maskedAddr.ToString("x"));
@@ -370,12 +370,12 @@ namespace BizHawk.Emulation.Consoles.Atari
 				{
 					if (inpt4 == true)
 					{
-						inpt4 = ((core.ReadControls1() & 0x08) != 0);
+						inpt4 = ((core.ReadControls1(peek) & 0x08) != 0);
 					}
 				}
 				else
 				{
-					inpt4 = ((core.ReadControls1() & 0x08) != 0);
+					inpt4 = ((core.ReadControls1(peek) & 0x08) != 0);
 				}
 				return (byte)(inpt4 ? 0x80 : 0x00); 
 

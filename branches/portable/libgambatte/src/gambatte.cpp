@@ -103,6 +103,14 @@ void GB::setWriteCallback(void (*callback)(unsigned)) {
 	p_->cpu.setWriteCallback(callback);
 }
 
+void GB::setTraceCallback(void (*callback)(void *)) {
+	p_->cpu.setTraceCallback(callback);
+}
+
+void GB::setScanlineCallback(void (*callback)(), int sl) {
+	p_->cpu.setScanlineCallback(callback, sl);
+}
+
 void GB::setSaveDir(const std::string &sdir) {
 	p_->cpu.setSaveDir(sdir);
 }

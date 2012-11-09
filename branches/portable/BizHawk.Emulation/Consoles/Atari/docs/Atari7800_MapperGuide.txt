@@ -1,0 +1,213 @@
+ATARI 7800 BANKSWITCHING GUIDE
+(c) copyright by Eckhard Stolberg (Eckhard_Stolberg@web.de)
+last modified on February 25, 2003 (version 1.00)
+
+Thanks to:
+Lee Krueger, Graham Percy, Dan Boris, Chad Schell and Mitch Orman
+==============================================================================
+7800 games can use the memory from $0400 to $047f, from $0500
+to $17ff and from $2800 to $ffff, but only the High-Score cart
+uses anything below $4000. It has 4KB of ROM at $3000-$3fff
+and 2KB of battery-backed RAM at $1000-$17ff.
+
+
+The non bankswitching games (7808, 7816, 7832 and 7848) just
+use the specified amount of ROM from $ffff downwards.
+
+
+Then there are several different types of Atari's SuperGame
+bankswitching. It basically consists of 8 16KB banks (0-7)
+that can be mapped in at $8000-$bfff. Bank 7 always is fixed
+at $c000-$ffff. To map in a chosen bank into $8000-$bfff you
+write it's bank number (0-7) to any address between $8000-bfff.
+The contend of $4000-$7fff differs between different variations
+of this type:
+
+Some games have nothing connected in this area and return only
+random data.
+
+Some games have bank 6 fixed at this area.
+
+Some games have 16K of extra ROM there. Those games are 144K
+in size and are marked as 78S9 in the list.
+
+Some games have either 8K of RAM at $6000-$7fff or 16K of
+RAM at $4000-$7fff.
+
+Some games have a POKEY chip mapped in at this area. It
+has 16 addresses that get repeated all the way between $4000
+and $7fff.
+
+Some games only have 4 ROM banks at $8000-$bfff (0-3). Banks
+4-7 either return the same data as banks 0-3 or completely
+random data. PAL Karateka is a special case. It only uses
+banks 4-7. Banks 0-3 are random data and bank 6 is also fixed
+at $4000-$7fff.
+
+
+F18 Hornet has it's own bankswitching format (78AB). It has
+32K of fixed data at $8000-$ffff and 2 16K banks at $4000 -
+$7fff. The two banks get mapped in by writing either $01 or
+$02 to address $8000. I don't know if other addresses trigger
+the bankswitching too, but I'm assuming any address above
+$8000 might work. I have no idea what happens when you write
+other values to the hotspot, but they probably will just be
+ignored.
+
+
+Double Dragon and Rampage have a very wierd bankswitching
+scheme (78AC). It has 8 16K banks (0-7) that get mapped in at
+$a000-$dfff. Write accesses to addresses above $ff80 trigger
+the bankswitching. This sets the bank according to the low
+nibble of the address. So a write to $ff80 maps in bank 0,
+a write to $ff81 maps in bank 1, etc. The games only use
+addresses $ff80-$ff87, so I'm not sure if other addresses
+trigger the bankswitching too.
+
+If we are assuming that a bank reaches from $a000-$dfff,
+then the rest of the ROM space looks like this:
+
+$4000-$5fff second 8kb of bank 6
+$6000-$7fff first 8kb of bank 6
+$8000-$9fff second 8kb of bank 7
+$e000-$ffff first 8kb of bank 7
+
+
+
+Type  RAM  POKEY  TV     Name
+
+78SG    0   no    NTSC   Ace of Aces
+78S9    0   no    NTSC   Alien Brigade
+7816    0   no    NTSC   Asteroids
+7832    0   yes   NTSC   Ballblazer
+78SG    0   no    NTSC   Barnyard Blaster
+78SG    0   no    NTSC   Basketbrawl
+7816    0   no    NTSC   Centipede
+7832    0   no    NTSC   Choplifter!
+78SG    0   yes   NTSC   Commando
+7808    0   no    NTSC   Colour Test
+78SG    0   no    NTSC   Crack'ed
+78S9    0   no    NTSC   Crossbow
+78SG    0   no    NTSC   Dark Chambers
+7848    0   no    NTSC   Desert Falcon
+7816SG 144  no    NTSC   Development Cartridge (Atari)
+7832    0   no    NTSC   Diagnostic Cartridge
+7816    0   no    NTSC   Dig Dug
+7848    0   no    NTSC   Donkey Kong
+7848    0   no    NTSC   Donkey Kong Junior
+78AC    0   no    NTSC   Double Dragon
+78AB    0   no    NTSC   F18 Hornet
+78SG    0   no    NTSC   Fatal Run
+78SG    0   no    NTSC   Fight Night
+7832    0   no    NTSC   Food Fight
+7832    0   no    NTSC   Galaga
+7848    0   no    NTSC   Hatrick
+78HS    2   no    NTSC   High-Score Cartridge (RAM is battery backed)
+78SG    0   no    NTSC   Ikari Warriors
+78SG    8   no    NTSC   Impossible Mission
+78SG    8   no    NTSC   Jinks
+7832    0   no    NTSC   Joust
+7848    0   no    NTSC   Karateka
+78SG    0   no    NTSC   KLAX (prototype)
+7832    0   no    NTSC   Kung-Fu Master
+7848    0   no    NTSC   Mario Bros.
+78SG    0   no    NTSC   Mat Mania Challenge
+78SG    0   no    NTSC   Mean 18 Ultimate Golf
+78SG    0   no    NTSC   Meltdown
+78SG    0   no    NTSC   Midnight Mutants
+7816*2  8   no    NTSC   Monitor Cartridge (Harry Dodgson)
+                         (16KB for 7800 mode and 16KB for 2600 mode
+                          RAM is battery backed)
+78SG    0   no    NTSC   Motor Psycho
+7816    0   no    NTSC   Ms. Pac-Man
+78SG    0   no    NTSC   Ninja Golf
+7848    0   no    NTSC   One on One Basketball
+7832    0   no    NTSC   Pete Rose Baseball
+78S4    0   no    NTSC   Pitfighter (prototype)
+78SG    0   no    NTSC   Planet Smashers
+7832    0   no    NTSC   Pole Position II
+78AC    0   no    NTSC   Rampage
+78S4    0   no    NTSC   Realsports Baseball
+7832    0   no    NTSC   Robotron
+78SG    0   no    NTSC   Scrapyard Dog
+78SG    0   no    NTSC   Sentinel (prototype)
+78SG   16   no    NTSC   Summer Games
+7848    0   no    NTSC   Super Huey UH-IX
+7832    0   no    NTSC   Super Skateboardin'
+78S4    0   no    NTSC   Tank Command
+7832    0   no    NTSC   Titlematch Pro Wrestling
+7832    0   no    NTSC   Tomcat F14
+78SG    0   no    NTSC   Touchdown Football
+78S4    8   no    NTSC   Tower Toppler
+78S4    0   no    NTSC   Waterski
+78SG   16   no    NTSC   Winter Games
+78SG    0   no    NTSC   Xenophobe
+7832    0   no    NTSC   Xevious
+
+missing:
+GATO prototype
+Plutos prototype
+Sirius prototype
+Chuck Norris: Missing in Action prototype
+
+
+78SG    0   no    PAL    Ace of Aces
+78S9    0   no    PAL    Alien Brigade
+7816*   0   no  PAL/NTSC Asteroids (BIOS)
+7832    0   yes   PAL    Ballblazer
+78SG    0   no    PAL    Barnyard Blaster
+78SG    0   no    PAL    Basketbrawl
+7816    0   no    PAL    Centipede
+7848    0   no    PAL    Choplifter!
+78SG    0   yes   PAL    Commando
+78SG    0   no    PAL    Crack'ed
+78S9    0   no    PAL    Crossbow
+78SG    0   no    PAL    Dark Chambers
+7848    0   no    PAL    Desert Falcon
+7832    0   no    PAL    Dig Dug
+7848    0   no    PAL    Donkey Kong
+7848    0   no    PAL    Donkey Kong Junior
+78AC    0   no    PAL    Double Dragon
+78AB    0   no    PAL    F18 Hornet
+78SG    0   no    PAL    Fatal Run
+78SG    0   no    PAL    Fight Night
+7848    0   no    PAL    Food Fight
+7848    0   no    PAL    Galaga
+7848    0   no    PAL    Hat Trick
+78SG    0   no    PAL    Ikari Warriors
+78SG    8   no    PAL    Impossible Mission
+78SG    8   no    PAL    Jinks
+7848    0   no    PAL    Joust
+78S4    0   no    PAL    Karateka (uses banks 4-7 instead of 0-3)
+7832    0   no    PAL    Kung-Fu Master
+7848    0   no    PAL    Mario Bros.
+78SG    0   no    PAL    Mat Mania Challenge
+78SG    0   no    PAL    Mean 18 Ultimate Golf
+78SG    0   no    PAL    Meltdown
+78SG    0   no    PAL    Midnight Mutants
+78SG    0   no    PAL    Motor Psycho
+7832    0   no    PAL    Ms. Pac-Man
+78SG    0   no    PAL    Ninja Golf
+7848    0   no    PAL    One on One Basketball
+7832    0   no    PAL    (Pete Rose) Baseball
+78SG    0   no    PAL    Planet Smashers
+7832    0   no    PAL    Pole Position II
+78SG    0   no    PAL    Scrapyard Dog
+78SG    0   no    PAL    Sentinel
+7848    0   no    PAL    Super Huey UH-IX
+7832    0   no    PAL    Super Skateboardin'
+7832    0   no    PAL    Titlematch Pro Wrestling
+7832    0   no    PAL    Tomcat F14
+78S4    8   no    PAL    Tower Toppler
+78SG    0   no    PAL    Xenophobe
+7848    0   no    PAL    Xevious
+
+no PAL version released (?):
+Rampage
+Realsports Baseball
+Robotron
+Summer Games
+Tank Command
+Touchdown Football
+Water Ski
+Winter Games

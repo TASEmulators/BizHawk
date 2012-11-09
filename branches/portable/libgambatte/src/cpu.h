@@ -39,6 +39,8 @@ class CPU {
 	
 	void process(unsigned long cycles);
 	
+	void (*tracecallback)(void *);
+
 public:
 	
 	CPU();
@@ -72,6 +74,14 @@ public:
 	void setWriteCallback(void (*callback)(unsigned)) {
 		memory.setWriteCallback(callback);
 	}
+
+	void setTraceCallback(void (*callback)(void *)) {
+		tracecallback = callback;
+	}
+
+	void setScanlineCallback(void (*callback)(), int sl) {
+		memory.setScanlineCallback(callback, sl);
+	}
 	
 	void setSaveDir(const std::string &sdir) {
 		memory.setSaveDir(sdir);
@@ -104,7 +114,8 @@ public:
 	void setGameGenie(const std::string &codes) { memory.setGameGenie(codes); }
 	void setGameShark(const std::string &codes) { memory.setGameShark(codes); }
 
-	unsigned char ExternalRead(unsigned short addr) { return memory.read(addr, cycleCounter_); }
+	//unsigned char ExternalRead(unsigned short addr) { return memory.read(addr, cycleCounter_); }
+	unsigned char ExternalRead(unsigned short addr) { return memory.peek(addr); }
 	void ExternalWrite(unsigned short addr, unsigned char val) { memory.write(addr, val, cycleCounter_); }
 
 };

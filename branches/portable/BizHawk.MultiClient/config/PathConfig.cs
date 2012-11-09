@@ -66,6 +66,7 @@ namespace BizHawk.MultiClient
 			NESScreenshotsBox.Text = Global.Config.PathNESScreenshots;
 			NESCheatsBox.Text = Global.Config.PathNESCheats;
 			NESPaletteBox.Text = Global.Config.PathNESPalette;
+			NESFDSBiosBox.Text = Global.Config.PathFDSBios;
 
 			SNESBaseBox.Text = Global.Config.BaseSNES;
 			SNESROMsBox.Text = Global.Config.PathSNESROMs;
@@ -132,6 +133,12 @@ namespace BizHawk.MultiClient
 			AtariScreenshotsBox.Text = Global.Config.PathAtariScreenshots;
 			AtariCheatsBox.Text = Global.Config.PathAtariCheats;
 
+			C64BaseBox.Text = Global.Config.BaseC64;
+			C64ROMsBox.Text = Global.Config.PathC64ROMs;
+			C64SavestatesBox.Text = Global.Config.PathC64Savestates;
+			C64ScreenshotsBox.Text = Global.Config.PathC64Screenshots;
+			C64CheatsBox.Text = Global.Config.PathC64Cheats;
+
 			MoviesBox.Text = Global.Config.MoviesPath;
 			MovieBackupsBox.Text = Global.Config.MoviesBackupPath;
 			LuaBox.Text = Global.Config.LuaPath;
@@ -143,8 +150,8 @@ namespace BizHawk.MultiClient
 
 			if (!Global.MainForm.INTERIM)
 			{
-				var TABPage1 = tabControl1.TabPages[10]; //Hide Int. V
-				tabControl1.Controls.Remove(TABPage1);
+				tabControl1.Controls.Remove(tabControl1.TabPages[10]); //Int. V
+				//tabControl1.Controls.Remove(tabControl1.TabPages[12]); //C64 //WHY DOES THIS FAIL?!
 			}
 
 			switch (Global.Game.System)
@@ -186,6 +193,9 @@ namespace BizHawk.MultiClient
 				case "INTV":
 					tabControl1.SelectTab(10);
 					break;
+				case "C64":
+					tabControl1.SelectTab(12);
+					break;
 				case "NULL":
 					tabControl1.SelectTab(11);
 					break;
@@ -214,6 +224,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathNESScreenshots = NESScreenshotsBox.Text;
 			Global.Config.PathNESCheats = NESCheatsBox.Text;
 			Global.Config.PathNESPalette = NESPaletteBox.Text;
+			Global.Config.PathFDSBios = NESFDSBiosBox.Text;
 
 			Global.Config.BaseSNES = SNESBaseBox.Text;
 			Global.Config.PathSNESROMs = SNESROMsBox.Text;
@@ -280,6 +291,12 @@ namespace BizHawk.MultiClient
 			Global.Config.PathAtariScreenshots = AtariScreenshotsBox.Text;
 			Global.Config.PathAtariCheats = AtariCheatsBox.Text;
 
+			Global.Config.BaseC64 = C64BaseBox.Text;
+			Global.Config.PathC64ROMs = C64ROMsBox.Text;
+			Global.Config.PathC64Savestates = C64SavestatesBox.Text;
+			Global.Config.PathC64Screenshots = C64ScreenshotsBox.Text;
+			Global.Config.PathC64Cheats = C64CheatsBox.Text;
+
 			Global.Config.MoviesPath = MoviesBox.Text;
 			Global.Config.MoviesBackupPath = MovieBackupsBox.Text;
 			Global.Config.LuaPath = LuaBox.Text;
@@ -314,32 +331,57 @@ namespace BizHawk.MultiClient
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
-			INTVRomsBox.Enabled = !RecentForROMs.Checked;
-			INTVBrowseROMs.Enabled = !RecentForROMs.Checked;
+
+			
+
 			NESROMsBox.Enabled = !RecentForROMs.Checked;
-			BrowseNESROMs.Enabled = !RecentForROMs.Checked;
+			NESBrowseROMs.Enabled = !RecentForROMs.Checked;
+			NESROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			SNESBrowseROMs.Enabled = !RecentForROMs.Checked;
+			SNESROMsBox.Enabled = !RecentForROMs.Checked;
+			SNESROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			Sega8ROMsDescription.Enabled = !RecentForROMs.Checked;
 			Sega8ROMsBox.Enabled = !RecentForROMs.Checked;
 			Sega8BrowseROMs.Enabled = !RecentForROMs.Checked;
+
+			SGROMsBox.Enabled = !RecentForROMs.Checked;
+			SGBrowseROMs.Enabled = !RecentForROMs.Checked;
+			SGROMsDescription.Enabled = !RecentForROMs.Checked;
+
 			GGROMBox.Enabled = !RecentForROMs.Checked;
 			GGROMsDescription.Enabled = !RecentForROMs.Checked;
-			SGROMsBox.Enabled = !RecentForROMs.Checked;
-			SGROMsDescription.Enabled = !RecentForROMs.Checked;
+			GGBrowseROMs.Enabled = !RecentForROMs.Checked;
+
 			GenesisROMsBox.Enabled = !RecentForROMs.Checked;
 			GenesisBrowseROMs.Enabled = !RecentForROMs.Checked;
+			GenesisROMsDescription.Enabled = !RecentForROMs.Checked;
+			
+
 			PCEROMsBox.Enabled = !RecentForROMs.Checked;
 			PCEBrowseROMs.Enabled = !RecentForROMs.Checked;
+			PCEROMsDescription.Enabled = !RecentForROMs.Checked;
+
 			GBROMsBox.Enabled = !RecentForROMs.Checked;
 			GBBrowseROMs.Enabled = !RecentForROMs.Checked;
+			GBROMsDescription.Enabled = !RecentForROMs.Checked;
+
 			TI83ROMsBox.Enabled = !RecentForROMs.Checked;
 			TI83BrowseROMs.Enabled = !RecentForROMs.Checked;
-
-			INTVROMsDescription.Enabled = !RecentForROMs.Checked;
-			NESROMsDescription.Enabled = !RecentForROMs.Checked;
-			Sega8ROMsDescription.Enabled = !RecentForROMs.Checked;
-			GenesisROMsDescription.Enabled = !RecentForROMs.Checked;
-			PCEROMsDescription.Enabled = !RecentForROMs.Checked;
-			GBROMsDescription.Enabled = !RecentForROMs.Checked;
 			TI83ROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			AtariROMsBox.Enabled = !RecentForROMs.Checked;
+			AtariBrowseROMs.Enabled = !RecentForROMs.Checked;
+			AtariROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			C64ROMsBox.Enabled = !RecentForROMs.Checked;
+			C64BrowseROMs.Enabled = !RecentForROMs.Checked;
+			C64ROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			INTVRomsBox.Enabled = !RecentForROMs.Checked;
+			INTVBrowseROMs.Enabled = !RecentForROMs.Checked;
+			INTVROMsDescription.Enabled = !RecentForROMs.Checked;
 		}
 
 		private void BrowseFolder(TextBox box, string Name)
@@ -789,6 +831,51 @@ namespace BizHawk.MultiClient
 		private void BrowseSNESSaveRAM_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(SNESSaveRAMBox, SNESSaveRAMDescription.Text);
+		}
+
+		private void NESBrowseFDSBios_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(NESFDSBiosBox, NESFDSBiosDescription.Text);
+		}
+
+		private void SNESFirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
+		}
+
+		private void BrowseC64Base_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(C64BaseBox, C64BaseDescription.Text);
+		}
+
+		private void BrowseC64ROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(NESROMsBox, NESROMsDescription.Text, "C64");
+		}
+
+		private void BrowseC64Savestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(NESSavestatesBox, NESSavestatesDescription.Text, "C64");
+		}
+
+		private void BrowseC64Screenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(C64ScreenshotsBox, C64ScreenshotsDescription.Text, "C64");
+		}
+
+		private void C64BrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(C64CheatsBox, C64CheatsDescription.Text, "C64");
+		}
+
+		private void C64BrowseFirmwares_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(C64FirmwaresBox, C64FirmwaresDescription.Text);
+		}
+
+		private void C64FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
 		}
 	}
 }

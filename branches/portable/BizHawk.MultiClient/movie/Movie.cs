@@ -50,6 +50,21 @@ namespace BizHawk.MultiClient
 		
 		public bool Loaded { get; private set; }
 		public bool IsText { get; private set; }
+		public int LoopOffset = -1;
+		public bool Loop
+		{
+			get
+			{
+				if (LoopOffset >= 0)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
 
 		public int Rerecords
 		{
@@ -94,7 +109,14 @@ namespace BizHawk.MultiClient
 			{
 				if (Loaded)
 				{
-					return Log.Length;
+					if (Loop)
+					{
+						return 999999; //TODO: rethink this, maybe return a nullable int, and on the client side check for null and act accordingly
+					}
+					else
+					{
+						return Log.Length;
+					}
 				}
 				else
 				{
@@ -260,6 +282,7 @@ namespace BizHawk.MultiClient
 		public void SwitchToPlay()
 		{
 			Mode = MOVIEMODE.PLAY;
+			WriteMovie();
 		}
 
 		public void Stop()
@@ -286,19 +309,36 @@ namespace BizHawk.MultiClient
 
 		public void WriteMovie()
 		{
-			if (!Loaded) return;
-			if (Filename == "") return;
+			if (!Loaded)
+			{
+				return;
+			}
+			else if (Filename == "")
+			{
+				return;
+			}
+			
 			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
 			if (IsText)
+			{
 				WriteText(Filename);
+			}
 			else
+			{
 				WriteBinary(Filename);
+			}
 		}
 
 		public void WriteBackup()
 		{
-			if (!Loaded) return;
-			if (Filename == "") return;
+			if (!Loaded)
+			{
+				return;
+			}
+			else if (Filename == "")
+			{
+				return;
+			}
 
 			string BackupName = Filename;
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
@@ -374,9 +414,28 @@ namespace BizHawk.MultiClient
 		public string GetInput(int frame)
 		{
 			lastlog = frame;
-			if (frame < Log.Length)
+			
+			int getframe;
+
+			if (Loop)
 			{
-				return Log.GetFrame(frame);
+				if (frame < Log.Length)
+				{
+					getframe = frame;
+				}
+				else
+				{
+					getframe = ((frame - LoopOffset) % (Log.Length - LoopOffset)) + LoopOffset;
+				}
+			}
+			else
+			{
+				getframe = frame;
+			}
+
+			if (getframe < Log.Length)
+			{
+				return Log.GetFrame(getframe);
 			}
 			else
 			{
@@ -447,6 +506,7 @@ namespace BizHawk.MultiClient
 			{
 				byte[] state = Global.Emulator.SaveStateBinary();
 				Log.AddState(state);
+				GC.Collect();
 			}
 		}
 
@@ -480,13 +540,15 @@ namespace BizHawk.MultiClient
 					else
 					{
 						//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
-						if (frame - 1 < Log.StateCount)
-						{
-							Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
-							Global.MainForm.UpdateFrame = true;
-						}
+						Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+						Global.MainForm.UpdateFrame = true;
 					}
 				}
+			}
+			else if (frame <= Log.StateLastIndex)
+			{
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+				Global.MainForm.UpdateFrame = true;
 			}
 			else
 			{
@@ -788,6 +850,13 @@ namespace BizHawk.MultiClient
 				using (StreamWriter sw = new StreamWriter(file))
 				{
 					Header.WriteText(sw);
+
+					//TODO: clean this up
+					if (LoopOffset >= 0)
+					{
+						sw.WriteLine("LoopOffset " + LoopOffset.ToString());
+					}
+
 					Subtitles.WriteText(sw);
 					Log.WriteText(sw);
 				}
@@ -848,7 +917,19 @@ namespace BizHawk.MultiClient
 					if (Header.AddHeaderFromLine(str))
 						continue;
 
-					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+					if (str.Contains("LoopOffset"))
+					{
+						str = ParseHeader(str, "LoopOffset");
+						try
+						{
+							LoopOffset = int.Parse(str);
+						}
+						catch
+						{
+							//Do nothing
+						}
+					}
+					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
 					}

@@ -8,14 +8,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	/*
 		Example Games:
 	--------------------------
-	Dragon Ball - Dai Maou Jukkatsu      (016)   Garble graphics and unplayable (Works in FCEUX)
+	Dragon Ball - Dai Maou Jukkatsu      (016)   Works
 	Dragon Ball Z Gaiden                 (016)   Works
 	Dragon Ball Z 2                      (016)   Works
-	Rokudenashi Blues                    (016)   Gray  (Gray in FCEUX as well, Nestopia plays it)
+	Rokudenashi Blues                    (016)   Works
 	Akuma-kun - Makai no Wana            (016)   Works
-	Dragon Ball Z - Kyoushuu! Saiya Jin  (159)   Gray
-	SD Gundam Gaiden                     (159)   Gray
-	Magical Taruruuto Kun 1, 2           (159)   Gray
+	Dragon Ball Z - Kyoushuu! Saiya Jin  (159)   Works
+	SD Gundam Gaiden                     (159)   Works
+	Magical Taruruuto Kun 1, 2           (159)   Works
 	
 	PRG_ROM: 128KB
 	PRG_RAM: None
@@ -38,9 +38,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//state
 		int prg_reg_16k, eprom;
 		ByteBuffer regs = new ByteBuffer(8);
-		bool irq_enabled, irq_asserted;
+		bool irq_enabled;
 		ushort irq_counter;
-		int clock_counter;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -50,11 +49,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("eprom", ref eprom);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_enabled", ref irq_enabled);
-			ser.Sync("irq_asserted", ref irq_asserted);
-			ser.Sync("clock_counter", ref clock_counter);
 
 			SyncPRG();
-			SyncIrq();
 		}
 
 		public override void Dispose()
@@ -134,8 +130,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case 0xA:
 					irq_enabled = value.Bit(0);
-					if (!irq_enabled) irq_asserted = false;
-					SyncIrq();
+					// all write acknolwedge
+					IRQSignal = false;
 					break;
 				case 0xB:
 					irq_counter &= 0xFF00;
@@ -164,30 +160,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			WriteReg(addr, value);
 		}
 
-		void SyncIrq()
+		public override byte ReadWRAM(int addr)
 		{
-			IRQSignal = irq_asserted;
+			// reading any addr in 6000:7fff returns a single bit from the eeprom
+			// in bit 4.  zeroing that bit seems sufficient for some games to boot
+			return (byte)(NES.DB & 0xef);
 		}
 
-		void ClockCPU()
+		public override void ClockCPU()
 		{
-			irq_counter--;
-			if (irq_counter == 0x0000)
+			if (irq_enabled)
 			{
-				irq_asserted = true;
-				SyncIrq();
+				irq_counter--;
+				if (irq_counter == 0x0000)
+				{
+					IRQSignal = true;
+				}
 			}
 		}
 
-		public override void ClockPPU()
-		{
-			clock_counter++;
-			if (clock_counter == 3)
-			{
-				ClockCPU();
-				clock_counter = 0;
-			}
-		}
 
 		public override byte ReadPRG(int addr)
 		{
@@ -214,10 +205,5 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else return base.ReadPPU(addr);
 		}
 
-		public override void WritePPU(int addr, byte value)
-		{
-			if (addr < 0x2000) { }
-			base.WritePPU(addr, value);
-		}
 	}
 }

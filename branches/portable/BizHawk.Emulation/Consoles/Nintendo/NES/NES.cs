@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public NES(GameInfo game, byte[] rom)
+		public NES(GameInfo game, byte[] rom, byte[] fdsbios = null)
 		{
 			CoreOutputComm = new CoreOutputComm();
 			CoreOutputComm.CpuTraceAvailable = true;
@@ -24,7 +24,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
-			Init(game, rom);
+			Init(game, rom, fdsbios);
+			ControllerDefinition = new ControllerDefinition(NESController);
+			if (board is FDS)
+			{
+				var b = board as FDS;
+				ControllerDefinition.BoolButtons.Add("FDS Eject");
+				for (int i = 0; i < b.NumSides; i++)
+					ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
+			}
+			if (vs_io)
+			{
+				ControllerDefinition.BoolButtons.Add("VS Coin 1");
+				ControllerDefinition.BoolButtons.Add("VS Coin 2");
+			}
 		}
 
 		private NES()
@@ -217,12 +230,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				Name = "NES Controller",
 				BoolButtons = {
-					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 B", "P1 A", "Reset",
+					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 B", "P1 A", "Reset", "Power",
 					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 B", "P2 A"
 				}
 			};
 
-		public ControllerDefinition ControllerDefinition { get { return NESController; } }
+		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		IController controller;
 		public IController Controller
@@ -234,7 +247,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		interface IPortDevice
 		{
 			void Write(int value);
-			byte Read();
+			byte Read(bool peek);
 			void Update();
 		}
 
@@ -271,10 +284,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					Strobe();
 				state = value;
 			}
-			public override byte Read()
+			public override byte Read(bool peek)
 			{
 				int ret = value & 1;
-				value >>= 1;
+				if(!peek) value >>= 1;
 				return (byte)(ret | nes.DB);
 			}
 			public override void Update()
@@ -289,7 +302,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual void Write(int value)
 			{
 			}
-			public virtual byte Read()
+			public virtual byte Read(bool peek)
 			{
 				return 0xFF;
 			}
@@ -319,12 +332,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public byte[] ReadSaveRam()
 		{
+			if (board is FDS)
+				return (board as FDS).ReadSaveRam();
+
 			if (board == null || board.SaveRam == null)
 				return null;
 			return (byte[])board.SaveRam.Clone();	
 		}
 		public void StoreSaveRam(byte[] data)
 		{
+			if (board is FDS)
+			{
+				(board as FDS).StoreSaveRam(data);
+				return;
+			}
+
 			if (board == null || board.SaveRam == null)
 				return;
 			Array.Copy(data, board.SaveRam, data.Length);
@@ -332,6 +354,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void ClearSaveRam()
 		{
+			if (board is FDS)
+			{
+				(board as FDS).ClearSaveRam();
+				return;
+			}
+
 			if (board == null || board.SaveRam == null)
 				return;
 			for (int i = 0; i < board.SaveRam.Length; i++)
@@ -340,7 +368,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public bool SaveRamModified
 		{
-			get { if (board == null) return false; if (board.SaveRam == null) return false; return true; }
+			get
+			{
+				if (board == null) return false;
+				if (board is FDS) return true;
+				if (board.SaveRam == null) return false;
+				return true;
+			}
 			set { }
 		}
 
@@ -366,7 +400,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			domains.Add(CIRAMdomain);
 			domains.Add(OAMdoman);
 
-			if (board.SaveRam != null)
+			if (!(board is FDS) && board.SaveRam != null)
 			{
 				var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, Endian.Little,
 					addr => board.SaveRam[addr], (addr, value) => board.SaveRam[addr] = value);
@@ -398,6 +432,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				domains.Add(WRAM);
 			}
 
+			// if there were more boards with special ram sets, we'd want to do something more general
+			if (board is FDS)
+				domains.Add((board as FDS).GetDiskPeeker());
+			else if (board is ExROM)
+				domains.Add((board as ExROM).GetExRAM());
+
 			memoryDomains = domains.AsReadOnly();
 		}
 
@@ -409,7 +449,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public enum EDetectionOrigin
 		{
-			None, BootGodDB, GameDB, INES, UNIF
+			None, BootGodDB, GameDB, INES, UNIF, FDS
 		}
 
 		StringWriter LoadReport;
@@ -434,7 +474,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public unsafe void Init(GameInfo gameInfo, byte[] rom)
+		public unsafe void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
 		{
 			LoadReport = new StringWriter();
 			LoadWriteLine("------");
@@ -447,7 +487,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			List<string> hash_sha1_several = new List<string>();
 			string hash_sha1 = null, hash_md5 = null;
 			Unif unif = null;
-			
+
 			origin = EDetectionOrigin.None;
 
 			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
@@ -459,6 +499,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				hash_sha1 = unif.GetCartInfo().sha1;
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
+			}
+			else if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("FDS\x1A")))
+			{
+				// there's not much else to do with FDS images other than to feed them to the board
+				origin = EDetectionOrigin.FDS;
+				LoadWriteLine("Found FDS header.");
+				if (fdsbios == null)
+					throw new Exception("Missing FDS Bios!");
+				cart = new CartInfo();
+				var fdsboard = new FDS();
+				fdsboard.biosrom = fdsbios;
+				fdsboard.SetDiskImage(rom);
+				fdsboard.Create(this);
+				fdsboard.Configure(origin);
+
+				board = fdsboard;
+
+				//create the vram and wram if necessary
+				if (cart.wram_size != 0)
+					board.WRAM = new byte[cart.wram_size * 1024];
+				if (cart.vram_size != 0)
+					board.VRAM = new byte[cart.vram_size * 1024];
+
+				board.PostConfigure();
+
+				HardReset();
+				return;
 			}
 			else
 			{
@@ -507,7 +574,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				LoadWriteLine("Could not locate game in nescartdb");
 				if (USE_DATABASE)
 				{
-					if(hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
+					if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
 					if (choice == null)
 					{
 						choice = IdentifyFromGameDB(hash_sha1);
@@ -521,7 +588,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						LoadWriteLine("Using information from UNIF header");
 						choice = unif.GetCartInfo();
 						choice.game = new NESGameInfo();
-						choice.game.name = gameInfo.Name; 
+						choice.game.name = gameInfo.Name;
 						origin = EDetectionOrigin.UNIF;
 					}
 					if (iNesHeaderInfo != null)
@@ -562,10 +629,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					origin = EDetectionOrigin.GameDB;
 					LoadWriteLine("Chose board from bizhawk gamedb: " + choice.board_type);
 					//gamedb entries that dont specify prg/chr sizes can infer it from the ines header
-					if (choice.prg_size == -1) choice.prg_size = iNesHeaderInfo.prg_size;
-					if (choice.chr_size == -1) choice.chr_size = iNesHeaderInfo.chr_size;
-					if (choice.vram_size == -1) choice.vram_size = iNesHeaderInfo.vram_size;
-					if (choice.wram_size == -1) choice.wram_size = iNesHeaderInfo.wram_size;
+					if (iNesHeaderInfo != null)
+					{
+						if (choice.prg_size == -1) choice.prg_size = iNesHeaderInfo.prg_size;
+						if (choice.chr_size == -1) choice.chr_size = iNesHeaderInfo.chr_size;
+						if (choice.vram_size == -1) choice.vram_size = iNesHeaderInfo.vram_size;
+						if (choice.wram_size == -1) choice.wram_size = iNesHeaderInfo.wram_size;
+					}
+					else if (unif != null)
+					{
+						if (choice.prg_size == -1) choice.prg_size = unif.GetCartInfo().prg_size;
+						if (choice.chr_size == -1) choice.chr_size = unif.GetCartInfo().chr_size;
+						// unif has no wram\vram sizes; hope the board impl can figure it out...
+						if (choice.vram_size == -1) choice.vram_size = 0;
+						if (choice.wram_size == -1) choice.wram_size = 0;
+					}
+
 				}
 			}
 			else
@@ -663,7 +742,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			board.PostConfigure();
 
 			HardReset();
-				SetupMemoryDomains();
 		}
 
 		void SyncState(Serializer ser)
@@ -683,6 +761,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("cpu_step", ref cpu_step);
 			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
 			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
+			if (vs_io)
+			{
+				ser.Sync("vs_coin1", ref vs_coin1);
+				ser.Sync("vs_coin2", ref vs_coin2);
+			}
 			board.SyncState(ser);
 			if (board is NESBoardBase && !((NESBoardBase)board).SyncStateFlag)
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");

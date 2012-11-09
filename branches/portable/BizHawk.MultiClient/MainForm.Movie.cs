@@ -47,6 +47,7 @@ namespace BizHawk.MultiClient
 			}
 			SetMainformMovieInfo();
 			TAStudio1.Restart();
+			VirtualPadForm1.Restart();
 		}
 
 		public void SetMainformMovieInfo()
@@ -150,7 +151,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						Global.MovieSession.Movie.WriteMovie();
-						Global.MovieSession.Movie.StartPlayback();
+						Global.MovieSession.Movie.SwitchToPlay();
 						SetMainformMovieInfo();
 					}
 				}
@@ -200,7 +201,7 @@ namespace BizHawk.MultiClient
 						}
 						else
 						{
-							Global.MovieSession.Movie.StartPlayback();
+							Global.MovieSession.Movie.SwitchToPlay();
 							SetMainformMovieInfo();
 						}
 					}
@@ -243,7 +244,7 @@ namespace BizHawk.MultiClient
 			{
 				if (Global.Emulator.Frame < Global.MovieSession.Movie.Frames) //This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
-					Global.MovieSession.Movie.StartPlayback();
+					Global.MovieSession.Movie.SwitchToPlay();
 					Global.MovieSession.LatchInputFromLog();
 				}
 				else
@@ -256,12 +257,25 @@ namespace BizHawk.MultiClient
 			{
 				if (Global.Emulator.Frame >= Global.MovieSession.Movie.Frames)
 				{
-					Global.MovieSession.Movie.Finish();
+					if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed)
+					{
+						Global.MovieSession.Movie.CaptureState();
+						Global.MovieSession.LatchInputFromLog();
+						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+					}
+					else
+					{
+						Global.MovieSession.Movie.Finish();
+					}
 				}
 				else
 				{
 					Global.MovieSession.Movie.CaptureState();
 					Global.MovieSession.LatchInputFromLog();
+					if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed)
+					{
+						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+					}
 				}
 			}
 

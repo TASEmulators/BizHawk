@@ -68,9 +68,14 @@ namespace BizHawk.MultiClient
 		{
 			switch (system)
 			{
+				case "C64":
+					return Global.Config.BaseC64;
+				case "PSX":
+					return Global.Config.BasePSX;
 				case "INTV":
 					return Global.Config.BaseINTV;
 				case "A26":
+				case "A78": //7800TODO: make its own path settings
 					return Global.Config.BaseAtari;
 				case "NES":
 					return Global.Config.BaseNES;
@@ -210,8 +215,14 @@ namespace BizHawk.MultiClient
 
 			switch (sysID)
 			{
+				case "C64":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathC64ROMs, "C64");
+					break;
+				case "PSX":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathPSXROMs, "PSX");
+					break;
 				case "INTV":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathSNESROMs, "INTV");
+					path = PathManager.MakeAbsolutePath(Global.Config.PathINTVROMs, "INTV");
 					break;
 				case "SNES":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathSNESROMs, "SNES");
@@ -285,7 +296,7 @@ namespace BizHawk.MultiClient
 
 			switch (game.System)
 			{
-				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSaveRAM, "INTV"), name + ".SaveRAM");
+				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathINTVSaveRAM, "INTV"), name + ".SaveRAM");
 				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSaveRAM, "A26"), name + ".SaveRAM");
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), name + ".SaveRAM");
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), name + ".SaveRAM");
@@ -298,6 +309,7 @@ namespace BizHawk.MultiClient
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), name + ".SaveRAM");
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), name + ".SaveRAM");
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSaveRAM, "SNES"), name + ".SaveRAM");
+				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSaveRAM, "PSX"), name + ".SaveRAM");
 				default: return Path.Combine(GetBasePathAbsolute(), name + ".SaveRAM");
 			}
 		}
@@ -307,7 +319,7 @@ namespace BizHawk.MultiClient
 			switch (game.System)
 			{
 				default: return GetRomsPath(game.System);
-				case "INTV": return MakeAbsolutePath(Global.Config.PathAtariSavestates, "INTV");
+				case "INTV": return MakeAbsolutePath(Global.Config.PathINTVSavestates, "INTV");
 				case "A26": return MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26");
 				case "SMS": return MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS");
 				case "GG": return MakeAbsolutePath(Global.Config.PathGGSavestates, "GG");
@@ -320,6 +332,8 @@ namespace BizHawk.MultiClient
 				case "NES": return MakeAbsolutePath(Global.Config.PathNESSavestates, "NES");
 				case "TI83": return MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83");
 				case "SNES": return MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES");
+				case "PSX": return MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX");
+				case "C64": return MakeAbsolutePath(Global.Config.PathC64Savestates, "C64");
 			}
 		}
 
@@ -334,7 +348,7 @@ namespace BizHawk.MultiClient
 			
 			switch (game.System)
 			{
-				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSavestates, "INTV"), name);
+				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathINTVSavestates, "INTV"), name);
 				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26"), name);
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS"), name);
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSavestates, "GG"), name);
@@ -347,6 +361,8 @@ namespace BizHawk.MultiClient
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSavestates, "NES"), name);
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83"), name);
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES"), name);
+				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX"), name);
+				case "C64": return Path.Combine(MakeAbsolutePath(Global.Config.PathC64Savestates, "C64"), name);
 			}
 			return "";
 		}
@@ -356,7 +372,7 @@ namespace BizHawk.MultiClient
 			string name = FilesystemSafeName(game);
 			switch (game.System)
 			{
-				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariScreenshots, "INTV"), name);
+				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathINTVScreenshots, "INTV"), name);
 				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariScreenshots, "A26"), name);
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSScreenshots, "SMS"), name);
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGScreenshots, "GG"), name);
@@ -369,6 +385,8 @@ namespace BizHawk.MultiClient
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"), name);
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Screenshots, "TI83"), name);
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESScreenshots, "SNES"), name);
+				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXScreenshots, "PSX"), name);
+				case "C64": return Path.Combine(MakeAbsolutePath(Global.Config.PathC64Screenshots, "C64"), name);
 			}
 			return "";
 		}

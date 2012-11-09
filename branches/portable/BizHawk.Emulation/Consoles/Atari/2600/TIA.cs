@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public bool frameComplete;
 		byte hsyncCnt = 0;
+		int capChargeStart = 0;
+		bool capCharging = false;
 
 		static byte CXP0 = 0x01;
 		static byte CXP1 = 0x02;
@@ -148,7 +150,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					}
 
 					// Reset missile, if desired
-					if (scanCnt == 0x04 && missile.resetToPlayer)
+					if (scanCnt == 0x04 && hPosCnt <= 16 && missile.resetToPlayer)
 					{
 						missile.hPosCnt = 0;
 					}
@@ -696,9 +698,13 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 
 				// Pick the pixel color from collisions
-				uint pixelColor = palette[playField.bkColor];
+				uint pixelColor = 0x000000;
+				if (core.CoreInputComm.Atari2600_ShowBG)
+				{
+					pixelColor = palette[playField.bkColor];
+				}
 
-				if ((collisions & CXPF) != 0)
+				if ((collisions & CXPF) != 0 && core.CoreInputComm.Atari2600_ShowPF)
 				{
 					if (playField.score)
 					{
@@ -720,34 +726,49 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if ((collisions & CXBL) != 0)
 				{
 					ball.collisions |= collisions;
-					pixelColor = palette[playField.pfColor];
+					if (core.CoreInputComm.Atari2600_ShowBall) 
+					{
+						pixelColor = palette[playField.pfColor];
+					}
 				}
 
 				if ((collisions & CXM1) != 0)
 				{
 					player1.missile.collisions |= collisions;
-					pixelColor = palette[player1.color];
+					if (core.CoreInputComm.Atari2600_ShowMissle2)
+					{
+						pixelColor = palette[player1.color];
+					}
 				}
 
 				if ((collisions & CXP1) != 0)
 				{
 					player1.collisions |= collisions;
-					pixelColor = palette[player1.color];
+					if (core.CoreInputComm.Atari2600_ShowPlayer2)
+					{
+						pixelColor = palette[player1.color];
+					}
 				}
 
 				if ((collisions & CXM0) != 0)
 				{
 					player0.missile.collisions |= collisions;
-					pixelColor = palette[player0.color];
+					if (core.CoreInputComm.Atari2600_ShowMissle1)
+					{
+						pixelColor = palette[player0.color];
+					}
 				}
 
 				if ((collisions & CXP0) != 0)
 				{
 					player0.collisions |= collisions;
-					pixelColor = palette[player0.color];
+					if (core.CoreInputComm.Atari2600_ShowPlayer1)
+					{
+						pixelColor = palette[player0.color];
+					}
 				}
 
-				if (playField.priority && (collisions & CXPF) != 0)
+				if (playField.priority && (collisions & CXPF) != 0 && core.CoreInputComm.Atari2600_ShowPF)
 				{
 					if (playField.score)
 					{
@@ -978,8 +999,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 				}
 			}
 		}
-
-		public byte ReadMemory(ushort addr)
+		
+		public byte ReadMemory(ushort addr, bool peek)
 		{
 			ushort maskedAddr = (ushort)(addr & 0x000F);
 			if (maskedAddr == 0x00) // CXM0P
@@ -1014,13 +1035,26 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				return (byte)((((player0.collisions & CXP1) != 0) ? 0x80 : 0x00) | (((player0.missile.collisions & CXM1) != 0) ? 0x40 : 0x00));
 			}
+			else if (maskedAddr == 0x08) // INPT0
+			{
+				// Changing the hard coded value will change the paddle position. The range seems to be roughly 0-56000 according to values from stella
+				// 6105 roughly centers the paddle in Breakout
+				if (capCharging && core.cpu.TotalExecutedCycles - capChargeStart >= 6105)
+				{
+					return 0x80;
+				}
+				else
+				{
+					return 0x00;
+				}
+			}
 			else if (maskedAddr == 0x0C) // INPT4
 			{
-				return (byte)((core.ReadControls1() & 0x08) != 0 ? 0x80 : 0x00);
+				return (byte)((core.ReadControls1(peek) & 0x08) != 0 ? 0x80 : 0x00);
 			}
 			else if (maskedAddr == 0x0D) // INPT5
 			{
-				return (byte)((core.ReadControls2() & 0x08) != 0 ? 0x80 : 0x00);
+				return (byte)((core.ReadControls2(peek) & 0x08) != 0 ? 0x80 : 0x00);
 			}
 
 			return 0x00;
@@ -1037,7 +1071,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					// Frame is complete, output to buffer
 					vsyncEnabled = true;
 				}
-				else
+				else if (vsyncEnabled)
 				{
 					// When VSYNC is disabled, this will be the first line of the new frame
 
@@ -1057,6 +1091,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x01) // VBLANK
 			{
 				vblankEnabled = (value & 0x02) != 0;
+				capCharging = (value & 0x80) == 0;
+				if ((value & 0x80) == 0)
+				{
+					capChargeStart = core.cpu.TotalExecutedCycles;
+				}
 			}
 			else if (maskedAddr == 0x02) // WSYNC
 			{
@@ -1130,23 +1169,70 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x10) // RESP0
 			{
-				player0.resetCnt = 0;
+				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
+				if (hsyncCnt < 69)
+				{
+					player0.hPosCnt = 0;
+					player0.resetCnt = 0;
+					player0.reset = true;
+				}
+				else if (hsyncCnt == 69)
+				{
+					player0.resetCnt = 3;
+				}
+				else if (hsyncCnt == 72)
+				{
+					player0.resetCnt = 2;
+				}
+				else if (hsyncCnt == 75)
+				{
+					player0.resetCnt = 1;
+				}
+				else
+				{
+					player0.resetCnt = 0;
+				}
+				//player0.resetCnt = 0;
 			}
 			else if (maskedAddr == 0x11) // RESP1
 			{
-				player1.resetCnt = 0;
+				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
+				// This fixes some graphic glitches with Frostbite
+				if (hsyncCnt < 69)
+				{
+					player1.hPosCnt = 0;
+					player1.resetCnt = 0;
+					player1.reset = true;
+				}
+				else if (hsyncCnt == 69)
+				{
+					player1.resetCnt = 3;
+				}
+				else if (hsyncCnt == 72)
+				{
+					player1.resetCnt = 2;
+				}
+				else if (hsyncCnt == 75)
+				{
+					player1.resetCnt = 1;
+				}
+				else
+				{
+					player1.resetCnt = 0;
+				}
+				//player1.resetCnt = 0;
 			}
 			else if (maskedAddr == 0x12) // RESM0
 			{
-				player0.missile.hPosCnt = 160 - 4;
+				player0.missile.hPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
 			}
 			else if (maskedAddr == 0x13) // RESM1
 			{
-				player1.missile.hPosCnt = 160 - 4;
+				player1.missile.hPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
 			}
 			else if (maskedAddr == 0x14) // RESBL
 			{
-				ball.hPosCnt = 160-4;
+				ball.hPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{

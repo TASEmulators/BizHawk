@@ -246,7 +246,7 @@ namespace BizHawk.MultiClient
 		private List<StateRecord> StateRecords = new List<StateRecord>();
 		
 		//TODO: Make this size limit configurable by the user
-		private int MaxStateRecordSize = 1024 * 1024 * 1024; //To limit memory usage.
+		private int MaxStateRecordSize = 512 * 1024 * 1024; //To limit memory usage.
 
 		#endregion
 	}

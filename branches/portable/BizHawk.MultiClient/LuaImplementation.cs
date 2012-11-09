@@ -511,6 +511,9 @@ namespace BizHawk.MultiClient
 		                                              		"opencheats",
 															"screenwidth",
 															"screenheight",
+															"screenshot",
+															"screenshottoclipboard",
+															"setscreenshotosd",
 		                                              	};
 
 		public static string[] FormsFunctions = new string[]
@@ -1860,7 +1863,7 @@ namespace BizHawk.MultiClient
 			if (x < 0 || x > 9)
 				return;
 
-			Global.MainForm.LoadState("QuickLoad" + x.ToString(), true);
+			Global.MainForm.LoadState("QuickSave" + x.ToString(), true);
 		}
 
 		public void savestate_save(object lua_input)
@@ -2041,6 +2044,28 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Client library
 		//----------------------------------------------------
+		public void client_screenshot(object path = null)
+		{
+			if (path == null)
+			{
+				Global.MainForm.TakeScreenshot();
+			}
+			else
+			{
+				Global.MainForm.TakeScreenshot(path.ToString());
+			}
+		}
+
+		public void client_screenshottoclipboard()
+		{
+			Global.MainForm.TakeScreenshotToClipboard();
+		}
+
+		public void client_setscreenshotosd(bool value)
+		{
+			Global.Config.Screenshot_CaptureOSD = value;
+		}
+
 		public int client_screenwidth()
 		{
 			return Global.RenderPanel.NativeSize.Width;

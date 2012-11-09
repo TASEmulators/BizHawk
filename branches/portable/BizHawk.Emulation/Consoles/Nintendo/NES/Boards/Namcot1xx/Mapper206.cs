@@ -47,7 +47,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
 					throw new Exception("TODO - test please");
 					//break;
-
+				case "TENGEN-800030": // Pac-Mania (U), etc
+					AssertPrg(64, 128); AssertChr(32, 64); AssertVram(0); AssertWram(0);
+					break;
 				default:
 					return false;
 			}

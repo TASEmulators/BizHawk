@@ -153,12 +153,44 @@ namespace BizHawk.Emulation.Consoles.GB
 		public static extern void gambatte_setwritecallback(IntPtr core, MemoryCallback callback);
 
 		/// <summary>
+		/// type of the cpu trace callback
+		/// </summary>
+		/// <param name="data">cpu state</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void TraceCallback(IntPtr state);
+
+		/// <summary>
+		/// set a callback to occur immediately BEFORE each opcode is executed
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">null to clear</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_settracecallback(IntPtr core, TraceCallback callback);
+
+		/// <summary>
+		/// type of the scanline callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ScanlineCallback();
+
+		/// <summary>
+		/// set a callback to occur when ly reaches a particular scanline (so at the beginning of the scanline).
+		/// when the LCD is active, typically 145 will be the first callback after the beginning of frame advance,
+		/// and 144 will be the last callback right before frame advance returns
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">null to clear</param>
+		/// <param name="sl">0-153 inclusive</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
+
+		/// <summary>
 		/// Sets the directory used for storing save data. The default is the same directory as the ROM Image file.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="sdir"></param>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setsavedir(IntPtr core, string sdir);
+		//[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		//public static extern void gambatte_setsavedir(IntPtr core, string sdir);
 
 		/// <summary>
 		/// Returns true if the currently loaded ROM image is treated as having CGB support.
@@ -300,7 +332,10 @@ namespace BizHawk.Emulation.Consoles.GB
 			wram = 2,
 			cartram = 3,
 			oam = 4,
-			hram = 5
+			hram = 5,
+			// these last two aren't returning native memory area data, but instead converted RGB32 colors
+			bgpal = 6,
+			sppal = 7
 		}
 
 		/// <summary>

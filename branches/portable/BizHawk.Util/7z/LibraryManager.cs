@@ -131,12 +131,16 @@ namespace SevenZip
 #if !WINCE && !MONO
             if (_modulePtr == IntPtr.Zero)
             {
-                if (!File.Exists(_libraryFileName))
-                {
-                    throw new SevenZipLibraryException("DLL file does not exist.");
-                }
+							//zero 29-oct-2012 - this check isnt useful since LoadLibrary can pretty much check for the same thing. and it wrecks our dll relocation scheme
+								//if (!File.Exists(_libraryFileName))
+								//{
+								//    throw new SevenZipLibraryException("DLL file does not exist.");
+								//}
                 if ((_modulePtr = NativeMethods.LoadLibrary(_libraryFileName)) == IntPtr.Zero)
                 {
+									//try a different directory
+									string alternateFilename = Path.Combine(Path.Combine(Path.GetDirectoryName(_libraryFileName),"dll"),"7z.dll");
+									if ((_modulePtr = NativeMethods.LoadLibrary(alternateFilename)) == IntPtr.Zero)
                     throw new SevenZipLibraryException("failed to load library.");
                 }
                 if (NativeMethods.GetProcAddress(_modulePtr, "GetHandlerProperty") == IntPtr.Zero)

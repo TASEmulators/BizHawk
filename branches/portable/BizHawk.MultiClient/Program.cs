@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 #if WINDOWS
 using SlimDX.Direct3D9;
@@ -13,33 +16,19 @@ namespace BizHawk.MultiClient
 		[STAThread]
 		unsafe static void Main(string[] args)
 		{
-			//string test = BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_library_revision_minor().ToString();
+#if WINDOWS
+			// this will look in subdirectory "dll" to load pinvoked stuff
+			SetDllDirectory(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll"));
 
-			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_init();
+			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+#endif
 
-			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_video_refresh_t myvidproc = 
-			//  (ushort* data, int width, int height) =>
-			//  {
-			//  };
+			SubMain(args);
+		}
 
-			//System.Runtime.InteropServices.GCHandle handle = System.Runtime.InteropServices.GCHandle.Alloc(myvidproc);
-			////IntPtr ip = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(myvidproc);
-
-			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_video_refresh(myvidproc);
-
-
-			//byte[] rom = System.IO.File.ReadAllBytes("d:\\Super Mario World (US).smc");
-			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_load_cartridge_normal(null, rom, rom.Length);
-
-			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_power();
-
-			//int framectr = 0;
-			//for (; ; )
-			//{
-			//  framectr++;
-			//  BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_run();
-			//}
-
+		static void SubMain(string[] args)
+		{
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -47,9 +36,6 @@ namespace BizHawk.MultiClient
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config());
 
 #if WINDOWS
-			// this will look in subdirectory "dll" to load pinvoked stuff
-			Win32.SetDllDirectory(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(),"dll"));
-
 			try { Global.DSound = new DirectSound(); }
 			catch
 			{
@@ -99,6 +85,24 @@ namespace BizHawk.MultiClient
 					Global.Direct3D.Dispose();
 			}
 #endif
+		}
+
+		//declared here instead of a more usual place to avoid dependencies on the more usual place
+#if WINDOWS
+		[DllImport("kernel32.dll", SetLastError = true)]
+		static extern bool SetDllDirectory(string lpPathName);
+#endif
+
+
+		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+		{
+			//load missing assemblies by trying to find them in the dll directory
+			string dllname = new AssemblyName(args.Name).Name + ".dll";
+			string directory = System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
+			string fname = Path.Combine(directory, dllname);
+			if (!File.Exists(fname)) return null;
+			//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
+			return Assembly.LoadFile(fname);
 		}
 
 #if WINDOWS

@@ -424,30 +424,13 @@ namespace BizHawk.MultiClient
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (false)
+			
+			ControllerConfig c = new ControllerConfig();
+			c.ShowDialog();
+			if (c.DialogResult == DialogResult.OK)
 			{
-				RunLoopBlocked = true;
-				ControllerConfig c = new ControllerConfig();
-				c.ShowDialog();
-				RunLoopBlocked = false;
-				if (c.DialogResult == DialogResult.OK)
-				{
-					InitControls();
-					SyncControls();
-				}
-			}
-			else
-			{
-				RunLoopBlocked = true;
-				InputConfig i = new InputConfig();
-				i.ShowDialog();
-				RunLoopBlocked = false;
-				//re-initialize controls in case anything was changed
-				if (i.DialogResult == DialogResult.OK)
-				{
-					InitControls();
-					SyncControls();
-				}
+				InitControls();
+				SyncControls();
 			}
 		}
 
@@ -1052,6 +1035,7 @@ namespace BizHawk.MultiClient
 					cmiMakeMovieBackup.Visible = true;
 					cmiViewSubtitles.Visible = true;
 					cmiViewComments.Visible = true;
+					saveMovieToolStripMenuItem1.Visible = true;
 					toolStripSeparator_afterMovie.Visible = true;
 					if (ReadOnly == true)
 					{
@@ -1078,6 +1062,7 @@ namespace BizHawk.MultiClient
 					cmiViewComments.Visible = false;
 					toolStripSeparator_afterMovie.Visible = true;
 					cmiAddSubtitle.Visible = false;
+					saveMovieToolStripMenuItem1.Visible = false;
 				}
 
 				cmiUndoSavestate.Visible = true;
@@ -1269,11 +1254,13 @@ namespace BizHawk.MultiClient
 			{
 				stopMovieToolStripMenuItem.Enabled = true;
 				playFromBeginningToolStripMenuItem.Enabled = true;
+				saveMovieToolStripMenuItem.Enabled = true;
 			}
 			else
 			{
 				stopMovieToolStripMenuItem.Enabled = false;
 				playFromBeginningToolStripMenuItem.Enabled = false;
+				saveMovieToolStripMenuItem.Enabled = false;
 			}
 
 			readonlyToolStripMenuItem.Checked = ReadOnly;
@@ -1285,6 +1272,7 @@ namespace BizHawk.MultiClient
 			playMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayMovieBinding;
 			stopMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.StopMovieBinding;
 			playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayBeginningBinding;
+			saveMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveMovieBinding;
 		}
 
 		private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1764,6 +1752,14 @@ namespace BizHawk.MultiClient
 			bWToolStripMenuItem.Checked = Global.Config.Atari2600_BW;
 			p0DifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_LeftDifficulty;
 			rightDifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_RightDifficulty;
+
+			showBGToolStripMenuItem.Checked = Global.Config.Atari2600_ShowBG;
+			showPlayer1ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayer1;
+			showPlayer2ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayer2;
+			showMissle1ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowMissle1;
+			showMissle2ToolStripMenuItem.Checked = Global.Config.Atari2600_ShowMissle2;
+			showBallToolStripMenuItem.Checked = Global.Config.Atari2600_ShowBall;
+			showPlayfieldToolStripMenuItem.Checked = Global.Config.Atari2600_ShowPlayfield;
 		}
 
 		private void skipBIOSIntroToolStripMenuItem_Click(object sender, EventArgs e)

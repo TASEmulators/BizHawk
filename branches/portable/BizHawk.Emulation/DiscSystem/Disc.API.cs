@@ -92,6 +92,30 @@ namespace BizHawk.DiscSystem
 			Array.Copy(temp, 16, buffer, offset, 2048);
 		}
 
+		/// <summary>
+		/// reads logical data from a flat disc address space
+		/// useful for plucking data from a known location on the disc
+		/// </summary>
+		public void ReadLBA_2352_Flat(long disc_offset, byte[] buffer, int offset, int length)
+		{
+			int secsize = 2352;
+			byte[] lba_buf = new byte[secsize];
+			while(length > 0)
+			{
+				int lba = (int)(disc_offset / secsize);
+				int lba_within = (int)(disc_offset % secsize);
+				int todo = length;
+				int remains_in_lba = secsize - lba_within;
+				if (remains_in_lba < todo)
+					todo = remains_in_lba;
+				ReadLBA_2352(lba, lba_buf, 0);
+				Array.Copy(lba_buf, lba_within, buffer, offset, todo);
+				offset += todo;
+				length -= todo;
+				lba_within = 0;
+			}
+		}
+
 
 		/// <summary>
 		/// Returns a SectorEntry from which you can retrieve various interesting pieces of information about the sector.
@@ -150,37 +174,37 @@ namespace BizHawk.DiscSystem
 
 		// converts LBA to minute:second:frame format.
 		//TODO - somewhat redundant with Timestamp, which is due for refactoring into something not cue-related
-        public static void ConvertLBAtoMSF(int lba, out byte m, out byte s, out byte f)
-        {
-            lba += 150;
-            m = (byte) (lba / 75 / 60);
-            s = (byte) ((lba - (m * 75 * 60)) / 75);
-            f = (byte) (lba - (m * 75 * 60) - (s * 75));
-        }
+		public static void ConvertLBAtoMSF(int lba, out byte m, out byte s, out byte f)
+		{
+			lba += 150;
+			m = (byte)(lba / 75 / 60);
+			s = (byte)((lba - (m * 75 * 60)) / 75);
+			f = (byte)(lba - (m * 75 * 60) - (s * 75));
+		}
 
-        // converts MSF to LBA offset
-        public static int ConvertMSFtoLBA(byte m, byte s, byte f)
-        {
-            return f + (s*75) + (m*75*60) - 150;
-        }
+		// converts MSF to LBA offset
+		public static int ConvertMSFtoLBA(byte m, byte s, byte f)
+		{
+			return f + (s * 75) + (m * 75 * 60) - 150;
+		}
 
-        // gets an identifying hash. hashes the first 512 sectors of 
-        // the first data track on the disc.
-        public string GetHash()
-        {
-            byte[] buffer = new byte[512*2352];
-            foreach (var track in TOC.Sessions[0].Tracks)
-            {
-                if (track.TrackType == ETrackType.Audio)
-                    continue;
+		// gets an identifying hash. hashes the first 512 sectors of 
+		// the first data track on the disc.
+		public string GetHash()
+		{
+			byte[] buffer = new byte[512 * 2352];
+			foreach (var track in TOC.Sessions[0].Tracks)
+			{
+				if (track.TrackType == ETrackType.Audio)
+					continue;
 
-                int lba_len = Math.Min(track.length_aba, 512);
-                for (int s=0; s<512 && s<track.length_aba; s++)
-                    ReadABA_2352(track.Indexes[1].aba + s, buffer, s*2352);
+				int lba_len = Math.Min(track.length_aba, 512);
+				for (int s = 0; s < 512 && s < track.length_aba; s++)
+					ReadABA_2352(track.Indexes[1].aba + s, buffer, s * 2352);
 
-                return Util.Hash_MD5(buffer, 0, lba_len*2352);
-            }
-            return "no data track found";
-        }
+				return Util.Hash_MD5(buffer, 0, lba_len * 2352);
+			}
+			return "no data track found";
+		}
 	}
 }

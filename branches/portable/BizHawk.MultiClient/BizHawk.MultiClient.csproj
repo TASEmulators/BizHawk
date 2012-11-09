@@ -104,6 +104,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,11 +172,11 @@
     <Compile Include="config\ControllerConfig.Designer.cs">
       <DependentUpon>ControllerConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\ControllerConfig\GamepadConfigPanel.cs">
-      <SubType>Component</SubType>
+    <Compile Include="config\ControllerConfig\ControllerConfigPanel.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="config\ControllerConfig\NESGamePad.cs">
-      <SubType>Component</SubType>
+    <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
+      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
@@ -217,11 +220,20 @@
     </Compile>
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
+    <Compile Include="GBtools\BmpView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GBtools\ColorChooserForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GBtools\ColorChooserForm.designer.cs">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GBtools\GBGPUView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GBtools\GBGPUView.Designer.cs">
+      <DependentUpon>GBGPUView.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="HawkFile.cs" />
@@ -411,6 +423,12 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadForm.Designer.cs">
+      <DependentUpon>VirtualPadForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPadGB.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -442,6 +460,9 @@
     <EmbeddedResource Include="config\ControllerConfig.resx">
       <DependentUpon>ControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
+      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
     </EmbeddedResource>
@@ -450,6 +471,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GBtools\ColorChooserForm.resx">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GBtools\GBGPUView.resx">
+      <DependentUpon>GBGPUView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -510,6 +534,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="tools\VirtualPadForm.resx">
+      <DependentUpon>VirtualPadForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -578,12 +605,6 @@
     </Compile>
     <Compile Include="tools\LuaFiles.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="tools\LuaText.cs" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Compile Include="tools\LuaWindow.cs" Condition=" '$(OS)' == 'Windows_NT' ">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\LuaWindow.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
-      <DependentUpon>LuaWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\MemoryViewer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -773,10 +794,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\LuaConsole.resx" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaConsole.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\LuaWindow.resx" Condition=" '$(OS)' == 'Windows_NT' ">
-      <DependentUpon>LuaWindow.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\MemoryViewer.resx">
       <DependentUpon>MemoryViewer.cs</DependentUpon>

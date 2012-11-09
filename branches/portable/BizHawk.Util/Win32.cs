@@ -440,8 +440,11 @@ namespace BizHawk
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
 
-		[DllImport("kernel32.dll", SetLastError = true)]
-		public static extern bool SetDllDirectory(string lpPathName);
+		[DllImport("Kernel32.dll", EntryPoint = "RtlZeroMemory", SetLastError = false)]
+		public static extern void ZeroMemory(IntPtr dest, uint size);
+
+		[DllImport("msvcrt.dll", EntryPoint = "memset", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+		public static extern IntPtr MemSet(IntPtr dest, int c, uint count);
 	}
 
 }

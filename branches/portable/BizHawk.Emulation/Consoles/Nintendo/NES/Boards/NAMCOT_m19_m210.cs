@@ -26,12 +26,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int irq_cycles;
 		bool irq_pending;
 
+		Namco163Audio audio;
+		int audio_cycles;
+
 		public override void Dispose()
 		{
 			base.Dispose();
 			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
 			nt_banks_1k.Dispose();
+			if (audio != null)
+			{
+				audio.Dispose();
+				audio = null;
+			}
 		}
 
 		public override void SyncState(Serializer ser)
@@ -40,12 +48,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("prg_banks_8k", ref prg_banks_8k);
 			ser.Sync("chr_banks_1k", ref chr_banks_1k);
 			ser.Sync("nt_banks_1k", ref nt_banks_1k);
-			for(int i=0;i<2;i++) ser.Sync("vram_enable_" + i, ref vram_enable[i]);
+			for (int i = 0; i < 2; i++)
+				ser.Sync("vram_enable_" + i, ref vram_enable[i]);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_enabled", ref irq_enabled);
 			ser.Sync("irq_cycles", ref irq_cycles);
 			ser.Sync("irq_pending", ref irq_pending);
 			SyncIRQ();
+			if (audio != null)
+			{
+				ser.Sync("audio_cycles", ref audio_cycles);
+				audio.SyncState(ser);
+			}
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -66,6 +80,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//hydelide 3 *this is a good test of more advanced features
 					Cart.vram_size = 8; //not many test cases of this, but hydelide 3 needs it.
 					AssertPrg(128,256); AssertChr(128,256); AssertVram(8); AssertWram(0,8);
+					audio = new Namco163Audio();
 					break;
 
 				//mapper 210:
@@ -99,6 +114,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			addr &= 0xF800;
 			switch (addr)
 			{
+				case 0x0800:
+					if (audio != null)
+						return audio.ReadData();
+					else
+						break;
 				case 0x1000:
 					return (byte)(irq_counter & 0xFF);
 				case 0x1800:
@@ -113,7 +133,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (addr)
 			{
 				case 0x0800:
-					//sound data port. not used.
+					if (audio != null)
+						audio.WriteData(value);
 					break;
 				case 0x1000:
 					irq_counter = (irq_counter & 0xFF00) | value;
@@ -174,6 +195,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case 0x7000: //$F000
 					prg_banks_8k[2] = (value & 0x3F) & prg_bank_mask_8k; 
+					break;
+				case 0x7800: //$F800
+					if (audio != null)
+						audio.WriteAddr(value);
 					break;
 			}
 		}
@@ -277,17 +302,32 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else irq_counter++;
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
-			if (!irq_enabled) return;
-
-			irq_cycles--;
-			if (irq_cycles == 0)
+			if (irq_enabled)
 			{
-				irq_cycles += 3;
-				ClockIRQ();
+				//irq_cycles--;
+				//if (irq_cycles == 0)
+				//{
+					//irq_cycles += 3;
+					ClockIRQ();
+				//}
+			}
+			if (audio != null)
+			{
+				audio_cycles++;
+				if (audio_cycles == 15)
+				{
+					audio_cycles = 0;
+					audio.Clock();
+				}
 			}
 		}
 
+		public override void ApplyCustomAudio(short[] samples)
+		{
+			if (audio != null)
+				audio.ApplyCustomAudio(samples);
+		}
 	}
 }

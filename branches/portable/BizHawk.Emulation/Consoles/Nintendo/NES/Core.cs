@@ -11,7 +11,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	public partial class NES : IEmulator
 	{
 		//hardware/state
+		// any of the 3 cpus are drop in replacements
 		public MOS6502X cpu;
+		//public MOS6502X_CPP cpu;
+		//public MOS6502XDouble cpu;
+		// dispose list as the native core can't keep track of its own stuff
+		List<System.Runtime.InteropServices.GCHandle> DisposeList = new List<System.Runtime.InteropServices.GCHandle>();
 		int cpu_accumulate; //cpu timekeeper
 		public PPU ppu;
 		public APU apu;
@@ -25,6 +30,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public bool SoundOn = true;
 		int sprdma_countdown;
 		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
+		/// <summary>if true, use VS. system arrangement of $4016..$4020</summary>
+		bool vs_io = false;
+		bool vs_coin1;
+		bool vs_coin2;
 
 		//irq state management
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; } }
@@ -45,6 +54,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (magicSoundProvider != null) magicSoundProvider.Dispose();
 			magicSoundProvider = null;
+			if (DisposeList != null)
+			{
+				foreach (var h in DisposeList)
+					h.Free();
+				DisposeList = null;
+			}
 		}
 
 		class MagicSoundProvider : ISoundProvider, IDisposable
@@ -53,12 +68,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ISoundProvider output;
 			NES nes;
 
-			public MagicSoundProvider(NES nes)
+			public MagicSoundProvider(NES nes, uint infreq)
 			{
 				this.nes = nes;
 				var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
 				//1.789773mhz NTSC
-				resampler = new Sound.Utilities.SpeexResampler(2, 1789773, 44100*APU.DECIMATIONFACTOR, 1789773, 44100, actualMetaspu.buffer.enqueue_samples);
+				resampler = new Sound.Utilities.SpeexResampler(2, infreq, 44100 * APU.DECIMATIONFACTOR, infreq, 44100, actualMetaspu.buffer.enqueue_samples);
 				output = new Sound.Utilities.DCFilter(actualMetaspu);
 			}
 
@@ -101,30 +116,80 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 		MagicSoundProvider magicSoundProvider;
 
-
 		public void HardReset()
 		{
-			cpu = new MOS6502X();
-			cpu.DummyReadMemory = ReadMemory;
-			cpu.ReadMemory = ReadMemory;
-			cpu.WriteMemory = WriteMemory;
+			cpu = new MOS6502X((h) => DisposeList.Add(h));
+			//cpu = new MOS6502X_CPP((h) => DisposeList.Add(h));
+			//cpu = new MOS6502XDouble((h) => DisposeList.Add(h));
+			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory, (h) => DisposeList.Add(h));
 			cpu.BCD_Enabled = false;
 			ppu = new PPU(this);
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
 			ports = new IPortDevice[2];
-			ports[0] = new JoypadPortDevice(this,0);
-			ports[1] = new JoypadPortDevice(this,1);
+			ports[0] = new JoypadPortDevice(this, 0);
+			ports[1] = new JoypadPortDevice(this, 1);
 
-			apu = new APU(this);
-			if (magicSoundProvider != null) magicSoundProvider.Dispose();
-			magicSoundProvider = new MagicSoundProvider(this);
+			BoardSystemHardReset();
+
+			apu = new APU(this, apu);
+			// don't replace the magicSoundProvider on reset, as it's not needed
+			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
+
+
+			// set up region
+			switch (cart.system)
+			{
+				case "NES-PAL":
+				case "NES-PAL-A":
+				case "NES-PAL-B":
+					ppu.region = PPU.Region.PAL;
+					CoreOutputComm.VsyncNum = 50;
+					CoreOutputComm.VsyncDen = 1;
+					cpu_sequence = cpu_sequence_PAL;
+					if (magicSoundProvider == null)
+						magicSoundProvider = new MagicSoundProvider(this, 1662607);
+					break;
+				case "NES-NTSC":
+				case "Famicom":
+					ppu.region = PPU.Region.NTSC;
+					cpu_sequence = cpu_sequence_NTSC;
+					if (magicSoundProvider == null)
+						magicSoundProvider = new MagicSoundProvider(this, 1789773);
+					break;
+				// there's no official name for these in bootgod, not sure what we should use
+				//case "PC10"://TODO
+				case "VS":
+					ppu.region = PPU.Region.RGB;
+					cpu_sequence = cpu_sequence_NTSC;
+					if (magicSoundProvider == null)
+						magicSoundProvider = new MagicSoundProvider(this, 1789773);
+					vs_io = true;
+					break;
+				// this is in bootgod, but not used at all
+				case "Dendy":
+					ppu.region = PPU.Region.Dendy;
+					CoreOutputComm.VsyncNum = 50;
+					CoreOutputComm.VsyncDen = 1;
+					cpu_sequence = cpu_sequence_NTSC;
+					if (magicSoundProvider == null)
+						magicSoundProvider = new MagicSoundProvider(this, 1773448);
+					break;
+				case null:
+					Console.WriteLine("Unknown NES system!  Defaulting to NTSC.");
+					goto case "NES-NTSC";
+				default:
+					Console.WriteLine("Unrecognized NES system \"{0}\"!  Defaulting to NTSC.", cart.system);
+					goto case "NES-NTSC";
+			}
 
 			//fceux uses this technique, which presumably tricks some games into thinking the memory is randomized
 			for (int i = 0; i < 0x800; i++)
 			{
 				if ((i & 4) != 0) ram[i] = 0xFF; else ram[i] = 0x00;
 			}
+
+			SetupMemoryDomains();
 
 			//in this emulator, reset takes place instantaneously
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
@@ -133,6 +198,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 		bool resetSignal;
+		bool hardResetSignal;
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
@@ -143,11 +209,34 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				apu.NESSoftReset();
 				//need to study what happens to ppu and apu and stuff..
 			}
+			else if (hardResetSignal)
+			{
+				HardReset();
+			}
 
 			Controller.UpdateControls(Frame++);
 			//if (resetSignal)
 				//Controller.UnpressButton("Reset");   TODO fix this
 			resetSignal = Controller["Reset"];
+			hardResetSignal = Controller["Power"];
+
+			if (board is FDS)
+			{
+				var b = board as FDS;
+				if (Controller["FDS Eject"])
+					b.Eject();
+				for (int i = 0; i < b.NumSides; i++)
+					if (Controller["FDS Insert " + i])
+						b.InsertSide(i);
+			}
+			if (vs_io)
+			{
+				if (Controller["VS Coin 1"])
+					vs_coin1 = true;
+				if (Controller["VS Coin 2"])
+					vs_coin2 = true;
+			}
+
 			ppu.FrameAdvance();
 			if (lagged)
 			{
@@ -165,13 +254,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//sequence of ppu clocks per cpu clock: 4,3,3,3,3
 		//NTSC:
 		//sequence of ppu clocks per cpu clock: 3
+		ByteBuffer cpu_sequence;
 		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3});
 		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3});
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
 		protected void RunCpuOne()
 		{
 			cpu_stepcounter++;
-			if (cpu_stepcounter == cpu_sequence_NTSC[cpu_step])
+			if (cpu_stepcounter == cpu_sequence[cpu_step])
 			{
 				cpu_step++;
 				cpu_step &= 31;
@@ -195,12 +285,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					cpu.IRQ = _irq_apu || board.IRQSignal;
 					if (CoreInputComm.Tracer.Enabled)
 					{
-						CoreInputComm.Tracer.Put(cpu.State());
+						CoreInputComm.Tracer.Put(cpu.TraceState());
 					}
 					cpu.ExecuteOne();
 				}
 
 				apu.RunOne();
+				board.ClockCPU();
 				ppu.PostCpuInstructionOne();
 			}
 		}
@@ -228,6 +319,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return 0xFF;
 		}
 
+		public byte PeekReg(int addr)
+		{
+			switch (addr)
+			{
+				case 0x4000: case 0x4001: case 0x4002: case 0x4003:
+				case 0x4004: case 0x4005: case 0x4006: case 0x4007:
+				case 0x4008: case 0x4009: case 0x400A: case 0x400B:
+				case 0x400C: case 0x400D: case 0x400E: case 0x400F:
+				case 0x4010: case 0x4011: case 0x4012: case 0x4013:
+					return apu.PeekReg(addr);
+				case 0x4014: /*OAM DMA*/ break;
+				case 0x4015: return apu.PeekReg(addr); 
+				case 0x4016:
+				case 0x4017:
+					return peek_joyport(addr);
+				default:
+					//Console.WriteLine("read register: {0:x4}", addr);
+					break;
+
+			}
+			return 0xFF;
+		}
+
 		void WriteReg(int addr, byte val)
 		{
 			switch (addr)
@@ -244,6 +358,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x4016:
 					ports[0].Write(val & 1);
 					ports[1].Write(val & 1);
+					if (vs_io && board is Mapper099)
+					{
+						// happily, there aren't any other "VS exceptions" like this
+						var b = board as Mapper099;
+						b.Signal4016(val >> 2 & 1);
+					}
 					break;
 				case 0x4017: apu.WriteReg(addr, val); break;
 				default:
@@ -255,13 +375,59 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		byte read_joyport(int addr)
 		{
 			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			return handle_read_joyport(addr, false);
+		}
+
+		byte peek_joyport(int addr)
+		{
+			return handle_read_joyport(addr, true);
+		}
+
+		byte handle_read_joyport(int addr, bool peek)
+		{
 			//read joystick port
 			//many todos here
 			lagged = false;
 			byte ret;
-			if(addr == 0x4016)
-				ret = ports[0].Read();
-			else ret = ports[1].Read();
+			if (addr == 0x4016)
+				ret = ports[vs_io ? 1 : 0].Read(peek);
+			else
+				ret = ports[vs_io ? 0 : 1].Read(peek);
+			if (vs_io)
+			{
+				if (addr == 0x4016)
+				{
+					// clear bits 2-6
+					ret &= 0x83;
+					if (false) // service switch
+						ret |= 0x04;
+					if (false) // DIP1
+						ret |= 0x08;
+					if (false) // DIP2
+						ret |= 0x10;
+					if (vs_coin1)
+						ret |= 0x20;
+					if (vs_coin2)
+						ret |= 0x40;
+				}
+				else
+				{
+					// clear bits 2-7
+					ret &= 0x03;
+					if (false) // DIP3
+						ret |= 0x04;
+					if (false) // DIP4
+						ret |= 0x08;
+					if (false) // DIP5
+						ret |= 0x10;
+					if (false) // DIP6
+						ret |= 0x20;
+					if (false) // DIP7
+						ret |= 0x40;
+					if (false) // DIP8
+						ret |= 0x80;
+				}
+			}
 			return ret;
 		}
 
@@ -327,6 +493,39 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		public byte PeekMemory(ushort addr)
+		{
+			byte ret;
+
+			if (addr >= 0x4020)
+			{
+				ret = board.PeekCart(addr); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+			}
+			else if (addr < 0x0800)
+			{
+				ret = ram[addr];
+			}
+			else if (addr < 0x2000)
+			{
+				ret = ram[addr & 0x7FF];
+			}
+			else if (addr < 0x4000)
+			{
+				ret = ppu.ReadReg(addr & 7);
+			}
+			else if (addr < 0x4020)
+			{
+				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
+			}
+			else
+			{
+				throw new Exception("Woopsie-doodle!");
+				ret = 0xFF;
+			}
+
+			return ret;
+		}
+
 		//old data bus values from previous reads
 		public byte DB;
 
@@ -342,7 +541,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				ret = ram[addr];
 			}
-			else if (addr < 0x1000)
+			else if (addr < 0x2000)
 			{
 				ret = ram[addr & 0x7FF];
 			}
@@ -418,6 +617,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			else if (addr < 0x6000)
 			{
+				if (vs_io && addr == 0x4020 && (value & 1) != 0)
+				{
+					// acknowledge coin insertion
+					vs_coin1 = false;
+					vs_coin2 = false;
+				}
 				board.WriteEXP(addr - 0x4000, value);
 			}
 			else if (addr < 0x8000)

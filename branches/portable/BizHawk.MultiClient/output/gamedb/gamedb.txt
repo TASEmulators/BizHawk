@@ -121,4 +121,5 @@ sha1:2F29F3DC724027FAD926BC9D4470A481884E42A5		Blargg's 6-MMC6.nes (newer)	NES		
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 #include gamedb_neshomebrew.txt
+#include gamedb_vs.txt
 #include gamedb_user.txt

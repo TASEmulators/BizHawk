@@ -43,6 +43,22 @@ namespace BizHawk.Emulation.Sound.Utilities
 				buffer.Enqueue(0);			
 		}
 
+		/// <summary>
+		/// detached mode
+		/// </summary>
+		/// <param name="filterwidth"></param>
+		public DCFilter(int filterwidth)
+		{
+			if (filterwidth < 1 || filterwidth > 65536)
+				throw new ArgumentOutOfRangeException();
+			this.input = null;
+			this.syncinput = null;
+			this.depth = filterwidth;
+			this.buffer = new Queue<short>(depth * 2);
+			for (int i = 0; i < depth * 2; i++)
+				buffer.Enqueue(0);
+		}
+
 		public DCFilter(ISyncSoundProvider input, int filterwidth)
 		{
 			if (filterwidth < 1 || filterwidth > 65536)

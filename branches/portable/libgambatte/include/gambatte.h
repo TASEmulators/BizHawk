@@ -85,6 +85,8 @@ public:
 	
 	void setReadCallback(void (*callback)(unsigned));
 	void setWriteCallback(void (*callback)(unsigned));
+	void setTraceCallback(void (*callback)(void *));
+	void setScanlineCallback(void (*callback)(), int sl);
 
 	/** Sets the directory used for storing save data. The default is the same directory as the ROM Image file. */
 	void setSaveDir(const std::string &sdir);

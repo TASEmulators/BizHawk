@@ -83,13 +83,13 @@ namespace BizHawk.MultiClient
 				while (textureWidth < imageWidth) textureWidth <<= 1;
 				while (textureHeight < imageHeight) textureHeight <<= 1;
 				// Create a new texture instance.
-				Texture = new Texture(GraphicsDevice, textureWidth, textureHeight, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
+				Texture = new Texture(GraphicsDevice, textureWidth, textureHeight, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 			}
 
 			surface.FromBitmap();
 
 			// Copy the image data to the texture.
-			using (var Data = Texture.LockRectangle(0, LockFlags.Discard | LockFlags.NoDirtyUpdate).Data)
+			using (var Data = Texture.LockRectangle(0, LockFlags.None).Data)
 			{
 				if (imageWidth == textureWidth)
 				{

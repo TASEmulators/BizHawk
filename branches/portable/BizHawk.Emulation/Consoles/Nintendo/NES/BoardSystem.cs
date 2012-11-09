@@ -23,6 +23,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			
 			//gets called once per PPU clock, for boards with complex behaviour which must be monitoring clock (i.e. mmc3 irq counter)
 			void ClockPPU();
+			//gets called once per CPU clock; typically for boards with M2 counters
+			void ClockCPU();
+
+			byte PeekCart(int addr);
 
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr); byte PeekPPU(int addr);
@@ -72,6 +76,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public abstract bool Configure(NES.EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
+			public virtual void ClockCPU() { }
 
 			public CartInfo Cart { get { return NES.cart; } }
 			public NES NES { get; set; }
@@ -233,6 +238,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
+			/// <summary>
+			/// derived classes should override this if they have peek-unsafe logic
+			/// </summary>
+			public virtual byte PeekCart(int addr)
+			{
+				byte ret;
+				if (addr >= 0x8000)
+				{
+					ret = ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+				}
+				else if (addr < 0x6000)
+				{
+					ret = ReadEXP(addr - 0x4000);
+				}
+				else
+				{
+					ret = ReadWRAM(addr - 0x6000);
+				}
+
+				return ret;
+			}
+
 			public virtual byte[] SaveRam
 			{
 				get
@@ -297,6 +324,44 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				INESBoardImplementors[x] = temp;
 			}
 			return board;
+		}
+
+		void BoardSystemHardReset()
+		{
+			INESBoard newboard;
+			// fds has a unique activation setup
+			if (board is FDS)
+			{
+				var newfds = new FDS();
+				var oldfds = board as FDS;
+				newfds.biosrom = oldfds.biosrom;
+				newfds.SetDiskImage(oldfds.GetDiskImage());
+				newboard = newfds;
+			}
+			else
+			{
+				newboard = CreateBoardInstance(board.GetType());
+			}
+			newboard.Create(this);
+			newboard.Configure(origin);
+			newboard.ROM = board.ROM;
+			newboard.VROM = board.VROM;
+			if (board.WRAM != null)
+				newboard.WRAM = new byte[board.WRAM.Length];
+			if (board.VRAM != null)
+				newboard.VRAM = new byte[board.VRAM.Length];
+			newboard.PostConfigure();
+			// the old board's sram must be restored
+			if (newboard is FDS)
+			{
+				var newfds = newboard as FDS;
+				var oldfds = board as FDS;
+				newfds.StoreSaveRam(oldfds.ReadSaveRam());
+			}
+			else if (board.SaveRam != null)
+			{
+				Buffer.BlockCopy(board.SaveRam, 0, newboard.SaveRam, 0, board.SaveRam.Length);
+			}
 		}
 
 
@@ -426,6 +491,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (!dict.ContainsKey("board"))
 				throw new Exception("NES gamedb entries must have a board identifier!");
 			cart.board_type = dict["board"];
+			if (dict.ContainsKey("system"))
+				cart.system = dict["system"];
 			cart.prg_size = -1;
 			cart.vram_size = -1;
 			cart.wram_size = -1;

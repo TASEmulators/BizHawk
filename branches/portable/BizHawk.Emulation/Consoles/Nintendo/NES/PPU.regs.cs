@@ -346,6 +346,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				reg_2000.Value = value;
 			}
 			byte read_2000() { return PPUGenLatch; }
+			byte peek_2000() { return PPUGenLatch; }
 
 			//PPU MASK (write)
 			void write_2001(byte value)
@@ -354,6 +355,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				reg_2001.Value = value;
 			}
 			byte read_2001() { return PPUGenLatch; }
+			byte peek_2001() { return PPUGenLatch; }
 
 			//PPU STATUS (read)
 			void write_2002(byte value) { }
@@ -363,14 +365,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//i think we should only reset the state machine for 2005/2006
 				//ppur.clear_latches();
 
-				vtoggle = false;
-				int ret = (Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (PPUGenLatch & 0x1F);
+				byte ret = peek_2002();
 
+				vtoggle = false;
 				Reg2002_vblank_active = 0;
 				Reg2002_vblank_active_pending = false;
 
-				return (byte)ret;
+				return ret;
 			}
+			byte peek_2002()
+			{
+				return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (PPUGenLatch & 0x1F));
+			}
+
 			void clear_2002()
 			{
 				Reg2002_objhit = Reg2002_objoverflow = 0;
@@ -384,6 +391,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				reg_2003 = value;
 			}
 			byte read_2003() { return PPUGenLatch; }
+			byte peek_2003() { return PPUGenLatch; }
 
 			//OAM DATA (write)
 			void write_2004(byte value)
@@ -393,9 +401,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				OAM[reg_2003] = value;
 				reg_2003++;
 			}
-			byte read_2004() {
-				return OAM[reg_2003];
-			}
+			byte read_2004() { return OAM[reg_2003]; }
+			byte peek_2004() { return OAM[reg_2003]; }
 
 			//SCROLL (write)
 			void write_2005(byte value)
@@ -415,6 +422,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				vtoggle ^= true;
 			}
 			byte read_2005() { return PPUGenLatch; }
+			byte peek_2005() { return PPUGenLatch; }
 
 			//VRAM address register (write)
 			void write_2006(byte value)
@@ -445,6 +453,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				vtoggle ^= true;
 			}
 			byte read_2006() { return PPUGenLatch; }
+			byte peek_2006() { return PPUGenLatch; }
 
 			//VRAM data register (r/w)
 			void write_2007(byte value)
@@ -501,6 +510,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				
 				return ret;
 			}
+			byte peek_2007()
+			{
+				int addr = ppur.get_2007access() & 0x3FFF;
+
+				//ordinarily we return the buffered values
+				byte ret = VRAMBuffer;
+
+				//in any case, we read from the ppu bus
+				VRAMBuffer = ppubus_peek(addr);
+
+				//but reads from the palette are implemented in the PPU and return immediately
+				if ((addr & 0x3F00) == 0x3F00)
+				{
+					//TODO apply greyscale shit?
+					ret = PALRAM[addr & 0x1F];
+				}
+
+				return ret;
+			}
 			//--------
 		
 			public byte ReadReg(int addr)
@@ -509,6 +537,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					case 0: return read_2000(); case 1: return read_2001(); case 2: return read_2002(); case 3: return read_2003();
 					case 4: return read_2004(); case 5: return read_2005(); case 6: return read_2006(); case 7: return read_2007();
+					default: throw new InvalidOperationException();
+				}
+			}
+			public byte PeekReg(int addr)
+			{
+				switch (addr)
+				{
+					case 0: return peek_2000(); case 1: return peek_2001(); case 2: return peek_2002(); case 3: return peek_2003();
+					case 4: return peek_2004(); case 5: return peek_2005(); case 6: return peek_2006(); case 7: return peek_2007();
 					default: throw new InvalidOperationException();
 				}
 			}

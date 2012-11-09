@@ -576,7 +576,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
 			if (ArcadeCard)
 			{
-				var ArcadeRamMemoryDomain = new MemoryDomain("Aracde Card RAM", ArcadeRam.Length, Endian.Little,
+				var ArcadeRamMemoryDomain = new MemoryDomain("Arcade Card RAM", ArcadeRam.Length, Endian.Little,
 						addr => ArcadeRam[addr & 0x1FFFFF],
 						(addr, value) => ArcadeRam[addr & 0x1FFFFF] = value);
 				domains.Add(ArcadeRamMemoryDomain);

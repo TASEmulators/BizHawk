@@ -74,7 +74,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="Buffer.cs" />
+    <Compile Include="Computers\Commodore64\C64.core.cs" />
+    <Compile Include="Computers\Commodore64\C64.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge.cs" />
+    <Compile Include="Computers\Commodore64\CartridgeMappers.cs" />
+    <Compile Include="Computers\Commodore64\Cia.cs" />
+    <Compile Include="Computers\Commodore64\DataPort.cs" />
+    <Compile Include="Computers\Commodore64\IMedia.cs" />
+    <Compile Include="Computers\Commodore64\PRGFile.cs" />
+    <Compile Include="Computers\Commodore64\MemBus.cs" />
+    <Compile Include="Computers\Commodore64\Sid.cs" />
+    <Compile Include="Computers\Commodore64\VicII.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />
@@ -82,6 +96,7 @@
     <Compile Include="Consoles\Atari\2600\Mappers\m3E.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3F.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m4A50.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mDPC.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mE0.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mE7.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mEF.cs" />
@@ -102,6 +117,72 @@
     <Compile Include="Consoles\Atari\2600\TIA.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.Core.cs" />
+    <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\AddressSpace.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Bios7800.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\BufferElement.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7808.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7816.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7832.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7832P.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7848.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78AB.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78AC.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78S4.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78S9.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78SG.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78SGP.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartA16K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartA16KR.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartA2K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartA32K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartA32KR.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartA4K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartA8K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartA8KR.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartCBS12K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartDC8K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartDPC.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartMN16K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartPB8K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartTV8K.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\CartType.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\ConsoleSwitch.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Controller.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\ControllerAction.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\DeserializationContext.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Emu7800Exception.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Emu7800SerializationException.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\FontRenderer.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\FrameBuffer.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\HSC7800.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\IDevice.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\ILogger.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\InputState.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\M6502.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\M6502DASM.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Machine2600.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Machine2600NTSC.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Machine2600PAL.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Machine7800.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Machine7800NTSC.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Machine7800PAL.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\MachineBase.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\MachineInput.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\MachineType.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\Maria.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\MariaTables.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\NullDevice.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\NullLogger.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\PIA.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\PokeySound.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\RAM6116.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\SerializationContext.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\TIA.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\TIASound.cs" />
+    <Compile Include="Consoles\Atari\7800\EMU7800\TIATables.cs" />
     <Compile Include="Consoles\Calculator\TI83.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.Core.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
@@ -129,6 +210,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_161_32.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper028.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CNROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CPROM.cs">
       <SubType>Code</SubType>
@@ -152,6 +234,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_SS8806.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper015.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper027.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper036.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper038.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper040.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper041.cs" />
@@ -162,7 +245,9 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper069.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper090.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper091.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper099.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper101.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper103.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper108.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper116.cs" />
@@ -218,6 +303,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper197.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper205.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper245.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper250.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\NES-QJ.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TQROM.cs" />
@@ -231,6 +317,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper112.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper154.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper206.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namco163Audio.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namcot1xx.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NAMCOT_m19_m210.cs">
       <SubType>Code</SubType>
@@ -256,6 +343,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Taito_X1_005.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Taito_X1_017.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN-800032.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN_800008.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UxROM.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -265,8 +353,10 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
     <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\VsUnisys.cs" />
     <Compile Include="Consoles\Nintendo\NES\Core.cs" />
+    <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
+    <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
+    <Compile Include="Consoles\Nintendo\NES\FDS\RamAdapter.cs" />
     <Compile Include="Consoles\Nintendo\NES\iNES.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
     <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />
@@ -282,6 +372,8 @@
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
     <Compile Include="Consoles\PC Engine\TurboCD.cs" />
+    <Compile Include="Consoles\PSX\LibMednahawkDll.cs" />
+    <Compile Include="Consoles\PSX\Octoshock.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
@@ -310,17 +402,16 @@
     <Compile Include="CPUs\MOS 6502X\Disassembler.cs" />
     <Compile Include="CPUs\MOS 6502X\Execute.cs" />
     <Compile Include="CPUs\MOS 6502X\MOS6502X.cs" />
-    <Compile Include="CPUs\MOS 6502\Disassembler.cs" />
-    <Compile Include="CPUs\MOS 6502\Execute.cs" />
-    <Compile Include="CPUs\MOS 6502\MOS6502.cs" />
+    <Compile Include="CPUs\MOS 6502X\MOS6502XDouble.cs" />
+    <Compile Include="CPUs\MOS 6502X\MOS6502XNative.cs" />
     <Compile Include="CPUs\Native68000\Musashi.cs" />
     <Compile Include="CPUs\x86\Disassembler.cs" />
     <Compile Include="CPUs\x86\Execute.cs" />
     <Compile Include="CPUs\x86\Timing.cs" />
     <Compile Include="CPUs\x86\x86.cs" />
-    <Compile Include="CPUs\Z80-GB\Disassembler.cs" />
     <Compile Include="CPUs\Z80-GB\Execute.cs" />
     <Compile Include="CPUs\Z80-GB\Interrupts.cs" />
+    <Compile Include="CPUs\Z80-GB\NewDisassembler.cs" />
     <Compile Include="CPUs\Z80-GB\Registers.cs" />
     <Compile Include="CPUs\Z80-GB\Tables.cs" />
     <Compile Include="CPUs\Z80-GB\Z80.cs" />
@@ -441,8 +532,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Consoles\PSX\" />
+    <Folder Include="Computers\Commodore64\docs\" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />

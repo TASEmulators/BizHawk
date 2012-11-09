@@ -139,8 +139,15 @@ namespace BizHawk.Emulation.Consoles.GB
 				LibGambatte.gambatte_reset(GambatteState);
 
 			RefreshMemoryCallbacks();
+			if (CoreInputComm.Tracer.Enabled)
+				tracecb = MakeTrace;
+			else
+				tracecb = null;
+			LibGambatte.gambatte_settracecallback(GambatteState, tracecb);
 
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
+
+			Console.WriteLine("===");
 
 			// upload any modified data to the memory domains
 
@@ -155,6 +162,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			if (IsLagFrame)
 				LagCount++;
 
+			if (endofframecallback != null)
+				endofframecallback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
 		}
 
 		/// <summary>
@@ -410,11 +419,40 @@ namespace BizHawk.Emulation.Consoles.GB
 			VsyncDen = 4389,
 			RomStatusAnnotation = null, //"Bizwhackin it up",
 			RomStatusDetails = null, //"LEVAR BURTON",
+			CpuTraceAvailable = true
 		};
 
 		public CoreOutputComm CoreOutputComm
 		{
 			get { return GbOutputComm; }
+		}
+
+		LibGambatte.TraceCallback tracecb;
+
+		void MakeTrace(IntPtr _s)
+		{
+			int[] s = new int[13];
+			System.Runtime.InteropServices.Marshal.Copy(_s, s, 0, 13);
+			ushort unused;
+
+			CoreInputComm.Tracer.Put(string.Format(
+				"{13} SP:{2:x2} A:{3:x2} B:{4:x2} C:{5:x2} D:{6:x2} E:{7:x2} F:{8:x2} H:{9:x2} L:{10:x2} {11} Cy:{0}",
+				s[0],
+				s[1] & 0xffff,
+				s[2] & 0xffff,
+				s[3] & 0xff,
+				s[4] & 0xff,
+				s[5] & 0xff,
+				s[6] & 0xff,
+				s[7] & 0xff,
+				s[8] & 0xff,
+				s[9] & 0xff,
+				s[10] & 0xff,
+				s[11] != 0 ? "skip" : "",
+				s[12] & 0xff,
+				//CPUs.Z80GB.Disassembler.DAsm((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
+				CPUs.Z80GB.NewDisassembler.Disassemble((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
+			));
 		}
 
 		#region MemoryDomains
@@ -538,6 +576,75 @@ namespace BizHawk.Emulation.Consoles.GB
 		public MemoryDomain MainMemory { get; private set; }
 
 		List <MemoryRefresher> MemoryRefreshers;
+
+		#endregion
+
+		#region ppudebug
+		public bool GetGPUMemoryAreas(out IntPtr vram, out IntPtr bgpal, out IntPtr sppal, out IntPtr oam)
+		{
+			IntPtr _vram = IntPtr.Zero;
+			IntPtr _bgpal = IntPtr.Zero;
+			IntPtr _sppal = IntPtr.Zero;
+			IntPtr _oam = IntPtr.Zero;
+			int unused = 0;
+			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref _vram, ref unused)
+				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.bgpal, ref _bgpal, ref unused)
+				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.sppal, ref _sppal, ref unused)
+				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.oam, ref _oam, ref unused))
+			{
+				vram = IntPtr.Zero;
+				bgpal = IntPtr.Zero;
+				sppal = IntPtr.Zero;
+				oam = IntPtr.Zero;
+				return false;
+			}
+			vram = _vram;
+			bgpal = _bgpal;
+			sppal = _sppal;
+			oam = _oam;
+			return true;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="lcdc">current value of register $ff40 (LCDC)</param>
+		public delegate void ScanlineCallback(int lcdc);
+
+		/// <summary>
+		/// set up callback
+		/// </summary>
+		/// <param name="callback"></param>
+		/// <param name="line">scanline. -1 = end of frame, -2 = RIGHT NOW</param>
+		public void SetScanlineCallback(ScanlineCallback callback, int line)
+		{
+			if (GambatteState == IntPtr.Zero)
+				// not sure how this is being reached.  tried the debugger...
+				return;
+			endofframecallback = null;
+			if (callback == null || line == -1 || line == -2)
+			{
+				scanlinecb = null;
+				LibGambatte.gambatte_setscanlinecallback(GambatteState, null, 0);
+				if (line == -1)
+					endofframecallback = callback;
+				else if (line == -2)
+					callback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
+			}
+			else if (line >= 0 && line <= 153)
+			{
+				scanlinecb = delegate()
+				{
+					callback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
+				};
+				LibGambatte.gambatte_setscanlinecallback(GambatteState, scanlinecb, line);
+			}
+			else
+				throw new ArgumentOutOfRangeException("line must be in [0, 153]");
+		}
+
+		LibGambatte.ScanlineCallback scanlinecb;
+		ScanlineCallback endofframecallback;
 
 		#endregion
 

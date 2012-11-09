@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		int prg = 0;
 		int chr = 0;
-		int irqclock = 2048 * 3;
+		int irqclock = 2048;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -95,14 +95,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irqclock", ref irqclock);
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
-			if (irqclock == 2048 * 3 - 1)
+			if (irqclock == 2048 - 1)
 			{
 				irqclock++;
 				IRQSignal = true;
 			}
-			else if (irqclock < 2048 * 3 - 1)
+			else if (irqclock < 2048 - 1)
 			{
 				irqclock++;
 			}

@@ -135,8 +135,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		void ClockIRQ()
+		public override void ClockCPU()
 		{
+			if (!irq_enabled) return;
 			if (irq_mode)
 			{
 				//8 bit mode
@@ -170,6 +171,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		/*
 		public override void ClockPPU()
 		{
 			if (!irq_enabled) return;
@@ -180,7 +182,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				irq_cycles += 3;
 				ClockIRQ();
 			}
-		}
+		}*/
 
 	}
 }

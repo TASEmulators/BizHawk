@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 
-		void ClockCPU()
+		public override void ClockCPU()
 		{
 			if (!irq_enable) return;
 			if (irq_counter == 0)
@@ -143,6 +143,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else return base.ReadPPU(addr);
 		}
 
+		/*
 		public override void ClockPPU()
 		{
 			clock_counter++;
@@ -151,6 +152,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				clock_counter = 0;
 				ClockCPU();
 			}
-		}
+		}*/
 	}
 }

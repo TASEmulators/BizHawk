@@ -58,6 +58,11 @@ namespace BizHawk
 		{
 			get { return _capsule.FileNames; }
 		}
+        public int FilterIndex
+        {
+            get { return _capsule.FilterIndex; }
+            set { _capsule.FilterIndex = value; }
+        }
 	}
 }
 

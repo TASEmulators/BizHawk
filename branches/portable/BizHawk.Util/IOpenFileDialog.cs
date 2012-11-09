@@ -11,6 +11,7 @@ namespace BizHawk
 		System.Windows.Forms.DialogResult ShowDialog();
 		string FileName {get; set;}
 		string[] FileNames {get;}
+        int FilterIndex { get; set; }
 	}
 }
 

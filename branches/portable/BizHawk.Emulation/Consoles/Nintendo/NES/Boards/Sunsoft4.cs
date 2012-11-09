@@ -51,6 +51,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "SUNSOFT-4":
 					AssertPrg(128); AssertChr(128,256); AssertVram(0); AssertWram(0,8); 
 					break;
+				case "UNIF_NES-NTBROM":
+					AssertPrg(128 + 16); AssertChr(128); Cart.wram_size = 8; Cart.vram_size = 0;
+					/* The actual cart had 128k prg, with a small slot on the top that can load an optional daughterboard.
+					 * The UNIF dump has this as an extra 16k prg lump.  I don't know how this lump is actually used,
+					 * though.
+					 */
+					break;
 				default:
 					return false;
 			}
@@ -58,6 +65,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SetMirrorType(EMirrorType.Vertical);
 			prg_regs_16k[1] = 0xFF;
 			prg_bank_mask = Cart.prg_size / 16 - 1;
+			if (Cart.prg_size == 128 + 16)
+				prg_bank_mask = 7; // ignore extra prg lump
 			chr_bank_mask = Cart.chr_size / 2 - 1;
 			nt_bank_mask = Cart.chr_size - 1;
 			return true;
@@ -105,6 +114,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePRG(int addr, byte value)
 		{
+			//Console.WriteLine("W{0:x4} {1:x2}", addr + 0x8000, value);
 			switch (addr & 0xF000)
 			{
 				case 0x0000: //$8000

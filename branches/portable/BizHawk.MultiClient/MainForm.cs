@@ -16,14 +16,15 @@ using BizHawk.Emulation.Consoles.Coleco;
 using System.Collections.Generic;
 using BizHawk.Emulation.Consoles.Intellivision;
 using BizHawk.Emulation.Consoles.GB;
+using BizHawk.Emulation.Computers.Commodore64;
 
 namespace BizHawk.MultiClient
 {
 
 	public partial class MainForm : Form
 	{
-		public bool INTERIM = true;
-		public const string EMUVERSION = "Version 1.2.0";
+		public bool INTERIM = false;
+		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
 		public const string RELEASEDATE = "October 20, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
@@ -80,11 +81,13 @@ namespace BizHawk.MultiClient
 		public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
 		public NESPPU NESPPU1 = new NESPPU();
 		public NESDebugger NESDebug1 = new NESDebugger();
+		public GBtools.GBGPUView GBGPUView1 = new GBtools.GBGPUView();
 		public PCEBGViewer PCEBGViewer1 = new PCEBGViewer();
 		public Cheats Cheats1 = new Cheats();
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
+		public VirtualPadForm VirtualPadForm1 = new VirtualPadForm();
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
@@ -308,8 +311,17 @@ namespace BizHawk.MultiClient
 				LoadNESDebugger();
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 				LoadGameGenieEC();
+
 			if (Global.Config.AutoloadTAStudio)
+			{
 				LoadTAStudio();
+			}
+
+			if (Global.Config.AutoloadVirtualPad)
+			{
+				LoadVirtualPads();
+			}
+
 			if (Global.Config.AutoLoadLuaConsole)
 				OpenLuaConsole();
 			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
@@ -383,6 +395,10 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG;
 			Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
+			Global.CoreInputComm.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
+
+			Global.CoreInputComm.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
+
 			Global.CoreInputComm.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			Global.CoreInputComm.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			Global.CoreInputComm.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
@@ -399,6 +415,14 @@ namespace BizHawk.MultiClient
 
 			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 			Global.CoreInputComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+
+			Global.CoreInputComm.Atari2600_ShowBG = Global.Config.Atari2600_ShowBG;
+			Global.CoreInputComm.Atari2600_ShowPlayer1 = Global.Config.Atari2600_ShowPlayer1;
+			Global.CoreInputComm.Atari2600_ShowPlayer2 = Global.Config.Atari2600_ShowPlayer2;
+			Global.CoreInputComm.Atari2600_ShowMissle1 = Global.Config.Atari2600_ShowMissle1;
+			Global.CoreInputComm.Atari2600_ShowMissle2 = Global.Config.Atari2600_ShowMissle2;
+			Global.CoreInputComm.Atari2600_ShowBall = Global.Config.Atari2600_ShowBall;
+			Global.CoreInputComm.Atari2600_ShowPF = Global.Config.Atari2600_ShowPlayfield;
 		}
 
 		void SyncPresentationMode()
@@ -574,13 +598,13 @@ namespace BizHawk.MultiClient
 		public void PauseEmulator()
 		{
 			EmulatorPaused = true;
-
-
+			SetPauseStatusbarIcon();
 		}
 
 		public void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
+			SetPauseStatusbarIcon();
 		}
 
 		private void SetPauseStatusbarIcon()
@@ -660,7 +684,7 @@ namespace BizHawk.MultiClient
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
 				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4", "Reboot Core" }
+				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie" }
 		};
 
 		private void InitControls()
@@ -676,7 +700,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("SNES Toggle OBJ 2", Global.Config.ToggleSNESOBJ2Binding);
 			controls.BindMulti("SNES Toggle OBJ 3", Global.Config.ToggleSNESOBJ3Binding);
 			controls.BindMulti("SNES Toggle OBJ 4", Global.Config.ToggleSNESOBJ4Binding);
-
+			controls.BindMulti("Save Movie", Global.Config.SaveMovieBinding);
 			controls.BindMulti("IncreaseWindowSize", Global.Config.IncreaseWindowSize);
 			controls.BindMulti("DecreaseWindowSize", Global.Config.DecreaseWindowSize);
 			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
@@ -767,8 +791,8 @@ namespace BizHawk.MultiClient
 			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
 
 			var smsControls = new Controller(SMS.SmsController);
-			smsControls.BindMulti("Reset", Global.Config.SmsReset);
-			smsControls.BindMulti("Pause", Global.Config.SmsPause);
+			smsControls.BindMulti("Reset", Global.Config.SMSConsoleButtons.Reset);
+			smsControls.BindMulti("Pause", Global.Config.SMSConsoleButtons.Pause);
 			for (int i = 0; i < 2; i++)
 			{
 				smsControls.BindMulti(string.Format("P{0} Up", i + 1), Global.Config.SMSController[i].Up);
@@ -782,8 +806,8 @@ namespace BizHawk.MultiClient
 
 			var asmsControls = new AutofireController(SMS.SmsController);
 			asmsControls.Autofire = true;
-			asmsControls.BindMulti("Reset", Global.Config.SmsReset);
-			asmsControls.BindMulti("Pause", Global.Config.SmsPause);
+			asmsControls.BindMulti("Reset", Global.Config.SMSConsoleButtons.Reset);
+			asmsControls.BindMulti("Pause", Global.Config.SMSConsoleButtons.Pause);
 			for (int i = 0; i < 2; i++)
 			{
 				asmsControls.BindMulti(string.Format("P{0} Up", i + 1), Global.Config.SMSAutoController[i].Up);
@@ -843,6 +867,9 @@ namespace BizHawk.MultiClient
 				snesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.SNESController[i].Select);
 				snesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.SNESController[i].Start);
 			}
+
+			snesControls.BindMulti("Reset", Global.Config.SNESConsoleButtons.Reset);
+			snesControls.BindMulti("Power", Global.Config.SNESConsoleButtons.Power);
 			Global.SNESControls = snesControls;
 
 
@@ -865,7 +892,6 @@ namespace BizHawk.MultiClient
 			}
 			Global.AutofireSNESControls = asnesControls;
 
-
 			var nesControls = new Controller(NES.NESController);
 			for (int i = 0; i < 2 /*TODO*/; i++)
 			{
@@ -878,6 +904,13 @@ namespace BizHawk.MultiClient
 				nesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.NESController[i].Select);
 				nesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESController[i].Start);
 			}
+
+			nesControls.BindMulti("Reset", Global.Config.NESConsoleButtons.Reset);
+			nesControls.BindMulti("Power", Global.Config.NESConsoleButtons.Power);
+			nesControls.BindMulti("FDS Eject", Global.Config.NESConsoleButtons.FDS_Eject);
+			nesControls.BindMulti("VS Coin 1", Global.Config.NESConsoleButtons.VS_Coin_1);
+			nesControls.BindMulti("VS Coin 2", Global.Config.NESConsoleButtons.VS_Coin_2);
+
 			Global.NESControls = nesControls;
 
 			var anesControls = new AutofireController(NES.NESController);
@@ -905,6 +938,7 @@ namespace BizHawk.MultiClient
 			gbControls.BindMulti("B", Global.Config.GBController[0].B);
 			gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
 			gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
+			gbControls.BindMulti("Power", Global.Config.GBController[0].Power);
 			Global.GBControls = gbControls;
 
 			var agbControls = new AutofireController(Gameboy.GbController);
@@ -928,6 +962,7 @@ namespace BizHawk.MultiClient
 			genControls.BindMulti("P1 B", Global.Config.GenesisController[0].B);
 			genControls.BindMulti("P1 C", Global.Config.GenesisController[0].C);
 			genControls.BindMulti("P1 Start", Global.Config.GenesisController[0].Start);
+			genControls.BindMulti("Reset", Global.Config.GenesisConsoleButtons.Reset);
 			Global.GenControls = genControls;
 
             var agenControls = new AutofireController(Genesis.GenesisController);
@@ -1048,6 +1083,35 @@ namespace BizHawk.MultiClient
 			TI83Controls.BindMulti("MODE", Global.Config.TI83Controller[0].MODE);
 			TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].DEL);
 			Global.TI83Controls = TI83Controls;
+
+			var CommodoreControls = new Controller(C64.C64ControllerDefinition);
+			CommodoreControls.BindMulti("P1 Up", Global.Config.C64Joysticks[0].Up);
+			CommodoreControls.BindMulti("P1 Left", Global.Config.C64Joysticks[0].Left);
+			CommodoreControls.BindMulti("P1 Right", Global.Config.C64Joysticks[0].Right);
+			CommodoreControls.BindMulti("P1 Down", Global.Config.C64Joysticks[0].Down);
+			CommodoreControls.BindMulti("P1 Button", Global.Config.C64Joysticks[0].Button);
+
+			CommodoreControls.BindMulti("P2 Up", Global.Config.C64Joysticks[1].Up);
+			CommodoreControls.BindMulti("P2 Left", Global.Config.C64Joysticks[1].Left);
+			CommodoreControls.BindMulti("P2 Right", Global.Config.C64Joysticks[1].Right);
+			CommodoreControls.BindMulti("P2 Down", Global.Config.C64Joysticks[1].Down);
+			CommodoreControls.BindMulti("P2 Button", Global.Config.C64Joysticks[1].Button);
+			Global.Commodore64Controls = CommodoreControls;
+
+			var autofireC64Controls = new AutofireController(C64.C64ControllerDefinition);
+			autofireC64Controls.BindMulti("P1 Up", Global.Config.C64AutoJoysticks[0].Up);
+			autofireC64Controls.BindMulti("P1 Left", Global.Config.C64AutoJoysticks[0].Left);
+			autofireC64Controls.BindMulti("P1 Right", Global.Config.C64AutoJoysticks[0].Right);
+			autofireC64Controls.BindMulti("P1 Down", Global.Config.C64AutoJoysticks[0].Down);
+			autofireC64Controls.BindMulti("P1 Button", Global.Config.C64AutoJoysticks[0].Button);
+
+			autofireC64Controls.BindMulti("P2 Up", Global.Config.C64AutoJoysticks[1].Up);
+			autofireC64Controls.BindMulti("P2 Left", Global.Config.C64AutoJoysticks[1].Left);
+			autofireC64Controls.BindMulti("P2 Right", Global.Config.C64AutoJoysticks[1].Right);
+			autofireC64Controls.BindMulti("P2 Down", Global.Config.C64AutoJoysticks[1].Down);
+			autofireC64Controls.BindMulti("P2 Button", Global.Config.C64AutoJoysticks[1].Button);
+
+			Global.AutofireCommodore64Controls = autofireC64Controls;
 		}
 
 		private static void FormDragEnter(object sender, DragEventArgs e)
@@ -1167,6 +1231,8 @@ namespace BizHawk.MultiClient
 				case "GB": str += "Game Boy"; break;
 				case "GBC": str += "Game Boy Color"; break;
 				case "A26": str += "Atari 2600"; break;
+				case "A78": str += "Atari 7800"; break;
+				case "C64": str += "Commodore 64"; break;
 			}
 
 			if (INTERIM) str += " (interim)";
@@ -1236,6 +1302,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "NES":
 					NESToolStripMenuItem.Visible = true;
+					NESSpeicalMenuControls();
 					break;
 				case "PCE":
 				case "PCECD":
@@ -1272,6 +1339,45 @@ namespace BizHawk.MultiClient
 				default:
 					break;
 			}
+		}
+
+		void NESSpeicalMenuAdd(string name, string button, string msg)
+		{
+			nESSpeicalToolStripMenuItem.Visible = true;
+			nESSpeicalToolStripMenuItem.DropDownItems.Add(name, null, delegate(object sender, EventArgs e)
+			{
+				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
+				{
+					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+					{
+						Global.ClickyVirtualPadController.Click(button);
+						Global.OSD.AddMessage(msg);
+					}
+				}
+
+			}
+			);
+		}
+
+		void NESSpeicalMenuControls()
+		{
+
+			// ugly and hacky
+			nESSpeicalToolStripMenuItem.Visible = false;
+			nESSpeicalToolStripMenuItem.DropDownItems.Clear();
+			var ss = Global.Emulator.ControllerDefinition.BoolButtons;
+			if (ss.Contains("FDS Eject"))
+				NESSpeicalMenuAdd("Eject Disk", "FDS Eject", "FDS Disk Ejected.");
+			for (int i = 0; i < 16; i++)
+			{
+				string s = "FDS Insert " + i;
+				if (ss.Contains(s))
+					NESSpeicalMenuAdd("Insert Disk " + i, s, "FDS Disk " + i + " inserted.");
+			}
+			if (ss.Contains("VS Coin 1"))
+				NESSpeicalMenuAdd("Insert Coin 1", "VS Coin 1", "Coin 1 inserted.");
+			if (ss.Contains("VS Coin 2"))
+				NESSpeicalMenuAdd("Insert Coin 2", "VS Coin 2", "Coin 2 inserted.");
 		}
 
 		void SyncControls()
@@ -1325,11 +1431,17 @@ namespace BizHawk.MultiClient
 				case "COLV":
 					Global.ActiveController = Global.ColecoControls;
 					break;
+				case "C64":
+					Global.ActiveController = Global.Commodore64Controls;
+					Global.AutoFireController = Global.AutofireCommodore64Controls;
+					break;
 				default:
 					Global.ActiveController = Global.NullControls;
 					break;
 			}
-
+			// allow propogating controls that are in the current controller definition but not in the prebaked one
+			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
+			Global.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);			
 			RewireInputChain();
 		}
 
@@ -1366,7 +1478,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "ROM", "INT", "GBC", "UNF" };
+				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1439,14 +1551,35 @@ namespace BizHawk.MultiClient
 							// In the future we need to do something smarter, possibly including simply asking the user
 							// what system the game is for.
 
-							game = new GameInfo();
-							game.System = "PCECD";
-							game.Name = Path.GetFileNameWithoutExtension(file.Name);
-							game.Hash = hash;
+							if (BizHawk.Emulation.Consoles.PSX.Octoshock.CheckIsPSX(disc))
+							{
+								game = new GameInfo();
+								game.System = "PSX";
+								game.Name = Path.GetFileNameWithoutExtension(file.Name);
+								game.Hash = hash;
+								disc.Dispose();
+							}
+							else
+							{
+								game = new GameInfo();
+								game.System = "PCECD";
+								game.Name = Path.GetFileNameWithoutExtension(file.Name);
+								game.Hash = hash;
+							}
 						}
 
 						switch (game.System)
 						{
+							case "PSX":
+								{
+									var psx = new BizHawk.Emulation.Consoles.PSX.Octoshock();
+									nextEmulator = psx;
+									psx.CoreInputComm = Global.CoreInputComm;
+									psx.LoadCuePath(file.CanonicalFullPath);
+									nextEmulator.CoreOutputComm.RomStatusDetails = "PSX etc.";
+								}
+								break;
+
 							case "PCE":
 							case "PCECD":
 								{
@@ -1541,7 +1674,22 @@ namespace BizHawk.MultiClient
 								break;
 							case "NES":
 								{
-									NES nes = new NES(game, rom.FileData);
+									string biosPath = PathManager.MakeAbsolutePath(Global.Config.PathFDSBios, "NES");
+									byte[] bios = null;
+									if (File.Exists(biosPath))
+									{
+										bios = File.ReadAllBytes(biosPath);
+										// ines header + 24KB of garbage + actual bios + 8KB of garbage
+										if (bios.Length == 40976)
+										{
+											MessageBox.Show(this, "Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
+											byte[] tmp = new byte[8192];
+											Buffer.BlockCopy(bios, 16 + 8192 * 3, tmp, 0, 8192);
+											bios = tmp;
+										}
+									}
+
+									NES nes = new NES(game, rom.FileData, bios);
 									nes.SoundOn = Global.Config.SoundEnabled;
 									nes.FirstDrawLine = Global.Config.NESTopLine;
 									nes.LastDrawLine = Global.Config.NESBottomLine;
@@ -1629,6 +1777,23 @@ namespace BizHawk.MultiClient
 									nextEmulator = intv;
 								}
 								break;
+							case "A78":
+								string ntsc_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800NTSCBIOS, "A78");
+								string pal_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800PALBIOS, "A78"); 
+								string hsbiospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800HighScoreBIOS, "A78");
+								byte[] NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
+								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
+								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);
+								
+								Atari7800 a78 = new Atari7800(game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS);
+								nextEmulator = a78;
+								break;
+							case "C64":
+								C64 c64 = new C64(game, rom.RomData, rom.Extension);
+								c64.CoreInputComm = Global.CoreInputComm;
+								c64.HardReset();
+								nextEmulator = c64;
+								break;
 						}
 					}
 
@@ -1655,7 +1820,8 @@ namespace BizHawk.MultiClient
 				if (game.System == "NES")
 				{
 					NES nes = Global.Emulator as NES;
-					Global.Game.Name = nes.GameName;
+					if (nes.GameName != null)
+						Global.Game.Name = nes.GameName;
 					Global.Game.Status = nes.RomStatus;
 					SetNESSoundChannels();
 				}
@@ -1699,9 +1865,11 @@ namespace BizHawk.MultiClient
 				NESPPU1.Restart();
 				NESNameTableViewer1.Restart();
 				NESDebug1.Restart();
+				GBGPUView1.Restart();
 				PCEBGViewer1.Restart();
 				TI83KeyPad1.Restart();
 				TAStudio1.Restart();
+				VirtualPadForm1.Restart();
 				Cheats1.Restart();
 				ToolBox1.Restart();
 				TraceLogger1.Restart();
@@ -1839,7 +2007,7 @@ namespace BizHawk.MultiClient
 					reader.Read(sram, 0, sram.Length);
 				Global.Emulator.StoreSaveRam(sram);
 			}
-			catch { }
+			catch (IOException) { }
 		}
 
 		private void CloseGame()
@@ -1994,7 +2162,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.StickyXORAdapter.ClearStickies();
 			Global.AutofireStickyXORAdapter.ClearStickies();
-			TAStudio1.ClearVirtualPadHolds();
+			VirtualPadForm1.ClearVirtualPadHolds();
 			Global.OSD.AddMessage("Autohold keys cleared");
 		}
 
@@ -2030,7 +2198,9 @@ namespace BizHawk.MultiClient
 				case "SNES Toggle OBJ 4":
 					SNES_ToggleOBJ4();
 					break;
-
+				case "Save Movie":
+					SaveMovie();
+					break;
 				case "Clear Autohold":
 					ClearAutohold();
 					break;
@@ -2454,6 +2624,7 @@ namespace BizHawk.MultiClient
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
+			GBGPUView1.UpdateValues();
 		}
 
 		public void UpdateToolsLoadstate()
@@ -2480,6 +2651,7 @@ namespace BizHawk.MultiClient
 			//frame of execution in its list view.
 
 			TAStudio1.UpdateValues();
+			VirtualPadForm1.UpdateValues();
 #if SNES
 			SNESGraphicsDebugger1.UpdateToolsAfter();
 #endif
@@ -2522,7 +2694,7 @@ namespace BizHawk.MultiClient
 			return image;
 		}
 
-		void TakeScreenshotToClipboard()
+		public void TakeScreenshotToClipboard()
 		{
 			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
@@ -2531,7 +2703,7 @@ namespace BizHawk.MultiClient
 			Global.OSD.AddMessage("Screenshot saved to clipboard.");
 		}
 
-		private void TakeScreenshot()
+		public void TakeScreenshot()
 		{
 			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
 			TakeScreenshot(path);
@@ -2544,7 +2716,7 @@ namespace BizHawk.MultiClient
 			//Was using this code to test the animated gif functions
 		}
 
-		private void TakeScreenshot(string path)
+		public void TakeScreenshot(string path)
 		{
 			var fi = new FileInfo(path);
 			if (fi.Directory.Exists == false)
@@ -2853,6 +3025,17 @@ namespace BizHawk.MultiClient
 				PCEBGViewer1.Focus();
 		}
 
+		public void LoadGBGPUView()
+		{
+			if (!GBGPUView1.IsHandleCreated || GBGPUView1.IsDisposed)
+			{
+				GBGPUView1 = new GBtools.GBGPUView();
+				GBGPUView1.Show();
+			}
+			else
+				GBGPUView1.Focus();
+		}
+
 		public void LoadTI83KeyPad()
 		{
 			if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
@@ -3021,6 +3204,7 @@ namespace BizHawk.MultiClient
 			return str;
 		}
 
+		int LastOpenRomFilter = 0;
 		private void OpenROM()
 		{
 			var ofd = BizHawk.HawkUIFactory.CreateOpenFileDialog();
@@ -3031,7 +3215,7 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Super NES", "*.smc;*.sfc;%ARCH%",
@@ -3041,11 +3225,13 @@ namespace BizHawk.MultiClient
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
 					"Atari 2600", "*.a26;*.bin;%ARCH%",
+					"Atari 7800", "*.a78;*.bin;%ARCH%",
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;%ARCH%",
 					"Colecovision (very experimental)", "*.col;%ARCH%",
 					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 					"PSX Executables (very experimental)", "*.exe",
+					"Commodore 64 (very experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 					"All Files", "*.*");
 			}
 			else
@@ -3067,8 +3253,10 @@ namespace BizHawk.MultiClient
 					"Genesis (experimental)", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
 					"All Files", "*.*");
 			}
+			
 			ofd.RestoreDirectory = false;
-
+			ofd.FilterIndex = LastOpenRomFilter;
+			
             RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
@@ -3078,6 +3266,7 @@ namespace BizHawk.MultiClient
 				return;
 			var file = new FileInfo(ofd.FileName);
 			Global.Config.LastRomPath = file.DirectoryName;
+			LastOpenRomFilter = ofd.FilterIndex;
 			LoadRom(file.FullName);
 		}
 
@@ -3095,6 +3284,7 @@ namespace BizHawk.MultiClient
 			NESPPU1.Restart();
 			NESNameTableViewer1.Restart();
 			NESDebug1.Restart();
+			GBGPUView1.Restart();
 			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
@@ -3133,11 +3323,13 @@ namespace BizHawk.MultiClient
 			CloseForm(NESNameTableViewer1);
 			CloseForm(NESPPU1);
 			CloseForm(NESDebug1);
+			CloseForm(GBGPUView1);
 			CloseForm(PCEBGViewer1);
 			CloseForm(Cheats1);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);
 			CloseForm(TraceLogger1);
+			CloseForm(VirtualPadForm1);
 #if WINDOWS
 			CloseForm(LuaConsole1);
 #endif
@@ -3251,6 +3443,17 @@ namespace BizHawk.MultiClient
 			}
 			else
 				TAStudio1.Focus();
+		}
+
+		public void LoadVirtualPads()
+		{
+			if (!VirtualPadForm1.IsHandleCreated || VirtualPadForm1.IsDisposed)
+			{
+				VirtualPadForm1 = new VirtualPadForm();
+				VirtualPadForm1.Show();
+			}
+			else
+				VirtualPadForm1.Focus();
 		}
 
 		private void VolumeUp()
@@ -4187,6 +4390,77 @@ namespace BizHawk.MultiClient
 		private void loadConfigToolStripMenuItem_Click_1(object sender, EventArgs e)
 		{
 
+		}
+
+		private void saveMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveMovie();
+		}
+
+		private void SaveMovie()
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				Global.MovieSession.Movie.WriteMovie();
+				Global.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
+			}
+		}
+
+		private void saveMovieToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			SaveMovie();
+		}
+
+		private void virtualPadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadVirtualPads();
+		}
+
+		private void showBGToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowBG ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showPlayer1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayer1 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showPlayer2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayer2 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showMissle1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowMissle1 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showMissle2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowMissle2 ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showBallToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowBall ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void showPlayfieldToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Atari2600_ShowPlayfield ^= true;
+			SyncCoreInputComm();
+		}
+
+		private void gPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGBGPUView();
 		}
 	}
 }

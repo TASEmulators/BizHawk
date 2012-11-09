@@ -400,6 +400,11 @@ namespace BizHawk.MultiClient
 			{
 				return "|.|";
 			}
+			if (ControlType == "Atari 7800 Basic Controller")
+			{
+				return "|.|"; //TODO
+			}
+
 			else if (ControlType == "SNES Controller")
 			{
 				return GetSNESControllersAsMnemonic();
@@ -407,10 +412,7 @@ namespace BizHawk.MultiClient
 
 			StringBuilder input = new StringBuilder("|");
 
-			if (
-				ControlType == "Genesis 3-Button Controller" || // ControlType == "Gameboy Controller" ||
-				ControlType == "PC Engine Controller"
-			)
+			if (ControlType == "PC Engine Controller")
 			{
 				input.Append(".");
 			}
@@ -419,9 +421,20 @@ namespace BizHawk.MultiClient
 				input.Append(IsBasePressed("Reset") ? "r" : ".");
 				input.Append(IsBasePressed("Select") ? "s" : ".");
 			}
-			if (ControlType == "NES Controller")
+			if (ControlType == "NES Controller" || ControlType == "Genesis 3-Button Controller")
 			{
-				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] : ".");
+				if (IsBasePressed("Power"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["Power"]);
+				}
+				else if (IsBasePressed("Reset"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["Reset"]);
+				}
+				else
+				{
+					input.Append('.');
+				}
 			}
 			if (ControlType == "Gameboy Controller")
 			{
@@ -668,13 +681,30 @@ namespace BizHawk.MultiClient
 			int start = 3;
 			if (ControlType == "NES Controller")
 			{
-				if (mnemonic.Length < 2) return;
+				if (mnemonic.Length < 2)
+				{
+					return;
+				}
+				else if (mnemonic[1] == 'P')
+				{
+					Force("Power", true);
+				}
+				else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+				{
+					Force("Reset", true);
+				}
+				
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
 			}
 			if (ControlType == "Gameboy Controller")
 			{
 				if (mnemonic.Length < 2) return;
 				Force("Power", mnemonic[1] != '.');
+			}
+			if (ControlType == "Genesis 3-Button Controller")
+			{
+				if (mnemonic.Length < 2) return;
+				Force("Reset", mnemonic[1] != '.');
 			}
 			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller")
 			{

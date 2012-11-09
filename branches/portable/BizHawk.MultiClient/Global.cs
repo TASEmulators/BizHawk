@@ -33,6 +33,7 @@ namespace BizHawk.MultiClient
 		public static Controller Atari2600Controls;
 		public static Controller NullControls;
 		public static Controller ColecoControls;
+		public static Controller Commodore64Controls;
 		public static CheatList CheatList;
 
 		public static AutofireController AutofireNullControls;
@@ -43,6 +44,7 @@ namespace BizHawk.MultiClient
 		public static AutofireController AutofireGBControls;
 		public static AutofireController AutofireGenControls;
 		public static AutofireController AutofireAtari2600Controls;
+		public static AutofireController AutofireCommodore64Controls;
 
 		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>()
 		{
@@ -120,8 +122,8 @@ namespace BizHawk.MultiClient
 		{
 			{"Atari 2600 Basic Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
 			{"Gameboy Controller", new Dictionary<string, string>() {{"Power", "P"}}},
-			{"Genesis 3-Button Controller", new Dictionary<string, string>() {}},
-			{"NES Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
+			{"Genesis 3-Button Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
+			{"NES Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Power", "P"}}},
 			{"SNES Controller", new Dictionary<string, string>() {{"Power", "P"}, {"Reset", "r"}}},
 			{"PC Engine Controller", new Dictionary<string, string>() {}},
 			{"SMS Controller", new Dictionary<string, string>() {{"Pause", "p"}, {"Reset", "r"}}},

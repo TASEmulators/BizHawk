@@ -77,6 +77,18 @@ __declspec(dllexport) void gambatte_setwritecallback(void *core, void (*callback
 	g->setWriteCallback(callback);
 }
 
+__declspec(dllexport) void gambatte_settracecallback(void *core, void (*callback)(void *))
+{
+	GB *g = (GB *) core;
+	g->setTraceCallback(callback);
+}
+
+__declspec(dllexport) void gambatte_setscanlinecallback(void *core, void (*callback)(), int sl)
+{
+	GB *g = (GB *) core;
+	g->setScanlineCallback(callback, sl);
+}
+
 __declspec(dllexport) void gambatte_setsavedir(void *core, const char *sdir)
 {
 	GB *g = (GB *) core;

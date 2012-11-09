@@ -153,7 +153,7 @@ namespace BizHawk.MultiClient
 				switch (platform)
 				{
 					case "Atari":
-						IDX_CONTROLLERENABLED.Checked = ((Atari2600ControllerTemplate)mainController[jpad]).Enabled;
+						IDX_CONTROLLERENABLED.Checked = ((SingleButtonJoyStickTemplate)mainController[jpad]).Enabled;
 						break;
 					case "Gameboy":
 						IDX_CONTROLLERENABLED.Checked = ((GBControllerTemplate)mainController[jpad]).Enabled;
@@ -203,7 +203,7 @@ namespace BizHawk.MultiClient
 						break;
 					case "Atari":
 					{
-						Atari2600ControllerTemplate obj = (Atari2600ControllerTemplate)controller[jpad];
+						SingleButtonJoyStickTemplate obj = (SingleButtonJoyStickTemplate)controller[jpad];
 						field = obj.GetType().GetField(fieldName).GetValue(obj);
 						break;
 					}
@@ -245,9 +245,9 @@ namespace BizHawk.MultiClient
 							field = obj.GetType().GetField(fieldName).GetValue(obj);
 						}
 						else if (button == 6)
-							field = Global.Config.SmsPause;
+							field = Global.Config.SMSConsoleButtons.Pause;
 						else
-							field = Global.Config.SmsReset;
+							field = Global.Config.SMSConsoleButtons.Reset;
 						break;
 					}
 					case "TI-83":
@@ -333,7 +333,7 @@ namespace BizHawk.MultiClient
 					((Atari2600ConsoleButtonsTemplate)mainController[0]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
 				case "Atari":
-					((Atari2600ControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					((SingleButtonJoyStickTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
 				case "Gameboy":
 					((GBControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
@@ -372,7 +372,7 @@ namespace BizHawk.MultiClient
 						break;
 					case "Atari":
 					{
-						Atari2600ControllerTemplate obj = (Atari2600ControllerTemplate)controller[prev];
+						SingleButtonJoyStickTemplate obj = (SingleButtonJoyStickTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
 						buttonField.SetValue(obj, TempBox.Text);
@@ -428,9 +428,9 @@ namespace BizHawk.MultiClient
 							buttonField.SetValue(obj, TempBox.Text);
 						}
 						else if (button == 6)
-							Global.Config.SmsPause = TempBox.Text;
+							Global.Config.SMSConsoleButtons.Pause = TempBox.Text;
 						else
-							Global.Config.SmsReset = TempBox.Text;
+							Global.Config.SMSConsoleButtons.Reset = TempBox.Text;
 						break;
 					}
 					case "TI-83":
