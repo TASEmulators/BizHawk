@@ -22,6 +22,8 @@ namespace BizHawk.MultiClient.GBtools
 		bool cgb; // set once at start
 		int lcdc; // set at each callback
 
+		IntPtr tilespal; // current palette to use on tiles
+
 		public GBGPUView()
 		{
 			InitializeComponent();
@@ -33,6 +35,7 @@ namespace BizHawk.MultiClient.GBtools
 			bmpViewSPPal.ChangeBitmapSize(8, 4);
 			bmpViewOAM.ChangeBitmapSize(320, 16);
 			bmpViewDetails.ChangeBitmapSize(8, 16);
+			bmpViewMemory.ChangeBitmapSize(8, 16);
 
 			hScrollBarScanline.Value = 0;
 			hScrollBarScanline_ValueChanged(null, null); // not firing in this case??
@@ -52,6 +55,7 @@ namespace BizHawk.MultiClient.GBtools
 					if (Visible)
 						Close();
 				}
+				tilespal = bgpal;
 
 				if (cgb)
 					label4.Enabled = true;
@@ -65,6 +69,7 @@ namespace BizHawk.MultiClient.GBtools
 				bmpViewSPPal.Clear();
 				bmpViewOAM.Clear();
 				bmpViewDetails.Clear();
+				bmpViewMemory.Clear();
 				cbscanline_emu = -4; // force refresh
 			}
 			else
@@ -373,11 +378,11 @@ namespace BizHawk.MultiClient.GBtools
 			// tile display
 			// TODO: user selects palette to use, instead of fixed palette 0
 			// or possibly "smart" where, if a tile is in use, it's drawn with one of the palettes actually being used with it?
-			DrawTiles(bmpViewTiles1.bmp, vram, bgpal);
+			DrawTiles(bmpViewTiles1.bmp, vram, tilespal);
 			bmpViewTiles1.Refresh();
 			if (cgb)
 			{
-				DrawTiles(bmpViewTiles2.bmp, vram + 0x2000, bgpal);
+				DrawTiles(bmpViewTiles2.bmp, vram + 0x2000, tilespal);
 				bmpViewTiles2.Refresh();
 			}
 
@@ -528,7 +533,7 @@ namespace BizHawk.MultiClient.GBtools
 		Bitmap freeze_bmp;
 		string freeze_details;
 
-		void SaveFreeze()
+		void SaveDetails()
 		{
 			freeze_label = groupBoxDetails.Text;
 			if (freeze_bmp != null)
@@ -537,7 +542,7 @@ namespace BizHawk.MultiClient.GBtools
 			freeze_details = labelDetails.Text;
 		}
 
-		void LoadFreeze()
+		void LoadDetails()
 		{
 			groupBoxDetails.Text = freeze_label;
 			bmpViewDetails.Height = freeze_bmp.Height * 8;
@@ -546,6 +551,17 @@ namespace BizHawk.MultiClient.GBtools
 				g.DrawImageUnscaled(freeze_bmp, 0, 0);
 			labelDetails.Text = freeze_details;
 			bmpViewDetails.Refresh();
+		}
+
+		void SetFreeze()
+		{
+			groupBoxMemory.Text = groupBoxDetails.Text;
+			bmpViewMemory.Size = bmpViewDetails.Size;
+			bmpViewMemory.ChangeBitmapSize(bmpViewDetails.bmp.Size);
+			using (var g = Graphics.FromImage(bmpViewMemory.bmp))
+				g.DrawImageUnscaled(bmpViewDetails.bmp, 0, 0);
+			labelMemory.Text = labelDetails.Text;
+			bmpViewMemory.Refresh();
 		}
 
 		unsafe void PaletteMouseover(int x, int y, bool sprite)
@@ -601,7 +617,7 @@ namespace BizHawk.MultiClient.GBtools
 				sb.AppendLine(string.Format("Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
 
 			var lockdata = bmpViewDetails.bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			DrawTile((byte*)vram + tileoffs + (secondbank ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)bgpal);
+			DrawTile((byte*)vram + tileoffs + (secondbank ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)tilespal);
 			bmpViewDetails.bmp.UnlockBits(lockdata);
 			labelDetails.Text = sb.ToString();
 			bmpViewDetails.Refresh();
@@ -693,13 +709,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewBG_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Background";
 		}
 
 		private void bmpViewBG_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewBG_MouseMove(object sender, MouseEventArgs e)
@@ -709,13 +725,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewWin_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Window";
 		}
 
 		private void bmpViewWin_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewWin_MouseMove(object sender, MouseEventArgs e)
@@ -725,13 +741,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewTiles1_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Tiles";
 		}
 
 		private void bmpViewTiles1_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewTiles1_MouseMove(object sender, MouseEventArgs e)
@@ -743,7 +759,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			if (!cgb)
 				return;
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Tiles";
 		}
 
@@ -751,7 +767,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			if (!cgb)
 				return;
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewTiles2_MouseMove(object sender, MouseEventArgs e)
@@ -763,13 +779,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewBGPal_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Palette";
 		}
 
 		private void bmpViewBGPal_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewBGPal_MouseMove(object sender, MouseEventArgs e)
@@ -779,13 +795,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewSPPal_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Palette";
 		}
 
 		private void bmpViewSPPal_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewSPPal_MouseMove(object sender, MouseEventArgs e)
@@ -795,13 +811,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewOAM_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Sprite";
 		}
 
 		private void bmpViewOAM_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewOAM_MouseMove(object sender, MouseEventArgs e)
@@ -810,6 +826,19 @@ namespace BizHawk.MultiClient.GBtools
 		}
 
 		#endregion
+
+		private void bmpView_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (e.Button == System.Windows.Forms.MouseButtons.Right)
+				SetFreeze();
+			else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+			{
+				if (sender == bmpViewBGPal)
+					tilespal = bgpal + e.X / 16 * 16;
+				else if (sender == bmpViewSPPal)
+					tilespal = sppal + e.X / 16 * 16;
+			}
+		}
 
 	}
 }
