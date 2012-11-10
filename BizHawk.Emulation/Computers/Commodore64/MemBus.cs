@@ -341,7 +341,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			bool hiRom = ((cpuData & 0x02) != 0);
 			bool ioEnable = ((cpuData & 0x04) != 0);
 
-			if (loRom && hiRom && exRomPin && gamePin)
+			if (loRom && hiRom && gamePin && exRomPin)
 			{
 				layout.Mem1000 = MemoryDesignation.RAM;
 				layout.Mem8000 = MemoryDesignation.RAM;
@@ -515,10 +515,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case MemoryDesignation.Expansion1:
 						break;
 					case MemoryDesignation.RAM:
-						ram[addr] = val;
 						break;
 					default:
 						break;
+				}
+
+				// write through to ram
+				if (des != MemoryDesignation.Disabled)
+				{
+					ram[addr] = val;
 				}
 			}
 			busData = val;
