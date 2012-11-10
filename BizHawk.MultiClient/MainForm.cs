@@ -1040,6 +1040,24 @@ namespace BizHawk.MultiClient
 			CommodoreControls.BindMulti("P2 Right", Global.Config.C64Joysticks[1].Right);
 			CommodoreControls.BindMulti("P2 Down", Global.Config.C64Joysticks[1].Down);
 			CommodoreControls.BindMulti("P2 Button", Global.Config.C64Joysticks[1].Button);
+
+			CommodoreControls.BindMulti("Key F1", Global.Config.C64Keyboard.F1);
+			CommodoreControls.BindMulti("Key F3", Global.Config.C64Keyboard.F3);
+			CommodoreControls.BindMulti("Key F5", Global.Config.C64Keyboard.F5);
+			CommodoreControls.BindMulti("Key F7", Global.Config.C64Keyboard.F7);
+			CommodoreControls.BindMulti("Key Left Arrow", Global.Config.C64Keyboard.Left_Arrow);
+			CommodoreControls.BindMulti("Key 1", Global.Config.C64Keyboard._1);
+			CommodoreControls.BindMulti("Key 2", Global.Config.C64Keyboard._2);
+			CommodoreControls.BindMulti("Key 3", Global.Config.C64Keyboard._3);
+			CommodoreControls.BindMulti("Key 4", Global.Config.C64Keyboard._4);
+			CommodoreControls.BindMulti("Key 5", Global.Config.C64Keyboard._5);
+			CommodoreControls.BindMulti("Key 6", Global.Config.C64Keyboard._6);
+			CommodoreControls.BindMulti("Key 7", Global.Config.C64Keyboard._7);
+			CommodoreControls.BindMulti("Key 8", Global.Config.C64Keyboard._8);
+			CommodoreControls.BindMulti("Key 9", Global.Config.C64Keyboard._9);
+			CommodoreControls.BindMulti("Key 0", Global.Config.C64Keyboard._0);
+			CommodoreControls.BindMulti("Key Plus", Global.Config.C64Keyboard.Plus);
+
 			Global.Commodore64Controls = CommodoreControls;
 
 			var autofireC64Controls = new AutofireController(C64.C64ControllerDefinition);
