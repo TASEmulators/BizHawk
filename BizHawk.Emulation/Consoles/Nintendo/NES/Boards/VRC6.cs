@@ -68,21 +68,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "MAPPER024":
+					newer_variant = false;
 					break;
 				case "MAPPER026":
+					newer_variant = true;
 					break;
 				case "KONAMI-VRC-6":
-					AssertPrg(256); AssertChr(128,256); AssertVram(0); AssertWram(0,8);
+					if (Cart.pcb == "351951")
+						newer_variant = false;
+					else if (Cart.pcb == "351949A")
+						newer_variant = true;
+					else throw new Exception("Unknown PCB type for VRC6");
 					break;
 				default:
 					return false;
 			}
-
-			if (Cart.pcb == "351951")
-				newer_variant = false;
-			else if (Cart.pcb == "351949A")
-				newer_variant = true;
-			else throw new Exception("Unknown PCB type for VRC6");
+			AssertPrg(256); AssertChr(128, 256); AssertVram(0); AssertWram(0, 8);
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
