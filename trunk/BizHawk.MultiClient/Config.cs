@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 
 			ColecoController = new ColecoVisionControllerTemplate(true);
 
-			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true);
+			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true, true);
 			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
 			C64AutoJoysticks[0] = new SingleButtonJoyStickTemplate(false);
 			C64AutoJoysticks[1] = new SingleButtonJoyStickTemplate(false);
@@ -1008,16 +1008,28 @@ namespace BizHawk.MultiClient
 		public bool Enabled;
 
 		public SingleButtonJoyStickTemplate() { }
-		public SingleButtonJoyStickTemplate(bool defaults)
+		public SingleButtonJoyStickTemplate(bool defaults, bool useNumpad = false)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				Button = "Z, X1 A";
+				if (useNumpad)
+				{
+					Enabled = true;
+					Up = "NumberPad8, X1 DpadUp, X1 LStickUp";
+					Down = "NumberPad2, X1 DpadDown, X1 LStickDown";
+					Left = "NumberPad4, X1 DpadLeft, X1 LStickLeft";
+					Right = "NumberPad6, X1 DpadRight, X1 LStickRight";
+					Button = "NumberPad8, X1 A";
+				}
+				else
+				{
+					Enabled = true;
+					Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+					Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+					Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+					Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+					Button = "Z, X1 A";
+				}
 			}
 		}
 	}
