@@ -90,7 +90,9 @@
     <Compile Include="Computers\Commodore64\PRGFile.cs" />
     <Compile Include="Computers\Commodore64\MemBus.cs" />
     <Compile Include="Computers\Commodore64\Sid.cs" />
+    <Compile Include="Computers\Commodore64\SidSoundProvider.cs" />
     <Compile Include="Computers\Commodore64\VicII.cs" />
+    <Compile Include="Computers\Commodore64\VicIIVideoProvider.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />

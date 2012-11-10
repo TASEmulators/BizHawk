@@ -451,7 +451,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		DramRefresh
 	}
 
-	public class VicII
+	public partial class VicII : IVideoProvider
 	{
 		// graphics buffer
 		public int[] buffer;
