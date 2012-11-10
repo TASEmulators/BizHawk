@@ -55,10 +55,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public MemoryLayout layout;
 
 		// ram
-		public byte cia2A;
-		public byte cia2B;
 		public byte[] colorRam;
 		public byte[] ram;
+		public bool vicCharEnabled;
+		public ushort vicOffset;
 
 		// registers
 		public byte busData;
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cia1 = newCia1;
 			cia1.ports[0] = cia1PortA;
 			cia1.ports[1] = cia1PortB;
-
+			cia1PortA.WritePort = UpdateVicOffset;
 			HardReset();
 		}
 
@@ -191,6 +191,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cpuPort = new DirectionalDataPort(0x37, 0x2F);
 			layout = new MemoryLayout();
 			UpdateLayout();
+			UpdateVicOffset(cia1PortA.Data);
 		}
 
 		public byte Peek(ushort addr)
@@ -423,33 +424,39 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		private void UpdateVicOffset(byte val)
+		{
+			switch (cia1PortA.Data & 0x03)
+			{
+				case 0:
+					vicCharEnabled = false;
+					vicOffset = 0xC000;
+					break;
+				case 1:
+					vicCharEnabled = true;
+					vicOffset = 0x8000;
+					break;
+				case 2:
+					vicCharEnabled = false;
+					vicOffset = 0x4000;
+					break;
+				default:
+					vicCharEnabled = true;
+					vicOffset = 0x0000;
+					break;
+			}
+		}
+
 		public byte VicRead(ushort addr)
 		{
 			addr = (ushort)(addr & 0x3FFF);
-			if (addr >= 0x1000 && addr < 0x2000)
+			if (vicCharEnabled && (addr >= 0x1000 && addr < 0x2000))
 			{
 				return charRom[addr & 0x0FFF];
 			}
 			else
 			{
-				int baseAddr = 0;
-				int videoOffsetIndex = cia1PortA.Data & 0x03;
-				switch (videoOffsetIndex)
-				{
-					case 0:
-						baseAddr = 0xC000 | addr;
-						break;
-					case 1:
-						baseAddr = 0x8000 | addr;
-						break;
-					case 2:
-						baseAddr = 0x4000 | addr;
-						break;
-					default:
-						baseAddr = addr;
-						break;
-				}
-				return ram[(ushort)baseAddr];
+				return ram[addr | vicOffset];
 			}
 		}
 
