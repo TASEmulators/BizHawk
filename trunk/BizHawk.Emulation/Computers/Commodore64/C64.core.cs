@@ -81,8 +81,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					}
 					break;
 			}
-
-			videoProvider = new MyVideoProvider(vic);
 		}
 
 		public byte PeekMemory(ushort addr)

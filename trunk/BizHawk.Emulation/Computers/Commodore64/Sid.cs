@@ -256,7 +256,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 	}
 
-	public class Sid
+	public partial class Sid : ISoundProvider
 	{
 		private int[] envRateIndex = {
 			9, 32, 63, 95,

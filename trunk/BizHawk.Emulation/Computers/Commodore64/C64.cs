@@ -37,8 +37,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void ClearSaveRam() { }
 		public bool SaveRamModified { get; set; }
 		public void Dispose() { }
-		public IVideoProvider VideoProvider { get { return videoProvider; } }
-		public ISoundProvider SoundProvider { get { return soundProvider; } }
+		public IVideoProvider VideoProvider { get { return vic; } }
+		public ISoundProvider SoundProvider { get { return sid; } }
 		public void ResetFrameCounter()
 		{
 			_frame = 0;
@@ -72,23 +72,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button"
 			}
 		};
-
-		class MySoundProvider : ISoundProvider
-		{
-			Atari7800 emu;
-			public MySoundProvider(Atari7800 emu)
-			{
-				this.emu = emu;
-			}
-			public int MaxVolume { get { return 0; } set { } }
-			public void DiscardSamples()
-			{
-			}
-
-			public void GetSamples(short[] samples)
-			{
-			}
-		}
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
@@ -125,50 +108,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				LagCount++;
 			}
-
-			videoProvider.FillFrameBuffer();
-		}
-
-		/*******************************/
-
-		private MySoundProvider soundProvider;
-		private MyVideoProvider videoProvider;
-
-		class MyVideoProvider : IVideoProvider
-		{
-			public int top;
-			public int bottom;
-			public int left;
-			public int right;
-
-			VicII vic;
-			public MyVideoProvider(VicII vic)
-			{
-				this.vic = vic;
-
-				buffer = new int[vic.visibleWidth * vic.visibleHeight];
-				top = 0;
-				bottom = vic.visibleHeight - 1;
-				left = 0;
-				right = vic.visibleWidth - 1;
-			}
-
-			int[] buffer; 
-
-			public void FillFrameBuffer() 
-			{
-				Array.Copy(vic.buffer, buffer, buffer.Length);
-			}
-
-			public int[] GetVideoBuffer()
-			{
-				return buffer;
-			}
-
-			public int VirtualWidth { get { return BufferWidth; } }
-			public int BufferWidth { get { return right - left + 1; } }
-			public int BufferHeight { get { return bottom - top + 1; } }
-			public int BackgroundColor { get { return 0; } }
 		}
 
 		private void SetupMemoryDomains()
