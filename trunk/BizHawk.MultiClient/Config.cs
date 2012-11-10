@@ -700,6 +700,8 @@ namespace BizHawk.MultiClient
 		//Commodore 64 Settings
 		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
 		public SingleButtonJoyStickTemplate[] C64AutoJoysticks = new SingleButtonJoyStickTemplate[2]; 
+		public C64KeyboardTemplate C64Keyboard = new C64KeyboardTemplate();
+		public C64KeyboardTemplate C64AutofireKeyboard = new C64KeyboardTemplate();
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;
@@ -1105,7 +1107,7 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class C64Keyboard
+	public class C64KeyboardTemplate
 	{
 		public string F1;
 		public string F3;
@@ -1177,10 +1179,10 @@ namespace BizHawk.MultiClient
 
 		public string Space;
 
-		bool enabled;
+		public bool enabled;
 
-		public C64Keyboard() { }
-		public C64Keyboard(bool defaults)
+		public C64KeyboardTemplate() { }
+		public C64KeyboardTemplate(bool defaults)
 		{
 			if (defaults)
 			{
