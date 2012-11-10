@@ -349,7 +349,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				layout.MemD000 = ioEnable ? MemoryDesignation.IO : MemoryDesignation.Character;
 				layout.MemE000 = MemoryDesignation.Kernal;
 			}
-			else if (loRom && !hiRom && exRomPin)
+			else if (loRom && !hiRom && gamePin)
 			{
 				layout.Mem1000 = MemoryDesignation.RAM;
 				layout.Mem8000 = MemoryDesignation.RAM;
@@ -433,7 +433,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			else
 			{
 				int baseAddr = 0;
-				switch (cia1PortA.Data & 0x03)
+				int videoOffsetIndex = cia1PortA.Data & 0x03;
+				switch (videoOffsetIndex)
 				{
 					case 0:
 						baseAddr = 0xC000 | addr;
