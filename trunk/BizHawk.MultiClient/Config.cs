@@ -1105,6 +1105,158 @@ namespace BizHawk.MultiClient
 		}
 	}
 
+	public class C64Keyboard
+	{
+		public string F1;
+		public string F3;
+		public string F5;
+		public string F7;
+
+		public string Left_Arrow;
+		public string _1;
+		public string _2;
+		public string _4;
+		public string _3;
+		public string _5;
+		public string _6;
+		public string _7;
+		public string _8;
+		public string _9;
+		public string _0;
+		public string Plus;
+		public string Minus;
+		public string Pound;
+		public string Clear_Home;
+		public string Insert_Delete;
+
+		public string Control;
+		public string Q;
+		public string W;
+		public string E;
+		public string R;
+		public string T;
+		public string Y;
+		public string U;
+		public string I;
+		public string O;
+		public string P;
+		public string At;
+		public string Asterisk;
+		public string Up_Arrow;
+
+		public string Run_Stop;
+		public string A;
+		public string S;
+		public string D;
+		public string F;
+		public string G;
+		public string H;
+		public string J;
+		public string K;
+		public string L;
+		public string Colon;
+		public string Semicolon;
+		public string Equal;
+		public string Return;
+
+		public string Commodore;
+		public string Left_Shift;
+		public string Z;
+		public string X;
+		public string C;
+		public string V;
+		public string B;
+		public string N;
+		public string M;
+		public string Comma;
+		public string Period;
+		public string Slash;
+		public string Right_Shift;
+		public string Cursor_Up_Down;
+		public string Cursor_Left_Right;
+
+		public string Space;
+
+		bool enabled;
+
+		public C64Keyboard() { }
+		public C64Keyboard(bool defaults)
+		{
+			if (defaults)
+			{
+				F1 = "F1";
+				F3 = "F3";
+				F5 = "F5";
+				F7 = "F7";
+
+				Left_Arrow = "";
+				_1 = "1";
+				_2 = "2";
+				_4 = "3";
+				_3 = "4";
+				_5 = "5";
+				_6 = "6";
+				_7 = "7";
+				_8 = "8";
+				_9 = "9";
+				_0 = "0";
+				Plus = "Equals";
+				Minus = "Minus";
+				Pound = "";
+				Clear_Home = "";
+				Insert_Delete = "";
+
+				Control = "";
+				Q = "Q";
+				W = "W";
+				E = "E";
+				R = "R";
+				T = "T";
+				Y = "Y";
+				U = "U";
+				I = "I";
+				O = "O";
+				P = "P";
+				At = "";
+				Asterisk = "";
+				Up_Arrow = "";
+
+				Run_Stop = "";
+				A = "A";
+				S = "S";
+				D = "D";
+				F = "F";
+				G = "G";
+				H = "H";
+				J = "J";
+				K = "K";
+				L = "L";
+				Colon = "Semicolon";
+				Semicolon = "Apostrophe";
+				Equal = "";
+				Return = "Return";
+
+				Commodore = "";
+				Left_Shift = "LeftShift";
+				Z = "Z";
+				X = "X";
+				C = "C";
+				V = "V";
+				B = "B";
+				N = "N";
+				M = "M";
+				Comma = "Comma";
+				Period = "Period";
+				Slash = "Slash";
+				Right_Shift = "RightShift";
+				Cursor_Up_Down = "";
+				Cursor_Left_Right = "";
+
+				Space = "Space";
+			}
+		}
+	}
+
 	public class TI83ControllerTemplate
 	{
 		public string _0;
