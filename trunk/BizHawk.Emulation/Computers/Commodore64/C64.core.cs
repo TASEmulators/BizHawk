@@ -103,24 +103,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void PollInput()
 		{
 			input.Poll();
-
-			/*
-			cia0portAData = 0xFF;
-			cia0portBData = 0xFF;
-
-			if (Controller["P1 Up"]) cia0portBData &= 0xFE;
-			if (Controller["P1 Down"]) cia0portBData &= 0xFD;
-			if (Controller["P1 Left"]) cia0portBData &= 0xFB;
-			if (Controller["P1 Right"]) cia0portBData &= 0xF7;
-			if (Controller["P1 Button"]) cia0portBData &= 0xEF;
-			if (Controller["P2 Up"]) cia0portAData &= 0xFE;
-			if (Controller["P2 Down"]) cia0portAData &= 0xFD;
-			if (Controller["P2 Left"]) cia0portAData &= 0xFB;
-			if (Controller["P2 Right"]) cia0portAData &= 0xF7;
-			if (Controller["P2 Button"]) cia0portAData &= 0xEF;
-			*/
-
-
+			signal.KeyboardNMI = input.restorePressed;
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -138,8 +121,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		private bool[] _CiaSerialInput = new bool[2];
 		private bool[] _CiaIRQOutput = new bool[2];
+		private bool _KeyboardNMIOutput;
 		private bool _VicAECOutput;
-		private bool _VicBAOutput;
 		private bool _VicIRQOutput;
 		private bool _VicLPInput;
 
@@ -149,8 +132,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool CiaSerial1 { get { return _CiaSerialInput[1]; } }
 		public bool CpuAEC { get { return _VicAECOutput; } }
 		public bool CpuIRQ { get { return _VicIRQOutput | _CiaIRQOutput[0]; } }
-		public bool CpuNMI { get { return _CiaIRQOutput[1]; } }
-		public bool CpuRDY { get { return _VicBAOutput; } }
+		public bool CpuNMI { get { return _CiaIRQOutput[1] | _KeyboardNMIOutput; } }
+		public bool KeyboardNMI { get { return _KeyboardNMIOutput; } set { _KeyboardNMIOutput = value; } }
 		public bool LPOutput { get { return _VicLPInput; } set { _VicLPInput = value; } }
 		public bool VicAEC { get { return _VicAECOutput; } set { _VicAECOutput = value; } }
 		public bool VicIRQ { get { return _VicIRQOutput; } set { _VicIRQOutput = value; } }

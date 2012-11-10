@@ -816,7 +816,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				if ((spriteFetchIndex & 1) == 0)
 				{
 					// first half of the fetch cycle, always fetch pointer
-					ushort pointerOffset = (ushort)((regs.VM << 10) + 0x3F8 + spriteIndex);
+					ushort pointerOffset = (ushort)((regs.VM << 10) | 0x3F8 | spriteIndex);
 					regs.MPTR[spriteIndex] = mem.VicRead(pointerOffset);
 
 					// also fetch upper 8 bits if enabled
