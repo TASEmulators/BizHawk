@@ -672,17 +672,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void PerformCycle()
 		{
-			ProcessDisplayRegisters();
-			RenderCycle();
-
-			// increment cycle
-			cycle++;
-			if (cycle == totalCycles)
+			if (cycle >= totalCycles)
 			{
 				cycle = 0;
 				AdvanceRaster();
 			}
 
+			ProcessDisplayRegisters();
+			RenderCycle();
+
+			// increment cycle
+			cycle++;
 			UpdateInterrupts();
 			signal.VicIRQ = regs.IRQ;
 		}
@@ -794,11 +794,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				{
 					if (regs.MYE[i])
 					{
-						regs.MCBASE[i] += 3;
-						if (regs.MCBASE[i] == 63)
+						if (regs.MD[i])
 						{
-							regs.MD[i] = false;
-							regs.MDMA[i] = false;
+							regs.MCBASE[i] += 3;
+							if (regs.MCBASE[i] == 63)
+							{
+								regs.MD[i] = false;
+								regs.MDMA[i] = false;
+							}
 						}
 					}
 				}
@@ -820,7 +823,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					regs.MPTR[spriteIndex] = mem.VicRead(pointerOffset);
 
 					// also fetch upper 8 bits if enabled
-					//signal.VicAEC = regs.MDMA[spriteIndex];
+					signal.VicAEC = !regs.MDMA[spriteIndex];
 					if (regs.MDMA[spriteIndex])
 					{
 						regs.MSRC[spriteIndex] = 24;
@@ -831,7 +834,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				else
 				{
 					// second half of the fetch cycle
-					//signal.VicAEC = regs.MDMA[spriteIndex];
+					signal.VicAEC = !regs.MDMA[spriteIndex];
 					if (regs.MDMA[spriteIndex])
 					{
 						for (int i = 0; i < 2; i++)
@@ -847,7 +850,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			else if (spriteFetchIndex == 16)
 			{
 				// set AEC after sprite fetches
-				//signal.VicAEC = true;
+				signal.VicAEC = true;
 				spriteFetchIndex++;
 			}
 

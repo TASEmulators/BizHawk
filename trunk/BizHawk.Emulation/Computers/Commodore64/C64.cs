@@ -92,13 +92,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			for (int i = 0; i < cyclesPerFrame; i++)
 			{
+				vic.PerformCycle();
 				cpu.IRQ = signal.CpuIRQ;
 				cpu.NMI = signal.CpuNMI;
 				if (signal.CpuAEC)
 				{
 					cpu.ExecuteOne();
 				}
-				vic.PerformCycle();
 				sid.PerformCycle();
 				cia0.PerformCycle();
 				cia1.PerformCycle();
