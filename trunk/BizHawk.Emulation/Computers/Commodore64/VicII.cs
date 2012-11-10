@@ -755,6 +755,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				// sprite comparison
 				for (int i = 0; i < 8; i++)
 				{
+					if (regs.MYE[i] && regs.MCBASE[i] == 63)
+					{
+						regs.MD[i] = false;
+						regs.MDMA[i] = false;
+					}
+
 					if (regs.MxYE[i])
 						regs.MYE[i] = !regs.MYE[i];
 
@@ -797,11 +803,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						if (regs.MD[i])
 						{
 							regs.MCBASE[i] += 3;
-							if (regs.MCBASE[i] == 63)
-							{
-								regs.MD[i] = false;
-								regs.MDMA[i] = false;
-							}
 						}
 					}
 				}
@@ -1116,8 +1117,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 								if ((!regs.MxXE[j]) || ((rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1)))
 								{
 									regs.MSR[j] <<= 1;
+									regs.MSRC[j]--;
 								}
-								regs.MSRC[j]--;
 							}
 
 							// if not transparent, process collisions and color
