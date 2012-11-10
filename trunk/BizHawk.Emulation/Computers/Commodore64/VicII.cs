@@ -825,7 +825,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					{
 						regs.MSRC[spriteIndex] = 24;
 						regs.MSR[spriteIndex] = mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
-						regs.MSR[spriteIndex] <<= 8;
 						regs.MC[spriteIndex]++;
 					}
 				}
@@ -837,8 +836,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					{
 						for (int i = 0; i < 2; i++)
 						{
-							regs.MSR[spriteIndex] |= mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
 							regs.MSR[spriteIndex] <<= 8;
+							regs.MSR[spriteIndex] |= mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
 							regs.MC[spriteIndex]++;
 						}
 					}
@@ -1092,28 +1091,30 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						if (regs.MxX[j] == rasterOffsetX)
 						{
 							regs.MSRA[j] = true;
-							regs.MSRC[j] = 25;
 						}
 						if (regs.MSRA[j])
 						{
 							// multicolor consumes two bits per pixel and is forced wide
 							if (regs.MxMC[j])
 							{
-								spriteBits = (int)((regs.MSR[j] >> 30) & 0x3);
+								spriteBits = (int)((regs.MSR[j] >> 22) & 0x3);
 								if ((rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1))
 								{
-									regs.MSR[j] <<= 2;
-									regs.MSRC[j]--;
+									if ((!regs.MxXE[j]) || ((rasterOffsetX & 0x2) != (regs.MxX[j] & 0x2)))
+									{
+										regs.MSR[j] <<= 2;
+										regs.MSRC[j]--;
+									}
 								}
 							}
 							else
 							{
-								spriteBits = (int)((regs.MSR[j] >> 30) & 0x2);
+								spriteBits = (int)((regs.MSR[j] >> 22) & 0x2);
 								if ((!regs.MxXE[j]) || ((rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1)))
 								{
 									regs.MSR[j] <<= 1;
-									regs.MSRC[j]--;
 								}
+								regs.MSRC[j]--;
 							}
 
 							// if not transparent, process collisions and color
