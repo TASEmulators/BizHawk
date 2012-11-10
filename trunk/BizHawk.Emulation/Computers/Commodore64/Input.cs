@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			byte port0result = 0xFF;
 			byte port1result = 0xFF;
 
-			port0result = (byte)(keyboardColumnData & joystickLatch[1]);
+			port0result = (byte)(joystickLatch[1]);
 
 			for (int i = 0; i < 8; i++)
 			{
@@ -95,8 +95,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 			port1result &= joystickLatch[0];
 
-			ports[0].SetRemoteData(port0result);
-			ports[1].SetRemoteData(port1result);
+			ports[0].RemoteData = port0result;
+			ports[1].RemoteData = port1result;
 		}
 
 		public void WritePortA(byte data)

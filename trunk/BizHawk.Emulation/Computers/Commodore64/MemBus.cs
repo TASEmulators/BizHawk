@@ -62,8 +62,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// registers
 		public byte busData;
-		public DirectionalDataPort cia1PortA = new DirectionalDataPort(0x7F, 0x00);
-		public DirectionalDataPort cia1PortB = new DirectionalDataPort(0xFF, 0x00);
+		public DirectionalDataPort cia1PortA = new DirectionalDataPort(0x7F, 0x00, 0xFF);
+		public DirectionalDataPort cia1PortB = new DirectionalDataPort(0xFF, 0x00, 0xFF);
 		public DirectionalDataPort cpuPort;
 		public bool readTrigger = true;
 		public bool writeTrigger = true;
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ram = new byte[0x10000];
 			colorRam = new byte[0x1000];
 			WipeMemory();
-			cpuPort = new DirectionalDataPort(0x37, 0x2F);
+			cpuPort = new DirectionalDataPort(0x37, 0x2F, 0x00);
 			layout = new MemoryLayout();
 			UpdateLayout();
 			UpdateVicOffset(cia1PortA.Data);
