@@ -946,10 +946,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				{
 					case 1:
 						dataForeground = false;
-						return characterData & 0xF;
+						return characterData >> 4;
 					case 2:
 						dataForeground = true;
-						return characterData >> 4;
+						return characterData & 0xF;
 					case 3:
 						dataForeground = true;
 						return colorData & 0xF;
