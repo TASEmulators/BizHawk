@@ -37,11 +37,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initialize cia timers
 			cia0 = new Cia(signal);
-			cia0.ports[0] = new DirectionalDataPort(0x00, 0x00);
-			cia0.ports[1] = new DirectionalDataPort(0x00, 0x00);
+			cia0.ports[0] = new DirectionalDataPort(0x00, 0x00, 0xFF);
+			cia0.ports[1] = new DirectionalDataPort(0x00, 0x00, 0xFF);
 			cia1 = new Cia(signal);
-			cia1.ports[0] = new DirectionalDataPort(0x00, 0x00);
-			cia1.ports[1] = new DirectionalDataPort(0x00, 0x00);
+			cia1.ports[0] = new DirectionalDataPort(0x00, 0x00, 0xFF);
+			cia1.ports[1] = new DirectionalDataPort(0x00, 0x00, 0xFF);
 
 			// initialize vic
 			signal = new ChipSignals();
