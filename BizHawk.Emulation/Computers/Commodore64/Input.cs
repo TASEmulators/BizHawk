@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		};
 
 		public IController controller;
+		public bool restorePressed;
 
 		private byte[] joystickLatch = new byte[2];
 		private byte keyboardColumnData = 0xFF;
@@ -69,6 +70,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void Poll()
 		{
+			restorePressed = controller["Key Restore"];
+
 			for (int i = 0; i < 2; i++)
 				joystickLatch[i] = GetJoystickBits(i);
 			for (int i = 0; i < 8; i++)
