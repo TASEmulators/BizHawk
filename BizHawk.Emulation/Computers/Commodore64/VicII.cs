@@ -1109,7 +1109,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							else
 							{
 								spriteBits = (int)((regs.MSR[j] >> 30) & 0x2);
-								if ((!regs.MxXE[j]) || (rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1))
+								if ((!regs.MxXE[j]) || ((rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1)))
 								{
 									regs.MSR[j] <<= 1;
 									regs.MSRC[j]--;
