@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void EndAsyncSound() { } //TODO
 		public bool DeterministicEmulation { get; set; } //TODO
 		public void SaveStateText(TextWriter writer) { } //TODO
-		public void LoadStateText(TextReader reader) { } //TODO
+		public void LoadStateText(TextReader reader) { } //TODO`
 		public void SaveStateBinary(BinaryWriter bw) { } //TODO
 		public void LoadStateBinary(BinaryReader br) { } //TODO
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
