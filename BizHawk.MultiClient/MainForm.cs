@@ -1057,6 +1057,57 @@ namespace BizHawk.MultiClient
 			CommodoreControls.BindMulti("Key 9", Global.Config.C64Keyboard._9);
 			CommodoreControls.BindMulti("Key 0", Global.Config.C64Keyboard._0);
 			CommodoreControls.BindMulti("Key Plus", Global.Config.C64Keyboard.Plus);
+			CommodoreControls.BindMulti("Key Minus", Global.Config.C64Keyboard.Minus);
+			CommodoreControls.BindMulti("Key Pound", Global.Config.C64Keyboard.Pound);
+			CommodoreControls.BindMulti("Key Clear/Home", Global.Config.C64Keyboard.Clear_Home);
+			CommodoreControls.BindMulti("Key Insert/Delete", Global.Config.C64Keyboard.Insert_Delete);
+			CommodoreControls.BindMulti("Key Control", Global.Config.C64Keyboard.Control);
+			CommodoreControls.BindMulti("Key Q", Global.Config.C64Keyboard.Q);
+			CommodoreControls.BindMulti("Key W", Global.Config.C64Keyboard.W);
+			CommodoreControls.BindMulti("Key E", Global.Config.C64Keyboard.E);
+			CommodoreControls.BindMulti("Key R", Global.Config.C64Keyboard.R);
+			CommodoreControls.BindMulti("Key T", Global.Config.C64Keyboard.T);
+			CommodoreControls.BindMulti("Key Y", Global.Config.C64Keyboard.Y);
+			CommodoreControls.BindMulti("Key U", Global.Config.C64Keyboard.U);
+			CommodoreControls.BindMulti("Key I", Global.Config.C64Keyboard.I);
+			CommodoreControls.BindMulti("Key O", Global.Config.C64Keyboard.O);
+			CommodoreControls.BindMulti("Key P", Global.Config.C64Keyboard.P);
+			CommodoreControls.BindMulti("Key At", Global.Config.C64Keyboard.At);
+			CommodoreControls.BindMulti("Key Asterisk", Global.Config.C64Keyboard.Asterisk);
+			CommodoreControls.BindMulti("Key Up Arrow", Global.Config.C64Keyboard.Up_Arrow);
+			CommodoreControls.BindMulti("Key Run/Stop", Global.Config.C64Keyboard.Run_Stop);
+			CommodoreControls.BindMulti("Key A", Global.Config.C64Keyboard.A);
+			CommodoreControls.BindMulti("Key S", Global.Config.C64Keyboard.S);
+			CommodoreControls.BindMulti("Key D", Global.Config.C64Keyboard.D);
+			CommodoreControls.BindMulti("Key F", Global.Config.C64Keyboard.F);
+			CommodoreControls.BindMulti("Key G", Global.Config.C64Keyboard.G);
+			CommodoreControls.BindMulti("Key H", Global.Config.C64Keyboard.H);
+			CommodoreControls.BindMulti("Key J", Global.Config.C64Keyboard.J);
+			CommodoreControls.BindMulti("Key K", Global.Config.C64Keyboard.K);
+			CommodoreControls.BindMulti("Key L", Global.Config.C64Keyboard.L);
+			CommodoreControls.BindMulti("Key Colon", Global.Config.C64Keyboard.Colon);
+			CommodoreControls.BindMulti("Key Semicolon", Global.Config.C64Keyboard.Semicolon);
+			CommodoreControls.BindMulti("Key Equal", Global.Config.C64Keyboard.Equal);
+			CommodoreControls.BindMulti("Key Return", Global.Config.C64Keyboard.Return);
+			CommodoreControls.BindMulti("Key Commodore", Global.Config.C64Keyboard.Commodore);
+			CommodoreControls.BindMulti("Key Left Shift", Global.Config.C64Keyboard.Left_Shift);
+			CommodoreControls.BindMulti("Key Z", Global.Config.C64Keyboard.Z);
+			CommodoreControls.BindMulti("Key X", Global.Config.C64Keyboard.X);
+			CommodoreControls.BindMulti("Key C", Global.Config.C64Keyboard.C);
+			CommodoreControls.BindMulti("Key V", Global.Config.C64Keyboard.V);
+			CommodoreControls.BindMulti("Key B", Global.Config.C64Keyboard.B);
+			CommodoreControls.BindMulti("Key N", Global.Config.C64Keyboard.N);
+			CommodoreControls.BindMulti("Key M", Global.Config.C64Keyboard.M);
+			CommodoreControls.BindMulti("Key Comma", Global.Config.C64Keyboard.Comma);
+			CommodoreControls.BindMulti("Key Period", Global.Config.C64Keyboard.Period);
+			CommodoreControls.BindMulti("Key Period", Global.Config.C64Keyboard.Period);
+			CommodoreControls.BindMulti("Key Slash", Global.Config.C64Keyboard.Slash);
+			CommodoreControls.BindMulti("Key Right Shift", Global.Config.C64Keyboard.Right_Shift);
+			CommodoreControls.BindMulti("Key Cursor Up/Down", Global.Config.C64Keyboard.Cursor_Up_Down);
+			CommodoreControls.BindMulti("Key Cursor Left/Right", Global.Config.C64Keyboard.Cursor_Left_Right);
+			CommodoreControls.BindMulti("Key Space", Global.Config.C64Keyboard.Space);
+			
+
 
 			Global.Commodore64Controls = CommodoreControls;
 
