@@ -43,9 +43,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool[] MxMC = new bool[8]; // sprite multicolor
 		public int[] MxX = new int[8]; // sprite X coordinate
 		public bool[] MxXE = new bool[8]; // sprite X expansion
+		public bool[] MxXEToggle = new bool[8]; // (internal)
+		public int[] MxXLatch = new int[8]; // (internal)
 		public int[] MxY = new int[8]; // sprite Y coordinate
 		public bool[] MxYE = new bool[8]; // sprite Y expansion
-		public bool[] MYE = new bool[8]; // (internal)
+		public bool[] MxYEToggle = new bool[8]; // (internal)
 		public int RASTER; // current raster line
 		public int RC; // (internal)
 		public bool RES; // reset bit (does nothing in this version of the VIC)
@@ -705,7 +707,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// sprite Y stretch flipflop
 			for (int i = 0; i < 8; i++)
 				if (!regs.MxYE[i])
-					regs.MYE[i] = true;
+					regs.MxYEToggle[i] = true;
 		}
 
 		// operations timed to NTSC
@@ -965,19 +967,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// sprite comparison
 			for (int i = 0; i < 8; i++)
 			{
-				if (regs.MYE[i] && regs.MCBASE[i] == 63)
-				{
-					regs.MD[i] = false;
-					regs.MDMA[i] = false;
-				}
-
 				if (regs.MxE[i] == true && regs.MxY[i] == (regs.RASTER & 0xFF) && regs.MDMA[i] == false)
 				{
 					regs.MDMA[i] = true;
 					regs.MCBASE[i] = 0;
 					if (regs.MxYE[i])
-						regs.MYE[i] = false;
+						regs.MxYEToggle[i] = false;
 				}
+				regs.MxXEToggle[i] = false;
 			}
 		}
 
@@ -1002,7 +999,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				regs.MC[i] = regs.MCBASE[i];
 				if (regs.MDMA[i] && regs.MxY[i] == (regs.RASTER & 0xFF))
+				{
 					regs.MD[i] = true;
+					regs.MxXEToggle[i] = false;
+				}
 			}
 		}
 
@@ -1010,11 +1010,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			for (int i = 0; i < 8; i++)
 			{
-				if (regs.MYE[i])
+				if (regs.MxYEToggle[i])
 				{
-					if (regs.MD[i])
+					regs.MCBASE[i] += 3;
+					if (regs.MxYEToggle[i] && regs.MCBASE[i] == 63)
 					{
-						regs.MCBASE[i] += 3;
+						regs.MD[i] = false;
+						regs.MDMA[i] = false;
 					}
 				}
 			}
@@ -1040,7 +1042,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			for (int i = 0; i < 8; i++)
 				if (regs.MxYE[i])
-					regs.MYE[i] = !regs.MYE[i];
+					regs.MxYEToggle[i] = !regs.MxYEToggle[i];
 		}
 
 		private void PerformVCReset()
@@ -1293,6 +1295,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						if (regs.MxX[j] == rasterOffsetX)
 						{
 							regs.MSRA[j] = true;
+							regs.MxXLatch[j] = rasterOffsetX;
 						}
 						if (regs.MSRA[j])
 						{
@@ -1300,23 +1303,25 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							if (regs.MxMC[j])
 							{
 								spriteBits = (int)((regs.MSR[j] >> 22) & 0x3);
-								if ((rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1))
+								if ((rasterOffsetX & 0x1) != (regs.MxXLatch[j] & 0x1))
 								{
-									if ((!regs.MxXE[j]) || ((rasterOffsetX & 0x2) != (regs.MxX[j] & 0x2)))
+									if (!regs.MxXE[j] || regs.MxXEToggle[j])
 									{
 										regs.MSR[j] <<= 2;
 										regs.MSRC[j]--;
 									}
+									regs.MxXEToggle[j] = !regs.MxXEToggle[j];
 								}
 							}
 							else
 							{
 								spriteBits = (int)((regs.MSR[j] >> 22) & 0x2);
-								if ((!regs.MxXE[j]) || ((rasterOffsetX & 0x1) != (regs.MxX[j] & 0x1)))
+								if (!regs.MxXE[j] || regs.MxXEToggle[j])
 								{
 									regs.MSR[j] <<= 1;
 									regs.MSRC[j]--;
 								}
+								regs.MxXEToggle[j] = !regs.MxXEToggle[j];
 							}
 
 							// if not transparent, process collisions and color

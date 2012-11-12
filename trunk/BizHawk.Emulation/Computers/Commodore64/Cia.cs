@@ -33,6 +33,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int TODHR; // time of day hour
 		public int TODMIN; // time of day minute
 		public bool TODPM; // time of day AM/PM
+		public bool TODREADLATCH; // read latch (internal)
+		public int TODREADLATCH10; // tod read latch (internal)
+		public int TODREADLATCHSEC; // tod read latch (internal)
+		public int TODREADLATCHMIN; // tod read latch (internal)
+		public int TODREADLATCHHR; // tod read latch (internal)
 		public int TODSEC; // time of day seconds
 
 		private ChipSignals signal;
@@ -203,6 +208,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public CiaRegs regs;
 		public ChipSignals signal;
 		public bool thisCNT;
+		public int todCounter;
+		public int todFrequency;
 		public bool[] underflow;
 
 		public Func<bool> ReadSerial;
@@ -213,7 +220,77 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			signal = newSignal;
 			ReadSerial = ReadSerialDummy;
 			WriteSerial = WriteSerialDummy;
+			switch (newRegion)
+			{
+				case Region.NTSC:
+					todFrequency = 14318181 / 14 / 10;
+					break;
+				case Region.PAL:
+					todFrequency = 14318181 / 18 / 10;
+					break;
+			}
 			HardReset();
+		}
+
+		private void AdvanceTOD()
+		{
+			bool overflow;
+			int tenths = regs.TOD10;
+			int seconds = regs.TODSEC;
+			int minutes = regs.TODMIN;
+			int hours = regs.TODHR;
+			bool ampm = regs.TODPM;
+			todCounter = todFrequency;
+
+			tenths = BCDAdd(tenths, 1, out overflow);
+			if (tenths >= 10)
+			{
+				tenths = 0;
+				seconds = BCDAdd(seconds, 1, out overflow);
+				if (overflow)
+				{
+					seconds = 0;
+					minutes = BCDAdd(minutes, 1, out overflow);
+					if (overflow)
+					{
+						minutes = 0;
+						hours = BCDAdd(hours, 1, out overflow);
+						if (hours > 12)
+						{
+							hours = 1;
+							ampm = !ampm;
+						}
+					}
+				}
+			}
+
+			regs.TOD10 = tenths;
+			regs.TODSEC = seconds;
+			regs.TODMIN = minutes;
+			regs.TODHR = hours;
+			regs.TODPM = ampm;
+		}
+
+		private int BCDAdd(int i, int j, out bool overflow)
+		{
+			int lo;
+			int hi;
+			int result;
+
+			lo = (i & 0x0F) + (j & 0x0F);
+			hi = (i & 0x70) + (j & 0x70);
+			if (lo > 0x09)
+			{
+				hi += 0x10;
+				lo += 0x06;
+			}
+			if (hi > 0x50)
+			{
+				hi += 0xA0;
+			}
+			overflow = hi >= 0x60;
+			result = (hi & 0x70) + (lo & 0x0F);
+			return result;
 		}
 
 		public void HardReset()
@@ -222,6 +299,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ports = new DirectionalDataPort[2];
 			regs = new CiaRegs(signal);
 			underflow = new bool[2];
+			todCounter = todFrequency;
 		}
 
 		public byte Peek(int addr)
@@ -246,6 +324,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			lastCNT = thisCNT;
 			thisCNT = ReadSerial();
+
+			// process time of day counter
+			todCounter--;
+			if (todCounter <= 0)
+				AdvanceTOD();
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -317,6 +400,26 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					return ports[0].Direction;
 				case 0x03:
 					return ports[1].Direction;
+				case 0x08:
+					regs.TODREADLATCH = false;
+					return (byte)regs.TODREADLATCH10;
+				case 0x09:
+					if (!regs.TODREADLATCH)
+						return regs[addr];
+					else
+						return (byte)regs.TODREADLATCHSEC;
+				case 0x0A:
+					if (!regs.TODREADLATCH)
+						return regs[addr];
+					else
+						return (byte)regs.TODREADLATCHMIN;
+				case 0x0B:
+					regs.TODREADLATCH = true;
+					regs.TODREADLATCH10 = regs.TOD10;
+					regs.TODREADLATCHSEC = regs.TODSEC;
+					regs.TODREADLATCHMIN = regs.TODMIN;
+					regs.TODREADLATCHHR = regs.TODHR;
+					return (byte)regs.TODREADLATCHHR;
 				case 0x0D:
 					// reading this reg clears it
 					result = regs[0x0D];
@@ -442,7 +545,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						regs.ALARMPM = ((val & 0x80) != 0x00);
 					}
 					else
+					{
 						regs[addr] = val;
+					}
 					break;
 				case 0x0D:
 					intMask &= ~val;
