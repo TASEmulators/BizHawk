@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			vic = new VicII(signal, Region.NTSC);
 
 			// initialize sid
-			sid = new Sid(Region.NTSC, 88200);
+			sid = new Sid(Region.NTSC, 44100); // we'll assume 44.1k for now until there's a better way
 
 			// initialize memory (this must be done AFTER all other chips are initialized)
 			string romPath = CoreInputComm.C64_FirmwaresPath;

@@ -179,15 +179,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x09:
 					case 0x10:
 						index = addr / 7;
-						PW[index] &= 0x0700;
+						PW[index] &= 0x0F00;
 						PW[index] |= val;
 						break;
 					case 0x03:
 					case 0x0A:
 					case 0x11:
 						index = addr / 7;
-						F[index] &= 0xFF;
-						F[index] |= (val & 0x07) << 8;
+						PW[index] &= 0xFF;
+						PW[index] |= (val & 0x0F) << 8;
 						break;
 					case 0x04:
 					case 0x0B:
@@ -389,7 +389,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			int sawOutput;
 			int squOutput;
 			int noiseOutput;
-			int finalOutput = 0xFFF;
+			int finalOutput = 0x00000FFF;
 			bool outputEnabled = false;
 
 			// triangle waveform
@@ -425,10 +425,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 				else
 				{
-					if (regs.PW[index] >= ((waveClock[index] >> 12) & 0xFFF))
-						squOutput = 0xFFF;
-					else
-						squOutput = 0x000;
+					squOutput = (waveClock[index] >> 12) >= regs.PW[index] ? 0xFFF : 0x000;
 				}
 				finalOutput &= squOutput;
 				outputEnabled = true;
@@ -437,6 +434,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// noise waveform
 			if (regs.NOISE[index])
 			{
+				// shift register information is from reSID
 				int sr = regs.SR[index];
 				noiseOutput = sr & 0x100000 >> 9;
 				noiseOutput |= sr & 0x040000 >> 8;
@@ -455,19 +453,24 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				waveClock[index] = 0x000000;
 				outputEnabled = false;
+				regs.SR[index] = 0x7FFFFF;
 			}
 			else
 			{
 				// shift register for generating noise
-				if ((waveClock[index] & 0x7FFFF) == 0x00000)
+				if ((waveClock[index] & 0x100000) != 0)
 					ProcessShiftRegister(index);
 
 				// increment wave clock
-				waveClock[index] = (waveClock[index] + regs.F[index]) & 0xFFFFFF;
+				waveClock[index] = (waveClock[index] + regs.F[index]) & 0x00FFFFFF;
 			}
 
 			// process the envelope generator
 			//ProcessEnvelope(index);
+
+			// a little hack until we fix the envelope generator
+			outputEnabled = regs.GATE[index];
+
 
 			// write to internal reg
 			if (outputEnabled)
@@ -523,6 +526,20 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					regs[addr] = val;
 					break;
 			}
+		}
+
+		private void WriteShiftRegister(int index, int sample)
+		{
+			regs.SR[index] &=
+				~((1 << 20) | (1 << 18) | (1 << 14) | (1 << 11) | (1 << 9) | (1 << 5) | (1 << 2) | (1 << 0)) |
+				((sample & 0x800) << 9) |
+				((sample & 0x400) << 8) |
+				((sample & 0x200) << 5) |
+				((sample & 0x100) << 3) |
+				((sample & 0x080) << 2) |
+				((sample & 0x040) >> 1) |
+				((sample & 0x020) >> 3) |
+				((sample & 0x010) >> 4);
 		}
 	}
 }
