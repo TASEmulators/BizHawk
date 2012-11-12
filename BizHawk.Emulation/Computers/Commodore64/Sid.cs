@@ -298,6 +298,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			regs = new SidRegs();
 		}
 
+		public byte Peek(int addr)
+		{
+			return regs[addr & 0x1F];
+		}
+
 		public void PerformCycle()
 		{
 			// accumulator is 24 bits
@@ -313,6 +318,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				regs.POTX = ReadPotX() & 0xFF;
 				regs.POTY = ReadPotY() & 0xFF;
 			}
+		}
+
+		public void Poke(int addr, byte val)
+		{
+			regs[addr & 0x1F] = val;
 		}
 
 		private void ProcessEnvelope(int index)

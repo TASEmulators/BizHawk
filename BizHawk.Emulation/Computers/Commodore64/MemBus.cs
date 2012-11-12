@@ -260,6 +260,68 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return result;
 		}
 
+		public byte PeekRam(int addr)
+		{
+			return ram[addr & 0xFFFF];
+		}
+
+		public void Poke(ushort addr, byte val)
+		{
+			if (addr == 0x0000)
+			{
+				cpuPort.Direction = val;
+			}
+			else if (addr == 0x0001)
+			{
+				cpuPort.Data = val;
+				UpdateLayout();
+			}
+			else
+			{
+				MemoryDesignation des = GetDesignation(addr);
+
+				switch (des)
+				{
+					case MemoryDesignation.Vic:
+						vic.Poke(addr, val);
+						break;
+					case MemoryDesignation.Sid:
+						sid.Poke(addr, val);
+						break;
+					case MemoryDesignation.ColorRam:
+						colorRam[addr & 0x03FF] = (byte)(val & 0x0F);
+						break;
+					case MemoryDesignation.Cia0:
+						cia0.Poke(addr, val);
+						break;
+					case MemoryDesignation.Cia1:
+						cia1.Poke(addr, val);
+						break;
+					case MemoryDesignation.Expansion0:
+						if (cart != null)
+							cart.WritePort(addr, val);
+						break;
+					case MemoryDesignation.Expansion1:
+						break;
+					case MemoryDesignation.RAM:
+						break;
+					default:
+						break;
+				}
+
+				// write through to ram
+				if (des != MemoryDesignation.Disabled)
+				{
+					ram[addr] = val;
+				}
+			}
+		}
+
+		public void PokeRam(int addr, byte val)
+		{
+			ram[addr & 0xFFFF] = val;
+		}
+
 		public byte Read(ushort addr)
 		{
 			byte result;

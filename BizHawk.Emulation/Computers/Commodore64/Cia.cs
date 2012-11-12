@@ -7,42 +7,38 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public class CiaRegs
 	{
-		public bool ALARM;
-		public int ALARM10;
-		public int ALARMHR;
-		public int ALARMMIN;
-		public bool ALARMPM;
-		public int ALARMSEC;
-		public int[] DOR = new int[2];
-		public bool IALARM;
-		public bool IFLG;
-		public int[] INMODE = new int[2];
-		public bool IRQ;
-		public bool ISP;
-		public bool[] IT = new bool[2];
-		public bool[] LOAD = new bool[2];
-		public bool[] OUTMODE = new bool[2];
-		public bool[] PBON = new bool[2];
-		public int[] PR = new int[2];
-		public bool[] RUNMODE = new bool[2];
-		public int SDR;
-		public bool SPMODE;
-		public bool[] START = new bool[2];
-		public int[] T = new int[2];
-		public int[] TLATCH = new int[2];
-		public int TOD10;
-		public bool TODIN;
-		public int TODHR;
-		public int TODMIN;
-		public bool TODPM;
-		public int TODSEC;
+		public bool ALARM; // alarm enabled
+		public int ALARM10; // alarm 10ths of a second
+		public int ALARMHR; // alarm hours
+		public int ALARMMIN; // alarm minutes
+		public bool ALARMPM; // alarm AM/PM
+		public int ALARMSEC; // alarm seconds
+		public bool IALARM; // alarm interrupt triggered
+		public bool IFLG; // interrupt triggered on FLAG pin
+		public int[] INMODE = new int[2]; // timer input mode
+		public bool IRQ; // interrupt triggered
+		public bool ISP; // shift register interrupt
+		public bool[] IT = new bool[2]; // timer interrupt
+		public bool[] LOAD = new bool[2]; // force load timer
+		public bool[] OUTMODE = new bool[2]; // timer output mode
+		public bool[] PBON = new bool[2]; // port bit modify on
+		public bool[] RUNMODE = new bool[2]; // running mode
+		public int SDR; // serial shift register
+		public bool SPMODE; // shift register mode
+		public bool[] START = new bool[2]; // timer enabled
+		public int[] T = new int[2]; // timer counter
+		public int[] TLATCH = new int[2]; // timer latch (internal)
+		public int TOD10; // time of day 10ths of a second
+		public bool TODIN; // time of day/alarm set
+		public int TODHR; // time of day hour
+		public int TODMIN; // time of day minute
+		public bool TODPM; // time of day AM/PM
+		public int TODSEC; // time of day seconds
 
-		private DirectionalDataPort[] ports;
 		private ChipSignals signal;
 
-		public CiaRegs(ChipSignals newSignal, DirectionalDataPort[] newPorts)
+		public CiaRegs(ChipSignals newSignal)
 		{
-			ports = newPorts;
 			signal = newSignal;
 
 			// power on state
@@ -64,18 +60,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				addr &= 0x0F;
 				switch (addr)
 				{
-					case 0x00:
-						result = ports[0].Data;
-						break;
-					case 0x01:
-						result = ports[1].Data;
-						break;
-					case 0x02:
-						result = ports[0].Direction;
-						break;
-					case 0x03:
-						result = ports[1].Direction;
-						break;
 					case 0x04:
 						result = (T[0] & 0xFF);
 						break;
@@ -145,18 +129,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				addr &= 0x0F;
 				switch (addr)
 				{
-					case 0x00:
-						ports[0].Data = val;
-						break;
-					case 0x01:
-						ports[1].Data = val;
-						break;
-					case 0x02:
-						ports[0].Direction = val;
-						break;
-					case 0x03:
-						ports[1].Direction = val;
-						break;
 					case 0x04:
 						T[0] &= 0xFF00;
 						T[0] |= val;
@@ -236,7 +208,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public Func<bool> ReadSerial;
 		public Action<bool> WriteSerial;
 
-		public Cia(ChipSignals newSignal)
+		public Cia(ChipSignals newSignal, Region newRegion)
 		{
 			signal = newSignal;
 			ReadSerial = ReadSerialDummy;
@@ -248,8 +220,26 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			outputBitMask = new byte[] { 0x40, 0x80 };
 			ports = new DirectionalDataPort[2];
-			regs = new CiaRegs(signal, ports);
+			regs = new CiaRegs(signal);
 			underflow = new bool[2];
+		}
+
+		public byte Peek(int addr)
+		{
+			addr &= 0xF;
+			switch (addr)
+			{
+				case 0x00:
+					return ports[0].Data;
+				case 0x01:
+					return ports[1].Data;
+				case 0x02:
+					return ports[0].Direction;
+				case 0x03:
+					return ports[1].Direction;
+				default:
+					return regs[addr];
+			}
 		}
 
 		public void PerformCycle()
@@ -289,12 +279,43 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		public void Poke(int addr, byte val)
+		{
+			addr &= 0xF;
+			switch (addr)
+			{
+				case 0x00:
+					ports[0].Data = val;
+					break;
+				case 0x01:
+					ports[1].Data = val;
+					break;
+				case 0x02:
+					ports[0].Direction = val;
+					break;
+				case 0x03:
+					ports[1].Direction = val;
+					break;
+				default:
+					regs[addr] = val;
+					break;
+			}
+		}
+
 		public byte Read(ushort addr)
 		{
 			byte result;
 
 			switch (addr)
 			{
+				case 0x00:
+					return ports[0].Data;
+				case 0x01:
+					return ports[1].Data;
+				case 0x02:
+					return ports[0].Direction;
+				case 0x03:
+					return ports[1].Direction;
 				case 0x0D:
 					// reading this reg clears it
 					result = regs[0x0D];
@@ -358,6 +379,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			switch (addr)
 			{
+				case 0x00:
+					ports[0].Data = val;
+					break;
+				case 0x01:
+					ports[1].Data = val;
+					break;
+				case 0x02:
+					ports[0].Direction = val;
+					break;
+				case 0x03:
+					ports[1].Direction = val;
+					break;
 				case 0x04:
 					regs.TLATCH[0] &= 0xFF00;
 					regs.TLATCH[0] |= val;

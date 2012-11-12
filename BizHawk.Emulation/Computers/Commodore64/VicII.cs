@@ -5,63 +5,57 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public enum VicIIMode
-	{
-		NTSC,
-		PAL
-	}
-
 	public class VicIIRegs
 	{
-		public bool BMM;
-		public int[] BxC = new int[4];
-		public int CB;
-		public bool CSEL;
-		public bool DEN;
-		public int EC;
-		public bool ECM;
-		public bool ELP;
-		public bool EMBC;
-		public bool EMMC;
-		public bool ERST;
-		public bool ILP;
-		public bool IMBC;
-		public bool IMMC;
-		public bool IRQ;
-		public bool IRST;
-		public int LPX;
-		public int LPY;
+		public bool BMM; // bitmap mode
+		public int[] BxC = new int[4]; // background colors
+		public int CB; // character bitmap offset
+		public bool CSEL; // column select
+		public bool DEN; // display enabled
+		public int EC; // border color
+		public bool ECM; // extra color mode
+		public bool ELP; // enable lightpen interrupt
+		public bool EMBC; // enable sprite-data interrupt
+		public bool EMMC; // enable sprite-sprite interrupt
+		public bool ERST; // enable raster line interrupt
+		public bool ILP; // light pen interrupt active
+		public bool IMBC; // sprite-data interrupt active
+		public bool IMMC; // sprite-sprite interrupt active
+		public bool IRQ; // interrupt was triggered
+		public bool IRST; // raster line interrupt active
+		public int LPX; // lightpen X coordinate
+		public int LPY; // lightpen Y coordinate
 		public int[] MC = new int[8]; // (internal)
 		public int[] MCBASE = new int[8]; // (internal)
-		public bool MCM;
+		public bool MCM; // multicolor mode
 		public bool[] MD = new bool[8]; // (internal)
 		public bool[] MDMA = new bool[8]; // (internal)
-		public int[] MMx = new int[2];
+		public int[] MMx = new int[2]; // sprite extra color
 		public int[] MPTR = new int[8]; // (internal)
 		public Int32[] MSR = new Int32[8]; // (internal)
 		public bool[] MSRA = new bool[8]; // (internal)
 		public int[] MSRC = new int[8]; // (internal)
-		public int[] MxC = new int[8];
-		public bool[] MxD = new bool[8];
-		public bool[] MxDP = new bool[8];
-		public bool[] MxE = new bool[8];
-		public bool[] MxM = new bool[8];
-		public bool[] MxMC = new bool[8];
-		public int[] MxX = new int[8];
-		public bool[] MxXE = new bool[8];
-		public int[] MxY = new int[8];
-		public bool[] MxYE = new bool[8];
+		public int[] MxC = new int[8]; // sprite color
+		public bool[] MxD = new bool[8]; // sprite-data collision
+		public bool[] MxDP = new bool[8]; // sprite priority
+		public bool[] MxE = new bool[8]; // sprite enabled
+		public bool[] MxM = new bool[8]; // sprite-sprite collision
+		public bool[] MxMC = new bool[8]; // sprite multicolor
+		public int[] MxX = new int[8]; // sprite X coordinate
+		public bool[] MxXE = new bool[8]; // sprite X expansion
+		public int[] MxY = new int[8]; // sprite Y coordinate
+		public bool[] MxYE = new bool[8]; // sprite Y expansion
 		public bool[] MYE = new bool[8]; // (internal)
-		public int RASTER;
+		public int RASTER; // current raster line
 		public int RC; // (internal)
-		public bool RES;
-		public bool RSEL;
+		public bool RES; // reset bit (does nothing in this version of the VIC)
+		public bool RSEL; // row select
 		public int VC; // (internal)
 		public int VCBASE; // (internal)
-		public int VM;
+		public int VM; // video memory offset
 		public int VMLI; // (internal)
-		public int XSCROLL;
-		public int YSCROLL;
+		public int XSCROLL; // X scroll position
+		public int YSCROLL; // Y scroll position
 
 		public VicIIRegs()
 		{
@@ -441,16 +435,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		}
 	}
 
-	public enum VicIITask
-	{
-		Idle,
-		VideoMatrix,
-		CharGen,
-		SpritePointer,
-		SpriteData,
-		DramRefresh
-	}
-
 	public partial class VicII : IVideoProvider
 	{
 		// graphics buffer
@@ -516,7 +500,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int spriteFetchStartCycle;
 		public int spriteFetchIndex;
 		public bool spriteForeground;
-		public VicIITask task;
 		public int totalCycles;
 		public bool vBlank;
 		public int visibleBottom;
@@ -536,13 +519,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private Action FetchG;
 		private Func<int> Plotter;
 
-		public VicII(ChipSignals newSignal, VicIIMode videoMode)
+		public VicII(ChipSignals newSignal, Region newRegion)
 		{
 			signal = newSignal;
 
-			switch (videoMode)
+			switch (newRegion)
 			{
-				case VicIIMode.NTSC:
+				case Region.NTSC:
 					totalCycles = 65;
 					rasterTotalLines = 263;
 					rasterLineLeft = 0x19C;
@@ -558,7 +541,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					visibleHeight = 232;
 					renderOffset = 0;
 					break;
-				case VicIIMode.PAL:
+				case Region.PAL:
 					break;
 				default:
 					break;
@@ -670,6 +653,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			spriteFetchIndex = 17;
 		}
 
+		public byte Peek(int addr)
+		{
+			return regs[addr & 0x3F];
+		}
+
 		public void PerformCycle()
 		{
 			if (cycle >= totalCycles)
@@ -685,6 +673,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cycle++;
 			UpdateInterrupts();
 			signal.VicIRQ = regs.IRQ;
+		}
+
+		public void Poke(int addr, byte val)
+		{
+			regs[addr & 0x3F] = val;
 		}
 
 		private void ProcessDisplayRegisters()
