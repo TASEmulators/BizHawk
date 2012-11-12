@@ -113,7 +113,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(PeekMemoryInt), new Action<int,byte>(PokeMemoryInt))); //TODO
+			domains.Add(new MemoryDomain("Memory", 0x10000, Endian.Little, new Func<int, byte>(PeekMemoryInt), new Action<int, byte>(PokeMemoryInt)));
+			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(PeekRAM), new Action<int, byte>(PokeRAM)));
+			domains.Add(new MemoryDomain("CIA0", 0x10, Endian.Little, new Func<int, byte>(PeekCia0), new Action<int, byte>(PokeCia0)));
+			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, new Func<int, byte>(PeekCia1), new Action<int, byte>(PokeCia1)));
+			domains.Add(new MemoryDomain("SID", 0x20, Endian.Little, new Func<int, byte>(PeekSid), new Action<int, byte>(PokeSid)));
+			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, new Func<int, byte>(PeekVic), new Action<int, byte>(PokeVic)));
+			domains.Add(new MemoryDomain("CRAM", 0x400, Endian.Little, new Func<int, byte>(PeekColorRAM), new Action<int, byte>(PokeColorRAM)));
 			memoryDomains = domains.AsReadOnly();
 		}
 

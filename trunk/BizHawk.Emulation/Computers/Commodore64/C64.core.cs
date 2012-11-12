@@ -7,6 +7,12 @@ using BizHawk.Emulation.CPUs.M6502;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
+	public enum Region
+	{
+		NTSC,
+		PAL
+	}
+
 	public partial class  C64 : IEmulator
 	{
 		// input
@@ -36,16 +42,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cpu.DummyReadMemory = PeekMemory;
 
 			// initialize cia timers
-			cia0 = new Cia(signal);
+			cia0 = new Cia(signal, Region.NTSC);
 			cia0.ports[0] = new DirectionalDataPort(0x00, 0x00, 0xFF);
 			cia0.ports[1] = new DirectionalDataPort(0x00, 0x00, 0xFF);
-			cia1 = new Cia(signal);
+			cia1 = new Cia(signal, Region.NTSC);
 			cia1.ports[0] = new DirectionalDataPort(0x00, 0x00, 0xFF);
 			cia1.ports[1] = new DirectionalDataPort(0x00, 0x00, 0xFF);
 
 			// initialize vic
 			signal = new ChipSignals();
-			vic = new VicII(signal, VicIIMode.NTSC);
+			vic = new VicII(signal, Region.NTSC);
 
 			// initialize sid
 			sid = new Sid();
@@ -81,21 +87,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					}
 					break;
 			}
-		}
-
-		public byte PeekMemory(ushort addr)
-		{
-			return mem.Peek(addr);
-		}
-
-		public byte PeekMemoryInt(int addr)
-		{
-			return mem.Peek((ushort)(addr & 0xFFFF));
-		}
-
-		public void PokeMemoryInt(int addr, byte val)
-		{
-			// todo
 		}
 
 		public void PollInput()

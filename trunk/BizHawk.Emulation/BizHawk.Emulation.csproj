@@ -81,6 +81,7 @@
     <Compile Include="Buffer.cs" />
     <Compile Include="Computers\Commodore64\C64.core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
+    <Compile Include="Computers\Commodore64\C64.PeekPoke.cs" />
     <Compile Include="Computers\Commodore64\Cartridge.cs" />
     <Compile Include="Computers\Commodore64\CartridgeMappers.cs" />
     <Compile Include="Computers\Commodore64\Cia.cs" />
