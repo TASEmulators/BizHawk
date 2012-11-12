@@ -219,19 +219,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = charRom[addr & 0x0FFF];
 						break;
 					case MemoryDesignation.Vic:
-						result = vic.regs[addr & 0x3F];
+						result = vic.Peek(addr & 0x3F);
 						break;
 					case MemoryDesignation.Sid:
-						result = sid.regs[addr & 0x1F];
+						result = sid.Peek(addr & 0x1F);
 						break;
 					case MemoryDesignation.ColorRam:
 						result = (byte)(colorRam[addr & 0x03FF] | (busData & 0xF0));
 						break;
 					case MemoryDesignation.Cia0:
-						result = cia0.regs[addr & 0x0F];
+						result = cia0.Peek(addr & 0x0F);
 						break;
 					case MemoryDesignation.Cia1:
-						result = cia1.regs[addr & 0x0F];
+						result = cia1.Peek(addr & 0x0F);
 						break;
 					case MemoryDesignation.Expansion0:
 						result = 0;
