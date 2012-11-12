@@ -750,6 +750,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					PerformSpriteDataFetch(7);
 					break;
 				case 10:
+					signal.VicAEC = true;
 					PerformDRAMRefresh();
 					break;
 				case 11:
@@ -889,6 +890,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					PerformSpriteComparison();
 					break;
 				case 55:
+					signal.VicAEC = true;
 					PerformSpriteComparison();
 					break;
 				case 56:
@@ -960,9 +962,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void PerformSpriteComparison()
 		{
-			// reenable cpu if disabled
-			signal.VicAEC = true;
-
 			// sprite comparison
 			for (int i = 0; i < 8; i++)
 			{
@@ -985,7 +984,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private void PerformSpriteDataFetch(int spriteIndex)
 		{
 			// second half of the fetch cycle
-			signal.VicAEC = !regs.MDMA[spriteIndex];
 			if (regs.MDMA[spriteIndex])
 			{
 				for (int i = 0; i < 2; i++)

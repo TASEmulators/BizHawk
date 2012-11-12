@@ -267,6 +267,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void Poke(ushort addr, byte val)
 		{
+			return;
+			/*
 			if (addr == 0x0000)
 			{
 				cpuPort.Direction = val;
@@ -315,6 +317,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					ram[addr] = val;
 				}
 			}
+			 */
 		}
 
 		public void PokeRam(int addr, byte val)

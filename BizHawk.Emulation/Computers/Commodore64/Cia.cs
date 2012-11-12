@@ -305,6 +305,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte Read(ushort addr)
 		{
 			byte result;
+			addr &= 0xF;
 
 			switch (addr)
 			{
@@ -377,6 +378,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void Write(ushort addr, byte val)
 		{
+			addr &= 0xF;
 			switch (addr)
 			{
 				case 0x00:
