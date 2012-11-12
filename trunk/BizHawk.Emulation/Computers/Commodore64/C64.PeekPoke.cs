@@ -9,12 +9,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		public byte PeekCia0(int addr)
 		{
-			return cia0.Peek(addr);
+			return cia0.regs[addr];
 		}
 
 		public byte PeekCia1(int addr)
 		{
-			return cia1.Peek(addr);
+			return cia1.regs[addr];
 		}
 
 		public byte PeekColorRAM(int addr)
@@ -34,17 +34,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public byte PeekRAM(int addr)
 		{
-			return mem.PeekRam(addr);
+			return mem.ram[addr];
 		}
 
 		public byte PeekSid(int addr)
 		{
-			return sid.Peek(addr);
+			return sid.regs[addr];
 		}
 
 		public byte PeekVic(int addr)
 		{
-			return vic.Peek(addr);
+			return vic.regs[addr];
 		}
 
 		public void PokeCia0(int addr, byte val)

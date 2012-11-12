@@ -518,6 +518,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private Action FetchC;
 		private Action FetchG;
 		private Func<int> Plotter;
+		private Action PerformCycleFunction;
 
 		public VicII(ChipSignals newSignal, Region newRegion)
 		{
@@ -540,32 +541,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					visibleWidth = 352;
 					visibleHeight = 232;
 					renderOffset = 0;
+					PerformCycleFunction = PerformCycleNTSC;
 					break;
 				case Region.PAL:
 					break;
 				default:
 					break;
 			}
-
-			// initialize raster
-			rasterWidth = totalCycles * 8;
-			rasterOffsetX = rasterLineLeft;
-			borderOnMain = true;
-			borderOnVertical = true;
-
-			// initialize buffer
-			buffer = new int[visibleWidth * visibleHeight];
-			bufferSize = buffer.Length;
-
-			// initialize screen buffer
-			characterMemory = new byte[40];
-			colorMemory = new byte[40];
-			pixelBuffer = new int[12];
-			pixelBufferForeground = new bool[12];
-			pixelBufferIndex = 0;
-
-			// initialize registers
-			spriteFetchIndex = 0;
 			HardReset();
 		}
 
@@ -642,20 +624,48 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void HardReset()
 		{
+			// initialize raster
+			rasterWidth = totalCycles * 8;
+			rasterOffsetX = rasterLineLeft;
+			borderOnMain = true;
+			borderOnVertical = true;
+
+			// initialize buffer
+			buffer = new int[visibleWidth * visibleHeight];
+			bufferSize = buffer.Length;
+
+			// initialize screen buffer
+			characterMemory = new byte[40];
+			colorMemory = new byte[40];
+			pixelBuffer = new int[12];
+			pixelBufferForeground = new bool[12];
+			pixelBufferIndex = 0;
+
+			// initialize registers
+			spriteFetchIndex = 0;
 			idle = true;
 			refreshAddress = 0x3FFF;
 			regs = new VicIIRegs();
 			regs.RC = 7;
 			signal.VicAEC = true;
 			signal.VicIRQ = false;
+
+			// initialize screen
 			UpdateBorder();
 			UpdatePlotter();
-			spriteFetchIndex = 17;
 		}
 
 		public byte Peek(int addr)
 		{
 			return regs[addr & 0x3F];
+		}
+
+		private void PerformBorderCheck()
+		{
+			if ((regs.RASTER == borderTop) && (regs.DEN))
+				borderOnVertical = false;
+			if (regs.RASTER == borderBottom)
+				borderOnVertical = true;
 		}
 
 		public void PerformCycle()
@@ -666,7 +676,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				AdvanceRaster();
 			}
 
-			ProcessDisplayRegisters();
+			PerformCycleCommon();
+			PerformCycleFunction();
 			RenderCycle();
 
 			// increment cycle
@@ -675,12 +686,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			signal.VicIRQ = regs.IRQ;
 		}
 
-		public void Poke(int addr, byte val)
-		{
-			regs[addr & 0x3F] = val;
-		}
-
-		private void ProcessDisplayRegisters()
+		// these operations are done every cycle
+		private void PerformCycleCommon()
 		{
 			// display enable check on line 030 (this must be run every cycle)
 			if (regs.RASTER == 0x030)
@@ -699,163 +706,363 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			for (int i = 0; i < 8; i++)
 				if (!regs.MxYE[i])
 					regs.MYE[i] = true;
+		}
 
-			// these actions are exclusive
-			if ((regs.RASTER == 0x000 && cycle == 1) || (regs.RASTER > 0x000 && cycle == 0))
+		// operations timed to NTSC
+		private void PerformCycleNTSC()
+		{
+			switch (cycle)
 			{
-				// IRQ is processed on cycle 1 of line 0 and cycle 0 on all other lines
-				if (regs.RASTER == rasterInterruptLine)
-					regs.IRST = true;
+				case 0:
+					// rasterline IRQ happens on cycle 1 on rasterline 0
+					if (regs.RASTER > 0 && regs.RASTER == rasterInterruptLine)
+						regs.IRST = true;
+					PerformSpritePointerFetch(3);
+					break;
+				case 1:
+					// rasterline IRQ happens on cycle 1 on rasterline 0
+					if (regs.RASTER == 0 && regs.RASTER == rasterInterruptLine)
+						regs.IRST = true;
+					PerformSpriteDataFetch(3);
+					break;
+				case 2:
+					PerformSpritePointerFetch(4);
+					break;
+				case 3:
+					PerformSpriteDataFetch(4);
+					break;
+				case 4:
+					PerformSpritePointerFetch(5);
+					break;
+				case 5:
+					PerformSpriteDataFetch(5);
+					break;
+				case 6:
+					PerformSpritePointerFetch(6);
+					break;
+				case 7:
+					PerformSpriteDataFetch(6);
+					break;
+				case 8:
+					PerformSpritePointerFetch(7);
+					break;
+				case 9:
+					PerformSpriteDataFetch(7);
+					break;
+				case 10:
+					PerformDRAMRefresh();
+					break;
+				case 11:
+					PerformDRAMRefresh();
+					break;
+				case 12:
+					PerformDRAMRefresh();
+					break;
+				case 13:
+					PerformVCReset();
+					PerformDRAMRefresh();
+					break;
+				case 14:
+					PerformDRAMRefresh();
+					break;
+				case 15:
+					PerformSpriteMCBASEAdvance();
+					PerformScreenCAccess();
+					break;
+				case 16:
+					PerformScreenCAccess();
+					break;
+				case 17:
+					PerformScreenCAccess();
+					break;
+				case 18:
+					PerformScreenCAccess();
+					break;
+				case 19:
+					PerformScreenCAccess();
+					break;
+				case 20:
+					PerformScreenCAccess();
+					break;
+				case 21:
+					PerformScreenCAccess();
+					break;
+				case 22:
+					PerformScreenCAccess();
+					break;
+				case 23:
+					PerformScreenCAccess();
+					break;
+				case 24:
+					PerformScreenCAccess();
+					break;
+				case 25:
+					PerformScreenCAccess();
+					break;
+				case 26:
+					PerformScreenCAccess();
+					break;
+				case 27:
+					PerformScreenCAccess();
+					break;
+				case 28:
+					PerformScreenCAccess();
+					break;
+				case 29:
+					PerformScreenCAccess();
+					break;
+				case 30:
+					PerformScreenCAccess();
+					break;
+				case 31:
+					PerformScreenCAccess();
+					break;
+				case 32:
+					PerformScreenCAccess();
+					break;
+				case 33:
+					PerformScreenCAccess();
+					break;
+				case 34:
+					PerformScreenCAccess();
+					break;
+				case 35:
+					PerformScreenCAccess();
+					break;
+				case 36:
+					PerformScreenCAccess();
+					break;
+				case 37:
+					PerformScreenCAccess();
+					break;
+				case 38:
+					PerformScreenCAccess();
+					break;
+				case 39:
+					PerformScreenCAccess();
+					break;
+				case 40:
+					PerformScreenCAccess();
+					break;
+				case 41:
+					PerformScreenCAccess();
+					break;
+				case 42:
+					PerformScreenCAccess();
+					break;
+				case 43:
+					PerformScreenCAccess();
+					break;
+				case 44:
+					PerformScreenCAccess();
+					break;
+				case 45:
+					PerformScreenCAccess();
+					break;
+				case 46:
+					PerformScreenCAccess();
+					break;
+				case 47:
+					PerformScreenCAccess();
+					break;
+				case 48:
+					PerformScreenCAccess();
+					break;
+				case 49:
+					PerformScreenCAccess();
+					break;
+				case 50:
+					PerformScreenCAccess();
+					break;
+				case 51:
+					PerformScreenCAccess();
+					break;
+				case 52:
+					PerformScreenCAccess();
+					break;
+				case 53:
+					PerformScreenCAccess();
+					break;
+				case 54:
+					PerformScreenCAccess();
+					PerformSpriteYExpansionFlip();
+					PerformSpriteComparison();
+					break;
+				case 55:
+					PerformSpriteComparison();
+					break;
+				case 56:
+					break;
+				case 57:
+					PerformSpriteDMAEnable();
+					PerformRCReset();
+					break;
+				case 58:
+					break;
+				case 59:
+					PerformSpritePointerFetch(0);
+					break;
+				case 60:
+					PerformSpriteDataFetch(0);
+					break;
+				case 61:
+					PerformSpritePointerFetch(1);
+					break;
+				case 62:
+					PerformSpriteDataFetch(1);
+					break;
+				case 63:
+					PerformSpritePointerFetch(2);
+					PerformBorderCheck();
+					break;
+				case 64:
+					PerformSpriteDataFetch(2);
+					break;
 			}
-			else if (cycle >= 10 && cycle < 15)
-			{
-				// dram refresh
-				mem.VicRead((ushort)refreshAddress);
-				refreshAddress = (refreshAddress - 1) & 0xFF;
-				refreshAddress |= 0x3F00;
+		}
 
-				// VC reset
-				if (cycle == 13)
+		// operations timed to PAL
+		private void PerformCyclePAL()
+		{
+		}
+
+		private void PerformDRAMRefresh()
+		{
+			// dram refresh
+			mem.VicRead((ushort)refreshAddress);
+			refreshAddress = (refreshAddress - 1) & 0xFF;
+			refreshAddress |= 0x3F00;
+		}
+
+		private void PerformRCReset()
+		{
+			// row counter processing
+			if (regs.RC == 7)
+			{
+				idle = true;
+				regs.VCBASE = regs.VC;
+			}
+			if (!idle)
+				regs.RC = (regs.RC + 1) & 0x07;
+		}
+
+		private void PerformScreenCAccess()
+		{
+			// screen memory c-access
+			if (badLine)
+			{
+				FetchC();
+				colorMemory[regs.VMLI] = colorDataBus;
+				characterMemory[regs.VMLI] = characterDataBus;
+			}
+			signal.VicAEC = !badLine;
+		}
+
+		private void PerformSpriteComparison()
+		{
+			// reenable cpu if disabled
+			signal.VicAEC = true;
+
+			// sprite comparison
+			for (int i = 0; i < 8; i++)
+			{
+				if (regs.MYE[i] && regs.MCBASE[i] == 63)
 				{
-					regs.VC = regs.VCBASE;
-					regs.VMLI = 0;
-					characterColumn = 0;
-					if (badLine)
-					{
-						regs.RC = 0;
-					}
-					bitmapData = 0;
-					colorData = 0;
-					characterData = 0;
+					regs.MD[i] = false;
+					regs.MDMA[i] = false;
 				}
-			}
-			else if (cycle >= 15 && cycle < 55)
-			{
-				// screen memory c-access
-				if (badLine)
-				{
-					FetchC();
-					colorMemory[regs.VMLI] = colorDataBus;
-					characterMemory[regs.VMLI] = characterDataBus;
-				}
-				signal.VicAEC = !badLine;
-			}
-			else if (cycle == 55)
-			{
-				// reenable cpu if disabled
-				signal.VicAEC = true;
 
-				// sprite comparison
-				for (int i = 0; i < 8; i++)
+				if (regs.MxE[i] == true && regs.MxY[i] == (regs.RASTER & 0xFF) && regs.MDMA[i] == false)
 				{
-					if (regs.MYE[i] && regs.MCBASE[i] == 63)
-					{
-						regs.MD[i] = false;
-						regs.MDMA[i] = false;
-					}
-
+					regs.MDMA[i] = true;
+					regs.MCBASE[i] = 0;
 					if (regs.MxYE[i])
-						regs.MYE[i] = !regs.MYE[i];
+						regs.MYE[i] = false;
+				}
+			}
+		}
 
-					if (regs.MxE[i] == true && regs.MxY[i] == (regs.RASTER & 0xFF) && regs.MDMA[i] == false)
+		private void PerformSpriteDataFetch(int spriteIndex)
+		{
+			// second half of the fetch cycle
+			signal.VicAEC = !regs.MDMA[spriteIndex];
+			if (regs.MDMA[spriteIndex])
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					regs.MSR[spriteIndex] <<= 8;
+					regs.MSR[spriteIndex] |= mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
+					regs.MC[spriteIndex]++;
+				}
+			}
+		}
+
+		private void PerformSpriteDMAEnable()
+		{
+			// sprite MC processing
+			for (int i = 0; i < 8; i++)
+			{
+				regs.MC[i] = regs.MCBASE[i];
+				if (regs.MDMA[i] && regs.MxY[i] == (regs.RASTER & 0xFF))
+					regs.MD[i] = true;
+			}
+		}
+
+		private void PerformSpriteMCBASEAdvance()
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				if (regs.MYE[i])
+				{
+					if (regs.MD[i])
 					{
-						regs.MDMA[i] = true;
-						regs.MCBASE[i] = 0;
-						if (regs.MxYE[i])
-							regs.MYE[i] = false;
+						regs.MCBASE[i] += 3;
 					}
 				}
 			}
-			else if (cycle == 57)
-			{
-				// row counter processing
-				if (regs.RC == 7)
-				{
-					idle = true;
-					regs.VCBASE = regs.VC;
-				}
-				if (!idle)
-					regs.RC = (regs.RC + 1) & 0x07;
+		}
 
-				// sprite MC processing
-				for (int i = 0; i < 8; i++)
-				{
-					regs.MC[i] = regs.MCBASE[i];
-					if (regs.MDMA[i] && regs.MxY[i] == (regs.RASTER & 0xFF))
-						regs.MD[i] = true;
-				}
-			}
+		private void PerformSpritePointerFetch(int spriteIndex)
+		{
+			// first half of the fetch cycle, always fetch pointer
+			ushort pointerOffset = (ushort)((regs.VM << 10) | 0x3F8 | spriteIndex);
+			regs.MPTR[spriteIndex] = mem.VicRead(pointerOffset);
 
-			// MCBASE reset if applicable
-			if (cycle == 15)
+			// also fetch upper 8 bits if enabled
+			signal.VicAEC = !regs.MDMA[spriteIndex];
+			if (regs.MDMA[spriteIndex])
 			{
-				for (int i = 0; i < 8; i++)
-				{
-					if (regs.MYE[i])
-					{
-						if (regs.MD[i])
-						{
-							regs.MCBASE[i] += 3;
-						}
-					}
-				}
+				regs.MSRC[spriteIndex] = 24;
+				regs.MSR[spriteIndex] = mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
+				regs.MC[spriteIndex]++;
 			}
+		}
 
-			// sprite fetch
-			if (cycle == spriteFetchStartCycle)
-			{
-				spriteFetchIndex = 0;
-			}
-			if (spriteFetchIndex < 16)
-			{
-				int spriteIndex = spriteFetchIndex >> 1;
+		private void PerformSpriteYExpansionFlip()
+		{
+			for (int i = 0; i < 8; i++)
+				if (regs.MxYE[i])
+					regs.MYE[i] = !regs.MYE[i];
+		}
 
-				if ((spriteFetchIndex & 1) == 0)
-				{
-					// first half of the fetch cycle, always fetch pointer
-					ushort pointerOffset = (ushort)((regs.VM << 10) | 0x3F8 | spriteIndex);
-					regs.MPTR[spriteIndex] = mem.VicRead(pointerOffset);
-
-					// also fetch upper 8 bits if enabled
-					signal.VicAEC = !regs.MDMA[spriteIndex];
-					if (regs.MDMA[spriteIndex])
-					{
-						regs.MSRC[spriteIndex] = 24;
-						regs.MSR[spriteIndex] = mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
-						regs.MC[spriteIndex]++;
-					}
-				}
-				else
-				{
-					// second half of the fetch cycle
-					signal.VicAEC = !regs.MDMA[spriteIndex];
-					if (regs.MDMA[spriteIndex])
-					{
-						for (int i = 0; i < 2; i++)
-						{
-							regs.MSR[spriteIndex] <<= 8;
-							regs.MSR[spriteIndex] |= mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
-							regs.MC[spriteIndex]++;
-						}
-					}
-				}
-				spriteFetchIndex++;
-			}
-			else if (spriteFetchIndex == 16)
+		private void PerformVCReset()
+		{
+			// VC reset
+			regs.VC = regs.VCBASE;
+			regs.VMLI = 0;
+			characterColumn = 0;
+			if (badLine)
 			{
-				// set AEC after sprite fetches
-				signal.VicAEC = true;
-				spriteFetchIndex++;
+				regs.RC = 0;
 			}
+			bitmapData = 0;
+			colorData = 0;
+			characterData = 0;
+		}
 
-			// border check
-			if (cycle == 63)
-			{
-				if ((regs.RASTER == borderTop) && (regs.DEN))
-					borderOnVertical = false;
-				if (regs.RASTER == borderBottom)
-					borderOnVertical = true;
-			}
+		public void Poke(int addr, byte val)
+		{
+			regs[addr & 0x3F] = val;
 		}
 
 		// standard text mode

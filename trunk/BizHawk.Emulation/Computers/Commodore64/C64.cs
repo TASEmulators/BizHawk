@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Memory", 0x10000, Endian.Little, new Func<int, byte>(PeekMemoryInt), new Action<int, byte>(PokeMemoryInt)));
+			domains.Add(new MemoryDomain("System Bus", 0x10000, Endian.Little, new Func<int, byte>(PeekMemoryInt), new Action<int, byte>(PokeMemoryInt)));
 			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(PeekRAM), new Action<int, byte>(PokeRAM)));
 			domains.Add(new MemoryDomain("CIA0", 0x10, Endian.Little, new Func<int, byte>(PeekCia0), new Action<int, byte>(PokeCia0)));
 			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, new Func<int, byte>(PeekCia1), new Action<int, byte>(PokeCia1)));
