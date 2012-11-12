@@ -271,6 +271,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public Func<int> ReadPotY;
 
 		public int clock;
+		public int cyclesPerSample;
 		public bool[] envEnable = new bool[3];
 		public int[] envExpCounter = new int[3];
 		public int[] envRate = new int[3];
@@ -281,10 +282,20 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public SidRegs regs;
 		public int[] waveClock = new int[3];
 
-		public Sid()
+		public Sid(Region newRegion, int sampleRate)
 		{
 			ReadPotX = DummyReadPot;
 			ReadPotY = DummyReadPot;
+			switch (newRegion)
+			{
+				case Region.NTSC:
+					cyclesPerSample = 14318181 / 14 / sampleRate;
+					break;
+				case Region.PAL:
+					cyclesPerSample = 14318181 / 18 / sampleRate;
+					break;
+			}
+			InitSound(sampleRate);
 			HardReset();
 		}
 
@@ -296,6 +307,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void HardReset()
 		{
 			regs = new SidRegs();
+		}
+
+		private short Mix(int input, short mixSource)
+		{
+			input &= 0xFFF;
+			input -= 0x800;
+			input += mixSource;
+			if (input > 32767)
+				input = 32767;
+			else if (input < -32768)
+				input = -32768;
+			return (short)input;
 		}
 
 		public byte Peek(int addr)
@@ -311,6 +334,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ProcessVoice(0);
 			ProcessVoice(1);
 			ProcessVoice(2);
+
+			SubmitSample();
 
 			// query pots every 512 cycles
 			if ((clock & 0x1FF) == 0x000)
@@ -364,19 +389,20 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			int sawOutput;
 			int squOutput;
 			int noiseOutput;
-			int finalOutput = 0xFFFFFF;
+			int finalOutput = 0xFFF;
 			bool outputEnabled = false;
 
 			// triangle waveform
 			if (regs.TRI[index])
 			{
-				triOutput = waveClock[index] >> 12;
+				triOutput = (waveClock[index] >> 12) & 0xFFF;
 				if (regs.SYNC[index])
 					triOutput ^= regs.OSC[syncIndex[index]] & 0x800;
 
 				if ((triOutput & 0x800) != 0x000)
-					triOutput &= 0xFFF;
+					triOutput ^= 0x7FF;
 
+				triOutput &= 0x7FF;
 				triOutput <<= 1;
 				finalOutput &= triOutput;
 				outputEnabled = true;
@@ -385,7 +411,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// saw waveform
 			if (regs.SAW[index])
 			{
-				sawOutput = waveClock[index] >> 12;
+				sawOutput = (waveClock[index] >> 12) & 0xFFF;
 				finalOutput &= sawOutput;
 				outputEnabled = true;
 			}
@@ -399,7 +425,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 				else
 				{
-					if (regs.PW[index] >= (waveClock[index] >> 12))
+					if (regs.PW[index] >= ((waveClock[index] >> 12) & 0xFFF))
 						squOutput = 0xFFF;
 					else
 						squOutput = 0x000;
@@ -447,7 +473,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			if (outputEnabled)
 				regs.OSC[index] = finalOutput;
 			else
-				regs.OSC[index] = 0x000000;
+				regs.OSC[index] = 0x000;
 		}
 
 		public byte Read(ushort addr)
