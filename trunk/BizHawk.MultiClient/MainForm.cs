@@ -24,7 +24,7 @@ namespace BizHawk.MultiClient
 
 	public partial class MainForm : Form
 	{
-		public bool INTERIM = false;
+		public bool INTERIM = true;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
 		public const string RELEASEDATE = "October 20, 2012";
 		private Control renderTarget;
@@ -4389,5 +4389,10 @@ namespace BizHawk.MultiClient
 		{
 			LoadGBGPUView();
 		}
+
+		private void miLimitFramerate_DropDownOpened(object sender, EventArgs e)
+		{
+		}
+
 	}
 }

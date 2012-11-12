@@ -226,10 +226,12 @@ namespace BizHawk.MultiClient
 		public int FrameSkip = 4;
 		public int SpeedPercent = 100;
 		public int SpeedPercentAlternate = 400;
-		public bool LimitFramerate = true;
+		public bool ClockThrottle = true;
 		public bool AutoMinimizeSkipping = true;
-		public bool DisplayVSync = false;
+		public bool VSyncThrottle = false;
 		public bool RewindEnabled = true;
+		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
+		public bool VSync = false;
 
 		// Display options
 		public int MessagesColor = -1;

@@ -374,8 +374,9 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				if (Global.ForceNoThrottle) return false;
-				return Global.Config.DisplayVSync;
+				if (Global.ForceNoThrottle)
+					return false;
+				return Global.Config.VSyncThrottle || Global.Config.VSync;
 			}
 		}
 
@@ -388,7 +389,7 @@ namespace BizHawk.MultiClient
 					BackBufferWidth = Math.Max(1, backingControl.ClientSize.Width),
 					BackBufferHeight = Math.Max(1, backingControl.ClientSize.Height),
 					DeviceWindowHandle = backingControl.Handle,
-					PresentationInterval = Vsync ? PresentInterval.One : PresentInterval.Immediate
+					PresentationInterval = Vsync ? PresentInterval.One : PresentInterval.Immediate			
 				};
 
 			var flags = CreateFlags.SoftwareVertexProcessing;
@@ -516,13 +517,38 @@ namespace BizHawk.MultiClient
 			RenderWrapper(_Present);
 		}
 
+		System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+		long stopwatchthrottle = System.Diagnostics.Stopwatch.Frequency / 50;
+		long stopwatchtmr = 0;
 		private void _Present()
 		{
-			Device.Present(SlimDX.Direct3D9.Present.None);
-			vsyncEvent.Set();
+			// according to the internet, D3DPRESENT_DONOTWAIT is not terribly reliable
+			// so instead we measure the time the present takes, and drop the next present call if it was too long
+			// this code isn't really very good
+			if (Global.Config.VSync && !Global.Config.VSyncThrottle)
+			{
+				if (stopwatchtmr > stopwatchthrottle)
+				{
+					stopwatchtmr = 0;
+					//Console.WriteLine('s');
+				}
+				else
+				{
+					stopwatch.Restart();
+					//Device.GetSwapChain(0).Present(SlimDX.Direct3D9.Present.DoNotWait);
+					Device.Present(SlimDX.Direct3D9.Present.None);
+					stopwatch.Stop();
+					stopwatchtmr += stopwatch.ElapsedTicks;
+					//Console.WriteLine('.');
+					stopwatchtmr -= stopwatchthrottle / 4;
+				}
+			}
+			else
+				Device.Present(SlimDX.Direct3D9.Present.None);
 		}
 
-		public static EventWaitHandle vsyncEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+		// not used anywhere?
+		//public static EventWaitHandle vsyncEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
 
 		private bool disposed;
 
