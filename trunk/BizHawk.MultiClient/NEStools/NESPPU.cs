@@ -684,5 +684,44 @@ namespace BizHawk.MultiClient
 		{
 			SpriteView.ScreenshotToClipboard();
 		}
+
+		private void NESPPU_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (Control.ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			{
+				// find the control under the mouse
+				Point m = System.Windows.Forms.Cursor.Position;
+				Control top = this;
+				Control found = null;
+				do
+				{
+					found = top.GetChildAtPoint(top.PointToClient(m));
+					top = found;
+				} while (found != null && found.HasChildren);
+
+				if (found != null)
+				{
+
+					var meth = found.GetType().GetMethod("ScreenshotToClipboard", System.Type.EmptyTypes);
+					if (meth != null)
+						meth.Invoke(found, null);
+					else if (found is PictureBox)
+						Clipboard.SetImage((found as PictureBox).Image);
+					else
+						return;
+
+					toolStripStatusLabel1.Text = found.Text + " copied to clipboard.";
+
+					messagetimer.Stop();
+					messagetimer.Start();
+				}
+			}
+		}
+
+		private void messagetimer_Tick(object sender, EventArgs e)
+		{
+			messagetimer.Stop();
+			toolStripStatusLabel1.Text = "Use CTRL+C to copy the pane under the mouse to the clipboard.";
+		}
 	}
 }
