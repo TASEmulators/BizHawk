@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			_frame++;
 			_islag = true;
 
-			const int cyclesPerFrame = (14318181 / 14 / 60);
+			int cyclesPerFrame = vic.cyclesPerFrame;
 
 			foreach (IMedia media in mediaAttached)
 			{

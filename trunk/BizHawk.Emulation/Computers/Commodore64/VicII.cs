@@ -484,6 +484,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte[] colorMemory;
 		public int cycle;
 		public int cycleLeft;
+		public int cyclesPerFrame;
 		public bool dataForeground;
 		public bool displayEnabled;
 		public bool hBlank;
@@ -655,6 +656,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// initialize screen
 			UpdateBorder();
 			UpdatePlotter();
+
+			// some helpful values
+			cyclesPerFrame = totalCycles * rasterTotalLines;
 		}
 
 		public byte Peek(int addr)
