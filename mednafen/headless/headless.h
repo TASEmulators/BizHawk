@@ -8,6 +8,7 @@
 #define HEADLESS
 #define WANT_RESAMPLER
 #define WANT_PSF
+#define WANT_DEINTERLACER
 #endif
 
 #ifdef HEADLESS
