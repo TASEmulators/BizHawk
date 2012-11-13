@@ -23,7 +23,7 @@
 /*								*/
 /****************************************************************/
 
-#include "../types.h"
+#include "../mednafen-types.h"
 
 #include <stdio.h>
 #include <stdlib.h>

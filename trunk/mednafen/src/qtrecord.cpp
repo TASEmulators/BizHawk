@@ -16,7 +16,7 @@
  */
 
 #include "mednafen.h"
-#include "endian.h"
+#include "mednafen-endian.h"
 #include "qtrecord.h"
 #include "compress/minilzo.h"
 #include "video/png.h"

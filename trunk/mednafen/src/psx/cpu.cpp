@@ -17,7 +17,10 @@
 
 #include "psx.h"
 #include "cpu.h"
+
+#ifdef _MSC_VER
 #include <windows.h>
+#endif
 
 //#define DPRINT(...)
 #define NOPRINT(...)

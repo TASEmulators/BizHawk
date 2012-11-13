@@ -20,7 +20,7 @@
 
 /* Modified 2007 for usage in Mednafen */
 
-#include "../types.h"
+#include "../mednafen-types.h"
 #include "jrevdct.h"
 
 /*

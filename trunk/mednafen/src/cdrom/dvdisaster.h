@@ -35,7 +35,7 @@
  *** Everything #includeable is rolled up herein...
  */
 
-#include "../types.h"
+#include "../mednafen-types.h"
 
 #include <ctype.h>
 #include <errno.h>

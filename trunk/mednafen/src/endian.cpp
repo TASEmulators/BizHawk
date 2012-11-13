@@ -16,7 +16,7 @@
  */
 
 #include "mednafen.h"
-#include "endian.h"
+#include "mednafen-endian.h"
 
 void Endian_A16_Swap(void *src, uint32 nelements)
 {

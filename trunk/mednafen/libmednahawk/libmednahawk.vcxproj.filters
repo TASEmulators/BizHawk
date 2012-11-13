@@ -429,7 +429,7 @@
     <ClInclude Include="..\src\debug.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\endian.h">
+    <ClInclude Include="..\src\mednafen-endian.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\error.h">
@@ -456,7 +456,7 @@
     <ClInclude Include="..\src\mednafen.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\memory.h">
+    <ClInclude Include="..\src\mednafen-memory.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\MemoryStream.h">
