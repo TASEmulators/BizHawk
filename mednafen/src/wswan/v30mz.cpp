@@ -28,7 +28,7 @@
 */
 
 #include "wswan.h"
-#include "memory.h"
+#include "mednafen-memory.h"
 
 #include <string.h>
 

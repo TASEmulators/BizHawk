@@ -19,7 +19,7 @@
 
 #include <zlib.h>
 #include "png.h"
-#include "../endian.h"
+#include "../mednafen-endian.h"
 
 void PNGWrite::WriteChunk(FileWrapper &pngfile, uint32 size, const char *type, const uint8 *data)
 {

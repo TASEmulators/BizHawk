@@ -24,7 +24,11 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 //#include <unistd.h> //zero 07-feb-2012
+
+#ifdef _MSC_VER
 #include <io.h>
+#endif
+
 #include <string.h>
 
 //TODO - change FOP crap to separate functions. this was just less work at the time.

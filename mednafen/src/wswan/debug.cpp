@@ -22,7 +22,7 @@
 #include "v30mz.h"
 #include "debug.h"
 #include "dis/disasm.h"
-#include "memory.h"
+#include "mednafen-memory.h"
 #include "gfx.h"
 #include <stdarg.h>
 #include <trio/trio.h>

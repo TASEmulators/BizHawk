@@ -204,4 +204,4 @@ static INLINE uint32 MDFN_de32msb(const uint8 *morp)
  return(morp[3]|(morp[2]<<8)|(morp[1]<<16)|(morp[0]<<24));
 }
 
-#endif
+#endif /* __MDFN_ENDIAN_H */

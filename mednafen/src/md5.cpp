@@ -5,7 +5,7 @@
  */
 /* Converted to C++ for use in Mednafen */
 
-#include "types.h"
+#include "mednafen-types.h"
 #include <string.h>
 #include "md5.h"
 

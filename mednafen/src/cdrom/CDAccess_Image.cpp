@@ -42,7 +42,7 @@
 #include <trio/trio.h>
 
 #include "../general.h"
-#include "../endian.h"
+#include "../mednafen-endian.h"
 #include "../FileStream.h"
 #include "../MemoryStream.h"
 

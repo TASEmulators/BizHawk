@@ -318,7 +318,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\debug.h" />
     <ClInclude Include="..\src\drivers\joystick.h" />
-    <ClInclude Include="..\src\endian.h" />
+    <ClInclude Include="..\src\mednafen-endian.h" />
     <ClInclude Include="..\src\error.h" />
     <ClInclude Include="..\src\file.h" />
     <ClInclude Include="..\src\FileStream.h" />
@@ -327,7 +327,7 @@
     <ClInclude Include="..\src\math_ops.h" />
     <ClInclude Include="..\src\md5.h" />
     <ClInclude Include="..\src\mednafen.h" />
-    <ClInclude Include="..\src\memory.h" />
+    <ClInclude Include="..\src\mednafen-memory.h" />
     <ClInclude Include="..\src\MemoryStream.h" />
     <ClInclude Include="..\src\mempatcher-driver.h" />
     <ClInclude Include="..\src\mempatcher.h" />
