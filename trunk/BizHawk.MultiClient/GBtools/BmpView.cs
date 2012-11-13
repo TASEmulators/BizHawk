@@ -13,13 +13,8 @@ namespace BizHawk.MultiClient.GBtools
 	{
 		[Browsable(false)]
 		public Bitmap bmp { get; private set; }
-		[Browsable(true)]
-		bool scaled;
 
-		/// <summary>
-		/// if true, the backcolor will be drawn.  otherwise, nothing (so HOM with transparent images)
-		/// </summary>
-		public bool DrawBackdrop { get; set; }
+		bool scaled;
 
 		public BmpView()
 		{
@@ -50,10 +45,6 @@ namespace BizHawk.MultiClient.GBtools
 
 		void BmpView_Paint(object sender, PaintEventArgs e)
 		{
-			if (DrawBackdrop)
-			{
-				e.Graphics.Clear(BackColor);
-			}
 			if (scaled)
 			{
 				e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
@@ -87,16 +78,10 @@ namespace BizHawk.MultiClient.GBtools
 		public void Clear()
 		{
 			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			//Win32.ZeroMemory(lockdata.Scan0, (uint)(lockdata.Height * lockdata.Stride));
 			Win32.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
 			bmp.UnlockBits(lockdata);
 			Refresh();
 		}
 
-		// kill unused props
-		//[Browsable(false)]
-		//public override Color BackColor { get { return base.BackColor; } set { base.BackColor = Color.Blue; } }
-		//[Browsable(false)]
-		//public override string Text { get { return base.Text; } set { base.Text = value; } }
 	}
 }
