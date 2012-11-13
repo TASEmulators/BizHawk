@@ -137,6 +137,9 @@ namespace BizHawk
 				case ".SMC": 
 					Game.System = "SNES"; 
 					break;
+				case ".PSF":
+					Game.System = "PSX";
+					break;
 				case ".SMS": Game.System = "SMS"; break;
 				case ".GG": Game.System = "GG"; break;
 				case ".SG": Game.System = "SG"; break;
@@ -147,7 +150,7 @@ namespace BizHawk
 
 				case ".BIN":
 				case ".GEN":
-                case ".MD":
+				case ".MD":
 				case ".SMD": Game.System = "GEN"; break;
 				case ".A26": Game.System = "A26"; break;
 				case ".A78": Game.System = "A78"; break;
@@ -156,6 +159,7 @@ namespace BizHawk
 				case ".INT": Game.System = "INTV"; break;
 				case ".PRG":
 				case ".D64":
+				case ".SID":
 				case ".G64":
 				case ".CRT":
 					Game.System = "C64";
