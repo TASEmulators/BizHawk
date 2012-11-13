@@ -290,7 +290,6 @@
     <ClInclude Include="..\src\mednafen-endian.h" />
     <ClInclude Include="..\src\drivers\logdebugger.h" />
     <ClInclude Include="..\src\drivers\prompt.h" />
-    <ClInclude Include="..\src\endian.h" />
     <ClInclude Include="..\src\error.h" />
     <ClInclude Include="..\src\file.h" />
     <ClInclude Include="..\src\FileStream.h" />
