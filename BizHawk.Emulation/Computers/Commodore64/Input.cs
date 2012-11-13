@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void UpdatePortData()
 		{
-			int keyboardShift = keyboardRowData;
+			int keyboardShift = keyboardColumnData;
 			byte port0result = 0xFF;
 			byte port1result = 0xFF;
 
@@ -90,7 +90,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			for (int i = 0; i < 8; i++)
 			{
 				if ((keyboardShift & 0x01) == 0x00)
+				{
 					port1result &= keyboardLatch[i];
+				}
 				keyboardShift >>= 1;
 			}
 			port1result &= joystickLatch[0];
