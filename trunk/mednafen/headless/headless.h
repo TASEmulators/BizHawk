@@ -9,6 +9,11 @@
 #define WANT_RESAMPLER
 #define WANT_PSF
 #define WANT_DEINTERLACER
+
+//in libmednahawk, we compile all cores together
+//in libretro, we'd want to compile them individually and choose the appropriate WANT_CD
+#define WANT_CDIF
+
 #endif
 
 #ifdef HEADLESS
