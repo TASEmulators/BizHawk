@@ -629,9 +629,6 @@
     <ClInclude Include="..\src\drivers\joystick.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\types.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\headless\headless.h">
       <Filter>headless</Filter>
     </ClInclude>
@@ -651,6 +648,12 @@
       <Filter>src\drivers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\endian.h" />
+    <ClInclude Include="..\src\mednafen-driver.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mednafen-types.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\psx\gpu_command_table.inc">
