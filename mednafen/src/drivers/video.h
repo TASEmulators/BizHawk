@@ -70,7 +70,7 @@ bool Video_ScreenBlitReady(void);
 // Called from the main thread.
 void Video_BlitToScreen(void);
 
-
+#ifndef HEADLESS
 class SDL_to_MDFN_Surface_Wrapper : public MDFN_Surface
 {
  public:
@@ -123,5 +123,6 @@ class SDL_to_MDFN_Surface_Wrapper : public MDFN_Surface
  private:
  SDL_Surface *ss;
 };
+#endif //HEADLESS
 
 #endif

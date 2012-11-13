@@ -31,9 +31,10 @@
 #include <fcntl.h>
 #endif
 
-
+#ifdef WANT_DEARCHIVE
 #include <zlib.h>
 #include "compress/unzip.h"
+#endif
 
 #include "file.h"
 #include "general.h"
@@ -51,6 +52,7 @@ enum
  MDFN_FILETYPE_ZIP = 2,
 };
 
+#ifdef WANT_DEARCHIVE
 static const char *unzErrorString(int error_code)
 {
  if(error_code == UNZ_OK)
@@ -72,7 +74,9 @@ static const char *unzErrorString(int error_code)
  else
   return("ZIP Unknown");
 }
+#endif //WANT_DEARCHIVE
 
+#ifdef WANT_IPS
 bool MDFNFILE::ApplyIPS(FILE *ips)
 {
  uint8 header[5];
@@ -227,6 +231,7 @@ bool MDFNFILE::ApplyIPS(FILE *ips)
 
  //return(1);
 }
+#endif //WANT_IPS
 
 // This function should ALWAYS close the system file "descriptor"(gzip library, zip library, or FILE *) it's given,
 // even if it errors out.
@@ -282,6 +287,7 @@ bool MDFNFILE::MakeMemWrapAndClose(void *tz, int type)
   }
   #endif
  }
+ #ifdef WANT_DEARCHIVE
  else if(type == MDFN_FILETYPE_GZIP)
  {
   uint32_t cur_size = 0;
@@ -355,6 +361,7 @@ bool MDFNFILE::MakeMemWrapAndClose(void *tz, int type)
 
   unzReadCurrentFile((unzFile)tz, f_data, ufo.uncompressed_size);
  }
+#endif //WANT_DEARCHIVE
 
  ret = TRUE;
 
@@ -363,6 +370,7 @@ bool MDFNFILE::MakeMemWrapAndClose(void *tz, int type)
  {
   fclose((FILE *)tz);
  }
+#ifdef WANT_DEARCHIVE
  else if(type == MDFN_FILETYPE_GZIP)
  {
   gzclose((gzFile)tz);
@@ -372,6 +380,7 @@ bool MDFNFILE::MakeMemWrapAndClose(void *tz, int type)
   unzCloseCurrentFile((unzFile)tz);
   unzClose((unzFile)tz);
  }
+#endif
 
  return(ret);
 }
@@ -406,14 +415,15 @@ MDFNFILE::~MDFNFILE()
 
 bool MDFNFILE::Open(const char *path, const FileExtensionSpecStruct *known_ext, const char *purpose, const bool suppress_notfound_pe)
 {
- unzFile tz;
-
  local_errno = 0;
  error_code = MDFNFILE_EC_OTHER;	// Set to 0 at the end if the function succeeds.
 
  //f_data = (uint8 *)0xDEADBEEF;
 
  // Try opening it as a zip file first
+#ifdef WANT_DEARCHIVE
+ unzFile tz;
+
  if((tz = unzOpen(path)))
  {
   char tempu[1024];
@@ -497,6 +507,7 @@ bool MDFNFILE::Open(const char *path, const FileExtensionSpecStruct *known_ext, 
  }
  else // If it's not a zip file, handle it as...another type of file!
  {
+ #endif //WANT_DEARCHIVE
   FILE *fp;
 
   if(!(fp = fopen(path, "rb")))
@@ -515,6 +526,8 @@ bool MDFNFILE::Open(const char *path, const FileExtensionSpecStruct *known_ext, 
 
    return(0);
   }
+
+#ifdef WANT_DEARCHIVE
 
   uint32 gzmagic;
 
@@ -579,6 +592,8 @@ bool MDFNFILE::Open(const char *path, const FileExtensionSpecStruct *known_ext, 
    free(tmp_path);
   } // End gzip handling
  } // End normal and gzip file handling else to zip
+
+ #endif //WANT_DEARCHIVE
 
  // FIXME:  Handle extension fixing for cases where loaded filename is like "moo.moo/lalala"
 

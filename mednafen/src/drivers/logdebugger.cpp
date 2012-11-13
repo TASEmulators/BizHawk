@@ -212,6 +212,7 @@ static void LogGroupSelect(int delta)
 }
 
 
+#ifndef HEADLESS
 // Call this from the main thread
 int LogDebugger_Event(const SDL_Event *event)
 {
@@ -284,4 +285,5 @@ int LogDebugger_Event(const SDL_Event *event)
  }
  return(1);
 }
+#endif //HEADLESS
 

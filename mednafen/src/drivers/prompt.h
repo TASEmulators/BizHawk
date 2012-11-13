@@ -10,13 +10,15 @@ class HappyPrompt
 	virtual ~HappyPrompt();
 
 	void Draw(MDFN_Surface *surface, const MDFN_Rect *rect);
-	void Event(const SDL_Event *event);
 	void Init(const std::string &ptext, const std::string &zestring);
 	void SetText(const std::string &ptext);
 	void SetKBB(const std::string &zestring);
 
-        virtual void TheEnd(const std::string &pstring);
+  virtual void TheEnd(const std::string &pstring);
 
+	#ifndef HEADLESS
+	void Event(const SDL_Event *event);
+  #endif
 
 	protected:
         std::string PromptText;

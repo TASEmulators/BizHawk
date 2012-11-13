@@ -431,6 +431,7 @@ bool PS_CDC::DecodeSubQ(uint8 *subpw)
  return(false);
 }
 
+#include "PACKED.h"
 struct XA_Subheader
 {
  uint8 file;
@@ -443,13 +444,16 @@ struct XA_Subheader
  uint8 submode_dup;
  uint8 coding_dup;
  
-}; // __attribute__((__packed__)); //zero 07-feb-2012
+};
+#include "PACKED_END.h"//zero 07-feb-2012
 
+#include "PACKED.h"
 struct XA_SoundGroup
 {
  uint8 params[16];
  uint8 samples[112];
-}; // __attribute__((__packed__)); //zero 07-feb-2012
+};
+#include "PACKED_END.h" //zero 07-feb-2012
 
 #define XA_SUBMODE_EOF		0x80
 #define XA_SUBMODE_REALTIME	0x40

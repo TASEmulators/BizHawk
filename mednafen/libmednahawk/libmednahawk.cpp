@@ -1,5 +1,4 @@
 #include "mednafen.h"
-#include "SDL.h"
 #include <stdio.h>
 #include <vector>
 
@@ -9,8 +8,20 @@
 #include "settings-driver.h"
 #include "FileWrapper.h"
 
+MDFNGI *CurGame=NULL;
+
 extern MDFNGI EmulatedPSX;
 void BuildPortsInfo(MDFNGI *gi);
+
+void MDFND_PrintError(const char *s)
+{
+	printf(s);
+}
+
+void MDFND_Message(const char *s)
+{
+	printf(s);
+}
 
 static MDFNSetting MednafenSettings[] =
 {
@@ -55,7 +66,7 @@ void FrameAdvance()
 	espec.LineWidths = (MDFN_Rect *)VTLineWidths[VTBackBuffer];
 	espec.skip = false;
 	espec.soundmultiplier = 1.0;
-	espec.NeedRewind = DNeedRewind;
+	espec.NeedRewind = false;
 
 	//espec.SoundRate = GetSoundRate();
 	//espec.SoundBuf = GetEmuModSoundBuffer(&espec.SoundBufMaxSize);
@@ -136,7 +147,7 @@ extern "C" __declspec(dllexport) bool psx_LoadCue(const char* path)
 	MDFNGI *gi = CurGame = MDFNI_LoadCD("psx", path);
 	
 	//does some kind of input hooking-up
-	BuildPortsInfo(gi);
+	//BuildPortsInfo(gi);
 
 	return true;
 }
@@ -163,7 +174,7 @@ extern "C" __declspec(dllexport) bool dll_Initialize()
 
 	//prep settings. for now we reuse a lot of mednafen's internal settings building. i would prefer to have supported settings enumerated in here
 	static std::vector <MDFNSetting> NeoDriverSettings; //these better be static or else shit will explode
-	MakeInputSettings(NeoDriverSettings);
+	//MakeInputSettings(NeoDriverSettings);
 	MDFN_MergeSettings(NeoDriverSettings);
 	MDFN_MergeSettings(MednafenSettings);
 
@@ -176,7 +187,7 @@ extern "C" __declspec(dllexport) bool dll_Initialize()
 
 	return true;
 }
-
+	
 
 //---------
 

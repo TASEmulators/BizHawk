@@ -82,6 +82,7 @@ void HappyPrompt::SetKBB(const std::string &zestring)
 
 void HappyPrompt::Draw(MDFN_Surface *surface, const MDFN_Rect *rect)
 {
+#ifdef WANT_SOFTGUI
  std::vector<uint32> PromptAnswer;
  std::vector<uint32> PromptAnswerOffsets;
  std::vector<uint32> PromptAnswerWidths;
@@ -149,8 +150,10 @@ void HappyPrompt::Draw(MDFN_Surface *surface, const MDFN_Rect *rect)
    DrawTextTrans(pixels + (13 * 2 + 2) * pitch32 + 2 * 6 + xpos, surface->pitchinpix << 2, 9, blinky_thingy, MK_COLOR_A(0x00, 0xFF, 0x00, 0xFF), 0, MDFN_FONT_6x13_12x13);
   }
  }
+#endif //WANT_SOFTGUI
 }
 
+#ifndef HEADLESS
 void HappyPrompt::Event(const SDL_Event *event)
 {
  if(event->type == SDL_KEYDOWN)
@@ -207,3 +210,4 @@ void HappyPrompt::Event(const SDL_Event *event)
   }
  }
 }
+#endif //HEADLESS

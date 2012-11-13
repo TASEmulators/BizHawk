@@ -7,8 +7,10 @@
 #include "config.h"
 #include "args.h"
 
+#ifndef HEADLESS
 #include <SDL.h>
 #include <SDL_thread.h>
+#endif
 
 #include "../gettext.h"
 

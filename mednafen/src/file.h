@@ -22,7 +22,10 @@ class MDFNFILE
 	 return(Open(path.c_str(), known_ext, purpose, suppress_notfound_pe));
 	}
 
-        bool ApplyIPS(FILE *);
+#ifdef WANT_IPS
+	bool ApplyIPS(FILE *);
+#endif
+
 	bool Close(void);
 
 	const int64 &size;

@@ -16,8 +16,10 @@ typedef struct {
 #define MKK(k) SDLK_##k
 #define MKK_COUNT (SDLK_LAST+1)
 
+#ifndef HEADLESS
 void Input_Event(const SDL_Event *event);
 void MainSetEventHook(int (*eh)(const SDL_Event *event));	// TODO: factor out eventually.
+#endif
 
 // Called after a game is loaded.
 void InitGameInput(MDFNGI *GI);

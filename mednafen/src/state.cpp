@@ -846,6 +846,8 @@ int MDFNSS_Load(const char *fname, const char *suffix)
         }
 }
 
+//here we have a whole bunch of UI-related savestate functionality which isnt needed in headless
+#ifndef HEADLESS
 void MDFNSS_CheckStates(void)
 {
 	time_t last_time = 0;
@@ -974,6 +976,7 @@ void MDFNI_SaveState(const char *fname, const char *suffix, const MDFN_Surface *
  MDFNSS_Save(fname, suffix, surface, DisplayRect, LineWidths);
 }
 
+
 void MDFNI_LoadState(const char *fname, const char *suffix)
 {
  if(!MDFNGameInfo->StateAction) 
@@ -988,17 +991,19 @@ void MDFNI_LoadState(const char *fname, const char *suffix)
  */
  if(MDFNSS_Load(fname, suffix))
  {
-   //zero 07-feb-2012 - no netplay
-  //if(MDFNnetplay)
- // {
-  // NetplaySendState();
- // }
+  if(MDFNnetplay)
+  {
+   NetplaySendState();
+  }
 
   if(MDFNMOV_IsRecording())
    MDFNMOV_RecordState();
  }
 }
+#endif //HEADLESS
 
+//here we have a lot of rewind-related functions
+#ifdef WANT_REWIND
 #include "compress/minilzo.h"
 #include "compress/quicklz.h"
 #include "compress/blz.h"
@@ -1275,3 +1280,4 @@ void MDFNI_EnableStateRewind(int enable)
 
  MDFN_StateEvilBegin();
 }
+#endif //WANT_REWIND

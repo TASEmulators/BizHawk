@@ -72,8 +72,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\src;..\include;..\zlib123;..\sdl\include;..\dx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HEADLESS;WIN32;_DEBUG;_CONSOLE;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;..\src;..\include;..\zlib123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WANT_PSF;HEADLESS;WIN32;_DEBUG;_CONSOLE;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -85,7 +85,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>..\zlib123/zlib-vc8-Win32.lib;..\sdl/sdl-vc8-win32.lib;winmm.lib;..\dx/directx-win32-ddraw-dinput8-dsound-dxerr8-dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\zlib123/zlib-vc8-Win32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -95,8 +95,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>.;..\src;..\include;..\zlib123;..\sdl\include;..\dx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HEADLESS;WIN32;NDEBUG;_CONSOLE;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;..\src;..\include;..\zlib123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WANT_PSF;HEADLESS;WIN32;NDEBUG;_CONSOLE;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
       <PrecompiledHeader>
@@ -112,7 +112,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>..\zlib123/zlib-vc8-Win32.lib;..\sdl/sdl-vc8-win32.lib;winmm.lib;..\dx/directx-win32-ddraw-dinput8-dsound-dxerr8-dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\zlib123/zlib-vc8-Win32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -125,8 +125,8 @@
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Full</Optimization>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.;..\src;..\include;..\zlib123;..\sdl\include;..\dx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HEADLESS;WIN32;NDEBUG;_CONSOLE;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;..\src;..\include;..\zlib123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WANT_PSF;HEADLESS;WIN32;NDEBUG;_CONSOLE;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
@@ -140,7 +140,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>..\zlib123/zlib-vc8-Win32.lib;..\sdl/sdl-vc8-win32.lib;winmm.lib;..\dx/directx-win32-ddraw-dinput8-dsound-dxerr8-dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\zlib123/zlib-vc8-Win32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -151,8 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\headless\netplay_stub.cpp" />
-    <ClCompile Include="..\src\cdplay.cpp" />
+    <ClCompile Include="..\headless\headless.cpp" />
     <ClCompile Include="..\src\debug.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
@@ -161,7 +160,10 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
+    <ClCompile Include="..\src\drivers\gfxdebugger.cpp" />
     <ClCompile Include="..\src\drivers\joystick.cpp" />
+    <ClCompile Include="..\src\drivers\logdebugger.cpp" />
+    <ClCompile Include="..\src\drivers\prompt.cpp" />
     <ClCompile Include="..\src\endian.cpp" />
     <ClCompile Include="..\src\error.cpp" />
     <ClCompile Include="..\src\file.cpp" />
@@ -174,10 +176,8 @@
     <ClCompile Include="..\src\memory.cpp" />
     <ClCompile Include="..\src\MemoryStream.cpp" />
     <ClCompile Include="..\src\mempatcher.cpp" />
-    <ClCompile Include="..\src\movie.cpp" />
     <ClCompile Include="..\src\player.cpp" />
     <ClCompile Include="..\src\PSFLoader.cpp" />
-    <ClCompile Include="..\src\qtrecord.cpp" />
     <ClCompile Include="..\src\settings.cpp" />
     <ClCompile Include="..\src\state.cpp" />
     <ClCompile Include="..\src\Stream.cpp" />
@@ -237,46 +237,18 @@
     <ClCompile Include="..\src\trio\triostr.c" />
     <ClCompile Include="..\src\drivers\2xSaI.cpp" />
     <ClCompile Include="..\src\drivers\args.cpp" />
-    <ClCompile Include="..\src\drivers\cheat.cpp" />
-    <ClCompile Include="..\src\drivers\console.cpp" />
     <ClCompile Include="..\src\drivers\debugger.cpp" />
-    <ClCompile Include="..\src\drivers\ers.cpp" />
-    <ClCompile Include="..\src\drivers\fps.cpp" />
-    <ClCompile Include="..\src\drivers\gfxdebugger.cpp" />
     <ClCompile Include="..\src\drivers\help.cpp" />
     <ClCompile Include="..\src\drivers\hq2x.cpp" />
     <ClCompile Include="..\src\drivers\hq3x.cpp" />
     <ClCompile Include="..\src\drivers\hq4x.cpp" />
-    <ClCompile Include="..\src\drivers\input-config.cpp" />
-    <ClCompile Include="..\src\drivers\input.cpp" />
-    <ClCompile Include="..\src\drivers\logdebugger.cpp" />
-    <ClCompile Include="..\src\drivers\main.cpp">
-      <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessToFile>
-      <PreprocessSuppressLineNumbers Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessSuppressLineNumbers>
-    </ClCompile>
     <ClCompile Include="..\src\drivers\nnx.cpp" />
     <ClCompile Include="..\src\drivers\nongl.cpp" />
-    <ClCompile Include="..\src\drivers\opengl.cpp" />
-    <ClCompile Include="..\src\drivers\overlay.cpp" />
-    <ClCompile Include="..\src\drivers\prompt.cpp" />
     <ClCompile Include="..\src\drivers\remote.cpp" />
     <ClCompile Include="..\src\drivers\scale2x.c" />
     <ClCompile Include="..\src\drivers\scale3x.c" />
     <ClCompile Include="..\src\drivers\scalebit.c" />
-    <ClCompile Include="..\src\drivers\shader.cpp">
-      <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessToFile>
-      <PreprocessSuppressLineNumbers Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessSuppressLineNumbers>
-    </ClCompile>
     <ClCompile Include="..\src\drivers\sound.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\video-state.cpp" />
-    <ClCompile Include="..\src\drivers\video.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
@@ -289,16 +261,10 @@
     <ClCompile Include="..\src\sound\sound.cpp" />
     <ClCompile Include="..\src\sound\Stereo_Buffer.cpp" />
     <ClCompile Include="..\src\sound\WAVRecord.cpp" />
-    <ClCompile Include="..\src\compress\blz.c" />
-    <ClCompile Include="..\src\compress\ioapi.c" />
-    <ClCompile Include="..\src\compress\minilzo.c" />
-    <ClCompile Include="..\src\compress\quicklz.c" />
-    <ClCompile Include="..\src\compress\unzip.c" />
     <ClCompile Include="..\src\string\ConvertUTF.cpp" />
     <ClCompile Include="..\src\string\escape.cpp" />
     <ClCompile Include="..\src\sexyal\convert.cpp" />
     <ClCompile Include="..\src\sexyal\sexyal.cpp" />
-    <ClCompile Include="..\src\sexyal\drivers\dsound.cpp" />
     <ClCompile Include="..\src\sexyal\drivers\dummy.cpp" />
     <ClCompile Include="..\src\hw_cpu\c68k\c68k.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -316,9 +282,14 @@
     <ClCompile Include="libmednahawk.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\headless\headless.h" />
     <ClInclude Include="..\src\debug.h" />
+    <ClInclude Include="..\src\drivers\gfxdebugger.h" />
     <ClInclude Include="..\src\drivers\joystick.h" />
     <ClInclude Include="..\src\mednafen-endian.h" />
+    <ClInclude Include="..\src\drivers\logdebugger.h" />
+    <ClInclude Include="..\src\drivers\prompt.h" />
+    <ClInclude Include="..\src\endian.h" />
     <ClInclude Include="..\src\error.h" />
     <ClInclude Include="..\src\file.h" />
     <ClInclude Include="..\src\FileStream.h" />
@@ -331,11 +302,8 @@
     <ClInclude Include="..\src\MemoryStream.h" />
     <ClInclude Include="..\src\mempatcher-driver.h" />
     <ClInclude Include="..\src\mempatcher.h" />
-    <ClInclude Include="..\src\movie-driver.h" />
-    <ClInclude Include="..\src\movie.h" />
     <ClInclude Include="..\src\player.h" />
     <ClInclude Include="..\src\PSFLoader.h" />
-    <ClInclude Include="..\src\qtrecord.h" />
     <ClInclude Include="..\src\settings-common.h" />
     <ClInclude Include="..\src\settings-driver.h" />
     <ClInclude Include="..\src\settings.h" />
@@ -344,6 +312,7 @@
     <ClInclude Include="..\src\state.h" />
     <ClInclude Include="..\src\Stream.h" />
     <ClInclude Include="..\src\tests.h" />
+    <ClInclude Include="..\src\types.h" />
     <ClInclude Include="..\src\video-driver.h" />
     <ClInclude Include="..\src\video.h" />
     <ClInclude Include="..\src\psx\cdc.h" />
@@ -393,38 +362,16 @@
     <ClInclude Include="..\src\video\video-common.h" />
     <ClInclude Include="..\src\drivers\2xSaI.h" />
     <ClInclude Include="..\src\drivers\args.h" />
-    <ClInclude Include="..\src\drivers\cheat.h" />
-    <ClInclude Include="..\src\drivers\console.h" />
     <ClInclude Include="..\src\drivers\debugger.h" />
-    <ClInclude Include="..\src\drivers\ers.h" />
-    <ClInclude Include="..\src\drivers\fps.h" />
-    <ClInclude Include="..\src\drivers\gfxdebugger.h" />
     <ClInclude Include="..\src\drivers\help.h" />
-    <ClInclude Include="..\src\drivers\input-config.h" />
     <ClInclude Include="..\src\drivers\input-default-buttons.h" />
-    <ClInclude Include="..\src\drivers\input.h" />
-    <ClInclude Include="..\src\drivers\logdebugger.h" />
-    <ClInclude Include="..\src\drivers\main.h" />
     <ClInclude Include="..\src\drivers\nnx.h" />
     <ClInclude Include="..\src\drivers\nongl.h" />
-    <ClInclude Include="..\src\drivers\opengl.h" />
-    <ClInclude Include="..\src\drivers\overlay.h" />
-    <ClInclude Include="..\src\drivers\prompt.h" />
     <ClInclude Include="..\src\drivers\scale2x.h" />
     <ClInclude Include="..\src\drivers\scale3x.h" />
     <ClInclude Include="..\src\drivers\scalebit.h" />
-    <ClInclude Include="..\src\drivers\shader.h" />
     <ClInclude Include="..\src\drivers\sound.h" />
-    <ClInclude Include="..\src\drivers\video-state.h" />
-    <ClInclude Include="..\src\drivers\video.h" />
     <ClInclude Include="..\src\sound\WAVRecord.h" />
-    <ClInclude Include="..\src\compress\blz.h" />
-    <ClInclude Include="..\src\compress\ioapi.h" />
-    <ClInclude Include="..\src\compress\lzoconf.h" />
-    <ClInclude Include="..\src\compress\lzodefs.h" />
-    <ClInclude Include="..\src\compress\minilzo.h" />
-    <ClInclude Include="..\src\compress\quicklz.h" />
-    <ClInclude Include="..\src\compress\unzip.h" />
     <ClInclude Include="..\src\string\ConvertUTF.h" />
     <ClInclude Include="..\src\string\escape.h" />
     <ClInclude Include="..\src\sexyal\convert.h" />

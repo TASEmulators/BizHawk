@@ -806,6 +806,7 @@ static void Emulate(EmulateSpecStruct *espec)
 
  espec->MasterCycles = timestamp;
 
+#ifndef WANT_SOFTGUI
  if(psf_loader)
  {
   if(!espec->skip)
@@ -814,7 +815,7 @@ static void Emulate(EmulateSpecStruct *espec)
    Player_Draw(espec->surface, &espec->DisplayRect, 0, espec->SoundBuf, espec->SoundBufSize);
   }
  }
-
+#endif
  // Save memcards if dirty.
  for(int i = 0; i < 8; i++)
  {

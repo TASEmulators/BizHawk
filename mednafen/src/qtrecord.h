@@ -7,6 +7,8 @@
 #include <vector>
 #include <list>
 
+#ifdef WANT_AVDUMP
+
 class QTRecord
 {
  public:
@@ -112,5 +114,7 @@ class QTRecord
 
  bool Finished;
 };
+
+#endif WANT_AVDUMP
 
 #endif
