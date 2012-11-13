@@ -723,6 +723,7 @@ static INLINE bool MDFN_DumpToFileReal(const char *filename, int compress, const
  if(MDFN_GetSettingB("filesys.disablesavegz"))
   compress = 0;
 
+#ifdef WANT_DEARCHIVE
  if(compress)
  {
   char mode[64];
@@ -762,6 +763,7 @@ static INLINE bool MDFN_DumpToFileReal(const char *filename, int compress, const
   }
  }
  else
+#endif //WANT_DEARCHIVE
  {
   FILE *fp = fopen(filename, "wb");
   if(!fp)

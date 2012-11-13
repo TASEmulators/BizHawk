@@ -29,6 +29,7 @@
 #include "string/escape.h"
 #include "FileStream.h"
 #include "MemoryStream.h"
+#include <zlib.h>
 
 typedef struct
 {
