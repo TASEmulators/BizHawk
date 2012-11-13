@@ -33,7 +33,7 @@
 
 #include	"state.h"
 #include	"movie.h"
-#include        "video.h"
+#include	"video.h"
 #include	"video/Deinterlacer.h"
 #include	"file.h"
 #include	"sound/WAVRecord.h"
@@ -51,6 +51,11 @@
 
 #include	"cdrom/CDUtility.h"
 
+//helping out MSVC
+#ifndef S_ISREG
+#define S_ISREG(mode)  (((mode) & S_IFMT) == S_IFREG)
+#endif
+
 static const char *CSD_forcemono = gettext_noop("Force monophonic sound output.");
 static const char *CSD_enable = gettext_noop("Enable (automatic) usage of this module.");
 static const char *CSD_tblur = gettext_noop("Enable video temporal blur(50/50 previous/current frame by default).");
@@ -67,6 +72,7 @@ static MDFNSetting_EnumList CompressorList[] =
  { NULL, 0 },
 };
 
+#ifdef WANT_AVDUMP
 static MDFNSetting_EnumList VCodec_List[] =
 {
  { "raw", (int)QTRecord::VCODEC_RAW, "Raw",
@@ -80,6 +86,7 @@ static MDFNSetting_EnumList VCodec_List[] =
 
  { NULL, 0 },
 };
+#endif //WANT_AVDUMP
 
 static const char *fname_extra = gettext_noop("See fname_format.txt for more information.  Edit at your own risk.");
 
@@ -112,7 +119,9 @@ static MDFNSetting MednafenSettings[] =
   { "qtrecord.w_double_threshold", MDFNSF_NOFLAGS, gettext_noop("Double the raw image's width if it's below this threshold."), NULL, MDFNST_UINT, "384", "0", "1073741824" },
   { "qtrecord.h_double_threshold", MDFNSF_NOFLAGS, gettext_noop("Double the raw image's height if it's below this threshold."), NULL, MDFNST_UINT, "256", "0", "1073741824" },
 
+#ifdef WANT_AVDUMP
   { "qtrecord.vcodec", MDFNSF_NOFLAGS, gettext_noop("Video codec to use."), NULL, MDFNST_ENUM, "cscd", NULL, NULL, NULL, NULL, VCodec_List },
+#endif
   { NULL }
 };
 
@@ -158,8 +167,10 @@ static uint32 PortDataLenCache[16];
 
 MDFNGI *MDFNGameInfo = NULL;
 
+#ifdef WANT_AVDUMP
 static QTRecord *qtrecorder = NULL;
 static WAVRecord *wavrecorder = NULL;
+#endif
 static Fir_Resampler<16> ff_resampler;
 static double LastSoundMultiplier;
 
@@ -173,6 +184,7 @@ static Deinterlacer deint;
 
 static std::vector<CDIF *> CDInterfaces;	// FIXME: Cleanup on error out.
 
+#ifdef WANT_AVDUMP
 bool MDFNI_StartWAVRecord(const char *path, double SoundRate)
 {
  try
@@ -250,19 +262,25 @@ void MDFNI_StopWAVRecord(void)
   wavrecorder = NULL;
  }
 }
+#endif //WANT_AVDUMP
 
 void MDFNI_CloseGame(void)
 {
  if(MDFNGameInfo)
  {
-   //zero 07-feb-2012 - no netplay
-  //if(MDFNnetplay)
-  // MDFNI_NetplayStop();
+#ifdef WANT_NETPLAY
+  if(MDFNnetplay)
+   MDFNI_NetplayStop();
+#endif
 
+#ifdef WANT_MOVIE
   MDFNMOV_Stop();
+#endif
 
+#ifdef WANT_CHEATS
   if(MDFNGameInfo->GameType != GMT_PLAYER)
    MDFN_FlushGameCheats(0);
+#endif
 
   MDFNGameInfo->CloseGame();
   if(MDFNGameInfo->name)
@@ -273,7 +291,10 @@ void MDFNI_CloseGame(void)
   MDFNMP_Kill();
 
   MDFNGameInfo = NULL;
+
+#ifdef WANT_REWIND
   MDFN_StateEvilEnd();
+#endif
 
   for(unsigned i = 0; i < CDInterfaces.size(); i++)
    delete CDInterfaces[i];
@@ -362,7 +383,9 @@ extern MDFNGI EmulatedWSwan;
 extern MDFNGI EmulatedSMS, EmulatedGG;
 #endif
 
+#ifdef WANT_CDPLAY_EMU
 extern MDFNGI EmulatedCDPlay;
+#endif
 
 std::vector<MDFNGI *> MDFNSystems;
 static std::list<MDFNGI *> MDFNSystemsPrio;
@@ -455,7 +478,7 @@ MDFNGI *MDFNI_LoadCD(const char *force_module, const char *devicename)
 
    for(unsigned i = 0; i < file_list.size(); i++)
    {
-#if 1
+#ifdef WANT_CDIF_MT
     CDInterfaces.push_back(new CDIF_MT(file_list[i].c_str()));
 #else
     CDInterfaces.push_back(new CDIF_ST(file_list[i].c_str()));
@@ -466,7 +489,7 @@ MDFNGI *MDFNI_LoadCD(const char *force_module, const char *devicename)
   }
   else
   {
-#if 1
+#ifdef WANT_CDIF_MT
    CDInterfaces.push_back(new CDIF_MT(devicename));
 #else
    CDInterfaces.push_back(new CDIF_ST(devicename));
@@ -625,13 +648,11 @@ MDFNGI *MDFNI_LoadCD(const char *force_module, const char *devicename)
 
  TBlur_Init();
 
- #ifndef HEADLESS
  if(MDFNGameInfo->GameType != GMT_PLAYER)
  {
   MDFN_LoadGameCheats(NULL);
   MDFNMP_InstallReadPatches();
  }
-#endif
 
   last_sound_rate = -1;
   memset(&last_pixel_format, 0, sizeof(MDFN_PixelFormat));
@@ -639,6 +660,7 @@ MDFNGI *MDFNI_LoadCD(const char *force_module, const char *devicename)
  return(MDFNGameInfo);
 }
 
+#ifdef WANT_IPS
 // Return FALSE on fatal error(IPS file found but couldn't be applied),
 // or TRUE on success(IPS patching succeeded, or IPS file not found).
 static bool LoadIPS(MDFNFILE &GameFile, const char *path)
@@ -674,6 +696,8 @@ static bool LoadIPS(MDFNFILE &GameFile, const char *path)
 
  return(1);
 }
+#endif WANT_IPS
+
 
 MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 {
@@ -686,11 +710,10 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 	 return(MDFNI_LoadCD(force_module, name));
 	}
 	
-  //zero 07-feb-2012 - remove some cd loading capability
-	//if(!stat(name, &stat_buf) && !S_ISREG(stat_buf.st_mode))
-	//{
-	// return(MDFNI_LoadCD(force_module, name));
-	//}
+	if(!stat(name, &stat_buf) && !S_ISREG(stat_buf.st_mode))
+	{
+	 return(MDFNI_LoadCD(force_module, name));
+	}
 
 	MDFNI_CloseGame();
 
@@ -731,12 +754,14 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 	 return 0;
 	}
 
+#ifdef WANT_IPS
 	if(!LoadIPS(GameFile, MDFN_MakeFName(MDFNMKF_IPS, 0, 0).c_str()))
 	{
 	 MDFNGameInfo = NULL;
          GameFile.Close();
          return(0);
 	}
+#endif
 
 	MDFNGameInfo = NULL;
 
@@ -840,10 +865,17 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 	MDFNDBG_PostGameLoad();
 	#endif
 
+#ifndef HEADLESS
 	MDFNSS_CheckStates();
-	MDFNMOV_CheckMovies();
+#endif
 
+#ifdef WANT_MOVIE
+	MDFNMOV_CheckMovies();
+#endif
+
+#ifdef WANT_SOFTGUI
 	MDFN_ResetMessages();	// Save state, status messages, etc.
+#endif
 
 	MDFN_indent(-2);
 
@@ -868,7 +900,9 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 
 	TBlur_Init();
 
+#ifdef WANT_REWIND
         MDFN_StateEvilBegin();
+#endif
 
 
         last_sound_rate = -1;
@@ -1035,7 +1069,9 @@ bool MDFNI_InitializeModules(const std::vector<MDFNGI *> &ExternalSystems)
   &EmulatedGG,
   #endif
 
+	#ifdef WANT_CDPLAY_EMU
   &EmulatedCDPlay
+	#endif
  };
  std::string i_modules_string, e_modules_string;
 
@@ -1085,11 +1121,15 @@ int MDFNI_Initialize(const char *basedir, const std::vector<MDFNSetting> &Driver
 	memset(PortDataLenCache, 0, sizeof(PortDataLenCache));
 	memset(PortDeviceCache, 0, sizeof(PortDeviceCache));
 
+#ifdef WANT_REWIND
 	lzo_init();
+#endif
 
 	MDFNI_SetBaseDirectory(basedir);
 
+#ifdef WANT_SOFTGUI
 	MDFN_InitFontData();
+#endif
 
 	// Generate dynamic settings
 	for(unsigned int i = 0; i < MDFNSystems.size(); i++)
@@ -1171,7 +1211,7 @@ static void ProcessAudio(EmulateSpecStruct *espec)
   int32 SoundBufSize = espec->SoundBufSize - espec->SoundBufSizeALMS;
   const int32 SoundBufMaxSize = espec->SoundBufMaxSize - espec->SoundBufSizeALMS;
 
-
+#ifdef WANT_AVDUMP
   if(qtrecorder && (volume_save != 1 || multiplier_save != 1))
   {
    int32 orig_size = SoundBufPristine.size();
@@ -1180,7 +1220,9 @@ static void ProcessAudio(EmulateSpecStruct *espec)
    for(int i = 0; i < SoundBufSize * MDFNGameInfo->soundchan; i++)
     SoundBufPristine[orig_size + i] = SoundBuf[i];
   }
+#endif //WANT_AVDUMP
 
+#ifdef WANT_REWIND
   if(espec->NeedSoundReverse)
   {
    int16 *yaybuf = SoundBuf;
@@ -1205,7 +1247,9 @@ static void ProcessAudio(EmulateSpecStruct *espec)
     }
    }
   }
+#endif //WANT_REWIND
 
+#ifdef WANT_AVDUMP
   try
   {
    if(wavrecorder)
@@ -1217,6 +1261,7 @@ static void ProcessAudio(EmulateSpecStruct *espec)
    delete wavrecorder;
    wavrecorder = NULL;
   }
+#endif
 
   if(multiplier_save != LastSoundMultiplier)
   {
@@ -1311,11 +1356,11 @@ static void ProcessAudio(EmulateSpecStruct *espec)
  } // end to:  if(espec->SoundBuf && espec->SoundBufSize)
 }
 
+#ifndef HEADLESS
 void MDFN_MidSync(EmulateSpecStruct *espec)
 {
-  //zero 07-feb-2012 - no netplay
- //if(MDFNnetplay)
- // return;
+ if(MDFNnetplay)
+  return;
 
  ProcessAudio(espec);
 
@@ -1328,6 +1373,7 @@ void MDFN_MidSync(EmulateSpecStruct *espec)
  espec->SoundBufSizeALMS = espec->SoundBufSize;
  espec->MasterCyclesALMS = espec->MasterCycles;
 }
+#endif
 
 void MDFNI_Emulate(EmulateSpecStruct *espec)
 {
@@ -1362,6 +1408,7 @@ void MDFNI_Emulate(EmulateSpecStruct *espec)
   ff_resampler.buffer_size((espec->SoundRate / 2) * 2);
  }
 
+#ifdef WANT_AVDUMP
  // We want to record movies without any dropped video frames and without fast-forwarding sound distortion and without custom volume.
  // The same goes for WAV recording(sans the dropped video frames bit :b).
  if(qtrecorder || wavrecorder)
@@ -1372,23 +1419,30 @@ void MDFNI_Emulate(EmulateSpecStruct *espec)
   volume_save = espec->SoundVolume;
   espec->SoundVolume = 1;
  }
+#endif
 
- //zero 07-feb-2012 - no netplay
- //if(MDFNnetplay)
- //{
- // NetplayUpdate((const char**)PortDeviceCache, PortDataCache, PortDataLenCache, MDFNGameInfo->InputInfo->InputPorts);
- //}
+#ifdef WANT_NETPLAY
+ if(MDFNnetplay)
+ {
+  NetplayUpdate((const char**)PortDeviceCache, PortDataCache, PortDataLenCache, MDFNGameInfo->InputInfo->InputPorts);
+ }
+#endif
 
+#ifdef WANT_MOVIE
  for(int x = 0; x < 16; x++)
   if(PortDataCache[x])
    MDFNMOV_AddJoy(PortDataCache[x], PortDataLenCache[x]);
+#endif
 
+#ifdef WANT_AVDUMP
  if(qtrecorder)
   espec->skip = 0;
+#endif
 
  if(TBlur_IsOn())
   espec->skip = 0;
 
+#ifdef WANT_REWIND
  if(espec->NeedRewind)
  {
   if(MDFNMOV_IsPlaying())
@@ -1396,26 +1450,27 @@ void MDFNI_Emulate(EmulateSpecStruct *espec)
    espec->NeedRewind = 0;
    MDFN_DispMessage(_("Can't rewind during movie playback."));
   }
-//zero 07-feb-2012 - no netplay
-  //else if(MDFNnetplay)
-  //{
-  // espec->NeedRewind = 0;
-  // MDFN_DispMessage(_("Silly-billy, can't rewind during netplay."));
-  //}
+  else if(MDFNnetplay)
+  {
+   espec->NeedRewind = 0;
+   MDFN_DispMessage(_("Silly-billy, can't rewind during netplay."));
+  }
   else if(MDFNGameInfo->GameType == GMT_PLAYER)
   {
    espec->NeedRewind = 0;
    MDFN_DispMessage(_("Music player rewinding is unsupported."));
   }
  }
+#endif
 
  // Don't even save states with state rewinding if netplay is enabled, it will degrade netplay performance, and can cause
  // desynchs with some emulation(IE SNES based on bsnes).
-
+#if defined(WANT_NETPLAY) && defined(WANT_REWIND)
  if(MDFNnetplay)
   espec->NeedSoundReverse = false;
  else
  espec->NeedSoundReverse = MDFN_StateEvil(espec->NeedRewind);
+#endif
 
  MDFNGameInfo->Emulate(espec);
 
@@ -1450,6 +1505,7 @@ void MDFNI_Emulate(EmulateSpecStruct *espec)
 
  ProcessAudio(espec);
 
+#ifdef WANT_AVDUMP
  if(qtrecorder)
  {
   int16 *sb_backup = espec->SoundBuf;
@@ -1477,6 +1533,7 @@ void MDFNI_Emulate(EmulateSpecStruct *espec)
   espec->SoundBuf = sb_backup;
   espec->SoundBufSize = sbs_backup;
  }
+#endif
 
  TBlur_Run(espec);
 }
@@ -1611,16 +1668,21 @@ void MDFN_DoSimpleCommand(int cmd)
 
 void MDFN_QSimpleCommand(int cmd)
 {
-  //zero 07-feb-2012 - no netplay
- //if(MDFNnetplay)
- // MDFNNET_SendCommand(cmd, 0);
- //else
- {
+#ifdef WANT_NETPLAY
+ if(MDFNnetplay)
+  MDFNNET_SendCommand(cmd, 0);
+ else
+#endif
+{
+#ifdef HEADLESS
+	 MDFN_DoSimpleCommand(cmd);
+#else
   if(!MDFNMOV_IsPlaying())
   {
    MDFN_DoSimpleCommand(cmd);
    MDFNMOV_AddCommand(cmd);
   }
+#endif
  }
 }
 

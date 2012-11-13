@@ -80,6 +80,7 @@ void GfxDebugger_SetActive(bool newia)
 // Call this function from the main thread
 void GfxDebugger_Draw(MDFN_Surface *surface, const MDFN_Rect *rect, const MDFN_Rect *screen_rect)
 {
+#ifdef WANT_SOFTGUI
  if(!IsActive)
   return;
 
@@ -171,9 +172,11 @@ void GfxDebugger_Draw(MDFN_Surface *surface, const MDFN_Rect *rect, const MDFN_R
  }
 
  LockGameMutex(0);
+#endif //WANT_SOFTGUI
 }
 
 // Call this from the main thread
+#ifndef HEADLESS
 int GfxDebugger_Event(const SDL_Event *event)
 {
  switch(event->type)
@@ -260,4 +263,4 @@ int GfxDebugger_Event(const SDL_Event *event)
  }
  return(1);
 }
-
+#endif //HEADLESS

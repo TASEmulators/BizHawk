@@ -1,6 +1,8 @@
 #ifndef _MOVIE_H
 #define _MOVIE_H
 
+#ifdef WANT_MOVIE
+
 void MDFNI_SelectMovie(int);
 
 #include "movie-driver.h"
@@ -14,4 +16,7 @@ bool MDFNMOV_IsRecording(void);
 void MDFNMOV_ForceRecord(StateMem *sm);
 StateMem MDFNMOV_GrabRewindJoy(void);
 void MDFNMOV_RecordState();
-#endif
+
+#endif //WANT_MOVIE
+
+#endif //_MOVIE_H

@@ -65,6 +65,7 @@ CDIF_Message::~CDIF_Message()
 
 }
 
+#ifdef WANT_CDIF_MT
 CDIF_Queue::CDIF_Queue()
 {
  ze_mutex = MDFND_CreateMutex();
@@ -115,7 +116,6 @@ void CDIF_Queue::Write(const CDIF_Message &message)
 
  MDFND_UnlockMutex(ze_mutex);
 }
-
 
 void CDIF_MT::RT_EjectDisc(bool eject_status, bool skip_actual_eject)
 {
@@ -359,19 +359,6 @@ CDIF_MT::~CDIF_MT()
  }
 }
 
-bool CDIF::ValidateRawSector(uint8 *buf)
-{
- int mode = buf[12 + 3];
-
- if(mode != 0x1 && mode != 0x2)
-  return(false);
-
- if(!edc_lec_check_correct(buf, mode == 2))
-  return(false);
-
- return(true);
-}
-
 bool CDIF_MT::ReadRawSector(uint8 *buf, uint32 lba)
 {
  bool found = FALSE;
@@ -424,6 +411,43 @@ void CDIF_MT::HintReadSector(uint32 lba)
  ReadThreadQueue.Write(CDIF_Message(CDIF_MSG_READ_SECTOR, lba));
 }
 
+bool CDIF_MT::Eject(bool eject_status)
+{
+ if(UnrecoverableError)
+  return(false);
+
+ try
+ {
+  CDIF_Message msg;
+
+  ReadThreadQueue.Write(CDIF_Message(CDIF_MSG_EJECT, eject_status));
+  EmuThreadQueue.Read(&msg);
+ }
+ catch(std::exception &e)
+ {
+  MDFN_PrintError(_("Error on eject/insert attempt: %s"), e.what());
+  return(false);
+ }
+
+ return(true);
+}
+
+#endif //WANT_CDIF_MT
+
+bool CDIF::ValidateRawSector(uint8 *buf)
+{
+ int mode = buf[12 + 3];
+
+ if(mode != 0x1 && mode != 0x2)
+  return(false);
+
+ if(!edc_lec_check_correct(buf, mode == 2))
+  return(false);
+
+ return(true);
+}
+
+
 int CDIF::ReadSector(uint8* pBuf, uint32 lba, uint32 nSectors)
 {
  int ret = 0;
@@ -474,34 +498,13 @@ int CDIF::ReadSector(uint8* pBuf, uint32 lba, uint32 nSectors)
  return(ret);
 }
 
-bool CDIF_MT::Eject(bool eject_status)
-{
- if(UnrecoverableError)
-  return(false);
-
- try
- {
-  CDIF_Message msg;
-
-  ReadThreadQueue.Write(CDIF_Message(CDIF_MSG_EJECT, eject_status));
-  EmuThreadQueue.Read(&msg);
- }
- catch(std::exception &e)
- {
-  MDFN_PrintError(_("Error on eject/insert attempt: %s"), e.what());
-  return(false);
- }
-
- return(true);
-}
-
 //
 //
 // Single-threaded implementation follows.
 //
 //
 
-CDIF_ST::CDIF_ST(const char *device_name, bool di_memcache)
+CDIF_ST::CDIF_ST(const char *device_name)
 {
  puts("***WARNING USING SINGLE-THREADED CD READER***");
 

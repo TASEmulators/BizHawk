@@ -8,9 +8,12 @@ void Debugger_ModOpacity(int deltalove);
 void Debugger_ForceStepIfStepping(); // For synchronizations with save state loading and reset/power toggles.  Should be called from game thread only.
 
 bool Debugger_IsActive(unsigned int *w = NULL, unsigned int *h = NULL);
-void Debugger_Event(const SDL_Event *event);
 bool Debugger_Toggle(void);
 void Debugger_ForceSteppingMode(void);
+
+#ifndef HEADLESS
+void Debugger_Event(const SDL_Event *event);
+#endif
 
 extern volatile bool InSteppingMode;
 #else

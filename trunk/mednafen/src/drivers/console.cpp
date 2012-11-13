@@ -148,6 +148,7 @@ int MDFNConsole::Event(const SDL_Event *event)
 
 void MDFNConsole::Draw(MDFN_Surface *surface, const MDFN_Rect *src_rect)
 {
+#ifdef WANT_SOFTGUI
  const MDFN_PixelFormat pf_cache = surface->format;
  uint32 pitch32 = surface->pitchinpix;
  uint32 w = src_rect->w;
@@ -288,6 +289,7 @@ void MDFNConsole::Draw(MDFN_Surface *surface, const MDFN_Rect *src_rect)
   MDFN_StretchBlitSurface(tmp_surface, &tmp_rect, surface, &dest_rect);
   delete tmp_surface;
  }
+#endif //WANT_SOFTGUI
 }
 
 void MDFNConsole::WriteLine(UTF8 *text)

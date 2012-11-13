@@ -31,6 +31,11 @@
 
 #include <string.h>
 
+#ifdef _MSC_VER
+#define S_IRUSR _S_IREAD
+#define S_IWUSR _S_IWRITE   
+#endif
+
 //TODO - change FOP crap to separate functions. this was just less work at the time.
 FILE* headless_fopen(const char* path, const char* mode);
 int headless_fclose(FILE* fp);
@@ -127,8 +132,7 @@ FileWrapper::FileWrapper(const char *path, const int mode, const char *purpose) 
   #if defined(S_IRGRP) && defined(S_IROTH) 
   int tmpfd = open(path, open_flags, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
   #else
-  //int tmpfd = open(path, open_flags, S_IRUSR | S_IWUSR);
-   int tmpfd = open(path, open_flags, _S_IREAD | _S_IWRITE); //zero 07-feb-2011
+  int tmpfd = open(path, open_flags, S_IRUSR | S_IWUSR);
   #endif
   if(tmpfd == -1)
   {

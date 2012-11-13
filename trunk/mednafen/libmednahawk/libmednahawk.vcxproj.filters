@@ -28,9 +28,6 @@
     <Filter Include="src\sound">
       <UniqueIdentifier>{5c139355-d298-4dc7-8eaf-4d01f15e4638}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\compress">
-      <UniqueIdentifier>{b02120a5-aefd-4df6-b1c6-0351f7cdf4a5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\string">
       <UniqueIdentifier>{026374fb-8a2c-4f3c-8c60-eae8c3382fa2}</UniqueIdentifier>
     </Filter>
@@ -40,26 +37,23 @@
     <Filter Include="src\sexyal\drivers">
       <UniqueIdentifier>{2d6ec477-c745-4d13-9e64-8c0483c2749d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\hw_cpu">
-      <UniqueIdentifier>{5791d772-b7d9-42dc-966b-5c9ff4ca7683}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\hw_cpu\c68k">
-      <UniqueIdentifier>{91179346-9375-4427-8630-122e086273dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\hw_cpu\z80-fuse">
-      <UniqueIdentifier>{a3e7626e-55bc-4387-b374-de3b4c608880}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\desa68">
       <UniqueIdentifier>{f36488fc-db6a-4348-84ad-94128fb86fbf}</UniqueIdentifier>
     </Filter>
     <Filter Include="headless">
       <UniqueIdentifier>{2097105e-a7b2-4499-a0b7-4b486470c6b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\drivers\hw_cpu">
+      <UniqueIdentifier>{5791d772-b7d9-42dc-966b-5c9ff4ca7683}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\drivers\hw_cpu\c68k">
+      <UniqueIdentifier>{91179346-9375-4427-8630-122e086273dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\drivers\hw_cpu\z80-fuse">
+      <UniqueIdentifier>{a3e7626e-55bc-4387-b374-de3b4c608880}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\cdplay.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\debug.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -99,16 +93,7 @@
     <ClCompile Include="..\src\mempatcher.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\movie.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\player.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\PSFLoader.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\qtrecord.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\settings.cpp">
@@ -252,9 +237,6 @@
     <ClCompile Include="..\src\video\tblur.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\video\text.cpp">
-      <Filter>src\video</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\video\video.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
@@ -273,22 +255,7 @@
     <ClCompile Include="..\src\drivers\args.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\drivers\cheat.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\console.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\drivers\debugger.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\ers.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\fps.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\gfxdebugger.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
     <ClCompile Include="..\src\drivers\help.cpp">
@@ -303,31 +270,10 @@
     <ClCompile Include="..\src\drivers\hq4x.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\drivers\input-config.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\input.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\logdebugger.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\main.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\drivers\nnx.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
     <ClCompile Include="..\src\drivers\nongl.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\opengl.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\overlay.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\prompt.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
     <ClCompile Include="..\src\drivers\remote.cpp">
@@ -342,16 +288,7 @@
     <ClCompile Include="..\src\drivers\scalebit.c">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\drivers\shader.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\drivers\sound.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\video-state.cpp">
-      <Filter>src\drivers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\drivers\video.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
     <ClCompile Include="..\src\sound\Blip_Buffer.cpp">
@@ -369,21 +306,6 @@
     <ClCompile Include="..\src\sound\WAVRecord.cpp">
       <Filter>src\sound</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\compress\blz.c">
-      <Filter>src\compress</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\compress\ioapi.c">
-      <Filter>src\compress</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\compress\minilzo.c">
-      <Filter>src\compress</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\compress\quicklz.c">
-      <Filter>src\compress</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\compress\unzip.c">
-      <Filter>src\compress</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\string\ConvertUTF.cpp">
       <Filter>src\string</Filter>
     </ClCompile>
@@ -396,23 +318,20 @@
     <ClCompile Include="..\src\sexyal\sexyal.cpp">
       <Filter>src\sexyal</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\sexyal\drivers\dsound.cpp">
-      <Filter>src\sexyal\drivers</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\sexyal\drivers\dummy.cpp">
       <Filter>src\sexyal\drivers</Filter>
     </ClCompile>
     <ClCompile Include="..\src\hw_cpu\c68k\c68k.cpp">
-      <Filter>src\hw_cpu\c68k</Filter>
+      <Filter>src\drivers\hw_cpu\c68k</Filter>
     </ClCompile>
     <ClCompile Include="..\src\hw_cpu\c68k\c68kexec.cpp">
-      <Filter>src\hw_cpu\c68k</Filter>
+      <Filter>src\drivers\hw_cpu\c68k</Filter>
     </ClCompile>
     <ClCompile Include="..\src\hw_cpu\z80-fuse\z80.cpp">
-      <Filter>src\hw_cpu\z80-fuse</Filter>
+      <Filter>src\drivers\hw_cpu\z80-fuse</Filter>
     </ClCompile>
     <ClCompile Include="..\src\hw_cpu\z80-fuse\z80_ops.cpp">
-      <Filter>src\hw_cpu\z80-fuse</Filter>
+      <Filter>src\drivers\hw_cpu\z80-fuse</Filter>
     </ClCompile>
     <ClCompile Include="..\src\desa68\desa68.c">
       <Filter>src\desa68</Filter>
@@ -421,8 +340,23 @@
       <Filter>src\drivers</Filter>
     </ClCompile>
     <ClCompile Include="libmednahawk.cpp" />
-    <ClCompile Include="..\headless\netplay_stub.cpp">
+    <ClCompile Include="..\headless\headless.cpp">
       <Filter>headless</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\player.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\video\text.cpp">
+      <Filter>src\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\drivers\logdebugger.cpp">
+      <Filter>src\drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\drivers\prompt.cpp">
+      <Filter>src\drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\drivers\gfxdebugger.cpp">
+      <Filter>src\drivers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -468,19 +402,7 @@
     <ClInclude Include="..\src\mempatcher.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\movie-driver.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\movie.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\player.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\PSFLoader.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\qtrecord.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\settings-common.h">
@@ -642,9 +564,6 @@
     <ClInclude Include="..\src\video\tblur.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\video\text.h">
-      <Filter>src\video</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\video\video-common.h">
       <Filter>src\video</Filter>
     </ClInclude>
@@ -654,55 +573,19 @@
     <ClInclude Include="..\src\drivers\args.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\drivers\cheat.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\console.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\drivers\debugger.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\ers.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\fps.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\gfxdebugger.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\drivers\help.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\drivers\input-config.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\drivers\input-default-buttons.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\input.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\logdebugger.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\main.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\drivers\nnx.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\drivers\nongl.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\opengl.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\overlay.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\prompt.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\drivers\scale2x.h">
@@ -714,41 +597,11 @@
     <ClInclude Include="..\src\drivers\scalebit.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\drivers\shader.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\drivers\sound.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\video-state.h">
-      <Filter>src\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\drivers\video.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\sound\WAVRecord.h">
       <Filter>src\sound</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\compress\blz.h">
-      <Filter>src\compress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\compress\ioapi.h">
-      <Filter>src\compress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\compress\lzoconf.h">
-      <Filter>src\compress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\compress\lzodefs.h">
-      <Filter>src\compress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\compress\minilzo.h">
-      <Filter>src\compress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\compress\quicklz.h">
-      <Filter>src\compress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\compress\unzip.h">
-      <Filter>src\compress</Filter>
     </ClInclude>
     <ClInclude Include="..\src\string\ConvertUTF.h">
       <Filter>src\string</Filter>
@@ -763,10 +616,10 @@
       <Filter>src\sexyal</Filter>
     </ClInclude>
     <ClInclude Include="..\src\hw_cpu\c68k\c68k.h">
-      <Filter>src\hw_cpu\c68k</Filter>
+      <Filter>src\drivers\hw_cpu\c68k</Filter>
     </ClInclude>
     <ClInclude Include="..\src\hw_cpu\z80-fuse\z80.h">
-      <Filter>src\hw_cpu\z80-fuse</Filter>
+      <Filter>src\drivers\hw_cpu\z80-fuse</Filter>
     </ClInclude>
     <ClInclude Include="..\src\desa68\desa68.h">
       <Filter>src\desa68</Filter>
@@ -776,6 +629,28 @@
     <ClInclude Include="..\src\drivers\joystick.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\types.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headless\headless.h">
+      <Filter>headless</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\player.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\video\text.h">
+      <Filter>src\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\drivers\logdebugger.h">
+      <Filter>src\drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\drivers\prompt.h">
+      <Filter>src\drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\drivers\gfxdebugger.h">
+      <Filter>src\drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\endian.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\psx\gpu_command_table.inc">

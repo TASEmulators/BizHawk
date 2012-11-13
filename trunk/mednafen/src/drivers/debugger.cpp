@@ -634,6 +634,7 @@ struct DisasmEntry
 
 static DebuggerPrompt *myprompt = NULL;
 
+#ifndef HEADLESS
 // Call this function from the main thread
 void Debugger_Draw(MDFN_Surface *surface, MDFN_Rect *rect, const MDFN_Rect *screen_rect)
 {
@@ -650,8 +651,7 @@ void Debugger_Draw(MDFN_Surface *surface, MDFN_Rect *rect, const MDFN_Rect *scre
  {
   surface->Fill(0, 0, 0, DebuggerOpacity);
 
-	//zero 29-oct-2012 - memdebugger not supported
-  //MemDebugger_Draw(surface, rect, screen_rect);
+  MemDebugger_Draw(surface, rect, screen_rect);
   return;
  }
  else if(WhichMode == 3)
@@ -1055,7 +1055,7 @@ void Debugger_Draw(MDFN_Surface *surface, MDFN_Rect *rect, const MDFN_Rect *scre
  }
  LockGameMutex(0);
 }
-
+#endif //HEADLESS
 static const char HexLUT[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 // Function called from game thread
@@ -1164,6 +1164,7 @@ bool Debugger_IsActive(unsigned int *w, unsigned int *h)
 }
 
 
+#ifndef HEADLESS
 // Call this function from the game thread:
 bool Debugger_Toggle(void)
 {
@@ -1325,6 +1326,7 @@ bool Debugger_Toggle(void)
  }
  return(IsActive);
 }
+#endif //HEADLESS
 
 void Debugger_ModOpacity(int deltalove)
 {
@@ -1333,6 +1335,7 @@ void Debugger_ModOpacity(int deltalove)
  if(DebuggerOpacity > 0xFF) DebuggerOpacity = 0xFF;
 }
 
+#ifndef HEADLESS
 // Called from the main thread
 void Debugger_Event(const SDL_Event *event)
 {
@@ -1688,4 +1691,5 @@ void Debugger_Event(const SDL_Event *event)
          break;
   }
 }
+#endif //HEADLESS
 

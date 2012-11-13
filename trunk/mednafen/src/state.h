@@ -37,7 +37,9 @@ int smem_read32le(StateMem *st, uint32 *b);
 int MDFNSS_SaveSM(StateMem *st, int wantpreview_and_ts, int data_only, const MDFN_Surface *surface = (MDFN_Surface *)NULL, const MDFN_Rect *DisplayRect = (MDFN_Rect*)NULL, const MDFN_Rect *LineWidths = (MDFN_Rect *)NULL);
 int MDFNSS_LoadSM(StateMem *st, int haspreview, int data_only);
 
+#ifndef HEADLESS
 void MDFNSS_CheckStates(void);
+#endif
 
 // Flag for a single, >= 1 byte native-endian variable
 #define MDFNSTATE_RLSB            0x80000000
@@ -138,10 +140,12 @@ class SSDescriptor
 int MDFNSS_StateAction(StateMem *st, int load, int data_only, std::vector <SSDescriptor> &sections);
 int MDFNSS_StateAction(StateMem *st, int load, int data_only, SFORMAT *sf, const char *name, bool optional = 0);
 
+#ifdef WANT_REWIND
 void MDFN_StateEvilFlushMovieLove(void);
 bool MDFN_StateEvilIsRunning(void);
 void MDFN_StateEvilBegin(void);
 void MDFN_StateEvilEnd(void);
 int MDFN_StateEvil(int);
+#endif
 
 #endif
