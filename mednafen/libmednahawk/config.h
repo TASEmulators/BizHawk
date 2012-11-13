@@ -3,7 +3,7 @@
 #define HAVE__MKDIR 1
 #define LSB_FIRST
 #define SIZEOF_DOUBLE 8
-#define WANT_DEBUGGER 1
+#define WANT_DEBUGGER 0
 #define snprintf _snprintf
 #define strcasecmp(x,y) _stricmp(x,y)
 #define strncasecmp(x, y, l) strnicmp(x, y, l)

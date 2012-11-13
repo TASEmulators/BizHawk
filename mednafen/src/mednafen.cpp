@@ -188,7 +188,9 @@ static Deinterlacer deint;
 
 static std::vector<int16> SoundBufPristine;
 
+#ifdef WANT_CDIF
 static std::vector<CDIF *> CDInterfaces;	// FIXME: Cleanup on error out.
+#endif
 
 #ifdef WANT_AVDUMP
 bool MDFNI_StartWAVRecord(const char *path, double SoundRate)
@@ -302,9 +304,12 @@ void MDFNI_CloseGame(void)
   MDFN_StateEvilEnd();
 #endif
 
+#ifdef WANT_CDIF
   for(unsigned i = 0; i < CDInterfaces.size(); i++)
    delete CDInterfaces[i];
   CDInterfaces.clear();
+#endif
+
  }
  TBlur_Kill();
 
@@ -711,6 +716,7 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 	struct stat stat_buf;
 	std::vector<FileExtensionSpecStruct> valid_iae;
 
+#ifdef WANT_CDIF
 	if(strlen(name) > 4 && (!strcasecmp(name + strlen(name) - 4, ".cue") || !strcasecmp(name + strlen(name) - 4, ".toc") || !strcasecmp(name + strlen(name) - 4, ".m3u")))
 	{
 	 return(MDFNI_LoadCD(force_module, name));
@@ -720,6 +726,7 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 	{
 	 return(MDFNI_LoadCD(force_module, name));
 	}
+#endif
 
 	MDFNI_CloseGame();
 
@@ -778,23 +785,25 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 
 	 if(force_module)
 	 {
-          if(!strcmp(force_module, (*it)->shortname))
-          {
-	   if(!(*it)->Load)
-	   {
-            GameFile.Close();
+		 if(!strcmp(force_module, (*it)->shortname))
+		 {
+			 if(!(*it)->Load)
+			 {
+				 GameFile.Close();
 
-	    if((*it)->LoadCD)
-             MDFN_PrintError(_("Specified system only supports CD(physical, or image files, such as *.cue and *.toc) loading."));
-	    else
-             MDFN_PrintError(_("Specified system does not support normal file loading."));
-            MDFN_indent(-1);
-            MDFNGameInfo = NULL;
-            return 0;
-	   }
-           MDFNGameInfo = *it;
-           break;
-          }
+				#ifdef WANT_CDIF
+				 if((*it)->LoadCD)
+					 MDFN_PrintError(_("Specified system only supports CD(physical, or image files, such as *.cue and *.toc) loading."));
+				 else
+				#endif
+					 MDFN_PrintError(_("Specified system does not support normal file loading."));
+				 MDFN_indent(-1);
+				 MDFNGameInfo = NULL;
+				 return 0;
+			 }
+			 MDFNGameInfo = *it;
+			 break;
+		 }
 	 }
 	 else
 	 {
@@ -1109,7 +1118,9 @@ bool MDFNI_InitializeModules(const std::vector<MDFNGI *> &ExternalSystems)
 
  MDFNSystemsPrio.sort(MDFNSystemsPrio_CompareFunc);
 
+ #ifdef WANT_CDIF
  CDUtility::CDUtility_Init();
+	#endif
 
  return(1);
 }
