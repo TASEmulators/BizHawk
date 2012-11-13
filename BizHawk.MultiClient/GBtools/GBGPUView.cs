@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.MultiClient.GBtools
 {
@@ -27,6 +28,29 @@ namespace BizHawk.MultiClient.GBtools
 		int lcdc; // set at each callback
 
 		IntPtr tilespal; // current palette to use on tiles
+
+		Color _spriteback;
+		Color spriteback
+		{
+			get { return _spriteback; }
+			set
+			{
+				_spriteback = value;
+				SetSpriteBack(_spriteback, this);
+				panelSpriteBackColor.BackColor = _spriteback;
+				labelSpriteBackColor.Text = string.Format("({0},{1},{2})", _spriteback.R, _spriteback.G, _spriteback.B);
+			}
+		}
+		static void SetSpriteBack(Color color, Control control)
+		{
+			foreach (Control c in control.Controls)
+			{
+				if (c is BmpView && (c as BmpView).DrawBackdrop)
+					c.BackColor = color;
+				if (c.Controls.Count > 0)
+					SetSpriteBack(color, c);
+			}
+		}
 
 		public GBGPUView()
 		{
@@ -52,6 +76,9 @@ namespace BizHawk.MultiClient.GBtools
 
 			checkBoxAutoLoad.Checked = Global.Config.AutoLoadGBGPUView;
 			checkBoxSavePos.Checked = Global.Config.GBGPUViewSaveWindowPosition;
+
+			// TODO: from config
+			spriteback = Color.Black;
 		}
 
 		public void Restart()
@@ -349,6 +376,10 @@ namespace BizHawk.MultiClient.GBtools
 				p = (int*)sppal;
 				for (int i = 0; i < 32; i++)
 					p[i] |= unchecked((int)0xff000000);
+				// transparent all sprite color 0s
+				int c = spriteback.B | spriteback.G << 8 | spriteback.R << 16;
+				for (int i = 0; i < 32; i += 4)
+					p[i] = c;
 			}
 
 			// bg maps
@@ -439,6 +470,11 @@ namespace BizHawk.MultiClient.GBtools
 			}
 			DrawOam(bmpViewOAM.bmp, oam, vram, sppal, lcdc.Bit(2), cgb);
 			bmpViewOAM.Refresh();
+
+			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
+			// this doesn't really work well; the update rate seems to be throttled
+			MouseEventArgs e = new MouseEventArgs(System.Windows.Forms.MouseButtons.None, 0, System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y, 0);
+			this.OnMouseMove(e);
 		}
 
 		private void GBGPUView_FormClosed(object sender, FormClosedEventArgs e)
@@ -878,7 +914,8 @@ namespace BizHawk.MultiClient.GBtools
 
 				if (found != null && found is BmpView)
 				{
-					Clipboard.SetImage((found as BmpView).bmp);
+					var bv = found as BmpView;
+					Clipboard.SetImage(bv.bmp);
 					labelClipboard.Text = found.Text + " copied to clipboard.";
 					messagetimer.Stop();
 					messagetimer.Start();
@@ -910,6 +947,26 @@ namespace BizHawk.MultiClient.GBtools
 		private void checkBoxSavePos_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.GBGPUViewSaveWindowPosition = (sender as CheckBox).Checked;
+		}
+
+		private void buttonChangeColor_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new ColorDialog())
+			{
+				dlg.AllowFullOpen = true;
+				dlg.AnyColor = true;
+				dlg.FullOpen = true;
+				dlg.Color = spriteback;
+
+				Global.Sound.StopSound();
+				var result = dlg.ShowDialog();
+				Global.Sound.StartSound();
+				if (result == System.Windows.Forms.DialogResult.OK)
+				{
+					// force full opaque
+					spriteback = Color.FromArgb(255, dlg.Color);
+				}
+			}
 		}
 	}
 }
