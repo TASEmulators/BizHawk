@@ -647,7 +647,6 @@
     <ClInclude Include="..\src\drivers\gfxdebugger.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\endian.h" />
     <ClInclude Include="..\src\mednafen-driver.h">
       <Filter>src</Filter>
     </ClInclude>
