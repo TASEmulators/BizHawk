@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		}
 
 		/*TODO*/
-		public ISyncSoundProvider SyncSoundProvider { get { return null; } } //TODO
+		public ISyncSoundProvider SyncSoundProvider { get { return new SidSyncSoundProvider(sid); ; } }
 		public bool StartAsyncSound() { return true; } //TODO
 		public void EndAsyncSound() { } //TODO
 		public bool DeterministicEmulation { get; set; } //TODO

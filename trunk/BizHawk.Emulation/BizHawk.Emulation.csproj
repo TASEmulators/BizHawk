@@ -79,6 +79,7 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Buffer.cs" />
+    <Compile Include="Computers\Commodore64\1541.cs" />
     <Compile Include="Computers\Commodore64\C64.core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Computers\Commodore64\C64.PeekPoke.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Computers\Commodore64\MemBus.cs" />
     <Compile Include="Computers\Commodore64\Sid.cs" />
     <Compile Include="Computers\Commodore64\SidSoundProvider.cs" />
+    <Compile Include="Computers\Commodore64\Via.cs" />
     <Compile Include="Computers\Commodore64\VicII.cs" />
     <Compile Include="Computers\Commodore64\VicIIBackgroundGenerator.cs" />
     <Compile Include="Computers\Commodore64\VicIISpriteGenerator.cs" />
