@@ -52,737 +52,742 @@
     <Filter Include="src\desa68">
       <UniqueIdentifier>{f36488fc-db6a-4348-84ad-94128fb86fbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="headless">
+      <UniqueIdentifier>{2097105e-a7b2-4499-a0b7-4b486470c6b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\cdplay.cpp">
+    <ClCompile Include="..\src\cdplay.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\debug.cpp">
+    <ClCompile Include="..\src\debug.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\endian.cpp">
+    <ClCompile Include="..\src\endian.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\error.cpp">
+    <ClCompile Include="..\src\error.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\file.cpp">
+    <ClCompile Include="..\src\file.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileStream.cpp">
+    <ClCompile Include="..\src\FileStream.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileWrapper.cpp">
+    <ClCompile Include="..\src\FileWrapper.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\general.cpp">
+    <ClCompile Include="..\src\general.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\math_ops.cpp">
+    <ClCompile Include="..\src\math_ops.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\md5.cpp">
+    <ClCompile Include="..\src\md5.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\mednafen.cpp">
+    <ClCompile Include="..\src\mednafen.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\memory.cpp">
+    <ClCompile Include="..\src\memory.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\MemoryStream.cpp">
+    <ClCompile Include="..\src\MemoryStream.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\mempatcher.cpp">
+    <ClCompile Include="..\src\mempatcher.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\movie.cpp">
+    <ClCompile Include="..\src\movie.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\player.cpp">
+    <ClCompile Include="..\src\player.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\PSFLoader.cpp">
+    <ClCompile Include="..\src\PSFLoader.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\qtrecord.cpp">
+    <ClCompile Include="..\src\qtrecord.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\settings.cpp">
+    <ClCompile Include="..\src\settings.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\state.cpp">
+    <ClCompile Include="..\src\state.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Stream.cpp">
+    <ClCompile Include="..\src\Stream.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\tests.cpp">
+    <ClCompile Include="..\src\tests.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\cdc.cpp">
+    <ClCompile Include="..\src\psx\cdc.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\cpu.cpp">
+    <ClCompile Include="..\src\psx\cpu.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\debug.cpp">
+    <ClCompile Include="..\src\psx\debug.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\dis.cpp">
+    <ClCompile Include="..\src\psx\dis.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\dma.cpp">
+    <ClCompile Include="..\src\psx\dma.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\frontio.cpp">
+    <ClCompile Include="..\src\psx\frontio.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\gpu.cpp">
+    <ClCompile Include="..\src\psx\gpu.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\gte.cpp">
+    <ClCompile Include="..\src\psx\gte.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\irq.cpp">
+    <ClCompile Include="..\src\psx\irq.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\mdec.cpp">
+    <ClCompile Include="..\src\psx\mdec.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\psx.cpp">
+    <ClCompile Include="..\src\psx\psx.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\sio.cpp">
+    <ClCompile Include="..\src\psx\sio.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\spu.cpp">
+    <ClCompile Include="..\src\psx\spu.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\timer.cpp">
+    <ClCompile Include="..\src\psx\timer.cpp">
       <Filter>src\psx</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\input\dualanalog.cpp">
+    <ClCompile Include="..\src\psx\input\dualanalog.cpp">
       <Filter>src\psx\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\input\dualshock.cpp">
+    <ClCompile Include="..\src\psx\input\dualshock.cpp">
       <Filter>src\psx\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\input\gamepad.cpp">
+    <ClCompile Include="..\src\psx\input\gamepad.cpp">
       <Filter>src\psx\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\input\guncon.cpp">
+    <ClCompile Include="..\src\psx\input\guncon.cpp">
       <Filter>src\psx\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\input\justifier.cpp">
+    <ClCompile Include="..\src\psx\input\justifier.cpp">
       <Filter>src\psx\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\input\memcard.cpp">
+    <ClCompile Include="..\src\psx\input\memcard.cpp">
       <Filter>src\psx\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\input\mouse.cpp">
+    <ClCompile Include="..\src\psx\input\mouse.cpp">
       <Filter>src\psx\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\input\multitap.cpp">
+    <ClCompile Include="..\src\psx\input\multitap.cpp">
       <Filter>src\psx\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\psx\input\negcon.cpp">
+    <ClCompile Include="..\src\psx\input\negcon.cpp">
       <Filter>src\psx\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\resampler\resample.c">
+    <ClCompile Include="..\src\resampler\resample.c">
       <Filter>src\resampler</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\audioreader.cpp">
+    <ClCompile Include="..\src\cdrom\audioreader.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\CDAccess.cpp">
+    <ClCompile Include="..\src\cdrom\CDAccess.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\CDAccess_Image.cpp">
+    <ClCompile Include="..\src\cdrom\CDAccess_Image.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\cdromif.cpp">
+    <ClCompile Include="..\src\cdrom\cdromif.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\CDUtility.cpp">
+    <ClCompile Include="..\src\cdrom\CDUtility.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\crc32.cpp">
+    <ClCompile Include="..\src\cdrom\crc32.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\galois.cpp">
+    <ClCompile Include="..\src\cdrom\galois.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\l-ec.cpp">
+    <ClCompile Include="..\src\cdrom\l-ec.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\lec.cpp">
+    <ClCompile Include="..\src\cdrom\lec.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\recover-raw.cpp">
+    <ClCompile Include="..\src\cdrom\recover-raw.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\cdrom\SimpleFIFO.cpp">
+    <ClCompile Include="..\src\cdrom\SimpleFIFO.cpp">
       <Filter>src\cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\Deinterlacer.cpp">
+    <ClCompile Include="..\src\video\Deinterlacer.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\font-data.cpp">
+    <ClCompile Include="..\src\video\font-data.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\png.cpp">
+    <ClCompile Include="..\src\video\png.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\primitives.cpp">
+    <ClCompile Include="..\src\video\primitives.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\resize.cpp">
+    <ClCompile Include="..\src\video\resize.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\selblur.cpp">
+    <ClCompile Include="..\src\video\selblur.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\surface.cpp">
+    <ClCompile Include="..\src\video\surface.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\tblur.cpp">
+    <ClCompile Include="..\src\video\tblur.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\text.cpp">
+    <ClCompile Include="..\src\video\text.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\video\video.cpp">
+    <ClCompile Include="..\src\video\video.cpp">
       <Filter>src\video</Filter>
     </ClCompile>
-    <ClCompile Include="src\trio\trio.c">
+    <ClCompile Include="..\src\trio\trio.c">
       <Filter>src\trio</Filter>
     </ClCompile>
-    <ClCompile Include="src\trio\trionan.c">
+    <ClCompile Include="..\src\trio\trionan.c">
       <Filter>src\trio</Filter>
     </ClCompile>
-    <ClCompile Include="src\trio\triostr.c">
+    <ClCompile Include="..\src\trio\triostr.c">
       <Filter>src\trio</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\2xSaI.cpp">
+    <ClCompile Include="..\src\drivers\2xSaI.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\args.cpp">
+    <ClCompile Include="..\src\drivers\args.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\cheat.cpp">
+    <ClCompile Include="..\src\drivers\cheat.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\console.cpp">
+    <ClCompile Include="..\src\drivers\console.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\debugger.cpp">
+    <ClCompile Include="..\src\drivers\debugger.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\ers.cpp">
+    <ClCompile Include="..\src\drivers\ers.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\fps.cpp">
+    <ClCompile Include="..\src\drivers\fps.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\gfxdebugger.cpp">
+    <ClCompile Include="..\src\drivers\gfxdebugger.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\help.cpp">
+    <ClCompile Include="..\src\drivers\help.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\hq2x.cpp">
+    <ClCompile Include="..\src\drivers\hq2x.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\hq3x.cpp">
+    <ClCompile Include="..\src\drivers\hq3x.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\hq4x.cpp">
+    <ClCompile Include="..\src\drivers\hq4x.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\input-config.cpp">
+    <ClCompile Include="..\src\drivers\input-config.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\input.cpp">
+    <ClCompile Include="..\src\drivers\input.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\logdebugger.cpp">
+    <ClCompile Include="..\src\drivers\logdebugger.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\main.cpp">
+    <ClCompile Include="..\src\drivers\main.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\nnx.cpp">
+    <ClCompile Include="..\src\drivers\nnx.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\nongl.cpp">
+    <ClCompile Include="..\src\drivers\nongl.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\opengl.cpp">
+    <ClCompile Include="..\src\drivers\opengl.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\overlay.cpp">
+    <ClCompile Include="..\src\drivers\overlay.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\prompt.cpp">
+    <ClCompile Include="..\src\drivers\prompt.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\remote.cpp">
+    <ClCompile Include="..\src\drivers\remote.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\scale2x.c">
+    <ClCompile Include="..\src\drivers\scale2x.c">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\scale3x.c">
+    <ClCompile Include="..\src\drivers\scale3x.c">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\scalebit.c">
+    <ClCompile Include="..\src\drivers\scalebit.c">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\shader.cpp">
+    <ClCompile Include="..\src\drivers\shader.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\sound.cpp">
+    <ClCompile Include="..\src\drivers\sound.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\video-state.cpp">
+    <ClCompile Include="..\src\drivers\video-state.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\drivers\video.cpp">
+    <ClCompile Include="..\src\drivers\video.cpp">
       <Filter>src\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\sound\Blip_Buffer.cpp">
+    <ClCompile Include="..\src\sound\Blip_Buffer.cpp">
       <Filter>src\sound</Filter>
     </ClCompile>
-    <ClCompile Include="src\sound\Fir_Resampler.cpp">
+    <ClCompile Include="..\src\sound\Fir_Resampler.cpp">
       <Filter>src\sound</Filter>
     </ClCompile>
-    <ClCompile Include="src\sound\sound.cpp">
+    <ClCompile Include="..\src\sound\sound.cpp">
       <Filter>src\sound</Filter>
     </ClCompile>
-    <ClCompile Include="src\sound\Stereo_Buffer.cpp">
+    <ClCompile Include="..\src\sound\Stereo_Buffer.cpp">
       <Filter>src\sound</Filter>
     </ClCompile>
-    <ClCompile Include="src\sound\WAVRecord.cpp">
+    <ClCompile Include="..\src\sound\WAVRecord.cpp">
       <Filter>src\sound</Filter>
     </ClCompile>
-    <ClCompile Include="src\compress\blz.c">
+    <ClCompile Include="..\src\compress\blz.c">
       <Filter>src\compress</Filter>
     </ClCompile>
-    <ClCompile Include="src\compress\ioapi.c">
+    <ClCompile Include="..\src\compress\ioapi.c">
       <Filter>src\compress</Filter>
     </ClCompile>
-    <ClCompile Include="src\compress\minilzo.c">
+    <ClCompile Include="..\src\compress\minilzo.c">
       <Filter>src\compress</Filter>
     </ClCompile>
-    <ClCompile Include="src\compress\quicklz.c">
+    <ClCompile Include="..\src\compress\quicklz.c">
       <Filter>src\compress</Filter>
     </ClCompile>
-    <ClCompile Include="src\compress\unzip.c">
+    <ClCompile Include="..\src\compress\unzip.c">
       <Filter>src\compress</Filter>
     </ClCompile>
-    <ClCompile Include="src\string\ConvertUTF.cpp">
+    <ClCompile Include="..\src\string\ConvertUTF.cpp">
       <Filter>src\string</Filter>
     </ClCompile>
-    <ClCompile Include="src\string\escape.cpp">
+    <ClCompile Include="..\src\string\escape.cpp">
       <Filter>src\string</Filter>
     </ClCompile>
-    <ClCompile Include="src\sexyal\convert.cpp">
+    <ClCompile Include="..\src\sexyal\convert.cpp">
       <Filter>src\sexyal</Filter>
     </ClCompile>
-    <ClCompile Include="src\sexyal\sexyal.cpp">
+    <ClCompile Include="..\src\sexyal\sexyal.cpp">
       <Filter>src\sexyal</Filter>
     </ClCompile>
-    <ClCompile Include="src\sexyal\drivers\dsound.cpp">
+    <ClCompile Include="..\src\sexyal\drivers\dsound.cpp">
       <Filter>src\sexyal\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\sexyal\drivers\dummy.cpp">
+    <ClCompile Include="..\src\sexyal\drivers\dummy.cpp">
       <Filter>src\sexyal\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="src\hw_cpu\c68k\c68k.cpp">
+    <ClCompile Include="..\src\hw_cpu\c68k\c68k.cpp">
       <Filter>src\hw_cpu\c68k</Filter>
     </ClCompile>
-    <ClCompile Include="src\hw_cpu\c68k\c68kexec.cpp">
+    <ClCompile Include="..\src\hw_cpu\c68k\c68kexec.cpp">
       <Filter>src\hw_cpu\c68k</Filter>
     </ClCompile>
-    <ClCompile Include="src\hw_cpu\z80-fuse\z80.cpp">
+    <ClCompile Include="..\src\hw_cpu\z80-fuse\z80.cpp">
       <Filter>src\hw_cpu\z80-fuse</Filter>
     </ClCompile>
-    <ClCompile Include="src\hw_cpu\z80-fuse\z80_ops.cpp">
+    <ClCompile Include="..\src\hw_cpu\z80-fuse\z80_ops.cpp">
       <Filter>src\hw_cpu\z80-fuse</Filter>
     </ClCompile>
-    <ClCompile Include="src\desa68\desa68.c">
+    <ClCompile Include="..\src\desa68\desa68.c">
       <Filter>src\desa68</Filter>
     </ClCompile>
-    <ClCompile Include="netplay_stub.cpp" />
-    <ClCompile Include="api.cpp" />
-    <ClCompile Include="src\drivers\joystick.cpp">
+    <ClCompile Include="..\src\drivers\joystick.cpp">
       <Filter>src\drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="libmednahawk.cpp" />
+    <ClCompile Include="..\headless\netplay_stub.cpp">
+      <Filter>headless</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\debug.h">
+    <ClInclude Include="..\src\debug.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\endian.h">
+    <ClInclude Include="..\src\endian.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\error.h">
+    <ClInclude Include="..\src\error.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\file.h">
+    <ClInclude Include="..\src\file.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\FileStream.h">
+    <ClInclude Include="..\src\FileStream.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\FileWrapper.h">
+    <ClInclude Include="..\src\FileWrapper.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\general.h">
+    <ClInclude Include="..\src\general.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\math_ops.h">
+    <ClInclude Include="..\src\math_ops.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\md5.h">
+    <ClInclude Include="..\src\md5.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\mednafen.h">
+    <ClInclude Include="..\src\mednafen.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\memory.h">
+    <ClInclude Include="..\src\memory.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\MemoryStream.h">
+    <ClInclude Include="..\src\MemoryStream.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\mempatcher-driver.h">
+    <ClInclude Include="..\src\mempatcher-driver.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\mempatcher.h">
+    <ClInclude Include="..\src\mempatcher.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\movie-driver.h">
+    <ClInclude Include="..\src\movie-driver.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\movie.h">
+    <ClInclude Include="..\src\movie.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\player.h">
+    <ClInclude Include="..\src\player.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\PSFLoader.h">
+    <ClInclude Include="..\src\PSFLoader.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\qtrecord.h">
+    <ClInclude Include="..\src\qtrecord.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\settings-common.h">
+    <ClInclude Include="..\src\settings-common.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\settings-driver.h">
+    <ClInclude Include="..\src\settings-driver.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\settings.h">
+    <ClInclude Include="..\src\settings.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\state-common.h">
+    <ClInclude Include="..\src\state-common.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\state-driver.h">
+    <ClInclude Include="..\src\state-driver.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\state.h">
+    <ClInclude Include="..\src\state.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Stream.h">
+    <ClInclude Include="..\src\Stream.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\tests.h">
+    <ClInclude Include="..\src\tests.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\video-driver.h">
+    <ClInclude Include="..\src\video-driver.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\video.h">
+    <ClInclude Include="..\src\video.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\cdc.h">
+    <ClInclude Include="..\src\psx\cdc.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\cpu.h">
+    <ClInclude Include="..\src\psx\cpu.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\debug.h">
+    <ClInclude Include="..\src\psx\debug.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\dis.h">
+    <ClInclude Include="..\src\psx\dis.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\dma.h">
+    <ClInclude Include="..\src\psx\dma.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\frontio.h">
+    <ClInclude Include="..\src\psx\frontio.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\gpu.h">
+    <ClInclude Include="..\src\psx\gpu.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\gte.h">
+    <ClInclude Include="..\src\psx\gte.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\irq.h">
+    <ClInclude Include="..\src\psx\irq.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\mdec.h">
+    <ClInclude Include="..\src\psx\mdec.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\psx.h">
+    <ClInclude Include="..\src\psx\psx.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\sio.h">
+    <ClInclude Include="..\src\psx\sio.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\spu.h">
+    <ClInclude Include="..\src\psx\spu.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\timer.h">
+    <ClInclude Include="..\src\psx\timer.h">
       <Filter>src\psx</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\input\dualanalog.h">
+    <ClInclude Include="..\src\psx\input\dualanalog.h">
       <Filter>src\psx\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\input\dualshock.h">
+    <ClInclude Include="..\src\psx\input\dualshock.h">
       <Filter>src\psx\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\input\gamepad.h">
+    <ClInclude Include="..\src\psx\input\gamepad.h">
       <Filter>src\psx\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\input\guncon.h">
+    <ClInclude Include="..\src\psx\input\guncon.h">
       <Filter>src\psx\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\input\justifier.h">
+    <ClInclude Include="..\src\psx\input\justifier.h">
       <Filter>src\psx\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\input\memcard.h">
+    <ClInclude Include="..\src\psx\input\memcard.h">
       <Filter>src\psx\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\input\mouse.h">
+    <ClInclude Include="..\src\psx\input\mouse.h">
       <Filter>src\psx\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\input\multitap.h">
+    <ClInclude Include="..\src\psx\input\multitap.h">
       <Filter>src\psx\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\psx\input\negcon.h">
+    <ClInclude Include="..\src\psx\input\negcon.h">
       <Filter>src\psx\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\resampler\arch.h">
+    <ClInclude Include="..\src\resampler\arch.h">
       <Filter>src\resampler</Filter>
     </ClInclude>
-    <ClInclude Include="src\resampler\fixed_generic.h">
+    <ClInclude Include="..\src\resampler\fixed_generic.h">
       <Filter>src\resampler</Filter>
     </ClInclude>
-    <ClInclude Include="src\resampler\resample_sse.h">
+    <ClInclude Include="..\src\resampler\resample_sse.h">
       <Filter>src\resampler</Filter>
     </ClInclude>
-    <ClInclude Include="src\resampler\resampler.h">
+    <ClInclude Include="..\src\resampler\resampler.h">
       <Filter>src\resampler</Filter>
     </ClInclude>
-    <ClInclude Include="src\resampler\stack_alloc.h">
+    <ClInclude Include="..\src\resampler\stack_alloc.h">
       <Filter>src\resampler</Filter>
     </ClInclude>
-    <ClInclude Include="src\cdrom\audioreader.h">
+    <ClInclude Include="..\src\cdrom\audioreader.h">
       <Filter>src\cdrom</Filter>
     </ClInclude>
-    <ClInclude Include="src\cdrom\CDAccess.h">
+    <ClInclude Include="..\src\cdrom\CDAccess.h">
       <Filter>src\cdrom</Filter>
     </ClInclude>
-    <ClInclude Include="src\cdrom\CDAccess_Image.h">
+    <ClInclude Include="..\src\cdrom\CDAccess_Image.h">
       <Filter>src\cdrom</Filter>
     </ClInclude>
-    <ClInclude Include="src\cdrom\cdromif.h">
+    <ClInclude Include="..\src\cdrom\cdromif.h">
       <Filter>src\cdrom</Filter>
     </ClInclude>
-    <ClInclude Include="src\cdrom\CDUtility.h">
+    <ClInclude Include="..\src\cdrom\CDUtility.h">
       <Filter>src\cdrom</Filter>
     </ClInclude>
-    <ClInclude Include="src\cdrom\galois-inlines.h">
+    <ClInclude Include="..\src\cdrom\galois-inlines.h">
       <Filter>src\cdrom</Filter>
     </ClInclude>
-    <ClInclude Include="src\cdrom\SimpleFIFO.h">
+    <ClInclude Include="..\src\cdrom\SimpleFIFO.h">
       <Filter>src\cdrom</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\Deinterlacer.h">
+    <ClInclude Include="..\src\video\Deinterlacer.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\font-data.h">
+    <ClInclude Include="..\src\video\font-data.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\png.h">
+    <ClInclude Include="..\src\video\png.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\primitives.h">
+    <ClInclude Include="..\src\video\primitives.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\resize.h">
+    <ClInclude Include="..\src\video\resize.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\selblur.h">
+    <ClInclude Include="..\src\video\selblur.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\surface.h">
+    <ClInclude Include="..\src\video\surface.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\tblur.h">
+    <ClInclude Include="..\src\video\tblur.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\text.h">
+    <ClInclude Include="..\src\video\text.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\video\video-common.h">
+    <ClInclude Include="..\src\video\video-common.h">
       <Filter>src\video</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\2xSaI.h">
+    <ClInclude Include="..\src\drivers\2xSaI.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\args.h">
+    <ClInclude Include="..\src\drivers\args.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\cheat.h">
+    <ClInclude Include="..\src\drivers\cheat.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\console.h">
+    <ClInclude Include="..\src\drivers\console.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\debugger.h">
+    <ClInclude Include="..\src\drivers\debugger.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\ers.h">
+    <ClInclude Include="..\src\drivers\ers.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\fps.h">
+    <ClInclude Include="..\src\drivers\fps.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\gfxdebugger.h">
+    <ClInclude Include="..\src\drivers\gfxdebugger.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\help.h">
+    <ClInclude Include="..\src\drivers\help.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\input-config.h">
+    <ClInclude Include="..\src\drivers\input-config.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\input-default-buttons.h">
+    <ClInclude Include="..\src\drivers\input-default-buttons.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\input.h">
+    <ClInclude Include="..\src\drivers\input.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\logdebugger.h">
+    <ClInclude Include="..\src\drivers\logdebugger.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\main.h">
+    <ClInclude Include="..\src\drivers\main.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\nnx.h">
+    <ClInclude Include="..\src\drivers\nnx.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\nongl.h">
+    <ClInclude Include="..\src\drivers\nongl.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\opengl.h">
+    <ClInclude Include="..\src\drivers\opengl.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\overlay.h">
+    <ClInclude Include="..\src\drivers\overlay.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\prompt.h">
+    <ClInclude Include="..\src\drivers\prompt.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\scale2x.h">
+    <ClInclude Include="..\src\drivers\scale2x.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\scale3x.h">
+    <ClInclude Include="..\src\drivers\scale3x.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\scalebit.h">
+    <ClInclude Include="..\src\drivers\scalebit.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\shader.h">
+    <ClInclude Include="..\src\drivers\shader.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\sound.h">
+    <ClInclude Include="..\src\drivers\sound.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\video-state.h">
+    <ClInclude Include="..\src\drivers\video-state.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\drivers\video.h">
+    <ClInclude Include="..\src\drivers\video.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
-    <ClInclude Include="src\sound\WAVRecord.h">
+    <ClInclude Include="..\src\sound\WAVRecord.h">
       <Filter>src\sound</Filter>
     </ClInclude>
-    <ClInclude Include="src\compress\blz.h">
+    <ClInclude Include="..\src\compress\blz.h">
       <Filter>src\compress</Filter>
     </ClInclude>
-    <ClInclude Include="src\compress\ioapi.h">
+    <ClInclude Include="..\src\compress\ioapi.h">
       <Filter>src\compress</Filter>
     </ClInclude>
-    <ClInclude Include="src\compress\lzoconf.h">
+    <ClInclude Include="..\src\compress\lzoconf.h">
       <Filter>src\compress</Filter>
     </ClInclude>
-    <ClInclude Include="src\compress\lzodefs.h">
+    <ClInclude Include="..\src\compress\lzodefs.h">
       <Filter>src\compress</Filter>
     </ClInclude>
-    <ClInclude Include="src\compress\minilzo.h">
+    <ClInclude Include="..\src\compress\minilzo.h">
       <Filter>src\compress</Filter>
     </ClInclude>
-    <ClInclude Include="src\compress\quicklz.h">
+    <ClInclude Include="..\src\compress\quicklz.h">
       <Filter>src\compress</Filter>
     </ClInclude>
-    <ClInclude Include="src\compress\unzip.h">
+    <ClInclude Include="..\src\compress\unzip.h">
       <Filter>src\compress</Filter>
     </ClInclude>
-    <ClInclude Include="src\string\ConvertUTF.h">
+    <ClInclude Include="..\src\string\ConvertUTF.h">
       <Filter>src\string</Filter>
     </ClInclude>
-    <ClInclude Include="src\string\escape.h">
+    <ClInclude Include="..\src\string\escape.h">
       <Filter>src\string</Filter>
     </ClInclude>
-    <ClInclude Include="src\sexyal\convert.h">
+    <ClInclude Include="..\src\sexyal\convert.h">
       <Filter>src\sexyal</Filter>
     </ClInclude>
-    <ClInclude Include="src\sexyal\sexyal.h">
+    <ClInclude Include="..\src\sexyal\sexyal.h">
       <Filter>src\sexyal</Filter>
     </ClInclude>
-    <ClInclude Include="src\hw_cpu\c68k\c68k.h">
+    <ClInclude Include="..\src\hw_cpu\c68k\c68k.h">
       <Filter>src\hw_cpu\c68k</Filter>
     </ClInclude>
-    <ClInclude Include="src\hw_cpu\z80-fuse\z80.h">
+    <ClInclude Include="..\src\hw_cpu\z80-fuse\z80.h">
       <Filter>src\hw_cpu\z80-fuse</Filter>
     </ClInclude>
-    <ClInclude Include="src\desa68\desa68.h">
+    <ClInclude Include="..\src\desa68\desa68.h">
       <Filter>src\desa68</Filter>
     </ClInclude>
     <ClInclude Include="config.h" />
     <ClInclude Include="inttypes.h" />
-    <ClInclude Include="src\drivers\joystick.h">
+    <ClInclude Include="..\src\drivers\joystick.h">
       <Filter>src\drivers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\psx\gpu_command_table.inc">
+    <None Include="..\src\psx\gpu_command_table.inc">
       <Filter>src\psx</Filter>
     </None>
-    <None Include="src\psx\gpu_line.inc">
+    <None Include="..\src\psx\gpu_sprite.inc">
       <Filter>src\psx</Filter>
     </None>
-    <None Include="src\psx\gpu_polygon.inc">
+    <None Include="..\src\psx\gpu_line.inc">
       <Filter>src\psx</Filter>
     </None>
-    <None Include="src\psx\gpu_sprite.inc">
+    <None Include="..\src\psx\gpu_polygon.inc">
       <Filter>src\psx</Filter>
     </None>
   </ItemGroup>
