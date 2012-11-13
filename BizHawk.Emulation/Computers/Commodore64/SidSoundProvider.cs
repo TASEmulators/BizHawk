@@ -64,13 +64,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			if (sampleCounter == 0)
 			{
 				short output;
-				output = Mix(regs.OSC[0], 0);
-				output = Mix(regs.OSC[1], output);
+				output = Mix(voices[0].OSC, 0);
+				output = Mix(voices[1].OSC, output);
 				
 				// voice 3 can be disabled with a specific register, but
 				// when the filter is enabled, it still plays
-				if (!regs.D3 || regs.FILT[2])
-					output = Mix(regs.OSC[2], output);
+				if (!regs.D3 || voices[2].FILT)
+					output = Mix(voices[2].OSC, output);
 
 				// run twice since the buffer expects stereo sound (I THINK)
 				for (int i = 0; i < 2; i++)

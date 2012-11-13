@@ -5,6 +5,31 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
+	public class SpriteRegs
+	{
+		public int MC; // (internal)
+		public int MCBASE; // (internal)
+		public bool MD; // (internal)
+		public bool MDMA; // (internal)
+		public int MPTR; // (internal)
+		public Int32 MSR; // (internal)
+		public bool MSRA; // (internal)
+		public int MSRC; // (internal)
+		public int MxC; // sprite color
+		public bool MxD; // sprite-data collision
+		public bool MxDP; // sprite priority
+		public bool MxE; // sprite enabled
+		public bool MxM; // sprite-sprite collision
+		public bool MxMC; // sprite multicolor
+		public int MxX; // sprite X coordinate
+		public bool MxXE; // sprite X expansion
+		public bool MxXEToggle; // (internal)
+		public int MxXLatch; // (internal)
+		public int MxY; // sprite Y coordinate
+		public bool MxYE; // sprite Y expansion
+		public bool MxYEToggle; // (internal)
+	}
+
 	public class VicIIRegs
 	{
 		public bool BMM; // bitmap mode
@@ -25,29 +50,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool IRST; // raster line interrupt active
 		public int LPX; // lightpen X coordinate
 		public int LPY; // lightpen Y coordinate
-		public int[] MC = new int[8]; // (internal)
-		public int[] MCBASE = new int[8]; // (internal)
 		public bool MCM; // multicolor mode
-		public bool[] MD = new bool[8]; // (internal)
-		public bool[] MDMA = new bool[8]; // (internal)
 		public int[] MMx = new int[2]; // sprite extra color
-		public int[] MPTR = new int[8]; // (internal)
-		public Int32[] MSR = new Int32[8]; // (internal)
-		public bool[] MSRA = new bool[8]; // (internal)
-		public int[] MSRC = new int[8]; // (internal)
-		public int[] MxC = new int[8]; // sprite color
-		public bool[] MxD = new bool[8]; // sprite-data collision
-		public bool[] MxDP = new bool[8]; // sprite priority
-		public bool[] MxE = new bool[8]; // sprite enabled
-		public bool[] MxM = new bool[8]; // sprite-sprite collision
-		public bool[] MxMC = new bool[8]; // sprite multicolor
-		public int[] MxX = new int[8]; // sprite X coordinate
-		public bool[] MxXE = new bool[8]; // sprite X expansion
-		public bool[] MxXEToggle = new bool[8]; // (internal)
-		public int[] MxXLatch = new int[8]; // (internal)
-		public int[] MxY = new int[8]; // sprite Y coordinate
-		public bool[] MxYE = new bool[8]; // sprite Y expansion
-		public bool[] MxYEToggle = new bool[8]; // (internal)
 		public int RASTER; // current raster line
 		public int RC; // (internal)
 		public bool RES; // reset bit (does nothing in this version of the VIC)
@@ -59,6 +63,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int XSCROLL; // X scroll position
 		public int YSCROLL; // Y scroll position
 
+		public SpriteRegs[] Sprites = new SpriteRegs[8];
+
 		public VicIIRegs()
 		{
 			// power on state
@@ -67,6 +73,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			this[0x18] = 0x01;
 			this[0x19] = 0x71;
 			this[0x1A] = 0xF0;
+
+			// init sprites
+			for (int i = 0; i < 8; i++)
+				Sprites[i] = new SpriteRegs();
 		}
 
 		public byte this[int addr]
@@ -86,7 +96,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x0A:
 					case 0x0C:
 					case 0x0E:
-						result = MxX[addr >> 1];
+						result = Sprites[addr >> 1].MxX;
 						break;
 					case 0x01:
 					case 0x03:
@@ -96,17 +106,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x0B:
 					case 0x0D:
 					case 0x0F:
-						result = MxY[addr >> 1];
+						result = Sprites[addr >> 1].MxY;
 						break;
 					case 0x10:
-						result = ((MxX[0] & 0x100) != 0) ? 0x01 : 0x00;
-						result |= ((MxX[1] & 0x100) != 0) ? 0x02 : 0x00;
-						result |= ((MxX[2] & 0x100) != 0) ? 0x04 : 0x00;
-						result |= ((MxX[3] & 0x100) != 0) ? 0x08 : 0x00;
-						result |= ((MxX[4] & 0x100) != 0) ? 0x10 : 0x00;
-						result |= ((MxX[5] & 0x100) != 0) ? 0x20 : 0x00;
-						result |= ((MxX[6] & 0x100) != 0) ? 0x40 : 0x00;
-						result |= ((MxX[7] & 0x100) != 0) ? 0x80 : 0x00;
+						result = ((Sprites[0].MxX & 0x100) != 0) ? 0x01 : 0x00;
+						result |= ((Sprites[1].MxX & 0x100) != 0) ? 0x02 : 0x00;
+						result |= ((Sprites[2].MxX & 0x100) != 0) ? 0x04 : 0x00;
+						result |= ((Sprites[3].MxX & 0x100) != 0) ? 0x08 : 0x00;
+						result |= ((Sprites[4].MxX & 0x100) != 0) ? 0x10 : 0x00;
+						result |= ((Sprites[5].MxX & 0x100) != 0) ? 0x20 : 0x00;
+						result |= ((Sprites[6].MxX & 0x100) != 0) ? 0x40 : 0x00;
+						result |= ((Sprites[7].MxX & 0x100) != 0) ? 0x80 : 0x00;
 						break;
 					case 0x11:
 						result = YSCROLL & 0x07;
@@ -126,14 +136,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = LPY;
 						break;
 					case 0x15:
-						result = (MxE[0] ? 0x01 : 0x00);
-						result |= (MxE[1] ? 0x02 : 0x00);
-						result |= (MxE[2] ? 0x04 : 0x00);
-						result |= (MxE[3] ? 0x08 : 0x00);
-						result |= (MxE[4] ? 0x10 : 0x00);
-						result |= (MxE[5] ? 0x20 : 0x00);
-						result |= (MxE[6] ? 0x40 : 0x00);
-						result |= (MxE[7] ? 0x80 : 0x00);
+						result = (Sprites[0].MxE ? 0x01 : 0x00);
+						result |= (Sprites[1].MxE ? 0x02 : 0x00);
+						result |= (Sprites[2].MxE ? 0x04 : 0x00);
+						result |= (Sprites[3].MxE ? 0x08 : 0x00);
+						result |= (Sprites[4].MxE ? 0x10 : 0x00);
+						result |= (Sprites[5].MxE ? 0x20 : 0x00);
+						result |= (Sprites[6].MxE ? 0x40 : 0x00);
+						result |= (Sprites[7].MxE ? 0x80 : 0x00);
 						break;
 					case 0x16:
 						result &= 0xC0;
@@ -143,14 +153,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result |= (RES ? 0x20 : 0x00);
 						break;
 					case 0x17:
-						result = (MxYE[0] ? 0x01 : 0x00);
-						result |= (MxYE[1] ? 0x02 : 0x00);
-						result |= (MxYE[2] ? 0x04 : 0x00);
-						result |= (MxYE[3] ? 0x08 : 0x00);
-						result |= (MxYE[4] ? 0x10 : 0x00);
-						result |= (MxYE[5] ? 0x20 : 0x00);
-						result |= (MxYE[6] ? 0x40 : 0x00);
-						result |= (MxYE[7] ? 0x80 : 0x00);						
+						result = (Sprites[0].MxYE ? 0x01 : 0x00);
+						result |= (Sprites[1].MxYE ? 0x02 : 0x00);
+						result |= (Sprites[2].MxYE ? 0x04 : 0x00);
+						result |= (Sprites[3].MxYE ? 0x08 : 0x00);
+						result |= (Sprites[4].MxYE ? 0x10 : 0x00);
+						result |= (Sprites[5].MxYE ? 0x20 : 0x00);
+						result |= (Sprites[6].MxYE ? 0x40 : 0x00);
+						result |= (Sprites[7].MxYE ? 0x80 : 0x00);						
 						break;
 					case 0x18:
 						result &= 0x01;
@@ -173,54 +183,54 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result |= (ELP ? 0x08 : 0x00);
 						break;
 					case 0x1B:
-						result = (MxDP[0] ? 0x01 : 0x00);
-						result |= (MxDP[1] ? 0x02 : 0x00);
-						result |= (MxDP[2] ? 0x04 : 0x00);
-						result |= (MxDP[3] ? 0x08 : 0x00);
-						result |= (MxDP[4] ? 0x10 : 0x00);
-						result |= (MxDP[5] ? 0x20 : 0x00);
-						result |= (MxDP[6] ? 0x40 : 0x00);
-						result |= (MxDP[7] ? 0x80 : 0x00);						
+						result = (Sprites[0].MxDP ? 0x01 : 0x00);
+						result |= (Sprites[1].MxDP ? 0x02 : 0x00);
+						result |= (Sprites[2].MxDP ? 0x04 : 0x00);
+						result |= (Sprites[3].MxDP ? 0x08 : 0x00);
+						result |= (Sprites[4].MxDP ? 0x10 : 0x00);
+						result |= (Sprites[5].MxDP ? 0x20 : 0x00);
+						result |= (Sprites[6].MxDP ? 0x40 : 0x00);
+						result |= (Sprites[7].MxDP ? 0x80 : 0x00);						
 						break;
 					case 0x1C:
-						result = (MxMC[0] ? 0x01 : 0x00);
-						result |= (MxMC[1] ? 0x02 : 0x00);
-						result |= (MxMC[2] ? 0x04 : 0x00);
-						result |= (MxMC[3] ? 0x08 : 0x00);
-						result |= (MxMC[4] ? 0x10 : 0x00);
-						result |= (MxMC[5] ? 0x20 : 0x00);
-						result |= (MxMC[6] ? 0x40 : 0x00);
-						result |= (MxMC[7] ? 0x80 : 0x00);						
+						result = (Sprites[0].MxMC ? 0x01 : 0x00);
+						result |= (Sprites[1].MxMC ? 0x02 : 0x00);
+						result |= (Sprites[2].MxMC ? 0x04 : 0x00);
+						result |= (Sprites[3].MxMC ? 0x08 : 0x00);
+						result |= (Sprites[4].MxMC ? 0x10 : 0x00);
+						result |= (Sprites[5].MxMC ? 0x20 : 0x00);
+						result |= (Sprites[6].MxMC ? 0x40 : 0x00);
+						result |= (Sprites[7].MxMC ? 0x80 : 0x00);						
 						break;
 					case 0x1D:
-						result = (MxXE[0] ? 0x01 : 0x00);
-						result |= (MxXE[1] ? 0x02 : 0x00);
-						result |= (MxXE[2] ? 0x04 : 0x00);
-						result |= (MxXE[3] ? 0x08 : 0x00);
-						result |= (MxXE[4] ? 0x10 : 0x00);
-						result |= (MxXE[5] ? 0x20 : 0x00);
-						result |= (MxXE[6] ? 0x40 : 0x00);
-						result |= (MxXE[7] ? 0x80 : 0x00);						
+						result = (Sprites[0].MxXE ? 0x01 : 0x00);
+						result |= (Sprites[1].MxXE ? 0x02 : 0x00);
+						result |= (Sprites[2].MxXE ? 0x04 : 0x00);
+						result |= (Sprites[3].MxXE ? 0x08 : 0x00);
+						result |= (Sprites[4].MxXE ? 0x10 : 0x00);
+						result |= (Sprites[5].MxXE ? 0x20 : 0x00);
+						result |= (Sprites[6].MxXE ? 0x40 : 0x00);
+						result |= (Sprites[7].MxXE ? 0x80 : 0x00);						
 						break;
 					case 0x1E:
-						result = (MxM[0] ? 0x01 : 0x00);
-						result |= (MxM[1] ? 0x02 : 0x00);
-						result |= (MxM[2] ? 0x04 : 0x00);
-						result |= (MxM[3] ? 0x08 : 0x00);
-						result |= (MxM[4] ? 0x10 : 0x00);
-						result |= (MxM[5] ? 0x20 : 0x00);
-						result |= (MxM[6] ? 0x40 : 0x00);
-						result |= (MxM[7] ? 0x80 : 0x00);						
+						result = (Sprites[0].MxM ? 0x01 : 0x00);
+						result |= (Sprites[1].MxM ? 0x02 : 0x00);
+						result |= (Sprites[2].MxM ? 0x04 : 0x00);
+						result |= (Sprites[3].MxM ? 0x08 : 0x00);
+						result |= (Sprites[4].MxM ? 0x10 : 0x00);
+						result |= (Sprites[5].MxM ? 0x20 : 0x00);
+						result |= (Sprites[6].MxM ? 0x40 : 0x00);
+						result |= (Sprites[7].MxM ? 0x80 : 0x00);						
 						break;
 					case 0x1F:
-						result = (MxD[0] ? 0x01 : 0x00);
-						result |= (MxD[1] ? 0x02 : 0x00);
-						result |= (MxD[2] ? 0x04 : 0x00);
-						result |= (MxD[3] ? 0x08 : 0x00);
-						result |= (MxD[4] ? 0x10 : 0x00);
-						result |= (MxD[5] ? 0x20 : 0x00);
-						result |= (MxD[6] ? 0x40 : 0x00);
-						result |= (MxD[7] ? 0x80 : 0x00);						
+						result = (Sprites[0].MxD ? 0x01 : 0x00);
+						result |= (Sprites[1].MxD ? 0x02 : 0x00);
+						result |= (Sprites[2].MxD ? 0x04 : 0x00);
+						result |= (Sprites[3].MxD ? 0x08 : 0x00);
+						result |= (Sprites[4].MxD ? 0x10 : 0x00);
+						result |= (Sprites[5].MxD ? 0x20 : 0x00);
+						result |= (Sprites[6].MxD ? 0x40 : 0x00);
+						result |= (Sprites[7].MxD ? 0x80 : 0x00);						
 						break;
 					case 0x20:
 						result &= 0xF0;
@@ -247,7 +257,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x2D:
 					case 0x2E:
 						result &= 0xF0;
-						result |= MxC[addr - 0x27] & 0x0F;
+						result |= Sprites[addr - 0x27].MxC & 0x0F;
 						break;
 					default:
 						result = 0xFF;
@@ -273,8 +283,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x0C:
 					case 0x0E:
 						index = addr >> 1;
-						MxX[index] &= 0x100;
-						MxX[index] |= (val & 0xFF);
+						Sprites[index].MxX &= 0x100;
+						Sprites[index].MxX |= (val & 0xFF);
 						break;
 					case 0x01:
 					case 0x03:
@@ -285,18 +295,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x0D:
 					case 0x0F:
 						index = addr >> 1;
-						MxY[index] &= 0x100;
-						MxY[index] |= (val & 0xFF);
+						Sprites[index].MxY &= 0x100;
+						Sprites[index].MxY |= (val & 0xFF);
 						break;
 					case 0x10:
-						MxX[0] = (MxX[0] & 0xFF) | ((val & 0x01) << 8);
-						MxX[1] = (MxX[1] & 0xFF) | ((val & 0x02) << 7);
-						MxX[2] = (MxX[2] & 0xFF) | ((val & 0x04) << 6);
-						MxX[3] = (MxX[3] & 0xFF) | ((val & 0x08) << 5);
-						MxX[4] = (MxX[4] & 0xFF) | ((val & 0x10) << 4);
-						MxX[5] = (MxX[5] & 0xFF) | ((val & 0x20) << 3);
-						MxX[6] = (MxX[6] & 0xFF) | ((val & 0x40) << 2);
-						MxX[7] = (MxX[7] & 0xFF) | ((val & 0x80) << 1);
+						Sprites[0].MxX = (Sprites[0].MxX & 0xFF) | ((val & 0x01) << 8);
+						Sprites[1].MxX = (Sprites[1].MxX & 0xFF) | ((val & 0x02) << 7);
+						Sprites[2].MxX = (Sprites[2].MxX & 0xFF) | ((val & 0x04) << 6);
+						Sprites[3].MxX = (Sprites[3].MxX & 0xFF) | ((val & 0x08) << 5);
+						Sprites[4].MxX = (Sprites[4].MxX & 0xFF) | ((val & 0x10) << 4);
+						Sprites[5].MxX = (Sprites[5].MxX & 0xFF) | ((val & 0x20) << 3);
+						Sprites[6].MxX = (Sprites[6].MxX & 0xFF) | ((val & 0x40) << 2);
+						Sprites[7].MxX = (Sprites[7].MxX & 0xFF) | ((val & 0x80) << 1);
 						break;
 					case 0x11:
 						YSCROLL = (val & 0x07);
@@ -318,14 +328,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						LPY = (val & 0xFF);
 						break;
 					case 0x15:
-						MxE[0] = ((val & 0x01) != 0x00);
-						MxE[1] = ((val & 0x02) != 0x00);
-						MxE[2] = ((val & 0x04) != 0x00);
-						MxE[3] = ((val & 0x08) != 0x00);
-						MxE[4] = ((val & 0x10) != 0x00);
-						MxE[5] = ((val & 0x20) != 0x00);
-						MxE[6] = ((val & 0x40) != 0x00);
-						MxE[7] = ((val & 0x80) != 0x00);
+						Sprites[0].MxE = ((val & 0x01) != 0x00);
+						Sprites[1].MxE = ((val & 0x02) != 0x00);
+						Sprites[2].MxE = ((val & 0x04) != 0x00);
+						Sprites[3].MxE = ((val & 0x08) != 0x00);
+						Sprites[4].MxE = ((val & 0x10) != 0x00);
+						Sprites[5].MxE = ((val & 0x20) != 0x00);
+						Sprites[6].MxE = ((val & 0x40) != 0x00);
+						Sprites[7].MxE = ((val & 0x80) != 0x00);
 						break;
 					case 0x16:
 						XSCROLL = (val & 0x07);
@@ -334,14 +344,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						RES = ((val & 0x20) != 0x00);
 						break;
 					case 0x17:
-						MxYE[0] = ((val & 0x01) != 0x00);
-						MxYE[1] = ((val & 0x02) != 0x00);
-						MxYE[2] = ((val & 0x04) != 0x00);
-						MxYE[3] = ((val & 0x08) != 0x00);
-						MxYE[4] = ((val & 0x10) != 0x00);
-						MxYE[5] = ((val & 0x20) != 0x00);
-						MxYE[6] = ((val & 0x40) != 0x00);
-						MxYE[7] = ((val & 0x80) != 0x00);
+						Sprites[0].MxYE = ((val & 0x01) != 0x00);
+						Sprites[1].MxYE = ((val & 0x02) != 0x00);
+						Sprites[2].MxYE = ((val & 0x04) != 0x00);
+						Sprites[3].MxYE = ((val & 0x08) != 0x00);
+						Sprites[4].MxYE = ((val & 0x10) != 0x00);
+						Sprites[5].MxYE = ((val & 0x20) != 0x00);
+						Sprites[6].MxYE = ((val & 0x40) != 0x00);
+						Sprites[7].MxYE = ((val & 0x80) != 0x00);
 						break;
 					case 0x18:
 						CB = (val & 0x0E) >> 1;
@@ -360,54 +370,54 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						ELP = ((val & 0x08) != 0x00);
 						break;
 					case 0x1B:
-						MxDP[0] = ((val & 0x01) != 0x00);
-						MxDP[1] = ((val & 0x02) != 0x00);
-						MxDP[2] = ((val & 0x04) != 0x00);
-						MxDP[3] = ((val & 0x08) != 0x00);
-						MxDP[4] = ((val & 0x10) != 0x00);
-						MxDP[5] = ((val & 0x20) != 0x00);
-						MxDP[6] = ((val & 0x40) != 0x00);
-						MxDP[7] = ((val & 0x80) != 0x00);
+						Sprites[0].MxDP = ((val & 0x01) != 0x00);
+						Sprites[1].MxDP = ((val & 0x02) != 0x00);
+						Sprites[2].MxDP = ((val & 0x04) != 0x00);
+						Sprites[3].MxDP = ((val & 0x08) != 0x00);
+						Sprites[4].MxDP = ((val & 0x10) != 0x00);
+						Sprites[5].MxDP = ((val & 0x20) != 0x00);
+						Sprites[6].MxDP = ((val & 0x40) != 0x00);
+						Sprites[7].MxDP = ((val & 0x80) != 0x00);
 						break;
 					case 0x1C:
-						MxMC[0] = ((val & 0x01) != 0x00);
-						MxMC[1] = ((val & 0x02) != 0x00);
-						MxMC[2] = ((val & 0x04) != 0x00);
-						MxMC[3] = ((val & 0x08) != 0x00);
-						MxMC[4] = ((val & 0x10) != 0x00);
-						MxMC[5] = ((val & 0x20) != 0x00);
-						MxMC[6] = ((val & 0x40) != 0x00);
-						MxMC[7] = ((val & 0x80) != 0x00);
+						Sprites[0].MxMC = ((val & 0x01) != 0x00);
+						Sprites[1].MxMC = ((val & 0x02) != 0x00);
+						Sprites[2].MxMC = ((val & 0x04) != 0x00);
+						Sprites[3].MxMC = ((val & 0x08) != 0x00);
+						Sprites[4].MxMC = ((val & 0x10) != 0x00);
+						Sprites[5].MxMC = ((val & 0x20) != 0x00);
+						Sprites[6].MxMC = ((val & 0x40) != 0x00);
+						Sprites[7].MxMC = ((val & 0x80) != 0x00);
 						break;
 					case 0x1D:
-						MxXE[0] = ((val & 0x01) != 0x00);
-						MxXE[1] = ((val & 0x02) != 0x00);
-						MxXE[2] = ((val & 0x04) != 0x00);
-						MxXE[3] = ((val & 0x08) != 0x00);
-						MxXE[4] = ((val & 0x10) != 0x00);
-						MxXE[5] = ((val & 0x20) != 0x00);
-						MxXE[6] = ((val & 0x40) != 0x00);
-						MxXE[7] = ((val & 0x80) != 0x00);
+						Sprites[0].MxXE = ((val & 0x01) != 0x00);
+						Sprites[1].MxXE = ((val & 0x02) != 0x00);
+						Sprites[2].MxXE = ((val & 0x04) != 0x00);
+						Sprites[3].MxXE = ((val & 0x08) != 0x00);
+						Sprites[4].MxXE = ((val & 0x10) != 0x00);
+						Sprites[5].MxXE = ((val & 0x20) != 0x00);
+						Sprites[6].MxXE = ((val & 0x40) != 0x00);
+						Sprites[7].MxXE = ((val & 0x80) != 0x00);
 						break;
-					case 0x1E: 
-						MxM[0] = ((val & 0x01) != 0x00);
-						MxM[1] = ((val & 0x02) != 0x00);
-						MxM[2] = ((val & 0x04) != 0x00);
-						MxM[3] = ((val & 0x08) != 0x00);
-						MxM[4] = ((val & 0x10) != 0x00);
-						MxM[5] = ((val & 0x20) != 0x00);
-						MxM[6] = ((val & 0x40) != 0x00);
-						MxM[7] = ((val & 0x80) != 0x00);
+					case 0x1E:
+						Sprites[0].MxM = ((val & 0x01) != 0x00);
+						Sprites[1].MxM = ((val & 0x02) != 0x00);
+						Sprites[2].MxM = ((val & 0x04) != 0x00);
+						Sprites[3].MxM = ((val & 0x08) != 0x00);
+						Sprites[4].MxM = ((val & 0x10) != 0x00);
+						Sprites[5].MxM = ((val & 0x20) != 0x00);
+						Sprites[6].MxM = ((val & 0x40) != 0x00);
+						Sprites[7].MxM = ((val & 0x80) != 0x00);
 						break;
 					case 0x1F:
-						MxD[0] = ((val & 0x01) != 0x00);
-						MxD[1] = ((val & 0x02) != 0x00);
-						MxD[2] = ((val & 0x04) != 0x00);
-						MxD[3] = ((val & 0x08) != 0x00);
-						MxD[4] = ((val & 0x10) != 0x00);
-						MxD[5] = ((val & 0x20) != 0x00);
-						MxD[6] = ((val & 0x40) != 0x00);
-						MxD[7] = ((val & 0x80) != 0x00);
+						Sprites[0].MxD = ((val & 0x01) != 0x00);
+						Sprites[1].MxD = ((val & 0x02) != 0x00);
+						Sprites[2].MxD = ((val & 0x04) != 0x00);
+						Sprites[3].MxD = ((val & 0x08) != 0x00);
+						Sprites[4].MxD = ((val & 0x10) != 0x00);
+						Sprites[5].MxD = ((val & 0x20) != 0x00);
+						Sprites[6].MxD = ((val & 0x40) != 0x00);
+						Sprites[7].MxD = ((val & 0x80) != 0x00);
 						break;
 					case 0x20:
 						EC = (val & 0x0F);
@@ -430,7 +440,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x2C:
 					case 0x2D:
 					case 0x2E:
-						MxC[addr - 0x27] = val & 0x0F;
+						Sprites[addr - 0x27].MxC = val & 0x0F;
 						break;
 				}
 			}
@@ -503,6 +513,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int spriteFetchStartCycle;
 		public int spriteFetchIndex;
 		public bool spriteForeground;
+		public SpriteGenerator[] spriteGenerators;
 		public int totalCycles;
 		public bool vBlank;
 		public int visibleBottom;
@@ -522,6 +533,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private Action FetchG;
 		private Func<int> Plotter;
 		private Action PerformCycleFunction;
+		private SpriteRegs[] sprites;
 
 		public VicII(ChipSignals newSignal, Region newRegion)
 		{
@@ -649,6 +661,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			idle = true;
 			refreshAddress = 0x3FFF;
 			regs = new VicIIRegs();
+			sprites = regs.Sprites;
 			regs.RC = 7;
 			signal.VicAEC = true;
 			signal.VicIRQ = false;
@@ -659,6 +672,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// some helpful values
 			cyclesPerFrame = totalCycles * rasterTotalLines;
+
+			// initialize sprite generators
+			spriteGenerators = new SpriteGenerator[8];
+			for (int i = 0; i < 8; i++)
+				spriteGenerators[i] = new SpriteGenerator(regs, i, rasterWidth, rasterLineLeft);
 		}
 
 		public byte Peek(int addr)
@@ -710,8 +728,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// sprite Y stretch flipflop
 			for (int i = 0; i < 8; i++)
-				if (!regs.MxYE[i])
-					regs.MxYEToggle[i] = true;
+				if (!sprites[i].MxYE)
+					sprites[i].MxYEToggle = true;
 		}
 
 		// operations timed to NTSC
@@ -773,6 +791,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					PerformDRAMRefresh();
 					break;
 				case 15:
+					spriteGenerators[0].Render();
+					spriteGenerators[1].Render();
+					spriteGenerators[2].Render();
+					spriteGenerators[3].Render();
+					spriteGenerators[4].Render();
+					spriteGenerators[5].Render();
+					spriteGenerators[6].Render();
+					spriteGenerators[7].Render();
 					PerformSpriteMCBASEAdvance();
 					PerformScreenCAccess();
 					break;
@@ -971,27 +997,28 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// sprite comparison
 			for (int i = 0; i < 8; i++)
 			{
-				if (regs.MxE[i] == true && regs.MxY[i] == (regs.RASTER & 0xFF) && regs.MDMA[i] == false)
+				if (sprites[i].MxE == true && sprites[i].MxY == (regs.RASTER & 0xFF) && sprites[i].MDMA == false)
 				{
-					regs.MDMA[i] = true;
-					regs.MCBASE[i] = 0;
-					if (regs.MxYE[i])
-						regs.MxYEToggle[i] = false;
+					sprites[i].MDMA = true;
+					sprites[i].MCBASE = 0;
+					if (sprites[i].MxYE)
+						sprites[i].MxYEToggle = false;
 				}
-				regs.MxXEToggle[i] = false;
+				sprites[i].MxXEToggle = false;
 			}
 		}
 
 		private void PerformSpriteDataFetch(int spriteIndex)
 		{
 			// second half of the fetch cycle
-			if (regs.MDMA[spriteIndex])
+			signal.VicAEC = !sprites[spriteIndex].MDMA;
+			if (sprites[spriteIndex].MDMA)
 			{
 				for (int i = 0; i < 2; i++)
 				{
-					regs.MSR[spriteIndex] <<= 8;
-					regs.MSR[spriteIndex] |= mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
-					regs.MC[spriteIndex]++;
+					sprites[spriteIndex].MSR <<= 8;
+					sprites[spriteIndex].MSR |= mem.VicRead((ushort)((sprites[spriteIndex].MPTR << 6) | (sprites[spriteIndex].MC)));
+					sprites[spriteIndex].MC++;
 				}
 			}
 		}
@@ -1001,11 +1028,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// sprite MC processing
 			for (int i = 0; i < 8; i++)
 			{
-				regs.MC[i] = regs.MCBASE[i];
-				if (regs.MDMA[i] && regs.MxY[i] == (regs.RASTER & 0xFF))
+				sprites[i].MC = sprites[i].MCBASE;
+				if (sprites[i].MDMA && sprites[i].MxY == (regs.RASTER & 0xFF))
 				{
-					regs.MD[i] = true;
-					regs.MxXEToggle[i] = false;
+					sprites[i].MD = true;
+					sprites[i].MxXEToggle = false;
 				}
 			}
 		}
@@ -1014,13 +1041,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			for (int i = 0; i < 8; i++)
 			{
-				if (regs.MxYEToggle[i])
+				if (sprites[i].MxYEToggle)
 				{
-					regs.MCBASE[i] += 3;
-					if (regs.MxYEToggle[i] && regs.MCBASE[i] == 63)
+					sprites[i].MCBASE += 3;
+					if (sprites[i].MxYEToggle && sprites[i].MCBASE == 63)
 					{
-						regs.MD[i] = false;
-						regs.MDMA[i] = false;
+						sprites[i].MD = false;
+						sprites[i].MDMA = false;
 					}
 				}
 			}
@@ -1030,23 +1057,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			// first half of the fetch cycle, always fetch pointer
 			ushort pointerOffset = (ushort)((regs.VM << 10) | 0x3F8 | spriteIndex);
-			regs.MPTR[spriteIndex] = mem.VicRead(pointerOffset);
+			sprites[spriteIndex].MPTR = mem.VicRead(pointerOffset);
 
 			// also fetch upper 8 bits if enabled
-			signal.VicAEC = !regs.MDMA[spriteIndex];
-			if (regs.MDMA[spriteIndex])
+			signal.VicAEC = !sprites[spriteIndex].MDMA;
+			if (sprites[spriteIndex].MDMA)
 			{
-				regs.MSRC[spriteIndex] = 24;
-				regs.MSR[spriteIndex] = mem.VicRead((ushort)((regs.MPTR[spriteIndex] << 6) | (regs.MC[spriteIndex])));
-				regs.MC[spriteIndex]++;
+				sprites[spriteIndex].MSRC = 24;
+				sprites[spriteIndex].MSR = mem.VicRead((ushort)((sprites[spriteIndex].MPTR << 6) | (sprites[spriteIndex].MC)));
+				sprites[spriteIndex].MC++;
 			}
 		}
 
 		private void PerformSpriteYExpansionFlip()
 		{
 			for (int i = 0; i < 8; i++)
-				if (regs.MxYE[i])
-					regs.MxYEToggle[i] = !regs.MxYEToggle[i];
+				if (sprites[i].MxYE)
+					sprites[i].MxYEToggle = !sprites[i].MxYEToggle;
 		}
 
 		private void PerformVCReset()
@@ -1294,87 +1321,35 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 				for (int j = 0; j < 8; j++)
 				{
-					if (regs.MD[j])
+					if (spriteGenerators[j].hasData)
 					{
-						if (regs.MxX[j] == rasterOffsetX)
+						if (spriteGenerators[j].dataBuffer[rasterOffsetX] != 0)
 						{
-							regs.MSRA[j] = true;
-							regs.MxXLatch[j] = rasterOffsetX;
-						}
-						if (regs.MSRA[j])
-						{
-							// multicolor consumes two bits per pixel and is forced wide
-							if (regs.MxMC[j])
-							{
-								spriteBits = (int)((regs.MSR[j] >> 22) & 0x3);
-								if ((rasterOffsetX & 0x1) != (regs.MxXLatch[j] & 0x1))
-								{
-									if (!regs.MxXE[j] || regs.MxXEToggle[j])
-									{
-										regs.MSR[j] <<= 2;
-										regs.MSRC[j]--;
-									}
-									regs.MxXEToggle[j] = !regs.MxXEToggle[j];
-								}
-							}
-							else
-							{
-								spriteBits = (int)((regs.MSR[j] >> 22) & 0x2);
-								if (!regs.MxXE[j] || regs.MxXEToggle[j])
-								{
-									regs.MSR[j] <<= 1;
-									regs.MSRC[j]--;
-								}
-								regs.MxXEToggle[j] = !regs.MxXEToggle[j];
-							}
 
-							// if not transparent, process collisions and color
-							if (spriteBits != 0)
+							// process collisions if the border is off
+							if (!borderOnVertical)
 							{
-								switch (spriteBits)
+								if (spritePixelOwner == -1)
 								{
-									case 1:
-										spritePixel = regs.MMx[0];
-										break;
-									case 2:
-										spritePixel = regs.MxC[j];
-										break;
-									case 3:
-										spritePixel = regs.MMx[1];
-										break;
-									default:
-										// this should never happen but VS needs this
-										spritePixel = 0;
-										break;
+									spritePixelOwner = j;
+									if (!sprites[j].MxDP || (!pixelBufferForeground[pixelBufferIndex]))
+									{
+										outputPixel = spriteGenerators[j].colorBuffer[rasterOffsetX];
+									}
 								}
-
-								// process collisions if the border is off
-								if (!borderOnVertical)
+								else
 								{
-									if (spritePixelOwner == -1)
-									{
-										spritePixelOwner = j;
-										if (!regs.MxDP[j] || (!pixelBufferForeground[pixelBufferIndex]))
-										{
-											outputPixel = spritePixel;
-										}
-									}
-									else
-									{
-										// a sprite already occupies this space
-										regs.MxM[spritePixelOwner] = true;
-										regs.MxM[j] = true;
-										regs.IMMC = true;
-									}
-									if (pixelBufferForeground[pixelBufferIndex])
-									{
-										regs.MxD[j] = true;
-										regs.IMBC = true;
-									}
+									// a sprite already occupies this space
+									sprites[spritePixelOwner].MxM = true;
+									sprites[j].MxM = true;
+									regs.IMMC = true;
+								}
+								if (pixelBufferForeground[pixelBufferIndex])
+								{
+									sprites[j].MxD = true;
+									regs.IMBC = true;
 								}
 							}
-							if (regs.MSRC[j] == 0)
-								regs.MSRA[j] = false;
 						}
 					}
 				}
