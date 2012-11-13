@@ -4,6 +4,12 @@
 //make sure this file gets included by everything
 //configurations related to headlessness shall be in here
 
+#ifdef LIBMEDNAHAWK
+#define HEADLESS
+#define WANT_RESAMPLER
+#define WANT_PSF
+#endif
+
 #ifdef HEADLESS
 
 #else
@@ -16,6 +22,7 @@
 #define WANT_REWIND
 #define WANT_DEARCHIVE
 #define WANT_IPS
+#define WANT_RESAMPLER
 
 //features you may want to consider -D in a headless library's makefile
 #define WANT_PSF
