@@ -18,43 +18,53 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		Sid8580
 	}
 
+	public class VoiceRegs
+	{
+		public int ATK;
+		public int DCY;
+		public int ENV;
+		public int F;
+		public bool FILT;
+		public bool GATE;
+		public bool NOISE;
+		public int OSC;
+		public int PW;
+		public int RLS;
+		public bool RMOD;
+		public bool SAW;
+		public int SR;
+		public bool SQU;
+		public int STN;
+		public bool SYNC;
+		public bool TEST;
+		public bool TRI;
+	}
+
 	public class SidRegs
 	{
-		public int[] ATK = new int[3];
 		public bool BP;
 		public bool D3;
-		public int[] DCY = new int[3];
-		public int[] ENV = new int[3];
-		public int[] F = new int[3];
 		public int FC;
-		public bool[] FILT = new bool[3];
 		public bool FILTEX;
-		public bool[] GATE = new bool[3];
 		public bool HP;
 		public bool LP;
-		public bool[] NOISE = new bool[3];
-		public int[] OSC = new int[3];
 		public int POTX;
 		public int POTY;
-		public int[] PW = new int[3];
 		public int RES;
-		public int[] RLS = new int[3];
-		public bool[] RMOD = new bool[3];
-		public bool[] SAW = new bool[3];
-		public int[] SR = new int[3];
-		public bool[] SQU = new bool[3];
-		public int[] STN = new int[3];
-		public bool[] SYNC = new bool[3];
-		public bool[] TEST = new bool[3];
-		public bool[] TRI = new bool[3];
 		public int VOL;
+
+		public VoiceRegs[] Voices;
 
 		public SidRegs()
 		{
+			Voices = new VoiceRegs[3];
+			for (int i = 0; i < 3; i++)
+				Voices[i] = new VoiceRegs();
+
 			// power on state
-			SR[0] = 0x7FFFFF;
-			SR[1] = 0x7FFFFF;
-			SR[2] = 0x7FFFFF;
+			Voices[0].SR = 0x7FFFFF;
+			Voices[1].SR = 0x7FFFFF;
+			Voices[2].SR = 0x7FFFFF;
 		}
 
 		public byte this[int addr]
@@ -71,49 +81,49 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x00:
 					case 0x07:
 					case 0x0E:
-						result = F[addr / 7] & 0xFF;
+						result = Voices[addr / 7].F & 0xFF;
 						break;
 					case 0x01:
 					case 0x08:
 					case 0x0F:
-						result = (F[addr / 7] & 0xFF00) >> 8;
+						result = (Voices[addr / 7].F & 0xFF00) >> 8;
 						break;
 					case 0x02:
 					case 0x09:
 					case 0x10:
-						result = PW[addr / 7] & 0xFF;
+						result = Voices[addr / 7].PW & 0xFF;
 						break;
 					case 0x03:
 					case 0x0A:
 					case 0x11:
-						result = (PW[addr / 7] & 0x0F00) >> 8;
+						result = (Voices[addr / 7].PW & 0x0F00) >> 8;
 						break;
 					case 0x04:
 					case 0x0B:
 					case 0x12:
 						index = addr / 7;
-						result = GATE[index] ? 0x01 : 0x00;
-						result |= SYNC[index] ? 0x02 : 0x00;
-						result |= RMOD[index] ? 0x04 : 0x00;
-						result |= TEST[index] ? 0x08 : 0x00;
-						result |= TRI[index] ? 0x10 : 0x00;
-						result |= SAW[index] ? 0x20 : 0x00;
-						result |= SQU[index] ? 0x40 : 0x00;
-						result |= NOISE[index] ? 0x80 : 0x00;
+						result = Voices[index].GATE ? 0x01 : 0x00;
+						result |= Voices[index].SYNC ? 0x02 : 0x00;
+						result |= Voices[index].RMOD ? 0x04 : 0x00;
+						result |= Voices[index].TEST ? 0x08 : 0x00;
+						result |= Voices[index].TRI ? 0x10 : 0x00;
+						result |= Voices[index].SAW ? 0x20 : 0x00;
+						result |= Voices[index].SQU ? 0x40 : 0x00;
+						result |= Voices[index].NOISE ? 0x80 : 0x00;
 						break;
 					case 0x05:
 					case 0x0C:
 					case 0x13:
 						index = addr / 7;
-						result = (ATK[index] & 0xF) << 4;
-						result |= DCY[index] & 0xF;
+						result = (Voices[index].ATK & 0xF) << 4;
+						result |= Voices[index].DCY & 0xF;
 						break;
 					case 0x06:
 					case 0x0D:
 					case 0x14:
 						index = addr / 7;
-						result = (STN[index] & 0xF) << 4;
-						result |= RLS[index] & 0xF;
+						result = (Voices[index].STN & 0xF) << 4;
+						result |= Voices[index].RLS & 0xF;
 						break;
 					case 0x15:
 						result = FC & 0x7;
@@ -122,9 +132,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = (FC & 0x7F8) >> 3;
 						break;
 					case 0x17:
-						result = FILT[0] ? 0x01 : 0x00;
-						result |= FILT[1] ? 0x02 : 0x00;
-						result |= FILT[2] ? 0x04 : 0x00;
+						result = Voices[0].FILT ? 0x01 : 0x00;
+						result |= Voices[1].FILT ? 0x02 : 0x00;
+						result |= Voices[2].FILT ? 0x04 : 0x00;
 						result |= FILTEX ? 0x08 : 0x00;
 						result |= (RES & 0xF) << 4;
 						break;
@@ -142,10 +152,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = POTY;
 						break;
 					case 0x1B:
-						result = OSC[2] >> 4;
+						result = Voices[2].OSC >> 4;
 						break;
 					case 0x1C:
-						result = ENV[2];
+						result = Voices[2].ENV;
 						break;
 					default:
 						result = 0;
@@ -165,56 +175,56 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x07:
 					case 0x0E:
 						index = addr / 7;
-						F[index] &= 0xFF00;
-						F[index] |= val;
+						Voices[index].F &= 0xFF00;
+						Voices[index].F |= val;
 						break;
 					case 0x01:
 					case 0x08:
 					case 0x0F:
 						index = addr / 7;
-						F[index] &= 0xFF;
-						F[index] |= val << 8;
+						Voices[index].F &= 0xFF;
+						Voices[index].F |= val << 8;
 						break;
 					case 0x02:
 					case 0x09:
 					case 0x10:
 						index = addr / 7;
-						PW[index] &= 0x0F00;
-						PW[index] |= val;
+						Voices[index].PW &= 0x0F00;
+						Voices[index].PW |= val;
 						break;
 					case 0x03:
 					case 0x0A:
 					case 0x11:
 						index = addr / 7;
-						PW[index] &= 0xFF;
-						PW[index] |= (val & 0x0F) << 8;
+						Voices[index].PW &= 0xFF;
+						Voices[index].PW |= (val & 0x0F) << 8;
 						break;
 					case 0x04:
 					case 0x0B:
 					case 0x12:
 						index = addr / 7;
-						GATE[index] = ((val & 0x01) != 0x00);
-						SYNC[index] = ((val & 0x02) != 0x00);
-						RMOD[index] = ((val & 0x04) != 0x00);
-						TEST[index] = ((val & 0x08) != 0x00);
-						TRI[index] = ((val & 0x10) != 0x00);
-						SAW[index] = ((val & 0x20) != 0x00);
-						SQU[index] = ((val & 0x40) != 0x00);
-						NOISE[index] = ((val & 0x80) != 0x00);
+						Voices[index].GATE = ((val & 0x01) != 0x00);
+						Voices[index].SYNC = ((val & 0x02) != 0x00);
+						Voices[index].RMOD = ((val & 0x04) != 0x00);
+						Voices[index].TEST = ((val & 0x08) != 0x00);
+						Voices[index].TRI = ((val & 0x10) != 0x00);
+						Voices[index].SAW = ((val & 0x20) != 0x00);
+						Voices[index].SQU = ((val & 0x40) != 0x00);
+						Voices[index].NOISE = ((val & 0x80) != 0x00);
 						break;
 					case 0x05:
 					case 0x0C:
 					case 0x13:
 						index = addr / 7;
-						ATK[index] = (val >> 4) & 0xF;
-						DCY[index] = val & 0xF;
+						Voices[index].ATK = (val >> 4) & 0xF;
+						Voices[index].DCY = val & 0xF;
 						break;
 					case 0x06:
 					case 0x0D:
 					case 0x14:
 						index = addr / 7;
-						STN[index] = (val >> 4) & 0xF;
-						RLS[index] = val & 0xF;
+						Voices[index].STN = (val >> 4) & 0xF;
+						Voices[index].RLS = val & 0xF;
 						break;
 					case 0x15:
 						FC &= 0x7F8;
@@ -225,9 +235,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						FC |= val << 3;
 						break;
 					case 0x17:
-						FILT[0] = ((val & 0x01) != 0x00);
-						FILT[1] = ((val & 0x02) != 0x00);
-						FILT[2] = ((val & 0x04) != 0x00);
+						Voices[0].FILT = ((val & 0x01) != 0x00);
+						Voices[1].FILT = ((val & 0x02) != 0x00);
+						Voices[2].FILT = ((val & 0x04) != 0x00);
 						FILTEX = ((val & 0x08) != 0x00);
 						RES = (val >> 4);
 						break;
@@ -245,10 +255,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						POTY = val;
 						break;
 					case 0x1B:
-						OSC[2] = val << 4;
+						Voices[2].OSC = val << 4;
 						break;
 					case 0x1C:
-						ENV[2] = val;
+						Voices[2].ENV = val;
 						break;
 				}
 			}
@@ -266,6 +276,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		};
 
 		private int[] syncIndex = { 2, 0, 1 };
+		private VoiceRegs[] voices;
 
 		public Func<int> ReadPotX;
 		public Func<int> ReadPotY;
@@ -307,6 +318,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void HardReset()
 		{
 			regs = new SidRegs();
+			voices = regs.Voices;
 		}
 
 		private short Mix(int input, short mixSource)
@@ -330,11 +342,24 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			// accumulator is 24 bits
 			clock = (clock + 1) & 0xFFFFFF;
+			ProcessAccumulator(0);
+			ProcessAccumulator(1);
+			ProcessAccumulator(2);
 
+			// process each voice
 			ProcessVoice(0);
 			ProcessVoice(1);
 			ProcessVoice(2);
 
+			// process voices again for best hard sync
+			if (voices[1].SYNC)
+				ProcessVoice(0);
+			if (voices[2].SYNC)
+				ProcessVoice(1);
+			if (voices[0].SYNC)
+				ProcessVoice(2);
+
+			// submit sample to soundprovider
 			SubmitSample();
 
 			// query pots every 512 cycles
@@ -350,17 +375,38 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			regs[addr & 0x1F] = val;
 		}
 
+		private void ProcessAccumulator(int index)
+		{
+			// test bit resets the oscillator
+			if (voices[index].TEST)
+			{
+				waveClock[index] = 0x000000;
+				voices[index].SR = 0x7FFFFF;
+			}
+			else
+			{
+				int lastWaveClock = waveClock[index];
+
+				// increment wave clock
+				waveClock[index] = (waveClock[index] + voices[index].F) & 0x00FFFFFF;
+
+				// process shift register if needed
+				if ((lastWaveClock & 0x100000) != (waveClock[index] & 0x100000))
+					ProcessShiftRegister(index);
+			}
+		}
+
 		private void ProcessEnvelope(int index)
 		{
 			// envelope counter is 15 bits
 			envRateCounter[index] &= 0x7FFF;
 
-			if (!gateLastCycle[index] && regs.GATE[index])
+			if (!gateLastCycle[index] && voices[index].GATE)
 			{
 				envState[index] = SidEnvelopeState.Attack;
 				envEnable[index] = true;
 			}
-			else if (gateLastCycle[index] && !regs.GATE[index])
+			else if (gateLastCycle[index] && !voices[index].GATE)
 			{
 				envState[index] = SidEnvelopeState.Release;
 			}
@@ -374,13 +420,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 
-			gateLastCycle[index] = regs.GATE[index];
+			gateLastCycle[index] = voices[index].GATE;
 		}
 
 		private void ProcessShiftRegister(int index)
 		{
-			int newBit = ((regs.SR[index] >> 22) ^ (regs.SR[index] >> 17)) & 0x1;
-			regs.SR[index] = ((regs.SR[index] << 1) | newBit) & 0x7FFFFF;
+			int newBit = ((voices[index].SR >> 22) ^ (voices[index].SR >> 17)) & 0x1;
+			voices[index].SR = ((voices[index].SR << 1) | newBit) & 0x7FFFFF;
 		}
 
 		private void ProcessVoice(int index)
@@ -393,11 +439,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			bool outputEnabled = false;
 
 			// triangle waveform
-			if (regs.TRI[index])
+			if (voices[index].TRI)
 			{
 				triOutput = (waveClock[index] >> 12) & 0xFFF;
-				if (regs.SYNC[index])
-					triOutput ^= regs.OSC[syncIndex[index]] & 0x800;
+				if (voices[index].SYNC)
+					triOutput ^= voices[syncIndex[index]].OSC & 0x800;
 
 				if ((triOutput & 0x800) != 0x000)
 					triOutput ^= 0x7FF;
@@ -409,7 +455,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			// saw waveform
-			if (regs.SAW[index])
+			if (voices[index].SAW)
 			{
 				sawOutput = (waveClock[index] >> 12) & 0xFFF;
 				finalOutput &= sawOutput;
@@ -417,25 +463,25 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			// square waveform
-			if (regs.SQU[index])
+			if (voices[index].SQU)
 			{
-				if (regs.TEST[index])
+				if (voices[index].TEST)
 				{
 					squOutput = 0xFFF;
 				}
 				else
 				{
-					squOutput = (waveClock[index] >> 12) >= regs.PW[index] ? 0xFFF : 0x000;
+					squOutput = (waveClock[index] >> 12) >= voices[index].PW ? 0xFFF : 0x000;
 				}
 				finalOutput &= squOutput;
 				outputEnabled = true;
 			}
 
 			// noise waveform
-			if (regs.NOISE[index])
+			if (voices[index].NOISE)
 			{
 				// shift register information is from reSID
-				int sr = regs.SR[index];
+				int sr = voices[index].SR;
 				noiseOutput = sr & 0x100000 >> 9;
 				noiseOutput |= sr & 0x040000 >> 8;
 				noiseOutput |= sr & 0x004000 >> 5;
@@ -448,35 +494,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				outputEnabled = true;
 			}
 
-			// test bit resets the oscillator and silences output
-			if (regs.TEST[index])
-			{
-				waveClock[index] = 0x000000;
-				outputEnabled = false;
-				regs.SR[index] = 0x7FFFFF;
-			}
-			else
-			{
-				// shift register for generating noise
-				if ((waveClock[index] & 0x100000) != 0)
-					ProcessShiftRegister(index);
-
-				// increment wave clock
-				waveClock[index] = (waveClock[index] + regs.F[index]) & 0x00FFFFFF;
-			}
-
 			// process the envelope generator
 			//ProcessEnvelope(index);
 
 			// a little hack until we fix the envelope generator
-			outputEnabled = regs.GATE[index];
-
+			outputEnabled = voices[index].GATE;
 
 			// write to internal reg
 			if (outputEnabled)
-				regs.OSC[index] = finalOutput;
+				voices[index].OSC = finalOutput;
 			else
-				regs.OSC[index] = 0x000;
+				voices[index].OSC = 0x000;
 		}
 
 		public byte Read(ushort addr)
@@ -500,13 +528,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (envState[index])
 			{
 				case SidEnvelopeState.Attack:
-					envRate[index] = envRateIndex[regs.ATK[index]];
+					envRate[index] = envRateIndex[voices[index].ATK];
 					break;
 				case SidEnvelopeState.Decay:
-					envRate[index] = envRateIndex[regs.DCY[index]];
+					envRate[index] = envRateIndex[voices[index].DCY];
 					break;
 				case SidEnvelopeState.Release:
-					envRate[index] = envRateIndex[regs.RLS[index]];
+					envRate[index] = envRateIndex[voices[index].RLS];
 					break;
 			}
 		}
@@ -530,7 +558,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void WriteShiftRegister(int index, int sample)
 		{
-			regs.SR[index] &=
+			voices[index].SR &=
 				~((1 << 20) | (1 << 18) | (1 << 14) | (1 << 11) | (1 << 9) | (1 << 5) | (1 << 2) | (1 << 0)) |
 				((sample & 0x800) << 9) |
 				((sample & 0x400) << 8) |
