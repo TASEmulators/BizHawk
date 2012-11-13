@@ -34,7 +34,6 @@
 #include	"state.h"
 #include	"movie.h"
 #include	"video.h"
-#include	"video/Deinterlacer.h"
 #include	"file.h"
 #include	"sound/WAVRecord.h"
 #include	"cdrom/cdromif.h"
@@ -181,8 +180,11 @@ static bool FFDiscard = FALSE; // TODO:  Setting to discard sound samples instea
 static MDFN_PixelFormat last_pixel_format;
 static double last_sound_rate;
 
+#ifdef WANT_DEINTERLACER
+#include	"video/Deinterlacer.h"
 static bool PrevInterlaced;
 static Deinterlacer deint;
+#endif
 
 static std::vector<int16> SoundBufPristine;
 
@@ -899,8 +901,11 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
           *tmp = 0;
         }
 
-	PrevInterlaced = false;
-	deint.ClearState();
+
+#ifdef NEED_DEINTERLACER
+   PrevInterlaced = false;
+   deint.ClearState();
+#endif
 
 	TBlur_Init();
 
@@ -1511,6 +1516,9 @@ void MDFNI_Emulate(EmulateSpecStruct *espec)
  //
  //
 
+  ProcessAudio(espec);
+
+#ifdef NEED_DEINTERLACER
  if(espec->InterlaceOn)
  {
   if(!PrevInterlaced)
@@ -1525,8 +1533,7 @@ void MDFNI_Emulate(EmulateSpecStruct *espec)
  }
  else
   PrevInterlaced = false;
-
- ProcessAudio(espec);
+#endif //NEED_DEINTERLACER
 
 #ifdef WANT_AVDUMP
  if(qtrecorder)
@@ -1556,7 +1563,7 @@ void MDFNI_Emulate(EmulateSpecStruct *espec)
   espec->SoundBuf = sb_backup;
   espec->SoundBufSize = sbs_backup;
  }
-#endif
+#endif //WANT_AVDUMP
 
  TBlur_Run(espec);
 }
