@@ -45,7 +45,10 @@
 #include	"qtrecord.h"
 #include	"md5.h"
 #include	"clamp.h"
+
+#ifdef WANT_RESAMPLER
 #include	"Fir_Resampler.h"
+#endif
 
 #include	"string/escape.h"
 
@@ -171,7 +174,6 @@ MDFNGI *MDFNGameInfo = NULL;
 static QTRecord *qtrecorder = NULL;
 static WAVRecord *wavrecorder = NULL;
 #endif
-static Fir_Resampler<16> ff_resampler;
 static double LastSoundMultiplier;
 
 static bool FFDiscard = FALSE; // TODO:  Setting to discard sound samples instead of increasing pitch
@@ -181,6 +183,8 @@ static double last_sound_rate;
 
 static bool PrevInterlaced;
 static Deinterlacer deint;
+
+static std::vector<int16> SoundBufPristine;
 
 static std::vector<CDIF *> CDInterfaces;	// FIXME: Cleanup on error out.
 
@@ -1194,8 +1198,9 @@ void MDFNI_Kill(void)
  MDFN_KillSettings();
 }
 
+#ifdef WANT_RESAMPLER
 static double multiplier_save, volume_save;
-static std::vector<int16> SoundBufPristine;
+static Fir_Resampler<16> ff_resampler;
 
 static void ProcessAudio(EmulateSpecStruct *espec)
 {
@@ -1355,6 +1360,20 @@ static void ProcessAudio(EmulateSpecStruct *espec)
   espec->SoundBufSize = espec->SoundBufSizeALMS + SoundBufSize;
  } // end to:  if(espec->SoundBuf && espec->SoundBufSize)
 }
+#else
+static void ProcessAudio(EmulateSpecStruct *espec)
+{
+   if(espec->SoundBuf && espec->SoundBufSize)
+   {
+      int16 *const SoundBuf = espec->SoundBuf + espec->SoundBufSizeALMS * MDFNGameInfo->soundchan;
+      int32 SoundBufSize = espec->SoundBufSize - espec->SoundBufSizeALMS;
+      const int32 SoundBufMaxSize = espec->SoundBufMaxSize - espec->SoundBufSizeALMS;
+
+      espec->SoundBufSize = espec->SoundBufSizeALMS + SoundBufSize;
+   } // end to:  if(espec->SoundBuf && espec->SoundBufSize)
+}
+#endif
+
 
 #ifndef HEADLESS
 void MDFN_MidSync(EmulateSpecStruct *espec)
@@ -1377,8 +1396,10 @@ void MDFN_MidSync(EmulateSpecStruct *espec)
 
 void MDFNI_Emulate(EmulateSpecStruct *espec)
 {
+#ifdef WANT_RESAMPLER
  multiplier_save = 1;
  volume_save = 1;
+#endif
 
  // Initialize some espec member data to zero, to catch some types of bugs.
  espec->DisplayRect.x = 0;
@@ -1405,7 +1426,9 @@ void MDFNI_Emulate(EmulateSpecStruct *espec)
   espec->SoundFormatChanged = true;
   last_sound_rate = espec->SoundRate;
 
+#ifdef WANT_RESAMPLER
   ff_resampler.buffer_size((espec->SoundRate / 2) * 2);
+#endif
  }
 
 #ifdef WANT_AVDUMP
