@@ -17,6 +17,7 @@
 #define WANT_DEARCHIVE
 #define WANT_IPS
 
+//features you may want to consider -D in a headless library's makefile
 #define WANT_PSF
 #define WANT_SOFTGUI
 #define WANT_CDIF_MT
