@@ -36,19 +36,8 @@ namespace BizHawk.MultiClient.GBtools
 			set
 			{
 				_spriteback = value;
-				SetSpriteBack(_spriteback, this);
 				panelSpriteBackColor.BackColor = _spriteback;
 				labelSpriteBackColor.Text = string.Format("({0},{1},{2})", _spriteback.R, _spriteback.G, _spriteback.B);
-			}
-		}
-		static void SetSpriteBack(Color color, Control control)
-		{
-			foreach (Control c in control.Controls)
-			{
-				if (c is BmpView && (c as BmpView).DrawBackdrop)
-					c.BackColor = color;
-				if (c.Controls.Count > 0)
-					SetSpriteBack(color, c);
 			}
 		}
 
@@ -376,8 +365,7 @@ namespace BizHawk.MultiClient.GBtools
 				p = (int*)sppal;
 				for (int i = 0; i < 32; i++)
 					p[i] |= unchecked((int)0xff000000);
-				// transparent all sprite color 0s
-				int c = spriteback.B | spriteback.G << 8 | spriteback.R << 16;
+				int c = spriteback.ToArgb();
 				for (int i = 0; i < 32; i += 4)
 					p[i] = c;
 			}
