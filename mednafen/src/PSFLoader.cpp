@@ -30,6 +30,7 @@
 #include <ctype.h>
 //#include <iconv.h>
 
+#include <zlib.h>
 
 PSFTags::PSFTags()
 {

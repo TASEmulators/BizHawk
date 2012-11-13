@@ -32,6 +32,10 @@
 #include "video.h"
 #include "video/resize.h"
 
+#ifndef HEADLESS
+#include <zlib.h>
+#endif
+
 static int SaveStateStatus[10];
 
 #define RLSB 		MDFNSTATE_RLSB	//0x80000000
@@ -654,6 +658,7 @@ int MDFNSS_SaveSM(StateMem *st, int wantpreview_and_ts, int data_only, const MDF
 	return(1);
 }
 
+#ifndef HEADLESS
 int MDFNSS_Save(const char *fname, const char *suffix, const MDFN_Surface *surface, const MDFN_Rect *DisplayRect, const MDFN_Rect *LineWidths)
 {
 	StateMem st;
@@ -724,7 +729,7 @@ int MDFNSS_SaveFP(gzFile fp, const MDFN_Surface *surface, const MDFN_Rect *Displ
 
  return(1);
 }
-
+#endif
 
 int MDFNSS_LoadSM(StateMem *st, int haspreview, int data_only)
 {
@@ -765,6 +770,7 @@ int MDFNSS_LoadSM(StateMem *st, int haspreview, int data_only)
 	return(MDFNGameInfo->StateAction(st, stateversion, data_only));
 }
 
+#ifndef HEADLESS
 int MDFNSS_LoadFP(gzFile fp)
 {
  uint8 header[32];
@@ -845,6 +851,7 @@ int MDFNSS_Load(const char *fname, const char *suffix)
          return(0);
         }
 }
+#endif
 
 //here we have a whole bunch of UI-related savestate functionality which isnt needed in headless
 #ifndef HEADLESS
