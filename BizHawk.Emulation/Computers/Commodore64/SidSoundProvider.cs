@@ -19,6 +19,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ResetBuffer();
 		}
 
+		public short[] GetAllSamples()
+		{
+			List<short> samples = new List<short>();
+			while (sampleBufferReadIndex != sampleBufferIndex)
+			{
+				samples.Add(sampleBuffer[sampleBufferReadIndex]);
+				sampleBufferReadIndex++;
+				if (sampleBufferReadIndex == sampleBufferCapacity)
+					sampleBufferReadIndex = 0;
+			}
+			return samples.ToArray();
+		}
+
 		public void GetSamples(short[] samples)
 		{
 			int count = samples.Length;
@@ -85,6 +98,27 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 			sampleCounter--;
+		}
+	}
+
+	public class SidSyncSoundProvider : ISyncSoundProvider
+	{
+		private Sid sid;
+
+		public SidSyncSoundProvider(Sid source)
+		{
+			sid = source;
+		}
+
+		public void DiscardSamples()
+		{
+			sid.DiscardSamples();
+		}
+
+		public void GetSamples(out short[] samples, out int nsamp)
+		{
+			samples = sid.GetAllSamples();
+			nsamp = samples.Length / 2;
 		}
 	}
 }
