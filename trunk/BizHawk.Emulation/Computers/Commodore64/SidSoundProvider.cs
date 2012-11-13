@@ -13,20 +13,28 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private int sampleBufferReadIndex;
 		private int sampleCounter;
 
+		public void DiscardSamples()
+		{
+			sampleBuffer = new short[sampleBufferCapacity];
+			ResetBuffer();
+		}
+
 		public void GetSamples(short[] samples)
 		{
 			int count = samples.Length;
 			int copied = 0;
 
-			while ((sampleBufferIndex != sampleBufferReadIndex) && (copied < count))
+			while (copied < count)
 			{
-				samples[copied] = sampleBuffer[sampleBufferReadIndex++];
+				samples[copied] = sampleBuffer[sampleBufferReadIndex];
+				if (sampleBufferIndex != sampleBufferReadIndex)
+					sampleBufferReadIndex++;
 				copied++;
 				if (sampleBufferReadIndex == sampleBufferCapacity)
 					sampleBufferReadIndex = 0;
 			}
 
-			// catch the buffer up
+			// catch buffer up
 			sampleBufferReadIndex = sampleBufferIndex;
 		}
 
@@ -34,12 +42,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			sampleBufferCapacity = initSampleRate;
 			DiscardSamples();
-		}
-
-		public void DiscardSamples()
-		{
-			sampleBuffer = new short[sampleBufferCapacity];
-			ResetBuffer();
 		}
 
 		public int MaxVolume
@@ -64,22 +66,22 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			if (sampleCounter == 0)
 			{
 				short output;
-				output = Mix(voices[0].OSC, 0);
-				output = Mix(voices[1].OSC, output);
+				output = Mix(voices[0].OSC, voices[0].ENV, 0);
+				output = Mix(voices[1].OSC, voices[1].ENV, output);
 				
 				// voice 3 can be disabled with a specific register, but
 				// when the filter is enabled, it still plays
 				if (!regs.D3 || voices[2].FILT)
-					output = Mix(voices[2].OSC, output);
+					output = Mix(voices[2].OSC, voices[2].ENV, output);
 
 				// run twice since the buffer expects stereo sound (I THINK)
 				for (int i = 0; i < 2; i++)
 				{
 					sampleCounter = cyclesPerSample;
-					sampleBuffer[sampleBufferIndex] = output;
 					sampleBufferIndex++;
 					if (sampleBufferIndex == sampleBufferCapacity)
 						sampleBufferIndex = 0;
+					sampleBuffer[sampleBufferIndex] = output;
 				}
 			}
 			sampleCounter--;

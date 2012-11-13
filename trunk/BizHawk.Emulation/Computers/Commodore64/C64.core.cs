@@ -53,6 +53,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			signal = new ChipSignals();
 			vic = new VicII(signal, Region.NTSC);
 
+			// assume NTSC for now
+			CoreOutputComm.VsyncDen = vic.cyclesPerFrame;
+			CoreOutputComm.VsyncNum = (14318181 / 14);
+
 			// initialize sid
 			sid = new Sid(Region.NTSC, 44100); // we'll assume 44.1k for now until there's a better way
 
