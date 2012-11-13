@@ -12,6 +12,8 @@
 #include <config.h>
 #endif
 
+#include "headless/headless.h"
+
 #include <assert.h>
 #include <inttypes.h>
 

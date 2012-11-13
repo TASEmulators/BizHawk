@@ -72,7 +72,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\src;..\include;..\zlib123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;..\src;..\include;..\zlib123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WANT_PSF;HEADLESS;WIN32;_DEBUG;_CONSOLE;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -95,7 +95,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>.;..\src;..\include;..\zlib123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;..\src;..\include;..\zlib123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WANT_PSF;HEADLESS;WIN32;NDEBUG;_CONSOLE;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
@@ -125,7 +125,7 @@
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Full</Optimization>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.;..\src;..\include;..\zlib123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;..\src;..\include;..\zlib123;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WANT_PSF;HEADLESS;WIN32;NDEBUG;_CONSOLE;HAVE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
@@ -286,6 +286,7 @@
     <ClInclude Include="..\src\debug.h" />
     <ClInclude Include="..\src\drivers\gfxdebugger.h" />
     <ClInclude Include="..\src\drivers\joystick.h" />
+    <ClInclude Include="..\src\mednafen-driver.h" />
     <ClInclude Include="..\src\mednafen-endian.h" />
     <ClInclude Include="..\src\drivers\logdebugger.h" />
     <ClInclude Include="..\src\drivers\prompt.h" />
@@ -297,6 +298,7 @@
     <ClInclude Include="..\src\general.h" />
     <ClInclude Include="..\src\math_ops.h" />
     <ClInclude Include="..\src\md5.h" />
+    <ClInclude Include="..\src\mednafen-types.h" />
     <ClInclude Include="..\src\mednafen.h" />
     <ClInclude Include="..\src\mednafen-memory.h" />
     <ClInclude Include="..\src\MemoryStream.h" />
@@ -312,7 +314,6 @@
     <ClInclude Include="..\src\state.h" />
     <ClInclude Include="..\src\Stream.h" />
     <ClInclude Include="..\src\tests.h" />
-    <ClInclude Include="..\src\types.h" />
     <ClInclude Include="..\src\video-driver.h" />
     <ClInclude Include="..\src\video.h" />
     <ClInclude Include="..\src\psx\cdc.h" />
