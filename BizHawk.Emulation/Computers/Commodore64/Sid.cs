@@ -274,8 +274,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			392, 977, 1954, 3126,
 			3907, 11720, 19532, 31251
 		};
-
+		private int[] sustainLevels = {
+			0x00, 0x11, 0x22, 0x33,
+			0x44, 0x55, 0x66, 0x77,
+			0x88, 0x99, 0xAA, 0xBB,
+			0xCC, 0xDD, 0xEE, 0xFF
+		};
 		private int[] syncIndex = { 2, 0, 1 };
+
 		private VoiceRegs[] voices;
 
 		public Func<int> ReadPotX;
@@ -284,11 +290,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int clock;
 		public int cyclesPerSample;
 		public bool[] envEnable = new bool[3];
+		public int[] envExp = new int[3];
 		public int[] envExpCounter = new int[3];
 		public int[] envRate = new int[3];
 		public int[] envRateCounter = new int[3];
 		public SidEnvelopeState[] envState = new SidEnvelopeState[3];
-		public bool[] gateLastCycle = new bool[3];
+		public bool[] lastGate = new bool[3];
 		public int output;
 		public SidRegs regs;
 		public int[] waveClock = new int[3];
@@ -321,10 +328,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			voices = regs.Voices;
 		}
 
-		private short Mix(int input, short mixSource)
+		private short Mix(int input, int volume, short mixSource)
 		{
+			// logarithmic volume (probably inaccurate)
+			int logVolume = volume * 256;
+			logVolume = (int)Math.Sqrt(logVolume);
+
+			// combine the volumes together 1:1
+			volume = (volume + logVolume) >> 1;
+
 			input &= 0xFFF;
 			input -= 0x800;
+			input *= volume;
+			input /= 255;
 			input += mixSource;
 			if (input > 32767)
 				input = 32767;
@@ -358,6 +374,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				ProcessVoice(1);
 			if (voices[0].SYNC)
 				ProcessVoice(2);
+
+			// process each envelope
+			ProcessEnvelope(0);
+			ProcessEnvelope(1);
+			ProcessEnvelope(2);
 
 			// submit sample to soundprovider
 			SubmitSample();
@@ -398,29 +419,81 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void ProcessEnvelope(int index)
 		{
-			// envelope counter is 15 bits
-			envRateCounter[index] &= 0x7FFF;
-
-			if (!gateLastCycle[index] && voices[index].GATE)
-			{
-				envState[index] = SidEnvelopeState.Attack;
-				envEnable[index] = true;
-			}
-			else if (gateLastCycle[index] && !voices[index].GATE)
-			{
-				envState[index] = SidEnvelopeState.Release;
-			}
-
+			envRateCounter[index] = (envRateCounter[index] + 1) & 0xFFFF;
 			if (envRateCounter[index] == envRate[index])
 			{
-				envExpCounter[index] = 0;
-				if (envEnable[index])
+				envRateCounter[index] = 0;
+				if (envState[index] != SidEnvelopeState.Disabled)
 				{
+					envExpCounter[index] = (envExpCounter[index] + 1) & 0xFF;
+					if (envExpCounter[index] == 0)
+						envState[index] = SidEnvelopeState.Disabled;
 
+					if (envExpCounter[index] == envExp[index])
+					{
+						switch (envState[index])
+						{
+							case SidEnvelopeState.Attack:
+								if (voices[index].ENV < 0xFF)
+									voices[index].ENV++;
+								if (voices[index].ENV == 0xFF)
+								{
+									envState[index] = SidEnvelopeState.Decay;
+									UpdateEnvelopeRateCounter(index);
+								}
+								break;
+							case SidEnvelopeState.Decay:
+								if (voices[index].ENV > sustainLevels[voices[index].STN] && voices[index].ENV > 0)
+									voices[index].ENV--;
+								break;
+							case SidEnvelopeState.Release:
+								if (voices[index].ENV > 0)
+									voices[index].ENV--;
+								if (voices[index].ENV == 0)
+								{
+									envState[index] = SidEnvelopeState.Disabled;
+									UpdateEnvelopeRateCounter(index);
+								}
+								break;
+						}
+						envExpCounter[index] = 0;
+						ProcessEnvelopeExpCounter(index);
+					}
+					else if (envState[index] == SidEnvelopeState.Attack)
+					{
+						ProcessEnvelopeExpCounter(index);
+					}
 				}
 			}
 
-			gateLastCycle[index] = voices[index].GATE;
+		}
+
+		private void ProcessEnvelopeExpCounter(int index)
+		{
+			switch (voices[index].ENV)
+			{
+				case 0xFF:
+					envExp[index] = 1;
+					break;
+				case 0x5D:
+					envExp[index] = 2;
+					break;
+				case 0x36:
+					envExp[index] = 4;
+					break;
+				case 0x1A:
+					envExp[index] = 8;
+					break;
+				case 0x0E:
+					envExp[index] = 16;
+					break;
+				case 0x06:
+					envExp[index] = 30;
+					break;
+				case 0x00:
+					envExp[index] = 1;
+					break;
+			}
 		}
 
 		private void ProcessShiftRegister(int index)
@@ -492,13 +565,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				noiseOutput |= sr & 0x000001 << 4;
 				finalOutput &= noiseOutput;
 				outputEnabled = true;
+
+				// other waveforms write into the shift register
+				if (voices[index].SQU || voices[index].TRI || voices[index].SAW)
+					WriteShiftRegister(index, finalOutput);
 			}
-
-			// process the envelope generator
-			//ProcessEnvelope(index);
-
-			// a little hack until we fix the envelope generator
-			outputEnabled = voices[index].GATE;
 
 			// write to internal reg
 			if (outputEnabled)
@@ -528,7 +599,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (envState[index])
 			{
 				case SidEnvelopeState.Attack:
-					envRate[index] = envRateIndex[voices[index].ATK];
+					envRate[index] = envRateIndex[voices[index].ATK] / 3;
 					break;
 				case SidEnvelopeState.Decay:
 					envRate[index] = envRateIndex[voices[index].DCY];
@@ -537,13 +608,57 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					envRate[index] = envRateIndex[voices[index].RLS];
 					break;
 			}
+			ProcessEnvelopeExpCounter(index);
 		}
 
 		public void Write(ushort addr, byte val)
 		{
+			int index;
+			bool gate;
+
 			addr &= 0x1F;
 			switch (addr)
 			{
+				case 0x04:
+				case 0x0B:
+				case 0x12:
+					// set control
+					index = addr / 7;
+					gate = lastGate[index];
+					regs[addr] = val;
+					lastGate[index] = voices[index].GATE;
+					if (!gate && lastGate[index])
+					{
+						envExpCounter[index] = 0;
+						envState[index] = SidEnvelopeState.Attack;
+						voices[index].ENV = 0;
+						envRateCounter[index] = 0;
+						UpdateEnvelopeRateCounter(index);
+						ProcessEnvelopeExpCounter(index);
+					}
+					else if (gate && !lastGate[index])
+					{
+						envExpCounter[index] = 0;
+						envState[index] = SidEnvelopeState.Release;
+						UpdateEnvelopeRateCounter(index);
+					}
+					break;
+				case 0x05:
+				case 0x0C:
+				case 0x13:
+					// set attack/decay
+					index = addr / 7;
+					regs[addr] = val;
+					UpdateEnvelopeRateCounter(index);
+					break;
+				case 0x06:
+				case 0x0D:
+				case 0x14:
+					// set sustain/release
+					index = addr / 7;
+					regs[addr] = val;
+					UpdateEnvelopeRateCounter(index);
+					break;
 				case 0x19:
 				case 0x1A:
 				case 0x1B:
