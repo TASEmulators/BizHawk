@@ -60,6 +60,7 @@ namespace BizHawk.MultiClient
 			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
 			C64AutoJoysticks[0] = new SingleButtonJoyStickTemplate(false);
 			C64AutoJoysticks[1] = new SingleButtonJoyStickTemplate(false);
+			C64Keyboard = new C64KeyboardTemplate(true);
 
 			NESConsoleButtons = new NESConsoleButtonTemplate();
 			SNESConsoleButtons = new NESConsoleButtonTemplate();
