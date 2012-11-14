@@ -76,11 +76,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (extension.ToUpper())
 			{
 				case @".G64":
-					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"1541dos")), Region.NTSC);
+					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), Region.NTSC);
 					diskDrive.Insert(G64.Read(inputFile));
 					break;
 				case @".D64":
-					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"1541dos")), Region.NTSC);
+					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), Region.NTSC);
+					diskDrive.Insert(D64.Read(inputFile));
 					break;
 				case @".PRG":
 					if (inputFile.Length > 2)
