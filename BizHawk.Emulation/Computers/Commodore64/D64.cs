@@ -60,6 +60,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			17, 17, 17, 17, 17
 		};
 
+		private static int[] standardTrackLengthBytes =
+		{
+			6250, 6666, 7142, 7692
+		};
+
 		private static byte Checksum(byte[] source)
 		{
 			int count = source.Length;
@@ -221,9 +226,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					byte[] diskData = ConvertSectorToGCR(sectorData, (byte)j, (byte)i, (byte)0x00, (byte)0x00, out bitsWritten);
 					trackMem.Write(diskData, 0, diskData.Length);
 				}
+				track.density = densityTable[i];
+
+				// we pad the tracks with extra gap bytes to meet MNIB standards
+				while (trackMem.Length < standardTrackLengthBytes[track.density])
+				{
+					trackMem.WriteByte(0x55);
+				}
 				track.data = trackMem.ToArray();
 				track.bits = (int)trackMem.Length;
-				track.density = densityTable[i];
 				track.index = i;
 				result.tracks.Add(track);
 				trackMem.Dispose();
