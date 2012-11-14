@@ -420,6 +420,12 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadC64Keyboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadC64Keyboard.Designer.cs">
+      <DependentUpon>VirtualPadC64Keyboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPadForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -531,6 +537,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="tools\VirtualPadC64Keyboard.resx">
+      <DependentUpon>VirtualPadC64Keyboard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPadForm.resx">
       <DependentUpon>VirtualPadForm.cs</DependentUpon>
     </EmbeddedResource>
