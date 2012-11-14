@@ -95,7 +95,10 @@
     <Compile Include="Computers\Commodore64\PRGFile.cs" />
     <Compile Include="Computers\Commodore64\MemBus.cs" />
     <Compile Include="Computers\Commodore64\Sid.cs" />
+    <Compile Include="Computers\Commodore64\SidEnvelopeGenerator.cs" />
     <Compile Include="Computers\Commodore64\SidSoundProvider.cs" />
+    <Compile Include="Computers\Commodore64\SidWaveformCalculator.cs" />
+    <Compile Include="Computers\Commodore64\SidWaveformGenerator.cs" />
     <Compile Include="Computers\Commodore64\Via.cs" />
     <Compile Include="Computers\Commodore64\VicII.cs" />
     <Compile Include="Computers\Commodore64\VicIIBackgroundGenerator.cs" />
