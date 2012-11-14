@@ -100,6 +100,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					cpu.ExecuteOne();
 				}
 				sid.PerformCycle();
+				if (diskDriveAttached)
+					diskDrive.PerformCycle();
 				cia0.PerformCycle();
 				cia1.PerformCycle();
 			}
