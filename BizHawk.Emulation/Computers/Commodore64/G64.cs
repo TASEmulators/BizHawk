@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					{
 						int trackLength;
 						byte[] trackData;
-						Disk.Track track = new Disk.Track();
+						Track track = new Track();
 
 						mem.Position = trackOffsetTable[i];
 						trackLength = reader.ReadInt16();
@@ -55,8 +55,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return result;
 		}
 
-		public static void Write(Disk source)
+		public static byte[] Write(Disk source)
 		{
+			return null;
 		}
 	}
 }
