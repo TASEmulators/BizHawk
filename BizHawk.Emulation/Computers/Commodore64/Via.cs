@@ -18,6 +18,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int SR;
 		public int[] TC;
 		public int[] TL;
+
+		public ViaRegs()
+		{
+			// power on state
+		}
+
+		public byte this[int addr]
+		{
+			get
+			{
+				return 0xFF;
+			}
+			set
+			{
+				// set register
+			}
+		}
 	}
 
 	public class Via

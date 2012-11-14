@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// source
 		public Cartridge cart;
+		public Drive1541 diskDrive;
 		public string extension;
 		public byte[] inputFile;
 		public List<IMedia> mediaAttached = new List<IMedia>();
@@ -74,6 +75,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// initialize media
 			switch (extension.ToUpper())
 			{
+				case @".G64":
+					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"1541dos")), Region.NTSC);
+					diskDrive.Insert(G64.Read(inputFile));
+					break;
+				case @".D64":
+					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"1541dos")), Region.NTSC);
+					break;
 				case @".PRG":
 					if (inputFile.Length > 2)
 						mediaAttached.Add(new PRGFile(inputFile, mem, cpu));
