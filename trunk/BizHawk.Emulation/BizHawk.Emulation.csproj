@@ -87,6 +87,8 @@
     <Compile Include="Computers\Commodore64\CartridgeMappers.cs" />
     <Compile Include="Computers\Commodore64\Cia.cs" />
     <Compile Include="Computers\Commodore64\DataPort.cs" />
+    <Compile Include="Computers\Commodore64\Disk.cs" />
+    <Compile Include="Computers\Commodore64\G64.cs" />
     <Compile Include="Computers\Commodore64\IMedia.cs" />
     <Compile Include="Computers\Commodore64\Input.cs" />
     <Compile Include="Computers\Commodore64\PRGFile.cs" />
