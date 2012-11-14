@@ -9,12 +9,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		public byte PeekCia0(int addr)
 		{
-			return cia0.regs[addr];
+			return cia0.Peek(addr);
 		}
 
 		public byte PeekCia1(int addr)
 		{
-			return cia1.regs[addr];
+			return cia1.Peek(addr);
 		}
 
 		public byte PeekColorRAM(int addr)

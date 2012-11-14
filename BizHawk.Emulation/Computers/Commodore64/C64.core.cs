@@ -19,8 +19,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public Input input;
 
 		// source
-		public Cartridge cart;
-		public Drive1541 diskDrive;
+		public Cartridge cart = null;
+		public Drive1541 diskDrive = null;
+		public bool diskDriveAttached = false;
 		public string extension;
 		public byte[] inputFile;
 		public List<IMedia> mediaAttached = new List<IMedia>();
@@ -44,11 +45,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initialize cia timers
 			cia0 = new Cia(signal, Region.NTSC);
-			cia0.ports[0] = new DirectionalDataPort(0x00, 0x00, 0xFF);
-			cia0.ports[1] = new DirectionalDataPort(0x00, 0x00, 0xFF);
 			cia1 = new Cia(signal, Region.NTSC);
-			cia1.ports[0] = new DirectionalDataPort(0x00, 0x00, 0xFF);
-			cia1.ports[1] = new DirectionalDataPort(0x00, 0x00, 0xFF);
 
 			// initialize vic
 			signal = new ChipSignals();
@@ -70,7 +67,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) + (ReadMemory(0xFFFD) << 8));
 
 			// initailize input
-			input = new Input(cia0.ports);
+			input = new Input( new DataPortConnector[] { cia0.ConnectPort(0), cia0.ConnectPort(1) } );
 
 			// initialize media
 			switch (extension.ToUpper())
@@ -94,12 +91,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						cart = newCart;
 						mediaAttached.Add(cart);
 					}
-					else
-					{
-						cart = null;
-					}
 					break;
 			}
+
+			diskDriveAttached = (diskDrive != null);
 		}
 
 		public void PollInput()

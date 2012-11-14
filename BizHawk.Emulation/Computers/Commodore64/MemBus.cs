@@ -62,11 +62,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// registers
 		public byte busData;
-		public DirectionalDataPort cia1PortA = new DirectionalDataPort(0x7F, 0x00, 0xFF);
-		public DirectionalDataPort cia1PortB = new DirectionalDataPort(0xFF, 0x00, 0xFF);
-		public DirectionalDataPort cpuPort;
 		public bool readTrigger = true;
 		public bool writeTrigger = true;
+
+		// ports
+		public DataPortConnector cpuPort;
+		public DataPortBus cpuPortBus = new DataPortBus();
 
 		void HandleFirmwareError(string file)
 		{
@@ -96,9 +97,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			sid = newSid;
 			cia0 = newCia0;
 			cia1 = newCia1;
-			cia1.ports[0] = cia1PortA;
-			cia1.ports[1] = cia1PortB;
-			cia1PortA.WritePort = UpdateVicOffset;
+
+			cpuPort = cpuPortBus.Connect();
+			cpuPortBus.AttachWriteHook(UpdateLayout);
+			cia1.AttachWriteHook(0, UpdateVicOffset);
 			HardReset();
 		}
 
@@ -185,13 +187,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void HardReset()
 		{
+			layout = new MemoryLayout();
+
 			ram = new byte[0x10000];
 			colorRam = new byte[0x1000];
 			WipeMemory();
-			cpuPort = new DirectionalDataPort(0x37, 0x2F, 0x00);
-			layout = new MemoryLayout();
-			UpdateLayout();
-			UpdateVicOffset(cia1PortA.Data);
+
+			cpuPort.Direction = 0x2F;
+			cpuPort.Data = 0x37;
+
+			UpdateVicOffset();
 		}
 
 		public byte Peek(ushort addr)
@@ -489,9 +494,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
-		private void UpdateVicOffset(byte val)
+		private void UpdateVicOffset()
 		{
-			switch (cia1PortA.Data & 0x03)
+			switch (cia1.Peek(0x00) & 0x03)
 			{
 				case 0:
 					vicCharEnabled = false;
@@ -550,7 +555,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			else if (addr == 0x0001)
 			{
 				cpuPort.Data = val;
-				UpdateLayout();
 			}
 			else
 			{

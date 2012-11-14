@@ -40,6 +40,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int TODREADLATCHHR; // tod read latch (internal)
 		public int TODSEC; // time of day seconds
 
+		public DataPortBus[] ports;
+
+		private DataPortConnector[] connectors;
 		private ChipSignals signal;
 
 		public CiaRegs(ChipSignals newSignal)
@@ -53,6 +56,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			T[1] = TLATCH[1];
 
 			this[0x0B] = 0x01;
+
+			ports = new DataPortBus[2];
+			ports[0] = new DataPortBus();
+			ports[1] = new DataPortBus();
+			connectors = new DataPortConnector[2];
+			connectors[0] = ports[0].Connect();
+			connectors[1] = ports[1].Connect();
+			connectors[0].Data = 0xFF;
+			connectors[1].Data = 0xFF;
+			connectors[0].Direction = 0xFF;
+			connectors[1].Direction = 0xFF;
 		}
 
 		public byte this[int addr]
@@ -65,6 +79,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				addr &= 0x0F;
 				switch (addr)
 				{
+					case 0x00:
+						result = connectors[0].Data;
+						break;
+					case 0x01:
+						result = connectors[1].Data;
+						break;
+					case 0x02:
+						result = connectors[0].Direction;
+						break;
+					case 0x03:
+						result = connectors[1].Direction;
+						break;
 					case 0x04:
 						result = (T[0] & 0xFF);
 						break;
@@ -134,6 +160,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				addr &= 0x0F;
 				switch (addr)
 				{
+					case 0x00:
+						connectors[0].Data = val;
+						break;
+					case 0x01:
+						connectors[1].Data = val;
+						break;
+					case 0x02:
+						connectors[0].Direction = val;
+						break;
+					case 0x03:
+						connectors[1].Direction = val;
+						break;
 					case 0x04:
 						T[0] &= 0xFF00;
 						T[0] |= val;
@@ -204,8 +242,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int intMask;
 		public bool lastCNT;
 		public byte[] outputBitMask;
-		public DirectionalDataPort[] ports;
-		public CiaRegs regs;
+		private CiaRegs regs;
 		public ChipSignals signal;
 		public bool thisCNT;
 		public int todCounter;
@@ -271,6 +308,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			regs.TODPM = ampm;
 		}
 
+		public void AttachWriteHook(int index, Action act)
+		{
+			regs.ports[index].AttachWriteHook(act);
+		}
+
 		private int BCDAdd(int i, int j, out bool overflow)
 		{
 			int lo;
@@ -293,10 +335,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return result;
 		}
 
+		public DataPortConnector ConnectPort(int index)
+		{
+			return regs.ports[index].Connect();
+		}
+
 		public void HardReset()
 		{
 			outputBitMask = new byte[] { 0x40, 0x80 };
-			ports = new DirectionalDataPort[2];
 			regs = new CiaRegs(signal);
 			underflow = new bool[2];
 			todCounter = todFrequency;
@@ -305,19 +351,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte Peek(int addr)
 		{
 			addr &= 0xF;
-			switch (addr)
-			{
-				case 0x00:
-					return ports[0].Data;
-				case 0x01:
-					return ports[1].Data;
-				case 0x02:
-					return ports[0].Direction;
-				case 0x03:
-					return ports[1].Direction;
-				default:
-					return regs[addr];
-			}
+			return regs[addr];
 		}
 
 		public void PerformCycle()
@@ -342,19 +376,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						if (regs.OUTMODE[i])
 						{
 							// clear bit if set
-							ports[1].Data &= (byte)~outputBitMask[i];
+							regs[0x01] &= (byte)~outputBitMask[i];
 						}
 						if (underflow[i])
 						{
 							if (regs.OUTMODE[i])
 							{
 								// toggle bit
-								ports[1].Data ^= outputBitMask[i];
+								regs[0x01] ^= outputBitMask[i];
 							}
 							else
 							{
 								// set for a cycle
-								ports[1].Data |= outputBitMask[i];
+								regs[0x01] |= outputBitMask[i];
 							}
 						}
 					}
@@ -365,24 +399,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void Poke(int addr, byte val)
 		{
 			addr &= 0xF;
-			switch (addr)
-			{
-				case 0x00:
-					ports[0].Data = val;
-					break;
-				case 0x01:
-					ports[1].Data = val;
-					break;
-				case 0x02:
-					ports[0].Direction = val;
-					break;
-				case 0x03:
-					ports[1].Direction = val;
-					break;
-				default:
-					regs[addr] = val;
-					break;
-			}
+			regs[addr] = val;
 		}
 
 		public byte Read(ushort addr)
@@ -392,14 +409,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			switch (addr)
 			{
-				case 0x00:
-					return ports[0].Data;
-				case 0x01:
-					return ports[1].Data;
-				case 0x02:
-					return ports[0].Direction;
-				case 0x03:
-					return ports[1].Direction;
 				case 0x08:
 					regs.TODREADLATCH = false;
 					return (byte)regs.TODREADLATCH10;
@@ -484,18 +493,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			addr &= 0xF;
 			switch (addr)
 			{
-				case 0x00:
-					ports[0].Data = val;
-					break;
-				case 0x01:
-					ports[1].Data = val;
-					break;
-				case 0x02:
-					ports[0].Direction = val;
-					break;
-				case 0x03:
-					ports[1].Direction = val;
-					break;
 				case 0x04:
 					regs.TLATCH[0] &= 0xFF00;
 					regs.TLATCH[0] |= val;

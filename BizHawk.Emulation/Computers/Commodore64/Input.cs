@@ -32,15 +32,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private byte keyboardColumnData = 0xFF;
 		private byte[] keyboardLatch = new byte[8];
 		private byte keyboardRowData = 0xFF;
-		private DirectionalDataPort[] ports;
+		private DataPortConnector[] ports;
 
-		public Input(DirectionalDataPort[] newPorts)
+		public Input(DataPortConnector[] newPorts)
 		{
 			ports = newPorts;
 
-			// attach input to a CIA I/O port
-			ports[0].WritePort = WritePortA;
-			ports[1].WritePort = WritePortB;
+			// set full output
+			ports[0].Direction = 0xFF;
+			ports[1].Direction = 0xFF;
 		}
 
 		private byte GetJoystickBits(int index)
@@ -97,8 +97,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 			port1result &= joystickLatch[0];
 
-			ports[0].RemoteData = port0result;
-			ports[1].RemoteData = port1result;
+			ports[0].Data = port0result;
+			ports[1].Data = port1result;
 		}
 
 		public void WritePortA(byte data)
