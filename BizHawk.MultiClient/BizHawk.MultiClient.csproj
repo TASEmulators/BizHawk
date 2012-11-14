@@ -933,6 +933,8 @@
     <None Include="config\ControllerImages\SNES_Controller.png" />
     <None Include="config\ControllerImages\TI83_Controller.png" />
     <None Include="images\GenesisControllerIcon.png" />
+    <None Include="config\ControllerImages\C64Joystick.png" />
+    <None Include="config\ControllerImages\C64Keyboard.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

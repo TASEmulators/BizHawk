@@ -92,6 +92,13 @@ namespace BizHawk.MultiClient
 			C64Autofire1Panel.LoadSettings(Global.Config.C64AutoJoysticks[0]);
 			C64Autofire2Panel.LoadSettings(Global.Config.C64AutoJoysticks[1]);
 
+			C64KeyboardPanel.Spacing = 23;
+			C64KeyboardPanel.InputSize = 70;
+			C64KeyboardPanel.LabelPadding = 4;
+			C64KeyboardPanel.ColumnWidth = 130;
+			C64KeyboardPanel.LabelWidth = 55;
+			C64KeyboardPanel.LoadSettings(Global.Config.C64Keyboard);
+
 			SetAutoTab(true);
 		}
 

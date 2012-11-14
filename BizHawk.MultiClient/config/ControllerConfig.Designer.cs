@@ -98,9 +98,15 @@
 			this.tabPage7 = new System.Windows.Forms.TabPage();
 			this.tabControl8 = new System.Windows.Forms.TabControl();
 			this.tabPage49 = new System.Windows.Forms.TabPage();
+			this.pictureBox8 = new System.Windows.Forms.PictureBox();
 			this.tabPage50 = new System.Windows.Forms.TabPage();
+			this.pictureBox9 = new System.Windows.Forms.PictureBox();
 			this.tabPage10 = new System.Windows.Forms.TabPage();
+			this.pictureBox10 = new System.Windows.Forms.PictureBox();
 			this.tabPage11 = new System.Windows.Forms.TabPage();
+			this.pictureBox11 = new System.Windows.Forms.PictureBox();
+			this.tabPage12 = new System.Windows.Forms.TabPage();
+			this.pictureBox12 = new System.Windows.Forms.PictureBox();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.pictureBox7 = new System.Windows.Forms.PictureBox();
 			this.Cancel = new System.Windows.Forms.Button();
@@ -154,6 +160,7 @@
 			this.C64Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.C64Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.C64Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.C64KeyboardPanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
@@ -223,9 +230,15 @@
 			this.tabPage7.SuspendLayout();
 			this.tabControl8.SuspendLayout();
 			this.tabPage49.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
 			this.tabPage50.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
 			this.tabPage10.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
 			this.tabPage11.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).BeginInit();
+			this.tabPage12.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
 			this.tabPage8.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.SuspendLayout();
@@ -1013,57 +1026,136 @@
 			// 
 			// tabControl8
 			// 
+			this.tabControl8.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControl8.Controls.Add(this.tabPage49);
 			this.tabControl8.Controls.Add(this.tabPage50);
 			this.tabControl8.Controls.Add(this.tabPage10);
 			this.tabControl8.Controls.Add(this.tabPage11);
-			this.tabControl8.Location = new System.Drawing.Point(15, 15);
+			this.tabControl8.Controls.Add(this.tabPage12);
+			this.tabControl8.Location = new System.Drawing.Point(5, 6);
 			this.tabControl8.Name = "tabControl8";
 			this.tabControl8.SelectedIndex = 0;
-			this.tabControl8.Size = new System.Drawing.Size(540, 387);
+			this.tabControl8.Size = new System.Drawing.Size(769, 416);
 			this.tabControl8.TabIndex = 0;
 			// 
 			// tabPage49
 			// 
+			this.tabPage49.Controls.Add(this.pictureBox8);
 			this.tabPage49.Controls.Add(this.C64Controller1Panel);
 			this.tabPage49.Location = new System.Drawing.Point(4, 22);
 			this.tabPage49.Name = "tabPage49";
 			this.tabPage49.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage49.Size = new System.Drawing.Size(532, 361);
+			this.tabPage49.Size = new System.Drawing.Size(761, 390);
 			this.tabPage49.TabIndex = 0;
 			this.tabPage49.Text = "Joy 1";
 			this.tabPage49.UseVisualStyleBackColor = true;
 			// 
+			// pictureBox8
+			// 
+			this.pictureBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox8.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox8.Image = global::BizHawk.MultiClient.Properties.Resources.C64Joystick;
+			this.pictureBox8.Location = new System.Drawing.Point(618, 6);
+			this.pictureBox8.Name = "pictureBox8";
+			this.pictureBox8.Size = new System.Drawing.Size(137, 163);
+			this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox8.TabIndex = 5;
+			this.pictureBox8.TabStop = false;
+			// 
 			// tabPage50
 			// 
+			this.tabPage50.Controls.Add(this.pictureBox9);
 			this.tabPage50.Controls.Add(this.C64Controller2Panel);
 			this.tabPage50.Location = new System.Drawing.Point(4, 22);
 			this.tabPage50.Name = "tabPage50";
 			this.tabPage50.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage50.Size = new System.Drawing.Size(532, 361);
+			this.tabPage50.Size = new System.Drawing.Size(761, 390);
 			this.tabPage50.TabIndex = 1;
 			this.tabPage50.Text = "Joy 2";
 			this.tabPage50.UseVisualStyleBackColor = true;
 			// 
+			// pictureBox9
+			// 
+			this.pictureBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox9.Image = global::BizHawk.MultiClient.Properties.Resources.C64Joystick;
+			this.pictureBox9.Location = new System.Drawing.Point(621, 6);
+			this.pictureBox9.Name = "pictureBox9";
+			this.pictureBox9.Size = new System.Drawing.Size(137, 163);
+			this.pictureBox9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox9.TabIndex = 6;
+			this.pictureBox9.TabStop = false;
+			// 
 			// tabPage10
 			// 
+			this.tabPage10.Controls.Add(this.pictureBox10);
 			this.tabPage10.Controls.Add(this.C64Autofire1Panel);
 			this.tabPage10.Location = new System.Drawing.Point(4, 22);
 			this.tabPage10.Name = "tabPage10";
-			this.tabPage10.Size = new System.Drawing.Size(532, 361);
+			this.tabPage10.Size = new System.Drawing.Size(761, 390);
 			this.tabPage10.TabIndex = 2;
 			this.tabPage10.Text = "Autojoy 1";
 			this.tabPage10.UseVisualStyleBackColor = true;
 			// 
+			// pictureBox10
+			// 
+			this.pictureBox10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox10.Image = global::BizHawk.MultiClient.Properties.Resources.C64Joystick;
+			this.pictureBox10.Location = new System.Drawing.Point(621, 3);
+			this.pictureBox10.Name = "pictureBox10";
+			this.pictureBox10.Size = new System.Drawing.Size(137, 163);
+			this.pictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox10.TabIndex = 7;
+			this.pictureBox10.TabStop = false;
+			// 
 			// tabPage11
 			// 
+			this.tabPage11.Controls.Add(this.pictureBox11);
 			this.tabPage11.Controls.Add(this.C64Autofire2Panel);
 			this.tabPage11.Location = new System.Drawing.Point(4, 22);
 			this.tabPage11.Name = "tabPage11";
-			this.tabPage11.Size = new System.Drawing.Size(532, 361);
+			this.tabPage11.Size = new System.Drawing.Size(761, 390);
 			this.tabPage11.TabIndex = 3;
 			this.tabPage11.Text = "Autojoy 2";
 			this.tabPage11.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox11
+			// 
+			this.pictureBox11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox11.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox11.Image = global::BizHawk.MultiClient.Properties.Resources.C64Joystick;
+			this.pictureBox11.Location = new System.Drawing.Point(621, 3);
+			this.pictureBox11.Name = "pictureBox11";
+			this.pictureBox11.Size = new System.Drawing.Size(137, 163);
+			this.pictureBox11.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox11.TabIndex = 8;
+			this.pictureBox11.TabStop = false;
+			// 
+			// tabPage12
+			// 
+			this.tabPage12.Controls.Add(this.C64KeyboardPanel);
+			this.tabPage12.Controls.Add(this.pictureBox12);
+			this.tabPage12.Location = new System.Drawing.Point(4, 22);
+			this.tabPage12.Name = "tabPage12";
+			this.tabPage12.Size = new System.Drawing.Size(761, 390);
+			this.tabPage12.TabIndex = 4;
+			this.tabPage12.Text = "Keyboard";
+			this.tabPage12.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox12
+			// 
+			this.pictureBox12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox12.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox12.Image = global::BizHawk.MultiClient.Properties.Resources.C64Keyboard;
+			this.pictureBox12.Location = new System.Drawing.Point(148, 3);
+			this.pictureBox12.Name = "pictureBox12";
+			this.pictureBox12.Size = new System.Drawing.Size(398, 122);
+			this.pictureBox12.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox12.TabIndex = 9;
+			this.pictureBox12.TabStop = false;
 			// 
 			// tabPage8
 			// 
@@ -1462,6 +1554,16 @@
 			this.C64Autofire2Panel.Size = new System.Drawing.Size(369, 332);
 			this.C64Autofire2Panel.TabIndex = 4;
 			// 
+			// C64KeyboardPanel
+			// 
+			this.C64KeyboardPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.C64KeyboardPanel.Location = new System.Drawing.Point(4, 131);
+			this.C64KeyboardPanel.Name = "C64KeyboardPanel";
+			this.C64KeyboardPanel.Size = new System.Drawing.Size(754, 259);
+			this.C64KeyboardPanel.TabIndex = 10;
+			// 
 			// TI83ControllerPanel
 			// 
 			this.TI83ControllerPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1555,9 +1657,15 @@
 			this.tabPage7.ResumeLayout(false);
 			this.tabControl8.ResumeLayout(false);
 			this.tabPage49.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
 			this.tabPage50.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
 			this.tabPage10.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
 			this.tabPage11.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).EndInit();
+			this.tabPage12.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();
 			this.tabPage8.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.ResumeLayout(false);
@@ -1694,5 +1802,12 @@
 		private ControllerConfigPanel C64Controller2Panel;
 		private ControllerConfigPanel C64Autofire1Panel;
 		private ControllerConfigPanel C64Autofire2Panel;
+		private System.Windows.Forms.PictureBox pictureBox8;
+		private System.Windows.Forms.PictureBox pictureBox9;
+		private System.Windows.Forms.PictureBox pictureBox10;
+		private System.Windows.Forms.PictureBox pictureBox11;
+		private System.Windows.Forms.TabPage tabPage12;
+		private ControllerConfigPanel C64KeyboardPanel;
+		private System.Windows.Forms.PictureBox pictureBox12;
 	}
 }
