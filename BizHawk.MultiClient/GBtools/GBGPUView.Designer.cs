@@ -56,9 +56,9 @@
 			this.checkBoxSavePos = new System.Windows.Forms.CheckBox();
 			this.checkBoxAutoLoad = new System.Windows.Forms.CheckBox();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
-			this.panelSpriteBackColor = new System.Windows.Forms.Panel();
-			this.buttonChangeColor = new System.Windows.Forms.Button();
 			this.labelSpriteBackColor = new System.Windows.Forms.Label();
+			this.buttonChangeColor = new System.Windows.Forms.Button();
+			this.panelSpriteBackColor = new System.Windows.Forms.Panel();
 			this.bmpViewMemory = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewDetails = new BizHawk.MultiClient.GBtools.BmpView();
 			this.bmpViewOAM = new BizHawk.MultiClient.GBtools.BmpView();
@@ -379,13 +379,14 @@
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "Sprite Backdrop";
 			// 
-			// panelSpriteBackColor
+			// labelSpriteBackColor
 			// 
-			this.panelSpriteBackColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.panelSpriteBackColor.Location = new System.Drawing.Point(6, 19);
-			this.panelSpriteBackColor.Name = "panelSpriteBackColor";
-			this.panelSpriteBackColor.Size = new System.Drawing.Size(55, 23);
-			this.panelSpriteBackColor.TabIndex = 0;
+			this.labelSpriteBackColor.AutoSize = true;
+			this.labelSpriteBackColor.Location = new System.Drawing.Point(67, 24);
+			this.labelSpriteBackColor.Name = "labelSpriteBackColor";
+			this.labelSpriteBackColor.Size = new System.Drawing.Size(35, 13);
+			this.labelSpriteBackColor.TabIndex = 2;
+			this.labelSpriteBackColor.Text = "label8";
 			// 
 			// buttonChangeColor
 			// 
@@ -397,14 +398,13 @@
 			this.buttonChangeColor.UseVisualStyleBackColor = true;
 			this.buttonChangeColor.Click += new System.EventHandler(this.buttonChangeColor_Click);
 			// 
-			// labelSpriteBackColor
+			// panelSpriteBackColor
 			// 
-			this.labelSpriteBackColor.AutoSize = true;
-			this.labelSpriteBackColor.Location = new System.Drawing.Point(67, 24);
-			this.labelSpriteBackColor.Name = "labelSpriteBackColor";
-			this.labelSpriteBackColor.Size = new System.Drawing.Size(35, 13);
-			this.labelSpriteBackColor.TabIndex = 2;
-			this.labelSpriteBackColor.Text = "label8";
+			this.panelSpriteBackColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panelSpriteBackColor.Location = new System.Drawing.Point(6, 19);
+			this.panelSpriteBackColor.Name = "panelSpriteBackColor";
+			this.panelSpriteBackColor.Size = new System.Drawing.Size(55, 23);
+			this.panelSpriteBackColor.TabIndex = 0;
 			// 
 			// bmpViewMemory
 			// 
@@ -520,7 +520,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(834, 580);
+			this.ClientSize = new System.Drawing.Size(834, 578);
 			this.Controls.Add(this.groupBox8);
 			this.Controls.Add(this.groupBox7);
 			this.Controls.Add(this.groupBox6);

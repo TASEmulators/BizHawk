@@ -425,7 +425,7 @@ namespace BizHawk.MultiClient
 		public bool GBGPUViewSaveWindowPosition = true;
 		public int GBGPUViewWndx = -1;
 		public int GBGPUViewWndy = -1;
-
+		public Color GBGPUSpriteBack = Color.Lime;
 
 		// SNES Graphics Debugger Dialog Settings
 		public bool AutoLoadSNESGraphicsDebugger = false;

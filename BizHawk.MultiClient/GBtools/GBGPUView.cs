@@ -67,7 +67,7 @@ namespace BizHawk.MultiClient.GBtools
 			checkBoxSavePos.Checked = Global.Config.GBGPUViewSaveWindowPosition;
 
 			// TODO: from config
-			spriteback = Color.Black;
+			spriteback = Color.FromArgb(255, Global.Config.GBGPUSpriteBack);
 		}
 
 		public void Restart()
@@ -472,6 +472,7 @@ namespace BizHawk.MultiClient.GBtools
 				gb.SetScanlineCallback(null, 0);
 				gb = null;
 			}
+			Global.Config.GBGPUSpriteBack = spriteback;
 		}
 
 		private void GBGPUView_Load(object sender, EventArgs e)
