@@ -103,7 +103,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				if (diskDriveAttached)
 					diskDrive.PerformCycle();
 				cia0.PerformCycle();
+				signal.CiaIRQ0 = cia0.IRQ;
 				cia1.PerformCycle();
+				signal.CiaIRQ1 = cia1.IRQ;
 			}
 
 			if (_islag)

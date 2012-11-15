@@ -13,6 +13,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int ALARMMIN; // alarm minutes
 		public bool ALARMPM; // alarm AM/PM
 		public int ALARMSEC; // alarm seconds
+		public bool EIALARM; // enable alarm interrupt (internal)
+		public bool EIFLAG; // enable flag pin interrupt (internal)
+		public bool EISP; // enable shift register interrupt (internal)
+		public bool[] EIT = new bool[2]; // enable timer interrupt (internal)
 		public bool IALARM; // alarm interrupt triggered
 		public bool IFLG; // interrupt triggered on FLAG pin
 		public int[] INMODE = new int[2]; // timer input mode
@@ -348,6 +352,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			todCounter = todFrequency;
 		}
 
+		public bool IRQ
+		{
+			get
+			{
+				return regs.IRQ;
+			}
+		}
+
 		public byte Peek(int addr)
 		{
 			addr &= 0xF;
@@ -394,6 +406,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					}
 				}
 			}
+
+			UpdateInterrupt();
 		}
 
 		public void Poke(int addr, byte val)
@@ -463,6 +477,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				underflow[index] = false;
 			}
 
+			regs.IT[index] |= underflow[index];
 			regs.T[index] = timer;
 		}
 
@@ -486,6 +501,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						TimerDec(index);
 					break;
 			}
+		}
+
+		public void UpdateInterrupt()
+		{
+			bool irq = false;
+			irq |= (regs.EIT[0] & regs.IT[0]);
+			irq |= (regs.EIT[1] & regs.IT[1]);
+			irq |= (regs.EIFLAG & regs.IFLG);
+			irq |= (regs.EISP & regs.ISP);
+			irq |= (regs.EIALARM & regs.IALARM);
+			regs.IRQ = irq;
 		}
 
 		public void Write(ushort addr, byte val)
@@ -550,6 +576,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					intMask &= ~val;
 					if ((val & 0x80) != 0x00)
 						intMask ^= val;
+					regs.EIT[0] = ((intMask & 0x01) != 0x00);
+					regs.EIT[1] = ((intMask & 0x02) != 0x00);
+					regs.EIALARM = ((intMask & 0x04) != 0x00);
+					regs.EISP = ((intMask & 0x08) != 0x00);
+					regs.EIFLAG = ((intMask & 0x10) != 0x00);
 					break;
 				default:
 					regs[addr] = val;
