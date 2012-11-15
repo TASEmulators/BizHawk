@@ -5,7 +5,10 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	class SidWaveformCalculator
+	// constants for the WaveformCalculator and calculation
+	// methods come from the libsidplayfp residfp library.
+
+	static class WaveformCalculator
 	{
 		struct CombinedWaveformConfig
 		{
@@ -33,13 +36,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			new CombinedWaveformConfig(0.9527834f, 1.794777f, 0.0f, 0.09806272f, 0.7752482f)
 		};
 
-		public short[][] BuildTable()
+		public static short[][] BuildTable()
 		{
 			short[][] wftable = new short[8][];
 			for (int i = 0; i < 8; i++)
 				wftable[i] = new short[4096];
 
-			for (int accumulator = 0; accumulator < 1 << 24; accumulator += 1 << 12)
+			for (int accumulator = 0; accumulator < (1 << 24); accumulator += (1 << 12))
 			{
 				int idx = (accumulator >> 12);
 				wftable[0][idx] = 0xFFF;
@@ -55,7 +58,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return wftable;
 		}
 
-		private short CalculateCombinedWaveForm(CombinedWaveformConfig config, int waveform, int accumulator)
+		private static short CalculateCombinedWaveForm(CombinedWaveformConfig config, int waveform, int accumulator)
 		{
 			float[] o = new float[12];
 

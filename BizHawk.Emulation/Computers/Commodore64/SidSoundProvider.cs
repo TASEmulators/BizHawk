@@ -78,24 +78,31 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			if (sampleCounter == 0)
 			{
-				short output;
-				output = Mix(voices[0].OSC, voices[0].ENV, 0);
-				output = Mix(voices[1].OSC, voices[1].ENV, output);
-				
-				// voice 3 can be disabled with a specific register, but
-				// when the filter is enabled, it still plays
-				if (!regs.D3 || voices[2].FILT)
-					output = Mix(voices[2].OSC, voices[2].ENV, output);
+				int mixer;
+
+				mixer = voices[0].Output();
+				mixer += voices[1].Output();
+				mixer += voices[2].Output();
+
+				// the mixer is very loud at this point, let's make it quieter
+				mixer /= 6;
+
+				if (mixer > 32767)
+					mixer = 326767;
+				else if (mixer < -32768)
+					mixer = -32768;
+
+				short output = (short)mixer;
 
 				// run twice since the buffer expects stereo sound (I THINK)
 				for (int i = 0; i < 2; i++)
 				{
-					sampleCounter = cyclesPerSample;
 					sampleBufferIndex++;
 					if (sampleBufferIndex == sampleBufferCapacity)
 						sampleBufferIndex = 0;
 					sampleBuffer[sampleBufferIndex] = output;
 				}
+				sampleCounter = cyclesPerSample;
 			}
 			sampleCounter--;
 		}
