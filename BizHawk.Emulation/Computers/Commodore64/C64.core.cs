@@ -71,6 +71,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initialize cpu hard reset vector
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) + (ReadMemory(0xFFFD) << 8));
+			cpu.BCD_Enabled = true;
 
 			// initailize input
 			input = new Input( new DataPortConnector[] { cia0.ConnectPort(0), cia0.ConnectPort(1) } );
