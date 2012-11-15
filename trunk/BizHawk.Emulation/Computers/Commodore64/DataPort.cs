@@ -11,13 +11,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private bool[] connected = new bool[2];
 		private byte[] direction = new byte[2];
 		private byte[] latch = new byte[2];
+		private List<int> servingHooks = new List<int>();
 		private List<Action> writeHooks = new List<Action>();
 
 		public DataPortBus()
 		{
 			connectors = new DataPortConnector[2];
-			connectors[0] = new DataPortConnector(ReadData0, ReadDirection0, WriteData0, WriteDirection0);
-			connectors[1] = new DataPortConnector(ReadData1, ReadDirection1, WriteData1, WriteDirection1);
+			connectors[0] = new DataPortConnector(ReadData0, ReadDirection0, ReadRemoteData0, WriteData0, WriteDirection0);
+			connectors[1] = new DataPortConnector(ReadData1, ReadDirection1, ReadRemoteData1, WriteData1, WriteDirection1);
 			connected[0] = false;
 			connected[1] = false;
 			direction[0] = 0x00;
@@ -29,6 +30,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void AttachWriteHook(Action act)
 		{
 			writeHooks.Add(act);
+			servingHooks.Add(0);
+		}
+
+		private void ClearHooks()
+		{
+			int count = servingHooks.Count;
+			for (int i = 0; i < count; i++)
+				servingHooks[i]--;
 		}
 
 		public DataPortConnector Connect()
@@ -64,6 +73,24 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		private void ExecuteWriteHooks()
+		{
+			int count = servingHooks.Count;
+			for (int i = 0; i < count; i++)
+			{
+				if (servingHooks[i] == 0)
+				{
+					servingHooks[i]++;
+					writeHooks[i]();
+				}
+				else
+				{
+					servingHooks[i]++;
+				}
+			}
+			ClearHooks();
+		}
+
 		private byte ReadData0()
 		{
 			if (connected[1])
@@ -90,34 +117,40 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return direction[1];
 		}
 
+		private byte ReadRemoteData0()
+		{
+			return latch[1];
+		}
+
+		private byte ReadRemoteData1()
+		{
+			return latch[0];
+		}
+
 		private void WriteData0(byte val)
 		{
 			latch[0] &= (byte)~direction[0];
 			latch[0] |= (byte)(val & direction[0]);
-			foreach (Action hook in writeHooks)
-				hook();
+			ExecuteWriteHooks();
 		}
 
 		private void WriteData1(byte val)
 		{
 			latch[1] &= (byte)~direction[1];
 			latch[1] |= (byte)(val & direction[1]);
-			foreach (Action hook in writeHooks)
-				hook();
+			ExecuteWriteHooks();
 		}
 
 		private void WriteDirection0(byte val)
 		{
 			direction[0] = val;
-			foreach (Action hook in writeHooks)
-				hook();
+			ExecuteWriteHooks();
 		}
 
 		private void WriteDirection1(byte val)
 		{
 			direction[1] = val;
-			foreach (Action hook in writeHooks)
-				hook();
+			ExecuteWriteHooks();
 		}
 	}
 
@@ -125,13 +158,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		private Func<byte> ReadData;
 		private Func<byte> ReadDirection;
+		private Func<byte> ReadRemoteData;
 		private Action<byte> WriteData;
 		private Action<byte> WriteDirection;
 
-		public DataPortConnector(Func<byte> newReadData, Func<byte> newReadDirection, Action<byte> newWriteData, Action<byte> newWriteDirection)
+		public DataPortConnector(Func<byte> newReadData, Func<byte> newReadDirection, Func<byte> newReadRemoteData, Action<byte> newWriteData, Action<byte> newWriteDirection)
 		{
 			ReadData = newReadData;
 			ReadDirection = newReadDirection;
+			ReadRemoteData = newReadRemoteData;
 			WriteData = newWriteData;
 			WriteDirection = newWriteDirection;
 		}
@@ -157,6 +192,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			set
 			{
 				WriteDirection(value);
+			}
+		}
+
+		public byte RemoteData
+		{
+			get
+			{
+				return ReadRemoteData();
 			}
 		}
 
