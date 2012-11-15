@@ -13,10 +13,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int ALARMMIN; // alarm minutes
 		public bool ALARMPM; // alarm AM/PM
 		public int ALARMSEC; // alarm seconds
+		public bool CNT; // external counter bit input
 		public bool EIALARM; // enable alarm interrupt (internal)
-		public bool EIFLAG; // enable flag pin interrupt (internal)
+		public bool EIFLG; // enable flag pin interrupt (internal)
 		public bool EISP; // enable shift register interrupt (internal)
 		public bool[] EIT = new bool[2]; // enable timer interrupt (internal)
+		public bool FLG; // external flag bit input
 		public bool IALARM; // alarm interrupt triggered
 		public bool IFLG; // interrupt triggered on FLAG pin
 		public int[] INMODE = new int[2]; // timer input mode
@@ -28,9 +30,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool[] PBON = new bool[2]; // port bit modify on
 		public bool[] RUNMODE = new bool[2]; // running mode
 		public int SDR; // serial shift register
+		public int SDRCOUNT; // serial shift register bit count
 		public bool SPMODE; // shift register mode
 		public bool[] START = new bool[2]; // timer enabled
 		public int[] T = new int[2]; // timer counter
+		public bool[] TICK = new bool[2]; // execute timer tick
 		public int[] TLATCH = new int[2]; // timer latch (internal)
 		public int TOD10; // time of day 10ths of a second
 		public bool TODIN; // time of day/alarm set
@@ -248,7 +252,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte[] outputBitMask;
 		private CiaRegs regs;
 		public ChipSignals signal;
-		public bool thisCNT;
 		public int todCounter;
 		public int todFrequency;
 		public bool[] underflow;
@@ -368,9 +371,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void PerformCycle()
 		{
-			lastCNT = thisCNT;
-			thisCNT = ReadSerial();
-
 			// process time of day counter
 			todCounter--;
 			if (todCounter <= 0)
@@ -407,6 +407,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 
+			lastCNT = regs.CNT;
+			regs.CNT = false;
 			UpdateInterrupt();
 		}
 
@@ -487,20 +489,22 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (regs.INMODE[index])
 			{
 				case 0:
-					TimerDec(index);
+					regs.TICK[index] = true;
 					break;
 				case 1:
-					if (thisCNT & !lastCNT)
-						TimerDec(index);
+					regs.TICK[index] |= (regs.CNT && !lastCNT);
 					break;
 				case 2:
-					if (underflow[0])
-						TimerDec(index);
+					regs.TICK[index] |= underflow[0];
 					break;
 				case 3:
-					if (underflow[0] || (thisCNT & !lastCNT))
-						TimerDec(index);
+					regs.TICK[index] |= (regs.CNT && !lastCNT) || underflow[0];
 					break;
+			}
+			if (regs.TICK[index])
+			{
+				TimerDec(index);
+				regs.TICK[index] = false;
 			}
 		}
 
@@ -509,7 +513,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			bool irq = false;
 			irq |= (regs.EIT[0] & regs.IT[0]);
 			irq |= (regs.EIT[1] & regs.IT[1]);
-			irq |= (regs.EIFLAG & regs.IFLG);
+			irq |= (regs.EIFLG & regs.IFLG);
 			irq |= (regs.EISP & regs.ISP);
 			irq |= (regs.EIALARM & regs.IALARM);
 			regs.IRQ = irq;
@@ -581,7 +585,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					regs.EIT[1] = ((intMask & 0x02) != 0x00);
 					regs.EIALARM = ((intMask & 0x04) != 0x00);
 					regs.EISP = ((intMask & 0x08) != 0x00);
-					regs.EIFLAG = ((intMask & 0x10) != 0x00);
+					regs.EIFLG = ((intMask & 0x10) != 0x00);
 					UpdateInterrupt();
 					break;
 				default:
@@ -589,6 +593,45 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					break;
 			}
 			
+		}
+
+		public void WriteCNT(bool val)
+		{
+			if (!lastCNT && val)
+			{
+				if (!regs.SPMODE)
+				{
+					// read bit into shift register
+					bool inputBit = ReadSerial();
+					regs.SDR = ((regs.SDR << 1) | (inputBit ? 0x01 : 0x00)) & 0xFF;
+
+					regs.SDRCOUNT = (regs.SDRCOUNT - 1) & 0x7;
+					if (regs.SDRCOUNT == 0)
+					{
+						regs.ISP = true;
+					}
+				}
+				else
+				{
+					// write bit out from shift register
+					bool outputBit = ((regs.SDR & 0x01) != 0);
+					regs.SDR >>= 1;
+					WriteSerial(outputBit);
+
+					regs.SDRCOUNT = (regs.SDRCOUNT - 1) & 0x7;
+					if (regs.SDRCOUNT == 0)
+					{
+						regs.ISP = true;
+					}
+				}
+			}
+			regs.CNT = val;
+		}
+
+		public void WriteFLG(bool val)
+		{
+			regs.FLG = val;
+			regs.IFLG |= val;
 		}
 
 		private void WriteSerialDummy(bool val)
