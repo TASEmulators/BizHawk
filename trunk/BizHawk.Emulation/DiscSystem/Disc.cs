@@ -235,12 +235,23 @@ namespace BizHawk.DiscSystem
 				buffer[offset + 14] = bcd_aba_frac;
 				//mode 1
 				buffer[offset + 15] = 1;
-				//EDC
-				ECM.edc_computeblock(buffer, offset+2064, buffer, offset+2064);
+
+				//calculate EDC and poke into the sector
+				uint edc = ECM.EDC_Calc(buffer, offset);
+				buffer[offset + 2064 + 0] = (byte)((edc >> 0) & 0xFF);
+				buffer[offset + 2064 + 1] = (byte)((edc >> 8) & 0xFF);
+				buffer[offset + 2064 + 2] = (byte)((edc >> 16) & 0xFF);
+				buffer[offset + 2064 + 3] = (byte)((edc >> 24) & 0xFF);
 				//intermediate
 				for (int i = 0; i < 8; i++) buffer[offset + 2068 + i] = 0;
 				//ECC
-				ECM.ecc_generate(buffer, offset, false, buffer, offset+2076);
+				ECM.ECC_Populate(buffer, offset, buffer, offset, false);
+
+				//VALIDATION - check our homemade algorithms against code derived from ECM
+				////EDC
+				//GPL_ECM.edc_validateblock(buffer, 2064, buffer, offset + 2064);
+				////ECC
+				//GPL_ECM.ecc_validate(buffer, offset, false);
 				
 				//if we read the 2048 physical bytes OK, then return the complete sector
 				if (read == 2048)
