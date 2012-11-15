@@ -1194,24 +1194,24 @@ namespace BizHawk.MultiClient
 				F5 = "F5";
 				F7 = "F7";
 
-				Left_Arrow = "";
-				_1 = "1";
-				_2 = "2";
-				_4 = "3";
-				_3 = "4";
-				_5 = "5";
-				_6 = "6";
-				_7 = "7";
-				_8 = "8";
-				_9 = "9";
-				_0 = "0";
+				Left_Arrow = "Grave";
+				_1 = "D1";
+				_2 = "D2";
+				_4 = "D4";
+				_3 = "D3";
+				_5 = "D5";
+				_6 = "D6";
+				_7 = "D7";
+				_8 = "D8";
+				_9 = "D9";
+				_0 = "D0";
 				Plus = "Equals";
 				Minus = "Minus";
-				Pound = "";
-				Clear_Home = "";
-				Insert_Delete = "";
+				Pound = "Insert";
+				Clear_Home = "Delete";
+				Insert_Delete = "Backspace";
 
-				Control = "";
+				Control = "Tab";
 				Q = "Q";
 				W = "W";
 				E = "E";
@@ -1222,11 +1222,11 @@ namespace BizHawk.MultiClient
 				I = "I";
 				O = "O";
 				P = "P";
-				At = "";
-				Asterisk = "";
-				Up_Arrow = "";
+				At = "LeftBracket";
+				Asterisk = "RightBracket";
+				Up_Arrow = "Backslash";
 
-				Run_Stop = "";
+				Run_Stop = "CapsLock";
 				A = "A";
 				S = "S";
 				D = "D";
@@ -1238,10 +1238,10 @@ namespace BizHawk.MultiClient
 				L = "L";
 				Colon = "Semicolon";
 				Semicolon = "Apostrophe";
-				Equal = "";
+				Equal = "RightControl";
 				Return = "Return";
 
-				Commodore = "";
+				Commodore = "LeftControl";
 				Left_Shift = "LeftShift";
 				Z = "Z";
 				X = "X";
@@ -1254,8 +1254,8 @@ namespace BizHawk.MultiClient
 				Period = "Period";
 				Slash = "Slash";
 				Right_Shift = "RightShift";
-				Cursor_Up_Down = "";
-				Cursor_Left_Right = "";
+				Cursor_Up_Down = "DownArrow";
+				Cursor_Left_Right = "RightArrow";
 
 				Space = "Space";
 			}
