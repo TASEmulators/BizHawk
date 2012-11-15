@@ -1054,6 +1054,14 @@ namespace BizHawk
 					byte_8[j++] = (byte)(byte_8[i] + a);
 			}
 		}
+
+		public static uint reverse_32(uint v)
+		{
+			return (uint)((byte_8[v & 0xff] << 24) |
+					(byte_8[(v >> 8) & 0xff] << 16) |
+					(byte_8[(v >> 16) & 0xff] << 8) |
+					(byte_8[(v >> 24) & 0xff]));
+		}
 	}
 
 	/// <summary>

@@ -465,6 +465,7 @@
     <Compile Include="DiscSystem\ECM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DiscSystem\GPL_ECM.cs" />
     <Compile Include="DiscSystem\Subcode.cs">
       <SubType>Code</SubType>
     </Compile>
