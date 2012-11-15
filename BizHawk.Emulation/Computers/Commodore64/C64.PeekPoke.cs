@@ -22,6 +22,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return (byte)((mem.colorRam[addr & 0x3FF] & 0xF) | mem.busData);
 		}
 
+		public byte PeekDiskDrive(int addr)
+		{
+			if (diskDriveAttached)
+				return diskDrive.Peek(addr);
+			return 0xFF;
+		}
+
 		public byte PeekMemory(ushort addr)
 		{
 			return mem.Peek(addr);
@@ -60,6 +67,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void PokeColorRAM(int addr, byte val)
 		{
 			mem.colorRam[addr & 0x3FF] = (byte)(val & 0xF);
+		}
+
+		public void PokeDiskDrive(int addr, byte val)
+		{
+			if (diskDriveAttached)
+				diskDrive.Poke(addr, val);
 		}
 
 		public void PokeMemoryInt(int addr, byte val)

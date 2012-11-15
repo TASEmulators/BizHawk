@@ -49,6 +49,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void HardReset()
 		{
 			cpu = new MOS6502X();
+			cpu.PC = (ushort)(Read(0xFFFC) + (Read(0xFFFD) << 8));
+			cpu.ReadMemory = Read;
+			cpu.WriteMemory = Write;
+			cpu.DummyReadMemory = Read;
+
 			ram = new byte[0x800];
 			via0 = new Via();
 			via1 = new Via();
@@ -60,8 +65,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			disk = newDisk;
 		}
 
-		public byte Peek(ushort addr)
+		public byte Peek(int addr)
 		{
+			addr &= 0xFFFF;
 			if (addr < 0x0800)
 			{
 				return ram[addr];
@@ -83,10 +89,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void PerformCycle()
 		{
+			cpu.ExecuteOne();
 		}
 
-		public void Poke(ushort addr, byte val)
+		public void Poke(int addr, byte val)
 		{
+			addr &= 0xFFFF;
 			if (addr < 0x0800)
 			{
 				ram[addr] = val;
