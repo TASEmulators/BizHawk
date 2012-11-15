@@ -16,8 +16,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int IFR;
 		public int PCR;
 		public int SR;
-		public int[] TC;
-		public int[] TL;
+		public int[] TC = new int[2];
+		public int[] TL = new int[2];
 
 		public ViaRegs()
 		{
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 	public class Via
 	{
-		public ViaRegs regs;
+		private ViaRegs regs;
 
 		public Via()
 		{
@@ -66,6 +66,26 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void HardReset()
 		{
 			regs = new ViaRegs();
+		}
+
+		public byte Peek(int addr)
+		{
+			addr &= 0xF;
+			return 0;
+		}
+
+		public void Poke(int addr, byte val)
+		{
+			addr &= 0xF;
+		}
+
+		public byte Read(ushort addr)
+		{
+			return 0x00;
+		}
+
+		public void Write(ushort addr, byte val)
+		{
 		}
 	}
 }

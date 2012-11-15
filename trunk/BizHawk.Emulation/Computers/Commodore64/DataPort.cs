@@ -162,6 +162,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private Action<byte> WriteData;
 		private Action<byte> WriteDirection;
 
+		public DataPortConnector(DataPortConnector source)
+		{
+			ReadData = source.ReadData;
+			ReadDirection = source.ReadDirection;
+			ReadRemoteData = source.ReadRemoteData;
+			WriteData = source.WriteData;
+			WriteDirection = source.WriteDirection;
+		}
+
 		public DataPortConnector(Func<byte> newReadData, Func<byte> newReadDirection, Func<byte> newReadRemoteData, Action<byte> newWriteData, Action<byte> newWriteDirection)
 		{
 			ReadData = newReadData;

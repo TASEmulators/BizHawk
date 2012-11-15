@@ -74,11 +74,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 			else if (addr >= 0x1800 && addr < 0x1810)
 			{
-				return via0.regs[addr];
+				return via0.Peek(addr);
 			}
 			else if (addr >= 0x1C00 && addr < 0x1C10)
 			{
-				return via1.regs[addr];
+				return via1.Peek(addr);
 			}
 			else if (addr >= 0xC000)
 			{
@@ -101,11 +101,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 			else if (addr >= 0x1800 && addr < 0x1810)
 			{
-				via0.regs[addr] = val;
+				via0.Poke(addr, val);
 			}
 			else if (addr >= 0x1C00 && addr < 0x1C10)
 			{
-				via1.regs[addr] = val;
+				via1.Poke(addr, val);
 			}
 		}
 
@@ -117,11 +117,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 			else if (addr >= 0x1800 && addr < 0x1810)
 			{
-				return via0.regs[addr];
+				return via0.Read(addr);
 			}
 			else if (addr >= 0x1C00 && addr < 0x1C10)
 			{
-				return via1.regs[addr];
+				return via1.Read(addr);
 			}
 			else if (addr >= 0xC000)
 			{
@@ -144,11 +144,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 			else if (addr >= 0x1800 && addr < 0x1810)
 			{
-				via0.regs[addr] = val;
+				via0.Write(addr, val);
 			}
 			else if (addr >= 0x1C00 && addr < 0x1C10)
 			{
-				via1.regs[addr] = val;
+				via1.Write(addr, val);
 			}
 		}
 	}

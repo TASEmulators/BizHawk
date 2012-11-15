@@ -39,6 +39,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		//private Emulation.Sound.Utilities.DCFilter sidDCFilter;
 		private SidSyncSoundProvider syncSid;
 
+		public bool DriveLED
+		{
+			get
+			{
+				if (diskDriveAttached)
+				{
+					return (diskDrive.Peek(0x1C00) & 0x8) != 0;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
 		public void HardReset()
 		{
 			// initalize cpu
