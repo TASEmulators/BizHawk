@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	// constants for the WaveformGenerator and calculation
 	// methods come from the libsidplayfp residfp library.
 
-	class WaveformGenerator
+	public class WaveformGenerator
 	{
 		private int accumulator;
 		private int floatingOutputTtl;

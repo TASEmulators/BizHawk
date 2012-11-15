@@ -35,6 +35,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public VicII vic;
 		public ChipSignals signal;
 
+		// sid stuff
+		//private Emulation.Sound.Utilities.DCFilter sidDCFilter;
+		private SidSyncSoundProvider syncSid;
+
 		public void HardReset()
 		{
 			// initalize cpu
@@ -57,6 +61,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initialize sid
 			sid = new Sid(Region.NTSC, 44100); // we'll assume 44.1k for now until there's a better way
+			syncSid = new SidSyncSoundProvider(sid);
+			//sidDCFilter = new Emulation.Sound.Utilities.DCFilter(sid, 2205);
 
 			// initialize memory (this must be done AFTER all other chips are initialized)
 			string romPath = CoreInputComm.C64_FirmwaresPath;
