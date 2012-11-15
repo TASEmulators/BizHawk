@@ -5,10 +5,13 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
+	
+	// constants for the WaveformGenerator and calculation
+	// methods come from the libsidplayfp residfp library.
+
 	class WaveformGenerator
 	{
 		private int accumulator;
-		private short[] dac = new short[4096];
 		private int floatingOutputTtl;
 		private int freq;
 		private short[][] modelWave;
@@ -29,8 +32,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private int waveform;
 		private int waveformOutput;
 
-		public WaveformGenerator()
+		public WaveformGenerator(short[][] newModelWave)
 		{
+			modelWave = newModelWave;
+			Reset();
 		}
 
 		public void Clock()
@@ -88,7 +93,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 			pulseOutput = ((accumulator >> 12) >= pw) ? 0xFFF : 0x000;
-			return dac[waveformOutput];
+			return (short)waveformOutput;
 		}
 
 		public int ReadAccumulator()
