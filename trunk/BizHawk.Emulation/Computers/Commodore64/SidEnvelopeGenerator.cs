@@ -7,15 +7,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 
 	// constants for the EnvelopeGenerator and calculation
-	// methods come from the libsidplayfp residfp library.
+	// methods are based from the libsidplayfp residfp library.
 
-	class EnvelopeGenerator
+	public class EnvelopeGenerator
 	{
 		enum State
 		{
-			Attack, DecaySustain, Release
+			Attack, Decay, Release
 		}
 
+		// value table for the envelope shift register
 		static int[] adsrTable = new int[]
 		{
 			0x7F00, 0x0006, 0x003C, 0x0330,
@@ -27,11 +28,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		int attack;
 		int decay;
 		byte envelopeCounter;
-		bool envelopePipeline;
+		bool envelopeProcessEnabled;
 		int exponentialCounter;
 		int exponentialCounterPeriod;
+		bool freeze;
 		bool gate;
-		bool holdZero;
 		int lfsr;
 		int rate;
 		int release;
@@ -43,13 +44,27 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			Reset();
 		}
 
+		public int Attack
+		{
+			get
+			{
+				return attack;
+			}
+			set
+			{
+				attack = value;
+				if (state == State.Attack)
+					rate = adsrTable[attack];
+			}
+		}
+
 		public void Clock()
 		{
-			if (envelopePipeline)
+			if (envelopeProcessEnabled)
 			{
-				--envelopeCounter;
-				envelopePipeline = false;
-				SetExponentialCounter();
+				envelopeProcessEnabled = false;
+				envelopeCounter--;
+				UpdateExponentialCounter();
 			}
 
 			if (lfsr != rate)
@@ -64,144 +79,165 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			if ((state == State.Attack) || (++exponentialCounter == exponentialCounterPeriod))
 			{
 				exponentialCounter = 0;
-				if (holdZero)
+				if (!freeze)
 				{
-					return;
-				}
+					switch (state)
+					{
+						case State.Attack:
+							++envelopeCounter;
+							if (envelopeCounter == 0xFF)
+							{
+								state = State.Decay;
+								rate = adsrTable[decay];
+							}
+							break;
+						case State.Decay:
+							if (envelopeCounter == ((sustain << 4) | sustain))
+							{
+								return;
+							}
+							if (exponentialCounterPeriod != 1)
+							{
+								envelopeProcessEnabled = true;
+								return;
+							}
+							envelopeCounter--;
+							break;
+						case State.Release:
+							if (exponentialCounterPeriod != 1)
+							{
+								envelopeProcessEnabled = true;
+								return;
+							}
+							envelopeCounter--;
+							break;
+					}
 
-				switch (state)
-				{
-					case State.Attack:
-						++envelopeCounter;
-						if (envelopeCounter == 0xFF)
-						{
-							state = State.DecaySustain;
-							rate = adsrTable[decay];
-						}
-						break;
-					case State.DecaySustain:
-						if (envelopeCounter == ((sustain << 4) | sustain))
-						{
-							return;
-						}
-						if (exponentialCounterPeriod != 1)
-						{
-							envelopePipeline = true;
-							return;
-						}
-						--envelopeCounter;
-						break;
-					case State.Release:
-						if (exponentialCounterPeriod != 1)
-						{
-							envelopePipeline = true;
-							return;
-						}
-						--envelopeCounter;
-						break;
+					UpdateExponentialCounter();
 				}
-
-				SetExponentialCounter();
 			}
 		}
 
-		public short Output()
+		public int Decay
 		{
-			return envelopeCounter;
+			get
+			{
+				return decay;
+			}
+			set
+			{
+				decay = value;
+				if (state == State.Decay)
+					rate = adsrTable[decay];
+			}
 		}
 
-		public byte ReadEnv()
+		public bool Gate
 		{
-			return envelopeCounter;
+			get
+			{
+				return gate;
+			}
+			set
+			{
+				bool gateThis = value;
+
+				if (!gate && gateThis)
+				{
+					state = State.Attack;
+					rate = adsrTable[attack];
+					freeze = false;
+					envelopeProcessEnabled = false;
+				}
+				else if (gate && !gateThis)
+				{
+					state = State.Release;
+					rate = adsrTable[release];
+				}
+
+				gate = gateThis;
+			}
+		}
+
+		public short Output
+		{
+			get
+			{
+				return envelopeCounter;
+			}
+		}
+
+		public int Release
+		{
+			get
+			{
+				return release;
+			}
+			set
+			{
+				release = value;
+				if (state == State.Release)
+					rate = adsrTable[release];
+			}
 		}
 
 		public void Reset()
 		{
-			envelopeCounter = 0;
-			envelopePipeline = false;
 			attack = 0;
 			decay = 0;
 			sustain = 0;
 			release = 0;
 			gate = false;
-			lfsr = 0x7FFF;
+
+			envelopeCounter = 0;
+			envelopeProcessEnabled = false;
 			exponentialCounter = 0;
 			exponentialCounterPeriod = 1;
+			
+			lfsr = 0x7FFF;
 			state = State.Release;
 			rate = adsrTable[release];
-			holdZero = true;
+			freeze = true;
 		}
 
-		private void SetExponentialCounter()
+		public int Sustain
+		{
+			get
+			{
+				return sustain;
+			}
+			set
+			{
+				sustain = value;
+			}
+		}
+
+		private void UpdateExponentialCounter()
 		{
 			switch (envelopeCounter)
 			{
-				case 0xFF:
+				case 0x00:
 					exponentialCounterPeriod = 1;
-					break;
-				case 0x5D:
-					exponentialCounterPeriod = 2;
-					break;
-				case 0x36:
-					exponentialCounterPeriod = 4;
-					break;
-				case 0x1A:
-					exponentialCounterPeriod = 8;
-					break;
-				case 0x0E:
-					exponentialCounterPeriod = 16;
+					freeze = true;
 					break;
 				case 0x06:
 					exponentialCounterPeriod = 30;
 					break;
-				case 0x00:
-					exponentialCounterPeriod = 1;
-					holdZero = true;
+				case 0x0E:
+					exponentialCounterPeriod = 16;
 					break;
-			}
-		}
-
-		public void WriteAttackDecay(byte attackDecay)
-		{
-			attack = (attackDecay >> 4) & 0x0F;
-			decay = attackDecay & 0x0F;
-			if (state == State.Attack)
-			{
-				rate = adsrTable[attack];
-			}
-			else if (state == State.DecaySustain)
-			{
-				rate = adsrTable[decay];
-			}
-		}
-
-		public void WriteControl(byte control)
-		{
-			bool gateNext = ((control & 0x01) != 0);
-
-			if (!gate && gateNext)
-			{
-				state = State.Attack;
-				rate = adsrTable[attack];
-				holdZero = false;
-				envelopePipeline = false;
-			}
-			else if (gate && !gateNext)
-			{
-				state = State.Release;
-				rate = adsrTable[release];
-			}
-
-			gate = gateNext;
-		}
-
-		public void WriteSustainRelease(byte sustainRelease)
-		{
-			sustain = (sustainRelease >> 4) & 0x0F;
-			release = sustainRelease & 0x0F;
-			if (state == State.Release)
-			{
-				rate = adsrTable[release];
+				case 0x1A:
+					exponentialCounterPeriod = 8;
+					break;
+				case 0x36:
+					exponentialCounterPeriod = 4;
+					break;
+				case 0x5D:
+					exponentialCounterPeriod = 2;
+					break;
+				case 0xFF:
+					exponentialCounterPeriod = 1;
+					break;
 			}
 		}
 	}

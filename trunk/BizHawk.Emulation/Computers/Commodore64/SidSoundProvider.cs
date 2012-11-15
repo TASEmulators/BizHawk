@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				mixer += voices[2].Output();
 
 				// the mixer is very loud at this point, let's make it quieter
-				mixer /= 6;
+				mixer /= 8;
 
 				if (mixer > 32767)
 					mixer = 326767;

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	// constants for the WaveformCalculator and calculation
 	// methods come from the libsidplayfp residfp library.
 
-	static class WaveformCalculator
+	public static class WaveformCalculator
 	{
 		struct CombinedWaveformConfig
 		{
