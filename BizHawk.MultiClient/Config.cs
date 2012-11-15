@@ -1120,8 +1120,8 @@ namespace BizHawk.MultiClient
 		public string Left_Arrow;
 		public string _1;
 		public string _2;
-		public string _4;
 		public string _3;
+		public string _4;
 		public string _5;
 		public string _6;
 		public string _7;
@@ -1197,8 +1197,8 @@ namespace BizHawk.MultiClient
 				Left_Arrow = "Grave";
 				_1 = "D1";
 				_2 = "D2";
-				_4 = "D4";
 				_3 = "D3";
+				_4 = "D4";
 				_5 = "D5";
 				_6 = "D6";
 				_7 = "D7";
