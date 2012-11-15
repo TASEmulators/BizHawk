@@ -75,6 +75,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initailize input
 			input = new Input( new DataPortConnector[] { cia0.ConnectPort(0), cia0.ConnectPort(1) } );
+			cia0.AttachWriteHook(0, input.WritePortA);
+			cia0.AttachWriteHook(1, input.WritePortB);
 
 			// initialize media
 			switch (extension.ToUpper())

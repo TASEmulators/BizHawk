@@ -65,6 +65,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			result |= controller[keyboardMatrix[row, 5]] ? (byte)0x00 : (byte)0x20;
 			result |= controller[keyboardMatrix[row, 6]] ? (byte)0x00 : (byte)0x40;
 			result |= controller[keyboardMatrix[row, 7]] ? (byte)0x00 : (byte)0x80;
+			if (result != 0xFF)
+				row = row;
 			return result;
 		}
 
@@ -101,17 +103,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ports[1].Data = port1result;
 		}
 
-		public void WritePortA(byte data)
+		public void WritePortA()
 		{
 			// keyboard matrix column select
-			keyboardColumnData = data;
+			keyboardColumnData = ports[0].RemoteData;
 			UpdatePortData();
 		}
 
-		public void WritePortB(byte data)
+		public void WritePortB()
 		{
 			// keyboard matrix row select
-			keyboardRowData = data;
+			keyboardRowData = ports[1].RemoteData;
 			UpdatePortData();
 		}
 	}
