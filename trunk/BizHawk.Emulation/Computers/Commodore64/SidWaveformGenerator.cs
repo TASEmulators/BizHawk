@@ -9,32 +9,33 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	// constants for the WaveformGenerator and calculation
 	// methods come from the libsidplayfp residfp library.
 
-	public class WaveformGenerator
+	public partial class WaveformGenerator
 	{
 		private int accumulator;
+		private byte control;
 		private int floatingOutputTtl;
 		private int freq;
-		private short[][] modelWave;
 		private bool msbRising;
 		private int noiseOutput;
-		private int noNoise;
-		private int noNoiseOrNoiseOutput;
-		private int noPulse;
 		private int pulseOutput;
 		private int pw;
 		private int ringMsbMask;
-		private int shiftPipeline;
 		private int shiftRegister;
-		private int shiftRegisterReset;
+		private int shiftRegisterDelay;
+		private int shiftRegisterResetDelay;
 		private bool sync;
 		private bool test;
 		private short[] wave;
 		private int waveform;
 		private int waveformOutput;
 
-		public WaveformGenerator(short[][] newModelWave)
+		// these are temp values used to speed up calculation
+		private int noNoise;
+		private int noNoiseOrNoiseOutput;
+		private int noPulse;
+
+		public WaveformGenerator()
 		{
-			modelWave = newModelWave;
 			Reset();
 		}
 
@@ -42,11 +43,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			if (test)
 			{
-				if (shiftRegisterReset != 0 && --shiftRegisterReset == 0)
+				pulseOutput = 0xFFF;
+				if (shiftRegisterResetDelay != 0 && --shiftRegisterResetDelay == 0)
 				{
 					ResetShiftRegister();
 				}
-				pulseOutput = 0xFFF;
 			}
 			else
 			{
@@ -58,9 +59,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 				if ((accumulatorBitsSet & 0x080000) != 0)
 				{
-					shiftPipeline = 2;
+					shiftRegisterDelay = 2;
 				}
-				else if (shiftPipeline != 0 && --shiftPipeline == 0)
+				else if (shiftRegisterDelay != 0 && --shiftRegisterDelay == 0)
 				{
 					ClockShiftRegister();
 				}
@@ -71,7 +72,62 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			int bit0 = ((shiftRegister >> 22) ^ (shiftRegister >> 17)) & 0x1;
 			shiftRegister = ((shiftRegister << 1) | bit0) & 0x7FFFFF;
-			SetNoiseOutput();
+			UpdateNoiseOutput();
+		}
+
+		public byte Control
+		{
+			get
+			{
+				return control;
+			}
+			set
+			{
+				control = value;
+
+				int waveformPrev = waveform;
+				bool testPrev = test;
+				waveform = (control >> 4) & 0x0F;
+				test = (control & 0x08) != 0;
+				sync = (control & 0x02) != 0;
+
+				wave = WaveformSamples[waveform & 0x7];
+				ringMsbMask = ((~control >> 5) & (control >> 2) & 0x1) << 23;
+				noNoise = (waveform & 0x8) != 0 ? 0x000 : 0xFFF;
+				noNoiseOrNoiseOutput = noNoise | noiseOutput;
+				noPulse = (waveform & 0x4) != 0 ? 0x000 : 0xFFF;
+
+				if (!testPrev && test)
+				{
+					accumulator = 0;
+					shiftRegisterDelay = 0;
+					shiftRegisterResetDelay = 0x8000;
+				}
+				else if (testPrev && !test)
+				{
+					int bit0 = (~shiftRegister >> 17) & 0x1;
+					shiftRegister = ((shiftRegister << 1) | bit0) & 0x7FFFFF;
+					UpdateNoiseOutput();
+				}
+
+				if (waveform == 0 && waveformPrev != 0)
+				{
+					floatingOutputTtl = 0x28000;
+				}
+			}
+		}
+
+
+		public int Frequency
+		{
+			get
+			{
+				return freq;
+			}
+			set
+			{
+				freq = value;
+			}
 		}
 
 		public short Output(WaveformGenerator ringModulator)
@@ -96,47 +152,39 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return (short)waveformOutput;
 		}
 
-		public int ReadAccumulator()
+		public int PulseWidth
 		{
-			return accumulator;
-		}
-
-		public int ReadFreq()
-		{
-			return freq;
-		}
-
-		public byte ReadOsc()
-		{
-			return (byte)(waveformOutput >> 4);
-		}
-
-		public bool ReadSync()
-		{
-			return sync;
-		}
-
-		public bool ReadTest()
-		{
-			return test;
+			get
+			{
+				return pw;
+			}
+			set
+			{
+				pw = value;
+			}
 		}
 
 		public void Reset()
 		{
-			accumulator = 0;
+			control = 0;
+			waveform = 0;
 			freq = 0;
 			pw = 0;
-			msbRising = false;
-			waveform = 0;
+			accumulator = 0;
 			test = false;
 			sync = false;
-			wave = modelWave[0];
+
+			msbRising = false;
+			wave = WaveformSamples[0];
 			ringMsbMask = 0;
+
 			noNoise = 0xFFF;
 			noPulse = 0xFFF;
 			pulseOutput = 0xFFF;
+
 			ResetShiftRegister();
-			shiftPipeline = 0;
+
+			shiftRegisterDelay = 0;
 			waveformOutput = 0;
 			floatingOutputTtl = 0;
 		}
@@ -144,11 +192,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private void ResetShiftRegister()
 		{
 			shiftRegister = 0x7FFFFF;
-			shiftRegisterReset = 0;
-			SetNoiseOutput();
+			shiftRegisterResetDelay = 0;
+			UpdateNoiseOutput();
 		}
 
-		private void SetNoiseOutput()
+		public void Synchronize(WaveformGenerator syncDest, WaveformGenerator syncSource)
+		{
+			if (msbRising && syncDest.sync && !(sync && syncSource.msbRising))
+			{
+				syncDest.accumulator = 0;
+			}
+		}
+
+		private void UpdateNoiseOutput()
 		{
 			noiseOutput =
 				((shiftRegister & 0x100000) >> 9) |
@@ -160,71 +216,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				((shiftRegister & 0x000004) << 3) |
 				((shiftRegister & 0x000001) << 4);
 			noNoiseOrNoiseOutput = noNoise | noiseOutput;
-		}
-
-		public void Synchronize(WaveformGenerator syncDest, WaveformGenerator syncSource)
-		{
-			if (msbRising && syncDest.sync && !(sync && syncSource.msbRising))
-			{
-				syncDest.accumulator = 0;
-			}
-		}
-
-		public void WriteControl(byte control)
-		{
-			int waveformPrev = waveform;
-			bool testPrev = test;
-			waveform = (control >> 4) & 0x0F;
-			test = (control & 0x08) != 0;
-			sync = (control & 0x02) != 0;
-
-			wave = modelWave[waveform & 0x7];
-			ringMsbMask = ((~control >> 5) & (control >> 2) & 0x1) << 23;
-			noNoise = (waveform & 0x8) != 0 ? 0x000 : 0xFFF;
-			noNoiseOrNoiseOutput = noNoise | noiseOutput;
-			noPulse = (waveform & 0x4) != 0 ? 0x000 : 0xFFF;
-
-			if (!testPrev && test)
-			{
-				accumulator = 0;
-				shiftPipeline = 0;
-				shiftRegisterReset = 0x8000;
-			}
-			else if (testPrev && !test)
-			{
-				int bit0 = (~shiftRegister >> 17) & 0x1;
-				shiftRegister = ((shiftRegister << 1) | bit0) & 0x7FFFFF;
-				SetNoiseOutput();
-			}
-
-			if (waveform == 0 && waveformPrev != 0)
-			{
-				floatingOutputTtl = 0x28000;
-			}
-		}
-
-		public void WriteFreqLo(byte freqLo)
-		{
-			freq &= 0xFF00;
-			freq |= freqLo;
-		}
-
-		public void WriteFreqHi(byte freqHi)
-		{
-			freq &= 0x00FF;
-			freq |= (int)(freqHi << 8) & 0xFF00;
-		}
-
-		public void WritePWLo(byte pwLo)
-		{
-			pw &= 0x0F00;
-			pw |= pwLo;
-		}
-
-		public void WritePWHi(byte pwHi)
-		{
-			pw &= 0x00FF;
-			pw |= (int)(pwHi << 8) & 0x0F00;
 		}
 
 		private void WriteShiftRegister()

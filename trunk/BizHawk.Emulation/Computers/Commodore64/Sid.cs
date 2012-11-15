@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public VoiceRegs()
 		{
 			Envelope = new EnvelopeGenerator();
-			Generator = new WaveformGenerator(WaveformCalculator.BuildTable());
+			Generator = new WaveformGenerator();
 		}
 
 		public void Clock()
@@ -119,31 +119,35 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case 0x07:
 					case 0x0E:
 						index = addr / 7;
-						Voices[index].Generator.WriteFreqLo(value);
+						Voices[index].Generator.Frequency &= 0xFF00;
+						Voices[index].Generator.Frequency |= value;
 						break;
 					case 0x01:
 					case 0x08:
 					case 0x0F:
 						index = addr / 7;
-						Voices[index].Generator.WriteFreqHi(value);
+						Voices[index].Generator.Frequency &= 0xFF;
+						Voices[index].Generator.Frequency |= (int)value << 8;
 						break;
 					case 0x02:
 					case 0x09:
 					case 0x10:
 						index = addr / 7;
-						Voices[index].Generator.WritePWLo(value);
+						Voices[index].Generator.PulseWidth &= 0x0F00;
+						Voices[index].Generator.PulseWidth |= value;
 						break;
 					case 0x03:
 					case 0x0A:
 					case 0x11:
 						index = addr / 7;
-						Voices[index].Generator.WritePWHi(value);
+						Voices[index].Generator.PulseWidth &= 0xFF;
+						Voices[index].Generator.PulseWidth |= (int)(value & 0xF) << 8;
 						break;
 					case 0x04:
 					case 0x0B:
 					case 0x12:
 						index = addr / 7;
-						Voices[index].Generator.WriteControl(value);
+						Voices[index].Generator.Control = value;
 						Voices[index].Envelope.Gate = ((value & 0x01) != 0x00);
 						break;
 					case 0x05:
@@ -241,6 +245,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			voices[0].Clock();
 			voices[1].Clock();
 			voices[2].Clock();
+
+			// sync voices
+			voices[0].Generator.Synchronize(voices[1].Generator, voices[2].Generator);
+			voices[1].Generator.Synchronize(voices[2].Generator, voices[0].Generator);
+			voices[2].Generator.Synchronize(voices[0].Generator, voices[1].Generator);
+
+			// finalize sample and put into buffer
 			SubmitSample();
 
 			// query pots every 512 cycles
