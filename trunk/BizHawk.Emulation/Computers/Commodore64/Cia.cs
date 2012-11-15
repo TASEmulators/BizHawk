@@ -447,6 +447,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					// reading this reg clears it
 					result = regs[0x0D];
 					regs[0x0D] = 0x00;
+					UpdateInterrupt();
 					return result;
 				default:
 					return regs[addr];
@@ -581,6 +582,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					regs.EIALARM = ((intMask & 0x04) != 0x00);
 					regs.EISP = ((intMask & 0x08) != 0x00);
 					regs.EIFLAG = ((intMask & 0x10) != 0x00);
+					UpdateInterrupt();
 					break;
 				default:
 					regs[addr] = val;
