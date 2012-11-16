@@ -63,8 +63,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cpu.DummyReadMemory = PeekMemory;
 
 			// initialize cia timers
-			cia0 = new Cia(signal, Region.NTSC);
-			cia1 = new Cia(signal, Region.NTSC);
+			cia0 = new Cia(Region.NTSC);
+			cia1 = new Cia(Region.NTSC);
 
 			// initialize vic
 			signal = new ChipSignals();
@@ -97,11 +97,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (extension.ToUpper())
 			{
 				case @".G64":
-					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), Region.NTSC);
+					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), Region.NTSC, cia1);
 					diskDrive.Insert(G64.Read(inputFile));
 					break;
 				case @".D64":
-					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), Region.NTSC);
+					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), Region.NTSC, cia1);
 					diskDrive.Insert(D64.Read(inputFile));
 					break;
 				case @".PRG":

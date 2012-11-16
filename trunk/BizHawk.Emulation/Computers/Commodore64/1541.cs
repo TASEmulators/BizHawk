@@ -14,6 +14,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// two 6522 VIA chips, mapped at 1800 (communication to C64) and 1C00 (drive mechanics)
 		// drive ROM, mapped C000-FFFF
 
+		// default 1800:
+		// 07 00 1A FF 05 00 FF FF
+		// 04 00 00 00 00 00 00 00
+		// default 1C00:
+		// 90 00 00 00 05 00 FF FF
+		// 04 00 00 00 00 00 80 00
+
+		private Cia cia;
+
 		public MOS6502X cpu;
 		public int cyclesPerRevolution;
 		public int cyclesPerSecond;
@@ -21,13 +30,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte[] ram;
 		public byte[] rom;
 		public double rpm;
+		public ChipSignals signal;
 		public Via via0;
 		public Via via1;
 
-		public Drive1541(byte[] driveRom, Region driveRegion)
+		public Drive1541(byte[] driveRom, Region driveRegion, Cia ciaInterface)
 		{
 			rom = new byte[driveRom.Length];
 			Array.Copy(driveRom, rom, driveRom.Length);
+
+			cia = ciaInterface;
 
 			switch (driveRegion)
 			{
@@ -38,6 +50,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					cyclesPerSecond = 14318181 / 18;
 					break;
 			}
+
 			HardReset();
 		}
 
@@ -58,6 +71,24 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			via0 = new Via();
 			via1 = new Via();
 			SetRPM(300.0);
+
+			// attach VIA/CIA
+
+			// set VIA values
+			via0.Poke(0x0, 0x07);
+			via0.Poke(0x2, 0x1A);
+			via0.Poke(0x3, 0xFF);
+			via0.Poke(0x4, 0x05);
+			via0.Poke(0x6, 0xFF);
+			via0.Poke(0x7, 0xFF);
+			via0.Poke(0x8, 0x04);
+			via0.Poke(0xE, 0x80);
+			via1.Poke(0x0, 0x90);
+			via1.Poke(0x4, 0x05);
+			via1.Poke(0x6, 0xFF);
+			via1.Poke(0x7, 0xFF);
+			via1.Poke(0x8, 0x04);
+			via1.Poke(0xE, 0x80);
 		}
 
 		public void Insert(Disk newDisk)
@@ -72,11 +103,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				return ram[addr];
 			}
-			else if (addr >= 0x1800 && addr < 0x1810)
+			else if (addr >= 0x1800 && addr < 0x1C00)
 			{
 				return via0.Peek(addr);
 			}
-			else if (addr >= 0x1C00 && addr < 0x1C10)
+			else if (addr >= 0x1C00 && addr < 0x2000)
 			{
 				return via1.Peek(addr);
 			}
@@ -89,7 +120,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void PerformCycle()
 		{
+			cpu.IRQ = via0.IRQ | via1.IRQ;
 			cpu.ExecuteOne();
+			via0.PerformCycle();
+			via1.PerformCycle();
 		}
 
 		public void Poke(int addr, byte val)
@@ -99,11 +133,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				ram[addr] = val;
 			}
-			else if (addr >= 0x1800 && addr < 0x1810)
+			else if (addr >= 0x1800 && addr < 0x1C00)
 			{
 				via0.Poke(addr, val);
 			}
-			else if (addr >= 0x1C00 && addr < 0x1C10)
+			else if (addr >= 0x1C00 && addr < 0x2000)
 			{
 				via1.Poke(addr, val);
 			}
@@ -115,11 +149,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				return ram[addr];
 			}
-			else if (addr >= 0x1800 && addr < 0x1810)
+			else if (addr >= 0x1800 && addr < 0x1C00)
 			{
 				return via0.Read(addr);
 			}
-			else if (addr >= 0x1C00 && addr < 0x1C10)
+			else if (addr >= 0x1C00 && addr < 0x2000)
 			{
 				return via1.Read(addr);
 			}
@@ -142,11 +176,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				ram[addr] = val;
 			}
-			else if (addr >= 0x1800 && addr < 0x1810)
+			else if (addr >= 0x1800 && addr < 0x1C00)
 			{
 				via0.Write(addr, val);
 			}
-			else if (addr >= 0x1C00 && addr < 0x1C10)
+			else if (addr >= 0x1C00 && addr < 0x2000)
 			{
 				via1.Write(addr, val);
 			}

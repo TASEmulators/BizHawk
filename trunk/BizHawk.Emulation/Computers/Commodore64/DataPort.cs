@@ -7,15 +7,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public class DataPortBus
 	{
-		private DataPortConnector[] connectors;
-		private bool[] connected = new bool[2];
-		private byte[] direction = new byte[2];
-		private byte[] latch = new byte[2];
-		private List<int> servingHooks = new List<int>();
-		private List<Action> writeHooks = new List<Action>();
+		protected bool[] connected = new bool[2];
+		protected DataPortConnector[] connectors;
+		protected byte[] direction = new byte[2];
+		protected DataPortConverter[] inputConverters;
+		protected byte[] latch = new byte[2];
+		protected DataPortConverter[] outputConverters;
+		protected List<int> servingHooks = new List<int>();
+		protected List<Action> writeHooks = new List<Action>();
 
 		public DataPortBus()
 		{
+			inputConverters = new DataPortConverter[2];
+			inputConverters[0] = new DataPortConverter();
+			inputConverters[1] = new DataPortConverter();
+			outputConverters = new DataPortConverter[2];
+			outputConverters[0] = new DataPortConverter();
+			outputConverters[1] = new DataPortConverter();
 			connectors = new DataPortConnector[2];
 			connectors[0] = new DataPortConnector(ReadData0, ReadDirection0, ReadRemoteData0, WriteData0, WriteDirection0);
 			connectors[1] = new DataPortConnector(ReadData1, ReadDirection1, ReadRemoteData1, WriteData1, WriteDirection1);
@@ -27,13 +35,37 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			latch[1] = 0x00;
 		}
 
+		public void AttachInputConverter(DataPortConnector connector, DataPortConverter converter)
+		{
+			if (connector.Equals(connectors[0]))
+			{
+				inputConverters[0] = converter;
+			}
+			else if (connector.Equals(connectors[1]))
+			{
+				inputConverters[1] = converter;
+			}
+		}
+
+		public void AttachOutputConverter(DataPortConnector connector, DataPortConverter converter)
+		{
+			if (connector.Equals(connectors[0]))
+			{
+				outputConverters[0] = converter;
+			}
+			else if (connector.Equals(connectors[1]))
+			{
+				outputConverters[1] = converter;
+			}
+		}
+
 		public void AttachWriteHook(Action act)
 		{
 			writeHooks.Add(act);
 			servingHooks.Add(0);
 		}
 
-		private void ClearHooks()
+		protected void ClearHooks()
 		{
 			int count = servingHooks.Count;
 			for (int i = 0; i < count; i++)
@@ -57,6 +89,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			throw new Exception("Two connections to this bus have already been established..");
 		}
 
+		public void Connect(DataPortConnector connection)
+		{
+			if (!connected[0])
+			{
+				connected[0] = true;
+				connectors[0] = connection;
+			}
+			else if (!connected[1])
+			{
+				connected[1] = true;
+				connectors[1] = connection;
+			}
+			throw new Exception("Two connections to this bus have already been established..");
+		}
+
 		public void Disconnect(DataPortConnector connector)
 		{
 			if (connector.Equals(connectors[0]))
@@ -73,7 +120,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
-		private void ExecuteWriteHooks()
+		protected void ExecuteWriteHooks()
 		{
 			int count = servingHooks.Count;
 			for (int i = 0; i < count; i++)
@@ -91,63 +138,71 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ClearHooks();
 		}
 
-		private byte ReadData0()
+		protected virtual byte ReadData0()
 		{
+			byte result;
 			if (connected[1])
-				return (byte)((~direction[0] & latch[1]) | (direction[0] & latch[0]));
+				result = (byte)((~direction[0] & latch[1]) | (direction[0] & latch[0]));
 			else
-				return latch[0];
+				result = latch[0];
+			return inputConverters[0].Convert(result, latch[1]);
 		}
 
-		private byte ReadData1()
+		protected virtual byte ReadData1()
 		{
+			byte result;
 			if (connected[0])
-				return (byte)((~direction[1] & latch[0]) | (direction[1] & latch[1]));
+				result = (byte)((~direction[1] & latch[0]) | (direction[1] & latch[1]));
 			else
-				return latch[1];
+				result = latch[1];
+			return inputConverters[1].Convert(result, latch[0]);
 		}
 
-		private byte ReadDirection0()
+		protected virtual byte ReadDirection0()
 		{
 			return direction[0];
 		}
 
-		private byte ReadDirection1()
+		protected virtual byte ReadDirection1()
 		{
 			return direction[1];
 		}
 
-		private byte ReadRemoteData0()
+		protected virtual byte ReadRemoteData0()
 		{
 			return latch[1];
 		}
 
-		private byte ReadRemoteData1()
+		protected virtual byte ReadRemoteData1()
 		{
 			return latch[0];
 		}
 
-		private void WriteData0(byte val)
+		protected virtual void WriteData0(byte val)
 		{
-			latch[0] &= (byte)~direction[0];
-			latch[0] |= (byte)(val & direction[0]);
+			byte result = latch[0];
+			result &= (byte)~direction[0];
+			result |= (byte)(val & direction[0]);
+			latch[0] = outputConverters[0].Convert(result, latch[1]);
 			ExecuteWriteHooks();
 		}
 
-		private void WriteData1(byte val)
+		protected virtual void WriteData1(byte val)
 		{
-			latch[1] &= (byte)~direction[1];
-			latch[1] |= (byte)(val & direction[1]);
+			byte result = latch[1];
+			result &= (byte)~direction[1];
+			result |= (byte)(val & direction[1]);
+			latch[1] = outputConverters[1].Convert(result, latch[0]);
 			ExecuteWriteHooks();
 		}
 
-		private void WriteDirection0(byte val)
+		protected virtual void WriteDirection0(byte val)
 		{
 			direction[0] = val;
 			ExecuteWriteHooks();
 		}
 
-		private void WriteDirection1(byte val)
+		protected virtual void WriteDirection1(byte val)
 		{
 			direction[1] = val;
 			ExecuteWriteHooks();
@@ -204,6 +259,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		public DataPortListener Listener()
+		{
+			return new DataPortListener(ReadData, ReadDirection);
+		}
+
 		public byte RemoteData
 		{
 			get
@@ -211,10 +271,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				return ReadRemoteData();
 			}
 		}
+	}
 
-		public DataPortListener Listener()
+	public class DataPortConverter
+	{
+		public virtual byte Convert(byte input, byte remote)
 		{
-			return new DataPortListener(ReadData, ReadDirection);
+			// the base converter transfers the values directly
+			return input;
 		}
 	}
 

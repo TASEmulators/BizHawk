@@ -51,12 +51,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public DataPortBus[] ports;
 
 		private DataPortConnector[] connectors;
-		private ChipSignals signal;
 
-		public CiaRegs(ChipSignals newSignal)
+		public CiaRegs()
 		{
-			signal = newSignal;
-
 			// power on state
 			TLATCH[0] = 0xFFFF;
 			TLATCH[1] = 0xFFFF;
@@ -251,7 +248,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool lastCNT;
 		public byte[] outputBitMask;
 		private CiaRegs regs;
-		public ChipSignals signal;
 		public int todCounter;
 		public int todFrequency;
 		public bool[] underflow;
@@ -259,9 +255,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public Func<bool> ReadSerial;
 		public Action<bool> WriteSerial;
 
-		public Cia(ChipSignals newSignal, Region newRegion)
+		public Cia(Region newRegion)
 		{
-			signal = newSignal;
 			ReadSerial = ReadSerialDummy;
 			WriteSerial = WriteSerialDummy;
 			switch (newRegion)
@@ -350,7 +345,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void HardReset()
 		{
 			outputBitMask = new byte[] { 0x40, 0x80 };
-			regs = new CiaRegs(signal);
+			regs = new CiaRegs();
 			underflow = new bool[2];
 			todCounter = todFrequency;
 		}
