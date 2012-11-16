@@ -110,15 +110,18 @@ struct Interface : public SNES::Interface {
             //palette[(l << 15) + (r << 10) + (g << 5) + (b << 0)] = (ab << 10) + (ag << 5) + (ar << 0);
 
 						//zero 04-sep-2012 - go ahead and turn this into a pixel format we'll want
-            double luma = (double)l / 15.0;
-            unsigned ar = (luma * r + 0.5);
-            unsigned ag = (luma * g + 0.5);
-            unsigned ab = (luma * b + 0.5);
-						ar = ar * 255 / 31;
-						ag = ag * 255 / 31;
-						ab = ab * 255 / 31;
-						unsigned color = (ab << 16) + (ag << 8) + (ar << 0) | 0xFF000000;
-						palette[(l << 15) + (r << 10) + (g << 5) + (b << 0)] = color;
+            //double luma = (double)l / 15.0;
+            //unsigned ar = (luma * r + 0.5);
+            //unsigned ag = (luma * g + 0.5);
+            //unsigned ab = (luma * b + 0.5);
+						//ar = ar * 255 / 31;
+						//ag = ag * 255 / 31;
+						//ab = ab * 255 / 31;
+			int ar = (r * l * 17 + 15) / 31;
+			int ag = (g * l * 17 + 15) / 31;
+			int ab = (b * l * 17 + 15) / 31;
+			unsigned color = (ab << 16) + (ag << 8) + (ar << 0) | 0xFF000000;
+			palette[(l << 15) + (r << 10) + (g << 5) + (b << 0)] = color;
           }
         }
       }

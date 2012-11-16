@@ -328,13 +328,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 						for (int b = 0; b < 32; b++)
 						{
 							//zero 04-sep-2012 - go ahead and turn this into a pixel format we'll want
-							double luma = (double)l / 15.0;
-							int ar = (int)(luma * r + 0.5);
-							int ag = (int)(luma * g + 0.5);
-							int ab = (int)(luma * b + 0.5);
-							ar = ar * 255 / 31;
-							ag = ag * 255 / 31;
-							ab = ab * 255 / 31;
+							//double luma = (double)l / 15.0;
+							//int ar = (int)(luma * r + 0.5);
+							//int ag = (int)(luma * g + 0.5);
+							//int ab = (int)(luma * b + 0.5);
+							//ar = ar * 255 / 31;
+							//ag = ag * 255 / 31;
+							//ab = ab * 255 / 31;
+							int ar = (r * l * 17 + 15) / 31;
+							int ag = (g * l * 17 + 15) / 31;
+							int ab = (b * l * 17 + 15) / 31;
 							int color = (ab << 16) + (ag << 8) + (ar << 0) | unchecked((int)0xFF000000);
 							colortable[(l << 15) + (r << 10) + (g << 5) + (b << 0)] = color;
 						}
