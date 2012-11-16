@@ -342,6 +342,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return regs.ports[index].Connect();
 		}
 
+		public DataPortConnector ConnectSerialPort(int index)
+		{
+			DataPortConnector result = regs.ports[index].Connect();
+			regs.ports[index].AttachInputConverter(result, new DataPortSerialInputConverter());
+			regs.ports[index].AttachOutputConverter(result, new DataPortSerialOutputConverter());
+			return result;
+		}
+
 		public void HardReset()
 		{
 			outputBitMask = new byte[] { 0x40, 0x80 };
