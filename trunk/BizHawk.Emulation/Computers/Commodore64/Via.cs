@@ -30,23 +30,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int[] TCONTROL = new int[2];
 		public int[] TL = new int[2];
 
-		public DataPortBus[] ports;
-
 		private DataPortConnector[] connectors;
 
 		public ViaRegs()
 		{
 			// power on state
-			ports = new DataPortBus[2];
-			ports[0] = new DataPortBus();
-			ports[1] = new DataPortBus();
 			connectors = new DataPortConnector[2];
-			connectors[0] = ports[0].Connect();
-			connectors[1] = ports[1].Connect();
-			connectors[0].Data = 0xFF;
-			connectors[1].Data = 0xFF;
-			connectors[0].Direction = 0xFF;
-			connectors[1].Direction = 0xFF;
+			connectors[0] = new DataPortConnector();
+			connectors[1] = new DataPortConnector();
 		}
 
 		public byte this[int addr]
@@ -210,6 +201,36 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						break;
 				}
 			}
+
+		}
+
+		public void Connect(DataPortConnector connector, int index)
+		{
+			connectors[index] = connector;
+		}
+
+		public bool PB6
+		{
+			get
+			{
+				return ((connectors[1].Latch & 0x40) != 0);
+			}
+			set
+			{
+				connectors[1].Data = (byte)((connectors[1].Latch & 0xBF) | (value ? 0x40 : 0x00));
+			}
+		}
+
+		public bool PB7
+		{
+			get
+			{
+				return ((connectors[1].Latch & 0x80) != 0);
+			}
+			set
+			{
+				connectors[1].Data = (byte)((connectors[1].Latch & 0x7F) | (value ? 0x80 : 0x00));
+			}
 		}
 	}
 
@@ -239,6 +260,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			HardReset();
 		}
 
+		public void Connect(DataPortConnector connector)
+		{
+			regs.Connect(connector, 1);
+		}
+
 		public void HardReset()
 		{
 			regs = new ViaRegs();
@@ -260,7 +286,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void PerformCycle()
 		{
-			// do stuff
+			Tick0();
+			Tick1();
 			UpdateInterrupts();
 		}
 
@@ -277,6 +304,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			addr &= 0xF;
 			switch (addr)
 			{
+				case 0x4:
+					result = regs[0x4];
+					regs.IT[0] = false;
+					break;
+				case 0x8:
+					result = (byte)(regs.TC[1] & 0xFF);
+					regs.IT[1] = false;
+					break;
+				case 0x9:
+					result = (byte)(regs.TC[1] >> 8);
+					regs.IT[1] = false;
+					break;
 				case 0xD:
 					// reading this clears it
 					result = regs[addr];
@@ -288,6 +327,52 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			return result;
+		}
+
+		private void Tick0()
+		{
+			bool underflow = false;
+
+			switch (regs.TCONTROL[0] & 0x1)
+			{
+				case 0:
+					if (regs.TC[0] > 0)
+					{
+						if (--regs.TC[0] <= 0)
+						{
+							regs.IT[0] = true;
+							underflow = true;
+						}
+					}
+					break;
+				case 1:
+					if (--regs.TC[0] <= 0)
+					{
+						regs.IT[0] = true;
+						regs.TC[0] = regs.TL[0];
+						underflow = true;
+					}
+					break;
+			}
+
+			if (underflow)
+			{
+				if ((regs.TCONTROL[0] & 0x2) != 0)
+				{
+					regs.PB7 = !regs.PB7;
+				}
+			}
+		}
+
+		private void Tick1()
+		{
+			switch (regs.TCONTROL[1])
+			{
+				case 0:
+					break;
+				case 1:
+					break;
+			}
 		}
 
 		private void UpdateInterrupts()
@@ -307,6 +392,26 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			addr &= 0xF;
 			switch (addr)
 			{
+				case 0x4: // write low counter
+					regs[0x6] = val;
+					break;
+				case 0x5: // write high counter
+					regs[0x4] = regs[0x06];
+					regs[0x5] = val;
+					regs[0x7] = val;
+					regs.IT[0] = false;
+					break;
+				case 0x7:
+					regs[0x7] = val;
+					regs.IT[0] = false;
+					break;
+				case 0x8:
+					regs.TL[1] = val;
+					break;
+				case 0x9:
+					regs.TC[1] = ((int)val << 8) | regs.TL[1];
+					regs.IT[1] = false;
+					break;
 				default:
 					regs[addr] = val;
 					break;

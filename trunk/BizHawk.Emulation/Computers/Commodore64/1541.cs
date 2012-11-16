@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			SetRPM(300.0);
 
 			// attach VIA/CIA
+			via0.Connect(cia.ConnectSerialPort(1));
 
 			// set VIA values
 			via0.Poke(0x0, 0x07);
@@ -118,6 +119,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return 0xFF;
 		}
 
+		public byte PeekVia0(int addr)
+		{
+			return via0.Peek(addr);
+		}
+
+		public byte PeekVia1(int addr)
+		{
+			return via1.Peek(addr);
+		}
+
 		public void PerformCycle()
 		{
 			cpu.IRQ = via0.IRQ | via1.IRQ;
@@ -141,6 +152,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				via1.Poke(addr, val);
 			}
+		}
+
+		public void PokeVia0(int addr, byte val)
+		{
+			via0.Poke(addr, val);
+		}
+
+		public void PokeVia1(int addr, byte val)
+		{
+			via1.Poke(addr, val);
 		}
 
 		public byte Read(ushort addr)

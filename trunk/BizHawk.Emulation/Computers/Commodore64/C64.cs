@@ -125,6 +125,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, new Func<int, byte>(PeekVic), new Action<int, byte>(PokeVic)));
 			domains.Add(new MemoryDomain("CRAM", 0x400, Endian.Little, new Func<int, byte>(PeekColorRAM), new Action<int, byte>(PokeColorRAM)));
 			domains.Add(new MemoryDomain("DISKRAM", 0x10000, Endian.Little, new Func<int, byte>(PeekDiskDrive), new Action<int, byte>(PokeDiskDrive)));
+			domains.Add(new MemoryDomain("DISKVIA0", 0x10, Endian.Little, new Func<int, byte>(PeekVia0), new Action<int, byte>(PokeVia0)));
+			domains.Add(new MemoryDomain("DISKVIA1", 0x10, Endian.Little, new Func<int, byte>(PeekVia1), new Action<int, byte>(PokeVia1)));
 			memoryDomains = domains.AsReadOnly();
 		}
 
