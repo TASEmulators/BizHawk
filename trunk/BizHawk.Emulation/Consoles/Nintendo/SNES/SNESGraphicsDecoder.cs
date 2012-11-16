@@ -299,7 +299,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 
 		//the same basic color table that libsnes uses to convert from snes 555 to rgba32
-		public static int[] colortable = new int[16 * 32768];
+		public static int[] colortable;
 		static int[] directColorTable = new int[256]; //8bpp gfx -> rgb555
 		static SNESGraphicsDecoder()
 		{
@@ -315,35 +315,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				int color = (b << 10) | (g << 5) | r;
 				directColorTable[i] = color;
 			}
-
-			//make colortable
-			//this is unlikely to change, so maybe we could precompute it to save bootup time.. benchmark it.
-			//alternatively, we could drag it out of libsneshawk dll
-			for (int l = 0; l < 16; l++)
-			{
-				for (int r = 0; r < 32; r++)
-				{
-					for (int g = 0; g < 32; g++)
-					{
-						for (int b = 0; b < 32; b++)
-						{
-							//zero 04-sep-2012 - go ahead and turn this into a pixel format we'll want
-							//double luma = (double)l / 15.0;
-							//int ar = (int)(luma * r + 0.5);
-							//int ag = (int)(luma * g + 0.5);
-							//int ab = (int)(luma * b + 0.5);
-							//ar = ar * 255 / 31;
-							//ag = ag * 255 / 31;
-							//ab = ab * 255 / 31;
-							int ar = (r * l * 17 + 15) / 31;
-							int ag = (g * l * 17 + 15) / 31;
-							int ab = (b * l * 17 + 15) / 31;
-							int color = (ab << 16) + (ag << 8) + (ar << 0) | unchecked((int)0xFF000000);
-							colortable[(l << 15) + (r << 10) + (g << 5) + (b << 0)] = color;
-						}
-					}
-				}
-			}
+			colortable = SnesColors.GetLUT(SnesColors.ColorType.Bizhawk);
 		}
 
 		byte* vram;
