@@ -143,6 +143,8 @@ void snes_dequeue_message(char* buffer);
 typedef const char* (*snes_path_request_t)(int slot, const char* hint);
 void snes_set_path_request(snes_path_request_t path_request);
 
+void snes_set_color_lut(uint32_t * colors);
+
 // system bus implementation
 uint8_t bus_read(unsigned addr);
 void bus_write(unsigned addr, uint8_t val);

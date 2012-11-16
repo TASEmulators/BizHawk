@@ -132,6 +132,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_dequeue_message(IntPtr strBuffer);
 
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_color_lut(IntPtr colors);
+
 		public static bool HasMessage { get { return snes_poll_message() != -1; } }
 
 		public static string DequeueMessage()
@@ -403,6 +406,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 
 			scanlineStart_cb = new LibsnesDll.snes_scanlineStart_t(snes_scanlineStart);
+
+			// set palette
+			int[] tmp = SnesColors.GetLUT(SnesColors.ColorType.Bizhawk);
+			fixed (int* p = &tmp[0])
+				BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_color_lut((IntPtr)p);
+
 
 			// start up audio resampler
 			InitAudio();
