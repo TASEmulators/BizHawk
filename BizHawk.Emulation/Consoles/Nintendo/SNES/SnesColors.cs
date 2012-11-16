@@ -72,8 +72,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public static void Snes9xColor(out int or, out int og, out int ob, int l, int r, int g, int b)
 		{
 			int ar = mul_brightness[l, r];
-			int ag = mul_brightness[l, r];
-			int ab = mul_brightness[l, r];
+			int ag = mul_brightness[l, g];
+			int ab = mul_brightness[l, b];
 			or = ar * 8;
 			og = ag * 8;
 			ob = ab * 8;
