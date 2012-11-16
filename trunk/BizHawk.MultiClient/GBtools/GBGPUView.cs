@@ -526,6 +526,7 @@ namespace BizHawk.MultiClient.GBtools
 		private void hScrollBarScanline_ValueChanged(object sender, EventArgs e)
 		{
 			labelScanline.Text = ((hScrollBarScanline.Value + 145) % 154).ToString();
+			cbscanline = (hScrollBarScanline.Value + 145) % 154;
 		}
 
 		/// <summary>
