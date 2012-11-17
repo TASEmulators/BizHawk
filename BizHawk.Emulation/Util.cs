@@ -10,42 +10,54 @@ using System.Text;
 
 namespace BizHawk
 {
-	public struct Tuple<T1, T2> : IEquatable<Tuple<T1, T2>>
-	{
-		readonly T1 first;
-		readonly T2 second;
-		public T1 First { get { return first; } }
-		public T2 Second { get { return second; } }
-
-		public Tuple(T1 o1, T2 o2)
-		{
-			first = o1;
-			second = o2;
-		}
-
-		public bool Equals(Tuple<T1, T2> other)
-		{
-			return first.Equals(other.first) &&
-			second.Equals(other.second);
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (obj is Tuple<T1, T2>)
-				return this.Equals((Tuple<T1, T2>)obj);
-			else
-				return false;
-		}
-
-		public override int GetHashCode()
-		{
-			return first.GetHashCode() ^ second.GetHashCode();
-		}
-	}
-
-
 	public static class Extensions
 	{
+		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key) where TKey : IComparable<TKey>
+		{
+			int min = 0;
+			int max = list.Count;
+			int mid = 0;
+			TKey midKey;
+			while (min < max)
+			{
+				mid = (max + min) / 2;
+				T midItem = list[mid];
+				midKey = keySelector(midItem);
+				int comp = midKey.CompareTo(key);
+				if (comp < 0)
+				{
+					min = mid + 1;
+				}
+				else if (comp > 0)
+				{
+					max = mid - 1;
+				}
+				else
+				{
+					return mid;
+				}
+			}
+
+			//did we find it exactly?
+			if (min == max && keySelector(list[min]).CompareTo(key) == 0)
+			{
+				return min;
+			}
+
+			mid = min;
+
+			//we didnt find it. return something corresponding to lower_bound semantics
+
+			if (mid == list.Count) 
+				return max; //had to go all the way to max before giving up; lower bound is max
+			if (mid == 0) 
+				return -1; //had to go all the way to min before giving up; lower bound is min
+
+			midKey = keySelector(list[mid]);
+			if (midKey.CompareTo(key) >= 0) return mid - 1;
+			else return mid;
+		}
+
 		public static string ToHexString(this int n, int numdigits)
 		{
 			return string.Format("{0:X" + numdigits + "}", n);

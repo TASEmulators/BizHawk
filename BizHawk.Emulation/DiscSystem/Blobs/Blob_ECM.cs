@@ -1,54 +1,28 @@
-﻿//The ecm file begins with 4 bytes: ECM\0
+﻿//Copyright (c) 2012 BizHawk team
 
-//then, repeat forever processing these blocks:
-//  Read the block header bytes. The block header is terminated after processing a byte without 0x80 set.
-//  The block header contains these bits packed in the bottom 7 LSB of successive bytes:
-//    xNNNNNNN NNNNNNNN NNNNNNNN NNNNNNNN TTT
-//      N: a Number
-//      T: the type of the sector
-//  If you encounter a Number of 0xFFFFFFFF then the blocks section is finished.
-//  If you need a 6th byte for the block header, then the block header is erroneous
-//  Increment Number, since storing 0 wouldve been useless.
+//Permission is hereby granted, free of charge, to any person obtaining a copy of 
+//this software and associated documentation files (the "Software"), to deal in
+//the Software without restriction, including without limitation the rights to
+//use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+//of the Software, and to permit persons to whom the Software is furnished to do
+//so, subject to the following conditions:
 
-//  Now, process the block.
-//    Type 0:
-//      Read Number bytes from the ECM file and write to the output stream.
-//        This block isn't necessarily a multiple of any particular sector size.
-//      accumulate all those bytes through the EDC
-  
-//    Type 1: For Number of sectors:
-//      Read sector bytes 12,13,14
-//      Read 2048 sector bytes @16
-//      Reconstruct sector as type 1
-//      accumulate 2352 sector bytes @0 through the EDC
-//      write 2352 sector byte @0 to the output stream
+//The above copyright notice and this permission notice shall be included in all 
+//copies or substantial portions of the Software.
 
-//    Type 2: For Number of sectors:
-//      Read 2052 sector bytes @20
-//      Reconstruct sector as type 2
-//      accumulate 2336 sector bytes @16 through the EDC
-//      write 2336 sector bytes @16 to the output stream
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//SOFTWARE.
 
-//    Type 3: For Number of sectors:
-//      Read 2328 sector bytes @20
-//      Reconstruct sector as type 3
-//      accumulate 2336 sector bytes @16 through the EDC
-//      write 2336 sector bytes @16 to the output stream
-    
-//After encountering our end marker and exiting the block processing section:
-//read a 32bit little endian value, which should be the output of the EDC (just a little check to make sure the file is valid)
-//That's the end of the file
+//ECM File Format reading support
 
-//
 //TODO - make a background thread to validate the EDC. be sure to terminate thread when the Blob disposes
+//remember: may need another stream for that. the IBlob architecture doesnt demand multithreading support
 
-//TODO - binary search the index.
-
-//TODO - stress test the random access system:
-//  pick random chunk lengths, increment counter by length, put records in list, until bin file is exhausted
-//  jumble records
-//  read all the records through ECM and not-ECM and make sure the contents match
- 
 using System;
 using System.Text;
 using System.IO;
@@ -56,7 +30,6 @@ using System.Collections.Generic;
 
 namespace BizHawk.DiscSystem
 {
-
 	partial class Disc
 	{
 		class Blob_ECM : IBlob
@@ -93,8 +66,6 @@ namespace BizHawk.DiscSystem
 
 			public void Parse(string path)
 			{
-				//List<IndexEntry> temp = new List<IndexEntry>();
-
 				stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 				
 				//skip header
@@ -158,11 +129,9 @@ namespace BizHawk.DiscSystem
 						logOffset += todo * 2336;
 					}
 					else MisformedException();
-
-					//Console.WriteLine(logOffset);
 				}
 
-				//TODO - endian bug
+				//TODO - endian bug. need endian-independent binary reader with good license
 				var br = new BinaryReader(stream);
 				EDC = br.ReadInt32();
 
@@ -187,6 +156,44 @@ namespace BizHawk.DiscSystem
 				}
 
 				return true;
+			}
+
+			/// <summary>
+			/// finds the IndexEntry for the specified logical offset
+			/// </summary>
+			int FindInIndex(long offset, int LastReadIndex)
+			{
+				//try to avoid searching the index. check the last index we we used.
+				for(int i=0;i<2;i++) //try 2 times
+				{
+					IndexEntry last = Index[LastReadIndex];
+					if (LastReadIndex == Index.Count - 1)
+					{
+						//byte_pos would have to be after the last entry
+						if (offset >= last.LogicalOffset)
+						{
+							return LastReadIndex;
+						}
+					}
+					else
+					{
+						IndexEntry next = Index[LastReadIndex + 1];
+						if (offset >= last.LogicalOffset && offset < next.LogicalOffset)
+						{
+							return LastReadIndex;
+						}
+
+						//well, maybe we just advanced one sector. just try again one sector ahead
+						LastReadIndex++;
+					}
+				}
+
+				//Console.WriteLine("binary searched"); //use this to check for mistaken LastReadIndex logic resulting in binary searches during sequential access
+				int listIndex = Index.LowerBoundBinarySearch(idx => idx.LogicalOffset, offset);
+				System.Diagnostics.Debug.Assert(listIndex < Index.Count);
+				//Console.WriteLine("byte_pos {0:X8} using index #{1} at offset {2:X8}", offset, listIndex, Index[listIndex].LogicalOffset);
+
+				return listIndex;
 			}
 
 			void Reconstruct(byte[] secbuf, int type)
@@ -238,65 +245,24 @@ namespace BizHawk.DiscSystem
 			}
 
 			//we dont want to keep churning through this many big byte arrays while reading stuff, so we save a sector cache.
-			//unlikely that we'll be hitting this from multiple threads, so low chance of contention.
 			byte[] Read_SectorBuf = new byte[2352];
-
-			int LastReadIndex = 0;
+			int Read_LastIndex = 0;
 
 			public int Read(long byte_pos, byte[] buffer, int offset, int _count)
 			{
-				//Console.WriteLine("{0:X8}", byte_pos);
-				//if (byte_pos + _count >= 0xb47d161)
-				if (byte_pos == 0xb47c830)
-				{
-					int zzz = 9;
-				}
 				long remain = _count;
 				int completed = 0;
 
 				//we take advantage of the fact that we pretty much always read one sector at a time.
 				//this would be really inefficient if we only read one byte at a time.
 				//on the other hand, just in case, we could keep a cache of the most recently decoded sector. that would be easy and would solve that problem (if we had it)
+
 				while (remain > 0)
 				{
-					//find the IndexEntry that corresponds to this byte position
-					//int listIndex = Index.BinarySearch(idx => idx.LogicalOffset, byte_pos);
-					//TODO - binary search. no builtin binary search is good enough to return something sensible for a non-match.
-					//check BinarySearch extension method in Util.cs and finish it up (too complex to add in to this mess right now)
-				RETRY:
-					int listIndex = LastReadIndex;
-					for (; ; )
-					{
-						IndexEntry curie = Index[listIndex];
-						if (curie.LogicalOffset > byte_pos)
-						{
-							if (Index[listIndex - 1].LogicalOffset > byte_pos)
-							{
-								LastReadIndex = 0;
-								goto RETRY;
-							}
-							break;
-						}
-						listIndex++;
-						if (listIndex == Index.Count)
-						{
-							break;
-						}
-					}
-					listIndex--;
-						
-					//if it wasnt found, then we didn't actually read anything
-					if (listIndex == -1 || listIndex == Index.Count)
-					{
-						//fix O() for this operation to not be exponential
-						if (LastReadIndex == 0)
-							return 0;
-						LastReadIndex = 0;
-						goto RETRY;
-					}
-					LastReadIndex = listIndex;
+					int listIndex = FindInIndex(byte_pos, Read_LastIndex);
 
 					IndexEntry ie = Index[listIndex];
+					Read_LastIndex = listIndex;
 
 					if (ie.Type == 0)
 					{
@@ -333,8 +299,6 @@ namespace BizHawk.DiscSystem
 					else
 					{
 						//these are sector-based types. they have similar handling.
-
-						//lock (Read_SectorBuf) //todo
 
 						long blockOffset = byte_pos - ie.LogicalOffset;
 
@@ -380,7 +344,7 @@ namespace BizHawk.DiscSystem
 								break;
 						}
 
-						//sector is decoded to 2352 bytes. Handling doesnt depend on type from here
+						//sector is decoded to 2352 bytes. Handling doesnt depend much on type from here
 
 						Array.Copy(Read_SectorBuf, (int)bytesAskedIntoSector + outSecOffset, buffer, offset, todo);
 						int done = (int)todo;
@@ -389,9 +353,9 @@ namespace BizHawk.DiscSystem
 						completed += done;
 						remain -= done;
 						byte_pos += done;
-					
+
 					} //not type 0
-				
+
 				} // while(Remain)
 
 				return completed;
@@ -399,3 +363,46 @@ namespace BizHawk.DiscSystem
 		}
 	}
 }
+
+//-------------------------------------------------------------------------------------------
+
+//The ecm file begins with 4 bytes: ECM\0
+
+//then, repeat forever processing these blocks:
+//  Read the block header bytes. The block header is terminated after processing a byte without 0x80 set.
+//  The block header contains these bits packed in the bottom 7 LSB of successive bytes:
+//    xNNNNNNN NNNNNNNN NNNNNNNN NNNNNNNN TTT
+//      N: a Number
+//      T: the type of the sector
+//  If you encounter a Number of 0xFFFFFFFF then the blocks section is finished.
+//  If you need a 6th byte for the block header, then the block header is erroneous
+//  Increment Number, since storing 0 wouldve been useless.
+
+//  Now, process the block.
+//    Type 0:
+//      Read Number bytes from the ECM file and write to the output stream.
+//        This block isn't necessarily a multiple of any particular sector size.
+//      accumulate all those bytes through the EDC
+
+//    Type 1: For Number of sectors:
+//      Read sector bytes 12,13,14
+//      Read 2048 sector bytes @16
+//      Reconstruct sector as type 1
+//      accumulate 2352 sector bytes @0 through the EDC
+//      write 2352 sector byte @0 to the output stream
+
+//    Type 2: For Number of sectors:
+//      Read 2052 sector bytes @20
+//      Reconstruct sector as type 2
+//      accumulate 2336 sector bytes @16 through the EDC
+//      write 2336 sector bytes @16 to the output stream
+
+//    Type 3: For Number of sectors:
+//      Read 2328 sector bytes @20
+//      Reconstruct sector as type 3
+//      accumulate 2336 sector bytes @16 through the EDC
+//      write 2336 sector bytes @16 to the output stream
+
+//After encountering our end marker and exiting the block processing section:
+//read a 32bit little endian value, which should be the output of the EDC (just a little check to make sure the file is valid)
+//That's the end of the file

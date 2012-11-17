@@ -16,15 +16,21 @@ namespace BizHawk.DiscSystem
 		/// </summary>
 		string FindAlternateExtensionFile(string path, bool caseSensitive)
 		{
+			string targetFile = Path.GetFileName(path);
 			string targetFragment = Path.GetFileNameWithoutExtension(path);
 			var di = new FileInfo(path).Directory;
 			var results = new List<FileInfo>();
 			foreach (var fi in di.GetFiles())
 			{
 				string fragment = Path.GetFileNameWithoutExtension(fi.FullName);
+				//match files with differing extensions
 				int cmp = string.Compare(fragment, targetFragment, !caseSensitive);
+				if(cmp != 0)
+					//match files with another extension added on (likely to be mygame.bin.ecm)
+					cmp = string.Compare(fragment, targetFile, !caseSensitive);
 				if (cmp == 0)
 					results.Add(fi);
+
 			}
 			if(results.Count == 0) throw new DiscReferenceException(path, "Cannot find the specified file");
 			if (results.Count > 1) throw new DiscReferenceException(path, "Cannot choose between multiple options");
@@ -70,6 +76,7 @@ namespace BizHawk.DiscSystem
 				if (blobPathExt == ".mp3") cue_file.FileType = Cue.CueFileType.Wave;
 				if (blobPathExt == ".mpc") cue_file.FileType = Cue.CueFileType.Wave;
 				if (blobPathExt == ".flac") cue_file.FileType = Cue.CueFileType.Wave;
+				if (blobPathExt == ".ecm") cue_file.FileType = Cue.CueFileType.ECM;
 
 				if (cue_file.FileType == Cue.CueFileType.Binary || cue_file.FileType == Cue.CueFileType.Unspecified)
 				{
@@ -81,6 +88,19 @@ namespace BizHawk.DiscSystem
 					blob_length_aba = (int)(blob.Length / blob_sectorsize);
 					blob_leftover = (int)(blob.Length - blob_length_aba * blob_sectorsize);
 					cue_blob = blob;
+				}
+				else if (cue_file.FileType == Cue.CueFileType.ECM)
+				{
+					if(!Blob_ECM.IsECM(blobPath))
+					{
+						throw new DiscReferenceException(blobPath, "an ECM file was specified or detected, but it isn't a valid ECM file. You've got issues. Consult your iso vendor.");
+					}
+					Blob_ECM blob = new Blob_ECM();
+					Blobs.Add(blob);
+					blob.Parse(blobPath);
+					cue_blob = blob;
+					blob_length_aba = (int)(blob.Length / blob_sectorsize);
+					blob_leftover = (int)(blob.Length - blob_length_aba * blob_sectorsize);
 				}
 				else if (cue_file.FileType == Cue.CueFileType.Wave)
 				{
@@ -109,7 +129,7 @@ namespace BizHawk.DiscSystem
 							FFMpeg ffmpeg = new FFMpeg();
 							if (!ffmpeg.QueryServiceAvailable())
 							{
-								throw new InvalidOperationException("No decoding service was available (make sure ffmpeg.exe is available. even though this may be a wav, ffmpeg is used to load oddly formatted wave files)");
+								throw new DiscReferenceException(blobPath, "No decoding service was available (make sure ffmpeg.exe is available. even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
 							}
 							AudioDecoder dec = new AudioDecoder();
 							byte[] buf = dec.AcquireWaveData(blobPath);
@@ -349,7 +369,7 @@ namespace BizHawk.DiscSystem
 
 		public enum CueFileType
 		{
-			Unspecified, Binary, Wave
+			Unspecified, Binary, Wave, ECM
 		}
 
 		public class CueFile
