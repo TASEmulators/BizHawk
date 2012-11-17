@@ -103,6 +103,9 @@
     <Compile Include="Computers\Commodore64\Via.cs" />
     <Compile Include="Computers\Commodore64\VicII.cs" />
     <Compile Include="Computers\Commodore64\VicIIBackgroundGenerator.cs" />
+    <Compile Include="Computers\Commodore64\VicIINew.cs" />
+    <Compile Include="Computers\Commodore64\VicIINewPipeline.cs" />
+    <Compile Include="Computers\Commodore64\VicIIRegs.cs" />
     <Compile Include="Computers\Commodore64\VicIISpriteGenerator.cs" />
     <Compile Include="Computers\Commodore64\VicIIVideoProvider.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
