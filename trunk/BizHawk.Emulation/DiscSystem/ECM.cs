@@ -19,7 +19,6 @@
 //SOFTWARE.
 
 //CD-ROM ECC/EDC related algorithms
-//Support for Neill Corlett's ECM file format (TBD)
 
 //todo - ecm sometimes sets the sector address to 0 before computing the ECC. i cant find any documentation to support this.
 //seems to only take effect for cd-xa (mode 2, form 1). need to ask about this or test further on a cd-xa test disc
@@ -186,13 +185,24 @@ namespace BizHawk.DiscSystem
 		}
 
 		/// <summary>
-		/// calculates EDC checksum for bytes [0,2063] of a sector located at (offset(
+		/// handy for stashing the EDC somewhere with little endian
+		/// </summary>
+		public static void PokeUint(byte[] data, int offset, uint value)
+		{
+			data[offset + 0] = (byte)((value >> 0) & 0xFF);
+			data[offset + 1] = (byte)((value >> 8) & 0xFF);
+			data[offset + 2] = (byte)((value >> 16) & 0xFF);
+			data[offset + 3] = (byte)((value >> 24) & 0xFF);
+		}
+
+		/// <summary>
+		/// calculates EDC checksum for the range of data provided
 		/// see section 14.3 of yellowbook 
 		/// </summary>
-		public static uint EDC_Calc(byte[] data, int offset)
+		public static uint EDC_Calc(byte[] data, int offset, int length)
 		{
 			uint crc = 0;
-			for (int i = 0; i <= 2063; i++)
+			for (int i = 0; i < length; i++)
 			{
 				byte b = data[offset + i];
 				int entry = ((int)crc ^ b) & 0xFF;
@@ -201,6 +211,8 @@ namespace BizHawk.DiscSystem
 
 			return crc;
 		}
+
+
 
 		/// <summary>
 		/// returns the address from a sector. useful for saving it before zeroing it for ECC calculations

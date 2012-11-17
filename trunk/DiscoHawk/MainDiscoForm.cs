@@ -36,7 +36,7 @@ namespace BizHawk
 			this.Close();
 		}
 
-		CueBinPrefs GetCuePrefs()
+		public static CueBinPrefs GetCuePrefs()
 		{
 			var prefs = new DiscSystem.CueBinPrefs();
 			prefs.AnnotateCue = true; // TODO? checkCueProp_Annotations.Checked;

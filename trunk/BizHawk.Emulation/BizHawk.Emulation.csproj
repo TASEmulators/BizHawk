@@ -443,6 +443,7 @@
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\GameInfo.cs" />
+    <Compile Include="DiscSystem\Blobs\Blob_ECM.cs" />
     <Compile Include="DiscSystem\Blobs\Blob_WaveFile.cs">
       <SubType>Code</SubType>
     </Compile>
