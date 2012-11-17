@@ -1486,7 +1486,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT" };
+				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1758,7 +1758,7 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "COLV":
-								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
+								ColecoVision c = new ColecoVision(game, rom.RomData);
 								nextEmulator = c;
 								break;
 							case "INTV":
