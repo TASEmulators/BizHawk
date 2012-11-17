@@ -203,12 +203,10 @@
     <Compile Include="Consoles\Atari\7800\EMU7800\TIASound.cs" />
     <Compile Include="Consoles\Atari\7800\EMU7800\TIATables.cs" />
     <Compile Include="Consoles\Calculator\TI83.cs" />
-    <Compile Include="Consoles\Coleco\ColecoVision.Core.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
-    <Compile Include="Consoles\Coleco\VDP.cs" />
-    <Compile Include="Consoles\Coleco\VDP.Mode4.cs" />
-    <Compile Include="Consoles\Coleco\VDP.ModeTMS.cs" />
-    <Compile Include="Consoles\Coleco\VDP.Tables.cs" />
+    <Compile Include="Consoles\Coleco\Input.cs" />
+    <Compile Include="Consoles\Coleco\MemoryMap.cs" />
+    <Compile Include="Consoles\Coleco\TMS9918A.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
