@@ -270,6 +270,11 @@ namespace BizHawk.DiscSystem
 						IndexEntry curie = Index[listIndex];
 						if (curie.LogicalOffset > byte_pos)
 						{
+							if (Index[listIndex - 1].LogicalOffset > byte_pos)
+							{
+								LastReadIndex = 0;
+								goto RETRY;
+							}
 							break;
 						}
 						listIndex++;
