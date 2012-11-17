@@ -55,6 +55,7 @@ namespace BizHawk.MultiClient
 			SNESAutoController[3] = new SNESControllerTemplate(false);
 
 			ColecoController = new ColecoVisionControllerTemplate(true);
+			ColecoAutoController = new ColecoVisionControllerTemplate(false);
 
 			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true, true);
 			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
@@ -684,6 +685,7 @@ namespace BizHawk.MultiClient
 
 		//ColecoVision
 		public ColecoVisionControllerTemplate ColecoController = new ColecoVisionControllerTemplate(true);
+		public ColecoVisionControllerTemplate ColecoAutoController = new ColecoVisionControllerTemplate(false);
 
 		//NES settings
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];

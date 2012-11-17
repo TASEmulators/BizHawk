@@ -45,6 +45,7 @@ namespace BizHawk.MultiClient
 		public static AutofireController AutofireGenControls;
 		public static AutofireController AutofireAtari2600Controls;
 		public static AutofireController AutofireCommodore64Controls;
+		public static AutofireController AutofireColecoControls;
 
 		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>()
 		{
@@ -112,7 +113,7 @@ namespace BizHawk.MultiClient
 				"ColecoVision Basic Controller", new Dictionary<string, string>()
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"L1", "l"}, {"L2", "L"}, {"R1", "r"}, {"R2", "R"}, //adelikat: These mnemonics are terrible but I can't think of anything better
-					{"Key1", "1"}, {"Key2", "2"}, {"Key3", "3"}, {"Key4", "4"}, {"Key5", "5"}, {"Key6", "6"}, {"Key7", "7"}, 
+					{"Key0", "0"}, {"Key1", "1"}, {"Key2", "2"}, {"Key3", "3"}, {"Key4", "4"}, {"Key5", "5"}, {"Key6", "6"}, {"Key7", "7"}, 
 					{"Key8", "8"}, {"Key9", "9"}, {"Star", "*"}, {"Pound", "#"}
 				}
 			}
