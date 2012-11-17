@@ -836,7 +836,10 @@ namespace BizHawk.MultiClient
 
 		private void NESBrowseFDSBios_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(NESFDSBiosBox, NESFDSBiosDescription.Text);
+			BrowseForBios(
+				"ROM files (*.rom)|*.rom|All Files|*.*",
+				 Global.Config.PathFDSBios, "NES",
+				NESFDSBiosBox);
 		}
 
 		private void SNESFirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
