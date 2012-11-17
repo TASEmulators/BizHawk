@@ -502,6 +502,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int[] pixelBuffer;
 		public bool[] pixelBufferForeground;
 		public int pixelBufferIndex;
+		public int pixelBufferLength;
 		public int rasterInterruptLine;
 		public int rasterLineLeft;
 		public int rasterOffset;
@@ -510,8 +511,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int rasterWidth;
 		public int refreshAddress;
 		public int renderOffset;
-		public int spriteFetchStartCycle;
-		public int spriteFetchIndex;
 		public bool spriteForeground;
 		public SpriteGenerator[] spriteGenerators;
 		public int totalCycles;
@@ -546,19 +545,34 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					rasterTotalLines = 263;
 					rasterLineLeft = 0x19C;
 					cycleLeft = 0;
-					spriteFetchStartCycle = 59;
 					visibleLeft = 0x008;
 					visibleRight = 0x168;
-					visibleTop = 0x023; //0x041;
-					visibleBottom = 0x004; //0x013;
+					visibleTop = 0x023;
+					visibleBottom = 0x004;
 					visibleRenderX = false;
 					visibleRenderY = false;
 					visibleWidth = 352;
 					visibleHeight = 232;
 					renderOffset = 0;
+					pixelBufferLength = 12;
 					PerformCycleFunction = PerformCycleNTSC;
 					break;
 				case Region.PAL:
+					totalCycles = 63;
+					rasterTotalLines = 312;
+					rasterLineLeft = 0x194;
+					cycleLeft = 0;
+					visibleLeft = 0x008;
+					visibleRight = 0x168;
+					visibleTop = 0x023;
+					visibleBottom = 0x10B;
+					visibleRenderX = false;
+					visibleRenderY = false;
+					visibleWidth = 352;
+					visibleHeight = 232;
+					renderOffset = 0;
+					PerformCycleFunction = PerformCyclePAL;
+					pixelBufferLength = 4;
 					break;
 				default:
 					break;
@@ -652,12 +666,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// initialize screen buffer
 			characterMemory = new byte[40];
 			colorMemory = new byte[40];
-			pixelBuffer = new int[12];
-			pixelBufferForeground = new bool[12];
+			pixelBuffer = new int[pixelBufferLength];
+			pixelBufferForeground = new bool[pixelBufferLength];
 			pixelBufferIndex = 0;
 
 			// initialize registers
-			spriteFetchIndex = 0;
 			idle = true;
 			refreshAddress = 0x3FFF;
 			regs = new VicIIRegs();
@@ -958,6 +971,220 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// operations timed to PAL
 		private void PerformCyclePAL()
 		{
+			switch (cycle)
+			{
+				case 0:
+					// rasterline IRQ happens on cycle 1 on rasterline 0
+					if (regs.RASTER > 0 && regs.RASTER == rasterInterruptLine)
+						regs.IRST = true;
+					PerformSpritePointerFetch(3);
+					break;
+				case 1:
+					// rasterline IRQ happens on cycle 1 on rasterline 0
+					if (regs.RASTER == 0 && regs.RASTER == rasterInterruptLine)
+						regs.IRST = true;
+					PerformSpriteDataFetch(3);
+					break;
+				case 2:
+					PerformSpritePointerFetch(4);
+					break;
+				case 3:
+					PerformSpriteDataFetch(4);
+					break;
+				case 4:
+					PerformSpritePointerFetch(5);
+					break;
+				case 5:
+					PerformSpriteDataFetch(5);
+					break;
+				case 6:
+					PerformSpritePointerFetch(6);
+					break;
+				case 7:
+					PerformSpriteDataFetch(6);
+					break;
+				case 8:
+					PerformSpritePointerFetch(7);
+					break;
+				case 9:
+					PerformSpriteDataFetch(7);
+					break;
+				case 10:
+					signal.VicAEC = true;
+					PerformDRAMRefresh();
+					break;
+				case 11:
+					PerformDRAMRefresh();
+					break;
+				case 12:
+					PerformDRAMRefresh();
+					break;
+				case 13:
+					PerformVCReset();
+					PerformDRAMRefresh();
+					break;
+				case 14:
+					PerformDRAMRefresh();
+					break;
+				case 15:
+					spriteGenerators[0].Render();
+					spriteGenerators[1].Render();
+					spriteGenerators[2].Render();
+					spriteGenerators[3].Render();
+					spriteGenerators[4].Render();
+					spriteGenerators[5].Render();
+					spriteGenerators[6].Render();
+					spriteGenerators[7].Render();
+					PerformSpriteMCBASEAdvance();
+					PerformScreenCAccess();
+					break;
+				case 16:
+					PerformScreenCAccess();
+					break;
+				case 17:
+					PerformScreenCAccess();
+					break;
+				case 18:
+					PerformScreenCAccess();
+					break;
+				case 19:
+					PerformScreenCAccess();
+					break;
+				case 20:
+					PerformScreenCAccess();
+					break;
+				case 21:
+					PerformScreenCAccess();
+					break;
+				case 22:
+					PerformScreenCAccess();
+					break;
+				case 23:
+					PerformScreenCAccess();
+					break;
+				case 24:
+					PerformScreenCAccess();
+					break;
+				case 25:
+					PerformScreenCAccess();
+					break;
+				case 26:
+					PerformScreenCAccess();
+					break;
+				case 27:
+					PerformScreenCAccess();
+					break;
+				case 28:
+					PerformScreenCAccess();
+					break;
+				case 29:
+					PerformScreenCAccess();
+					break;
+				case 30:
+					PerformScreenCAccess();
+					break;
+				case 31:
+					PerformScreenCAccess();
+					break;
+				case 32:
+					PerformScreenCAccess();
+					break;
+				case 33:
+					PerformScreenCAccess();
+					break;
+				case 34:
+					PerformScreenCAccess();
+					break;
+				case 35:
+					PerformScreenCAccess();
+					break;
+				case 36:
+					PerformScreenCAccess();
+					break;
+				case 37:
+					PerformScreenCAccess();
+					break;
+				case 38:
+					PerformScreenCAccess();
+					break;
+				case 39:
+					PerformScreenCAccess();
+					break;
+				case 40:
+					PerformScreenCAccess();
+					break;
+				case 41:
+					PerformScreenCAccess();
+					break;
+				case 42:
+					PerformScreenCAccess();
+					break;
+				case 43:
+					PerformScreenCAccess();
+					break;
+				case 44:
+					PerformScreenCAccess();
+					break;
+				case 45:
+					PerformScreenCAccess();
+					break;
+				case 46:
+					PerformScreenCAccess();
+					break;
+				case 47:
+					PerformScreenCAccess();
+					break;
+				case 48:
+					PerformScreenCAccess();
+					break;
+				case 49:
+					PerformScreenCAccess();
+					break;
+				case 50:
+					PerformScreenCAccess();
+					break;
+				case 51:
+					PerformScreenCAccess();
+					break;
+				case 52:
+					PerformScreenCAccess();
+					break;
+				case 53:
+					PerformScreenCAccess();
+					break;
+				case 54:
+					PerformScreenCAccess();
+					PerformSpriteYExpansionFlip();
+					PerformSpriteComparison();
+					break;
+				case 55:
+					signal.VicAEC = true;
+					PerformSpriteComparison();
+					break;
+				case 56:
+					break;
+				case 57:
+					PerformSpriteDMAEnable();
+					PerformRCReset();
+					PerformSpritePointerFetch(0);
+					break;
+				case 58:
+					PerformSpriteDataFetch(0);
+					break;
+				case 59:
+					PerformSpritePointerFetch(1);
+					break;
+				case 60:
+					PerformSpriteDataFetch(1);
+					break;
+				case 61:
+					PerformSpritePointerFetch(2);
+					break;
+				case 62:
+					PerformBorderCheck();
+					PerformSpriteDataFetch(2);
+					break;
+			}
 		}
 
 		private void PerformDRAMRefresh()
@@ -1367,11 +1594,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					}
 				}
 
-				// process 12 pixel delay
+				// process pixel delay
 				pixelBuffer[pixelBufferIndex] = inputPixel;
 				pixelBufferForeground[pixelBufferIndex] = dataForeground;
 				pixelBufferIndex++;
-				if (pixelBufferIndex == 12)
+				if (pixelBufferIndex == pixelBufferLength)
 				{
 					pixelBufferIndex = 0;
 				}

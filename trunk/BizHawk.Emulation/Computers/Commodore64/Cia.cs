@@ -54,24 +54,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public CiaRegs()
 		{
-			// power on state
-			TLATCH[0] = 0xFFFF;
-			TLATCH[1] = 0xFFFF;
-			T[0] = TLATCH[0];
-			T[1] = TLATCH[1];
-
-			this[0x0B] = 0x01;
-
 			ports = new DataPortBus[2];
 			ports[0] = new DataPortBus();
 			ports[1] = new DataPortBus();
 			connectors = new DataPortConnector[2];
 			connectors[0] = ports[0].Connect();
 			connectors[1] = ports[1].Connect();
-			connectors[0].Data = 0xFF;
-			connectors[1].Data = 0xFF;
-			connectors[0].Direction = 0xFF;
-			connectors[1].Direction = 0xFF;
+			HardReset();
 		}
 
 		public byte this[int addr]
@@ -240,6 +229,25 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 		}
+
+		public void HardReset()
+		{
+			// power on state
+			for (int i = 0; i < 0x10; i++)
+				this[i] = 0x00;
+
+			TLATCH[0] = 0xFFFF;
+			TLATCH[1] = 0xFFFF;
+			T[0] = TLATCH[0];
+			T[1] = TLATCH[1];
+
+			this[0x0B] = 0x01;
+
+			connectors[0].Data = 0xFF;
+			connectors[1].Data = 0xFF;
+			connectors[0].Direction = 0xFF;
+			connectors[1].Direction = 0xFF;
+		}
 	}
 
 	public class Cia
@@ -247,7 +255,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public int intMask;
 		public bool lastCNT;
 		public byte[] outputBitMask;
-		private CiaRegs regs;
+		private CiaRegs regs = new CiaRegs();
 		public int todCounter;
 		public int todFrequency;
 		public bool[] underflow;
@@ -353,7 +361,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void HardReset()
 		{
 			outputBitMask = new byte[] { 0x40, 0x80 };
-			regs = new CiaRegs();
+			regs.HardReset();
 			underflow = new bool[2];
 			todCounter = todFrequency;
 		}

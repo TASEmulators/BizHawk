@@ -56,6 +56,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void HardReset()
 		{
+			mem.HardReset();
+			cia0.HardReset();
+			cia1.HardReset();
+			vic.HardReset();
+			sid.HardReset();
+			if (diskDriveAttached)
+				diskDrive.HardReset();
+		}
+
+		private void Init(Region initRegion)
+		{
 			// initalize cpu
 			cpu = new MOS6502X();
 			cpu.ReadMemory = ReadMemory;
@@ -63,24 +74,36 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cpu.DummyReadMemory = PeekMemory;
 
 			// initialize cia timers
-			cia0 = new Cia(Region.NTSC);
-			cia1 = new Cia(Region.NTSC);
+			cia0 = new Cia(initRegion);
+			cia1 = new Cia(initRegion);
 
 			// initialize vic
 			signal = new ChipSignals();
-			vic = new VicII(signal, Region.NTSC);
+			vic = new VicII(signal, initRegion);
 
-			// assume NTSC for now
+			// set vsync rate
 			CoreOutputComm.VsyncDen = vic.cyclesPerFrame;
-			CoreOutputComm.VsyncNum = (14318181 / 14);
+			switch (initRegion)
+			{
+				case Region.NTSC:
+					CoreOutputComm.VsyncNum = (14318181 / 14);
+					break;
+				case Region.PAL:
+					CoreOutputComm.VsyncNum = (14318181 / 18);
+					break;
+			}
 
 			// initialize sid
-			sid = new Sid(Region.NTSC, 44100); // we'll assume 44.1k for now until there's a better way
+			sid = new Sid(initRegion, 44100); // we'll assume 44.1k for now until there's a better way
 			syncSid = new SidSyncSoundProvider(sid);
 			//sidDCFilter = new Emulation.Sound.Utilities.DCFilter(sid, 2205);
 
 			// initialize memory (this must be done AFTER all other chips are initialized)
 			string romPath = CoreInputComm.C64_FirmwaresPath;
+			if (romPath == null)
+			{
+				romPath = @".\C64\Firmwares";
+			}
 			mem = new Memory(romPath, vic, sid, cia0, cia1);
 			vic.mem = mem;
 
@@ -89,7 +112,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cpu.BCD_Enabled = true;
 
 			// initailize input
-			input = new Input( new DataPortConnector[] { cia0.ConnectPort(0), cia0.ConnectPort(1) } );
+			input = new Input(new DataPortConnector[] { cia0.ConnectPort(0), cia0.ConnectPort(1) });
 			cia0.AttachWriteHook(0, input.WritePortA);
 			cia0.AttachWriteHook(1, input.WritePortB);
 
@@ -97,11 +120,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (extension.ToUpper())
 			{
 				case @".G64":
-					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), Region.NTSC, cia1);
+					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), initRegion, cia1);
 					diskDrive.Insert(G64.Read(inputFile));
 					break;
 				case @".D64":
-					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), Region.NTSC, cia1);
+					diskDrive = new Drive1541(File.ReadAllBytes(Path.Combine(romPath, @"dos1541")), initRegion, cia1);
 					diskDrive.Insert(D64.Read(inputFile));
 					break;
 				case @".PRG":
