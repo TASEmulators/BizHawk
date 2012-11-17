@@ -102,13 +102,22 @@ namespace BizHawk.MultiClient
 			COLController1Panel.InputSize = 110;
 			COLController1Panel.LabelWidth = 50;
 			COLController1Panel.ColumnWidth = 170;
-			COLController1Panel.LoadSettings(Global.Config.ColecoController);
-
+			COLController1Panel.LoadSettings(Global.Config.ColecoController[0]);
 
 			COLAutofire1Panel.InputSize = 110;
 			COLAutofire1Panel.LabelWidth = 50;
 			COLAutofire1Panel.ColumnWidth = 170;
-			COLAutofire1Panel.LoadSettings(Global.Config.ColecoAutoController);
+			COLAutofire1Panel.LoadSettings(Global.Config.ColecoAutoController[0]);
+
+			COLController2Panel.InputSize = 110;
+			COLController2Panel.LabelWidth = 50;
+			COLController2Panel.ColumnWidth = 170;
+			COLController2Panel.LoadSettings(Global.Config.ColecoController[1]);
+
+			COLAutofire2Panel.InputSize = 110;
+			COLAutofire2Panel.LabelWidth = 50;
+			COLAutofire2Panel.ColumnWidth = 170;
+			COLAutofire2Panel.LoadSettings(Global.Config.ColecoAutoController[1]);
 
 			SetAutoTab(true);
 		}

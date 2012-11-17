@@ -30,6 +30,7 @@
 		{
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.pictureBox14 = new System.Windows.Forms.PictureBox();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage13 = new System.Windows.Forms.TabPage();
 			this.tabPage14 = new System.Windows.Forms.TabPage();
@@ -109,6 +110,7 @@
 			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.pictureBox7 = new System.Windows.Forms.PictureBox();
 			this.tabPage59 = new System.Windows.Forms.TabPage();
+			this.pictureBox15 = new System.Windows.Forms.PictureBox();
 			this.tabControl10 = new System.Windows.Forms.TabControl();
 			this.tabPage60 = new System.Windows.Forms.TabPage();
 			this.tabPage61 = new System.Windows.Forms.TabPage();
@@ -116,6 +118,8 @@
 			this.OK = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AllowLR = new System.Windows.Forms.CheckBox();
+			this.tabPage62 = new System.Windows.Forms.TabPage();
+			this.tabPage63 = new System.Windows.Forms.TabPage();
 			this.NESController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.NESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.NESController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
@@ -167,10 +171,11 @@
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.COLController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.COLAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.pictureBox14 = new System.Windows.Forms.PictureBox();
-			this.pictureBox15 = new System.Windows.Forms.PictureBox();
+			this.COLController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.COLAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
 			this.tabControl2.SuspendLayout();
 			this.tabPage13.SuspendLayout();
 			this.tabPage14.SuspendLayout();
@@ -248,11 +253,12 @@
 			this.tabPage8.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.tabPage59.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).BeginInit();
 			this.tabControl10.SuspendLayout();
 			this.tabPage60.SuspendLayout();
 			this.tabPage61.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).BeginInit();
+			this.tabPage62.SuspendLayout();
+			this.tabPage63.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -287,6 +293,18 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "NES";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox14
+			// 
+			this.pictureBox14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox14.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox14.Image = global::BizHawk.MultiClient.Properties.Resources.NES_Controller;
+			this.pictureBox14.Location = new System.Drawing.Point(497, 15);
+			this.pictureBox14.Name = "pictureBox14";
+			this.pictureBox14.Size = new System.Drawing.Size(284, 125);
+			this.pictureBox14.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox14.TabIndex = 6;
+			this.pictureBox14.TabStop = false;
 			// 
 			// tabControl2
 			// 
@@ -1193,10 +1211,24 @@
 			this.tabPage59.Text = "Coleco V.";
 			this.tabPage59.UseVisualStyleBackColor = true;
 			// 
+			// pictureBox15
+			// 
+			this.pictureBox15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox15.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox15.Image = global::BizHawk.MultiClient.Properties.Resources.colecovisioncontroller;
+			this.pictureBox15.Location = new System.Drawing.Point(542, 15);
+			this.pictureBox15.Name = "pictureBox15";
+			this.pictureBox15.Size = new System.Drawing.Size(228, 236);
+			this.pictureBox15.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox15.TabIndex = 6;
+			this.pictureBox15.TabStop = false;
+			// 
 			// tabControl10
 			// 
 			this.tabControl10.Controls.Add(this.tabPage60);
 			this.tabControl10.Controls.Add(this.tabPage61);
+			this.tabControl10.Controls.Add(this.tabPage62);
+			this.tabControl10.Controls.Add(this.tabPage63);
 			this.tabControl10.Location = new System.Drawing.Point(18, 15);
 			this.tabControl10.Name = "tabControl10";
 			this.tabControl10.SelectedIndex = 0;
@@ -1268,6 +1300,26 @@
 			this.AllowLR.TabIndex = 11;
 			this.AllowLR.Text = "Allow L+R / U+D";
 			this.AllowLR.UseVisualStyleBackColor = true;
+			// 
+			// tabPage62
+			// 
+			this.tabPage62.Controls.Add(this.COLController2Panel);
+			this.tabPage62.Location = new System.Drawing.Point(4, 22);
+			this.tabPage62.Name = "tabPage62";
+			this.tabPage62.Size = new System.Drawing.Size(371, 372);
+			this.tabPage62.TabIndex = 2;
+			this.tabPage62.Text = "Controller 2";
+			this.tabPage62.UseVisualStyleBackColor = true;
+			// 
+			// tabPage63
+			// 
+			this.tabPage63.Controls.Add(this.COLAutofire2Panel);
+			this.tabPage63.Location = new System.Drawing.Point(4, 22);
+			this.tabPage63.Name = "tabPage63";
+			this.tabPage63.Size = new System.Drawing.Size(371, 372);
+			this.tabPage63.TabIndex = 3;
+			this.tabPage63.Text = "Autofire 2";
+			this.tabPage63.UseVisualStyleBackColor = true;
 			// 
 			// NESController1Panel
 			// 
@@ -1632,29 +1684,19 @@
 			this.COLAutofire1Panel.Size = new System.Drawing.Size(359, 332);
 			this.COLAutofire1Panel.TabIndex = 2;
 			// 
-			// pictureBox14
+			// COLController2Panel
 			// 
-			this.pictureBox14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox14.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pictureBox14.Image = global::BizHawk.MultiClient.Properties.Resources.NES_Controller;
-			this.pictureBox14.Location = new System.Drawing.Point(497, 15);
-			this.pictureBox14.Name = "pictureBox14";
-			this.pictureBox14.Size = new System.Drawing.Size(284, 125);
-			this.pictureBox14.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.pictureBox14.TabIndex = 6;
-			this.pictureBox14.TabStop = false;
+			this.COLController2Panel.Location = new System.Drawing.Point(3, 3);
+			this.COLController2Panel.Name = "COLController2Panel";
+			this.COLController2Panel.Size = new System.Drawing.Size(359, 332);
+			this.COLController2Panel.TabIndex = 2;
 			// 
-			// pictureBox15
+			// COLAutofire2Panel
 			// 
-			this.pictureBox15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox15.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pictureBox15.Image = global::BizHawk.MultiClient.Properties.Resources.colecovisioncontroller;
-			this.pictureBox15.Location = new System.Drawing.Point(542, 15);
-			this.pictureBox15.Name = "pictureBox15";
-			this.pictureBox15.Size = new System.Drawing.Size(228, 236);
-			this.pictureBox15.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.pictureBox15.TabIndex = 6;
-			this.pictureBox15.TabStop = false;
+			this.COLAutofire2Panel.Location = new System.Drawing.Point(3, 3);
+			this.COLAutofire2Panel.Name = "COLAutofire2Panel";
+			this.COLAutofire2Panel.Size = new System.Drawing.Size(359, 332);
+			this.COLAutofire2Panel.TabIndex = 3;
 			// 
 			// ControllerConfig
 			// 
@@ -1673,6 +1715,7 @@
 			this.Load += new System.EventHandler(this.ControllerConfig_Load);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).EndInit();
 			this.tabControl2.ResumeLayout(false);
 			this.tabPage13.ResumeLayout(false);
 			this.tabPage14.ResumeLayout(false);
@@ -1750,11 +1793,12 @@
 			this.tabPage8.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.tabPage59.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).EndInit();
 			this.tabControl10.ResumeLayout(false);
 			this.tabPage60.ResumeLayout(false);
 			this.tabPage61.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).EndInit();
+			this.tabPage62.ResumeLayout(false);
+			this.tabPage63.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1903,5 +1947,9 @@
 		private ControllerConfigPanel COLAutofire1Panel;
 		private System.Windows.Forms.PictureBox pictureBox14;
 		private System.Windows.Forms.PictureBox pictureBox15;
+		private System.Windows.Forms.TabPage tabPage62;
+		private System.Windows.Forms.TabPage tabPage63;
+		private ControllerConfigPanel COLController2Panel;
+		private ControllerConfigPanel COLAutofire2Panel;
 	}
 }

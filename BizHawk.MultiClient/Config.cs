@@ -54,8 +54,10 @@ namespace BizHawk.MultiClient
 			SNESAutoController[2] = new SNESControllerTemplate(false);
 			SNESAutoController[3] = new SNESControllerTemplate(false);
 
-			ColecoController = new ColecoVisionControllerTemplate(true);
-			ColecoAutoController = new ColecoVisionControllerTemplate(false);
+			ColecoController[0] = new ColecoVisionControllerTemplate(true);
+			ColecoController[1] = new ColecoVisionControllerTemplate(false);
+			ColecoAutoController[0] = new ColecoVisionControllerTemplate(false);
+			ColecoAutoController[1] = new ColecoVisionControllerTemplate(false);
 
 			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true, true);
 			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
@@ -684,8 +686,8 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_RightDifficulty = true;
 
 		//ColecoVision
-		public ColecoVisionControllerTemplate ColecoController = new ColecoVisionControllerTemplate(true);
-		public ColecoVisionControllerTemplate ColecoAutoController = new ColecoVisionControllerTemplate(false);
+		public ColecoVisionControllerTemplate[] ColecoController = new ColecoVisionControllerTemplate[2];
+		public ColecoVisionControllerTemplate[] ColecoAutoController = new ColecoVisionControllerTemplate[2];
 
 		//NES settings
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];

@@ -358,6 +358,8 @@ namespace BizHawk.MultiClient
 				case "PCECD":
 				case "SGX":
 					return "|.|........|........|........|........|........|";
+				case "Coleco":
+					return "|....................|....................|";
 			}
 		}
 
