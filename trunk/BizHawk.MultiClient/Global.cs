@@ -136,7 +136,7 @@ namespace BizHawk.MultiClient
 			{"Gameboy Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
 			{"SNES Controller", 4},
 			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2},
-			{"ColecoVision Basic Controller", 1}
+			{"ColecoVision Basic Controller", 2}
 		};
 
 		/// <summary>

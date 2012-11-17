@@ -259,6 +259,9 @@ namespace BizHawk.MultiClient
 				case "TI83":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathTI83ROMs, "TI83");
 					break;
+				case "Coleco":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathCOLROMs, "Coleco");
+					break;
 				default:
 					path = PathManager.GetBasePathAbsolute();
 					break;
@@ -337,6 +340,7 @@ namespace BizHawk.MultiClient
 				case "SNES": return MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES");
 				case "PSX": return MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX");
 				case "C64": return MakeAbsolutePath(Global.Config.PathC64Savestates, "C64");
+				case "Coleco": return MakeAbsolutePath(Global.Config.PathCOLSavestates, "Coleco");
 			}
 		}
 
@@ -366,6 +370,7 @@ namespace BizHawk.MultiClient
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSavestates, "SNES"), name);
 				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX"), name);
 				case "C64": return Path.Combine(MakeAbsolutePath(Global.Config.PathC64Savestates, "C64"), name);
+				case "Coleco": return Path.Combine(MakeAbsolutePath(Global.Config.PathCOLSavestates, "Coleco"), name);
 			}
 			return "";
 		}
@@ -389,7 +394,7 @@ namespace BizHawk.MultiClient
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Screenshots, "TI83"), name);
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESScreenshots, "SNES"), name);
 				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXScreenshots, "PSX"), name);
-				case "C64": return Path.Combine(MakeAbsolutePath(Global.Config.PathC64Screenshots, "C64"), name);
+				case "Coleco": return Path.Combine(MakeAbsolutePath(Global.Config.PathCOLScreenshots, "Coleco"), name);
 			}
 			return "";
 		}
