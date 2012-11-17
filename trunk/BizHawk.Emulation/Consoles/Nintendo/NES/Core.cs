@@ -122,6 +122,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//cpu = new MOS6502X_CPP((h) => DisposeList.Add(h));
 			//cpu = new MOS6502XDouble((h) => DisposeList.Add(h));
 			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory, (h) => DisposeList.Add(h));
+			cpu.FetchCallback = () =>
+				{
+					if (CoreInputComm.Tracer.Enabled)
+					{
+						CoreInputComm.Tracer.Put(cpu.TraceState());
+					}
+				};
 			cpu.BCD_Enabled = false;
 			ppu = new PPU(this);
 			ram = new byte[0x800];
@@ -283,10 +290,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				else
 				{
 					cpu.IRQ = _irq_apu || board.IRQSignal;
-					if (CoreInputComm.Tracer.Enabled)
-					{
-						CoreInputComm.Tracer.Put(cpu.TraceState());
-					}
 					cpu.ExecuteOne();
 				}
 
