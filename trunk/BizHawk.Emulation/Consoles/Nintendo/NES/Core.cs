@@ -190,11 +190,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					goto case "NES-NTSC";
 			}
 
-			//fceux uses this technique, which presumably tricks some games into thinking the memory is randomized
-			for (int i = 0; i < 0x800; i++)
-			{
-				if ((i & 4) != 0) ram[i] = 0xFF; else ram[i] = 0x00;
-			}
+			//check fceux's PowerNES function for more information:
+			//relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
+			for(int i=0;i<0x800;i++) if((i&1)!=0) ram[i] = 0xAA; else ram[i] = 0x55;
 
 			SetupMemoryDomains();
 
