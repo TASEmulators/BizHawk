@@ -1787,7 +1787,7 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "Coleco":
-								string colbiosPath = PathManager.MakeAbsolutePath(Global.Config.PathCOLBios, "COL");
+								string colbiosPath = PathManager.MakeAbsolutePath(Global.Config.PathCOLBios, "Coleco");
 								ColecoVision c = new ColecoVision(game, rom.RomData, colbiosPath);
 								nextEmulator = c;
 								break;
