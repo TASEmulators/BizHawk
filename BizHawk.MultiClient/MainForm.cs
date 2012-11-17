@@ -976,6 +976,29 @@ namespace BizHawk.MultiClient
 			colecoControls.BindMulti("P1 Pound", Global.Config.ColecoController.Pound);
 			Global.ColecoControls = colecoControls;
 
+			var acolecoControls = new AutofireController(ColecoVision.ColecoVisionControllerDefinition);
+			acolecoControls.BindMulti("P1 Up", Global.Config.ColecoAutoController.Up);
+			acolecoControls.BindMulti("P1 Left", Global.Config.ColecoAutoController.Left);
+			acolecoControls.BindMulti("P1 Right", Global.Config.ColecoAutoController.Right);
+			acolecoControls.BindMulti("P1 Down", Global.Config.ColecoAutoController.Down);
+			acolecoControls.BindMulti("P1 L1", Global.Config.ColecoAutoController.L1);
+			acolecoControls.BindMulti("P1 L2", Global.Config.ColecoAutoController.L2);
+			acolecoControls.BindMulti("P1 R1", Global.Config.ColecoAutoController.R1);
+			acolecoControls.BindMulti("P1 R2", Global.Config.ColecoAutoController.R2);
+			acolecoControls.BindMulti("P1 Key0", Global.Config.ColecoAutoController._0);
+			acolecoControls.BindMulti("P1 Key1", Global.Config.ColecoAutoController._1);
+			acolecoControls.BindMulti("P1 Key2", Global.Config.ColecoAutoController._2);
+			acolecoControls.BindMulti("P1 Key3", Global.Config.ColecoAutoController._3);
+			acolecoControls.BindMulti("P1 Key4", Global.Config.ColecoAutoController._4);
+			acolecoControls.BindMulti("P1 Key5", Global.Config.ColecoAutoController._5);
+			acolecoControls.BindMulti("P1 Key6", Global.Config.ColecoAutoController._6);
+			acolecoControls.BindMulti("P1 Key7", Global.Config.ColecoAutoController._7);
+			acolecoControls.BindMulti("P1 Key8", Global.Config.ColecoAutoController._8);
+			acolecoControls.BindMulti("P1 Key9", Global.Config.ColecoAutoController._9);
+			acolecoControls.BindMulti("P1 Star", Global.Config.ColecoAutoController.Star);
+			acolecoControls.BindMulti("P1 Pound", Global.Config.ColecoController.Pound);
+			Global.AutofireColecoControls = acolecoControls;
+
 			var TI83Controls = new Controller(TI83.TI83Controller);
 			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0);
 			TI83Controls.BindMulti("1", Global.Config.TI83Controller[0]._1);
@@ -1439,6 +1462,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "Coleco":
 					Global.ActiveController = Global.ColecoControls;
+					Global.AutoFireController = Global.AutofireColecoControls;
 					break;
 				case "C64":
 					Global.ActiveController = Global.Commodore64Controls;
