@@ -935,6 +935,7 @@
     <None Include="images\GenesisControllerIcon.png" />
     <None Include="config\ControllerImages\C64Joystick.png" />
     <None Include="config\ControllerImages\C64Keyboard.png" />
+    <None Include="config\ControllerImages\colecovisioncontroller.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

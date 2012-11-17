@@ -179,6 +179,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap colecovisioncontroller {
+            get {
+                object obj = ResourceManager.GetObject("colecovisioncontroller", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap console16x16 {
             get {
                 object obj = ResourceManager.GetObject("console16x16", resourceCulture);

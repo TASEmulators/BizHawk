@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			PSG = new SN76489();
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
-			BiosRom = File.ReadAllBytes("D:/coleco.rom");
+			BiosRom = File.ReadAllBytes(biosPath);
 
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
