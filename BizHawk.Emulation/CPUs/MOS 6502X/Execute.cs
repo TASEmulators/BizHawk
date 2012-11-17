@@ -548,10 +548,13 @@ namespace BizHawk.Emulation.CPUs.M6502
 		bool booltemp;
 		int tempint;
 		int lo, hi;
+		public Action FetchCallback;
 
 		void Fetch1()
 		{
 			{
+				if (FetchCallback != null)
+					FetchCallback();
 				my_iflag = FlagI;
 				FlagI = iflag_pending;
 				if (!branch_irq_hack)
