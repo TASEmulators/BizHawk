@@ -168,18 +168,18 @@ namespace BizHawk.MultiClient
 		public string PathPSXCheats = Path.Combine(".", "Cheats");
 		public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
 
+		public string BaseCOL = Path.Combine(".", "ColecoVision");
+		public string PathCOLROMs = ".";
+		public string PathCOLSavestates = Path.Combine(".", "State");
+		public string PathCOLScreenshots = Path.Combine(".", "Screenshots");
+
+		public string PathCOLCheats = Path.Combine(".", "Cheats");
 		public string MoviesPath = Path.Combine(".", "Movies");
 		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
 		public string LuaPath = Path.Combine(".", "Lua");
 		public string WatchPath = ".";
 		public string AVIPath = ".";
 		public string LogPath = ".";
-
-		public string BaseCOL = Path.Combine(".", "ColecoVision");
-		public string PathCOLROMs = ".";
-		public string PathCOLSavestates = Path.Combine(".", "State");
-		public string PathCOLScreenshots = Path.Combine(".", "Screenshots");
-		public string PathCOLCheats = Path.Combine(".", "Cheats");
 
 		//BIOS Paths
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");

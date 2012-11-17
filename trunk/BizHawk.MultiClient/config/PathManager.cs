@@ -97,6 +97,8 @@ namespace BizHawk.MultiClient
 					return Global.Config.BaseGameboy;
 				case "SNES":
 					return Global.Config.BaseSNES;
+				case "Coleco":
+					return Global.Config.BaseCOL;
 				case "NULL":
 				default:
 					return "";
