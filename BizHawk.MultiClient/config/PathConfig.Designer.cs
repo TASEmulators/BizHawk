@@ -276,6 +276,7 @@
 			this.INTVSaveRAMDescription = new System.Windows.Forms.Label();
 			this.INTVSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPageC64 = new System.Windows.Forms.TabPage();
+			this.C64FirmwaresDescription = new System.Windows.Forms.LinkLabel();
 			this.C64BrowseFirmwares = new System.Windows.Forms.Button();
 			this.C64FirmwaresBox = new System.Windows.Forms.TextBox();
 			this.C64CheatsDescription = new System.Windows.Forms.Label();
@@ -309,7 +310,25 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.C64FirmwaresDescription = new System.Windows.Forms.LinkLabel();
+			this.tabPage13 = new System.Windows.Forms.TabPage();
+			this.COLBaseBox = new System.Windows.Forms.TextBox();
+			this.COLBiosDescription = new System.Windows.Forms.Label();
+			this.COLBrowseBios = new System.Windows.Forms.Button();
+			this.COLBiosBox = new System.Windows.Forms.TextBox();
+			this.COLCheatsDescription = new System.Windows.Forms.Label();
+			this.COLBrowseCheats = new System.Windows.Forms.Button();
+			this.COLCheatsBox = new System.Windows.Forms.TextBox();
+			this.COLScreenshotsBox = new System.Windows.Forms.TextBox();
+			this.COLBaseDescription = new System.Windows.Forms.Label();
+			this.COLScreenshotsDescription = new System.Windows.Forms.Label();
+			this.BrowseCOLBase = new System.Windows.Forms.Button();
+			this.BrowseCOLScreenshots = new System.Windows.Forms.Button();
+			this.COLROMsBox = new System.Windows.Forms.TextBox();
+			this.BrowseCOLSavestates = new System.Windows.Forms.Button();
+			this.COLSavestatesDescription = new System.Windows.Forms.Label();
+			this.COLROMsDescription = new System.Windows.Forms.Label();
+			this.COLSavestatesBox = new System.Windows.Forms.TextBox();
+			this.COLBrowseROMs = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage12.SuspendLayout();
@@ -324,6 +343,7 @@
 			this.tabPage11.SuspendLayout();
 			this.tabPageC64.SuspendLayout();
 			this.tabPage7.SuspendLayout();
+			this.tabPage13.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// Cancel
@@ -726,6 +746,7 @@
 			this.tabControl1.Controls.Add(this.tabPage6);
 			this.tabControl1.Controls.Add(this.tabPage10);
 			this.tabControl1.Controls.Add(this.tabPage11);
+			this.tabControl1.Controls.Add(this.tabPage13);
 			this.tabControl1.Controls.Add(this.tabPageC64);
 			this.tabControl1.Controls.Add(this.tabPage7);
 			this.tabControl1.Location = new System.Drawing.Point(13, 97);
@@ -915,9 +936,9 @@
 			this.tabPage12.Controls.Add(this.SNESROMsDescription);
 			this.tabPage12.Controls.Add(this.SNESSaveRAMBox);
 			this.tabPage12.Controls.Add(this.SNESBrowseROMs);
-			this.tabPage12.Location = new System.Drawing.Point(4, 40);
+			this.tabPage12.Location = new System.Drawing.Point(4, 22);
 			this.tabPage12.Name = "tabPage12";
-			this.tabPage12.Size = new System.Drawing.Size(566, 257);
+			this.tabPage12.Size = new System.Drawing.Size(566, 275);
 			this.tabPage12.TabIndex = 11;
 			this.tabPage12.Text = "SNES";
 			this.tabPage12.UseVisualStyleBackColor = true;
@@ -1154,10 +1175,10 @@
 			this.tabPage2.Controls.Add(this.Sega8BrowseSaveRAM);
 			this.tabPage2.Controls.Add(this.Sega8SaveRAMDescription);
 			this.tabPage2.Controls.Add(this.Sega8SaveRAMBox);
-			this.tabPage2.Location = new System.Drawing.Point(4, 40);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(566, 257);
+			this.tabPage2.Size = new System.Drawing.Size(566, 275);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "SMS";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -1242,9 +1263,9 @@
 			this.tabPage9.Controls.Add(this.SGROMsDescription);
 			this.tabPage9.Controls.Add(this.SGSaveRAMBox);
 			this.tabPage9.Controls.Add(this.SGBrowseROMs);
-			this.tabPage9.Location = new System.Drawing.Point(4, 40);
+			this.tabPage9.Location = new System.Drawing.Point(4, 22);
 			this.tabPage9.Name = "tabPage9";
-			this.tabPage9.Size = new System.Drawing.Size(566, 257);
+			this.tabPage9.Size = new System.Drawing.Size(566, 275);
 			this.tabPage9.TabIndex = 8;
 			this.tabPage9.Text = "SG-1000";
 			this.tabPage9.UseVisualStyleBackColor = true;
@@ -1450,9 +1471,9 @@
 			this.tabPage8.Controls.Add(this.GGBrowseSaveRAM);
 			this.tabPage8.Controls.Add(this.GGSaveRAMDescription);
 			this.tabPage8.Controls.Add(this.GGSaveRAMBox);
-			this.tabPage8.Location = new System.Drawing.Point(4, 40);
+			this.tabPage8.Location = new System.Drawing.Point(4, 22);
 			this.tabPage8.Name = "tabPage8";
-			this.tabPage8.Size = new System.Drawing.Size(566, 257);
+			this.tabPage8.Size = new System.Drawing.Size(566, 275);
 			this.tabPage8.TabIndex = 7;
 			this.tabPage8.Text = "G. Gear";
 			this.tabPage8.UseVisualStyleBackColor = true;
@@ -1657,9 +1678,9 @@
 			this.tabPage3.Controls.Add(this.GenesisBrowseSavestates);
 			this.tabPage3.Controls.Add(this.GenesisBrowseScreenshots);
 			this.tabPage3.Controls.Add(this.GenesisROMsBox);
-			this.tabPage3.Location = new System.Drawing.Point(4, 40);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(566, 257);
+			this.tabPage3.Size = new System.Drawing.Size(566, 275);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Genesis";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -1882,6 +1903,7 @@
 			this.PCEBaseBox.Name = "PCEBaseBox";
 			this.PCEBaseBox.Size = new System.Drawing.Size(421, 20);
 			this.PCEBaseBox.TabIndex = 77;
+			this.PCEBaseBox.TextChanged += new System.EventHandler(this.PCEBaseBox_TextChanged);
 			// 
 			// PCEBiosDescription
 			// 
@@ -1912,6 +1934,7 @@
 			this.PCEBiosBox.Name = "PCEBiosBox";
 			this.PCEBiosBox.Size = new System.Drawing.Size(421, 20);
 			this.PCEBiosBox.TabIndex = 89;
+			this.PCEBiosBox.TextChanged += new System.EventHandler(this.PCEBiosBox_TextChanged);
 			// 
 			// PCECheatsDescription
 			// 
@@ -1942,6 +1965,7 @@
 			this.PCECheatsBox.Name = "PCECheatsBox";
 			this.PCECheatsBox.Size = new System.Drawing.Size(421, 20);
 			this.PCECheatsBox.TabIndex = 87;
+			this.PCECheatsBox.TextChanged += new System.EventHandler(this.PCECheatsBox_TextChanged);
 			// 
 			// PCEScreenshotsBox
 			// 
@@ -1952,6 +1976,7 @@
 			this.PCEScreenshotsBox.Name = "PCEScreenshotsBox";
 			this.PCEScreenshotsBox.Size = new System.Drawing.Size(421, 20);
 			this.PCEScreenshotsBox.TabIndex = 85;
+			this.PCEScreenshotsBox.TextChanged += new System.EventHandler(this.PCEScreenshotsBox_TextChanged);
 			// 
 			// PCEBaseDescription
 			// 
@@ -2004,6 +2029,7 @@
 			this.PCEROMsBox.Name = "PCEROMsBox";
 			this.PCEROMsBox.Size = new System.Drawing.Size(421, 20);
 			this.PCEROMsBox.TabIndex = 79;
+			this.PCEROMsBox.TextChanged += new System.EventHandler(this.PCEROMsBox_TextChanged);
 			// 
 			// PCEBrowseSavestates
 			// 
@@ -2045,6 +2071,7 @@
 			this.PCESavestatesBox.Name = "PCESavestatesBox";
 			this.PCESavestatesBox.Size = new System.Drawing.Size(421, 20);
 			this.PCESavestatesBox.TabIndex = 81;
+			this.PCESavestatesBox.TextChanged += new System.EventHandler(this.PCESavestatesBox_TextChanged);
 			// 
 			// PCEBrowseROMs
 			// 
@@ -2086,6 +2113,7 @@
 			this.PCESaveRAMBox.Name = "PCESaveRAMBox";
 			this.PCESaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.PCESaveRAMBox.TabIndex = 83;
+			this.PCESaveRAMBox.TextChanged += new System.EventHandler(this.PCESaveRAMBox_TextChanged);
 			// 
 			// tabPage5
 			// 
@@ -2110,9 +2138,9 @@
 			this.tabPage5.Controls.Add(this.GBBrowseSaveRAM);
 			this.tabPage5.Controls.Add(this.GBSaveRAMDescription);
 			this.tabPage5.Controls.Add(this.GBSaveRAMBox);
-			this.tabPage5.Location = new System.Drawing.Point(4, 40);
+			this.tabPage5.Location = new System.Drawing.Point(4, 22);
 			this.tabPage5.Name = "tabPage5";
-			this.tabPage5.Size = new System.Drawing.Size(566, 257);
+			this.tabPage5.Size = new System.Drawing.Size(566, 275);
 			this.tabPage5.TabIndex = 4;
 			this.tabPage5.Text = "Gameboy";
 			this.tabPage5.UseVisualStyleBackColor = true;
@@ -2347,9 +2375,9 @@
 			this.tabPage6.Controls.Add(this.TI83BrowseSaveRAM);
 			this.tabPage6.Controls.Add(this.TI83SaveRAMDescription);
 			this.tabPage6.Controls.Add(this.TI83SaveRAMBox);
-			this.tabPage6.Location = new System.Drawing.Point(4, 40);
+			this.tabPage6.Location = new System.Drawing.Point(4, 22);
 			this.tabPage6.Name = "tabPage6";
-			this.tabPage6.Size = new System.Drawing.Size(566, 257);
+			this.tabPage6.Size = new System.Drawing.Size(566, 275);
 			this.tabPage6.TabIndex = 5;
 			this.tabPage6.Text = "TI83";
 			this.tabPage6.UseVisualStyleBackColor = true;
@@ -2556,9 +2584,9 @@
 			this.tabPage10.Controls.Add(this.AtariROMsDescription);
 			this.tabPage10.Controls.Add(this.AtariSaveRAMBox);
 			this.tabPage10.Controls.Add(this.AtariBrowseROMs);
-			this.tabPage10.Location = new System.Drawing.Point(4, 40);
+			this.tabPage10.Location = new System.Drawing.Point(4, 22);
 			this.tabPage10.Name = "tabPage10";
-			this.tabPage10.Size = new System.Drawing.Size(566, 257);
+			this.tabPage10.Size = new System.Drawing.Size(566, 275);
 			this.tabPage10.TabIndex = 9;
 			this.tabPage10.Text = "Atari";
 			this.tabPage10.UseVisualStyleBackColor = true;
@@ -2770,10 +2798,10 @@
 			this.tabPage11.Controls.Add(this.INTVBrowseSaveRAM);
 			this.tabPage11.Controls.Add(this.INTVSaveRAMDescription);
 			this.tabPage11.Controls.Add(this.INTVSaveRAMBox);
-			this.tabPage11.Location = new System.Drawing.Point(4, 40);
+			this.tabPage11.Location = new System.Drawing.Point(4, 22);
 			this.tabPage11.Name = "tabPage11";
 			this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage11.Size = new System.Drawing.Size(566, 257);
+			this.tabPage11.Size = new System.Drawing.Size(566, 275);
 			this.tabPage11.TabIndex = 10;
 			this.tabPage11.Text = "Int.V.";
 			this.tabPage11.UseVisualStyleBackColor = true;
@@ -3047,6 +3075,17 @@
 			this.tabPageC64.TabIndex = 12;
 			this.tabPageC64.Text = "C64";
 			this.tabPageC64.UseVisualStyleBackColor = true;
+			// 
+			// C64FirmwaresDescription
+			// 
+			this.C64FirmwaresDescription.AutoSize = true;
+			this.C64FirmwaresDescription.Location = new System.Drawing.Point(474, 183);
+			this.C64FirmwaresDescription.Name = "C64FirmwaresDescription";
+			this.C64FirmwaresDescription.Size = new System.Drawing.Size(54, 13);
+			this.C64FirmwaresDescription.TabIndex = 97;
+			this.C64FirmwaresDescription.TabStop = true;
+			this.C64FirmwaresDescription.Text = "Firmwares";
+			this.C64FirmwaresDescription.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.C64FirmwaresDescription_LinkClicked);
 			// 
 			// C64BrowseFirmwares
 			// 
@@ -3378,16 +3417,215 @@
 			this.label1.TabIndex = 204;
 			this.label1.Text = "Special Commands";
 			// 
-			// C64FirmwaresDescription
+			// tabPage13
 			// 
-			this.C64FirmwaresDescription.AutoSize = true;
-			this.C64FirmwaresDescription.Location = new System.Drawing.Point(474, 183);
-			this.C64FirmwaresDescription.Name = "C64FirmwaresDescription";
-			this.C64FirmwaresDescription.Size = new System.Drawing.Size(54, 13);
-			this.C64FirmwaresDescription.TabIndex = 97;
-			this.C64FirmwaresDescription.TabStop = true;
-			this.C64FirmwaresDescription.Text = "Firmwares";
-			this.C64FirmwaresDescription.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.C64FirmwaresDescription_LinkClicked);
+			this.tabPage13.Controls.Add(this.COLBaseBox);
+			this.tabPage13.Controls.Add(this.COLBiosDescription);
+			this.tabPage13.Controls.Add(this.COLBrowseBios);
+			this.tabPage13.Controls.Add(this.COLBiosBox);
+			this.tabPage13.Controls.Add(this.COLCheatsDescription);
+			this.tabPage13.Controls.Add(this.COLBrowseCheats);
+			this.tabPage13.Controls.Add(this.COLCheatsBox);
+			this.tabPage13.Controls.Add(this.COLScreenshotsBox);
+			this.tabPage13.Controls.Add(this.COLBaseDescription);
+			this.tabPage13.Controls.Add(this.COLScreenshotsDescription);
+			this.tabPage13.Controls.Add(this.BrowseCOLBase);
+			this.tabPage13.Controls.Add(this.BrowseCOLScreenshots);
+			this.tabPage13.Controls.Add(this.COLROMsBox);
+			this.tabPage13.Controls.Add(this.BrowseCOLSavestates);
+			this.tabPage13.Controls.Add(this.COLSavestatesDescription);
+			this.tabPage13.Controls.Add(this.COLROMsDescription);
+			this.tabPage13.Controls.Add(this.COLSavestatesBox);
+			this.tabPage13.Controls.Add(this.COLBrowseROMs);
+			this.tabPage13.Location = new System.Drawing.Point(4, 40);
+			this.tabPage13.Name = "tabPage13";
+			this.tabPage13.Size = new System.Drawing.Size(566, 257);
+			this.tabPage13.TabIndex = 13;
+			this.tabPage13.Text = "Col. V.";
+			this.tabPage13.UseVisualStyleBackColor = true;
+			// 
+			// COLBaseBox
+			// 
+			this.COLBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.COLBaseBox.Name = "COLBaseBox";
+			this.COLBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.COLBaseBox.TabIndex = 98;
+			// 
+			// COLBiosDescription
+			// 
+			this.COLBiosDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLBiosDescription.AutoSize = true;
+			this.COLBiosDescription.Location = new System.Drawing.Point(474, 183);
+			this.COLBiosDescription.Name = "COLBiosDescription";
+			this.COLBiosDescription.Size = new System.Drawing.Size(32, 13);
+			this.COLBiosDescription.TabIndex = 112;
+			this.COLBiosDescription.Text = "BIOS";
+			// 
+			// COLBrowseBios
+			// 
+			this.COLBrowseBios.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLBrowseBios.Image = ((System.Drawing.Image)(resources.GetObject("COLBrowseBios.Image")));
+			this.COLBrowseBios.Location = new System.Drawing.Point(442, 179);
+			this.COLBrowseBios.Name = "COLBrowseBios";
+			this.COLBrowseBios.Size = new System.Drawing.Size(26, 23);
+			this.COLBrowseBios.TabIndex = 111;
+			this.COLBrowseBios.UseVisualStyleBackColor = true;
+			this.COLBrowseBios.Click += new System.EventHandler(this.COLBrowseBios_Click);
+			// 
+			// COLBiosBox
+			// 
+			this.COLBiosBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLBiosBox.Location = new System.Drawing.Point(13, 179);
+			this.COLBiosBox.Name = "COLBiosBox";
+			this.COLBiosBox.Size = new System.Drawing.Size(421, 20);
+			this.COLBiosBox.TabIndex = 110;
+			// 
+			// COLCheatsDescription
+			// 
+			this.COLCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLCheatsDescription.AutoSize = true;
+			this.COLCheatsDescription.Location = new System.Drawing.Point(474, 153);
+			this.COLCheatsDescription.Name = "COLCheatsDescription";
+			this.COLCheatsDescription.Size = new System.Drawing.Size(40, 13);
+			this.COLCheatsDescription.TabIndex = 97;
+			this.COLCheatsDescription.Text = "Cheats";
+			// 
+			// COLBrowseCheats
+			// 
+			this.COLBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLBrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("COLBrowseCheats.Image")));
+			this.COLBrowseCheats.Location = new System.Drawing.Point(442, 149);
+			this.COLBrowseCheats.Name = "COLBrowseCheats";
+			this.COLBrowseCheats.Size = new System.Drawing.Size(26, 23);
+			this.COLBrowseCheats.TabIndex = 109;
+			this.COLBrowseCheats.UseVisualStyleBackColor = true;
+			this.COLBrowseCheats.Click += new System.EventHandler(this.COLBrowseCheats_Click);
+			// 
+			// COLCheatsBox
+			// 
+			this.COLCheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLCheatsBox.Location = new System.Drawing.Point(13, 149);
+			this.COLCheatsBox.Name = "COLCheatsBox";
+			this.COLCheatsBox.Size = new System.Drawing.Size(421, 20);
+			this.COLCheatsBox.TabIndex = 108;
+			// 
+			// COLScreenshotsBox
+			// 
+			this.COLScreenshotsBox.AcceptsReturn = true;
+			this.COLScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLScreenshotsBox.Location = new System.Drawing.Point(13, 119);
+			this.COLScreenshotsBox.Name = "COLScreenshotsBox";
+			this.COLScreenshotsBox.Size = new System.Drawing.Size(421, 20);
+			this.COLScreenshotsBox.TabIndex = 106;
+			// 
+			// COLBaseDescription
+			// 
+			this.COLBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLBaseDescription.AutoSize = true;
+			this.COLBaseDescription.Location = new System.Drawing.Point(474, 25);
+			this.COLBaseDescription.Name = "COLBaseDescription";
+			this.COLBaseDescription.Size = new System.Drawing.Size(31, 13);
+			this.COLBaseDescription.TabIndex = 96;
+			this.COLBaseDescription.Text = "Base";
+			// 
+			// COLScreenshotsDescription
+			// 
+			this.COLScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLScreenshotsDescription.AutoSize = true;
+			this.COLScreenshotsDescription.Location = new System.Drawing.Point(474, 123);
+			this.COLScreenshotsDescription.Name = "COLScreenshotsDescription";
+			this.COLScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+			this.COLScreenshotsDescription.TabIndex = 95;
+			this.COLScreenshotsDescription.Text = "Screenshots";
+			// 
+			// BrowseCOLBase
+			// 
+			this.BrowseCOLBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseCOLBase.Image = ((System.Drawing.Image)(resources.GetObject("BrowseCOLBase.Image")));
+			this.BrowseCOLBase.Location = new System.Drawing.Point(442, 21);
+			this.BrowseCOLBase.Name = "BrowseCOLBase";
+			this.BrowseCOLBase.Size = new System.Drawing.Size(26, 23);
+			this.BrowseCOLBase.TabIndex = 99;
+			this.BrowseCOLBase.UseVisualStyleBackColor = true;
+			this.BrowseCOLBase.Click += new System.EventHandler(this.BrowseCOLBase_Click);
+			// 
+			// BrowseCOLScreenshots
+			// 
+			this.BrowseCOLScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseCOLScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("BrowseCOLScreenshots.Image")));
+			this.BrowseCOLScreenshots.Location = new System.Drawing.Point(442, 119);
+			this.BrowseCOLScreenshots.Name = "BrowseCOLScreenshots";
+			this.BrowseCOLScreenshots.Size = new System.Drawing.Size(26, 23);
+			this.BrowseCOLScreenshots.TabIndex = 107;
+			this.BrowseCOLScreenshots.UseVisualStyleBackColor = true;
+			this.BrowseCOLScreenshots.Click += new System.EventHandler(this.BrowseCOLScreenshots_Click);
+			// 
+			// COLROMsBox
+			// 
+			this.COLROMsBox.AcceptsReturn = true;
+			this.COLROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLROMsBox.Location = new System.Drawing.Point(13, 59);
+			this.COLROMsBox.Name = "COLROMsBox";
+			this.COLROMsBox.Size = new System.Drawing.Size(421, 20);
+			this.COLROMsBox.TabIndex = 100;
+			// 
+			// BrowseCOLSavestates
+			// 
+			this.BrowseCOLSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseCOLSavestates.Image = ((System.Drawing.Image)(resources.GetObject("BrowseCOLSavestates.Image")));
+			this.BrowseCOLSavestates.Location = new System.Drawing.Point(442, 89);
+			this.BrowseCOLSavestates.Name = "BrowseCOLSavestates";
+			this.BrowseCOLSavestates.Size = new System.Drawing.Size(26, 23);
+			this.BrowseCOLSavestates.TabIndex = 103;
+			this.BrowseCOLSavestates.UseVisualStyleBackColor = true;
+			this.BrowseCOLSavestates.Click += new System.EventHandler(this.BrowseCOLSavestates_Click);
+			// 
+			// COLSavestatesDescription
+			// 
+			this.COLSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLSavestatesDescription.AutoSize = true;
+			this.COLSavestatesDescription.Location = new System.Drawing.Point(474, 93);
+			this.COLSavestatesDescription.Name = "COLSavestatesDescription";
+			this.COLSavestatesDescription.Size = new System.Drawing.Size(60, 13);
+			this.COLSavestatesDescription.TabIndex = 92;
+			this.COLSavestatesDescription.Text = "Savestates";
+			// 
+			// COLROMsDescription
+			// 
+			this.COLROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLROMsDescription.AutoSize = true;
+			this.COLROMsDescription.Location = new System.Drawing.Point(474, 63);
+			this.COLROMsDescription.Name = "COLROMsDescription";
+			this.COLROMsDescription.Size = new System.Drawing.Size(37, 13);
+			this.COLROMsDescription.TabIndex = 94;
+			this.COLROMsDescription.Text = "ROMs";
+			// 
+			// COLSavestatesBox
+			// 
+			this.COLSavestatesBox.AcceptsTab = true;
+			this.COLSavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLSavestatesBox.Location = new System.Drawing.Point(13, 89);
+			this.COLSavestatesBox.Name = "COLSavestatesBox";
+			this.COLSavestatesBox.Size = new System.Drawing.Size(421, 20);
+			this.COLSavestatesBox.TabIndex = 102;
+			// 
+			// COLBrowseROMs
+			// 
+			this.COLBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.COLBrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("COLBrowseROMs.Image")));
+			this.COLBrowseROMs.Location = new System.Drawing.Point(442, 59);
+			this.COLBrowseROMs.Name = "COLBrowseROMs";
+			this.COLBrowseROMs.Size = new System.Drawing.Size(26, 23);
+			this.COLBrowseROMs.TabIndex = 101;
+			this.COLBrowseROMs.UseVisualStyleBackColor = true;
+			this.COLBrowseROMs.Click += new System.EventHandler(this.COLBrowseROMs_Click);
 			// 
 			// PathConfig
 			// 
@@ -3438,6 +3676,8 @@
 			this.tabPageC64.PerformLayout();
 			this.tabPage7.ResumeLayout(false);
 			this.tabPage7.PerformLayout();
+			this.tabPage13.ResumeLayout(false);
+			this.tabPage13.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -3725,5 +3965,24 @@
 		private System.Windows.Forms.Button C64BrowseFirmwares;
 		private System.Windows.Forms.TextBox C64FirmwaresBox;
 		private System.Windows.Forms.LinkLabel C64FirmwaresDescription;
+		private System.Windows.Forms.TabPage tabPage13;
+		private System.Windows.Forms.TextBox COLBaseBox;
+		private System.Windows.Forms.Label COLBiosDescription;
+		private System.Windows.Forms.Button COLBrowseBios;
+		private System.Windows.Forms.TextBox COLBiosBox;
+		private System.Windows.Forms.Label COLCheatsDescription;
+		private System.Windows.Forms.Button COLBrowseCheats;
+		private System.Windows.Forms.TextBox COLCheatsBox;
+		private System.Windows.Forms.TextBox COLScreenshotsBox;
+		private System.Windows.Forms.Label COLBaseDescription;
+		private System.Windows.Forms.Label COLScreenshotsDescription;
+		private System.Windows.Forms.Button BrowseCOLBase;
+		private System.Windows.Forms.Button BrowseCOLScreenshots;
+		private System.Windows.Forms.TextBox COLROMsBox;
+		private System.Windows.Forms.Button BrowseCOLSavestates;
+		private System.Windows.Forms.Label COLSavestatesDescription;
+		private System.Windows.Forms.Label COLROMsDescription;
+		private System.Windows.Forms.TextBox COLSavestatesBox;
+		private System.Windows.Forms.Button COLBrowseROMs;
     }
 }

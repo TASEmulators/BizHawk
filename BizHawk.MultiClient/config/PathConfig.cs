@@ -103,6 +103,7 @@ namespace BizHawk.MultiClient
 			PCESaveRAMBox.Text = Global.Config.PathPCESaveRAM;
 			PCEScreenshotsBox.Text = Global.Config.PathPCEScreenshots;
 			PCECheatsBox.Text = Global.Config.PathPCECheats;
+			PCEBiosBox.Text = Global.Config.PathPCEBios;
 
 			GenesisBaseBox.Text = Global.Config.BaseGenesis;
 			GenesisROMsBox.Text = Global.Config.PathGenesisROMs;
@@ -139,6 +140,13 @@ namespace BizHawk.MultiClient
 			C64ScreenshotsBox.Text = Global.Config.PathC64Screenshots;
 			C64CheatsBox.Text = Global.Config.PathC64Cheats;
 
+			COLBaseBox.Text = Global.Config.BaseCOL;
+			COLROMsBox.Text = Global.Config.PathCOLROMs;
+			COLSavestatesBox.Text = Global.Config.PathCOLSavestates;
+			COLScreenshotsBox.Text = Global.Config.PathCOLScreenshots;
+			COLCheatsBox.Text = Global.Config.PathCOLCheats;
+			COLBiosBox.Text = Global.Config.PathCOLBios;
+
 			MoviesBox.Text = Global.Config.MoviesPath;
 			MovieBackupsBox.Text = Global.Config.MoviesBackupPath;
 			LuaBox.Text = Global.Config.LuaPath;
@@ -146,7 +154,7 @@ namespace BizHawk.MultiClient
 			AVIBox.Text = Global.Config.AVIPath;
 			LogBox.Text = Global.Config.LogPath;
 
-			PCEBiosBox.Text = Global.Config.PathPCEBios;
+			
 
 			if (!Global.MainForm.INTERIM)
 			{
@@ -195,6 +203,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "C64":
 					tabControl1.SelectTab(12);
+					break;
+				case "Coleco":
+					tabControl1.SelectTab(13);
 					break;
 				case "NULL":
 					tabControl1.SelectTab(11);
@@ -297,6 +308,13 @@ namespace BizHawk.MultiClient
 			Global.Config.PathC64Screenshots = C64ScreenshotsBox.Text;
 			Global.Config.PathC64Cheats = C64CheatsBox.Text;
 
+			Global.Config.BaseCOL = COLBaseBox.Text;
+			Global.Config.PathCOLROMs = COLROMsBox.Text;
+			Global.Config.PathCOLSavestates = COLSavestatesBox.Text;
+			Global.Config.PathCOLScreenshots = COLScreenshotsBox.Text;
+			Global.Config.PathCOLCheats = COLCheatsBox.Text;
+			Global.Config.PathCOLBios = COLBiosBox.Text;
+
 			Global.Config.MoviesPath = MoviesBox.Text;
 			Global.Config.MoviesBackupPath = MovieBackupsBox.Text;
 			Global.Config.LuaPath = LuaBox.Text;
@@ -357,7 +375,6 @@ namespace BizHawk.MultiClient
 			GenesisROMsBox.Enabled = !RecentForROMs.Checked;
 			GenesisBrowseROMs.Enabled = !RecentForROMs.Checked;
 			GenesisROMsDescription.Enabled = !RecentForROMs.Checked;
-			
 
 			PCEROMsBox.Enabled = !RecentForROMs.Checked;
 			PCEBrowseROMs.Enabled = !RecentForROMs.Checked;
@@ -378,6 +395,10 @@ namespace BizHawk.MultiClient
 			C64ROMsBox.Enabled = !RecentForROMs.Checked;
 			C64BrowseROMs.Enabled = !RecentForROMs.Checked;
 			C64ROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			COLROMsBox.Enabled = !RecentForROMs.Checked;
+			COLBrowseROMs.Enabled = !RecentForROMs.Checked;
+			COLROMsDescription.Enabled = !RecentForROMs.Checked;
 
 			INTVRomsBox.Enabled = !RecentForROMs.Checked;
 			INTVBrowseROMs.Enabled = !RecentForROMs.Checked;
@@ -737,8 +758,18 @@ namespace BizHawk.MultiClient
 
 		void BrowseForBios(string filter, string config, string system, TextBox tb)
 		{
+			
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Path.GetDirectoryName(config), system);
+			
+			if (!String.IsNullOrWhiteSpace(config))
+			{
+				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Path.GetDirectoryName(config), system);
+			}
+			else
+			{
+				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.BaseCOL, "Coleco");
+			}
+
 			ofd.Filter = filter;
 			ofd.FileName = Path.GetFileName(config);
 
@@ -880,6 +911,74 @@ namespace BizHawk.MultiClient
 		private void C64FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
+		}
+
+		private void PCEBaseBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCEROMsBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCESavestatesBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCESaveRAMBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCEScreenshotsBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCECheatsBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCEBiosBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void BrowseCOLBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLBaseBox, COLBaseDescription.Text);
+		}
+
+		private void COLBrowseROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLROMsBox, COLROMsDescription.Text, "Coleco");
+		}
+
+		private void BrowseCOLSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLSavestatesBox, COLSavestatesDescription.Text, "Coleco");
+		}
+
+		private void BrowseCOLScreenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLScreenshotsBox, COLScreenshotsDescription.Text, "Coleco");
+		}
+
+		private void COLBrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLScreenshotsBox, COLScreenshotsDescription.Text, "Coleco");
+		}
+
+		private void COLBrowseBios_Click(object sender, EventArgs e)
+		{
+			BrowseForBios(
+				"ROM files (*.bin)|*.bin|All Files|*.*",
+				 Global.Config.PathCOLBios, "Coleco",
+				COLBiosBox);
 		}
 	}
 }

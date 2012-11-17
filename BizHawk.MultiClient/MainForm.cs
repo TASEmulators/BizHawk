@@ -1436,7 +1436,7 @@ namespace BizHawk.MultiClient
 					Global.ActiveController = Global.GBControls;
 					Global.AutoFireController = Global.AutofireGBControls;
 					break;
-				case "COLV":
+				case "Coleco":
 					Global.ActiveController = Global.ColecoControls;
 					break;
 				case "C64":
@@ -1757,8 +1757,9 @@ namespace BizHawk.MultiClient
 									}
 								}
 								break;
-							case "COLV":
-								ColecoVision c = new ColecoVision(game, rom.RomData);
+							case "Coleco":
+								string colbiosPath = PathManager.MakeAbsolutePath(Global.Config.PathCOLBios, "COL");
+								ColecoVision c = new ColecoVision(game, rom.RomData, colbiosPath);
 								nextEmulator = c;
 								break;
 							case "INTV":
