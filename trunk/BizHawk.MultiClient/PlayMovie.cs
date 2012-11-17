@@ -80,7 +80,8 @@ namespace BizHawk.MultiClient
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
-			ofd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + ";*.zip;*.7z|" + Global.MainForm.GetMovieExtName() + "|Savestates|*.state|Archive Files|*.zip;*.7z|All Files|*.*";
+			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
+			ofd.Filter = filter;
 
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();

@@ -443,9 +443,9 @@ namespace BizHawk.MultiClient
 			SaveFileDialog sfd = new SaveFileDialog();
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			sfd.DefaultExt = "." + Global.Config.MovieExtension;
-			//sfd.FileName = RecordBox.Text;
 			sfd.FileName = Global.MovieSession.Movie.Filename;
-			sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
+			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
+			sfd.Filter = filter;
 
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();

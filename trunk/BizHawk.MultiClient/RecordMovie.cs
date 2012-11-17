@@ -165,7 +165,8 @@ namespace BizHawk.MultiClient
 			sfd.DefaultExt = "." + Global.Config.MovieExtension;
 			sfd.FileName = RecordBox.Text;
 			sfd.OverwritePrompt = false;
-			sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
+			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
+			sfd.Filter = filter;
 
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
