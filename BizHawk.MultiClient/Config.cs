@@ -175,8 +175,15 @@ namespace BizHawk.MultiClient
 		public string AVIPath = ".";
 		public string LogPath = ".";
 
+		public string BaseCOL = Path.Combine(".", "ColecoVision");
+		public string PathCOLROMs = ".";
+		public string PathCOLSavestates = Path.Combine(".", "State");
+		public string PathCOLScreenshots = Path.Combine(".", "Screenshots");
+		public string PathCOLCheats = Path.Combine(".", "Cheats");
+
 		//BIOS Paths
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
+		public string PathCOLBios = Path.Combine(".", "ColecoBios.bin");
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
 		public string PathFDSBios = Path.Combine(".", "disksys.rom");
