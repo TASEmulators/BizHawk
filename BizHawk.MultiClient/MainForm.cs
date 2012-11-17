@@ -1265,49 +1265,11 @@ namespace BizHawk.MultiClient
 				case "A26": str += "Atari 2600"; break;
 				case "A78": str += "Atari 7800"; break;
 				case "C64": str += "Commodore 64"; break;
+				case "Coleco": str += "ColecoVision"; break;
 			}
 
 			if (INTERIM) str += " (interim)";
 			return str;
-		}
-
-		public string GetMovieExtName()
-		{
-			string str = "", system = Global.Game.System, ext = GetAlternateExt();
-			switch (system)
-			{
-				case "SG": str += "SG-1000"; break;
-				case "SMS": str += "Sega Master System"; break;
-				case "GG": str += "Game Gear"; break;
-				case "PCECD": str += "TurboGrafx-16 (CD)"; break;
-				case "PCE": str += "TurboGrafx-16"; break;
-				case "SGX": str += "SuperGrafx"; break;
-				case "GEN": str += "Genesis"; break;
-				case "TI83": str += "TI-83"; break;
-				case "NES": str += "NES"; break;
-				case "GB": str += "Game Boy"; break;
-			}
-			return str + " Movie File (*" + ext + ")|*" + ext;
-		}
-
-		private string GetAlternateExt()
-		{
-			string str = ".", system = Global.Game.System;
-			switch (system)
-			{
-				case "SG": str += "1000"; break;
-				case "SMS": str += "sms"; break;
-				case "GG": str += "gg"; break;
-				case "PCECD": str += "pcecd"; break;
-				case "PCE": str += "pce"; break;
-				case "SGX": str += "sgx"; break;
-				case "GEN": str += "gen"; break;
-				case "TI83": str += "ti83"; break;
-				case "NES": str += "nes"; break;
-				case "GB": str += "gb"; break;
-			}
-
-			return str + "." + Global.Config.MovieExtension;
 		}
 
 		private void HandlePlatformMenus()
