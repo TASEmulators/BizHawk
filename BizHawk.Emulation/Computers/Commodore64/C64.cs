@@ -16,43 +16,55 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			SetupMemoryDomains();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
+			Init(Region.NTSC);
 		}
 
-		public string SystemId { get { return "C64"; } }
-		public GameInfo game;
-		
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
-		private IList<MemoryDomain> memoryDomains;
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
-		public int Frame { get { return _frame; } set { _frame = value; } }
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public bool IsLagFrame { get { return _islag; } }
+		// internal variables
 		private bool _islag = true;
 		private int _lagcount = 0;
 		private int _frame = 0;
-		public byte[] ReadSaveRam() { return null; }
-		public void StoreSaveRam(byte[] data) { }
+
+		// bizhawk I/O
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
+		
+		// game/rom specific
+		public GameInfo game;
+		public string SystemId { get { return "C64"; } }
+
+		// memory domains
+		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		private IList<MemoryDomain> memoryDomains;
+		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+
+		// save state/ram
 		public void ClearSaveRam() { }
+		public void LoadStateBinary(BinaryReader br) { }
+		public void LoadStateText(TextReader reader) { }
+		public byte[] ReadSaveRam() { return null; }
 		public bool SaveRamModified { get; set; }
-		public void Dispose() { }
-		public IVideoProvider VideoProvider { get { return vic; } }
-		public ISoundProvider SoundProvider { get { return sid; } }
+		public void SaveStateBinary(BinaryWriter bw) { }
+		public void SaveStateText(TextWriter writer) { }
+		public void StoreSaveRam(byte[] data) { }
+
+		// running state
+		public bool DeterministicEmulation { get { return true; } set { ; } }
+		public int Frame { get { return _frame; } set { _frame = value; } }
+		public bool IsLagFrame { get { return _islag; } }
+		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public void ResetFrameCounter()
 		{
 			_frame = 0;
 		}
 
-		/*TODO*/
-		public ISyncSoundProvider SyncSoundProvider { get { return syncSid; ; } }
-		public bool StartAsyncSound() { return true; } //TODO
+		// audio/video
 		public void EndAsyncSound() { } //TODO
-		public bool DeterministicEmulation { get; set; } //TODO
-		public void SaveStateText(TextWriter writer) { } //TODO
-		public void LoadStateText(TextReader reader) { } //TODO`
-		public void SaveStateBinary(BinaryWriter bw) { } //TODO
-		public void LoadStateBinary(BinaryReader br) { } //TODO
+		public ISoundProvider SoundProvider { get { return sid; } }
+		public bool StartAsyncSound() { return true; } //TODO
+		public ISyncSoundProvider SyncSoundProvider { get { return syncSid; ; } }
+		public IVideoProvider VideoProvider { get { return vic; } }
+
+		// controller
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
 		public IController Controller { get { return input.controller; } set { input.controller = value; } }
 		public static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
@@ -73,6 +85,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		};
 
+		// framework
+		public void Dispose() { }
+
+		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			_frame++;
@@ -114,6 +130,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		public byte[] SaveStateBinary()
+		{
+			MemoryStream ms = new MemoryStream();
+			BinaryWriter bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
+		}
+
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(1);
@@ -128,15 +153,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			domains.Add(new MemoryDomain("DISKVIA0", 0x10, Endian.Little, new Func<int, byte>(PeekVia0), new Action<int, byte>(PokeVia0)));
 			domains.Add(new MemoryDomain("DISKVIA1", 0x10, Endian.Little, new Func<int, byte>(PeekVia1), new Action<int, byte>(PokeVia1)));
 			memoryDomains = domains.AsReadOnly();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
 		}
 
 		void SyncState(Serializer ser) //TODO
