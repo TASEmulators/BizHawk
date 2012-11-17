@@ -962,6 +962,7 @@ namespace BizHawk.MultiClient
 			colecoControls.BindMulti("P1 L2", Global.Config.ColecoController.L2);
 			colecoControls.BindMulti("P1 R1", Global.Config.ColecoController.R1);
 			colecoControls.BindMulti("P1 R2", Global.Config.ColecoController.R2);
+			colecoControls.BindMulti("P1 Key0", Global.Config.ColecoController._0);
 			colecoControls.BindMulti("P1 Key1", Global.Config.ColecoController._1);
 			colecoControls.BindMulti("P1 Key2", Global.Config.ColecoController._2);
 			colecoControls.BindMulti("P1 Key3", Global.Config.ColecoController._3);

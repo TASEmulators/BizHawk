@@ -1075,6 +1075,7 @@ namespace BizHawk.MultiClient
 		public string R1 = "";
 		public string R2 = "";
 
+		public string _0 = "";
 		public string _1 = "";
 		public string _2 = "";
 		public string _3 = "";
@@ -1102,6 +1103,7 @@ namespace BizHawk.MultiClient
 				L2 = "X, J1 B2";
 				R1 = "C, J1 B1";
 				R2 = "V, J1 B2";
+				_0 = "NumberPad0";
 				_1 = "NumberPad1";
 				_2 = "NumberPad2";
 				_3 = "NumberPad3";
@@ -1112,7 +1114,7 @@ namespace BizHawk.MultiClient
 				_8 = "NumberPad8";
 				_9 = "NumberPad9";
 				Pound = "NumberPadPeriod";
-				Star = "NumberPad0";
+				Star = "NumberPadEnter";
 			}
 		}
 	}
