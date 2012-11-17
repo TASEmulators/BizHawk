@@ -30,7 +30,6 @@
 		{
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.ControllerImage = new System.Windows.Forms.PictureBox();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage13 = new System.Windows.Forms.TabPage();
 			this.tabPage14 = new System.Windows.Forms.TabPage();
@@ -109,6 +108,10 @@
 			this.pictureBox12 = new System.Windows.Forms.PictureBox();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.pictureBox7 = new System.Windows.Forms.PictureBox();
+			this.tabPage59 = new System.Windows.Forms.TabPage();
+			this.tabControl10 = new System.Windows.Forms.TabControl();
+			this.tabPage60 = new System.Windows.Forms.TabPage();
+			this.tabPage61 = new System.Windows.Forms.TabPage();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
@@ -162,9 +165,12 @@
 			this.C64Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.C64KeyboardPanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.COLController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.COLAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.pictureBox14 = new System.Windows.Forms.PictureBox();
+			this.pictureBox15 = new System.Windows.Forms.PictureBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
 			this.tabControl2.SuspendLayout();
 			this.tabPage13.SuspendLayout();
 			this.tabPage14.SuspendLayout();
@@ -241,6 +247,12 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
 			this.tabPage8.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
+			this.tabPage59.SuspendLayout();
+			this.tabControl10.SuspendLayout();
+			this.tabPage60.SuspendLayout();
+			this.tabPage61.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -257,6 +269,7 @@
 			this.tabControl1.Controls.Add(this.tabPage6);
 			this.tabControl1.Controls.Add(this.tabPage7);
 			this.tabControl1.Controls.Add(this.tabPage8);
+			this.tabControl1.Controls.Add(this.tabPage59);
 			this.tabControl1.Location = new System.Drawing.Point(12, 21);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
@@ -265,7 +278,7 @@
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.ControllerImage);
+			this.tabPage1.Controls.Add(this.pictureBox14);
 			this.tabPage1.Controls.Add(this.tabControl2);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
@@ -274,18 +287,6 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "NES";
 			this.tabPage1.UseVisualStyleBackColor = true;
-			// 
-			// ControllerImage
-			// 
-			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.ControllerImage.Image = global::BizHawk.MultiClient.Properties.Resources.NES_Controller;
-			this.ControllerImage.Location = new System.Drawing.Point(485, 37);
-			this.ControllerImage.Name = "ControllerImage";
-			this.ControllerImage.Size = new System.Drawing.Size(284, 125);
-			this.ControllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.ControllerImage.TabIndex = 4;
-			this.ControllerImage.TabStop = false;
 			// 
 			// tabControl2
 			// 
@@ -1181,6 +1182,49 @@
 			this.pictureBox7.TabIndex = 4;
 			this.pictureBox7.TabStop = false;
 			// 
+			// tabPage59
+			// 
+			this.tabPage59.Controls.Add(this.pictureBox15);
+			this.tabPage59.Controls.Add(this.tabControl10);
+			this.tabPage59.Location = new System.Drawing.Point(4, 22);
+			this.tabPage59.Name = "tabPage59";
+			this.tabPage59.Size = new System.Drawing.Size(787, 425);
+			this.tabPage59.TabIndex = 9;
+			this.tabPage59.Text = "Coleco V.";
+			this.tabPage59.UseVisualStyleBackColor = true;
+			// 
+			// tabControl10
+			// 
+			this.tabControl10.Controls.Add(this.tabPage60);
+			this.tabControl10.Controls.Add(this.tabPage61);
+			this.tabControl10.Location = new System.Drawing.Point(18, 15);
+			this.tabControl10.Name = "tabControl10";
+			this.tabControl10.SelectedIndex = 0;
+			this.tabControl10.Size = new System.Drawing.Size(379, 398);
+			this.tabControl10.TabIndex = 1;
+			// 
+			// tabPage60
+			// 
+			this.tabPage60.Controls.Add(this.COLController1Panel);
+			this.tabPage60.Location = new System.Drawing.Point(4, 22);
+			this.tabPage60.Name = "tabPage60";
+			this.tabPage60.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage60.Size = new System.Drawing.Size(371, 372);
+			this.tabPage60.TabIndex = 0;
+			this.tabPage60.Text = "Controller 1";
+			this.tabPage60.UseVisualStyleBackColor = true;
+			// 
+			// tabPage61
+			// 
+			this.tabPage61.Controls.Add(this.COLAutofire1Panel);
+			this.tabPage61.Location = new System.Drawing.Point(4, 22);
+			this.tabPage61.Name = "tabPage61";
+			this.tabPage61.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage61.Size = new System.Drawing.Size(371, 372);
+			this.tabPage61.TabIndex = 1;
+			this.tabPage61.Text = "Autofire 1";
+			this.tabPage61.UseVisualStyleBackColor = true;
+			// 
 			// Cancel
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1574,6 +1618,44 @@
 			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 414);
 			this.TI83ControllerPanel.TabIndex = 1;
 			// 
+			// COLController1Panel
+			// 
+			this.COLController1Panel.Location = new System.Drawing.Point(6, 6);
+			this.COLController1Panel.Name = "COLController1Panel";
+			this.COLController1Panel.Size = new System.Drawing.Size(359, 332);
+			this.COLController1Panel.TabIndex = 1;
+			// 
+			// COLAutofire1Panel
+			// 
+			this.COLAutofire1Panel.Location = new System.Drawing.Point(6, 6);
+			this.COLAutofire1Panel.Name = "COLAutofire1Panel";
+			this.COLAutofire1Panel.Size = new System.Drawing.Size(359, 332);
+			this.COLAutofire1Panel.TabIndex = 2;
+			// 
+			// pictureBox14
+			// 
+			this.pictureBox14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox14.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox14.Image = global::BizHawk.MultiClient.Properties.Resources.NES_Controller;
+			this.pictureBox14.Location = new System.Drawing.Point(497, 15);
+			this.pictureBox14.Name = "pictureBox14";
+			this.pictureBox14.Size = new System.Drawing.Size(284, 125);
+			this.pictureBox14.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox14.TabIndex = 6;
+			this.pictureBox14.TabStop = false;
+			// 
+			// pictureBox15
+			// 
+			this.pictureBox15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox15.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox15.Image = global::BizHawk.MultiClient.Properties.Resources.colecovisioncontroller;
+			this.pictureBox15.Location = new System.Drawing.Point(542, 15);
+			this.pictureBox15.Name = "pictureBox15";
+			this.pictureBox15.Size = new System.Drawing.Size(228, 236);
+			this.pictureBox15.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox15.TabIndex = 6;
+			this.pictureBox15.TabStop = false;
+			// 
 			// ControllerConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1591,7 +1673,6 @@
 			this.Load += new System.EventHandler(this.ControllerConfig_Load);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).EndInit();
 			this.tabControl2.ResumeLayout(false);
 			this.tabPage13.ResumeLayout(false);
 			this.tabPage14.ResumeLayout(false);
@@ -1668,6 +1749,12 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();
 			this.tabPage8.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
+			this.tabPage59.ResumeLayout(false);
+			this.tabControl10.ResumeLayout(false);
+			this.tabPage60.ResumeLayout(false);
+			this.tabPage61.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1750,7 +1837,6 @@
 		private ControllerConfigPanel NESAutofire2Panel;
 		private ControllerConfigPanel NESAutofire3Panel;
 		private ControllerConfigPanel NESAutofire4Panel;
-		private System.Windows.Forms.PictureBox ControllerImage;
 		private System.Windows.Forms.Label label38;
 		private ControllerConfigPanel SNESController1Panel;
 		private ControllerConfigPanel SNESController2Panel;
@@ -1809,5 +1895,13 @@
 		private System.Windows.Forms.TabPage tabPage12;
 		private ControllerConfigPanel C64KeyboardPanel;
 		private System.Windows.Forms.PictureBox pictureBox12;
+		private System.Windows.Forms.TabPage tabPage59;
+		private System.Windows.Forms.TabControl tabControl10;
+		private System.Windows.Forms.TabPage tabPage60;
+		private ControllerConfigPanel COLController1Panel;
+		private System.Windows.Forms.TabPage tabPage61;
+		private ControllerConfigPanel COLAutofire1Panel;
+		private System.Windows.Forms.PictureBox pictureBox14;
+		private System.Windows.Forms.PictureBox pictureBox15;
 	}
 }

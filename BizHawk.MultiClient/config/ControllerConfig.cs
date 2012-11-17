@@ -99,6 +99,11 @@ namespace BizHawk.MultiClient
 			C64KeyboardPanel.LabelWidth = 55;
 			C64KeyboardPanel.LoadSettings(Global.Config.C64Keyboard);
 
+			COLController1Panel.InputSize = 110;
+			COLController1Panel.LabelWidth = 50;
+			COLController1Panel.ColumnWidth = 170;
+			COLController1Panel.LoadSettings(Global.Config.ColecoController);
+
 			SetAutoTab(true);
 		}
 
