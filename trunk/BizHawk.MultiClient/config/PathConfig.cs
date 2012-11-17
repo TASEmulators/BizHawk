@@ -735,10 +735,10 @@ namespace BizHawk.MultiClient
 			BrowseFolder(INTVCheatsBox, INTVCheatsDescription.Text, "INTV");
 		}
 
-		void BrowseForBios(string filter, string config, TextBox tb)
+		void BrowseForBios(string filter, string config, string system, TextBox tb)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = Path.GetDirectoryName(config);
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Path.GetDirectoryName(config), system);
 			ofd.Filter = filter;
 			ofd.FileName = Path.GetFileName(config);
 
@@ -758,7 +758,7 @@ namespace BizHawk.MultiClient
 		{
 			BrowseForBios(
 				"Intellivision EROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
-				 Global.Config.PathINTVEROM,
+				 Global.Config.PathINTVEROM, "INTV", 
 				INTVEROMBox);
 		}
 
@@ -766,7 +766,7 @@ namespace BizHawk.MultiClient
 		{
 			BrowseForBios(
 				"Intellivision GROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
-				 Global.Config.PathINTVGROM,
+				 Global.Config.PathINTVGROM, "INTV",
 				INTVGROMBox);
 		}
 
@@ -775,7 +775,7 @@ namespace BizHawk.MultiClient
 		{
 			BrowseForBios(
 				"PCE CD BIOS (*.pce)|*.pce|All Files|*.*",
-				 Global.Config.PathPCEBios,
+				 Global.Config.PathPCEBios, "PCE",
 				PCEBiosBox);
 		}
 
