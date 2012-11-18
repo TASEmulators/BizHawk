@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient
 		//Restore defaults
 		//Autoload
 
-		List<VirtualPad> Pads = new List<VirtualPad>();
+		List<IVirtualPad> Pads = new List<IVirtualPad>();
 
 		public VirtualPadForm()
 		{
@@ -60,12 +60,12 @@ namespace BizHawk.MultiClient
 					ataripad2.Controller = "P2";
 					Pads.Add(ataripad1);
 					Pads.Add(ataripad2);
-					ControllerBox.Controls.Add(Pads[0]);
-					ControllerBox.Controls.Add(Pads[1]);
+					ControllerBox.Controls.Add(ataripad1);
+					ControllerBox.Controls.Add(ataripad2);
 					VirtualPadA26Control ataricontrols = new VirtualPadA26Control();
 					ataricontrols.Location = new Point(8, 109);
 					Pads.Add(ataricontrols);
-					ControllerBox.Controls.Add(Pads[2]);
+					ControllerBox.Controls.Add(Pads[2] as Control);
 					break;
 				case "NES":
 					VirtualPadNES nespad1 = new VirtualPadNES();
@@ -76,12 +76,12 @@ namespace BizHawk.MultiClient
 					nespad2.Controller = "P2";
 					Pads.Add(nespad1);
 					Pads.Add(nespad2);
-					ControllerBox.Controls.Add(Pads[0]);
-					ControllerBox.Controls.Add(Pads[1]);
+					ControllerBox.Controls.Add(nespad1);
+					ControllerBox.Controls.Add(nespad2);
 					VirtualPadNESControl controlpad1 = new VirtualPadNESControl();
 					controlpad1.Location = new Point(8, 109);
 					Pads.Add(controlpad1);
-					ControllerBox.Controls.Add(Pads[2]);
+					ControllerBox.Controls.Add(controlpad1);
 					break;
 				case "SMS":
 				case "SG":
@@ -94,12 +94,12 @@ namespace BizHawk.MultiClient
 					smspad2.Controller = "P2";
 					Pads.Add(smspad1);
 					Pads.Add(smspad2);
-					ControllerBox.Controls.Add(Pads[0]);
-					ControllerBox.Controls.Add(Pads[1]);
+					ControllerBox.Controls.Add(smspad1);
+					ControllerBox.Controls.Add(smspad2);
 					VirtualPadSMSControl controlpad2 = new VirtualPadSMSControl();
 					controlpad2.Location = new Point(8, 109);
 					Pads.Add(controlpad2);
-					ControllerBox.Controls.Add(Pads[2]);
+					ControllerBox.Controls.Add(Pads[2] as Control);
 					break;
 				case "PCE":
 					VirtualPadPCE pcepad1 = new VirtualPadPCE();
@@ -118,10 +118,10 @@ namespace BizHawk.MultiClient
 					Pads.Add(pcepad2);
 					Pads.Add(pcepad3);
 					Pads.Add(pcepad4);
-					ControllerBox.Controls.Add(Pads[0]);
-					ControllerBox.Controls.Add(Pads[1]);
-					ControllerBox.Controls.Add(Pads[2]);
-					ControllerBox.Controls.Add(Pads[3]);
+					ControllerBox.Controls.Add(pcepad1);
+					ControllerBox.Controls.Add(pcepad2);
+					ControllerBox.Controls.Add(pcepad3);
+					ControllerBox.Controls.Add(pcepad4);
 					break;
 				case "SNES":
 					VirtualPadSNES snespad1 = new VirtualPadSNES();
@@ -143,11 +143,11 @@ namespace BizHawk.MultiClient
 					Pads.Add(snespad3);
 					Pads.Add(snespad4);
 					Pads.Add(snescontrolpad);
-					ControllerBox.Controls.Add(Pads[0]);
-					ControllerBox.Controls.Add(Pads[1]);
-					ControllerBox.Controls.Add(Pads[2]);
-					ControllerBox.Controls.Add(Pads[3]);
-					ControllerBox.Controls.Add(Pads[4]);
+					ControllerBox.Controls.Add(snespad1);
+					ControllerBox.Controls.Add(snespad2);
+					ControllerBox.Controls.Add(snespad3);
+					ControllerBox.Controls.Add(snespad4);
+					ControllerBox.Controls.Add(snescontrolpad);
 					break;
 				case "GB":
 				case "GBC":
@@ -155,18 +155,30 @@ namespace BizHawk.MultiClient
 					gbpad1.Location = new Point(8, 19);
 					gbpad1.Controller = "";
 					Pads.Add(gbpad1);
-					ControllerBox.Controls.Add(Pads[0]);
+					ControllerBox.Controls.Add(gbpad1);
 					VirtualPadGBControl gbcontrolpad = new VirtualPadGBControl();
 					gbcontrolpad.Location = new Point(8, 109);
 					Pads.Add(gbcontrolpad);
-					ControllerBox.Controls.Add(Pads[1]);
+					ControllerBox.Controls.Add(gbcontrolpad);
 					break;
 				case "GEN":
 					VirtualPadGen3Button genpad1 = new VirtualPadGen3Button();
 					genpad1.Location = new Point(8, 19);
 					genpad1.Controller = "P1";
 					Pads.Add(genpad1);
-					ControllerBox.Controls.Add(Pads[0]);
+					ControllerBox.Controls.Add(genpad1);
+					break;
+				case "Coleco":
+					VirtualPadColeco coleco1 = new VirtualPadColeco();
+					coleco1.Location = new Point(8, 19);
+					coleco1.Controller = "P1";
+					VirtualPadColeco coleco2 = new VirtualPadColeco();
+					coleco2.Location = new Point(130, 19);
+					coleco2.Controller = "P2";
+					Pads.Add(coleco1);
+					Pads.Add(coleco2);
+					ControllerBox.Controls.Add(coleco1);
+					ControllerBox.Controls.Add(coleco2);
 					break;
 			}
 		}
@@ -278,3 +290,4 @@ namespace BizHawk.MultiClient
 		}
 	}
 }
+

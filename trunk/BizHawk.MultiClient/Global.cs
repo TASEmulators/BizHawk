@@ -112,9 +112,9 @@ namespace BizHawk.MultiClient
 			{
 				"ColecoVision Basic Controller", new Dictionary<string, string>()
 				{
-					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"L", "L"}, {"R", "R"},
-					{"Key0", "0"}, {"Key1", "1"}, {"Key2", "2"}, {"Key3", "3"}, {"Key4", "4"}, {"Key5", "5"}, 
-					{"Key6", "6"}, {"Key7", "7"}, {"Key8", "8"}, {"Key9", "9"}, {"Star", "*"}, {"Pound", "#"}
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"L", "l"}, {"R", "r"},
+					{"Key1", "1"}, {"Key2", "2"}, {"Key3", "3"}, {"Key4", "4"}, {"Key5", "5"}, {"Key6", "6"}, 
+					{"Key7", "7"}, {"Key8", "8"}, {"Key9", "9"}, {"Star", "*"}, {"Key0", "0"}, {"Pound", "#"}
 				}
 			}
 		};
