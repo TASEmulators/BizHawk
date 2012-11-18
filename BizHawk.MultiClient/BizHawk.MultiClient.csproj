@@ -386,6 +386,7 @@
     <Compile Include="tools\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\IVirtualPad.cs" />
     <Compile Include="tools\LuaButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -425,6 +426,12 @@
     </Compile>
     <Compile Include="tools\VirtualPadC64Keyboard.Designer.cs">
       <DependentUpon>VirtualPadC64Keyboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPadColeco.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadColeco.Designer.cs">
+      <DependentUpon>VirtualPadColeco.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\VirtualPadForm.cs">
       <SubType>Form</SubType>
@@ -539,6 +546,9 @@
     </Compile>
     <EmbeddedResource Include="tools\VirtualPadC64Keyboard.resx">
       <DependentUpon>VirtualPadC64Keyboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPadColeco.resx">
+      <DependentUpon>VirtualPadColeco.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPadForm.resx">
       <DependentUpon>VirtualPadForm.cs</DependentUpon>
