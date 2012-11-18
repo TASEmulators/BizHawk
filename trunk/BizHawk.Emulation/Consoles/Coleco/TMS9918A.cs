@@ -17,15 +17,22 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
         int TmsMode;
 
-        public bool Mode1Bit              { get { return (Registers[1] & 16) > 0; } }
-        public bool Mode2Bit              { get { return (Registers[0] & 2)  > 0; } }
-        public bool Mode3Bit              { get { return (Registers[1] & 8)  > 0; } }
+        bool Mode1Bit              { get { return (Registers[1] & 16) > 0; } }
+        bool Mode2Bit              { get { return (Registers[0] & 2)  > 0; } }
+        bool Mode3Bit              { get { return (Registers[1] & 8)  > 0; } }
 
-        public bool EnableDoubledSprites  { get { return (Registers[1] & 1)  > 0; } }
-        public bool EnableLargeSprites    { get { return (Registers[1] & 2)  > 0; } }
-        public bool EnableInterrupts      { get { return (Registers[1] & 32) > 0; } }
-        public bool DisplayOn             { get { return (Registers[1] & 64) > 0; } }
+        bool EnableDoubledSprites  { get { return (Registers[1] & 1)  > 0; } }
+        bool EnableLargeSprites    { get { return (Registers[1] & 2)  > 0; } }
+        bool EnableInterrupts      { get { return (Registers[1] & 32) > 0; } }
+        bool DisplayOn             { get { return (Registers[1] & 64) > 0; } }
+        bool Mode4k                { get { return (Registers[1] & 128)> 0; } }
         // TODO, is 4/16K bit used?
+
+        bool InterruptPending
+        {
+            get { return (StatusByte & 0x80) != 0; }
+            set { StatusByte = (byte)((StatusByte & ~0x02) | (value ? 0x80 : 0x00)); }
+        }
 
         //int NameTableBase;
         int ColorTableBase;
@@ -42,7 +49,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
                 if (scanLine == 192)
                 {
-                    // TODO interrupt pending thing
+                    InterruptPending = true;
                     if (EnableInterrupts)
                         Cpu.NonMaskableInterrupt = true;
                     //Console.WriteLine("Set NMI / VSYNC");
@@ -109,10 +116,10 @@ namespace BizHawk.Emulation.Consoles.Coleco
                     break;
                 case 1: // Mode Control Register 2
                     CheckVideoMode();
-                    //Cpu.NonMaskableInterrupt = (EnableInterrupts && VIntPending);
+                    Cpu.NonMaskableInterrupt = (EnableInterrupts && InterruptPending);
+                    Console.WriteLine("4k bit "+ Mode4k);
                     break;
                 case 2: // Name Table Base Address
-                    //NameTableBase = CalcNameTableBase();
                     TmsPatternNameTableBase = (Registers[2] << 10) & 0x3C00;
                     break;
                 case 3: // Color Table Base Address
@@ -122,7 +129,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
                     PatternGeneratorBase = (Registers[4] << 11) & 0x3800;
                     break;
                 case 5: // Sprite Attribute Table Base Address
-                    // ??? should I move from my property to precalculated?
                     TmsSpriteAttributeBase = (Registers[5] << 7) & 0x3F80;
                     break;
                 case 6: // Sprite Pattern Generator Base Adderss 
@@ -136,7 +142,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
             VdpWaitingForLatchByte = true;
             byte returnValue = StatusByte;
             StatusByte &= 0x1F;
-            //VIntPending = false;
             Cpu.NonMaskableInterrupt = false;
 
             //Console.WriteLine("Clear NMI / read status");
@@ -286,8 +291,9 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
                 if (++NumSpritesOnScanline == 5)
                 {
+                    StatusByte &= 0xE0;    // Clear FS0-FS4 bits
                     StatusByte |= (byte)i; // set 5th sprite index
-                    StatusByte |= 0x40; // set overflow bit
+                    StatusByte |= 0x40;    // set overflow bit
                     break;
                 }
 
@@ -305,9 +311,11 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
                     if ((pv & (1 << (7 - (xp & 7)))) > 0)
                     {
-                        // todo sprite collision
                         if (Color != 0 && ScanlinePriorityBuffer[x + xp] == 0)
                         {
+                            if (SpriteCollisionBuffer[x + xp] != 0)
+                                StatusByte |= 0x20; // Set sprite collision flag
+                            SpriteCollisionBuffer[x + xp] = 1;
                             ScanlinePriorityBuffer[x + xp] = 1;
                             FrameBuffer[(scanLine * 256) + x + xp] = PaletteTMS9918[Color & 0x0F];
                         }
