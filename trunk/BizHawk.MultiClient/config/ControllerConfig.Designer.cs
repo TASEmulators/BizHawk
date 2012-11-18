@@ -28,8 +28,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.PlatformTabControl = new System.Windows.Forms.TabControl();
+			this.tabPageNES = new System.Windows.Forms.TabPage();
 			this.pictureBox14 = new System.Windows.Forms.PictureBox();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage13 = new System.Windows.Forms.TabPage();
@@ -41,7 +41,7 @@
 			this.tabPage19 = new System.Windows.Forms.TabPage();
 			this.tabPage20 = new System.Windows.Forms.TabPage();
 			this.tabPage21 = new System.Windows.Forms.TabPage();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.tabPageSNES = new System.Windows.Forms.TabPage();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.tabControl3 = new System.Windows.Forms.TabControl();
 			this.tabPage22 = new System.Windows.Forms.TabPage();
@@ -53,12 +53,12 @@
 			this.tabPage28 = new System.Windows.Forms.TabPage();
 			this.tabPage29 = new System.Windows.Forms.TabPage();
 			this.tabPage30 = new System.Windows.Forms.TabPage();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.tabPageGameboy = new System.Windows.Forms.TabPage();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.tabControl4 = new System.Windows.Forms.TabControl();
 			this.tabPage31 = new System.Windows.Forms.TabPage();
 			this.tabPage32 = new System.Windows.Forms.TabPage();
-			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.tabPageGenesis = new System.Windows.Forms.TabPage();
 			this.pictureBox6 = new System.Windows.Forms.PictureBox();
 			this.tabControl9 = new System.Windows.Forms.TabControl();
 			this.tabPage52 = new System.Windows.Forms.TabPage();
@@ -66,7 +66,7 @@
 			this.tabPage54 = new System.Windows.Forms.TabPage();
 			this.tabPage55 = new System.Windows.Forms.TabPage();
 			this.tabPage56 = new System.Windows.Forms.TabPage();
-			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.tabPageSMS = new System.Windows.Forms.TabPage();
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
 			this.tabControl5 = new System.Windows.Forms.TabControl();
 			this.tabPage33 = new System.Windows.Forms.TabPage();
@@ -74,7 +74,7 @@
 			this.Console = new System.Windows.Forms.TabPage();
 			this.tabPage51 = new System.Windows.Forms.TabPage();
 			this.tabPage57 = new System.Windows.Forms.TabPage();
-			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.tabPagePCE = new System.Windows.Forms.TabPage();
 			this.pictureBox4 = new System.Windows.Forms.PictureBox();
 			this.tabControl6 = new System.Windows.Forms.TabControl();
 			this.tabPage36 = new System.Windows.Forms.TabPage();
@@ -87,7 +87,7 @@
 			this.tabPage43 = new System.Windows.Forms.TabPage();
 			this.tabPage44 = new System.Windows.Forms.TabPage();
 			this.tabPage45 = new System.Windows.Forms.TabPage();
-			this.tabPage6 = new System.Windows.Forms.TabPage();
+			this.tabPageAtari2600 = new System.Windows.Forms.TabPage();
 			this.pictureBox5 = new System.Windows.Forms.PictureBox();
 			this.tabControl7 = new System.Windows.Forms.TabControl();
 			this.tabPage46 = new System.Windows.Forms.TabPage();
@@ -95,7 +95,7 @@
 			this.tabPage48 = new System.Windows.Forms.TabPage();
 			this.tabPage35 = new System.Windows.Forms.TabPage();
 			this.tabPage58 = new System.Windows.Forms.TabPage();
-			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.tabPageC64 = new System.Windows.Forms.TabPage();
 			this.tabControl8 = new System.Windows.Forms.TabControl();
 			this.tabPage49 = new System.Windows.Forms.TabPage();
 			this.pictureBox8 = new System.Windows.Forms.PictureBox();
@@ -107,9 +107,9 @@
 			this.pictureBox11 = new System.Windows.Forms.PictureBox();
 			this.tabPage12 = new System.Windows.Forms.TabPage();
 			this.pictureBox12 = new System.Windows.Forms.PictureBox();
-			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.tabPageTI83 = new System.Windows.Forms.TabPage();
 			this.pictureBox7 = new System.Windows.Forms.PictureBox();
-			this.tabPage59 = new System.Windows.Forms.TabPage();
+			this.tabPageColeco = new System.Windows.Forms.TabPage();
 			this.pictureBox15 = new System.Windows.Forms.PictureBox();
 			this.tabControl10 = new System.Windows.Forms.TabControl();
 			this.tabPage60 = new System.Windows.Forms.TabPage();
@@ -173,8 +173,8 @@
 			this.COLAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.COLController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.COLAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabControl1.SuspendLayout();
-			this.tabPage1.SuspendLayout();
+			this.PlatformTabControl.SuspendLayout();
+			this.tabPageNES.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
 			this.tabControl2.SuspendLayout();
 			this.tabPage13.SuspendLayout();
@@ -186,7 +186,7 @@
 			this.tabPage19.SuspendLayout();
 			this.tabPage20.SuspendLayout();
 			this.tabPage21.SuspendLayout();
-			this.tabPage2.SuspendLayout();
+			this.tabPageSNES.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.tabControl3.SuspendLayout();
 			this.tabPage22.SuspendLayout();
@@ -198,18 +198,18 @@
 			this.tabPage28.SuspendLayout();
 			this.tabPage29.SuspendLayout();
 			this.tabPage30.SuspendLayout();
-			this.tabPage3.SuspendLayout();
+			this.tabPageGameboy.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			this.tabControl4.SuspendLayout();
 			this.tabPage31.SuspendLayout();
 			this.tabPage32.SuspendLayout();
-			this.tabPage9.SuspendLayout();
+			this.tabPageGenesis.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
 			this.tabControl9.SuspendLayout();
 			this.tabPage52.SuspendLayout();
 			this.tabPage54.SuspendLayout();
 			this.tabPage55.SuspendLayout();
-			this.tabPage4.SuspendLayout();
+			this.tabPageSMS.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
 			this.tabControl5.SuspendLayout();
 			this.tabPage33.SuspendLayout();
@@ -217,7 +217,7 @@
 			this.Console.SuspendLayout();
 			this.tabPage51.SuspendLayout();
 			this.tabPage57.SuspendLayout();
-			this.tabPage5.SuspendLayout();
+			this.tabPagePCE.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
 			this.tabControl6.SuspendLayout();
 			this.tabPage36.SuspendLayout();
@@ -230,7 +230,7 @@
 			this.tabPage43.SuspendLayout();
 			this.tabPage44.SuspendLayout();
 			this.tabPage45.SuspendLayout();
-			this.tabPage6.SuspendLayout();
+			this.tabPageAtari2600.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
 			this.tabControl7.SuspendLayout();
 			this.tabPage46.SuspendLayout();
@@ -238,7 +238,7 @@
 			this.tabPage48.SuspendLayout();
 			this.tabPage35.SuspendLayout();
 			this.tabPage58.SuspendLayout();
-			this.tabPage7.SuspendLayout();
+			this.tabPageC64.SuspendLayout();
 			this.tabControl8.SuspendLayout();
 			this.tabPage49.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
@@ -250,9 +250,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).BeginInit();
 			this.tabPage12.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
-			this.tabPage8.SuspendLayout();
+			this.tabPageTI83.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
-			this.tabPage59.SuspendLayout();
+			this.tabPageColeco.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).BeginInit();
 			this.tabControl10.SuspendLayout();
 			this.tabPage60.SuspendLayout();
@@ -263,36 +263,36 @@
 			// 
 			// tabControl1
 			// 
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.PlatformTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Controls.Add(this.tabPage3);
-			this.tabControl1.Controls.Add(this.tabPage9);
-			this.tabControl1.Controls.Add(this.tabPage4);
-			this.tabControl1.Controls.Add(this.tabPage5);
-			this.tabControl1.Controls.Add(this.tabPage6);
-			this.tabControl1.Controls.Add(this.tabPage7);
-			this.tabControl1.Controls.Add(this.tabPage8);
-			this.tabControl1.Controls.Add(this.tabPage59);
-			this.tabControl1.Location = new System.Drawing.Point(12, 21);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(795, 451);
-			this.tabControl1.TabIndex = 0;
+			this.PlatformTabControl.Controls.Add(this.tabPageNES);
+			this.PlatformTabControl.Controls.Add(this.tabPageSNES);
+			this.PlatformTabControl.Controls.Add(this.tabPageGameboy);
+			this.PlatformTabControl.Controls.Add(this.tabPageGenesis);
+			this.PlatformTabControl.Controls.Add(this.tabPageSMS);
+			this.PlatformTabControl.Controls.Add(this.tabPagePCE);
+			this.PlatformTabControl.Controls.Add(this.tabPageAtari2600);
+			this.PlatformTabControl.Controls.Add(this.tabPageC64);
+			this.PlatformTabControl.Controls.Add(this.tabPageTI83);
+			this.PlatformTabControl.Controls.Add(this.tabPageColeco);
+			this.PlatformTabControl.Location = new System.Drawing.Point(12, 21);
+			this.PlatformTabControl.Name = "tabControl1";
+			this.PlatformTabControl.SelectedIndex = 0;
+			this.PlatformTabControl.Size = new System.Drawing.Size(795, 451);
+			this.PlatformTabControl.TabIndex = 0;
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.pictureBox14);
-			this.tabPage1.Controls.Add(this.tabControl2);
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(787, 425);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "NES";
-			this.tabPage1.UseVisualStyleBackColor = true;
+			this.tabPageNES.Controls.Add(this.pictureBox14);
+			this.tabPageNES.Controls.Add(this.tabControl2);
+			this.tabPageNES.Location = new System.Drawing.Point(4, 22);
+			this.tabPageNES.Name = "tabPage1";
+			this.tabPageNES.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageNES.Size = new System.Drawing.Size(787, 425);
+			this.tabPageNES.TabIndex = 0;
+			this.tabPageNES.Text = "NES";
+			this.tabPageNES.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox14
 			// 
@@ -419,15 +419,15 @@
 			// 
 			// tabPage2
 			// 
-			this.tabPage2.Controls.Add(this.pictureBox1);
-			this.tabPage2.Controls.Add(this.tabControl3);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(787, 425);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "SNES";
-			this.tabPage2.UseVisualStyleBackColor = true;
+			this.tabPageSNES.Controls.Add(this.pictureBox1);
+			this.tabPageSNES.Controls.Add(this.tabControl3);
+			this.tabPageSNES.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSNES.Name = "tabPage2";
+			this.tabPageSNES.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageSNES.Size = new System.Drawing.Size(787, 425);
+			this.tabPageSNES.TabIndex = 1;
+			this.tabPageSNES.Text = "SNES";
+			this.tabPageSNES.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox1
 			// 
@@ -556,14 +556,14 @@
 			// 
 			// tabPage3
 			// 
-			this.tabPage3.Controls.Add(this.pictureBox2);
-			this.tabPage3.Controls.Add(this.tabControl4);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(787, 425);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "GB/GBC";
-			this.tabPage3.UseVisualStyleBackColor = true;
+			this.tabPageGameboy.Controls.Add(this.pictureBox2);
+			this.tabPageGameboy.Controls.Add(this.tabControl4);
+			this.tabPageGameboy.Location = new System.Drawing.Point(4, 22);
+			this.tabPageGameboy.Name = "tabPage3";
+			this.tabPageGameboy.Size = new System.Drawing.Size(787, 425);
+			this.tabPageGameboy.TabIndex = 2;
+			this.tabPageGameboy.Text = "GB/GBC";
+			this.tabPageGameboy.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox2
 			// 
@@ -613,14 +613,14 @@
 			// 
 			// tabPage9
 			// 
-			this.tabPage9.Controls.Add(this.pictureBox6);
-			this.tabPage9.Controls.Add(this.tabControl9);
-			this.tabPage9.Location = new System.Drawing.Point(4, 22);
-			this.tabPage9.Name = "tabPage9";
-			this.tabPage9.Size = new System.Drawing.Size(787, 425);
-			this.tabPage9.TabIndex = 8;
-			this.tabPage9.Text = "Genesis";
-			this.tabPage9.UseVisualStyleBackColor = true;
+			this.tabPageGenesis.Controls.Add(this.pictureBox6);
+			this.tabPageGenesis.Controls.Add(this.tabControl9);
+			this.tabPageGenesis.Location = new System.Drawing.Point(4, 22);
+			this.tabPageGenesis.Name = "tabPage9";
+			this.tabPageGenesis.Size = new System.Drawing.Size(787, 425);
+			this.tabPageGenesis.TabIndex = 8;
+			this.tabPageGenesis.Text = "Genesis";
+			this.tabPageGenesis.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox6
 			// 
@@ -703,14 +703,14 @@
 			// 
 			// tabPage4
 			// 
-			this.tabPage4.Controls.Add(this.pictureBox3);
-			this.tabPage4.Controls.Add(this.tabControl5);
-			this.tabPage4.Location = new System.Drawing.Point(4, 22);
-			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Size = new System.Drawing.Size(787, 425);
-			this.tabPage4.TabIndex = 3;
-			this.tabPage4.Text = "SMS/GG/SG";
-			this.tabPage4.UseVisualStyleBackColor = true;
+			this.tabPageSMS.Controls.Add(this.pictureBox3);
+			this.tabPageSMS.Controls.Add(this.tabControl5);
+			this.tabPageSMS.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSMS.Name = "tabPage4";
+			this.tabPageSMS.Size = new System.Drawing.Size(787, 425);
+			this.tabPageSMS.TabIndex = 3;
+			this.tabPageSMS.Text = "SMS/GG/SG";
+			this.tabPageSMS.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox3
 			// 
@@ -795,14 +795,14 @@
 			// 
 			// tabPage5
 			// 
-			this.tabPage5.Controls.Add(this.pictureBox4);
-			this.tabPage5.Controls.Add(this.tabControl6);
-			this.tabPage5.Location = new System.Drawing.Point(4, 22);
-			this.tabPage5.Name = "tabPage5";
-			this.tabPage5.Size = new System.Drawing.Size(787, 425);
-			this.tabPage5.TabIndex = 4;
-			this.tabPage5.Text = "PCE";
-			this.tabPage5.UseVisualStyleBackColor = true;
+			this.tabPagePCE.Controls.Add(this.pictureBox4);
+			this.tabPagePCE.Controls.Add(this.tabControl6);
+			this.tabPagePCE.Location = new System.Drawing.Point(4, 22);
+			this.tabPagePCE.Name = "tabPage5";
+			this.tabPagePCE.Size = new System.Drawing.Size(787, 425);
+			this.tabPagePCE.TabIndex = 4;
+			this.tabPagePCE.Text = "PCE";
+			this.tabPagePCE.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox4
 			// 
@@ -943,14 +943,14 @@
 			// 
 			// tabPage6
 			// 
-			this.tabPage6.Controls.Add(this.pictureBox5);
-			this.tabPage6.Controls.Add(this.tabControl7);
-			this.tabPage6.Location = new System.Drawing.Point(4, 22);
-			this.tabPage6.Name = "tabPage6";
-			this.tabPage6.Size = new System.Drawing.Size(787, 425);
-			this.tabPage6.TabIndex = 5;
-			this.tabPage6.Text = "Atari";
-			this.tabPage6.UseVisualStyleBackColor = true;
+			this.tabPageAtari2600.Controls.Add(this.pictureBox5);
+			this.tabPageAtari2600.Controls.Add(this.tabControl7);
+			this.tabPageAtari2600.Location = new System.Drawing.Point(4, 22);
+			this.tabPageAtari2600.Name = "tabPage6";
+			this.tabPageAtari2600.Size = new System.Drawing.Size(787, 425);
+			this.tabPageAtari2600.TabIndex = 5;
+			this.tabPageAtari2600.Text = "Atari";
+			this.tabPageAtari2600.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox5
 			// 
@@ -1035,13 +1035,13 @@
 			// 
 			// tabPage7
 			// 
-			this.tabPage7.Controls.Add(this.tabControl8);
-			this.tabPage7.Location = new System.Drawing.Point(4, 22);
-			this.tabPage7.Name = "tabPage7";
-			this.tabPage7.Size = new System.Drawing.Size(787, 425);
-			this.tabPage7.TabIndex = 6;
-			this.tabPage7.Text = "C64";
-			this.tabPage7.UseVisualStyleBackColor = true;
+			this.tabPageC64.Controls.Add(this.tabControl8);
+			this.tabPageC64.Location = new System.Drawing.Point(4, 22);
+			this.tabPageC64.Name = "tabPage7";
+			this.tabPageC64.Size = new System.Drawing.Size(787, 425);
+			this.tabPageC64.TabIndex = 6;
+			this.tabPageC64.Text = "C64";
+			this.tabPageC64.UseVisualStyleBackColor = true;
 			// 
 			// tabControl8
 			// 
@@ -1178,14 +1178,14 @@
 			// 
 			// tabPage8
 			// 
-			this.tabPage8.Controls.Add(this.pictureBox7);
-			this.tabPage8.Controls.Add(this.TI83ControllerPanel);
-			this.tabPage8.Location = new System.Drawing.Point(4, 22);
-			this.tabPage8.Name = "tabPage8";
-			this.tabPage8.Size = new System.Drawing.Size(787, 425);
-			this.tabPage8.TabIndex = 7;
-			this.tabPage8.Text = "TI-83";
-			this.tabPage8.UseVisualStyleBackColor = true;
+			this.tabPageTI83.Controls.Add(this.pictureBox7);
+			this.tabPageTI83.Controls.Add(this.TI83ControllerPanel);
+			this.tabPageTI83.Location = new System.Drawing.Point(4, 22);
+			this.tabPageTI83.Name = "tabPage8";
+			this.tabPageTI83.Size = new System.Drawing.Size(787, 425);
+			this.tabPageTI83.TabIndex = 7;
+			this.tabPageTI83.Text = "TI-83";
+			this.tabPageTI83.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox7
 			// 
@@ -1202,14 +1202,14 @@
 			// 
 			// tabPage59
 			// 
-			this.tabPage59.Controls.Add(this.pictureBox15);
-			this.tabPage59.Controls.Add(this.tabControl10);
-			this.tabPage59.Location = new System.Drawing.Point(4, 22);
-			this.tabPage59.Name = "tabPage59";
-			this.tabPage59.Size = new System.Drawing.Size(787, 425);
-			this.tabPage59.TabIndex = 9;
-			this.tabPage59.Text = "Coleco V.";
-			this.tabPage59.UseVisualStyleBackColor = true;
+			this.tabPageColeco.Controls.Add(this.pictureBox15);
+			this.tabPageColeco.Controls.Add(this.tabControl10);
+			this.tabPageColeco.Location = new System.Drawing.Point(4, 22);
+			this.tabPageColeco.Name = "tabPage59";
+			this.tabPageColeco.Size = new System.Drawing.Size(787, 425);
+			this.tabPageColeco.TabIndex = 9;
+			this.tabPageColeco.Text = "Coleco V.";
+			this.tabPageColeco.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox15
 			// 
@@ -1709,12 +1709,12 @@
 			this.Controls.Add(this.label38);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.Cancel);
-			this.Controls.Add(this.tabControl1);
+			this.Controls.Add(this.PlatformTabControl);
 			this.Name = "ControllerConfig";
 			this.Text = "ControllerConfig";
 			this.Load += new System.EventHandler(this.ControllerConfig_Load);
-			this.tabControl1.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
+			this.PlatformTabControl.ResumeLayout(false);
+			this.tabPageNES.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).EndInit();
 			this.tabControl2.ResumeLayout(false);
 			this.tabPage13.ResumeLayout(false);
@@ -1726,7 +1726,7 @@
 			this.tabPage19.ResumeLayout(false);
 			this.tabPage20.ResumeLayout(false);
 			this.tabPage21.ResumeLayout(false);
-			this.tabPage2.ResumeLayout(false);
+			this.tabPageSNES.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.tabControl3.ResumeLayout(false);
 			this.tabPage22.ResumeLayout(false);
@@ -1738,18 +1738,18 @@
 			this.tabPage28.ResumeLayout(false);
 			this.tabPage29.ResumeLayout(false);
 			this.tabPage30.ResumeLayout(false);
-			this.tabPage3.ResumeLayout(false);
+			this.tabPageGameboy.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			this.tabControl4.ResumeLayout(false);
 			this.tabPage31.ResumeLayout(false);
 			this.tabPage32.ResumeLayout(false);
-			this.tabPage9.ResumeLayout(false);
+			this.tabPageGenesis.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
 			this.tabControl9.ResumeLayout(false);
 			this.tabPage52.ResumeLayout(false);
 			this.tabPage54.ResumeLayout(false);
 			this.tabPage55.ResumeLayout(false);
-			this.tabPage4.ResumeLayout(false);
+			this.tabPageSMS.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
 			this.tabControl5.ResumeLayout(false);
 			this.tabPage33.ResumeLayout(false);
@@ -1757,7 +1757,7 @@
 			this.Console.ResumeLayout(false);
 			this.tabPage51.ResumeLayout(false);
 			this.tabPage57.ResumeLayout(false);
-			this.tabPage5.ResumeLayout(false);
+			this.tabPagePCE.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
 			this.tabControl6.ResumeLayout(false);
 			this.tabPage36.ResumeLayout(false);
@@ -1770,7 +1770,7 @@
 			this.tabPage43.ResumeLayout(false);
 			this.tabPage44.ResumeLayout(false);
 			this.tabPage45.ResumeLayout(false);
-			this.tabPage6.ResumeLayout(false);
+			this.tabPageAtari2600.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
 			this.tabControl7.ResumeLayout(false);
 			this.tabPage46.ResumeLayout(false);
@@ -1778,7 +1778,7 @@
 			this.tabPage48.ResumeLayout(false);
 			this.tabPage35.ResumeLayout(false);
 			this.tabPage58.ResumeLayout(false);
-			this.tabPage7.ResumeLayout(false);
+			this.tabPageC64.ResumeLayout(false);
 			this.tabControl8.ResumeLayout(false);
 			this.tabPage49.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
@@ -1790,9 +1790,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).EndInit();
 			this.tabPage12.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();
-			this.tabPage8.ResumeLayout(false);
+			this.tabPageTI83.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
-			this.tabPage59.ResumeLayout(false);
+			this.tabPageColeco.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).EndInit();
 			this.tabControl10.ResumeLayout(false);
 			this.tabPage60.ResumeLayout(false);
@@ -1806,16 +1806,16 @@
 
 		#endregion
 
-		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabPage tabPage2;
-		private System.Windows.Forms.TabPage tabPage3;
-		private System.Windows.Forms.TabPage tabPage4;
-		private System.Windows.Forms.TabPage tabPage5;
-		private System.Windows.Forms.TabPage tabPage6;
-		private System.Windows.Forms.TabPage tabPage7;
-		private System.Windows.Forms.TabPage tabPage8;
-		private System.Windows.Forms.TabPage tabPage9;
+		private System.Windows.Forms.TabControl PlatformTabControl;
+		private System.Windows.Forms.TabPage tabPageNES;
+		private System.Windows.Forms.TabPage tabPageSNES;
+		private System.Windows.Forms.TabPage tabPageGameboy;
+		private System.Windows.Forms.TabPage tabPageSMS;
+		private System.Windows.Forms.TabPage tabPagePCE;
+		private System.Windows.Forms.TabPage tabPageAtari2600;
+		private System.Windows.Forms.TabPage tabPageC64;
+		private System.Windows.Forms.TabPage tabPageTI83;
+		private System.Windows.Forms.TabPage tabPageGenesis;
 		private System.Windows.Forms.TabControl tabControl2;
 		private System.Windows.Forms.TabPage tabPage13;
 		private System.Windows.Forms.TabPage tabPage14;
@@ -1939,7 +1939,7 @@
 		private System.Windows.Forms.TabPage tabPage12;
 		private ControllerConfigPanel C64KeyboardPanel;
 		private System.Windows.Forms.PictureBox pictureBox12;
-		private System.Windows.Forms.TabPage tabPage59;
+		private System.Windows.Forms.TabPage tabPageColeco;
 		private System.Windows.Forms.TabControl tabControl10;
 		private System.Windows.Forms.TabPage tabPage60;
 		private ControllerConfigPanel COLController1Panel;

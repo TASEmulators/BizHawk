@@ -120,6 +120,11 @@ namespace BizHawk.MultiClient
 			COLAutofire2Panel.LoadSettings(Global.Config.ColecoAutoController[1]);
 
 			SetAutoTab(true);
+
+			if (!Global.MainForm.INTERIM)
+			{
+				PlatformTabControl.Controls.Remove(tabPageC64);
+			}
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -136,7 +141,7 @@ namespace BizHawk.MultiClient
 
 		private void SetAutoTab(bool setting)
 		{
-			foreach (Control control1 in tabControl1.TabPages)
+			foreach (Control control1 in PlatformTabControl.TabPages)
 			{
 				if (control1 is TabControl)
 				{
@@ -162,7 +167,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.AllowUD_LR = AllowLR.Checked;
 
-			foreach (Control control1 in tabControl1.TabPages)
+			foreach (Control control1 in PlatformTabControl.TabPages)
 			{
 				if (control1 is TabPage)
 				{
