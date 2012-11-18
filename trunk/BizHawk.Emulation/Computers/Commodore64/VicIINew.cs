@@ -27,6 +27,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		public double FramesPerSecond
+		{
+			get
+			{
+				switch (region)
+				{
+					case Region.NTSC:
+						return (14318181d / 14d) / (double)CyclesPerFrame;
+					case Region.PAL:
+						return (17734472d / 18d) / (double)CyclesPerFrame;
+				}
+				return 0;
+			}
+		}
+
 		public void HardReset()
 		{
 			InitRegs();

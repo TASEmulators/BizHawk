@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void EndAsyncSound() { } //TODO
 		public ISoundProvider SoundProvider { get { return sid; } }
 		public bool StartAsyncSound() { return true; } //TODO
-		public ISyncSoundProvider SyncSoundProvider { get { return syncSid; ; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return new SidSyncSoundProvider(sid); } }
 		public IVideoProvider VideoProvider { get { return vic; } }
 
 		// controller

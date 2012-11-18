@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// sid stuff
 		//private Emulation.Sound.Utilities.DCFilter sidDCFilter;
-		private SidSyncSoundProvider syncSid;
+		//private SidSyncSoundProvider syncSid;
 
 		public bool DriveLED
 		{
@@ -82,21 +82,20 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			vic = new VicIINew(signal, initRegion);
 
 			// set vsync rate
-			CoreOutputComm.VsyncDen = vic.CyclesPerFrame;
 			switch (initRegion)
 			{
 				case Region.NTSC:
-					CoreOutputComm.VsyncNum = (14318181 / 14);
+					CoreOutputComm.VsyncDen = vic.CyclesPerFrame * 14;
+					CoreOutputComm.VsyncNum = 14318181;
 					break;
 				case Region.PAL:
-					CoreOutputComm.VsyncNum = (17734472 / 18);
+					CoreOutputComm.VsyncDen = vic.CyclesPerFrame * 18;
+					CoreOutputComm.VsyncNum = 17734472;
 					break;
 			}
 
 			// initialize sid
 			sid = new Sid(initRegion, 44100); // we'll assume 44.1k for now until there's a better way
-			syncSid = new SidSyncSoundProvider(sid);
-			//sidDCFilter = new Emulation.Sound.Utilities.DCFilter(sid, 2205);
 
 			// initialize memory (this must be done AFTER all other chips are initialized)
 			string romPath = CoreInputComm.C64_FirmwaresPath;
