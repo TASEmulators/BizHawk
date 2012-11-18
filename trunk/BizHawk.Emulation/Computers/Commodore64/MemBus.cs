@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// chips
 		public Cia cia0;
 		public Cia cia1;
-		public VicII vic;
+		public VicIINew vic;
 		public Sid sid;
 
 		// storage
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			throw new FileNotFoundException();
 		}
 
-		public Memory(string sourceFolder, VicII newVic, Sid newSid, Cia newCia0, Cia newCia1)
+		public Memory(string sourceFolder, VicIINew newVic, Sid newSid, Cia newCia0, Cia newCia1)
 		{
 			string basicFile = "basic";
 			string charFile = "chargen";

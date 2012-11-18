@@ -5,17 +5,19 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public partial class VicIINew
+	public partial class VicIINew : IVideoProvider
 	{
 		private class VicIINewSprite
 		{
 			// internal regs
 			public int MC;
 			public int MCBASE;
+			public bool MD;
 			public bool MDMA;
 			public int MPTR;
 			public int MSR;
-			public int MSRC;
+			public bool MxXEToggle;
+			public bool MxYEToggle;
 			
 			// external regs
 			public int MxC; // sprite color
@@ -33,6 +35,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// internal regs
 		private int RC;
 		private int VC;
+		private int VCBASE;
 		private int VMLI;
 
 		// external regs
@@ -62,9 +65,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private int VM; // video memory offset
 		private int XSCROLL; // X scroll position
 		private int YSCROLL; // Y scroll position
+
+		private int spriteData;
+		private int spritePixel;
+		private bool spritePriority;
 		private VicIINewSprite[] sprites;
 
 		private bool badline;
+		private int bitmapColumn;
 		private byte bitmapData;
 		private int borderBottom;
 		private int borderLeft;
@@ -72,6 +80,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private bool borderOnVertical;
 		private int borderRight;
 		private int borderTop;
+		private bool centerEnabled;
 		private byte characterData;
 		private byte characterDataBus;
 		private byte[] characterMemory;
@@ -80,6 +89,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private byte[] colorMemory;
 		private bool displayEnabled;
 		private int graphicsMode;
+		private bool idle;
+		private int plotterBufferIndex;
+		private int plotterData;
+		private int[] plotterDataBuffer;
+		private int plotterDelay;
+		private int plotterPixel;
+		private int[] plotterPixelBuffer;
 		private int rasterInterruptLine;
 		private int rasterLeft;
 		private int rasterLines;
@@ -89,6 +105,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void InitRegs()
 		{
+			// init sprites
+			sprites = new VicIINewSprite[8];
+			for (int i = 0; i < 8; i++)
+				sprites[i] = new VicIINewSprite();
+
+			// init buffers
+			plotterDataBuffer = new int[plotterDelay];
+			plotterPixelBuffer = new int[plotterDelay];
+			characterMemory = new byte[40];
+			colorMemory = new byte[40];
+
+			// init raster data
+			rasterX = rasterLeft;
+			rasterWidth = pipeline.Length * 8;
+
 			// reset regs
 			for (int i = 0; i < 0x40; i++)
 				this[i] = 0x00;
@@ -98,11 +129,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			this[0x18] = 0x01;
 			this[0x19] = 0x71;
 			this[0x1A] = 0xF0;
-
-			// init sprites
-			sprites = new VicIINewSprite[8];
-			for (int i = 0; i < 8; i++)
-				sprites[i] = new VicIINewSprite();
+			RC = 7;
+			refreshAddress = 0x3FFF;
+			idle = true;
 		}
 
 		private byte this[int addr]
@@ -482,7 +511,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			this[addr & 0x3F] = val;
 		}
 
-		public byte Read(ushort addr, byte val)
+		public byte Read(ushort addr)
 		{
 			byte result = 0;
 			addr &= 0x3F;
@@ -494,12 +523,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					result = this[addr];
 					this[addr] = 0x00;
 					IMMC = false;
+					UpdateInterrupts();
 					break;
 				case 0x1F:
 					// clear after read
 					result = this[addr];
 					this[addr] = 0x00;
 					IMBC = false;
+					UpdateInterrupts();
 					break;
 				default:
 					result = this[addr];

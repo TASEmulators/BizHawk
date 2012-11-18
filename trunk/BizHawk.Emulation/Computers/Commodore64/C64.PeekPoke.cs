@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public byte PeekVic(int addr)
 		{
-			return vic.regs[addr];
+			return vic.Peek(addr);
 		}
 
 		public void PokeCia0(int addr, byte val)

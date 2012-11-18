@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public MOS6502X cpu;
 		public Memory mem;
 		public Sid sid;
-		public VicII vic;
+		public VicIINew vic;
 		public ChipSignals signal;
 
 		// sid stuff
@@ -79,17 +79,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initialize vic
 			signal = new ChipSignals();
-			vic = new VicII(signal, initRegion);
+			vic = new VicIINew(signal, initRegion);
 
 			// set vsync rate
-			CoreOutputComm.VsyncDen = vic.cyclesPerFrame;
+			CoreOutputComm.VsyncDen = vic.CyclesPerFrame;
 			switch (initRegion)
 			{
 				case Region.NTSC:
 					CoreOutputComm.VsyncNum = (14318181 / 14);
 					break;
 				case Region.PAL:
-					CoreOutputComm.VsyncNum = (14318181 / 18);
+					CoreOutputComm.VsyncNum = (17734472 / 18);
 					break;
 			}
 
