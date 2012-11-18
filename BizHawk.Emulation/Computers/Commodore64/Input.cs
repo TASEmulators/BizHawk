@@ -51,8 +51,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			result |= controller[joystickMatrix[index, 2]] ? (byte)0x00 : (byte)0x04;
 			result |= controller[joystickMatrix[index, 3]] ? (byte)0x00 : (byte)0x08;
 			result |= controller[joystickMatrix[index, 4]] ? (byte)0x00 : (byte)0x10;
-			if (result != 0xFF)
-				index = index;
 			return result;
 		}
 

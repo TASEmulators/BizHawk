@@ -5,17 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public struct VicIIDataGenerator
-	{
-
-	}
-
-	public struct VicIISpriteGenerator
-	{
-
-	}
-
-	public partial class VicIINew
+	public partial class VicIINew : IVideoProvider
 	{
 		public Memory mem;
 		public Region region;
@@ -25,13 +15,22 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			region = newRegion;
 			signal = newSignal;
-			HardReset();
 			InitPipeline(newRegion);
+			HardReset();
+		}
+
+		public int CyclesPerFrame
+		{
+			get
+			{
+				return pipeline.Length * rasterLines;
+			}
 		}
 
 		public void HardReset()
 		{
 			InitRegs();
+			InitVideoBuffer();
 			cycle = 0;
 		}
 
@@ -46,6 +45,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void PerformCycle()
 		{
 			ExecutePipeline();
+			UpdateInterrupts();
+			signal.VicIRQ = IRQ;
 		}
 
 	}

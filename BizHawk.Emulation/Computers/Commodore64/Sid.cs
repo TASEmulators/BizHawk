@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					cyclesPerSample = 14318181 / 14 / sampleRate;
 					break;
 				case Region.PAL:
-					cyclesPerSample = 14318181 / 18 / sampleRate;
+					cyclesPerSample = 17734472 / 18 / sampleRate;
 					break;
 			}
 			InitSound(sampleRate);

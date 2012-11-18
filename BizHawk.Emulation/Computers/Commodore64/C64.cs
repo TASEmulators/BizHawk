@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			SetupMemoryDomains();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
-			Init(Region.NTSC);
+			Init(Region.PAL);
 		}
 
 		// internal variables
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			_frame++;
 			_islag = true;
 
-			int cyclesPerFrame = vic.cyclesPerFrame;
+			int cyclesPerFrame = vic.CyclesPerFrame;
 
 			foreach (IMedia media in mediaAttached)
 			{
@@ -111,17 +111,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				vic.PerformCycle();
 				cpu.IRQ = signal.CpuIRQ;
 				cpu.NMI = signal.CpuNMI;
-				if (signal.CpuAEC)
-				{
-					cpu.ExecuteOne();
-				}
-				sid.PerformCycle();
-				if (diskDriveAttached)
-					diskDrive.PerformCycle();
 				cia0.PerformCycle();
 				signal.CiaIRQ0 = cia0.IRQ;
 				cia1.PerformCycle();
 				signal.CiaIRQ1 = cia1.IRQ;
+				sid.PerformCycle();
+				if (diskDriveAttached)
+					diskDrive.PerformCycle();
+				if (signal.CpuAEC)
+				{
+					cpu.ExecuteOne();
+				}
 			}
 
 			if (_islag)
