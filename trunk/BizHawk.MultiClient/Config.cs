@@ -1074,11 +1074,8 @@ namespace BizHawk.MultiClient
 		public string Down = "";
 		public string Left = "";
 		public string Right = "";
-		public string L1 = "";
-		public string L2 = "";
-		public string R1 = "";
-		public string R2 = "";
-
+		public string L = "";
+		public string R = "";
 		public string _0 = "";
 		public string _1 = "";
 		public string _2 = "";
@@ -1103,10 +1100,8 @@ namespace BizHawk.MultiClient
 				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
 				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
 				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				L1 = "Z, J1 B1";
-				L2 = "X, J1 B2";
-				R1 = "C, J1 B1";
-				R2 = "V, J1 B2";
+				L = "Z, J1 B1";
+				R = "X, J1 B1";
 				_0 = "NumberPad0";
 				_1 = "NumberPad1";
 				_2 = "NumberPad2";
