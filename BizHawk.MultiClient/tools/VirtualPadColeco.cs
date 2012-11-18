@@ -63,8 +63,8 @@ namespace BizHawk.MultiClient
 			StringBuilder input = new StringBuilder("");
 			input.Append(PU.Checked ? "U" : ".");
 			input.Append(PD.Checked ? "D" : ".");
-			input.Append(PL.Checked ? "L" : "L");
-			input.Append(PR.Checked ? "R" : "R");
+			input.Append(PL.Checked ? "L" : ".");
+			input.Append(PR.Checked ? "R" : ".");
 
 			input.Append(KeyLeft.Checked ? "l" : ".");
 			input.Append(KeyRight.Checked ? "r" : ".");

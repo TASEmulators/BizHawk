@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.tools
+﻿namespace BizHawk.MultiClient
 {
 	partial class VirtualPadC64Keyboard
 	{
@@ -1024,6 +1024,7 @@
 			this.Controls.Add(this.checkBox1);
 			this.Name = "VirtualPadC64Keyboard";
 			this.Size = new System.Drawing.Size(454, 140);
+			this.Load += new System.EventHandler(this.VirtualPadC64Keyboard_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

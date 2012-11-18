@@ -180,6 +180,12 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(coleco1);
 					ControllerBox.Controls.Add(coleco2);
 					break;
+				case "C64":
+					VirtualPadC64Keyboard c64k = new VirtualPadC64Keyboard();
+					c64k.Location = new Point(8, 19);
+					Pads.Add(c64k);
+					ControllerBox.Controls.Add(c64k);
+					break;
 			}
 		}
 
@@ -255,6 +261,12 @@ namespace BizHawk.MultiClient
 							break;
 						case "GB":
 							Pads[0].SetButtons(str.Substring(3, 8));
+							break;
+						case "Coleco":
+							Pads[0].SetButtons(str.Substring(1, 18));
+							Pads[1].SetButtons(str.Substring(20, 18));
+							break;
+						case "C64":
 							break;
 						default:
 							break;

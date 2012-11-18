@@ -395,6 +395,10 @@ namespace BizHawk.MultiClient
 			return input.ToString();
 		}
 
+		private string GetC64ControllersAsMnemonic()
+		{
+			return ""; //TODO
+		}
 
 		public string GetControllersAsMnemonic()
 		{
@@ -402,14 +406,17 @@ namespace BizHawk.MultiClient
 			{
 				return "|.|";
 			}
-			if (ControlType == "Atari 7800 Basic Controller")
+			else if (ControlType == "Atari 7800 Basic Controller")
 			{
 				return "|.|"; //TODO
 			}
-
 			else if (ControlType == "SNES Controller")
 			{
 				return GetSNESControllersAsMnemonic();
+			}
+			else if (ControlType == "Commodore 64 Controller")
+			{
+				return GetC64ControllersAsMnemonic();
 			}
 
 			StringBuilder input = new StringBuilder("|");
@@ -485,7 +492,7 @@ namespace BizHawk.MultiClient
 			{
 				input.Append(IsBasePressed("Power") ? Global.COMMANDS[ControlType]["Power"] : ".");
 			}
-			else if (ControlType != "SMS Controller" && ControlType != "TI83 Controller")
+			else if (ControlType != "SMS Controller" && ControlType != "TI83 Controller" && ControlType != "ColecoVision Basic Controller")
 			{
 				input.Append("|");
 			}
@@ -706,6 +713,11 @@ namespace BizHawk.MultiClient
 
 		}
 
+		private void SetSNESControllersAsMnemonic()
+		{
+			//TODO
+		}
+
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string
 		/// </summary>
@@ -720,6 +732,12 @@ namespace BizHawk.MultiClient
 				SetSNESControllersAsMnemonic(mnemonic);
 				return;
 			}
+			else if (ControlType == "Commodore 64 Controller")
+			{
+				SetSNESControllersAsMnemonic();
+				return;
+			}
+
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 
 			MyBoolButtons.Clear();
@@ -778,7 +796,7 @@ namespace BizHawk.MultiClient
 				if (mnemonic.Length < 2) return;
 				Force("Reset", mnemonic[1] != '.');
 			}
-			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller")
+			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller" ||  ControlType == "ColecoVision Basic Controller")
 			{
 				start = 1;
 			}
