@@ -406,9 +406,16 @@ namespace BizHawk.MultiClient
 				{
 					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
 				}
-				input.Append("|");
+				input.Append('|');
 			}
 
+			foreach (string button in Global.BUTTONS["Commodore 64 Keyboard"].Keys)
+			{
+				input.Append(IsBasePressed(button) ? Global.BUTTONS["Commodore 64 Keyboard"][button] : ".");
+			}
+			input.Append('|');
+
+			input.Append('|');
 			return input.ToString();
 		}
 
@@ -745,6 +752,12 @@ namespace BizHawk.MultiClient
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
+			}
+
+			int startk = 13;
+			foreach (string button in Global.BUTTONS["Commodore 64 Keyboard"].Keys)
+			{
+				Force(button, c[startk++]);
 			}
 		}
 
