@@ -1782,11 +1782,12 @@ namespace BizHawk.MultiClient
 		private void gBToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			// the palettes have no effect when CGB mode is active
+			/*
 			if (Global.Emulator is Emulation.Consoles.GB.Gameboy)
 			{
 				changeDMGPalettesToolStripMenuItem.Enabled =
 					!((Emulation.Consoles.GB.Gameboy)Global.Emulator).IsCGBMode();
-			}
+			}*/
 
 			//skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
 			forceDMGModeToolStripMenuItem.Checked = Global.Config.GB_ForceDMG;

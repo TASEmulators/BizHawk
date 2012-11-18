@@ -1731,16 +1731,23 @@ namespace BizHawk.MultiClient
 									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
 									Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(game, rom.FileData);
 									nextEmulator = gb;
-									try
+									if (gb.IsCGBMode())
 									{
-										using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
-										{
-											int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
-											if (colors != null)
-												gb.ChangeDMGColors(colors);
-										}
+										gb.SetCGBColors(Global.Config.CGBColors);
 									}
-									catch { }
+									else
+									{
+										try
+										{
+											using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
+											{
+												int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
+												if (colors != null)
+													gb.ChangeDMGColors(colors);
+											}
+										}
+										catch { }
+									}
 								}
 								else
 								{
@@ -4242,7 +4249,18 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is Gameboy)
 			{
-				GBtools.ColorChooserForm.DoColorChooserFormDialog(((Gameboy)Global.Emulator).ChangeDMGColors, this);
+				var g = Global.Emulator as Gameboy;
+				if (g.IsCGBMode())
+				{
+					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
+					{
+						g.SetCGBColors(Global.Config.CGBColors);
+					}
+				}
+				else
+				{
+					GBtools.ColorChooserForm.DoColorChooserFormDialog(g.ChangeDMGColors, this);
+				}
 			}
 		}
 

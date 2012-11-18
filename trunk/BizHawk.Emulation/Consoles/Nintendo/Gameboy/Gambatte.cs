@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			// set real default colors (before anyone mucks with them at all)
 			ChangeDMGColors(new int[] { 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157 });
-			SetCGBColors();
+			SetCGBColors(GBColors.ColorType.gambatte);
 
 			InitSound();
 
@@ -707,14 +707,9 @@ namespace BizHawk.Emulation.Consoles.GB
 				LibGambatte.gambatte_setdmgpalettecolor(GambatteState, (LibGambatte.PalType)(i / 4), (uint)i % 4, (uint)colors[i]);
 		}
 
-		void SetCGBColors()
+		public void SetCGBColors(GBColors.ColorType type)
 		{
-			int[] lut = new int[32768];
-			int i = 0;
-			for (int b = 0; b < 32; b++)
-				for (int g = 0; g < 32; g++)
-					for (int r = 0; r < 32; r++)
-						lut[i++] = GBColors.GambatteColor(new GBColors.Triple(r, g, b)).ToARGB32();
+			int[] lut = GBColors.GetLut(type);
 			unsafe
 			{
 				fixed (int* p = &lut[0])

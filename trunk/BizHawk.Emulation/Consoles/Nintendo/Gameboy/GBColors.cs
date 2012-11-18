@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		}
 
 		// vba's default mode
-		public static Triple VividColor(Triple c)
+		public static Triple VividVBAColor(Triple c)
 		{
 			return c.Bit5to8Bad();
 		}
@@ -95,6 +95,41 @@ namespace BizHawk.Emulation.Consoles.GB
 			ret.g = (c.r * 1 + c.g * 12 + c.b * 3 + 8) >> 4;
 			ret.b = (c.r * 2 + c.g * 2 + c.b * 12 + 8) >> 4;
 			return ret.Bit5to8Bad();
+		}
+
+		// as vivid as possible
+		public static Triple UltraVividColor(Triple c)
+		{
+			return c.Bit5to8Good();
+		}
+
+		public enum ColorType
+		{
+			gambatte,
+			vivid,
+			vbavivid,
+			vbagbnew,
+			vgabgbold
+		};
+
+		public static int[] GetLut(ColorType c)
+		{
+			Func<Triple, Triple> f = null;
+			switch (c)
+			{
+				case ColorType.gambatte: f = GambatteColor; break;
+				case ColorType.vivid: f = UltraVividColor; break;
+				case ColorType.vbavivid: f = VividVBAColor; break;
+				case ColorType.vbagbnew: f = NewVBAColor; break;
+				case ColorType.vgabgbold: f = OldVBAColor; break;
+			}
+			int[] ret = new int[32768];
+			int i = 0;
+			for (int b = 0; b < 32; b++)
+				for (int g = 0; g < 32; g++)
+					for (int r = 0; r < 32; r++)
+						ret[i++] = f(new Triple(r, g, b)).ToARGB32();
+			return ret;
 		}
 	}
 }

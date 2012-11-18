@@ -33,6 +33,7 @@ void LCD::setDmgPalette(unsigned long *const palette, const unsigned long *const
 void LCD::setCgbPalette(unsigned *lut) {
 	for (int i = 0; i < 32768; i++)
 		cgbColorsRgb32[i] = lut[i];
+	refreshPalettes();
 }
 
 unsigned long LCD::gbcToRgb32(const unsigned bgr15) {
