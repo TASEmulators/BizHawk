@@ -52,12 +52,16 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 		}
 
-		void LoadRom(byte[] rom)
-		{
-			RomData = new byte[0x8000];
-			for (int i = 0; i < 0x8000; i++)
-				RomData[i] = rom[i % rom.Length];
-		}
+        void LoadRom(byte[] rom)
+        {
+            RomData = new byte[0x8000];
+            for (int i = 0; i < 0x8000; i++)
+                RomData[i] = rom[i % rom.Length];
+
+// hack to skip colecovision title screen
+//RomData[0] = 0x55;
+//RomData[1] = 0xAA;
+        }
 
 		void Reset()
 		{
@@ -77,6 +81,13 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				return VDP.ReadVdpStatus();
 			}
 
+            if (port >= 0xE0)
+            {
+                if ((port & 1) == 0)
+                    return ReadController1();
+                return ReadController2();
+            }
+
 			return 0xFF;
 		}
 
@@ -84,7 +95,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		{
 			port &= 0xFF;
 
-			if (port >= 0xA0 && port < 0xC0)
+			if (port >= 0xA0 && port <= 0xBF)  
 			{
 				if ((port & 1) == 0)
 					VDP.WriteVdpData(value);
@@ -93,12 +104,23 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				return;
 			}
 
-			if (port >= 0xE0)
-			{
-				PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
-				return;
-			}
+            if (port >= 0x80 && port <= 0x9F)
+            {
+                InputPortSelection = InputPortMode.Right;
+                return;
+            }
 
+            if (port >= 0xC0 && port <= 0xDF)
+            {
+                InputPortSelection = InputPortMode.Left;
+                return;
+            }
+
+            if (port >= 0xE0)
+            {
+                PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
+                return;
+            }
 
 			//Console.WriteLine("Write port {0:X2}:{1:X2}", port, value);
 		}
