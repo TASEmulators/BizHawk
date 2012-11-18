@@ -110,6 +110,10 @@ public:
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) {
 		memory.setDmgPaletteColor(palNum, colorNum, rgb32);
 	}
+
+	void setCgbPalette(unsigned *lut) {
+		memory.setCgbPalette(lut);
+	}
 	
 	void setGameGenie(const std::string &codes) { memory.setGameGenie(codes); }
 	void setGameShark(const std::string &codes) { memory.setGameShark(codes); }

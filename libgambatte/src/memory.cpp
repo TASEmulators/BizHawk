@@ -1031,6 +1031,10 @@ void Memory::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned lon
 	display.setDmgPaletteColor(palNum, colorNum, rgb32);
 }
 
+void Memory::setCgbPalette(unsigned *lut) {
+	display.setCgbPalette(lut);
+}
+
 bool Memory::getMemoryArea(int which, unsigned char **data, int *length) {
 	if (!data || !length)
 		return false;
