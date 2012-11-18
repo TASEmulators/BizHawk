@@ -36,7 +36,7 @@
                 if (Controller["P1 Right"]) retval &= 0xFD;
                 if (Controller["P1 Down"])  retval &= 0xFB;
                 if (Controller["P1 Left"])  retval &= 0xF7;
-                if (Controller["P1 L1"])    retval &= 0x3F;
+                if (Controller["P1 L"])     retval &= 0x3F;
 
                 return retval;
             }
@@ -61,7 +61,7 @@
                 if (Controller["P1 Key1"])  retval = 0x0D;
                 if (Controller["P1 Key6"])  retval = 0x0E;
 
-                if (Controller["P1 R1"] == false) retval |= 0x40;
+                if (Controller["P1 R"] == false) retval |= 0x40;
                 return retval;
             }
 
