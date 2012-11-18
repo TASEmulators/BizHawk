@@ -44,6 +44,7 @@
 			this.KeypadTool = new System.Windows.Forms.ToolStripButton();
 			this.GameboyDebuggerTool = new System.Windows.Forms.ToolStripButton();
 			this.SNESGraphicsDebuggerButton = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -58,6 +59,7 @@
             this.toolStripButton4,
             this.HexEditor,
             this.toolStripButton5,
+            this.toolStripButton6,
             this.TAStudioButton,
             this.NESDebugger,
             this.NESPPU,
@@ -69,7 +71,7 @@
 			this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Table;
 			this.toolStrip1.Location = new System.Drawing.Point(9, 11);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(100, 306);
+			this.toolStrip1.Size = new System.Drawing.Size(100, 348);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.TabStop = true;
 			// 
@@ -129,12 +131,12 @@
 			// 
 			// TAStudioButton
 			// 
-			this.TAStudioButton.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
+			this.TAStudioButton.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
 			this.TAStudioButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.TAStudioButton.Name = "TAStudioButton";
-			this.TAStudioButton.Size = new System.Drawing.Size(76, 20);
-			this.TAStudioButton.Text = "TAStudio";
-			this.TAStudioButton.Click += new System.EventHandler(this.TAStudioButton_Click);
+			this.TAStudioButton.Size = new System.Drawing.Size(86, 20);
+			this.TAStudioButton.Text = "VirtualPads";
+			this.TAStudioButton.Click += new System.EventHandler(this.TAStudioButton_Click_1);
 			// 
 			// NESDebugger
 			// 
@@ -195,11 +197,20 @@
 			this.SNESGraphicsDebuggerButton.Text = "Gfx Debugger";
 			this.SNESGraphicsDebuggerButton.Click += new System.EventHandler(this.SNESGraphicsDebuggerButton_Click);
 			// 
+			// toolStripButton6
+			// 
+			this.toolStripButton6.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
+			this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton6.Name = "toolStripButton6";
+			this.toolStripButton6.Size = new System.Drawing.Size(76, 20);
+			this.toolStripButton6.Text = "TAStudio";
+			this.toolStripButton6.Click += new System.EventHandler(this.TAStudioButton_Click);
+			// 
 			// ToolBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(116, 321);
+			this.ClientSize = new System.Drawing.Size(116, 338);
 			this.Controls.Add(this.toolStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(130, 64);
@@ -230,6 +241,7 @@
 		private System.Windows.Forms.ToolStripButton TAStudioButton;
 		private System.Windows.Forms.ToolStripButton GameboyDebuggerTool;
 		private System.Windows.Forms.ToolStripButton SNESGraphicsDebuggerButton;
+		private System.Windows.Forms.ToolStripButton toolStripButton6;
 
     }
 }

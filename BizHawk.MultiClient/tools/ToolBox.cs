@@ -66,6 +66,8 @@ namespace BizHawk.MultiClient
 			{
 				SNESGraphicsDebuggerButton.Visible = false;
 			}
+
+			Size = new Size(this.Size.Width, toolStrip1.Size.Height + 50);
 		}
 
 		private void toolStripButton1_Click(object sender, EventArgs e)
@@ -138,6 +140,11 @@ namespace BizHawk.MultiClient
 			{
 				Global.MainForm.LoadSNESGraphicsDebugger();
 			}
+		}
+
+		private void TAStudioButton_Click_1(object sender, EventArgs e)
+		{
+			Global.MainForm.LoadVirtualPads();
 		}
 	}
 }
