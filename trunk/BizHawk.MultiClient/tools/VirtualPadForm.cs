@@ -192,8 +192,8 @@ namespace BizHawk.MultiClient
 		{
 			foreach (var controller in ControllerBox.Controls)
 			{
-				if (controller is VirtualPad)
-					((VirtualPad)controller).Clear();
+				if (controller is IVirtualPad)
+					((IVirtualPad)controller).Clear();
 			}
 		}
 
