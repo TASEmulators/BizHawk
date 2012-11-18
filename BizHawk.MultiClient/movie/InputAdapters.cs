@@ -360,6 +360,8 @@ namespace BizHawk.MultiClient
 					return "|.|........|........|........|........|........|";
 				case "Coleco":
 					return "|..................|..................|";
+				case "C64":
+					return "|.....|.....|..................................................................|";
 			}
 		}
 
@@ -386,7 +388,6 @@ namespace BizHawk.MultiClient
 			{
 				foreach (string button in Global.BUTTONS[ControlType].Keys)
 				{
-					
 					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
 				}
 				input.Append("|");
@@ -397,7 +398,18 @@ namespace BizHawk.MultiClient
 
 		private string GetC64ControllersAsMnemonic()
 		{
-			return ""; //TODO
+			StringBuilder input = new StringBuilder("|");
+			
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
+				}
+				input.Append("|");
+			}
+
+			return input.ToString();
 		}
 
 		public string GetControllersAsMnemonic()
@@ -713,9 +725,27 @@ namespace BizHawk.MultiClient
 
 		}
 
-		private void SetSNESControllersAsMnemonic()
+		private void SetC64ControllersAsMnemonic(string mnemonic)
 		{
-			//TODO
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+
+				if (mnemonic.Length < srcindex + 1 + Global.BUTTONS[ControlType].Count - 1)
+				{
+					return;
+				}
+
+				int start = 1;
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+			}
 		}
 
 		/// <summary>
@@ -734,7 +764,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (ControlType == "Commodore 64 Controller")
 			{
-				SetSNESControllersAsMnemonic();
+				SetC64ControllersAsMnemonic(mnemonic);
 				return;
 			}
 
