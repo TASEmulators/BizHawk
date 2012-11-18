@@ -47,9 +47,14 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 		public void FrameAdvance(bool render, bool renderSound)
 		{
+			Frame++;
+			IsLagFrame = true;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 			VDP.ExecuteFrame();
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
+
+			if (IsLagFrame)
+				LagCount++;
 		}
 
         void LoadRom(byte[] rom)
