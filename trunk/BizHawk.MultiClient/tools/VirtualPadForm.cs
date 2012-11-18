@@ -12,10 +12,8 @@ namespace BizHawk.MultiClient
 	public partial class VirtualPadForm : Form
 	{
 		//TODO: clicky vs sticky
-		//Remember window position
 		//Remember window size
 		//Restore defaults
-		//Autoload
 
 		List<IVirtualPad> Pads = new List<IVirtualPad>();
 
