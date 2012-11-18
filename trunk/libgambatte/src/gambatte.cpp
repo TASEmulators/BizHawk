@@ -182,6 +182,10 @@ void GB::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) 
 	p_->cpu.setDmgPaletteColor(palNum, colorNum, rgb32);
 }
 
+void GB::setCgbPalette(unsigned *lut) {
+	p_->cpu.setCgbPalette(lut);
+}
+
 bool GB::loadState(std::istream &file) {
 	if (p_->cpu.loaded()) {
 	//	p_->cpu.saveSavedata();

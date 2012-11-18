@@ -16,6 +16,8 @@ extern "C"
 
 	__declspec(dllexport) void gambatte_setdmgpalettecolor(void *core, unsigned palnum, unsigned colornum, unsigned rgb32);
 
+	__declspec(dllexport) void gambatte_setcgbpalette(void *core, unsigned *lut);
+
 	__declspec(dllexport) void gambatte_setinputgetter(void *core, unsigned (*getinput)(void));
 
 	__declspec(dllexport) void gambatte_setreadcallback(void *core, void (*callback)(unsigned));

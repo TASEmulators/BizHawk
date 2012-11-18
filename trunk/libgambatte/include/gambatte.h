@@ -80,6 +80,8 @@ public:
 	  */
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32);
 	
+	void setCgbPalette(unsigned *lut);
+
 	/** Sets the callback used for getting input state. */
 	void setInputGetter(InputGetter *getInput);
 	

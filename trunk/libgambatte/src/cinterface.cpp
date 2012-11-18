@@ -45,6 +45,12 @@ __declspec(dllexport) void gambatte_setdmgpalettecolor(void *core, unsigned paln
 	g->setDmgPaletteColor(palnum, colornum, rgb32);
 }
 
+__declspec(dllexport) void gambatte_setcgbpalette(void *core, unsigned *lut)
+{
+	GB *g = (GB *) core;
+	g->setCgbPalette(lut);
+}
+
 class CInputGetter: public InputGetter
 {
 public: 

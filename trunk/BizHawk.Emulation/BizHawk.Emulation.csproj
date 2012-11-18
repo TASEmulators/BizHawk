@@ -212,6 +212,7 @@
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
