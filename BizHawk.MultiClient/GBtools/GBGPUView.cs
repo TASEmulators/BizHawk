@@ -16,6 +16,17 @@ namespace BizHawk.MultiClient.GBtools
 		// state, not the state at the last callback (and so can be quite different when update is set to manual).
 		// I'm not quite sure what's the best thing to do...
 
+		// TODO: color stuff.  In GB mode, the colors used are exactly whatever you set in palette config.  In GBC
+		// mode, the following "real color" algorithm is used (NB: converting 555->888 at the same time):
+		// r' = 6.5r + 1.0g + 0.5b
+		// g' = 0.0r + 6.0g + 2.0b
+		// b' = 1.5r + 1.0g + 5.5b
+		//
+		// other emulators use "vivid color" modes, such as:
+		// r' = 8.25r
+		// g' = 8.25g
+	    // b' = 8.25b
+
 		Emulation.Consoles.GB.Gameboy gb;
 
 		// gambatte doesn't modify these memory locations unless you reconstruct, so we can store
