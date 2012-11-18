@@ -154,65 +154,70 @@ namespace BizHawk.MultiClient
 			AVIBox.Text = Global.Config.AVIPath;
 			LogBox.Text = Global.Config.LogPath;
 
-			
+
 
 			if (!Global.MainForm.INTERIM)
 			{
-				tabControl1.Controls.Remove(tabControl1.TabPages[10]); //Int. V
-				//tabControl1.Controls.Remove(tabControl1.TabPages[12]); //C64 //WHY DOES THIS FAIL?!
+				tabControl1.Controls.Remove(tabPageIntellivision);
+				tabControl1.Controls.Remove(tabPageC64);
 			}
-
-			switch (Global.Game.System)
+			else
 			{
-				case "NES":
-					tabControl1.SelectTab(0);
-					break;
-				case "SNES":
-				case "SGB":
-					tabControl1.SelectTab(1);
-					break;
-				case "SMS":
-					tabControl1.SelectTab(2);
-					break;
-				case "SG":
-					tabControl1.SelectTab(3);
-					break;
-				case "GG":
-					tabControl1.SelectTab(4);
-					break;
-				case "GEN":
-					tabControl1.SelectTab(5);
-					break;
-				case "PCE":
-				case "PCECD":
-				case "SGX":
-					tabControl1.SelectTab(6);
-					break;
-				case "GB":
-				case "GBC":
-					tabControl1.SelectTab(7);
-					break;
-				case "TI83":
-					tabControl1.SelectTab(8);
-					break;
-				case "A26":
-					tabControl1.SelectTab(9);
-					break;
-				case "INTV":
-					tabControl1.SelectTab(10);
-					break;
-				case "C64":
-					tabControl1.SelectTab(12);
-					break;
-				case "Coleco":
-					tabControl1.SelectTab(13);
-					break;
-				case "NULL":
-					tabControl1.SelectTab(11);
-					break;
-
-
+				switch (Global.Game.System)
+				{
+					case "NES":
+						tabControl1.SelectTab(tabPageNES);
+						break;
+					case "SNES":
+					case "SGB":
+						tabControl1.SelectTab(tabPageSNES);
+						break;
+					case "SMS":
+						tabControl1.SelectTab(tabPageSMS);
+						break;
+					case "SG":
+						tabControl1.SelectTab(tabPageSG1000);
+						break;
+					case "GG":
+						tabControl1.SelectTab(tabPageGGear);
+						break;
+					case "GEN":
+						tabControl1.SelectTab(tabPageGenesis);
+						break;
+					case "PCE":
+					case "PCECD":
+					case "SGX":
+						tabControl1.SelectTab(tabPagePCE);
+						break;
+					case "GB":
+					case "GBC":
+						tabControl1.SelectTab(tabPageGameboy);
+						break;
+					case "TI83":
+						tabControl1.SelectTab(tabPageTI83);
+						break;
+					case "A26":
+						tabControl1.SelectTab(tabPageAtari2600);
+						break;
+					case "INTV":
+						tabControl1.SelectTab(tabPageIntellivision);
+						break;
+					case "C64":
+						tabControl1.SelectTab(tabPageC64);
+						break;
+					case "Coleco":
+						tabControl1.SelectTab(tabPageColeco);
+						break;
+					case "NULL":
+						tabControl1.SelectTab(tabPageTools);
+						break;
+				}
 			}
+
+			int x = 0;
+			x++;
+			int y = x;
+			y++;
 		}
 
 		private void SaveSettings()

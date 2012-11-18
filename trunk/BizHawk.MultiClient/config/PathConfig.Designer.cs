@@ -69,7 +69,7 @@
 			this.AVIDescription = new System.Windows.Forms.Label();
 			this.BrowseAVI = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tabPageNES = new System.Windows.Forms.TabPage();
 			this.NESFDSBiosDescription = new System.Windows.Forms.Label();
 			this.NESBrowseFDSBios = new System.Windows.Forms.Button();
 			this.NESFDSBiosBox = new System.Windows.Forms.TextBox();
@@ -82,7 +82,7 @@
 			this.NESCheatsBox = new System.Windows.Forms.TextBox();
 			this.NESBaseDescription = new System.Windows.Forms.Label();
 			this.BrowseNESBase = new System.Windows.Forms.Button();
-			this.tabPage12 = new System.Windows.Forms.TabPage();
+			this.tabPageSNES = new System.Windows.Forms.TabPage();
 			this.SNESFirmwaresDescription = new System.Windows.Forms.LinkLabel();
 			this.SNESBrowseFirmwares = new System.Windows.Forms.Button();
 			this.SNESFirmwaresBox = new System.Windows.Forms.TextBox();
@@ -104,14 +104,14 @@
 			this.SNESROMsDescription = new System.Windows.Forms.Label();
 			this.SNESSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.SNESBrowseROMs = new System.Windows.Forms.Button();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.tabPageSMS = new System.Windows.Forms.TabPage();
 			this.Sega8BaseBox = new System.Windows.Forms.TextBox();
 			this.Sega8CheatsDescription = new System.Windows.Forms.Label();
 			this.Sega8BrowseCheats = new System.Windows.Forms.Button();
 			this.Sega8CheatsBox = new System.Windows.Forms.TextBox();
 			this.Sega8BaseDescription = new System.Windows.Forms.Label();
 			this.Sega8BrowseBase = new System.Windows.Forms.Button();
-			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.tabPageSG1000 = new System.Windows.Forms.TabPage();
 			this.SGBaseBox = new System.Windows.Forms.TextBox();
 			this.SGCheatsDescription = new System.Windows.Forms.Label();
 			this.SGBrowseCheats = new System.Windows.Forms.Button();
@@ -130,7 +130,7 @@
 			this.SGROMsDescription = new System.Windows.Forms.Label();
 			this.SGSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.SGBrowseROMs = new System.Windows.Forms.Button();
-			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.tabPageGGear = new System.Windows.Forms.TabPage();
 			this.GGBaseBox = new System.Windows.Forms.TextBox();
 			this.GGCheatsDescription = new System.Windows.Forms.Label();
 			this.GGBrowseCheats = new System.Windows.Forms.Button();
@@ -149,7 +149,7 @@
 			this.GGBrowseSaveRAM = new System.Windows.Forms.Button();
 			this.GGSaveRAMDescription = new System.Windows.Forms.Label();
 			this.GGSaveRAMBox = new System.Windows.Forms.TextBox();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.tabPageGenesis = new System.Windows.Forms.TabPage();
 			this.GenesisBaseBox = new System.Windows.Forms.TextBox();
 			this.GenesisCheatsDescription = new System.Windows.Forms.Label();
 			this.GenesisBrowseCheats = new System.Windows.Forms.Button();
@@ -168,7 +168,7 @@
 			this.GenesisBrowseSavestates = new System.Windows.Forms.Button();
 			this.GenesisBrowseScreenshots = new System.Windows.Forms.Button();
 			this.GenesisROMsBox = new System.Windows.Forms.TextBox();
-			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.tabPagePCE = new System.Windows.Forms.TabPage();
 			this.PCEBaseBox = new System.Windows.Forms.TextBox();
 			this.PCEBiosDescription = new System.Windows.Forms.Label();
 			this.PCEBrowseBios = new System.Windows.Forms.Button();
@@ -190,7 +190,7 @@
 			this.PCEBrowseSaveRAM = new System.Windows.Forms.Button();
 			this.PCESaveRAMDescription = new System.Windows.Forms.Label();
 			this.PCESaveRAMBox = new System.Windows.Forms.TextBox();
-			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.tabPageGameboy = new System.Windows.Forms.TabPage();
 			this.GBBaseBox = new System.Windows.Forms.TextBox();
 			this.GBPalettesBox = new System.Windows.Forms.TextBox();
 			this.GBBrowsePalettes = new System.Windows.Forms.Button();
@@ -212,7 +212,7 @@
 			this.GBBrowseSaveRAM = new System.Windows.Forms.Button();
 			this.GBSaveRAMDescription = new System.Windows.Forms.Label();
 			this.GBSaveRAMBox = new System.Windows.Forms.TextBox();
-			this.tabPage6 = new System.Windows.Forms.TabPage();
+			this.tabPageTI83 = new System.Windows.Forms.TabPage();
 			this.TI83BaseBox = new System.Windows.Forms.TextBox();
 			this.TI83CheatsDescription = new System.Windows.Forms.Label();
 			this.TI83BrowseBox = new System.Windows.Forms.Button();
@@ -231,7 +231,7 @@
 			this.TI83BrowseSaveRAM = new System.Windows.Forms.Button();
 			this.TI83SaveRAMDescription = new System.Windows.Forms.Label();
 			this.TI83SaveRAMBox = new System.Windows.Forms.TextBox();
-			this.tabPage10 = new System.Windows.Forms.TabPage();
+			this.tabPageAtari2600 = new System.Windows.Forms.TabPage();
 			this.AtariBaseBox = new System.Windows.Forms.TextBox();
 			this.AtariCheatsDescription = new System.Windows.Forms.Label();
 			this.AtariBrowseCheats = new System.Windows.Forms.Button();
@@ -250,7 +250,7 @@
 			this.AtariROMsDescription = new System.Windows.Forms.Label();
 			this.AtariSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.AtariBrowseROMs = new System.Windows.Forms.Button();
-			this.tabPage11 = new System.Windows.Forms.TabPage();
+			this.tabPageIntellivision = new System.Windows.Forms.TabPage();
 			this.INTVBaseBox = new System.Windows.Forms.TextBox();
 			this.INTVGROMDescription = new System.Windows.Forms.Label();
 			this.INTVBroseGROM = new System.Windows.Forms.Button();
@@ -294,7 +294,7 @@
 			this.C64SavestatesBox = new System.Windows.Forms.TextBox();
 			this.C64ROMsBox = new System.Windows.Forms.TextBox();
 			this.C64BaseBox = new System.Windows.Forms.TextBox();
-			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.tabPageTools = new System.Windows.Forms.TabPage();
 			this.LogDescription = new System.Windows.Forms.Label();
 			this.BrowseLog = new System.Windows.Forms.Button();
 			this.LogBox = new System.Windows.Forms.TextBox();
@@ -310,7 +310,7 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.tabPage13 = new System.Windows.Forms.TabPage();
+			this.tabPageColeco = new System.Windows.Forms.TabPage();
 			this.COLBaseBox = new System.Windows.Forms.TextBox();
 			this.COLBiosDescription = new System.Windows.Forms.Label();
 			this.COLBrowseBios = new System.Windows.Forms.Button();
@@ -330,20 +330,20 @@
 			this.COLSavestatesBox = new System.Windows.Forms.TextBox();
 			this.COLBrowseROMs = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
-			this.tabPage1.SuspendLayout();
-			this.tabPage12.SuspendLayout();
-			this.tabPage2.SuspendLayout();
-			this.tabPage9.SuspendLayout();
-			this.tabPage8.SuspendLayout();
-			this.tabPage3.SuspendLayout();
-			this.tabPage4.SuspendLayout();
-			this.tabPage5.SuspendLayout();
-			this.tabPage6.SuspendLayout();
-			this.tabPage10.SuspendLayout();
-			this.tabPage11.SuspendLayout();
+			this.tabPageNES.SuspendLayout();
+			this.tabPageSNES.SuspendLayout();
+			this.tabPageSMS.SuspendLayout();
+			this.tabPageSG1000.SuspendLayout();
+			this.tabPageGGear.SuspendLayout();
+			this.tabPageGenesis.SuspendLayout();
+			this.tabPagePCE.SuspendLayout();
+			this.tabPageGameboy.SuspendLayout();
+			this.tabPageTI83.SuspendLayout();
+			this.tabPageAtari2600.SuspendLayout();
+			this.tabPageIntellivision.SuspendLayout();
 			this.tabPageC64.SuspendLayout();
-			this.tabPage7.SuspendLayout();
-			this.tabPage13.SuspendLayout();
+			this.tabPageTools.SuspendLayout();
+			this.tabPageColeco.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// Cancel
@@ -735,20 +735,20 @@
 			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Controls.Add(this.tabPage12);
-			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Controls.Add(this.tabPage9);
-			this.tabControl1.Controls.Add(this.tabPage8);
-			this.tabControl1.Controls.Add(this.tabPage3);
-			this.tabControl1.Controls.Add(this.tabPage4);
-			this.tabControl1.Controls.Add(this.tabPage5);
-			this.tabControl1.Controls.Add(this.tabPage6);
-			this.tabControl1.Controls.Add(this.tabPage10);
-			this.tabControl1.Controls.Add(this.tabPage11);
-			this.tabControl1.Controls.Add(this.tabPage13);
+			this.tabControl1.Controls.Add(this.tabPageNES);
+			this.tabControl1.Controls.Add(this.tabPageSNES);
+			this.tabControl1.Controls.Add(this.tabPageSMS);
+			this.tabControl1.Controls.Add(this.tabPageSG1000);
+			this.tabControl1.Controls.Add(this.tabPageGGear);
+			this.tabControl1.Controls.Add(this.tabPageGenesis);
+			this.tabControl1.Controls.Add(this.tabPagePCE);
+			this.tabControl1.Controls.Add(this.tabPageGameboy);
+			this.tabControl1.Controls.Add(this.tabPageTI83);
+			this.tabControl1.Controls.Add(this.tabPageAtari2600);
+			this.tabControl1.Controls.Add(this.tabPageIntellivision);
+			this.tabControl1.Controls.Add(this.tabPageColeco);
 			this.tabControl1.Controls.Add(this.tabPageC64);
-			this.tabControl1.Controls.Add(this.tabPage7);
+			this.tabControl1.Controls.Add(this.tabPageTools);
 			this.tabControl1.Location = new System.Drawing.Point(13, 97);
 			this.tabControl1.Multiline = true;
 			this.tabControl1.Name = "tabControl1";
@@ -759,37 +759,37 @@
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.NESFDSBiosDescription);
-			this.tabPage1.Controls.Add(this.NESBrowseFDSBios);
-			this.tabPage1.Controls.Add(this.NESFDSBiosBox);
-			this.tabPage1.Controls.Add(this.NESBaseBox);
-			this.tabPage1.Controls.Add(this.NESPaletteDescription);
-			this.tabPage1.Controls.Add(this.NESBrowsePalette);
-			this.tabPage1.Controls.Add(this.NESPaletteBox);
-			this.tabPage1.Controls.Add(this.NESCheatsDescription);
-			this.tabPage1.Controls.Add(this.NESBrowseCheats);
-			this.tabPage1.Controls.Add(this.NESCheatsBox);
-			this.tabPage1.Controls.Add(this.NESBaseDescription);
-			this.tabPage1.Controls.Add(this.BrowseNESBase);
-			this.tabPage1.Controls.Add(this.NESROMsBox);
-			this.tabPage1.Controls.Add(this.NESScreenshotsBox);
-			this.tabPage1.Controls.Add(this.BrowseNESSavestates);
-			this.tabPage1.Controls.Add(this.NESScreenshotsDescription);
-			this.tabPage1.Controls.Add(this.NESSavestatesDescription);
-			this.tabPage1.Controls.Add(this.BrowseNESScreenshots);
-			this.tabPage1.Controls.Add(this.NESSavestatesBox);
-			this.tabPage1.Controls.Add(this.BrowseNESSaveRAM);
-			this.tabPage1.Controls.Add(this.NESSaveRAMDescription);
-			this.tabPage1.Controls.Add(this.NESROMsDescription);
-			this.tabPage1.Controls.Add(this.NESSaveRAMBox);
-			this.tabPage1.Controls.Add(this.NESBrowseROMs);
-			this.tabPage1.Location = new System.Drawing.Point(4, 40);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(566, 257);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "NES";
-			this.tabPage1.UseVisualStyleBackColor = true;
+			this.tabPageNES.Controls.Add(this.NESFDSBiosDescription);
+			this.tabPageNES.Controls.Add(this.NESBrowseFDSBios);
+			this.tabPageNES.Controls.Add(this.NESFDSBiosBox);
+			this.tabPageNES.Controls.Add(this.NESBaseBox);
+			this.tabPageNES.Controls.Add(this.NESPaletteDescription);
+			this.tabPageNES.Controls.Add(this.NESBrowsePalette);
+			this.tabPageNES.Controls.Add(this.NESPaletteBox);
+			this.tabPageNES.Controls.Add(this.NESCheatsDescription);
+			this.tabPageNES.Controls.Add(this.NESBrowseCheats);
+			this.tabPageNES.Controls.Add(this.NESCheatsBox);
+			this.tabPageNES.Controls.Add(this.NESBaseDescription);
+			this.tabPageNES.Controls.Add(this.BrowseNESBase);
+			this.tabPageNES.Controls.Add(this.NESROMsBox);
+			this.tabPageNES.Controls.Add(this.NESScreenshotsBox);
+			this.tabPageNES.Controls.Add(this.BrowseNESSavestates);
+			this.tabPageNES.Controls.Add(this.NESScreenshotsDescription);
+			this.tabPageNES.Controls.Add(this.NESSavestatesDescription);
+			this.tabPageNES.Controls.Add(this.BrowseNESScreenshots);
+			this.tabPageNES.Controls.Add(this.NESSavestatesBox);
+			this.tabPageNES.Controls.Add(this.BrowseNESSaveRAM);
+			this.tabPageNES.Controls.Add(this.NESSaveRAMDescription);
+			this.tabPageNES.Controls.Add(this.NESROMsDescription);
+			this.tabPageNES.Controls.Add(this.NESSaveRAMBox);
+			this.tabPageNES.Controls.Add(this.NESBrowseROMs);
+			this.tabPageNES.Location = new System.Drawing.Point(4, 40);
+			this.tabPageNES.Name = "tabPage1";
+			this.tabPageNES.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageNES.Size = new System.Drawing.Size(566, 257);
+			this.tabPageNES.TabIndex = 0;
+			this.tabPageNES.Text = "NES";
+			this.tabPageNES.UseVisualStyleBackColor = true;
 			// 
 			// NESFDSBiosDescription
 			// 
@@ -915,33 +915,33 @@
 			// 
 			// tabPage12
 			// 
-			this.tabPage12.Controls.Add(this.SNESFirmwaresDescription);
-			this.tabPage12.Controls.Add(this.SNESBrowseFirmwares);
-			this.tabPage12.Controls.Add(this.SNESFirmwaresBox);
-			this.tabPage12.Controls.Add(this.SNESBaseBox);
-			this.tabPage12.Controls.Add(this.SNESCheatsDescription);
-			this.tabPage12.Controls.Add(this.SNESBrowseCheats);
-			this.tabPage12.Controls.Add(this.SNESCheatsBox);
-			this.tabPage12.Controls.Add(this.SNESBaseDescription);
-			this.tabPage12.Controls.Add(this.BrowseSNESBase);
-			this.tabPage12.Controls.Add(this.SNESROMsBox);
-			this.tabPage12.Controls.Add(this.SNESScreenshotsBox);
-			this.tabPage12.Controls.Add(this.BrowseSNESSavestates);
-			this.tabPage12.Controls.Add(this.SNESScreenshotsDescription);
-			this.tabPage12.Controls.Add(this.SNESSavestatesDescription);
-			this.tabPage12.Controls.Add(this.BrowseSNESScreenshots);
-			this.tabPage12.Controls.Add(this.SNESSavestatesBox);
-			this.tabPage12.Controls.Add(this.BrowseSNESSaveRAM);
-			this.tabPage12.Controls.Add(this.SNESSaveRAMDescription);
-			this.tabPage12.Controls.Add(this.SNESROMsDescription);
-			this.tabPage12.Controls.Add(this.SNESSaveRAMBox);
-			this.tabPage12.Controls.Add(this.SNESBrowseROMs);
-			this.tabPage12.Location = new System.Drawing.Point(4, 22);
-			this.tabPage12.Name = "tabPage12";
-			this.tabPage12.Size = new System.Drawing.Size(566, 275);
-			this.tabPage12.TabIndex = 11;
-			this.tabPage12.Text = "SNES";
-			this.tabPage12.UseVisualStyleBackColor = true;
+			this.tabPageSNES.Controls.Add(this.SNESFirmwaresDescription);
+			this.tabPageSNES.Controls.Add(this.SNESBrowseFirmwares);
+			this.tabPageSNES.Controls.Add(this.SNESFirmwaresBox);
+			this.tabPageSNES.Controls.Add(this.SNESBaseBox);
+			this.tabPageSNES.Controls.Add(this.SNESCheatsDescription);
+			this.tabPageSNES.Controls.Add(this.SNESBrowseCheats);
+			this.tabPageSNES.Controls.Add(this.SNESCheatsBox);
+			this.tabPageSNES.Controls.Add(this.SNESBaseDescription);
+			this.tabPageSNES.Controls.Add(this.BrowseSNESBase);
+			this.tabPageSNES.Controls.Add(this.SNESROMsBox);
+			this.tabPageSNES.Controls.Add(this.SNESScreenshotsBox);
+			this.tabPageSNES.Controls.Add(this.BrowseSNESSavestates);
+			this.tabPageSNES.Controls.Add(this.SNESScreenshotsDescription);
+			this.tabPageSNES.Controls.Add(this.SNESSavestatesDescription);
+			this.tabPageSNES.Controls.Add(this.BrowseSNESScreenshots);
+			this.tabPageSNES.Controls.Add(this.SNESSavestatesBox);
+			this.tabPageSNES.Controls.Add(this.BrowseSNESSaveRAM);
+			this.tabPageSNES.Controls.Add(this.SNESSaveRAMDescription);
+			this.tabPageSNES.Controls.Add(this.SNESROMsDescription);
+			this.tabPageSNES.Controls.Add(this.SNESSaveRAMBox);
+			this.tabPageSNES.Controls.Add(this.SNESBrowseROMs);
+			this.tabPageSNES.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSNES.Name = "tabPage12";
+			this.tabPageSNES.Size = new System.Drawing.Size(566, 275);
+			this.tabPageSNES.TabIndex = 11;
+			this.tabPageSNES.Text = "SNES";
+			this.tabPageSNES.UseVisualStyleBackColor = true;
 			// 
 			// SNESFirmwaresDescription
 			// 
@@ -1157,31 +1157,31 @@
 			// 
 			// tabPage2
 			// 
-			this.tabPage2.Controls.Add(this.Sega8BaseBox);
-			this.tabPage2.Controls.Add(this.Sega8CheatsDescription);
-			this.tabPage2.Controls.Add(this.Sega8BrowseCheats);
-			this.tabPage2.Controls.Add(this.Sega8CheatsBox);
-			this.tabPage2.Controls.Add(this.Sega8ScreenshotsBox);
-			this.tabPage2.Controls.Add(this.Sega8BaseDescription);
-			this.tabPage2.Controls.Add(this.Sega8ScreenshotsDescription);
-			this.tabPage2.Controls.Add(this.Sega8BrowseBase);
-			this.tabPage2.Controls.Add(this.Sega8BrowseScreenshots);
-			this.tabPage2.Controls.Add(this.Sega8ROMsBox);
-			this.tabPage2.Controls.Add(this.Sega8BrowseSavestates);
-			this.tabPage2.Controls.Add(this.Sega8SavestatesDescription);
-			this.tabPage2.Controls.Add(this.Sega8ROMsDescription);
-			this.tabPage2.Controls.Add(this.Sega8SavestatesBox);
-			this.tabPage2.Controls.Add(this.Sega8BrowseROMs);
-			this.tabPage2.Controls.Add(this.Sega8BrowseSaveRAM);
-			this.tabPage2.Controls.Add(this.Sega8SaveRAMDescription);
-			this.tabPage2.Controls.Add(this.Sega8SaveRAMBox);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(566, 275);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "SMS";
-			this.tabPage2.UseVisualStyleBackColor = true;
+			this.tabPageSMS.Controls.Add(this.Sega8BaseBox);
+			this.tabPageSMS.Controls.Add(this.Sega8CheatsDescription);
+			this.tabPageSMS.Controls.Add(this.Sega8BrowseCheats);
+			this.tabPageSMS.Controls.Add(this.Sega8CheatsBox);
+			this.tabPageSMS.Controls.Add(this.Sega8ScreenshotsBox);
+			this.tabPageSMS.Controls.Add(this.Sega8BaseDescription);
+			this.tabPageSMS.Controls.Add(this.Sega8ScreenshotsDescription);
+			this.tabPageSMS.Controls.Add(this.Sega8BrowseBase);
+			this.tabPageSMS.Controls.Add(this.Sega8BrowseScreenshots);
+			this.tabPageSMS.Controls.Add(this.Sega8ROMsBox);
+			this.tabPageSMS.Controls.Add(this.Sega8BrowseSavestates);
+			this.tabPageSMS.Controls.Add(this.Sega8SavestatesDescription);
+			this.tabPageSMS.Controls.Add(this.Sega8ROMsDescription);
+			this.tabPageSMS.Controls.Add(this.Sega8SavestatesBox);
+			this.tabPageSMS.Controls.Add(this.Sega8BrowseROMs);
+			this.tabPageSMS.Controls.Add(this.Sega8BrowseSaveRAM);
+			this.tabPageSMS.Controls.Add(this.Sega8SaveRAMDescription);
+			this.tabPageSMS.Controls.Add(this.Sega8SaveRAMBox);
+			this.tabPageSMS.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSMS.Name = "tabPage2";
+			this.tabPageSMS.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageSMS.Size = new System.Drawing.Size(566, 275);
+			this.tabPageSMS.TabIndex = 1;
+			this.tabPageSMS.Text = "SMS";
+			this.tabPageSMS.UseVisualStyleBackColor = true;
 			// 
 			// Sega8BaseBox
 			// 
@@ -1245,30 +1245,30 @@
 			// 
 			// tabPage9
 			// 
-			this.tabPage9.Controls.Add(this.SGBaseBox);
-			this.tabPage9.Controls.Add(this.SGCheatsDescription);
-			this.tabPage9.Controls.Add(this.SGBrowseCheats);
-			this.tabPage9.Controls.Add(this.SGCheatsBox);
-			this.tabPage9.Controls.Add(this.SGBaseDescription);
-			this.tabPage9.Controls.Add(this.SGBrowseBase);
-			this.tabPage9.Controls.Add(this.SGROMsBox);
-			this.tabPage9.Controls.Add(this.SGScreenshotsBox);
-			this.tabPage9.Controls.Add(this.SGBrowseSavestates);
-			this.tabPage9.Controls.Add(this.SGScreenshotsDescription);
-			this.tabPage9.Controls.Add(this.SGSavestatesDescription);
-			this.tabPage9.Controls.Add(this.SGBrowseScreenshots);
-			this.tabPage9.Controls.Add(this.SGSavestatesBox);
-			this.tabPage9.Controls.Add(this.SGBrowseSaveRAM);
-			this.tabPage9.Controls.Add(this.SGSaveRAMDescription);
-			this.tabPage9.Controls.Add(this.SGROMsDescription);
-			this.tabPage9.Controls.Add(this.SGSaveRAMBox);
-			this.tabPage9.Controls.Add(this.SGBrowseROMs);
-			this.tabPage9.Location = new System.Drawing.Point(4, 22);
-			this.tabPage9.Name = "tabPage9";
-			this.tabPage9.Size = new System.Drawing.Size(566, 275);
-			this.tabPage9.TabIndex = 8;
-			this.tabPage9.Text = "SG-1000";
-			this.tabPage9.UseVisualStyleBackColor = true;
+			this.tabPageSG1000.Controls.Add(this.SGBaseBox);
+			this.tabPageSG1000.Controls.Add(this.SGCheatsDescription);
+			this.tabPageSG1000.Controls.Add(this.SGBrowseCheats);
+			this.tabPageSG1000.Controls.Add(this.SGCheatsBox);
+			this.tabPageSG1000.Controls.Add(this.SGBaseDescription);
+			this.tabPageSG1000.Controls.Add(this.SGBrowseBase);
+			this.tabPageSG1000.Controls.Add(this.SGROMsBox);
+			this.tabPageSG1000.Controls.Add(this.SGScreenshotsBox);
+			this.tabPageSG1000.Controls.Add(this.SGBrowseSavestates);
+			this.tabPageSG1000.Controls.Add(this.SGScreenshotsDescription);
+			this.tabPageSG1000.Controls.Add(this.SGSavestatesDescription);
+			this.tabPageSG1000.Controls.Add(this.SGBrowseScreenshots);
+			this.tabPageSG1000.Controls.Add(this.SGSavestatesBox);
+			this.tabPageSG1000.Controls.Add(this.SGBrowseSaveRAM);
+			this.tabPageSG1000.Controls.Add(this.SGSaveRAMDescription);
+			this.tabPageSG1000.Controls.Add(this.SGROMsDescription);
+			this.tabPageSG1000.Controls.Add(this.SGSaveRAMBox);
+			this.tabPageSG1000.Controls.Add(this.SGBrowseROMs);
+			this.tabPageSG1000.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSG1000.Name = "tabPage9";
+			this.tabPageSG1000.Size = new System.Drawing.Size(566, 275);
+			this.tabPageSG1000.TabIndex = 8;
+			this.tabPageSG1000.Text = "SG-1000";
+			this.tabPageSG1000.UseVisualStyleBackColor = true;
 			// 
 			// SGBaseBox
 			// 
@@ -1453,30 +1453,30 @@
 			// 
 			// tabPage8
 			// 
-			this.tabPage8.Controls.Add(this.GGBaseBox);
-			this.tabPage8.Controls.Add(this.GGCheatsDescription);
-			this.tabPage8.Controls.Add(this.GGBrowseCheats);
-			this.tabPage8.Controls.Add(this.GGCheatsBox);
-			this.tabPage8.Controls.Add(this.GGScreenshotsBox);
-			this.tabPage8.Controls.Add(this.GGBaseDescription);
-			this.tabPage8.Controls.Add(this.GGScreenshotsDescription);
-			this.tabPage8.Controls.Add(this.GGBrowseBase);
-			this.tabPage8.Controls.Add(this.GGBrowseScreenshots);
-			this.tabPage8.Controls.Add(this.GGROMBox);
-			this.tabPage8.Controls.Add(this.GGBrowseSavestates);
-			this.tabPage8.Controls.Add(this.GGSavestatesDescription);
-			this.tabPage8.Controls.Add(this.GGROMsDescription);
-			this.tabPage8.Controls.Add(this.GGSavestatesBox);
-			this.tabPage8.Controls.Add(this.GGBrowseROMs);
-			this.tabPage8.Controls.Add(this.GGBrowseSaveRAM);
-			this.tabPage8.Controls.Add(this.GGSaveRAMDescription);
-			this.tabPage8.Controls.Add(this.GGSaveRAMBox);
-			this.tabPage8.Location = new System.Drawing.Point(4, 22);
-			this.tabPage8.Name = "tabPage8";
-			this.tabPage8.Size = new System.Drawing.Size(566, 275);
-			this.tabPage8.TabIndex = 7;
-			this.tabPage8.Text = "G. Gear";
-			this.tabPage8.UseVisualStyleBackColor = true;
+			this.tabPageGGear.Controls.Add(this.GGBaseBox);
+			this.tabPageGGear.Controls.Add(this.GGCheatsDescription);
+			this.tabPageGGear.Controls.Add(this.GGBrowseCheats);
+			this.tabPageGGear.Controls.Add(this.GGCheatsBox);
+			this.tabPageGGear.Controls.Add(this.GGScreenshotsBox);
+			this.tabPageGGear.Controls.Add(this.GGBaseDescription);
+			this.tabPageGGear.Controls.Add(this.GGScreenshotsDescription);
+			this.tabPageGGear.Controls.Add(this.GGBrowseBase);
+			this.tabPageGGear.Controls.Add(this.GGBrowseScreenshots);
+			this.tabPageGGear.Controls.Add(this.GGROMBox);
+			this.tabPageGGear.Controls.Add(this.GGBrowseSavestates);
+			this.tabPageGGear.Controls.Add(this.GGSavestatesDescription);
+			this.tabPageGGear.Controls.Add(this.GGROMsDescription);
+			this.tabPageGGear.Controls.Add(this.GGSavestatesBox);
+			this.tabPageGGear.Controls.Add(this.GGBrowseROMs);
+			this.tabPageGGear.Controls.Add(this.GGBrowseSaveRAM);
+			this.tabPageGGear.Controls.Add(this.GGSaveRAMDescription);
+			this.tabPageGGear.Controls.Add(this.GGSaveRAMBox);
+			this.tabPageGGear.Location = new System.Drawing.Point(4, 22);
+			this.tabPageGGear.Name = "tabPage8";
+			this.tabPageGGear.Size = new System.Drawing.Size(566, 275);
+			this.tabPageGGear.TabIndex = 7;
+			this.tabPageGGear.Text = "G. Gear";
+			this.tabPageGGear.UseVisualStyleBackColor = true;
 			// 
 			// GGBaseBox
 			// 
@@ -1660,30 +1660,30 @@
 			// 
 			// tabPage3
 			// 
-			this.tabPage3.Controls.Add(this.GenesisBaseBox);
-			this.tabPage3.Controls.Add(this.GenesisCheatsDescription);
-			this.tabPage3.Controls.Add(this.GenesisBrowseCheats);
-			this.tabPage3.Controls.Add(this.GenesisCheatsBox);
-			this.tabPage3.Controls.Add(this.GenesisScreenshotsBox);
-			this.tabPage3.Controls.Add(this.GenesisBrowseSaveRAM);
-			this.tabPage3.Controls.Add(this.GenesisBrowseROMs);
-			this.tabPage3.Controls.Add(this.GenesisBaseDescription);
-			this.tabPage3.Controls.Add(this.GenesisSaveRAMDescription);
-			this.tabPage3.Controls.Add(this.GenesisSavestatesBox);
-			this.tabPage3.Controls.Add(this.GenesisScreenshotsDescription);
-			this.tabPage3.Controls.Add(this.GenesisSaveRAMBox);
-			this.tabPage3.Controls.Add(this.GenesisROMsDescription);
-			this.tabPage3.Controls.Add(this.GenesisBrowseBase);
-			this.tabPage3.Controls.Add(this.GenesisSavestatesDescription);
-			this.tabPage3.Controls.Add(this.GenesisBrowseSavestates);
-			this.tabPage3.Controls.Add(this.GenesisBrowseScreenshots);
-			this.tabPage3.Controls.Add(this.GenesisROMsBox);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(566, 275);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Genesis";
-			this.tabPage3.UseVisualStyleBackColor = true;
+			this.tabPageGenesis.Controls.Add(this.GenesisBaseBox);
+			this.tabPageGenesis.Controls.Add(this.GenesisCheatsDescription);
+			this.tabPageGenesis.Controls.Add(this.GenesisBrowseCheats);
+			this.tabPageGenesis.Controls.Add(this.GenesisCheatsBox);
+			this.tabPageGenesis.Controls.Add(this.GenesisScreenshotsBox);
+			this.tabPageGenesis.Controls.Add(this.GenesisBrowseSaveRAM);
+			this.tabPageGenesis.Controls.Add(this.GenesisBrowseROMs);
+			this.tabPageGenesis.Controls.Add(this.GenesisBaseDescription);
+			this.tabPageGenesis.Controls.Add(this.GenesisSaveRAMDescription);
+			this.tabPageGenesis.Controls.Add(this.GenesisSavestatesBox);
+			this.tabPageGenesis.Controls.Add(this.GenesisScreenshotsDescription);
+			this.tabPageGenesis.Controls.Add(this.GenesisSaveRAMBox);
+			this.tabPageGenesis.Controls.Add(this.GenesisROMsDescription);
+			this.tabPageGenesis.Controls.Add(this.GenesisBrowseBase);
+			this.tabPageGenesis.Controls.Add(this.GenesisSavestatesDescription);
+			this.tabPageGenesis.Controls.Add(this.GenesisBrowseSavestates);
+			this.tabPageGenesis.Controls.Add(this.GenesisBrowseScreenshots);
+			this.tabPageGenesis.Controls.Add(this.GenesisROMsBox);
+			this.tabPageGenesis.Location = new System.Drawing.Point(4, 22);
+			this.tabPageGenesis.Name = "tabPage3";
+			this.tabPageGenesis.Size = new System.Drawing.Size(566, 275);
+			this.tabPageGenesis.TabIndex = 2;
+			this.tabPageGenesis.Text = "Genesis";
+			this.tabPageGenesis.UseVisualStyleBackColor = true;
 			// 
 			// GenesisBaseBox
 			// 
@@ -1867,33 +1867,33 @@
 			// 
 			// tabPage4
 			// 
-			this.tabPage4.Controls.Add(this.PCEBaseBox);
-			this.tabPage4.Controls.Add(this.PCEBiosDescription);
-			this.tabPage4.Controls.Add(this.PCEBrowseBios);
-			this.tabPage4.Controls.Add(this.PCEBiosBox);
-			this.tabPage4.Controls.Add(this.PCECheatsDescription);
-			this.tabPage4.Controls.Add(this.PCEBrowseCheats);
-			this.tabPage4.Controls.Add(this.PCECheatsBox);
-			this.tabPage4.Controls.Add(this.PCEScreenshotsBox);
-			this.tabPage4.Controls.Add(this.PCEBaseDescription);
-			this.tabPage4.Controls.Add(this.PCEScreenshotsDescription);
-			this.tabPage4.Controls.Add(this.PCEBrowseBase);
-			this.tabPage4.Controls.Add(this.PCEBrowseScreenshots);
-			this.tabPage4.Controls.Add(this.PCEROMsBox);
-			this.tabPage4.Controls.Add(this.PCEBrowseSavestates);
-			this.tabPage4.Controls.Add(this.PCESavestatesDescription);
-			this.tabPage4.Controls.Add(this.PCEROMsDescription);
-			this.tabPage4.Controls.Add(this.PCESavestatesBox);
-			this.tabPage4.Controls.Add(this.PCEBrowseROMs);
-			this.tabPage4.Controls.Add(this.PCEBrowseSaveRAM);
-			this.tabPage4.Controls.Add(this.PCESaveRAMDescription);
-			this.tabPage4.Controls.Add(this.PCESaveRAMBox);
-			this.tabPage4.Location = new System.Drawing.Point(4, 40);
-			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Size = new System.Drawing.Size(566, 257);
-			this.tabPage4.TabIndex = 3;
-			this.tabPage4.Text = "PC Engine";
-			this.tabPage4.UseVisualStyleBackColor = true;
+			this.tabPagePCE.Controls.Add(this.PCEBaseBox);
+			this.tabPagePCE.Controls.Add(this.PCEBiosDescription);
+			this.tabPagePCE.Controls.Add(this.PCEBrowseBios);
+			this.tabPagePCE.Controls.Add(this.PCEBiosBox);
+			this.tabPagePCE.Controls.Add(this.PCECheatsDescription);
+			this.tabPagePCE.Controls.Add(this.PCEBrowseCheats);
+			this.tabPagePCE.Controls.Add(this.PCECheatsBox);
+			this.tabPagePCE.Controls.Add(this.PCEScreenshotsBox);
+			this.tabPagePCE.Controls.Add(this.PCEBaseDescription);
+			this.tabPagePCE.Controls.Add(this.PCEScreenshotsDescription);
+			this.tabPagePCE.Controls.Add(this.PCEBrowseBase);
+			this.tabPagePCE.Controls.Add(this.PCEBrowseScreenshots);
+			this.tabPagePCE.Controls.Add(this.PCEROMsBox);
+			this.tabPagePCE.Controls.Add(this.PCEBrowseSavestates);
+			this.tabPagePCE.Controls.Add(this.PCESavestatesDescription);
+			this.tabPagePCE.Controls.Add(this.PCEROMsDescription);
+			this.tabPagePCE.Controls.Add(this.PCESavestatesBox);
+			this.tabPagePCE.Controls.Add(this.PCEBrowseROMs);
+			this.tabPagePCE.Controls.Add(this.PCEBrowseSaveRAM);
+			this.tabPagePCE.Controls.Add(this.PCESaveRAMDescription);
+			this.tabPagePCE.Controls.Add(this.PCESaveRAMBox);
+			this.tabPagePCE.Location = new System.Drawing.Point(4, 40);
+			this.tabPagePCE.Name = "tabPage4";
+			this.tabPagePCE.Size = new System.Drawing.Size(566, 257);
+			this.tabPagePCE.TabIndex = 3;
+			this.tabPagePCE.Text = "PC Engine";
+			this.tabPagePCE.UseVisualStyleBackColor = true;
 			// 
 			// PCEBaseBox
 			// 
@@ -2117,33 +2117,33 @@
 			// 
 			// tabPage5
 			// 
-			this.tabPage5.Controls.Add(this.GBBaseBox);
-			this.tabPage5.Controls.Add(this.GBPalettesBox);
-			this.tabPage5.Controls.Add(this.GBBrowsePalettes);
-			this.tabPage5.Controls.Add(this.GBPalettesDescription);
-			this.tabPage5.Controls.Add(this.GBCheatsDescription);
-			this.tabPage5.Controls.Add(this.GBBrowseCheats);
-			this.tabPage5.Controls.Add(this.GBCheatsBox);
-			this.tabPage5.Controls.Add(this.GBScreenshotsBox);
-			this.tabPage5.Controls.Add(this.GBBaseDescription);
-			this.tabPage5.Controls.Add(this.GBScreenshotsDescription);
-			this.tabPage5.Controls.Add(this.GBBrowseBase);
-			this.tabPage5.Controls.Add(this.GBBrowseScreenshots);
-			this.tabPage5.Controls.Add(this.GBROMsBox);
-			this.tabPage5.Controls.Add(this.GBBrowseSavestates);
-			this.tabPage5.Controls.Add(this.GBSavestatesDescription);
-			this.tabPage5.Controls.Add(this.GBROMsDescription);
-			this.tabPage5.Controls.Add(this.GBSavestatesBox);
-			this.tabPage5.Controls.Add(this.GBBrowseROMs);
-			this.tabPage5.Controls.Add(this.GBBrowseSaveRAM);
-			this.tabPage5.Controls.Add(this.GBSaveRAMDescription);
-			this.tabPage5.Controls.Add(this.GBSaveRAMBox);
-			this.tabPage5.Location = new System.Drawing.Point(4, 22);
-			this.tabPage5.Name = "tabPage5";
-			this.tabPage5.Size = new System.Drawing.Size(566, 275);
-			this.tabPage5.TabIndex = 4;
-			this.tabPage5.Text = "Gameboy";
-			this.tabPage5.UseVisualStyleBackColor = true;
+			this.tabPageGameboy.Controls.Add(this.GBBaseBox);
+			this.tabPageGameboy.Controls.Add(this.GBPalettesBox);
+			this.tabPageGameboy.Controls.Add(this.GBBrowsePalettes);
+			this.tabPageGameboy.Controls.Add(this.GBPalettesDescription);
+			this.tabPageGameboy.Controls.Add(this.GBCheatsDescription);
+			this.tabPageGameboy.Controls.Add(this.GBBrowseCheats);
+			this.tabPageGameboy.Controls.Add(this.GBCheatsBox);
+			this.tabPageGameboy.Controls.Add(this.GBScreenshotsBox);
+			this.tabPageGameboy.Controls.Add(this.GBBaseDescription);
+			this.tabPageGameboy.Controls.Add(this.GBScreenshotsDescription);
+			this.tabPageGameboy.Controls.Add(this.GBBrowseBase);
+			this.tabPageGameboy.Controls.Add(this.GBBrowseScreenshots);
+			this.tabPageGameboy.Controls.Add(this.GBROMsBox);
+			this.tabPageGameboy.Controls.Add(this.GBBrowseSavestates);
+			this.tabPageGameboy.Controls.Add(this.GBSavestatesDescription);
+			this.tabPageGameboy.Controls.Add(this.GBROMsDescription);
+			this.tabPageGameboy.Controls.Add(this.GBSavestatesBox);
+			this.tabPageGameboy.Controls.Add(this.GBBrowseROMs);
+			this.tabPageGameboy.Controls.Add(this.GBBrowseSaveRAM);
+			this.tabPageGameboy.Controls.Add(this.GBSaveRAMDescription);
+			this.tabPageGameboy.Controls.Add(this.GBSaveRAMBox);
+			this.tabPageGameboy.Location = new System.Drawing.Point(4, 22);
+			this.tabPageGameboy.Name = "tabPage5";
+			this.tabPageGameboy.Size = new System.Drawing.Size(566, 275);
+			this.tabPageGameboy.TabIndex = 4;
+			this.tabPageGameboy.Text = "Gameboy";
+			this.tabPageGameboy.UseVisualStyleBackColor = true;
 			// 
 			// GBBaseBox
 			// 
@@ -2357,30 +2357,30 @@
 			// 
 			// tabPage6
 			// 
-			this.tabPage6.Controls.Add(this.TI83BaseBox);
-			this.tabPage6.Controls.Add(this.TI83CheatsDescription);
-			this.tabPage6.Controls.Add(this.TI83BrowseBox);
-			this.tabPage6.Controls.Add(this.TI83CheatsBox);
-			this.tabPage6.Controls.Add(this.TI83ScreenshotsBox);
-			this.tabPage6.Controls.Add(this.TI83BaseDescription);
-			this.tabPage6.Controls.Add(this.TI83ScreenshotsDescription);
-			this.tabPage6.Controls.Add(this.TI83BrowseBase);
-			this.tabPage6.Controls.Add(this.TI83BrowseScreenshots);
-			this.tabPage6.Controls.Add(this.TI83ROMsBox);
-			this.tabPage6.Controls.Add(this.TI83BrowseSavestates);
-			this.tabPage6.Controls.Add(this.TI83SavestatesDescription);
-			this.tabPage6.Controls.Add(this.TI83ROMsDescription);
-			this.tabPage6.Controls.Add(this.TI83SavestatesBox);
-			this.tabPage6.Controls.Add(this.TI83BrowseROMs);
-			this.tabPage6.Controls.Add(this.TI83BrowseSaveRAM);
-			this.tabPage6.Controls.Add(this.TI83SaveRAMDescription);
-			this.tabPage6.Controls.Add(this.TI83SaveRAMBox);
-			this.tabPage6.Location = new System.Drawing.Point(4, 22);
-			this.tabPage6.Name = "tabPage6";
-			this.tabPage6.Size = new System.Drawing.Size(566, 275);
-			this.tabPage6.TabIndex = 5;
-			this.tabPage6.Text = "TI83";
-			this.tabPage6.UseVisualStyleBackColor = true;
+			this.tabPageTI83.Controls.Add(this.TI83BaseBox);
+			this.tabPageTI83.Controls.Add(this.TI83CheatsDescription);
+			this.tabPageTI83.Controls.Add(this.TI83BrowseBox);
+			this.tabPageTI83.Controls.Add(this.TI83CheatsBox);
+			this.tabPageTI83.Controls.Add(this.TI83ScreenshotsBox);
+			this.tabPageTI83.Controls.Add(this.TI83BaseDescription);
+			this.tabPageTI83.Controls.Add(this.TI83ScreenshotsDescription);
+			this.tabPageTI83.Controls.Add(this.TI83BrowseBase);
+			this.tabPageTI83.Controls.Add(this.TI83BrowseScreenshots);
+			this.tabPageTI83.Controls.Add(this.TI83ROMsBox);
+			this.tabPageTI83.Controls.Add(this.TI83BrowseSavestates);
+			this.tabPageTI83.Controls.Add(this.TI83SavestatesDescription);
+			this.tabPageTI83.Controls.Add(this.TI83ROMsDescription);
+			this.tabPageTI83.Controls.Add(this.TI83SavestatesBox);
+			this.tabPageTI83.Controls.Add(this.TI83BrowseROMs);
+			this.tabPageTI83.Controls.Add(this.TI83BrowseSaveRAM);
+			this.tabPageTI83.Controls.Add(this.TI83SaveRAMDescription);
+			this.tabPageTI83.Controls.Add(this.TI83SaveRAMBox);
+			this.tabPageTI83.Location = new System.Drawing.Point(4, 22);
+			this.tabPageTI83.Name = "tabPage6";
+			this.tabPageTI83.Size = new System.Drawing.Size(566, 275);
+			this.tabPageTI83.TabIndex = 5;
+			this.tabPageTI83.Text = "TI83";
+			this.tabPageTI83.UseVisualStyleBackColor = true;
 			// 
 			// TI83BaseBox
 			// 
@@ -2566,30 +2566,30 @@
 			// 
 			// tabPage10
 			// 
-			this.tabPage10.Controls.Add(this.AtariBaseBox);
-			this.tabPage10.Controls.Add(this.AtariCheatsDescription);
-			this.tabPage10.Controls.Add(this.AtariBrowseCheats);
-			this.tabPage10.Controls.Add(this.AtariCheatsBox);
-			this.tabPage10.Controls.Add(this.AtariBaseDescription);
-			this.tabPage10.Controls.Add(this.BrowseAtariBase);
-			this.tabPage10.Controls.Add(this.AtariROMsBox);
-			this.tabPage10.Controls.Add(this.AtariScreenshotsBox);
-			this.tabPage10.Controls.Add(this.BrowseAtariSavestates);
-			this.tabPage10.Controls.Add(this.AtariScreenshotsDescription);
-			this.tabPage10.Controls.Add(this.AtariSavestatesDescription);
-			this.tabPage10.Controls.Add(this.BrowseAtariScreenshots);
-			this.tabPage10.Controls.Add(this.AtariSavestatesBox);
-			this.tabPage10.Controls.Add(this.BrowseAtariSaveRAM);
-			this.tabPage10.Controls.Add(this.AtariSaveRAMDescription);
-			this.tabPage10.Controls.Add(this.AtariROMsDescription);
-			this.tabPage10.Controls.Add(this.AtariSaveRAMBox);
-			this.tabPage10.Controls.Add(this.AtariBrowseROMs);
-			this.tabPage10.Location = new System.Drawing.Point(4, 22);
-			this.tabPage10.Name = "tabPage10";
-			this.tabPage10.Size = new System.Drawing.Size(566, 275);
-			this.tabPage10.TabIndex = 9;
-			this.tabPage10.Text = "Atari";
-			this.tabPage10.UseVisualStyleBackColor = true;
+			this.tabPageAtari2600.Controls.Add(this.AtariBaseBox);
+			this.tabPageAtari2600.Controls.Add(this.AtariCheatsDescription);
+			this.tabPageAtari2600.Controls.Add(this.AtariBrowseCheats);
+			this.tabPageAtari2600.Controls.Add(this.AtariCheatsBox);
+			this.tabPageAtari2600.Controls.Add(this.AtariBaseDescription);
+			this.tabPageAtari2600.Controls.Add(this.BrowseAtariBase);
+			this.tabPageAtari2600.Controls.Add(this.AtariROMsBox);
+			this.tabPageAtari2600.Controls.Add(this.AtariScreenshotsBox);
+			this.tabPageAtari2600.Controls.Add(this.BrowseAtariSavestates);
+			this.tabPageAtari2600.Controls.Add(this.AtariScreenshotsDescription);
+			this.tabPageAtari2600.Controls.Add(this.AtariSavestatesDescription);
+			this.tabPageAtari2600.Controls.Add(this.BrowseAtariScreenshots);
+			this.tabPageAtari2600.Controls.Add(this.AtariSavestatesBox);
+			this.tabPageAtari2600.Controls.Add(this.BrowseAtariSaveRAM);
+			this.tabPageAtari2600.Controls.Add(this.AtariSaveRAMDescription);
+			this.tabPageAtari2600.Controls.Add(this.AtariROMsDescription);
+			this.tabPageAtari2600.Controls.Add(this.AtariSaveRAMBox);
+			this.tabPageAtari2600.Controls.Add(this.AtariBrowseROMs);
+			this.tabPageAtari2600.Location = new System.Drawing.Point(4, 22);
+			this.tabPageAtari2600.Name = "tabPage10";
+			this.tabPageAtari2600.Size = new System.Drawing.Size(566, 275);
+			this.tabPageAtari2600.TabIndex = 9;
+			this.tabPageAtari2600.Text = "Atari";
+			this.tabPageAtari2600.UseVisualStyleBackColor = true;
 			// 
 			// AtariBaseBox
 			// 
@@ -2774,37 +2774,37 @@
 			// 
 			// tabPage11
 			// 
-			this.tabPage11.Controls.Add(this.INTVBaseBox);
-			this.tabPage11.Controls.Add(this.INTVGROMDescription);
-			this.tabPage11.Controls.Add(this.INTVBroseGROM);
-			this.tabPage11.Controls.Add(this.INTVGROMBox);
-			this.tabPage11.Controls.Add(this.INTVEROMDescription);
-			this.tabPage11.Controls.Add(this.INTVBrowseEROM);
-			this.tabPage11.Controls.Add(this.INTVEROMBox);
-			this.tabPage11.Controls.Add(this.INTVCheatsDescription);
-			this.tabPage11.Controls.Add(this.INTVBrowseCheats);
-			this.tabPage11.Controls.Add(this.INTVCheatsBox);
-			this.tabPage11.Controls.Add(this.INTVScreenshotsBox);
-			this.tabPage11.Controls.Add(this.INTVBaseDescription);
-			this.tabPage11.Controls.Add(this.INTVScreenshotsDescription);
-			this.tabPage11.Controls.Add(this.INTVBrowseBase);
-			this.tabPage11.Controls.Add(this.INTVBrowseScreenshots);
-			this.tabPage11.Controls.Add(this.INTVRomsBox);
-			this.tabPage11.Controls.Add(this.INTVBrowseSavestates);
-			this.tabPage11.Controls.Add(this.INTVSavestatesDescription);
-			this.tabPage11.Controls.Add(this.INTVROMsDescription);
-			this.tabPage11.Controls.Add(this.INTVSavestatesBox);
-			this.tabPage11.Controls.Add(this.INTVBrowseROMs);
-			this.tabPage11.Controls.Add(this.INTVBrowseSaveRAM);
-			this.tabPage11.Controls.Add(this.INTVSaveRAMDescription);
-			this.tabPage11.Controls.Add(this.INTVSaveRAMBox);
-			this.tabPage11.Location = new System.Drawing.Point(4, 22);
-			this.tabPage11.Name = "tabPage11";
-			this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage11.Size = new System.Drawing.Size(566, 275);
-			this.tabPage11.TabIndex = 10;
-			this.tabPage11.Text = "Int.V.";
-			this.tabPage11.UseVisualStyleBackColor = true;
+			this.tabPageIntellivision.Controls.Add(this.INTVBaseBox);
+			this.tabPageIntellivision.Controls.Add(this.INTVGROMDescription);
+			this.tabPageIntellivision.Controls.Add(this.INTVBroseGROM);
+			this.tabPageIntellivision.Controls.Add(this.INTVGROMBox);
+			this.tabPageIntellivision.Controls.Add(this.INTVEROMDescription);
+			this.tabPageIntellivision.Controls.Add(this.INTVBrowseEROM);
+			this.tabPageIntellivision.Controls.Add(this.INTVEROMBox);
+			this.tabPageIntellivision.Controls.Add(this.INTVCheatsDescription);
+			this.tabPageIntellivision.Controls.Add(this.INTVBrowseCheats);
+			this.tabPageIntellivision.Controls.Add(this.INTVCheatsBox);
+			this.tabPageIntellivision.Controls.Add(this.INTVScreenshotsBox);
+			this.tabPageIntellivision.Controls.Add(this.INTVBaseDescription);
+			this.tabPageIntellivision.Controls.Add(this.INTVScreenshotsDescription);
+			this.tabPageIntellivision.Controls.Add(this.INTVBrowseBase);
+			this.tabPageIntellivision.Controls.Add(this.INTVBrowseScreenshots);
+			this.tabPageIntellivision.Controls.Add(this.INTVRomsBox);
+			this.tabPageIntellivision.Controls.Add(this.INTVBrowseSavestates);
+			this.tabPageIntellivision.Controls.Add(this.INTVSavestatesDescription);
+			this.tabPageIntellivision.Controls.Add(this.INTVROMsDescription);
+			this.tabPageIntellivision.Controls.Add(this.INTVSavestatesBox);
+			this.tabPageIntellivision.Controls.Add(this.INTVBrowseROMs);
+			this.tabPageIntellivision.Controls.Add(this.INTVBrowseSaveRAM);
+			this.tabPageIntellivision.Controls.Add(this.INTVSaveRAMDescription);
+			this.tabPageIntellivision.Controls.Add(this.INTVSaveRAMBox);
+			this.tabPageIntellivision.Location = new System.Drawing.Point(4, 22);
+			this.tabPageIntellivision.Name = "tabPage11";
+			this.tabPageIntellivision.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageIntellivision.Size = new System.Drawing.Size(566, 275);
+			this.tabPageIntellivision.TabIndex = 10;
+			this.tabPageIntellivision.Text = "Int.V.";
+			this.tabPageIntellivision.UseVisualStyleBackColor = true;
 			// 
 			// INTVBaseBox
 			// 
@@ -3259,30 +3259,30 @@
 			// 
 			// tabPage7
 			// 
-			this.tabPage7.Controls.Add(this.LogDescription);
-			this.tabPage7.Controls.Add(this.BrowseLog);
-			this.tabPage7.Controls.Add(this.LogBox);
-			this.tabPage7.Controls.Add(this.MoviesBox);
-			this.tabPage7.Controls.Add(this.MovieBackupsBox);
-			this.tabPage7.Controls.Add(this.BrowseMovieBackups);
-			this.tabPage7.Controls.Add(this.MovieBackupsDescription);
-			this.tabPage7.Controls.Add(this.AVIBox);
-			this.tabPage7.Controls.Add(this.AVIDescription);
-			this.tabPage7.Controls.Add(this.BrowseAVI);
-			this.tabPage7.Controls.Add(this.WatchBox);
-			this.tabPage7.Controls.Add(this.BrowseLua);
-			this.tabPage7.Controls.Add(this.WatchDescription);
-			this.tabPage7.Controls.Add(this.LuaDescription);
-			this.tabPage7.Controls.Add(this.BrowseWatch);
-			this.tabPage7.Controls.Add(this.LuaBox);
-			this.tabPage7.Controls.Add(this.BrowseMovies);
-			this.tabPage7.Controls.Add(this.MoviesDescription);
-			this.tabPage7.Location = new System.Drawing.Point(4, 40);
-			this.tabPage7.Name = "tabPage7";
-			this.tabPage7.Size = new System.Drawing.Size(566, 257);
-			this.tabPage7.TabIndex = 6;
-			this.tabPage7.Text = "Tools";
-			this.tabPage7.UseVisualStyleBackColor = true;
+			this.tabPageTools.Controls.Add(this.LogDescription);
+			this.tabPageTools.Controls.Add(this.BrowseLog);
+			this.tabPageTools.Controls.Add(this.LogBox);
+			this.tabPageTools.Controls.Add(this.MoviesBox);
+			this.tabPageTools.Controls.Add(this.MovieBackupsBox);
+			this.tabPageTools.Controls.Add(this.BrowseMovieBackups);
+			this.tabPageTools.Controls.Add(this.MovieBackupsDescription);
+			this.tabPageTools.Controls.Add(this.AVIBox);
+			this.tabPageTools.Controls.Add(this.AVIDescription);
+			this.tabPageTools.Controls.Add(this.BrowseAVI);
+			this.tabPageTools.Controls.Add(this.WatchBox);
+			this.tabPageTools.Controls.Add(this.BrowseLua);
+			this.tabPageTools.Controls.Add(this.WatchDescription);
+			this.tabPageTools.Controls.Add(this.LuaDescription);
+			this.tabPageTools.Controls.Add(this.BrowseWatch);
+			this.tabPageTools.Controls.Add(this.LuaBox);
+			this.tabPageTools.Controls.Add(this.BrowseMovies);
+			this.tabPageTools.Controls.Add(this.MoviesDescription);
+			this.tabPageTools.Location = new System.Drawing.Point(4, 40);
+			this.tabPageTools.Name = "tabPage7";
+			this.tabPageTools.Size = new System.Drawing.Size(566, 257);
+			this.tabPageTools.TabIndex = 6;
+			this.tabPageTools.Text = "Tools";
+			this.tabPageTools.UseVisualStyleBackColor = true;
 			// 
 			// LogDescription
 			// 
@@ -3419,30 +3419,30 @@
 			// 
 			// tabPage13
 			// 
-			this.tabPage13.Controls.Add(this.COLBaseBox);
-			this.tabPage13.Controls.Add(this.COLBiosDescription);
-			this.tabPage13.Controls.Add(this.COLBrowseBios);
-			this.tabPage13.Controls.Add(this.COLBiosBox);
-			this.tabPage13.Controls.Add(this.COLCheatsDescription);
-			this.tabPage13.Controls.Add(this.COLBrowseCheats);
-			this.tabPage13.Controls.Add(this.COLCheatsBox);
-			this.tabPage13.Controls.Add(this.COLScreenshotsBox);
-			this.tabPage13.Controls.Add(this.COLBaseDescription);
-			this.tabPage13.Controls.Add(this.COLScreenshotsDescription);
-			this.tabPage13.Controls.Add(this.BrowseCOLBase);
-			this.tabPage13.Controls.Add(this.BrowseCOLScreenshots);
-			this.tabPage13.Controls.Add(this.COLROMsBox);
-			this.tabPage13.Controls.Add(this.BrowseCOLSavestates);
-			this.tabPage13.Controls.Add(this.COLSavestatesDescription);
-			this.tabPage13.Controls.Add(this.COLROMsDescription);
-			this.tabPage13.Controls.Add(this.COLSavestatesBox);
-			this.tabPage13.Controls.Add(this.COLBrowseROMs);
-			this.tabPage13.Location = new System.Drawing.Point(4, 40);
-			this.tabPage13.Name = "tabPage13";
-			this.tabPage13.Size = new System.Drawing.Size(566, 257);
-			this.tabPage13.TabIndex = 13;
-			this.tabPage13.Text = "Col. V.";
-			this.tabPage13.UseVisualStyleBackColor = true;
+			this.tabPageColeco.Controls.Add(this.COLBaseBox);
+			this.tabPageColeco.Controls.Add(this.COLBiosDescription);
+			this.tabPageColeco.Controls.Add(this.COLBrowseBios);
+			this.tabPageColeco.Controls.Add(this.COLBiosBox);
+			this.tabPageColeco.Controls.Add(this.COLCheatsDescription);
+			this.tabPageColeco.Controls.Add(this.COLBrowseCheats);
+			this.tabPageColeco.Controls.Add(this.COLCheatsBox);
+			this.tabPageColeco.Controls.Add(this.COLScreenshotsBox);
+			this.tabPageColeco.Controls.Add(this.COLBaseDescription);
+			this.tabPageColeco.Controls.Add(this.COLScreenshotsDescription);
+			this.tabPageColeco.Controls.Add(this.BrowseCOLBase);
+			this.tabPageColeco.Controls.Add(this.BrowseCOLScreenshots);
+			this.tabPageColeco.Controls.Add(this.COLROMsBox);
+			this.tabPageColeco.Controls.Add(this.BrowseCOLSavestates);
+			this.tabPageColeco.Controls.Add(this.COLSavestatesDescription);
+			this.tabPageColeco.Controls.Add(this.COLROMsDescription);
+			this.tabPageColeco.Controls.Add(this.COLSavestatesBox);
+			this.tabPageColeco.Controls.Add(this.COLBrowseROMs);
+			this.tabPageColeco.Location = new System.Drawing.Point(4, 40);
+			this.tabPageColeco.Name = "tabPage13";
+			this.tabPageColeco.Size = new System.Drawing.Size(566, 257);
+			this.tabPageColeco.TabIndex = 13;
+			this.tabPageColeco.Text = "Col. V.";
+			this.tabPageColeco.UseVisualStyleBackColor = true;
 			// 
 			// COLBaseBox
 			// 
@@ -3650,34 +3650,34 @@
 			this.Text = "Path Configuration";
 			this.Load += new System.EventHandler(this.PathConfig_Load);
 			this.tabControl1.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
-			this.tabPage1.PerformLayout();
-			this.tabPage12.ResumeLayout(false);
-			this.tabPage12.PerformLayout();
-			this.tabPage2.ResumeLayout(false);
-			this.tabPage2.PerformLayout();
-			this.tabPage9.ResumeLayout(false);
-			this.tabPage9.PerformLayout();
-			this.tabPage8.ResumeLayout(false);
-			this.tabPage8.PerformLayout();
-			this.tabPage3.ResumeLayout(false);
-			this.tabPage3.PerformLayout();
-			this.tabPage4.ResumeLayout(false);
-			this.tabPage4.PerformLayout();
-			this.tabPage5.ResumeLayout(false);
-			this.tabPage5.PerformLayout();
-			this.tabPage6.ResumeLayout(false);
-			this.tabPage6.PerformLayout();
-			this.tabPage10.ResumeLayout(false);
-			this.tabPage10.PerformLayout();
-			this.tabPage11.ResumeLayout(false);
-			this.tabPage11.PerformLayout();
+			this.tabPageNES.ResumeLayout(false);
+			this.tabPageNES.PerformLayout();
+			this.tabPageSNES.ResumeLayout(false);
+			this.tabPageSNES.PerformLayout();
+			this.tabPageSMS.ResumeLayout(false);
+			this.tabPageSMS.PerformLayout();
+			this.tabPageSG1000.ResumeLayout(false);
+			this.tabPageSG1000.PerformLayout();
+			this.tabPageGGear.ResumeLayout(false);
+			this.tabPageGGear.PerformLayout();
+			this.tabPageGenesis.ResumeLayout(false);
+			this.tabPageGenesis.PerformLayout();
+			this.tabPagePCE.ResumeLayout(false);
+			this.tabPagePCE.PerformLayout();
+			this.tabPageGameboy.ResumeLayout(false);
+			this.tabPageGameboy.PerformLayout();
+			this.tabPageTI83.ResumeLayout(false);
+			this.tabPageTI83.PerformLayout();
+			this.tabPageAtari2600.ResumeLayout(false);
+			this.tabPageAtari2600.PerformLayout();
+			this.tabPageIntellivision.ResumeLayout(false);
+			this.tabPageIntellivision.PerformLayout();
 			this.tabPageC64.ResumeLayout(false);
 			this.tabPageC64.PerformLayout();
-			this.tabPage7.ResumeLayout(false);
-			this.tabPage7.PerformLayout();
-			this.tabPage13.ResumeLayout(false);
-			this.tabPage13.PerformLayout();
+			this.tabPageTools.ResumeLayout(false);
+			this.tabPageTools.PerformLayout();
+			this.tabPageColeco.ResumeLayout(false);
+			this.tabPageColeco.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -3724,19 +3724,19 @@
         private System.Windows.Forms.Label Sega8SavestatesDescription;
         private System.Windows.Forms.Button Sega8BrowseSavestates;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.TabPage tabPageNES;
+        private System.Windows.Forms.TabPage tabPageSMS;
+        private System.Windows.Forms.TabPage tabPageGenesis;
+        private System.Windows.Forms.TabPage tabPagePCE;
+        private System.Windows.Forms.TabPage tabPageGameboy;
+        private System.Windows.Forms.TabPage tabPageTI83;
         private System.Windows.Forms.TextBox NESBaseBox;
         private System.Windows.Forms.Label NESBaseDescription;
         private System.Windows.Forms.Button BrowseNESBase;
         private System.Windows.Forms.TextBox Sega8BaseBox;
         private System.Windows.Forms.Label Sega8BaseDescription;
         private System.Windows.Forms.Button Sega8BrowseBase;
-        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.TabPage tabPageTools;
         private System.Windows.Forms.TextBox GenesisBaseBox;
         private System.Windows.Forms.TextBox GenesisScreenshotsBox;
         private System.Windows.Forms.Button GenesisBrowseSaveRAM;
@@ -3820,7 +3820,7 @@
         private System.Windows.Forms.Button TI83BrowseBox;
         private System.Windows.Forms.TextBox TI83CheatsBox;
         private System.Windows.Forms.Button SaveButton;
-        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.TabPage tabPageGGear;
         private System.Windows.Forms.Label GGCheatsDescription;
         private System.Windows.Forms.Button GGBrowseCheats;
         private System.Windows.Forms.TextBox GGCheatsBox;
@@ -3839,7 +3839,7 @@
         private System.Windows.Forms.Button GGBrowseSaveRAM;
         private System.Windows.Forms.Label GGSaveRAMDescription;
         private System.Windows.Forms.TextBox GGSaveRAMBox;
-        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.TabPage tabPageSG1000;
         private System.Windows.Forms.Label SGCheatsDescription;
         private System.Windows.Forms.Button SGBrowseCheats;
         private System.Windows.Forms.TextBox SGCheatsBox;
@@ -3864,7 +3864,7 @@
 		private System.Windows.Forms.Label PCEBiosDescription;
 		private System.Windows.Forms.Button PCEBrowseBios;
 		private System.Windows.Forms.TextBox PCEBiosBox;
-		private System.Windows.Forms.TabPage tabPage10;
+		private System.Windows.Forms.TabPage tabPageAtari2600;
 		private System.Windows.Forms.Label AtariCheatsDescription;
 		private System.Windows.Forms.Button AtariBrowseCheats;
 		private System.Windows.Forms.TextBox AtariCheatsBox;
@@ -3883,7 +3883,7 @@
 		private System.Windows.Forms.Label AtariROMsDescription;
 		private System.Windows.Forms.TextBox AtariSaveRAMBox;
 		private System.Windows.Forms.Button AtariBrowseROMs;
-		private System.Windows.Forms.TabPage tabPage11;
+		private System.Windows.Forms.TabPage tabPageIntellivision;
 		private System.Windows.Forms.Label INTVGROMDescription;
 		private System.Windows.Forms.Button INTVBroseGROM;
 		private System.Windows.Forms.TextBox INTVGROMBox;
@@ -3914,7 +3914,7 @@
 		private System.Windows.Forms.TextBox GBPalettesBox;
 		private System.Windows.Forms.Button GBBrowsePalettes;
 		private System.Windows.Forms.Label GBPalettesDescription;
-		private System.Windows.Forms.TabPage tabPage12;
+		private System.Windows.Forms.TabPage tabPageSNES;
 		private System.Windows.Forms.Label SNESCheatsDescription;
 		private System.Windows.Forms.Button SNESBrowseCheats;
 		private System.Windows.Forms.TextBox SNESCheatsBox;
@@ -3965,7 +3965,7 @@
 		private System.Windows.Forms.Button C64BrowseFirmwares;
 		private System.Windows.Forms.TextBox C64FirmwaresBox;
 		private System.Windows.Forms.LinkLabel C64FirmwaresDescription;
-		private System.Windows.Forms.TabPage tabPage13;
+		private System.Windows.Forms.TabPage tabPageColeco;
 		private System.Windows.Forms.TextBox COLBaseBox;
 		private System.Windows.Forms.Label COLBiosDescription;
 		private System.Windows.Forms.Button COLBrowseBios;
