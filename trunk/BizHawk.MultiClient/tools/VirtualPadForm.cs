@@ -183,6 +183,17 @@ namespace BizHawk.MultiClient
 					c64k.Location = new Point(8, 19);
 					Pads.Add(c64k);
 					ControllerBox.Controls.Add(c64k);
+
+					VirtualPadA26 _ataripad1 = new VirtualPadA26();
+					_ataripad1.Location = new Point(8, 159);
+					_ataripad1.Controller = "P1";
+					VirtualPadA26 _ataripad2 = new VirtualPadA26();
+					_ataripad2.Location = new Point(188, 159);
+					_ataripad2.Controller = "P2";
+					Pads.Add(_ataripad1);
+					Pads.Add(_ataripad2);
+					ControllerBox.Controls.Add(_ataripad1);
+					ControllerBox.Controls.Add(_ataripad2);
 					break;
 			}
 		}
