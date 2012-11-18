@@ -110,6 +110,12 @@ namespace BizHawk.MultiClient
 				}
 			},
 			{
+				"Commodore 64 Controller", new Dictionary<string,string>()
+				{	
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Button", "B"}
+				}
+			},
+			{
 				"ColecoVision Basic Controller", new Dictionary<string, string>()
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"L", "l"}, {"R", "r"},
@@ -136,7 +142,7 @@ namespace BizHawk.MultiClient
 			{"Gameboy Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
 			{"SNES Controller", 4},
 			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2},
-			{"ColecoVision Basic Controller", 2}
+			{"ColecoVision Basic Controller", 2}, {"Commodore 64 Controller", 2}
 		};
 
 		/// <summary>
