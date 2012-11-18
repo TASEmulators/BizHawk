@@ -220,6 +220,12 @@
     <Compile Include="GBtools\BmpView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="GBtools\CGBColorChooserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GBtools\CGBColorChooserForm.Designer.cs">
+      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GBtools\ColorChooserForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -478,6 +484,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GBtools\CGBColorChooserForm.resx">
+      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GBtools\ColorChooserForm.resx">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>

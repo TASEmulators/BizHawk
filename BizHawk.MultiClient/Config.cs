@@ -710,6 +710,7 @@ namespace BizHawk.MultiClient
 		public bool GB_MulticartCompat = false;
 		public string GB_PaletteFile = "";
 		public bool GB_AsSGB = false;
+		public Emulation.Consoles.GB.GBColors.ColorType CGBColors = Emulation.Consoles.GB.GBColors.ColorType.gambatte;
 
 		//Commodore 64 Settings
 		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
