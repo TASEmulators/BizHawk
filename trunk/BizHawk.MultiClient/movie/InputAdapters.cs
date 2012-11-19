@@ -437,6 +437,10 @@ namespace BizHawk.MultiClient
 			{
 				return GetC64ControllersAsMnemonic();
 			}
+			else if (ControlType == "GBA Controller")
+			{
+				return "EAT AT JOE'S";
+			}
 
 			StringBuilder input = new StringBuilder("|");
 

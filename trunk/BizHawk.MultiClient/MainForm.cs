@@ -17,6 +17,7 @@ using BizHawk.MultiClient.tools;
 using System.Collections.Generic;
 using BizHawk.Emulation.Consoles.Intellivision;
 using BizHawk.Emulation.Consoles.GB;
+using BizHawk.Emulation.Consoles.Nintendo.GBA;
 using BizHawk.Emulation.Computers.Commodore64;
 
 namespace BizHawk.MultiClient
@@ -1301,6 +1302,7 @@ namespace BizHawk.MultiClient
 				case "A78": str += "Atari 7800"; break;
 				case "C64": str += "Commodore 64"; break;
 				case "Coleco": str += "ColecoVision"; break;
+				case "GBA": str += "Game Boy Advance"; break;
 			}
 
 			if (INTERIM) str += " (interim)";
@@ -1821,6 +1823,11 @@ namespace BizHawk.MultiClient
 								c64.CoreInputComm = Global.CoreInputComm;
 								c64.HardReset();
 								nextEmulator = c64;
+								break;
+							case "GBA":
+								GBA gba = new GBA();
+								gba.Load(rom.RomData);
+								nextEmulator = gba;
 								break;
 						}
 					}
