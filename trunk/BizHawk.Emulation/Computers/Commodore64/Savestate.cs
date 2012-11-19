@@ -11,23 +11,37 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void ClearSaveRam()
 		{
 		}
+
 		public void LoadStateBinary(BinaryReader br)
 		{
 		}
+
 		public void LoadStateText(TextReader reader)
 		{
+			Dictionary<string, StateParameters> state = new Dictionary<string, StateParameters>();
+
 		}
+
 		public byte[] ReadSaveRam()
 		{
 			return null;
 		}
+
+		// TODO: when disk support is finished, set this flag according to if any writes to disk were done
 		public bool SaveRamModified
 		{
-			get;
-			set;
+			get
+			{
+				return false;
+			}
+			set
+			{
+			}
 		}
+
 		public void SaveStateBinary(BinaryWriter bw)
 		{
+			
 		}
 		public void SaveStateText(TextWriter writer)
 		{ 
@@ -35,13 +49,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void StoreSaveRam(byte[] data)
 		{
 		}
-	}
-
-	public class State
-	{
-		private Dictionary<string, StateParameters> paramList = new Dictionary<string, StateParameters>();
-
-
 	}
 
 	public class StateParameters
@@ -109,10 +116,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void ImportText(Stream source)
 		{
 			StreamReader reader = new StreamReader(source);
+			string line = "";
 
-			while (!reader.EndOfStream)
+			while (!reader.EndOfStream && !(line.Contains("[") && line.Contains("]")))
 			{
-				string line = reader.ReadLine();
+				line = reader.ReadLine();
 				int equalsIndex = line.IndexOf("=");
 
 				if (equalsIndex >= 0 && equalsIndex < (line.Length - 1))

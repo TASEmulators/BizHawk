@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		private short[] sampleBuffer;
 		private int sampleBufferCapacity;
+		private int sampleBufferCount;
 		private int sampleBufferIndex;
 		private int sampleBufferReadIndex;
 		private int sampleCounter;
@@ -21,15 +22,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public short[] GetAllSamples()
 		{
-			List<short> samples = new List<short>();
-			while (sampleBufferReadIndex != sampleBufferIndex)
+			if (sampleBufferCount > 0)
 			{
-				samples.Add(sampleBuffer[sampleBufferReadIndex]);
-				sampleBufferReadIndex++;
-				if (sampleBufferReadIndex == sampleBufferCapacity)
-					sampleBufferReadIndex = 0;
+				short[] samples = new short[sampleBufferCount];
+				GetSamples(samples);
+				return samples;
 			}
-			return samples.ToArray();
+			else
+			{
+				return new short[] { };
+			}
 		}
 
 		public void GetSamples(short[] samples)
@@ -49,6 +51,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// catch buffer up
 			sampleBufferReadIndex = sampleBufferIndex;
+			sampleBufferCount = 0;
 		}
 
 		private void InitSound(int initSampleRate)
@@ -106,6 +109,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				for (int i = 0; i < 2; i++)
 				{
 					sampleBufferIndex++;
+					sampleBufferCount++;
 					if (sampleBufferIndex == sampleBufferCapacity)
 						sampleBufferIndex = 0;
 					sampleBuffer[sampleBufferIndex] = output;
