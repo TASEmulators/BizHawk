@@ -80,7 +80,7 @@
 			this.KReturn = new System.Windows.Forms.CheckBox();
 			this.KCommodore = new System.Windows.Forms.CheckBox();
 			this.KLeftShift = new System.Windows.Forms.CheckBox();
-			this.KShift = new System.Windows.Forms.CheckBox();
+			this.KRightShift = new System.Windows.Forms.CheckBox();
 			this.KSlash = new System.Windows.Forms.CheckBox();
 			this.KPeriod = new System.Windows.Forms.CheckBox();
 			this.KComma = new System.Windows.Forms.CheckBox();
@@ -108,6 +108,7 @@
 			this.KLeftArrow.TabIndex = 0;
 			this.KLeftArrow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KLeftArrow.UseVisualStyleBackColor = true;
+			this.KLeftArrow.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K1
 			// 
@@ -121,6 +122,7 @@
 			this.K1.Text = "1";
 			this.K1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K1.UseVisualStyleBackColor = true;
+			this.K1.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K2
 			// 
@@ -134,6 +136,7 @@
 			this.K2.Text = "2";
 			this.K2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K2.UseVisualStyleBackColor = true;
+			this.K2.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K4
 			// 
@@ -147,6 +150,7 @@
 			this.K4.Text = "4";
 			this.K4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K4.UseVisualStyleBackColor = true;
+			this.K4.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K3
 			// 
@@ -160,6 +164,7 @@
 			this.K3.Text = "3";
 			this.K3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K3.UseVisualStyleBackColor = true;
+			this.K3.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K8
 			// 
@@ -173,6 +178,7 @@
 			this.K8.Text = "8";
 			this.K8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K8.UseVisualStyleBackColor = true;
+			this.K8.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K7
 			// 
@@ -186,6 +192,7 @@
 			this.K7.Text = "7";
 			this.K7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K7.UseVisualStyleBackColor = true;
+			this.K7.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K6
 			// 
@@ -199,6 +206,7 @@
 			this.K6.Text = "6";
 			this.K6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K6.UseVisualStyleBackColor = true;
+			this.K6.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K5
 			// 
@@ -212,6 +220,7 @@
 			this.K5.Text = "5";
 			this.K5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K5.UseVisualStyleBackColor = true;
+			this.K5.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K9
 			// 
@@ -225,6 +234,7 @@
 			this.K9.Text = "9";
 			this.K9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K9.UseVisualStyleBackColor = true;
+			this.K9.CheckStateChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K0
 			// 
@@ -238,6 +248,7 @@
 			this.K0.Text = "0";
 			this.K0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.K0.UseVisualStyleBackColor = true;
+			this.K0.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KPlus
 			// 
@@ -251,6 +262,7 @@
 			this.KPlus.Text = "+";
 			this.KPlus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KPlus.UseVisualStyleBackColor = true;
+			this.KPlus.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KMinus
 			// 
@@ -264,6 +276,7 @@
 			this.KMinus.Text = "-";
 			this.KMinus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KMinus.UseVisualStyleBackColor = true;
+			this.KMinus.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KPound
 			// 
@@ -277,6 +290,7 @@
 			this.KPound.Text = "£";
 			this.KPound.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KPound.UseVisualStyleBackColor = true;
+			this.KPound.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KClear
 			// 
@@ -290,6 +304,7 @@
 			this.KClear.Text = "C/H";
 			this.KClear.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KClear.UseVisualStyleBackColor = true;
+			this.KClear.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KInsert
 			// 
@@ -303,6 +318,7 @@
 			this.KInsert.Text = "I/D";
 			this.KInsert.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KInsert.UseVisualStyleBackColor = true;
+			this.KInsert.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KF1
 			// 
@@ -316,6 +332,7 @@
 			this.KF1.Text = "f 1";
 			this.KF1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KF1.UseVisualStyleBackColor = true;
+			this.KF1.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KF3
 			// 
@@ -329,6 +346,7 @@
 			this.KF3.Text = "f 3";
 			this.KF3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KF3.UseVisualStyleBackColor = true;
+			this.KF3.CausesValidationChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KF7
 			// 
@@ -342,6 +360,7 @@
 			this.KF7.Text = "f 7";
 			this.KF7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KF7.UseVisualStyleBackColor = true;
+			this.KF7.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KF5
 			// 
@@ -355,6 +374,7 @@
 			this.KF5.Text = "f 5";
 			this.KF5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KF5.UseVisualStyleBackColor = true;
+			this.KF5.CausesValidationChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KCtrl
 			// 
@@ -367,6 +387,7 @@
 			this.KCtrl.Text = "CTRL";
 			this.KCtrl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KCtrl.UseVisualStyleBackColor = true;
+			this.KCtrl.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KP
 			// 
@@ -380,6 +401,7 @@
 			this.KP.Text = "P";
 			this.KP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KP.UseVisualStyleBackColor = true;
+			this.KP.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KO
 			// 
@@ -393,6 +415,7 @@
 			this.KO.Text = "O";
 			this.KO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KO.UseVisualStyleBackColor = true;
+			this.KO.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KI
 			// 
@@ -406,6 +429,7 @@
 			this.KI.Text = "I";
 			this.KI.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KI.UseVisualStyleBackColor = true;
+			this.KI.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KU
 			// 
@@ -419,6 +443,7 @@
 			this.KU.Text = "U";
 			this.KU.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KU.UseVisualStyleBackColor = true;
+			this.KU.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KY
 			// 
@@ -432,6 +457,7 @@
 			this.KY.Text = "Y";
 			this.KY.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KY.UseVisualStyleBackColor = true;
+			this.KY.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KT
 			// 
@@ -445,6 +471,7 @@
 			this.KT.Text = "T";
 			this.KT.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KT.UseVisualStyleBackColor = true;
+			this.KT.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KR
 			// 
@@ -458,6 +485,7 @@
 			this.KR.Text = "R";
 			this.KR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KR.UseVisualStyleBackColor = true;
+			this.KR.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KE
 			// 
@@ -471,6 +499,7 @@
 			this.KE.Text = "E";
 			this.KE.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KE.UseVisualStyleBackColor = true;
+			this.KE.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KW
 			// 
@@ -484,6 +513,7 @@
 			this.KW.Text = "W";
 			this.KW.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KW.UseVisualStyleBackColor = true;
+			this.KW.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KQ
 			// 
@@ -497,6 +527,7 @@
 			this.KQ.Text = "Q";
 			this.KQ.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KQ.UseVisualStyleBackColor = true;
+			this.KQ.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KAt
 			// 
@@ -509,6 +540,7 @@
 			this.KAt.Text = "@";
 			this.KAt.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KAt.UseVisualStyleBackColor = true;
+			this.KAt.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KAsterisk
 			// 
@@ -522,6 +554,7 @@
 			this.KAsterisk.Text = "*";
 			this.KAsterisk.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.KAsterisk.UseVisualStyleBackColor = true;
+			this.KAsterisk.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KUpArrow
 			// 
@@ -535,6 +568,7 @@
 			this.KUpArrow.TabIndex = 33;
 			this.KUpArrow.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.KUpArrow.UseVisualStyleBackColor = true;
+			this.KUpArrow.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KRST
 			// 
@@ -548,6 +582,7 @@
 			this.KRST.Text = "RST";
 			this.KRST.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KRST.UseVisualStyleBackColor = true;
+			this.KRST.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KRun
 			// 
@@ -561,6 +596,7 @@
 			this.KRun.Text = "R/S";
 			this.KRun.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KRun.UseVisualStyleBackColor = true;
+			this.KRun.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KLck
 			// 
@@ -574,6 +610,7 @@
 			this.KLck.Text = "Lck";
 			this.KLck.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KLck.UseVisualStyleBackColor = true;
+			this.KLck.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KK
 			// 
@@ -587,6 +624,7 @@
 			this.KK.Text = "K";
 			this.KK.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KK.UseVisualStyleBackColor = true;
+			this.KK.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KJ
 			// 
@@ -600,6 +638,7 @@
 			this.KJ.Text = "J";
 			this.KJ.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KJ.UseVisualStyleBackColor = true;
+			this.KJ.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KH
 			// 
@@ -613,6 +652,7 @@
 			this.KH.Text = "H";
 			this.KH.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KH.UseVisualStyleBackColor = true;
+			this.KH.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KG
 			// 
@@ -626,6 +666,7 @@
 			this.KG.Text = "G";
 			this.KG.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KG.UseVisualStyleBackColor = true;
+			this.KG.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KF
 			// 
@@ -639,6 +680,7 @@
 			this.KF.Text = "F";
 			this.KF.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KF.UseVisualStyleBackColor = true;
+			this.KF.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KD
 			// 
@@ -652,6 +694,7 @@
 			this.KD.Text = "D";
 			this.KD.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KD.UseVisualStyleBackColor = true;
+			this.KD.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KS
 			// 
@@ -665,6 +708,7 @@
 			this.KS.Text = "S";
 			this.KS.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KS.UseVisualStyleBackColor = true;
+			this.KS.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KA
 			// 
@@ -678,6 +722,7 @@
 			this.KA.Text = "A";
 			this.KA.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KA.UseVisualStyleBackColor = true;
+			this.KA.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KL
 			// 
@@ -691,6 +736,7 @@
 			this.KL.Text = "L";
 			this.KL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KL.UseVisualStyleBackColor = true;
+			this.KL.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KColon
 			// 
@@ -704,6 +750,7 @@
 			this.KColon.Text = ":";
 			this.KColon.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KColon.UseVisualStyleBackColor = true;
+			this.KColon.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KSemicolon
 			// 
@@ -717,6 +764,7 @@
 			this.KSemicolon.Text = ";";
 			this.KSemicolon.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KSemicolon.UseVisualStyleBackColor = true;
+			this.KSemicolon.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KEquals
 			// 
@@ -730,6 +778,7 @@
 			this.KEquals.Text = "=";
 			this.KEquals.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KEquals.UseVisualStyleBackColor = true;
+			this.KEquals.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KReturn
 			// 
@@ -743,6 +792,7 @@
 			this.KReturn.Text = "Return";
 			this.KReturn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KReturn.UseVisualStyleBackColor = true;
+			this.KReturn.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KCommodore
 			// 
@@ -756,6 +806,7 @@
 			this.KCommodore.Text = "O";
 			this.KCommodore.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KCommodore.UseVisualStyleBackColor = true;
+			this.KCommodore.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KLeftShift
 			// 
@@ -769,19 +820,21 @@
 			this.KLeftShift.Text = "Shift";
 			this.KLeftShift.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KLeftShift.UseVisualStyleBackColor = true;
+			this.KLeftShift.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
-			// KShift
+			// KRightShift
 			// 
-			this.KShift.Appearance = System.Windows.Forms.Appearance.Button;
-			this.KShift.AutoSize = true;
-			this.KShift.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KShift.Location = new System.Drawing.Point(283, 84);
-			this.KShift.Name = "KShift";
-			this.KShift.Size = new System.Drawing.Size(38, 23);
-			this.KShift.TabIndex = 52;
-			this.KShift.Text = "Shift";
-			this.KShift.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.KShift.UseVisualStyleBackColor = true;
+			this.KRightShift.Appearance = System.Windows.Forms.Appearance.Button;
+			this.KRightShift.AutoSize = true;
+			this.KRightShift.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KRightShift.Location = new System.Drawing.Point(283, 84);
+			this.KRightShift.Name = "KRightShift";
+			this.KRightShift.Size = new System.Drawing.Size(38, 23);
+			this.KRightShift.TabIndex = 52;
+			this.KRightShift.Text = "Shift";
+			this.KRightShift.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.KRightShift.UseVisualStyleBackColor = true;
+			this.KRightShift.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KSlash
 			// 
@@ -795,6 +848,7 @@
 			this.KSlash.Text = "/";
 			this.KSlash.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KSlash.UseVisualStyleBackColor = true;
+			this.KSlash.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KPeriod
 			// 
@@ -808,6 +862,7 @@
 			this.KPeriod.Text = ".";
 			this.KPeriod.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KPeriod.UseVisualStyleBackColor = true;
+			this.KPeriod.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KComma
 			// 
@@ -821,6 +876,7 @@
 			this.KComma.Text = ",";
 			this.KComma.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KComma.UseVisualStyleBackColor = true;
+			this.KComma.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KM
 			// 
@@ -834,6 +890,7 @@
 			this.KM.Text = "M";
 			this.KM.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KM.UseVisualStyleBackColor = true;
+			this.KM.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KN
 			// 
@@ -847,6 +904,7 @@
 			this.KN.Text = "N";
 			this.KN.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KN.UseVisualStyleBackColor = true;
+			this.KN.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KB
 			// 
@@ -860,6 +918,7 @@
 			this.KB.Text = "B";
 			this.KB.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KB.UseVisualStyleBackColor = true;
+			this.KB.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KV
 			// 
@@ -873,6 +932,7 @@
 			this.KV.Text = "V";
 			this.KV.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KV.UseVisualStyleBackColor = true;
+			this.KV.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KC
 			// 
@@ -886,6 +946,7 @@
 			this.KC.Text = "C";
 			this.KC.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KC.UseVisualStyleBackColor = true;
+			this.KC.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KX
 			// 
@@ -899,6 +960,7 @@
 			this.KX.Text = "X";
 			this.KX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KX.UseVisualStyleBackColor = true;
+			this.KX.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KZ
 			// 
@@ -912,6 +974,7 @@
 			this.KZ.Text = "Z";
 			this.KZ.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KZ.UseVisualStyleBackColor = true;
+			this.KZ.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KCursorUp
 			// 
@@ -925,6 +988,7 @@
 			this.KCursorUp.Text = "Crsr";
 			this.KCursorUp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KCursorUp.UseVisualStyleBackColor = true;
+			this.KCursorUp.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KCursorLeft
 			// 
@@ -938,6 +1002,7 @@
 			this.KCursorLeft.Text = "Crsr";
 			this.KCursorLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KCursorLeft.UseVisualStyleBackColor = true;
+			this.KCursorLeft.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KSpace
 			// 
@@ -951,6 +1016,7 @@
 			this.KSpace.Text = "           Space           ";
 			this.KSpace.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KSpace.UseVisualStyleBackColor = true;
+			this.KSpace.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// VirtualPadC64Keyboard
 			// 
@@ -969,7 +1035,7 @@
 			this.Controls.Add(this.KC);
 			this.Controls.Add(this.KX);
 			this.Controls.Add(this.KZ);
-			this.Controls.Add(this.KShift);
+			this.Controls.Add(this.KRightShift);
 			this.Controls.Add(this.KLeftShift);
 			this.Controls.Add(this.KCommodore);
 			this.Controls.Add(this.KReturn);
@@ -1084,7 +1150,7 @@
 		private System.Windows.Forms.CheckBox KReturn;
 		private System.Windows.Forms.CheckBox KCommodore;
 		private System.Windows.Forms.CheckBox KLeftShift;
-		private System.Windows.Forms.CheckBox KShift;
+		private System.Windows.Forms.CheckBox KRightShift;
 		private System.Windows.Forms.CheckBox KSlash;
 		private System.Windows.Forms.CheckBox KPeriod;
 		private System.Windows.Forms.CheckBox KComma;
