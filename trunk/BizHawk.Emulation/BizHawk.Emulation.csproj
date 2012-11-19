@@ -100,6 +100,7 @@
     <Compile Include="Computers\Commodore64\SidSoundProvider.cs" />
     <Compile Include="Computers\Commodore64\SidWaveformCalculator.cs" />
     <Compile Include="Computers\Commodore64\SidWaveformGenerator.cs" />
+    <Compile Include="Computers\Commodore64\Timing.cs" />
     <Compile Include="Computers\Commodore64\Via.cs" />
     <Compile Include="Computers\Commodore64\VicIINew.cs" />
     <Compile Include="Computers\Commodore64\VicIINewPipeline.cs" />

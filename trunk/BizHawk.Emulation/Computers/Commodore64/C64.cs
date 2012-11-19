@@ -91,11 +91,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			_frame++;
-			_islag = true;
-
 			int cyclesPerFrame = vic.CyclesPerFrame;
+			
+			// bizhawk interface setup
+			_frame++;
+			mem.inputWasRead = false;
 
+			// apply any media if needed
 			foreach (IMedia media in mediaAttached)
 			{
 				if (!media.Loaded() && media.Ready())
@@ -104,8 +106,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 
+			// refresh the input values
 			PollInput();
 
+			// perform the cycle
 			for (int i = 0; i < cyclesPerFrame; i++)
 			{
 				vic.PerformCycle();
@@ -123,6 +127,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					cpu.ExecuteOne();
 				}
 			}
+
+			_islag = !mem.inputWasRead;
 
 			if (_islag)
 			{
