@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="lut">uint32[32768], input color (r,g,b) is at lut[r | g << 5 | b << 10]</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setcgbpalette(IntPtr core, IntPtr lut);
+		public static extern void gambatte_setcgbpalette(IntPtr core, int[] lut);
 
 		/// <summary>
 		/// combination of button flags used by the input callback
