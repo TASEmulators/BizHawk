@@ -1159,6 +1159,7 @@ namespace BizHawk.MultiClient
 		public string Up_Arrow;
 
 		public string Run_Stop;
+		public string Lck;
 		public string A;
 		public string S;
 		public string D;
