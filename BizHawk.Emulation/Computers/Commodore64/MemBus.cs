@@ -62,6 +62,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// registers
 		public byte busData;
+		public bool inputWasRead;
 		public bool readTrigger = true;
 		public bool writeTrigger = true;
 
@@ -364,6 +365,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = ReadColorRam(addr);
 						break;
 					case MemoryDesignation.Cia0:
+						if ((addr & 0xF) < 0x02)
+							inputWasRead = true;
 						result = cia0.Read(addr);
 						break;
 					case MemoryDesignation.Cia1:
