@@ -37,16 +37,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private IList<MemoryDomain> memoryDomains;
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
 
-		// save state/ram
-		public void ClearSaveRam() { }
-		public void LoadStateBinary(BinaryReader br) { }
-		public void LoadStateText(TextReader reader) { }
-		public byte[] ReadSaveRam() { return null; }
-		public bool SaveRamModified { get; set; }
-		public void SaveStateBinary(BinaryWriter bw) { }
-		public void SaveStateText(TextWriter writer) { }
-		public void StoreSaveRam(byte[] data) { }
-
 		// running state
 		public bool DeterministicEmulation { get { return true; } set { ; } }
 		public int Frame { get { return _frame; } set { _frame = value; } }

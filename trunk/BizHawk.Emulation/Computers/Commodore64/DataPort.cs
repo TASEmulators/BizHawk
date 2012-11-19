@@ -138,6 +138,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ClearHooks();
 		}
 
+		public void LoadState(byte direction0, byte direction1, byte latch0, byte latch1)
+		{
+			direction[0] = direction0;
+			direction[1] = direction1;
+			latch[0] = latch0;
+			latch[1] = latch1;
+		}
+
 		protected virtual byte ReadData0()
 		{
 			byte result;

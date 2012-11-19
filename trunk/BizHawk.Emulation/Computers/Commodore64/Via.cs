@@ -201,7 +201,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						break;
 				}
 			}
-
 		}
 
 		public void Connect(DataPortConnector connector, int index)
