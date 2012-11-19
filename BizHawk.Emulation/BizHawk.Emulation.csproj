@@ -216,6 +216,8 @@
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />

@@ -164,6 +164,10 @@ namespace BizHawk
 				case ".CRT":
 					Game.System = "C64";
 					break;
+
+				case ".GBA":
+					Game.System = "GBA";
+					break;
 			}
 
 			Game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');
