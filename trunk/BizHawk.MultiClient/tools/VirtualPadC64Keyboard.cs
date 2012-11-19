@@ -616,7 +616,26 @@ namespace BizHawk.MultiClient
 			if (buttons[42] == '.') KJ.Checked = false; else KJ.Checked = true;
 			if (buttons[43] == '.') KK.Checked = false; else KK.Checked = true;
 			if (buttons[44] == '.') KL.Checked = false; else KL.Checked = true;
-
+			if (buttons[45] == '.') KColon.Checked = false; else KColon.Checked = true;
+			if (buttons[46] == '.') KSemicolon.Checked = false; else KSemicolon.Checked = true;
+			if (buttons[47] == '.') KEquals.Checked = false; else KEquals.Checked = true;
+			if (buttons[48] == '.') KReturn.Checked = false; else KReturn.Checked = true;
+			if (buttons[49] == '.') KCommodore.Checked = false; else KCommodore.Checked = true;
+			if (buttons[50] == '.') KLeftShift.Checked = false; else KLeftShift.Checked = true;
+			if (buttons[51] == '.') KZ.Checked = false; else KZ.Checked = true;
+			if (buttons[52] == '.') KX.Checked = false; else KX.Checked = true;
+			if (buttons[53] == '.') KC.Checked = false; else KC.Checked = true;
+			if (buttons[54] == '.') KV.Checked = false; else KV.Checked = true;
+			if (buttons[55] == '.') KB.Checked = false; else KB.Checked = true;
+			if (buttons[56] == '.') KN.Checked = false; else KN.Checked = true;
+			if (buttons[57] == '.') KM.Checked = false; else KM.Checked = true;
+			if (buttons[58] == '.') KComma.Checked = false; else KComma.Checked = true;
+			if (buttons[59] == '.') KPeriod.Checked = false; else KPeriod.Checked = true;
+			if (buttons[60] == '.') KSlash.Checked = false; else KSlash.Checked = true;
+			if (buttons[61] == '.') KRightShift.Checked = false; else KRightShift.Checked = true;
+			if (buttons[62] == '.') KCursorUp.Checked = false; else KCursorUp.Checked = true;
+			if (buttons[63] == '.') KCursorLeft.Checked = false; else KCursorLeft.Checked = true;
+			if (buttons[64] == '.') KSpace.Checked = false; else KSpace.Checked = true;
 		}
 	}
 }
