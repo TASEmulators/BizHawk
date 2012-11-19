@@ -454,6 +454,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineIRQ0,
 							PipelineFetchSprite3P,
+							PipelineBadlineDelay,
 							PipelineRender
 						},
 						new Action[]
@@ -461,6 +462,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineIRQ1,
 							PipelineFetchSprite3S,
+							PipelineBadlineDelay,
 							PipelineRender
 						},
 						new Action[]

@@ -35,10 +35,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public VicIINew vic;
 		public ChipSignals signal;
 
-		// sid stuff
-		//private Emulation.Sound.Utilities.DCFilter sidDCFilter;
-		//private SidSyncSoundProvider syncSid;
-
 		public bool DriveLED
 		{
 			get
