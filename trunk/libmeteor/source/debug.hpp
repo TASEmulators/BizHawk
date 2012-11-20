@@ -25,6 +25,10 @@
 // for abort macro
 #include "ameteor.hpp"
 
+// from cinterface.cpp
+void print_bizhawk(const char *msg);
+void print_bizhawk(std::string &msg);
+
 #if 0
 #define met_abort(str) \
 	{ \
@@ -38,7 +42,7 @@
 #endif
 #ifdef METDEBUG
 #include <sstream>
-extern "C" int __stdcall MessageBoxA(int, const char *, const char *, int);
+//extern "C" int __stdcall MessageBoxA(int, const char *, const char *, int);
 #define met_abort(_str) if(true)\
 	{ \
 		std::stringstream _zisrny; \
@@ -47,7 +51,7 @@ extern "C" int __stdcall MessageBoxA(int, const char *, const char *, int);
 		<< IOS_ADD << ::AMeteor::_cpu.Reg(15) << "\n[r15] = " << IOS_ADD \
 		<< ::AMeteor::_memory.Read32(::AMeteor::_cpu.Reg(15)) \
 		<< "\nFlag T : " << ::AMeteor::_cpu.ICpsr().thumb << std::endl; \
-		MessageBoxA(NULL, _zisrny.str().c_str(), "FUCK!", 0); \
+		print_bizhawk(_zisrny.str().c_str()); \
 	}
 
 #else
@@ -60,13 +64,18 @@ extern "C" int __stdcall MessageBoxA(int, const char *, const char *, int);
 #if defined METDEBUG && defined METDEBUGLOG
 //XXX
 #	define MYDEBUG
-#	define debug(str) \
-		STDBG << str << std::endl
-#	define debug_(str) \
-		STDBG << str
+#	define debug(_str) \
+	{ \
+		std::stringstream _zisrny; \
+		_zisrny << _str << std::endl; \
+		print_bizhawk(_zisrny.str()); \
+	}
+		//STDBG << str << std::endl
+//#	define debug_(str) \
+//		STDBG << str
 #else
 #	define debug(s) {}
-#	define debug_(s) {}
+//#	define debug_(s) {}
 #endif
 
 #define IOS_ADD \
