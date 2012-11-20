@@ -362,7 +362,22 @@ namespace BizHawk.MultiClient
 					return "|..................|..................|";
 				case "C64":
 					return "|.....|.....|..................................................................|";
+				case "GBA":
+					return "|.|..........|";
 			}
+		}
+
+		private string GetGBAControllersAsMnemonic()
+		{
+			StringBuilder input = new StringBuilder("|");
+			// there's no power button for now
+			input.Append(".|");
+			foreach (string button in Global.BUTTONS[ControlType].Keys)
+			{
+				input.Append(IsBasePressed(button) ? Global.BUTTONS[ControlType][button] : ".");
+			}
+			input.Append("|");
+			return input.ToString();
 		}
 
 		//adelikat: I"m going to do all controllers like this, so what if it is redundant! It is better than reducing lines of code with convoluted logic that is difficult to expand to support new platforms
@@ -439,7 +454,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (ControlType == "GBA Controller")
 			{
-				return "EAT AT JOE'S";
+				return GetGBAControllersAsMnemonic();
 			}
 
 			StringBuilder input = new StringBuilder("|");
