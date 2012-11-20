@@ -559,16 +559,47 @@ namespace BizHawk
 
 		public static uint[] ByteBufferToUintBuffer(byte[] buf)
 		{
-			int num = buf.Length / 2;
+			int num = buf.Length / 4;
 			uint[] ret = new uint[num];
 			for (int i = 0; i < num; i++)
 			{
-				ret[i] = (uint)(buf[i * 2] | (buf[i * 4 + 1] << 8) | (buf[i * 4 + 2] << 16) | (buf[i * 4 + 3] << 24));
+				ret[i] = (uint)(buf[i * 4] | (buf[i * 4 + 1] << 8) | (buf[i * 4 + 2] << 16) | (buf[i * 4 + 3] << 24));
 			}
 			return ret;
 		}
 
 		public static byte[] UintBufferToByteBuffer(uint[] buf)
+		{
+			int num = buf.Length;
+			byte[] ret = new byte[num * 4];
+			for (int i = 0; i < num; i++)
+			{
+				ret[i * 4 + 0] = (byte)(buf[i] & 0xFF);
+				ret[i * 4 + 1] = (byte)((buf[i] >> 8) & 0xFF);
+				ret[i * 4 + 2] = (byte)((buf[i] >> 16) & 0xFF);
+				ret[i * 4 + 3] = (byte)((buf[i] >> 24) & 0xFF);
+			}
+			return ret;
+		}
+
+		public static uint[] ByteBufferToIntBuffer(byte[] buf)
+		{
+			int num = buf.Length / 4;
+			uint[] ret = new uint[num];
+			for (int i = 0; i < num; i++)
+			{
+				ret[i] = buf[(i * 4) + 3];
+				ret[i] <<= 8;
+				ret[i] |= buf[(i * 4) + 2];
+				ret[i] <<= 8;
+				ret[i] |= buf[(i * 4) + 1];
+				ret[i] <<= 8;
+				ret[i] |= buf[(i * 4)];
+			}
+			return ret;
+		}
+
+		public static byte[] IntBufferToByteBuffer(int[] buf)
 		{
 			int num = buf.Length;
 			byte[] ret = new byte[num * 4];
@@ -838,6 +869,33 @@ namespace BizHawk
 				short[] temp = val;
 				if (temp == null) temp = new short[0];
 				tw.WriteLine("{0} {1}", name, Util.BytesToHexString(Util.ShortBufferToByteBuffer(temp)));
+			}
+		}
+
+		public void Sync(string name, ref int[] val, bool use_null)
+		{
+			if (IsText) SyncText(name, ref val, use_null);
+			else if (IsReader)
+			{
+				val = Util.ByteBufferToIntBuffer(Util.ReadByteBuffer(br, false));
+				if (val == null && !use_null) val = new uint[0];
+			}
+			else Util.WriteByteBuffer(bw, Util.IntBufferToByteBuffer(val));
+		}
+		public void SyncText(string name, ref int[] val, bool use_null)
+		{
+			if (IsReader)
+			{
+				string[] parts = tr.ReadLine().Split(' ');
+				byte[] bytes = Util.HexStringToBytes(parts[1]);
+				val = Util.ByteBufferToIntBuffer(bytes);
+				if (val.Length == 0 && use_null) val = null;
+			}
+			else
+			{
+				int[] temp = val;
+				if (temp == null) temp = new int[0];
+				tw.WriteLine("{0} {1}", name, Util.BytesToHexString(Util.IntBufferToByteBuffer(temp)));
 			}
 		}
 
