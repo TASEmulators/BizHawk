@@ -582,10 +582,10 @@ namespace BizHawk
 			return ret;
 		}
 
-		public static uint[] ByteBufferToIntBuffer(byte[] buf)
+		public static int[] ByteBufferToIntBuffer(byte[] buf)
 		{
 			int num = buf.Length / 4;
-			uint[] ret = new uint[num];
+			int[] ret = new int[num];
 			for (int i = 0; i < num; i++)
 			{
 				ret[i] = buf[(i * 4) + 3];
@@ -878,7 +878,7 @@ namespace BizHawk
 			else if (IsReader)
 			{
 				val = Util.ByteBufferToIntBuffer(Util.ReadByteBuffer(br, false));
-				if (val == null && !use_null) val = new uint[0];
+				if (val == null && !use_null) val = new int[0];
 			}
 			else Util.WriteByteBuffer(bw, Util.IntBufferToByteBuffer(val));
 		}
