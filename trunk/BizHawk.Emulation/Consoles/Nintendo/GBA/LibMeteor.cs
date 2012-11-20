@@ -111,5 +111,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libmeteor_setkeycallback(InputCallback callback);
 
+		/// <summary>
+		/// parameter to libmeteor_getmemoryarea
+		/// </summary>
+		public enum MemoryArea : int
+		{
+			bios = 0,
+			ewram = 1,
+			iwram = 2,
+			palram = 3,
+			vram = 4,
+			oam = 5,
+			rom = 6
+		}
+
+		/// <summary>
+		/// return a pointer to a memory area
+		/// </summary>
+		/// <param name="which"></param>
+		/// <returns>IntPtr.Zero if which is unrecognized</returns>
+		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr libmeteor_getmemoryarea(MemoryArea which);
 	}
 }

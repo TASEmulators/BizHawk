@@ -130,5 +130,10 @@ EXPORT void libmeteor_loadbios(const void *data, unsigned size)
 	AMeteor::_memory.LoadBios((const uint8_t*)data, size);
 }
 
-// TODO: memory domains
+EXPORT uint8_t *libmeteor_getmemoryarea(int which)
+{
+	return AMeteor::_memory.GetMemoryArea(which);
+}
+
+// TODO: cartram and system bus memory domains
 

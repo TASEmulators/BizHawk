@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			LibMeteor.libmeteor_reset();
 			LibMeteor.libmeteor_loadbios(bios, (uint)bios.Length);
 			LibMeteor.libmeteor_loadrom(rom, (uint)rom.Length);
+
+			SetUpMemoryDomains();
 		}
 
 		public void FrameAdvance(bool render, bool rendersound = true)
@@ -110,15 +112,62 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		public CoreOutputComm CoreOutputComm { get { return _CoreOutputComm; } }
 
-		public IList<MemoryDomain> MemoryDomains
-		{
-			get { return null; }
-		}
+		#region memorydomains
 
+		List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
+		public IList<MemoryDomain> MemoryDomains { get { return _MemoryDomains; } }
 		public MemoryDomain MainMemory
 		{
-			get { return null; }
+			// some core tools assume MainMemory == MemoryDomains[0], so do that anyway
+			get { return MemoryDomains[0]; }
 		}
+
+		void AddMemoryDomain(LibMeteor.MemoryArea which, int size, string name)
+		{
+			IntPtr data = LibMeteor.libmeteor_getmemoryarea(which);
+			if (data == IntPtr.Zero)
+				throw new Exception("libmeteor_getmemoryarea() returned NULL??");
+
+			MemoryDomain md = new MemoryDomain(name, size, Endian.Little,
+				delegate(int addr)
+				{
+					unsafe
+					{
+						byte* d = (byte*)data;
+						if (addr < 0 || addr >= size)
+							throw new IndexOutOfRangeException();
+						return d[addr];
+					}
+				},
+				delegate(int addr, byte val)
+				{
+					unsafe
+					{
+						byte* d = (byte*)data;
+						if (addr < 0 || addr >= size)
+							throw new IndexOutOfRangeException();
+						d[addr] = val;
+					}
+				});
+			_MemoryDomains.Add(md);
+		}
+
+		void SetUpMemoryDomains()
+		{
+			_MemoryDomains.Clear();
+			// this must be first to coincide with "main memory"
+			// note that ewram could also be considered main memory depending on which hairs you split
+			AddMemoryDomain(LibMeteor.MemoryArea.iwram, 32 * 1024, "IWRAM");
+			AddMemoryDomain(LibMeteor.MemoryArea.ewram, 256 * 1024, "EWRAM");
+			AddMemoryDomain(LibMeteor.MemoryArea.bios, 16 * 1024, "BIOS");
+			AddMemoryDomain(LibMeteor.MemoryArea.palram, 1024, "PALRAM");
+			AddMemoryDomain(LibMeteor.MemoryArea.vram, 96 * 1024, "VRAM");
+			AddMemoryDomain(LibMeteor.MemoryArea.oam, 1024, "OAM");
+			// even if the rom is less than 32MB, the whole is still valid in meteor
+			AddMemoryDomain(LibMeteor.MemoryArea.rom, 32 * 1024 * 1024, "ROM");
+		}
+
+		#endregion
 
 		/// <summary>like libsnes, the library is single-instance</summary>
 		static GBA attachedcore;
@@ -191,6 +240,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 				inputcallback = null;
 				LibMeteor.libmeteor_setmessagecallback(messagecallback);
 				LibMeteor.libmeteor_setkeycallback(inputcallback);
+				_MemoryDomains.Clear();
 			}
 		}
 
