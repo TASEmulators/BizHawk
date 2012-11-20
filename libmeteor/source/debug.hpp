@@ -28,6 +28,7 @@
 // from cinterface.cpp
 void print_bizhawk(const char *msg);
 void print_bizhawk(std::string &msg);
+void keyupdate_bizhawk();
 
 #if 0
 #define met_abort(str) \
