@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public DataPortBus[] ports;
 
-		private DataPortConnector[] connectors;
+		public DataPortConnector[] connectors;
 
 		public CiaRegs()
 		{
@@ -243,18 +243,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			this[0x0B] = 0x01;
 
-			connectors[0].Data = 0xFF;
-			connectors[1].Data = 0xFF;
+			connectors[0].Latch = 0xFF;
+			connectors[1].Latch = 0xFF;
 			connectors[0].Direction = 0xFF;
 			connectors[1].Direction = 0xFF;
 		}
 	}
 
-	public class Cia
+	public partial class Cia
 	{
 		public int intMask;
 		public bool lastCNT;
-		public byte[] outputBitMask;
+		public byte[] outputBitMask = new byte[] { 0x40, 0x80 };
 		private CiaRegs regs = new CiaRegs();
 		public int todCounter;
 		public int todFrequency;
@@ -360,7 +360,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void HardReset()
 		{
-			outputBitMask = new byte[] { 0x40, 0x80 };
 			regs.HardReset();
 			underflow = new bool[2];
 			todCounter = todFrequency;
