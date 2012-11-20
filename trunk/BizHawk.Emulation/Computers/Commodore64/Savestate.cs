@@ -149,6 +149,26 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			val = this[key] != 0;
 		}
 
+		public void Load(string key, out byte[] val, int length)
+		{
+			byte[] result = new byte[length];
+			for (int i = 0; i < length; i++)
+			{
+				result[i] = (byte)(this[key + i.ToString()] & 0xFF);
+			}
+			val = result;
+		}
+
+		public void Load(string key, out int[] val, int length)
+		{
+			int[] result = new int[length];
+			for (int i = 0; i < length; i++)
+			{
+				result[i] = (int)(this[key + i.ToString()] & 0xFF);
+			}
+			val = result;
+		}
+
 		public void Save(string key, byte val)
 		{
 			this[key] = (int)val;
@@ -162,6 +182,22 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void Save(string key, bool val)
 		{
 			this[key] = val ? 1 : 0;
+		}
+
+		public void Save(string key, byte[] val, int length)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				this[key + i.ToString()] = val[i];
+			}
+		}
+
+		public void Save(string key, int[] val, int length)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				this[key + i.ToString()] = (int)val[i];
+			}
 		}
 	}
 }
