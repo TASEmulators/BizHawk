@@ -4,9 +4,9 @@
 
 #define EXPORT extern "C" __declspec(dllexport)
 
-void (*messagecallback)(const char *msg) = NULL;
+void (*messagecallback)(const char *msg, int abort) = NULL;
 
-EXPORT void libmeteor_setmessagecallback(void (*callback)(const char *msg))
+EXPORT void libmeteor_setmessagecallback(void (*callback)(const char *msg, int abort))
 {
 	messagecallback = callback;
 	print_bizhawk("libmeteor message stream operational.");
@@ -15,12 +15,17 @@ EXPORT void libmeteor_setmessagecallback(void (*callback)(const char *msg))
 void print_bizhawk(const char *msg)
 {
 	if (messagecallback)
-		messagecallback(msg);
+		messagecallback(msg, 0);
 }
 void print_bizhawk(std::string &msg)
 {
 	if (messagecallback)
-		messagecallback(msg.c_str());
+		messagecallback(msg.c_str(), 0);
+}
+void abort_bizhawk(const char *msg)
+{
+	if (messagecallback)
+		messagecallback(msg, 1);
 }
 
 uint16_t (*keycallback)() = NULL;
