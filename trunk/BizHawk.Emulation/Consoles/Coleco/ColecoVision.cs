@@ -41,8 +41,31 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 			LoadRom(rom);
 			this.game = game;
-
+			SetupMemoryDomains();
 			Reset();
+		}
+
+		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		IList<MemoryDomain> memoryDomains;
+		const ushort RamSizeMask = 0x03FF;
+		void SetupMemoryDomains()
+		{
+			var domains = new List<MemoryDomain>(3);
+			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, Endian.Little,
+				addr => Ram[addr & RamSizeMask],
+				(addr, value) => Ram[addr & RamSizeMask] = value);
+			var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, Endian.Little,
+				addr => VDP.VRAM[addr & 0x3FFF],
+				(addr, value) => VDP.VRAM[addr & 0x3FFF] = value);
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, Endian.Little,
+				addr => Cpu.ReadMemory((ushort)addr),
+				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
+
+			domains.Add(MainMemoryDomain);
+			domains.Add(VRamDomain);
+			domains.Add(SystemBusDomain);
+			memoryDomains = domains.AsReadOnly();
 		}
 
 		public void FrameAdvance(bool render, bool renderSound)
@@ -159,8 +182,5 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public ISyncSoundProvider SyncSoundProvider { get { return null; } }
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
-
-		public IList<MemoryDomain> MemoryDomains { get { return null; } }
-		public MemoryDomain MainMemory { get { return null; } }
 	}
 }

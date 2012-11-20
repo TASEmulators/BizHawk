@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 {
     public sealed class TMS9918A : IVideoProvider
     {
-        byte[] VRAM = new byte[0x4000];
+        public byte[] VRAM = new byte[0x4000];
         byte[] Registers = new byte[8];
         byte StatusByte;
 
