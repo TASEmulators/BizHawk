@@ -86,6 +86,7 @@
     <Compile Include="Computers\Commodore64\Cartridge.cs" />
     <Compile Include="Computers\Commodore64\CartridgeMappers.cs" />
     <Compile Include="Computers\Commodore64\Cia.cs" />
+    <Compile Include="Computers\Commodore64\CiaState.cs" />
     <Compile Include="Computers\Commodore64\D64.cs" />
     <Compile Include="Computers\Commodore64\DataPort.cs" />
     <Compile Include="Computers\Commodore64\Disk.cs" />

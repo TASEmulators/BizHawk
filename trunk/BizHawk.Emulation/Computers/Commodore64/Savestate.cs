@@ -18,8 +18,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void LoadStateText(TextReader reader)
 		{
-			Dictionary<string, StateParameters> state = new Dictionary<string, StateParameters>();
-
 		}
 
 		public byte[] ReadSaveRam()
@@ -41,7 +39,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			
+			Dictionary<string, StateParameters> state = new Dictionary<string, StateParameters>();
 		}
 		public void SaveStateText(TextWriter writer)
 		{ 
@@ -134,6 +132,36 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					}
 				}
 			}
+		}
+
+		public void Load(string key, out byte val)
+		{
+			val = (byte)(this[key] & 0xFF);
+		}
+
+		public void Load(string key, out int val)
+		{
+			val = this[key];
+		}
+
+		public void Load(string key, out bool val)
+		{
+			val = this[key] != 0;
+		}
+
+		public void Save(string key, byte val)
+		{
+			this[key] = (int)val;
+		}
+
+		public void Save(string key, int val)
+		{
+			this[key] = val;
+		}
+
+		public void Save(string key, bool val)
+		{
+			this[key] = val ? 1 : 0;
 		}
 	}
 }

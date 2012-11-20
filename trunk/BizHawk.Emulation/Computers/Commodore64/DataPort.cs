@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			outputConverters[0] = new DataPortConverter();
 			outputConverters[1] = new DataPortConverter();
 			connectors = new DataPortConnector[2];
-			connectors[0] = new DataPortConnector(ReadData0, ReadDirection0, ReadLatch0, ReadRemoteLatch0, WriteData0, WriteDirection0);
-			connectors[1] = new DataPortConnector(ReadData1, ReadDirection1, ReadLatch1, ReadRemoteLatch1, WriteData1, WriteDirection1);
+			connectors[0] = new DataPortConnector(ReadData0, ReadDirection0, ReadLatch0, ReadRemoteLatch0, WriteData0, WriteDirection0, WriteLatch0);
+			connectors[1] = new DataPortConnector(ReadData1, ReadDirection1, ReadLatch1, ReadRemoteLatch1, WriteData1, WriteDirection1, WriteLatch1);
 			connected[0] = false;
 			connected[1] = false;
 			direction[0] = 0x00;
@@ -138,14 +138,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ClearHooks();
 		}
 
-		public void LoadState(byte direction0, byte direction1, byte latch0, byte latch1)
-		{
-			direction[0] = direction0;
-			direction[1] = direction1;
-			latch[0] = latch0;
-			latch[1] = latch1;
-		}
-
 		protected virtual byte ReadData0()
 		{
 			byte result;
@@ -225,6 +217,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			direction[1] = val;
 			ExecuteWriteHooks();
 		}
+
+		protected virtual void WriteLatch0(byte val)
+		{
+			latch[0] = val;
+		}
+
+		protected virtual void WriteLatch1(byte val)
+		{
+			latch[1] = val;
+		}
 	}
 
 	public class DataPortConnector
@@ -235,6 +237,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private Func<byte> ReadRemoteLatch;
 		private Action<byte> WriteData;
 		private Action<byte> WriteDirection;
+		private Action<byte> WriteLatch;
 
 		public DataPortConnector()
 		{
@@ -244,6 +247,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ReadRemoteLatch = ReadDataDummy;
 			WriteData = WriteDataDummy;
 			WriteDirection = WriteDataDummy;
+			WriteLatch = WriteDataDummy;
 		}
 
 		public DataPortConnector(DataPortConnector source)
@@ -254,9 +258,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ReadRemoteLatch = source.ReadRemoteLatch;
 			WriteData = source.WriteData;
 			WriteDirection = source.WriteDirection;
+			WriteLatch = source.WriteLatch;
 		}
 
-		public DataPortConnector(Func<byte> newReadData, Func<byte> newReadDirection, Func<byte> newReadLatch, Func<byte> newReadRemoteLatch, Action<byte> newWriteData, Action<byte> newWriteDirection)
+		public DataPortConnector(Func<byte> newReadData, Func<byte> newReadDirection, Func<byte> newReadLatch, Func<byte> newReadRemoteLatch, Action<byte> newWriteData, Action<byte> newWriteDirection, Action<byte> newWriteLatch)
 		{
 			ReadData = newReadData;
 			ReadDirection = newReadDirection;
@@ -264,6 +269,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ReadRemoteLatch = newReadRemoteLatch;
 			WriteData = newWriteData;
 			WriteDirection = newWriteDirection;
+			WriteLatch = newWriteLatch;
 		}
 
 		public byte Data
@@ -295,6 +301,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			get
 			{
 				return ReadLatch();
+			}
+			set
+			{
+				WriteLatch(value);
 			}
 		}
 
