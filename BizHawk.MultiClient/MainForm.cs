@@ -1809,12 +1809,12 @@ namespace BizHawk.MultiClient
 								break;
 							case "A78":
 								string ntsc_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800NTSCBIOS, "A78");
-								string pal_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800PALBIOS, "A78"); 
+								string pal_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800PALBIOS, "A78");
 								string hsbiospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800HighScoreBIOS, "A78");
 								byte[] NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
 								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
 								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);
-								
+
 								Atari7800 a78 = new Atari7800(game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS);
 								nextEmulator = a78;
 								break;
@@ -1825,8 +1825,20 @@ namespace BizHawk.MultiClient
 								nextEmulator = c64;
 								break;
 							case "GBA":
+								string gbabiospath = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBAFirmwares, "GBA"), "gbabios.rom");
+								byte[] gbabios = null;
+
+								if (File.Exists(gbabiospath))
+								{
+									gbabios = File.ReadAllBytes(gbabiospath);
+								}
+								else
+								{
+									MessageBox.Show(string.Format("Couldn't open GBA BIOS: {0}\nCheck your firmware config", gbabiospath));
+									throw new Exception();
+								}
 								GBA gba = new GBA();
-								gba.Load(rom.RomData);
+								gba.Load(rom.RomData, gbabios);
 								nextEmulator = gba;
 								break;
 						}

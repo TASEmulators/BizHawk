@@ -21,11 +21,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		public ControllerDefinition ControllerDefinition { get { return GBAController; } }
 		public IController Controller { get; set; }
 
-		public void Load(byte[] rom)
+		public void Load(byte[] rom, byte[] bios)
 		{
+			if (bios.Length != 16384)
+				throw new Exception("GBA bios must be exactly 16384 bytes!");
 			Init();
 			LibMeteor.libmeteor_reset();
-			LibMeteor.libmeteor_loadbios(File.ReadAllBytes("gbabios.rom"), 16384);
+			LibMeteor.libmeteor_loadbios(bios, (uint)bios.Length);
 			LibMeteor.libmeteor_loadrom(rom, (uint)rom.Length);
 		}
 
