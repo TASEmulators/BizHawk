@@ -120,6 +120,8 @@ namespace AMeteor
 
 			void TimeEvent ();
 
+			uint8_t* GetMemoryArea(int which);
+
 		private :
 			// times for a 8 or 16 bits access
 			uint8_t m_memtime[0xF];

@@ -820,4 +820,27 @@ namespace AMeteor
 		if (m_cart->Write(add, val))
 			CLOCK.SetBattery(CART_SAVE_TIME);
 	}
+
+	uint8_t *Memory::GetMemoryArea(int which)
+	{
+		switch (which)
+		{
+		case 0:
+			return m_brom; // BIOS - System ROM
+		case 1:
+			return m_wbram; // WRAM - On-board Work RAM
+		case 2:
+			return m_wcram; // WRAM - In-chip Work RAM
+		case 3:
+			return m_pram; // BG/OBJ Palette RAM
+		case 4:
+			return m_vram; // VRAM - Video RAM
+		case 5:
+			return m_oram; // OAM - OBJ Attributes
+		case 6:
+			return m_rom; // Game Pake ROM/FlashROM (max 32MB)
+		default:
+			return 0;
+		}
+	}
 }
