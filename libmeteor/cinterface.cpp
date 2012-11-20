@@ -16,7 +16,7 @@ void videocb(const uint16_t *frame)
 	const uint16_t *src = frame;
 	for (int i = 0; i < 240 * 160; i++, src++, dest++)
 	{
-		uint16_t c = *frame;
+		uint16_t c = *src;
 		uint16_t b = c >> 10 & 31;
 		uint16_t g = c >> 5 & 31;
 		uint16_t r = c & 31;
