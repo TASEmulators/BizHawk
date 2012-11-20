@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EE01E7C1-6FC4-497F-82CC-C7C64E3BF9D1}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>libmeteor</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath);include;include\ameteor</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath);include;include\ameteor</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBMETEOR_EXPORTS;%(PreprocessorDefinitions);METDEBUG</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBMETEOR_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="cinterface.cpp" />
+    <ClCompile Include="source\ameteor.cpp" />
+    <ClCompile Include="source\audio\dsound.cpp" />
+    <ClCompile Include="source\audio\sound1.cpp" />
+    <ClCompile Include="source\audio\sound2.cpp" />
+    <ClCompile Include="source\audio\sound4.cpp" />
+    <ClCompile Include="source\audio\speaker.cpp" />
+    <ClCompile Include="source\bios.cpp" />
+    <ClCompile Include="source\cartmem.cpp" />
+    <ClCompile Include="source\clock.cpp" />
+    <ClCompile Include="source\cpu.cpp" />
+    <ClCompile Include="source\debug.cpp" />
+    <ClCompile Include="source\disassembler\argimmediate.cpp" />
+    <ClCompile Include="source\disassembler\argmulregisters.cpp" />
+    <ClCompile Include="source\disassembler\argpsr.cpp" />
+    <ClCompile Include="source\disassembler\argregister.cpp" />
+    <ClCompile Include="source\disassembler\argrelative.cpp" />
+    <ClCompile Include="source\disassembler\argshift.cpp" />
+    <ClCompile Include="source\disassembler\arguimmediate.cpp" />
+    <ClCompile Include="source\disassembler\arguments.cpp" />
+    <ClCompile Include="source\disassembler\instruction.cpp" />
+    <ClCompile Include="source\dma.cpp" />
+    <ClCompile Include="source\eeprom.cpp" />
+    <ClCompile Include="source\flash.cpp" />
+    <ClCompile Include="source\graphics\bglayer.cpp" />
+    <ClCompile Include="source\graphics\object.cpp" />
+    <ClCompile Include="source\graphics\objects.cpp" />
+    <ClCompile Include="source\graphics\renderer.cpp" />
+    <ClCompile Include="source\graphics\screen.cpp" />
+    <ClCompile Include="source\interpreter.cpp" />
+    <ClCompile Include="source\interpreter_arm.cpp" />
+    <ClCompile Include="source\interpreter_thumb.cpp" />
+    <ClCompile Include="source\io.cpp" />
+    <ClCompile Include="source\keypad.cpp" />
+    <ClCompile Include="source\lcd.cpp" />
+    <ClCompile Include="source\memory.cpp" />
+    <ClCompile Include="source\sound.cpp" />
+    <ClCompile Include="source\sram.cpp" />
+    <ClCompile Include="source\timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ameteor.hpp" />
+    <ClInclude Include="include\ameteor\audio\dsound.hpp" />
+    <ClInclude Include="include\ameteor\audio\sound1.hpp" />
+    <ClInclude Include="include\ameteor\audio\sound2.hpp" />
+    <ClInclude Include="include\ameteor\audio\sound4.hpp" />
+    <ClInclude Include="include\ameteor\audio\speaker.hpp" />
+    <ClInclude Include="include\ameteor\bios.hpp" />
+    <ClInclude Include="include\ameteor\cartmem.hpp" />
+    <ClInclude Include="include\ameteor\clock.hpp" />
+    <ClInclude Include="include\ameteor\cpu.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\argimmediate.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\argmulregisters.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\argpsr.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\argregister.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\argrelative.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\argshift.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\arguimmediate.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\argument.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\arguments.hpp" />
+    <ClInclude Include="include\ameteor\disassembler\instruction.hpp" />
+    <ClInclude Include="include\ameteor\dma.hpp" />
+    <ClInclude Include="include\ameteor\eeprom.hpp" />
+    <ClInclude Include="include\ameteor\flash.hpp" />
+    <ClInclude Include="include\ameteor\graphics\bglayer.hpp" />
+    <ClInclude Include="include\ameteor\graphics\object.hpp" />
+    <ClInclude Include="include\ameteor\graphics\objects.hpp" />
+    <ClInclude Include="include\ameteor\graphics\renderer.hpp" />
+    <ClInclude Include="include\ameteor\graphics\screen.hpp" />
+    <ClInclude Include="include\ameteor\interpreter.hpp" />
+    <ClInclude Include="include\ameteor\io.hpp" />
+    <ClInclude Include="include\ameteor\keypad.hpp" />
+    <ClInclude Include="include\ameteor\lcd.hpp" />
+    <ClInclude Include="include\ameteor\memory.hpp" />
+    <ClInclude Include="include\ameteor\sound.hpp" />
+    <ClInclude Include="include\ameteor\sram.hpp" />
+    <ClInclude Include="include\ameteor\swap.hpp" />
+    <ClInclude Include="include\ameteor\timer.hpp" />
+    <ClInclude Include="include\syg\signal.hpp" />
+    <ClInclude Include="source\cpu_globals.hpp" />
+    <ClInclude Include="source\debug.hpp" />
+    <ClInclude Include="source\globals.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
