@@ -159,8 +159,46 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public bool SaveRamModified { get; set; }
 
 		public bool DeterministicEmulation { get { return true; } }
-		public void SaveStateText(TextWriter writer) { }
-		public void LoadStateText(TextReader reader) { }
+		
+		public void SaveStateText(TextWriter writer)
+		{
+			writer.WriteLine("[Coleco]\n");
+			Cpu.SaveStateText(writer);
+			PSG.SaveStateText(writer);
+			//VDP.SaveStateText(writer); //TODO
+
+			writer.WriteLine("Frame {0}", Frame);
+			writer.WriteLine("Lag {0}", _lagcount);
+			writer.Write("RAM ");
+			Ram.SaveAsHex(writer);
+			writer.WriteLine("[/Coleco]");
+		}
+		
+		public void LoadStateText(TextReader reader)
+		{
+			while (true)
+			{
+				string[] args = reader.ReadLine().Split(' ');
+				if (args[0].Trim() == "") continue;
+				if (args[0] == "[Coleco]") continue;
+				if (args[0] == "[/Coleco]") break;
+				else if (args[0] == "Frame")
+					Frame = int.Parse(args[1]);
+				else if (args[0] == "Lag")
+					_lagcount = int.Parse(args[1]);
+				else if (args[0] == "RAM")
+					Ram.ReadFromHex(args[1]);
+				else if (args[0] == "[Z80]")
+					Cpu.LoadStateText(reader);
+				else if (args[0] == "[PSG]")
+					PSG.LoadStateText(reader);
+				else if (args[0] == "[VDP]")
+					VDP.LoadStateText(reader);
+				else
+					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+			}
+		}
+
 		public void SaveStateBinary(BinaryWriter bw) { }
 		public void LoadStateBinary(BinaryReader br) { }
 
