@@ -99,6 +99,8 @@ namespace AMeteor
 	// TODO implement unreadable or write-only io
 	uint8_t Io::Read8 (uint32_t add)
 	{
+		if ((add & 0xFFE) == KEYINPUT)
+			keyupdate_bizhawk();
 		//debug ("IO Read8 at " << IOS_ADD << add << " of " << IOS_ADD << (int)*(uint8_t*)(m_iomem + (add & 0xFFF)));
 		if ((add & 0xFF0) == 0x100)
 			switch (add & 0xF)
@@ -114,6 +116,8 @@ namespace AMeteor
 
 	uint16_t Io::Read16 (uint32_t add)
 	{
+		if ((add & 0xFFE) == KEYINPUT)
+			keyupdate_bizhawk();
 		//debug ("IO Read16 at " << IOS_ADD << add << " of " << IOS_ADD << *(uint16_t*)(m_iomem + (add & 0xFFF)));
 		// special case, reading timers
 		if ((add & 0xFF0) == 0x100)
@@ -129,6 +133,8 @@ namespace AMeteor
 
 	uint32_t Io::Read32 (uint32_t add)
 	{
+		if ((add & 0xFFC) == KEYINPUT)
+			keyupdate_bizhawk();
 		//debug ("IO Read32 at " << IOS_ADD << add << " of " << IOS_ADD << *(uint32_t*)(m_iomem + (add & 0xFFF)));
 		// special case, reading timers
 		if ((add & 0xFF0) == 0x100)

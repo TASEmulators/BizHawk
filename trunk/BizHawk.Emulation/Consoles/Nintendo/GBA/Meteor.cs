@@ -31,12 +31,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
+			Controller.UpdateControls(Frame++);
+			IsLagFrame = true;
 			LibMeteor.libmeteor_frameadvance();
+			if (IsLagFrame)
+				LagCount++;
 		}
 
 		public int Frame
 		{
-			get { return 0; }
+			get;
+			private set;
 		}
 
 		public int LagCount
@@ -47,7 +52,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		public bool IsLagFrame
 		{
-			get { return false; }
+			get;
+			private set;
 		}
 
 		public string SystemId
@@ -77,7 +83,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		public void ResetFrameCounter()
 		{
+			Frame = 0;
+			LagCount = 0;
 		}
+
+		#region savestates
 
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
@@ -104,6 +114,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			return ms.ToArray();
 		}
 
+		#endregion
+
 		public CoreInputComm CoreInputComm { get; set; }
 
 		CoreOutputComm _CoreOutputComm = new CoreOutputComm
@@ -126,6 +138,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		static GBA attachedcore;
 		LibMeteor.MessageCallback messagecallback;
+		LibMeteor.InputCallback inputcallback;
+
+		LibMeteor.Buttons GetInput()
+		{
+			IsLagFrame = false;
+			LibMeteor.Buttons ret = 0;
+			if (Controller["Up"]) ret |= LibMeteor.Buttons.BTN_UP;
+			if (Controller["Down"]) ret |= LibMeteor.Buttons.BTN_DOWN;
+			if (Controller["Left"]) ret |= LibMeteor.Buttons.BTN_LEFT;
+			if (Controller["Right"]) ret |= LibMeteor.Buttons.BTN_RIGHT;
+			if (Controller["Select"]) ret |= LibMeteor.Buttons.BTN_SELECT;
+			if (Controller["Start"]) ret |= LibMeteor.Buttons.BTN_START;
+			if (Controller["B"]) ret |= LibMeteor.Buttons.BTN_B;
+			if (Controller["A"]) ret |= LibMeteor.Buttons.BTN_A;
+			if (Controller["L"]) ret |= LibMeteor.Buttons.BTN_L;
+			if (Controller["R"]) ret |= LibMeteor.Buttons.BTN_R;
+			return ret;
+		}
+
 
 		void Init()
 		{
@@ -133,7 +164,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 				attachedcore.Dispose();
 
 			messagecallback = (str) => Console.Write(str.Replace("\n","\r\n"));
+			inputcallback = GetInput;
 			LibMeteor.libmeteor_setmessagecallback(messagecallback);
+			LibMeteor.libmeteor_setkeycallback(inputcallback);
 
 			LibMeteor.libmeteor_init();
 			videobuffer = new int[240 * 160];

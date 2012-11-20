@@ -23,6 +23,19 @@ void print_bizhawk(std::string &msg)
 		messagecallback(msg.c_str());
 }
 
+uint16_t (*keycallback)() = NULL;
+
+void keyupdate_bizhawk()
+{
+	if (keycallback)
+		AMeteor::_keypad.SetPadState(keycallback() ^ 0x3FF);
+}
+
+EXPORT void libmeteor_setkeycallback(uint16_t (*callback)())
+{
+	keycallback = callback;
+}
+
 EXPORT void libmeteor_reset()
 {
 	AMeteor::Reset(AMeteor::UNIT_ALL ^ AMeteor::UNIT_MEMORY_BIOS);
@@ -96,7 +109,7 @@ EXPORT void libmeteor_init()
 
 EXPORT void libmeteor_frameadvance()
 {
-	AMeteor::_keypad.SetPadState(0x3ff);
+	//AMeteor::_keypad.SetPadState(0x3ff);
 	AMeteor::Run(10000000);
 }
 

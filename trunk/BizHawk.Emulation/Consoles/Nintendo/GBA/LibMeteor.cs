@@ -77,5 +77,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// <param name="cb"></param>
 		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libmeteor_setmessagecallback(MessageCallback cb);
+
+		/// <summary>
+		/// combination of button flags used by the key callback
+		/// </summary>
+		[Flags]
+		public enum Buttons : ushort
+		{
+			BTN_A      = 0x001,
+			BTN_B      = 0x002,
+			BTN_SELECT = 0x004,
+			BTN_START  = 0x008,
+			BTN_RIGHT  = 0x010,
+			BTN_LEFT   = 0x020,
+			BTN_UP     = 0x040,
+			BTN_DOWN   = 0x080,
+			BTN_R      = 0x100,
+			BTN_L      = 0x200
+		}
+
+		/// <summary>
+		/// core callback to get input state
+		/// </summary>
+		/// <returns>buttons pressed bitfield</returns>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate Buttons InputCallback();
+
+		/// <summary>
+		/// set callback for whenever input is requested
+		/// </summary>
+		/// <param name="callback"></param>
+		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libmeteor_setkeycallback(InputCallback callback);
+
 	}
 }
