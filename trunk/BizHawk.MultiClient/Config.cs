@@ -99,6 +99,14 @@ namespace BizHawk.MultiClient
 		public string PathSNESCheats = Path.Combine(".", "Cheats");
 		public string PathSNESFirmwares = Path.Combine(".", "Firmwares");
 
+		public string BaseGBA = Path.Combine(".", "GBA");
+		public string PathGBAROMs = ".";
+		public string PathGBASavestates = Path.Combine(".", "State");
+		public string PathGBASaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathGBAScreenshots = Path.Combine(".", "Screenshots");
+		public string PathGBACheats = Path.Combine(".", "Cheats");
+		public string PathGBAFirmwares = Path.Combine(".", "Firmwares");
+
 		public string BaseSMS = Path.Combine(".", "SMS");
 		public string PathSMSROMs = ".";
 		public string PathSMSSavestates = Path.Combine(".", "State");

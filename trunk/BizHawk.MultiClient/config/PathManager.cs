@@ -99,6 +99,8 @@ namespace BizHawk.MultiClient
 					return Global.Config.BaseSNES;
 				case "Coleco":
 					return Global.Config.BaseCOL;
+				case "GBA":
+					return Global.Config.BaseGBA;
 				case "NULL":
 				default:
 					return "";
