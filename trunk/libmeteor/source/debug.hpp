@@ -28,6 +28,7 @@
 // from cinterface.cpp
 void print_bizhawk(const char *msg);
 void print_bizhawk(std::string &msg);
+void abort_bizhawk(const char *msg);
 void keyupdate_bizhawk();
 
 #if 0
@@ -52,7 +53,7 @@ void keyupdate_bizhawk();
 		<< IOS_ADD << ::AMeteor::_cpu.Reg(15) << "\n[r15] = " << IOS_ADD \
 		<< ::AMeteor::_memory.Read32(::AMeteor::_cpu.Reg(15)) \
 		<< "\nFlag T : " << ::AMeteor::_cpu.ICpsr().thumb << std::endl; \
-		print_bizhawk(_zisrny.str().c_str()); \
+		abort_bizhawk(_zisrny.str().c_str()); \
 	}
 
 #else

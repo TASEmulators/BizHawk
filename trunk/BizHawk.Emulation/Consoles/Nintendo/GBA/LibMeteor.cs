@@ -68,8 +68,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// core callback to print meaningful (or meaningless) log messages
 		/// </summary>
 		/// <param name="msg">message to be printed</param>
+		/// <param name="abort">true if emulation should be aborted</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void MessageCallback(string msg);
+		public delegate void MessageCallback(string msg, bool abort);
 
 		/// <summary>
 		/// set callback for log messages.  this can (and should) be called first

@@ -40,33 +40,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 				LagCount++;
 		}
 
-		public int Frame
+		public int Frame { get; private set; }
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; private set; }
+		public string SystemId { get { return "GBA"; } }
+		public bool DeterministicEmulation { get { return true; } }
+
+		public void ResetFrameCounter()
 		{
-			get;
-			private set;
+			Frame = 0;
+			LagCount = 0;
 		}
 
-		public int LagCount
-		{
-			get;
-			set;
-		}
-
-		public bool IsLagFrame
-		{
-			get;
-			private set;
-		}
-
-		public string SystemId
-		{
-			get { return "GBA"; }
-		}
-
-		public bool DeterministicEmulation
-		{
-			get { return true; }
-		}
+		#region saveram
 
 		public byte[] ReadSaveRam()
 		{
@@ -83,11 +69,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		public bool SaveRamModified { get { return false; } set { } }
 
-		public void ResetFrameCounter()
-		{
-			Frame = 0;
-			LagCount = 0;
-		}
+		#endregion
 
 		#region savestates
 
@@ -138,12 +120,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			get { return null; }
 		}
 
+		/// <summary>like libsnes, the library is single-instance</summary>
 		static GBA attachedcore;
+		/// <summary>hold pointer to message callback so it won't get GCed</summary>
 		LibMeteor.MessageCallback messagecallback;
+		/// <summary>hold pointer to input callback so it won't get GCed</summary>
 		LibMeteor.InputCallback inputcallback;
 
 		LibMeteor.Buttons GetInput()
 		{
+			// libmeteor bitflips everything itself, so 0 == off, 1 == on
 			IsLagFrame = false;
 			LibMeteor.Buttons ret = 0;
 			if (Controller["Up"]) ret |= LibMeteor.Buttons.BTN_UP;
@@ -159,13 +145,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			return ret;
 		}
 
+		void PrintMessage(string msg, bool abort)
+		{
+			if (!abort)
+				Console.Write(msg.Replace("\n", "\r\n"));
+			else
+				throw new Exception("libmeteor abort:\n " + msg);
+		}
 
 		void Init()
 		{
 			if (attachedcore != null)
 				attachedcore.Dispose();
 
-			messagecallback = (str) => Console.Write(str.Replace("\n","\r\n"));
+			messagecallback = PrintMessage;
 			inputcallback = GetInput;
 			LibMeteor.libmeteor_setmessagecallback(messagecallback);
 			LibMeteor.libmeteor_setkeycallback(inputcallback);
@@ -192,6 +185,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 				disposed = true;
 				videohandle.Free();
 				soundhandle.Free();
+				// guarantee crash if it gets accessed
+				LibMeteor.libmeteor_setbuffers(IntPtr.Zero, 240 * 160 * 4, IntPtr.Zero, 4);
+				messagecallback = null;
+				inputcallback = null;
+				LibMeteor.libmeteor_setmessagecallback(messagecallback);
+				LibMeteor.libmeteor_setkeycallback(inputcallback);
 			}
 		}
 
@@ -225,7 +224,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			uint nbytes = LibMeteor.libmeteor_emptysound();
 			samples = soundbuffer;
 			nsamp = (int)(nbytes / 4);
-
 		}
 
 		public void DiscardSamples()
