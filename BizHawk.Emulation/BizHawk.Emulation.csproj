@@ -108,6 +108,7 @@
     <Compile Include="Computers\Commodore64\VicIINewPipeline.cs" />
     <Compile Include="Computers\Commodore64\VicIINewVideoProvider.cs" />
     <Compile Include="Computers\Commodore64\VicIIRegs.cs" />
+    <Compile Include="Computers\Commodore64\VicState.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />
