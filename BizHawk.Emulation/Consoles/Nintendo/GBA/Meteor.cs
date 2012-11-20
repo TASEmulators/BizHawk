@@ -125,22 +125,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		}
 
 		static GBA attachedcore;
+		LibMeteor.MessageCallback messagecallback;
 
 		void Init()
 		{
 			if (attachedcore != null)
 				attachedcore.Dispose();
 
+			messagecallback = (str) => Console.Write(str.Replace("\n","\r\n"));
+			LibMeteor.libmeteor_setmessagecallback(messagecallback);
+
 			LibMeteor.libmeteor_init();
 			videobuffer = new int[240 * 160];
 			videohandle = GCHandle.Alloc(videobuffer, GCHandleType.Pinned);
-			soundbuffer = new short[2048];
+			soundbuffer = new short[2048]; // nominal length of one frame is something like 1480 shorts?
 			soundhandle = GCHandle.Alloc(soundbuffer, GCHandleType.Pinned);
 
 			if (!LibMeteor.libmeteor_setbuffers
 				(videohandle.AddrOfPinnedObject(), (uint)(sizeof(int) * videobuffer.Length),
 				soundhandle.AddrOfPinnedObject(), (uint)(sizeof(short) * soundbuffer.Length)))
-				throw new Exception("libmeteor_setbuffers() returned false!");
+				throw new Exception("libmeteor_setbuffers() returned false??");
 
 			attachedcore = this;
 		}

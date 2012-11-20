@@ -63,5 +63,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// <param name="datalen">length of data in bytes</param>
 		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libmeteor_loadbios(byte[] data, uint datalen);
+
+		/// <summary>
+		/// core callback to print meaningful (or meaningless) log messages
+		/// </summary>
+		/// <param name="msg">message to be printed</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void MessageCallback(string msg);
+
+		/// <summary>
+		/// set callback for log messages.  this can (and should) be called first
+		/// </summary>
+		/// <param name="cb"></param>
+		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libmeteor_setmessagecallback(MessageCallback cb);
 	}
 }

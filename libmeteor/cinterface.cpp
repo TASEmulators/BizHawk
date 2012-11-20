@@ -1,7 +1,27 @@
 #include "ameteor.hpp"
 #include "ameteor/cartmem.hpp"
+#include "source/debug.hpp"
 
 #define EXPORT extern "C" __declspec(dllexport)
+
+void (*messagecallback)(const char *msg) = NULL;
+
+EXPORT void libmeteor_setmessagecallback(void (*callback)(const char *msg))
+{
+	messagecallback = callback;
+	print_bizhawk("libmeteor message stream operational.");
+}
+
+void print_bizhawk(const char *msg)
+{
+	if (messagecallback)
+		messagecallback(msg);
+}
+void print_bizhawk(std::string &msg)
+{
+	if (messagecallback)
+		messagecallback(msg.c_str());
+}
 
 EXPORT void libmeteor_reset()
 {
@@ -56,7 +76,7 @@ EXPORT int libmeteor_setbuffers(uint32_t *vid, unsigned vidlen, int16_t *aud, un
 		return 0;
 	videobuff = vid;
 	soundbuff = aud;
-	soundbuffend = soundbuff + audlen;
+	soundbuffend = soundbuff + audlen / sizeof(int16_t);
 	libmeteor_emptysound();
 	return 1;
 }
