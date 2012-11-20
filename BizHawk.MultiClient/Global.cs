@@ -57,6 +57,13 @@ namespace BizHawk.MultiClient
 				}
 			},
 			{
+				"GBA Controller", new Dictionary<string, string>()
+				{
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
+					{"A", "A"}, {"L", "L"}, {"R", "R"},
+				}
+			},
+			{
 				"Genesis 3-Button Controller", new Dictionary<string, string>()
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Start", "S"}, {"A", "A"}, {"B", "B"},
