@@ -26,6 +26,7 @@ void abort_bizhawk(const char *msg)
 {
 	if (messagecallback)
 		messagecallback(msg, 1);
+	AMeteor::Stop(); // makes it easy to pick apart what happened
 }
 
 uint16_t (*keycallback)() = NULL;

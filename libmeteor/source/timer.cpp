@@ -88,7 +88,7 @@ namespace AMeteor
 
 	void Timer::TimeEvent ()
 	{
-		debug("Timer" << (int)m_num << " overflow");
+		//debug("Timer" << (int)m_num << " overflow");
 		SOUND.TimerOverflow(m_num);
 
 		m_count = 65536 - m_reload;

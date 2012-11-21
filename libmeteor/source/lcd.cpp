@@ -41,7 +41,7 @@ namespace AMeteor
 
 		if (dispstat & 0x2) // if we were H-Blanking
 		{
-			debug("hblank end");
+			//debug("hblank end");
 			// we are not anymore, we're on next line
 			dispstat ^= 0x2;
 			// call me when we are H-Blanking again
@@ -96,7 +96,7 @@ namespace AMeteor
 		}
 		else // if we were not H-Blanking
 		{
-			debug("hblank vcount : " << std::dec << vcount);
+			//debug("hblank vcount : " << std::dec << vcount);
 			// now, we are
 			dispstat |= 0x2;
 			// call me when we are not H-Blanking anymore
