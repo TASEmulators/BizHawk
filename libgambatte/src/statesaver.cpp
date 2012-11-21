@@ -418,9 +418,11 @@ bool StateSaver::saveState(const SaveState &state,
 	if (file.fail())
 		return false;
 	
-	{ static const char ver[] = { 0, 1 }; file.write(ver, sizeof(ver)); }
-	
-	writeSnapShot(file, videoBuf, pitch);
+	//{ static const char ver[] = { 0, 1 }; file.write(ver, sizeof(ver)); }
+	// bump version as the screenshot is being removed
+	{ static const char ver[] = { 0, 2 }; file.write(ver, sizeof(ver)); }
+
+	//writeSnapShot(file, videoBuf, pitch);
 	
 	for (SaverList::const_iterator it = list.begin(); it != list.end(); ++it) {
 		file.write(it->label, it->labelsize);
@@ -436,8 +438,15 @@ bool StateSaver::loadState(SaveState &state, std::istream &file) {
 	if (file.fail() || file.get() != 0)
 		return false;
 	
-	file.ignore();
-	file.ignore(get24(file));
+	int minor = file.get();
+	if (minor == 1) { // skip over screenshot
+		file.ignore();
+		file.ignore(get24(file));
+	}
+	else if (minor == 2) { // no screenshot
+	}
+	else
+		return false;
 	
 	const Array<char> labelbuf(list.maxLabelsize());
 	const Saver labelbufSaver = { labelbuf, 0, 0, list.maxLabelsize() };
