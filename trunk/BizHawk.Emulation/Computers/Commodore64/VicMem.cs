@@ -26,6 +26,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			addr &= 0x3F;
 			switch (addr)
 			{
+				case 0x1E:
+					// clear after read
+					result = this[addr];
+					this[addr] = 0x00;
+					irqSpriteCollision = false;
+					break;
+				case 0x1F:
+					// clear after read
+					result = this[addr];
+					this[addr] = 0x00;
+					irqDataCollision = false;
+					break;
 				default:
 					result = this[addr];
 					break;
@@ -39,6 +51,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			addr &= 0x3F;
 			switch (addr)
 			{
+				case 0x19:
+					// interrupt reg
+					if ((val & 0x01) != 0x00)
+						irqRaster = false;
+					if ((val & 0x02) != 0x00)
+						irqDataCollision = false;
+					if ((val & 0x04) != 0x00)
+						irqSpriteCollision = false;
+					if ((val & 0x08) != 0x00)
+						irqLightPen = false;
+					break;
+				case 0x1E:
+				case 0x1F:
+					// non writeable regs
+					break;
 				default:
 					this[addr] = val;
 					break;

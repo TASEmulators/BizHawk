@@ -7,10 +7,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class VicII
 	{
-		private struct Sprite
+		private class Sprite
 		{
 			public uint color;
 			public bool dataCollision;
+			public bool display;
 			public bool dma;
 			public bool enable;
 			public bool exp;
@@ -28,16 +29,53 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			public bool xExpand;
 			public uint y;
 			public bool yExpand;
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("color", ref color);
+				ser.Sync("dataCollision", ref dataCollision);
+				ser.Sync("display", ref display);
+				ser.Sync("dma", ref dma);
+				ser.Sync("enable", ref enable);
+				ser.Sync("exp", ref exp);
+				ser.Sync("mc", ref mc);
+				ser.Sync("mcBase", ref mcBase);
+				ser.Sync("mcChange", ref mcChange);
+				ser.Sync("multicolor", ref multicolor);
+				ser.Sync("priority", ref priority);
+				ser.Sync("ptr", ref ptr);
+				ser.Sync("ptrinc", ref ptrinc);
+				ser.Sync("spriteCollision", ref spriteCollision);
+				ser.Sync("x", ref x);
+				ser.Sync("xShift", ref xShift);
+				ser.Sync("xShiftSum", ref xShiftSum);
+				ser.Sync("xExpand", ref xExpand);
+				ser.Sync("y", ref y);
+				ser.Sync("yExpand", ref yExpand);
+			}
 		}
 
 		private uint backgroundColor0;
 		private uint backgroundColor1;
 		private uint backgroundColor2;
 		private uint backgroundColor3;
+		private bool badline;
+		private bool badlineEnabled;
 		private bool bitmapMode;
 		private uint bitmapRam;
+		private uint borderBottom;
 		private uint borderColor;
+		private uint borderLeft;
+		private bool borderOnMain;
+		private bool borderOnVertical;
+		private bool borderOnVerticalEnable;
+		private uint borderRight;
+		private uint borderTop;
 		private bool columnSelect;
+		private bool cycleFetchG;
+		private bool cycleFetchP;
+		private bool cycleFetchR;
+		private bool cycleFetchS;
 		private bool displayEnable;
 		private bool enableIrqDataCollision;
 		private bool enableIrqLightPen;
@@ -53,22 +91,90 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private uint lightPenX;
 		private uint lightPenY;
 		private bool multiColorMode;
-		private uint phaseRead;
+		private uint phaseRead0;
+		private uint phaseRead1;
 		private uint rasterCycle;
 		private uint rasterIrqLine;
 		private uint rasterLine;
 		private uint rc;
+		private ushort refreshAddr;
 		private bool reset;
 		private bool rowSelect;
+		private uint spriteIndex;
 		private uint spriteMultiColor0;
 		private uint spriteMultiColor1;
 		private Sprite[] sprites;
 		private uint vc;
 		private uint vcbase;
+		private uint[] videoBuffer;
 		private uint videoRam;
 		private uint vmli;
 		private uint xScroll;
 		private uint yScroll;
+		private uint ySmooth;
+
+		public void SyncState(Serializer ser)
+		{
+			ser.Sync("backgroundColor0", ref backgroundColor0);
+			ser.Sync("backgroundColor1", ref backgroundColor1);
+			ser.Sync("backgroundColor2", ref backgroundColor2);
+			ser.Sync("backgroundColor3", ref backgroundColor3);
+			ser.Sync("badline", ref badline);
+			ser.Sync("badlineEnabled", ref badlineEnabled);
+			ser.Sync("bitmapMode", ref bitmapMode);
+			ser.Sync("bitmapRam", ref bitmapRam);
+			ser.Sync("borderBottom", ref borderBottom);
+			ser.Sync("borderColor", ref borderColor);
+			ser.Sync("borderLeft", ref borderLeft);
+			ser.Sync("borderOnMain", ref borderOnMain);
+			ser.Sync("borderOnVertical", ref borderOnVertical);
+			ser.Sync("borderOnVerticalEnable", ref borderOnVerticalEnable);
+			ser.Sync("borderRight", ref borderRight);
+			ser.Sync("borderTop", ref borderTop);
+			ser.Sync("columnSelect", ref columnSelect);
+			ser.Sync("displayEnable", ref displayEnable);
+			ser.Sync("enableIrqDataCollision", ref enableIrqDataCollision);
+			ser.Sync("enableIrqLightPen", ref enableIrqLightPen);
+			ser.Sync("enableIrqRaster", ref enableIrqRaster);
+			ser.Sync("enableIrqSpriteCollision", ref enableIrqSpriteCollision);
+			ser.Sync("extraColorMode", ref extraColorMode);
+			ser.Sync("idle", ref idle);
+			ser.Sync("irq", ref irq);
+			ser.Sync("irqDataCollision", ref irqDataCollision);
+			ser.Sync("irqLightPen", ref irqLightPen);
+			ser.Sync("irqRaster", ref irqRaster);
+			ser.Sync("irqSpriteCollision", ref irqSpriteCollision);
+			ser.Sync("lightPenX", ref lightPenX);
+			ser.Sync("lightPenY", ref lightPenY);
+			ser.Sync("multiColorMode", ref multiColorMode);
+			ser.Sync("phaseRead0", ref phaseRead0);
+			ser.Sync("phaseRead1", ref phaseRead1);
+			ser.Sync("rasterCycle", ref rasterCycle);
+			ser.Sync("rasterIrqLine", ref rasterIrqLine);
+			ser.Sync("rasterLine", ref rasterLine);
+			ser.Sync("rc", ref rc);
+			ser.Sync("refreshAddr", ref refreshAddr);
+			ser.Sync("reset", ref reset);
+			ser.Sync("rowSelect", ref rowSelect);
+			ser.Sync("spriteIndex", ref spriteIndex);
+			ser.Sync("spriteMultiColor0", ref spriteMultiColor0);
+			ser.Sync("spriteMultiColor1", ref spriteMultiColor1);
+			ser.Sync("vc", ref vc);
+			ser.Sync("vcbase", ref vcbase);
+			ser.Sync("videoBuffer", ref videoBuffer, false);
+			ser.Sync("videoRam", ref videoRam);
+			ser.Sync("vmli", ref vmli);
+			ser.Sync("xScroll", ref xScroll);
+			ser.Sync("yScroll", ref yScroll);
+			ser.Sync("ySmooth", ref ySmooth);
+
+			for (int i = 0; i < 8; i++)
+			{
+				ser.BeginSection("sprite" + i.ToString());
+				sprites[i].SyncState(ser);
+				ser.EndSection();
+			}
+		}
 
 		private byte this[uint addr]
 		{
@@ -599,6 +705,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			get { return (byte)sprites[7].color; }
 			set { sprites[7].color = value; }
 		}
+
 	}
 
 }
