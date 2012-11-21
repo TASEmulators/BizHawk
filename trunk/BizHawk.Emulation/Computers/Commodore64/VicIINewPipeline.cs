@@ -1312,10 +1312,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				if (borderOnMain || borderOnVertical)
 					pixel = EC;
 				else
-					pixel = (
-						(spriteData == 0) ||
-						((spriteData != 0) && (spritePriority = true) && (plotterDataBuffer[plotterBufferIndex] >= 0x2)))
-						? plotterPixelBuffer[plotterBufferIndex] : spritePixel;
+				{
+					if ((spriteData == 0) || (spritePriority == true && plotterDataBuffer[plotterBufferIndex] >= 0x2))
+					{
+						pixel = plotterPixelBuffer[plotterBufferIndex];
+					}
+					else
+					{
+						pixel = spritePixel;
+					}
+				}
 
 				PipelineWritePixel(pixel);
 
