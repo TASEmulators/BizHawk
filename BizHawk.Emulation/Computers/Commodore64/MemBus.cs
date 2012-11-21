@@ -407,6 +407,30 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return (byte)((busData & 0xF0) | (colorRam[addr & 0x03FF]));
 		}
 
+		public void SyncState(Serializer ser)
+		{
+			ser.Sync("BUSDATA", ref busData);
+			ser.Sync("EXROMPIN", ref exRomPin);
+			ser.Sync("GAMEPIN", ref gamePin);
+			ser.Sync("INPUTWASREAD", ref inputWasRead);
+
+			ser.Sync("COLORRAM", ref colorRam, false);
+			ser.Sync("RAM", ref ram, false);
+
+			byte cpuData = cpuPort.Latch;
+			byte cpuDir = cpuPort.Direction;
+			ser.Sync("CPUPORT", ref cpuData);
+			ser.Sync("CPUDIR", ref cpuDir);
+
+			if (ser.IsReader)
+			{
+				cpuPort.Latch = cpuData;
+				cpuPort.Direction = cpuDir;
+				UpdateLayout();
+				UpdateVicOffset();
+			}
+		}
+
 		public void UpdateLayout()
 		{
 			byte cpuData = cpuPort.Data;

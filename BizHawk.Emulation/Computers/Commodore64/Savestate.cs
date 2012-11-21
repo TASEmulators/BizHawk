@@ -14,10 +14,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void LoadStateBinary(BinaryReader br)
 		{
+			SyncState(new Serializer(br));
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
+			SyncState(new Serializer(reader));
 		}
 
 		public byte[] ReadSaveRam()
@@ -39,165 +41,51 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			Dictionary<string, StateParameters> state = new Dictionary<string, StateParameters>();
+			SyncState(new Serializer(bw));
 		}
+
 		public void SaveStateText(TextWriter writer)
-		{ 
+		{
+			SyncState(new Serializer(writer));
 		}
+
 		public void StoreSaveRam(byte[] data)
 		{
 		}
-	}
 
-	public class StateParameters
-	{
-		private Dictionary<string, int> integerList = new Dictionary<string, int>();
-
-		public int this[string key]
+		void SyncState(Serializer ser)
 		{
-			get
-			{
-				if (integerList.ContainsKey(key))
-				{
-					return integerList[key];
-				}
-				return 0;
-			}
-			set
-			{
-				integerList[key] = value;
-			}
-		}
+			// global stuffs
+			ser.BeginSection("GAME");
+			ser.Sync("Lag", ref _lagcount);
+			ser.Sync("Frame", ref _frame);
+			ser.Sync("IsLag", ref _islag);
+			ser.EndSection();
 
-		public void ExportBinary(Stream target)
-		{
-			BinaryWriter writer = new BinaryWriter(target);
+			// cpu creates its own section..
+			cpu.SyncState(ser);
 
-			writer.Write((Int32)integerList.Count);
-			foreach (KeyValuePair<string, int> kv in integerList)
-			{
-				writer.Write(kv.Key);
-				writer.Write(kv.Value);
-			}
+			ser.BeginSection("MEM");
+			mem.SyncState(ser);
+			ser.EndSection();
 
-			writer.Flush();
-		}
+			ser.BeginSection("VIC");
+			vic.SyncState(ser);
+			ser.EndSection();
 
-		public void ExportText(Stream target)
-		{
-			StringBuilder sb = new StringBuilder();
+			ser.BeginSection("SID");
+			sid.SyncState(ser);
+			ser.EndSection();
 
-			foreach (KeyValuePair<string, int> kv in integerList)
-			{
-				sb.Append(kv.Key + "=");
-				sb.AppendLine(kv.Value.ToString());
-			}
+			ser.BeginSection("CIA0");
+			cia0.SyncState(ser);
+			ser.EndSection();
 
-			StreamWriter writer = new StreamWriter(target);
-			writer.Write(sb.ToString());
-			writer.Flush();
-		}
+			ser.BeginSection("CIA1");
+			cia1.SyncState(ser);
+			ser.EndSection();
 
-		public void ImportBinary(Stream source)
-		{
-			BinaryReader reader = new BinaryReader(source);
-
-			int count = reader.ReadInt32();
-			for (int i = 0; i < count; i++)
-			{
-				string key = reader.ReadString();
-				int val = reader.ReadInt32();
-				integerList[key] = val;
-			}
-		}
-
-		public void ImportText(Stream source)
-		{
-			StreamReader reader = new StreamReader(source);
-			string line = "";
-
-			while (!reader.EndOfStream && !(line.Contains("[") && line.Contains("]")))
-			{
-				line = reader.ReadLine();
-				int equalsIndex = line.IndexOf("=");
-
-				if (equalsIndex >= 0 && equalsIndex < (line.Length - 1))
-				{
-					string key = line.Substring(0, equalsIndex - 1);
-					string val = line.Substring(equalsIndex + 1);
-
-					if (val.Length > 0 && key.Length > 0)
-					{
-						integerList[key] = int.Parse(val);
-					}
-				}
-			}
-		}
-
-		public void Load(string key, out byte val)
-		{
-			val = (byte)(this[key] & 0xFF);
-		}
-
-		public void Load(string key, out int val)
-		{
-			val = this[key];
-		}
-
-		public void Load(string key, out bool val)
-		{
-			val = this[key] != 0;
-		}
-
-		public void Load(string key, out byte[] val, int length)
-		{
-			byte[] result = new byte[length];
-			for (int i = 0; i < length; i++)
-			{
-				result[i] = (byte)(this[key + i.ToString()] & 0xFF);
-			}
-			val = result;
-		}
-
-		public void Load(string key, out int[] val, int length)
-		{
-			int[] result = new int[length];
-			for (int i = 0; i < length; i++)
-			{
-				result[i] = (int)(this[key + i.ToString()] & 0xFF);
-			}
-			val = result;
-		}
-
-		public void Save(string key, byte val)
-		{
-			this[key] = (int)val;
-		}
-
-		public void Save(string key, int val)
-		{
-			this[key] = val;
-		}
-
-		public void Save(string key, bool val)
-		{
-			this[key] = val ? 1 : 0;
-		}
-
-		public void Save(string key, byte[] val, int length)
-		{
-			for (int i = 0; i < length; i++)
-			{
-				this[key + i.ToString()] = val[i];
-			}
-		}
-
-		public void Save(string key, int[] val, int length)
-		{
-			for (int i = 0; i < length; i++)
-			{
-				this[key + i.ToString()] = (int)val[i];
-			}
+			// TODO: drive
 		}
 	}
 }

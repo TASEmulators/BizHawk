@@ -9,9 +9,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	// constants for the EnvelopeGenerator and calculation
 	// methods are based from the libsidplayfp residfp library.
 
-	public class EnvelopeGenerator
+	public partial class EnvelopeGenerator
 	{
-		enum State
+		public enum EnvelopeState
 		{
 			Attack, Decay, Release
 		}
@@ -27,17 +27,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		int attack;
 		int decay;
-		byte envelopeCounter;
-		bool envelopeProcessEnabled;
-		int exponentialCounter;
-		int exponentialCounterPeriod;
-		bool freeze;
 		bool gate;
-		int lfsr;
-		int rate;
 		int release;
-		State state;
 		int sustain;
+
+		public byte envelopeCounter;
+		public bool envelopeProcessEnabled;
+		public int exponentialCounter;
+		public int exponentialCounterPeriod;
+		public bool freeze;
+		public int lfsr;
+		public int rate;
+		public EnvelopeState state;
 
 		public EnvelopeGenerator()
 		{
@@ -53,7 +54,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			set
 			{
 				attack = value;
-				if (state == State.Attack)
+				if (state == EnvelopeState.Attack)
 					rate = adsrTable[attack];
 			}
 		}
@@ -76,22 +77,22 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			lfsr = 0x7FFF;
 
-			if ((state == State.Attack) || (++exponentialCounter == exponentialCounterPeriod))
+			if ((state == EnvelopeState.Attack) || (++exponentialCounter == exponentialCounterPeriod))
 			{
 				exponentialCounter = 0;
 				if (!freeze)
 				{
 					switch (state)
 					{
-						case State.Attack:
+						case EnvelopeState.Attack:
 							++envelopeCounter;
 							if (envelopeCounter == 0xFF)
 							{
-								state = State.Decay;
+								state = EnvelopeState.Decay;
 								rate = adsrTable[decay];
 							}
 							break;
-						case State.Decay:
+						case EnvelopeState.Decay:
 							if (envelopeCounter == ((sustain << 4) | sustain))
 							{
 								return;
@@ -103,7 +104,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							}
 							envelopeCounter--;
 							break;
-						case State.Release:
+						case EnvelopeState.Release:
 							if (exponentialCounterPeriod != 1)
 							{
 								envelopeProcessEnabled = true;
@@ -127,7 +128,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			set
 			{
 				decay = value;
-				if (state == State.Decay)
+				if (state == EnvelopeState.Decay)
 					rate = adsrTable[decay];
 			}
 		}
@@ -144,14 +145,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 				if (!gate && gateThis)
 				{
-					state = State.Attack;
+					state = EnvelopeState.Attack;
 					rate = adsrTable[attack];
 					freeze = false;
 					envelopeProcessEnabled = false;
 				}
 				else if (gate && !gateThis)
 				{
-					state = State.Release;
+					state = EnvelopeState.Release;
 					rate = adsrTable[release];
 				}
 
@@ -176,7 +177,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			set
 			{
 				release = value;
-				if (state == State.Release)
+				if (state == EnvelopeState.Release)
 					rate = adsrTable[release];
 			}
 		}
@@ -195,9 +196,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			exponentialCounterPeriod = 1;
 			
 			lfsr = 0x7FFF;
-			state = State.Release;
+			state = EnvelopeState.Release;
 			rate = adsrTable[release];
 			freeze = true;
+		}
+
+		public void SetState(int stateAtk, int stateDcy, int stateSus, int stateRls, bool stateGate, EnvelopeState stateState)
+		{
+			attack = stateAtk;
+			decay = stateDcy;
+			sustain = stateSus;
+			release = stateRls;
+			gate = stateGate;
+			state = stateState;
 		}
 
 		public int Sustain
