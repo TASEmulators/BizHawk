@@ -14,6 +14,7 @@
 #include gamedb_pce_cd.txt
 #include gamedb_sega_md.txt
 #include gamedb_a2600.txt
+#include gamedb_coleco.txt
 #include gamedb_gb.txt
 #include gamedb_gbc.txt
 #include gamedb_snes.txt
