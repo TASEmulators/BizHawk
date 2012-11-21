@@ -108,12 +108,13 @@
     <Compile Include="Computers\Commodore64\Vic.cs" />
     <Compile Include="Computers\Commodore64\VicFunction.cs" />
     <Compile Include="Computers\Commodore64\VicMem.cs" />
+    <Compile Include="Computers\Commodore64\VicVideoProvider.cs" />
     <Compile Include="Computers\Commodore64\_VicIINew.cs" />
     <Compile Include="Computers\Commodore64\_VicIINewPipeline.cs" />
     <Compile Include="Computers\Commodore64\_VicIINewVideoProvider.cs" />
     <Compile Include="Computers\Commodore64\_VicIIRegs.cs" />
     <Compile Include="Computers\Commodore64\VicRegs.cs" />
-    <Compile Include="Computers\Commodore64\VicState.cs" />
+    <Compile Include="Computers\Commodore64\_VicState.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />

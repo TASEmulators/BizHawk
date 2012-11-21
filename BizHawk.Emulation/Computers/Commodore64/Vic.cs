@@ -9,12 +9,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		private uint cyclesTotal;
 		private uint linesTotal;
+		private Memory mem;
+		private uint rasterLeft;
 		private Region region;
 
 		private Action Execute;
 
-		public VicII(Region vicRegion)
+		public VicII(Region vicRegion, Memory vicMem)
 		{
+			mem = vicMem;
 			region = vicRegion;
 
 			switch (region)
@@ -22,14 +25,40 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				case Region.NTSC:
 					cyclesTotal = 65;
 					linesTotal = 263;
+					rasterLeft = 0x19C;
 					Execute = ExecuteNTSC;
 					break;
 				case Region.PAL:
 					cyclesTotal = 63;
 					linesTotal = 312;
+					rasterLeft = 0x194;
 					Execute = ExecutePAL;
 					break;
 			}
+
+			// initalize screen properties
+			screenWidth = cyclesTotal * 8;
+			screenHeight = linesTotal;
+
+			// initialize viewport properties
+			visibleWidth = screenWidth;
+			visibleHeight = screenHeight;
+			visibleRight = visibleLeft + visibleWidth;
+			visibleBottom = visibleTop + visibleHeight;
+
+			// initialize screen buffer
+			screenBuffer = new int[visibleWidth * visibleHeight];
+		}
+
+		private void ExecuteCommon()
+		{
+			if (!badlineEnabled && rasterLine == 0x30)
+				badlineEnabled = displayEnable;
+
+			if (badlineEnabled)
+				CheckBadline();
+
+			Execute();
 		}
 
 		private void ExecuteNTSC()
@@ -174,7 +203,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
-
-
+		public void PerformCycle()
+		{
+			ExecuteCommon();
+			rasterCycle++;
+			if (rasterCycle == cyclesTotal)
+			{
+				rasterCycle = 0;
+				NextRasterLine();
+			}
+		}
 	}
 }
