@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.radioButton6 = new System.Windows.Forms.RadioButton();
 			this.radioButton5 = new System.Windows.Forms.RadioButton();
 			this.radioButton3 = new System.Windows.Forms.RadioButton();
 			this.radioButton4 = new System.Windows.Forms.RadioButton();
@@ -44,6 +45,7 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.radioButton6);
 			this.groupBox1.Controls.Add(this.radioButton5);
 			this.groupBox1.Controls.Add(this.radioButton3);
 			this.groupBox1.Controls.Add(this.radioButton4);
@@ -51,10 +53,22 @@
 			this.groupBox1.Controls.Add(this.radioButton1);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(132, 132);
+			this.groupBox1.Size = new System.Drawing.Size(132, 182);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Preset Select";
+			// 
+			// radioButton6
+			// 
+			this.radioButton6.AutoSize = true;
+			this.radioButton6.Location = new System.Drawing.Point(6, 134);
+			this.radioButton6.Name = "radioButton6";
+			this.radioButton6.Size = new System.Drawing.Size(47, 17);
+			this.radioButton6.TabIndex = 3;
+			this.radioButton6.TabStop = true;
+			this.radioButton6.Text = "GBA";
+			this.radioButton6.UseVisualStyleBackColor = true;
+			this.radioButton6.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
 			// 
 			// radioButton5
 			// 
@@ -187,5 +201,6 @@
 		private BmpView bmpView1;
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonCancel;
+		private System.Windows.Forms.RadioButton radioButton6;
 	}
 }
