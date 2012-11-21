@@ -11,23 +11,25 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 	public partial class WaveformGenerator
 	{
-		private int accumulator;
+		// internal
 		private byte control;
-		private int floatingOutputTtl;
 		private int freq;
-		private bool msbRising;
-		private int noiseOutput;
-		private int pulseOutput;
 		private int pw;
-		private int ringMsbMask;
-		private int shiftRegister;
-		private int shiftRegisterDelay;
-		private int shiftRegisterResetDelay;
-		private bool sync;
-		private bool test;
+
+		public int accumulator;
+		public int floatingOutputTtl;
+		public bool msbRising;
+		public int noiseOutput;
+		public int pulseOutput;
+		public int ringMsbMask;
+		public int shiftRegister;
+		public int shiftRegisterDelay;
+		public int shiftRegisterResetDelay;
+		public bool sync;
+		public bool test;
 		private short[] wave;
-		private int waveform;
-		private int waveformOutput;
+		public int waveform;
+		public int waveformOutput;
 
 		// these are temp values used to speed up calculation
 		private int noNoise;
@@ -194,6 +196,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			shiftRegister = 0x7FFFFF;
 			shiftRegisterResetDelay = 0;
 			UpdateNoiseOutput();
+		}
+
+		public void SetState(byte stateControl, int stateFreq, int statePulseWidth)
+		{
+			pw = statePulseWidth;
+			freq = stateFreq;
+			control = stateControl;
+			noNoise = (waveform & 0x8) != 0 ? 0x000 : 0xFFF;
+			noNoiseOrNoiseOutput = noNoise | noiseOutput;
+			noPulse = (waveform & 0x4) != 0 ? 0x000 : 0xFFF;
+			ringMsbMask = ((~control >> 5) & (control >> 2) & 0x1) << 23;
+			waveform = (control >> 4) & 0x0F;
+			test = (control & 0x08) != 0;
+			sync = (control & 0x02) != 0;
+			wave = WaveformSamples[waveform & 0x7];
 		}
 
 		public void Synchronize(WaveformGenerator syncDest, WaveformGenerator syncSource)

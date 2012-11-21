@@ -150,12 +150,5 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			domains.Add(new MemoryDomain("DISKVIA1", 0x10, Endian.Little, new Func<int, byte>(PeekVia1), new Action<int, byte>(PokeVia1)));
 			memoryDomains = domains.AsReadOnly();
 		}
-
-		void SyncState(Serializer ser) //TODO
-		{
-			ser.Sync("Lag", ref _lagcount);
-			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
-		}
 	}
 }
