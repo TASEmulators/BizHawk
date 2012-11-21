@@ -23,7 +23,8 @@ namespace BizHawk.MultiClient.GBtools
 				case GBColors.ColorType.vivid: radioButton2.Checked = true; break;
 				case GBColors.ColorType.vbavivid: radioButton3.Checked = true; break;
 				case GBColors.ColorType.vbagbnew: radioButton4.Checked = true; break;
-				case GBColors.ColorType.vgabgbold: radioButton5.Checked = true; break;
+				case GBColors.ColorType.vbabgbold: radioButton5.Checked = true; break;
+				case GBColors.ColorType.gba: radioButton6.Checked = true; break;
 			}
 		}
 		GBColors.ColorType type;
@@ -65,7 +66,9 @@ namespace BizHawk.MultiClient.GBtools
 			if (sender == radioButton4)
 				type = GBColors.ColorType.vbagbnew;
 			if (sender == radioButton5)
-				type = GBColors.ColorType.vgabgbold;
+				type = GBColors.ColorType.vbabgbold;
+			if (sender == radioButton6)
+				type = GBColors.ColorType.gba;
 			if ((sender as RadioButton).Checked)
 				RefreshType();
 		}

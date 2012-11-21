@@ -103,13 +103,29 @@ namespace BizHawk.Emulation.Consoles.GB
 			return c.Bit5to8Good();
 		}
 
+		// possibly represents a GBA screen, more or less
+		// but probably not (black point?)
+		static int GBAGamma(int input)
+		{
+			return (int)Math.Round(Math.Pow(input / 31.0, 3.5 / 2.2) * 255.0);
+		}
+		public static Triple GBAColor(Triple c)
+		{
+			Triple ret;
+			ret.r = GBAGamma(c.r);
+			ret.g = GBAGamma(c.g);
+			ret.b = GBAGamma(c.b);
+			return ret;
+		}
+
 		public enum ColorType
 		{
 			gambatte,
 			vivid,
 			vbavivid,
 			vbagbnew,
-			vgabgbold
+			vbabgbold,
+			gba
 		};
 
 		public static int[] GetLut(ColorType c)
@@ -121,7 +137,8 @@ namespace BizHawk.Emulation.Consoles.GB
 				case ColorType.vivid: f = UltraVividColor; break;
 				case ColorType.vbavivid: f = VividVBAColor; break;
 				case ColorType.vbagbnew: f = NewVBAColor; break;
-				case ColorType.vgabgbold: f = OldVBAColor; break;
+				case ColorType.vbabgbold: f = OldVBAColor; break;
+				case ColorType.gba: f = GBAColor; break;
 			}
 			int[] ret = new int[32768];
 			int i = 0;
