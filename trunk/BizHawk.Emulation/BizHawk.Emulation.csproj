@@ -106,6 +106,7 @@
     <Compile Include="Computers\Commodore64\Timing.cs" />
     <Compile Include="Computers\Commodore64\Via.cs" />
     <Compile Include="Computers\Commodore64\Vic.cs" />
+    <Compile Include="Computers\Commodore64\VicCycles.cs" />
     <Compile Include="Computers\Commodore64\VicFunction.cs" />
     <Compile Include="Computers\Commodore64\VicMem.cs" />
     <Compile Include="Computers\Commodore64\VicVideoProvider.cs" />
