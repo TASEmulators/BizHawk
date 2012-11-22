@@ -12,6 +12,7 @@ using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Consoles.Coleco;
 
 namespace BizHawk.MultiClient
 {
@@ -110,7 +111,10 @@ namespace BizHawk.MultiClient
 						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
 					}
 				}
-
+				else if (Global.Emulator is ColecoVision)
+				{
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.SKIPBIOS, Global.Config.ColecoSkipBiosIntro.ToString());
+				}
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{

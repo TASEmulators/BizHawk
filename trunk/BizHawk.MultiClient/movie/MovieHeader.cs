@@ -35,7 +35,9 @@ namespace BizHawk.MultiClient
 		public const string GB_FORCEDMG = "Force_DMG_Mode";
 		public const string GB_GBA_IN_CGB = "GBA_In_CGB";
 		public const string SGB = "SGB"; //a snes movie will set this to indicate that it's actually SGB
-
+		
+		//BIO skipping setting (affects sync)
+		public const string SKIPBIOS = "Skip_Bios";
 
 		public static string MovieVersion = "BizHawk v0.0.1";
 
