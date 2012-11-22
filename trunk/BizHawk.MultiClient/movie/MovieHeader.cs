@@ -183,6 +183,26 @@ namespace BizHawk.MultiClient
 				line = ParseHeader(line, MovieHeader.SHA1);
 				AddHeaderLine(MovieHeader.SHA1, line);
 			}
+			else if (line.Contains(MovieHeader.SKIPBIOS))
+			{
+				line = ParseHeader(line, MovieHeader.SKIPBIOS);
+				AddHeaderLine(MovieHeader.SKIPBIOS, line);
+			}
+			else if (line.Contains(MovieHeader.GB_FORCEDMG))
+			{
+				line = ParseHeader(line, MovieHeader.GB_FORCEDMG);
+				AddHeaderLine(MovieHeader.GB_FORCEDMG, line);
+			}
+			else if (line.Contains(MovieHeader.GB_GBA_IN_CGB))
+			{
+				line = ParseHeader(line, MovieHeader.GB_GBA_IN_CGB);
+				AddHeaderLine(MovieHeader.GB_GBA_IN_CGB, line);
+			}
+			else if (line.Contains(MovieHeader.SGB))
+			{
+				line = ParseHeader(line, MovieHeader.SGB);
+				AddHeaderLine(MovieHeader.SGB, line);
+			}
 			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 			{
 				return false;
