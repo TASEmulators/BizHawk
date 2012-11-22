@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			writer.WriteLine("[Coleco]\n");
 			Cpu.SaveStateText(writer);
 			PSG.SaveStateText(writer);
-			//VDP.SaveStateText(writer); //TODO
+			VDP.SaveStateText(writer);
 
 			writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("Lag {0}", _lagcount);
