@@ -415,12 +415,30 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			//TODO
+			writer.Write(StatusByte);
+			writer.Write(VdpWaitingForLatchByte);
+			writer.Write(VdpLatch);
+			writer.Write(VdpBuffer);
+			writer.Write(VdpAddress);
+			writer.Write((byte)vdpCommand);
+			writer.Write(Registers);
+			writer.Write(VRAM);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			//TODO
+			StatusByte = reader.ReadByte();
+			VdpWaitingForLatchByte = reader.ReadBoolean();
+			VdpLatch = reader.ReadByte();
+			VdpBuffer = reader.ReadByte();
+			VdpAddress = reader.ReadUInt16();
+			vdpCommand = (VdpCommand)Enum.ToObject(typeof(VdpCommand), reader.ReadByte());
+			Registers = reader.ReadBytes(Registers.Length);
+			VRAM = reader.ReadBytes(VRAM.Length);
+			for (int i = 0; i < Registers.Length; i++)
+			{
+				WriteRegister(i, Registers[i]);
+			}
 		}
 	}
 }
