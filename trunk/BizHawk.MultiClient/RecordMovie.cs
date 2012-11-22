@@ -188,7 +188,9 @@ namespace BizHawk.MultiClient
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			RecordBox.Text = PathManager.FilesystemSafeName(Global.Game);
+			string name = PathManager.FilesystemSafeName(Global.Game);
+			name = Path.GetFileNameWithoutExtension(name);
+			RecordBox.Text = name;
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
 			if (Global.Config.UseDefaultAuthor)
