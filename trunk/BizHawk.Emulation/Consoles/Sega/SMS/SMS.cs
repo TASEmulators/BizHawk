@@ -222,6 +222,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 			writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("Lag {0}", _lagcount);
+			writer.WriteLine("IsLagFrame {0}", islag);
 			writer.WriteLine("Bank0 {0}", RomBank0);
 			writer.WriteLine("Bank1 {0}", RomBank1);
 			writer.WriteLine("Bank2 {0}", RomBank2);
@@ -262,6 +263,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 					Frame = int.Parse(args[1]);
 				else if (args[0] == "Lag")
 					_lagcount = int.Parse(args[1]);
+				else if (args[0] == "IsLagFrame")
+					islag = bool.Parse(args[1]);
 				else if (args[0] == "RAM")
 					SystemRam.ReadFromHex(args[1]);
 				else if (args[0] == "SaveRAM")
@@ -311,6 +314,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 			writer.Write(Frame);
 			writer.Write(_lagcount);
+			writer.Write(islag);
 			writer.Write(RomBank0);
 			writer.Write(RomBank1);
 			writer.Write(RomBank2);
@@ -330,6 +334,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 			Frame = reader.ReadInt32();
 			_lagcount = reader.ReadInt32();
+			islag = reader.ReadBoolean();
 			RomBank0 = reader.ReadByte();
 			RomBank1 = reader.ReadByte();
 			RomBank2 = reader.ReadByte();
