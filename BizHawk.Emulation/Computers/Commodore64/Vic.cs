@@ -52,6 +52,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void ExecuteCommon()
 		{
+			cycleFetchG = false;
+			cycleFetchP = false;
+			cycleFetchR = false;
+			cycleFetchS = false;
+
 			if (!badlineEnabled && rasterLine == 0x30)
 				badlineEnabled = displayEnable;
 
@@ -137,7 +142,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			switch (rasterCycle)
 			{
-				case 0: break;
+				case 0:
+
+					BASprite(3, 4);
+					break;
 				case 1: break;
 				case 2: break;
 				case 3: break;

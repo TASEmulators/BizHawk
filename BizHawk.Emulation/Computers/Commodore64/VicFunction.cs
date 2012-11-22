@@ -7,16 +7,37 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class VicII
 	{
+		private void BAClear()
+		{
+			ba = false;
+			prefetchCounter = 0;
+		}
+
+		private void BASet()
+		{
+			if (!ba)
+			{
+				ba = true;
+				prefetchCounter = 4;
+			}
+		}
+
 		private void BASprite(uint index0)
 		{
+			if (sprites[index0].dma)
+				BASet();
 		}
 
 		private void BASprite(uint index0, uint index1)
 		{
+			if (sprites[index0].dma || sprites[index1].dma)
+				BASet();
 		}
 
 		private void BASprite(uint index0, uint index1, uint index2)
 		{
+			if (sprites[index0].dma || sprites[index1].dma || sprites[index2].dma)
+				BASet();
 		}
 
 		private void CheckBadline()
@@ -110,6 +131,36 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		private uint Fetch0(ushort addr)
+		{
+			phaseRead0 = mem.VicRead(addr);
+			return phaseRead0;
+		}
+
+		private uint Fetch1(ushort addr)
+		{
+			phaseRead1 = mem.VicRead(addr);
+			return phaseRead1;
+		}
+
+		private ushort FetchAddr()
+		{
+			ushort addr;
+
+			if (cycleFetchG)
+				addr = idle ? FetchAddrGI() : FetchAddrG();
+			else if (cycleFetchP)
+				addr = FetchAddrP();
+			else if (cycleFetchS)
+				addr = FetchAddrS();
+			else if (cycleFetchR)
+				addr = FetchAddrR();
+			else
+				addr = extraColorMode ? (ushort)0x39FF : (ushort)0x3FFF;
+
+			return addr;
+		}
+
 		private ushort FetchAddrG()
 		{
 			ushort addr;
@@ -125,34 +176,26 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return addr;
 		}
 
-		private uint Fetch0(ushort addr)
+		private ushort FetchAddrGI()
 		{
-			if (cycleFetchG)
-			{
-				if (!idle)
-					return FetchG();
-				else
-					return FetchGIdle();
-			}
-			else if (cycleFetchP)
-			{
-				return FetchP();
-			}
-			else if (cycleFetchS)
-			{
-				return FetchS();
-			}
-			else if (cycleFetchR)
-			{
-				return FetchR();
-			}
-			return FetchIdle();
+			return (extraColorMode ? (ushort)0x39FF : (ushort)0x3FFF);
 		}
 
-		private uint Fetch1(ushort addr)
+		private ushort FetchAddrP()
 		{
-			phaseRead1 = mem.VicRead(addr);
-			return phaseRead1;
+			return 0;
+		}
+
+		private ushort FetchAddrR()
+		{
+			ushort addr = refreshAddr--;
+			addr |= 0x3F00;
+			return addr;
+		}
+
+		private ushort FetchAddrS()
+		{
+			return 0;
 		}
 
 		private ushort FetchAddrV(uint offset)
@@ -165,14 +208,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return 0;
 		}
 
-		private ushort FetchG()
+		private void FetchG()
 		{
-			return 0;
-		}
-
-		private ushort FetchGIdle()
-		{
-			return 0;
+			if (prefetchCounter > 0)
+			{
+				videoBuffer[vmli] = 0xFF;
+				colorBuffer[vmli] = 0;
+			}
+			else
+			{
+				videoBuffer[vmli] = Fetch1(FetchAddrV(vc));
+				colorBuffer[vmli] = (uint)mem.colorRam[vc] & 0xF;
+			}
 		}
 
 		private ushort FetchIdle()

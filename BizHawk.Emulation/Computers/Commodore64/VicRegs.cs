@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		private bool ba;
 		private uint backgroundColor0;
 		private uint backgroundColor1;
 		private uint backgroundColor2;
@@ -71,6 +72,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private bool borderOnVerticalEnable;
 		private uint borderRight;
 		private uint borderTop;
+		private uint[] colorBuffer;
+		private bool collisionEnabled;
 		private bool columnSelect;
 		private bool cycleFetchG;
 		private bool cycleFetchP;
@@ -93,6 +96,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private bool multiColorMode;
 		private uint phaseRead0;
 		private uint phaseRead1;
+		private uint prefetchCounter;
 		private uint rasterCycle;
 		private uint rasterIrqLine;
 		private uint rasterLine;
@@ -115,6 +119,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void SyncState(Serializer ser)
 		{
+			ser.Sync("ba", ref ba);
 			ser.Sync("backgroundColor0", ref backgroundColor0);
 			ser.Sync("backgroundColor1", ref backgroundColor1);
 			ser.Sync("backgroundColor2", ref backgroundColor2);
@@ -131,7 +136,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ser.Sync("borderOnVerticalEnable", ref borderOnVerticalEnable);
 			ser.Sync("borderRight", ref borderRight);
 			ser.Sync("borderTop", ref borderTop);
+			ser.Sync("collisionEnabled", ref collisionEnabled);
 			ser.Sync("columnSelect", ref columnSelect);
+			ser.Sync("cycleFetchG", ref cycleFetchG);
+			ser.Sync("cycleFetchP", ref cycleFetchP);
+			ser.Sync("cycleFetchR", ref cycleFetchR);
+			ser.Sync("cycleFetchS", ref cycleFetchS);
 			ser.Sync("displayEnable", ref displayEnable);
 			ser.Sync("enableIrqDataCollision", ref enableIrqDataCollision);
 			ser.Sync("enableIrqLightPen", ref enableIrqLightPen);
@@ -170,7 +180,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			for (int i = 0; i < 8; i++)
 			{
-				ser.BeginSection("sprite" + i.ToString());
+				ser.BeginSection("sprites" + i.ToString());
 				sprites[i].SyncState(ser);
 				ser.EndSection();
 			}
@@ -480,7 +490,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 		private byte Reg18 {
-			get { return (byte)((videoRam << 4) | (bitmapRam << 1)); }
+			get { return (byte)((videoRam << 4) | (bitmapRam << 1) | 0x1); }
 			set { videoRam = ((uint)(value & 0xF0)) >> 4; bitmapRam = ((uint)(value & 0x0E)) >> 1; }
 		}
 		private byte Reg19 {
@@ -646,64 +656,64 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 		private byte Reg20 {
-			get { return (byte)borderColor; }
-			set { borderColor = value; }
+			get { return (byte)(borderColor | 0xF0); }
+			set { borderColor = (uint)value & 0x0F; }
 		}
 		private byte Reg21 {
-			get { return (byte)backgroundColor0; }
-			set { backgroundColor0 = value; }
+			get { return (byte)(backgroundColor0 | 0xF0); }
+			set { backgroundColor0 = (uint)value & 0x0F; }
 		}
 		private byte Reg22 {
-			get { return (byte)backgroundColor1; }
-			set { backgroundColor1 = value; }
+			get { return (byte)(backgroundColor1 | 0xF0); }
+			set { backgroundColor1 = (uint)value & 0x0F; }
 		}
 		private byte Reg23 {
-			get { return (byte)backgroundColor2; }
-			set { backgroundColor2 = value; }
+			get { return (byte)(backgroundColor2 | 0xF0); }
+			set { backgroundColor2 = (uint)value & 0x0F; }
 		}
 		private byte Reg24 {
-			get { return (byte)backgroundColor3; }
-			set { backgroundColor3 = value; }
+			get { return (byte)(backgroundColor3 | 0xF0); }
+			set { backgroundColor3 = (uint)value & 0x0F; }
 		}
 		private byte Reg25 {
-			get { return (byte)spriteMultiColor0; }
-			set { spriteMultiColor0 = value; }
+			get { return (byte)(spriteMultiColor0 | 0xF0); }
+			set { spriteMultiColor0 = (uint)value & 0x0F; }
 		}
 		private byte Reg26 {
-			get { return (byte)spriteMultiColor1; }
-			set { spriteMultiColor1 = value; }
+			get { return (byte)(spriteMultiColor1 | 0xF0); }
+			set { spriteMultiColor1 = (uint)value & 0x0F; }
 		}
 		private byte Reg27 {
-			get { return (byte)sprites[0].color; }
-			set { sprites[0].color = value; }
+			get { return (byte)(sprites[0].color | 0xF0); }
+			set { sprites[0].color = (uint)value & 0x0F; }
 		}
 		private byte Reg28 {
-			get { return (byte)sprites[1].color; }
-			set { sprites[1].color = value; }
+			get { return (byte)(sprites[1].color | 0xF0); }
+			set { sprites[1].color = (uint)value & 0x0F; }
 		}
 		private byte Reg29 {
-			get { return (byte)sprites[2].color; }
-			set { sprites[2].color = value; }
+			get { return (byte)(sprites[2].color | 0xF0); }
+			set { sprites[2].color = (uint)value & 0x0F; }
 		}
 		private byte Reg2A {
-			get { return (byte)sprites[3].color; }
-			set { sprites[3].color = value; }
+			get { return (byte)(sprites[3].color | 0xF0); }
+			set { sprites[3].color = (uint)value & 0x0F; }
 		}
 		private byte Reg2B {
-			get { return (byte)sprites[4].color; }
-			set { sprites[4].color = value; }
+			get { return (byte)(sprites[4].color | 0xF0); }
+			set { sprites[4].color = (uint)value & 0x0F; }
 		}
 		private byte Reg2C {
-			get { return (byte)sprites[5].color; }
-			set { sprites[5].color = value; }
+			get { return (byte)(sprites[5].color | 0xF0); }
+			set { sprites[5].color = (uint)value & 0x0F; }
 		}
 		private byte Reg2D {
-			get { return (byte)sprites[6].color; }
-			set { sprites[6].color = value; }
+			get { return (byte)(sprites[6].color | 0xF0); }
+			set { sprites[6].color = (uint)value & 0x0F; }
 		}
 		private byte Reg2E {
-			get { return (byte)sprites[7].color; }
-			set { sprites[7].color = value; }
+			get { return (byte)(sprites[7].color | 0xF0); }
+			set { sprites[7].color = (uint)value & 0x0F; }
 		}
 
 	}
