@@ -488,6 +488,9 @@ namespace BizHawk.MultiClient
 		public bool SMSDispBG = true;
 		public bool SMSDispOBJ = true;
 
+		// Coleco Settings
+		public bool ColecoSkipBiosIntro = false;
+
 		//GB Debugger settings
 		public bool AutoloadGBDebugger = false;
 		public bool GBDebuggerSaveWindowPosition = true;

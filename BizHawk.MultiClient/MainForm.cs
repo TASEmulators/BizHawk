@@ -1325,9 +1325,10 @@ namespace BizHawk.MultiClient
 			gBToolStripMenuItem.Visible = false;
 			atariToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
+			colecoToolStripMenuItem.Visible = false;
+			
 			switch (system)
 			{
-
 				case "TI83":
 					tI83ToolStripMenuItem.Visible = true;
 					break;
@@ -1366,6 +1367,9 @@ namespace BizHawk.MultiClient
 					else
 						sNESToolStripMenuItem.Text = "&SNES";
 					sNESToolStripMenuItem.Visible = true;
+					break;
+				case "Coleco":
+					colecoToolStripMenuItem.Visible = true;
 					break;
 				default:
 					break;
@@ -1790,7 +1794,7 @@ namespace BizHawk.MultiClient
 								break;
 							case "Coleco":
 								string colbiosPath = PathManager.MakeAbsolutePath(Global.Config.PathCOLBios, "Coleco");
-								ColecoVision c = new ColecoVision(game, rom.RomData, colbiosPath);
+								ColecoVision c = new ColecoVision(game, rom.RomData, colbiosPath, Global.Config.ColecoSkipBiosIntro);
 								nextEmulator = c;
 								break;
 							case "INTV":
@@ -4459,6 +4463,17 @@ namespace BizHawk.MultiClient
 
 		private void miLimitFramerate_DropDownOpened(object sender, EventArgs e)
 		{
+		}
+
+		private void skipBIOIntroToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ColecoSkipBiosIntro ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void colecoToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			skipBIOIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
 		}
 
 	}

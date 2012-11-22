@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public SN76489 PSG;
 		public byte[] Ram = new byte[1024];
 
-		public ColecoVision(GameInfo game, byte[] rom, string biosPath)
+		public ColecoVision(GameInfo game, byte[] rom, string biosPath, bool skipbios)
 		{
 			Cpu = new Z80A();
 			Cpu.ReadMemory = ReadMemory;
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 
-			LoadRom(rom);
+			LoadRom(rom, skipbios);
 			this.game = game;
 			SetupMemoryDomains();
 			Reset();
@@ -80,15 +80,18 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				LagCount++;
 		}
 
-        void LoadRom(byte[] rom)
+        void LoadRom(byte[] rom, bool skipbios)
         {
             RomData = new byte[0x8000];
             for (int i = 0; i < 0x8000; i++)
                 RomData[i] = rom[i % rom.Length];
 
-// hack to skip colecovision title screen
-//RomData[0] = 0x55;
-//RomData[1] = 0xAA;
+			// hack to skip colecovision title screen
+			if (skipbios)
+			{
+				RomData[0] = 0x55;
+				RomData[1] = 0xAA;
+			}
         }
 
 		void Reset()
