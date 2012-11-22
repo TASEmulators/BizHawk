@@ -2065,6 +2065,7 @@ namespace BizHawk.MultiClient
 				SaveState("Auto");
 			if (Global.Emulator.SaveRamModified)
 				SaveRam();
+			StopAVI();
 			Global.Emulator.Dispose();
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
