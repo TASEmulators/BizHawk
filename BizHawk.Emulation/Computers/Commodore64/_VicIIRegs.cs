@@ -71,6 +71,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private bool spritePriority;
 		private VicIINewSprite[] sprites;
 
+		private bool advanceX;
 		private bool badline;
 		private int bitmapColumn;
 		private byte bitmapData;
@@ -88,6 +89,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private byte colorDataBus;
 		private byte[] colorMemory;
 		private bool displayEnabled;
+		private int fetchCounter;
 		private int graphicsMode;
 		private bool idle;
 		private int plotterBufferIndex;
@@ -97,6 +99,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private int plotterPixel;
 		private int[] plotterPixelBuffer;
 		private int rasterInterruptLine;
+		private bool rasterInterruptTriggered;
 		private int rasterLeft;
 		private int rasterLines;
 		private int rasterWidth;
@@ -565,6 +568,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (addr)
 			{
 				case 0x11:
+					rasterInterruptTriggered = false;
 					rasterInterruptLine &= 0xFF;
 					rasterInterruptLine |= (val & 0x80) << 1;
 					// raster upper bit can't be changed, save and restore the value
@@ -576,6 +580,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					break;
 				case 0x12:
 					// raster interrupt lower 8 bits
+					rasterInterruptTriggered = false;
 					rasterInterruptLine &= 0x100;
 					rasterInterruptLine |= (val & 0xFF);
 					break;

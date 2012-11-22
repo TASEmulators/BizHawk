@@ -44,6 +44,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ser.Sync("YSCROLL", ref YSCROLL);
 
 			// state
+			ser.Sync("ADVANCEX", ref advanceX);
 			ser.Sync("BADLINE", ref badline);
 			ser.Sync("BITMAPCOLUMN", ref bitmapColumn);
 			ser.Sync("BITMAPDATA", ref bitmapData);
@@ -57,6 +58,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ser.Sync("COLORDATABUS", ref colorDataBus);
 			ser.Sync("COLORMEM", ref colorMemory, false);
 			ser.Sync("DISPLAYENABLED", ref displayEnabled);
+			ser.Sync("FETCHCOUNTER", ref fetchCounter);
 			ser.Sync("IDLE", ref idle);
 			ser.Sync("PLOTTERBUFFERINDEX", ref plotterBufferIndex);
 			ser.Sync("PLOTTERDATA", ref plotterData);
@@ -65,6 +67,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ser.Sync("PLOTTERPIXEL", ref plotterPixel);
 			ser.Sync("PLOTTERPIXELBUFFER", ref plotterPixelBuffer, false);
 			ser.Sync("RASTERINTERRUPTLINE", ref rasterInterruptLine);
+			ser.Sync("RASTERINTERRUPTTRIGGERED", ref rasterInterruptTriggered);
 			ser.Sync("RASTERX", ref rasterX);
 			ser.Sync("REFRESHADDRESS", ref refreshAddress);
 

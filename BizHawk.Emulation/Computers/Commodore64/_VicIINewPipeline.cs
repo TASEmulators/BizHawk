@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			pipelineGAccess = false;
 			pipelineMemoryBusy = false;
+			advanceX = true;
 
 			foreach (Action a in pipeline[cycle])
 				a();
@@ -420,6 +421,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						{	// 61
 							PipelineCycle,
 							PipelineFetchSprite1P,
+							PipelineDisableAdvanceX,
 							PipelineRender
 						},
 						new Action[]
@@ -454,7 +456,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineIRQ0,
 							PipelineFetchSprite3P,
-							PipelineBadlineDelay,
 							PipelineRender
 						},
 						new Action[]
@@ -462,7 +463,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineIRQ1,
 							PipelineFetchSprite3S,
-							PipelineBadlineDelay,
 							PipelineRender
 						},
 						new Action[]
@@ -542,6 +542,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						{	// 14
 							PipelineCycle,
 							PipelineDramRefresh,
+							PipelineBadlineDelay,
 							PipelineRender
 						},
 						new Action[]
@@ -783,7 +784,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						{	// 54
 							PipelineCycle,
 							PipelineFetchC,
-							PipelineSpriteMYEFlip,
 							PipelineSpriteEnable0,
 							PipelineRender
 						},
@@ -791,6 +791,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						{	// 55
 							PipelineCycle,
 							PipelineSpriteEnable1,
+							PipelineSpriteMYEFlip,
 							PipelineIdle,
 							PipelineRender
 						},
@@ -876,6 +877,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			for (int i = 0; i < 8; i++)
 				if (!sprites[i].MxYE)
 					sprites[i].MxYEToggle = true;
+		}
+
+		private void PipelineDisableAdvanceX()
+		{
+			advanceX = false;
 		}
 
 		private void PipelineDramRefresh()
@@ -1072,14 +1078,20 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void PipelineIRQ0()
 		{
-			if (RASTER == rasterInterruptLine && RASTER > 0)
+			if (!rasterInterruptTriggered && RASTER == rasterInterruptLine && RASTER > 0)
+			{
 				IRST = true;
+				rasterInterruptTriggered = true;
+			}
 		}
 
 		private void PipelineIRQ1()
 		{
-			if (RASTER == 0 && rasterInterruptLine == 0)
+			if (!rasterInterruptTriggered && RASTER == 0 && rasterInterruptLine == 0)
+			{
 				IRST = true;
+				rasterInterruptTriggered = true;
+			}
 		}
 
 		private void PipelinePlot()
@@ -1259,6 +1271,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void PipelineRasterAdvance()
 		{
+			rasterInterruptTriggered = false;
 			RASTER++;
 			if (RASTER == rasterLines)
 			{
@@ -1332,9 +1345,25 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					plotterBufferIndex = 0;
 
 				bitmapColumn++;
-				rasterX++;
-				if (rasterX >= rasterWidth)
-					rasterX -= rasterWidth;
+				if (advanceX)
+				{
+					rasterX++;
+					if (rasterX >= rasterWidth)
+						rasterX -= rasterWidth;
+				}
+			}
+		}
+
+		private void PipelineSetBA(bool val)
+		{
+			if (val)
+			{
+				if (fetchCounter == 0)
+					fetchCounter = 4;
+			}
+			else
+			{
+				fetchCounter = 0;
 			}
 		}
 
