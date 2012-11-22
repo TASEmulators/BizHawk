@@ -530,7 +530,8 @@ namespace BizHawk.MultiClient
 			{
 				input.Append(IsBasePressed("Power") ? Global.COMMANDS[ControlType]["Power"] : ".");
 			}
-			else if (ControlType != "SMS Controller" && ControlType != "TI83 Controller" && ControlType != "ColecoVision Basic Controller")
+			
+			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller" && ControlType != "ColecoVision Basic Controller")
 			{
 				input.Append("|");
 			}
