@@ -151,6 +151,8 @@ namespace BizHawk.MultiClient
 			gd = null;
 			if (currentSnesCore == null) return;
 			gd = new SNESGraphicsDecoder();
+			if(checkBackdropColor.Checked)
+				gd.SetBackColor(DecodeWinformsColorToSNES(pnBackdropColor.BackColor));
 			gd.CacheTiles();
 			si = gd.ScanScreenInfo();
 		}
@@ -779,17 +781,23 @@ namespace BizHawk.MultiClient
 			UpdateColorDetails();
 		}
 
+		static int DecodeWinformsColorToSNES(Color winforms)
+		{
+			int r = winforms.R;
+			int g = winforms.G;
+			int b = winforms.B;
+			r >>= 3;
+			g >>= 3;
+			b >>= 3;
+			int col = r | (g << 5) | (b << 10);
+			return col;
+		}
+
 		void SyncBackdropColor()
 		{
 			if (checkBackdropColor.Checked)
 			{
-				int r = pnBackdropColor.BackColor.R;
-				int g = pnBackdropColor.BackColor.G;
-				int b = pnBackdropColor.BackColor.B;
-				r >>= 3;
-				g >>= 3;
-				b >>= 3;
-				int col = r | (g << 5) | (b << 10);
+				int col = DecodeWinformsColorToSNES(pnBackdropColor.BackColor);
 				LibsnesDll.snes_set_backdropColor(col);
 			}
 			else
@@ -802,6 +810,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.SNESGraphicsUseUserBackdropColor = checkBackdropColor.Checked;
 			SyncBackdropColor();
+			RegenerateData();
 		}
 
 		private void pnBackdropColor_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -814,6 +823,38 @@ namespace BizHawk.MultiClient
 				Global.Config.SNESGraphicsUserBackdropColor = pnBackdropColor.BackColor.ToArgb();
 				SyncBackdropColor();
 			}
+		}
+
+		private void SNESGraphicsDebugger_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (Control.ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			{
+				// find the control under the mouse
+				Point m = System.Windows.Forms.Cursor.Position;
+				Control top = this;
+				Control found = null;
+				do
+				{
+					found = top.GetChildAtPoint(top.PointToClient(m));
+					top = found;
+				} while (found != null && found.HasChildren);
+
+				if (found != null && found is SNESGraphicsViewer)
+				{
+					var v = found as SNESGraphicsViewer;
+					lock(v)
+						Clipboard.SetImage(v.GetBitmap());
+					labelClipboard.Text = found.Text + " copied to clipboard.";
+					messagetimer.Stop();
+					messagetimer.Start();
+				}
+			}
+		}
+
+		private void messagetimer_Tick(object sender, EventArgs e)
+		{
+			messagetimer.Stop();
+			labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
 		}
 
 
