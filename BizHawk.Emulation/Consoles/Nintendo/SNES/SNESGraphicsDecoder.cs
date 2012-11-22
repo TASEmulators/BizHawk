@@ -433,8 +433,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 									int dstOfs = dstY * stride + dstX;
 									int color = tileCache[srcOfs & tileCacheMask];
 									srcOfs++;
-									color += te.palette * ncolors;
-									color += paletteStart;
+									if (color == 0 && usingUserBackColor)
+									{ }
+									else
+									{
+										color += te.palette * ncolors;
+										color += paletteStart;
+									}
 									screen[dstOfs] = color;
 								}
 							}
@@ -483,7 +488,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			for (int i = 0; i < numpixels; i++)
 			{
-				buf[offset + i] = cgram[startcolor + buf[offset + i]] & 0x7FFF; //unfortunate that we have to mask this here.. maybe do it in a more optimal spot when we port it to c++
+				int entry = buf[offset + i];
+				int color;
+				if (entry == 0 && usingUserBackColor)
+					color = userBackColor;
+				else color = cgram[startcolor + entry] & 0x7FFF; //unfortunate that we have to mask this here.. maybe do it in a more optimal spot when we port it to c++
+
+				buf[offset + i] = color;
 			}
 		}
 		public void Colorize(int* buf, int offset, int numpixels)
@@ -495,6 +506,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		int[][] _tileCache = new int[18][];
+
+		bool usingUserBackColor = false;
+		int userBackColor;
+
+		public void SetBackColor(int snescol)
+		{
+			usingUserBackColor = true;
+			userBackColor = snescol;
+		}
 
 		/// <summary>
 		/// Caches all tiles at the 2bpp, 4bpp, and 8bpp decoded states.

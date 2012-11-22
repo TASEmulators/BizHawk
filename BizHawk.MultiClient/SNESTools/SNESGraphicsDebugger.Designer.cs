@@ -41,6 +41,9 @@
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.label24 = new System.Windows.Forms.Label();
+			this.pnBackdropColor = new System.Windows.Forms.Panel();
+			this.checkBackdropColor = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.checkScanlineControl = new System.Windows.Forms.CheckBox();
 			this.label19 = new System.Windows.Forms.Label();
@@ -147,12 +150,12 @@
 			this.tpTile = new System.Windows.Forms.TabPage();
 			this.viewerPanel = new System.Windows.Forms.Panel();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.checkBackdropColor = new System.Windows.Forms.CheckBox();
-			this.pnBackdropColor = new System.Windows.Forms.Panel();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.labelClipboard = new System.Windows.Forms.Label();
+			this.messagetimer = new System.Windows.Forms.Timer(this.components);
 			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
-			this.label24 = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -168,6 +171,7 @@
 			this.tpPalette.SuspendLayout();
 			this.tpTile.SuspendLayout();
 			this.viewerPanel.SuspendLayout();
+			this.groupBox6.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -196,7 +200,7 @@
 			// 
 			this.saveScreenshotAsToolStripMenuItem.Enabled = false;
 			this.saveScreenshotAsToolStripMenuItem.Name = "saveScreenshotAsToolStripMenuItem";
-			this.saveScreenshotAsToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+			this.saveScreenshotAsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
 			this.saveScreenshotAsToolStripMenuItem.Text = "Save Screenshot &As...";
 			// 
 			// saveScreenshotToClipboardToolStripMenuItem
@@ -204,19 +208,19 @@
 			this.saveScreenshotToClipboardToolStripMenuItem.Enabled = false;
 			this.saveScreenshotToClipboardToolStripMenuItem.Name = "saveScreenshotToClipboardToolStripMenuItem";
 			this.saveScreenshotToClipboardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.saveScreenshotToClipboardToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+			this.saveScreenshotToClipboardToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
 			this.saveScreenshotToClipboardToolStripMenuItem.Text = "Save Screenshot to Clipboard";
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(252, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(263, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -233,14 +237,14 @@
 			// autoloadToolStripMenuItem
 			// 
 			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.autoloadToolStripMenuItem.Text = "Auto-load";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
 			// saveWindowPositionToolStripMenuItem
 			// 
 			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "&Save Window Position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
@@ -264,6 +268,7 @@
 			// 
 			this.panel1.AutoSize = true;
 			this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.panel1.Controls.Add(this.groupBox6);
 			this.panel1.Controls.Add(this.label24);
 			this.panel1.Controls.Add(this.pnBackdropColor);
 			this.panel1.Controls.Add(this.checkBackdropColor);
@@ -277,6 +282,35 @@
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(558, 672);
 			this.panel1.TabIndex = 0;
+			// 
+			// label24
+			// 
+			this.label24.AutoSize = true;
+			this.label24.Location = new System.Drawing.Point(237, 42);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(78, 13);
+			this.label24.TabIndex = 49;
+			this.label24.Text = "User Backdrop";
+			// 
+			// pnBackdropColor
+			// 
+			this.pnBackdropColor.BackColor = System.Drawing.Color.Red;
+			this.pnBackdropColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pnBackdropColor.Location = new System.Drawing.Point(240, 7);
+			this.pnBackdropColor.Name = "pnBackdropColor";
+			this.pnBackdropColor.Size = new System.Drawing.Size(32, 32);
+			this.pnBackdropColor.TabIndex = 48;
+			this.pnBackdropColor.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pnBackdropColor_MouseDoubleClick);
+			// 
+			// checkBackdropColor
+			// 
+			this.checkBackdropColor.AutoSize = true;
+			this.checkBackdropColor.Location = new System.Drawing.Point(278, 25);
+			this.checkBackdropColor.Name = "checkBackdropColor";
+			this.checkBackdropColor.Size = new System.Drawing.Size(15, 14);
+			this.checkBackdropColor.TabIndex = 47;
+			this.checkBackdropColor.UseVisualStyleBackColor = true;
+			this.checkBackdropColor.CheckedChanged += new System.EventHandler(this.checkBackdropColor_CheckedChanged);
 			// 
 			// groupBox3
 			// 
@@ -1468,25 +1502,29 @@
 			this.toolTip1.InitialDelay = 250;
 			this.toolTip1.ReshowDelay = 100;
 			// 
-			// checkBackdropColor
+			// groupBox6
 			// 
-			this.checkBackdropColor.AutoSize = true;
-			this.checkBackdropColor.Location = new System.Drawing.Point(278, 25);
-			this.checkBackdropColor.Name = "checkBackdropColor";
-			this.checkBackdropColor.Size = new System.Drawing.Size(15, 14);
-			this.checkBackdropColor.TabIndex = 47;
-			this.checkBackdropColor.UseVisualStyleBackColor = true;
-			this.checkBackdropColor.CheckedChanged += new System.EventHandler(this.checkBackdropColor_CheckedChanged);
+			this.groupBox6.Controls.Add(this.labelClipboard);
+			this.groupBox6.Location = new System.Drawing.Point(1, 419);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(228, 43);
+			this.groupBox6.TabIndex = 50;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "Copy to Clipboard";
 			// 
-			// pnBackdropColor
+			// labelClipboard
 			// 
-			this.pnBackdropColor.BackColor = System.Drawing.Color.Red;
-			this.pnBackdropColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pnBackdropColor.Location = new System.Drawing.Point(240, 7);
-			this.pnBackdropColor.Name = "pnBackdropColor";
-			this.pnBackdropColor.Size = new System.Drawing.Size(32, 32);
-			this.pnBackdropColor.TabIndex = 48;
-			this.pnBackdropColor.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pnBackdropColor_MouseDoubleClick);
+			this.labelClipboard.AutoSize = true;
+			this.labelClipboard.Location = new System.Drawing.Point(7, 23);
+			this.labelClipboard.Name = "labelClipboard";
+			this.labelClipboard.Size = new System.Drawing.Size(212, 13);
+			this.labelClipboard.TabIndex = 0;
+			this.labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
+			// 
+			// messagetimer
+			// 
+			this.messagetimer.Interval = 5000;
+			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
 			// 
 			// paletteViewer
 			// 
@@ -1520,15 +1558,6 @@
 			this.viewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseMove);
 			this.viewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseUp);
 			// 
-			// label24
-			// 
-			this.label24.AutoSize = true;
-			this.label24.Location = new System.Drawing.Point(237, 42);
-			this.label24.Name = "label24";
-			this.label24.Size = new System.Drawing.Size(78, 13);
-			this.label24.TabIndex = 49;
-			this.label24.Text = "User Backdrop";
-			// 
 			// SNESGraphicsDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1536,10 +1565,12 @@
 			this.ClientSize = new System.Drawing.Size(1086, 697);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.menuStrip1);
+			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "SNESGraphicsDebugger";
 			this.Text = "SNES Graphics Debugger";
 			this.Load += new System.EventHandler(this.SNESGraphicsDebugger_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SNESGraphicsDebugger_KeyDown);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.tableLayoutPanel1.ResumeLayout(false);
@@ -1564,6 +1595,8 @@
 			this.tpPalette.PerformLayout();
 			this.tpTile.ResumeLayout(false);
 			this.viewerPanel.ResumeLayout(false);
+			this.groupBox6.ResumeLayout(false);
+			this.groupBox6.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1694,5 +1727,8 @@
 		private System.Windows.Forms.Panel pnBackdropColor;
 		private System.Windows.Forms.CheckBox checkBackdropColor;
 		private System.Windows.Forms.Label label24;
+		private System.Windows.Forms.GroupBox groupBox6;
+		private System.Windows.Forms.Label labelClipboard;
+		private System.Windows.Forms.Timer messagetimer;
 	}
 }

@@ -16,7 +16,8 @@ namespace BizHawk.MultiClient
 		public SNESGraphicsViewer()
 		{
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-			this.BackColor = Color.Transparent;
+			if(!DesignMode)
+				this.BackColor = Color.Transparent;
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
