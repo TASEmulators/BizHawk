@@ -24,11 +24,13 @@ namespace BizHawk.MultiClient
 			Global.MovieSession.Movie = m;
 			RewireInputChain();
 
-			LoadRom(Global.MainForm.CurrentlyOpenRom, true);
 			if (!record)
 			{
 				Global.MovieSession.Movie.LoadMovie();
+				SetSyncDependentSettings();
 			}
+
+			LoadRom(Global.MainForm.CurrentlyOpenRom, true);
 
 			Global.Config.RecentMovies.Add(m.Filename);
 			if (Global.MovieSession.Movie.StartsFromSavestate)
@@ -289,6 +291,29 @@ namespace BizHawk.MultiClient
 				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
 				Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+			}
+		}
+
+		//On movie load, these need to be set based on the contents of the movie file
+		private void SetSyncDependentSettings()
+		{
+			string str = "";
+			switch (Global.Emulator.SystemId)
+			{
+				case "Coleco":
+					str = Global.MovieSession.Movie.Header.GetHeaderLine(MovieHeader.SKIPBIOS);
+					if (!String.IsNullOrWhiteSpace(str))
+					{
+						if (str.ToLower() == "true")
+						{
+							Global.Config.ColecoSkipBiosIntro = true;
+						}
+						else
+						{
+							Global.Config.ColecoSkipBiosIntro = false;
+						}
+					}
+					break;
 			}
 		}
 	}
