@@ -169,6 +169,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 			writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("Lag {0}", _lagcount);
+			writer.WriteLine("IsLagFrame {0}", IsLagFrame);
 			writer.Write("RAM ");
 			Ram.SaveAsHex(writer);
 			writer.WriteLine("[/Coleco]");
@@ -186,6 +187,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 					Frame = int.Parse(args[1]);
 				else if (args[0] == "Lag")
 					_lagcount = int.Parse(args[1]);
+				else if (args[0] == "IsLagFrame")
+					IsLagFrame = bool.Parse(args[1]);
 				else if (args[0] == "RAM")
 					Ram.ReadFromHex(args[1]);
 				else if (args[0] == "[Z80]")
@@ -199,12 +202,38 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			}
 		}
 
-		public void SaveStateBinary(BinaryWriter bw) { }
-		public void LoadStateBinary(BinaryReader br) { }
-
 		public byte[] SaveStateBinary()
 		{
-			return new byte[0];
+			var buf = new byte[24802 + 16384 + 16384];
+			var stream = new MemoryStream(buf);
+			var writer = new BinaryWriter(stream);
+			SaveStateBinary(writer);
+			writer.Close();
+			return buf;
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			Cpu.SaveStateBinary(writer);
+			PSG.SaveStateBinary(writer);
+			VDP.SaveStateBinary(writer);
+
+			writer.Write(Frame);
+			writer.Write(_lagcount);
+			writer.Write(IsLagFrame);
+			writer.Write(Ram);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			Cpu.LoadStateBinary(reader);
+			PSG.LoadStateBinary(reader);
+			VDP.LoadStateBinary(reader);
+
+			Frame = reader.ReadInt32();
+			_lagcount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
+			Ram = reader.ReadBytes(Ram.Length);
 		}
 
 		public void Dispose() { }
