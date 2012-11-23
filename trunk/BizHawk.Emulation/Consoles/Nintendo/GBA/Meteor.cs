@@ -40,6 +40,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 			if (Controller["Power"])
 				LibMeteor.libmeteor_hardreset();
+			// due to the design of the tracing api, we have to poll whether it's active each frame
+			LibMeteor.libmeteor_settracecallback(CoreInputComm.Tracer.Enabled ? tracecallback : null);
 			if (!coredead)
 				LibMeteor.libmeteor_frameadvance();
 			if (IsLagFrame)
@@ -111,7 +113,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		CoreOutputComm _CoreOutputComm = new CoreOutputComm
 		{
 			VsyncNum = 262144,
-			VsyncDen = 4389
+			VsyncDen = 4389,
+			CpuTraceAvailable = true
 		};
 
 		public CoreOutputComm CoreOutputComm { get { return _CoreOutputComm; } }
@@ -181,6 +184,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		LibMeteor.InputCallback inputcallback;
 		/// <summary>true if libmeteor aborted</summary>
 		bool coredead = false;
+		/// <summary>hold pointer to trace callback so it won't get GCed</summary>
+		LibMeteor.TraceCallback tracecallback;
 
 		LibMeteor.Buttons GetInput()
 		{
@@ -279,6 +284,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		#endregion
 
+		void Trace(string msg)
+		{
+			CoreInputComm.Tracer.Put(msg);
+		}
+
 		void Init()
 		{
 			if (attachedcore != null)
@@ -286,6 +296,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 			messagecallback = PrintMessage;
 			inputcallback = GetInput;
+			tracecallback = Trace; // don't set this callback now, only set if enabled
 			LibMeteor.libmeteor_setmessagecallback(messagecallback);
 			LibMeteor.libmeteor_setkeycallback(inputcallback);
 
@@ -315,8 +326,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 				LibMeteor.libmeteor_setbuffers(IntPtr.Zero, 240 * 160 * 4, IntPtr.Zero, 4);
 				messagecallback = null;
 				inputcallback = null;
+				tracecallback = null;
 				LibMeteor.libmeteor_setmessagecallback(messagecallback);
 				LibMeteor.libmeteor_setkeycallback(inputcallback);
+				LibMeteor.libmeteor_settracecallback(tracecallback);
 				_MemoryDomains.Clear();
 			}
 		}
