@@ -344,7 +344,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 		int[] PaletteTMS9918 = new int[] 
 		{
-			unchecked((int)0x00000000),
+			unchecked((int)0xFF000000),
 			unchecked((int)0xFF000000),
 			unchecked((int)0xFF47B73B),
 			unchecked((int)0xFF7CCF6F),
