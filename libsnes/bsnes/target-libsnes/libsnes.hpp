@@ -185,6 +185,11 @@ void bus_write(unsigned addr, uint8_t val);
 #define SNES_REG_CGWSEL_COLORSUBMASK 41
 #define SNES_REG_CGWSEL_ADDSUBMODE 42
 #define SNES_REG_CGWSEL_DIRECTCOLOR 43
+//$2101 OBSEL
+#define SNES_REG_OBSEL_NAMEBASE 50
+#define SNES_REG_OBSEL_NAMESEL 51
+#define SNES_REG_OBSEL_SIZE 52
+
 
 int snes_peek_logical_register(int reg);
 

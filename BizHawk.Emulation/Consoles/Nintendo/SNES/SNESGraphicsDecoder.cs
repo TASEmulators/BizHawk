@@ -54,6 +54,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return ret;
 		}
 
+		public static Dimensions[,] ObjSizes = new Dimensions[,] 
+		{
+			{ new Dimensions(8,8), new Dimensions(16,16) },
+			{ new Dimensions(8,8), new Dimensions(32,32) },
+			{ new Dimensions(8,8), new Dimensions(64,64) },
+			{ new Dimensions(16,16), new Dimensions(32,32) },
+			{ new Dimensions(16,16), new Dimensions(64,64) },
+			{ new Dimensions(32,32), new Dimensions(64,64) },
+			{ new Dimensions(16,32), new Dimensions(32,64) },
+			{ new Dimensions(16,32), new Dimensions(32,32) }
+		};
+
 		public static Dimensions SizeInBlocksForBGSize(ScreenSize size)
 		{
 			switch (size)
@@ -176,9 +188,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public int CGWSEL_AddSubMode { private set; get; }
 			public bool CGWSEL_DirectColor { private set; get; }
 
+			public int OBSEL_Size { private set; get; }
+			public int OBSEL_NameSel { private set; get; }
+			public int OBSEL_NameBase { private set; get; }
+
+			public int OBJTable0Addr { private set; get; }
+			public int OBJTable1Addr { private set; get; }
+
 			public static ScreenInfo GetScreenInfo()
 			{
 				var si = new ScreenInfo();
+
+				si.OBSEL_Size = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_SIZE);
+				si.OBSEL_NameSel = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMESEL);
+				si.OBSEL_NameBase = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMEBASE);
+
+				si.OBJTable0Addr = si.OBSEL_NameBase << 14;
+				si.OBJTable1Addr = (si.OBJTable0Addr + ((si.OBSEL_NameSel + 1) << 13)) & 0xFFFF;
 
 				si.SETINI_Mode7ExtBG = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_MODE7_EXTBG) == 1;
 				si.SETINI_HiRes = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_HIRES) == 1;
@@ -648,7 +674,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// we might need 16x16 unscrambling and some other perks here eventually.
 		/// provide a start color to use as the basis for the palette
 		/// </summary>
-		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1)
+		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1, bool descramble16=false)
 		{
 			if(numTiles == -1)
 				numTiles = 8192 / bpp;
@@ -656,6 +682,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			for (int i = 0; i < numTiles; i++)
 			{
 				int tnum = startTile + i;
+				//TODO - mask by possible number of tiles? only in OBJ rendering mode?
 				int ty = i / tilesWide;
 				int tx = i % tilesWide;
 				int dstOfs = (ty * 8) * stride + tx * 8;

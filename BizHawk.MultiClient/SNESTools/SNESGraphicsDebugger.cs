@@ -2,6 +2,8 @@
 //TODO - overhaul the BG display box if its mode7 or direct color (mode7 more important)
 //TODO - draw `1024` label in red if your content is being scaled down.
 //TODO - maybe draw a label (in lieu of above, also) showing what scale the content is at: 2x or 1x or 1/2x
+//TODO - add eDisplayType for BG1-Tiles, BG2-Tiles, etc. which show the tiles available to a BG. more concise than viewing all tiles and illustrating the relevant accessible areas
+//        . could this apply to the palette too?
 
 using System;
 using System.Collections.Generic;
@@ -34,7 +36,7 @@ namespace BizHawk.MultiClient
 			displayTypeItems.Add(new DisplayTypeItem("BG2",eDisplayType.BG2));
 			displayTypeItems.Add(new DisplayTypeItem("BG3",eDisplayType.BG3));
 			displayTypeItems.Add(new DisplayTypeItem("BG4",eDisplayType.BG4));
-			displayTypeItems.Add(new DisplayTypeItem("OBJ",eDisplayType.OBJ));
+			displayTypeItems.Add(new DisplayTypeItem("OBJ",eDisplayType.OBJ0));
 			displayTypeItems.Add(new DisplayTypeItem("2bpp tiles",eDisplayType.Tiles2bpp));
 			displayTypeItems.Add(new DisplayTypeItem("4bpp tiles",eDisplayType.Tiles4bpp));
 			displayTypeItems.Add(new DisplayTypeItem("8bpp tiles",eDisplayType.Tiles8bpp));
@@ -93,8 +95,11 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsLoadstate()
 		{
 			SyncCore();
-			RegenerateData();
-			UpdateValues();
+			if (this.Visible)
+			{
+				RegenerateData();
+				UpdateValues();
+			}
 		}
 
 		private void nudScanline_ValueChanged(object sender, EventArgs e)
@@ -162,6 +167,13 @@ namespace BizHawk.MultiClient
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (currentSnesCore == null) return;
 
+			txtOBSELSizeBits.Text = si.OBSEL_Size.ToString();
+			txtOBSELBaseBits.Text = si.OBSEL_NameBase.ToString();
+			txtOBSELT1OfsBits.Text = si.OBSEL_NameSel.ToString();
+			txtOBSELSizeDescr.Text = string.Format("{0}, {1}", SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size,0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size,1]);
+			txtOBSELBaseDescr.Text = FormatVramAddress(si.OBJTable0Addr);
+			txtOBSELT1OfsDescr.Text = FormatVramAddress(si.OBJTable1Addr);
+
 			checkScreenExtbg.Checked = si.SETINI_Mode7ExtBG;
 			checkScreenHires.Checked = si.SETINI_HiRes;
 			checkScreenOverscan.Checked = si.SETINI_Overscan;
@@ -228,6 +240,15 @@ namespace BizHawk.MultiClient
 			};
 
 			var selection = CurrDisplaySelection;
+			if (selection == eDisplayType.OBJ0 || selection == eDisplayType.OBJ1)
+			{
+				allocate(128, 256);
+				int startTile;
+				startTile = si.OBJTable0Addr / 32;
+				gd.RenderTilesToScreen(pixelptr, 16, 16, stride / 4, 4, currPaletteSelection.start, startTile, 256, true);
+				startTile = si.OBJTable1Addr / 32;
+				gd.RenderTilesToScreen(pixelptr + (stride/4*8*16), 16, 16, stride / 4, 4, currPaletteSelection.start, startTile, 256, true);
+			}
 			if (selection == eDisplayType.Tiles2bpp)
 			{
 				allocate(512, 512);
@@ -315,9 +336,10 @@ namespace BizHawk.MultiClient
 
 		enum eDisplayType
 		{
-			BG1=1, BG2=2, BG3=3, BG4=4, OBJ, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC
+			BG1=1, BG2=2, BG3=3, BG4=4, OBJ0, OBJ1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC
 		}
 		static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
+		static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJ0 || type == eDisplayType.OBJ1; }
 		static int DisplayTypeBGNum(eDisplayType type) { if(IsDisplayTypeBG(type)) return (int)type; else return -1; }
 
 		class DisplayTypeItem
@@ -467,11 +489,13 @@ namespace BizHawk.MultiClient
 		{
 			int bpp = 0;
 			var selection = CurrDisplaySelection;
-			if (selection == eDisplayType.Tiles2bpp) bpp=2;
+			if (selection == eDisplayType.Tiles2bpp) bpp = 2;
 			if (selection == eDisplayType.Tiles4bpp) bpp = 4;
 			if (selection == eDisplayType.Tiles8bpp) bpp = 8;
 			if (selection == eDisplayType.TilesMode7) bpp = 8;
 			if (selection == eDisplayType.TilesMode7Ext) bpp = 7;
+			if (selection == eDisplayType.OBJ0) bpp = 4;
+			if (selection == eDisplayType.OBJ1) bpp = 4;
 
 			SNESGraphicsDecoder.PaletteSelection ret = new SNESGraphicsDecoder.PaletteSelection();
 			if(bpp == 0) return ret;
@@ -519,8 +543,13 @@ namespace BizHawk.MultiClient
 				//next, draw the rectangle that advises you which colors could possibly be used for a bg
 				if (IsDisplayTypeBG(CurrDisplaySelection))
 				{
-					var si = gd.ScanScreenInfo();
 					var ps = si.BG[DisplayTypeBGNum(CurrDisplaySelection)].PaletteSelection;
+					region = GetPaletteRegion(ps);
+					DrawPaletteRegion(g, Color.FromArgb(192, 128, 255, 255), region);
+				}
+				if (IsDisplayTypeOBJ(CurrDisplaySelection))
+				{
+					var ps = new SNESGraphicsDecoder.PaletteSelection(128, 128);
 					region = GetPaletteRegion(ps);
 					DrawPaletteRegion(g, Color.FromArgb(192, 128, 255, 255), region);
 				}
@@ -651,7 +680,8 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				UpdateViewerMouseover(e.Location);
+				if(si != null)
+					UpdateViewerMouseover(e.Location);
 			}
 		}
 

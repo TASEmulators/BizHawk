@@ -153,6 +153,17 @@
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.labelClipboard = new System.Windows.Forms.Label();
 			this.messagetimer = new System.Windows.Forms.Timer(this.components);
+			this.label26 = new System.Windows.Forms.Label();
+			this.txtOBSELSizeDescr = new System.Windows.Forms.TextBox();
+			this.label28 = new System.Windows.Forms.Label();
+			this.txtOBSELSizeBits = new System.Windows.Forms.TextBox();
+			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.txtOBSELBaseBits = new System.Windows.Forms.TextBox();
+			this.txtOBSELBaseDescr = new System.Windows.Forms.TextBox();
+			this.label29 = new System.Windows.Forms.Label();
+			this.txtOBSELT1OfsBits = new System.Windows.Forms.TextBox();
+			this.txtOBSELT1OfsDescr = new System.Windows.Forms.TextBox();
+			this.label30 = new System.Windows.Forms.Label();
 			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
@@ -172,6 +183,7 @@
 			this.tpTile.SuspendLayout();
 			this.viewerPanel.SuspendLayout();
 			this.groupBox6.SuspendLayout();
+			this.groupBox7.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -268,6 +280,7 @@
 			// 
 			this.panel1.AutoSize = true;
 			this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.panel1.Controls.Add(this.groupBox7);
 			this.panel1.Controls.Add(this.groupBox6);
 			this.panel1.Controls.Add(this.label24);
 			this.panel1.Controls.Add(this.pnBackdropColor);
@@ -286,7 +299,7 @@
 			// label24
 			// 
 			this.label24.AutoSize = true;
-			this.label24.Location = new System.Drawing.Point(237, 42);
+			this.label24.Location = new System.Drawing.Point(3, 623);
 			this.label24.Name = "label24";
 			this.label24.Size = new System.Drawing.Size(78, 13);
 			this.label24.TabIndex = 49;
@@ -296,7 +309,7 @@
 			// 
 			this.pnBackdropColor.BackColor = System.Drawing.Color.Red;
 			this.pnBackdropColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pnBackdropColor.Location = new System.Drawing.Point(240, 7);
+			this.pnBackdropColor.Location = new System.Drawing.Point(6, 588);
 			this.pnBackdropColor.Name = "pnBackdropColor";
 			this.pnBackdropColor.Size = new System.Drawing.Size(32, 32);
 			this.pnBackdropColor.TabIndex = 48;
@@ -305,7 +318,7 @@
 			// checkBackdropColor
 			// 
 			this.checkBackdropColor.AutoSize = true;
-			this.checkBackdropColor.Location = new System.Drawing.Point(278, 25);
+			this.checkBackdropColor.Location = new System.Drawing.Point(44, 606);
 			this.checkBackdropColor.Name = "checkBackdropColor";
 			this.checkBackdropColor.Size = new System.Drawing.Size(15, 14);
 			this.checkBackdropColor.TabIndex = 47;
@@ -413,7 +426,7 @@
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Location = new System.Drawing.Point(0, 0);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(229, 165);
+			this.groupBox2.Size = new System.Drawing.Size(307, 165);
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Screen";
@@ -1155,18 +1168,6 @@
 			this.comboDisplayType.FormattingEnabled = true;
 			this.comboDisplayType.IntegralHeight = false;
 			this.comboDisplayType.ItemHeight = 13;
-			this.comboDisplayType.Items.AddRange(new object[] {
-            "BG1",
-            "BG2",
-            "BG3",
-            "BG4",
-            "OBJ",
-            "2bpp tiles",
-            "4bpp tiles",
-            "8bpp tiles",
-            "Mode7 tiles",
-            "Mode7Ext tiles",
-            "Mode7 tiles (DC)"});
 			this.comboDisplayType.Location = new System.Drawing.Point(6, 8);
 			this.comboDisplayType.Name = "comboDisplayType";
 			this.comboDisplayType.Size = new System.Drawing.Size(107, 21);
@@ -1505,7 +1506,7 @@
 			// groupBox6
 			// 
 			this.groupBox6.Controls.Add(this.labelClipboard);
-			this.groupBox6.Location = new System.Drawing.Point(1, 419);
+			this.groupBox6.Location = new System.Drawing.Point(1, 539);
 			this.groupBox6.Name = "groupBox6";
 			this.groupBox6.Size = new System.Drawing.Size(228, 43);
 			this.groupBox6.TabIndex = 50;
@@ -1525,6 +1526,122 @@
 			// 
 			this.messagetimer.Interval = 5000;
 			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
+			// 
+			// label26
+			// 
+			this.label26.AutoSize = true;
+			this.label26.Location = new System.Drawing.Point(5, 14);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(42, 13);
+			this.label26.TabIndex = 45;
+			this.label26.Text = "OBSEL";
+			// 
+			// txtOBSELSizeDescr
+			// 
+			this.txtOBSELSizeDescr.Location = new System.Drawing.Point(77, 29);
+			this.txtOBSELSizeDescr.Multiline = true;
+			this.txtOBSELSizeDescr.Name = "txtOBSELSizeDescr";
+			this.txtOBSELSizeDescr.ReadOnly = true;
+			this.txtOBSELSizeDescr.Size = new System.Drawing.Size(80, 18);
+			this.txtOBSELSizeDescr.TabIndex = 48;
+			this.txtOBSELSizeDescr.Text = "64x32, 32x32";
+			// 
+			// label28
+			// 
+			this.label28.AutoSize = true;
+			this.label28.Location = new System.Drawing.Point(31, 32);
+			this.label28.Name = "label28";
+			this.label28.Size = new System.Drawing.Size(27, 13);
+			this.label28.TabIndex = 47;
+			this.label28.Text = "Size";
+			// 
+			// txtOBSELSizeBits
+			// 
+			this.txtOBSELSizeBits.BackColor = System.Drawing.Color.LightGreen;
+			this.txtOBSELSizeBits.Location = new System.Drawing.Point(12, 29);
+			this.txtOBSELSizeBits.Multiline = true;
+			this.txtOBSELSizeBits.Name = "txtOBSELSizeBits";
+			this.txtOBSELSizeBits.ReadOnly = true;
+			this.txtOBSELSizeBits.Size = new System.Drawing.Size(15, 17);
+			this.txtOBSELSizeBits.TabIndex = 49;
+			this.txtOBSELSizeBits.Text = "00";
+			// 
+			// groupBox7
+			// 
+			this.groupBox7.Controls.Add(this.txtOBSELT1OfsBits);
+			this.groupBox7.Controls.Add(this.txtOBSELT1OfsDescr);
+			this.groupBox7.Controls.Add(this.label30);
+			this.groupBox7.Controls.Add(this.txtOBSELBaseBits);
+			this.groupBox7.Controls.Add(this.txtOBSELBaseDescr);
+			this.groupBox7.Controls.Add(this.label29);
+			this.groupBox7.Controls.Add(this.txtOBSELSizeBits);
+			this.groupBox7.Controls.Add(this.label26);
+			this.groupBox7.Controls.Add(this.txtOBSELSizeDescr);
+			this.groupBox7.Controls.Add(this.label28);
+			this.groupBox7.Location = new System.Drawing.Point(1, 419);
+			this.groupBox7.Name = "groupBox7";
+			this.groupBox7.Size = new System.Drawing.Size(228, 114);
+			this.groupBox7.TabIndex = 51;
+			this.groupBox7.TabStop = false;
+			this.groupBox7.Text = "OBJ";
+			// 
+			// txtOBSELBaseBits
+			// 
+			this.txtOBSELBaseBits.BackColor = System.Drawing.Color.LightGreen;
+			this.txtOBSELBaseBits.Location = new System.Drawing.Point(12, 51);
+			this.txtOBSELBaseBits.Multiline = true;
+			this.txtOBSELBaseBits.Name = "txtOBSELBaseBits";
+			this.txtOBSELBaseBits.ReadOnly = true;
+			this.txtOBSELBaseBits.Size = new System.Drawing.Size(15, 17);
+			this.txtOBSELBaseBits.TabIndex = 52;
+			this.txtOBSELBaseBits.Text = "00";
+			// 
+			// txtOBSELBaseDescr
+			// 
+			this.txtOBSELBaseDescr.Location = new System.Drawing.Point(77, 51);
+			this.txtOBSELBaseDescr.Multiline = true;
+			this.txtOBSELBaseDescr.Name = "txtOBSELBaseDescr";
+			this.txtOBSELBaseDescr.ReadOnly = true;
+			this.txtOBSELBaseDescr.Size = new System.Drawing.Size(80, 18);
+			this.txtOBSELBaseDescr.TabIndex = 51;
+			// 
+			// label29
+			// 
+			this.label29.AutoSize = true;
+			this.label29.Location = new System.Drawing.Point(31, 54);
+			this.label29.Name = "label29";
+			this.label29.Size = new System.Drawing.Size(47, 13);
+			this.label29.TabIndex = 50;
+			this.label29.Text = "TD.Addr";
+			// 
+			// txtOBSELT1OfsBits
+			// 
+			this.txtOBSELT1OfsBits.BackColor = System.Drawing.Color.LightGreen;
+			this.txtOBSELT1OfsBits.Location = new System.Drawing.Point(12, 72);
+			this.txtOBSELT1OfsBits.Multiline = true;
+			this.txtOBSELT1OfsBits.Name = "txtOBSELT1OfsBits";
+			this.txtOBSELT1OfsBits.ReadOnly = true;
+			this.txtOBSELT1OfsBits.Size = new System.Drawing.Size(15, 17);
+			this.txtOBSELT1OfsBits.TabIndex = 55;
+			this.txtOBSELT1OfsBits.Text = "00";
+			// 
+			// txtOBSELT1OfsDescr
+			// 
+			this.txtOBSELT1OfsDescr.Location = new System.Drawing.Point(77, 72);
+			this.txtOBSELT1OfsDescr.Multiline = true;
+			this.txtOBSELT1OfsDescr.Name = "txtOBSELT1OfsDescr";
+			this.txtOBSELT1OfsDescr.ReadOnly = true;
+			this.txtOBSELT1OfsDescr.Size = new System.Drawing.Size(80, 18);
+			this.txtOBSELT1OfsDescr.TabIndex = 54;
+			// 
+			// label30
+			// 
+			this.label30.AutoSize = true;
+			this.label30.Location = new System.Drawing.Point(31, 75);
+			this.label30.Name = "label30";
+			this.label30.Size = new System.Drawing.Size(45, 13);
+			this.label30.TabIndex = 53;
+			this.label30.Text = "T1.Addr";
 			// 
 			// paletteViewer
 			// 
@@ -1597,6 +1714,8 @@
 			this.viewerPanel.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox6.PerformLayout();
+			this.groupBox7.ResumeLayout(false);
+			this.groupBox7.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1730,5 +1849,16 @@
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.Label labelClipboard;
 		private System.Windows.Forms.Timer messagetimer;
+		private System.Windows.Forms.GroupBox groupBox7;
+		private System.Windows.Forms.TextBox txtOBSELT1OfsBits;
+		private System.Windows.Forms.TextBox txtOBSELT1OfsDescr;
+		private System.Windows.Forms.Label label30;
+		private System.Windows.Forms.TextBox txtOBSELBaseBits;
+		private System.Windows.Forms.TextBox txtOBSELBaseDescr;
+		private System.Windows.Forms.Label label29;
+		private System.Windows.Forms.TextBox txtOBSELSizeBits;
+		private System.Windows.Forms.Label label26;
+		private System.Windows.Forms.TextBox txtOBSELSizeDescr;
+		private System.Windows.Forms.Label label28;
 	}
 }
