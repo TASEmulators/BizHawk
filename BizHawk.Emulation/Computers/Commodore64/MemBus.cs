@@ -67,6 +67,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool writeTrigger = true;
 
 		// ports
+		public DataPortConnector cpuIO;
 		public DataPortConnector cpuPort;
 		public DataPortBus cpuPortBus = new DataPortBus();
 
@@ -101,6 +102,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			cpuPort = cpuPortBus.Connect();
 			cpuPortBus.AttachWriteHook(UpdateLayout);
+			
+			cpuIO = cpuPortBus.Connect();
+			cpuIO.Latch = 0x17;
+
 			cia1.AttachWriteHook(0, UpdateVicOffset);
 			HardReset();
 		}

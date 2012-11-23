@@ -7,17 +7,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class VicIINew : IVideoProvider
 	{
+		private int baCount;
 		private int cycle;
 		private Action[][] pipeline;
 		private bool pipelineGAccess;
-		private bool pipelineMemoryBusy;
 		private int pipelineLength;
 
 		private void ExecutePipeline()
 		{
 			pipelineGAccess = false;
-			pipelineMemoryBusy = false;
 			advanceX = true;
+			baCount = 0;
 
 			foreach (Action a in pipeline[cycle])
 				a();
@@ -29,7 +29,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				PipelineRasterAdvance();
 			}
 
-			signal.VicAEC = !pipelineMemoryBusy;
+			PipelineBA(baCount > 0);
+			if (baCount > 0)
+			{
+				if (fetchCounter > 0)
+					fetchCounter--;
+				signal.VicAEC = (fetchCounter != 0);
+			}
+			else
+			{
+				fetchCounter = 0;
+				signal.VicAEC = true;
+			}
 		}
 
 		private void InitPipeline(Region region)
@@ -374,7 +385,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						{	// 54
 							PipelineCycle,
 							PipelineFetchC,
-							PipelineSpriteMYEFlip,
 							PipelineSpriteEnable0,
 							PipelineRender
 						},
@@ -382,6 +392,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						{	// 55
 							PipelineCycle,
 							PipelineSpriteEnable1,
+							PipelineSpriteMYEFlip,
 							PipelineIdle,
 							PipelineRender
 						},
@@ -456,6 +467,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineIRQ0,
 							PipelineFetchSprite3P,
+							PipelineBASprite3,
+							PipelineBASprite4,
 							PipelineRender
 						},
 						new Action[]
@@ -463,72 +476,96 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineIRQ1,
 							PipelineFetchSprite3S,
+							PipelineBASprite3,
+							PipelineBASprite4,
+							PipelineBASprite5,
 							PipelineRender
 						},
 						new Action[]
 						{	// 2
 							PipelineCycle,
 							PipelineFetchSprite4P,
+							PipelineBASprite4,
+							PipelineBASprite5,
 							PipelineRender
 						},
 						new Action[]
 						{	// 3
 							PipelineCycle,
 							PipelineFetchSprite4S,
+							PipelineBASprite4,
+							PipelineBASprite5,
+							PipelineBASprite6,
 							PipelineRender
 						},
 						new Action[]
 						{	// 4
 							PipelineCycle,
 							PipelineFetchSprite5P,
+							PipelineBASprite5,
+							PipelineBASprite6,
 							PipelineRender
 						},
 						new Action[]
 						{	// 5
 							PipelineCycle,
 							PipelineFetchSprite5S,
+							PipelineBASprite5,
+							PipelineBASprite6,
+							PipelineBASprite7,
 							PipelineRender
 						},
 						new Action[]
 						{	// 6
 							PipelineCycle,
 							PipelineFetchSprite6P,
+							PipelineBASprite6,
+							PipelineBASprite7,
 							PipelineRender
 						},
 						new Action[]
 						{	// 7
 							PipelineCycle,
 							PipelineFetchSprite6S,
+							PipelineBASprite6,
+							PipelineBASprite7,
 							PipelineRender
 						},
 						new Action[]
 						{	// 8
 							PipelineCycle,
 							PipelineFetchSprite7P,
+							PipelineBASprite7,
+							PipelineBAForceLag,
 							PipelineRender
 						},
 						new Action[]
 						{	// 9
 							PipelineCycle,
 							PipelineFetchSprite7S,
+							PipelineBASprite7,
+							PipelineBAForceLag,
 							PipelineRender
 						},
 						new Action[]
 						{	// 10
 							PipelineCycle,
 							PipelineDramRefresh,
+							PipelineBAForceLag,
 							PipelineRender
 						},
 						new Action[]
 						{	// 11
 							PipelineCycle,
 							PipelineDramRefresh,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 12
 							PipelineCycle,
 							PipelineDramRefresh,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
@@ -536,13 +573,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineVCReset,
 							PipelineDramRefresh,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 14
 							PipelineCycle,
 							PipelineDramRefresh,
-							PipelineBadlineDelay,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
@@ -550,234 +588,273 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineSpriteMCBASEAdvance,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 16
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 17
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 18
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 19
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 20
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 21
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 22
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 23
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 24
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 25
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 26
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 27
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 28
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 29
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 30
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 31
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 32
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 33
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 34
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 35
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 36
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 37
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 38
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 39
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 40
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 41
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 42
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 43
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 44
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 45
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 46
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 47
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 48
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 49
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 50
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 51
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 52
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
 						{	// 53
 							PipelineCycle,
 							PipelineFetchC,
+							PipelineBAFetch,
 							PipelineRender
 						},
 						new Action[]
@@ -785,6 +862,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineFetchC,
 							PipelineSpriteEnable0,
+							PipelineBASprite0,
 							PipelineRender
 						},
 						new Action[]
@@ -793,12 +871,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineSpriteEnable1,
 							PipelineSpriteMYEFlip,
 							PipelineIdle,
+							PipelineBASprite0,
 							PipelineRender
 						},
 						new Action[]
 						{	// 56
 							PipelineCycle,
 							PipelineIdle,
+							PipelineBASprite0,
+							PipelineBASprite1,
 							PipelineRender
 						},
 						new Action[]
@@ -807,30 +888,42 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineSpriteDMA,
 							PipelineRCReset,
 							PipelineFetchSprite0P,
+							PipelineBASprite0,
+							PipelineBASprite1,
 							PipelineRender
 						},
 						new Action[]
 						{	// 58
 							PipelineCycle,
 							PipelineFetchSprite0S,
+							PipelineBASprite0,
+							PipelineBASprite1,
+							PipelineBASprite2,
 							PipelineRender
 						},
 						new Action[]
 						{	// 59
 							PipelineCycle,
 							PipelineFetchSprite1P,
+							PipelineBASprite1,
+							PipelineBASprite2,
 							PipelineRender
 						},
 						new Action[]
 						{	// 60
 							PipelineCycle,
 							PipelineFetchSprite1S,
+							PipelineBASprite1,
+							PipelineBASprite2,
+							PipelineBASprite3,
 							PipelineRender
 						},
 						new Action[]
 						{	// 61
 							PipelineCycle,
 							PipelineFetchSprite2P,
+							PipelineBASprite2,
+							PipelineBASprite3,
 							PipelineRender
 						},
 						new Action[]
@@ -838,6 +931,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 							PipelineCycle,
 							PipelineFetchSprite2S,
 							PipelineBorderCheck,
+							PipelineBASprite2,
+							PipelineBASprite3,
+							PipelineBASprite4,
 							PipelineRender
 						}
 					};
@@ -847,10 +943,76 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			pipelineLength = pipeline.Length;
 		}
 
-		private void PipelineBadlineDelay()
+		private void PipelineBA(bool val)
+		{
+			if (val)
+			{
+				if (signal.VicAEC == true && fetchCounter == 0)
+					fetchCounter = 4;
+			}
+			else
+			{
+				fetchCounter = 0;
+			}
+		}
+
+		private void PipelineBAFetch()
 		{
 			if (badline)
-				pipelineMemoryBusy = true;
+				baCount++;
+		}
+
+		private void PipelineBAForceLag()
+		{
+			baCount++;
+		}
+
+		private void PipelineBASprite0()
+		{
+			if (sprites[0].MDMA)
+				baCount++;
+		}
+
+		private void PipelineBASprite1()
+		{
+			if (sprites[1].MDMA)
+				baCount++;
+		}
+
+		private void PipelineBASprite2()
+		{
+			if (sprites[2].MDMA)
+				baCount++;
+		}
+
+		private void PipelineBASprite3()
+		{
+			if (sprites[3].MDMA)
+				baCount++;
+		}
+
+		private void PipelineBASprite4()
+		{
+			if (sprites[4].MDMA)
+				baCount++;
+		}
+
+		private void PipelineBASprite5()
+		{
+			if (sprites[5].MDMA)
+				baCount++;
+		}
+
+		private void PipelineBASprite6()
+		{
+			if (sprites[6].MDMA)
+				baCount++;
+		}
+
+		private void PipelineBASprite7()
+		{
+			if (sprites[7].MDMA)
+				baCount++;
 		}
 
 		private void PipelineBorderCheck()
@@ -867,7 +1029,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				displayEnabled = (displayEnabled | DEN);
 
 			if (RASTER >= 0x030 && RASTER < 0x0F8)
-				badline = ((YSCROLL == (RASTER & 0x07)) && displayEnabled);
+				badline = badline | ((YSCROLL == (RASTER & 0x07)) && displayEnabled);
 			else
 				badline = false;
 
@@ -906,7 +1068,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					int cAddress = (VM << 10) | VC;
 					characterDataBus = mem.VicRead((ushort)cAddress);
 					colorDataBus = mem.colorRam[VC];
-					pipelineMemoryBusy = true;
 				}
 				else
 				{
@@ -1053,7 +1214,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				sprites[index].MSR = mem.VicRead((ushort)((sprites[index].MPTR << 6) | (sprites[index].MC)));
 				sprites[index].MC++;
-				pipelineMemoryBusy = true;
 			}
 		}
 
@@ -1067,7 +1227,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					sprites[index].MSR |= mem.VicRead((ushort)((sprites[index].MPTR << 6) | (sprites[index].MC)));
 					sprites[index].MC++;
 				}
-				pipelineMemoryBusy = true;
 			}
 		}
 
@@ -1280,6 +1439,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				displayEnabled = false;
 				rasterX = rasterLeft;
 			}
+			badline = false;
 		}
 
 		private void PipelineRCReset()
@@ -1351,19 +1511,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					if (rasterX >= rasterWidth)
 						rasterX -= rasterWidth;
 				}
-			}
-		}
-
-		private void PipelineSetBA(bool val)
-		{
-			if (val)
-			{
-				if (fetchCounter == 0)
-					fetchCounter = 4;
-			}
-			else
-			{
-				fetchCounter = 0;
 			}
 		}
 
