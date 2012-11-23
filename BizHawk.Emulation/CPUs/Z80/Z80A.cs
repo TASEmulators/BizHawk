@@ -47,10 +47,12 @@ namespace BizHawk.Emulation.CPUs.Z80
         public Func<ushort, byte> ReadMemory;
         public Action<ushort, byte> WriteMemory;
 
-        public void UnregisterMemoryMapper()
+        // Utility function, not used by core
+        public ushort ReadWord(ushort addr)
         {
-            ReadMemory = null;
-            WriteMemory = null;
+            ushort value = ReadMemory(addr++);
+            value |= (ushort) (ReadMemory(addr) << 8);
+            return value;
         }
 
         // Hardware I/O Port Access
