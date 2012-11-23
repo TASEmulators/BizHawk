@@ -36,7 +36,8 @@ namespace BizHawk.MultiClient
 			displayTypeItems.Add(new DisplayTypeItem("BG2",eDisplayType.BG2));
 			displayTypeItems.Add(new DisplayTypeItem("BG3",eDisplayType.BG3));
 			displayTypeItems.Add(new DisplayTypeItem("BG4",eDisplayType.BG4));
-			displayTypeItems.Add(new DisplayTypeItem("OBJ",eDisplayType.OBJ0));
+			displayTypeItems.Add(new DisplayTypeItem("OBJ Tiles",eDisplayType.OBJ0));
+			displayTypeItems.Add(new DisplayTypeItem("Sprites", eDisplayType.Sprites));
 			displayTypeItems.Add(new DisplayTypeItem("2bpp tiles",eDisplayType.Tiles2bpp));
 			displayTypeItems.Add(new DisplayTypeItem("4bpp tiles",eDisplayType.Tiles4bpp));
 			displayTypeItems.Add(new DisplayTypeItem("8bpp tiles",eDisplayType.Tiles8bpp));
@@ -240,6 +241,23 @@ namespace BizHawk.MultiClient
 			};
 
 			var selection = CurrDisplaySelection;
+			if (selection == eDisplayType.Sprites)
+			{
+				var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size,0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size,1] };
+				int largestWidth = Math.Max(dims[0].Width, dims[1].Width);
+				int largestHeight = Math.Max(dims[0].Height, dims[1].Height);
+				int width = largestWidth * 16;
+				int height = largestHeight * 8;
+				allocate(width, height);
+				for (int i = 0; i < 128; i++)
+				{
+					int tx = i % 16;
+					int ty = i / 16;
+					int x = tx * largestWidth;
+					int y = ty * largestHeight;
+					gd.RenderSpriteToScreen(pixelptr, stride / 4, x,y, si, i);
+				}
+			}
 			if (selection == eDisplayType.OBJ0 || selection == eDisplayType.OBJ1)
 			{
 				allocate(128, 256);
@@ -336,7 +354,7 @@ namespace BizHawk.MultiClient
 
 		enum eDisplayType
 		{
-			BG1=1, BG2=2, BG3=3, BG4=4, OBJ0, OBJ1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC
+			BG1=1, BG2=2, BG3=3, BG4=4, Sprites, OBJ0, OBJ1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC
 		}
 		static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
 		static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJ0 || type == eDisplayType.OBJ1; }
