@@ -31,16 +31,16 @@ namespace AMeteor
 				uint32_t dw;
 				struct
 				{
-					unsigned int mode     :  5;
-					bool thumb			      :  1;
-					bool fiq_d            :  1;
-					bool irq_d            :  1;
-					unsigned int reserved : 19;
-					bool s_overflow       :  1;
-					bool f_overflow       :  1;
-					bool f_carry          :  1;
-					bool f_zero           :  1;
-					bool f_sign           :  1;
+					unsigned int mode        :  5;
+					unsigned int thumb	     :  1;
+					unsigned int fiq_d       :  1;
+					unsigned int irq_d       :  1;
+					unsigned int reserved    : 19;
+					unsigned int s_overflow  :  1;
+					unsigned int f_overflow  :  1;
+					unsigned int f_carry     :  1;
+					unsigned int f_zero      :  1;
+					unsigned int f_sign      :  1;
 				} b;
 			};
 			struct IPsr
