@@ -132,5 +132,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// <returns>IntPtr.Zero if which is unrecognized</returns>
 		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr libmeteor_getmemoryarea(MemoryArea which);
+
+		/// <summary>
+		/// core callback for tracelogging
+		/// </summary>
+		/// <param name="msg">disassembly of an instruction about to be run</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void TraceCallback(string msg);
+
+		/// <summary>
+		/// set callback to run before each instruction is executed
+		/// </summary>
+		/// <param name="callback">null to clear</param>
+		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libmeteor_settracecallback(TraceCallback callback);
 	}
 }

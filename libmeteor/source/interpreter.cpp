@@ -24,6 +24,7 @@
 #include "ameteor.hpp"
 
 #include "debug.hpp"
+#include <sstream>
 
 namespace AMeteor
 {
@@ -70,7 +71,12 @@ namespace AMeteor
 							met_abort("PC not 16 bit aligned : " << IOS_ADD << R(15));
 
 						code = MEM.Read16(R(15)-2);
-						//std::cerr << IOS_ADD << R(15) << ' ' << Disassembler::Instruction(R(15), (uint16_t)code).ToString() << std::endl;
+						if (traceenabled)
+						{
+							std::stringstream ss;
+							ss << IOS_ADD << R(15) << ' ' << Disassembler::Instruction(R(15), (uint16_t)code).ToString();
+							trace_bizhawk(ss.str());
+						}
 						R(15) += 2;
 						t_Code();
 					}
@@ -108,7 +114,12 @@ namespace AMeteor
 						else
 						{
 							code = MEM.Read32(R(15)-4);
-							//std::cerr << IOS_ADD << R(15) << ' ' << Disassembler::Instruction(R(15), (uint32_t)code).ToString() << std::endl;
+							if (traceenabled)
+							{
+								std::stringstream ss;
+								ss << IOS_ADD << R(15) << ' ' << Disassembler::Instruction(R(15), (uint32_t)code).ToString();
+								trace_bizhawk(ss.str());
+							}
 							R(15) += 4;
 							a_Code();
 						}

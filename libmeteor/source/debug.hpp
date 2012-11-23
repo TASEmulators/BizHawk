@@ -30,6 +30,8 @@ void print_bizhawk(const char *msg);
 void print_bizhawk(std::string &msg);
 void abort_bizhawk(const char *msg);
 void keyupdate_bizhawk();
+extern bool traceenabled;
+void trace_bizhawk(std::string msg);
 
 #if 0
 #define met_abort(str) \

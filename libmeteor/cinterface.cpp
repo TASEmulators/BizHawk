@@ -42,6 +42,21 @@ EXPORT void libmeteor_setkeycallback(uint16_t (*callback)())
 	keycallback = callback;
 }
 
+bool traceenabled = false;
+void (*tracecallback)(const char *msg) = NULL;
+
+EXPORT void libmeteor_settracecallback(void (*callback)(const char*msg))
+{
+	tracecallback = callback;
+	traceenabled = tracecallback != NULL;
+}
+
+void trace_bizhawk(std::string msg)
+{
+	if (tracecallback)
+		tracecallback(msg.c_str());
+}
+
 EXPORT void libmeteor_hardreset()
 {
 	AMeteor::Reset(AMeteor::UNIT_ALL ^ (AMeteor::UNIT_MEMORY_BIOS | AMeteor::UNIT_MEMORY_ROM));
@@ -105,17 +120,16 @@ EXPORT void libmeteor_init()
 	static bool first = true;
 	if (first)
 	{
+		// TODO: saveram stuff
 		//AMeteor::_memory.LoadCartInferred();
 		AMeteor::_lcd.GetScreen().GetRenderer().SetFrameSlot(syg::ptr_fun(videocb));
 		AMeteor::_sound.GetSpeaker().SetFrameSlot(syg::ptr_fun(soundcb));
-		// TODO: input
 		first = false;
 	}
 }
 
 EXPORT void libmeteor_frameadvance()
 {
-	//AMeteor::_keypad.SetPadState(0x3ff);
 	AMeteor::Run(10000000);
 }
 
