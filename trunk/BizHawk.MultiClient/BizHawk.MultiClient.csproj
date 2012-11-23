@@ -448,6 +448,9 @@
     <Compile Include="tools\VirtualPadGB.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPadGBA.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\VirtualPadGBControl.cs">
       <SubType>Component</SubType>
     </Compile>
