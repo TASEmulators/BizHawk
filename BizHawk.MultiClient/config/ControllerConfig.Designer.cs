@@ -274,8 +274,8 @@
 			this.PlatformTabControl.Controls.Add(this.tabPagePCE);
 			this.PlatformTabControl.Controls.Add(this.tabPageAtari2600);
 			this.PlatformTabControl.Controls.Add(this.tabPageC64);
-			this.PlatformTabControl.Controls.Add(this.tabPageTI83);
 			this.PlatformTabControl.Controls.Add(this.tabPageColeco);
+			this.PlatformTabControl.Controls.Add(this.tabPageTI83);
 			this.PlatformTabControl.Location = new System.Drawing.Point(12, 21);
 			this.PlatformTabControl.Name = "PlatformTabControl";
 			this.PlatformTabControl.SelectedIndex = 0;
