@@ -629,7 +629,7 @@ namespace BizHawk.MultiClient
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
 				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie" }
+				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad" }
 		};
 
 		private void InitControls()
@@ -700,6 +700,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Next Slot", Global.Config.NextSlot);
 			controls.BindMulti("Ram Watch", Global.Config.RamWatch);
 			controls.BindMulti("TASTudio", Global.Config.TASTudio);
+			controls.BindMulti("Virtual Pad", Global.Config.OpenVirtualPadBinding);
 			controls.BindMulti("Ram Search", Global.Config.RamSearch);
 			controls.BindMulti("Ram Poke", Global.Config.RamPoke);
 			controls.BindMulti("Hex Editor", Global.Config.HexEditor);
@@ -2357,6 +2358,7 @@ namespace BizHawk.MultiClient
 				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": LoadCheatsWindow(); break;
 				case "TASTudio": LoadTAStudio(); break;
+				case "Virtual Pad": LoadVirtualPads(); break;
 				case "Open ROM": OpenROM(); break;
 				case "Close ROM": CloseROM(); break;
 				case "Display FPS": ToggleFPS(); break;
