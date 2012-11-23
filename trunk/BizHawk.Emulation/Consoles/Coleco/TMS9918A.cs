@@ -54,7 +54,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
 					InterruptPending = true;
 					if (EnableInterrupts)
 						Cpu.NonMaskableInterrupt = true;
-					//Console.WriteLine("Set NMI / VSYNC");
 				}
 
 				Cpu.ExecuteCycles(228);
@@ -97,20 +96,14 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			VdpWaitingForLatchByte = true;
 			VdpBuffer = value;
 
-			// Write VRAM and update pre-computed pattern buffer. 
-			//UpdatePatternBuffer((ushort)(VdpAddress & 0x3FFF), value);
-			//Console.WriteLine("VRAM[{0:X4}] = {1:X2}", VdpAddress & 0x3FFF, value);
 			VRAM[VdpAddress & 0x3FFF] = value;
-
 			VdpAddress++;
 		}
 
 		void WriteRegister(int reg, byte data)
 		{
 			if (reg >= 8) return;
-            Log.Error("COL","Write register {0} : {1:X2}", reg, data);
 
-			Console.WriteLine("Write register {0} : {1:X2}", reg, data);
 			Registers[reg] = data;
 			switch (reg)
 			{
@@ -120,7 +113,9 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				case 1: // Mode Control Register 2
 					CheckVideoMode();
 					Cpu.NonMaskableInterrupt = (EnableInterrupts && InterruptPending);
-					Console.WriteLine("4k bit " + Mode4k);
+                    if (Mode4k == false)
+                        //throw new Exception("4k bit is false! tell vec where you saw this happen pls!");
+                        Console.WriteLine("4k bit is false! tell vec where you saw this happen pls!");
 					break;
 				case 2: // Name Table Base Address
 					TmsPatternNameTableBase = (Registers[2] << 10) & 0x3C00;
@@ -147,7 +142,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			StatusByte &= 0x1F;
 			Cpu.NonMaskableInterrupt = false;
 
-			//Console.WriteLine("Clear NMI / read status");
 			return returnValue;
 		}
 
@@ -167,7 +161,10 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			else if (Mode3Bit) TmsMode = 3;
 			else TmsMode = 0;
 
-			Console.WriteLine("video mode {0}", TmsMode);
+            if (TmsMode == 1)
+                throw new Exception("TMS video mode 1! please tell vecna which game uses this!");
+            if (TmsMode == 3)
+                throw new Exception("TMS video mode 3! please tell vecna which game uses this!");
 		}
 
 		void RenderScanline(int scanLine)

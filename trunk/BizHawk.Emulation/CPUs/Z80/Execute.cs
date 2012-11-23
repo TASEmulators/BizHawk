@@ -11648,8 +11648,6 @@ namespace BizHawk.Emulation.CPUs.Z80
         public string State()
         {
             ushort tempPC = RegPC.Word;
-            //ushort pc = RegPC.Word;
-            //string str = disasm.Disassemble(() => ReadMemory(pc++));
             string a = string.Format("{0:X4}  {1:X2} {2} ", RegPC.Word, ReadMemory(RegPC.Word), Disassembler.Disassemble(() => ReadMemory(tempPC++)).PadRight(41));
             string b = string.Format("AF:{0:X4} BC:{1:X4} DE:{2:X4} HL:{3:X4} IX:{4:X4} IY:{5:X4} SP:{6:X4} Cy:{7}", RegAF.Word, RegBC.Word, RegDE.Word, RegHL.Word, RegIX.Word, RegIY.Word, RegSP.Word, TotalExecutedCycles);
             string val = a + b + "   ";

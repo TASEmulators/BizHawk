@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			Cpu.WriteMemory = WriteMemory;
 			Cpu.ReadHardware = ReadPort;
 			Cpu.WriteHardware = WritePort;
-			Cpu.Logger = (s) => Console.WriteLine(s);
+            Cpu.Logger = (s) => Log.Error("COL", s);
 			//Cpu.Debug = true;
 
 			VDP = new TMS9918A(Cpu);
@@ -38,11 +38,13 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
-
+             
+            if (game["NoSkip"])
+                skipbios = false;
+            Console.WriteLine("skipbios = {0}", skipbios);
 			LoadRom(rom, skipbios);
 			this.game = game;
 			SetupMemoryDomains();
-			Reset();
 		}
 
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
@@ -94,16 +96,9 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			}
         }
 
-		void Reset()
-		{
-			/*Cpu.RegisterPC = Cpu.ReadWord(0x800A);
-			Console.WriteLine("code start vector = {0:X4}", Cpu.RegisterPC);*/
-		}
-
 		byte ReadPort(ushort port)
 		{
 			port &= 0xFF;
-			//Console.WriteLine("Read port {0:X2}", port);
 
 			if (port >= 0xA0 && port < 0xC0)
 			{
@@ -152,8 +147,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
                 PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
                 return;
             }
-
-			//Console.WriteLine("Write port {0:X2}:{1:X2}", port, value);
 		}
 
 		public byte[] ReadSaveRam() { return null; }
