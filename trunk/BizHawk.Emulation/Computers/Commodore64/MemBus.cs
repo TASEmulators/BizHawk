@@ -101,6 +101,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cia1 = newCia1;
 
 			cpuPort = cpuPortBus.Connect();
+			cpuPort.Latch = 0x00;
+			cpuPort.Direction = 0x1F;
 			cpuPortBus.AttachWriteHook(UpdateLayout);
 			
 			cpuIO = cpuPortBus.Connect();

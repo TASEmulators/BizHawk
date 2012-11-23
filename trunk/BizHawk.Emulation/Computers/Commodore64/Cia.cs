@@ -475,7 +475,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			int timer = regs.T[index];
 			timer--;
-			if (timer == 0)
+			if (timer < 0)
 			{
 				underflow[index] = true;
 				if (regs.RUNMODE[index])

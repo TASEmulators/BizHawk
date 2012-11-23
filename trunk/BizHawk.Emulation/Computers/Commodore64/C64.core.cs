@@ -35,6 +35,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public VicIINew vic;
 		public ChipSignals signal;
 
+		// cpu
+		private bool haltCPU;
+
 		public bool DriveLED
 		{
 			get
@@ -65,7 +68,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			// initalize cpu
 			cpu = new MOS6502X();
-			cpu.ReadMemory = ReadMemory;
+			cpu.ReadMemory = ReadMemoryCPU;
 			cpu.WriteMemory = WriteMemory;
 			cpu.DummyReadMemory = PeekMemory;
 
@@ -147,6 +150,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public byte ReadMemory(ushort addr)
 		{
+			return mem.Read(addr);
+		}
+
+		private byte ReadMemoryCPU(ushort addr)
+		{
+			if (!signal.CpuAEC)
+				haltCPU = true;
 			return mem.Read(addr);
 		}
 
