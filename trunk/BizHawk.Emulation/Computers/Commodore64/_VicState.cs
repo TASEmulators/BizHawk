@@ -74,7 +74,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// pipeline
 			ser.Sync("CYCLE", ref cycle);
 			ser.Sync("PIPELINEGACCESS", ref pipelineGAccess);
-			ser.Sync("PIPELINEMEMORYBUSY", ref pipelineMemoryBusy);
 
 			// sprites
 			for (int i = 0; i < 8; i++)

@@ -102,6 +102,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// perform the cycle
 			for (int i = 0; i < cyclesPerFrame; i++)
 			{
+				if (signal.CpuAEC)
+				{
+					cpu.ExecuteOne();
+				}
 				vic.PerformCycle();
 				cpu.IRQ = signal.CpuIRQ;
 				cpu.NMI = signal.CpuNMI;
@@ -112,10 +116,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				sid.PerformCycle();
 				if (diskDriveAttached)
 					diskDrive.PerformCycle();
-				if (signal.CpuAEC)
-				{
-					cpu.ExecuteOne();
-				}
 			}
 
 			_islag = !mem.inputWasRead;
