@@ -12,10 +12,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 	public static class LibMeteor
 	{
 		/// <summary>
-		/// reset the emulation core
+		/// power cycle the emulation core
 		/// </summary>
 		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void libmeteor_reset();
+		public static extern void libmeteor_hardreset();
 
 		/// <summary>
 		/// signal that you are removing data from the sound buffer.

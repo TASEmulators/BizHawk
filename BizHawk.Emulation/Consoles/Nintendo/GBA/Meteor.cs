@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			Name = "GBA Controller",
 			BoolButtons =
 			{					
-				"Up", "Down", "Left", "Right", "Select", "Start", "B", "A", "L", "R"//, "Reset", "Power",		
+				"Up", "Down", "Left", "Right", "Select", "Start", "B", "A", "L", "R", "Power"
 			}
 		};
 		public ControllerDefinition ControllerDefinition { get { return GBAController; } }
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			if (bios.Length != 16384)
 				throw new Exception("GBA bios must be exactly 16384 bytes!");
 			Init();
-			LibMeteor.libmeteor_reset();
+			LibMeteor.libmeteor_hardreset();
 			LibMeteor.libmeteor_loadbios(bios, (uint)bios.Length);
 			LibMeteor.libmeteor_loadrom(rom, (uint)rom.Length);
 
@@ -37,6 +37,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		{
 			Controller.UpdateControls(Frame++);
 			IsLagFrame = true;
+
+			if (Controller["Power"])
+				LibMeteor.libmeteor_hardreset();
 			if (!coredead)
 				LibMeteor.libmeteor_frameadvance();
 			if (IsLagFrame)
