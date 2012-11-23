@@ -20,6 +20,8 @@ namespace BizHawk.MultiClient
 			ButtonPoints[5] = new Point(74, 24);
 			ButtonPoints[6] = new Point(122, 24);
 			ButtonPoints[7] = new Point(146, 24);
+			ButtonPoints[8] = new Point(146, 34);
+			ButtonPoints[9] = new Point(146, 34);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -110,6 +112,26 @@ namespace BizHawk.MultiClient
 			this.B4.UseVisualStyleBackColor = true;
 			this.B4.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 
+			this.B5 = new CheckBox();
+			this.B5.Appearance = System.Windows.Forms.Appearance.Button;
+			this.B5.AutoSize = true;
+			this.B5.Location = ButtonPoints[10];
+			this.B5.TabIndex = 8;
+			this.B5.Text = "L";
+			this.B5.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.B5.UseVisualStyleBackColor = true;
+			this.B5.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+
+			this.B6 = new CheckBox();
+			this.B6.Appearance = System.Windows.Forms.Appearance.Button;
+			this.B6.AutoSize = true;
+			this.B6.Location = ButtonPoints[11];
+			this.B6.TabIndex = 8;
+			this.B6.Text = "R";
+			this.B6.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.B6.UseVisualStyleBackColor = true;
+			this.B6.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+
 			this.Controls.Add(this.PU);
 			this.Controls.Add(this.PD);
 			this.Controls.Add(this.PL);
@@ -118,6 +140,8 @@ namespace BizHawk.MultiClient
 			this.Controls.Add(this.B2);
 			this.Controls.Add(this.B3);
 			this.Controls.Add(this.B4);
+			this.Controls.Add(this.B5);
+			this.Controls.Add(this.B6);
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -163,6 +187,9 @@ namespace BizHawk.MultiClient
 			input.Append(B2.Checked ? "S" : ".");
 			input.Append(B3.Checked ? "B" : ".");
 			input.Append(B4.Checked ? "A" : ".");
+			input.Append(B5.Checked ? "L" : ".");
+			input.Append(B6.Checked ? "R" : ".");
+			
 			input.Append("|");
 			return input.ToString();
 		}
@@ -179,27 +206,33 @@ namespace BizHawk.MultiClient
 			if (buttons[5] == '.') B2.Checked = false; else B2.Checked = true;
 			if (buttons[6] == '.') B3.Checked = false; else B3.Checked = true;
 			if (buttons[7] == '.') B4.Checked = false; else B4.Checked = true;
+			if (buttons[8] == '.') B5.Checked = false; else B5.Checked = true;
+			if (buttons[9] == '.') B6.Checked = false; else B6.Checked = true;
 		}
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
 			if (Global.Emulator.SystemId != "GBA") return;
 			if (sender == PU)
-				Global.StickyXORAdapter.SetSticky(Controller + " Up", PU.Checked);
+				Global.StickyXORAdapter.SetSticky("Up", PU.Checked);
 			else if (sender == PD)
-				Global.StickyXORAdapter.SetSticky(Controller + " Down", PD.Checked);
+				Global.StickyXORAdapter.SetSticky("Down", PD.Checked);
 			else if (sender == PL)
-				Global.StickyXORAdapter.SetSticky(Controller + " Left", PL.Checked);
+				Global.StickyXORAdapter.SetSticky("Left", PL.Checked);
 			else if (sender == PR)
-				Global.StickyXORAdapter.SetSticky(Controller + " Right", PR.Checked);
+				Global.StickyXORAdapter.SetSticky("Right", PR.Checked);
 			else if (sender == B1)
-				Global.StickyXORAdapter.SetSticky(Controller + " Select", B1.Checked);
+				Global.StickyXORAdapter.SetSticky("Select", B1.Checked);
 			else if (sender == B2)
-				Global.StickyXORAdapter.SetSticky(Controller + " Start", B2.Checked);
+				Global.StickyXORAdapter.SetSticky("Start", B2.Checked);
 			else if (sender == B3)
-				Global.StickyXORAdapter.SetSticky(Controller + " B", B3.Checked);
+				Global.StickyXORAdapter.SetSticky("B", B3.Checked);
 			else if (sender == B4)
-				Global.StickyXORAdapter.SetSticky(Controller + " A", B4.Checked);
+				Global.StickyXORAdapter.SetSticky("A", B4.Checked);
+			else if (sender == B5)
+				Global.StickyXORAdapter.SetSticky("L", B5.Checked);
+			else if (sender == B6)
+				Global.StickyXORAdapter.SetSticky("R", B6.Checked);
 		}
 
 		public override void Clear()
@@ -214,15 +247,19 @@ namespace BizHawk.MultiClient
 			B2.Checked = false;
 			B3.Checked = false;
 			B4.Checked = false;
+			B5.Checked = false;
+			B6.Checked = false;
 
-			Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Select", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Start", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " B", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " A", false);
+			Global.StickyXORAdapter.SetSticky("Up", false);
+			Global.StickyXORAdapter.SetSticky("Down", false);
+			Global.StickyXORAdapter.SetSticky("Left", false);
+			Global.StickyXORAdapter.SetSticky("Right", false);
+			Global.StickyXORAdapter.SetSticky("Select", false);
+			Global.StickyXORAdapter.SetSticky("Start", false);
+			Global.StickyXORAdapter.SetSticky("B", false);
+			Global.StickyXORAdapter.SetSticky("A", false);
+			Global.StickyXORAdapter.SetSticky("L", false);
+			Global.StickyXORAdapter.SetSticky("R", false);
 		}
 	}
 }

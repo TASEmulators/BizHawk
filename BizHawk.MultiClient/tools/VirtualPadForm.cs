@@ -159,6 +159,13 @@ namespace BizHawk.MultiClient
 					Pads.Add(gbcontrolpad);
 					ControllerBox.Controls.Add(gbcontrolpad);
 					break;
+				case "GBA":
+					VirtualPadGBA gbapad1 = new VirtualPadGBA();
+					gbapad1.Location = new Point(8, 19);
+					gbapad1.Controller = "";
+					Pads.Add(gbapad1);
+					ControllerBox.Controls.Add(gbapad1);
+					break;
 				case "GEN":
 					VirtualPadGen3Button genpad1 = new VirtualPadGen3Button();
 					genpad1.Location = new Point(8, 19);
