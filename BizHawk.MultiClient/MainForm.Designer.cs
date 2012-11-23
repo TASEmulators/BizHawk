@@ -312,7 +312,7 @@
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.colecoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.skipBIOIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.skipBIOSIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -2693,7 +2693,7 @@
 			// colecoToolStripMenuItem
 			// 
 			this.colecoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.skipBIOIntroToolStripMenuItem});
+            this.skipBIOSIntroToolStripMenuItem});
 			this.colecoToolStripMenuItem.Name = "colecoToolStripMenuItem";
 			this.colecoToolStripMenuItem.Size = new System.Drawing.Size(56, 19);
 			this.colecoToolStripMenuItem.Text = "&Coleco";
@@ -2701,10 +2701,10 @@
 			// 
 			// skipBIOIntroToolStripMenuItem
 			// 
-			this.skipBIOIntroToolStripMenuItem.Name = "skipBIOIntroToolStripMenuItem";
-			this.skipBIOIntroToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.skipBIOIntroToolStripMenuItem.Text = "&Skip BIO intro";
-			this.skipBIOIntroToolStripMenuItem.Click += new System.EventHandler(this.skipBIOIntroToolStripMenuItem_Click);
+			this.skipBIOSIntroToolStripMenuItem.Name = "skipBIOSIntroToolStripMenuItem";
+			this.skipBIOSIntroToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.skipBIOSIntroToolStripMenuItem.Text = "&Skip BIOS intro";
+			this.skipBIOSIntroToolStripMenuItem.Click += new System.EventHandler(this.skipBIOIntroToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3029,7 +3029,7 @@
 		private System.Windows.Forms.ToolStripMenuItem vSyncEnabledToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator28;
 		private System.Windows.Forms.ToolStripMenuItem colecoToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem skipBIOIntroToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem skipBIOSIntroToolStripMenuItem;
     }
 }
 
