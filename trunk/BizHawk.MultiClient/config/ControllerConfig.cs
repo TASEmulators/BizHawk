@@ -121,9 +121,56 @@ namespace BizHawk.MultiClient
 
 			SetAutoTab(true);
 
+
+			SetTabByPlatform();
+
 			if (!Global.MainForm.INTERIM)
 			{
 				PlatformTabControl.Controls.Remove(tabPageC64);
+			}
+		}
+
+		private void SetTabByPlatform()
+		{
+			switch (Global.Emulator.SystemId)
+			{
+				case "NES":
+				case "FDS":
+					PlatformTabControl.SelectTab(tabPageNES);
+					break;
+				case "SNES":
+				case "SGB": //TODO: I think it never reports this, so this line could/should be removed
+					PlatformTabControl.SelectTab(tabPageSNES);
+					break;
+				case "GB":
+				case "GBC":
+					PlatformTabControl.SelectTab(tabPageGameboy);
+					break;
+				case "GEN":
+					PlatformTabControl.SelectTab(tabPageGenesis);
+					break;
+				case "SMS":
+				case "GG":
+				case "SG":
+					PlatformTabControl.SelectTab(tabPageSMS);
+					break;
+				case "PCE":
+				case "SGX":
+				case "PCECD":
+					PlatformTabControl.SelectTab(tabPagePCE);
+					break;
+				case "A26":
+					PlatformTabControl.SelectTab(tabPageAtari2600);
+					break;
+				case "C64":
+					PlatformTabControl.SelectTab(tabPageC64);
+					break;
+				case "Coleco":
+					PlatformTabControl.SelectTab(tabPageColeco);
+					break;
+				case "TI83":
+					PlatformTabControl.SelectTab(tabPageTI83);
+					break;
 			}
 		}
 
