@@ -196,6 +196,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CGWSEL_COLORSUBMASK = 41,
 			CGWSEL_ADDSUBMODE = 42,
 			CGWSEL_DIRECTCOLOR = 43,
+			//$2101 OBSEL
+			OBSEL_NAMEBASE = 50,
+			OBSEL_NAMESEL = 51,
+			OBSEL_SIZE = 52,
 		}
 
 		public enum SNES_MEMORY : uint

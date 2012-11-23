@@ -335,6 +335,10 @@ int snes_peek_logical_register(int reg)
 	case SNES_REG_CGWSEL_COLORSUBMASK: return SNES::ppu.regs.color_mask;
 	case SNES_REG_CGWSEL_ADDSUBMODE: return SNES::ppu.regs.addsub_mode?1:0;
 	case SNES_REG_CGWSEL_DIRECTCOLOR: return SNES::ppu.regs.direct_color?1:0;
+		//$2101 OBSEL
+	case SNES_REG_OBSEL_NAMEBASE: return SNES::ppu.regs.oam_tdaddr>>14;
+	case SNES_REG_OBSEL_NAMESEL: return SNES::ppu.regs.oam_nameselect;
+	case SNES_REG_OBSEL_SIZE: return SNES::ppu.regs.oam_basesize;
 	}
 	return 0;
 }
