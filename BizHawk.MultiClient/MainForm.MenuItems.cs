@@ -669,6 +669,7 @@ namespace BizHawk.MultiClient
 			luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LuaConsole;
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.Cheats;
 			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.TASTudio;
+			virtualPadToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.OpenVirtualPadBinding;
 
 			if (Global.Emulator.CoreOutputComm.CpuTraceAvailable)
 			{
