@@ -31,7 +31,7 @@ else
 endif
 
 #CXXFLAGS += -Wall -pedantic -I. -I../ameteor/include -pipe -D__LIBRETRO__ -Wno-parentheses -fno-exceptions -fno-rtti
-CXXFLAGS += -Wall -pedantic -I. -Iinclude -pipe -D__LIBRETRO__ -Wno-parentheses -fno-exceptions -fno-rtti
+CXXFLAGS += -Wall -pedantic -I. -Iinclude -pipe -D__LIBRETRO__ -DX86_ASM -Wno-parentheses -fno-exceptions -fno-rtti
 
 ifeq ($(DEBUG), 1)
    CFLAGS += -O0 -g
