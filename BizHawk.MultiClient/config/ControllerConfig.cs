@@ -119,15 +119,15 @@ namespace BizHawk.MultiClient
 			COLAutofire2Panel.ColumnWidth = 170;
 			COLAutofire2Panel.LoadSettings(Global.Config.ColecoAutoController[1]);
 
-			SetAutoTab(true);
-
-
 			SetTabByPlatform();
 
 			if (!Global.MainForm.INTERIM)
 			{
 				PlatformTabControl.Controls.Remove(tabPageC64);
 			}
+
+			AutoTab.Checked = Global.Config.InputConfigAutoTab;
+			SetAutoTab();
 		}
 
 		private void SetTabByPlatform()
@@ -186,26 +186,44 @@ namespace BizHawk.MultiClient
 			//Input.Instance.EnableIgnoreModifiers = false;
 		}
 
-		private void SetAutoTab(bool setting)
+		private void SetAutoTab()
 		{
+			bool setting = AutoTab.Checked;
 			foreach (Control control1 in PlatformTabControl.TabPages)
 			{
-				if (control1 is TabControl)
+				if (control1 is TabPage)
 				{
-					foreach (Control control2 in (control1 as TabControl).TabPages)
+					foreach (Control control2 in control1.Controls)
 					{
-						if (control2 is InputWidget)
+						if (control2 is ControllerConfigPanel)
 						{
-							(control2 as InputWidget).AutoTab = setting;
+							(control2 as ControllerConfigPanel).SetAutoTab(setting);
+						}
+						else if (control2 is TabControl)
+						{
+							foreach (Control control3 in (control2 as TabControl).TabPages)
+							{
+								if (control3 is TabPage)
+								{
+									foreach (Control control4 in control3.Controls)
+									{
+										if (control4 is ControllerConfigPanel)
+										{
+											(control4 as ControllerConfigPanel).SetAutoTab(setting);
+										}
+									}
+								}
+								else if (control3 is ControllerConfigPanel)
+								{
+									(control3 as ControllerConfigPanel).SetAutoTab(setting);
+								}
+							}
 						}
 					}
 				}
-				else
+				else if (control1 is ControllerConfigPanel)
 				{
-					if (control1 is InputWidget)
-					{
-						(control1 as InputWidget).AutoTab = setting;
-					}
+					(control1 as ControllerConfigPanel).SetAutoTab(setting);
 				}
 			}
 		}
@@ -264,6 +282,12 @@ namespace BizHawk.MultiClient
 		{
 			Global.OSD.AddMessage("Controller config aborted");
 			Close();
+		}
+
+		private void AutoTab_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.HotkeyConfigAutoTab = AutoTab.Checked;
+			SetAutoTab();
 		}
 	}
 }
