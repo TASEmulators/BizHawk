@@ -42,9 +42,9 @@ EXPORT void libmeteor_setkeycallback(uint16_t (*callback)())
 	keycallback = callback;
 }
 
-EXPORT void libmeteor_reset()
+EXPORT void libmeteor_hardreset()
 {
-	AMeteor::Reset(AMeteor::UNIT_ALL ^ AMeteor::UNIT_MEMORY_BIOS);
+	AMeteor::Reset(AMeteor::UNIT_ALL ^ (AMeteor::UNIT_MEMORY_BIOS | AMeteor::UNIT_MEMORY_ROM));
 }
 
 uint32_t *videobuff;
