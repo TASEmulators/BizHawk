@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		byte[] Registers = new byte[8];
 		byte StatusByte;
 
-		bool VdpWaitingForLatchByte;
+		bool VdpWaitingForLatchByte = true;
 		byte VdpLatch;
 		ushort VdpAddress;
 		byte VdpBuffer;
@@ -108,6 +108,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		void WriteRegister(int reg, byte data)
 		{
 			if (reg >= 8) return;
+            Log.Error("COL","Write register {0} : {1:X2}", reg, data);
 
 			Console.WriteLine("Write register {0} : {1:X2}", reg, data);
 			Registers[reg] = data;

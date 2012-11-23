@@ -4474,7 +4474,7 @@ namespace BizHawk.MultiClient
 
 		private void colecoToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			skipBIOIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
+			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
 		}
 
 	}
