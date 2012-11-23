@@ -85,6 +85,8 @@ void trace_bizhawk(std::string msg);
 #define IOS_ADD \
 	"0x" << std::setbase(16) << std::setw(8) << std::setfill('0') \
 		<< std::uppercase
+#define IOS_TRACE \
+		std::setbase(16) << std::setw(8) << std::setfill('0') << std::uppercase
 #define IOS_NOR \
 	std::setbase(10) << std::setw(0) << std::setfill(' ')
 

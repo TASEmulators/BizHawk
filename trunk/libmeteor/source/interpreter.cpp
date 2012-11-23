@@ -74,7 +74,16 @@ namespace AMeteor
 						if (traceenabled)
 						{
 							std::stringstream ss;
-							ss << IOS_ADD << R(15) << ' ' << Disassembler::Instruction(R(15), (uint16_t)code).ToString();
+							ss << IOS_TRACE << R(15) << ':' << std::setw(4) << code << "     ";
+							ss.setf(std::ios::left, std::ios::adjustfield);
+							ss << std::setw(32) << std::setfill(' ') << Disassembler::Instruction(R(15), (uint16_t)code).ToString();
+							ss.setf(std::ios::right, std::ios::adjustfield);
+							ss << IOS_TRACE;
+							for (int i = 0; i < 16; i++)
+								ss << std::setw(8) << R(i) << ' ';
+							UpdateCpsr();
+							ss << std::setw(8) << m_st.cpsr.dw << ' ';
+							ss << std::setw(8) << m_st.spsr.dw << ' ';
 							trace_bizhawk(ss.str());
 						}
 						R(15) += 2;
@@ -117,7 +126,16 @@ namespace AMeteor
 							if (traceenabled)
 							{
 								std::stringstream ss;
-								ss << IOS_ADD << R(15) << ' ' << Disassembler::Instruction(R(15), (uint32_t)code).ToString();
+								ss << IOS_TRACE << R(15) << ':' << std::setw(8) << code << ' ';
+								ss.setf(std::ios::left, std::ios::adjustfield);
+								ss << std::setw(32) << std::setfill(' ') << Disassembler::Instruction(R(15), (uint32_t)code).ToString();
+								ss.setf(std::ios::right, std::ios::adjustfield);
+								ss << IOS_TRACE;
+								for (int i = 0; i < 16; i++)
+									ss << std::setw(8) << R(i) << ' ';
+								UpdateCpsr();
+								ss << std::setw(8) << m_st.cpsr.dw << ' ';
+								ss << std::setw(8) << m_st.spsr.dw << ' ';
 								trace_bizhawk(ss.str());
 							}
 							R(15) += 4;
