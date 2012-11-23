@@ -120,6 +120,14 @@ namespace BizHawk.MultiClient
 			GBCheatsBox.Text = Global.Config.PathGBCheats;
 			GBPalettesBox.Text = Global.Config.PathGBPalettes;
 
+			GBABaseBox.Text = Global.Config.BaseGBA;
+			GBAROMsBox.Text = Global.Config.PathGBAROMs;
+			GBASavestatesBox.Text = Global.Config.PathGBASavestates;
+			GBASaveRAMBox.Text = Global.Config.PathGBASaveRAM;
+			GBAScreenshotsBox.Text = Global.Config.PathGBAScreenshots;
+			GBACheatsBox.Text = Global.Config.PathGBACheats;
+			GBAFirmwaresBox.Text = Global.Config.PathGBAFirmwares;
+
 			TI83BaseBox.Text = Global.Config.BaseTI83;
 			TI83ROMsBox.Text = Global.Config.PathTI83ROMs;
 			TI83SavestatesBox.Text = Global.Config.PathTI83Savestates;
@@ -160,6 +168,7 @@ namespace BizHawk.MultiClient
 			{
 				tabControl1.Controls.Remove(tabPageIntellivision);
 				tabControl1.Controls.Remove(tabPageC64);
+				tabControl1.Controls.Remove(tabPageGBA);
 			}
 			else
 			{
@@ -207,6 +216,9 @@ namespace BizHawk.MultiClient
 						break;
 					case "Coleco":
 						tabControl1.SelectTab(tabPageColeco);
+						break;
+					case "GBA":
+						tabControl1.SelectTab(tabPageGBA);
 						break;
 					case "NULL":
 						tabControl1.SelectTab(tabPageTools);
@@ -292,6 +304,14 @@ namespace BizHawk.MultiClient
 			Global.Config.PathGBScreenshots = GBScreenshotsBox.Text;
 			Global.Config.PathGBCheats = GBCheatsBox.Text;
 			Global.Config.PathGBPalettes = GBPalettesBox.Text;
+
+			Global.Config.BaseGBA = GBABaseBox.Text;
+			Global.Config.PathGBAROMs = GBAROMsBox.Text;
+			Global.Config.PathGBASavestates = GBASavestatesBox.Text;
+			Global.Config.PathGBASaveRAM = GBASaveRAMBox.Text;
+			Global.Config.PathGBAScreenshots = GBAScreenshotsBox.Text;
+			Global.Config.PathGBACheats = GBACheatsBox.Text;
+			Global.Config.PathGBAFirmwares = GBAFirmwaresBox.Text;
 
 			Global.Config.BaseTI83 = TI83BaseBox.Text;
 			Global.Config.PathTI83ROMs = TI83ROMsBox.Text;
@@ -388,6 +408,10 @@ namespace BizHawk.MultiClient
 			GBROMsBox.Enabled = !RecentForROMs.Checked;
 			GBBrowseROMs.Enabled = !RecentForROMs.Checked;
 			GBROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			GBAROMsBox.Enabled = !RecentForROMs.Checked;
+			GBABrowseROMs.Enabled = !RecentForROMs.Checked;
+			GBAROMsDescription.Enabled = !RecentForROMs.Checked;
 
 			TI83ROMsBox.Enabled = !RecentForROMs.Checked;
 			TI83BrowseROMs.Enabled = !RecentForROMs.Checked;
@@ -984,6 +1008,41 @@ namespace BizHawk.MultiClient
 				"ROM files (*.bin)|*.bin|All Files|*.*",
 				 Global.Config.PathCOLBios, "Coleco",
 				COLBiosBox);
+		}
+
+		private void GBABrowseBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBABaseBox, GBABaseDescription.Text);
+		}
+
+		private void GBABrowseROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBAROMsBox, GBAROMsDescription.Text, "GBA");
+		}
+
+		private void GBABrowseSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBASavestatesBox, GBASavestatesDescription.Text, "GBA");
+		}
+
+		private void GBABrowseSaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBASaveRAMBox, GBASaveRAMDescription.Text, "GBA");
+		}
+
+		private void GBABrowseScreenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBAScreenshotsBox, GBAScreenshotsDescription.Text, "GBA");
+		}
+
+		private void GBABrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBACheatsBox, GBACheatsDescription.Text, "GBA");
+		}
+
+		private void GBABrowseFirmwares_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBAFirmwaresBox, GBAFirmwaresDescription.Text);
 		}
 	}
 }
