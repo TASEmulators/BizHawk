@@ -86,7 +86,7 @@ namespace BizHawk.MultiClient
 		public void RecordMovie()
 		{
 			// put any BEETA quality cores here
-			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA)
+			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA || Global.Emulator is Emulation.Consoles.Sega.Genesis)
 			{
 				var result = MessageBox.Show
 					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
