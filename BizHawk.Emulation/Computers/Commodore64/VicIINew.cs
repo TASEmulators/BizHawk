@@ -5,13 +5,13 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public partial class VicIINew : IVideoProvider
+	public partial class VicII : IVideoProvider
 	{
 		public Memory mem;
 		public Region region;
 		public ChipSignals signal;
 
-		public VicIINew(ChipSignals newSignal, Region newRegion)
+		public VicII(ChipSignals newSignal, Region newRegion)
 		{
 			region = newRegion;
 			signal = newSignal;

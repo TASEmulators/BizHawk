@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public partial class VicIINew : IVideoProvider
+	public partial class VicII : IVideoProvider
 	{
 		private int baCount;
 		private int cycle;
@@ -1526,7 +1526,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			for (int i = 0; i < 8; i++)
 			{
-				VicIINewSprite sprite = sprites[i];
+				VicIISprite sprite = sprites[i];
 
 				if (sprite.MSR == 0)
 				{
@@ -1605,7 +1605,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			for (int i = 0; i < 8; i++)
 			{
-				VicIINewSprite sprite = sprites[i];
+				VicIISprite sprite = sprites[i];
 				sprite.MC = sprite.MCBASE;
 				if (sprite.MDMA && sprite.MxY == (RASTER & 0xFF))
 				{
@@ -1619,7 +1619,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			int endIndex = index + 4;
 			for (int i = index; i < endIndex; i++)
 			{
-				VicIINewSprite sprite = sprites[i];
+				VicIISprite sprite = sprites[i];
 				sprite.MD = false;
 				if (sprite.MxE == true && sprite.MxY == (RASTER & 0xFF) && sprite.MDMA == false)
 				{
@@ -1646,7 +1646,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			for (int i = 0; i < 8; i++)
 			{
-				VicIINewSprite sprite = sprites[i];
+				VicIISprite sprite = sprites[i];
 				if (sprite.MxYEToggle)
 				{
 					sprite.MCBASE += 3;

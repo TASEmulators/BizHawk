@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public partial class VicIINew : IVideoProvider
+	public partial class VicII : IVideoProvider
 	{
 		private int[] videoBuffer;
 		private int videoBufferHeight;
