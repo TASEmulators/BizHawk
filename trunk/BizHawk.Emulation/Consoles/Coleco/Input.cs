@@ -27,7 +27,7 @@
 
         byte ReadController1()
         {
-            IsLagFrame = false;
+            islag = false;
 
             if (InputPortSelection == InputPortMode.Left)
             {
@@ -71,7 +71,7 @@
 
         byte ReadController2()
         {
-            IsLagFrame = false;
+            islag = false;
 
             if (InputPortSelection == InputPortMode.Left)
             {
@@ -114,7 +114,15 @@
 
         public int Frame { get; set; }
         public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-        public bool IsLagFrame { get; private set; }
-        private int _lagcount = 0;
+		public bool IsLagFrame
+		{
+			get
+			{
+				return islag;
+			}
+		}
+        
+		private int _lagcount = 0;
+		private bool islag = true;
     }
 }
