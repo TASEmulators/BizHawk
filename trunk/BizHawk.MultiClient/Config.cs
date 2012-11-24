@@ -26,6 +26,9 @@ namespace BizHawk.MultiClient
 			GBAutoController[0] = new GBControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
 
+			GBAController[0] = new GBAControllerTemplate(true);
+			GBAAutoController[0] = new GBAControllerTemplate(false);
+
 			GenesisController[0] = new GenControllerTemplate(true);
 			GenesisAutoController[0] = new GenControllerTemplate(false);
 
@@ -724,6 +727,10 @@ namespace BizHawk.MultiClient
 		public bool GB_AsSGB = false;
 		public Emulation.Consoles.GB.GBColors.ColorType CGBColors = Emulation.Consoles.GB.GBColors.ColorType.gambatte;
 
+		//GBA settings
+		public GBAControllerTemplate[] GBAController = new GBAControllerTemplate[1];
+		public GBAControllerTemplate[] GBAAutoController = new GBAControllerTemplate[1];
+
 		//Commodore 64 Settings
 		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
 		public SingleButtonJoyStickTemplate[] C64AutoJoysticks = new SingleButtonJoyStickTemplate[2]; 
@@ -908,6 +915,54 @@ namespace BizHawk.MultiClient
 				Start = "";
 				Select = "";
 				X = Y = L = R = "";
+			}
+		}
+	}
+
+	public class GBAControllerTemplate
+	{
+		public string Up;
+		public string Down;
+		public string Left;
+		public string Right;
+		public string A;
+		public string B;
+		public string Start;
+		public string Select;
+		public string L, R;
+		public string Power;
+		public bool Enabled;
+		public GBAControllerTemplate() { }
+		public GBAControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				A = "X, X1 B";
+				B = "Z, X1 A";
+				L = "W, X1 LeftTrigger";
+				R = "E, X1 RightTrigger";
+				Start = "Return, X1 Start";
+				Select = "Space, X1 Back";
+				Power = "";
+			}
+			else
+			{
+				Enabled = false;
+				Up = "";
+				Down = "";
+				Right = "";
+				Left = "";
+				A = "";
+				B = "";
+				Start = "";
+				Select = "";
+				L = R = "";
+				Power = "";
 			}
 		}
 	}
