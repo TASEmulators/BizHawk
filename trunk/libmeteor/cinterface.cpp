@@ -1,6 +1,7 @@
 #include "ameteor.hpp"
 #include "ameteor/cartmem.hpp"
 #include "source/debug.hpp"
+#include <sstream>
 
 #define EXPORT extern "C" __declspec(dllexport)
 
@@ -131,8 +132,6 @@ EXPORT void libmeteor_frameadvance()
 	AMeteor::Run(10000000);
 }
 
-// TODO: serialize, unserialize
-
 EXPORT void libmeteor_loadrom(const void *data, unsigned size)
 {
 	AMeteor::_memory.LoadRom((const uint8_t*)data, size);
@@ -171,6 +170,36 @@ EXPORT int libmeteor_hassaveram()
 EXPORT void libmeteor_clearsaveram()
 {
 	AMeteor::_memory.DeleteCart();
+}
+
+EXPORT int libmeteor_savestate(void **data, unsigned *size)
+{
+	if (!data || !size)
+		return 0;
+
+	std::ostringstream ss = std::ostringstream(std::ios_base::binary);
+	AMeteor::SaveState(ss);
+
+	std::string s = ss.str();
+
+	void *ret = std::malloc(s.size());
+	if (!ret)
+		return 0;
+	std::memcpy(ret, s.data(), s.size());
+	*data = ret;
+	*size = s.size();
+	return 1;
+}
+
+EXPORT void libmeteor_savestate_destroy(void *data)
+{
+	std::free(data);
+}
+
+EXPORT int libmeteor_loadstate(const void *data, unsigned size)
+{
+	std::istringstream ss = std::istringstream(std::string((const char*)data, size), std::ios_base::binary);
+	return AMeteor::LoadState(ss);
 }
 
 // TODO: cartram and system bus memory domains
