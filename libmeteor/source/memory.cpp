@@ -519,7 +519,9 @@ namespace AMeteor
 		bool b = m_brom;
 		SS_WRITE_VAR(b);
 		if (b)
+		{
 			SS_WRITE_DATA(m_brom, 0x00004000);
+		}
 		SS_WRITE_DATA(m_wbram, 0x00040000);
 		SS_WRITE_DATA(m_wcram, 0x00008000);
 		SS_WRITE_DATA(m_pram , 0x00000400);
@@ -545,9 +547,13 @@ namespace AMeteor
 		bool b;
 		SS_READ_VAR(b);
 		if (b)
+		{
 			SS_READ_DATA(m_brom , 0x00004000);
+		}
 		else
+		{
 			UnloadBios();
+		}
 		SS_READ_DATA(m_wbram, 0x00040000);
 		SS_READ_DATA(m_wcram, 0x00008000);
 		SS_READ_DATA(m_pram , 0x00000400);
