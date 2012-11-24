@@ -35,12 +35,14 @@ namespace AMeteor
 	{
 		unsigned short tocommit;
 
-		m_count += m_cycles;
+		//m_count += m_cycles;
 
 		// this loop is here because a timer can trigger a dma which will take a
 		// long time, during this time the lcd must draw and the timers continue
 		while (m_cycles >= m_first)
 		{
+			m_count += m_cycles;
+
 			tocommit = m_cycles;
 			m_cycles = 0;
 
