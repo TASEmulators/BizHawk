@@ -1862,24 +1862,21 @@ namespace BizHawk.MultiClient
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								if (INTERIM)
-								{
-									string gbabiospath = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBAFirmwares, "GBA"), "gbabios.rom");
-									byte[] gbabios = null;
+								string gbabiospath = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBAFirmwares, "GBA"), "gbabios.rom");
+								byte[] gbabios = null;
 
-									if (File.Exists(gbabiospath))
-									{
-										gbabios = File.ReadAllBytes(gbabiospath);
-									}
-									else
-									{
-										MessageBox.Show(string.Format("Couldn't open GBA BIOS: {0}\nCheck your firmware config", gbabiospath));
-										throw new Exception();
-									}
-									GBA gba = new GBA();
-									gba.Load(rom.RomData, gbabios);
-									nextEmulator = gba;
+								if (File.Exists(gbabiospath))
+								{
+									gbabios = File.ReadAllBytes(gbabiospath);
 								}
+								else
+								{
+									MessageBox.Show(string.Format("Couldn't open GBA BIOS: {0}\nCheck your firmware config", gbabiospath));
+									throw new Exception();
+								}
+								GBA gba = new GBA();
+								gba.Load(rom.RomData, gbabios);
+								nextEmulator = gba;
 								break;
 						}
 					}
