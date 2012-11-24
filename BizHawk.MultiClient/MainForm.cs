@@ -899,6 +899,34 @@ namespace BizHawk.MultiClient
 			agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
 			Global.AutofireGBControls = agbControls;
 
+			var gbaControls = new Controller(GBA.GBAController);
+			gbaControls.BindMulti("Up", Global.Config.GBAController[0].Up);
+			gbaControls.BindMulti("Down", Global.Config.GBAController[0].Down);
+			gbaControls.BindMulti("Left", Global.Config.GBAController[0].Left);
+			gbaControls.BindMulti("Right", Global.Config.GBAController[0].Right);
+			gbaControls.BindMulti("A", Global.Config.GBAController[0].A);
+			gbaControls.BindMulti("B", Global.Config.GBAController[0].B);
+			gbaControls.BindMulti("Select", Global.Config.GBAController[0].Select);
+			gbaControls.BindMulti("Start", Global.Config.GBAController[0].Start);
+			gbaControls.BindMulti("L", Global.Config.GBAController[0].L);
+			gbaControls.BindMulti("R", Global.Config.GBAController[0].R);
+			gbaControls.BindMulti("Power", Global.Config.GBAController[0].Power);
+			Global.GBAControls = gbaControls;
+
+			var agbaControls = new AutofireController(GBA.GBAController);
+			agbaControls.BindMulti("Up", Global.Config.GBAAutoController[0].Up);
+			agbaControls.BindMulti("Down", Global.Config.GBAAutoController[0].Down);
+			agbaControls.BindMulti("Left", Global.Config.GBAAutoController[0].Left);
+			agbaControls.BindMulti("Right", Global.Config.GBAAutoController[0].Right);
+			agbaControls.BindMulti("A", Global.Config.GBAAutoController[0].A);
+			agbaControls.BindMulti("B", Global.Config.GBAAutoController[0].B);
+			agbaControls.BindMulti("Select", Global.Config.GBAAutoController[0].Select);
+			agbaControls.BindMulti("Start", Global.Config.GBAAutoController[0].Start);
+			agbaControls.BindMulti("L", Global.Config.GBAAutoController[0].L);
+			agbaControls.BindMulti("R", Global.Config.GBAAutoController[0].R);
+			agbaControls.BindMulti("Power", Global.Config.GBAAutoController[0].Power);
+			Global.AutofireGBAControls = agbaControls;
+
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenesisController[0].Up);
 			genControls.BindMulti("P1 Left", Global.Config.GenesisController[0].Left);
@@ -1463,6 +1491,10 @@ namespace BizHawk.MultiClient
 				case "GBC":
 					Global.ActiveController = Global.GBControls;
 					Global.AutoFireController = Global.AutofireGBControls;
+					break;
+				case "GBA":
+					Global.ActiveController = Global.GBAControls;
+					Global.AutoFireController = Global.AutofireGBAControls;
 					break;
 				case "Coleco":
 					Global.ActiveController = Global.ColecoControls;
