@@ -73,12 +73,12 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public void FrameAdvance(bool render, bool renderSound)
 		{
 			Frame++;
-			IsLagFrame = true;
+			islag = true;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 			VDP.ExecuteFrame();
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 
-			if (IsLagFrame)
+			if (islag)
 				LagCount++;
 		}
 
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 			writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("Lag {0}", _lagcount);
-			writer.WriteLine("IsLagFrame {0}", IsLagFrame);
+			writer.WriteLine("islag {0}", islag);
 			writer.Write("RAM ");
 			Ram.SaveAsHex(writer);
 			writer.WriteLine("[/Coleco]");
@@ -183,8 +183,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 					Frame = int.Parse(args[1]);
 				else if (args[0] == "Lag")
 					_lagcount = int.Parse(args[1]);
-				else if (args[0] == "IsLagFrame")
-					IsLagFrame = bool.Parse(args[1]);
+				else if (args[0] == "islag")
+					islag = bool.Parse(args[1]);
 				else if (args[0] == "RAM")
 					Ram.ReadFromHex(args[1]);
 				else if (args[0] == "[Z80]")
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 			writer.Write(Frame);
 			writer.Write(_lagcount);
-			writer.Write(IsLagFrame);
+			writer.Write(islag);
 			writer.Write(Ram);
 		}
 
@@ -228,7 +228,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 			Frame = reader.ReadInt32();
 			_lagcount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
+			islag = reader.ReadBoolean();
 			Ram = reader.ReadBytes(Ram.Length);
 		}
 
