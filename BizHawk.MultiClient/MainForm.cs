@@ -2041,20 +2041,18 @@ namespace BizHawk.MultiClient
 			//zero says: this is sort of sketchy... but this is no time for rearchitecting
 			try
 			{
-				/*
-				var sram = new byte[Global.Emulator.ReadSaveRam.Length];
-				using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
-					reader.Read(sram, 0, Global.Emulator.ReadSaveRam.Length);
-				if (Global.Emulator is LibsnesCore)
-					((LibsnesCore)Global.Emulator).StoreSaveRam(sram);
-				else if (Global.Emulator is Gameboy)
-					((Gameboy)Global.Emulator).StoreSaveRam(sram);
+				byte[] sram;
+				// GBA core might not know how big the saveram ought to be, so just send it the whole file
+				if (Global.Emulator is GBA)
+				{
+					sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
+				}
 				else
-					Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
-				 */
-				var sram = new byte[Global.Emulator.ReadSaveRam().Length];
-				using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
+				{
+					sram = new byte[Global.Emulator.ReadSaveRam().Length];
+					using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
 					reader.Read(sram, 0, sram.Length);
+				}
 				Global.Emulator.StoreSaveRam(sram);
 			}
 			catch (IOException) { }

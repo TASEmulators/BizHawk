@@ -81,15 +81,15 @@ namespace AMeteor
 				return m_timer[num];
 			}
 
-			void SetBattery (uint32_t cycles)
-			{
-				m_battery = cycles;
-			}
-			void DisableBattery ()
-			{
-				m_battery = INT_MAX;
+			//void SetBattery (uint32_t cycles)
+			//{
+			//	m_battery = cycles;
+			//}
+			//void DisableBattery ()
+			//{
+			//	m_battery = INT_MAX;
 				// no need to SetFirst since battery will be disabled only in TimeEvent
-			}
+			//}
 
 			bool SaveState (std::ostream& stream);
 			bool LoadState (std::istream& stream);
@@ -100,7 +100,7 @@ namespace AMeteor
 
 			unsigned short m_cycles;
 			unsigned short m_first;
-			int m_lcd, m_timer[4], m_sound, m_battery;
+			int m_lcd, m_timer[4], m_sound;//, m_battery;
 
 			unsigned int m_count;
 

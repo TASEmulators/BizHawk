@@ -60,10 +60,10 @@ namespace AMeteor
 			// erases cartridge memory
 			void SetCartTypeFromSize (uint32_t size);
 			void SetCartType (uint8_t type);
-			void SetCartFile (const char* filename)
-			{
-				m_cartfile = filename;
-			}
+			//void SetCartFile (const char* filename)
+			//{
+			//	m_cartfile = filename;
+			//}
 
 			void Reset (uint32_t params = ~0);
 			void ClearWbram ();
@@ -85,10 +85,23 @@ namespace AMeteor
 			}
 			bool LoadRom (const char* filename);
 			void LoadRom (const uint8_t* data, uint32_t size);
-			CartError LoadCart ();
+			//CartError LoadCart ();
+			bool LoadCart (const uint8_t* data, uint32_t size);
+			bool SaveCart (uint8_t** data, uint32_t* size);
+			void SaveCartDestroy(uint8_t* data);
 #ifdef __LIBRETRO__
 			bool LoadCartInferred ();
 #endif
+			bool HasCart () const
+			{
+				return m_cart;
+			}
+
+			void DeleteCart()
+			{
+				if (m_cart)
+					delete m_cart;
+			}
 
 			bool HasBios () const
 			{
@@ -141,7 +154,7 @@ namespace AMeteor
 
 			uint8_t m_carttype;
 			CartMem* m_cart;
-			std::string m_cartfile;
+			//std::string m_cartfile;
 
 			uint8_t ReadCart (uint16_t add);
 			void WriteCart (uint16_t add, uint8_t val);

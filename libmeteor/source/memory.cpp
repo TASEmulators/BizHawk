@@ -99,29 +99,39 @@ namespace AMeteor
 	void Memory::SetCartType (uint8_t type)
 	{
 		if (m_cart)
+		{
 			delete m_cart;
+			print_bizhawk("Cart Memory unloaded.\n");
+		}
 		switch (type)
 		{
 			case CTYPE_UNKNOWN:
 				m_cart = NULL;
+				print_bizhawk("Cart Memory set to <empty>.\n");
 				break;
 			case CTYPE_FLASH64:
 				m_cart = new Flash(false);
+				print_bizhawk("Cart Memory set to FLASH64\n");
 				break;
 			case CTYPE_FLASH128:
 				m_cart = new Flash(true);
+				print_bizhawk("Cart Memory set to FLASH128\n");
 				break;
 			case CTYPE_EEPROM512:
 				m_cart = new Eeprom(false);
+				print_bizhawk("Cart Memory set to EEPROM512\n");
 				break;
 			case CTYPE_EEPROM8192:
 				m_cart = new Eeprom(true);
+				print_bizhawk("Cart Memory set to EEPROM8192\n");
 				break;
 			case CTYPE_SRAM:
 				m_cart = new Sram();
+				print_bizhawk("Cart Memory set to SRAM\n");
 				break;
 			default:
 				met_abort("Unknown cartridge memory type");
+				print_bizhawk("Problem setting Cart Memory.  This is bad.\n");
 				break;
 		}
 		m_carttype = type;
@@ -168,7 +178,7 @@ namespace AMeteor
 		if (params & UNIT_MEMORY_ROM)
 			std::memset(m_rom  , 0, 0x02000000);
 		SetCartType(CTYPE_UNKNOWN);
-		m_cartfile.clear();
+		//m_cartfile.clear();
 	}
 
 	void Memory::ClearWbram ()
@@ -204,6 +214,7 @@ namespace AMeteor
 
 	void Memory::TimeEvent ()
 	{
+		/*
 		if (!m_cartfile.empty())
 		{
 			// FIXME, this may fail, we should do something to inform user
@@ -211,6 +222,7 @@ namespace AMeteor
 			m_cart->Save(f);
 		}
 		CLOCK.DisableBattery();
+		*/
 	}
 
 	bool Memory::LoadBios (const char* filename)
@@ -251,6 +263,38 @@ namespace AMeteor
 		std::memset(m_rom+until, 0, 0x02000000-until);
 	}
 
+	bool Memory::LoadCart(const uint8_t* data, uint32_t size)
+	{
+		SetCartTypeFromSize(size);
+		if (!m_cart)
+			return false;
+		std::stringstream ss = std::stringstream(std::string((const char*)data, size), std::ios_base::in | std::ios_base::binary);
+		return m_cart->Load(ss);
+	}
+
+	bool Memory::SaveCart(uint8_t** data, uint32_t* size)
+	{
+		if (!m_cart)
+			return false;
+		if (!data || !size)
+			return false;
+		std::stringstream ss = std::stringstream(std::ios_base::out | std::ios_base::binary);
+		if (!m_cart->Save(ss))
+			return false;
+		std::string s = ss.str();		
+		uint8_t *ret = (uint8_t *)std::malloc(s.length());
+		std::memcpy(ret, s.data(), s.length());
+		*data = ret;
+		*size = s.length();
+		return true;
+	}
+
+	void Memory::SaveCartDestroy(uint8_t* data)
+	{
+		std::free(data);
+	}
+
+	/*
 	Memory::CartError Memory::LoadCart ()
 	{
 		struct stat buf;
@@ -262,6 +306,7 @@ namespace AMeteor
 			return CERR_FAIL;
 		return CERR_NO_ERROR;
 	}
+	*/
 
 #ifdef __LIBRETRO__
 	bool Memory::LoadCartInferred ()
@@ -761,8 +806,9 @@ namespace AMeteor
 		else
 			met_abort("Unknown size for EEPROM DMA");
 
-		if (eeprom->Write((uint16_t*)GetRealAddress(src), size))
-			CLOCK.SetBattery(CART_SAVE_TIME);
+		//if (eeprom->Write((uint16_t*)GetRealAddress(src), size))
+		//	CLOCK.SetBattery(CART_SAVE_TIME);
+		eeprom->Write((uint16_t*)GetRealAddress(src), size);
 	}
 
 #if 0
@@ -777,7 +823,6 @@ namespace AMeteor
 	}
 #endif
 
-#define NO_MEMMEM
 #ifdef NO_MEMMEM // memmem() is a GNU extension, and does not exist in at least MinGW.
 #define memmem memmem_compat
 	// Implementation from Git.
@@ -817,8 +862,9 @@ namespace AMeteor
 			}
 			else
 				SetCartType(CTYPE_SRAM);
-		if (m_cart->Write(add, val))
-			CLOCK.SetBattery(CART_SAVE_TIME);
+		//if (m_cart->Write(add, val))
+		//	CLOCK.SetBattery(CART_SAVE_TIME);
+		m_cart->Write(add, val);
 	}
 
 	uint8_t *Memory::GetMemoryArea(int which)
