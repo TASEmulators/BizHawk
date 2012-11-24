@@ -53,6 +53,8 @@ namespace BizHawk
 		public int ScreenLogicalOffsetX, ScreenLogicalOffsetY;
 
 		public bool CpuTraceAvailable = false;
+
+		public string TraceHeader = "Instructions";
 	}
 
 	public class TraceBuffer
