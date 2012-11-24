@@ -132,12 +132,11 @@ namespace AMeteor
 								*ptr = m_pPalette[*tpChar] | 0x8000;
 							else
 								*ptr = 0x0;
-
-							if (flipH)
-								--tpChar;
-							else
-								++tpChar;
 						}
+						if (flipH)
+							--tpChar;
+						else
+							++tpChar;
 
 						++ptr;
 						++tileX;
@@ -186,27 +185,27 @@ namespace AMeteor
 					// we draw until the end of the tile or the line
 					while (tileX < 8)
 					{
+						if (flipH)
+							if (tileX % 2)
+							{
+								colorInd = *tpChar & 0xF;
+								--tpChar;
+							}
+							else
+								colorInd = *tpChar >> 4;
+						else
+							if (tileX % 2)
+							{
+								colorInd = *tpChar >> 4;
+								++tpChar;
+							}
+							else
+								colorInd = *tpChar & 0xF;
+
 						if (mosH && i % mosH)
 							*ptr = ptr[-1];
 						else
 						{
-							if (flipH)
-								if (tileX % 2)
-								{
-									colorInd = *tpChar & 0xF;
-									--tpChar;
-								}
-								else
-									colorInd = *tpChar >> 4;
-							else
-								if (tileX % 2)
-								{
-									colorInd = *tpChar >> 4;
-									++tpChar;
-								}
-								else
-									colorInd = *tpChar & 0xF;
-
 							if (colorInd)
 								*ptr = pPalette[colorInd] | 0x8000;
 							else
