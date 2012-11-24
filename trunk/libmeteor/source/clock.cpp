@@ -27,7 +27,7 @@ namespace AMeteor
 		// lcd is enabled by default
 		m_first = m_count = m_cycles = m_lcd = m_sound = 0;
 		// timers and battery are disabled by default
-		m_battery = m_timer[0] = m_timer[1] = m_timer[2] = m_timer[3] =
+		/*m_battery =*/ m_timer[0] = m_timer[1] = m_timer[2] = m_timer[3] =
 			INT_MAX;
 	}
 
@@ -67,7 +67,7 @@ namespace AMeteor
 			COMMIT(timer[1], TIMER1)
 			COMMIT(timer[2], TIMER2)
 			COMMIT(timer[3], TIMER3)
-			COMMIT(battery, MEM)
+			//COMMIT(battery, MEM)
 #undef COMMIT
 
 			SetFirst();
@@ -91,7 +91,7 @@ namespace AMeteor
 		SETFIRST(timer[2]);
 		SETFIRST(timer[3]);
 		SETFIRST(sound);
-		SETFIRST(battery);
+		//SETFIRST(battery);
 	}
 #undef SETFIRST
 
@@ -101,7 +101,7 @@ namespace AMeteor
 		SS_WRITE_VAR(m_first);
 		SS_WRITE_VAR(m_lcd);
 		SS_WRITE_VAR(m_sound);
-		SS_WRITE_VAR(m_battery);
+		//SS_WRITE_VAR(m_battery);
 
 		SS_WRITE_ARRAY(m_timer);
 
@@ -114,7 +114,7 @@ namespace AMeteor
 		SS_READ_VAR(m_first);
 		SS_READ_VAR(m_lcd);
 		SS_READ_VAR(m_sound);
-		SS_READ_VAR(m_battery);
+		//SS_READ_VAR(m_battery);
 
 		SS_READ_ARRAY(m_timer);
 

@@ -120,8 +120,6 @@ EXPORT void libmeteor_init()
 	static bool first = true;
 	if (first)
 	{
-		// TODO: saveram stuff
-		//AMeteor::_memory.LoadCartInferred();
 		AMeteor::_lcd.GetScreen().GetRenderer().SetFrameSlot(syg::ptr_fun(videocb));
 		AMeteor::_sound.GetSpeaker().SetFrameSlot(syg::ptr_fun(soundcb));
 		first = false;
@@ -148,6 +146,31 @@ EXPORT void libmeteor_loadbios(const void *data, unsigned size)
 EXPORT uint8_t *libmeteor_getmemoryarea(int which)
 {
 	return AMeteor::_memory.GetMemoryArea(which);
+}
+
+EXPORT int libmeteor_loadsaveram(const void *data, unsigned size)
+{
+	return AMeteor::_memory.LoadCart((const uint8_t*)data, size);
+}
+
+EXPORT int libmeteor_savesaveram(void **data, unsigned *size)
+{
+	return AMeteor::_memory.SaveCart((uint8_t **)data, size);
+}
+
+EXPORT void libmeteor_savesaveram_destroy(void *data)
+{
+	AMeteor::_memory.SaveCartDestroy((uint8_t *)data);
+}
+
+EXPORT int libmeteor_hassaveram()
+{
+	return AMeteor::_memory.HasCart();
+}
+
+EXPORT void libmeteor_clearsaveram()
+{
+	AMeteor::_memory.DeleteCart();
 }
 
 // TODO: cartram and system bus memory domains

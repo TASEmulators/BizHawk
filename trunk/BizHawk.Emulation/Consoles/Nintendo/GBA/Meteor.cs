@@ -64,18 +64,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		public byte[] ReadSaveRam()
 		{
-			return new byte[0];
+			if (!LibMeteor.libmeteor_hassaveram())
+				return null;
+			IntPtr data = IntPtr.Zero;
+			uint size = 0;
+			if (!LibMeteor.libmeteor_savesaveram(ref data, ref size))
+				throw new Exception("libmeteor_savesaveram() returned false!");
+			byte[] ret = new byte[size];
+			Marshal.Copy(data, ret, 0, (int)size);
+			LibMeteor.libmeteor_savesaveram_destroy(data);
+			return ret;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
+			if (!LibMeteor.libmeteor_loadsaveram(data, (uint)data.Length))
+				throw new Exception("libmeteor_loadsaveram() returned false!");
 		}
 
 		public void ClearSaveRam()
 		{
+			LibMeteor.libmeteor_clearsaveram();
 		}
 
-		public bool SaveRamModified { get { return false; } set { } }
+		public bool SaveRamModified
+		{ get { return LibMeteor.libmeteor_hassaveram(); } set { } }
 
 		#endregion
 

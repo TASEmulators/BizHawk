@@ -51,7 +51,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBMETEOR_EXPORTS;%(PreprocessorDefinitions);METDEBUG;METDEBUGLOG;_ITERATOR_DEBUG_LEVEL=0</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBMETEOR_EXPORTS;%(PreprocessorDefinitions);METDEBUG;METDEBUGLOG;_ITERATOR_DEBUG_LEVEL=0;NO_MEMMEM</PreprocessorDefinitions>
       <DisableSpecificWarnings>4396;4800</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -67,7 +67,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBMETEOR_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBMETEOR_EXPORTS;%(PreprocessorDefinitions);NO_MEMMEM</PreprocessorDefinitions>
       <DisableSpecificWarnings>4396;4800</DisableSpecificWarnings>
     </ClCompile>
     <Link>
