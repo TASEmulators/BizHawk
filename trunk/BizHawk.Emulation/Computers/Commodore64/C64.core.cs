@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public MOS6502X cpu;
 		public Memory mem;
 		public Sid sid;
-		public VicIINew vic;
+		public VicII vic;
 		public ChipSignals signal;
 
 		// cpu
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// initialize vic
 			signal = new ChipSignals();
-			vic = new VicIINew(signal, initRegion);
+			vic = new VicII(signal, initRegion);
 
 			// set vsync rate
 			switch (initRegion)

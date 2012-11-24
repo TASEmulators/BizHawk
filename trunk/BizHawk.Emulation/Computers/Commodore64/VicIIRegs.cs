@@ -5,9 +5,9 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public partial class VicIINew : IVideoProvider
+	public partial class VicII : IVideoProvider
 	{
-		private class VicIINewSprite
+		private class VicIISprite
 		{
 			// internal regs
 			public int MC;
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private int spriteData;
 		private int spritePixel;
 		private bool spritePriority;
-		private VicIINewSprite[] sprites;
+		private VicIISprite[] sprites;
 
 		private bool advanceX;
 		private bool badline;
@@ -109,9 +109,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private void InitRegs()
 		{
 			// init sprites
-			sprites = new VicIINewSprite[8];
+			sprites = new VicIISprite[8];
 			for (int i = 0; i < 8; i++)
-				sprites[i] = new VicIINewSprite();
+				sprites[i] = new VicIISprite();
 
 			// init buffers
 			plotterDataBuffer = new int[plotterDelay];
