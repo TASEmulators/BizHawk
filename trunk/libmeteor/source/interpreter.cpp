@@ -74,7 +74,7 @@ namespace AMeteor
 						if (traceenabled)
 						{
 							std::stringstream ss;
-							ss << IOS_TRACE << R(15) << ':' << std::setw(4) << code << "     ";
+							ss << IOS_TRACE << R(15) - 2 << ':' << std::setw(4) << code << "     ";
 							ss.setf(std::ios::left, std::ios::adjustfield);
 							ss << std::setw(32) << std::setfill(' ') << Disassembler::Instruction(R(15), (uint16_t)code).ToString();
 							ss.setf(std::ios::right, std::ios::adjustfield);
@@ -126,7 +126,7 @@ namespace AMeteor
 							if (traceenabled)
 							{
 								std::stringstream ss;
-								ss << IOS_TRACE << R(15) << ':' << std::setw(8) << code << ' ';
+								ss << IOS_TRACE << R(15) - 4 << ':' << std::setw(8) << code << ' ';
 								ss.setf(std::ios::left, std::ios::adjustfield);
 								ss << std::setw(32) << std::setfill(' ') << Disassembler::Instruction(R(15), (uint32_t)code).ToString();
 								ss.setf(std::ios::right, std::ios::adjustfield);
