@@ -85,6 +85,17 @@ namespace BizHawk.MultiClient
 
 		public void RecordMovie()
 		{
+			// put any BEETA quality cores here
+			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA)
+			{
+				var result = MessageBox.Show
+					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
+					"is currently BETA-status.  We appreciate your help in testing Bizhawk. " +
+					"You can record a movie on this core if you'd like to, but expect to " +
+					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
+				if (result != System.Windows.Forms.DialogResult.Yes)
+					return;
+			}
 			RecordMovie r = new RecordMovie();
 			r.ShowDialog();
 		}

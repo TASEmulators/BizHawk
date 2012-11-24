@@ -370,8 +370,15 @@ namespace BizHawk.MultiClient
 		private string GetGBAControllersAsMnemonic()
 		{
 			StringBuilder input = new StringBuilder("|");
-			// there's no power button for now
-			input.Append(".|");
+			if (IsBasePressed("Power"))
+			{
+				input.Append(Global.COMMANDS[ControlType]["Power"]);
+			}
+			else
+			{
+				input.Append(".");
+			}
+			input.Append("|");
 			foreach (string button in Global.BUTTONS[ControlType].Keys)
 			{
 				input.Append(IsBasePressed(button) ? Global.BUTTONS[ControlType][button] : ".");
@@ -715,6 +722,26 @@ namespace BizHawk.MultiClient
 		}
 
 		//Redundancy beats crazy if logic that makes new consoles annoying to add
+
+		private void SetGBAControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			int start = 3;
+			foreach (string button in Global.BUTTONS[ControlType].Keys)
+			{
+				Force(button, c[start++]);
+			}
+		}
+
 		private void SetSNESControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
@@ -798,6 +825,11 @@ namespace BizHawk.MultiClient
 			else if (ControlType == "Commodore 64 Controller")
 			{
 				SetC64ControllersAsMnemonic(mnemonic);
+				return;
+			}
+			else if (ControlType == "GBA Controller")
+			{
+				SetGBAControllersAsMnemonic(mnemonic);
 				return;
 			}
 

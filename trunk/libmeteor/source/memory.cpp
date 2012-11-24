@@ -96,12 +96,21 @@ namespace AMeteor
 		}
 	}
 
+	void Memory::DeleteCart()
+	{
+		if (m_cart)
+			delete m_cart;
+		m_cart = NULL;
+		print_bizhawk("Cart Memory unloaded.\n");
+	}
+
 	void Memory::SetCartType (uint8_t type)
 	{
 		if (m_cart)
 		{
 			delete m_cart;
 			print_bizhawk("Cart Memory unloaded.\n");
+			m_cart = NULL;
 		}
 		switch (type)
 		{

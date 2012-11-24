@@ -97,11 +97,7 @@ namespace AMeteor
 				return m_cart;
 			}
 
-			void DeleteCart()
-			{
-				if (m_cart)
-					delete m_cart;
-			}
+			void DeleteCart();
 
 			bool HasBios () const
 			{
