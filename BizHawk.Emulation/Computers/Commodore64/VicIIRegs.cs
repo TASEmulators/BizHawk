@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			// init raster data
 			rasterX = rasterLeft;
-			rasterWidth = pipeline.Length * 8;
+			rasterWidth = pipelineLength * 8;
 
 			// reset regs
 			for (int i = 0; i < 0x40; i++)

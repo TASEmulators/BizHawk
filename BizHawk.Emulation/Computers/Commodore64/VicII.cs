@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			get
 			{
-				return pipeline.Length * rasterLines;
+				return pipelineLength * rasterLines;
 			}
 		}
 

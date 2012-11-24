@@ -105,9 +105,10 @@
     <Compile Include="Computers\Commodore64\SidWaveformGenerator.cs" />
     <Compile Include="Computers\Commodore64\Timing.cs" />
     <Compile Include="Computers\Commodore64\Via.cs" />
-    <Compile Include="Computers\Commodore64\VicIINew.cs" />
-    <Compile Include="Computers\Commodore64\VicIINewPipeline.cs" />
-    <Compile Include="Computers\Commodore64\VicIINewVideoProvider.cs" />
+    <Compile Include="Computers\Commodore64\VicII.cs" />
+    <Compile Include="Computers\Commodore64\VicIIPipeline.cs" />
+    <Compile Include="Computers\Commodore64\VicIIPipelineBuilder.cs" />
+    <Compile Include="Computers\Commodore64\VicIIVideoProvider.cs" />
     <Compile Include="Computers\Commodore64\VicIIRegs.cs" />
     <Compile Include="Computers\Commodore64\VicState.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />

@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private void InitVideoBuffer()
 		{
 			videoBufferIndex = 0;
-			videoBufferWidth = pipeline.Length * 8;
+			videoBufferWidth = pipelineLength * 8;
 			videoBufferHeight = rasterLines;
 			videoBufferSize = videoBufferWidth * videoBufferHeight;
 			videoBuffer = new int[videoBufferSize];
