@@ -433,6 +433,13 @@ namespace BizHawk.MultiClient
 
 			foreach (string button in Global.BUTTONS["Commodore 64 Keyboard"].Keys)
 			{
+				if (Global.BUTTONS["Commodore 64 Keyboard"][button] == "Key Restore")
+				{
+					int xx = 0;
+					xx++;
+					int y = xx;
+					y++;
+				}
 				input.Append(IsBasePressed(button) ? Global.BUTTONS["Commodore 64 Keyboard"][button] : ".");
 			}
 			input.Append('|');
