@@ -3826,7 +3826,7 @@ namespace BizHawk.MultiClient
 			}
 			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
-			Global.OSD.AddMessage("AVI capture aborted");
+			Global.OSD.AddMessage("A/V capture aborted");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
@@ -3847,7 +3847,7 @@ namespace BizHawk.MultiClient
 			CurrAviWriter.CloseFile();
 			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
-			Global.OSD.AddMessage("AVI capture stopped");
+			Global.OSD.AddMessage("A/V capture stopped");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
