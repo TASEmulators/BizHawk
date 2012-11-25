@@ -583,6 +583,24 @@ namespace AMeteor
 // Read
 ////////////////////////////////////////////////////////////////////////////////
 
+	uint8_t Memory::Peek8 (uint32_t add)
+	{
+		switch (add >> 24)
+		{
+		case 0x04:
+			if (add < 0x04001000)
+				return IO.DRead8(add & 0xfff);
+			else
+				return 0;
+		case 0x0e:
+			// todo: cart reading
+			return 0xff;
+		default:
+			uint8_t *r = (uint8_t*)GetRealAddress(add, 1);
+			return r ? *r : 0;
+		}
+	}
+
 	uint8_t Memory::Read8 (uint32_t add)
 	{
 		switch (add >> 24)

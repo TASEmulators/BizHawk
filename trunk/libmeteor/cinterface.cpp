@@ -202,5 +202,13 @@ EXPORT int libmeteor_loadstate(const void *data, unsigned size)
 	return AMeteor::LoadState(ss);
 }
 
-// TODO: cartram and system bus memory domains
+// TODO: cartram memory domain, cartram in system bus memory domain
+EXPORT uint8_t libmeteor_peekbus(uint32_t addr)
+{
+	return AMeteor::_memory.Peek8(addr);
+}
 
+EXPORT void libmeteor_writebus(uint32_t addr, uint8_t val)
+{
+	AMeteor::_memory.Write8(addr, val);
+}

@@ -115,6 +115,8 @@ namespace AMeteor
 			bool SaveState (std::ostream& stream);
 			bool LoadState (std::istream& stream);
 
+			uint8_t Peek8 (uint32_t add);
+
 			// TODO make const members
 			uint8_t Read8 (uint32_t add);
 			uint16_t Read16 (uint32_t add);
