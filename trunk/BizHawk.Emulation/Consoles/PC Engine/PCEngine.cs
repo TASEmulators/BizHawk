@@ -236,6 +236,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		{
 			// this should just be a public setter instead of a new method.
 			Frame = 0;
+			_lagcount = 0;
+			islag = false;
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)

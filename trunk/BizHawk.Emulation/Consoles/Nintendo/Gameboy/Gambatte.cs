@@ -289,9 +289,9 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public void ResetFrameCounter()
 		{
-			// is this right?
 			Frame = 0;
 			LagCount = 0;
+			IsLagFrame = false;
 		}
 
 		#region savestates

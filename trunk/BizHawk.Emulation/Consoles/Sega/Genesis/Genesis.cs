@@ -38,6 +38,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public void ResetFrameCounter()
 		{
 			Frame = 0;
+			_lagcount = 0;
+			islag = false;
 		}
 
 		// Genesis timings:
