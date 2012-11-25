@@ -61,10 +61,10 @@ namespace AMeteor
 				struct
 				{
 					unsigned int prescaler : 2;
-					bool countup           : 1;
+					unsigned int countup   : 1;
 					unsigned int unused1   : 3;
-					bool irq               : 1;
-					bool start             : 1;
+					unsigned int irq       : 1;
+					unsigned int start     : 1;
 					unsigned int unused2   : 8;
 				} b;
 			};
