@@ -53,6 +53,9 @@ namespace BizHawk.MultiClient
 			GBController1Panel.LoadSettings(Global.Config.GBController[0]);
 			GBAutofire1Panel.LoadSettings(Global.Config.GBAutoController[0]);
 
+			GBAController1Panel.LoadSettings(Global.Config.GBAController[0]);
+			GBAAutofire1Panel.LoadSettings(Global.Config.GBAAutoController[0]);
+
 			GenesisController1Panel.LoadSettings(Global.Config.GenesisController[0]);
 			GenesisAutofire1Panel.LoadSettings(Global.Config.GenesisAutoController[0]);
 			GenesisConsoleButtons.LoadSettings(Global.Config.GenesisConsoleButtons);
@@ -124,6 +127,7 @@ namespace BizHawk.MultiClient
 			if (!Global.MainForm.INTERIM)
 			{
 				PlatformTabControl.Controls.Remove(tabPageC64);
+				PlatformTabControl.Controls.Remove(tabPageGBA);
 			}
 
 			AutoTab.Checked = Global.Config.InputConfigAutoTab;
@@ -145,6 +149,9 @@ namespace BizHawk.MultiClient
 				case "GB":
 				case "GBC":
 					PlatformTabControl.SelectTab(tabPageGameboy);
+					break;
+				case "GBA":
+					PlatformTabControl.SelectTab(tabPageGBA);
 					break;
 				case "GEN":
 					PlatformTabControl.SelectTab(tabPageGenesis);
