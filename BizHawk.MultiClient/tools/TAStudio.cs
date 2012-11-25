@@ -102,19 +102,31 @@ namespace BizHawk.MultiClient
 		{
 			if (index == 0 && Global.MovieSession.Movie.StateFirstIndex == 0)
 			{
-				color = Color.LightGreen; //special case for frame 0. Normally we need to go back an extra frame, but for frame 0 we can reload the rom.
+				if (color != Color.LightGreen)
+				{
+					color = Color.LightGreen; //special case for frame 0. Normally we need to go back an extra frame, but for frame 0 we can reload the rom.
+				}
 			}
 			else if (Global.MovieSession.Movie.FrameLagged(index))
 			{
-				color = Color.Pink;
+				if (color != Color.Pink)
+				{
+					color = Color.Pink;
+				}
 			}
 			else if (index > Global.MovieSession.Movie.StateFirstIndex && index <= Global.MovieSession.Movie.StateLastIndex)
 			{
-				color = Color.LightGreen;
+				if (color != Color.LightGreen)
+				{
+					color = Color.LightGreen;
+				}
 			}
 			if (index == Global.Emulator.Frame)
 			{
-				color = Color.LightBlue;
+				if (color != Color.LightBlue)
+				{
+					color = Color.LightBlue;
+				}
 			}
 		}
 
