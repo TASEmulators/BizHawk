@@ -285,8 +285,8 @@ namespace AMeteor
 		}
 
 		m_graphic = false;
-		if ((basedest >> 24) == 0x07)
-			LCD.OamWrite(basedest, dest);
+		//if ((basedest >> 24) == 0x07)
+		//	LCD.OamWrite(basedest, dest);
 	}
 
 	bool Dma::SaveState (std::ostream& stream)
