@@ -230,6 +230,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			AddMemoryDomain(LibMeteor.MemoryArea.oam, 1024, "OAM");
 			// even if the rom is less than 32MB, the whole is still valid in meteor
 			AddMemoryDomain(LibMeteor.MemoryArea.rom, 32 * 1024 * 1024, "ROM");
+			// special domain for system bus
+			MemoryDomain sb = new MemoryDomain("BUS", 1 << 28, Endian.Little,
+				delegate(int addr)
+				{
+					return LibMeteor.libmeteor_peekbus((uint)addr);
+				},
+				delegate(int addr, byte val)
+				{
+					LibMeteor.libmeteor_writebus((uint)addr, val);
+				});
+			_MemoryDomains.Add(sb);
 		}
 
 		#endregion

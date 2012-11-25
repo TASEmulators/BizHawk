@@ -210,6 +210,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool libmeteor_loadstate(byte[] data, uint size);
 
+		/// <summary>
+		/// read a byte off the system bus.  guaranteed to have no side effects
+		/// </summary>
+		/// <param name="addr"></param>
+		/// <returns></returns>
+		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte libmeteor_peekbus(uint addr);
 
+		/// <summary>
+		/// write a byte to the system bus.
+		/// </summary>
+		/// <param name="addr"></param>
+		/// <param name="val"></param>
+		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libmeteor_writebus(uint addr, byte val);
 	}
 }
