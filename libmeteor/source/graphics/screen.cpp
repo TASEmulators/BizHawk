@@ -121,6 +121,16 @@ namespace AMeteor
 					// if objects are enabled draw them
 					if (layersOn & (0x1 << 4)) m_objs.DrawLine(line, lineObj);
 					break;
+				case 3: // bg2 only 15 bit direct color 240x160
+					layersOn &= 0xF4;
+					if (layersOn & (0x1 << 2))
+						m_bgLayer2.DrawLine3(lineBg+2*WIDTH,
+								m_refX2, m_refY2,
+								m_io.DRead16(Io::BG2PA),
+								m_io.DRead16(Io::BG2PC));
+					if (layersOn & (0x1 << 4))
+						m_objs.DrawLineHighOnly(line, lineObj);
+					break;
 				// TODO (remember, HIGH ONLY for objs, don't make shitty copy paste)
 				case 4: // bg2 only in mode 4 (bitmap 256)
 					layersOn &= 0xF4;
@@ -139,6 +149,17 @@ namespace AMeteor
 					// if objs are enabled
 					if (layersOn & (0x1 << 4))
 						// all objs with the current priority
+						m_objs.DrawLineHighOnly(line, lineObj);
+					break;
+				case 5: // bg2 only 15 bit direct color 160x128 2 frames
+					layersOn &= 0xF4;
+					if (layersOn & (0x1 << 2))
+						m_bgLayer2.DrawLine5(lineBg+2*WIDTH,
+								m_refX2, m_refY2,
+								m_io.DRead16(Io::BG2PA),
+								m_io.DRead16(Io::BG2PC),
+								m_dispcnt & (0x1 << 4));
+					if (layersOn & (0x1 << 4))
 						m_objs.DrawLineHighOnly(line, lineObj);
 					break;
 				default :
