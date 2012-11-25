@@ -27,8 +27,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		bool EnableLargeSprites { get { return (Registers[1] & 2) > 0; } }
 		bool EnableInterrupts { get { return (Registers[1] & 32) > 0; } }
 		bool DisplayOn { get { return (Registers[1] & 64) > 0; } }
-		bool Mode4k { get { return (Registers[1] & 128) > 0; } }
-		// TODO, is 4/16K bit used?
+		bool Mode16k { get { return (Registers[1] & 128) > 0; } }
 
 		bool InterruptPending
 		{
@@ -36,7 +35,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			set { StatusByte = (byte)((StatusByte & ~0x02) | (value ? 0x80 : 0x00)); }
 		}
 
-		//int NameTableBase;
 		int ColorTableBase;
 		int PatternGeneratorBase;
 		int SpritePatternGeneratorBase;
@@ -58,7 +56,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 				Cpu.ExecuteCycles(228);
 			}
-
 		}
 
 		public void WriteVdpControl(byte value)
@@ -67,18 +64,20 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			{
 				VdpLatch = value;
 				VdpWaitingForLatchByte = false;
-				VdpAddress = (ushort)((VdpAddress & 0xFF00) | value);
+				VdpAddress = (ushort)((VdpAddress & 0x3F00) | value);
 				return;
 			}
 
 			VdpWaitingForLatchByte = true;
 			VdpAddress = (ushort)(((value & 63) << 8) | VdpLatch);
+            VdpAddress &= 0x3FFF;
 			switch (value & 0xC0)
 			{
 				case 0x00: // read VRAM
 					vdpCommand = VdpCommand.VramRead;
-					VdpBuffer = VRAM[VdpAddress & 0x3FFF];
+					VdpBuffer = VRAM[VdpAddress];
 					VdpAddress++;
+                    VdpAddress &= 0x3FFF;
 					break;
 				case 0x40: // write VRAM
 					vdpCommand = VdpCommand.VramWrite;
@@ -96,8 +95,12 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			VdpWaitingForLatchByte = true;
 			VdpBuffer = value;
 
-			VRAM[VdpAddress & 0x3FFF] = value;
+			VRAM[VdpAddress] = value;
+            if (!Mode16k)
+                Console.WriteLine("VRAM written while not in 16k addressing mode!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            //Log.Error("COL", "VRAM[{0:X4}] = {1:X2}", VdpAddress, value);
 			VdpAddress++;
+            VdpAddress &= 0x3FFF;
 		}
 
 		void WriteRegister(int reg, byte data)
@@ -113,7 +116,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				case 1: // Mode Control Register 2
 					CheckVideoMode();
 					Cpu.NonMaskableInterrupt = (EnableInterrupts && InterruptPending);
-                    if (Mode4k == false)
+
+                    if (!Mode16k)
                         //throw new Exception("4k bit is false! tell vec where you saw this happen pls!");
                         Console.WriteLine("4k bit is false! tell vec where you saw this happen pls!");
 					break;
@@ -149,8 +153,9 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		{
 			VdpWaitingForLatchByte = true;
 			byte value = VdpBuffer;
-			VdpBuffer = VRAM[VdpAddress & 0x3FFF];
+			VdpBuffer = VRAM[VdpAddress];
 			VdpAddress++;
+            VdpAddress &= 0x3FFF;
 			return value;
 		}
 
@@ -160,6 +165,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			else if (Mode2Bit) TmsMode = 2;
 			else if (Mode3Bit) TmsMode = 3;
 			else TmsMode = 0;
+            Console.WriteLine("mode " + TmsMode);
 
             if (TmsMode == 1)
                 throw new Exception("TMS video mode 1! please tell vecna which game uses this!");
@@ -259,20 +265,26 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		byte[] ScanlinePriorityBuffer = new byte[256];
 		byte[] SpriteCollisionBuffer = new byte[256];
 
-		void RenderTmsSprites(int scanLine)
+        void RenderTmsSprites(int scanLine)
+        {
+            if (EnableDoubledSprites == false)
+                RenderTmsSpritesStandard(scanLine);
+            else
+                RenderTmsSpritesDouble(scanLine);
+        }
+
+		void RenderTmsSpritesStandard(int scanLine)
 		{
 			if (DisplayOn == false) return;
 
 			Array.Clear(ScanlinePriorityBuffer, 0, 256);
 			Array.Clear(SpriteCollisionBuffer, 0, 256);
 
-			bool Double = EnableDoubledSprites;
 			bool LargeSprites = EnableLargeSprites;
 
 			int SpriteSize = 8;
 			if (LargeSprites) SpriteSize *= 2;
-			if (Double) SpriteSize *= 2;
-			int OneCellSize = Double ? 16 : 8;
+            const int OneCellSize = 8;
 
 			int NumSpritesOnScanline = 0;
 			for (int i = 0; i < 32; i++)
@@ -299,7 +311,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 				if (LargeSprites) Pattern &= 0xFC; // 16x16 sprites forced to 4-byte alignment
 				int SpriteLine = scanLine - y;
-				if (Double) SpriteLine /= 2;
 
 				byte pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine];
 
@@ -323,6 +334,71 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				}
 			}
 		}
+
+        void RenderTmsSpritesDouble(int scanLine)
+        {
+            if (DisplayOn == false) return;
+
+            Array.Clear(ScanlinePriorityBuffer, 0, 256);
+            Array.Clear(SpriteCollisionBuffer, 0, 256);
+
+            bool LargeSprites = EnableLargeSprites;
+
+            int SpriteSize = 8;
+            if (LargeSprites) SpriteSize *= 2;
+            SpriteSize *= 2;  // because sprite magnification
+            const int OneCellSize = 16; // once 8-pixel cell, doubled, will take 16 pixels
+
+            int NumSpritesOnScanline = 0;
+            for (int i = 0; i < 32; i++)
+            {
+                int SpriteBase = TmsSpriteAttributeBase + (i * 4);
+                int y = VRAM[SpriteBase++];
+                int x = VRAM[SpriteBase++];
+                int Pattern = VRAM[SpriteBase++];
+                int Color = VRAM[SpriteBase];
+
+                if (y == 208) break; // terminator sprite
+                if (y > 224) y -= 256; // sprite Y wrap
+                y++; // inexplicably, sprites start on Y+1
+                if (y > scanLine || y + SpriteSize <= scanLine) continue; // sprite is not on this scanline
+                if ((Color & 0x80) > 0) x -= 32; // Early Clock adjustment
+
+                if (++NumSpritesOnScanline == 5)
+                {
+                    StatusByte &= 0xE0;    // Clear FS0-FS4 bits
+                    StatusByte |= (byte)i; // set 5th sprite index
+                    StatusByte |= 0x40;    // set overflow bit
+                    break;
+                }
+
+                if (LargeSprites) Pattern &= 0xFC; // 16x16 sprites forced to 4-byte alignment
+                int SpriteLine = scanLine - y;
+                SpriteLine /= 2; // because of sprite magnification
+
+                byte pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine];
+
+                for (int xp = 0; xp < SpriteSize && x + xp < 256; xp++)
+                {
+                    if (x + xp < 0) continue;
+                    if (LargeSprites && xp == OneCellSize)
+                        pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine + 16];
+
+                    if ((pv & (1 << (7 - ((xp/2) & 7)))) > 0)  // xp/2 is due to sprite magnification
+                    {
+                        if (Color != 0 && ScanlinePriorityBuffer[x + xp] == 0)
+                        {
+                            if (SpriteCollisionBuffer[x + xp] != 0)
+                                StatusByte |= 0x20; // Set sprite collision flag
+                            SpriteCollisionBuffer[x + xp] = 1;
+                            ScanlinePriorityBuffer[x + xp] = 1;
+                            FrameBuffer[(scanLine * 256) + x + xp] = PaletteTMS9918[Color & 0x0F];
+                        }
+                    }
+                }
+            }
+        }
+
 
 		Z80A Cpu;
 		public TMS9918A(Z80A cpu)
