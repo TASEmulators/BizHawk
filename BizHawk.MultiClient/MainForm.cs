@@ -1831,6 +1831,7 @@ namespace BizHawk.MultiClient
 								if (!colfile.Exists)
 								{
 									MessageBox.Show("Unable to find the required ColecoVision BIOS file - \n" + colbiosPath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									throw new Exception();
 								}
 								else
 								{
@@ -1870,7 +1871,7 @@ namespace BizHawk.MultiClient
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								string gbabiospath = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBAFirmwares, "GBA"), "gbabios.rom");
+								string gbabiospath = PathManager.MakeAbsolutePath(Global.Config.PathGBABIOS, "GBA");
 								byte[] gbabios = null;
 
 								if (File.Exists(gbabiospath))
@@ -1879,7 +1880,7 @@ namespace BizHawk.MultiClient
 								}
 								else
 								{
-									MessageBox.Show(string.Format("Couldn't open GBA BIOS: {0}\nCheck your firmware config", gbabiospath));
+									MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
 									throw new Exception();
 								}
 								GBA gba = new GBA();

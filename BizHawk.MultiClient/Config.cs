@@ -108,7 +108,6 @@ namespace BizHawk.MultiClient
 		public string PathGBASaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathGBAScreenshots = Path.Combine(".", "Screenshots");
 		public string PathGBACheats = Path.Combine(".", "Cheats");
-		public string PathGBAFirmwares = Path.Combine(".", "Firmwares");
 
 		public string BaseSMS = Path.Combine(".", "SMS");
 		public string PathSMSROMs = ".";
@@ -196,6 +195,7 @@ namespace BizHawk.MultiClient
 		public string LogPath = ".";
 
 		//BIOS Paths
+		public string PathGBABIOS = Path.Combine(".", "gbabios.rom");
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
 		public string PathCOLBios = Path.Combine(".", "ColecoBios.bin");
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");

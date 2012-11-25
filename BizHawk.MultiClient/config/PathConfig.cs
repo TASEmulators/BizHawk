@@ -126,7 +126,7 @@ namespace BizHawk.MultiClient
 			GBASaveRAMBox.Text = Global.Config.PathGBASaveRAM;
 			GBAScreenshotsBox.Text = Global.Config.PathGBAScreenshots;
 			GBACheatsBox.Text = Global.Config.PathGBACheats;
-			GBAFirmwaresBox.Text = Global.Config.PathGBAFirmwares;
+			GBAFirmwaresBox.Text = Global.Config.PathGBABIOS;
 
 			TI83BaseBox.Text = Global.Config.BaseTI83;
 			TI83ROMsBox.Text = Global.Config.PathTI83ROMs;
@@ -307,7 +307,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathGBASaveRAM = GBASaveRAMBox.Text;
 			Global.Config.PathGBAScreenshots = GBAScreenshotsBox.Text;
 			Global.Config.PathGBACheats = GBACheatsBox.Text;
-			Global.Config.PathGBAFirmwares = GBAFirmwaresBox.Text;
+			Global.Config.PathGBABIOS = GBAFirmwaresBox.Text;
 
 			Global.Config.BaseTI83 = TI83BaseBox.Text;
 			Global.Config.PathTI83ROMs = TI83ROMsBox.Text;
@@ -1038,7 +1038,10 @@ namespace BizHawk.MultiClient
 
 		private void GBABrowseFirmwares_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(GBAFirmwaresBox, GBAFirmwaresDescription.Text);
+			BrowseForBios(
+				"GBA BIOS (*.rom)|*.rom|All Files|*.*",
+				 Global.Config.PathGBABIOS, "GBA",
+				GBAFirmwaresBox);
 		}
 	}
 }
