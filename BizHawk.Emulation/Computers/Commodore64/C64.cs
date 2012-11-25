@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void ResetFrameCounter()
 		{
 			_frame = 0;
+			_lagcount = 0;
+			_islag = false;
 		}
 
 		// audio/video

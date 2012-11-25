@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		{
 			Frame = 0;
 			LagCount = 0;
+			IsLagFrame = false;
 		}
 
 		#region saveram

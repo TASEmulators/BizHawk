@@ -734,7 +734,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			StoreSaveRam(cleardata);
 		}
 
-		public void ResetFrameCounter() { timeFrameCounter = 0; }
+		public void ResetFrameCounter()
+		{
+			timeFrameCounter = 0;
+			LagCount = 0;
+			IsLagFrame = false;
+		}
 
 		#region savestates
 

@@ -204,7 +204,10 @@ namespace BizHawk.Emulation.Consoles.PSX
 
 		public void ResetFrameCounter()
 		{
+			// FIXME when all this stuff is implemented
 			Frame = 0;
+			LagCount = 0;
+			//IsLagFrame = false;
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)

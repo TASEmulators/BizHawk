@@ -320,6 +320,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public void ResetFrameCounter()
 		{
 			_frame = 0;
+			_lagcount = 0;
+			islag = false;
 		}
 
 		public long Timestamp { get; private set; }

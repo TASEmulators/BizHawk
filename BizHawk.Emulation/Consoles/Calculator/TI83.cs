@@ -484,6 +484,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		public void ResetFrameCounter()
 		{
 			Frame = 0;
+			_lagcount = 0;
+			islag = false;
 		}
 
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }

@@ -63,6 +63,8 @@ namespace BizHawk
 		public void ResetFrameCounter()
 		{
 			_frame = 0;
+			_lagcount = 0;
+			_islag = false;
 		}
 
 		public byte[] SaveStateBinary()

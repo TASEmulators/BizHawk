@@ -233,7 +233,12 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		}
 
 		public void Dispose() { }
-		public void ResetFrameCounter() { }
+		public void ResetFrameCounter()
+		{
+			Frame = 0;
+			_lagcount = 0;
+			islag = false;
+		}
 
 		public string SystemId { get { return "Coleco"; } }
 		public GameInfo game;
