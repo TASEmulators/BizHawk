@@ -346,7 +346,7 @@
 			this.KF3.Text = "f 3";
 			this.KF3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KF3.UseVisualStyleBackColor = true;
-			this.KF3.CausesValidationChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			this.KF3.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KF7
 			// 
@@ -374,7 +374,7 @@
 			this.KF5.Text = "f 5";
 			this.KF5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KF5.UseVisualStyleBackColor = true;
-			this.KF5.CausesValidationChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			this.KF5.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// KCtrl
 			// 

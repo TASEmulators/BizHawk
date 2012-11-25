@@ -1163,6 +1163,7 @@ namespace BizHawk.MultiClient
 			CommodoreControls.BindMulti("Key At", Global.Config.C64Keyboard.At);
 			CommodoreControls.BindMulti("Key Asterisk", Global.Config.C64Keyboard.Asterisk);
 			CommodoreControls.BindMulti("Key Up Arrow", Global.Config.C64Keyboard.Up_Arrow);
+			CommodoreControls.BindMulti("Key Restore", Global.Config.C64Keyboard.Restore);
 			CommodoreControls.BindMulti("Key Run/Stop", Global.Config.C64Keyboard.Run_Stop);
 			CommodoreControls.BindMulti("Key Lck", Global.Config.C64Keyboard.Lck);
 			CommodoreControls.BindMulti("Key A", Global.Config.C64Keyboard.A);

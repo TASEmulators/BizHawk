@@ -33,15 +33,15 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == KF3)
 			{
-				Global.StickyXORAdapter.SetSticky("Key F3", KF1.Checked);
+				Global.StickyXORAdapter.SetSticky("Key F3", KF3.Checked);
 			}
 			else if (sender == KF5)
 			{
-				Global.StickyXORAdapter.SetSticky("Key F5", KF1.Checked);
+				Global.StickyXORAdapter.SetSticky("Key F5", KF5.Checked);
 			}
 			else if (sender == KF7)
 			{
-				Global.StickyXORAdapter.SetSticky("Key F7", KF1.Checked);
+				Global.StickyXORAdapter.SetSticky("Key F7", KF7.Checked);
 			}
 			else if (sender == KLeftArrow)
 			{
@@ -165,7 +165,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (sender == KRST)
 			{
-				Global.StickyXORAdapter.SetSticky("Key RST", KRST.Checked);
+				Global.StickyXORAdapter.SetSticky("Key Restore", KRST.Checked);
 			}
 			else if (sender == KRun)
 			{

@@ -1225,6 +1225,7 @@ namespace BizHawk.MultiClient
 		public string At;
 		public string Asterisk;
 		public string Up_Arrow;
+		public string Restore;
 
 		public string Run_Stop;
 		public string Lck;
