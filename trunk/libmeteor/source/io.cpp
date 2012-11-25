@@ -289,28 +289,37 @@ namespace AMeteor
 				W16(add, (val & 0xFFF8) | (m_iomem[add & 0xFFF] & 0x07));
 				break;
 			// The BG*OFS are write-only, we don't need to W16()
+			// You do if you're ever going to load them from a savestate...
 			case BG0HOFS:
+				W16(add, val & 0x1FF);
 				LCD.UpdateBg0XOff(val & 0x1FF);
 				break;
 			case BG0VOFS:
+				W16(add, val & 0x1FF);
 				LCD.UpdateBg0YOff(val & 0x1FF);
 				break;
 			case BG1HOFS:
+				W16(add, val & 0x1FF);
 				LCD.UpdateBg1XOff(val & 0x1FF);
 				break;
 			case BG1VOFS:
+				W16(add, val & 0x1FF);
 				LCD.UpdateBg1YOff(val & 0x1FF);
 				break;
 			case BG2HOFS:
+				W16(add, val & 0x1FF);
 				LCD.UpdateBg2XOff(val & 0x1FF);
 				break;
 			case BG2VOFS:
+				W16(add, val & 0x1FF);
 				LCD.UpdateBg2YOff(val & 0x1FF);
 				break;
 			case BG3HOFS:
+				W16(add, val & 0x1FF);
 				LCD.UpdateBg3XOff(val & 0x1FF);
 				break;
 			case BG3VOFS:
+				W16(add, val & 0x1FF);
 				LCD.UpdateBg3YOff(val & 0x1FF);
 				break;
 			case BG2X_H:
