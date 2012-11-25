@@ -456,6 +456,7 @@ namespace BizHawk.MultiClient
 		public int SNESGraphicsDebuggerRefreshRate = 4;
 		public bool SNESGraphicsUseUserBackdropColor = false;
 		public int SNESGraphicsUserBackdropColor = -1;
+		public string SNESPalette = "BizHawk";
 
 		// SNES Graphics settings
 		//bsnes allows the layers to be enabled for each priority level.

@@ -1908,6 +1908,12 @@ namespace BizHawk.MultiClient
 				Global.Game = game;
 				SyncControls();
 
+				if (nextEmulator is LibsnesCore)
+				{
+					var snes = nextEmulator as LibsnesCore;
+					snes.SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), Global.Config.SNESPalette, false));
+				}
+
 				if (game.System == "NES")
 				{
 					NES nes = Global.Emulator as NES;

@@ -373,6 +373,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return test;
 		}
 
+		public SnesColors.ColorType CurrPalette { get; private set; }
+
+		public void SetPalette(SnesColors.ColorType pal)
+		{
+			CurrPalette = pal;
+			int[] tmp = SnesColors.GetLUT(pal);
+			fixed (int* p = &tmp[0])
+				BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_color_lut((IntPtr)p);
+		}
+
 		public LibsnesCore()
 		{
 		}
@@ -411,10 +421,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			scanlineStart_cb = new LibsnesDll.snes_scanlineStart_t(snes_scanlineStart);
 
-			// set palette
-			int[] tmp = SnesColors.GetLUT(SnesColors.ColorType.Bizhawk);
-			fixed (int* p = &tmp[0])
-				BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_color_lut((IntPtr)p);
+			// set default palette. Should be overridden by frontend probably
+			SetPalette(SnesColors.ColorType.BizHawk);
 
 
 			// start up audio resampler

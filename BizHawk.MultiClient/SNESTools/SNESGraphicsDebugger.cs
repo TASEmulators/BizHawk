@@ -5,6 +5,8 @@
 //TODO - add eDisplayType for BG1-Tiles, BG2-Tiles, etc. which show the tiles available to a BG. more concise than viewing all tiles and illustrating the relevant accessible areas
 //        . could this apply to the palette too?
 
+//http://stackoverflow.com/questions/1101149/displaying-thumbnail-icons-128x128-pixels-or-larger-in-a-grid-in-listview
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +31,7 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
 			viewerTile.ScaleImage = true;
+
 			viewer.ScaleImage = false;
 
 			var displayTypeItems = new List<DisplayTypeItem>();
@@ -44,9 +47,18 @@ namespace BizHawk.MultiClient
 			displayTypeItems.Add(new DisplayTypeItem("Mode7 tiles",eDisplayType.TilesMode7));
 			displayTypeItems.Add(new DisplayTypeItem("Mode7Ext tiles",eDisplayType.TilesMode7Ext));
 			displayTypeItems.Add(new DisplayTypeItem("Mode7 tiles (DC)", eDisplayType.TilesMode7DC));
-
 			comboDisplayType.DataSource = displayTypeItems;
 			comboDisplayType.SelectedIndex = 0;
+
+			var paletteTypeItems = new List<PaletteTypeItem>();
+			paletteTypeItems.Add(new PaletteTypeItem("BizHawk Palette", SnesColors.ColorType.BizHawk));
+			paletteTypeItems.Add(new PaletteTypeItem("bsnes Palette", SnesColors.ColorType.BSNES));
+			paletteTypeItems.Add(new PaletteTypeItem("Snes9X Palette", SnesColors.ColorType.Snes9x));
+			suppression = true;
+			comboPalette.DataSource = paletteTypeItems;
+			comboPalette.SelectedIndex = 0;
+			suppression = false;
+
 			comboBGProps.SelectedIndex = 0;
 
 			tabctrlDetails.SelectedIndex = 1;
@@ -126,7 +138,16 @@ namespace BizHawk.MultiClient
 		{
 			LibsnesCore core = Global.Emulator as LibsnesCore;
 			if (currentSnesCore != core && currentSnesCore != null)
+			{
 				currentSnesCore.ScanlineHookManager.Unregister(this);
+			}
+
+			if(currentSnesCore != core)
+			{
+				suppression = true;
+				comboPalette.SelectedValue = core.CurrPalette;
+				suppression = false;
+			}
 
 			currentSnesCore = core;
 
@@ -149,14 +170,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		SNESGraphicsDecoder gd = new SNESGraphicsDecoder();
+		SNESGraphicsDecoder gd = new SNESGraphicsDecoder(SnesColors.ColorType.BizHawk);
 		SNESGraphicsDecoder.ScreenInfo si;
 
 		void RegenerateData()
 		{
 			gd = null;
 			if (currentSnesCore == null) return;
-			gd = new SNESGraphicsDecoder();
+			gd = NewDecoder();
 			if(checkBackdropColor.Checked)
 				gd.SetBackColor(DecodeWinformsColorToSNES(pnBackdropColor.BackColor));
 			gd.CacheTiles();
@@ -371,6 +392,17 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		class PaletteTypeItem
+		{
+			public SnesColors.ColorType type { get; set; }
+			public string descr { get; set; }
+			public PaletteTypeItem(string descr, SnesColors.ColorType type)
+			{
+				this.type = type;
+				this.descr = descr;
+			}
+		}
+
 		private void comboDisplayType_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			UpdateValues();
@@ -531,9 +563,16 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
+		SNESGraphicsDecoder NewDecoder()
+		{
+			if (currentSnesCore != null)
+				return new SNESGraphicsDecoder(currentSnesCore.CurrPalette);
+			else return new SNESGraphicsDecoder(SnesColors.ColorType.BizHawk);
+		}
+
 		void RenderPalette()
 		{
-			var gd = new SNESGraphicsDecoder();
+			var gd = NewDecoder();
 			lastPalette = gd.GetPalette();
 
 			int pixsize = paletteCellSize * 16 + paletteCellSpacing * 17;
@@ -585,7 +624,7 @@ namespace BizHawk.MultiClient
 		void UpdateColorDetails()
 		{
 			int rgb555 = lastPalette[lastColorNum];
-			var gd = new SNESGraphicsDecoder();
+			var gd = NewDecoder();
 			int color = gd.Colorize(rgb555);
 			pnDetailsPaletteColor.BackColor = Color.FromArgb(color);
 
@@ -711,6 +750,7 @@ namespace BizHawk.MultiClient
 		TileViewerBGState currTileViewerBGState;
 		int currViewingTile = -1;
 		int currViewingTileBpp = -1;
+		int currViewingSprite = -1;
 		void RenderTileView(bool force=false)
 		{
 			//TODO - blech - handle invalid some other way with a dedicated black-setter
@@ -759,6 +799,10 @@ namespace BizHawk.MultiClient
 			int ty = loc.Y / 8;
 			switch (CurrDisplaySelection)
 			{
+				case eDisplayType.Sprites:
+					//currViewingSprite = tx + ty * 16;
+					RenderView();
+					break;
 			  case eDisplayType.Tiles4bpp:
 					currViewingTileBpp = 4;
 					currViewingTile = ty * 64 + tx;
@@ -903,6 +947,22 @@ namespace BizHawk.MultiClient
 		{
 			messagetimer.Stop();
 			labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
+		}
+
+		private void comboPalette_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (suppression) return;
+			var pal = (SnesColors.ColorType)comboPalette.SelectedValue;
+			Console.WriteLine("set {0}", pal);
+			Global.Config.SNESPalette = pal.ToString();
+			if (currentSnesCore != null)
+			{
+				currentSnesCore.SetPalette(pal);
+			}
+			RegenerateData();
+			RenderView();
+			RenderPalette();
+			RenderTileView();
 		}
 
 
