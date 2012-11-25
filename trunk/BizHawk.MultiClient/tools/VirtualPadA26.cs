@@ -151,7 +151,7 @@ namespace BizHawk.MultiClient
 
 		public override void Clear()
 		{
-			if (Global.Emulator.SystemId != "A26") return;
+			if (Global.Emulator.SystemId != "A26" && Global.Emulator.SystemId != "C64") return;
 			PU.Checked = false;
 			PD.Checked = false;
 			PL.Checked = false;
