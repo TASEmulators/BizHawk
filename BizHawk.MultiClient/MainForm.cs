@@ -1827,8 +1827,16 @@ namespace BizHawk.MultiClient
 								break;
 							case "Coleco":
 								string colbiosPath = PathManager.MakeAbsolutePath(Global.Config.PathCOLBios, "Coleco");
-								ColecoVision c = new ColecoVision(game, rom.RomData, colbiosPath, Global.Config.ColecoSkipBiosIntro);
-								nextEmulator = c;
+								FileInfo colfile = new FileInfo(colbiosPath);
+								if (!colfile.Exists)
+								{
+									MessageBox.Show("Unable to find the required ColecoVision BIOS file - \n" + colbiosPath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+								}
+								else
+								{
+									ColecoVision c = new ColecoVision(game, rom.RomData, colbiosPath, Global.Config.ColecoSkipBiosIntro);
+									nextEmulator = c;
+								}
 								break;
 							case "INTV":
 								{
