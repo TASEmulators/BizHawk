@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					displayEnabled = (displayEnabled | DEN);
 
 				if (RASTER >= 0x030 && RASTER < 0x0F8)
-					badline = badline | ((YSCROLL == (RASTER & 0x07)) && displayEnabled);
+					badline = ((YSCROLL == (RASTER & 0x07)) && displayEnabled);
 				else
 					badline = false;
 
@@ -555,7 +555,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				badline = false;
 			}
 
-			PipelineBA(baCount > 0);
+			signal.VicBA = (baCount > 0);
+			PipelineBA(signal.VicBA);
 			if (baCount > 0)
 			{
 				if (fetchCounter > 0)
@@ -640,25 +641,28 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void PipelineFetchSpriteP(int index)
 		{
+			VicIISprite spr = sprites[index];
 			ushort pointerOffset = (ushort)((VM << 10) | 0x3F8 | index);
-			sprites[index].MPTR = mem.VicRead(pointerOffset);
 
-			if (sprites[index].MDMA)
+			spr.MPTR = mem.VicRead(pointerOffset);
+
+			if (spr.MDMA)
 			{
-				sprites[index].MSR = mem.VicRead((ushort)((sprites[index].MPTR << 6) | (sprites[index].MC)));
-				sprites[index].MC++;
+				spr.MSR = mem.VicRead((ushort)((spr.MPTR << 6) | (spr.MC)));
+				spr.MC++;
 			}
 		}
 
 		private void PipelineFetchSpriteS(int index)
 		{
-			if (sprites[index].MDMA)
+			VicIISprite spr = sprites[index];
+			if (spr.MDMA)
 			{
 				for (int i = 0; i < 2; i++)
 				{
-					sprites[index].MSR <<= 8;
-					sprites[index].MSR |= mem.VicRead((ushort)((sprites[index].MPTR << 6) | (sprites[index].MC)));
-					sprites[index].MC++;
+					spr.MSR <<= 8;
+					spr.MSR |= mem.VicRead((ushort)((spr.MPTR << 6) | (spr.MC)));
+					spr.MC++;
 				}
 			}
 		}
