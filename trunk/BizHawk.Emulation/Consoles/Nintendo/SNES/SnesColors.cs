@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		// none of this is optimized for speed because we make a LUT at load time
 
-		public static void BizColor(out int or, out int og, out int ob, int l, int r, int g, int b)
+		public static void BsnesColor(out int or, out int og, out int ob, int l, int r, int g, int b)
 		{
 			// bizhawk through r3808, from bsnes
 			double luma = (double)l / 15.0;
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			ob = ab * 255 / 31;
 		}
 
-		public static void NattColor(out int or, out int og, out int ob, int l, int r, int g, int b)
+		public static void BizColor(out int or, out int og, out int ob, int l, int r, int g, int b)
 		{
 			// bizhawk r3809.  assumes that luma mixing is done in analog
 			or = (r * l * 17 + 15) / 31;
@@ -81,12 +81,39 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public enum ColorType
 		{
-			Bizhawk,
-			Natt,
+			BizHawk,
+			BSNES,
 			Snes9x
 		};
 
+		//I separated these out to try and make them lazy construct, but it didnt work. try it some other way later.
+
+		public static class BIZCOLOR
+		{
+			public static int[] palette = GenLUT(ColorType.BizHawk);
+		}
+
+		public static class SNES9XCOLOR
+		{
+			public static int[] palette = GenLUT(ColorType.Snes9x);
+		}
+
+		public static class BSNESCOLOR
+		{
+			public static int[] palette = GenLUT(ColorType.BSNES);
+		}
+
 		public static int[] GetLUT(ColorType t)
+		{
+			if (t == ColorType.Snes9x)
+				return SNES9XCOLOR.palette;
+			else if (t == ColorType.BizHawk)
+				return BIZCOLOR.palette;
+			else
+				return BSNESCOLOR.palette;
+		}
+
+		static int[] GenLUT(ColorType t)
 		{
 			int[] ret = new int[16 * 32768];
 			for (int l = 0; l < 16; l++)
@@ -100,10 +127,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 							int ar, ag, ab;
 							if (t == ColorType.Snes9x)
 								Snes9xColor(out ar, out ag, out ab, l, r, g, b);
-							else if (t == ColorType.Natt)
-								NattColor(out ar, out ag, out ab, l, r, g, b);
-							else
+							else if (t == ColorType.BizHawk)
 								BizColor(out ar, out ag, out ab, l, r, g, b);
+							else
+								BsnesColor(out ar, out ag, out ab, l, r, g, b);
+
 							int color = (ar << 16) + (ag << 8) + (ab << 0) | unchecked((int)0xFF000000);
 							ret[(l << 15) + (b << 10) + (g << 5) + (r << 0)] = color;
 						}

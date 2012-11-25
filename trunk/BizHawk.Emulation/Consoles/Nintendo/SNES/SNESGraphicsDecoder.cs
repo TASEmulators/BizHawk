@@ -362,9 +362,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return ScreenInfo.GetScreenInfo();
 		}
 
-
 		//the same basic color table that libsnes uses to convert from snes 555 to rgba32
-		public static int[] colortable;
 		static int[] directColorTable = new int[256]; //8bpp gfx -> rgb555
 		static SNESGraphicsDecoder()
 		{
@@ -380,13 +378,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				int color = (b << 10) | (g << 5) | r;
 				directColorTable[i] = color;
 			}
-			colortable = SnesColors.GetLUT(SnesColors.ColorType.Bizhawk);
 		}
 
+		int[] colortable;
 		public byte* vram, oam;
 		public ushort* cgram, vram16;
-		public SNESGraphicsDecoder()
+		public SNESGraphicsDecoder(SnesColors.ColorType pal)
 		{
+			colortable = SnesColors.GetLUT(pal);
 			IntPtr block = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.VRAM);
 			vram = (byte*)block;
 			vram16 = (ushort*)block;
