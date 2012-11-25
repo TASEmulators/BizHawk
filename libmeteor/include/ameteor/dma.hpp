@@ -42,7 +42,8 @@ namespace AMeteor
 
 			bool GraphicDma () const
 			{
-				return m_graphic;
+				return false;
+				//return m_graphic;
 			}
 
 			void SetReload(uint8_t channum, uint16_t reload)
