@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		{
 			Frame = 0;
 			LagCount = 0;
-			IsLagFrame = false;
+			//IsLagFrame = false;
 		}
 
 		public void SaveStateText(TextWriter writer)
