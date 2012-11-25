@@ -155,13 +155,20 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private byte ReadMemoryCPU(ushort addr)
 		{
-			if (!signal.CpuAEC)
+			if (!signal.CpuRDY || !signal.CpuAEC)
 				haltCPU = true;
 			return mem.Read(addr);
 		}
 
 		public void WriteMemory(ushort addr, byte value)
 		{
+			mem.Write(addr, value);
+		}
+
+		public void WriteMemoryCPU(ushort addr, byte value)
+		{
+			if (!signal.CpuAEC)
+				haltCPU = true;
 			mem.Write(addr, value);
 		}
 	}
@@ -172,6 +179,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private bool[] _CiaIRQOutput = new bool[2];
 		private bool _KeyboardNMIOutput;
 		private bool _VicAECOutput;
+		private bool _VicBAOutput;
 		private bool _VicIRQOutput;
 		private bool _VicLPInput;
 
@@ -182,9 +190,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public bool CpuAEC { get { return _VicAECOutput; } }
 		public bool CpuIRQ { get { return _VicIRQOutput | _CiaIRQOutput[0]; } }
 		public bool CpuNMI { get { return _CiaIRQOutput[1] | _KeyboardNMIOutput; } }
+		public bool CpuRDY { get { return !_VicBAOutput; } }
 		public bool KeyboardNMI { get { return _KeyboardNMIOutput; } set { _KeyboardNMIOutput = value; } }
 		public bool LPOutput { get { return _VicLPInput; } set { _VicLPInput = value; } }
 		public bool VicAEC { get { return _VicAECOutput; } set { _VicAECOutput = value; } }
+		public bool VicBA { get { return _VicBAOutput; } set { _VicBAOutput = value; } }
 		public bool VicIRQ { get { return _VicIRQOutput; } set { _VicIRQOutput = value; } }
 		public bool VicLP { get { return _VicLPInput; } }
 	}
