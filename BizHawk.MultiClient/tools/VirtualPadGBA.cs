@@ -12,23 +12,23 @@ namespace BizHawk.MultiClient
 	{
 		public VirtualPadGBA()
 		{
-			ButtonPoints[0] = new Point(14, 2);
-			ButtonPoints[1] = new Point(14, 46);
-			ButtonPoints[2] = new Point(2, 24);
-			ButtonPoints[3] = new Point(24, 24);
-			ButtonPoints[4] = new Point(52, 24);
-			ButtonPoints[5] = new Point(74, 24);
+			ButtonPoints[0] = new Point(36, 2);
+			ButtonPoints[1] = new Point(36, 46);
+			ButtonPoints[2] = new Point(24, 24);
+			ButtonPoints[3] = new Point(46, 24);
+			ButtonPoints[4] = new Point(72, 24);
+			ButtonPoints[5] = new Point(94, 24);
 			ButtonPoints[6] = new Point(122, 24);
 			ButtonPoints[7] = new Point(146, 24);
-			ButtonPoints[8] = new Point(146, 34);
-			ButtonPoints[9] = new Point(146, 34);
+			ButtonPoints[8] = new Point(2, 2);
+			ButtonPoints[9] = new Point(166, 2);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			this.BorderStyle = BorderStyle.Fixed3D;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.VirtualPad_Paint);
-			this.Size = new Size(174, 74);
+			this.Size = new Size(194, 74);
 
 			Point n = new Point(this.Size);
 
@@ -115,7 +115,7 @@ namespace BizHawk.MultiClient
 			this.B5 = new CheckBox();
 			this.B5.Appearance = System.Windows.Forms.Appearance.Button;
 			this.B5.AutoSize = true;
-			this.B5.Location = ButtonPoints[10];
+			this.B5.Location = ButtonPoints[8];
 			this.B5.TabIndex = 8;
 			this.B5.Text = "L";
 			this.B5.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -125,7 +125,7 @@ namespace BizHawk.MultiClient
 			this.B6 = new CheckBox();
 			this.B6.Appearance = System.Windows.Forms.Appearance.Button;
 			this.B6.AutoSize = true;
-			this.B6.Location = ButtonPoints[11];
+			this.B6.Location = ButtonPoints[9];
 			this.B6.TabIndex = 8;
 			this.B6.Text = "R";
 			this.B6.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
