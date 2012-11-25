@@ -309,6 +309,9 @@ namespace BizHawk.Emulation.Consoles.Coleco
 					break;
 				}
 
+                //if (i >= 5 && y==30)
+                  //  Console.WriteLine(i);
+
 				if (LargeSprites) Pattern &= 0xFC; // 16x16 sprites forced to 4-byte alignment
 				int SpriteLine = scanLine - y;
 
@@ -320,14 +323,15 @@ namespace BizHawk.Emulation.Consoles.Coleco
 					if (LargeSprites && xp == OneCellSize)
 						pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine + 16];
 
-					if ((pv & (1 << (7 - (xp & 7)))) > 0)
+					if (Color != 0 && (pv & (1 << (7 - (xp & 7)))) > 0)
 					{
-						if (Color != 0 && ScanlinePriorityBuffer[x + xp] == 0)
+                        if (SpriteCollisionBuffer[x + xp] != 0)
+                            StatusByte |= 0x20; // Set sprite collision flag
+
+						if (ScanlinePriorityBuffer[x + xp] == 0)
 						{
-							if (SpriteCollisionBuffer[x + xp] != 0)
-								StatusByte |= 0x20; // Set sprite collision flag
-							SpriteCollisionBuffer[x + xp] = 1;
 							ScanlinePriorityBuffer[x + xp] = 1;
+                            SpriteCollisionBuffer[x + xp] = 1;
 							FrameBuffer[(scanLine * 256) + x + xp] = PaletteTMS9918[Color & 0x0F];
 						}
 					}
@@ -384,14 +388,15 @@ namespace BizHawk.Emulation.Consoles.Coleco
                     if (LargeSprites && xp == OneCellSize)
                         pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine + 16];
 
-                    if ((pv & (1 << (7 - ((xp/2) & 7)))) > 0)  // xp/2 is due to sprite magnification
+                    if (Color != 0 && (pv & (1 << (7 - ((xp / 2) & 7)))) > 0)  // xp/2 is due to sprite magnification
                     {
-                        if (Color != 0 && ScanlinePriorityBuffer[x + xp] == 0)
+                        if (SpriteCollisionBuffer[x + xp] != 0)
+                            StatusByte |= 0x20; // Set sprite collision flag
+
+                        if (ScanlinePriorityBuffer[x + xp] == 0)
                         {
-                            if (SpriteCollisionBuffer[x + xp] != 0)
-                                StatusByte |= 0x20; // Set sprite collision flag
-                            SpriteCollisionBuffer[x + xp] = 1;
                             ScanlinePriorityBuffer[x + xp] = 1;
+                            SpriteCollisionBuffer[x + xp] = 1;
                             FrameBuffer[(scanLine * 256) + x + xp] = PaletteTMS9918[Color & 0x0F];
                         }
                     }
