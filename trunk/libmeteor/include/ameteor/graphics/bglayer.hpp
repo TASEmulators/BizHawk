@@ -46,6 +46,9 @@ namespace AMeteor
 				void DrawLine4 (uint8_t line, uint16_t* ptr,
 						int32_t curX, int32_t curY,
 						int16_t dx, int16_t dmx, int16_t dy, int16_t dmy, bool frame1);
+				void DrawLine5 (uint16_t* ptr,
+						int32_t refX, int32_t refY,
+						int16_t dx, int16_t dy, bool frame1);
 				void FillList ();
 
 				void UpdateCnt (uint16_t cnt);

@@ -308,7 +308,7 @@ namespace AMeteor
 		{
 			int32_t intX, intY;
 
-			uint8_t* pChar = m_memory.GetRealAddress(0x06000000);
+			uint16_t* pChar = (uint16_t*) m_memory.GetRealAddress(0x06000000);
 
 			for (uint8_t x = 0; x < 240; ++x, ++ptr, curX += dx, curY += dy)
 			{
@@ -317,6 +317,7 @@ namespace AMeteor
 
 				// if we are off layer
 				if (intX < 0 || intX >= 240)
+					/*
 					if (m_cnt & (0x1 << 13))
 					{
 						// NOTE : in C++, the modulus can be negative
@@ -324,19 +325,20 @@ namespace AMeteor
 						if (intX < 0)
 							intX += 240;
 					}
-					else
+					else*/
 						continue;
 				if (intY < 0 || intY >= 160)
+					/*
 					if (m_cnt & (0x1 << 13))
 					{
 						intY %= 160;
 						if (intY < 0)
 							intY += 160;
 					}
-					else
+					else*/
 						continue;
 
-				*ptr = pChar[intY * 240 * 2 + intX * 2] | 0x8000;
+				*ptr = pChar[intY * 240 + intX] | 0x8000;
 			}
 		}
 
@@ -409,6 +411,29 @@ namespace AMeteor
 					*ptr = m_pPalette[colorInd] | 0x8000;
 				else
 					*ptr = 0x0;
+			}
+		}
+
+		void BgLayer::DrawLine5 (uint16_t* ptr,
+				int32_t curX, int32_t curY,
+				int16_t dx, int16_t dy, bool frame1)
+		{
+			int32_t intX, intY;
+
+			uint16_t* pChar = (uint16_t*) m_memory.GetRealAddress(frame1 ? 0x0600A000 : 0x06000000);
+
+			for (uint8_t x = 0; x < 240; ++x, ++ptr, curX += dx, curY += dy)
+			{
+				intX = curX >> 8;
+				intY = curY >> 8;
+
+				// if we are off layer
+				if (intX < 0 || intX >= 160)
+						continue;
+				if (intY < 0 || intY >= 128)
+						continue;
+
+				*ptr = pChar[intY * 160 + intX] | 0x8000;
 			}
 		}
 
