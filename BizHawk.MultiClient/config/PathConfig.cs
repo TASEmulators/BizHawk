@@ -147,6 +147,7 @@ namespace BizHawk.MultiClient
 			C64SavestatesBox.Text = Global.Config.PathC64Savestates;
 			C64ScreenshotsBox.Text = Global.Config.PathC64Screenshots;
 			C64CheatsBox.Text = Global.Config.PathC64Cheats;
+			C64FirmwaresBox.Text = Global.Config.PathC64Firmwares;
 
 			COLBaseBox.Text = Global.Config.BaseCOL;
 			COLROMsBox.Text = Global.Config.PathCOLROMs;
@@ -328,6 +329,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathC64Savestates = C64SavestatesBox.Text;
 			Global.Config.PathC64Screenshots = C64ScreenshotsBox.Text;
 			Global.Config.PathC64Cheats = C64CheatsBox.Text;
+			Global.Config.PathC64Firmwares = C64FirmwaresBox.Text;
 
 			Global.Config.BaseCOL = COLBaseBox.Text;
 			Global.Config.PathCOLROMs = COLROMsBox.Text;
@@ -930,7 +932,7 @@ namespace BizHawk.MultiClient
 
 		private void C64BrowseFirmwares_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(C64FirmwaresBox, C64FirmwaresDescription.Text);
+			BrowseFolder(C64FirmwaresBox, C64FirmwaresDescription.Text, "C64");
 		}
 
 		private void C64FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
