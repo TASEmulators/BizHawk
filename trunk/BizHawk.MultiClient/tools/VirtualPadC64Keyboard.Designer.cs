@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.KLeftArrow = new System.Windows.Forms.CheckBox();
 			this.K1 = new System.Windows.Forms.CheckBox();
 			this.K2 = new System.Windows.Forms.CheckBox();
 			this.K4 = new System.Windows.Forms.CheckBox();
@@ -61,7 +60,6 @@
 			this.KQ = new System.Windows.Forms.CheckBox();
 			this.KAt = new System.Windows.Forms.CheckBox();
 			this.KAsterisk = new System.Windows.Forms.CheckBox();
-			this.KUpArrow = new System.Windows.Forms.CheckBox();
 			this.KRST = new System.Windows.Forms.CheckBox();
 			this.KRun = new System.Windows.Forms.CheckBox();
 			this.KLck = new System.Windows.Forms.CheckBox();
@@ -94,28 +92,16 @@
 			this.KCursorUp = new System.Windows.Forms.CheckBox();
 			this.KCursorLeft = new System.Windows.Forms.CheckBox();
 			this.KSpace = new System.Windows.Forms.CheckBox();
+			this.KUpArrow = new System.Windows.Forms.CheckBox();
+			this.KLeftArrow = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
-			// 
-			// KLeftArrow
-			// 
-			this.KLeftArrow.Appearance = System.Windows.Forms.Appearance.Button;
-			this.KLeftArrow.AutoSize = true;
-			this.KLeftArrow.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KLeftArrow.Image = global::BizHawk.MultiClient.Properties.Resources.MoveLeft;
-			this.KLeftArrow.Location = new System.Drawing.Point(19, 15);
-			this.KLeftArrow.Name = "KLeftArrow";
-			this.KLeftArrow.Size = new System.Drawing.Size(22, 22);
-			this.KLeftArrow.TabIndex = 0;
-			this.KLeftArrow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.KLeftArrow.UseVisualStyleBackColor = true;
-			this.KLeftArrow.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// K1
 			// 
 			this.K1.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K1.AutoSize = true;
 			this.K1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K1.Location = new System.Drawing.Point(39, 14);
+			this.K1.Location = new System.Drawing.Point(38, 10);
 			this.K1.Name = "K1";
 			this.K1.Size = new System.Drawing.Size(24, 24);
 			this.K1.TabIndex = 1;
@@ -129,7 +115,7 @@
 			this.K2.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K2.AutoSize = true;
 			this.K2.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K2.Location = new System.Drawing.Point(60, 14);
+			this.K2.Location = new System.Drawing.Point(60, 10);
 			this.K2.Name = "K2";
 			this.K2.Size = new System.Drawing.Size(24, 24);
 			this.K2.TabIndex = 2;
@@ -143,7 +129,7 @@
 			this.K4.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K4.AutoSize = true;
 			this.K4.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K4.Location = new System.Drawing.Point(102, 14);
+			this.K4.Location = new System.Drawing.Point(103, 10);
 			this.K4.Name = "K4";
 			this.K4.Size = new System.Drawing.Size(24, 24);
 			this.K4.TabIndex = 4;
@@ -157,7 +143,7 @@
 			this.K3.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K3.AutoSize = true;
 			this.K3.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K3.Location = new System.Drawing.Point(81, 14);
+			this.K3.Location = new System.Drawing.Point(81, 10);
 			this.K3.Name = "K3";
 			this.K3.Size = new System.Drawing.Size(24, 24);
 			this.K3.TabIndex = 3;
@@ -171,7 +157,7 @@
 			this.K8.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K8.AutoSize = true;
 			this.K8.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K8.Location = new System.Drawing.Point(188, 14);
+			this.K8.Location = new System.Drawing.Point(191, 10);
 			this.K8.Name = "K8";
 			this.K8.Size = new System.Drawing.Size(24, 24);
 			this.K8.TabIndex = 8;
@@ -185,7 +171,7 @@
 			this.K7.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K7.AutoSize = true;
 			this.K7.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K7.Location = new System.Drawing.Point(167, 14);
+			this.K7.Location = new System.Drawing.Point(169, 10);
 			this.K7.Name = "K7";
 			this.K7.Size = new System.Drawing.Size(24, 24);
 			this.K7.TabIndex = 7;
@@ -199,7 +185,7 @@
 			this.K6.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K6.AutoSize = true;
 			this.K6.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K6.Location = new System.Drawing.Point(145, 14);
+			this.K6.Location = new System.Drawing.Point(147, 10);
 			this.K6.Name = "K6";
 			this.K6.Size = new System.Drawing.Size(24, 24);
 			this.K6.TabIndex = 6;
@@ -213,7 +199,7 @@
 			this.K5.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K5.AutoSize = true;
 			this.K5.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K5.Location = new System.Drawing.Point(124, 14);
+			this.K5.Location = new System.Drawing.Point(125, 10);
 			this.K5.Name = "K5";
 			this.K5.Size = new System.Drawing.Size(24, 24);
 			this.K5.TabIndex = 5;
@@ -227,7 +213,7 @@
 			this.K9.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K9.AutoSize = true;
 			this.K9.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K9.Location = new System.Drawing.Point(209, 14);
+			this.K9.Location = new System.Drawing.Point(213, 10);
 			this.K9.Name = "K9";
 			this.K9.Size = new System.Drawing.Size(24, 24);
 			this.K9.TabIndex = 9;
@@ -241,7 +227,7 @@
 			this.K0.Appearance = System.Windows.Forms.Appearance.Button;
 			this.K0.AutoSize = true;
 			this.K0.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.K0.Location = new System.Drawing.Point(230, 14);
+			this.K0.Location = new System.Drawing.Point(235, 10);
 			this.K0.Name = "K0";
 			this.K0.Size = new System.Drawing.Size(24, 24);
 			this.K0.TabIndex = 10;
@@ -255,7 +241,7 @@
 			this.KPlus.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KPlus.AutoSize = true;
 			this.KPlus.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KPlus.Location = new System.Drawing.Point(250, 14);
+			this.KPlus.Location = new System.Drawing.Point(257, 10);
 			this.KPlus.Name = "KPlus";
 			this.KPlus.Size = new System.Drawing.Size(24, 24);
 			this.KPlus.TabIndex = 11;
@@ -269,7 +255,7 @@
 			this.KMinus.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KMinus.AutoSize = true;
 			this.KMinus.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KMinus.Location = new System.Drawing.Point(271, 14);
+			this.KMinus.Location = new System.Drawing.Point(279, 10);
 			this.KMinus.Name = "KMinus";
 			this.KMinus.Size = new System.Drawing.Size(24, 24);
 			this.KMinus.TabIndex = 12;
@@ -283,7 +269,7 @@
 			this.KPound.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KPound.AutoSize = true;
 			this.KPound.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KPound.Location = new System.Drawing.Point(293, 15);
+			this.KPound.Location = new System.Drawing.Point(301, 10);
 			this.KPound.Name = "KPound";
 			this.KPound.Size = new System.Drawing.Size(24, 24);
 			this.KPound.TabIndex = 13;
@@ -296,10 +282,10 @@
 			// 
 			this.KClear.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KClear.AutoSize = true;
-			this.KClear.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KClear.Location = new System.Drawing.Point(315, 15);
+			this.KClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KClear.Location = new System.Drawing.Point(323, 10);
 			this.KClear.Name = "KClear";
-			this.KClear.Size = new System.Drawing.Size(35, 24);
+			this.KClear.Size = new System.Drawing.Size(37, 23);
 			this.KClear.TabIndex = 14;
 			this.KClear.Text = "C/H";
 			this.KClear.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -310,10 +296,10 @@
 			// 
 			this.KInsert.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KInsert.AutoSize = true;
-			this.KInsert.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KInsert.Location = new System.Drawing.Point(348, 14);
+			this.KInsert.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KInsert.Location = new System.Drawing.Point(356, 10);
 			this.KInsert.Name = "KInsert";
-			this.KInsert.Size = new System.Drawing.Size(32, 24);
+			this.KInsert.Size = new System.Drawing.Size(33, 23);
 			this.KInsert.TabIndex = 15;
 			this.KInsert.Text = "I/D";
 			this.KInsert.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -325,7 +311,7 @@
 			this.KF1.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KF1.AutoSize = true;
 			this.KF1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KF1.Location = new System.Drawing.Point(406, 14);
+			this.KF1.Location = new System.Drawing.Point(410, 10);
 			this.KF1.Name = "KF1";
 			this.KF1.Size = new System.Drawing.Size(38, 24);
 			this.KF1.TabIndex = 16;
@@ -339,7 +325,7 @@
 			this.KF3.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KF3.AutoSize = true;
 			this.KF3.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KF3.Location = new System.Drawing.Point(406, 37);
+			this.KF3.Location = new System.Drawing.Point(410, 33);
 			this.KF3.Name = "KF3";
 			this.KF3.Size = new System.Drawing.Size(38, 24);
 			this.KF3.TabIndex = 17;
@@ -353,7 +339,7 @@
 			this.KF7.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KF7.AutoSize = true;
 			this.KF7.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KF7.Location = new System.Drawing.Point(406, 84);
+			this.KF7.Location = new System.Drawing.Point(410, 79);
 			this.KF7.Name = "KF7";
 			this.KF7.Size = new System.Drawing.Size(38, 24);
 			this.KF7.TabIndex = 19;
@@ -367,7 +353,7 @@
 			this.KF5.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KF5.AutoSize = true;
 			this.KF5.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KF5.Location = new System.Drawing.Point(406, 60);
+			this.KF5.Location = new System.Drawing.Point(410, 56);
 			this.KF5.Name = "KF5";
 			this.KF5.Size = new System.Drawing.Size(38, 24);
 			this.KF5.TabIndex = 18;
@@ -380,7 +366,7 @@
 			// 
 			this.KCtrl.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KCtrl.AutoSize = true;
-			this.KCtrl.Location = new System.Drawing.Point(17, 38);
+			this.KCtrl.Location = new System.Drawing.Point(18, 33);
 			this.KCtrl.Name = "KCtrl";
 			this.KCtrl.Size = new System.Drawing.Size(45, 23);
 			this.KCtrl.TabIndex = 20;
@@ -394,7 +380,7 @@
 			this.KP.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KP.AutoSize = true;
 			this.KP.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KP.Location = new System.Drawing.Point(251, 38);
+			this.KP.Location = new System.Drawing.Point(259, 33);
 			this.KP.Name = "KP";
 			this.KP.Size = new System.Drawing.Size(24, 24);
 			this.KP.TabIndex = 30;
@@ -408,7 +394,7 @@
 			this.KO.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KO.AutoSize = true;
 			this.KO.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KO.Location = new System.Drawing.Point(227, 38);
+			this.KO.Location = new System.Drawing.Point(237, 33);
 			this.KO.Name = "KO";
 			this.KO.Size = new System.Drawing.Size(24, 24);
 			this.KO.TabIndex = 29;
@@ -422,7 +408,7 @@
 			this.KI.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KI.AutoSize = true;
 			this.KI.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KI.Location = new System.Drawing.Point(209, 38);
+			this.KI.Location = new System.Drawing.Point(215, 33);
 			this.KI.Name = "KI";
 			this.KI.Size = new System.Drawing.Size(24, 24);
 			this.KI.TabIndex = 28;
@@ -436,7 +422,7 @@
 			this.KU.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KU.AutoSize = true;
 			this.KU.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KU.Location = new System.Drawing.Point(188, 38);
+			this.KU.Location = new System.Drawing.Point(193, 33);
 			this.KU.Name = "KU";
 			this.KU.Size = new System.Drawing.Size(24, 24);
 			this.KU.TabIndex = 27;
@@ -450,7 +436,7 @@
 			this.KY.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KY.AutoSize = true;
 			this.KY.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KY.Location = new System.Drawing.Point(166, 38);
+			this.KY.Location = new System.Drawing.Point(171, 33);
 			this.KY.Name = "KY";
 			this.KY.Size = new System.Drawing.Size(24, 24);
 			this.KY.TabIndex = 26;
@@ -464,7 +450,7 @@
 			this.KT.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KT.AutoSize = true;
 			this.KT.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KT.Location = new System.Drawing.Point(145, 38);
+			this.KT.Location = new System.Drawing.Point(149, 33);
 			this.KT.Name = "KT";
 			this.KT.Size = new System.Drawing.Size(24, 24);
 			this.KT.TabIndex = 25;
@@ -478,7 +464,7 @@
 			this.KR.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KR.AutoSize = true;
 			this.KR.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KR.Location = new System.Drawing.Point(123, 38);
+			this.KR.Location = new System.Drawing.Point(127, 33);
 			this.KR.Name = "KR";
 			this.KR.Size = new System.Drawing.Size(24, 24);
 			this.KR.TabIndex = 24;
@@ -492,7 +478,7 @@
 			this.KE.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KE.AutoSize = true;
 			this.KE.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KE.Location = new System.Drawing.Point(102, 38);
+			this.KE.Location = new System.Drawing.Point(105, 33);
 			this.KE.Name = "KE";
 			this.KE.Size = new System.Drawing.Size(24, 24);
 			this.KE.TabIndex = 23;
@@ -506,7 +492,7 @@
 			this.KW.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KW.AutoSize = true;
 			this.KW.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KW.Location = new System.Drawing.Point(81, 38);
+			this.KW.Location = new System.Drawing.Point(83, 33);
 			this.KW.Name = "KW";
 			this.KW.Size = new System.Drawing.Size(24, 24);
 			this.KW.TabIndex = 22;
@@ -520,7 +506,7 @@
 			this.KQ.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KQ.AutoSize = true;
 			this.KQ.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KQ.Location = new System.Drawing.Point(60, 38);
+			this.KQ.Location = new System.Drawing.Point(61, 33);
 			this.KQ.Name = "KQ";
 			this.KQ.Size = new System.Drawing.Size(24, 24);
 			this.KQ.TabIndex = 21;
@@ -533,9 +519,10 @@
 			// 
 			this.KAt.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KAt.AutoSize = true;
-			this.KAt.Location = new System.Drawing.Point(274, 38);
+			this.KAt.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KAt.Location = new System.Drawing.Point(281, 33);
 			this.KAt.Name = "KAt";
-			this.KAt.Size = new System.Drawing.Size(28, 23);
+			this.KAt.Size = new System.Drawing.Size(24, 24);
 			this.KAt.TabIndex = 31;
 			this.KAt.Text = "@";
 			this.KAt.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -546,36 +533,22 @@
 			// 
 			this.KAsterisk.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KAsterisk.AutoSize = true;
-			this.KAsterisk.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KAsterisk.Location = new System.Drawing.Point(300, 38);
+			this.KAsterisk.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KAsterisk.Location = new System.Drawing.Point(303, 33);
 			this.KAsterisk.Name = "KAsterisk";
-			this.KAsterisk.Size = new System.Drawing.Size(21, 23);
+			this.KAsterisk.Size = new System.Drawing.Size(24, 24);
 			this.KAsterisk.TabIndex = 32;
 			this.KAsterisk.Text = "*";
 			this.KAsterisk.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.KAsterisk.UseVisualStyleBackColor = true;
 			this.KAsterisk.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
-			// KUpArrow
-			// 
-			this.KUpArrow.Appearance = System.Windows.Forms.Appearance.Button;
-			this.KUpArrow.AutoSize = true;
-			this.KUpArrow.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KUpArrow.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
-			this.KUpArrow.Location = new System.Drawing.Point(320, 39);
-			this.KUpArrow.Name = "KUpArrow";
-			this.KUpArrow.Size = new System.Drawing.Size(22, 22);
-			this.KUpArrow.TabIndex = 33;
-			this.KUpArrow.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			this.KUpArrow.UseVisualStyleBackColor = true;
-			this.KUpArrow.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
-			// 
 			// KRST
 			// 
 			this.KRST.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KRST.AutoSize = true;
 			this.KRST.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KRST.Location = new System.Drawing.Point(341, 37);
+			this.KRST.Location = new System.Drawing.Point(345, 33);
 			this.KRST.Name = "KRST";
 			this.KRST.Size = new System.Drawing.Size(38, 24);
 			this.KRST.TabIndex = 34;
@@ -589,7 +562,7 @@
 			this.KRun.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KRun.AutoSize = true;
 			this.KRun.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KRun.Location = new System.Drawing.Point(7, 60);
+			this.KRun.Location = new System.Drawing.Point(10, 56);
 			this.KRun.Name = "KRun";
 			this.KRun.Size = new System.Drawing.Size(32, 24);
 			this.KRun.TabIndex = 35;
@@ -603,7 +576,7 @@
 			this.KLck.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KLck.AutoSize = true;
 			this.KLck.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KLck.Location = new System.Drawing.Point(38, 60);
+			this.KLck.Location = new System.Drawing.Point(40, 56);
 			this.KLck.Name = "KLck";
 			this.KLck.Size = new System.Drawing.Size(35, 23);
 			this.KLck.TabIndex = 36;
@@ -617,7 +590,7 @@
 			this.KK.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KK.AutoSize = true;
 			this.KK.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KK.Location = new System.Drawing.Point(220, 60);
+			this.KK.Location = new System.Drawing.Point(227, 56);
 			this.KK.Name = "KK";
 			this.KK.Size = new System.Drawing.Size(24, 24);
 			this.KK.TabIndex = 44;
@@ -631,7 +604,7 @@
 			this.KJ.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KJ.AutoSize = true;
 			this.KJ.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KJ.Location = new System.Drawing.Point(199, 60);
+			this.KJ.Location = new System.Drawing.Point(205, 56);
 			this.KJ.Name = "KJ";
 			this.KJ.Size = new System.Drawing.Size(24, 24);
 			this.KJ.TabIndex = 43;
@@ -645,7 +618,7 @@
 			this.KH.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KH.AutoSize = true;
 			this.KH.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KH.Location = new System.Drawing.Point(177, 60);
+			this.KH.Location = new System.Drawing.Point(183, 56);
 			this.KH.Name = "KH";
 			this.KH.Size = new System.Drawing.Size(24, 24);
 			this.KH.TabIndex = 42;
@@ -659,7 +632,7 @@
 			this.KG.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KG.AutoSize = true;
 			this.KG.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KG.Location = new System.Drawing.Point(156, 60);
+			this.KG.Location = new System.Drawing.Point(161, 56);
 			this.KG.Name = "KG";
 			this.KG.Size = new System.Drawing.Size(24, 24);
 			this.KG.TabIndex = 41;
@@ -673,7 +646,7 @@
 			this.KF.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KF.AutoSize = true;
 			this.KF.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KF.Location = new System.Drawing.Point(134, 60);
+			this.KF.Location = new System.Drawing.Point(139, 56);
 			this.KF.Name = "KF";
 			this.KF.Size = new System.Drawing.Size(24, 24);
 			this.KF.TabIndex = 40;
@@ -687,7 +660,7 @@
 			this.KD.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KD.AutoSize = true;
 			this.KD.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KD.Location = new System.Drawing.Point(113, 60);
+			this.KD.Location = new System.Drawing.Point(117, 56);
 			this.KD.Name = "KD";
 			this.KD.Size = new System.Drawing.Size(24, 24);
 			this.KD.TabIndex = 39;
@@ -701,7 +674,7 @@
 			this.KS.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KS.AutoSize = true;
 			this.KS.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KS.Location = new System.Drawing.Point(92, 60);
+			this.KS.Location = new System.Drawing.Point(95, 56);
 			this.KS.Name = "KS";
 			this.KS.Size = new System.Drawing.Size(24, 24);
 			this.KS.TabIndex = 38;
@@ -715,7 +688,7 @@
 			this.KA.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KA.AutoSize = true;
 			this.KA.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KA.Location = new System.Drawing.Point(71, 60);
+			this.KA.Location = new System.Drawing.Point(73, 56);
 			this.KA.Name = "KA";
 			this.KA.Size = new System.Drawing.Size(24, 24);
 			this.KA.TabIndex = 37;
@@ -729,7 +702,7 @@
 			this.KL.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KL.AutoSize = true;
 			this.KL.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KL.Location = new System.Drawing.Point(242, 60);
+			this.KL.Location = new System.Drawing.Point(249, 56);
 			this.KL.Name = "KL";
 			this.KL.Size = new System.Drawing.Size(24, 24);
 			this.KL.TabIndex = 45;
@@ -743,7 +716,7 @@
 			this.KColon.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KColon.AutoSize = true;
 			this.KColon.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KColon.Location = new System.Drawing.Point(264, 60);
+			this.KColon.Location = new System.Drawing.Point(271, 56);
 			this.KColon.Name = "KColon";
 			this.KColon.Size = new System.Drawing.Size(24, 24);
 			this.KColon.TabIndex = 46;
@@ -757,7 +730,7 @@
 			this.KSemicolon.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KSemicolon.AutoSize = true;
 			this.KSemicolon.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KSemicolon.Location = new System.Drawing.Point(286, 60);
+			this.KSemicolon.Location = new System.Drawing.Point(293, 56);
 			this.KSemicolon.Name = "KSemicolon";
 			this.KSemicolon.Size = new System.Drawing.Size(24, 24);
 			this.KSemicolon.TabIndex = 47;
@@ -771,7 +744,7 @@
 			this.KEquals.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KEquals.AutoSize = true;
 			this.KEquals.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KEquals.Location = new System.Drawing.Point(308, 60);
+			this.KEquals.Location = new System.Drawing.Point(315, 56);
 			this.KEquals.Name = "KEquals";
 			this.KEquals.Size = new System.Drawing.Size(24, 24);
 			this.KEquals.TabIndex = 48;
@@ -785,7 +758,7 @@
 			this.KReturn.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KReturn.AutoSize = true;
 			this.KReturn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KReturn.Location = new System.Drawing.Point(330, 61);
+			this.KReturn.Location = new System.Drawing.Point(337, 56);
 			this.KReturn.Name = "KReturn";
 			this.KReturn.Size = new System.Drawing.Size(49, 23);
 			this.KReturn.TabIndex = 49;
@@ -799,11 +772,11 @@
 			this.KCommodore.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KCommodore.AutoSize = true;
 			this.KCommodore.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KCommodore.Location = new System.Drawing.Point(7, 83);
+			this.KCommodore.Image = global::BizHawk.MultiClient.Properties.Resources.C64Symbol;
+			this.KCommodore.Location = new System.Drawing.Point(7, 79);
 			this.KCommodore.Name = "KCommodore";
-			this.KCommodore.Size = new System.Drawing.Size(24, 24);
+			this.KCommodore.Size = new System.Drawing.Size(27, 24);
 			this.KCommodore.TabIndex = 50;
-			this.KCommodore.Text = "O";
 			this.KCommodore.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KCommodore.UseVisualStyleBackColor = true;
 			this.KCommodore.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
@@ -813,7 +786,7 @@
 			this.KLeftShift.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KLeftShift.AutoSize = true;
 			this.KLeftShift.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KLeftShift.Location = new System.Drawing.Point(31, 84);
+			this.KLeftShift.Location = new System.Drawing.Point(32, 79);
 			this.KLeftShift.Name = "KLeftShift";
 			this.KLeftShift.Size = new System.Drawing.Size(38, 23);
 			this.KLeftShift.TabIndex = 51;
@@ -827,7 +800,7 @@
 			this.KRightShift.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KRightShift.AutoSize = true;
 			this.KRightShift.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KRightShift.Location = new System.Drawing.Point(283, 84);
+			this.KRightShift.Location = new System.Drawing.Point(288, 79);
 			this.KRightShift.Name = "KRightShift";
 			this.KRightShift.Size = new System.Drawing.Size(38, 23);
 			this.KRightShift.TabIndex = 52;
@@ -841,7 +814,7 @@
 			this.KSlash.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KSlash.AutoSize = true;
 			this.KSlash.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KSlash.Location = new System.Drawing.Point(260, 83);
+			this.KSlash.Location = new System.Drawing.Point(266, 79);
 			this.KSlash.Name = "KSlash";
 			this.KSlash.Size = new System.Drawing.Size(24, 24);
 			this.KSlash.TabIndex = 62;
@@ -855,7 +828,7 @@
 			this.KPeriod.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KPeriod.AutoSize = true;
 			this.KPeriod.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KPeriod.Location = new System.Drawing.Point(238, 83);
+			this.KPeriod.Location = new System.Drawing.Point(244, 79);
 			this.KPeriod.Name = "KPeriod";
 			this.KPeriod.Size = new System.Drawing.Size(24, 24);
 			this.KPeriod.TabIndex = 61;
@@ -869,7 +842,7 @@
 			this.KComma.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KComma.AutoSize = true;
 			this.KComma.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KComma.Location = new System.Drawing.Point(216, 83);
+			this.KComma.Location = new System.Drawing.Point(222, 79);
 			this.KComma.Name = "KComma";
 			this.KComma.Size = new System.Drawing.Size(24, 24);
 			this.KComma.TabIndex = 60;
@@ -883,7 +856,7 @@
 			this.KM.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KM.AutoSize = true;
 			this.KM.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KM.Location = new System.Drawing.Point(195, 83);
+			this.KM.Location = new System.Drawing.Point(200, 79);
 			this.KM.Name = "KM";
 			this.KM.Size = new System.Drawing.Size(24, 24);
 			this.KM.TabIndex = 59;
@@ -897,7 +870,7 @@
 			this.KN.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KN.AutoSize = true;
 			this.KN.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KN.Location = new System.Drawing.Point(173, 83);
+			this.KN.Location = new System.Drawing.Point(178, 79);
 			this.KN.Name = "KN";
 			this.KN.Size = new System.Drawing.Size(24, 24);
 			this.KN.TabIndex = 58;
@@ -911,7 +884,7 @@
 			this.KB.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KB.AutoSize = true;
 			this.KB.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KB.Location = new System.Drawing.Point(152, 83);
+			this.KB.Location = new System.Drawing.Point(156, 79);
 			this.KB.Name = "KB";
 			this.KB.Size = new System.Drawing.Size(24, 24);
 			this.KB.TabIndex = 57;
@@ -925,7 +898,7 @@
 			this.KV.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KV.AutoSize = true;
 			this.KV.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KV.Location = new System.Drawing.Point(130, 83);
+			this.KV.Location = new System.Drawing.Point(134, 79);
 			this.KV.Name = "KV";
 			this.KV.Size = new System.Drawing.Size(24, 24);
 			this.KV.TabIndex = 56;
@@ -939,7 +912,7 @@
 			this.KC.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KC.AutoSize = true;
 			this.KC.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KC.Location = new System.Drawing.Point(109, 83);
+			this.KC.Location = new System.Drawing.Point(112, 79);
 			this.KC.Name = "KC";
 			this.KC.Size = new System.Drawing.Size(24, 24);
 			this.KC.TabIndex = 55;
@@ -953,7 +926,7 @@
 			this.KX.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KX.AutoSize = true;
 			this.KX.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KX.Location = new System.Drawing.Point(88, 83);
+			this.KX.Location = new System.Drawing.Point(90, 79);
 			this.KX.Name = "KX";
 			this.KX.Size = new System.Drawing.Size(24, 24);
 			this.KX.TabIndex = 54;
@@ -967,7 +940,7 @@
 			this.KZ.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KZ.AutoSize = true;
 			this.KZ.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KZ.Location = new System.Drawing.Point(67, 83);
+			this.KZ.Location = new System.Drawing.Point(68, 79);
 			this.KZ.Name = "KZ";
 			this.KZ.Size = new System.Drawing.Size(24, 24);
 			this.KZ.TabIndex = 53;
@@ -981,11 +954,11 @@
 			this.KCursorUp.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KCursorUp.AutoSize = true;
 			this.KCursorUp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KCursorUp.Location = new System.Drawing.Point(320, 84);
+			this.KCursorUp.Location = new System.Drawing.Point(324, 79);
 			this.KCursorUp.Name = "KCursorUp";
-			this.KCursorUp.Size = new System.Drawing.Size(35, 23);
+			this.KCursorUp.Size = new System.Drawing.Size(43, 23);
 			this.KCursorUp.TabIndex = 63;
-			this.KCursorUp.Text = "Crsr";
+			this.KCursorUp.Text = "Csr U";
 			this.KCursorUp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KCursorUp.UseVisualStyleBackColor = true;
 			this.KCursorUp.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
@@ -995,11 +968,11 @@
 			this.KCursorLeft.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KCursorLeft.AutoSize = true;
 			this.KCursorLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KCursorLeft.Location = new System.Drawing.Point(354, 83);
+			this.KCursorLeft.Location = new System.Drawing.Point(365, 79);
 			this.KCursorLeft.Name = "KCursorLeft";
-			this.KCursorLeft.Size = new System.Drawing.Size(35, 23);
+			this.KCursorLeft.Size = new System.Drawing.Size(41, 23);
 			this.KCursorLeft.TabIndex = 64;
-			this.KCursorLeft.Text = "Crsr";
+			this.KCursorLeft.Text = "Csr L";
 			this.KCursorLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KCursorLeft.UseVisualStyleBackColor = true;
 			this.KCursorLeft.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
@@ -1009,14 +982,42 @@
 			this.KSpace.Appearance = System.Windows.Forms.Appearance.Button;
 			this.KSpace.AutoSize = true;
 			this.KSpace.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.KSpace.Location = new System.Drawing.Point(77, 106);
+			this.KSpace.Location = new System.Drawing.Point(77, 102);
 			this.KSpace.Name = "KSpace";
-			this.KSpace.Size = new System.Drawing.Size(206, 24);
+			this.KSpace.Size = new System.Drawing.Size(199, 24);
 			this.KSpace.TabIndex = 65;
-			this.KSpace.Text = "           Space           ";
+			this.KSpace.Text = "           Space          ";
 			this.KSpace.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.KSpace.UseVisualStyleBackColor = true;
 			this.KSpace.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			// 
+			// KUpArrow
+			// 
+			this.KUpArrow.Appearance = System.Windows.Forms.Appearance.Button;
+			this.KUpArrow.AutoSize = true;
+			this.KUpArrow.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KUpArrow.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
+			this.KUpArrow.Location = new System.Drawing.Point(325, 33);
+			this.KUpArrow.Name = "KUpArrow";
+			this.KUpArrow.Size = new System.Drawing.Size(22, 22);
+			this.KUpArrow.TabIndex = 33;
+			this.KUpArrow.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.KUpArrow.UseVisualStyleBackColor = true;
+			this.KUpArrow.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			// 
+			// KLeftArrow
+			// 
+			this.KLeftArrow.Appearance = System.Windows.Forms.Appearance.Button;
+			this.KLeftArrow.AutoSize = true;
+			this.KLeftArrow.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KLeftArrow.Image = global::BizHawk.MultiClient.Properties.Resources.MoveLeft;
+			this.KLeftArrow.Location = new System.Drawing.Point(18, 10);
+			this.KLeftArrow.Name = "KLeftArrow";
+			this.KLeftArrow.Size = new System.Drawing.Size(22, 22);
+			this.KLeftArrow.TabIndex = 0;
+			this.KLeftArrow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.KLeftArrow.UseVisualStyleBackColor = true;
+			this.KLeftArrow.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// VirtualPadC64Keyboard
 			// 
@@ -1089,7 +1090,7 @@
 			this.Controls.Add(this.K1);
 			this.Controls.Add(this.KLeftArrow);
 			this.Name = "VirtualPadC64Keyboard";
-			this.Size = new System.Drawing.Size(454, 140);
+			this.Size = new System.Drawing.Size(454, 134);
 			this.Load += new System.EventHandler(this.VirtualPadC64Keyboard_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
