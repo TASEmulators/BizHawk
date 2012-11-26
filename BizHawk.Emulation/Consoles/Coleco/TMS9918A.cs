@@ -96,9 +96,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			VdpBuffer = value;
 
 			VRAM[VdpAddress] = value;
-            if (!Mode16k)
-                Console.WriteLine("VRAM written while not in 16k addressing mode!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            //Log.Error("COL", "VRAM[{0:X4}] = {1:X2}", VdpAddress, value);
+            //if (!Mode16k)
+            //    Console.WriteLine("VRAM written while not in 16k addressing mode!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			VdpAddress++;
             VdpAddress &= 0x3FFF;
 		}
@@ -116,10 +115,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				case 1: // Mode Control Register 2
 					CheckVideoMode();
 					Cpu.NonMaskableInterrupt = (EnableInterrupts && InterruptPending);
-
-                    if (!Mode16k)
-                        //throw new Exception("4k bit is false! tell vec where you saw this happen pls!");
-                        Console.WriteLine("4k bit is false! tell vec where you saw this happen pls!");
 					break;
 				case 2: // Name Table Base Address
 					TmsPatternNameTableBase = (Registers[2] << 10) & 0x3C00;
@@ -165,12 +160,9 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			else if (Mode2Bit) TmsMode = 2;
 			else if (Mode3Bit) TmsMode = 3;
 			else TmsMode = 0;
-            Console.WriteLine("mode " + TmsMode);
 
             if (TmsMode == 1)
                 throw new Exception("TMS video mode 1! please tell vecna which game uses this!");
-            if (TmsMode == 3)
-                throw new Exception("TMS video mode 3! please tell vecna which game uses this!");
 		}
 
 		void RenderScanline(int scanLine)
@@ -188,6 +180,12 @@ namespace BizHawk.Emulation.Consoles.Coleco
 				RenderBackgroundM0(scanLine);
 				RenderTmsSprites(scanLine);
 			}
+            else if (TmsMode == 3)
+            {
+                RenderBackgroundM3(scanLine);
+                RenderTmsSprites(scanLine);
+            }
+            // This may seem silly but if I ever implement mode 1, sprites are not rendered in that.
 		}
 
 		void RenderBackgroundM0(int scanLine)
@@ -225,42 +223,77 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			}
 		}
 
-		void RenderBackgroundM2(int scanLine)
-		{
-			if (DisplayOn == false)
-			{
-				Array.Clear(FrameBuffer, scanLine * 256, 256);
-				return;
-			}
+        void RenderBackgroundM2(int scanLine)
+        {
+            if (DisplayOn == false)
+            {
+                Array.Clear(FrameBuffer, scanLine * 256, 256);
+                return;
+            }
 
-			int yrow = scanLine / 8;
-			int yofs = scanLine % 8;
-			int FrameBufferOffset = scanLine * 256;
-			int PatternNameOffset = TmsPatternNameTableBase + (yrow * 32);
-			int PatternGeneratorOffset = (((Registers[4] & 4) << 11) & 0x2000);// +((yrow / 8) * 0x100);
-			int ColorOffset = (ColorTableBase & 0x2000);// +((yrow / 8) * 0x100);
-			int ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+            int yrow = scanLine / 8;
+            int yofs = scanLine % 8;
+            int FrameBufferOffset = scanLine * 256;
+            int PatternNameOffset = TmsPatternNameTableBase + (yrow * 32);
+            int PatternGeneratorOffset = (((Registers[4] & 4) << 11) & 0x2000);
+            int ColorOffset = (ColorTableBase & 0x2000);
+            int ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
 
-			for (int xc = 0; xc < 32; xc++)
-			{
-				int pn = VRAM[PatternNameOffset++] + ((yrow / 8) * 0x100);
-				int pv = VRAM[PatternGeneratorOffset + (pn * 8) + yofs];
-				int colorEntry = VRAM[ColorOffset + (pn * 8) + yofs];
-				int fgIndex = (colorEntry >> 4) & 0x0F;
-				int bgIndex = colorEntry & 0x0F;
-				int fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
-				int bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
+            for (int xc = 0; xc < 32; xc++)
+            {
+                int pn = VRAM[PatternNameOffset++] + ((yrow / 8) * 0x100);
+                int pv = VRAM[PatternGeneratorOffset + (pn * 8) + yofs];
+                int colorEntry = VRAM[ColorOffset + (pn * 8) + yofs];
+                int fgIndex = (colorEntry >> 4) & 0x0F;
+                int bgIndex = colorEntry & 0x0F;
+                int fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
+                int bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
 
-				FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
-				FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
-				FrameBuffer[FrameBufferOffset++] = ((pv & 0x20) > 0) ? fgColor : bgColor;
-				FrameBuffer[FrameBufferOffset++] = ((pv & 0x10) > 0) ? fgColor : bgColor;
-				FrameBuffer[FrameBufferOffset++] = ((pv & 0x08) > 0) ? fgColor : bgColor;
-				FrameBuffer[FrameBufferOffset++] = ((pv & 0x04) > 0) ? fgColor : bgColor;
-				FrameBuffer[FrameBufferOffset++] = ((pv & 0x02) > 0) ? fgColor : bgColor;
-				FrameBuffer[FrameBufferOffset++] = ((pv & 0x01) > 0) ? fgColor : bgColor;
-			}
-		}
+                FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
+                FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
+                FrameBuffer[FrameBufferOffset++] = ((pv & 0x20) > 0) ? fgColor : bgColor;
+                FrameBuffer[FrameBufferOffset++] = ((pv & 0x10) > 0) ? fgColor : bgColor;
+                FrameBuffer[FrameBufferOffset++] = ((pv & 0x08) > 0) ? fgColor : bgColor;
+                FrameBuffer[FrameBufferOffset++] = ((pv & 0x04) > 0) ? fgColor : bgColor;
+                FrameBuffer[FrameBufferOffset++] = ((pv & 0x02) > 0) ? fgColor : bgColor;
+                FrameBuffer[FrameBufferOffset++] = ((pv & 0x01) > 0) ? fgColor : bgColor;
+            }
+        }
+
+        void RenderBackgroundM3(int scanLine)
+        {
+            if (DisplayOn == false)
+            {
+                Array.Clear(FrameBuffer, scanLine * 256, 256);
+                return;
+            }
+
+            int yc = scanLine / 8;
+            bool top = (scanLine & 4) == 0; // am I in the top 4 pixels of an 8-pixel character?
+            int FrameBufferOffset = scanLine * 256;
+            int PatternNameOffset = TmsPatternNameTableBase + (yc * 32);
+            int ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+
+            for (int xc = 0; xc < 32; xc++)
+            {
+                int pn = VRAM[PatternNameOffset++];
+                int pv = VRAM[PatternGeneratorBase + (pn * 8) + ((yc & 3) * 2) + (top ? 0 : 1)];
+
+                int lColorIndex = pv & 0xF;
+                int rColorIndex = pv >> 4;
+                int lColor = lColorIndex == 0 ? ScreenBGColor : PaletteTMS9918[lColorIndex];
+                int rColor = rColorIndex == 0 ? ScreenBGColor : PaletteTMS9918[rColorIndex];
+
+                FrameBuffer[FrameBufferOffset++] = lColor;
+                FrameBuffer[FrameBufferOffset++] = lColor;
+                FrameBuffer[FrameBufferOffset++] = lColor;
+                FrameBuffer[FrameBufferOffset++] = lColor;
+                FrameBuffer[FrameBufferOffset++] = rColor;
+                FrameBuffer[FrameBufferOffset++] = rColor;
+                FrameBuffer[FrameBufferOffset++] = rColor;
+                FrameBuffer[FrameBufferOffset  ] = rColor;
+            }
+        }
 
 		byte[] ScanlinePriorityBuffer = new byte[256];
 		byte[] SpriteCollisionBuffer = new byte[256];
@@ -309,11 +342,12 @@ namespace BizHawk.Emulation.Consoles.Coleco
 					break;
 				}
 
-                //if (i >= 5 && y==30)
-                  //  Console.WriteLine(i);
-
 				if (LargeSprites) Pattern &= 0xFC; // 16x16 sprites forced to 4-byte alignment
 				int SpriteLine = scanLine - y;
+
+                // pv contains the VRAM byte holding the pattern data for this character at this scanline.
+                // each byte contains the pattern data for each the 8 pixels on this line.
+                // the bit-shift further down on PV pulls out the relevant horizontal pixel.
 
 				byte pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine];
 
@@ -403,7 +437,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
                 }
             }
         }
-
 
 		Z80A Cpu;
 		public TMS9918A(Z80A cpu)

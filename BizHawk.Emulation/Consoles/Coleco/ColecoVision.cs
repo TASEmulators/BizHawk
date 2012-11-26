@@ -27,8 +27,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			Cpu.WriteMemory = WriteMemory;
 			Cpu.ReadHardware = ReadPort;
 			Cpu.WriteHardware = WritePort;
-            Cpu.Logger = (s) => Log.Error("COL", s);
-			//Cpu.Debug = true;
 
 			VDP = new TMS9918A(Cpu);
 			PSG = new SN76489();
@@ -41,7 +39,6 @@ namespace BizHawk.Emulation.Consoles.Coleco
              
             if (game["NoSkip"])
                 skipbios = false;
-            Console.WriteLine("skipbios = {0}", skipbios);
 			LoadRom(rom, skipbios);
 			this.game = game;
 			SetupMemoryDomains();
