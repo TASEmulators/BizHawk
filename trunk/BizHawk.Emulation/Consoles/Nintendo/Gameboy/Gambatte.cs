@@ -420,7 +420,9 @@ namespace BizHawk.Emulation.Consoles.GB
 			VsyncDen = 4389,
 			RomStatusAnnotation = null, //"Bizwhackin it up",
 			RomStatusDetails = null, //"LEVAR BURTON",
-			CpuTraceAvailable = true
+			CpuTraceAvailable = true,
+			NominalWidth = 160,
+			NominalHeight = 144
 		};
 
 		public CoreOutputComm CoreOutputComm

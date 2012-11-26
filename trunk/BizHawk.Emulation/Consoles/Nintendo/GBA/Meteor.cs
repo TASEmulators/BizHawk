@@ -172,7 +172,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			VsyncNum = 262144,
 			VsyncDen = 4389,
 			CpuTraceAvailable = true,
-			TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---" 
+			TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---",
+			NominalWidth = 240,
+			NominalHeight = 160
 		};
 
 		public CoreOutputComm CoreOutputComm { get { return _CoreOutputComm; } }
