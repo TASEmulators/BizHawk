@@ -162,9 +162,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 ResetDevice();
                 return;
             }
-
+            
             if (DataReadInProgress && pce.Cpu.TotalExecutedCycles > DataReadWaitTimer)
             {
+                if (SectorsLeftToRead > 0)
+                    pce.CoreOutputComm.DriveLED = true;
+
                 if (DataIn.Count == 0)
                 {
                     // read in a sector and shove it in the queue
