@@ -202,6 +202,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		#endregion
 
+		public Action<bool> DriveLightCallback;
+
 		/// <summary>
 		/// eject the loaded disk
 		/// </summary>
@@ -211,6 +213,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			state = RamAdapterState.IDLE;
 			SetCycles();
 			Console.WriteLine("FDS: Disk ejected");
+			if (DriveLightCallback != null)
+				DriveLightCallback(false);
 		}
 
 		/// <summary>
@@ -231,6 +235,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SetCycles();
 			Console.WriteLine("FDS: Disk Inserted");
 			originaldisk = (byte[])disk.Clone();
+			if (DriveLightCallback != null)
+				DriveLightCallback(false);
 		}
 
 		/// <summary>
@@ -378,6 +384,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						state = RamAdapterState.SPINUP;
 						SetCycles();
 					//}
+						if (DriveLightCallback != null)
+							DriveLightCallback(true);
 				}
 			}
 			if ((value & 2) != 0)
@@ -488,6 +496,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							state = RamAdapterState.RESET;
 							transferreset = false;
 							//numcrc = 0;
+							if (DriveLightCallback != null)
+								DriveLightCallback(false);
 						}
 						SetCycles();
 						break;
@@ -500,12 +510,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						transferreset = false;
 						//numcrc = 0;
 						Console.WriteLine("FDS: Return or Insert Complete");
+						if (DriveLightCallback != null)
+							DriveLightCallback(false);
 						break;
 					case RamAdapterState.SPINUP:
 						state = RamAdapterState.RUNNING;
 						SetCycles();
 						//transferreset = false; // this definitely does not happen.
 						Console.WriteLine("FDS: Spin up complete!  Disk is running");
+						if (DriveLightCallback != null)
+							DriveLightCallback(true);
 						break;
 
 					case RamAdapterState.IDLE:
