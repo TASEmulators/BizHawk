@@ -14,7 +14,7 @@ namespace BizHawk.MultiClient
 	/// </summary>
 	public partial class VideoWriterChooserForm : Form
 	{
-		public VideoWriterChooserForm()
+		VideoWriterChooserForm()
 		{
 			InitializeComponent();
 		}
@@ -25,11 +25,11 @@ namespace BizHawk.MultiClient
 		/// <param name="list">list of IVideoWriters to choose from</param>
 		/// <param name="owner">parent window</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
-		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<IVideoWriter> list, IWin32Window owner)
+		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<IVideoWriter> list, IWin32Window owner, out int resizew, out int resizeh)
 		{
 			VideoWriterChooserForm dlg = new VideoWriterChooserForm();
 
-			dlg.label2.Text = "";
+			dlg.labelDescriptionBody.Text = "";
 
 			dlg.listBox1.BeginUpdate();
 			foreach (var vw in list)
@@ -39,6 +39,9 @@ namespace BizHawk.MultiClient
 			int i = dlg.listBox1.FindStringExact(Global.Config.VideoWriter);
 			if (i != ListBox.NoMatches)
 				dlg.listBox1.SelectedIndex = i;
+
+			foreach (Control c in dlg.panelSizeSelect.Controls)
+				c.Enabled = false;
 
 			DialogResult result = dlg.ShowDialog(owner);
 
@@ -52,6 +55,16 @@ namespace BizHawk.MultiClient
 			else
 				ret = null;
 
+			if (ret != null && dlg.checkBoxResize.Checked)
+			{
+				resizew = dlg.numericTextBoxW.IntValue;
+				resizeh = dlg.numericTextBoxH.IntValue;
+			}
+			else
+			{
+				resizew = -1;
+				resizeh = -1;
+			}
 			dlg.Dispose();
 			return ret;
 		}
@@ -59,9 +72,43 @@ namespace BizHawk.MultiClient
 		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (listBox1.SelectedIndex != -1)
-				label2.Text = ((IVideoWriter)listBox1.SelectedItem).WriterDescription();
+				labelDescriptionBody.Text = ((IVideoWriter)listBox1.SelectedItem).WriterDescription();
 			else
-				label2.Text = "";
+				labelDescriptionBody.Text = "";
+		}
+
+		private void checkBoxResize_CheckedChanged(object sender, EventArgs e)
+		{
+			foreach (Control c in panelSizeSelect.Controls)
+				c.Enabled = checkBoxResize.Checked;
+		}
+
+		private void buttonAuto_Click(object sender, EventArgs e)
+		{
+			numericTextBoxW.Text = Global.Emulator.CoreOutputComm.NominalWidth.ToString();
+			numericTextBoxH.Text = Global.Emulator.CoreOutputComm.NominalHeight.ToString();
+		}
+
+		private void buttonOK_Click(object sender, EventArgs e)
+		{
+			if (checkBoxResize.Checked)
+			{
+				try
+				{
+					if (numericTextBoxW.IntValue < 1 || numericTextBoxH.IntValue < 1)
+					{
+						MessageBox.Show(this, "Size must be positive!");
+						DialogResult = DialogResult.None;
+						return;
+					}
+				}
+				catch (FormatException)
+				{
+					MessageBox.Show(this, "Size must be numeric!");
+					DialogResult = DialogResult.None;
+					return;
+				}
+			}
 		}
 	}
 }
