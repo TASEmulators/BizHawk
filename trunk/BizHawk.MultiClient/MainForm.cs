@@ -2638,66 +2638,9 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
 				MemoryPulse.Pulse();
 				//=======================================
-				if (CurrAviWriter != null)
-				{
-					long nsampnum = 44100 * (long)Global.Emulator.CoreOutputComm.VsyncDen + SoundRemainder;
-					long nsamp = nsampnum / Global.Emulator.CoreOutputComm.VsyncNum;
-					// exactly remember fractional parts of an audio sample
-					SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
 
-					short[] temp = new short[nsamp * 2];
-					AviSoundInput.GetSamples(temp);
-					DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
-
-					try
-					{
-						IVideoProvider output;
-						if (avwriter_resizew > 0 && avwriter_resizeh > 0)
-						{
-							Bitmap bmpin;
-							if (Global.Config.AVI_CaptureOSD)
-								bmpin = CaptureOSD();
-							else
-							{
-								bmpin = new Bitmap(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, PixelFormat.Format32bppArgb);
-								var lockdata = bmpin.LockBits(new Rectangle(0, 0, bmpin.Width, bmpin.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-								System.Runtime.InteropServices.Marshal.Copy(Global.Emulator.VideoProvider.GetVideoBuffer(), 0, lockdata.Scan0, bmpin.Width * bmpin.Height);
-								bmpin.UnlockBits(lockdata);
-							}
-							Bitmap bmpout = new Bitmap(avwriter_resizew, avwriter_resizeh, PixelFormat.Format32bppArgb);
-							using (Graphics g = Graphics.FromImage(bmpout))
-								g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
-							bmpin.Dispose();
-							output = new AVOut.BmpVideoProvder(bmpout);
-						}
-						else
-						{
-							if (Global.Config.AVI_CaptureOSD)
-								output = new AVOut.BmpVideoProvder(CaptureOSD());
-							else
-								output = Global.Emulator.VideoProvider;
-						}
-
-						CurrAviWriter.AddFrame(output);
-						if (output is AVOut.BmpVideoProvder)
-							(output as AVOut.BmpVideoProvder).Dispose();
-
-						CurrAviWriter.AddSamples(temp);
-					}
-					catch (Exception e)
-					{
-						MessageBox.Show("Video dumping died:\n\n" + e.ToString());
-						AbortAVI();
-					}
-
-					if (autoDumpLength > 0)
-					{
-						autoDumpLength--;
-						if (autoDumpLength == 0) // finish
-							StopAVI();
-					}
-				}
-
+				AVIFrameAdvance();
+	
 				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
 				{
 					Global.AutoFireController.IncrementStarts();
@@ -3709,6 +3652,8 @@ namespace BizHawk.MultiClient
 			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlDark;
 		}
 
+		#region AVI Stuff
+
 		/// <summary>
 		/// start avi recording, unattended
 		/// </summary>
@@ -3896,6 +3841,71 @@ namespace BizHawk.MultiClient
 			SoundRemainder = 0;
 			RewireSound();
 		}
+
+		void AVIFrameAdvance()
+		{
+			if (CurrAviWriter != null)
+			{
+				long nsampnum = 44100 * (long)Global.Emulator.CoreOutputComm.VsyncDen + SoundRemainder;
+				long nsamp = nsampnum / Global.Emulator.CoreOutputComm.VsyncNum;
+				// exactly remember fractional parts of an audio sample
+				SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
+
+				short[] temp = new short[nsamp * 2];
+				AviSoundInput.GetSamples(temp);
+				DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
+
+				try
+				{
+					IVideoProvider output;
+					if (avwriter_resizew > 0 && avwriter_resizeh > 0)
+					{
+						Bitmap bmpin;
+						if (Global.Config.AVI_CaptureOSD)
+							bmpin = CaptureOSD();
+						else
+						{
+							bmpin = new Bitmap(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, PixelFormat.Format32bppArgb);
+							var lockdata = bmpin.LockBits(new Rectangle(0, 0, bmpin.Width, bmpin.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+							System.Runtime.InteropServices.Marshal.Copy(Global.Emulator.VideoProvider.GetVideoBuffer(), 0, lockdata.Scan0, bmpin.Width * bmpin.Height);
+							bmpin.UnlockBits(lockdata);
+						}
+						Bitmap bmpout = new Bitmap(avwriter_resizew, avwriter_resizeh, PixelFormat.Format32bppArgb);
+						using (Graphics g = Graphics.FromImage(bmpout))
+							g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+						bmpin.Dispose();
+						output = new AVOut.BmpVideoProvder(bmpout);
+					}
+					else
+					{
+						if (Global.Config.AVI_CaptureOSD)
+							output = new AVOut.BmpVideoProvder(CaptureOSD());
+						else
+							output = Global.Emulator.VideoProvider;
+					}
+
+					CurrAviWriter.AddFrame(output);
+					if (output is AVOut.BmpVideoProvder)
+						(output as AVOut.BmpVideoProvder).Dispose();
+
+					CurrAviWriter.AddSamples(temp);
+				}
+				catch (Exception e)
+				{
+					MessageBox.Show("Video dumping died:\n\n" + e.ToString());
+					AbortAVI();
+				}
+
+				if (autoDumpLength > 0)
+				{
+					autoDumpLength--;
+					if (autoDumpLength == 0) // finish
+						StopAVI();
+				}
+			}
+		}
+
+		#endregion
 
 		private void SwapBackupSavestate(string path)
 		{
