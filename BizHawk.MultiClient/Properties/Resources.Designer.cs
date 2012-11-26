@@ -144,6 +144,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap C64Symbol {
+            get {
+                object obj = ResourceManager.GetObject("C64Symbol", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap calculator {
             get {
                 object obj = ResourceManager.GetObject("calculator", resourceCulture);
