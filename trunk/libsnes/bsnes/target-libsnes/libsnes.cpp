@@ -332,13 +332,35 @@ int snes_peek_logical_register(int reg)
 	case SNES_REG_SETINI_SCREEN_INTERLACE: return SNES::ppu.regs.interlace?1:0;
 		//$2130 CGWSEL
 	case SNES_REG_CGWSEL_COLORMASK: return SNES::ppu.regs.color_mask;
-	case SNES_REG_CGWSEL_COLORSUBMASK: return SNES::ppu.regs.color_mask;
+	case SNES_REG_CGWSEL_COLORSUBMASK: return SNES::ppu.regs.colorsub_mask;
 	case SNES_REG_CGWSEL_ADDSUBMODE: return SNES::ppu.regs.addsub_mode?1:0;
 	case SNES_REG_CGWSEL_DIRECTCOLOR: return SNES::ppu.regs.direct_color?1:0;
 		//$2101 OBSEL
 	case SNES_REG_OBSEL_NAMEBASE: return SNES::ppu.regs.oam_tdaddr>>14;
 	case SNES_REG_OBSEL_NAMESEL: return SNES::ppu.regs.oam_nameselect;
 	case SNES_REG_OBSEL_SIZE: return SNES::ppu.regs.oam_basesize;
+		//$2131 CGADSUB
+	//enum { BG1 = 0, BG2 = 1, BG3 = 2, BG4 = 3, OAM = 4, BACK = 5, COL = 5 };
+	case SNES_REG_CGADSUB_MODE: return SNES::ppu.regs.color_mode;
+	case SNES_REG_CGADSUB_HALF: return SNES::ppu.regs.color_halve;
+	case SNES_REG_CGADSUB_BG4: return SNES::ppu.regs.color_enabled[3];
+	case SNES_REG_CGADSUB_BG3: return SNES::ppu.regs.color_enabled[2];
+	case SNES_REG_CGADSUB_BG2: return SNES::ppu.regs.color_enabled[1];
+	case SNES_REG_CGADSUB_BG1: return SNES::ppu.regs.color_enabled[0];
+	case SNES_REG_CGADSUB_OBJ: return SNES::ppu.regs.color_enabled[4];
+	case SNES_REG_CGADSUB_BACKDROP: return SNES::ppu.regs.color_enabled[5];
+		//$212C TM
+	case SNES_REG_TM_BG1: return SNES::ppu.regs.bg_enabled[0];
+	case SNES_REG_TM_BG2: return SNES::ppu.regs.bg_enabled[1];
+	case SNES_REG_TM_BG3: return SNES::ppu.regs.bg_enabled[2];
+	case SNES_REG_TM_BG4: return SNES::ppu.regs.bg_enabled[3];
+	case SNES_REG_TM_OBJ: return SNES::ppu.regs.bg_enabled[4];
+		//$212D TM
+	case SNES_REG_TS_BG1: return SNES::ppu.regs.bgsub_enabled[0];
+	case SNES_REG_TS_BG2: return SNES::ppu.regs.bgsub_enabled[1];
+	case SNES_REG_TS_BG3: return SNES::ppu.regs.bgsub_enabled[2];
+	case SNES_REG_TS_BG4: return SNES::ppu.regs.bgsub_enabled[3];
+	case SNES_REG_TS_OBJ: return SNES::ppu.regs.bgsub_enabled[4];
 	}
 	return 0;
 }

@@ -200,6 +200,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			OBSEL_NAMEBASE = 50,
 			OBSEL_NAMESEL = 51,
 			OBSEL_SIZE = 52,
+			//$2131 CGADSUB
+			CGADSUB_MODE = 60,
+			CGADSUB_HALF = 61,
+			CGADSUB_BG4 = 62,
+			CGADSUB_BG3 = 63,
+			CGADSUB_BG2 = 64,
+			CGADSUB_BG1 = 65,
+			CGADSUB_OBJ = 66,
+			CGADSUB_BACKDROP = 67,
+			//$212C TM
+			TM_BG1 =70,
+			TM_BG2 =71,
+			TM_BG3 =72,
+			TM_BG4 =73,
+			TM_OBJ =74,
+			//$212D TM
+			TS_BG1 =80,
+			TS_BG2 =81,
+			TS_BG3 =82,
+			TS_BG4 =83,
+			TS_OBJ =84
 		}
 
 		public enum SNES_MEMORY : uint

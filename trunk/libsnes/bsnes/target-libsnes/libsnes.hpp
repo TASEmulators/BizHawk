@@ -189,6 +189,27 @@ void bus_write(unsigned addr, uint8_t val);
 #define SNES_REG_OBSEL_NAMEBASE 50
 #define SNES_REG_OBSEL_NAMESEL 51
 #define SNES_REG_OBSEL_SIZE 52
+//$2131 CGADSUB
+#define SNES_REG_CGADSUB_MODE 60
+#define SNES_REG_CGADSUB_HALF 61
+#define SNES_REG_CGADSUB_BG4 62
+#define SNES_REG_CGADSUB_BG3 63
+#define SNES_REG_CGADSUB_BG2 64
+#define SNES_REG_CGADSUB_BG1 65
+#define SNES_REG_CGADSUB_OBJ 66
+#define SNES_REG_CGADSUB_BACKDROP 67
+//$212C TM
+#define SNES_REG_TM_BG1 70
+#define SNES_REG_TM_BG2 71
+#define SNES_REG_TM_BG3 72
+#define SNES_REG_TM_BG4 73
+#define SNES_REG_TM_OBJ 74
+//$212D TM
+#define SNES_REG_TS_BG1 80
+#define SNES_REG_TS_BG2 81
+#define SNES_REG_TS_BG3 82
+#define SNES_REG_TS_BG4 83
+#define SNES_REG_TS_OBJ 84
 
 
 int snes_peek_logical_register(int reg);
