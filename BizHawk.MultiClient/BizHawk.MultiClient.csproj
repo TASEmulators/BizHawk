@@ -960,6 +960,8 @@
     <None Include="config\ControllerImages\colecovisioncontroller.png" />
     <None Include="config\ControllerImages\GBA_Controller.png" />
     <None Include="images\C64Symbol.png" />
+    <None Include="images\LightOff.png" />
+    <None Include="images\LightOn.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
