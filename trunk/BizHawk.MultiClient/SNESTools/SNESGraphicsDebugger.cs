@@ -7,13 +7,18 @@
 
 //http://stackoverflow.com/questions/1101149/displaying-thumbnail-icons-128x128-pixels-or-larger-in-a-grid-in-listview
 
+//hiding the tab control headers.. once this design gets solid, ill get rid of them
+//http://www.mostthingsweb.com/2011/01/hiding-tab-headers-on-a-tabcontrol-in-c/
+
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Core;
@@ -781,6 +786,42 @@ namespace BizHawk.MultiClient
 				panStartLocation = viewer.PointToScreen(e.Location);
 				this.Cursor = Cursors.SizeAll;
 			}
+
+			if ((e.Button & System.Windows.Forms.MouseButtons.Right) != 0)
+				Freeze();
+		}
+
+		void Freeze()
+		{
+			groupFreeze.SuspendLayout();
+
+			Win32.SendMessage(groupFreeze.Handle, 11, 0, 0); //WM_SETREDRAW false
+
+			var tp = tabctrlDetails.SelectedTab;
+
+			//clone the currently selected tab page into the destination
+			var oldControls = new ArrayList(pnGroupFreeze.Controls);
+			pnGroupFreeze.Controls.Clear();
+			foreach (var control in tp.Controls)
+				pnGroupFreeze.Controls.Add((control as Control).Clone());
+			foreach (var control in oldControls)
+				(control as Control).Dispose();
+
+			//set the freeze caption accordingly
+			if (tp == tpMapEntry) groupFreeze.Text = "Freeze - Map Entry";
+			if (tp == tpPalette) groupFreeze.Text = "Freeze - Color";
+			if (tp == tpTile) groupFreeze.Text = "Freeze - Tile";
+			if (tp == tpOBJ) groupFreeze.Text = "Freeze - OBJ";
+			
+			groupFreeze.ResumeLayout();
+
+			Win32.SendMessage(groupFreeze.Handle, 11, 1, 0); //WM_SETREDRAW true
+			groupFreeze.Refresh();
+		}
+
+		enum eFreezeTarget
+		{
+			MainViewer
 		}
 
 		private void viewer_MouseUp(object sender, MouseEventArgs e)
@@ -879,6 +920,7 @@ namespace BizHawk.MultiClient
 					currViewingTile = ty * 64 + tx;
 					if (currViewingTile < 0 || currViewingTile >= (8192 / currViewingTileBpp))
 						currViewingTile = -1;
+					tabctrlDetails.SelectedTab = tpTile;
 					break;
 				case eDisplayType.BG1:
 				case eDisplayType.BG2:
@@ -904,6 +946,8 @@ namespace BizHawk.MultiClient
 						//int paletteStart = 0;
 						//gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
 						//gd.Paletteize(pixelptr, 0, 0, numPixels);
+
+						tabctrlDetails.SelectedTab = tpMapEntry;
 					}
 					break;
 			}
@@ -923,7 +967,8 @@ namespace BizHawk.MultiClient
 
 		private void paletteViewer_MouseDown(object sender, MouseEventArgs e)
 		{
-
+			if ((e.Button & System.Windows.Forms.MouseButtons.Right) != 0)
+				Freeze();
 		}
 
 		private void paletteViewer_MouseEnter(object sender, EventArgs e)
@@ -943,6 +988,7 @@ namespace BizHawk.MultiClient
 			if (!valid) return;
 			lastColorNum = pt.Y * 16 + pt.X;
 			UpdateColorDetails();
+			tabctrlDetails.SelectedTab = tpPalette;
 		}
 
 		static int DecodeWinformsColorToSNES(Color winforms)
@@ -1091,8 +1137,47 @@ namespace BizHawk.MultiClient
 			Global.MainForm.SyncCoreInputComm();
 		}
 
-
 	}
 
 
+}
+
+
+static class ControlExtensions
+{
+	static string[] secondPass = new[] { "Size" };
+	public static T Clone<T>(this T controlToClone)
+			where T : Control
+	{
+		PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+		Type t = controlToClone.GetType();
+		T instance = Activator.CreateInstance(t) as T;
+
+		t.GetProperty("AutoSize").SetValue(instance, false, null);
+
+		for (int i = 0; i < 3; i++)
+		{
+			foreach (PropertyInfo propInfo in controlProperties)
+			{
+				if (!propInfo.CanWrite)
+					continue;
+
+				if (propInfo.Name == "AutoSize")
+				{ }
+				else if (propInfo.Name == "WindowTarget")
+				{ }
+				else
+					propInfo.SetValue(instance, propInfo.GetValue(controlToClone, null), null);
+			}
+		}
+
+		if (instance is RetainedViewportPanel)
+		{
+			var clonebmp = ((controlToClone) as RetainedViewportPanel).GetBitmap().Clone() as Bitmap;
+			((instance) as RetainedViewportPanel).SetBitmap(clonebmp);
+		}
+
+		return instance;
+	}
 }

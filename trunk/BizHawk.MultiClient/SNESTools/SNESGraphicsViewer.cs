@@ -25,8 +25,9 @@ namespace BizHawk.MultiClient
 			base.OnPaint(e);
 		}
 
-
-		
-		//todo - screenshot?
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+		}
 	}
 }
