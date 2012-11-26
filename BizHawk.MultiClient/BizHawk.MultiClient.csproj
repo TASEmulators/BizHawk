@@ -220,6 +220,12 @@
     </Compile>
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
+    <Compile Include="GBAtools\GBAGPUView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GBAtools\GBAGPUView.Designer.cs">
+      <DependentUpon>GBAGPUView.cs</DependentUpon>
+    </Compile>
     <Compile Include="GBtools\BmpView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -490,6 +496,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GBAtools\GBAGPUView.resx">
+      <DependentUpon>GBAGPUView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GBtools\CGBColorChooserForm.resx">
       <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
