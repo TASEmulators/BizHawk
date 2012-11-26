@@ -81,6 +81,7 @@ namespace BizHawk.MultiClient
 		public NESPPU NESPPU1 = new NESPPU();
 		public NESDebugger NESDebug1 = new NESDebugger();
 		public GBtools.GBGPUView GBGPUView1 = new GBtools.GBGPUView();
+		public GBAtools.GBAGPUView GBAGPUView1 = new GBAtools.GBAGPUView();
 		public PCEBGViewer PCEBGViewer1 = new PCEBGViewer();
 		public Cheats Cheats1 = new Cheats();
 		public ToolBox ToolBox1 = new ToolBox();
@@ -1355,6 +1356,7 @@ namespace BizHawk.MultiClient
 			pCEToolStripMenuItem.Visible = false;
 			sMSToolStripMenuItem.Visible = false;
 			gBToolStripMenuItem.Visible = false;
+			gBAToolStripMenuItem.Visible = false;
 			atariToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
 			colecoToolStripMenuItem.Visible = false;
@@ -1388,6 +1390,9 @@ namespace BizHawk.MultiClient
 				case "GB":
 				case "GBC":
 					gBToolStripMenuItem.Visible = true;
+					break;
+				case "GBA":
+					gBAToolStripMenuItem.Visible = true;
 					break;
 				case "A26":
 					atariToolStripMenuItem.Visible = true;
@@ -1966,6 +1971,7 @@ namespace BizHawk.MultiClient
 				NESNameTableViewer1.Restart();
 				NESDebug1.Restart();
 				GBGPUView1.Restart();
+				GBAGPUView1.Restart();
 				PCEBGViewer1.Restart();
 				TI83KeyPad1.Restart();
 				TAStudio1.Restart();
@@ -2696,6 +2702,7 @@ namespace BizHawk.MultiClient
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
 			GBGPUView1.UpdateValues();
+			GBAGPUView1.UpdateValues();
 		}
 
 		public void UpdateToolsLoadstate()
@@ -3076,6 +3083,17 @@ namespace BizHawk.MultiClient
 				GBGPUView1.Focus();
 		}
 
+		public void LoadGBAGPUView()
+		{
+			if (!GBAGPUView1.IsHandleCreated || GBAGPUView1.IsDisposed)
+			{
+				GBAGPUView1 = new GBAtools.GBAGPUView();
+				GBAGPUView1.Show();
+			}
+			else
+				GBAGPUView1.Focus();
+		}
+
 		public void LoadTI83KeyPad()
 		{
 			if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
@@ -3315,6 +3333,7 @@ namespace BizHawk.MultiClient
 			NESNameTableViewer1.Restart();
 			NESDebug1.Restart();
 			GBGPUView1.Restart();
+			GBAGPUView1.Restart();
 			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
@@ -3354,6 +3373,7 @@ namespace BizHawk.MultiClient
 			CloseForm(NESPPU1);
 			CloseForm(NESDebug1);
 			CloseForm(GBGPUView1);
+			CloseForm(GBAGPUView1);
 			CloseForm(PCEBGViewer1);
 			CloseForm(Cheats1);
 			CloseForm(TI83KeyPad1);
@@ -4595,6 +4615,11 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+		}
+
+		private void gPUViewToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGBAGPUView();
 		}
 	}
 }
