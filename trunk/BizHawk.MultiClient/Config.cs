@@ -840,8 +840,8 @@ namespace BizHawk.MultiClient
 		public string Right;
 		public string I;
 		public string II;
-		public string Run;
 		public string Select;
+		public string Run;
 		public bool Enabled;
 		public PCEControllerTemplate() { }
 		public PCEControllerTemplate(bool defaults)
