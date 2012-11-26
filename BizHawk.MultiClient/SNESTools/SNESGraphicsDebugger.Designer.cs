@@ -41,60 +41,74 @@
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.groupFreeze = new System.Windows.Forms.GroupBox();
+			this.pnGroupFreeze = new System.Windows.Forms.Panel();
+			this.check2x = new System.Windows.Forms.CheckBox();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.radioButton6 = new System.Windows.Forms.RadioButton();
+			this.radioButton1 = new System.Windows.Forms.RadioButton();
+			this.radioButton10 = new System.Windows.Forms.RadioButton();
+			this.radioButton15 = new System.Windows.Forms.RadioButton();
+			this.radioButton5 = new System.Windows.Forms.RadioButton();
+			this.radioButton14 = new System.Windows.Forms.RadioButton();
+			this.radioButton4 = new System.Windows.Forms.RadioButton();
+			this.radioButton3 = new System.Windows.Forms.RadioButton();
+			this.radioButton13 = new System.Windows.Forms.RadioButton();
+			this.radioButton2 = new System.Windows.Forms.RadioButton();
+			this.comboDisplayType = new System.Windows.Forms.ComboBox();
+			this.label47 = new System.Windows.Forms.Label();
 			this.pnBackdropColor = new System.Windows.Forms.Panel();
 			this.comboPalette = new System.Windows.Forms.ComboBox();
 			this.checkBackdropColor = new System.Windows.Forms.CheckBox();
-			this.label24 = new System.Windows.Forms.Label();
-			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.txtOBSELT1OfsBits = new System.Windows.Forms.TextBox();
-			this.txtOBSELT1OfsDescr = new System.Windows.Forms.TextBox();
-			this.label30 = new System.Windows.Forms.Label();
-			this.txtOBSELBaseBits = new System.Windows.Forms.TextBox();
-			this.txtOBSELBaseDescr = new System.Windows.Forms.TextBox();
-			this.label29 = new System.Windows.Forms.Label();
-			this.txtOBSELSizeBits = new System.Windows.Forms.TextBox();
-			this.label26 = new System.Windows.Forms.Label();
-			this.txtOBSELSizeDescr = new System.Windows.Forms.TextBox();
-			this.label28 = new System.Windows.Forms.Label();
-			this.label20 = new System.Windows.Forms.Label();
-			this.checkScreenExtbg = new System.Windows.Forms.CheckBox();
-			this.label21 = new System.Windows.Forms.Label();
-			this.checkScreenHires = new System.Windows.Forms.CheckBox();
-			this.label18391 = new System.Windows.Forms.Label();
-			this.checkScreenOverscan = new System.Windows.Forms.CheckBox();
-			this.label198129381279841 = new System.Windows.Forms.Label();
-			this.checkScreenObjInterlace = new System.Windows.Forms.CheckBox();
-			this.label123812831 = new System.Windows.Forms.Label();
-			this.checkScreenInterlace = new System.Windows.Forms.CheckBox();
-			this.label2193813 = new System.Windows.Forms.Label();
-			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.labelClipboard = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.checkScanlineControl = new System.Windows.Forms.CheckBox();
 			this.label19 = new System.Windows.Forms.Label();
 			this.nudScanline = new System.Windows.Forms.NumericUpDown();
 			this.sliderScanline = new System.Windows.Forms.TrackBar();
+			this.label24 = new System.Windows.Forms.Label();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.labelClipboard = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label26 = new System.Windows.Forms.Label();
+			this.txtOBSELT1OfsBits = new System.Windows.Forms.TextBox();
 			this.label41 = new System.Windows.Forms.Label();
+			this.txtOBSELT1OfsDescr = new System.Windows.Forms.TextBox();
 			this.checkEN1_OBJ = new System.Windows.Forms.CheckBox();
+			this.label30 = new System.Windows.Forms.Label();
 			this.checkEN1_BG4 = new System.Windows.Forms.CheckBox();
+			this.txtOBSELBaseBits = new System.Windows.Forms.TextBox();
 			this.checkEN1_BG3 = new System.Windows.Forms.CheckBox();
+			this.txtOBSELBaseDescr = new System.Windows.Forms.TextBox();
 			this.checkEN1_BG2 = new System.Windows.Forms.CheckBox();
+			this.label29 = new System.Windows.Forms.Label();
 			this.checkEN1_BG1 = new System.Windows.Forms.CheckBox();
+			this.txtOBSELSizeBits = new System.Windows.Forms.TextBox();
 			this.checkEN3_OBJ = new System.Windows.Forms.CheckBox();
 			this.checkEN2_OBJ = new System.Windows.Forms.CheckBox();
+			this.txtOBSELSizeDescr = new System.Windows.Forms.TextBox();
 			this.label40 = new System.Windows.Forms.Label();
+			this.label28 = new System.Windows.Forms.Label();
 			this.label39 = new System.Windows.Forms.Label();
+			this.label20 = new System.Windows.Forms.Label();
+			this.checkScreenExtbg = new System.Windows.Forms.CheckBox();
 			this.label38 = new System.Windows.Forms.Label();
+			this.label21 = new System.Windows.Forms.Label();
 			this.txtScreenCGADSUB_Half = new System.Windows.Forms.CheckBox();
+			this.checkScreenHires = new System.Windows.Forms.CheckBox();
 			this.label37 = new System.Windows.Forms.Label();
+			this.label18391 = new System.Windows.Forms.Label();
 			this.checkEN0_OBJ = new System.Windows.Forms.CheckBox();
+			this.checkScreenOverscan = new System.Windows.Forms.CheckBox();
 			this.checkEN0_BG4 = new System.Windows.Forms.CheckBox();
+			this.label198129381279841 = new System.Windows.Forms.Label();
 			this.checkEN0_BG3 = new System.Windows.Forms.CheckBox();
+			this.checkScreenObjInterlace = new System.Windows.Forms.CheckBox();
 			this.checkEN0_BG2 = new System.Windows.Forms.CheckBox();
+			this.label123812831 = new System.Windows.Forms.Label();
 			this.checkEN0_BG1 = new System.Windows.Forms.CheckBox();
+			this.checkScreenInterlace = new System.Windows.Forms.CheckBox();
 			this.txtScreenCGADSUB_AddSub_Descr = new System.Windows.Forms.TextBox();
+			this.label2193813 = new System.Windows.Forms.Label();
 			this.txtScreenCGADSUB_AddSub = new System.Windows.Forms.TextBox();
 			this.label36 = new System.Windows.Forms.Label();
 			this.checkTMOBJ = new BizHawk.Core.CustomCheckBox();
@@ -145,6 +159,7 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.txtBGPaletteInfo = new System.Windows.Forms.TextBox();
 			this.rbBG4 = new System.Windows.Forms.RadioButton();
 			this.rbBG3 = new System.Windows.Forms.RadioButton();
 			this.rbBG2 = new System.Windows.Forms.RadioButton();
@@ -169,19 +184,6 @@
 			this.txtBG1SizeInTiles = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.txtBG1SizeBits = new System.Windows.Forms.TextBox();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.radioButton6 = new System.Windows.Forms.RadioButton();
-			this.check2x = new System.Windows.Forms.CheckBox();
-			this.radioButton15 = new System.Windows.Forms.RadioButton();
-			this.radioButton14 = new System.Windows.Forms.RadioButton();
-			this.comboDisplayType = new System.Windows.Forms.ComboBox();
-			this.radioButton1 = new System.Windows.Forms.RadioButton();
-			this.radioButton2 = new System.Windows.Forms.RadioButton();
-			this.radioButton13 = new System.Windows.Forms.RadioButton();
-			this.radioButton3 = new System.Windows.Forms.RadioButton();
-			this.radioButton4 = new System.Windows.Forms.RadioButton();
-			this.radioButton5 = new System.Windows.Forms.RadioButton();
-			this.radioButton10 = new System.Windows.Forms.RadioButton();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.tabctrlDetails = new System.Windows.Forms.TabControl();
 			this.tpPalette = new System.Windows.Forms.TabPage();
@@ -209,26 +211,27 @@
 			this.txtMapEntryPrio = new System.Windows.Forms.TextBox();
 			this.txtMapEntryLocation = new System.Windows.Forms.TextBox();
 			this.txtMapEntryTileNum = new System.Windows.Forms.TextBox();
+			this.tpOBJ = new System.Windows.Forms.TabPage();
 			this.viewerPanel = new System.Windows.Forms.Panel();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.messagetimer = new System.Windows.Forms.Timer(this.components);
-			this.txtBGPaletteInfo = new System.Windows.Forms.TextBox();
 			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewerMapEntryTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
+			this.labelMemory = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
+			this.groupFreeze.SuspendLayout();
+			this.pnGroupFreeze.SuspendLayout();
 			this.groupBox8.SuspendLayout();
-			this.groupBox7.SuspendLayout();
-			this.groupBox6.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudScanline)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.sliderScanline)).BeginInit();
+			this.groupBox6.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			this.groupBox4.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.tabctrlDetails.SuspendLayout();
 			this.tpPalette.SuspendLayout();
@@ -331,13 +334,18 @@
 			// 
 			this.panel1.AutoSize = true;
 			this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.panel1.Controls.Add(this.groupBox8);
-			this.panel1.Controls.Add(this.groupBox7);
-			this.panel1.Controls.Add(this.groupBox6);
+			this.panel1.Controls.Add(this.groupFreeze);
+			this.panel1.Controls.Add(this.check2x);
+			this.panel1.Controls.Add(this.comboDisplayType);
+			this.panel1.Controls.Add(this.label47);
+			this.panel1.Controls.Add(this.pnBackdropColor);
+			this.panel1.Controls.Add(this.comboPalette);
+			this.panel1.Controls.Add(this.checkBackdropColor);
 			this.panel1.Controls.Add(this.groupBox3);
+			this.panel1.Controls.Add(this.label24);
+			this.panel1.Controls.Add(this.groupBox6);
 			this.panel1.Controls.Add(this.groupBox2);
 			this.panel1.Controls.Add(this.groupBox1);
-			this.panel1.Controls.Add(this.groupBox4);
 			this.panel1.Controls.Add(this.groupBox5);
 			this.panel1.Controls.Add(this.tabctrlDetails);
 			this.panel1.Location = new System.Drawing.Point(3, 3);
@@ -345,24 +353,207 @@
 			this.panel1.Size = new System.Drawing.Size(557, 666);
 			this.panel1.TabIndex = 0;
 			// 
+			// groupFreeze
+			// 
+			this.groupFreeze.Controls.Add(this.pnGroupFreeze);
+			this.groupFreeze.Location = new System.Drawing.Point(300, 217);
+			this.groupFreeze.Name = "groupFreeze";
+			this.groupFreeze.Size = new System.Drawing.Size(214, 113);
+			this.groupFreeze.TabIndex = 55;
+			this.groupFreeze.TabStop = false;
+			this.groupFreeze.Text = "Freeze";
+			// 
+			// pnGroupFreeze
+			// 
+			this.pnGroupFreeze.Controls.Add(this.labelMemory);
+			this.pnGroupFreeze.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pnGroupFreeze.Location = new System.Drawing.Point(3, 16);
+			this.pnGroupFreeze.Name = "pnGroupFreeze";
+			this.pnGroupFreeze.Size = new System.Drawing.Size(208, 94);
+			this.pnGroupFreeze.TabIndex = 0;
+			// 
+			// check2x
+			// 
+			this.check2x.Appearance = System.Windows.Forms.Appearance.Button;
+			this.check2x.Location = new System.Drawing.Point(515, 0);
+			this.check2x.Name = "check2x";
+			this.check2x.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.check2x.Size = new System.Drawing.Size(39, 21);
+			this.check2x.TabIndex = 45;
+			this.check2x.Text = "1024";
+			this.toolTip1.SetToolTip(this.check2x, "Sets graphics viewport size to 1024 (unchecked is 512).\r\nContent will be scaled t" +
+        "o fill specified size");
+			this.check2x.UseVisualStyleBackColor = true;
+			this.check2x.CheckedChanged += new System.EventHandler(this.check2x_CheckedChanged);
+			// 
 			// groupBox8
 			// 
-			this.groupBox8.Controls.Add(this.pnBackdropColor);
-			this.groupBox8.Controls.Add(this.comboPalette);
-			this.groupBox8.Controls.Add(this.checkBackdropColor);
-			this.groupBox8.Controls.Add(this.label24);
-			this.groupBox8.Location = new System.Drawing.Point(3, 558);
+			this.groupBox8.Controls.Add(this.radioButton6);
+			this.groupBox8.Controls.Add(this.radioButton1);
+			this.groupBox8.Controls.Add(this.radioButton10);
+			this.groupBox8.Controls.Add(this.radioButton15);
+			this.groupBox8.Controls.Add(this.radioButton5);
+			this.groupBox8.Controls.Add(this.radioButton14);
+			this.groupBox8.Controls.Add(this.radioButton4);
+			this.groupBox8.Controls.Add(this.radioButton3);
+			this.groupBox8.Controls.Add(this.radioButton13);
+			this.groupBox8.Controls.Add(this.radioButton2);
+			this.groupBox8.Location = new System.Drawing.Point(273, 247);
 			this.groupBox8.Name = "groupBox8";
-			this.groupBox8.Size = new System.Drawing.Size(200, 70);
-			this.groupBox8.TabIndex = 53;
+			this.groupBox8.Size = new System.Drawing.Size(15, 22);
+			this.groupBox8.TabIndex = 54;
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "groupBox8";
+			// 
+			// radioButton6
+			// 
+			this.radioButton6.AutoSize = true;
+			this.radioButton6.Enabled = false;
+			this.radioButton6.Location = new System.Drawing.Point(77, 115);
+			this.radioButton6.Name = "radioButton6";
+			this.radioButton6.Size = new System.Drawing.Size(73, 17);
+			this.radioButton6.TabIndex = 49;
+			this.radioButton6.TabStop = true;
+			this.radioButton6.Text = "Mode7Ext";
+			this.radioButton6.UseVisualStyleBackColor = true;
+			// 
+			// radioButton1
+			// 
+			this.radioButton1.AutoSize = true;
+			this.radioButton1.Enabled = false;
+			this.radioButton1.Location = new System.Drawing.Point(27, 51);
+			this.radioButton1.Name = "radioButton1";
+			this.radioButton1.Size = new System.Drawing.Size(46, 17);
+			this.radioButton1.TabIndex = 19;
+			this.radioButton1.TabStop = true;
+			this.radioButton1.Text = "BG1";
+			this.radioButton1.UseVisualStyleBackColor = true;
+			// 
+			// radioButton10
+			// 
+			this.radioButton10.AutoSize = true;
+			this.radioButton10.Enabled = false;
+			this.radioButton10.Location = new System.Drawing.Point(77, 67);
+			this.radioButton10.Name = "radioButton10";
+			this.radioButton10.Size = new System.Drawing.Size(49, 17);
+			this.radioButton10.TabIndex = 28;
+			this.radioButton10.TabStop = true;
+			this.radioButton10.Text = "4bpp";
+			this.radioButton10.UseVisualStyleBackColor = true;
+			// 
+			// radioButton15
+			// 
+			this.radioButton15.AutoSize = true;
+			this.radioButton15.Enabled = false;
+			this.radioButton15.Location = new System.Drawing.Point(77, 99);
+			this.radioButton15.Name = "radioButton15";
+			this.radioButton15.Size = new System.Drawing.Size(58, 17);
+			this.radioButton15.TabIndex = 33;
+			this.radioButton15.TabStop = true;
+			this.radioButton15.Text = "Mode7";
+			this.radioButton15.UseVisualStyleBackColor = true;
+			// 
+			// radioButton5
+			// 
+			this.radioButton5.AutoSize = true;
+			this.radioButton5.Enabled = false;
+			this.radioButton5.Location = new System.Drawing.Point(77, 51);
+			this.radioButton5.Name = "radioButton5";
+			this.radioButton5.Size = new System.Drawing.Size(49, 17);
+			this.radioButton5.TabIndex = 23;
+			this.radioButton5.TabStop = true;
+			this.radioButton5.Text = "2bpp";
+			this.radioButton5.UseVisualStyleBackColor = true;
+			// 
+			// radioButton14
+			// 
+			this.radioButton14.AutoSize = true;
+			this.radioButton14.Enabled = false;
+			this.radioButton14.Location = new System.Drawing.Point(27, 116);
+			this.radioButton14.Name = "radioButton14";
+			this.radioButton14.Size = new System.Drawing.Size(45, 17);
+			this.radioButton14.TabIndex = 32;
+			this.radioButton14.TabStop = true;
+			this.radioButton14.Text = "OBJ";
+			this.radioButton14.UseVisualStyleBackColor = true;
+			// 
+			// radioButton4
+			// 
+			this.radioButton4.AutoSize = true;
+			this.radioButton4.Enabled = false;
+			this.radioButton4.Location = new System.Drawing.Point(27, 99);
+			this.radioButton4.Name = "radioButton4";
+			this.radioButton4.Size = new System.Drawing.Size(46, 17);
+			this.radioButton4.TabIndex = 22;
+			this.radioButton4.TabStop = true;
+			this.radioButton4.Text = "BG4";
+			this.radioButton4.UseVisualStyleBackColor = true;
+			// 
+			// radioButton3
+			// 
+			this.radioButton3.AutoSize = true;
+			this.radioButton3.Enabled = false;
+			this.radioButton3.Location = new System.Drawing.Point(27, 83);
+			this.radioButton3.Name = "radioButton3";
+			this.radioButton3.Size = new System.Drawing.Size(46, 17);
+			this.radioButton3.TabIndex = 21;
+			this.radioButton3.TabStop = true;
+			this.radioButton3.Text = "BG3";
+			this.radioButton3.UseVisualStyleBackColor = true;
+			// 
+			// radioButton13
+			// 
+			this.radioButton13.AutoSize = true;
+			this.radioButton13.Enabled = false;
+			this.radioButton13.Location = new System.Drawing.Point(77, 83);
+			this.radioButton13.Name = "radioButton13";
+			this.radioButton13.Size = new System.Drawing.Size(49, 17);
+			this.radioButton13.TabIndex = 31;
+			this.radioButton13.TabStop = true;
+			this.radioButton13.Text = "8bpp";
+			this.radioButton13.UseVisualStyleBackColor = true;
+			// 
+			// radioButton2
+			// 
+			this.radioButton2.AutoSize = true;
+			this.radioButton2.Enabled = false;
+			this.radioButton2.Location = new System.Drawing.Point(27, 67);
+			this.radioButton2.Name = "radioButton2";
+			this.radioButton2.Size = new System.Drawing.Size(46, 17);
+			this.radioButton2.TabIndex = 20;
+			this.radioButton2.TabStop = true;
+			this.radioButton2.Text = "BG2";
+			this.radioButton2.UseVisualStyleBackColor = true;
+			// 
+			// comboDisplayType
+			// 
+			this.comboDisplayType.DisplayMember = "descr";
+			this.comboDisplayType.DropDownHeight = 200;
+			this.comboDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboDisplayType.FormattingEnabled = true;
+			this.comboDisplayType.IntegralHeight = false;
+			this.comboDisplayType.ItemHeight = 13;
+			this.comboDisplayType.Location = new System.Drawing.Point(402, 0);
+			this.comboDisplayType.Name = "comboDisplayType";
+			this.comboDisplayType.Size = new System.Drawing.Size(107, 21);
+			this.comboDisplayType.TabIndex = 18;
+			this.comboDisplayType.ValueMember = "type";
+			this.comboDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboDisplayType_SelectedIndexChanged);
+			// 
+			// label47
+			// 
+			this.label47.AutoSize = true;
+			this.label47.Location = new System.Drawing.Point(442, 22);
+			this.label47.Name = "label47";
+			this.label47.Size = new System.Drawing.Size(40, 13);
+			this.label47.TabIndex = 53;
+			this.label47.Text = "Palette";
 			// 
 			// pnBackdropColor
 			// 
 			this.pnBackdropColor.BackColor = System.Drawing.Color.Red;
 			this.pnBackdropColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pnBackdropColor.Location = new System.Drawing.Point(14, 19);
+			this.pnBackdropColor.Location = new System.Drawing.Point(402, 26);
 			this.pnBackdropColor.Name = "pnBackdropColor";
 			this.pnBackdropColor.Size = new System.Drawing.Size(32, 32);
 			this.pnBackdropColor.TabIndex = 48;
@@ -373,9 +564,9 @@
 			this.comboPalette.DisplayMember = "descr";
 			this.comboPalette.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboPalette.FormattingEnabled = true;
-			this.comboPalette.Location = new System.Drawing.Point(65, 19);
+			this.comboPalette.Location = new System.Drawing.Point(445, 36);
 			this.comboPalette.Name = "comboPalette";
-			this.comboPalette.Size = new System.Drawing.Size(121, 21);
+			this.comboPalette.Size = new System.Drawing.Size(70, 21);
 			this.comboPalette.TabIndex = 52;
 			this.comboPalette.ValueMember = "type";
 			this.comboPalette.SelectedIndexChanged += new System.EventHandler(this.comboPalette_SelectedIndexChanged);
@@ -383,260 +574,12 @@
 			// checkBackdropColor
 			// 
 			this.checkBackdropColor.AutoSize = true;
-			this.checkBackdropColor.Location = new System.Drawing.Point(14, 54);
+			this.checkBackdropColor.Location = new System.Drawing.Point(402, 61);
 			this.checkBackdropColor.Name = "checkBackdropColor";
 			this.checkBackdropColor.Size = new System.Drawing.Size(15, 14);
 			this.checkBackdropColor.TabIndex = 47;
 			this.checkBackdropColor.UseVisualStyleBackColor = true;
 			this.checkBackdropColor.CheckedChanged += new System.EventHandler(this.checkBackdropColor_CheckedChanged);
-			// 
-			// label24
-			// 
-			this.label24.AutoSize = true;
-			this.label24.Location = new System.Drawing.Point(32, 53);
-			this.label24.Name = "label24";
-			this.label24.Size = new System.Drawing.Size(78, 13);
-			this.label24.TabIndex = 49;
-			this.label24.Text = "User Backdrop";
-			// 
-			// groupBox7
-			// 
-			this.groupBox7.Controls.Add(this.txtOBSELT1OfsBits);
-			this.groupBox7.Controls.Add(this.txtOBSELT1OfsDescr);
-			this.groupBox7.Controls.Add(this.label30);
-			this.groupBox7.Controls.Add(this.txtOBSELBaseBits);
-			this.groupBox7.Controls.Add(this.txtOBSELBaseDescr);
-			this.groupBox7.Controls.Add(this.label29);
-			this.groupBox7.Controls.Add(this.txtOBSELSizeBits);
-			this.groupBox7.Controls.Add(this.label26);
-			this.groupBox7.Controls.Add(this.txtOBSELSizeDescr);
-			this.groupBox7.Controls.Add(this.label28);
-			this.groupBox7.Location = new System.Drawing.Point(1, 431);
-			this.groupBox7.Name = "groupBox7";
-			this.groupBox7.Size = new System.Drawing.Size(228, 78);
-			this.groupBox7.TabIndex = 51;
-			this.groupBox7.TabStop = false;
-			this.groupBox7.Text = "OBJ";
-			// 
-			// txtOBSELT1OfsBits
-			// 
-			this.txtOBSELT1OfsBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtOBSELT1OfsBits.Location = new System.Drawing.Point(6, 55);
-			this.txtOBSELT1OfsBits.Multiline = true;
-			this.txtOBSELT1OfsBits.Name = "txtOBSELT1OfsBits";
-			this.txtOBSELT1OfsBits.ReadOnly = true;
-			this.txtOBSELT1OfsBits.Size = new System.Drawing.Size(15, 17);
-			this.txtOBSELT1OfsBits.TabIndex = 55;
-			this.txtOBSELT1OfsBits.Text = "00";
-			// 
-			// txtOBSELT1OfsDescr
-			// 
-			this.txtOBSELT1OfsDescr.Location = new System.Drawing.Point(71, 55);
-			this.txtOBSELT1OfsDescr.Multiline = true;
-			this.txtOBSELT1OfsDescr.Name = "txtOBSELT1OfsDescr";
-			this.txtOBSELT1OfsDescr.ReadOnly = true;
-			this.txtOBSELT1OfsDescr.Size = new System.Drawing.Size(80, 18);
-			this.txtOBSELT1OfsDescr.TabIndex = 54;
-			// 
-			// label30
-			// 
-			this.label30.AutoSize = true;
-			this.label30.Location = new System.Drawing.Point(25, 58);
-			this.label30.Name = "label30";
-			this.label30.Size = new System.Drawing.Size(45, 13);
-			this.label30.TabIndex = 53;
-			this.label30.Text = "T1.Addr";
-			// 
-			// txtOBSELBaseBits
-			// 
-			this.txtOBSELBaseBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtOBSELBaseBits.Location = new System.Drawing.Point(6, 36);
-			this.txtOBSELBaseBits.Multiline = true;
-			this.txtOBSELBaseBits.Name = "txtOBSELBaseBits";
-			this.txtOBSELBaseBits.ReadOnly = true;
-			this.txtOBSELBaseBits.Size = new System.Drawing.Size(15, 17);
-			this.txtOBSELBaseBits.TabIndex = 52;
-			this.txtOBSELBaseBits.Text = "00";
-			// 
-			// txtOBSELBaseDescr
-			// 
-			this.txtOBSELBaseDescr.Location = new System.Drawing.Point(71, 36);
-			this.txtOBSELBaseDescr.Multiline = true;
-			this.txtOBSELBaseDescr.Name = "txtOBSELBaseDescr";
-			this.txtOBSELBaseDescr.ReadOnly = true;
-			this.txtOBSELBaseDescr.Size = new System.Drawing.Size(80, 18);
-			this.txtOBSELBaseDescr.TabIndex = 51;
-			// 
-			// label29
-			// 
-			this.label29.AutoSize = true;
-			this.label29.Location = new System.Drawing.Point(25, 39);
-			this.label29.Name = "label29";
-			this.label29.Size = new System.Drawing.Size(47, 13);
-			this.label29.TabIndex = 50;
-			this.label29.Text = "TD.Addr";
-			// 
-			// txtOBSELSizeBits
-			// 
-			this.txtOBSELSizeBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtOBSELSizeBits.Location = new System.Drawing.Point(6, 16);
-			this.txtOBSELSizeBits.Multiline = true;
-			this.txtOBSELSizeBits.Name = "txtOBSELSizeBits";
-			this.txtOBSELSizeBits.ReadOnly = true;
-			this.txtOBSELSizeBits.Size = new System.Drawing.Size(15, 17);
-			this.txtOBSELSizeBits.TabIndex = 49;
-			this.txtOBSELSizeBits.Text = "00";
-			// 
-			// label26
-			// 
-			this.label26.AutoSize = true;
-			this.label26.Location = new System.Drawing.Point(178, 16);
-			this.label26.Name = "label26";
-			this.label26.Size = new System.Drawing.Size(42, 13);
-			this.label26.TabIndex = 45;
-			this.label26.Text = "OBSEL";
-			// 
-			// txtOBSELSizeDescr
-			// 
-			this.txtOBSELSizeDescr.Location = new System.Drawing.Point(71, 16);
-			this.txtOBSELSizeDescr.Multiline = true;
-			this.txtOBSELSizeDescr.Name = "txtOBSELSizeDescr";
-			this.txtOBSELSizeDescr.ReadOnly = true;
-			this.txtOBSELSizeDescr.Size = new System.Drawing.Size(80, 18);
-			this.txtOBSELSizeDescr.TabIndex = 48;
-			this.txtOBSELSizeDescr.Text = "64x32, 32x32";
-			// 
-			// label28
-			// 
-			this.label28.AutoSize = true;
-			this.label28.Location = new System.Drawing.Point(25, 19);
-			this.label28.Name = "label28";
-			this.label28.Size = new System.Drawing.Size(27, 13);
-			this.label28.TabIndex = 47;
-			this.label28.Text = "Size";
-			// 
-			// label20
-			// 
-			this.label20.AutoSize = true;
-			this.label20.Location = new System.Drawing.Point(72, 147);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(42, 13);
-			this.label20.TabIndex = 21;
-			this.label20.Text = "SETINI";
-			// 
-			// checkScreenExtbg
-			// 
-			this.checkScreenExtbg.AutoSize = true;
-			this.checkScreenExtbg.Enabled = false;
-			this.checkScreenExtbg.Location = new System.Drawing.Point(83, 163);
-			this.checkScreenExtbg.Name = "checkScreenExtbg";
-			this.checkScreenExtbg.Size = new System.Drawing.Size(15, 14);
-			this.checkScreenExtbg.TabIndex = 22;
-			this.checkScreenExtbg.UseVisualStyleBackColor = true;
-			// 
-			// label21
-			// 
-			this.label21.AutoSize = true;
-			this.label21.Location = new System.Drawing.Point(97, 163);
-			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(43, 13);
-			this.label21.TabIndex = 23;
-			this.label21.Text = "EXTBG";
-			// 
-			// checkScreenHires
-			// 
-			this.checkScreenHires.AutoSize = true;
-			this.checkScreenHires.Enabled = false;
-			this.checkScreenHires.Location = new System.Drawing.Point(83, 177);
-			this.checkScreenHires.Name = "checkScreenHires";
-			this.checkScreenHires.Size = new System.Drawing.Size(15, 14);
-			this.checkScreenHires.TabIndex = 24;
-			this.checkScreenHires.UseVisualStyleBackColor = true;
-			// 
-			// label18391
-			// 
-			this.label18391.AutoSize = true;
-			this.label18391.Location = new System.Drawing.Point(97, 177);
-			this.label18391.Name = "label18391";
-			this.label18391.Size = new System.Drawing.Size(40, 13);
-			this.label18391.TabIndex = 25;
-			this.label18391.Text = "HIRES";
-			// 
-			// checkScreenOverscan
-			// 
-			this.checkScreenOverscan.AutoSize = true;
-			this.checkScreenOverscan.Enabled = false;
-			this.checkScreenOverscan.Location = new System.Drawing.Point(83, 191);
-			this.checkScreenOverscan.Name = "checkScreenOverscan";
-			this.checkScreenOverscan.Size = new System.Drawing.Size(15, 14);
-			this.checkScreenOverscan.TabIndex = 26;
-			this.checkScreenOverscan.UseVisualStyleBackColor = true;
-			// 
-			// label198129381279841
-			// 
-			this.label198129381279841.AutoSize = true;
-			this.label198129381279841.Location = new System.Drawing.Point(97, 191);
-			this.label198129381279841.Name = "label198129381279841";
-			this.label198129381279841.Size = new System.Drawing.Size(47, 13);
-			this.label198129381279841.TabIndex = 27;
-			this.label198129381279841.Text = "O.SCAN";
-			// 
-			// checkScreenObjInterlace
-			// 
-			this.checkScreenObjInterlace.AutoSize = true;
-			this.checkScreenObjInterlace.Enabled = false;
-			this.checkScreenObjInterlace.Location = new System.Drawing.Point(142, 161);
-			this.checkScreenObjInterlace.Name = "checkScreenObjInterlace";
-			this.checkScreenObjInterlace.Size = new System.Drawing.Size(15, 14);
-			this.checkScreenObjInterlace.TabIndex = 28;
-			this.checkScreenObjInterlace.UseVisualStyleBackColor = true;
-			// 
-			// label123812831
-			// 
-			this.label123812831.AutoSize = true;
-			this.label123812831.Location = new System.Drawing.Point(156, 161);
-			this.label123812831.Name = "label123812831";
-			this.label123812831.Size = new System.Drawing.Size(49, 13);
-			this.label123812831.TabIndex = 29;
-			this.label123812831.Text = "O.INTLC";
-			// 
-			// checkScreenInterlace
-			// 
-			this.checkScreenInterlace.AutoSize = true;
-			this.checkScreenInterlace.Enabled = false;
-			this.checkScreenInterlace.Location = new System.Drawing.Point(142, 174);
-			this.checkScreenInterlace.Name = "checkScreenInterlace";
-			this.checkScreenInterlace.Size = new System.Drawing.Size(15, 14);
-			this.checkScreenInterlace.TabIndex = 30;
-			this.checkScreenInterlace.UseVisualStyleBackColor = true;
-			// 
-			// label2193813
-			// 
-			this.label2193813.AutoSize = true;
-			this.label2193813.Location = new System.Drawing.Point(156, 174);
-			this.label2193813.Name = "label2193813";
-			this.label2193813.Size = new System.Drawing.Size(48, 13);
-			this.label2193813.TabIndex = 31;
-			this.label2193813.Text = "S.INTLC";
-			// 
-			// groupBox6
-			// 
-			this.groupBox6.Controls.Add(this.labelClipboard);
-			this.groupBox6.Location = new System.Drawing.Point(0, 515);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(228, 38);
-			this.groupBox6.TabIndex = 50;
-			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = "Copy to Clipboard";
-			// 
-			// labelClipboard
-			// 
-			this.labelClipboard.AutoSize = true;
-			this.labelClipboard.Location = new System.Drawing.Point(4, 18);
-			this.labelClipboard.Name = "labelClipboard";
-			this.labelClipboard.Size = new System.Drawing.Size(212, 13);
-			this.labelClipboard.TabIndex = 0;
-			this.labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
 			// 
 			// groupBox3
 			// 
@@ -644,7 +587,7 @@
 			this.groupBox3.Controls.Add(this.label19);
 			this.groupBox3.Controls.Add(this.nudScanline);
 			this.groupBox3.Controls.Add(this.sliderScanline);
-			this.groupBox3.Location = new System.Drawing.Point(172, 217);
+			this.groupBox3.Location = new System.Drawing.Point(178, 281);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(57, 191);
 			this.groupBox3.TabIndex = 46;
@@ -699,17 +642,56 @@
 			this.sliderScanline.Value = 224;
 			this.sliderScanline.ValueChanged += new System.EventHandler(this.sliderScanline_ValueChanged);
 			// 
+			// label24
+			// 
+			this.label24.AutoSize = true;
+			this.label24.Location = new System.Drawing.Point(420, 60);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(78, 13);
+			this.label24.TabIndex = 49;
+			this.label24.Text = "User Backdrop";
+			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.labelClipboard);
+			this.groupBox6.Location = new System.Drawing.Point(2, 495);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(161, 38);
+			this.groupBox6.TabIndex = 50;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "Copy to Clipboard";
+			// 
+			// labelClipboard
+			// 
+			this.labelClipboard.AutoSize = true;
+			this.labelClipboard.Location = new System.Drawing.Point(4, 18);
+			this.labelClipboard.Name = "labelClipboard";
+			this.labelClipboard.Size = new System.Drawing.Size(152, 13);
+			this.labelClipboard.TabIndex = 0;
+			this.labelClipboard.Text = "Mouseover pane and CTRL+C";
+			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.label26);
+			this.groupBox2.Controls.Add(this.txtOBSELT1OfsBits);
+			this.groupBox2.Controls.Add(this.groupBox8);
 			this.groupBox2.Controls.Add(this.label41);
+			this.groupBox2.Controls.Add(this.txtOBSELT1OfsDescr);
 			this.groupBox2.Controls.Add(this.checkEN1_OBJ);
+			this.groupBox2.Controls.Add(this.label30);
 			this.groupBox2.Controls.Add(this.checkEN1_BG4);
+			this.groupBox2.Controls.Add(this.txtOBSELBaseBits);
 			this.groupBox2.Controls.Add(this.checkEN1_BG3);
+			this.groupBox2.Controls.Add(this.txtOBSELBaseDescr);
 			this.groupBox2.Controls.Add(this.checkEN1_BG2);
+			this.groupBox2.Controls.Add(this.label29);
 			this.groupBox2.Controls.Add(this.checkEN1_BG1);
+			this.groupBox2.Controls.Add(this.txtOBSELSizeBits);
 			this.groupBox2.Controls.Add(this.checkEN3_OBJ);
 			this.groupBox2.Controls.Add(this.checkEN2_OBJ);
+			this.groupBox2.Controls.Add(this.txtOBSELSizeDescr);
 			this.groupBox2.Controls.Add(this.label40);
+			this.groupBox2.Controls.Add(this.label28);
 			this.groupBox2.Controls.Add(this.label39);
 			this.groupBox2.Controls.Add(this.label20);
 			this.groupBox2.Controls.Add(this.checkScreenExtbg);
@@ -782,10 +764,30 @@
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Location = new System.Drawing.Point(0, 0);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(380, 211);
+			this.groupBox2.Size = new System.Drawing.Size(294, 275);
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Screen";
+			// 
+			// label26
+			// 
+			this.label26.AutoSize = true;
+			this.label26.Location = new System.Drawing.Point(6, 194);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(42, 13);
+			this.label26.TabIndex = 45;
+			this.label26.Text = "OBSEL";
+			// 
+			// txtOBSELT1OfsBits
+			// 
+			this.txtOBSELT1OfsBits.BackColor = System.Drawing.Color.LightGreen;
+			this.txtOBSELT1OfsBits.Location = new System.Drawing.Point(13, 249);
+			this.txtOBSELT1OfsBits.Multiline = true;
+			this.txtOBSELT1OfsBits.Name = "txtOBSELT1OfsBits";
+			this.txtOBSELT1OfsBits.ReadOnly = true;
+			this.txtOBSELT1OfsBits.Size = new System.Drawing.Size(15, 17);
+			this.txtOBSELT1OfsBits.TabIndex = 55;
+			this.txtOBSELT1OfsBits.Text = "00";
 			// 
 			// label41
 			// 
@@ -795,6 +797,15 @@
 			this.label41.Size = new System.Drawing.Size(41, 13);
 			this.label41.TabIndex = 101;
 			this.label41.Text = "EN.Pr3";
+			// 
+			// txtOBSELT1OfsDescr
+			// 
+			this.txtOBSELT1OfsDescr.Location = new System.Drawing.Point(78, 249);
+			this.txtOBSELT1OfsDescr.Multiline = true;
+			this.txtOBSELT1OfsDescr.Name = "txtOBSELT1OfsDescr";
+			this.txtOBSELT1OfsDescr.ReadOnly = true;
+			this.txtOBSELT1OfsDescr.Size = new System.Drawing.Size(80, 18);
+			this.txtOBSELT1OfsDescr.TabIndex = 54;
 			// 
 			// checkEN1_OBJ
 			// 
@@ -806,6 +817,15 @@
 			this.checkEN1_OBJ.UseVisualStyleBackColor = true;
 			this.checkEN1_OBJ.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
 			// 
+			// label30
+			// 
+			this.label30.AutoSize = true;
+			this.label30.Location = new System.Drawing.Point(32, 252);
+			this.label30.Name = "label30";
+			this.label30.Size = new System.Drawing.Size(45, 13);
+			this.label30.TabIndex = 53;
+			this.label30.Text = "T1.Addr";
+			// 
 			// checkEN1_BG4
 			// 
 			this.checkEN1_BG4.AutoSize = true;
@@ -815,6 +835,17 @@
 			this.checkEN1_BG4.TabIndex = 99;
 			this.checkEN1_BG4.UseVisualStyleBackColor = true;
 			this.checkEN1_BG4.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
+			// 
+			// txtOBSELBaseBits
+			// 
+			this.txtOBSELBaseBits.BackColor = System.Drawing.Color.LightGreen;
+			this.txtOBSELBaseBits.Location = new System.Drawing.Point(13, 230);
+			this.txtOBSELBaseBits.Multiline = true;
+			this.txtOBSELBaseBits.Name = "txtOBSELBaseBits";
+			this.txtOBSELBaseBits.ReadOnly = true;
+			this.txtOBSELBaseBits.Size = new System.Drawing.Size(15, 17);
+			this.txtOBSELBaseBits.TabIndex = 52;
+			this.txtOBSELBaseBits.Text = "00";
 			// 
 			// checkEN1_BG3
 			// 
@@ -826,6 +857,15 @@
 			this.checkEN1_BG3.UseVisualStyleBackColor = true;
 			this.checkEN1_BG3.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
 			// 
+			// txtOBSELBaseDescr
+			// 
+			this.txtOBSELBaseDescr.Location = new System.Drawing.Point(78, 230);
+			this.txtOBSELBaseDescr.Multiline = true;
+			this.txtOBSELBaseDescr.Name = "txtOBSELBaseDescr";
+			this.txtOBSELBaseDescr.ReadOnly = true;
+			this.txtOBSELBaseDescr.Size = new System.Drawing.Size(80, 18);
+			this.txtOBSELBaseDescr.TabIndex = 51;
+			// 
 			// checkEN1_BG2
 			// 
 			this.checkEN1_BG2.AutoSize = true;
@@ -836,6 +876,15 @@
 			this.checkEN1_BG2.UseVisualStyleBackColor = true;
 			this.checkEN1_BG2.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
 			// 
+			// label29
+			// 
+			this.label29.AutoSize = true;
+			this.label29.Location = new System.Drawing.Point(32, 233);
+			this.label29.Name = "label29";
+			this.label29.Size = new System.Drawing.Size(47, 13);
+			this.label29.TabIndex = 50;
+			this.label29.Text = "TD.Addr";
+			// 
 			// checkEN1_BG1
 			// 
 			this.checkEN1_BG1.AutoSize = true;
@@ -845,6 +894,17 @@
 			this.checkEN1_BG1.TabIndex = 96;
 			this.checkEN1_BG1.UseVisualStyleBackColor = true;
 			this.checkEN1_BG1.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
+			// 
+			// txtOBSELSizeBits
+			// 
+			this.txtOBSELSizeBits.BackColor = System.Drawing.Color.LightGreen;
+			this.txtOBSELSizeBits.Location = new System.Drawing.Point(13, 210);
+			this.txtOBSELSizeBits.Multiline = true;
+			this.txtOBSELSizeBits.Name = "txtOBSELSizeBits";
+			this.txtOBSELSizeBits.ReadOnly = true;
+			this.txtOBSELSizeBits.Size = new System.Drawing.Size(15, 17);
+			this.txtOBSELSizeBits.TabIndex = 49;
+			this.txtOBSELSizeBits.Text = "00";
 			// 
 			// checkEN3_OBJ
 			// 
@@ -866,6 +926,16 @@
 			this.checkEN2_OBJ.UseVisualStyleBackColor = true;
 			this.checkEN2_OBJ.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
 			// 
+			// txtOBSELSizeDescr
+			// 
+			this.txtOBSELSizeDescr.Location = new System.Drawing.Point(78, 210);
+			this.txtOBSELSizeDescr.Multiline = true;
+			this.txtOBSELSizeDescr.Name = "txtOBSELSizeDescr";
+			this.txtOBSELSizeDescr.ReadOnly = true;
+			this.txtOBSELSizeDescr.Size = new System.Drawing.Size(80, 18);
+			this.txtOBSELSizeDescr.TabIndex = 48;
+			this.txtOBSELSizeDescr.Text = "64x32, 32x32";
+			// 
 			// label40
 			// 
 			this.label40.AutoSize = true;
@@ -874,6 +944,15 @@
 			this.label40.Size = new System.Drawing.Size(41, 13);
 			this.label40.TabIndex = 93;
 			this.label40.Text = "EN.Pr2";
+			// 
+			// label28
+			// 
+			this.label28.AutoSize = true;
+			this.label28.Location = new System.Drawing.Point(32, 213);
+			this.label28.Name = "label28";
+			this.label28.Size = new System.Drawing.Size(27, 13);
+			this.label28.TabIndex = 47;
+			this.label28.Text = "Size";
 			// 
 			// label39
 			// 
@@ -884,6 +963,25 @@
 			this.label39.TabIndex = 92;
 			this.label39.Text = "EN.Pr1";
 			// 
+			// label20
+			// 
+			this.label20.AutoSize = true;
+			this.label20.Location = new System.Drawing.Point(72, 147);
+			this.label20.Name = "label20";
+			this.label20.Size = new System.Drawing.Size(42, 13);
+			this.label20.TabIndex = 21;
+			this.label20.Text = "SETINI";
+			// 
+			// checkScreenExtbg
+			// 
+			this.checkScreenExtbg.AutoSize = true;
+			this.checkScreenExtbg.Enabled = false;
+			this.checkScreenExtbg.Location = new System.Drawing.Point(83, 163);
+			this.checkScreenExtbg.Name = "checkScreenExtbg";
+			this.checkScreenExtbg.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenExtbg.TabIndex = 22;
+			this.checkScreenExtbg.UseVisualStyleBackColor = true;
+			// 
 			// label38
 			// 
 			this.label38.AutoSize = true;
@@ -892,6 +990,15 @@
 			this.label38.Size = new System.Drawing.Size(26, 13);
 			this.label38.TabIndex = 91;
 			this.label38.Text = "Half";
+			// 
+			// label21
+			// 
+			this.label21.AutoSize = true;
+			this.label21.Location = new System.Drawing.Point(97, 163);
+			this.label21.Name = "label21";
+			this.label21.Size = new System.Drawing.Size(43, 13);
+			this.label21.TabIndex = 23;
+			this.label21.Text = "EXTBG";
 			// 
 			// txtScreenCGADSUB_Half
 			// 
@@ -903,6 +1010,16 @@
 			this.txtScreenCGADSUB_Half.TabIndex = 90;
 			this.txtScreenCGADSUB_Half.UseVisualStyleBackColor = true;
 			// 
+			// checkScreenHires
+			// 
+			this.checkScreenHires.AutoSize = true;
+			this.checkScreenHires.Enabled = false;
+			this.checkScreenHires.Location = new System.Drawing.Point(83, 177);
+			this.checkScreenHires.Name = "checkScreenHires";
+			this.checkScreenHires.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenHires.TabIndex = 24;
+			this.checkScreenHires.UseVisualStyleBackColor = true;
+			// 
 			// label37
 			// 
 			this.label37.AutoSize = true;
@@ -911,6 +1028,15 @@
 			this.label37.Size = new System.Drawing.Size(41, 13);
 			this.label37.TabIndex = 89;
 			this.label37.Text = "EN.Pr0";
+			// 
+			// label18391
+			// 
+			this.label18391.AutoSize = true;
+			this.label18391.Location = new System.Drawing.Point(97, 177);
+			this.label18391.Name = "label18391";
+			this.label18391.Size = new System.Drawing.Size(40, 13);
+			this.label18391.TabIndex = 25;
+			this.label18391.Text = "HIRES";
 			// 
 			// checkEN0_OBJ
 			// 
@@ -922,6 +1048,16 @@
 			this.checkEN0_OBJ.UseVisualStyleBackColor = true;
 			this.checkEN0_OBJ.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
 			// 
+			// checkScreenOverscan
+			// 
+			this.checkScreenOverscan.AutoSize = true;
+			this.checkScreenOverscan.Enabled = false;
+			this.checkScreenOverscan.Location = new System.Drawing.Point(83, 191);
+			this.checkScreenOverscan.Name = "checkScreenOverscan";
+			this.checkScreenOverscan.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenOverscan.TabIndex = 26;
+			this.checkScreenOverscan.UseVisualStyleBackColor = true;
+			// 
 			// checkEN0_BG4
 			// 
 			this.checkEN0_BG4.AutoSize = true;
@@ -931,6 +1067,15 @@
 			this.checkEN0_BG4.TabIndex = 87;
 			this.checkEN0_BG4.UseVisualStyleBackColor = true;
 			this.checkEN0_BG4.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
+			// 
+			// label198129381279841
+			// 
+			this.label198129381279841.AutoSize = true;
+			this.label198129381279841.Location = new System.Drawing.Point(97, 191);
+			this.label198129381279841.Name = "label198129381279841";
+			this.label198129381279841.Size = new System.Drawing.Size(47, 13);
+			this.label198129381279841.TabIndex = 27;
+			this.label198129381279841.Text = "O.SCAN";
 			// 
 			// checkEN0_BG3
 			// 
@@ -942,6 +1087,16 @@
 			this.checkEN0_BG3.UseVisualStyleBackColor = true;
 			this.checkEN0_BG3.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
 			// 
+			// checkScreenObjInterlace
+			// 
+			this.checkScreenObjInterlace.AutoSize = true;
+			this.checkScreenObjInterlace.Enabled = false;
+			this.checkScreenObjInterlace.Location = new System.Drawing.Point(142, 161);
+			this.checkScreenObjInterlace.Name = "checkScreenObjInterlace";
+			this.checkScreenObjInterlace.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenObjInterlace.TabIndex = 28;
+			this.checkScreenObjInterlace.UseVisualStyleBackColor = true;
+			// 
 			// checkEN0_BG2
 			// 
 			this.checkEN0_BG2.AutoSize = true;
@@ -951,6 +1106,15 @@
 			this.checkEN0_BG2.TabIndex = 85;
 			this.checkEN0_BG2.UseVisualStyleBackColor = true;
 			this.checkEN0_BG2.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
+			// 
+			// label123812831
+			// 
+			this.label123812831.AutoSize = true;
+			this.label123812831.Location = new System.Drawing.Point(156, 161);
+			this.label123812831.Name = "label123812831";
+			this.label123812831.Size = new System.Drawing.Size(49, 13);
+			this.label123812831.TabIndex = 29;
+			this.label123812831.Text = "O.INTLC";
 			// 
 			// checkEN0_BG1
 			// 
@@ -962,6 +1126,16 @@
 			this.checkEN0_BG1.UseVisualStyleBackColor = true;
 			this.checkEN0_BG1.CheckedChanged += new System.EventHandler(this.checkEN_CheckedChanged);
 			// 
+			// checkScreenInterlace
+			// 
+			this.checkScreenInterlace.AutoSize = true;
+			this.checkScreenInterlace.Enabled = false;
+			this.checkScreenInterlace.Location = new System.Drawing.Point(142, 174);
+			this.checkScreenInterlace.Name = "checkScreenInterlace";
+			this.checkScreenInterlace.Size = new System.Drawing.Size(15, 14);
+			this.checkScreenInterlace.TabIndex = 30;
+			this.checkScreenInterlace.UseVisualStyleBackColor = true;
+			// 
 			// txtScreenCGADSUB_AddSub_Descr
 			// 
 			this.txtScreenCGADSUB_AddSub_Descr.Location = new System.Drawing.Point(233, 112);
@@ -971,6 +1145,15 @@
 			this.txtScreenCGADSUB_AddSub_Descr.Size = new System.Drawing.Size(31, 17);
 			this.txtScreenCGADSUB_AddSub_Descr.TabIndex = 39;
 			this.txtScreenCGADSUB_AddSub_Descr.Text = "ADD";
+			// 
+			// label2193813
+			// 
+			this.label2193813.AutoSize = true;
+			this.label2193813.Location = new System.Drawing.Point(156, 174);
+			this.label2193813.Name = "label2193813";
+			this.label2193813.Size = new System.Drawing.Size(48, 13);
+			this.label2193813.TabIndex = 31;
+			this.label2193813.Text = "S.INTLC";
 			// 
 			// txtScreenCGADSUB_AddSub
 			// 
@@ -1284,7 +1467,7 @@
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(205, 12);
+			this.label22.Location = new System.Drawing.Point(205, 10);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(53, 13);
 			this.label22.TabIndex = 32;
@@ -1491,12 +1674,22 @@
 			this.groupBox1.Controls.Add(this.txtBG1SizeInTiles);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.txtBG1SizeBits);
-			this.groupBox1.Location = new System.Drawing.Point(0, 217);
+			this.groupBox1.Location = new System.Drawing.Point(2, 281);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(170, 208);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "BG";
+			// 
+			// txtBGPaletteInfo
+			// 
+			this.txtBGPaletteInfo.Location = new System.Drawing.Point(5, 181);
+			this.txtBGPaletteInfo.Multiline = true;
+			this.txtBGPaletteInfo.Name = "txtBGPaletteInfo";
+			this.txtBGPaletteInfo.ReadOnly = true;
+			this.txtBGPaletteInfo.Size = new System.Drawing.Size(155, 19);
+			this.txtBGPaletteInfo.TabIndex = 39;
+			this.txtBGPaletteInfo.Text = "256 colors from $FF to $FF";
 			// 
 			// rbBG4
 			// 
@@ -1747,175 +1940,6 @@
 			this.txtBG1SizeBits.TabIndex = 5;
 			this.txtBG1SizeBits.Text = "00";
 			// 
-			// groupBox4
-			// 
-			this.groupBox4.Controls.Add(this.radioButton6);
-			this.groupBox4.Controls.Add(this.check2x);
-			this.groupBox4.Controls.Add(this.radioButton15);
-			this.groupBox4.Controls.Add(this.radioButton14);
-			this.groupBox4.Controls.Add(this.comboDisplayType);
-			this.groupBox4.Controls.Add(this.radioButton1);
-			this.groupBox4.Controls.Add(this.radioButton2);
-			this.groupBox4.Controls.Add(this.radioButton13);
-			this.groupBox4.Controls.Add(this.radioButton3);
-			this.groupBox4.Controls.Add(this.radioButton4);
-			this.groupBox4.Controls.Add(this.radioButton5);
-			this.groupBox4.Controls.Add(this.radioButton10);
-			this.groupBox4.Location = new System.Drawing.Point(386, 0);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(166, 191);
-			this.groupBox4.TabIndex = 35;
-			this.groupBox4.TabStop = false;
-			// 
-			// radioButton6
-			// 
-			this.radioButton6.AutoSize = true;
-			this.radioButton6.Enabled = false;
-			this.radioButton6.Location = new System.Drawing.Point(56, 97);
-			this.radioButton6.Name = "radioButton6";
-			this.radioButton6.Size = new System.Drawing.Size(73, 17);
-			this.radioButton6.TabIndex = 49;
-			this.radioButton6.TabStop = true;
-			this.radioButton6.Text = "Mode7Ext";
-			this.radioButton6.UseVisualStyleBackColor = true;
-			// 
-			// check2x
-			// 
-			this.check2x.Appearance = System.Windows.Forms.Appearance.Button;
-			this.check2x.Location = new System.Drawing.Point(119, 8);
-			this.check2x.Name = "check2x";
-			this.check2x.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.check2x.Size = new System.Drawing.Size(39, 21);
-			this.check2x.TabIndex = 45;
-			this.check2x.Text = "1024";
-			this.toolTip1.SetToolTip(this.check2x, "Sets graphics viewport size to 1024 (unchecked is 512).\r\nContent will be scaled t" +
-        "o fill specified size");
-			this.check2x.UseVisualStyleBackColor = true;
-			this.check2x.CheckedChanged += new System.EventHandler(this.check2x_CheckedChanged);
-			// 
-			// radioButton15
-			// 
-			this.radioButton15.AutoSize = true;
-			this.radioButton15.Enabled = false;
-			this.radioButton15.Location = new System.Drawing.Point(56, 81);
-			this.radioButton15.Name = "radioButton15";
-			this.radioButton15.Size = new System.Drawing.Size(58, 17);
-			this.radioButton15.TabIndex = 33;
-			this.radioButton15.TabStop = true;
-			this.radioButton15.Text = "Mode7";
-			this.radioButton15.UseVisualStyleBackColor = true;
-			// 
-			// radioButton14
-			// 
-			this.radioButton14.AutoSize = true;
-			this.radioButton14.Enabled = false;
-			this.radioButton14.Location = new System.Drawing.Point(6, 98);
-			this.radioButton14.Name = "radioButton14";
-			this.radioButton14.Size = new System.Drawing.Size(45, 17);
-			this.radioButton14.TabIndex = 32;
-			this.radioButton14.TabStop = true;
-			this.radioButton14.Text = "OBJ";
-			this.radioButton14.UseVisualStyleBackColor = true;
-			// 
-			// comboDisplayType
-			// 
-			this.comboDisplayType.DisplayMember = "descr";
-			this.comboDisplayType.DropDownHeight = 200;
-			this.comboDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboDisplayType.FormattingEnabled = true;
-			this.comboDisplayType.IntegralHeight = false;
-			this.comboDisplayType.ItemHeight = 13;
-			this.comboDisplayType.Location = new System.Drawing.Point(6, 8);
-			this.comboDisplayType.Name = "comboDisplayType";
-			this.comboDisplayType.Size = new System.Drawing.Size(107, 21);
-			this.comboDisplayType.TabIndex = 18;
-			this.comboDisplayType.ValueMember = "type";
-			this.comboDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboDisplayType_SelectedIndexChanged);
-			// 
-			// radioButton1
-			// 
-			this.radioButton1.AutoSize = true;
-			this.radioButton1.Enabled = false;
-			this.radioButton1.Location = new System.Drawing.Point(6, 33);
-			this.radioButton1.Name = "radioButton1";
-			this.radioButton1.Size = new System.Drawing.Size(46, 17);
-			this.radioButton1.TabIndex = 19;
-			this.radioButton1.TabStop = true;
-			this.radioButton1.Text = "BG1";
-			this.radioButton1.UseVisualStyleBackColor = true;
-			// 
-			// radioButton2
-			// 
-			this.radioButton2.AutoSize = true;
-			this.radioButton2.Enabled = false;
-			this.radioButton2.Location = new System.Drawing.Point(6, 49);
-			this.radioButton2.Name = "radioButton2";
-			this.radioButton2.Size = new System.Drawing.Size(46, 17);
-			this.radioButton2.TabIndex = 20;
-			this.radioButton2.TabStop = true;
-			this.radioButton2.Text = "BG2";
-			this.radioButton2.UseVisualStyleBackColor = true;
-			// 
-			// radioButton13
-			// 
-			this.radioButton13.AutoSize = true;
-			this.radioButton13.Enabled = false;
-			this.radioButton13.Location = new System.Drawing.Point(56, 65);
-			this.radioButton13.Name = "radioButton13";
-			this.radioButton13.Size = new System.Drawing.Size(49, 17);
-			this.radioButton13.TabIndex = 31;
-			this.radioButton13.TabStop = true;
-			this.radioButton13.Text = "8bpp";
-			this.radioButton13.UseVisualStyleBackColor = true;
-			// 
-			// radioButton3
-			// 
-			this.radioButton3.AutoSize = true;
-			this.radioButton3.Enabled = false;
-			this.radioButton3.Location = new System.Drawing.Point(6, 65);
-			this.radioButton3.Name = "radioButton3";
-			this.radioButton3.Size = new System.Drawing.Size(46, 17);
-			this.radioButton3.TabIndex = 21;
-			this.radioButton3.TabStop = true;
-			this.radioButton3.Text = "BG3";
-			this.radioButton3.UseVisualStyleBackColor = true;
-			// 
-			// radioButton4
-			// 
-			this.radioButton4.AutoSize = true;
-			this.radioButton4.Enabled = false;
-			this.radioButton4.Location = new System.Drawing.Point(6, 81);
-			this.radioButton4.Name = "radioButton4";
-			this.radioButton4.Size = new System.Drawing.Size(46, 17);
-			this.radioButton4.TabIndex = 22;
-			this.radioButton4.TabStop = true;
-			this.radioButton4.Text = "BG4";
-			this.radioButton4.UseVisualStyleBackColor = true;
-			// 
-			// radioButton5
-			// 
-			this.radioButton5.AutoSize = true;
-			this.radioButton5.Enabled = false;
-			this.radioButton5.Location = new System.Drawing.Point(56, 33);
-			this.radioButton5.Name = "radioButton5";
-			this.radioButton5.Size = new System.Drawing.Size(49, 17);
-			this.radioButton5.TabIndex = 23;
-			this.radioButton5.TabStop = true;
-			this.radioButton5.Text = "2bpp";
-			this.radioButton5.UseVisualStyleBackColor = true;
-			// 
-			// radioButton10
-			// 
-			this.radioButton10.AutoSize = true;
-			this.radioButton10.Enabled = false;
-			this.radioButton10.Location = new System.Drawing.Point(56, 49);
-			this.radioButton10.Name = "radioButton10";
-			this.radioButton10.Size = new System.Drawing.Size(49, 17);
-			this.radioButton10.TabIndex = 28;
-			this.radioButton10.TabStop = true;
-			this.radioButton10.Text = "4bpp";
-			this.radioButton10.UseVisualStyleBackColor = true;
-			// 
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.paletteViewer);
@@ -1931,10 +1955,11 @@
 			this.tabctrlDetails.Controls.Add(this.tpPalette);
 			this.tabctrlDetails.Controls.Add(this.tpTile);
 			this.tabctrlDetails.Controls.Add(this.tpMapEntry);
-			this.tabctrlDetails.Location = new System.Drawing.Point(235, 214);
+			this.tabctrlDetails.Controls.Add(this.tpOBJ);
+			this.tabctrlDetails.Location = new System.Drawing.Point(300, 91);
 			this.tabctrlDetails.Name = "tabctrlDetails";
 			this.tabctrlDetails.SelectedIndex = 0;
-			this.tabctrlDetails.Size = new System.Drawing.Size(317, 120);
+			this.tabctrlDetails.Size = new System.Drawing.Size(214, 120);
 			this.tabctrlDetails.TabIndex = 0;
 			// 
 			// tpPalette
@@ -1952,7 +1977,7 @@
 			this.tpPalette.Location = new System.Drawing.Point(4, 22);
 			this.tpPalette.Name = "tpPalette";
 			this.tpPalette.Padding = new System.Windows.Forms.Padding(3);
-			this.tpPalette.Size = new System.Drawing.Size(309, 94);
+			this.tpPalette.Size = new System.Drawing.Size(206, 94);
 			this.tpPalette.TabIndex = 0;
 			this.tpPalette.Text = "Color";
 			this.tpPalette.UseVisualStyleBackColor = true;
@@ -2062,7 +2087,7 @@
 			this.tpTile.Location = new System.Drawing.Point(4, 22);
 			this.tpTile.Name = "tpTile";
 			this.tpTile.Padding = new System.Windows.Forms.Padding(3);
-			this.tpTile.Size = new System.Drawing.Size(309, 94);
+			this.tpTile.Size = new System.Drawing.Size(206, 94);
 			this.tpTile.TabIndex = 1;
 			this.tpTile.Text = "Tile";
 			this.tpTile.UseVisualStyleBackColor = true;
@@ -2084,7 +2109,7 @@
 			this.tpMapEntry.Controls.Add(this.viewerMapEntryTile);
 			this.tpMapEntry.Location = new System.Drawing.Point(4, 22);
 			this.tpMapEntry.Name = "tpMapEntry";
-			this.tpMapEntry.Size = new System.Drawing.Size(309, 94);
+			this.tpMapEntry.Size = new System.Drawing.Size(206, 94);
 			this.tpMapEntry.TabIndex = 2;
 			this.tpMapEntry.Text = "Map Entry";
 			this.tpMapEntry.UseVisualStyleBackColor = true;
@@ -2207,6 +2232,15 @@
 			this.txtMapEntryTileNum.TabIndex = 39;
 			this.txtMapEntryTileNum.Text = "$1024";
 			// 
+			// tpOBJ
+			// 
+			this.tpOBJ.Location = new System.Drawing.Point(4, 22);
+			this.tpOBJ.Name = "tpOBJ";
+			this.tpOBJ.Size = new System.Drawing.Size(206, 94);
+			this.tpOBJ.TabIndex = 3;
+			this.tpOBJ.Text = "OBJ";
+			this.tpOBJ.UseVisualStyleBackColor = true;
+			// 
 			// viewerPanel
 			// 
 			this.viewerPanel.AutoScroll = true;
@@ -2230,16 +2264,6 @@
 			this.messagetimer.Interval = 5000;
 			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
 			// 
-			// txtBGPaletteInfo
-			// 
-			this.txtBGPaletteInfo.Location = new System.Drawing.Point(5, 181);
-			this.txtBGPaletteInfo.Multiline = true;
-			this.txtBGPaletteInfo.Name = "txtBGPaletteInfo";
-			this.txtBGPaletteInfo.ReadOnly = true;
-			this.txtBGPaletteInfo.Size = new System.Drawing.Size(155, 19);
-			this.txtBGPaletteInfo.TabIndex = 39;
-			this.txtBGPaletteInfo.Text = "256 colors from $FF to $FF";
-			// 
 			// paletteViewer
 			// 
 			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
@@ -2249,6 +2273,7 @@
 			this.paletteViewer.TabIndex = 18;
 			this.paletteViewer.TabStop = false;
 			this.paletteViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseClick);
+			this.paletteViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseDown);
 			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
 			// 
 			// viewerTile
@@ -2281,6 +2306,15 @@
 			this.viewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseMove);
 			this.viewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseUp);
 			// 
+			// labelMemory
+			// 
+			this.labelMemory.AutoSize = true;
+			this.labelMemory.Location = new System.Drawing.Point(3, 2);
+			this.labelMemory.Name = "labelMemory";
+			this.labelMemory.Size = new System.Drawing.Size(176, 13);
+			this.labelMemory.TabIndex = 1;
+			this.labelMemory.Text = "Right-click an item to display it here.";
+			// 
 			// SNESGraphicsDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2299,22 +2333,22 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
+			this.groupFreeze.ResumeLayout(false);
+			this.pnGroupFreeze.ResumeLayout(false);
+			this.pnGroupFreeze.PerformLayout();
 			this.groupBox8.ResumeLayout(false);
 			this.groupBox8.PerformLayout();
-			this.groupBox7.ResumeLayout(false);
-			this.groupBox7.PerformLayout();
-			this.groupBox6.ResumeLayout(false);
-			this.groupBox6.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudScanline)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.sliderScanline)).EndInit();
+			this.groupBox6.ResumeLayout(false);
+			this.groupBox6.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			this.groupBox4.ResumeLayout(false);
-			this.groupBox4.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
 			this.tabctrlDetails.ResumeLayout(false);
 			this.tpPalette.ResumeLayout(false);
@@ -2384,17 +2418,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox txtBG1SizeBits;
 		private System.Windows.Forms.Label label19;
-		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.RadioButton radioButton15;
-		private System.Windows.Forms.RadioButton radioButton14;
 		private System.Windows.Forms.ComboBox comboDisplayType;
-		private System.Windows.Forms.RadioButton radioButton1;
-		private System.Windows.Forms.RadioButton radioButton2;
-		private System.Windows.Forms.RadioButton radioButton13;
-		private System.Windows.Forms.RadioButton radioButton3;
-		private System.Windows.Forms.RadioButton radioButton4;
-		private System.Windows.Forms.RadioButton radioButton5;
-		private System.Windows.Forms.RadioButton radioButton10;
 		private System.Windows.Forms.TrackBar sliderScanline;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private SNESGraphicsViewer paletteViewer;
@@ -2429,7 +2453,6 @@
 		private System.Windows.Forms.CheckBox checkScreenObjInterlace;
 		private System.Windows.Forms.Label label2193813;
 		private System.Windows.Forms.CheckBox checkScreenInterlace;
-		private System.Windows.Forms.RadioButton radioButton6;
 		private System.Windows.Forms.TextBox txtScreenCGWSEL_ColorMask;
 		private System.Windows.Forms.Label label22;
 		private System.Windows.Forms.Label label2893719831;
@@ -2443,10 +2466,7 @@
 		private System.Windows.Forms.Panel pnBackdropColor;
 		private System.Windows.Forms.CheckBox checkBackdropColor;
 		private System.Windows.Forms.Label label24;
-		private System.Windows.Forms.GroupBox groupBox6;
-		private System.Windows.Forms.Label labelClipboard;
 		private System.Windows.Forms.Timer messagetimer;
-		private System.Windows.Forms.GroupBox groupBox7;
 		private System.Windows.Forms.TextBox txtOBSELT1OfsBits;
 		private System.Windows.Forms.TextBox txtOBSELT1OfsDescr;
 		private System.Windows.Forms.Label label30;
@@ -2458,7 +2478,6 @@
 		private System.Windows.Forms.TextBox txtOBSELSizeDescr;
 		private System.Windows.Forms.Label label28;
 		private System.Windows.Forms.ComboBox comboPalette;
-		private System.Windows.Forms.GroupBox groupBox8;
 		private System.Windows.Forms.Label lblTS;
 		private System.Windows.Forms.Label lblTM;
 		private System.Windows.Forms.Label label32;
@@ -2517,5 +2536,23 @@
 		private System.Windows.Forms.Label label40;
 		private System.Windows.Forms.Label label39;
 		private System.Windows.Forms.TextBox txtBGPaletteInfo;
+		private System.Windows.Forms.GroupBox groupBox6;
+		private System.Windows.Forms.Label labelClipboard;
+		private System.Windows.Forms.Label label47;
+		private System.Windows.Forms.TabPage tpOBJ;
+		private System.Windows.Forms.GroupBox groupFreeze;
+		private System.Windows.Forms.GroupBox groupBox8;
+		private System.Windows.Forms.RadioButton radioButton6;
+		private System.Windows.Forms.RadioButton radioButton1;
+		private System.Windows.Forms.RadioButton radioButton10;
+		private System.Windows.Forms.RadioButton radioButton15;
+		private System.Windows.Forms.RadioButton radioButton5;
+		private System.Windows.Forms.RadioButton radioButton14;
+		private System.Windows.Forms.RadioButton radioButton4;
+		private System.Windows.Forms.RadioButton radioButton3;
+		private System.Windows.Forms.RadioButton radioButton13;
+		private System.Windows.Forms.RadioButton radioButton2;
+		private System.Windows.Forms.Panel pnGroupFreeze;
+		private System.Windows.Forms.Label labelMemory;
 	}
 }
