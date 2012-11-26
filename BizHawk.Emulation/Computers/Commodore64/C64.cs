@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 			Init(Region.PAL);
+			CoreOutputComm.UsesDriveLed = true;
 		}
 
 		// internal variables
@@ -132,6 +133,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			{
 				LagCount++;
 			}
+
+			CoreOutputComm.DriveLED = DriveLED;
 		}
 
 		public byte[] SaveStateBinary()
