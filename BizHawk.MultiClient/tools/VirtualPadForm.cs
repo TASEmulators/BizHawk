@@ -100,6 +100,8 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(Pads[2] as Control);
 					break;
 				case "PCE":
+				case "PCECD":
+				case "SGX":
 					VirtualPadPCE pcepad1 = new VirtualPadPCE();
 					pcepad1.Location = new Point(8, 19);
 					pcepad1.Controller = "P1";
