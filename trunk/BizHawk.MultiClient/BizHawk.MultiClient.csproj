@@ -140,6 +140,9 @@
       <DependentUpon>JMDForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AVOut\JMDWriter.cs" />
+    <Compile Include="AVOut\NumericTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="AVOut\NutMuxer.cs" />
     <Compile Include="AVOut\NutWriter.cs" />
     <Compile Include="AVOut\VideoWriterChooserForm.cs">

@@ -49,6 +49,8 @@ namespace BizHawk.MultiClient
 		Emulation.Sound.MetaspuSoundProvider DumpProxy = null;
 		/// <summary>audio timekeeping for video dumping</summary>
 		long SoundRemainder = 0;
+		int avwriter_resizew;
+		int avwriter_resizeh;
 
 		//runloop control
 		bool exit;
@@ -2649,10 +2651,37 @@ namespace BizHawk.MultiClient
 
 					try
 					{
-						if (Global.Config.AVI_CaptureOSD)
-							CurrAviWriter.AddFrame(new AVOut.BmpVideoProvder(CaptureOSD()));
+						IVideoProvider output;
+						if (avwriter_resizew > 0 && avwriter_resizeh > 0)
+						{
+							Bitmap bmpin;
+							if (Global.Config.AVI_CaptureOSD)
+								bmpin = CaptureOSD();
+							else
+							{
+								bmpin = new Bitmap(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, PixelFormat.Format32bppArgb);
+								var lockdata = bmpin.LockBits(new Rectangle(0, 0, bmpin.Width, bmpin.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+								System.Runtime.InteropServices.Marshal.Copy(Global.Emulator.VideoProvider.GetVideoBuffer(), 0, lockdata.Scan0, bmpin.Width * bmpin.Height);
+								bmpin.UnlockBits(lockdata);
+							}
+							Bitmap bmpout = new Bitmap(avwriter_resizew, avwriter_resizeh, PixelFormat.Format32bppArgb);
+							using (Graphics g = Graphics.FromImage(bmpout))
+								g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+							bmpin.Dispose();
+							output = new AVOut.BmpVideoProvder(bmpout);
+						}
 						else
-							CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+						{
+							if (Global.Config.AVI_CaptureOSD)
+								output = new AVOut.BmpVideoProvder(CaptureOSD());
+							else
+								output = Global.Emulator.VideoProvider;
+						}
+
+						CurrAviWriter.AddFrame(output);
+						if (output is AVOut.BmpVideoProvder)
+							(output as AVOut.BmpVideoProvder).Dispose();
+
 						CurrAviWriter.AddSamples(temp);
 					}
 					catch (Exception e)
@@ -3725,7 +3754,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm);
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm, out avwriter_resizew, out avwriter_resizeh);
 			}
 
 			foreach (var w in writers)
@@ -3746,7 +3775,10 @@ namespace BizHawk.MultiClient
 			try
 			{
 				aw.SetMovieParameters(Global.Emulator.CoreOutputComm.VsyncNum, Global.Emulator.CoreOutputComm.VsyncDen);
-				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+				if (avwriter_resizew > 0 && avwriter_resizeh > 0)
+					aw.SetVideoParameters(avwriter_resizew, avwriter_resizeh);
+				else
+					aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
 				aw.SetAudioParameters(44100, 2, 16);
 
 				// select codec token

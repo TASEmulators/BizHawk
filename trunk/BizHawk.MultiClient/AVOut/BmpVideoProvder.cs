@@ -9,12 +9,21 @@ namespace BizHawk.MultiClient.AVOut
 	/// <summary>
 	/// an IVideoProivder wrapping a Bitmap
 	/// </summary>
-	public class BmpVideoProvder : IVideoProvider
+	public class BmpVideoProvder : IVideoProvider, IDisposable
 	{
 		Bitmap bmp;
 		public BmpVideoProvder(Bitmap bmp)
 		{
 			this.bmp = bmp;
+		}
+
+		public void Dispose()
+		{
+			if (bmp != null)
+			{
+				bmp.Dispose();
+				bmp = null;
+			}
 		}
 
 		public int[] GetVideoBuffer()
