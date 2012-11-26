@@ -195,13 +195,23 @@ namespace BizHawk.MultiClient
 					_ataripad1.Location = new Point(8, 159);
 					_ataripad1.Controller = "P1";
 					VirtualPadA26 _ataripad2 = new VirtualPadA26();
-					_ataripad2.Location = new Point(188, 159);
+					_ataripad2.Location = new Point(218, 159);
 					_ataripad2.Controller = "P2";
 					Pads.Add(_ataripad1);
 					Pads.Add(_ataripad2);
 					ControllerBox.Controls.Add(_ataripad1);
 					ControllerBox.Controls.Add(_ataripad2);
 					break;
+			}
+
+			//Hack for now
+			if (Global.Emulator.SystemId == "C64")
+			{
+				if (this.Width < 505)
+				{
+					this.Width = 505;
+					ControllerBox.Width = this.Width - 37;
+				}
 			}
 		}
 
