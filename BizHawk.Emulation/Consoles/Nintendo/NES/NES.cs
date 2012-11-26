@@ -32,6 +32,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ControllerDefinition.BoolButtons.Add("FDS Eject");
 				for (int i = 0; i < b.NumSides; i++)
 					ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
+
+				CoreOutputComm.UsesDriveLed = true;
+				b.SetDriveLightCallback((val) => CoreOutputComm.DriveLED = val);
 			}
 			if (vs_io)
 			{

@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				currentside = tmp == 1234567 ? null : (int?)tmp;
 			}
 			for (int i = 0; i < NumSides; i++)
-				ser.Sync("diskdiffs" + i, ref diskdiffs[i], false);
+				ser.Sync("diskdiffs" + i, ref diskdiffs[i], true);
 			ser.Sync("_timerirq", ref _timerirq);
 			ser.Sync("_diskirq", ref _diskirq);
 			ser.Sync("diskenable", ref diskenable);
@@ -79,6 +79,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SetIRQ();
 		}
 
+		public void SetDriveLightCallback(Action<bool> callback)
+		{
+			diskdrive.DriveLightCallback = callback;
+		}
 
 		/// <summary>
 		/// should only be called once, before emulation begins
@@ -140,7 +144,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte[] buf = new byte[65500];
 			Buffer.BlockCopy(diskimage, 16 + side * 65500, buf, 0, 65500);
 			diskdrive.InsertBrokenImage(buf, false /*true*/);
-			if (diskdiffs[side] != null)
+			if (diskdiffs[side] != null && diskdiffs[side].Length > 0)
 				diskdrive.ApplyDiff(diskdiffs[side]);
 			currentside = side;
 		}
