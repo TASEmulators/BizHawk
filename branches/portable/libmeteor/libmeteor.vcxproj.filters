@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\audio">
+      <UniqueIdentifier>{93df073d-6997-45f7-b85f-a285bca7b310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{f134ab18-d00a-4652-ad25-5179aac22dbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\disassembler">
+      <UniqueIdentifier>{b152e4ad-8658-48a8-a214-3d9d1282fc70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\syg">
+      <UniqueIdentifier>{63c54b4d-45ec-46f4-923e-38f486e19909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ameteor">
+      <UniqueIdentifier>{e3ba08fe-cf72-4aed-857c-697b3e437472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ameteor\audio">
+      <UniqueIdentifier>{486541a1-445b-4012-8c31-218e65ea1e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ameteor\graphics">
+      <UniqueIdentifier>{66d5a4ba-681b-448c-8912-ecbb110d4896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ameteor\disassembler">
+      <UniqueIdentifier>{a989399f-ba01-4804-ae68-ba5f363a2f9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cinterface">
+      <UniqueIdentifier>{05542396-9b85-441b-beb8-8c49f126a881}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\ameteor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\bios.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cartmem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\clock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cpu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dma.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\eeprom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\flash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\interpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\interpreter_arm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\interpreter_thumb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\keypad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\lcd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\dsound.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\sound1.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\sound2.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\sound4.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\speaker.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\bglayer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\object.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\objects.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\renderer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\graphics\screen.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disassembler\argimmediate.cpp">
+      <Filter>Source Files\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disassembler\argmulregisters.cpp">
+      <Filter>Source Files\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disassembler\argpsr.cpp">
+      <Filter>Source Files\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disassembler\argregister.cpp">
+      <Filter>Source Files\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disassembler\argrelative.cpp">
+      <Filter>Source Files\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disassembler\argshift.cpp">
+      <Filter>Source Files\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disassembler\arguimmediate.cpp">
+      <Filter>Source Files\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disassembler\arguments.cpp">
+      <Filter>Source Files\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disassembler\instruction.cpp">
+      <Filter>Source Files\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="cinterface.cpp">
+      <Filter>Source Files\cinterface</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ameteor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\syg\signal.hpp">
+      <Filter>Header Files\syg</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\bios.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\cartmem.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\clock.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\cpu.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\dma.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\eeprom.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\flash.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\interpreter.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\io.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\keypad.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\lcd.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\memory.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\sound.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\sram.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\swap.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\timer.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\audio\dsound.hpp">
+      <Filter>Header Files\ameteor\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\audio\sound1.hpp">
+      <Filter>Header Files\ameteor\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\audio\sound2.hpp">
+      <Filter>Header Files\ameteor\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\audio\sound4.hpp">
+      <Filter>Header Files\ameteor\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\audio\speaker.hpp">
+      <Filter>Header Files\ameteor\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\graphics\bglayer.hpp">
+      <Filter>Header Files\ameteor\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\graphics\object.hpp">
+      <Filter>Header Files\ameteor\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\graphics\objects.hpp">
+      <Filter>Header Files\ameteor\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\graphics\renderer.hpp">
+      <Filter>Header Files\ameteor\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\graphics\screen.hpp">
+      <Filter>Header Files\ameteor\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\argimmediate.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\argmulregisters.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\argpsr.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\argregister.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\argrelative.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\argshift.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\arguimmediate.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\argument.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\arguments.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ameteor\disassembler\instruction.hpp">
+      <Filter>Header Files\ameteor\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cpu_globals.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\debug.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\globals.hpp">
+      <Filter>Header Files\ameteor</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

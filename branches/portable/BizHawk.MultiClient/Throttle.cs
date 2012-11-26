@@ -44,7 +44,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					return Global.Config.LimitFramerate; 
+					return Global.Config.ClockThrottle; 
 				}
 			}
 		}

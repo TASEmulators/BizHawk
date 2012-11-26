@@ -78,17 +78,38 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Buffer.cs" />
+    <Compile Include="Computers\Commodore64\1541.cs" />
     <Compile Include="Computers\Commodore64\C64.core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
+    <Compile Include="Computers\Commodore64\C64.PeekPoke.cs" />
     <Compile Include="Computers\Commodore64\Cartridge.cs" />
     <Compile Include="Computers\Commodore64\CartridgeMappers.cs" />
     <Compile Include="Computers\Commodore64\Cia.cs" />
+    <Compile Include="Computers\Commodore64\CiaState.cs" />
+    <Compile Include="Computers\Commodore64\D64.cs" />
     <Compile Include="Computers\Commodore64\DataPort.cs" />
+    <Compile Include="Computers\Commodore64\Disk.cs" />
+    <Compile Include="Computers\Commodore64\G64.cs" />
     <Compile Include="Computers\Commodore64\IMedia.cs" />
+    <Compile Include="Computers\Commodore64\Input.cs" />
     <Compile Include="Computers\Commodore64\PRGFile.cs" />
     <Compile Include="Computers\Commodore64\MemBus.cs" />
+    <Compile Include="Computers\Commodore64\Savestate.cs" />
+    <Compile Include="Computers\Commodore64\SerialCable.cs" />
     <Compile Include="Computers\Commodore64\Sid.cs" />
+    <Compile Include="Computers\Commodore64\SidEnvelopeGenerator.cs" />
+    <Compile Include="Computers\Commodore64\SidSoundProvider.cs" />
+    <Compile Include="Computers\Commodore64\SidState.cs" />
+    <Compile Include="Computers\Commodore64\SidWaveformCalculator.cs" />
+    <Compile Include="Computers\Commodore64\SidWaveformGenerator.cs" />
+    <Compile Include="Computers\Commodore64\Timing.cs" />
+    <Compile Include="Computers\Commodore64\Via.cs" />
     <Compile Include="Computers\Commodore64\VicII.cs" />
+    <Compile Include="Computers\Commodore64\VicIIPipeline.cs" />
+    <Compile Include="Computers\Commodore64\VicIIPipelineBuilder.cs" />
+    <Compile Include="Computers\Commodore64\VicIIVideoProvider.cs" />
+    <Compile Include="Computers\Commodore64\VicIIRegs.cs" />
+    <Compile Include="Computers\Commodore64\VicState.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />
@@ -184,12 +205,10 @@
     <Compile Include="Consoles\Atari\7800\EMU7800\TIASound.cs" />
     <Compile Include="Consoles\Atari\7800\EMU7800\TIATables.cs" />
     <Compile Include="Consoles\Calculator\TI83.cs" />
-    <Compile Include="Consoles\Coleco\ColecoVision.Core.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
-    <Compile Include="Consoles\Coleco\VDP.cs" />
-    <Compile Include="Consoles\Coleco\VDP.Mode4.cs" />
-    <Compile Include="Consoles\Coleco\VDP.ModeTMS.cs" />
-    <Compile Include="Consoles\Coleco\VDP.Tables.cs" />
+    <Compile Include="Consoles\Coleco\Input.cs" />
+    <Compile Include="Consoles\Coleco\MemoryMap.cs" />
+    <Compile Include="Consoles\Coleco\TMS9918A.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
@@ -198,7 +217,10 @@
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
@@ -303,6 +325,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper197.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper205.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper245.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper249.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper250.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\NES-QJ.cs" />
@@ -365,6 +388,7 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
     <Compile Include="Consoles\Nintendo\NES\Unif.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\SnesColors.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
     <Compile Include="Consoles\PC Engine\ArcadeCard.cs" />
@@ -424,6 +448,7 @@
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\GameInfo.cs" />
+    <Compile Include="DiscSystem\Blobs\Blob_ECM.cs" />
     <Compile Include="DiscSystem\Blobs\Blob_WaveFile.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -449,6 +474,7 @@
     <Compile Include="DiscSystem\ECM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DiscSystem\GPL_ECM.cs" />
     <Compile Include="DiscSystem\Subcode.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -16,6 +16,7 @@ using BizHawk.Emulation.Consoles.Coleco;
 using System.Collections.Generic;
 using BizHawk.Emulation.Consoles.Intellivision;
 using BizHawk.Emulation.Consoles.GB;
+using BizHawk.Emulation.Consoles.Nintendo.GBA;
 using BizHawk.Emulation.Computers.Commodore64;
 
 namespace BizHawk.MultiClient
@@ -23,7 +24,7 @@ namespace BizHawk.MultiClient
 
 	public partial class MainForm : Form
 	{
-		public bool INTERIM = false;
+		public bool INTERIM = true;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
 		public const string RELEASEDATE = "October 20, 2012";
 		private Control renderTarget;
@@ -311,6 +312,8 @@ namespace BizHawk.MultiClient
 				LoadNESDebugger();
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 				LoadGameGenieEC();
+			if (Global.Config.AutoLoadGBGPUView && Global.Emulator is Gameboy)
+				LoadGBGPUView();
 
 			if (Global.Config.AutoloadTAStudio)
 			{
@@ -556,8 +559,8 @@ namespace BizHawk.MultiClient
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
 				}
 
-				if (!EmulatorPaused)
-					Global.ClickyVirtualPadController.FrameTick();
+				//if (!EmulatorPaused)
+					//Global.ClickyVirtualPadController.FrameTick();
 
 #if WINDOWS
                     LuaConsole1.ResumeScripts(false);
@@ -684,7 +687,7 @@ namespace BizHawk.MultiClient
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
 				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie" }
+				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad" }
 		};
 
 		private void InitControls()
@@ -755,6 +758,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Next Slot", Global.Config.NextSlot);
 			controls.BindMulti("Ram Watch", Global.Config.RamWatch);
 			controls.BindMulti("TASTudio", Global.Config.TASTudio);
+			controls.BindMulti("Virtual Pad", Global.Config.OpenVirtualPadBinding);
 			controls.BindMulti("Ram Search", Global.Config.RamSearch);
 			controls.BindMulti("Ram Poke", Global.Config.RamPoke);
 			controls.BindMulti("Hex Editor", Global.Config.HexEditor);
@@ -907,9 +911,9 @@ namespace BizHawk.MultiClient
 
 			nesControls.BindMulti("Reset", Global.Config.NESConsoleButtons.Reset);
 			nesControls.BindMulti("Power", Global.Config.NESConsoleButtons.Power);
-			nesControls.BindMulti("FDS Eject", Global.Config.NESConsoleButtons.FDS_Eject);
-			nesControls.BindMulti("VS Coin 1", Global.Config.NESConsoleButtons.VS_Coin_1);
-			nesControls.BindMulti("VS Coin 2", Global.Config.NESConsoleButtons.VS_Coin_2);
+			//nesControls.BindMulti("FDS Eject", Global.Config.NESConsoleButtons.FDS_Eject);
+			//nesControls.BindMulti("VS Coin 1", Global.Config.NESConsoleButtons.VS_Coin_1);
+			//nesControls.BindMulti("VS Coin 2", Global.Config.NESConsoleButtons.VS_Coin_2);
 
 			Global.NESControls = nesControls;
 
@@ -952,6 +956,34 @@ namespace BizHawk.MultiClient
 			agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
 			agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
 			Global.AutofireGBControls = agbControls;
+
+			var gbaControls = new Controller(GBA.GBAController);
+			gbaControls.BindMulti("Up", Global.Config.GBAController[0].Up);
+			gbaControls.BindMulti("Down", Global.Config.GBAController[0].Down);
+			gbaControls.BindMulti("Left", Global.Config.GBAController[0].Left);
+			gbaControls.BindMulti("Right", Global.Config.GBAController[0].Right);
+			gbaControls.BindMulti("A", Global.Config.GBAController[0].A);
+			gbaControls.BindMulti("B", Global.Config.GBAController[0].B);
+			gbaControls.BindMulti("Select", Global.Config.GBAController[0].Select);
+			gbaControls.BindMulti("Start", Global.Config.GBAController[0].Start);
+			gbaControls.BindMulti("L", Global.Config.GBAController[0].L);
+			gbaControls.BindMulti("R", Global.Config.GBAController[0].R);
+			gbaControls.BindMulti("Power", Global.Config.GBAController[0].Power);
+			Global.GBAControls = gbaControls;
+
+			var agbaControls = new AutofireController(GBA.GBAController);
+			agbaControls.BindMulti("Up", Global.Config.GBAAutoController[0].Up);
+			agbaControls.BindMulti("Down", Global.Config.GBAAutoController[0].Down);
+			agbaControls.BindMulti("Left", Global.Config.GBAAutoController[0].Left);
+			agbaControls.BindMulti("Right", Global.Config.GBAAutoController[0].Right);
+			agbaControls.BindMulti("A", Global.Config.GBAAutoController[0].A);
+			agbaControls.BindMulti("B", Global.Config.GBAAutoController[0].B);
+			agbaControls.BindMulti("Select", Global.Config.GBAAutoController[0].Select);
+			agbaControls.BindMulti("Start", Global.Config.GBAAutoController[0].Start);
+			agbaControls.BindMulti("L", Global.Config.GBAAutoController[0].L);
+			agbaControls.BindMulti("R", Global.Config.GBAAutoController[0].R);
+			agbaControls.BindMulti("Power", Global.Config.GBAAutoController[0].Power);
+			Global.AutofireGBAControls = agbaControls;
 
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenesisController[0].Up);
@@ -1010,26 +1042,84 @@ namespace BizHawk.MultiClient
 			Global.AutofireAtari2600Controls = autofireA2600Controls;
 
 			var colecoControls = new Controller(ColecoVision.ColecoVisionControllerDefinition);
-			colecoControls.BindMulti("P1 Up", Global.Config.ColecoController.Up);
-			colecoControls.BindMulti("P1 Left", Global.Config.ColecoController.Left);
-			colecoControls.BindMulti("P1 Right", Global.Config.ColecoController.Right);
-			colecoControls.BindMulti("P1 Down", Global.Config.ColecoController.Down);
-			colecoControls.BindMulti("P1 L1", Global.Config.ColecoController.L1);
-			colecoControls.BindMulti("P1 L2", Global.Config.ColecoController.L2);
-			colecoControls.BindMulti("P1 R1", Global.Config.ColecoController.R1);
-			colecoControls.BindMulti("P1 R2", Global.Config.ColecoController.R2);
-			colecoControls.BindMulti("P1 Key1", Global.Config.ColecoController._1);
-			colecoControls.BindMulti("P1 Key2", Global.Config.ColecoController._2);
-			colecoControls.BindMulti("P1 Key3", Global.Config.ColecoController._3);
-			colecoControls.BindMulti("P1 Key4", Global.Config.ColecoController._4);
-			colecoControls.BindMulti("P1 Key5", Global.Config.ColecoController._5);
-			colecoControls.BindMulti("P1 Key6", Global.Config.ColecoController._6);
-			colecoControls.BindMulti("P1 Key7", Global.Config.ColecoController._7);
-			colecoControls.BindMulti("P1 Key8", Global.Config.ColecoController._8);
-			colecoControls.BindMulti("P1 Key9", Global.Config.ColecoController._9);
-			colecoControls.BindMulti("P1 Star", Global.Config.ColecoController.Star);
-			colecoControls.BindMulti("P1 Pound", Global.Config.ColecoController.Pound);
+			colecoControls.BindMulti("P1 Up", Global.Config.ColecoController[0].Up);
+			colecoControls.BindMulti("P1 Left", Global.Config.ColecoController[0].Left);
+			colecoControls.BindMulti("P1 Right", Global.Config.ColecoController[0].Right);
+			colecoControls.BindMulti("P1 Down", Global.Config.ColecoController[0].Down);
+			colecoControls.BindMulti("P1 L", Global.Config.ColecoController[0].L);
+			colecoControls.BindMulti("P1 R", Global.Config.ColecoController[0].R);
+			colecoControls.BindMulti("P1 Key0", Global.Config.ColecoController[0]._0);
+			colecoControls.BindMulti("P1 Key1", Global.Config.ColecoController[0]._1);
+			colecoControls.BindMulti("P1 Key2", Global.Config.ColecoController[0]._2);
+			colecoControls.BindMulti("P1 Key3", Global.Config.ColecoController[0]._3);
+			colecoControls.BindMulti("P1 Key4", Global.Config.ColecoController[0]._4);
+			colecoControls.BindMulti("P1 Key5", Global.Config.ColecoController[0]._5);
+			colecoControls.BindMulti("P1 Key6", Global.Config.ColecoController[0]._6);
+			colecoControls.BindMulti("P1 Key7", Global.Config.ColecoController[0]._7);
+			colecoControls.BindMulti("P1 Key8", Global.Config.ColecoController[0]._8);
+			colecoControls.BindMulti("P1 Key9", Global.Config.ColecoController[0]._9);
+			colecoControls.BindMulti("P1 Star", Global.Config.ColecoController[0].Star);
+			colecoControls.BindMulti("P1 Pound", Global.Config.ColecoController[0].Pound);
+
+			colecoControls.BindMulti("P2 Up", Global.Config.ColecoController[1].Up);
+			colecoControls.BindMulti("P2 Left", Global.Config.ColecoController[1].Left);
+			colecoControls.BindMulti("P2 Right", Global.Config.ColecoController[1].Right);
+			colecoControls.BindMulti("P2 Down", Global.Config.ColecoController[1].Down);
+			colecoControls.BindMulti("P2 L", Global.Config.ColecoController[1].L);
+			colecoControls.BindMulti("P2 R", Global.Config.ColecoController[1].R);
+			colecoControls.BindMulti("P2 Key0", Global.Config.ColecoController[1]._0);
+			colecoControls.BindMulti("P2 Key1", Global.Config.ColecoController[1]._1);
+			colecoControls.BindMulti("P2 Key2", Global.Config.ColecoController[1]._2);
+			colecoControls.BindMulti("P2 Key3", Global.Config.ColecoController[1]._3);
+			colecoControls.BindMulti("P2 Key4", Global.Config.ColecoController[1]._4);
+			colecoControls.BindMulti("P2 Key5", Global.Config.ColecoController[1]._5);
+			colecoControls.BindMulti("P2 Key6", Global.Config.ColecoController[1]._6);
+			colecoControls.BindMulti("P2 Key7", Global.Config.ColecoController[1]._7);
+			colecoControls.BindMulti("P2 Key8", Global.Config.ColecoController[1]._8);
+			colecoControls.BindMulti("P2 Key9", Global.Config.ColecoController[1]._9);
+			colecoControls.BindMulti("P2 Star", Global.Config.ColecoController[1].Star);
+			colecoControls.BindMulti("P2 Pound", Global.Config.ColecoController[1].Pound);
 			Global.ColecoControls = colecoControls;
+
+			var acolecoControls = new AutofireController(ColecoVision.ColecoVisionControllerDefinition);
+			acolecoControls.BindMulti("P1 Up", Global.Config.ColecoAutoController[0].Up);
+			acolecoControls.BindMulti("P1 Left", Global.Config.ColecoAutoController[0].Left);
+			acolecoControls.BindMulti("P1 Right", Global.Config.ColecoAutoController[0].Right);
+			acolecoControls.BindMulti("P1 Down", Global.Config.ColecoAutoController[0].Down);
+			acolecoControls.BindMulti("P1 L", Global.Config.ColecoAutoController[0].L);
+			acolecoControls.BindMulti("P1 R", Global.Config.ColecoAutoController[0].R);
+			acolecoControls.BindMulti("P1 Key0", Global.Config.ColecoAutoController[0]._0);
+			acolecoControls.BindMulti("P1 Key1", Global.Config.ColecoAutoController[0]._1);
+			acolecoControls.BindMulti("P1 Key2", Global.Config.ColecoAutoController[0]._2);
+			acolecoControls.BindMulti("P1 Key3", Global.Config.ColecoAutoController[0]._3);
+			acolecoControls.BindMulti("P1 Key4", Global.Config.ColecoAutoController[0]._4);
+			acolecoControls.BindMulti("P1 Key5", Global.Config.ColecoAutoController[0]._5);
+			acolecoControls.BindMulti("P1 Key6", Global.Config.ColecoAutoController[0]._6);
+			acolecoControls.BindMulti("P1 Key7", Global.Config.ColecoAutoController[0]._7);
+			acolecoControls.BindMulti("P1 Key8", Global.Config.ColecoAutoController[0]._8);
+			acolecoControls.BindMulti("P1 Key9", Global.Config.ColecoAutoController[0]._9);
+			acolecoControls.BindMulti("P1 Star", Global.Config.ColecoAutoController[0].Star);
+			acolecoControls.BindMulti("P1 Pound", Global.Config.ColecoController[0].Pound);
+
+			acolecoControls.BindMulti("P2 Up", Global.Config.ColecoAutoController[1].Up);
+			acolecoControls.BindMulti("P2 Left", Global.Config.ColecoAutoController[1].Left);
+			acolecoControls.BindMulti("P2 Right", Global.Config.ColecoAutoController[1].Right);
+			acolecoControls.BindMulti("P2 Down", Global.Config.ColecoAutoController[1].Down);
+			acolecoControls.BindMulti("P2 L", Global.Config.ColecoAutoController[1].L);
+			acolecoControls.BindMulti("P2 R", Global.Config.ColecoAutoController[1].R);
+			acolecoControls.BindMulti("P2 Key0", Global.Config.ColecoAutoController[1]._0);
+			acolecoControls.BindMulti("P2 Key1", Global.Config.ColecoAutoController[1]._1);
+			acolecoControls.BindMulti("P2 Key2", Global.Config.ColecoAutoController[1]._2);
+			acolecoControls.BindMulti("P2 Key3", Global.Config.ColecoAutoController[1]._3);
+			acolecoControls.BindMulti("P2 Key4", Global.Config.ColecoAutoController[1]._4);
+			acolecoControls.BindMulti("P2 Key5", Global.Config.ColecoAutoController[1]._5);
+			acolecoControls.BindMulti("P2 Key6", Global.Config.ColecoAutoController[1]._6);
+			acolecoControls.BindMulti("P2 Key7", Global.Config.ColecoAutoController[1]._7);
+			acolecoControls.BindMulti("P2 Key8", Global.Config.ColecoAutoController[1]._8);
+			acolecoControls.BindMulti("P2 Key9", Global.Config.ColecoAutoController[1]._9);
+			acolecoControls.BindMulti("P2 Star", Global.Config.ColecoAutoController[1].Star);
+			acolecoControls.BindMulti("P2 Pound", Global.Config.ColecoController[1].Pound);
+			Global.AutofireColecoControls = acolecoControls;
 
 			var TI83Controls = new Controller(TI83.TI83Controller);
 			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0);
@@ -1096,6 +1186,77 @@ namespace BizHawk.MultiClient
 			CommodoreControls.BindMulti("P2 Right", Global.Config.C64Joysticks[1].Right);
 			CommodoreControls.BindMulti("P2 Down", Global.Config.C64Joysticks[1].Down);
 			CommodoreControls.BindMulti("P2 Button", Global.Config.C64Joysticks[1].Button);
+
+			CommodoreControls.BindMulti("Key F1", Global.Config.C64Keyboard.F1);
+			CommodoreControls.BindMulti("Key F3", Global.Config.C64Keyboard.F3);
+			CommodoreControls.BindMulti("Key F5", Global.Config.C64Keyboard.F5);
+			CommodoreControls.BindMulti("Key F7", Global.Config.C64Keyboard.F7);
+			CommodoreControls.BindMulti("Key Left Arrow", Global.Config.C64Keyboard.Left_Arrow);
+			CommodoreControls.BindMulti("Key 1", Global.Config.C64Keyboard._1);
+			CommodoreControls.BindMulti("Key 2", Global.Config.C64Keyboard._2);
+			CommodoreControls.BindMulti("Key 3", Global.Config.C64Keyboard._3);
+			CommodoreControls.BindMulti("Key 4", Global.Config.C64Keyboard._4);
+			CommodoreControls.BindMulti("Key 5", Global.Config.C64Keyboard._5);
+			CommodoreControls.BindMulti("Key 6", Global.Config.C64Keyboard._6);
+			CommodoreControls.BindMulti("Key 7", Global.Config.C64Keyboard._7);
+			CommodoreControls.BindMulti("Key 8", Global.Config.C64Keyboard._8);
+			CommodoreControls.BindMulti("Key 9", Global.Config.C64Keyboard._9);
+			CommodoreControls.BindMulti("Key 0", Global.Config.C64Keyboard._0);
+			CommodoreControls.BindMulti("Key Plus", Global.Config.C64Keyboard.Plus);
+			CommodoreControls.BindMulti("Key Minus", Global.Config.C64Keyboard.Minus);
+			CommodoreControls.BindMulti("Key Pound", Global.Config.C64Keyboard.Pound);
+			CommodoreControls.BindMulti("Key Clear/Home", Global.Config.C64Keyboard.Clear_Home);
+			CommodoreControls.BindMulti("Key Insert/Delete", Global.Config.C64Keyboard.Insert_Delete);
+			CommodoreControls.BindMulti("Key Control", Global.Config.C64Keyboard.Control);
+			CommodoreControls.BindMulti("Key Q", Global.Config.C64Keyboard.Q);
+			CommodoreControls.BindMulti("Key W", Global.Config.C64Keyboard.W);
+			CommodoreControls.BindMulti("Key E", Global.Config.C64Keyboard.E);
+			CommodoreControls.BindMulti("Key R", Global.Config.C64Keyboard.R);
+			CommodoreControls.BindMulti("Key T", Global.Config.C64Keyboard.T);
+			CommodoreControls.BindMulti("Key Y", Global.Config.C64Keyboard.Y);
+			CommodoreControls.BindMulti("Key U", Global.Config.C64Keyboard.U);
+			CommodoreControls.BindMulti("Key I", Global.Config.C64Keyboard.I);
+			CommodoreControls.BindMulti("Key O", Global.Config.C64Keyboard.O);
+			CommodoreControls.BindMulti("Key P", Global.Config.C64Keyboard.P);
+			CommodoreControls.BindMulti("Key At", Global.Config.C64Keyboard.At);
+			CommodoreControls.BindMulti("Key Asterisk", Global.Config.C64Keyboard.Asterisk);
+			CommodoreControls.BindMulti("Key Up Arrow", Global.Config.C64Keyboard.Up_Arrow);
+			CommodoreControls.BindMulti("Key Restore", Global.Config.C64Keyboard.Restore);
+			CommodoreControls.BindMulti("Key Run/Stop", Global.Config.C64Keyboard.Run_Stop);
+			CommodoreControls.BindMulti("Key Lck", Global.Config.C64Keyboard.Lck);
+			CommodoreControls.BindMulti("Key A", Global.Config.C64Keyboard.A);
+			CommodoreControls.BindMulti("Key S", Global.Config.C64Keyboard.S);
+			CommodoreControls.BindMulti("Key D", Global.Config.C64Keyboard.D);
+			CommodoreControls.BindMulti("Key F", Global.Config.C64Keyboard.F);
+			CommodoreControls.BindMulti("Key G", Global.Config.C64Keyboard.G);
+			CommodoreControls.BindMulti("Key H", Global.Config.C64Keyboard.H);
+			CommodoreControls.BindMulti("Key J", Global.Config.C64Keyboard.J);
+			CommodoreControls.BindMulti("Key K", Global.Config.C64Keyboard.K);
+			CommodoreControls.BindMulti("Key L", Global.Config.C64Keyboard.L);
+			CommodoreControls.BindMulti("Key Colon", Global.Config.C64Keyboard.Colon);
+			CommodoreControls.BindMulti("Key Semicolon", Global.Config.C64Keyboard.Semicolon);
+			CommodoreControls.BindMulti("Key Equal", Global.Config.C64Keyboard.Equal);
+			CommodoreControls.BindMulti("Key Return", Global.Config.C64Keyboard.Return);
+			CommodoreControls.BindMulti("Key Commodore", Global.Config.C64Keyboard.Commodore);
+			CommodoreControls.BindMulti("Key Left Shift", Global.Config.C64Keyboard.Left_Shift);
+			CommodoreControls.BindMulti("Key Z", Global.Config.C64Keyboard.Z);
+			CommodoreControls.BindMulti("Key X", Global.Config.C64Keyboard.X);
+			CommodoreControls.BindMulti("Key C", Global.Config.C64Keyboard.C);
+			CommodoreControls.BindMulti("Key V", Global.Config.C64Keyboard.V);
+			CommodoreControls.BindMulti("Key B", Global.Config.C64Keyboard.B);
+			CommodoreControls.BindMulti("Key N", Global.Config.C64Keyboard.N);
+			CommodoreControls.BindMulti("Key M", Global.Config.C64Keyboard.M);
+			CommodoreControls.BindMulti("Key Comma", Global.Config.C64Keyboard.Comma);
+			CommodoreControls.BindMulti("Key Period", Global.Config.C64Keyboard.Period);
+			CommodoreControls.BindMulti("Key Period", Global.Config.C64Keyboard.Period);
+			CommodoreControls.BindMulti("Key Slash", Global.Config.C64Keyboard.Slash);
+			CommodoreControls.BindMulti("Key Right Shift", Global.Config.C64Keyboard.Right_Shift);
+			CommodoreControls.BindMulti("Key Cursor Up/Down", Global.Config.C64Keyboard.Cursor_Up_Down);
+			CommodoreControls.BindMulti("Key Cursor Left/Right", Global.Config.C64Keyboard.Cursor_Left_Right);
+			CommodoreControls.BindMulti("Key Space", Global.Config.C64Keyboard.Space);
+			
+
+
 			Global.Commodore64Controls = CommodoreControls;
 
 			var autofireC64Controls = new AutofireController(C64.C64ControllerDefinition);
@@ -1233,49 +1394,12 @@ namespace BizHawk.MultiClient
 				case "A26": str += "Atari 2600"; break;
 				case "A78": str += "Atari 7800"; break;
 				case "C64": str += "Commodore 64"; break;
+				case "Coleco": str += "ColecoVision"; break;
+				case "GBA": str += "Game Boy Advance"; break;
 			}
 
 			if (INTERIM) str += " (interim)";
 			return str;
-		}
-
-		public string GetMovieExtName()
-		{
-			string str = "", system = Global.Game.System, ext = GetAlternateExt();
-			switch (system)
-			{
-				case "SG": str += "SG-1000"; break;
-				case "SMS": str += "Sega Master System"; break;
-				case "GG": str += "Game Gear"; break;
-				case "PCECD": str += "TurboGrafx-16 (CD)"; break;
-				case "PCE": str += "TurboGrafx-16"; break;
-				case "SGX": str += "SuperGrafx"; break;
-				case "GEN": str += "Genesis"; break;
-				case "TI83": str += "TI-83"; break;
-				case "NES": str += "NES"; break;
-				case "GB": str += "Game Boy"; break;
-			}
-			return str + " Movie File (*" + ext + ")|*" + ext;
-		}
-
-		private string GetAlternateExt()
-		{
-			string str = ".", system = Global.Game.System;
-			switch (system)
-			{
-				case "SG": str += "1000"; break;
-				case "SMS": str += "sms"; break;
-				case "GG": str += "gg"; break;
-				case "PCECD": str += "pcecd"; break;
-				case "PCE": str += "pce"; break;
-				case "SGX": str += "sgx"; break;
-				case "GEN": str += "gen"; break;
-				case "TI83": str += "ti83"; break;
-				case "NES": str += "nes"; break;
-				case "GB": str += "gb"; break;
-			}
-
-			return str + "." + Global.Config.MovieExtension;
 		}
 
 		private void HandlePlatformMenus()
@@ -1294,9 +1418,10 @@ namespace BizHawk.MultiClient
 			gBToolStripMenuItem.Visible = false;
 			atariToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
+			colecoToolStripMenuItem.Visible = false;
+			
 			switch (system)
 			{
-
 				case "TI83":
 					tI83ToolStripMenuItem.Visible = true;
 					break;
@@ -1335,6 +1460,9 @@ namespace BizHawk.MultiClient
 					else
 						sNESToolStripMenuItem.Text = "&SNES";
 					sNESToolStripMenuItem.Visible = true;
+					break;
+				case "Coleco":
+					colecoToolStripMenuItem.Visible = true;
 					break;
 				default:
 					break;
@@ -1428,8 +1556,13 @@ namespace BizHawk.MultiClient
 					Global.ActiveController = Global.GBControls;
 					Global.AutoFireController = Global.AutofireGBControls;
 					break;
-				case "COLV":
+				case "GBA":
+					Global.ActiveController = Global.GBAControls;
+					Global.AutoFireController = Global.AutofireGBAControls;
+					break;
+				case "Coleco":
 					Global.ActiveController = Global.ColecoControls;
+					Global.AutoFireController = Global.AutofireColecoControls;
 					break;
 				case "C64":
 					Global.ActiveController = Global.Commodore64Controls;
@@ -1478,7 +1611,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT" };
+				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1712,16 +1845,23 @@ namespace BizHawk.MultiClient
 									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
 									Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(game, rom.FileData);
 									nextEmulator = gb;
-									try
+									if (gb.IsCGBMode())
 									{
-										using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
-										{
-											int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
-											if (colors != null)
-												gb.ChangeDMGColors(colors);
-										}
+										gb.SetCGBColors(Global.Config.CGBColors);
 									}
-									catch { }
+									else
+									{
+										try
+										{
+											using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
+											{
+												int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
+												if (colors != null)
+													gb.ChangeDMGColors(colors);
+											}
+										}
+										catch { }
+									}
 								}
 								else
 								{
@@ -1759,9 +1899,19 @@ namespace BizHawk.MultiClient
 									}
 								}
 								break;
-							case "COLV":
-								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
-								nextEmulator = c;
+							case "Coleco":
+								string colbiosPath = PathManager.MakeAbsolutePath(Global.Config.PathCOLBios, "Coleco");
+								FileInfo colfile = new FileInfo(colbiosPath);
+								if (!colfile.Exists)
+								{
+									MessageBox.Show("Unable to find the required ColecoVision BIOS file - \n" + colbiosPath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									throw new Exception();
+								}
+								else
+								{
+									ColecoVision c = new ColecoVision(game, rom.RomData, colbiosPath, Global.Config.ColecoSkipBiosIntro);
+									nextEmulator = c;
+								}
 								break;
 							case "INTV":
 								{
@@ -1779,12 +1929,12 @@ namespace BizHawk.MultiClient
 								break;
 							case "A78":
 								string ntsc_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800NTSCBIOS, "A78");
-								string pal_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800PALBIOS, "A78"); 
+								string pal_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800PALBIOS, "A78");
 								string hsbiospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800HighScoreBIOS, "A78");
 								byte[] NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
 								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
 								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);
-								
+
 								Atari7800 a78 = new Atari7800(game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS);
 								nextEmulator = a78;
 								break;
@@ -1793,6 +1943,23 @@ namespace BizHawk.MultiClient
 								c64.CoreInputComm = Global.CoreInputComm;
 								c64.HardReset();
 								nextEmulator = c64;
+								break;
+							case "GBA":
+								string gbabiospath = PathManager.MakeAbsolutePath(Global.Config.PathGBABIOS, "GBA");
+								byte[] gbabios = null;
+
+								if (File.Exists(gbabiospath))
+								{
+									gbabios = File.ReadAllBytes(gbabiospath);
+								}
+								else
+								{
+									MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									throw new Exception();
+								}
+								GBA gba = new GBA();
+								gba.Load(rom.RomData, gbabios);
+								nextEmulator = gba;
 								break;
 						}
 					}
@@ -1816,6 +1983,12 @@ namespace BizHawk.MultiClient
 				Global.Emulator = nextEmulator;
 				Global.Game = game;
 				SyncControls();
+
+				if (nextEmulator is LibsnesCore)
+				{
+					var snes = nextEmulator as LibsnesCore;
+					snes.SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), Global.Config.SNESPalette, false));
+				}
 
 				if (game.System == "NES")
 				{
@@ -1991,20 +2164,18 @@ namespace BizHawk.MultiClient
 			//zero says: this is sort of sketchy... but this is no time for rearchitecting
 			try
 			{
-				/*
-				var sram = new byte[Global.Emulator.ReadSaveRam.Length];
-				using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
-					reader.Read(sram, 0, Global.Emulator.ReadSaveRam.Length);
-				if (Global.Emulator is LibsnesCore)
-					((LibsnesCore)Global.Emulator).StoreSaveRam(sram);
-				else if (Global.Emulator is Gameboy)
-					((Gameboy)Global.Emulator).StoreSaveRam(sram);
+				byte[] sram;
+				// GBA core might not know how big the saveram ought to be, so just send it the whole file
+				if (Global.Emulator is GBA)
+				{
+					sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
+				}
 				else
-					Array.Copy(sram, Global.Emulator.ReadSaveRam, Global.Emulator.ReadSaveRam.Length);
-				 */
-				var sram = new byte[Global.Emulator.ReadSaveRam().Length];
-				using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
+				{
+					sram = new byte[Global.Emulator.ReadSaveRam().Length];
+					using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
 					reader.Read(sram, 0, sram.Length);
+				}
 				Global.Emulator.StoreSaveRam(sram);
 			}
 			catch (IOException) { }
@@ -2016,6 +2187,7 @@ namespace BizHawk.MultiClient
 				SaveState("Auto");
 			if (Global.Emulator.SaveRamModified)
 				SaveRam();
+			StopAVI();
 			Global.Emulator.Dispose();
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
@@ -2309,6 +2481,7 @@ namespace BizHawk.MultiClient
 				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": LoadCheatsWindow(); break;
 				case "TASTudio": LoadTAStudio(); break;
+				case "Virtual Pad": LoadVirtualPads(); break;
 				case "Open ROM": OpenROM(); break;
 				case "Close ROM": CloseROM(); break;
 				case "Display FPS": ToggleFPS(); break;
@@ -2496,6 +2669,8 @@ namespace BizHawk.MultiClient
 				{
 					UpdateToolsBefore();
 				}
+
+				Global.ClickyVirtualPadController.FrameTick();
 
 				runloop_fps++;
 				//client input-related duties
@@ -3215,9 +3390,10 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;%ARCH%",
+					"Music Files", "*.psf;*.sid",
 					"Disc Images", "*.cue",
-					"NES", "*.nes;%ARCH%",
+					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
@@ -3228,18 +3404,20 @@ namespace BizHawk.MultiClient
 					"Atari 7800", "*.a78;*.bin;%ARCH%",
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.md;*.cue;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;%ARCH%",
-					"Colecovision (very experimental)", "*.col;%ARCH%",
+					"Colecovision", "*.col;%ARCH%",
 					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 					"PSX Executables (very experimental)", "*.exe",
-					"Commodore 64 (very experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
+					"PSF Playstation Sound File (very experimental)", "*.psf",
+					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
+					"SID Commodore 64 Music File", "*.sid;%ARCH%",
 					"All Files", "*.*");
 			}
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.rom;*.cue;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.col;*.rom;*.cue;%ARCH%",
 					"Disc Images", "*.cue",
-					"NES", "*.nes;%ARCH%",
+					"NES", "*.nes;*.fds;%ARCH%",
 #if WINDOWS
 					"Super NES", "*.smc;*.sfc;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;%ARCH%",
@@ -3247,10 +3425,12 @@ namespace BizHawk.MultiClient
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"Atari 2600", "*.a26;%ARCH%",
+					"Colecovision", "*.col;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
 					"Genesis (experimental)", "*.gen;*.md;*.smd;*.bin;*.cue;%ARCH%",
+					
 					"All Files", "*.*");
 			}
 			
@@ -3780,7 +3960,7 @@ namespace BizHawk.MultiClient
 			}
 			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
-			Global.OSD.AddMessage("AVI capture aborted");
+			Global.OSD.AddMessage("A/V capture aborted");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
@@ -3801,7 +3981,7 @@ namespace BizHawk.MultiClient
 			CurrAviWriter.CloseFile();
 			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
-			Global.OSD.AddMessage("AVI capture stopped");
+			Global.OSD.AddMessage("A/V capture stopped");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
@@ -4285,7 +4465,18 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is Gameboy)
 			{
-				GBtools.ColorChooserForm.DoColorChooserFormDialog(((Gameboy)Global.Emulator).ChangeDMGColors, this);
+				var g = Global.Emulator as Gameboy;
+				if (g.IsCGBMode())
+				{
+					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
+					{
+						g.SetCGBColors(Global.Config.CGBColors);
+					}
+				}
+				else
+				{
+					GBtools.ColorChooserForm.DoColorChooserFormDialog(g.ChangeDMGColors, this);
+				}
 			}
 		}
 
@@ -4462,5 +4653,21 @@ namespace BizHawk.MultiClient
 		{
 			LoadGBGPUView();
 		}
+
+		private void miLimitFramerate_DropDownOpened(object sender, EventArgs e)
+		{
+		}
+
+		private void skipBIOIntroToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ColecoSkipBiosIntro ^= true;
+			FlagNeedsReboot();
+		}
+
+		private void colecoToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
+		}
+
 	}
 }

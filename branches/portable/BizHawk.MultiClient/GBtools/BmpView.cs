@@ -11,7 +11,9 @@ namespace BizHawk.MultiClient.GBtools
 {
 	public partial class BmpView : Control
 	{
+		[Browsable(false)]
 		public Bitmap bmp { get; private set; }
+
 		bool scaled;
 
 		public BmpView()
@@ -19,7 +21,7 @@ namespace BizHawk.MultiClient.GBtools
 			if (System.Diagnostics.Process.GetCurrentProcess().ProcessName == "devenv")
 			{
 				// in the designer
-				this.BackColor = Color.Black;
+				//this.BackColor = Color.Black;
 				SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			}
 			else
@@ -76,16 +78,10 @@ namespace BizHawk.MultiClient.GBtools
 		public void Clear()
 		{
 			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			//Win32.ZeroMemory(lockdata.Scan0, (uint)(lockdata.Height * lockdata.Stride));
 			Win32.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
 			bmp.UnlockBits(lockdata);
 			Refresh();
 		}
 
-		// kill unused props
-		[Browsable(false)]
-		public override Color BackColor { get { return base.BackColor; } set { base.BackColor = Color.Black; } }
-		[Browsable(false)]
-		public override string Text { get { return base.Text; } set { base.Text = value; } }
 	}
 }

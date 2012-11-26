@@ -83,6 +83,7 @@ namespace BizHawk.MultiClient
 					Global.DSound.Dispose();
 				if (Global.Direct3D != null && Global.Direct3D.Disposed == false)
 					Global.Direct3D.Dispose();
+				GamePad.CloseAll();
 			}
 #endif
 		}

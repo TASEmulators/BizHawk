@@ -30,6 +30,7 @@ namespace BizHawk.MultiClient
 		public static Controller NESControls;
 		public static Controller SNESControls;
 		public static Controller GBControls;
+		public static Controller GBAControls;
 		public static Controller Atari2600Controls;
 		public static Controller NullControls;
 		public static Controller ColecoControls;
@@ -42,9 +43,11 @@ namespace BizHawk.MultiClient
 		public static AutofireController AutofireSMSControls;
 		public static AutofireController AutofirePCEControls;
 		public static AutofireController AutofireGBControls;
+		public static AutofireController AutofireGBAControls;
 		public static AutofireController AutofireGenControls;
 		public static AutofireController AutofireAtari2600Controls;
 		public static AutofireController AutofireCommodore64Controls;
+		public static AutofireController AutofireColecoControls;
 
 		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>()
 		{
@@ -53,6 +56,13 @@ namespace BizHawk.MultiClient
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
 					{"A", "A"}
+				}
+			},
+			{
+				"GBA Controller", new Dictionary<string, string>()
+				{
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
+					{"A", "A"}, {"L", "L"}, {"R", "R"},
 				}
 			},
 			{
@@ -109,11 +119,28 @@ namespace BizHawk.MultiClient
 				}
 			},
 			{
+				"Commodore 64 Controller", new Dictionary<string,string>()
+				{	
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Button", "B"}
+				}
+			},
+			{
+				"Commodore 64 Keyboard", new Dictionary<string,string>()
+				{	
+					{"Key F1", "1"}, {"Key F3", "3"}, {"Key F5", "5"}, {"Key F7", "7"},
+					{"Key Left Arrow", "l"}, {"Key 1", "1"}, {"Key 2", "2"}, {"Key 3", "3"}, {"Key 4", "4"}, {"Key 5", "5"}, {"Key 6", "6"}, {"Key 7", "7"}, {"Key 8", "8"}, {"Key 9", "9"}, {"Key 0", "0"}, {"Key Plus", "+"}, {"Key Minus", "-"}, {"Key Pound", "l"}, {"Key Clear/Home", "c"}, {"Key Insert/Delete", "i"}, 
+					{"Key Control", "c"}, {"Key Q", "Q"}, {"Key W", "W"}, {"Key E", "E"}, {"Key R", "R"}, {"Key T", "T"}, {"Key Y", "Y"}, {"Key U", "U"}, {"Key I", "I"}, {"Key O", "O"}, {"Key P", "P"}, {"Key At", "@"}, {"Key Asterisk", "*"}, {"Key Up Arrow", "u"}, {"Key Restore", "r"},
+					{"Key Run/Stop", "s"}, {"Key Lck", "k"}, {"Key A", "A"}, {"Key S", "S"}, {"Key D", "D"}, {"Key F", "F"}, {"Key G", "G"}, {"Key H", "H"}, {"Key J", "J"}, {"Key K", "K"}, {"Key L", "L"}, {"Key Colon", ":"}, {"Key Semicolon", ";"}, {"Key Equal", "="}, {"Key Return", "e"}, 
+					{"Key Commodore", "o"}, {"Key Left Shift", "s"}, {"Key Z", "Z"}, {"Key X", "X"}, {"Key C", "C"}, {"Key V", "V"}, {"Key B", "B"}, {"Key N", "N"}, {"Key M", "M"}, {"Key Comma", ","}, {"Key Period", ">"}, {"Key Slash", "/"}, {"Key Right Shift", "s"}, {"Key Cursor Up/Down", "u"}, {"Key Cursor Left/Right", "l"}, 
+					{"Key Space", "_"}
+				}
+			},
+			{
 				"ColecoVision Basic Controller", new Dictionary<string, string>()
 				{
-					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"L1", "l"}, {"L2", "L"}, {"R1", "r"}, {"R2", "R"}, //adelikat: These mnemonics are terrible but I can't think of anything better
-					{"Key1", "1"}, {"Key2", "2"}, {"Key3", "3"}, {"Key4", "4"}, {"Key5", "5"}, {"Key6", "6"}, {"Key7", "7"}, 
-					{"Key8", "8"}, {"Key9", "9"}, {"Star", "*"}, {"Pound", "#"}
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"L", "l"}, {"R", "r"},
+					{"Key1", "1"}, {"Key2", "2"}, {"Key3", "3"}, {"Key4", "4"}, {"Key5", "5"}, {"Key6", "6"}, 
+					{"Key7", "7"}, {"Key8", "8"}, {"Key9", "9"}, {"Star", "*"}, {"Key0", "0"}, {"Pound", "#"}
 				}
 			}
 		};
@@ -122,8 +149,9 @@ namespace BizHawk.MultiClient
 		{
 			{"Atari 2600 Basic Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
 			{"Gameboy Controller", new Dictionary<string, string>() {{"Power", "P"}}},
+			{"GBA Controller", new Dictionary<string, string>() {{"Power", "P"}}},
 			{"Genesis 3-Button Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
-			{"NES Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Power", "P"}}},
+			{"NES Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Power", "P"}, {"FDS Eject", "E"}, {"FDS Insert 0", "0"}, {"FDS Insert 1", "1"}, {"VS Coin 1", "c"}, {"VS Coin 2", "C"}}},
 			{"SNES Controller", new Dictionary<string, string>() {{"Power", "P"}, {"Reset", "r"}}},
 			{"PC Engine Controller", new Dictionary<string, string>() {}},
 			{"SMS Controller", new Dictionary<string, string>() {{"Pause", "p"}, {"Reset", "r"}}},
@@ -135,7 +163,7 @@ namespace BizHawk.MultiClient
 			{"Gameboy Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
 			{"SNES Controller", 4},
 			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2},
-			{"ColecoVision Basic Controller", 1}
+			{"ColecoVision Basic Controller", 2}, {"Commodore 64 Controller", 2}
 		};
 
 		/// <summary>

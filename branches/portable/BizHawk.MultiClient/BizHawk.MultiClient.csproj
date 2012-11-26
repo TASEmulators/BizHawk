@@ -223,6 +223,12 @@
     <Compile Include="GBtools\BmpView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="GBtools\CGBColorChooserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GBtools\CGBColorChooserForm.Designer.cs">
+      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GBtools\ColorChooserForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -389,6 +395,7 @@
     <Compile Include="tools\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\IVirtualPad.cs" />
     <Compile Include="tools\LuaButton.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Component</SubType>
     </Compile>
@@ -423,6 +430,18 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadC64Keyboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadC64Keyboard.Designer.cs">
+      <DependentUpon>VirtualPadC64Keyboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPadColeco.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadColeco.Designer.cs">
+      <DependentUpon>VirtualPadColeco.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPadForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -430,6 +449,9 @@
       <DependentUpon>VirtualPadForm.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\VirtualPadGB.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadGBA.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\VirtualPadGBControl.cs">
@@ -468,6 +490,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GBtools\CGBColorChooserForm.resx">
+      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GBtools\ColorChooserForm.resx">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
@@ -534,6 +559,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="tools\VirtualPadC64Keyboard.resx">
+      <DependentUpon>VirtualPadC64Keyboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPadColeco.resx">
+      <DependentUpon>VirtualPadColeco.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPadForm.resx">
       <DependentUpon>VirtualPadForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -927,6 +958,11 @@
     <None Include="config\ControllerImages\SNES_Controller.png" />
     <None Include="config\ControllerImages\TI83_Controller.png" />
     <None Include="images\GenesisControllerIcon.png" />
+    <None Include="config\ControllerImages\C64Joystick.png" />
+    <None Include="config\ControllerImages\C64Keyboard.png" />
+    <None Include="config\ControllerImages\colecovisioncontroller.png" />
+    <None Include="config\ControllerImages\GBA_Controller.png" />
+    <None Include="images\C64Symbol.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

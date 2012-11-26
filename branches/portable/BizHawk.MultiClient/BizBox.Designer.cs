@@ -60,6 +60,9 @@
 			this.label10 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
+			this.label12 = new System.Windows.Forms.Label();
+			this.label15 = new System.Windows.Forms.Label();
+			this.label27 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -112,9 +115,9 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(198, 98);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(125, 13);
+			this.label2.Size = new System.Drawing.Size(149, 13);
 			this.label2.TabIndex = 4;
-			this.label2.Text = "vecna, adelikat, zeromus";
+			this.label2.Text = "vecna, adelikat, zeromus, natt";
 			// 
 			// label3
 			// 
@@ -147,7 +150,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(198, 131);
+			this.label5.Location = new System.Drawing.Point(198, 120);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(66, 13);
 			this.label5.TabIndex = 8;
@@ -156,20 +159,20 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(198, 145);
+			this.label6.Location = new System.Drawing.Point(198, 134);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(223, 13);
+			this.label6.Size = new System.Drawing.Size(217, 13);
 			this.label6.TabIndex = 9;
-			this.label6.Text = "DarkKobold, Micro500, TaoTao, Rolanmen1, ";
+			this.label6.Text = "DarkKobold, Micro500, TaoTao, Rolanmen1";
 			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(198, 159);
+			this.label7.Location = new System.Drawing.Point(198, 148);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(237, 13);
+			this.label7.Size = new System.Drawing.Size(216, 13);
 			this.label7.TabIndex = 10;
-			this.label7.Text = "Deign, Brandon Evans, Pasky13, link_7777, natt";
+			this.label7.Text = "Deign, Brandon Evans, Pasky13, link_7777,";
 			// 
 			// panel1
 			// 
@@ -177,6 +180,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.label12);
+			this.panel1.Controls.Add(this.label15);
 			this.panel1.Controls.Add(this.linkLabel3);
 			this.panel1.Controls.Add(this.linkLabel2);
 			this.panel1.Controls.Add(this.label24);
@@ -376,6 +381,33 @@
 			this.label8.TabIndex = 0;
 			this.label8.Text = "NESHawk";
 			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(21, 207);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(94, 13);
+			this.label12.TabIndex = 22;
+			this.label12.Text = "Created by: vecna";
+			// 
+			// label15
+			// 
+			this.label15.AutoSize = true;
+			this.label15.Location = new System.Drawing.Point(13, 190);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(68, 13);
+			this.label15.TabIndex = 21;
+			this.label15.Text = "ColecoHawk";
+			// 
+			// label27
+			// 
+			this.label27.AutoSize = true;
+			this.label27.Location = new System.Drawing.Point(198, 162);
+			this.label27.Name = "label27";
+			this.label27.Size = new System.Drawing.Size(63, 13);
+			this.label27.TabIndex = 12;
+			this.label27.Text = "SaxxonPike";
+			// 
 			// BizBox
 			// 
 			this.AcceptButton = this.OK;
@@ -383,6 +415,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.OK;
 			this.ClientSize = new System.Drawing.Size(445, 447);
+			this.Controls.Add(this.label27);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label7);
 			this.Controls.Add(this.label6);
@@ -442,5 +475,8 @@
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.LinkLabel linkLabel2;
 		private System.Windows.Forms.LinkLabel linkLabel3;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.Label label15;
+		private System.Windows.Forms.Label label27;
 	}
 }

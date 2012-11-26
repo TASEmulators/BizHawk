@@ -362,6 +362,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				Buffer.BlockCopy(board.SaveRam, 0, newboard.SaveRam, 0, board.SaveRam.Length);
 			}
+			board.Dispose();
+			board = newboard;
 		}
 
 

@@ -26,6 +26,9 @@ namespace BizHawk.MultiClient
 			GBAutoController[0] = new GBControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
 
+			GBAController[0] = new GBAControllerTemplate(true);
+			GBAAutoController[0] = new GBAControllerTemplate(false);
+
 			GenesisController[0] = new GenControllerTemplate(true);
 			GenesisAutoController[0] = new GenControllerTemplate(false);
 
@@ -54,12 +57,16 @@ namespace BizHawk.MultiClient
 			SNESAutoController[2] = new SNESControllerTemplate(false);
 			SNESAutoController[3] = new SNESControllerTemplate(false);
 
-			ColecoController = new ColecoVisionControllerTemplate(true);
+			ColecoController[0] = new ColecoVisionControllerTemplate(true);
+			ColecoController[1] = new ColecoVisionControllerTemplate(false);
+			ColecoAutoController[0] = new ColecoVisionControllerTemplate(false);
+			ColecoAutoController[1] = new ColecoVisionControllerTemplate(false);
 
-			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true);
+			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true, true);
 			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
 			C64AutoJoysticks[0] = new SingleButtonJoyStickTemplate(false);
 			C64AutoJoysticks[1] = new SingleButtonJoyStickTemplate(false);
+			C64Keyboard = new C64KeyboardTemplate(true);
 
 			NESConsoleButtons = new NESConsoleButtonTemplate();
 			SNESConsoleButtons = new NESConsoleButtonTemplate();
@@ -94,6 +101,13 @@ namespace BizHawk.MultiClient
 		public string PathSNESScreenshots = Path.Combine(".", "Screenshots");
 		public string PathSNESCheats = Path.Combine(".", "Cheats");
 		public string PathSNESFirmwares = Path.Combine(".", "Firmwares");
+
+		public string BaseGBA = Path.Combine(".", "GBA");
+		public string PathGBAROMs = ".";
+		public string PathGBASavestates = Path.Combine(".", "State");
+		public string PathGBASaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathGBAScreenshots = Path.Combine(".", "Screenshots");
+		public string PathGBACheats = Path.Combine(".", "Cheats");
 
 		public string BaseSMS = Path.Combine(".", "SMS");
 		public string PathSMSROMs = ".";
@@ -167,6 +181,12 @@ namespace BizHawk.MultiClient
 		public string PathPSXCheats = Path.Combine(".", "Cheats");
 		public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
 
+		public string BaseCOL = Path.Combine(".", "ColecoVision");
+		public string PathCOLROMs = ".";
+		public string PathCOLSavestates = Path.Combine(".", "State");
+		public string PathCOLScreenshots = Path.Combine(".", "Screenshots");
+
+		public string PathCOLCheats = Path.Combine(".", "Cheats");
 		public string MoviesPath = Path.Combine(".", "Movies");
 		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
 		public string LuaPath = Path.Combine(".", "Lua");
@@ -175,7 +195,9 @@ namespace BizHawk.MultiClient
 		public string LogPath = ".";
 
 		//BIOS Paths
+		public string PathGBABIOS = Path.Combine(".", "gbabios.rom");
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
+		public string PathCOLBios = Path.Combine(".", "ColecoBios.bin");
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
 		public string PathFDSBios = Path.Combine(".", "disksys.rom");
@@ -226,10 +248,12 @@ namespace BizHawk.MultiClient
 		public int FrameSkip = 4;
 		public int SpeedPercent = 100;
 		public int SpeedPercentAlternate = 400;
-		public bool LimitFramerate = true;
+		public bool ClockThrottle = true;
 		public bool AutoMinimizeSkipping = true;
-		public bool DisplayVSync = false;
+		public bool VSyncThrottle = false;
 		public bool RewindEnabled = true;
+		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
+		public bool VSync = false;
 
 		// Display options
 		public int MessagesColor = -1;
@@ -417,6 +441,13 @@ namespace BizHawk.MultiClient
 		public int NESTopLine = 8;
 		public int NESBottomLine = 231;
 
+		// gb gpu view settings
+		public bool AutoLoadGBGPUView = false;
+		public bool GBGPUViewSaveWindowPosition = true;
+		public int GBGPUViewWndx = -1;
+		public int GBGPUViewWndy = -1;
+		public Color GBGPUSpriteBack = Color.Lime;
+
 		// SNES Graphics Debugger Dialog Settings
 		public bool AutoLoadSNESGraphicsDebugger = false;
 		public bool SNESGraphicsDebuggerSaveWindowPosition = true;
@@ -425,6 +456,7 @@ namespace BizHawk.MultiClient
 		public int SNESGraphicsDebuggerRefreshRate = 4;
 		public bool SNESGraphicsUseUserBackdropColor = false;
 		public int SNESGraphicsUserBackdropColor = -1;
+		public string SNESPalette = "BizHawk";
 
 		// SNES Graphics settings
 		//bsnes allows the layers to be enabled for each priority level.
@@ -459,6 +491,9 @@ namespace BizHawk.MultiClient
 		// SMS Graphics settings
 		public bool SMSDispBG = true;
 		public bool SMSDispOBJ = true;
+
+		// Coleco Settings
+		public bool ColecoSkipBiosIntro = false;
 
 		//GB Debugger settings
 		public bool AutoloadGBDebugger = false;
@@ -625,6 +660,7 @@ namespace BizHawk.MultiClient
 		public string ToggleSNESOBJ3Binding = "";
 		public string ToggleSNESOBJ4Binding = "";
 		public string SaveMovieBinding = "";
+		public string OpenVirtualPadBinding = "";
 
 		// NES Sound settings
 		public bool NESEnableSquare1 = true;
@@ -666,7 +702,8 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_RightDifficulty = true;
 
 		//ColecoVision
-		public ColecoVisionControllerTemplate ColecoController = new ColecoVisionControllerTemplate(true);
+		public ColecoVisionControllerTemplate[] ColecoController = new ColecoVisionControllerTemplate[2];
+		public ColecoVisionControllerTemplate[] ColecoAutoController = new ColecoVisionControllerTemplate[2];
 
 		//NES settings
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
@@ -689,10 +726,17 @@ namespace BizHawk.MultiClient
 		public bool GB_MulticartCompat = false;
 		public string GB_PaletteFile = "";
 		public bool GB_AsSGB = false;
+		public Emulation.Consoles.GB.GBColors.ColorType CGBColors = Emulation.Consoles.GB.GBColors.ColorType.gambatte;
+
+		//GBA settings
+		public GBAControllerTemplate[] GBAController = new GBAControllerTemplate[1];
+		public GBAControllerTemplate[] GBAAutoController = new GBAControllerTemplate[1];
 
 		//Commodore 64 Settings
 		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
 		public SingleButtonJoyStickTemplate[] C64AutoJoysticks = new SingleButtonJoyStickTemplate[2]; 
+		public C64KeyboardTemplate C64Keyboard = new C64KeyboardTemplate();
+		public C64KeyboardTemplate C64AutofireKeyboard = new C64KeyboardTemplate();
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;
@@ -736,10 +780,10 @@ namespace BizHawk.MultiClient
 	{
 		public string Reset = "";
 		public string Power = "";
-		public string FDS_Eject = "";
-		public string FDS_Insert = "";
-		public string VS_Coin_1 = "";
-		public string VS_Coin_2 = "";
+		//public string FDS_Eject = ""; //Not supporting this for now
+		//public string FDS_Insert = ""; //Need to support inserting of disk 1,2,3,4,etc so not supporting this for now
+		//public string VS_Coin_1 = ""; //Not supported yet
+		//public string VS_Coin_2 = ""; //Not supported yet
 	}
 
 	public class SMSConsoleButtonTemplate
@@ -876,6 +920,54 @@ namespace BizHawk.MultiClient
 		}
 	}
 
+	public class GBAControllerTemplate
+	{
+		public string Up;
+		public string Down;
+		public string Left;
+		public string Right;
+		public string A;
+		public string B;
+		public string Start;
+		public string Select;
+		public string L, R;
+		public string Power;
+		public bool Enabled;
+		public GBAControllerTemplate() { }
+		public GBAControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				A = "X, X1 B";
+				B = "Z, X1 A";
+				L = "W, X1 LeftTrigger";
+				R = "E, X1 RightTrigger";
+				Start = "Return, X1 Start";
+				Select = "Space, X1 Back";
+				Power = "";
+			}
+			else
+			{
+				Enabled = false;
+				Up = "";
+				Down = "";
+				Right = "";
+				Left = "";
+				A = "";
+				B = "";
+				Start = "";
+				Select = "";
+				L = R = "";
+				Power = "";
+			}
+		}
+	}
+
 	public class NESControllerTemplate
 	{
 		public string Up;
@@ -1001,16 +1093,28 @@ namespace BizHawk.MultiClient
 		public bool Enabled;
 
 		public SingleButtonJoyStickTemplate() { }
-		public SingleButtonJoyStickTemplate(bool defaults)
+		public SingleButtonJoyStickTemplate(bool defaults, bool useNumpad = false)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				Button = "Z, X1 A";
+				if (useNumpad)
+				{
+					Enabled = true;
+					Up = "NumberPad8, X1 DpadUp, X1 LStickUp";
+					Down = "NumberPad2, X1 DpadDown, X1 LStickDown";
+					Left = "NumberPad4, X1 DpadLeft, X1 LStickLeft";
+					Right = "NumberPad6, X1 DpadRight, X1 LStickRight";
+					Button = "NumberPad8, X1 A";
+				}
+				else
+				{
+					Enabled = true;
+					Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+					Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+					Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+					Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+					Button = "Z, X1 A";
+				}
 			}
 		}
 	}
@@ -1039,11 +1143,9 @@ namespace BizHawk.MultiClient
 		public string Down = "";
 		public string Left = "";
 		public string Right = "";
-		public string L1 = "";
-		public string L2 = "";
-		public string R1 = "";
-		public string R2 = "";
-
+		public string L = "";
+		public string R = "";
+		public string _0 = "";
 		public string _1 = "";
 		public string _2 = "";
 		public string _3 = "";
@@ -1067,10 +1169,9 @@ namespace BizHawk.MultiClient
 				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
 				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
 				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				L1 = "Z, J1 B1";
-				L2 = "X, J1 B2";
-				R1 = "C, J1 B1";
-				R2 = "V, J1 B2";
+				L = "Z, J1 B1";
+				R = "X, J1 B1";
+				_0 = "NumberPad0";
 				_1 = "NumberPad1";
 				_2 = "NumberPad2";
 				_3 = "NumberPad3";
@@ -1081,7 +1182,161 @@ namespace BizHawk.MultiClient
 				_8 = "NumberPad8";
 				_9 = "NumberPad9";
 				Pound = "NumberPadPeriod";
-				Star = "NumberPad0";
+				Star = "NumberPadEnter";
+			}
+		}
+	}
+
+	public class C64KeyboardTemplate
+	{
+		public string F1;
+		public string F3;
+		public string F5;
+		public string F7;
+
+		public string Left_Arrow;
+		public string _1;
+		public string _2;
+		public string _3;
+		public string _4;
+		public string _5;
+		public string _6;
+		public string _7;
+		public string _8;
+		public string _9;
+		public string _0;
+		public string Plus;
+		public string Minus;
+		public string Pound;
+		public string Clear_Home;
+		public string Insert_Delete;
+
+		public string Control;
+		public string Q;
+		public string W;
+		public string E;
+		public string R;
+		public string T;
+		public string Y;
+		public string U;
+		public string I;
+		public string O;
+		public string P;
+		public string At;
+		public string Asterisk;
+		public string Up_Arrow;
+		public string Restore;
+
+		public string Run_Stop;
+		public string Lck;
+		public string A;
+		public string S;
+		public string D;
+		public string F;
+		public string G;
+		public string H;
+		public string J;
+		public string K;
+		public string L;
+		public string Colon;
+		public string Semicolon;
+		public string Equal;
+		public string Return;
+
+		public string Commodore;
+		public string Left_Shift;
+		public string Z;
+		public string X;
+		public string C;
+		public string V;
+		public string B;
+		public string N;
+		public string M;
+		public string Comma;
+		public string Period;
+		public string Slash;
+		public string Right_Shift;
+		public string Cursor_Up_Down;
+		public string Cursor_Left_Right;
+
+		public string Space;
+
+		public bool enabled;
+
+		public C64KeyboardTemplate() { }
+		public C64KeyboardTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				F1 = "F1";
+				F3 = "F3";
+				F5 = "F5";
+				F7 = "F7";
+
+				Left_Arrow = "Grave";
+				_1 = "D1";
+				_2 = "D2";
+				_3 = "D3";
+				_4 = "D4";
+				_5 = "D5";
+				_6 = "D6";
+				_7 = "D7";
+				_8 = "D8";
+				_9 = "D9";
+				_0 = "D0";
+				Plus = "Equals";
+				Minus = "Minus";
+				Pound = "Insert";
+				Clear_Home = "Delete";
+				Insert_Delete = "Backspace";
+
+				Control = "Tab";
+				Q = "Q";
+				W = "W";
+				E = "E";
+				R = "R";
+				T = "T";
+				Y = "Y";
+				U = "U";
+				I = "I";
+				O = "O";
+				P = "P";
+				At = "LeftBracket";
+				Asterisk = "RightBracket";
+				Up_Arrow = "Backslash";
+
+				Run_Stop = "CapsLock";
+				A = "A";
+				S = "S";
+				D = "D";
+				F = "F";
+				G = "G";
+				H = "H";
+				J = "J";
+				K = "K";
+				L = "L";
+				Colon = "Semicolon";
+				Semicolon = "Apostrophe";
+				Equal = "RightControl";
+				Return = "Return";
+
+				Commodore = "LeftControl";
+				Left_Shift = "LeftShift";
+				Z = "Z";
+				X = "X";
+				C = "C";
+				V = "V";
+				B = "B";
+				N = "N";
+				M = "M";
+				Comma = "Comma";
+				Period = "Period";
+				Slash = "Slash";
+				Right_Shift = "RightShift";
+				Cursor_Up_Down = "DownArrow";
+				Cursor_Left_Right = "RightArrow";
+
+				Space = "Space";
 			}
 		}
 	}

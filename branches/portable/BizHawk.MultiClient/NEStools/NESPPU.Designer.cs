@@ -99,6 +99,9 @@
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoLoadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.messagetimer = new System.Windows.Forms.Timer(this.components);
 			this.PatternGroup.SuspendLayout();
 			this.PatternContext.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
@@ -111,6 +114,7 @@
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).BeginInit();
 			this.menuStrip1.SuspendLayout();
+			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// PatternGroup
@@ -151,6 +155,7 @@
 			this.PatternView.Name = "PatternView";
 			this.PatternView.Size = new System.Drawing.Size(256, 128);
 			this.PatternView.TabIndex = 0;
+			this.PatternView.Text = "Pattern Tables";
 			this.PatternView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatternView_Click);
 			this.PatternView.MouseEnter += new System.EventHandler(this.PatternView_MouseEnter);
 			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
@@ -204,6 +209,7 @@
 			this.PaletteView.Name = "PaletteView";
 			this.PaletteView.Size = new System.Drawing.Size(256, 32);
 			this.PaletteView.TabIndex = 0;
+			this.PaletteView.Text = "Palettes";
 			this.PaletteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseClick);
 			this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
 			this.PaletteView.MouseLeave += new System.EventHandler(this.PaletteView_MouseLeave);
@@ -300,6 +306,7 @@
 			this.ZoomBox.Size = new System.Drawing.Size(64, 64);
 			this.ZoomBox.TabIndex = 6;
 			this.ZoomBox.TabStop = false;
+			this.ZoomBox.Text = "Details";
 			// 
 			// Value3Label
 			// 
@@ -355,6 +362,7 @@
 			this.SpriteView.Name = "SpriteView";
 			this.SpriteView.Size = new System.Drawing.Size(256, 96);
 			this.SpriteView.TabIndex = 0;
+			this.SpriteView.Text = "Sprites";
 			this.SpriteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseClick);
 			this.SpriteView.MouseEnter += new System.EventHandler(this.SpriteView_MouseEnter);
 			this.SpriteView.MouseLeave += new System.EventHandler(this.SpriteView_MouseLeave);
@@ -713,11 +721,34 @@
 			this.saveWindowPositionToolStripMenuItem1.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem1.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
+			// statusStrip1
+			// 
+			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
+			this.statusStrip1.Location = new System.Drawing.Point(0, 349);
+			this.statusStrip1.Name = "statusStrip1";
+			this.statusStrip1.Size = new System.Drawing.Size(574, 22);
+			this.statusStrip1.SizingGrip = false;
+			this.statusStrip1.TabIndex = 11;
+			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// toolStripStatusLabel1
+			// 
+			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(319, 17);
+			this.toolStripStatusLabel1.Text = "Use CTRL+C to copy the pane under the mouse to the clipboard.";
+			// 
+			// messagetimer
+			// 
+			this.messagetimer.Interval = 5000;
+			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
+			// 
 			// NESPPU
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(574, 348);
+			this.ClientSize = new System.Drawing.Size(574, 371);
+			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.SpriteViewerBox);
@@ -727,12 +758,14 @@
 			this.Controls.Add(this.PatternGroup);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(580, 370);
 			this.Name = "NESPPU";
 			this.Text = "NES PPU Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESPPU_FormClosed);
 			this.Load += new System.EventHandler(this.NESPPU_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NESPPU_KeyDown);
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.NESPPU_MouseClick);
 			this.PatternGroup.ResumeLayout(false);
 			this.PatternGroup.PerformLayout();
@@ -751,6 +784,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).EndInit();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.statusStrip1.ResumeLayout(false);
+			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -827,5 +862,8 @@
 		private System.Windows.Forms.ToolStripMenuItem copyPatternToClipboardToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copySpriteToClipboardToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.StatusStrip statusStrip1;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+		private System.Windows.Forms.Timer messagetimer;
     }
 }

@@ -30,12 +30,21 @@ void LCD::setDmgPalette(unsigned long *const palette, const unsigned long *const
 	palette[3] = dmgColors[data >> 6 & 3];
 }
 
-static unsigned long gbcToRgb32(const unsigned bgr15) {
+void LCD::setCgbPalette(unsigned *lut) {
+	for (int i = 0; i < 32768; i++)
+		cgbColorsRgb32[i] = lut[i];
+	refreshPalettes();
+}
+
+unsigned long LCD::gbcToRgb32(const unsigned bgr15) {
+	/*
 	const unsigned long r = bgr15       & 0x1F;
 	const unsigned long g = bgr15 >>  5 & 0x1F;
 	const unsigned long b = bgr15 >> 10 & 0x1F;
 
 	return ((r * 13 + g * 2 + b) >> 1) << 16 | (g * 3 + b) << 9 | (r * 3 + g * 2 + b * 11) >> 1;
+	*/
+	return cgbColorsRgb32[bgr15 & 0x7FFF];
 }
 
 /*static unsigned long gbcToRgb16(const unsigned bgr15) {
@@ -357,7 +366,7 @@ bool LCD::cgbpAccessible(const unsigned long cycleCounter) {
 			|| cycleCounter >= m0TimeOfCurrentLine(cycleCounter) + 3 - isDoubleSpeed();
 }
 
-static void doCgbColorChange(unsigned char *const pdata,
+void LCD::doCgbColorChange(unsigned char *const pdata,
 		unsigned long *const palette, unsigned index, const unsigned data) {
 	pdata[index] = data;
 	index >>= 1;

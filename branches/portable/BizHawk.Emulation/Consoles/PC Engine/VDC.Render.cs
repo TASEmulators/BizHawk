@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (BackgroundEnabled == false)
             {
                 for (int i = 0; i < FrameWidth; i++)
-                    FrameBuffer[(ActiveLine * FramePitch) + i] = vce.Palette[0];
+                    FrameBuffer[(ActiveLine * FramePitch) + i] = vce.Palette[256];
                 return;
             }
 

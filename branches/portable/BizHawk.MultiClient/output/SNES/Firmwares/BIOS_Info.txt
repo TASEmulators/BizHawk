@@ -1,0 +1,17 @@
+To play Certain SNES games or run Super Gameboy,  Firmware files are required
+
+It is expected by default that they be in this folder
+
+To configure the location and name of the firmwares folder, use the Config -> Path Config dialog
+
+Here is a list of all files that could be used.  They must be named accordingly.
+
+cx4.rom	 	 sha256:ae8d4d1961b93421ff00b3caa1d0f0ce7783e749772a3369c36b3dbf0d37ef18	Mega Men X2, X3
+dsp1b.rom	 sha256:d789cb3c36b05c0b23b6c6f23be7aa37c6e78b6ee9ceac8d2d2aa9d8c4d35fa9	
+dsp2.rom	 sha256:03ef4ef26c9f701346708cb5d07847b5203cf1b0818bf2930acd34510ffdd717	Dungeon Master
+dsp3.rom	 sha256:0971b08f396c32e61989d1067dddf8e4b14649d548b2188f7c541b03d7c69e4e	SD Gundam GX
+dsp4.rom	 sha256:752d03b2d74441e430b7f713001fa241f8bbcfc1a0d890ed4143f174dbe031da	Top Gear 3000
+st010.rom	 sha256:fa9bced838fedea11c6f6ace33d1878024bdd0d02cc9485899d0bdd4015ec24c	F1 ROC II: Race of Champions
+st011.rom	 sha256:8b2b3f3f3e6e29f4d21d8bc736b400bc988b7d2214ebee15643f01c1fee2f364	Hayazashi Nidan Morita Shogi
+st018.rom	 sha256:6df209ab5d2524d1839c038be400ae5eb20dafc14a3771a3239cd9e8acd53806	Hayazashi Nidan Morita Shogi 2
+sgb.sfc	 	 sha1:973E10840DB683CF3FAF61BD443090786B3A9F04	 				Super Gameboy Games

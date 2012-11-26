@@ -76,8 +76,14 @@ namespace BizHawk.DiscSystem
 			int Read(byte[] buffer, int offset);
 		}
 
+		/// <summary>
+		/// Presently, an IBlob doesn't need to work multithreadedly. It's quite an onerous demand. This should probably be managed by the Disc class somehow, or by the user making another Disc.
+		/// </summary>
 		public interface IBlob : IDisposable
 		{
+			/// <summary>
+			/// what a weird parameter order. normally the dest buffer would be first. weird.
+			/// </summary>
 			int Read(long byte_pos, byte[] buffer, int offset, int count);
 		}
 
@@ -235,12 +241,21 @@ namespace BizHawk.DiscSystem
 				buffer[offset + 14] = bcd_aba_frac;
 				//mode 1
 				buffer[offset + 15] = 1;
-				//EDC
-				ECM.edc_computeblock(buffer, offset+2064, buffer, offset+2064);
+
+				//calculate EDC and poke into the sector
+				uint edc = ECM.EDC_Calc(buffer, offset, 2064);
+				ECM.PokeUint(buffer, 2064, edc);
+				
 				//intermediate
 				for (int i = 0; i < 8; i++) buffer[offset + 2068 + i] = 0;
 				//ECC
-				ECM.ecc_generate(buffer, offset, false, buffer, offset+2076);
+				ECM.ECC_Populate(buffer, offset, buffer, offset, false);
+
+				//VALIDATION - check our homemade algorithms against code derived from ECM
+				////EDC
+				//GPL_ECM.edc_validateblock(buffer, 2064, buffer, offset + 2064);
+				////ECC
+				//GPL_ECM.ecc_validate(buffer, offset, false);
 				
 				//if we read the 2048 physical bytes OK, then return the complete sector
 				if (read == 2048)
@@ -645,6 +660,11 @@ namespace BizHawk.DiscSystem
 		public bool ReallyDumpBin;
 
 		/// <summary>
+		/// Dump bins to bitbucket instead of disk
+		/// </summary>
+		public bool DumpToBitbucket;
+
+		/// <summary>
 		/// dump a .sub.q along with bins. one day we'll want to dump the entire subcode but really Q is all thats important for debugging most things
 		/// </summary>
 		public bool DumpSubchannelQ;
@@ -764,7 +784,8 @@ namespace BizHawk.DiscSystem
 			progress.ProgressCurrent = 0;
 			progress.InfoPresent = true;
 			string cuePath = Path.Combine(directory, baseName + ".cue");
-			File.WriteAllText(cuePath, cue);
+			if (prefs.DumpToBitbucket) { }
+			else File.WriteAllText(cuePath, cue);
 
 			progress.Message = "Writing bin(s)";
 			progress.TaskCurrent = 1;
@@ -780,12 +801,17 @@ namespace BizHawk.DiscSystem
 				string trackBinFile = bfd.name;
 				string trackBinPath = Path.Combine(directory, trackBinFile);
 				string subQPath = Path.ChangeExtension(trackBinPath, ".sub.q");
-				FileStream fsSubQ = null;
-				FileStream fs = new FileStream(trackBinPath, FileMode.Create, FileAccess.Write, FileShare.None);
+				Stream fsSubQ = null;
+				Stream fs;
+				if(prefs.DumpToBitbucket)
+					fs = Stream.Null;
+				else fs = new FileStream(trackBinPath, FileMode.Create, FileAccess.Write, FileShare.None);
 				try
 				{
 					if (prefs.DumpSubchannelQ)
-						fsSubQ = new FileStream(subQPath, FileMode.Create, FileAccess.Write, FileShare.None);
+						if (prefs.DumpToBitbucket)
+							fsSubQ = Stream.Null;
+						else fsSubQ = new FileStream(subQPath, FileMode.Create, FileAccess.Write, FileShare.None);
 
 					for (int i = 0; i < bfd.abas.Count; i++)
 					{

@@ -112,7 +112,7 @@ namespace BizHawk.DiscSystem
 				Array.Copy(lba_buf, lba_within, buffer, offset, todo);
 				offset += todo;
 				length -= todo;
-				lba_within = 0;
+				disc_offset += todo;
 			}
 		}
 

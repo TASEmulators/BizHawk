@@ -99,6 +99,14 @@ namespace BizHawk.Emulation.Consoles.GB
 		public static extern void gambatte_setdmgpalettecolor(IntPtr core, PalType palnum, uint colornum, uint rgb32);
 
 		/// <summary>
+		/// set cgb palette lookup
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="lut">uint32[32768], input color (r,g,b) is at lut[r | g << 5 | b << 10]</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setcgbpalette(IntPtr core, int[] lut);
+
+		/// <summary>
 		/// combination of button flags used by the input callback
 		/// </summary>
 		[Flags]
@@ -233,10 +241,10 @@ namespace BizHawk.Emulation.Consoles.GB
 		public static extern int gambatte_savesavedatalength(IntPtr core);
 
 		/// <summary>
-		/// Saves emulator state to the state to a byte array
+		/// Saves emulator state to a byte array
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="videobuf">160x144 RGB32 (native endian) video frame buffer or 0. Used for saving a thumbnail.</param>
+		/// <param name="videobuf">160x144 RGB32 (native endian) video frame buffer or 0. Used for saving a thumbnail.  NOT USED ANYMORE</param>
 		/// <param name="pitch">distance in number of pixels (not bytes) from the start of one line to the next in videoBuf.</param>
 		/// <param name="data">private savestate data returned by the core</param>
 		/// <param name="len">the length of the data in bytes</param>
@@ -252,7 +260,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		public static extern void gambatte_savestate_destroy(IntPtr data);
 
 		/// <summary>
-		/// Loads emulator state from the byte array
+		/// Loads emulator state from a byte array
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="data">savestate data</param>

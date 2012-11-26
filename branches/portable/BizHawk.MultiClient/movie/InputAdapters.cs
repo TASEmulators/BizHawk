@@ -358,7 +358,33 @@ namespace BizHawk.MultiClient
 				case "PCECD":
 				case "SGX":
 					return "|.|........|........|........|........|........|";
+				case "Coleco":
+					return "|..................|..................|";
+				case "C64":
+					return "|.....|.....|..................................................................|";
+				case "GBA":
+					return "|.|..........|";
 			}
+		}
+
+		private string GetGBAControllersAsMnemonic()
+		{
+			StringBuilder input = new StringBuilder("|");
+			if (IsBasePressed("Power"))
+			{
+				input.Append(Global.COMMANDS[ControlType]["Power"]);
+			}
+			else
+			{
+				input.Append(".");
+			}
+			input.Append("|");
+			foreach (string button in Global.BUTTONS[ControlType].Keys)
+			{
+				input.Append(IsBasePressed(button) ? Global.BUTTONS[ControlType][button] : ".");
+			}
+			input.Append("|");
+			return input.ToString();
 		}
 
 		//adelikat: I"m going to do all controllers like this, so what if it is redundant! It is better than reducing lines of code with convoluted logic that is difficult to expand to support new platforms
@@ -384,7 +410,6 @@ namespace BizHawk.MultiClient
 			{
 				foreach (string button in Global.BUTTONS[ControlType].Keys)
 				{
-					
 					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
 				}
 				input.Append("|");
@@ -393,6 +418,35 @@ namespace BizHawk.MultiClient
 			return input.ToString();
 		}
 
+		private string GetC64ControllersAsMnemonic()
+		{
+			StringBuilder input = new StringBuilder("|");
+			
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
+				}
+				input.Append('|');
+			}
+
+			foreach (string button in Global.BUTTONS["Commodore 64 Keyboard"].Keys)
+			{
+				if (Global.BUTTONS["Commodore 64 Keyboard"][button] == "Key Restore")
+				{
+					int xx = 0;
+					xx++;
+					int y = xx;
+					y++;
+				}
+				input.Append(IsBasePressed(button) ? Global.BUTTONS["Commodore 64 Keyboard"][button] : ".");
+			}
+			input.Append('|');
+
+			input.Append('|');
+			return input.ToString();
+		}
 
 		public string GetControllersAsMnemonic()
 		{
@@ -400,14 +454,21 @@ namespace BizHawk.MultiClient
 			{
 				return "|.|";
 			}
-			if (ControlType == "Atari 7800 Basic Controller")
+			else if (ControlType == "Atari 7800 Basic Controller")
 			{
 				return "|.|"; //TODO
 			}
-
 			else if (ControlType == "SNES Controller")
 			{
 				return GetSNESControllersAsMnemonic();
+			}
+			else if (ControlType == "Commodore 64 Controller")
+			{
+				return GetC64ControllersAsMnemonic();
+			}
+			else if (ControlType == "GBA Controller")
+			{
+				return GetGBAControllersAsMnemonic();
 			}
 
 			StringBuilder input = new StringBuilder("|");
@@ -416,12 +477,55 @@ namespace BizHawk.MultiClient
 			{
 				input.Append(".");
 			}
-			if (ControlType == "Atari 2600 Basic Controller")
+			else if (ControlType == "Atari 2600 Basic Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? "r" : ".");
 				input.Append(IsBasePressed("Select") ? "s" : ".");
 			}
-			if (ControlType == "NES Controller" || ControlType == "Genesis 3-Button Controller")
+			else if (ControlType == "NES Controller")
+			{
+				if (IsBasePressed("Power"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["Power"]);
+				}
+				else if (IsBasePressed("Reset"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["Reset"]);
+				}
+				else if (IsBasePressed("FDS Eject"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["FDS Eject"]);
+				}
+				else if (IsBasePressed("FDS Insert 0"))
+				{
+					input.Append("0");
+				}
+				else if (IsBasePressed("FDS Insert 1"))
+				{
+					input.Append("1");
+				}
+				else if (IsBasePressed("FDS Insert 2"))
+				{
+					input.Append("2");
+				}
+				else if (IsBasePressed("FDS Insert 3"))
+				{
+					input.Append("3");
+				}
+				else if (IsBasePressed("VS Coin 1"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["VS Coin 1"]);
+				}
+				else if (IsBasePressed("VS Coin 2"))
+				{
+					input.Append(Global.COMMANDS[ControlType]["VS Coin 2"]);
+				}
+				else
+				{
+					input.Append('.');
+				}
+			}
+			else if (ControlType == "Genesis 3-Button Controller")
 			{
 				if (IsBasePressed("Power"))
 				{
@@ -436,14 +540,16 @@ namespace BizHawk.MultiClient
 					input.Append('.');
 				}
 			}
-			if (ControlType == "Gameboy Controller")
+			else if (ControlType == "Gameboy Controller")
 			{
 				input.Append(IsBasePressed("Power") ? Global.COMMANDS[ControlType]["Power"] : ".");
 			}
-			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller")
+			
+			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller" && ControlType != "ColecoVision Basic Controller")
 			{
 				input.Append("|");
 			}
+			
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
 				string prefix = "";
@@ -623,6 +729,26 @@ namespace BizHawk.MultiClient
 		}
 
 		//Redundancy beats crazy if logic that makes new consoles annoying to add
+
+		private void SetGBAControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			int start = 3;
+			foreach (string button in Global.BUTTONS[ControlType].Keys)
+			{
+				Force(button, c[start++]);
+			}
+		}
+
 		private void SetSNESControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
@@ -660,6 +786,35 @@ namespace BizHawk.MultiClient
 
 		}
 
+		private void SetC64ControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+
+				if (mnemonic.Length < srcindex + 1 + Global.BUTTONS[ControlType].Count - 1)
+				{
+					return;
+				}
+
+				int start = 1;
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+			}
+
+			int startk = 13;
+			foreach (string button in Global.BUTTONS["Commodore 64 Keyboard"].Keys)
+			{
+				Force(button, c[startk++]);
+			}
+		}
+
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string
 		/// </summary>
@@ -674,6 +829,17 @@ namespace BizHawk.MultiClient
 				SetSNESControllersAsMnemonic(mnemonic);
 				return;
 			}
+			else if (ControlType == "Commodore 64 Controller")
+			{
+				SetC64ControllersAsMnemonic(mnemonic);
+				return;
+			}
+			else if (ControlType == "GBA Controller")
+			{
+				SetGBAControllersAsMnemonic(mnemonic);
+				return;
+			}
+
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 
 			MyBoolButtons.Clear();
@@ -689,12 +855,38 @@ namespace BizHawk.MultiClient
 				{
 					Force("Power", true);
 				}
-				else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+				else if (mnemonic[1] == 'E')
+				{
+					Force("FDS Eject", true);
+				}
+				else if (mnemonic[1] == '0')
+				{
+					Force("FDS Insert 0", true);
+				}
+				else if (mnemonic[1] == '1')
+				{
+					Force("FDS Insert 1", true);
+				}
+				else if (mnemonic[1] == '2')
+				{
+					Force("FDS Insert 2", true);
+				}
+				else if (mnemonic[1] == '3')
+				{
+					Force("FDS Insert 3", true);
+				}
+				else if (mnemonic[1] == 'c')
+				{
+					Force("VS Coin 1", true);
+				}
+				else if (mnemonic[1] == 'C')
+				{
+					Force("VS Coin 2", true);
+				}
+				else if (mnemonic[1] != '.')
 				{
 					Force("Reset", true);
 				}
-				
-				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
 			}
 			if (ControlType == "Gameboy Controller")
 			{
@@ -706,7 +898,7 @@ namespace BizHawk.MultiClient
 				if (mnemonic.Length < 2) return;
 				Force("Reset", mnemonic[1] != '.');
 			}
-			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller")
+			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller" ||  ControlType == "ColecoVision Basic Controller")
 			{
 				start = 1;
 			}

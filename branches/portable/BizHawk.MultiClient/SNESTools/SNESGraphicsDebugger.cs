@@ -2,6 +2,10 @@
 //TODO - overhaul the BG display box if its mode7 or direct color (mode7 more important)
 //TODO - draw `1024` label in red if your content is being scaled down.
 //TODO - maybe draw a label (in lieu of above, also) showing what scale the content is at: 2x or 1x or 1/2x
+//TODO - add eDisplayType for BG1-Tiles, BG2-Tiles, etc. which show the tiles available to a BG. more concise than viewing all tiles and illustrating the relevant accessible areas
+//        . could this apply to the palette too?
+
+//http://stackoverflow.com/questions/1101149/displaying-thumbnail-icons-128x128-pixels-or-larger-in-a-grid-in-listview
 
 using System;
 using System.Collections.Generic;
@@ -27,6 +31,7 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
 			viewerTile.ScaleImage = true;
+
 			viewer.ScaleImage = false;
 
 			var displayTypeItems = new List<DisplayTypeItem>();
@@ -34,16 +39,26 @@ namespace BizHawk.MultiClient
 			displayTypeItems.Add(new DisplayTypeItem("BG2",eDisplayType.BG2));
 			displayTypeItems.Add(new DisplayTypeItem("BG3",eDisplayType.BG3));
 			displayTypeItems.Add(new DisplayTypeItem("BG4",eDisplayType.BG4));
-			displayTypeItems.Add(new DisplayTypeItem("OBJ",eDisplayType.OBJ));
+			displayTypeItems.Add(new DisplayTypeItem("OBJ Tiles",eDisplayType.OBJ0));
+			displayTypeItems.Add(new DisplayTypeItem("Sprites", eDisplayType.Sprites));
 			displayTypeItems.Add(new DisplayTypeItem("2bpp tiles",eDisplayType.Tiles2bpp));
 			displayTypeItems.Add(new DisplayTypeItem("4bpp tiles",eDisplayType.Tiles4bpp));
 			displayTypeItems.Add(new DisplayTypeItem("8bpp tiles",eDisplayType.Tiles8bpp));
 			displayTypeItems.Add(new DisplayTypeItem("Mode7 tiles",eDisplayType.TilesMode7));
 			displayTypeItems.Add(new DisplayTypeItem("Mode7Ext tiles",eDisplayType.TilesMode7Ext));
 			displayTypeItems.Add(new DisplayTypeItem("Mode7 tiles (DC)", eDisplayType.TilesMode7DC));
-
 			comboDisplayType.DataSource = displayTypeItems;
 			comboDisplayType.SelectedIndex = 0;
+
+			var paletteTypeItems = new List<PaletteTypeItem>();
+			paletteTypeItems.Add(new PaletteTypeItem("BizHawk Palette", SnesColors.ColorType.BizHawk));
+			paletteTypeItems.Add(new PaletteTypeItem("bsnes Palette", SnesColors.ColorType.BSNES));
+			paletteTypeItems.Add(new PaletteTypeItem("Snes9X Palette", SnesColors.ColorType.Snes9x));
+			suppression = true;
+			comboPalette.DataSource = paletteTypeItems;
+			comboPalette.SelectedIndex = 0;
+			suppression = false;
+
 			comboBGProps.SelectedIndex = 0;
 
 			tabctrlDetails.SelectedIndex = 1;
@@ -93,8 +108,11 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsLoadstate()
 		{
 			SyncCore();
-			RegenerateData();
-			UpdateValues();
+			if (this.Visible)
+			{
+				RegenerateData();
+				UpdateValues();
+			}
 		}
 
 		private void nudScanline_ValueChanged(object sender, EventArgs e)
@@ -120,7 +138,16 @@ namespace BizHawk.MultiClient
 		{
 			LibsnesCore core = Global.Emulator as LibsnesCore;
 			if (currentSnesCore != core && currentSnesCore != null)
+			{
 				currentSnesCore.ScanlineHookManager.Unregister(this);
+			}
+
+			if(currentSnesCore != core)
+			{
+				suppression = true;
+				comboPalette.SelectedValue = core.CurrPalette;
+				suppression = false;
+			}
 
 			currentSnesCore = core;
 
@@ -143,14 +170,16 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		SNESGraphicsDecoder gd = new SNESGraphicsDecoder();
+		SNESGraphicsDecoder gd = new SNESGraphicsDecoder(SnesColors.ColorType.BizHawk);
 		SNESGraphicsDecoder.ScreenInfo si;
 
 		void RegenerateData()
 		{
 			gd = null;
 			if (currentSnesCore == null) return;
-			gd = new SNESGraphicsDecoder();
+			gd = NewDecoder();
+			if(checkBackdropColor.Checked)
+				gd.SetBackColor(DecodeWinformsColorToSNES(pnBackdropColor.BackColor));
 			gd.CacheTiles();
 			si = gd.ScanScreenInfo();
 		}
@@ -159,6 +188,13 @@ namespace BizHawk.MultiClient
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (currentSnesCore == null) return;
+
+			txtOBSELSizeBits.Text = si.OBSEL_Size.ToString();
+			txtOBSELBaseBits.Text = si.OBSEL_NameBase.ToString();
+			txtOBSELT1OfsBits.Text = si.OBSEL_NameSel.ToString();
+			txtOBSELSizeDescr.Text = string.Format("{0}, {1}", SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size,0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size,1]);
+			txtOBSELBaseDescr.Text = FormatVramAddress(si.OBJTable0Addr);
+			txtOBSELT1OfsDescr.Text = FormatVramAddress(si.OBJTable1Addr);
 
 			checkScreenExtbg.Checked = si.SETINI_Mode7ExtBG;
 			checkScreenHires.Checked = si.SETINI_HiRes;
@@ -226,6 +262,32 @@ namespace BizHawk.MultiClient
 			};
 
 			var selection = CurrDisplaySelection;
+			if (selection == eDisplayType.Sprites)
+			{
+				var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size,0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size,1] };
+				int largestWidth = Math.Max(dims[0].Width, dims[1].Width);
+				int largestHeight = Math.Max(dims[0].Height, dims[1].Height);
+				int width = largestWidth * 16;
+				int height = largestHeight * 8;
+				allocate(width, height);
+				for (int i = 0; i < 128; i++)
+				{
+					int tx = i % 16;
+					int ty = i / 16;
+					int x = tx * largestWidth;
+					int y = ty * largestHeight;
+					gd.RenderSpriteToScreen(pixelptr, stride / 4, x,y, si, i);
+				}
+			}
+			if (selection == eDisplayType.OBJ0 || selection == eDisplayType.OBJ1)
+			{
+				allocate(128, 256);
+				int startTile;
+				startTile = si.OBJTable0Addr / 32;
+				gd.RenderTilesToScreen(pixelptr, 16, 16, stride / 4, 4, currPaletteSelection.start, startTile, 256, true);
+				startTile = si.OBJTable1Addr / 32;
+				gd.RenderTilesToScreen(pixelptr + (stride/4*8*16), 16, 16, stride / 4, 4, currPaletteSelection.start, startTile, 256, true);
+			}
 			if (selection == eDisplayType.Tiles2bpp)
 			{
 				allocate(512, 512);
@@ -313,9 +375,10 @@ namespace BizHawk.MultiClient
 
 		enum eDisplayType
 		{
-			BG1=1, BG2=2, BG3=3, BG4=4, OBJ, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC
+			BG1=1, BG2=2, BG3=3, BG4=4, Sprites, OBJ0, OBJ1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC
 		}
 		static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
+		static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJ0 || type == eDisplayType.OBJ1; }
 		static int DisplayTypeBGNum(eDisplayType type) { if(IsDisplayTypeBG(type)) return (int)type; else return -1; }
 
 		class DisplayTypeItem
@@ -323,6 +386,17 @@ namespace BizHawk.MultiClient
 			public eDisplayType type { get; set; }
 			public string descr { get; set; }
 			public DisplayTypeItem(string descr, eDisplayType type)
+			{
+				this.type = type;
+				this.descr = descr;
+			}
+		}
+
+		class PaletteTypeItem
+		{
+			public SnesColors.ColorType type { get; set; }
+			public string descr { get; set; }
+			public PaletteTypeItem(string descr, SnesColors.ColorType type)
 			{
 				this.type = type;
 				this.descr = descr;
@@ -465,11 +539,13 @@ namespace BizHawk.MultiClient
 		{
 			int bpp = 0;
 			var selection = CurrDisplaySelection;
-			if (selection == eDisplayType.Tiles2bpp) bpp=2;
+			if (selection == eDisplayType.Tiles2bpp) bpp = 2;
 			if (selection == eDisplayType.Tiles4bpp) bpp = 4;
 			if (selection == eDisplayType.Tiles8bpp) bpp = 8;
 			if (selection == eDisplayType.TilesMode7) bpp = 8;
 			if (selection == eDisplayType.TilesMode7Ext) bpp = 7;
+			if (selection == eDisplayType.OBJ0) bpp = 4;
+			if (selection == eDisplayType.OBJ1) bpp = 4;
 
 			SNESGraphicsDecoder.PaletteSelection ret = new SNESGraphicsDecoder.PaletteSelection();
 			if(bpp == 0) return ret;
@@ -487,9 +563,16 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
+		SNESGraphicsDecoder NewDecoder()
+		{
+			if (currentSnesCore != null)
+				return new SNESGraphicsDecoder(currentSnesCore.CurrPalette);
+			else return new SNESGraphicsDecoder(SnesColors.ColorType.BizHawk);
+		}
+
 		void RenderPalette()
 		{
-			var gd = new SNESGraphicsDecoder();
+			var gd = NewDecoder();
 			lastPalette = gd.GetPalette();
 
 			int pixsize = paletteCellSize * 16 + paletteCellSpacing * 17;
@@ -517,8 +600,13 @@ namespace BizHawk.MultiClient
 				//next, draw the rectangle that advises you which colors could possibly be used for a bg
 				if (IsDisplayTypeBG(CurrDisplaySelection))
 				{
-					var si = gd.ScanScreenInfo();
 					var ps = si.BG[DisplayTypeBGNum(CurrDisplaySelection)].PaletteSelection;
+					region = GetPaletteRegion(ps);
+					DrawPaletteRegion(g, Color.FromArgb(192, 128, 255, 255), region);
+				}
+				if (IsDisplayTypeOBJ(CurrDisplaySelection))
+				{
+					var ps = new SNESGraphicsDecoder.PaletteSelection(128, 128);
 					region = GetPaletteRegion(ps);
 					DrawPaletteRegion(g, Color.FromArgb(192, 128, 255, 255), region);
 				}
@@ -536,7 +624,7 @@ namespace BizHawk.MultiClient
 		void UpdateColorDetails()
 		{
 			int rgb555 = lastPalette[lastColorNum];
-			var gd = new SNESGraphicsDecoder();
+			var gd = NewDecoder();
 			int color = gd.Colorize(rgb555);
 			pnDetailsPaletteColor.BackColor = Color.FromArgb(color);
 
@@ -649,7 +737,8 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				UpdateViewerMouseover(e.Location);
+				if(si != null)
+					UpdateViewerMouseover(e.Location);
 			}
 		}
 
@@ -661,6 +750,7 @@ namespace BizHawk.MultiClient
 		TileViewerBGState currTileViewerBGState;
 		int currViewingTile = -1;
 		int currViewingTileBpp = -1;
+		int currViewingSprite = -1;
 		void RenderTileView(bool force=false)
 		{
 			//TODO - blech - handle invalid some other way with a dedicated black-setter
@@ -709,6 +799,10 @@ namespace BizHawk.MultiClient
 			int ty = loc.Y / 8;
 			switch (CurrDisplaySelection)
 			{
+				case eDisplayType.Sprites:
+					//currViewingSprite = tx + ty * 16;
+					RenderView();
+					break;
 			  case eDisplayType.Tiles4bpp:
 					currViewingTileBpp = 4;
 					currViewingTile = ty * 64 + tx;
@@ -779,17 +873,23 @@ namespace BizHawk.MultiClient
 			UpdateColorDetails();
 		}
 
+		static int DecodeWinformsColorToSNES(Color winforms)
+		{
+			int r = winforms.R;
+			int g = winforms.G;
+			int b = winforms.B;
+			r >>= 3;
+			g >>= 3;
+			b >>= 3;
+			int col = r | (g << 5) | (b << 10);
+			return col;
+		}
+
 		void SyncBackdropColor()
 		{
 			if (checkBackdropColor.Checked)
 			{
-				int r = pnBackdropColor.BackColor.R;
-				int g = pnBackdropColor.BackColor.G;
-				int b = pnBackdropColor.BackColor.B;
-				r >>= 3;
-				g >>= 3;
-				b >>= 3;
-				int col = r | (g << 5) | (b << 10);
+				int col = DecodeWinformsColorToSNES(pnBackdropColor.BackColor);
 				LibsnesDll.snes_set_backdropColor(col);
 			}
 			else
@@ -802,6 +902,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.SNESGraphicsUseUserBackdropColor = checkBackdropColor.Checked;
 			SyncBackdropColor();
+			RegenerateData();
 		}
 
 		private void pnBackdropColor_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -814,6 +915,54 @@ namespace BizHawk.MultiClient
 				Global.Config.SNESGraphicsUserBackdropColor = pnBackdropColor.BackColor.ToArgb();
 				SyncBackdropColor();
 			}
+		}
+
+		private void SNESGraphicsDebugger_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (Control.ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			{
+				// find the control under the mouse
+				Point m = System.Windows.Forms.Cursor.Position;
+				Control top = this;
+				Control found = null;
+				do
+				{
+					found = top.GetChildAtPoint(top.PointToClient(m));
+					top = found;
+				} while (found != null && found.HasChildren);
+
+				if (found != null && found is SNESGraphicsViewer)
+				{
+					var v = found as SNESGraphicsViewer;
+					lock(v)
+						Clipboard.SetImage(v.GetBitmap());
+					labelClipboard.Text = found.Text + " copied to clipboard.";
+					messagetimer.Stop();
+					messagetimer.Start();
+				}
+			}
+		}
+
+		private void messagetimer_Tick(object sender, EventArgs e)
+		{
+			messagetimer.Stop();
+			labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
+		}
+
+		private void comboPalette_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (suppression) return;
+			var pal = (SnesColors.ColorType)comboPalette.SelectedValue;
+			Console.WriteLine("set {0}", pal);
+			Global.Config.SNESPalette = pal.ToString();
+			if (currentSnesCore != null)
+			{
+				currentSnesCore.SetPalette(pal);
+			}
+			RegenerateData();
+			RenderView();
+			RenderPalette();
+			RenderTileView();
 		}
 
 

@@ -50,7 +50,8 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			// set real default colors (before anyone mucks with them at all)
 			ChangeDMGColors(new int[] { 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157, 10798341, 8956165, 1922333, 337157 });
-			
+			SetCGBColors(GBColors.ColorType.gambatte);
+
 			InitSound();
 
 			Frame = 0;
@@ -147,7 +148,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
 
-			Console.WriteLine("===");
+			//Console.WriteLine("===");
 
 			// upload any modified data to the memory domains
 
@@ -288,9 +289,9 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public void ResetFrameCounter()
 		{
-			// is this right?
 			Frame = 0;
 			LagCount = 0;
+			IsLagFrame = false;
 		}
 
 		#region savestates
@@ -329,7 +330,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			foreach (var r in MemoryRefreshers)
 				r.RefreshRead();
 		}
-	
+
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
 			var temp = SaveStateBinary();
@@ -406,7 +407,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			LibGambatte.gambatte_setreadcallback(GambatteState, readcb);
 			LibGambatte.gambatte_setwritecallback(GambatteState, writecb);
 		}
-	
+
 
 
 		#endregion
@@ -450,7 +451,6 @@ namespace BizHawk.Emulation.Consoles.GB
 				s[10] & 0xff,
 				s[11] != 0 ? "skip" : "",
 				s[12] & 0xff,
-				//CPUs.Z80GB.Disassembler.DAsm((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
 				CPUs.Z80GB.NewDisassembler.Disassemble((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused).PadRight(30)
 			));
 		}
@@ -474,7 +474,7 @@ namespace BizHawk.Emulation.Consoles.GB
 				// needs to be true in case a read is attempted before the first frame advance
 				readneeded = true;
 			}
-	
+
 			bool readneeded;
 			bool writeneeded;
 
@@ -575,7 +575,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public MemoryDomain MainMemory { get; private set; }
 
-		List <MemoryRefresher> MemoryRefreshers;
+		List<MemoryRefresher> MemoryRefreshers;
 
 		#endregion
 
@@ -706,14 +706,17 @@ namespace BizHawk.Emulation.Consoles.GB
 				LibGambatte.gambatte_setdmgpalettecolor(GambatteState, (LibGambatte.PalType)(i / 4), (uint)i % 4, (uint)colors[i]);
 		}
 
+		public void SetCGBColors(GBColors.ColorType type)
+		{
+			int[] lut = GBColors.GetLut(type);
+			LibGambatte.gambatte_setcgbpalette(GambatteState, lut);
+		}
+
 		#endregion
 
 		#region ISoundProvider
 
-		public ISoundProvider SoundProvider
-		{
-			get { return null; }
-		}
+		public ISoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return dcfilter; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }

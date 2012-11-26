@@ -1,77 +1,153 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
-using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.Emulation.Consoles.Coleco
 {
-	public partial class ColecoVision : IEmulator, IVideoProvider, ISoundProvider
+	public sealed partial class ColecoVision : IEmulator
 	{
-		public string SystemId { get { return "Coleco"; } }
-		public GameInfo game;
-		public int[] frameBuffer = new int[256 * 192];
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
-		public IVideoProvider VideoProvider { get { return this; } }
-		public ISoundProvider SoundProvider { get { return this; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(this, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
-		public byte[] ram = new byte[2048];
+		// ROM
+		public byte[] RomData;
+		public int RomLength;
 
-		public DisplayType DisplayType { get; set; } //TOOD: delete me
+		public byte[] BiosRom;
 
-		public ColecoVision(GameInfo game, byte[] rom)
+		// Machine
+		public Z80A Cpu;
+		public TMS9918A VDP;
+		public SN76489 PSG;
+		public byte[] Ram = new byte[1024];
+
+		public ColecoVision(GameInfo game, byte[] rom, string biosPath, bool skipbios)
 		{
-			cpu = new Z80A();
-			Vdp = new VDP(this, cpu, VdpMode.SMS, DisplayType);
+			Cpu = new Z80A();
+			Cpu.ReadMemory = ReadMemory;
+			Cpu.WriteMemory = WriteMemory;
+			Cpu.ReadHardware = ReadPort;
+			Cpu.WriteHardware = WritePort;
+            Cpu.Logger = (s) => Log.Error("COL", s);
+			//Cpu.Debug = true;
 
-			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 1024, Endian.Little, addr => ram[1023], (addr, value) => ram[addr & 1023] = value));
-			memoryDomains = domains.AsReadOnly();
+			VDP = new TMS9918A(Cpu);
+			PSG = new SN76489();
+
+			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
+			BiosRom = File.ReadAllBytes(biosPath);
+
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
-			this.rom = rom;
+             
+            if (game["NoSkip"])
+                skipbios = false;
+            Console.WriteLine("skipbios = {0}", skipbios);
+			LoadRom(rom, skipbios);
 			this.game = game;
-			HardReset();
+			SetupMemoryDomains();
 		}
 
-		public void ResetFrameCounter() { _frame = 0; }
-
-		public static readonly ControllerDefinition ColecoVisionControllerDefinition = new ControllerDefinition
+		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		IList<MemoryDomain> memoryDomains;
+		const ushort RamSizeMask = 0x03FF;
+		void SetupMemoryDomains()
 		{
-			Name = "ColecoVision Basic Controller",
-			BoolButtons = 
+			var domains = new List<MemoryDomain>(3);
+			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, Endian.Little,
+				addr => Ram[addr & RamSizeMask],
+				(addr, value) => Ram[addr & RamSizeMask] = value);
+			var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, Endian.Little,
+				addr => VDP.VRAM[addr & 0x3FFF],
+				(addr, value) => VDP.VRAM[addr & 0x3FFF] = value);
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, Endian.Little,
+				addr => Cpu.ReadMemory((ushort)addr),
+				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
+
+			domains.Add(MainMemoryDomain);
+			domains.Add(VRamDomain);
+			domains.Add(SystemBusDomain);
+			memoryDomains = domains.AsReadOnly();
+		}
+
+		public void FrameAdvance(bool render, bool renderSound)
+		{
+			Frame++;
+			islag = true;
+			PSG.BeginFrame(Cpu.TotalExecutedCycles);
+			VDP.ExecuteFrame();
+			PSG.EndFrame(Cpu.TotalExecutedCycles);
+
+			if (islag)
+				LagCount++;
+		}
+
+        void LoadRom(byte[] rom, bool skipbios)
+        {
+            RomData = new byte[0x8000];
+            for (int i = 0; i < 0x8000; i++)
+                RomData[i] = rom[i % rom.Length];
+
+			// hack to skip colecovision title screen
+			if (skipbios)
 			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right",
-				"P1 L1", "P1 L2", "P1 R1", "P1 R2",
-				"P1 Key1", "P1 Key2", "P1 Key3", "P1 Key4", "P1 Key5",
-				"P1 Key6", "P1 Key7", "P1 Key8", "P1 Key9", "P1 Star", "P1 Pound" //adelikat: TODO: can there be multiple controllers?
+				RomData[0] = 0x55;
+				RomData[1] = 0xAA;
 			}
-		};
+        }
 
-		void SyncState(Serializer ser)
+		byte ReadPort(ushort port)
 		{
-			//cpu.SyncState(ser); //TODO: z80 does not have this, do it the SMS way?
-			ser.Sync("ram", ref ram, false);
-			ser.Sync("Lag", ref _lagcount);
-			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
+			port &= 0xFF;
+
+			if (port >= 0xA0 && port < 0xC0)
+			{
+				if ((port & 1) == 0)
+					return VDP.ReadData();
+				return VDP.ReadVdpStatus();
+			}
+
+            if (port >= 0xE0)
+            {
+                if ((port & 1) == 0)
+                    return ReadController1();
+                return ReadController2();
+            }
+
+			return 0xFF;
 		}
 
-		public ControllerDefinition ControllerDefinition { get { return ColecoVisionControllerDefinition; } }
-		public IController Controller { get; set; }
+		void WritePort(ushort port, byte value)
+		{
+			port &= 0xFF;
 
-		public int Frame { get { return _frame; } set { _frame = value; } }
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public bool IsLagFrame { get { return _islag; } }
-		private bool _islag = true;
-		private int _lagcount = 0;
-		private int _frame = 0;
+			if (port >= 0xA0 && port <= 0xBF)  
+			{
+				if ((port & 1) == 0)
+					VDP.WriteVdpData(value);
+				else
+					VDP.WriteVdpControl(value);
+				return;
+			}
+
+            if (port >= 0x80 && port <= 0x9F)
+            {
+                InputPortSelection = InputPortMode.Right;
+                return;
+            }
+
+            if (port >= 0xC0 && port <= 0xDF)
+            {
+                InputPortSelection = InputPortMode.Left;
+                return;
+            }
+
+            if (port >= 0xE0)
+            {
+                PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
+                return;
+            }
+		}
 
 		public byte[] ReadSaveRam() { return null; }
 		public void StoreSaveRam(byte[] data) { }
@@ -79,34 +155,100 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public bool SaveRamModified { get; set; }
 
 		public bool DeterministicEmulation { get { return true; } }
-		public void SaveStateText(TextWriter writer) { SyncState(Serializer.CreateTextWriter(writer)); }
-		public void LoadStateText(TextReader reader) { SyncState(Serializer.CreateTextReader(reader)); }
-		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
-		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }
+		
+		public void SaveStateText(TextWriter writer)
+		{
+			writer.WriteLine("[Coleco]\n");
+			Cpu.SaveStateText(writer);
+			PSG.SaveStateText(writer);
+			VDP.SaveStateText(writer);
+
+			writer.WriteLine("Frame {0}", Frame);
+			writer.WriteLine("Lag {0}", _lagcount);
+			writer.WriteLine("islag {0}", islag);
+			writer.Write("RAM ");
+			Ram.SaveAsHex(writer);
+			writer.WriteLine("[/Coleco]");
+		}
+		
+		public void LoadStateText(TextReader reader)
+		{
+			while (true)
+			{
+				string[] args = reader.ReadLine().Split(' ');
+				if (args[0].Trim() == "") continue;
+				if (args[0] == "[Coleco]") continue;
+				if (args[0] == "[/Coleco]") break;
+				else if (args[0] == "Frame")
+					Frame = int.Parse(args[1]);
+				else if (args[0] == "Lag")
+					_lagcount = int.Parse(args[1]);
+				else if (args[0] == "islag")
+					islag = bool.Parse(args[1]);
+				else if (args[0] == "RAM")
+					Ram.ReadFromHex(args[1]);
+				else if (args[0] == "[Z80]")
+					Cpu.LoadStateText(reader);
+				else if (args[0] == "[PSG]")
+					PSG.LoadStateText(reader);
+				else if (args[0] == "[VDP]")
+					VDP.LoadStateText(reader);
+				else
+					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+			}
+		}
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
+			var buf = new byte[24802 + 16384 + 16384];
+			var stream = new MemoryStream(buf);
+			var writer = new BinaryWriter(stream);
+			SaveStateBinary(writer);
+			writer.Close();
+			return buf;
 		}
 
-		public int[] GetVideoBuffer() { return frameBuffer; }
-        public int VirtualWidth { get { return 256; } }
-        public int BufferWidth { get { return 256; } }
-		public int BufferHeight { get { return 192; } }
-		public int BackgroundColor { get { return 0; } }
-		public void GetSamples(short[] samples)
+		public void SaveStateBinary(BinaryWriter writer)
 		{
+			Cpu.SaveStateBinary(writer);
+			PSG.SaveStateBinary(writer);
+			VDP.SaveStateBinary(writer);
+
+			writer.Write(Frame);
+			writer.Write(_lagcount);
+			writer.Write(islag);
+			writer.Write(Ram);
 		}
 
-		public void DiscardSamples() { }
-		public int MaxVolume { get; set; }
-		private IList<MemoryDomain> memoryDomains;
-		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			Cpu.LoadStateBinary(reader);
+			PSG.LoadStateBinary(reader);
+			VDP.LoadStateBinary(reader);
+
+			Frame = reader.ReadInt32();
+			_lagcount = reader.ReadInt32();
+			islag = reader.ReadBoolean();
+			Ram = reader.ReadBytes(Ram.Length);
+		}
+
 		public void Dispose() { }
+		public void ResetFrameCounter()
+		{
+			Frame = 0;
+			_lagcount = 0;
+			islag = false;
+		}
+
+		public string SystemId { get { return "Coleco"; } }
+		public GameInfo game;
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
+		public IVideoProvider VideoProvider { get { return VDP; } }
+		public ISoundProvider SoundProvider { get { return PSG; } }
+
+		public ISyncSoundProvider SyncSoundProvider { get { return null; } }
+		public bool StartAsyncSound() { return true; }
+		public void EndAsyncSound() { }
 	}
 }

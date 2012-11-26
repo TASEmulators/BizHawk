@@ -122,6 +122,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//cpu = new MOS6502X_CPP((h) => DisposeList.Add(h));
 			//cpu = new MOS6502XDouble((h) => DisposeList.Add(h));
 			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory, (h) => DisposeList.Add(h));
+			cpu.FetchCallback = () =>
+				{
+					if (CoreInputComm.Tracer.Enabled)
+					{
+						CoreInputComm.Tracer.Put(cpu.TraceState());
+					}
+				};
 			cpu.BCD_Enabled = false;
 			ppu = new PPU(this);
 			ram = new byte[0x800];
@@ -183,11 +190,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					goto case "NES-NTSC";
 			}
 
-			//fceux uses this technique, which presumably tricks some games into thinking the memory is randomized
-			for (int i = 0; i < 0x800; i++)
-			{
-				if ((i & 4) != 0) ram[i] = 0xFF; else ram[i] = 0x00;
-			}
+			//check fceux's PowerNES function for more information:
+			//relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
+			for(int i=0;i<0x800;i++) if((i&1)!=0) ram[i] = 0xAA; else ram[i] = 0x55;
 
 			SetupMemoryDomains();
 
@@ -283,10 +288,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				else
 				{
 					cpu.IRQ = _irq_apu || board.IRQSignal;
-					if (CoreInputComm.Tracer.Enabled)
-					{
-						CoreInputComm.Tracer.Put(cpu.TraceState());
-					}
 					cpu.ExecuteOne();
 				}
 

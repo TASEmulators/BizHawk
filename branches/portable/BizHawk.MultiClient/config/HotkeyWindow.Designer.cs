@@ -176,6 +176,7 @@
 			this.label41 = new System.Windows.Forms.Label();
 			this.label40 = new System.Windows.Forms.Label();
 			this.label39 = new System.Windows.Forms.Label();
+			this.SaveMovieLabel = new System.Windows.Forms.Label();
 			this.IDW_STOPMOVIE = new BizHawk.MultiClient.InputWidget();
 			this.IDW_PLAYMOVIE = new BizHawk.MultiClient.InputWidget();
 			this.IDW_RECORDMOVIE = new BizHawk.MultiClient.InputWidget();
@@ -184,7 +185,10 @@
 			this.IDW_MTINCPLAYER = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SELECTNONE = new BizHawk.MultiClient.InputWidget();
 			this.IDW_MTSELECTALL = new BizHawk.MultiClient.InputWidget();
+			this.IDW_SaveMovie = new BizHawk.MultiClient.InputWidget();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.VirtualPadsLabel = new System.Windows.Forms.Label();
+			this.IDW_OpenVirtualPad = new BizHawk.MultiClient.InputWidget();
 			this.label77 = new System.Windows.Forms.Label();
 			this.label46 = new System.Windows.Forms.Label();
 			this.label56 = new System.Windows.Forms.Label();
@@ -222,8 +226,6 @@
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
-			this.IDW_SaveMovie = new BizHawk.MultiClient.InputWidget();
-			this.SaveMovieLabel = new System.Windows.Forms.Label();
 			this.hotkeyTabs.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -333,7 +335,7 @@
 			// 
 			this.IDW_HARDRESET.AcceptsTab = true;
 			this.IDW_HARDRESET.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_HARDRESET.Location = new System.Drawing.Point(93, 178);
+			this.IDW_HARDRESET.Location = new System.Drawing.Point(93, 180);
 			this.IDW_HARDRESET.Name = "IDW_HARDRESET";
 			this.IDW_HARDRESET.Size = new System.Drawing.Size(100, 20);
 			this.IDW_HARDRESET.TabIndex = 30;
@@ -478,18 +480,18 @@
 			this.label73.AutoSize = true;
 			this.label73.Location = new System.Drawing.Point(402, 38);
 			this.label73.Name = "label73";
-			this.label73.Size = new System.Drawing.Size(49, 13);
+			this.label73.Size = new System.Drawing.Size(51, 13);
 			this.label73.TabIndex = 97;
-			this.label73.Text = "Stop AVI";
+			this.label73.Text = "Stop A/V";
 			// 
 			// label72
 			// 
 			this.label72.AutoSize = true;
 			this.label72.Location = new System.Drawing.Point(402, 14);
 			this.label72.Name = "label72";
-			this.label72.Size = new System.Drawing.Size(62, 13);
+			this.label72.Size = new System.Drawing.Size(64, 13);
 			this.label72.TabIndex = 96;
-			this.label72.Text = "Record AVI";
+			this.label72.Text = "Record A/V";
 			// 
 			// label71
 			// 
@@ -1523,6 +1525,7 @@
 			this.tabPage3.Controls.Add(this.label41);
 			this.tabPage3.Controls.Add(this.label40);
 			this.tabPage3.Controls.Add(this.label39);
+			this.tabPage3.Controls.Add(this.SaveMovieLabel);
 			this.tabPage3.Controls.Add(this.IDW_STOPMOVIE);
 			this.tabPage3.Controls.Add(this.IDW_PLAYMOVIE);
 			this.tabPage3.Controls.Add(this.IDW_RECORDMOVIE);
@@ -1531,7 +1534,6 @@
 			this.tabPage3.Controls.Add(this.IDW_MTINCPLAYER);
 			this.tabPage3.Controls.Add(this.IDW_SELECTNONE);
 			this.tabPage3.Controls.Add(this.IDW_MTSELECTALL);
-			this.tabPage3.Controls.Add(this.SaveMovieLabel);
 			this.tabPage3.Controls.Add(this.IDW_SaveMovie);
 			this.tabPage3.Location = new System.Drawing.Point(4, 28);
 			this.tabPage3.Name = "tabPage3";
@@ -1649,6 +1651,15 @@
 			this.label39.TabIndex = 67;
 			this.label39.Text = "Toggle MultiTrack";
 			// 
+			// SaveMovieLabel
+			// 
+			this.SaveMovieLabel.AutoSize = true;
+			this.SaveMovieLabel.Location = new System.Drawing.Point(6, 143);
+			this.SaveMovieLabel.Name = "SaveMovieLabel";
+			this.SaveMovieLabel.Size = new System.Drawing.Size(64, 13);
+			this.SaveMovieLabel.TabIndex = 119;
+			this.SaveMovieLabel.Text = "Save Movie";
+			// 
 			// IDW_STOPMOVIE
 			// 
 			this.IDW_STOPMOVIE.AcceptsTab = true;
@@ -1721,8 +1732,19 @@
 			this.IDW_MTSELECTALL.Size = new System.Drawing.Size(100, 20);
 			this.IDW_MTSELECTALL.TabIndex = 81;
 			// 
+			// IDW_SaveMovie
+			// 
+			this.IDW_SaveMovie.AcceptsTab = true;
+			this.IDW_SaveMovie.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SaveMovie.Location = new System.Drawing.Point(105, 139);
+			this.IDW_SaveMovie.Name = "IDW_SaveMovie";
+			this.IDW_SaveMovie.Size = new System.Drawing.Size(100, 20);
+			this.IDW_SaveMovie.TabIndex = 118;
+			// 
 			// tabPage4
 			// 
+			this.tabPage4.Controls.Add(this.VirtualPadsLabel);
+			this.tabPage4.Controls.Add(this.IDW_OpenVirtualPad);
 			this.tabPage4.Controls.Add(this.label77);
 			this.tabPage4.Controls.Add(this.label46);
 			this.tabPage4.Controls.Add(this.label56);
@@ -1745,6 +1767,24 @@
 			this.tabPage4.TabIndex = 3;
 			this.tabPage4.Text = "Tools";
 			this.tabPage4.UseVisualStyleBackColor = true;
+			// 
+			// VirtualPadsLabel
+			// 
+			this.VirtualPadsLabel.AutoSize = true;
+			this.VirtualPadsLabel.Location = new System.Drawing.Point(18, 220);
+			this.VirtualPadsLabel.Name = "VirtualPadsLabel";
+			this.VirtualPadsLabel.Size = new System.Drawing.Size(58, 13);
+			this.VirtualPadsLabel.TabIndex = 119;
+			this.VirtualPadsLabel.Text = "Virtual Pad";
+			// 
+			// IDW_OpenVirtualPad
+			// 
+			this.IDW_OpenVirtualPad.AcceptsTab = true;
+			this.IDW_OpenVirtualPad.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_OpenVirtualPad.Location = new System.Drawing.Point(87, 217);
+			this.IDW_OpenVirtualPad.Name = "IDW_OpenVirtualPad";
+			this.IDW_OpenVirtualPad.Size = new System.Drawing.Size(100, 20);
+			this.IDW_OpenVirtualPad.TabIndex = 118;
 			// 
 			// label77
 			// 
@@ -2099,24 +2139,6 @@
 			this.AutoTabCheckBox.UseVisualStyleBackColor = true;
 			this.AutoTabCheckBox.CheckedChanged += new System.EventHandler(this.AutoTabCheckBox_CheckedChanged);
 			// 
-			// IDW_SaveMovie
-			// 
-			this.IDW_SaveMovie.AcceptsTab = true;
-			this.IDW_SaveMovie.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SaveMovie.Location = new System.Drawing.Point(105, 139);
-			this.IDW_SaveMovie.Name = "IDW_SaveMovie";
-			this.IDW_SaveMovie.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SaveMovie.TabIndex = 118;
-			// 
-			// SaveMovieLabel
-			// 
-			this.SaveMovieLabel.AutoSize = true;
-			this.SaveMovieLabel.Location = new System.Drawing.Point(6, 143);
-			this.SaveMovieLabel.Name = "SaveMovieLabel";
-			this.SaveMovieLabel.Size = new System.Drawing.Size(67, 13);
-			this.SaveMovieLabel.TabIndex = 119;
-			this.SaveMovieLabel.Text = "Save Movie";
-			// 
 			// HotkeyWindow
 			// 
 			this.AcceptButton = this.IDB_SAVE;
@@ -2351,5 +2373,7 @@
 		private System.Windows.Forms.Label label82;
 		private System.Windows.Forms.Label SaveMovieLabel;
 		private InputWidget IDW_SaveMovie;
+		private System.Windows.Forms.Label VirtualPadsLabel;
+		private InputWidget IDW_OpenVirtualPad;
     }
 }

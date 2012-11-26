@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
             // Initialize scanline to background color
             for (int i = 0; i < FrameWidth; i++)
-                FrameBuffer[(scanline * FrameWidth) + i] = VCE.Palette[0];
+                FrameBuffer[(scanline * FrameWidth) + i] = VCE.Palette[256];
         }
 
         void RenderBackgroundScanline(VDC vdc, byte priority, bool show)

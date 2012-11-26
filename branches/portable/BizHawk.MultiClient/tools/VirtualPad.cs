@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-	public class VirtualPad : Panel
+	public class VirtualPad : Panel , IVirtualPad
 	{
 		
 		public Point[] ButtonPoints = new Point[16];

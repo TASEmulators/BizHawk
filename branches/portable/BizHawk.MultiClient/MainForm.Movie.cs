@@ -24,11 +24,13 @@ namespace BizHawk.MultiClient
 			Global.MovieSession.Movie = m;
 			RewireInputChain();
 
-			LoadRom(Global.MainForm.CurrentlyOpenRom, true);
 			if (!record)
 			{
 				Global.MovieSession.Movie.LoadMovie();
+				SetSyncDependentSettings();
 			}
+
+			LoadRom(Global.MainForm.CurrentlyOpenRom, true);
 
 			Global.Config.RecentMovies.Add(m.Filename);
 			if (Global.MovieSession.Movie.StartsFromSavestate)
@@ -86,6 +88,17 @@ namespace BizHawk.MultiClient
 		public void RecordMovie()
 		{
 			RunLoopBlocked = true;
+			// put any BEETA quality cores here
+			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA || Global.Emulator is Emulation.Consoles.Sega.Genesis)
+			{
+				var result = MessageBox.Show
+					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
+					"is currently BETA-status.  We appreciate your help in testing Bizhawk. " +
+					"You can record a movie on this core if you'd like to, but expect to " +
+					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
+				if (result != System.Windows.Forms.DialogResult.Yes)
+					return;
+			}
 			RecordMovie r = new RecordMovie();
 			r.ShowDialog();
 			RunLoopBlocked = false;
@@ -293,6 +306,29 @@ namespace BizHawk.MultiClient
 				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
 				Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+			}
+		}
+
+		//On movie load, these need to be set based on the contents of the movie file
+		private void SetSyncDependentSettings()
+		{
+			string str = "";
+			switch (Global.Emulator.SystemId)
+			{
+				case "Coleco":
+					str = Global.MovieSession.Movie.Header.GetHeaderLine(MovieHeader.SKIPBIOS);
+					if (!String.IsNullOrWhiteSpace(str))
+					{
+						if (str.ToLower() == "true")
+						{
+							Global.Config.ColecoSkipBiosIntro = true;
+						}
+						else
+						{
+							Global.Config.ColecoSkipBiosIntro = false;
+						}
+					}
+					break;
 			}
 		}
 	}

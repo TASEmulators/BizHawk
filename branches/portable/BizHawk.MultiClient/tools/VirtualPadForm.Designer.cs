@@ -31,6 +31,8 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VirtualPadForm));
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autolaodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,21 +40,36 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StickyBox = new System.Windows.Forms.CheckBox();
-			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
+			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ControllerBox
 			// 
+			this.ControllerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerBox.ContextMenuStrip = this.contextMenuStrip1;
 			this.ControllerBox.Location = new System.Drawing.Point(9, 26);
 			this.ControllerBox.Name = "ControllerBox";
-			this.ControllerBox.Size = new System.Drawing.Size(367, 207);
+			this.ControllerBox.Size = new System.Drawing.Size(367, 251);
 			this.ControllerBox.TabIndex = 5;
 			this.ControllerBox.TabStop = false;
 			this.ControllerBox.Text = "Controllers";
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(102, 26);
+			// 
+			// clearToolStripMenuItem
+			// 
+			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+			this.clearToolStripMenuItem.Text = "&Clear";
+			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
 			// 
 			// menuStrip1
 			// 
@@ -105,9 +122,10 @@
 			// 
 			// StickyBox
 			// 
+			this.StickyBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.StickyBox.AutoSize = true;
 			this.StickyBox.Enabled = false;
-			this.StickyBox.Location = new System.Drawing.Point(12, 247);
+			this.StickyBox.Location = new System.Drawing.Point(9, 283);
 			this.StickyBox.Name = "StickyBox";
 			this.StickyBox.Size = new System.Drawing.Size(55, 17);
 			this.StickyBox.TabIndex = 7;
@@ -115,38 +133,23 @@
 			this.StickyBox.UseVisualStyleBackColor = true;
 			this.StickyBox.CheckedChanged += new System.EventHandler(this.StickyBox_CheckedChanged);
 			// 
-			// contextMenuStrip1
-			// 
-			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearToolStripMenuItem});
-			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(102, 26);
-			// 
-			// clearToolStripMenuItem
-			// 
-			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-			this.clearToolStripMenuItem.Text = "&Clear";
-			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
-			// 
 			// VirtualPadForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(388, 274);
-			this.Controls.Add(this.StickyBox);
+			this.ClientSize = new System.Drawing.Size(388, 312);
 			this.Controls.Add(this.ControllerBox);
+			this.Controls.Add(this.StickyBox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
-			this.MaximumSize = new System.Drawing.Size(404, 312);
-			this.MinimumSize = new System.Drawing.Size(404, 312);
+			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "VirtualPadForm";
 			this.Text = "Virtual Pads";
 			this.Load += new System.EventHandler(this.VirtualPadForm_Load);
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

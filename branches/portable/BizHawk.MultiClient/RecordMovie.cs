@@ -12,6 +12,7 @@ using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Consoles.Coleco;
 
 namespace BizHawk.MultiClient
 {
@@ -110,7 +111,10 @@ namespace BizHawk.MultiClient
 						MovieToRecord.Header.SetHeaderLine(MovieHeader.PAL, "1");
 					}
 				}
-
+				else if (Global.Emulator is ColecoVision)
+				{
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.SKIPBIOS, Global.Config.ColecoSkipBiosIntro.ToString());
+				}
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")
 				{
@@ -165,7 +169,8 @@ namespace BizHawk.MultiClient
 			sfd.DefaultExt = "." + Global.Config.MovieExtension;
 			sfd.FileName = RecordBox.Text;
 			sfd.OverwritePrompt = false;
-			sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
+			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
+			sfd.Filter = filter;
 
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
@@ -183,7 +188,9 @@ namespace BizHawk.MultiClient
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			RecordBox.Text = PathManager.FilesystemSafeName(Global.Game);
+			string name = PathManager.FilesystemSafeName(Global.Game);
+			name = Path.GetFileNameWithoutExtension(name);
+			RecordBox.Text = name;
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
 			if (Global.Config.UseDefaultAuthor)

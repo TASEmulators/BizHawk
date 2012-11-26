@@ -92,7 +92,7 @@ namespace BizHawk.MultiClient
 			//Input.Update();
 
 			//zero: ??? what is this all about ???
-			wasPressed = Input.Instance.GetNextPressedButtonOrNull();
+			wasPressed = Input.Instance.GetNextBindEvent();
 		}
 
 		protected override void OnLeave(EventArgs e)
@@ -117,7 +117,7 @@ namespace BizHawk.MultiClient
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
-			string TempBindingStr = Input.Instance.GetNextPressedButtonOrNull();
+			string TempBindingStr = Input.Instance.GetNextBindEvent();
 			if (wasPressed != "" && TempBindingStr == wasPressed)
 			{
 				return;

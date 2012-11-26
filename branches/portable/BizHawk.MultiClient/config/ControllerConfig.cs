@@ -53,6 +53,9 @@ namespace BizHawk.MultiClient
 			GBController1Panel.LoadSettings(Global.Config.GBController[0]);
 			GBAutofire1Panel.LoadSettings(Global.Config.GBAutoController[0]);
 
+			GBAController1Panel.LoadSettings(Global.Config.GBAController[0]);
+			GBAAutofire1Panel.LoadSettings(Global.Config.GBAAutoController[0]);
+
 			GenesisController1Panel.LoadSettings(Global.Config.GenesisController[0]);
 			GenesisAutofire1Panel.LoadSettings(Global.Config.GenesisAutoController[0]);
 			GenesisConsoleButtons.LoadSettings(Global.Config.GenesisConsoleButtons);
@@ -92,41 +95,142 @@ namespace BizHawk.MultiClient
 			C64Autofire1Panel.LoadSettings(Global.Config.C64AutoJoysticks[0]);
 			C64Autofire2Panel.LoadSettings(Global.Config.C64AutoJoysticks[1]);
 
-			SetAutoTab(true);
+			C64KeyboardPanel.Spacing = 23;
+			C64KeyboardPanel.InputSize = 70;
+			C64KeyboardPanel.LabelPadding = 4;
+			C64KeyboardPanel.ColumnWidth = 130;
+			C64KeyboardPanel.LabelWidth = 55;
+			C64KeyboardPanel.LoadSettings(Global.Config.C64Keyboard);
+
+			COLController1Panel.InputSize = 110;
+			COLController1Panel.LabelWidth = 50;
+			COLController1Panel.ColumnWidth = 170;
+			COLController1Panel.LoadSettings(Global.Config.ColecoController[0]);
+
+			COLAutofire1Panel.InputSize = 110;
+			COLAutofire1Panel.LabelWidth = 50;
+			COLAutofire1Panel.ColumnWidth = 170;
+			COLAutofire1Panel.LoadSettings(Global.Config.ColecoAutoController[0]);
+
+			COLController2Panel.InputSize = 110;
+			COLController2Panel.LabelWidth = 50;
+			COLController2Panel.ColumnWidth = 170;
+			COLController2Panel.LoadSettings(Global.Config.ColecoController[1]);
+
+			COLAutofire2Panel.InputSize = 110;
+			COLAutofire2Panel.LabelWidth = 50;
+			COLAutofire2Panel.ColumnWidth = 170;
+			COLAutofire2Panel.LoadSettings(Global.Config.ColecoAutoController[1]);
+
+			SetTabByPlatform();
+
+			if (!Global.MainForm.INTERIM)
+			{
+				PlatformTabControl.Controls.Remove(tabPageC64);
+				PlatformTabControl.Controls.Remove(tabPageGBA);
+			}
+
+			AutoTab.Checked = Global.Config.InputConfigAutoTab;
+			SetAutoTab();
+		}
+
+		private void SetTabByPlatform()
+		{
+			switch (Global.Emulator.SystemId)
+			{
+				case "NES":
+				case "FDS":
+					PlatformTabControl.SelectTab(tabPageNES);
+					break;
+				case "SNES":
+				case "SGB": //TODO: I think it never reports this, so this line could/should be removed
+					PlatformTabControl.SelectTab(tabPageSNES);
+					break;
+				case "GB":
+				case "GBC":
+					PlatformTabControl.SelectTab(tabPageGameboy);
+					break;
+				case "GBA":
+					PlatformTabControl.SelectTab(tabPageGBA);
+					break;
+				case "GEN":
+					PlatformTabControl.SelectTab(tabPageGenesis);
+					break;
+				case "SMS":
+				case "GG":
+				case "SG":
+					PlatformTabControl.SelectTab(tabPageSMS);
+					break;
+				case "PCE":
+				case "SGX":
+				case "PCECD":
+					PlatformTabControl.SelectTab(tabPagePCE);
+					break;
+				case "A26":
+					PlatformTabControl.SelectTab(tabPageAtari2600);
+					break;
+				case "C64":
+					PlatformTabControl.SelectTab(tabPageC64);
+					break;
+				case "Coleco":
+					PlatformTabControl.SelectTab(tabPageColeco);
+					break;
+				case "TI83":
+					PlatformTabControl.SelectTab(tabPageTI83);
+					break;
+			}
 		}
 
 		protected override void OnShown(EventArgs e)
 		{
-			Input.Instance.EnableIgnoreModifiers = true;
+			//Input.Instance.EnableIgnoreModifiers = true;
 			base.OnShown(e);
 		}
 
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			Input.Instance.EnableIgnoreModifiers = false;
+			//Input.Instance.EnableIgnoreModifiers = false;
 		}
 
-		private void SetAutoTab(bool setting)
+		private void SetAutoTab()
 		{
-			foreach (Control control1 in tabControl1.TabPages)
+			bool setting = AutoTab.Checked;
+			foreach (Control control1 in PlatformTabControl.TabPages)
 			{
-				if (control1 is TabControl)
+				if (control1 is TabPage)
 				{
-					foreach (Control control2 in (control1 as TabControl).TabPages)
+					foreach (Control control2 in control1.Controls)
 					{
-						if (control2 is InputWidget)
+						if (control2 is ControllerConfigPanel)
 						{
-							(control2 as InputWidget).AutoTab = setting;
+							(control2 as ControllerConfigPanel).SetAutoTab(setting);
+						}
+						else if (control2 is TabControl)
+						{
+							foreach (Control control3 in (control2 as TabControl).TabPages)
+							{
+								if (control3 is TabPage)
+								{
+									foreach (Control control4 in control3.Controls)
+									{
+										if (control4 is ControllerConfigPanel)
+										{
+											(control4 as ControllerConfigPanel).SetAutoTab(setting);
+										}
+									}
+								}
+								else if (control3 is ControllerConfigPanel)
+								{
+									(control3 as ControllerConfigPanel).SetAutoTab(setting);
+								}
+							}
 						}
 					}
 				}
-				else
+				else if (control1 is ControllerConfigPanel)
 				{
-					if (control1 is InputWidget)
-					{
-						(control1 as InputWidget).AutoTab = setting;
-					}
+					(control1 as ControllerConfigPanel).SetAutoTab(setting);
 				}
 			}
 		}
@@ -135,7 +239,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.AllowUD_LR = AllowLR.Checked;
 
-			foreach (Control control1 in tabControl1.TabPages)
+			foreach (Control control1 in PlatformTabControl.TabPages)
 			{
 				if (control1 is TabPage)
 				{
@@ -185,6 +289,12 @@ namespace BizHawk.MultiClient
 		{
 			Global.OSD.AddMessage("Controller config aborted");
 			Close();
+		}
+
+		private void AutoTab_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.HotkeyConfigAutoTab = AutoTab.Checked;
+			SetAutoTab();
 		}
 	}
 }

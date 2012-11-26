@@ -59,13 +59,61 @@ namespace BizHawk.MultiClient
 
 		private void miLimitFramerate_Click(object sender, EventArgs e)
 		{
-			Global.Config.LimitFramerate ^= true;
+			Global.Config.ClockThrottle ^= true;
+			if (Global.Config.ClockThrottle)
+			{
+				bool old = Global.Config.SoundThrottle;
+				Global.Config.SoundThrottle = false;
+				if (old)
+					RewireSound();
+				old = Global.Config.VSyncThrottle;
+				Global.Config.VSyncThrottle = false;
+				if (old)
+					Global.RenderPanel.Resized = true;
+			}
 			LimitFrameRateMessage();
+		}
+
+		private void audioThrottleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SoundThrottle ^= true;
+			RewireSound();
+			if (Global.Config.SoundThrottle)
+			{
+				Global.Config.ClockThrottle = false;
+				bool old = Global.Config.VSyncThrottle;
+				Global.Config.VSyncThrottle = false;
+				if (old)
+					Global.RenderPanel.Resized = true;
+			}
+
+		}
+
+		private void miDisplayVsync_Click(object sender, EventArgs e)
+		{
+			Global.Config.VSyncThrottle ^= true;
+			Global.RenderPanel.Resized = true;
+			if (Global.Config.VSyncThrottle)
+			{
+				Global.Config.ClockThrottle = false;
+				bool old = Global.Config.SoundThrottle;
+				Global.Config.SoundThrottle = false;
+				if (old)
+					RewireSound();
+			}
+			VsyncMessage();
+		}
+
+		private void vSyncEnabledToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.VSync ^= true;
+			if (!Global.Config.VSyncThrottle) // when vsync throttle is on, vsync is forced to on, so no change to make here
+				Global.RenderPanel.Resized = true;
 		}
 
 		public void LimitFrameRateMessage()
 		{
-			if (Global.Config.LimitFramerate)
+			if (Global.Config.ClockThrottle)
 			{
 				Global.OSD.AddMessage("Framerate limiting on");
 			}
@@ -75,16 +123,10 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void miDisplayVsync_Click(object sender, EventArgs e)
-		{
-			Global.Config.DisplayVSync ^= true;
-			Global.RenderPanel.Resized = true;
-			VsyncMessage();
-		}
 
 		public void VsyncMessage()
 		{
-			if (Global.Config.DisplayVSync)
+			if (Global.Config.VSyncThrottle)
 			{
 				Global.OSD.AddMessage("Display Vsync is set to on");
 			}
@@ -642,6 +684,7 @@ namespace BizHawk.MultiClient
 			luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LuaConsole;
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.Cheats;
 			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.TASTudio;
+			virtualPadToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.OpenVirtualPadBinding;
 
 			if (Global.Emulator.CoreOutputComm.CpuTraceAvailable)
 			{
@@ -1291,8 +1334,8 @@ namespace BizHawk.MultiClient
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			miAutoMinimizeSkipping.Checked = Global.Config.AutoMinimizeSkipping;
-			miLimitFramerate.Checked = Global.Config.LimitFramerate;
-			miDisplayVsync.Checked = Global.Config.DisplayVSync;
+			miLimitFramerate.Checked = Global.Config.ClockThrottle;
+			miDisplayVsync.Checked = Global.Config.VSyncThrottle;
 			miFrameskip0.Checked = Global.Config.FrameSkip == 0;
 			miFrameskip1.Checked = Global.Config.FrameSkip == 1;
 			miFrameskip2.Checked = Global.Config.FrameSkip == 2;
@@ -1303,6 +1346,12 @@ namespace BizHawk.MultiClient
 			miFrameskip7.Checked = Global.Config.FrameSkip == 7;
 			miFrameskip8.Checked = Global.Config.FrameSkip == 8;
 			miFrameskip9.Checked = Global.Config.FrameSkip == 9;
+			miAutoMinimizeSkipping.Enabled = !miFrameskip0.Checked;
+			if (!miAutoMinimizeSkipping.Enabled) miAutoMinimizeSkipping.Checked = true;
+			audioThrottleToolStripMenuItem.Enabled = Global.Config.SoundEnabled;
+			audioThrottleToolStripMenuItem.Checked = Global.Config.SoundThrottle;
+			vSyncEnabledToolStripMenuItem.Checked = Global.Config.VSync;
+
 			miSpeed100.Checked = Global.Config.SpeedPercent == 100;
 			miSpeed100.Image = (Global.Config.SpeedPercentAlternate == 100) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
 			miSpeed150.Checked = Global.Config.SpeedPercent == 150;
@@ -1313,8 +1362,6 @@ namespace BizHawk.MultiClient
 			miSpeed75.Image = (Global.Config.SpeedPercentAlternate == 75) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
 			miSpeed50.Checked = Global.Config.SpeedPercent == 50;
 			miSpeed50.Image = (Global.Config.SpeedPercentAlternate == 50) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
-			miAutoMinimizeSkipping.Enabled = !miFrameskip0.Checked;
-			if (!miAutoMinimizeSkipping.Enabled) miAutoMinimizeSkipping.Checked = true;
 		}
 
 		private void gUIToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1771,11 +1818,12 @@ namespace BizHawk.MultiClient
 		private void gBToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			// the palettes have no effect when CGB mode is active
+			/*
 			if (Global.Emulator is Emulation.Consoles.GB.Gameboy)
 			{
 				changeDMGPalettesToolStripMenuItem.Enabled =
 					!((Emulation.Consoles.GB.Gameboy)Global.Emulator).IsCGBMode();
-			}
+			}*/
 
 			//skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
 			forceDMGModeToolStripMenuItem.Checked = Global.Config.GB_ForceDMG;

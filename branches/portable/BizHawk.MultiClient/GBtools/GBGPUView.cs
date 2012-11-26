@@ -6,11 +6,27 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.MultiClient.GBtools
 {
 	public partial class GBGPUView : Form
 	{
+		// TODO: freeze semantics are a bit weird: details for a mouseover or freeze are taken from the current
+		// state, not the state at the last callback (and so can be quite different when update is set to manual).
+		// I'm not quite sure what's the best thing to do...
+
+		// TODO: color stuff.  In GB mode, the colors used are exactly whatever you set in palette config.  In GBC
+		// mode, the following "real color" algorithm is used (NB: converting 555->888 at the same time):
+		// r' = 6.5r + 1.0g + 0.5b
+		// g' = 0.0r + 6.0g + 2.0b
+		// b' = 1.5r + 1.0g + 5.5b
+		//
+		// other emulators use "vivid color" modes, such as:
+		// r' = 8.25r
+		// g' = 8.25g
+	    // b' = 8.25b
+
 		Emulation.Consoles.GB.Gameboy gb;
 
 		// gambatte doesn't modify these memory locations unless you reconstruct, so we can store
@@ -21,6 +37,20 @@ namespace BizHawk.MultiClient.GBtools
 
 		bool cgb; // set once at start
 		int lcdc; // set at each callback
+
+		IntPtr tilespal; // current palette to use on tiles
+
+		Color _spriteback;
+		Color spriteback
+		{
+			get { return _spriteback; }
+			set
+			{
+				_spriteback = value;
+				panelSpriteBackColor.BackColor = _spriteback;
+				labelSpriteBackColor.Text = string.Format("({0},{1},{2})", _spriteback.R, _spriteback.G, _spriteback.B);
+			}
+		}
 
 		public GBGPUView()
 		{
@@ -33,10 +63,22 @@ namespace BizHawk.MultiClient.GBtools
 			bmpViewSPPal.ChangeBitmapSize(8, 4);
 			bmpViewOAM.ChangeBitmapSize(320, 16);
 			bmpViewDetails.ChangeBitmapSize(8, 16);
+			bmpViewMemory.ChangeBitmapSize(8, 16);
 
 			hScrollBarScanline.Value = 0;
 			hScrollBarScanline_ValueChanged(null, null); // not firing in this case??
 			radioButtonRefreshFrame.Checked = true;
+
+			KeyPreview = true;
+
+			messagetimer.Interval = 5000;
+			messagetimer.Tick += new EventHandler(messagetimer_Tick);
+
+			checkBoxAutoLoad.Checked = Global.Config.AutoLoadGBGPUView;
+			checkBoxSavePos.Checked = Global.Config.GBGPUViewSaveWindowPosition;
+
+			// TODO: from config
+			spriteback = Color.FromArgb(255, Global.Config.GBGPUSpriteBack);
 		}
 
 		public void Restart()
@@ -52,6 +94,7 @@ namespace BizHawk.MultiClient.GBtools
 					if (Visible)
 						Close();
 				}
+				tilespal = bgpal;
 
 				if (cgb)
 					label4.Enabled = true;
@@ -65,6 +108,7 @@ namespace BizHawk.MultiClient.GBtools
 				bmpViewSPPal.Clear();
 				bmpViewOAM.Clear();
 				bmpViewDetails.Clear();
+				bmpViewMemory.Clear();
 				cbscanline_emu = -4; // force refresh
 			}
 			else
@@ -332,6 +376,9 @@ namespace BizHawk.MultiClient.GBtools
 				p = (int*)sppal;
 				for (int i = 0; i < 32; i++)
 					p[i] |= unchecked((int)0xff000000);
+				int c = spriteback.ToArgb();
+				for (int i = 0; i < 32; i += 4)
+					p[i] = c;
 			}
 
 			// bg maps
@@ -373,11 +420,11 @@ namespace BizHawk.MultiClient.GBtools
 			// tile display
 			// TODO: user selects palette to use, instead of fixed palette 0
 			// or possibly "smart" where, if a tile is in use, it's drawn with one of the palettes actually being used with it?
-			DrawTiles(bmpViewTiles1.bmp, vram, bgpal);
+			DrawTiles(bmpViewTiles1.bmp, vram, tilespal);
 			bmpViewTiles1.Refresh();
 			if (cgb)
 			{
-				DrawTiles(bmpViewTiles2.bmp, vram + 0x2000, bgpal);
+				DrawTiles(bmpViewTiles2.bmp, vram + 0x2000, tilespal);
 				bmpViewTiles2.Refresh();
 			}
 
@@ -422,6 +469,11 @@ namespace BizHawk.MultiClient.GBtools
 			}
 			DrawOam(bmpViewOAM.bmp, oam, vram, sppal, lcdc.Bit(2), cgb);
 			bmpViewOAM.Refresh();
+
+			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
+			// this doesn't really work well; the update rate seems to be throttled
+			MouseEventArgs e = new MouseEventArgs(System.Windows.Forms.MouseButtons.None, 0, System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y, 0);
+			this.OnMouseMove(e);
 		}
 
 		private void GBGPUView_FormClosed(object sender, FormClosedEventArgs e)
@@ -431,10 +483,17 @@ namespace BizHawk.MultiClient.GBtools
 				gb.SetScanlineCallback(null, 0);
 				gb = null;
 			}
+			Global.Config.GBGPUSpriteBack = spriteback;
 		}
 
 		private void GBGPUView_Load(object sender, EventArgs e)
 		{
+			if (Global.Config.GBGPUViewSaveWindowPosition)
+			{
+				Point p = new Point(Global.Config.GBGPUViewWndx, Global.Config.GBGPUViewWndy);
+				if (p.X >= 0 && p.Y >= 0)
+					Location = p;
+			}
 			Restart();
 		}
 
@@ -478,6 +537,7 @@ namespace BizHawk.MultiClient.GBtools
 		private void hScrollBarScanline_ValueChanged(object sender, EventArgs e)
 		{
 			labelScanline.Text = ((hScrollBarScanline.Value + 145) % 154).ToString();
+			cbscanline = (hScrollBarScanline.Value + 145) % 154;
 		}
 
 		/// <summary>
@@ -528,7 +588,7 @@ namespace BizHawk.MultiClient.GBtools
 		Bitmap freeze_bmp;
 		string freeze_details;
 
-		void SaveFreeze()
+		void SaveDetails()
 		{
 			freeze_label = groupBoxDetails.Text;
 			if (freeze_bmp != null)
@@ -537,7 +597,7 @@ namespace BizHawk.MultiClient.GBtools
 			freeze_details = labelDetails.Text;
 		}
 
-		void LoadFreeze()
+		void LoadDetails()
 		{
 			groupBoxDetails.Text = freeze_label;
 			bmpViewDetails.Height = freeze_bmp.Height * 8;
@@ -548,6 +608,17 @@ namespace BizHawk.MultiClient.GBtools
 			bmpViewDetails.Refresh();
 		}
 
+		void SetFreeze()
+		{
+			groupBoxMemory.Text = groupBoxDetails.Text;
+			bmpViewMemory.Size = bmpViewDetails.Size;
+			bmpViewMemory.ChangeBitmapSize(bmpViewDetails.bmp.Size);
+			using (var g = Graphics.FromImage(bmpViewMemory.bmp))
+				g.DrawImageUnscaled(bmpViewDetails.bmp, 0, 0);
+			labelMemory.Text = labelDetails.Text;
+			bmpViewMemory.Refresh();
+		}
+
 		unsafe void PaletteMouseover(int x, int y, bool sprite)
 		{
 			bmpViewDetails.ChangeBitmapSize(8, 10);
@@ -556,7 +627,7 @@ namespace BizHawk.MultiClient.GBtools
 			var sb = new StringBuilder();
 			x /= 16;
 			y /= 16;
-			int *pal = (int*)(sprite ? sppal : bgpal) + x * 4;
+			int* pal = (int*)(sprite ? sppal : bgpal) + x * 4;
 			int color = pal[y];
 
 			sb.AppendLine(string.Format("Palette {0}", x));
@@ -566,7 +637,7 @@ namespace BizHawk.MultiClient.GBtools
 			var lockdata = bmpViewDetails.bmp.LockBits(new Rectangle(0, 0, 8, 10), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
-			
+
 			for (int py = 0; py < 10; py++)
 			{
 				for (int px = 0; px < 8; px++)
@@ -601,7 +672,7 @@ namespace BizHawk.MultiClient.GBtools
 				sb.AppendLine(string.Format("Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
 
 			var lockdata = bmpViewDetails.bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			DrawTile((byte*)vram + tileoffs + (secondbank ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)bgpal);
+			DrawTile((byte*)vram + tileoffs + (secondbank ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)tilespal);
 			bmpViewDetails.bmp.UnlockBits(lockdata);
 			labelDetails.Text = sb.ToString();
 			bmpViewDetails.Refresh();
@@ -618,7 +689,7 @@ namespace BizHawk.MultiClient.GBtools
 			x /= 8;
 			y /= 8;
 			mapoffs += y * 32 + x;
-			byte *mapbase = (byte *)vram + mapoffs;
+			byte* mapbase = (byte*)vram + mapoffs;
 			int tileindex = mapbase[0];
 			if (win || !lcdc.Bit(4)) // 0x9000 base
 				if (tileindex < 128)
@@ -693,13 +764,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewBG_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Background";
 		}
 
 		private void bmpViewBG_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewBG_MouseMove(object sender, MouseEventArgs e)
@@ -709,13 +780,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewWin_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Window";
 		}
 
 		private void bmpViewWin_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewWin_MouseMove(object sender, MouseEventArgs e)
@@ -725,13 +796,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewTiles1_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Tiles";
 		}
 
 		private void bmpViewTiles1_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewTiles1_MouseMove(object sender, MouseEventArgs e)
@@ -743,7 +814,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			if (!cgb)
 				return;
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Tiles";
 		}
 
@@ -751,7 +822,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			if (!cgb)
 				return;
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewTiles2_MouseMove(object sender, MouseEventArgs e)
@@ -763,13 +834,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewBGPal_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Palette";
 		}
 
 		private void bmpViewBGPal_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewBGPal_MouseMove(object sender, MouseEventArgs e)
@@ -779,13 +850,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewSPPal_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Palette";
 		}
 
 		private void bmpViewSPPal_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewSPPal_MouseMove(object sender, MouseEventArgs e)
@@ -795,13 +866,13 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpViewOAM_MouseEnter(object sender, EventArgs e)
 		{
-			SaveFreeze();
+			SaveDetails();
 			groupBoxDetails.Text = "Details - Sprite";
 		}
 
 		private void bmpViewOAM_MouseLeave(object sender, EventArgs e)
 		{
-			LoadFreeze();
+			LoadDetails();
 		}
 
 		private void bmpViewOAM_MouseMove(object sender, MouseEventArgs e)
@@ -811,5 +882,92 @@ namespace BizHawk.MultiClient.GBtools
 
 		#endregion
 
+		private void bmpView_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (e.Button == System.Windows.Forms.MouseButtons.Right)
+				SetFreeze();
+			else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+			{
+				if (sender == bmpViewBGPal)
+					tilespal = bgpal + e.X / 16 * 16;
+				else if (sender == bmpViewSPPal)
+					tilespal = sppal + e.X / 16 * 16;
+			}
+		}
+
+		#region copyimage
+
+		Timer messagetimer = new Timer();
+
+		private void GBGPUView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (Control.ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			{
+				// find the control under the mouse
+				Point m = System.Windows.Forms.Cursor.Position;
+				Control top = this;
+				Control found = null;
+				do
+				{
+					found = top.GetChildAtPoint(top.PointToClient(m));
+					top = found;
+				} while (found != null && found.HasChildren);
+
+				if (found != null && found is BmpView)
+				{
+					var bv = found as BmpView;
+					Clipboard.SetImage(bv.bmp);
+					labelClipboard.Text = found.Text + " copied to clipboard.";
+					messagetimer.Stop();
+					messagetimer.Start();
+				}
+			}
+
+		}
+
+		void messagetimer_Tick(object sender, EventArgs e)
+		{
+			messagetimer.Stop();
+			labelClipboard.Text = "CTRL+C copies the pane under the mouse.";
+		}
+
+
+		#endregion
+
+		private void GBGPUView_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Global.Config.GBGPUViewWndx = Location.X;
+			Global.Config.GBGPUViewWndy = Location.Y;
+		}
+
+		private void checkBoxAutoLoad_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadGBGPUView = (sender as CheckBox).Checked;
+		}
+
+		private void checkBoxSavePos_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.GBGPUViewSaveWindowPosition = (sender as CheckBox).Checked;
+		}
+
+		private void buttonChangeColor_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new ColorDialog())
+			{
+				dlg.AllowFullOpen = true;
+				dlg.AnyColor = true;
+				dlg.FullOpen = true;
+				dlg.Color = spriteback;
+
+				Global.Sound.StopSound();
+				var result = dlg.ShowDialog();
+				Global.Sound.StartSound();
+				if (result == System.Windows.Forms.DialogResult.OK)
+				{
+					// force full opaque
+					spriteback = Color.FromArgb(255, dlg.Color);
+				}
+			}
+		}
 	}
 }

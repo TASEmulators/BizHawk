@@ -132,6 +132,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_dequeue_message(IntPtr strBuffer);
 
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_color_lut(IntPtr colors);
+
 		public static bool HasMessage { get { return snes_poll_message() != -1; } }
 
 		public static string DequeueMessage()
@@ -193,6 +196,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CGWSEL_COLORSUBMASK = 41,
 			CGWSEL_ADDSUBMODE = 42,
 			CGWSEL_DIRECTCOLOR = 43,
+			//$2101 OBSEL
+			OBSEL_NAMEBASE = 50,
+			OBSEL_NAMESEL = 51,
+			OBSEL_SIZE = 52,
 		}
 
 		public enum SNES_MEMORY : uint
@@ -366,6 +373,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return test;
 		}
 
+		public SnesColors.ColorType CurrPalette { get; private set; }
+
+		public void SetPalette(SnesColors.ColorType pal)
+		{
+			CurrPalette = pal;
+			int[] tmp = SnesColors.GetLUT(pal);
+			fixed (int* p = &tmp[0])
+				BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_color_lut((IntPtr)p);
+		}
+
 		public LibsnesCore()
 		{
 		}
@@ -403,6 +420,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 
 			scanlineStart_cb = new LibsnesDll.snes_scanlineStart_t(snes_scanlineStart);
+
+			// set default palette. Should be overridden by frontend probably
+			SetPalette(SnesColors.ColorType.BizHawk);
+
 
 			// start up audio resampler
 			InitAudio();
@@ -721,7 +742,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			StoreSaveRam(cleardata);
 		}
 
-		public void ResetFrameCounter() { timeFrameCounter = 0; }
+		public void ResetFrameCounter()
+		{
+			timeFrameCounter = 0;
+			LagCount = 0;
+			IsLagFrame = false;
+		}
 
 		#region savestates
 

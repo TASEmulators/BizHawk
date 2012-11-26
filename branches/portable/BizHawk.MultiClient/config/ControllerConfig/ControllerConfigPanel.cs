@@ -118,5 +118,13 @@ namespace BizHawk.MultiClient
 				Labels.Add(l);
 			}
 		}
+
+		public void SetAutoTab(bool value)
+		{
+			foreach (InputWidget i in Inputs)
+			{
+				i.AutoTab = value;
+			}
+		}
 	}
 }

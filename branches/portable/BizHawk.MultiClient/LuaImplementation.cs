@@ -1080,11 +1080,11 @@ namespace BizHawk.MultiClient
 			{
 				if (temp == "0" || temp.ToLower() == "false")
 				{
-					Global.Config.LimitFramerate = false;
+					Global.Config.ClockThrottle = false;
 				}
 				else
 				{
-					Global.Config.LimitFramerate = true;
+					Global.Config.ClockThrottle = true;
 				}
 				Global.MainForm.LimitFrameRateMessage();
 			}
@@ -1097,11 +1097,11 @@ namespace BizHawk.MultiClient
 			{
 				if (temp == "0" || temp.ToLower() == "false")
 				{
-					Global.Config.DisplayVSync = false;
+					Global.Config.VSyncThrottle = false;
 				}
 				else
 				{
-					Global.Config.DisplayVSync = true;
+					Global.Config.VSyncThrottle = true;
 				}
 				Global.MainForm.VsyncMessage();
 			}

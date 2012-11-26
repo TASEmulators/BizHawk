@@ -30,6 +30,7 @@ namespace BizHawk
 		public void ResetFrameCounter()
 		{
 			Frame = 0;
+			// no lag frames on this stub core
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)

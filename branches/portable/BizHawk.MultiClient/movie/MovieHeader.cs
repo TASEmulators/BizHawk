@@ -35,7 +35,9 @@ namespace BizHawk.MultiClient
 		public const string GB_FORCEDMG = "Force_DMG_Mode";
 		public const string GB_GBA_IN_CGB = "GBA_In_CGB";
 		public const string SGB = "SGB"; //a snes movie will set this to indicate that it's actually SGB
-
+		
+		//BIO skipping setting (affects sync)
+		public const string SKIPBIOS = "Skip_Bios";
 
 		public static string MovieVersion = "BizHawk v0.0.1";
 
@@ -180,6 +182,26 @@ namespace BizHawk.MultiClient
 			{
 				line = ParseHeader(line, MovieHeader.SHA1);
 				AddHeaderLine(MovieHeader.SHA1, line);
+			}
+			else if (line.Contains(MovieHeader.SKIPBIOS))
+			{
+				line = ParseHeader(line, MovieHeader.SKIPBIOS);
+				AddHeaderLine(MovieHeader.SKIPBIOS, line);
+			}
+			else if (line.Contains(MovieHeader.GB_FORCEDMG))
+			{
+				line = ParseHeader(line, MovieHeader.GB_FORCEDMG);
+				AddHeaderLine(MovieHeader.GB_FORCEDMG, line);
+			}
+			else if (line.Contains(MovieHeader.GB_GBA_IN_CGB))
+			{
+				line = ParseHeader(line, MovieHeader.GB_GBA_IN_CGB);
+				AddHeaderLine(MovieHeader.GB_GBA_IN_CGB, line);
+			}
+			else if (line.Contains(MovieHeader.SGB))
+			{
+				line = ParseHeader(line, MovieHeader.SGB);
+				AddHeaderLine(MovieHeader.SGB, line);
 			}
 			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 			{

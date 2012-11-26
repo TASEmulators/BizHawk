@@ -25,14 +25,15 @@ namespace BizHawk.MultiClient
 			SoundVolNumeric.Value = Global.Config.SoundVolume;
 			UpdateSoundDialog();
 
-			if (Global.MainForm.INTERIM)
-			{
-				ThrottlecheckBox.Visible = true;
-			}
-			else
-			{
+			// to be removed
+			//if (Global.MainForm.INTERIM)
+			//{
+			//	ThrottlecheckBox.Visible = true;
+			//}
+			//else
+			//{
 				ThrottlecheckBox.Visible = false;
-			}
+			//}
 		}
 
 		private void OK_Click(object sender, EventArgs e)

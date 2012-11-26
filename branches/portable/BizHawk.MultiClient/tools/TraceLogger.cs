@@ -65,6 +65,7 @@ namespace BizHawk.MultiClient
 			LoggingEnabled.Checked = true;
 			Global.CoreInputComm.Tracer.Enabled = true;
 			SetTracerBoxTitle();
+			Restart();
 		}
 
 		public void UpdateValues()
@@ -83,6 +84,7 @@ namespace BizHawk.MultiClient
 				if (Global.Emulator.CoreOutputComm.CpuTraceAvailable)
 				{
 					ClearList();
+					TraceView.Columns[0].Text = Global.Emulator.CoreOutputComm.TraceHeader;
 				}
 				else
 				{

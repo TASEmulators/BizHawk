@@ -103,6 +103,7 @@ namespace BizHawk.MultiClient
 			PCESaveRAMBox.Text = Global.Config.PathPCESaveRAM;
 			PCEScreenshotsBox.Text = Global.Config.PathPCEScreenshots;
 			PCECheatsBox.Text = Global.Config.PathPCECheats;
+			PCEBiosBox.Text = Global.Config.PathPCEBios;
 
 			GenesisBaseBox.Text = Global.Config.BaseGenesis;
 			GenesisROMsBox.Text = Global.Config.PathGenesisROMs;
@@ -118,6 +119,14 @@ namespace BizHawk.MultiClient
 			GBScreenshotsBox.Text = Global.Config.PathGBScreenshots;
 			GBCheatsBox.Text = Global.Config.PathGBCheats;
 			GBPalettesBox.Text = Global.Config.PathGBPalettes;
+
+			GBABaseBox.Text = Global.Config.BaseGBA;
+			GBAROMsBox.Text = Global.Config.PathGBAROMs;
+			GBASavestatesBox.Text = Global.Config.PathGBASavestates;
+			GBASaveRAMBox.Text = Global.Config.PathGBASaveRAM;
+			GBAScreenshotsBox.Text = Global.Config.PathGBAScreenshots;
+			GBACheatsBox.Text = Global.Config.PathGBACheats;
+			GBAFirmwaresBox.Text = Global.Config.PathGBABIOS;
 
 			TI83BaseBox.Text = Global.Config.BaseTI83;
 			TI83ROMsBox.Text = Global.Config.PathTI83ROMs;
@@ -139,6 +148,13 @@ namespace BizHawk.MultiClient
 			C64ScreenshotsBox.Text = Global.Config.PathC64Screenshots;
 			C64CheatsBox.Text = Global.Config.PathC64Cheats;
 
+			COLBaseBox.Text = Global.Config.BaseCOL;
+			COLROMsBox.Text = Global.Config.PathCOLROMs;
+			COLSavestatesBox.Text = Global.Config.PathCOLSavestates;
+			COLScreenshotsBox.Text = Global.Config.PathCOLScreenshots;
+			COLCheatsBox.Text = Global.Config.PathCOLCheats;
+			COLBiosBox.Text = Global.Config.PathCOLBios;
+
 			MoviesBox.Text = Global.Config.MoviesPath;
 			MovieBackupsBox.Text = Global.Config.MoviesBackupPath;
 			LuaBox.Text = Global.Config.LuaPath;
@@ -146,61 +162,69 @@ namespace BizHawk.MultiClient
 			AVIBox.Text = Global.Config.AVIPath;
 			LogBox.Text = Global.Config.LogPath;
 
-			PCEBiosBox.Text = Global.Config.PathPCEBios;
+			SetTabByPlatform();
 
 			if (!Global.MainForm.INTERIM)
 			{
-				tabControl1.Controls.Remove(tabControl1.TabPages[10]); //Int. V
-				//tabControl1.Controls.Remove(tabControl1.TabPages[12]); //C64 //WHY DOES THIS FAIL?!
+				tabControl1.Controls.Remove(tabPageIntellivision);
+				tabControl1.Controls.Remove(tabPageC64);
+				tabControl1.Controls.Remove(tabPageGBA);
 			}
+		}
 
+		private void SetTabByPlatform()
+		{
 			switch (Global.Game.System)
 			{
 				case "NES":
-					tabControl1.SelectTab(0);
+					tabControl1.SelectTab(tabPageNES);
 					break;
 				case "SNES":
 				case "SGB":
-					tabControl1.SelectTab(1);
+					tabControl1.SelectTab(tabPageSNES);
 					break;
 				case "SMS":
-					tabControl1.SelectTab(2);
+					tabControl1.SelectTab(tabPageSMS);
 					break;
 				case "SG":
-					tabControl1.SelectTab(3);
+					tabControl1.SelectTab(tabPageSG1000);
 					break;
 				case "GG":
-					tabControl1.SelectTab(4);
+					tabControl1.SelectTab(tabPageGGear);
 					break;
 				case "GEN":
-					tabControl1.SelectTab(5);
+					tabControl1.SelectTab(tabPageGenesis);
 					break;
 				case "PCE":
 				case "PCECD":
 				case "SGX":
-					tabControl1.SelectTab(6);
+					tabControl1.SelectTab(tabPagePCE);
 					break;
 				case "GB":
 				case "GBC":
-					tabControl1.SelectTab(7);
+					tabControl1.SelectTab(tabPageGameboy);
 					break;
 				case "TI83":
-					tabControl1.SelectTab(8);
+					tabControl1.SelectTab(tabPageTI83);
 					break;
 				case "A26":
-					tabControl1.SelectTab(9);
+					tabControl1.SelectTab(tabPageAtari2600);
 					break;
 				case "INTV":
-					tabControl1.SelectTab(10);
+					tabControl1.SelectTab(tabPageIntellivision);
 					break;
 				case "C64":
-					tabControl1.SelectTab(12);
+					tabControl1.SelectTab(tabPageC64);
+					break;
+				case "Coleco":
+					tabControl1.SelectTab(tabPageColeco);
+					break;
+				case "GBA":
+					tabControl1.SelectTab(tabPageGBA);
 					break;
 				case "NULL":
-					tabControl1.SelectTab(11);
+					tabControl1.SelectTab(tabPageTools);
 					break;
-
-
 			}
 		}
 
@@ -277,6 +301,14 @@ namespace BizHawk.MultiClient
 			Global.Config.PathGBCheats = GBCheatsBox.Text;
 			Global.Config.PathGBPalettes = GBPalettesBox.Text;
 
+			Global.Config.BaseGBA = GBABaseBox.Text;
+			Global.Config.PathGBAROMs = GBAROMsBox.Text;
+			Global.Config.PathGBASavestates = GBASavestatesBox.Text;
+			Global.Config.PathGBASaveRAM = GBASaveRAMBox.Text;
+			Global.Config.PathGBAScreenshots = GBAScreenshotsBox.Text;
+			Global.Config.PathGBACheats = GBACheatsBox.Text;
+			Global.Config.PathGBABIOS = GBAFirmwaresBox.Text;
+
 			Global.Config.BaseTI83 = TI83BaseBox.Text;
 			Global.Config.PathTI83ROMs = TI83ROMsBox.Text;
 			Global.Config.PathTI83Savestates = TI83SavestatesBox.Text;
@@ -296,6 +328,13 @@ namespace BizHawk.MultiClient
 			Global.Config.PathC64Savestates = C64SavestatesBox.Text;
 			Global.Config.PathC64Screenshots = C64ScreenshotsBox.Text;
 			Global.Config.PathC64Cheats = C64CheatsBox.Text;
+
+			Global.Config.BaseCOL = COLBaseBox.Text;
+			Global.Config.PathCOLROMs = COLROMsBox.Text;
+			Global.Config.PathCOLSavestates = COLSavestatesBox.Text;
+			Global.Config.PathCOLScreenshots = COLScreenshotsBox.Text;
+			Global.Config.PathCOLCheats = COLCheatsBox.Text;
+			Global.Config.PathCOLBios = COLBiosBox.Text;
 
 			Global.Config.MoviesPath = MoviesBox.Text;
 			Global.Config.MoviesBackupPath = MovieBackupsBox.Text;
@@ -357,7 +396,6 @@ namespace BizHawk.MultiClient
 			GenesisROMsBox.Enabled = !RecentForROMs.Checked;
 			GenesisBrowseROMs.Enabled = !RecentForROMs.Checked;
 			GenesisROMsDescription.Enabled = !RecentForROMs.Checked;
-			
 
 			PCEROMsBox.Enabled = !RecentForROMs.Checked;
 			PCEBrowseROMs.Enabled = !RecentForROMs.Checked;
@@ -366,6 +404,10 @@ namespace BizHawk.MultiClient
 			GBROMsBox.Enabled = !RecentForROMs.Checked;
 			GBBrowseROMs.Enabled = !RecentForROMs.Checked;
 			GBROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			GBAROMsBox.Enabled = !RecentForROMs.Checked;
+			GBABrowseROMs.Enabled = !RecentForROMs.Checked;
+			GBAROMsDescription.Enabled = !RecentForROMs.Checked;
 
 			TI83ROMsBox.Enabled = !RecentForROMs.Checked;
 			TI83BrowseROMs.Enabled = !RecentForROMs.Checked;
@@ -378,6 +420,10 @@ namespace BizHawk.MultiClient
 			C64ROMsBox.Enabled = !RecentForROMs.Checked;
 			C64BrowseROMs.Enabled = !RecentForROMs.Checked;
 			C64ROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			COLROMsBox.Enabled = !RecentForROMs.Checked;
+			COLBrowseROMs.Enabled = !RecentForROMs.Checked;
+			COLROMsDescription.Enabled = !RecentForROMs.Checked;
 
 			INTVRomsBox.Enabled = !RecentForROMs.Checked;
 			INTVBrowseROMs.Enabled = !RecentForROMs.Checked;
@@ -735,10 +781,19 @@ namespace BizHawk.MultiClient
 			BrowseFolder(INTVCheatsBox, INTVCheatsDescription.Text, "INTV");
 		}
 
-		void BrowseForBios(string filter, string config, TextBox tb)
+		void BrowseForBios(string filter, string config, string system, TextBox tb)
 		{
 			var ofd = HawkUIFactory.CreateOpenFileDialog();
-			ofd.InitialDirectory = Path.GetDirectoryName(config);
+			
+			if (!String.IsNullOrWhiteSpace(config))
+			{
+				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Path.GetDirectoryName(config), system);
+			}
+			else
+			{
+				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.BaseCOL, "Coleco");
+			}
+
 			ofd.Filter = filter;
 			ofd.FileName = Path.GetFileName(config);
 
@@ -757,7 +812,7 @@ namespace BizHawk.MultiClient
 		{
 			BrowseForBios(
 				"Intellivision EROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
-				 Global.Config.PathINTVEROM,
+				 Global.Config.PathINTVEROM, "INTV", 
 				INTVEROMBox);
 		}
 
@@ -765,7 +820,7 @@ namespace BizHawk.MultiClient
 		{
 			BrowseForBios(
 				"Intellivision GROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
-				 Global.Config.PathINTVGROM,
+				 Global.Config.PathINTVGROM, "INTV",
 				INTVGROMBox);
 		}
 
@@ -774,7 +829,7 @@ namespace BizHawk.MultiClient
 		{
 			BrowseForBios(
 				"PCE CD BIOS (*.pce)|*.pce|All Files|*.*",
-				 Global.Config.PathPCEBios,
+				 Global.Config.PathPCEBios, "PCE",
 				PCEBiosBox);
 		}
 
@@ -835,7 +890,10 @@ namespace BizHawk.MultiClient
 
 		private void NESBrowseFDSBios_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(NESFDSBiosBox, NESFDSBiosDescription.Text);
+			BrowseForBios(
+				"ROM files (*.rom)|*.rom|All Files|*.*",
+				 Global.Config.PathFDSBios, "NES",
+				NESFDSBiosBox);
 		}
 
 		private void SNESFirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -876,6 +934,112 @@ namespace BizHawk.MultiClient
 		private void C64FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
+		}
+
+		private void PCEBaseBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCEROMsBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCESavestatesBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCESaveRAMBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCEScreenshotsBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCECheatsBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void PCEBiosBox_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void BrowseCOLBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLBaseBox, COLBaseDescription.Text);
+		}
+
+		private void COLBrowseROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLROMsBox, COLROMsDescription.Text, "Coleco");
+		}
+
+		private void BrowseCOLSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLSavestatesBox, COLSavestatesDescription.Text, "Coleco");
+		}
+
+		private void BrowseCOLScreenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLScreenshotsBox, COLScreenshotsDescription.Text, "Coleco");
+		}
+
+		private void COLBrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(COLScreenshotsBox, COLScreenshotsDescription.Text, "Coleco");
+		}
+
+		private void COLBrowseBios_Click(object sender, EventArgs e)
+		{
+			BrowseForBios(
+				"ROM files (*.bin)|*.bin|All Files|*.*",
+				 Global.Config.PathCOLBios, "Coleco",
+				COLBiosBox);
+		}
+
+		private void GBABrowseBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBABaseBox, GBABaseDescription.Text);
+		}
+
+		private void GBABrowseROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBAROMsBox, GBAROMsDescription.Text, "GBA");
+		}
+
+		private void GBABrowseSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBASavestatesBox, GBASavestatesDescription.Text, "GBA");
+		}
+
+		private void GBABrowseSaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBASaveRAMBox, GBASaveRAMDescription.Text, "GBA");
+		}
+
+		private void GBABrowseScreenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBAScreenshotsBox, GBAScreenshotsDescription.Text, "GBA");
+		}
+
+		private void GBABrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(GBACheatsBox, GBACheatsDescription.Text, "GBA");
+		}
+
+		private void GBABrowseFirmwares_Click(object sender, EventArgs e)
+		{
+			BrowseForBios(
+				"GBA BIOS (*.rom)|*.rom|All Files|*.*",
+				 Global.Config.PathGBABIOS, "GBA",
+				GBAFirmwaresBox);
 		}
 	}
 }

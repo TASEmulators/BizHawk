@@ -7,51 +7,60 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public class CiaRegs
 	{
-		public bool ALARM;
-		public int ALARM10;
-		public int ALARMHR;
-		public int ALARMMIN;
-		public bool ALARMPM;
-		public int ALARMSEC;
-		public int[] DOR = new int[2];
-		public bool IALARM;
-		public bool IFLG;
-		public int[] INMODE = new int[2];
-		public bool IRQ;
-		public bool ISP;
-		public bool[] IT = new bool[2];
-		public bool[] LOAD = new bool[2];
-		public bool[] OUTMODE = new bool[2];
-		public bool[] PBON = new bool[2];
-		public int[] PR = new int[2];
-		public bool[] RUNMODE = new bool[2];
-		public int SDR;
-		public bool SPMODE;
-		public bool[] START = new bool[2];
-		public int[] T = new int[2];
-		public int[] TLATCH = new int[2];
-		public int TOD10;
-		public bool TODIN;
-		public int TODHR;
-		public int TODMIN;
-		public bool TODPM;
-		public int TODSEC;
+		public bool ALARM; // alarm enabled
+		public int ALARM10; // alarm 10ths of a second
+		public int ALARMHR; // alarm hours
+		public int ALARMMIN; // alarm minutes
+		public bool ALARMPM; // alarm AM/PM
+		public int ALARMSEC; // alarm seconds
+		public bool CNT; // external counter bit input
+		public bool EIALARM; // enable alarm interrupt (internal)
+		public bool EIFLG; // enable flag pin interrupt (internal)
+		public bool EISP; // enable shift register interrupt (internal)
+		public bool[] EIT = new bool[2]; // enable timer interrupt (internal)
+		public bool FLG; // external flag bit input
+		public bool IALARM; // alarm interrupt triggered
+		public bool IFLG; // interrupt triggered on FLAG pin
+		public int[] INMODE = new int[2]; // timer input mode
+		public bool IRQ; // interrupt triggered
+		public bool ISP; // shift register interrupt
+		public bool[] IT = new bool[2]; // timer interrupt
+		public bool[] LOAD = new bool[2]; // force load timer
+		public bool[] OUTMODE = new bool[2]; // timer output mode
+		public bool[] PBON = new bool[2]; // port bit modify on
+		public bool[] RUNMODE = new bool[2]; // running mode
+		public int SDR; // serial shift register
+		public int SDRCOUNT; // serial shift register bit count
+		public bool SPMODE; // shift register mode
+		public bool[] START = new bool[2]; // timer enabled
+		public int[] T = new int[2]; // timer counter
+		public bool[] TICK = new bool[2]; // execute timer tick
+		public int[] TLATCH = new int[2]; // timer latch (internal)
+		public int TOD10; // time of day 10ths of a second
+		public bool TODIN; // time of day/alarm set
+		public int TODHR; // time of day hour
+		public int TODMIN; // time of day minute
+		public bool TODPM; // time of day AM/PM
+		public bool TODREADLATCH; // read latch (internal)
+		public int TODREADLATCH10; // tod read latch (internal)
+		public int TODREADLATCHSEC; // tod read latch (internal)
+		public int TODREADLATCHMIN; // tod read latch (internal)
+		public int TODREADLATCHHR; // tod read latch (internal)
+		public int TODSEC; // time of day seconds
 
-		private DirectionalDataPort[] ports;
-		private ChipSignals signal;
+		public DataPortBus[] ports;
 
-		public CiaRegs(ChipSignals newSignal, DirectionalDataPort[] newPorts)
+		public DataPortConnector[] connectors;
+
+		public CiaRegs()
 		{
-			ports = newPorts;
-			signal = newSignal;
-
-			// power on state
-			TLATCH[0] = 0xFFFF;
-			TLATCH[1] = 0xFFFF;
-			T[0] = TLATCH[0];
-			T[1] = TLATCH[1];
-
-			this[0x0B] = 0x01;
+			ports = new DataPortBus[2];
+			ports[0] = new DataPortBus();
+			ports[1] = new DataPortBus();
+			connectors = new DataPortConnector[2];
+			connectors[0] = ports[0].Connect();
+			connectors[1] = ports[1].Connect();
+			HardReset();
 		}
 
 		public byte this[int addr]
@@ -65,16 +74,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				switch (addr)
 				{
 					case 0x00:
-						result = ports[0].Data;
+						result = connectors[0].Data;
 						break;
 					case 0x01:
-						result = ports[1].Data;
+						result = connectors[1].Data;
 						break;
 					case 0x02:
-						result = ports[0].Direction;
+						result = connectors[0].Direction;
 						break;
 					case 0x03:
-						result = ports[1].Direction;
+						result = connectors[1].Direction;
 						break;
 					case 0x04:
 						result = (T[0] & 0xFF);
@@ -146,16 +155,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				switch (addr)
 				{
 					case 0x00:
-						ports[0].Data = val;
+						connectors[0].Data = val;
 						break;
 					case 0x01:
-						ports[1].Data = val;
+						connectors[1].Data = val;
 						break;
 					case 0x02:
-						ports[0].Direction = val;
+						connectors[0].Direction = val;
 						break;
 					case 0x03:
-						ports[1].Direction = val;
+						connectors[1].Direction = val;
 						break;
 					case 0x04:
 						T[0] &= 0xFF00;
@@ -220,42 +229,162 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 		}
+
+		public void HardReset()
+		{
+			// power on state
+			for (int i = 0; i < 0x10; i++)
+				this[i] = 0x00;
+
+			TLATCH[0] = 0xFFFF;
+			TLATCH[1] = 0xFFFF;
+			T[0] = TLATCH[0];
+			T[1] = TLATCH[1];
+
+			this[0x0B] = 0x01;
+
+			connectors[0].Latch = 0xFF;
+			connectors[1].Latch = 0xFF;
+			connectors[0].Direction = 0xFF;
+			connectors[1].Direction = 0xFF;
+		}
 	}
 
-	public class Cia
+	public partial class Cia
 	{
 		public int intMask;
 		public bool lastCNT;
-		public byte[] outputBitMask;
-		public DirectionalDataPort[] ports;
-		public CiaRegs regs;
-		public ChipSignals signal;
-		public bool thisCNT;
+		public byte[] outputBitMask = new byte[] { 0x40, 0x80 };
+		private CiaRegs regs = new CiaRegs();
+		public int todCounter;
+		public int todFrequency;
 		public bool[] underflow;
 
 		public Func<bool> ReadSerial;
 		public Action<bool> WriteSerial;
 
-		public Cia(ChipSignals newSignal)
+		public Cia(Region newRegion)
 		{
-			signal = newSignal;
 			ReadSerial = ReadSerialDummy;
 			WriteSerial = WriteSerialDummy;
+			switch (newRegion)
+			{
+				case Region.NTSC:
+					todFrequency = 14318181 / 14 / 10;
+					break;
+				case Region.PAL:
+					todFrequency = 14318181 / 18 / 10;
+					break;
+			}
 			HardReset();
+		}
+
+		private void AdvanceTOD()
+		{
+			bool overflow;
+			int tenths = regs.TOD10;
+			int seconds = regs.TODSEC;
+			int minutes = regs.TODMIN;
+			int hours = regs.TODHR;
+			bool ampm = regs.TODPM;
+			todCounter = todFrequency;
+
+			tenths = BCDAdd(tenths, 1, out overflow);
+			if (tenths >= 10)
+			{
+				tenths = 0;
+				seconds = BCDAdd(seconds, 1, out overflow);
+				if (overflow)
+				{
+					seconds = 0;
+					minutes = BCDAdd(minutes, 1, out overflow);
+					if (overflow)
+					{
+						minutes = 0;
+						hours = BCDAdd(hours, 1, out overflow);
+						if (hours > 12)
+						{
+							hours = 1;
+							ampm = !ampm;
+						}
+					}
+				}
+			}
+
+			regs.TOD10 = tenths;
+			regs.TODSEC = seconds;
+			regs.TODMIN = minutes;
+			regs.TODHR = hours;
+			regs.TODPM = ampm;
+		}
+
+		public void AttachWriteHook(int index, Action act)
+		{
+			regs.ports[index].AttachWriteHook(act);
+		}
+
+		private int BCDAdd(int i, int j, out bool overflow)
+		{
+			int lo;
+			int hi;
+			int result;
+
+			lo = (i & 0x0F) + (j & 0x0F);
+			hi = (i & 0x70) + (j & 0x70);
+			if (lo > 0x09)
+			{
+				hi += 0x10;
+				lo += 0x06;
+			}
+			if (hi > 0x50)
+			{
+				hi += 0xA0;
+			}
+			overflow = hi >= 0x60;
+			result = (hi & 0x70) + (lo & 0x0F);
+			return result;
+		}
+
+		public DataPortConnector ConnectPort(int index)
+		{
+			return regs.ports[index].Connect();
+		}
+
+		public DataPortConnector ConnectSerialPort(int index)
+		{
+			DataPortConnector result = regs.ports[index].Connect();
+			regs.ports[index].AttachInputConverter(result, new DataPortSerialInputConverter());
+			regs.ports[index].AttachOutputConverter(result, new DataPortSerialOutputConverter());
+			return result;
 		}
 
 		public void HardReset()
 		{
-			outputBitMask = new byte[] { 0x40, 0x80 };
-			ports = new DirectionalDataPort[2];
-			regs = new CiaRegs(signal, ports);
+			regs.HardReset();
 			underflow = new bool[2];
+			todCounter = todFrequency;
+		}
+
+		public bool IRQ
+		{
+			get
+			{
+				return regs.IRQ;
+			}
+		}
+
+		public byte Peek(int addr)
+		{
+			addr &= 0xF;
+			return regs[addr];
 		}
 
 		public void PerformCycle()
 		{
-			lastCNT = thisCNT;
-			thisCNT = ReadSerial();
+			// process time of day counter
+			todCounter--;
+			if (todCounter <= 0)
+				AdvanceTOD();
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -269,36 +398,68 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						if (regs.OUTMODE[i])
 						{
 							// clear bit if set
-							ports[1].Data &= (byte)~outputBitMask[i];
+							regs[0x01] &= (byte)~outputBitMask[i];
 						}
 						if (underflow[i])
 						{
 							if (regs.OUTMODE[i])
 							{
 								// toggle bit
-								ports[1].Data ^= outputBitMask[i];
+								regs[0x01] ^= outputBitMask[i];
 							}
 							else
 							{
 								// set for a cycle
-								ports[1].Data |= outputBitMask[i];
+								regs[0x01] |= outputBitMask[i];
 							}
 						}
 					}
 				}
 			}
+
+			lastCNT = regs.CNT;
+			regs.CNT = false;
+			UpdateInterrupt();
+		}
+
+		public void Poke(int addr, byte val)
+		{
+			addr &= 0xF;
+			regs[addr] = val;
 		}
 
 		public byte Read(ushort addr)
 		{
 			byte result;
+			addr &= 0xF;
 
 			switch (addr)
 			{
+				case 0x08:
+					regs.TODREADLATCH = false;
+					return (byte)regs.TODREADLATCH10;
+				case 0x09:
+					if (!regs.TODREADLATCH)
+						return regs[addr];
+					else
+						return (byte)regs.TODREADLATCHSEC;
+				case 0x0A:
+					if (!regs.TODREADLATCH)
+						return regs[addr];
+					else
+						return (byte)regs.TODREADLATCHMIN;
+				case 0x0B:
+					regs.TODREADLATCH = true;
+					regs.TODREADLATCH10 = regs.TOD10;
+					regs.TODREADLATCHSEC = regs.TODSEC;
+					regs.TODREADLATCHMIN = regs.TODMIN;
+					regs.TODREADLATCHHR = regs.TODHR;
+					return (byte)regs.TODREADLATCHHR;
 				case 0x0D:
 					// reading this reg clears it
 					result = regs[0x0D];
 					regs[0x0D] = 0x00;
+					UpdateInterrupt();
 					return result;
 				default:
 					return regs[addr];
@@ -329,7 +490,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				underflow[index] = false;
 			}
 
-			regs.T[index] = timer;
+			regs.IT[index] |= underflow[index];
+			regs.T[index] = timer & 0xFFFF;
 		}
 
 		public void TimerTick(int index)
@@ -337,25 +499,39 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (regs.INMODE[index])
 			{
 				case 0:
-					TimerDec(index);
+					regs.TICK[index] = true;
 					break;
 				case 1:
-					if (thisCNT & !lastCNT)
-						TimerDec(index);
+					regs.TICK[index] |= (regs.CNT && !lastCNT);
 					break;
 				case 2:
-					if (underflow[0])
-						TimerDec(index);
+					regs.TICK[index] |= underflow[0];
 					break;
 				case 3:
-					if (underflow[0] || (thisCNT & !lastCNT))
-						TimerDec(index);
+					regs.TICK[index] |= (regs.CNT && !lastCNT) || underflow[0];
 					break;
 			}
+			if (regs.TICK[index])
+			{
+				TimerDec(index);
+				regs.TICK[index] = false;
+			}
+		}
+
+		public void UpdateInterrupt()
+		{
+			bool irq = false;
+			irq |= (regs.EIT[0] & regs.IT[0]);
+			irq |= (regs.EIT[1] & regs.IT[1]);
+			irq |= (regs.EIFLG & regs.IFLG);
+			irq |= (regs.EISP & regs.ISP);
+			irq |= (regs.EIALARM & regs.IALARM);
+			regs.IRQ = irq;
 		}
 
 		public void Write(ushort addr, byte val)
 		{
+			addr &= 0xF;
 			switch (addr)
 			{
 				case 0x04:
@@ -407,18 +583,65 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						regs.ALARMPM = ((val & 0x80) != 0x00);
 					}
 					else
+					{
 						regs[addr] = val;
+					}
 					break;
 				case 0x0D:
 					intMask &= ~val;
 					if ((val & 0x80) != 0x00)
 						intMask ^= val;
+					regs.EIT[0] = ((intMask & 0x01) != 0x00);
+					regs.EIT[1] = ((intMask & 0x02) != 0x00);
+					regs.EIALARM = ((intMask & 0x04) != 0x00);
+					regs.EISP = ((intMask & 0x08) != 0x00);
+					regs.EIFLG = ((intMask & 0x10) != 0x00);
+					UpdateInterrupt();
 					break;
 				default:
 					regs[addr] = val;
 					break;
 			}
 			
+		}
+
+		public void WriteCNT(bool val)
+		{
+			if (!lastCNT && val)
+			{
+				if (!regs.SPMODE)
+				{
+					// read bit into shift register
+					bool inputBit = ReadSerial();
+					regs.SDR = ((regs.SDR << 1) | (inputBit ? 0x01 : 0x00)) & 0xFF;
+
+					regs.SDRCOUNT = (regs.SDRCOUNT - 1) & 0x7;
+					if (regs.SDRCOUNT == 0)
+					{
+						regs.ISP = true;
+					}
+				}
+				else
+				{
+					// write bit out from shift register
+					bool outputBit = ((regs.SDR & 0x01) != 0);
+					regs.SDR >>= 1;
+					WriteSerial(outputBit);
+
+					regs.SDRCOUNT = (regs.SDRCOUNT - 1) & 0x7;
+					if (regs.SDRCOUNT == 0)
+					{
+						regs.ISP = true;
+					}
+				}
+			}
+			regs.CNT = val;
+		}
+
+		public void WriteFLG(bool val)
+		{
+			regs.FLG = val;
+			regs.IFLG |= val;
 		}
 
 		private void WriteSerialDummy(bool val)

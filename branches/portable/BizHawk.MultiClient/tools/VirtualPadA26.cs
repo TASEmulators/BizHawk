@@ -136,7 +136,7 @@ namespace BizHawk.MultiClient
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (Global.Emulator.SystemId != "A26") return;
+			if (Global.Emulator.SystemId != "A26" && Global.Emulator.SystemId != "C64") return;
 			if (sender == PU)
 				Global.StickyXORAdapter.SetSticky(Controller + " Up", PU.Checked);
 			else if (sender == PD)
@@ -151,7 +151,7 @@ namespace BizHawk.MultiClient
 
 		public override void Clear()
 		{
-			if (Global.Emulator.SystemId != "A26") return;
+			if (Global.Emulator.SystemId != "A26" && Global.Emulator.SystemId != "C64") return;
 			PU.Checked = false;
 			PD.Checked = false;
 			PL.Checked = false;

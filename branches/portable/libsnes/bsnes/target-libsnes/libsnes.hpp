@@ -143,6 +143,8 @@ void snes_dequeue_message(char* buffer);
 typedef const char* (*snes_path_request_t)(int slot, const char* hint);
 void snes_set_path_request(snes_path_request_t path_request);
 
+void snes_set_color_lut(uint32_t * colors);
+
 // system bus implementation
 uint8_t bus_read(unsigned addr);
 void bus_write(unsigned addr, uint8_t val);
@@ -183,6 +185,11 @@ void bus_write(unsigned addr, uint8_t val);
 #define SNES_REG_CGWSEL_COLORSUBMASK 41
 #define SNES_REG_CGWSEL_ADDSUBMODE 42
 #define SNES_REG_CGWSEL_DIRECTCOLOR 43
+//$2101 OBSEL
+#define SNES_REG_OBSEL_NAMEBASE 50
+#define SNES_REG_OBSEL_NAMESEL 51
+#define SNES_REG_OBSEL_SIZE 52
+
 
 int snes_peek_logical_register(int reg);
 

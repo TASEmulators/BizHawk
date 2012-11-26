@@ -54,6 +54,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return ret;
 		}
 
+		public static Dimensions[,] ObjSizes = new Dimensions[,] 
+		{
+			{ new Dimensions(8,8), new Dimensions(16,16) },
+			{ new Dimensions(8,8), new Dimensions(32,32) },
+			{ new Dimensions(8,8), new Dimensions(64,64) },
+			{ new Dimensions(16,16), new Dimensions(32,32) },
+			{ new Dimensions(16,16), new Dimensions(64,64) },
+			{ new Dimensions(32,32), new Dimensions(64,64) },
+			{ new Dimensions(16,32), new Dimensions(32,64) },
+			{ new Dimensions(16,32), new Dimensions(32,32) }
+		};
+
 		public static Dimensions SizeInBlocksForBGSize(ScreenSize size)
 		{
 			switch (size)
@@ -159,6 +171,45 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public int MODE;
 		}
 
+		public class OAMInfo
+		{
+			public int Index { private set; get; }
+			public int X { private set; get; }
+			public int Y { private set; get; }
+			public int Tile { private set; get; }
+			public int Table { private set; get; }
+			public int Palette { private set; get; }
+			public int Priority { private set; get; }
+			public bool VFlip { private set; get; }
+			public bool HFlip { private set; get; }
+			public int Size { private set; get; }
+
+			public OAMInfo(SNESGraphicsDecoder dec, int num)
+			{
+				Index = num;
+				
+				int lowaddr = num*4;
+				X = dec.oam[lowaddr++];
+				Y = dec.oam[lowaddr++];
+				Tile = dec.oam[lowaddr++];
+				Table = dec.oam[lowaddr] & 1;
+				Palette = (dec.oam[lowaddr]>>1) & 7;
+				Priority = (dec.oam[lowaddr] >> 4) & 3;
+				HFlip = ((dec.oam[lowaddr] >> 6) & 1)==1;
+				VFlip = ((dec.oam[lowaddr] >> 7) & 1) == 1;
+
+				int highaddr = num / 4;
+				int shift = (num % 4) * 2;
+				int high = dec.oam[512+highaddr];
+				high >>= shift;
+				int x = high & 1;
+				high >>= 1;
+				Size = high & 1;
+				X |= (x << 9);
+				X = (X << 23) >> 23;
+			}
+		}
+
 		public class ScreenInfo
 		{
 			public BGInfos BG = new BGInfos();
@@ -176,9 +227,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public int CGWSEL_AddSubMode { private set; get; }
 			public bool CGWSEL_DirectColor { private set; get; }
 
+			public int OBSEL_Size { private set; get; }
+			public int OBSEL_NameSel { private set; get; }
+			public int OBSEL_NameBase { private set; get; }
+
+			public int OBJTable0Addr { private set; get; }
+			public int OBJTable1Addr { private set; get; }
+
 			public static ScreenInfo GetScreenInfo()
 			{
 				var si = new ScreenInfo();
+
+				si.OBSEL_Size = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_SIZE);
+				si.OBSEL_NameSel = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMESEL);
+				si.OBSEL_NameBase = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMEBASE);
+
+				si.OBJTable0Addr = si.OBSEL_NameBase << 14;
+				si.OBJTable1Addr = (si.OBJTable0Addr + ((si.OBSEL_NameSel + 1) << 13)) & 0xFFFF;
 
 				si.SETINI_Mode7ExtBG = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_MODE7_EXTBG) == 1;
 				si.SETINI_HiRes = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_HIRES) == 1;
@@ -297,9 +362,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return ScreenInfo.GetScreenInfo();
 		}
 
-
 		//the same basic color table that libsnes uses to convert from snes 555 to rgba32
-		public static int[] colortable = new int[16 * 32768];
 		static int[] directColorTable = new int[256]; //8bpp gfx -> rgb555
 		static SNESGraphicsDecoder()
 		{
@@ -315,43 +378,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				int color = (b << 10) | (g << 5) | r;
 				directColorTable[i] = color;
 			}
-
-			//make colortable
-			//this is unlikely to change, so maybe we could precompute it to save bootup time.. benchmark it.
-			//alternatively, we could drag it out of libsneshawk dll
-			for (int l = 0; l < 16; l++)
-			{
-				for (int r = 0; r < 32; r++)
-				{
-					for (int g = 0; g < 32; g++)
-					{
-						for (int b = 0; b < 32; b++)
-						{
-							//zero 04-sep-2012 - go ahead and turn this into a pixel format we'll want
-							double luma = (double)l / 15.0;
-							int ar = (int)(luma * r + 0.5);
-							int ag = (int)(luma * g + 0.5);
-							int ab = (int)(luma * b + 0.5);
-							ar = ar * 255 / 31;
-							ag = ag * 255 / 31;
-							ab = ab * 255 / 31;
-							int color = (ab << 16) + (ag << 8) + (ar << 0) | unchecked((int)0xFF000000);
-							colortable[(l << 15) + (r << 10) + (g << 5) + (b << 0)] = color;
-						}
-					}
-				}
-			}
 		}
 
-		byte* vram;
+		int[] colortable;
+		public byte* vram, oam;
 		public ushort* cgram, vram16;
-		public SNESGraphicsDecoder()
+		public SNESGraphicsDecoder(SnesColors.ColorType pal)
 		{
+			colortable = SnesColors.GetLUT(pal);
 			IntPtr block = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.VRAM);
-			vram = (byte*)block.ToPointer();
-			vram16 = (ushort*)vram;
+			vram = (byte*)block;
+			vram16 = (ushort*)block;
 			block = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.CGRAM);
-			cgram = (ushort*)block.ToPointer();
+			cgram = (ushort*)block;
+			block = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.OAM);
+			oam = (byte*)block;
 		}
 
 		public struct TileEntry
@@ -458,8 +499,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 									int dstOfs = dstY * stride + dstX;
 									int color = tileCache[srcOfs & tileCacheMask];
 									srcOfs++;
-									color += te.palette * ncolors;
-									color += paletteStart;
+									if (color == 0 && usingUserBackColor)
+									{ }
+									else
+									{
+										color += te.palette * ncolors;
+										color += paletteStart;
+									}
 									screen[dstOfs] = color;
 								}
 							}
@@ -508,7 +554,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			for (int i = 0; i < numpixels; i++)
 			{
-				buf[offset + i] = cgram[startcolor + buf[offset + i]] & 0x7FFF; //unfortunate that we have to mask this here.. maybe do it in a more optimal spot when we port it to c++
+				int entry = buf[offset + i];
+				int color;
+				if (entry == 0 && usingUserBackColor)
+					color = userBackColor;
+				else color = cgram[startcolor + entry] & 0x7FFF; //unfortunate that we have to mask this here.. maybe do it in a more optimal spot when we port it to c++
+
+				buf[offset + i] = color;
 			}
 		}
 		public void Colorize(int* buf, int offset, int numpixels)
@@ -520,6 +572,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		int[][] _tileCache = new int[18][];
+
+		bool usingUserBackColor = false;
+		int userBackColor;
+
+		public void SetBackColor(int snescol)
+		{
+			usingUserBackColor = true;
+			userBackColor = snescol;
+		}
 
 		/// <summary>
 		/// Caches all tiles at the 2bpp, 4bpp, and 8bpp decoded states.
@@ -648,12 +709,48 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			Colorize(screen, 0, numPixels);
 		}
 
+		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum)
+		{
+			var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1] };
+			var oam = new OAMInfo(this, spritenum);
+			var dim = dims[oam.Size];
+
+			int[] tilebuf = _tileCache[4];
+
+			int baseaddr;
+			if (oam.Table == 0)
+				baseaddr = si.OBJTable0Addr;
+			else
+				baseaddr = si.OBJTable1Addr;
+
+			int bcol = oam.Tile & 0xF;
+			int brow = (oam.Tile >> 4) & 0xF;
+			for(int y=0;y<dim.Height;y++)
+				for (int x = 0; x < dim.Width; x++)
+				{
+					int dy = desty + y;
+					int dx = destx + x;
+					int col = (bcol + (x >> 3)) & 0xF;
+					int row = (brow + (y >> 3)) & 0xF;
+					int sx = x & 0x7;
+					int sy = y & 0x7;
+
+					int addr = baseaddr*2 + (row * 16 + col) * 64;
+					addr += sy * 8 + sx;
+
+					int dofs = stride*dy+dx;
+					screen[dofs] = tilebuf[addr];
+					Paletteize(screen, dofs, oam.Palette * 16 + 128, 1);
+					Colorize(screen, dofs, 1);
+				}
+		}
+
 		/// <summary>
 		/// renders the tiles to a screen of the crudely specified size.
 		/// we might need 16x16 unscrambling and some other perks here eventually.
 		/// provide a start color to use as the basis for the palette
 		/// </summary>
-		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1)
+		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1, bool descramble16 = false)
 		{
 			if(numTiles == -1)
 				numTiles = 8192 / bpp;
@@ -661,6 +758,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			for (int i = 0; i < numTiles; i++)
 			{
 				int tnum = startTile + i;
+				//TODO - mask by possible number of tiles? only in OBJ rendering mode?
 				int ty = i / tilesWide;
 				int tx = i % tilesWide;
 				int dstOfs = (ty * 8) * stride + tx * 8;

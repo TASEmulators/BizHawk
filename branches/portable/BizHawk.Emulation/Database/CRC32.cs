@@ -1,4 +1,7 @@
-﻿namespace BizHawk
+﻿//we could get a little list of crcs from here and make it clear which crc this class was for, and expose others
+//http://www.ross.net/crc/download/crc_v3.txt
+
+namespace BizHawk
 {
 	public static class CRC32
 	{

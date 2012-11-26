@@ -1,0 +1,35 @@
+//lets leave some notes here until we've rewritten every possible thing -- error recovery, ECM file format, ISO filesystem, etc.
+
+//here is a braindump of urls and stuff for future reference
+//check this for some iso stuff but seems like it ripped off corlett's code
+//http://lioneditor.googlecode.com/svn/trunk/utils/isopatcherv05/src/
+//http://code.ohloh.net/file?fid=185llKM04w3QCqwC2MdFgtUiQ94&cid=yPMRq_HKxUg&s=ecc_computeblock%28pSector%20%2B%200xC%2C%2052%2C%2043%2C%2086%2C%2088%2C%20pSector%20%2B%200x8C8%29&mp=1&ml=1&me=1&md=1&browser=Default#L106
+
+//more gpl edc/ecc
+//http://code.ohloh.net/file?fid=BEZeY2fWALJKXTgY3Oe9J988ubQ&cid=Xkpw3SKt7K8&s=edc%20ecc%20&pp=0&fl=C&ff=1&filterChecked=true&mp=1&ml=1&me=1&md=1&browser=Default#L13
+//still more.. comes from lxdream, which takes its code from cdrkit. cdrkit is gpl
+//http://code.ohloh.net/file?fid=asMhpC6ygBi47pIYaxYwhXJFptI&cid=T6ljN87aG7M&s=&browser=Default&pp=0&fl=NonCode&fl=C&fl=C%2B%2B&ff=1&mp=1&ml=1&me=1&md=1&filterChecked=true#L0
+
+//cdemu/cdrtools/dvdrtools/cdkit maybe useful libraries to reference but all gpl?
+//cdrdao is GPL as well
+//cdrtools is some weird license CDDL
+//cdrkit was forked from the last GPL version of cdrtools. cdrkit is definitely gpl
+//libedc was part of cdrtools; now part of cdrkit too when it forked. but it is GPL
+//dvdisaster is GPL too
+//one more thing http://www.gnu.org/software/libcdio/libcdio.html
+
+//entertaining debacle
+//https://bugzilla.novell.com/show_bug.cgi?id=672491#c7
+
+//this 
+//https://github.com/tonioni/WinUAE/blob/master/cdrom.cpp
+//references this
+//http://www.ross.net/crc/download/crc_v3.txt
+
+//this code in mednafen's lec.cpp calculates the reed solomon crap. port it to c# and then a/b test against it
+//Gf8_Q_Coeffs_Results_01
+
+//assorted other helpful urls
+//http://www.cs.utsa.edu/~wagner/laws/FFM.html
+//http://www.cs.cmu.edu/afs/cs.cmu.edu/project/pscico-guyb/realworld/www/reedsolomon/reed_solomon_codes.html
+//http://en.wikipedia.org/wiki/Finite_field_arithmetic

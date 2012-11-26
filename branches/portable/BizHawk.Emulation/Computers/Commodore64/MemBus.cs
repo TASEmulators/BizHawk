@@ -55,20 +55,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public MemoryLayout layout;
 
 		// ram
-		public byte cia2A;
-		public byte cia2B;
 		public byte[] colorRam;
 		public byte[] ram;
+		public bool vicCharEnabled;
+		public ushort vicOffset;
 
 		// registers
 		public byte busData;
-		public DirectionalDataPort cia0PortA = new DirectionalDataPort(0xFF, 0x00);
-		public DirectionalDataPort cia0PortB = new DirectionalDataPort(0xFF, 0x00);
-		public DirectionalDataPort cia1PortA = new DirectionalDataPort(0x7F, 0x00);
-		public DirectionalDataPort cia1PortB = new DirectionalDataPort(0xFF, 0x00);
-		public DirectionalDataPort cpuPort;
+		public bool inputWasRead;
 		public bool readTrigger = true;
 		public bool writeTrigger = true;
+
+		// ports
+		public DataPortConnector cpuIO;
+		public DataPortConnector cpuPort;
+		public DataPortBus cpuPortBus = new DataPortBus();
 
 		void HandleFirmwareError(string file)
 		{
@@ -98,11 +99,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			sid = newSid;
 			cia0 = newCia0;
 			cia1 = newCia1;
-			cia0.ports[0] = cia0PortA;
-			cia0.ports[1] = cia0PortB;
-			cia1.ports[0] = cia1PortA;
-			cia1.ports[1] = cia1PortB;
 
+			cpuPort = cpuPortBus.Connect();
+			cpuPort.Latch = 0x00;
+			cpuPort.Direction = 0x1F;
+			cpuPortBus.AttachWriteHook(UpdateLayout);
+			
+			cpuIO = cpuPortBus.Connect();
+			cpuIO.Latch = 0x17;
+
+			cia1.AttachWriteHook(0, UpdateVicOffset);
 			HardReset();
 		}
 
@@ -189,12 +195,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void HardReset()
 		{
+			layout = new MemoryLayout();
+
 			ram = new byte[0x10000];
 			colorRam = new byte[0x1000];
 			WipeMemory();
-			cpuPort = new DirectionalDataPort(0x37, 0x2F);
-			layout = new MemoryLayout();
-			UpdateLayout();
+
+			cpuPort.Direction = 0x2F;
+			cpuPort.Data = 0x37;
+
+			UpdateVicOffset();
 		}
 
 		public byte Peek(ushort addr)
@@ -222,19 +232,19 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = charRom[addr & 0x0FFF];
 						break;
 					case MemoryDesignation.Vic:
-						result = vic.regs[addr & 0x3F];
+						result = vic.Peek(addr & 0x3F);
 						break;
 					case MemoryDesignation.Sid:
-						result = sid.regs[addr & 0x1F];
+						result = sid.Peek(addr & 0x1F);
 						break;
 					case MemoryDesignation.ColorRam:
 						result = (byte)(colorRam[addr & 0x03FF] | (busData & 0xF0));
 						break;
 					case MemoryDesignation.Cia0:
-						result = cia0.regs[addr & 0x0F];
+						result = cia0.Peek(addr & 0x0F);
 						break;
 					case MemoryDesignation.Cia1:
-						result = cia1.regs[addr & 0x0F];
+						result = cia1.Peek(addr & 0x0F);
 						break;
 					case MemoryDesignation.Expansion0:
 						result = 0;
@@ -261,6 +271,71 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			busData = result;
 			return result;
+		}
+
+		public byte PeekRam(int addr)
+		{
+			return ram[addr & 0xFFFF];
+		}
+
+		public void Poke(ushort addr, byte val)
+		{
+			return;
+			/*
+			if (addr == 0x0000)
+			{
+				cpuPort.Direction = val;
+			}
+			else if (addr == 0x0001)
+			{
+				cpuPort.Data = val;
+				UpdateLayout();
+			}
+			else
+			{
+				MemoryDesignation des = GetDesignation(addr);
+
+				switch (des)
+				{
+					case MemoryDesignation.Vic:
+						vic.Poke(addr, val);
+						break;
+					case MemoryDesignation.Sid:
+						sid.Poke(addr, val);
+						break;
+					case MemoryDesignation.ColorRam:
+						colorRam[addr & 0x03FF] = (byte)(val & 0x0F);
+						break;
+					case MemoryDesignation.Cia0:
+						cia0.Poke(addr, val);
+						break;
+					case MemoryDesignation.Cia1:
+						cia1.Poke(addr, val);
+						break;
+					case MemoryDesignation.Expansion0:
+						if (cart != null)
+							cart.WritePort(addr, val);
+						break;
+					case MemoryDesignation.Expansion1:
+						break;
+					case MemoryDesignation.RAM:
+						break;
+					default:
+						break;
+				}
+
+				// write through to ram
+				if (des != MemoryDesignation.Disabled)
+				{
+					ram[addr] = val;
+				}
+			}
+			 */
+		}
+
+		public void PokeRam(int addr, byte val)
+		{
+			ram[addr & 0xFFFF] = val;
 		}
 
 		public byte Read(ushort addr)
@@ -297,6 +372,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						result = ReadColorRam(addr);
 						break;
 					case MemoryDesignation.Cia0:
+						if ((addr & 0xF) < 0x02)
+							inputWasRead = true;
 						result = cia0.Read(addr);
 						break;
 					case MemoryDesignation.Cia1:
@@ -337,6 +414,30 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return (byte)((busData & 0xF0) | (colorRam[addr & 0x03FF]));
 		}
 
+		public void SyncState(Serializer ser)
+		{
+			ser.Sync("BUSDATA", ref busData);
+			ser.Sync("EXROMPIN", ref exRomPin);
+			ser.Sync("GAMEPIN", ref gamePin);
+			ser.Sync("INPUTWASREAD", ref inputWasRead);
+
+			ser.Sync("COLORRAM", ref colorRam, false);
+			ser.Sync("RAM", ref ram, false);
+
+			byte cpuData = cpuPort.Latch;
+			byte cpuDir = cpuPort.Direction;
+			ser.Sync("CPUPORT", ref cpuData);
+			ser.Sync("CPUDIR", ref cpuDir);
+
+			if (ser.IsReader)
+			{
+				cpuPort.Latch = cpuData;
+				cpuPort.Direction = cpuDir;
+				UpdateLayout();
+				UpdateVicOffset();
+			}
+		}
+
 		public void UpdateLayout()
 		{
 			byte cpuData = cpuPort.Data;
@@ -344,7 +445,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			bool hiRom = ((cpuData & 0x02) != 0);
 			bool ioEnable = ((cpuData & 0x04) != 0);
 
-			if (loRom && hiRom && exRomPin && gamePin)
+			if (loRom && hiRom && gamePin && exRomPin)
 			{
 				layout.Mem1000 = MemoryDesignation.RAM;
 				layout.Mem8000 = MemoryDesignation.RAM;
@@ -353,7 +454,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				layout.MemD000 = ioEnable ? MemoryDesignation.IO : MemoryDesignation.Character;
 				layout.MemE000 = MemoryDesignation.Kernal;
 			}
-			else if (loRom && !hiRom && exRomPin)
+			else if (loRom && !hiRom && gamePin)
 			{
 				layout.Mem1000 = MemoryDesignation.RAM;
 				layout.Mem8000 = MemoryDesignation.RAM;
@@ -427,32 +528,39 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
+		private void UpdateVicOffset()
+		{
+			switch (cia1.Peek(0x00) & 0x03)
+			{
+				case 0:
+					vicCharEnabled = false;
+					vicOffset = 0xC000;
+					break;
+				case 1:
+					vicCharEnabled = true;
+					vicOffset = 0x8000;
+					break;
+				case 2:
+					vicCharEnabled = false;
+					vicOffset = 0x4000;
+					break;
+				default:
+					vicCharEnabled = true;
+					vicOffset = 0x0000;
+					break;
+			}
+		}
+
 		public byte VicRead(ushort addr)
 		{
 			addr = (ushort)(addr & 0x3FFF);
-			if (addr >= 0x1000 && addr < 0x2000)
+			if (vicCharEnabled && (addr >= 0x1000 && addr < 0x2000))
 			{
 				return charRom[addr & 0x0FFF];
 			}
 			else
 			{
-				int baseAddr = 0;
-				switch (cia1PortA.Data & 0x03)
-				{
-					case 0:
-						baseAddr = 0xC000 | addr;
-						break;
-					case 1:
-						baseAddr = 0x8000 | addr;
-						break;
-					case 2:
-						baseAddr = 0x4000 | addr;
-						break;
-					default:
-						baseAddr = addr;
-						break;
-				}
-				return ram[(ushort)baseAddr];
+				return ram[addr | vicOffset];
 			}
 		}
 
@@ -481,7 +589,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			else if (addr == 0x0001)
 			{
 				cpuPort.Data = val;
-				UpdateLayout();
 			}
 			else
 			{
@@ -511,10 +618,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					case MemoryDesignation.Expansion1:
 						break;
 					case MemoryDesignation.RAM:
-						ram[addr] = val;
 						break;
 					default:
 						break;
+				}
+
+				// write through to ram
+				if (des != MemoryDesignation.Disabled)
+				{
+					ram[addr] = val;
 				}
 			}
 			busData = val;
