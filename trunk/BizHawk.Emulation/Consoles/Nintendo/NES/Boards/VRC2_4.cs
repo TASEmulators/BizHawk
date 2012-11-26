@@ -17,13 +17,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		Func<int, int> fix_chr;
 		int type;
 		bool latch6k_exists = false;
+		bool extrabig_chr = false;
 
 		//state
 		public int[] prg_bank_reg_8k = new int[2];
 		public int[] chr_bank_reg_1k = new int[16];
 		bool prg_mode;
 		ByteBuffer prg_banks_8k = new ByteBuffer(4);
-		public ByteBuffer chr_banks_1k = new ByteBuffer(8);
+		public IntBuffer chr_banks_1k = new IntBuffer(8);
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;
 		byte irq_reload;
@@ -88,7 +89,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				temp = fix_chr(temp);
 				//Console.Write("{0},", temp);
 				temp &= chr_bank_mask_1k;
-				chr_banks_1k[i] = (byte)temp;
+				chr_banks_1k[i] = temp;
 			}
 		}
 
@@ -107,6 +108,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "MAPPER023":
 				case "MAPPER025":
 					throw new InvalidOperationException("someone will need to bug me to set these up for failsafe mapping");
+
+				case "MAPPER027":
+					//not exactly the same implementation as FCEUX, but we're taking functionality from it step by step as we discover and document it
+					//world hero (unl) is m027 and depends on the extrabig_chr functionality to have correct graphics.
+					//otherwise, cah4e3 says its the same as VRC4
+					extrabig_chr = true;
+					remap = (addr) => addr;
+					type = 4;
+				  break;
 
 				case "MAPPER116_HACKY":
 					remap = (addr) => addr;
@@ -190,8 +200,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePRG(int addr, byte value)
 		{
-			//Console.WriteLine("mapping {0:X4} = {1:X2}", addr, value);
+			//Console.WriteLine("mapping {0:X4} = {1:X2}", addr + 0x8000, value);
 			addr = remap(addr);
+
+			int chr_value = value & 0xF;
+			if ((addr & 1) == 1 && extrabig_chr)
+				chr_value = value & 0x1F;
+
 			switch (addr)
 			{
 				default:
@@ -236,7 +251,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x3001: //$B001
 				case 0x3002: //$B002
 				case 0x3003: //$B003
-					chr_bank_reg_1k[addr-0x3000] = value & 0xF;
+					chr_bank_reg_1k[addr - 0x3000] = chr_value;
 					SyncCHR();
 					break;
 
@@ -244,7 +259,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x4001: //$C001
 				case 0x4002: //$C002
 				case 0x4003: //$C003
-					chr_bank_reg_1k[addr - 0x4000 + 4] = value & 0xF;
+					chr_bank_reg_1k[addr - 0x4000 + 4] = chr_value;
 					SyncCHR();
 					break;
 
@@ -252,7 +267,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x5001: //$D001
 				case 0x5002: //$D002
 				case 0x5003: //$D003
-					chr_bank_reg_1k[addr - 0x5000 + 8] = value & 0xF;
+					chr_bank_reg_1k[addr - 0x5000 + 8] = chr_value;
 					SyncCHR();
 					break;
 
@@ -260,7 +275,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x6001: //$E001
 				case 0x6002: //$E002
 				case 0x6003: //$E003
-					chr_bank_reg_1k[addr - 0x6000 + 12] = value & 0xF;
+					chr_bank_reg_1k[addr - 0x6000 + 12] = chr_value;
 					SyncCHR();
 					break;
 

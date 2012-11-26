@@ -74,6 +74,13 @@ sha1:536D623BA02A622BDE8E2D7D514AE9785B5E0357	H	Punch Out!! Kirby (Hack) (U)	NES
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;heres another idea. let's list rom sets from goodNES, good and bad variants together
+sha1:98B71119294DA59D1B22723D2D2955D80EADABF4		World Hero (Unl) [!]	NES		board=MAPPER027
+sha1:17AC56723F99A646BD44F8C999B23B8A972A3EF2	B	World Hero (Unl) [b1]	NES		board=MAPPER027
+sha1:5227195D5DB2030758BF67704150E8C5FAF056B1	B	World Hero (Unl) [b2]	NES		board=MAPPER027
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;obscure and unlicensed roms which are not likely to be in bootgod's DB anytime soon but which are nonetheless "good" as far as things go
 ;people like these games (especially vast quantities of chinese oddities) so its important to add them here as good
 sha1:D09EF8127C64CBE817B45DF33C4D43E7B441E381		Final Fantasy V (Unl)	NES		board=MAPPER164;PRG=512;CHR=0;WRAM=8;PRAM=8;PAD_V=1

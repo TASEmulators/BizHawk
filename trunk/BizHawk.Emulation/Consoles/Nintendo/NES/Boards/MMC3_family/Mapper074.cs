@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+//27
+
+//TODO - could merge functionality with 192 somehow
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	class Mapper074 : MMC3Board_Base
