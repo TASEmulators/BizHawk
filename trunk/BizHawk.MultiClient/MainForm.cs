@@ -4530,13 +4530,13 @@ namespace BizHawk.MultiClient
 		{
 			if (StatusSlot0.Visible)
 			{
-				if (Global.Emulator is C64)
+				if (Global.Emulator.CoreOutputComm.UsesDriveLed)
 				{
 					if (!StatusBarLedLight.Visible)
 					{
 						StatusBarLedLight.Visible = true;
 					}
-					if ((Global.Emulator as C64).DriveLED)
+					if (Global.Emulator.CoreOutputComm.DriveLED)
 					{
 						StatusBarLedLight.Image = BizHawk.MultiClient.Properties.Resources.LightOn;
 					}

@@ -55,6 +55,9 @@ namespace BizHawk
 		public bool CpuTraceAvailable = false;
 
 		public string TraceHeader = "Instructions";
+
+		public bool DriveLED = false;
+		public bool UsesDriveLed = false;
 	}
 
 	public class TraceBuffer
