@@ -396,6 +396,20 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap LightOff {
+            get {
+                object obj = ResourceManager.GetObject("LightOff", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap LightOn {
+            get {
+                object obj = ResourceManager.GetObject("LightOn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap LoadConfig {
             get {
                 object obj = ResourceManager.GetObject("LoadConfig", resourceCulture);

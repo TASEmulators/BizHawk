@@ -267,6 +267,8 @@
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.graphicsDebuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadGBInSGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.colecoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.skipBIOSIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.forumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -278,6 +280,7 @@
 			this.PauseStrip = new System.Windows.Forms.ToolStripDropDownButton();
 			this.RebootStatusBarIcon = new System.Windows.Forms.ToolStripStatusLabel();
 			this.AVIStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusBarLedLight = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.StatusSlot1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.StatusSlot2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -311,8 +314,6 @@
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiShowMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.colecoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.skipBIOSIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -2313,6 +2314,22 @@
 			this.loadGBInSGBToolStripMenuItem.Text = "Load GB in SGB";
 			this.loadGBInSGBToolStripMenuItem.Click += new System.EventHandler(this.loadGBInSGBToolStripMenuItem_Click);
 			// 
+			// colecoToolStripMenuItem
+			// 
+			this.colecoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.skipBIOSIntroToolStripMenuItem});
+			this.colecoToolStripMenuItem.Name = "colecoToolStripMenuItem";
+			this.colecoToolStripMenuItem.Size = new System.Drawing.Size(56, 19);
+			this.colecoToolStripMenuItem.Text = "&Coleco";
+			this.colecoToolStripMenuItem.DropDownOpened += new System.EventHandler(this.colecoToolStripMenuItem_DropDownOpened);
+			// 
+			// skipBIOSIntroToolStripMenuItem
+			// 
+			this.skipBIOSIntroToolStripMenuItem.Name = "skipBIOSIntroToolStripMenuItem";
+			this.skipBIOSIntroToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.skipBIOSIntroToolStripMenuItem.Text = "&Skip BIOS intro";
+			this.skipBIOSIntroToolStripMenuItem.Click += new System.EventHandler(this.skipBIOIntroToolStripMenuItem_Click);
+			// 
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2356,6 +2373,7 @@
             this.PauseStrip,
             this.RebootStatusBarIcon,
             this.AVIStatusLabel,
+            this.StatusBarLedLight,
             this.toolStripStatusLabel1,
             this.StatusSlot1,
             this.StatusSlot2,
@@ -2433,6 +2451,13 @@
 			this.AVIStatusLabel.Name = "AVIStatusLabel";
 			this.AVIStatusLabel.Size = new System.Drawing.Size(16, 17);
 			this.AVIStatusLabel.Text = "AVI Capture";
+			// 
+			// StatusBarLedLight
+			// 
+			this.StatusBarLedLight.Image = global::BizHawk.MultiClient.Properties.Resources.LightOff;
+			this.StatusBarLedLight.Name = "StatusBarLedLight";
+			this.StatusBarLedLight.Size = new System.Drawing.Size(16, 17);
+			this.StatusBarLedLight.ToolTipText = "Disk Drive LED Light";
 			// 
 			// toolStripStatusLabel1
 			// 
@@ -2689,22 +2714,6 @@
 			this.cmiShowMenu.Size = new System.Drawing.Size(203, 22);
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
-			// 
-			// colecoToolStripMenuItem
-			// 
-			this.colecoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.skipBIOSIntroToolStripMenuItem});
-			this.colecoToolStripMenuItem.Name = "colecoToolStripMenuItem";
-			this.colecoToolStripMenuItem.Size = new System.Drawing.Size(56, 19);
-			this.colecoToolStripMenuItem.Text = "&Coleco";
-			this.colecoToolStripMenuItem.DropDownOpened += new System.EventHandler(this.colecoToolStripMenuItem_DropDownOpened);
-			// 
-			// skipBIOIntroToolStripMenuItem
-			// 
-			this.skipBIOSIntroToolStripMenuItem.Name = "skipBIOSIntroToolStripMenuItem";
-			this.skipBIOSIntroToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.skipBIOSIntroToolStripMenuItem.Text = "&Skip BIOS intro";
-			this.skipBIOSIntroToolStripMenuItem.Click += new System.EventHandler(this.skipBIOIntroToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3030,6 +3039,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator28;
 		private System.Windows.Forms.ToolStripMenuItem colecoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem skipBIOSIntroToolStripMenuItem;
+		private System.Windows.Forms.ToolStripStatusLabel StatusBarLedLight;
     }
 }
 

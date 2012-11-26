@@ -2501,6 +2501,7 @@ namespace BizHawk.MultiClient
 
 		void StepRunLoop_Core()
 		{
+			HandleToggleLight();
 			bool runFrame = false;
 			runloop_frameadvance = false;
 			DateTime now = DateTime.Now;
@@ -4525,5 +4526,33 @@ namespace BizHawk.MultiClient
 			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
 		}
 
+		private void HandleToggleLight()
+		{
+			if (StatusSlot0.Visible)
+			{
+				if (Global.Emulator is C64)
+				{
+					if (!StatusBarLedLight.Visible)
+					{
+						StatusBarLedLight.Visible = true;
+					}
+					if ((Global.Emulator as C64).DriveLED)
+					{
+						StatusBarLedLight.Image = BizHawk.MultiClient.Properties.Resources.LightOn;
+					}
+					else
+					{
+						StatusBarLedLight.Image = BizHawk.MultiClient.Properties.Resources.LightOff;
+					}
+				}
+				else
+				{
+					if (StatusBarLedLight.Visible)
+					{
+						StatusBarLedLight.Visible = false;
+					}
+				}
+			}
+		}
 	}
 }
