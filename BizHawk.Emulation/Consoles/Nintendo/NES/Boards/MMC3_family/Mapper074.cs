@@ -28,7 +28,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				VRAM[addr & 0x7FF] = value;
+				int bank = Get_CHRBank_1K(addr);
+				if (bank == 0x08)
+				{
+					VRAM[addr & 0x03FF] = value;
+				}
+				else if (bank == 0x09)
+				{
+					VRAM[(addr & 0x03FF) + 0x400] = value;
+				}
 			}
 			else
 			{
@@ -36,32 +44,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		private int GetBankNum(int addr)
-		{
-			int bank_1k = Get_CHRBank_1K(addr);
-			bank_1k &= chr_mask;
-			return bank_1k;
-		}
-
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				int bank = GetBankNum(addr);
-				if (bank == 0x08)
-				{
-					return VRAM[addr & 0x03FF];
-				}
-				else if (bank == 0x09)
-				{
-					return VRAM[(addr & 0x03FF) + 0x400];
-				}
-				else
-				{
-					addr = MapCHR(addr);
-					return VROM[addr + extra_vrom];
-				}
-
+				int bank = Get_CHRBank_1K(addr);
+			  if (bank == 0x08)
+			  {
+			    return VRAM[addr & 0x03FF];
+			  }
+			  else if (bank == 0x09)
+			  {
+			    return VRAM[(addr & 0x03FF) + 0x400];
+			  }
+			  else
+			  {
+			    addr = MapCHR(addr);
+			    return VROM[addr];
+			  }
 			}
 			else return base.ReadPPU(addr);
 		}
