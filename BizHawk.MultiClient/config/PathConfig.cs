@@ -135,12 +135,18 @@ namespace BizHawk.MultiClient
 			TI83ScreenshotsBox.Text = Global.Config.PathTI83Screenshots;
 			TI83CheatsBox.Text = Global.Config.PathTI83Cheats;
 
-			AtariBaseBox.Text = Global.Config.BaseAtari;
-			AtariROMsBox.Text = Global.Config.PathAtariROMs;
-			AtariSavestatesBox.Text = Global.Config.PathAtariSavestates;
-			AtariSaveRAMBox.Text = Global.Config.PathAtariSaveRAM;
-			AtariScreenshotsBox.Text = Global.Config.PathAtariScreenshots;
-			AtariCheatsBox.Text = Global.Config.PathAtariCheats;
+			Atari2600BaseBox.Text = Global.Config.BaseAtari2600;
+			Atari2600ROMsBox.Text = Global.Config.PathAtari2600ROMs;
+			Atari2600SavestatesBox.Text = Global.Config.PathAtari2600Savestates;
+			Atari2600ScreenshotsBox.Text = Global.Config.PathAtari2600Screenshots;
+			Atari2600CheatsBox.Text = Global.Config.PathAtari2600Cheats;
+
+			Atari7800BaseBox.Text = Global.Config.BaseAtari7800;
+			Atari7800ROMsBox.Text = Global.Config.PathAtari7800ROMs;
+			Atari7800SavestatesBox.Text = Global.Config.PathAtari7800Savestates;
+			Atari7800ScreenshotsBox.Text = Global.Config.PathAtari7800Screenshots;
+			Atari7800CheatsBox.Text = Global.Config.PathAtari7800Cheats;
+			Atari7800FirmwaresBox.Text = Global.Config.PathAtari7800Firmwares;
 
 			C64BaseBox.Text = Global.Config.BaseC64;
 			C64ROMsBox.Text = Global.Config.PathC64ROMs;
@@ -170,6 +176,7 @@ namespace BizHawk.MultiClient
 				tabControl1.Controls.Remove(tabPageIntellivision);
 				tabControl1.Controls.Remove(tabPageC64);
 				tabControl1.Controls.Remove(tabPageGBA);
+				tabControl1.Controls.Remove(tabPageAtari7800);
 			}
 		}
 
@@ -210,6 +217,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "A26":
 					tabControl1.SelectTab(tabPageAtari2600);
+					break;
+				case "A78":
+					tabControl1.SelectTab(tabPageAtari7800);
 					break;
 				case "INTV":
 					tabControl1.SelectTab(tabPageIntellivision);
@@ -317,12 +327,18 @@ namespace BizHawk.MultiClient
 			Global.Config.PathTI83Screenshots = TI83ScreenshotsBox.Text;
 			Global.Config.PathTI83Cheats = TI83CheatsBox.Text;
 
-			Global.Config.BaseAtari = AtariBaseBox.Text;
-			Global.Config.PathAtariROMs = AtariROMsBox.Text;
-			Global.Config.PathAtariSavestates = AtariSavestatesBox.Text;
-			Global.Config.PathAtariSaveRAM = AtariSaveRAMBox.Text;
-			Global.Config.PathAtariScreenshots = AtariScreenshotsBox.Text;
-			Global.Config.PathAtariCheats = AtariCheatsBox.Text;
+			Global.Config.BaseAtari2600 = Atari2600BaseBox.Text;
+			Global.Config.PathAtari2600ROMs = Atari2600ROMsBox.Text;
+			Global.Config.PathAtari2600Savestates = Atari2600SavestatesBox.Text;
+			Global.Config.PathAtari2600Screenshots = Atari2600ScreenshotsBox.Text;
+			Global.Config.PathAtari2600Cheats = Atari2600CheatsBox.Text;
+
+			Global.Config.BaseAtari7800 = Atari7800BaseBox.Text;
+			Global.Config.PathAtari7800ROMs = Atari7800ROMsBox.Text;
+			Global.Config.PathAtari7800Savestates = Atari7800SavestatesBox.Text;
+			Global.Config.PathAtari7800Screenshots = Atari7800ScreenshotsBox.Text;
+			Global.Config.PathAtari7800Cheats = Atari7800CheatsBox.Text;
+			Global.Config.PathAtari7800Firmwares = Atari7800FirmwaresBox.Text;
 
 			Global.Config.BaseC64 = C64BaseBox.Text;
 			Global.Config.PathC64ROMs = C64ROMsBox.Text;
@@ -415,9 +431,13 @@ namespace BizHawk.MultiClient
 			TI83BrowseROMs.Enabled = !RecentForROMs.Checked;
 			TI83ROMsDescription.Enabled = !RecentForROMs.Checked;
 
-			AtariROMsBox.Enabled = !RecentForROMs.Checked;
-			AtariBrowseROMs.Enabled = !RecentForROMs.Checked;
-			AtariROMsDescription.Enabled = !RecentForROMs.Checked;
+			Atari2600ROMsBox.Enabled = !RecentForROMs.Checked;
+			Atari2600BrowseROMs.Enabled = !RecentForROMs.Checked;
+			Atari2600ROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			Atari7800ROMsBox.Enabled = !RecentForROMs.Checked;
+			Atari7800BrowseROMs.Enabled = !RecentForROMs.Checked;
+			Atari7800ROMsDescription.Enabled = !RecentForROMs.Checked;
 
 			C64ROMsBox.Enabled = !RecentForROMs.Checked;
 			C64BrowseROMs.Enabled = !RecentForROMs.Checked;
@@ -725,32 +745,27 @@ namespace BizHawk.MultiClient
 
 		private void BrowseAtariBase_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariBaseBox, AtariBaseDescription.Text);
+			BrowseFolder(Atari2600BaseBox, Atari2600BaseDescription.Text);
 		}
 
 		private void BrowseAtariROMs_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariROMsBox, AtariROMsDescription.Text, "A26");
+			BrowseFolder(Atari2600ROMsBox, Atari2600ROMsDescription.Text, "A26");
 		}
 
 		private void BrowseAtariSavestates_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariSavestatesBox, AtariSavestatesDescription.Text, "A26");
-		}
-
-		private void BrowseAtariSaveRAM_Click(object sender, EventArgs e)
-		{
-			BrowseFolder(AtariSaveRAMBox, AtariSaveRAMDescription.Text, "A26");
+			BrowseFolder(Atari2600SavestatesBox, Atari2600SavestatesDescription.Text, "A26");
 		}
 
 		private void BrowseAtariScreenshots_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariScreenshotsBox, AtariScreenshotsDescription.Text, "A26");
+			BrowseFolder(Atari2600ScreenshotsBox, Atari2600ScreenshotsDescription.Text, "A26");
 		}
 
 		private void AtariBrowseCheats_Click(object sender, EventArgs e)
 		{
-			BrowseFolder(AtariCheatsBox, AtariCheatsDescription.Text, "A26");
+			BrowseFolder(Atari2600CheatsBox, Atari2600CheatsDescription.Text, "A26");
 		}
 
 		private void INTVBrowseBase_Click(object sender, EventArgs e)
@@ -940,41 +955,6 @@ namespace BizHawk.MultiClient
 			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
 		}
 
-		private void PCEBaseBox_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void PCEROMsBox_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void PCESavestatesBox_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void PCESaveRAMBox_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void PCEScreenshotsBox_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void PCECheatsBox_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void PCEBiosBox_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
 		private void BrowseCOLBase_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(COLBaseBox, COLBaseDescription.Text);
@@ -1044,6 +1024,42 @@ namespace BizHawk.MultiClient
 				"GBA BIOS (*.rom)|*.rom|All Files|*.*",
 				 Global.Config.PathGBABIOS, "GBA",
 				GBAFirmwaresBox);
+		}
+
+		private void Atari78FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
+		}
+
+		private void BrowseAtari7800Base_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(Atari7800BaseBox, Atari7800BaseDescription.Text);
+			
+		}
+
+		private void Atari7800BrowseROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(Atari7800ROMsBox, Atari7800ROMsDescription.Text, "A78");
+		}
+
+		private void BrowseAtari7800Savestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(Atari7800SavestatesBox, Atari7800SavestatesDescription.Text, "A78");
+		}
+
+		private void BrowseAtari7800Screenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(Atari7800ScreenshotsBox, Atari7800ScreenshotsDescription.Text, "A78");
+		}
+
+		private void Atari7800BrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(Atari7800CheatsBox, Atari7800CheatsDescription.Text, "A78");
+		}
+
+		private void Atari7800BrowseFirmwares_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(Atari7800FirmwaresBox, Atari7800FirmwaresDescription.Text, "A78");
 		}
 	}
 }

@@ -1862,9 +1862,32 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "A78":
-								string ntsc_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800NTSCBIOS, "A78");
-								string pal_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800PALBIOS, "A78");
-								string hsbiospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800HighScoreBIOS, "A78");
+								string ntsc_biospath = PathManager.MakeAbsolutePath(Path.Combine(Global.Config.PathAtari7800Firmwares, "7800NTSCBIOS.bin"), "A78");
+								string pal_biospath = PathManager.MakeAbsolutePath(Path.Combine(Global.Config.PathAtari7800Firmwares, "7800PALBIOS.bin"), "A78");
+								string hsbiospath = PathManager.MakeAbsolutePath(Path.Combine(Global.Config.PathAtari7800Firmwares, "7800highscore.bin"), "A78");
+
+								FileInfo ntscfile = new FileInfo(ntsc_biospath);
+								FileInfo palfile = new FileInfo(pal_biospath);
+								FileInfo hsfile = new FileInfo(hsbiospath);
+
+								if (!ntscfile.Exists)
+								{
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									throw new Exception();
+								}
+
+								if (!palfile.Exists)
+								{
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									throw new Exception();
+								}
+
+								if (!hsfile.Exists)
+								{
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									throw new Exception();
+								}
+
 								byte[] NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
 								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
 								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);

@@ -159,12 +159,18 @@ namespace BizHawk.MultiClient
 		public string PathTI83Screenshots = Path.Combine(".", "Screenshots");
 		public string PathTI83Cheats = Path.Combine(".", "Cheats");
 
-		public string BaseAtari = Path.Combine(".", "Atari");
-		public string PathAtariROMs = ".";
-		public string PathAtariSavestates = Path.Combine(".", "State");
-		public string PathAtariSaveRAM = Path.Combine(".", "SaveRAM");
-		public string PathAtariScreenshots = Path.Combine(".", "Screenshots");
-		public string PathAtariCheats = Path.Combine(".", "Cheats");
+		public string BaseAtari2600 = Path.Combine(".", "Atari 2600");
+		public string PathAtari2600ROMs = ".";
+		public string PathAtari2600Savestates = Path.Combine(".", "State");
+		public string PathAtari2600Screenshots = Path.Combine(".", "Screenshots");
+		public string PathAtari2600Cheats = Path.Combine(".", "Cheats");
+
+		public string BaseAtari7800 = Path.Combine(".", "Atari 7800");
+		public string PathAtari7800ROMs = ".";
+		public string PathAtari7800Savestates = Path.Combine(".", "State");
+		public string PathAtari7800Screenshots = Path.Combine(".", "Screenshots");
+		public string PathAtari7800Cheats = Path.Combine(".", "Cheats");
+		public string PathAtari7800Firmwares = Path.Combine(".", "Firmwares");
 
 		public string BaseC64 = Path.Combine(".", "C64");
 		public string PathC64ROMs = ".";
@@ -201,9 +207,6 @@ namespace BizHawk.MultiClient
 		public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		public string PathINTVEROM = Path.Combine(".", "erom.bin");
 		public string PathFDSBios = Path.Combine(".", "disksys.rom");
-		public string PathAtari7800NTSCBIOS = Path.Combine(".", "7800NTSCBIOS.bin");
-		public string PathAtari7800PALBIOS = Path.Combine(".", "7800PALBIOS.bin");
-		public string PathAtari7800HighScoreBIOS = Path.Combine(".", "7800highscore.bin");
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
