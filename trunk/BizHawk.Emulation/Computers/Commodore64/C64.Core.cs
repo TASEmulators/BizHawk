@@ -96,15 +96,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			chips.HardReset();
 		}
 
-		private byte Peek(int addr)
-		{
-			return chips.cpu.Peek(addr);
-		}
+		//private byte Peek(int addr)
+		//{
+		//    return chips.cpu.Peek(addr);
+		//}
 
-		private void Poke(int addr, byte val)
-		{
-			chips.cpu.Poke(addr, val);
-		}
+		//private void Poke(int addr, byte val)
+		//{
+		//    chips.cpu.Poke(addr, val);
+		//}
 
 		// ------------------------------------
 	}

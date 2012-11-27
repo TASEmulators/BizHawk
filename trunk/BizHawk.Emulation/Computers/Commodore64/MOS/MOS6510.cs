@@ -26,6 +26,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool pinNMI;
 		private bool pinRDY;
 		private byte portDir;
+		private bool unusedPin0;
+		private bool unusedPin1;
+		private uint unusedPinTTL0;
+		private uint unusedPinTTL1;
+		private uint unusedPinTTLCycles;
 
 		// ------------------------------------
 
@@ -42,6 +47,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			// configure data port defaults
 			portDir = 0x2F;
 			SetPortData(0x37);
+
+			// todo: verify this value (I only know that unconnected bits fade after a number of cycles)
+			unusedPinTTLCycles = 40;
+			unusedPinTTL0 = 0;
+			unusedPinTTL1 = 0;
 		}
 
 		public void HardReset()
@@ -71,6 +81,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				cpu.IRQ = !pinIRQ;
 				cpu.ExecuteOne();
 			}
+
+			// process unused pin TTL
+			if (unusedPinTTL0 == 0)
+				unusedPin0 = false;
+			else
+				unusedPinTTL0--;
+
+			if (unusedPinTTL1 == 0)
+				unusedPin1 = false;
+			else
+				unusedPinTTL1--;
 		}
 
 		private void UpdatePins()
@@ -102,8 +123,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				portDir = val;
 			else if (addr == 0x0001)
 				SetPortData(val);
-			else
-				chips.pla.Poke(addr, val);
+			chips.pla.Poke(addr, val);
 		}
 
 		public byte Read(ushort addr)
@@ -126,8 +146,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				PortDirection = val;
 			else if (addr == 0x0001)
 				PortData = val;
-			else
-				chips.pla.Write(addr, val);
+			chips.pla.Write(addr, val);
 		}
 
 		// ------------------------------------
@@ -164,7 +183,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				result |= pinCassetteOutput ? (byte)0x08 : (byte)0x00;
 				result |= pinCassetteButton ? (byte)0x10 : (byte)0x00;
 				result |= pinCassetteMotor ? (byte)0x20 : (byte)0x00;
-
+				result |= unusedPin0 ? (byte)0x40 : (byte)0x00;
+				result |= unusedPin1 ? (byte)0x80 : (byte)0x00;
 				return result;
 			}
 			set
@@ -195,6 +215,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				chips.pla.HiRam = pinHiram;
 				chips.pla.Charen = pinCharen;
 			}
+
+			unusedPin0 = ((val & 0x40) != 0);
+			unusedPin1 = ((val & 0x80) != 0);
+			unusedPinTTL0 = unusedPinTTLCycles;
+			unusedPinTTL1 = unusedPinTTLCycles;
 		}
 
 		// ------------------------------------
