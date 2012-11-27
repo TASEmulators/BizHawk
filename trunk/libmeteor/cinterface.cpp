@@ -144,7 +144,12 @@ EXPORT void libmeteor_loadbios(const void *data, unsigned size)
 
 EXPORT uint8_t *libmeteor_getmemoryarea(int which)
 {
-	return AMeteor::_memory.GetMemoryArea(which);
+	if (which < 7)
+		return AMeteor::_memory.GetMemoryArea(which);
+	else if (which == 7)
+		return AMeteor::_io.GetIoPointer();
+	else
+		return NULL;
 }
 
 EXPORT int libmeteor_loadsaveram(const void *data, unsigned size)

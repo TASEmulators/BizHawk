@@ -208,6 +208,9 @@ namespace AMeteor
 			bool SaveState (std::ostream& stream);
 			bool LoadState (std::istream& stream);
 
+			// this should be considered very dangerous to use
+			uint8_t* GetIoPointer() {return m_iomem;}
+
 		private :
 			uint8_t* m_iomem;
 	};
