@@ -17,12 +17,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			inputFile = rom;
 			extension = romextension;
-			SetupMemoryDomains();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 			Init(Region.PAL);
 			cyclesPerFrame = (uint)chips.vic.CyclesPerFrame;
 			CoreOutputComm.UsesDriveLed = true;
+			SetupMemoryDomains();
 		}
 
 		// internal variables
@@ -117,8 +117,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void SetupMemoryDomains()
 		{
+			// chips must be initialized before this code runs!
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("System Bus", 0x10000, Endian.Little, new Func<int, byte>(Peek), new Action<int, byte>(Poke)));
+			domains.Add(new MemoryDomain("System Bus", 0x10000, Endian.Little, new Func<int, byte>(chips.cpu.Peek), new Action<int, byte>(chips.cpu.Poke)));
+			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(chips.ram.Peek), new Action<int, byte>(chips.ram.Poke)));
+			domains.Add(new MemoryDomain("CIA0", 0x10, Endian.Little, new Func<int, byte>(chips.cia0.Peek), new Action<int, byte>(chips.cia0.Poke)));
+			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, new Func<int, byte>(chips.cia1.Peek), new Action<int, byte>(chips.cia1.Poke)));
+			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, new Func<int, byte>(chips.vic.Peek), new Action<int, byte>(chips.vic.Poke)));
+			domains.Add(new MemoryDomain("SID", 0x20, Endian.Little, new Func<int, byte>(chips.sid.Peek), new Action<int, byte>(chips.sid.Poke)));
 			memoryDomains = domains.AsReadOnly();
 		}
 	}
