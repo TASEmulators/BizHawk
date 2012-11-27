@@ -6,20 +6,204 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BizHawk.MultiClient.GBtools;
 
 namespace BizHawk.MultiClient.GBAtools
 {
 	public partial class GBAGPUView : Form
 	{
+		Emulation.Consoles.Nintendo.GBA.GBA gba;
+
+		// emulator memory areas
+		IntPtr vram;
+		IntPtr oam;
+		IntPtr mmio;
+		IntPtr palram;
+		// color conversion to RGB888
+		int[] ColorConversion;
+
+		MobileBmpView bg0, bg1, bg2, bg3;
+
 		public GBAGPUView()
 		{
 			InitializeComponent();
+			// TODO: hook up something
+
+			// we do this twice to avoid having to & 0x7fff with every color
+			int[] tmp = Emulation.Consoles.GB.GBColors.GetLut(Emulation.Consoles.GB.GBColors.ColorType.vivid);
+			ColorConversion = new int[65536];
+			Buffer.BlockCopy(tmp, 0, ColorConversion, 0, sizeof(int) * tmp.Length);
+			Buffer.BlockCopy(tmp, 0, ColorConversion, sizeof(int) * tmp.Length, sizeof(int) * tmp.Length);
+			/*
+			for (int i = 1; i <= 2; i++)
+			{
+				Form foobar = new Form();
+				foobar.Text = "foo" + i;
+				foobar.TopLevel = false;
+				//foobar.TopLevelControl = this;
+				foobar.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+				//foobar.SetBounds(10, 10, 100, 100);
+				foobar.Location = new Point(100, 100);
+				foobar.Size = new System.Drawing.Size(100, 100);
+				//foobar.BackColor = Color.Black;
+				Controls.Add(foobar);
+
+				int j = i;
+
+				//foobar.Activated += (o, e) => MessageBox.Show("activated" + j);
+				//foobar.Enter += (o, e) => MessageBox.Show("enter" + j);
+				//foobar.Leave += (o, e) => MessageBox.Show("leave" + j);
+				foobar.MouseEnter += (o, e) => foobar.Activate();
+
+				foobar.Controls.Add(new Button());
+				foobar.Show();
+			}
+			*/
+
+			GenerateWidgets();
+		}
+
+		#region drawing primitives
+
+		unsafe void DrawTile16(int* dest, int pitch, byte* tile, ushort *palette, bool hflip, bool vflip)
+		{
+			if (vflip)
+			{
+				dest += pitch * 7;
+				pitch = -pitch;
+			}
+			for (int y = 0; y < 8; y++)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					*dest++ = ColorConversion[palette[*tile & 15]];
+					*dest++ = ColorConversion[palette[*tile >> 4]];
+					tile++;
+				}
+				dest -= 8;
+				dest += pitch;
+			}
+		}
+
+		unsafe void DrawTextNameTable16(int* dest, int pitch, ushort* nametable, byte* tiles)
+		{
+			for (int ty = 0; ty < 32; ty++)
+			{
+				for (int tx = 0; tx < 32; tx++)
+				{
+					ushort ntent = *nametable++;
+					DrawTile16(dest, pitch, tiles + (ntent & 1023) * 32, (ushort*)palram + (ntent >> 12 << 4), ntent.Bit(10), ntent.Bit(11));
+					dest += 8;
+				}
+				dest -= 256;
+				dest += 8 * pitch;
+			}
+		}
+
+		unsafe void DrawTextNameTable(int* dest, int pitch, ushort* nametable, byte* tiles, bool eightbit)
+		{
+			if (eightbit)
+				;
+			else
+				DrawTextNameTable16(dest, pitch, nametable, tiles);
+		}
+
+		unsafe void DrawTextBG(int n, MobileBmpView mbv)
+		{
+			ushort bgcnt = ((ushort*)mmio)[4 + n];
+			int ssize = bgcnt >> 14;
+			switch (ssize)
+			{
+				case 0: mbv.ChangeAllSizes(256, 256); break;
+				case 1: mbv.ChangeAllSizes(512, 256); break;
+				case 2: mbv.ChangeAllSizes(256, 512); break;
+				case 3: mbv.ChangeAllSizes(512, 512); break;
+			}
+			Bitmap bmp = mbv.bmpView.bmp;
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			int* pixels = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+
+			byte* tiles = (byte*)vram + ((bgcnt & 0xc) << 12);
+
+			ushort *nametable = (ushort*)vram + ((bgcnt & 0x1f00) << 2);
+
+			bool eightbit = bgcnt.Bit(7);
+
+			switch (ssize)
+			{
+				case 0:
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					break;
+				case 1:
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					pixels += 256;
+					nametable += 1024;
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					break;
+				case 2:
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					pixels += pitch * 256;
+					nametable += 1024;
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					break;
+				case 3:
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					pixels += 256;
+					nametable += 1024;
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					pixels -= 256;
+					pixels += pitch * 256;
+					nametable += 1024;
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					pixels += 256;
+					nametable += 1024;
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					break;
+			}
+
+			bmp.UnlockBits(lockdata);
+			mbv.bmpView.Refresh();
+		}
+
+
+		#endregion
+
+		MobileBmpView MakeWidget(string text, int w, int h)
+		{
+			var mbv = new MobileBmpView();
+			mbv.Text = text;
+			mbv.TopLevel = false;
+			mbv.ChangeViewSize(w, h);
+			mbv.bmpView.Clear();
+			mbv.FormClosing += delegate(object sender, FormClosingEventArgs e)
+			{
+				e.Cancel = true;
+				listBoxWidgets.Items.Add(sender);
+				(sender as Form).Hide();
+			};
+			panel1.Controls.Add(mbv);
+			listBoxWidgets.Items.Add(mbv);
+			return mbv;
+		}
+
+		void GenerateWidgets()
+		{
+			listBoxWidgets.BeginUpdate();
+			bg0 = MakeWidget("Background 0", 256, 256);
+			bg1 = MakeWidget("Background 1", 256, 256);
+			bg2 = MakeWidget("Background 2", 256, 256);
+			bg3 = MakeWidget("Background 3", 256, 256);
+			listBoxWidgets.EndUpdate();
 		}
 
 		public void Restart()
 		{
-			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA)
+			gba = Global.Emulator as Emulation.Consoles.Nintendo.GBA.GBA;
+			if (gba != null)
 			{
+				gba.GetGPUMemoryAreas(out vram, out palram, out oam, out mmio);
 			}
 			else
 			{
@@ -28,9 +212,56 @@ namespace BizHawk.MultiClient.GBAtools
 			}
 		}
 
+		unsafe void DrawEverything()
+		{
+			ushort dispcnt = ((ushort*)mmio)[0];
+
+			int bgmode = dispcnt & 7;
+			switch (bgmode)
+			{
+				case 0:
+					if (bg0.ShouldDraw) DrawTextBG(0, bg0);
+					if (bg1.ShouldDraw) DrawTextBG(1, bg1);
+					if (bg2.ShouldDraw) DrawTextBG(2, bg2);
+					if (bg3.ShouldDraw) DrawTextBG(3, bg3);
+					break;
+			}
+
+		}
+
 		/// <summary>belongs in ToolsBefore</summary>
 		public void UpdateValues()
 		{
+			if (!this.IsHandleCreated || this.IsDisposed)
+				return;
+			if (gba != null)
+			{
+				DrawEverything();
+			}
+		}
+
+		private void GBAGPUView_Load(object sender, EventArgs e)
+		{
+			Restart();
+		}
+
+		void ShowSelectedWidget()
+		{
+			if (listBoxWidgets.SelectedItem != null)
+			{
+				(listBoxWidgets.SelectedItem as MobileBmpView).Show();
+				listBoxWidgets.Items.RemoveAt(listBoxWidgets.SelectedIndex);
+			}
+		}
+
+		private void buttonShowWidget_Click(object sender, EventArgs e)
+		{
+			ShowSelectedWidget();
+		}
+
+		private void listBoxWidgets_DoubleClick(object sender, EventArgs e)
+		{
+			ShowSelectedWidget();
 		}
 	}
 }

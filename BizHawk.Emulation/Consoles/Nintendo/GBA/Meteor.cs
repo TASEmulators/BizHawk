@@ -245,6 +245,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			_MemoryDomains.Add(sb);
 		}
 
+		public void GetGPUMemoryAreas(out IntPtr vram, out IntPtr palram, out IntPtr oam, out IntPtr mmio)
+		{
+			IntPtr _vram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.vram);
+			IntPtr _palram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.palram);
+			IntPtr _oam = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.oam);
+			IntPtr _mmio = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.io);
+
+			if (_vram == IntPtr.Zero || _palram == IntPtr.Zero || _oam == IntPtr.Zero || _mmio == IntPtr.Zero)
+				throw new Exception("libmeteor_getmemoryarea() failed!");
+
+			vram = _vram;
+			palram = _palram;
+			oam = _oam;
+			mmio = _mmio;
+		}
+
 		#endregion
 
 		/// <summary>like libsnes, the library is single-instance</summary>
