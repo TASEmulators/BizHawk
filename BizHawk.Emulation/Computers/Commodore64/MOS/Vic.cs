@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			public bool collideData;
 			public bool collideSprite;
 			public uint color;
+			public bool display;
+			public bool dma;
 			public bool enable;
 			public uint mc;
 			public uint mcbase;
@@ -24,6 +26,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			public uint x;
 			public bool xExpand;
 			public uint y;
+			public bool yCrunch;
 			public bool yExpand;
 
 			public void HardReset()
@@ -31,6 +34,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				collideData = false;
 				collideSprite = false;
 				color = 0;
+				display = false;
+				dma = false;
 				enable = false;
 				mc = 0;
 				mcbase = 0;
@@ -41,6 +46,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				x = 0;
 				xExpand = false;
 				y = 0;
+				yCrunch = false;
 				yExpand = false;
 			}
 		}
@@ -54,11 +60,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool badline;
 		private bool badlineEnable;
 		private bool bitmapMode;
+		private uint borderB;
 		private bool borderCheckLEnable;
 		private bool borderCheckREnable;
 		private uint borderColor;
+		private uint borderL;
 		private bool borderOnMain;
 		private bool borderOnVertical;
+		private uint borderR;
+		private uint borderT;
 		private uint[] bufferC;
 		private uint[] bufferG;
 		private byte bus;
@@ -197,6 +207,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				bufferC[i] = 0;
 				bufferG[i] = 0;
 			}
+
+			UpdateBorder();
 		}
 
 		private void UpdateBA()
@@ -205,6 +217,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				baCount = 4;
 			else if (baCount > 0)
 				baCount--;
+		}
+
+		private void UpdateBorder()
+		{
+			borderL = columnSelect ? (uint)0x018 : (uint)0x01F;
+			borderR = columnSelect ? (uint)0x158 : (uint)0x14F;
+			borderT = rowSelect ? (uint)0x033 : (uint)0x037;
+			borderB = rowSelect ? (uint)0x0FB : (uint)0x0F7;
 		}
 
 		private void UpdatePins()
@@ -254,8 +274,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			if (badlineEnable && rasterLine >= 0x030 && rasterLine < 0x0F7 && ((rasterLine & 0x7) == yScroll))
 				badline = true;
 
+			// go into display state on a badline
 			if (badline)
 				idle = false;
+
+			// process some sprite crunch vars
+			if (!sprites[0].yExpand) sprites[0].yCrunch = true;
+			if (!sprites[1].yExpand) sprites[1].yCrunch = true;
+			if (!sprites[2].yExpand) sprites[2].yCrunch = true;
+			if (!sprites[3].yExpand) sprites[3].yCrunch = true;
+			if (!sprites[4].yExpand) sprites[4].yCrunch = true;
+			if (!sprites[5].yExpand) sprites[5].yCrunch = true;
+			if (!sprites[6].yExpand) sprites[6].yCrunch = true;
+			if (!sprites[7].yExpand) sprites[7].yCrunch = true;
 
 			ParseCycle();
 
@@ -273,6 +304,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			cycle++;
 			if (cycle == totalCycles)
 			{
+				if (rasterLine == borderB)
+					borderOnVertical = true;
+				if (rasterLine == borderT && displayEnable)
+					borderOnVertical = false;
+
 				vcbase = 0;
 				cycleIndex = 0;
 				cycle = 0;
@@ -324,6 +360,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 							addr = (ushort)((pointerVM << 10) | vc);
 							bus = chips.pla.ReadVic(addr);
 							dataC = bus;
+							dataC |= (uint)chips.colorRam.Read((ushort)vc) << 8;
+							bufferC[vmli] = dataC;
 						}
 						else
 						{
@@ -344,14 +382,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						if (bitmapMode)
 							addr = (ushort)(rc | (vc << 3) | ((pointerCB & 0x4) << 11));
 						else
-							addr = (ushort)(rc | (dataG << 3) | (pointerCB << 9));
+							addr = (ushort)(rc | ((dataC & 0xFF) << 3) | (pointerCB << 11));
 					}
 					if (extraColorMode)
 						addr &= 0x39FF;
 					bus = chips.pla.ReadVic(addr);
 					dataG = bus;
-					vmli++;
-					vc++;
+					vmli = (vmli + 1) & 0x3F;
+					vc = (vc + 1) & 0x3FF;
 					break;
 				case 0x0400:
 					// fetch I
@@ -377,10 +415,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						case 0x20:
 						case 0x30:
 							// fetch S
-							addr = (ushort)(sprites[cycleFetchSpriteIndex].mc | sprites[cycleFetchSpriteIndex].pointer << 6);
-							bus = chips.pla.ReadVic(addr);
-							sprites[cycleFetchSpriteIndex].sr <<= 8;
-							sprites[cycleFetchSpriteIndex].sr |= bus;
+							if (sprites[cycleFetchSpriteIndex].dma)
+							{
+								Sprite spr = sprites[cycleFetchSpriteIndex];
+								addr = (ushort)(spr.mc | (spr.pointer << 6));
+								bus = chips.pla.ReadVic(addr);
+								spr.sr <<= 8;
+								spr.sr |= bus;
+								spr.mc++;
+							}
 							break;
 					}
 					break;
@@ -399,39 +442,86 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					cycleBAsprite0 = ba & 0x000F;
 					cycleBAsprite1 = ba & 0x00F0;
 					cycleBAsprite2 = ba & 0x0F00;
-					if ((cycleBAsprite0 < 8 && sprites[cycleBAsprite0].enable) ||
-						(cycleBAsprite1 < 8 && sprites[cycleBAsprite1].enable) ||
-						(cycleBAsprite2 < 8 && sprites[cycleBAsprite2].enable))
+					if ((cycleBAsprite0 < 8 && sprites[cycleBAsprite0].dma) ||
+						(cycleBAsprite1 < 8 && sprites[cycleBAsprite1].dma) ||
+						(cycleBAsprite2 < 8 && sprites[cycleBAsprite2].dma))
 						pinBA = false;
 					break;
 			}
 
 			// perform actions
-			borderCheckLEnable = false;
-			borderCheckREnable = false;
+			borderCheckLEnable = true;
+			borderCheckREnable = true;
 
-			if (!columnSelect && (act & pipelineChkBrdL0) != 0)
-				borderCheckLEnable = true;
-			if (columnSelect && (act & pipelineChkBrdL1) != 0)
-				borderCheckLEnable = true;
-			if (!columnSelect && (act & pipelineChkBrdR0) != 0)
-				borderCheckREnable = true;
-			if (columnSelect && (act & pipelineChkBrdR1) != 0)
-				borderCheckREnable = true;
+			//if (!columnSelect && (act & pipelineChkBrdL0) != 0)
+			//    borderCheckLEnable = true;
+			//if (columnSelect && (act & pipelineChkBrdL1) != 0)
+			//    borderCheckLEnable = true;
+			//if (!columnSelect && (act & pipelineChkBrdR0) != 0)
+			//    borderCheckREnable = true;
+			//if (columnSelect && (act & pipelineChkBrdR1) != 0)
+			//    borderCheckREnable = true;
 			if ((act & pipelineChkSprChunch) != 0)
 			{
+				for (int i = 0; i < 8; i++)
+				{
+					Sprite spr = sprites[i];
+					if (spr.yCrunch)
+						spr.mcbase += 2;
+				}
 			}
 			if ((act & pipelineChkSprDisp) != 0)
 			{
+				for (int i = 0; i < 8; i++)
+				{
+					Sprite spr = sprites[i];
+					spr.mc = spr.mcbase;
+					if (spr.dma && spr.y == (rasterLine & 0xFF))
+					{
+						spr.display = true;
+					}
+				}
 			}
 			if ((act & pipelineChkSprDma) != 0)
 			{
+				for (int i = 0; i < 8; i++)
+				{
+					Sprite spr = sprites[i];
+					if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
+					{
+						spr.dma = true;
+						spr.mcbase = 0;
+						if (spr.yExpand)
+							spr.yCrunch = false;
+					}
+				}
 			}
 			if ((act & pipelineChkSprExp) != 0)
 			{
+				if (sprites[0].yExpand) sprites[0].yCrunch ^= true;
+				if (sprites[1].yExpand) sprites[1].yCrunch ^= true;
+				if (sprites[2].yExpand) sprites[2].yCrunch ^= true;
+				if (sprites[3].yExpand) sprites[3].yCrunch ^= true;
+				if (sprites[4].yExpand) sprites[4].yCrunch ^= true;
+				if (sprites[5].yExpand) sprites[5].yCrunch ^= true;
+				if (sprites[6].yExpand) sprites[6].yCrunch ^= true;
+				if (sprites[7].yExpand) sprites[7].yCrunch ^= true;
 			}
 			if ((act & pipelineUpdateMcBase) != 0)
 			{
+				for (int i = 0; i < 8; i++)
+				{
+					Sprite spr = sprites[i];
+					if (spr.yCrunch)
+					{
+						spr.mcbase++;
+						if (spr.mcbase == 63)
+						{
+							spr.dma = false;
+							spr.display = false;
+						}
+					}
+				}
 			}
 			if ((act & pipelineUpdateRc) != 0)
 			{
@@ -441,7 +531,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					vcbase = vc;
 				}
 				if (!idle)
-					rc++;
+					rc = (rc + 1) & 0x7;
 			}
 			if ((act & pipelineUpdateVc) != 0)
 			{
@@ -456,16 +546,24 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void Render()
 		{
-			if (borderCheckLEnable)
+			for (int i = 0; i < 4; i++)
 			{
+				if (borderCheckLEnable && rasterX == borderL)
+				{
+					if (rasterLine == borderB)
+						borderOnVertical = true;
+					if (rasterLine == borderT && displayEnable)
+						borderOnVertical = false;
+					if (!borderOnVertical)
+						borderOnMain = false;
+				}
+				if (borderCheckREnable && rasterX == borderR)
+				{
+					borderOnMain = true;
+				}
+				WritePixel(backgroundColor0);
+				rasterX++;
 			}
-			if (borderCheckREnable)
-			{
-			}
-			WritePixel(0);
-			WritePixel(0);
-			WritePixel(0);
-			WritePixel(0);
 		}
 
 		// ------------------------------------
