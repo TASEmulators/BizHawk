@@ -22,13 +22,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public Chip4864()
 		{
+			ram = new byte[0x10000];
 			HardReset();
 		}
 
 		public void HardReset()
 		{
-			ram = new byte[0x10000];
-
 			// stripe the ram
 			for (int i = 0; i < 10000; i++)
 				ram[i] = ((i & 0x40) != 0) ? (byte)0xFF : (byte)0x00;
