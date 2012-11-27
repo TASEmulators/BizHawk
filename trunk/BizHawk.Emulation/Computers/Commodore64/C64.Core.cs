@@ -96,16 +96,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			chips.HardReset();
 		}
 
-		//private byte Peek(int addr)
-		//{
-		//    return chips.cpu.Peek(addr);
-		//}
-
-		//private void Poke(int addr, byte val)
-		//{
-		//    chips.cpu.Poke(addr, val);
-		//}
-
 		// ------------------------------------
 	}
 
@@ -118,7 +108,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public Chip2114 colorRam; //u19
 		public MOS6510 cpu; //u6
 		public Chip23XX kernalRom; //u4
-		public MOSPLA pla; //
+		public MOSPLA pla;
 		public Chip4864 ram; //u10+11
 		public Sid sid; //u9
 		public Vic vic; //u7
