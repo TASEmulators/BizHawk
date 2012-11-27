@@ -5,10 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public interface IMedia
+	class Memory
 	{
-		void Apply();
-		bool Loaded();
-		bool Ready();
 	}
 }

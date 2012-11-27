@@ -79,38 +79,31 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Buffer.cs" />
-    <Compile Include="Computers\Commodore64\1541.cs" />
-    <Compile Include="Computers\Commodore64\C64.core.cs" />
+    <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
-    <Compile Include="Computers\Commodore64\C64.PeekPoke.cs" />
-    <Compile Include="Computers\Commodore64\Cartridge.cs" />
-    <Compile Include="Computers\Commodore64\CartridgeMappers.cs" />
-    <Compile Include="Computers\Commodore64\Cia.cs" />
-    <Compile Include="Computers\Commodore64\CiaState.cs" />
-    <Compile Include="Computers\Commodore64\D64.cs" />
-    <Compile Include="Computers\Commodore64\DataPort.cs" />
-    <Compile Include="Computers\Commodore64\Disk.cs" />
-    <Compile Include="Computers\Commodore64\G64.cs" />
-    <Compile Include="Computers\Commodore64\IMedia.cs" />
-    <Compile Include="Computers\Commodore64\Input.cs" />
-    <Compile Include="Computers\Commodore64\PRGFile.cs" />
-    <Compile Include="Computers\Commodore64\MemBus.cs" />
-    <Compile Include="Computers\Commodore64\Savestate.cs" />
-    <Compile Include="Computers\Commodore64\SerialCable.cs" />
-    <Compile Include="Computers\Commodore64\Sid.cs" />
-    <Compile Include="Computers\Commodore64\SidEnvelopeGenerator.cs" />
-    <Compile Include="Computers\Commodore64\SidSoundProvider.cs" />
-    <Compile Include="Computers\Commodore64\SidState.cs" />
-    <Compile Include="Computers\Commodore64\SidWaveformCalculator.cs" />
-    <Compile Include="Computers\Commodore64\SidWaveformGenerator.cs" />
-    <Compile Include="Computers\Commodore64\Timing.cs" />
-    <Compile Include="Computers\Commodore64\Via.cs" />
-    <Compile Include="Computers\Commodore64\VicII.cs" />
-    <Compile Include="Computers\Commodore64\VicIIPipeline.cs" />
-    <Compile Include="Computers\Commodore64\VicIIPipelineBuilder.cs" />
-    <Compile Include="Computers\Commodore64\VicIIVideoProvider.cs" />
-    <Compile Include="Computers\Commodore64\VicIIRegs.cs" />
-    <Compile Include="Computers\Commodore64\VicState.cs" />
+    <Compile Include="Computers\Commodore64\Memory.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
+    <Compile Include="Computers\Commodore64\MOS\IStandardIO.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6510.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6522.cs" />
+    <Compile Include="Computers\Commodore64\Media\D64.cs" />
+    <Compile Include="Computers\Commodore64\Media\Disk.cs" />
+    <Compile Include="Computers\Commodore64\Media\G64.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6526.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6567.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6581.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6569.cs" />
+    <Compile Include="Computers\Commodore64\C64.Savestate.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOSPLA.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Port.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Sid.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Sid.SoundProvider.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Sid.SyncSoundProvider.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Timer.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />
@@ -559,6 +552,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Computers\Commodore64\docs\" />
+    <Folder Include="Computers\Commodore64\Peripheral\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
