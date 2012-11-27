@@ -271,6 +271,75 @@ namespace BizHawk.MultiClient.GBAtools
 			mbv.bmpView.Refresh();
 		}
 
+		unsafe void DrawM3BG(MobileBmpView mbv)
+		{
+			mbv.ChangeAllSizes(240, 160);
+			Bitmap bmp = mbv.bmpView.bmp;
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			int* pixels = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+			
+			ushort *frame = (ushort*)vram;
+
+			for (int y = 0; y < 160; y++)
+			{
+				for (int x = 0; x < 240; x++)
+					*pixels++ = ColorConversion[*frame++];
+				pixels -= 240;
+				pixels += pitch;
+			}
+			
+			bmp.UnlockBits(lockdata);
+			mbv.bmpView.Refresh();
+		}
+
+		unsafe void DrawM4BG(MobileBmpView mbv, bool secondframe)
+		{
+			mbv.ChangeAllSizes(240, 160);
+			Bitmap bmp = mbv.bmpView.bmp;
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			int* pixels = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+
+			byte* frame = (byte*)vram + (secondframe ? 40960 : 0);
+			ushort* palette = (ushort*)palram;
+
+			for (int y = 0; y < 160; y++)
+			{
+				for (int x = 0; x < 240; x++)
+					*pixels++ = ColorConversion[palette[*frame++]];
+				pixels -= 240;
+				pixels += pitch;
+			}
+
+			bmp.UnlockBits(lockdata);
+			mbv.bmpView.Refresh();
+		}
+
+		unsafe void DrawM5BG(MobileBmpView mbv, bool secondframe)
+		{
+			mbv.ChangeAllSizes(160, 128);
+			Bitmap bmp = mbv.bmpView.bmp;
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			int* pixels = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+
+			ushort* frame = (ushort*)vram + (secondframe ? 20480 : 0);
+
+			for (int y = 0; y < 128; y++)
+			{
+				for (int x = 0; x < 160; x++)
+					*pixels++ = ColorConversion[*frame++];
+				pixels -= 160;
+				pixels += pitch;
+			}
+
+			bmp.UnlockBits(lockdata);
+			mbv.bmpView.Refresh();
+		}
 
 		#endregion
 
@@ -299,7 +368,25 @@ namespace BizHawk.MultiClient.GBAtools
 					if (bg2.ShouldDraw) DrawAffineBG(2, bg2);
 					if (bg3.ShouldDraw) DrawAffineBG(3, bg3);
 					break;
-					
+				case 3:
+					if (bg0.ShouldDraw) bg0.bmpView.Clear();
+					if (bg1.ShouldDraw) bg1.bmpView.Clear();
+					if (bg2.ShouldDraw) DrawM3BG(bg2);
+					if (bg3.ShouldDraw) bg3.bmpView.Clear();
+					break;
+				//in modes 4, 5, bg3 is repurposed as bg2 invisible frame
+				case 4:
+					if (bg0.ShouldDraw) bg0.bmpView.Clear();
+					if (bg1.ShouldDraw) bg1.bmpView.Clear();
+					if (bg2.ShouldDraw) DrawM4BG(bg2, dispcnt.Bit(4));
+					if (bg3.ShouldDraw) DrawM4BG(bg3, !dispcnt.Bit(4));
+					break;
+				case 5:
+					if (bg0.ShouldDraw) bg0.bmpView.Clear();
+					if (bg1.ShouldDraw) bg1.bmpView.Clear();
+					if (bg2.ShouldDraw) DrawM5BG(bg2, dispcnt.Bit(4));
+					if (bg3.ShouldDraw) DrawM5BG(bg3, !dispcnt.Bit(4));
+					break;
 			}
 
 		}
