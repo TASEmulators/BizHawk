@@ -65,6 +65,41 @@ namespace BizHawk.MultiClient.GBAtools
 
 		#region drawing primitives
 
+		unsafe void DrawTile256(int* dest, int pitch, byte* tile, ushort* palette, bool hflip, bool vflip)
+		{
+			if (vflip)
+			{
+				dest += pitch * 7;
+				pitch = -pitch;
+			}
+
+			if (hflip)
+			{
+				dest += 7;
+				for (int y = 0; y < 8; y++)
+				{
+					for (int x = 0; x < 8; x++)
+					{
+						*dest-- = ColorConversion[palette[*tile++]];
+					}
+					dest += 8;
+					dest += pitch;
+				}
+			}
+			else
+			{
+				for (int y = 0; y < 8; y++)
+				{
+					for (int x = 0; x < 8; x++)
+					{
+						*dest++ = ColorConversion[palette[*tile++]];
+					}
+					dest -= 8;
+					dest += pitch;
+				}
+			}
+		}
+				
 		unsafe void DrawTile16(int* dest, int pitch, byte* tile, ushort *palette, bool hflip, bool vflip)
 		{
 			if (vflip)
@@ -72,16 +107,34 @@ namespace BizHawk.MultiClient.GBAtools
 				dest += pitch * 7;
 				pitch = -pitch;
 			}
-			for (int y = 0; y < 8; y++)
+			if (hflip)
 			{
-				for (int i = 0; i < 4; i++)
+				dest += 7;
+				for (int y = 0; y < 8; y++)
 				{
-					*dest++ = ColorConversion[palette[*tile & 15]];
-					*dest++ = ColorConversion[palette[*tile >> 4]];
-					tile++;
+					for (int i = 0; i < 4; i++)
+					{
+						*dest-- = ColorConversion[palette[*tile & 15]];
+						*dest-- = ColorConversion[palette[*tile >> 4]];
+						tile++;
+					}
+					dest += 8;
+					dest += pitch;
 				}
-				dest -= 8;
-				dest += pitch;
+			}
+			else
+			{
+				for (int y = 0; y < 8; y++)
+				{
+					for (int i = 0; i < 4; i++)
+					{
+						*dest++ = ColorConversion[palette[*tile & 15]];
+						*dest++ = ColorConversion[palette[*tile >> 4]];
+						tile++;
+					}
+					dest -= 8;
+					dest += pitch;
+				}
 			}
 		}
 
@@ -100,10 +153,25 @@ namespace BizHawk.MultiClient.GBAtools
 			}
 		}
 
+		unsafe void DrawTextNameTable256(int* dest, int pitch, ushort* nametable, byte* tiles)
+		{
+			for (int ty = 0; ty < 32; ty++)
+			{
+				for (int tx = 0; tx < 32; tx++)
+				{
+					ushort ntent = *nametable++;
+					DrawTile256(dest, pitch, tiles + (ntent & 1023) * 64, (ushort*)palram, ntent.Bit(10), ntent.Bit(11));
+					dest += 8;
+				}
+				dest -= 256;
+				dest += 8 * pitch;
+			}
+		}
+
 		unsafe void DrawTextNameTable(int* dest, int pitch, ushort* nametable, byte* tiles, bool eightbit)
 		{
 			if (eightbit)
-				;
+				DrawTextNameTable256(dest, pitch, nametable, tiles);
 			else
 				DrawTextNameTable16(dest, pitch, nametable, tiles);
 		}
@@ -167,8 +235,74 @@ namespace BizHawk.MultiClient.GBAtools
 			mbv.bmpView.Refresh();
 		}
 
+		unsafe void DrawAffineBG(int n, MobileBmpView mbv)
+		{
+			ushort bgcnt = ((ushort*)mmio)[4 + n];
+			int ssize = bgcnt >> 14;
+			switch (ssize)
+			{
+				case 0: mbv.ChangeAllSizes(128, 128); break;
+				case 1: mbv.ChangeAllSizes(256, 256); break;
+				case 2: mbv.ChangeAllSizes(512, 512); break;
+				case 3: mbv.ChangeAllSizes(1024, 1024); break;
+			}
+			Bitmap bmp = mbv.bmpView.bmp;
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			int* pixels = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+
+			byte* tiles = (byte*)vram + ((bgcnt & 0xc) << 12);
+
+			byte* nametable = (byte*)vram + ((bgcnt & 0x1f00) << 3);
+
+			for (int ty = 0; ty < bmp.Height / 8; ty++)
+			{
+				for (int tx = 0; tx < bmp.Width / 8; tx++)
+				{
+					DrawTile256(pixels, pitch, tiles + *nametable++ * 64, (ushort*)palram, false, false);
+					pixels += 8;
+				}
+				pixels -= bmp.Width;
+				pixels += 8 * pitch;
+			}
+
+			bmp.UnlockBits(lockdata);
+			mbv.bmpView.Refresh();
+		}
+
 
 		#endregion
+
+		unsafe void DrawEverything()
+		{
+			ushort dispcnt = ((ushort*)mmio)[0];
+
+			int bgmode = dispcnt & 7;
+			switch (bgmode)
+			{
+				case 0:
+					if (bg0.ShouldDraw) DrawTextBG(0, bg0);
+					if (bg1.ShouldDraw) DrawTextBG(1, bg1);
+					if (bg2.ShouldDraw) DrawTextBG(2, bg2);
+					if (bg3.ShouldDraw) DrawTextBG(3, bg3);
+					break;
+				case 1:
+					if (bg0.ShouldDraw) DrawTextBG(0, bg0);
+					if (bg1.ShouldDraw) DrawTextBG(1, bg1);
+					if (bg2.ShouldDraw) DrawAffineBG(2, bg2);
+					if (bg3.ShouldDraw) bg3.bmpView.Clear();
+					break;
+				case 2:
+					if (bg0.ShouldDraw) bg0.bmpView.Clear();
+					if (bg1.ShouldDraw) bg1.bmpView.Clear();
+					if (bg2.ShouldDraw) DrawAffineBG(2, bg2);
+					if (bg3.ShouldDraw) DrawAffineBG(3, bg3);
+					break;
+					
+			}
+
+		}
 
 		MobileBmpView MakeWidget(string text, int w, int h)
 		{
@@ -210,23 +344,6 @@ namespace BizHawk.MultiClient.GBAtools
 				if (Visible)
 					Close();
 			}
-		}
-
-		unsafe void DrawEverything()
-		{
-			ushort dispcnt = ((ushort*)mmio)[0];
-
-			int bgmode = dispcnt & 7;
-			switch (bgmode)
-			{
-				case 0:
-					if (bg0.ShouldDraw) DrawTextBG(0, bg0);
-					if (bg1.ShouldDraw) DrawTextBG(1, bg1);
-					if (bg2.ShouldDraw) DrawTextBG(2, bg2);
-					if (bg3.ShouldDraw) DrawTextBG(3, bg3);
-					break;
-			}
-
 		}
 
 		/// <summary>belongs in ToolsBefore</summary>
