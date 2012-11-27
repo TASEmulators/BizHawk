@@ -22,43 +22,17 @@ namespace BizHawk.MultiClient.GBAtools
 		// color conversion to RGB888
 		int[] ColorConversion;
 
-		MobileBmpView bg0, bg1, bg2, bg3;
+		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal;
 
 		public GBAGPUView()
 		{
 			InitializeComponent();
 			// TODO: hook up something
-
 			// we do this twice to avoid having to & 0x7fff with every color
 			int[] tmp = Emulation.Consoles.GB.GBColors.GetLut(Emulation.Consoles.GB.GBColors.ColorType.vivid);
 			ColorConversion = new int[65536];
 			Buffer.BlockCopy(tmp, 0, ColorConversion, 0, sizeof(int) * tmp.Length);
 			Buffer.BlockCopy(tmp, 0, ColorConversion, sizeof(int) * tmp.Length, sizeof(int) * tmp.Length);
-			/*
-			for (int i = 1; i <= 2; i++)
-			{
-				Form foobar = new Form();
-				foobar.Text = "foo" + i;
-				foobar.TopLevel = false;
-				//foobar.TopLevelControl = this;
-				foobar.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-				//foobar.SetBounds(10, 10, 100, 100);
-				foobar.Location = new Point(100, 100);
-				foobar.Size = new System.Drawing.Size(100, 100);
-				//foobar.BackColor = Color.Black;
-				Controls.Add(foobar);
-
-				int j = i;
-
-				//foobar.Activated += (o, e) => MessageBox.Show("activated" + j);
-				//foobar.Enter += (o, e) => MessageBox.Show("enter" + j);
-				//foobar.Leave += (o, e) => MessageBox.Show("leave" + j);
-				foobar.MouseEnter += (o, e) => foobar.Activate();
-
-				foobar.Controls.Add(new Button());
-				foobar.Show();
-			}
-			*/
 
 			GenerateWidgets();
 		}
@@ -341,6 +315,29 @@ namespace BizHawk.MultiClient.GBAtools
 			mbv.bmpView.Refresh();
 		}
 
+		unsafe void DrawPalette(MobileBmpView mbv, bool sprite)
+		{
+			mbv.bmpView.ChangeBitmapSize(16, 16);
+			Bitmap bmp = mbv.bmpView.bmp;
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			int* pixels = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+
+			ushort* palette = (ushort*)palram + (sprite ? 256 : 0);
+
+			for (int j = 0; j < 16; j++)
+			{
+				for (int i = 0; i < 16; i++)
+					*pixels++ = ColorConversion[*palette++];
+				pixels -= 16;
+				pixels += pitch;
+			}
+
+			bmp.UnlockBits(lockdata);
+			mbv.bmpView.Refresh();
+		}
+
 		#endregion
 
 		unsafe void DrawEverything()
@@ -389,6 +386,9 @@ namespace BizHawk.MultiClient.GBAtools
 					break;
 			}
 
+			if (bgpal.ShouldDraw) DrawPalette(bgpal, false);
+			if (sppal.ShouldDraw) DrawPalette(sppal, true);
+
 		}
 
 		MobileBmpView MakeWidget(string text, int w, int h)
@@ -416,6 +416,8 @@ namespace BizHawk.MultiClient.GBAtools
 			bg1 = MakeWidget("Background 1", 256, 256);
 			bg2 = MakeWidget("Background 2", 256, 256);
 			bg3 = MakeWidget("Background 3", 256, 256);
+			bgpal = MakeWidget("Background Palettes", 256, 256);
+			sppal = MakeWidget("Sprite Palettes", 256, 256);
 			listBoxWidgets.EndUpdate();
 		}
 
