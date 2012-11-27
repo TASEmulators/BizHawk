@@ -55,37 +55,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		void SyncState(Serializer ser)
 		{
-			// global stuffs
-			ser.BeginSection("GAME");
-			ser.Sync("Lag", ref _lagcount);
-			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
-			ser.EndSection();
-
-			// cpu creates its own section..
-			cpu.SyncState(ser);
-
-			ser.BeginSection("MEM");
-			mem.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("VIC");
-			vic.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("SID");
-			sid.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("CIA0");
-			cia0.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("CIA1");
-			cia1.SyncState(ser);
-			ser.EndSection();
-
-			// TODO: drive
 		}
 	}
 }
