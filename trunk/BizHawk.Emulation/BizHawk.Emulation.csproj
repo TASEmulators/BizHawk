@@ -81,7 +81,10 @@
     <Compile Include="Buffer.cs" />
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
+    <Compile Include="Computers\Commodore64\Cartridges\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\Memory.cs" />
+    <Compile Include="Computers\Commodore64\Cartridges\Cartridge.cs" />
+    <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
@@ -102,6 +105,7 @@
     <Compile Include="Computers\Commodore64\MOS\Sid.SoundProvider.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.SyncSoundProvider.cs" />
     <Compile Include="Computers\Commodore64\MOS\Timer.cs" />
+    <Compile Include="Computers\Commodore64\MOS\UserPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />

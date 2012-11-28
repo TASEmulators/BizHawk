@@ -254,9 +254,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase1()
 		{
-			// always assert access over the bus in ph1
-			pinAEC = false;
-
 			// raster IRQ compare
 			if ((cycle == 0 && rasterLine > 0) || (cycle == 1 && rasterLine == 0))
 			{
@@ -273,6 +270,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			// badline compare
 			if (badlineEnable && rasterLine >= 0x030 && rasterLine < 0x0F7 && ((rasterLine & 0x7) == yScroll))
 				badline = true;
+			else
+				badline = false;
 
 			// go into display state on a badline
 			if (badline)
@@ -319,8 +318,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			// if the BA counter is nonzero, allow CPU bus access
 			UpdateBA();
-			if (baCount > 0)
-				pinAEC = true;
+			pinAEC = (baCount > 0);
 
 			Render();
 
@@ -330,6 +328,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void ParseCycle()
 		{
+			bool baPinThisCycle = true;
 			ushort addr = 0x3FFF;
 			uint cycleBAsprite0;
 			uint cycleBAsprite1;
@@ -433,10 +432,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (ba)
 			{
 				case 0x0000:
-					pinBA = true;
+					baPinThisCycle = true;
 					break;
 				case 0x1000:
-					pinBA = !badline;
+					baPinThisCycle = !badline;
 					break;
 				default:
 					cycleBAsprite0 = ba & 0x000F;
@@ -445,9 +444,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					if ((cycleBAsprite0 < 8 && sprites[cycleBAsprite0].dma) ||
 						(cycleBAsprite1 < 8 && sprites[cycleBAsprite1].dma) ||
 						(cycleBAsprite2 < 8 && sprites[cycleBAsprite2].dma))
-						pinBA = false;
+						baPinThisCycle = false;
 					break;
 			}
+			pinBA = baPinThisCycle;
 
 			// perform actions
 			borderCheckLEnable = true;
@@ -859,6 +859,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						intSpriteCollision = false;
 					if ((val & 0x08) != 0)
 						intLightPen = false;
+					UpdatePins();
+					break;
+				case 0x1A:
+					WriteRegister(addr, val);
+					UpdatePins();
 					break;
 				case 0x1E:
 				case 0x1F:
