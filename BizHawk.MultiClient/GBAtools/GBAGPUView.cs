@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient.GBAtools
 		// color conversion to RGB888
 		int[] ColorConversion;
 
-		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal, sprites;
+		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal, sprites, bgtiles16, bgtiles256, sptiles16, sptiles256;
 
 		public GBAGPUView()
 		{
@@ -440,6 +440,78 @@ namespace BizHawk.MultiClient.GBAtools
 			mbv.bmpView.Refresh();
 		}
 
+		unsafe void DrawTileRange(int* dest, int pitch, byte* tiles, ushort* palette, int tw, int th, bool eightbit)
+		{
+			for (int ty = 0; ty < th; ty++)
+			{
+				for (int tx = 0; tx < tw; tx++)
+				{
+					if (eightbit)
+					{
+						DrawTile256(dest, pitch, tiles, palette, false, false);
+						dest += 8;
+						tiles += 64;
+					}
+					else
+					{
+						DrawTile16(dest, pitch, tiles, palette, false, false);
+						dest += 8;
+						tiles += 32;
+					}
+				}
+				dest -= tw * 8;
+				dest += pitch * 8;
+			}
+		}
+
+		unsafe void DrawSpriteTiles(MobileBmpView mbv, bool tophalfonly, bool eightbit)
+		{
+			int tw = eightbit ? 16 : 32;
+			int th = tophalfonly ? 16 : 32;
+
+			mbv.bmpView.ChangeBitmapSize(tw * 8, 256);
+			Bitmap bmp = mbv.bmpView.bmp;
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			int* pixels = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+
+			byte* tiles = (byte*)vram + 65536;
+			// TODO: palette changing (in 4 bit mode anyway)
+			ushort* palette = (ushort*)palram + 256;
+
+			if (tophalfonly)
+			{
+				Win32.MemSet(lockdata.Scan0, 0xff, (uint)(128 * lockdata.Stride));
+				pixels += 128 * pitch;
+				tiles += 16384;
+			}
+			DrawTileRange(pixels, pitch, tiles, palette, tw, th, eightbit);
+			bmp.UnlockBits(lockdata);
+			mbv.bmpView.Refresh();
+		}
+
+		unsafe void DrawBGTiles(MobileBmpView mbv, bool eightbit)
+		{
+			int tw = eightbit ? 32 : 64;
+			int th = 32;
+
+			mbv.bmpView.ChangeBitmapSize(tw * 8, th * 8);
+			Bitmap bmp = mbv.bmpView.bmp;
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			int* pixels = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+
+			byte* tiles = (byte*)vram;
+			// TODO: palette changing (in 4 bit mode anyway)
+			ushort* palette = (ushort*)palram;
+			DrawTileRange(pixels, pitch, tiles, palette, tw, th, eightbit);
+			bmp.UnlockBits(lockdata);
+			mbv.bmpView.Refresh();
+		}
+
+
 		#endregion
 
 		unsafe void DrawEverything()
@@ -454,24 +526,40 @@ namespace BizHawk.MultiClient.GBAtools
 					if (bg1.ShouldDraw) DrawTextBG(1, bg1);
 					if (bg2.ShouldDraw) DrawTextBG(2, bg2);
 					if (bg3.ShouldDraw) DrawTextBG(3, bg3);
+					if (bgtiles16.ShouldDraw) DrawBGTiles(bgtiles16, false);
+					if (bgtiles256.ShouldDraw) DrawBGTiles(bgtiles256, true);
+					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, false, false);
+					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, false, true);
 					break;
 				case 1:
 					if (bg0.ShouldDraw) DrawTextBG(0, bg0);
 					if (bg1.ShouldDraw) DrawTextBG(1, bg1);
 					if (bg2.ShouldDraw) DrawAffineBG(2, bg2);
 					if (bg3.ShouldDraw) bg3.bmpView.Clear();
+					if (bgtiles16.ShouldDraw) DrawBGTiles(bgtiles16, false);
+					if (bgtiles256.ShouldDraw) DrawBGTiles(bgtiles256, true);
+					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, false, false);
+					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, false, true);
 					break;
 				case 2:
 					if (bg0.ShouldDraw) bg0.bmpView.Clear();
 					if (bg1.ShouldDraw) bg1.bmpView.Clear();
 					if (bg2.ShouldDraw) DrawAffineBG(2, bg2);
 					if (bg3.ShouldDraw) DrawAffineBG(3, bg3);
+					if (bgtiles16.ShouldDraw) bgtiles16.bmpView.Clear(); // NB: no 4pp bgtiles in mode 2
+					if (bgtiles256.ShouldDraw) DrawBGTiles(bgtiles256, true);
+					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, false, false);
+					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, false, true);
 					break;
 				case 3:
 					if (bg0.ShouldDraw) bg0.bmpView.Clear();
 					if (bg1.ShouldDraw) bg1.bmpView.Clear();
 					if (bg2.ShouldDraw) DrawM3BG(bg2);
 					if (bg3.ShouldDraw) bg3.bmpView.Clear();
+					if (bgtiles16.ShouldDraw) bgtiles16.bmpView.Clear();
+					if (bgtiles256.ShouldDraw) bgtiles256.bmpView.Clear();
+					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, true, false);
+					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, true, true);
 					break;
 				//in modes 4, 5, bg3 is repurposed as bg2 invisible frame
 				case 4:
@@ -479,12 +567,31 @@ namespace BizHawk.MultiClient.GBAtools
 					if (bg1.ShouldDraw) bg1.bmpView.Clear();
 					if (bg2.ShouldDraw) DrawM4BG(bg2, dispcnt.Bit(4));
 					if (bg3.ShouldDraw) DrawM4BG(bg3, !dispcnt.Bit(4));
+					if (bgtiles16.ShouldDraw) bgtiles16.bmpView.Clear();
+					if (bgtiles256.ShouldDraw) bgtiles256.bmpView.Clear();
+					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, true, false);
+					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, true, true);
 					break;
 				case 5:
 					if (bg0.ShouldDraw) bg0.bmpView.Clear();
 					if (bg1.ShouldDraw) bg1.bmpView.Clear();
 					if (bg2.ShouldDraw) DrawM5BG(bg2, dispcnt.Bit(4));
 					if (bg3.ShouldDraw) DrawM5BG(bg3, !dispcnt.Bit(4));
+					if (bgtiles16.ShouldDraw) bgtiles16.bmpView.Clear();
+					if (bgtiles256.ShouldDraw) bgtiles256.bmpView.Clear();
+					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, true, false);
+					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, true, true);
+					break;
+				default:
+					// shouldn't happen, but shouldn't be our problem either
+					if (bg0.ShouldDraw) bg0.bmpView.Clear();
+					if (bg1.ShouldDraw) bg1.bmpView.Clear();
+					if (bg2.ShouldDraw) bg2.bmpView.Clear();
+					if (bg3.ShouldDraw) bg3.bmpView.Clear();
+					if (bgtiles16.ShouldDraw) bgtiles16.bmpView.Clear();
+					if (bgtiles256.ShouldDraw) bgtiles256.bmpView.Clear();
+					if (sptiles16.ShouldDraw) sptiles16.bmpView.Clear();
+					if (sptiles256.ShouldDraw) sptiles256.bmpView.Clear();
 					break;
 			}
 
@@ -524,6 +631,10 @@ namespace BizHawk.MultiClient.GBAtools
 			bgpal = MakeWidget("Background Palettes", 256, 256);
 			sppal = MakeWidget("Sprite Palettes", 256, 256);
 			sprites = MakeWidget("Sprites", 1024, 512);
+			sptiles16 = MakeWidget("Sprite Tiles (4bpp)", 256, 256);
+			sptiles256 = MakeWidget("Sprite Tiles (8bpp)", 128, 256);
+			bgtiles16 = MakeWidget("Background Tiles (4bpp)", 512, 256);
+			bgtiles256 = MakeWidget("Background Tiles (8bpp)", 256, 256);
 			listBoxWidgets.EndUpdate();
 		}
 
