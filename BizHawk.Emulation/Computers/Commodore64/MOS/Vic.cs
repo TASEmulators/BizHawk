@@ -59,6 +59,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint baCount;
 		private bool badline;
 		private bool badlineEnable;
+		private uint bitmapColumn;
 		private bool bitmapMode;
 		private uint borderB;
 		private bool borderCheckLEnable;
@@ -97,6 +98,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint[] pixelBuffer;
 		private uint pixelBufferDelay;
 		private uint pixelBufferIndex;
+		private uint[] pixelBackgroundBuffer;
+		private uint pixelBackgroundBufferDelay;
+		private uint pixelBackgroundBufferIndex;
+		private uint[] pixelDataBuffer;
 		private uint pointerCB;
 		private uint pointerVM;
 		private uint rasterInterruptLine;
@@ -136,6 +141,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			pipeline = newPipeline;
 			cyclesPerSec = newCyclesPerSec;
 			pixelBufferDelay = 12;
+			pixelBackgroundBufferDelay = 4;
 
 			bufWidth = (int)(totalCycles * 8);
 			bufHeight = (int)(totalLines);
@@ -149,6 +155,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			bufferC = new uint[40];
 			bufferG = new uint[40];
 			pixelBuffer = new uint[pixelBufferDelay];
+			pixelDataBuffer = new uint[pixelBufferDelay];
+			pixelBackgroundBuffer = new uint[pixelBackgroundBufferDelay];
 		}
 
 		public void HardReset()
@@ -189,7 +197,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			lightPenX = 0;
 			lightPenY = 0;
 			multicolorMode = false;
-			pixelBufferIndex = 0; 
+			pixelBufferIndex = 0;
+			pixelBackgroundBufferIndex = 0;
 			pointerCB = 0;
 			pointerVM = 0;
 			rasterInterruptLine = 0;
@@ -221,7 +230,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			// clear pixel buffer
 			for (uint i = 0; i < pixelBufferDelay; i++)
+			{
 				pixelBuffer[i] = 0;
+				pixelDataBuffer[i] = 0;
+			}
+			for (uint i = 0; i < pixelBackgroundBufferDelay; i++)
+				pixelBackgroundBuffer[i] = 0;
 
 			UpdateBorder();
 		}
@@ -305,7 +319,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			// set up display index for rendering
 			if (cycle == 15)
 				displayIndex = 0;
-			else if (cycle > 15 && cycle < 55)
+			else if (cycle > 15 && cycle <= 55)
 				displayIndex++;
 
 			ParseCycle();
@@ -569,6 +583,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private void Render()
 		{
 			uint pixel;
+			uint pixelData;
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -586,6 +601,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					borderOnMain = true;
 				}
 
+				// render visible pixel
+				pixel = pixelBuffer[pixelBufferIndex];
+				WritePixel(pixel);
+
+				// put the pixel from the background buffer into the main buffer
+				pixel = pixelBackgroundBuffer[pixelBackgroundBufferIndex];
+
+				// border doesn't work with the background buffer
+				if (borderOnMain || borderOnVertical)
+					pixel = borderColor; 
+
+				pixelBuffer[pixelBufferIndex] = pixel;
+
 				// fill shift register
 				if (xOffset == xScroll)
 				{
@@ -594,24 +622,106 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						displayC = bufferC[displayIndex];
 						sr |= bufferG[displayIndex];
 					}
+					bitmapColumn = 0;
 				}
 
-				// render pixel buffer
-				pixel = pixelBuffer[pixelBufferIndex];
-
-				// write pixel
-				WritePixel(pixel);
-
-				// g-access shift register
-				sr <<= 1;
-				if ((sr & 0x100) != 0)
-					pixelBuffer[pixelBufferIndex] = displayC >> 8;
+				if (!extraColorMode && !bitmapMode & !multicolorMode)
+				{
+					// 000
+					pixelData = (sr & 0x80) >> 6;
+					sr <<= 1;
+					pixel = (pixelData != 0) ? displayC >> 8 : backgroundColor0;
+				}
+				else if (!extraColorMode && !bitmapMode & multicolorMode)
+				{
+					// 001
+					if ((displayC & 0x800) != 0)
+					{
+						// multicolor 001
+						pixelData = (sr & 0xC0) >> 6;
+						if ((bitmapColumn & 1) != 0)
+							sr <<= 2;
+						switch (pixelData)
+						{
+							case 0x00: pixel = backgroundColor0; break;
+							case 0x01: pixel = backgroundColor1; break;
+							case 0x02: pixel = backgroundColor2; break;
+							default: pixel = (displayC & 0x700) >> 8; break;
+						}
+					}
+					else
+					{
+						// standard 001
+						pixelData = (sr & 0x80) >> 6;
+						sr <<= 1;
+						pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
+					}
+				}
+				else if (!extraColorMode && bitmapMode & !multicolorMode)
+				{
+					// 010
+					pixelData = (sr & 0x80) >> 6;
+					sr <<= 1;
+					pixel = (pixelData != 0) ? ((displayC >> 4) & 0xF) : (displayC & 0xF);
+				}
+				else if (!extraColorMode && bitmapMode & multicolorMode)
+				{
+					// 011
+					pixelData = (sr & 0xC0) >> 6;
+					if ((bitmapColumn & 1) != 0)
+						sr <<= 2;
+					switch (pixelData)
+					{
+						case 0x00: pixel = backgroundColor0; break;
+						case 0x01: pixel = (displayC >> 4) & 0xF; break;
+						case 0x02: pixel = displayC & 0xF; break;
+						default: pixel = (displayC >> 8) & 0xF; break;
+					}
+				}
+				else if (extraColorMode && !bitmapMode & !multicolorMode)
+				{
+					// 100
+					pixelData = (sr & 0x80) >> 6;
+					sr <<= 1;
+					if (pixelData != 0)
+					{
+						pixel = displayC >> 8;
+					}
+					else
+					{
+						switch ((displayC >> 6) & 0x3)
+						{
+							case 0x00: pixel = backgroundColor0; break;
+							case 0x01: pixel = backgroundColor1; break;
+							case 0x02: pixel = backgroundColor2; break;
+							default: pixel = backgroundColor3; break;
+						}
+					}
+				}
+				else if (extraColorMode && !bitmapMode & multicolorMode)
+				{
+					// 101
+					pixelData = 0;
+					pixel = 0;
+				}
+				else if (extraColorMode && bitmapMode & !multicolorMode)
+				{
+					// 110
+					pixelData = 0;
+					pixel = 0;
+				}
 				else
-					pixelBuffer[pixelBufferIndex] = backgroundColor0;
+				{
+					// 111
+					pixelData = 0;
+					pixel = 0;
+				}
 
-				// border check
-				if (borderOnMain || borderOnVertical)
-					pixelBuffer[pixelBufferIndex] = borderColor;
+				// put the rendered pixel into the background buffer
+				pixelBackgroundBuffer[pixelBackgroundBufferIndex] = pixel;
+				pixelBackgroundBufferIndex++;
+				if (pixelBackgroundBufferIndex == pixelBackgroundBufferDelay)
+					pixelBackgroundBufferIndex = 0;
 
 				// advance pixel buffer
 				pixelBufferIndex++;
@@ -620,6 +730,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 				rasterX++;
 				xOffset++;
+				bitmapColumn++;
 			}
 		}
 
@@ -749,7 +860,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						);
 					break;
 				case 0x16:
-					result &= 0xBF;
+					result &= 0xC0;
 					result |= (byte)(
 						(byte)(xScroll & 0x7) |
 						(columnSelect ? (byte)0x08 : (byte)0x00) |
@@ -769,7 +880,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						);
 					break;
 				case 0x18:
-					result &= 0xFE;
+					result &= 0x01;
 					result |= (byte)(
 						((pointerVM & 0xF) << 4) |
 						((pointerCB & 0x7) << 1)
