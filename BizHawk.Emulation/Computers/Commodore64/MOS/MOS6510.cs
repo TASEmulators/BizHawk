@@ -80,8 +80,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				cpu.NMI = !pinNMI;
 				cpu.IRQ = !pinIRQ;
 				cpu.ExecuteOne();
-				chips.ram.Write(0x0FFE, (byte)(cpu.PC & 0xFF));
-				chips.ram.Write(0x0FFF, (byte)((cpu.PC >> 8) & 0xFF));
 			}
 
 			// process unused pin TTL

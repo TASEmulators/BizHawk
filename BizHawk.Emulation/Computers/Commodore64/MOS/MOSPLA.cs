@@ -506,9 +506,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 				else
 				{
-					ushort bank = (ushort)(vicBankPortRead() & 0x3);
-					bank <<= 14;
-					addr |= bank;
+					uint bank = (vicBankPortRead() & (uint)0x3);
+					switch (bank)
+					{
+						case 0: addr |= 0xC000; break;
+						case 1: addr |= 0x8000; break;
+						case 2: addr |= 0x4000; break;
+					}
 					return chips.ram.Read(addr);
 				}
 			}
