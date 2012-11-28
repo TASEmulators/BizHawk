@@ -61,11 +61,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void WritePixel(uint pixel)
 		{
-			if (borderOnMain || borderOnVertical)
-				buf[bufOffset] = palette[borderColor];
-			else
-				buf[bufOffset] = palette[pixel];
-
+			buf[bufOffset] = palette[pixel];
 			bufOffset++;
 			if (bufOffset == bufLength)
 				bufOffset = 0;

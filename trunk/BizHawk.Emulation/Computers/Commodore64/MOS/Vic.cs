@@ -77,7 +77,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint cycleIndex;
 		private uint dataC;
 		private uint dataG;
+		private uint displayC;
 		private bool displayEnable;
+		private uint displayIndex;
 		private bool enableIntLightPen;
 		private bool enableIntRaster;
 		private bool enableIntSpriteCollision;
@@ -92,6 +94,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint lightPenX;
 		private uint lightPenY;
 		private bool multicolorMode;
+		private uint[] pixelBuffer;
+		private uint pixelBufferDelay;
+		private uint pixelBufferIndex;
 		private uint pointerCB;
 		private uint pointerVM;
 		private uint rasterInterruptLine;
@@ -103,10 +108,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint spriteMulticolor0;
 		private uint spriteMulticolor1;
 		private uint sr;
-		private uint srCount;
 		private uint vc;
 		private uint vcbase;
 		private uint vmli;
+		private uint xOffset;
 		private uint xScroll;
 		private uint yScroll;
 
@@ -130,6 +135,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			totalLines = newLines;
 			pipeline = newPipeline;
 			cyclesPerSec = newCyclesPerSec;
+			pixelBufferDelay = 12;
 
 			bufWidth = (int)(totalCycles * 8);
 			bufHeight = (int)(totalLines);
@@ -142,6 +148,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			bufferC = new uint[40];
 			bufferG = new uint[40];
+			pixelBuffer = new uint[pixelBufferDelay];
 		}
 
 		public void HardReset()
@@ -167,6 +174,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			borderOnVertical = true;
 			columnSelect = false;
 			displayEnable = false;
+			displayIndex = 0;
 			enableIntLightPen = false;
 			enableIntRaster = false;
 			enableIntSpriteCollision = false;
@@ -181,6 +189,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			lightPenX = 0;
 			lightPenY = 0;
 			multicolorMode = false;
+			pixelBufferIndex = 0; 
 			pointerCB = 0;
 			pointerVM = 0;
 			rasterInterruptLine = 0;
@@ -192,21 +201,27 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			spriteMulticolor0 = 0;
 			spriteMulticolor1 = 0;
 			sr = 0;
-			srCount = 0;
 			vc = 0;
 			vcbase = 0;
 			vmli = 0;
+			xOffset = 0;
 			xScroll = 0;
 			yScroll = 0;
 
+			// reset sprites
 			for (uint i = 0; i < 8; i++)
 				sprites[i].HardReset();
 
+			// clear C buffer
 			for (uint i = 0; i < 40; i++)
 			{
 				bufferC[i] = 0;
 				bufferG[i] = 0;
 			}
+
+			// clear pixel buffer
+			for (uint i = 0; i < pixelBufferDelay; i++)
+				pixelBuffer[i] = 0;
 
 			UpdateBorder();
 		}
@@ -287,8 +302,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			if (!sprites[6].yExpand) sprites[6].yCrunch = true;
 			if (!sprites[7].yExpand) sprites[7].yCrunch = true;
 
+			// set up display index for rendering
+			if (cycle == 15)
+				displayIndex = 0;
+			else if (cycle > 15 && cycle < 55)
+				displayIndex++;
+
 			ParseCycle();
 
+			xOffset = 0;
 			Render();
 
 			// must always come last
@@ -308,12 +330,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				if (rasterLine == borderT && displayEnable)
 					borderOnVertical = false;
 
-				vcbase = 0;
 				cycleIndex = 0;
 				cycle = 0;
 				rasterLine++;
 				if (rasterLine == totalLines)
+				{
 					rasterLine = 0;
+					vcbase = 0;
+					vc = 0;
+				}
 			}
 
 			// if the BA counter is nonzero, allow CPU bus access
@@ -360,6 +385,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 							bus = chips.pla.ReadVic(addr);
 							dataC = bus;
 							dataC |= (uint)chips.colorRam.Read((ushort)vc) << 8;
+							dataC &= 0xFFF;
 							bufferC[vmli] = dataC;
 						}
 						else
@@ -387,8 +413,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						addr &= 0x39FF;
 					bus = chips.pla.ReadVic(addr);
 					dataG = bus;
-					vmli = (vmli + 1) & 0x3F;
-					vc = (vc + 1) & 0x3FF;
+					if (!idle)
+					{
+						bufferG[vmli] = dataG;
+						vmli = (vmli + 1) & 0x3F;
+						vc = (vc + 1) & 0x3FF;
+					}
 					break;
 				case 0x0400:
 					// fetch I
@@ -453,14 +483,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			borderCheckLEnable = true;
 			borderCheckREnable = true;
 
-			//if (!columnSelect && (act & pipelineChkBrdL0) != 0)
-			//    borderCheckLEnable = true;
-			//if (columnSelect && (act & pipelineChkBrdL1) != 0)
-			//    borderCheckLEnable = true;
-			//if (!columnSelect && (act & pipelineChkBrdR0) != 0)
-			//    borderCheckREnable = true;
-			//if (columnSelect && (act & pipelineChkBrdR1) != 0)
-			//    borderCheckREnable = true;
 			if ((act & pipelineChkSprChunch) != 0)
 			{
 				for (int i = 0; i < 8; i++)
@@ -546,6 +568,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void Render()
 		{
+			uint pixel;
+
 			for (int i = 0; i < 4; i++)
 			{
 				if (borderCheckLEnable && rasterX == borderL)
@@ -561,8 +585,41 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				{
 					borderOnMain = true;
 				}
-				WritePixel(backgroundColor0);
+
+				// fill shift register
+				if (xOffset == xScroll)
+				{
+					if (displayIndex < 40)
+					{
+						displayC = bufferC[displayIndex];
+						sr |= bufferG[displayIndex];
+					}
+				}
+
+				// render pixel buffer
+				pixel = pixelBuffer[pixelBufferIndex];
+
+				// write pixel
+				WritePixel(pixel);
+
+				// g-access shift register
+				sr <<= 1;
+				if ((sr & 0x100) != 0)
+					pixelBuffer[pixelBufferIndex] = displayC >> 8;
+				else
+					pixelBuffer[pixelBufferIndex] = backgroundColor0;
+
+				// border check
+				if (borderOnMain || borderOnVertical)
+					pixelBuffer[pixelBufferIndex] = borderColor;
+
+				// advance pixel buffer
+				pixelBufferIndex++;
+				if (pixelBufferIndex == pixelBufferDelay)
+					pixelBufferIndex = 0;
+
 				rasterX++;
+				xOffset++;
 			}
 		}
 
@@ -937,6 +994,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					extraColorMode = ((val & 0x40) != 0);
 					rasterInterruptLine &= 0xFF;
 					rasterInterruptLine |= (uint)(val & 0x80) << 1;
+					UpdateBorder();
 					break;
 				case 0x12:
 					rasterInterruptLine &= 0x100;
@@ -962,6 +1020,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					xScroll = (val & (uint)0x07);
 					columnSelect = ((val & 0x08) != 0);
 					multicolorMode = ((val & 0x10) != 0);
+					UpdateBorder();
 					break;
 				case 0x17:
 					sprites[0].yExpand = ((val & 0x01) != 0);

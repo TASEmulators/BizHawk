@@ -252,12 +252,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (addr)
 			{
 				case 0x0:
+					val = portData[0];
 					break;
 				case 0x1:
+					val = portData[1];
 					break;
 				case 0x2:
+					val = portDir[0];
 					break;
 				case 0x3:
+					val = portDir[1];
 					break;
 				case 0x4:
 					break;
@@ -301,8 +305,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			switch (addr)
 			{
+				case 0x0:
+					WritePort0(val);
+					break;
 				case 0x1:
-					WriteRegister(addr, val);
+					WritePort1(val);
 					pinPC = false;
 					break;
 				default:
@@ -316,12 +323,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (addr)
 			{
 				case 0x0:
+					portData[0] = val;
 					break;
 				case 0x1:
+					portData[1] = val;
 					break;
 				case 0x2:
+					portDir[0] = val;
 					break;
 				case 0x3:
+					portDir[1] = val;
 					break;
 				case 0x4:
 					break;

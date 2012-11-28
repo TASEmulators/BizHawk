@@ -57,8 +57,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			timerLatch[0] = timer[0];
 			timerLatch[1] = timer[1];
 			pinIRQ = true;
-			portDir[0] = 0x00;
-			portDir[1] = 0x00;
+			portDir[0] = 0xFF;
+			portDir[1] = 0xFF;
 		}
 
 		public bool IRQ
