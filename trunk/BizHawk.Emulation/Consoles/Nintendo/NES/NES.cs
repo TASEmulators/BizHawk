@@ -291,7 +291,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				int ret = value & 1;
 				if(!peek) value >>= 1;
-				return (byte)(ret | nes.DB);
+				// more information is needed
+				return (byte)(ret | (nes.DB & 0xe0));
 			}
 			public override void Update()
 			{
