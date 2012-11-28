@@ -222,6 +222,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Read(ushort addr)
 		{
+			return Read(addr, 0xFF);
+		}
+
+		public byte Read(ushort addr, byte mask)
+		{
 			addr &= 0xF;
 			byte val;
 
@@ -236,6 +241,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 			}
 
+			val &= mask;
 			return val;
 		}
 
@@ -284,6 +290,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void Write(ushort addr, byte val)
 		{
+			Write(addr, val, 0xFF);
+		}
+
+		public void Write(ushort addr, byte val, byte mask)
+		{
+			val &= mask;
+			val |= (byte)(ReadRegister(addr) & ~mask);
 			addr &= 0xF;
 
 			switch (addr)

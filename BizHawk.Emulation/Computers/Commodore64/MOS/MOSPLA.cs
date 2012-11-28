@@ -59,13 +59,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			chips = newChips;
 			vicBankPortRead = newVicBankPortRead;
+			pinExRom = true;
+			pinGame = true;
 		}
 
 		public void HardReset()
 		{
 			pinCharen = true;
-			pinExRom = true;
-			pinGame = true;
 			pinHiRam = true;
 			pinLoRam = true;
 			UpdateMap();
@@ -358,9 +358,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case PLABank.BasicROM:
 					return chips.basicRom.Peek(addr);
 				case PLABank.CartridgeHi:
-					return 0;
+					return chips.cartPort.PeekHiRom(addr);
 				case PLABank.CartridgeLo:
-					return 0;
+					return chips.cartPort.PeekLoRom(addr);
 				case PLABank.CharROM:
 					return chips.charRom.Peek(addr);
 				case PLABank.Cia0:
@@ -370,9 +370,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case PLABank.ColorRam:
 					return chips.colorRam.Peek(addr, bus);
 				case PLABank.Expansion0:
-					return 0;
+					return chips.cartPort.PeekLoExp(addr);
 				case PLABank.Expansion1:
-					return 0;
+					return chips.cartPort.PeekHiExp(addr);
 				case PLABank.KernalROM:
 					return chips.kernalRom.Peek(addr);
 				case PLABank.None:
@@ -395,8 +395,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					chips.basicRom.Poke(addr, val);
 					break;
 				case PLABank.CartridgeHi:
+					chips.cartPort.PokeHiRom(addr, val);
 					break;
 				case PLABank.CartridgeLo:
+					chips.cartPort.PokeLoRom(addr, val);
 					break;
 				case PLABank.CharROM:
 					chips.charRom.Poke(addr, val);
@@ -411,8 +413,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					chips.colorRam.Poke(addr, val);
 					break;
 				case PLABank.Expansion0:
+					chips.cartPort.PokeLoExp(addr, val);
 					break;
 				case PLABank.Expansion1:
+					chips.cartPort.PokeHiExp(addr, val);
 					break;
 				case PLABank.KernalROM:
 					chips.kernalRom.Poke(addr, val);
@@ -439,10 +443,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					bus = chips.basicRom.Read(addr);
 					break;
 				case PLABank.CartridgeHi:
-					bus = 0;
+					bus = chips.cartPort.ReadHiRom(addr);
 					break;
 				case PLABank.CartridgeLo:
-					bus = 0;
+					bus = chips.cartPort.ReadLoRom(addr);
 					break;
 				case PLABank.CharROM:
 					bus = chips.charRom.Read(addr);
@@ -459,10 +463,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					bus = chips.colorRam.Read(addr, bus);
 					break;
 				case PLABank.Expansion0:
-					bus = 0;
+					bus = chips.cartPort.ReadLoExp(addr);
 					break;
 				case PLABank.Expansion1:
-					bus = 0;
+					bus = chips.cartPort.ReadHiExp(addr);
 					break;
 				case PLABank.KernalROM:
 					bus = chips.kernalRom.Read(addr);
@@ -518,8 +522,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					chips.basicRom.Write(addr, val);
 					break;
 				case PLABank.CartridgeHi:
+					chips.cartPort.WriteHiRom(addr, val);
 					break;
 				case PLABank.CartridgeLo:
+					chips.cartPort.WriteLoRom(addr, val);
 					break;
 				case PLABank.CharROM:
 					chips.charRom.Write(addr, val);
@@ -534,8 +540,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					chips.colorRam.Write(addr, val);
 					break;
 				case PLABank.Expansion0:
+					chips.cartPort.WriteLoExp(addr, val);
 					break;
 				case PLABank.Expansion1:
+					chips.cartPort.WriteHiExp(addr, val);
 					break;
 				case PLABank.KernalROM:
 					chips.kernalRom.Write(addr, val);

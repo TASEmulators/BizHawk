@@ -39,10 +39,27 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			chips = new C64Chips(initRegion);
 			InitRoms();
+			InitMedia();
 
 			// configure video
 			CoreOutputComm.VsyncDen = chips.vic.CyclesPerFrame;
 			CoreOutputComm.VsyncNum = chips.vic.CyclesPerSecond;
+		}
+
+		private void InitMedia()
+		{
+			switch (extension.ToUpper())
+			{
+				case @".CRT":
+					Cartridges.Cartridge cart = Cartridges.Cartridge.Load(inputFile);
+					if (cart != null)
+					{
+						chips.cartPort.Connect(cart);
+						chips.pla.ExRom = chips.cartPort.ExRom;
+						chips.pla.Game = chips.cartPort.Game;
+					}
+					break;
+			}
 		}
 
 		private void InitRoms()
@@ -102,6 +119,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	public class C64Chips
 	{
 		public Chip23XX basicRom; //u4
+		public CartridgePort cartPort; //cn6
 		public Chip23XX charRom; //u5
 		public MOS6526 cia0; //u1
 		public MOS6526 cia1; //u2
@@ -111,10 +129,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public MOSPLA pla;
 		public Chip4864 ram; //u10+11
 		public Sid sid; //u9
+		public UserPort userPort; //cn2 (probably won't be needed for games)
 		public Vic vic; //u7
 
 		public C64Chips(Region initRegion)
 		{
+			cartPort = new CartridgePort();
 			cia0 = new MOS6526(initRegion);
 			cia1 = new MOS6526(initRegion);
 			pla = new MOSPLA(this, cia1.ReadPort0);
