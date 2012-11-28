@@ -90,6 +90,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
 		{
+			// load PRG file if needed
+			if (loadPrg)
+			{
+				if (chips.pla.Peek(0x04C8) == 0x12 &&
+					chips.pla.Peek(0x04C9) == 0x05 &&
+					chips.pla.Peek(0x04CA) == 0x01 &&
+					chips.pla.Peek(0x04CB) == 0x04 &&
+					chips.pla.Peek(0x04CC) == 0x19 &&
+					chips.pla.Peek(0x04CD) == 0x2E)
+				{
+					Media.PRG.Load(chips.pla, inputFile);
+					loadPrg = false;
+				}
+			}
+
 			PollInput();
 			chips.pla.InputWasRead = false;
 			Execute(cyclesPerFrame);

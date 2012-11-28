@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Computers.Commodore64
+namespace BizHawk.Emulation.Computers.Commodore64.Media
 {
 	public static class D64
 	{

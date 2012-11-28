@@ -31,7 +31,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		// ------------------------------------
 
-		C64Chips chips;
+		private C64Chips chips;
+
+		// ------------------------------------
+
+		private bool loadPrg;
 
 		// ------------------------------------
 
@@ -61,6 +65,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 						chips.pla.ExRom = chips.cartPort.ExRom;
 						chips.pla.Game = chips.cartPort.Game;
 					}
+					break;
+				case @".PRG":
+					if (inputFile.Length > 2)
+						loadPrg = true;
 					break;
 			}
 		}
