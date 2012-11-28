@@ -410,6 +410,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					else
 					{
 						dataC = 0;
+						bufferC[vmli] = dataC;
 					}
 					break;
 				case 0x0300:
@@ -617,7 +618,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				// fill shift register
 				if (xOffset == xScroll)
 				{
-					if (displayIndex < 40)
+					if (displayIndex < 40 && !idle)
 					{
 						displayC = bufferC[displayIndex];
 						sr |= bufferG[displayIndex];
