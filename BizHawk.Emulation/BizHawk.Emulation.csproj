@@ -82,6 +82,7 @@
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Computers\Commodore64\Cartridges\Mapper0000.cs" />
+    <Compile Include="Computers\Commodore64\C64.Input.cs" />
     <Compile Include="Computers\Commodore64\Memory.cs" />
     <Compile Include="Computers\Commodore64\Cartridges\Cartridge.cs" />
     <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />

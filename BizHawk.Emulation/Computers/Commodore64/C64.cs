@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class  C64 : IEmulator
 	{
+		private IController controller;
 		private uint cyclesPerFrame;
 		private string extension;
 		private byte[] inputFile;
@@ -64,7 +65,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// controller
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-		public IController Controller { get { return null; } set { } }
+		public IController Controller { get { return controller; } set { controller = value; } }
 		public static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Commodore 64 Controller", //TODO
@@ -89,6 +90,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
 		{
+			PollInput();
 			chips.pla.InputWasRead = false;
 			Execute(cyclesPerFrame);
 			_islag = !chips.pla.InputWasRead;
