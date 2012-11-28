@@ -363,5 +363,26 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
+
+		void CopyAllToClipboard()
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach (string s in Instructions)
+				sb.AppendLine(s);
+			string ss = sb.ToString();
+			if (!string.IsNullOrEmpty(ss))
+				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
+		}
+
+		private void TraceLogger_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+				CopyAllToClipboard();
+		}
+
+		private void copyAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CopyAllToClipboard();
+		}
 	}
 }
