@@ -800,6 +800,12 @@ namespace BizHawk
 					string name = end.Groups[1].Value;
 					if (name != curs.Name) throw new InvalidOperationException("Mis-formed savestate blob");
 					curs = ss.Pop();
+					// consume no data past the end of the last proper section
+					if (curs == ReaderSection)
+					{
+						CurrSection = curs;
+						return;
+					}
 				}
 				else if (begin.Success)
 				{
