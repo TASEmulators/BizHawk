@@ -1036,7 +1036,15 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				cmiOpenRom.Visible = false;
+				if (InFullscreen)
+				{
+					cmiOpenRom.Visible = true;
+				}
+				else
+				{
+					cmiOpenRom.Visible = false;
+				}
+				
 				cmiLoadLastRom.Visible = false;
 				toolStripSeparator_afterRomLoading.Visible = false;
 
