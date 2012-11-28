@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient.GBAtools
 		// color conversion to RGB888
 		int[] ColorConversion;
 
-		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal;
+		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal, sprites;
 
 		public GBAGPUView()
 		{
@@ -315,6 +315,108 @@ namespace BizHawk.MultiClient.GBAtools
 			mbv.bmpView.Refresh();
 		}
 
+		static readonly int[, ,] spritesizes = { { { 1, 1 }, { 2, 2 }, { 4, 4 }, { 8, 8 } }, { { 2, 1 }, { 4, 1 }, { 4, 2 }, { 8, 4 } }, { { 1, 2 }, { 1, 4 }, { 2, 4 }, { 4, 8 } } };
+
+		unsafe void DrawSprite(int* dest, int pitch, ushort* sprite, byte* tiles, bool twodee)
+		{
+			ushort attr0 = sprite[0];
+			ushort attr1 = sprite[1];
+			ushort attr2 = sprite[2];
+
+			if (!attr0.Bit(8) && attr0.Bit(9))
+				return; // 2x with affine off
+
+			int tw, th;
+			int shape = attr0 >> 14;
+			if (shape == 3)
+				return;
+			int size = attr1 >> 14;
+			tw = spritesizes[shape, size, 0];
+			th = spritesizes[shape, size, 1];
+
+			bool eightbit = attr0.Bit(13);
+			bool hflip = attr1.Bit(12);
+			bool vflip = attr1.Bit(13);
+
+			ushort* palette = (ushort*)palram + 256;
+			if (!eightbit)
+				palette += attr2 >> 12 << 4;
+			if (!eightbit)
+				tiles += 32 * (attr2 & 1023);
+			else
+				tiles += 32 * (attr2 & 1022);
+
+			int tilestride = 0;
+			if (twodee)
+				tilestride = 1024 - tw * (eightbit ? 64 : 32);
+			if (vflip)
+				dest += pitch * 8 * (th - 1);
+			if (hflip)
+				dest += 8 * (tw - 1);
+			for (int ty = 0; ty < th; ty++)
+			{
+				for (int tx = 0; tx < tw; tx++)
+				{
+					if (eightbit)
+					{
+						DrawTile256(dest, pitch, tiles, palette, hflip, vflip);
+						tiles += 64;
+					}
+					else
+					{
+						DrawTile16(dest, pitch, tiles, palette, hflip, vflip);
+						tiles += 32;
+					}
+					if (hflip)
+						dest -= 8;
+					else
+						dest += 8;
+				}
+				if (hflip)
+					dest += tw * 8;
+				else
+					dest -= tw * 8;
+				if (vflip)
+					dest -= pitch * 8;
+				else
+					dest += pitch * 8;
+				tiles += tilestride;
+			}
+		}
+
+		unsafe void DrawSprites(MobileBmpView mbv)
+		{
+			mbv.bmpView.ChangeBitmapSize(1024, 512);
+			Bitmap bmp = mbv.bmpView.bmp;
+			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			// Clear()
+			Win32.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
+
+			int* pixels = (int*)lockdata.Scan0;
+			int pitch = lockdata.Stride / sizeof(int);
+
+			ushort* sprites = (ushort*)oam;
+			byte* tiles = (byte*)vram + 65536;
+
+			ushort dispcnt = ((ushort*)mmio)[0];
+			bool twodee = !dispcnt.Bit(6);
+
+			for (int sy = 0; sy < 8; sy++)
+			{
+				for (int sx = 0; sx < 16; sx++)
+				{
+					DrawSprite(pixels, pitch, sprites, tiles, twodee);
+					pixels += 64;
+					sprites += 4;
+				}
+				pixels -= 1024;
+				pixels += pitch * 64;
+			}
+
+			bmp.UnlockBits(lockdata);
+			mbv.bmpView.Refresh();
+		}
+
 		unsafe void DrawPalette(MobileBmpView mbv, bool sprite)
 		{
 			mbv.bmpView.ChangeBitmapSize(16, 16);
@@ -389,6 +491,7 @@ namespace BizHawk.MultiClient.GBAtools
 			if (bgpal.ShouldDraw) DrawPalette(bgpal, false);
 			if (sppal.ShouldDraw) DrawPalette(sppal, true);
 
+			if (sprites.ShouldDraw) DrawSprites(sprites);
 		}
 
 		MobileBmpView MakeWidget(string text, int w, int h)
@@ -404,6 +507,8 @@ namespace BizHawk.MultiClient.GBAtools
 				listBoxWidgets.Items.Add(sender);
 				(sender as Form).Hide();
 			};
+			// hackish, and why doesn't winforms handle this directly?
+			mbv.bmpView.Click += (o, e) => (o as Control).Parent.BringToFront();
 			panel1.Controls.Add(mbv);
 			listBoxWidgets.Items.Add(mbv);
 			return mbv;
@@ -418,6 +523,7 @@ namespace BizHawk.MultiClient.GBAtools
 			bg3 = MakeWidget("Background 3", 256, 256);
 			bgpal = MakeWidget("Background Palettes", 256, 256);
 			sppal = MakeWidget("Sprite Palettes", 256, 256);
+			sprites = MakeWidget("Sprites", 1024, 512);
 			listBoxWidgets.EndUpdate();
 		}
 
