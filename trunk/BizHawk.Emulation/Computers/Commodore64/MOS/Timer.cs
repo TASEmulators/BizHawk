@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		protected uint[] timer;
 		protected uint[] timerLatch;
 		protected bool[] timerOn;
+		protected bool[] underflow;
 
 		public Timer()
 		{
@@ -23,16 +24,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			timer = new uint[2];
 			timerLatch = new uint[2];
 			timerOn = new bool[2];
+			underflow = new bool[2];
 		}
 
-		public PortAdapter Adapter0()
+		public PortAdapter Adapter0
 		{
-			return Port.GetAdapter(ReadPort0, ExternalWritePort0);
+			get
+			{
+				return Port.GetAdapter(ReadPort0, ExternalWritePort0);
+			}
 		}
 
-		public PortAdapter Adapter1()
+		public PortAdapter Adapter1
 		{
-			return Port.GetAdapter(ReadPort1, ExternalWritePort1);
+			get
+			{
+				return Port.GetAdapter(ReadPort1, ExternalWritePort1);
+			}
 		}
 
 		private void ExternalWritePort(uint index, byte data)

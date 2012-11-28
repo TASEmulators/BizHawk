@@ -555,7 +555,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case PLABank.None:
 					break;
 				case PLABank.RAM:
-					chips.ram.Write(addr, val);
 					break;
 				case PLABank.Sid:
 					chips.sid.Write(addr, val);
@@ -564,6 +563,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					chips.vic.Write(addr, val);
 					break;
 			}
+			chips.ram.Write(addr, val);
 		}
 	}
 }

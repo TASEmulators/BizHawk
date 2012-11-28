@@ -44,6 +44,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// configure video
 			CoreOutputComm.VsyncDen = chips.vic.CyclesPerFrame;
 			CoreOutputComm.VsyncNum = chips.vic.CyclesPerSecond;
+
+			// configure input
+			InitInput();
 		}
 
 		private void InitMedia()
@@ -103,6 +106,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			for (; count > 0; count--)
 			{
+				WriteInputPort();
 				chips.ExecutePhase1();
 				chips.ExecutePhase2();
 			}
