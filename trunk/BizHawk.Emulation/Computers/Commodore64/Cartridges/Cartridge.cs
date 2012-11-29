@@ -65,13 +65,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 					switch (mapper)
 					{
 						case 0x0000:
-							result = new Mapper0000(chipData[0], exrom, game);
+							result = new Mapper0000(chipAddress, chipBank, chipData, game, exrom);
 							break;
 						case 0x0005:
 							result = new Mapper0005(chipAddress, chipBank, chipData);
 							break;
 						case 0x0012:
 							result = new Mapper0012(chipAddress, chipBank, chipData);
+							break;
+						case 0x0020:
+							result = new Mapper0020(chipAddress, chipBank, chipData);
 							break;
 						default:
 							break;

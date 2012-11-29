@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			{
 				if (newAddresses[i] == 0x8000)
 					Array.Copy(newData[i], bankMain, 0x1000);
-				else if (newAddresses[i] == 0xA000 && newBanks[i] < 2)
+				else if ((newAddresses[i] == 0xA000 || newAddresses[i] == 0xE000) && newBanks[i] < 2)
 					bankHigh[newBanks[i]] = newData[i];
 			}
 

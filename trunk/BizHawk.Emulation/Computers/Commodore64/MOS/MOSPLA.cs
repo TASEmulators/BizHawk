@@ -115,9 +115,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void UpdateMap()
 		{
-			if (ultimax)
-				return;
-
+			ultimax = false;
 			if (pinCharen && pinHiRam && pinLoRam && pinGame && pinExRom)
 			{
 				// 11111
@@ -291,7 +289,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			else if (!pinGame && pinExRom)
 			{
 				// XXX01 (ultimax)
-				// once in this mode, it is not supposed to change
 				map.layout1000 = PLABank.None;
 				map.layout8000 = PLABank.CartridgeLo;
 				map.layoutA000 = PLABank.None;
