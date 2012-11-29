@@ -212,6 +212,11 @@ namespace BizHawk.MultiClient
 				return false;
 		}
 
+		public static string GetLuaPath()
+		{
+			return MakeAbsolutePath(Global.Config.LuaPath, "");
+		}
+
 		public static string GetRomsPath(string sysID)
 		{
 			string path = "";

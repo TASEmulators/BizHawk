@@ -577,12 +577,12 @@ namespace BizHawk.MultiClient
 			else if (!(Global.Emulator is NullEmulator))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
+				sfd.InitialDirectory = PathManager.GetLuaPath();
 			}
 			else
 			{
 				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
+				sfd.InitialDirectory = PathManager.GetLuaPath();
 			}
 			sfd.Filter = "Watch Files (*.lua)|*.lua|All Files|*.*";
 			sfd.RestoreDirectory = true;
