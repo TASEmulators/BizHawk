@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cartPort = new CartridgePort();
 			cia0 = new MOS6526(initRegion);
 			cia1 = new MOS6526(initRegion);
-			pla = new MOSPLA(this, cia1.ReadPort0);
+			pla = new MOSPLA(this);
 			switch (initRegion)
 			{
 				case Region.NTSC:
