@@ -557,6 +557,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case PLABank.None:
 					break;
 				case PLABank.RAM:
+					// RAM is written through anyway, don't do it here
 					break;
 				case PLABank.Sid:
 					chips.sid.Write(addr, val);

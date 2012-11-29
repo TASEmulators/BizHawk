@@ -167,6 +167,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void ExecutePhase1()
 		{
+			// sync cartridge lines (these can change)
+			pla.ExRom = cartPort.ExRom;
+			pla.Game = cartPort.Game;
+
 			cia0.ExecutePhase1();
 			cia1.ExecutePhase1();
 			sid.ExecutePhase1();
