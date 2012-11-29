@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			}
 			else if (count == 32) //256k
 			{
+				// this specific config is a weird exception
 				pinGame = false;
 				pinExRom = false;
 				bankMask = 0x0F;
@@ -46,12 +47,33 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 				bankMask = 0x0F;
 				banksA = new byte[16][];
 			}
+			else if (count == 8) //64k
+			{
+				pinGame = true;
+				pinExRom = false;
+				bankMask = 0x07;
+				banksA = new byte[8][];
+			}
 			else if (count == 4) //32k
 			{
 				pinGame = true;
 				pinExRom = false;
 				bankMask = 0x03;
 				banksA = new byte[4][];
+			}
+			else if (count == 2) //16k
+			{
+				pinGame = true;
+				pinExRom = false;
+				bankMask = 0x01;
+				banksA = new byte[2][];
+			}
+			else if (count == 1) //8k
+			{
+				pinGame = true;
+				pinExRom = false;
+				bankMask = 0x00;
+				banksA = new byte[1][];
 			}
 			else
 			{
