@@ -100,12 +100,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			currentBank = banks[bankNumber];
 			if (romEnable)
 			{
-				pinExRom = true;
+				pinExRom = false;
 				pinGame = true;
 			}
 			else
 			{
-				pinExRom = false;
+				pinExRom = true;
 				pinGame = true;
 			}
 		}

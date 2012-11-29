@@ -70,8 +70,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 						case 0x0005:
 							result = new Mapper0005(chipAddress, chipBank, chipData);
 							break;
+						case 0x000B:
+							result = new Mapper000B(chipAddress, chipBank, chipData);
+							break;
 						case 0x000F:
 							result = new Mapper000F(chipAddress, chipBank, chipData);
+							break;
+						case 0x0011:
+							result = new Mapper0011(chipAddress, chipBank, chipData);
 							break;
 						case 0x0012:
 							result = new Mapper0012(chipAddress, chipBank, chipData);
@@ -83,7 +89,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 							result = new Mapper0020(chipAddress, chipBank, chipData);
 							break;
 						default:
-							break;
+							throw new Exception("This cartridge file uses an unrecognized mapper: " + mapper);
 					}
 				}
 			}
