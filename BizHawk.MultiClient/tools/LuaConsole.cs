@@ -165,7 +165,7 @@ namespace BizHawk.MultiClient
 			var ofd = new OpenFileDialog();
 			if (lastLuaFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(lastLuaFile);
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
+			ofd.InitialDirectory = PathManager.GetLuaPath();
 			ofd.Filter = filter;
 			ofd.RestoreDirectory = true;
 
@@ -848,21 +848,32 @@ namespace BizHawk.MultiClient
 				}
 				for (int i = 0; i < luaList.Count; i++)
 				{
+					var lf = luaList[i];
+					
+					//save old current directory before this lua thread clobbers it for the .net thread
+					string oldcd = Environment.CurrentDirectory;
+
 					try
 					{
 						//LuaImp.gui_clearGraphics();
-						if (luaList[i].Enabled && luaList[i].Thread != null && !(luaList[i].Paused))
+						if (lf.Enabled && lf.Thread != null && !(lf.Paused))
 						{
 							bool prohibit = false;
-							if (luaList[i].FrameWaiting && !includeFrameWaiters)
+							if (lf.FrameWaiting && !includeFrameWaiters)
 							{
 								prohibit = true;
 							}
 							if (!prohibit)
 							{
-								var result = LuaImp.ResumeScript(luaList[i].Thread);
-								if (result.Terminated) luaList[i].Stop();
-								luaList[i].FrameWaiting = result.WaitForFrame;
+								//restore this lua thread's preferred current directory
+								Environment.CurrentDirectory = lf.CurrentDirectory;
+								
+								var result = LuaImp.ResumeScript(lf.Thread);
+								if (result.Terminated) lf.Stop();
+								lf.FrameWaiting = result.WaitForFrame;
+
+								//if the lua thread changed its current directory, capture that here
+								lf.CurrentDirectory = Environment.CurrentDirectory;
 							}
 						}
 					}
@@ -870,13 +881,17 @@ namespace BizHawk.MultiClient
 					{
 						if (ex is LuaInterface.LuaScriptException || ex is LuaInterface.LuaException)
 						{
-							luaList[i].Enabled = false;
-							luaList[i].Thread = null;
+							lf.Enabled = false;
+							lf.Thread = null;
 							AddText(ex.ToString());
 						}
 						else MessageBox.Show(ex.ToString());
 					}
-				}
+
+					//restore the current directory
+					Environment.CurrentDirectory = oldcd;
+
+				} //loop across luaList
 			}
 			//LuaImp.gui_drawFinishEmu();
 		}
@@ -942,13 +957,13 @@ namespace BizHawk.MultiClient
 			else if (!(Global.Emulator is NullEmulator))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
+				sfd.InitialDirectory = PathManager.GetLuaPath();
 
 			}
 			else
 			{
 				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
+				sfd.InitialDirectory = PathManager.GetLuaPath();
 			}
 			sfd.Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*";
 			sfd.RestoreDirectory = true;
