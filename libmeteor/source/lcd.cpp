@@ -93,6 +93,8 @@ namespace AMeteor
 			}
 			else // no vcount match
 				dispstat &= ~(uint16_t)0x4;
+			// scanline callback for frontend
+			// ...
 		}
 		else // if we were not H-Blanking
 		{

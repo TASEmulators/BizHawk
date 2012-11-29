@@ -672,7 +672,9 @@ namespace BizHawk.MultiClient.GBAtools
 		{
 			if (listBoxWidgets.SelectedItem != null)
 			{
-				(listBoxWidgets.SelectedItem as MobileBmpView).Show();
+				var mbv = listBoxWidgets.SelectedItem as MobileBmpView;
+				mbv.Show();
+				mbv.BringToFront();
 				listBoxWidgets.Items.RemoveAt(listBoxWidgets.SelectedIndex);
 			}
 		}
