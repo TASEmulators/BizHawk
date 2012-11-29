@@ -70,11 +70,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			{
 				if (newAddresses[i] == 0x8000)
 				{
-					banksA[newBanks[i]] = newData[i];
+					banksA[newBanks[i] & bankMask] = newData[i];
 				}
-				else if (newAddresses[i] == 0xA000)
+				else if (newAddresses[i] == 0xA000 || newAddresses[i] == 0xE000)
 				{
-					banksB[newBanks[i]] = newData[i];
+					banksB[newBanks[i] & bankMask] = newData[i];
 				}
 			}
 

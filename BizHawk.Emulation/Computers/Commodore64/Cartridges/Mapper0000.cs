@@ -11,8 +11,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 		private byte[] romB;
 
 		// standard cartridge mapper (Commodore)
+		// note that this format also covers Ultimax carts
 
-		public Mapper0000(byte[] data, bool exrom, bool game)
+		public Mapper0000(List<uint> newAddresses, List<uint> newBanks, List<byte[]> newData, bool game, bool exrom)
 		{
 			pinGame = game;
 			pinExRom = exrom;
@@ -21,30 +22,37 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			romB = new byte[0x2000];
 			validCartridge = true;
 
-			// we can expect three different configurations:
-			// bank of 4k, bank of 8k, or two banks of 8k
-
-			if (data.Length == 0x1000)
+			for (int i = 0; i < newAddresses.Count; i++)
 			{
-				Array.Copy(data, 0x0000, romA, 0x0000, 0x1000);
-				Array.Copy(data, 0x0000, romA, 0x1000, 0x1000);
-				for (int i = 0; i < 0x2000; i++)
-					romB[i] = 0xFF;
-			}
-			else if (data.Length == 0x2000)
-			{
-				Array.Copy(data, 0x0000, romA, 0x0000, 0x2000);
-				for (int i = 0; i < 0x2000; i++)
-					romB[i] = 0xFF;
-			}
-			else if (data.Length == 0x4000)
-			{
-				Array.Copy(data, 0x0000, romA, 0x0000, 0x2000);
-				Array.Copy(data, 0x2000, romB, 0x0000, 0x2000);
-			}
-			else
-			{
-				validCartridge = false;
+				if (newAddresses[i] == 0x8000)
+				{
+					if (newData[i].Length < 0x2000)
+					{
+						Array.Copy(newData[i], 0x0000, romA, 0x0000, 0x1000);
+						Array.Copy(newData[i], 0x0000, romA, 0x1000, 0x1000);
+					}
+					else if (newData[i].Length < 0x4000)
+					{
+						romA = newData[i];
+					}
+					else
+					{
+						Array.Copy(newData[i], 0x0000, romA, 0x0000, 0x2000);
+						Array.Copy(newData[i], 0x2000, romB, 0x0000, 0x2000);
+					}
+				}
+				else if (newAddresses[i] == 0xA000 || newAddresses[i] == 0xE000)
+				{
+					if (newData[i].Length < 0x2000)
+					{
+						Array.Copy(newData[i], 0x0000, romB, 0x0000, 0x1000);
+						Array.Copy(newData[i], 0x0000, romB, 0x1000, 0x1000);
+					}
+					else
+					{
+						romB = newData[i];
+					}
+				}
 			}
 
 			HardReset();
