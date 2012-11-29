@@ -84,6 +84,7 @@
     <Compile Include="Computers\Commodore64\Cartridges\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\C64.Input.cs" />
     <Compile Include="Computers\Commodore64\Cartridges\Mapper0005.cs" />
+    <Compile Include="Computers\Commodore64\Cartridges\Mapper0012.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
     <Compile Include="Computers\Commodore64\Memory.cs" />
     <Compile Include="Computers\Commodore64\Cartridges\Cartridge.cs" />

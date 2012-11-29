@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			backgroundColor1 = 0;
 			backgroundColor2 = 0;
 			backgroundColor3 = 0;
-			baCount = 4;
+			baCount = baResetCounter;
 			badline = false;
 			badlineEnable = false;
 			bitmapMode = false;
@@ -243,9 +243,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private void UpdateBA()
 		{
 			if (pinBA)
-				baCount = 4;
+				baCount = baResetCounter;
 			else if (baCount > 0)
 				baCount--;
+			pinAEC = (baCount > 0);
 		}
 
 		private void UpdateBorder()
@@ -279,12 +280,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		protected const uint pipelineChkSprDisp = 512;
 		protected const uint pipelineUpdateRc = 1024;
 
+		protected const uint rasterIrqLine0Cycle = 1;
+		protected const uint rasterIrqLineXCycle = 0;
+
+		protected const uint baResetCounter = 4;
+
 		// ------------------------------------
 
 		public void ExecutePhase1()
 		{
 			// raster IRQ compare
-			if ((cycle == 0 && rasterLine > 0) || (cycle == 1 && rasterLine == 0))
+			if ((cycle == rasterIrqLineXCycle && rasterLine > 0) || (cycle == rasterIrqLine0Cycle && rasterLine == 0))
 			{
 				if (rasterLine != lastRasterLine)
 					if (rasterLine == rasterInterruptLine)
@@ -327,6 +333,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			xOffset = 0;
 			Render();
 
+			// if the BA counter is nonzero, allow CPU bus access
+			UpdateBA();
+
 			// must always come last
 			UpdatePins();
 		}
@@ -355,10 +364,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			// if the BA counter is nonzero, allow CPU bus access
-			UpdateBA();
-			pinAEC = (baCount > 0);
-
 			Render();
 
 			// must always come last
@@ -367,7 +372,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void ParseCycle()
 		{
-			bool baPinThisCycle = true;
 			ushort addr = 0x3FFF;
 			uint cycleBAsprite0;
 			uint cycleBAsprite1;
@@ -477,10 +481,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (ba)
 			{
 				case 0x0000:
-					baPinThisCycle = true;
+					pinBA = true;
 					break;
 				case 0x1000:
-					baPinThisCycle = !badline;
+					pinBA = !badline;
 					break;
 				default:
 					cycleBAsprite0 = ba & 0x000F;
@@ -489,10 +493,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					if ((cycleBAsprite0 < 8 && sprites[cycleBAsprite0].dma) ||
 						(cycleBAsprite1 < 8 && sprites[cycleBAsprite1].dma) ||
 						(cycleBAsprite2 < 8 && sprites[cycleBAsprite2].dma))
-						baPinThisCycle = false;
+						pinBA = false;
+					else
+						pinBA = true;
 					break;
 			}
-			pinBA = baPinThisCycle;
 
 			// perform actions
 			borderCheckLEnable = true;
