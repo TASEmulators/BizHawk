@@ -21,6 +21,7 @@
 #include "ameteor.hpp"
 
 #include "debug.hpp"
+#include <sstream>
 
 namespace AMeteor
 {
@@ -152,6 +153,15 @@ namespace AMeteor
 				<< " to " << IOS_ADD << chan.dest
 				<< " of " << IOS_NOR << (chan.count ? chan.count : 0x10000)
 				<< (chan.control.b.type ? " words" : " halfwords"));
+		if (traceenabled)
+		{
+			std::stringstream ss;
+			ss << "DMA" << IOS_NOR << (int)channum << ", from " << IOS_ADD << chan.src
+				<< " to " << IOS_ADD << chan.dest
+				<< " of " << IOS_NOR << (chan.count ? chan.count : 0x10000)
+				<< (chan.control.b.type ? " words" : " halfwords");
+			trace_bizhawk(ss.str());
+		}
 #if 0
 		if (channum == 3 && (chan.dest >> 24) == 0x0D || (chan.src >> 24) == 0x0D)
 		{

@@ -55,6 +55,10 @@ namespace AMeteor
 			if (m_attr0 & (0x1 << 9) || ((m_attr0 >> 10) & 0x3) == 2)
 				return;
 
+			// don't draw sprites with "prohibited" size
+			if (m_width == 0)
+				return;
+
 			int16_t yoff = (m_attr0 & 0xFF);
 			if (yoff > Screen::HEIGHT)
 				yoff -= 256;
@@ -253,6 +257,10 @@ namespace AMeteor
 			if (((m_attr0 >> 10) & 0x3) == 2)
 				return;
 
+			// don't draw sprites with "prohibited" size
+			if (m_width == 0)
+				return;
+
 			int16_t yoff = (m_attr0 & 0xFF);
 			if (yoff > Screen::HEIGHT)
 				yoff -= 256;
@@ -407,6 +415,10 @@ namespace AMeteor
 			if (m_attr0 & (0x1 << 9) || ((m_attr0 >> 10) & 0x3) != 2)
 				return;
 
+			// don't draw sprites with "prohibited" size
+			if (m_width == 0)
+				return;
+
 			int16_t yoff = (m_attr0 & 0xFF);
 			if (yoff > Screen::HEIGHT)
 				yoff -= 256;
@@ -496,6 +508,10 @@ namespace AMeteor
 		{
 			// if it's not an obj window
 			if (((m_attr0 >> 10) & 0x3) != 2)
+				return;
+			
+			// don't draw sprites with "prohibited" size
+			if (m_width == 0)
 				return;
 
 			int16_t yoff = (m_attr0 & 0xFF);
@@ -662,15 +678,17 @@ namespace AMeteor
 
 		inline void Object::SetSize ()
 		{
-			static const uint8_t Width[3][4] = {
+			static const uint8_t Width[4][4] = {
 				{1, 2, 4, 8}, // Square
 				{2, 4, 4, 8}, // Horizontal
-				{1, 1, 2, 4}  // Vertical
+				{1, 1, 2, 4}, // Vertical
+				{0, 0, 0, 0}  // Prohibited
 			};
-			static const uint8_t Height[3][4] = {
+			static const uint8_t Height[4][4] = {
 				{1, 2, 4, 8}, // Square
 				{1, 1, 2, 4}, // Horizontal
-				{2, 4, 4, 8}  // Vertical
+				{2, 4, 4, 8}, // Vertical
+				{0, 0, 0, 0}  // Prohibited
 			};
 
 			m_width = Width[m_attr0 >> 14][m_attr1 >> 14];
