@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			BankSet(0);
 		}
 
-		private void BankSet(uint index)
+		protected void BankSet(uint index)
 		{
 			bankNumber = index & bankMask;
 			UpdateState();

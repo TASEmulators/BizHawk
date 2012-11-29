@@ -75,25 +75,25 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public bool Charen
 		{
 			get { return pinCharen; }
-			set { pinCharen = value; UpdateMap(); }
+			set { if (pinCharen != value) { pinCharen = value; UpdateMap(); } }
 		}
 
 		public bool ExRom
 		{
 			get { return pinExRom; }
-			set { pinExRom = value; UpdateMap(); }
+			set { if (pinExRom != value) { pinExRom = value; UpdateMap(); } }
 		}
 
 		public bool Game
 		{
 			get { return pinGame; }
-			set { pinGame = value; UpdateMap(); }
+			set { if (pinGame != value) { pinGame = value; UpdateMap(); } }
 		}
 
 		public bool HiRam
 		{
 			get { return pinHiRam; }
-			set { pinHiRam = value; UpdateMap(); }
+			set { if (pinHiRam != value) { pinHiRam = value; UpdateMap(); } }
 		}
 
 		public bool InputWasRead
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public bool LoRam
 		{
 			get { return pinLoRam; }
-			set { pinLoRam = value; UpdateMap(); }
+			set { if (pinLoRam != value) { pinLoRam = value; UpdateMap(); } }
 		}
 
 		public bool UltimaxMode
@@ -301,6 +301,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				throw new Exception("Memory configuration missing from PLA, fix this!");
 			}
+		}
+
+		public void UpdatePins()
+		{
+			// called after all cartridge routines in case
+			// game/exrom configuration changes
+
+			Game = chips.cartPort.Game;
+			ExRom = chips.cartPort.ExRom;
 		}
 
 		// ------------------------------------
