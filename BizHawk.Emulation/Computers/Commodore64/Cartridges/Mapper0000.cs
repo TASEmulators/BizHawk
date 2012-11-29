@@ -10,6 +10,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 		private byte[] romA;
 		private byte[] romB;
 
+		// standard cartridge mapper (Commodore)
+
 		public Mapper0000(byte[] data, bool exrom, bool game)
 		{
 			pinGame = game;
@@ -17,17 +19,32 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 
 			romA = new byte[0x2000];
 			romB = new byte[0x2000];
+			validCartridge = true;
 
-			Array.Copy(data, 0x0000, romA, 0x0000, 0x2000);
+			// we can expect three different configurations:
+			// bank of 4k, bank of 8k, or two banks of 8k
 
-			if (data.Length == 0x2000)
+			if (data.Length == 0x1000)
 			{
+				Array.Copy(data, 0x0000, romA, 0x0000, 0x1000);
+				Array.Copy(data, 0x0000, romA, 0x1000, 0x1000);
 				for (int i = 0; i < 0x2000; i++)
 					romB[i] = 0xFF;
 			}
+			else if (data.Length == 0x2000)
+			{
+				Array.Copy(data, 0x0000, romA, 0x0000, 0x2000);
+				for (int i = 0; i < 0x2000; i++)
+					romB[i] = 0xFF;
+			}
+			else if (data.Length == 0x4000)
+			{
+				Array.Copy(data, 0x0000, romA, 0x0000, 0x2000);
+				Array.Copy(data, 0x2000, romB, 0x0000, 0x2000);
+			}
 			else
 			{
-				Array.Copy(data, 0x2000, romB, 0x0000, 0x2000);
+				validCartridge = false;
 			}
 
 			HardReset();

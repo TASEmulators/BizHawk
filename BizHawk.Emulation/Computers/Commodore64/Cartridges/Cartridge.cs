@@ -70,6 +70,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 						case 0x0005:
 							result = new Mapper0005(chipAddress, chipBank, chipData);
 							break;
+						case 0x0012:
+							result = new Mapper0012(chipAddress, chipBank, chipData);
+							break;
 						default:
 							break;
 					}
