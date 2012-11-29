@@ -53,12 +53,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool pinHiRam;
 		private bool pinLoRam;
 		private bool ultimax;
-		private Func<byte> vicBankPortRead;
+		private ushort vicBank;
 
-		public MOSPLA(C64Chips newChips, Func<byte>newVicBankPortRead)
+		public MOSPLA(C64Chips newChips)
 		{
 			chips = newChips;
-			vicBankPortRead = newVicBankPortRead;
 			pinExRom = true;
 			pinGame = true;
 		}
@@ -408,6 +407,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case PLABank.Cia1:
 					chips.cia1.Poke(addr, val);
+					UpdateVicBank();
 					break;
 				case PLABank.ColorRam:
 					chips.colorRam.Poke(addr, val);
@@ -500,21 +500,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 			else
 			{
+				addr |= vicBank;
 				if ((addr & 0x7000) == 0x1000)
-				{
 					return chips.charRom.Read(addr);
-				}
 				else
-				{
-					uint bank = (vicBankPortRead() & (uint)0x3);
-					switch (bank)
-					{
-						case 0: addr |= 0xC000; break;
-						case 1: addr |= 0x8000; break;
-						case 2: addr |= 0x4000; break;
-					}
 					return chips.ram.Read(addr);
-				}
+			}
+		}
+
+		private void UpdateVicBank()
+		{
+			switch (chips.cia1.ReadPort0() & 0x3)
+			{
+				case 0: vicBank = 0xC000; break;
+				case 1: vicBank = 0x8000; break;
+				case 2: vicBank = 0x4000; break;
+				case 3: vicBank = 0x0000; break;
 			}
 		}
 
@@ -539,6 +540,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case PLABank.Cia1:
 					chips.cia1.Write(addr, val);
+					UpdateVicBank();
 					break;
 				case PLABank.ColorRam:
 					chips.colorRam.Write(addr, val);

@@ -1032,7 +1032,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case 0x1A:
 					WriteRegister(addr, val);
-					UpdatePins();
 					break;
 				case 0x1E:
 				case 0x1F:
@@ -1153,12 +1152,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					intSpriteDataCollision = ((val & 0x02) != 0);
 					intSpriteCollision = ((val & 0x04) != 0);
 					intLightPen = ((val & 0x08) != 0);
+					UpdatePins();
 					break;
 				case 0x1A:
 					enableIntRaster = ((val & 0x01) != 0);
 					enableIntSpriteDataCollision = ((val & 0x02) != 0);
 					enableIntSpriteCollision = ((val & 0x04) != 0);
 					enableIntLightPen = ((val & 0x08) != 0);
+					UpdatePins();
 					break;
 				case 0x1B:
 					sprites[0].priority = ((val & 0x01) != 0);
