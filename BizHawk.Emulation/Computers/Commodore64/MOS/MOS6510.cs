@@ -15,16 +15,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private C64Chips chips;
 		private MOS6502X cpu;
 		private bool freezeCpu;
-		private bool pinAEC;
 		private bool pinCassetteButton;
 		private bool pinCassetteMotor;
 		private bool pinCassetteOutput;
 		private bool pinCharen;
-		private bool pinIRQ;
 		private bool pinLoram;
 		private bool pinHiram;
-		private bool pinNMI;
-		private bool pinRDY;
 		private byte portDir;
 		private bool unusedPin0;
 		private bool unusedPin1;
@@ -66,19 +62,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase1()
 		{
-			UpdatePins();
 		}
 
 		public void ExecutePhase2()
 		{
-			UpdatePins();
-
-			if (pinAEC && !freezeCpu)
+			if (chips.vic.AEC && !freezeCpu)
 			{
 				// the 6502 core expects active high
 				// so we reverse the polarity here
-				cpu.NMI = !pinNMI;
-				cpu.IRQ = !pinIRQ;
+				cpu.NMI = !(chips.cia1.IRQ & chips.cartPort.NMI);
+				cpu.IRQ = !(chips.vic.IRQ && chips.cia0.IRQ && chips.cartPort.IRQ);
 				cpu.ExecuteOne();
 			}
 
@@ -92,17 +85,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				unusedPin1 = false;
 			else
 				unusedPinTTL1--;
-		}
-
-		private void UpdatePins()
-		{
-			pinAEC = chips.vic.AEC;
-			pinIRQ = chips.vic.IRQ && chips.cia0.IRQ;
-			pinNMI = chips.cia1.IRQ;
-			pinRDY = chips.vic.BA;
-
-			if (pinRDY)
-				freezeCpu = false;
 		}
 
 		// ------------------------------------
@@ -130,7 +112,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public byte Read(ushort addr)
 		{
 			// cpu freezes after first read when RDY is low
-			if (!pinRDY)
+			if (!chips.vic.BA)
 				freezeCpu = true;
 
 			if (addr == 0x0000)
@@ -152,11 +134,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public bool AEC
-		{
-			get { return pinAEC; }
-		}
-
 		public bool Charen
 		{
 			get { return pinCharen; }
@@ -167,24 +144,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			get { return pinHiram; }
 		}
 
-		public bool IRQ
-		{
-			get { return pinIRQ; }
-		}
-
 		public bool LoRam
 		{
 			get { return pinLoram; }
-		}
-
-		public bool NMI
-		{
-			get { return pinNMI; }
-		}
-
-		public bool RDY
-		{
-			get { return pinRDY; }
 		}
 
 		public byte PortData
