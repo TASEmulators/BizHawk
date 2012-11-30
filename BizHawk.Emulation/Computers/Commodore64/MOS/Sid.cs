@@ -265,8 +265,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			private uint waveform;
 			private uint[][] waveTable;
 
-			public Voice()
+			public Voice(uint[][] newWaveTable)
 			{
+				waveTable = newWaveTable;
 				HardReset();
 			}
 
@@ -576,7 +577,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			voices = new Voice[3];
 			for (int i = 0; i < 3; i++)
-				voices[i] = new Voice();
+				voices[i] = new Voice(newWaveformTable);
 			voiceOutput = new uint[3];
 
 			filterEnable = new bool[3];
@@ -649,7 +650,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Read(ushort addr)
 		{
-			byte result = 0xFF;
+			byte result = 0x00;
 			switch (addr)
 			{
 				case 0x19:
@@ -664,7 +665,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private byte ReadRegister(ushort addr)
 		{
-			byte result = 0xFF;
+			byte result = 0x00;
 
 			switch (addr)
 			{

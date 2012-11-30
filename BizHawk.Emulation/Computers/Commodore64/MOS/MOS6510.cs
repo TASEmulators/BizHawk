@@ -123,7 +123,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				portDir = val;
 			else if (addr == 0x0001)
 				SetPortData(val);
-			chips.pla.Poke(addr, val);
+			else
+				chips.pla.Poke(addr, val);
 		}
 
 		public byte Read(ushort addr)
@@ -156,9 +157,24 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			get { return pinAEC; }
 		}
 
+		public bool Charen
+		{
+			get { return pinCharen; }
+		}
+
+		public bool HiRam
+		{
+			get { return pinHiram; }
+		}
+
 		public bool IRQ
 		{
 			get { return pinIRQ; }
+		}
+
+		public bool LoRam
+		{
+			get { return pinLoram; }
 		}
 
 		public bool NMI
@@ -190,6 +206,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			set
 			{
 				byte val = Port.CPUWrite(PortData, value, portDir);
+				Console.WriteLine("CPU write DTA: val=" + C64Util.ToBinary(value, 8) + " dir=" + C64Util.ToBinary(portDir, 8) + " new=" + C64Util.ToBinary(val, 8));
 				SetPortData(val);
 			}
 		}
@@ -197,7 +214,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public byte PortDirection
 		{
 			get { return portDir; }
-			set { portDir = value; }
+			set
+			{
+				Console.WriteLine("CPU write DIR: val=" + C64Util.ToBinary(value, 8));
+				portDir = value;
+			}
 		}
 
 		private void SetPortData(byte val)
@@ -206,15 +227,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			pinCassetteButton = ((val & 0x10) != 0);
 			pinCassetteMotor = ((val & 0x20) != 0);
 
-			if (!chips.pla.UltimaxMode)
-			{
-				pinLoram = ((val & 0x01) != 0);
-				pinHiram = ((val & 0x02) != 0);
-				pinCharen = ((val & 0x04) != 0);
-				chips.pla.LoRam = pinLoram;
-				chips.pla.HiRam = pinHiram;
-				chips.pla.Charen = pinCharen;
-			}
+			pinLoram = ((val & 0x01) != 0);
+			pinHiram = ((val & 0x02) != 0);
+			pinCharen = ((val & 0x04) != 0);
 
 			unusedPin0 = ((val & 0x40) != 0);
 			unusedPin1 = ((val & 0x80) != 0);
