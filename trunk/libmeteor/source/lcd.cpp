@@ -94,7 +94,8 @@ namespace AMeteor
 			else // no vcount match
 				dispstat &= ~(uint16_t)0x4;
 			// scanline callback for frontend
-			// ...
+			if (slcallbackline == vcount)
+				scanlinecallback_bizhawk();
 		}
 		else // if we were not H-Blanking
 		{

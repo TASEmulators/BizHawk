@@ -211,7 +211,7 @@
 			// hScrollBarScanline
 			// 
 			this.hScrollBarScanline.Location = new System.Drawing.Point(76, 45);
-			this.hScrollBarScanline.Maximum = 153;
+			this.hScrollBarScanline.Maximum = 162;
 			this.hScrollBarScanline.Name = "hScrollBarScanline";
 			this.hScrollBarScanline.Size = new System.Drawing.Size(192, 16);
 			this.hScrollBarScanline.TabIndex = 21;

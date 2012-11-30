@@ -35,6 +35,9 @@ namespace BizHawk.MultiClient.GBAtools
 			Buffer.BlockCopy(tmp, 0, ColorConversion, sizeof(int) * tmp.Length, sizeof(int) * tmp.Length);
 
 			GenerateWidgets();
+			radioButtonFrame.Checked = true;
+			hScrollBar1_ValueChanged(null, null);
+			RecomputeRefresh();
 		}
 
 		#region drawing primitives
@@ -659,7 +662,22 @@ namespace BizHawk.MultiClient.GBAtools
 				return;
 			if (gba != null)
 			{
-				DrawEverything();
+				if (cbscanline_emu != cbscanline)
+				{
+					cbscanline_emu = cbscanline;
+					if (cbscanline == -2) // manual, do nothing
+					{
+						gba.SetScanlineCallback(null, null);
+					}
+					else if (cbscanline == -1) // end of frame
+					{
+						gba.SetScanlineCallback(DrawEverything, null);
+					}
+					else
+					{
+						gba.SetScanlineCallback(DrawEverything, cbscanline);
+					}
+				}
 			}
 		}
 
@@ -687,6 +705,66 @@ namespace BizHawk.MultiClient.GBAtools
 		private void listBoxWidgets_DoubleClick(object sender, EventArgs e)
 		{
 			ShowSelectedWidget();
+		}
+
+		int cbscanline;
+		int cbscanline_emu = 500;
+
+		void RecomputeRefresh()
+		{
+			if (radioButtonFrame.Checked)
+			{
+				hScrollBar1.Enabled = false;
+				buttonRefresh.Enabled = false;
+				cbscanline = -1;
+			}
+			else if (radioButtonScanline.Checked)
+			{
+				hScrollBar1.Enabled = true;
+				buttonRefresh.Enabled = false;
+				cbscanline = (hScrollBar1.Value + 160) % 228;
+			}
+			else if (radioButtonManual.Checked)
+			{
+				hScrollBar1.Enabled = false;
+				buttonRefresh.Enabled = true;
+				cbscanline = -2;
+			}
+		}
+
+		private void radioButtonFrame_CheckedChanged(object sender, EventArgs e)
+		{
+			RecomputeRefresh();
+		}
+
+		private void radioButtonScanline_CheckedChanged(object sender, EventArgs e)
+		{
+			RecomputeRefresh();
+		}
+
+		private void hScrollBar1_ValueChanged(object sender, EventArgs e)
+		{
+			cbscanline = (hScrollBar1.Value + 160) % 228;
+			radioButtonScanline.Text = "Scanline " + cbscanline;
+		}
+
+		private void radioButtonManual_CheckedChanged(object sender, EventArgs e)
+		{
+			RecomputeRefresh();
+		}
+
+		private void buttonRefresh_Click(object sender, EventArgs e)
+		{
+			DrawEverything();
+		}
+
+		private void GBAGPUView_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			if (gba != null)
+			{
+				gba.SetScanlineCallback(null, null);
+				gba = null;
+			}
 		}
 	}
 }

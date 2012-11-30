@@ -25,6 +25,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		{
 			if (bios.Length != 16384)
 				throw new Exception("GBA bios must be exactly 16384 bytes!");
+			if (rom.Length > 32 * 1024 * 1024)
+				throw new Exception("Rom is too big!");
 			Init();
 			LibMeteor.libmeteor_hardreset();
 			LibMeteor.libmeteor_loadbios(bios, (uint)bios.Length);
@@ -46,6 +48,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 				LibMeteor.libmeteor_frameadvance();
 			if (IsLagFrame)
 				LagCount++;
+			if (EndOfFrameCallback != null)
+				EndOfFrameCallback();
 		}
 
 		public int Frame { get; private set; }
@@ -374,6 +378,40 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		void Trace(string msg)
 		{
 			CoreInputComm.Tracer.Put(msg);
+		}
+
+		Action EndOfFrameCallback = null;
+		LibMeteor.ScanlineCallback scanlinecb = null;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="callback">null to cancel</param>
+		/// <param name="scanline">0-227, null = end of frame</param>
+		public void SetScanlineCallback(Action callback, int? scanline)
+		{
+			if (callback == null)
+			{
+				LibMeteor.libmeteor_setscanlinecallback(null, 400);
+				EndOfFrameCallback = null;
+				scanlinecb = null;
+			}
+			else if (scanline == null)
+			{
+				LibMeteor.libmeteor_setscanlinecallback(null, 400);
+				EndOfFrameCallback = callback;
+				scanlinecb = null;
+			}
+			else if (scanline >= 0 && scanline <= 227)
+			{
+				scanlinecb = new LibMeteor.ScanlineCallback(callback);
+				LibMeteor.libmeteor_setscanlinecallback(scanlinecb, (int)scanline);
+				EndOfFrameCallback = null;
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException("Scanline must be in [0, 227]!");
+			}
 		}
 
 		void Init()
