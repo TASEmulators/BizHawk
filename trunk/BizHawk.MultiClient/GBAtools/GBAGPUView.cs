@@ -24,6 +24,8 @@ namespace BizHawk.MultiClient.GBAtools
 
 		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal, sprites, bgtiles16, bgtiles256, sptiles16, sptiles256;
 
+		MobileDetailView details, memory;
+
 		public GBAGPUView()
 		{
 			InitializeComponent();
@@ -76,8 +78,8 @@ namespace BizHawk.MultiClient.GBAtools
 				}
 			}
 		}
-				
-		unsafe void DrawTile16(int* dest, int pitch, byte* tile, ushort *palette, bool hflip, bool vflip)
+
+		unsafe void DrawTile16(int* dest, int pitch, byte* tile, ushort* palette, bool hflip, bool vflip)
 		{
 			if (vflip)
 			{
@@ -172,7 +174,7 @@ namespace BizHawk.MultiClient.GBAtools
 
 			byte* tiles = (byte*)vram + ((bgcnt & 0xc) << 12);
 
-			ushort *nametable = (ushort*)vram + ((bgcnt & 0x1f00) << 2);
+			ushort* nametable = (ushort*)vram + ((bgcnt & 0x1f00) << 2);
 
 			bool eightbit = bgcnt.Bit(7);
 
@@ -256,8 +258,8 @@ namespace BizHawk.MultiClient.GBAtools
 
 			int* pixels = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
-			
-			ushort *frame = (ushort*)vram;
+
+			ushort* frame = (ushort*)vram;
 
 			for (int y = 0; y < 160; y++)
 			{
@@ -266,7 +268,7 @@ namespace BizHawk.MultiClient.GBAtools
 				pixels -= 240;
 				pixels += pitch;
 			}
-			
+
 			bmp.UnlockBits(lockdata);
 			mbv.bmpView.Refresh();
 		}
@@ -607,42 +609,73 @@ namespace BizHawk.MultiClient.GBAtools
 			if (sprites.ShouldDraw) DrawSprites(sprites);
 		}
 
-		MobileBmpView MakeWidget(string text, int w, int h)
+		MobileBmpView MakeMBVWidget(string text, int w, int h)
 		{
 			var mbv = new MobileBmpView();
 			mbv.Text = text;
+			mbv.bmpView.Text = text;
 			mbv.TopLevel = false;
 			mbv.ChangeViewSize(w, h);
 			mbv.bmpView.Clear();
-			mbv.FormClosing += delegate(object sender, FormClosingEventArgs e)
-			{
-				e.Cancel = true;
-				listBoxWidgets.Items.Add(sender);
-				(sender as Form).Hide();
-			};
-			// hackish, and why doesn't winforms handle this directly?
-			mbv.bmpView.Click += (o, e) => (o as Control).Parent.BringToFront();
 			panel1.Controls.Add(mbv);
 			listBoxWidgets.Items.Add(mbv);
 			return mbv;
 		}
 
+		MobileDetailView MakeMDVWidget(string text, int w, int h)
+		{
+			var mdv = new MobileDetailView();
+			mdv.Text = text;
+			mdv.bmpView.Text = text;
+			mdv.TopLevel = false;
+			mdv.ClientSize = new Size(w, h);
+			mdv.bmpView.Clear();
+			panel1.Controls.Add(mdv);
+			listBoxWidgets.Items.Add(mdv);
+			return mdv;
+		}
+
 		void GenerateWidgets()
 		{
 			listBoxWidgets.BeginUpdate();
-			bg0 = MakeWidget("Background 0", 256, 256);
-			bg1 = MakeWidget("Background 1", 256, 256);
-			bg2 = MakeWidget("Background 2", 256, 256);
-			bg3 = MakeWidget("Background 3", 256, 256);
-			bgpal = MakeWidget("Background Palettes", 256, 256);
-			sppal = MakeWidget("Sprite Palettes", 256, 256);
-			sprites = MakeWidget("Sprites", 1024, 512);
-			sptiles16 = MakeWidget("Sprite Tiles (4bpp)", 256, 256);
-			sptiles256 = MakeWidget("Sprite Tiles (8bpp)", 128, 256);
-			bgtiles16 = MakeWidget("Background Tiles (4bpp)", 512, 256);
-			bgtiles256 = MakeWidget("Background Tiles (8bpp)", 256, 256);
+			bg0 = MakeMBVWidget("Background 0", 256, 256);
+			bg1 = MakeMBVWidget("Background 1", 256, 256);
+			bg2 = MakeMBVWidget("Background 2", 256, 256);
+			bg3 = MakeMBVWidget("Background 3", 256, 256);
+			bgpal = MakeMBVWidget("Background Palettes", 256, 256);
+			sppal = MakeMBVWidget("Sprite Palettes", 256, 256);
+			sprites = MakeMBVWidget("Sprites", 1024, 512);
+			sptiles16 = MakeMBVWidget("Sprite Tiles (4bpp)", 256, 256);
+			sptiles256 = MakeMBVWidget("Sprite Tiles (8bpp)", 128, 256);
+			bgtiles16 = MakeMBVWidget("Background Tiles (4bpp)", 512, 256);
+			bgtiles256 = MakeMBVWidget("Background Tiles (8bpp)", 256, 256);
+			details = MakeMDVWidget("Details", 128, 192);
+			memory = MakeMDVWidget("Details - Memory", 128, 192);
 			listBoxWidgets.EndUpdate();
+
+			foreach (var f in listBoxWidgets.Items)
+			{
+				Form form = (Form)f;
+				// close becomes hide
+				form.FormClosing += delegate(object sender, FormClosingEventArgs e)
+				{
+					e.Cancel = true;
+					listBoxWidgets.Items.Add(sender);
+					(sender as Form).Hide();
+				};
+				// hackish, and why doesn't winforms handle this directly?
+				BringToFrontHack(form, form);
+			}
 		}
+
+		static void BringToFrontHack(Control c, Control top)
+		{
+			c.Click += (o, e) => top.BringToFront();
+			if (c.HasChildren)
+				foreach (Control cc in c.Controls)
+					BringToFrontHack(cc, top);
+		}
+
 
 		public void Restart()
 		{
@@ -693,9 +726,9 @@ namespace BizHawk.MultiClient.GBAtools
 		{
 			if (listBoxWidgets.SelectedItem != null)
 			{
-				var mbv = listBoxWidgets.SelectedItem as MobileBmpView;
-				mbv.Show();
-				mbv.BringToFront();
+				var form = listBoxWidgets.SelectedItem as Form;
+				form.Show();
+				form.BringToFront();
 				listBoxWidgets.Items.RemoveAt(listBoxWidgets.SelectedIndex);
 			}
 		}
@@ -709,6 +742,8 @@ namespace BizHawk.MultiClient.GBAtools
 		{
 			ShowSelectedWidget();
 		}
+
+		#region refresh control
 
 		int cbscanline;
 		int cbscanline_emu = 500;
@@ -761,6 +796,8 @@ namespace BizHawk.MultiClient.GBAtools
 			DrawEverything();
 		}
 
+		#endregion
+
 		private void GBAGPUView_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			if (gba != null)
@@ -769,5 +806,39 @@ namespace BizHawk.MultiClient.GBAtools
 				gba = null;
 			}
 		}
+
+		#region copy to clipboard
+
+		private void timerMessage_Tick(object sender, EventArgs e)
+		{
+			timerMessage.Stop();
+			labelClipboard.Text = "CTRL + C: Copy under mouse to clipboard.";
+		}
+
+		private void GBAGPUView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (Control.ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			{
+				// find the control under the mouse
+				Point m = System.Windows.Forms.Cursor.Position;
+				Control top = this;
+				Control found = null;
+				do
+				{
+					found = top.GetChildAtPoint(top.PointToClient(m));
+					top = found;
+				} while (found != null && found.HasChildren);
+
+				if (found != null && found is BmpView)
+				{
+					var bv = found as BmpView;
+					Clipboard.SetImage(bv.bmp);
+					labelClipboard.Text = found.Text + " copied to clipboard.";
+					timerMessage.Stop();
+					timerMessage.Start();
+				}
+			}
+		}
+		#endregion
 	}
 }
