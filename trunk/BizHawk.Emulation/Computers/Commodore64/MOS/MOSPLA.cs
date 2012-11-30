@@ -47,53 +47,69 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private C64Chips chips;
 		private bool cia0portRead;
 		private PLACpuMap map;
-		private bool pinCharen;
-		private bool pinExRom;
-		private bool pinGame;
-		private bool pinHiRam;
-		private bool pinLoRam;
+		private bool pinCharenLast;
+		private bool pinExRomLast;
+		private bool pinGameLast;
+		private bool pinHiRamLast;
+		private bool pinLoRamLast;
 		private bool ultimax;
 		private ushort vicBank;
 
 		public MOSPLA(C64Chips newChips)
 		{
 			chips = newChips;
-			pinExRom = true;
-			pinGame = true;
 		}
 
 		public void HardReset()
 		{
-			pinCharen = true;
-			pinHiRam = true;
-			pinLoRam = true;
 			UpdateMap();
+		}
+
+		// ------------------------------------
+
+		public void ExecutePhase1()
+		{
+			UpdatePins();
+		}
+
+		public void ExecutePhase2()
+		{
+			UpdatePins();
+		}
+
+		public void UpdatePins()
+		{
+			if ((ExRom != pinExRomLast) || (Game != pinGameLast) || (LoRam != pinLoRamLast) || (HiRam != pinHiRamLast) || (Charen != pinCharenLast))
+			{
+				UpdateMap();
+				pinExRomLast = ExRom;
+				pinGameLast = Game;
+				pinLoRamLast = LoRam;
+				pinHiRamLast = HiRam;
+				pinCharenLast = Charen;
+			}
 		}
 
 		// ------------------------------------
 
 		public bool Charen
 		{
-			get { return pinCharen; }
-			set { if (pinCharen != value) { pinCharen = value; UpdateMap(); } }
+			get { return chips.cpu.Charen; }
 		}
 
 		public bool ExRom
 		{
-			get { return pinExRom; }
-			set { if (pinExRom != value) { pinExRom = value; UpdateMap(); } }
+			get { return chips.cartPort.ExRom; }
 		}
 
 		public bool Game
 		{
-			get { return pinGame; }
-			set { if (pinGame != value) { pinGame = value; UpdateMap(); } }
+			get { return chips.cartPort.Game; }
 		}
 
 		public bool HiRam
 		{
-			get { return pinHiRam; }
-			set { if (pinHiRam != value) { pinHiRam = value; UpdateMap(); } }
+			get { return chips.cpu.HiRam; }
 		}
 
 		public bool InputWasRead
@@ -104,17 +120,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public bool LoRam
 		{
-			get { return pinLoRam; }
-			set { if (pinLoRam != value) { pinLoRam = value; UpdateMap(); } }
+			get { return chips.cpu.LoRam; }
 		}
 
 		public bool UltimaxMode
 		{
-			get { return ultimax; }
+			get { return (!Game && ExRom); }
 		}
 
 		private void UpdateMap()
 		{
+			bool pinGame = Game;
+			bool pinExRom = ExRom;
+			bool pinCharen = Charen;
+			bool pinHiRam = HiRam;
+			bool pinLoRam = LoRam;
+
 			ultimax = false;
 			if (pinCharen && pinHiRam && pinLoRam && pinGame && pinExRom)
 			{
@@ -301,15 +322,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				throw new Exception("Memory configuration missing from PLA, fix this!");
 			}
-		}
-
-		public void UpdatePins()
-		{
-			// called after all cartridge routines in case
-			// game/exrom configuration changes
-
-			Game = chips.cartPort.Game;
-			ExRom = chips.cartPort.ExRom;
 		}
 
 		// ------------------------------------

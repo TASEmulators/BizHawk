@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			get
 			{
-				return Port.GetAdapter(ReadPort0, ExternalWritePort0);
+				return Port.GetAdapter(ReadPort0, ExternalWritePort0, ExternalWriteForce0);
 			}
 		}
 
@@ -39,8 +39,18 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			get
 			{
-				return Port.GetAdapter(ReadPort1, ExternalWritePort1);
+				return Port.GetAdapter(ReadPort1, ExternalWritePort1, ExternalWriteForce1);
 			}
+		}
+
+		private void ExternalWriteForce0(byte data)
+		{
+			portData[0] = data;
+		}
+
+		private void ExternalWriteForce1(byte data)
+		{
+			portData[1] = data;
 		}
 
 		private void ExternalWritePort(uint index, byte data)

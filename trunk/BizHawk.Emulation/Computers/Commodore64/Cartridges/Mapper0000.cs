@@ -21,6 +21,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			pinExRom = exrom;
 
 			validCartridge = true;
+			
+			// default to empty banks
+			romA = new byte[1];
+			romB = new byte[1];
+			romA[0] = 0xFF;
+			romB[0] = 0xFF;
 
 			for (int i = 0; i < newAddresses.Count; i++)
 			{

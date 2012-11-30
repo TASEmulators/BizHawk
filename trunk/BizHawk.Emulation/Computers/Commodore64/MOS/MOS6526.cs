@@ -237,12 +237,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 							{
 								u = (t == 0);
 								t--;
+								intTimer[index] |= (t == 0);
 							}
 							break;
 						case InMode.Phase2:
 							// every clock
 							u = (t == 0);
 							t--;
+							intTimer[index] |= (t == 0);
 							break;
 						case InMode.TimerAUnderflow:
 							// every underflow[0]
@@ -250,6 +252,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 							{
 								u = (t == 0);
 								t--;
+								intTimer[index] |= (t == 0);
 							}
 							break;
 						case InMode.TimerAUnderflowCNT:
@@ -258,6 +261,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 							{
 								u = (t == 0);
 								t--;
+								intTimer[index] |= (t == 0);
 							}
 							break;
 					}
@@ -284,8 +288,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 									break;
 							}
 						}
-
-						intTimer[index] = true;
 					}
 
 					underflow[index] = u;

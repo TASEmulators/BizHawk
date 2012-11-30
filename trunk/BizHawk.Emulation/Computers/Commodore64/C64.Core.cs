@@ -62,8 +62,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					if (cart != null)
 					{
 						chips.cartPort.Connect(cart);
-						chips.pla.ExRom = chips.cartPort.ExRom;
-						chips.pla.Game = chips.cartPort.Game;
 					}
 					break;
 				case @".PRG":
@@ -163,11 +161,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cpu = new MOS6510(this);
 			ram = new Chip4864();
 			sid = new MOS6581();
+			pla.UpdatePins();
 		}
 
 		public void ExecutePhase1()
 		{
-			pla.UpdatePins();
+			pla.ExecutePhase1();
 			cia0.ExecutePhase1();
 			cia1.ExecutePhase1();
 			sid.ExecutePhase1();
@@ -177,7 +176,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void ExecutePhase2()
 		{
-			pla.UpdatePins();
+			pla.ExecutePhase2();
 			cia0.ExecutePhase2();
 			cia1.ExecutePhase2();
 			sid.ExecutePhase2();
@@ -198,6 +197,39 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ram.HardReset();
 			sid.HardReset();
 			vic.HardReset();
+		}
+	}
+
+	static public class C64Util
+	{
+		static public string ToBinary(uint n, uint charsmin)
+		{
+			string result = "";
+
+			while (n > 0 || charsmin > 0)
+			{
+				result = (((n & 0x1) != 0) ? "1" : "0") + result;
+				n >>= 1;
+				if (charsmin > 0)
+					charsmin--;
+			}
+
+			return result;
+		}
+
+		static public string ToHex(uint n, uint charsmin)
+		{
+			string result = "";
+
+			while (n > 0 || charsmin > 0)
+			{
+				result = "0123456789ABCDEF".Substring((int)(n & 0xF), 1) + result;
+				n >>= 4;
+				if (charsmin > 0)
+					charsmin--;
+			}
+
+			return result;
 		}
 	}
 }
