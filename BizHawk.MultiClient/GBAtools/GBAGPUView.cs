@@ -549,7 +549,10 @@ namespace BizHawk.MultiClient.GBAtools
 					if (bg1.ShouldDraw) bg1.bmpView.Clear();
 					if (bg2.ShouldDraw) DrawAffineBG(2, bg2);
 					if (bg3.ShouldDraw) DrawAffineBG(3, bg3);
-					if (bgtiles16.ShouldDraw) bgtiles16.bmpView.Clear(); // NB: no 4pp bgtiles in mode 2
+					// while there are no 4bpp tiles possible in mode 2, there might be some in memory
+					// due to midframe mode switching.  no real reason not to display them if that's
+					// what the user wants to see
+					if (bgtiles16.ShouldDraw) DrawBGTiles(bgtiles16, false);
 					if (bgtiles256.ShouldDraw) DrawBGTiles(bgtiles256, true);
 					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, false, false);
 					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, false, true);
