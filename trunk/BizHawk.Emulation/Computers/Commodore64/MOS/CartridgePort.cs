@@ -80,11 +80,27 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			// note: this will not disconnect any attached media
 		}
 
+		public bool IRQ
+		{
+			get
+			{
+				return true; //todo: hook this up to cartridge
+			}
+		}
+
 		public bool IsConnected
 		{
 			get
 			{
 				return connected;
+			}
+		}
+
+		public bool NMI
+		{
+			get
+			{
+				return true; //todo: hook this up to cartridge
 			}
 		}
 	}
