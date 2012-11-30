@@ -232,6 +232,12 @@
     <Compile Include="GBAtools\MobileBmpView.Designer.cs">
       <DependentUpon>MobileBmpView.cs</DependentUpon>
     </Compile>
+    <Compile Include="GBAtools\MobileDetailView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GBAtools\MobileDetailView.Designer.cs">
+      <DependentUpon>MobileDetailView.cs</DependentUpon>
+    </Compile>
     <Compile Include="GBtools\BmpView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -508,6 +514,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GBAtools\MobileBmpView.resx">
       <DependentUpon>MobileBmpView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GBAtools\MobileDetailView.resx">
+      <DependentUpon>MobileDetailView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GBtools\CGBColorChooserForm.resx">
       <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
