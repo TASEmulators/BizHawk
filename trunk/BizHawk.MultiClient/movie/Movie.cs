@@ -683,7 +683,8 @@ namespace BizHawk.MultiClient
 				Log.TruncateMovie(Log.Length);
 				Mode = MOVIEMODE.FINISHED;
 			}
-			Rerecords++;
+			if (IsCountingRerecords)
+				Rerecords++;
 			reader.Close();
 		}
 
