@@ -91,6 +91,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 						default:
 							throw new Exception("This cartridge file uses an unrecognized mapper: " + mapper);
 					}
+					result.HardReset();
 				}
 			}
 

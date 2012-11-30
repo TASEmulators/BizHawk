@@ -8,7 +8,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 	public class Mapper0000 : Cartridge
 	{
 		private byte[] romA;
+		private uint romAMask;
 		private byte[] romB;
+		private uint romBMask;
 
 		// standard cartridge mapper (Commodore)
 		// note that this format also covers Ultimax carts
@@ -18,64 +20,73 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			pinGame = game;
 			pinExRom = exrom;
 
-			romA = new byte[0x2000];
-			romB = new byte[0x2000];
 			validCartridge = true;
 
 			for (int i = 0; i < newAddresses.Count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 				{
-					if (newData[i].Length < 0x2000)
+					switch (newData[i].Length)
 					{
-						Array.Copy(newData[i], 0x0000, romA, 0x0000, 0x1000);
-						Array.Copy(newData[i], 0x0000, romA, 0x1000, 0x1000);
-					}
-					else if (newData[i].Length < 0x4000)
-					{
-						romA = newData[i];
-					}
-					else
-					{
-						Array.Copy(newData[i], 0x0000, romA, 0x0000, 0x2000);
-						Array.Copy(newData[i], 0x2000, romB, 0x0000, 0x2000);
+						case 0x1000: 
+							romAMask = 0x0FFF; 
+							romA = newData[i];
+							break;
+						case 0x2000: 
+							romAMask = 0x1FFF; 
+							romA = newData[i];
+							break;
+						case 0x4000: 
+							romAMask = 0x1FFF;
+							romBMask = 0x1FFF;
+							// split the rom into two banks
+							romA = new byte[0x2000];
+							romB = new byte[0x2000];
+							Array.Copy(newData[i], 0x0000, romA, 0x0000, 0x2000);
+							Array.Copy(newData[i], 0x2000, romB, 0x0000, 0x2000);
+							break;
+						default:
+							validCartridge = false;
+							return;
 					}
 				}
 				else if (newAddresses[i] == 0xA000 || newAddresses[i] == 0xE000)
 				{
-					if (newData[i].Length < 0x2000)
+					switch (newData[i].Length)
 					{
-						Array.Copy(newData[i], 0x0000, romB, 0x0000, 0x1000);
-						Array.Copy(newData[i], 0x0000, romB, 0x1000, 0x1000);
+						case 0x1000:
+							romBMask = 0x0FFF;
+							break;
+						case 0x2000:
+							romBMask = 0x1FFF;
+							break;
+						default:
+							validCartridge = false;
+							return;
 					}
-					else
-					{
-						romB = newData[i];
-					}
+					romB = newData[i];
 				}
 			}
-
-			HardReset();
 		}
 
 		public override byte Peek8000(int addr)
 		{
-			return romA[addr];
+			return romA[addr & romAMask];
 		}
 
 		public override byte PeekA000(int addr)
 		{
-			return romB[addr];
+			return romB[addr & romBMask];
 		}
 
 		public override byte Read8000(ushort addr)
 		{
-			return romA[addr];
+			return romA[addr & romAMask];
 		}
 
 		public override byte ReadA000(ushort addr)
 		{
-			return romB[addr];
+			return romB[addr & romBMask];
 		}
 	}
 }
