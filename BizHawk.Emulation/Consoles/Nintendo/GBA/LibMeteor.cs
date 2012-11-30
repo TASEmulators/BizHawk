@@ -250,5 +250,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// <param name="val"></param>
 		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libmeteor_writebus(uint addr, byte val);
+
+		/// <summary>
+		/// type of the scanline callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ScanlineCallback();
+
+		/// <summary>
+		/// set a callback to coincide with vcount interrupts
+		/// </summary>
+		/// <param name="callback">null to clear</param>
+		/// <param name="scanline">0-227, 160 occurring first in a frame</param>
+		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libmeteor_setscanlinecallback(ScanlineCallback callback, int scanline);
 	}
 }

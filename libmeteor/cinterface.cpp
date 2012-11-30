@@ -217,3 +217,21 @@ EXPORT void libmeteor_writebus(uint32_t addr, uint8_t val)
 {
 	AMeteor::_memory.Write8(addr, val);
 }
+
+int slcallbackline = 400;
+void (*slcallback)() = NULL;
+
+EXPORT void libmeteor_setscanlinecallback(void (*callback)(), int scanline)
+{
+	if (!callback)
+		slcallbackline = 400;
+	else
+		slcallbackline = scanline;
+	slcallback = callback;
+}
+
+void scanlinecallback_bizhawk()
+{
+	if (slcallback)
+		slcallback();
+}
