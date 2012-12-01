@@ -25,7 +25,7 @@ namespace BizHawk.MultiClient
 
 	public partial class MainForm : Form
 	{
-		public bool INTERIM = true;
+		public bool INTERIM = false;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
 		public const string RELEASEDATE = "October 20, 2012";
 		private Control renderTarget;
@@ -1902,21 +1902,24 @@ namespace BizHawk.MultiClient
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								string gbabiospath = PathManager.MakeAbsolutePath(Global.Config.PathGBABIOS, "GBA");
-								byte[] gbabios = null;
+								if (INTERIM)
+								{
+									string gbabiospath = PathManager.MakeAbsolutePath(Global.Config.PathGBABIOS, "GBA");
+									byte[] gbabios = null;
 
-								if (File.Exists(gbabiospath))
-								{
-									gbabios = File.ReadAllBytes(gbabiospath);
+									if (File.Exists(gbabiospath))
+									{
+										gbabios = File.ReadAllBytes(gbabiospath);
+									}
+									else
+									{
+										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+										throw new Exception();
+									}
+									GBA gba = new GBA();
+									gba.Load(rom.RomData, gbabios);
+									nextEmulator = gba;
 								}
-								else
-								{
-									MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									throw new Exception();
-								}
-								GBA gba = new GBA();
-								gba.Load(rom.RomData, gbabios);
-								nextEmulator = gba;
 								break;
 						}
 					}
