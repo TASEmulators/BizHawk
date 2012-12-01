@@ -64,7 +64,22 @@ namespace nall {
       }
     }
 
+    template<typename T> void integer(const T &value) {
+      enum { size = std::is_same<bool, T>::value ? 1 : sizeof(T) };
+      if(imode == Save) {
+        for(unsigned n = 0; n < size; n++) idata[isize++] = (uintmax_t)value >> (n << 3);
+      } else if(imode == Load) {
+      } else if(imode == Size) {
+        isize += size;
+      }
+    }
+
     template<typename T> void array(T &array) {
+      enum { size = sizeof(T) / sizeof(typename std::remove_extent<T>::type) };
+      for(unsigned n = 0; n < size; n++) integer(array[n]);
+    }
+
+    template<typename T> void array(const T &array) {
       enum { size = sizeof(T) / sizeof(typename std::remove_extent<T>::type) };
       for(unsigned n = 0; n < size; n++) integer(array[n]);
     }

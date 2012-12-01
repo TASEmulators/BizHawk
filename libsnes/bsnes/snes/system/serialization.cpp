@@ -48,29 +48,53 @@ void System::serialize(serializer &s) {
   s.integer((unsigned&)expansion);
 }
 
+//zero 01-dec-2012 - these will embed strings in the savestates, so you can debug them more easily. but itll break the savestate format
+//#define DEBUGSAVESTATE(X) s.array(#X)
+#define DEBUGSAVESTATE(X) 
+
 void System::serialize_all(serializer &s) {
+	DEBUGSAVESTATE(cart);
   cartridge.serialize(s);
+	DEBUGSAVESTATE(system);
   system.serialize(s);
+	DEBUGSAVESTATE(random);
   random.serialize(s);
+	DEBUGSAVESTATE(cpu);
   cpu.serialize(s);
+	DEBUGSAVESTATE(smp);
   smp.serialize(s);
+	DEBUGSAVESTATE(ppu);
   ppu.serialize(s);
+	DEBUGSAVESTATE(dsp);
   dsp.serialize(s);
+	DEBUGSAVESTATE(input);
   input.serialize(s);
 
+	DEBUGSAVESTATE(sufamiturbo);
   if(cartridge.mode() == Cartridge::Mode::SufamiTurbo) sufamiturbo.serialize(s);
   #if defined(GAMEBOY)
+	DEBUGSAVESTATE(icd2);
   if(cartridge.mode() == Cartridge::Mode::SuperGameBoy) icd2.serialize(s);
   #endif
+	DEBUGSAVESTATE(superfx);
   if(cartridge.has_superfx()) superfx.serialize(s);
+	DEBUGSAVESTATE(sa1);
   if(cartridge.has_sa1()) sa1.serialize(s);
+	DEBUGSAVESTATE(necdsp);
   if(cartridge.has_necdsp()) necdsp.serialize(s);
+	DEBUGSAVESTATE(hitachidsp);
   if(cartridge.has_hitachidsp()) hitachidsp.serialize(s);
+	DEBUGSAVESTATE(armdsp);
   if(cartridge.has_armdsp()) armdsp.serialize(s);
+	DEBUGSAVESTATE(srtc);
   if(cartridge.has_srtc()) srtc.serialize(s);
+	DEBUGSAVESTATE(sdd1);
   if(cartridge.has_sdd1()) sdd1.serialize(s);
+	DEBUGSAVESTATE(spc7110);
   if(cartridge.has_spc7110()) spc7110.serialize(s);
+	DEBUGSAVESTATE(obc1);
   if(cartridge.has_obc1()) obc1.serialize(s);
+	DEBUGSAVESTATE(msu1);
   if(cartridge.has_msu1()) msu1.serialize(s);
 }
 
