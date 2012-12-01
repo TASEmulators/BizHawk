@@ -66,6 +66,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase2()
 		{
+			if (chips.vic.BA)
+				freezeCpu = false;
+
 			if (chips.vic.AEC && !freezeCpu)
 			{
 				// the 6502 core expects active high
