@@ -192,8 +192,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cia0.HardReset();
 			cia1.HardReset();
 			colorRam.HardReset();
-			cpu.HardReset();
 			pla.HardReset();
+			cpu.HardReset();
 			ram.HardReset();
 			sid.HardReset();
 			vic.HardReset();
