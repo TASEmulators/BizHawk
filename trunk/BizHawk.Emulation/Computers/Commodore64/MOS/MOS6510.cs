@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool pinCharen;
 		private bool pinLoram;
 		private bool pinHiram;
+		private bool pinNMILast;
 		private byte portDir;
 		private bool unusedPin0;
 		private bool unusedPin1;
@@ -41,13 +42,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			cpu.WriteMemory = Write;
 
 			// configure data port defaults
-			portDir = 0x2F;
+			portDir = 0xEF;
 			SetPortData(0x37);
 
 			// todo: verify this value (I only know that unconnected bits fade after a number of cycles)
 			unusedPinTTLCycles = 40;
 			unusedPinTTL0 = 0;
 			unusedPinTTL1 = 0;
+
+			// NMI is high on startup (todo: verify)
+			pinNMILast = true;
 		}
 
 		public void HardReset()
@@ -73,7 +77,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				// the 6502 core expects active high
 				// so we reverse the polarity here
-				cpu.NMI = !(chips.cia1.IRQ & chips.cartPort.NMI);
+				bool thisNMI = (chips.cia1.IRQ & chips.cartPort.NMI);
+				if (!thisNMI && pinNMILast)
+					cpu.NMI = true;
+				else
+					cpu.NMI = false;
+				pinNMILast = thisNMI;
+
 				cpu.IRQ = !(chips.vic.IRQ && chips.cia0.IRQ && chips.cartPort.IRQ);
 				cpu.ExecuteOne();
 			}
@@ -105,7 +115,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public void Poke(int addr, byte val)
 		{
 			if (addr == 0x0000)
-				portDir = val;
+				SetPortDir(val);
 			else if (addr == 0x0001)
 				SetPortData(val);
 			else
@@ -182,7 +192,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			set
 			{
 				Console.WriteLine("CPU write DIR: val=" + C64Util.ToBinary(value, 8));
-				portDir = value;
+				SetPortDir(value);
 			}
 		}
 
@@ -200,6 +210,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			unusedPin1 = ((val & 0x80) != 0);
 			unusedPinTTL0 = unusedPinTTLCycles;
 			unusedPinTTL1 = unusedPinTTLCycles;
+		}
+
+		private void SetPortDir(byte val)
+		{
+			portDir = val;
+			SetPortData((byte)(PortData | ((byte)~val & 0x1F)));
 		}
 
 		// ------------------------------------

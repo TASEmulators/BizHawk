@@ -97,9 +97,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			inputAdapter0.Data = resultA;
-			inputAdapter1.Data = resultB;
+			inputAdapter1.Data = (byte)(joyB & resultB);
 			inputAdapter0.MaskWrite(joyB);
-			inputAdapter1.MaskWrite(joyA);
 		}
 	}
 }
