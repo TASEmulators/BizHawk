@@ -187,7 +187,7 @@ namespace BizHawk.MultiClient
 		public string PathPSXCheats = Path.Combine(".", "Cheats");
 		public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
 
-		public string BaseCOL = Path.Combine(".", "ColecoVision");
+		public string BaseCOL = Path.Combine(".", "Coleco");
 		public string PathCOLROMs = ".";
 		public string PathCOLSavestates = Path.Combine(".", "State");
 		public string PathCOLScreenshots = Path.Combine(".", "Screenshots");
