@@ -49,6 +49,10 @@ void SMP::power() {
   timer0.target = 0;
   timer1.target = 0;
   timer2.target = 0;
+
+	//zero 01-dec-2012
+	//gotta clear these to something, sometime
+	dp.w = sp.w = rd.w = wr.w = bit.w = ya.w = 0;
 }
 
 void SMP::reset() {
@@ -115,6 +119,7 @@ void SMP::reset() {
 }
 
 SMP::SMP() {
+
 }
 
 SMP::~SMP() {
