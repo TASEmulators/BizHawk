@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,17 +11,18 @@ namespace BizHawk.MultiClient
 		public string Name;
 		public string Path;
 		public bool Enabled;
-        public bool Paused;
+		public bool Paused;
 		public bool IsSeparator;
 		public LuaInterface.Lua Thread;
 		public bool FrameWaiting;
+		public string CurrentDirectory;
 
 		public LuaFile(string path)
 		{
 			Name = "";
 			Path = path;
 			Enabled = true;
-            Paused = false;
+			Paused = false;
 			FrameWaiting = false;
 		}
 
@@ -35,6 +37,9 @@ namespace BizHawk.MultiClient
 			Name = name;
 			Path = path;
 			IsSeparator = false;
+
+			//the current directory for the lua task will start off wherever the lua file is located
+			CurrentDirectory = new FileInfo(path).Directory.FullName;
 		}
 
 		public LuaFile(bool isSeparator)
@@ -50,20 +55,21 @@ namespace BizHawk.MultiClient
 			Name = l.Name;
 			Path = l.Path;
 			Enabled = l.Enabled;
-            Paused = l.Paused;
+			Paused = l.Paused;
 			IsSeparator = l.IsSeparator;
+			CurrentDirectory = l.CurrentDirectory;
 		}
 
 		public void Toggle()
 		{
 			Enabled ^= true;
-            if (Enabled)
-                Paused = false;
+			if (Enabled)
+				Paused = false;
 		}
 
-        public void TogglePause()
-        {
-            Paused ^= true;
-        }
+		public void TogglePause()
+		{
+			Paused ^= true;
+		}
 	}
 }

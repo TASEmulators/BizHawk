@@ -126,6 +126,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public int TILESIZE;
 
 			/// <summary>
+			/// enabled on MAIN Screen via $212C
+			/// </summary>
+			public bool MainEnabled;
+
+			/// <summary>
+			/// enabled on SUB Screen via $212D
+			/// </summary>
+			public bool SubEnabled;
+
+			/// <summary>
+			/// enabled for color math via $2131
+			/// </summary>
+			public bool MathEnabled;
+
+			/// <summary>
 			/// TileSize; 8 or 16
 			/// </summary>
 			public int TileSize { get { return TILESIZE == 1 ? 16 : 8; } }
@@ -216,6 +231,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			public ModeInfo Mode = new ModeInfo();
 
+			public bool Mode1_BG3_Priority { private set; get; }
+
 			public bool SETINI_Mode7ExtBG { private set; get; }
 			public bool SETINI_HiRes { private set; get; }
 			public bool SETINI_Overscan { private set; get; }
@@ -226,6 +243,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public int CGWSEL_ColorSubMask { private set; get; }
 			public int CGWSEL_AddSubMode { private set; get; }
 			public bool CGWSEL_DirectColor { private set; get; }
+			public int CGADSUB_AddSub { private set; get; }
+			public bool CGADSUB_Half { private set; get; }
 
 			public int OBSEL_Size { private set; get; }
 			public int OBSEL_NameSel { private set; get; }
@@ -234,9 +253,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public int OBJTable0Addr { private set; get; }
 			public int OBJTable1Addr { private set; get; }
 
+			public bool OBJ_MainEnabled { private set; get; }
+			public bool OBJ_SubEnabled { private set; get; }
+			public bool OBJ_MathEnabled { private set; get; }
+			public bool BK_MathEnabled { private set; get; }
+
 			public static ScreenInfo GetScreenInfo()
 			{
 				var si = new ScreenInfo();
+
+				si.Mode1_BG3_Priority = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_PRIORITY) == 1;
 
 				si.OBSEL_Size = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_SIZE);
 				si.OBSEL_NameSel = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMESEL);
@@ -255,6 +281,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.CGWSEL_ColorSubMask = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_COLORSUBMASK);
 				si.CGWSEL_AddSubMode = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_ADDSUBMODE);
 				si.CGWSEL_DirectColor = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_DIRECTCOLOR) == 1;
+
+				si.CGADSUB_AddSub = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_MODE);
+				si.CGADSUB_Half = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_HALF) == 1;
+
+				si.OBJ_MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_OBJ) == 1;
+				si.OBJ_SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_OBJ) == 1;
+				si.OBJ_MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_OBJ) == 1;
+				si.BK_MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BACKDROP) == 1;
 
 				si.Mode.MODE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG_MODE);
 				si.BG.BG1.Bpp = ModeBpps[si.Mode.MODE, 0];
@@ -282,6 +316,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.BG.BG2.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TDADDR);
 				si.BG.BG3.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_TDADDR);
 				si.BG.BG4.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_TDADDR);
+
+				si.BG.BG1.MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_BG1) == 1;
+				si.BG.BG2.MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_BG2) == 1;
+				si.BG.BG3.MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_BG3) == 1;
+				si.BG.BG4.MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_BG4) == 1;
+				si.BG.BG1.SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_BG1) == 1;
+				si.BG.BG2.SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_BG2) == 1;
+				si.BG.BG3.SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_BG3) == 1;
+				si.BG.BG4.SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_BG4) == 1;
+				si.BG.BG1.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG1) == 1;
+				si.BG.BG2.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG2) == 1;
+				si.BG.BG3.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG3) == 1;
+				si.BG.BG4.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG4) == 1;
 
 				for (int i = 1; i <= 4; i++)
 					si.BG[i].Mode = si.Mode.MODE;
@@ -400,6 +447,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public ushort tilenum;
 			public byte palette;
 			public TileEntryFlags flags;
+			public int address;
 		}
 
 		public enum TileEntryFlags : byte
@@ -540,6 +588,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 							buf[idx].tilenum = (ushort)(entry & 0x3FF);
 							buf[idx].palette = (byte)((entry >> 10) & 7);
 							buf[idx].flags = (TileEntryFlags)((entry >> 13) & 7);
+							buf[idx].address = addr;
 							addr += 2;
 						}
 					}

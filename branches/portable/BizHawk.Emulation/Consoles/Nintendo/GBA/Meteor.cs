@@ -25,6 +25,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		{
 			if (bios.Length != 16384)
 				throw new Exception("GBA bios must be exactly 16384 bytes!");
+			if (rom.Length > 32 * 1024 * 1024)
+				throw new Exception("Rom is too big!");
 			Init();
 			LibMeteor.libmeteor_hardreset();
 			LibMeteor.libmeteor_loadbios(bios, (uint)bios.Length);
@@ -46,6 +48,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 				LibMeteor.libmeteor_frameadvance();
 			if (IsLagFrame)
 				LagCount++;
+			if (EndOfFrameCallback != null)
+				EndOfFrameCallback();
 		}
 
 		public int Frame { get; private set; }
@@ -172,7 +176,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			VsyncNum = 262144,
 			VsyncDen = 4389,
 			CpuTraceAvailable = true,
-			TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---" 
+			TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---",
+			NominalWidth = 240,
+			NominalHeight = 160
 		};
 
 		public CoreOutputComm CoreOutputComm { get { return _CoreOutputComm; } }
@@ -241,6 +247,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 					LibMeteor.libmeteor_writebus((uint)addr, val);
 				});
 			_MemoryDomains.Add(sb);
+		}
+
+		public void GetGPUMemoryAreas(out IntPtr vram, out IntPtr palram, out IntPtr oam, out IntPtr mmio)
+		{
+			IntPtr _vram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.vram);
+			IntPtr _palram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.palram);
+			IntPtr _oam = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.oam);
+			IntPtr _mmio = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.io);
+
+			if (_vram == IntPtr.Zero || _palram == IntPtr.Zero || _oam == IntPtr.Zero || _mmio == IntPtr.Zero)
+				throw new Exception("libmeteor_getmemoryarea() failed!");
+
+			vram = _vram;
+			palram = _palram;
+			oam = _oam;
+			mmio = _mmio;
 		}
 
 		#endregion
@@ -356,6 +378,40 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		void Trace(string msg)
 		{
 			CoreInputComm.Tracer.Put(msg);
+		}
+
+		Action EndOfFrameCallback = null;
+		LibMeteor.ScanlineCallback scanlinecb = null;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="callback">null to cancel</param>
+		/// <param name="scanline">0-227, null = end of frame</param>
+		public void SetScanlineCallback(Action callback, int? scanline)
+		{
+			if (callback == null)
+			{
+				LibMeteor.libmeteor_setscanlinecallback(null, 400);
+				EndOfFrameCallback = null;
+				scanlinecb = null;
+			}
+			else if (scanline == null)
+			{
+				LibMeteor.libmeteor_setscanlinecallback(null, 400);
+				EndOfFrameCallback = callback;
+				scanlinecb = null;
+			}
+			else if (scanline >= 0 && scanline <= 227)
+			{
+				scanlinecb = new LibMeteor.ScanlineCallback(callback);
+				LibMeteor.libmeteor_setscanlinecallback(scanlinecb, (int)scanline);
+				EndOfFrameCallback = null;
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException("Scanline must be in [0, 227]!");
+			}
 		}
 
 		void Init()

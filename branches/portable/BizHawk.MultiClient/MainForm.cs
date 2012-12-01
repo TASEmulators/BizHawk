@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient
 	{
 		public bool INTERIM = true;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
-		public const string RELEASEDATE = "October 20, 2012";
+		public const string RELEASEDATE = "December 01, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -48,6 +48,8 @@ namespace BizHawk.MultiClient
 		Emulation.Sound.MetaspuSoundProvider DumpProxy = null;
 		/// <summary>audio timekeeping for video dumping</summary>
 		long SoundRemainder = 0;
+		int avwriter_resizew;
+		int avwriter_resizeh;
 
 		//runloop control
         private Thread runLoopThread;
@@ -83,6 +85,7 @@ namespace BizHawk.MultiClient
 		public NESPPU NESPPU1 = new NESPPU();
 		public NESDebugger NESDebug1 = new NESDebugger();
 		public GBtools.GBGPUView GBGPUView1 = new GBtools.GBGPUView();
+		public GBAtools.GBAGPUView GBAGPUView1 = new GBAtools.GBAGPUView();
 		public PCEBGViewer PCEBGViewer1 = new PCEBGViewer();
 		public Cheats Cheats1 = new Cheats();
 		public ToolBox ToolBox1 = new ToolBox();
@@ -1416,6 +1419,7 @@ namespace BizHawk.MultiClient
 			pCEToolStripMenuItem.Visible = false;
 			sMSToolStripMenuItem.Visible = false;
 			gBToolStripMenuItem.Visible = false;
+			gBAToolStripMenuItem.Visible = false;
 			atariToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
 			colecoToolStripMenuItem.Visible = false;
@@ -1449,6 +1453,9 @@ namespace BizHawk.MultiClient
 				case "GB":
 				case "GBC":
 					gBToolStripMenuItem.Visible = true;
+					break;
+				case "GBA":
+					gBAToolStripMenuItem.Visible = true;
 					break;
 				case "A26":
 					atariToolStripMenuItem.Visible = true;
@@ -1928,9 +1935,32 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "A78":
-								string ntsc_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800NTSCBIOS, "A78");
-								string pal_biospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800PALBIOS, "A78");
-								string hsbiospath = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800HighScoreBIOS, "A78");
+								string ntsc_biospath = PathManager.MakeAbsolutePath(Path.Combine(Global.Config.PathAtari7800Firmwares, "7800NTSCBIOS.bin"), "A78");
+								string pal_biospath = PathManager.MakeAbsolutePath(Path.Combine(Global.Config.PathAtari7800Firmwares, "7800PALBIOS.bin"), "A78");
+								string hsbiospath = PathManager.MakeAbsolutePath(Path.Combine(Global.Config.PathAtari7800Firmwares, "7800highscore.bin"), "A78");
+
+								FileInfo ntscfile = new FileInfo(ntsc_biospath);
+								FileInfo palfile = new FileInfo(pal_biospath);
+								FileInfo hsfile = new FileInfo(hsbiospath);
+
+								if (!ntscfile.Exists)
+								{
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									throw new Exception();
+								}
+
+								if (!palfile.Exists)
+								{
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									throw new Exception();
+								}
+
+								if (!hsfile.Exists)
+								{
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									throw new Exception();
+								}
+
 								byte[] NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
 								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
 								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);
@@ -1945,21 +1975,24 @@ namespace BizHawk.MultiClient
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								string gbabiospath = PathManager.MakeAbsolutePath(Global.Config.PathGBABIOS, "GBA");
-								byte[] gbabios = null;
+								if (INTERIM)
+								{
+									string gbabiospath = PathManager.MakeAbsolutePath(Global.Config.PathGBABIOS, "GBA");
+									byte[] gbabios = null;
 
-								if (File.Exists(gbabiospath))
-								{
-									gbabios = File.ReadAllBytes(gbabiospath);
+									if (File.Exists(gbabiospath))
+									{
+										gbabios = File.ReadAllBytes(gbabiospath);
+									}
+									else
+									{
+										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+										throw new Exception();
+									}
+									GBA gba = new GBA();
+									gba.Load(rom.RomData, gbabios);
+									nextEmulator = gba;
 								}
-								else
-								{
-									MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									throw new Exception();
-								}
-								GBA gba = new GBA();
-								gba.Load(rom.RomData, gbabios);
-								nextEmulator = gba;
 								break;
 						}
 					}
@@ -2039,6 +2072,7 @@ namespace BizHawk.MultiClient
 				NESNameTableViewer1.Restart();
 				NESDebug1.Restart();
 				GBGPUView1.Restart();
+				GBAGPUView1.Restart();
 				PCEBGViewer1.Restart();
 				TI83KeyPad1.Restart();
 				TAStudio1.Restart();
@@ -2578,6 +2612,7 @@ namespace BizHawk.MultiClient
 
 		void StepRunLoop_Core()
 		{
+			HandleToggleLight();
 			bool runFrame = false;
 			runloop_frameadvance = false;
 			DateTime now = DateTime.Now;
@@ -2712,39 +2747,9 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe || CurrAviWriter != null, !coreskipaudio);
 				MemoryPulse.Pulse();
 				//=======================================
-				if (CurrAviWriter != null)
-				{
-					long nsampnum = 44100 * (long)Global.Emulator.CoreOutputComm.VsyncDen + SoundRemainder;
-					long nsamp = nsampnum / Global.Emulator.CoreOutputComm.VsyncNum;
-					// exactly remember fractional parts of an audio sample
-					SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
 
-					short[] temp = new short[nsamp * 2];
-					AviSoundInput.GetSamples(temp);
-					DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
-
-					try
-					{
-						if (Global.Config.AVI_CaptureOSD)
-							CurrAviWriter.AddFrame(new AVOut.BmpVideoProvder(CaptureOSD()));
-						else
-							CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
-						CurrAviWriter.AddSamples(temp);
-					}
-					catch (Exception e)
-					{
-						MessageBox.Show("Video dumping died:\n\n" + e.ToString());
-						AbortAVI();
-					}
-
-					if (autoDumpLength > 0)
-					{
-						autoDumpLength--;
-						if (autoDumpLength == 0) // finish
-							StopAVI();
-					}
-				}
-
+				AVIFrameAdvance();
+	
 				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
 				{
 					Global.AutoFireController.IncrementStarts();
@@ -2800,6 +2805,7 @@ namespace BizHawk.MultiClient
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
 			GBGPUView1.UpdateValues();
+			GBAGPUView1.UpdateValues();
 		}
 
 		public void UpdateToolsLoadstate()
@@ -3211,6 +3217,17 @@ namespace BizHawk.MultiClient
 				GBGPUView1.Focus();
 		}
 
+		public void LoadGBAGPUView()
+		{
+			if (!GBAGPUView1.IsHandleCreated || GBAGPUView1.IsDisposed)
+			{
+				GBAGPUView1 = new GBAtools.GBAGPUView();
+				GBAGPUView1.Show();
+			}
+			else
+				GBAGPUView1.Focus();
+		}
+
 		public void LoadTI83KeyPad()
 		{
 			if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
@@ -3465,6 +3482,7 @@ namespace BizHawk.MultiClient
 			NESNameTableViewer1.Restart();
 			NESDebug1.Restart();
 			GBGPUView1.Restart();
+			GBAGPUView1.Restart();
 			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
@@ -3504,6 +3522,7 @@ namespace BizHawk.MultiClient
 			CloseForm(NESPPU1);
 			CloseForm(NESDebug1);
 			CloseForm(GBGPUView1);
+			CloseForm(GBAGPUView1);
 			CloseForm(PCEBGViewer1);
 			CloseForm(Cheats1);
 			CloseForm(TI83KeyPad1);
@@ -3806,6 +3825,8 @@ namespace BizHawk.MultiClient
 			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlDark;
 		}
 
+		#region AVI Stuff
+
 		/// <summary>
 		/// start avi recording, unattended
 		/// </summary>
@@ -3851,7 +3872,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm);
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm, out avwriter_resizew, out avwriter_resizeh);
 			}
 
 			foreach (var w in writers)
@@ -3872,7 +3893,10 @@ namespace BizHawk.MultiClient
 			try
 			{
 				aw.SetMovieParameters(Global.Emulator.CoreOutputComm.VsyncNum, Global.Emulator.CoreOutputComm.VsyncDen);
-				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+				if (avwriter_resizew > 0 && avwriter_resizeh > 0)
+					aw.SetVideoParameters(avwriter_resizew, avwriter_resizeh);
+				else
+					aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
 				aw.SetAudioParameters(44100, 2, 16);
 
 				// select codec token
@@ -3990,6 +4014,71 @@ namespace BizHawk.MultiClient
 			SoundRemainder = 0;
 			RewireSound();
 		}
+
+		void AVIFrameAdvance()
+		{
+			if (CurrAviWriter != null)
+			{
+				long nsampnum = 44100 * (long)Global.Emulator.CoreOutputComm.VsyncDen + SoundRemainder;
+				long nsamp = nsampnum / Global.Emulator.CoreOutputComm.VsyncNum;
+				// exactly remember fractional parts of an audio sample
+				SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
+
+				short[] temp = new short[nsamp * 2];
+				AviSoundInput.GetSamples(temp);
+				DumpProxy.buffer.enqueue_samples(temp, (int)nsamp);
+
+				try
+				{
+					IVideoProvider output;
+					if (avwriter_resizew > 0 && avwriter_resizeh > 0)
+					{
+						Bitmap bmpin;
+						if (Global.Config.AVI_CaptureOSD)
+							bmpin = CaptureOSD();
+						else
+						{
+							bmpin = new Bitmap(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight, PixelFormat.Format32bppArgb);
+							var lockdata = bmpin.LockBits(new Rectangle(0, 0, bmpin.Width, bmpin.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+							System.Runtime.InteropServices.Marshal.Copy(Global.Emulator.VideoProvider.GetVideoBuffer(), 0, lockdata.Scan0, bmpin.Width * bmpin.Height);
+							bmpin.UnlockBits(lockdata);
+						}
+						Bitmap bmpout = new Bitmap(avwriter_resizew, avwriter_resizeh, PixelFormat.Format32bppArgb);
+						using (Graphics g = Graphics.FromImage(bmpout))
+							g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+						bmpin.Dispose();
+						output = new AVOut.BmpVideoProvder(bmpout);
+					}
+					else
+					{
+						if (Global.Config.AVI_CaptureOSD)
+							output = new AVOut.BmpVideoProvder(CaptureOSD());
+						else
+							output = Global.Emulator.VideoProvider;
+					}
+
+					CurrAviWriter.AddFrame(output);
+					if (output is AVOut.BmpVideoProvder)
+						(output as AVOut.BmpVideoProvder).Dispose();
+
+					CurrAviWriter.AddSamples(temp);
+				}
+				catch (Exception e)
+				{
+					MessageBox.Show("Video dumping died:\n\n" + e.ToString());
+					AbortAVI();
+				}
+
+				if (autoDumpLength > 0)
+				{
+					autoDumpLength--;
+					if (autoDumpLength == 0) // finish
+						StopAVI();
+				}
+			}
+		}
+
+		#endregion
 
 		private void SwapBackupSavestate(string path)
 		{
@@ -4669,5 +4758,38 @@ namespace BizHawk.MultiClient
 			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
 		}
 
+		private void HandleToggleLight()
+		{
+			if (StatusSlot0.Visible)
+			{
+				if (Global.Emulator.CoreOutputComm.UsesDriveLed)
+				{
+					if (!StatusBarLedLight.Visible)
+					{
+						StatusBarLedLight.Visible = true;
+					}
+					if (Global.Emulator.CoreOutputComm.DriveLED)
+					{
+						StatusBarLedLight.Image = BizHawk.MultiClient.Properties.Resources.LightOn;
+					}
+					else
+					{
+						StatusBarLedLight.Image = BizHawk.MultiClient.Properties.Resources.LightOff;
+					}
+				}
+				else
+				{
+					if (StatusBarLedLight.Visible)
+					{
+						StatusBarLedLight.Visible = false;
+					}
+				}
+			}
+		}
+
+		private void gPUViewToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGBAGPUView();
+		}
 	}
 }

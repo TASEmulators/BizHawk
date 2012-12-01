@@ -75,8 +75,9 @@ namespace BizHawk.MultiClient
 				case "INTV":
 					return Global.Config.BaseINTV;
 				case "A26":
-				case "A78": //7800TODO: make its own path settings
-					return Global.Config.BaseAtari;
+					return Global.Config.BaseAtari2600;
+				case "A78":
+					return Global.Config.BaseAtari7800;
 				case "NES":
 					return Global.Config.BaseNES;
 				case "SG":
@@ -210,6 +211,11 @@ namespace BizHawk.MultiClient
 				return false;
 		}
 
+		public static string GetLuaPath()
+		{
+			return MakeAbsolutePath(Global.Config.LuaPath, "");
+		}
+
 		public static string GetRomsPath(string sysID)
 		{
 			string path = "";
@@ -232,7 +238,10 @@ namespace BizHawk.MultiClient
 					path = PathManager.MakeAbsolutePath(Global.Config.PathSNESROMs, "SNES");
 					break;
 				case "A26":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathAtariROMs, "A26");
+					path = PathManager.MakeAbsolutePath(Global.Config.PathAtari2600ROMs, "A26");
+					break;
+				case "A78":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800ROMs, "A78");
 					break;
 				case "NES":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathNESROMs, "NES");
@@ -307,7 +316,6 @@ namespace BizHawk.MultiClient
 			switch (game.System)
 			{
 				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathINTVSaveRAM, "INTV"), name + ".SaveRAM");
-				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSaveRAM, "A26"), name + ".SaveRAM");
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), name + ".SaveRAM");
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), name + ".SaveRAM");
 				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG"), name + ".SaveRAM");
@@ -331,7 +339,8 @@ namespace BizHawk.MultiClient
 			{
 				default: return GetRomsPath(game.System);
 				case "INTV": return MakeAbsolutePath(Global.Config.PathINTVSavestates, "INTV");
-				case "A26": return MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26");
+				case "A26": return MakeAbsolutePath(Global.Config.PathAtari2600Savestates, "A26");
+				case "A78": return MakeAbsolutePath(Global.Config.PathAtari7800Savestates, "A78");
 				case "SMS": return MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS");
 				case "GG": return MakeAbsolutePath(Global.Config.PathGGSavestates, "GG");
 				case "SG": return MakeAbsolutePath(Global.Config.PathSGSavestates, "SG");
@@ -362,7 +371,8 @@ namespace BizHawk.MultiClient
 			switch (game.System)
 			{
 				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathINTVSavestates, "INTV"), name);
-				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26"), name);
+				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari2600Savestates, "A26"), name);
+				case "A78": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari7800Savestates, "A78"), name);
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS"), name);
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSavestates, "GG"), name);
 				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSavestates, "SG"), name);
@@ -388,7 +398,8 @@ namespace BizHawk.MultiClient
 			switch (game.System)
 			{
 				case "INTV": return Path.Combine(MakeAbsolutePath(Global.Config.PathINTVScreenshots, "INTV"), name);
-				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariScreenshots, "A26"), name);
+				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari2600Screenshots, "A26"), name);
+				case "A78": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari7800Screenshots, "A78"), name);
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSScreenshots, "SMS"), name);
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGScreenshots, "GG"), name);
 				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGScreenshots, "SG"), name);

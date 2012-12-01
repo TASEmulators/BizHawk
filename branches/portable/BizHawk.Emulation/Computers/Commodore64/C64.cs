@@ -9,14 +9,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class  C64 : IEmulator
 	{
+		private IController controller;
+		private uint cyclesPerFrame;
+		private string extension;
+		private byte[] inputFile;
+
 		public C64(GameInfo game, byte[] rom, string romextension)
 		{
 			inputFile = rom;
 			extension = romextension;
-			SetupMemoryDomains();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 			Init(Region.PAL);
+			cyclesPerFrame = (uint)chips.vic.CyclesPerFrame;
+			CoreOutputComm.UsesDriveLed = true;
+			SetupMemoryDomains();
 		}
 
 		// internal variables
@@ -51,14 +58,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// audio/video
 		public void EndAsyncSound() { } //TODO
-		public ISoundProvider SoundProvider { get { return sid; } }
+		public ISoundProvider SoundProvider { get { return chips.sid; } }
 		public bool StartAsyncSound() { return true; } //TODO
-		public ISyncSoundProvider SyncSoundProvider { get { return new SidSyncSoundProvider(sid); } }
-		public IVideoProvider VideoProvider { get { return vic; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return chips.sid; } }
+		public IVideoProvider VideoProvider { get { return chips.vic; } }
 
 		// controller
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-		public IController Controller { get { return input.controller; } set { input.controller = value; } }
+		public IController Controller { get { return controller; } set { controller = value; } }
 		public static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Commodore 64 Controller", //TODO
@@ -83,55 +90,37 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			int cyclesPerFrame = vic.CyclesPerFrame;
-			
-			// bizhawk interface setup
-			_frame++;
-			mem.inputWasRead = false;
-
-			// apply any media if needed
-			foreach (IMedia media in mediaAttached)
+			// load PRG file if needed
+			if (loadPrg)
 			{
-				if (!media.Loaded() && media.Ready())
+				if (chips.pla.Peek(0x04C8) == 0x12 &&
+					chips.pla.Peek(0x04C9) == 0x05 &&
+					chips.pla.Peek(0x04CA) == 0x01 &&
+					chips.pla.Peek(0x04CB) == 0x04 &&
+					chips.pla.Peek(0x04CC) == 0x19 &&
+					chips.pla.Peek(0x04CD) == 0x2E)
 				{
-					media.Apply();
+					Media.PRG.Load(chips.pla, inputFile);
+					loadPrg = false;
 				}
 			}
 
-			// refresh the input values
 			PollInput();
-
-			// perform the cycle
-			for (int i = 0; i < cyclesPerFrame; i++)
-			{
-				if (!haltCPU)
-				{
-					cpu.IRQ = signal.CpuIRQ;
-					cpu.NMI = signal.CpuNMI;
-					cpu.ExecuteOne();
-				}
-
-				vic.PerformCycle();
-				cia0.PerformCycle();
-				signal.CiaIRQ0 = cia0.IRQ;
-				cia1.PerformCycle();
-				signal.CiaIRQ1 = cia1.IRQ;
-				sid.PerformCycle();
-
-				if (diskDriveAttached)
-					diskDrive.PerformCycle();
-
-				if (signal.CpuAEC)
-					haltCPU = false;
-
-			}
-
-			_islag = !mem.inputWasRead;
+			chips.pla.InputWasRead = false;
+			Execute(cyclesPerFrame);
+			_islag = !chips.pla.InputWasRead;
 
 			if (_islag)
-			{
 				LagCount++;
-			}
+			_frame++;
+
+			CoreOutputComm.DriveLED = DriveLED;
+		}
+
+		private void HandleFirmwareError(string file)
+		{
+			System.Windows.Forms.MessageBox.Show("the C64 core is referencing a firmware file which could not be found. Please make sure it's in your configured C64 firmwares folder. The referenced filename is: " + file);
+			throw new FileNotFoundException();
 		}
 
 		public byte[] SaveStateBinary()
@@ -145,17 +134,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void SetupMemoryDomains()
 		{
+			// chips must be initialized before this code runs!
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("System Bus", 0x10000, Endian.Little, new Func<int, byte>(PeekMemoryInt), new Action<int, byte>(PokeMemoryInt)));
-			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(PeekRAM), new Action<int, byte>(PokeRAM)));
-			domains.Add(new MemoryDomain("CIA0", 0x10, Endian.Little, new Func<int, byte>(PeekCia0), new Action<int, byte>(PokeCia0)));
-			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, new Func<int, byte>(PeekCia1), new Action<int, byte>(PokeCia1)));
-			domains.Add(new MemoryDomain("SID", 0x20, Endian.Little, new Func<int, byte>(PeekSid), new Action<int, byte>(PokeSid)));
-			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, new Func<int, byte>(PeekVic), new Action<int, byte>(PokeVic)));
-			domains.Add(new MemoryDomain("CRAM", 0x400, Endian.Little, new Func<int, byte>(PeekColorRAM), new Action<int, byte>(PokeColorRAM)));
-			domains.Add(new MemoryDomain("DISKRAM", 0x10000, Endian.Little, new Func<int, byte>(PeekDiskDrive), new Action<int, byte>(PokeDiskDrive)));
-			domains.Add(new MemoryDomain("DISKVIA0", 0x10, Endian.Little, new Func<int, byte>(PeekVia0), new Action<int, byte>(PokeVia0)));
-			domains.Add(new MemoryDomain("DISKVIA1", 0x10, Endian.Little, new Func<int, byte>(PeekVia1), new Action<int, byte>(PokeVia1)));
+			domains.Add(new MemoryDomain("System Bus", 0x10000, Endian.Little, new Func<int, byte>(chips.cpu.Peek), new Action<int, byte>(chips.cpu.Poke)));
+			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(chips.ram.Peek), new Action<int, byte>(chips.ram.Poke)));
+			domains.Add(new MemoryDomain("CIA0", 0x10, Endian.Little, new Func<int, byte>(chips.cia0.Peek), new Action<int, byte>(chips.cia0.Poke)));
+			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, new Func<int, byte>(chips.cia1.Peek), new Action<int, byte>(chips.cia1.Poke)));
+			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, new Func<int, byte>(chips.vic.Peek), new Action<int, byte>(chips.vic.Poke)));
+			domains.Add(new MemoryDomain("SID", 0x20, Endian.Little, new Func<int, byte>(chips.sid.Peek), new Action<int, byte>(chips.sid.Poke)));
 			memoryDomains = domains.AsReadOnly();
 		}
 	}

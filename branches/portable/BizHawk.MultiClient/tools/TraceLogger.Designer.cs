@@ -50,6 +50,8 @@
 			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
 			this.ClearButton = new System.Windows.Forms.Button();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
+			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.copyAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TracerBox.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -57,9 +59,9 @@
 			// 
 			// TracerBox
 			// 
-			this.TracerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TracerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.TracerBox.Controls.Add(this.TraceView);
 			this.TracerBox.Location = new System.Drawing.Point(12, 27);
 			this.TracerBox.Name = "TracerBox";
@@ -70,9 +72,9 @@
 			// 
 			// TraceView
 			// 
-			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.TraceView.CheckBoxes = true;
 			this.TraceView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Script});
@@ -101,6 +103,7 @@
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1,
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -120,27 +123,27 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
 			// saveLogToolStripMenuItem
 			// 
 			this.saveLogToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
 			this.saveLogToolStripMenuItem.Name = "saveLogToolStripMenuItem";
-			this.saveLogToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.saveLogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.saveLogToolStripMenuItem.Text = "&Save Log";
 			this.saveLogToolStripMenuItem.Click += new System.EventHandler(this.saveLogToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -152,40 +155,40 @@
             this.autoloadToolStripMenuItem,
             this.saveWindowPositionToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
 			// 
 			// setMaxWindowLinesToolStripMenuItem
 			// 
 			this.setMaxWindowLinesToolStripMenuItem.Name = "setMaxWindowLinesToolStripMenuItem";
-			this.setMaxWindowLinesToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.setMaxWindowLinesToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
 			this.setMaxWindowLinesToolStripMenuItem.Text = "&Set Max Window Lines...";
 			this.setMaxWindowLinesToolStripMenuItem.Click += new System.EventHandler(this.setMaxWindowLinesToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(198, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(190, 6);
 			// 
 			// autoloadToolStripMenuItem
 			// 
 			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
 			this.autoloadToolStripMenuItem.Text = "&Autoload";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
 			// saveWindowPositionToolStripMenuItem
 			// 
 			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "&Save Window Position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.Controls.Add(this.BrowseBox);
 			this.groupBox2.Controls.Add(this.FileBox);
 			this.groupBox2.Controls.Add(this.ToFileRadio);
@@ -213,8 +216,8 @@
 			// 
 			// FileBox
 			// 
-			this.FileBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.FileBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.FileBox.Location = new System.Drawing.Point(229, 20);
 			this.FileBox.Name = "FileBox";
 			this.FileBox.ReadOnly = true;
@@ -269,6 +272,22 @@
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
 			// 
+			// editToolStripMenuItem
+			// 
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyAllToolStripMenuItem});
+			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+			this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.editToolStripMenuItem.Text = "Edit";
+			// 
+			// copyAllToolStripMenuItem
+			// 
+			this.copyAllToolStripMenuItem.Name = "copyAllToolStripMenuItem";
+			this.copyAllToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
+			this.copyAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.copyAllToolStripMenuItem.Text = "Copy All";
+			this.copyAllToolStripMenuItem.Click += new System.EventHandler(this.copyAllToolStripMenuItem_Click);
+			// 
 			// TraceLogger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -278,11 +297,13 @@
 			this.Controls.Add(this.TracerBox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(400, 230);
 			this.Name = "TraceLogger";
 			this.Text = "TraceLogger";
 			this.Load += new System.EventHandler(this.TraceLogger_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TraceLogger_KeyDown);
 			this.TracerBox.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
@@ -316,5 +337,7 @@
 		private System.Windows.Forms.RadioButton ToWindowRadio;
 		private System.Windows.Forms.TextBox FileBox;
 		private System.Windows.Forms.Button BrowseBox;
+		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem copyAllToolStripMenuItem;
 	}
 }

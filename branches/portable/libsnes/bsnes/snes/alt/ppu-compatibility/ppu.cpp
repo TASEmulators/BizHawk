@@ -350,6 +350,17 @@ void PPU::reset() {
   PPUcounter::reset();
   memset(surface, 0, 512 * 512 * sizeof(uint32));
 
+	//zero 01-dec-2012 - gotta reset these sometime, somewhere
+	memset(oam_itemlist, 0, sizeof(oam_itemlist));
+	memset(oam_tilelist, 0, sizeof(oam_tilelist));
+	memset(oam_line_pal, 0, sizeof(oam_line_pal));
+	memset(oam_line_pri, 0, sizeof(oam_line_pri));
+	active_sprite = sprite_list_valid = 0;
+	memset(bg_info, 0, sizeof(bg_info));
+	memset(window, 0, sizeof(window));
+	memset(pixel_cache, 0, sizeof(pixel_cache));
+	regs.oam_tilecount = regs.oam_itemcount = 0;
+
   frame();
 
   //$2100

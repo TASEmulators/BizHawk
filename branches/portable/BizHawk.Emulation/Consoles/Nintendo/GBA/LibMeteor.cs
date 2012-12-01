@@ -116,13 +116,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// </summary>
 		public enum MemoryArea : int
 		{
+			/// <summary>
+			/// BIOS, may be invalid if bios not loaded. valid size: 16K.  system bus: @00000000h
+			/// </summary>
 			bios = 0,
+			/// <summary>
+			/// external workram.  valid size: 256K.  system bus: @02000000h
+			/// </summary>
 			ewram = 1,
+			/// <summary>
+			/// internal workram.  valid size: 32K.  system bus: @03000000h
+			/// </summary>
 			iwram = 2,
+			/// <summary>
+			/// palettes.  valid size: 1K.  system bus: @05000000h
+			/// </summary>
 			palram = 3,
+			/// <summary>
+			/// video ram.  valid size: 96K.  system bus: @06000000h
+			/// </summary>
 			vram = 4,
+			/// <summary>
+			/// sprite attribute ram.  valid size: 1K.  system bus: @07000000h
+			/// </summary>
 			oam = 5,
-			rom = 6
+			/// <summary>
+			/// rom.  always valid to full size, even if no rom or small rom loaded.  valid size: 32M.  system bus: @08000000h, others
+			/// </summary>
+			rom = 6,
+			/// <summary>
+			/// direct access to cached io port values.  this should NEVER be modified!  valid size: 4K.  system bus: @04000000h (sort of)
+			/// </summary>
+			io = 7
 		}
 
 		/// <summary>
@@ -225,5 +250,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// <param name="val"></param>
 		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libmeteor_writebus(uint addr, byte val);
+
+		/// <summary>
+		/// type of the scanline callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ScanlineCallback();
+
+		/// <summary>
+		/// set a callback to coincide with vcount interrupts
+		/// </summary>
+		/// <param name="callback">null to clear</param>
+		/// <param name="scanline">0-227, 160 occurring first in a frame</param>
+		[DllImport("libmeteor.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libmeteor_setscanlinecallback(ScanlineCallback callback, int scanline);
 	}
 }

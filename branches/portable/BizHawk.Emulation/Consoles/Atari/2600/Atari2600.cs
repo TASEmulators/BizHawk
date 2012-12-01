@@ -50,6 +50,7 @@ namespace BizHawk
 
 		void SyncState(Serializer ser)
 		{
+			ser.BeginSection("A2600");
 			cpu.SyncState(ser);
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("Lag", ref _lagcount);
@@ -58,6 +59,7 @@ namespace BizHawk
 			tia.SyncState(ser);
 			m6532.SyncState(ser);
 			mapper.SyncState(ser);
+			ser.EndSection();
 		}
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }

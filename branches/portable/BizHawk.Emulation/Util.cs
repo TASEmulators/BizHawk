@@ -118,6 +118,10 @@ namespace BizHawk
 			return (b & (1 << index)) != 0;
 		}
 
+		public static bool Bit(this ushort b, int index)
+		{
+			return (b & (1 << index)) != 0;
+		}
 
 		public static string GetPrecedingString(this string str, string value)
 		{
@@ -796,6 +800,12 @@ namespace BizHawk
 					string name = end.Groups[1].Value;
 					if (name != curs.Name) throw new InvalidOperationException("Mis-formed savestate blob");
 					curs = ss.Pop();
+					// consume no data past the end of the last proper section
+					if (curs == ReaderSection)
+					{
+						CurrSection = curs;
+						return;
+					}
 				}
 				else if (begin.Success)
 				{

@@ -144,7 +144,12 @@ EXPORT void libmeteor_loadbios(const void *data, unsigned size)
 
 EXPORT uint8_t *libmeteor_getmemoryarea(int which)
 {
-	return AMeteor::_memory.GetMemoryArea(which);
+	if (which < 7)
+		return AMeteor::_memory.GetMemoryArea(which);
+	else if (which == 7)
+		return AMeteor::_io.GetIoPointer();
+	else
+		return NULL;
 }
 
 EXPORT int libmeteor_loadsaveram(const void *data, unsigned size)
@@ -211,4 +216,22 @@ EXPORT uint8_t libmeteor_peekbus(uint32_t addr)
 EXPORT void libmeteor_writebus(uint32_t addr, uint8_t val)
 {
 	AMeteor::_memory.Write8(addr, val);
+}
+
+int slcallbackline = 400;
+void (*slcallback)() = NULL;
+
+EXPORT void libmeteor_setscanlinecallback(void (*callback)(), int scanline)
+{
+	if (!callback)
+		slcallbackline = 400;
+	else
+		slcallbackline = scanline;
+	slcallback = callback;
+}
+
+void scanlinecallback_bizhawk()
+{
+	if (slcallback)
+		slcallback();
 }

@@ -12,6 +12,10 @@ using BizHawk.Emulation.Sound;
   + Try to clean up the organization of the source code. 
   + Lightgun/Paddle/etc if I get really bored  
 
+  + SG-1000 TMS does not fire sprite collision bit
+  + SG-1000 TMS sprite doubling most likely does not work!
+  + Maybe try to unify the Coleco TMS with SG-1000? Or at least pull in other TMS fixes.
+ 
 **********************************************************/
 
 namespace BizHawk.Emulation.Consoles.Sega

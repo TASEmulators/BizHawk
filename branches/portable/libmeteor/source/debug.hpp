@@ -32,6 +32,8 @@ void abort_bizhawk(const char *msg);
 void keyupdate_bizhawk();
 extern bool traceenabled;
 void trace_bizhawk(std::string msg);
+extern int slcallbackline;
+void scanlinecallback_bizhawk();
 
 #if 0
 #define met_abort(str) \

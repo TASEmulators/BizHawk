@@ -74,6 +74,13 @@ sha1:536D623BA02A622BDE8E2D7D514AE9785B5E0357	H	Punch Out!! Kirby (Hack) (U)	NES
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;heres another idea. let's list rom sets from goodNES, good and bad variants together
+sha1:98B71119294DA59D1B22723D2D2955D80EADABF4		World Hero (Unl) [!]	NES		board=MAPPER027
+sha1:17AC56723F99A646BD44F8C999B23B8A972A3EF2	B	World Hero (Unl) [b1]	NES		board=MAPPER027
+sha1:5227195D5DB2030758BF67704150E8C5FAF056B1	B	World Hero (Unl) [b2]	NES		board=MAPPER027
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;obscure and unlicensed roms which are not likely to be in bootgod's DB anytime soon but which are nonetheless "good" as far as things go
 ;people like these games (especially vast quantities of chinese oddities) so its important to add them here as good
 sha1:D09EF8127C64CBE817B45DF33C4D43E7B441E381		Final Fantasy V (Unl)	NES		board=MAPPER164;PRG=512;CHR=0;WRAM=8;PRAM=8;PAD_V=1
@@ -106,6 +113,7 @@ sha1:F5FA7807F2B70ADFE5707D9BF88F90DAC1436DB0		Di 4 Ci - Ji Qi Ren Dai Zhan (Ch)
 sha1:A9887C308C5D0659C3AA45D003A603C9DFFB148A	B	Ji Jia Zhan Shi (Asia)	NES		board=MAPPER074;VRAM=2
 sha1:5084F25F14A61AB2799BD85D363B57B9B494601D		Ji Jia Zhan Shi (Asia)	NES		board=MAPPER074;VRAM=2
 sha1:6143D80047FFC17C752078C622A44C3E0CB7466E	B	Dong Fang de Chuan Shuo - The Hyrule Fantasy (Asia)	NES		board=MAPPER245
+sha1:CEFEBA536DB507DBDEF8A538F9C332D7A75BF613		You Ling Xing Dong (Ch)	NES		board=MAPPER192;VRAM=4
 
 ;wrong vram info
 sha1:32D71DD6C5A8D78A918FE1B9D6D6C4A570D9652D		Oeka Kids - Anpanman no Hiragana Daisuki (J)	NES		board=MAPPER096;VRAM=32
