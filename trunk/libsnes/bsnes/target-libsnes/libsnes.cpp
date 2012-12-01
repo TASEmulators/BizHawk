@@ -168,7 +168,8 @@ template<typename T> inline void reconstruct(T* t) {
 void snes_init(void) {
   SNES::interface = &interface;
 
-	//because we're tasers and we didnt make this core, and we're paranoid, lets reconstruct everything so we know subsequent runs are as similar as possible
+	//zero 01-dec-2012 - due to systematic variable initialization fails in bsnes components, these reconstructions are necessary,
+	//and the previous comment here which called this paranoid has been removed.
   reconstruct(&SNES::icd2);
   reconstruct(&SNES::nss);
   reconstruct(&SNES::superfx);
@@ -187,6 +188,14 @@ void snes_init(void) {
   reconstruct(&SNES::link);
   reconstruct(&SNES::video);
   reconstruct(&SNES::audio);
+
+	//zero 01-dec-2012 - forgot to do all these. massive desync chaos!
+	//remove these to make it easier to find initialization fails in the component power-ons / constructors / etc.
+	//or just forget about it. this snes_init gets called paranoidly frequently by bizhawk, so things should stay zeroed correctly
+	reconstruct(&SNES::cpu);
+	reconstruct(&SNES::smp);
+	reconstruct(&SNES::dsp);
+	reconstruct(&SNES::ppu);
 
   SNES::system.init();
   SNES::input.connect(SNES::Controller::Port1, SNES::Input::Device::Joypad);
