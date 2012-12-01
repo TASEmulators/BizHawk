@@ -61,6 +61,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool pinFlag;
 		private bool pinPC;
 		private byte sr;
+		private uint[] timerDelay;
 		private InMode[] timerInMode;
 		private OutMode[] timerOutMode;
 		private bool[] timerPortEnable;
@@ -82,6 +83,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			chipRegion = region;
 			enableIntTimer = new bool[2];
 			intTimer = new bool[2];
+			timerDelay = new uint[2];
 			timerInMode = new InMode[2];
 			timerOutMode = new OutMode[2];
 			timerPortEnable = new bool[2];
@@ -111,8 +113,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			if (timerPulse[1])
 				portData[1] &= PBOnMask[0];
 
-			TimerRun(0);
-			TimerRun(1);
+			if (timerDelay[0] == 0)
+				TimerRun(0);
+			else
+				timerDelay[0]--;
+
+			if (timerDelay[1] == 0)
+				TimerRun(1);
+			else
+				timerDelay[1]--;
+
 			intAlarm |= (
 				tod[0] == todAlarm[0] &&
 				tod[1] == todAlarm[1] &&
@@ -149,8 +159,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			intTimer[0] = false;
 			intTimer[1] = false;
 			sr = 0;
-			timerPortEnable[0] = false;
-			timerPortEnable[1] = false;
+			timerDelay[0] = 0;
+			timerDelay[1] = 0;
 			timerInMode[0] = InMode.Phase2;
 			timerInMode[1] = InMode.Phase2;
 			timerOn[0] = false;
@@ -402,6 +412,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private byte ReadRegister(ushort addr)
 		{
 			byte val = 0x00; //unused pin value
+			uint timerVal;
 
 			switch (addr)
 			{
@@ -418,16 +429,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					val = portDir[1];
 					break;
 				case 0x4:
-					val = (byte)(timer[0] & 0xFF);
+					timerVal = ReadTimerValue(0);
+					val = (byte)(timerVal & 0xFF);
 					break;
 				case 0x5:
-					val = (byte)(timer[0] >> 8);
+					timerVal = ReadTimerValue(0);
+					val = (byte)(timerVal >> 8);
 					break;
 				case 0x6:
-					val = (byte)(timer[1] & 0xFF);
+					timerVal = ReadTimerValue(1);
+					val = (byte)(timerVal & 0xFF);
 					break;
 				case 0x7:
-					val = (byte)(timer[1] >> 8);
+					timerVal = ReadTimerValue(1);
+					val = (byte)(timerVal >> 8);
 					break;
 				case 0x8:
 					val = tod[0];
@@ -493,6 +508,21 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 
 			return val;
+		}
+
+		private uint ReadTimerValue(uint index)
+		{
+			if (timerOn[index])
+			{
+				if (timer[index] == 0)
+					return timerLatch[index];
+				else
+					return timer[index];
+			}
+			else
+			{
+				return timer[index];
+			}
 		}
 
 		public void Write(ushort addr, byte val)
@@ -622,6 +652,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						enableIntFlag = intReg;
 					break;
 				case 0xE:
+					if ((val & 0x01) != 0 && !timerOn[0])
+						timerDelay[0] = 2;
 					timerOn[0] = ((val & 0x01) != 0);
 					timerPortEnable[0] = ((val & 0x02) != 0);
 					timerOutMode[0] = ((val & 0x04) != 0) ? OutMode.Toggle : OutMode.Pulse;
@@ -631,6 +663,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					todIn = ((val & 0x80) != 0);
 					break;
 				case 0xF:
+					if ((val & 0x01) != 0 && !timerOn[1])
+						timerDelay[1] = 2;
 					timerOn[1] = ((val & 0x01) != 0);
 					timerPortEnable[1] = ((val & 0x02) != 0);
 					timerOutMode[1] = ((val & 0x04) != 0) ? OutMode.Toggle : OutMode.Pulse;
