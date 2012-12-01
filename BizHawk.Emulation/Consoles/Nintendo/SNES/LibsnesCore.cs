@@ -951,7 +951,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			int size = LibsnesDll.snes_serialize_size();
 			if (data.Length != size)
-				throw new Exception("Libsnes internal savestate size mismatch!");		
+				throw new Exception("Libsnes internal savestate size mismatch!");
+			LibsnesDll.snes_init();
 			fixed (byte* pbuf = &data[0])
 				LibsnesDll.snes_unserialize(new IntPtr(pbuf), size);
 		}
