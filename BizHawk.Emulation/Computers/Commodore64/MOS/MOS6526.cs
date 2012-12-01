@@ -406,10 +406,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (addr)
 			{
 				case 0x0:
-					val = portData[0];
+					val = (byte)(portData[0] & portMask[0]);
 					break;
 				case 0x1:
-					val = portData[1];
+					val = (byte)(portData[1] & portMask[1]);
 					break;
 				case 0x2:
 					val = portDir[0];

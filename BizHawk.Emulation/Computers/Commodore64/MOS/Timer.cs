@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		protected bool pinIRQ;
 		protected byte[] portData;
 		protected byte[] portDir;
+		protected byte[] portMask;
 		protected uint[] timer;
 		protected uint[] timerLatch;
 		protected bool[] timerOn;
@@ -21,6 +22,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			portData = new byte[2];
 			portDir = new byte[2];
+			portMask = new byte[2];
 			timer = new uint[2];
 			timerLatch = new uint[2];
 			timerOn = new bool[2];
@@ -31,7 +33,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			get
 			{
-				return Port.GetAdapter(ReadPort0, ExternalWritePort0, ExternalWriteForce0);
+				return Port.GetAdapter(ReadPort0, ExternalWritePort0, ExternalWriteMask0);
 			}
 		}
 
@@ -39,18 +41,18 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			get
 			{
-				return Port.GetAdapter(ReadPort1, ExternalWritePort1, ExternalWriteForce1);
+				return Port.GetAdapter(ReadPort1, ExternalWritePort1, ExternalWriteMask1);
 			}
 		}
 
-		private void ExternalWriteForce0(byte data)
+		private void ExternalWriteMask0(byte data)
 		{
-			portData[0] = data;
+			portMask[0] = data;
 		}
 
-		private void ExternalWriteForce1(byte data)
+		private void ExternalWriteMask1(byte data)
 		{
-			portData[1] = data;
+			portMask[1] = data;
 		}
 
 		private void ExternalWritePort(uint index, byte data)
@@ -77,6 +79,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			pinIRQ = true;
 			portDir[0] = 0xFF;
 			portDir[1] = 0xFF;
+			portMask[0] = 0xFF;
+			portMask[1] = 0xFF;
+			portData[0] = 0xFF;
+			portData[1] = 0xFF;
 		}
 
 		public bool IRQ

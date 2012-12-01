@@ -70,14 +70,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			byte portB = inputAdapter1.Data;
 			byte resultA = 0xFF;
 			byte resultB = 0xFF;
-
-			for (uint i = 0; i < 5; i++)
-			{
-				if (joystickPressed[1, i])
-					resultA &= inputBitMask[i];
-				if (joystickPressed[0, i])
-					resultB &= inputBitMask[i];
-			}
+			byte joyA = 0xFF;
+			byte joyB = 0xFF;
 
 			for (uint i = 0; i < 8; i++)
 			{
@@ -94,8 +88,18 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				}
 			}
 
-			inputAdapter0.ForceWrite((byte)(resultA & portB));
+			for (uint i = 0; i < 5; i++)
+			{
+				if (joystickPressed[1, i])
+					joyA &= inputBitMask[i];
+				if (joystickPressed[0, i])
+					joyB &= inputBitMask[i];
+			}
+
+			inputAdapter0.Data = resultA;
 			inputAdapter1.Data = resultB;
+			inputAdapter0.MaskWrite(joyB);
+			inputAdapter1.MaskWrite(joyA);
 		}
 	}
 }

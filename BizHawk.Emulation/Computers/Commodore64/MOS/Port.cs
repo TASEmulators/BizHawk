@@ -32,14 +32,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	public class PortAdapter
 	{
 		private Action<byte> actWrite;
-		private Action<byte> actWriteForce;
+		private Action<byte> actWriteMask;
 		private Func<byte> funcRead;
 
-		public PortAdapter(Func<byte> newRead, Action<byte> newWrite, Action<byte> newWriteForce)
+		public PortAdapter(Func<byte> newRead, Action<byte> newWrite, Action<byte> newWriteMask)
 		{
 			funcRead = newRead;
 			actWrite = newWrite;
-			actWriteForce = newWriteForce;
+			actWriteMask = newWriteMask;
 		}
 
 		public byte Data
@@ -54,9 +54,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
-		public void ForceWrite(byte val)
+		public void MaskWrite(byte val)
 		{
-			actWriteForce(val);
+			actWriteMask(val);
 		}
 	}
 }
