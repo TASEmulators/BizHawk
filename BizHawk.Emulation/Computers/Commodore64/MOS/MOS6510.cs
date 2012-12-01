@@ -42,8 +42,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			cpu.WriteMemory = Write;
 
 			// configure data port defaults
-			portDir = 0xEF;
-			SetPortData(0x37);
+			portDir = 0x00;
+			SetPortData(0x1F);
 
 			// todo: verify this value (I only know that unconnected bits fade after a number of cycles)
 			unusedPinTTLCycles = 40;
@@ -181,7 +181,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			set
 			{
 				byte val = Port.CPUWrite(PortData, value, portDir);
-				Console.WriteLine("CPU write DTA: val=" + C64Util.ToBinary(value, 8) + " dir=" + C64Util.ToBinary(portDir, 8) + " new=" + C64Util.ToBinary(val, 8));
 				SetPortData(val);
 			}
 		}
@@ -191,7 +190,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			get { return portDir; }
 			set
 			{
-				Console.WriteLine("CPU write DIR: val=" + C64Util.ToBinary(value, 8));
 				SetPortDir(value);
 			}
 		}
@@ -215,7 +213,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private void SetPortDir(byte val)
 		{
 			portDir = val;
-			SetPortData((byte)(PortData | ((byte)~val & 0x1F)));
+			//SetPortData((byte)(PortData | ((byte)~val & 0x1F)));
 		}
 
 		// ------------------------------------
