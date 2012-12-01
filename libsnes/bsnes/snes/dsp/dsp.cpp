@@ -223,6 +223,10 @@ void DSP::write(uint8 addr, uint8 data) {
 
 void DSP::power() {
   memset(&state.regs, 0, sizeof state.regs);
+	
+	//zero 01-dec-2012 - gotta reset these sometime, somewhere
+	state.echo_hist[0] = state.echo_hist[1] = 0;
+
   state.echo_hist_pos = 0;
   state.every_other_sample = false;
   state.kon = 0;
