@@ -211,6 +211,7 @@ namespace BizHawk.MultiClient
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
 		// General Client Settings
+		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
 		public int TargetDisplayFilter = 0;
