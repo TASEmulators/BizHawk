@@ -43,6 +43,11 @@ namespace BizHawk.MultiClient
 			bool inChangeSequence = false;
 			var ms = new MemoryStream();
 			var writer = new BinaryWriter(ms);
+			if(LastState == null) //WTF?!?!?
+			{
+				LastState = CurrentState;
+				return;
+			}
 			if (CurrentState.Length != LastState.Length)
 			{
 				writer.Write(true); // full state

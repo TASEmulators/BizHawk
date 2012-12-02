@@ -155,6 +155,7 @@ namespace BizHawk.MultiClient
 
 			//If begins wtih .. do alorithm to determine how many ..\.. combos and deal with accordingly, return drive letter only if too many ..
 
+#if WINDOWS
 			if ((path[0] > 'A' && path[0] < 'Z') || (path[0] > 'a' && path[0] < 'z'))
 			{
 				//C:\
@@ -169,6 +170,10 @@ namespace BizHawk.MultiClient
 						return GetExeDirectoryAbsolute(); //bad path
 				}
 			}
+#else
+			if(path[0] == Path.DirectorySeparatorChar)
+				return path; //If it starts with /, it's probably a valid Unix absolute path.
+#endif
 
 			//all pad paths default to EXE
 			return GetExeDirectoryAbsolute();

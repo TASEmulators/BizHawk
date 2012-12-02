@@ -10,6 +10,7 @@ namespace MonoMacWrapper
 		private static MonoMac.Foundation.NSUrl _directoryToRestore;
 		private bool _restoreDir;
 		private string _filter;
+		private int _filterIndex;
 		
 		public MacOpenFileDialog()
 		{
@@ -54,6 +55,12 @@ namespace MonoMacWrapper
 				_filter = value;
 				ParseFilter();
 			}
+		}
+
+		public int FilterIndex
+		{
+			get { return _filterIndex; }
+			set { _filterIndex = value; }
 		}
 		
 		public void ParseFilter()

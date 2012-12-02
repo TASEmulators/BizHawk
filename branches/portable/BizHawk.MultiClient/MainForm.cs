@@ -1430,8 +1430,8 @@ namespace BizHawk.MultiClient
 					tI83ToolStripMenuItem.Visible = true;
 					break;
 				case "NES":
+					NESSpeicalMenuControls(); //Do this first, because OSX will use the Visible event to rebuild the menu
 					NESToolStripMenuItem.Visible = true;
-					NESSpeicalMenuControls();
 					break;
 				case "PCE":
 				case "PCECD":
@@ -1822,7 +1822,9 @@ namespace BizHawk.MultiClient
 										// ines header + 24KB of garbage + actual bios + 8KB of garbage
 										if (bios.Length == 40976)
 										{
+											RunLoopBlocked = true;
 											MessageBox.Show(this, "Your FDS BIOS is a bad dump.  BizHawk will attempt to use it, but no guarantees!  You should find a new one.");
+											RunLoopBlocked = false;
 											byte[] tmp = new byte[8192];
 											Buffer.BlockCopy(bios, 16 + 8192 * 3, tmp, 0, 8192);
 											bios = tmp;
@@ -1883,7 +1885,9 @@ namespace BizHawk.MultiClient
 										}
 										else
 										{
+											RunLoopBlocked = true;
 											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES") + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
+											RunLoopBlocked = false;
 											Global.Config.GB_AsSGB = false;
 											game.System = "GB";
 											goto RETRY;
@@ -1911,7 +1915,9 @@ namespace BizHawk.MultiClient
 								FileInfo colfile = new FileInfo(colbiosPath);
 								if (!colfile.Exists)
 								{
+									RunLoopBlocked = true;
 									MessageBox.Show("Unable to find the required ColecoVision BIOS file - \n" + colbiosPath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									RunLoopBlocked = false;
 									throw new Exception();
 								}
 								else
@@ -1945,19 +1951,25 @@ namespace BizHawk.MultiClient
 
 								if (!ntscfile.Exists)
 								{
+									RunLoopBlocked = true;
 									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									RunLoopBlocked = false;
 									throw new Exception();
 								}
 
 								if (!palfile.Exists)
 								{
+									RunLoopBlocked = true;
 									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									RunLoopBlocked = false;
 									throw new Exception();
 								}
 
 								if (!hsfile.Exists)
 								{
+									RunLoopBlocked = true;
 									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									RunLoopBlocked = false;
 									throw new Exception();
 								}
 
@@ -1986,7 +1998,9 @@ namespace BizHawk.MultiClient
 									}
 									else
 									{
+										RunLoopBlocked = true;
 										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+										RunLoopBlocked = false;
 										throw new Exception();
 									}
 									GBA gba = new GBA();
@@ -4520,8 +4534,10 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is NES)
 			{
 				Global.Sound.StopSound();
+				RunLoopBlocked = true;
 				NESSoundConfig config = new NESSoundConfig();
 				config.ShowDialog();
+				RunLoopBlocked = false;
 				Global.Sound.StartSound();
 			}
 		}
@@ -4757,11 +4773,13 @@ namespace BizHawk.MultiClient
 		{
 			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
 		}
-
+		private bool _lightTogglePending;
 		private void HandleToggleLight()
 		{
-			if (StatusSlot0.Visible)
+			if (StatusSlot0.Visible && !_lightTogglePending)
 			{
+				_lightTogglePending = true;
+				this.BeginInvoke(new Action(delegate{
 				if (Global.Emulator.CoreOutputComm.UsesDriveLed)
 				{
 					if (!StatusBarLedLight.Visible)
@@ -4784,6 +4802,8 @@ namespace BizHawk.MultiClient
 						StatusBarLedLight.Visible = false;
 					}
 				}
+					_lightTogglePending = false;
+				}));
 			}
 		}
 

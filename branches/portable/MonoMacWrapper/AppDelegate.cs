@@ -23,7 +23,12 @@ namespace MonoMacWrapper
 				StartApplication();
 			});
 		}
-		
+
+		public override void WillTerminate (NSNotification notification)
+		{
+			_mainWinForm.Close();
+		}
+
 		private void StartApplication()
 		{
 			BizHawk.HawkUIFactory.OpenDialogClass = typeof(MacOpenFileDialog);
@@ -143,6 +148,34 @@ namespace MonoMacWrapper
 				translated.Hidden = !translated.Hidden; 
 				//Can't actually look at Visible property because the entire menubar is hidden.
 				//Since the event only gets called when Visible is changed, we can assume it got flipped.
+				if(((ToolStripMenuItem)sender).Text.Equals("&NES")){
+					//Hack to rebuild menu contents due to changing FDS sub-menu.
+					//At some point, I might want to figure out a better way to do this.
+					RemoveMenuItems(translated);
+					ExtractSubmenu(translated.HostMenu.DropDownItems, translated.Submenu, false);
+				}
+			}
+		}
+
+		private void RemoveMenuItems(MenuItemAdapter menu)
+		{
+			if(menu.HasSubmenu)
+			{
+				for(int i=menu.Submenu.Count-1; i>=0; i--)
+				{
+					MenuItemAdapter item = menu.Submenu.ItemAt(i) as MenuItemAdapter;
+					if(item != null) //It will be null if it's a separator
+					{
+						RemoveMenuItems(item);
+						if(_menuLookup.ContainsKey(item.HostMenu))
+						{
+							_menuLookup.Remove(item.HostMenu);
+						}
+						item.HostMenu.CheckedChanged -= HandleMenuItemCheckedChanged;
+						item.HostMenu.EnabledChanged -= HandleMenuItemEnabledChanged;
+					}
+					menu.Submenu.RemoveItemAt(i);
+				}
 			}
 		}
 
