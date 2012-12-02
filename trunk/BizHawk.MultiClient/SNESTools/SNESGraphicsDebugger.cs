@@ -4,6 +4,7 @@
 //TODO - maybe draw a label (in lieu of above, also) showing what scale the content is at: 2x or 1x or 1/2x
 //TODO - add eDisplayType for BG1-Tiles, BG2-Tiles, etc. which show the tiles available to a BG. more concise than viewing all tiles and illustrating the relevant accessible areas
 //        . could this apply to the palette too?
+//TODO - show the priority list for the current mode. make the priority list have checkboxes, and use that to control whether that item displays (does bsnes have that granularity? maybe)
 
 //http://stackoverflow.com/questions/1101149/displaying-thumbnail-icons-128x128-pixels-or-larger-in-a-grid-in-listview
 
@@ -57,9 +58,9 @@ namespace BizHawk.MultiClient
 			comboDisplayType.SelectedIndex = 0;
 
 			var paletteTypeItems = new List<PaletteTypeItem>();
-			paletteTypeItems.Add(new PaletteTypeItem("BizHawk Palette", SnesColors.ColorType.BizHawk));
-			paletteTypeItems.Add(new PaletteTypeItem("bsnes Palette", SnesColors.ColorType.BSNES));
-			paletteTypeItems.Add(new PaletteTypeItem("Snes9X Palette", SnesColors.ColorType.Snes9x));
+			paletteTypeItems.Add(new PaletteTypeItem("BizHawk", SnesColors.ColorType.BizHawk));
+			paletteTypeItems.Add(new PaletteTypeItem("bsnes", SnesColors.ColorType.BSNES));
+			paletteTypeItems.Add(new PaletteTypeItem("Snes9X", SnesColors.ColorType.Snes9x));
 			suppression = true;
 			comboPalette.DataSource = paletteTypeItems;
 			comboPalette.SelectedIndex = 0;
@@ -85,13 +86,6 @@ namespace BizHawk.MultiClient
 		{
 			if (bpp == 0) return "---";
 			else return bpp.ToString();
-		}
-
-		string FormatScreenSizeInTiles(SNESGraphicsDecoder.ScreenSize screensize)
-		{
-			var dims = SNESGraphicsDecoder.SizeInTilesForBGSize(screensize);
-			int size = dims.Width * dims.Height * 2 / 1024;
-			return string.Format("{0} ({1}K)", dims, size);
 		}
 
 		string FormatVramAddress(int address)
@@ -179,6 +173,8 @@ namespace BizHawk.MultiClient
 
 		SNESGraphicsDecoder gd = new SNESGraphicsDecoder(SnesColors.ColorType.BizHawk);
 		SNESGraphicsDecoder.ScreenInfo si;
+		SNESGraphicsDecoder.TileEntry[] map;
+		SNESGraphicsDecoder.BGMode viewBgMode;
 
 		void RegenerateData()
 		{
@@ -234,13 +230,15 @@ namespace BizHawk.MultiClient
 			txtBG1TSizeDescr.Text = string.Format("{0}x{0}", bg.TileSize);
 			txtBG1Bpp.Text = FormatBpp(bg.Bpp);
 			txtBG1SizeBits.Text = bg.SCSIZE.ToString();
-			txtBG1SizeInTiles.Text = FormatScreenSizeInTiles(bg.ScreenSize);
+			txtBG1SizeInTiles.Text = bg.ScreenSizeInTiles.ToString();
+			int size = bg.ScreenSizeInTiles.Width * bg.ScreenSizeInTiles.Height * 2 / 1024;
+			txtBG1MapSizeBytes.Text = string.Format("({0}K)", size);
 			txtBG1SCAddrBits.Text = bg.SCADDR.ToString();
-			txtBG1SCAddrDescr.Text = FormatVramAddress(bg.SCADDR << 9);
+			txtBG1SCAddrDescr.Text = FormatVramAddress(bg.ScreenAddr);
 			txtBG1Colors.Text = (1 << bg.Bpp).ToString();
 			if (bg.Bpp == 8 && si.CGWSEL_DirectColor) txtBG1Colors.Text = "(Direct Color)";
 			txtBG1TDAddrBits.Text = bg.TDADDR.ToString();
-			txtBG1TDAddrDescr.Text = FormatVramAddress(bg.TDADDR << 13);
+			txtBG1TDAddrDescr.Text = FormatVramAddress(bg.TiledataAddr);
 
 			if (bg.Bpp != 0)
 			{
@@ -249,9 +247,7 @@ namespace BizHawk.MultiClient
 			}
 			else txtBGPaletteInfo.Text = "";
 
-			var sizeInPixels = SNESGraphicsDecoder.SizeInTilesForBGSize(bg.ScreenSize);
-			sizeInPixels.Width *= si.BG[bgnum].TileSize;
-			sizeInPixels.Height *= si.BG[bgnum].TileSize;
+			var sizeInPixels = bg.ScreenSizeInPixels;
 			txtBG1SizeInPixels.Text = string.Format("{0}x{1}", sizeInPixels.Width, sizeInPixels.Height);
 
 			checkTMOBJ.Checked = si.OBJ_MainEnabled;
@@ -290,7 +286,6 @@ namespace BizHawk.MultiClient
 			RenderPalette();
 			RenderTileView();
 			UpdateColorDetails();
-			UpdateMapEntryDetails();
 		}
 
 		eDisplayType CurrDisplaySelection { get { return (comboDisplayType.SelectedValue as eDisplayType?).Value; } }
@@ -377,12 +372,16 @@ namespace BizHawk.MultiClient
 				var si = gd.ScanScreenInfo();
 				var bg = si.BG[bgnum];
 
+				map = new SNESGraphicsDecoder.TileEntry[0];
+				viewBgMode = bg.BGMode;
+
 				bool handled = false;
 				if (bg.Enabled)
 				{
 					//TODO - directColor in normal BG renderer
 					bool DirectColor = si.CGWSEL_DirectColor && bg.Bpp == 8; //any exceptions?
 					int numPixels = 0;
+					//TODO - could use BGMode property on BG... too much chaos to deal with it now
 					if (si.Mode.MODE == 7)
 					{
 						bool mode7 = bgnum == 1;
@@ -395,6 +394,9 @@ namespace BizHawk.MultiClient
 							numPixels = 128 * 128 * 8 * 8;
 							if (DirectColor) gd.DirectColorify(pixelptr, numPixels);
 							else gd.Paletteize(pixelptr, 0, 0, numPixels);
+
+							//get a fake map, since mode7 doesnt really have a map
+							map = gd.FetchMode7Tilemap();
 						}
 					}
 					else
@@ -406,7 +408,7 @@ namespace BizHawk.MultiClient
 						numPixels = dims.Width * dims.Height;
 						System.Diagnostics.Debug.Assert(stride / 4 == dims.Width);
 
-						var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
+						map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
 						int paletteStart = 0;
 						gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
 						gd.Paletteize(pixelptr, 0, 0, numPixels);
@@ -689,6 +691,11 @@ namespace BizHawk.MultiClient
 			int baseTileNum = tiledataBaseAddr / tileSizeBytes;
 			int tileNum = baseTileNum + currMapEntryState.entry.tilenum;
 			int addr = tileNum * tileSizeBytes;
+
+			//mode7 takes up 128 bytes per tile because its interleaved with the screen data
+			if (bg.BGModeIsMode7Type)
+				addr *= 2;
+
 			addr &= 0xFFFF;
 			txtMapEntryTileAddr.Text = "@" + addr.ToHexString(4);
 		}
@@ -860,26 +867,33 @@ namespace BizHawk.MultiClient
 			public Point Location;
 		}
 		MapEntryState currMapEntryState;
-		int currViewingTile = -1;
-		int currViewingTileBpp = -1;
-		int currViewingSprite = -1;
-		void RenderTileView(bool force=false)
-		{
-			//TODO - blech - handle invalid some other way with a dedicated black-setter
-			bool valid = currViewingTile != -1;
-			valid |= (currMapEntryState != null);
-			if (!valid && !force) return;
 
+		class TileDataState
+		{
+			public eDisplayType Type;
+			public int Bpp;
+			public int Tile;
+		}
+		TileDataState tileDataState;
+
+		void RenderTileView()
+		{
 			if (currMapEntryState != null)
 			{
-				//view a BG tile (no mode7 support yet) - itd be nice if we could generalize this code a bit
-				//TODO - choose correct palette (commonize that code)
+				//view a BG tile 
 				int paletteStart = 0;
 				var bmp = new Bitmap(8, 8, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				var bgs = currMapEntryState;
 				var oneTileEntry = new SNESGraphicsDecoder.TileEntry[] { bgs.entry };
-				if (valid)
+
+				if (viewBgMode == SNESGraphicsDecoder.BGMode.Mode7)
+					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, false, 1, currMapEntryState.entry.tilenum, 1);
+				else if (viewBgMode == SNESGraphicsDecoder.BGMode.Mode7Ext)
+					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, true, false, 1, currMapEntryState.entry.tilenum, 1);
+				else if (viewBgMode == SNESGraphicsDecoder.BGMode.Mode7DC)
+					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, true, 1, currMapEntryState.entry.tilenum, 1);
+				else
 				{
 					gd.DecodeBG((int*)bmpdata.Scan0, bmpdata.Stride / 4, oneTileEntry, si.BG[bgs.bgnum].TiledataAddr, SNESGraphicsDecoder.ScreenSize.Hacky_1x1, si.BG[bgs.bgnum].Bpp, 8, paletteStart);
 					gd.Paletteize((int*)bmpdata.Scan0, 0, 0, 64);
@@ -889,24 +903,48 @@ namespace BizHawk.MultiClient
 				bmp.UnlockBits(bmpdata);
 				viewerMapEntryTile.SetBitmap(bmp);
 			}
-			else
+			else if (tileDataState != null)
 			{
 				//view a tileset tile
-				int bpp = currViewingTileBpp;
+				int bpp = tileDataState.Bpp;
 
 				var bmp = new Bitmap(8, 8, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-				if (valid) gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, currViewingTile, 1);
+				if (tileDataState.Type == eDisplayType.TilesMode7)
+					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, false, 1, tileDataState.Tile, 1);
+				else if (tileDataState.Type == eDisplayType.TilesMode7Ext)
+					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, true, false, 1, tileDataState.Tile, 1);
+				else if (tileDataState.Type == eDisplayType.TilesMode7DC)
+					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, true, 1, tileDataState.Tile, 1);
+				else gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, tileDataState.Tile, 1);
+
 				bmp.UnlockBits(bmpdata);
 				viewerTile.SetBitmap(bmp);
 			}
+			else
+			{
+				var bmp = new Bitmap(8, 8, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				viewerTile.SetBitmap(bmp);
+			}
+		}
+
+		void HandleTileViewMouseOver(int pxacross, int pxtall, int bpp, int tx, int ty)
+		{
+			int tilestride = pxacross / 8;
+			int tilesTall = pxtall / 8;
+			if (tx < 0 || ty < 0 || tx >= tilestride || ty >= tilesTall)
+				return;
+			tileDataState = new TileDataState();
+			tileDataState.Bpp = bpp;
+			tileDataState.Type = CurrDisplaySelection;
+			tileDataState.Tile = ty * tilestride + tx;
+			tabctrlDetails.SelectedTab = tpTile;
 		}
 
 		void UpdateViewerMouseover(Point loc)
 		{
 			currMapEntryState = null;
-			currViewingTile = -1;
-			currViewingTileBpp = -1;
+			tileDataState = null;
 			int tx = loc.X / 8;
 			int ty = loc.Y / 8;
 			switch (CurrDisplaySelection)
@@ -915,12 +953,19 @@ namespace BizHawk.MultiClient
 					//currViewingSprite = tx + ty * 16;
 					RenderView();
 					break;
+				case eDisplayType.Tiles2bpp:
+					HandleTileViewMouseOver(512, 512, 2, tx, ty);
+					break;
 			  case eDisplayType.Tiles4bpp:
-					currViewingTileBpp = 4;
-					currViewingTile = ty * 64 + tx;
-					if (currViewingTile < 0 || currViewingTile >= (8192 / currViewingTileBpp))
-						currViewingTile = -1;
-					tabctrlDetails.SelectedTab = tpTile;
+					HandleTileViewMouseOver(512, 256, 4, tx, ty);
+					break;
+				case eDisplayType.Tiles8bpp:
+					HandleTileViewMouseOver(256, 256, 8, tx, ty);
+					break;
+				case eDisplayType.TilesMode7:
+				case eDisplayType.TilesMode7Ext:
+				case eDisplayType.TilesMode7DC:
+					HandleTileViewMouseOver(128, 128, 8, tx, ty);
 					break;
 				case eDisplayType.BG1:
 				case eDisplayType.BG2:
@@ -928,7 +973,7 @@ namespace BizHawk.MultiClient
 				case eDisplayType.BG4:
 					{
 						var bg = si.BG[(int)CurrDisplaySelection];
-						var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
+
 						if (bg.TileSize == 16) { tx /= 2; ty /= 2; } //worry about this later. need to pass a different flag into `currViewingTile`
 
 						int tloc = ty * bg.ScreenSizeInTiles.Width + tx;
@@ -952,7 +997,8 @@ namespace BizHawk.MultiClient
 					break;
 			}
 
-			RenderTileView(true);
+			RenderTileView();
+			UpdateMapEntryDetails();
 		}
 
 		private void viewer_MouseEnter(object sender, EventArgs e)

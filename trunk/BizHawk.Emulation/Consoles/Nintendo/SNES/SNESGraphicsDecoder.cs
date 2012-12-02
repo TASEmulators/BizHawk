@@ -78,8 +78,30 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
+		public enum BGMode
+		{
+			Unavailable, Text, Mode7, Mode7Ext, Mode7DC
+		}
+
+		/// <summary>
+		/// this class is not 'smart' - it wont recompute values for you. it's meant to be read only (we should find some way to protect write access to make that clear)
+		/// </summary>
 		public class BGInfo
 		{
+			public BGInfo(int num)
+			{
+			}
+
+			/// <summary>
+			/// what type of BG is it?
+			/// </summary>
+			public BGMode BGMode;
+
+			/// <summary>
+			/// is this BGMode a mode7 type (mode7, mode7ext, mode7DC)
+			/// </summary>
+			public bool BGModeIsMode7Type { get { return BGMode == SNESGraphicsDecoder.BGMode.Mode7 || BGMode == SNESGraphicsDecoder.BGMode.Mode7DC || BGMode == SNESGraphicsDecoder.BGMode.Mode7Ext; } }
+
 			/// <summary>
 			/// Is the layer even enabled?
 			/// </summary>
@@ -103,12 +125,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			/// <summary>
 			/// the address of the screen data
 			/// </summary>
-			public int ScreenAddr { get { return SCADDR << 9; } }
+			public int ScreenAddr;
 
 			/// <summary>
 			/// the address of the tile data
 			/// </summary>
-			public int TiledataAddr { get { return TDADDR << 13; } }
+			public int TiledataAddr;
 
 			/// <summary>
 			/// Screen size (shape, really.)
@@ -148,7 +170,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			/// <summary>
 			/// The size of the layer, in tiles
 			/// </summary>
-			public Dimensions ScreenSizeInTiles { get { return SizeInTilesForBGSize(ScreenSize); } }
+			public Dimensions ScreenSizeInTiles
+			{
+				get
+				{
+					if (BGMode == SNESGraphicsDecoder.BGMode.Text)
+						return SizeInTilesForBGSize(ScreenSize);
+					else return new Dimensions(128, 128);
+				}
+			}
 
 			/// <summary>
 			/// The size of the layer, in pixels. This has factored in the selection of 8x8 or 16x16 tiles
@@ -170,7 +200,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public class BGInfos
 		{
-			BGInfo[] bgs = new BGInfo[4] { new BGInfo(), new BGInfo(), new BGInfo(), new BGInfo() };
+			BGInfo[] bgs = new BGInfo[4] { new BGInfo(1), new BGInfo(2), new BGInfo(3), new BGInfo(4) };
 			public BGInfo BG1 { get { return bgs[0]; } }
 			public BGInfo BG2 { get { return bgs[1]; } }
 			public BGInfo BG3 { get { return bgs[2]; } }
@@ -296,8 +326,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.BG.BG3.Bpp = ModeBpps[si.Mode.MODE, 2];
 				si.BG.BG4.Bpp = ModeBpps[si.Mode.MODE, 3];
 
-				if (si.Mode.MODE == 7 && si.SETINI_Mode7ExtBG)
-					si.BG.BG2.Bpp = 7;
+				//initial setting of mode type (derived from bpp table.. mode7 bg types will be fixed up later)
+				for(int i=1;i<=4;i++)
+					si.BG[i].BGMode = si.BG[i].Bpp == 0 ? BGMode.Unavailable : BGMode.Text;
 
 				si.BG.BG1.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_TILESIZE);
 				si.BG.BG2.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TILESIZE);
@@ -331,7 +362,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.BG.BG4.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG4) == 1;
 
 				for (int i = 1; i <= 4; i++)
+				{
 					si.BG[i].Mode = si.Mode.MODE;
+					si.BG[i].TiledataAddr = si.BG[i].TDADDR << 13;
+					si.BG[i].ScreenAddr = si.BG[i].SCADDR << 9;
+				}
+				
+				//fixup irregular things for mode 7
+				if (si.Mode.MODE == 7)
+				{
+					si.BG.BG1.TiledataAddr = 0;
+					si.BG.BG1.ScreenAddr = 0;
+
+					if (si.CGWSEL_DirectColor)
+					{
+						si.BG.BG1.BGMode = BGMode.Mode7DC;
+					}
+					else
+						si.BG.BG1.BGMode = BGMode.Mode7;
+
+					if (si.SETINI_Mode7ExtBG)
+					{
+						si.BG.BG2.BGMode = BGMode.Mode7Ext;
+						si.BG.BG2.Bpp = 7;
+						si.BG.BG2.TiledataAddr = 0;
+						si.BG.BG2.ScreenAddr = 0;
+					}
+				}
 
 				//determine which colors each BG could use
 				switch (si.Mode.MODE)
@@ -452,7 +509,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public enum TileEntryFlags : byte
 		{
-			Priority = 1, Horz = 2, Vert = 4,
+			None = 0, Priority = 1, Horz = 2, Vert = 4,
 		}
 
 		/// <summary>
@@ -561,6 +618,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					}
 				}
 			}
+		}
+
+		public TileEntry[] FetchMode7Tilemap()
+		{
+			TileEntry[] buf = new TileEntry[128*128];
+			for (int ty = 0, tidx = 0; ty < 128; ty++)
+			{
+				for (int tx = 0; tx < 128; tx++, tidx++)
+				{
+					int tileEntry = vram[tidx * 2];
+					buf[tidx].address = tidx * 2;
+					buf[tidx].tilenum = (ushort)tileEntry;
+					//palette and flags are ok defaulting to 0
+				}
+			}
+
+			return buf;
 		}
 
 		/// <summary>
@@ -732,17 +806,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// <summary>
 		/// renders the mode7 tiles to a screen with the predefined size.
 		/// </summary>
-		public void RenderMode7TilesToScreen(int* screen, int stride, bool ext, bool directColor)
+		public void RenderMode7TilesToScreen(int* screen, int stride, bool ext, bool directColor, int tilesWide = 16, int startTile = 0, int numTiles = 256)
 		{
-			int numTiles = 256;
-			int tilesWide = 16;
 			int[] tilebuf = _tileCache[ext?17:7];
 			for (int i = 0; i < numTiles; i++)
 			{
+				int tnum = startTile + i;
+				//TODO - mask by possible number of tiles? only in OBJ rendering mode?
+
 				int ty = i / tilesWide;
 				int tx = i % tilesWide;
 				int dstOfs = (ty * 8) * stride + tx * 8;
-				int srcOfs = i * 64;
+				int srcOfs = tnum * 64;
 				for (int y = 0, p = 0; y < 8; y++)
 				{
 					for (int x = 0; x < 8; x++, p++)
@@ -757,6 +832,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			else Paletteize(screen, 0, 0, numPixels);
 			Colorize(screen, 0, numPixels);
 		}
+
+
+		/// <summary>
+		/// renders the tiles to a screen of the crudely specified size.
+		/// we might need 16x16 unscrambling and some other perks here eventually.
+		/// provide a start color to use as the basis for the palette
+		/// </summary>
+		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1, bool descramble16 = false)
+		{
+			if (numTiles == -1)
+				numTiles = 8192 / bpp;
+			int[] tilebuf = _tileCache[bpp];
+			for (int i = 0; i < numTiles; i++)
+			{
+				int tnum = startTile + i;
+				//TODO - mask by possible number of tiles? only in OBJ rendering mode?
+				int ty = i / tilesWide;
+				int tx = i % tilesWide;
+				int dstOfs = (ty * 8) * stride + tx * 8;
+				int srcOfs = tnum * 64;
+				for (int y = 0, p = 0; y < 8; y++)
+					for (int x = 0; x < 8; x++, p++)
+					{
+						screen[dstOfs + y * stride + x] = tilebuf[srcOfs + p];
+					}
+			}
+
+			int numPixels = numTiles * 8 * 8;
+			Paletteize(screen, 0, startcolor, numPixels);
+			Colorize(screen, 0, numPixels);
+		}
+
 
 		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum)
 		{
@@ -792,36 +899,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					Paletteize(screen, dofs, oam.Palette * 16 + 128, 1);
 					Colorize(screen, dofs, 1);
 				}
-		}
-
-		/// <summary>
-		/// renders the tiles to a screen of the crudely specified size.
-		/// we might need 16x16 unscrambling and some other perks here eventually.
-		/// provide a start color to use as the basis for the palette
-		/// </summary>
-		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1, bool descramble16 = false)
-		{
-			if(numTiles == -1)
-				numTiles = 8192 / bpp;
-			int[] tilebuf = _tileCache[bpp];
-			for (int i = 0; i < numTiles; i++)
-			{
-				int tnum = startTile + i;
-				//TODO - mask by possible number of tiles? only in OBJ rendering mode?
-				int ty = i / tilesWide;
-				int tx = i % tilesWide;
-				int dstOfs = (ty * 8) * stride + tx * 8;
-				int srcOfs = tnum * 64;
-				for (int y = 0,p=0; y < 8; y++)
-					for (int x = 0; x < 8; x++,p++)
-					{
-						screen[dstOfs+y*stride+x] = tilebuf[srcOfs + p];
-					}
-			}
-
-			int numPixels = numTiles * 8 * 8;
-			Paletteize(screen, 0, startcolor, numPixels);
-			Colorize(screen, 0, numPixels);
 		}
 
 		public int Colorize(int rgb555)
