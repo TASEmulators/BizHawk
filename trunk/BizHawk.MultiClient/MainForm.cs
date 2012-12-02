@@ -1284,6 +1284,8 @@ namespace BizHawk.MultiClient
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
+				//tries to open a legacy movie format as if it were a BKM, by importing it
+
 				if (CurrentlyOpenRom == null)
 					OpenROM();
 				else
@@ -1298,6 +1300,11 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
+					//fix movie extension to something palatable for these purposes. 
+					//for instance, something which doesnt clobber movies you already may have had.
+					//i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+					m.Filename += ".autoimported." + Global.Config.MovieExtension;
+					m.WriteMovie();
 					StartNewMovie(m, false);
 				}
 				Global.OSD.AddMessage(warningMsg);
@@ -4080,26 +4087,30 @@ namespace BizHawk.MultiClient
 
 			foreach (string fn in ofd.FileNames)
 			{
-				var file = new FileInfo(fn);
-				string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
-				string errorMsg = "";
-				string warningMsg = "";
-				Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
-				if (errorMsg.Length > 0)
-					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				if (warningMsg.Length > 0)
-					Global.OSD.AddMessage(warningMsg);
-				else
-					Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
-										  Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
-				if (!Directory.Exists(d))
-					Directory.CreateDirectory(d);
-				File.Copy(fn + "." + Global.Config.MovieExtension, d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension, true);
-				File.Delete(fn + "." + Global.Config.MovieExtension);
+				ProcessMovieImport(fn);
 			}
 		}
 
+		void ProcessMovieImport(string fn)
+		{
+			var file = new FileInfo(fn);
+			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+			string errorMsg = "";
+			string warningMsg = "";
+			Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
+			if (errorMsg.Length > 0)
+				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			if (warningMsg.Length > 0)
+				Global.OSD.AddMessage(warningMsg);
+			else
+				Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
+										Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
+			if (!Directory.Exists(d))
+				Directory.CreateDirectory(d);
 
+			string outPath = d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension;
+			m.WriteMovie(outPath);
+		}
 
 		// workaround for possible memory leak in SysdrawingRenderPanel
 		RetainedViewportPanel captureosd_rvp;

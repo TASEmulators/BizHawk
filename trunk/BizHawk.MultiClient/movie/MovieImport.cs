@@ -84,7 +84,6 @@ namespace BizHawk.MultiClient
 				if (errorMsg == "")
 				{
 					m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
-					m.WriteMovie();
 				}
 			}
 			catch (Exception except)
