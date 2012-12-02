@@ -2269,21 +2269,68 @@ namespace BizHawk.MultiClient
 
 				//zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
 				//maybe because it doesnt make sense to me to bind hotkeys and controller inputs to the same keystrokes
-				Global.ControllerInputCoalescer.Receive(ie);
-
-				bool handled = false;
-				if (ie.EventType == Input.InputEventType.Press)
+				
+				//adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts.  This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
+				bool handled;
+				switch (Global.Config.Input_Hotkey_OverrideOptions)
 				{
-					foreach (var trigger in triggers)
-					{
-						handled |= CheckHotkey(trigger);
-					}
-				}
+					default:
+					case 0: //Both allowed
+						Global.ControllerInputCoalescer.Receive(ie);
 
-				//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
-				if (!handled)
-				{
-					Global.HotkeyCoalescer.Receive(ie);
+						handled = false;
+						if (ie.EventType == Input.InputEventType.Press)
+						{
+							foreach (var trigger in triggers)
+							{
+								handled |= CheckHotkey(trigger);
+							}
+						}
+
+						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
+						if (!handled)
+						{
+							Global.HotkeyCoalescer.Receive(ie);
+						}
+						break;
+					case 1: //Input overrides Hokeys
+						Global.ControllerInputCoalescer.Receive(ie);
+						bool inputisbound = Global.ActiveController.HasBinding(ie.LogicalButton.ToString());
+						if (!inputisbound)
+						{
+							handled = false;
+							if (ie.EventType == Input.InputEventType.Press)
+							{
+								foreach (var trigger in triggers)
+								{
+									handled |= CheckHotkey(trigger);
+								}
+							}
+
+							//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
+							if (!handled)
+							{
+								Global.HotkeyCoalescer.Receive(ie);
+							}
+						}
+						break;
+					case 2: //Hotkeys override Input
+						handled = false;
+						if (ie.EventType == Input.InputEventType.Press)
+						{
+							foreach (var trigger in triggers)
+							{
+								handled |= CheckHotkey(trigger);
+							}
+						}
+
+						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
+						if (!handled)
+						{
+							Global.HotkeyCoalescer.Receive(ie);
+							Global.ControllerInputCoalescer.Receive(ie);
+						}
+						break;
 				}
 
 			} //foreach event
@@ -4647,6 +4694,44 @@ namespace BizHawk.MultiClient
 		private void gPUViewToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadGBAGPUView();
+		}
+
+		private void bothHotkeysAndControllersToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Input_Hotkey_OverrideOptions = 0;
+		}
+
+		private void inputOverridesHotkeysToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Input_Hotkey_OverrideOptions = 1;
+		}
+
+		private void hotkeysOverrideInputToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.Input_Hotkey_OverrideOptions = 2;
+		}
+
+		private void keyPriorityToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			switch (Global.Config.Input_Hotkey_OverrideOptions)
+			{
+				default:
+				case 0:
+					bothHotkeysAndControllersToolStripMenuItem.Checked = true;
+					inputOverridesHotkeysToolStripMenuItem.Checked = false;
+					hotkeysOverrideInputToolStripMenuItem.Checked = false;
+					break;
+				case 1:
+					bothHotkeysAndControllersToolStripMenuItem.Checked = false;
+					inputOverridesHotkeysToolStripMenuItem.Checked = true;
+					hotkeysOverrideInputToolStripMenuItem.Checked = false;
+					break;
+				case 2:
+					bothHotkeysAndControllersToolStripMenuItem.Checked = false;
+					inputOverridesHotkeysToolStripMenuItem.Checked = false;
+					hotkeysOverrideInputToolStripMenuItem.Checked = true;
+					break;
+			}
 		}
 	}
 }
