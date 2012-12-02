@@ -152,20 +152,20 @@ namespace BizHawk.MultiClient
 		public override void Clear()
 		{
 			if (Global.Emulator.SystemId != "A26" && Global.Emulator.SystemId != "C64") return;
+			
+
+			if (PU.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
+			if (PD.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
+			if (PL.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
+			if (PR.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
+			if (B1.Checked) Global.StickyXORAdapter.SetSticky(Controller + " B", false);
+
 			PU.Checked = false;
 			PD.Checked = false;
 			PL.Checked = false;
 			PR.Checked = false;
 
 			B1.Checked = false;
-
-			Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Select", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Start", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " B", false);
 		}
 	}
 }

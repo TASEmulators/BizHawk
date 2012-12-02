@@ -153,11 +153,31 @@ namespace BizHawk.MultiClient
 		public void Clear()
 		{
 			if (Global.Emulator.SystemId != "Coleco") return;
+
+
+			if (PU.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
+			if (PD.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
+			if (PL.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
+			if (PR.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
+			if (KeyLeft.Checked) Global.StickyXORAdapter.SetSticky(Controller + " L", false);
+			if (KeyRight.Checked) Global.StickyXORAdapter.SetSticky(Controller + " R", false);
+			if (KP1.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key0", false);
+			if (KP2.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key1", false);
+			if (KP3.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key2", false);
+			if (KP4.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key3", false);
+			if (KP5.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key4", false);
+			if (KP6.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key5", false);
+			if (KP7.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key6", false);
+			if (KP8.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key7", false);
+			if (KP9.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key8", false);
+			if (KPStar.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Key9", false);
+			if (KP0.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Star", false);
+			if (KPPound.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Pound", false);
+
 			PU.Checked = false;
 			PD.Checked = false;
 			PL.Checked = false;
 			PR.Checked = false;
-
 			KeyLeft.Checked = false;
 			KeyRight.Checked = false;
 			KP1.Checked = false;
@@ -172,25 +192,6 @@ namespace BizHawk.MultiClient
 			KPStar.Checked = false;
 			KP0.Checked = false;
 			KPPound.Checked = false;
-
-			Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " L", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " R", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key0", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key1", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key2", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key3", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key4", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key5", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key6", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key7", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key8", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Key9", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Star", false);
-			Global.StickyXORAdapter.SetSticky(Controller + " Pound", false);
 		}
 	}
 }
