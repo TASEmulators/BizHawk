@@ -307,6 +307,41 @@ namespace BizHawk.MultiClient
 
 		#region Public File Handling
 
+		public void WriteMovie(Stream stream)
+		{
+			if (!Loaded)
+			{
+				return;
+			}
+
+			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
+			if (IsText)
+			{
+				WriteText(stream);
+			}
+			else
+			{
+				WriteBinary(stream);
+			}
+		}
+
+		public void WriteMovie(string path)
+		{
+			if (!Loaded)
+			{
+				return;
+			}
+			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
+			if (IsText)
+			{
+				WriteText(Filename);
+			}
+			else
+			{
+				WriteBinary(Filename);
+			}
+		}
+
 		public void WriteMovie()
 		{
 			if (!Loaded)
@@ -317,16 +352,8 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-			
-			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
-			if (IsText)
-			{
-				WriteText(Filename);
-			}
-			else
-			{
-				WriteBinary(Filename);
-			}
+
+			WriteMovie(Filename);
 		}
 
 		public void WriteBackup()
@@ -851,31 +878,40 @@ namespace BizHawk.MultiClient
 
 		#region Helpers
 
-		private void WriteText(string file)
+		private void WriteText(string fn)
 		{
-			if (file.Length > 0)
+			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write, FileShare.Read))
+				WriteText(fs);
+		}
+
+		private void WriteBinary(string fn)
+		{
+			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write, FileShare.Read))
+				WriteBinary(fs);
+		}
+
+
+		private void WriteText(Stream stream)
+		{
+			int length = Log.Length;
+
+			using (StreamWriter sw = new StreamWriter(stream))
 			{
-				int length = Log.Length;
+				Header.WriteText(sw);
 
-				using (StreamWriter sw = new StreamWriter(file))
+				//TODO: clean this up
+				if (LoopOffset >= 0)
 				{
-					Header.WriteText(sw);
-
-					//TODO: clean this up
-					if (LoopOffset >= 0)
-					{
-						sw.WriteLine("LoopOffset " + LoopOffset.ToString());
-					}
-
-					Subtitles.WriteText(sw);
-					Log.WriteText(sw);
+					sw.WriteLine("LoopOffset " + LoopOffset.ToString());
 				}
+
+				Subtitles.WriteText(sw);
+				Log.WriteText(sw);
 			}
 		}
 
-		private void WriteBinary(string file)
+		private void WriteBinary(Stream stream)
 		{
-
 		}
 
 		private bool LoadText()
