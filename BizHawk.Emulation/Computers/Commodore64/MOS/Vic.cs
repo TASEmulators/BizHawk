@@ -487,9 +487,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					pinBA = !badline;
 					break;
 				default:
-					cycleBAsprite0 = ba & 0x000F;
-					cycleBAsprite1 = ba & 0x00F0;
-					cycleBAsprite2 = ba & 0x0F00;
+					cycleBAsprite0 = (ba & 0x000F);
+					cycleBAsprite1 = (ba & 0x00F0) >> 4;
+					cycleBAsprite2 = (ba & 0x0F00) >> 8;
 					if ((cycleBAsprite0 < 8 && sprites[cycleBAsprite0].dma) ||
 						(cycleBAsprite1 < 8 && sprites[cycleBAsprite1].dma) ||
 						(cycleBAsprite2 < 8 && sprites[cycleBAsprite2].dma))
@@ -609,7 +609,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 				// render visible pixel
 				pixel = pixelBuffer[pixelBufferIndex];
-				WritePixel(pixel);
+				buf[bufOffset] = palette[pixel];
+				bufOffset++;
+				if (bufOffset == bufLength)
+					bufOffset = 0;
 
 				// put the pixel from the background buffer into the main buffer
 				pixel = pixelBackgroundBuffer[pixelBackgroundBufferIndex];
