@@ -641,15 +641,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Peek(int addr)
 		{
-			return 0;
+			return ReadRegister((ushort)(addr & 0x1F));
 		}
 
 		public void Poke(int addr, byte val)
 		{
+			WriteRegister((ushort)(addr & 0x1F), val);
 		}
 
 		public byte Read(ushort addr)
 		{
+			addr &= 0x1F;
 			byte result = 0x00;
 			switch (addr)
 			{
@@ -694,60 +696,75 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						(envelopes[0].Release)
 						);
 					break;
-				case 0x07: result = (byte)voices[0].FrequencyLo; break;
-				case 0x08: result = (byte)voices[0].FrequencyHi; break;
-				case 0x09: result = (byte)voices[0].PulseWidthLo; break;
-				case 0x0A: result = (byte)voices[0].PulseWidthHi; break;
+				case 0x07: result = (byte)voices[1].FrequencyLo; break;
+				case 0x08: result = (byte)voices[1].FrequencyHi; break;
+				case 0x09: result = (byte)voices[1].PulseWidthLo; break;
+				case 0x0A: result = (byte)voices[1].PulseWidthHi; break;
 				case 0x0B:
 					result = (byte)(
-						(envelopes[0].Gate ? 0x01 : 0x00) |
-						(voices[0].Sync ? 0x02 : 0x00) |
-						(voices[0].RingMod ? 0x04 : 0x00) |
-						(voices[0].Test ? 0x08 : 0x00) |
-						(byte)(voices[0].Waveform << 4)
+						(envelopes[1].Gate ? 0x01 : 0x00) |
+						(voices[1].Sync ? 0x02 : 0x00) |
+						(voices[1].RingMod ? 0x04 : 0x00) |
+						(voices[1].Test ? 0x08 : 0x00) |
+						(byte)(voices[1].Waveform << 4)
 						);
 					break;
 				case 0x0C:
 					result = (byte)(
-						(envelopes[0].Attack << 4) |
-						(envelopes[0].Decay)
+						(envelopes[1].Attack << 4) |
+						(envelopes[1].Decay)
 						);
 					break;
 				case 0x0D:
 					result = (byte)(
-						(envelopes[0].Sustain << 4) |
-						(envelopes[0].Release)
+						(envelopes[1].Sustain << 4) |
+						(envelopes[1].Release)
 						);
 					break;
-				case 0x0E: result = (byte)voices[0].FrequencyLo; break;
-				case 0x0F: result = (byte)voices[0].FrequencyHi; break;
-				case 0x10: result = (byte)voices[0].PulseWidthLo; break;
-				case 0x11: result = (byte)voices[0].PulseWidthHi; break;
+				case 0x0E: result = (byte)voices[2].FrequencyLo; break;
+				case 0x0F: result = (byte)voices[2].FrequencyHi; break;
+				case 0x10: result = (byte)voices[2].PulseWidthLo; break;
+				case 0x11: result = (byte)voices[2].PulseWidthHi; break;
 				case 0x12:
 					result = (byte)(
-						(envelopes[0].Gate ? 0x01 : 0x00) |
-						(voices[0].Sync ? 0x02 : 0x00) |
-						(voices[0].RingMod ? 0x04 : 0x00) |
-						(voices[0].Test ? 0x08 : 0x00) |
-						(byte)(voices[0].Waveform << 4)
+						(envelopes[2].Gate ? 0x01 : 0x00) |
+						(voices[2].Sync ? 0x02 : 0x00) |
+						(voices[2].RingMod ? 0x04 : 0x00) |
+						(voices[2].Test ? 0x08 : 0x00) |
+						(byte)(voices[2].Waveform << 4)
 						);
 					break;
 				case 0x13:
 					result = (byte)(
-						(envelopes[0].Attack << 4) |
-						(envelopes[0].Decay)
+						(envelopes[2].Attack << 4) |
+						(envelopes[2].Decay)
 						);
 					break;
 				case 0x14:
 					result = (byte)(
-						(envelopes[0].Sustain << 4) |
-						(envelopes[0].Release)
+						(envelopes[2].Sustain << 4) |
+						(envelopes[2].Release)
 						);
 					break;
-				case 0x15: break;
-				case 0x16: break;
-				case 0x17: break;
-				case 0x18: break;
+				case 0x15: result = (byte)(filterFrequency & 0x7); break;
+				case 0x16: result = (byte)((filterFrequency >> 3) & 0xFF); break;
+				case 0x17:
+					result = (byte)(
+						(filterEnable[0] ? 0x01 : 0x00) |
+						(filterEnable[1] ? 0x02 : 0x00) |
+						(filterEnable[2] ? 0x04 : 0x00) |
+						(byte)(filterResonance << 4)
+						);
+					break;
+				case 0x18:
+					result = (byte)(
+						(byte)volume |
+						(filterSelectLoPass ? 0x10 : 0x00) |
+						(filterSelectBandPass ? 0x20 : 0x00) |
+						(filterSelectHiPass ? 0x40 : 0x00) |
+						(disableVoice3 ? 0x80 : 0x00)
+						);
+					break;
 				case 0x19: result = (byte)potX; break;
 				case 0x1A: result = (byte)potY;	break;
 				case 0x1B: result = (byte)(voices[2].Oscillator >> 4); break;
@@ -759,6 +776,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void Write(ushort addr, byte val)
 		{
+			addr &= 0x1F;
+			switch (addr)
+			{
+				case 0x19:
+				case 0x1A:
+				case 0x1B:
+				case 0x1C:
+				case 0x1D:
+				case 0x1E:
+				case 0x1F:
+					// can't write to these
+					break;
+				default:
+					WriteRegister(addr, val);
+					break;
+			}
 		}
 
 		private void WriteRegister(ushort addr, byte val)

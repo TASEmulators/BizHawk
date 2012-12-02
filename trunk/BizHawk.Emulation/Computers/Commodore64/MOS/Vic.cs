@@ -20,10 +20,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			public uint mc;
 			public uint mcbase;
 			public bool multicolor;
+			public bool multicolorCrunch;
 			public uint pointer;
 			public bool priority;
+			public bool shiftEnable;
 			public uint sr;
 			public uint x;
+			public bool xCrunch;
 			public bool xExpand;
 			public uint y;
 			public bool yCrunch;
@@ -42,8 +45,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				multicolor = false;
 				pointer = 0;
 				priority = false;
+				shiftEnable = false;
 				sr = 0;
 				x = 0;
+				xCrunch = false;
 				xExpand = false;
 				y = 0;
 				yCrunch = false;
@@ -455,9 +460,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					{
 						case 0x00:
 							// fetch P
-							addr = (ushort)(0x1F8 | (pointerVM << 10) | cycleFetchSpriteIndex);
+							addr = (ushort)(0x3F8 | (pointerVM << 10) | cycleFetchSpriteIndex);
 							bus = chips.pla.ReadVic(addr);
 							sprites[cycleFetchSpriteIndex].pointer = bus;
+							sprites[cycleFetchSpriteIndex].shiftEnable = false;
 							break;
 						case 0x10:
 						case 0x20:
@@ -510,6 +516,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					Sprite spr = sprites[i];
 					if (spr.yCrunch)
 						spr.mcbase += 2;
+					spr.shiftEnable = false;
+					spr.xCrunch = !spr.xExpand;
 				}
 			}
 			if ((act & pipelineChkSprDisp) != 0)
@@ -607,8 +615,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					borderOnMain = true;
 				}
 
-				// render visible pixel
+				// recall pixel from buffer
 				pixel = pixelBuffer[pixelBufferIndex];
+
 				buf[bufOffset] = palette[pixel];
 				bufOffset++;
 				if (bufOffset == bufLength)
@@ -617,10 +626,55 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				// put the pixel from the background buffer into the main buffer
 				pixel = pixelBackgroundBuffer[pixelBackgroundBufferIndex];
 
+				// render sprite
+				uint pixelOwner = 8;
+				for (uint j = 0; j < 8; j++)
+				{
+					uint sprData;
+					uint sprPixel = pixel;
+
+					Sprite spr = sprites[j];
+
+					if (spr.x == rasterX)
+						spr.shiftEnable = true;
+
+					if (spr.shiftEnable)
+					{
+						if (spr.multicolor)
+						{
+							sprData = (spr.sr & 0xC00000) >> 22;
+							if (spr.multicolorCrunch && spr.xCrunch)
+								spr.sr <<= 2;
+							spr.multicolorCrunch ^= spr.xCrunch;
+						}
+						else
+						{
+							sprData = (spr.sr & 0x800000) >> 22;
+							if (spr.xCrunch)
+								spr.sr <<= 1;
+						}
+						spr.xCrunch ^= spr.xExpand;
+						switch (sprData)
+						{
+							case 1: sprPixel = spriteMulticolor0; break;
+							case 2: sprPixel = spr.color; break;
+							case 3: sprPixel = spriteMulticolor1; break;
+						}
+						if (sprData != 0 && pixelOwner >= 8)
+						{
+							pixel = sprPixel;
+							pixelOwner = j;
+						}
+						if (spr.sr == 0)
+							spr.shiftEnable = false; //optimization
+					}
+				}
+
 				// border doesn't work with the background buffer
 				if (borderOnMain || borderOnVertical)
 					pixel = borderColor; 
 
+				// store pixel in buffer
 				pixelBuffer[pixelBufferIndex] = pixel;
 
 				// fill shift register
