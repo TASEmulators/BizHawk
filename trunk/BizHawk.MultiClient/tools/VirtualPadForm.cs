@@ -301,6 +301,16 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+			else
+			{
+				if (!Global.Config.VirtualPadSticky)
+				{
+					foreach (IVirtualPad v in Pads)
+					{
+						v.Clear();
+					}
+				}
+			}
 		}
 
 		private void StickyBox_CheckedChanged(object sender, EventArgs e)

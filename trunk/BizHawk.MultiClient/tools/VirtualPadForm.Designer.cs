@@ -124,7 +124,6 @@
 			// 
 			this.StickyBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.StickyBox.AutoSize = true;
-			this.StickyBox.Enabled = false;
 			this.StickyBox.Location = new System.Drawing.Point(9, 283);
 			this.StickyBox.Name = "StickyBox";
 			this.StickyBox.Size = new System.Drawing.Size(55, 17);
