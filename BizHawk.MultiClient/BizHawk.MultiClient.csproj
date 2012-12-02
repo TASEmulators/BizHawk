@@ -992,6 +992,7 @@
     <None Include="images\C64Symbol.png" />
     <None Include="images\LightOff.png" />
     <None Include="images\LightOn.png" />
+    <None Include="images\Both.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

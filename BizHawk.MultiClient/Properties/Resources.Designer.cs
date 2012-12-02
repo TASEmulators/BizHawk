@@ -123,6 +123,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Both {
+            get {
+                object obj = ResourceManager.GetObject("Both", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Bug {
             get {
                 object obj = ResourceManager.GetObject("Bug", resourceCulture);
