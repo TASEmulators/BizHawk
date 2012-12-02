@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			// configure data port defaults
 			portDir = 0x00;
-			SetPortData(0x1F);
+			SetPortData(0x17);
 
 			// todo: verify this value (I only know that unconnected bits fade after a number of cycles)
 			unusedPinTTLCycles = 40;
@@ -200,9 +200,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			pinCassetteButton = ((val & 0x10) != 0);
 			pinCassetteMotor = ((val & 0x20) != 0);
 
-			pinLoram = ((val & 0x01) != 0);
-			pinHiram = ((val & 0x02) != 0);
-			pinCharen = ((val & 0x04) != 0);
+			pinLoram = ((val & 0x01) != 0) || ((portDir & 0x01) == 0);
+			pinHiram = ((val & 0x02) != 0) || ((portDir & 0x02) == 0);
+			pinCharen = ((val & 0x04) != 0) || ((portDir & 0x04) == 0);
 
 			unusedPin0 = ((val & 0x40) != 0);
 			unusedPin1 = ((val & 0x80) != 0);
@@ -213,7 +213,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private void SetPortDir(byte val)
 		{
 			portDir = val;
-			//SetPortData((byte)(PortData | ((byte)~val & 0x1F)));
+			SetPortData(PortData);
 		}
 
 		// ------------------------------------
