@@ -119,6 +119,7 @@ namespace BizHawk.MultiClient
 
 			Global.CheatList = new CheatList();
 			UpdateStatusSlots();
+			UpdateKeyPriorityIcon();
 
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			//we could background thread this later instead if we wanted to be real clever
@@ -4699,16 +4700,19 @@ namespace BizHawk.MultiClient
 		private void bothHotkeysAndControllersToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Input_Hotkey_OverrideOptions = 0;
+			UpdateKeyPriorityIcon();
 		}
 
 		private void inputOverridesHotkeysToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Input_Hotkey_OverrideOptions = 1;
+			UpdateKeyPriorityIcon();
 		}
 
 		private void hotkeysOverrideInputToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Input_Hotkey_OverrideOptions = 2;
+			UpdateKeyPriorityIcon();
 		}
 
 		private void keyPriorityToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -4730,6 +4734,44 @@ namespace BizHawk.MultiClient
 					bothHotkeysAndControllersToolStripMenuItem.Checked = false;
 					inputOverridesHotkeysToolStripMenuItem.Checked = false;
 					hotkeysOverrideInputToolStripMenuItem.Checked = true;
+					break;
+			}
+		}
+
+		private void KeyPriorityStatusBarLabel_Click(object sender, EventArgs e)
+		{
+			switch (Global.Config.Input_Hotkey_OverrideOptions)
+			{
+				default:
+				case 0:
+					Global.Config.Input_Hotkey_OverrideOptions = 1;
+					break;
+				case 1:
+					Global.Config.Input_Hotkey_OverrideOptions = 2;
+					break;
+				case 2:
+					Global.Config.Input_Hotkey_OverrideOptions = 0;
+					break;
+			}
+			UpdateKeyPriorityIcon();
+		}
+
+		private void UpdateKeyPriorityIcon()
+		{
+			switch (Global.Config.Input_Hotkey_OverrideOptions)
+			{
+				default:
+				case 0:
+					KeyPriorityStatusBarLabel.Image = BizHawk.MultiClient.Properties.Resources.Both;
+					KeyPriorityStatusBarLabel.ToolTipText = "Key priority: Allow both hotkeys and controller buttons";
+					break;
+				case 1:
+					KeyPriorityStatusBarLabel.Image = BizHawk.MultiClient.Properties.Resources.GameController;
+					KeyPriorityStatusBarLabel.ToolTipText = "Key priority: Controller buttons will override hotkeys";
+					break;
+				case 2:
+					KeyPriorityStatusBarLabel.Image = BizHawk.MultiClient.Properties.Resources.HotKeys;
+					KeyPriorityStatusBarLabel.ToolTipText = "Key priority: Hotkeys will override controller buttons";
 					break;
 			}
 		}
