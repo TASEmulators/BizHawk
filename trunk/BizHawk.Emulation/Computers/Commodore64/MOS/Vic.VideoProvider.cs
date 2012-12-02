@@ -58,13 +58,5 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			get { return bufWidth; }
 		}
-
-		private void WritePixel(uint pixel)
-		{
-			buf[bufOffset] = palette[pixel];
-			bufOffset++;
-			if (bufOffset == bufLength)
-				bufOffset = 0;
-		}
 	}
 }

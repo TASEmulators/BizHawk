@@ -70,9 +70,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase2()
 		{
-			if (chips.vic.BA)
-				freezeCpu = false;
-
 			if (chips.vic.AEC && !freezeCpu)
 			{
 				// the 6502 core expects active high
@@ -87,6 +84,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				cpu.IRQ = !(chips.vic.IRQ && chips.cia0.IRQ && chips.cartPort.IRQ);
 				cpu.ExecuteOne();
 			}
+
+			// unfreeze cpu if BA is high
+			if (chips.vic.BA) freezeCpu = false;
 
 			// process unused pin TTL
 			if (unusedPinTTL0 == 0)
