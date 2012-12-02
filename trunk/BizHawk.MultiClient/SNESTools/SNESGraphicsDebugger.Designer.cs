@@ -187,6 +187,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.txtBG1SizeBits = new System.Windows.Forms.TextBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.tabctrlDetails = new System.Windows.Forms.TabControl();
 			this.tpPalette = new System.Windows.Forms.TabPage();
 			this.txtPaletteDetailsIndexSpecific = new System.Windows.Forms.TextBox();
@@ -200,6 +201,13 @@
 			this.lblDetailsOBJOrBG = new System.Windows.Forms.Label();
 			this.pnDetailsPaletteColor = new System.Windows.Forms.Panel();
 			this.tpTile = new System.Windows.Forms.TabPage();
+			this.txtTileMode = new System.Windows.Forms.TextBox();
+			this.label18 = new System.Windows.Forms.Label();
+			this.txtTileColors = new System.Windows.Forms.TextBox();
+			this.txtTileBpp = new System.Windows.Forms.TextBox();
+			this.label42 = new System.Windows.Forms.Label();
+			this.txtTileAddress = new System.Windows.Forms.TextBox();
+			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.tpMapEntry = new System.Windows.Forms.TabPage();
 			this.checkMapEntryVFlip = new System.Windows.Forms.CheckBox();
 			this.label34 = new System.Windows.Forms.Label();
@@ -213,14 +221,12 @@
 			this.txtMapEntryPrio = new System.Windows.Forms.TextBox();
 			this.txtMapEntryLocation = new System.Windows.Forms.TextBox();
 			this.txtMapEntryTileNum = new System.Windows.Forms.TextBox();
+			this.viewerMapEntryTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.tpOBJ = new System.Windows.Forms.TabPage();
 			this.viewerPanel = new System.Windows.Forms.Panel();
+			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.messagetimer = new System.Windows.Forms.Timer(this.components);
-			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
-			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
-			this.viewerMapEntryTile = new BizHawk.MultiClient.SNESGraphicsViewer();
-			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -528,7 +534,7 @@
 			this.groupBox6.Controls.Add(this.labelClipboard);
 			this.groupBox6.Location = new System.Drawing.Point(2, 495);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(161, 38);
+			this.groupBox6.Size = new System.Drawing.Size(220, 38);
 			this.groupBox6.TabIndex = 50;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Copy to Clipboard";
@@ -833,9 +839,9 @@
 			this.label30.AutoSize = true;
 			this.label30.Location = new System.Drawing.Point(32, 252);
 			this.label30.Name = "label30";
-			this.label30.Size = new System.Drawing.Size(45, 13);
+			this.label30.Size = new System.Drawing.Size(46, 13);
 			this.label30.TabIndex = 53;
-			this.label30.Text = "T1.Addr";
+			this.label30.Text = "@Tiles1";
 			// 
 			// checkEN1_BG4
 			// 
@@ -892,9 +898,9 @@
 			this.label29.AutoSize = true;
 			this.label29.Location = new System.Drawing.Point(32, 233);
 			this.label29.Name = "label29";
-			this.label29.Size = new System.Drawing.Size(47, 13);
+			this.label29.Size = new System.Drawing.Size(46, 13);
 			this.label29.TabIndex = 50;
-			this.label29.Text = "TD.Addr";
+			this.label29.Text = "@Tiles0";
 			// 
 			// checkEN1_BG1
 			// 
@@ -1972,6 +1978,18 @@
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Palette";
 			// 
+			// paletteViewer
+			// 
+			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
+			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
+			this.paletteViewer.Name = "paletteViewer";
+			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
+			this.paletteViewer.TabIndex = 18;
+			this.paletteViewer.TabStop = false;
+			this.paletteViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseClick);
+			this.paletteViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseDown);
+			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
+			// 
 			// tabctrlDetails
 			// 
 			this.tabctrlDetails.Controls.Add(this.tpPalette);
@@ -2105,6 +2123,12 @@
 			// 
 			// tpTile
 			// 
+			this.tpTile.Controls.Add(this.txtTileMode);
+			this.tpTile.Controls.Add(this.label18);
+			this.tpTile.Controls.Add(this.txtTileColors);
+			this.tpTile.Controls.Add(this.txtTileBpp);
+			this.tpTile.Controls.Add(this.label42);
+			this.tpTile.Controls.Add(this.txtTileAddress);
 			this.tpTile.Controls.Add(this.viewerTile);
 			this.tpTile.Location = new System.Drawing.Point(4, 22);
 			this.tpTile.Name = "tpTile";
@@ -2113,6 +2137,73 @@
 			this.tpTile.TabIndex = 1;
 			this.tpTile.Text = "Tile";
 			this.tpTile.UseVisualStyleBackColor = true;
+			// 
+			// txtTileMode
+			// 
+			this.txtTileMode.Location = new System.Drawing.Point(132, 6);
+			this.txtTileMode.Multiline = true;
+			this.txtTileMode.Name = "txtTileMode";
+			this.txtTileMode.ReadOnly = true;
+			this.txtTileMode.Size = new System.Drawing.Size(66, 18);
+			this.txtTileMode.TabIndex = 62;
+			this.txtTileMode.Text = "Text 8bpp";
+			// 
+			// label18
+			// 
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(172, 49);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(36, 13);
+			this.label18.TabIndex = 61;
+			this.label18.Text = "Colors";
+			// 
+			// txtTileColors
+			// 
+			this.txtTileColors.Location = new System.Drawing.Point(132, 48);
+			this.txtTileColors.Multiline = true;
+			this.txtTileColors.Name = "txtTileColors";
+			this.txtTileColors.ReadOnly = true;
+			this.txtTileColors.Size = new System.Drawing.Size(36, 17);
+			this.txtTileColors.TabIndex = 60;
+			this.txtTileColors.Text = "32768";
+			// 
+			// txtTileBpp
+			// 
+			this.txtTileBpp.Location = new System.Drawing.Point(132, 29);
+			this.txtTileBpp.Multiline = true;
+			this.txtTileBpp.Name = "txtTileBpp";
+			this.txtTileBpp.ReadOnly = true;
+			this.txtTileBpp.Size = new System.Drawing.Size(24, 17);
+			this.txtTileBpp.TabIndex = 59;
+			this.txtTileBpp.Text = "8";
+			// 
+			// label42
+			// 
+			this.label42.AutoSize = true;
+			this.label42.Location = new System.Drawing.Point(173, 31);
+			this.label42.Name = "label42";
+			this.label42.Size = new System.Drawing.Size(32, 13);
+			this.label42.TabIndex = 58;
+			this.label42.Text = "Bpp; ";
+			// 
+			// txtTileAddress
+			// 
+			this.txtTileAddress.Location = new System.Drawing.Point(76, 6);
+			this.txtTileAddress.Multiline = true;
+			this.txtTileAddress.Name = "txtTileAddress";
+			this.txtTileAddress.ReadOnly = true;
+			this.txtTileAddress.Size = new System.Drawing.Size(50, 18);
+			this.txtTileAddress.TabIndex = 57;
+			this.txtTileAddress.Text = "@DDDD";
+			// 
+			// viewerTile
+			// 
+			this.viewerTile.BackColor = System.Drawing.Color.Transparent;
+			this.viewerTile.Location = new System.Drawing.Point(6, 6);
+			this.viewerTile.Name = "viewerTile";
+			this.viewerTile.Size = new System.Drawing.Size(64, 64);
+			this.viewerTile.TabIndex = 19;
+			this.viewerTile.TabStop = false;
 			// 
 			// tpMapEntry
 			// 
@@ -2254,6 +2345,15 @@
 			this.txtMapEntryTileNum.TabIndex = 39;
 			this.txtMapEntryTileNum.Text = "$1024";
 			// 
+			// viewerMapEntryTile
+			// 
+			this.viewerMapEntryTile.BackColor = System.Drawing.Color.Transparent;
+			this.viewerMapEntryTile.Location = new System.Drawing.Point(6, 6);
+			this.viewerMapEntryTile.Name = "viewerMapEntryTile";
+			this.viewerMapEntryTile.Size = new System.Drawing.Size(64, 64);
+			this.viewerMapEntryTile.TabIndex = 20;
+			this.viewerMapEntryTile.TabStop = false;
+			// 
 			// tpOBJ
 			// 
 			this.tpOBJ.Location = new System.Drawing.Point(4, 22);
@@ -2275,47 +2375,6 @@
 			this.viewerPanel.Size = new System.Drawing.Size(517, 667);
 			this.viewerPanel.TabIndex = 1;
 			// 
-			// toolTip1
-			// 
-			this.toolTip1.AutoPopDelay = 5000;
-			this.toolTip1.InitialDelay = 250;
-			this.toolTip1.ReshowDelay = 100;
-			// 
-			// messagetimer
-			// 
-			this.messagetimer.Interval = 5000;
-			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
-			// 
-			// paletteViewer
-			// 
-			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
-			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
-			this.paletteViewer.Name = "paletteViewer";
-			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
-			this.paletteViewer.TabIndex = 18;
-			this.paletteViewer.TabStop = false;
-			this.paletteViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseClick);
-			this.paletteViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseDown);
-			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
-			// 
-			// viewerTile
-			// 
-			this.viewerTile.BackColor = System.Drawing.Color.Transparent;
-			this.viewerTile.Location = new System.Drawing.Point(6, 6);
-			this.viewerTile.Name = "viewerTile";
-			this.viewerTile.Size = new System.Drawing.Size(64, 64);
-			this.viewerTile.TabIndex = 19;
-			this.viewerTile.TabStop = false;
-			// 
-			// viewerMapEntryTile
-			// 
-			this.viewerMapEntryTile.BackColor = System.Drawing.Color.Transparent;
-			this.viewerMapEntryTile.Location = new System.Drawing.Point(6, 6);
-			this.viewerMapEntryTile.Name = "viewerMapEntryTile";
-			this.viewerMapEntryTile.Size = new System.Drawing.Size(64, 64);
-			this.viewerMapEntryTile.TabIndex = 20;
-			this.viewerMapEntryTile.TabStop = false;
-			// 
 			// viewer
 			// 
 			this.viewer.BackColor = System.Drawing.Color.Transparent;
@@ -2327,6 +2386,17 @@
 			this.viewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseDown);
 			this.viewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseMove);
 			this.viewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseUp);
+			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutoPopDelay = 5000;
+			this.toolTip1.InitialDelay = 250;
+			this.toolTip1.ReshowDelay = 100;
+			// 
+			// messagetimer
+			// 
+			this.messagetimer.Interval = 5000;
+			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
 			// 
 			// SNESGraphicsDebugger
 			// 
@@ -2367,6 +2437,7 @@
 			this.tpPalette.ResumeLayout(false);
 			this.tpPalette.PerformLayout();
 			this.tpTile.ResumeLayout(false);
+			this.tpTile.PerformLayout();
 			this.tpMapEntry.ResumeLayout(false);
 			this.tpMapEntry.PerformLayout();
 			this.viewerPanel.ResumeLayout(false);
@@ -2568,5 +2639,11 @@
 		private System.Windows.Forms.Label labelMemory;
 		private System.Windows.Forms.TextBox txtBG1MapSizeBytes;
 		private System.Windows.Forms.TextBox txtBG1SizeInTiles;
+		private System.Windows.Forms.TextBox txtTileMode;
+		private System.Windows.Forms.Label label18;
+		private System.Windows.Forms.TextBox txtTileColors;
+		private System.Windows.Forms.TextBox txtTileBpp;
+		private System.Windows.Forms.Label label42;
+		private System.Windows.Forms.TextBox txtTileAddress;
 	}
 }
