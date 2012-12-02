@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public enum BGMode
 		{
-			Unavailable, Text, Mode7, Mode7Ext, Mode7DC
+			Unavailable, Text, Mode7, Mode7Ext, Mode7DC, OBJ
 		}
 
 
