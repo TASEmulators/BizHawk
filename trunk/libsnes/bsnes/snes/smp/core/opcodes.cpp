@@ -540,6 +540,10 @@ void SMPcore::op_stw_dp() {
 
 void SMPcore::op_wait() {
   while(true) {
+    if(scheduler.sync == Scheduler::SynchronizeMode::All) {
+	  regs.pc--; // repeat this opcode on next run
+      scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
+    }
     op_io();
     op_io();
   }
