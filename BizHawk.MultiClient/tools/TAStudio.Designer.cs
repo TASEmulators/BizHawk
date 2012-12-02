@@ -693,6 +693,7 @@
 			this.Name = "TAStudio";
 			this.Text = "TAStudio";
 			this.Load += new System.EventHandler(this.TAStudio_Load);
+			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TAStudio_KeyPress);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);

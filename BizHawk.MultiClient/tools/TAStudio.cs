@@ -777,5 +777,10 @@ namespace BizHawk.MultiClient
 				Global.MainForm.TogglePause();
 			}
 		}
+
+		private void TAStudio_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			Global.MainForm.ProcessInput();
+		}
 	}
 }
