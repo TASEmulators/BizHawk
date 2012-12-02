@@ -83,6 +83,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			Unavailable, Text, Mode7, Mode7Ext, Mode7DC
 		}
 
+
+		/// <summary>
+		/// is a BGMode a mode7 type (mode7, mode7ext, mode7DC)
+		/// </summary>
+		public static bool BGModeIsMode7Type(BGMode BGMode) { return BGMode == SNESGraphicsDecoder.BGMode.Mode7 || BGMode == SNESGraphicsDecoder.BGMode.Mode7DC || BGMode == SNESGraphicsDecoder.BGMode.Mode7Ext; }
+
+
 		/// <summary>
 		/// this class is not 'smart' - it wont recompute values for you. it's meant to be read only (we should find some way to protect write access to make that clear)
 		/// </summary>
@@ -100,7 +107,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			/// <summary>
 			/// is this BGMode a mode7 type (mode7, mode7ext, mode7DC)
 			/// </summary>
-			public bool BGModeIsMode7Type { get { return BGMode == SNESGraphicsDecoder.BGMode.Mode7 || BGMode == SNESGraphicsDecoder.BGMode.Mode7DC || BGMode == SNESGraphicsDecoder.BGMode.Mode7Ext; } }
+			public bool BGModeIsMode7Type { get { return BGModeIsMode7Type(BGMode); } }
 
 			/// <summary>
 			/// Is the layer even enabled?
