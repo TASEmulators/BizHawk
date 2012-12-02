@@ -449,6 +449,8 @@ namespace BizHawk.MultiClient
 				case eDisplayType.TilesMode7: return SNESGraphicsDecoder.BGMode.Mode7;
 				case eDisplayType.TilesMode7Ext: return SNESGraphicsDecoder.BGMode.Mode7Ext;
 				case eDisplayType.TilesMode7DC: return SNESGraphicsDecoder.BGMode.Mode7DC;
+				case eDisplayType.OBJ0: return SNESGraphicsDecoder.BGMode.OBJ;
+				case eDisplayType.OBJ1: return SNESGraphicsDecoder.BGMode.OBJ;
 				default: throw new InvalidOperationException();
 			}
 		}
@@ -691,6 +693,7 @@ namespace BizHawk.MultiClient
 		{
 			if (mode == SNESGraphicsDecoder.BGMode.Unavailable) return "Unavailable";
 			if (mode == SNESGraphicsDecoder.BGMode.Text) return string.Format("Text{0}bpp", bpp);
+			if (mode == SNESGraphicsDecoder.BGMode.OBJ) return string.Format("OBJ", bpp);
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7) return "Mode7";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7Ext) return "Mode7Ext";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7DC) return "Mode7DC";
@@ -706,7 +709,9 @@ namespace BizHawk.MultiClient
 			txtTileMode.Text = BGModeShortName(mode, bpp);
 			txtTileBpp.Text = currTileDataState.Bpp.ToString();
 			txtTileColors.Text = (1 << currTileDataState.Bpp).ToString();
+			txtTileNumber.Text = string.Format("#${0:X3}", currTileDataState.Tile);
 			txtTileAddress.Text = string.Format("@{0:X4}", currTileDataState.Address);
+			txtTilePalette.Text = string.Format("#{0:X2}", currTileDataState.Palette);
 		}
 
 		void UpdateMapEntryDetails()
@@ -778,6 +783,11 @@ namespace BizHawk.MultiClient
 			bool valid = TranslatePaletteCoord(e.Location, out pt);
 			if (!valid) return;
 			selectedColorNum = pt.Y * 16 + pt.X;
+
+			if (currTileDataState != null)
+			{
+				currTileDataState.Palette = currPaletteSelection.start;
+			}
 
 			SyncColorSelection();
 			UpdateValues();
@@ -912,8 +922,16 @@ namespace BizHawk.MultiClient
 			public int Bpp;
 			public int Tile;
 			public int Address;
+			public int Palette;
 		}
 		TileDataState currTileDataState;
+
+		class ObjDataState
+		{
+			public int Number;
+			public SNESGraphicsDecoder.OAMInfo OAMInfo;
+		}
+		ObjDataState currObjDataState;
 
 		void RenderTileView()
 		{
@@ -955,6 +973,12 @@ namespace BizHawk.MultiClient
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, true, false, 1, currTileDataState.Tile, 1);
 				else if (currTileDataState.Type == eDisplayType.TilesMode7DC)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, true, 1, currTileDataState.Tile, 1);
+				else if (currTileDataState.Type == eDisplayType.OBJ0 || currTileDataState.Type == eDisplayType.OBJ1)
+				{ 
+					//render an obj tile
+					int tile = currTileDataState.Address / 32;
+					gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, tile, 1);
+				}
 				else gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, currTileDataState.Tile, 1);
 
 				bmp.UnlockBits(bmpdata);
@@ -973,17 +997,38 @@ namespace BizHawk.MultiClient
 			int tilesTall = pxtall / 8;
 			if (tx < 0 || ty < 0 || tx >= tilestride || ty >= tilesTall)
 				return;
+			int tilenum = ty * tilestride + tx;
 			currTileDataState = new TileDataState();
 			currTileDataState.Bpp = bpp;
 			currTileDataState.Type = CurrDisplaySelection;
-			currTileDataState.Tile = ty * tilestride + tx;
+			currTileDataState.Tile = tilenum;
 			currTileDataState.Address = (bpp==7?8:bpp) * 8 * currTileDataState.Tile;
-			if (SNESGraphicsDecoder.BGModeIsMode7Type(BGModeForDisplayType(CurrDisplaySelection)))
+			currTileDataState.Palette = currPaletteSelection.start;
+			if (CurrDisplaySelection == eDisplayType.OBJ0 || CurrDisplaySelection == eDisplayType.OBJ1)
+			{
+				//adjust address according to 
+				if (tilenum < 256)
+					currTileDataState.Address += si.OBJTable0Addr;
+				else
+					currTileDataState.Address += si.OBJTable1Addr - (256*32);
+
+				currTileDataState.Address &= 0xFFFF;
+			}
+			else if (SNESGraphicsDecoder.BGModeIsMode7Type(BGModeForDisplayType(CurrDisplaySelection)))
 			{
 				currTileDataState.Address *= 2;
 			}
 
 			SetTab(tpTile);
+		}
+
+		void HandleSpriteMouseOver(int px, int py)
+		{
+			//currViewingSprite = tx + ty * 16;
+			//RenderView(); //remember, we were going to highlight the selected sprite somehow as we hover over it
+			int ox = px / 64;
+			int oy = py / 64;
+			//if(ox<0 || oy<0 || ox> 
 		}
 
 		void SetTab(TabPage tpSet)
@@ -1002,13 +1047,19 @@ namespace BizHawk.MultiClient
 		{
 			currMapEntryState = null;
 			currTileDataState = null;
+			currObjDataState = null;
+
 			int tx = loc.X / 8;
 			int ty = loc.Y / 8;
+
 			switch (CurrDisplaySelection)
 			{
+				case eDisplayType.OBJ0:
+				case eDisplayType.OBJ1:
+					HandleTileViewMouseOver(128, 256, 4, tx, ty);
+					break;
 				case eDisplayType.Sprites:
-					//currViewingSprite = tx + ty * 16;
-					RenderView();
+					HandleSpriteMouseOver(loc.X, loc.Y);
 					break;
 				case eDisplayType.Tiles2bpp:
 					HandleTileViewMouseOver(512, 512, 2, tx, ty);

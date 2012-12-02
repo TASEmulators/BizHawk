@@ -201,6 +201,7 @@
 			this.lblDetailsOBJOrBG = new System.Windows.Forms.Label();
 			this.pnDetailsPaletteColor = new System.Windows.Forms.Panel();
 			this.tpTile = new System.Windows.Forms.TabPage();
+			this.txtTileNumber = new System.Windows.Forms.TextBox();
 			this.txtTileMode = new System.Windows.Forms.TextBox();
 			this.label18 = new System.Windows.Forms.Label();
 			this.txtTileColors = new System.Windows.Forms.TextBox();
@@ -223,10 +224,19 @@
 			this.txtMapEntryTileNum = new System.Windows.Forms.TextBox();
 			this.viewerMapEntryTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.tpOBJ = new System.Windows.Forms.TabPage();
+			this.txtObjNumber = new System.Windows.Forms.TextBox();
+			this.txtObjCoord = new System.Windows.Forms.TextBox();
+			this.checkBox1 = new System.Windows.Forms.CheckBox();
+			this.label43 = new System.Windows.Forms.Label();
+			this.checkBox2 = new System.Windows.Forms.CheckBox();
+			this.label44 = new System.Windows.Forms.Label();
+			this.viewerObj = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewerPanel = new System.Windows.Forms.Panel();
 			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.messagetimer = new System.Windows.Forms.Timer(this.components);
+			this.txtTilePalette = new System.Windows.Forms.TextBox();
+			this.label45 = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -244,6 +254,7 @@
 			this.tpPalette.SuspendLayout();
 			this.tpTile.SuspendLayout();
 			this.tpMapEntry.SuspendLayout();
+			this.tpOBJ.SuspendLayout();
 			this.viewerPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -2123,6 +2134,9 @@
 			// 
 			// tpTile
 			// 
+			this.tpTile.Controls.Add(this.label45);
+			this.tpTile.Controls.Add(this.txtTilePalette);
+			this.tpTile.Controls.Add(this.txtTileNumber);
 			this.tpTile.Controls.Add(this.txtTileMode);
 			this.tpTile.Controls.Add(this.label18);
 			this.tpTile.Controls.Add(this.txtTileColors);
@@ -2138,20 +2152,30 @@
 			this.tpTile.Text = "Tile";
 			this.tpTile.UseVisualStyleBackColor = true;
 			// 
+			// txtTileNumber
+			// 
+			this.txtTileNumber.Location = new System.Drawing.Point(76, 6);
+			this.txtTileNumber.Multiline = true;
+			this.txtTileNumber.Name = "txtTileNumber";
+			this.txtTileNumber.ReadOnly = true;
+			this.txtTileNumber.Size = new System.Drawing.Size(54, 18);
+			this.txtTileNumber.TabIndex = 63;
+			this.txtTileNumber.Text = "#$DDD";
+			// 
 			// txtTileMode
 			// 
-			this.txtTileMode.Location = new System.Drawing.Point(132, 6);
+			this.txtTileMode.Location = new System.Drawing.Point(139, 6);
 			this.txtTileMode.Multiline = true;
 			this.txtTileMode.Name = "txtTileMode";
 			this.txtTileMode.ReadOnly = true;
-			this.txtTileMode.Size = new System.Drawing.Size(66, 18);
+			this.txtTileMode.Size = new System.Drawing.Size(59, 18);
 			this.txtTileMode.TabIndex = 62;
 			this.txtTileMode.Text = "Text 8bpp";
 			// 
 			// label18
 			// 
 			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(172, 49);
+			this.label18.Location = new System.Drawing.Point(169, 49);
 			this.label18.Name = "label18";
 			this.label18.Size = new System.Drawing.Size(36, 13);
 			this.label18.TabIndex = 61;
@@ -2159,28 +2183,28 @@
 			// 
 			// txtTileColors
 			// 
-			this.txtTileColors.Location = new System.Drawing.Point(132, 48);
+			this.txtTileColors.Location = new System.Drawing.Point(139, 48);
 			this.txtTileColors.Multiline = true;
 			this.txtTileColors.Name = "txtTileColors";
 			this.txtTileColors.ReadOnly = true;
-			this.txtTileColors.Size = new System.Drawing.Size(36, 17);
+			this.txtTileColors.Size = new System.Drawing.Size(28, 17);
 			this.txtTileColors.TabIndex = 60;
-			this.txtTileColors.Text = "32768";
+			this.txtTileColors.Text = "256";
 			// 
 			// txtTileBpp
 			// 
-			this.txtTileBpp.Location = new System.Drawing.Point(132, 29);
+			this.txtTileBpp.Location = new System.Drawing.Point(139, 28);
 			this.txtTileBpp.Multiline = true;
 			this.txtTileBpp.Name = "txtTileBpp";
 			this.txtTileBpp.ReadOnly = true;
-			this.txtTileBpp.Size = new System.Drawing.Size(24, 17);
+			this.txtTileBpp.Size = new System.Drawing.Size(28, 17);
 			this.txtTileBpp.TabIndex = 59;
 			this.txtTileBpp.Text = "8";
 			// 
 			// label42
 			// 
 			this.label42.AutoSize = true;
-			this.label42.Location = new System.Drawing.Point(173, 31);
+			this.label42.Location = new System.Drawing.Point(169, 30);
 			this.label42.Name = "label42";
 			this.label42.Size = new System.Drawing.Size(32, 13);
 			this.label42.TabIndex = 58;
@@ -2188,11 +2212,11 @@
 			// 
 			// txtTileAddress
 			// 
-			this.txtTileAddress.Location = new System.Drawing.Point(76, 6);
+			this.txtTileAddress.Location = new System.Drawing.Point(76, 27);
 			this.txtTileAddress.Multiline = true;
 			this.txtTileAddress.Name = "txtTileAddress";
 			this.txtTileAddress.ReadOnly = true;
-			this.txtTileAddress.Size = new System.Drawing.Size(50, 18);
+			this.txtTileAddress.Size = new System.Drawing.Size(54, 18);
 			this.txtTileAddress.TabIndex = 57;
 			this.txtTileAddress.Text = "@DDDD";
 			// 
@@ -2356,12 +2380,86 @@
 			// 
 			// tpOBJ
 			// 
+			this.tpOBJ.Controls.Add(this.txtObjNumber);
+			this.tpOBJ.Controls.Add(this.txtObjCoord);
+			this.tpOBJ.Controls.Add(this.checkBox1);
+			this.tpOBJ.Controls.Add(this.label43);
+			this.tpOBJ.Controls.Add(this.checkBox2);
+			this.tpOBJ.Controls.Add(this.label44);
+			this.tpOBJ.Controls.Add(this.viewerObj);
 			this.tpOBJ.Location = new System.Drawing.Point(4, 22);
 			this.tpOBJ.Name = "tpOBJ";
 			this.tpOBJ.Size = new System.Drawing.Size(206, 94);
 			this.tpOBJ.TabIndex = 3;
 			this.tpOBJ.Text = "OBJ";
 			this.tpOBJ.UseVisualStyleBackColor = true;
+			// 
+			// txtObjNumber
+			// 
+			this.txtObjNumber.Location = new System.Drawing.Point(76, 6);
+			this.txtObjNumber.Multiline = true;
+			this.txtObjNumber.Name = "txtObjNumber";
+			this.txtObjNumber.ReadOnly = true;
+			this.txtObjNumber.Size = new System.Drawing.Size(43, 18);
+			this.txtObjNumber.TabIndex = 68;
+			this.txtObjNumber.Text = "#$DD";
+			// 
+			// txtObjCoord
+			// 
+			this.txtObjCoord.Location = new System.Drawing.Point(125, 6);
+			this.txtObjCoord.Multiline = true;
+			this.txtObjCoord.Name = "txtObjCoord";
+			this.txtObjCoord.ReadOnly = true;
+			this.txtObjCoord.Size = new System.Drawing.Size(65, 18);
+			this.txtObjCoord.TabIndex = 67;
+			this.txtObjCoord.Text = "(-239,-239)";
+			// 
+			// checkBox1
+			// 
+			this.checkBox1.AutoSize = true;
+			this.checkBox1.Enabled = false;
+			this.checkBox1.Location = new System.Drawing.Point(42, 76);
+			this.checkBox1.Name = "checkBox1";
+			this.checkBox1.Size = new System.Drawing.Size(15, 14);
+			this.checkBox1.TabIndex = 65;
+			this.checkBox1.UseVisualStyleBackColor = true;
+			// 
+			// label43
+			// 
+			this.label43.AutoSize = true;
+			this.label43.Location = new System.Drawing.Point(56, 76);
+			this.label43.Name = "label43";
+			this.label43.Size = new System.Drawing.Size(14, 13);
+			this.label43.TabIndex = 66;
+			this.label43.Text = "V";
+			// 
+			// checkBox2
+			// 
+			this.checkBox2.AutoSize = true;
+			this.checkBox2.Enabled = false;
+			this.checkBox2.Location = new System.Drawing.Point(8, 76);
+			this.checkBox2.Name = "checkBox2";
+			this.checkBox2.Size = new System.Drawing.Size(15, 14);
+			this.checkBox2.TabIndex = 63;
+			this.checkBox2.UseVisualStyleBackColor = true;
+			// 
+			// label44
+			// 
+			this.label44.AutoSize = true;
+			this.label44.Location = new System.Drawing.Point(22, 76);
+			this.label44.Name = "label44";
+			this.label44.Size = new System.Drawing.Size(15, 13);
+			this.label44.TabIndex = 64;
+			this.label44.Text = "H";
+			// 
+			// viewerObj
+			// 
+			this.viewerObj.BackColor = System.Drawing.Color.Transparent;
+			this.viewerObj.Location = new System.Drawing.Point(6, 6);
+			this.viewerObj.Name = "viewerObj";
+			this.viewerObj.Size = new System.Drawing.Size(64, 64);
+			this.viewerObj.TabIndex = 21;
+			this.viewerObj.TabStop = false;
 			// 
 			// viewerPanel
 			// 
@@ -2397,6 +2495,25 @@
 			// 
 			this.messagetimer.Interval = 5000;
 			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
+			// 
+			// txtTilePalette
+			// 
+			this.txtTilePalette.Location = new System.Drawing.Point(139, 68);
+			this.txtTilePalette.Multiline = true;
+			this.txtTilePalette.Name = "txtTilePalette";
+			this.txtTilePalette.ReadOnly = true;
+			this.txtTilePalette.Size = new System.Drawing.Size(29, 18);
+			this.txtTilePalette.TabIndex = 64;
+			this.txtTilePalette.Text = "$FF";
+			// 
+			// label45
+			// 
+			this.label45.AutoSize = true;
+			this.label45.Location = new System.Drawing.Point(169, 70);
+			this.label45.Name = "label45";
+			this.label45.Size = new System.Drawing.Size(22, 13);
+			this.label45.TabIndex = 65;
+			this.label45.Text = "Pal";
 			// 
 			// SNESGraphicsDebugger
 			// 
@@ -2440,6 +2557,8 @@
 			this.tpTile.PerformLayout();
 			this.tpMapEntry.ResumeLayout(false);
 			this.tpMapEntry.PerformLayout();
+			this.tpOBJ.ResumeLayout(false);
+			this.tpOBJ.PerformLayout();
 			this.viewerPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -2645,5 +2764,15 @@
 		private System.Windows.Forms.TextBox txtTileBpp;
 		private System.Windows.Forms.Label label42;
 		private System.Windows.Forms.TextBox txtTileAddress;
+		private SNESGraphicsViewer viewerObj;
+		private System.Windows.Forms.TextBox txtObjNumber;
+		private System.Windows.Forms.TextBox txtObjCoord;
+		private System.Windows.Forms.CheckBox checkBox1;
+		private System.Windows.Forms.Label label43;
+		private System.Windows.Forms.CheckBox checkBox2;
+		private System.Windows.Forms.Label label44;
+		private System.Windows.Forms.TextBox txtTileNumber;
+		private System.Windows.Forms.Label label45;
+		private System.Windows.Forms.TextBox txtTilePalette;
 	}
 }
