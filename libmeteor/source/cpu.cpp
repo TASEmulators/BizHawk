@@ -244,6 +244,125 @@ namespace AMeteor
 	// TODO put this in Bios, no ?
 	void Cpu::SoftwareInterrupt (uint32_t comment)
 	{
+		if (true)
+		{
+			char buff[256];
+			int pos = 0;
+			pos += sprintf (buff + pos, "SWI %02xh : ", comment);
+			switch (comment) // no one cares about the sound driver
+			{
+			case 0x00: pos += sprintf (buff + pos, "SoftReset");
+				break;
+			case 0x01: pos += sprintf (buff + pos, "RegisterRamReset"); // todo: display flags
+				break;
+			case 0x02: pos += sprintf (buff + pos, "Halt");
+				break;
+			case 0x03: pos += sprintf (buff + pos, "Stop");
+				break;
+			case 0x04: pos += sprintf (buff + pos, "IntrWait"); // todo: display flags
+				break;
+			case 0x05: pos += sprintf (buff + pos, "VBlankIntrWait");
+				break;
+			case 0x06: pos += sprintf (buff + pos, "Div: ");
+				pos += sprintf (buff + pos, "%08xh/%08xh", R(0), R(1));
+				break;
+			case 0x07: pos += sprintf (buff + pos, "DivArm: ");
+				pos += sprintf (buff + pos, "%08xh/%08xh", R(1), R(0));
+				break;
+			case 0x08: pos += sprintf (buff + pos, "Sqrt: ");
+				pos += sprintf (buff + pos, "sqrt(%08xh)", R(0));
+				break;
+			case 0x09: pos += sprintf (buff + pos, "ArcTan: ");
+				pos += sprintf (buff + pos, "atan(%04xh)", R(0) & 0xffff);
+				break;
+			case 0x0a: pos += sprintf (buff + pos, "ArcTan2: ");
+				pos += sprintf (buff + pos, "atan2(%04xh,%04xh)", R(1) & 0xffff, R(0) & 0xffff);
+				break;
+			case 0x0b: pos += sprintf (buff + pos, "CpuSet: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh], wcnt=%xh, fixed=%c, size=%d", R(0), R(1), R(2) & 0x1fffff, R(2) & 0x1000000 ? 'Y' : 'N', R(2) & 0x4000000 ? 32 : 16);
+				break;
+			case 0x0c: pos += sprintf (buff + pos, "CpuFastSet: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh], wcnt=%xh, fixed=%c", R(0), R(1), R(2) & 0x1fffff, R(2) & 0x1000000 ? 'Y' : 'N');
+				break;
+			case 0x0d: pos += sprintf (buff + pos, "GetBiosChecksum");
+				break;
+			case 0x0e: pos += sprintf (buff + pos, "BgAffineSet: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh], cnt=%d", R(0), R(1), R(2));
+				break;
+			case 0x0f: pos += sprintf (buff + pos, "ObjAffineSet: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh], cnt=%d, offs=%d", R(0), R(1), R(2), R(3));
+				break;
+			case 0x10: pos += sprintf (buff + pos, "BitUnPack: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh], info=[%08xh]", R(0), R(1), R(2));
+				break;
+			case 0x11: pos += sprintf (buff + pos, "LZ77UnCompWram: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh]", R(0), R(1));
+				break;
+			case 0x12: pos += sprintf (buff + pos, "LZ77UnCompVram: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh]", R(0), R(1));
+				break;
+			case 0x13: pos += sprintf (buff + pos, "HuffUnComp: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh]", R(0), R(1));
+				break;
+			case 0x14: pos += sprintf (buff + pos, "RLUnCompWram: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh]", R(0), R(1));
+				break;
+			case 0x15: pos += sprintf (buff + pos, "RLUnCompVram: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh]", R(0), R(1));
+				break;
+			case 0x16: pos += sprintf (buff + pos, "Diff8bitUnFilterWram: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh]", R(0), R(1));
+				break;
+			case 0x17: pos += sprintf (buff + pos, "Diff8bitUnFilterVram: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh]", R(0), R(1));
+				break;
+			case 0x18: pos += sprintf (buff + pos, "Diff16bitUnFilter: ");
+				pos += sprintf (buff + pos, "src=[%08xh], dst=[%08xh]", R(0), R(1));
+				break;
+			case 0x19: pos += sprintf (buff + pos, "SoundBias");
+				break;
+			case 0x1a: pos += sprintf (buff + pos, "SoundDriverInit");
+				break;
+			case 0x1b: pos += sprintf (buff + pos, "SoundDriverMode");
+				break;
+			case 0x1c: pos += sprintf (buff + pos, "SoundDriverMain");
+				break;
+			case 0x1d: pos += sprintf (buff + pos, "SoundDriverVSync");
+				break;
+			case 0x1e: pos += sprintf (buff + pos, "SoundChannelClear");
+				break;
+			case 0x1f: pos += sprintf (buff + pos, "MidiKey2Freq");
+				break;
+			case 0x20: pos += sprintf (buff + pos, "SoundWhatever0");
+				break;
+			case 0x21: pos += sprintf (buff + pos, "SoundWhatever1");
+				break;
+			case 0x22: pos += sprintf (buff + pos, "SoundWhatever2");
+				break;
+			case 0x23: pos += sprintf (buff + pos, "SoundWhatever3");
+				break;
+			case 0x24: pos += sprintf (buff + pos, "SoundWhatever4");
+				break;
+			case 0x25: pos += sprintf (buff + pos, "MultiBoot: ");
+				pos += sprintf (buff + pos, "mbp=[%08xh], mode=%d", R(0), R(1));
+				break;
+			case 0x26: pos += sprintf (buff + pos, "HardReset");
+				break;
+			case 0x27: pos += sprintf (buff + pos, "CustomHalt: ");
+				pos += sprintf (buff + pos, "val=%02xh", R(2) & 0xff);
+				break;
+			case 0x28: pos += sprintf (buff + pos, "SoundDriverVSyncOff");
+				break;
+			case 0x29: pos += sprintf (buff + pos, "SoundDriverVSyncOnn");
+				break;
+			case 0x2a: pos += sprintf (buff + pos, "SoundGetJumpList");
+				break;
+			default: pos += sprintf (buff + pos, "UNKNOWN");
+				break;
+			}
+			pos += sprintf (buff + pos, "\n");
+			print_bizhawk(buff);
+		}
 		if (MEM.HasBios())
 			SoftwareInterrupt();
 		else
