@@ -34,10 +34,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public bool EnableDMC = true;
 
 			NES nes;
-			public APU(NES nes, APU old = null)
+			public APU(NES nes, APU old, bool pal)
 			{
 				this.nes = nes;
-				dmc = new DMCUnit(this);
+				dmc = new DMCUnit(this, pal);
 				if (old != null)
 				{
 					EnableSquare1 = old.EnableSquare1;
@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			static int[] DMC_RATE_NTSC = { 428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 84, 72, 54 };
+			static int[] DMC_RATE_PAL = { 398, 354, 316, 298, 276, 236, 210, 198, 176, 148, 132, 118, 98, 78, 66, 50 };
 			static int[] LENGTH_TABLE = { 10, 254, 20, 2, 40, 4, 80, 6, 160, 8, 60, 10, 14, 12, 26, 14, 12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30 };
 			static byte[,] PULSE_DUTY = {
 				{0,1,0,0,0,0,0,0}, //(12.5%)
@@ -548,11 +549,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			class DMCUnit
 			{
 				APU apu;
-				public DMCUnit(APU apu)
+				int[] DMC_RATE;
+				public DMCUnit(APU apu, bool pal)
 				{
 					this.apu = apu;
 					out_silence = true;
-					timer_reload = DMC_RATE_NTSC[0];
+					DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
+					timer_reload = DMC_RATE[0];
 					sample_buffer_filled = false;
 					out_deltacounter = 64;
 					out_bits_remaining = 0;
@@ -700,7 +703,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						case 0:
 							irq_enabled = val.Bit(7);
 							loop_flag = val.Bit(6);
-							timer_reload = DMC_RATE_NTSC[val & 0xF];
+							timer_reload = DMC_RATE[val & 0xF];
 							if (!irq_enabled) apu.dmc_irq = false;
 							apu.SyncIRQ();
 							break;
