@@ -139,7 +139,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			BoardSystemHardReset();
 
-			apu = new APU(this, apu);
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
 
@@ -150,6 +149,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-PAL":
 				case "NES-PAL-A":
 				case "NES-PAL-B":
+					apu = new APU(this, apu, true);
 					ppu.region = PPU.Region.PAL;
 					CoreOutputComm.VsyncNum = 50;
 					CoreOutputComm.VsyncDen = 1;
@@ -159,6 +159,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case "NES-NTSC":
 				case "Famicom":
+					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.NTSC;
 					cpu_sequence = cpu_sequence_NTSC;
 					if (magicSoundProvider == null)
@@ -167,6 +168,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				// there's no official name for these in bootgod, not sure what we should use
 				//case "PC10"://TODO
 				case "VS":
+					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.RGB;
 					cpu_sequence = cpu_sequence_NTSC;
 					if (magicSoundProvider == null)
@@ -175,6 +177,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				// this is in bootgod, but not used at all
 				case "Dendy":
+					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.Dendy;
 					CoreOutputComm.VsyncNum = 50;
 					CoreOutputComm.VsyncDen = 1;
