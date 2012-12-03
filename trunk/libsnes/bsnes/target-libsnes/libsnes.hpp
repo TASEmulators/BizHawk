@@ -72,6 +72,7 @@ typedef void (*snes_audio_sample_t)(uint16_t left, uint16_t right);
 typedef void (*snes_input_poll_t)(void);
 typedef int16_t (*snes_input_state_t)(unsigned port, unsigned device, unsigned index, unsigned id);
 typedef void (*snes_input_notify_t)(int index);
+typedef void (*snes_trace_t)(const char *msg);
 
 const char* snes_library_id(void);
 unsigned snes_library_revision_major(void);
@@ -144,6 +145,8 @@ typedef const char* (*snes_path_request_t)(int slot, const char* hint);
 void snes_set_path_request(snes_path_request_t path_request);
 
 void snes_set_color_lut(uint32_t * colors);
+
+void snes_set_trace_callback(void (*callback)(const char *));
 
 // system bus implementation
 uint8_t bus_read(unsigned addr);
