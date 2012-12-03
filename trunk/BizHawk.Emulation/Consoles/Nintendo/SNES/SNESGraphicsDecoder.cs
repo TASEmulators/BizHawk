@@ -263,7 +263,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				int x = high & 1;
 				high >>= 1;
 				Size = high & 1;
-				X |= (x << 9);
+				X |= (x << 8);
 				X = (X << 23) >> 23;
 
 				Tile = Table*256 + Name;
@@ -897,10 +897,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 
-		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum)
+		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum, OAMInfo oam = null, int xlimit = 1024, int ylimit = 1024, byte[,] spriteMap = null)
 		{
 			var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1] };
-			var oam = new OAMInfo(this, si, spritenum);
+			if(oam == null)
+				oam = new OAMInfo(this, si, spritenum);
 			var dim = dims[oam.Size];
 
 			int[] tilebuf = _tileCache[4];
@@ -933,6 +934,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					dx += destx;
 					dy += desty;
 
+					if(dx>=xlimit || dy>=ylimit || dx<0 || dy<0)
+						continue;
+
 					int col = (bcol + (x >> 3)) & 0xF;
 					int row = (brow + (y >> 3)) & 0xF;
 					int sx = x & 0x7;
@@ -942,9 +946,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					addr += sy * 8 + sx;
 
 					int dofs = stride*dy+dx;
-					screen[dofs] = tilebuf[addr];
-					Paletteize(screen, dofs, oam.Palette * 16 + 128, 1);
-					Colorize(screen, dofs, 1);
+					int color = tilebuf[addr];
+					if (spriteMap != null && color == 0)
+					{
+						//skip transparent pixels
+					}
+					else
+					{
+						screen[dofs] = color;
+						Paletteize(screen, dofs, oam.Palette * 16 + 128, 1);
+						Colorize(screen, dofs, 1);
+						if (spriteMap != null) spriteMap[dx, dy] = (byte)spritenum;
+					}
 				}
 		}
 
