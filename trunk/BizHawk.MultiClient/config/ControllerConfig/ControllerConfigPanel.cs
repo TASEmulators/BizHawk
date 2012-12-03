@@ -38,6 +38,14 @@ namespace BizHawk.MultiClient
 			
 		}
 
+		public void ClearAll()
+		{
+			foreach (InputWidget i in Inputs)
+			{
+				i.Clear();
+			}
+		}
+
 		public void Save()
 		{
 			for (int button = 0; button < buttons.Count; button++)
@@ -125,6 +133,11 @@ namespace BizHawk.MultiClient
 			{
 				i.AutoTab = value;
 			}
+		}
+
+		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearAll();
 		}
 	}
 }
