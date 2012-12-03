@@ -538,6 +538,7 @@
     <Compile Include="Sound\Utilities\Waves.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Computers\Commodore64\docs\CRT.TXT" />
     <Content Include="Consoles\Coleco\docs\CV-Sound.txt" />
     <Content Include="Consoles\Coleco\docs\CV-Tech.txt" />
     <Content Include="Consoles\Nintendo\NES\Docs\sunsoft.txt" />
@@ -565,7 +566,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Computers\Commodore64\docs\" />
     <Folder Include="Computers\Commodore64\Peripheral\" />
   </ItemGroup>
   <ItemGroup />
