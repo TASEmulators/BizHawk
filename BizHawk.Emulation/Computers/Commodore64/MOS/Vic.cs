@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -147,11 +148,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			cyclesPerSec = newCyclesPerSec;
 			pixelBufferDelay = 12;
 			pixelBackgroundBufferDelay = 4;
+			bufRect = new Rectangle(136 - 24, 51 - 24, 320 + 48, 200 + 48);
 
+			buf = new int[bufRect.Width * bufRect.Height];
+			bufLength = (uint)buf.Length;
 			bufWidth = (int)(totalCycles * 8);
 			bufHeight = (int)(totalLines);
-			buf = new int[bufWidth * bufHeight];
-			bufLength = (uint)buf.Length;
 
 			sprites = new Sprite[8];
 			for (uint i = 0; i < 8; i++)
@@ -618,10 +620,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				// recall pixel from buffer
 				pixel = pixelBuffer[pixelBufferIndex];
 
-				buf[bufOffset] = palette[pixel];
-				bufOffset++;
-				if (bufOffset == bufLength)
-					bufOffset = 0;
+				// plot pixel if within viewing area
+				if (bufRect.Contains(bufPoint))
+				{
+					buf[bufOffset] = palette[pixel];
+					bufOffset++;
+					if (bufOffset == bufLength)
+						bufOffset = 0;
+				}
+				bufPoint.X++;
+				if (bufPoint.X == bufWidth)
+				{
+					bufPoint.X = 0;
+					bufPoint.Y++;
+					if (bufPoint.Y == bufHeight)
+						bufPoint.Y = 0;
+				}
 
 				// put the pixel from the background buffer into the main buffer
 				pixel = pixelBackgroundBuffer[pixelBackgroundBufferIndex];

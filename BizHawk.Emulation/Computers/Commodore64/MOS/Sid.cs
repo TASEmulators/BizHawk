@@ -488,7 +488,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 				set
 				{
-					pulseWidth &= 0xFF00;
+					pulseWidth &= 0x0F00;
 					pulseWidth |= value & 0x00FF;
 				}
 			}
@@ -502,7 +502,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				set
 				{
 					pulseWidth &= 0x00FF;
-					pulseWidth |= (value & 0x00FF) << 8;
+					pulseWidth |= (value & 0x000F) << 8;
 				}
 			}
 
@@ -639,9 +639,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				voices[i].Synchronize(voices[syncNextTable[i]], voices[syncPrevTable[i]]);
 
 			// get output
-			voiceOutput[0] = voices[0].Output(voices[1]);
-			voiceOutput[1] = voices[1].Output(voices[2]);
-			voiceOutput[2] = voices[2].Output(voices[0]);
+			voiceOutput[0] = voices[0].Output(voices[2]);
+			voiceOutput[1] = voices[1].Output(voices[0]);
+			voiceOutput[2] = voices[2].Output(voices[1]);
 			envelopeOutput[0] = envelopes[0].Level;
 			envelopeOutput[1] = envelopes[1].Level;
 			envelopeOutput[2] = envelopes[2].Level;
