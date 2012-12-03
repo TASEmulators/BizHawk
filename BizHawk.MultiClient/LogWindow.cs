@@ -16,6 +16,8 @@ namespace BizHawk.MultiClient
 		int defaultWidth;
 		int defaultHeight;
 
+		List<string> Lines = new List<string>();
+
 		public LogWindow()
 		{
 			InitializeComponent();
@@ -26,36 +28,35 @@ namespace BizHawk.MultiClient
 				LogConsole.notifyLogWindowClosing();
 				SaveConfigSettings();
 			};
+			virtualListView1_ClientSizeChanged(null, null);
 		}
 
-		public void ShowReport(string title, string report)
+		public static void ShowReport(string title, string report, IWin32Window parent)
 		{
-			Text = title;
-			textBox1.Text = report;
-			btnClear.Visible = false;
-			ShowDialog();
-		}
-
-		public void SetLogText(string str)
-		{
-			textBox1.Text = str;
-			textBox1.SelectionStart = str.Length;
-			textBox1.ScrollToCaret();
-			Refresh();
+			using (var dlg = new LogWindow())
+			{
+				var ss = report.Split('\n');
+				foreach (var s in ss)
+					dlg.Lines.Add(s);
+				dlg.virtualListView1.ItemCount = ss.Length;
+				dlg.Text = title;
+				dlg.btnClear.Visible = false;
+				dlg.ShowDialog(parent);
+			}
 		}
 
 		StringBuilder sbLog = new StringBuilder();
 		public void Append(string str)
 		{
-			sbLog.Append(str);
-			SetLogText(sbLog.ToString());
+			Lines.Add(str);
+			virtualListView1.ItemCount++;
 		}
 
 		private void btnClear_Click(object sender, EventArgs e)
 		{
-			sbLog.Length = 0;
-			SetLogText("");
-			Refresh();
+			Lines.Clear();
+			virtualListView1.ItemCount = 0;
+			virtualListView1.SelectedIndices.Clear();
 		}
 
 		private void btnClose_Click(object sender, EventArgs e)
@@ -89,6 +90,34 @@ namespace BizHawk.MultiClient
 				Global.Config.LogWindowWidth = this.Right - this.Left;
 				Global.Config.LogWindowHeight = this.Bottom - this.Top;
 			}
+		}
+
+		private void virtualListView1_QueryItemText(int item, int subItem, out string text)
+		{
+			text = Lines[item];
+		}
+
+		private void virtualListView1_ClientSizeChanged(object sender, EventArgs e)
+		{
+			virtualListView1.Columns[0].Width = virtualListView1.ClientSize.Width;
+		}
+
+		private void buttonCopy_Click(object sender, EventArgs e)
+		{
+			var sb = new StringBuilder();
+			foreach (int i in virtualListView1.SelectedIndices)
+				sb.AppendLine(Lines[i]);
+			if (sb.Length > 0)
+				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
+		}
+
+		private void buttonCopyAll_Click(object sender, EventArgs e)
+		{
+			var sb = new StringBuilder();
+			foreach (var s in Lines)
+				sb.Append(s);
+			if (sb.Length > 0)
+				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
 		}
 	}
 }
