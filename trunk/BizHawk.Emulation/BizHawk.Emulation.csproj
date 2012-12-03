@@ -357,6 +357,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\NROM368.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
