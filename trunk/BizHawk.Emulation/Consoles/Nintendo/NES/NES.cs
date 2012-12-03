@@ -478,6 +478,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Console.WriteLine(format, arg);
 				loadReport.WriteLine(format, arg);
 			}
+			public override void WriteLine(string value)
+			{
+				Console.WriteLine(value);
+				loadReport.WriteLine(value);
+			}
 		}
 
 		public unsafe void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
