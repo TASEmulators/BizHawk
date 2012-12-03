@@ -378,6 +378,29 @@ int snes_peek_logical_register(int reg)
 	case SNES_REG_TS_BG3: return SNES::ppu.regs.bgsub_enabled[2];
 	case SNES_REG_TS_BG4: return SNES::ppu.regs.bgsub_enabled[3];
 	case SNES_REG_TS_OBJ: return SNES::ppu.regs.bgsub_enabled[4];
+		//Mode7 regs
+	case SNES_REG_M7SEL_REPEAT: return SNES::ppu.regs.mode7_repeat;
+	case SNES_REG_M7SEL_HFLIP: return SNES::ppu.regs.mode7_vflip;
+	case SNES_REG_M7SEL_VFLIP: return SNES::ppu.regs.mode7_hflip;
+	case SNES_REG_M7A: return SNES::ppu.regs.m7a;
+	case SNES_REG_M7B: return SNES::ppu.regs.m7b;
+	case SNES_REG_M7C: return SNES::ppu.regs.m7c;
+	case SNES_REG_M7D: return SNES::ppu.regs.m7d;
+	case SNES_REG_M7X: return SNES::ppu.regs.m7x;
+	case SNES_REG_M7Y: return SNES::ppu.regs.m7y;
+		//BG scroll regs
+	case SNES_REG_BG1HOFS: return SNES::ppu.regs.bg_hofs[0] & 0x3FF;
+	case SNES_REG_BG1VOFS: return SNES::ppu.regs.bg_vofs[0] & 0x3FF;
+	case SNES_REG_BG2HOFS: return SNES::ppu.regs.bg_hofs[1] & 0x3FF;
+	case SNES_REG_BG2VOFS: return SNES::ppu.regs.bg_vofs[1] & 0x3FF;
+	case SNES_REG_BG3HOFS: return SNES::ppu.regs.bg_hofs[2] & 0x3FF;
+	case SNES_REG_BG3VOFS: return SNES::ppu.regs.bg_vofs[2] & 0x3FF;
+	case SNES_REG_BG4HOFS: return SNES::ppu.regs.bg_hofs[3] & 0x3FF;
+	case SNES_REG_BG4VOFS: return SNES::ppu.regs.bg_vofs[3] & 0x3FF;
+	case SNES_REG_M7HOFS: return SNES::ppu.regs.m7_hofs & 0x1FFF; //rememebr to make these signed with <<19>>19
+	case SNES_REG_M7VOFS: return SNES::ppu.regs.m7_vofs & 0x1FFF; //rememebr to make these signed with <<19>>19
+		
+
 	}
 	return 0;
 }

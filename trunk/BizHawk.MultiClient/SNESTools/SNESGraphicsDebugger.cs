@@ -11,6 +11,7 @@
 //TODO - add "scroll&screen" checkbox which changes BG1/2/3/4 display modes to render scrolled and limited to 256x224 (for matching obj screen)
 //         alternatively - add "BG1 Screen" as a complement to BG1
 //TODO - make Sprites mode respect priority toggles
+//TODO - add "mode" display to BG info (in addition to bpp) so we can readily see if its mode7 or unavailable
 
 //DEFERRED:
 //. 256bpp modes (difficult to use)
@@ -54,6 +55,12 @@ namespace BizHawk.MultiClient
 
 			displayTypeItems.Add(new DisplayTypeItem("Sprites", eDisplayType.Sprites));
 			displayTypeItems.Add(new DisplayTypeItem("OBJ", eDisplayType.OBJ));
+			
+			displayTypeItems.Add(new DisplayTypeItem("BG1 Screen", eDisplayType.BG1));
+			displayTypeItems.Add(new DisplayTypeItem("BG2 Screen", eDisplayType.BG2));
+			displayTypeItems.Add(new DisplayTypeItem("BG3 Screen", eDisplayType.BG3));
+			displayTypeItems.Add(new DisplayTypeItem("BG4 Screen", eDisplayType.BG4));
+
 			displayTypeItems.Add(new DisplayTypeItem("BG1", eDisplayType.BG1));
 			displayTypeItems.Add(new DisplayTypeItem("BG2",eDisplayType.BG2));
 			displayTypeItems.Add(new DisplayTypeItem("BG3",eDisplayType.BG3));
@@ -253,6 +260,8 @@ namespace BizHawk.MultiClient
 			if (bg.Bpp == 8 && si.CGWSEL_DirectColor) txtBG1Colors.Text = "(Direct Color)";
 			txtBG1TDAddrBits.Text = bg.TDADDR.ToString();
 			txtBG1TDAddrDescr.Text = FormatVramAddress(bg.TiledataAddr);
+
+			txtBG1Scroll.Text = string.Format("({0},{1})", bg.HOFS, bg.VOFS);
 
 			if (bg.Bpp != 0)
 			{
@@ -454,7 +463,8 @@ namespace BizHawk.MultiClient
 
 		enum eDisplayType
 		{
-			BG1 = 1, BG2 = 2, BG3 = 3, BG4 = 4, OBJTiles0, OBJTiles1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC, Sprites, OBJ
+			BG1 = 1, BG2 = 2, BG3 = 3, BG4 = 4, OBJTiles0, OBJTiles1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC, Sprites, OBJ,
+			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104, 
 		}
 		static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
 		static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJTiles0 || type == eDisplayType.OBJTiles1; }
