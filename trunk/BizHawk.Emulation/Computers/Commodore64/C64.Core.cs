@@ -199,9 +199,43 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			vic.HardReset();
 		}
 
-		public void SyncState()
+		public void SyncState(Serializer ser)
 		{
-			
+			ser.BeginSection("cia0");
+			cia0.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("cia1");
+			cia1.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("colorram");
+			colorRam.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("pla");
+			pla.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("cpu");
+			cpu.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("ram");
+			ram.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("sid");
+			sid.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("vic");
+			vic.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("cart");
+
+			ser.EndSection();
 		}
 	}
 

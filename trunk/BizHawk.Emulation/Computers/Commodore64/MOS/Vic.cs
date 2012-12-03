@@ -44,6 +44,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				mc = 0;
 				mcbase = 0;
 				multicolor = false;
+				multicolorCrunch = false;
 				pointer = 0;
 				priority = false;
 				shiftEnable = false;
@@ -54,6 +55,30 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				y = 0;
 				yCrunch = false;
 				yExpand = false;
+			}
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("collideData", ref collideData);
+				ser.Sync("collideSprite", ref collideSprite);
+				ser.Sync("color", ref color);
+				ser.Sync("display", ref display);
+				ser.Sync("dma", ref dma);
+				ser.Sync("enable", ref enable);
+				ser.Sync("mc", ref mc);
+				ser.Sync("mcbase", ref mcbase);
+				ser.Sync("multicolor", ref multicolor);
+				ser.Sync("multicolorCrunch", ref multicolorCrunch);
+				ser.Sync("pointer", ref pointer);
+				ser.Sync("priority", ref priority);
+				ser.Sync("shiftEnable", ref shiftEnable);
+				ser.Sync("sr", ref sr);
+				ser.Sync("x", ref x);
+				ser.Sync("xCrunch", ref xCrunch);
+				ser.Sync("xExpand", ref xExpand);
+				ser.Sync("y", ref y);
+				ser.Sync("yCrunch", ref yCrunch);
+				ser.Sync("yExpand", ref yExpand);
 			}
 		}
 		private Sprite[] sprites;
@@ -687,7 +712,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 				// border doesn't work with the background buffer
 				if (borderOnMain || borderOnVertical)
-					pixel = borderColor; 
+					pixel = borderColor;
 
 				// store pixel in buffer
 				pixelBuffer[pixelBufferIndex] = pixel;
@@ -1322,6 +1347,92 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				default:
 					break;
 			}
+		}
+
+		// --------------------------
+
+		public void SyncState(Serializer ser)
+		{
+			for (uint i = 0; i < 8; i++)
+			{
+				ser.BeginSection("sprite" + i.ToString());
+				sprites[i].SyncState(ser);
+				ser.EndSection();
+			}
+			ser.Sync("backgroundColor0", ref backgroundColor0);
+			ser.Sync("backgroundColor1", ref backgroundColor1);
+			ser.Sync("backgroundColor2", ref backgroundColor2);
+			ser.Sync("backgroundColor3", ref backgroundColor3);
+			ser.Sync("baCount", ref baCount);
+			ser.Sync("badline", ref badline);
+			ser.Sync("badlineEnable", ref badlineEnable);
+			ser.Sync("bitmapColumn", ref bitmapColumn);
+			ser.Sync("bitmapMode", ref bitmapMode);
+			ser.Sync("borderB", ref borderB);
+			ser.Sync("borderCheckLEnable", ref borderCheckLEnable);
+			ser.Sync("borderCheckREnable", ref borderCheckREnable);
+			ser.Sync("borderColor", ref borderColor);
+			ser.Sync("borderL", ref borderL);
+			ser.Sync("borderOnMain", ref borderOnMain);
+			ser.Sync("borderOnVertical", ref borderOnVertical);
+			ser.Sync("borderR", ref borderR);
+			ser.Sync("borderT", ref borderT);
+			ser.Sync("bufferC", ref bufferC, false);
+			ser.Sync("bufferG", ref bufferG, false);
+			ser.Sync("bus", ref bus);
+			ser.Sync("columnSelect", ref columnSelect);
+			ser.Sync("cycle", ref cycle);
+			ser.Sync("cycleIndex", ref cycleIndex);
+			ser.Sync("dataC", ref dataC);
+			ser.Sync("dataG", ref dataG);
+			ser.Sync("displayC", ref displayC);
+			ser.Sync("displayEnable", ref displayEnable);
+			ser.Sync("displayIndex", ref displayIndex);
+			ser.Sync("enableIntLightPen", ref enableIntLightPen);
+			ser.Sync("enableIntRaster", ref enableIntRaster);
+			ser.Sync("enableIntSpriteCollision", ref enableIntSpriteCollision);
+			ser.Sync("enableIntSpriteDataCollision", ref enableIntSpriteDataCollision);
+			ser.Sync("extraColorMode", ref extraColorMode);
+			ser.Sync("idle", ref idle);
+			ser.Sync("intLightPen", ref intLightPen);
+			ser.Sync("intRaster", ref intRaster);
+			ser.Sync("intSpriteCollision", ref intSpriteCollision);
+			ser.Sync("intSpriteDataCollision", ref intSpriteDataCollision);
+			ser.Sync("lastRasterLine", ref lastRasterLine);
+			ser.Sync("lightPenX", ref lightPenX);
+			ser.Sync("lightPenY", ref lightPenY);
+			ser.Sync("multicolorMode", ref multicolorMode);
+			ser.Sync("pixelBuffer", ref pixelBuffer, false);
+			ser.Sync("pixelBufferDelay", ref pixelBufferDelay);
+			ser.Sync("pixelBufferIndex", ref pixelBufferIndex);
+			ser.Sync("pixelBackgroundBuffer", ref pixelBackgroundBuffer, false);
+			ser.Sync("pixelBackgroundBufferDelay", ref pixelBackgroundBufferDelay);
+			ser.Sync("pixelBackgroundBufferIndex", ref pixelBackgroundBufferIndex);
+			ser.Sync("pixelDataBuffer", ref pixelDataBuffer, false);
+			ser.Sync("pointerCB", ref pointerCB);
+			ser.Sync("pointerVM", ref pointerVM);
+			ser.Sync("rasterInterruptLine", ref rasterInterruptLine);
+			ser.Sync("rasterLine", ref rasterLine);
+			ser.Sync("rasterX", ref rasterX);
+			ser.Sync("rc", ref rc);
+			ser.Sync("refreshCounter", ref refreshCounter);
+			ser.Sync("rowSelect", ref rowSelect);
+			ser.Sync("spriteMulticolor0", ref spriteMulticolor0);
+			ser.Sync("spriteMulticolor1", ref spriteMulticolor1);
+			ser.Sync("sr", ref sr);
+			ser.Sync("vc", ref vc);
+			ser.Sync("vcbase", ref vcbase);
+			ser.Sync("vmli", ref vmli);
+			ser.Sync("xOffset", ref xOffset);
+			ser.Sync("xScroll", ref xScroll);
+			ser.Sync("yScroll", ref yScroll);
+
+			ser.Sync("cyclesPerSec", ref cyclesPerSec);
+			ser.Sync("pinAEC", ref pinAEC);
+			ser.Sync("pinBA", ref pinBA);
+			ser.Sync("pinIRQ", ref pinIRQ);
+			ser.Sync("totalCycles", ref totalCycles);
+			ser.Sync("totalLines", ref totalLines);
 		}
 	}
 }

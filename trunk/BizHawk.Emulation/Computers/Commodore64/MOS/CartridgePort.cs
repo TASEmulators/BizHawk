@@ -103,5 +103,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				return true; //todo: hook this up to cartridge
 			}
 		}
+
+		public void SyncState(Serializer ser)
+		{
+			ser.Sync("connected", ref connected);
+			if (connected)
+			{
+				ser.BeginSection("cartmapper");
+				cart.SyncState(ser);
+				ser.EndSection();
+			}
+		}
 	}
 }

@@ -216,6 +216,25 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			SetPortData(PortData);
 		}
 
+		public void SyncState(Serializer ser)
+		{
+			cpu.SyncState(ser);
+			ser.Sync("freezeCpu", ref freezeCpu);
+			ser.Sync("pinCassetteButton", ref pinCassetteButton);
+			ser.Sync("pinCassetteMotor", ref pinCassetteMotor);
+			ser.Sync("pinCassetteOutput", ref pinCassetteOutput);
+			ser.Sync("pinCharen", ref pinCharen);
+			ser.Sync("pinLoram", ref pinLoram);
+			ser.Sync("pinHiram", ref pinHiram);
+			ser.Sync("pinNMILast", ref pinNMILast);
+			ser.Sync("portDir", ref portDir);
+			ser.Sync("unusedPin0", ref unusedPin0);
+			ser.Sync("unusedPin1", ref unusedPin1);
+			ser.Sync("unusedPinTTL0", ref unusedPinTTL0);
+			ser.Sync("unusedPinTTL1", ref unusedPinTTL1);
+			ser.Sync("unusedPinTTLCycles", ref unusedPinTTLCycles);
+		}
+
 		// ------------------------------------
 	}
 }

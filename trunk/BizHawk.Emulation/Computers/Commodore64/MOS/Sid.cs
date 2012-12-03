@@ -240,6 +240,25 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 
 			// ------------------------------------
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("attack", ref attack);
+				ser.Sync("decay", ref decay);
+				ser.Sync("delay", ref delay);
+				ser.Sync("envCounter", ref envCounter);
+				ser.Sync("expCounter", ref expCounter);
+				ser.Sync("expPeriod", ref expPeriod);
+				ser.Sync("freeze", ref freeze);
+				ser.Sync("lfsr", ref lfsr);
+				ser.Sync("gate", ref gate);
+				ser.Sync("rate", ref rate);
+				ser.Sync("release", ref release);
+				ser.Sync("state", ref state);
+				ser.Sync("sustain", ref sustain);
+			}
+
+			// ------------------------------------
 		}
 
 		private class Voice
@@ -542,6 +561,34 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				{
 					return waveform;
 				}
+			}
+
+			// ------------------------------------
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("accumulator", ref accumulator);
+				ser.Sync("delay", ref delay);
+				ser.Sync("floatOutputTTL", ref floatOutputTTL);
+				ser.Sync("frequency", ref frequency);
+				ser.Sync("msbRising", ref msbRising);
+				ser.Sync("noise", ref noise);
+				ser.Sync("noNoise", ref noNoise);
+				ser.Sync("noNoiseOrNoise", ref noNoiseOrNoise);
+				ser.Sync("noPulse", ref noPulse);
+				ser.Sync("output", ref output);
+				ser.Sync("pulse", ref pulse);
+				ser.Sync("pulseWidth", ref pulseWidth);
+				ser.Sync("ringMod", ref ringMod);
+				ser.Sync("ringMsbMask", ref ringMsbMask);
+				ser.Sync("shiftRegister", ref shiftRegister);
+				ser.Sync("shiftRegisterReset", ref shiftRegisterReset);
+				ser.Sync("sync", ref sync);
+				ser.Sync("test", ref test);
+				ser.Sync("waveform", ref waveform);
+
+				if (ser.IsReader)
+					wave = waveTable[waveform];
 			}
 		}
 
@@ -871,6 +918,49 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					potY = val;
 					break;
 			}
+		}
+
+		// ----------------------------------
+
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("env0");
+			envelopes[0].SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("wav0");
+			voices[0].SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("env1");
+			envelopes[1].SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("wav1");
+			voices[1].SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("env2");
+			envelopes[2].SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("wav2");
+			voices[2].SyncState(ser);
+			ser.EndSection();
+			ser.Sync("disableVoice3", ref disableVoice3);
+			ser.Sync("envelopeOutput0", ref envelopeOutput[0]);
+			ser.Sync("envelopeOutput1", ref envelopeOutput[1]);
+			ser.Sync("envelopeOutput2", ref envelopeOutput[2]);
+			ser.Sync("filterEnable0", ref filterEnable[0]);
+			ser.Sync("filterEnable1", ref filterEnable[1]);
+			ser.Sync("filterEnable2", ref filterEnable[2]);
+			ser.Sync("filterFrequency", ref filterFrequency);
+			ser.Sync("filterResonance", ref filterResonance);
+			ser.Sync("filterSelectBandPass", ref filterSelectBandPass);
+			ser.Sync("filterSelectLoPass", ref filterSelectLoPass);
+			ser.Sync("filterSelectHiPass", ref filterSelectHiPass);
+			ser.Sync("potCounter", ref potCounter);
+			ser.Sync("potX", ref potX);
+			ser.Sync("potY", ref potY);
+			ser.Sync("voiceOutput0", ref voiceOutput[0]);
+			ser.Sync("voiceOutput1", ref voiceOutput[1]);
+			ser.Sync("voiceOutput2", ref voiceOutput[2]);
+			ser.Sync("volume", ref volume);
 		}
 	}
 }

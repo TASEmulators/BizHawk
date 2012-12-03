@@ -236,6 +236,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			}
 		}
 
+		public virtual void SyncState(Serializer ser)
+		{
+			ser.Sync("pinExRom", ref pinExRom);
+			ser.Sync("pinGame", ref pinGame);
+			ser.Sync("pinIRQ", ref pinIRQ);
+			ser.Sync("pinNMI", ref pinNMI);
+			ser.Sync("pinReset", ref pinReset);
+			ser.Sync("validCartridge", ref validCartridge);
+		}
+
 		public bool Valid
 		{
 			get
