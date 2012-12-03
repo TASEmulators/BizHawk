@@ -9,14 +9,27 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	{
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
-			samples = buffer;
-			nsamp = (int)bufferIndex;
-			bufferIndex = 0;
+			if (bufferIndex > bufferReadOffset)
+				samples = new short[bufferIndex - bufferReadOffset];
+			else
+				samples = new short[bufferIndex + (bufferLength - bufferReadOffset)];
+			
+			nsamp = samples.Length;
+			for (uint i = 0; i < nsamp; i++)
+			{
+				samples[i] = buffer[bufferReadOffset];
+				if (bufferReadOffset != bufferIndex)
+					bufferReadOffset++;
+				if (bufferReadOffset == bufferLength)
+					bufferReadOffset = 0;
+			}
+			nsamp /= 2;
 		}
 
 		public void DiscardSamples()
 		{
-			// todo
+			bufferIndex = 0;
+			bufferReadOffset = 0;
 		}
 	}
 }

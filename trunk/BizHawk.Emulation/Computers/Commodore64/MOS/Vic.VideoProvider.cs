@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -11,6 +12,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private int bufHeight;
 		private uint bufLength;
 		private uint bufOffset;
+		private Point bufPoint;
+		private Rectangle bufRect;
 		private int bufWidth;
 
 		// palette
@@ -41,12 +44,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public int BufferHeight
 		{
-			get { return bufHeight; }
+			get { return bufRect.Height; }
 		}
 
 		public int BufferWidth
 		{
-			get { return bufWidth; }
+			get { return bufRect.Width; }
 		}
 
 		public int[] GetVideoBuffer()
@@ -56,7 +59,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public int VirtualWidth
 		{
-			get { return bufWidth; }
+			get { return bufRect.Width; }
 		}
 	}
 }
