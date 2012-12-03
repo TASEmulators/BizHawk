@@ -8,6 +8,9 @@
 //TODO - use custom checkboxes for register-viewing checkboxes to make them green and checked
 //TODO - make freeze actually save the info caches, and re-render in realtime, so that you can pick something you want to see animate without having to hover your mouse just right. also add a checkbox to do the literal freeze (stop it from updating)
 //TODO - sprite wrapping is not correct
+//TODO - add "scroll&screen" checkbox which changes BG1/2/3/4 display modes to render scrolled and limited to 256x224 (for matching obj screen)
+//         alternatively - add "BG1 Screen" as a complement to BG1
+//TODO - make Sprites mode respect priority toggles
 
 //DEFERRED:
 //. 256bpp modes (difficult to use)
@@ -1367,12 +1370,40 @@ namespace BizHawk.MultiClient
 			Global.MainForm.SyncCoreInputComm();
 		}
 
+		private void lblEnPrio0_Click(object sender, EventArgs e)
+		{
+			bool any = checkEN0_OBJ.Checked || checkEN0_BG1.Checked || checkEN0_BG2.Checked || checkEN0_BG3.Checked || checkEN0_BG4.Checked;
+			bool all = checkEN0_OBJ.Checked && checkEN0_BG1.Checked && checkEN0_BG2.Checked && checkEN0_BG3.Checked && checkEN0_BG4.Checked;
+			bool newval;
+			if (all) newval = false;
+			else newval = true;
+			checkEN0_OBJ.Checked = checkEN0_BG1.Checked = checkEN0_BG2.Checked = checkEN0_BG3.Checked = checkEN0_BG4.Checked = newval;
 
+		}
 
-	}
+		private void lblEnPrio1_Click(object sender, EventArgs e)
+		{
+			bool any = checkEN1_OBJ.Checked || checkEN1_BG1.Checked || checkEN1_BG2.Checked || checkEN1_BG3.Checked || checkEN1_BG4.Checked;
+			bool all = checkEN1_OBJ.Checked && checkEN1_BG1.Checked && checkEN1_BG2.Checked && checkEN1_BG3.Checked && checkEN1_BG4.Checked;
+			bool newval;
+			if (all) newval = false;
+			else newval = true;
+			checkEN1_OBJ.Checked = checkEN1_BG1.Checked = checkEN1_BG2.Checked = checkEN1_BG3.Checked = checkEN1_BG4.Checked = newval;
 
+		}
 
-}
+		private void lblEnPrio2_Click(object sender, EventArgs e)
+		{
+			checkEN2_OBJ.Checked ^= true;
+		}
+
+		private void lblEnPrio3_Click(object sender, EventArgs e)
+		{
+			checkEN3_OBJ.Checked ^= true;
+		}
+
+	} //class SNESGraphicsDebugger 
+} //namespace BizHawk.MultiClient
 
 
 static class ControlExtensions

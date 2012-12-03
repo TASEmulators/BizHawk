@@ -72,7 +72,7 @@
 			this.radioButton3 = new System.Windows.Forms.RadioButton();
 			this.radioButton13 = new System.Windows.Forms.RadioButton();
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
-			this.label41 = new System.Windows.Forms.Label();
+			this.lblEnPrio3 = new System.Windows.Forms.Label();
 			this.txtOBSELT1OfsDescr = new System.Windows.Forms.TextBox();
 			this.checkEN1_OBJ = new System.Windows.Forms.CheckBox();
 			this.label30 = new System.Windows.Forms.Label();
@@ -87,16 +87,16 @@
 			this.checkEN3_OBJ = new System.Windows.Forms.CheckBox();
 			this.checkEN2_OBJ = new System.Windows.Forms.CheckBox();
 			this.txtOBSELSizeDescr = new System.Windows.Forms.TextBox();
-			this.label40 = new System.Windows.Forms.Label();
+			this.lblEnPrio2 = new System.Windows.Forms.Label();
 			this.label28 = new System.Windows.Forms.Label();
-			this.label39 = new System.Windows.Forms.Label();
+			this.lblEnPrio1 = new System.Windows.Forms.Label();
 			this.label20 = new System.Windows.Forms.Label();
 			this.checkScreenExtbg = new System.Windows.Forms.CheckBox();
 			this.label38 = new System.Windows.Forms.Label();
 			this.label21 = new System.Windows.Forms.Label();
 			this.txtScreenCGADSUB_Half = new System.Windows.Forms.CheckBox();
 			this.checkScreenHires = new System.Windows.Forms.CheckBox();
-			this.label37 = new System.Windows.Forms.Label();
+			this.lblEnPrio0 = new System.Windows.Forms.Label();
 			this.label18391 = new System.Windows.Forms.Label();
 			this.checkEN0_OBJ = new System.Windows.Forms.CheckBox();
 			this.checkScreenOverscan = new System.Windows.Forms.CheckBox();
@@ -576,7 +576,7 @@
 			this.groupBox2.Controls.Add(this.label26);
 			this.groupBox2.Controls.Add(this.txtOBSELT1OfsBits);
 			this.groupBox2.Controls.Add(this.groupBox8);
-			this.groupBox2.Controls.Add(this.label41);
+			this.groupBox2.Controls.Add(this.lblEnPrio3);
 			this.groupBox2.Controls.Add(this.txtOBSELT1OfsDescr);
 			this.groupBox2.Controls.Add(this.checkEN1_OBJ);
 			this.groupBox2.Controls.Add(this.label30);
@@ -591,16 +591,16 @@
 			this.groupBox2.Controls.Add(this.checkEN3_OBJ);
 			this.groupBox2.Controls.Add(this.checkEN2_OBJ);
 			this.groupBox2.Controls.Add(this.txtOBSELSizeDescr);
-			this.groupBox2.Controls.Add(this.label40);
+			this.groupBox2.Controls.Add(this.lblEnPrio2);
 			this.groupBox2.Controls.Add(this.label28);
-			this.groupBox2.Controls.Add(this.label39);
+			this.groupBox2.Controls.Add(this.lblEnPrio1);
 			this.groupBox2.Controls.Add(this.label20);
 			this.groupBox2.Controls.Add(this.checkScreenExtbg);
 			this.groupBox2.Controls.Add(this.label38);
 			this.groupBox2.Controls.Add(this.label21);
 			this.groupBox2.Controls.Add(this.txtScreenCGADSUB_Half);
 			this.groupBox2.Controls.Add(this.checkScreenHires);
-			this.groupBox2.Controls.Add(this.label37);
+			this.groupBox2.Controls.Add(this.lblEnPrio0);
 			this.groupBox2.Controls.Add(this.label18391);
 			this.groupBox2.Controls.Add(this.checkEN0_OBJ);
 			this.groupBox2.Controls.Add(this.checkScreenOverscan);
@@ -829,14 +829,17 @@
 			this.radioButton2.Text = "BG2";
 			this.radioButton2.UseVisualStyleBackColor = true;
 			// 
-			// label41
+			// lblEnPrio3
 			// 
-			this.label41.AutoSize = true;
-			this.label41.Location = new System.Drawing.Point(4, 161);
-			this.label41.Name = "label41";
-			this.label41.Size = new System.Drawing.Size(49, 13);
-			this.label41.TabIndex = 101;
-			this.label41.Text = "EN.Prio3";
+			this.lblEnPrio3.AutoSize = true;
+			this.lblEnPrio3.ForeColor = System.Drawing.Color.Blue;
+			this.lblEnPrio3.Location = new System.Drawing.Point(3, 161);
+			this.lblEnPrio3.Name = "lblEnPrio3";
+			this.lblEnPrio3.Size = new System.Drawing.Size(49, 13);
+			this.lblEnPrio3.TabIndex = 101;
+			this.lblEnPrio3.Text = "EN.Prio3";
+			this.lblEnPrio3.Click += new System.EventHandler(this.lblEnPrio3_Click);
+			this.lblEnPrio3.DoubleClick += new System.EventHandler(this.lblEnPrio3_Click);
 			// 
 			// txtOBSELT1OfsDescr
 			// 
@@ -976,14 +979,17 @@
 			this.txtOBSELSizeDescr.TabIndex = 48;
 			this.txtOBSELSizeDescr.Text = "64x32, 32x32";
 			// 
-			// label40
+			// lblEnPrio2
 			// 
-			this.label40.AutoSize = true;
-			this.label40.Location = new System.Drawing.Point(4, 146);
-			this.label40.Name = "label40";
-			this.label40.Size = new System.Drawing.Size(49, 13);
-			this.label40.TabIndex = 93;
-			this.label40.Text = "EN.Prio2";
+			this.lblEnPrio2.AutoSize = true;
+			this.lblEnPrio2.ForeColor = System.Drawing.Color.Blue;
+			this.lblEnPrio2.Location = new System.Drawing.Point(3, 146);
+			this.lblEnPrio2.Name = "lblEnPrio2";
+			this.lblEnPrio2.Size = new System.Drawing.Size(49, 13);
+			this.lblEnPrio2.TabIndex = 93;
+			this.lblEnPrio2.Text = "EN.Prio2";
+			this.lblEnPrio2.Click += new System.EventHandler(this.lblEnPrio2_Click);
+			this.lblEnPrio2.DoubleClick += new System.EventHandler(this.lblEnPrio2_Click);
 			// 
 			// label28
 			// 
@@ -994,14 +1000,17 @@
 			this.label28.TabIndex = 47;
 			this.label28.Text = "Size";
 			// 
-			// label39
+			// lblEnPrio1
 			// 
-			this.label39.AutoSize = true;
-			this.label39.Location = new System.Drawing.Point(162, 130);
-			this.label39.Name = "label39";
-			this.label39.Size = new System.Drawing.Size(49, 13);
-			this.label39.TabIndex = 92;
-			this.label39.Text = "EN.Prio1";
+			this.lblEnPrio1.AutoSize = true;
+			this.lblEnPrio1.ForeColor = System.Drawing.Color.Blue;
+			this.lblEnPrio1.Location = new System.Drawing.Point(162, 130);
+			this.lblEnPrio1.Name = "lblEnPrio1";
+			this.lblEnPrio1.Size = new System.Drawing.Size(49, 13);
+			this.lblEnPrio1.TabIndex = 92;
+			this.lblEnPrio1.Text = "EN.Prio1";
+			this.lblEnPrio1.Click += new System.EventHandler(this.lblEnPrio1_Click);
+			this.lblEnPrio1.DoubleClick += new System.EventHandler(this.lblEnPrio1_Click);
 			// 
 			// label20
 			// 
@@ -1025,7 +1034,7 @@
 			// label38
 			// 
 			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(228, 131);
+			this.label38.Location = new System.Drawing.Point(229, 131);
 			this.label38.Name = "label38";
 			this.label38.Size = new System.Drawing.Size(26, 13);
 			this.label38.TabIndex = 91;
@@ -1044,7 +1053,7 @@
 			// 
 			this.txtScreenCGADSUB_Half.AutoSize = true;
 			this.txtScreenCGADSUB_Half.Enabled = false;
-			this.txtScreenCGADSUB_Half.Location = new System.Drawing.Point(213, 131);
+			this.txtScreenCGADSUB_Half.Location = new System.Drawing.Point(214, 131);
 			this.txtScreenCGADSUB_Half.Name = "txtScreenCGADSUB_Half";
 			this.txtScreenCGADSUB_Half.Size = new System.Drawing.Size(15, 14);
 			this.txtScreenCGADSUB_Half.TabIndex = 90;
@@ -1060,14 +1069,17 @@
 			this.checkScreenHires.TabIndex = 24;
 			this.checkScreenHires.UseVisualStyleBackColor = true;
 			// 
-			// label37
+			// lblEnPrio0
 			// 
-			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(162, 115);
-			this.label37.Name = "label37";
-			this.label37.Size = new System.Drawing.Size(49, 13);
-			this.label37.TabIndex = 89;
-			this.label37.Text = "EN.Prio0";
+			this.lblEnPrio0.AutoSize = true;
+			this.lblEnPrio0.ForeColor = System.Drawing.Color.Blue;
+			this.lblEnPrio0.Location = new System.Drawing.Point(162, 115);
+			this.lblEnPrio0.Name = "lblEnPrio0";
+			this.lblEnPrio0.Size = new System.Drawing.Size(49, 13);
+			this.lblEnPrio0.TabIndex = 89;
+			this.lblEnPrio0.Text = "EN.Prio0";
+			this.lblEnPrio0.Click += new System.EventHandler(this.lblEnPrio0_Click);
+			this.lblEnPrio0.DoubleClick += new System.EventHandler(this.lblEnPrio0_Click);
 			// 
 			// label18391
 			// 
@@ -1178,7 +1190,7 @@
 			// 
 			// txtScreenCGADSUB_AddSub_Descr
 			// 
-			this.txtScreenCGADSUB_AddSub_Descr.Location = new System.Drawing.Point(233, 112);
+			this.txtScreenCGADSUB_AddSub_Descr.Location = new System.Drawing.Point(234, 112);
 			this.txtScreenCGADSUB_AddSub_Descr.Multiline = true;
 			this.txtScreenCGADSUB_AddSub_Descr.Name = "txtScreenCGADSUB_AddSub_Descr";
 			this.txtScreenCGADSUB_AddSub_Descr.ReadOnly = true;
@@ -1198,7 +1210,7 @@
 			// txtScreenCGADSUB_AddSub
 			// 
 			this.txtScreenCGADSUB_AddSub.BackColor = System.Drawing.Color.LightGreen;
-			this.txtScreenCGADSUB_AddSub.Location = new System.Drawing.Point(212, 112);
+			this.txtScreenCGADSUB_AddSub.Location = new System.Drawing.Point(213, 112);
 			this.txtScreenCGADSUB_AddSub.Multiline = true;
 			this.txtScreenCGADSUB_AddSub.Name = "txtScreenCGADSUB_AddSub";
 			this.txtScreenCGADSUB_AddSub.ReadOnly = true;
@@ -1209,7 +1221,7 @@
 			// label36
 			// 
 			this.label36.AutoSize = true;
-			this.label36.Location = new System.Drawing.Point(205, 96);
+			this.label36.Location = new System.Drawing.Point(206, 96);
 			this.label36.Name = "label36";
 			this.label36.Size = new System.Drawing.Size(59, 13);
 			this.label36.TabIndex = 82;
@@ -1447,7 +1459,7 @@
 			// label25
 			// 
 			this.label25.AutoSize = true;
-			this.label25.Location = new System.Drawing.Point(228, 64);
+			this.label25.Location = new System.Drawing.Point(229, 64);
 			this.label25.Name = "label25";
 			this.label25.Size = new System.Drawing.Size(61, 13);
 			this.label25.TabIndex = 44;
@@ -1456,7 +1468,7 @@
 			// txtScreenCGWSEL_MathFixed
 			// 
 			this.txtScreenCGWSEL_MathFixed.BackColor = System.Drawing.Color.LightGreen;
-			this.txtScreenCGWSEL_MathFixed.Location = new System.Drawing.Point(212, 62);
+			this.txtScreenCGWSEL_MathFixed.Location = new System.Drawing.Point(213, 62);
 			this.txtScreenCGWSEL_MathFixed.Multiline = true;
 			this.txtScreenCGWSEL_MathFixed.Name = "txtScreenCGWSEL_MathFixed";
 			this.txtScreenCGWSEL_MathFixed.ReadOnly = true;
@@ -1467,7 +1479,7 @@
 			// label2893719831
 			// 
 			this.label2893719831.AutoSize = true;
-			this.label2893719831.Location = new System.Drawing.Point(228, 45);
+			this.label2893719831.Location = new System.Drawing.Point(229, 45);
 			this.label2893719831.Name = "label2893719831";
 			this.label2893719831.Size = new System.Drawing.Size(52, 13);
 			this.label2893719831.TabIndex = 42;
@@ -1476,7 +1488,7 @@
 			// txtScreenCGWSEL_ColorSubMask
 			// 
 			this.txtScreenCGWSEL_ColorSubMask.BackColor = System.Drawing.Color.LightGreen;
-			this.txtScreenCGWSEL_ColorSubMask.Location = new System.Drawing.Point(212, 43);
+			this.txtScreenCGWSEL_ColorSubMask.Location = new System.Drawing.Point(213, 43);
 			this.txtScreenCGWSEL_ColorSubMask.Multiline = true;
 			this.txtScreenCGWSEL_ColorSubMask.Name = "txtScreenCGWSEL_ColorSubMask";
 			this.txtScreenCGWSEL_ColorSubMask.ReadOnly = true;
@@ -1487,7 +1499,7 @@
 			// label23
 			// 
 			this.label23.AutoSize = true;
-			this.label23.Location = new System.Drawing.Point(228, 27);
+			this.label23.Location = new System.Drawing.Point(229, 27);
 			this.label23.Name = "label23";
 			this.label23.Size = new System.Drawing.Size(56, 13);
 			this.label23.TabIndex = 40;
@@ -1496,7 +1508,7 @@
 			// txtScreenCGWSEL_ColorMask
 			// 
 			this.txtScreenCGWSEL_ColorMask.BackColor = System.Drawing.Color.LightGreen;
-			this.txtScreenCGWSEL_ColorMask.Location = new System.Drawing.Point(212, 25);
+			this.txtScreenCGWSEL_ColorMask.Location = new System.Drawing.Point(213, 25);
 			this.txtScreenCGWSEL_ColorMask.Multiline = true;
 			this.txtScreenCGWSEL_ColorMask.Name = "txtScreenCGWSEL_ColorMask";
 			this.txtScreenCGWSEL_ColorMask.ReadOnly = true;
@@ -1507,7 +1519,7 @@
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(205, 10);
+			this.label22.Location = new System.Drawing.Point(206, 10);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(53, 13);
 			this.label22.TabIndex = 32;
@@ -1516,7 +1528,7 @@
 			// label27
 			// 
 			this.label27.AutoSize = true;
-			this.label27.Location = new System.Drawing.Point(228, 81);
+			this.label27.Location = new System.Drawing.Point(229, 81);
 			this.label27.Name = "label27";
 			this.label27.Size = new System.Drawing.Size(59, 13);
 			this.label27.TabIndex = 31;
@@ -1526,7 +1538,7 @@
 			// 
 			this.checkScreenCGWSEL_DirectColor.AutoSize = true;
 			this.checkScreenCGWSEL_DirectColor.Enabled = false;
-			this.checkScreenCGWSEL_DirectColor.Location = new System.Drawing.Point(213, 81);
+			this.checkScreenCGWSEL_DirectColor.Location = new System.Drawing.Point(214, 81);
 			this.checkScreenCGWSEL_DirectColor.Name = "checkScreenCGWSEL_DirectColor";
 			this.checkScreenCGWSEL_DirectColor.Size = new System.Drawing.Size(15, 14);
 			this.checkScreenCGWSEL_DirectColor.TabIndex = 30;
@@ -2157,7 +2169,7 @@
 			this.tpTile.Location = new System.Drawing.Point(4, 22);
 			this.tpTile.Name = "tpTile";
 			this.tpTile.Padding = new System.Windows.Forms.Padding(3);
-			this.tpTile.Size = new System.Drawing.Size(206, 92);
+			this.tpTile.Size = new System.Drawing.Size(206, 94);
 			this.tpTile.TabIndex = 1;
 			this.tpTile.Text = "Tile";
 			this.tpTile.UseVisualStyleBackColor = true;
@@ -2276,7 +2288,7 @@
 			this.tpMapEntry.Controls.Add(this.viewerMapEntryTile);
 			this.tpMapEntry.Location = new System.Drawing.Point(4, 22);
 			this.tpMapEntry.Name = "tpMapEntry";
-			this.tpMapEntry.Size = new System.Drawing.Size(206, 92);
+			this.tpMapEntry.Size = new System.Drawing.Size(206, 94);
 			this.tpMapEntry.TabIndex = 2;
 			this.tpMapEntry.Text = "Map Entry";
 			this.tpMapEntry.UseVisualStyleBackColor = true;
@@ -2859,13 +2871,13 @@
 		private System.Windows.Forms.TextBox txtScreenCGADSUB_AddSub_Descr;
 		private System.Windows.Forms.Label label38;
 		private System.Windows.Forms.CheckBox txtScreenCGADSUB_Half;
-		private System.Windows.Forms.Label label37;
+		private System.Windows.Forms.Label lblEnPrio0;
 		private System.Windows.Forms.CheckBox checkEN0_OBJ;
 		private System.Windows.Forms.CheckBox checkEN0_BG4;
 		private System.Windows.Forms.CheckBox checkEN0_BG3;
 		private System.Windows.Forms.CheckBox checkEN0_BG2;
 		private System.Windows.Forms.CheckBox checkEN0_BG1;
-		private System.Windows.Forms.Label label41;
+		private System.Windows.Forms.Label lblEnPrio3;
 		private System.Windows.Forms.CheckBox checkEN1_OBJ;
 		private System.Windows.Forms.CheckBox checkEN1_BG4;
 		private System.Windows.Forms.CheckBox checkEN1_BG3;
@@ -2873,8 +2885,8 @@
 		private System.Windows.Forms.CheckBox checkEN1_BG1;
 		private System.Windows.Forms.CheckBox checkEN3_OBJ;
 		private System.Windows.Forms.CheckBox checkEN2_OBJ;
-		private System.Windows.Forms.Label label40;
-		private System.Windows.Forms.Label label39;
+		private System.Windows.Forms.Label lblEnPrio2;
+		private System.Windows.Forms.Label lblEnPrio1;
 		private System.Windows.Forms.TextBox txtBGPaletteInfo;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.Label labelClipboard;
