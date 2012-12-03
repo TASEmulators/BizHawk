@@ -4,6 +4,11 @@ namespace SNES {
 
 Interface *interface = nullptr;
 
+Interface::Interface()
+	: wanttrace(false)
+{
+}
+
 void Interface::videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan) {
 }
 

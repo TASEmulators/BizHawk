@@ -215,17 +215,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CGADSUB_OBJ = 66,
 			CGADSUB_BACKDROP = 67,
 			//$212C TM
-			TM_BG1 =70,
-			TM_BG2 =71,
-			TM_BG3 =72,
-			TM_BG4 =73,
-			TM_OBJ =74,
+			TM_BG1 = 70,
+			TM_BG2 = 71,
+			TM_BG3 = 72,
+			TM_BG4 = 73,
+			TM_OBJ = 74,
 			//$212D TM
-			TS_BG1 =80,
-			TS_BG2 =81,
-			TS_BG3 =82,
-			TS_BG4 =83,
-			TS_OBJ =84
+			TS_BG1 = 80,
+			TS_BG2 = 81,
+			TS_BG3 = 82,
+			TS_BG4 = 83,
+			TS_OBJ = 84,
+			//Mode7 regs
+			M7SEL_REPEAT = 90,
+			M7SEL_HFLIP = 91,
+			M7SEL_VFLIP = 92,
+			M7A = 93,
+			M7B = 94,
+			M7C = 95,
+			M7D = 96,
+			M7X = 97,
+			M7Y = 98,
+			//BG scroll regs
+			BG1HOFS = 100,
+			BG1VOFS = 101,
+			BG2HOFS = 102,
+			BG2VOFS = 103,
+			BG3HOFS = 104,
+			BG3VOFS = 105,
+			BG4HOFS = 106,
+			BG4VOFS = 107,
+			M7HOFS = 108,
+			M7VOFS = 109,
 		}
 
 		public enum SNES_MEMORY : uint

@@ -170,6 +170,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public bool MathEnabled;
 
 			/// <summary>
+			/// scroll registers
+			/// </summary>
+			public int HOFS, VOFS;
+
+			/// <summary>
 			/// TileSize; 8 or 16
 			/// </summary>
 			public int TileSize { get { return TILESIZE == 1 ? 16 : 8; } }
@@ -315,6 +320,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public bool OBJ_MathEnabled { private set; get; }
 			public bool BK_MathEnabled { private set; get; }
 
+			public int M7HOFS { private set; get; }
+			public int M7VOFS { private set; get; }
+			public int M7A { private set; get; }
+			public int M7B { private set; get; }
+			public int M7C { private set; get; }
+			public int M7D { private set; get; }
+			public int M7X { private set; get; }
+			public int M7Y { private set; get; }
+			public int M7SEL_REPEAT { private set; get; }
+			public bool M7SEL_HFLIP { private set; get; }
+			public bool M7SEL_VFLIP { private set; get; }
+
 			public static ScreenInfo GetScreenInfo()
 			{
 				var si = new ScreenInfo();
@@ -392,6 +409,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.BG.BG2.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG2) == 1;
 				si.BG.BG3.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG3) == 1;
 				si.BG.BG4.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG4) == 1;
+
+				si.BG.BG1.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1HOFS);
+				si.BG.BG1.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1VOFS);
+				si.BG.BG2.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2HOFS);
+				si.BG.BG2.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2VOFS);
+				si.BG.BG3.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3HOFS);
+				si.BG.BG3.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3VOFS);
+				si.BG.BG4.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4HOFS);
+				si.BG.BG4.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4VOFS);
+
+				si.M7HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7HOFS);
+				si.M7VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7VOFS);
+				si.M7A = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7A);
+				si.M7B = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7B);
+				si.M7C = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7C);
+				si.M7D = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7D);
+				si.M7X = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7X);
+				si.M7Y = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7Y);
+				si.M7Y = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7Y);
+				si.M7SEL_REPEAT = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7SEL_REPEAT);
+				si.M7SEL_HFLIP = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7SEL_HFLIP)!=0;
+				si.M7SEL_VFLIP = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7SEL_VFLIP)!=0;
 
 				for (int i = 1; i <= 4; i++)
 				{

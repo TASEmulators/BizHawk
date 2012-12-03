@@ -213,6 +213,27 @@ void bus_write(unsigned addr, uint8_t val);
 #define SNES_REG_TS_BG3 82
 #define SNES_REG_TS_BG4 83
 #define SNES_REG_TS_OBJ 84
+//Mode7 regs
+#define SNES_REG_M7SEL_REPEAT 90
+#define SNES_REG_M7SEL_HFLIP 91
+#define SNES_REG_M7SEL_VFLIP 92
+#define SNES_REG_M7A 93
+#define SNES_REG_M7B 94
+#define SNES_REG_M7C 95
+#define SNES_REG_M7D 96
+#define SNES_REG_M7X 97
+#define SNES_REG_M7Y 98
+//BG scroll regs
+#define SNES_REG_BG1HOFS 100
+#define SNES_REG_BG1VOFS 101
+#define SNES_REG_BG2HOFS 102
+#define SNES_REG_BG2VOFS 103
+#define SNES_REG_BG3HOFS 104
+#define SNES_REG_BG3VOFS 105
+#define SNES_REG_BG4HOFS 106
+#define SNES_REG_BG4VOFS 107
+#define SNES_REG_M7HOFS 108
+#define SNES_REG_M7VOFS 109
 
 
 int snes_peek_logical_register(int reg);

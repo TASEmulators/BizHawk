@@ -160,6 +160,8 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.txtBG1Scroll = new System.Windows.Forms.TextBox();
+			this.label37 = new System.Windows.Forms.Label();
 			this.txtBG1MapSizeBytes = new System.Windows.Forms.TextBox();
 			this.txtBGPaletteInfo = new System.Windows.Forms.TextBox();
 			this.rbBG4 = new System.Windows.Forms.RadioButton();
@@ -555,7 +557,7 @@
 			// groupBox6
 			// 
 			this.groupBox6.Controls.Add(this.labelClipboard);
-			this.groupBox6.Location = new System.Drawing.Point(2, 495);
+			this.groupBox6.Location = new System.Drawing.Point(2, 520);
 			this.groupBox6.Name = "groupBox6";
 			this.groupBox6.Size = new System.Drawing.Size(220, 38);
 			this.groupBox6.TabIndex = 50;
@@ -1701,6 +1703,8 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.txtBG1Scroll);
+			this.groupBox1.Controls.Add(this.label37);
 			this.groupBox1.Controls.Add(this.txtBG1MapSizeBytes);
 			this.groupBox1.Controls.Add(this.txtBGPaletteInfo);
 			this.groupBox1.Controls.Add(this.rbBG4);
@@ -1729,10 +1733,29 @@
 			this.groupBox1.Controls.Add(this.txtBG1SizeBits);
 			this.groupBox1.Location = new System.Drawing.Point(2, 281);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(170, 208);
+			this.groupBox1.Size = new System.Drawing.Size(170, 233);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "BG";
+			// 
+			// txtBG1Scroll
+			// 
+			this.txtBG1Scroll.Location = new System.Drawing.Point(73, 134);
+			this.txtBG1Scroll.Multiline = true;
+			this.txtBG1Scroll.Name = "txtBG1Scroll";
+			this.txtBG1Scroll.ReadOnly = true;
+			this.txtBG1Scroll.Size = new System.Drawing.Size(72, 18);
+			this.txtBG1Scroll.TabIndex = 42;
+			this.txtBG1Scroll.Text = "1024,1024";
+			// 
+			// label37
+			// 
+			this.label37.AutoSize = true;
+			this.label37.Location = new System.Drawing.Point(35, 137);
+			this.label37.Name = "label37";
+			this.label37.Size = new System.Drawing.Size(36, 13);
+			this.label37.TabIndex = 41;
+			this.label37.Text = "Scroll:";
 			// 
 			// txtBG1MapSizeBytes
 			// 
@@ -1746,7 +1769,7 @@
 			// 
 			// txtBGPaletteInfo
 			// 
-			this.txtBGPaletteInfo.Location = new System.Drawing.Point(5, 181);
+			this.txtBGPaletteInfo.Location = new System.Drawing.Point(5, 206);
 			this.txtBGPaletteInfo.Multiline = true;
 			this.txtBGPaletteInfo.Name = "txtBGPaletteInfo";
 			this.txtBGPaletteInfo.ReadOnly = true;
@@ -1887,7 +1910,7 @@
 			// 
 			// txtBG1TDAddrDescr
 			// 
-			this.txtBG1TDAddrDescr.Location = new System.Drawing.Point(73, 156);
+			this.txtBG1TDAddrDescr.Location = new System.Drawing.Point(73, 177);
 			this.txtBG1TDAddrDescr.Multiline = true;
 			this.txtBG1TDAddrDescr.Name = "txtBG1TDAddrDescr";
 			this.txtBG1TDAddrDescr.ReadOnly = true;
@@ -1898,7 +1921,7 @@
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(30, 161);
+			this.label11.Location = new System.Drawing.Point(30, 182);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(40, 13);
 			this.label11.TabIndex = 14;
@@ -1906,7 +1929,7 @@
 			// 
 			// txtBG1SCAddrDescr
 			// 
-			this.txtBG1SCAddrDescr.Location = new System.Drawing.Point(73, 134);
+			this.txtBG1SCAddrDescr.Location = new System.Drawing.Point(73, 155);
 			this.txtBG1SCAddrDescr.Multiline = true;
 			this.txtBG1SCAddrDescr.Name = "txtBG1SCAddrDescr";
 			this.txtBG1SCAddrDescr.ReadOnly = true;
@@ -1926,7 +1949,7 @@
 			// txtBG1TDAddrBits
 			// 
 			this.txtBG1TDAddrBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1TDAddrBits.Location = new System.Drawing.Point(5, 158);
+			this.txtBG1TDAddrBits.Location = new System.Drawing.Point(5, 179);
 			this.txtBG1TDAddrBits.Multiline = true;
 			this.txtBG1TDAddrBits.Name = "txtBG1TDAddrBits";
 			this.txtBG1TDAddrBits.ReadOnly = true;
@@ -1937,7 +1960,7 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(30, 137);
+			this.label10.Location = new System.Drawing.Point(30, 158);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(40, 13);
 			this.label10.TabIndex = 11;
@@ -1965,7 +1988,7 @@
 			// txtBG1SCAddrBits
 			// 
 			this.txtBG1SCAddrBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1SCAddrBits.Location = new System.Drawing.Point(5, 134);
+			this.txtBG1SCAddrBits.Location = new System.Drawing.Point(5, 155);
 			this.txtBG1SCAddrBits.Multiline = true;
 			this.txtBG1SCAddrBits.Name = "txtBG1SCAddrBits";
 			this.txtBG1SCAddrBits.ReadOnly = true;
@@ -2939,5 +2962,7 @@
 		private System.Windows.Forms.TextBox txtObjPaletteMemo;
 		private System.Windows.Forms.Label label49;
 		private System.Windows.Forms.TextBox txtObjPalette;
+		private System.Windows.Forms.TextBox txtBG1Scroll;
+		private System.Windows.Forms.Label label37;
 	}
 }
