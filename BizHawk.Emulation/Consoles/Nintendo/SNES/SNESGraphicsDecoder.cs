@@ -229,6 +229,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public int X { private set; get; }
 			public int Y { private set; get; }
 			public int Tile { private set; get; }
+			public int Name { private set; get; }
 			public int Table { private set; get; }
 			public int Palette { private set; get; }
 			public int Priority { private set; get; }
@@ -236,14 +237,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public bool HFlip { private set; get; }
 			public int Size { private set; get; }
 
-			public OAMInfo(SNESGraphicsDecoder dec, int num)
+			/// <summary>
+			/// tiledata address
+			/// </summary>
+			public int Address { private set; get; }
+
+			public OAMInfo(SNESGraphicsDecoder dec, ScreenInfo si, int num)
 			{
 				Index = num;
 				
 				int lowaddr = num*4;
 				X = dec.oam[lowaddr++];
 				Y = dec.oam[lowaddr++];
-				Tile = dec.oam[lowaddr++];
+				Name = dec.oam[lowaddr++];
 				Table = dec.oam[lowaddr] & 1;
 				Palette = (dec.oam[lowaddr]>>1) & 7;
 				Priority = (dec.oam[lowaddr] >> 4) & 3;
@@ -259,11 +265,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				Size = high & 1;
 				X |= (x << 9);
 				X = (X << 23) >> 23;
+
+				Tile = Table*256 + Name;
+				Address = 32 * Tile;
+			
+				if (Tile < 256)
+					Address += si.OBJTable0Addr;
+				else
+					Address += si.OBJTable1Addr - (256 * 32);
+
+				Address &= 0xFFFF;
+
 			}
 		}
 
 		public class ScreenInfo
 		{
+			public Dimensions ObjSizeBounds;
+			public Dimensions ObjSizeBoundsSquare;
+
 			public BGInfos BG = new BGInfos();
 
 			public ModeInfo Mode = new ModeInfo();
@@ -304,6 +324,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.OBSEL_Size = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_SIZE);
 				si.OBSEL_NameSel = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMESEL);
 				si.OBSEL_NameBase = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMEBASE);
+
+				si.ObjSizeBounds = ObjSizes[si.OBSEL_Size,1];
+				int square = Math.Max(si.ObjSizeBounds.Width, si.ObjSizeBounds.Height);
+				si.ObjSizeBoundsSquare = new Dimensions(square, square);
+
 
 				si.OBJTable0Addr = si.OBSEL_NameBase << 14;
 				si.OBJTable1Addr = (si.OBJTable0Addr + ((si.OBSEL_NameSel + 1) << 13)) & 0xFFFF;
@@ -875,7 +900,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum)
 		{
 			var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1] };
-			var oam = new OAMInfo(this, spritenum);
+			var oam = new OAMInfo(this, si, spritenum);
 			var dim = dims[oam.Size];
 
 			int[] tilebuf = _tileCache[4];
@@ -886,13 +911,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			else
 				baseaddr = si.OBJTable1Addr;
 
+			//TODO - flips of 'undocumented' rectangular oam settings are wrong. probably easy to do right, but we need a test
+
 			int bcol = oam.Tile & 0xF;
 			int brow = (oam.Tile >> 4) & 0xF;
-			for(int y=0;y<dim.Height;y++)
-				for (int x = 0; x < dim.Width; x++)
+			for(int oy=0;oy<dim.Height;oy++)
+				for (int ox = 0; ox < dim.Width; ox++)
 				{
-					int dy = desty + y;
-					int dx = destx + x;
+					int x = ox;
+					int y = oy;
+
+					int dy, dx;
+
+					if (oam.HFlip)
+						dx = dim.Width - 1 - x;
+					else dx = x;
+					if (oam.VFlip)
+						dy = dim.Height - 1 - y;
+					else dy = y;
+
+					dx += destx;
+					dy += desty;
+
 					int col = (bcol + (x >> 3)) & 0xF;
 					int row = (brow + (y >> 3)) & 0xF;
 					int sx = x & 0x7;
@@ -910,6 +950,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public int Colorize(int rgb555)
 		{
+			//skip to max luminance in the palette table
 			return colortable[491520 + rgb555];
 		}
 
