@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				this.nes = nes;
 				dmc = new DMCUnit(this, pal);
+				noise = new NoiseUnit(pal);
 				if (old != null)
 				{
 					EnableSquare1 = old.EnableSquare1;
@@ -62,10 +63,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0,
  				0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
 			};
-			static int[] NOISE_TABLE = 
+			static int[] NOISE_TABLE_NTSC = 
 			{
-				4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068 //NTSC
-				//4, 7, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778 //PAL
+				4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068
+			};
+			static int[] NOISE_TABLE_PAL = 
+			{
+				4, 7, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778
 			};
 
 
@@ -285,6 +289,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public int sample;
 				int env_output, env_start_flag, env_divider, env_counter;
 				bool noise_bit = true;
+
+				int[] NOISE_TABLE;
+
+				public NoiseUnit(bool pal)
+				{
+					NOISE_TABLE = pal ? NOISE_TABLE_PAL : NOISE_TABLE_NTSC;
+				}
 
 				public void SyncState(Serializer ser)
 				{
@@ -766,7 +777,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			PulseUnit[] pulse = { new PulseUnit(0), new PulseUnit(1) };
 			TriangleUnit triangle = new TriangleUnit();
-			NoiseUnit noise = new NoiseUnit();
+			NoiseUnit noise; //= new NoiseUnit();
 			DMCUnit dmc;
 
 			bool irq_pending;
