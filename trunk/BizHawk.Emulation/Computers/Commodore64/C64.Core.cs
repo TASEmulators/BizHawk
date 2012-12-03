@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			colorRam = new Chip2114();
 			cpu = new MOS6510(this);
 			ram = new Chip4864();
-			sid = new MOS6581();
+			sid = new MOS6581(44100, initRegion);
 			pla.UpdatePins();
 		}
 

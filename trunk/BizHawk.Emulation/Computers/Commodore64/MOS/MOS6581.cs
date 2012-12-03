@@ -4124,7 +4124,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		};
 
-		public MOS6581() : base(waveTable)
+		public MOS6581(uint newSampleRate, Region newRegion) : base(waveTable, newSampleRate, newRegion)
 		{
 		}
 	}

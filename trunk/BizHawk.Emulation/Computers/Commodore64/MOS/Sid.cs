@@ -71,53 +71,54 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					delay = true;
 					UpdateExpCounter();
 				}
+
 				if (lfsr != rate)
 				{
 					uint feedback = ((lfsr >> 14) ^ (lfsr >> 13)) & 0x1;
 					lfsr = ((lfsr << 1) & 0x7FFF) | feedback;
+					return;
 				}
-				else
+				lfsr = 0x7FFF;
+
+				if (state == stateAttack || ++expCounter == expPeriod)
 				{
-					lfsr = 0x7FFF;
-					if (state == stateAttack || ++expCounter == expPeriod)
+					expCounter = 0;
+					if (freeze)
+						return;
+
+					switch (state)
 					{
-						expCounter = 0;
-						if (!freeze)
-						{
-							switch (state)
+						case stateAttack:
+							envCounter++;
+							if (envCounter == 0xFF)
 							{
-								case stateAttack:
-									envCounter++;
-									if (envCounter == 0xFF)
-									{
-										state = stateDecay;
-										rate = adsrTable[decay];
-									}
-									break;
-								case stateDecay:
-									if (envCounter == sustainTable[sustain])
-									{
-										return;
-									}
-									if (expPeriod != 1)
-									{
-										delay = false;
-										return;
-									}
-									envCounter--;
-									break;
-								case stateRelease:
-									if (expPeriod != 1)
-									{
-										delay = false;
-										return;
-									}
-									envCounter--;
-									break;
+								state = stateDecay;
+								rate = adsrTable[decay];
 							}
-							UpdateExpCounter();
-						}
+							break;
+						case stateDecay:
+							if (envCounter == sustainTable[sustain])
+							{
+								return;
+							}
+							if (expPeriod != 1)
+							{
+								delay = false;
+								return;
+							}
+							envCounter--;
+							break;
+						case stateRelease:
+							if (expPeriod != 1)
+							{
+								delay = false;
+								return;
+							}
+							envCounter--;
+							break;
 					}
+					envCounter &= 0xFF;
+					UpdateExpCounter();
 				}
 			}
 
@@ -464,7 +465,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						output = 0x000;
 				}
 				pulse = ((accumulator >> 12) >= pulseWidth) ? (uint)0xFFF : (uint)0x000;
-				return 0;
+				return output;
 			}
 
 			public uint PulseWidth
@@ -566,8 +567,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint volume;
 		private uint[][] waveformTable;
 
-		public Sid(uint[][] newWaveformTable)
+		public Sid(uint[][] newWaveformTable, uint newSampleRate, Region newRegion)
 		{
+			switch (newRegion)
+			{
+				case Region.NTSC: cyclesPerSec = 14318181 / 14; break;
+				case Region.PAL: cyclesPerSec = 17734472 / 18; break;
+			}
+			bufferFrequency = cyclesPerSec / newSampleRate;
+			bufferLength = newSampleRate * 2;
+			buffer = new short[bufferLength];
+
 			waveformTable = newWaveformTable;
 
 			envelopes = new Envelope[3];
@@ -635,6 +645,27 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			envelopeOutput[0] = envelopes[0].Level;
 			envelopeOutput[1] = envelopes[1].Level;
 			envelopeOutput[2] = envelopes[2].Level;
+
+			// process output
+			if (bufferCounter == 0)
+			{
+				uint mixer;
+				short sample;
+				bufferCounter = bufferFrequency;
+
+				// mix each channel (20 bits)
+				mixer = ((voiceOutput[0] * envelopeOutput[0]) >> 7);
+				mixer += ((voiceOutput[1] * envelopeOutput[1]) >> 7);
+				mixer += ((voiceOutput[2] * envelopeOutput[2]) >> 7);
+				mixer = (mixer * volume) >> 4;
+
+				sample = (short)mixer;
+				buffer[bufferIndex++] = sample;
+				buffer[bufferIndex++] = sample;
+				if (bufferIndex == bufferLength)
+					bufferIndex = 0;
+			}
+			bufferCounter--;
 		}
 
 		// ------------------------------------
@@ -767,8 +798,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case 0x19: result = (byte)potX; break;
 				case 0x1A: result = (byte)potY;	break;
-				case 0x1B: result = (byte)(voices[2].Oscillator >> 4); break;
-				case 0x1C: result = (byte)(envelopes[2].Level); break;
+				case 0x1B: result = (byte)(voiceOutput[2] >> 4); break;
+				case 0x1C: result = (byte)(envelopeOutput[2]); break;
 			}
 
 			return result;
@@ -796,6 +827,51 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void WriteRegister(ushort addr, byte val)
 		{
+			switch (addr)
+			{
+				case 0x00: voices[0].FrequencyLo = val; break;
+				case 0x01: voices[0].FrequencyHi = val; break;
+				case 0x02: voices[0].PulseWidthLo = val; break;
+				case 0x03: voices[0].PulseWidthHi = val; break;
+				case 0x04: voices[0].Control = val; envelopes[0].Gate = ((val & 0x01) != 0); break;
+				case 0x05: envelopes[0].Attack = (uint)(val >> 4); envelopes[0].Decay = (uint)(val & 0xF); break;
+				case 0x06: envelopes[0].Sustain = (uint)(val >> 4); envelopes[0].Release = (uint)(val & 0xF); break;
+				case 0x07: voices[1].FrequencyLo = val; break;
+				case 0x08: voices[1].FrequencyHi = val; break;
+				case 0x09: voices[1].PulseWidthLo = val; break;
+				case 0x0A: voices[1].PulseWidthHi = val; break;
+				case 0x0B: voices[1].Control = val; envelopes[1].Gate = ((val & 0x01) != 0); break;
+				case 0x0C: envelopes[1].Attack = (uint)(val >> 4); envelopes[1].Decay = (uint)(val & 0xF); break;
+				case 0x0D: envelopes[1].Sustain = (uint)(val >> 4); envelopes[1].Release = (uint)(val & 0xF); break;
+				case 0x0E: voices[2].FrequencyLo = val; break;
+				case 0x0F: voices[2].FrequencyHi = val; break;
+				case 0x10: voices[2].PulseWidthLo = val; break;
+				case 0x11: voices[2].PulseWidthHi = val; break;
+				case 0x12: voices[2].Control = val; envelopes[2].Gate = ((val & 0x01) != 0); break;
+				case 0x13: envelopes[2].Attack = (uint)(val >> 4); envelopes[2].Decay = (uint)(val & 0xF); break;
+				case 0x14: envelopes[2].Sustain = (uint)(val >> 4); envelopes[2].Release = (uint)(val & 0xF); break;
+				case 0x15: filterFrequency &= 0x3FF; filterFrequency |= (uint)(val & 0x7); break;
+				case 0x16: filterFrequency &= 0x7; filterFrequency |= (uint)val << 3; break;
+				case 0x17:
+					filterEnable[0] = ((val & 0x1) != 0);
+					filterEnable[1] = ((val & 0x2) != 0);
+					filterEnable[2] = ((val & 0x4) != 0);
+					filterResonance = (uint)val >> 4;
+					break;
+				case 0x18:
+					volume = (uint)(val & 0xF);
+					filterSelectLoPass = ((val & 0x10) != 0);
+					filterSelectBandPass = ((val & 0x20) != 0);
+					filterSelectHiPass = ((val & 0x40) != 0);
+					disableVoice3 = ((val & 0x40) != 0);
+					break;
+				case 0x19:
+					potX = val;
+					break;
+				case 0x1A:
+					potY = val;
+					break;
+			}
 		}
 	}
 }

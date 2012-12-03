@@ -9,8 +9,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	{
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
-			samples = new short[0];
-			nsamp = 0;
+			samples = buffer;
+			nsamp = (int)bufferIndex;
+			bufferIndex = 0;
 		}
 
 		public void DiscardSamples()
