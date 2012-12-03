@@ -46,6 +46,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return (byte)(ram[addr & 0x3FF] | (bus & 0xF0));
 		}
 
+		public void SyncState(Serializer ser)
+		{
+			ByteBuffer buffer = new ByteBuffer(ram);
+			ser.Sync("ram", ref buffer);
+		}
+
 		public void Write(ushort addr, byte val)
 		{
 			ram[addr & 0x3FF] = (byte)(val & 0xF);

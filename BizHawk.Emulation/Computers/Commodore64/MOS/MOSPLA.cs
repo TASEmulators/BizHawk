@@ -82,11 +82,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			if ((ExRom != pinExRomLast) || (Game != pinGameLast) || (LoRam != pinLoRamLast) || (HiRam != pinHiRamLast) || (Charen != pinCharenLast))
 			{
 				UpdateMap();
-				pinExRomLast = ExRom;
-				pinGameLast = Game;
-				pinLoRamLast = LoRam;
-				pinHiRamLast = HiRam;
-				pinCharenLast = Charen;
 			}
 		}
 
@@ -322,6 +317,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				throw new Exception("Memory configuration missing from PLA, fix this!");
 			}
+
+			pinExRomLast = ExRom;
+			pinGameLast = Game;
+			pinLoRamLast = LoRam;
+			pinHiRamLast = HiRam;
+			pinCharenLast = Charen;
 		}
 
 		// ------------------------------------
@@ -524,6 +525,21 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				else
 					return chips.ram.Read(addr);
 			}
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ser.Sync("bus", ref bus);
+			ser.Sync("cia0portRead", ref cia0portRead);
+			ser.Sync("pinCharenLast", ref pinCharenLast);
+			ser.Sync("pinExRomLast", ref pinExRomLast);
+			ser.Sync("pinGameLast", ref pinGameLast);
+			ser.Sync("pinHiRamLast", ref pinHiRamLast);
+			ser.Sync("pinLoRamLast", ref pinLoRamLast);
+			ser.Sync("ultimax", ref ultimax);
+			ser.Sync("vicBank", ref vicBank);
+
+			if (ser.IsReader) UpdateMap();
 		}
 
 		private void UpdateVicBank()

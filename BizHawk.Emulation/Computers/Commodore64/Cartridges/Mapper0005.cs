@@ -148,5 +148,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 			if (addr == 0x00)
 				BankSet(val);
 		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bankMask", ref bankMask);
+			ser.Sync("bankNumber", ref bankNumber);
+			if (ser.IsReader)
+				BankSet(bankNumber);
+		}
 	}
 }

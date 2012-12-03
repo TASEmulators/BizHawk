@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 		private byte[] bankMain;
 		private byte[][] bankHigh;
 		private byte[] bankHighSelected;
+		private uint bankIndex;
 		private byte[] dummyBank;
 
 		// Zaxxon and Super Zaxxon cartridges
@@ -59,14 +60,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 
 		public override byte Read8000(ushort addr)
 		{
-			uint bank = (addr & (uint)0x1000) >> 12;
-			bankHighSelected = bankHigh[bank];
+			bankIndex = (addr & (uint)0x1000) >> 12;
+			bankHighSelected = bankHigh[bankIndex];
 			return bankMain[addr];
 		}
 
 		public override byte ReadA000(ushort addr)
 		{
 			return bankHighSelected[addr];
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bankIndex", ref bankIndex);
+			if (ser.IsReader)
+				bankHighSelected = bankHigh[bankIndex];
 		}
 	}
 }

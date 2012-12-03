@@ -55,6 +55,17 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		void SyncState(Serializer ser)
 		{
+			chips.SyncState(ser);
+			ser.BeginSection("core");
+			ser.Sync("cyclesPerFrame", ref cyclesPerFrame);
+			ser.Sync("loadPrg", ref loadPrg);
+			for (uint i = 0; i < 2; i++)
+				for (uint j = 0; j < 5; j++)
+					ser.Sync("joystickPressed" + i.ToString() + j.ToString(), ref joystickPressed[i, j]);
+			for (uint i = 0; i < 8; i++)
+				for (uint j = 0; j < 8; j++)
+					ser.Sync("keyboardPressed" + i.ToString() + j.ToString(), ref keyboardPressed[i, j]);
+			ser.EndSection();
 		}
 	}
 }

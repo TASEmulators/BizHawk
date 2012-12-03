@@ -165,5 +165,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 		{
 			ram[addr] = val;
 		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("bankNumber", ref bankNumber);
+			ser.Sync("boardLed", ref boardLed);
+			ser.Sync("ram", ref ram, false);
+			if (ser.IsReader)
+				UpdateState();
+		}
 	}
 }

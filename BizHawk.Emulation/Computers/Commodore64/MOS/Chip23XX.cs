@@ -59,6 +59,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			return rom[addr & addrMask];
 		}
 
+		public void SyncState(Serializer ser)
+		{
+			ByteBuffer buffer = new ByteBuffer(rom);
+			ser.Sync("rom", ref buffer);
+		}
+
 		public void Write(ushort addr, byte val)
 		{
 			// do nothing (this is rom)
