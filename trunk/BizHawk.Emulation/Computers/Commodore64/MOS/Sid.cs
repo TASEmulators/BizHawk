@@ -571,11 +571,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			switch (newRegion)
 			{
-				case Region.NTSC: cyclesPerSec = 14318181 / 14; break;
-				case Region.PAL: cyclesPerSec = 17734472 / 18; break;
+				case Region.NTSC: cyclesPerSec = 14318181 / 14; bufferLength = (newSampleRate / 60) * 4; break;
+				case Region.PAL: cyclesPerSec = 17734472 / 18; bufferLength = (newSampleRate / 50) * 4; break;
 			}
 			bufferFrequency = cyclesPerSec / newSampleRate;
-			bufferLength = newSampleRate * 2;
 			buffer = new short[bufferLength];
 
 			waveformTable = newWaveformTable;
