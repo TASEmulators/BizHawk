@@ -99,7 +99,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret.wram_size = (short)(wram_size * 8);
 				//0 is supposed to mean 8KB (for compatibility, as this is an extension to original iNES format)
 				if (ret.wram_size == 0)
+				{
+					report.WriteLine("iNES wr=0 interpreted as wr=8");
 					ret.wram_size = 8;
+				}
 
 				//iNES wants us to assume that no chr -> 8KB vram
 				if (ret.chr_size == 0) ret.vram_size = 8;
