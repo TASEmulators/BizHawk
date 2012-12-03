@@ -7,6 +7,7 @@
 //TODO - show the priority list for the current mode. make the priority list have checkboxes, and use that to control whether that item displays (does bsnes have that granularity? maybe)
 //TODO - use custom checkboxes for register-viewing checkboxes to make them green and checked
 //TODO - make freeze actually save the info caches, and re-render in realtime, so that you can pick something you want to see animate without having to hover your mouse just right. also add a checkbox to do the literal freeze (stop it from updating)
+//TODO - sprite wrapping is not correct
 
 //DEFERRED:
 //. 256bpp modes (difficult to use)
@@ -48,6 +49,7 @@ namespace BizHawk.MultiClient
 
 			viewer.ScaleImage = false;
 
+			displayTypeItems.Add(new DisplayTypeItem("Sprites", eDisplayType.Sprites));
 			displayTypeItems.Add(new DisplayTypeItem("OBJ", eDisplayType.OBJ));
 			displayTypeItems.Add(new DisplayTypeItem("BG1", eDisplayType.BG1));
 			displayTypeItems.Add(new DisplayTypeItem("BG2",eDisplayType.BG2));
@@ -61,7 +63,7 @@ namespace BizHawk.MultiClient
 			displayTypeItems.Add(new DisplayTypeItem("Mode7Ext tiles",eDisplayType.TilesMode7Ext));
 			displayTypeItems.Add(new DisplayTypeItem("Mode7 tiles (DC)", eDisplayType.TilesMode7DC));
 			comboDisplayType.DataSource = displayTypeItems;
-			comboDisplayType.SelectedIndex = 1;
+			comboDisplayType.SelectedIndex = 2;
 
 			var paletteTypeItems = new List<PaletteTypeItem>();
 			paletteTypeItems.Add(new PaletteTypeItem("BizHawk", SnesColors.ColorType.BizHawk));
@@ -182,6 +184,7 @@ namespace BizHawk.MultiClient
 		SNESGraphicsDecoder gd = new SNESGraphicsDecoder(SnesColors.ColorType.BizHawk);
 		SNESGraphicsDecoder.ScreenInfo si;
 		SNESGraphicsDecoder.TileEntry[] map;
+		byte[,] spriteMap = new byte[256, 224];
 		SNESGraphicsDecoder.BGMode viewBgMode;
 
 		void RegenerateData()
@@ -335,6 +338,17 @@ namespace BizHawk.MultiClient
 					gd.RenderSpriteToScreen(pixelptr, stride / 4, x,y, si, i);
 				}
 			}
+			if (selection == eDisplayType.Sprites)
+			{
+				//render sprites in-place
+				allocate(256, 224);
+				for (int y = 0; y < 224; y++) for (int x = 0; x < 256; x++) spriteMap[x, y] = 0xFF;
+				for(int i=127;i>=0;i--)
+				{
+					var oam = new SNESGraphicsDecoder.OAMInfo(gd, si, i);
+					gd.RenderSpriteToScreen(pixelptr, stride / 4, oam.X, oam.Y, si, i, oam, 256, 224, spriteMap);
+				}
+			}
 			if (selection == eDisplayType.OBJTiles0 || selection == eDisplayType.OBJTiles1)
 			{
 				allocate(128, 256);
@@ -437,7 +451,7 @@ namespace BizHawk.MultiClient
 
 		enum eDisplayType
 		{
-			OBJ, BG1 = 1, BG2 = 2, BG3 = 3, BG4 = 4, OBJTiles0, OBJTiles1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC
+			BG1 = 1, BG2 = 2, BG3 = 3, BG4 = 4, OBJTiles0, OBJTiles1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC, Sprites, OBJ
 		}
 		static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
 		static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJTiles0 || type == eDisplayType.OBJTiles1; }
@@ -1054,6 +1068,19 @@ namespace BizHawk.MultiClient
 
 		void HandleSpriteMouseOver(int px, int py)
 		{
+			if (px < 0 || py < 0 || px >= 256 || py >= 224) return;
+
+			int sprite = spriteMap[px,py];
+			if(sprite == 0xFF) return;
+
+			currObjDataState = new ObjDataState();
+			currObjDataState.Number = sprite;
+
+			SetTab(tpOBJ);
+		}
+
+		void HandleObjMouseOver(int px, int py)
+		{
 			int ox = px / si.ObjSizeBounds.Width;
 			int oy = py / si.ObjSizeBounds.Height;
 			
@@ -1097,6 +1124,9 @@ namespace BizHawk.MultiClient
 					HandleTileViewMouseOver(128, 256, 4, tx, ty);
 					break;
 				case eDisplayType.OBJ:
+					HandleObjMouseOver(loc.X, loc.Y);
+					break;
+				case eDisplayType.Sprites:
 					HandleSpriteMouseOver(loc.X, loc.Y);
 					break;
 				case eDisplayType.Tiles2bpp:
