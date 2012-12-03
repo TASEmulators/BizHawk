@@ -198,6 +198,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			sid.HardReset();
 			vic.HardReset();
 		}
+
+		public void SyncState()
+		{
+			
+		}
 	}
 
 	static public class C64Util

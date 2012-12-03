@@ -105,6 +105,21 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		protected void SyncInternal(Serializer ser)
 		{
+			ser.Sync("pinIRQ", ref pinIRQ);
+			ser.Sync("portData0", ref portData[0]);
+			ser.Sync("portData1", ref portData[1]);
+			ser.Sync("portDir0", ref portDir[0]);
+			ser.Sync("portDir1", ref portDir[1]);
+			ser.Sync("portMask0", ref portMask[0]);
+			ser.Sync("portMask1", ref portMask[1]);
+			ser.Sync("timer0", ref timer[0]);
+			ser.Sync("timer1", ref timer[1]);
+			ser.Sync("timerLatch0", ref timerLatch[0]);
+			ser.Sync("timerLatch1", ref timerLatch[1]);
+			ser.Sync("timerOn0", ref timerOn[0]);
+			ser.Sync("timerOn1", ref timerOn[1]);
+			ser.Sync("underflow0", ref underflow[0]);
+			ser.Sync("underflow1", ref underflow[1]);
 		}
 
 		private void WritePort(uint index, byte data)
