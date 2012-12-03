@@ -24,10 +24,9 @@ namespace BizHawk.MultiClient
 		private void DumpStatus_Click(object sender, EventArgs e)
 		{
 			string details = Global.Emulator.CoreOutputComm.RomStatusDetails;
-			if(string.IsNullOrEmpty(details)) return;
-			var lw = new LogWindow();
+			if (string.IsNullOrEmpty(details)) return;
 			Global.Sound.StopSound();
-			lw.ShowReport("Dump Status Report",details);
+			LogWindow.ShowReport("Dump Status Report", details, this);
 			Global.Sound.StartSound();
 		}
 
