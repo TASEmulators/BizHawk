@@ -1,0 +1,1201 @@
+
+*** CRT - CaRTridge Images (from the CCS64 emulator)
+*** Document revision: 1.13
+*** Last updated: June 12, 2007
+*** Compiler/Editor: Peter Schepers
+*** Contributors/sources: Per Hakan Sundell,
+                          Markus Brenner
+                          Marco Van Den Heuvel
+
+  Cartridge files were introduced in the CCS64  emulator,  written  by  Per
+Hakan Sundell, and use the ".CRT" file extension. This format  was  created
+to handle the various ROM cartridges that exist, such as Action Replay, the
+Power cartridge, and the Final Cartridge.
+
+  Normal game cartridges can load  into  several  different  memory  ranges
+($8000-9FFF,  $A000-BFFF  or  $E000-FFFF).  Newer   utility   and   freezer
+cartridges were less intrusive, hiding themselves until  called  upon,  and
+still others used bank-switching techniques to allow much larger ROM's than
+normal. Because of these "stealthing" and bank-switching methods, a special
+cartridge format  was  necessary,  to  let  the  emulator  know  where  the
+cartridge should reside, the control line  states  to  enable  it  and  any
+special hardware features it uses.
+
+  Here is a dump of a sample 8K normal cartridge,  "Attack  Of  The  Mutant
+Camels"...
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 00 00 01 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 41 54 54 41 43 4B 20 4F 46 20 54 48 45 20 4D 55   ATTACKתOFתTHEתMU
+0030: 54 41 4E 54 20 43 41 4D 45 4C 53 00 00 00 00 00   TANTתCAMELSתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+0050: D3 9B BC FE C3 C2 CD 38 30 EA EA EA A9 01 85 13   ׃›¼‏ֲֳֽ80ךךך©ת…ת
+0060: 4C B3 9B A9 08 85 5A 88 D0 FD C6 5A D0 F9 60 D0   L³›©ת…Zˆ׀‎ֶZ׀ש`׀
+
+  Bytes:$0000-000F - 16-byte cartridge signature  "C64  CARTRIDGE"  (padded
+                     with space characters)
+         0010-0013 - File header length  ($00000040,  in  high/low  format,
+                     calculated from offset $0000). The default  (also  the
+                     minimum) value is $40.  Some  cartridges  exist  which
+                     show a value of $00000020 which is wrong.
+         0014-0015 - Cartridge version (high/low, presently 01.00)
+         0016-0017 - Cartridge hardware type ($0000, high/low)
+                       0 - Normal cartridge
+                       1 - Action Replay
+                       2 - KCS Power Cartridge
+                       3 - Final Cartridge III
+                       4 - Simons Basic
+                       5 - Ocean type 1*
+                       6 - Expert Cartridge
+                       7 - Fun Play, Power Play
+                       8 - Super Games
+                       9 - Atomic Power
+                      10 - Epyx Fastload
+                      11 - Westermann Learning
+                      12 - Rex Utility
+                      13 - Final Cartridge I
+                      14 - Magic Formel
+                      15 - C64 Game System, System 3
+                      16 - WarpSpeed
+                      17 - Dinamic**
+                      18 - Zaxxon, Super Zaxxon (SEGA)
+                      19 - Magic Desk, Domark, HES Australia
+                      20 - Super Snapshot 5
+                      21 - Comal-80
+                      22 - Structured Basic
+                      23 - Ross
+                      24 - Dela EP64
+                      25 - Dela EP7x8
+                      26 - Dela EP256
+                      27 - Rex EP256
+              0018 - Cartridge port EXROM line status
+                      0 - inactive
+                      1 - active
+              0019 - Cartridge port GAME line status
+                      0 - inactive
+                      1 - active
+         001A-001F - Reserved for future use
+         0020-003F - 32-byte cartridge  name  "CCSMON"  (uppercase,  padded
+                     with null characters)
+         0040-xxxx - Cartridge contents (called CHIP PACKETS, as there  can
+                     be more than one  per  CRT  file).  See  below  for  a
+                     breakdown of the CHIP format.
+
+  (*Note: Ocean type 1 includes Navy Seals, Robocop 2 & 3,  Shadow  of  the
+    Beast, Toki, Terminator 2 and more)
+
+  (**Note: Dinamic includes Narco Police and more)
+
+
+---------------------------------------------------------------------------
+
+
+CHIP Contents
+-------------
+
+  The following is the contents of the CHIP packet, from position $0040  on
+in the CRT file. Note I have re-adjusted the starting address to be  $0000,
+since we are now looking at a file contained in the .CRT file, and all size
+references are from where it starts.
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+0010: D3 9B BC FE C3 C2 CD 38 30 EA EA EA A9 01 85 13   ׃›¼‏ֲֳֽ80ךךך©ת…ת
+0020: 4C B3 9B A9 08 85 5A 88 D0 FD C6 5A D0 F9 60 D0   L³›©ת…Zˆ׀‎ֶZ׀ש`׀
+0030: F2 60 A9 04 85 49 A9 00 85 48 A2 00 A5 48 9D 40   ע`©ת…I©ת…H¢ת¥H@
+0040: 03 A5 49 9D 60 03 A5 48 18 69 28 85 48 A5 49 69   ת¥I`ת¥Hתi(…H¥Ii
+0050: 00 85 49 E8 E0 18 D0 E4 60 A6 03 A4 02 BD 40 03   ת…Iטאת׀ה`¦ת₪ת½@ת
+
+  Bytes:$0000-0003 - Contained ROM signature "CHIP" (note there can be more
+                     than one image in a .CRT file)
+         0004-0007 - Total packet length ($00002010,  ROM  image  size  and
+                     header combined) (high/low format)
+         0008-0009 - Chip type
+                      0 - ROM
+                      1 - RAM, no ROM data
+                      2 - Flash ROM
+         000A-000B - Bank number ($0000 - normal cartridge)
+         000C-000D - Starting load address (high/low format)
+         000E-000F - ROM image size in bytes  (high/low  format,  typically
+                     $2000 or $4000)
+         0010-xxxx - ROM data
+
+
+---------------------------------------------------------------------------
+
+
+  The following is a chart taken from the "Commodore Programmers  Reference
+Guide". It details the state of various areas of memory  depending  on  the
+state of the control lines.
+
+
+Legend:
+L - ROML (low)
+H - ROMH (high)
+G - GAME
+E - EXROM
+
+Addr       LHGE   LHGE   LHGE   LHGE   LHGE   LHGE   LHGE   LHGE   LHGE
+Range
+           1111   101X   1000   011X   001X   1110   0100   1100   XX01
+         default                00X0                             Ultimax
+-------------------------------------------------------------------------
+E000-FFFF Kernal  RAM    RAM   Kernal  RAM   Kernal Kernal Kernal ROMH(*)
+D000-DFFF IO/CHR IO/CHR IO/RAM IO/CHR  RAM   IO/CHR IO/CHR IO/CHR   I/O
+C000-CFFF  RAM    RAM    RAM    RAM    RAM    RAM    RAM    RAM     -
+A000-BFFF BASIC   RAM    RAM    RAM    RAM   BASIC   ROMH   ROMH    -
+8000-9FFF  RAM    RAM    RAM    RAM    RAM    ROML   RAM    ROML  ROML(*)
+4000-7FFF  RAM    RAM    RAM    RAM    RAM    RAM    RAM    RAM     -
+1000-3FFF  RAM    RAM    RAM    RAM    RAM    RAM    RAM    RAM     -
+0000-0FFF  RAM    RAM    RAM    RAM    RAM    RAM    RAM    RAM    RAM
+
+(*) Internal memory does not respond to write accesses in these areas
+
+
+  From the above chart, the following table can be built. It shows standard
+cartridges, either 8K or 16K in size, and the memory ranges they load into.
+
+Type     Size   Game   EXRom  Low Bank  High Bank
+         in K   Line   Line    (ROML)    (ROMH)
+-------------------------------------------------
+Normal    8k     hi     lo     $8000      ----
+Normal    16k    lo     lo     $8000     $A000
+Ultimax   8k     lo     hi     $E000      ----
+
+  The ROMH and ROML lines are CPU-controlled status  lines,  used  to  bank
+in/out RAM, ROM or I/O, depending on what is needed at the time.
+
+  Ultimax cartridges typically are situated  in  the  $E000-FFFF  (8K)  ROM
+address range. There are some cartridges  which  only  use  4K  of  the  8K
+allocation. If the cartridge is 16K in size, then it will  reside  in  both
+$8000-9FFF and $E000-FFFF.
+
+
+---------------------------------------------------------------------------
+
+
+Cartridge Specifics
+-------------------
+
+0 - Normal cartridge
+
+    Size - 8Kb
+    GAME - active (1)
+    EXROM - inactive (0)
+    Load address - $8000-9FFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 00 00 01 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 41 54 54 41 43 4B 20 4F 46 20 54 48 45 20 4D 55   ATTACKתOFתTHEתMU
+0030: 54 41 4E 54 20 43 41 4D 45 4C 53 00 00 00 00 00   TANTתCAMELSתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+0050: D3 9B BC FE C3 C2 CD 38 30 EA EA EA A9 01 85 13   ׃›¼‏ֲֳֽ80ךךך©ת…ת
+
+
+      The second sample below is a dump of "Music Machine", a  4Kb  ULTIMAX
+    mode cartridge. It  is  still  identified  as  a  "standard  cartridge"
+    according to the ID.
+
+    Normal cartridge
+
+    Size - 4Kb (ULTIMAX mode)
+    GAME - inactive (0)
+    EXROM - active (1)
+    Load address - $F000-F7FF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 00 01 00 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 4D 55 53 49 43 20 4D 41 43 48 49 4E 45 00 00 00   MUSICתMACHINEתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 10 10 00 00 00 00 F0 00 10 00   CHIPתתתתתתתתנתתת
+0050: 3C 66 C3 C3 66 3C FF FF 18 3C 66 7E 66 66 66 00   <fֳֳf<תתת<f~fffת
+
+
+      The third sample is a dump of "Adventure Creator",  a  16Kb  standard
+    cartridge.
+
+    Normal cartridge
+
+    Size - 16Kb
+    GAME - inactive (0)
+    EXROM - inactive (0)
+    Load address - $8000-BFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 00 00 00 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 41 64 76 65 6E 74 75 72 65 20 43 72 65 61 74 6F   AdventureתCreato
+0030: 72 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   rתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 40 10 00 00 00 00 80 00 40 00   CHIPתת@תתתתת€ת@ת
+0050: 09 80 81 EA C3 C2 CD 38 30 A2 00 78 D8 8E 11 D0   ת€ךֲֳֽ80¢תx״ת׀
+
+
+===========================================================================
+
+
+1 - Action Replay
+
+    Size - 32Kb (4 banks of 8Kb each)
+    GAME - inactive (0)
+    EXROM - inactive (0)
+    Load address - $8000-9FFF (all modules)
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 01 00 00 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 41 63 74 69 6F 6E 20 52 65 70 6C 61 79 20 56 00   ActionתReplayתVת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+0050: 09 80 0C 80 C3 C2 CD 38 30 4C 60 80 4C 63 80 4C   ת€ת€ֲֳֽ80L`€Lc€L
+
+
+===========================================================================
+
+
+2 - KCS Power Cartridge
+
+    Size - 16Kb (2 banks of 8K each)
+    GAME - inactive (0)
+    EXROM - inactive (0)
+    Load address - module #1 - $8000-9FFF
+                   module #2 - $A000-BFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 20 01 00 00 02 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0020: 4B 43 53 20 50 6F 77 65 72 20 43 61 72 74 72 69   KCSתPowerתCartri
+0030: 64 67 65 00 00 00 00 00 00 00 00 00 00 00 00 00   dgeתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+0050: 09 80 5E FE C3 C2 CD 38 30 78 D8 A2 FF 9A A9 27   ת€^‏ֲֳֽ80x״¢ת©'
+....
+2050: 43 48 49 50 00 00 20 10 00 00 00 00 A0 00 20 00   CHIPתתתתתתתת תתת
+2060: 97 E3 16 A1 FF FF FF 20 13 A0 A5 01 09 01 85 01   —דת¡תתתתת ¥תתת…ת
+
+
+===========================================================================
+
+
+3 - Final Cartridge III
+
+    Size - 64Kb (4 banks of 16Kb each)
+    GAME - active (1)
+    EXROM - active (1)
+    Load address - $8000-BFFF (all modules)
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 03 01 01 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 46 69 6E 61 6C 20 43 61 72 74 72 69 64 67 65 20   FinalתCartridgeת
+0030: 49 49 49 20 31 39 38 37 00 00 00 00 00 00 00 00   IIIת1987תתתתתתתת
+0040: 43 48 49 50 00 00 40 10 00 00 00 00 80 00 40 00   CHIPתת@תתתתת€ת@ת
+0050: 09 80 5E FE C3 C2 CD 38 30 4C 4C 80 4C 55 95 4C   ת€^‏ֲֳֽ80LL€LU•L
+....
+4050: 43 48 49 50 00 00 40 10 00 00 00 01 80 00 40 00   CHIPתת@תתתתת€ת@ת
+4060: 01 02 00 81 5D 81 61 81 99 81 D8 81 0B 82 33 82   תתת]a™״ת‚3‚
+....
+8060: 43 48 49 50 00 00 40 10 00 00 00 02 80 00 40 00   CHIPתת@תתתתת€ת@ת
+8070: 20 43 80 20 52 80 A9 4E 20 05 DE 20 FD BF AD 39   תC€תR€©NתתÞת‎¿­9
+....
+C070: 43 48 49 50 00 00 40 10 00 00 00 03 80 00 40 00   CHIPתת@תתתתת€ת@ת
+C080: A2 06 BD DD 85 95 05 CA 10 F8 AE A0 02 E8 EC A2   ¢ת½Ý…•תÊתר® תטל¢
+
+    A total of 64 kB of ROM memory  is  organized  into  four  $4000  banks
+    located at $8000-$BFFF. Bank switching is  done  by  writing  the  bank
+    number plus $40 into memory location $DFFF.  For  instance,  to  select
+    bank 2, $DFFF is set to $42.
+
+    The CRT file contains four CHIP blocks, each block with a start address
+    of $8000, length $4000 and the bank number in the bank  field.  In  the
+    cartridge header, both EXROM ($18) and GAME  ($19)  are  set  to  1  to
+    enable the 16 kB ROM configuration.
+
+
+===========================================================================
+
+
+4 - Simons Basic
+
+    Size - 16Kb (2 banks of 8kb each)
+    GAME - active (1)
+    EXROM - inactive (0)
+    Load address - module #1 - $8000-9FFF
+                   module #2 - $A000-BFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 04 00 01 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 53 69 6D 6F 6E 27 73 20 42 61 73 69 63 00 00 00   Simon'sתBasicתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+0050: 52 81 52 81 C3 C2 CD 38 30 41 4C 52 81 20 2C 81   RRֲֳֽ80ALRת,
+....
+2050: 43 48 49 50 00 00 20 10 00 00 00 00 A0 00 20 00   CHIPתתתתתתתת תתת
+2060: 20 A4 A6 99 9E CB A0 05 A5 A8 91 20 A4 A6 99 A2   ת₪¦™ֻ ת¥¨‘ת₪¦™¢
+
+    SIMONS BASIC permanently uses 16 kB ($4000) bytes of  cartridge  memory
+    from $8000-$BFFF. However, through some custom bank-switching logic the
+    upper area ($A000-$BFFF) may be disabled so Simons BASIC may use it  as
+    additional RAM. Writing a value of $01 to address location $DE00  banks
+    in ROM, $00 disables ROM and enables RAM.
+
+    The CRT file contains two CHIP blocks of length $2000 each,  the  first
+    block having a start address of $8000, the second block $A000.  In  the
+    cartridge header, EXROM ($18) is set to 0, GAME ($19) is set  to  1  to
+    indicate the RESET/power-up configuration of 8 kB ROM.
+
+
+===========================================================================
+
+
+5 - Ocean type 1
+
+    Size - 128Kb, 256Kb or 512Kb sizes (16, 32 or 64 banks of 8Kb each)
+    GAME - inactive (0)
+    EXROM - inactive (0)
+    Load address - Banks 00-15 - $8000-9FFF
+                   Banks 16-31 - $A000-BFFF  (except Terminator 2)
+
+       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+       -----------------------------------------------   ----------------
+00000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+00010: 00 00 00 40 01 00 00 05 00 00 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+00020: 53 48 41 44 4F 57 20 4F 46 20 54 48 45 20 42 45   SHADOWתOFתTHEתBE
+00030: 41 53 54 00 00 00 00 00 00 00 00 00 00 00 00 00   ASTתתתתתתתתתתתתת
+00040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+00050: 09 80 83 81 C3 C2 CD 38 30 4C 83 81 4C 76 82 80   ת€ƒֲֳֽ80LƒLv‚€
+ ....
+02050: 43 48 49 50 00 00 20 10 00 00 00 01 80 00 20 00   CHIPתתתתתתתת€תתת
+02060: 59 6D 00 56 AD 00 55 AE F0 00 01 A0 FE 00 01 F8   YmתV­תU®נתת ‏תתר
+ ....
+20140: 43 48 49 50 00 00 20 10 00 00 00 10 A0 00 20 00   CHIPתתתתתתתת תתת
+20150: 0A 9A 55 FF 9B 69 57 FE AA 65 96 FE 65 0F D6 D9   תUת›iW‏×e–‏eתײÙ
+
+    Here is a list of the known OCEAN cartridges:
+
+    Batman The Movie    (128 kB)
+    Battle Command      (128 kB)
+    Double Dragon       (128 kB)
+    Navy Seals          (128 kB)
+    Pang                (128 kB)
+    Robocop 3           (128 kB)
+    Space Gun           (128 kB)
+    Toki                (128 kB)
+    Chase H.Q. II       (256 kB)
+    Robocop 2           (256 kB)
+    Shadow of the Beast (256 kB)
+    Terminator 2        (512 kB)
+
+
+    Memory is divided into 8Kb ($2000) banks. For the lower  128Kb,  memory
+    is banked into $8000-$9FFF and for the upper 128Kb,  memory  is  banked
+    into $A000-$BFFF. Note that the Terminator 2  cartridge  loads  all  64
+    banks at $8000-$9FFF.
+
+    Bank switching is done by writing to $DE00. The lower six bits give the
+    bank number (ranging from 0-63). Bit 8 in this selection word is always
+    set.
+
+
+===========================================================================
+
+
+6 - Expert Cartridge
+
+    Size - 8Kb
+    GAME - active (1)
+    EXROM - active (1)
+    Load address - $8000-9FFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 06 01 01 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 45 78 70 65 72 74 20 43 61 72 74 72 69 64 67 65   ExpertתCartridge
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 40 10 00 02 00 00 80 00 20 00   CHIPתת@תתתתת€תתת
+0050: 00 00 00 0A F3 00 00 00 00 00 00 00 00 00 00 00   תתתתףתתתתתתתתתתת
+
+
+===========================================================================
+
+
+7 - Fun Play, Power Play
+
+    Size - 128Kb (16 banks of 8Kb modules)
+    GAME - inactive (0)
+    EXROM - inactive (0)
+    Load address - $8000-9FFF (all modules)
+
+       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+       -----------------------------------------------   ----------------
+00000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+00010: 00 00 00 40 01 00 00 07 00 00 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+00020: 46 55 4E 20 50 4C 41 59 00 00 00 00 00 00 00 00   FUNתPLAYתתתתתתתת
+00030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+00040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+00050: 1E 80 86 EA C3 C2 CD 38 30 1B 00 81 0D 08 80 00   ת€†ךֲֳֽ80תתתת€ת
+ ....
+02050: 43 48 49 50 00 00 20 10 00 00 00 08 80 00 20 00   CHIPתתתתתתתת€תתת
+02060: 78 A2 F0 86 01 BD 1D 08 9D F8 00 CA D0 F7 4C 00   x¢נ†ת½תתרתÊ׀קLת
+ ....
+04060: 43 48 49 50 00 00 20 10 00 00 00 10 80 00 20 00   CHIPתתתתתתתת€תתת
+04070: 38 E5 68 85 03 B0 11 27 03 12 C0 18 69 27 42 90   8וh…ת°ת'תתְתi'B
+ ....
+06070: 43 48 49 50 00 00 20 10 00 00 00 18 80 00 20 00   CHIPתתתתתתתת€תתת
+06080: 44 D0 5E 06 02 C0 44 11 40 04 11 44 01 5F 1C 73   D׀^תתְDת@תתDת_תs
+ ....
+1E130: 43 48 49 50 00 00 20 10 00 00 00 39 80 00 20 00   CHIPתתתתתתת9€תתת
+1E140: 85 EB 41 EA 9E 08 03 00 C0 06 18 01 00 C0 08 03   …כAךתתתְתתתתְתת
+
+      The FUN PLAY Cartridge uses $DE00 for bank selection,  and  uses  8Kb
+    banks ($2000) at $8000-$9FFF. There are 16 banks of ROM memory and  are
+    referenced by the following values:
+
+    $00 -> Bank 0
+    $08 -> Bank 1
+    $10 -> Bank 2
+    $18 -> Bank 3
+    $20 -> Bank 4
+    $28 -> Bank 5
+    $30 -> Bank 6
+    $38 -> Bank 7
+    $01 -> Bank 8
+    $09 -> Bank 9
+    $11 -> Bank 10
+    $19 -> Bank 11
+    $21 -> Bank 12
+    $29 -> Bank 13
+    $31 -> Bank 14
+    $39 -> Bank 15
+
+      The bank field in the chip headers is  set  according  to  the  value
+    written to $DE00. The following bits are  used  for  bank  decoding  in
+    $DE00 (0 being the LSB, 3 being the MSB).
+
+        Bit# 76543210
+             xx210xx3
+
+      After copying memory from the ROM banks, the selection program writes
+    a value of $86 to $DE00. This seems either  to  reset  or  disable  the
+    cartridge ROM.
+
+
+===========================================================================
+
+
+8 - Super Games
+
+    Size - 64Kb (4 banks of 16Kb each)
+    GAME - inactive (0)
+    EXROM - inactive (0)
+    Load address - $8000-BFFF (all modules)
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 08 00 00 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 53 55 50 45 52 20 47 41 4D 45 53 00 00 00 00 00   SUPERתGAMESתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 40 10 00 00 00 00 80 00 40 00   CHIPתת@תתתתת€ת@ת
+0050: 0A 80 0A 80 C3 C2 CD 38 30 00 A9 80 A0 00 85 FB   ת€ת€ֲֳֽ80ת©€ ת…û
+....
+4050: 43 48 49 50 00 00 40 10 00 00 00 01 80 00 40 00   CHIPתת@תתתתת€ת@ת
+4060: 27 80 A8 80 C3 C2 CD 38 30 00 40 C0 40 C0 40 C0   '€¨€ֲֳֽ80ת@ְ@ְ@ְ
+....
+8060: 43 48 49 50 00 00 40 10 00 00 00 02 80 00 40 00   CHIPתת@תתתתת€ת@ת
+8070: 00 00 00 49 4D C7 64 47 46 45 F3 48 DC 08 7E 0B   תתתIMַdGFEףHÜת~ת
+....
+C070: 43 48 49 50 00 00 40 10 00 00 00 03 80 00 40 00   CHIPתת@תתתתת€ת@ת
+C080: D5 F9 F0 C1 D5 F7 F0 BD E8 B5 02 F0 FB C9 05 30   ױשנֱױקנ½טµתנûֹת0
+
+      The SUPER GAMES cartridge uses 4  16Kb  banks  ($8000-$BFFF)  of  ROM
+    memory. Bank selecting is done by writing to $DF00.
+
+    Values for $DF00:
+
+    $00 -> Bank 0
+    $01 -> Bank 1 (also value $09 used)
+    $02 -> Bank 2
+    $03 -> Bank 3
+
+      Bit #2
+       0: ROM $8000-$BFFF
+       1: ROM $8000-$9FFF
+      Bit #3
+       0: ?
+       1: if bit #2 AND #3 are on (1) then the module is off
+
+
+===========================================================================
+
+
+9 - Atomic Power
+
+    Size - 32Kb (4 banks of 8Kb modules)
+    GAME - inactive (0)
+    EXROM - inactive (0)
+    Load address - $8000-9FFF (all modules)
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 09 00 00 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 41 74 6F 6D 69 63 20 50 6F 77 65 72 00 00 00 00   AtomicתPowerתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+0050: 09 80 0C 80 C3 C2 CD 38 30 4C 41 80 4C 1E 80 4C   ת€ת€ֲֳֽ80LA€Lת€L
+....
+2050: 43 48 49 50 00 00 20 10 00 00 00 01 80 00 20 00   CHIPתתתתתתתת€תתת
+2060: 09 80 0C 80 C3 C2 CD 38 30 4C 3F 80 4C 91 80 4C   ת€ת€ֲֳֽ80L?€L‘€L
+....
+4060: 43 48 49 50 00 00 20 10 00 00 00 02 80 00 20 00   CHIPתתתתתתתת€תתת
+4070: EF FC 09 80 C3 C2 CD 38 30 4C 27 80 4C DB 81 4C   ןüת€ֲֳֽ80L'€LÛL
+....
+6070: 43 48 49 50 00 00 20 10 00 00 00 03 80 00 20 00   CHIPתתתתתתתת€תתת
+6080: 09 80 0C 80 C3 C2 CD 38 30 4C 73 86 4C 30 80 4C   ת€ת€ֲֳֽ80Ls†L0€L
+
+
+===========================================================================
+
+
+10 - Epyx Fastload
+
+     Size - 8Kb
+     GAME - active (1)
+     EXROM - active (1)
+     Load address - $8000-9FFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 0A 01 01 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 45 50 59 58 20 46 41 53 54 4C 4F 41 44 00 00 00   EPYXתFASTLOADתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+0050: 30 80 5E FE C3 C2 CD 38 30 20 04 90 4C 38 DF AB   0€^‏ֲֳֽ80תתL8ß«
+
+
+===========================================================================
+
+
+11 - Westermann Learning
+
+     Size - 16Kb
+     GAME - inactive (0)
+     EXROM - inactive (0)
+     Load address - $8000-BFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 0B 00 00 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 57 45 53 54 45 52 4D 41 4E 4E 00 00 00 00 00 00   WESTERMANNתתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 40 00   CHIPתתתתתתתת€ת@ת
+0050: 09 80 9C 80 C3 C2 CD 38 30 A2 00 8E 16 D0 20 84   ת€€ֲֳֽ80¢תת׀ת„
+
+
+===========================================================================
+
+
+12 - Rex Utility
+
+     Size - 8K
+     GAME - active (1)
+     EXROM - inactive (0)
+     Load address - $8000-9FFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 0C 00 01 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 52 45 58 00 00 00 00 00 00 00 00 00 00 00 00 00   REXתתתתתתתתתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00   CHIPתתתתתתתת€תתת
+0050: 08 80 C1 FE C3 C2 CD 38 30 6C 95 E3 20 A3 FD 20   ת€ֱ‏ֲֳֽ80l•דת£‎ת
+
+
+===========================================================================
+
+
+13 - Final Cartridge I
+
+     Size - 16Kb
+     GAME - active (1)
+     EXROM - active (1)
+     Load address - $8000-BFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F        ASCII
+      -----------------------------------------------   ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20   C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 0D 01 01 00 00 00 00 00 00   תתת@תתתתתתתתתתתת
+0020: 54 68 65 20 46 69 6E 61 6C 20 43 61 72 74 72 69   TheתFinalתCartri
+0030: 64 67 65 20 49 00 00 00 00 00 00 00 00 00 00 00   dgeתIתתתתתתתתתתת
+0040: 43 48 49 50 00 00 40 10 00 00 00 00 80 00 40 00   CHIPתת@תתתתת€ת@ת
+0050: 80 BA 5E FE C3 C2 CD 38 30 00 A0 A0 20 2D FE 58   €÷^‏ֲֳֽ80ת  ת-‏X
+
+
+===========================================================================
+
+
+14 - Magic Formel
+
+     Size - 64Kb (8 banks of 8Kb)
+     GAME - Inactive (0)
+     EXROM - Inactive (0)
+     Load Address - $E000-FFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 0E 01 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 4D 61 67 69 63 20 46 6F 72 6D 65 6C 00 00 00 00  MagicתFormelתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 E0 00 20 00  CHIPתתתתתתתתאתתת
+0050: 4D 46 30 8D 00 DF 60 8D 01 DF 60 8D 02 DF 60 8D  MF0תß`תß`תß`
+...
+2050: 43 48 49 50 00 00 20 10 00 00 00 01 E0 00 20 00  CHIPתתתתתתתתאתתת
+2060: 4C 5F E4 8D 00 DF 60 8D 01 DF 60 8D 02 DF 60 8D  L_התß`תß`תß`
+...
+4060: 43 48 49 50 00 00 20 10 00 00 00 02 E0 00 20 00  CHIPתתתתתתתתאתתת
+4070: 4D 46 32 8D 00 DF 60 8D 01 DF 60 8D 02 DF 60 8D  MF2תß`תß`תß`
+...
+6070: 43 48 49 50 00 00 20 10 00 00 00 03 E0 00 20 00  CHIPתתתתתתתתאתתת
+6080: 4D 46 33 8D 00 DF 60 8D 01 DF 60 8D 02 DF 60 8D  MF3תß`תß`תß`
+...
+8080: 43 48 49 50 00 00 20 10 00 00 00 04 E0 00 20 00  CHIPתתתתתתתתאתתת
+8090: 4D 46 34 8D 00 DF 60 8D 01 DF 60 8D 02 DF 60 8D  MF4תß`תß`תß`
+...
+A090: 43 48 49 50 00 00 20 10 00 00 00 05 E0 00 20 00  CHIPתתתתתתתתאתתת
+A0A0: 4D 46 35 8D 00 DF 60 8D 01 DF 60 8D 02 DF 60 8D  MF5תß`תß`תß`
+...
+C0A0: 43 48 49 50 00 00 20 10 00 00 00 06 E0 00 20 00  CHIPתתתתתתתתאתתת
+C0B0: 4D 46 36 8D 00 DF 60 8D 01 DF 60 8D 02 DF 60 8D  MF6תß`תß`תß`
+..
+E0B0: 43 48 49 50 00 00 20 10 00 00 00 07 E0 00 20 00  CHIPתתתתתתתתאתתת
+E0C0: 4D 46 37 8D 00 DF 60 8D 01 DF 60 8D 02 DF 60 8D  MF7תß`תß`תß`
+
+
+===========================================================================
+
+
+15 - C64 Game System, System 3
+
+     Size - 512Kb (64 banks of 8Kb each)
+     GAME - inactive (0)
+     EXROM - active (1)
+     Load address - $8000-9FFF (all modules)
+
+        00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+        -----------------------------------------------  ----------------
+000000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+000010: 00 00 00 40 01 00 00 0F 00 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+000020: 43 36 34 47 53 20 43 61 72 74 72 69 64 67 65 00  C64GSתCartridgeת
+000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+000040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00  CHIPתתתתתתתת€תתת
+000050: 6D 80 C5 80 C3 C2 CD 38 30 4C CB 80 4C 36 84 4C  m€ֵ€ֲֳֽ80Lֻ€L6„L
+....
+002050: 43 48 49 50 00 00 20 10 00 00 00 01 80 00 20 00  CHIPתתתתתתתת€תתת
+002060: 18 D0 A9 FF 8D 15 D0 8D 1D D0 8D 17 D0 A2 07 A9  ת׀©תת׀ת׀ת׀¢ת©
+....
+004060: 43 48 49 50 00 00 20 10 00 00 00 02 80 00 20 00  CHIPתתתתתתתת€תתת
+004070: E0 08 19 21 77 84 52 98 9F 80 A5 21 31 01 31 89  אתת!w„R˜€¥!1ת1‰
+....
+006070: 43 48 49 50 00 00 20 10 00 00 00 03 80 00 20 00  CHIPתתתתתתתת€תתת
+006080: C0 08 1C 1D A0 92 03 03 D8 AA 04 C0 B8 01 40 EA  ְתתת ’תת״×תְ¸ת@ך
+....
+07E430: 43 48 49 50 00 00 20 10 00 00 00 3F 80 00 20 00  CHIPתתתתתתת?€תתת
+07E440: 45 20 41 20 42 49 47 20 58 FE 4F 4E 20 54 48 49  EתAתBIGתX‏ONתTHI
+
+    Here is a list of the known cartridges:
+
+    C64GS 4-in-1      (Commodore)  (512 kB)
+    Last Ninja Remix  (System 3)   (512 kB)
+    Myth              (System 3)   (512 kB)
+
+    ROM memory is organized in 8Kb ($2000) banks  located  at  $8000-$9FFF.
+    Bank switching is done by writing to address $DE00+X, where  X  is  the
+    bank number (STA $DE00,X). For instance, to read from bank  3,  address
+    $DE03 is accessed.
+
+    The CRT file contains a string of CHIP blocks, each block with a  start
+    address of $8000, length $2000 and the bank number in the  bank  field.
+    In the cartridge header, EXROM ($18) is set to 0, GAME ($19) is set  to
+    1 to enable the 8 kB ROM configuration.
+
+
+===========================================================================
+
+
+16 - WarpSpeed
+
+     Size - 16Kb
+     GAME - inactive (0)
+     EXROM - inactive (0)
+     Load address - $8000-BFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 10 01 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 57 61 72 70 73 70 65 65 64 00 00 00 00 00 00 00  Warpspeedתתתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 40 10 00 00 00 00 80 00 40 00  CHIPתת@תתתתת€ת@ת
+0050: 4C 22 80 4C 22 80 FF 43 42 4D 20 53 E4 20 18 E5  L"€L"€תCBMתSהתתו
+
+     After RESET or  POWER  ON,  16kB  of  Cartridge  ROM  are  visible  at
+     $8000-$BFFF. Additionally, ROM normally located  at  $9E00-$9FFF  is
+     mirrored into IO1 and  IO2  at  $DE00-$DFFF.  ROM  at  $8000-$BFFF  is
+     disabled by writing into the IO2 area (typically  $DF00)  and  may  be
+     re-enabled by writing  into  IO1  ($DE00).  However,  the  $DE00-$DFFF
+     (IO1/IO2) area itself always remains mapped to cartridge ROM.
+
+     Included with these documents is a WRPSPEED.JPG which is the schematic
+     of the WarpSpeed cartridge itself.
+
+
+===========================================================================
+
+
+17 - Dinamic
+
+     Size - 128Kb (16 banks of 8Kb each)
+     GAME - inactive (0)
+     EXROM - active (1)
+     Load address - $8000-9FFF (all modules)
+
+        00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+        -----------------------------------------------  ----------------
+000000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+000010: 00 00 00 40 01 00 00 11 00 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+000020: 4E 61 72 63 6F 20 50 6F 6C 69 63 65 00 00 00 00  NarcoתPoliceתתתת
+000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+000040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00  CHIPתתתתתתתת€תתת
+000050: 0B 80 0B 80 C3 C2 CD 38 30 00 00 78 A2 FF 9A D8  ת€ת€ֲֳֽ80תתx¢ת״
+..
+002050: 43 48 49 50 00 00 20 10 00 00 00 01 80 00 20 00  CHIPתתתתתתתת€תתת
+002060: 1C 8C 1B 8C 16 16 8F 16 16 88 1C 1C 86 1C 1C 89  תתתתתתˆתת†תת‰
+..
+004060: 43 48 49 50 00 00 20 10 00 00 00 02 80 00 20 00  CHIPתתתתתתתת€תתת
+004070: B6 02 07 08 07 07 00 0A 0A B6 00 05 0A 00 07 07  ¶תתתתתתתת¶תתתתתת
+..
+01E130: 43 48 49 50 00 00 20 10 00 00 00 0F 80 00 20 00  CHIPתתתתתתתת€תתת
+01E140: 00 D5 70 03 F5 70 0F 5F 70 0F F7 70 35 FD F0 37  תױpתץpת_pתקp5‎נ7
+
+    Here is a list of the known DINAMIC cartridges:
+
+    Narco Police  (128 kB)
+    Satan         (128 kB)
+
+    ROM memory is organized in 8Kb ($2000) banks  located  at  $8000-$9FFF.
+    Bank switching is done by reading from address $DE00+X, where X is  the
+    bank number (LDA $DE00,X). For instance, to read from bank  3,  address
+    $DE03 is accessed.
+
+    The CRT file contains a string of CHIP blocks, each block with a  start
+    address of $8000, length $2000 and the bank number in the  bank  field.
+    In the cartridge header, EXROM ($18) is set to 0, GAME ($19) is set  to
+    1 to enable the 8 kB ROM configuration.
+
+
+===========================================================================
+
+
+18 - Zaxxon, Super Zaxxon (SEGA)
+
+     Size - 20Kb (3 banks of different sizes)
+     GAME - active (1)
+     EXROM - active (1)
+     Load address - $8000-8FFF (mirrored in $9000-9FFF, module 0, chip U1)
+                    $A000-BFFF (banked modules 1 and 2, chip U2)
+
+        00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+        -----------------------------------------------  ----------------
+000000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+000010: 00 00 00 40 01 00 00 12 00 00 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+000020: 5A 61 78 78 6F 6E 00 00 00 00 00 00 00 00 00 00  Zaxxonתתתתתתתתתת
+000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+000040: 43 48 49 50 00 00 10 10 00 00 00 00 80 00 10 00  CHIPתתתתתתתת€תתת
+000050: 0D 80 29 80 C3 C2 CD 38 30 78 4C 09 80 78 A9 00  ת€)€ֲֳֽ80xLת€x©ת
+..
+001050: 43 48 49 50 00 00 20 10 00 00 00 00 A0 00 20 00  CHIPתתתתתתתת תתת
+001060: A2 0F BD 00 20 D0 04 CA 10 F8 60 BD 70 20 F0 0D  ¢ת½תת׀תÊתר`½pתנת
+..
+003060: 43 48 49 50 00 00 20 10 00 00 00 01 A0 00 20 00  CHIPתתתתתתתת תתת
+003070: 65 A2 36 A3 E7 A3 CB A4 94 A5 86 A6 5E A7 35 A8  e¢6£ח£ֻ₪”¥†¦^§5¨
+
+    The (Super) Zaxxon carts use a 4Kb ($1000) ROM at $8000-$8FFF (mirrored
+    in $9000-$9FFF) along with two 8Kb ($2000) cartridge banks  located  at
+    $A000-$BFFF. One of the two banks is selected by doing a read access to
+    either the $8000-$8FFF area (bank 0 is selected) or to $9000-$9FFF area
+    (bank 1 is selected). EXROM ($18 = $00) and GAME ($19 = $00) lines  are
+    always pulled to GND to select the 16 kB ROM configuration.
+
+    The CRT file includes three CHIP blocks:
+    a) bank = 0, load address = $8000, size = $1000
+    b) bank = 0, load address = $A000, size = $2000
+    c) bank = 1, load address = $A000, size = $2000
+
+
+===========================================================================
+
+
+19. Magic Desk, Domark, HES Australia
+
+    Size - 32Kb, 64Kb or 128Kb sizes (4 to 16 banks of 8Kb each)
+    GAME - inactive (0)
+    EXROM - active (1)
+    Load address (banks 00-15) - $8000-9FFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 13 00 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 4D 61 67 69 63 20 44 65 73 6B 00 00 00 00 00 00  MagicתDeskתתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00  CHIPתתתתתתתת€תתת
+0050: 09 80 C6 CA C3 C2 CD 38 30 8E 16 D0 20 A3 FD 20  ת€ֶÊֲֳֽ80ת׀ת£‎ת
+..
+2050: 43 48 49 50 00 00 20 10 00 00 00 01 80 00 20 00  CHIPתתתתתתתת€תתת
+2060: 00 3F 0A 01 00 86 4E 24 28 31 30 29 3A 4A 4F 59  ת?תתת†N$(10):JOY
+..
+4060: 43 48 49 50 00 00 20 10 00 00 00 02 80 00 20 00  CHIPתתתתתתתת€תתת
+4070: 00 8B C9 28 4E 24 2C 31 29 B3 B1 22 FF 22 A7 32  ת‹ֹ(N$,1)³±"ת"§2
+..
+6070: 43 48 49 50 00 00 20 10 00 00 00 03 80 00 20 00  CHIPתתתתתתתת€תתת
+6080: AE 01 83 33 2C 37 2C 22 32 29 20 44 45 4C 20 4B  ®תƒ3,7,"2)תDELתK
+
+    This cartridge type is very similar to the OCEAN cart type: ROM  memory
+    is  organized  in  8Kb  ($2000)  banks  located  at  $8000-$9FFF.  Bank
+    switching is done by writing the bank number to $DE00. Deviant from the
+    Ocean type, bit 8 is cleared for selecting one of the ROM banks. If bit
+    8 is set ($DE00 = $80), the GAME/EXROM lines are disabled,  turning  on
+    RAM at $8000-$9FFF instead of ROM.
+
+    In the cartridge header, EXROM ($18) is set to 0, GAME ($19) is set  to
+    1 to indicate the RESET/power-up configuration of 8 kB ROM.
+
+    Here is a list of the known cartridges:
+
+    Ghosbusters        (HES Australia)   (32 kB)
+    Magic Desk         (Commodore)       (32 kB)
+    Badlands           (Domark)          (64 kB)
+    Vindicators        (Domark)          (64 kB)
+    Wonderboy          (HES Australia)   (64 kB)
+    Cyberball          (Domark)         (128 kB)
+
+
+===========================================================================
+
+
+20. Super Snapshot 5
+
+    Size - 64Kb (4 banks of 16Kb each)
+    GAME - active (1)
+    EXROM - active (1)
+    Load address - $8000-BFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 14 01 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 53 75 70 65 72 20 53 6E 61 70 73 68 6F 74 20 35  SuperתSnapshotת5
+0030: 20 4E 54 53 43 00 00 00 00 00 00 00 00 00 00 00  תNTSCתתתתתתתתתתת
+0040: 43 48 49 50 00 00 40 10 00 00 00 00 80 00 40 00  CHIPתת@תתתתת€ת@ת
+0050: 09 80 59 80 C3 C2 CD 38 30 20 03 9F 00 FA F4 20  ת€Y€ֲֳֽ80תתתתפת
+...
+4050: 43 48 49 50 00 00 40 10 00 00 00 01 80 00 40 00  CHIPתת@תתתתת€ת@ת
+4060: 79 DE BC FE C3 C2 CD 38 30 A9 05 8D 20 D0 8D 21  yÞ¼‏ֲֳֽ80©תת׀!
+...
+8060: 43 48 49 50 00 00 40 10 00 00 00 02 80 00 40 00  CHIPתת@תתתתת€ת@ת
+8070: 50 DE BC FE C3 C2 CD 38 30 A9 0A 85 6A A9 0D 85  PÞ¼‏ֲֳֽ80©ת…j©ת…
+...
+C070: 43 48 49 50 00 00 40 10 00 00 00 03 80 00 40 00  CHIPתת@תתתתת€ת@ת
+C080: 50 DE BC FE C3 C2 CD 38 30 85 07 20 1A AD A5 76  PÞ¼‏ֲֳֽ80…תתת­¥v
+
+
+===========================================================================
+
+
+21. Comal-80
+
+    Size - 64Kb (4 banks of 16Kb each)
+    GAME - active (1)
+    EXROM - active (1)
+    Load address - $8000-BFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 15 01 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 43 6F 6D 61 6C 20 38 30 00 00 00 00 00 00 00 00  Comalת80תתתתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 40 10 00 00 00 00 80 00 40 00  CHIPתת@תתתתת€ת@ת
+0050: 87 87 70 CF C3 C2 CD 38 30 4C AA CF 4C 70 CF 4C  ‡‡pֲֳֽֿ80L×ֿLpֿL
+...
+4050: 43 48 49 50 00 00 40 10 00 00 00 01 80 00 40 00  CHIPתת@תתתתת€ת@ת
+4060: AA CF 70 CF C3 C2 CD 38 30 01 29 01 28 01 2C 04  ×ֿpֲֳֽֿ80ת)ת(ת,ת
+...
+8060: 43 48 49 50 00 00 40 10 00 00 00 02 80 00 40 00  CHIPתת@תתתתת€ת@ת
+8070: AA CF 70 CF C3 C2 CD 38 30 91 92 92 92 92 92 92  ×ֿpֲֳֽֿ80‘’’’’’’
+...
+C070: 43 48 49 50 00 00 40 10 00 00 00 03 80 00 40 00  CHIPתת@תתתתת€ת@ת
+C080: 7B C8 7E C8 C3 C2 CD 38 30 43 4F 4D 41 4C 80 93  {ָ~ֲֳָֽ80COMAL€“
+
+
+    The Comal-80 Cartridge uses $DE00 for bank  selection,  and  uses  16Kb
+    banks ($4000) at $8000-$BFFF. There are 4 banks of ROM memory  and  are
+    referenced by the following values:
+
+       $80 -> Bank 0
+       $81 -> Bank 1
+       $82 -> Bank 2
+       $83 -> Bank 3
+
+
+===========================================================================
+
+
+22. Structured Basic
+
+    Size - 16Kb (2 banks of 8Kb each)
+    GAME - active (0)
+    EXROM - active (1)
+    Load address - $8000-9FFF
+
+    No sample data/file available.
+
+    Any read/write access to $DE00 or $DE01 will switch in bank 0.
+    Any read/write access to $DE02 will switch in bank 1.
+    Any read/write access to $DE03 will switch off EXROM.
+
+
+===========================================================================
+
+
+23. Ross
+
+    Size - 16Kb or 32Kb sizes (1 or 2 banks of 16Kb each)
+    GAME - active (1)
+    EXROM - active (1)
+    Load address - $8000-BFFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 17 00 00 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 52 6F 73 73 20 31 34 00 00 00 00 00 00 00 00 00  Rossת14תתתתתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 40 10 00 00 00 00 80 00 40 00  CHIPתת@תתתתת€ת@ת
+0050: 09 80 09 80 C3 C2 CD 38 30 A2 00 BD 20 80 4D 0E  ת€ת€ֲֳֽ80¢ת½ת€Mת
+...
+4050: 43 48 49 50 00 00 40 10 00 00 00 01 80 00 40 00  CHIPתת@תתתתת€ת@ת
+4060: 3F 5A 4D 4D 50 4D 8D 25 3F 1A 1F 77 3F CD E0 3F  ?ZMMPM%?תתw?ֽא?
+
+    Any read access to $DE00 will switch in bank 1 (if cart is 32Kb).
+    Any read access to $DF00 will switch off EXROM and GAME.
+
+
+===========================================================================
+
+
+24. Dela EP64
+
+    Size - 8Kb to 72kb sizes (1 to 9 banks of 8Kb each,
+                              or 1 bank of 8Kb and 1 or 2 banks
+                              of 32Kb each)
+    GAME - inactive (0)
+    EXROM - active (1)
+    Load address - $8000-9FFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 18 00 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 44 45 4C 41 20 45 50 36 34 00 00 00 00 00 00 00  DELAתEP64תתתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00  CHIPתתתתתתתת€תתת
+0050: 00 85 5E FE C3 C2 CD 38 30 FF FF FF FF FF FF FF  ת…^‏ֲֳֽ80תתתתתתת
+...
+2050: 43 48 49 50 00 00 80 10 00 00 00 01 80 00 80 00  CHIPתת€תתתתת€ת€ת
+2060: 54 45 53 54 0D 2A 0D 54 45 20 36 34 0D 00 00 00  TESTת*תTEת64תתתת
+
+    This is an eprom cartridge. It has 1 2764 (8Kb) which  holds  the  base
+    eprom with the base menu, and 2 27256 eproms of  which  8Kb  parts  are
+    banked into the $8000-9FFF area.
+
+    The bank selecting is done by writing to $DE00. The following bits  are
+    used for bank decoding in $DE00 (0 being the LSB, 3 being the MSB).
+
+         Bit# 76543210
+              xx10xx32
+
+    Any bank value below 4 or above 11 switches in the base bank (bank 0).
+
+    The bit values for each eprom bank are :
+
+    eprom bank 1 : xx00xx01
+    eprom bank 2 : xx01xx01
+    eprom bank 3 : xx10xx01
+    eprom bank 4 : xx11xx01
+    eprom bank 5 : xx00xx10
+    eprom bank 6 : xx01xx10
+    eprom bank 7 : xx10xx10
+    eprom bank 8 : xx11xx10
+
+    Setting bit 7 high will switch off EXROM.
+
+
+==========================================================================
+
+
+25. Dela EP7x8
+
+    Size - 8Kb to 64kb sizes (1 to 8 banks of 8Kb each)
+    GAME - inactive (0)
+    EXROM - active (1)
+    Load address - $8000-9FFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 19 00 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 44 45 4C 41 20 45 50 37 78 38 00 00 00 00 00 00  DELAתEP7x8תתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00  CHIPתתתתתתתת€תתת
+0050: 09 80 5E FE C3 C2 CD 38 30 78 A2 FF 9A D8 8E 16  ת€^‏ֲֳֽ80x¢ת״ת
+...
+2050: 43 48 49 50 00 00 20 10 00 00 00 01 80 00 20 00  CHIPתתתתתתתת€תתת
+2060: 94 83 A0 83 C3 C2 CD 38 30 02 BB 5A 30 5F EE 3D  ”ƒ ƒֲֳֽ80ת»Z0_מ=
+
+    This is an eprom cartridge. It has 8 8Kb banks of which the first holds
+    the base menu, the other eproms can be banked into the $8000-9FFF area.
+
+    The bank selecting is done by writing to $DE00. Each low bit is used to
+    bank in the respective eprom. If all bits are high then  the  EXROM  is
+    switched off.
+
+    The bit values for each eprom bank is:
+
+    eprom bank 1 : 11111110 ($FE) (base eprom)
+    eprom bank 2 : 11111101 ($FD)
+    eprom bank 3 : 11111011 ($FB)
+    eprom bank 4 : 11110111 ($F7)
+    eprom bank 5 : 11101111 ($EF)
+    eprom bank 6 : 11011111 ($DF)
+    eprom bank 7 : 10111111 ($BF)
+    eprom bank 8 : 01111111 ($7F)
+
+    EXROM off    : 11111111 ($FF)
+
+
+==========================================================================
+
+
+26. Dela EP256
+
+    Size - 8Kb to 262kb sizes (1 to 33 banks of 8Kb each)
+    GAME - inactive (0)
+    EXROM - active (1)
+    Load address - $8000-9FFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 1A 00 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 44 45 4C 41 20 45 50 32 35 36 00 00 00 00 00 00  DELAתEP256תתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00  CHIPתתתתתתתת€תתת
+0050: 00 85 5E FE C3 C2 CD 38 30 93 0D 2B 2B 2B 20 45  ת…^‏ֲֳֽ80“ת+++תE
+...
+2050: 43 48 49 50 00 00 20 10 00 00 00 01 80 00 20 00  CHIPתתתתתתתת€תתת
+2060: 09 80 28 80 C3 C2 CD 38 30 78 A2 05 8E 16 D0 20  ת€(€ֲֳֽ80x¢תת׀ת
+...
+4060: 43 48 49 50 00 00 20 10 00 00 00 02 80 00 20 00  CHIPתתתתתתתת€תתת
+4070: 0B 80 BC FE C3 C2 CD 38 30 DC 10 8E 16 D0 20 87  ת€¼‏ֲֳֽ80Üתת׀ת‡
+...
+6070: 43 48 49 50 00 00 20 10 00 00 00 03 80 00 20 00  CHIPתתתתתתתת€תתת
+6080: 09 80 F6 8E C3 C2 CD 38 30 A2 C8 8E 16 D0 20 ..  ת€צֲֳֽ80¢ָת׀ת.
+...
+8080: 43 48 49 50 00 00 20 10 00 00 00 04 80 00 20 00  CHIPתתתתתתתת€תתת
+8090: 94 83 A0 83 C3 C2 CD 38 30 02 BB 5A 30 5F EE 3D  ”ƒ ƒֲֳֽ80ת»Z0_מ=
+
+    This is an eprom cartridge. It has 33 8Kb  banks  of  which  the  first
+    holds the base menu, the other eproms can be banked into the $8000-9FFF
+    area.
+
+    The bank selecting is done by writing to $DE00.
+
+    The values for the (extra) eprom banks are:
+
+    eprom banks  1- 8 : $38-3F
+    eprom banks  9-16 : $28-2F
+    eprom banks 17-24 : $18-1F
+    eprom banks 25-32 : $08-0F
+
+    Setting bit 7 high will switch off EXROM.
+
+
+==========================================================================
+
+
+27. Rex EP256
+
+    Size - 8Kb to 262kb sizes (1 bank of 8Kb and 1 to 8 banks of either
+                               8Kb, 16Kb or 32Kb)
+    GAME - inactive (0)
+    EXROM - active (1)
+    Load address - $8000-9FFF
+
+      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F       ASCII
+      -----------------------------------------------  ----------------
+0000: 43 36 34 20 43 41 52 54 52 49 44 47 45 20 20 20  C64תCARTRIDGEתתת
+0010: 00 00 00 40 01 00 00 1B 00 01 00 00 00 00 00 00  תתת@תתתתתתתתתתתת
+0020: 52 45 58 20 45 50 32 35 36 00 00 00 00 00 00 00  REXתEP256תתתתתתת
+0030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  תתתתתתתתתתתתתתתת
+0040: 43 48 49 50 00 00 20 10 00 00 00 00 80 00 20 00  CHIPתתתתתתתת€תתת
+0050: 09 80 C1 FE C3 C2 CD 38 30 20 A3 FD 20 50 FD 20  ת€ֱ‏ֲֳֽ80ת£‎תP‎ת
+...
+2050: 43 48 49 50 00 00 20 10 00 00 00 01 80 00 20 00  CHIPתתתתתתתת€תתת
+2060: 09 80 F2 8F C3 C2 CD 38 30 A2 C8 8E 16 D0 20 A3  ת€עֲֳֽ80¢ָת׀ת£
+...
+4060: 43 48 49 50 00 00 40 10 00 00 00 02 80 00 40 00  CHIPתת@תתתתת€ת@ת
+4070: 09 80 09 80 C3 C2 CD 38 30 58 D8 20 84 FF 20 8A  ת€ת€ֲֳֽ80X״ת„תת
+
+    This is an eprom cartridge. It has 9 eprom sockets, of which the  first
+    holds the base eprom with the base menu which  is  an  8Kb  eprom,  the
+    other eprom sockets can handle 8Kb, 16Kb or 32Kb eproms, of  which  8kb
+    can be banked into the $8000-9FFF area.
+
+    The bank selecting is done by  writing  to  $DFA0.  Bits  2,  1  and  0
+    determine which socket is used and bits 5 and 4 are used to  select  an
+    8Kb piece of the eprom.
+
+    The possible values for bits 5 and 4 for the (extra) eprom banks are:
+
+     8Kb        : 3, 2, 1, 0
+
+    16Kb bank 0 : 2, 0
+    16Kb bank 1 : 3, 1
+
+    32Kb bank 0 : 0
+    32Kb bank 1 : 1
+    32Kb bank 2 : 2
+    32Kb bank 3 : 3
+
+    Reading from $DFC0 switches off the EXROM.
+    Reading from $DFE0 switches on the EXROM.
+
+
