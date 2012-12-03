@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			ser.EndSection();
 
 			ser.BeginSection("cart");
-
+			cartPort.SyncState(ser);
 			ser.EndSection();
 		}
 	}
