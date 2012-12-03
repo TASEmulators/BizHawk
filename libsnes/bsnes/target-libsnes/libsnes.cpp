@@ -14,7 +14,8 @@ struct Interface : public SNES::Interface {
   snes_input_poll_t pinput_poll;
   snes_input_state_t pinput_state;
   snes_input_notify_t pinput_notify;
-	snes_path_request_t ppath_request;
+  snes_path_request_t ppath_request;
+  snes_trace_t ptrace;
   string basename;
   uint32_t *buffer;
   uint32_t *palette;
@@ -74,6 +75,11 @@ struct Interface : public SNES::Interface {
   void message(const string &text) {
 		messages.push(text);
   }
+  
+  void cpuTrace(const char *msg) {
+    if (ptrace)
+	  ptrace((const char *)msg);
+  }
 
   string path(SNES::Cartridge::Slot slot, const string &hint)
 	{
@@ -93,7 +99,8 @@ struct Interface : public SNES::Interface {
 			pinput_state(0), 
 			pinput_notify(0), 
 			ppath_request(0),
-			backdropColor(-1)
+			backdropColor(-1),
+			ptrace(0)
 	{
     buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
@@ -582,4 +589,18 @@ void snes_dequeue_message(char* buffer)
 void snes_set_backdropColor(int color)
 {
 	interface.backdropColor = color;
+}
+
+void snes_set_trace_callback(snes_trace_t callback)
+{
+  if (callback)
+  {
+    interface.wanttrace = true;
+	interface.ptrace = callback;
+  }
+  else
+  {
+    interface.wanttrace = false;
+	interface.ptrace = 0;
+  }
 }

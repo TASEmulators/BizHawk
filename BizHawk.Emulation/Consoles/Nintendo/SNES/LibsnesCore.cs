@@ -79,6 +79,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public delegate void snes_scanlineStart_t(int line);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate string snes_path_request_t(int slot, string hint);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void snes_trace_t(string msg);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_video_refresh(snes_video_refresh_t video_refresh);
@@ -131,6 +133,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_dequeue_message(IntPtr strBuffer);
+
+		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void snes_set_trace_callback(snes_trace_t callback);
 
 		[DllImport("libsneshawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void snes_set_color_lut(IntPtr colors);
@@ -394,6 +399,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return test;
 		}
 
+		void snes_trace(string msg)
+		{
+			CoreInputComm.Tracer.Put(msg);
+		}
+
 		public SnesColors.ColorType CurrPalette { get; private set; }
 
 		public void SetPalette(SnesColors.ColorType pal)
@@ -439,8 +449,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			pathRequest_cb = new LibsnesDll.snes_path_request_t(snes_path_request);
 			BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_path_request(pathRequest_cb);
 
-
 			scanlineStart_cb = new LibsnesDll.snes_scanlineStart_t(snes_scanlineStart);
+
+			tracecb = new LibsnesDll.snes_trace_t(snes_trace);
 
 			// set default palette. Should be overridden by frontend probably
 			SetPalette(SnesColors.ColorType.BizHawk);
@@ -483,6 +494,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				CoreOutputComm.VsyncDen = 1;
 			}
 
+			CoreOutputComm.CpuTraceAvailable = true;
+
 			LibsnesDll.snes_power();
 
 			SetupMemoryDomains(romData);
@@ -509,6 +522,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		LibsnesDll.snes_audio_sample_t soundcb;
 		LibsnesDll.snes_scanlineStart_t scanlineStart_cb;
 		LibsnesDll.snes_path_request_t pathRequest_cb;
+		LibsnesDll.snes_trace_t tracecb;
 
 		ushort snes_input_state(int port, int device, int index, int id)
 		{
@@ -627,6 +641,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				bw.Close();
 				savestatebuff = ms.ToArray();
 			}
+
+			if (!nocallbacks && CoreInputComm.Tracer.Enabled)
+				LibsnesDll.snes_set_trace_callback(tracecb);
+			else
+				LibsnesDll.snes_set_trace_callback(null);
 
 			// speedup when sound rendering is not needed
 			if (!rendersound)
@@ -1038,9 +1057,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
 		public MemoryDomain MainMemory { get; private set; }
-
-
-
 
 		#region audio stuff
 

@@ -36,4 +36,7 @@ int Interface::getBackdropColor()
 	return -1;
 }
 
+void Interface::cpuTrace(const char *msg) {
+}
+
 }
