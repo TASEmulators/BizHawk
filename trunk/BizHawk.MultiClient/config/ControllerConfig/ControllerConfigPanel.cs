@@ -12,7 +12,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class ControllerConfigPanel : UserControl
 	{
-		object ControllerConfigObject; //Object that values will be saved to (In Config.cs)
+		iControllerConfigObject ControllerConfigObject; //Object that values will be saved to (In Config.cs)
 
 		public List<string> buttons = new List<string>();
 
@@ -55,7 +55,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void LoadSettings(object configobj)
+		public void LoadSettings(iControllerConfigObject configobj)
 		{
 			ControllerConfigObject = configobj;
 
@@ -138,6 +138,15 @@ namespace BizHawk.MultiClient
 		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ClearAll();
+		}
+
+		private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (ControllerConfigObject is iControllerConfigObject)
+			{
+				(ControllerConfigObject as iControllerConfigObject).SetDefaults();
+			}
+			SetWidgetStrings();
 		}
 	}
 }
