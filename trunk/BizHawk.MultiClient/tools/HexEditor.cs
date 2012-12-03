@@ -155,7 +155,11 @@ namespace BizHawk.MultiClient
 
 				if (NumDigits == 4)
 				{
-					addrStr.Append("  "); //Hack to line things up better between 4 and 6
+					addrStr.Append("    "); //Hack to line things up better between 4 and 6
+				}
+				else if (NumDigits == 6)
+				{
+					addrStr.Append("  ");
 				}
 				addrStr.Append(String.Format("{0:X" + NumDigits + "}", addr));
 				addrStr.Append('\n');
@@ -178,9 +182,15 @@ namespace BizHawk.MultiClient
 
 				for (int j = 0; j < 16; j += DataSize)
 				{
-					if (addr + j < Domain.Size)
+					if (addr + j + DataSize <= Domain.Size)
 					{
 						rowStr.AppendFormat(DigitFormatString, MakeValue(addr + j));
+					}
+					else
+					{
+						for (int t = 0; t < DataSize; t++)
+							rowStr.Append("  ");
+						rowStr.Append(' ');
 					}
 				}
 				rowStr.Append("  | ");
@@ -267,6 +277,7 @@ namespace BizHawk.MultiClient
 			Domain = domain;
 			int? theDomain = GetDomainInt(Domain.Name);
 			SetMemoryDomain(theDomain ?? 0);
+			SetHeader();
 		}
 
 		public void Restart()
@@ -291,7 +302,7 @@ namespace BizHawk.MultiClient
 			{
 				SetMemoryDomain(theDomain ?? 0);
 			}
-			
+			SetHeader();
 			
 			ResetScrollBar();
 
@@ -449,6 +460,7 @@ namespace BizHawk.MultiClient
 			{
 				SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
 			}
+			SetHeader();
 			UpdateGroupBoxTitle();
 			ResetScrollBar();
 			UpdateValues();
