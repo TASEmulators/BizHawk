@@ -600,6 +600,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			uint pixel;
 			uint pixelData;
+			bool renderEnabled = bufRect.Contains(bufPoint);
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -621,7 +622,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				pixel = pixelBuffer[pixelBufferIndex];
 
 				// plot pixel if within viewing area
-				if (bufRect.Contains(bufPoint))
+				if (renderEnabled)
 				{
 					buf[bufOffset] = palette[pixel];
 					bufOffset++;

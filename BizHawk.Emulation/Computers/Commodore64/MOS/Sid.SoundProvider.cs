@@ -17,12 +17,30 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void GetSamples(short[] samples)
 		{
+			bool overrun = false;
 			uint count = (uint)samples.Length;
-			for (uint i = 0; i < count; i++)
+			uint overrunOffset;
+
+			if (bufferIndex == 0)
+				overrunOffset = bufferLength - 1;
+			else
+				overrunOffset = bufferIndex - 1;
+				
+			uint i = 0;
+			while (i < count)
 			{
-				samples[i] = buffer[bufferReadOffset];
-				if (bufferReadOffset != bufferIndex)
-					bufferReadOffset++;
+				if (bufferReadOffset == bufferIndex)
+					overrun = true;
+				if (!overrun)
+				{
+					samples[i++] = buffer[bufferReadOffset++];
+					samples[i++] = buffer[bufferReadOffset++];
+				}
+				else
+				{
+					samples[i++] = buffer[overrunOffset];
+					samples[i++] = buffer[overrunOffset];
+				}
 				if (bufferReadOffset == bufferLength)
 					bufferReadOffset = 0;
 			}
