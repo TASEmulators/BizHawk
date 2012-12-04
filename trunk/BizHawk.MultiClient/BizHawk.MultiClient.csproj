@@ -184,12 +184,6 @@
     <Compile Include="config\GifAnimator.Designer.cs">
       <DependentUpon>GifAnimator.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\InputConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\InputConfig.Designer.cs">
-      <DependentUpon>InputConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\InputWidget.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -763,10 +757,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\AutofireConfig.resx">
       <DependentUpon>AutofireConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\InputConfig.resx">
-      <DependentUpon>InputConfig.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="config\MessageConfig.resx">
       <DependentUpon>MessageConfig.cs</DependentUpon>
