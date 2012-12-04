@@ -38,6 +38,37 @@ namespace BizHawk.MultiClient
 			
 		}
 
+		private void DoConflicts()
+		{
+			List<KeyValuePair<int, string>> BindingList = new List<KeyValuePair<int, string>>();
+			HashSet<string> uniqueBindings = new HashSet<string>();
+
+			for (int i = 0; i < Inputs.Count; i++)
+			{
+				if (!String.IsNullOrWhiteSpace(Inputs[0].Text))
+				{
+					string[] bindings = Inputs[0].Text.Split(',');
+					foreach (string binding in bindings)
+					{
+						BindingList.Add(new KeyValuePair<int, string>(i, binding));
+						uniqueBindings.Add(binding);
+					}
+				}
+			}
+
+			foreach (string binding in uniqueBindings)
+			{
+				List<KeyValuePair<int, string>> kvps = BindingList.Where(x => x.Value == binding).ToList();
+				if (kvps.Count > 0)
+				{
+					foreach(KeyValuePair<int, string> kvp in kvps)
+					{
+						Inputs[kvp.Key].Conflicted = true;
+					}
+				}
+			}
+		}
+
 		public void ClearAll()
 		{
 			foreach (InputWidget i in Inputs)
