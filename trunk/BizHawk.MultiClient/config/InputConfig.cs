@@ -190,7 +190,7 @@ namespace BizHawk.MultiClient
 				int yoffset = (row * 24);
 				TempLabel.Location = new Point(8 + xoffset, 20 + yoffset);
 				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget(HotkeyMappingList);
+				TempTextBox = new InputWidget();
 				TempTextBox.Location = new Point(64 + xoffset, 20 + yoffset);
 				TextBoxes.Add(TempTextBox);
 				object field = null;

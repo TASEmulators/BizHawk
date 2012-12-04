@@ -22,6 +22,29 @@ namespace BizHawk.MultiClient
 		Color _highlight_color = Color.LightCyan;
 		Color _no_highlight_color = SystemColors.Window;
 
+		private bool conflicted = false;
+		public bool Conflicted
+		{
+			get
+			{
+				return conflicted;
+			}
+			set
+			{
+				conflicted = value;
+				if (conflicted)
+				{
+					_no_highlight_color = Color.LightCoral;
+					_highlight_color = Color.Violet;
+				}
+				else
+				{
+					_highlight_color = Color.LightCyan;
+					_no_highlight_color = SystemColors.Window;
+				}
+			}
+		}
+
 		private void Highlight()
 		{
 			BackColor = _highlight_color;
@@ -31,8 +54,6 @@ namespace BizHawk.MultiClient
 		{
 			BackColor = _no_highlight_color;
 		}
-
-		private List<KeyValuePair<string, string>> ConflictLookup = new List<KeyValuePair<string, string>>();
 
 		[DllImport("user32")]
 		private static extern bool HideCaret(IntPtr hWnd);
@@ -45,15 +66,6 @@ namespace BizHawk.MultiClient
 			tooltip1.AutoPopDelay = 2000;
 		}
 
-		public InputWidget(List<KeyValuePair<string, string>> conflictList)
-		{
-			this.ContextMenu = new ContextMenu();
-			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
-			InitializeBindings();
-			tooltip1.AutoPopDelay = 2000;
-			ConflictLookup = conflictList;
-		}
-
 		public InputWidget(int maxBindings)
 		{
 			this.ContextMenu = new ContextMenu();
@@ -62,11 +74,6 @@ namespace BizHawk.MultiClient
 			Bindings = new string[MaxBind];
 			InitializeBindings();
 			tooltip1.AutoPopDelay = 2000;
-		}
-
-		public void SetConflictList(List<KeyValuePair<string, string>> conflictLookup)
-		{
-			ConflictLookup = conflictLookup;
 		}
 
 		protected override void OnMouseClick(MouseEventArgs e)
@@ -108,7 +115,7 @@ namespace BizHawk.MultiClient
 		public void EraseMappings()
 		{
 			ClearBindings();
-			HideConflicts();
+			conflicted = false;
 			Text = "";
 		}
 
@@ -125,7 +132,7 @@ namespace BizHawk.MultiClient
 				if (TempBindingStr == "Escape")
 				{
 					ClearBindings();
-					HideConflicts();
+					conflicted = false;
 					Increment();
 					return;
 				}
@@ -139,55 +146,9 @@ namespace BizHawk.MultiClient
 				}
 				wasPressed = TempBindingStr;
 
-				DoConflictCheck();
-
 				UpdateLabel();
 				Increment();
 			}
-		}
-
-		private string Conflicts = "";
-
-		private void DoConflictCheck()
-		{
-			StringBuilder conflicts = new StringBuilder(); ;
-			foreach (KeyValuePair<string, string> conflict in ConflictLookup)
-			{
-				foreach (string binding in Bindings)
-				{
-					if (conflict.Key == binding)
-					{
-						conflicts.Append(binding);
-						conflicts.Append(" conflicts with Hotkey - "); //Ideally we don't hardcode Hotkey, we may want to check mappings on specific controllers or unforeseen things
-						conflicts.Append(conflict.Value);
-						conflicts.Append('\n');
-					}
-				}
-			}
-			Conflicts = conflicts.ToString();
-
-			if (String.IsNullOrWhiteSpace(Conflicts))
-			{
-				HideConflicts();
-			}
-			else
-			{
-				ShowConflicts();
-			}
-		}
-
-		private void ShowConflicts()
-		{
-			_no_highlight_color = Color.LightCoral;
-			_highlight_color = Color.Violet;
-			tooltip1.SetToolTip(this, Conflicts);
-		}
-
-		private void HideConflicts()
-		{
-			_highlight_color = Color.LightCyan;
-			_no_highlight_color = SystemColors.Window;
-			tooltip1.SetToolTip(this, "");
 		}
 
 		//Checks if the key is already mapped to this widget
