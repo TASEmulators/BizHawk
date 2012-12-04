@@ -42,6 +42,15 @@ namespace BizHawk.MultiClient
 					_highlight_color = Color.LightCyan;
 					_no_highlight_color = SystemColors.Window;
 				}
+
+				if (Focused)
+				{
+					Highlight();
+				}
+				else
+				{
+					UnHighlight();
+				}
 			}
 		}
 

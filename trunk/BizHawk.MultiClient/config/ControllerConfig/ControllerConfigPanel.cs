@@ -45,9 +45,9 @@ namespace BizHawk.MultiClient
 
 			for (int i = 0; i < Inputs.Count; i++)
 			{
-				if (!String.IsNullOrWhiteSpace(Inputs[0].Text))
+				if (!String.IsNullOrWhiteSpace(Inputs[i].Text))
 				{
-					string[] bindings = Inputs[0].Text.Split(',');
+					string[] bindings = Inputs[i].Text.Split(',');
 					foreach (string binding in bindings)
 					{
 						BindingList.Add(new KeyValuePair<int, string>(i, binding));
@@ -59,7 +59,7 @@ namespace BizHawk.MultiClient
 			foreach (string binding in uniqueBindings)
 			{
 				List<KeyValuePair<int, string>> kvps = BindingList.Where(x => x.Value == binding).ToList();
-				if (kvps.Count > 0)
+				if (kvps.Count > 1)
 				{
 					foreach(KeyValuePair<int, string> kvp in kvps)
 					{
@@ -146,9 +146,10 @@ namespace BizHawk.MultiClient
 				iw.Size = new Size(InputSize, 23);
 				iw.TabIndex = i;
 				iw.BringToFront();
+				iw.Enter += new System.EventHandler(this.InputWidget_Enter);
+				iw.Leave += new System.EventHandler(this.InputWidget_Leave);
 				Controls.Add(iw);
 				Inputs.Add(iw);
-
 				Label l = new Label();
 				l.Location = new Point(x + InputSize + LabelPadding, y + 3);
 				l.Text = buttons[i].Replace('_', ' ').Trim();
@@ -156,6 +157,16 @@ namespace BizHawk.MultiClient
 				Controls.Add(l);
 				Labels.Add(l);
 			}
+		}
+
+		private void InputWidget_Enter(object sender, EventArgs e)
+		{
+			DoConflicts();
+		}
+
+		private void InputWidget_Leave(object sender, EventArgs e)
+		{
+			DoConflicts();
 		}
 
 		public void SetAutoTab(bool value)
