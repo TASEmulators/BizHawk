@@ -2212,7 +2212,6 @@ namespace BizHawk.MultiClient
 				if (Form.ActiveForm == this) return true;
 
 				//modals that need to capture input for binding purposes get input, of course
-				if (Form.ActiveForm is InputConfig) return true;
 				if (Form.ActiveForm is HotkeyWindow) return true;
 				if (Form.ActiveForm is ControllerConfig) return true;
 				if (Form.ActiveForm is TAStudio) return true;
