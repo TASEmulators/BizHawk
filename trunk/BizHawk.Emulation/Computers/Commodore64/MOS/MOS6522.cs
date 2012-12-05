@@ -6,7 +6,7 @@ using System.Text;
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// via
-	public class MOS6522 : Timer, IStandardIO
+	public class MOS6522 : Timer
 	{
 		// ------------------------------------
 

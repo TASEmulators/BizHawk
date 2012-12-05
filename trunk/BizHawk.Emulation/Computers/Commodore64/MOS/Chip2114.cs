@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// used as Color RAM in C64
 
-	public class Chip2114 : IStandardIO
+	public class Chip2114
 	{
 		private byte[] ram;
 

@@ -6,7 +6,7 @@ using System.Text;
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// sid
-	public class MOS6581 : Sid, IStandardIO, ISoundProvider, ISyncSoundProvider
+	public class MOS6581 : Sid, ISoundProvider, ISyncSoundProvider
 	{
 		static uint[][] waveTable = new uint[][]
 		{

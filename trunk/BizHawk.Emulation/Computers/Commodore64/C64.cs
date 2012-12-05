@@ -9,7 +9,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 {
 	public partial class  C64 : IEmulator
 	{
-		private IController controller;
 		private uint cyclesPerFrame;
 		private string extension;
 		private byte[] inputFile;
@@ -21,7 +20,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 			Init(Region.PAL);
-			cyclesPerFrame = (uint)chips.vic.CyclesPerFrame;
+			cyclesPerFrame = (uint)board.vic.CyclesPerFrame;
 			CoreOutputComm.UsesDriveLed = true;
 			SetupMemoryDomains();
 		}
@@ -58,14 +57,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// audio/video
 		public void EndAsyncSound() { } //TODO
-		public ISoundProvider SoundProvider { get { return chips.sid; } }
+		public ISoundProvider SoundProvider { get { return board.sid; } }
 		public bool StartAsyncSound() { return true; } //TODO
-		public ISyncSoundProvider SyncSoundProvider { get { return chips.sid; } }
-		public IVideoProvider VideoProvider { get { return chips.vic; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return board.sid; } }
+		public IVideoProvider VideoProvider { get { return board.vic; } }
 
 		// controller
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-		public IController Controller { get { return controller; } set { controller = value; } }
+		public IController Controller { get { return board.controller; } set { board.controller = value; } }
 		public static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Commodore 64 Controller", //TODO
@@ -93,22 +92,21 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			// load PRG file if needed
 			if (loadPrg)
 			{
-				if (chips.pla.Peek(0x04C8) == 0x12 &&
-					chips.pla.Peek(0x04C9) == 0x05 &&
-					chips.pla.Peek(0x04CA) == 0x01 &&
-					chips.pla.Peek(0x04CB) == 0x04 &&
-					chips.pla.Peek(0x04CC) == 0x19 &&
-					chips.pla.Peek(0x04CD) == 0x2E)
+				if (board.pla.Peek(0x04C8) == 0x12 &&
+					board.pla.Peek(0x04C9) == 0x05 &&
+					board.pla.Peek(0x04CA) == 0x01 &&
+					board.pla.Peek(0x04CB) == 0x04 &&
+					board.pla.Peek(0x04CC) == 0x19 &&
+					board.pla.Peek(0x04CD) == 0x2E)
 				{
-					Media.PRG.Load(chips.pla, inputFile);
+					Media.PRG.Load(board.pla, inputFile);
 					loadPrg = false;
 				}
 			}
 
-			PollInput();
-			chips.pla.InputWasRead = false;
-			Execute(cyclesPerFrame);
-			_islag = !chips.pla.InputWasRead;
+			board.PollInput();
+			board.Execute(cyclesPerFrame);
+			_islag = !board.inputRead;
 
 			if (_islag)
 				LagCount++;
@@ -136,12 +134,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			// chips must be initialized before this code runs!
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("System Bus", 0x10000, Endian.Little, new Func<int, byte>(chips.cpu.Peek), new Action<int, byte>(chips.cpu.Poke)));
-			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(chips.ram.Peek), new Action<int, byte>(chips.ram.Poke)));
-			domains.Add(new MemoryDomain("CIA0", 0x10, Endian.Little, new Func<int, byte>(chips.cia0.Peek), new Action<int, byte>(chips.cia0.Poke)));
-			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, new Func<int, byte>(chips.cia1.Peek), new Action<int, byte>(chips.cia1.Poke)));
-			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, new Func<int, byte>(chips.vic.Peek), new Action<int, byte>(chips.vic.Poke)));
-			domains.Add(new MemoryDomain("SID", 0x20, Endian.Little, new Func<int, byte>(chips.sid.Peek), new Action<int, byte>(chips.sid.Poke)));
+			domains.Add(new MemoryDomain("System Bus", 0x10000, Endian.Little, new Func<int, byte>(board.cpu.Peek), new Action<int, byte>(board.cpu.Poke)));
+			domains.Add(new MemoryDomain("RAM", 0x10000, Endian.Little, new Func<int, byte>(board.ram.Peek), new Action<int, byte>(board.ram.Poke)));
+			domains.Add(new MemoryDomain("CIA0", 0x10, Endian.Little, new Func<int, byte>(board.cia0.Peek), new Action<int, byte>(board.cia0.Poke)));
+			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, new Func<int, byte>(board.cia1.Peek), new Action<int, byte>(board.cia1.Poke)));
+			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, new Func<int, byte>(board.vic.Peek), new Action<int, byte>(board.vic.Poke)));
+			domains.Add(new MemoryDomain("SID", 0x20, Endian.Little, new Func<int, byte>(board.sid.Peek), new Action<int, byte>(board.sid.Poke)));
 			memoryDomains = domains.AsReadOnly();
 		}
 	}
