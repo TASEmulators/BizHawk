@@ -5,11 +5,10 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	public interface IStandardIO
+	public class CassettePort
 	{
-		byte Peek(int addr);
-		void Poke(int addr, byte val);
-		byte Read(ushort addr);
-		void Write(ushort addr, byte val);
+		public void HardReset()
+		{
+		}
 	}
 }

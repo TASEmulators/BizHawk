@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 	// memory is striped 00/FF at intervals of 0x40
 
-	public class Chip4864 : IStandardIO
+	public class Chip4864
 	{
 		private byte[] ram;
 

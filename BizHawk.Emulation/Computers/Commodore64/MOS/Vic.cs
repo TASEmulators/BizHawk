@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	public abstract partial class Vic : IStandardIO
+	public abstract partial class Vic
 	{
 		// ------------------------------------
 
@@ -103,7 +103,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint borderT;
 		private uint[] bufferC;
 		private uint[] bufferG;
-		private byte bus;
 		private bool columnSelect;
 		private uint cycle;
 		private uint cycleIndex;
@@ -126,12 +125,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint lightPenX;
 		private uint lightPenY;
 		private bool multicolorMode;
-		private uint[] pixelBuffer;
-		private uint pixelBufferDelay;
-		private uint pixelBufferIndex;
 		private uint[] pixelBackgroundBuffer;
 		private uint pixelBackgroundBufferDelay;
 		private uint pixelBackgroundBufferIndex;
+		private uint[] pixelBuffer;
+		private uint pixelBufferDelay;
+		private uint pixelBufferIndex;
 		private uint[] pixelDataBuffer;
 		private uint pointerCB;
 		private uint pointerVM;
@@ -153,7 +152,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		private C64Chips chips;
 		private int cyclesPerSec;
 		private bool pinAEC;
 		private bool pinBA;
@@ -164,31 +162,38 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public Vic(C64Chips newChips, uint newCycles, uint newLines, uint[][] newPipeline, int newCyclesPerSec)
+		public Func<ushort, byte> ReadColorRam;
+		public Func<ushort, byte> ReadMemory;
+	
+		// ------------------------------------
+
+		public Vic(uint newCycles, uint newLines, uint[][] newPipeline, int newCyclesPerSec)
 		{
-			chips = newChips;
-			totalCycles = newCycles;
-			totalLines = newLines;
-			pipeline = newPipeline;
-			cyclesPerSec = newCyclesPerSec;
-			pixelBufferDelay = 12;
-			pixelBackgroundBufferDelay = 4;
-			bufRect = new Rectangle(136 - 24, 51 - 24, 320 + 48, 200 + 48);
+			
+			{
+				totalCycles = newCycles;
+				totalLines = newLines;
+				pipeline = newPipeline;
+				cyclesPerSec = newCyclesPerSec;
+				pixelBufferDelay = 12;
+				pixelBackgroundBufferDelay = 4;
+				bufRect = new Rectangle(136 - 24, 51 - 24, 320 + 48, 200 + 48);
 
-			buf = new int[bufRect.Width * bufRect.Height];
-			bufLength = (uint)buf.Length;
-			bufWidth = (int)(totalCycles * 8);
-			bufHeight = (int)(totalLines);
+				buf = new int[bufRect.Width * bufRect.Height];
+				bufLength = (uint)buf.Length;
+				bufWidth = (int)(totalCycles * 8);
+				bufHeight = (int)(totalLines);
 
-			sprites = new Sprite[8];
-			for (uint i = 0; i < 8; i++)
-				sprites[i] = new Sprite();
+				sprites = new Sprite[8];
+				for (uint i = 0; i < 8; i++)
+					sprites[i] = new Sprite();
 
-			bufferC = new uint[40];
-			bufferG = new uint[40];
-			pixelBuffer = new uint[pixelBufferDelay];
-			pixelDataBuffer = new uint[pixelBufferDelay];
-			pixelBackgroundBuffer = new uint[pixelBackgroundBufferDelay];
+				bufferC = new uint[40];
+				bufferG = new uint[40];
+				pixelBuffer = new uint[pixelBufferDelay];
+				pixelDataBuffer = new uint[pixelBufferDelay];
+				pixelBackgroundBuffer = new uint[pixelBackgroundBufferDelay];
+			}
 		}
 
 		public void HardReset()
@@ -274,28 +279,37 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private void UpdateBA()
 		{
-			if (pinBA)
-				baCount = baResetCounter;
-			else if (baCount > 0)
-				baCount--;
-			pinAEC = (baCount > 0);
+			
+			{
+				if (pinBA)
+					baCount = baResetCounter;
+				else if (baCount > 0)
+					baCount--;
+				pinAEC = (baCount > 0);
+			}
 		}
 
 		private void UpdateBorder()
 		{
-			borderL = columnSelect ? (uint)0x018 : (uint)0x01F;
-			borderR = columnSelect ? (uint)0x158 : (uint)0x14F;
-			borderT = rowSelect ? (uint)0x033 : (uint)0x037;
-			borderB = rowSelect ? (uint)0x0FB : (uint)0x0F7;
+			
+			{
+				borderL = columnSelect ? (uint)0x018 : (uint)0x01F;
+				borderR = columnSelect ? (uint)0x158 : (uint)0x14F;
+				borderT = rowSelect ? (uint)0x033 : (uint)0x037;
+				borderB = rowSelect ? (uint)0x0FB : (uint)0x0F7;
+			}
 		}
 
 		private void UpdatePins()
 		{
-			pinIRQ = !(
-				(enableIntRaster & intRaster) |
-				(enableIntSpriteDataCollision & intSpriteDataCollision) |
-				(enableIntSpriteCollision & intSpriteCollision) |
-				(enableIntLightPen & intLightPen));
+			
+			{
+				pinIRQ = !(
+					(enableIntRaster & intRaster) |
+					(enableIntSpriteDataCollision & intSpriteDataCollision) |
+					(enableIntSpriteCollision & intSpriteCollision) |
+					(enableIntLightPen & intLightPen));
+			}
 		}
 
 		// ------------------------------------
@@ -321,519 +335,545 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase1()
 		{
-			// raster IRQ compare
-			if ((cycle == rasterIrqLineXCycle && rasterLine > 0) || (cycle == rasterIrqLine0Cycle && rasterLine == 0))
+			
 			{
-				if (rasterLine != lastRasterLine)
-					if (rasterLine == rasterInterruptLine)
-						intRaster = true;
-				lastRasterLine = rasterLine;
+				// raster IRQ compare
+				if ((cycle == rasterIrqLineXCycle && rasterLine > 0) || (cycle == rasterIrqLine0Cycle && rasterLine == 0))
+				{
+					if (rasterLine != lastRasterLine)
+						if (rasterLine == rasterInterruptLine)
+							intRaster = true;
+					lastRasterLine = rasterLine;
+				}
+
+				// display enable compare
+				if (rasterLine == 0x030)
+					badlineEnable |= displayEnable;
+
+				// badline compare
+				if (badlineEnable && rasterLine >= 0x030 && rasterLine < 0x0F7 && ((rasterLine & 0x7) == yScroll))
+					badline = true;
+				else
+					badline = false;
+
+				// go into display state on a badline
+				if (badline)
+					idle = false;
+
+				// process some sprite crunch vars
+				if (!sprites[0].yExpand) sprites[0].yCrunch = true;
+				if (!sprites[1].yExpand) sprites[1].yCrunch = true;
+				if (!sprites[2].yExpand) sprites[2].yCrunch = true;
+				if (!sprites[3].yExpand) sprites[3].yCrunch = true;
+				if (!sprites[4].yExpand) sprites[4].yCrunch = true;
+				if (!sprites[5].yExpand) sprites[5].yCrunch = true;
+				if (!sprites[6].yExpand) sprites[6].yCrunch = true;
+				if (!sprites[7].yExpand) sprites[7].yCrunch = true;
+
+				// set up display index for rendering
+				if (cycle == 15)
+					displayIndex = 0;
+				else if (cycle > 15 && cycle <= 55)
+					displayIndex++;
+
+				ParseCycle();
+
+				xOffset = 0;
+				Render();
+
+				// if the BA counter is nonzero, allow CPU bus access
+				UpdateBA();
+
+				// must always come last
+				UpdatePins();
 			}
-
-			// display enable compare
-			if (rasterLine == 0x030)
-				badlineEnable |= displayEnable;
-
-			// badline compare
-			if (badlineEnable && rasterLine >= 0x030 && rasterLine < 0x0F7 && ((rasterLine & 0x7) == yScroll))
-				badline = true;
-			else
-				badline = false;
-
-			// go into display state on a badline
-			if (badline)
-				idle = false;
-
-			// process some sprite crunch vars
-			if (!sprites[0].yExpand) sprites[0].yCrunch = true;
-			if (!sprites[1].yExpand) sprites[1].yCrunch = true;
-			if (!sprites[2].yExpand) sprites[2].yCrunch = true;
-			if (!sprites[3].yExpand) sprites[3].yCrunch = true;
-			if (!sprites[4].yExpand) sprites[4].yCrunch = true;
-			if (!sprites[5].yExpand) sprites[5].yCrunch = true;
-			if (!sprites[6].yExpand) sprites[6].yCrunch = true;
-			if (!sprites[7].yExpand) sprites[7].yCrunch = true;
-
-			// set up display index for rendering
-			if (cycle == 15)
-				displayIndex = 0;
-			else if (cycle > 15 && cycle <= 55)
-				displayIndex++;
-
-			ParseCycle();
-
-			xOffset = 0;
-			Render();
-
-			// if the BA counter is nonzero, allow CPU bus access
-			UpdateBA();
-
-			// must always come last
-			UpdatePins();
 		}
 
 		public void ExecutePhase2()
 		{
-			ParseCycle();
-
-			// advance cycle and optionally raster line
-			cycle++;
-			if (cycle == totalCycles)
+			
 			{
-				if (rasterLine == borderB)
-					borderOnVertical = true;
-				if (rasterLine == borderT && displayEnable)
-					borderOnVertical = false;
+				ParseCycle();
 
-				cycleIndex = 0;
-				cycle = 0;
-				rasterLine++;
-				if (rasterLine == totalLines)
-				{
-					rasterLine = 0;
-					vcbase = 0;
-					vc = 0;
-				}
-			}
-
-			Render();
-
-			// must always come last
-			UpdatePins();
-		}
-
-		private void ParseCycle()
-		{
-			ushort addr = 0x3FFF;
-			uint cycleBAsprite0;
-			uint cycleBAsprite1;
-			uint cycleBAsprite2;
-			uint cycleFetchSpriteIndex;
-			uint fetch = pipeline[1][cycleIndex];
-			uint ba = pipeline[2][cycleIndex];
-			uint act = pipeline[3][cycleIndex];
-
-			// apply X location
-			rasterX = pipeline[0][cycleIndex];
-
-			// perform fetch
-			switch (fetch & 0xFF00)
-			{
-				case 0x0100:
-					// fetch R
-					refreshCounter = (refreshCounter - 1) & 0xFF;
-					addr = (ushort)(0x3F00 | refreshCounter);
-					bus = chips.pla.ReadVic(addr);
-					break;
-				case 0x0200:
-					// fetch C
-					if (!idle)
-					{
-						if (badline)
-						{
-							addr = (ushort)((pointerVM << 10) | vc);
-							bus = chips.pla.ReadVic(addr);
-							dataC = bus;
-							dataC |= (uint)chips.colorRam.Read((ushort)vc) << 8;
-							dataC &= 0xFFF;
-							bufferC[vmli] = dataC;
-						}
-						else
-						{
-							dataC = bufferC[vmli];
-						}
-					}
-					else
-					{
-						dataC = 0;
-						bufferC[vmli] = dataC;
-					}
-					break;
-				case 0x0300:
-					// fetch G
-					if (idle)
-						addr = 0x3FFF;
-					else
-					{
-						if (bitmapMode)
-							addr = (ushort)(rc | (vc << 3) | ((pointerCB & 0x4) << 11));
-						else
-							addr = (ushort)(rc | ((dataC & 0xFF) << 3) | (pointerCB << 11));
-					}
-					if (extraColorMode)
-						addr &= 0x39FF;
-					bus = chips.pla.ReadVic(addr);
-					dataG = bus;
-					if (!idle)
-					{
-						bufferG[vmli] = dataG;
-						vmli = (vmli + 1) & 0x3F;
-						vc = (vc + 1) & 0x3FF;
-					}
-					break;
-				case 0x0400:
-					// fetch I
-					addr = (extraColorMode ? (ushort)0x39FF : (ushort)0x3FFF);
-					bus = chips.pla.ReadVic(addr);
-					dataG = bus;
-					dataC = 0;
-					break;
-				case 0x0500:
-					// no fetch
-					break;
-				default:
-					cycleFetchSpriteIndex = (fetch & 0x7);
-					switch (fetch & 0xF0)
-					{
-						case 0x00:
-							// fetch P
-							addr = (ushort)(0x3F8 | (pointerVM << 10) | cycleFetchSpriteIndex);
-							bus = chips.pla.ReadVic(addr);
-							sprites[cycleFetchSpriteIndex].pointer = bus;
-							sprites[cycleFetchSpriteIndex].shiftEnable = false;
-							break;
-						case 0x10:
-						case 0x20:
-						case 0x30:
-							// fetch S
-							if (sprites[cycleFetchSpriteIndex].dma)
-							{
-								Sprite spr = sprites[cycleFetchSpriteIndex];
-								addr = (ushort)(spr.mc | (spr.pointer << 6));
-								bus = chips.pla.ReadVic(addr);
-								spr.sr <<= 8;
-								spr.sr |= bus;
-								spr.mc++;
-							}
-							break;
-					}
-					break;
-			}
-
-			// perform BA flag manipulation
-			switch (ba)
-			{
-				case 0x0000:
-					pinBA = true;
-					break;
-				case 0x1000:
-					pinBA = !badline;
-					break;
-				default:
-					cycleBAsprite0 = (ba & 0x000F);
-					cycleBAsprite1 = (ba & 0x00F0) >> 4;
-					cycleBAsprite2 = (ba & 0x0F00) >> 8;
-					if ((cycleBAsprite0 < 8 && sprites[cycleBAsprite0].dma) ||
-						(cycleBAsprite1 < 8 && sprites[cycleBAsprite1].dma) ||
-						(cycleBAsprite2 < 8 && sprites[cycleBAsprite2].dma))
-						pinBA = false;
-					else
-						pinBA = true;
-					break;
-			}
-
-			// perform actions
-			borderCheckLEnable = true;
-			borderCheckREnable = true;
-
-			if ((act & pipelineChkSprChunch) != 0)
-			{
-				for (int i = 0; i < 8; i++)
-				{
-					Sprite spr = sprites[i];
-					if (spr.yCrunch)
-						spr.mcbase += 2;
-					spr.shiftEnable = false;
-					spr.xCrunch = !spr.xExpand;
-				}
-			}
-			if ((act & pipelineChkSprDisp) != 0)
-			{
-				for (int i = 0; i < 8; i++)
-				{
-					Sprite spr = sprites[i];
-					spr.mc = spr.mcbase;
-					if (spr.dma && spr.y == (rasterLine & 0xFF))
-					{
-						spr.display = true;
-					}
-				}
-			}
-			if ((act & pipelineChkSprDma) != 0)
-			{
-				for (int i = 0; i < 8; i++)
-				{
-					Sprite spr = sprites[i];
-					if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
-					{
-						spr.dma = true;
-						spr.mcbase = 0;
-						if (spr.yExpand)
-							spr.yCrunch = false;
-					}
-				}
-			}
-			if ((act & pipelineChkSprExp) != 0)
-			{
-				if (sprites[0].yExpand) sprites[0].yCrunch ^= true;
-				if (sprites[1].yExpand) sprites[1].yCrunch ^= true;
-				if (sprites[2].yExpand) sprites[2].yCrunch ^= true;
-				if (sprites[3].yExpand) sprites[3].yCrunch ^= true;
-				if (sprites[4].yExpand) sprites[4].yCrunch ^= true;
-				if (sprites[5].yExpand) sprites[5].yCrunch ^= true;
-				if (sprites[6].yExpand) sprites[6].yCrunch ^= true;
-				if (sprites[7].yExpand) sprites[7].yCrunch ^= true;
-			}
-			if ((act & pipelineUpdateMcBase) != 0)
-			{
-				for (int i = 0; i < 8; i++)
-				{
-					Sprite spr = sprites[i];
-					if (spr.yCrunch)
-					{
-						spr.mcbase++;
-						if (spr.mcbase == 63)
-						{
-							spr.dma = false;
-							spr.display = false;
-						}
-					}
-				}
-			}
-			if ((act & pipelineUpdateRc) != 0)
-			{
-				if (rc == 7)
-				{
-					idle = true;
-					vcbase = vc;
-				}
-				if (!idle)
-					rc = (rc + 1) & 0x7;
-			}
-			if ((act & pipelineUpdateVc) != 0)
-			{
-				vc = vcbase;
-				vmli = 0;
-				if (badline)
-					rc = 0;
-			}
-
-			cycleIndex++;
-		}
-
-		private void Render()
-		{
-			uint pixel;
-			uint pixelData;
-			bool renderEnabled = bufRect.Contains(bufPoint);
-
-			for (int i = 0; i < 4; i++)
-			{
-				if (borderCheckLEnable && rasterX == borderL)
+				// advance cycle and optionally raster line
+				cycle++;
+				if (cycle == totalCycles)
 				{
 					if (rasterLine == borderB)
 						borderOnVertical = true;
 					if (rasterLine == borderT && displayEnable)
 						borderOnVertical = false;
-					if (!borderOnVertical)
-						borderOnMain = false;
-				}
-				if (borderCheckREnable && rasterX == borderR)
-				{
-					borderOnMain = true;
-				}
 
-				// recall pixel from buffer
-				pixel = pixelBuffer[pixelBufferIndex];
-
-				// plot pixel if within viewing area
-				if (renderEnabled)
-				{
-					buf[bufOffset] = palette[pixel];
-					bufOffset++;
-					if (bufOffset == bufLength)
-						bufOffset = 0;
-				}
-				bufPoint.X++;
-				if (bufPoint.X == bufWidth)
-				{
-					bufPoint.X = 0;
-					bufPoint.Y++;
-					if (bufPoint.Y == bufHeight)
-						bufPoint.Y = 0;
-				}
-
-				// put the pixel from the background buffer into the main buffer
-				pixel = pixelBackgroundBuffer[pixelBackgroundBufferIndex];
-
-				// render sprite
-				uint pixelOwner = 8;
-				for (uint j = 0; j < 8; j++)
-				{
-					uint sprData;
-					uint sprPixel = pixel;
-
-					Sprite spr = sprites[j];
-
-					if (spr.x == rasterX)
-						spr.shiftEnable = true;
-
-					if (spr.shiftEnable)
+					cycleIndex = 0;
+					cycle = 0;
+					rasterLine++;
+					if (rasterLine == totalLines)
 					{
-						if (spr.multicolor)
+						rasterLine = 0;
+						vcbase = 0;
+						vc = 0;
+					}
+				}
+
+				Render();
+
+				// must always come last
+				UpdatePins();
+			}
+		}
+
+		private void ParseCycle()
+		{
+			
+			{
+				ushort addr = 0x3FFF;
+				uint cycleBAsprite0;
+				uint cycleBAsprite1;
+				uint cycleBAsprite2;
+				uint cycleFetchSpriteIndex;
+				uint fetch = pipeline[1][cycleIndex];
+				uint ba = pipeline[2][cycleIndex];
+				uint act = pipeline[3][cycleIndex];
+
+				// apply X location
+				rasterX = pipeline[0][cycleIndex];
+
+				// perform fetch
+				switch (fetch & 0xFF00)
+				{
+					case 0x0100:
+						// fetch R
+						refreshCounter = (refreshCounter - 1) & 0xFF;
+						addr = (ushort)(0x3F00 | refreshCounter);
+						ReadMemory(addr);
+						break;
+					case 0x0200:
+						// fetch C
+						if (!idle)
 						{
-							sprData = (spr.sr & 0xC00000) >> 22;
-							if (spr.multicolorCrunch && spr.xCrunch)
-								spr.sr <<= 2;
-							spr.multicolorCrunch ^= spr.xCrunch;
+							if (badline)
+							{
+								addr = (ushort)((pointerVM << 10) | vc);
+								dataC = ReadMemory(addr);
+								dataC |= ((uint)ReadColorRam(addr) & 0xF) << 8;
+								bufferC[vmli] = dataC;
+							}
+							else
+							{
+								dataC = bufferC[vmli];
+							}
 						}
 						else
 						{
-							sprData = (spr.sr & 0x800000) >> 22;
-							if (spr.xCrunch)
-								spr.sr <<= 1;
+							dataC = 0;
+							bufferC[vmli] = dataC;
 						}
-						spr.xCrunch ^= spr.xExpand;
-						switch (sprData)
+						break;
+					case 0x0300:
+						// fetch G
+						if (idle)
+							addr = 0x3FFF;
+						else
 						{
-							case 1: sprPixel = spriteMulticolor0; break;
-							case 2: sprPixel = spr.color; break;
-							case 3: sprPixel = spriteMulticolor1; break;
+							if (bitmapMode)
+								addr = (ushort)(rc | (vc << 3) | ((pointerCB & 0x4) << 11));
+							else
+								addr = (ushort)(rc | ((dataC & 0xFF) << 3) | (pointerCB << 11));
 						}
-						if (sprData != 0 && pixelOwner >= 8)
+						if (extraColorMode)
+							addr &= 0x39FF;
+						dataG = ReadMemory(addr);
+						if (!idle)
 						{
-							pixel = sprPixel;
-							pixelOwner = j;
+							bufferG[vmli] = dataG;
+							vmli = (vmli + 1) & 0x3F;
+							vc = (vc + 1) & 0x3FF;
 						}
-						if (spr.sr == 0)
-							spr.shiftEnable = false; //optimization
+						break;
+					case 0x0400:
+						// fetch I
+						addr = (extraColorMode ? (ushort)0x39FF : (ushort)0x3FFF);
+						dataG = ReadMemory(addr);
+						dataC = 0;
+						break;
+					case 0x0500:
+						// no fetch
+						break;
+					default:
+						cycleFetchSpriteIndex = (fetch & 0x7);
+						switch (fetch & 0xF0)
+						{
+							case 0x00:
+								// fetch P
+								addr = (ushort)(0x3F8 | (pointerVM << 10) | cycleFetchSpriteIndex);
+								sprites[cycleFetchSpriteIndex].pointer = ReadMemory(addr);
+								sprites[cycleFetchSpriteIndex].shiftEnable = false;
+								break;
+							case 0x10:
+							case 0x20:
+							case 0x30:
+								// fetch S
+								if (sprites[cycleFetchSpriteIndex].dma)
+								{
+									Sprite spr = sprites[cycleFetchSpriteIndex];
+									addr = (ushort)(spr.mc | (spr.pointer << 6));
+									spr.sr <<= 8;
+									spr.sr |= ReadMemory(addr);
+									spr.mc++;
+								}
+								break;
+						}
+						break;
+				}
+
+				// perform BA flag manipulation
+				switch (ba)
+				{
+					case 0x0000:
+						pinBA = true;
+						break;
+					case 0x1000:
+						pinBA = !badline;
+						break;
+					default:
+						cycleBAsprite0 = (ba & 0x000F);
+						cycleBAsprite1 = (ba & 0x00F0) >> 4;
+						cycleBAsprite2 = (ba & 0x0F00) >> 8;
+						if ((cycleBAsprite0 < 8 && sprites[cycleBAsprite0].dma) ||
+							(cycleBAsprite1 < 8 && sprites[cycleBAsprite1].dma) ||
+							(cycleBAsprite2 < 8 && sprites[cycleBAsprite2].dma))
+							pinBA = false;
+						else
+							pinBA = true;
+						break;
+				}
+
+				// perform actions
+				borderCheckLEnable = true;
+				borderCheckREnable = true;
+
+				if ((act & pipelineChkSprChunch) != 0)
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						Sprite spr = sprites[i];
+						if (spr.yCrunch)
+							spr.mcbase += 2;
+						spr.shiftEnable = false;
+						spr.xCrunch = !spr.xExpand;
+						spr.multicolorCrunch = !spr.multicolor;
 					}
 				}
-
-				// border doesn't work with the background buffer
-				if (borderOnMain || borderOnVertical)
-					pixel = borderColor;
-
-				// store pixel in buffer
-				pixelBuffer[pixelBufferIndex] = pixel;
-
-				// fill shift register
-				if (xOffset == xScroll)
+				if ((act & pipelineChkSprDisp) != 0)
 				{
-					if (displayIndex < 40 && !idle)
+					for (int i = 0; i < 8; i++)
 					{
-						displayC = bufferC[displayIndex];
-						sr |= bufferG[displayIndex];
+						Sprite spr = sprites[i];
+						spr.mc = spr.mcbase;
+						if (spr.dma && spr.y == (rasterLine & 0xFF))
+						{
+							spr.display = true;
+						}
 					}
-					bitmapColumn = 0;
+				}
+				if ((act & pipelineChkSprDma) != 0)
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						Sprite spr = sprites[i];
+						if (spr.enable && spr.y == (rasterLine & 0xFF) && !spr.dma)
+						{
+							spr.dma = true;
+							spr.mcbase = 0;
+							spr.yCrunch = !spr.yExpand;
+						}
+					}
+				}
+				if ((act & pipelineChkSprExp) != 0)
+				{
+					if (sprites[0].yExpand) sprites[0].yCrunch ^= true;
+					if (sprites[1].yExpand) sprites[1].yCrunch ^= true;
+					if (sprites[2].yExpand) sprites[2].yCrunch ^= true;
+					if (sprites[3].yExpand) sprites[3].yCrunch ^= true;
+					if (sprites[4].yExpand) sprites[4].yCrunch ^= true;
+					if (sprites[5].yExpand) sprites[5].yCrunch ^= true;
+					if (sprites[6].yExpand) sprites[6].yCrunch ^= true;
+					if (sprites[7].yExpand) sprites[7].yCrunch ^= true;
+				}
+				if ((act & pipelineUpdateMcBase) != 0)
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						Sprite spr = sprites[i];
+						if (spr.yCrunch)
+						{
+							spr.mcbase++;
+							if (spr.mcbase == 63)
+							{
+								spr.dma = false;
+								spr.display = false;
+							}
+						}
+					}
+				}
+				if ((act & pipelineUpdateRc) != 0)
+				{
+					if (rc == 7)
+					{
+						idle = true;
+						vcbase = vc;
+					}
+					if (!idle)
+						rc = (rc + 1) & 0x7;
+				}
+				if ((act & pipelineUpdateVc) != 0)
+				{
+					vc = vcbase;
+					vmli = 0;
+					if (badline)
+						rc = 0;
 				}
 
-				if (!extraColorMode && !bitmapMode & !multicolorMode)
+				cycleIndex++;
+			}
+		}
+
+		private void Render()
+		{
+			
+			{
+				uint pixel;
+				uint pixelData;
+				bool renderEnabled = bufRect.Contains(bufPoint);
+
+				for (int i = 0; i < 4; i++)
 				{
-					// 000
-					pixelData = (sr & 0x80) >> 6;
-					sr <<= 1;
-					pixel = (pixelData != 0) ? displayC >> 8 : backgroundColor0;
-				}
-				else if (!extraColorMode && !bitmapMode & multicolorMode)
-				{
-					// 001
-					if ((displayC & 0x800) != 0)
+					if (borderCheckLEnable && rasterX == borderL)
 					{
-						// multicolor 001
+						if (rasterLine == borderB)
+							borderOnVertical = true;
+						if (rasterLine == borderT && displayEnable)
+							borderOnVertical = false;
+						if (!borderOnVertical)
+							borderOnMain = false;
+					}
+					if (borderCheckREnable && rasterX == borderR)
+					{
+						borderOnMain = true;
+					}
+
+					// recall pixel from buffer
+					pixel = pixelBuffer[pixelBufferIndex];
+
+					// plot pixel if within viewing area
+					if (renderEnabled)
+					{
+						buf[bufOffset] = palette[pixel];
+						bufOffset++;
+						if (bufOffset == bufLength)
+							bufOffset = 0;
+					}
+					bufPoint.X++;
+					if (bufPoint.X == bufWidth)
+					{
+						bufPoint.X = 0;
+						bufPoint.Y++;
+						if (bufPoint.Y == bufHeight)
+							bufPoint.Y = 0;
+					}
+
+					// put the pixel from the background buffer into the main buffer
+					pixel = pixelBackgroundBuffer[pixelBackgroundBufferIndex];
+
+					// render sprite
+					uint pixelOwner = 8;
+					for (uint j = 0; j < 8; j++)
+					{
+						uint sprData;
+						uint sprPixel = pixel;
+
+						Sprite spr = sprites[j];
+
+						if (spr.x == rasterX)
+							spr.shiftEnable = true;
+
+						if (spr.shiftEnable)
+						{
+							if (spr.multicolor)
+							{
+								sprData = (spr.sr & 0xC00000) >> 22;
+								if (spr.multicolorCrunch && spr.xCrunch)
+									spr.sr <<= 2;
+								spr.multicolorCrunch ^= spr.xCrunch;
+							}
+							else
+							{
+								sprData = (spr.sr & 0x800000) >> 22;
+								if (spr.xCrunch)
+									spr.sr <<= 1;
+							}
+							spr.xCrunch ^= spr.xExpand;
+							switch (sprData)
+							{
+								case 1: sprPixel = spriteMulticolor0; break;
+								case 2: sprPixel = spr.color; break;
+								case 3: sprPixel = spriteMulticolor1; break;
+							}
+							if (sprData != 0)
+							{
+								// sprite-sprite collision
+								if (pixelOwner >= 8)
+								{
+									if (!spr.priority || (pixelDataBuffer[pixelBackgroundBufferIndex] < 0x2))
+										pixel = sprPixel;
+									pixelOwner = j;
+								}
+								else
+								{
+									if (!borderOnVertical)
+									{
+										spr.collideSprite = true;
+										sprites[pixelOwner].collideSprite = true;
+									}
+								}
+
+								// sprite-data collision
+								if (!borderOnVertical && (pixelDataBuffer[pixelBackgroundBufferIndex] >= 0x2))
+								{
+									spr.collideData = true;
+								}
+							}
+							if (spr.sr == 0)
+								spr.shiftEnable = false; //optimization
+						}
+					}
+
+					// border doesn't work with the background buffer
+					if (borderOnMain || borderOnVertical)
+						pixel = borderColor;
+
+					// store pixel in buffer
+					pixelBuffer[pixelBufferIndex] = pixel;
+
+					// fill shift register
+					if (xOffset == xScroll)
+					{
+						if (displayIndex < 40 && !idle)
+						{
+							displayC = bufferC[displayIndex];
+							sr |= bufferG[displayIndex];
+						}
+						bitmapColumn = 0;
+					}
+
+					if (!extraColorMode && !bitmapMode & !multicolorMode)
+					{
+						// 000
+						pixelData = (sr & 0x80) >> 6;
+						sr <<= 1;
+						pixel = (pixelData != 0) ? displayC >> 8 : backgroundColor0;
+					}
+					else if (!extraColorMode && !bitmapMode & multicolorMode)
+					{
+						// 001
+						if ((displayC & 0x800) != 0)
+						{
+							// multicolor 001
+							pixelData = (sr & 0xC0) >> 6;
+							if ((bitmapColumn & 1) != 0)
+								sr <<= 2;
+							switch (pixelData)
+							{
+								case 0x00: pixel = backgroundColor0; break;
+								case 0x01: pixel = backgroundColor1; break;
+								case 0x02: pixel = backgroundColor2; break;
+								default: pixel = (displayC & 0x700) >> 8; break;
+							}
+						}
+						else
+						{
+							// standard 001
+							pixelData = (sr & 0x80) >> 6;
+							sr <<= 1;
+							pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
+						}
+					}
+					else if (!extraColorMode && bitmapMode & !multicolorMode)
+					{
+						// 010
+						pixelData = (sr & 0x80) >> 6;
+						sr <<= 1;
+						pixel = (pixelData != 0) ? ((displayC >> 4) & 0xF) : (displayC & 0xF);
+					}
+					else if (!extraColorMode && bitmapMode & multicolorMode)
+					{
+						// 011
 						pixelData = (sr & 0xC0) >> 6;
 						if ((bitmapColumn & 1) != 0)
 							sr <<= 2;
 						switch (pixelData)
 						{
 							case 0x00: pixel = backgroundColor0; break;
-							case 0x01: pixel = backgroundColor1; break;
-							case 0x02: pixel = backgroundColor2; break;
-							default: pixel = (displayC & 0x700) >> 8; break;
+							case 0x01: pixel = (displayC >> 4) & 0xF; break;
+							case 0x02: pixel = displayC & 0xF; break;
+							default: pixel = (displayC >> 8) & 0xF; break;
 						}
 					}
-					else
+					else if (extraColorMode && !bitmapMode & !multicolorMode)
 					{
-						// standard 001
+						// 100
 						pixelData = (sr & 0x80) >> 6;
 						sr <<= 1;
-						pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
+						if (pixelData != 0)
+						{
+							pixel = displayC >> 8;
+						}
+						else
+						{
+							switch ((displayC >> 6) & 0x3)
+							{
+								case 0x00: pixel = backgroundColor0; break;
+								case 0x01: pixel = backgroundColor1; break;
+								case 0x02: pixel = backgroundColor2; break;
+								default: pixel = backgroundColor3; break;
+							}
+						}
 					}
-				}
-				else if (!extraColorMode && bitmapMode & !multicolorMode)
-				{
-					// 010
-					pixelData = (sr & 0x80) >> 6;
-					sr <<= 1;
-					pixel = (pixelData != 0) ? ((displayC >> 4) & 0xF) : (displayC & 0xF);
-				}
-				else if (!extraColorMode && bitmapMode & multicolorMode)
-				{
-					// 011
-					pixelData = (sr & 0xC0) >> 6;
-					if ((bitmapColumn & 1) != 0)
-						sr <<= 2;
-					switch (pixelData)
+					else if (extraColorMode && !bitmapMode & multicolorMode)
 					{
-						case 0x00: pixel = backgroundColor0; break;
-						case 0x01: pixel = (displayC >> 4) & 0xF; break;
-						case 0x02: pixel = displayC & 0xF; break;
-						default: pixel = (displayC >> 8) & 0xF; break;
+						// 101
+						pixelData = 0;
+						pixel = 0;
 					}
-				}
-				else if (extraColorMode && !bitmapMode & !multicolorMode)
-				{
-					// 100
-					pixelData = (sr & 0x80) >> 6;
-					sr <<= 1;
-					if (pixelData != 0)
+					else if (extraColorMode && bitmapMode & !multicolorMode)
 					{
-						pixel = displayC >> 8;
+						// 110
+						pixelData = 0;
+						pixel = 0;
 					}
 					else
 					{
-						switch ((displayC >> 6) & 0x3)
-						{
-							case 0x00: pixel = backgroundColor0; break;
-							case 0x01: pixel = backgroundColor1; break;
-							case 0x02: pixel = backgroundColor2; break;
-							default: pixel = backgroundColor3; break;
-						}
+						// 111
+						pixelData = 0;
+						pixel = 0;
 					}
-				}
-				else if (extraColorMode && !bitmapMode & multicolorMode)
-				{
-					// 101
-					pixelData = 0;
-					pixel = 0;
-				}
-				else if (extraColorMode && bitmapMode & !multicolorMode)
-				{
-					// 110
-					pixelData = 0;
-					pixel = 0;
-				}
-				else
-				{
-					// 111
-					pixelData = 0;
-					pixel = 0;
-				}
 
-				// put the rendered pixel into the background buffer
-				pixelBackgroundBuffer[pixelBackgroundBufferIndex] = pixel;
-				pixelBackgroundBufferIndex++;
-				if (pixelBackgroundBufferIndex == pixelBackgroundBufferDelay)
-					pixelBackgroundBufferIndex = 0;
+					// put the rendered pixel into the background buffer
+					pixelDataBuffer[pixelBackgroundBufferIndex] = pixelData;
+					pixelBackgroundBuffer[pixelBackgroundBufferIndex] = pixel;
+					pixelBackgroundBufferIndex++;
+					if (pixelBackgroundBufferIndex == pixelBackgroundBufferDelay)
+						pixelBackgroundBufferIndex = 0;
 
-				// advance pixel buffer
-				pixelBufferIndex++;
-				if (pixelBufferIndex == pixelBufferDelay)
-					pixelBufferIndex = 0;
+					// advance pixel buffer
+					pixelBufferIndex++;
+					if (pixelBufferIndex == pixelBufferDelay)
+						pixelBufferIndex = 0;
 
-				rasterX++;
-				xOffset++;
-				bitmapColumn++;
+					rasterX++;
+					xOffset++;
+					bitmapColumn++;
+				}
 			}
 		}
 
@@ -1379,7 +1419,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			ser.Sync("borderT", ref borderT);
 			ser.Sync("bufferC", ref bufferC, false);
 			ser.Sync("bufferG", ref bufferG, false);
-			ser.Sync("bus", ref bus);
 			ser.Sync("columnSelect", ref columnSelect);
 			ser.Sync("cycle", ref cycle);
 			ser.Sync("cycleIndex", ref cycleIndex);

@@ -81,6 +81,7 @@
     <Compile Include="Buffer.cs" />
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
+    <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
     <Compile Include="Computers\Commodore64\Cartridges\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\C64.Input.cs" />
     <Compile Include="Computers\Commodore64\Cartridges\Mapper0005.cs" />
@@ -94,10 +95,10 @@
     <Compile Include="Computers\Commodore64\Memory.cs" />
     <Compile Include="Computers\Commodore64\Cartridges\Cartridge.cs" />
     <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\CassettePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
-    <Compile Include="Computers\Commodore64\MOS\IStandardIO.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6510.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6522.cs" />
     <Compile Include="Computers\Commodore64\Media\D64.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Computers\Commodore64\C64.Savestate.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOSPLA.cs" />
     <Compile Include="Computers\Commodore64\MOS\Port.cs" />
+    <Compile Include="Computers\Commodore64\MOS\SerialPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.SoundProvider.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.SyncSoundProvider.cs" />

@@ -8,8 +8,62 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	// emulates the PLA
 	// which handles all bank switching
 
-	public class MOSPLA : IStandardIO
+	public class MOSPLA
 	{
+		// ------------------------------------
+
+		public Func<int, byte> PeekBasicRom;
+		public Func<int, byte> PeekCartridgeLo;
+		public Func<int, byte> PeekCartridgeHi;
+		public Func<int, byte> PeekCharRom;
+		public Func<int, byte> PeekCia0;
+		public Func<int, byte> PeekCia1;
+		public Func<int, byte> PeekColorRam;
+		public Func<int, byte> PeekExpansionLo;
+		public Func<int, byte> PeekExpansionHi;
+		public Func<int, byte> PeekKernalRom;
+		public Func<int, byte> PeekMemory;
+		public Func<int, byte> PeekSid;
+		public Func<int, byte> PeekVic;
+		public Action<int, byte> PokeCartridgeLo;
+		public Action<int, byte> PokeCartridgeHi;
+		public Action<int, byte> PokeCia0;
+		public Action<int, byte> PokeCia1;
+		public Action<int, byte> PokeColorRam;
+		public Action<int, byte> PokeExpansionLo;
+		public Action<int, byte> PokeExpansionHi;
+		public Action<int, byte> PokeMemory;
+		public Action<int, byte> PokeSid;
+		public Action<int, byte> PokeVic;
+		public Func<ushort, byte> ReadBasicRom;
+		public Func<ushort, byte> ReadCartridgeLo;
+		public Func<ushort, byte> ReadCartridgeHi;
+		public Func<bool> ReadCharen;
+		public Func<ushort, byte> ReadCharRom;
+		public Func<ushort, byte> ReadCia0;
+		public Func<ushort, byte> ReadCia1;
+		public Func<ushort, byte> ReadColorRam;
+		public Func<ushort, byte> ReadExpansionLo;
+		public Func<ushort, byte> ReadExpansionHi;
+		public Func<bool> ReadExRom;
+		public Func<bool> ReadGame;
+		public Func<bool> ReadHiRam;
+		public Func<ushort, byte> ReadKernalRom;
+		public Func<bool> ReadLoRam;
+		public Func<ushort, byte> ReadMemory;
+		public Func<ushort, byte> ReadSid;
+		public Func<ushort, byte> ReadVic;
+		public Action<ushort, byte> WriteCartridgeLo;
+		public Action<ushort, byte> WriteCartridgeHi;
+		public Action<ushort, byte> WriteCia0;
+		public Action<ushort, byte> WriteCia1;
+		public Action<ushort, byte> WriteColorRam;
+		public Action<ushort, byte> WriteExpansionLo;
+		public Action<ushort, byte> WriteExpansionHi;
+		public Action<ushort, byte> WriteMemory;
+		public Action<ushort, byte> WriteSid;
+		public Action<ushort, byte> WriteVic;
+	
 		// ------------------------------------
 
 		private enum PLABank
@@ -43,21 +97,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		private byte bus;
-		private C64Chips chips;
-		private bool cia0portRead;
 		private PLACpuMap map;
 		private bool pinCharenLast;
 		private bool pinExRomLast;
 		private bool pinGameLast;
 		private bool pinHiRamLast;
 		private bool pinLoRamLast;
-		private bool ultimax;
-		private ushort vicBank;
 
-		public MOSPLA(C64Chips newChips)
+		public MOSPLA()
 		{
-			chips = newChips;
 		}
 
 		public void HardReset()
@@ -79,7 +127,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void UpdatePins()
 		{
-			if ((ExRom != pinExRomLast) || (Game != pinGameLast) || (LoRam != pinLoRamLast) || (HiRam != pinHiRamLast) || (Charen != pinCharenLast))
+			if ((ReadExRom() != pinExRomLast) || (ReadGame() != pinGameLast) || (ReadLoRam() != pinLoRamLast) || (ReadHiRam() != pinHiRamLast) || (ReadCharen() != pinCharenLast))
 			{
 				UpdateMap();
 			}
@@ -87,51 +135,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public bool Charen
-		{
-			get { return chips.cpu.Charen; }
-		}
-
-		public bool ExRom
-		{
-			get { return chips.cartPort.ExRom; }
-		}
-
-		public bool Game
-		{
-			get { return chips.cartPort.Game; }
-		}
-
-		public bool HiRam
-		{
-			get { return chips.cpu.HiRam; }
-		}
-
-		public bool InputWasRead
-		{
-			get { return cia0portRead; }
-			set { cia0portRead = value; }
-		}
-
-		public bool LoRam
-		{
-			get { return chips.cpu.LoRam; }
-		}
-
-		public bool UltimaxMode
-		{
-			get { return (!Game && ExRom); }
-		}
-
 		private void UpdateMap()
 		{
-			bool pinGame = Game;
-			bool pinExRom = ExRom;
-			bool pinCharen = Charen;
-			bool pinHiRam = HiRam;
-			bool pinLoRam = LoRam;
+			bool pinGame = ReadGame();
+			bool pinExRom = ReadExRom();
+			bool pinCharen = ReadCharen();
+			bool pinHiRam = ReadHiRam();
+			bool pinLoRam = ReadLoRam();
 
-			ultimax = false;
 			if (pinCharen && pinHiRam && pinLoRam && pinGame && pinExRom)
 			{
 				// 11111
@@ -311,18 +322,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				map.layoutC000 = PLABank.None;
 				map.layoutD000 = PLABank.IO;
 				map.layoutE000 = PLABank.CartridgeHi;
-				ultimax = true;
 			}
 			else
 			{
 				throw new Exception("Memory configuration missing from PLA, fix this!");
 			}
 
-			pinExRomLast = ExRom;
-			pinGameLast = Game;
-			pinLoRamLast = LoRam;
-			pinHiRamLast = HiRam;
-			pinCharenLast = Charen;
+			pinExRomLast = pinExRom;
+			pinGameLast = pinGame;
+			pinLoRamLast = pinLoRam;
+			pinHiRamLast = pinHiRam;
+			pinCharenLast = pinCharen;
 		}
 
 		// ------------------------------------
@@ -374,33 +384,33 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (Bank((ushort)(addr & 0xFFFF)))
 			{
 				case PLABank.BasicROM:
-					return chips.basicRom.Peek(addr);
+					return PeekBasicRom(addr);
 				case PLABank.CartridgeHi:
-					return chips.cartPort.PeekHiRom(addr);
+					return PeekCartridgeHi(addr);
 				case PLABank.CartridgeLo:
-					return chips.cartPort.PeekLoRom(addr);
+					return PeekCartridgeLo(addr);
 				case PLABank.CharROM:
-					return chips.charRom.Peek(addr);
+					return PeekCharRom(addr);
 				case PLABank.Cia0:
-					return chips.cia0.Peek(addr);
+					return PeekCia0(addr);
 				case PLABank.Cia1:
-					return chips.cia1.Peek(addr);
+					return PeekCia1(addr);
 				case PLABank.ColorRam:
-					return chips.colorRam.Peek(addr, bus);
+					return PeekColorRam(addr);
 				case PLABank.Expansion0:
-					return chips.cartPort.PeekLoExp(addr);
+					return PeekExpansionLo(addr);
 				case PLABank.Expansion1:
-					return chips.cartPort.PeekHiExp(addr);
+					return PeekExpansionHi(addr);
 				case PLABank.KernalROM:
-					return chips.kernalRom.Peek(addr);
+					return PeekKernalRom(addr);
 				case PLABank.None:
 					return 0xFF;
 				case PLABank.RAM:
-					return chips.ram.Peek(addr);
+					return PeekMemory(addr);
 				case PLABank.Sid:
-					return chips.sid.Peek(addr);
+					return PeekSid(addr);
 				case PLABank.Vic:
-					return chips.vic.Peek(addr);
+					return PeekVic(addr);
 			}
 			return 0xFF;
 		}
@@ -410,46 +420,42 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (Bank((ushort)(addr & 0xFFFF)))
 			{
 				case PLABank.BasicROM:
-					chips.basicRom.Poke(addr, val);
 					break;
 				case PLABank.CartridgeHi:
-					chips.cartPort.PokeHiRom(addr, val);
+					PokeCartridgeHi(addr, val);
 					break;
 				case PLABank.CartridgeLo:
-					chips.cartPort.PokeLoRom(addr, val);
+					PokeCartridgeLo(addr, val);
 					break;
 				case PLABank.CharROM:
-					chips.charRom.Poke(addr, val);
 					break;
 				case PLABank.Cia0:
-					chips.cia0.Poke(addr, val);
+					PokeCia0(addr, val);
 					break;
 				case PLABank.Cia1:
-					chips.cia1.Poke(addr, val);
-					UpdateVicBank();
+					PokeCia1(addr, val);
 					break;
 				case PLABank.ColorRam:
-					chips.colorRam.Poke(addr, val);
+					PokeColorRam(addr, val);
 					break;
 				case PLABank.Expansion0:
-					chips.cartPort.PokeLoExp(addr, val);
+					PokeExpansionLo(addr, val);
 					break;
 				case PLABank.Expansion1:
-					chips.cartPort.PokeHiExp(addr, val);
+					PokeExpansionHi(addr, val);
 					break;
 				case PLABank.KernalROM:
-					chips.kernalRom.Poke(addr, val);
 					break;
 				case PLABank.None:
 					break;
 				case PLABank.RAM:
-					chips.ram.Poke(addr, val);
+					PokeMemory(addr, val);
 					break;
 				case PLABank.Sid:
-					chips.sid.Poke(addr, val);
+					PokeSid(addr, val);
 					break;
 				case PLABank.Vic:
-					chips.vic.Poke(addr, val);
+					PokeVic(addr, val);
 					break;
 			}
 		}
@@ -459,98 +465,44 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (Bank(addr))
 			{
 				case PLABank.BasicROM:
-					bus = chips.basicRom.Read(addr);
-					break;
+					return ReadBasicRom(addr);
 				case PLABank.CartridgeHi:
-					bus = chips.cartPort.ReadHiRom(addr);
-					break;
+					return ReadCartridgeHi(addr);
 				case PLABank.CartridgeLo:
-					bus = chips.cartPort.ReadLoRom(addr);
-					break;
+					return ReadCartridgeLo(addr);
 				case PLABank.CharROM:
-					bus = chips.charRom.Read(addr);
-					break;
+					return ReadCharRom(addr);
 				case PLABank.Cia0:
-					if (addr == 0xDC00 || addr == 0xDC01)
-						cia0portRead = true;
-					bus = chips.cia0.Read(addr);
-					break;
+					return ReadCia0(addr);
 				case PLABank.Cia1:
-					bus = chips.cia1.Read(addr);
-					break;
+					return ReadCia1(addr);
 				case PLABank.ColorRam:
-					bus = chips.colorRam.Read(addr, bus);
-					break;
+					return ReadColorRam(addr);
 				case PLABank.Expansion0:
-					bus = chips.cartPort.ReadLoExp(addr);
-					break;
+					return ReadExpansionLo(addr);
 				case PLABank.Expansion1:
-					bus = chips.cartPort.ReadHiExp(addr);
-					break;
+					return ReadExpansionHi(addr);
 				case PLABank.KernalROM:
-					bus = chips.kernalRom.Read(addr);
-					break;
-				case PLABank.None:
-					bus = 0xFF;
-					break;
+					return ReadKernalRom(addr);
 				case PLABank.RAM:
-					bus = chips.ram.Read(addr);
-					break;
+					return ReadMemory(addr);
 				case PLABank.Sid:
-					bus = chips.sid.Read(addr);
-					break;
+					return ReadSid(addr);
 				case PLABank.Vic:
-					bus = chips.vic.Read(addr);
-					break;
+					return ReadVic(addr);
 			}
-			return bus;
-		}
-
-		public byte ReadVic(ushort addr)
-		{
-			addr &= 0x3FFF;
-
-			if (ultimax)
-			{
-				if (addr >= 0x3000)
-					return 0; //todo: change to ROMHI
-				else
-					return chips.ram.Read(addr);
-			}
-			else
-			{
-				addr |= vicBank;
-				if ((addr & 0x7000) == 0x1000)
-					return chips.charRom.Read(addr);
-				else
-					return chips.ram.Read(addr);
-			}
+			return 0xFF;
 		}
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("bus", ref bus);
-			ser.Sync("cia0portRead", ref cia0portRead);
 			ser.Sync("pinCharenLast", ref pinCharenLast);
 			ser.Sync("pinExRomLast", ref pinExRomLast);
 			ser.Sync("pinGameLast", ref pinGameLast);
 			ser.Sync("pinHiRamLast", ref pinHiRamLast);
 			ser.Sync("pinLoRamLast", ref pinLoRamLast);
-			ser.Sync("ultimax", ref ultimax);
-			ser.Sync("vicBank", ref vicBank);
 
 			if (ser.IsReader) UpdateMap();
-		}
-
-		private void UpdateVicBank()
-		{
-			switch (chips.cia1.ReadPort0() & 0x3)
-			{
-				case 0: vicBank = 0xC000; break;
-				case 1: vicBank = 0x8000; break;
-				case 2: vicBank = 0x4000; break;
-				case 3: vicBank = 0x0000; break;
-			}
 		}
 
 		public void Write(ushort addr, byte val)
@@ -558,35 +510,31 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (Bank(addr))
 			{
 				case PLABank.BasicROM:
-					chips.basicRom.Write(addr, val);
 					break;
 				case PLABank.CartridgeHi:
-					chips.cartPort.WriteHiRom(addr, val);
+					WriteCartridgeHi(addr, val);
 					break;
 				case PLABank.CartridgeLo:
-					chips.cartPort.WriteLoRom(addr, val);
+					WriteCartridgeLo(addr, val);
 					break;
 				case PLABank.CharROM:
-					chips.charRom.Write(addr, val);
 					break;
 				case PLABank.Cia0:
-					chips.cia0.Write(addr, val);
+					WriteCia0(addr, val);
 					break;
 				case PLABank.Cia1:
-					chips.cia1.Write(addr, val);
-					UpdateVicBank();
+					WriteCia1(addr, val);
 					break;
 				case PLABank.ColorRam:
-					chips.colorRam.Write(addr, val);
+					WriteColorRam(addr, val);
 					break;
 				case PLABank.Expansion0:
-					chips.cartPort.WriteLoExp(addr, val);
+					WriteExpansionLo(addr, val);
 					break;
 				case PLABank.Expansion1:
-					chips.cartPort.WriteHiExp(addr, val);
+					WriteExpansionHi(addr, val);
 					break;
 				case PLABank.KernalROM:
-					chips.kernalRom.Write(addr, val);
 					break;
 				case PLABank.None:
 					break;
@@ -594,13 +542,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					// RAM is written through anyway, don't do it here
 					break;
 				case PLABank.Sid:
-					chips.sid.Write(addr, val);
+					WriteSid(addr, val);
 					break;
 				case PLABank.Vic:
-					chips.vic.Write(addr, val);
+					WriteVic(addr, val);
 					break;
 			}
-			chips.ram.Write(addr, val);
+			WriteMemory(addr, val);
 		}
 	}
 }

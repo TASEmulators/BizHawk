@@ -6,7 +6,7 @@ using System.Text;
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// vic pal
-	public class MOS6569 : Vic, IStandardIO
+	public class MOS6569 : Vic
 	{
 		static uint[][] pipeline = new uint[][]
 			{
@@ -324,8 +324,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			};
 
-		public MOS6569(C64Chips newChips)
-			: base(newChips, 63, 312, pipeline, 17734472 / 18)
+		public MOS6569()
+			: base(63, 312, pipeline, 17734472 / 18)
 		{
 		}
 	}

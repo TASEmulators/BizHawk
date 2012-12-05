@@ -8,11 +8,10 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// an extension of the 6502 processor
 
-	public class MOS6510 : IStandardIO
+	public class MOS6510
 	{
 		// ------------------------------------
 
-		private C64Chips chips;
 		private MOS6502X cpu;
 		private bool freezeCpu;
 		private bool pinCassetteButton;
@@ -29,11 +28,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint unusedPinTTL1;
 		private uint unusedPinTTLCycles;
 
+		public Func<int, byte> PeekMemory;
+		public Action<int, byte> PokeMemory;
+		public Func<bool> ReadAEC;
+		public Func<bool> ReadIRQ;
+		public Func<bool> ReadNMI;
+		public Func<bool> ReadRDY;
+		public Func<ushort, byte> ReadMemory;
+		public Action<ushort, byte> WriteMemory;
+
 		// ------------------------------------
 
-		public MOS6510(C64Chips newChips)
+		public MOS6510()
 		{
-			chips = newChips;
 			cpu = new MOS6502X();
 
 			// configure cpu r/w
@@ -59,7 +66,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			cpu.Reset();
 			cpu.FlagI = true;
 			cpu.BCD_Enabled = true;
-			cpu.PC = (ushort)(chips.pla.Read(0xFFFC) | (chips.pla.Read(0xFFFD) << 8));
+			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
 		}
 
 		// ------------------------------------
@@ -70,23 +77,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase2()
 		{
-			if (chips.vic.AEC && !freezeCpu)
+			if (ReadAEC() && !freezeCpu)
 			{
 				// the 6502 core expects active high
 				// so we reverse the polarity here
-				bool thisNMI = (chips.cia1.IRQ & chips.cartPort.NMI);
+				bool thisNMI = ReadNMI();
 				if (!thisNMI && pinNMILast)
 					cpu.NMI = true;
 				else
 					cpu.NMI = false;
 				pinNMILast = thisNMI;
 
-				cpu.IRQ = !(chips.vic.IRQ && chips.cia0.IRQ && chips.cartPort.IRQ);
+				cpu.IRQ = !ReadIRQ();
 				cpu.ExecuteOne();
 			}
 
 			// unfreeze cpu if BA is high
-			if (chips.vic.BA) freezeCpu = false;
+			if (ReadRDY()) freezeCpu = false;
 
 			// process unused pin TTL
 			if (unusedPinTTL0 == 0)
@@ -109,7 +116,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			else if (addr == 0x0001)
 				return PortData;
 			else
-				return chips.pla.Peek(addr);
+				return PeekMemory(addr);
 		}
 
 		public void Poke(int addr, byte val)
@@ -119,13 +126,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			else if (addr == 0x0001)
 				SetPortData(val);
 			else
-				chips.pla.Poke(addr, val);
+				PokeMemory(addr, val);
 		}
 
 		public byte Read(ushort addr)
 		{
 			// cpu freezes after first read when RDY is low
-			if (!chips.vic.BA)
+			if (!ReadRDY())
 				freezeCpu = true;
 
 			if (addr == 0x0000)
@@ -133,7 +140,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			else if (addr == 0x0001)
 				return PortData;
 			else
-				return chips.pla.Read(addr);
+				return ReadMemory(addr);
 		}
 
 		public void Write(ushort addr, byte val)
@@ -142,7 +149,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				PortDirection = val;
 			else if (addr == 0x0001)
 				PortData = val;
-			chips.pla.Write(addr, val);
+			WriteMemory(addr, val);
 		}
 
 		// ------------------------------------
@@ -194,6 +201,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
+		public byte ReadPortData()
+		{
+			return PortData;
+		}
+
 		private void SetPortData(byte val)
 		{
 			pinCassetteOutput = ((val & 0x08) != 0);
@@ -233,6 +245,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			ser.Sync("unusedPinTTL0", ref unusedPinTTL0);
 			ser.Sync("unusedPinTTL1", ref unusedPinTTL1);
 			ser.Sync("unusedPinTTLCycles", ref unusedPinTTLCycles);
+		}
+
+		public void WritePortData(byte data)
+		{
+			PortData = data;
 		}
 
 		// ------------------------------------

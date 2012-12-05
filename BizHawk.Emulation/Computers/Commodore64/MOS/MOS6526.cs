@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	// * CS, R/W and RS# pins are not emulated. (not needed)
 	// * A low RES pin is emulated via HardReset().
 
-	public class MOS6526 : Timer, IStandardIO
+	public class MOS6526 : Timer
 	{
 		// ------------------------------------
 
@@ -105,42 +105,49 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase2()
 		{
-			pinPC = true;
-			TODRun();
+			
+			{
+				pinPC = true;
+				TODRun();
 
-			if (timerPulse[0])
-				portData[0] &= PBOnMask[0];
-			if (timerPulse[1])
-				portData[1] &= PBOnMask[0];
+				if (timerPulse[0])
+				{
+					WritePortA((byte)(ReadPortA() & PBOnMask[0]));
+				}
+				if (timerPulse[1])
+				{
+					WritePortB((byte)(ReadPortA() & PBOnMask[1]));
+				}
 
-			if (timerDelay[0] == 0)
-				TimerRun(0);
-			else
-				timerDelay[0]--;
+				if (timerDelay[0] == 0)
+					TimerRun(0);
+				else
+					timerDelay[0]--;
 
-			if (timerDelay[1] == 0)
-				TimerRun(1);
-			else
-				timerDelay[1]--;
+				if (timerDelay[1] == 0)
+					TimerRun(1);
+				else
+					timerDelay[1]--;
 
-			intAlarm |= (
-				tod[0] == todAlarm[0] &&
-				tod[1] == todAlarm[1] &&
-				tod[2] == todAlarm[2] &&
-				tod[3] == todAlarm[3] &&
-				todPM == todAlarmPM);
+				intAlarm |= (
+					tod[0] == todAlarm[0] &&
+					tod[1] == todAlarm[1] &&
+					tod[2] == todAlarm[2] &&
+					tod[3] == todAlarm[3] &&
+					todPM == todAlarmPM);
 
-			cntPos = false;
-			underflow[0] = false;
-			underflow[1] = false;
+				cntPos = false;
+				underflow[0] = false;
+				underflow[1] = false;
 
-			pinIRQ = !(
-				(intTimer[0] && enableIntTimer[0]) ||
-				(intTimer[1] && enableIntTimer[1]) ||
-				(intAlarm && enableIntAlarm) ||
-				(intSP && enableIntSP) ||
-				(intFlag && enableIntFlag)
-				);
+				pinIRQ = !(
+					(intTimer[0] && enableIntTimer[0]) ||
+					(intTimer[1] && enableIntTimer[1]) ||
+					(intAlarm && enableIntAlarm) ||
+					(intSP && enableIntSP) ||
+					(intFlag && enableIntFlag)
+					);
+			}
 		}
 
 		public void HardReset()
@@ -210,135 +217,144 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private byte BCDAdd(byte i, byte j, out bool overflow)
 		{
-			uint lo;
-			uint hi;
-			uint result;
+			
+			{
+				uint lo;
+				uint hi;
+				uint result;
 
-			lo = (i & (uint)0x0F) + (j & (uint)0x0F);
-			hi = (i & (uint)0x70) + (j & (uint)0x70);
-			if (lo > 0x09)
-			{
-				hi += 0x10;
-				lo += 0x06;
+				lo = (i & (uint)0x0F) + (j & (uint)0x0F);
+				hi = (i & (uint)0x70) + (j & (uint)0x70);
+				if (lo > 0x09)
+				{
+					hi += 0x10;
+					lo += 0x06;
+				}
+				if (hi > 0x50)
+				{
+					hi += 0xA0;
+				}
+				overflow = hi >= 0x60;
+				result = (hi & 0x70) + (lo & 0x0F);
+				return (byte)(result & 0xFF);
 			}
-			if (hi > 0x50)
-			{
-				hi += 0xA0;
-			}
-			overflow = hi >= 0x60;
-			result = (hi & 0x70) + (lo & 0x0F);
-			return (byte)(result & 0xFF);
 		}
 
 		private void TimerRun(uint index)
 		{
-			if (timerOn[index])
+			
 			{
-				uint t = timer[index];
-				bool u = false;
-
-				unchecked
+				if (timerOn[index])
 				{
-					switch (timerInMode[index])
-					{
-						case InMode.CNT:
-							// CNT positive
-							if (cntPos)
-							{
-								u = (t == 0);
-								t--;
-								intTimer[index] |= (t == 0);
-							}
-							break;
-						case InMode.Phase2:
-							// every clock
-							u = (t == 0);
-							t--;
-							intTimer[index] |= (t == 0);
-							break;
-						case InMode.TimerAUnderflow:
-							// every underflow[0]
-							if (underflow[0])
-							{
-								u = (t == 0);
-								t--;
-								intTimer[index] |= (t == 0);
-							}
-							break;
-						case InMode.TimerAUnderflowCNT:
-							// every underflow[0] while CNT high
-							if (underflow[0] && pinCnt)
-							{
-								u = (t == 0);
-								t--;
-								intTimer[index] |= (t == 0);
-							}
-							break;
-					}
+					uint t = timer[index];
+					bool u = false;
 
-					// underflow?
-					if (u)
+					
 					{
-						t = timerLatch[index];
-						if (timerRunMode[index] == RunMode.Oneshot)
-							timerOn[index] = false;
-
-						if (timerPortEnable[index])
+						switch (timerInMode[index])
 						{
-							// force port B bit to output
-							portDir[index] |= PBOnBit[index];
-							switch (timerOutMode[index])
+							case InMode.CNT:
+								// CNT positive
+								if (cntPos)
+								{
+									u = (t == 0);
+									t--;
+									intTimer[index] |= (t == 0);
+								}
+								break;
+							case InMode.Phase2:
+								// every clock
+								u = (t == 0);
+								t--;
+								intTimer[index] |= (t == 0);
+								break;
+							case InMode.TimerAUnderflow:
+								// every underflow[0]
+								if (underflow[0])
+								{
+									u = (t == 0);
+									t--;
+									intTimer[index] |= (t == 0);
+								}
+								break;
+							case InMode.TimerAUnderflowCNT:
+								// every underflow[0] while CNT high
+								if (underflow[0] && pinCnt)
+								{
+									u = (t == 0);
+									t--;
+									intTimer[index] |= (t == 0);
+								}
+								break;
+						}
+
+						// underflow?
+						if (u)
+						{
+							t = timerLatch[index];
+							if (timerRunMode[index] == RunMode.Oneshot)
+								timerOn[index] = false;
+
+							if (timerPortEnable[index])
 							{
-								case OutMode.Pulse:
-									timerPulse[index] = true;
-									portData[index] |= PBOnBit[index];
-									break;
-								case OutMode.Toggle:
-									portData[index] ^= PBOnBit[index];
-									break;
+								// force port B bit to output
+								WriteDirB((byte)(ReadDirB() | PBOnBit[index]));
+								switch (timerOutMode[index])
+								{
+									case OutMode.Pulse:
+										timerPulse[index] = true;
+										WritePortB((byte)(ReadPortB() | PBOnBit[index]));
+										break;
+									case OutMode.Toggle:
+										WritePortB((byte)(ReadPortB() ^ PBOnBit[index]));
+										break;
+								}
 							}
 						}
-					}
 
-					underflow[index] = u;
-					timer[index] = t;
+						underflow[index] = u;
+						timer[index] = t;
+					}
 				}
 			}
 		}
 
 		private void TODRun()
 		{
-			bool todV;
-
-			if (todCounter == 0)
+			
 			{
-				todCounter = todCounterLatch;
-				tod[0] = BCDAdd(tod[0], 1, out todV);
-				if (tod[0] >= 10)
+				bool todV;
+
+				if (todCounter == 0)
 				{
-					tod[0] = 0;
-					tod[1] = BCDAdd(tod[1], 1, out todV);
-					if (todV)
+					todCounter = todCounterLatch;
+					tod[0] = BCDAdd(tod[0], 1, out todV);
+					if (tod[0] >= 10)
 					{
-						tod[1] = 0;
-						tod[2] = BCDAdd(tod[2], 1, out todV);
+						tod[0] = 0;
+						tod[1] = BCDAdd(tod[1], 1, out todV);
 						if (todV)
 						{
-							tod[2] = 0;
-							tod[3] = BCDAdd(tod[3], 1, out todV);
-							if (tod[3] > 12)
+							tod[1] = 0;
+							tod[2] = BCDAdd(tod[2], 1, out todV);
+							if (todV)
 							{
-								tod[3] = 1;
-							}
-							else if (tod[3] == 12)
-							{
-								todPM = !todPM;
+								tod[2] = 0;
+								tod[3] = BCDAdd(tod[3], 1, out todV);
+								if (tod[3] > 12)
+								{
+									tod[3] = 1;
+								}
+								else if (tod[3] == 12)
+								{
+									todPM = !todPM;
+								}
 							}
 						}
 					}
 				}
+				todCounter--;
 			}
-			todCounter--;
 		}
 
 		// ------------------------------------
@@ -417,16 +433,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (addr)
 			{
 				case 0x0:
-					val = (byte)(portData[0] & portMask[0]);
+					val = ReadPortA();
 					break;
 				case 0x1:
-					val = (byte)(portData[1] & portMask[1]);
+					val = ReadPortB();
 					break;
 				case 0x2:
-					val = portDir[0];
+					val = ReadDirA();
 					break;
 				case 0x3:
-					val = portDir[1];
+					val = ReadDirB();
 					break;
 				case 0x4:
 					timerVal = ReadTimerValue(0);
@@ -604,11 +620,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			switch (addr)
 			{
-				case 0x0:
-					WritePort0(val);
-					break;
 				case 0x1:
-					WritePort1(val);
+					WriteRegister(addr, val);
 					pinPC = false;
 					break;
 				case 0x5:
@@ -644,16 +657,16 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			switch (addr)
 			{
 				case 0x0:
-					portData[0] = val;
+					WritePortA(val);
 					break;
 				case 0x1:
-					portData[1] = val;
+					WritePortB(val);
 					break;
 				case 0x2:
-					portDir[0] = val;
+					WriteDirA(val);
 					break;
 				case 0x3:
-					portDir[1] = val;
+					WriteDirB(val);
 					break;
 				case 0x4:
 					timerLatch[0] &= 0xFF00;

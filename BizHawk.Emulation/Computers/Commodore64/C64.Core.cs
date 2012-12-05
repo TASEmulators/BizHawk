@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 	{
 		// ------------------------------------
 
-		private C64Chips chips;
+		private Motherboard board;
 
 		// ------------------------------------
 
@@ -41,16 +41,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void Init(Region initRegion)
 		{
-			chips = new C64Chips(initRegion);
+			board = new Motherboard(initRegion);
 			InitRoms();
+			board.Init();
 			InitMedia();
 
 			// configure video
-			CoreOutputComm.VsyncDen = chips.vic.CyclesPerFrame;
-			CoreOutputComm.VsyncNum = chips.vic.CyclesPerSecond;
-
-			// configure input
-			InitInput();
+			CoreOutputComm.VsyncDen = board.vic.CyclesPerFrame;
+			CoreOutputComm.VsyncNum = board.vic.CyclesPerSecond;
 		}
 
 		private void InitMedia()
@@ -61,7 +59,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					Cartridges.Cartridge cart = Cartridges.Cartridge.Load(inputFile);
 					if (cart != null)
 					{
-						chips.cartPort.Connect(cart);
+						board.cartPort.Connect(cart);
 					}
 					break;
 				case @".PRG":
@@ -93,9 +91,9 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			byte[] charRom = File.ReadAllBytes(charPath);
 			byte[] kernalRom = File.ReadAllBytes(kernalPath);
 
-			chips.basicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
-			chips.kernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
-			chips.charRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
+			board.basicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
+			board.kernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
+			board.charRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
 		}
 
 		// ------------------------------------
@@ -108,135 +106,12 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 		}
 
-		public void Execute(uint count)
-		{
-			for (; count > 0; count--)
-			{
-				WriteInputPort();
-				chips.ExecutePhase1();
-				chips.ExecutePhase2();
-			}
-		}
-
 		public void HardReset()
 		{
-			chips.HardReset();
+			board.HardReset();
 		}
 
 		// ------------------------------------
-	}
-
-	public class C64Chips
-	{
-		public Chip23XX basicRom; //u4
-		public CartridgePort cartPort; //cn6
-		public Chip23XX charRom; //u5
-		public MOS6526 cia0; //u1
-		public MOS6526 cia1; //u2
-		public Chip2114 colorRam; //u19
-		public MOS6510 cpu; //u6
-		public Chip23XX kernalRom; //u4
-		public MOSPLA pla;
-		public Chip4864 ram; //u10+11
-		public Sid sid; //u9
-		public UserPort userPort; //cn2 (probably won't be needed for games)
-		public Vic vic; //u7
-
-		public C64Chips(Region initRegion)
-		{
-			cartPort = new CartridgePort();
-			cia0 = new MOS6526(initRegion);
-			cia1 = new MOS6526(initRegion);
-			pla = new MOSPLA(this);
-			switch (initRegion)
-			{
-				case Region.NTSC:
-					vic = new MOS6567(this);
-					break;
-				case Region.PAL:
-					vic = new MOS6569(this);
-					break;
-			}
-			colorRam = new Chip2114();
-			cpu = new MOS6510(this);
-			ram = new Chip4864();
-			sid = new MOS6581(44100, initRegion);
-			pla.UpdatePins();
-		}
-
-		public void ExecutePhase1()
-		{
-			pla.ExecutePhase1();
-			cia0.ExecutePhase1();
-			cia1.ExecutePhase1();
-			sid.ExecutePhase1();
-			vic.ExecutePhase1();
-			cpu.ExecutePhase1();
-		}
-
-		public void ExecutePhase2()
-		{
-			pla.ExecutePhase2();
-			cia0.ExecutePhase2();
-			cia1.ExecutePhase2();
-			sid.ExecutePhase2();
-			vic.ExecutePhase2();
-			cpu.ExecutePhase2();
-		}
-
-		public void HardReset()
-		{
-			// note about hard reset: NOT identical to cold start
-
-			// reset all chips
-			cia0.HardReset();
-			cia1.HardReset();
-			colorRam.HardReset();
-			pla.HardReset();
-			cpu.HardReset();
-			ram.HardReset();
-			sid.HardReset();
-			vic.HardReset();
-		}
-
-		public void SyncState(Serializer ser)
-		{
-			ser.BeginSection("cia0");
-			cia0.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("cia1");
-			cia1.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("colorram");
-			colorRam.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("pla");
-			pla.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("cpu");
-			cpu.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("ram");
-			ram.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("sid");
-			sid.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("vic");
-			vic.SyncState(ser);
-			ser.EndSection();
-
-			ser.BeginSection("cart");
-			cartPort.SyncState(ser);
-			ser.EndSection();
-		}
 	}
 
 	static public class C64Util

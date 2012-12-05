@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		Chip23128
 	}
 
-	public class Chip23XX : IStandardIO
+	public class Chip23XX
 	{
 		private uint addrMask;
 		private byte[] rom;
