@@ -93,7 +93,7 @@
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
     <Compile Include="Computers\Commodore64\Memory.cs" />
-    <Compile Include="Computers\Commodore64\Cartridge\Cartridge.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Cart.cs" />
     <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\CassettePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
