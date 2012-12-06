@@ -14,8 +14,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private MOS6502X cpu;
 		private bool freezeCpu;
-		private bool pinCassetteButton;
-		private bool pinCassetteMotor;
+		private bool pinCassetteButton; // note: these are only
+		private bool pinCassetteMotor; // latches!
 		private bool pinCassetteOutput;
 		private bool pinCharen;
 		private bool pinLoram;
@@ -31,10 +31,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public Func<int, byte> PeekMemory;
 		public Action<int, byte> PokeMemory;
 		public Func<bool> ReadAEC;
+		public Func<bool> ReadCassetteButton;
 		public Func<bool> ReadIRQ;
 		public Func<bool> ReadNMI;
 		public Func<bool> ReadRDY;
 		public Func<ushort, byte> ReadMemory;
+		public Action<bool> WriteCassetteLevel;
+		public Action<bool> WriteCassetteMotor;
 		public Action<ushort, byte> WriteMemory;
 
 		// ------------------------------------
@@ -153,6 +156,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		}
 
 		// ------------------------------------
+
+		public bool CassetteButton
+		{
+			get { return pinCassetteButton; }
+			set { pinCassetteButton = value; }
+		}
+
+		public bool CassetteMotor
+		{
+			get { return pinCassetteMotor; }
+		}
+
+		public bool CassetteOutputLevel
+		{
+			get { return pinCassetteOutput; }
+		}
 
 		public bool Charen
 		{
