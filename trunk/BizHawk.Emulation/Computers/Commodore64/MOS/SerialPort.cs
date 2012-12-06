@@ -30,6 +30,26 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// Connect() needs to set System functions above
 
+		public SerialPort()
+		{
+			DeviceReadAtn = (() => { return true; });
+			DeviceReadClock = (() => { return true; });
+			DeviceReadData = (() => { return true; });
+			DeviceReadReset = (() => { return true; });
+			DeviceWriteAtn = ((bool val) => { });
+			DeviceWriteClock = ((bool val) => { });
+			DeviceWriteData = ((bool val) => { });
+			DeviceWriteSrq = ((bool val) => { });
+			SystemReadAtn = (() => { return true; });
+			SystemReadClock = (() => { return true; });
+			SystemReadData = (() => { return true; });
+			SystemReadSrq = (() => { return true; });
+			SystemWriteAtn = ((bool val) => { });
+			SystemWriteClock = ((bool val) => { });
+			SystemWriteData = ((bool val) => { });
+			SystemWriteReset = ((bool val) => { });
+		}
+
 		public void HardReset()
 		{
 		}

@@ -1,6 +1,8 @@
 ﻿using BizHawk.Emulation.CPUs.M6502;
 using BizHawk.Emulation.Computers.Commodore64.Cartridge;
+using BizHawk.Emulation.Computers.Commodore64.Disk;
 using BizHawk.Emulation.Computers.Commodore64.MOS;
+using BizHawk.Emulation.Computers.Commodore64.Tape;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,6 +35,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		// ------------------------------------
 
 		private Motherboard board;
+		private VIC1541 disk;
+		private VIC1530 tape;
 
 		// ------------------------------------
 
@@ -45,11 +49,25 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			board = new Motherboard(initRegion);
 			InitRoms();
 			board.Init();
+			InitDisk(initRegion);
 			InitMedia();
 
 			// configure video
 			CoreOutputComm.VsyncDen = board.vic.CyclesPerFrame;
 			CoreOutputComm.VsyncNum = board.vic.CyclesPerSecond;
+		}
+
+		private void InitDisk(Region initRegion)
+		{
+			string sourceFolder = CoreInputComm.C64_FirmwaresPath;
+			if (sourceFolder == null)
+				sourceFolder = @".\C64\Firmwares";
+			string diskFile = "dos1541";
+			string diskPath = Path.Combine(sourceFolder, diskFile);
+			if (!File.Exists(diskPath)) HandleFirmwareError(diskFile);
+			byte[] diskRom = File.ReadAllBytes(diskPath);
+
+			disk = new VIC1541(initRegion, diskRom);
 		}
 
 		private void InitMedia()
@@ -79,6 +97,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			string basicFile = "basic";
 			string charFile = "chargen";
 			string kernalFile = "kernal";
+			string diskFile = "dos1541";
 
 			string basicPath = Path.Combine(sourceFolder, basicFile);
 			string charPath = Path.Combine(sourceFolder, charFile);
@@ -91,7 +110,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			byte[] basicRom = File.ReadAllBytes(basicPath);
 			byte[] charRom = File.ReadAllBytes(charPath);
 			byte[] kernalRom = File.ReadAllBytes(kernalPath);
-
+			
 			board.basicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
 			board.kernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
 			board.charRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
