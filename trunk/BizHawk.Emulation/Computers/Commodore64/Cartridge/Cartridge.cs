@@ -4,17 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
+namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 {
 	// this is the base cartridge class
 
-	public class Cartridge
+	public class Cart
 	{
 		// ---------------------------------
 
-		static public Cartridge Load(byte[] crtFile)
+		static public Cart Load(byte[] crtFile)
 		{
-			Cartridge result = null;
+			Cart result = null;
 			MemoryStream mem = new MemoryStream(crtFile);
 			BinaryReader reader = new BinaryReader(mem);
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
+namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 {
 	// EasyFlash cartridge
 	// No official games came on one of these but there
@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 	// with Game set high and ExRom set low.
 
 	// There is also 256 bytes RAM at DF00-DFFF.
-	
-	public class Mapper0020 : Cartridge
+
+	public class Mapper0020 : Cart
 	{
 		private byte[][] banksA = new byte[64][]; //8000
 		private byte[][] banksB = new byte[64][]; //A000

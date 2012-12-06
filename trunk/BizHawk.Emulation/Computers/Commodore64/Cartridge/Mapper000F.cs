@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
+namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 {
 	// This is a mapper used commonly by System 3. It is
 	// also utilized by the short-lived C64 Game System.
@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 	// register DE00+BankNr. For example, bank 01 is a write
 	// to DE01.
 
-	public class Mapper000F : Cartridge
+	public class Mapper000F : Cart
 	{
 		private byte[][] banks = new byte[0][]; //8000
 		private uint bankMask;

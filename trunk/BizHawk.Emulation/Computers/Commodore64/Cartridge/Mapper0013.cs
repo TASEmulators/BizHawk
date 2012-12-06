@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
+namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 {
 	// Mapper for a few Domark and HES Australia games.
 	// It seems a lot of people dumping these have remapped
@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 	// Bank select is DE00, bit 7 enabled means to disable
 	// ROM in 8000-9FFF.
 
-	public class Mapper0013 : Cartridge
+	public class Mapper0013 : Cart
 	{
 		private byte[][] banks = new byte[0][]; //8000
 		private uint bankMask;

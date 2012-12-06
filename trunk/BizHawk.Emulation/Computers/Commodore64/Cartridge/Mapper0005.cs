@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
+namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 {
-	public class Mapper0005 : Cartridge
+	public class Mapper0005 : Cart
 	{
 		private byte[][] banksA = new byte[0][]; //8000
 		private byte[][] banksB = new byte[0][]; //A000
