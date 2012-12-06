@@ -1,4 +1,4 @@
-﻿using BizHawk.Emulation.Computers.Commodore64.Cartridges;
+﻿using BizHawk.Emulation.Computers.Commodore64.Cartridge;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	public class CartridgePort
 	{
-		private Cartridge cart;
+		private Cart cart;
 		private bool connected;
 
 		public CartridgePort()
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------------
 
-		public void Connect(Cartridge newCart)
+		public void Connect(Cart newCart)
 		{
 			cart = newCart;
 			connected = true;

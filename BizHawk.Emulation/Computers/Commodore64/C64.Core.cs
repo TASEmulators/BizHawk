@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.CPUs.M6502;
+using BizHawk.Emulation.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Computers.Commodore64.MOS;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			switch (extension.ToUpper())
 			{
 				case @".CRT":
-					Cartridges.Cartridge cart = Cartridges.Cartridge.Load(inputFile);
+					Cart cart = Cart.Load(inputFile);
 					if (cart != null)
 					{
 						board.cartPort.Connect(cart);

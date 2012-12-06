@@ -82,18 +82,18 @@
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0000.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\C64.Input.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0005.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper000B.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper000F.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0011.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0012.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0013.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0020.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper000B.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper000F.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0011.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0012.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0013.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
     <Compile Include="Computers\Commodore64\Memory.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Cartridge.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Cartridge.cs" />
     <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\CassettePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
@@ -568,7 +568,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Computers\Commodore64\Disk\" />
     <Folder Include="Computers\Commodore64\Peripheral\" />
+    <Folder Include="Computers\Commodore64\Tape\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

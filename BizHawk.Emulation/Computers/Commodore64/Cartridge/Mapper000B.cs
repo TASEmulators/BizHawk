@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
+namespace BizHawk.Emulation.Computers.Commodore64.Cartridge
 {
 	// Westermann Learning mapper.
 	// Starts up with both banks enabled, any read to DFxx
@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Cartridges
 	// the RAM underneath (BASIC variable values probably)
 	// and then disables once loaded.
 
-	public class Mapper000B : Cartridge
+	public class Mapper000B : Cart
 	{
 		private byte[] rom = new byte[0x4000];
 
