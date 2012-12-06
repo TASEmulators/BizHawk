@@ -79,7 +79,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				"Key Pound", "Key Asterisk", "Key Semicolon", "Key Clear/Home", "Key Right Shift", "Key Equal", "Key Up Arrow", "Key Slash",
 				"Key 1", "Key Left Arrow", "Key Control", "Key 2", "Key Space", "Key Commodore", "Key Q", "Key Run/Stop",
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button"
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button",
+				"Key Restore"
 			}
 		};
 
