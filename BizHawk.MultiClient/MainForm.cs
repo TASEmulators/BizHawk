@@ -1200,8 +1200,6 @@ namespace BizHawk.MultiClient
 			CommodoreControls.BindMulti("Key Cursor Up/Down", Global.Config.C64Keyboard.Cursor_Up_Down);
 			CommodoreControls.BindMulti("Key Cursor Left/Right", Global.Config.C64Keyboard.Cursor_Left_Right);
 			CommodoreControls.BindMulti("Key Space", Global.Config.C64Keyboard.Space);
-			
-
 
 			Global.Commodore64Controls = CommodoreControls;
 
