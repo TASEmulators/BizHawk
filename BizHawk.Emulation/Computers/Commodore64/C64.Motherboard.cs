@@ -235,14 +235,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			serPort.DeviceWriteClock = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)(cia1DataA | (val ? 0x40 : 0x00)), cia1DirA); });
 			serPort.DeviceWriteData = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)(cia1DataA | (val ? 0x80 : 0x00)), cia1DirA); });
 			serPort.DeviceWriteSrq = ((bool val) => { cia0FlagSerial = val; cia0.FLAG = cia0FlagCassette & cia0FlagSerial; });
-			serPort.SystemReadAtn = (() => { return true; });
-			serPort.SystemReadClock = (() => { return true; });
-			serPort.SystemReadData = (() => { return true; });
-			serPort.SystemReadSrq = (() => { return true; });
-			serPort.SystemWriteAtn = ((bool val) => { });
-			serPort.SystemWriteClock = ((bool val) => { });
-			serPort.SystemWriteData = ((bool val) => { });
-			serPort.SystemWriteReset = ((bool val) => { });
 
 			sid.ReadPotX = (() => { return 0; });
 			sid.ReadPotY = (() => { return 0; });
