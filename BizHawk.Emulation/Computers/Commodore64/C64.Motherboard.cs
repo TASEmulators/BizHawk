@@ -35,6 +35,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public byte cia0DataB;
 		public byte cia0DirA;
 		public byte cia0DirB;
+		public bool cia0FlagCassette;
+		public bool cia0FlagSerial;
 		public byte cia1DataA;
 		public byte cia1DataB;
 		public byte cia1DirA;
@@ -102,6 +104,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cia0DataB = 0xFF;
 			cia0DirA = 0xFF;
 			cia0DirB = 0xFF;
+			cia0FlagCassette = true;
+			cia0FlagSerial = true;
 			cia1DataA = 0xFF;
 			cia1DataB = 0xFF;
 			cia1DirA = 0xFF;
@@ -128,6 +132,15 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		public void Init()
 		{
+			cassPort.DeviceReadLevel = (() => { return cpu.CassetteOutputLevel; });
+			cassPort.DeviceReadMotor = (() => { return cpu.CassetteMotor; });
+			cassPort.DeviceWriteButton = ((bool val) => { cpu.CassetteButton = val; });
+			cassPort.DeviceWriteLevel = ((bool val) => { cia0FlagCassette = val; cia0.FLAG = cia0FlagCassette & cia0FlagSerial; });
+			cassPort.SystemReadButton = (() => { return true; });
+			cassPort.SystemReadLevel = (() => { return true; });
+			cassPort.SystemWriteLevel = ((bool val) => { });
+			cassPort.SystemWriteMotor = ((bool val) => { });
+
 			cia0.ReadDirA = (() => { return cia0DirA; });
 			cia0.ReadDirB = (() => { return cia0DirB; });
 			cia0.ReadPortA = (() => { return cia0DataA; });
@@ -214,6 +227,22 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			pla.WriteSid = ((ushort addr, byte val) => { address = addr; bus = val; sid.Write(addr, val); });
 			pla.WriteVic = ((ushort addr, byte val) => { address = addr; bus = val; vic.Write(addr, val); });
 
+			serPort.DeviceReadAtn = (() => { return (cia1DataA & 0x08) != 0; });
+			serPort.DeviceReadClock = (() => { return (cia1DataA & 0x10) != 0; });
+			serPort.DeviceReadData = (() => { return (cia1DataA & 0x20) != 0; });
+			serPort.DeviceReadReset = (() => { return true; }); // this triggers hard reset on ext device when low
+			serPort.DeviceWriteAtn = ((bool val) => { }); // currently not wired
+			serPort.DeviceWriteClock = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)(cia1DataA | (val ? 0x40 : 0x00)), cia1DirA); });
+			serPort.DeviceWriteData = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)(cia1DataA | (val ? 0x80 : 0x00)), cia1DirA); });
+			serPort.DeviceWriteSrq = ((bool val) => { cia0FlagSerial = val; cia0.FLAG = cia0FlagCassette & cia0FlagSerial; });
+			serPort.SystemReadAtn = (() => { return true; });
+			serPort.SystemReadClock = (() => { return true; });
+			serPort.SystemReadData = (() => { return true; });
+			serPort.SystemReadSrq = (() => { return true; });
+			serPort.SystemWriteAtn = ((bool val) => { });
+			serPort.SystemWriteClock = ((bool val) => { });
+			serPort.SystemWriteData = ((bool val) => { });
+			serPort.SystemWriteReset = ((bool val) => { });
 
 			sid.ReadPotX = (() => { return 0; });
 			sid.ReadPotY = (() => { return 0; });
