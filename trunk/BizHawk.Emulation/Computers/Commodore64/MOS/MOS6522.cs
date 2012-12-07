@@ -250,9 +250,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						}
 						break;
 					case tControlLoadPB:
-						if (pbPulse[i])
-							pbPulse[i] = false;
-						else
+						if (!pbPulse[i])
 							WritePortB((byte)(ReadPortB() & portMask[i]));
 
 						if (timer[i] > 0)
@@ -261,7 +259,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 							if (timer[i] == 0)
 							{
 								irqT[i] = true;
-								WritePortB((byte)(ReadPortB() | portBit[i]));
+								if (irqT[i])
+									WritePortB((byte)(ReadPortB() | portBit[i]));
 							}
 						}
 						break;
@@ -401,7 +400,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						(byte)((pcrControlB[0] & 0x2) << 3) |
 						(byte)((pcrControlB[1] & 0x3) << 5)
 						);
-				case 0xD:
+				case 0xD: //IFR
 					return (byte)(
 						(irqCA[1] ? 0x01 : 0x00) |
 						(irqCA[0] ? 0x02 : 0x00) |
@@ -412,7 +411,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						(irqT[0] ? 0x40 : 0x00) |
 						(pinIRQ ? 0x00 : 0x80)
 						);
-				case 0xE:
+				case 0xE: //IER
 					return (byte)(
 						(enableIrqCA[1] ? 0x01 : 0x00) |
 						(enableIrqCA[0] ? 0x02 : 0x00) |
@@ -421,7 +420,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						(enableIrqCB[0] ? 0x10 : 0x00) |
 						(enableIrqT[1] ? 0x20 : 0x00) |
 						(enableIrqT[0] ? 0x40 : 0x00) |
-						(0x80)
+						(0x00)
 						);
 				default:
 					return 0x00;
@@ -454,11 +453,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					break;
 				case 0x2:
 					WriteDirB(val);
-					WritePortB(val);
+					WritePortB(pbOut);
 					break;
 				case 0x3:
 					WriteDirA(val);
-					WritePortA(val);
+					WritePortA(paOut);
 					break;
 				case 0x4:
 				case 0x6:
@@ -469,18 +468,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					WriteRegister(0x4, ReadRegister(0x6));
 					WriteRegister(0x5, ReadRegister(0x7));
 					irqT[0] = false;
+					pbPulse[0] = false;
 					break;
 				case 0x9:
 					timer[1] = timerLatch[1];
 					irqT[1] = false;
+					pbPulse[1] = false;
 					break;
 				case 0xE:
 					intEnable = ((val & 0x80) != 0);
 					result = ReadRegister(addr);
 					if (intEnable)
-						result |= val;
+						result |= (byte)(val & 0x7F);
 					else
-						result &= (byte)(val ^ 0x7F);
+						result &= (byte)((val & 0x7F) ^ 0x7F);
 					WriteRegister(0xE, result);
 					break;
 				default:
