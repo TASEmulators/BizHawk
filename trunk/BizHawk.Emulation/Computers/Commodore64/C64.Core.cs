@@ -17,19 +17,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		PAL
 	}
 
-	// emulated chips:
-	// U1:  6526 CIA0
-	// U2:  6526 CIA1
-	// U4:  KERNAL & BASIC ROM
-	// U5:  CHARACTER ROM
-	// U6:  6510 CPU
-	// U7:  VIC 6567 (NTSC) or 6569 (PAL)
-	// U8:  Memory multiplexer
-	// U9:  SID 6581 or 8580
-	// U10: RAM
-	// U11: RAM
-	// U19: 2114 color RAM
-
 	public partial class  C64 : IEmulator
 	{
 		// ------------------------------------
@@ -129,6 +116,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		public void HardReset()
 		{
 			board.HardReset();
+			disk.HardReset();
 		}
 
 		// ------------------------------------

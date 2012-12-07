@@ -106,7 +106,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			}
 
 			board.PollInput();
-			board.Execute(cyclesPerFrame);
+			for (uint count = cyclesPerFrame; count > 0; count--)
+			{
+				disk.Execute();
+				board.Execute();
+			}
 			_islag = !board.inputRead;
 
 			if (_islag)
@@ -141,6 +145,10 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			domains.Add(new MemoryDomain("CIA1", 0x10, Endian.Little, new Func<int, byte>(board.cia1.Peek), new Action<int, byte>(board.cia1.Poke)));
 			domains.Add(new MemoryDomain("VIC", 0x40, Endian.Little, new Func<int, byte>(board.vic.Peek), new Action<int, byte>(board.vic.Poke)));
 			domains.Add(new MemoryDomain("SID", 0x20, Endian.Little, new Func<int, byte>(board.sid.Peek), new Action<int, byte>(board.sid.Poke)));
+			domains.Add(new MemoryDomain("1541 Bus", 0x10000, Endian.Little, new Func<int, byte>(disk.Peek), new Action<int, byte>(disk.Poke)));
+			domains.Add(new MemoryDomain("1541 VIA0", 0x10, Endian.Little, new Func<int, byte>(disk.PeekVia0), new Action<int, byte>(disk.PokeVia0)));
+			domains.Add(new MemoryDomain("1541 VIA1", 0x10, Endian.Little, new Func<int, byte>(disk.PeekVia1), new Action<int, byte>(disk.PokeVia1)));
+			domains.Add(new MemoryDomain("1541 RAM", 0x1000, Endian.Little, new Func<int, byte>(disk.PeekRam), new Action<int, byte>(disk.PokeRam)));
 			memoryDomains = domains.AsReadOnly();
 		}
 	}

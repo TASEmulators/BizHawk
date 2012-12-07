@@ -70,28 +70,23 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		// -----------------------------------------
 
-		public void Execute(uint count)
+		public void Execute()
 		{
-			while (count > 0)
-			{
-				WriteInputPort();
+			WriteInputPort();
 
-				cia0.ExecutePhase1();
-				cia1.ExecutePhase1();
-				pla.ExecutePhase1();
-				sid.ExecutePhase1();
-				vic.ExecutePhase1();
-				cpu.ExecutePhase1();
+			cia0.ExecutePhase1();
+			cia1.ExecutePhase1();
+			pla.ExecutePhase1();
+			sid.ExecutePhase1();
+			vic.ExecutePhase1();
+			cpu.ExecutePhase1();
 
-				cia0.ExecutePhase2();
-				cia1.ExecutePhase2();
-				pla.ExecutePhase2();
-				sid.ExecutePhase2();
-				vic.ExecutePhase2();
-				cpu.ExecutePhase2();
-				
-				count--;
-			}
+			cia0.ExecutePhase2();
+			cia1.ExecutePhase2();
+			pla.ExecutePhase2();
+			sid.ExecutePhase2();
+			vic.ExecutePhase2();
+			cpu.ExecutePhase2();
 		}
 
 		// -----------------------------------------
@@ -227,13 +222,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			pla.WriteSid = ((ushort addr, byte val) => { address = addr; bus = val; sid.Write(addr, val); });
 			pla.WriteVic = ((ushort addr, byte val) => { address = addr; bus = val; vic.Write(addr, val); });
 
-			serPort.DeviceReadAtn = (() => { return (cia1DataA & 0x08) != 0; });
-			serPort.DeviceReadClock = (() => { return (cia1DataA & 0x10) != 0; });
-			serPort.DeviceReadData = (() => { return (cia1DataA & 0x20) != 0; });
+			// note: c64 serport lines are inverted
+			serPort.DeviceReadAtn = (() => { return (cia1DataA & 0x08) == 0; });
+			serPort.DeviceReadClock = (() => { return (cia1DataA & 0x10) == 0; });
+			serPort.DeviceReadData = (() => { return (cia1DataA & 0x20) == 0; });
 			serPort.DeviceReadReset = (() => { return true; }); // this triggers hard reset on ext device when low
 			serPort.DeviceWriteAtn = ((bool val) => { }); // currently not wired
-			serPort.DeviceWriteClock = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)(cia1DataA | (val ? 0x40 : 0x00)), cia1DirA); });
-			serPort.DeviceWriteData = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)(cia1DataA | (val ? 0x80 : 0x00)), cia1DirA); });
+			serPort.DeviceWriteClock = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)((cia1DataA & 0xBF) | (val ? 0x00 : 0x40)), cia1DirA); });
+			serPort.DeviceWriteData = ((bool val) => { cia1DataA = Port.ExternalWrite(cia1DataA, (byte)((cia1DataA & 0x7F) | (val ? 0x00 : 0x80)), cia1DirA); });
 			serPort.DeviceWriteSrq = ((bool val) => { cia0FlagSerial = val; cia0.FLAG = cia0FlagCassette & cia0FlagSerial; });
 
 			sid.ReadPotX = (() => { return 0; });
