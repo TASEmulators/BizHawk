@@ -79,14 +79,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 		public MOS6522 via0;
 		public MOS6522 via1;
 
-		public byte via0dirA;
-		public byte via0dirB;
-		public byte via0portA;
-		public byte via0portB;
-		public byte via1dirA;
-		public byte via1dirB;
-		public byte via1portA;
-		public byte via1portB;
+		public bool via0CA0;
+		public bool via0CA1;
+		public bool via0CB0;
+		public bool via0CB1;
+		public byte via0DataA;
+		public byte via0DataB;
+		public byte via0DirA;
+		public byte via0DirB;
+		public bool via1CA0;
+		public bool via1CA1;
+		public bool via1CB0;
+		public bool via1CB1;
+		public byte via1DataA;
+		public byte via1DataB;
+		public byte via1DirA;
+		public byte via1DirB;
 
 		public VIC1541Motherboard(Region initRegion, byte[] initRom)
 		{
@@ -119,28 +127,97 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 			pla.WriteVia0 = via0.Write;
 			pla.WriteVia1 = via1.Write;
 
-			via0dirA = 0x00;
-			via0dirB = 0x00;
-			via0portA = 0xFF;
-			via0portB = 0xFF;
-			via1dirA = 0x00;
-			via1dirB = 0x00;
-			via1portA = 0xFF;
-			via1portB = 0xFF;
+			via0CA0 = false;
+			via0CA1 = false;
+			via0CB0 = false;
+			via0CB1 = false;
+			via0DirA = 0x00;
+			via0DirB = 0x00;
+			via0DataA = 0xFF;
+			via0DataB = 0xFF;
+			via1CA0 = false;
+			via1CA1 = false;
+			via1CB0 = false;
+			via1CB1 = false;
+			via1DirA = 0x00;
+			via1DirB = 0x00;
+			via1DataA = 0xFF;
+			via1DataB = 0xFF;
+
+			via0.ReadCA0 = (() => { return via0CA0; });
+			via0.ReadCA1 = (() => { return via0CA1; });
+			via0.ReadCB0 = (() => { return via0CB0; });
+			via0.ReadCB1 = (() => { return via0CB1; });
+			via0.ReadDirA = (() => { return via0DirA; });
+			via0.ReadDirB = (() => { return via0DirB; });
+			via0.ReadPortA = (() => { return via0DataA; });
+			via0.ReadPortB = (() => { return via0DataB; });
+			via0.WriteCA0 = ((bool val) => { via0CA0 = val; });
+			via0.WriteCA1 = ((bool val) => { via0CA1 = val; });
+			via0.WriteCB0 = ((bool val) => { via0CB0 = val; });
+			via0.WriteCB1 = ((bool val) => { via0CB1 = val; });
+			via0.WriteDirA = ((byte val) => { via0DirA = val; });
+			via0.WriteDirB = ((byte val) => { via0DirB = val; });
+			via0.WritePortA = ((byte val) => {
+				via0DataA = Port.CPUWrite(via0DataA, val, via0DirA);
+			});
+			via0.WritePortB = ((byte val) => {
+				via0DataB = Port.CPUWrite(via0DataB, val, via0DirB);
+				serPort.DeviceWriteAtn((via0DataB & 0x80) != 0);
+				serPort.DeviceWriteClock((via0DataB & 0x08) != 0);
+				serPort.DeviceWriteData((via0DataB & 0x02) != 0);
+			});
+
+			via1.ReadCA0 = (() => { return via1CA0; });
+			via1.ReadCA1 = (() => { return via1CA1; });
+			via1.ReadCB0 = (() => { return via1CB0; });
+			via1.ReadCB1 = (() => { return via1CB1; });
+			via1.ReadDirA = (() => { return via1DirA; });
+			via1.ReadDirB = (() => { return via1DirB; });
+			via1.ReadPortA = (() => { return via1DataA; });
+			via1.ReadPortB = (() => { return via1DataB; });
+			via1.WriteCA0 = ((bool val) => { via1CA0 = val; });
+			via1.WriteCA1 = ((bool val) => { via1CA1 = val; });
+			via1.WriteCB0 = ((bool val) => { via1CB0 = val; });
+			via1.WriteCB1 = ((bool val) => { via1CB1 = val; });
+			via1.WriteDirA = ((byte val) => { via1DirA = val; });
+			via1.WriteDirB = ((byte val) => { via1DirB = val; });
+			via1.WritePortA = ((byte val) => { via1DataA = Port.CPUWrite(via1DataA, val, via1DirA); });
+			via1.WritePortB = ((byte val) => { via1DataB = Port.CPUWrite(via1DataB, val, via1DirB); });	
 		}
 
 		public void Connect(SerialPort newSerPort)
 		{
 			// TODO: verify polarity
 			serPort = newSerPort;
-			serPort.SystemReadAtn = (() => { return true; });
-			serPort.SystemReadClock = (() => { return ((via0portB & 0x8) != 0); }); // bit 3
-			serPort.SystemReadData = (() => { return ((via0portB & 0x2) != 0); }); // bit 1
-			serPort.SystemReadSrq = (() => { return true; });
-			serPort.SystemWriteAtn = ((bool val) => { via0portB = Port.ExternalWrite(via0portB, (byte)((via0portB & 0x7F) | (val ? 0x80 : 0x00)), via0dirB); });
-			serPort.SystemWriteClock = ((bool val) => { via0portB = Port.ExternalWrite(via0portB, (byte)((via0portB & 0xFB) | (val ? 0x04 : 0x00)), via0dirB); });
-			serPort.SystemWriteData = ((bool val) => { via0portB = Port.ExternalWrite(via0portB, (byte)((via0portB & 0xFE) | (val ? 0x01 : 0x00)), via0dirB); });
+			serPort.SystemReadAtn = (() => { 
+				return true;
+			});
+			serPort.SystemReadClock = (() => { 
+				return ((via0DataB & 0x08) != 0); 
+			}); // bit 3
+			serPort.SystemReadData = (() => { 
+				return ((via0DataB & 0x02) != 0); 
+			}); // bit 1
+			serPort.SystemReadSrq = (() => { 
+				return false; 
+			}); // device sensing
+			serPort.SystemWriteAtn = ((bool val) => {
+				via0DataB = Port.ExternalWrite(via0DataB, (byte)((via0DataB & 0x7F) | (val ? 0x80 : 0x00)), via0DataB);
+				via0CA0 = val;
+				// repeat to DATA OUT if bit 4 enabled on port B
+				if ((via0DataB & 0x10) != 0)
+					serPort.DeviceWriteData(val);
+			});
+			serPort.SystemWriteClock = ((bool val) => {
+				via0DataB = Port.ExternalWrite(via0DataB, (byte)((via0DataB & 0xFB) | (val ? 0x04 : 0x00)), via0DataB);
+			});
+			serPort.SystemWriteData = ((bool val) => {
+				via0DataB = Port.ExternalWrite(via0DataB, (byte)((via0DataB & 0xFE) | (val ? 0x01 : 0x00)), via0DataB);
+			});
 			serPort.SystemWriteReset = ((bool val) => { });
+
+			serPort.DeviceWriteSrq(false);
 		}
 
 		public void Execute()
@@ -148,6 +225,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 			via0.ExecutePhase1();
 			via1.ExecutePhase1();
 
+			cpu.IRQ = !(via0.IRQ && via1.IRQ);
 			cpu.ExecuteOne();
 			via0.ExecutePhase2();
 			via1.ExecutePhase2();
@@ -158,6 +236,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 			for (uint i = 0; i < 0x7FF; i++)
 				ram[i] = 0x00;
 			cpu.PC = (ushort)(cpu.ReadMemory(0xFFFC) | ((ushort)cpu.ReadMemory(0xFFFD) << 8));
+			via0.HardReset();
+			via1.HardReset();
 		}
 	}
 }

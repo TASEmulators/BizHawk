@@ -15,14 +15,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		protected bool[] timerOn;
 		protected bool[] underflow;
 
-		public Func<byte> ReadDirA;
-		public Func<byte> ReadDirB;
-		public Func<byte> ReadPortA;
-		public Func<byte> ReadPortB;
-		public Action<byte> WriteDirA;
-		public Action<byte> WriteDirB;
-		public Action<byte> WritePortA;
-		public Action<byte> WritePortB;
+		public Func<byte> ReadDirA = (() => { return 0xFF; });
+		public Func<byte> ReadDirB = (() => { return 0xFF; });
+		public Func<byte> ReadPortA = (() => { return 0xFF; });
+		public Func<byte> ReadPortB = (() => { return 0xFF; });
+		public Action<byte> WriteDirA = ((byte val) => { });
+		public Action<byte> WriteDirB = ((byte val) => { });
+		public Action<byte> WritePortA = ((byte val) => { });
+		public Action<byte> WritePortB = ((byte val) => { });
 
 		public Timer()
 		{
@@ -34,6 +34,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		protected void HardResetInternal()
 		{
+			WriteDirA(0x00);
+			WriteDirB(0x00);
 			timer[0] = 0xFFFF;
 			timer[1] = 0xFFFF;
 			timerLatch[0] = timer[0];
