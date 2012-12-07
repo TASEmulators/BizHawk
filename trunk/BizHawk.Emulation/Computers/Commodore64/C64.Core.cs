@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			byte[] diskRom = File.ReadAllBytes(diskPath);
 
 			disk = new VIC1541(initRegion, diskRom);
+			disk.Connect(board.serPort);
 		}
 
 		private void InitMedia()
@@ -84,7 +85,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			string basicFile = "basic";
 			string charFile = "chargen";
 			string kernalFile = "kernal";
-			string diskFile = "dos1541";
 
 			string basicPath = Path.Combine(sourceFolder, basicFile);
 			string charPath = Path.Combine(sourceFolder, charFile);
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		{
 			get
 			{
-				return false;
+				return (disk.PeekVia1(0x00) & 0x08) != 0;
 			}
 		}
 

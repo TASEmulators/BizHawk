@@ -26,7 +26,18 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private const uint pcrControlLow = 6;
 		private const uint pcrControlHigh = 7;
 
+		private const uint tControlLoad = 0;
+		private const uint tControlContinuous = 1;
+		private const uint tControlLoadPB = 2;
+		private const uint tControlContinuousPB = 3;
+		private const uint tControlPulseCounter = 4;
+
+		private static byte[] portBit = new byte[] { 0x80, 0x40 };
+		private static byte[] portMask = new byte[] { 0x7F, 0xBF };
+
 		private uint acrShiftMode;
+		private bool caPulse;
+		private bool cbPulse;
 		private bool[] enableIrqCA;
 		private bool[] enableIrqCB;
 		private bool enableIrqSR;
@@ -35,17 +46,31 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool[] irqCB;
 		private bool irqSR;
 		private bool[] irqT;
+		private bool[] lastca;
+		private bool[] lastcb;
+		private byte lastpb;
 		private byte paLatch;
 		private byte pbLatch;
 		private bool paLatchEnable;
 		private bool pbLatchEnable;
 		private byte paOut;
 		private byte pbOut;
+		private bool[] pbPulse;
 		private uint[] pcrControlA;
 		private uint[] pcrControlB;
 		private byte sr;
 		private uint srControl;
+		private uint srCounter;
 		private uint[] tControl;
+
+		public Func<bool> ReadCA0;
+		public Func<bool> ReadCA1;
+		public Func<bool> ReadCB0;
+		public Func<bool> ReadCB1;
+		public Action<bool> WriteCA0;
+		public Action<bool> WriteCA1;
+		public Action<bool> WriteCB0;
+		public Action<bool> WriteCB1;
 
 		public MOS6522()
 		{
@@ -55,6 +80,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			irqCA = new bool[2];
 			irqCB = new bool[2];
 			irqT = new bool[2];
+			lastca = new bool[2];
+			lastcb = new bool[2];
+			pbPulse = new bool[2];
 			pcrControlA = new uint[2];
 			pcrControlB = new uint[2];
 			tControl = new uint[2];
@@ -63,6 +91,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public void HardReset()
 		{
 			acrShiftMode = 0;
+			caPulse = false;
+			cbPulse = false;
 			enableIrqCA[0] = false;
 			enableIrqCA[1] = false;
 			enableIrqCB[0] = false;
@@ -77,12 +107,19 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			irqSR = false;
 			irqT[0] = false;
 			irqT[1] = false;
+			lastca[0] = ReadCA0();
+			lastca[1] = ReadCA1();
+			lastcb[0] = ReadCB0();
+			lastcb[1] = ReadCB1();
+			pbPulse[0] = false;
+			pbPulse[1] = false;
 			pcrControlA[0] = 0;
 			pcrControlA[1] = 0;
 			pcrControlB[0] = 0;
 			pcrControlB[1] = 0;
 			tControl[0] = 0;
 			tControl[1] = 0;
+			HardResetInternal();
 		}
 
 		// ------------------------------------
@@ -93,10 +130,185 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase2()
 		{
-			pinIRQ = !(irqCA[0] | irqCA[1] |
-				irqCB[0] | irqCB[1] |
-				irqSR | irqT[0] | irqT[1]
+			bool ca0 = ReadCA0();
+			bool ca1 = ReadCA1();
+			bool cb0 = ReadCB0();
+			bool cb1 = ReadCB1();
+			bool ca0Trans = (lastca[0] != ca0);
+			bool ca1Trans = (lastca[1] != ca1);
+			bool cb0Trans = (lastcb[0] != cb0);
+			bool cb1Trans = (lastcb[1] != cb1);
+
+			// edge triggered interrupts
+
+			switch (pcrControlA[0])
+			{
+				case pcrControlInNegative:
+					if (lastca[0] && !ca0)
+						irqCA[0] = true;
+					break;
+				case pcrControlInPositive:
+					if (!lastca[0] && ca0)
+						irqCA[0] = true;
+					break;
+			}
+
+			switch (pcrControlB[0])
+			{
+				case pcrControlInNegative:
+					if (lastcb[0] && !cb0)
+						irqCB[0] = true;
+					break;
+				case pcrControlInPositive:
+					if (!lastcb[0] && cb0)
+						irqCB[0] = true;
+					break;
+			}
+
+			switch (pcrControlA[1])
+			{
+				case pcrControlInNegative:
+				case pcrControlInNegativeIndep:
+					if (lastca[1] && !ca1)
+						irqCA[1] = true;
+					break;
+				case pcrControlInPositive:
+				case pcrControlInPositiveIndep:
+					if (!lastca[1] && ca1)
+						irqCA[1] = true;
+					break;
+				case pcrControlHandshake:
+					if (lastca[0] != ca0)
+						WriteCA1(true);
+					break;
+				case pcrControlPulse:
+					if (caPulse)
+						caPulse = false;
+					else
+						WriteCA1(true);
+					break;
+				case pcrControlLow:
+					WriteCA1(false);
+					break;
+				case pcrControlHigh:
+					WriteCA1(true);
+					break;
+			}
+
+			switch (pcrControlB[1])
+			{
+				case pcrControlInNegative:
+				case pcrControlInNegativeIndep:
+					if (lastcb[1] && !cb1)
+						irqCB[1] = true;
+					break;
+				case pcrControlInPositive:
+				case pcrControlInPositiveIndep:
+					if (!lastcb[1] && cb1)
+						irqCB[1] = true;
+					break;
+				case pcrControlHandshake:
+					if (lastcb[0] != cb0)
+						WriteCB1(true);
+					break;
+				case pcrControlPulse:
+					if (cbPulse)
+						cbPulse = false;
+					else
+						WriteCB1(true);
+					break;
+				case pcrControlLow:
+					WriteCB1(false);
+					break;
+				case pcrControlHigh:
+					WriteCB1(true);
+					break;
+			}
+
+			// run timers
+			for (uint i = 0; i < 2; i++)
+			{
+				switch (tControl[i])
+				{
+					case tControlLoad:
+						if (timer[i] > 0)
+						{
+							timer[i]--;
+							if (timer[i] == 0)
+								irqT[i] = true;
+						}
+						break;
+					case tControlContinuous:
+						if (timer[i] > 0)
+						{
+							timer[i]--;
+							if (timer[i] == 0)
+							{
+								irqT[i] = true;
+								timer[i] = timerLatch[i];
+							}
+						}
+						break;
+					case tControlLoadPB:
+						if (pbPulse[i])
+							pbPulse[i] = false;
+						else
+							WritePortB((byte)(ReadPortB() & portMask[i]));
+
+						if (timer[i] > 0)
+						{
+							timer[i]--;
+							if (timer[i] == 0)
+							{
+								irqT[i] = true;
+								WritePortB((byte)(ReadPortB() | portBit[i]));
+							}
+						}
+						break;
+					case tControlContinuousPB:
+						if (timer[i] > 0)
+						{
+							timer[i]--;
+							if (timer[i] == 0)
+							{
+								irqT[i] = true;
+								timer[i] = timerLatch[i];
+								WritePortB((byte)(ReadPortB() ^ portBit[i]));
+							}
+						}
+						break;
+					case tControlPulseCounter:
+						if ((lastpb & 0x40) != 0 && (ReadPortB() & 0x40) == 0)
+						{
+							if (timer[i] > 0)
+							{
+								timer[i]--;
+								if (timer[i] == 0)
+								{
+									irqT[i] = true;
+								}
+							}
+						}
+						break;
+				}
+			}
+
+			lastca[0] = ca0;
+			lastca[1] = ca1;
+			lastcb[0] = cb0;
+			lastcb[1] = cb1;
+			lastpb = ReadPortB();
+
+			pinIRQ = !((irqCA[0] & enableIrqCA[0]) |
+				(irqCA[1] & enableIrqCA[1]) |
+				(irqCB[0] & enableIrqCB[0]) |
+				(irqCB[1] & enableIrqCB[1]) |
+				(irqSR & enableIrqSR) |
+				(irqT[0] & enableIrqT[0]) |
+				(irqT[1] & enableIrqT[1])
 				);
+
+			
 		}
 
 		// ------------------------------------
@@ -113,15 +325,26 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Read(ushort addr)
 		{
+
+			//Console.WriteLine("via R: reg" + C64Util.ToHex(addr, 4));
+			
 			addr &= 0xF;
 			switch (addr)
 			{
 				case 0x0:
+					irqCB[0] = false;
+					irqCB[1] = false;
+
 					if (pbLatchEnable)
 						return Port.ExternalWrite(pbLatch, ReadPortB(), ReadDirB());
 					else
 						return ReadPortB();
 				case 0x1:
+					if (pcrControlA[0] != pcrControlInNegativeIndep && pcrControlA[0] != pcrControlInPositiveIndep)
+						irqCA[0] = false;
+					if (pcrControlA[1] != pcrControlInNegativeIndep && pcrControlA[1] != pcrControlInPositiveIndep)
+						irqCA[1] = false;
+
 					if (paLatchEnable)
 						return Port.ExternalWrite(paLatch, ReadPortA(), ReadDirA());
 					else
@@ -168,7 +391,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						(paLatchEnable ? 0x01 : 0x00) |
 						(pbLatchEnable ? 0x02 : 0x00) |
 						(byte)((srControl & 0x7) << 2) |
-						(byte)((tControl[1] & 0x1) << 5) |
+						(byte)((tControl[1] & 0x4) << 3) |
 						(byte)((tControl[0] & 0x3) << 6)
 						);
 				case 0xC:
@@ -207,14 +430,25 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void Write(ushort addr, byte val)
 		{
+			byte result;
+			bool intEnable;
+
+			//Console.WriteLine("via W: reg" + C64Util.ToHex(addr, 4) + " val" + C64Util.ToHex(val, 2));
+
 			addr &= 0xF;
 			switch (addr)
 			{
 				case 0x0:
+					irqCB[0] = false;
+					irqCB[1] = false;
 					pbOut = val;
 					WritePortB(val);
 					break;
 				case 0x1:
+					if (pcrControlA[0] != pcrControlInNegativeIndep && pcrControlA[0] != pcrControlInPositiveIndep)
+						irqCA[0] = false;
+					if (pcrControlA[1] != pcrControlInNegativeIndep && pcrControlA[1] != pcrControlInPositiveIndep)
+						irqCA[1] = false;
 					paOut = val;
 					WritePortA(val);
 					break;
@@ -239,6 +473,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case 0x9:
 					timer[1] = timerLatch[1];
 					irqT[1] = false;
+					break;
+				case 0xE:
+					intEnable = ((val & 0x80) != 0);
+					result = ReadRegister(addr);
+					if (intEnable)
+						result |= val;
+					else
+						result &= (byte)(val ^ 0x7F);
+					WriteRegister(0xE, result);
 					break;
 				default:
 					WriteRegister(addr, val);
@@ -293,7 +536,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					paLatchEnable = ((val & 0x01) != 0);
 					pbLatchEnable = ((val & 0x02) != 0);
 					srControl = (((uint)val >> 2) & 0x7);
-					tControl[1] = (((uint)val >> 5) & 0x1);
+					tControl[1] = (((uint)val >> 3) & 0x4);
 					tControl[0] = (((uint)val >> 6) & 0x3);
 					break;
 				case 0xC:

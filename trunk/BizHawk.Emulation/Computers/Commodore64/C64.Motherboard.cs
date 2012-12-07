@@ -151,8 +151,16 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			cia1.ReadPortB = (() => { return cia1DataB; });
 			cia1.WriteDirA = ((byte val) => { cia1DirA = val; });
 			cia1.WriteDirB = ((byte val) => { cia1DirB = val; });
-			cia1.WritePortA = ((byte val) => { cia1DataA = Port.CPUWrite(cia1DataA, val, cia1DirA); UpdateVicBank(); });
-			cia1.WritePortB = ((byte val) => { cia1DataB = Port.CPUWrite(cia1DataB, val, cia1DirB); });
+			cia1.WritePortA = ((byte val) => { 
+				cia1DataA = Port.CPUWrite(cia1DataA, val, cia1DirA); 
+				UpdateVicBank();
+				serPort.SystemWriteAtn((cia1DataA & 0x08) == 0);
+				serPort.SystemWriteClock((cia1DataA & 0x10) == 0);
+				serPort.SystemWriteData((cia1DataA & 0x20) == 0);
+			});
+			cia1.WritePortB = ((byte val) => {
+				cia1DataB = Port.CPUWrite(cia1DataB, val, cia1DirB);
+			});
 
 			cpu.PeekMemory = pla.Peek;
 			cpu.PokeMemory = pla.Poke;
