@@ -22,20 +22,51 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public byte Peek(int addr)
 		{
-			return 0;
+			return ReadRegister((ushort)(addr & 0xF));
 		}
 
 		public void Poke(int addr, byte val)
 		{
+			WriteRegister((ushort)(addr & 0xF), val);
 		}
 
 		public byte Read(ushort addr)
 		{
-			return 0;
+			addr &= 0xF;
+			switch (addr)
+			{
+				default:
+					return ReadRegister(addr);
+			}
+		}
+
+		private byte ReadRegister(ushort addr)
+		{
+			switch (addr)
+			{
+				default:
+					return 0;
+			}
 		}
 
 		public void Write(ushort addr, byte val)
 		{
+			addr &= 0xF;
+			switch (addr)
+			{
+				default:
+					WriteRegister(addr, val);
+					break;
+			}
+		}
+
+		private void WriteRegister(ushort addr, byte val)
+		{
+			switch (addr)
+			{
+				default:
+					break;
+			}
 		}
 	
 		// ------------------------------------
