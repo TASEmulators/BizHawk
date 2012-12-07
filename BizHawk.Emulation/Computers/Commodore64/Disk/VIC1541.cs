@@ -64,10 +64,30 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 			WriteVia0 = board.pla.WriteVia0;
 			WriteVia1 = board.pla.WriteVia1;
 		}
+
+		public ushort PC
+		{
+			get
+			{
+				return board.cpu.PC;
+			}
+		}
 	}
 
 	// because the VIC1541 doesn't have bank switching like the system does,
 	// we simplify things by processing the rom bytes directly.
+
+	// note: when a byte is read, the drive mechanics will cause
+	// the V flag on the 6502 to be enabled
+
+	// note: 6502 IRQ is wired to both VIA0 and VIA1. the NMI
+	// pin is not connected to any other source and is always
+	// held low.
+
+	// note: there is a GATE ARRAY that directs the signal
+	// between different parts of the board. it is not emulated
+	// directly, we are actually performing all its functions
+	// within the motherboard class itself.
 
 	public class VIC1541Motherboard
 	{
@@ -182,8 +202,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.Disk
 			via1.WriteCB1 = ((bool val) => { via1CB1 = val; });
 			via1.WriteDirA = ((byte val) => { via1DirA = val; });
 			via1.WriteDirB = ((byte val) => { via1DirB = val; });
-			via1.WritePortA = ((byte val) => { via1DataA = Port.CPUWrite(via1DataA, val, via1DirA); });
-			via1.WritePortB = ((byte val) => { via1DataB = Port.CPUWrite(via1DataB, val, via1DirB); });	
+			via1.WritePortA = ((byte val) => {
+				via1DataA = Port.CPUWrite(via1DataA, val, via1DirA);
+			});
+			via1.WritePortB = ((byte val) => {
+				via1DataB = Port.CPUWrite(via1DataB, val, via1DirB);
+			});	
 		}
 
 		public void Connect(SerialPort newSerPort)

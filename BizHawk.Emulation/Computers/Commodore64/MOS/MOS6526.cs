@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			todAlarm = new byte[4];
 
 			SetTodIn(chipRegion);
-			HardReset();
+			pinFlag = true;
 		}
 
 		// ------------------------------------
@@ -194,7 +194,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			todPM = false;
 
 			pinCnt = false;
-			pinFlag = true;
 			pinPC = true;
 	}
 
@@ -248,7 +247,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				{
 					uint t = timer[index];
 					bool u = false;
-
 					
 					{
 						switch (timerInMode[index])

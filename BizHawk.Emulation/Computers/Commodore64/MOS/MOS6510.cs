@@ -112,6 +112,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
+		public ushort PC
+		{
+			get
+			{
+				return cpu.PC;
+			}
+		}
+
 		public byte Peek(int addr)
 		{
 			if (addr == 0x0000)

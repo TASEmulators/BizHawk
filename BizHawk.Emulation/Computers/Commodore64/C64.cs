@@ -117,6 +117,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 				LagCount++;
 			_frame++;
 
+			Console.WriteLine("CPUPC: " + C64Util.ToHex(board.cpu.PC, 4) + " 1541PC: " + C64Util.ToHex(disk.PC, 4));
+
 			CoreOutputComm.DriveLED = DriveLED;
 		}
 
