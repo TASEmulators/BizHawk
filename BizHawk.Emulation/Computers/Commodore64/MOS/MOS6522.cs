@@ -8,6 +8,24 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	// via
 	public class MOS6522 : Timer
 	{
+		private const uint acrShiftModeDisabled = 0;
+		private const uint acrShiftModeInT1 = 1;
+		private const uint acrShiftModeInClock = 2;
+		private const uint acrShiftModeInExtClock = 3;
+		private const uint acrShiftModeOutFree = 4;
+		private const uint acrShiftModeOutT1 = 5;
+		private const uint acrShiftModeOutClock = 6;
+		private const uint acrShiftModeOutExtClock = 7;
+
+		private const uint pcrControlInNegative = 0;
+		private const uint pcrControlInNegativeIndep = 1;
+		private const uint pcrControlInPositive = 2;
+		private const uint pcrControlInPositiveIndep = 3;
+		private const uint pcrControlHandshake = 4;
+		private const uint pcrControlPulse = 5;
+		private const uint pcrControlLow = 6;
+		private const uint pcrControlHigh = 7;
+
 		private uint acrShiftMode;
 		private bool[] enableIrqCA;
 		private bool[] enableIrqCB;
@@ -17,8 +35,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool[] irqCB;
 		private bool irqSR;
 		private bool[] irqT;
+		private byte paLatch;
+		private byte pbLatch;
 		private bool paLatchEnable;
 		private bool pbLatchEnable;
+		private byte paOut;
+		private byte pbOut;
 		private uint[] pcrControlA;
 		private uint[] pcrControlB;
 		private byte sr;
@@ -94,6 +116,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			addr &= 0xF;
 			switch (addr)
 			{
+				case 0x0:
+					if (pbLatchEnable)
+						return Port.ExternalWrite(pbLatch, ReadPortB(), ReadDirB());
+					else
+						return ReadPortB();
+				case 0x1:
+					if (paLatchEnable)
+						return Port.ExternalWrite(paLatch, ReadPortA(), ReadDirA());
+					else
+						return ReadPortA();
+				case 0x4:
+					irqT[0] = false;
+					return ReadRegister(addr);
+				case 0x8:
+					irqT[1] = false;
+					return ReadRegister(addr);
 				default:
 					return ReadRegister(addr);
 			}
@@ -135,9 +173,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						);
 				case 0xC:
 					return (byte)(
-						(byte)(pcrControlA[0] & 0x1) |
+						(byte)((pcrControlA[0] & 0x2) >> 1) |
 						(byte)((pcrControlA[1] & 0x3) << 1) |
-						(byte)((pcrControlB[0] & 0x1) << 4) |
+						(byte)((pcrControlB[0] & 0x2) << 3) |
 						(byte)((pcrControlB[1] & 0x3) << 5)
 						);
 				case 0xD:
@@ -172,6 +210,36 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			addr &= 0xF;
 			switch (addr)
 			{
+				case 0x0:
+					pbOut = val;
+					WritePortB(val);
+					break;
+				case 0x1:
+					paOut = val;
+					WritePortA(val);
+					break;
+				case 0x2:
+					WriteDirB(val);
+					WritePortB(val);
+					break;
+				case 0x3:
+					WriteDirA(val);
+					WritePortA(val);
+					break;
+				case 0x4:
+				case 0x6:
+					WriteRegister(0x6, val);
+					break;
+				case 0x5:
+					WriteRegister(0x7, val);
+					WriteRegister(0x4, ReadRegister(0x6));
+					WriteRegister(0x5, ReadRegister(0x7));
+					irqT[0] = false;
+					break;
+				case 0x9:
+					timer[1] = timerLatch[1];
+					irqT[1] = false;
+					break;
 				default:
 					WriteRegister(addr, val);
 					break;
@@ -195,12 +263,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					WriteDirA(val);
 					break;
 				case 0x4:
-					timerLatch[0] &= 0xFF00;
-					timerLatch[0] |= val;
+					timer[0] &= 0xFF00;
+					timer[0] |= val;
 					break;
 				case 0x5:
-					timerLatch[0] &= 0x00FF;
-					timerLatch[0] |= (uint)val << 8;
+					timer[0] &= 0x00FF;
+					timer[0] |= (uint)val << 8;
 					break;
 				case 0x6:
 					timerLatch[0] &= 0xFF00;
@@ -215,8 +283,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					timerLatch[1] |= val;
 					break;
 				case 0x9:
-					timerLatch[1] &= 0x00FF;
-					timerLatch[1] |= (uint)val << 8;
+					timer[1] &= 0x00FF;
+					timer[1] |= (uint)val << 8;
 					break;
 				case 0xA:
 					sr = val;
@@ -229,9 +297,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					tControl[0] = (((uint)val >> 6) & 0x3);
 					break;
 				case 0xC:
-					pcrControlA[0] = (uint)(val & 0x1);
+					pcrControlA[0] = ((uint)val << 1) & 0x2;
 					pcrControlA[1] = ((uint)val >> 1) & 0x7;
-					pcrControlB[0] = ((uint)val >> 4) & 0x1;
+					pcrControlB[0] = ((uint)val >> 3) & 0x2;
 					pcrControlB[1] = ((uint)val >> 5) & 0x7;
 					break;
 				case 0xD:
