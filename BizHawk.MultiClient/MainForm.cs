@@ -2588,7 +2588,6 @@ namespace BizHawk.MultiClient
 
 		void StepRunLoop_Core()
 		{
-			HandleToggleLight();
 			bool runFrame = false;
 			runloop_frameadvance = false;
 			DateTime now = DateTime.Now;
@@ -2809,6 +2808,7 @@ namespace BizHawk.MultiClient
 			VirtualPadForm1.UpdateValues();
 			SNESGraphicsDebugger1.UpdateToolsAfter();
 			TraceLogger1.UpdateValues();
+			HandleToggleLight();
 #if WINDOWS
 			LuaConsole1.LuaImp.FrameRegisterAfter();
 			if (!fromLua)
