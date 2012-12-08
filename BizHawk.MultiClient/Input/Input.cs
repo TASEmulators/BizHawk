@@ -287,6 +287,7 @@ namespace BizHawk.MultiClient
 		public string GetNextBindEvent()
 		{
 			if (InputEvents.Count == 0) return null;
+			if (!Global.MainForm.AllowInput) return null;
 
 			//we only listen to releases for input binding, because we need to distinguish releases of pure modifierkeys from modified keys
 			//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl
