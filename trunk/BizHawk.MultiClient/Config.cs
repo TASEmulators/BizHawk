@@ -544,6 +544,8 @@ namespace BizHawk.MultiClient
 		public bool VirtualPadSticky = true;
 		public int VPadWndx = -1;
 		public int VPadWndy = -1;
+		public int VPadWidth = -1;
+		public int VPadHeight = -1;
 
 		// NES Game Genie Encoder/Decoder
 		public bool NESGGAutoload = false;
