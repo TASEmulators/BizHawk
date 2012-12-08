@@ -11,9 +11,9 @@ namespace BizHawk.MultiClient
 {
 	public partial class VirtualPadForm : Form
 	{
-		//TODO: clicky vs sticky
-		//Remember window size
-		//Restore defaults
+		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		int defaultHeight;
+
 
 		List<IVirtualPad> Pads = new List<IVirtualPad>();
 
@@ -25,6 +25,15 @@ namespace BizHawk.MultiClient
 
 		private void VirtualPadForm_Load(object sender, EventArgs e)
 		{
+			LoadConfigSettings();
+			LoadPads();
+		}
+
+		private void LoadConfigSettings()
+		{
+			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = Size.Height;
+
 			StickyBox.Checked = Global.Config.VirtualPadSticky;
 
 			if (Global.Config.VirtualPadSaveWindowPosition && Global.Config.VPadWndx >= 0 && Global.Config.VPadWndy >= 0)
@@ -32,13 +41,20 @@ namespace BizHawk.MultiClient
 				this.Location = new Point(Global.Config.VPadWndx, Global.Config.VPadWndy);
 			}
 
-			LoadPads();
+			if (Global.Config.VirtualPadSaveWindowPosition &&  Global.Config.VPadWidth >= 0 && Global.Config.VPadHeight >= 0)
+			{
+				Size = new System.Drawing.Size(Global.Config.VPadWidth, Global.Config.VPadHeight);
+			}
 		}
 
 		private void SaveConfigSettings()
 		{
 			Global.Config.VPadWndx = this.Location.X;
 			Global.Config.VPadWndy = this.Location.Y;
+
+			Global.Config.VPadWidth = this.Right - this.Left;
+			Global.Config.VPadHeight = this.Bottom - this.Top;
+
 			Pads.Clear();
 		}
 
@@ -337,6 +353,20 @@ namespace BizHawk.MultiClient
 		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ClearVirtualPadHolds();
+		}
+
+		private void restoreDefaultSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RestoreDefaultSettings();
+		}
+
+		private void RestoreDefaultSettings()
+		{
+			this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+
+			Global.Config.VirtualPadSaveWindowPosition = true;
+			Global.Config.VPadHeight = -1;
+			Global.Config.VPadWidth = -1;
 		}
 	}
 }
