@@ -5,16 +5,21 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	public abstract partial class Sid : ISoundProvider
+	/*
+	 * this wasn't sounding as good as a vecna metaspu
+	 */
+	public abstract partial class Sid //: ISoundProvider
 	{
+		/*
 		private short[] buffer;
 		private uint bufferCounter;
 		private uint bufferFrequency;
 		private uint bufferIndex;
 		private uint bufferLength;
 		private uint bufferReadOffset;
+		*/
 		private uint cyclesPerSec;
-
+		/*
 		public void GetSamples(short[] samples)
 		{
 			bool overrun = false;
@@ -57,5 +62,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				// no change in volume
 			}
 		}
+		*/
 	}
 }

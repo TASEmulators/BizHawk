@@ -5,8 +5,10 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
-	public abstract partial class Sid : ISyncSoundProvider
+	public abstract partial class Sid : IDisposable
 	{
+		public Sound.Utilities.SpeexResampler resampler;
+		/*
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
 			if (bufferIndex > bufferReadOffset)
@@ -30,6 +32,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			bufferIndex = 0;
 			bufferReadOffset = 0;
+		}
+		*/
+		public void Dispose()
+		{
+			if (resampler != null)
+			{
+				resampler.Dispose();
+				resampler = null;
+			}
 		}
 	}
 }

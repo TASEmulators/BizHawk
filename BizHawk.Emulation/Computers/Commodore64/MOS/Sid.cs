@@ -645,11 +645,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			switch (newRegion)
 			{
-				case Region.NTSC: cyclesPerSec = 14318181 / 14; bufferLength = (newSampleRate / 60) * 4; break;
-				case Region.PAL: cyclesPerSec = 17734472 / 18; bufferLength = (newSampleRate / 50) * 4; break;
+				case Region.NTSC: cyclesPerSec = 14318181 / 14; /*bufferLength = (newSampleRate / 60) * 4;*/ break;
+				case Region.PAL: cyclesPerSec = 17734472 / 18; /*bufferLength = (newSampleRate / 50) * 4;*/ break;
 			}
-			bufferFrequency = cyclesPerSec / newSampleRate;
-			buffer = new short[bufferLength];
+			//bufferFrequency = cyclesPerSec / newSampleRate;
+			//buffer = new short[bufferLength];
 
 			waveformTable = newWaveformTable;
 
@@ -666,6 +666,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			filterEnable = new bool[3];
 			for (int i = 0; i < 3; i++)
 				filterEnable[i] = false;
+
+			resampler = new Sound.Utilities.SpeexResampler(0, cyclesPerSec, 44100, cyclesPerSec, 44100, null, null);
 		}
 
 		// ------------------------------------
@@ -722,11 +724,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				envelopeOutput[2] = envelopes[2].Level;
 
 				// process output
-				if (bufferCounter == 0)
-				{
+				//if (bufferCounter == 0)
+				//{
 					uint mixer;
 					short sample;
-					bufferCounter = bufferFrequency;
+					//bufferCounter = bufferFrequency;
 
 					// mix each channel (20 bits)
 					mixer = ((voiceOutput[0] * envelopeOutput[0]) >> 7);
@@ -735,12 +737,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					mixer = (mixer * volume) >> 4;
 
 					sample = (short)mixer;
-					buffer[bufferIndex++] = sample;
-					buffer[bufferIndex++] = sample;
-					if (bufferIndex == bufferLength)
-						bufferIndex = 0;
-				}
-				bufferCounter--;
+					//buffer[bufferIndex++] = sample;
+					//buffer[bufferIndex++] = sample;
+					resampler.EnqueueSample(sample, sample);
+					//if (bufferIndex == bufferLength)
+					//	bufferIndex = 0;
+				//}
+				//bufferCounter--;
 			}
 		}
 
