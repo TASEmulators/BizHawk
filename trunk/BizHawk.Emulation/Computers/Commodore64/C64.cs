@@ -85,7 +85,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		};
 
 		// framework
-		public void Dispose() { }
+		public void Dispose()
+		{
+			if (board.sid != null)
+			{
+				board.sid.Dispose();
+				board.sid = null;
+			}
+		}
 
 		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
