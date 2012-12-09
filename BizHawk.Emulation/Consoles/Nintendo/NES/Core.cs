@@ -62,56 +62,84 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		class MagicSoundProvider : ISoundProvider, IDisposable
+		class MagicSoundProvider : ISoundProvider, ISyncSoundProvider, IDisposable
 		{
-			Sound.Utilities.SpeexResampler resampler;
-			ISoundProvider output;
+			Sound.Utilities.BlipBuffer blip;
 			NES nes;
+
+			const int blipbuffsize = 4096;
 
 			public MagicSoundProvider(NES nes, uint infreq)
 			{
 				this.nes = nes;
-				var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+
+				blip = new Sound.Utilities.BlipBuffer(blipbuffsize);
+				blip.SetRates(infreq, 44100);
+
+				//var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
 				//1.789773mhz NTSC
-				resampler = new Sound.Utilities.SpeexResampler(2, infreq, 44100 * APU.DECIMATIONFACTOR, infreq, 44100, actualMetaspu.buffer.enqueue_samples);
-				output = new Sound.Utilities.DCFilter(actualMetaspu);
+				//resampler = new Sound.Utilities.SpeexResampler(2, infreq, 44100 * APU.DECIMATIONFACTOR, infreq, 44100, actualMetaspu.buffer.enqueue_samples);
+				//output = new Sound.Utilities.DCFilter(actualMetaspu);
 			}
 
-			Random r = new Random();
 			public void GetSamples(short[] samples)
 			{
-				if (nes.apu.squeue.Count == 0)
-					return;
-				var monosampbuf = nes.apu.squeue.ToArray(2);
-				nes.apu.squeue.Clear();
-				if (monosampbuf.Length > 0)
-				{
-					var stereosampbuf = new short[monosampbuf.Length * 2];
-					for (int i = 0; i < monosampbuf.Length; i++)
-					{
-						stereosampbuf[i * 2 + 0] = monosampbuf[i];
-						stereosampbuf[i * 2 + 1] = monosampbuf[i];
-					}
-					resampler.EnqueueSamples(stereosampbuf, monosampbuf.Length);
-					resampler.Flush();
-					output.GetSamples(samples);
-				}
+				Console.WriteLine("Sync: {0}", nes.apu.dlist.Count);
+				int nsamp = samples.Length / 2;
+				if (nsamp > blipbuffsize) // oh well.
+					nsamp = blipbuffsize;
+				uint targetclock = (uint)blip.ClocksNeeded(nsamp);
+				uint actualclock = nes.apu.sampleclock;
+				foreach (var d in nes.apu.dlist)
+					blip.AddDelta(d.time * targetclock / actualclock, d.value);
+				nes.apu.dlist.Clear();
+				blip.EndFrame(targetclock);
+				nes.apu.sampleclock = 0;
+
+				blip.ReadSamples(samples, nsamp, true);
+				// duplicate to stereo
+				for (int i = 0; i < nsamp * 2; i += 2)
+					samples[i + 1] = samples[i];
 
 				//mix in the cart's extra sound circuit
 				nes.board.ApplyCustomAudio(samples);
 			}
 
+			public void GetSamples(out short[] samples, out int nsamp)
+			{
+				Console.WriteLine("ASync: {0}", nes.apu.dlist.Count);
+				foreach (var d in nes.apu.dlist)
+					blip.AddDelta(d.time, d.value);
+				nes.apu.dlist.Clear();
+				blip.EndFrame(nes.apu.sampleclock);
+				nes.apu.sampleclock = 0;
+
+				nsamp = blip.SamplesAvailable();
+				samples = new short[nsamp * 2];
+
+				blip.ReadSamples(samples, nsamp, true);
+				// duplicate to stereo
+				for (int i = 0; i < nsamp * 2; i += 2)
+					samples[i + 1] = samples[i];
+
+				nes.board.ApplyCustomAudio(samples);
+			}
+
 			public void DiscardSamples()
 			{
-				output.DiscardSamples();
+				nes.apu.dlist.Clear();
+				nes.apu.sampleclock = 0;
 			}
 
 			public int MaxVolume { get; set; }
 
 			public void Dispose()
 			{
-				resampler.Dispose();
-				resampler = null;
+				if (blip != null)
+				{
+					blip.Dispose();
+					blip = null;
+				}
 			}
 		}
 		MagicSoundProvider magicSoundProvider;
