@@ -263,17 +263,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					if (duty_value) //high state of duty cycle
 					{
 						newsample = env_output;
-
-						if (swp_silence)
-							newsample = env_output >> 1; //(a little biasing hack here)
-
-						if (len_cnt == 0) //length counter is 0
-							newsample = env_output >> 1; //silenced (a little biasing hack here)
+						if (swp_silence || len_cnt == 0)
+							newsample = 0; // silenced
 					}
 					else
-						newsample = env_output >> 1; //duty cycle is 0, silenced.
+						newsample = 0; //duty cycle is 0, silenced.
 
-					newsample -= env_output >> 1; //unbias
+					//newsample -= env_output >> 1; //unbias
 					if (newsample != sample)
 					{
 						apu.recalculate = true;
@@ -428,11 +424,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						noise_bit = (shift_register & 1) != 0;
 					}
 
-					//unbiasing is rolled in here
 					int newsample;
 					if (len_cnt == 0) newsample = 0;
-					else if (noise_bit) newsample = -env_output;
-					else newsample = env_output;
+					else if (noise_bit) newsample = env_output; // switched, was 0?
+					else newsample = 0;
 					if (newsample != sample)
 					{
 						apu.recalculate = true;
@@ -532,7 +527,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							seq = (seq + 1) & 0x1F;
 							timer = timer_cnt_reload;
 						}
-						if(CFG_DECLICK)
+						if(CFG_DECLICK) // this looks ugly...
 							newsample = TRIANGLE_TABLE[(seq + 8) & 0x1F];
 						else
 							newsample = TRIANGLE_TABLE[seq];
@@ -542,7 +537,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						//so we'll emulate it at the digital level
 						if (timer_cnt_reload == 1) newsample = 8;
 
-						newsample -= 8; //unbias
+						//newsample -= 8; //unbias
 						if (newsample != sample)
 						{
 							apu.recalculate = true;
@@ -615,7 +610,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int out_shift, out_bits_remaining, out_deltacounter;
 				bool out_silence;
 
-				public int sample { get { return out_deltacounter - 64; } }
+				public int sample { get { return out_deltacounter /* - 64*/; } }
 
 				public void SyncState(Serializer ser)
 				{
@@ -1022,11 +1017,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
-			//public void DiscardSamples()
-			//{
-			//  metaspu.buffer.clear();
-			//}
-
 			int toggle = 0;
 			public void RunOne()
 			{
@@ -1074,11 +1064,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//we want the changes to affect it on the *next* cycle.
 			}
 
-			//int loopy = 0;
-			//public const int DECIMATIONFACTOR = 20;
-			//const int QUEUESIZE = 1789773 / DECIMATIONFACTOR; //1 second, should be enough
-			//public QuickQueue<short> squeue = new QuickQueue<short>(QUEUESIZE);
-
 			public struct Delta
 			{
 				public uint time;
@@ -1114,14 +1099,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					if (!EnableNoise) s_noise = 0;
 					if (!EnableDMC) s_dmc = 0;
 
-					const float NOISEADJUST = 0.5f;
+					//const float NOISEADJUST = 0.5f;
 
 					//linear approximation
-					float pulse_out = 0.00752f * (s_pulse0 + s_pulse1);
-					float tnd_out = 0.00851f * s_tri + 0.00494f * NOISEADJUST * s_noise + 0.00335f * s_dmc;
-					float output = pulse_out + tnd_out;
+					//float pulse_out = 0.00752f * (s_pulse0 + s_pulse1);
+					//float tnd_out = 0.00851f * s_tri + 0.00494f * /*NOISEADJUST * */ s_noise + 0.00335f * s_dmc;
+					//float output = pulse_out + tnd_out;
 					//this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
-					int mix = (int)(50000 * output);
+					//int mix = (int)(50000 * output);
+
+					int pulse_out = 376 * (s_pulse0 + s_pulse1);
+					int tnd_out = 426 * s_tri + 247 * s_noise + 167 * s_dmc;
+					int mix = pulse_out + tnd_out;
 
 					dlist.Add(new Delta(sampleclock, mix - oldmix));
 					oldmix = mix;
