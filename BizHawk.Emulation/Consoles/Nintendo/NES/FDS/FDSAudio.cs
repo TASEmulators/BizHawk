@@ -6,7 +6,7 @@ using System.Text;
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// http://wiki.nesdev.com/w/index.php/FDS_audio
-	public class FDSAudio
+	public class FDSAudio : IDisposable
 	{
 		public void SyncState(Serializer ser)
 		{
@@ -99,11 +99,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		int latchedoutput;
 
-		/// <summary>
-		/// enough room to hold roughly one frame of final output, 0-2047
-		/// </summary>
-		short[] samplebuff = new short[32768];
-		int samplebuffpos = 0;
+		public FDSAudio(int m2rate)
+		{
+			// minor hack: due to the way the initialization sequence goes, this might get called
+			// with m2rate = 0.  such an instance will never be asked for samples, though
+			if (m2rate > 0)
+			{
+				blip = new Sound.Utilities.BlipBuffer(blipsize);
+				blip.SetRates(m2rate, 44100);
+			}
+		}
+
+		public void Dispose()
+		{
+			if (blip != null)
+			{
+				blip.Dispose();
+				blip = null;
+			}
+		}
 
 		void CalcMod()
 		{
@@ -134,7 +148,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			tmp *= waveramoutput;
 			tmp *= mastervol_num;
 			tmp /= mastervol_den;
-			latchedoutput = tmp;
+
+			if (latchedoutput != tmp)
+			{
+				dlist.Add(new Delta(sampleclock, tmp - latchedoutput));
+				latchedoutput = tmp;
+			}
 		}
 
 		/// <summary>
@@ -206,9 +225,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					CalcOut();
 				}
 			}
-			samplebuff[samplebuffpos++] = (short)latchedoutput;
-			// if for some reason ApplyCustomAudio() is not called, glitch up but don't crash
-			samplebuffpos &= 32767;
+			sampleclock++;
 		}
 
 		public void WriteReg(int addr, byte value)
@@ -309,30 +326,54 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ret;
 		}
 
-		Sound.Utilities.DCFilter dc = Sound.Utilities.DCFilter.DetatchedMode(4096);
+		Sound.Utilities.BlipBuffer blip;
+
+		struct Delta
+		{
+			public uint time;
+			public int value;
+			public Delta(uint time, int value)
+			{
+				this.time = time;
+				this.value = value;
+			}
+		}
+		List<Delta> dlist = new List<Delta>();
+
+		uint sampleclock = 0;
+		const int blipsize = 4096;
+
+		short[] mixout = new short[blipsize];
 
 		public void ApplyCustomAudio(short[] samples)
 		{
-			for (int i = 0; i < samples.Length; i += 2)
+			int nsamp = samples.Length / 2;
+			if (nsamp > blipsize) // oh well.
+				nsamp = blipsize;
+			uint targetclock = (uint)blip.ClocksNeeded(nsamp);
+			foreach (var d in dlist)
 			{
-				// worst imaginable resampling
-				int pos = i * samplebuffpos / samples.Length;
-				int samp = samplebuff[pos] * 6 - 12096;
-				samp += samples[i];
-				if (samp > 32767)
-					samples[i] = 32767;
-				else if (samp < -32768)
-					samples[i] = -32768;
-				else
-					samples[i] = (short)samp;
-
-				// NES audio is mono, so this should be identical anyway
-				samples[i + 1] = samples[i];
+				// original deltas are in -2016..2016
+				blip.AddDelta(d.time * targetclock / sampleclock, d.value * 6);
 			}
-			//Console.WriteLine("##{0}##", samplebuffpos);
-			samplebuffpos = 0;
+			//Console.WriteLine("sclock {0} tclock {1} ndelta {2}", sampleclock, targetclock, dlist.Count);
+			dlist.Clear();
+			blip.EndFrame(targetclock);
+			sampleclock = 0;
+			blip.ReadSamples(mixout, nsamp, false);
 
-			dc.PushThroughSamples(samples, samples.Length);
+			for (int i = 0, j = 0; i < nsamp; i++, j += 2)
+			{
+				int s = mixout[i] + samples[j];
+				if (s > 32767)
+					samples[j] = 32767;
+				else if (s <= -32768)
+					samples[j] = -32768;
+				else
+					samples[j] = (short)s;
+				// nes audio is mono, so we can ignore the original value of samples[j+1]
+				samples[j + 1] = samples[j];
+			}
 		}
 	}
 }

@@ -34,6 +34,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool vs_io = false;
 		bool vs_coin1;
 		bool vs_coin2;
+		/// <summary>clock speed of the main cpu in hz</summary>
+		public int cpuclockrate { get; private set; }
 
 		//irq state management
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; } }
@@ -84,7 +86,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public void GetSamples(short[] samples)
 			{
-				Console.WriteLine("Sync: {0}", nes.apu.dlist.Count);
+				//Console.WriteLine("Sync: {0}", nes.apu.dlist.Count);
 				int nsamp = samples.Length / 2;
 				if (nsamp > blipbuffsize) // oh well.
 					nsamp = blipbuffsize;
@@ -107,7 +109,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public void GetSamples(out short[] samples, out int nsamp)
 			{
-				Console.WriteLine("ASync: {0}", nes.apu.dlist.Count);
+				//Console.WriteLine("ASync: {0}", nes.apu.dlist.Count);
 				foreach (var d in nes.apu.dlist)
 					blip.AddDelta(d.time, d.value);
 				nes.apu.dlist.Clear();
@@ -165,11 +167,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ports[0] = new JoypadPortDevice(this, 0);
 			ports[1] = new JoypadPortDevice(this, 1);
 
-			BoardSystemHardReset();
-
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
-
 
 			// set up region
 			switch (cart.system)
@@ -181,26 +180,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppu.region = PPU.Region.PAL;
 					CoreOutputComm.VsyncNum = 50;
 					CoreOutputComm.VsyncDen = 1;
+					cpuclockrate = 1662607;
 					cpu_sequence = cpu_sequence_PAL;
-					if (magicSoundProvider == null)
-						magicSoundProvider = new MagicSoundProvider(this, 1662607);
 					break;
 				case "NES-NTSC":
 				case "Famicom":
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.NTSC;
+					cpuclockrate = 1789773;
 					cpu_sequence = cpu_sequence_NTSC;
-					if (magicSoundProvider == null)
-						magicSoundProvider = new MagicSoundProvider(this, 1789773);
 					break;
 				// there's no official name for these in bootgod, not sure what we should use
 				//case "PC10"://TODO
 				case "VS":
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.RGB;
+					cpuclockrate = 1789773;
 					cpu_sequence = cpu_sequence_NTSC;
-					if (magicSoundProvider == null)
-						magicSoundProvider = new MagicSoundProvider(this, 1789773);
 					vs_io = true;
 					break;
 				// this is in bootgod, but not used at all
@@ -209,9 +205,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppu.region = PPU.Region.Dendy;
 					CoreOutputComm.VsyncNum = 50;
 					CoreOutputComm.VsyncDen = 1;
+					cpuclockrate = 1773448;
 					cpu_sequence = cpu_sequence_NTSC;
-					if (magicSoundProvider == null)
-						magicSoundProvider = new MagicSoundProvider(this, 1773448);
 					break;
 				case null:
 					Console.WriteLine("Unknown NES system!  Defaulting to NTSC.");
@@ -220,6 +215,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					Console.WriteLine("Unrecognized NES system \"{0}\"!  Defaulting to NTSC.", cart.system);
 					goto case "NES-NTSC";
 			}
+			if (magicSoundProvider == null)
+				magicSoundProvider = new MagicSoundProvider(this, (uint)cpuclockrate);
+
+			BoardSystemHardReset();
 
 			//check fceux's PowerNES function for more information:
 			//relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
