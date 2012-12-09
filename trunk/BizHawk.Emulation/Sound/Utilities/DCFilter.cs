@@ -27,53 +27,42 @@ namespace BizHawk.Emulation.Sound.Utilities
 
 		int depth;
 		
-		/// <summary>
-		/// if input == null, run in detatched push mode
-		/// </summary>
-		/// <param name="input"></param>
-		public DCFilter(ISoundProvider input = null, int filterwidth = 65536)
+		public static DCFilter AsISoundProvider(ISoundProvider input, int filterwidth)
+		{
+			if (input == null)
+				throw new ArgumentNullException();
+			return new DCFilter(input, null, filterwidth);
+		}
+
+		public static DCFilter AsISyncSoundProvider(ISyncSoundProvider syncinput, int filterwidth)
+		{
+			if (syncinput == null)
+				throw new ArgumentNullException();
+			return new DCFilter(null, syncinput, filterwidth);
+		}
+
+		public static DCFilter DetatchedMode(int filterwidth)
+		{
+			return new DCFilter(null, null, filterwidth);
+		}
+
+		DCFilter(ISoundProvider input, ISyncSoundProvider syncinput, int filterwidth)	
 		{
 			if (filterwidth < 1 || filterwidth > 65536)
 				throw new ArgumentOutOfRangeException();
 			this.input = input;
-			this.syncinput = null;
-			this.depth = filterwidth;
-			this.buffer = new Queue<short>(depth * 2);
-			for (int i = 0; i < depth * 2; i++)
-				buffer.Enqueue(0);			
-		}
-
-		/// <summary>
-		/// detached mode
-		/// </summary>
-		/// <param name="filterwidth"></param>
-		public DCFilter(int filterwidth)
-		{
-			if (filterwidth < 1 || filterwidth > 65536)
-				throw new ArgumentOutOfRangeException();
-			this.input = null;
-			this.syncinput = null;
-			this.depth = filterwidth;
-			this.buffer = new Queue<short>(depth * 2);
-			for (int i = 0; i < depth * 2; i++)
-				buffer.Enqueue(0);
-		}
-
-		public DCFilter(ISyncSoundProvider input, int filterwidth)
-		{
-			if (filterwidth < 1 || filterwidth > 65536)
-				throw new ArgumentOutOfRangeException();
-			this.input = null;
-			this.syncinput = input;
-			this.depth = filterwidth;
-			this.buffer = new Queue<short>(depth * 2);
+			this.syncinput = syncinput;
+			depth = filterwidth;
+			buffer = new Queue<short>(depth * 2);
 			for (int i = 0; i < depth * 2; i++)
 				buffer.Enqueue(0);
 		}
 		
 		/// <summary>
-		/// pass a set of samples through the filter.  should not be mixed with pull (ISoundProvider) mode or sync mode
+		/// pass a set of samples through the filter.  should only be used in detached mode
 		/// </summary>
+		/// <param name="samples">sample buffer to modify</param>
+		/// <param name="length">number of samples (not pairs).  stereo</param>
 		public void PushThroughSamples(short[] samples, int length)
 		{
 			PushThroughSamples(samples, samples, length);
@@ -107,36 +96,26 @@ namespace BizHawk.Emulation.Sound.Utilities
 				else
 					samplesout[i + 1] = (short)bigR;
 			}
-
 		}
 
-		public void GetSamples(short[] samples)
+		void ISoundProvider.GetSamples(short[] samples)
 		{
 			input.GetSamples(samples);
 			PushThroughSamples(samples, samples.Length);
 		}
 
-		public void DiscardSamples()
+		void ISoundProvider.DiscardSamples()
 		{
-			if (input != null)
-				input.DiscardSamples();
-			if (syncinput != null)
-				syncinput.DiscardSamples();
+			input.DiscardSamples();
 		}
 
-		public int MaxVolume
+		int ISoundProvider.MaxVolume
 		{
-			get
-			{
-				return input.MaxVolume;
-			}
-			set
-			{
-				input.MaxVolume = value;
-			}
+			get { return input.MaxVolume; }
+			set { input.MaxVolume = value; }
 		}
 
-		public void GetSamples(out short[] samples, out int nsamp)
+		void ISyncSoundProvider.GetSamples(out short[] samples, out int nsamp)
 		{
 			short[] sampin;
 			int nsampin;
@@ -145,6 +124,11 @@ namespace BizHawk.Emulation.Sound.Utilities
 			PushThroughSamples(sampin, ret, nsampin * 2);
 			samples = ret;
 			nsamp = nsampin;
+		}
+
+		void ISyncSoundProvider.DiscardSamples()
+		{
+			syncinput.DiscardSamples();
 		}
 	}
 }

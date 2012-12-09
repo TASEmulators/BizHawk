@@ -185,7 +185,7 @@ namespace BizHawk
 			//tia = new TIA(this, frameBuffer);
 			tia = new TIA(this);
 			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
-			dcfilter = new Emulation.Sound.Utilities.DCFilter(tia, 256);
+			dcfilter = Emulation.Sound.Utilities.DCFilter.AsISoundProvider(tia, 256);
 			// Setup 6532
 			m6532 = new M6532(this);
 
