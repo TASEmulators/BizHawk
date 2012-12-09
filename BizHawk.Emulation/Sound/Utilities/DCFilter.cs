@@ -20,10 +20,21 @@ namespace BizHawk.Emulation.Sound.Utilities
 		ISoundProvider input;
 		ISyncSoundProvider syncinput;
 
-		int sumL = 0;
-		int sumR = 0;
+		int latchL = 0;
+		int latchR = 0;
+		int accumL = 0;
+		int accumR = 0;
 
-		Queue<short> buffer;
+		static int DepthFromFilterwidth(int filterwidth)
+		{
+			int ret = -2;
+			while (filterwidth > 0)
+			{
+				filterwidth >>= 1;
+				ret++;
+			}
+			return ret;
+		}
 
 		int depth;
 		
@@ -48,14 +59,11 @@ namespace BizHawk.Emulation.Sound.Utilities
 
 		DCFilter(ISoundProvider input, ISyncSoundProvider syncinput, int filterwidth)	
 		{
-			if (filterwidth < 1 || filterwidth > 65536)
+			if (filterwidth < 8 || filterwidth > 65536)
 				throw new ArgumentOutOfRangeException();
 			this.input = input;
 			this.syncinput = syncinput;
-			depth = filterwidth;
-			buffer = new Queue<short>(depth * 2);
-			for (int i = 0; i < depth * 2; i++)
-				buffer.Enqueue(0);
+			depth = DepthFromFilterwidth(filterwidth);
 		}
 		
 		/// <summary>
@@ -72,16 +80,17 @@ namespace BizHawk.Emulation.Sound.Utilities
 		{
 			for (int i = 0; i < length; i += 2)
 			{
-				sumL -= buffer.Dequeue();
-				sumR -= buffer.Dequeue();
-				short L = samplesin[i];
-				short R = samplesin[i + 1];
-				sumL += L;
-				sumR += R;
-				buffer.Enqueue(L);
-				buffer.Enqueue(R);
-				int bigL = L - sumL / depth;
-				int bigR = R - sumR / depth;
+				int L = samplesin[i] << 12;
+				int R = samplesin[i + 1] << 12;
+				accumL -= accumL >> depth;
+				accumR -= accumR >> depth;
+				accumL += L - latchL;
+				accumR += R - latchR;
+				latchL = L;
+				latchR = R;
+
+				int bigL = accumL >> 12;
+				int bigR = accumR >> 12;
 				// check for clipping
 				if (bigL > 32767)
 					samplesout[i] = 32767;

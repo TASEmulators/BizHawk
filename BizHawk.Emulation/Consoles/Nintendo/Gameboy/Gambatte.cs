@@ -738,7 +738,9 @@ namespace BizHawk.Emulation.Consoles.GB
 		void InitSound()
 		{
 			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, null, this);
-			dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 65536);
+			//dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 65536);
+			// lowpass filtering on an actual GB was probably pretty aggressive?
+			dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 2048);
 		}
 
 		void DisposeSound()
