@@ -1530,7 +1530,7 @@ namespace BizHawk.MultiClient
 
 		void RewireInputChain()
 		{
-			Global.ControllerInputCoalescer = new InputCoalescer();
+			Global.ControllerInputCoalescer = new ControllerInputCoalescer();
 
 			Global.ControllerInputCoalescer.Type = Global.ActiveController.Type;
 

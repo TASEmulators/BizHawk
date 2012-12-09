@@ -196,7 +196,7 @@ namespace BizHawk.MultiClient
 		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
 
 		//input state which has been destined for game controller inputs are coalesced here
-		public static InputCoalescer ControllerInputCoalescer = new InputCoalescer();
+		public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();
 		//input state which has been destined for client hotkey consumption are colesced here
 		public static InputCoalescer HotkeyCoalescer = new InputCoalescer();
 
