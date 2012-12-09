@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ret;
 		}
 
-		Sound.Utilities.DCFilter dc = new Sound.Utilities.DCFilter(4096);
+		Sound.Utilities.DCFilter dc = Sound.Utilities.DCFilter.DetatchedMode(4096);
 
 		public void ApplyCustomAudio(short[] samples)
 		{

@@ -738,7 +738,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		void InitSound()
 		{
 			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, null, this);
-			dcfilter = new Sound.Utilities.DCFilter(resampler, 65536);
+			dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 65536);
 		}
 
 		void DisposeSound()

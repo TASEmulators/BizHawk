@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public Namco163Audio()
 		{
 			resampler = new Sound.Utilities.SpeexResampler(2, 119318, 44100, 119318, 44100, null, null);
-			dc = new Sound.Utilities.DCFilter(4096);
+			dc = Sound.Utilities.DCFilter.DetatchedMode(4096);
 			metaspu = new Sound.MetaspuAsync(resampler, Sound.ESynchMethod.ESynchMethod_V);
 		}
 
