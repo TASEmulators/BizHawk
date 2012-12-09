@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Cart.board_type = "FAMICOM_DISK_SYSTEM";
 
 			diskdrive = new RamAdapter();
-			audio = new FDSAudio();
+			audio = new FDSAudio(NES.cpuclockrate);
 
 			InsertSide(0);
 			// set mirroring??
@@ -385,6 +385,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void ApplyCustomAudio(short[] samples)
 		{
 			audio.ApplyCustomAudio(samples);
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			if (audio != null)
+			{
+				audio.Dispose();
+				audio = null;
+			}
 		}
 	}
 }
