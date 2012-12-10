@@ -88,6 +88,29 @@ namespace BizHawk
 			}
 		};
 
+		class ConsoleLogger : ILogger
+		{
+			public void WriteLine(string format, params object[] args)
+			{
+				Console.WriteLine(format, args);
+			}
+
+			public void WriteLine(object value)
+			{
+				Console.WriteLine(value);
+			}
+
+			public void Write(string format, params object[] args)
+			{
+				Console.Write(format, args);
+			}
+
+			public void Write(object value)
+			{
+				Console.Write(value);
+			}
+		}
+
 		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, byte[] ntsc_bios, byte[] pal_bios, byte[] highscoreBIOS)
 		{
 			CoreComm = comm;
@@ -121,12 +144,13 @@ namespace BizHawk
 			
 			int[] bob = new int[] { 0, 0, 0 };
 
-			FileStream fs = new FileStream("C:\\dummy", FileMode.Create, FileAccess.ReadWrite); //TODO: I don't see what this context is used for, see if it can be whacked or pass in a null
-			BinaryReader blah = new BinaryReader(fs);
-			DeserializationContext george = new DeserializationContext(blah);
-			NullLogger logger = new NullLogger();
-			HSC7800 hsc7800 = new HSC7800(hsbios, new byte[4096]); //TODO: why should I have to feed it ram? how much?
+			//FileStream fs = new FileStream("C:\\dummy", FileMode.Create, FileAccess.ReadWrite); //TODO: I don't see what this context is used for, see if it can be whacked or pass in a null
+			//BinaryReader blah = new BinaryReader(fs);
+			//DeserializationContext george = new DeserializationContext(blah);
+			ILogger logger = new ConsoleLogger();
+			HSC7800 hsc7800 = new HSC7800(hsbios, new byte[2048]); //TODO: why should I have to feed it ram? how much?
 			theMachine = new Machine7800NTSC(cart, NTSC_BIOS, hsc7800, logger);
+			//theMachine = new Machine7800NTSC(cart, null, null, logger);
 			//TODO: clean up, the hs and bios are passed in, the bios has an object AND byte array in the core, and naming is inconsistent
 		}
 
