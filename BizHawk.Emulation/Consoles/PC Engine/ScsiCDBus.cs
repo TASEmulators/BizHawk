@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (DataReadInProgress && pce.Cpu.TotalExecutedCycles > DataReadWaitTimer)
             {
                 if (SectorsLeftToRead > 0)
-                    pce.CoreOutputComm.DriveLED = true;
+                    pce.CoreComm.DriveLED = true;
 
                 if (DataIn.Count == 0)
                 {

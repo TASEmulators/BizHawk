@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 									pixelcolor |= 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
 								}
 
-								if (!nes.CoreInputComm.NES_ShowBG)
+								if (!nes.CoreComm.NES_ShowBG)
 									pixelcolor = 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
 
 								//look for a sprite to be drawn
@@ -259,7 +259,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 										Reg2002_objhit |= (oam->index == 0 && pixel != 0 && rasterpos < 255);
 										//priority handling, if in front of BG:
 										bool drawsprite = !(((oam->oam[2] & 0x20) != 0) && ((pixel & 3) != 0));
-										if (drawsprite && nes.CoreInputComm.NES_ShowOBJ)
+										if (drawsprite && nes.CoreComm.NES_ShowOBJ)
 										{
 											//bring in the palette bits and palettize
 											spixel |= (oam->oam[2] & 3) << 2;
@@ -300,7 +300,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							if (oamcount >= 8 && reg_2001.PPUON)
 							{
 								Reg2002_objoverflow = true;
-								if(!nes.CoreInputComm.NES_UnlimitedSprites)
+								if(!nes.CoreComm.NES_UnlimitedSprites)
 									break;
 							}
 							//just copy some bytes into the internal sprite buffer

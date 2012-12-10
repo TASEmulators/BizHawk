@@ -1,7 +1,7 @@
 ﻿using System.Text;
 namespace BizHawk
 {
-	public class CoreInputComm
+	public class CoreComm
 	{
 		public int NES_BackdropColor;
 		public bool NES_UnlimitedSprites;
@@ -32,10 +32,7 @@ namespace BizHawk
 		public System.Action InputCallback;
 
 		public MemoryCallbackSystem MemoryCallbackSystem = new MemoryCallbackSystem();
-	}
 
-	public class CoreOutputComm
-	{
 		public double VsyncRate
 		{
 			get

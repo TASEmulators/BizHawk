@@ -38,8 +38,10 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			if (GraphicsRom.Length != 2048) throw new ApplicationException("GROM file is wrong size - expected 2048 bytes");
 		}
 
-		public Intellivision(GameInfo game, byte[] rom)
+		public Intellivision(CoreComm comm, GameInfo game, byte[] rom)
 		{
+			CoreComm = comm;
+
 			Rom = rom;
 			Game = game;
 			Cart = new Intellicart();
@@ -64,8 +66,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Psg.WriteMemory = WriteMemory;
 
 			Connect();
-
-			CoreOutputComm = new CoreOutputComm();
 
 			Cpu.LogData();
 		}
@@ -162,8 +162,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return new byte[0];
 		}
 
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 
 		public IList<MemoryDomain> MemoryDomains
 		{

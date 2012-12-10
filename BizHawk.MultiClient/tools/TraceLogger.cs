@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 
 		public void SaveConfigSettings()
 		{
-			Global.CoreInputComm.Tracer.Enabled = false;
+			Global.CoreComm.Tracer.Enabled = false;
 			Global.Config.TraceLoggerWndx = this.Location.X;
 			Global.Config.TraceLoggerWndy = this.Location.Y;
 		}
@@ -63,7 +63,7 @@ namespace BizHawk.MultiClient
 
 			ClearList();
 			LoggingEnabled.Checked = true;
-			Global.CoreInputComm.Tracer.Enabled = true;
+			Global.CoreComm.Tracer.Enabled = true;
 			SetTracerBoxTitle();
 			Restart();
 		}
@@ -81,10 +81,10 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				if (Global.Emulator.CoreOutputComm.CpuTraceAvailable)
+				if (Global.Emulator.CoreComm.CpuTraceAvailable)
 				{
 					ClearList();
-					TraceView.Columns[0].Text = Global.Emulator.CoreOutputComm.TraceHeader;
+					TraceView.Columns[0].Text = Global.Emulator.CoreComm.TraceHeader;
 				}
 				else
 				{
@@ -107,7 +107,7 @@ namespace BizHawk.MultiClient
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.CoreInputComm.Tracer.Enabled = LoggingEnabled.Checked;
+			Global.CoreComm.Tracer.Enabled = LoggingEnabled.Checked;
 			SetTracerBoxTitle();
 		}
 
@@ -133,13 +133,13 @@ namespace BizHawk.MultiClient
 		{
 			using (StreamWriter sw = new StreamWriter(LogFile.FullName, true))
 			{
-				sw.Write(Global.CoreInputComm.Tracer.TakeContents());
+				sw.Write(Global.CoreComm.Tracer.TakeContents());
 			}
 		}
 
 		private void LogToWindow()
 		{
-			string[] instructions = Global.CoreInputComm.Tracer.TakeContents().Split('\n');
+			string[] instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');
 			if (!String.IsNullOrWhiteSpace(instructions[0]))
 			{
 				foreach (string s in instructions)
@@ -207,7 +207,7 @@ namespace BizHawk.MultiClient
 
 		private void SetTracerBoxTitle()
 		{
-			if (Global.CoreInputComm.Tracer.Enabled)
+			if (Global.CoreComm.Tracer.Enabled)
 			{
 				if (ToFileRadio.Checked)
 				{

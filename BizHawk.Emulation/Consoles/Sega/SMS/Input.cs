@@ -18,7 +18,7 @@
 
 		byte ReadControls1()
 		{
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			lagged = false;
 			byte value = 0xFF;
 
@@ -37,7 +37,7 @@
 
 		byte ReadControls2()
 		{
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			lagged = false;
 			byte value = 0xFF;
 

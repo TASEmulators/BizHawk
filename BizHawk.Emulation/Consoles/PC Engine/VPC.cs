@@ -267,16 +267,16 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             switch (EffectivePriorityMode)
             {
                 case 0:
-                    RenderBackgroundScanline(VDC1, 12, PCE.CoreInputComm.PCE_ShowBG1);
-                    RenderBackgroundScanline(VDC2, 2, PCE.CoreInputComm.PCE_ShowBG2);
-                    RenderSpritesScanline(VDC1, 11, 14, PCE.CoreInputComm.PCE_ShowOBJ1);
-                    RenderSpritesScanline(VDC2, 1, 3, PCE.CoreInputComm.PCE_ShowOBJ2);
+                    RenderBackgroundScanline(VDC1, 12, PCE.CoreComm.PCE_ShowBG1);
+                    RenderBackgroundScanline(VDC2, 2, PCE.CoreComm.PCE_ShowBG2);
+                    RenderSpritesScanline(VDC1, 11, 14, PCE.CoreComm.PCE_ShowOBJ1);
+                    RenderSpritesScanline(VDC2, 1, 3, PCE.CoreComm.PCE_ShowOBJ2);
                     break;
                 case 1:
-                    RenderBackgroundScanline(VDC1, 12, PCE.CoreInputComm.PCE_ShowBG1);
-                    RenderBackgroundScanline(VDC2, 2, PCE.CoreInputComm.PCE_ShowBG2);
-                    RenderSpritesScanline(VDC1, 11, 14, PCE.CoreInputComm.PCE_ShowOBJ1);
-                    RenderSpritesScanline(VDC2, 1, 13, PCE.CoreInputComm.PCE_ShowOBJ2);
+                    RenderBackgroundScanline(VDC1, 12, PCE.CoreComm.PCE_ShowBG1);
+                    RenderBackgroundScanline(VDC2, 2, PCE.CoreComm.PCE_ShowBG2);
+                    RenderSpritesScanline(VDC1, 11, 14, PCE.CoreComm.PCE_ShowOBJ1);
+                    RenderSpritesScanline(VDC2, 1, 13, PCE.CoreComm.PCE_ShowOBJ2);
                     break;
             }
         }

@@ -154,9 +154,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory, (h) => DisposeList.Add(h));
 			cpu.FetchCallback = () =>
 				{
-					if (CoreInputComm.Tracer.Enabled)
+					if (CoreComm.Tracer.Enabled)
 					{
-						CoreInputComm.Tracer.Put(cpu.TraceState());
+						CoreComm.Tracer.Put(cpu.TraceState());
 					}
 				};
 			cpu.BCD_Enabled = false;
@@ -178,8 +178,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-PAL-B":
 					apu = new APU(this, apu, true);
 					ppu.region = PPU.Region.PAL;
-					CoreOutputComm.VsyncNum = 50;
-					CoreOutputComm.VsyncDen = 1;
+					CoreComm.VsyncNum = 50;
+					CoreComm.VsyncDen = 1;
 					cpuclockrate = 1662607;
 					cpu_sequence = cpu_sequence_PAL;
 					break;
@@ -203,8 +203,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "Dendy":
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.Dendy;
-					CoreOutputComm.VsyncNum = 50;
-					CoreOutputComm.VsyncDen = 1;
+					CoreComm.VsyncNum = 50;
+					CoreComm.VsyncDen = 1;
 					cpuclockrate = 1773448;
 					cpu_sequence = cpu_sequence_NTSC;
 					break;
@@ -405,7 +405,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		byte read_joyport(int addr)
 		{
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			return handle_read_joyport(addr, false);
 		}
 
@@ -602,9 +602,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret = sysbus_watch[addr].ApplyGameGenie(ret);
 			}
 
-			if (CoreInputComm.MemoryCallbackSystem.HasRead)
+			if (CoreComm.MemoryCallbackSystem.HasRead)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
+				CoreComm.MemoryCallbackSystem.TriggerRead(addr);
 			}
 
 			DB = ret;
@@ -665,9 +665,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				board.WritePRG(addr - 0x8000, value);
 			}
 
-			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
+			if (CoreComm.MemoryCallbackSystem.HasWrite)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
+				CoreComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 		}
 

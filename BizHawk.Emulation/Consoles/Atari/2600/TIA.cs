@@ -699,12 +699,12 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 				// Pick the pixel color from collisions
 				uint pixelColor = 0x000000;
-				if (core.CoreInputComm.Atari2600_ShowBG)
+				if (core.CoreComm.Atari2600_ShowBG)
 				{
 					pixelColor = palette[playField.bkColor];
 				}
 
-				if ((collisions & CXPF) != 0 && core.CoreInputComm.Atari2600_ShowPF)
+				if ((collisions & CXPF) != 0 && core.CoreComm.Atari2600_ShowPF)
 				{
 					if (playField.score)
 					{
@@ -726,7 +726,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if ((collisions & CXBL) != 0)
 				{
 					ball.collisions |= collisions;
-					if (core.CoreInputComm.Atari2600_ShowBall) 
+					if (core.CoreComm.Atari2600_ShowBall) 
 					{
 						pixelColor = palette[playField.pfColor];
 					}
@@ -735,7 +735,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if ((collisions & CXM1) != 0)
 				{
 					player1.missile.collisions |= collisions;
-					if (core.CoreInputComm.Atari2600_ShowMissle2)
+					if (core.CoreComm.Atari2600_ShowMissle2)
 					{
 						pixelColor = palette[player1.color];
 					}
@@ -744,7 +744,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if ((collisions & CXP1) != 0)
 				{
 					player1.collisions |= collisions;
-					if (core.CoreInputComm.Atari2600_ShowPlayer2)
+					if (core.CoreComm.Atari2600_ShowPlayer2)
 					{
 						pixelColor = palette[player1.color];
 					}
@@ -753,7 +753,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if ((collisions & CXM0) != 0)
 				{
 					player0.missile.collisions |= collisions;
-					if (core.CoreInputComm.Atari2600_ShowMissle1)
+					if (core.CoreComm.Atari2600_ShowMissle1)
 					{
 						pixelColor = palette[player0.color];
 					}
@@ -762,13 +762,13 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if ((collisions & CXP0) != 0)
 				{
 					player0.collisions |= collisions;
-					if (core.CoreInputComm.Atari2600_ShowPlayer1)
+					if (core.CoreComm.Atari2600_ShowPlayer1)
 					{
 						pixelColor = palette[player0.color];
 					}
 				}
 
-				if (playField.priority && (collisions & CXPF) != 0 && core.CoreInputComm.Atari2600_ShowPF)
+				if (playField.priority && (collisions & CXPF) != 0 && core.CoreComm.Atari2600_ShowPF)
 				{
 					if (playField.score)
 					{

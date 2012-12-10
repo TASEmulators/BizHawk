@@ -39,9 +39,9 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				ret = rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
 			else ret = ram[addr - 0x8000];
 
-			if (CoreInputComm.MemoryCallbackSystem.HasRead)
+			if (CoreComm.MemoryCallbackSystem.HasRead)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
+				CoreComm.MemoryCallbackSystem.TriggerRead(addr);
 			}
 
 			return ret;
@@ -55,9 +55,9 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				return; //other rom page
 			else ram[addr - 0x8000] = value;
 
-			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
+			if (CoreComm.MemoryCallbackSystem.HasWrite)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
+				CoreComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 		}
 
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		byte ReadKeyboard()
 		{
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			//ref TI-9X
 
 			int ret = 0xFF;
@@ -326,9 +326,9 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			}
 		}
 
-		public TI83(GameInfo game, byte[] rom)
+		public TI83(CoreComm comm, GameInfo game, byte[] rom)
 		{
-			CoreOutputComm = new CoreOutputComm();
+			CoreComm = comm;
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
 			cpu.ReadHardware = ReadHardware;
@@ -362,8 +362,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		}
 
 
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 
 		protected byte[] vram = new byte[0x300];
 		class MyVideoProvider : IVideoProvider

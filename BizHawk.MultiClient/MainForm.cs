@@ -129,8 +129,8 @@ namespace BizHawk.MultiClient
 					return Util.ReadAllBytes(NesCartFile.GetStream());
 			};
 			Global.MainForm = this;
-			Global.CoreInputComm = new CoreInputComm();
-			SyncCoreInputComm();
+			//Global.CoreComm = new CoreComm();
+			//SyncCoreCommInputSignals();
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
@@ -165,7 +165,9 @@ namespace BizHawk.MultiClient
 
 			Input.Initialize();
 			InitControls();
-			Global.Emulator = new NullEmulator();
+			Global.CoreComm = new CoreComm();
+			SyncCoreCommInputSignals();
+			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
@@ -308,7 +310,7 @@ namespace BizHawk.MultiClient
 				LoadSNESGraphicsDebugger();
 			if (Global.Config.TraceLoggerAutoLoad)
 			{
-				if (Global.Emulator.CoreOutputComm.CpuTraceAvailable)
+				if (Global.CoreComm.CpuTraceAvailable)
 				{
 					LoadTraceLogger();
 				}
@@ -356,47 +358,52 @@ namespace BizHawk.MultiClient
 			base.Dispose(disposing);
 		}
 
-		public void SyncCoreInputComm()
+		public void SyncCoreCommInputSignals(CoreComm target)
 		{
-			Global.CoreInputComm.NES_BackdropColor = Global.Config.NESBackgroundColor;
-			Global.CoreInputComm.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
-			Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground;
-			Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites;
-			Global.CoreInputComm.PCE_ShowBG1 = Global.Config.PCEDispBG1;
-			Global.CoreInputComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1;
-			Global.CoreInputComm.PCE_ShowBG2 = Global.Config.PCEDispBG2;
-			Global.CoreInputComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2;
-			Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG;
-			Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
+			target.NES_BackdropColor = Global.Config.NESBackgroundColor;
+			target.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
+			target.NES_ShowBG = Global.Config.NESDispBackground;
+			target.NES_ShowOBJ = Global.Config.NESDispSprites;
+			target.PCE_ShowBG1 = Global.Config.PCEDispBG1;
+			target.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1;
+			target.PCE_ShowBG2 = Global.Config.PCEDispBG2;
+			target.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2;
+			target.SMS_ShowBG = Global.Config.SMSDispBG;
+			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
-			Global.CoreInputComm.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
+			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
 
-			Global.CoreInputComm.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
+			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
 
-			Global.CoreInputComm.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
-			Global.CoreInputComm.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
-			Global.CoreInputComm.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
-			Global.CoreInputComm.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
-			Global.CoreInputComm.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_1;
-			Global.CoreInputComm.SNES_ShowBG3_0 = Global.Config.SNES_ShowBG3_0;
-			Global.CoreInputComm.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_1;
-			Global.CoreInputComm.SNES_ShowBG4_0 = Global.Config.SNES_ShowBG4_0;
-			Global.CoreInputComm.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_1;
-			Global.CoreInputComm.SNES_ShowOBJ_0 = Global.Config.SNES_ShowOBJ1;
-			Global.CoreInputComm.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ2;
-			Global.CoreInputComm.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ3;
-			Global.CoreInputComm.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ4;
+			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
+			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
+			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
+			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
+			target.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_1;
+			target.SNES_ShowBG3_0 = Global.Config.SNES_ShowBG3_0;
+			target.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_1;
+			target.SNES_ShowBG4_0 = Global.Config.SNES_ShowBG4_0;
+			target.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_1;
+			target.SNES_ShowOBJ_0 = Global.Config.SNES_ShowOBJ1;
+			target.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ2;
+			target.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ3;
+			target.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ4;
 
-			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
-			Global.CoreInputComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+			target.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+			target.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
 
-			Global.CoreInputComm.Atari2600_ShowBG = Global.Config.Atari2600_ShowBG;
-			Global.CoreInputComm.Atari2600_ShowPlayer1 = Global.Config.Atari2600_ShowPlayer1;
-			Global.CoreInputComm.Atari2600_ShowPlayer2 = Global.Config.Atari2600_ShowPlayer2;
-			Global.CoreInputComm.Atari2600_ShowMissle1 = Global.Config.Atari2600_ShowMissle1;
-			Global.CoreInputComm.Atari2600_ShowMissle2 = Global.Config.Atari2600_ShowMissle2;
-			Global.CoreInputComm.Atari2600_ShowBall = Global.Config.Atari2600_ShowBall;
-			Global.CoreInputComm.Atari2600_ShowPF = Global.Config.Atari2600_ShowPlayfield;
+			target.Atari2600_ShowBG = Global.Config.Atari2600_ShowBG;
+			target.Atari2600_ShowPlayer1 = Global.Config.Atari2600_ShowPlayer1;
+			target.Atari2600_ShowPlayer2 = Global.Config.Atari2600_ShowPlayer2;
+			target.Atari2600_ShowMissle1 = Global.Config.Atari2600_ShowMissle1;
+			target.Atari2600_ShowMissle2 = Global.Config.Atari2600_ShowMissle2;
+			target.Atari2600_ShowBall = Global.Config.Atari2600_ShowBall;
+			target.Atari2600_ShowPF = Global.Config.Atari2600_ShowPlayfield;
+		}
+
+		public void SyncCoreCommInputSignals()
+		{
+			SyncCoreCommInputSignals(Global.CoreComm);
 		}
 
 		void SyncPresentationMode()
@@ -467,7 +474,7 @@ namespace BizHawk.MultiClient
 			Global.ForceNoThrottle = unthrottled || fastforward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
-			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
+			throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 
 			throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
 			throttle.signal_unthrottle = unthrottled;
@@ -1588,6 +1595,8 @@ namespace BizHawk.MultiClient
 				IEmulator nextEmulator = null;
 				RomGame rom = null;
 				GameInfo game = null;
+				CoreComm nextComm = new CoreComm();
+				SyncCoreCommInputSignals(nextComm);
 
 				try
 				{
@@ -1649,11 +1658,10 @@ namespace BizHawk.MultiClient
 						{
 							case "PSX":
 								{
-									var psx = new BizHawk.Emulation.Consoles.PSX.Octoshock();
+									var psx = new BizHawk.Emulation.Consoles.PSX.Octoshock(nextComm);
 									nextEmulator = psx;
-									psx.CoreInputComm = Global.CoreInputComm;
 									psx.LoadCuePath(file.CanonicalFullPath);
-									nextEmulator.CoreOutputComm.RomStatusDetails = "PSX etc.";
+									nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								}
 								break;
 
@@ -1690,7 +1698,7 @@ namespace BizHawk.MultiClient
 
 									game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData));
 
-									nextEmulator = new PCEngine(game, disc, rom.RomData);
+									nextEmulator = new PCEngine(nextComm, game, disc, rom.RomData);
 									break;
 								}
 						}
@@ -1706,9 +1714,8 @@ namespace BizHawk.MultiClient
 							case "SNES":
 								{
 									game.System = "SNES";
-									var snes = new LibsnesCore();
+									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
-									nextEmulator.CoreInputComm = Global.CoreInputComm;
 									snes.Load(game, rom.FileData, null, deterministicemulation);
 								}
 								break;
@@ -1718,15 +1725,15 @@ namespace BizHawk.MultiClient
 								if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
 								if (Global.Config.SmsForceStereoSeparation) game.AddOption("ForceStereo");
 								if (Global.Config.SmsSpriteLimit) game.AddOption("SpriteLimit");
-								nextEmulator = new SMS(game, rom.RomData);
+								nextEmulator = new SMS(nextComm, game, rom.RomData);
 								break;
 							case "GG":
 								if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
 								if (Global.Config.SmsSpriteLimit) game.AddOption("SpriteLimit");
-								nextEmulator = new SMS(game, rom.RomData);
+								nextEmulator = new SMS(nextComm, game, rom.RomData);
 								break;
 							case "A26":
-								nextEmulator = new Atari2600(game, rom.FileData);
+								nextEmulator = new Atari2600(nextComm, game, rom.FileData);
 								((Atari2600)nextEmulator).SetBw(Global.Config.Atari2600_BW);
 								((Atari2600)nextEmulator).SetP0Diff(Global.Config.Atari2600_LeftDifficulty);
 								((Atari2600)nextEmulator).SetP1Diff(Global.Config.Atari2600_RightDifficulty);
@@ -1735,13 +1742,13 @@ namespace BizHawk.MultiClient
 							case "PCECD":
 							case "SGX":
 								if (Global.Config.PceSpriteLimit) game.AddOption("ForceSpriteLimit");
-								nextEmulator = new PCEngine(game, rom.RomData);
+								nextEmulator = new PCEngine(nextComm, game, rom.RomData);
 								break;
 							case "GEN":
-								nextEmulator = new Genesis(game, rom.RomData);
+								nextEmulator = new Genesis(nextComm, game, rom.RomData);
 								break;
 							case "TI83":
-								nextEmulator = new TI83(game, rom.RomData);
+								nextEmulator = new TI83(nextComm, game, rom.RomData);
 								if (Global.Config.TI83autoloadKeyPad)
 									LoadTI83KeyPad();
 								break;
@@ -1762,7 +1769,7 @@ namespace BizHawk.MultiClient
 										}
 									}
 
-									NES nes = new NES(game, rom.FileData, bios);
+									NES nes = new NES(nextComm, game, rom.FileData, bios);
 									nes.SoundOn = Global.Config.SoundEnabled;
 									nes.FirstDrawLine = Global.Config.NESTopLine;
 									nes.LastDrawLine = Global.Config.NESBottomLine;
@@ -1783,7 +1790,7 @@ namespace BizHawk.MultiClient
 									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
 									if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
 									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-									Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(game, rom.FileData);
+									Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(nextComm, game, rom.FileData);
 									nextEmulator = gb;
 									if (gb.IsCGBMode())
 									{
@@ -1832,7 +1839,7 @@ namespace BizHawk.MultiClient
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
-										var snes = new LibsnesCore();
+										var snes = new LibsnesCore(nextComm);
 										nextEmulator = snes;
 										game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
 										snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
@@ -1849,13 +1856,13 @@ namespace BizHawk.MultiClient
 								}
 								else
 								{
-									ColecoVision c = new ColecoVision(game, rom.RomData, colbiosPath, Global.Config.ColecoSkipBiosIntro);
+									ColecoVision c = new ColecoVision(nextComm, game, rom.RomData, colbiosPath, Global.Config.ColecoSkipBiosIntro);
 									nextEmulator = c;
 								}
 								break;
 							case "INTV":
 								{
-									Intellivision intv = new Intellivision(game, rom.RomData);
+									Intellivision intv = new Intellivision(nextComm, game, rom.RomData);
 									string eromPath = PathManager.MakeAbsolutePath(Global.Config.PathINTVEROM, "INTV");
 									if (!File.Exists(eromPath))
 										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
@@ -1898,12 +1905,11 @@ namespace BizHawk.MultiClient
 								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
 								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);
 
-								Atari7800 a78 = new Atari7800(game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS);
+								Atari7800 a78 = new Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS);
 								nextEmulator = a78;
 								break;
 							case "C64":
-								C64 c64 = new C64(game, rom.RomData, rom.Extension);
-								c64.CoreInputComm = Global.CoreInputComm;
+								C64 c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
 								c64.HardReset();
 								nextEmulator = c64;
 								break;
@@ -1922,7 +1928,7 @@ namespace BizHawk.MultiClient
 										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
 										throw new Exception();
 									}
-									GBA gba = new GBA();
+									GBA gba = new GBA(nextComm);
 									gba.Load(rom.RomData, gbabios);
 									nextEmulator = gba;
 								}
@@ -1932,7 +1938,6 @@ namespace BizHawk.MultiClient
 
 					if (nextEmulator == null)
 						throw new Exception("No core could load the rom.");
-					nextEmulator.CoreInputComm = Global.CoreInputComm;
 				}
 				catch (Exception ex)
 				{
@@ -1945,7 +1950,9 @@ namespace BizHawk.MultiClient
 				CloseGame();
 				Global.Emulator.Dispose();
 				Global.Emulator = nextEmulator;
+				Global.CoreComm = nextComm;
 				Global.Game = game;
+				SyncCoreCommInputSignals();
 				SyncControls();
 
 				if (nextEmulator is LibsnesCore)
@@ -1966,9 +1973,9 @@ namespace BizHawk.MultiClient
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
 
-				if (Global.Emulator.CoreOutputComm.RomStatusDetails == null)
+				if (Global.Emulator.CoreComm.RomStatusDetails == null)
 				{
-					Global.Emulator.CoreOutputComm.RomStatusDetails =
+					Global.Emulator.CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 						game.Name,
 						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom.RomData)),
@@ -1993,7 +2000,7 @@ namespace BizHawk.MultiClient
 				////setup the throttle based on platform's specifications
 				////(one day later for some systems we will need to modify it at runtime as the display mode changes)
 				//{
-				//    throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
+				//    throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
 				//    SyncThrottle();
 				//}
 				RamSearch1.Restart();
@@ -2117,8 +2124,8 @@ namespace BizHawk.MultiClient
 				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
 				annotation = "Verified good dump";
 			}
-			if (!string.IsNullOrEmpty(Global.Emulator.CoreOutputComm.RomStatusAnnotation))
-				annotation = Global.Emulator.CoreOutputComm.RomStatusAnnotation;
+			if (!string.IsNullOrEmpty(Global.Emulator.CoreComm.RomStatusAnnotation))
+				annotation = Global.Emulator.CoreComm.RomStatusAnnotation;
 
 			DumpStatus.ToolTipText = annotation;
 		}
@@ -2144,22 +2151,6 @@ namespace BizHawk.MultiClient
 				Global.Emulator.StoreSaveRam(sram);
 			}
 			catch (IOException) { }
-		}
-
-		private void CloseGame()
-		{
-			if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
-				SaveState("Auto");
-			if (Global.Emulator.SaveRamModified)
-				SaveRam();
-			StopAVI();
-			Global.Emulator.Dispose();
-			Global.Emulator = new NullEmulator();
-			Global.ActiveController = Global.NullControls;
-			Global.AutoFireController = Global.AutofireNullControls;
-			Global.MovieSession.Movie.Stop();
-			NeedsReboot = false;
-			SetRebootIconStatus();
 		}
 
 		private static void SaveRam()
@@ -3397,10 +3388,34 @@ namespace BizHawk.MultiClient
 			LoadRom(file.FullName);
 		}
 
+		//-------------------------------------------------------
+		//whats the difference between these two methods??
+		//its very tricky. rename to be more clear or combine them.
+
+		private void CloseGame()
+		{
+			if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
+				SaveState("Auto");
+			if (Global.Emulator.SaveRamModified)
+				SaveRam();
+			StopAVI();
+			Global.Emulator.Dispose();
+			Global.CoreComm = new CoreComm();
+			SyncCoreCommInputSignals();
+			Global.Emulator = new NullEmulator(Global.CoreComm);
+			Global.ActiveController = Global.NullControls;
+			Global.AutoFireController = Global.AutofireNullControls;
+			Global.MovieSession.Movie.Stop();
+			NeedsReboot = false;
+			SetRebootIconStatus();
+		}
+
 		public void CloseROM()
 		{
 			CloseGame();
-			Global.Emulator = new NullEmulator();
+			Global.CoreComm = new CoreComm();
+			SyncCoreCommInputSignals();
+			Global.Emulator = new NullEmulator(Global.CoreComm);
 			Global.Game = GameInfo.GetNullGame();
 			MemoryPulse.Clear();
 			RewireSound();
@@ -3425,6 +3440,8 @@ namespace BizHawk.MultiClient
 			StateSlots.Clear();
 			UpdateDumpIcon();
 		}
+
+		//-------------------------------------------------------
 
 		private void SaveConfig()
 		{
@@ -3818,7 +3835,7 @@ namespace BizHawk.MultiClient
 
 			try
 			{
-				aw.SetMovieParameters(Global.Emulator.CoreOutputComm.VsyncNum, Global.Emulator.CoreOutputComm.VsyncDen);
+				aw.SetMovieParameters(Global.Emulator.CoreComm.VsyncNum, Global.Emulator.CoreComm.VsyncDen);
 				if (avwriter_resizew > 0 && avwriter_resizeh > 0)
 					aw.SetVideoParameters(avwriter_resizew, avwriter_resizeh);
 				else
@@ -3945,10 +3962,10 @@ namespace BizHawk.MultiClient
 		{
 			if (CurrAviWriter != null)
 			{
-				long nsampnum = 44100 * (long)Global.Emulator.CoreOutputComm.VsyncDen + SoundRemainder;
-				long nsamp = nsampnum / Global.Emulator.CoreOutputComm.VsyncNum;
+				long nsampnum = 44100 * (long)Global.Emulator.CoreComm.VsyncDen + SoundRemainder;
+				long nsamp = nsampnum / Global.Emulator.CoreComm.VsyncNum;
 				// exactly remember fractional parts of an audio sample
-				SoundRemainder = nsampnum % Global.Emulator.CoreOutputComm.VsyncNum;
+				SoundRemainder = nsampnum % Global.Emulator.CoreComm.VsyncNum;
 
 				short[] temp = new short[nsamp * 2];
 				AviSoundInput.GetSamples(temp);
@@ -4571,13 +4588,13 @@ namespace BizHawk.MultiClient
 		private void showClippedRegionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GGShowClippedRegions ^= true;
-			Global.CoreInputComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
+			Global.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
 		}
 
 		private void highlightActiveDisplayRegionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GGHighlightActiveDisplayRegion ^= true;
-			Global.CoreInputComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
+			Global.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 		}
 
 		private void loadConfigToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -4612,43 +4629,43 @@ namespace BizHawk.MultiClient
 		private void showBGToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowBG ^= true;
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		private void showPlayer1ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowPlayer1 ^= true;
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		private void showPlayer2ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowPlayer2 ^= true;
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		private void showMissle1ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowMissle1 ^= true;
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		private void showMissle2ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowMissle2 ^= true;
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		private void showBallToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowBall ^= true;
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		private void showPlayfieldToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.Atari2600_ShowPlayfield ^= true;
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		private void gPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4675,13 +4692,13 @@ namespace BizHawk.MultiClient
 		{
 			if (StatusSlot0.Visible)
 			{
-				if (Global.Emulator.CoreOutputComm.UsesDriveLed)
+				if (Global.Emulator.CoreComm.UsesDriveLed)
 				{
 					if (!StatusBarLedLight.Visible)
 					{
 						StatusBarLedLight.Visible = true;
 					}
-					if (Global.Emulator.CoreOutputComm.DriveLED)
+					if (Global.Emulator.CoreComm.DriveLED)
 					{
 						StatusBarLedLight.Image = BizHawk.MultiClient.Properties.Resources.LightOn;
 					}

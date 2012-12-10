@@ -1376,8 +1376,8 @@ namespace BizHawk.MultiClient
 				RefreshBGENCheckStatesFromConfig();
 				suppression = false;
 			}
-			
-			Global.MainForm.SyncCoreInputComm();
+
+			Global.MainForm.SyncCoreCommInputSignals();
 		}
 
 		private void lblEnPrio0_Click(object sender, EventArgs e)
