@@ -40,13 +40,13 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			InitMedia();
 
 			// configure video
-			CoreOutputComm.VsyncDen = board.vic.CyclesPerFrame;
-			CoreOutputComm.VsyncNum = board.vic.CyclesPerSecond;
+			CoreComm.VsyncDen = board.vic.CyclesPerFrame;
+			CoreComm.VsyncNum = board.vic.CyclesPerSecond;
 		}
 
 		private void InitDisk(Region initRegion)
 		{
-			string sourceFolder = CoreInputComm.C64_FirmwaresPath;
+			string sourceFolder = CoreComm.C64_FirmwaresPath;
 			if (sourceFolder == null)
 				sourceFolder = @".\C64\Firmwares";
 			string diskFile = "dos1541";
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void InitRoms()
 		{
-			string sourceFolder = CoreInputComm.C64_FirmwaresPath;
+			string sourceFolder = CoreComm.C64_FirmwaresPath;
 			if (sourceFolder == null)
 				sourceFolder = @".\C64\Firmwares";
 

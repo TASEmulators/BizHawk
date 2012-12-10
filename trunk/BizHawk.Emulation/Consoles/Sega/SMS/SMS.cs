@@ -85,12 +85,13 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public DisplayType DisplayType { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 
-		public SMS(GameInfo game, byte[] rom)
+		public SMS(CoreComm comm, GameInfo game, byte[] rom)
 		{
-		    IsGameGear = game.System == "GG";
+			CoreComm = comm;
+			
+			IsGameGear = game.System == "GG";
 		    RomData = rom;
-			CoreOutputComm = new CoreOutputComm();
-            CoreOutputComm.CpuTraceAvailable = true;
+            CoreComm.CpuTraceAvailable = true;
             
             if (RomData.Length % BankSize != 0)
                 Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
@@ -98,8 +99,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             DisplayType = DisplayType.NTSC;
             if (game["PAL"]) DisplayType = DisplayType.PAL;
-			CoreOutputComm.VsyncNum = DisplayType == DisplayType.NTSC ? 60 : 50;
-			CoreOutputComm.VsyncDen = 1;
+			CoreComm.VsyncNum = DisplayType == DisplayType.NTSC ? 60 : 50;
+			CoreComm.VsyncDen = 1;
             
             if (game["Japan"]) Region = "Japan";
             if (game.NotInDatabase || game["FM"] && game["UseFM"])
@@ -201,9 +202,9 @@ namespace BizHawk.Emulation.Consoles.Sega
 			lagged = true;
 			Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
-            Cpu.Debug = CoreInputComm.Tracer.Enabled;
-            if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreInputComm/CoreOutputComm first
-                Cpu.Logger = (s) => CoreInputComm.Tracer.Put(s);
+            Cpu.Debug = CoreComm.Tracer.Enabled;
+            if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+                Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
 
 			if (IsGameGear == false)
 				Cpu.NonMaskableInterrupt = Controller["Pause"];
@@ -359,8 +360,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		}
 
 		public IVideoProvider VideoProvider { get { return Vdp; } }
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 
 		ISoundProvider ActiveSoundProvider;
 		public ISoundProvider SoundProvider { get { return ActiveSoundProvider; } }

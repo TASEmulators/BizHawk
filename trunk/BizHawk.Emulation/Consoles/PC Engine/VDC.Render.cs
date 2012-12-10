@@ -108,8 +108,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (ActiveLine >= FrameHeight)
                 return;
 
-            RenderBackgroundScanline(pce.CoreInputComm.PCE_ShowBG1);
-            RenderSpritesScanline(pce.CoreInputComm.PCE_ShowOBJ1);
+            RenderBackgroundScanline(pce.CoreComm.PCE_ShowBG1);
+            RenderSpritesScanline(pce.CoreComm.PCE_ShowOBJ1);
         }
 
         void RenderBackgroundScanline(bool show)

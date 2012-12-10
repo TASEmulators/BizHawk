@@ -13,15 +13,14 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private string extension;
 		private byte[] inputFile;
 
-		public C64(GameInfo game, byte[] rom, string romextension)
+		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
 		{
+			CoreComm = comm;
 			inputFile = rom;
 			extension = romextension;
-			CoreOutputComm = new CoreOutputComm();
-			CoreInputComm = new CoreInputComm();
 			Init(Region.PAL);
 			cyclesPerFrame = (uint)board.vic.CyclesPerFrame;
-			CoreOutputComm.UsesDriveLed = true;
+			CoreComm.UsesDriveLed = true;
 			SetupMemoryDomains();
 		}
 
@@ -31,8 +30,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		private int _frame = 0;
 
 		// bizhawk I/O
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 		
 		// game/rom specific
 		public GameInfo game;
@@ -126,7 +124,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 			Console.WriteLine("CPUPC: " + C64Util.ToHex(board.cpu.PC, 4) + " 1541PC: " + C64Util.ToHex(disk.PC, 4));
 
-			CoreOutputComm.DriveLED = DriveLED;
+			CoreComm.DriveLED = DriveLED;
 		}
 
 		private void HandleFirmwareError(string file)

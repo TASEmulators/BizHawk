@@ -20,8 +20,10 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public SN76489 PSG;
 		public byte[] Ram = new byte[1024];
 
-		public ColecoVision(GameInfo game, byte[] rom, string biosPath, bool skipbios)
+		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, string biosPath, bool skipbios)
 		{
+			CoreComm = comm;
+
 			Cpu = new Z80A();
 			Cpu.ReadMemory = ReadMemory;
 			Cpu.WriteMemory = WriteMemory;
@@ -34,11 +36,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
 			BiosRom = File.ReadAllBytes(biosPath);
 
-			CoreOutputComm = new CoreOutputComm();
-			CoreInputComm = new CoreInputComm();
-             
-            if (game["NoSkip"])
-                skipbios = false;
+			if (game["NoSkip"])
+				skipbios = false;
 			LoadRom(rom, skipbios);
 			this.game = game;
 			SetupMemoryDomains();
@@ -239,8 +238,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 
 		public string SystemId { get { return "Coleco"; } }
 		public GameInfo game;
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return VDP; } }
 		public ISoundProvider SoundProvider { get { return PSG; } }
 

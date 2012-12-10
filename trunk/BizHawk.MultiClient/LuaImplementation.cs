@@ -650,8 +650,8 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				dx -= Global.Emulator.CoreOutputComm.ScreenLogicalOffsetX;
-				dy -= Global.Emulator.CoreOutputComm.ScreenLogicalOffsetY;
+				dx -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
+				dy -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
 			Global.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor),
@@ -871,8 +871,8 @@ namespace BizHawk.MultiClient
 		Graphics GetGraphics()
 		{
 			var g = luaSurface.GetGraphics();
-			int tx = Global.Emulator.CoreOutputComm.ScreenLogicalOffsetX;
-			int ty = Global.Emulator.CoreOutputComm.ScreenLogicalOffsetY;
+			int tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
+			int ty = Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)
 			{
 				var transform = g.Transform;
@@ -1159,23 +1159,23 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator is BizHawk.Emulation.Consoles.Nintendo.NES)
 			{
-				Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
-				Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
+				Global.CoreComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
+				Global.CoreComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
 			}
 			else if (Global.Emulator is BizHawk.Emulation.Consoles.TurboGrafx.PCEngine)
 			{
-				Global.CoreInputComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
-				Global.CoreInputComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
+				Global.CoreComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
+				Global.CoreComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
 				if (lua_p.Length > 2)
 				{
-					Global.CoreInputComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
-					Global.CoreInputComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
+					Global.CoreComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
+					Global.CoreComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
 				}
 			}
 			else if (Global.Emulator is BizHawk.Emulation.Consoles.Sega.SMS)
 			{
-				Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
-				Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
+				Global.CoreComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
+				Global.CoreComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
 			}
 		}
 
@@ -1183,7 +1183,7 @@ namespace BizHawk.MultiClient
 		{
 			if (luaf != null)
 			{
-				Global.Emulator.CoreInputComm.InputCallback = delegate()
+				Global.Emulator.CoreComm.InputCallback = delegate()
 				{
 					try
 					{
@@ -1198,7 +1198,7 @@ namespace BizHawk.MultiClient
 				};
 			}
 			else
-				Global.Emulator.CoreInputComm.InputCallback = null;
+				Global.Emulator.CoreComm.InputCallback = null;
 		}
 
 		//----------------------------------------------------
@@ -2609,7 +2609,7 @@ namespace BizHawk.MultiClient
 		public void nes_setdispbackground(bool show)
 		{
 			Global.Config.NESDispBackground = show;
-			Global.MainForm.SyncCoreInputComm();
+			Global.MainForm.SyncCoreCommInputSignals();
 		}
 
 		public bool nes_getdispsprites()
@@ -2620,7 +2620,7 @@ namespace BizHawk.MultiClient
 		public void nes_setdispsprites(bool show)
 		{
 			Global.Config.NESDispSprites = show;
-			Global.MainForm.SyncCoreInputComm();
+			Global.MainForm.SyncCoreCommInputSignals();
 		}
 
 		public bool nes_getallowmorethaneightsprites()
@@ -2633,7 +2633,7 @@ namespace BizHawk.MultiClient
 			Global.Config.NESAllowMoreThanEightSprites = allow;
 			if (Global.Emulator is NES)
 			{
-				(Global.Emulator as NES).CoreInputComm.NES_UnlimitedSprites = allow;
+				(Global.Emulator as NES).CoreComm.NES_UnlimitedSprites = allow;
 			}
 		}
 
@@ -2722,8 +2722,8 @@ namespace BizHawk.MultiClient
 					_addr = LuaInt(address);
 				}
 
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.ReadAddr = _addr;
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetReadCallback(delegate(uint addr)
+				Global.Emulator.CoreComm.MemoryCallbackSystem.ReadAddr = _addr;
+				Global.Emulator.CoreComm.MemoryCallbackSystem.SetReadCallback(delegate(uint addr)
 				{
 					try
 					{
@@ -2740,7 +2740,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetReadCallback(null);
+				Global.Emulator.CoreComm.MemoryCallbackSystem.SetReadCallback(null);
 			}
 		}
 
@@ -2760,8 +2760,8 @@ namespace BizHawk.MultiClient
 					_addr = LuaInt(address);
 				}
 
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.WriteAddr = _addr;
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetWriteCallback(delegate(uint addr)
+				Global.Emulator.CoreComm.MemoryCallbackSystem.WriteAddr = _addr;
+				Global.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(delegate(uint addr)
 				{
 					try
 					{
@@ -2777,7 +2777,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				Global.Emulator.CoreInputComm.MemoryCallbackSystem.SetWriteCallback(null);
+				Global.Emulator.CoreComm.MemoryCallbackSystem.SetWriteCallback(null);
 			}
 		}
 	}

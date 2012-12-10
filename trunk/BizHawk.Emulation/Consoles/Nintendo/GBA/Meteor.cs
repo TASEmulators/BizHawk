@@ -21,6 +21,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		public ControllerDefinition ControllerDefinition { get { return GBAController; } }
 		public IController Controller { get; set; }
 
+		public GBA(CoreComm comm)
+		{
+			CoreComm = comm;
+			comm.VsyncNum = 262144;
+			comm.VsyncDen = 4389;
+			comm.CpuTraceAvailable = true;
+			comm.TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---";
+			comm.NominalWidth = 240;
+			comm.NominalHeight = 160;
+		}
+
 		public void Load(byte[] rom, byte[] bios)
 		{
 			if (bios.Length != 16384)
@@ -43,7 +54,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			if (Controller["Power"])
 				LibMeteor.libmeteor_hardreset();
 			// due to the design of the tracing api, we have to poll whether it's active each frame
-			LibMeteor.libmeteor_settracecallback(CoreInputComm.Tracer.Enabled ? tracecallback : null);
+			LibMeteor.libmeteor_settracecallback(CoreComm.Tracer.Enabled ? tracecallback : null);
 			if (!coredead)
 				LibMeteor.libmeteor_frameadvance();
 			if (IsLagFrame)
@@ -169,20 +180,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		#endregion
 
-		public CoreInputComm CoreInputComm { get; set; }
-
-		CoreOutputComm _CoreOutputComm = new CoreOutputComm
-		{
-			VsyncNum = 262144,
-			VsyncDen = 4389,
-			CpuTraceAvailable = true,
-			TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---",
-			NominalWidth = 240,
-			NominalHeight = 160
-		};
-
-		public CoreOutputComm CoreOutputComm { get { return _CoreOutputComm; } }
-
+		public CoreComm CoreComm { get; private set; }
+		
 		#region memorydomains
 
 		List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
@@ -377,7 +376,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		void Trace(string msg)
 		{
-			CoreInputComm.Tracer.Put(msg);
+			CoreComm.Tracer.Put(msg);
 		}
 
 		Action EndOfFrameCallback = null;

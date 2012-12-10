@@ -405,7 +405,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if (hint == "msu1.rom") return "";
 
 			//build romfilename
-			string test = Path.Combine(CoreInputComm.SNES_FirmwaresPath ?? "", hint);
+			string test = Path.Combine(CoreComm.SNES_FirmwaresPath ?? "", hint);
 
 			//does it exist?
 			if (!File.Exists(test))
@@ -422,7 +422,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		void snes_trace(string msg)
 		{
-			CoreInputComm.Tracer.Put(msg);
+			CoreComm.Tracer.Put(msg);
 		}
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
@@ -435,8 +435,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_color_lut((IntPtr)p);
 		}
 
-		public LibsnesCore()
+		public LibsnesCore(CoreComm comm)
 		{
+			CoreComm = comm;
 		}
 
 		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData, bool DeterministicEmulation)
@@ -506,16 +507,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if (LibsnesDll.snes_get_region() == LibsnesDll.SNES_REGION.NTSC)
 			{
 				//similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
-				CoreOutputComm.VsyncNum = 21477272;
-				CoreOutputComm.VsyncDen = 4 * 341 * 262;
+				CoreComm.VsyncNum = 21477272;
+				CoreComm.VsyncDen = 4 * 341 * 262;
 			}
 			else
 			{
-				CoreOutputComm.VsyncNum = 50;
-				CoreOutputComm.VsyncDen = 1;
+				CoreComm.VsyncNum = 50;
+				CoreComm.VsyncDen = 1;
 			}
 
-			CoreOutputComm.CpuTraceAvailable = true;
+			CoreComm.CpuTraceAvailable = true;
 
 			LibsnesDll.snes_power();
 
@@ -547,7 +548,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		ushort snes_input_state(int port, int device, int index, int id)
 		{
-			if (!nocallbacks && CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (!nocallbacks && CoreComm.InputCallback != null) CoreComm.InputCallback();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";
@@ -663,7 +664,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				savestatebuff = ms.ToArray();
 			}
 
-			if (!nocallbacks && CoreInputComm.Tracer.Enabled)
+			if (!nocallbacks && CoreComm.Tracer.Enabled)
 				LibsnesDll.snes_set_trace_callback(tracecb);
 			else
 				LibsnesDll.snes_set_trace_callback(null);
@@ -680,18 +681,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			bool powerSignal = Controller["Power"];
 			if (powerSignal) LibsnesDll.snes_power();
 
-			LibsnesDll.snes_set_layer_enable(0, 0, CoreInputComm.SNES_ShowBG1_0);
-			LibsnesDll.snes_set_layer_enable(0, 1, CoreInputComm.SNES_ShowBG1_1);
-			LibsnesDll.snes_set_layer_enable(1, 0, CoreInputComm.SNES_ShowBG2_0);
-			LibsnesDll.snes_set_layer_enable(1, 1, CoreInputComm.SNES_ShowBG2_1);
-			LibsnesDll.snes_set_layer_enable(2, 0, CoreInputComm.SNES_ShowBG3_0);
-			LibsnesDll.snes_set_layer_enable(2, 1, CoreInputComm.SNES_ShowBG3_1);
-			LibsnesDll.snes_set_layer_enable(3, 0, CoreInputComm.SNES_ShowBG4_0);
-			LibsnesDll.snes_set_layer_enable(3, 1, CoreInputComm.SNES_ShowBG4_1);
-			LibsnesDll.snes_set_layer_enable(4, 0, CoreInputComm.SNES_ShowOBJ_0);
-			LibsnesDll.snes_set_layer_enable(4, 1, CoreInputComm.SNES_ShowOBJ_1);
-			LibsnesDll.snes_set_layer_enable(4, 2, CoreInputComm.SNES_ShowOBJ_2);
-			LibsnesDll.snes_set_layer_enable(4, 3, CoreInputComm.SNES_ShowOBJ_3);
+			LibsnesDll.snes_set_layer_enable(0, 0, CoreComm.SNES_ShowBG1_0);
+			LibsnesDll.snes_set_layer_enable(0, 1, CoreComm.SNES_ShowBG1_1);
+			LibsnesDll.snes_set_layer_enable(1, 0, CoreComm.SNES_ShowBG2_0);
+			LibsnesDll.snes_set_layer_enable(1, 1, CoreComm.SNES_ShowBG2_1);
+			LibsnesDll.snes_set_layer_enable(2, 0, CoreComm.SNES_ShowBG3_0);
+			LibsnesDll.snes_set_layer_enable(2, 1, CoreComm.SNES_ShowBG3_1);
+			LibsnesDll.snes_set_layer_enable(3, 0, CoreComm.SNES_ShowBG4_0);
+			LibsnesDll.snes_set_layer_enable(3, 1, CoreComm.SNES_ShowBG4_1);
+			LibsnesDll.snes_set_layer_enable(4, 0, CoreComm.SNES_ShowOBJ_0);
+			LibsnesDll.snes_set_layer_enable(4, 1, CoreComm.SNES_ShowOBJ_1);
+			LibsnesDll.snes_set_layer_enable(4, 2, CoreComm.SNES_ShowOBJ_2);
+			LibsnesDll.snes_set_layer_enable(4, 3, CoreComm.SNES_ShowOBJ_3);
 
 			// if the input poll callback is called, it will set this to false
 			IsLagFrame = true;
@@ -1015,10 +1016,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		#endregion
 
-		// Arbitrary extensible core comm mechanism
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get { return _CoreOutputComm; } }
-		CoreOutputComm _CoreOutputComm = new CoreOutputComm();
+		public CoreComm CoreComm { get; private set; }
 
 		// ----- Client Debugging API stuff -----
 		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesDll.SNES_MEMORY id, Endian endian)

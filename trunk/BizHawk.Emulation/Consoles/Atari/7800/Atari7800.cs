@@ -29,8 +29,7 @@ namespace BizHawk
 		}
 
 		/* TODO */
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 		public ISyncSoundProvider SyncSoundProvider { get { return null; } }
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
@@ -89,14 +88,14 @@ namespace BizHawk
 			}
 		};
 
-		public Atari7800(GameInfo game, byte[] rom, byte[] ntsc_bios, byte[] pal_bios, byte[] highscoreBIOS)
+		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, byte[] ntsc_bios, byte[] pal_bios, byte[] highscoreBIOS)
 		{
+			CoreComm = comm;
+
 			//TODO: store both the ntsc bios and the pal bios
 			var domains = new List<MemoryDomain>(1);
 			domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr => 0xFF, null)); //TODO
 			memoryDomains = domains.AsReadOnly();
-			CoreOutputComm = new CoreOutputComm();
-			CoreInputComm = new CoreInputComm();
 			this.rom = rom;
 			this.game = game;
 			this.hsbios = highscoreBIOS;
@@ -111,7 +110,7 @@ namespace BizHawk
 		{
 			_lagcount = 0;
 			// show mapper class on romstatusdetails
-			CoreOutputComm.RomStatusDetails =
+			CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
 						game.Name,
 						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom)),

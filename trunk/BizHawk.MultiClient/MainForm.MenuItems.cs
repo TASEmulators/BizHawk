@@ -23,7 +23,7 @@ namespace BizHawk.MultiClient
 
 		private void DumpStatus_Click(object sender, EventArgs e)
 		{
-			string details = Global.Emulator.CoreOutputComm.RomStatusDetails;
+			string details = Global.Emulator.CoreComm.RomStatusDetails;
 			if (string.IsNullOrEmpty(details)) return;
 			Global.Sound.StopSound();
 			LogWindow.ShowReport("Dump Status Report", details, this);
@@ -670,7 +670,7 @@ namespace BizHawk.MultiClient
 			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.TASTudio;
 			virtualPadToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.OpenVirtualPadBinding;
 
-			if (Global.Emulator.CoreOutputComm.CpuTraceAvailable)
+			if (Global.Emulator.CoreComm.CpuTraceAvailable)
 			{
 				traceLoggerToolStripMenuItem.Enabled = true;
 			}
@@ -884,21 +884,21 @@ namespace BizHawk.MultiClient
 		{
 			NESGraphicsConfig g = new NESGraphicsConfig();
 			g.ShowDialog();
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		private void pceGraphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PCEGraphicsConfig g = new PCEGraphicsConfig();
 			g.ShowDialog();
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		private void smsGraphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SMSGraphicsConfig g = new SMSGraphicsConfig();
 			g.ShowDialog();
-			SyncCoreInputComm();
+			SyncCoreCommInputSignals();
 		}
 
 		public void MainForm_MouseClick(object sender, MouseEventArgs e)
@@ -1815,7 +1815,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is LibsnesCore)
 			{
 				Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
-				SyncCoreInputComm();
+				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG1_1)
 				{
 					Global.OSD.AddMessage("BG 1 Layer On");
@@ -1832,7 +1832,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is LibsnesCore)
 			{
 				Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
-				SyncCoreInputComm();
+				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG2_1)
 				{
 					Global.OSD.AddMessage("BG 2 Layer On");
@@ -1849,7 +1849,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is LibsnesCore)
 			{
 				Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
-				SyncCoreInputComm();
+				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG3_1)
 				{
 					Global.OSD.AddMessage("BG 3 Layer On");
@@ -1866,7 +1866,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is LibsnesCore)
 			{
 				Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
-				SyncCoreInputComm();
+				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG4_1)
 				{
 					Global.OSD.AddMessage("BG 4 Layer On");
@@ -1883,7 +1883,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is LibsnesCore)
 			{
 				Global.Config.SNES_ShowOBJ1 ^= true;
-				SyncCoreInputComm();
+				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ1)
 				{
 					Global.OSD.AddMessage("OBJ 1 Layer On");
@@ -1900,7 +1900,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is LibsnesCore)
 			{
 				Global.Config.SNES_ShowOBJ2 ^= true;
-				SyncCoreInputComm();
+				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ2)
 				{
 					Global.OSD.AddMessage("OBJ 2 Layer On");
@@ -1917,7 +1917,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is LibsnesCore)
 			{
 				Global.Config.SNES_ShowOBJ3 ^= true;
-				SyncCoreInputComm();
+				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ3)
 				{
 					Global.OSD.AddMessage("OBJ 3 Layer On");
@@ -1934,7 +1934,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is LibsnesCore)
 			{
 				Global.Config.SNES_ShowOBJ4 ^= true;
-				SyncCoreInputComm();
+				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ4)
 				{
 					Global.OSD.AddMessage("OBJ 4 Layer On");
