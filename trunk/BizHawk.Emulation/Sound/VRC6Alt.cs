@@ -8,7 +8,6 @@ namespace BizHawk.Emulation.Sound
 	public class VRC6Alt : IDisposable
 	{
 		// http://wiki.nesdev.com/w/index.php/VRC6_audio
-		// $9003 not implemented
 
 
 
@@ -94,18 +93,25 @@ namespace BizHawk.Emulation.Sound
 			}
 		}
 
+		// the two pulse channels are about the same volume as 2a03 pulse channels.
+		// everything is flipped, though; but that's taken care of in the classes
 		void PulseAddDiff(int value)
 		{
 			dlist.Add(new Delta(sampleclock, value * 360));
 		}
+		// saw ends up being not that loud because of differences in implementation
 		void SawAddDiff(int value)
 		{
-			dlist.Add(new Delta(sampleclock, value * 180));
+			dlist.Add(new Delta(sampleclock, value * 360));
 		}
+
+		// state
+		bool masterenable;
 
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("VRC6Alt");
+			ser.Sync("masterenable", ref masterenable);
 			pulse1.SyncState(ser);
 			pulse2.SyncState(ser);
 			saw.SyncState(ser);
@@ -118,7 +124,15 @@ namespace BizHawk.Emulation.Sound
 
 		public void Write9003(byte value)
 		{
-
+			masterenable = !value.Bit(0);
+			int RSHIFT = 0;
+			if (value.Bit(1))
+				RSHIFT = 4;
+			if (value.Bit(2))
+				RSHIFT = 8;
+			pulse1.SetRSHIFT(RSHIFT);
+			pulse2.SetRSHIFT(RSHIFT);
+			saw.SetRSHIFT(RSHIFT);
 		}
 
 		public void WriteA000(byte value) { pulse2.Write0(value); }
@@ -131,9 +145,12 @@ namespace BizHawk.Emulation.Sound
 
 		public void Clock()
 		{
-			pulse1.Clock();
-			pulse2.Clock();
-			saw.Clock();
+			if (masterenable)
+			{
+				pulse1.Clock();
+				pulse2.Clock();
+				saw.Clock();
+			}
 			sampleclock++;
 		}
 
@@ -143,22 +160,37 @@ namespace BizHawk.Emulation.Sound
 			public Saw(Action<int> SendDiff) { this.SendDiff = SendDiff; }
 
 			// set by regs
+			/// <summary>rate of increment for accumulator</summary>
 			byte A;
+			/// <summary>frequency.  actually a reload value</summary>
 			int F;
+			/// <summary>enable</summary>
 			bool E;
+			/// <summary>reload shift, from $9003</summary>
+			int RSHIFT;
+
 			// internal state
+			/// <summary>frequency counter</summary>
 			int count;
+			/// <summary>accumulator</summary>
 			byte accum;
+			/// <summary>saw reset counter</summary>
 			int acount;
-			int value;
+			/// <summary>latched output, 0..31</summary>
+			int output;
+
+			public void SetRSHIFT(int RSHIFT)
+			{
+				this.RSHIFT = RSHIFT;
+			}
 
 			void SendNew()
 			{
 				int newvalue = accum >> 3;
-				if (newvalue != value)
+				if (newvalue != output)
 				{
-					SendDiff(value - newvalue); // intentionally flipped
-					value = newvalue;
+					SendDiff(output - newvalue); // intentionally flipped
+					output = newvalue;
 				}
 			}
 
@@ -167,10 +199,11 @@ namespace BizHawk.Emulation.Sound
 				ser.Sync("A", ref A);
 				ser.Sync("F", ref F);
 				ser.Sync("E", ref E);
+				ser.Sync("RSHIFT", ref RSHIFT);
 				ser.Sync("count", ref count);
 				ser.Sync("accum", ref accum);
 				ser.Sync("acount", ref acount);
-				ser.Sync("value", ref value);
+				ser.Sync("output", ref output);
 			}
 
 			public void Write0(byte value)
@@ -201,7 +234,7 @@ namespace BizHawk.Emulation.Sound
 				count--;
 				if (count <= 0)
 				{
-					count = F;
+					count = F >> RSHIFT;
 					acount++;
 					if (acount % 2 == 0)
 					{
@@ -226,14 +259,29 @@ namespace BizHawk.Emulation.Sound
 			public Pulse(Action<int> SendDiff) { this.SendDiff = SendDiff; }
 
 			// set by regs
+			/// <summary>volume, 0..15</summary>
 			int V;
+			/// <summary>duty comparison.  forced to max when x000.7 == 1</summary>
 			int D;
+			/// <summary>frequency.  actually a reload value</summary>
 			int F;
+			/// <summary>enable</summary>
 			bool E;
+			/// <summary>reload shift, from $9003</summary>
+			int RSHIFT;
+
 			// internal state
+			/// <summary>frequency counter</summary>
 			int count;
+			/// <summary>duty counter</summary>
 			int duty;
-			int value;
+			/// <summary>latched output, 0..15</summary>
+			int output;
+
+			public void SetRSHIFT(int RSHIFT)
+			{
+				this.RSHIFT = RSHIFT;
+			}
 
 			void SendNew()
 			{
@@ -242,19 +290,19 @@ namespace BizHawk.Emulation.Sound
 					newvalue = V;
 				else
 					newvalue = 0;
-				if (newvalue != value)
+				if (newvalue != output)
 				{
-					SendDiff(value - newvalue); // intentionally flipped
-					value = newvalue;
+					SendDiff(output - newvalue); // intentionally flipped
+					output = newvalue;
 				}
 			}
 
 			void SendNewZero()
 			{
-				if (0 != value)
+				if (0 != output)
 				{
-					SendDiff(value - 0); // intentionally flipped
-					value = 0;
+					SendDiff(output - 0); // intentionally flipped
+					output = 0;
 				}
 			}
 
@@ -264,9 +312,10 @@ namespace BizHawk.Emulation.Sound
 				ser.Sync("D", ref D);
 				ser.Sync("F", ref F);
 				ser.Sync("E", ref E);
+				ser.Sync("RSHIFT", ref RSHIFT);
 				ser.Sync("count", ref count);
 				ser.Sync("duty", ref duty);
-				ser.Sync("value", ref value);
+				ser.Sync("output", ref output);
 			}
 
 			public void Write0(byte value)
@@ -301,7 +350,7 @@ namespace BizHawk.Emulation.Sound
 				count--;
 				if (count <= 0)
 				{
-					count = F;
+					count = F >> RSHIFT;
 					duty--;
 					if (duty < 0)
 						duty += 16;

@@ -149,6 +149,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x1002: //$9002
 					VRC6Sound.Write9002(value);
 					break;
+				case 0x1003: //$9003
+					VRC6Sound.Write9003(value);
+					break;
 
 				case 0x2000: //$A000
 					VRC6Sound.WriteA000(value);

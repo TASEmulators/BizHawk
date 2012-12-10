@@ -5,6 +5,12 @@ using System.Text;
 
 namespace BizHawk.Emulation.Sound
 {
+	/*
+	 * old VRC6 audio.
+	 * not quite a drop in replacement for the new one.
+	 * doesn't sound right.
+	 */
+
 	class VRC6 : ISoundProvider
 	{
 		public void DiscardSamples() { }
