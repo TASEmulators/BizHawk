@@ -12,7 +12,7 @@ namespace GarboDev
 	using BizHawk.Emulation;
 	using BizHawk;
 
-	public class GbaManager : IEmulator, ISoundProvider, IVideoProvider
+	public class GbaManager : IEmulator, ISyncSoundProvider, IVideoProvider
 	{
 		public const int cpuFreq = 16 * 1024 * 1024;
 
@@ -130,15 +130,6 @@ namespace GarboDev
 			this.arm7.Reset(this.skipBios);
 			this.memory.Reset();
 			this.videoManager.Reset();
-		}
-
-		public void AudioMixerStereo(short[] buffer, int length)
-		{
-			// even = left, odd = right
-			if (this.soundManager.SamplesMixed > Math.Max(500, length))
-			{
-				this.soundManager.GetSamples(buffer, length);
-			}
 		}
 
 		public void LoadState(BinaryReader state)
@@ -309,12 +300,12 @@ namespace GarboDev
 
 		ISoundProvider IEmulator.SoundProvider
 		{
-			get { return this; }
+			get { return null; }
 		}
 
 		ISyncSoundProvider IEmulator.SyncSoundProvider
 		{
-			get { return new FakeSyncSound(this, 735); }
+			get { return this; }
 		}
 
 		bool IEmulator.StartAsyncSound()
@@ -456,27 +447,23 @@ namespace GarboDev
 
 		}
 
-		void ISoundProvider.GetSamples(short[] samples)
-		{
-			AudioMixerStereo(samples, samples.Length);
-		}
-
-		void ISoundProvider.DiscardSamples()
-		{
-
-		}
-
-		int ISoundProvider.MaxVolume
-		{
-			get;
-			set;
-		}
-
 		int[] vbuf = new int[240 * 160];
 		int[] IVideoProvider.GetVideoBuffer() { return vbuf; }
 		int IVideoProvider.VirtualWidth { get { return 240; } }
 		int IVideoProvider.BufferWidth { get { return 240; } }
 		int IVideoProvider.BufferHeight { get { return 160; } }
 		int IVideoProvider.BackgroundColor { get { return unchecked((int)0xff000000); } }
+
+		void ISyncSoundProvider.GetSamples(out short[] samples, out int nsamp)
+		{
+			nsamp = soundManager.SamplesMixed / 2;
+			samples = new short[nsamp * 2];
+			soundManager.GetSamples(samples, nsamp * 2);
+		}
+
+		void ISyncSoundProvider.DiscardSamples()
+		{
+			// should implement
+		}
 	}
 }
