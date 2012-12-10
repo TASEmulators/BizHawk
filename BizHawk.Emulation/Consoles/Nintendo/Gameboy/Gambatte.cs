@@ -30,6 +30,14 @@ namespace BizHawk.Emulation.Consoles.GB
 		{
 			CoreComm = comm;
 
+			comm.VsyncNum = 262144;
+			comm.VsyncDen = 4389;
+			comm.RomStatusAnnotation = null;
+			comm.RomStatusDetails = null;
+			comm.CpuTraceAvailable = true;
+			comm.NominalWidth = 160;
+			comm.NominalHeight = 144;
+
 			ThrowExceptionForBadRom(romdata);
 
 			GambatteState = LibGambatte.gambatte_create();
