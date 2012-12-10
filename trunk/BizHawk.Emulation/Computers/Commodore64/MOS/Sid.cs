@@ -618,6 +618,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
+		public Sound.Utilities.SpeexResampler resampler;
+
 		private static uint[] syncNextTable = new uint[] { 1, 2, 0 };
 		private static uint[] syncPrevTable = new uint[] { 2, 0, 1 };
 
@@ -643,6 +645,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public Sid(uint[][] newWaveformTable, uint newSampleRate, Region newRegion)
 		{
+			uint cyclesPerSec = 0;
+
 			switch (newRegion)
 			{
 				case Region.NTSC: cyclesPerSec = 14318181 / 14; /*bufferLength = (newSampleRate / 60) * 4;*/ break;
@@ -668,6 +672,15 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				filterEnable[i] = false;
 
 			resampler = new Sound.Utilities.SpeexResampler(0, cyclesPerSec, 44100, cyclesPerSec, 44100, null, null);
+		}
+
+		public void Dispose()
+		{
+			if (resampler != null)
+			{
+				resampler.Dispose();
+				resampler = null;
+			}
 		}
 
 		// ------------------------------------
