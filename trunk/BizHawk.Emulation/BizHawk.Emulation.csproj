@@ -506,7 +506,6 @@
     <Compile Include="Sound\Utilities\DCFilter.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
     <Compile Include="Sound\Utilities\SpeexResampler.cs" />
-    <Compile Include="Sound\VRC6.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
     <Compile Include="Interfaces\IController.cs" />
