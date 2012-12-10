@@ -1928,8 +1928,8 @@ namespace BizHawk.MultiClient
 										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
 										throw new Exception();
 									}
-									//GBA gba = new GBA(nextComm);
-									var gba = new GarboDev.GbaManager(nextComm);
+									GBA gba = new GBA(nextComm);
+									//var gba = new GarboDev.GbaManager(nextComm);
 									gba.Load(rom.RomData, gbabios);
 									nextEmulator = gba;
 								}
