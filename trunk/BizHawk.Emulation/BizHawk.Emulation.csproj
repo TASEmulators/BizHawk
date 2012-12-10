@@ -532,6 +532,7 @@
     <Compile Include="Consoles\Sega\Genesis\IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.68000.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
+    <Compile Include="Sound\VRC6Alt.cs" />
     <Compile Include="Sound\YM2612.cs" />
     <Compile Include="Consoles\Sega\SMS\BIOS.cs" />
     <Compile Include="Sound\Utilities\SoundMixer.cs" />
