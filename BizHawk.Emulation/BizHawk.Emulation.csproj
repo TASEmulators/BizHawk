@@ -115,8 +115,6 @@
     <Compile Include="Computers\Commodore64\MOS\Port.cs" />
     <Compile Include="Computers\Commodore64\MOS\SerialPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Sid.SoundProvider.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Sid.SyncSoundProvider.cs" />
     <Compile Include="Computers\Commodore64\MOS\Timer.cs" />
     <Compile Include="Computers\Commodore64\MOS\UserPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
