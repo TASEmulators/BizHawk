@@ -30,7 +30,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.Dispose();
 			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
-			VRC6Sound.Dispose();
+			if (VRC6Sound != null)
+				VRC6Sound.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
