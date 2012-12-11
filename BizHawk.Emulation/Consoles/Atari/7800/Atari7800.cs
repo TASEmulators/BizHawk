@@ -152,6 +152,7 @@ namespace BizHawk
 			theMachine = new Machine7800NTSC(cart, NTSC_BIOS, hsc7800, logger);
 			//theMachine = new Machine7800NTSC(cart, null, null, logger);
 			//TODO: clean up, the hs and bios are passed in, the bios has an object AND byte array in the core, and naming is inconsistent
+			theMachine.Reset();
 		}
 
 		void SyncState(Serializer ser) //TODO
