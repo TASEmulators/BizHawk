@@ -2703,7 +2703,6 @@
 			this.Name = "SNESGraphicsDebugger";
 			this.Text = "SNES Graphics Debugger";
 			this.Load += new System.EventHandler(this.SNESGraphicsDebugger_Load);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SNESGraphicsDebugger_KeyDown);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.tableLayoutPanel1.ResumeLayout(false);

@@ -1269,9 +1269,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNESGraphicsDebugger_KeyDown(object sender, KeyEventArgs e)
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			if (Control.ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			if(keyData == (Keys.C | Keys.Control))
 			{
 				// find the control under the mouse
 				Point m = System.Windows.Forms.Cursor.Position;
@@ -1286,8 +1286,11 @@ namespace BizHawk.MultiClient
 				if (found != null && found is SNESGraphicsViewer)
 				{
 					var v = found as SNESGraphicsViewer;
-					lock(v)
-						Clipboard.SetImage(v.GetBitmap());
+					lock (v)
+					{
+						var bmp = v.GetBitmap();
+						Clipboard.SetImage(bmp);
+					}
 					string label = "";
 					if (found.Name == "viewer")
 						label = displayTypeItems.Find((x) => x.type == CurrDisplaySelection).descr;
@@ -1295,14 +1298,19 @@ namespace BizHawk.MultiClient
 						label = "Tile";
 					if (found.Name == "viewerMapEntryTile")
 						label = "Map Entry";
-					if(found.Name == "paletteViewer")
+					if (found.Name == "paletteViewer")
 						label = "Palette";
 					labelClipboard.Text = label + " copied to clipboard.";
 					messagetimer.Stop();
 					messagetimer.Start();
+
+					return true;
 				}
 			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
 		}
+
 
 		private void messagetimer_Tick(object sender, EventArgs e)
 		{
