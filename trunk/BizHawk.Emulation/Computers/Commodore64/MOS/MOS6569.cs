@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	// vic pal
 	public class MOS6569 : Vic
 	{
-		static uint[][] pipeline = new uint[][]
+		static int[][] pipeline = new int[][]
 			{
-				new uint[] // xposition
+				new int[] // xposition
 				{
 					0x0194, 0x0198, 
 					0x019C, 0x01A0, 
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					0x0184, 0x0188, 
 					0x018C,	0x0190
 				},
-				new uint[] // fetch (100=ref 200=c 300=g 400=i 500=none)
+				new int[] // fetch (100=ref 200=c 300=g 400=i 500=none)
 				{
 					0x0003, 0x0013, 
 					0x0023, 0x0033, 
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					0x0002, 0x0012, 
 					0x0022,	0x0032
 				},
-				new uint[] // BA
+				new int[] // BA
 				{
 					0x0843, 0x0843,
 					0x0543, 0x0543,
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					0x0283, 0x0283,
 					0x0243,	0x0243
 				},
-				new uint[] // actions
+				new int[] // actions
 				{
 					0, 0,
 					0, 0,
