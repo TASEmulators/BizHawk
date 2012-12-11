@@ -10,8 +10,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 	{
 		private int[] buf;
 		private int bufHeight;
-		private uint bufLength;
-		private uint bufOffset;
+		private int bufLength;
+		private int bufOffset;
 		private Point bufPoint;
 		private Rectangle bufRect;
 		private int bufWidth;

@@ -11,25 +11,25 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private class Envelope
 		{
-			private const uint stateAttack = 0;
-			private const uint stateDecay = 1;
-			private const uint stateRelease = 2;
+			private const int stateAttack = 0;
+			private const int stateDecay = 1;
+			private const int stateRelease = 2;
 
-			private uint attack;
-			private uint decay;
+			private int attack;
+			private int decay;
 			private bool delay;
-			private uint envCounter;
-			private uint expCounter;
-			private uint expPeriod;
+			private int envCounter;
+			private int expCounter;
+			private int expPeriod;
 			private bool freeze;
-			private uint lfsr;
+			private int lfsr;
 			private bool gate;
-			private uint rate;
-			private uint release;
-			private uint state;
-			private uint sustain;
+			private int rate;
+			private int release;
+			private int state;
+			private int sustain;
 
-			private static uint[] adsrTable = new uint[]
+			private static int[] adsrTable = new int[]
 			{
 				0x7F00, 0x0006, 0x003C, 0x0330,
 				0x20C0, 0x6755, 0x3800, 0x500E,
@@ -37,17 +37,17 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				0x3840, 0x77E2, 0x7625, 0x0A93
 			};
 
-			private static uint[] expCounterTable = new uint[]
+			private static int[] expCounterTable = new int[]
 			{
 				0xFF, 0x5D, 0x36, 0x1A, 0x0E, 0x06, 0x00
 			};
 
-			private static uint[] expPeriodTable = new uint[]
+			private static int[] expPeriodTable = new int[]
 			{
 				0x01, 0x02, 0x04, 0x08, 0x10, 0x1E, 0x01
 			};
 
-			private static uint[] sustainTable = new uint[]
+			private static int[] sustainTable = new int[]
 			{
 				0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
 				0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 					if (lfsr != rate)
 					{
-						uint feedback = ((lfsr >> 14) ^ (lfsr >> 13)) & 0x1;
+						int feedback = ((lfsr >> 14) ^ (lfsr >> 13)) & 0x1;
 						lfsr = ((lfsr << 1) & 0x7FFF) | feedback;
 						return;
 					}
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				
 				{
-					for (uint i = 0; i < 7; i++)
+					for (int i = 0; i < 7; i++)
 					{
 						if (envCounter == expCounterTable[i])
 							expPeriod = expPeriodTable[i];
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			// ------------------------------------
 
-			public uint Attack
+			public int Attack
 			{
 				get
 				{
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint Decay
+			public int Decay
 			{
 				get
 				{
@@ -211,7 +211,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint Level
+			public int Level
 			{
 				get
 				{
@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint Release
+			public int Release
 			{
 				get
 				{
@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint Sustain
+			public int Sustain
 			{
 				get
 				{
@@ -269,29 +269,29 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		private class Voice
 		{
-			private uint accumulator;
-			private uint delay;
-			private uint floatOutputTTL;
-			private uint frequency;
+			private int accumulator;
+			private int delay;
+			private int floatOutputTTL;
+			private int frequency;
 			private bool msbRising;
-			private uint noise;
-			private uint noNoise;
-			private uint noNoiseOrNoise;
-			private uint noPulse;
-			private uint output;
-			private uint pulse;
-			private uint pulseWidth;
+			private int noise;
+			private int noNoise;
+			private int noNoiseOrNoise;
+			private int noPulse;
+			private int output;
+			private int pulse;
+			private int pulseWidth;
 			private bool ringMod;
-			private uint ringMsbMask;
-			private uint shiftRegister;
-			private uint shiftRegisterReset;
+			private int ringMsbMask;
+			private int shiftRegister;
+			private int shiftRegisterReset;
 			private bool sync;
 			private bool test;
-			private uint[] wave;
-			private uint waveform;
-			private uint[][] waveTable;
+			private int[] wave;
+			private int waveform;
+			private int[][] waveTable;
 
-			public Voice(uint[][] newWaveTable)
+			public Voice(int[][] newWaveTable)
 			{
 				waveTable = newWaveTable;
 				HardReset();
@@ -337,8 +337,8 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					}
 					else
 					{
-						uint accNext = (accumulator + frequency) & 0xFFFFFF;
-						uint accBits = ~accumulator & accNext;
+						int accNext = (accumulator + frequency) & 0xFFFFFF;
+						int accBits = ~accumulator & accNext;
 						accumulator = accNext;
 						msbRising = ((accBits & 0x800000) != 0);
 
@@ -356,7 +356,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			{
 				
 				{
-					uint bit0 = ((shiftRegister >> 22) ^ (shiftRegister >> 17)) & 0x1;
+					int bit0 = ((shiftRegister >> 22) ^ (shiftRegister >> 17)) & 0x1;
 					shiftRegister = ((shiftRegister << 1) | bit0) & 0x7FFFFF;
 					SetNoise();
 				}
@@ -409,11 +409,11 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			// ------------------------------------
 
-			public uint Control
+			public int Control
 			{
 				set
 				{
-					uint wavePrev = waveform;
+					int wavePrev = waveform;
 					bool testPrev = test;
 
 					sync = ((value & 0x02) != 0);
@@ -422,9 +422,9 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					waveform = (value >> 4) & 0x0F;
 					wave = waveTable[waveform & 0x07];
 					ringMsbMask = ((~value >> 5) & (value >> 2) & 0x1) << 23;
-					noNoise = ((waveform & 0x8) != 0) ? (uint)0x000 : (uint)0xFFF;
+					noNoise = ((waveform & 0x8) != 0) ? (int)0x000 : (int)0xFFF;
 					noNoiseOrNoise = noNoise | noise;
-					noPulse = ((waveform & 0x4) != 0) ? (uint)0x000 : (uint)0xFFF;
+					noPulse = ((waveform & 0x4) != 0) ? (int)0x000 : (int)0xFFF;
 
 					if (!testPrev && test)
 					{
@@ -434,7 +434,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 					}
 					else if (testPrev && !test)
 					{
-						uint bit0 = (~shiftRegister >> 17) & 0x1;
+						int bit0 = (~shiftRegister >> 17) & 0x1;
 						shiftRegister = ((shiftRegister << 1) | bit0) & 0x7FFFFF;
 						SetNoise();
 					}
@@ -444,7 +444,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint Frequency
+			public int Frequency
 			{
 				get
 				{
@@ -456,7 +456,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint FrequencyLo
+			public int FrequencyLo
 			{
 				get
 				{
@@ -469,7 +469,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint FrequencyHi
+			public int FrequencyHi
 			{
 				get
 				{
@@ -482,7 +482,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint Oscillator
+			public int Oscillator
 			{
 				get
 				{
@@ -490,13 +490,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint Output(Voice ringModSource)
+			public int Output(Voice ringModSource)
 			{
 				
 				{
 					if (waveform != 0)
 					{
-						uint index = (accumulator ^ (ringModSource.accumulator & ringMsbMask)) >> 12;
+						int index = (accumulator ^ (ringModSource.accumulator & ringMsbMask)) >> 12;
 						output = wave[index] & (noPulse | pulse) & noNoiseOrNoise;
 						if (waveform > 8)
 							WriteShiftReg();
@@ -506,12 +506,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 						if (floatOutputTTL != 0 && --floatOutputTTL == 0)
 							output = 0x000;
 					}
-					pulse = ((accumulator >> 12) >= pulseWidth) ? (uint)0xFFF : (uint)0x000;
+					pulse = ((accumulator >> 12) >= pulseWidth) ? (int)0xFFF : (int)0x000;
 					return output;
 				}
 			}
 
-			public uint PulseWidth
+			public int PulseWidth
 			{
 				get
 				{
@@ -523,7 +523,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint PulseWidthLo
+			public int PulseWidthLo
 			{
 				get
 				{
@@ -536,7 +536,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint PulseWidthHi
+			public int PulseWidthHi
 			{
 				get
 				{
@@ -579,7 +579,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				}
 			}
 
-			public uint Waveform
+			public int Waveform
 			{
 				get
 				{
@@ -620,52 +620,50 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public Sound.Utilities.SpeexResampler resampler;
 
-		private static uint[] syncNextTable = new uint[] { 1, 2, 0 };
-		private static uint[] syncPrevTable = new uint[] { 2, 0, 1 };
+		private static int[] syncNextTable = new int[] { 1, 2, 0 };
+		private static int[] syncPrevTable = new int[] { 2, 0, 1 };
 
 		private bool disableVoice3;
-		private uint[] envelopeOutput;
+		private int[] envelopeOutput;
 		private Envelope[] envelopes;
 		private bool[] filterEnable;
-		private uint filterFrequency;
-		private uint filterResonance;
+		private int filterFrequency;
+		private int filterResonance;
 		private bool filterSelectBandPass;
 		private bool filterSelectLoPass;
 		private bool filterSelectHiPass;
-		private uint potCounter;
+		private int potCounter;
 		private byte potX;
 		private byte potY;
-		private uint[] voiceOutput;
+		private int[] voiceOutput;
 		private Voice[] voices;
-		private uint volume;
-		private uint[][] waveformTable;
+		private int volume;
+		private int[][] waveformTable;
 
 		public Func<byte> ReadPotX;
 		public Func<byte> ReadPotY;
 
-		public Sid(uint[][] newWaveformTable, uint newSampleRate, Region newRegion)
+		public Sid(int[][] newWaveformTable, int newSampleRate, Region newRegion)
 		{
 			uint cyclesPerSec = 0;
 
 			switch (newRegion)
 			{
-				case Region.NTSC: cyclesPerSec = 14318181 / 14; /*bufferLength = (newSampleRate / 60) * 4;*/ break;
-				case Region.PAL: cyclesPerSec = 17734472 / 18; /*bufferLength = (newSampleRate / 50) * 4;*/ break;
+				case Region.NTSC: cyclesPerSec = 14318181 / 14; break;
+				case Region.PAL: cyclesPerSec = 17734472 / 18; break;
 			}
-			//bufferFrequency = cyclesPerSec / newSampleRate;
-			//buffer = new short[bufferLength];
 
 			waveformTable = newWaveformTable;
 
 			envelopes = new Envelope[3];
 			for (int i = 0; i < 3; i++)
 				envelopes[i] = new Envelope();
-			envelopeOutput = new uint[3];
+			envelopeOutput = new int[3];
 
 			voices = new Voice[3];
 			for (int i = 0; i < 3; i++)
 				voices[i] = new Voice(newWaveformTable);
-			voiceOutput = new uint[3];
+			voiceOutput = new int[3];
 
 			filterEnable = new bool[3];
 			for (int i = 0; i < 3; i++)
@@ -725,7 +723,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				envelopes[2].ExecutePhase2();
 
 				// process sync
-				for (uint i = 0; i < 3; i++)
+				for (int i = 0; i < 3; i++)
 					voices[i].Synchronize(voices[syncNextTable[i]], voices[syncPrevTable[i]]);
 
 				// get output
@@ -739,7 +737,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				// process output
 				//if (bufferCounter == 0)
 				//{
-					uint mixer;
+					int mixer;
 					short sample;
 					//bufferCounter = bufferFrequency;
 
@@ -926,32 +924,32 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				case 0x02: voices[0].PulseWidthLo = val; break;
 				case 0x03: voices[0].PulseWidthHi = val; break;
 				case 0x04: voices[0].Control = val; envelopes[0].Gate = ((val & 0x01) != 0); break;
-				case 0x05: envelopes[0].Attack = (uint)(val >> 4); envelopes[0].Decay = (uint)(val & 0xF); break;
-				case 0x06: envelopes[0].Sustain = (uint)(val >> 4); envelopes[0].Release = (uint)(val & 0xF); break;
+				case 0x05: envelopes[0].Attack = (val >> 4); envelopes[0].Decay = (val & 0xF); break;
+				case 0x06: envelopes[0].Sustain = (val >> 4); envelopes[0].Release = (val & 0xF); break;
 				case 0x07: voices[1].FrequencyLo = val; break;
 				case 0x08: voices[1].FrequencyHi = val; break;
 				case 0x09: voices[1].PulseWidthLo = val; break;
 				case 0x0A: voices[1].PulseWidthHi = val; break;
 				case 0x0B: voices[1].Control = val; envelopes[1].Gate = ((val & 0x01) != 0); break;
-				case 0x0C: envelopes[1].Attack = (uint)(val >> 4); envelopes[1].Decay = (uint)(val & 0xF); break;
-				case 0x0D: envelopes[1].Sustain = (uint)(val >> 4); envelopes[1].Release = (uint)(val & 0xF); break;
+				case 0x0C: envelopes[1].Attack = (val >> 4); envelopes[1].Decay = (val & 0xF); break;
+				case 0x0D: envelopes[1].Sustain = (val >> 4); envelopes[1].Release = (val & 0xF); break;
 				case 0x0E: voices[2].FrequencyLo = val; break;
 				case 0x0F: voices[2].FrequencyHi = val; break;
 				case 0x10: voices[2].PulseWidthLo = val; break;
 				case 0x11: voices[2].PulseWidthHi = val; break;
 				case 0x12: voices[2].Control = val; envelopes[2].Gate = ((val & 0x01) != 0); break;
-				case 0x13: envelopes[2].Attack = (uint)(val >> 4); envelopes[2].Decay = (uint)(val & 0xF); break;
-				case 0x14: envelopes[2].Sustain = (uint)(val >> 4); envelopes[2].Release = (uint)(val & 0xF); break;
-				case 0x15: filterFrequency &= 0x3FF; filterFrequency |= (uint)(val & 0x7); break;
-				case 0x16: filterFrequency &= 0x7; filterFrequency |= (uint)val << 3; break;
+				case 0x13: envelopes[2].Attack = (val >> 4); envelopes[2].Decay = (val & 0xF); break;
+				case 0x14: envelopes[2].Sustain = (val >> 4); envelopes[2].Release = (val & 0xF); break;
+				case 0x15: filterFrequency &= 0x3FF; filterFrequency |= (val & 0x7); break;
+				case 0x16: filterFrequency &= 0x7; filterFrequency |= val << 3; break;
 				case 0x17:
 					filterEnable[0] = ((val & 0x1) != 0);
 					filterEnable[1] = ((val & 0x2) != 0);
 					filterEnable[2] = ((val & 0x4) != 0);
-					filterResonance = (uint)val >> 4;
+					filterResonance = val >> 4;
 					break;
 				case 0x18:
-					volume = (uint)(val & 0xF);
+					volume = (val & 0xF);
 					filterSelectLoPass = ((val & 0x10) != 0);
 					filterSelectBandPass = ((val & 0x20) != 0);
 					filterSelectHiPass = ((val & 0x40) != 0);
