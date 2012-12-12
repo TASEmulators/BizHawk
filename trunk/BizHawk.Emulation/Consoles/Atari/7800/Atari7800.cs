@@ -7,6 +7,15 @@ namespace BizHawk
 {
 	public partial class Atari7800 : IEmulator
 	{
+		static Atari7800()
+		{
+			// add alpha bits to palette tables
+			for (int i = 0; i < TIATables.NTSCPalette.Length; i++)
+				TIATables.NTSCPalette[i] |= unchecked((int)0xff000000);
+			for (int i = 0; i < TIATables.PALPalette.Length; i++)
+				TIATables.PALPalette[i] |= unchecked((int)0xff000000);
+		}
+
 		public string SystemId { get { return "A78"; } } //TODO: are we going to allow this core to do 2600 games?
 		public GameInfo game;
 
@@ -15,20 +24,20 @@ namespace BizHawk
 			_frame++;
 			_islag = true;
 
-			theMachine.ComputeNextFrame(videoProvider.fb);
+			theMachine.ComputeNextFrame(avProvider.framebuffer);
 			
 			if (_islag)
 			{
 				LagCount++;
 			}
 
-			videoProvider.FillFrameBuffer();
+			avProvider.FillFrameBuffer();
 		}
 
 		/* TODO */
 		public CoreComm CoreComm { get; private set; }
-		public ISyncSoundProvider SyncSoundProvider { get { return null; } }
-		public bool StartAsyncSound() { return true; }
+		public ISyncSoundProvider SyncSoundProvider { get { return avProvider; } }
+		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }
 		public bool DeterministicEmulation { get; set; }
 		public void SaveStateText(TextWriter writer) { }
@@ -51,9 +60,16 @@ namespace BizHawk
 		public void StoreSaveRam(byte[] data) { }
 		public void ClearSaveRam() { }
 		public bool SaveRamModified { get; set; }
-		public void Dispose() { }
-		public IVideoProvider VideoProvider { get { return videoProvider; } }
-		public ISoundProvider SoundProvider { get { return soundProvider; } }
+		public void Dispose()
+		{
+			if (avProvider != null)
+			{
+				avProvider.Dispose();
+				avProvider = null;
+			}
+		}
+		public IVideoProvider VideoProvider { get { return avProvider; } }
+		public ISoundProvider SoundProvider { get { return null; } }
 		
 
 		public void ResetFrameCounter()
@@ -121,7 +137,6 @@ namespace BizHawk
 			this.hsbios = highscoreBIOS;
 			NTSC_BIOS = new Bios7800(ntsc_bios);
 			PAL_BIOS = new Bios7800(pal_bios);
-			soundProvider = new MySoundProvider(this); //TODO
 			HardReset();
 		}
 
@@ -149,7 +164,7 @@ namespace BizHawk
 			//theMachine = new Machine7800NTSC(cart, null, null, logger);
 			//TODO: clean up, the hs and bios are passed in, the bios has an object AND byte array in the core, and naming is inconsistent
 			theMachine.Reset();
-			videoProvider = new MyVideoProvider(theMachine.CreateFrameBuffer());
+			avProvider = new MyAVProvider(theMachine);
 		}
 
 		void SyncState(Serializer ser) //TODO
@@ -164,36 +179,44 @@ namespace BizHawk
 			theMachine.Reset();
 		}
 
-		MyVideoProvider videoProvider;
+		MyAVProvider avProvider;
 
-		class MyVideoProvider : IVideoProvider
+		class MyAVProvider : IVideoProvider, ISyncSoundProvider, IDisposable
 		{
-			public FrameBuffer fb { get; private set; }
-			public MyVideoProvider(FrameBuffer fb)
+			public FrameBuffer framebuffer { get; private set; }
+			public MyAVProvider(MachineBase m)
 			{
-				this.fb = fb;
-				BufferWidth = fb.VisiblePitch;
-				BufferHeight = fb.Scanlines;
-				buffer = new int[BufferWidth * BufferHeight];
+				framebuffer = m.CreateFrameBuffer();
+				BufferWidth = framebuffer.VisiblePitch;
+				BufferHeight = framebuffer.Scanlines;
+				vidbuffer = new int[BufferWidth * BufferHeight];
+
+				uint samplerate = (uint)m.SoundSampleFrequency;
+				resampler = new Emulation.Sound.Utilities.SpeexResampler(3, samplerate, 44100, samplerate, 44100, null, null);
+				dcfilter = Emulation.Sound.Utilities.DCFilter.DetatchedMode(256);
 			}
 
-			int[] buffer;
+			int[] vidbuffer;
+			Emulation.Sound.Utilities.SpeexResampler resampler;
+			Emulation.Sound.Utilities.DCFilter dcfilter;
 
 			public void FillFrameBuffer()
 			{
-				int s = 0;
-				int t = 0;
-
-				for (int i = 0; i < 262; i++)
+				unsafe
 				{
-					for (int j = 0; j < 320; j++)
+					fixed (BufferElement *src_ = framebuffer.VideoBuffer)
 					{
-						buffer[(i * fb.VisiblePitch) + j] = TIATables.NTSCPalette[fb.VideoBuffer[s][t]] | unchecked((int)0xff000000);
-						t++;
-						if (t == 4)
+						fixed (int* dst_ = vidbuffer)
 						{
-							t = 0;
-							s++;
+							fixed (int* pal = TIATables.NTSCPalette)
+							{
+								byte* src = (byte*)src_;
+								int* dst = dst_;
+								for (int i = 0; i < vidbuffer.Length; i++)
+								{
+									*dst++ = pal[*src++];
+								}
+							}
 						}
 					}
 				}
@@ -201,31 +224,46 @@ namespace BizHawk
 
 			public int[] GetVideoBuffer()
 			{
-				return buffer;
+				return vidbuffer;
 			}
 
 			public int VirtualWidth { get { return BufferWidth; } }
 			public int BufferWidth { get; private set; }
 			public int BufferHeight { get; private set; }
 			public int BackgroundColor { get { return unchecked((int)0xff000000); } }
-		}
 
-		MySoundProvider soundProvider;
-
-		class MySoundProvider : ISoundProvider
-		{
-			Atari7800 emu;
-			public MySoundProvider(Atari7800 emu)
+			public void GetSamples(out short[] samples, out int nsamp)
 			{
-				this.emu = emu;
+				int nsampin = framebuffer.SoundBufferByteLength;
+				unsafe
+				{
+					fixed (BufferElement* src_ = framebuffer.SoundBuffer)
+					{
+							byte* src = (byte*)src_;
+							for (int i = 0; i < nsampin; i++)
+							{
+								short s = (short)(src[i] * 200 - 25500);
+								resampler.EnqueueSample(s, s);
+							}
+						
+					}
+				}
+				resampler.GetSamples(out samples, out nsamp);
+				dcfilter.PushThroughSamples(samples, nsamp * 2);
 			}
-			public int MaxVolume { get { return 0; } set { } }
+
 			public void DiscardSamples()
 			{
+				resampler.DiscardSamples();
 			}
 
-			public void GetSamples(short[] samples)
+			public void Dispose()
 			{
+				if (resampler != null)
+				{
+					resampler.Dispose();
+					resampler = null;
+				}
 			}
 		}
 
