@@ -151,7 +151,7 @@ namespace BizHawk
 						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom)),
 						"TODO");
 
-			cart = new Cart7848(rom); //TODO: mapper selection system
+			cart = Cart.Create(rom, CartType.A7848); //TODO: mapper selection system
 			
 			int[] bob = new int[] { 0, 0, 0 };
 
