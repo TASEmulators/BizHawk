@@ -25,7 +25,7 @@ namespace BizHawk
 			_islag = true;
 
 			theMachine.ComputeNextFrame(avProvider.framebuffer);
-			
+
 			if (_islag)
 			{
 				LagCount++;
@@ -40,10 +40,10 @@ namespace BizHawk
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }
 		public bool DeterministicEmulation { get; set; }
-		public void SaveStateText(TextWriter writer) { }
-		public void LoadStateText(TextReader reader) { }
-		public void SaveStateBinary(BinaryWriter bw) { }
-		public void LoadStateBinary(BinaryReader br) { }
+		public void SaveStateText(TextWriter writer) { SyncState(new Serializer(writer)); }
+		public void LoadStateText(TextReader reader) { SyncState(new Serializer(reader)); }
+		public void SaveStateBinary(BinaryWriter bw) { SyncState(new Serializer(bw)); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(new Serializer(br)); }
 		private IList<MemoryDomain> memoryDomains;
 		public IList<MemoryDomain> MemoryDomains { get { return null; } }
 		public MemoryDomain MainMemory { get { return null; } }
@@ -57,11 +57,11 @@ namespace BizHawk
 		private int _frame = 0;
 
 		public byte[] ReadSaveRam()
-		{ 
+		{
 			return (byte[])hsram.Clone();
 		}
 		public void StoreSaveRam(byte[] data)
-		{ 
+		{
 			Buffer.BlockCopy(data, 0, hsram, 0, data.Length);
 		}
 		public void ClearSaveRam()
@@ -70,9 +70,9 @@ namespace BizHawk
 				hsram[i] = 0;
 		}
 		public bool SaveRamModified
-		{ 
-			get 
-			{ 
+		{
+			get
+			{
 				return GameInfo.MachineType == MachineType.A7800PAL || GameInfo.MachineType == MachineType.A7800NTSC;
 			}
 			set
@@ -91,7 +91,7 @@ namespace BizHawk
 		}
 		public IVideoProvider VideoProvider { get { return avProvider; } }
 		public ISoundProvider SoundProvider { get { return null; } }
-		
+
 
 		public void ResetFrameCounter()
 		{
@@ -182,7 +182,7 @@ namespace BizHawk
 						"TODO");*/
 
 			cart = Cart.Create(rom, GameInfo.CartType);
-			
+
 			//int[] bob = new int[] { 0, 0, 0 };
 			//FileStream fs = new FileStream("C:\\dummy", FileMode.Create, FileAccess.ReadWrite); //TODO: I don't see what this context is used for, see if it can be whacked or pass in a null
 			//BinaryReader blah = new BinaryReader(fs);
@@ -199,13 +199,13 @@ namespace BizHawk
 				GameInfo.LController,
 				GameInfo.RController,
 				logger);
-				
+
 			//theMachine = new Machine7800NTSC(cart, null, null, logger);
 			//TODO: clean up, the hs and bios are passed in, the bios has an object AND byte array in the core, and naming is inconsistent
 			theMachine.Reset();
 			if (avProvider != null)
 				avProvider.Dispose();
-			avProvider = new MyAVProvider(theMachine);
+			avProvider.ConnectToMachine(theMachine);
 			// to sync exactly with audio as this emulator creates and times it, the frame rate should be exactly 60:1 or 50:1
 			CoreComm.VsyncNum = theMachine.FrameHZ;
 			CoreComm.VsyncDen = 1;
@@ -213,9 +213,25 @@ namespace BizHawk
 
 		void SyncState(Serializer ser) //TODO
 		{
+			byte[] core = null;
+			if (ser.IsWriter)
+			{
+				var ms = new MemoryStream();
+				theMachine.Serialize(new BinaryWriter(ms));
+				ms.Close();
+				core = ms.ToArray();
+			}
+			ser.BeginSection("Atari7800");
+			ser.Sync("core", ref core, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
+			ser.EndSection();
+			if (ser.IsReader)
+			{
+				theMachine = MachineBase.Deserialize(new BinaryReader(new MemoryStream(core, false)));
+				avProvider.ConnectToMachine(theMachine);
+			}
 		}
 
 		private void SoftReset() //TOOD: hook this up
@@ -223,12 +239,12 @@ namespace BizHawk
 			theMachine.Reset();
 		}
 
-		MyAVProvider avProvider;
+		MyAVProvider avProvider = new MyAVProvider();
 
 		class MyAVProvider : IVideoProvider, ISyncSoundProvider, IDisposable
 		{
 			public FrameBuffer framebuffer { get; private set; }
-			public MyAVProvider(MachineBase m)
+			public void ConnectToMachine(MachineBase m)
 			{
 				framebuffer = m.CreateFrameBuffer();
 				BufferWidth = framebuffer.VisiblePitch;
@@ -236,6 +252,8 @@ namespace BizHawk
 				vidbuffer = new int[BufferWidth * BufferHeight];
 
 				uint samplerate = (uint)m.SoundSampleFrequency;
+				if (resampler != null)
+					resampler.Dispose();
 				resampler = new Emulation.Sound.Utilities.SpeexResampler(3, samplerate, 44100, samplerate, 44100, null, null);
 				dcfilter = Emulation.Sound.Utilities.DCFilter.DetatchedMode(256);
 			}
@@ -248,7 +266,7 @@ namespace BizHawk
 			{
 				unsafe
 				{
-					fixed (BufferElement *src_ = framebuffer.VideoBuffer)
+					fixed (BufferElement* src_ = framebuffer.VideoBuffer)
 					{
 						fixed (int* dst_ = vidbuffer)
 						{
@@ -283,13 +301,13 @@ namespace BizHawk
 				{
 					fixed (BufferElement* src_ = framebuffer.SoundBuffer)
 					{
-							byte* src = (byte*)src_;
-							for (int i = 0; i < nsampin; i++)
-							{
-								short s = (short)(src[i] * 200 - 25500);
-								resampler.EnqueueSample(s, s);
-							}
-						
+						byte* src = (byte*)src_;
+						for (int i = 0; i < nsampin; i++)
+						{
+							short s = (short)(src[i] * 200 - 25500);
+							resampler.EnqueueSample(s, s);
+						}
+
 					}
 				}
 				resampler.GetSamples(out samples, out nsamp);
