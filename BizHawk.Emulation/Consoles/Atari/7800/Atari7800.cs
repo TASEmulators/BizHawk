@@ -173,22 +173,8 @@ namespace BizHawk.Emulation
 		public void HardReset()
 		{
 			_lagcount = 0;
-			// show mapper class on romstatusdetails
-			/*
-			CoreComm.RomStatusDetails =
-						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
-						game.Name,
-						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom)),
-						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom)),
-						"TODO");*/
 
 			cart = Cart.Create(rom, GameInfo.CartType);
-
-			//int[] bob = new int[] { 0, 0, 0 };
-			//FileStream fs = new FileStream("C:\\dummy", FileMode.Create, FileAccess.ReadWrite); //TODO: I don't see what this context is used for, see if it can be whacked or pass in a null
-			//BinaryReader blah = new BinaryReader(fs);
-			//DeserializationContext george = new DeserializationContext(blah);
-
 			ILogger logger = new ConsoleLogger();
 			HSC7800 hsc7800 = new HSC7800(hsbios, hsram);
 			Bios7800 bios7800 = new Bios7800(bios);
@@ -201,8 +187,6 @@ namespace BizHawk.Emulation
 				GameInfo.RController,
 				logger);
 
-			//theMachine = new Machine7800NTSC(cart, null, null, logger);
-			//TODO: clean up, the hs and bios are passed in, the bios has an object AND byte array in the core, and naming is inconsistent
 			theMachine.Reset();
 			if (avProvider != null)
 				avProvider.Dispose();
