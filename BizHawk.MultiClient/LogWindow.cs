@@ -48,8 +48,15 @@ namespace BizHawk.MultiClient
 		StringBuilder sbLog = new StringBuilder();
 		public void Append(string str)
 		{
-			Lines.Add(str);
-			virtualListView1.ItemCount++;
+			var ss = str.Split('\n');
+			foreach (var s in ss)
+			{
+				if (!string.IsNullOrWhiteSpace(s))
+				{
+					Lines.Add(s);
+					virtualListView1.ItemCount++;
+				}
+			}
 		}
 
 		private void btnClear_Click(object sender, EventArgs e)

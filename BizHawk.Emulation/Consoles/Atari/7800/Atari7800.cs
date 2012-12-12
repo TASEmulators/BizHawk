@@ -124,9 +124,18 @@ namespace BizHawk
 			}
 		}
 
-		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, byte[] ntsc_bios, byte[] pal_bios, byte[] highscoreBIOS)
+		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, byte[] ntsc_bios, byte[] pal_bios, byte[] highscoreBIOS, string GameDBfn)
 		{
 			CoreComm = comm;
+
+			if (EMU7800.Win.GameProgramLibrary.EMU7800DB == null)
+			{
+				EMU7800.Win.GameProgramLibrary.EMU7800DB = new EMU7800.Win.GameProgramLibrary(new StreamReader(GameDBfn));
+			}
+			GameInfo = EMU7800.Win.GameProgramLibrary.EMU7800DB.TryRecognizeRom(rom);
+			CoreComm.RomStatusDetails = GameInfo.ToString();
+			Console.WriteLine("Rom Determiniation from 7800DB:");
+			Console.WriteLine(GameInfo.ToString());
 
 			//TODO: store both the ntsc bios and the pal bios
 			var domains = new List<MemoryDomain>(1);
@@ -135,8 +144,7 @@ namespace BizHawk
 			this.rom = rom;
 			this.game = game;
 			this.hsbios = highscoreBIOS;
-			NTSC_BIOS = new Bios7800(ntsc_bios);
-			PAL_BIOS = new Bios7800(pal_bios);
+			this.bios = GameInfo.MachineType == MachineType.A7800PAL ? pal_bios : ntsc_bios;
 			HardReset();
 		}
 
@@ -144,27 +152,42 @@ namespace BizHawk
 		{
 			_lagcount = 0;
 			// show mapper class on romstatusdetails
+			/*
 			CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
 						game.Name,
 						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom)),
 						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom)),
-						"TODO");
+						"TODO");*/
 
-			cart = Cart.Create(rom, CartType.A7848); //TODO: mapper selection system
+			cart = Cart.Create(rom, GameInfo.CartType);
 			
-			int[] bob = new int[] { 0, 0, 0 };
-
+			//int[] bob = new int[] { 0, 0, 0 };
 			//FileStream fs = new FileStream("C:\\dummy", FileMode.Create, FileAccess.ReadWrite); //TODO: I don't see what this context is used for, see if it can be whacked or pass in a null
 			//BinaryReader blah = new BinaryReader(fs);
 			//DeserializationContext george = new DeserializationContext(blah);
+
 			ILogger logger = new ConsoleLogger();
 			HSC7800 hsc7800 = new HSC7800(hsbios, new byte[2048]); //TODO: why should I have to feed it ram? how much?
-			theMachine = new Machine7800NTSC(cart, NTSC_BIOS, hsc7800, logger);
+			Bios7800 bios7800 = new Bios7800(bios);
+			theMachine = MachineBase.Create
+				(GameInfo.MachineType,
+				cart,
+				bios7800,
+				hsc7800,
+				GameInfo.LController,
+				GameInfo.RController,
+				logger);
+				
 			//theMachine = new Machine7800NTSC(cart, null, null, logger);
 			//TODO: clean up, the hs and bios are passed in, the bios has an object AND byte array in the core, and naming is inconsistent
 			theMachine.Reset();
+			if (avProvider != null)
+				avProvider.Dispose();
 			avProvider = new MyAVProvider(theMachine);
+			// to sync exactly with audio as this emulator creates and times it, the frame rate should be exactly 60:1 or 50:1
+			CoreComm.VsyncNum = theMachine.FrameHZ;
+			CoreComm.VsyncDen = 1;
 		}
 
 		void SyncState(Serializer ser) //TODO

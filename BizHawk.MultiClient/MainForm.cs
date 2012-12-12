@@ -1905,7 +1905,9 @@ namespace BizHawk.MultiClient
 								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
 								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);
 
-								Atari7800 a78 = new Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS);
+								string gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
+
+								Atari7800 a78 = new Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS, gamedbpath);
 								nextEmulator = a78;
 								break;
 							case "C64":
