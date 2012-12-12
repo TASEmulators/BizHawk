@@ -32,6 +32,7 @@ namespace BizHawk
 			}
 
 			avProvider.FillFrameBuffer();
+
 		}
 
 		/* TODO */
@@ -251,13 +252,19 @@ namespace BizHawk
 				BufferHeight = framebuffer.Scanlines;
 				vidbuffer = new int[BufferWidth * BufferHeight];
 
-				uint samplerate = (uint)m.SoundSampleFrequency;
-				if (resampler != null)
-					resampler.Dispose();
-				resampler = new Emulation.Sound.Utilities.SpeexResampler(3, samplerate, 44100, samplerate, 44100, null, null);
-				dcfilter = Emulation.Sound.Utilities.DCFilter.DetatchedMode(256);
+				uint newsamplerate = (uint)m.SoundSampleFrequency;
+				if (newsamplerate != samplerate)
+				{
+					// really shouldn't happen, but if it does, we're ready
+					if (resampler != null)
+						resampler.Dispose();
+					resampler = new Emulation.Sound.Utilities.SpeexResampler(3, newsamplerate, 44100, newsamplerate, 44100, null, null);
+					samplerate = newsamplerate;
+					dcfilter = Emulation.Sound.Utilities.DCFilter.DetatchedMode(256);
+				}				
 			}
 
+			uint samplerate;
 			int[] vidbuffer;
 			Emulation.Sound.Utilities.SpeexResampler resampler;
 			Emulation.Sound.Utilities.DCFilter dcfilter;
@@ -304,7 +311,9 @@ namespace BizHawk
 						byte* src = (byte*)src_;
 						for (int i = 0; i < nsampin; i++)
 						{
-							short s = (short)(src[i] * 200 - 25500);
+							// the buffer values don't really get very large at all,
+							// so this doesn't overflow
+							short s = (short)(src[i] * 200);
 							resampler.EnqueueSample(s, s);
 						}
 
@@ -316,7 +325,8 @@ namespace BizHawk
 
 			public void DiscardSamples()
 			{
-				resampler.DiscardSamples();
+				if (resampler != null)
+					resampler.DiscardSamples();
 			}
 
 			public void Dispose()
