@@ -17,6 +17,6 @@ namespace BizHawk
 		Cart cart;
 		MachineBase theMachine;
 		EMU7800.Win.GameProgram GameInfo;
-
+		public byte[] hsram = new byte[2048];
 	}
 }

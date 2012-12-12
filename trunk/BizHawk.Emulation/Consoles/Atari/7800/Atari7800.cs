@@ -56,10 +56,31 @@ namespace BizHawk
 		private int _lagcount = 0;
 		private int _frame = 0;
 
-		public byte[] ReadSaveRam() { return null; }
-		public void StoreSaveRam(byte[] data) { }
-		public void ClearSaveRam() { }
-		public bool SaveRamModified { get; set; }
+		public byte[] ReadSaveRam()
+		{ 
+			return (byte[])hsram.Clone();
+		}
+		public void StoreSaveRam(byte[] data)
+		{ 
+			Buffer.BlockCopy(data, 0, hsram, 0, data.Length);
+		}
+		public void ClearSaveRam()
+		{
+			for (int i = 0; i < hsram.Length; i++)
+				hsram[i] = 0;
+		}
+		public bool SaveRamModified
+		{ 
+			get 
+			{ 
+				return GameInfo.MachineType == MachineType.A7800PAL || GameInfo.MachineType == MachineType.A7800NTSC;
+			}
+			set
+			{
+				throw new Exception("No one ever uses this, and it won't work with the way MainForm is set up.");
+			}
+		}
+
 		public void Dispose()
 		{
 			if (avProvider != null)
@@ -168,7 +189,7 @@ namespace BizHawk
 			//DeserializationContext george = new DeserializationContext(blah);
 
 			ILogger logger = new ConsoleLogger();
-			HSC7800 hsc7800 = new HSC7800(hsbios, new byte[2048]); //TODO: why should I have to feed it ram? how much?
+			HSC7800 hsc7800 = new HSC7800(hsbios, hsram);
 			Bios7800 bios7800 = new Bios7800(bios);
 			theMachine = MachineBase.Create
 				(GameInfo.MachineType,
