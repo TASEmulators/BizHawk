@@ -16,7 +16,8 @@ namespace BizHawk
 			_islag = true;
 
 			//TODO
-			FrameBuffer fb = new FrameBuffer(262, 320); //TODO: 262 is NTSC
+			FrameBuffer fb = theMachine.CreateFrameBuffer();			
+				//new FrameBuffer(262, 320); //TODO: 262 is NTSC
 			theMachine.ComputeNextFrame(fb);
 
 			
@@ -25,7 +26,7 @@ namespace BizHawk
 				LagCount++;
 			}
 
-			videoProvider.FillFrameBuffer();
+			videoProvider.FillFrameBuffer(fb);
 		}
 
 		/* TODO */
@@ -184,15 +185,22 @@ namespace BizHawk
 
 			int[] buffer = new int[262 * 320]; //TODO: use videobuffer values for this if there's a logical way
 
-			public void FillFrameBuffer() //TODO: don't recalculate consantly, fill this on frame advance instead
+			public void FillFrameBuffer(FrameBuffer fb) //TODO: don't recalculate consantly, fill this on frame advance instead
 			{
-				FrameBuffer fb = emu.theMachine.CreateFrameBuffer();
+				int s = 0;
+				int t = 0;
 
 				for (int i = 0; i < 262; i++)
 				{
 					for (int j = 0; j < 320; j++)
 					{
-						buffer[(i * fb.VisiblePitch) + j] = fb.VideoBuffer[i][j];
+						buffer[(i * fb.VisiblePitch) + j] = TIATables.NTSCPalette[fb.VideoBuffer[s][t]] | unchecked((int)0xff000000);
+						t++;
+						if (t == 4)
+						{
+							t = 0;
+							s++;
+						}
 					}
 				}
 			}
