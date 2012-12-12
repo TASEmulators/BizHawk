@@ -214,6 +214,8 @@
     <Compile Include="Consoles\Atari\7800\EMU7800\TIA.cs" />
     <Compile Include="Consoles\Atari\7800\EMU7800\TIASound.cs" />
     <Compile Include="Consoles\Atari\7800\EMU7800\TIATables.cs" />
+    <Compile Include="Consoles\Atari\7800\GameProgram.cs" />
+    <Compile Include="Consoles\Atari\7800\GameProgramLibrary.cs" />
     <Compile Include="Consoles\Calculator\TI83.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
     <Compile Include="Consoles\Coleco\Input.cs" />
