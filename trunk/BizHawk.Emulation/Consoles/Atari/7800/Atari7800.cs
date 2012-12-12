@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using EMU7800.Core;
 
-namespace BizHawk
+namespace BizHawk.Emulation
 {
 	public partial class Atari7800 : IEmulator
 	{

@@ -150,6 +150,7 @@
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800.Core.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
+    <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
     <Compile Include="Consoles\Atari\7800\EMU7800\AddressSpace.cs" />
     <Compile Include="Consoles\Atari\7800\EMU7800\Bios7800.cs" />
     <Compile Include="Consoles\Atari\7800\EMU7800\BufferElement.cs" />

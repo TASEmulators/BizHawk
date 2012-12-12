@@ -5,7 +5,7 @@ using BizHawk.Emulation.CPUs.M6502;
 using BizHawk.Emulation.Consoles.Atari;
 using EMU7800.Core;
 
-namespace BizHawk
+namespace BizHawk.Emulation
 {
 	partial class Atari7800
 	{
