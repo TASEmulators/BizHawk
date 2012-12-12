@@ -15,18 +15,14 @@ namespace BizHawk
 			_frame++;
 			_islag = true;
 
-			//TODO
-			FrameBuffer fb = theMachine.CreateFrameBuffer();			
-				//new FrameBuffer(262, 320); //TODO: 262 is NTSC
-			theMachine.ComputeNextFrame(fb);
-
+			theMachine.ComputeNextFrame(videoProvider.fb);
 			
 			if (_islag)
 			{
 				LagCount++;
 			}
 
-			videoProvider.FillFrameBuffer(fb);
+			videoProvider.FillFrameBuffer();
 		}
 
 		/* TODO */
@@ -125,7 +121,6 @@ namespace BizHawk
 			this.hsbios = highscoreBIOS;
 			NTSC_BIOS = new Bios7800(ntsc_bios);
 			PAL_BIOS = new Bios7800(pal_bios);
-			videoProvider = new MyVideoProvider(this);
 			soundProvider = new MySoundProvider(this); //TODO
 			HardReset();
 		}
@@ -154,6 +149,7 @@ namespace BizHawk
 			//theMachine = new Machine7800NTSC(cart, null, null, logger);
 			//TODO: clean up, the hs and bios are passed in, the bios has an object AND byte array in the core, and naming is inconsistent
 			theMachine.Reset();
+			videoProvider = new MyVideoProvider(theMachine.CreateFrameBuffer());
 		}
 
 		void SyncState(Serializer ser) //TODO
@@ -172,20 +168,18 @@ namespace BizHawk
 
 		class MyVideoProvider : IVideoProvider
 		{
-			public int top = 0; //TODO: I should delete these probably
-			public int bottom = 262;
-			public int left = 0;
-			public int right = 320;
-
-			Atari7800 emu;
-			public MyVideoProvider(Atari7800 emu)
+			public FrameBuffer fb { get; private set; }
+			public MyVideoProvider(FrameBuffer fb)
 			{
-				this.emu = emu;
+				this.fb = fb;
+				BufferWidth = fb.VisiblePitch;
+				BufferHeight = fb.Scanlines;
+				buffer = new int[BufferWidth * BufferHeight];
 			}
 
-			int[] buffer = new int[262 * 320]; //TODO: use videobuffer values for this if there's a logical way
+			int[] buffer;
 
-			public void FillFrameBuffer(FrameBuffer fb) //TODO: don't recalculate consantly, fill this on frame advance instead
+			public void FillFrameBuffer()
 			{
 				int s = 0;
 				int t = 0;
@@ -211,9 +205,9 @@ namespace BizHawk
 			}
 
 			public int VirtualWidth { get { return BufferWidth; } }
-			public int BufferWidth { get { return right - left + 1; } }
-			public int BufferHeight { get { return bottom - top + 1; } }
-			public int BackgroundColor { get { return 0; } }
+			public int BufferWidth { get; private set; }
+			public int BufferHeight { get; private set; }
+			public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 		}
 
 		MySoundProvider soundProvider;
