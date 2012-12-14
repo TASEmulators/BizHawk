@@ -305,10 +305,12 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		public byte[] SaveStateBinary()
 		{
-			var buf = new byte[24802 + 16384 + 16384];
+			var buf = new byte[24802 + 1 + 16384 + 16384];
 			var stream = new MemoryStream(buf);
 			var writer = new BinaryWriter(stream);
 			SaveStateBinary(writer);
+			if (stream.Length != buf.Length)
+				throw new Exception(string.Format("savestate buffer underrun: {0} < {1}", stream.Length, buf.Length));
 			writer.Close();
 			return buf;
 		}
