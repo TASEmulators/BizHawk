@@ -232,7 +232,7 @@ namespace BizHawk.Emulation.Sound
 				if (!E)
 					return;
 				count--;
-				if (count <= 0)
+				if (count < 0)
 				{
 					count = F >> RSHIFT;
 					acount++;
@@ -348,7 +348,7 @@ namespace BizHawk.Emulation.Sound
 				if (!E)
 					return;
 				count--;
-				if (count <= 0)
+				if (count < 0)
 				{
 					count = F >> RSHIFT;
 					duty--;
