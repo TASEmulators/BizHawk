@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	class Sunsoft_5 : Sunsoft_FME7
 	{
+		Sound.Sunsoft5BAudio audio;
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//configure
@@ -22,14 +24,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			BaseConfigure();
+			if (NES.apu != null)
+				audio = new Sound.Sunsoft5BAudio(NES.apu.ExternalQueue);
 
 			return true;
 		}
 
 		public override void WritePRG(int addr, byte value)
 		{
-			//TODO - sound
-			base.WritePRG(addr, value);
+			int a = addr & 0xe000;
+			if (a == 0x4000)
+				audio.RegSelect(value);
+			else if (a == 0x6000)
+				audio.RegWrite(value);
+			else
+				base.WritePRG(addr, value);
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			audio.SyncState(ser);
+		}
+
+		public override void ClockCPU()
+		{
+			audio.Clock();
+			base.ClockCPU();
 		}
 	}
 

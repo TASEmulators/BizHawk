@@ -442,6 +442,7 @@
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />
+    <Compile Include="Sound\Sunsoft5BAudio.cs" />
     <Compile Include="Sound\Utilities\BlipBuffer.cs" />
     <Compile Include="Sound\Utilities\DCFilter.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
