@@ -1202,11 +1202,11 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 1:
-					return new Point(((address % 16) * (fontWidth * 3)) + 57, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point(((address % 16) * (fontWidth * 3)) + 67, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 2:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 57, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 67, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 4:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 57, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 67, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 			}
 		}
 
@@ -1217,13 +1217,13 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 1:
-					start = (16 * (fontWidth * 3)) + 57;
+					start = (16 * (fontWidth * 3)) + 67;
 					break;
 				case 2:
-					start = ((16 / DataSize) * (fontWidth * 5)) + 57;
+					start = ((16 / DataSize) * (fontWidth * 5)) + 67;
 					break;
 				case 4:
-					start = ((16 / DataSize) * (fontWidth * 9)) + 57;
+					start = ((16 / DataSize) * (fontWidth * 9)) + 67;
 					break;
 			}
 			start += (fontWidth * 4);
