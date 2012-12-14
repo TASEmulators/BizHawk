@@ -37,12 +37,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int wram_bank;
 		byte[] EXRAM = new byte[1024];
 		byte multiplicand, multiplier;
+		Sound.MMC5Audio audio;
 		//regeneratable state
 		IntBuffer a_banks_1k = new IntBuffer(8);
 		IntBuffer b_banks_1k = new IntBuffer(8);
 		IntBuffer prg_banks_8k = new IntBuffer(4);
 		byte product_low, product_high;
 		int last_nt_read;
+		bool irq_audio;
 
 		public MemoryDomain GetExRAM()
 		{
@@ -76,6 +78,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SyncCHRBanks();
 			SyncMultiplier();
 			SyncIRQ();
+			audio.SyncState(ser);
 		}
 
 		public override void Dispose()
@@ -110,6 +113,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr_bank_mask_1k = Cart.chr_size - 1;
 
 			PoweronState();
+
+			if (NES.apu != null)
+				audio = new Sound.MMC5Audio(NES.apu.ExternalQueue, (e) => { irq_audio = e; SyncIRQ(); });
 
 			return true;
 		}
@@ -320,6 +326,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void WriteEXP(int addr, byte value)
 		{
 			//NES.LogLine("MMC5 WriteEXP: ${0:x4} = ${1:x2}", addr, value);
+			if (addr >= 0x1000 && addr <= 0x1015)
+			{
+				audio.WriteExp(addr + 0x4000, value);
+				return;
+			}
 			switch (addr)
 			{
 				case 0x1100: //$5100:  [.... ..PP]    PRG Mode Select:
@@ -440,6 +451,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x1206: //$5206:  high 8 bits of product
 					ret = product_high;
 					break;
+
+				case 0x1015: // $5015: apu status
+					ret = audio.Read5015();
+					break;
+
+				case 0x1010: // $5010: apu PCM
+					ret = audio.Read5010();
+					break;
 			}
 
 			//TODO - additional r/w timing security
@@ -455,7 +474,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled);
+			IRQSignal = (irq_pending && irq_enabled) || irq_audio;
 		}
 
 		public override void ClockPPU()
@@ -491,6 +510,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
+		}
+
+		public override void ClockCPU()
+		{
+			audio.Clock();
 		}
 
 		void SetBank(IntBuffer target, int offset, int size, int value)
