@@ -83,6 +83,12 @@ namespace BizHawk.MultiClient
 			Atari2600Autofire1Panel.LoadSettings(Global.Config.Atari2600AutoController[0]);
 			Atari2600Autofire2Panel.LoadSettings(Global.Config.Atari2600AutoController[1]);
 
+			Atari7800Controller1Panel.LoadSettings(Global.Config.Atari7800Controller[0]);
+			Atari7800Controller2Panel.LoadSettings(Global.Config.Atari7800Controller[1]);
+			Atari7800ConsoleButtons.LoadSettings(Global.Config.Atari7800ConsoleButtons[0]);
+			Atari7800Autofire1Panel.LoadSettings(Global.Config.Atari7800AutoController[0]);
+			Atari7800Autofire2Panel.LoadSettings(Global.Config.Atari7800AutoController[1]);
+
 			TI83ControllerPanel.Spacing = 24;
 			TI83ControllerPanel.InputSize = 110;
 			TI83ControllerPanel.LabelPadding = 5;

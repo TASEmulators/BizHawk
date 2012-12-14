@@ -114,11 +114,11 @@ namespace BizHawk.Emulation
 		public IController Controller { get; set; }
 		public static readonly ControllerDefinition Atari7800ControllerDefinition = new ControllerDefinition
 		{
-			Name = "Atari 7800 Basic Controller", //TODO
+			Name = "Atari 7800 Basic Controller",
 			BoolButtons =
 			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", 
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button", 
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", 
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2",
 				"Reset", "Select"
 			}
 		};

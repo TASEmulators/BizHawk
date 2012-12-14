@@ -19,6 +19,7 @@ using BizHawk.Emulation.Consoles.Intellivision;
 using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.GBA;
 using BizHawk.Emulation.Computers.Commodore64;
+using BizHawk.Emulation;
 
 namespace BizHawk.MultiClient
 {
@@ -994,6 +995,43 @@ namespace BizHawk.MultiClient
 			
 			Global.AutofireAtari2600Controls = autofireA2600Controls;
 
+			var a7800Controls = new Controller(Atari7800.Atari7800ControllerDefinition);
+			a7800Controls.BindMulti("P1 Up", Global.Config.Atari7800Controller[0].Up);
+			a7800Controls.BindMulti("P1 Left", Global.Config.Atari7800Controller[0].Left);
+			a7800Controls.BindMulti("P1 Right", Global.Config.Atari7800Controller[0].Right);
+			a7800Controls.BindMulti("P1 Down", Global.Config.Atari7800Controller[0].Down);
+			a7800Controls.BindMulti("P1 B1", Global.Config.Atari7800Controller[0].Button1);
+			a7800Controls.BindMulti("P1 B2", Global.Config.Atari7800Controller[0].Button2);
+
+			a7800Controls.BindMulti("P2 Up", Global.Config.Atari7800Controller[1].Up);
+			a7800Controls.BindMulti("P2 Left", Global.Config.Atari7800Controller[1].Left);
+			a7800Controls.BindMulti("P2 Right", Global.Config.Atari7800Controller[1].Right);
+			a7800Controls.BindMulti("P2 Down", Global.Config.Atari7800Controller[1].Down);
+			a7800Controls.BindMulti("P2 B1", Global.Config.Atari7800Controller[1].Button1);
+			a7800Controls.BindMulti("P2 B2", Global.Config.Atari7800Controller[1].Button2);
+
+			a7800Controls.BindMulti("Reset", Global.Config.Atari2600ConsoleButtons[0].Reset);
+			a7800Controls.BindMulti("Select", Global.Config.Atari2600ConsoleButtons[0].Select);
+
+			Global.Atari7800Controls = a7800Controls;
+
+			var autofireA7800Controls = new AutofireController(Atari7800.Atari7800ControllerDefinition);
+			autofireA7800Controls.BindMulti("P1 Up", Global.Config.Atari7800AutoController[0].Up);
+			autofireA7800Controls.BindMulti("P1 Left", Global.Config.Atari7800AutoController[0].Left);
+			autofireA7800Controls.BindMulti("P1 Right", Global.Config.Atari7800AutoController[0].Right);
+			autofireA7800Controls.BindMulti("P1 Down", Global.Config.Atari7800AutoController[0].Down);
+			autofireA7800Controls.BindMulti("P1 B1", Global.Config.Atari7800AutoController[0].Button1);
+			autofireA7800Controls.BindMulti("P1 B2", Global.Config.Atari7800AutoController[0].Button2);
+
+			autofireA7800Controls.BindMulti("P2 Up", Global.Config.Atari7800AutoController[1].Up);
+			autofireA7800Controls.BindMulti("P2 Left", Global.Config.Atari7800AutoController[1].Left);
+			autofireA7800Controls.BindMulti("P2 Right", Global.Config.Atari7800AutoController[1].Right);
+			autofireA7800Controls.BindMulti("P2 Down", Global.Config.Atari7800AutoController[1].Down);
+			autofireA7800Controls.BindMulti("P2 B1", Global.Config.Atari7800AutoController[1].Button1);
+			autofireA7800Controls.BindMulti("P2 B2", Global.Config.Atari7800AutoController[1].Button2);
+
+			Global.AutofireAtari7800Controls = autofireA2600Controls;
+
 			var colecoControls = new Controller(ColecoVision.ColecoVisionControllerDefinition);
 			colecoControls.BindMulti("P1 Up", Global.Config.ColecoController[0].Up);
 			colecoControls.BindMulti("P1 Left", Global.Config.ColecoController[0].Left);
@@ -1483,6 +1521,10 @@ namespace BizHawk.MultiClient
 				case "A26":
 					Global.ActiveController = Global.Atari2600Controls;
 					Global.AutoFireController = Global.AutofireAtari2600Controls;
+					break;
+				case "A78":
+					Global.ActiveController = Global.Atari7800Controls;
+					Global.AutoFireController = Global.AutofireAtari7800Controls;
 					break;
 				case "PCE":
 				case "PCECD":
