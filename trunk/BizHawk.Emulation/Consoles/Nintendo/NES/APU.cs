@@ -1076,6 +1076,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			public List<Delta> dlist = new List<Delta>();
 
+			/// <summary>only call in board.ClockCPU()</summary>
+			/// <param name="value"></param>
+			public void ExternalQueue(int value)
+			{
+				// sampleclock is incremented right before board.ClockCPU()
+				dlist.Add(new Delta(sampleclock - 1, value));
+			}
+
 			public uint sampleclock = 0;
 
 			int oldmix = 0;

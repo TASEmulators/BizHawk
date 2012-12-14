@@ -30,8 +30,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.Dispose();
 			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
-			if (VRC6Sound != null)
-				VRC6Sound.Dispose();
+			//if (VRC6Sound != null)
+			//	VRC6Sound.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -96,7 +96,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SyncPRG();
 			SetMirrorType(EMirrorType.Vertical);
 
-			VRC6Sound = new Sound.VRC6Alt((uint)NES.cpuclockrate);
+			if (NES.apu != null) // don't start up sound when in configurator
+				VRC6Sound = new Sound.VRC6Alt((uint)NES.cpuclockrate, NES.apu.ExternalQueue);
 
 			return true;
 		}
@@ -273,8 +274,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public override void ApplyCustomAudio(short[] samples)
-		{
+		//public override void ApplyCustomAudio(short[] samples)
+		//{
 			/*
 			short[] fmsamples = new short[samples.Length];
 			VRC6Sound.GetSamples(fmsamples);
@@ -284,8 +285,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				samples[i] = (short)((samples[i] >> 1) + (fmsamples[i] >> 1));
 			}
 			*/
-			VRC6Sound.ApplyCustomAudio(samples);
-		}
+		//	VRC6Sound.ApplyCustomAudio(samples);
+		//}
 
 	}
 }

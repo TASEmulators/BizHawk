@@ -5,19 +5,19 @@ using System.Text;
 
 namespace BizHawk.Emulation.Sound
 {
-	public class VRC6Alt : IDisposable
+	public class VRC6Alt// : IDisposable
 	{
 		// http://wiki.nesdev.com/w/index.php/VRC6_audio
 
 
 
-
-
+		/*
+		// the VRC6 now sends its blips back to the NES core, for simplicity
+		// (speed is the same)
+		
 		#region blip-buf interface
 
 		Sound.Utilities.BlipBuffer blip;
-		// yes, some of this is copy+pasted from the FDS, and more or less from the NES
-		// as soon as i decide that i like it and i use it a third time, i'll put it in a class
 
 		struct Delta
 		{
@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Sound
 
 		public void ApplyCustomAudio(short[] samples)
 		{
+			
 			int nsamp = samples.Length / 2;
 			if (nsamp > blipsize) // oh well.
 				nsamp = blipsize;
@@ -61,29 +62,35 @@ namespace BizHawk.Emulation.Sound
 				// nes audio is mono, so we can ignore the original value of samples[j+1]
 				samples[j + 1] = samples[j];
 			}
+			
 		}
-
 		#endregion
+		*/
 
 		Pulse pulse1, pulse2;
 		Saw saw;
+
+		Action<int> enqueuer;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="freq">frequency of the M2 clock in hz</param>
-		public VRC6Alt(uint freq)
+		/// <param name="enqueuer">a place to dump deltas to</param>
+		public VRC6Alt(uint freq, Action<int> enqueuer)
 		{
+			this.enqueuer = enqueuer;
+			/*
 			if (freq > 0)
 			{
 				blip = new Utilities.BlipBuffer(blipsize);
 				blip.SetRates(freq, 44100);
-			}
+			}*/
 			pulse1 = new Pulse(PulseAddDiff);
 			pulse2 = new Pulse(PulseAddDiff);
 			saw = new Saw(SawAddDiff);
 		}
-
+		/*
 		public void Dispose()
 		{
 			if (blip != null)
@@ -91,18 +98,20 @@ namespace BizHawk.Emulation.Sound
 				blip.Dispose();
 				blip = null;
 			}
-		}
+		}*/
 
 		// the two pulse channels are about the same volume as 2a03 pulse channels.
 		// everything is flipped, though; but that's taken care of in the classes
 		void PulseAddDiff(int value)
 		{
-			dlist.Add(new Delta(sampleclock, value * 360));
+			//dlist.Add(new Delta(sampleclock, value * 360));
+			enqueuer(value * 360);
 		}
 		// saw ends up being not that loud because of differences in implementation
 		void SawAddDiff(int value)
 		{
-			dlist.Add(new Delta(sampleclock, value * 360));
+			//dlist.Add(new Delta(sampleclock, value * 360));
+			enqueuer(value * 360);
 		}
 
 		// state
@@ -151,7 +160,7 @@ namespace BizHawk.Emulation.Sound
 				pulse2.Clock();
 				saw.Clock();
 			}
-			sampleclock++;
+			//sampleclock++;
 		}
 
 		class Saw
