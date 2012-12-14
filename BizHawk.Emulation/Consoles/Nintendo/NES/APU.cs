@@ -1088,6 +1088,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			int oldmix = 0;
 
+			// http://wiki.nesdev.com/w/index.php/APU_Mixer
+			// in the end, doesn't help pass any tests, so canned
+			/*
+			static readonly int[] pulse_table;
+			static readonly int[] tnd_table;
+			static APU()
+			{
+				const double scale = 43803.0;
+
+				pulse_table = new int[31];
+				tnd_table = new int[203];
+				pulse_table[0] = tnd_table[0] = 0;
+				for (int i = 1; i < pulse_table.Length; i++)
+					pulse_table[i] = (int)Math.Round(scale * 95.52 / (8128.0 / i + 100.0));
+				for (int i = 1; i < tnd_table.Length; i++)
+					tnd_table[i] = (int)Math.Round(scale * 163.67 / (24329.0 / i + 100.0));
+			}
+			*/
+
 			void EmitSample()
 			{
 				if (recalculate)
@@ -1119,6 +1138,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					int pulse_out = 376 * (s_pulse0 + s_pulse1);
 					int tnd_out = 426 * s_tri + 247 * s_noise + 167 * s_dmc;
 					int mix = pulse_out + tnd_out;
+					//int pulse_out = pulse_table[s_pulse0 + s_pulse1];
+					//int tnd_out = tnd_table[3 * s_tri + 2 * s_noise + s_dmc];
+					//int mix = pulse_out + tnd_out;
 
 					dlist.Add(new Delta(sampleclock, mix - oldmix));
 					oldmix = mix;
