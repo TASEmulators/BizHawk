@@ -315,9 +315,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPRG(int addr)
 		{
 			bool ram;
-			addr = MapPRG(addr, out ram);
-			if (ram) return WRAM[addr];
-			else return ROM[addr];
+			byte ret;
+			int mapaddr = MapPRG(addr, out ram);
+			if (ram)
+				ret = WRAM[mapaddr];
+			else
+				ret = ROM[mapaddr];
+			if (addr < 0x4000)
+				audio.ReadROMTrigger(ret);
+			return ret;
 		}
 
 		public override void WritePRG(int addr, byte value)
