@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//configuraton
 		int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)
+		int wram_bank_mask_8k;
 
 		//state
 		int irq_target, irq_counter;
@@ -100,7 +101,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "MAPPER005":
 					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
-					AssertPrg(128,256); AssertChr(128);
+					AssertPrg(128, 256); AssertChr(128);
 					break;
 				case "NES-EKROM": //Gemfire (U)
 					AssertPrg(256); AssertChr(256);
@@ -111,8 +112,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size/8-1;
+			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
+			wram_bank_mask_8k = Cart.wram_size / 8 - 1;
 
 			PoweronState();
 
@@ -138,7 +140,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		int MapWRAM(int addr)
 		{
-			int bank_8k = wram_bank;
+			int bank_8k = wram_bank & wram_bank_mask_8k;
 			int ofs = addr & ((1 << 13) - 1);
 			addr = (bank_8k << 13) | ofs;
 			return addr;
