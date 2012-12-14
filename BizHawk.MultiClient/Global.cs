@@ -32,6 +32,7 @@ namespace BizHawk.MultiClient
 		public static Controller GBControls;
 		public static Controller GBAControls;
 		public static Controller Atari2600Controls;
+		public static Controller Atari7800Controls;
 		public static Controller NullControls;
 		public static Controller ColecoControls;
 		public static Controller Commodore64Controls;
@@ -46,6 +47,7 @@ namespace BizHawk.MultiClient
 		public static AutofireController AutofireGBAControls;
 		public static AutofireController AutofireGenControls;
 		public static AutofireController AutofireAtari2600Controls;
+		public static AutofireController AutofireAtari7800Controls;
 		public static AutofireController AutofireCommodore64Controls;
 		public static AutofireController AutofireColecoControls;
 

@@ -38,6 +38,12 @@ namespace BizHawk.MultiClient
 			Atari2600AutoController[1] = new SingleButtonJoyStickTemplate(false);
 			Atari2600ConsoleButtons[0] = new Atari2600ConsoleButtonsTemplate(true);
 
+			Atari7800Controller[0] = new DoubleButtonJoyStickTemplate(true);
+			Atari7800Controller[1] = new DoubleButtonJoyStickTemplate(false);
+			Atari7800AutoController[0] = new DoubleButtonJoyStickTemplate(false);
+			Atari7800AutoController[1] = new DoubleButtonJoyStickTemplate(false);
+			Atari7800ConsoleButtons[0] = new Atari2600ConsoleButtonsTemplate(true);
+
 			NESAutoController[0] = new NESControllerTemplate(false);
 			NESAutoController[1] = new NESControllerTemplate(false);
 			NESAutoController[2] = new NESControllerTemplate(false);
@@ -707,6 +713,11 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_LeftDifficulty = true;
 		public bool Atari2600_RightDifficulty = true;
 
+		//Atari 7800 Settings
+		public DoubleButtonJoyStickTemplate[] Atari7800Controller = new DoubleButtonJoyStickTemplate[2];
+		public DoubleButtonJoyStickTemplate[] Atari7800AutoController = new DoubleButtonJoyStickTemplate[2];
+		public Atari2600ConsoleButtonsTemplate[] Atari7800ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
+
 		//ColecoVision
 		public ColecoVisionControllerTemplate[] ColecoController = new ColecoVisionControllerTemplate[2];
 		public ColecoVisionControllerTemplate[] ColecoAutoController = new ColecoVisionControllerTemplate[2];
@@ -1111,6 +1122,37 @@ namespace BizHawk.MultiClient
 				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
 				Button = "Z, X1 A";
 			}
+		}
+	}
+
+	public class DoubleButtonJoyStickTemplate : iControllerConfigObject
+	{
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string Button1 = "";
+		public string Button2 = "";
+		public bool Enabled;
+
+		public DoubleButtonJoyStickTemplate() { }
+		public DoubleButtonJoyStickTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			Button1 = "Z, X1 A";
+			Button2 = "X, X1 X";
 		}
 	}
 
