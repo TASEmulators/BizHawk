@@ -105,6 +105,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-EKROM": //Gemfire (U)
 					AssertPrg(256); AssertChr(256);
 					break;
+				case "HVC-EKROM":
+					break;
 				default:
 					return false;
 			}
