@@ -146,6 +146,19 @@
 			this.Atari2600Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage58 = new System.Windows.Forms.TabPage();
 			this.Atari2600Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPageAtari7800 = new System.Windows.Forms.TabPage();
+			this.pictureBox16 = new System.Windows.Forms.PictureBox();
+			this.tabControl11 = new System.Windows.Forms.TabControl();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.Atari7800Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.Atari7800Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.Atari7800ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage6 = new System.Windows.Forms.TabPage();
+			this.Atari7800Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.Atari7800Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageC64 = new System.Windows.Forms.TabPage();
 			this.tabControl8 = new System.Windows.Forms.TabControl();
 			this.tabPage49 = new System.Windows.Forms.TabPage();
@@ -182,19 +195,6 @@
 			this.label38 = new System.Windows.Forms.Label();
 			this.AllowLR = new System.Windows.Forms.CheckBox();
 			this.AutoTab = new System.Windows.Forms.CheckBox();
-			this.tabPageAtari7800 = new System.Windows.Forms.TabPage();
-			this.pictureBox16 = new System.Windows.Forms.PictureBox();
-			this.tabControl11 = new System.Windows.Forms.TabControl();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.Atari7800Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage4 = new System.Windows.Forms.TabPage();
-			this.Atari7800Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage5 = new System.Windows.Forms.TabPage();
-			this.Atari7800ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage6 = new System.Windows.Forms.TabPage();
-			this.Atari7800Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage7 = new System.Windows.Forms.TabPage();
-			this.Atari7800Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.PlatformTabControl.SuspendLayout();
 			this.tabPageNES.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
@@ -265,6 +265,14 @@
 			this.tabPage48.SuspendLayout();
 			this.tabPage35.SuspendLayout();
 			this.tabPage58.SuspendLayout();
+			this.tabPageAtari7800.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox16)).BeginInit();
+			this.tabControl11.SuspendLayout();
+			this.tabPage3.SuspendLayout();
+			this.tabPage4.SuspendLayout();
+			this.tabPage5.SuspendLayout();
+			this.tabPage6.SuspendLayout();
+			this.tabPage7.SuspendLayout();
 			this.tabPageC64.SuspendLayout();
 			this.tabControl8.SuspendLayout();
 			this.tabPage49.SuspendLayout();
@@ -286,14 +294,6 @@
 			this.tabPage63.SuspendLayout();
 			this.tabPageTI83.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
-			this.tabPageAtari7800.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox16)).BeginInit();
-			this.tabControl11.SuspendLayout();
-			this.tabPage3.SuspendLayout();
-			this.tabPage4.SuspendLayout();
-			this.tabPage5.SuspendLayout();
-			this.tabPage6.SuspendLayout();
-			this.tabPage7.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// PlatformTabControl
@@ -1442,6 +1442,133 @@
 			this.Atari2600Autofire2Panel.Size = new System.Drawing.Size(368, 332);
 			this.Atari2600Autofire2Panel.TabIndex = 3;
 			// 
+			// tabPageAtari7800
+			// 
+			this.tabPageAtari7800.Controls.Add(this.pictureBox16);
+			this.tabPageAtari7800.Controls.Add(this.tabControl11);
+			this.tabPageAtari7800.Location = new System.Drawing.Point(4, 22);
+			this.tabPageAtari7800.Name = "tabPageAtari7800";
+			this.tabPageAtari7800.Size = new System.Drawing.Size(787, 425);
+			this.tabPageAtari7800.TabIndex = 11;
+			this.tabPageAtari7800.Text = "Atari 7800";
+			this.tabPageAtari7800.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox16
+			// 
+			this.pictureBox16.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox16.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox16.Image = global::BizHawk.MultiClient.Properties.Resources.A78Joystick;
+			this.pictureBox16.Location = new System.Drawing.Point(426, 37);
+			this.pictureBox16.Name = "pictureBox16";
+			this.pictureBox16.Size = new System.Drawing.Size(241, 210);
+			this.pictureBox16.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox16.TabIndex = 6;
+			this.pictureBox16.TabStop = false;
+			// 
+			// tabControl11
+			// 
+			this.tabControl11.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.tabControl11.Controls.Add(this.tabPage3);
+			this.tabControl11.Controls.Add(this.tabPage4);
+			this.tabControl11.Controls.Add(this.tabPage5);
+			this.tabControl11.Controls.Add(this.tabPage6);
+			this.tabControl11.Controls.Add(this.tabPage7);
+			this.tabControl11.Location = new System.Drawing.Point(17, 15);
+			this.tabControl11.Name = "tabControl11";
+			this.tabControl11.SelectedIndex = 0;
+			this.tabControl11.Size = new System.Drawing.Size(389, 401);
+			this.tabControl11.TabIndex = 5;
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.Atari7800Controller1Panel);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(381, 375);
+			this.tabPage3.TabIndex = 0;
+			this.tabPage3.Text = "Joystick 1";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800Controller1Panel
+			// 
+			this.Atari7800Controller1Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Controller1Panel.Name = "Atari7800Controller1Panel";
+			this.Atari7800Controller1Panel.Size = new System.Drawing.Size(365, 332);
+			this.Atari7800Controller1Panel.TabIndex = 1;
+			// 
+			// tabPage4
+			// 
+			this.tabPage4.Controls.Add(this.Atari7800Controller2Panel);
+			this.tabPage4.Location = new System.Drawing.Point(4, 22);
+			this.tabPage4.Name = "tabPage4";
+			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage4.Size = new System.Drawing.Size(381, 375);
+			this.tabPage4.TabIndex = 1;
+			this.tabPage4.Text = "Joystick 2";
+			this.tabPage4.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800Controller2Panel
+			// 
+			this.Atari7800Controller2Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Controller2Panel.Name = "Atari7800Controller2Panel";
+			this.Atari7800Controller2Panel.Size = new System.Drawing.Size(365, 332);
+			this.Atari7800Controller2Panel.TabIndex = 2;
+			// 
+			// tabPage5
+			// 
+			this.tabPage5.Controls.Add(this.Atari7800ConsoleButtons);
+			this.tabPage5.Location = new System.Drawing.Point(4, 22);
+			this.tabPage5.Name = "tabPage5";
+			this.tabPage5.Size = new System.Drawing.Size(381, 375);
+			this.tabPage5.TabIndex = 2;
+			this.tabPage5.Text = "Console";
+			this.tabPage5.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800ConsoleButtons
+			// 
+			this.Atari7800ConsoleButtons.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800ConsoleButtons.Name = "Atari7800ConsoleButtons";
+			this.Atari7800ConsoleButtons.Size = new System.Drawing.Size(359, 125);
+			this.Atari7800ConsoleButtons.TabIndex = 1;
+			// 
+			// tabPage6
+			// 
+			this.tabPage6.Controls.Add(this.Atari7800Autofire1Panel);
+			this.tabPage6.Location = new System.Drawing.Point(4, 22);
+			this.tabPage6.Name = "tabPage6";
+			this.tabPage6.Size = new System.Drawing.Size(381, 375);
+			this.tabPage6.TabIndex = 3;
+			this.tabPage6.Text = "Autofire 1";
+			this.tabPage6.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800Autofire1Panel
+			// 
+			this.Atari7800Autofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Autofire1Panel.Name = "Atari7800Autofire1Panel";
+			this.Atari7800Autofire1Panel.Size = new System.Drawing.Size(368, 332);
+			this.Atari7800Autofire1Panel.TabIndex = 3;
+			// 
+			// tabPage7
+			// 
+			this.tabPage7.Controls.Add(this.Atari7800Autofire2Panel);
+			this.tabPage7.Location = new System.Drawing.Point(4, 22);
+			this.tabPage7.Name = "tabPage7";
+			this.tabPage7.Size = new System.Drawing.Size(381, 375);
+			this.tabPage7.TabIndex = 4;
+			this.tabPage7.Text = "Autofire 2";
+			this.tabPage7.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800Autofire2Panel
+			// 
+			this.Atari7800Autofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Autofire2Panel.Name = "Atari7800Autofire2Panel";
+			this.Atari7800Autofire2Panel.Size = new System.Drawing.Size(368, 332);
+			this.Atari7800Autofire2Panel.TabIndex = 3;
+			// 
 			// tabPageC64
 			// 
 			this.tabPageC64.Controls.Add(this.tabControl8);
@@ -1818,133 +1945,6 @@
 			this.AutoTab.UseVisualStyleBackColor = true;
 			this.AutoTab.CheckedChanged += new System.EventHandler(this.AutoTab_CheckedChanged);
 			// 
-			// tabPageAtari7800
-			// 
-			this.tabPageAtari7800.Controls.Add(this.pictureBox16);
-			this.tabPageAtari7800.Controls.Add(this.tabControl11);
-			this.tabPageAtari7800.Location = new System.Drawing.Point(4, 22);
-			this.tabPageAtari7800.Name = "tabPageAtari7800";
-			this.tabPageAtari7800.Size = new System.Drawing.Size(787, 425);
-			this.tabPageAtari7800.TabIndex = 11;
-			this.tabPageAtari7800.Text = "Atari 7800";
-			this.tabPageAtari7800.UseVisualStyleBackColor = true;
-			// 
-			// pictureBox16
-			// 
-			this.pictureBox16.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox16.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pictureBox16.Image = global::BizHawk.MultiClient.Properties.Resources.atari_controller;
-			this.pictureBox16.Location = new System.Drawing.Point(426, 37);
-			this.pictureBox16.Name = "pictureBox16";
-			this.pictureBox16.Size = new System.Drawing.Size(177, 199);
-			this.pictureBox16.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.pictureBox16.TabIndex = 6;
-			this.pictureBox16.TabStop = false;
-			// 
-			// tabControl11
-			// 
-			this.tabControl11.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.tabControl11.Controls.Add(this.tabPage3);
-			this.tabControl11.Controls.Add(this.tabPage4);
-			this.tabControl11.Controls.Add(this.tabPage5);
-			this.tabControl11.Controls.Add(this.tabPage6);
-			this.tabControl11.Controls.Add(this.tabPage7);
-			this.tabControl11.Location = new System.Drawing.Point(17, 15);
-			this.tabControl11.Name = "tabControl11";
-			this.tabControl11.SelectedIndex = 0;
-			this.tabControl11.Size = new System.Drawing.Size(389, 401);
-			this.tabControl11.TabIndex = 5;
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.Controls.Add(this.Atari7800Controller1Panel);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(381, 375);
-			this.tabPage3.TabIndex = 0;
-			this.tabPage3.Text = "Joystick 1";
-			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// Atari7800Controller1Panel
-			// 
-			this.Atari7800Controller1Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800Controller1Panel.Name = "Atari7800Controller1Panel";
-			this.Atari7800Controller1Panel.Size = new System.Drawing.Size(365, 332);
-			this.Atari7800Controller1Panel.TabIndex = 1;
-			// 
-			// tabPage4
-			// 
-			this.tabPage4.Controls.Add(this.Atari7800Controller2Panel);
-			this.tabPage4.Location = new System.Drawing.Point(4, 22);
-			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(381, 375);
-			this.tabPage4.TabIndex = 1;
-			this.tabPage4.Text = "Joystick 2";
-			this.tabPage4.UseVisualStyleBackColor = true;
-			// 
-			// Atari7800Controller2Panel
-			// 
-			this.Atari7800Controller2Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800Controller2Panel.Name = "Atari7800Controller2Panel";
-			this.Atari7800Controller2Panel.Size = new System.Drawing.Size(365, 332);
-			this.Atari7800Controller2Panel.TabIndex = 2;
-			// 
-			// tabPage5
-			// 
-			this.tabPage5.Controls.Add(this.Atari7800ConsoleButtons);
-			this.tabPage5.Location = new System.Drawing.Point(4, 22);
-			this.tabPage5.Name = "tabPage5";
-			this.tabPage5.Size = new System.Drawing.Size(381, 375);
-			this.tabPage5.TabIndex = 2;
-			this.tabPage5.Text = "Console";
-			this.tabPage5.UseVisualStyleBackColor = true;
-			// 
-			// Atari7800ConsoleButtons
-			// 
-			this.Atari7800ConsoleButtons.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800ConsoleButtons.Name = "Atari7800ConsoleButtons";
-			this.Atari7800ConsoleButtons.Size = new System.Drawing.Size(359, 125);
-			this.Atari7800ConsoleButtons.TabIndex = 1;
-			// 
-			// tabPage6
-			// 
-			this.tabPage6.Controls.Add(this.Atari7800Autofire1Panel);
-			this.tabPage6.Location = new System.Drawing.Point(4, 22);
-			this.tabPage6.Name = "tabPage6";
-			this.tabPage6.Size = new System.Drawing.Size(381, 375);
-			this.tabPage6.TabIndex = 3;
-			this.tabPage6.Text = "Autofire 1";
-			this.tabPage6.UseVisualStyleBackColor = true;
-			// 
-			// Atari7800Autofire1Panel
-			// 
-			this.Atari7800Autofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800Autofire1Panel.Name = "Atari7800Autofire1Panel";
-			this.Atari7800Autofire1Panel.Size = new System.Drawing.Size(368, 332);
-			this.Atari7800Autofire1Panel.TabIndex = 3;
-			// 
-			// tabPage7
-			// 
-			this.tabPage7.Controls.Add(this.Atari7800Autofire2Panel);
-			this.tabPage7.Location = new System.Drawing.Point(4, 22);
-			this.tabPage7.Name = "tabPage7";
-			this.tabPage7.Size = new System.Drawing.Size(381, 375);
-			this.tabPage7.TabIndex = 4;
-			this.tabPage7.Text = "Autofire 2";
-			this.tabPage7.UseVisualStyleBackColor = true;
-			// 
-			// Atari7800Autofire2Panel
-			// 
-			this.Atari7800Autofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800Autofire2Panel.Name = "Atari7800Autofire2Panel";
-			this.Atari7800Autofire2Panel.Size = new System.Drawing.Size(368, 332);
-			this.Atari7800Autofire2Panel.TabIndex = 3;
-			// 
 			// ControllerConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2031,6 +2031,14 @@
 			this.tabPage48.ResumeLayout(false);
 			this.tabPage35.ResumeLayout(false);
 			this.tabPage58.ResumeLayout(false);
+			this.tabPageAtari7800.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox16)).EndInit();
+			this.tabControl11.ResumeLayout(false);
+			this.tabPage3.ResumeLayout(false);
+			this.tabPage4.ResumeLayout(false);
+			this.tabPage5.ResumeLayout(false);
+			this.tabPage6.ResumeLayout(false);
+			this.tabPage7.ResumeLayout(false);
 			this.tabPageC64.ResumeLayout(false);
 			this.tabControl8.ResumeLayout(false);
 			this.tabPage49.ResumeLayout(false);
@@ -2052,14 +2060,6 @@
 			this.tabPage63.ResumeLayout(false);
 			this.tabPageTI83.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
-			this.tabPageAtari7800.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox16)).EndInit();
-			this.tabControl11.ResumeLayout(false);
-			this.tabPage3.ResumeLayout(false);
-			this.tabPage4.ResumeLayout(false);
-			this.tabPage5.ResumeLayout(false);
-			this.tabPage6.ResumeLayout(false);
-			this.tabPage7.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
