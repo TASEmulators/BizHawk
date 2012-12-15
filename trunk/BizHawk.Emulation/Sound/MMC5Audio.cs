@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Sound
 				clock--;
 				if (clock < 0)
 				{
-					clock = T * 2;
+					clock = T * 2 + 1;
 					sequence--;
 					if (sequence < 0)
 						sequence += 8;
