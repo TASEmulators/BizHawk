@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
 			Atari7800Controller[1] = new DoubleButtonJoyStickTemplate(false);
 			Atari7800AutoController[0] = new DoubleButtonJoyStickTemplate(false);
 			Atari7800AutoController[1] = new DoubleButtonJoyStickTemplate(false);
-			Atari7800ConsoleButtons[0] = new Atari2600ConsoleButtonsTemplate(true);
+			Atari7800ConsoleButtons[0] = new Atari7800ConsoleButtonsTemplate(true);
 
 			NESAutoController[0] = new NESControllerTemplate(false);
 			NESAutoController[1] = new NESControllerTemplate(false);
@@ -716,7 +716,7 @@ namespace BizHawk.MultiClient
 		//Atari 7800 Settings
 		public DoubleButtonJoyStickTemplate[] Atari7800Controller = new DoubleButtonJoyStickTemplate[2];
 		public DoubleButtonJoyStickTemplate[] Atari7800AutoController = new DoubleButtonJoyStickTemplate[2];
-		public Atari2600ConsoleButtonsTemplate[] Atari7800ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
+		public Atari7800ConsoleButtonsTemplate[] Atari7800ConsoleButtons = new Atari7800ConsoleButtonsTemplate[1];
 
 		//ColecoVision
 		public ColecoVisionControllerTemplate[] ColecoController = new ColecoVisionControllerTemplate[2];
@@ -1158,8 +1158,8 @@ namespace BizHawk.MultiClient
 
 	public class Atari2600ConsoleButtonsTemplate : iControllerConfigObject
 	{
-		public string Reset = "";
-		public string Select = "";
+		public string Reset = "C";
+		public string Select = "V, X1 Start";
 		public bool Enabled = false;
 
 		public Atari2600ConsoleButtonsTemplate() { }
@@ -1176,6 +1176,31 @@ namespace BizHawk.MultiClient
 			Enabled = true;
 			Reset = "";
 			Select = "";
+		}
+	}
+
+	public class Atari7800ConsoleButtonsTemplate : iControllerConfigObject
+	{
+		public string Reset = "C";
+		public string Select = "V, X1 Start";
+		public string Pause = "";
+		public bool Enabled = false;
+
+		public Atari7800ConsoleButtonsTemplate() { }
+		public Atari7800ConsoleButtonsTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Reset = "";
+			Select = "";
+			Pause = "";
 		}
 	}
 
