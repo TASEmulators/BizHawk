@@ -150,7 +150,7 @@
         AAEAAAD/////AQAAAAAAAAAEAQAAABZTeXN0ZW0uSU8uTWVtb3J5U3RyZWFtCgAAAAdfYnVmZmVyB19v
         cmlnaW4JX3Bvc2l0aW9uB19sZW5ndGgJX2NhcGFjaXR5C19leHBhbmRhYmxlCV93cml0YWJsZQpfZXhw
         b3NhYmxlB19pc09wZW4dTWFyc2hhbEJ5UmVmT2JqZWN0K19faWRlbnRpdHkHAAAAAAAAAAACAggICAgB
-        AQEBCQIAAAAAAAAAAAAAAHhiAAB4YgAAAAEAAQoPAgAAAHhiAAACUklGRnBiAABXQVZFZm10IBAAAAAB
+        AQEBCQIAAAAAAAAAeGIAAHhiAAB4YgAAAAEAAQoPAgAAAHhiAAACUklGRnBiAABXQVZFZm10IBAAAAAB
         AAEAIlYAACJWAAABAAgAZGF0YYBhAAB/f39/gICAgH9/f39/gICAgH9/f4CAgIB/f39/gICAf39/gIB/
         f39/f39/f3+AgH9/f3+AgIB/f39/gICAf39/gICAgIB/f39/f3+AgICAf39/gICAgH9/f4CAgIB/f39/
         gICAgH9/gICAgH9/f3+AgIB/f39/f4CAgIB/f3+AgIB/f39/gICAf3+AgIB/f39/gICAf39/gICAf39/
@@ -860,5 +860,8 @@
   </data>
   <data name="Both" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Both.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="A78Joystick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\A78Joystick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
