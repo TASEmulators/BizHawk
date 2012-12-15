@@ -121,6 +121,12 @@ namespace BizHawk.MultiClient
 				}
 			},
 			{
+				"Atari 7800 ProLine Joystick Controller", new Dictionary<string,string>()
+				{	
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Trigger", "1"}, {"Trigger 2", "2"}
+				}
+			},
+			{
 				"Commodore 64 Controller", new Dictionary<string,string>()
 				{	
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Button", "B"}
@@ -150,6 +156,7 @@ namespace BizHawk.MultiClient
 		public static readonly Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>()
 		{
 			{"Atari 2600 Basic Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
+			{"Atari 7800 ProLine Joystick Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
 			{"Gameboy Controller", new Dictionary<string, string>() {{"Power", "P"}}},
 			{"GBA Controller", new Dictionary<string, string>() {{"Power", "P"}}},
 			{"Genesis 3-Button Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
@@ -163,7 +170,7 @@ namespace BizHawk.MultiClient
 		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>()
 		{
 			{"Gameboy Controller", 1}, {"GBA Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
-			{"SNES Controller", 4}, {"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2},
+			{"SNES Controller", 4}, {"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2}, {"Atari 7800 ProLine Joystick Controller", 2},
 			{"ColecoVision Basic Controller", 2}, {"Commodore 64 Controller", 2}
 		};
 
