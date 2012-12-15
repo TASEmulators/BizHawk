@@ -815,15 +815,15 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-			else if (mnemonic[1] == 'r')
+			if (mnemonic[1] == 'r')
 			{
 				Force("Reset", true);
 			}
-			else if (mnemonic[2] == 's')
+			if (mnemonic[2] == 's')
 			{
 				Force("Select", true);
 			}
-			else if (mnemonic[3] == 'p')
+			if (mnemonic[3] == 'p')
 			{
 				Force("Pause", true);
 			}
@@ -831,13 +831,12 @@ namespace BizHawk.MultiClient
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
 				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
-
-				if (mnemonic.Length < srcindex + 6 + Global.BUTTONS[ControlType].Count - 1)
+				int start = 5;
+				if (mnemonic.Length < srcindex + start + Global.BUTTONS[ControlType].Count)
 				{
 					return;
 				}
 
-				int start = 3;
 				foreach (string button in Global.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
@@ -901,6 +900,7 @@ namespace BizHawk.MultiClient
 			else if (ControlType == "Atari 7800 ProLine Joystick Controller")
 			{
 				SetAtari7800AsMnemonic(mnemonic);
+				return;
 			}
 
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
