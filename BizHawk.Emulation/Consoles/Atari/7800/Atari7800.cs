@@ -160,6 +160,14 @@ namespace BizHawk.Emulation
 			{
 				EMU7800.Win.GameProgramLibrary.EMU7800DB = new EMU7800.Win.GameProgramLibrary(new StreamReader(GameDBfn));
 			}
+
+			if (rom.Length % 1024 == 128)
+			{
+				Console.WriteLine("Trimming 128 byte .a78 header...");
+				byte[] newrom = new byte[rom.Length - 128];
+				Buffer.BlockCopy(rom, 128, newrom, 0, newrom.Length);
+				rom = newrom;
+			}
 			GameInfo = EMU7800.Win.GameProgramLibrary.EMU7800DB.TryRecognizeRom(rom);
 			CoreComm.RomStatusDetails = GameInfo.ToString();
 			Console.WriteLine("Rom Determiniation from 7800DB:");
