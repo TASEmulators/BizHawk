@@ -116,7 +116,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Cart.board_type = "FAMICOM_DISK_SYSTEM";
 
 			diskdrive = new RamAdapter();
-			audio = new FDSAudio(NES.cpuclockrate);
+			if (NES.apu != null)
+			{
+				//audio = new FDSAudio(NES.cpuclockrate);
+				audio = new FDSAudio(NES.apu.ExternalQueue);
+			}
 
 			InsertSide(0);
 			// set mirroring??
@@ -382,6 +386,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				WRAM[addr + 0x2000] = value;
 		}
 
+		/*
 		public override void ApplyCustomAudio(short[] samples)
 		{
 			audio.ApplyCustomAudio(samples);
@@ -396,5 +401,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				audio = null;
 			}
 		}
+		*/
 	}
 }

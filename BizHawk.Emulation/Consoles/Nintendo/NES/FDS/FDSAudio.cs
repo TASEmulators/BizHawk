@@ -6,7 +6,7 @@ using System.Text;
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// http://wiki.nesdev.com/w/index.php/FDS_audio
-	public class FDSAudio : IDisposable
+	public class FDSAudio //: IDisposable
 	{
 		public void SyncState(Serializer ser)
 		{
@@ -57,30 +57,78 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		//4040:407f
 		byte[] waveram = new byte[64];
+		/// <summary>
+		/// playback position, clocked by main unit
+		/// </summary>
 		int waverampos;
 		//4080
+		/// <summary>
+		/// volume level or envelope speed, depending on r4080_7
+		/// </summary>
 		int volumespd;
+		/// <summary>
+		/// increase volume with envelope
+		/// </summary>
 		bool r4080_6;
+		/// <summary>
+		/// disable volume envelope
+		/// </summary>
 		bool r4080_7;
 		//4082:4083
+		/// <summary>
+		/// speed to clock main unit
+		/// </summary>
 		int frequency;
+		/// <summary>
+		/// disable volume and sweep
+		/// </summary>
 		bool r4083_6;
+		/// <summary>
+		/// silence channel
+		/// </summary>
 		bool r4083_7;
 		//4084
+		/// <summary>
+		/// sweep gain or sweep speed, depending on r4084_7
+		/// </summary>
 		int sweepspd;
+		/// <summary>
+		/// increase sweep with envelope
+		/// </summary>
 		bool r4084_6;
+		/// <summary>
+		/// disable sweep unit
+		/// </summary>
 		bool r4084_7;
 		//4085
+		/// <summary>
+		/// 7 bit signed
+		/// </summary>
 		int sweepbias;
 		//4086:4087
+		/// <summary>
+		/// speed to clock modulation unit
+		/// </summary>
 		int modfreq;
+		/// <summary>
+		/// disable modulation unit
+		/// </summary>
 		bool r4087_7;
 		//4088
+		/// <summary>
+		/// ring buffer, only 32 entries on hardware
+		/// </summary>
 		byte[] modtable = new byte[64];
+		/// <summary>
+		/// playback position
+		/// </summary>
 		int modtablepos;
 		//4089
 		int mastervol_num;
 		int mastervol_den;
+		/// <summary>
+		/// channel silenced and waveram writable
+		/// </summary>
 		bool waveram_writeenable;
 		//408a
 		int envspeed;
@@ -92,15 +140,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		int modoutput;
 
+		// read at 4090
 		int volumegain;
+		// read at 4092
 		int sweepgain;
 
 		int waveramoutput;
 
 		int latchedoutput;
 
-		public FDSAudio(int m2rate)
+		Action<int> SendDiff;
+
+		public FDSAudio(Action<int> SendDiff)
 		{
+			this.SendDiff = SendDiff;
+			/*
 			// minor hack: due to the way the initialization sequence goes, this might get called
 			// with m2rate = 0.  such an instance will never be asked for samples, though
 			if (m2rate > 0)
@@ -108,8 +162,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				blip = new Sound.Utilities.BlipBuffer(blipsize);
 				blip.SetRates(m2rate, 44100);
 			}
+			*/
 		}
 
+		/*
 		public void Dispose()
 		{
 			if (blip != null)
@@ -118,6 +174,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				blip = null;
 			}
 		}
+		*/
 
 		void CalcMod()
 		{
@@ -151,7 +208,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			if (latchedoutput != tmp)
 			{
-				dlist.Add(new Delta(sampleclock, tmp - latchedoutput));
+				//dlist.Add(new Delta(sampleclock, tmp - latchedoutput));
+				SendDiff((tmp - latchedoutput) * 6);
 				latchedoutput = tmp;
 			}
 		}
@@ -162,7 +220,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public void Clock()
 		{
 			// volume envelope unit
-			if (!r4080_7 && envspeed > 0 && !r4080_6)
+			if (!r4080_7 && envspeed > 0 && !r4083_6)
 			{
 				volumeclock++;
 				if (volumeclock >= 8 * envspeed * (volumespd + 1))
@@ -209,6 +267,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						case 7: sweepbias -= 1; break;
 					}
 					sweepbias &= 0x7f;
+					// sign extend
+					sweepbias <<= 25;
+					sweepbias >>= 25;
 					modtablepos &= 63;
 					CalcMod();
 				}
@@ -225,7 +286,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					CalcOut();
 				}
 			}
-			sampleclock++;
+			//sampleclock++;
 		}
 
 		public void WriteReg(int addr, byte value)
@@ -326,6 +387,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ret;
 		}
 
+		/*
 		Sound.Utilities.BlipBuffer blip;
 
 		struct Delta
@@ -375,5 +437,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				samples[j + 1] = samples[j];
 			}
 		}
+		*/
 	}
 }
