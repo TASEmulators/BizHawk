@@ -454,7 +454,7 @@ namespace BizHawk.MultiClient
 			{
 				return "|.|";
 			}
-			else if (ControlType == "Atari 7800 Basic Controller")
+			else if (ControlType == "Atari 7800 ProLine Joystick Controller")
 			{
 				return "|.|"; //TODO
 			}
