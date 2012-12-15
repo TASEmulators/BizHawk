@@ -175,6 +175,9 @@ namespace BizHawk.MultiClient
 				case "A26":
 					PlatformTabControl.SelectTab(tabPageAtari2600);
 					break;
+				case "A78":
+					PlatformTabControl.SelectTab(tabPageAtari7800);
+					break;
 				case "C64":
 					PlatformTabControl.SelectTab(tabPageC64);
 					break;
