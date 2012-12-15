@@ -24,7 +24,10 @@ namespace BizHawk.Emulation
 			_frame++;
 			_islag = true;
 
+			ControlAdapter.Convert(Controller, theMachine.InputState);
 			theMachine.ComputeNextFrame(avProvider.framebuffer);
+
+			_islag = false; // until we put in a working lagometer
 
 			if (_islag)
 			{
@@ -110,8 +113,11 @@ namespace BizHawk.Emulation
 			return ms.ToArray();
 		}
 
-		public ControllerDefinition ControllerDefinition { get { return Atari7800ControllerDefinition; } }
+		Atari7800Control ControlAdapter;
+
+		public ControllerDefinition ControllerDefinition { get; private set; }
 		public IController Controller { get; set; }
+		/*
 		public static readonly ControllerDefinition Atari7800ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Atari 7800 Basic Controller",
@@ -121,7 +127,7 @@ namespace BizHawk.Emulation
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2",
 				"Reset", "Select"
 			}
-		};
+		};*/
 
 		class ConsoleLogger : ILogger
 		{
@@ -188,6 +194,12 @@ namespace BizHawk.Emulation
 				logger);
 
 			theMachine.Reset();
+
+			ControlAdapter = new Atari7800Control(theMachine);
+			if (ControlAdapter.ControlType.Name != "Atari 7800 ProLine Joystick Controller")
+				throw new Exception("For now, only Atari 7800 ProLine Joystick games are supported.");
+			ControllerDefinition = ControlAdapter.ControlType;
+
 			if (avProvider != null)
 				avProvider.Dispose();
 			avProvider.ConnectToMachine(theMachine);
