@@ -442,6 +442,18 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadA78.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadA78.Designer.cs">
+      <DependentUpon>VirtualPadA78.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPadA78Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadA78Control.Designer.cs">
+      <DependentUpon>VirtualPadA78Control.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPadC64Keyboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -580,6 +592,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="tools\VirtualPadA78.resx">
+      <DependentUpon>VirtualPadA78.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPadA78Control.resx">
+      <DependentUpon>VirtualPadA78Control.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPadC64Keyboard.resx">
       <DependentUpon>VirtualPadC64Keyboard.cs</DependentUpon>
     </EmbeddedResource>
