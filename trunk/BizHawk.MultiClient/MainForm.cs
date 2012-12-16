@@ -996,6 +996,12 @@ namespace BizHawk.MultiClient
 			Global.AutofireAtari2600Controls = autofireA2600Controls;
 
 			var a7800Controls = new Controller(Atari7800Control.ProLineJoystick);
+
+			a7800Controls.BindMulti("Power", Global.Config.Atari7800ConsoleButtons[0].Power);
+			a7800Controls.BindMulti("Reset", Global.Config.Atari7800ConsoleButtons[0].Reset);
+			a7800Controls.BindMulti("Select", Global.Config.Atari7800ConsoleButtons[0].Select);
+			a7800Controls.BindMulti("Pause", Global.Config.Atari7800ConsoleButtons[0].Pause);
+
 			a7800Controls.BindMulti("P1 Up", Global.Config.Atari7800Controller[0].Up);
 			a7800Controls.BindMulti("P1 Left", Global.Config.Atari7800Controller[0].Left);
 			a7800Controls.BindMulti("P1 Right", Global.Config.Atari7800Controller[0].Right);
@@ -1009,10 +1015,6 @@ namespace BizHawk.MultiClient
 			a7800Controls.BindMulti("P2 Down", Global.Config.Atari7800Controller[1].Down);
 			a7800Controls.BindMulti("P2 Trigger", Global.Config.Atari7800Controller[1].Button1);
 			a7800Controls.BindMulti("P2 Trigger 2", Global.Config.Atari7800Controller[1].Button2);
-
-			//FIXME
-			//a7800Controls.BindMulti("Reset", Global.Config.Atari2600ConsoleButtons[0].Reset);
-			//a7800Controls.BindMulti("Select", Global.Config.Atari2600ConsoleButtons[0].Select);
 
 			Global.Atari7800Controls = a7800Controls;
 
