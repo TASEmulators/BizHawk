@@ -54,11 +54,13 @@ namespace EMU7800.Core
             _binaryWriter.Write(value);
         }
 
+		/*
         public void Write(BufferElement bufferElement)
         {
             for (var i = 0; i < BufferElement.SIZE; i++)
                 Write(bufferElement[i]);
         }
+		*/
 
         public void Write(byte[] bytes)
         {

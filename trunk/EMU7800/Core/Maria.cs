@@ -731,19 +731,14 @@ namespace EMU7800.Core
 
         void OutputLineRAM()
         {
-            var bufferElement = new BufferElement();
-            var fbi = ((Scanline + 1) * M.FrameBuffer.VideoBufferElementVisiblePitch) % M.FrameBuffer.VideoBufferElementLength;
+            var fbi = ((Scanline + 1) * M.FrameBuffer.VisiblePitch) % M.FrameBuffer.VideoBufferByteLength;
 
-            for (int i = 0, s = 0; i < M.FrameBuffer.VideoBufferElementVisiblePitch; i++)
+			for (int i = 0; i < M.FrameBuffer.VisiblePitch; i++)
             {
-                for (var j = 0; j < BufferElement.SIZE; j++, s++)
-                {
-                    var colorIndex = LineRAM[s];
-                    bufferElement[j] = Registers[BACKGRND + ((colorIndex & 3) == 0 ? 0 : colorIndex)];
-                }
-                M.FrameBuffer.VideoBuffer[fbi] = bufferElement;
-                if (++fbi == M.FrameBuffer.VideoBufferElementLength)
-                    fbi = 0;
+				var colorIndex = LineRAM[i];
+				M.FrameBuffer.VideoBuffer[fbi++] = Registers[BACKGRND + ((colorIndex & 3) == 0 ? 0 : colorIndex)];
+				if (fbi == M.FrameBuffer.VideoBufferByteLength)
+					fbi = 0;
             }
 
             for (var i = 0; i < LineRAM.Length; i++)

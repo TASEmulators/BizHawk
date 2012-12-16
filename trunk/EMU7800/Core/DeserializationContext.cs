@@ -55,6 +55,7 @@ namespace EMU7800.Core
             return _binaryReader.ReadDouble();
         }
 
+		/*
         public BufferElement ReadBufferElement()
         {
             var be = new BufferElement();
@@ -62,6 +63,7 @@ namespace EMU7800.Core
                 be[i] = ReadByte();
             return be;
         }
+		*/
 
         public byte[] ReadBytes()
         {

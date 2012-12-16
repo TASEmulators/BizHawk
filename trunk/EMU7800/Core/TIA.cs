@@ -162,7 +162,7 @@ namespace EMU7800.Core
         int FrameBufferIndex;
 
         // bytes are batched here for writing to the FrameBuffer
-        BufferElement FrameBufferElement;
+        //BufferElement FrameBufferElement;
 
         // signals when to start an HMOVE
         ulong StartHMOVEClock;
@@ -505,14 +505,9 @@ namespace EMU7800.Core
 
             if (HSync >= 68)
             {
-                var i = FrameBufferIndex++;
-                FrameBufferElement[i] = fbyte;
-                if ((i & BufferElement.MASK) == BufferElement.MASK)
-                {
-                    M.FrameBuffer.VideoBuffer[i >> BufferElement.SHIFT] = FrameBufferElement;
-                    if (FrameBufferIndex == M.FrameBuffer.VideoBufferByteLength)
-                        FrameBufferIndex = 0;
-                }
+				M.FrameBuffer.VideoBuffer[FrameBufferIndex++] = fbyte;
+				if (FrameBufferIndex == M.FrameBuffer.VideoBufferByteLength)
+					FrameBufferIndex = 0;
                 if (HSync == 227)
                     ScanLine++;
             }
@@ -1218,13 +1213,13 @@ namespace EMU7800.Core
             M = m;
             TIASound = input.ReadTIASound(M, CPU_TICKS_PER_AUDIO_SAMPLE);
 
-            input.CheckVersion(1);
+            input.CheckVersion(2);
             RegW = input.ReadExpectedBytes(0x40);
             HSync = input.ReadInt32();
             HMoveCounter = input.ReadInt32();
             ScanLine = input.ReadInt32();
             FrameBufferIndex = input.ReadInt32();
-            FrameBufferElement = input.ReadBufferElement();
+            //FrameBufferElement = input.ReadBufferElement();
             StartHMOVEClock = input.ReadUInt64();
             HMoveLatch = input.ReadBoolean();
             StartClock = input.ReadUInt64();
@@ -1278,13 +1273,13 @@ namespace EMU7800.Core
 
             output.Write(TIASound);
 
-            output.WriteVersion(1);
+            output.WriteVersion(2);
             output.Write(RegW);
             output.Write(HSync);
             output.Write(HMoveCounter);
             output.Write(ScanLine);
             output.Write(FrameBufferIndex);
-            output.Write(FrameBufferElement);
+            //output.Write(FrameBufferElement);
             output.Write(StartHMOVEClock);
             output.Write(HMoveLatch);
             output.Write(StartClock);

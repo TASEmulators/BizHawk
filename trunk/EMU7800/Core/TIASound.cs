@@ -309,7 +309,7 @@ namespace EMU7800.Core
                     ProcessChannel(1);
                 }
 
-                M.FrameBuffer.SoundBuffer[BufferIndex >> BufferElement.SHIFT][BufferIndex] += (byte)(OutputVol[0] + OutputVol[1]);
+                M.FrameBuffer.SoundBuffer[BufferIndex] += (byte)(OutputVol[0] + OutputVol[1]);
             }
         }
 
