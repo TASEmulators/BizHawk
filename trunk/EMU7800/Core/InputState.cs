@@ -35,6 +35,8 @@ namespace EMU7800.Core
         readonly int[] _nextInputState = new int[InputStateSize];
         readonly int[] _inputState = new int[InputStateSize];
 
+		bool _lagged = true;
+
         #endregion
 
         #region Public Members
@@ -60,6 +62,7 @@ namespace EMU7800.Core
             Buffer.BlockCopy(_nextInputState, 0, _inputState, 0, InputStateSize * sizeof(int));
             if (InputAdvanced != null)
                 InputAdvanced(_inputState);
+			_lagged = true;
         }
 
         public Controller LeftControllerJack
@@ -88,6 +91,11 @@ namespace EMU7800.Core
         {
             get { return (_nextInputState[ConsoleSwitchIndex] & (1 << (int)ConsoleSwitch.RightDifficultyA)) != 0; }
         }
+
+		public bool Lagged
+		{
+			get { return _lagged; }
+		}
 
         public void RaiseInput(int playerNo, MachineInput input, bool down)
         {
@@ -264,10 +272,11 @@ namespace EMU7800.Core
             if (input == null)
                 throw new ArgumentNullException("input");
 
-            input.CheckVersion(1);
+            input.CheckVersion(2);
             _rotState = input.ReadIntegers(2);
             _nextInputState = input.ReadIntegers(InputStateSize);
             _inputState = input.ReadIntegers(InputStateSize);
+			_lagged = input.ReadBoolean();
         }
 
         public void GetObjectData(SerializationContext output)
@@ -275,10 +284,11 @@ namespace EMU7800.Core
             if (output == null)
                 throw new ArgumentNullException("output");
 
-            output.WriteVersion(1);
+            output.WriteVersion(2);
             output.Write(_rotState);
             output.Write(_nextInputState);
             output.Write(_inputState);
+			output.Write(_lagged);
         }
 
         #endregion
@@ -287,21 +297,25 @@ namespace EMU7800.Core
 
         internal bool SampleCapturedConsoleSwitchState(ConsoleSwitch consoleSwitch)
         {
+			_lagged = false;
             return (_inputState[ConsoleSwitchIndex] & (1 << (int)consoleSwitch)) != 0;
         }
 
         internal bool SampleCapturedControllerActionState(int playerno, ControllerAction action)
         {
+			_lagged = false;
             return (_inputState[ControllerActionStateIndex + (playerno & 3)] & (1 << (int)action)) != 0;
         }
 
         internal int SampleCapturedOhmState(int playerNo)
         {
+			_lagged = false;
             return _inputState[OhmsIndex + (playerNo & 3)];
         }
 
         internal void SampleCapturedLightGunPosition(int playerNo, out int scanline, out int hpos)
         {
+			_lagged = false;
             var i = LightgunPositionIndex + ((playerNo & 1) << 1);
             scanline = _inputState[i++];
             hpos = _inputState[i];
@@ -309,6 +323,7 @@ namespace EMU7800.Core
 
         internal byte SampleCapturedDrivingState(int playerNo)
         {
+			_lagged = false;
             if (SampleCapturedControllerActionState(playerNo, ControllerAction.Driving0))
                 _rotState[playerNo] = 0;
             else if (SampleCapturedControllerActionState(playerNo, ControllerAction.Driving1))
