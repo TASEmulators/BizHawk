@@ -22,12 +22,11 @@ namespace BizHawk.Emulation
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			_frame++;
-			_islag = true;
 
 			ControlAdapter.Convert(Controller, theMachine.InputState);
 			theMachine.ComputeNextFrame(avProvider.framebuffer);
 
-			_islag = false; // until we put in a working lagometer
+			_islag = theMachine.InputState.Lagged;
 
 			if (_islag)
 			{
