@@ -81,6 +81,22 @@ namespace BizHawk.MultiClient
 					Pads.Add(ataricontrols);
 					ControllerBox.Controls.Add(Pads[2] as Control);
 					break;
+				case "A78":
+					VirtualPadA78 atari78pad1 = new VirtualPadA78();
+					atari78pad1.Location = new Point(8, 19);
+					atari78pad1.Controller = "P1";
+					VirtualPadA78 atari78pad2 = new VirtualPadA78();
+					atari78pad2.Location = new Point(150, 19);
+					atari78pad2.Controller = "P2";
+					Pads.Add(atari78pad1);
+					Pads.Add(atari78pad2);
+					ControllerBox.Controls.Add(atari78pad1);
+					ControllerBox.Controls.Add(atari78pad2);
+					VirtualPadA78Control atari78controls = new VirtualPadA78Control();
+					atari78controls.Location = new Point(8, 125);
+					Pads.Add(atari78controls);
+					ControllerBox.Controls.Add(Pads[2] as Control);
+					break;
 				case "NES":
 					VirtualPadNES nespad1 = new VirtualPadNES();
 					nespad1.Location = new Point(8, 19);

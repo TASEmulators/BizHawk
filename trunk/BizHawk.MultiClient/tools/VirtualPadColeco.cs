@@ -56,8 +56,8 @@ namespace BizHawk.MultiClient
 		private void VirtualPad_Paint(object sender, PaintEventArgs e)
 		{
 
-
 		}
+
 		public string GetMnemonic()
 		{
 			StringBuilder input = new StringBuilder("");
