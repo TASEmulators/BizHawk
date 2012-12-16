@@ -274,13 +274,13 @@ namespace BizHawk.Emulation
 			{
 				unsafe
 				{
-					fixed (BufferElement* src_ = framebuffer.VideoBuffer)
+					fixed (byte* src_ = framebuffer.VideoBuffer)
 					{
 						fixed (int* dst_ = vidbuffer)
 						{
 							fixed (int* pal = TIATables.NTSCPalette)
 							{
-								byte* src = (byte*)src_;
+								byte* src = src_;
 								int* dst = dst_;
 								for (int i = 0; i < vidbuffer.Length; i++)
 								{
@@ -307,9 +307,8 @@ namespace BizHawk.Emulation
 				int nsampin = framebuffer.SoundBufferByteLength;
 				unsafe
 				{
-					fixed (BufferElement* src_ = framebuffer.SoundBuffer)
+					fixed (byte* src = framebuffer.SoundBuffer)
 					{
-						byte* src = (byte*)src_;
 						for (int i = 0; i < nsampin; i++)
 						{
 							// the buffer values don't really get very large at all,

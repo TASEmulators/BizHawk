@@ -314,7 +314,7 @@ namespace EMU7800.Core
                     for (var ch = 0; ch < 4; ch++)
                         sample += _outvol[ch];
 
-                    M.FrameBuffer.SoundBuffer[_bufferIndex >> BufferElement.SHIFT][_bufferIndex++] += sample;
+                    M.FrameBuffer.SoundBuffer[_bufferIndex++] += sample;
                     count--;
 
                     continue;

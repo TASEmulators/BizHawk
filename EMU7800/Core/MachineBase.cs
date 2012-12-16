@@ -220,8 +220,8 @@ namespace EMU7800.Core
             _FrameBuffer = frameBuffer;
             FrameNumber++;
 
-            for (var i = 0; i < _FrameBuffer.SoundBufferElementLength; i++)
-                _FrameBuffer.SoundBuffer[i].ClearAll();
+			for (var i = 0; i < _FrameBuffer.SoundBufferByteLength; i++)
+				_FrameBuffer.SoundBuffer[i] = 0;
         }
 
         /// <summary>

@@ -93,7 +93,7 @@ namespace EMU7800.Core
                         {
                             pos += frameBuffer.VideoBufferByteLength;
                         }
-                        frameBuffer.VideoBuffer[pos >> BufferElement.SHIFT][pos++] = back;
+                        frameBuffer.VideoBuffer[pos++] = back;
                     }
                 }
             }
@@ -160,7 +160,7 @@ namespace EMU7800.Core
                     }
                     if (((fdata >> j) & 1) != 0)
                     {
-                        frameBuffer.VideoBuffer[pos >> BufferElement.SHIFT][pos] = fore;
+                        frameBuffer.VideoBuffer[pos] = fore;
                     }
                 }
                 xoffset += 5;

@@ -1,5 +1,20 @@
 ﻿namespace EMU7800.Core
 {
+	/*
+	 * why this sucks:
+	 * A read costs 3 shifts and an or.  A write costs 2 shifts.  Additional shifts are
+	 * needed elsewhere to figure out which item in a BufferElement[] to access.  Because
+	 * the encapsulation is for a BufferElement and not a whole array of them, code elsewhere
+	 * is gunked up with 'BufferElement.SIZE' shifts.  If the 32 bit "alias" was actually used,
+	 * there might be some purpose to this code:  but it's only used for a ZeroMemory()
+	 * replacement.  Every use of BufferElement in the code is a BufferElement[] used as a gunked
+	 * up replacement for a byte[].
+	 * 
+	 * A small speed increase was observed hacking this out; but my motivation was more about cleaness
+	 * and stomping out bad ideas.
+	 */
+
+	/*
     /// <summary>
     /// Frames are composed of <see cref="BufferElement"/>s,
     /// that group bytes into machine words for efficient array processing.
@@ -52,4 +67,5 @@
             _data = 0;
         }
     }
+	*/
 }
