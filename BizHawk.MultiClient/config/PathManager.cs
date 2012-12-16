@@ -328,6 +328,7 @@ namespace BizHawk.MultiClient
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), name + ".SaveRAM");
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), name + ".SaveRAM");
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), name + ".SaveRAM");
+				case "A78": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari7800SaveRAM, "A78"), name + ".SaveRAM");
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSaveRAM, "SNES"), name + ".SaveRAM");
 				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSaveRAM, "PSX"), name + ".SaveRAM");
 				default: return Path.Combine(GetBasePathAbsolute(), name + ".SaveRAM");

@@ -174,6 +174,7 @@ namespace BizHawk.MultiClient
 		public string BaseAtari7800 = Path.Combine(".", "Atari 7800");
 		public string PathAtari7800ROMs = ".";
 		public string PathAtari7800Savestates = Path.Combine(".", "State");
+		public string PathAtari7800SaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathAtari7800Screenshots = Path.Combine(".", "Screenshots");
 		public string PathAtari7800Cheats = Path.Combine(".", "Cheats");
 		public string PathAtari7800Firmwares = Path.Combine(".", "Firmwares");
