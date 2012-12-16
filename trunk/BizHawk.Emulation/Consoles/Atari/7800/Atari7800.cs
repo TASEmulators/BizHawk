@@ -7,6 +7,9 @@ namespace BizHawk.Emulation
 {
 	public partial class Atari7800 : IEmulator
 	{
+		// TODO:
+		// some things don't work when you try to plug in a 2600 game
+
 		static Atari7800()
 		{
 			// add alpha bits to palette tables
@@ -16,7 +19,7 @@ namespace BizHawk.Emulation
 				TIATables.PALPalette[i] |= unchecked((int)0xff000000);
 		}
 
-		public string SystemId { get { return "A78"; } } //TODO: are we going to allow this core to do 2600 games?
+		public string SystemId { get { return "A78"; } } // TODO 2600?
 		public GameInfo game;
 
 		public void FrameAdvance(bool render, bool rendersound)
@@ -44,20 +47,11 @@ namespace BizHawk.Emulation
 
 		}
 
-		/* TODO */
 		public CoreComm CoreComm { get; private set; }
-		public ISyncSoundProvider SyncSoundProvider { get { return avProvider; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
 		public bool DeterministicEmulation { get; set; }
-		public void SaveStateText(TextWriter writer) { SyncState(new Serializer(writer)); }
-		public void LoadStateText(TextReader reader) { SyncState(new Serializer(reader)); }
-		public void SaveStateBinary(BinaryWriter bw) { SyncState(new Serializer(bw)); }
-		public void LoadStateBinary(BinaryReader br) { SyncState(new Serializer(br)); }
 		private List<MemoryDomain> _MemoryDomains;
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
 		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
-		/********************/
 
 		public int Frame { get { return _frame; } set { _frame = value; } }
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
@@ -66,6 +60,7 @@ namespace BizHawk.Emulation
 		private int _lagcount = 0;
 		private int _frame = 0;
 
+		#region saveram
 		public byte[] ReadSaveRam()
 		{
 			return (byte[])hsram.Clone();
@@ -90,6 +85,7 @@ namespace BizHawk.Emulation
 				throw new Exception("No one ever uses this, and it won't work with the way MainForm is set up.");
 			}
 		}
+		#endregion
 
 		public void Dispose()
 		{
@@ -99,8 +95,6 @@ namespace BizHawk.Emulation
 				avProvider = null;
 			}
 		}
-		public IVideoProvider VideoProvider { get { return avProvider; } }
-		public ISoundProvider SoundProvider { get { return null; } }
 
 
 		public void ResetFrameCounter()
@@ -110,6 +104,11 @@ namespace BizHawk.Emulation
 			_islag = false;
 		}
 
+		#region savestates
+		public void SaveStateText(TextWriter writer) { SyncState(new Serializer(writer)); }
+		public void LoadStateText(TextReader reader) { SyncState(new Serializer(reader)); }
+		public void SaveStateBinary(BinaryWriter bw) { SyncState(new Serializer(bw)); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(new Serializer(br)); }
 		public byte[] SaveStateBinary()
 		{
 			MemoryStream ms = new MemoryStream();
@@ -118,22 +117,35 @@ namespace BizHawk.Emulation
 			bw.Flush();
 			return ms.ToArray();
 		}
+		void SyncState(Serializer ser)
+		{
+			byte[] core = null;
+			if (ser.IsWriter)
+			{
+				var ms = new MemoryStream();
+				theMachine.Serialize(new BinaryWriter(ms));
+				ms.Close();
+				core = ms.ToArray();
+			}
+			ser.BeginSection("Atari7800");
+			ser.Sync("core", ref core, false);
+			ser.Sync("Lag", ref _lagcount);
+			ser.Sync("Frame", ref _frame);
+			ser.Sync("IsLag", ref _islag);
+			ser.EndSection();
+			if (ser.IsReader)
+			{
+				theMachine = MachineBase.Deserialize(new BinaryReader(new MemoryStream(core, false)));
+				avProvider.ConnectToMachine(theMachine);
+			}
+		}
+		#endregion
 
 		Atari7800Control ControlAdapter;
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 		public IController Controller { get; set; }
-		/*
-		public static readonly ControllerDefinition Atari7800ControllerDefinition = new ControllerDefinition
-		{
-			Name = "Atari 7800 Basic Controller",
-			BoolButtons =
-			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", 
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2",
-				"Reset", "Select"
-			}
-		};*/
+
 
 		class ConsoleLogger : ILogger
 		{
@@ -278,7 +290,7 @@ namespace BizHawk.Emulation
 							theMachine.Mem[(ushort)addr] = val;
 						}));
 				}
-				else // 2600?
+				else // todo 2600?
 				{
 				}
 				MemoryDomains = _MemoryDomains.AsReadOnly();
@@ -286,28 +298,13 @@ namespace BizHawk.Emulation
 
 		}
 
-		void SyncState(Serializer ser) //TODO
-		{
-			byte[] core = null;
-			if (ser.IsWriter)
-			{
-				var ms = new MemoryStream();
-				theMachine.Serialize(new BinaryWriter(ms));
-				ms.Close();
-				core = ms.ToArray();
-			}
-			ser.BeginSection("Atari7800");
-			ser.Sync("core", ref core, false);
-			ser.Sync("Lag", ref _lagcount);
-			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
-			ser.EndSection();
-			if (ser.IsReader)
-			{
-				theMachine = MachineBase.Deserialize(new BinaryReader(new MemoryStream(core, false)));
-				avProvider.ConnectToMachine(theMachine);
-			}
-		}
+		#region audio\video
+
+		public ISyncSoundProvider SyncSoundProvider { get { return avProvider; } }
+		public bool StartAsyncSound() { return false; }
+		public void EndAsyncSound() { }
+		public IVideoProvider VideoProvider { get { return avProvider; } }
+		public ISoundProvider SoundProvider { get { return null; } }
 
 		MyAVProvider avProvider = new MyAVProvider();
 
@@ -406,6 +403,6 @@ namespace BizHawk.Emulation
 				}
 			}
 		}
-
+		#endregion
 	}
 }
