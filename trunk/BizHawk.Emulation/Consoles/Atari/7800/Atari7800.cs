@@ -54,9 +54,9 @@ namespace BizHawk.Emulation
 		public void LoadStateText(TextReader reader) { SyncState(new Serializer(reader)); }
 		public void SaveStateBinary(BinaryWriter bw) { SyncState(new Serializer(bw)); }
 		public void LoadStateBinary(BinaryReader br) { SyncState(new Serializer(br)); }
-		private IList<MemoryDomain> memoryDomains;
-		public IList<MemoryDomain> MemoryDomains { get { return null; } }
-		public MemoryDomain MainMemory { get { return null; } }
+		private List<MemoryDomain> _MemoryDomains;
+		public IList<MemoryDomain> MemoryDomains { get; private set; }
+		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
 		/********************/
 
 		public int Frame { get { return _frame; } set { _frame = value; } }
@@ -179,10 +179,6 @@ namespace BizHawk.Emulation
 			Console.WriteLine("Rom Determiniation from 7800DB:");
 			Console.WriteLine(GameInfo.ToString());
 
-			//TODO: store both the ntsc bios and the pal bios
-			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr => 0xFF, null)); //TODO
-			memoryDomains = domains.AsReadOnly();
 			this.rom = rom;
 			this.game = game;
 			this.hsbios = highscoreBIOS;
@@ -216,6 +212,78 @@ namespace BizHawk.Emulation
 			// to sync exactly with audio as this emulator creates and times it, the frame rate should be exactly 60:1 or 50:1
 			CoreComm.VsyncNum = theMachine.FrameHZ;
 			CoreComm.VsyncDen = 1;
+
+			// reset memory domains
+			if (_MemoryDomains == null)
+			{
+				_MemoryDomains = new List<MemoryDomain>();
+				if (theMachine is Machine7800)
+				{
+					_MemoryDomains.Add(new MemoryDomain(
+						"RAM1", 0x800, Endian.Unknown,
+						delegate(int addr)
+						{
+							return ((Machine7800)theMachine).RAM1[(ushort)addr];
+						},
+						delegate(int addr, byte val)
+						{
+							((Machine7800)theMachine).RAM1[(ushort)addr] = val;
+						}));
+					_MemoryDomains.Add(new MemoryDomain(
+						"RAM2", 0x800, Endian.Unknown,
+						delegate(int addr)
+						{
+							return ((Machine7800)theMachine).RAM2[(ushort)addr];
+						},
+						delegate(int addr, byte val)
+						{
+							((Machine7800)theMachine).RAM2[(ushort)addr] = val;
+						}));
+					_MemoryDomains.Add(new MemoryDomain(
+						"BIOS ROM", bios.Length, Endian.Unknown,
+						delegate(int addr)
+						{
+							return bios[addr];
+						},
+						delegate(int addr, byte val)
+						{
+						}));
+					_MemoryDomains.Add(new MemoryDomain(
+						"HSC ROM", hsbios.Length, Endian.Unknown,
+						delegate(int addr)
+						{
+							return hsbios[addr];
+						},
+						delegate(int addr, byte val)
+						{
+						}));
+					_MemoryDomains.Add(new MemoryDomain(
+						"HSC RAM", hsram.Length, Endian.Unknown,
+						delegate(int addr)
+						{
+							return hsram[addr];
+						},
+						delegate(int addr, byte val)
+						{
+							hsram[addr] = val;
+						}));
+					_MemoryDomains.Add(new MemoryDomain(
+						"System Bus", 65536, Endian.Unknown,
+						delegate(int addr)
+						{
+							return theMachine.Mem[(ushort)addr];
+						},
+						delegate(int addr, byte val)
+						{
+							theMachine.Mem[(ushort)addr] = val;
+						}));
+				}
+				else // 2600?
+				{
+				}
+				MemoryDomains = _MemoryDomains.AsReadOnly();
+			}
+
 		}
 
 		void SyncState(Serializer ser) //TODO

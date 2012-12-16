@@ -13,10 +13,10 @@ namespace EMU7800.Core
         #region Fields
 
         protected Maria Maria { get; set; }
-        protected RAM6116 RAM1 { get; set; }
-        protected RAM6116 RAM2 { get; set; }
-        protected Bios7800 BIOS { get; private set; }
-        protected HSC7800 HSC { get; private set; }
+        public RAM6116 RAM1 { get; protected set; }
+		public RAM6116 RAM2 { get; protected set; }
+		public Bios7800 BIOS { get; private set; }
+		public HSC7800 HSC { get; private set; }
 
         #endregion
 
