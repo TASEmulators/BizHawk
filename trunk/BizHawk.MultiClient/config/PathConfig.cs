@@ -144,6 +144,7 @@ namespace BizHawk.MultiClient
 			Atari7800BaseBox.Text = Global.Config.BaseAtari7800;
 			Atari7800ROMsBox.Text = Global.Config.PathAtari7800ROMs;
 			Atari7800SavestatesBox.Text = Global.Config.PathAtari7800Savestates;
+			Atari7800SaveRAMBox.Text = Global.Config.PathAtari7800SaveRAM;
 			Atari7800ScreenshotsBox.Text = Global.Config.PathAtari7800Screenshots;
 			Atari7800CheatsBox.Text = Global.Config.PathAtari7800Cheats;
 			Atari7800FirmwaresBox.Text = Global.Config.PathAtari7800Firmwares;
@@ -336,6 +337,7 @@ namespace BizHawk.MultiClient
 			Global.Config.BaseAtari7800 = Atari7800BaseBox.Text;
 			Global.Config.PathAtari7800ROMs = Atari7800ROMsBox.Text;
 			Global.Config.PathAtari7800Savestates = Atari7800SavestatesBox.Text;
+			Global.Config.PathAtari7800SaveRAM = Atari7800SaveRAMBox.Text;
 			Global.Config.PathAtari7800Screenshots = Atari7800ScreenshotsBox.Text;
 			Global.Config.PathAtari7800Cheats = Atari7800CheatsBox.Text;
 			Global.Config.PathAtari7800Firmwares = Atari7800FirmwaresBox.Text;
@@ -1060,6 +1062,11 @@ namespace BizHawk.MultiClient
 		private void Atari7800BrowseFirmwares_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(Atari7800FirmwaresBox, Atari7800FirmwaresDescription.Text, "A78");
+		}
+
+		private void BrowseAtari7800SaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(Atari7800SaveRAMBox, Atari7800SaveRAMsDescription.Text, "A78");
 		}
 	}
 }
