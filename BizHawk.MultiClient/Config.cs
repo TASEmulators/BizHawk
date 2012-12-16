@@ -1182,6 +1182,7 @@ namespace BizHawk.MultiClient
 
 	public class Atari7800ConsoleButtonsTemplate : iControllerConfigObject
 	{
+		public string Power = "";
 		public string Reset = "C";
 		public string Select = "V, X1 Start";
 		public string Pause = "";
