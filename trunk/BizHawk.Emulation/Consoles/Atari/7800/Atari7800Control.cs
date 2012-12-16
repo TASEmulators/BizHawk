@@ -13,6 +13,8 @@ namespace BizHawk.Emulation
 			Name = "Atari 7800 Joystick Controller",
 			BoolButtons =
 			{
+				// hard reset, not passed to EMU7800
+				"Power",
 				// on the console
 				"Reset",
 				"Select",
@@ -29,6 +31,8 @@ namespace BizHawk.Emulation
 			Name = "Atari 7800 Paddle Controller",
 			BoolButtons = 
 			{
+				// hard reset, not passed to EMU7800
+				"Power",
 				// on the console
 				"Reset",
 				"Select",
@@ -54,6 +58,8 @@ namespace BizHawk.Emulation
 			Name = "Atari 7800 Keypad Controller",
 			BoolButtons = 
 			{
+				// hard reset, not passed to EMU7800
+				"Power",
 				// on the console
 				"Reset",
 				"Select",
@@ -84,6 +90,8 @@ namespace BizHawk.Emulation
 			Name = "Atari 7800 Driving Controller",
 			BoolButtons = 
 			{
+				// hard reset, not passed to EMU7800
+				"Power",
 				// on the console
 				"Reset",
 				"Select",
@@ -105,6 +113,8 @@ namespace BizHawk.Emulation
 			Name = "Atari 7800 Booster Grip Controller",
 			BoolButtons = 
 			{
+				// hard reset, not passed to EMU7800
+				"Power",
 				// on the console
 				"Reset",
 				"Select",
@@ -122,6 +132,8 @@ namespace BizHawk.Emulation
 			Name = "Atari 7800 ProLine Joystick Controller",
 			BoolButtons =
 			{
+				// hard reset, not passed to EMU7800
+				"Power",
 				// on the console
 				"Reset",
 				"Select",
@@ -136,6 +148,8 @@ namespace BizHawk.Emulation
 			Name = "Atari 7800 Light Gun Controller",
 			BoolButtons =
 			{
+				// hard reset, not passed to EMU7800
+				"Power",
 				// on the console
 				"Reset",
 				"Select",

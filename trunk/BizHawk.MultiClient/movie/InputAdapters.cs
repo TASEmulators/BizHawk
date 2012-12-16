@@ -341,7 +341,7 @@ namespace BizHawk.MultiClient
 				case "A26":
 					return "|..|.....|.....|";
 				case "A78":
-					return "|...|......|......|";
+					return "|....|......|......|";
 				case "TI83":
 					return "|..................................................|.|";
 				case "NES":
@@ -453,6 +453,7 @@ namespace BizHawk.MultiClient
 		private string GetA78ControllersAsMnemonic()
 		{
 			StringBuilder input = new StringBuilder("|");
+			input.Append(IsBasePressed("Power") ? 'P' : '.');
 			input.Append(IsBasePressed("Reset") ? 'r' : '.');
 			input.Append(IsBasePressed("Select") ? 's' : '.');
 			input.Append(IsBasePressed("Pause") ? 'p' : '.');
@@ -811,19 +812,23 @@ namespace BizHawk.MultiClient
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 			MyBoolButtons.Clear();
 
-			if (mnemonic.Length < 4)
+			if (mnemonic.Length < 5)
 			{
 				return;
 			}
-			if (mnemonic[1] == 'r')
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			if (mnemonic[2] == 'r')
 			{
 				Force("Reset", true);
 			}
-			if (mnemonic[2] == 's')
+			if (mnemonic[3] == 's')
 			{
 				Force("Select", true);
 			}
-			if (mnemonic[3] == 'p')
+			if (mnemonic[4] == 'p')
 			{
 				Force("Pause", true);
 			}
@@ -831,7 +836,7 @@ namespace BizHawk.MultiClient
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
 				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
-				int start = 5;
+				int start = 6;
 				if (mnemonic.Length < srcindex + start + Global.BUTTONS[ControlType].Count)
 				{
 					return;

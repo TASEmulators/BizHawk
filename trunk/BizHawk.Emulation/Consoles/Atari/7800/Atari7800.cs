@@ -23,6 +23,13 @@ namespace BizHawk.Emulation
 		{
 			_frame++;
 
+			if (Controller["Power"])
+			{
+				// it seems that theMachine.Reset() doesn't clear ram, etc
+				// this should leave hsram intact but clear most other things
+				HardReset();
+			}
+
 			ControlAdapter.Convert(Controller, theMachine.InputState);
 			theMachine.ComputeNextFrame(avProvider.framebuffer);
 
@@ -183,10 +190,8 @@ namespace BizHawk.Emulation
 			HardReset();
 		}
 
-		public void HardReset()
+		void HardReset()
 		{
-			_lagcount = 0;
-
 			cart = Cart.Create(rom, GameInfo.CartType);
 			ILogger logger = new ConsoleLogger();
 			HSC7800 hsc7800 = new HSC7800(hsbios, hsram);
@@ -207,8 +212,6 @@ namespace BizHawk.Emulation
 				throw new Exception("For now, only Atari 7800 ProLine Joystick games are supported.");
 			ControllerDefinition = ControlAdapter.ControlType;
 
-			if (avProvider != null)
-				avProvider.Dispose();
 			avProvider.ConnectToMachine(theMachine);
 			// to sync exactly with audio as this emulator creates and times it, the frame rate should be exactly 60:1 or 50:1
 			CoreComm.VsyncNum = theMachine.FrameHZ;
@@ -238,11 +241,6 @@ namespace BizHawk.Emulation
 			}
 		}
 
-		private void SoftReset() //TOOD: hook this up
-		{
-			theMachine.Reset();
-		}
-
 		MyAVProvider avProvider = new MyAVProvider();
 
 		class MyAVProvider : IVideoProvider, ISyncSoundProvider, IDisposable
@@ -258,7 +256,7 @@ namespace BizHawk.Emulation
 				uint newsamplerate = (uint)m.SoundSampleFrequency;
 				if (newsamplerate != samplerate)
 				{
-					// really shouldn't happen, but if it does, we're ready
+					// really shouldn't happen (after init), but if it does, we're ready
 					if (resampler != null)
 						resampler.Dispose();
 					resampler = new Emulation.Sound.Utilities.SpeexResampler(3, newsamplerate, 44100, newsamplerate, 44100, null, null);
