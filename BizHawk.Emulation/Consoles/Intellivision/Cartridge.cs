@@ -15,7 +15,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			int index = 0;
 			// Combine every two bytes into a word.
 			while (index + 1 < Rom.Length)
+			{
 				Data[(index / 2) + 0x2C00] = (ushort)((Rom[index++] << 8) | Rom[index++]);
+			}
 			/*
 			for (int index = 0; index < Rom.Length; index++)
 				Data[index + 0x2C00] = Rom[index];
@@ -32,17 +34,27 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				case 0x0000:
 					dest = addr - 0x0400;
 					if (addr <= 0x03FF)
+					{
 						break;
-					if (addr <= 0x04FF)
+					}
+					else if (addr <= 0x04FF)
+					{
 						// OK on all but Intellivision 2.
 						return Data[dest];
+					}
 					else if (addr <= 0x06FF)
+					{
 						return Data[dest];
+					}
 					else if (addr <= 0x0CFF)
+					{
 						// OK if no Intellivoice.
 						return Data[dest];
+					}
 					else
+					{
 						return Data[dest];
+					}
 				case 0x2000:
 					dest = (addr - 0x2000) + 0x0C00;
 					// OK if no ECS.
@@ -50,34 +62,50 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				case 0x4000:
 					dest = (addr - 0x4000) + 0x1C00;
 					if (addr <= 0x47FF)
+					{
 						// OK if no ECS.
 						return Data[dest];
+					}
 					else if (addr == 0x4800)
+					{
 						// return Data[dest];
 						// For now, assume unmapped. TODO: Fix.
 						return null;
+					}
 					else
+					{
 						return Data[dest];
+					}
 				case 0x5000:
 				case 0x6000:
 					dest = (addr - 0x5000) + 0x2C00;
 					if (addr <= 0x5014)
+					{
 						return Data[dest];
+					}
 					else
+					{
 						return Data[dest];
+					}
 				case 0x7000:
 					dest = (addr - 0x7000) + 0x4C00;
 					if (addr == 0x7000)
+					{
 						// OK if no ECS.
 						// return Data[dest];
 						// For now, assume unmapped. TODO: Fix.
 						return null;
+					}
 					else if (addr <= 0x77FF)
+					{
 						// OK if no ECS.
 						return Data[dest];
+					}
 					else
+					{
 						// OK if no ECS.
 						return Data[dest];
+					}
 				case 0x8000:
 					dest = (addr - 0x8000) + 0x5C00;
 					// OK. Avoid STIC alias at $8000-$803F.
@@ -87,9 +115,13 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				case 0xB000:
 					dest = (addr - 0x9000) + 0x6C00;
 					if (addr <= 0xB7FF)
+					{
 						return Data[dest];
+					}
 					else
+					{
 						return Data[dest];
+					}
 				case 0xC000:
 					dest = (addr - 0xC000) + 0x9C00;
 					// OK. Avoid STIC alias at $C000-$C03F.
@@ -104,9 +136,13 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				case 0xF000:
 					dest = (addr - 0xF000) + 0xCC00;
 					if (addr <= 0xF7FF)
+					{
 						return Data[dest];
+					}
 					else
+					{
 						return Data[dest];
+					}
 			}
 			return null;
 		}
@@ -120,8 +156,10 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				case 0x0000:
 					dest = addr - 0x0400;
 					if (addr <= 0x03FF)
+					{
 						break;
-					if (addr <= 0x04FF)
+					}
+					else if (addr <= 0x04FF)
 					{
 						// OK on all but Intellivision 2.
 						Data[dest] = value;

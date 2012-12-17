@@ -47,9 +47,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			ushort value;
 			// Auto-decrement the stack pointer if it's the memory register.
 			if (mem == 0x6)
+			{
 				RegisterSP--;
+			}
 			if (!FlagD)
+			{
 				value = ReadMemory(Register[mem]);
+			}
 			else
 			{
 				// Double Byte Data.
@@ -58,7 +62,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			}
 			// Auto-increment the memory register if it does so on write.
 			if (mem >= 0x4 && mem != 0x6)
+			{
 				Register[mem]++;
+			}
 			return value;
 		}
 
@@ -67,13 +73,19 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			if (!FlagD)
 			{
 				if (mem != 0x6)
+				{
 					return 8;
+				}
 				else
+				{
 					return 11;
+				}
 			}
 			else
+			{
 				// Double Byte Data.
 				return 10;
+			}
 		}
 
 		public void Indirect_Set(byte mem, byte src)
@@ -81,11 +93,14 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			WriteMemory(Register[mem], Register[src]);
 			// Auto-increment the memory register if it does so on read.
 			if (mem >= 0x4)
+			{
 				Register[mem]++;
+			}
 		}
 
 		public int Execute()
 		{
+			int cycles = 0;
 			/*
 			 Take an interrupt if the previous instruction was interruptible, interrupts are enabled, and IntRM has a
 			 falling edge.
@@ -103,7 +118,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				Interruptible = false;
 				Indirect_Set(6, 7);
 				RegisterPC = INTERRUPT;
-				return 28;
+				cycles = 28;
+				PendingCycles -= cycles;
+				TotalExecutedCycles += cycles;
+				return cycles;
 			}
 			if (Logging)
 			{
@@ -115,7 +133,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			}
 			byte dest, src, mem;
 			ushort dest_value, src_value, mem_read, addr, addr_read, offset;
-			int cycles = 0, decle2, decle3, result = 0, twos, status_word, lower, sign, cond, ext;
+			int decle2, decle3, result = 0, twos, status_word, lower, sign, cond, ext;
 			//int ones, carry;
 			bool branch = false;
 			bool FlagD_prev = FlagD;
@@ -148,8 +166,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					// aaaaaaaaaaaaaaaa indicates the address to where the CP1610 should Jump
 					addr = (ushort)(((decle2 << 8) & 0xFC00) | (decle3 & 0x3FF));
 					if (dest != 0x7)
+					{
 						// Store the return address.
 						Register[dest] = (ushort)(RegisterPC & 0xFFFF);
+					}
 					// ff indicates how to affect the Interrupt (I) flag in the CP1610
 					switch (decle2 & 0x3)
 					{
@@ -357,8 +377,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = Register[dest] << 1;
 					if (((opcode >> 2) & 0x1) == 0)
+					{
 						// Single shift.
 						cycles = 6;
+					}
 					else
 					{
 						// Double shift.
@@ -385,8 +407,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					result = (dest_value << 1) | (FlagC ? 1 : 0);
 					FlagC = ((dest_value & 0x8000) != 0);
 					if (((opcode >> 2) & 0x1) == 0)
+					{
 						// Single rotate.
 						cycles = 6;
+					}
 					else
 					{
 						// Double rotate.
@@ -415,8 +439,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					result = dest_value << 1;
 					FlagC = ((dest_value & 0x8000) != 0);
 					if (((opcode >> 2) & 0x1) == 0)
+					{
 						// Single shift.
 						cycles = 6;
+					}
 					else
 					{
 						// Double shift.
@@ -442,8 +468,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = Register[dest] >> 1;
 					if (((opcode >> 2) & 0x1) == 0)
+					{
 						// Single shift.
 						cycles = 6;
+					}
 					else
 					{
 						// Double shift.
@@ -469,8 +497,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					sign = dest_value & 0x8000;
 					result = (dest_value >> 1) | sign;
 					if (((opcode >> 2) & 0x1) == 0)
+					{
 						// Single shift.
 						cycles = 6;
+					}
 					else
 					{
 						// Double shift.
@@ -497,8 +527,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					result = (dest_value >> 1) | ((FlagC ? 1 : 0) << 15);
 					FlagC = ((dest_value & 0x1) != 0);
 					if (((opcode >> 2) & 0x1) == 0)
+					{
 						// Single rotate.
 						cycles = 6;
+					}
 					else
 					{
 						// Double rotate.
@@ -527,8 +559,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					result = (dest_value >> 1) | sign;
 					FlagC = ((dest_value & 0x1) != 0);
 					if (((opcode >> 2) & 0x1) == 0)
+					{
 						// Single shift.
 						cycles = 6;
+					}
 					else
 					{
 						// Double shift.
@@ -614,9 +648,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					Calc_FlagZ(result);
 					Register[dest] = (ushort)result;
 					if (dest == 0x6 || dest == 0x7)
+					{
 						cycles = 7;
+					}
 					else
+					{
 						cycles = 6;
+					}
 					Interruptible = true;
 					break;
 				// ADDR
@@ -922,16 +960,15 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x1BD:
 				case 0x1BE:
 				case 0x1BF:
-					throw new NotImplementedException();
-                    //src = (byte)((opcode >> 3) & 0x7);
-                    //dest = (byte)(opcode & 0x7);
-                    //result = Register[dest] & Register[src];
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 6;
-                    //Interruptible = true;
-                    //break;
+                    src = (byte)((opcode >> 3) & 0x7);
+                    dest = (byte)(opcode & 0x7);
+                    result = Register[dest] & Register[src];
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 6;
+                    Interruptible = true;
+                    break;
 				// XORR
 				case 0x1C0:
 				case 0x1C1:
@@ -1079,7 +1116,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					ext = opcode & 0x10;
 					// BEXT
 					if (ext != 0)
+					{
 						throw new ArgumentException(UNEXPECTED_BEXT);
+					}
 					else
 					{
 						switch (cond)
@@ -1159,7 +1198,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 						cycles = 9;
 					}
 					else
+					{
 						cycles = 7;
+					}
 					Interruptible = true;
 					break;
 				// MVO
@@ -1700,18 +1741,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x3C5:
 				case 0x3C6:
 				case 0x3C7:
-					throw new NotImplementedException();
-                    //dest = (byte)(opcode & 0x7);
-                    //addr = ReadMemory(RegisterPC++);
-                    //dest_value = Register[dest];
-                    //addr_read = ReadMemory(addr);
-                    //result = dest_value ^ addr_read;
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 10;
-                    //Interruptible = true;
-                    //break;
+                    dest = (byte)(opcode & 0x7);
+                    addr = ReadMemory(RegisterPC++);
+                    dest_value = Register[dest];
+                    addr_read = ReadMemory(addr);
+                    result = dest_value ^ addr_read;
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 10;
+                    Interruptible = true;
+                    break;
 				// XOR@
 				case 0x3C8:
 				case 0x3C9:
@@ -1781,7 +1821,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					break;
 			}
 			if (FlagD == FlagD_prev)
+			{
 				FlagD = false;
+			}
 			PendingCycles -= cycles;
 			TotalExecutedCycles += cycles;
 			return cycles;
