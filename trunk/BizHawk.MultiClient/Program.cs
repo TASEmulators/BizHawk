@@ -33,6 +33,19 @@ namespace BizHawk.MultiClient
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
+			// catch morons who mix versions
+			{
+				var thisversion = typeof(Program).Assembly.GetName().Version;
+				var utilversion = typeof(InputValidate).Assembly.GetName().Version;
+				var emulversion = typeof(Log).Assembly.GetName().Version;
+
+				if (thisversion != utilversion || thisversion != emulversion)
+				{
+					MessageBox.Show("Conflicting revisions found!  Don't mix .dll versions!");
+					return;
+				}
+			}
+
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config());
 
 #if WINDOWS
@@ -71,7 +84,7 @@ namespace BizHawk.MultiClient
 					}
 #if WINDOWS
 				}
-#endif 
+#endif
 			}
 			catch (Exception e)
 			{
