@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public bool EnableNoise = false;
 			public bool EnableDMC = true;
 
-			//public bool recalculate = false;
+			public bool recalculate = false;
 
 			NES nes;
 			public APU(NES nes, APU old, bool pal)
@@ -272,8 +272,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//newsample -= env_output >> 1; //unbias
 					if (newsample != sample)
 					{
-						//apu.recalculate = true;
-						apu.dlist.Add(new Delta(apu.sampleclock, 376 * (newsample - sample)));
+						apu.recalculate = true;
 						sample = newsample;
 					}
 				}
@@ -431,8 +430,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					else newsample = 0;
 					if (newsample != sample)
 					{
-						//apu.recalculate = true;
-						apu.dlist.Add(new Delta(apu.sampleclock, 247 * (newsample - sample)));
+						apu.recalculate = true;
 						sample = newsample;
 					}
 				}
@@ -542,8 +540,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						//newsample -= 8; //unbias
 						if (newsample != sample)
 						{
-							//apu.recalculate = true;
-							apu.dlist.Add(new Delta(apu.sampleclock, 426 * (newsample - sample)));
+							apu.recalculate = true;
 							sample = newsample;
 						}
 					}
@@ -661,21 +658,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						if (out_shift.Bit(0))
 						{
 							if (out_deltacounter < 126)
-							{
 								out_deltacounter += 2;
-								apu.dlist.Add(new Delta(apu.sampleclock, 167 * 2));
-							}
 						}
 						else
 						{
 							if (out_deltacounter > 1)
-							{
 								out_deltacounter -= 2;
-								apu.dlist.Add(new Delta(apu.sampleclock, -167 * 2));
-							}
 						}
 						//apu.nes.LogLine("dmc out sample: {0}", out_deltacounter);
-						//apu.recalculate = true;
+						apu.recalculate = true;
 					}
 
 					//The right shift register is clocked. 
@@ -755,14 +746,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							apu.SyncIRQ();
 							break;
 						case 1:
-							int newsample = val & 0x7F;
-							if (out_deltacounter != newsample)
-							{
-								apu.dlist.Add(new Delta(apu.sampleclock, 167 * (newsample - out_deltacounter)));
-								out_deltacounter = newsample;
-							}
+							out_deltacounter = val & 0x7F;
 							//apu.nes.LogLine("~~ out_deltacounter set to {0}", out_deltacounter);
-							//apu.recalculate = true;
+							apu.recalculate = true;
 							break;
 						case 2:
 							user_address = 0xC000 | (val << 6);
@@ -1123,7 +1109,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			void EmitSample()
 			{
-				/*
 				if (recalculate)
 				{
 					recalculate = false;
@@ -1145,7 +1130,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 					//linear approximation
 					//float pulse_out = 0.00752f * (s_pulse0 + s_pulse1);
-					//float tnd_out = 0.00851f * s_tri + 0.00494f * s_noise + 0.00335f * s_dmc;
+					//float tnd_out = 0.00851f * s_tri + 0.00494f * /*NOISEADJUST * */ s_noise + 0.00335f * s_dmc;
 					//float output = pulse_out + tnd_out;
 					//this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
 					//int mix = (int)(50000 * output);
@@ -1173,7 +1158,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
 				//int mix = (int)(20000 * output);
 
-				*/
+
 				sampleclock++;
 			}
 			
