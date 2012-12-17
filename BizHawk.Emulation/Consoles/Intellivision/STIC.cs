@@ -53,16 +53,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Sst = value;
 		}
 
-		public int GetPendingCycles()
-		{
-			return PendingCycles;
-		}
-
-		public void AddPendingCycles(int cycles)
-		{
-			PendingCycles += cycles;
-		}
-
 		public ushort? ReadSTIC(ushort addr)
 		{
 			switch (addr & 0xF000)
@@ -187,11 +177,11 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				Sr1 = !Sr1;
 				if (Sr1)
 				{
-					AddPendingCycles(14934 - 3791);
+					PendingCycles = 14934 - 3791;
 				}
 				else
 				{
-					AddPendingCycles(3791);
+					PendingCycles += 3791;
 				}
 			}
 		}

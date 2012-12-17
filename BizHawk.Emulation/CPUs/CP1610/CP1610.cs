@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public Func<ushort, ushort> ReadMemory;
 		public Func<ushort, ushort, bool> WriteMemory;
 
-		private static bool Logging = false;
+		private static bool Logging = true;
 		private static StreamWriter Log;
 
 		static CP1610()
@@ -94,13 +94,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			Log.WriteLine("INTRM = {0}", IntRM);
 			Log.WriteLine("BUSRQ = {0}", BusRq);
 			Log.WriteLine("BUSAK = {0}", BusAk);
-			/*
-			Log.WriteLine("MSYNC = {0}", MSync);
-			Log.WriteLine("0x28 = {0}", ReadMemory(0x28));
-			Log.WriteLine("0x29 = {0}", ReadMemory(0x29));
-			Log.WriteLine("0x2A = {0}", ReadMemory(0x2A));
-			Log.WriteLine("0x2B = {0}", ReadMemory(0x2B));
-			*/
+			// Log.WriteLine("MSYNC = {0}", MSync);
 			Log.Flush();
 		}
 	}

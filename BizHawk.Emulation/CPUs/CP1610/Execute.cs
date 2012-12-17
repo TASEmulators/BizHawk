@@ -24,7 +24,13 @@ namespace BizHawk.Emulation.CPUs.CP1610
 
 		private void Calc_FlagO_Add(int op1, int op2, int result)
 		{
-			FlagO = (((op1 ^ result) & (op1 ^ op2) & 0x8000) != 0);
+			bool op1_neg = ((op1 & 0x8000) != 0);
+			bool op2_neg = ((op2 & 0x8000) != 0);
+			bool result_neg = ((op1 & 0x8000) != 0);
+			FlagO = (
+				(op1_neg && op2_neg && !result_neg) ||
+				(!op1_neg && !op2_neg && result_neg)
+			);
 		}
 
 		private void Calc_FlagS(int result)
