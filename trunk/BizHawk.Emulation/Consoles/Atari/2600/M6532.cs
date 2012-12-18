@@ -230,9 +230,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public void SyncState(Serializer ser)
 		{
+			ser.BeginSection("M6532");
 			ser.Sync("ddra", ref ddra);
 			ser.Sync("ddrb", ref ddrb);
 			timer.SyncState(ser);
+			ser.EndSection();
 		}
 	}
 }

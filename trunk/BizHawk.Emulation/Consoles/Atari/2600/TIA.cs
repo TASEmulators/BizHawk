@@ -92,6 +92,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 			public void SyncState(Serializer ser)
 			{
+				ser.BeginSection("Missile");
 				ser.Sync("enabled", ref enabled);
 				ser.Sync("resetToPlayer", ref resetToPlayer);
 				ser.Sync("hPosCnt", ref hPosCnt);
@@ -99,6 +100,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				ser.Sync("number", ref number);
 				ser.Sync("HM", ref HM);
 				ser.Sync("collisions", ref collisions);
+				ser.EndSection();
 			}
 		}
 
@@ -291,6 +293,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 			public void SyncState(Serializer ser)
 			{
+				ser.BeginSection("Ball");
 				ser.Sync("enabled", ref enabled);
 				ser.Sync("denabled", ref denabled);
 				ser.Sync("delay", ref delay);
@@ -298,6 +301,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				ser.Sync("HM", ref HM);
 				ser.Sync("hPosCnt", ref hPosCnt);
 				ser.Sync("collisions", ref collisions);
+				ser.EndSection();
 			}
 
 		};
@@ -312,12 +316,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public bool priority;
 			public void SyncState(Serializer ser)
 			{
+				ser.BeginSection("PlayField");
 				ser.Sync("grp", ref grp);
 				ser.Sync("pfColor", ref pfColor);
 				ser.Sync("bkColor", ref bkColor);
 				ser.Sync("reflect", ref reflect);
 				ser.Sync("score", ref score);
 				ser.Sync("priority", ref priority);
+				ser.EndSection();
 			}
 		};
 
@@ -346,6 +352,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 			public void SyncState(Serializer ser)
 			{
+				ser.BeginSection("HMove");
 				ser.Sync("hmoveEnabled", ref hmoveEnabled);
 				ser.Sync("hmoveJustStarted", ref hmoveJustStarted);
 				ser.Sync("lateHBlankReset", ref lateHBlankReset);
@@ -362,6 +369,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				ser.Sync("missile0Cnt", ref missile0Cnt);
 				ser.Sync("missile1Cnt", ref missile1Cnt);
 				ser.Sync("ballCnt", ref ballCnt);
+				ser.EndSection();
 			}
 		};
 
@@ -1359,13 +1367,19 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public void SyncState(Serializer ser)
 		{
+			ser.BeginSection("TIA");
 			ball.SyncState(ser);
 			hmove.SyncState(ser);
 			ser.Sync("hsyncCnt", ref hsyncCnt);
+			ser.BeginSection("Player0");
 			player0.SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("Player1");
 			player1.SyncState(ser);
+			ser.EndSection();
 			playField.SyncState(ser);
 			//ser.Sync("scanline", ref scanline);
+			ser.EndSection();
 		}
 	}
 }

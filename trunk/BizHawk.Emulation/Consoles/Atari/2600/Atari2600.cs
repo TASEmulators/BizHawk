@@ -56,7 +56,9 @@ namespace BizHawk
 			ser.Sync("IsLag", ref _islag);
 			tia.SyncState(ser);
 			m6532.SyncState(ser);
+			ser.BeginSection("Mapper");
 			mapper.SyncState(ser);
+			ser.EndSection();
 			ser.EndSection();
 		}
 
