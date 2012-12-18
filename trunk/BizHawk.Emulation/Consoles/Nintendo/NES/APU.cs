@@ -98,6 +98,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public void SyncState(Serializer ser)
 				{
+					ser.BeginSection("Pulse" + unit);
 					ser.Sync("duty_cnt", ref duty_cnt);
 					ser.Sync("env_loop", ref env_loop);
 					ser.Sync("env_constant", ref env_constant);
@@ -126,6 +127,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ser.Sync("env_divider", ref env_divider);
 					ser.Sync("env_counter", ref env_counter);
 					ser.Sync("env_output", ref env_output);
+					ser.EndSection();
 				}
 
 				public bool IsLenCntNonZero() { return len_cnt > 0; }
@@ -324,14 +326,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public void SyncState(Serializer ser)
 				{
+					ser.BeginSection("Noise");
 					ser.Sync("env_cnt_value", ref env_cnt_value);
 					ser.Sync("env_loop", ref env_loop);
 					ser.Sync("env_constant", ref env_constant);
 					ser.Sync("mode_cnt", ref mode_cnt);
 					ser.Sync("period_cnt", ref period_cnt);
 
-					ser.Sync("mode_cnt", ref mode_cnt);
-					ser.Sync("period_cnt", ref period_cnt);
+					//ser.Sync("mode_cnt", ref mode_cnt);
+					//ser.Sync("period_cnt", ref period_cnt);
 
 					ser.Sync("len_cnt", ref len_cnt);
 
@@ -346,6 +349,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ser.Sync("env_divider", ref env_divider);
 					ser.Sync("env_counter", ref env_counter);
 					ser.Sync("noise_bit", ref noise_bit);
+					ser.EndSection();
 				}
 
 
@@ -468,6 +472,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public void SyncState(Serializer ser)
 				{
+					ser.BeginSection("Triangle");
 					ser.Sync("linear_counter_reload", ref linear_counter_reload);
 					ser.Sync("control_flag", ref control_flag);
 					ser.Sync("timer_cnt", ref timer_cnt);
@@ -480,6 +485,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ser.Sync("timer_cnt_reload", ref timer_cnt_reload);
 					ser.Sync("seq", ref seq);
 					ser.Sync("sample", ref sample);
+					ser.EndSection();
 				}
 
 				public bool IsLenCntNonZero() { return len_cnt > 0; }
@@ -627,6 +633,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public void SyncState(Serializer ser)
 				{
+					ser.BeginSection("DMC");
 					ser.Sync("irq_enabled", ref irq_enabled);
 					ser.Sync("loop_flag", ref loop_flag);
 					ser.Sync("timer_reload", ref timer_reload);
@@ -647,6 +654,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 					//int sample = 0; //junk
 					//ser.Sync("sample", ref sample);
+					ser.EndSection();
 				}
 
 				public void Run()
