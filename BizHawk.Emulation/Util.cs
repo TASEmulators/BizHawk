@@ -813,7 +813,10 @@ namespace BizHawk
 					ss.Push(curs);
 					var news = new Section();
 					news.Name = name;
-					curs[name] = news;
+					if (!curs.ContainsKey(name))
+						curs[name] = news;
+					else
+						throw new Exception(string.Format("Duplicate key \"{0}\" in serializer savestate!", name));
 					curs = news;
 				}
 				else
