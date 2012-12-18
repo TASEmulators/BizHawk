@@ -121,9 +121,15 @@ namespace BizHawk.Emulation.Sound
 		{
 			ser.BeginSection("VRC6Alt");
 			ser.Sync("masterenable", ref masterenable);
+			ser.BeginSection("Pulse1");
 			pulse1.SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("Pulse2");
 			pulse2.SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("Saw");
 			saw.SyncState(ser);
+			ser.EndSection();
 			ser.EndSection();
 		}
 

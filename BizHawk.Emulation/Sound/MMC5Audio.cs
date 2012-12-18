@@ -257,8 +257,12 @@ namespace BizHawk.Emulation.Sound
 		{
 			ser.BeginSection("MMC5Audio");
 			ser.Sync("frame", ref frame);
+			ser.BeginSection("Pulse0");
 			pulse[0].SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("Pulse1");
 			pulse[1].SyncState(ser);
+			ser.EndSection();
 			ser.Sync("PCMRead", ref PCMRead);
 			ser.Sync("PCMEnableIRQ", ref PCMEnableIRQ);
 			ser.Sync("PCMIRQTriggered", ref PCMIRQTriggered);
