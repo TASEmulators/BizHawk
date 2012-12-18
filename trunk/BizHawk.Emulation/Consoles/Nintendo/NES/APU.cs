@@ -114,6 +114,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ser.Sync("timer_reload_value", ref timer_reload_value);
 
 					ser.Sync("lenctr_en", ref lenctr_en);
+
+					ser.Sync("swp_divider_counter", ref swp_divider_counter);
+					ser.Sync("swp_silence", ref swp_silence);
+					ser.Sync("duty_step", ref duty_step);
+					ser.Sync("timer_counter", ref timer_counter);
+					ser.Sync("sample", ref sample);
+					ser.Sync("duty_value", ref duty_value);
+
+					ser.Sync("env_start_flag", ref env_start_flag);
+					ser.Sync("env_divider", ref env_divider);
+					ser.Sync("env_counter", ref env_counter);
+					ser.Sync("env_output", ref env_output);
 				}
 
 				public bool IsLenCntNonZero() { return len_cnt > 0; }
@@ -166,6 +178,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 
 				//state
+				//why was all of this stuff not in the savestate???????
 				int swp_divider_counter;
 				bool swp_silence;
 				int duty_step;
@@ -632,8 +645,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ser.Sync("out_deltacounter", ref out_deltacounter);
 					ser.Sync("out_silence", ref out_silence);
 
-					int sample = 0; //junk
-					ser.Sync("sample", ref sample);
+					//int sample = 0; //junk
+					//ser.Sync("sample", ref sample);
 				}
 
 				public void Run()
