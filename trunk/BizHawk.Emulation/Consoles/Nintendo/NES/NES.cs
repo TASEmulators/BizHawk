@@ -775,9 +775,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ser.Sync("vs_coin1", ref vs_coin1);
 				ser.Sync("vs_coin2", ref vs_coin2);
 			}
+			ser.BeginSection("Board");
 			board.SyncState(ser);
 			if (board is NESBoardBase && !((NESBoardBase)board).SyncStateFlag)
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
+			ser.EndSection();
 			ppu.SyncState(ser);
 			apu.SyncState(ser);
 
