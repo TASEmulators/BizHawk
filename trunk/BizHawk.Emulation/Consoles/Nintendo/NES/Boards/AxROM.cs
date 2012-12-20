@@ -28,24 +28,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 
 				case "NES-ANROM": //marble madness
-					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0); 
+					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0);
 					bus_conflict = false;
 					break;
 
 				case "NES-AN1ROM": //R.C. Pro-Am
-					AssertPrg(64); AssertChr(0); AssertVram(8); AssertWram(0); 
+					AssertPrg(64); AssertChr(0); AssertVram(8); AssertWram(0);
 					bus_conflict = false;
 					break;
 
 				case "NES-AMROM": //time lord
-					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0); 
+					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0);
 					bus_conflict = true;
 					break;
-			
+
 				case "NES-AOROM": //battletoads
 				case "HVC-AOROM":
-					AssertPrg(128,256); AssertChr(0); AssertVram(8); AssertWram(0);
+					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(0);
 					bus_conflict = false; //adelikat:  I could not find an example of a game that needs bus conflicts, please enlightening me of a case where a game fails because of the lack of conflicts!
+					break;
+
+				case "ACCLAIM-AOROM": // wizards and warriors 3
+					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
+					bus_conflict = true; // not enough chips on the pcb to disable bus conflicts?
 					break;
 
 				default:
