@@ -133,6 +133,12 @@ namespace BizHawk.MultiClient
 		void Present();
 		bool Resized { get; set; }
 		Size NativeSize { get; }
+		/// <summary>
+		/// convert coordinates
+		/// </summary>
+		/// <param name="p">desktop coordinates</param>
+		/// <returns>ivideoprovider coordinates</returns>
+		Point ScreenToScreen(Point p);
 	}
 
 	public class SysdrawingRenderPanel : IRenderer, IBlitter
@@ -148,7 +154,7 @@ namespace BizHawk.MultiClient
 		{
 			backingControl.ReleaseCallback = RetainedViewportPanelDisposeCallback;
 
-			lock(this)
+			lock (this)
 				tempBuffer = surfaceSet.AllocateSurface(backingControl.Width, backingControl.Height, false);
 
 			RenderInternal(surface, false);
@@ -176,7 +182,7 @@ namespace BizHawk.MultiClient
 		void IBlitter.Open()
 		{
 			g = Graphics.FromImage(tempBuffer.PeekBitmap());
-			ClipBounds = new Rectangle(0, 0, NativeSize.Width, NativeSize.Height); 
+			ClipBounds = new Rectangle(0, 0, NativeSize.Width, NativeSize.Height);
 		}
 
 		void IBlitter.Close()
@@ -227,6 +233,10 @@ namespace BizHawk.MultiClient
 				else
 					g.DrawImage(surface.PeekBitmap(), 0, 0, backingControl.Width, backingControl.Height);
 			}
+			if (!transparent)
+			{
+				lastsize = new Size(surface.Width, surface.Height);
+			}
 		}
 
 		public void FastRenderAndPresent(DisplaySurface surface)
@@ -252,6 +262,15 @@ namespace BizHawk.MultiClient
 			AlertFont = new sysdrawingfont("Courier", 14, FontStyle.Bold, GraphicsUnit.Pixel);
 		}
 		RetainedViewportPanel backingControl;
+
+		Size lastsize = new Size(256, 192);
+		public Point ScreenToScreen(Point p)
+		{
+			p = backingControl.PointToClient(p);
+			Point ret = new Point(p.X * lastsize.Width / backingControl.Width,
+				p.Y * lastsize.Height / backingControl.Height);
+			return ret;
+		}
 	}
 
 	public interface IBlitter
@@ -559,6 +578,14 @@ namespace BizHawk.MultiClient
 				disposed = true;
 				DestroyDevice();
 			}
+		}
+
+		public Point ScreenToScreen(Point p)
+		{
+			p = backingControl.PointToClient(p);
+			Point ret = new Point(p.X * Texture.ImageWidth / backingControl.Width,
+				p.Y * Texture.ImageHeight / backingControl.Height);
+			return ret;
 		}
 
 	}
