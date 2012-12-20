@@ -2530,13 +2530,14 @@ namespace BizHawk.MultiClient
 		public LuaTable input_getmouse()
 		{
 			LuaTable buttons = lua.NewTable();
-			buttons["X"] = Control.MousePosition.X;
-			buttons["Y"] = Control.MousePosition.Y;
-			buttons[MouseButtons.Left.ToString()] = Control.MouseButtons & MouseButtons.Left;
-			buttons[MouseButtons.Middle.ToString()] = Control.MouseButtons & MouseButtons.Middle;
-			buttons[MouseButtons.Right.ToString()] = Control.MouseButtons & MouseButtons.Right;
-			buttons[MouseButtons.XButton1.ToString()] = Control.MouseButtons & MouseButtons.XButton1;
-			buttons[MouseButtons.XButton2.ToString()] = Control.MouseButtons & MouseButtons.XButton2;
+			Point p = Global.RenderPanel.ScreenToScreen(Control.MousePosition);
+			buttons["X"] = p.X;
+			buttons["Y"] = p.Y;
+			buttons[MouseButtons.Left.ToString()] = (Control.MouseButtons & MouseButtons.Left) != 0;
+			buttons[MouseButtons.Middle.ToString()] = (Control.MouseButtons & MouseButtons.Middle) != 0;
+			buttons[MouseButtons.Right.ToString()] = (Control.MouseButtons & MouseButtons.Right) != 0;
+			buttons[MouseButtons.XButton1.ToString()] = (Control.MouseButtons & MouseButtons.XButton1) != 0;
+			buttons[MouseButtons.XButton2.ToString()] = (Control.MouseButtons & MouseButtons.XButton2) != 0;
 			return buttons;
 		}
 
