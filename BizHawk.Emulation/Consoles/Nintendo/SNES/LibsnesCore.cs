@@ -414,18 +414,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 							int nsamples = brPipe.ReadInt32();
 							bwPipe.Write(0); //location to store audio buffer in
 							brPipe.ReadInt32(); //dummy synchronization
-							bwPipe.Write(0); //dummy synchronization
-							brPipe.ReadInt32();  //dummy synchronization
+
 							if (audio_sample != null)
 							{
 								ushort* audiobuffer = ((ushort*)mmvaPtr);
-								for (int i = 0; i < nsamples; i++)
+								for (int i = 0; i < nsamples;)
 								{
 									ushort left = audiobuffer[i++];
 									ushort right = audiobuffer[i++];
 									audio_sample(left, right);
 								}
 							}
+
+							bwPipe.Write(0); //dummy synchronization
+							brPipe.ReadInt32();  //dummy synchronization
 							break;
 						}
 					case eMessage.eMessage_snes_cb_scanlineStart:
