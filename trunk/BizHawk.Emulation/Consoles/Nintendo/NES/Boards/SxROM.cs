@@ -40,6 +40,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//zelda doesnt; nor megaman2; nor blastermaster; nor metroid
 			StandardReset();
 			//well, lets leave it.
+
+			SyncCHR();
 		}
 
 		public void SyncState(Serializer ser)
@@ -53,6 +55,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("wram_disable", ref wram_disable);
 			ser.Sync("prg", ref prg);
 			ser.SyncEnum("mirror", ref mirror);
+
+			SyncCHR();
+			//ser.Sync("chr_banks_4k", ref chr_banks_4k, false); 
 		}
 
 		public enum Rev
@@ -74,6 +79,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//register 3:
 		int wram_disable;
 		int prg;
+
+		int[] chr_banks_4k = new int[2];
 
 		public class MMC1_SerialController
 		{
@@ -138,6 +145,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public void Write(int addr, byte value)
 		{
 			scnt.Write(addr, value);
+			SyncCHR();
 		}
 
 		//logical register writes, called from the serial controller
@@ -166,6 +174,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//board.NES.LogLine("mapping.. prg_mode={0}, prg_slot{1}, prg={2}", prg_mode, prg_slot, prg);
 		}
 
+		void SyncCHR()
+		{
+			if (chr_mode == 0)
+			{
+				chr_banks_4k[0] = chr_0 & ~1;
+				chr_banks_4k[1] = (chr_0 & ~1)+1;
+			}
+			else
+			{
+				chr_banks_4k[0] = chr_0;
+				chr_banks_4k[1] = chr_1;
+			}
+		}
+
 		public int Get_PRGBank(int addr)
 		{
 			int PRG_A14 = (addr >> 14) & 1;
@@ -189,15 +211,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public int Get_CHRBank_4K(int addr)
 		{
-			int CHR_A12 = (addr >> 12) & 1;
-			int CHR_A14 = (addr >> 14) & 1;
-			if (chr_mode == 0)
-				if (CHR_A12 == 0)
-					return chr_0;
-				else return chr_0 + 1;
-			else if (CHR_A12 == 0)
-				return chr_0;
-			else return chr_1;
+			int bank_4k = addr >> 12;
+			int ofs = addr & ((1 << 12) - 1);
+			bank_4k = chr_banks_4k[bank_4k];
+			return bank_4k;
 		}
 	}
 
