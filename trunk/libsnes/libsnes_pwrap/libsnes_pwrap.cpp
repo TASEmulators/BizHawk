@@ -164,13 +164,15 @@ void FlushAudio()
 
 	WritePipe(eMessage_snes_cb_audio_sample);
 
-	int nsamples = audiobuffer_idx/2;
+	int nsamples = audiobuffer_idx;
 	WritePipe(nsamples);
-	int destOfs = ReadPipe<int>();
-	char* buf = (char*)hMapFilePtr + destOfs;
-	memcpy(buf,audiobuffer,nsamples*4);
+	char* buf = ReadPipeSharedPtr();
+	memcpy(buf,audiobuffer,nsamples*2);
 	//extra just in case we had to unexpectedly flush audio and then carry on with some other process... yeah, its rickety.
 	WritePipe(0); //dummy synchronization
+	
+	//wait for frontend to consume data
+
 	ReadPipe<int>(); //dummy synchronization
 	WritePipe(0); //dummy synchronization
 	audiobuffer_idx = 0;
