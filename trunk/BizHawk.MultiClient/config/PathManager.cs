@@ -11,9 +11,11 @@ namespace BizHawk.MultiClient
 	{
 		public static string GetExeDirectoryAbsolute()
 		{
-			var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
-			string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
-			return Path.GetDirectoryName(module);
+			//var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
+			//string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
+			//return Path.GetDirectoryName(module);
+			//zero 21-dec-2012 - reuse code elsewhere and remove system.web dependency
+			return Assembly.GetEntryAssembly().GetDirectory();
 		}
 
 		/// <summary>

@@ -156,6 +156,7 @@ void PPU::serialize(serializer &s) {
     s.integer(pixel_cache[n].pri_sub);
   }
 
+	//zero TODO - only on load
   //better to just take a small speed hit than store all of bg_tiledata[3][] ...
   flush_tiledata_cache();
 

@@ -99,6 +99,7 @@ struct Interface : public SNES::Interface {
 			pinput_state(0), 
 			pinput_notify(0), 
 			ppath_request(0),
+			pScanlineStart(0),
 			backdropColor(-1),
 			ptrace(0)
 	{
@@ -599,7 +600,7 @@ void bus_write(unsigned addr, uint8_t val) {
 
 int snes_poll_message()
 {
-	if(interface.messages.size() == 0) return -1;
+	if(interface.messages.empty()) return -1;
 	return interface.messages.front().length();
 }
 void snes_dequeue_message(char* buffer)
