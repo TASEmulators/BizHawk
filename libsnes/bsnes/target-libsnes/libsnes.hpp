@@ -3,6 +3,14 @@
 
 #include <stdint.h>
 
+#if defined(LIBSNES_IMPORT)
+#define LIBSNES_IMPORTDECL __declspec(dllimport)
+#elif defined(LIBSNES_EXPORT)
+#define LIBSNES_IMPORTDECL __declspec(dllexport)
+#else
+#define LIBSNES_IMPORTDECL
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,6 +74,9 @@ extern "C" {
 #define SNES_MEMORY_VRAM    102
 #define SNES_MEMORY_OAM     103
 #define SNES_MEMORY_CGRAM   104
+
+#define SNES_MEMORY_SYSBUS 200
+#define SNES_MEMORY_LOGICAL_REGS 201
 
 typedef void (*snes_video_refresh_t)(const uint32_t *data, unsigned width, unsigned height);
 typedef void (*snes_audio_sample_t)(uint16_t left, uint16_t right);

@@ -24,7 +24,7 @@ else ifeq ($(platform),osx)
 	ar rcs out/libsnes.a $(objects)
 	$(cpp) -o out/libsnes.dylib -install_name @executable_path/../Libraries/libsnes.dylib -shared -dynamiclib $(objects)
 else ifeq ($(platform),win)
-	$(cpp) -o out/snes.dll -shared -Wl,--out-implib,libsnes.a $(objects) $(TARGET_LIBSNES_LIBDEPS)
+	$(cpp) -o out/snes.dll -shared -Wl,--output-def,libsneshawk.def,--out-implib,libsnes.a $(objects) $(TARGET_LIBSNES_LIBDEPS)
 endif
 
 install:
