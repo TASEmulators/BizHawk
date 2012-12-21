@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//Console.WriteLine("MAP {0:X4} = {1:X2}", addr, value);
 
 			value = HandleNormalPRGConflict(addr, value);
-
+			/*
 			int command = value >> 6;
 			switch (command)
 			{
@@ -89,6 +89,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					latch = command;
 					break;
 			}
+			*/
+
+			// the important change here is that the chr and prg bank latches get filled on the rising edge, not falling
+			if (value.Bit(6) && !latch.Bit(6))
+				chr_banks_8k[0] = (byte)(value & 0xF);
+			if (value.Bit(7) && !latch.Bit(7))
+				prg_banks_16k[1] = (byte)(value & 0xF);
+			latch = value;
+			SyncMap();
 		}
 
 		public override byte ReadPRG(int addr)
