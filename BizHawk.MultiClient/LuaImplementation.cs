@@ -499,7 +499,8 @@ namespace BizHawk.MultiClient
 
 		public static string[] MultiClientFunctions = new string[]
 		                                              	{
-		                                              		"setwindowsize",
+		                                              		"getwindowsize",
+															"setwindowsize",
 		                                              		"openrom",
 		                                              		"closerom",
 		                                              		"opentoolbox",
@@ -2138,6 +2139,11 @@ namespace BizHawk.MultiClient
 				console_log("Invalid window size");
 			}
 
+		}
+
+		public int client_getwindowsize()
+		{
+			return Global.Config.TargetZoomFactor;
 		}
 
 		public void client_opencheats()
