@@ -102,6 +102,15 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			{
 				Name = "Intellivision Controller",
 				BoolButtons = {
+					"P1 Up", "P1 Down", "P1 Left", "P1 Right",
+					"P1 L", "P1 R",
+					"P1 Key0", "P1 Key1", "P1 Key2", "P1 Key3", "P1 Key4", "P1 Key5",
+					"P1 Key6", "P1 Key7", "P1 Key8", "P1 Key9", "P1 Enter", "P1 Clear",
+
+					"P2 Up", "P2 Down", "P2 Left", "P2 Right",
+					"P2 L", "P2 R",
+					"P2 Key0", "P2 Key1", "P2 Key2", "P2 Key3", "P2 Key4", "P2 Key5",
+					"P2 Key6", "P2 Key7", "P2 Key8", "P2 Key9", "P2 Enter", "P2 Clear"
 				}
 			};
 

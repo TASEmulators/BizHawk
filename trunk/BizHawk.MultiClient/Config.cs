@@ -68,6 +68,11 @@ namespace BizHawk.MultiClient
 			ColecoAutoController[0] = new ColecoVisionControllerTemplate(false);
 			ColecoAutoController[1] = new ColecoVisionControllerTemplate(false);
 
+			IntellivisionController[0] = new IntellivisionControllerTemplate(true);
+			IntellivisionController[1] = new IntellivisionControllerTemplate(false);
+			IntellivisionAutoController[0] = new IntellivisionControllerTemplate(false);
+			IntellivisionAutoController[1] = new IntellivisionControllerTemplate(false);
+
 			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true, true);
 			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
 			C64AutoJoysticks[0] = new SingleButtonJoyStickTemplate(false);
@@ -723,6 +728,10 @@ namespace BizHawk.MultiClient
 		public ColecoVisionControllerTemplate[] ColecoController = new ColecoVisionControllerTemplate[2];
 		public ColecoVisionControllerTemplate[] ColecoAutoController = new ColecoVisionControllerTemplate[2];
 
+		//Intellivision
+		public IntellivisionControllerTemplate[] IntellivisionController = new IntellivisionControllerTemplate[2];
+		public IntellivisionControllerTemplate[] IntellivisionAutoController = new IntellivisionControllerTemplate[2];
+
 		//NES settings
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
 		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
@@ -1214,7 +1223,6 @@ namespace BizHawk.MultiClient
 		public string Right = "";
 		public string L = "";
 		public string R = "";
-		public string _0 = "";
 		public string _1 = "";
 		public string _2 = "";
 		public string _3 = "";
@@ -1225,6 +1233,7 @@ namespace BizHawk.MultiClient
 		public string _8 = "";
 		public string _9 = "";
 		public string Star = "";
+		public string _0 = "";
 		public string Pound = "";
 		public bool Enabled;
 
@@ -1258,6 +1267,62 @@ namespace BizHawk.MultiClient
 			_9 = "NumberPad9";
 			Pound = "NumberPadPeriod";
 			Star = "NumberPadEnter";
+		}
+	}
+
+	public class IntellivisionControllerTemplate : iControllerConfigObject
+	{
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string L = "";
+		public string R = "";
+		public string _1 = "";
+		public string _2 = "";
+		public string _3 = "";
+		public string _4 = "";
+		public string _5 = "";
+		public string _6 = "";
+		public string _7 = "";
+		public string _8 = "";
+		public string _9 = "";
+		public string Enter = "";
+		public string _0 = "";
+		public string Clear = "";
+		
+		public bool Enabled;
+
+		public IntellivisionControllerTemplate() { }
+		public IntellivisionControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			L = "Z, J1 B1";
+			R = "X, J1 B1";
+			_0 = "NumberPad0";
+			_1 = "NumberPad1";
+			_2 = "NumberPad2";
+			_3 = "NumberPad3";
+			_4 = "NumberPad4";
+			_5 = "NumberPad5";
+			_6 = "NumberPad6";
+			_7 = "NumberPad7";
+			_8 = "NumberPad8";
+			_9 = "NumberPad9";
+			Enter = "NumberPadPeriod";
+			Clear = "NumberPadEnter";
 		}
 	}
 
