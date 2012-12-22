@@ -1115,6 +1115,86 @@ namespace BizHawk.MultiClient
 			acolecoControls.BindMulti("P2 Pound", Global.Config.ColecoController[1].Pound);
 			Global.AutofireColecoControls = acolecoControls;
 
+			var intelliControls = new Controller(Intellivision.IntellivisionController);
+			intelliControls.BindMulti("P1 Up", Global.Config.IntellivisionController[0].Up);
+			intelliControls.BindMulti("P1 Left", Global.Config.IntellivisionController[0].Left);
+			intelliControls.BindMulti("P1 Right", Global.Config.IntellivisionController[0].Right);
+			intelliControls.BindMulti("P1 Down", Global.Config.IntellivisionController[0].Down);
+			intelliControls.BindMulti("P1 L", Global.Config.IntellivisionController[0].L);
+			intelliControls.BindMulti("P1 R", Global.Config.IntellivisionController[0].R);
+			intelliControls.BindMulti("P1 Key0", Global.Config.IntellivisionController[0]._0);
+			intelliControls.BindMulti("P1 Key1", Global.Config.IntellivisionController[0]._1);
+			intelliControls.BindMulti("P1 Key2", Global.Config.IntellivisionController[0]._2);
+			intelliControls.BindMulti("P1 Key3", Global.Config.IntellivisionController[0]._3);
+			intelliControls.BindMulti("P1 Key4", Global.Config.IntellivisionController[0]._4);
+			intelliControls.BindMulti("P1 Key5", Global.Config.IntellivisionController[0]._5);
+			intelliControls.BindMulti("P1 Key6", Global.Config.IntellivisionController[0]._6);
+			intelliControls.BindMulti("P1 Key7", Global.Config.IntellivisionController[0]._7);
+			intelliControls.BindMulti("P1 Key8", Global.Config.IntellivisionController[0]._8);
+			intelliControls.BindMulti("P1 Key9", Global.Config.IntellivisionController[0]._9);
+			intelliControls.BindMulti("P1 Clear", Global.Config.IntellivisionController[0].Clear);
+			intelliControls.BindMulti("P1 Enter", Global.Config.IntellivisionController[0].Enter);
+
+			intelliControls.BindMulti("P2 Up", Global.Config.IntellivisionController[1].Up);
+			intelliControls.BindMulti("P2 Left", Global.Config.IntellivisionController[1].Left);
+			intelliControls.BindMulti("P2 Right", Global.Config.IntellivisionController[1].Right);
+			intelliControls.BindMulti("P2 Down", Global.Config.IntellivisionController[1].Down);
+			intelliControls.BindMulti("P2 L", Global.Config.IntellivisionController[1].L);
+			intelliControls.BindMulti("P2 R", Global.Config.IntellivisionController[1].R);
+			intelliControls.BindMulti("P2 Key0", Global.Config.IntellivisionController[1]._0);
+			intelliControls.BindMulti("P2 Key1", Global.Config.IntellivisionController[1]._1);
+			intelliControls.BindMulti("P2 Key2", Global.Config.IntellivisionController[1]._2);
+			intelliControls.BindMulti("P2 Key3", Global.Config.IntellivisionController[1]._3);
+			intelliControls.BindMulti("P2 Key4", Global.Config.IntellivisionController[1]._4);
+			intelliControls.BindMulti("P2 Key5", Global.Config.IntellivisionController[1]._5);
+			intelliControls.BindMulti("P2 Key6", Global.Config.IntellivisionController[1]._6);
+			intelliControls.BindMulti("P2 Key7", Global.Config.IntellivisionController[1]._7);
+			intelliControls.BindMulti("P2 Key8", Global.Config.IntellivisionController[1]._8);
+			intelliControls.BindMulti("P2 Key9", Global.Config.IntellivisionController[1]._9);
+			intelliControls.BindMulti("P2 Clear", Global.Config.IntellivisionController[1].Clear);
+			intelliControls.BindMulti("P2 Enter", Global.Config.IntellivisionController[1].Enter);
+			Global.IntellivisionControls = intelliControls;
+
+			var aintelliControls = new AutofireController(Intellivision.IntellivisionController);
+			aintelliControls.BindMulti("P1 Up", Global.Config.IntellivisionAutoController[0].Up);
+			aintelliControls.BindMulti("P1 Left", Global.Config.IntellivisionAutoController[0].Left);
+			aintelliControls.BindMulti("P1 Right", Global.Config.IntellivisionAutoController[0].Right);
+			aintelliControls.BindMulti("P1 Down", Global.Config.IntellivisionAutoController[0].Down);
+			aintelliControls.BindMulti("P1 L", Global.Config.IntellivisionAutoController[0].L);
+			aintelliControls.BindMulti("P1 R", Global.Config.IntellivisionAutoController[0].R);
+			aintelliControls.BindMulti("P1 Key0", Global.Config.IntellivisionAutoController[0]._0);
+			aintelliControls.BindMulti("P1 Key1", Global.Config.IntellivisionAutoController[0]._1);
+			aintelliControls.BindMulti("P1 Key2", Global.Config.IntellivisionAutoController[0]._2);
+			aintelliControls.BindMulti("P1 Key3", Global.Config.IntellivisionAutoController[0]._3);
+			aintelliControls.BindMulti("P1 Key4", Global.Config.IntellivisionAutoController[0]._4);
+			aintelliControls.BindMulti("P1 Key5", Global.Config.IntellivisionAutoController[0]._5);
+			aintelliControls.BindMulti("P1 Key6", Global.Config.IntellivisionAutoController[0]._6);
+			aintelliControls.BindMulti("P1 Key7", Global.Config.IntellivisionAutoController[0]._7);
+			aintelliControls.BindMulti("P1 Key8", Global.Config.IntellivisionAutoController[0]._8);
+			aintelliControls.BindMulti("P1 Key9", Global.Config.IntellivisionAutoController[0]._9);
+			aintelliControls.BindMulti("P1 Clear", Global.Config.IntellivisionAutoController[0].Clear);
+			aintelliControls.BindMulti("P1 Enter", Global.Config.IntellivisionAutoController[0].Enter);
+
+			aintelliControls.BindMulti("P2 Up", Global.Config.IntellivisionAutoController[1].Up);
+			aintelliControls.BindMulti("P2 Left", Global.Config.IntellivisionAutoController[1].Left);
+			aintelliControls.BindMulti("P2 Right", Global.Config.IntellivisionAutoController[1].Right);
+			aintelliControls.BindMulti("P2 Down", Global.Config.IntellivisionAutoController[1].Down);
+			aintelliControls.BindMulti("P2 L", Global.Config.IntellivisionAutoController[1].L);
+			aintelliControls.BindMulti("P2 R", Global.Config.IntellivisionAutoController[1].R);
+			aintelliControls.BindMulti("P2 Key0", Global.Config.IntellivisionAutoController[1]._0);
+			aintelliControls.BindMulti("P2 Key1", Global.Config.IntellivisionAutoController[1]._1);
+			aintelliControls.BindMulti("P2 Key2", Global.Config.IntellivisionAutoController[1]._2);
+			aintelliControls.BindMulti("P2 Key3", Global.Config.IntellivisionAutoController[1]._3);
+			aintelliControls.BindMulti("P2 Key4", Global.Config.IntellivisionAutoController[1]._4);
+			aintelliControls.BindMulti("P2 Key5", Global.Config.IntellivisionAutoController[1]._5);
+			aintelliControls.BindMulti("P2 Key6", Global.Config.IntellivisionAutoController[1]._6);
+			aintelliControls.BindMulti("P2 Key7", Global.Config.IntellivisionAutoController[1]._7);
+			aintelliControls.BindMulti("P2 Key8", Global.Config.IntellivisionAutoController[1]._8);
+			aintelliControls.BindMulti("P2 Key9", Global.Config.IntellivisionAutoController[1]._9);
+			aintelliControls.BindMulti("P2 Clear", Global.Config.IntellivisionAutoController[1].Clear);
+			aintelliControls.BindMulti("P2 Enter", Global.Config.IntellivisionAutoController[1].Enter);
+			Global.AutofireIntellivisionControls = aintelliControls;
+
 			var TI83Controls = new Controller(TI83.TI83Controller);
 			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0);
 			TI83Controls.BindMulti("1", Global.Config.TI83Controller[0]._1);
@@ -1569,6 +1649,10 @@ namespace BizHawk.MultiClient
 				case "C64":
 					Global.ActiveController = Global.Commodore64Controls;
 					Global.AutoFireController = Global.AutofireCommodore64Controls;
+					break;
+				case "INTV":
+					Global.ActiveController = Global.IntellivisionControls;
+					Global.AutoFireController = Global.AutofireIntellivisionControls;
 					break;
 				default:
 					Global.ActiveController = Global.NullControls;
