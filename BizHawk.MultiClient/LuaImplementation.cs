@@ -654,9 +654,11 @@ namespace BizHawk.MultiClient
 				dx -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
 				dy -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
+			// blah hacks
+			dx *= client_getwindowsize();
+			dy *= client_getwindowsize();
 
-			Global.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor),
-								  a);
+			Global.OSD.AddGUIText(luaStr.ToString(), dx, dy, alert, GetColor(background), GetColor(forecolor),  a);
 		}
 
 		public void gui_text(object luaX, object luaY, object luaStr, object background = null, object forecolor = null,
