@@ -1001,6 +1001,7 @@
     <None Include="images\LightOn.png" />
     <None Include="images\Both.png" />
     <None Include="config\ControllerImages\A78Joystick.png" />
+    <None Include="config\ControllerImages\IntVController.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

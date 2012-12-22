@@ -187,6 +187,17 @@
 			this.COLController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage63 = new System.Windows.Forms.TabPage();
 			this.COLAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPageINTV = new System.Windows.Forms.TabPage();
+			this.pictureBox17 = new System.Windows.Forms.PictureBox();
+			this.tabControl12 = new System.Windows.Forms.TabControl();
+			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.INTVController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.INTVAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage59 = new System.Windows.Forms.TabPage();
+			this.INTVController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage64 = new System.Windows.Forms.TabPage();
+			this.INTVAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageTI83 = new System.Windows.Forms.TabPage();
 			this.pictureBox7 = new System.Windows.Forms.PictureBox();
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
@@ -292,6 +303,13 @@
 			this.tabPage61.SuspendLayout();
 			this.tabPage62.SuspendLayout();
 			this.tabPage63.SuspendLayout();
+			this.tabPageINTV.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox17)).BeginInit();
+			this.tabControl12.SuspendLayout();
+			this.tabPage8.SuspendLayout();
+			this.tabPage9.SuspendLayout();
+			this.tabPage59.SuspendLayout();
+			this.tabPage64.SuspendLayout();
 			this.tabPageTI83.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.SuspendLayout();
@@ -312,6 +330,7 @@
 			this.PlatformTabControl.Controls.Add(this.tabPageAtari7800);
 			this.PlatformTabControl.Controls.Add(this.tabPageC64);
 			this.PlatformTabControl.Controls.Add(this.tabPageColeco);
+			this.PlatformTabControl.Controls.Add(this.tabPageINTV);
 			this.PlatformTabControl.Controls.Add(this.tabPageTI83);
 			this.PlatformTabControl.Location = new System.Drawing.Point(12, 21);
 			this.PlatformTabControl.Name = "PlatformTabControl";
@@ -1855,6 +1874,111 @@
 			this.COLAutofire2Panel.Size = new System.Drawing.Size(358, 332);
 			this.COLAutofire2Panel.TabIndex = 3;
 			// 
+			// tabPageINTV
+			// 
+			this.tabPageINTV.Controls.Add(this.pictureBox17);
+			this.tabPageINTV.Controls.Add(this.tabControl12);
+			this.tabPageINTV.Location = new System.Drawing.Point(4, 22);
+			this.tabPageINTV.Name = "tabPageINTV";
+			this.tabPageINTV.Size = new System.Drawing.Size(787, 425);
+			this.tabPageINTV.TabIndex = 12;
+			this.tabPageINTV.Text = "Int. V";
+			this.tabPageINTV.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox17
+			// 
+			this.pictureBox17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox17.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox17.Image = global::BizHawk.MultiClient.Properties.Resources.IntVController;
+			this.pictureBox17.Location = new System.Drawing.Point(423, 37);
+			this.pictureBox17.Name = "pictureBox17";
+			this.pictureBox17.Size = new System.Drawing.Size(249, 255);
+			this.pictureBox17.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox17.TabIndex = 8;
+			this.pictureBox17.TabStop = false;
+			// 
+			// tabControl12
+			// 
+			this.tabControl12.Controls.Add(this.tabPage8);
+			this.tabControl12.Controls.Add(this.tabPage9);
+			this.tabControl12.Controls.Add(this.tabPage59);
+			this.tabControl12.Controls.Add(this.tabPage64);
+			this.tabControl12.Location = new System.Drawing.Point(17, 15);
+			this.tabControl12.Name = "tabControl12";
+			this.tabControl12.SelectedIndex = 0;
+			this.tabControl12.Size = new System.Drawing.Size(379, 398);
+			this.tabControl12.TabIndex = 7;
+			// 
+			// tabPage8
+			// 
+			this.tabPage8.Controls.Add(this.INTVController1Panel);
+			this.tabPage8.Location = new System.Drawing.Point(4, 22);
+			this.tabPage8.Name = "tabPage8";
+			this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage8.Size = new System.Drawing.Size(371, 372);
+			this.tabPage8.TabIndex = 0;
+			this.tabPage8.Text = "Controller 1";
+			this.tabPage8.UseVisualStyleBackColor = true;
+			// 
+			// INTVController1Panel
+			// 
+			this.INTVController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVController1Panel.Name = "INTVController1Panel";
+			this.INTVController1Panel.Size = new System.Drawing.Size(355, 332);
+			this.INTVController1Panel.TabIndex = 1;
+			// 
+			// tabPage9
+			// 
+			this.tabPage9.Controls.Add(this.INTVAutofire1Panel);
+			this.tabPage9.Location = new System.Drawing.Point(4, 22);
+			this.tabPage9.Name = "tabPage9";
+			this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage9.Size = new System.Drawing.Size(371, 372);
+			this.tabPage9.TabIndex = 1;
+			this.tabPage9.Text = "Autofire 1";
+			this.tabPage9.UseVisualStyleBackColor = true;
+			// 
+			// INTVAutofire1Panel
+			// 
+			this.INTVAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVAutofire1Panel.Name = "INTVAutofire1Panel";
+			this.INTVAutofire1Panel.Size = new System.Drawing.Size(359, 332);
+			this.INTVAutofire1Panel.TabIndex = 2;
+			// 
+			// tabPage59
+			// 
+			this.tabPage59.Controls.Add(this.INTVController2Panel);
+			this.tabPage59.Location = new System.Drawing.Point(4, 22);
+			this.tabPage59.Name = "tabPage59";
+			this.tabPage59.Size = new System.Drawing.Size(371, 372);
+			this.tabPage59.TabIndex = 2;
+			this.tabPage59.Text = "Controller 2";
+			this.tabPage59.UseVisualStyleBackColor = true;
+			// 
+			// INTVController2Panel
+			// 
+			this.INTVController2Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVController2Panel.Name = "INTVController2Panel";
+			this.INTVController2Panel.Size = new System.Drawing.Size(358, 332);
+			this.INTVController2Panel.TabIndex = 2;
+			// 
+			// tabPage64
+			// 
+			this.tabPage64.Controls.Add(this.INTVAutofire2Panel);
+			this.tabPage64.Location = new System.Drawing.Point(4, 22);
+			this.tabPage64.Name = "tabPage64";
+			this.tabPage64.Size = new System.Drawing.Size(371, 372);
+			this.tabPage64.TabIndex = 3;
+			this.tabPage64.Text = "Autofire 2";
+			this.tabPage64.UseVisualStyleBackColor = true;
+			// 
+			// INTVAutofire2Panel
+			// 
+			this.INTVAutofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVAutofire2Panel.Name = "INTVAutofire2Panel";
+			this.INTVAutofire2Panel.Size = new System.Drawing.Size(358, 332);
+			this.INTVAutofire2Panel.TabIndex = 3;
+			// 
 			// tabPageTI83
 			// 
 			this.tabPageTI83.Controls.Add(this.pictureBox7);
@@ -2058,6 +2182,13 @@
 			this.tabPage61.ResumeLayout(false);
 			this.tabPage62.ResumeLayout(false);
 			this.tabPage63.ResumeLayout(false);
+			this.tabPageINTV.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox17)).EndInit();
+			this.tabControl12.ResumeLayout(false);
+			this.tabPage8.ResumeLayout(false);
+			this.tabPage9.ResumeLayout(false);
+			this.tabPage59.ResumeLayout(false);
+			this.tabPage64.ResumeLayout(false);
 			this.tabPageTI83.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.ResumeLayout(false);
@@ -2233,5 +2364,16 @@
 		private ControllerConfigPanel Atari7800Autofire1Panel;
 		private System.Windows.Forms.TabPage tabPage7;
 		private ControllerConfigPanel Atari7800Autofire2Panel;
+		private System.Windows.Forms.TabPage tabPageINTV;
+		private System.Windows.Forms.PictureBox pictureBox17;
+		private System.Windows.Forms.TabControl tabControl12;
+		private System.Windows.Forms.TabPage tabPage8;
+		private ControllerConfigPanel INTVController1Panel;
+		private System.Windows.Forms.TabPage tabPage9;
+		private ControllerConfigPanel INTVAutofire1Panel;
+		private System.Windows.Forms.TabPage tabPage59;
+		private ControllerConfigPanel INTVController2Panel;
+		private System.Windows.Forms.TabPage tabPage64;
+		private ControllerConfigPanel INTVAutofire2Panel;
 	}
 }
