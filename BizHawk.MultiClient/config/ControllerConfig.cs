@@ -128,12 +128,34 @@ namespace BizHawk.MultiClient
 			COLAutofire2Panel.ColumnWidth = 170;
 			COLAutofire2Panel.LoadSettings(Global.Config.ColecoAutoController[1]);
 
+
+			INTVController1Panel.InputSize = 110;
+			INTVController1Panel.LabelWidth = 50;
+			INTVController1Panel.ColumnWidth = 170;
+			INTVController1Panel.LoadSettings(Global.Config.IntellivisionController[0]);
+
+			INTVAutofire1Panel.InputSize = 110;
+			INTVAutofire1Panel.LabelWidth = 50;
+			INTVAutofire1Panel.ColumnWidth = 170;
+			INTVAutofire1Panel.LoadSettings(Global.Config.IntellivisionAutoController[0]);
+
+			INTVController2Panel.InputSize = 110;
+			INTVController2Panel.LabelWidth = 50;
+			INTVController2Panel.ColumnWidth = 170;
+			INTVController2Panel.LoadSettings(Global.Config.IntellivisionController[1]);
+
+			INTVAutofire2Panel.InputSize = 110;
+			INTVAutofire2Panel.LabelWidth = 50;
+			INTVAutofire2Panel.ColumnWidth = 170;
+			INTVAutofire2Panel.LoadSettings(Global.Config.IntellivisionAutoController[1]);
+
 			SetTabByPlatform();
 
 			if (!Global.MainForm.INTERIM)
 			{
 				PlatformTabControl.Controls.Remove(tabPageC64);
 				PlatformTabControl.Controls.Remove(tabPageGBA);
+				PlatformTabControl.Controls.Remove(tabPageINTV);
 			}
 
 			AutoTab.Checked = Global.Config.InputConfigAutoTab;
@@ -183,6 +205,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "Coleco":
 					PlatformTabControl.SelectTab(tabPageColeco);
+					break;
+				case "INTV":
+					PlatformTabControl.SelectTab(tabPageINTV);
 					break;
 				case "TI83":
 					PlatformTabControl.SelectTab(tabPageTI83);

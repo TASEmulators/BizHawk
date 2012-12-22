@@ -553,6 +553,16 @@ namespace BizHawk.MultiClient.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IntVController {
+            get {
+                object obj = ResourceManager.GetObject("IntVController", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Lightning {
             get {
                 object obj = ResourceManager.GetObject("Lightning", resourceCulture);
