@@ -372,11 +372,11 @@ namespace BizHawk.MultiClient
 			target.SMS_ShowBG = Global.Config.SMSDispBG;
 			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
-			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
+			target.PSX_FirmwaresPath = Global.Config.FirmwaresPath; // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
 
-			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
+			target.C64_FirmwaresPath = Global.Config.FirmwaresPath; // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
 
-			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
+			target.SNES_FirmwaresPath = Global.Config.FirmwaresPath; // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
@@ -1797,7 +1797,7 @@ namespace BizHawk.MultiClient
 							case "PCE":
 							case "PCECD":
 								{
-									string biosPath = PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
+									string biosPath = Path.Combine(Global.Config.FirmwaresPath, "[BIOS] Super CD-ROM System (Japan) (v3.0).pce"); //PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
 									if (File.Exists(biosPath) == false)
 									{
 										MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
@@ -1883,7 +1883,7 @@ namespace BizHawk.MultiClient
 								break;
 							case "NES":
 								{
-									string biosPath = PathManager.MakeAbsolutePath(Global.Config.PathFDSBios, "NES");
+									string biosPath = Path.Combine(Global.Config.FirmwaresPath, "disksys.rom"); //PathManager.MakeAbsolutePath(Global.Config.PathFDSBios, "NES");
 									byte[] bios = null;
 									if (File.Exists(biosPath))
 									{
@@ -1942,7 +1942,7 @@ namespace BizHawk.MultiClient
 								else
 								{
 									// todo: get these bioses into a gamedb?? then we could demand different filenames for different regions?
-									string sgbromPath = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
+									string sgbromPath = Path.Combine(Global.Config.FirmwaresPath, "sgb.sfc"); //Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
 									byte[] sgbrom = null;
 									try
 									{
@@ -1952,7 +1952,7 @@ namespace BizHawk.MultiClient
 										}
 										else
 										{
-											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES") + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
+											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + sgbromPath + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
 											Global.Config.GB_AsSGB = false;
 											game.System = "GB";
 											goto RETRY;
@@ -1976,7 +1976,7 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "Coleco":
-								string colbiosPath = PathManager.MakeAbsolutePath(Global.Config.PathCOLBios, "Coleco");
+								string colbiosPath = Path.Combine(Global.Config.FirmwaresPath, "ColecoBios.bin"); // PathManager.MakeAbsolutePath(Global.Config.PathCOLBios, "Coleco");
 								FileInfo colfile = new FileInfo(colbiosPath);
 								if (!colfile.Exists)
 								{
@@ -1992,11 +1992,11 @@ namespace BizHawk.MultiClient
 							case "INTV":
 								{
 									Intellivision intv = new Intellivision(nextComm, game, rom.RomData);
-									string eromPath = PathManager.MakeAbsolutePath(Global.Config.PathINTVEROM, "INTV");
+									string eromPath = Path.Combine(Global.Config.FirmwaresPath, "EROM"); //PathManager.MakeAbsolutePath(Global.Config.PathINTVEROM, "INTV");
 									if (!File.Exists(eromPath))
 										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
 									intv.LoadExecutiveRom(eromPath);
-									string gromPath = PathManager.MakeAbsolutePath(Global.Config.PathINTVGROM, "INTV");
+									string gromPath = Path.Combine(Global.Config.FirmwaresPath, "GROM"); //PathManager.MakeAbsolutePath(Global.Config.PathINTVGROM, "INTV");
 									if (!File.Exists(gromPath))
 										throw new InvalidOperationException("Specified GROM path does not exist:\n\n" + gromPath);
 									intv.LoadGraphicsRom(gromPath);
@@ -2004,9 +2004,9 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "A78":
-								string ntsc_biospath = PathManager.MakeAbsolutePath(Path.Combine(Global.Config.PathAtari7800Firmwares, "7800NTSCBIOS.bin"), "A78");
-								string pal_biospath = PathManager.MakeAbsolutePath(Path.Combine(Global.Config.PathAtari7800Firmwares, "7800PALBIOS.bin"), "A78");
-								string hsbiospath = PathManager.MakeAbsolutePath(Path.Combine(Global.Config.PathAtari7800Firmwares, "7800highscore.bin"), "A78");
+								string ntsc_biospath = Path.Combine(Global.Config.FirmwaresPath, "7800NTSCBIOS.bin");
+								string pal_biospath = Path.Combine(Global.Config.FirmwaresPath, "7800PALBIOS.bin");
+								string hsbiospath = Path.Combine(Global.Config.FirmwaresPath, "7800highscore.bin");
 
 								FileInfo ntscfile = new FileInfo(ntsc_biospath);
 								FileInfo palfile = new FileInfo(pal_biospath);
@@ -2047,7 +2047,7 @@ namespace BizHawk.MultiClient
 							case "GBA":
 								if (INTERIM)
 								{
-									string gbabiospath = PathManager.MakeAbsolutePath(Global.Config.PathGBABIOS, "GBA");
+									string gbabiospath = Path.Combine(Global.Config.FirmwaresPath, "gbabios.rom"); //PathManager.MakeAbsolutePath(Global.Config.PathGBABIOS, "GBA");
 									byte[] gbabios = null;
 
 									if (File.Exists(gbabiospath))
