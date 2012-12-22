@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
 		public string PathSNESSaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathSNESScreenshots = Path.Combine(".", "Screenshots");
 		public string PathSNESCheats = Path.Combine(".", "Cheats");
-		public string PathSNESFirmwares = Path.Combine(".", "Firmwares");
+		//public string PathSNESFirmwares = Path.Combine(".", "Firmwares");
 
 		public string BaseGBA = Path.Combine(".", "GBA");
 		public string PathGBAROMs = ".";
@@ -182,14 +182,14 @@ namespace BizHawk.MultiClient
 		public string PathAtari7800SaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathAtari7800Screenshots = Path.Combine(".", "Screenshots");
 		public string PathAtari7800Cheats = Path.Combine(".", "Cheats");
-		public string PathAtari7800Firmwares = Path.Combine(".", "Firmwares");
+		//public string PathAtari7800Firmwares = Path.Combine(".", "Firmwares");
 
 		public string BaseC64 = Path.Combine(".", "C64");
 		public string PathC64ROMs = ".";
 		public string PathC64Savestates = Path.Combine(".", "State");
 		public string PathC64Screenshots = Path.Combine(".", "Screenshots");
 		public string PathC64Cheats = Path.Combine(".", "Cheats");
-		public string PathC64Firmwares = Path.Combine(".", "Firmwares");
+		//public string PathC64Firmwares = Path.Combine(".", "Firmwares");
 
 		public string BasePSX = Path.Combine(".", "PSX");
 		public string PathPSXROMs = ".";
@@ -197,7 +197,7 @@ namespace BizHawk.MultiClient
 		public string PathPSXSaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathPSXScreenshots = Path.Combine(".", "Screenshots");
 		public string PathPSXCheats = Path.Combine(".", "Cheats");
-		public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
+		//public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
 
 		public string BaseCOL = Path.Combine(".", "Coleco");
 		public string PathCOLROMs = ".";
@@ -211,14 +211,15 @@ namespace BizHawk.MultiClient
 		public string WatchPath = ".";
 		public string AVIPath = ".";
 		public string LogPath = ".";
+		public string FirmwaresPath = Path.Combine(".", "Firmware");
 
 		//BIOS Paths
-		public string PathGBABIOS = Path.Combine(".", "gbabios.rom");
-		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
-		public string PathCOLBios = Path.Combine(".", "ColecoBios.bin");
-		public string PathINTVGROM = Path.Combine(".", "grom.bin");
-		public string PathINTVEROM = Path.Combine(".", "erom.bin");
-		public string PathFDSBios = Path.Combine(".", "disksys.rom");
+		//public string PathGBABIOS = Path.Combine(".", "gbabios.rom");
+		//public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
+		//public string PathCOLBios = Path.Combine(".", "ColecoBios.bin");
+		//public string PathINTVGROM = Path.Combine(".", "grom.bin");
+		//public string PathINTVEROM = Path.Combine(".", "erom.bin");
+		//public string PathFDSBios = Path.Combine(".", "disksys.rom");
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 

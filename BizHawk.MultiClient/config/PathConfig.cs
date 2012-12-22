@@ -56,9 +56,9 @@ namespace BizHawk.MultiClient
 			INTVSaveRAMBox.Text = Global.Config.PathINTVSaveRAM; ;
 			INTVScreenshotsBox.Text = Global.Config.PathINTVScreenshots;
 			INTVCheatsBox.Text = Global.Config.PathINTVCheats;
-			INTVEROMBox.Text = Global.Config.PathINTVEROM;
-			INTVGROMBox.Text = Global.Config.PathINTVGROM;
-
+			//INTVEROMBox.Text = Global.Config.PathINTVEROM;
+			//INTVGROMBox.Text = Global.Config.PathINTVGROM;
+			
 			NESBaseBox.Text = Global.Config.BaseNES;
 			NESROMsBox.Text = Global.Config.PathNESROMs;
 			NESSavestatesBox.Text = Global.Config.PathNESSavestates;
@@ -66,7 +66,7 @@ namespace BizHawk.MultiClient
 			NESScreenshotsBox.Text = Global.Config.PathNESScreenshots;
 			NESCheatsBox.Text = Global.Config.PathNESCheats;
 			NESPaletteBox.Text = Global.Config.PathNESPalette;
-			NESFDSBiosBox.Text = Global.Config.PathFDSBios;
+			//NESFDSBiosBox.Text = Global.Config.PathFDSBios;
 
 			SNESBaseBox.Text = Global.Config.BaseSNES;
 			SNESROMsBox.Text = Global.Config.PathSNESROMs;
@@ -74,7 +74,7 @@ namespace BizHawk.MultiClient
 			SNESSaveRAMBox.Text = Global.Config.PathSNESSaveRAM;
 			SNESScreenshotsBox.Text = Global.Config.PathSNESScreenshots;
 			SNESCheatsBox.Text = Global.Config.PathSNESCheats;
-			SNESFirmwaresBox.Text = Global.Config.PathSNESFirmwares;
+			//SNESFirmwaresBox.Text = Global.Config.PathSNESFirmwares;
 
 			Sega8BaseBox.Text = Global.Config.BaseSMS;
 			Sega8ROMsBox.Text = Global.Config.PathSMSROMs;
@@ -103,7 +103,7 @@ namespace BizHawk.MultiClient
 			PCESaveRAMBox.Text = Global.Config.PathPCESaveRAM;
 			PCEScreenshotsBox.Text = Global.Config.PathPCEScreenshots;
 			PCECheatsBox.Text = Global.Config.PathPCECheats;
-			PCEBiosBox.Text = Global.Config.PathPCEBios;
+			//PCEBiosBox.Text = Global.Config.PathPCEBios;
 
 			GenesisBaseBox.Text = Global.Config.BaseGenesis;
 			GenesisROMsBox.Text = Global.Config.PathGenesisROMs;
@@ -126,7 +126,7 @@ namespace BizHawk.MultiClient
 			GBASaveRAMBox.Text = Global.Config.PathGBASaveRAM;
 			GBAScreenshotsBox.Text = Global.Config.PathGBAScreenshots;
 			GBACheatsBox.Text = Global.Config.PathGBACheats;
-			GBAFirmwaresBox.Text = Global.Config.PathGBABIOS;
+			//GBAFirmwaresBox.Text = Global.Config.PathGBABIOS;
 
 			TI83BaseBox.Text = Global.Config.BaseTI83;
 			TI83ROMsBox.Text = Global.Config.PathTI83ROMs;
@@ -147,21 +147,21 @@ namespace BizHawk.MultiClient
 			Atari7800SaveRAMBox.Text = Global.Config.PathAtari7800SaveRAM;
 			Atari7800ScreenshotsBox.Text = Global.Config.PathAtari7800Screenshots;
 			Atari7800CheatsBox.Text = Global.Config.PathAtari7800Cheats;
-			Atari7800FirmwaresBox.Text = Global.Config.PathAtari7800Firmwares;
+			//Atari7800FirmwaresBox.Text = Global.Config.PathAtari7800Firmwares;
 
 			C64BaseBox.Text = Global.Config.BaseC64;
 			C64ROMsBox.Text = Global.Config.PathC64ROMs;
 			C64SavestatesBox.Text = Global.Config.PathC64Savestates;
 			C64ScreenshotsBox.Text = Global.Config.PathC64Screenshots;
 			C64CheatsBox.Text = Global.Config.PathC64Cheats;
-			C64FirmwaresBox.Text = Global.Config.PathC64Firmwares;
+			//C64FirmwaresBox.Text = Global.Config.PathC64Firmwares;
 
 			COLBaseBox.Text = Global.Config.BaseCOL;
 			COLROMsBox.Text = Global.Config.PathCOLROMs;
 			COLSavestatesBox.Text = Global.Config.PathCOLSavestates;
 			COLScreenshotsBox.Text = Global.Config.PathCOLScreenshots;
 			COLCheatsBox.Text = Global.Config.PathCOLCheats;
-			COLBiosBox.Text = Global.Config.PathCOLBios;
+			//COLBiosBox.Text = Global.Config.PathCOLBios;
 
 			MoviesBox.Text = Global.Config.MoviesPath;
 			MovieBackupsBox.Text = Global.Config.MoviesBackupPath;
@@ -169,6 +169,7 @@ namespace BizHawk.MultiClient
 			WatchBox.Text = Global.Config.WatchPath;
 			AVIBox.Text = Global.Config.AVIPath;
 			LogBox.Text = Global.Config.LogPath;
+			textBoxFirmware.Text = Global.Config.FirmwaresPath;
 
 			SetTabByPlatform();
 
@@ -250,8 +251,8 @@ namespace BizHawk.MultiClient
 			Global.Config.PathINTVSavestates = INTVSavestatesBox.Text;
 			Global.Config.PathINTVScreenshots = INTVScreenshotsBox.Text;
 			Global.Config.PathINTVCheats = INTVCheatsBox.Text;
-			Global.Config.PathINTVEROM = INTVEROMBox.Text;
-			Global.Config.PathINTVGROM = INTVGROMBox.Text;
+			//Global.Config.PathINTVEROM = INTVEROMBox.Text;
+			//Global.Config.PathINTVGROM = INTVGROMBox.Text;
 
 			Global.Config.BaseNES = NESBaseBox.Text;
 			Global.Config.PathNESROMs = NESROMsBox.Text;
@@ -260,7 +261,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathNESScreenshots = NESScreenshotsBox.Text;
 			Global.Config.PathNESCheats = NESCheatsBox.Text;
 			Global.Config.PathNESPalette = NESPaletteBox.Text;
-			Global.Config.PathFDSBios = NESFDSBiosBox.Text;
+			//Global.Config.PathFDSBios = NESFDSBiosBox.Text;
 
 			Global.Config.BaseSNES = SNESBaseBox.Text;
 			Global.Config.PathSNESROMs = SNESROMsBox.Text;
@@ -268,7 +269,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathSNESSaveRAM = SNESSaveRAMBox.Text;
 			Global.Config.PathSNESScreenshots = SNESScreenshotsBox.Text;
 			Global.Config.PathSNESCheats = SNESCheatsBox.Text;
-			Global.Config.PathSNESFirmwares = SNESFirmwaresBox.Text;
+			//Global.Config.PathSNESFirmwares = SNESFirmwaresBox.Text;
 
 			Global.Config.BaseSMS = Sega8BaseBox.Text;
 			Global.Config.PathSMSROMs = Sega8ROMsBox.Text;
@@ -319,7 +320,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathGBASaveRAM = GBASaveRAMBox.Text;
 			Global.Config.PathGBAScreenshots = GBAScreenshotsBox.Text;
 			Global.Config.PathGBACheats = GBACheatsBox.Text;
-			Global.Config.PathGBABIOS = GBAFirmwaresBox.Text;
+			//Global.Config.PathGBABIOS = GBAFirmwaresBox.Text;
 
 			Global.Config.BaseTI83 = TI83BaseBox.Text;
 			Global.Config.PathTI83ROMs = TI83ROMsBox.Text;
@@ -340,21 +341,21 @@ namespace BizHawk.MultiClient
 			Global.Config.PathAtari7800SaveRAM = Atari7800SaveRAMBox.Text;
 			Global.Config.PathAtari7800Screenshots = Atari7800ScreenshotsBox.Text;
 			Global.Config.PathAtari7800Cheats = Atari7800CheatsBox.Text;
-			Global.Config.PathAtari7800Firmwares = Atari7800FirmwaresBox.Text;
+			//Global.Config.PathAtari7800Firmwares = Atari7800FirmwaresBox.Text;
 
 			Global.Config.BaseC64 = C64BaseBox.Text;
 			Global.Config.PathC64ROMs = C64ROMsBox.Text;
 			Global.Config.PathC64Savestates = C64SavestatesBox.Text;
 			Global.Config.PathC64Screenshots = C64ScreenshotsBox.Text;
 			Global.Config.PathC64Cheats = C64CheatsBox.Text;
-			Global.Config.PathC64Firmwares = C64FirmwaresBox.Text;
+			//Global.Config.PathC64Firmwares = C64FirmwaresBox.Text;
 
 			Global.Config.BaseCOL = COLBaseBox.Text;
 			Global.Config.PathCOLROMs = COLROMsBox.Text;
 			Global.Config.PathCOLSavestates = COLSavestatesBox.Text;
 			Global.Config.PathCOLScreenshots = COLScreenshotsBox.Text;
 			Global.Config.PathCOLCheats = COLCheatsBox.Text;
-			Global.Config.PathCOLBios = COLBiosBox.Text;
+			//Global.Config.PathCOLBios = COLBiosBox.Text;
 
 			Global.Config.MoviesPath = MoviesBox.Text;
 			Global.Config.MoviesBackupPath = MovieBackupsBox.Text;
@@ -362,8 +363,9 @@ namespace BizHawk.MultiClient
 			Global.Config.WatchPath = WatchBox.Text;
 			Global.Config.AVIPath = AVIBox.Text;
 			Global.Config.LogPath = LogBox.Text;
+			Global.Config.FirmwaresPath = textBoxFirmware.Text;
 
-			Global.Config.PathPCEBios = PCEBiosBox.Text;
+			//Global.Config.PathPCEBios = PCEBiosBox.Text;
 
 			BasePathBox.Focus();
 			Global.MainForm.UpdateStatusSlots();
@@ -829,30 +831,30 @@ namespace BizHawk.MultiClient
 		}
 
 
-		private void INTVBrowseEROM_Click(object sender, EventArgs e)
+		/*private void INTVBrowseEROM_Click(object sender, EventArgs e)
 		{
 			BrowseForBios(
 				"Intellivision EROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
 				 Global.Config.PathINTVEROM, "INTV", 
 				INTVEROMBox);
-		}
+		}*/
 
-		private void INTVBroseGROM_Click(object sender, EventArgs e)
+		/*private void INTVBroseGROM_Click(object sender, EventArgs e)
 		{
 			BrowseForBios(
 				"Intellivision GROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
 				 Global.Config.PathINTVGROM, "INTV",
 				INTVGROMBox);
-		}
+		}*/
 
 
-		private void PCEBrowseBios_Click(object sender, EventArgs e)
+		/*private void PCEBrowseBios_Click(object sender, EventArgs e)
 		{
 			BrowseForBios(
 				"PCE CD BIOS (*.pce)|*.pce|All Files|*.*",
 				 Global.Config.PathPCEBios, "PCE",
 				PCEBiosBox);
-		}
+		}*/
 
 		private void BrowseMovieBackups_Click(object sender, EventArgs e)
 		{
@@ -889,10 +891,10 @@ namespace BizHawk.MultiClient
 			BrowseFolder(SNESCheatsBox, SNESCheatsDescription.Text, "SNES");
 		}
 
-		private void SNESBrowseFirmwares_Click(object sender, EventArgs e)
+		/*private void SNESBrowseFirmwares_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(SNESFirmwaresBox, SNESFirmwaresDescription.Text);
-		}
+		}*/
 
 		private void BrowseLog_Click(object sender, EventArgs e)
 		{
@@ -909,13 +911,13 @@ namespace BizHawk.MultiClient
 			BrowseFolder(SNESSaveRAMBox, SNESSaveRAMDescription.Text);
 		}
 
-		private void NESBrowseFDSBios_Click(object sender, EventArgs e)
+		/*private void NESBrowseFDSBios_Click(object sender, EventArgs e)
 		{
 			BrowseForBios(
 				"ROM files (*.rom)|*.rom|All Files|*.*",
 				 Global.Config.PathFDSBios, "NES",
 				NESFDSBiosBox);
-		}
+		}*/
 
 		private void SNESFirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
@@ -947,10 +949,10 @@ namespace BizHawk.MultiClient
 			BrowseFolder(C64CheatsBox, C64CheatsDescription.Text, "C64");
 		}
 
-		private void C64BrowseFirmwares_Click(object sender, EventArgs e)
+		/*private void C64BrowseFirmwares_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(C64FirmwaresBox, C64FirmwaresDescription.Text, "C64");
-		}
+		}*/
 
 		private void C64FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
@@ -982,13 +984,13 @@ namespace BizHawk.MultiClient
 			BrowseFolder(COLScreenshotsBox, COLScreenshotsDescription.Text, "Coleco");
 		}
 
-		private void COLBrowseBios_Click(object sender, EventArgs e)
+		/*private void COLBrowseBios_Click(object sender, EventArgs e)
 		{
 			BrowseForBios(
 				"ROM files (*.bin)|*.bin|All Files|*.*",
 				 Global.Config.PathCOLBios, "Coleco",
 				COLBiosBox);
-		}
+		}*/
 
 		private void GBABrowseBase_Click(object sender, EventArgs e)
 		{
@@ -1020,13 +1022,13 @@ namespace BizHawk.MultiClient
 			BrowseFolder(GBACheatsBox, GBACheatsDescription.Text, "GBA");
 		}
 
-		private void GBABrowseFirmwares_Click(object sender, EventArgs e)
+		/*private void GBABrowseFirmwares_Click(object sender, EventArgs e)
 		{
 			BrowseForBios(
 				"GBA BIOS (*.rom)|*.rom|All Files|*.*",
 				 Global.Config.PathGBABIOS, "GBA",
 				GBAFirmwaresBox);
-		}
+		}*/
 
 		private void Atari78FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
@@ -1059,14 +1061,19 @@ namespace BizHawk.MultiClient
 			BrowseFolder(Atari7800CheatsBox, Atari7800CheatsDescription.Text, "A78");
 		}
 
-		private void Atari7800BrowseFirmwares_Click(object sender, EventArgs e)
+		/*private void Atari7800BrowseFirmwares_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(Atari7800FirmwaresBox, Atari7800FirmwaresDescription.Text, "A78");
-		}
+		}*/
 
 		private void BrowseAtari7800SaveRAM_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(Atari7800SaveRAMBox, Atari7800SaveRAMsDescription.Text, "A78");
+		}
+
+		private void buttonFirmware_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(textBoxFirmware, labelFirmware.Text);
 		}
 	}
 }
