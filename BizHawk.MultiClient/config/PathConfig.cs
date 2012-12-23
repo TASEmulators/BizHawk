@@ -103,7 +103,6 @@ namespace BizHawk.MultiClient
 			PCESaveRAMBox.Text = Global.Config.PathPCESaveRAM;
 			PCEScreenshotsBox.Text = Global.Config.PathPCEScreenshots;
 			PCECheatsBox.Text = Global.Config.PathPCECheats;
-			//PCEBiosBox.Text = Global.Config.PathPCEBios;
 
 			GenesisBaseBox.Text = Global.Config.BaseGenesis;
 			GenesisROMsBox.Text = Global.Config.PathGenesisROMs;
@@ -170,6 +169,9 @@ namespace BizHawk.MultiClient
 			AVIBox.Text = Global.Config.AVIPath;
 			LogBox.Text = Global.Config.LogPath;
 			textBoxFirmware.Text = Global.Config.FirmwaresPath;
+
+			PCEBIOSBox.Text = Global.Config.FilenamePCEBios;
+			FDSBIOSBox.Text = Global.Config.FilenameFDSBios;
 
 			SetTabByPlatform();
 
@@ -261,7 +263,6 @@ namespace BizHawk.MultiClient
 			Global.Config.PathNESScreenshots = NESScreenshotsBox.Text;
 			Global.Config.PathNESCheats = NESCheatsBox.Text;
 			Global.Config.PathNESPalette = NESPaletteBox.Text;
-			//Global.Config.PathFDSBios = NESFDSBiosBox.Text;
 
 			Global.Config.BaseSNES = SNESBaseBox.Text;
 			Global.Config.PathSNESROMs = SNESROMsBox.Text;
@@ -365,7 +366,8 @@ namespace BizHawk.MultiClient
 			Global.Config.LogPath = LogBox.Text;
 			Global.Config.FirmwaresPath = textBoxFirmware.Text;
 
-			//Global.Config.PathPCEBios = PCEBiosBox.Text;
+			Global.Config.FilenamePCEBios = PCEBIOSBox.Text;
+			Global.Config.FilenameFDSBios = FDSBIOSBox.Text;
 
 			BasePathBox.Focus();
 			Global.MainForm.UpdateStatusSlots();
@@ -392,8 +394,6 @@ namespace BizHawk.MultiClient
 		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
-
-			
 
 			NESROMsBox.Enabled = !RecentForROMs.Checked;
 			NESBrowseROMs.Enabled = !RecentForROMs.Checked;
@@ -847,15 +847,6 @@ namespace BizHawk.MultiClient
 				INTVGROMBox);
 		}*/
 
-
-		/*private void PCEBrowseBios_Click(object sender, EventArgs e)
-		{
-			BrowseForBios(
-				"PCE CD BIOS (*.pce)|*.pce|All Files|*.*",
-				 Global.Config.PathPCEBios, "PCE",
-				PCEBiosBox);
-		}*/
-
 		private void BrowseMovieBackups_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(MovieBackupsBox, MovieBackupsDescription.Text);
@@ -1074,6 +1065,34 @@ namespace BizHawk.MultiClient
 		private void buttonFirmware_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(textBoxFirmware, labelFirmware.Text);
+		}
+
+		private void button2_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.Filter = "BIOS Files (*.bin)|*.bin|All Files|*.*";
+			ofd.RestoreDirectory = false;
+			DialogResult result = ofd.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				var file = new FileInfo(ofd.FileName);
+				PCEBIOSBox.Text = file.Name;
+			}
+		}
+
+		private void NESBrowseFDSBIOS_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.Filter = "FDS BIOS Files (*.rom)|*.rom|All Files|*.*";
+			ofd.RestoreDirectory = false;
+			DialogResult result = ofd.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				var file = new FileInfo(ofd.FileName);
+				FDSBIOSBox.Text = file.Name;
+			}
 		}
 	}
 }
