@@ -11,19 +11,9 @@ namespace BizHawk.MultiClient
 	{
 		public static string GetExeDirectoryAbsolute()
 		{
-			//var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
-			//string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
-			//return Path.GetDirectoryName(module);
-			//zero 21-dec-2012 - reuse code elsewhere and remove system.web dependency
-			//return Assembly.GetEntryAssembly().GetDirectory();
-
-			// no no no
-			// this must be available entirely with multiclient code, as it's used to set up the AssemblyResolve event that loads util and emulation
-			var asm = Assembly.GetEntryAssembly();
-			string codeBase = asm.CodeBase;
-			UriBuilder uri = new UriBuilder(codeBase);
-			string path = Uri.UnescapeDataString(uri.Path);
-			return Path.GetDirectoryName(path);
+			var uri = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
+			string module = uri.LocalPath + System.Web.HttpUtility.UrlDecode(uri.Fragment);
+			return Path.GetDirectoryName(module);
 		}
 
 		/// <summary>

@@ -191,7 +191,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		SNESGraphicsDecoder gd;
+		SNESGraphicsDecoder gd = new SNESGraphicsDecoder(SnesColors.ColorType.BizHawk);
 		SNESGraphicsDecoder.ScreenInfo si;
 		SNESGraphicsDecoder.TileEntry[] map;
 		byte[,] spriteMap = new byte[256, 224];
@@ -199,7 +199,6 @@ namespace BizHawk.MultiClient
 
 		void RegenerateData()
 		{
-			if (gd != null) gd.Dispose();
 			gd = null;
 			if (currentSnesCore == null) return;
 			gd = NewDecoder();
@@ -664,15 +663,14 @@ namespace BizHawk.MultiClient
 
 		SNESGraphicsDecoder NewDecoder()
 		{
-			//wtf to do? now we need an api all the time
 			if (currentSnesCore != null)
-				return new SNESGraphicsDecoder(currentSnesCore.api, currentSnesCore.CurrPalette);
-			else return new SNESGraphicsDecoder(currentSnesCore.api, SnesColors.ColorType.BizHawk);
+				return new SNESGraphicsDecoder(currentSnesCore.CurrPalette);
+			else return new SNESGraphicsDecoder(SnesColors.ColorType.BizHawk);
 		}
 
 		void RenderPalette()
 		{
-			//var gd = NewDecoder(); //??
+			var gd = NewDecoder();
 			lastPalette = gd.GetPalette();
 
 			int pixsize = paletteCellSize * 16 + paletteCellSpacing * 17;
@@ -794,7 +792,7 @@ namespace BizHawk.MultiClient
 			if (lastPalette == null) return;
 
 			int rgb555 = lastPalette[lastColorNum];
-			//var gd = NewDecoder(); //??
+			var gd = NewDecoder();
 			int color = gd.Colorize(rgb555);
 			pnDetailsPaletteColor.BackColor = Color.FromArgb(color);
 
