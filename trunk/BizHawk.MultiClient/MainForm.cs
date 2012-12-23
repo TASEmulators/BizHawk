@@ -28,7 +28,7 @@ namespace BizHawk.MultiClient
 	{
 		public bool INTERIM = true;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
-		public const string RELEASEDATE = "December 01, 2012";
+		public const string RELEASEDATE = "December 23, 2012";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
