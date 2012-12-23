@@ -1976,7 +1976,7 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "Coleco":
-								string colbiosPath = Path.Combine(Global.Config.FirmwaresPath, "ColecoBios.bin"); // PathManager.MakeAbsolutePath(Global.Config.PathCOLBios, "Coleco");
+								string colbiosPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameCOLBios);
 								FileInfo colfile = new FileInfo(colbiosPath);
 								if (!colfile.Exists)
 								{
@@ -2047,7 +2047,7 @@ namespace BizHawk.MultiClient
 							case "GBA":
 								if (INTERIM)
 								{
-									string gbabiospath = Path.Combine(Global.Config.FirmwaresPath, "gbabios.rom"); //PathManager.MakeAbsolutePath(Global.Config.PathGBABIOS, "GBA");
+									string gbabiospath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameGBABIOS);
 									byte[] gbabios = null;
 
 									if (File.Exists(gbabiospath))

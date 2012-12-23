@@ -70,6 +70,9 @@
 			this.BrowseAVI = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPageNES = new System.Windows.Forms.TabPage();
+			this.label3 = new System.Windows.Forms.Label();
+			this.NESBrowseFDSBIOS = new System.Windows.Forms.Button();
+			this.FDSBIOSBox = new System.Windows.Forms.TextBox();
 			this.NESBaseBox = new System.Windows.Forms.TextBox();
 			this.NESPaletteDescription = new System.Windows.Forms.Label();
 			this.NESBrowsePalette = new System.Windows.Forms.Button();
@@ -163,6 +166,9 @@
 			this.GenesisBrowseScreenshots = new System.Windows.Forms.Button();
 			this.GenesisROMsBox = new System.Windows.Forms.TextBox();
 			this.tabPagePCE = new System.Windows.Forms.TabPage();
+			this.button2 = new System.Windows.Forms.Button();
+			this.label2 = new System.Windows.Forms.Label();
+			this.PCEBIOSBox = new System.Windows.Forms.TextBox();
 			this.PCEBaseBox = new System.Windows.Forms.TextBox();
 			this.PCECheatsDescription = new System.Windows.Forms.Label();
 			this.PCEBrowseCheats = new System.Windows.Forms.Button();
@@ -346,12 +352,12 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.PCEBIOSBox = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.button2 = new System.Windows.Forms.Button();
-			this.FDSBIOSBox = new System.Windows.Forms.TextBox();
-			this.NESBrowseFDSBIOS = new System.Windows.Forms.Button();
-			this.label3 = new System.Windows.Forms.Label();
+			this.ColecoBIOSBox = new System.Windows.Forms.TextBox();
+			this.button3 = new System.Windows.Forms.Button();
+			this.label4 = new System.Windows.Forms.Label();
+			this.GBABIOSBox = new System.Windows.Forms.TextBox();
+			this.button4 = new System.Windows.Forms.Button();
+			this.label5 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPageNES.SuspendLayout();
 			this.tabPageSNES.SuspendLayout();
@@ -817,6 +823,37 @@
 			this.tabPageNES.TabIndex = 0;
 			this.tabPageNES.Text = "NES";
 			this.tabPageNES.UseVisualStyleBackColor = true;
+			// 
+			// label3
+			// 
+			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(474, 242);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(56, 13);
+			this.label3.TabIndex = 29;
+			this.label3.Text = "FDS BIOS";
+			// 
+			// NESBrowseFDSBIOS
+			// 
+			this.NESBrowseFDSBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.NESBrowseFDSBIOS.Image = ((System.Drawing.Image)(resources.GetObject("NESBrowseFDSBIOS.Image")));
+			this.NESBrowseFDSBIOS.Location = new System.Drawing.Point(442, 239);
+			this.NESBrowseFDSBIOS.Name = "NESBrowseFDSBIOS";
+			this.NESBrowseFDSBIOS.Size = new System.Drawing.Size(26, 23);
+			this.NESBrowseFDSBIOS.TabIndex = 28;
+			this.NESBrowseFDSBIOS.UseVisualStyleBackColor = true;
+			this.NESBrowseFDSBIOS.Click += new System.EventHandler(this.NESBrowseFDSBIOS_Click);
+			// 
+			// FDSBIOSBox
+			// 
+			this.FDSBIOSBox.AcceptsTab = true;
+			this.FDSBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.FDSBIOSBox.Location = new System.Drawing.Point(13, 239);
+			this.FDSBIOSBox.Name = "FDSBIOSBox";
+			this.FDSBIOSBox.Size = new System.Drawing.Size(421, 20);
+			this.FDSBIOSBox.TabIndex = 27;
 			// 
 			// NESBaseBox
 			// 
@@ -1858,6 +1895,36 @@
 			this.tabPagePCE.Text = "PC Engine";
 			this.tabPagePCE.UseVisualStyleBackColor = true;
 			// 
+			// button2
+			// 
+			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
+			this.button2.Location = new System.Drawing.Point(442, 209);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(26, 23);
+			this.button2.TabIndex = 91;
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
+			// 
+			// label2
+			// 
+			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(474, 213);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(32, 13);
+			this.label2.TabIndex = 90;
+			this.label2.Text = "BIOS";
+			// 
+			// PCEBIOSBox
+			// 
+			this.PCEBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.PCEBIOSBox.Location = new System.Drawing.Point(12, 209);
+			this.PCEBIOSBox.Name = "PCEBIOSBox";
+			this.PCEBIOSBox.Size = new System.Drawing.Size(421, 20);
+			this.PCEBIOSBox.TabIndex = 89;
+			// 
 			// PCEBaseBox
 			// 
 			this.PCEBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -2283,6 +2350,9 @@
 			// 
 			// tabPageGBA
 			// 
+			this.tabPageGBA.Controls.Add(this.label5);
+			this.tabPageGBA.Controls.Add(this.button4);
+			this.tabPageGBA.Controls.Add(this.GBABIOSBox);
 			this.tabPageGBA.Controls.Add(this.GBABaseBox);
 			this.tabPageGBA.Controls.Add(this.GBACheatsDescription);
 			this.tabPageGBA.Controls.Add(this.GBABrowseCheats);
@@ -3292,6 +3362,9 @@
 			// 
 			// tabPageColeco
 			// 
+			this.tabPageColeco.Controls.Add(this.label4);
+			this.tabPageColeco.Controls.Add(this.button3);
+			this.tabPageColeco.Controls.Add(this.ColecoBIOSBox);
 			this.tabPageColeco.Controls.Add(this.COLBaseBox);
 			this.tabPageColeco.Controls.Add(this.COLCheatsDescription);
 			this.tabPageColeco.Controls.Add(this.COLBrowseCheats);
@@ -3835,66 +3908,65 @@
 			this.label1.TabIndex = 204;
 			this.label1.Text = "Special Commands";
 			// 
-			// PCEBIOSBox
+			// ColecoBIOSBox
 			// 
-			this.PCEBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.ColecoBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.PCEBIOSBox.Location = new System.Drawing.Point(12, 209);
-			this.PCEBIOSBox.Name = "PCEBIOSBox";
-			this.PCEBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.PCEBIOSBox.TabIndex = 89;
+			this.ColecoBIOSBox.Location = new System.Drawing.Point(13, 179);
+			this.ColecoBIOSBox.Name = "ColecoBIOSBox";
+			this.ColecoBIOSBox.Size = new System.Drawing.Size(421, 20);
+			this.ColecoBIOSBox.TabIndex = 110;
 			// 
-			// label2
+			// button3
 			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(474, 213);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(32, 13);
-			this.label2.TabIndex = 90;
-			this.label2.Text = "BIOS";
+			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button3.Image = ((System.Drawing.Image)(resources.GetObject("button3.Image")));
+			this.button3.Location = new System.Drawing.Point(442, 179);
+			this.button3.Name = "button3";
+			this.button3.Size = new System.Drawing.Size(26, 23);
+			this.button3.TabIndex = 111;
+			this.button3.UseVisualStyleBackColor = true;
+			this.button3.Click += new System.EventHandler(this.button3_Click);
 			// 
-			// button2
+			// label4
 			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
-			this.button2.Location = new System.Drawing.Point(442, 209);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(26, 23);
-			this.button2.TabIndex = 91;
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click);
+			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(474, 183);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(32, 13);
+			this.label4.TabIndex = 112;
+			this.label4.Text = "BIOS";
 			// 
-			// FDSBIOSBox
+			// GBABIOSBox
 			// 
-			this.FDSBIOSBox.AcceptsTab = true;
-			this.FDSBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.GBABIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.FDSBIOSBox.Location = new System.Drawing.Point(13, 239);
-			this.FDSBIOSBox.Name = "FDSBIOSBox";
-			this.FDSBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.FDSBIOSBox.TabIndex = 27;
+			this.GBABIOSBox.Location = new System.Drawing.Point(13, 209);
+			this.GBABIOSBox.Name = "GBABIOSBox";
+			this.GBABIOSBox.Size = new System.Drawing.Size(421, 20);
+			this.GBABIOSBox.TabIndex = 123;
 			// 
-			// NESBrowseFDSBIOS
+			// button4
 			// 
-			this.NESBrowseFDSBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.NESBrowseFDSBIOS.Image = ((System.Drawing.Image)(resources.GetObject("NESBrowseFDSBIOS.Image")));
-			this.NESBrowseFDSBIOS.Location = new System.Drawing.Point(442, 239);
-			this.NESBrowseFDSBIOS.Name = "NESBrowseFDSBIOS";
-			this.NESBrowseFDSBIOS.Size = new System.Drawing.Size(26, 23);
-			this.NESBrowseFDSBIOS.TabIndex = 28;
-			this.NESBrowseFDSBIOS.UseVisualStyleBackColor = true;
-			this.NESBrowseFDSBIOS.Click += new System.EventHandler(this.NESBrowseFDSBIOS_Click);
+			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
+			this.button4.Location = new System.Drawing.Point(440, 209);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(26, 23);
+			this.button4.TabIndex = 124;
+			this.button4.UseVisualStyleBackColor = true;
+			this.button4.Click += new System.EventHandler(this.button4_Click);
 			// 
-			// label3
+			// label5
 			// 
-			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(474, 242);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(56, 13);
-			this.label3.TabIndex = 29;
-			this.label3.Text = "FDS BIOS";
+			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(474, 213);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(32, 13);
+			this.label5.TabIndex = 125;
+			this.label5.Text = "BIOS";
 			// 
 			// PathConfig
 			// 
@@ -4280,5 +4352,11 @@
 		private System.Windows.Forms.TextBox FDSBIOSBox;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button NESBrowseFDSBIOS;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Button button3;
+		private System.Windows.Forms.TextBox ColecoBIOSBox;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Button button4;
+		private System.Windows.Forms.TextBox GBABIOSBox;
     }
 }

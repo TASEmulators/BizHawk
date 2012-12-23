@@ -125,7 +125,6 @@ namespace BizHawk.MultiClient
 			GBASaveRAMBox.Text = Global.Config.PathGBASaveRAM;
 			GBAScreenshotsBox.Text = Global.Config.PathGBAScreenshots;
 			GBACheatsBox.Text = Global.Config.PathGBACheats;
-			//GBAFirmwaresBox.Text = Global.Config.PathGBABIOS;
 
 			TI83BaseBox.Text = Global.Config.BaseTI83;
 			TI83ROMsBox.Text = Global.Config.PathTI83ROMs;
@@ -160,7 +159,6 @@ namespace BizHawk.MultiClient
 			COLSavestatesBox.Text = Global.Config.PathCOLSavestates;
 			COLScreenshotsBox.Text = Global.Config.PathCOLScreenshots;
 			COLCheatsBox.Text = Global.Config.PathCOLCheats;
-			//COLBiosBox.Text = Global.Config.PathCOLBios;
 
 			MoviesBox.Text = Global.Config.MoviesPath;
 			MovieBackupsBox.Text = Global.Config.MoviesBackupPath;
@@ -172,6 +170,8 @@ namespace BizHawk.MultiClient
 
 			PCEBIOSBox.Text = Global.Config.FilenamePCEBios;
 			FDSBIOSBox.Text = Global.Config.FilenameFDSBios;
+			ColecoBIOSBox.Text = Global.Config.FilenameCOLBios;
+			GBABIOSBox.Text = Global.Config.FilenameGBABIOS;
 
 			SetTabByPlatform();
 
@@ -321,7 +321,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathGBASaveRAM = GBASaveRAMBox.Text;
 			Global.Config.PathGBAScreenshots = GBAScreenshotsBox.Text;
 			Global.Config.PathGBACheats = GBACheatsBox.Text;
-			//Global.Config.PathGBABIOS = GBAFirmwaresBox.Text;
+			Global.Config.FilenameGBABIOS = GBABIOSBox.Text;
 
 			Global.Config.BaseTI83 = TI83BaseBox.Text;
 			Global.Config.PathTI83ROMs = TI83ROMsBox.Text;
@@ -356,7 +356,6 @@ namespace BizHawk.MultiClient
 			Global.Config.PathCOLSavestates = COLSavestatesBox.Text;
 			Global.Config.PathCOLScreenshots = COLScreenshotsBox.Text;
 			Global.Config.PathCOLCheats = COLCheatsBox.Text;
-			//Global.Config.PathCOLBios = COLBiosBox.Text;
 
 			Global.Config.MoviesPath = MoviesBox.Text;
 			Global.Config.MoviesBackupPath = MovieBackupsBox.Text;
@@ -368,6 +367,8 @@ namespace BizHawk.MultiClient
 
 			Global.Config.FilenamePCEBios = PCEBIOSBox.Text;
 			Global.Config.FilenameFDSBios = FDSBIOSBox.Text;
+			Global.Config.FilenameCOLBios = ColecoBIOSBox.Text;
+			Global.Config.FilenameGBABIOS = GBABIOSBox.Text;
 
 			BasePathBox.Focus();
 			Global.MainForm.UpdateStatusSlots();
@@ -1071,7 +1072,7 @@ namespace BizHawk.MultiClient
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
-			ofd.Filter = "BIOS Files (*.bin)|*.bin|All Files|*.*";
+			ofd.Filter = "Binary Files (*.rom,*.bin,*.pce)|*.rom;*.bin;*.pce|All Files|*.*";
 			ofd.RestoreDirectory = false;
 			DialogResult result = ofd.ShowDialog();
 			if (result == DialogResult.OK)
@@ -1085,13 +1086,41 @@ namespace BizHawk.MultiClient
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
-			ofd.Filter = "FDS BIOS Files (*.rom)|*.rom|All Files|*.*";
+			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
 			ofd.RestoreDirectory = false;
 			DialogResult result = ofd.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 				var file = new FileInfo(ofd.FileName);
 				FDSBIOSBox.Text = file.Name;
+			}
+		}
+
+		private void button3_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
+			ofd.RestoreDirectory = false;
+			DialogResult result = ofd.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				var file = new FileInfo(ofd.FileName);
+				ColecoBIOSBox.Text = file.Name;
+			}
+		}
+
+		private void button4_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
+			ofd.RestoreDirectory = false;
+			DialogResult result = ofd.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				var file = new FileInfo(ofd.FileName);
+				GBABIOSBox.Text = file.Name;
 			}
 		}
 	}
