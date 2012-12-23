@@ -109,6 +109,7 @@ namespace BizHawk.MultiClient
 			syncsoundProvider = null;
 			asyncsoundProvider = source;
 			semisync.BaseSoundProvider = source;
+			semisync.RecalculateMagic(Global.CoreComm.VsyncRate);
 		}
 
 		static int circularDist(int from, int to, int size)
