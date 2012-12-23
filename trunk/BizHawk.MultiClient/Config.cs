@@ -216,9 +216,8 @@ namespace BizHawk.MultiClient
 		//BIOS Paths
 		public string FilenamePCEBios = "[BIOS] Super CD-ROM System (Japan) (v3.0).pce";
 		public string FilenameFDSBios = "disksys.rom";
-		//public string PathGBABIOS = Path.Combine(".", "gbabios.rom");
-		
-		//public string PathCOLBios = Path.Combine(".", "ColecoBios.bin");
+		public string FilenameGBABIOS = "gbabios.rom";
+		public string FilenameCOLBios = "ColecoBios.bin";
 		//public string PathINTVGROM = Path.Combine(".", "grom.bin");
 		//public string PathINTVEROM = Path.Combine(".", "erom.bin");
 
