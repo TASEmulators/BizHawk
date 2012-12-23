@@ -167,6 +167,7 @@ namespace BizHawk.MultiClient
 			AVIBox.Text = Global.Config.AVIPath;
 			LogBox.Text = Global.Config.LogPath;
 			textBoxFirmware.Text = Global.Config.FirmwaresPath;
+			BaseROMSBox.Text = Global.Config.BaseROMPath;
 
 			PCEBIOSBox.Text = Global.Config.FilenamePCEBios;
 			FDSBIOSBox.Text = Global.Config.FilenameFDSBios;
@@ -364,6 +365,7 @@ namespace BizHawk.MultiClient
 			Global.Config.AVIPath = AVIBox.Text;
 			Global.Config.LogPath = LogBox.Text;
 			Global.Config.FirmwaresPath = textBoxFirmware.Text;
+			Global.Config.BaseROMPath = BaseROMSBox.Text;
 
 			Global.Config.FilenamePCEBios = PCEBIOSBox.Text;
 			Global.Config.FilenameFDSBios = FDSBIOSBox.Text;
@@ -455,6 +457,10 @@ namespace BizHawk.MultiClient
 			INTVRomsBox.Enabled = !RecentForROMs.Checked;
 			INTVBrowseROMs.Enabled = !RecentForROMs.Checked;
 			INTVROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			BaseROMSBox.Enabled = !RecentForROMs.Checked;
+			BrowseBaseROM.Enabled = !RecentForROMs.Checked;
+			BaseROMLabel.Enabled = !RecentForROMs.Checked;
 		}
 
 		private void BrowseFolder(TextBox box, string Name)
@@ -1122,6 +1128,11 @@ namespace BizHawk.MultiClient
 				var file = new FileInfo(ofd.FileName);
 				GBABIOSBox.Text = file.Name;
 			}
+		}
+
+		private void BrowseBaseROM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(BaseROMSBox, BaseROMLabel.Text, "");
 		}
 	}
 }
