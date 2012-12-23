@@ -287,7 +287,7 @@ namespace BizHawk.MultiClient
 					path = PathManager.MakeAbsolutePath(Global.Config.PathCOLROMs, "Coleco");
 					break;
 				default:
-					path = PathManager.GetBasePathAbsolute();
+					path = PathManager.MakeAbsolutePath(Global.Config.BaseROMPath, "");
 					break;
 			}
 

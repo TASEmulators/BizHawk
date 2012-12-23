@@ -89,6 +89,7 @@ namespace BizHawk.MultiClient
 		public bool UseRecentForROMs = false;
 		public string LastRomPath = ".";
 		public string BasePath = ".";
+		public string BaseROMPath = ".";
 
 		public string BaseINTV = Path.Combine(".", "Intellivision");
 		public string PathINTVROMs = ".";
@@ -218,8 +219,8 @@ namespace BizHawk.MultiClient
 		public string FilenameFDSBios = "disksys.rom";
 		public string FilenameGBABIOS = "gbabios.rom";
 		public string FilenameCOLBios = "ColecoBios.bin";
-		//public string PathINTVGROM = Path.Combine(".", "grom.bin");
-		//public string PathINTVEROM = Path.Combine(".", "erom.bin");
+		public string FilenameINTVGROM = "grom.bin";
+		public string FilenameINTVEROM = "erom.bin";
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 

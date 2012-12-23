@@ -1992,11 +1992,11 @@ namespace BizHawk.MultiClient
 							case "INTV":
 								{
 									Intellivision intv = new Intellivision(nextComm, game, rom.RomData);
-									string eromPath = Path.Combine(Global.Config.FirmwaresPath, "EROM"); //PathManager.MakeAbsolutePath(Global.Config.PathINTVEROM, "INTV");
+									string eromPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameINTVEROM);
 									if (!File.Exists(eromPath))
 										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
 									intv.LoadExecutiveRom(eromPath);
-									string gromPath = Path.Combine(Global.Config.FirmwaresPath, "GROM"); //PathManager.MakeAbsolutePath(Global.Config.PathINTVGROM, "INTV");
+									string gromPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameINTVGROM);
 									if (!File.Exists(gromPath))
 										throw new InvalidOperationException("Specified GROM path does not exist:\n\n" + gromPath);
 									intv.LoadGraphicsRom(gromPath);

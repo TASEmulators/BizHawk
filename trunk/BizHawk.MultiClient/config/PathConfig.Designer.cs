@@ -358,6 +358,9 @@
 			this.GBABIOSBox = new System.Windows.Forms.TextBox();
 			this.button4 = new System.Windows.Forms.Button();
 			this.label5 = new System.Windows.Forms.Label();
+			this.BaseROMSBox = new System.Windows.Forms.TextBox();
+			this.BrowseBaseROM = new System.Windows.Forms.Button();
+			this.BaseROMLabel = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPageNES.SuspendLayout();
 			this.tabPageSNES.SuspendLayout();
@@ -3716,6 +3719,9 @@
 			// 
 			// tabPageTools
 			// 
+			this.tabPageTools.Controls.Add(this.BaseROMLabel);
+			this.tabPageTools.Controls.Add(this.BrowseBaseROM);
+			this.tabPageTools.Controls.Add(this.BaseROMSBox);
 			this.tabPageTools.Controls.Add(this.labelFirmware);
 			this.tabPageTools.Controls.Add(this.buttonFirmware);
 			this.tabPageTools.Controls.Add(this.textBoxFirmware);
@@ -3967,6 +3973,37 @@
 			this.label5.Size = new System.Drawing.Size(32, 13);
 			this.label5.TabIndex = 125;
 			this.label5.Text = "BIOS";
+			// 
+			// BaseROMSBox
+			// 
+			this.BaseROMSBox.AcceptsReturn = true;
+			this.BaseROMSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BaseROMSBox.Location = new System.Drawing.Point(12, 231);
+			this.BaseROMSBox.Name = "BaseROMSBox";
+			this.BaseROMSBox.Size = new System.Drawing.Size(421, 20);
+			this.BaseROMSBox.TabIndex = 152;
+			// 
+			// BrowseBaseROM
+			// 
+			this.BrowseBaseROM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseBaseROM.Image = ((System.Drawing.Image)(resources.GetObject("BrowseBaseROM.Image")));
+			this.BrowseBaseROM.Location = new System.Drawing.Point(442, 231);
+			this.BrowseBaseROM.Name = "BrowseBaseROM";
+			this.BrowseBaseROM.Size = new System.Drawing.Size(26, 23);
+			this.BrowseBaseROM.TabIndex = 153;
+			this.BrowseBaseROM.UseVisualStyleBackColor = true;
+			this.BrowseBaseROM.Click += new System.EventHandler(this.BrowseBaseROM_Click);
+			// 
+			// BaseROMLabel
+			// 
+			this.BaseROMLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BaseROMLabel.AutoSize = true;
+			this.BaseROMLabel.Location = new System.Drawing.Point(474, 235);
+			this.BaseROMLabel.Name = "BaseROMLabel";
+			this.BaseROMLabel.Size = new System.Drawing.Size(59, 13);
+			this.BaseROMLabel.TabIndex = 154;
+			this.BaseROMLabel.Text = "Base ROM";
 			// 
 			// PathConfig
 			// 
@@ -4358,5 +4395,8 @@
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.TextBox GBABIOSBox;
+		private System.Windows.Forms.TextBox BaseROMSBox;
+		private System.Windows.Forms.Label BaseROMLabel;
+		private System.Windows.Forms.Button BrowseBaseROM;
     }
 }
