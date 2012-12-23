@@ -181,7 +181,6 @@ namespace BizHawk.MultiClient
 				tabControl1.Controls.Remove(tabPageIntellivision);
 				tabControl1.Controls.Remove(tabPageC64);
 				tabControl1.Controls.Remove(tabPageGBA);
-				tabControl1.Controls.Remove(tabPageAtari7800);
 			}
 		}
 
