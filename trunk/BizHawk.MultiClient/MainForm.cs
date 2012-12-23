@@ -1797,7 +1797,7 @@ namespace BizHawk.MultiClient
 							case "PCE":
 							case "PCECD":
 								{
-									string biosPath = Path.Combine(Global.Config.FirmwaresPath, "[BIOS] Super CD-ROM System (Japan) (v3.0).pce"); //PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
+									string biosPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenamePCEBios); //PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
 									if (File.Exists(biosPath) == false)
 									{
 										MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
@@ -1883,7 +1883,7 @@ namespace BizHawk.MultiClient
 								break;
 							case "NES":
 								{
-									string biosPath = Path.Combine(Global.Config.FirmwaresPath, "disksys.rom"); //PathManager.MakeAbsolutePath(Global.Config.PathFDSBios, "NES");
+									string biosPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameFDSBios);
 									byte[] bios = null;
 									if (File.Exists(biosPath))
 									{
