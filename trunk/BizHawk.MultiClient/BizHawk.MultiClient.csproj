@@ -83,6 +83,7 @@
     </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>

@@ -12,14 +12,6 @@ namespace BizHawk
 {
 	public static class Extensions
 	{
-		public static string GetDirectory(this Assembly asm)
-		{
-			string codeBase = asm.CodeBase;
-			UriBuilder uri = new UriBuilder(codeBase);
-			string path = Uri.UnescapeDataString(uri.Path);
-			return Path.GetDirectoryName(path);
-		}
-
 		public static int LowerBoundBinarySearch<T, TKey>(this IList<T> list, Func<T, TKey> keySelector, TKey key) where TKey : IComparable<TKey>
 		{
 			int min = 0;
@@ -497,18 +489,6 @@ namespace BizHawk
 			for (int b = 0; b < bytes; b++)
 				read[b] = r.ReadByte();
 			return System.Text.Encoding.UTF8.GetString(read);
-		}
-
-		public static string ReadStringAsciiZ(this BinaryReader r)
-		{
-			StringBuilder sb = new StringBuilder();
-			for(;;)
-			{
-				int b = r.ReadByte();
-				if(b <= 0) break;
-				sb.Append((char)b);
-			}
-			return sb.ToString();
 		}
 
 		/// <summary>
