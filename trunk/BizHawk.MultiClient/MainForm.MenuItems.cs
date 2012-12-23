@@ -1032,6 +1032,7 @@ namespace BizHawk.MultiClient
 				cmiScreenshotClipboard.Visible = false;
 				cmiCloseRom.Visible = false;
 				cmiShowMenu.Visible = false;
+				saveMovieToolStripMenuItem1.Visible = false;
 			}
 			else
 			{

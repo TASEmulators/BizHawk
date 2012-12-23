@@ -379,7 +379,10 @@ namespace BizHawk.MultiClient
 				BigEndian = false;
 			maxRow = Domain.Size / 2;
 			SetUpScrollBar();
-			vScrollBar1.Value = 0;
+			if (0 >= vScrollBar1.Minimum &&  0 <= vScrollBar1.Maximum)
+			{
+				vScrollBar1.Value = 0;
+			}
 			Refresh();
 		}
 
