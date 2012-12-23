@@ -34,9 +34,19 @@ namespace BizHawk.Emulation.Sound
 
         Queue<short> buffer = new Queue<short>(4096);
 
-        const int SamplesInOneFrame = 1470;
-        const int TargetExtraSamples = 882;
+        int SamplesInOneFrame = 1470;
+        int TargetExtraSamples = 882;
         const int MaxExcessSamples = 4096;
+
+		/// <summary>
+		/// recalculates some internal parameters based on the IEmulator's framerate
+		/// </summary>
+		public void RecalculateMagic(double framerate)
+		{
+			// ceiling instead of floor here is very important (magic)
+			SamplesInOneFrame = (int)System.Math.Ceiling((88200.0 / framerate));
+			//TargetExtraSamples = ;// complete guess
+		}
 
 		public void DiscardSamples()
 		{
