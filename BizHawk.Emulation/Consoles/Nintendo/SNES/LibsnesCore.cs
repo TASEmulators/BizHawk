@@ -516,7 +516,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				CoreComm.VsyncDen = 1;
 			}
 
-			CoreComm.CpuTraceAvailable = true;
+			CoreComm.CpuTraceAvailable = false;
 
 			LibsnesDll.snes_power();
 
