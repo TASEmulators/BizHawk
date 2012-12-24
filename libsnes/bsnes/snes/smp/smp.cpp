@@ -47,8 +47,12 @@ void SMP::Enter() { smp.enter(); }
 void SMP::enter() {
   while(true) {
     // see comment in timing.cpp
-    if(clock > +(768 * 24 * (int64)24000000)) synchronize_cpu();
+    if(clock > +(768 * 24 * (int64)24000000))
+      synchronize_cpu();
 
+    if(scheduler.sync == Scheduler::SynchronizeMode::CPU) {
+      synchronize_cpu(); // when in CPU sync mode, always switch back to CPU as soon as possible
+    }
     if(scheduler.sync == Scheduler::SynchronizeMode::All) {
       scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
