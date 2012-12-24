@@ -5,11 +5,21 @@ void SMP::add_clocks(unsigned clocks) {
   synchronize_dsp();
 
   #if defined(DEBUGGER)
+  #error -DDEBUGGER SMP runtosave() correctness not checked
   synchronize_cpu();
   #else
   //forcefully sync S-SMP to S-CPU in case chips are not communicating
   //sync if S-SMP is more than 24 samples ahead of S-CPU
-  if(clock > +(768 * 24 * (int64)24000000)) synchronize_cpu();
+/*
+our new smp design guarantees that there is at most one required synchronize_cpu() per uop,
+inside an op_busread() or op_buswrite().  this extra synchronize can cause problems if we
+swap out of the SMP at the beginning of a uop with an add_clocks() call when there is an
+important op_busread() / op_buswrite() later on.  the SMP will need to finish that uop in
+order to reach a savable state, but it might never get to do so until it's too late (ie,
+scheduler.sync == Scheduler.SynchronizeMode::All).  so we remove this call and instead
+do catchup sync in the main Enter() loop.
+*/
+  //if(clock > +(768 * 24 * (int64)24000000)) synchronize_cpu();
   #endif
 }
 

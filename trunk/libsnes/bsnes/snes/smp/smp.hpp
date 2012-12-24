@@ -5,6 +5,7 @@ struct SMP : public Processor, public SMPcore {
   enum : bool { Threaded = true };
   alwaysinline void step(unsigned clocks);
   alwaysinline void synchronize_cpu();
+  alwaysinline void synchronize_cpu_force();
   alwaysinline void synchronize_dsp();
 
   uint8 port_read(uint2 port) const;
