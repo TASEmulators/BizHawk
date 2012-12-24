@@ -12,6 +12,8 @@ public:
   #include "mmio/mmio.hpp"
   #include "render/render.hpp"
 
+  int uindex;
+
   uint32 *surface;
   uint32 *output;
 
@@ -59,6 +61,10 @@ public:
   void render_scanline();
   void frame();
   void enter();
+  void enter1();
+  void enter2();
+  void enter3();
+  void enter4();
   void enable();
   void power();
   void reset();
