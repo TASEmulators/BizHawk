@@ -14,7 +14,8 @@ struct Interface : public SNES::Interface {
   snes_input_poll_t pinput_poll;
   snes_input_state_t pinput_state;
   snes_input_notify_t pinput_notify;
-	snes_path_request_t ppath_request;
+  snes_path_request_t ppath_request;
+  snes_trace_t ptrace;
   string basename;
   uint32_t *buffer;
   uint32_t *palette;
@@ -74,6 +75,11 @@ struct Interface : public SNES::Interface {
   void message(const string &text) {
 		messages.push(text);
   }
+  
+  void cpuTrace(const char *msg) {
+    if (ptrace)
+	  ptrace((const char *)msg);
+  }
 
   string path(SNES::Cartridge::Slot slot, const string &hint)
 	{
@@ -93,7 +99,8 @@ struct Interface : public SNES::Interface {
 			pinput_state(0), 
 			pinput_notify(0), 
 			ppath_request(0),
-			backdropColor(-1)
+			backdropColor(-1),
+			ptrace(0)
 	{
     buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
@@ -371,6 +378,29 @@ int snes_peek_logical_register(int reg)
 	case SNES_REG_TS_BG3: return SNES::ppu.regs.bgsub_enabled[2];
 	case SNES_REG_TS_BG4: return SNES::ppu.regs.bgsub_enabled[3];
 	case SNES_REG_TS_OBJ: return SNES::ppu.regs.bgsub_enabled[4];
+		//Mode7 regs
+	case SNES_REG_M7SEL_REPEAT: return SNES::ppu.regs.mode7_repeat;
+	case SNES_REG_M7SEL_HFLIP: return SNES::ppu.regs.mode7_vflip;
+	case SNES_REG_M7SEL_VFLIP: return SNES::ppu.regs.mode7_hflip;
+	case SNES_REG_M7A: return SNES::ppu.regs.m7a;
+	case SNES_REG_M7B: return SNES::ppu.regs.m7b;
+	case SNES_REG_M7C: return SNES::ppu.regs.m7c;
+	case SNES_REG_M7D: return SNES::ppu.regs.m7d;
+	case SNES_REG_M7X: return SNES::ppu.regs.m7x;
+	case SNES_REG_M7Y: return SNES::ppu.regs.m7y;
+		//BG scroll regs
+	case SNES_REG_BG1HOFS: return SNES::ppu.regs.bg_hofs[0] & 0x3FF;
+	case SNES_REG_BG1VOFS: return SNES::ppu.regs.bg_vofs[0] & 0x3FF;
+	case SNES_REG_BG2HOFS: return SNES::ppu.regs.bg_hofs[1] & 0x3FF;
+	case SNES_REG_BG2VOFS: return SNES::ppu.regs.bg_vofs[1] & 0x3FF;
+	case SNES_REG_BG3HOFS: return SNES::ppu.regs.bg_hofs[2] & 0x3FF;
+	case SNES_REG_BG3VOFS: return SNES::ppu.regs.bg_vofs[2] & 0x3FF;
+	case SNES_REG_BG4HOFS: return SNES::ppu.regs.bg_hofs[3] & 0x3FF;
+	case SNES_REG_BG4VOFS: return SNES::ppu.regs.bg_vofs[3] & 0x3FF;
+	case SNES_REG_M7HOFS: return SNES::ppu.regs.m7_hofs & 0x1FFF; //rememebr to make these signed with <<19>>19
+	case SNES_REG_M7VOFS: return SNES::ppu.regs.m7_vofs & 0x1FFF; //rememebr to make these signed with <<19>>19
+		
+
 	}
 	return 0;
 }
@@ -582,4 +612,18 @@ void snes_dequeue_message(char* buffer)
 void snes_set_backdropColor(int color)
 {
 	interface.backdropColor = color;
+}
+
+void snes_set_trace_callback(snes_trace_t callback)
+{
+  if (callback)
+  {
+    interface.wanttrace = true;
+	interface.ptrace = callback;
+  }
+  else
+  {
+    interface.wanttrace = false;
+	interface.ptrace = 0;
+  }
 }

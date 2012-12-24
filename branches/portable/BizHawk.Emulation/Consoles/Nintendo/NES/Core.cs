@@ -34,6 +34,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool vs_io = false;
 		bool vs_coin1;
 		bool vs_coin2;
+		/// <summary>clock speed of the main cpu in hz</summary>
+		public int cpuclockrate { get; private set; }
 
 		//irq state management
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; } }
@@ -62,56 +64,84 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		class MagicSoundProvider : ISoundProvider, IDisposable
+		class MagicSoundProvider : ISoundProvider, ISyncSoundProvider, IDisposable
 		{
-			Sound.Utilities.SpeexResampler resampler;
-			ISoundProvider output;
+			Sound.Utilities.BlipBuffer blip;
 			NES nes;
+
+			const int blipbuffsize = 4096;
 
 			public MagicSoundProvider(NES nes, uint infreq)
 			{
 				this.nes = nes;
-				var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
+
+				blip = new Sound.Utilities.BlipBuffer(blipbuffsize);
+				blip.SetRates(infreq, 44100);
+
+				//var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
 				//1.789773mhz NTSC
-				resampler = new Sound.Utilities.SpeexResampler(2, infreq, 44100 * APU.DECIMATIONFACTOR, infreq, 44100, actualMetaspu.buffer.enqueue_samples);
-				output = new Sound.Utilities.DCFilter(actualMetaspu);
+				//resampler = new Sound.Utilities.SpeexResampler(2, infreq, 44100 * APU.DECIMATIONFACTOR, infreq, 44100, actualMetaspu.buffer.enqueue_samples);
+				//output = new Sound.Utilities.DCFilter(actualMetaspu);
 			}
 
-			Random r = new Random();
 			public void GetSamples(short[] samples)
 			{
-				if (nes.apu.squeue.Count == 0)
-					return;
-				var monosampbuf = nes.apu.squeue.ToArray(2);
-				nes.apu.squeue.Clear();
-				if (monosampbuf.Length > 0)
-				{
-					var stereosampbuf = new short[monosampbuf.Length * 2];
-					for (int i = 0; i < monosampbuf.Length; i++)
-					{
-						stereosampbuf[i * 2 + 0] = monosampbuf[i];
-						stereosampbuf[i * 2 + 1] = monosampbuf[i];
-					}
-					resampler.EnqueueSamples(stereosampbuf, monosampbuf.Length);
-					resampler.Flush();
-					output.GetSamples(samples);
-				}
+				//Console.WriteLine("Sync: {0}", nes.apu.dlist.Count);
+				int nsamp = samples.Length / 2;
+				if (nsamp > blipbuffsize) // oh well.
+					nsamp = blipbuffsize;
+				uint targetclock = (uint)blip.ClocksNeeded(nsamp);
+				uint actualclock = nes.apu.sampleclock;
+				foreach (var d in nes.apu.dlist)
+					blip.AddDelta(d.time * targetclock / actualclock, d.value);
+				nes.apu.dlist.Clear();
+				blip.EndFrame(targetclock);
+				nes.apu.sampleclock = 0;
+
+				blip.ReadSamples(samples, nsamp, true);
+				// duplicate to stereo
+				for (int i = 0; i < nsamp * 2; i += 2)
+					samples[i + 1] = samples[i];
 
 				//mix in the cart's extra sound circuit
 				nes.board.ApplyCustomAudio(samples);
 			}
 
+			public void GetSamples(out short[] samples, out int nsamp)
+			{
+				//Console.WriteLine("ASync: {0}", nes.apu.dlist.Count);
+				foreach (var d in nes.apu.dlist)
+					blip.AddDelta(d.time, d.value);
+				nes.apu.dlist.Clear();
+				blip.EndFrame(nes.apu.sampleclock);
+				nes.apu.sampleclock = 0;
+
+				nsamp = blip.SamplesAvailable();
+				samples = new short[nsamp * 2];
+
+				blip.ReadSamples(samples, nsamp, true);
+				// duplicate to stereo
+				for (int i = 0; i < nsamp * 2; i += 2)
+					samples[i + 1] = samples[i];
+
+				nes.board.ApplyCustomAudio(samples);
+			}
+
 			public void DiscardSamples()
 			{
-				output.DiscardSamples();
+				nes.apu.dlist.Clear();
+				nes.apu.sampleclock = 0;
 			}
 
 			public int MaxVolume { get; set; }
 
 			public void Dispose()
 			{
-				resampler.Dispose();
-				resampler = null;
+				if (blip != null)
+				{
+					blip.Dispose();
+					blip = null;
+				}
 			}
 		}
 		MagicSoundProvider magicSoundProvider;
@@ -124,9 +154,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory, (h) => DisposeList.Add(h));
 			cpu.FetchCallback = () =>
 				{
-					if (CoreInputComm.Tracer.Enabled)
+					if (CoreComm.Tracer.Enabled)
 					{
-						CoreInputComm.Tracer.Put(cpu.TraceState());
+						CoreComm.Tracer.Put(cpu.TraceState());
 					}
 				};
 			cpu.BCD_Enabled = false;
@@ -137,12 +167,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ports[0] = new JoypadPortDevice(this, 0);
 			ports[1] = new JoypadPortDevice(this, 1);
 
-			BoardSystemHardReset();
-
-			apu = new APU(this, apu);
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
-
 
 			// set up region
 			switch (cart.system)
@@ -150,37 +176,37 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-PAL":
 				case "NES-PAL-A":
 				case "NES-PAL-B":
+					apu = new APU(this, apu, true);
 					ppu.region = PPU.Region.PAL;
-					CoreOutputComm.VsyncNum = 50;
-					CoreOutputComm.VsyncDen = 1;
+					CoreComm.VsyncNum = 50;
+					CoreComm.VsyncDen = 1;
+					cpuclockrate = 1662607;
 					cpu_sequence = cpu_sequence_PAL;
-					if (magicSoundProvider == null)
-						magicSoundProvider = new MagicSoundProvider(this, 1662607);
 					break;
 				case "NES-NTSC":
 				case "Famicom":
+					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.NTSC;
+					cpuclockrate = 1789773;
 					cpu_sequence = cpu_sequence_NTSC;
-					if (magicSoundProvider == null)
-						magicSoundProvider = new MagicSoundProvider(this, 1789773);
 					break;
 				// there's no official name for these in bootgod, not sure what we should use
 				//case "PC10"://TODO
 				case "VS":
+					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.RGB;
+					cpuclockrate = 1789773;
 					cpu_sequence = cpu_sequence_NTSC;
-					if (magicSoundProvider == null)
-						magicSoundProvider = new MagicSoundProvider(this, 1789773);
 					vs_io = true;
 					break;
 				// this is in bootgod, but not used at all
 				case "Dendy":
+					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.Dendy;
-					CoreOutputComm.VsyncNum = 50;
-					CoreOutputComm.VsyncDen = 1;
+					CoreComm.VsyncNum = 50;
+					CoreComm.VsyncDen = 1;
+					cpuclockrate = 1773448;
 					cpu_sequence = cpu_sequence_NTSC;
-					if (magicSoundProvider == null)
-						magicSoundProvider = new MagicSoundProvider(this, 1773448);
 					break;
 				case null:
 					Console.WriteLine("Unknown NES system!  Defaulting to NTSC.");
@@ -189,6 +215,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					Console.WriteLine("Unrecognized NES system \"{0}\"!  Defaulting to NTSC.", cart.system);
 					goto case "NES-NTSC";
 			}
+			if (magicSoundProvider == null)
+				magicSoundProvider = new MagicSoundProvider(this, (uint)cpuclockrate);
+
+			BoardSystemHardReset();
 
 			//check fceux's PowerNES function for more information:
 			//relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
@@ -375,7 +405,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		byte read_joyport(int addr)
 		{
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			return handle_read_joyport(addr, false);
 		}
 
@@ -572,9 +602,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret = sysbus_watch[addr].ApplyGameGenie(ret);
 			}
 
-			if (CoreInputComm.MemoryCallbackSystem.HasRead)
+			if (CoreComm.MemoryCallbackSystem.HasRead)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
+				CoreComm.MemoryCallbackSystem.TriggerRead(addr);
 			}
 
 			DB = ret;
@@ -635,9 +665,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				board.WritePRG(addr - 0x8000, value);
 			}
 
-			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
+			if (CoreComm.MemoryCallbackSystem.HasWrite)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
+				CoreComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 		}
 

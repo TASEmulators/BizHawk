@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (mode == VdpMode.GameGear)
             {
-                if (Sms.CoreInputComm.GG_ShowClippedRegions == false) 
+                if (Sms.CoreComm.GG_ShowClippedRegions == false) 
                 {
                     int yStart = (FrameHeight - 144)/2;
                     for (int y = 0; y < 144; y++)
@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                             GameGearFrameBuffer[(y * 160) + x] = FrameBuffer[((y + yStart) * 256) + x + 48];
                 }
 
-                if (Sms.CoreInputComm.GG_HighlightActiveDisplayRegion && Sms.CoreInputComm.GG_ShowClippedRegions)
+                if (Sms.CoreComm.GG_HighlightActiveDisplayRegion && Sms.CoreComm.GG_ShowClippedRegions)
                 {
                     // Top 24 scanlines
                     for (int y = 0; y < 24; y++)

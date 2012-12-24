@@ -106,7 +106,7 @@
 
         void ReadController(ref byte data)
         {
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			data &= 0xC0;
             if ((data & 0x40) != 0) // TH high
             {

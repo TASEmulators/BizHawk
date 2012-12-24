@@ -377,28 +377,28 @@ namespace BizHawk.Emulation.Consoles.Sega
 					return;
 				}
 
-				RenderBackgroundCurrentLine(Sms.CoreInputComm.SMS_ShowBG);
+				RenderBackgroundCurrentLine(Sms.CoreComm.SMS_ShowBG);
 
 				if (EnableDoubledSprites)
-					RenderSpritesCurrentLineDoubleSize(Sms.CoreInputComm.SMS_ShowOBJ);
+					RenderSpritesCurrentLineDoubleSize(Sms.CoreComm.SMS_ShowOBJ);
 				else
-					RenderSpritesCurrentLine(Sms.CoreInputComm.SMS_ShowOBJ);
+					RenderSpritesCurrentLine(Sms.CoreComm.SMS_ShowOBJ);
 			}
 			else if (TmsMode == 2)
 			{
 				if (render == false)
 					return;
 
-				RenderBackgroundM2(Sms.CoreInputComm.SMS_ShowBG);
-				RenderTmsSprites(Sms.CoreInputComm.SMS_ShowOBJ);
+				RenderBackgroundM2(Sms.CoreComm.SMS_ShowBG);
+				RenderTmsSprites(Sms.CoreComm.SMS_ShowOBJ);
 			}
 			else if (TmsMode == 0)
 			{
 				if (render == false)
 					return;
 
-				RenderBackgroundM0(Sms.CoreInputComm.SMS_ShowBG);
-				RenderTmsSprites(Sms.CoreInputComm.SMS_ShowOBJ);
+				RenderBackgroundM0(Sms.CoreComm.SMS_ShowBG);
+				RenderTmsSprites(Sms.CoreComm.SMS_ShowOBJ);
 			}
 		}
 
@@ -496,7 +496,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 		public int[] GetVideoBuffer()
 		{
-			if (mode == VdpMode.SMS || Sms.CoreInputComm.GG_ShowClippedRegions)
+			if (mode == VdpMode.SMS || Sms.CoreComm.GG_ShowClippedRegions)
 				return FrameBuffer;
 			return GameGearFrameBuffer;
 		}
@@ -506,7 +506,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		{
 			get
 			{
-				if (mode == VdpMode.SMS || Sms.CoreInputComm.GG_ShowClippedRegions)
+				if (mode == VdpMode.SMS || Sms.CoreComm.GG_ShowClippedRegions)
 					return 256;
 				return 160; // GameGear
 			}
@@ -516,7 +516,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		{
 			get
 			{
-				if (mode == VdpMode.SMS || Sms.CoreInputComm.GG_ShowClippedRegions)
+				if (mode == VdpMode.SMS || Sms.CoreComm.GG_ShowClippedRegions)
 					return FrameHeight;
 				return 144; // GameGear
 			}

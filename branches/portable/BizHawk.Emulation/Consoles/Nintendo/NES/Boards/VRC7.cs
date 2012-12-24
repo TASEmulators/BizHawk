@@ -33,7 +33,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			fm.SyncState(ser);
+			if (fm != null)
+				fm.SyncState(ser);
 			ser.Sync("prg_banks_8k", ref prg_banks_8k);
 			ser.Sync("chr_banks_1k", ref chr_banks_1k);
 			ser.Sync("irq_mode", ref irq_mode);
@@ -56,21 +57,32 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "MAPPER085":
+					// presumably the only reason a homebrew would use mapper085 is for the sound?
+					// so initialize like lagrange point
+					remap = (addr) => ((addr & 0xF000) | ((addr & 0x30) >> 4));
+					fm = new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
 					break;
 				case "KONAMI-VRC-7":
-					AssertPrg(128,512); AssertChr(0,128); AssertVram(0,8); AssertWram(0,8);
+					AssertPrg(128, 512); AssertChr(0, 128); AssertVram(0, 8); AssertWram(0, 8);
+					if (Cart.pcb == "353429")
+					{
+						//tiny toons 2
+						remap = (addr) => ((addr & 0xF000) | ((addr & 0x8) >> 3));
+						// there is no resonator or crystal on the board for the fm chip
+						fm = null;
+					}
+					else if (Cart.pcb == "352402")
+					{
+						//lagrange point
+						remap = (addr) => ((addr & 0xF000) | ((addr & 0x30) >> 4));
+						fm = new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
+					}
+					else
+						throw new Exception("Unknown PCB type for VRC7");
 					break;
 				default:
 					return false;
 			}
-
-			if (Cart.pcb == "353429")
-				//tiny toons 2
-				remap = (addr) => ((addr & 0xF000) | ((addr & 0x8) >> 3));
-			else if(Cart.pcb == "352402")
-				//lagrange point
-				remap = (addr) => ((addr & 0xF000) | ((addr & 0x30) >> 4));
-			else throw new Exception("Unknown PCB type for VRC7");
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
@@ -78,8 +90,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SetMirrorType(EMirrorType.Vertical);
 
 			prg_banks_8k[3] = (byte)(0xFF & prg_bank_mask_8k);
-
-			fm = new Sound.YM2413(Sound.YM2413.ChipType.VRC7);
 
 			return true;
 		}
@@ -124,14 +134,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void ApplyCustomAudio(short[] samples)
 		{
-			short[] fmsamples = new short[samples.Length];
-			fm.GetSamples(fmsamples);
-			//naive mixing. need to study more
-			int len = samples.Length;
-			for (int i = 0; i < len; i++)
+			if (fm != null)
 			{
-				short fmsamp = fmsamples[i];
-				samples[i] = (short)(samples[i] + fmsamp);
+				short[] fmsamples = new short[samples.Length];
+				fm.GetSamples(fmsamples);
+				//naive mixing. need to study more
+				int len = samples.Length;
+				for (int i = 0; i < len; i++)
+				{
+					short fmsamp = fmsamples[i];
+					samples[i] = (short)(samples[i] + fmsamp);
+				}
 			}
 		}
 
@@ -148,11 +161,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				case 0x1001:
 					//sound address port
-					fm.RegisterLatch = value;
+					if (fm != null)
+						fm.RegisterLatch = value;
 					break;
 				case 0x1003:
 					//sound data port
-					fm.Write(value);
+					if (fm != null)
+						fm.Write(value);
 					break;
 
 					//a bit creepy to mask this for lagrange point which has no VROM, but the mask will be 0xFFFFFFFF so its OK

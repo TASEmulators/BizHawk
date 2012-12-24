@@ -1,7 +1,0 @@
-To play Gameboy Advance games requires the GBA BIOS,
-
-It is expected by default to be in this folder named gbabios.rom
-
-To configure the location and name of this file, use the Config -> Path Config dialog
-
-Its sha1 is 300C20DF6731A33952DED8C436F7F186D25D3492

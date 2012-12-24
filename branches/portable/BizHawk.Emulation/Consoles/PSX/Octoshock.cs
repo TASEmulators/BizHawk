@@ -14,8 +14,7 @@ namespace BizHawk.Emulation.Consoles.PSX
 
 		private int[] frameBuffer = new int[0];
 		private Random rand = new Random();
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(this, 735); } }
@@ -50,11 +49,10 @@ namespace BizHawk.Emulation.Consoles.PSX
 			//BizHawk.Emulation.Consoles.Nintendo.SNES.LibsnesDll.snes_set_audio_sample(null);
 		}
 
-		public Octoshock()
+		public Octoshock(CoreComm comm)
 		{
 			var domains = new List<MemoryDomain>();
-			CoreOutputComm = new CoreOutputComm();
-			CoreInputComm = new CoreInputComm();
+			CoreComm = comm;
 			VirtualWidth = BufferWidth = 256;
 			BufferHeight = 192;
 		}
@@ -121,7 +119,7 @@ namespace BizHawk.Emulation.Consoles.PSX
 				if (parts[0] != "$psx") throw new InvalidOperationException("Octoshock using some weird path we dont handle yet");
 				if (parts[1] == "firmware")
 				{
-					fname = Path.Combine(CurrOctoshockCore.CoreInputComm.PSX_FirmwaresPath, parts[2]);
+					fname = Path.Combine(CurrOctoshockCore.CoreComm.PSX_FirmwaresPath, parts[2]);
 					if (!File.Exists(fname))
 					{
 						System.Windows.Forms.MessageBox.Show("the Octoshock core is referencing a firmware file which could not be found. Please make sure it's in your configured PSX firmwares folder. The referenced filename is: " + parts[1]);

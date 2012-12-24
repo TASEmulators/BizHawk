@@ -20,13 +20,15 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public Func<ushort, ushort> ReadMemory;
 		public Func<ushort, ushort, bool> WriteMemory;
 
-		private static bool Logging = false;
+		private static bool Logging = true;
 		private static StreamWriter Log;
 
 		static CP1610()
 		{
 			if (Logging)
+			{
 				Log = new StreamWriter("log_CP1610.txt");
+			}
 		}
 
 		public void Reset()
@@ -35,7 +37,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			Interruptible = false;
 			FlagS = FlagC = FlagZ = FlagO = FlagI = FlagD = false;
 			for (int register = 0; register <= 6; register++)
+			{
 				Register[register] = 0;
+			}
 			RegisterPC = RESET;
 		}
 
@@ -47,6 +51,10 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public void SetIntRM(bool value)
 		{
 			IntRM = value;
+			if (IntRM)
+			{
+				Interrupted = false;
+			}
 		}
 
 		public void SetBusRq(bool value)
@@ -67,9 +75,14 @@ namespace BizHawk.Emulation.CPUs.CP1610
 		public void LogData()
 		{
 			if (!Logging)
+			{
 				return;
+			}
+			Log.WriteLine("Total Executed Cycles = {0}", TotalExecutedCycles);
 			for (int register = 0; register <= 5; register++)
+			{
 				Log.WriteLine("R{0:d} = {1:X4}", register, Register[register]);
+			}
 			Log.WriteLine("SP = {0:X4}", RegisterSP);
 			Log.WriteLine("PC = {0:X4}", RegisterPC);
 			Log.WriteLine("S = {0}", FlagS);
@@ -81,7 +94,7 @@ namespace BizHawk.Emulation.CPUs.CP1610
 			Log.WriteLine("INTRM = {0}", IntRM);
 			Log.WriteLine("BUSRQ = {0}", BusRq);
 			Log.WriteLine("BUSAK = {0}", BusAk);
-			//Log.WriteLine("MSYNC = {0}", MSync);
+			// Log.WriteLine("MSYNC = {0}", MSync);
 			Log.Flush();
 		}
 	}

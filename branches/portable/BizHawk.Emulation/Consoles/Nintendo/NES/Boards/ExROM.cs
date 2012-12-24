@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//configuraton
 		int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)
+		int wram_bank_mask_8k;
 
 		//state
 		int irq_target, irq_counter;
@@ -37,12 +38,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int wram_bank;
 		byte[] EXRAM = new byte[1024];
 		byte multiplicand, multiplier;
+		Sound.MMC5Audio audio;
 		//regeneratable state
 		IntBuffer a_banks_1k = new IntBuffer(8);
 		IntBuffer b_banks_1k = new IntBuffer(8);
 		IntBuffer prg_banks_8k = new IntBuffer(4);
 		byte product_low, product_high;
 		int last_nt_read;
+		bool irq_audio;
 
 		public MemoryDomain GetExRAM()
 		{
@@ -76,6 +79,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SyncCHRBanks();
 			SyncMultiplier();
 			SyncIRQ();
+			audio.SyncState(ser);
 		}
 
 		public override void Dispose()
@@ -97,19 +101,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "MAPPER005":
 					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
-					AssertPrg(128,256); AssertChr(128);
+					AssertPrg(128, 256); AssertChr(128);
 					break;
 				case "NES-EKROM": //Gemfire (U)
 					AssertPrg(256); AssertChr(256);
+					break;
+				case "HVC-EKROM":
 					break;
 				default:
 					return false;
 			}
 
-			prg_bank_mask_8k = Cart.prg_size/8-1;
+			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
+			wram_bank_mask_8k = Cart.wram_size / 8 - 1;
 
 			PoweronState();
+
+			if (NES.apu != null)
+				audio = new Sound.MMC5Audio(NES.apu.ExternalQueue, (e) => { irq_audio = e; SyncIRQ(); });
 
 			return true;
 		}
@@ -130,7 +140,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		int MapWRAM(int addr)
 		{
-			int bank_8k = wram_bank;
+			int bank_8k = wram_bank & wram_bank_mask_8k;
 			int ofs = addr & ((1 << 13) - 1);
 			addr = (bank_8k << 13) | ofs;
 			return addr;
@@ -305,9 +315,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPRG(int addr)
 		{
 			bool ram;
-			addr = MapPRG(addr, out ram);
-			if (ram) return WRAM[addr];
-			else return ROM[addr];
+			byte ret;
+			int mapaddr = MapPRG(addr, out ram);
+			if (ram)
+				ret = WRAM[mapaddr];
+			else
+				ret = ROM[mapaddr];
+			if (addr < 0x4000)
+				audio.ReadROMTrigger(ret);
+			return ret;
 		}
 
 		public override void WritePRG(int addr, byte value)
@@ -320,6 +336,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void WriteEXP(int addr, byte value)
 		{
 			//NES.LogLine("MMC5 WriteEXP: ${0:x4} = ${1:x2}", addr, value);
+			if (addr >= 0x1000 && addr <= 0x1015)
+			{
+				audio.WriteExp(addr + 0x4000, value);
+				return;
+			}
 			switch (addr)
 			{
 				case 0x1100: //$5100:  [.... ..PP]    PRG Mode Select:
@@ -440,6 +461,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x1206: //$5206:  high 8 bits of product
 					ret = product_high;
 					break;
+
+				case 0x1015: // $5015: apu status
+					ret = audio.Read5015();
+					break;
+
+				case 0x1010: // $5010: apu PCM
+					ret = audio.Read5010();
+					break;
 			}
 
 			//TODO - additional r/w timing security
@@ -455,7 +484,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncIRQ()
 		{
-			IRQSignal = (irq_pending && irq_enabled);
+			IRQSignal = (irq_pending && irq_enabled) || irq_audio;
 		}
 
 		public override void ClockPPU()
@@ -491,6 +520,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
+		}
+
+		public override void ClockCPU()
+		{
+			audio.Clock();
 		}
 
 		void SetBank(IntBuffer target, int offset, int size, int value)

@@ -813,7 +813,7 @@ namespace BizHawk.MultiClient
 			WatchListView.Columns[5].Width = 55;
 			WatchListView.Columns[6].Width = 128;
 			Global.Config.DisplayRamWatch = false;
-			Global.Config.RamWatchSaveWindowPosition = false;
+			Global.Config.RamWatchSaveWindowPosition = true;
 		}
 
 		private void newToolStripButton_Click(object sender, EventArgs e)

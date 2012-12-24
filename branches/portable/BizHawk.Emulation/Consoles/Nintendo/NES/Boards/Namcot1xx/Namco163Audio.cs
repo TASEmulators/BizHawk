@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			//samplebuff[samplebuffpos++] = samp;
 			//samplebuffpos &= 2047;
-			short ss = (short)(samp * 50 - 12096);
+			short ss = (short)(samp * 150 - 18000);
 			resampler.EnqueueSample(ss, ss);
 		}
 
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public Namco163Audio()
 		{
 			resampler = new Sound.Utilities.SpeexResampler(2, 119318, 44100, 119318, 44100, null, null);
-			dc = new Sound.Utilities.DCFilter(4096);
+			dc = Sound.Utilities.DCFilter.DetatchedMode(4096);
 			metaspu = new Sound.MetaspuAsync(resampler, Sound.ESynchMethod.ESynchMethod_V);
 		}
 

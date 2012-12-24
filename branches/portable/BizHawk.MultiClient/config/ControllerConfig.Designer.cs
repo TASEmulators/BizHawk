@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.PlatformTabControl = new System.Windows.Forms.TabControl();
 			this.tabPageNES = new System.Windows.Forms.TabPage();
 			this.pictureBox14 = new System.Windows.Forms.PictureBox();
@@ -78,6 +79,13 @@
 			this.GBController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage32 = new System.Windows.Forms.TabPage();
 			this.GBAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPageGBA = new System.Windows.Forms.TabPage();
+			this.pictureBox13 = new System.Windows.Forms.PictureBox();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.GBAController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.GBAAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageGenesis = new System.Windows.Forms.TabPage();
 			this.pictureBox6 = new System.Windows.Forms.PictureBox();
 			this.tabControl9 = new System.Windows.Forms.TabControl();
@@ -138,6 +146,19 @@
 			this.Atari2600Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage58 = new System.Windows.Forms.TabPage();
 			this.Atari2600Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPageAtari7800 = new System.Windows.Forms.TabPage();
+			this.pictureBox16 = new System.Windows.Forms.PictureBox();
+			this.tabControl11 = new System.Windows.Forms.TabControl();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.Atari7800Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.Atari7800Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.Atari7800ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage6 = new System.Windows.Forms.TabPage();
+			this.Atari7800Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.Atari7800Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageC64 = new System.Windows.Forms.TabPage();
 			this.tabControl8 = new System.Windows.Forms.TabControl();
 			this.tabPage49 = new System.Windows.Forms.TabPage();
@@ -166,6 +187,17 @@
 			this.COLController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage63 = new System.Windows.Forms.TabPage();
 			this.COLAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPageINTV = new System.Windows.Forms.TabPage();
+			this.pictureBox17 = new System.Windows.Forms.PictureBox();
+			this.tabControl12 = new System.Windows.Forms.TabControl();
+			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.INTVController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.INTVAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage59 = new System.Windows.Forms.TabPage();
+			this.INTVController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage64 = new System.Windows.Forms.TabPage();
+			this.INTVAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageTI83 = new System.Windows.Forms.TabPage();
 			this.pictureBox7 = new System.Windows.Forms.PictureBox();
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
@@ -174,13 +206,6 @@
 			this.label38 = new System.Windows.Forms.Label();
 			this.AllowLR = new System.Windows.Forms.CheckBox();
 			this.AutoTab = new System.Windows.Forms.CheckBox();
-			this.tabPageGBA = new System.Windows.Forms.TabPage();
-			this.pictureBox13 = new System.Windows.Forms.PictureBox();
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.GBAController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.GBAAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.PlatformTabControl.SuspendLayout();
 			this.tabPageNES.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
@@ -211,6 +236,11 @@
 			this.tabControl4.SuspendLayout();
 			this.tabPage31.SuspendLayout();
 			this.tabPage32.SuspendLayout();
+			this.tabPageGBA.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).BeginInit();
+			this.tabControl1.SuspendLayout();
+			this.tabPage1.SuspendLayout();
+			this.tabPage2.SuspendLayout();
 			this.tabPageGenesis.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
 			this.tabControl9.SuspendLayout();
@@ -246,6 +276,14 @@
 			this.tabPage48.SuspendLayout();
 			this.tabPage35.SuspendLayout();
 			this.tabPage58.SuspendLayout();
+			this.tabPageAtari7800.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox16)).BeginInit();
+			this.tabControl11.SuspendLayout();
+			this.tabPage3.SuspendLayout();
+			this.tabPage4.SuspendLayout();
+			this.tabPage5.SuspendLayout();
+			this.tabPage6.SuspendLayout();
+			this.tabPage7.SuspendLayout();
 			this.tabPageC64.SuspendLayout();
 			this.tabControl8.SuspendLayout();
 			this.tabPage49.SuspendLayout();
@@ -265,13 +303,15 @@
 			this.tabPage61.SuspendLayout();
 			this.tabPage62.SuspendLayout();
 			this.tabPage63.SuspendLayout();
+			this.tabPageINTV.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox17)).BeginInit();
+			this.tabControl12.SuspendLayout();
+			this.tabPage8.SuspendLayout();
+			this.tabPage9.SuspendLayout();
+			this.tabPage59.SuspendLayout();
+			this.tabPage64.SuspendLayout();
 			this.tabPageTI83.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
-			this.tabPageGBA.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).BeginInit();
-			this.tabControl1.SuspendLayout();
-			this.tabPage1.SuspendLayout();
-			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// PlatformTabControl
@@ -287,8 +327,10 @@
 			this.PlatformTabControl.Controls.Add(this.tabPageSMS);
 			this.PlatformTabControl.Controls.Add(this.tabPagePCE);
 			this.PlatformTabControl.Controls.Add(this.tabPageAtari2600);
+			this.PlatformTabControl.Controls.Add(this.tabPageAtari7800);
 			this.PlatformTabControl.Controls.Add(this.tabPageC64);
 			this.PlatformTabControl.Controls.Add(this.tabPageColeco);
+			this.PlatformTabControl.Controls.Add(this.tabPageINTV);
 			this.PlatformTabControl.Controls.Add(this.tabPageTI83);
 			this.PlatformTabControl.Location = new System.Drawing.Point(12, 21);
 			this.PlatformTabControl.Name = "PlatformTabControl";
@@ -765,6 +807,77 @@
 			this.GBAutofire1Panel.Size = new System.Drawing.Size(359, 332);
 			this.GBAutofire1Panel.TabIndex = 2;
 			// 
+			// tabPageGBA
+			// 
+			this.tabPageGBA.Controls.Add(this.pictureBox13);
+			this.tabPageGBA.Controls.Add(this.tabControl1);
+			this.tabPageGBA.Location = new System.Drawing.Point(4, 22);
+			this.tabPageGBA.Name = "tabPageGBA";
+			this.tabPageGBA.Size = new System.Drawing.Size(787, 425);
+			this.tabPageGBA.TabIndex = 10;
+			this.tabPageGBA.Text = "GBA";
+			this.tabPageGBA.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox13
+			// 
+			this.pictureBox13.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox13.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox13.Image = global::BizHawk.MultiClient.Properties.Resources.GBA_Controller;
+			this.pictureBox13.Location = new System.Drawing.Point(419, 37);
+			this.pictureBox13.Name = "pictureBox13";
+			this.pictureBox13.Size = new System.Drawing.Size(236, 138);
+			this.pictureBox13.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox13.TabIndex = 6;
+			this.pictureBox13.TabStop = false;
+			// 
+			// tabControl1
+			// 
+			this.tabControl1.Controls.Add(this.tabPage1);
+			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Location = new System.Drawing.Point(17, 15);
+			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.SelectedIndex = 0;
+			this.tabControl1.Size = new System.Drawing.Size(379, 398);
+			this.tabControl1.TabIndex = 5;
+			// 
+			// tabPage1
+			// 
+			this.tabPage1.Controls.Add(this.GBAController1Panel);
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(371, 372);
+			this.tabPage1.TabIndex = 0;
+			this.tabPage1.Text = "Controller 1";
+			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// GBAController1Panel
+			// 
+			this.GBAController1Panel.Location = new System.Drawing.Point(6, 6);
+			this.GBAController1Panel.Name = "GBAController1Panel";
+			this.GBAController1Panel.Size = new System.Drawing.Size(359, 332);
+			this.GBAController1Panel.TabIndex = 1;
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.GBAAutofire1Panel);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(371, 372);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "Autofire 1";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// GBAAutofire1Panel
+			// 
+			this.GBAAutofire1Panel.Location = new System.Drawing.Point(6, 6);
+			this.GBAAutofire1Panel.Name = "GBAAutofire1Panel";
+			this.GBAAutofire1Panel.Size = new System.Drawing.Size(359, 332);
+			this.GBAAutofire1Panel.TabIndex = 2;
+			// 
 			// tabPageGenesis
 			// 
 			this.tabPageGenesis.Controls.Add(this.pictureBox6);
@@ -1229,7 +1342,7 @@
 			this.tabPageAtari2600.Name = "tabPageAtari2600";
 			this.tabPageAtari2600.Size = new System.Drawing.Size(787, 425);
 			this.tabPageAtari2600.TabIndex = 5;
-			this.tabPageAtari2600.Text = "Atari";
+			this.tabPageAtari2600.Text = "Atari 2600";
 			this.tabPageAtari2600.UseVisualStyleBackColor = true;
 			// 
 			// pictureBox5
@@ -1347,6 +1460,133 @@
 			this.Atari2600Autofire2Panel.Name = "Atari2600Autofire2Panel";
 			this.Atari2600Autofire2Panel.Size = new System.Drawing.Size(368, 332);
 			this.Atari2600Autofire2Panel.TabIndex = 3;
+			// 
+			// tabPageAtari7800
+			// 
+			this.tabPageAtari7800.Controls.Add(this.pictureBox16);
+			this.tabPageAtari7800.Controls.Add(this.tabControl11);
+			this.tabPageAtari7800.Location = new System.Drawing.Point(4, 22);
+			this.tabPageAtari7800.Name = "tabPageAtari7800";
+			this.tabPageAtari7800.Size = new System.Drawing.Size(787, 425);
+			this.tabPageAtari7800.TabIndex = 11;
+			this.tabPageAtari7800.Text = "Atari 7800";
+			this.tabPageAtari7800.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox16
+			// 
+			this.pictureBox16.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox16.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox16.Image = global::BizHawk.MultiClient.Properties.Resources.A78Joystick;
+			this.pictureBox16.Location = new System.Drawing.Point(426, 37);
+			this.pictureBox16.Name = "pictureBox16";
+			this.pictureBox16.Size = new System.Drawing.Size(241, 210);
+			this.pictureBox16.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox16.TabIndex = 6;
+			this.pictureBox16.TabStop = false;
+			// 
+			// tabControl11
+			// 
+			this.tabControl11.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.tabControl11.Controls.Add(this.tabPage3);
+			this.tabControl11.Controls.Add(this.tabPage4);
+			this.tabControl11.Controls.Add(this.tabPage5);
+			this.tabControl11.Controls.Add(this.tabPage6);
+			this.tabControl11.Controls.Add(this.tabPage7);
+			this.tabControl11.Location = new System.Drawing.Point(17, 15);
+			this.tabControl11.Name = "tabControl11";
+			this.tabControl11.SelectedIndex = 0;
+			this.tabControl11.Size = new System.Drawing.Size(389, 401);
+			this.tabControl11.TabIndex = 5;
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.Atari7800Controller1Panel);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(381, 375);
+			this.tabPage3.TabIndex = 0;
+			this.tabPage3.Text = "Joystick 1";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800Controller1Panel
+			// 
+			this.Atari7800Controller1Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Controller1Panel.Name = "Atari7800Controller1Panel";
+			this.Atari7800Controller1Panel.Size = new System.Drawing.Size(365, 332);
+			this.Atari7800Controller1Panel.TabIndex = 1;
+			// 
+			// tabPage4
+			// 
+			this.tabPage4.Controls.Add(this.Atari7800Controller2Panel);
+			this.tabPage4.Location = new System.Drawing.Point(4, 22);
+			this.tabPage4.Name = "tabPage4";
+			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage4.Size = new System.Drawing.Size(381, 375);
+			this.tabPage4.TabIndex = 1;
+			this.tabPage4.Text = "Joystick 2";
+			this.tabPage4.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800Controller2Panel
+			// 
+			this.Atari7800Controller2Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Controller2Panel.Name = "Atari7800Controller2Panel";
+			this.Atari7800Controller2Panel.Size = new System.Drawing.Size(365, 332);
+			this.Atari7800Controller2Panel.TabIndex = 2;
+			// 
+			// tabPage5
+			// 
+			this.tabPage5.Controls.Add(this.Atari7800ConsoleButtons);
+			this.tabPage5.Location = new System.Drawing.Point(4, 22);
+			this.tabPage5.Name = "tabPage5";
+			this.tabPage5.Size = new System.Drawing.Size(381, 375);
+			this.tabPage5.TabIndex = 2;
+			this.tabPage5.Text = "Console";
+			this.tabPage5.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800ConsoleButtons
+			// 
+			this.Atari7800ConsoleButtons.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800ConsoleButtons.Name = "Atari7800ConsoleButtons";
+			this.Atari7800ConsoleButtons.Size = new System.Drawing.Size(359, 125);
+			this.Atari7800ConsoleButtons.TabIndex = 1;
+			// 
+			// tabPage6
+			// 
+			this.tabPage6.Controls.Add(this.Atari7800Autofire1Panel);
+			this.tabPage6.Location = new System.Drawing.Point(4, 22);
+			this.tabPage6.Name = "tabPage6";
+			this.tabPage6.Size = new System.Drawing.Size(381, 375);
+			this.tabPage6.TabIndex = 3;
+			this.tabPage6.Text = "Autofire 1";
+			this.tabPage6.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800Autofire1Panel
+			// 
+			this.Atari7800Autofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Autofire1Panel.Name = "Atari7800Autofire1Panel";
+			this.Atari7800Autofire1Panel.Size = new System.Drawing.Size(368, 332);
+			this.Atari7800Autofire1Panel.TabIndex = 3;
+			// 
+			// tabPage7
+			// 
+			this.tabPage7.Controls.Add(this.Atari7800Autofire2Panel);
+			this.tabPage7.Location = new System.Drawing.Point(4, 22);
+			this.tabPage7.Name = "tabPage7";
+			this.tabPage7.Size = new System.Drawing.Size(381, 375);
+			this.tabPage7.TabIndex = 4;
+			this.tabPage7.Text = "Autofire 2";
+			this.tabPage7.UseVisualStyleBackColor = true;
+			// 
+			// Atari7800Autofire2Panel
+			// 
+			this.Atari7800Autofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Autofire2Panel.Name = "Atari7800Autofire2Panel";
+			this.Atari7800Autofire2Panel.Size = new System.Drawing.Size(368, 332);
+			this.Atari7800Autofire2Panel.TabIndex = 3;
 			// 
 			// tabPageC64
 			// 
@@ -1634,6 +1874,111 @@
 			this.COLAutofire2Panel.Size = new System.Drawing.Size(358, 332);
 			this.COLAutofire2Panel.TabIndex = 3;
 			// 
+			// tabPageINTV
+			// 
+			this.tabPageINTV.Controls.Add(this.pictureBox17);
+			this.tabPageINTV.Controls.Add(this.tabControl12);
+			this.tabPageINTV.Location = new System.Drawing.Point(4, 22);
+			this.tabPageINTV.Name = "tabPageINTV";
+			this.tabPageINTV.Size = new System.Drawing.Size(787, 425);
+			this.tabPageINTV.TabIndex = 12;
+			this.tabPageINTV.Text = "Int. V";
+			this.tabPageINTV.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox17
+			// 
+			this.pictureBox17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox17.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox17.Image = global::BizHawk.MultiClient.Properties.Resources.IntVController;
+			this.pictureBox17.Location = new System.Drawing.Point(423, 37);
+			this.pictureBox17.Name = "pictureBox17";
+			this.pictureBox17.Size = new System.Drawing.Size(249, 255);
+			this.pictureBox17.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox17.TabIndex = 8;
+			this.pictureBox17.TabStop = false;
+			// 
+			// tabControl12
+			// 
+			this.tabControl12.Controls.Add(this.tabPage8);
+			this.tabControl12.Controls.Add(this.tabPage9);
+			this.tabControl12.Controls.Add(this.tabPage59);
+			this.tabControl12.Controls.Add(this.tabPage64);
+			this.tabControl12.Location = new System.Drawing.Point(17, 15);
+			this.tabControl12.Name = "tabControl12";
+			this.tabControl12.SelectedIndex = 0;
+			this.tabControl12.Size = new System.Drawing.Size(379, 398);
+			this.tabControl12.TabIndex = 7;
+			// 
+			// tabPage8
+			// 
+			this.tabPage8.Controls.Add(this.INTVController1Panel);
+			this.tabPage8.Location = new System.Drawing.Point(4, 22);
+			this.tabPage8.Name = "tabPage8";
+			this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage8.Size = new System.Drawing.Size(371, 372);
+			this.tabPage8.TabIndex = 0;
+			this.tabPage8.Text = "Controller 1";
+			this.tabPage8.UseVisualStyleBackColor = true;
+			// 
+			// INTVController1Panel
+			// 
+			this.INTVController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVController1Panel.Name = "INTVController1Panel";
+			this.INTVController1Panel.Size = new System.Drawing.Size(355, 332);
+			this.INTVController1Panel.TabIndex = 1;
+			// 
+			// tabPage9
+			// 
+			this.tabPage9.Controls.Add(this.INTVAutofire1Panel);
+			this.tabPage9.Location = new System.Drawing.Point(4, 22);
+			this.tabPage9.Name = "tabPage9";
+			this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage9.Size = new System.Drawing.Size(371, 372);
+			this.tabPage9.TabIndex = 1;
+			this.tabPage9.Text = "Autofire 1";
+			this.tabPage9.UseVisualStyleBackColor = true;
+			// 
+			// INTVAutofire1Panel
+			// 
+			this.INTVAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVAutofire1Panel.Name = "INTVAutofire1Panel";
+			this.INTVAutofire1Panel.Size = new System.Drawing.Size(359, 332);
+			this.INTVAutofire1Panel.TabIndex = 2;
+			// 
+			// tabPage59
+			// 
+			this.tabPage59.Controls.Add(this.INTVController2Panel);
+			this.tabPage59.Location = new System.Drawing.Point(4, 22);
+			this.tabPage59.Name = "tabPage59";
+			this.tabPage59.Size = new System.Drawing.Size(371, 372);
+			this.tabPage59.TabIndex = 2;
+			this.tabPage59.Text = "Controller 2";
+			this.tabPage59.UseVisualStyleBackColor = true;
+			// 
+			// INTVController2Panel
+			// 
+			this.INTVController2Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVController2Panel.Name = "INTVController2Panel";
+			this.INTVController2Panel.Size = new System.Drawing.Size(358, 332);
+			this.INTVController2Panel.TabIndex = 2;
+			// 
+			// tabPage64
+			// 
+			this.tabPage64.Controls.Add(this.INTVAutofire2Panel);
+			this.tabPage64.Location = new System.Drawing.Point(4, 22);
+			this.tabPage64.Name = "tabPage64";
+			this.tabPage64.Size = new System.Drawing.Size(371, 372);
+			this.tabPage64.TabIndex = 3;
+			this.tabPage64.Text = "Autofire 2";
+			this.tabPage64.UseVisualStyleBackColor = true;
+			// 
+			// INTVAutofire2Panel
+			// 
+			this.INTVAutofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVAutofire2Panel.Name = "INTVAutofire2Panel";
+			this.INTVAutofire2Panel.Size = new System.Drawing.Size(358, 332);
+			this.INTVAutofire2Panel.TabIndex = 3;
+			// 
 			// tabPageTI83
 			// 
 			this.tabPageTI83.Controls.Add(this.pictureBox7);
@@ -1724,77 +2069,6 @@
 			this.AutoTab.UseVisualStyleBackColor = true;
 			this.AutoTab.CheckedChanged += new System.EventHandler(this.AutoTab_CheckedChanged);
 			// 
-			// tabPageGBA
-			// 
-			this.tabPageGBA.Controls.Add(this.pictureBox13);
-			this.tabPageGBA.Controls.Add(this.tabControl1);
-			this.tabPageGBA.Location = new System.Drawing.Point(4, 22);
-			this.tabPageGBA.Name = "tabPageGBA";
-			this.tabPageGBA.Size = new System.Drawing.Size(787, 425);
-			this.tabPageGBA.TabIndex = 10;
-			this.tabPageGBA.Text = "GBA";
-			this.tabPageGBA.UseVisualStyleBackColor = true;
-			// 
-			// pictureBox13
-			// 
-			this.pictureBox13.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox13.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pictureBox13.Image = global::BizHawk.MultiClient.Properties.Resources.GBA_Controller;
-			this.pictureBox13.Location = new System.Drawing.Point(419, 37);
-			this.pictureBox13.Name = "pictureBox13";
-			this.pictureBox13.Size = new System.Drawing.Size(236, 138);
-			this.pictureBox13.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.pictureBox13.TabIndex = 6;
-			this.pictureBox13.TabStop = false;
-			// 
-			// tabControl1
-			// 
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Location = new System.Drawing.Point(17, 15);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(379, 398);
-			this.tabControl1.TabIndex = 5;
-			// 
-			// tabPage1
-			// 
-			this.tabPage1.Controls.Add(this.GBAController1Panel);
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(371, 372);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Controller 1";
-			this.tabPage1.UseVisualStyleBackColor = true;
-			// 
-			// GBAController1Panel
-			// 
-			this.GBAController1Panel.Location = new System.Drawing.Point(6, 6);
-			this.GBAController1Panel.Name = "GBAController1Panel";
-			this.GBAController1Panel.Size = new System.Drawing.Size(359, 332);
-			this.GBAController1Panel.TabIndex = 1;
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.Controls.Add(this.GBAAutofire1Panel);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(371, 372);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Autofire 1";
-			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
-			// GBAAutofire1Panel
-			// 
-			this.GBAAutofire1Panel.Location = new System.Drawing.Point(6, 6);
-			this.GBAAutofire1Panel.Name = "GBAAutofire1Panel";
-			this.GBAAutofire1Panel.Size = new System.Drawing.Size(359, 332);
-			this.GBAAutofire1Panel.TabIndex = 2;
-			// 
 			// ControllerConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1841,6 +2115,11 @@
 			this.tabControl4.ResumeLayout(false);
 			this.tabPage31.ResumeLayout(false);
 			this.tabPage32.ResumeLayout(false);
+			this.tabPageGBA.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).EndInit();
+			this.tabControl1.ResumeLayout(false);
+			this.tabPage1.ResumeLayout(false);
+			this.tabPage2.ResumeLayout(false);
 			this.tabPageGenesis.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
 			this.tabControl9.ResumeLayout(false);
@@ -1876,6 +2155,14 @@
 			this.tabPage48.ResumeLayout(false);
 			this.tabPage35.ResumeLayout(false);
 			this.tabPage58.ResumeLayout(false);
+			this.tabPageAtari7800.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox16)).EndInit();
+			this.tabControl11.ResumeLayout(false);
+			this.tabPage3.ResumeLayout(false);
+			this.tabPage4.ResumeLayout(false);
+			this.tabPage5.ResumeLayout(false);
+			this.tabPage6.ResumeLayout(false);
+			this.tabPage7.ResumeLayout(false);
 			this.tabPageC64.ResumeLayout(false);
 			this.tabControl8.ResumeLayout(false);
 			this.tabPage49.ResumeLayout(false);
@@ -1895,13 +2182,15 @@
 			this.tabPage61.ResumeLayout(false);
 			this.tabPage62.ResumeLayout(false);
 			this.tabPage63.ResumeLayout(false);
+			this.tabPageINTV.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox17)).EndInit();
+			this.tabControl12.ResumeLayout(false);
+			this.tabPage8.ResumeLayout(false);
+			this.tabPage9.ResumeLayout(false);
+			this.tabPage59.ResumeLayout(false);
+			this.tabPage64.ResumeLayout(false);
 			this.tabPageTI83.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
-			this.tabPageGBA.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).EndInit();
-			this.tabControl1.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
-			this.tabPage2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -2062,5 +2351,29 @@
 		private ControllerConfigPanel GBAController1Panel;
 		private System.Windows.Forms.TabPage tabPage2;
 		private ControllerConfigPanel GBAAutofire1Panel;
+		private System.Windows.Forms.TabPage tabPageAtari7800;
+		private System.Windows.Forms.PictureBox pictureBox16;
+		private System.Windows.Forms.TabControl tabControl11;
+		private System.Windows.Forms.TabPage tabPage3;
+		private ControllerConfigPanel Atari7800Controller1Panel;
+		private System.Windows.Forms.TabPage tabPage4;
+		private ControllerConfigPanel Atari7800Controller2Panel;
+		private System.Windows.Forms.TabPage tabPage5;
+		private ControllerConfigPanel Atari7800ConsoleButtons;
+		private System.Windows.Forms.TabPage tabPage6;
+		private ControllerConfigPanel Atari7800Autofire1Panel;
+		private System.Windows.Forms.TabPage tabPage7;
+		private ControllerConfigPanel Atari7800Autofire2Panel;
+		private System.Windows.Forms.TabPage tabPageINTV;
+		private System.Windows.Forms.PictureBox pictureBox17;
+		private System.Windows.Forms.TabControl tabControl12;
+		private System.Windows.Forms.TabPage tabPage8;
+		private ControllerConfigPanel INTVController1Panel;
+		private System.Windows.Forms.TabPage tabPage9;
+		private ControllerConfigPanel INTVAutofire1Panel;
+		private System.Windows.Forms.TabPage tabPage59;
+		private ControllerConfigPanel INTVController2Panel;
+		private System.Windows.Forms.TabPage tabPage64;
+		private ControllerConfigPanel INTVAutofire2Panel;
 	}
 }

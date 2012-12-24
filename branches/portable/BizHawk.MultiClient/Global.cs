@@ -21,33 +21,50 @@ namespace BizHawk.MultiClient
 		public static DisplayManager DisplayManager = new DisplayManager();
 		public static Config Config;
 		public static IEmulator Emulator;
-		public static CoreInputComm CoreInputComm;
+		public static CoreComm CoreComm;
 		public static GameInfo Game;
-		public static Controller SMSControls;
-		public static Controller PCEControls;
-		public static Controller GenControls;
-		public static Controller TI83Controls;
-		public static Controller NESControls;
-		public static Controller SNESControls;
-		public static Controller GBControls;
-		public static Controller GBAControls;
-		public static Controller Atari2600Controls;
-		public static Controller NullControls;
-		public static Controller ColecoControls;
-		public static Controller Commodore64Controls;
 		public static CheatList CheatList;
 
+		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;
+
+		public static Controller NESControls;
 		public static AutofireController AutofireNESControls;
+
+		public static Controller SNESControls;
 		public static AutofireController AutofireSNESControls;
-		public static AutofireController AutofireSMSControls;
-		public static AutofireController AutofirePCEControls;
+
+		public static Controller GBControls;
 		public static AutofireController AutofireGBControls;
+		
+		public static Controller GBAControls;
 		public static AutofireController AutofireGBAControls;
+
+		public static Controller PCEControls;
+		public static AutofireController AutofirePCEControls;
+
+		public static Controller SMSControls;
+		public static AutofireController AutofireSMSControls;
+
+		public static Controller GenControls;
 		public static AutofireController AutofireGenControls;
+
+		public static Controller TI83Controls;
+
+		public static Controller Atari2600Controls;
 		public static AutofireController AutofireAtari2600Controls;
-		public static AutofireController AutofireCommodore64Controls;
+
+		public static Controller Atari7800Controls;
+		public static AutofireController AutofireAtari7800Controls;
+
+		public static Controller ColecoControls;
 		public static AutofireController AutofireColecoControls;
+
+		public static Controller IntellivisionControls;
+		public static AutofireController AutofireIntellivisionControls;
+
+		public static Controller Commodore64Controls;
+		public static AutofireController AutofireCommodore64Controls;
 
 		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>()
 		{
@@ -62,7 +79,7 @@ namespace BizHawk.MultiClient
 				"GBA Controller", new Dictionary<string, string>()
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
-					{"A", "A"}, {"L", "L"}, {"R", "R"},
+					{"A", "A"}, {"L", "L"}, {"R", "R"}
 				}
 			},
 			{
@@ -83,7 +100,7 @@ namespace BizHawk.MultiClient
 				"SNES Controller", new Dictionary<string, string>()
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
-					{"A", "A"}, {"X", "X"}, {"Y", "Y"}, {"L", "L"}, {"R", "R"}, 
+					{"A", "A"}, {"X", "X"}, {"Y", "Y"}, {"L", "L"}, {"R", "R"}
 				}
 			},
 			{
@@ -119,6 +136,12 @@ namespace BizHawk.MultiClient
 				}
 			},
 			{
+				"Atari 7800 ProLine Joystick Controller", new Dictionary<string,string>()
+				{	
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Trigger", "1"}, {"Trigger 2", "2"}
+				}
+			},
+			{
 				"Commodore 64 Controller", new Dictionary<string,string>()
 				{	
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Button", "B"}
@@ -148,6 +171,7 @@ namespace BizHawk.MultiClient
 		public static readonly Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>()
 		{
 			{"Atari 2600 Basic Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
+			{"Atari 7800 ProLine Joystick Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
 			{"Gameboy Controller", new Dictionary<string, string>() {{"Power", "P"}}},
 			{"GBA Controller", new Dictionary<string, string>() {{"Power", "P"}}},
 			{"Genesis 3-Button Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
@@ -160,9 +184,8 @@ namespace BizHawk.MultiClient
 
 		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>()
 		{
-			{"Gameboy Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
-			{"SNES Controller", 4},
-			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2},
+			{"Gameboy Controller", 1}, {"GBA Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
+			{"SNES Controller", 4}, {"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2}, {"Atari 7800 ProLine Joystick Controller", 2},
 			{"ColecoVision Basic Controller", 2}, {"Commodore 64 Controller", 2}
 		};
 
@@ -197,7 +220,7 @@ namespace BizHawk.MultiClient
 		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
 
 		//input state which has been destined for game controller inputs are coalesced here
-		public static InputCoalescer ControllerInputCoalescer = new InputCoalescer();
+		public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();
 		//input state which has been destined for client hotkey consumption are colesced here
 		public static InputCoalescer HotkeyCoalescer = new InputCoalescer();
 

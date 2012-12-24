@@ -160,10 +160,11 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
+				if (B1.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
+				if (B2.Checked) Global.StickyXORAdapter.SetSticky("Power", false);
+
 				B1.Checked = false;
 				B2.Checked = false;
-				Global.StickyXORAdapter.SetSticky("Reset", false);
-				Global.StickyXORAdapter.SetSticky("Power", false);
 			}
 		}
 	}

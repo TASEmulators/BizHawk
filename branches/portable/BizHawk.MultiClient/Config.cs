@@ -38,6 +38,12 @@ namespace BizHawk.MultiClient
 			Atari2600AutoController[1] = new SingleButtonJoyStickTemplate(false);
 			Atari2600ConsoleButtons[0] = new Atari2600ConsoleButtonsTemplate(true);
 
+			Atari7800Controller[0] = new DoubleButtonJoyStickTemplate(true);
+			Atari7800Controller[1] = new DoubleButtonJoyStickTemplate(false);
+			Atari7800AutoController[0] = new DoubleButtonJoyStickTemplate(false);
+			Atari7800AutoController[1] = new DoubleButtonJoyStickTemplate(false);
+			Atari7800ConsoleButtons[0] = new Atari7800ConsoleButtonsTemplate(true);
+
 			NESAutoController[0] = new NESControllerTemplate(false);
 			NESAutoController[1] = new NESControllerTemplate(false);
 			NESAutoController[2] = new NESControllerTemplate(false);
@@ -62,6 +68,11 @@ namespace BizHawk.MultiClient
 			ColecoAutoController[0] = new ColecoVisionControllerTemplate(false);
 			ColecoAutoController[1] = new ColecoVisionControllerTemplate(false);
 
+			IntellivisionController[0] = new IntellivisionControllerTemplate(true);
+			IntellivisionController[1] = new IntellivisionControllerTemplate(false);
+			IntellivisionAutoController[0] = new IntellivisionControllerTemplate(false);
+			IntellivisionAutoController[1] = new IntellivisionControllerTemplate(false);
+
 			C64Joysticks[0] = new SingleButtonJoyStickTemplate(true, true);
 			C64Joysticks[1] = new SingleButtonJoyStickTemplate(false);
 			C64AutoJoysticks[0] = new SingleButtonJoyStickTemplate(false);
@@ -78,6 +89,7 @@ namespace BizHawk.MultiClient
 		public bool UseRecentForROMs = false;
 		public string LastRomPath = ".";
 		public string BasePath = ".";
+		public string BaseROMPath = ".";
 
 		public string BaseINTV = Path.Combine(".", "Intellivision");
 		public string PathINTVROMs = ".";
@@ -100,7 +112,7 @@ namespace BizHawk.MultiClient
 		public string PathSNESSaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathSNESScreenshots = Path.Combine(".", "Screenshots");
 		public string PathSNESCheats = Path.Combine(".", "Cheats");
-		public string PathSNESFirmwares = Path.Combine(".", "Firmwares");
+		//public string PathSNESFirmwares = Path.Combine(".", "Firmwares");
 
 		public string BaseGBA = Path.Combine(".", "GBA");
 		public string PathGBAROMs = ".";
@@ -168,16 +180,17 @@ namespace BizHawk.MultiClient
 		public string BaseAtari7800 = Path.Combine(".", "Atari 7800");
 		public string PathAtari7800ROMs = ".";
 		public string PathAtari7800Savestates = Path.Combine(".", "State");
+		public string PathAtari7800SaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathAtari7800Screenshots = Path.Combine(".", "Screenshots");
 		public string PathAtari7800Cheats = Path.Combine(".", "Cheats");
-		public string PathAtari7800Firmwares = Path.Combine(".", "Firmwares");
+		//public string PathAtari7800Firmwares = Path.Combine(".", "Firmwares");
 
 		public string BaseC64 = Path.Combine(".", "C64");
 		public string PathC64ROMs = ".";
 		public string PathC64Savestates = Path.Combine(".", "State");
 		public string PathC64Screenshots = Path.Combine(".", "Screenshots");
 		public string PathC64Cheats = Path.Combine(".", "Cheats");
-		public string PathC64Firmwares = Path.Combine(".", "Firmwares");
+		//public string PathC64Firmwares = Path.Combine(".", "Firmwares");
 
 		public string BasePSX = Path.Combine(".", "PSX");
 		public string PathPSXROMs = ".";
@@ -185,7 +198,7 @@ namespace BizHawk.MultiClient
 		public string PathPSXSaveRAM = Path.Combine(".", "SaveRAM");
 		public string PathPSXScreenshots = Path.Combine(".", "Screenshots");
 		public string PathPSXCheats = Path.Combine(".", "Cheats");
-		public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
+		//public string PathPSXFirmwares = Path.Combine(".", "Firmwares");
 
 		public string BaseCOL = Path.Combine(".", "Coleco");
 		public string PathCOLROMs = ".";
@@ -199,18 +212,20 @@ namespace BizHawk.MultiClient
 		public string WatchPath = ".";
 		public string AVIPath = ".";
 		public string LogPath = ".";
+		public string FirmwaresPath = Path.Combine(".", "Firmware");
 
 		//BIOS Paths
-		public string PathGBABIOS = Path.Combine(".", "gbabios.rom");
-		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce");
-		public string PathCOLBios = Path.Combine(".", "ColecoBios.bin");
-		public string PathINTVGROM = Path.Combine(".", "grom.bin");
-		public string PathINTVEROM = Path.Combine(".", "erom.bin");
-		public string PathFDSBios = Path.Combine(".", "disksys.rom");
+		public string FilenamePCEBios = "[BIOS] Super CD-ROM System (Japan) (v3.0).pce";
+		public string FilenameFDSBios = "disksys.rom";
+		public string FilenameGBABIOS = "gbabios.rom";
+		public string FilenameCOLBios = "ColecoBios.bin";
+		public string FilenameINTVGROM = "grom.bin";
+		public string FilenameINTVEROM = "erom.bin";
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
 		// General Client Settings
+		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
 		public int TargetDisplayFilter = 0;
@@ -543,6 +558,8 @@ namespace BizHawk.MultiClient
 		public bool VirtualPadSticky = true;
 		public int VPadWndx = -1;
 		public int VPadWndy = -1;
+		public int VPadWidth = -1;
+		public int VPadHeight = -1;
 
 		// NES Game Genie Encoder/Decoder
 		public bool NESGGAutoload = false;
@@ -704,9 +721,18 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_LeftDifficulty = true;
 		public bool Atari2600_RightDifficulty = true;
 
+		//Atari 7800 Settings
+		public DoubleButtonJoyStickTemplate[] Atari7800Controller = new DoubleButtonJoyStickTemplate[2];
+		public DoubleButtonJoyStickTemplate[] Atari7800AutoController = new DoubleButtonJoyStickTemplate[2];
+		public Atari7800ConsoleButtonsTemplate[] Atari7800ConsoleButtons = new Atari7800ConsoleButtonsTemplate[1];
+
 		//ColecoVision
 		public ColecoVisionControllerTemplate[] ColecoController = new ColecoVisionControllerTemplate[2];
 		public ColecoVisionControllerTemplate[] ColecoAutoController = new ColecoVisionControllerTemplate[2];
+
+		//Intellivision
+		public IntellivisionControllerTemplate[] IntellivisionController = new IntellivisionControllerTemplate[2];
+		public IntellivisionControllerTemplate[] IntellivisionAutoController = new IntellivisionControllerTemplate[2];
 
 		//NES settings
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
@@ -779,7 +805,7 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_ShowPlayfield = true;
 	}
 
-	public class NESConsoleButtonTemplate
+	public class NESConsoleButtonTemplate : iControllerConfigObject
 	{
 		public string Reset = "";
 		public string Power = "";
@@ -787,276 +813,253 @@ namespace BizHawk.MultiClient
 		//public string FDS_Insert = ""; //Need to support inserting of disk 1,2,3,4,etc so not supporting this for now
 		//public string VS_Coin_1 = ""; //Not supported yet
 		//public string VS_Coin_2 = ""; //Not supported yet
+
+		public void SetDefaults()
+		{
+			Reset = "";
+			Power = "";
+		}
 	}
 
-	public class SMSConsoleButtonTemplate
+	public class SMSConsoleButtonTemplate : iControllerConfigObject
 	{
 		public string Reset = "C";
 		public string Pause = "V, X1 Start";
+
+		public void SetDefaults()
+		{
+			Reset = "C";
+			Pause = "V, X1 Start";
+		}
 	}
 
-	public class GenConsoleButtonTemplate
+	public class GenConsoleButtonTemplate : iControllerConfigObject
 	{
 		public string Reset = "";
+
+		public void SetDefaults()
+		{
+			Reset = "";
+		}
 	}
 
-	public class SMSControllerTemplate
+	public class SMSControllerTemplate : iControllerConfigObject
 	{
-		public string Up;
-		public string Down;
-		public string Left;
-		public string Right;
-		public string B1;
-		public string B2;
-		public bool Enabled;
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string B1 = "";
+		public string B2 = "";
+		public bool Enabled = false;
 		public SMSControllerTemplate() { }
 		public SMSControllerTemplate(bool defaults)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				B1 = "Z, X1 A";
-				B2 = "X, X1 B";
+				SetDefaults();
 			}
-			else
-			{
-				Enabled = false;
-				Up = "";
-				Down = "";
-				Right = "";
-				Left = "";
-				B1 = "";
-				B2 = "";
-			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			B1 = "Z, X1 A";
+			B2 = "X, X1 B";
 		}
 	}
 
-	public class PCEControllerTemplate
+	public class PCEControllerTemplate : iControllerConfigObject
 	{
-		public string Up;
-		public string Down;
-		public string Left;
-		public string Right;
-		public string I;
-		public string II;
-		public string Select;
-		public string Run;
-		public bool Enabled;
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string I = "";
+		public string II = "";
+		public string Select = "";
+		public string Run = "";
+		public bool Enabled = false;
 		public PCEControllerTemplate() { }
 		public PCEControllerTemplate(bool defaults)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				I = "Z, X1 B";
-				II = "X, X1 A";
-				Run = "C, X1 Start";
-				Select = "V, X1 Back";
+				SetDefaults();
 			}
-			else
-			{
-				Enabled = false;
-				Up = "";
-				Down = "";
-				Right = "";
-				Left = "";
-				I = "";
-				II = "";
-				Run = "";
-				Select = "";
-			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			I = "Z, X1 B";
+			II = "X, X1 A";
+			Run = "C, X1 Start";
+			Select = "V, X1 Back";
 		}
 	}
 
-	public class SNESControllerTemplate
+	public class SNESControllerTemplate : iControllerConfigObject
 	{
-		public string Up;
-		public string Down;
-		public string Left;
-		public string Right;
-		public string A;
-		public string B;
-		public string Start;
-		public string Select;
-		public string Y, X, L, R;
-		public bool Enabled;
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string A = "";
+		public string B = "";
+		public string Start = "";
+		public string Select = "";
+		public string Y = "";
+		public string X = "";
+		public string L = "";
+		public string R = "";
+		public bool Enabled = false;
 		public SNESControllerTemplate() { }
 		public SNESControllerTemplate(bool defaults)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				A = "X, X1 B";
-				B = "Z, X1 A";
-				Y = "A, X1 X";
-				X = "S, X1 Y";
-				L = "W, X1 LeftTrigger";
-				R = "E, X1 RightTrigger";
-				Start = "Return, X1 Start";
-				Select = "Space, X1 Back";
+				SetDefaults();
 			}
-			else
-			{
-				Enabled = false;
-				Up = "";
-				Down = "";
-				Right = "";
-				Left = "";
-				A = "";
-				B = "";
-				Start = "";
-				Select = "";
-				X = Y = L = R = "";
-			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			A = "X, X1 B";
+			B = "Z, X1 A";
+			Y = "A, X1 X";
+			X = "S, X1 Y";
+			L = "W, X1 LeftTrigger";
+			R = "E, X1 RightTrigger";
+			Start = "Return, X1 Start";
+			Select = "Space, X1 Back";
 		}
 	}
 
-	public class GBAControllerTemplate
+	public class GBAControllerTemplate : iControllerConfigObject
 	{
-		public string Up;
-		public string Down;
-		public string Left;
-		public string Right;
-		public string A;
-		public string B;
-		public string Start;
-		public string Select;
-		public string L, R;
-		public string Power;
-		public bool Enabled;
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string A = "";
+		public string B = "";
+		public string Start = "";
+		public string Select = "";
+		public string L = "";
+		public string R = "";
+		public string Power = "";
+		public bool Enabled = false;
 		public GBAControllerTemplate() { }
 		public GBAControllerTemplate(bool defaults)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				A = "X, X1 B";
-				B = "Z, X1 A";
-				L = "W, X1 LeftTrigger";
-				R = "E, X1 RightTrigger";
-				Start = "Return, X1 Start";
-				Select = "Space, X1 Back";
-				Power = "";
+				SetDefaults();
 			}
-			else
-			{
-				Enabled = false;
-				Up = "";
-				Down = "";
-				Right = "";
-				Left = "";
-				A = "";
-				B = "";
-				Start = "";
-				Select = "";
-				L = R = "";
-				Power = "";
-			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			A = "X, X1 B";
+			B = "Z, X1 A";
+			L = "W, X1 LeftTrigger";
+			R = "E, X1 RightTrigger";
+			Start = "Return, X1 Start";
+			Select = "Space, X1 Back";
+			Power = "";
 		}
 	}
 
-	public class NESControllerTemplate
+	public class NESControllerTemplate : iControllerConfigObject
 	{
-		public string Up;
-		public string Down;
-		public string Left;
-		public string Right;
-		public string A;
-		public string B;
-		public string Select;
-		public string Start;
-		public bool Enabled;
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string A = "";
+		public string B = "";
+		public string Select = "";
+		public string Start = "";
+		public bool Enabled = false;
 		public NESControllerTemplate() { }
 		public NESControllerTemplate(bool defaults)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				A = "X, X1 B";
-				B = "Z, X1 A";
-				Start = "Return, X1 Start";
-				Select = "Space, X1 Back";
+				SetDefaults();
 			}
-			else
-			{
-				Enabled = false;
-				Up = "";
-				Down = "";
-				Right = "";
-				Left = "";
-				A = "";
-				B = "";
-				Start = "";
-				Select = "";
-			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			A = "X, X1 B";
+			B = "Z, X1 A";
+			Start = "Return, X1 Start";
+			Select = "Space, X1 Back";
 		}
 	}
 
-	public class GBControllerTemplate
+	public class GBControllerTemplate : iControllerConfigObject
 	{
-		public string Up;
-		public string Down;
-		public string Left;
-		public string Right;
-		public string A;
-		public string B;
-		public string Select;
-		public string Start;
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string A = "";
+		public string B = "";
+		public string Select = "";
+		public string Start = "";
 		public string Power = "";
-		public bool Enabled;
+		public bool Enabled = false;
 		public GBControllerTemplate() { }
 		public GBControllerTemplate(bool defaults)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				A = "X, X1 B";
-				B = "Z, X1 A";
-				Start = "Return, X1 Start";
-				Select = "Space, X1 Back";
-				Power = "";
+				SetDefaults();
 			}
-			else
-			{
-				Enabled = false;
-				Up = "";
-				Down = "";
-				Right = "";
-				Left = "";
-				A = "";
-				B = "";
-				Start = "";
-				Select = "";
-				Power = "";
-			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			A = "X, X1 B";
+			B = "Z, X1 A";
+			Start = "Return, X1 Start";
+			Select = "Space, X1 Back";
+			Power = "";
 		}
 	}
 
-	public class GenControllerTemplate
+	public class GenControllerTemplate : iControllerConfigObject
 	{
 		public string Up = "";
 		public string Down = "";
@@ -1073,20 +1076,25 @@ namespace BizHawk.MultiClient
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				A = "Z, X1 A";
-				B = "X, X1 X";
-				C = "C, X1 Y";
-				Start = "Return, X1 Start";
+				SetDefaults();
 			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			A = "Z, X1 A";
+			B = "X, X1 X";
+			C = "C, X1 Y";
+			Start = "Return, X1 Start";
 		}
 	}
 
-	public class SingleButtonJoyStickTemplate
+	public class SingleButtonJoyStickTemplate : iControllerConfigObject
 	{
 		public string Up = "";
 		public string Down = "";
@@ -1094,53 +1102,122 @@ namespace BizHawk.MultiClient
 		public string Right = "";
 		public string Button = "";
 		public bool Enabled;
+		public bool UseNumpad;
 
 		public SingleButtonJoyStickTemplate() { }
 		public SingleButtonJoyStickTemplate(bool defaults, bool useNumpad = false)
 		{
+			UseNumpad = useNumpad;
 			if (defaults)
 			{
-				if (useNumpad)
-				{
-					Enabled = true;
-					Up = "NumberPad8, X1 DpadUp, X1 LStickUp";
-					Down = "NumberPad2, X1 DpadDown, X1 LStickDown";
-					Left = "NumberPad4, X1 DpadLeft, X1 LStickLeft";
-					Right = "NumberPad6, X1 DpadRight, X1 LStickRight";
-					Button = "NumberPad8, X1 A";
-				}
-				else
-				{
-					Enabled = true;
-					Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-					Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-					Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-					Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-					Button = "Z, X1 A";
-				}
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			if (UseNumpad)
+			{
+				Enabled = true;
+				Up = "NumberPad8, X1 DpadUp, X1 LStickUp";
+				Down = "NumberPad2, X1 DpadDown, X1 LStickDown";
+				Left = "NumberPad4, X1 DpadLeft, X1 LStickLeft";
+				Right = "NumberPad6, X1 DpadRight, X1 LStickRight";
+				Button = "NumberPad8, X1 A";
+			}
+			else
+			{
+				Enabled = true;
+				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+				Button = "Z, X1 A";
 			}
 		}
 	}
 
-	public class Atari2600ConsoleButtonsTemplate
+	public class DoubleButtonJoyStickTemplate : iControllerConfigObject
 	{
-		public string Reset = "";
-		public string Select = "";
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string Button1 = "";
+		public string Button2 = "";
 		public bool Enabled;
+
+		public DoubleButtonJoyStickTemplate() { }
+		public DoubleButtonJoyStickTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			Button1 = "Z, X1 A";
+			Button2 = "X, X1 X";
+		}
+	}
+
+	public class Atari2600ConsoleButtonsTemplate : iControllerConfigObject
+	{
+		public string Reset = "C";
+		public string Select = "V, X1 Start";
+		public bool Enabled = false;
 
 		public Atari2600ConsoleButtonsTemplate() { }
 		public Atari2600ConsoleButtonsTemplate(bool defaults)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Reset = "";
-				Select = "";
+				SetDefaults();
 			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Reset = "";
+			Select = "";
 		}
 	}
 
-	public class ColecoVisionControllerTemplate
+	public class Atari7800ConsoleButtonsTemplate : iControllerConfigObject
+	{
+		public string Power = "";
+		public string Reset = "C";
+		public string Select = "V, X1 Start";
+		public string Pause = "";
+		public bool Enabled = false;
+
+		public Atari7800ConsoleButtonsTemplate() { }
+		public Atari7800ConsoleButtonsTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Reset = "";
+			Select = "";
+			Pause = "";
+		}
+	}
+
+	public class ColecoVisionControllerTemplate : iControllerConfigObject
 	{
 		public string Up = "";
 		public string Down = "";
@@ -1148,7 +1225,6 @@ namespace BizHawk.MultiClient
 		public string Right = "";
 		public string L = "";
 		public string R = "";
-		public string _0 = "";
 		public string _1 = "";
 		public string _2 = "";
 		public string _3 = "";
@@ -1159,6 +1235,7 @@ namespace BizHawk.MultiClient
 		public string _8 = "";
 		public string _9 = "";
 		public string Star = "";
+		public string _0 = "";
 		public string Pound = "";
 		public bool Enabled;
 
@@ -1167,347 +1244,371 @@ namespace BizHawk.MultiClient
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				Up = "UpArrow, X1 DpadUp, X1 LStickUp";
-				Down = "DownArrow, X1 DpadDown, X1 LStickDown";
-				Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-				Right = "RightArrow, X1 DpadRight, X1 LStickRight";
-				L = "Z, J1 B1";
-				R = "X, J1 B1";
-				_0 = "NumberPad0";
-				_1 = "NumberPad1";
-				_2 = "NumberPad2";
-				_3 = "NumberPad3";
-				_4 = "NumberPad4";
-				_5 = "NumberPad5";
-				_6 = "NumberPad6";
-				_7 = "NumberPad7";
-				_8 = "NumberPad8";
-				_9 = "NumberPad9";
-				Pound = "NumberPadPeriod";
-				Star = "NumberPadEnter";
+				SetDefaults();
 			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			L = "Z, J1 B1";
+			R = "X, J1 B1";
+			_0 = "NumberPad0";
+			_1 = "NumberPad1";
+			_2 = "NumberPad2";
+			_3 = "NumberPad3";
+			_4 = "NumberPad4";
+			_5 = "NumberPad5";
+			_6 = "NumberPad6";
+			_7 = "NumberPad7";
+			_8 = "NumberPad8";
+			_9 = "NumberPad9";
+			Pound = "NumberPadPeriod";
+			Star = "NumberPadEnter";
 		}
 	}
 
-	public class C64KeyboardTemplate
+	public class IntellivisionControllerTemplate : iControllerConfigObject
 	{
-		public string F1;
-		public string F3;
-		public string F5;
-		public string F7;
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string L = "";
+		public string R = "";
+		public string _1 = "";
+		public string _2 = "";
+		public string _3 = "";
+		public string _4 = "";
+		public string _5 = "";
+		public string _6 = "";
+		public string _7 = "";
+		public string _8 = "";
+		public string _9 = "";
+		public string Enter = "";
+		public string _0 = "";
+		public string Clear = "";
+		
+		public bool Enabled;
 
-		public string Left_Arrow;
-		public string _1;
-		public string _2;
-		public string _3;
-		public string _4;
-		public string _5;
-		public string _6;
-		public string _7;
-		public string _8;
-		public string _9;
-		public string _0;
-		public string Plus;
-		public string Minus;
-		public string Pound;
-		public string Clear_Home;
-		public string Insert_Delete;
+		public IntellivisionControllerTemplate() { }
+		public IntellivisionControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
 
-		public string Control;
-		public string Q;
-		public string W;
-		public string E;
-		public string R;
-		public string T;
-		public string Y;
-		public string U;
-		public string I;
-		public string O;
-		public string P;
-		public string At;
-		public string Asterisk;
-		public string Up_Arrow;
-		public string Restore;
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			L = "Z, J1 B1";
+			R = "X, J1 B1";
+			_0 = "NumberPad0";
+			_1 = "NumberPad1";
+			_2 = "NumberPad2";
+			_3 = "NumberPad3";
+			_4 = "NumberPad4";
+			_5 = "NumberPad5";
+			_6 = "NumberPad6";
+			_7 = "NumberPad7";
+			_8 = "NumberPad8";
+			_9 = "NumberPad9";
+			Enter = "NumberPadPeriod";
+			Clear = "NumberPadEnter";
+		}
+	}
 
-		public string Run_Stop;
-		public string Lck;
-		public string A;
-		public string S;
-		public string D;
-		public string F;
-		public string G;
-		public string H;
-		public string J;
-		public string K;
-		public string L;
-		public string Colon;
-		public string Semicolon;
-		public string Equal;
-		public string Return;
+	public class C64KeyboardTemplate : iControllerConfigObject
+	{
+		public string F1 = "";
+		public string F3 = "";
+		public string F5 = "";
+		public string F7 = "";
 
-		public string Commodore;
-		public string Left_Shift;
-		public string Z;
-		public string X;
-		public string C;
-		public string V;
-		public string B;
-		public string N;
-		public string M;
-		public string Comma;
-		public string Period;
-		public string Slash;
-		public string Right_Shift;
-		public string Cursor_Up_Down;
-		public string Cursor_Left_Right;
+		public string Left_Arrow = "";
+		public string _1 = "";
+		public string _2 = "";
+		public string _3 = "";
+		public string _4 = "";
+		public string _5 = "";
+		public string _6 = "";
+		public string _7 = "";
+		public string _8 = "";
+		public string _9 = "";
+		public string _0 = "";
+		public string Plus = "";
+		public string Minus = "";
+		public string Pound = "";
+		public string Clear_Home = "";
+		public string Insert_Delete = "";
 
-		public string Space;
+		public string Control = "";
+		public string Q = "";
+		public string W = "";
+		public string E = "";
+		public string R = "";
+		public string T = "";
+		public string Y = "";
+		public string U = "";
+		public string I = "";
+		public string O = "";
+		public string P = "";
+		public string At = "";
+		public string Asterisk = "";
+		public string Up_Arrow = "";
+		public string Restore = "";
 
-		public bool enabled;
+		public string Run_Stop = "";
+		public string Lck = "";
+		public string A = "";
+		public string S = "";
+		public string D = "";
+		public string F = "";
+		public string G = "";
+		public string H = "";
+		public string J = "";
+		public string K = "";
+		public string L = "";
+		public string Colon = "";
+		public string Semicolon = "";
+		public string Equal = "";
+		public string Return = "";
+
+		public string Commodore = "";
+		public string Left_Shift = "";
+		public string Z = "";
+		public string X = "";
+		public string C = "";
+		public string V = "";
+		public string B = "";
+		public string N = "";
+		public string M = "";
+		public string Comma = "";
+		public string Period = "";
+		public string Slash = "";
+		public string Right_Shift = "";
+		public string Cursor_Up_Down = "";
+		public string Cursor_Left_Right = "";
+
+		public string Space = "";
+
+		public bool enabled = false;
 
 		public C64KeyboardTemplate() { }
 		public C64KeyboardTemplate(bool defaults)
 		{
 			if (defaults)
 			{
-				F1 = "F1";
-				F3 = "F3";
-				F5 = "F5";
-				F7 = "F7";
-
-				Left_Arrow = "Grave";
-				_1 = "D1";
-				_2 = "D2";
-				_3 = "D3";
-				_4 = "D4";
-				_5 = "D5";
-				_6 = "D6";
-				_7 = "D7";
-				_8 = "D8";
-				_9 = "D9";
-				_0 = "D0";
-				Plus = "Equals";
-				Minus = "Minus";
-				Pound = "Insert";
-				Clear_Home = "Delete";
-				Insert_Delete = "Backspace";
-
-				Control = "Tab";
-				Q = "Q";
-				W = "W";
-				E = "E";
-				R = "R";
-				T = "T";
-				Y = "Y";
-				U = "U";
-				I = "I";
-				O = "O";
-				P = "P";
-				At = "LeftBracket";
-				Asterisk = "RightBracket";
-				Up_Arrow = "Backslash";
-
-				Run_Stop = "CapsLock";
-				A = "A";
-				S = "S";
-				D = "D";
-				F = "F";
-				G = "G";
-				H = "H";
-				J = "J";
-				K = "K";
-				L = "L";
-				Colon = "Semicolon";
-				Semicolon = "Apostrophe";
-				Equal = "RightControl";
-				Return = "Return";
-
-				Commodore = "LeftControl";
-				Left_Shift = "LeftShift";
-				Z = "Z";
-				X = "X";
-				C = "C";
-				V = "V";
-				B = "B";
-				N = "N";
-				M = "M";
-				Comma = "Comma";
-				Period = "Period";
-				Slash = "Slash";
-				Right_Shift = "RightShift";
-				Cursor_Up_Down = "DownArrow";
-				Cursor_Left_Right = "RightArrow";
-
-				Space = "Space";
+				SetDefaults();
 			}
+		}
+
+		public void SetDefaults()
+		{
+			F1 = "F1";
+			F3 = "F3";
+			F5 = "F5";
+			F7 = "F7";
+
+			Left_Arrow = "Grave";
+			_1 = "D1";
+			_2 = "D2";
+			_3 = "D3";
+			_4 = "D4";
+			_5 = "D5";
+			_6 = "D6";
+			_7 = "D7";
+			_8 = "D8";
+			_9 = "D9";
+			_0 = "D0";
+			Plus = "Equals";
+			Minus = "Minus";
+			Pound = "Insert";
+			Clear_Home = "Delete";
+			Insert_Delete = "Backspace";
+
+			Control = "Tab";
+			Q = "Q";
+			W = "W";
+			E = "E";
+			R = "R";
+			T = "T";
+			Y = "Y";
+			U = "U";
+			I = "I";
+			O = "O";
+			P = "P";
+			At = "LeftBracket";
+			Asterisk = "RightBracket";
+			Up_Arrow = "Backslash";
+
+			Run_Stop = "CapsLock";
+			A = "A";
+			S = "S";
+			D = "D";
+			F = "F";
+			G = "G";
+			H = "H";
+			J = "J";
+			K = "K";
+			L = "L";
+			Colon = "Semicolon";
+			Semicolon = "Apostrophe";
+			Equal = "RightControl";
+			Return = "Return";
+
+			Commodore = "LeftControl";
+			Left_Shift = "LeftShift";
+			Z = "Z";
+			X = "X";
+			C = "C";
+			V = "V";
+			B = "B";
+			N = "N";
+			M = "M";
+			Comma = "Comma";
+			Period = "Period";
+			Slash = "Slash";
+			Right_Shift = "RightShift";
+			Cursor_Up_Down = "DownArrow";
+			Cursor_Left_Right = "RightArrow";
+
+			Space = "Space";
 		}
 	}
 
-	public class TI83ControllerTemplate
+	public class TI83ControllerTemplate : iControllerConfigObject
 	{
-		public string _0;
-		public string _1;
-		public string _2;
-		public string _3;
-		public string _4;
-		public string _5;
-		public string _6;
-		public string _7;
-		public string _8;
-		public string _9;
-		public string DOT;
-		public string ON;
-		public string ENTER;
-		public string DOWN;
-		public string UP;
-		public string LEFT;
-		public string RIGHT;
-		public string PLUS;
-		public string MINUS;
-		public string MULTIPLY;
-		public string DIVIDE;
-		public string CLEAR;
-		public string EXP;
-		public string DASH;
-		public string PARACLOSE;
-		public string TAN;
-		public string VARS;
-		public string PARAOPEN;
-		public string COS;
-		public string PRGM;
-		public string STAT;
-		public string SIN;
-		public string MATRIX;
-		public string X;
-		public string STO;
-		public string LN;
-		public string LOG;
-		public string SQUARED;
-		public string NEG1;
-		public string MATH;
-		public string ALPHA;
-		public string GRAPH;
-		public string TRACE;
-		public string ZOOM;
-		public string WINDOW;
-		public string Y;
-		public string SECOND;
-		public string MODE;
-		public string DEL;
+		public string _0 = "";
+		public string _1 = "";
+		public string _2 = "";
+		public string _3 = "";
+		public string _4 = "";
+		public string _5 = "";
+		public string _6 = "";
+		public string _7 = "";
+		public string _8 = "";
+		public string _9 = "";
+		public string DOT = "";
+		public string ON = "";
+		public string ENTER = "";
+		public string DOWN = "";
+		public string UP = "";
+		public string LEFT = "";
+		public string RIGHT = "";
+		public string PLUS = "";
+		public string MINUS = "";
+		public string MULTIPLY = "";
+		public string DIVIDE = "";
+		public string CLEAR = "";
+		public string EXP = "";
+		public string DASH = "";
+		public string PARACLOSE = "";
+		public string TAN = "";
+		public string VARS = "";
+		public string PARAOPEN = "";
+		public string COS = "";
+		public string PRGM = "";
+		public string STAT = "";
+		public string SIN = "";
+		public string MATRIX = "";
+		public string X = "";
+		public string STO = "";
+		public string LN = "";
+		public string LOG = "";
+		public string SQUARED = "";
+		public string NEG1 = "";
+		public string MATH = "";
+		public string ALPHA = "";
+		public string GRAPH = "";
+		public string TRACE = "";
+		public string ZOOM = "";
+		public string WINDOW = "";
+		public string Y = "";
+		public string SECOND = "";
+		public string MODE = "";
+		public string DEL = "";
+		public string COMMA = "";
+
+		public bool Enabled = false;
+
 		public TI83ControllerTemplate() { }
-		public bool Enabled;
-		public string COMMA;
 		public TI83ControllerTemplate(bool defaults)
 		{
 			if (defaults)
 			{
-				Enabled = true;
-				_0 = "NumberPad0";      //0
-				_1 = "NumberPad1";      //1
-				_2 = "NumberPad2";      //2
-				_3 = "NumberPad3";      //3
-				_4 = "NumberPad4";      //4
-				_5 = "NumberPad5";      //5
-				_6 = "NumberPad6";      //6
-				_7 = "NumberPad7";      //7
-				_8 = "NumberPad8";      //8
-				_9 = "NumberPad9";      //9
-				DOT = "NumberPadPeriod";//10
-				ON = "Space";           //11
-				ENTER = "Return, NumberPadEnter";       //12
-				UP = "UpArrow";         //13
-				DOWN = "DownArrow";     //14
-				LEFT = "LeftArrow";     //15
-				RIGHT = "RightArrow";   //16
-				PLUS = "NumberPadPlus"; //17
-				MINUS = "NumberPadMinus";     //18
-				MULTIPLY = "NumberPadStar";   //19
-				DIVIDE = "NumberPadSlash";    //20
-				CLEAR = "Escape";       //21
-				EXP = "6";              //22
-				DASH = "Minus";         //23
-				PARACLOSE = "0";        //24
-				PARAOPEN = "9";         //25
-				TAN = "T";              //26
-				VARS = "V";             //27
-				COS = "C";              //28
-				PRGM = "R";             //29
-				STAT = "S";             //30
-				MATRIX = "LeftBracket"; //31
-				X = "X";                //32
-				STO = "Insert";         //33
-				LN = "L";               //34
-				LOG = "O";              //35
-				SQUARED = "2";          //36
-				NEG1 = "1";             //37
-				MATH = "M";             //38
-				ALPHA = "A";            //39
-				GRAPH = "G";            //40
-				TRACE = "Home";         //41
-				ZOOM = "Z";             //42
-				WINDOW = "W";           //43
-				Y = "Y";                //44
-				SECOND = "Slash";       //45
-				MODE = "BackSlash";     //46
-				DEL = "Delete";         //47
-				COMMA = "Comma";        //48
-				SIN = "Period";         //49
-			}
-			else
-			{
-				Enabled = false;
-				_0 = "";
-				_1 = "";
-				_2 = "";
-				_3 = "";
-				_4 = "";
-				_5 = "";
-				_6 = "";
-				_7 = "";
-				_8 = "";
-				_9 = "";
-				DOT = "";
-				ON = "";
-				ENTER = "";
-				UP = "";
-				DOWN = "";
-				LEFT = "";
-				RIGHT = "";
-				PLUS = "";
-				MINUS = "";
-				MULTIPLY = "";
-				DIVIDE = "";
-				CLEAR = "";
-				EXP = "";
-				DASH = "";
-				PARACLOSE = "";
-				TAN = "";
-				VARS = "";
-				PARAOPEN = "";
-				COS = "";
-				PRGM = "";
-				STAT = "";
-				SIN = "";
-				MATRIX = "";
-				X = "";
-				STO = "";
-				LN = "";
-				LOG = "";
-				SQUARED = "";
-				NEG1 = "";
-				MATH = "";
-				ALPHA = "";
-				GRAPH = "";
-				TRACE = "";
-				ZOOM = "";
-				WINDOW = "";
-				Y = "";
-				SECOND = "";
-				MODE = "";
-				DEL = "";
-				COMMA = "";
+				SetDefaults();
 			}
 		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			_0 = "NumberPad0";      //0
+			_1 = "NumberPad1";      //1
+			_2 = "NumberPad2";      //2
+			_3 = "NumberPad3";      //3
+			_4 = "NumberPad4";      //4
+			_5 = "NumberPad5";      //5
+			_6 = "NumberPad6";      //6
+			_7 = "NumberPad7";      //7
+			_8 = "NumberPad8";      //8
+			_9 = "NumberPad9";      //9
+			DOT = "NumberPadPeriod";//10
+			ON = "Space";           //11
+			ENTER = "Return, NumberPadEnter";       //12
+			UP = "UpArrow";         //13
+			DOWN = "DownArrow";     //14
+			LEFT = "LeftArrow";     //15
+			RIGHT = "RightArrow";   //16
+			PLUS = "NumberPadPlus"; //17
+			MINUS = "NumberPadMinus";     //18
+			MULTIPLY = "NumberPadStar";   //19
+			DIVIDE = "NumberPadSlash";    //20
+			CLEAR = "Escape";       //21
+			EXP = "6";              //22
+			DASH = "Minus";         //23
+			PARACLOSE = "0";        //24
+			PARAOPEN = "9";         //25
+			TAN = "T";              //26
+			VARS = "V";             //27
+			COS = "C";              //28
+			PRGM = "R";             //29
+			STAT = "S";             //30
+			MATRIX = "LeftBracket"; //31
+			X = "X";                //32
+			STO = "Insert";         //33
+			LN = "L";               //34
+			LOG = "O";              //35
+			SQUARED = "2";          //36
+			NEG1 = "1";             //37
+			MATH = "M";             //38
+			ALPHA = "A";            //39
+			GRAPH = "G";            //40
+			TRACE = "Home";         //41
+			ZOOM = "Z";             //42
+			WINDOW = "W";           //43
+			Y = "Y";                //44
+			SECOND = "Slash";       //45
+			MODE = "BackSlash";     //46
+			DEL = "Delete";         //47
+			COMMA = "Comma";        //48
+			SIN = "Period";         //49
+		}
+	}
+
+	public interface iControllerConfigObject
+	{
+		void SetDefaults();
 	}
 }

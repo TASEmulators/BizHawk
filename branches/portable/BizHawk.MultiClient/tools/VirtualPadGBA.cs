@@ -238,28 +238,28 @@ namespace BizHawk.MultiClient
 		public override void Clear()
 		{
 			if (Global.Emulator.SystemId != "GBA") return;
+
+			if (PU.Checked) Global.StickyXORAdapter.SetSticky("Up", false);
+			if (PD.Checked) Global.StickyXORAdapter.SetSticky("Down", false);
+			if (PL.Checked) Global.StickyXORAdapter.SetSticky("Left", false);
+			if (PR.Checked) Global.StickyXORAdapter.SetSticky("Right", false);
+			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Select", false);
+			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Start", false);
+			if (B3.Checked) Global.StickyXORAdapter.SetSticky("B", false);
+			if (B4.Checked) Global.StickyXORAdapter.SetSticky("A", false);
+			if (B5.Checked) Global.StickyXORAdapter.SetSticky("L", false);
+			if (B6.Checked) Global.StickyXORAdapter.SetSticky("R", false);
+
 			PU.Checked = false;
 			PD.Checked = false;
 			PL.Checked = false;
 			PR.Checked = false;
-
 			B1.Checked = false;
 			B2.Checked = false;
 			B3.Checked = false;
 			B4.Checked = false;
 			B5.Checked = false;
 			B6.Checked = false;
-
-			Global.StickyXORAdapter.SetSticky("Up", false);
-			Global.StickyXORAdapter.SetSticky("Down", false);
-			Global.StickyXORAdapter.SetSticky("Left", false);
-			Global.StickyXORAdapter.SetSticky("Right", false);
-			Global.StickyXORAdapter.SetSticky("Select", false);
-			Global.StickyXORAdapter.SetSticky("Start", false);
-			Global.StickyXORAdapter.SetSticky("B", false);
-			Global.StickyXORAdapter.SetSticky("A", false);
-			Global.StickyXORAdapter.SetSticky("L", false);
-			Global.StickyXORAdapter.SetSticky("R", false);
 		}
 	}
 }

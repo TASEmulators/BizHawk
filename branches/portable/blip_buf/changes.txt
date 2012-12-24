@@ -1,0 +1,39 @@
+Blip_buf Change Log
+-------------------
+
+blip_buf 1.1.0 (2009-10-06)
+--------------
+* Changed library name to blip_buf, to make it easier to find uses of on
+the Web.
+
+* Increased internal input-output ratio accuracy greatly when compiler
+supports 64-bit integer type.
+
+* Renamed blip_buffer_t to blip_t, for consistency with function names.
+Old name is deprecated.
+
+* Reduced high-pass so that a bit more bass comes through.
+
+* Made header file minimally Doxygen-compatible.
+
+* Added unit test suite.
+
+* Added assertions to catch more precondition violations (negative
+values, etc.)
+
+* blip_new() sets default rate to blip_max_ratio clocks per sample.
+
+* blip_delete() can now accept NULL, as originally claimed.
+
+* blip_clocks_needed() now properly returns zero when passed zero.
+
+* blip_add_delta_fast() now adds delta at same place blip_add_delta()'s
+center of delta would be, rather than one sample later as before.
+
+* blip_add_delta() and blip_add_delta_fast() allow adding slightly past
+buffer size, as originally claimed.
+
+
+blip 1.0.0 (2008-12-08)
+----------
+* First release

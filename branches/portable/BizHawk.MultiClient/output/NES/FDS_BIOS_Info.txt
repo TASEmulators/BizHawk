@@ -1,8 +1,0 @@
-To play Famicom DiskSystem games requires the FDS BIOS,
-
-It is expected by default to be in this folder named disksys.rom
-
-To configure the location and name of this file, use the Config -> Path Config dialog
-
-Its sha1 is E4E41472C454F928E53EB10E0509BF7D1146ECC1
-Its filesize is 8k

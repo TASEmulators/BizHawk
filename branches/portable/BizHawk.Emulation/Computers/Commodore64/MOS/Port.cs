@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		static public byte CPUWrite(byte latch, byte val, byte dir)
 		{
 			byte result;
-			result = (byte)(latch & (byte)(~dir & 0xFF));
+			result = (byte)(latch & (dir ^ 0xFF));
 			result |= (byte)(val & dir);
 			return result;
 		}
@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		{
 			byte result;
 			result = (byte)(latch & dir);
-			result |= (byte)(val & (byte)(~dir & 0xFF));
+			result |= (byte)(val & (dir ^ 0xFF));
 			return result;
 		}
 

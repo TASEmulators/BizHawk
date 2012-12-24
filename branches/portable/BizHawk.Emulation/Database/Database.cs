@@ -159,7 +159,7 @@ namespace BizHawk
 				case ".INT": Game.System = "INTV"; break;
 				case ".PRG":
 				case ".D64":
-				case ".SID":
+				case ".T64":
 				case ".G64":
 				case ".CRT":
 					Game.System = "C64";

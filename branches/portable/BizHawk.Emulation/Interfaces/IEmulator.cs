@@ -62,9 +62,10 @@ namespace BizHawk
 		void LoadStateBinary(BinaryReader reader);
 		byte[] SaveStateBinary();
 
-		// Arbitrary extensible core comm mechanism
-		CoreInputComm CoreInputComm { get; set; }
-		CoreOutputComm CoreOutputComm { get; }
+		/// <summary>
+		/// the corecomm module in use by this core.
+		/// </summary>
+		CoreComm CoreComm { get; }
 
 		// ----- Client Debugging API stuff -----
 		IList<MemoryDomain> MemoryDomains { get; }

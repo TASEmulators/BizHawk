@@ -113,9 +113,9 @@ namespace BizHawk
 		{
 			byte temp = mapper.ReadMemory((ushort)(addr&0x1FFF));
 
-			if (CoreInputComm.MemoryCallbackSystem.HasRead)
+			if (CoreComm.MemoryCallbackSystem.HasRead)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerRead(addr);
+				CoreComm.MemoryCallbackSystem.TriggerRead(addr);
 			}
 
 			return temp;
@@ -132,9 +132,9 @@ namespace BizHawk
 		{
 			mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
 
-			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
+			if (CoreComm.MemoryCallbackSystem.HasWrite)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerWrite(addr);
+				CoreComm.MemoryCallbackSystem.TriggerWrite(addr);
 			}
 		}
 
@@ -185,7 +185,7 @@ namespace BizHawk
 			//tia = new TIA(this, frameBuffer);
 			tia = new TIA(this);
 			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
-			dcfilter = new Emulation.Sound.Utilities.DCFilter(tia, 256);
+			dcfilter = Emulation.Sound.Utilities.DCFilter.AsISoundProvider(tia, 256);
 			// Setup 6532
 			m6532 = new M6532(this);
 
@@ -195,7 +195,7 @@ namespace BizHawk
 			//cpu.PC = 0x0000; //set the initial PC
 
 			// show mapper class on romstatusdetails
-			CoreOutputComm.RomStatusDetails =
+			CoreComm.RomStatusDetails =
 						string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
 						game.Name,
 						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom)),
@@ -215,8 +215,8 @@ namespace BizHawk
 				tia.execute(1);
 
 				m6532.timer.tick();
-				if (CoreInputComm.Tracer.Enabled)
-					CoreInputComm.Tracer.Put(cpu.TraceState());
+				if (CoreComm.Tracer.Enabled)
+					CoreComm.Tracer.Put(cpu.TraceState());
 				cpu.ExecuteOne();
 				//if (cpu.PendingCycles <= 0)
 				//{
@@ -236,7 +236,7 @@ namespace BizHawk
 
 		public byte ReadControls1(bool peek)
 		{
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			byte value = 0xFF;
 
 			if (Controller["P1 Up"]) value &= 0xEF;
@@ -250,7 +250,7 @@ namespace BizHawk
 
 		public byte ReadControls2(bool peek)
 		{
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			byte value = 0xFF;
 
 			if (Controller["P2 Up"]) value &= 0xEF;

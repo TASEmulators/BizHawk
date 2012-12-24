@@ -26,8 +26,18 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// </summary>
 		LibGambatte.Buttons CurrentButtons = 0;
 
-		public Gameboy(GameInfo game, byte[] romdata)
+		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata)
 		{
+			CoreComm = comm;
+
+			comm.VsyncNum = 262144;
+			comm.VsyncDen = 4389;
+			comm.RomStatusAnnotation = null;
+			comm.RomStatusDetails = null;
+			comm.CpuTraceAvailable = true;
+			comm.NominalWidth = 160;
+			comm.NominalHeight = 144;
+
 			ThrowExceptionForBadRom(romdata);
 
 			GambatteState = LibGambatte.gambatte_create();
@@ -64,7 +74,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 			InitMemoryDomains();
 
-			GbOutputComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
+			CoreComm.RomStatusDetails = string.Format("{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 				game.Name,
 				Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(romdata)),
 				Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romdata))
@@ -89,7 +99,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		LibGambatte.Buttons ControllerCallback()
 		{
-			if (CoreInputComm.InputCallback != null) CoreInputComm.InputCallback();
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			IsLagFrame = false;
 			return CurrentButtons;
 		}
@@ -140,7 +150,7 @@ namespace BizHawk.Emulation.Consoles.GB
 				LibGambatte.gambatte_reset(GambatteState);
 
 			RefreshMemoryCallbacks();
-			if (CoreInputComm.Tracer.Enabled)
+			if (CoreComm.Tracer.Enabled)
 				tracecb = MakeTrace;
 			else
 				tracecb = null;
@@ -391,7 +401,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		void RefreshMemoryCallbacks()
 		{
-			var mcs = CoreInputComm.MemoryCallbackSystem;
+			var mcs = CoreComm.MemoryCallbackSystem;
 
 			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
 
@@ -412,23 +422,7 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		#endregion
 
-		public CoreInputComm CoreInputComm { get; set; }
-
-		CoreOutputComm GbOutputComm = new CoreOutputComm
-		{
-			VsyncNum = 262144,
-			VsyncDen = 4389,
-			RomStatusAnnotation = null, //"Bizwhackin it up",
-			RomStatusDetails = null, //"LEVAR BURTON",
-			CpuTraceAvailable = true,
-			NominalWidth = 160,
-			NominalHeight = 144
-		};
-
-		public CoreOutputComm CoreOutputComm
-		{
-			get { return GbOutputComm; }
-		}
+		public CoreComm CoreComm { get; set; }
 
 		LibGambatte.TraceCallback tracecb;
 
@@ -438,7 +432,7 @@ namespace BizHawk.Emulation.Consoles.GB
 			System.Runtime.InteropServices.Marshal.Copy(_s, s, 0, 13);
 			ushort unused;
 
-			CoreInputComm.Tracer.Put(string.Format(
+			CoreComm.Tracer.Put(string.Format(
 				"{13} SP:{2:x2} A:{3:x2} B:{4:x2} C:{5:x2} D:{6:x2} E:{7:x2} F:{8:x2} H:{9:x2} L:{10:x2} {11} Cy:{0}",
 				s[0],
 				s[1] & 0xffff,
@@ -738,7 +732,9 @@ namespace BizHawk.Emulation.Consoles.GB
 		void InitSound()
 		{
 			resampler = new Sound.Utilities.SpeexResampler(2, 2097152, 44100, 2097152, 44100, null, this);
-			dcfilter = new Sound.Utilities.DCFilter(resampler, 65536);
+			//dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 65536);
+			// lowpass filtering on an actual GB was probably pretty aggressive?
+			dcfilter = Sound.Utilities.DCFilter.AsISyncSoundProvider(resampler, 2048);
 		}
 
 		void DisposeSound()

@@ -1,7 +1,0 @@
-To play ColecoVision games requires the coleco BIOS,
-
-It is expected by default to be in this folder named ColecoBios.bin
-
-To configure the location and name of this file, use the Config -> Path Config dialog
-
-Its sha1 is 45BEDC4CBDEAC66C7DF59E9E599195C778D86A92

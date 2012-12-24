@@ -308,6 +308,19 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
+				if (PU.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
+				if (PD.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
+				if (PL.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
+				if (PR.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
+				if (B1.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Select", false);
+				if (B2.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Start", false);
+				if (B3.Checked) Global.StickyXORAdapter.SetSticky(Controller + " B", false);
+				if (B4.Checked) Global.StickyXORAdapter.SetSticky(Controller + " A", false);
+				if (B5.Checked) Global.StickyXORAdapter.SetSticky(Controller + " X", false);
+				if (B6.Checked) Global.StickyXORAdapter.SetSticky(Controller + " Y", false);
+				if (B7.Checked) Global.StickyXORAdapter.SetSticky(Controller + " L", false);
+				if (B8.Checked) Global.StickyXORAdapter.SetSticky(Controller + " R", false);
+
 				PU.Checked = false;
 				PD.Checked = false;
 				PL.Checked = false;
@@ -322,19 +335,6 @@ namespace BizHawk.MultiClient
 				B6.Checked = false;
 				B7.Checked = false;
 				B8.Checked = false;
-
-				Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " Select", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " Start", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " B", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " A", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " X", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " Y", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " L", false);
-				Global.StickyXORAdapter.SetSticky(Controller + " R", false);
 			}
 		}
 	}

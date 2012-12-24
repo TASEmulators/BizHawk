@@ -78,8 +78,37 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
+		public enum BGMode
+		{
+			Unavailable, Text, Mode7, Mode7Ext, Mode7DC, OBJ
+		}
+
+
+		/// <summary>
+		/// is a BGMode a mode7 type (mode7, mode7ext, mode7DC)
+		/// </summary>
+		public static bool BGModeIsMode7Type(BGMode BGMode) { return BGMode == SNESGraphicsDecoder.BGMode.Mode7 || BGMode == SNESGraphicsDecoder.BGMode.Mode7DC || BGMode == SNESGraphicsDecoder.BGMode.Mode7Ext; }
+
+
+		/// <summary>
+		/// this class is not 'smart' - it wont recompute values for you. it's meant to be read only (we should find some way to protect write access to make that clear)
+		/// </summary>
 		public class BGInfo
 		{
+			public BGInfo(int num)
+			{
+			}
+
+			/// <summary>
+			/// what type of BG is it?
+			/// </summary>
+			public BGMode BGMode;
+
+			/// <summary>
+			/// is this BGMode a mode7 type (mode7, mode7ext, mode7DC)
+			/// </summary>
+			public bool BGModeIsMode7Type { get { return BGModeIsMode7Type(BGMode); } }
+
 			/// <summary>
 			/// Is the layer even enabled?
 			/// </summary>
@@ -103,12 +132,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			/// <summary>
 			/// the address of the screen data
 			/// </summary>
-			public int ScreenAddr { get { return SCADDR << 9; } }
+			public int ScreenAddr;
 
 			/// <summary>
 			/// the address of the tile data
 			/// </summary>
-			public int TiledataAddr { get { return TDADDR << 13; } }
+			public int TiledataAddr;
 
 			/// <summary>
 			/// Screen size (shape, really.)
@@ -141,6 +170,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public bool MathEnabled;
 
 			/// <summary>
+			/// scroll registers
+			/// </summary>
+			public int HOFS, VOFS;
+
+			/// <summary>
 			/// TileSize; 8 or 16
 			/// </summary>
 			public int TileSize { get { return TILESIZE == 1 ? 16 : 8; } }
@@ -148,7 +182,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			/// <summary>
 			/// The size of the layer, in tiles
 			/// </summary>
-			public Dimensions ScreenSizeInTiles { get { return SizeInTilesForBGSize(ScreenSize); } }
+			public Dimensions ScreenSizeInTiles
+			{
+				get
+				{
+					if (BGMode == SNESGraphicsDecoder.BGMode.Text)
+						return SizeInTilesForBGSize(ScreenSize);
+					else return new Dimensions(128, 128);
+				}
+			}
 
 			/// <summary>
 			/// The size of the layer, in pixels. This has factored in the selection of 8x8 or 16x16 tiles
@@ -170,7 +212,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public class BGInfos
 		{
-			BGInfo[] bgs = new BGInfo[4] { new BGInfo(), new BGInfo(), new BGInfo(), new BGInfo() };
+			BGInfo[] bgs = new BGInfo[4] { new BGInfo(1), new BGInfo(2), new BGInfo(3), new BGInfo(4) };
 			public BGInfo BG1 { get { return bgs[0]; } }
 			public BGInfo BG2 { get { return bgs[1]; } }
 			public BGInfo BG3 { get { return bgs[2]; } }
@@ -192,6 +234,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public int X { private set; get; }
 			public int Y { private set; get; }
 			public int Tile { private set; get; }
+			public int Name { private set; get; }
 			public int Table { private set; get; }
 			public int Palette { private set; get; }
 			public int Priority { private set; get; }
@@ -199,14 +242,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public bool HFlip { private set; get; }
 			public int Size { private set; get; }
 
-			public OAMInfo(SNESGraphicsDecoder dec, int num)
+			/// <summary>
+			/// tiledata address
+			/// </summary>
+			public int Address { private set; get; }
+
+			public OAMInfo(SNESGraphicsDecoder dec, ScreenInfo si, int num)
 			{
 				Index = num;
 				
 				int lowaddr = num*4;
 				X = dec.oam[lowaddr++];
 				Y = dec.oam[lowaddr++];
-				Tile = dec.oam[lowaddr++];
+				Name = dec.oam[lowaddr++];
 				Table = dec.oam[lowaddr] & 1;
 				Palette = (dec.oam[lowaddr]>>1) & 7;
 				Priority = (dec.oam[lowaddr] >> 4) & 3;
@@ -220,13 +268,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				int x = high & 1;
 				high >>= 1;
 				Size = high & 1;
-				X |= (x << 9);
+				X |= (x << 8);
 				X = (X << 23) >> 23;
+
+				Tile = Table*256 + Name;
+				Address = 32 * Tile;
+			
+				if (Tile < 256)
+					Address += si.OBJTable0Addr;
+				else
+					Address += si.OBJTable1Addr - (256 * 32);
+
+				Address &= 0xFFFF;
+
 			}
 		}
 
 		public class ScreenInfo
 		{
+			public Dimensions ObjSizeBounds;
+			public Dimensions ObjSizeBoundsSquare;
+
 			public BGInfos BG = new BGInfos();
 
 			public ModeInfo Mode = new ModeInfo();
@@ -258,6 +320,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public bool OBJ_MathEnabled { private set; get; }
 			public bool BK_MathEnabled { private set; get; }
 
+			public int M7HOFS { private set; get; }
+			public int M7VOFS { private set; get; }
+			public int M7A { private set; get; }
+			public int M7B { private set; get; }
+			public int M7C { private set; get; }
+			public int M7D { private set; get; }
+			public int M7X { private set; get; }
+			public int M7Y { private set; get; }
+			public int M7SEL_REPEAT { private set; get; }
+			public bool M7SEL_HFLIP { private set; get; }
+			public bool M7SEL_VFLIP { private set; get; }
+
 			public static ScreenInfo GetScreenInfo()
 			{
 				var si = new ScreenInfo();
@@ -267,6 +341,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.OBSEL_Size = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_SIZE);
 				si.OBSEL_NameSel = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMESEL);
 				si.OBSEL_NameBase = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMEBASE);
+
+				si.ObjSizeBounds = ObjSizes[si.OBSEL_Size,1];
+				int square = Math.Max(si.ObjSizeBounds.Width, si.ObjSizeBounds.Height);
+				si.ObjSizeBoundsSquare = new Dimensions(square, square);
+
 
 				si.OBJTable0Addr = si.OBSEL_NameBase << 14;
 				si.OBJTable1Addr = (si.OBJTable0Addr + ((si.OBSEL_NameSel + 1) << 13)) & 0xFFFF;
@@ -296,8 +375,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.BG.BG3.Bpp = ModeBpps[si.Mode.MODE, 2];
 				si.BG.BG4.Bpp = ModeBpps[si.Mode.MODE, 3];
 
-				if (si.Mode.MODE == 7 && si.SETINI_Mode7ExtBG)
-					si.BG.BG2.Bpp = 7;
+				//initial setting of mode type (derived from bpp table.. mode7 bg types will be fixed up later)
+				for(int i=1;i<=4;i++)
+					si.BG[i].BGMode = si.BG[i].Bpp == 0 ? BGMode.Unavailable : BGMode.Text;
 
 				si.BG.BG1.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_TILESIZE);
 				si.BG.BG2.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TILESIZE);
@@ -330,8 +410,56 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.BG.BG3.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG3) == 1;
 				si.BG.BG4.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG4) == 1;
 
+				si.BG.BG1.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1HOFS);
+				si.BG.BG1.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1VOFS);
+				si.BG.BG2.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2HOFS);
+				si.BG.BG2.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2VOFS);
+				si.BG.BG3.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3HOFS);
+				si.BG.BG3.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3VOFS);
+				si.BG.BG4.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4HOFS);
+				si.BG.BG4.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4VOFS);
+
+				si.M7HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7HOFS);
+				si.M7VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7VOFS);
+				si.M7A = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7A);
+				si.M7B = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7B);
+				si.M7C = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7C);
+				si.M7D = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7D);
+				si.M7X = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7X);
+				si.M7Y = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7Y);
+				si.M7Y = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7Y);
+				si.M7SEL_REPEAT = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7SEL_REPEAT);
+				si.M7SEL_HFLIP = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7SEL_HFLIP)!=0;
+				si.M7SEL_VFLIP = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7SEL_VFLIP)!=0;
+
 				for (int i = 1; i <= 4; i++)
+				{
 					si.BG[i].Mode = si.Mode.MODE;
+					si.BG[i].TiledataAddr = si.BG[i].TDADDR << 13;
+					si.BG[i].ScreenAddr = si.BG[i].SCADDR << 9;
+				}
+				
+				//fixup irregular things for mode 7
+				if (si.Mode.MODE == 7)
+				{
+					si.BG.BG1.TiledataAddr = 0;
+					si.BG.BG1.ScreenAddr = 0;
+
+					if (si.CGWSEL_DirectColor)
+					{
+						si.BG.BG1.BGMode = BGMode.Mode7DC;
+					}
+					else
+						si.BG.BG1.BGMode = BGMode.Mode7;
+
+					if (si.SETINI_Mode7ExtBG)
+					{
+						si.BG.BG2.BGMode = BGMode.Mode7Ext;
+						si.BG.BG2.Bpp = 7;
+						si.BG.BG2.TiledataAddr = 0;
+						si.BG.BG2.ScreenAddr = 0;
+					}
+				}
 
 				//determine which colors each BG could use
 				switch (si.Mode.MODE)
@@ -452,7 +580,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public enum TileEntryFlags : byte
 		{
-			Priority = 1, Horz = 2, Vert = 4,
+			None = 0, Priority = 1, Horz = 2, Vert = 4,
 		}
 
 		/// <summary>
@@ -561,6 +689,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 					}
 				}
 			}
+		}
+
+		public TileEntry[] FetchMode7Tilemap()
+		{
+			TileEntry[] buf = new TileEntry[128*128];
+			for (int ty = 0, tidx = 0; ty < 128; ty++)
+			{
+				for (int tx = 0; tx < 128; tx++, tidx++)
+				{
+					int tileEntry = vram[tidx * 2];
+					buf[tidx].address = tidx * 2;
+					buf[tidx].tilenum = (ushort)tileEntry;
+					//palette and flags are ok defaulting to 0
+				}
+			}
+
+			return buf;
 		}
 
 		/// <summary>
@@ -732,17 +877,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// <summary>
 		/// renders the mode7 tiles to a screen with the predefined size.
 		/// </summary>
-		public void RenderMode7TilesToScreen(int* screen, int stride, bool ext, bool directColor)
+		public void RenderMode7TilesToScreen(int* screen, int stride, bool ext, bool directColor, int tilesWide = 16, int startTile = 0, int numTiles = 256)
 		{
-			int numTiles = 256;
-			int tilesWide = 16;
 			int[] tilebuf = _tileCache[ext?17:7];
 			for (int i = 0; i < numTiles; i++)
 			{
+				int tnum = startTile + i;
+				//TODO - mask by possible number of tiles? only in OBJ rendering mode?
+
 				int ty = i / tilesWide;
 				int tx = i % tilesWide;
 				int dstOfs = (ty * 8) * stride + tx * 8;
-				int srcOfs = i * 64;
+				int srcOfs = tnum * 64;
 				for (int y = 0, p = 0; y < 8; y++)
 				{
 					for (int x = 0; x < 8; x++, p++)
@@ -758,41 +904,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			Colorize(screen, 0, numPixels);
 		}
 
-		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum)
-		{
-			var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1] };
-			var oam = new OAMInfo(this, spritenum);
-			var dim = dims[oam.Size];
-
-			int[] tilebuf = _tileCache[4];
-
-			int baseaddr;
-			if (oam.Table == 0)
-				baseaddr = si.OBJTable0Addr;
-			else
-				baseaddr = si.OBJTable1Addr;
-
-			int bcol = oam.Tile & 0xF;
-			int brow = (oam.Tile >> 4) & 0xF;
-			for(int y=0;y<dim.Height;y++)
-				for (int x = 0; x < dim.Width; x++)
-				{
-					int dy = desty + y;
-					int dx = destx + x;
-					int col = (bcol + (x >> 3)) & 0xF;
-					int row = (brow + (y >> 3)) & 0xF;
-					int sx = x & 0x7;
-					int sy = y & 0x7;
-
-					int addr = baseaddr*2 + (row * 16 + col) * 64;
-					addr += sy * 8 + sx;
-
-					int dofs = stride*dy+dx;
-					screen[dofs] = tilebuf[addr];
-					Paletteize(screen, dofs, oam.Palette * 16 + 128, 1);
-					Colorize(screen, dofs, 1);
-				}
-		}
 
 		/// <summary>
 		/// renders the tiles to a screen of the crudely specified size.
@@ -801,7 +912,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// </summary>
 		public void RenderTilesToScreen(int* screen, int tilesWide, int tilesTall, int stride, int bpp, int startcolor, int startTile = 0, int numTiles = -1, bool descramble16 = false)
 		{
-			if(numTiles == -1)
+			if (numTiles == -1)
 				numTiles = 8192 / bpp;
 			int[] tilebuf = _tileCache[bpp];
 			for (int i = 0; i < numTiles; i++)
@@ -812,10 +923,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				int tx = i % tilesWide;
 				int dstOfs = (ty * 8) * stride + tx * 8;
 				int srcOfs = tnum * 64;
-				for (int y = 0,p=0; y < 8; y++)
-					for (int x = 0; x < 8; x++,p++)
+				for (int y = 0, p = 0; y < 8; y++)
+					for (int x = 0; x < 8; x++, p++)
 					{
-						screen[dstOfs+y*stride+x] = tilebuf[srcOfs + p];
+						screen[dstOfs + y * stride + x] = tilebuf[srcOfs + p];
 					}
 			}
 
@@ -824,8 +935,74 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			Colorize(screen, 0, numPixels);
 		}
 
+
+		public void RenderSpriteToScreen(int* screen, int stride, int destx, int desty, ScreenInfo si, int spritenum, OAMInfo oam = null, int xlimit = 1024, int ylimit = 1024, byte[,] spriteMap = null)
+		{
+			var dims = new[] { SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1] };
+			if(oam == null)
+				oam = new OAMInfo(this, si, spritenum);
+			var dim = dims[oam.Size];
+
+			int[] tilebuf = _tileCache[4];
+
+			int baseaddr;
+			if (oam.Table == 0)
+				baseaddr = si.OBJTable0Addr;
+			else
+				baseaddr = si.OBJTable1Addr;
+
+			//TODO - flips of 'undocumented' rectangular oam settings are wrong. probably easy to do right, but we need a test
+
+			int bcol = oam.Tile & 0xF;
+			int brow = (oam.Tile >> 4) & 0xF;
+			for(int oy=0;oy<dim.Height;oy++)
+				for (int ox = 0; ox < dim.Width; ox++)
+				{
+					int x = ox;
+					int y = oy;
+
+					int dy, dx;
+
+					if (oam.HFlip)
+						dx = dim.Width - 1 - x;
+					else dx = x;
+					if (oam.VFlip)
+						dy = dim.Height - 1 - y;
+					else dy = y;
+
+					dx += destx;
+					dy += desty;
+
+					if(dx>=xlimit || dy>=ylimit || dx<0 || dy<0)
+						continue;
+
+					int col = (bcol + (x >> 3)) & 0xF;
+					int row = (brow + (y >> 3)) & 0xF;
+					int sx = x & 0x7;
+					int sy = y & 0x7;
+
+					int addr = baseaddr*2 + (row * 16 + col) * 64;
+					addr += sy * 8 + sx;
+
+					int dofs = stride*dy+dx;
+					int color = tilebuf[addr];
+					if (spriteMap != null && color == 0)
+					{
+						//skip transparent pixels
+					}
+					else
+					{
+						screen[dofs] = color;
+						Paletteize(screen, dofs, oam.Palette * 16 + 128, 1);
+						Colorize(screen, dofs, 1);
+						if (spriteMap != null) spriteMap[dx, dy] = (byte)spritenum;
+					}
+				}
+		}
+
 		public int Colorize(int rgb555)
 		{
+			//skip to max luminance in the palette table
 			return colortable[491520 + rgb555];
 		}
 

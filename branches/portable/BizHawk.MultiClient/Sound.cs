@@ -169,6 +169,9 @@ namespace BizHawk.MultiClient
 					return;
 				samples = new short[samplesNeeded];
 				samplesProvided = samplesNeeded;
+
+				if (asyncsoundProvider != null) asyncsoundProvider.DiscardSamples();
+				if (syncsoundProvider != null) syncsoundProvider.DiscardSamples();
 			}
 			else if (syncsoundProvider != null)
 			{

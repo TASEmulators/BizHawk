@@ -75,9 +75,9 @@ namespace BizHawk.Emulation.Consoles.Sega
         WriteCallback write32;
 #endif
 
-		public Genesis(GameInfo game, byte[] rom)
+		public Genesis(CoreComm comm, GameInfo game, byte[] rom)
 		{
-			CoreOutputComm = new CoreOutputComm();
+			CoreComm = comm;
 			MainCPU = new MC68000();
 			SoundCPU = new Z80A();
             YM2612 = new YM2612() { MaxVolume = 23405 };
@@ -252,8 +252,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             unchecked { VDP.VdpStatusWord &= (ushort)~GenVDP.StatusVerticalInterruptPending; }
         }
 
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 
 		public IVideoProvider VideoProvider
 		{

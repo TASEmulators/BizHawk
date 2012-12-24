@@ -18,7 +18,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 		public ushort? ReadPSG(ushort addr)
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)
+			{
 				return Register[addr - 0x01F0];
+			}
 			return null;
 		}
 

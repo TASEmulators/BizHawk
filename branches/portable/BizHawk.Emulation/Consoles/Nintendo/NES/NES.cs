@@ -16,11 +16,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public NES(GameInfo game, byte[] rom, byte[] fdsbios = null)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, byte[] fdsbios = null)
 		{
-			CoreOutputComm = new CoreOutputComm();
-			CoreOutputComm.CpuTraceAvailable = true;
-			CoreInputComm = new BizHawk.CoreInputComm();
+			CoreComm = comm;
+			CoreComm.CpuTraceAvailable = true;
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
@@ -33,8 +32,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				for (int i = 0; i < b.NumSides; i++)
 					ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
 
-				CoreOutputComm.UsesDriveLed = true;
-				b.SetDriveLightCallback((val) => CoreOutputComm.DriveLED = val);
+				CoreComm.UsesDriveLed = true;
+				b.SetDriveLightCallback((val) => CoreComm.DriveLED = val);
 			}
 			if (vs_io)
 			{
@@ -149,8 +148,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			NESWatch[] watches;
 		}
 
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 
 		public DisplayType DisplayType { get { return BizHawk.DisplayType.NTSC; } }
 
@@ -176,8 +174,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public void FillFrameBuffer()
 			{
 				int backdrop = 0;
-				if (emu.CoreInputComm != null)
-					backdrop = emu.CoreInputComm.NES_BackdropColor;
+				if (emu.CoreComm != null)
+					backdrop = emu.CoreComm.NES_BackdropColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
 
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
@@ -201,7 +199,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public int BackgroundColor { get { return 0; } }
 		}
 
-		public int FirstDrawLine { get { return videoProvider.top; } set { videoProvider.top = value; CoreOutputComm.ScreenLogicalOffsetY = videoProvider.top; } }
+		public int FirstDrawLine { get { return videoProvider.top; } set { videoProvider.top = value; CoreComm.ScreenLogicalOffsetY = videoProvider.top; } }
 		public int LastDrawLine { get { return videoProvider.bottom; } set { videoProvider.bottom = value; } }
 
 		public void SetClipLeftAndRight(bool clip)
@@ -217,14 +215,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				videoProvider.right = 255;
 			}
 			
-			CoreOutputComm.ScreenLogicalOffsetX = videoProvider.left;
+			CoreComm.ScreenLogicalOffsetX = videoProvider.left;
 			videoProvider.FillFrameBuffer();
 		}
 
 		MyVideoProvider videoProvider;
 		public IVideoProvider VideoProvider { get { return videoProvider; } }
 		public ISoundProvider SoundProvider { get { return magicSoundProvider; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(magicSoundProvider, CoreOutputComm.VsyncRate > 55 ?  734 : 882); } }
+		public ISyncSoundProvider SyncSoundProvider { get { return magicSoundProvider; } }
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
@@ -478,6 +476,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Console.WriteLine(format, arg);
 				loadReport.WriteLine(format, arg);
 			}
+			public override void WriteLine(string value)
+			{
+				Console.WriteLine(value);
+				loadReport.WriteLine(value);
+			}
 		}
 
 		public unsafe void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
@@ -693,17 +696,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (origin == EDetectionOrigin.BootGodDB)
 			{
 				RomStatus = RomStatus.GoodDump;
-				CoreOutputComm.RomStatusAnnotation = "Identified from BootGod's database";
+				CoreComm.RomStatusAnnotation = "Identified from BootGod's database";
 			}
 			if (origin == EDetectionOrigin.UNIF)
 			{
 				RomStatus = RomStatus.NotInDatabase;
-				CoreOutputComm.RomStatusAnnotation = "Inferred from UNIF header; somewhat suspicious";
+				CoreComm.RomStatusAnnotation = "Inferred from UNIF header; somewhat suspicious";
 			}
 			if (origin == EDetectionOrigin.INES)
 			{
 				RomStatus = RomStatus.NotInDatabase;
-				CoreOutputComm.RomStatusAnnotation = "Inferred from iNES header; potentially wrong";
+				CoreComm.RomStatusAnnotation = "Inferred from iNES header; potentially wrong";
 			}
 			if (origin == EDetectionOrigin.GameDB)
 			{
@@ -718,7 +721,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			LoadReport.Flush();
-			CoreOutputComm.RomStatusDetails = LoadReport.ToString();
+			CoreComm.RomStatusDetails = LoadReport.ToString();
 
 			//create the board's rom and vrom
 			if (iNesHeaderInfo != null)
@@ -772,9 +775,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ser.Sync("vs_coin1", ref vs_coin1);
 				ser.Sync("vs_coin2", ref vs_coin2);
 			}
+			ser.BeginSection("Board");
 			board.SyncState(ser);
 			if (board is NESBoardBase && !((NESBoardBase)board).SyncStateFlag)
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
+			ser.EndSection();
 			ppu.SyncState(ser);
 			apu.SyncState(ser);
 

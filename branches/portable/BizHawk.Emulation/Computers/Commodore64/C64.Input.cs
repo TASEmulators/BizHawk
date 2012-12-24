@@ -6,10 +6,8 @@ using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64
 {
-	public partial class C64 : IEmulator
+	public partial class Motherboard
 	{
-		private PortAdapter inputAdapter0;
-		private PortAdapter inputAdapter1;
 		private bool[,] joystickPressed = new bool[2, 5];
 		private bool[,] keyboardPressed = new bool[8, 8];
 
@@ -34,13 +32,7 @@ namespace BizHawk.Emulation.Computers.Commodore64
 		static private byte[] inputBitMask = new byte[] { 0xFE, 0xFD, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
 		static private byte[] inputBitSelect = new byte[] { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
-		private void InitInput()
-		{
-			inputAdapter0 = chips.cia0.Adapter0;
-			inputAdapter1 = chips.cia0.Adapter1;
-		}
-
-		private void PollInput()
+		public void PollInput()
 		{
 			// scan joysticks
 			for (uint i = 0; i < 2; i++)
@@ -63,11 +55,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private void WriteInputPort()
 		{
-			inputAdapter0.Data = 0xFF;
-			inputAdapter1.Data = 0xFF;
-
-			byte portA = inputAdapter0.Data;
-			byte portB = inputAdapter1.Data;
+			byte portA = Port.ExternalWrite(cia0DataA, 0xFF, cia0DirA);
+			byte portB = Port.ExternalWrite(cia0DataB, 0xFF, cia0DirB);
 			byte resultA = 0xFF;
 			byte resultB = 0xFF;
 			byte joyA = 0xFF;
@@ -96,9 +85,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 					joyB &= inputBitMask[i];
 			}
 
-			inputAdapter0.Data = resultA;
-			inputAdapter1.Data = (byte)(joyB & resultB);
-			inputAdapter0.MaskWrite(joyB);
+			resultA &= joyA;
+			resultB &= joyB;
+
+			cia0DataA = Port.ExternalWrite(cia0DataA, resultA, cia0DirA);
+			cia0DataB = Port.ExternalWrite(cia0DataB, resultB, cia0DirB);
 		}
 	}
 }

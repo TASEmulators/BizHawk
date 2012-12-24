@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 	// memory is striped 00/FF at intervals of 0x40
 
-	public class Chip4864 : IStandardIO
+	public class Chip4864
 	{
 		private byte[] ram;
 
@@ -46,6 +46,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public byte Read(ushort addr)
 		{
 			return ram[addr];
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ByteBuffer buffer = new ByteBuffer(ram);
+			ser.Sync("ram", ref buffer);
 		}
 
 		public void Write(ushort addr, byte val)

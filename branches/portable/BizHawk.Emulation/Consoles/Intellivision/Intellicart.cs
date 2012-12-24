@@ -57,7 +57,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			int offset = 0;
 			// Check to see if the header is valid.
 			if (Rom[offset++] != 0xA8 || Rom[offset++] != (0xFF ^ Rom[offset++]))
+			{
 				return -1;
+			}
 			ushort crc, expected;
 			// Parse for data segments.
 			for (int segment = 0; segment < Rom[1]; segment++)
@@ -70,7 +72,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				ushort start = (ushort)(upper_start << 8);
 				ushort end = (ushort)((upper_end << 8) | 0xFF);
 				if (end < start)
+				{
 					throw new ArgumentException("Ranges can't start higher than they end.");
+				}
 				for (int addr = start; addr <= end; addr++)
 				{
 					ushort data;
@@ -83,7 +87,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				}
 				expected = (ushort)((Rom[offset++] << 8) | Rom[offset++]);
 				if (expected != crc)
+				{
 					throw new ArgumentException("Invalid CRC.");
+				}
 			}
 			// Parse for memory attributes.
 			for (int range = 0; range < 32; range++)
@@ -91,7 +97,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				byte attributes = Rom[offset + (range >> 1)];
 				// Every second 2K block is stored in the upper 4 bits.
 				if ((range & 0x1) != 0)
+				{
 					attributes = (byte)(attributes >> 4);
+				}
 				attributes &= 0xF;
 				MemoryAttributes[range] = new bool[4];
 				// Readable.
@@ -109,25 +117,35 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 				int index;
 				// The lower and upper 2K in a 4K range are 16 addresses away from each other.
 				if ((range & 0x1) != 0)
+				{
 					index = offset + 16 + (range >> 1);
+				}
 				else
+				{
 					index = offset + 32 + (range >> 1);
+				}
 				int range_start = range * 2048;
 				ushort start = (ushort)((((Rom[index] >> 4) & 0x07) << 8) + range_start);
 				ushort end = (ushort)((((Rom[index]) & 0x07) << 8) + 0xFF + range_start);
 				if (end < start)
+				{
 					throw new ArgumentException("Ranges can't start higher than they end.");
+				}
 				FineAddresses[range] = new ushort[2];
 				FineAddresses[range][0] = start;
 				FineAddresses[range][1] = end;
 			}
 			crc = 0xFFFF;
 			for (int index = 0; index < 48; index++)
+			{
 				crc = UpdateCRC16(crc, Rom[offset++]);
+			}
 			expected = (ushort)((Rom[offset++] << 8) | (Rom[offset++] & 0xFF));
 			// Check if there is an invalid CRC for the memory attributes / fine addresses.
 			if (expected != crc)
+			{
 				throw new ArgumentException("Invalid CRC.");
+			}
 			return offset;
 		}
 
@@ -136,7 +154,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			int range = addr / 2048;
 			bool[] attributes = MemoryAttributes[range];
 			if (attributes[0] && addr >= FineAddresses[range][0] && addr <= FineAddresses[range][1])
+			{
 				return Data[addr];
+			}
 			return null;
 		}
 
@@ -148,9 +168,13 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			{
 				// Only write lower 8 bits if the Narrow attribute is set.
 				if (attributes[2])
+				{
 					value &= 0xFF;
+				}
 				if (attributes[3])
+				{
 					throw new NotImplementedException("Bank-switched memory attribute not implemented.");
+				}
 				Data[addr] = value;
 				return true;
 			}

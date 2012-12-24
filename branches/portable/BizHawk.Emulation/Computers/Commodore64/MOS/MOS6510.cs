@@ -8,15 +8,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// an extension of the 6502 processor
 
-	public class MOS6510 : IStandardIO
+	public class MOS6510
 	{
 		// ------------------------------------
 
-		private C64Chips chips;
 		private MOS6502X cpu;
 		private bool freezeCpu;
-		private bool pinCassetteButton;
-		private bool pinCassetteMotor;
+		private bool pinCassetteButton; // note: these are only
+		private bool pinCassetteMotor; // latches!
 		private bool pinCassetteOutput;
 		private bool pinCharen;
 		private bool pinLoram;
@@ -29,11 +28,22 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private uint unusedPinTTL1;
 		private uint unusedPinTTLCycles;
 
+		public Func<int, byte> PeekMemory;
+		public Action<int, byte> PokeMemory;
+		public Func<bool> ReadAEC;
+		public Func<bool> ReadCassetteButton;
+		public Func<bool> ReadIRQ;
+		public Func<bool> ReadNMI;
+		public Func<bool> ReadRDY;
+		public Func<ushort, byte> ReadMemory;
+		public Action<bool> WriteCassetteLevel;
+		public Action<bool> WriteCassetteMotor;
+		public Action<ushort, byte> WriteMemory;
+
 		// ------------------------------------
 
-		public MOS6510(C64Chips newChips)
+		public MOS6510()
 		{
-			chips = newChips;
 			cpu = new MOS6502X();
 
 			// configure cpu r/w
@@ -43,7 +53,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 			// configure data port defaults
 			portDir = 0x00;
-			SetPortData(0x1F);
+			SetPortData(0x17);
 
 			// todo: verify this value (I only know that unconnected bits fade after a number of cycles)
 			unusedPinTTLCycles = 40;
@@ -59,7 +69,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			cpu.Reset();
 			cpu.FlagI = true;
 			cpu.BCD_Enabled = true;
-			cpu.PC = (ushort)(chips.pla.Read(0xFFFC) | (chips.pla.Read(0xFFFD) << 8));
+			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
 		}
 
 		// ------------------------------------
@@ -70,23 +80,23 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void ExecutePhase2()
 		{
-			if (chips.vic.BA)
-				freezeCpu = false;
-
-			if (chips.vic.AEC && !freezeCpu)
+			if (ReadAEC() && !freezeCpu)
 			{
 				// the 6502 core expects active high
 				// so we reverse the polarity here
-				bool thisNMI = (chips.cia1.IRQ & chips.cartPort.NMI);
+				bool thisNMI = ReadNMI();
 				if (!thisNMI && pinNMILast)
 					cpu.NMI = true;
 				else
 					cpu.NMI = false;
 				pinNMILast = thisNMI;
 
-				cpu.IRQ = !(chips.vic.IRQ && chips.cia0.IRQ && chips.cartPort.IRQ);
+				cpu.IRQ = !ReadIRQ();
 				cpu.ExecuteOne();
 			}
+
+			// unfreeze cpu if BA is high
+			if (ReadRDY()) freezeCpu = false;
 
 			// process unused pin TTL
 			if (unusedPinTTL0 == 0)
@@ -102,6 +112,14 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
+		public ushort PC
+		{
+			get
+			{
+				return cpu.PC;
+			}
+		}
+
 		public byte Peek(int addr)
 		{
 			if (addr == 0x0000)
@@ -109,7 +127,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			else if (addr == 0x0001)
 				return PortData;
 			else
-				return chips.pla.Peek(addr);
+				return PeekMemory(addr);
 		}
 
 		public void Poke(int addr, byte val)
@@ -119,13 +137,13 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			else if (addr == 0x0001)
 				SetPortData(val);
 			else
-				chips.pla.Poke(addr, val);
+				PokeMemory(addr, val);
 		}
 
 		public byte Read(ushort addr)
 		{
 			// cpu freezes after first read when RDY is low
-			if (!chips.vic.BA)
+			if (!ReadRDY())
 				freezeCpu = true;
 
 			if (addr == 0x0000)
@@ -133,7 +151,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			else if (addr == 0x0001)
 				return PortData;
 			else
-				return chips.pla.Read(addr);
+				return ReadMemory(addr);
 		}
 
 		public void Write(ushort addr, byte val)
@@ -142,10 +160,26 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 				PortDirection = val;
 			else if (addr == 0x0001)
 				PortData = val;
-			chips.pla.Write(addr, val);
+			WriteMemory(addr, val);
 		}
 
 		// ------------------------------------
+
+		public bool CassetteButton
+		{
+			get { return pinCassetteButton; }
+			set { pinCassetteButton = value; }
+		}
+
+		public bool CassetteMotor
+		{
+			get { return pinCassetteMotor; }
+		}
+
+		public bool CassetteOutputLevel
+		{
+			get { return pinCassetteOutput; }
+		}
 
 		public bool Charen
 		{
@@ -194,15 +228,20 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 			}
 		}
 
+		public byte ReadPortData()
+		{
+			return PortData;
+		}
+
 		private void SetPortData(byte val)
 		{
 			pinCassetteOutput = ((val & 0x08) != 0);
 			pinCassetteButton = ((val & 0x10) != 0);
 			pinCassetteMotor = ((val & 0x20) != 0);
 
-			pinLoram = ((val & 0x01) != 0);
-			pinHiram = ((val & 0x02) != 0);
-			pinCharen = ((val & 0x04) != 0);
+			pinLoram = ((val & 0x01) != 0) || ((portDir & 0x01) == 0);
+			pinHiram = ((val & 0x02) != 0) || ((portDir & 0x02) == 0);
+			pinCharen = ((val & 0x04) != 0) || ((portDir & 0x04) == 0);
 
 			unusedPin0 = ((val & 0x40) != 0);
 			unusedPin1 = ((val & 0x80) != 0);
@@ -213,7 +252,31 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private void SetPortDir(byte val)
 		{
 			portDir = val;
-			//SetPortData((byte)(PortData | ((byte)~val & 0x1F)));
+			SetPortData(PortData);
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			cpu.SyncState(ser);
+			ser.Sync("freezeCpu", ref freezeCpu);
+			ser.Sync("pinCassetteButton", ref pinCassetteButton);
+			ser.Sync("pinCassetteMotor", ref pinCassetteMotor);
+			ser.Sync("pinCassetteOutput", ref pinCassetteOutput);
+			ser.Sync("pinCharen", ref pinCharen);
+			ser.Sync("pinLoram", ref pinLoram);
+			ser.Sync("pinHiram", ref pinHiram);
+			ser.Sync("pinNMILast", ref pinNMILast);
+			ser.Sync("portDir", ref portDir);
+			ser.Sync("unusedPin0", ref unusedPin0);
+			ser.Sync("unusedPin1", ref unusedPin1);
+			ser.Sync("unusedPinTTL0", ref unusedPinTTL0);
+			ser.Sync("unusedPinTTL1", ref unusedPinTTL1);
+			ser.Sync("unusedPinTTLCycles", ref unusedPinTTLCycles);
+		}
+
+		public void WritePortData(byte data)
+		{
+			PortData = data;
 		}
 
 		// ------------------------------------

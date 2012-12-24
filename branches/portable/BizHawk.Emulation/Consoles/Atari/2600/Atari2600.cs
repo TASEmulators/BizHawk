@@ -9,22 +9,20 @@ namespace BizHawk
 		public string SystemId { get { return "A26"; } }
 		public GameInfo game;
 
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return tia; } }
 		public ISoundProvider SoundProvider { get { return dcfilter; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(dcfilter, 735); } }
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 
-		public Atari2600(GameInfo game, byte[] rom)
+		public Atari2600(CoreComm comm, GameInfo game, byte[] rom)
 		{
+			CoreComm = comm;
 			var domains = new List<MemoryDomain>(1);
 			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value));
 			memoryDomains = domains.AsReadOnly();
-			CoreOutputComm = new CoreOutputComm();
-			CoreOutputComm.CpuTraceAvailable = true;
-			CoreInputComm = new CoreInputComm();
+			CoreComm.CpuTraceAvailable = true;
 			this.rom = rom;
 			this.game = game;
 			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
@@ -58,7 +56,9 @@ namespace BizHawk
 			ser.Sync("IsLag", ref _islag);
 			tia.SyncState(ser);
 			m6532.SyncState(ser);
+			ser.BeginSection("Mapper");
 			mapper.SyncState(ser);
+			ser.EndSection();
 			ser.EndSection();
 		}
 

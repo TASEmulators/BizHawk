@@ -43,18 +43,8 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.groupFreeze = new System.Windows.Forms.GroupBox();
 			this.pnGroupFreeze = new System.Windows.Forms.Panel();
+			this.labelMemory = new System.Windows.Forms.Label();
 			this.check2x = new System.Windows.Forms.CheckBox();
-			this.groupBox8 = new System.Windows.Forms.GroupBox();
-			this.radioButton6 = new System.Windows.Forms.RadioButton();
-			this.radioButton1 = new System.Windows.Forms.RadioButton();
-			this.radioButton10 = new System.Windows.Forms.RadioButton();
-			this.radioButton15 = new System.Windows.Forms.RadioButton();
-			this.radioButton5 = new System.Windows.Forms.RadioButton();
-			this.radioButton14 = new System.Windows.Forms.RadioButton();
-			this.radioButton4 = new System.Windows.Forms.RadioButton();
-			this.radioButton3 = new System.Windows.Forms.RadioButton();
-			this.radioButton13 = new System.Windows.Forms.RadioButton();
-			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.comboDisplayType = new System.Windows.Forms.ComboBox();
 			this.label47 = new System.Windows.Forms.Label();
 			this.pnBackdropColor = new System.Windows.Forms.Panel();
@@ -71,7 +61,18 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.label26 = new System.Windows.Forms.Label();
 			this.txtOBSELT1OfsBits = new System.Windows.Forms.TextBox();
-			this.label41 = new System.Windows.Forms.Label();
+			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.radioButton6 = new System.Windows.Forms.RadioButton();
+			this.radioButton1 = new System.Windows.Forms.RadioButton();
+			this.radioButton10 = new System.Windows.Forms.RadioButton();
+			this.radioButton15 = new System.Windows.Forms.RadioButton();
+			this.radioButton5 = new System.Windows.Forms.RadioButton();
+			this.radioButton14 = new System.Windows.Forms.RadioButton();
+			this.radioButton4 = new System.Windows.Forms.RadioButton();
+			this.radioButton3 = new System.Windows.Forms.RadioButton();
+			this.radioButton13 = new System.Windows.Forms.RadioButton();
+			this.radioButton2 = new System.Windows.Forms.RadioButton();
+			this.lblEnPrio3 = new System.Windows.Forms.Label();
 			this.txtOBSELT1OfsDescr = new System.Windows.Forms.TextBox();
 			this.checkEN1_OBJ = new System.Windows.Forms.CheckBox();
 			this.label30 = new System.Windows.Forms.Label();
@@ -86,16 +87,16 @@
 			this.checkEN3_OBJ = new System.Windows.Forms.CheckBox();
 			this.checkEN2_OBJ = new System.Windows.Forms.CheckBox();
 			this.txtOBSELSizeDescr = new System.Windows.Forms.TextBox();
-			this.label40 = new System.Windows.Forms.Label();
+			this.lblEnPrio2 = new System.Windows.Forms.Label();
 			this.label28 = new System.Windows.Forms.Label();
-			this.label39 = new System.Windows.Forms.Label();
+			this.lblEnPrio1 = new System.Windows.Forms.Label();
 			this.label20 = new System.Windows.Forms.Label();
 			this.checkScreenExtbg = new System.Windows.Forms.CheckBox();
 			this.label38 = new System.Windows.Forms.Label();
 			this.label21 = new System.Windows.Forms.Label();
 			this.txtScreenCGADSUB_Half = new System.Windows.Forms.CheckBox();
 			this.checkScreenHires = new System.Windows.Forms.CheckBox();
-			this.label37 = new System.Windows.Forms.Label();
+			this.lblEnPrio0 = new System.Windows.Forms.Label();
 			this.label18391 = new System.Windows.Forms.Label();
 			this.checkEN0_OBJ = new System.Windows.Forms.CheckBox();
 			this.checkScreenOverscan = new System.Windows.Forms.CheckBox();
@@ -159,6 +160,9 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.txtBG1Scroll = new System.Windows.Forms.TextBox();
+			this.label37 = new System.Windows.Forms.Label();
+			this.txtBG1MapSizeBytes = new System.Windows.Forms.TextBox();
 			this.txtBGPaletteInfo = new System.Windows.Forms.TextBox();
 			this.rbBG4 = new System.Windows.Forms.RadioButton();
 			this.rbBG3 = new System.Windows.Forms.RadioButton();
@@ -185,20 +189,32 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.txtBG1SizeBits = new System.Windows.Forms.TextBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.tabctrlDetails = new System.Windows.Forms.TabControl();
 			this.tpPalette = new System.Windows.Forms.TabPage();
-			this.txtPaletteDetailsIndexSpecific = new System.Windows.Forms.TextBox();
-			this.txtPaletteDetailsIndexHexSpecific = new System.Windows.Forms.TextBox();
+			this.label53 = new System.Windows.Forms.Label();
+			this.label52 = new System.Windows.Forms.Label();
+			this.label51 = new System.Windows.Forms.Label();
 			this.txtPaletteDetailsAddress = new System.Windows.Forms.TextBox();
 			this.txtPaletteDetailsIndex = new System.Windows.Forms.TextBox();
 			this.txtPaletteDetailsIndexHex = new System.Windows.Forms.TextBox();
 			this.txtDetailsPaletteColorRGB = new System.Windows.Forms.TextBox();
 			this.txtDetailsPaletteColorHex = new System.Windows.Forms.TextBox();
 			this.txtDetailsPaletteColor = new System.Windows.Forms.TextBox();
-			this.lblDetailsOBJOrBG = new System.Windows.Forms.Label();
 			this.pnDetailsPaletteColor = new System.Windows.Forms.Panel();
 			this.tpTile = new System.Windows.Forms.TabPage();
+			this.label45 = new System.Windows.Forms.Label();
+			this.txtTilePalette = new System.Windows.Forms.TextBox();
+			this.txtTileNumber = new System.Windows.Forms.TextBox();
+			this.txtTileMode = new System.Windows.Forms.TextBox();
+			this.label18 = new System.Windows.Forms.Label();
+			this.txtTileColors = new System.Windows.Forms.TextBox();
+			this.txtTileBpp = new System.Windows.Forms.TextBox();
+			this.label42 = new System.Windows.Forms.Label();
+			this.txtTileAddress = new System.Windows.Forms.TextBox();
+			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.tpMapEntry = new System.Windows.Forms.TabPage();
+			this.textBox2 = new System.Windows.Forms.TextBox();
 			this.checkMapEntryVFlip = new System.Windows.Forms.CheckBox();
 			this.label34 = new System.Windows.Forms.Label();
 			this.checkMapEntryHFlip = new System.Windows.Forms.CheckBox();
@@ -211,32 +227,48 @@
 			this.txtMapEntryPrio = new System.Windows.Forms.TextBox();
 			this.txtMapEntryLocation = new System.Windows.Forms.TextBox();
 			this.txtMapEntryTileNum = new System.Windows.Forms.TextBox();
+			this.viewerMapEntryTile = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.tpOBJ = new System.Windows.Forms.TabPage();
+			this.txtObjPriority = new System.Windows.Forms.TextBox();
+			this.label50 = new System.Windows.Forms.Label();
+			this.txtObjPaletteMemo = new System.Windows.Forms.TextBox();
+			this.label49 = new System.Windows.Forms.Label();
+			this.txtObjPalette = new System.Windows.Forms.TextBox();
+			this.label48 = new System.Windows.Forms.Label();
+			this.txtObjNameAddr = new System.Windows.Forms.TextBox();
+			this.txtObjName = new System.Windows.Forms.TextBox();
+			this.txtObjSize = new System.Windows.Forms.TextBox();
+			this.label46 = new System.Windows.Forms.Label();
+			this.cbObjLarge = new System.Windows.Forms.CheckBox();
+			this.txtObjNumber = new System.Windows.Forms.TextBox();
+			this.txtObjCoord = new System.Windows.Forms.TextBox();
+			this.cbObjVFlip = new System.Windows.Forms.CheckBox();
+			this.label43 = new System.Windows.Forms.Label();
+			this.cbObjHFlip = new System.Windows.Forms.CheckBox();
+			this.label44 = new System.Windows.Forms.Label();
+			this.viewerObj = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.viewerPanel = new System.Windows.Forms.Panel();
+			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.messagetimer = new System.Windows.Forms.Timer(this.components);
-			this.paletteViewer = new BizHawk.MultiClient.SNESGraphicsViewer();
-			this.viewerTile = new BizHawk.MultiClient.SNESGraphicsViewer();
-			this.viewerMapEntryTile = new BizHawk.MultiClient.SNESGraphicsViewer();
-			this.viewer = new BizHawk.MultiClient.SNESGraphicsViewer();
-			this.labelMemory = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.groupFreeze.SuspendLayout();
 			this.pnGroupFreeze.SuspendLayout();
-			this.groupBox8.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudScanline)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.sliderScanline)).BeginInit();
 			this.groupBox6.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.groupBox8.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.tabctrlDetails.SuspendLayout();
 			this.tpPalette.SuspendLayout();
 			this.tpTile.SuspendLayout();
 			this.tpMapEntry.SuspendLayout();
+			this.tpOBJ.SuspendLayout();
 			this.viewerPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -372,6 +404,15 @@
 			this.pnGroupFreeze.Size = new System.Drawing.Size(208, 94);
 			this.pnGroupFreeze.TabIndex = 0;
 			// 
+			// labelMemory
+			// 
+			this.labelMemory.AutoSize = true;
+			this.labelMemory.Location = new System.Drawing.Point(3, 2);
+			this.labelMemory.Name = "labelMemory";
+			this.labelMemory.Size = new System.Drawing.Size(176, 13);
+			this.labelMemory.TabIndex = 1;
+			this.labelMemory.Text = "Right-click an item to display it here.";
+			// 
 			// check2x
 			// 
 			this.check2x.Appearance = System.Windows.Forms.Appearance.Button;
@@ -385,6 +426,271 @@
         "o fill specified size");
 			this.check2x.UseVisualStyleBackColor = true;
 			this.check2x.CheckedChanged += new System.EventHandler(this.check2x_CheckedChanged);
+			// 
+			// comboDisplayType
+			// 
+			this.comboDisplayType.DisplayMember = "descr";
+			this.comboDisplayType.DropDownHeight = 200;
+			this.comboDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboDisplayType.FormattingEnabled = true;
+			this.comboDisplayType.IntegralHeight = false;
+			this.comboDisplayType.ItemHeight = 13;
+			this.comboDisplayType.Location = new System.Drawing.Point(402, 0);
+			this.comboDisplayType.Name = "comboDisplayType";
+			this.comboDisplayType.Size = new System.Drawing.Size(107, 21);
+			this.comboDisplayType.TabIndex = 18;
+			this.comboDisplayType.ValueMember = "type";
+			this.comboDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboDisplayType_SelectedIndexChanged);
+			// 
+			// label47
+			// 
+			this.label47.AutoSize = true;
+			this.label47.Location = new System.Drawing.Point(442, 22);
+			this.label47.Name = "label47";
+			this.label47.Size = new System.Drawing.Size(40, 13);
+			this.label47.TabIndex = 53;
+			this.label47.Text = "Palette";
+			// 
+			// pnBackdropColor
+			// 
+			this.pnBackdropColor.BackColor = System.Drawing.Color.Red;
+			this.pnBackdropColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pnBackdropColor.Location = new System.Drawing.Point(402, 26);
+			this.pnBackdropColor.Name = "pnBackdropColor";
+			this.pnBackdropColor.Size = new System.Drawing.Size(32, 32);
+			this.pnBackdropColor.TabIndex = 48;
+			this.pnBackdropColor.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pnBackdropColor_MouseDoubleClick);
+			// 
+			// comboPalette
+			// 
+			this.comboPalette.DisplayMember = "descr";
+			this.comboPalette.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboPalette.FormattingEnabled = true;
+			this.comboPalette.Location = new System.Drawing.Point(445, 36);
+			this.comboPalette.Name = "comboPalette";
+			this.comboPalette.Size = new System.Drawing.Size(70, 21);
+			this.comboPalette.TabIndex = 52;
+			this.toolTip1.SetToolTip(this.comboPalette, resources.GetString("comboPalette.ToolTip"));
+			this.comboPalette.ValueMember = "type";
+			this.comboPalette.SelectedIndexChanged += new System.EventHandler(this.comboPalette_SelectedIndexChanged);
+			// 
+			// checkBackdropColor
+			// 
+			this.checkBackdropColor.AutoSize = true;
+			this.checkBackdropColor.Location = new System.Drawing.Point(402, 61);
+			this.checkBackdropColor.Name = "checkBackdropColor";
+			this.checkBackdropColor.Size = new System.Drawing.Size(15, 14);
+			this.checkBackdropColor.TabIndex = 47;
+			this.checkBackdropColor.UseVisualStyleBackColor = true;
+			this.checkBackdropColor.CheckedChanged += new System.EventHandler(this.checkBackdropColor_CheckedChanged);
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.checkScanlineControl);
+			this.groupBox3.Controls.Add(this.label19);
+			this.groupBox3.Controls.Add(this.nudScanline);
+			this.groupBox3.Controls.Add(this.sliderScanline);
+			this.groupBox3.Location = new System.Drawing.Point(178, 281);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(57, 191);
+			this.groupBox3.TabIndex = 46;
+			this.groupBox3.TabStop = false;
+			// 
+			// checkScanlineControl
+			// 
+			this.checkScanlineControl.AutoSize = true;
+			this.checkScanlineControl.Location = new System.Drawing.Point(3, 171);
+			this.checkScanlineControl.Name = "checkScanlineControl";
+			this.checkScanlineControl.Size = new System.Drawing.Size(15, 14);
+			this.checkScanlineControl.TabIndex = 42;
+			this.toolTip1.SetToolTip(this.checkScanlineControl, resources.GetString("checkScanlineControl.ToolTip"));
+			this.checkScanlineControl.UseVisualStyleBackColor = true;
+			this.checkScanlineControl.CheckedChanged += new System.EventHandler(this.checkScanlineControl_CheckedChanged);
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(3, 7);
+			this.label19.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(48, 13);
+			this.label19.TabIndex = 41;
+			this.label19.Text = "Scanline";
+			// 
+			// nudScanline
+			// 
+			this.nudScanline.Location = new System.Drawing.Point(5, 22);
+			this.nudScanline.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+			this.nudScanline.Maximum = new decimal(new int[] {
+            224,
+            0,
+            0,
+            0});
+			this.nudScanline.Name = "nudScanline";
+			this.nudScanline.Size = new System.Drawing.Size(46, 20);
+			this.nudScanline.TabIndex = 39;
+			this.nudScanline.ValueChanged += new System.EventHandler(this.nudScanline_ValueChanged);
+			// 
+			// sliderScanline
+			// 
+			this.sliderScanline.AutoSize = false;
+			this.sliderScanline.Location = new System.Drawing.Point(14, 41);
+			this.sliderScanline.Maximum = 224;
+			this.sliderScanline.Name = "sliderScanline";
+			this.sliderScanline.Orientation = System.Windows.Forms.Orientation.Vertical;
+			this.sliderScanline.Size = new System.Drawing.Size(30, 144);
+			this.sliderScanline.TabIndex = 40;
+			this.sliderScanline.Text = "label14";
+			this.sliderScanline.TickFrequency = 16;
+			this.sliderScanline.Value = 224;
+			this.sliderScanline.ValueChanged += new System.EventHandler(this.sliderScanline_ValueChanged);
+			// 
+			// label24
+			// 
+			this.label24.AutoSize = true;
+			this.label24.Location = new System.Drawing.Point(420, 60);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(78, 13);
+			this.label24.TabIndex = 49;
+			this.label24.Text = "User Backdrop";
+			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.labelClipboard);
+			this.groupBox6.Location = new System.Drawing.Point(2, 520);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(220, 38);
+			this.groupBox6.TabIndex = 50;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "Copy to Clipboard";
+			// 
+			// labelClipboard
+			// 
+			this.labelClipboard.AutoSize = true;
+			this.labelClipboard.Location = new System.Drawing.Point(4, 18);
+			this.labelClipboard.Name = "labelClipboard";
+			this.labelClipboard.Size = new System.Drawing.Size(152, 13);
+			this.labelClipboard.TabIndex = 0;
+			this.labelClipboard.Text = "Mouseover pane and CTRL+C";
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.label26);
+			this.groupBox2.Controls.Add(this.txtOBSELT1OfsBits);
+			this.groupBox2.Controls.Add(this.groupBox8);
+			this.groupBox2.Controls.Add(this.lblEnPrio3);
+			this.groupBox2.Controls.Add(this.txtOBSELT1OfsDescr);
+			this.groupBox2.Controls.Add(this.checkEN1_OBJ);
+			this.groupBox2.Controls.Add(this.label30);
+			this.groupBox2.Controls.Add(this.checkEN1_BG4);
+			this.groupBox2.Controls.Add(this.txtOBSELBaseBits);
+			this.groupBox2.Controls.Add(this.checkEN1_BG3);
+			this.groupBox2.Controls.Add(this.txtOBSELBaseDescr);
+			this.groupBox2.Controls.Add(this.checkEN1_BG2);
+			this.groupBox2.Controls.Add(this.label29);
+			this.groupBox2.Controls.Add(this.checkEN1_BG1);
+			this.groupBox2.Controls.Add(this.txtOBSELSizeBits);
+			this.groupBox2.Controls.Add(this.checkEN3_OBJ);
+			this.groupBox2.Controls.Add(this.checkEN2_OBJ);
+			this.groupBox2.Controls.Add(this.txtOBSELSizeDescr);
+			this.groupBox2.Controls.Add(this.lblEnPrio2);
+			this.groupBox2.Controls.Add(this.label28);
+			this.groupBox2.Controls.Add(this.lblEnPrio1);
+			this.groupBox2.Controls.Add(this.label20);
+			this.groupBox2.Controls.Add(this.checkScreenExtbg);
+			this.groupBox2.Controls.Add(this.label38);
+			this.groupBox2.Controls.Add(this.label21);
+			this.groupBox2.Controls.Add(this.txtScreenCGADSUB_Half);
+			this.groupBox2.Controls.Add(this.checkScreenHires);
+			this.groupBox2.Controls.Add(this.lblEnPrio0);
+			this.groupBox2.Controls.Add(this.label18391);
+			this.groupBox2.Controls.Add(this.checkEN0_OBJ);
+			this.groupBox2.Controls.Add(this.checkScreenOverscan);
+			this.groupBox2.Controls.Add(this.checkEN0_BG4);
+			this.groupBox2.Controls.Add(this.label198129381279841);
+			this.groupBox2.Controls.Add(this.checkEN0_BG3);
+			this.groupBox2.Controls.Add(this.checkScreenObjInterlace);
+			this.groupBox2.Controls.Add(this.checkEN0_BG2);
+			this.groupBox2.Controls.Add(this.label123812831);
+			this.groupBox2.Controls.Add(this.checkEN0_BG1);
+			this.groupBox2.Controls.Add(this.checkScreenInterlace);
+			this.groupBox2.Controls.Add(this.txtScreenCGADSUB_AddSub_Descr);
+			this.groupBox2.Controls.Add(this.label2193813);
+			this.groupBox2.Controls.Add(this.txtScreenCGADSUB_AddSub);
+			this.groupBox2.Controls.Add(this.label36);
+			this.groupBox2.Controls.Add(this.checkTMOBJ);
+			this.groupBox2.Controls.Add(this.checkTSOBJ);
+			this.groupBox2.Controls.Add(this.checkMathBK);
+			this.groupBox2.Controls.Add(this.label35);
+			this.groupBox2.Controls.Add(this.checkMathBG4);
+			this.groupBox2.Controls.Add(this.checkMathBG3);
+			this.groupBox2.Controls.Add(this.checkMathBG2);
+			this.groupBox2.Controls.Add(this.checkMathBG1);
+			this.groupBox2.Controls.Add(this.label33);
+			this.groupBox2.Controls.Add(this.checkMathOBJ);
+			this.groupBox2.Controls.Add(this.lblTS);
+			this.groupBox2.Controls.Add(this.checkTSBG4);
+			this.groupBox2.Controls.Add(this.checkTSBG3);
+			this.groupBox2.Controls.Add(this.checkTSBG2);
+			this.groupBox2.Controls.Add(this.checkTSBG1);
+			this.groupBox2.Controls.Add(this.lblTM);
+			this.groupBox2.Controls.Add(this.checkTMBG4);
+			this.groupBox2.Controls.Add(this.checkTMBG3);
+			this.groupBox2.Controls.Add(this.checkTMBG2);
+			this.groupBox2.Controls.Add(this.checkTMBG1);
+			this.groupBox2.Controls.Add(this.label32);
+			this.groupBox2.Controls.Add(this.label31);
+			this.groupBox2.Controls.Add(this.label25);
+			this.groupBox2.Controls.Add(this.txtScreenCGWSEL_MathFixed);
+			this.groupBox2.Controls.Add(this.label2893719831);
+			this.groupBox2.Controls.Add(this.txtScreenCGWSEL_ColorSubMask);
+			this.groupBox2.Controls.Add(this.label23);
+			this.groupBox2.Controls.Add(this.txtScreenCGWSEL_ColorMask);
+			this.groupBox2.Controls.Add(this.label22);
+			this.groupBox2.Controls.Add(this.label27);
+			this.groupBox2.Controls.Add(this.checkScreenCGWSEL_DirectColor);
+			this.groupBox2.Controls.Add(this.label16);
+			this.groupBox2.Controls.Add(this.txtScreenBG4TSize);
+			this.groupBox2.Controls.Add(this.txtScreenBG3TSize);
+			this.groupBox2.Controls.Add(this.txtScreenBG2TSize);
+			this.groupBox2.Controls.Add(this.txtScreenBG1TSize);
+			this.groupBox2.Controls.Add(this.txtScreenBG4Bpp);
+			this.groupBox2.Controls.Add(this.label1);
+			this.groupBox2.Controls.Add(this.txtScreenBG3Bpp);
+			this.groupBox2.Controls.Add(this.txtModeBits);
+			this.groupBox2.Controls.Add(this.txtScreenBG2Bpp);
+			this.groupBox2.Controls.Add(this.label8);
+			this.groupBox2.Controls.Add(this.label7);
+			this.groupBox2.Controls.Add(this.txtScreenBG1Bpp);
+			this.groupBox2.Controls.Add(this.lblBG3);
+			this.groupBox2.Controls.Add(this.label4);
+			this.groupBox2.Controls.Add(this.label5);
+			this.groupBox2.Location = new System.Drawing.Point(0, 0);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(294, 275);
+			this.groupBox2.TabIndex = 16;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Screen";
+			// 
+			// label26
+			// 
+			this.label26.AutoSize = true;
+			this.label26.Location = new System.Drawing.Point(6, 194);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(42, 13);
+			this.label26.TabIndex = 45;
+			this.label26.Text = "OBSEL";
+			// 
+			// txtOBSELT1OfsBits
+			// 
+			this.txtOBSELT1OfsBits.BackColor = System.Drawing.Color.LightGreen;
+			this.txtOBSELT1OfsBits.Location = new System.Drawing.Point(13, 249);
+			this.txtOBSELT1OfsBits.Multiline = true;
+			this.txtOBSELT1OfsBits.Name = "txtOBSELT1OfsBits";
+			this.txtOBSELT1OfsBits.ReadOnly = true;
+			this.txtOBSELT1OfsBits.Size = new System.Drawing.Size(15, 17);
+			this.txtOBSELT1OfsBits.TabIndex = 55;
+			this.txtOBSELT1OfsBits.Text = "00";
 			// 
 			// groupBox8
 			// 
@@ -525,278 +831,17 @@
 			this.radioButton2.Text = "BG2";
 			this.radioButton2.UseVisualStyleBackColor = true;
 			// 
-			// comboDisplayType
+			// lblEnPrio3
 			// 
-			this.comboDisplayType.DisplayMember = "descr";
-			this.comboDisplayType.DropDownHeight = 200;
-			this.comboDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboDisplayType.FormattingEnabled = true;
-			this.comboDisplayType.IntegralHeight = false;
-			this.comboDisplayType.ItemHeight = 13;
-			this.comboDisplayType.Location = new System.Drawing.Point(402, 0);
-			this.comboDisplayType.Name = "comboDisplayType";
-			this.comboDisplayType.Size = new System.Drawing.Size(107, 21);
-			this.comboDisplayType.TabIndex = 18;
-			this.comboDisplayType.ValueMember = "type";
-			this.comboDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboDisplayType_SelectedIndexChanged);
-			// 
-			// label47
-			// 
-			this.label47.AutoSize = true;
-			this.label47.Location = new System.Drawing.Point(442, 22);
-			this.label47.Name = "label47";
-			this.label47.Size = new System.Drawing.Size(40, 13);
-			this.label47.TabIndex = 53;
-			this.label47.Text = "Palette";
-			// 
-			// pnBackdropColor
-			// 
-			this.pnBackdropColor.BackColor = System.Drawing.Color.Red;
-			this.pnBackdropColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pnBackdropColor.Location = new System.Drawing.Point(402, 26);
-			this.pnBackdropColor.Name = "pnBackdropColor";
-			this.pnBackdropColor.Size = new System.Drawing.Size(32, 32);
-			this.pnBackdropColor.TabIndex = 48;
-			this.pnBackdropColor.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pnBackdropColor_MouseDoubleClick);
-			// 
-			// comboPalette
-			// 
-			this.comboPalette.DisplayMember = "descr";
-			this.comboPalette.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboPalette.FormattingEnabled = true;
-			this.comboPalette.Location = new System.Drawing.Point(445, 36);
-			this.comboPalette.Name = "comboPalette";
-			this.comboPalette.Size = new System.Drawing.Size(70, 21);
-			this.comboPalette.TabIndex = 52;
-			this.comboPalette.ValueMember = "type";
-			this.comboPalette.SelectedIndexChanged += new System.EventHandler(this.comboPalette_SelectedIndexChanged);
-			// 
-			// checkBackdropColor
-			// 
-			this.checkBackdropColor.AutoSize = true;
-			this.checkBackdropColor.Location = new System.Drawing.Point(402, 61);
-			this.checkBackdropColor.Name = "checkBackdropColor";
-			this.checkBackdropColor.Size = new System.Drawing.Size(15, 14);
-			this.checkBackdropColor.TabIndex = 47;
-			this.checkBackdropColor.UseVisualStyleBackColor = true;
-			this.checkBackdropColor.CheckedChanged += new System.EventHandler(this.checkBackdropColor_CheckedChanged);
-			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.checkScanlineControl);
-			this.groupBox3.Controls.Add(this.label19);
-			this.groupBox3.Controls.Add(this.nudScanline);
-			this.groupBox3.Controls.Add(this.sliderScanline);
-			this.groupBox3.Location = new System.Drawing.Point(178, 281);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(57, 191);
-			this.groupBox3.TabIndex = 46;
-			this.groupBox3.TabStop = false;
-			// 
-			// checkScanlineControl
-			// 
-			this.checkScanlineControl.AutoSize = true;
-			this.checkScanlineControl.Location = new System.Drawing.Point(3, 171);
-			this.checkScanlineControl.Name = "checkScanlineControl";
-			this.checkScanlineControl.Size = new System.Drawing.Size(15, 14);
-			this.checkScanlineControl.TabIndex = 42;
-			this.toolTip1.SetToolTip(this.checkScanlineControl, resources.GetString("checkScanlineControl.ToolTip"));
-			this.checkScanlineControl.UseVisualStyleBackColor = true;
-			this.checkScanlineControl.CheckedChanged += new System.EventHandler(this.checkScanlineControl_CheckedChanged);
-			// 
-			// label19
-			// 
-			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(3, 7);
-			this.label19.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(48, 13);
-			this.label19.TabIndex = 41;
-			this.label19.Text = "Scanline";
-			// 
-			// nudScanline
-			// 
-			this.nudScanline.Location = new System.Drawing.Point(5, 22);
-			this.nudScanline.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-			this.nudScanline.Maximum = new decimal(new int[] {
-            224,
-            0,
-            0,
-            0});
-			this.nudScanline.Name = "nudScanline";
-			this.nudScanline.Size = new System.Drawing.Size(46, 20);
-			this.nudScanline.TabIndex = 39;
-			this.nudScanline.ValueChanged += new System.EventHandler(this.nudScanline_ValueChanged);
-			// 
-			// sliderScanline
-			// 
-			this.sliderScanline.AutoSize = false;
-			this.sliderScanline.Location = new System.Drawing.Point(14, 41);
-			this.sliderScanline.Maximum = 224;
-			this.sliderScanline.Name = "sliderScanline";
-			this.sliderScanline.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.sliderScanline.Size = new System.Drawing.Size(30, 144);
-			this.sliderScanline.TabIndex = 40;
-			this.sliderScanline.Text = "label14";
-			this.sliderScanline.TickFrequency = 16;
-			this.sliderScanline.Value = 224;
-			this.sliderScanline.ValueChanged += new System.EventHandler(this.sliderScanline_ValueChanged);
-			// 
-			// label24
-			// 
-			this.label24.AutoSize = true;
-			this.label24.Location = new System.Drawing.Point(420, 60);
-			this.label24.Name = "label24";
-			this.label24.Size = new System.Drawing.Size(78, 13);
-			this.label24.TabIndex = 49;
-			this.label24.Text = "User Backdrop";
-			// 
-			// groupBox6
-			// 
-			this.groupBox6.Controls.Add(this.labelClipboard);
-			this.groupBox6.Location = new System.Drawing.Point(2, 495);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(161, 38);
-			this.groupBox6.TabIndex = 50;
-			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = "Copy to Clipboard";
-			// 
-			// labelClipboard
-			// 
-			this.labelClipboard.AutoSize = true;
-			this.labelClipboard.Location = new System.Drawing.Point(4, 18);
-			this.labelClipboard.Name = "labelClipboard";
-			this.labelClipboard.Size = new System.Drawing.Size(152, 13);
-			this.labelClipboard.TabIndex = 0;
-			this.labelClipboard.Text = "Mouseover pane and CTRL+C";
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.label26);
-			this.groupBox2.Controls.Add(this.txtOBSELT1OfsBits);
-			this.groupBox2.Controls.Add(this.groupBox8);
-			this.groupBox2.Controls.Add(this.label41);
-			this.groupBox2.Controls.Add(this.txtOBSELT1OfsDescr);
-			this.groupBox2.Controls.Add(this.checkEN1_OBJ);
-			this.groupBox2.Controls.Add(this.label30);
-			this.groupBox2.Controls.Add(this.checkEN1_BG4);
-			this.groupBox2.Controls.Add(this.txtOBSELBaseBits);
-			this.groupBox2.Controls.Add(this.checkEN1_BG3);
-			this.groupBox2.Controls.Add(this.txtOBSELBaseDescr);
-			this.groupBox2.Controls.Add(this.checkEN1_BG2);
-			this.groupBox2.Controls.Add(this.label29);
-			this.groupBox2.Controls.Add(this.checkEN1_BG1);
-			this.groupBox2.Controls.Add(this.txtOBSELSizeBits);
-			this.groupBox2.Controls.Add(this.checkEN3_OBJ);
-			this.groupBox2.Controls.Add(this.checkEN2_OBJ);
-			this.groupBox2.Controls.Add(this.txtOBSELSizeDescr);
-			this.groupBox2.Controls.Add(this.label40);
-			this.groupBox2.Controls.Add(this.label28);
-			this.groupBox2.Controls.Add(this.label39);
-			this.groupBox2.Controls.Add(this.label20);
-			this.groupBox2.Controls.Add(this.checkScreenExtbg);
-			this.groupBox2.Controls.Add(this.label38);
-			this.groupBox2.Controls.Add(this.label21);
-			this.groupBox2.Controls.Add(this.txtScreenCGADSUB_Half);
-			this.groupBox2.Controls.Add(this.checkScreenHires);
-			this.groupBox2.Controls.Add(this.label37);
-			this.groupBox2.Controls.Add(this.label18391);
-			this.groupBox2.Controls.Add(this.checkEN0_OBJ);
-			this.groupBox2.Controls.Add(this.checkScreenOverscan);
-			this.groupBox2.Controls.Add(this.checkEN0_BG4);
-			this.groupBox2.Controls.Add(this.label198129381279841);
-			this.groupBox2.Controls.Add(this.checkEN0_BG3);
-			this.groupBox2.Controls.Add(this.checkScreenObjInterlace);
-			this.groupBox2.Controls.Add(this.checkEN0_BG2);
-			this.groupBox2.Controls.Add(this.label123812831);
-			this.groupBox2.Controls.Add(this.checkEN0_BG1);
-			this.groupBox2.Controls.Add(this.checkScreenInterlace);
-			this.groupBox2.Controls.Add(this.txtScreenCGADSUB_AddSub_Descr);
-			this.groupBox2.Controls.Add(this.label2193813);
-			this.groupBox2.Controls.Add(this.txtScreenCGADSUB_AddSub);
-			this.groupBox2.Controls.Add(this.label36);
-			this.groupBox2.Controls.Add(this.checkTMOBJ);
-			this.groupBox2.Controls.Add(this.checkTSOBJ);
-			this.groupBox2.Controls.Add(this.checkMathBK);
-			this.groupBox2.Controls.Add(this.label35);
-			this.groupBox2.Controls.Add(this.checkMathBG4);
-			this.groupBox2.Controls.Add(this.checkMathBG3);
-			this.groupBox2.Controls.Add(this.checkMathBG2);
-			this.groupBox2.Controls.Add(this.checkMathBG1);
-			this.groupBox2.Controls.Add(this.label33);
-			this.groupBox2.Controls.Add(this.checkMathOBJ);
-			this.groupBox2.Controls.Add(this.lblTS);
-			this.groupBox2.Controls.Add(this.checkTSBG4);
-			this.groupBox2.Controls.Add(this.checkTSBG3);
-			this.groupBox2.Controls.Add(this.checkTSBG2);
-			this.groupBox2.Controls.Add(this.checkTSBG1);
-			this.groupBox2.Controls.Add(this.lblTM);
-			this.groupBox2.Controls.Add(this.checkTMBG4);
-			this.groupBox2.Controls.Add(this.checkTMBG3);
-			this.groupBox2.Controls.Add(this.checkTMBG2);
-			this.groupBox2.Controls.Add(this.checkTMBG1);
-			this.groupBox2.Controls.Add(this.label32);
-			this.groupBox2.Controls.Add(this.label31);
-			this.groupBox2.Controls.Add(this.label25);
-			this.groupBox2.Controls.Add(this.txtScreenCGWSEL_MathFixed);
-			this.groupBox2.Controls.Add(this.label2893719831);
-			this.groupBox2.Controls.Add(this.txtScreenCGWSEL_ColorSubMask);
-			this.groupBox2.Controls.Add(this.label23);
-			this.groupBox2.Controls.Add(this.txtScreenCGWSEL_ColorMask);
-			this.groupBox2.Controls.Add(this.label22);
-			this.groupBox2.Controls.Add(this.label27);
-			this.groupBox2.Controls.Add(this.checkScreenCGWSEL_DirectColor);
-			this.groupBox2.Controls.Add(this.label16);
-			this.groupBox2.Controls.Add(this.txtScreenBG4TSize);
-			this.groupBox2.Controls.Add(this.txtScreenBG3TSize);
-			this.groupBox2.Controls.Add(this.txtScreenBG2TSize);
-			this.groupBox2.Controls.Add(this.txtScreenBG1TSize);
-			this.groupBox2.Controls.Add(this.txtScreenBG4Bpp);
-			this.groupBox2.Controls.Add(this.label1);
-			this.groupBox2.Controls.Add(this.txtScreenBG3Bpp);
-			this.groupBox2.Controls.Add(this.txtModeBits);
-			this.groupBox2.Controls.Add(this.txtScreenBG2Bpp);
-			this.groupBox2.Controls.Add(this.label8);
-			this.groupBox2.Controls.Add(this.label7);
-			this.groupBox2.Controls.Add(this.txtScreenBG1Bpp);
-			this.groupBox2.Controls.Add(this.lblBG3);
-			this.groupBox2.Controls.Add(this.label4);
-			this.groupBox2.Controls.Add(this.label5);
-			this.groupBox2.Location = new System.Drawing.Point(0, 0);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(294, 275);
-			this.groupBox2.TabIndex = 16;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Screen";
-			// 
-			// label26
-			// 
-			this.label26.AutoSize = true;
-			this.label26.Location = new System.Drawing.Point(6, 194);
-			this.label26.Name = "label26";
-			this.label26.Size = new System.Drawing.Size(42, 13);
-			this.label26.TabIndex = 45;
-			this.label26.Text = "OBSEL";
-			// 
-			// txtOBSELT1OfsBits
-			// 
-			this.txtOBSELT1OfsBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtOBSELT1OfsBits.Location = new System.Drawing.Point(13, 249);
-			this.txtOBSELT1OfsBits.Multiline = true;
-			this.txtOBSELT1OfsBits.Name = "txtOBSELT1OfsBits";
-			this.txtOBSELT1OfsBits.ReadOnly = true;
-			this.txtOBSELT1OfsBits.Size = new System.Drawing.Size(15, 17);
-			this.txtOBSELT1OfsBits.TabIndex = 55;
-			this.txtOBSELT1OfsBits.Text = "00";
-			// 
-			// label41
-			// 
-			this.label41.AutoSize = true;
-			this.label41.Location = new System.Drawing.Point(10, 161);
-			this.label41.Name = "label41";
-			this.label41.Size = new System.Drawing.Size(41, 13);
-			this.label41.TabIndex = 101;
-			this.label41.Text = "EN.Pr3";
+			this.lblEnPrio3.AutoSize = true;
+			this.lblEnPrio3.ForeColor = System.Drawing.Color.Blue;
+			this.lblEnPrio3.Location = new System.Drawing.Point(3, 161);
+			this.lblEnPrio3.Name = "lblEnPrio3";
+			this.lblEnPrio3.Size = new System.Drawing.Size(49, 13);
+			this.lblEnPrio3.TabIndex = 101;
+			this.lblEnPrio3.Text = "EN.Prio3";
+			this.lblEnPrio3.Click += new System.EventHandler(this.lblEnPrio3_Click);
+			this.lblEnPrio3.DoubleClick += new System.EventHandler(this.lblEnPrio3_Click);
 			// 
 			// txtOBSELT1OfsDescr
 			// 
@@ -822,9 +867,9 @@
 			this.label30.AutoSize = true;
 			this.label30.Location = new System.Drawing.Point(32, 252);
 			this.label30.Name = "label30";
-			this.label30.Size = new System.Drawing.Size(45, 13);
+			this.label30.Size = new System.Drawing.Size(46, 13);
 			this.label30.TabIndex = 53;
-			this.label30.Text = "T1.Addr";
+			this.label30.Text = "@Tiles1";
 			// 
 			// checkEN1_BG4
 			// 
@@ -881,9 +926,9 @@
 			this.label29.AutoSize = true;
 			this.label29.Location = new System.Drawing.Point(32, 233);
 			this.label29.Name = "label29";
-			this.label29.Size = new System.Drawing.Size(47, 13);
+			this.label29.Size = new System.Drawing.Size(46, 13);
 			this.label29.TabIndex = 50;
-			this.label29.Text = "TD.Addr";
+			this.label29.Text = "@Tiles0";
 			// 
 			// checkEN1_BG1
 			// 
@@ -936,14 +981,17 @@
 			this.txtOBSELSizeDescr.TabIndex = 48;
 			this.txtOBSELSizeDescr.Text = "64x32, 32x32";
 			// 
-			// label40
+			// lblEnPrio2
 			// 
-			this.label40.AutoSize = true;
-			this.label40.Location = new System.Drawing.Point(10, 146);
-			this.label40.Name = "label40";
-			this.label40.Size = new System.Drawing.Size(41, 13);
-			this.label40.TabIndex = 93;
-			this.label40.Text = "EN.Pr2";
+			this.lblEnPrio2.AutoSize = true;
+			this.lblEnPrio2.ForeColor = System.Drawing.Color.Blue;
+			this.lblEnPrio2.Location = new System.Drawing.Point(3, 146);
+			this.lblEnPrio2.Name = "lblEnPrio2";
+			this.lblEnPrio2.Size = new System.Drawing.Size(49, 13);
+			this.lblEnPrio2.TabIndex = 93;
+			this.lblEnPrio2.Text = "EN.Prio2";
+			this.lblEnPrio2.Click += new System.EventHandler(this.lblEnPrio2_Click);
+			this.lblEnPrio2.DoubleClick += new System.EventHandler(this.lblEnPrio2_Click);
 			// 
 			// label28
 			// 
@@ -954,14 +1002,17 @@
 			this.label28.TabIndex = 47;
 			this.label28.Text = "Size";
 			// 
-			// label39
+			// lblEnPrio1
 			// 
-			this.label39.AutoSize = true;
-			this.label39.Location = new System.Drawing.Point(162, 130);
-			this.label39.Name = "label39";
-			this.label39.Size = new System.Drawing.Size(41, 13);
-			this.label39.TabIndex = 92;
-			this.label39.Text = "EN.Pr1";
+			this.lblEnPrio1.AutoSize = true;
+			this.lblEnPrio1.ForeColor = System.Drawing.Color.Blue;
+			this.lblEnPrio1.Location = new System.Drawing.Point(162, 130);
+			this.lblEnPrio1.Name = "lblEnPrio1";
+			this.lblEnPrio1.Size = new System.Drawing.Size(49, 13);
+			this.lblEnPrio1.TabIndex = 92;
+			this.lblEnPrio1.Text = "EN.Prio1";
+			this.lblEnPrio1.Click += new System.EventHandler(this.lblEnPrio1_Click);
+			this.lblEnPrio1.DoubleClick += new System.EventHandler(this.lblEnPrio1_Click);
 			// 
 			// label20
 			// 
@@ -985,7 +1036,7 @@
 			// label38
 			// 
 			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(228, 131);
+			this.label38.Location = new System.Drawing.Point(229, 131);
 			this.label38.Name = "label38";
 			this.label38.Size = new System.Drawing.Size(26, 13);
 			this.label38.TabIndex = 91;
@@ -1004,7 +1055,7 @@
 			// 
 			this.txtScreenCGADSUB_Half.AutoSize = true;
 			this.txtScreenCGADSUB_Half.Enabled = false;
-			this.txtScreenCGADSUB_Half.Location = new System.Drawing.Point(213, 131);
+			this.txtScreenCGADSUB_Half.Location = new System.Drawing.Point(214, 131);
 			this.txtScreenCGADSUB_Half.Name = "txtScreenCGADSUB_Half";
 			this.txtScreenCGADSUB_Half.Size = new System.Drawing.Size(15, 14);
 			this.txtScreenCGADSUB_Half.TabIndex = 90;
@@ -1020,14 +1071,17 @@
 			this.checkScreenHires.TabIndex = 24;
 			this.checkScreenHires.UseVisualStyleBackColor = true;
 			// 
-			// label37
+			// lblEnPrio0
 			// 
-			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(162, 115);
-			this.label37.Name = "label37";
-			this.label37.Size = new System.Drawing.Size(41, 13);
-			this.label37.TabIndex = 89;
-			this.label37.Text = "EN.Pr0";
+			this.lblEnPrio0.AutoSize = true;
+			this.lblEnPrio0.ForeColor = System.Drawing.Color.Blue;
+			this.lblEnPrio0.Location = new System.Drawing.Point(162, 115);
+			this.lblEnPrio0.Name = "lblEnPrio0";
+			this.lblEnPrio0.Size = new System.Drawing.Size(49, 13);
+			this.lblEnPrio0.TabIndex = 89;
+			this.lblEnPrio0.Text = "EN.Prio0";
+			this.lblEnPrio0.Click += new System.EventHandler(this.lblEnPrio0_Click);
+			this.lblEnPrio0.DoubleClick += new System.EventHandler(this.lblEnPrio0_Click);
 			// 
 			// label18391
 			// 
@@ -1138,7 +1192,7 @@
 			// 
 			// txtScreenCGADSUB_AddSub_Descr
 			// 
-			this.txtScreenCGADSUB_AddSub_Descr.Location = new System.Drawing.Point(233, 112);
+			this.txtScreenCGADSUB_AddSub_Descr.Location = new System.Drawing.Point(234, 112);
 			this.txtScreenCGADSUB_AddSub_Descr.Multiline = true;
 			this.txtScreenCGADSUB_AddSub_Descr.Name = "txtScreenCGADSUB_AddSub_Descr";
 			this.txtScreenCGADSUB_AddSub_Descr.ReadOnly = true;
@@ -1158,7 +1212,7 @@
 			// txtScreenCGADSUB_AddSub
 			// 
 			this.txtScreenCGADSUB_AddSub.BackColor = System.Drawing.Color.LightGreen;
-			this.txtScreenCGADSUB_AddSub.Location = new System.Drawing.Point(212, 112);
+			this.txtScreenCGADSUB_AddSub.Location = new System.Drawing.Point(213, 112);
 			this.txtScreenCGADSUB_AddSub.Multiline = true;
 			this.txtScreenCGADSUB_AddSub.Name = "txtScreenCGADSUB_AddSub";
 			this.txtScreenCGADSUB_AddSub.ReadOnly = true;
@@ -1169,7 +1223,7 @@
 			// label36
 			// 
 			this.label36.AutoSize = true;
-			this.label36.Location = new System.Drawing.Point(205, 96);
+			this.label36.Location = new System.Drawing.Point(206, 96);
 			this.label36.Name = "label36";
 			this.label36.Size = new System.Drawing.Size(59, 13);
 			this.label36.TabIndex = 82;
@@ -1407,7 +1461,7 @@
 			// label25
 			// 
 			this.label25.AutoSize = true;
-			this.label25.Location = new System.Drawing.Point(228, 64);
+			this.label25.Location = new System.Drawing.Point(229, 64);
 			this.label25.Name = "label25";
 			this.label25.Size = new System.Drawing.Size(61, 13);
 			this.label25.TabIndex = 44;
@@ -1416,7 +1470,7 @@
 			// txtScreenCGWSEL_MathFixed
 			// 
 			this.txtScreenCGWSEL_MathFixed.BackColor = System.Drawing.Color.LightGreen;
-			this.txtScreenCGWSEL_MathFixed.Location = new System.Drawing.Point(212, 62);
+			this.txtScreenCGWSEL_MathFixed.Location = new System.Drawing.Point(213, 62);
 			this.txtScreenCGWSEL_MathFixed.Multiline = true;
 			this.txtScreenCGWSEL_MathFixed.Name = "txtScreenCGWSEL_MathFixed";
 			this.txtScreenCGWSEL_MathFixed.ReadOnly = true;
@@ -1427,7 +1481,7 @@
 			// label2893719831
 			// 
 			this.label2893719831.AutoSize = true;
-			this.label2893719831.Location = new System.Drawing.Point(228, 45);
+			this.label2893719831.Location = new System.Drawing.Point(229, 45);
 			this.label2893719831.Name = "label2893719831";
 			this.label2893719831.Size = new System.Drawing.Size(52, 13);
 			this.label2893719831.TabIndex = 42;
@@ -1436,7 +1490,7 @@
 			// txtScreenCGWSEL_ColorSubMask
 			// 
 			this.txtScreenCGWSEL_ColorSubMask.BackColor = System.Drawing.Color.LightGreen;
-			this.txtScreenCGWSEL_ColorSubMask.Location = new System.Drawing.Point(212, 43);
+			this.txtScreenCGWSEL_ColorSubMask.Location = new System.Drawing.Point(213, 43);
 			this.txtScreenCGWSEL_ColorSubMask.Multiline = true;
 			this.txtScreenCGWSEL_ColorSubMask.Name = "txtScreenCGWSEL_ColorSubMask";
 			this.txtScreenCGWSEL_ColorSubMask.ReadOnly = true;
@@ -1447,7 +1501,7 @@
 			// label23
 			// 
 			this.label23.AutoSize = true;
-			this.label23.Location = new System.Drawing.Point(228, 27);
+			this.label23.Location = new System.Drawing.Point(229, 27);
 			this.label23.Name = "label23";
 			this.label23.Size = new System.Drawing.Size(56, 13);
 			this.label23.TabIndex = 40;
@@ -1456,7 +1510,7 @@
 			// txtScreenCGWSEL_ColorMask
 			// 
 			this.txtScreenCGWSEL_ColorMask.BackColor = System.Drawing.Color.LightGreen;
-			this.txtScreenCGWSEL_ColorMask.Location = new System.Drawing.Point(212, 25);
+			this.txtScreenCGWSEL_ColorMask.Location = new System.Drawing.Point(213, 25);
 			this.txtScreenCGWSEL_ColorMask.Multiline = true;
 			this.txtScreenCGWSEL_ColorMask.Name = "txtScreenCGWSEL_ColorMask";
 			this.txtScreenCGWSEL_ColorMask.ReadOnly = true;
@@ -1467,7 +1521,7 @@
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(205, 10);
+			this.label22.Location = new System.Drawing.Point(206, 10);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(53, 13);
 			this.label22.TabIndex = 32;
@@ -1476,7 +1530,7 @@
 			// label27
 			// 
 			this.label27.AutoSize = true;
-			this.label27.Location = new System.Drawing.Point(228, 81);
+			this.label27.Location = new System.Drawing.Point(229, 81);
 			this.label27.Name = "label27";
 			this.label27.Size = new System.Drawing.Size(59, 13);
 			this.label27.TabIndex = 31;
@@ -1486,7 +1540,7 @@
 			// 
 			this.checkScreenCGWSEL_DirectColor.AutoSize = true;
 			this.checkScreenCGWSEL_DirectColor.Enabled = false;
-			this.checkScreenCGWSEL_DirectColor.Location = new System.Drawing.Point(213, 81);
+			this.checkScreenCGWSEL_DirectColor.Location = new System.Drawing.Point(214, 81);
 			this.checkScreenCGWSEL_DirectColor.Name = "checkScreenCGWSEL_DirectColor";
 			this.checkScreenCGWSEL_DirectColor.Size = new System.Drawing.Size(15, 14);
 			this.checkScreenCGWSEL_DirectColor.TabIndex = 30;
@@ -1649,6 +1703,9 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.txtBG1Scroll);
+			this.groupBox1.Controls.Add(this.label37);
+			this.groupBox1.Controls.Add(this.txtBG1MapSizeBytes);
 			this.groupBox1.Controls.Add(this.txtBGPaletteInfo);
 			this.groupBox1.Controls.Add(this.rbBG4);
 			this.groupBox1.Controls.Add(this.rbBG3);
@@ -1676,14 +1733,43 @@
 			this.groupBox1.Controls.Add(this.txtBG1SizeBits);
 			this.groupBox1.Location = new System.Drawing.Point(2, 281);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(170, 208);
+			this.groupBox1.Size = new System.Drawing.Size(170, 233);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "BG";
 			// 
+			// txtBG1Scroll
+			// 
+			this.txtBG1Scroll.Location = new System.Drawing.Point(73, 134);
+			this.txtBG1Scroll.Multiline = true;
+			this.txtBG1Scroll.Name = "txtBG1Scroll";
+			this.txtBG1Scroll.ReadOnly = true;
+			this.txtBG1Scroll.Size = new System.Drawing.Size(72, 18);
+			this.txtBG1Scroll.TabIndex = 42;
+			this.txtBG1Scroll.Text = "1024,1024";
+			// 
+			// label37
+			// 
+			this.label37.AutoSize = true;
+			this.label37.Location = new System.Drawing.Point(35, 137);
+			this.label37.Name = "label37";
+			this.label37.Size = new System.Drawing.Size(36, 13);
+			this.label37.TabIndex = 41;
+			this.label37.Text = "Scroll:";
+			// 
+			// txtBG1MapSizeBytes
+			// 
+			this.txtBG1MapSizeBytes.Location = new System.Drawing.Point(34, 112);
+			this.txtBG1MapSizeBytes.Multiline = true;
+			this.txtBG1MapSizeBytes.Name = "txtBG1MapSizeBytes";
+			this.txtBG1MapSizeBytes.ReadOnly = true;
+			this.txtBG1MapSizeBytes.Size = new System.Drawing.Size(33, 17);
+			this.txtBG1MapSizeBytes.TabIndex = 40;
+			this.txtBG1MapSizeBytes.Text = "(32K)";
+			// 
 			// txtBGPaletteInfo
 			// 
-			this.txtBGPaletteInfo.Location = new System.Drawing.Point(5, 181);
+			this.txtBGPaletteInfo.Location = new System.Drawing.Point(5, 206);
 			this.txtBGPaletteInfo.Multiline = true;
 			this.txtBGPaletteInfo.Name = "txtBGPaletteInfo";
 			this.txtBGPaletteInfo.ReadOnly = true;
@@ -1824,7 +1910,7 @@
 			// 
 			// txtBG1TDAddrDescr
 			// 
-			this.txtBG1TDAddrDescr.Location = new System.Drawing.Point(73, 156);
+			this.txtBG1TDAddrDescr.Location = new System.Drawing.Point(73, 177);
 			this.txtBG1TDAddrDescr.Multiline = true;
 			this.txtBG1TDAddrDescr.Name = "txtBG1TDAddrDescr";
 			this.txtBG1TDAddrDescr.ReadOnly = true;
@@ -1835,7 +1921,7 @@
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(30, 161);
+			this.label11.Location = new System.Drawing.Point(30, 182);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(40, 13);
 			this.label11.TabIndex = 14;
@@ -1843,7 +1929,7 @@
 			// 
 			// txtBG1SCAddrDescr
 			// 
-			this.txtBG1SCAddrDescr.Location = new System.Drawing.Point(73, 134);
+			this.txtBG1SCAddrDescr.Location = new System.Drawing.Point(73, 155);
 			this.txtBG1SCAddrDescr.Multiline = true;
 			this.txtBG1SCAddrDescr.Name = "txtBG1SCAddrDescr";
 			this.txtBG1SCAddrDescr.ReadOnly = true;
@@ -1863,7 +1949,7 @@
 			// txtBG1TDAddrBits
 			// 
 			this.txtBG1TDAddrBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1TDAddrBits.Location = new System.Drawing.Point(5, 158);
+			this.txtBG1TDAddrBits.Location = new System.Drawing.Point(5, 179);
 			this.txtBG1TDAddrBits.Multiline = true;
 			this.txtBG1TDAddrBits.Name = "txtBG1TDAddrBits";
 			this.txtBG1TDAddrBits.ReadOnly = true;
@@ -1874,7 +1960,7 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(30, 137);
+			this.label10.Location = new System.Drawing.Point(30, 158);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(40, 13);
 			this.label10.TabIndex = 11;
@@ -1893,7 +1979,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(124, 95);
+			this.label3.Location = new System.Drawing.Point(134, 96);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(32, 13);
 			this.label3.TabIndex = 7;
@@ -1902,7 +1988,7 @@
 			// txtBG1SCAddrBits
 			// 
 			this.txtBG1SCAddrBits.BackColor = System.Drawing.Color.LightGreen;
-			this.txtBG1SCAddrBits.Location = new System.Drawing.Point(5, 134);
+			this.txtBG1SCAddrBits.Location = new System.Drawing.Point(5, 155);
 			this.txtBG1SCAddrBits.Multiline = true;
 			this.txtBG1SCAddrBits.Name = "txtBG1SCAddrBits";
 			this.txtBG1SCAddrBits.ReadOnly = true;
@@ -1916,9 +2002,9 @@
 			this.txtBG1SizeInTiles.Multiline = true;
 			this.txtBG1SizeInTiles.Name = "txtBG1SizeInTiles";
 			this.txtBG1SizeInTiles.ReadOnly = true;
-			this.txtBG1SizeInTiles.Size = new System.Drawing.Size(48, 17);
+			this.txtBG1SizeInTiles.Size = new System.Drawing.Size(59, 17);
 			this.txtBG1SizeInTiles.TabIndex = 6;
-			this.txtBG1SizeInTiles.Text = "64x64";
+			this.txtBG1SizeInTiles.Text = "128x128 (32K)";
 			// 
 			// label2
 			// 
@@ -1950,6 +2036,18 @@
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Palette";
 			// 
+			// paletteViewer
+			// 
+			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
+			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
+			this.paletteViewer.Name = "paletteViewer";
+			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
+			this.paletteViewer.TabIndex = 18;
+			this.paletteViewer.TabStop = false;
+			this.paletteViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseClick);
+			this.paletteViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseDown);
+			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
+			// 
 			// tabctrlDetails
 			// 
 			this.tabctrlDetails.Controls.Add(this.tpPalette);
@@ -1964,15 +2062,15 @@
 			// 
 			// tpPalette
 			// 
-			this.tpPalette.Controls.Add(this.txtPaletteDetailsIndexSpecific);
-			this.tpPalette.Controls.Add(this.txtPaletteDetailsIndexHexSpecific);
+			this.tpPalette.Controls.Add(this.label53);
+			this.tpPalette.Controls.Add(this.label52);
+			this.tpPalette.Controls.Add(this.label51);
 			this.tpPalette.Controls.Add(this.txtPaletteDetailsAddress);
 			this.tpPalette.Controls.Add(this.txtPaletteDetailsIndex);
 			this.tpPalette.Controls.Add(this.txtPaletteDetailsIndexHex);
 			this.tpPalette.Controls.Add(this.txtDetailsPaletteColorRGB);
 			this.tpPalette.Controls.Add(this.txtDetailsPaletteColorHex);
 			this.tpPalette.Controls.Add(this.txtDetailsPaletteColor);
-			this.tpPalette.Controls.Add(this.lblDetailsOBJOrBG);
 			this.tpPalette.Controls.Add(this.pnDetailsPaletteColor);
 			this.tpPalette.Location = new System.Drawing.Point(4, 22);
 			this.tpPalette.Name = "tpPalette";
@@ -1982,39 +2080,46 @@
 			this.tpPalette.Text = "Color";
 			this.tpPalette.UseVisualStyleBackColor = true;
 			// 
-			// txtPaletteDetailsIndexSpecific
+			// label53
 			// 
-			this.txtPaletteDetailsIndexSpecific.Location = new System.Drawing.Point(69, 42);
-			this.txtPaletteDetailsIndexSpecific.Multiline = true;
-			this.txtPaletteDetailsIndexSpecific.Name = "txtPaletteDetailsIndexSpecific";
-			this.txtPaletteDetailsIndexSpecific.ReadOnly = true;
-			this.txtPaletteDetailsIndexSpecific.Size = new System.Drawing.Size(31, 18);
-			this.txtPaletteDetailsIndexSpecific.TabIndex = 44;
-			this.txtPaletteDetailsIndexSpecific.Text = "127";
+			this.label53.AutoSize = true;
+			this.label53.Location = new System.Drawing.Point(73, 76);
+			this.label53.Name = "label53";
+			this.label53.Size = new System.Drawing.Size(48, 13);
+			this.label53.TabIndex = 61;
+			this.label53.Text = "RGB888";
 			// 
-			// txtPaletteDetailsIndexHexSpecific
+			// label52
 			// 
-			this.txtPaletteDetailsIndexHexSpecific.Location = new System.Drawing.Point(42, 42);
-			this.txtPaletteDetailsIndexHexSpecific.Multiline = true;
-			this.txtPaletteDetailsIndexHexSpecific.Name = "txtPaletteDetailsIndexHexSpecific";
-			this.txtPaletteDetailsIndexHexSpecific.ReadOnly = true;
-			this.txtPaletteDetailsIndexHexSpecific.Size = new System.Drawing.Size(26, 18);
-			this.txtPaletteDetailsIndexHexSpecific.TabIndex = 43;
-			this.txtPaletteDetailsIndexHexSpecific.Text = "$7F";
+			this.label52.AutoSize = true;
+			this.label52.Location = new System.Drawing.Point(93, 54);
+			this.label52.Name = "label52";
+			this.label52.Size = new System.Drawing.Size(26, 13);
+			this.label52.TabIndex = 60;
+			this.label52.Text = "Hex";
+			// 
+			// label51
+			// 
+			this.label51.AutoSize = true;
+			this.label51.Location = new System.Drawing.Point(73, 32);
+			this.label51.Name = "label51";
+			this.label51.Size = new System.Drawing.Size(50, 13);
+			this.label51.TabIndex = 59;
+			this.label51.Text = "Raw Col.";
 			// 
 			// txtPaletteDetailsAddress
 			// 
-			this.txtPaletteDetailsAddress.Location = new System.Drawing.Point(41, 22);
+			this.txtPaletteDetailsAddress.Location = new System.Drawing.Point(149, 7);
 			this.txtPaletteDetailsAddress.Multiline = true;
 			this.txtPaletteDetailsAddress.Name = "txtPaletteDetailsAddress";
 			this.txtPaletteDetailsAddress.ReadOnly = true;
-			this.txtPaletteDetailsAddress.Size = new System.Drawing.Size(58, 18);
+			this.txtPaletteDetailsAddress.Size = new System.Drawing.Size(54, 18);
 			this.txtPaletteDetailsAddress.TabIndex = 42;
-			this.txtPaletteDetailsAddress.Text = "@1FE";
+			this.txtPaletteDetailsAddress.Text = "@DDD";
 			// 
 			// txtPaletteDetailsIndex
 			// 
-			this.txtPaletteDetailsIndex.Location = new System.Drawing.Point(68, 3);
+			this.txtPaletteDetailsIndex.Location = new System.Drawing.Point(112, 7);
 			this.txtPaletteDetailsIndex.Multiline = true;
 			this.txtPaletteDetailsIndex.Name = "txtPaletteDetailsIndex";
 			this.txtPaletteDetailsIndex.ReadOnly = true;
@@ -2024,52 +2129,43 @@
 			// 
 			// txtPaletteDetailsIndexHex
 			// 
-			this.txtPaletteDetailsIndexHex.Location = new System.Drawing.Point(41, 3);
+			this.txtPaletteDetailsIndexHex.Location = new System.Drawing.Point(76, 7);
 			this.txtPaletteDetailsIndexHex.Multiline = true;
 			this.txtPaletteDetailsIndexHex.Name = "txtPaletteDetailsIndexHex";
 			this.txtPaletteDetailsIndexHex.ReadOnly = true;
-			this.txtPaletteDetailsIndexHex.Size = new System.Drawing.Size(26, 18);
+			this.txtPaletteDetailsIndexHex.Size = new System.Drawing.Size(28, 18);
 			this.txtPaletteDetailsIndexHex.TabIndex = 39;
-			this.txtPaletteDetailsIndexHex.Text = "$7F";
+			this.txtPaletteDetailsIndexHex.Text = "$DD";
 			// 
 			// txtDetailsPaletteColorRGB
 			// 
-			this.txtDetailsPaletteColorRGB.Location = new System.Drawing.Point(102, 42);
+			this.txtDetailsPaletteColorRGB.Location = new System.Drawing.Point(125, 73);
 			this.txtDetailsPaletteColorRGB.Multiline = true;
 			this.txtDetailsPaletteColorRGB.Name = "txtDetailsPaletteColorRGB";
 			this.txtDetailsPaletteColorRGB.ReadOnly = true;
-			this.txtDetailsPaletteColorRGB.Size = new System.Drawing.Size(96, 18);
+			this.txtDetailsPaletteColorRGB.Size = new System.Drawing.Size(78, 18);
 			this.txtDetailsPaletteColorRGB.TabIndex = 38;
 			this.txtDetailsPaletteColorRGB.Text = "(255, 255, 255)";
 			// 
 			// txtDetailsPaletteColorHex
 			// 
-			this.txtDetailsPaletteColorHex.Location = new System.Drawing.Point(102, 22);
+			this.txtDetailsPaletteColorHex.Location = new System.Drawing.Point(125, 51);
 			this.txtDetailsPaletteColorHex.Multiline = true;
 			this.txtDetailsPaletteColorHex.Name = "txtDetailsPaletteColorHex";
 			this.txtDetailsPaletteColorHex.ReadOnly = true;
-			this.txtDetailsPaletteColorHex.Size = new System.Drawing.Size(96, 18);
+			this.txtDetailsPaletteColorHex.Size = new System.Drawing.Size(78, 18);
 			this.txtDetailsPaletteColorHex.TabIndex = 37;
-			this.txtDetailsPaletteColorHex.Text = "#FFFFFF";
+			this.txtDetailsPaletteColorHex.Text = "#DDDDDD";
 			// 
 			// txtDetailsPaletteColor
 			// 
-			this.txtDetailsPaletteColor.Location = new System.Drawing.Point(102, 2);
+			this.txtDetailsPaletteColor.Location = new System.Drawing.Point(125, 29);
 			this.txtDetailsPaletteColor.Multiline = true;
 			this.txtDetailsPaletteColor.Name = "txtDetailsPaletteColor";
 			this.txtDetailsPaletteColor.ReadOnly = true;
-			this.txtDetailsPaletteColor.Size = new System.Drawing.Size(96, 18);
+			this.txtDetailsPaletteColor.Size = new System.Drawing.Size(79, 18);
 			this.txtDetailsPaletteColor.TabIndex = 36;
-			this.txtDetailsPaletteColor.Text = "$7FFF";
-			// 
-			// lblDetailsOBJOrBG
-			// 
-			this.lblDetailsOBJOrBG.Location = new System.Drawing.Point(2, 42);
-			this.lblDetailsOBJOrBG.Name = "lblDetailsOBJOrBG";
-			this.lblDetailsOBJOrBG.Size = new System.Drawing.Size(36, 16);
-			this.lblDetailsOBJOrBG.TabIndex = 40;
-			this.lblDetailsOBJOrBG.Text = "(OBJ:)";
-			this.lblDetailsOBJOrBG.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.txtDetailsPaletteColor.Text = "$DDDD";
 			// 
 			// pnDetailsPaletteColor
 			// 
@@ -2077,12 +2173,21 @@
 			this.pnDetailsPaletteColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.pnDetailsPaletteColor.Location = new System.Drawing.Point(3, 4);
 			this.pnDetailsPaletteColor.Name = "pnDetailsPaletteColor";
-			this.pnDetailsPaletteColor.Size = new System.Drawing.Size(32, 32);
+			this.pnDetailsPaletteColor.Size = new System.Drawing.Size(69, 68);
 			this.pnDetailsPaletteColor.TabIndex = 3;
 			this.pnDetailsPaletteColor.DoubleClick += new System.EventHandler(this.pnDetailsPaletteColor_DoubleClick);
 			// 
 			// tpTile
 			// 
+			this.tpTile.Controls.Add(this.label45);
+			this.tpTile.Controls.Add(this.txtTilePalette);
+			this.tpTile.Controls.Add(this.txtTileNumber);
+			this.tpTile.Controls.Add(this.txtTileMode);
+			this.tpTile.Controls.Add(this.label18);
+			this.tpTile.Controls.Add(this.txtTileColors);
+			this.tpTile.Controls.Add(this.txtTileBpp);
+			this.tpTile.Controls.Add(this.label42);
+			this.tpTile.Controls.Add(this.txtTileAddress);
 			this.tpTile.Controls.Add(this.viewerTile);
 			this.tpTile.Location = new System.Drawing.Point(4, 22);
 			this.tpTile.Name = "tpTile";
@@ -2092,8 +2197,105 @@
 			this.tpTile.Text = "Tile";
 			this.tpTile.UseVisualStyleBackColor = true;
 			// 
+			// label45
+			// 
+			this.label45.AutoSize = true;
+			this.label45.Location = new System.Drawing.Point(169, 75);
+			this.label45.Name = "label45";
+			this.label45.Size = new System.Drawing.Size(22, 13);
+			this.label45.TabIndex = 65;
+			this.label45.Text = "Pal";
+			// 
+			// txtTilePalette
+			// 
+			this.txtTilePalette.Location = new System.Drawing.Point(139, 73);
+			this.txtTilePalette.Multiline = true;
+			this.txtTilePalette.Name = "txtTilePalette";
+			this.txtTilePalette.ReadOnly = true;
+			this.txtTilePalette.Size = new System.Drawing.Size(29, 18);
+			this.txtTilePalette.TabIndex = 64;
+			this.txtTilePalette.Text = "$FF";
+			// 
+			// txtTileNumber
+			// 
+			this.txtTileNumber.Location = new System.Drawing.Point(76, 6);
+			this.txtTileNumber.Multiline = true;
+			this.txtTileNumber.Name = "txtTileNumber";
+			this.txtTileNumber.ReadOnly = true;
+			this.txtTileNumber.Size = new System.Drawing.Size(54, 18);
+			this.txtTileNumber.TabIndex = 63;
+			this.txtTileNumber.Text = "#$DDD";
+			// 
+			// txtTileMode
+			// 
+			this.txtTileMode.Location = new System.Drawing.Point(139, 6);
+			this.txtTileMode.Multiline = true;
+			this.txtTileMode.Name = "txtTileMode";
+			this.txtTileMode.ReadOnly = true;
+			this.txtTileMode.Size = new System.Drawing.Size(59, 18);
+			this.txtTileMode.TabIndex = 62;
+			this.txtTileMode.Text = "Text 8bpp";
+			// 
+			// label18
+			// 
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(169, 53);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(36, 13);
+			this.label18.TabIndex = 61;
+			this.label18.Text = "Colors";
+			// 
+			// txtTileColors
+			// 
+			this.txtTileColors.Location = new System.Drawing.Point(139, 51);
+			this.txtTileColors.Multiline = true;
+			this.txtTileColors.Name = "txtTileColors";
+			this.txtTileColors.ReadOnly = true;
+			this.txtTileColors.Size = new System.Drawing.Size(28, 17);
+			this.txtTileColors.TabIndex = 60;
+			this.txtTileColors.Text = "256";
+			// 
+			// txtTileBpp
+			// 
+			this.txtTileBpp.Location = new System.Drawing.Point(139, 29);
+			this.txtTileBpp.Multiline = true;
+			this.txtTileBpp.Name = "txtTileBpp";
+			this.txtTileBpp.ReadOnly = true;
+			this.txtTileBpp.Size = new System.Drawing.Size(28, 17);
+			this.txtTileBpp.TabIndex = 59;
+			this.txtTileBpp.Text = "8";
+			// 
+			// label42
+			// 
+			this.label42.AutoSize = true;
+			this.label42.Location = new System.Drawing.Point(169, 31);
+			this.label42.Name = "label42";
+			this.label42.Size = new System.Drawing.Size(32, 13);
+			this.label42.TabIndex = 58;
+			this.label42.Text = "Bpp; ";
+			// 
+			// txtTileAddress
+			// 
+			this.txtTileAddress.Location = new System.Drawing.Point(76, 28);
+			this.txtTileAddress.Multiline = true;
+			this.txtTileAddress.Name = "txtTileAddress";
+			this.txtTileAddress.ReadOnly = true;
+			this.txtTileAddress.Size = new System.Drawing.Size(54, 18);
+			this.txtTileAddress.TabIndex = 57;
+			this.txtTileAddress.Text = "@DDDD";
+			// 
+			// viewerTile
+			// 
+			this.viewerTile.BackColor = System.Drawing.Color.Transparent;
+			this.viewerTile.Location = new System.Drawing.Point(6, 6);
+			this.viewerTile.Name = "viewerTile";
+			this.viewerTile.Size = new System.Drawing.Size(64, 64);
+			this.viewerTile.TabIndex = 19;
+			this.viewerTile.TabStop = false;
+			// 
 			// tpMapEntry
 			// 
+			this.tpMapEntry.Controls.Add(this.textBox2);
 			this.tpMapEntry.Controls.Add(this.checkMapEntryVFlip);
 			this.tpMapEntry.Controls.Add(this.label34);
 			this.tpMapEntry.Controls.Add(this.checkMapEntryHFlip);
@@ -2113,6 +2315,16 @@
 			this.tpMapEntry.TabIndex = 2;
 			this.tpMapEntry.Text = "Map Entry";
 			this.tpMapEntry.UseVisualStyleBackColor = true;
+			// 
+			// textBox2
+			// 
+			this.textBox2.Location = new System.Drawing.Point(137, 51);
+			this.textBox2.Multiline = true;
+			this.textBox2.Name = "textBox2";
+			this.textBox2.ReadOnly = true;
+			this.textBox2.Size = new System.Drawing.Size(34, 18);
+			this.textBox2.TabIndex = 63;
+			this.textBox2.Text = "$DD";
 			// 
 			// checkMapEntryVFlip
 			// 
@@ -2146,7 +2358,7 @@
 			// label17
 			// 
 			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(145, 46);
+			this.label17.Location = new System.Drawing.Point(93, 53);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(40, 13);
 			this.label17.TabIndex = 60;
@@ -2164,7 +2376,7 @@
 			// txtMapEntryPalette
 			// 
 			this.txtMapEntryPalette.BackColor = System.Drawing.Color.LightGreen;
-			this.txtMapEntryPalette.Location = new System.Drawing.Point(126, 43);
+			this.txtMapEntryPalette.Location = new System.Drawing.Point(76, 51);
 			this.txtMapEntryPalette.Multiline = true;
 			this.txtMapEntryPalette.Name = "txtMapEntryPalette";
 			this.txtMapEntryPalette.ReadOnly = true;
@@ -2175,7 +2387,7 @@
 			// label14
 			// 
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(95, 46);
+			this.label14.Location = new System.Drawing.Point(95, 75);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(25, 13);
 			this.label14.TabIndex = 58;
@@ -2184,7 +2396,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(121, 27);
+			this.label6.Location = new System.Drawing.Point(121, 31);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(31, 13);
 			this.label6.TabIndex = 56;
@@ -2192,18 +2404,18 @@
 			// 
 			// txtMapEntryTileAddr
 			// 
-			this.txtMapEntryTileAddr.Location = new System.Drawing.Point(153, 25);
+			this.txtMapEntryTileAddr.Location = new System.Drawing.Point(153, 29);
 			this.txtMapEntryTileAddr.Multiline = true;
 			this.txtMapEntryTileAddr.Name = "txtMapEntryTileAddr";
 			this.txtMapEntryTileAddr.ReadOnly = true;
-			this.txtMapEntryTileAddr.Size = new System.Drawing.Size(42, 18);
+			this.txtMapEntryTileAddr.Size = new System.Drawing.Size(45, 18);
 			this.txtMapEntryTileAddr.TabIndex = 57;
-			this.txtMapEntryTileAddr.Text = "@FFFF";
+			this.txtMapEntryTileAddr.Text = "@0D00";
 			// 
 			// txtMapEntryPrio
 			// 
 			this.txtMapEntryPrio.BackColor = System.Drawing.Color.LightGreen;
-			this.txtMapEntryPrio.Location = new System.Drawing.Point(76, 43);
+			this.txtMapEntryPrio.Location = new System.Drawing.Point(76, 73);
 			this.txtMapEntryPrio.Multiline = true;
 			this.txtMapEntryPrio.Name = "txtMapEntryPrio";
 			this.txtMapEntryPrio.ReadOnly = true;
@@ -2224,22 +2436,225 @@
 			// txtMapEntryTileNum
 			// 
 			this.txtMapEntryTileNum.BackColor = System.Drawing.Color.LightGreen;
-			this.txtMapEntryTileNum.Location = new System.Drawing.Point(76, 25);
+			this.txtMapEntryTileNum.Location = new System.Drawing.Point(76, 29);
 			this.txtMapEntryTileNum.Multiline = true;
 			this.txtMapEntryTileNum.Name = "txtMapEntryTileNum";
 			this.txtMapEntryTileNum.ReadOnly = true;
-			this.txtMapEntryTileNum.Size = new System.Drawing.Size(43, 17);
+			this.txtMapEntryTileNum.Size = new System.Drawing.Size(44, 17);
 			this.txtMapEntryTileNum.TabIndex = 39;
-			this.txtMapEntryTileNum.Text = "$1024";
+			this.txtMapEntryTileNum.Text = "#$DDD";
+			// 
+			// viewerMapEntryTile
+			// 
+			this.viewerMapEntryTile.BackColor = System.Drawing.Color.Transparent;
+			this.viewerMapEntryTile.Location = new System.Drawing.Point(6, 6);
+			this.viewerMapEntryTile.Name = "viewerMapEntryTile";
+			this.viewerMapEntryTile.Size = new System.Drawing.Size(64, 64);
+			this.viewerMapEntryTile.TabIndex = 20;
+			this.viewerMapEntryTile.TabStop = false;
 			// 
 			// tpOBJ
 			// 
+			this.tpOBJ.Controls.Add(this.txtObjPriority);
+			this.tpOBJ.Controls.Add(this.label50);
+			this.tpOBJ.Controls.Add(this.txtObjPaletteMemo);
+			this.tpOBJ.Controls.Add(this.label49);
+			this.tpOBJ.Controls.Add(this.txtObjPalette);
+			this.tpOBJ.Controls.Add(this.label48);
+			this.tpOBJ.Controls.Add(this.txtObjNameAddr);
+			this.tpOBJ.Controls.Add(this.txtObjName);
+			this.tpOBJ.Controls.Add(this.txtObjSize);
+			this.tpOBJ.Controls.Add(this.label46);
+			this.tpOBJ.Controls.Add(this.cbObjLarge);
+			this.tpOBJ.Controls.Add(this.txtObjNumber);
+			this.tpOBJ.Controls.Add(this.txtObjCoord);
+			this.tpOBJ.Controls.Add(this.cbObjVFlip);
+			this.tpOBJ.Controls.Add(this.label43);
+			this.tpOBJ.Controls.Add(this.cbObjHFlip);
+			this.tpOBJ.Controls.Add(this.label44);
+			this.tpOBJ.Controls.Add(this.viewerObj);
 			this.tpOBJ.Location = new System.Drawing.Point(4, 22);
 			this.tpOBJ.Name = "tpOBJ";
 			this.tpOBJ.Size = new System.Drawing.Size(206, 94);
 			this.tpOBJ.TabIndex = 3;
 			this.tpOBJ.Text = "OBJ";
 			this.tpOBJ.UseVisualStyleBackColor = true;
+			// 
+			// txtObjPriority
+			// 
+			this.txtObjPriority.BackColor = System.Drawing.Color.LightGreen;
+			this.txtObjPriority.Location = new System.Drawing.Point(187, 29);
+			this.txtObjPriority.Multiline = true;
+			this.txtObjPriority.Name = "txtObjPriority";
+			this.txtObjPriority.ReadOnly = true;
+			this.txtObjPriority.Size = new System.Drawing.Size(18, 17);
+			this.txtObjPriority.TabIndex = 102;
+			this.txtObjPriority.Text = "3";
+			// 
+			// label50
+			// 
+			this.label50.AutoSize = true;
+			this.label50.Location = new System.Drawing.Point(160, 31);
+			this.label50.Name = "label50";
+			this.label50.Size = new System.Drawing.Size(25, 13);
+			this.label50.TabIndex = 101;
+			this.label50.Text = "Prio";
+			// 
+			// txtObjPaletteMemo
+			// 
+			this.txtObjPaletteMemo.Location = new System.Drawing.Point(137, 73);
+			this.txtObjPaletteMemo.Multiline = true;
+			this.txtObjPaletteMemo.Name = "txtObjPaletteMemo";
+			this.txtObjPaletteMemo.ReadOnly = true;
+			this.txtObjPaletteMemo.Size = new System.Drawing.Size(34, 18);
+			this.txtObjPaletteMemo.TabIndex = 100;
+			this.txtObjPaletteMemo.Text = "$DD";
+			// 
+			// label49
+			// 
+			this.label49.AutoSize = true;
+			this.label49.Location = new System.Drawing.Point(93, 75);
+			this.label49.Name = "label49";
+			this.label49.Size = new System.Drawing.Size(40, 13);
+			this.label49.TabIndex = 99;
+			this.label49.Text = "Palette";
+			// 
+			// txtObjPalette
+			// 
+			this.txtObjPalette.BackColor = System.Drawing.Color.LightGreen;
+			this.txtObjPalette.Location = new System.Drawing.Point(76, 73);
+			this.txtObjPalette.Multiline = true;
+			this.txtObjPalette.Name = "txtObjPalette";
+			this.txtObjPalette.ReadOnly = true;
+			this.txtObjPalette.Size = new System.Drawing.Size(15, 17);
+			this.txtObjPalette.TabIndex = 98;
+			this.txtObjPalette.Text = "00";
+			// 
+			// label48
+			// 
+			this.label48.AutoSize = true;
+			this.label48.Location = new System.Drawing.Point(121, 53);
+			this.label48.Name = "label48";
+			this.label48.Size = new System.Drawing.Size(31, 13);
+			this.label48.TabIndex = 96;
+			this.label48.Text = "Tile#";
+			// 
+			// txtObjNameAddr
+			// 
+			this.txtObjNameAddr.Location = new System.Drawing.Point(153, 51);
+			this.txtObjNameAddr.Multiline = true;
+			this.txtObjNameAddr.Name = "txtObjNameAddr";
+			this.txtObjNameAddr.ReadOnly = true;
+			this.txtObjNameAddr.Size = new System.Drawing.Size(45, 18);
+			this.txtObjNameAddr.TabIndex = 97;
+			this.txtObjNameAddr.Text = "@0D00";
+			// 
+			// txtObjName
+			// 
+			this.txtObjName.BackColor = System.Drawing.Color.LightGreen;
+			this.txtObjName.Location = new System.Drawing.Point(76, 51);
+			this.txtObjName.Multiline = true;
+			this.txtObjName.Name = "txtObjName";
+			this.txtObjName.ReadOnly = true;
+			this.txtObjName.Size = new System.Drawing.Size(43, 17);
+			this.txtObjName.TabIndex = 95;
+			this.txtObjName.Text = "#$DDD";
+			// 
+			// txtObjSize
+			// 
+			this.txtObjSize.Location = new System.Drawing.Point(122, 29);
+			this.txtObjSize.Multiline = true;
+			this.txtObjSize.Name = "txtObjSize";
+			this.txtObjSize.ReadOnly = true;
+			this.txtObjSize.Size = new System.Drawing.Size(37, 18);
+			this.txtObjSize.TabIndex = 93;
+			this.txtObjSize.Text = "64x64";
+			// 
+			// label46
+			// 
+			this.label46.AutoSize = true;
+			this.label46.Location = new System.Drawing.Point(89, 31);
+			this.label46.Name = "label46";
+			this.label46.Size = new System.Drawing.Size(34, 13);
+			this.label46.TabIndex = 92;
+			this.label46.Text = "Large";
+			// 
+			// cbObjLarge
+			// 
+			this.cbObjLarge.AutoSize = true;
+			this.cbObjLarge.Enabled = false;
+			this.cbObjLarge.Location = new System.Drawing.Point(76, 31);
+			this.cbObjLarge.Name = "cbObjLarge";
+			this.cbObjLarge.Size = new System.Drawing.Size(15, 14);
+			this.cbObjLarge.TabIndex = 91;
+			this.cbObjLarge.UseVisualStyleBackColor = true;
+			// 
+			// txtObjNumber
+			// 
+			this.txtObjNumber.Location = new System.Drawing.Point(76, 6);
+			this.txtObjNumber.Multiline = true;
+			this.txtObjNumber.Name = "txtObjNumber";
+			this.txtObjNumber.ReadOnly = true;
+			this.txtObjNumber.Size = new System.Drawing.Size(43, 18);
+			this.txtObjNumber.TabIndex = 68;
+			this.txtObjNumber.Text = "#$DD";
+			// 
+			// txtObjCoord
+			// 
+			this.txtObjCoord.Location = new System.Drawing.Point(125, 6);
+			this.txtObjCoord.Multiline = true;
+			this.txtObjCoord.Name = "txtObjCoord";
+			this.txtObjCoord.ReadOnly = true;
+			this.txtObjCoord.Size = new System.Drawing.Size(65, 18);
+			this.txtObjCoord.TabIndex = 67;
+			this.txtObjCoord.Text = "(-239,-239)";
+			// 
+			// cbObjVFlip
+			// 
+			this.cbObjVFlip.AutoSize = true;
+			this.cbObjVFlip.Enabled = false;
+			this.cbObjVFlip.Location = new System.Drawing.Point(42, 76);
+			this.cbObjVFlip.Name = "cbObjVFlip";
+			this.cbObjVFlip.Size = new System.Drawing.Size(15, 14);
+			this.cbObjVFlip.TabIndex = 65;
+			this.cbObjVFlip.UseVisualStyleBackColor = true;
+			// 
+			// label43
+			// 
+			this.label43.AutoSize = true;
+			this.label43.Location = new System.Drawing.Point(56, 76);
+			this.label43.Name = "label43";
+			this.label43.Size = new System.Drawing.Size(14, 13);
+			this.label43.TabIndex = 66;
+			this.label43.Text = "V";
+			// 
+			// cbObjHFlip
+			// 
+			this.cbObjHFlip.AutoSize = true;
+			this.cbObjHFlip.Enabled = false;
+			this.cbObjHFlip.Location = new System.Drawing.Point(8, 76);
+			this.cbObjHFlip.Name = "cbObjHFlip";
+			this.cbObjHFlip.Size = new System.Drawing.Size(15, 14);
+			this.cbObjHFlip.TabIndex = 63;
+			this.cbObjHFlip.UseVisualStyleBackColor = true;
+			// 
+			// label44
+			// 
+			this.label44.AutoSize = true;
+			this.label44.Location = new System.Drawing.Point(22, 76);
+			this.label44.Name = "label44";
+			this.label44.Size = new System.Drawing.Size(15, 13);
+			this.label44.TabIndex = 64;
+			this.label44.Text = "H";
+			// 
+			// viewerObj
+			// 
+			this.viewerObj.BackColor = System.Drawing.Color.Transparent;
+			this.viewerObj.Location = new System.Drawing.Point(6, 6);
+			this.viewerObj.Name = "viewerObj";
+			this.viewerObj.Size = new System.Drawing.Size(64, 64);
+			this.viewerObj.TabIndex = 21;
+			this.viewerObj.TabStop = false;
 			// 
 			// viewerPanel
 			// 
@@ -2253,47 +2668,6 @@
 			this.viewerPanel.Size = new System.Drawing.Size(517, 667);
 			this.viewerPanel.TabIndex = 1;
 			// 
-			// toolTip1
-			// 
-			this.toolTip1.AutoPopDelay = 5000;
-			this.toolTip1.InitialDelay = 250;
-			this.toolTip1.ReshowDelay = 100;
-			// 
-			// messagetimer
-			// 
-			this.messagetimer.Interval = 5000;
-			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
-			// 
-			// paletteViewer
-			// 
-			this.paletteViewer.BackColor = System.Drawing.Color.Transparent;
-			this.paletteViewer.Location = new System.Drawing.Point(6, 14);
-			this.paletteViewer.Name = "paletteViewer";
-			this.paletteViewer.Size = new System.Drawing.Size(307, 307);
-			this.paletteViewer.TabIndex = 18;
-			this.paletteViewer.TabStop = false;
-			this.paletteViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseClick);
-			this.paletteViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseDown);
-			this.paletteViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteViewer_MouseMove);
-			// 
-			// viewerTile
-			// 
-			this.viewerTile.BackColor = System.Drawing.Color.Transparent;
-			this.viewerTile.Location = new System.Drawing.Point(6, 6);
-			this.viewerTile.Name = "viewerTile";
-			this.viewerTile.Size = new System.Drawing.Size(64, 64);
-			this.viewerTile.TabIndex = 19;
-			this.viewerTile.TabStop = false;
-			// 
-			// viewerMapEntryTile
-			// 
-			this.viewerMapEntryTile.BackColor = System.Drawing.Color.Transparent;
-			this.viewerMapEntryTile.Location = new System.Drawing.Point(6, 6);
-			this.viewerMapEntryTile.Name = "viewerMapEntryTile";
-			this.viewerMapEntryTile.Size = new System.Drawing.Size(64, 64);
-			this.viewerMapEntryTile.TabIndex = 20;
-			this.viewerMapEntryTile.TabStop = false;
-			// 
 			// viewer
 			// 
 			this.viewer.BackColor = System.Drawing.Color.Transparent;
@@ -2306,14 +2680,16 @@
 			this.viewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseMove);
 			this.viewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.viewer_MouseUp);
 			// 
-			// labelMemory
+			// toolTip1
 			// 
-			this.labelMemory.AutoSize = true;
-			this.labelMemory.Location = new System.Drawing.Point(3, 2);
-			this.labelMemory.Name = "labelMemory";
-			this.labelMemory.Size = new System.Drawing.Size(176, 13);
-			this.labelMemory.TabIndex = 1;
-			this.labelMemory.Text = "Right-click an item to display it here.";
+			this.toolTip1.AutoPopDelay = 5000;
+			this.toolTip1.InitialDelay = 250;
+			this.toolTip1.ReshowDelay = 100;
+			// 
+			// messagetimer
+			// 
+			this.messagetimer.Interval = 5000;
+			this.messagetimer.Tick += new System.EventHandler(this.messagetimer_Tick);
 			// 
 			// SNESGraphicsDebugger
 			// 
@@ -2327,7 +2703,6 @@
 			this.Name = "SNESGraphicsDebugger";
 			this.Text = "SNES Graphics Debugger";
 			this.Load += new System.EventHandler(this.SNESGraphicsDebugger_Load);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SNESGraphicsDebugger_KeyDown);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.tableLayoutPanel1.ResumeLayout(false);
@@ -2337,8 +2712,6 @@
 			this.groupFreeze.ResumeLayout(false);
 			this.pnGroupFreeze.ResumeLayout(false);
 			this.pnGroupFreeze.PerformLayout();
-			this.groupBox8.ResumeLayout(false);
-			this.groupBox8.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudScanline)).EndInit();
@@ -2347,6 +2720,8 @@
 			this.groupBox6.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.groupBox8.ResumeLayout(false);
+			this.groupBox8.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
@@ -2354,8 +2729,11 @@
 			this.tpPalette.ResumeLayout(false);
 			this.tpPalette.PerformLayout();
 			this.tpTile.ResumeLayout(false);
+			this.tpTile.PerformLayout();
 			this.tpMapEntry.ResumeLayout(false);
 			this.tpMapEntry.PerformLayout();
+			this.tpOBJ.ResumeLayout(false);
+			this.tpOBJ.PerformLayout();
 			this.viewerPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -2414,7 +2792,6 @@
 		private System.Windows.Forms.TextBox txtBG1SizeInPixels;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.TextBox txtBG1SCAddrBits;
-		private System.Windows.Forms.TextBox txtBG1SizeInTiles;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox txtBG1SizeBits;
 		private System.Windows.Forms.Label label19;
@@ -2425,15 +2802,12 @@
 		private System.Windows.Forms.NumericUpDown nudScanline;
 		private System.Windows.Forms.TabControl tabctrlDetails;
 		private System.Windows.Forms.TabPage tpPalette;
-		private System.Windows.Forms.TextBox txtPaletteDetailsIndexSpecific;
-		private System.Windows.Forms.TextBox txtPaletteDetailsIndexHexSpecific;
 		private System.Windows.Forms.TextBox txtPaletteDetailsAddress;
 		private System.Windows.Forms.TextBox txtPaletteDetailsIndex;
 		private System.Windows.Forms.TextBox txtPaletteDetailsIndexHex;
 		private System.Windows.Forms.TextBox txtDetailsPaletteColorRGB;
 		private System.Windows.Forms.TextBox txtDetailsPaletteColorHex;
 		private System.Windows.Forms.TextBox txtDetailsPaletteColor;
-		private System.Windows.Forms.Label lblDetailsOBJOrBG;
 		private System.Windows.Forms.Panel pnDetailsPaletteColor;
 		private System.Windows.Forms.TabPage tpTile;
 		private System.Windows.Forms.Panel viewerPanel;
@@ -2519,13 +2893,13 @@
 		private System.Windows.Forms.TextBox txtScreenCGADSUB_AddSub_Descr;
 		private System.Windows.Forms.Label label38;
 		private System.Windows.Forms.CheckBox txtScreenCGADSUB_Half;
-		private System.Windows.Forms.Label label37;
+		private System.Windows.Forms.Label lblEnPrio0;
 		private System.Windows.Forms.CheckBox checkEN0_OBJ;
 		private System.Windows.Forms.CheckBox checkEN0_BG4;
 		private System.Windows.Forms.CheckBox checkEN0_BG3;
 		private System.Windows.Forms.CheckBox checkEN0_BG2;
 		private System.Windows.Forms.CheckBox checkEN0_BG1;
-		private System.Windows.Forms.Label label41;
+		private System.Windows.Forms.Label lblEnPrio3;
 		private System.Windows.Forms.CheckBox checkEN1_OBJ;
 		private System.Windows.Forms.CheckBox checkEN1_BG4;
 		private System.Windows.Forms.CheckBox checkEN1_BG3;
@@ -2533,8 +2907,8 @@
 		private System.Windows.Forms.CheckBox checkEN1_BG1;
 		private System.Windows.Forms.CheckBox checkEN3_OBJ;
 		private System.Windows.Forms.CheckBox checkEN2_OBJ;
-		private System.Windows.Forms.Label label40;
-		private System.Windows.Forms.Label label39;
+		private System.Windows.Forms.Label lblEnPrio2;
+		private System.Windows.Forms.Label lblEnPrio1;
 		private System.Windows.Forms.TextBox txtBGPaletteInfo;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.Label labelClipboard;
@@ -2554,5 +2928,40 @@
 		private System.Windows.Forms.RadioButton radioButton2;
 		private System.Windows.Forms.Panel pnGroupFreeze;
 		private System.Windows.Forms.Label labelMemory;
+		private System.Windows.Forms.TextBox txtBG1MapSizeBytes;
+		private System.Windows.Forms.TextBox txtBG1SizeInTiles;
+		private System.Windows.Forms.TextBox txtTileMode;
+		private System.Windows.Forms.Label label18;
+		private System.Windows.Forms.TextBox txtTileColors;
+		private System.Windows.Forms.TextBox txtTileBpp;
+		private System.Windows.Forms.Label label42;
+		private System.Windows.Forms.TextBox txtTileAddress;
+		private SNESGraphicsViewer viewerObj;
+		private System.Windows.Forms.TextBox txtObjNumber;
+		private System.Windows.Forms.TextBox txtObjCoord;
+		private System.Windows.Forms.CheckBox cbObjVFlip;
+		private System.Windows.Forms.Label label43;
+		private System.Windows.Forms.CheckBox cbObjHFlip;
+		private System.Windows.Forms.Label label44;
+		private System.Windows.Forms.TextBox txtTileNumber;
+		private System.Windows.Forms.Label label45;
+		private System.Windows.Forms.TextBox txtTilePalette;
+		private System.Windows.Forms.Label label48;
+		private System.Windows.Forms.TextBox txtObjNameAddr;
+		private System.Windows.Forms.TextBox txtObjName;
+		private System.Windows.Forms.TextBox txtObjSize;
+		private System.Windows.Forms.Label label46;
+		private System.Windows.Forms.CheckBox cbObjLarge;
+		private System.Windows.Forms.Label label53;
+		private System.Windows.Forms.Label label52;
+		private System.Windows.Forms.Label label51;
+		private System.Windows.Forms.TextBox textBox2;
+		private System.Windows.Forms.TextBox txtObjPriority;
+		private System.Windows.Forms.Label label50;
+		private System.Windows.Forms.TextBox txtObjPaletteMemo;
+		private System.Windows.Forms.Label label49;
+		private System.Windows.Forms.TextBox txtObjPalette;
+		private System.Windows.Forms.TextBox txtBG1Scroll;
+		private System.Windows.Forms.Label label37;
 	}
 }

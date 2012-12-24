@@ -155,7 +155,11 @@ namespace BizHawk.MultiClient
 
 				if (NumDigits == 4)
 				{
-					addrStr.Append("  "); //Hack to line things up better between 4 and 6
+					addrStr.Append("    "); //Hack to line things up better between 4 and 6
+				}
+				else if (NumDigits == 6)
+				{
+					addrStr.Append("  ");
 				}
 				addrStr.Append(String.Format("{0:X" + NumDigits + "}", addr));
 				addrStr.Append('\n');
@@ -178,9 +182,15 @@ namespace BizHawk.MultiClient
 
 				for (int j = 0; j < 16; j += DataSize)
 				{
-					if (addr + j < Domain.Size)
+					if (addr + j + DataSize <= Domain.Size)
 					{
 						rowStr.AppendFormat(DigitFormatString, MakeValue(addr + j));
+					}
+					else
+					{
+						for (int t = 0; t < DataSize; t++)
+							rowStr.Append("  ");
+						rowStr.Append(' ');
 					}
 				}
 				rowStr.Append("  | ");
@@ -267,6 +277,7 @@ namespace BizHawk.MultiClient
 			Domain = domain;
 			int? theDomain = GetDomainInt(Domain.Name);
 			SetMemoryDomain(theDomain ?? 0);
+			SetHeader();
 		}
 
 		public void Restart()
@@ -291,7 +302,7 @@ namespace BizHawk.MultiClient
 			{
 				SetMemoryDomain(theDomain ?? 0);
 			}
-			
+			SetHeader();
 			
 			ResetScrollBar();
 
@@ -368,7 +379,10 @@ namespace BizHawk.MultiClient
 				BigEndian = false;
 			maxRow = Domain.Size / 2;
 			SetUpScrollBar();
-			vScrollBar1.Value = 0;
+			if (0 >= vScrollBar1.Minimum &&  0 <= vScrollBar1.Maximum)
+			{
+				vScrollBar1.Value = 0;
+			}
 			Refresh();
 		}
 
@@ -449,6 +463,7 @@ namespace BizHawk.MultiClient
 			{
 				SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
 			}
+			SetHeader();
 			UpdateGroupBoxTitle();
 			ResetScrollBar();
 			UpdateValues();
@@ -1190,11 +1205,11 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 1:
-					return new Point(((address % 16) * (fontWidth * 3)) + 57, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point(((address % 16) * (fontWidth * 3)) + 67, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 2:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 57, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 67, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 4:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 57, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 67, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 			}
 		}
 
@@ -1205,13 +1220,13 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 1:
-					start = (16 * (fontWidth * 3)) + 57;
+					start = (16 * (fontWidth * 3)) + 67;
 					break;
 				case 2:
-					start = ((16 / DataSize) * (fontWidth * 5)) + 57;
+					start = ((16 / DataSize) * (fontWidth * 5)) + 67;
 					break;
 				case 4:
-					start = ((16 / DataSize) * (fontWidth * 9)) + 57;
+					start = ((16 / DataSize) * (fontWidth * 9)) + 67;
 					break;
 			}
 			start += (fontWidth * 4);

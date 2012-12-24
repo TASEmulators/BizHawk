@@ -85,8 +85,8 @@ namespace BizHawk.MultiClient
 
 		private void buttonAuto_Click(object sender, EventArgs e)
 		{
-			numericTextBoxW.Text = Global.Emulator.CoreOutputComm.NominalWidth.ToString();
-			numericTextBoxH.Text = Global.Emulator.CoreOutputComm.NominalHeight.ToString();
+			numericTextBoxW.Text = Global.Emulator.CoreComm.NominalWidth.ToString();
+			numericTextBoxH.Text = Global.Emulator.CoreComm.NominalHeight.ToString();
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)

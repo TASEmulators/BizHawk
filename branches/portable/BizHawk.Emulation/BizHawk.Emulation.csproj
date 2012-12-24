@@ -58,6 +58,10 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EMU7800, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\BizHawk.MultiClient\output\dll\EMU7800.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -80,23 +84,26 @@
     <Compile Include="Buffer.cs" />
     <Compile Include="Computers\Commodore64\C64.Core.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0000.cs" />
+    <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\C64.Input.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0005.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper000B.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper000F.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0011.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0012.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0013.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Mapper0020.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper000B.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper000F.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0011.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0012.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0013.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
+    <Compile Include="Computers\Commodore64\Disk\VIC1541.cs" />
+    <Compile Include="Computers\Commodore64\Disk\VIC1541.PLA.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
     <Compile Include="Computers\Commodore64\Memory.cs" />
-    <Compile Include="Computers\Commodore64\Cartridges\Cartridge.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Cart.cs" />
     <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\CassettePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
-    <Compile Include="Computers\Commodore64\MOS\IStandardIO.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6510.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6522.cs" />
     <Compile Include="Computers\Commodore64\Media\D64.cs" />
@@ -109,13 +116,13 @@
     <Compile Include="Computers\Commodore64\C64.Savestate.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOSPLA.cs" />
     <Compile Include="Computers\Commodore64\MOS\Port.cs" />
+    <Compile Include="Computers\Commodore64\MOS\SerialPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Sid.SoundProvider.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Sid.SyncSoundProvider.cs" />
     <Compile Include="Computers\Commodore64\MOS\Timer.cs" />
     <Compile Include="Computers\Commodore64\MOS\UserPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
+    <Compile Include="Computers\Commodore64\Tape\VIC1530.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />
@@ -146,70 +153,7 @@
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800.Core.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\AddressSpace.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Bios7800.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\BufferElement.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7808.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7816.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7832.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7832P.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart7848.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78AB.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78AC.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78S4.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78S9.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78SG.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Cart78SGP.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartA16K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartA16KR.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartA2K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartA32K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartA32KR.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartA4K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartA8K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartA8KR.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartCBS12K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartDC8K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartDPC.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartMN16K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartPB8K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartTV8K.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\CartType.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\ConsoleSwitch.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Controller.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\ControllerAction.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\DeserializationContext.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Emu7800Exception.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Emu7800SerializationException.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\FontRenderer.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\FrameBuffer.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\HSC7800.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\IDevice.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\ILogger.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\InputState.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\M6502.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\M6502DASM.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Machine2600.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Machine2600NTSC.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Machine2600PAL.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Machine7800.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Machine7800NTSC.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Machine7800PAL.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\MachineBase.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\MachineInput.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\MachineType.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\Maria.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\MariaTables.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\NullDevice.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\NullLogger.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\PIA.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\PokeySound.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\RAM6116.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\SerializationContext.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\TIA.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\TIASound.cs" />
-    <Compile Include="Consoles\Atari\7800\EMU7800\TIATables.cs" />
+    <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
     <Compile Include="Consoles\Calculator\TI83.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
     <Compile Include="Consoles\Coleco\Input.cs" />
@@ -356,8 +300,10 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\NROM368.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\SEEPROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m89.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m93.cs" />
@@ -495,10 +441,12 @@
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />
+    <Compile Include="Sound\MMC5Audio.cs" />
+    <Compile Include="Sound\Sunsoft5BAudio.cs" />
+    <Compile Include="Sound\Utilities\BlipBuffer.cs" />
     <Compile Include="Sound\Utilities\DCFilter.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
     <Compile Include="Sound\Utilities\SpeexResampler.cs" />
-    <Compile Include="Sound\VRC6.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
     <Compile Include="Interfaces\IController.cs" />
@@ -524,6 +472,7 @@
     <Compile Include="Consoles\Sega\Genesis\IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.68000.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
+    <Compile Include="Sound\VRC6Alt.cs" />
     <Compile Include="Sound\YM2612.cs" />
     <Compile Include="Consoles\Sega\SMS\BIOS.cs" />
     <Compile Include="Sound\Utilities\SoundMixer.cs" />
@@ -536,6 +485,7 @@
     <Compile Include="Sound\Utilities\Waves.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Computers\Commodore64\docs\CRT.TXT" />
     <Content Include="Consoles\Coleco\docs\CV-Sound.txt" />
     <Content Include="Consoles\Coleco\docs\CV-Tech.txt" />
     <Content Include="Consoles\Nintendo\NES\Docs\sunsoft.txt" />
@@ -563,7 +513,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Computers\Commodore64\docs\" />
     <Folder Include="Computers\Commodore64\Peripheral\" />
   </ItemGroup>
   <ItemGroup />

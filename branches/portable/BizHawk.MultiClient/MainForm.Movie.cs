@@ -89,7 +89,9 @@ namespace BizHawk.MultiClient
 		{
 			RunLoopBlocked = true;
 			// put any BEETA quality cores here
-			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA || Global.Emulator is Emulation.Consoles.Sega.Genesis)
+			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA ||
+				Global.Emulator is Emulation.Consoles.Sega.Genesis ||
+				Global.Emulator is Emulation.Atari7800)
 			{
 				var result = MessageBox.Show
 					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +

@@ -6,12 +6,12 @@ using System.Text;
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// vic ntsc
-	public class MOS6567 : Vic, IStandardIO
+	public class MOS6567 : Vic
 	{
-		static uint[][] pipeline = new uint[5][];
+		static int[][] pipeline = new int[5][];
 
-		public MOS6567(C64Chips newChips)
-			: base(newChips, 65, 263, pipeline, 14318181 / 14)
+		public MOS6567()
+			: base(65, 263, pipeline, 14318181 / 14)
 		{
 		}
 	}

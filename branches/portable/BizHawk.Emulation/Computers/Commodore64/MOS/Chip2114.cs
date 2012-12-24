@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// used as Color RAM in C64
 
-	public class Chip2114 : IStandardIO
+	public class Chip2114
 	{
 		private byte[] ram;
 
@@ -44,6 +44,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public byte Read(ushort addr, byte bus)
 		{
 			return (byte)(ram[addr & 0x3FF] | (bus & 0xF0));
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ByteBuffer buffer = new ByteBuffer(ram);
+			ser.Sync("ram", ref buffer);
 		}
 
 		public void Write(ushort addr, byte val)

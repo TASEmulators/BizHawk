@@ -340,6 +340,8 @@ namespace BizHawk.MultiClient
 					return "|.|";
 				case "A26":
 					return "|..|.....|.....|";
+				case "A78":
+					return "|....|......|......|";
 				case "TI83":
 					return "|..................................................|.|";
 				case "NES":
@@ -448,15 +450,35 @@ namespace BizHawk.MultiClient
 			return input.ToString();
 		}
 
+		private string GetA78ControllersAsMnemonic()
+		{
+			StringBuilder input = new StringBuilder("|");
+			input.Append(IsBasePressed("Power") ? 'P' : '.');
+			input.Append(IsBasePressed("Reset") ? 'r' : '.');
+			input.Append(IsBasePressed("Select") ? 's' : '.');
+			input.Append(IsBasePressed("Pause") ? 'p' : '.');
+			input.Append('|');
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
+				}
+				input.Append('|');
+			}
+
+			return input.ToString();
+		}
+
 		public string GetControllersAsMnemonic()
 		{
 			if (ControlType == "Null Controller")
 			{
 				return "|.|";
 			}
-			else if (ControlType == "Atari 7800 Basic Controller")
+			else if (ControlType == "Atari 7800 ProLine Joystick Controller")
 			{
-				return "|.|"; //TODO
+				return GetA78ControllersAsMnemonic();
 			}
 			else if (ControlType == "SNES Controller")
 			{
@@ -783,7 +805,48 @@ namespace BizHawk.MultiClient
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
 			}
+		}
 
+		private void SetAtari7800AsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+			if (mnemonic.Length < 5)
+			{
+				return;
+			}
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			if (mnemonic[2] == 'r')
+			{
+				Force("Reset", true);
+			}
+			if (mnemonic[3] == 's')
+			{
+				Force("Select", true);
+			}
+			if (mnemonic[4] == 'p')
+			{
+				Force("Pause", true);
+			}
+
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+				int start = 6;
+				if (mnemonic.Length < srcindex + start + Global.BUTTONS[ControlType].Count)
+				{
+					return;
+				}
+
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+			}
 		}
 
 		private void SetC64ControllersAsMnemonic(string mnemonic)
@@ -837,6 +900,11 @@ namespace BizHawk.MultiClient
 			else if (ControlType == "GBA Controller")
 			{
 				SetGBAControllersAsMnemonic(mnemonic);
+				return;
+			}
+			else if (ControlType == "Atari 7800 ProLine Joystick Controller")
+			{
+				SetAtari7800AsMnemonic(mnemonic);
 				return;
 			}
 

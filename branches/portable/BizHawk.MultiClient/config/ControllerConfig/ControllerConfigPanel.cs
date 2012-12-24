@@ -12,7 +12,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class ControllerConfigPanel : UserControl
 	{
-		object ControllerConfigObject; //Object that values will be saved to (In Config.cs)
+		iControllerConfigObject ControllerConfigObject; //Object that values will be saved to (In Config.cs)
 
 		public List<string> buttons = new List<string>();
 
@@ -38,6 +38,45 @@ namespace BizHawk.MultiClient
 			
 		}
 
+		private void DoConflicts()
+		{
+			List<KeyValuePair<int, string>> BindingList = new List<KeyValuePair<int, string>>();
+			HashSet<string> uniqueBindings = new HashSet<string>();
+
+			for (int i = 0; i < Inputs.Count; i++)
+			{
+				if (!String.IsNullOrWhiteSpace(Inputs[i].Text))
+				{
+					string[] bindings = Inputs[i].Text.Split(',');
+					foreach (string binding in bindings)
+					{
+						BindingList.Add(new KeyValuePair<int, string>(i, binding));
+						uniqueBindings.Add(binding);
+					}
+				}
+			}
+
+			foreach (string binding in uniqueBindings)
+			{
+				List<KeyValuePair<int, string>> kvps = BindingList.Where(x => x.Value == binding).ToList();
+				if (kvps.Count > 1)
+				{
+					foreach(KeyValuePair<int, string> kvp in kvps)
+					{
+						Inputs[kvp.Key].Conflicted = true;
+					}
+				}
+			}
+		}
+
+		public void ClearAll()
+		{
+			foreach (InputWidget i in Inputs)
+			{
+				i.Clear();
+			}
+		}
+
 		public void Save()
 		{
 			for (int button = 0; button < buttons.Count; button++)
@@ -47,7 +86,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void LoadSettings(object configobj)
+		public void LoadSettings(iControllerConfigObject configobj)
 		{
 			ControllerConfigObject = configobj;
 
@@ -107,9 +146,10 @@ namespace BizHawk.MultiClient
 				iw.Size = new Size(InputSize, 23);
 				iw.TabIndex = i;
 				iw.BringToFront();
+				iw.Enter += new System.EventHandler(this.InputWidget_Enter);
+				iw.Leave += new System.EventHandler(this.InputWidget_Leave);
 				Controls.Add(iw);
 				Inputs.Add(iw);
-
 				Label l = new Label();
 				l.Location = new Point(x + InputSize + LabelPadding, y + 3);
 				l.Text = buttons[i].Replace('_', ' ').Trim();
@@ -119,12 +159,36 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void InputWidget_Enter(object sender, EventArgs e)
+		{
+			DoConflicts();
+		}
+
+		private void InputWidget_Leave(object sender, EventArgs e)
+		{
+			DoConflicts();
+		}
+
 		public void SetAutoTab(bool value)
 		{
 			foreach (InputWidget i in Inputs)
 			{
 				i.AutoTab = value;
 			}
+		}
+
+		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearAll();
+		}
+
+		private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (ControllerConfigObject is iControllerConfigObject)
+			{
+				(ControllerConfigObject as iControllerConfigObject).SetDefaults();
+			}
+			SetWidgetStrings();
 		}
 	}
 }

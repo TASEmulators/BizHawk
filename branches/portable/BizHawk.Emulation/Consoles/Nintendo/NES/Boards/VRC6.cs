@@ -12,7 +12,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int prg_bank_mask_8k, chr_bank_mask_1k;
 		bool newer_variant;
 
-		Sound.VRC6 VRC6Sound = new Sound.VRC6();
+		//Sound.VRC6 VRC6Sound = new Sound.VRC6();
+		Sound.VRC6Alt VRC6Sound;
 
 		//state
 		int prg_bank_16k, prg_bank_8k;
@@ -29,6 +30,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.Dispose();
 			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
+			//if (VRC6Sound != null)
+			//	VRC6Sound.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -93,6 +96,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SyncPRG();
 			SetMirrorType(EMirrorType.Vertical);
 
+			if (NES.apu != null) // don't start up sound when in configurator
+				VRC6Sound = new Sound.VRC6Alt((uint)NES.cpuclockrate, NES.apu.ExternalQueue);
+
 			return true;
 		}
 		public override byte ReadPRG(int addr)
@@ -139,10 +145,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					VRC6Sound.Write9000(value);
 					break;
 				case 0x1001: //$9001
-					VRC6Sound.Write9000(value);
+					VRC6Sound.Write9001(value);
 					break;
 				case 0x1002: //$9002
 					VRC6Sound.Write9002(value);
+					break;
+				case 0x1003: //$9003
+					VRC6Sound.Write9003(value);
 					break;
 
 				case 0x2000: //$A000
@@ -246,6 +255,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void ClockCPU()
 		{
+			VRC6Sound.Clock();
+
 			if (!irq_enabled) return;
 
 			if (irq_mode)
@@ -263,8 +274,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public override void ApplyCustomAudio(short[] samples)
-		{
+		//public override void ApplyCustomAudio(short[] samples)
+		//{
+			/*
 			short[] fmsamples = new short[samples.Length];
 			VRC6Sound.GetSamples(fmsamples);
 			int len = samples.Length;
@@ -272,7 +284,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				samples[i] = (short)((samples[i] >> 1) + (fmsamples[i] >> 1));
 			}
-		}
+			*/
+		//	VRC6Sound.ApplyCustomAudio(samples);
+		//}
 
 	}
 }

@@ -30,26 +30,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_1k;
-		bool has_eprom = false;
 
 		//regenerable state
 		IntBuffer prg_banks_16k = new IntBuffer(2);
 
 		//state
-		int prg_reg_16k, eprom;
+		int prg_reg_16k;
 		ByteBuffer regs = new ByteBuffer(8);
 		bool irq_enabled;
 		ushort irq_counter;
+		SEEPROM eprom;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync("prg_reg_16k", ref prg_reg_16k);
 			ser.Sync("regs", ref regs);
-			ser.Sync("eprom", ref eprom);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_enabled", ref irq_enabled);
-
+			if (eprom != null)
+				eprom.SyncState(ser);
 			SyncPRG();
 		}
 
@@ -64,23 +64,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
-				case "BANDAI-FCG-1":
-					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertWram(0, 8); AssertVram(0);
+				case "BANDAI-FCG-1": // no eprom
+					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertWram(0); AssertVram(0);
 					break;
-				case "BANDAI-FCG-2":
+				case "BANDAI-FCG-2": // no eprom
 					AssertPrg(128); AssertChr(128); AssertWram(0); AssertVram(0);
 					break;
-				case "BANDAI-LZ93D50+24C01":
+				case "BANDAI-LZ93D50+24C01": // 1kbit eprom
 					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
+					eprom = new SEEPROM(false);
 					break;
-				case "BANDAI-LZ93D50+24C02":
-					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0, 8); AssertVram(0);
+				case "BANDAI-LZ93D50+24C02": // 2kbit eprom
+					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
+					eprom = new SEEPROM(true);
 					break;
+					/* if implementing NES mappers, a way must be found to reliably determine which
+					 * eprom variety is in use
+				case "MAPPER016": // TEST TEST
+					Cart.wram_size = 0;
+					Cart.vram_size = 0;
+					eprom = new SEEPROM(false);
+					break;
+					 */
 				default:
 					return false;
 			}
-			if (Cart.mapper == 159)
-				has_eprom = true;
 
 			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
@@ -142,7 +150,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					irq_counter |= (ushort)(value << 8);
 					break;
 				case 0xD:
-					eprom = value;
+					if (eprom != null)
+						eprom.WriteByte(value);
 					break;
 			}
 		}
@@ -163,8 +172,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadWRAM(int addr)
 		{
 			// reading any addr in 6000:7fff returns a single bit from the eeprom
-			// in bit 4.  zeroing that bit seems sufficient for some games to boot
-			return (byte)(NES.DB & 0xef);
+			// in bit 4.
+			byte ret = (byte)(NES.DB & 0xef);
+			if (eprom != null && eprom.ReadBit(NES.DB.Bit(4)))
+				ret |= 0x10;
+			return ret;
 		}
 
 		public override void ClockCPU()
@@ -205,5 +217,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else return base.ReadPPU(addr);
 		}
 
+		public override byte[] SaveRam
+		{
+			get
+			{
+				if (eprom != null)
+					return eprom.GetSaveRAM();
+				else
+					return null;
+			}
+		}
 	}
 }

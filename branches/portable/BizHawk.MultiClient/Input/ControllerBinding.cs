@@ -44,6 +44,22 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
+		//Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
+		public bool HasBinding(string button)
+		{
+			foreach (var kvp in bindings)
+			{
+				foreach (var bound_button in kvp.Value)
+				{
+					if (bound_button == button)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
 		/// <summary>
 		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
 		/// this will clobber any existing data (use OR_* or other functions to layer in additional input sources)

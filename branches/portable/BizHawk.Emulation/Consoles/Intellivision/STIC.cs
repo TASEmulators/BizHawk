@@ -53,16 +53,6 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			Sst = value;
 		}
 
-		public int GetPendingCycles()
-		{
-			return PendingCycles;
-		}
-
-		public void AddPendingCycles(int cycles)
-		{
-			PendingCycles += cycles;
-		}
-
 		public ushort? ReadSTIC(ushort addr)
 		{
 			switch (addr & 0xF000)
@@ -72,19 +62,25 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x0021)
+						{
 							Fgbg = false;
+						}
 						return Register[addr];
 					}
 					else if (addr <= 0x007F)
+					{
 						// TODO: OK only during VBlank Period 2.
 						return Register[addr - 0x0040];
+					}
 					break;
 				case 0x4000:
 					if (addr <= 0x403F)
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x4021)
+						{
 							Fgbg = false;
+						}
 					}
 					break;
 				case 0x8000:
@@ -92,7 +88,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x8021)
+						{
 							Fgbg = false;
+						}
 					}
 					break;
 				case 0xC000:
@@ -100,7 +98,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0xC021)
+						{
 							Fgbg = false;
+						}
 					}
 					break;
 			}
@@ -116,20 +116,26 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x0021)
+						{
 							Fgbg = true;
+						}
 						Register[addr] = value;
 						return true;
 					}
 					else if (addr <= 0x007F)
+					{
 						// Read-only STIC.
 						break;
+					}
 					break;
 				case 0x4000:
 					if (addr <= 0x403F)
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x4021)
+						{
 							Fgbg = true;
+						}
 						Register[addr - 0x4000] = value;
 						return true;
 					}
@@ -139,7 +145,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0x8021)
+						{
 							Fgbg = true;
+						}
 						Register[addr & 0x003F] = value;
 						return true;
 					}
@@ -149,7 +157,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					{
 						// TODO: OK only during VBlank Period 1.
 						if (addr == 0xC021)
+						{
 							Fgbg = true;
+						}
 						Register[addr - 0xC000] = value;
 						return true;
 					}
@@ -160,16 +170,20 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 
 		public void Execute(int cycles)
 		{
+			PendingCycles -= cycles;
+			TotalExecutedCycles += cycles;
 			if (PendingCycles <= 0)
 			{
 				Sr1 = !Sr1;
 				if (Sr1)
-					AddPendingCycles(14394 - 3791 + 530);
+				{
+					PendingCycles = 14934 - 3791;
+				}
 				else
-					AddPendingCycles(3791);
+				{
+					PendingCycles += 3791;
+				}
 			}
-			PendingCycles -= cycles;
-			TotalExecutedCycles += cycles;
 		}
 
 		public int ColorToRGBA(int color)
@@ -226,7 +240,7 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 					bool gram = ((card & 0x0800) != 0);
 					int card_num = card >> 3;
 					int fg = card & 0x0007;
-					int bg = 0x000000;
+					int bg;
 					if (Fgbg)
 					{
 						bg = ((card >> 9) & 0x0008) | ((card >> 11) & 0x0004) | ((card >> 9) & 0x0003);
@@ -264,23 +278,33 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 								{
 									// The rightmost column does not get displayed.
 									if (card_col == 19 && squares_col == 7)
+									{
 										continue;
+									}
 									int color;
 									int pixel = buffer_offset + (squares_row * 159) + squares_col;
 									// Determine the color of the quadrant the pixel is in.
 									if (squares_col < 4)
 									{
 										if (squares_row < 4)
+										{
 											color = 0;
+										}
 										else
+										{
 											color = 2;
+										}
 									}
 									else
 									{
 										if (squares_row < 4)
+										{
 											color = 1;
+										}
 										else
+										{
 											color = 3;
+										}
 									}
 									FrameBuffer[pixel] = ColorToRGBA(colors[color]);
 								}
@@ -294,7 +318,9 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 								// Cycle through the Color Stack registers.
 								ColorSP++;
 								if (ColorSP > 0x002B)
+								{
 									ColorSP = 0x0028;
+								}
 							}
 							bg = ReadMemory(ColorSP) & 0x000F;
 						}
@@ -305,21 +331,31 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 						int row_mem = (card_num * 8) + pict_row;
 						byte row;
 						if (gram)
+						{
 							row = (byte)ReadMemory((ushort)(0x3800 + row_mem));
+						}
 						else
+						{
 							row = (byte)ReadMemory((ushort)(0x3000 + row_mem));
+						}
 						for (int pict_col = 0; pict_col < 8; pict_col++)
 						{
 							// The rightmost column does not get displayed.
 							if (card_col == 19 && pict_col == 0)
+							{
 								continue;
+							}
 							int pixel = buffer_offset + (pict_row * 159) + (7 - pict_col);
 							// If the pixel is on, give it the FG color.
 							if ((row & 0x1) != 0)
+							{
 								// The pixels go right as the bits get less significant.
 								FrameBuffer[pixel] = ColorToRGBA(fg);
+							}
 							else
+							{
 								FrameBuffer[pixel] = ColorToRGBA(bg);
+							}
 							row >>= 1;
 						}
 					}

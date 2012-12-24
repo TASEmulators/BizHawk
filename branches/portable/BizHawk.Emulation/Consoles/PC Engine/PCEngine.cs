@@ -51,10 +51,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
 
-		public PCEngine(GameInfo game, byte[] rom)
+		public PCEngine(CoreComm comm, GameInfo game, byte[] rom)
 		{
-			CoreOutputComm = new CoreOutputComm();
-            CoreOutputComm.CpuTraceAvailable = true;
+			CoreComm = comm;
+			CoreComm.CpuTraceAvailable = true;
 
 			switch (game.System)
 			{
@@ -70,17 +70,17 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			Init(game, rom);
 		}
 
-		public PCEngine(GameInfo game, Disc disc, byte[] rom)
+		public PCEngine(CoreComm comm, GameInfo game, Disc disc, byte[] rom)
 		{
+			CoreComm = comm;
+			CoreComm.CpuTraceAvailable = true;
+			CoreComm.UsesDriveLed = true;
 			systemid = "PCECD";
-			CoreOutputComm = new CoreOutputComm();
-            CoreOutputComm.CpuTraceAvailable = true;
-            CoreOutputComm.UsesDriveLed = true;
 			Type = NecSystemType.TurboCD;
 			this.disc = disc;
 			Init(game, rom);
 			// the default RomStatusDetails don't do anything with Disc
-			CoreOutputComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
+			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
 		}
 
 		void Init(GameInfo game, byte[] rom)
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			PSG = new HuC6280PSG();
 			SCSI = new ScsiCDBus(this, disc);
 
-            Cpu.Logger = (s) => CoreInputComm.Tracer.Put(s);
+			Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
 
 			if (TurboGrafx)
 			{
@@ -244,12 +244,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			lagged = true;
-            CoreOutputComm.DriveLED = false;
+			CoreComm.DriveLED = false;
 			Controller.UpdateControls(Frame++);
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
-            Cpu.Debug = CoreInputComm.Tracer.Enabled;
-                        
+			Cpu.Debug = CoreComm.Tracer.Enabled;
+
 			if (SuperGrafx)
 				VPC.ExecFrame(render);
 			else
@@ -268,8 +268,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 				islag = false;
 		}
 
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 
 		public IVideoProvider VideoProvider
 		{

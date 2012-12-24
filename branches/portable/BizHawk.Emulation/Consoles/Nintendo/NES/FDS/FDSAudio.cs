@@ -6,7 +6,7 @@ using System.Text;
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// http://wiki.nesdev.com/w/index.php/FDS_audio
-	public class FDSAudio
+	public class FDSAudio //: IDisposable
 	{
 		public void SyncState(Serializer ser)
 		{
@@ -57,30 +57,78 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		//4040:407f
 		byte[] waveram = new byte[64];
+		/// <summary>
+		/// playback position, clocked by main unit
+		/// </summary>
 		int waverampos;
 		//4080
+		/// <summary>
+		/// volume level or envelope speed, depending on r4080_7
+		/// </summary>
 		int volumespd;
+		/// <summary>
+		/// increase volume with envelope
+		/// </summary>
 		bool r4080_6;
+		/// <summary>
+		/// disable volume envelope
+		/// </summary>
 		bool r4080_7;
 		//4082:4083
+		/// <summary>
+		/// speed to clock main unit
+		/// </summary>
 		int frequency;
+		/// <summary>
+		/// disable volume and sweep
+		/// </summary>
 		bool r4083_6;
+		/// <summary>
+		/// silence channel
+		/// </summary>
 		bool r4083_7;
 		//4084
+		/// <summary>
+		/// sweep gain or sweep speed, depending on r4084_7
+		/// </summary>
 		int sweepspd;
+		/// <summary>
+		/// increase sweep with envelope
+		/// </summary>
 		bool r4084_6;
+		/// <summary>
+		/// disable sweep unit
+		/// </summary>
 		bool r4084_7;
 		//4085
+		/// <summary>
+		/// 7 bit signed
+		/// </summary>
 		int sweepbias;
 		//4086:4087
+		/// <summary>
+		/// speed to clock modulation unit
+		/// </summary>
 		int modfreq;
+		/// <summary>
+		/// disable modulation unit
+		/// </summary>
 		bool r4087_7;
 		//4088
+		/// <summary>
+		/// ring buffer, only 32 entries on hardware
+		/// </summary>
 		byte[] modtable = new byte[64];
+		/// <summary>
+		/// playback position
+		/// </summary>
 		int modtablepos;
 		//4089
 		int mastervol_num;
 		int mastervol_den;
+		/// <summary>
+		/// channel silenced and waveram writable
+		/// </summary>
 		bool waveram_writeenable;
 		//408a
 		int envspeed;
@@ -92,18 +140,41 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		int modoutput;
 
+		// read at 4090
 		int volumegain;
+		// read at 4092
 		int sweepgain;
 
 		int waveramoutput;
 
 		int latchedoutput;
 
-		/// <summary>
-		/// enough room to hold roughly one frame of final output, 0-2047
-		/// </summary>
-		short[] samplebuff = new short[32768];
-		int samplebuffpos = 0;
+		Action<int> SendDiff;
+
+		public FDSAudio(Action<int> SendDiff)
+		{
+			this.SendDiff = SendDiff;
+			/*
+			// minor hack: due to the way the initialization sequence goes, this might get called
+			// with m2rate = 0.  such an instance will never be asked for samples, though
+			if (m2rate > 0)
+			{
+				blip = new Sound.Utilities.BlipBuffer(blipsize);
+				blip.SetRates(m2rate, 44100);
+			}
+			*/
+		}
+
+		/*
+		public void Dispose()
+		{
+			if (blip != null)
+			{
+				blip.Dispose();
+				blip = null;
+			}
+		}
+		*/
 
 		void CalcMod()
 		{
@@ -134,7 +205,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			tmp *= waveramoutput;
 			tmp *= mastervol_num;
 			tmp /= mastervol_den;
-			latchedoutput = tmp;
+
+			if (latchedoutput != tmp)
+			{
+				//dlist.Add(new Delta(sampleclock, tmp - latchedoutput));
+				SendDiff((tmp - latchedoutput) * 6);
+				latchedoutput = tmp;
+			}
 		}
 
 		/// <summary>
@@ -143,7 +220,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public void Clock()
 		{
 			// volume envelope unit
-			if (!r4080_7 && envspeed > 0 && !r4080_6)
+			if (!r4080_7 && envspeed > 0 && !r4083_6)
 			{
 				volumeclock++;
 				if (volumeclock >= 8 * envspeed * (volumespd + 1))
@@ -190,6 +267,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						case 7: sweepbias -= 1; break;
 					}
 					sweepbias &= 0x7f;
+					// sign extend
+					sweepbias <<= 25;
+					sweepbias >>= 25;
 					modtablepos &= 63;
 					CalcMod();
 				}
@@ -206,9 +286,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					CalcOut();
 				}
 			}
-			samplebuff[samplebuffpos++] = (short)latchedoutput;
-			// if for some reason ApplyCustomAudio() is not called, glitch up but don't crash
-			samplebuffpos &= 32767;
+			//sampleclock++;
 		}
 
 		public void WriteReg(int addr, byte value)
@@ -309,30 +387,56 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ret;
 		}
 
-		Sound.Utilities.DCFilter dc = new Sound.Utilities.DCFilter(4096);
+		/*
+		Sound.Utilities.BlipBuffer blip;
+
+		struct Delta
+		{
+			public uint time;
+			public int value;
+			public Delta(uint time, int value)
+			{
+				this.time = time;
+				this.value = value;
+			}
+		}
+		List<Delta> dlist = new List<Delta>();
+
+		uint sampleclock = 0;
+		const int blipsize = 4096;
+
+		short[] mixout = new short[blipsize];
 
 		public void ApplyCustomAudio(short[] samples)
 		{
-			for (int i = 0; i < samples.Length; i += 2)
+			int nsamp = samples.Length / 2;
+			if (nsamp > blipsize) // oh well.
+				nsamp = blipsize;
+			uint targetclock = (uint)blip.ClocksNeeded(nsamp);
+			foreach (var d in dlist)
 			{
-				// worst imaginable resampling
-				int pos = i * samplebuffpos / samples.Length;
-				int samp = samplebuff[pos] * 6 - 12096;
-				samp += samples[i];
-				if (samp > 32767)
-					samples[i] = 32767;
-				else if (samp < -32768)
-					samples[i] = -32768;
-				else
-					samples[i] = (short)samp;
-
-				// NES audio is mono, so this should be identical anyway
-				samples[i + 1] = samples[i];
+				// original deltas are in -2016..2016
+				blip.AddDelta(d.time * targetclock / sampleclock, d.value * 6);
 			}
-			//Console.WriteLine("##{0}##", samplebuffpos);
-			samplebuffpos = 0;
+			//Console.WriteLine("sclock {0} tclock {1} ndelta {2}", sampleclock, targetclock, dlist.Count);
+			dlist.Clear();
+			blip.EndFrame(targetclock);
+			sampleclock = 0;
+			blip.ReadSamples(mixout, nsamp, false);
 
-			dc.PushThroughSamples(samples, samples.Length);
+			for (int i = 0, j = 0; i < nsamp; i++, j += 2)
+			{
+				int s = mixout[i] + samples[j];
+				if (s > 32767)
+					samples[j] = 32767;
+				else if (s <= -32768)
+					samples[j] = -32768;
+				else
+					samples[j] = (short)s;
+				// nes audio is mono, so we can ignore the original value of samples[j+1]
+				samples[j + 1] = samples[j];
+			}
 		}
+		*/
 	}
 }

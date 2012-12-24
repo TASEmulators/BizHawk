@@ -11,21 +11,19 @@ namespace BizHawk
 
 		private int[] frameBuffer = new int[256 * 192];
 		private Random rand = new Random();
-		public CoreInputComm CoreInputComm { get; set; }
-		public CoreOutputComm CoreOutputComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(this, 735); } }
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 		
-		public NullEmulator()
+		public NullEmulator(CoreComm comm)
 		{
+			CoreComm = comm;
 			var domains = new List<MemoryDomain>(1);
 			domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr => 0, (a, v) => { }));
 			memoryDomains = domains.AsReadOnly();
-			CoreOutputComm = new CoreOutputComm();
-			CoreInputComm = new CoreInputComm();
 		}
 		public void ResetFrameCounter()
 		{

@@ -55,6 +55,11 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		void SyncState(Serializer ser)
 		{
+			board.SyncState(ser);
+			ser.BeginSection("core");
+			ser.Sync("cyclesPerFrame", ref cyclesPerFrame);
+			ser.Sync("loadPrg", ref loadPrg);
+			ser.EndSection();
 		}
 	}
 }

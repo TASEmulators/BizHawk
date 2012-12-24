@@ -116,9 +116,9 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			B1.Checked = false;
+			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Power", false);
 
-			Global.StickyXORAdapter.SetSticky("Power", false);
+			B1.Checked = false;
 		}
 	}
 }

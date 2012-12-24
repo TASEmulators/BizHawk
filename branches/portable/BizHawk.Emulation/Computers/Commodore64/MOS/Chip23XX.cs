@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		Chip23128
 	}
 
-	public class Chip23XX : IStandardIO
+	public class Chip23XX
 	{
 		private uint addrMask;
 		private byte[] rom;
@@ -57,6 +57,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		public byte Read(ushort addr)
 		{
 			return rom[addr & addrMask];
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ByteBuffer buffer = new ByteBuffer(rom);
+			ser.Sync("rom", ref buffer);
 		}
 
 		public void Write(ushort addr, byte val)

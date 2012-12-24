@@ -37,7 +37,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					addr = (ushort)(((decle2 << 8) & 0xFC00) | (decle3 & 0x3FF));
 					result = "J";
 					if (dest != 0x7)
+					{
 						result += "SR";
+					}
 					// ff indicates how to affect the Interrupt (I) flag in the CP1610
 					switch (decle2 & 0x3)
 					{
@@ -52,7 +54,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 							return UNKNOWN;
 					}
 					if (dest != 0x3)
+					{
 						result += " R" + dest + ",";
+					}
 					result += string.Format(" ${0:X4}", addr);
 					addrToAdvance = 3;
 					return result;
@@ -122,13 +126,17 @@ namespace BizHawk.Emulation.CPUs.CP1610
 				case 0x035:
 					result = "NOP";
 					if ((opcode & 0x1) != 0)
+					{
 						result += " 1";
+					}
 					return result;
 				case 0x036:
 				case 0x037:
 					result = "SIN";
 					if ((opcode & 0x1) != 0)
+					{
 						result += " 1";
+					}
 					return result;
 				case 0x038:
 				case 0x039:
@@ -151,7 +159,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = "SWAP R" + dest;
 					if (((opcode >> 2) & 0x1) != 0)
+					{
 						result += ", 1";
+					}
 					return result;
 				case 0x048:
 				case 0x049:
@@ -164,7 +174,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = "SLL R" + dest;
 					if (((opcode >> 2) & 0x1) != 0)
+					{
 						result += ", 1";
+					}
 					return result;
 				case 0x050:
 				case 0x051:
@@ -177,7 +189,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = "RLC R" + dest;
 					if (((opcode >> 2) & 0x1) != 0)
+					{
 						result += ", 1";
+					}
 					return result;
 				case 0x058:
 				case 0x059:
@@ -190,7 +204,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = "SLLC R" + dest;
 					if (((opcode >> 2) & 0x1) != 0)
+					{
 						result += ", 1";
+					}
 					return result;
 				case 0x060:
 				case 0x061:
@@ -203,7 +219,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = "SLR R" + dest;
 					if (((opcode >> 2) & 0x1) != 0)
+					{
 						result += ", 1";
+					}
 					return result;
 				case 0x068:
 				case 0x069:
@@ -216,7 +234,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = "SAR R" + dest;
 					if (((opcode >> 2) & 0x1) != 0)
+					{
 						result += ", 1";
+					}
 					return result;
 				case 0x070:
 				case 0x071:
@@ -229,7 +249,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = "RRC R" + dest;
 					if (((opcode >> 2) & 0x1) != 0)
+					{
 						result += ", 1";
+					}
 					return result;
 				case 0x078:
 				case 0x079:
@@ -242,7 +264,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					dest = (byte)(opcode & 0x3);
 					result = "SARC R" + dest;
 					if (((opcode >> 2) & 0x1) != 0)
+					{
 						result += ", 1";
+					}
 					return result;
 				case 0x080:
 				case 0x081:
@@ -718,7 +742,9 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					cond = opcode & 0xF;
 					ext = opcode & 0x10;
 					if (ext != 0)
+					{
 						result = "BEXT";
+					}
 					else
 					{
 						switch (cond)
@@ -777,10 +803,14 @@ namespace BizHawk.Emulation.CPUs.CP1610
 					{
 						// Branch in the reverse direction by negating the offset and subtracting 1.
 						if (((opcode >> 5) & 0x1) != 0)
+						{
 							offset = (ushort)(-offset - 1);
+						}
 						result += string.Format(" ${0:X4}", offset);
 						if (ext != 0)
+						{
 							result += string.Format(", ${0:X1}", opcode & 0x8);
+						}
 					}
 					addrToAdvance = 2;
 					return result;

@@ -41,6 +41,8 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.label12 = new System.Windows.Forms.Label();
+			this.label15 = new System.Windows.Forms.Label();
 			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
 			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
 			this.label24 = new System.Windows.Forms.Label();
@@ -60,9 +62,10 @@
 			this.label10 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
-			this.label12 = new System.Windows.Forms.Label();
-			this.label15 = new System.Windows.Forms.Label();
 			this.label27 = new System.Windows.Forms.Label();
+			this.label28 = new System.Windows.Forms.Label();
+			this.label30 = new System.Windows.Forms.Label();
+			this.linkLabel4 = new System.Windows.Forms.LinkLabel();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -71,7 +74,7 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.OK.Location = new System.Drawing.Point(358, 412);
+			this.OK.Location = new System.Drawing.Point(361, 455);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -93,7 +96,7 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(170, 416);
+			this.linkLabel1.Location = new System.Drawing.Point(173, 459);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(180, 13);
 			this.linkLabel1.TabIndex = 2;
@@ -180,6 +183,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.linkLabel4);
+			this.panel1.Controls.Add(this.label28);
+			this.panel1.Controls.Add(this.label30);
 			this.panel1.Controls.Add(this.label12);
 			this.panel1.Controls.Add(this.label15);
 			this.panel1.Controls.Add(this.linkLabel3);
@@ -203,8 +209,26 @@
 			this.panel1.Controls.Add(this.label8);
 			this.panel1.Location = new System.Drawing.Point(12, 182);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(420, 224);
+			this.panel1.Size = new System.Drawing.Size(423, 267);
 			this.panel1.TabIndex = 11;
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(21, 212);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(94, 13);
+			this.label12.TabIndex = 22;
+			this.label12.Text = "Created by: vecna";
+			// 
+			// label15
+			// 
+			this.label15.AutoSize = true;
+			this.label15.Location = new System.Drawing.Point(13, 196);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(68, 13);
+			this.label15.TabIndex = 21;
+			this.label15.Text = "ColecoHawk";
 			// 
 			// linkLabel3
 			// 
@@ -278,9 +302,9 @@
 			this.label23.AutoSize = true;
 			this.label23.Location = new System.Drawing.Point(201, 96);
 			this.label23.Name = "label23";
-			this.label23.Size = new System.Drawing.Size(56, 13);
+			this.label23.Size = new System.Drawing.Size(80, 13);
 			this.label23.TabIndex = 13;
-			this.label23.Text = "AtariHawk";
+			this.label23.Text = "Atari2600Hawk";
 			// 
 			// label17
 			// 
@@ -381,24 +405,6 @@
 			this.label8.TabIndex = 0;
 			this.label8.Text = "NESHawk";
 			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(21, 207);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(94, 13);
-			this.label12.TabIndex = 22;
-			this.label12.Text = "Created by: vecna";
-			// 
-			// label15
-			// 
-			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(13, 190);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(68, 13);
-			this.label15.TabIndex = 21;
-			this.label15.Text = "ColecoHawk";
-			// 
 			// label27
 			// 
 			this.label27.AutoSize = true;
@@ -408,13 +414,44 @@
 			this.label27.TabIndex = 12;
 			this.label27.Text = "SaxxonPike";
 			// 
+			// label28
+			// 
+			this.label28.AutoSize = true;
+			this.label28.Location = new System.Drawing.Point(212, 238);
+			this.label28.Name = "label28";
+			this.label28.Size = new System.Drawing.Size(104, 13);
+			this.label28.TabIndex = 25;
+			this.label28.Text = "author: Mike Murphy";
+			this.label28.Click += new System.EventHandler(this.label28_Click);
+			// 
+			// label30
+			// 
+			this.label30.AutoSize = true;
+			this.label30.Location = new System.Drawing.Point(204, 207);
+			this.label30.Name = "label30";
+			this.label30.Size = new System.Drawing.Size(80, 13);
+			this.label30.TabIndex = 23;
+			this.label30.Text = "Atari7800Hawk";
+			this.label30.Click += new System.EventHandler(this.label30_Click);
+			// 
+			// linkLabel4
+			// 
+			this.linkLabel4.AutoSize = true;
+			this.linkLabel4.Location = new System.Drawing.Point(212, 225);
+			this.linkLabel4.Name = "linkLabel4";
+			this.linkLabel4.Size = new System.Drawing.Size(55, 13);
+			this.linkLabel4.TabIndex = 26;
+			this.linkLabel4.TabStop = true;
+			this.linkLabel4.Text = "EMU7800";
+			this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
+			// 
 			// BizBox
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.OK;
-			this.ClientSize = new System.Drawing.Size(445, 447);
+			this.ClientSize = new System.Drawing.Size(448, 490);
 			this.Controls.Add(this.label27);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label7);
@@ -478,5 +515,8 @@
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Label label27;
+		private System.Windows.Forms.Label label28;
+		private System.Windows.Forms.Label label30;
+		private System.Windows.Forms.LinkLabel linkLabel4;
 	}
 }

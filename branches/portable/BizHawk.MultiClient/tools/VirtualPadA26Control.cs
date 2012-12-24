@@ -122,10 +122,11 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "A26") return;
 
+			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
+			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Pause", false);
+
 			B1.Checked = false;
 			B2.Checked = false;
-			Global.StickyXORAdapter.SetSticky("Reset", false);
-			Global.StickyXORAdapter.SetSticky("Pause", false);
 		}
 	}
 }

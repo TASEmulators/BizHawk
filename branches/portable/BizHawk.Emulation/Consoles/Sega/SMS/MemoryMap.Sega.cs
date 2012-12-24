@@ -43,9 +43,9 @@
 				ret = SystemRam[address & RamSizeMask];
 			}
 
-			if (CoreInputComm.MemoryCallbackSystem.HasRead)
+			if (CoreComm.MemoryCallbackSystem.HasRead)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerRead(address);
+				CoreComm.MemoryCallbackSystem.TriggerRead(address);
 			}
 
 			return ret;
@@ -81,9 +81,9 @@
 				return;
 			}
 
-			if (CoreInputComm.MemoryCallbackSystem.HasWrite)
+			if (CoreComm.MemoryCallbackSystem.HasWrite)
 			{
-				CoreInputComm.MemoryCallbackSystem.TriggerWrite(address);
+				CoreComm.MemoryCallbackSystem.TriggerWrite(address);
 			}
 		}
 

@@ -48,9 +48,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("mod", ref mode);
+			ser.BeginSection("M116MMC1");
 			mmc1.SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("M116MMC3");
 			mmc3.SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("M116VRC2");
 			vrc2.SyncState(ser);
+			ser.EndSection();
 			base.SyncState(ser);
 			SyncIRQ(mmc3.mmc3.irq_pending);
 		}

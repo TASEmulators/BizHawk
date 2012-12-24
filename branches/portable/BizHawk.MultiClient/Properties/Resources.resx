@@ -430,4 +430,13 @@
   <data name="LightOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\LightOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Both" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Both.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="A78Joystick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\A78Joystick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IntVController" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\IntVController.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
