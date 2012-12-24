@@ -202,6 +202,8 @@ void PPU::serialize(serializer &s) {
 
   s.array(oam_line_pal, 256);
   s.array(oam_line_pri, 256);
+
+  s.integer(uindex);
 }
 
 #endif
