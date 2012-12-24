@@ -23,6 +23,17 @@ void SMP::synchronize_cpu() {
   }
 }
 
+void SMP::synchronize_cpu_force() {
+  if(CPU::Threaded == true) {
+    if(clock >= 0 && scheduler.sync != Scheduler::SynchronizeMode::All)
+      co_switch(cpu.thread);
+    else if(clock >= 0 && scheduler.sync == Scheduler::SynchronizeMode::All)
+      interface->message("SMP had to advance nondeterministically!");
+  } else {
+    while(clock >= 0) cpu.enter();
+  }
+}
+
 void SMP::synchronize_dsp() {
   if(DSP::Threaded == true) {
     if(dsp.clock < 0 && scheduler.sync != Scheduler::SynchronizeMode::All) co_switch(dsp.thread);
@@ -35,6 +46,9 @@ void SMP::Enter() { smp.enter(); }
 
 void SMP::enter() {
   while(true) {
+    // see comment in timing.cpp
+    if(clock > +(768 * 24 * (int64)24000000)) synchronize_cpu();
+
     if(scheduler.sync == Scheduler::SynchronizeMode::All) {
       scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
@@ -59,6 +73,10 @@ void SMP::reset() {
   create(Enter, system.apu_frequency());
 
   regs.pc = 0xffc0;
+  // exact value doesn't matter much, so long as "fetch" is next
+  opcode = 0; // NOP
+  uindex = 1; // fetch phase
+
   regs.a = 0x00;
   regs.x = 0x00;
   regs.y = 0x00;
