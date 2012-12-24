@@ -56,8 +56,12 @@ void CPU::Enter() { cpu.enter(); }
 void CPU::enter() {
   while(true) {
     if(scheduler.sync == Scheduler::SynchronizeMode::CPU) {
-      scheduler.sync = Scheduler::SynchronizeMode::All;
-      scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
+      // we can only stop if there's enough time for at least one more event
+      // on both the PPU and the SMP
+      if (smp.clock < 0 && ppu.clock < 0) {
+        scheduler.sync = Scheduler::SynchronizeMode::All;
+        scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
+      }
     }
 
     if(status.interrupt_pending) {
@@ -86,7 +90,7 @@ void CPU::enter() {
 
 void CPU::op_step() {
   debugger.op_exec(regs.pc.d);
-  
+
   if (interface->wanttrace)
   {
     char tmp[512];
@@ -94,7 +98,7 @@ void CPU::op_step() {
 	tmp[511] = 0;
     interface->cpuTrace(tmp);
   }
-  
+
   (this->*opcode_table[op_readpc()])();
 }
 

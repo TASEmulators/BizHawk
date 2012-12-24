@@ -29,6 +29,9 @@ void PPU::Enter() { ppu.enter(); }
 
 void PPU::enter() {
   while(true) {
+    if(scheduler.sync == Scheduler::SynchronizeMode::CPU) {
+      synchronize_cpu(); // when in CPU sync mode, always switch back to CPU as soon as possible
+    }
     if(scheduler.sync == Scheduler::SynchronizeMode::All) {
       scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
