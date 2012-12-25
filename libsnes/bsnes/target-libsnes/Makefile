@@ -10,10 +10,11 @@ else ifeq ($(platform),win)
 endif
 
 #rules
-objects := $(objects) libsnes
+objects := $(objects) libsnes libsnes_pwrap
 objects := $(patsubst %,obj/%.o,$(objects))
 
 obj/libsnes.o: $(ui)/libsnes.cpp $(ui)/*
+obj/libsnes_pwrap.o: $(ui)/libsnes_pwrap.cpp $(ui)/*
 
 #targets
 build: $(objects)
@@ -24,7 +25,7 @@ else ifeq ($(platform),osx)
 	ar rcs out/libsnes.a $(objects)
 	$(cpp) -o out/libsnes.dylib -install_name @executable_path/../Libraries/libsnes.dylib -shared -dynamiclib $(objects)
 else ifeq ($(platform),win)
-	$(cpp) -o out/snes.dll -shared -Wl,--out-implib,libsnes.a $(objects) $(TARGET_LIBSNES_LIBDEPS)
+	$(cpp) -o out/libsneshawk-$(profile).exe -Wl $(objects) $(TARGET_LIBSNES_LIBDEPS)
 endif
 
 install:

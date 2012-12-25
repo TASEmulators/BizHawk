@@ -60,7 +60,7 @@ void Cartridge::load(System::Revision revision, const string &markup, const uint
     case Mapper::HuC3:  mapper = &huc3;  break;
   }
 
-  ramdata = new uint8_t[ramsize = info.ramsize]();
+  ramdata = (uint8_t*)interface->allocSharedMemory("GAME_BOY_RAM",ramsize = info.ramsize);
   system.load(revision);
 
   loaded = true;
@@ -71,7 +71,7 @@ void Cartridge::unload() {
   if(loaded == false) return;
 
   if(romdata) { delete[] romdata; romdata = 0; }
-  if(ramdata) { delete[] ramdata; ramdata = 0; }
+	if(ramdata) { interface->freeSharedMemory(ramdata); }
   loaded = false;
 }
 

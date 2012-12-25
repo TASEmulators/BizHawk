@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using System.Diagnostics;
 using BizHawk.Core;
 using BizHawk.DiscSystem;
 using BizHawk.Emulation.Consoles.Sega;
@@ -26,7 +27,7 @@ namespace BizHawk.MultiClient
 
 	public partial class MainForm : Form
 	{
-		public bool INTERIM = true;
+		public static bool INTERIM = true;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
 		public const string RELEASEDATE = "December 23, 2012";
 		private Control renderTarget;
@@ -359,6 +360,33 @@ namespace BizHawk.MultiClient
 			base.Dispose(disposing);
 		}
 
+		//contains a mapping: profilename->exepath ; or null if the exe wasnt available
+		Dictionary<string, string> SNES_prepared = new Dictionary<string, string>();
+		string SNES_Prepare(string profile)
+		{
+			SNES_Check(profile);
+			if (SNES_prepared[profile] == null)
+			{
+				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
+			}
+			return SNES_prepared[profile];
+		}
+		void SNES_Check(string profile)
+		{
+			if (SNES_prepared.ContainsKey(profile)) return;
+			string exename = "libsneshawk-" + profile.ToLower() + ".exe";
+
+			string thisDir = PathManager.GetExeDirectoryAbsolute();
+			string exePath = Path.Combine(thisDir, exename);
+			if (!File.Exists(exePath))
+				exePath = Path.Combine(Path.Combine(thisDir, "dll"), exename);
+
+			if (!File.Exists(exePath))
+				exePath = null;
+
+			SNES_prepared[profile] = exePath;
+		}
+
 		public void SyncCoreCommInputSignals(CoreComm target)
 		{
 			target.NES_BackdropColor = Global.Config.NESBackgroundColor;
@@ -389,6 +417,8 @@ namespace BizHawk.MultiClient
 			target.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ2;
 			target.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ3;
 			target.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ4;
+
+			target.SNES_Profile = Global.Config.SNESProfile;
 
 			target.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 			target.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
@@ -1843,6 +1873,7 @@ namespace BizHawk.MultiClient
 							case "SNES":
 								{
 									game.System = "SNES";
+									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
 									snes.Load(game, rom.FileData, null, deterministicemulation);
@@ -1968,6 +1999,7 @@ namespace BizHawk.MultiClient
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
+										nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 										var snes = new LibsnesCore(nextComm);
 										nextEmulator = snes;
 										game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
@@ -4933,5 +4965,7 @@ namespace BizHawk.MultiClient
 					break;
 			}
 		}
+
+	
 	}
 }

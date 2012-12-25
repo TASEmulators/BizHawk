@@ -1811,6 +1811,18 @@ namespace BizHawk.MultiClient
 			LoadSNESGraphicsDebugger();
 		}
 
+		private void miSnesOptions_Click(object sender, EventArgs e)
+		{
+			var so = new SNESOptions();
+			so.Profile = Global.Config.SNESProfile;
+			if (so.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				bool reboot = Global.Config.SNESProfile != so.Profile;
+				Global.Config.SNESProfile = so.Profile;
+				if (reboot) FlagNeedsReboot();
+			}
+		}
+
 		private void SNES_ToggleBG1()
 		{
 			if (Global.Emulator is LibsnesCore)

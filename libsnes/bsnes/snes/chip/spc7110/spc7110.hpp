@@ -3,7 +3,7 @@
 
 class SPC7110 {
 public:
-  uint8 rtc[20];
+  uint8* rtc; //[20];
   unsigned data_rom_offset;
 
   void init();
@@ -41,6 +41,8 @@ public:
 
   void serialize(serializer&);
   SPC7110();
+	~SPC7110();
+	void initialize();
 
 private:
   //==================

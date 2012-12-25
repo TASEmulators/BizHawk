@@ -91,12 +91,12 @@ void CPU::enter() {
 void CPU::op_step() {
   debugger.op_exec(regs.pc.d);
 
-  if (interface->wanttrace)
+  if (interface()->wanttrace)
   {
     char tmp[512];
 	disassemble_opcode(tmp, regs.pc.d);
 	tmp[511] = 0;
-    interface->cpuTrace(tmp);
+    interface()->cpuTrace(tmp);
   }
 
   (this->*opcode_table[op_readpc()])();
@@ -128,7 +128,7 @@ void CPU::enable() {
 
 void CPU::power() {
   cpu_version = config.cpu.version;
-  for(auto &n : wram) n = random(config.cpu.wram_init_value);
+	for(int i=0;i<128*1024;i++) wram[i] = random(config.cpu.wram_init_value);
 
   regs.a = regs.x = regs.y = 0x0000;
   regs.s = 0x01ff;
@@ -166,11 +166,19 @@ void CPU::reset() {
   timing_reset();
 }
 
-CPU::CPU() {
+CPU::CPU()
+	: wram(nullptr)
+{
   PPUcounter::scanline = { &CPU::scanline, this };
 }
 
 CPU::~CPU() {
+	interface()->freeSharedMemory(wram);
+}
+
+void CPU::initialize()
+{
+	wram = (uint8*)interface()->allocSharedMemory("WRAM",128 * 1024);
 }
 
 }

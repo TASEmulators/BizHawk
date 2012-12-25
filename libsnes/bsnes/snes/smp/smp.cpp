@@ -28,7 +28,7 @@ void SMP::synchronize_cpu_force() {
     if(clock >= 0 && scheduler.sync != Scheduler::SynchronizeMode::All)
       co_switch(cpu.thread);
     else if(clock >= 0 && scheduler.sync == Scheduler::SynchronizeMode::All)
-      interface->message("SMP had to advance nondeterministically!");
+      interface()->message("SMP had to advance nondeterministically!");
   } else {
     while(clock >= 0) cpu.enter();
   }
@@ -87,7 +87,7 @@ void SMP::reset() {
   regs.s = 0xef;
   regs.p = 0x02;
 
-  for(auto &n : apuram) n = random(0x00);
+	for(int i=0;i<64*1024;i++) apuram[i] = random(0x00);
   apuram[0x00f4] = 0x00;
   apuram[0x00f5] = 0x00;
   apuram[0x00f6] = 0x00;
@@ -140,11 +140,18 @@ void SMP::reset() {
   timer2.enable = false;
 }
 
-SMP::SMP() {
-
+SMP::SMP()
+	: apuram(nullptr)
+{
 }
 
 SMP::~SMP() {
+	interface()->freeSharedMemory(apuram);
+}
+
+void SMP::initialize()
+{
+	apuram = (uint8*)interface()->allocSharedMemory("APURAM",64 * 1024);
 }
 
 }

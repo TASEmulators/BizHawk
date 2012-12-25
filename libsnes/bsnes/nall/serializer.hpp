@@ -74,6 +74,10 @@ namespace nall {
       }
     }
 
+		template<typename T> void array(T *array, int size) {
+      for(unsigned n = 0; n < size; n++) integer(array[n]);
+		}
+
     template<typename T> void array(T &array) {
       enum { size = sizeof(T) / sizeof(typename std::remove_extent<T>::type) };
       for(unsigned n = 0; n < size; n++) integer(array[n]);

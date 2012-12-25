@@ -176,7 +176,7 @@ namespace BizHawk.MultiClient
 
 			SetTabByPlatform();
 
-			if (!Global.MainForm.INTERIM)
+			if (!MainForm.INTERIM)
 			{
 				tabControl1.Controls.Remove(tabPageIntellivision);
 				tabControl1.Controls.Remove(tabPageC64);

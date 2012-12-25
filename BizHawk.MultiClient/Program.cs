@@ -34,6 +34,8 @@ namespace BizHawk.MultiClient
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			// catch morons who mix versions
+			// zero 25-dec-2012 - only do for public builds. its annoying during development
+			if(!MainForm.INTERIM)
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
 				var utilversion = typeof(InputValidate).Assembly.GetName().Version;

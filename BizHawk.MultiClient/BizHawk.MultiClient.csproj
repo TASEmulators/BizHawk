@@ -395,6 +395,12 @@
     <Compile Include="SNESTools\SNESGraphicsViewer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SNESTools\SNESOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SNESTools\SNESOptions.Designer.cs">
+      <DependentUpon>SNESOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\HexColor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -560,6 +566,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SNESTools\SNESGraphicsDebugger.resx">
       <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SNESTools\SNESOptions.resx">
+      <DependentUpon>SNESOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexColor.resx">
       <DependentUpon>HexColor.cs</DependentUpon>

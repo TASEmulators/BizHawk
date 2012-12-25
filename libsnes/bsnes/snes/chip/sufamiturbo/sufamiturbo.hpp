@@ -8,6 +8,8 @@ public:
   void load();
   void unload();
   void serialize(serializer&);
+
+	SufamiTurbo();
 };
 
 extern SufamiTurbo sufamiturbo;

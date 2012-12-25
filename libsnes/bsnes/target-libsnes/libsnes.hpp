@@ -2,6 +2,15 @@
 #define LIBSNES_HPP
 
 #include <stdint.h>
+#include <stdlib.h>
+
+#if defined(LIBSNES_IMPORT)
+#define LIBSNES_IMPORTDECL __declspec(dllimport)
+#elif defined(LIBSNES_EXPORT)
+#define LIBSNES_IMPORTDECL __declspec(dllexport)
+#else
+#define LIBSNES_IMPORTDECL
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,12 +76,17 @@ extern "C" {
 #define SNES_MEMORY_OAM     103
 #define SNES_MEMORY_CGRAM   104
 
+#define SNES_MEMORY_SYSBUS 200
+#define SNES_MEMORY_LOGICAL_REGS 201
+
 typedef void (*snes_video_refresh_t)(const uint32_t *data, unsigned width, unsigned height);
 typedef void (*snes_audio_sample_t)(uint16_t left, uint16_t right);
 typedef void (*snes_input_poll_t)(void);
 typedef int16_t (*snes_input_state_t)(unsigned port, unsigned device, unsigned index, unsigned id);
 typedef void (*snes_input_notify_t)(int index);
 typedef void (*snes_trace_t)(const char *msg);
+typedef void* (*snes_allocSharedMemory_t)(const char* memtype, size_t amt);
+typedef void (*snes_freeSharedMemory_t)(void* ptr);
 
 const char* snes_library_id(void);
 unsigned snes_library_revision_major(void);
@@ -83,6 +97,9 @@ void snes_set_audio_sample(snes_audio_sample_t);
 void snes_set_input_poll(snes_input_poll_t);
 void snes_set_input_state(snes_input_state_t);
 void snes_set_input_notify(snes_input_notify_t);
+
+void snes_set_allocSharedMemory(snes_allocSharedMemory_t);
+void snes_set_freeSharedMemory(snes_freeSharedMemory_t);
 
 void snes_set_controller_port_device(bool port, unsigned device);
 void snes_set_cartridge_basename(const char *basename);
@@ -129,6 +146,7 @@ void snes_unload_cartridge(void);
 
 bool snes_get_region(void);
 uint8_t* snes_get_memory_data(unsigned id);
+const char* snes_get_memory_id_name(unsigned id);
 unsigned snes_get_memory_size(unsigned id);
 
 //zeromus additions

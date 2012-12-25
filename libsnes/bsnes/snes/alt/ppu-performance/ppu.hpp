@@ -1,8 +1,8 @@
 class PPU : public Processor, public PPUcounter {
 public:
-  uint8 vram[64 * 1024];
-  uint8 oam[544];
-  uint8 cgram[512];
+  uint8 *vram; //[64 * 1024];
+  uint8 *oam; //[544];
+  uint8 *cgram; //[512];
 
   enum : bool { Threaded = true };
   alwaysinline void step(unsigned clocks);
@@ -26,6 +26,7 @@ public:
   void serialize(serializer&);
   PPU();
   ~PPU();
+	void initialize();
 
 private:
   uint32 *surface;
