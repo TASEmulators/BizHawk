@@ -112,4 +112,7 @@ bool ICD2::inputPoll(unsigned id) {
   return 0;
 }
 
+void* ICD2::allocSharedMemory(const char* memtype, size_t amt, int initialByte) { SNES::interface()->allocSharedMemory(memtype, amt, initialByte); }
+void ICD2::freeSharedMemory(void* ptr) { SNES::interface()->freeSharedMemory(ptr); }
+
 #endif

@@ -1,6 +1,6 @@
 class CPU : public Processor, public CPUcore, public PPUcounter {
 public:
-  uint8 wram[128 * 1024];
+  uint8* wram; //[128 * 1024];
 
   enum : bool { Threaded = true };
   array<Processor*> coprocessors;
@@ -30,6 +30,7 @@ public:
   void serialize(serializer&);
   CPU();
   ~CPU();
+	void initialize();
 
 private:
   //cpu

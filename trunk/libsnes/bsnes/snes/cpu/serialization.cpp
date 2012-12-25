@@ -5,7 +5,7 @@ void CPU::serialize(serializer &s) {
   CPUcore::core_serialize(s);
   PPUcounter::serialize(s);
 
-  s.array(wram);
+  s.array(wram,128 * 1024);
 
   s.integer(cpu_version);
 

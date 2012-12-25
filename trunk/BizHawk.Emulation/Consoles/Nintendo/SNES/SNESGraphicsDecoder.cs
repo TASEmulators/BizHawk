@@ -10,14 +10,14 @@ using System.Linq;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 {
 
-	public unsafe class SNESGraphicsDecoder
+	public unsafe class SNESGraphicsDecoder : IDisposable
 	{
-
 		public class PaletteSelection
 		{
 			public PaletteSelection() { }
@@ -332,15 +332,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			public bool M7SEL_HFLIP { private set; get; }
 			public bool M7SEL_VFLIP { private set; get; }
 
-			public static ScreenInfo GetScreenInfo()
+			public static ScreenInfo GetScreenInfo(LibsnesApi api)
 			{
 				var si = new ScreenInfo();
 
-				si.Mode1_BG3_Priority = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_PRIORITY) == 1;
+				si.Mode1_BG3_Priority = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG3_PRIORITY) == 1;
 
-				si.OBSEL_Size = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_SIZE);
-				si.OBSEL_NameSel = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMESEL);
-				si.OBSEL_NameBase = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.OBSEL_NAMEBASE);
+				si.OBSEL_Size = api.snes_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_SIZE);
+				si.OBSEL_NameSel = api.snes_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMESEL);
+				si.OBSEL_NameBase = api.snes_peek_logical_register(LibsnesApi.SNES_REG.OBSEL_NAMEBASE);
 
 				si.ObjSizeBounds = ObjSizes[si.OBSEL_Size,1];
 				int square = Math.Max(si.ObjSizeBounds.Width, si.ObjSizeBounds.Height);
@@ -350,26 +350,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				si.OBJTable0Addr = si.OBSEL_NameBase << 14;
 				si.OBJTable1Addr = (si.OBJTable0Addr + ((si.OBSEL_NameSel + 1) << 13)) & 0xFFFF;
 
-				si.SETINI_Mode7ExtBG = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_MODE7_EXTBG) == 1;
-				si.SETINI_HiRes = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_HIRES) == 1;
-				si.SETINI_Overscan = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_OVERSCAN) == 1;
-				si.SETINI_ObjInterlace = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_OBJ_INTERLACE) == 1;
-				si.SETINI_ScreenInterlace = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.SETINI_SCREEN_INTERLACE) == 1;
+				si.SETINI_Mode7ExtBG = api.snes_peek_logical_register(LibsnesApi.SNES_REG.SETINI_MODE7_EXTBG) == 1;
+				si.SETINI_HiRes = api.snes_peek_logical_register(LibsnesApi.SNES_REG.SETINI_HIRES) == 1;
+				si.SETINI_Overscan = api.snes_peek_logical_register(LibsnesApi.SNES_REG.SETINI_OVERSCAN) == 1;
+				si.SETINI_ObjInterlace = api.snes_peek_logical_register(LibsnesApi.SNES_REG.SETINI_OBJ_INTERLACE) == 1;
+				si.SETINI_ScreenInterlace = api.snes_peek_logical_register(LibsnesApi.SNES_REG.SETINI_SCREEN_INTERLACE) == 1;
 
-				si.CGWSEL_ColorMask = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_COLORMASK);
-				si.CGWSEL_ColorSubMask = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_COLORSUBMASK);
-				si.CGWSEL_AddSubMode = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_ADDSUBMODE);
-				si.CGWSEL_DirectColor = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGWSEL_DIRECTCOLOR) == 1;
+				si.CGWSEL_ColorMask = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_COLORMASK);
+				si.CGWSEL_ColorSubMask = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_COLORSUBMASK);
+				si.CGWSEL_AddSubMode = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_ADDSUBMODE);
+				si.CGWSEL_DirectColor = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGWSEL_DIRECTCOLOR) == 1;
 
-				si.CGADSUB_AddSub = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_MODE);
-				si.CGADSUB_Half = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_HALF) == 1;
+				si.CGADSUB_AddSub = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_MODE);
+				si.CGADSUB_Half = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_HALF) == 1;
 
-				si.OBJ_MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_OBJ) == 1;
-				si.OBJ_SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_OBJ) == 1;
-				si.OBJ_MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_OBJ) == 1;
-				si.BK_MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BACKDROP) == 1;
+				si.OBJ_MainEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TM_OBJ) == 1;
+				si.OBJ_SubEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TS_OBJ) == 1;
+				si.OBJ_MathEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_OBJ) == 1;
+				si.BK_MathEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BACKDROP) == 1;
 
-				si.Mode.MODE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG_MODE);
+				si.Mode.MODE = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG_MODE);
 				si.BG.BG1.Bpp = ModeBpps[si.Mode.MODE, 0];
 				si.BG.BG2.Bpp = ModeBpps[si.Mode.MODE, 1];
 				si.BG.BG3.Bpp = ModeBpps[si.Mode.MODE, 2];
@@ -379,58 +379,58 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				for(int i=1;i<=4;i++)
 					si.BG[i].BGMode = si.BG[i].Bpp == 0 ? BGMode.Unavailable : BGMode.Text;
 
-				si.BG.BG1.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_TILESIZE);
-				si.BG.BG2.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TILESIZE);
-				si.BG.BG3.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_TILESIZE);
-				si.BG.BG4.TILESIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_TILESIZE);
+				si.BG.BG1.TILESIZE = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG1_TILESIZE);
+				si.BG.BG2.TILESIZE = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG2_TILESIZE);
+				si.BG.BG3.TILESIZE = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG3_TILESIZE);
+				si.BG.BG4.TILESIZE = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG4_TILESIZE);
 
-				si.BG.BG1.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_SCSIZE);
-				si.BG.BG2.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_SCSIZE);
-				si.BG.BG3.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_SCSIZE);
-				si.BG.BG4.SCSIZE = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_SCSIZE);
-				si.BG.BG1.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_SCADDR);
-				si.BG.BG2.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_SCADDR);
-				si.BG.BG3.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_SCADDR);
-				si.BG.BG4.SCADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_SCADDR);
-				si.BG.BG1.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1_TDADDR);
-				si.BG.BG2.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2_TDADDR);
-				si.BG.BG3.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3_TDADDR);
-				si.BG.BG4.TDADDR = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4_TDADDR);
+				si.BG.BG1.SCSIZE = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG1_SCSIZE);
+				si.BG.BG2.SCSIZE = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG2_SCSIZE);
+				si.BG.BG3.SCSIZE = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG3_SCSIZE);
+				si.BG.BG4.SCSIZE = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG4_SCSIZE);
+				si.BG.BG1.SCADDR = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG1_SCADDR);
+				si.BG.BG2.SCADDR = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG2_SCADDR);
+				si.BG.BG3.SCADDR = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG3_SCADDR);
+				si.BG.BG4.SCADDR = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG4_SCADDR);
+				si.BG.BG1.TDADDR = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG1_TDADDR);
+				si.BG.BG2.TDADDR = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG2_TDADDR);
+				si.BG.BG3.TDADDR = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG3_TDADDR);
+				si.BG.BG4.TDADDR = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG4_TDADDR);
 
-				si.BG.BG1.MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_BG1) == 1;
-				si.BG.BG2.MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_BG2) == 1;
-				si.BG.BG3.MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_BG3) == 1;
-				si.BG.BG4.MainEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TM_BG4) == 1;
-				si.BG.BG1.SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_BG1) == 1;
-				si.BG.BG2.SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_BG2) == 1;
-				si.BG.BG3.SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_BG3) == 1;
-				si.BG.BG4.SubEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.TS_BG4) == 1;
-				si.BG.BG1.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG1) == 1;
-				si.BG.BG2.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG2) == 1;
-				si.BG.BG3.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG3) == 1;
-				si.BG.BG4.MathEnabled = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.CGADSUB_BG4) == 1;
+				si.BG.BG1.MainEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TM_BG1) == 1;
+				si.BG.BG2.MainEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TM_BG2) == 1;
+				si.BG.BG3.MainEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TM_BG3) == 1;
+				si.BG.BG4.MainEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TM_BG4) == 1;
+				si.BG.BG1.SubEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TS_BG1) == 1;
+				si.BG.BG2.SubEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TS_BG2) == 1;
+				si.BG.BG3.SubEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TS_BG3) == 1;
+				si.BG.BG4.SubEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.TS_BG4) == 1;
+				si.BG.BG1.MathEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG1) == 1;
+				si.BG.BG2.MathEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG2) == 1;
+				si.BG.BG3.MathEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG3) == 1;
+				si.BG.BG4.MathEnabled = api.snes_peek_logical_register(LibsnesApi.SNES_REG.CGADSUB_BG4) == 1;
 
-				si.BG.BG1.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1HOFS);
-				si.BG.BG1.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG1VOFS);
-				si.BG.BG2.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2HOFS);
-				si.BG.BG2.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG2VOFS);
-				si.BG.BG3.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3HOFS);
-				si.BG.BG3.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG3VOFS);
-				si.BG.BG4.HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4HOFS);
-				si.BG.BG4.VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.BG4VOFS);
+				si.BG.BG1.HOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG1HOFS);
+				si.BG.BG1.VOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG1VOFS);
+				si.BG.BG2.HOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG2HOFS);
+				si.BG.BG2.VOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG2VOFS);
+				si.BG.BG3.HOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG3HOFS);
+				si.BG.BG3.VOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG3VOFS);
+				si.BG.BG4.HOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG4HOFS);
+				si.BG.BG4.VOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.BG4VOFS);
 
-				si.M7HOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7HOFS);
-				si.M7VOFS = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7VOFS);
-				si.M7A = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7A);
-				si.M7B = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7B);
-				si.M7C = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7C);
-				si.M7D = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7D);
-				si.M7X = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7X);
-				si.M7Y = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7Y);
-				si.M7Y = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7Y);
-				si.M7SEL_REPEAT = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7SEL_REPEAT);
-				si.M7SEL_HFLIP = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7SEL_HFLIP)!=0;
-				si.M7SEL_VFLIP = LibsnesDll.snes_peek_logical_register(LibsnesDll.SNES_REG.M7SEL_VFLIP)!=0;
+				si.M7HOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7HOFS);
+				si.M7VOFS = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7VOFS);
+				si.M7A = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7A);
+				si.M7B = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7B);
+				si.M7C = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7C);
+				si.M7D = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7D);
+				si.M7X = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7X);
+				si.M7Y = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7Y);
+				si.M7Y = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7Y);
+				si.M7SEL_REPEAT = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7SEL_REPEAT);
+				si.M7SEL_HFLIP = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7SEL_HFLIP)!=0;
+				si.M7SEL_VFLIP = api.snes_peek_logical_register(LibsnesApi.SNES_REG.M7SEL_VFLIP)!=0;
 
 				for (int i = 1; i <= 4; i++)
 				{
@@ -534,7 +534,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public ScreenInfo ScanScreenInfo()
 		{
-			return ScreenInfo.GetScreenInfo();
+			return ScreenInfo.GetScreenInfo(api);
 		}
 
 		//the same basic color table that libsnes uses to convert from snes 555 to rgba32
@@ -558,16 +558,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		int[] colortable;
 		public byte* vram, oam;
 		public ushort* cgram, vram16;
-		public SNESGraphicsDecoder(SnesColors.ColorType pal)
+		
+		LibsnesApi api;
+
+		public SNESGraphicsDecoder(LibsnesApi api, SnesColors.ColorType pal)
 		{
+			this.api = api;
 			colortable = SnesColors.GetLUT(pal);
-			IntPtr block = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.VRAM);
+			IntPtr block = (IntPtr)api.snes_get_memory_data(LibsnesApi.SNES_MEMORY.VRAM);
 			vram = (byte*)block;
 			vram16 = (ushort*)block;
-			block = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.CGRAM);
+			block = (IntPtr)api.snes_get_memory_data(LibsnesApi.SNES_MEMORY.CGRAM);
 			cgram = (ushort*)block;
-			block = LibsnesDll.snes_get_memory_data(LibsnesDll.SNES_MEMORY.OAM);
+			block = (IntPtr)api.snes_get_memory_data(LibsnesApi.SNES_MEMORY.OAM);
 			oam = (byte*)block;
+		}
+
+		public void Dispose()
+		{
+			//todo - unhook from api?
 		}
 
 		public struct TileEntry
@@ -783,7 +792,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public void CacheTiles()
 		{
 			//generate 2bpp tiles
-			int numtiles = 8192;
+			int numtiles = 65536/8/2;
 			int[] tiles = new int[8 * 8 * numtiles];
 			_tileCache[2] = tiles;
 			for (int i = 0; i < numtiles; i++)

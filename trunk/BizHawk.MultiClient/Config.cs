@@ -743,6 +743,7 @@ namespace BizHawk.MultiClient
 		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
 		public SNESControllerTemplate[] SNESAutoController = new SNESControllerTemplate[4];
 		public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
+		public string SNESProfile = "Compatibility";
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];

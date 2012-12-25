@@ -16,6 +16,8 @@ public:
 
   void serialize(serializer&);
 
+	ICD2();
+
 private:
   #include "interface/interface.hpp"
   #include "mmio/mmio.hpp"

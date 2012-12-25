@@ -6,15 +6,21 @@
 
 #include <queue>
 
+#include <Windows.h>
+
 using namespace nall;
 
 struct Interface : public SNES::Interface {
+	typedef SNES::Interface BaseType;
+
   snes_video_refresh_t pvideo_refresh;
   snes_audio_sample_t paudio_sample;
   snes_input_poll_t pinput_poll;
   snes_input_state_t pinput_state;
   snes_input_notify_t pinput_notify;
   snes_path_request_t ppath_request;
+	snes_allocSharedMemory_t pallocSharedMemory;
+	snes_freeSharedMemory_t pfreeSharedMemory;
   snes_trace_t ptrace;
   string basename;
   uint32_t *buffer;
@@ -89,8 +95,26 @@ struct Interface : public SNES::Interface {
 			return path;
 		}
     return { basename, hint };
-
   }
+
+
+	//zero 23-dec-2012
+	void* allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1)
+	{
+		void* ret;
+		//if pallocSharedMemory isnt set up yet, we're going to have serious problems
+		ret = pallocSharedMemory(memtype,amt);
+		if(initialByte != -1)
+		{
+			for(unsigned i = 0; i < amt; i++) ((uint8*)ret)[i] = (uint8)initialByte;
+		}
+		return ret;
+	}
+	void freeSharedMemory(void* ptr)
+	{
+		if(!pfreeSharedMemory) return; //?? 
+		pfreeSharedMemory(ptr);
+	}
 
   Interface() : 
 			pvideo_refresh(0), 
@@ -99,12 +123,14 @@ struct Interface : public SNES::Interface {
 			pinput_state(0), 
 			pinput_notify(0), 
 			ppath_request(0),
+			pScanlineStart(0),
+			pallocSharedMemory(0),
+			pfreeSharedMemory(0),
 			backdropColor(-1),
 			ptrace(0)
 	{
     buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
-
   }
 
   ~Interface() {
@@ -113,7 +139,17 @@ struct Interface : public SNES::Interface {
   }
 };
 
-static Interface interface;
+void pwrap_init();
+static Interface *iface = nullptr;
+namespace SNES {
+SNES::Interface *interface()
+{
+	if(iface != nullptr) return iface;
+	iface = new ::Interface();
+	pwrap_init();
+	return iface;
+}
+}
 
 const char* snes_library_id(void) {
   static string version = {"bsnes v", Version};
@@ -128,34 +164,43 @@ unsigned snes_library_revision_minor(void) {
   return 3;
 }
 
+void snes_set_allocSharedMemory(snes_allocSharedMemory_t cb)
+{
+	iface->pallocSharedMemory = cb;
+}
+void snes_set_freeSharedMemory(snes_freeSharedMemory_t cb)
+{
+	iface->pfreeSharedMemory = cb;
+}
+
 void snes_set_video_refresh(snes_video_refresh_t video_refresh) {
-  interface.pvideo_refresh = video_refresh;
+  iface->pvideo_refresh = video_refresh;
 }
 
 void snes_set_color_lut(uint32_t * colors) {
   for (int i = 0; i < 16 * 32768; i++)
-    interface.palette[i] = colors[i];
+    iface->palette[i] = colors[i];
 }
 
 void snes_set_audio_sample(snes_audio_sample_t audio_sample) {
-  interface.paudio_sample = audio_sample;
+  iface->paudio_sample = audio_sample;
 }
 
 void snes_set_input_poll(snes_input_poll_t input_poll) {
-  interface.pinput_poll = input_poll;
+  iface->pinput_poll = input_poll;
 }
 
 void snes_set_input_state(snes_input_state_t input_state) {
-  interface.pinput_state = input_state;
+  iface->pinput_state = input_state;
 }
 
 void snes_set_input_notify(snes_input_notify_t input_notify) {
-  interface.pinput_notify = input_notify;
+  iface->pinput_notify = input_notify;
 }
 
 void snes_set_path_request(snes_path_request_t path_request)
 {
-	 interface.ppath_request = path_request;
+	 iface->ppath_request = path_request;
 }
 
 void snes_set_controller_port_device(bool port, unsigned device) {
@@ -163,7 +208,7 @@ void snes_set_controller_port_device(bool port, unsigned device) {
 }
 
 void snes_set_cartridge_basename(const char *basename) {
-  interface.basename = basename;
+  iface->basename = basename;
 }
 
 template<typename T> inline void reconstruct(T* t) { 
@@ -173,7 +218,9 @@ template<typename T> inline void reconstruct(T* t) {
 }
 
 void snes_init(void) {
-  SNES::interface = &interface;
+
+	//force everything to get initialized, even thuogh it probably already is
+	SNES::interface();
 
 	//zero 01-dec-2012 - due to systematic variable initialization fails in bsnes components, these reconstructions are necessary,
 	//and the previous comment here which called this paranoid has been removed.
@@ -187,9 +234,9 @@ void snes_init(void) {
   reconstruct(&SNES::bsxsatellaview);
   reconstruct(&SNES::bsxcartridge);
   reconstruct(&SNES::bsxflash);
-  reconstruct(&SNES::srtc);
+  reconstruct(&SNES::srtc); SNES::srtc.initialize();
   reconstruct(&SNES::sdd1);
-  reconstruct(&SNES::spc7110);
+  reconstruct(&SNES::spc7110); SNES::spc7110.initialize();
   reconstruct(&SNES::obc1);
   reconstruct(&SNES::msu1);
   reconstruct(&SNES::link);
@@ -199,11 +246,11 @@ void snes_init(void) {
 	//zero 01-dec-2012 - forgot to do all these. massive desync chaos!
 	//remove these to make it easier to find initialization fails in the component power-ons / constructors / etc.
 	//or just forget about it. this snes_init gets called paranoidly frequently by bizhawk, so things should stay zeroed correctly
-	reconstruct(&SNES::cpu);
-	reconstruct(&SNES::smp);
+	reconstruct(&SNES::cpu); SNES::cpu.initialize();
+	reconstruct(&SNES::smp); SNES::smp.initialize();
 	reconstruct(&SNES::dsp);
 	reconstruct(&SNES::ppu);
-
+	SNES::ppu.initialize();
   SNES::system.init();
   SNES::input.connect(SNES::Controller::Port1, SNES::Input::Device::Joypad);
   SNES::input.connect(SNES::Controller::Port2, SNES::Input::Device::Joypad);
@@ -299,7 +346,7 @@ void snes_cheat_set(unsigned index, bool enable, const char *code) {
 //zero 21-sep-2012
 void snes_set_scanlineStart(snes_scanlineStart_t cb)
 {
-	interface.pScanlineStart = cb;
+	iface->pScanlineStart = cb;
 }
 
 //zero 03-sep-2012
@@ -316,6 +363,7 @@ int snes_peek_logical_register(int reg)
 	switch(reg)
 	{
 		//$2105
+#if !defined(PROFILE_PERFORMANCE)
 	case SNES_REG_BG_MODE: return SNES::ppu.regs.bg_mode;
 	case SNES_REG_BG3_PRIORITY: return SNES::ppu.regs.bg3_priority;
 	case SNES_REG_BG1_TILESIZE: return SNES::ppu.regs.bg_tilesize[SNES::PPU::BG1];
@@ -399,7 +447,7 @@ int snes_peek_logical_register(int reg)
 	case SNES_REG_BG4VOFS: return SNES::ppu.regs.bg_vofs[3] & 0x3FF;
 	case SNES_REG_M7HOFS: return SNES::ppu.regs.m7_hofs & 0x1FFF; //rememebr to make these signed with <<19>>19
 	case SNES_REG_M7VOFS: return SNES::ppu.regs.m7_vofs & 0x1FFF; //rememebr to make these signed with <<19>>19
-		
+#endif
 
 	}
 	return 0;
@@ -533,6 +581,53 @@ uint8_t* snes_get_memory_data(unsigned id) {
   return 0;
 }
 
+const char* snes_get_memory_id_name(unsigned id) {
+  if(SNES::cartridge.loaded() == false) return nullptr;
+
+  switch(id) {
+    case SNES_MEMORY_CARTRIDGE_RAM:
+      return "CARTRIDGE_RAM";
+    case SNES_MEMORY_CARTRIDGE_RTC:
+      if(SNES::cartridge.has_srtc()) return "RTC";
+      if(SNES::cartridge.has_spc7110rtc()) return "SPC7110_RTC";
+      return nullptr;
+    case SNES_MEMORY_BSX_RAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::Bsx) break;
+      return "BSX_SRAM"; 
+    case SNES_MEMORY_BSX_PRAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::Bsx) break;
+      return "BSX_PSRAM";
+    case SNES_MEMORY_SUFAMI_TURBO_A_RAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SufamiTurbo) break;
+			return "SUFAMI_SLOTARAM";
+    case SNES_MEMORY_SUFAMI_TURBO_B_RAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SufamiTurbo) break;
+      return "SUFAMI_SLOTBRAM";
+    case SNES_MEMORY_GAME_BOY_RAM:
+      if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
+      //return GameBoy::cartridge.ramdata;
+			return "SGB_CARTRAM";
+  //case SNES_MEMORY_GAME_BOY_RTC:
+  //  if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
+  //  return GameBoy::cartridge.rtcdata;
+
+    case SNES_MEMORY_WRAM:
+      //return SNES::cpu.wram;
+			return "WRAM";
+    case SNES_MEMORY_APURAM:
+      //return SNES::smp.apuram;
+			return "APURAM";
+    case SNES_MEMORY_VRAM:
+      return "VRAM";
+    case SNES_MEMORY_OAM:
+      return "OAM";
+    case SNES_MEMORY_CGRAM:
+      return "CGRAM";
+  }
+
+  return nullptr;
+}
+
 unsigned snes_get_memory_size(unsigned id) {
   if(SNES::cartridge.loaded() == false) return 0;
   unsigned size = 0;
@@ -599,31 +694,31 @@ void bus_write(unsigned addr, uint8_t val) {
 
 int snes_poll_message()
 {
-	if(interface.messages.size() == 0) return -1;
-	return interface.messages.front().length();
+	if(iface->messages.empty()) return -1;
+	return iface->messages.front().length();
 }
 void snes_dequeue_message(char* buffer)
 {
-	int len = interface.messages.front().length();
-	memcpy(buffer,(const char*)interface.messages.front(),len);
-	interface.messages.pop();
+	int len = iface->messages.front().length();
+	memcpy(buffer,(const char*)iface->messages.front(),len);
+	iface->messages.pop();
 }
 
 void snes_set_backdropColor(int color)
 {
-	interface.backdropColor = color;
+	iface->backdropColor = color;
 }
 
 void snes_set_trace_callback(snes_trace_t callback)
 {
   if (callback)
   {
-    interface.wanttrace = true;
-	interface.ptrace = callback;
+    iface->wanttrace = true;
+	iface->ptrace = callback;
   }
   else
   {
-    interface.wanttrace = false;
-	interface.ptrace = 0;
+    iface->wanttrace = false;
+	iface->ptrace = 0;
   }
 }

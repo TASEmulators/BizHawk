@@ -1,5 +1,5 @@
 struct CPU : public Processor, public CPUcore, public PPUcounter {
-  uint8 wram[128 * 1024];
+  uint8 *wram; //[128 * 1024];
 
   enum : bool { Threaded = true };
   array<Processor*> coprocessors;
@@ -24,6 +24,7 @@ struct CPU : public Processor, public CPUcore, public PPUcounter {
   void serialize(serializer&);
   CPU();
   ~CPU();
+	void initialize();
 
 privileged:
   #include "dma/dma.hpp"

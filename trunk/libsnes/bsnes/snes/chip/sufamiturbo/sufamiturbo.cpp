@@ -6,6 +6,12 @@ namespace SNES {
 #include "serialization.cpp"
 SufamiTurbo sufamiturbo;
 
+SufamiTurbo::SufamiTurbo()
+{
+	slotA.ram.setName("SUFAMI_TURBO_A_RAM");
+	slotB.ram.setName("SUFAMI_TURBO_B_RAM");
+}
+
 void SufamiTurbo::load() {
   slotA.ram.map(allocate<uint8>(128 * 1024, 0xff), 128 * 1024);
   slotB.ram.map(allocate<uint8>(128 * 1024, 0xff), 128 * 1024);

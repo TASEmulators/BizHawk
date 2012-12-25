@@ -103,10 +103,10 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			newStripButton1.Visible = Global.MainForm.INTERIM;
-			newScriptToolStripMenuItem.Visible = Global.MainForm.INTERIM;
-			newStripButton1.Enabled = Global.MainForm.INTERIM;
-			newScriptToolStripMenuItem.Enabled = Global.MainForm.INTERIM;
+			newStripButton1.Visible = MainForm.INTERIM;
+			newScriptToolStripMenuItem.Visible = MainForm.INTERIM;
+			newStripButton1.Enabled = MainForm.INTERIM;
+			newScriptToolStripMenuItem.Enabled = MainForm.INTERIM;
 		}
 
 		private void StopScript(int x)
@@ -708,7 +708,7 @@ namespace BizHawk.MultiClient
 
 		private void EditToolstripButton_Click(object sender, EventArgs e)
 		{
-			if (Global.MainForm.INTERIM)
+			if (MainForm.INTERIM)
 			{
 				DoLuaWriter();
 			}

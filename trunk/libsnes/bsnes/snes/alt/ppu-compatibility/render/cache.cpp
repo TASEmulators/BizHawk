@@ -104,7 +104,7 @@ void PPU::flush_pixel_cache() {
 	
 	uint16 main;
 
-	int backdropColor = interface->getBackdropColor();
+	int backdropColor = interface()->getBackdropColor();
 	if(backdropColor == -1)
 		main = get_palette(0);
 	else main = backdropColor;

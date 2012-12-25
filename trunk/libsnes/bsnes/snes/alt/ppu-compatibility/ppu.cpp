@@ -19,7 +19,7 @@ void PPU::synchronize_cpu() {
     if(clock >= 0 && scheduler.sync != Scheduler::SynchronizeMode::All)
       co_switch(cpu.thread);
     else if(clock >= 0 && scheduler.sync == Scheduler::SynchronizeMode::All)
-      interface->message("PPU had to advance nondeterministically!");
+      interface()->message("PPU had to advance nondeterministically!");
   } else {
     while(clock >= 0) cpu.enter();
   }
@@ -107,7 +107,7 @@ void PPU::scanline() {
     regs.range_over = false;
   }
 
-	interface->scanlineStart(line);
+	interface()->scanlineStart(line);
 
   if(line == 1) {
     //mosaic reset
@@ -154,9 +154,9 @@ void PPU::power() {
   ppu1_version = config.ppu1.version;
   ppu2_version = config.ppu2.version;
 
-  for(auto &n : vram) n = 0x00;
-  for(auto &n : oam) n = 0x00;
-  for(auto &n : cgram) n = 0x00;
+	for(int i=0;i<128*1024;i++) vram[i] = 0;
+	for(int i=0;i<544;i++) oam[i] = 0;
+	for(int i=0;i<512;i++) cgram[i] = 0;
   flush_tiledata_cache();
 
   region = (system.region() == System::Region::NTSC ? 0 : 1);  //0 = NTSC, 1 = PAL
@@ -431,7 +431,20 @@ void PPU::set_frameskip(unsigned frameskip_) {
   framecounter = 0;
 }
 
-PPU::PPU() {
+PPU::PPU()
+	: vram(nullptr)
+	, oam(nullptr)
+	, cgram(nullptr)
+{
+  
+}
+
+void PPU::initialize()
+{
+	vram = (uint8*)interface()->allocSharedMemory("VRAM",128 * 1024);
+  oam = (uint8*)interface()->allocSharedMemory("OAM",544);
+  cgram = (uint8*)interface()->allocSharedMemory("CGRAM",512);
+
   surface = new uint32[512 * 512];
   output = surface + 16 * 512;
 
@@ -462,6 +475,9 @@ PPU::PPU() {
 PPU::~PPU() {
   delete[] surface;
   free_tiledata_cache();
+	interface()->freeSharedMemory(vram);
+	interface()->freeSharedMemory(oam);
+	interface()->freeSharedMemory(cgram);
 }
 
 }

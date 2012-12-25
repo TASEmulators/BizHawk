@@ -18,8 +18,8 @@ uint2 Multitap::data() {
     port2 = 3;  //controller 4
   }
 
-  bool data1 = interface->inputPoll(port, Input::Device::Multitap, port1, index);
-  bool data2 = interface->inputPoll(port, Input::Device::Multitap, port2, index);
+  bool data1 = interface()->inputPoll(port, Input::Device::Multitap, port1, index);
+  bool data2 = interface()->inputPoll(port, Input::Device::Multitap, port2, index);
   return (data2 << 1) | (data1 << 0);
 }
 

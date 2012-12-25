@@ -185,7 +185,7 @@ namespace BizHawk.MultiClient
 
 		private void TAStudio_Load(object sender, EventArgs e)
 		{
-			if (!Global.MainForm.INTERIM)
+			if (!MainForm.INTERIM)
 			{
 				newProjectToolStripMenuItem.Enabled = false;
 				openProjectToolStripMenuItem.Enabled = false;

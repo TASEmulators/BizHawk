@@ -1,16 +1,22 @@
 #include <Windows.h>
+
+#define LIBSNES_IMPORT
+#include "snes/snes.hpp"
+#include "libsnes.hpp"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <map>
 #include <string>
 #include <vector>
 
-#define LIBSNES_IMPORT
-#include "../bsnes/target-libsnes/libsnes.hpp"
+
 
 HANDLE hPipe, hMapFile;
 void* hMapFilePtr;
+static bool running = false;
 
 enum eMessage : int
 {
@@ -29,20 +35,21 @@ enum eMessage : int
 
 	//snes_set_cartridge_basename, //not used
 
-	eMessage_snes_load_cartridge_normal, //10
+	eMessage_snes_load_cartridge_normal,
+	eMessage_snes_load_cartridge_super_game_boy,
 
 	eMessage_snes_cb_video_refresh,
 	eMessage_snes_cb_input_poll,
 	eMessage_snes_cb_input_state,
 	eMessage_snes_cb_input_notify,
 	eMessage_snes_cb_audio_sample,
-	eMessage_snes_cb_scanlineStart, //16
+	eMessage_snes_cb_scanlineStart,
 	eMessage_snes_cb_path_request,
 	eMessage_snes_cb_trace_callback,
 
 	eMessage_snes_get_region,
 
-	eMessage_snes_get_memory_size, //20
+	eMessage_snes_get_memory_size,
 	eMessage_snes_get_memory_data,
 	eMessage_peek,
 	eMessage_poke,
@@ -62,7 +69,11 @@ enum eMessage : int
 	eMessage_snes_enable_audio,
 	eMessage_snes_set_layer_enable,
 	eMessage_snes_set_backdropColor,
-	eMessage_snes_peek_logical_register
+	eMessage_snes_peek_logical_register,
+
+	eMessage_snes_allocSharedMemory,
+	eMessage_snes_freeSharedMemory,
+	eMessage_GetMemoryIdName
 };
 
 void ReadPipeBuffer(void* buf, int len)
@@ -90,10 +101,10 @@ template<> bool ReadPipe<bool>()
 	return !!ReadPipe<char>();
 }
 
-FILE* outf = NULL;
 
 void WritePipeBuffer(const void* buf, int len)
 {
+	//static FILE* outf = NULL;
 	//if(!outf) outf = fopen("c:\\trace.bin","wb"); fwrite(buf,1,len,outf); fflush(outf);
 	DWORD bytesWritten;
 	BOOL result = WriteFile(hPipe, buf, len, &bytesWritten, NULL);
@@ -108,9 +119,9 @@ template<typename T> void WritePipe(const T& val)
 
 void WritePipeString(const char* str)
 {
-	//TODO - write string length
 	int len = strlen(str);
-	WritePipeBuffer(str,len+1);
+	WritePipe(len);
+	WritePipeBuffer(str,len);
 }
 
 std::string ReadPipeString()
@@ -164,13 +175,15 @@ void FlushAudio()
 
 	WritePipe(eMessage_snes_cb_audio_sample);
 
-	int nsamples = audiobuffer_idx/2;
+	int nsamples = audiobuffer_idx;
 	WritePipe(nsamples);
-	int destOfs = ReadPipe<int>();
-	char* buf = (char*)hMapFilePtr + destOfs;
-	memcpy(buf,audiobuffer,nsamples*4);
+	char* buf = ReadPipeSharedPtr();
+	memcpy(buf,audiobuffer,nsamples*2);
 	//extra just in case we had to unexpectedly flush audio and then carry on with some other process... yeah, its rickety.
 	WritePipe(0); //dummy synchronization
+	
+	//wait for frontend to consume data
+
 	ReadPipe<int>(); //dummy synchronization
 	WritePipe(0); //dummy synchronization
 	audiobuffer_idx = 0;
@@ -222,10 +235,62 @@ const char* snes_path_request(int slot, const char* hint)
 	strcpy(ret,str.c_str());
 	return ret;
 }
+
+void RunMessageLoop();
 void snes_scanlineStart(int line)
 {
 	WritePipe(eMessage_snes_cb_scanlineStart);
 	WritePipe(line);
+
+	//we've got to wait for the frontend to finish processing.
+	//in theory we could let emulation proceed after snagging the vram and registers, and do decoding and stuff on another thread...
+	//but its too hard for now.
+	RunMessageLoop();
+}
+
+class SharedMemoryBlock
+{
+public:
+	std::string memtype;
+	HANDLE handle;
+};
+
+static std::map<void*,SharedMemoryBlock*> memHandleTable;
+
+void* snes_allocSharedMemory(const char* memtype, size_t amt)
+{
+	if(!running) return NULL;
+	WritePipe(eMessage_snes_allocSharedMemory);
+	WritePipeString(memtype);
+	WritePipe(amt);
+	
+	std::string blockname = ReadPipeString();
+
+	auto mapfile = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, blockname.c_str());
+	
+	if(mapfile == INVALID_HANDLE_VALUE)
+		return NULL;
+
+	auto ptr = MapViewOfFile(mapfile, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
+
+	auto smb = new SharedMemoryBlock();
+	smb->memtype = memtype;
+	smb->handle = mapfile;
+
+	memHandleTable[ptr] = smb;
+	
+	return ptr;
+}
+
+void snes_freeSharedMemory(void* ptr)
+{
+	if(!running) return;
+	if(!ptr) return;
+	auto smb = memHandleTable.find(ptr)->second;
+	UnmapViewOfFile(ptr);
+	CloseHandle(smb->handle);
+	WritePipe(eMessage_snes_freeSharedMemory);
+	WritePipeString(smb->memtype.c_str());
 }
 
 void InitBsnes()
@@ -237,49 +302,30 @@ void InitBsnes()
 	snes_set_input_state(snes_input_state);
 	snes_set_input_notify(snes_input_notify);
 	snes_set_path_request(snes_path_request);
+	
+	snes_set_allocSharedMemory(snes_allocSharedMemory);
+	snes_set_freeSharedMemory(snes_freeSharedMemory);
 }
 
-int main(int argc, char** argv)
+void RunMessageLoop()
 {
-	if(argc != 2)
-	{
-		printf("This program is run from the libsneshawk emulator core. It is useless to you directly.");
-		exit(1);
-	}
-
-	if(!strcmp(argv[1],"Bongizong"))
-	{
-		fprintf(stderr,"Honga Wongkong");
-		exit(0x16817);
-	}
-
-	InitBsnes();
-
-	char pipename[256];
-	sprintf(pipename, "\\\\.\\Pipe\\%s",argv[1]);
-
-	hPipe = CreateFile(pipename, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
-
-	if(hPipe == INVALID_HANDLE_VALUE)
-		return 1;
-
-	hMapFile = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, argv[1]);
-	if(hMapFile == INVALID_HANDLE_VALUE)
-		return 1;
-
-	hMapFilePtr = MapViewOfFile(hMapFile, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
-
 	for(;;)
 	{
+		//printf("Reading message from pipe...\n");
 		auto msg = ReadPipe<eMessage>();
+		//printf("slam %08X\n",msg);
 		switch(msg)
 		{
+		case eMessage_Complete:
+			return;
+
 		case eMessage_snes_library_id: WritePipeString(snes_library_id()); break;
 		case eMessage_snes_library_revision_major: WritePipe(snes_library_revision_major()); break;
 		case eMessage_snes_library_revision_minor: WritePipe(snes_library_revision_minor()); break;
 
 		case eMessage_snes_init: 
 			snes_init(); 
+			WritePipe(eMessage_Complete);
 			break;
 		case eMessage_snes_power: snes_power(); break;
 		case eMessage_snes_reset: snes_reset(); break;
@@ -301,6 +347,28 @@ int main(int argc, char** argv)
 				bool ret = snes_load_cartridge_normal(xmlptr,(unsigned char*)&rom_data[0],rom_data.size());
 				WritePipe(eMessage_Complete);
 				WritePipe((char)(ret?1:0));
+				break;
+			}
+
+		case eMessage_snes_load_cartridge_super_game_boy:
+			{
+				std::string rom_xml = ReadPipeString();
+				const char* rom_xmlptr = NULL;
+				if(rom_xml != "") rom_xmlptr = rom_xml.c_str();
+				Blob rom_data = ReadPipeBlob();
+				uint32 rom_length = rom_data.size();
+
+				std::string dmg_xml = ReadPipeString();
+				const char* dmg_xmlptr = NULL;
+				if(dmg_xml != "") dmg_xmlptr = dmg_xml.c_str();
+				Blob dmg_data = ReadPipeBlob();
+				uint32 dmg_length = dmg_data.size();
+
+				bool ret = snes_load_cartridge_super_game_boy(rom_xmlptr,(uint8*)&rom_data[0],rom_length, dmg_xmlptr,(uint8*)&dmg_data[0], dmg_length);
+				
+				WritePipe(eMessage_Complete);
+				WritePipe((char)(ret?1:0));
+				
 				break;
 			}
 
@@ -421,9 +489,68 @@ int main(int argc, char** argv)
 			WritePipe(snes_peek_logical_register(ReadPipe<int>()));
 			break;
 
+		case eMessage_GetMemoryIdName:
+			{
+				uint32 id = ReadPipe<uint32>();
+				const char* ret = snes_get_memory_id_name(id);
+				if(!ret) ret = "";
+				WritePipeString(ret);
+				break;
+			}
+
 		} //switch(msg)
 	}
+}
 
+
+void OpenConsole() 
+{
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
+	freopen("CONIN$", "r", stdin);
+}
+
+int xmain(int argc, char** argv)
+{
+	if(argc != 2)
+	{
+		printf("This program is run from the libsneshawk emulator core. It is useless to you directly.");
+		exit(1);
+	}
+
+	if(!strcmp(argv[1],"Bongizong"))
+	{
+		fprintf(stderr,"Honga Wongkong");
+		exit(0x16817);
+	}
+
+	char pipename[256];
+	sprintf(pipename, "\\\\.\\Pipe\\%s",argv[1]);
+
+	if(!strncmp(argv[1],"console",7))
+	{
+		OpenConsole();
+	}
+	
+	printf("pipe: %s\n",pipename);
+
+	hPipe = CreateFile(pipename, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+
+	if(hPipe == INVALID_HANDLE_VALUE)
+		return 1;
+
+	hMapFile = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, argv[1]);
+	if(hMapFile == INVALID_HANDLE_VALUE)
+		return 1;
+
+	hMapFilePtr = MapViewOfFile(hMapFile, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
+
+	running = true;
+	printf("running\n");
+
+	RunMessageLoop();
+	
 	return 0;
 }
 
@@ -434,12 +561,17 @@ int CALLBACK WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	if(argc != 2)
 	{
-		if(IDCANCEL == MessageBox(0,"This program is run from the libsneshawk emulator core. It is useless to you directly. But if you're really, that curious, click cancel.","Whatfor my daddy-o",MB_OKCANCEL))
+		if(IDOK == MessageBox(0,"This program is run from the libsneshawk emulator core. It is useless to you directly. But if you're really, that curious, click OK.","Whatfor my daddy-o",MB_OKCANCEL))
 		{
 			ShellExecute(0,"open","http://www.youtube.com/watch?v=boanuwUMNNQ#t=98s",NULL,NULL,SW_SHOWNORMAL);
 		}
 		exit(1);
 		
 	}
-	main(argc,argv);
+	xmain(argc,argv);
+}
+
+void pwrap_init()
+{
+	InitBsnes();
 }
