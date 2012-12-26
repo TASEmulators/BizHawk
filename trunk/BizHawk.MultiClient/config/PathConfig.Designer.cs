@@ -210,6 +210,9 @@
 			this.GBSaveRAMDescription = new System.Windows.Forms.Label();
 			this.GBSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPageGBA = new System.Windows.Forms.TabPage();
+			this.label5 = new System.Windows.Forms.Label();
+			this.button4 = new System.Windows.Forms.Button();
+			this.GBABIOSBox = new System.Windows.Forms.TextBox();
 			this.GBABaseBox = new System.Windows.Forms.TextBox();
 			this.GBACheatsDescription = new System.Windows.Forms.Label();
 			this.GBABrowseCheats = new System.Windows.Forms.Button();
@@ -302,6 +305,9 @@
 			this.INTVSaveRAMDescription = new System.Windows.Forms.Label();
 			this.INTVSaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabPageColeco = new System.Windows.Forms.TabPage();
+			this.label4 = new System.Windows.Forms.Label();
+			this.button3 = new System.Windows.Forms.Button();
+			this.ColecoBIOSBox = new System.Windows.Forms.TextBox();
 			this.COLBaseBox = new System.Windows.Forms.TextBox();
 			this.COLCheatsDescription = new System.Windows.Forms.Label();
 			this.COLBrowseCheats = new System.Windows.Forms.Button();
@@ -333,7 +339,10 @@
 			this.C64SavestatesBox = new System.Windows.Forms.TextBox();
 			this.C64ROMsBox = new System.Windows.Forms.TextBox();
 			this.C64BaseBox = new System.Windows.Forms.TextBox();
-			this.tabPageTools = new System.Windows.Forms.TabPage();
+			this.tabPageGlobal = new System.Windows.Forms.TabPage();
+			this.BaseROMLabel = new System.Windows.Forms.Label();
+			this.BrowseBaseROM = new System.Windows.Forms.Button();
+			this.BaseROMSBox = new System.Windows.Forms.TextBox();
 			this.labelFirmware = new System.Windows.Forms.Label();
 			this.buttonFirmware = new System.Windows.Forms.Button();
 			this.textBoxFirmware = new System.Windows.Forms.TextBox();
@@ -352,15 +361,6 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.ColecoBIOSBox = new System.Windows.Forms.TextBox();
-			this.button3 = new System.Windows.Forms.Button();
-			this.label4 = new System.Windows.Forms.Label();
-			this.GBABIOSBox = new System.Windows.Forms.TextBox();
-			this.button4 = new System.Windows.Forms.Button();
-			this.label5 = new System.Windows.Forms.Label();
-			this.BaseROMSBox = new System.Windows.Forms.TextBox();
-			this.BrowseBaseROM = new System.Windows.Forms.Button();
-			this.BaseROMLabel = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPageNES.SuspendLayout();
 			this.tabPageSNES.SuspendLayout();
@@ -377,7 +377,7 @@
 			this.tabPageIntellivision.SuspendLayout();
 			this.tabPageColeco.SuspendLayout();
 			this.tabPageC64.SuspendLayout();
-			this.tabPageTools.SuspendLayout();
+			this.tabPageGlobal.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// Cancel
@@ -769,6 +769,7 @@
 			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.tabControl1.Controls.Add(this.tabPageGlobal);
 			this.tabControl1.Controls.Add(this.tabPageNES);
 			this.tabControl1.Controls.Add(this.tabPageSNES);
 			this.tabControl1.Controls.Add(this.tabPageSMS);
@@ -784,7 +785,6 @@
 			this.tabControl1.Controls.Add(this.tabPageIntellivision);
 			this.tabControl1.Controls.Add(this.tabPageColeco);
 			this.tabControl1.Controls.Add(this.tabPageC64);
-			this.tabControl1.Controls.Add(this.tabPageTools);
 			this.tabControl1.Location = new System.Drawing.Point(13, 97);
 			this.tabControl1.Multiline = true;
 			this.tabControl1.Name = "tabControl1";
@@ -819,10 +819,10 @@
 			this.tabPageNES.Controls.Add(this.NESROMsDescription);
 			this.tabPageNES.Controls.Add(this.NESSaveRAMBox);
 			this.tabPageNES.Controls.Add(this.NESBrowseROMs);
-			this.tabPageNES.Location = new System.Drawing.Point(4, 40);
+			this.tabPageNES.Location = new System.Drawing.Point(4, 22);
 			this.tabPageNES.Name = "tabPageNES";
 			this.tabPageNES.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageNES.Size = new System.Drawing.Size(566, 278);
+			this.tabPageNES.Size = new System.Drawing.Size(566, 296);
 			this.tabPageNES.TabIndex = 0;
 			this.tabPageNES.Text = "NES";
 			this.tabPageNES.UseVisualStyleBackColor = true;
@@ -970,9 +970,9 @@
 			this.tabPageSNES.Controls.Add(this.SNESROMsDescription);
 			this.tabPageSNES.Controls.Add(this.SNESSaveRAMBox);
 			this.tabPageSNES.Controls.Add(this.SNESBrowseROMs);
-			this.tabPageSNES.Location = new System.Drawing.Point(4, 40);
+			this.tabPageSNES.Location = new System.Drawing.Point(4, 22);
 			this.tabPageSNES.Name = "tabPageSNES";
-			this.tabPageSNES.Size = new System.Drawing.Size(566, 278);
+			this.tabPageSNES.Size = new System.Drawing.Size(566, 296);
 			this.tabPageSNES.TabIndex = 11;
 			this.tabPageSNES.Text = "SNES";
 			this.tabPageSNES.UseVisualStyleBackColor = true;
@@ -1178,10 +1178,10 @@
 			this.tabPageSMS.Controls.Add(this.Sega8BrowseSaveRAM);
 			this.tabPageSMS.Controls.Add(this.Sega8SaveRAMDescription);
 			this.tabPageSMS.Controls.Add(this.Sega8SaveRAMBox);
-			this.tabPageSMS.Location = new System.Drawing.Point(4, 40);
+			this.tabPageSMS.Location = new System.Drawing.Point(4, 22);
 			this.tabPageSMS.Name = "tabPageSMS";
 			this.tabPageSMS.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageSMS.Size = new System.Drawing.Size(566, 278);
+			this.tabPageSMS.Size = new System.Drawing.Size(566, 296);
 			this.tabPageSMS.TabIndex = 1;
 			this.tabPageSMS.Text = "SMS";
 			this.tabPageSMS.UseVisualStyleBackColor = true;
@@ -1266,9 +1266,9 @@
 			this.tabPageSG1000.Controls.Add(this.SGROMsDescription);
 			this.tabPageSG1000.Controls.Add(this.SGSaveRAMBox);
 			this.tabPageSG1000.Controls.Add(this.SGBrowseROMs);
-			this.tabPageSG1000.Location = new System.Drawing.Point(4, 40);
+			this.tabPageSG1000.Location = new System.Drawing.Point(4, 22);
 			this.tabPageSG1000.Name = "tabPageSG1000";
-			this.tabPageSG1000.Size = new System.Drawing.Size(566, 278);
+			this.tabPageSG1000.Size = new System.Drawing.Size(566, 296);
 			this.tabPageSG1000.TabIndex = 8;
 			this.tabPageSG1000.Text = "SG-1000";
 			this.tabPageSG1000.UseVisualStyleBackColor = true;
@@ -1474,9 +1474,9 @@
 			this.tabPageGGear.Controls.Add(this.GGBrowseSaveRAM);
 			this.tabPageGGear.Controls.Add(this.GGSaveRAMDescription);
 			this.tabPageGGear.Controls.Add(this.GGSaveRAMBox);
-			this.tabPageGGear.Location = new System.Drawing.Point(4, 40);
+			this.tabPageGGear.Location = new System.Drawing.Point(4, 22);
 			this.tabPageGGear.Name = "tabPageGGear";
-			this.tabPageGGear.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGGear.Size = new System.Drawing.Size(566, 296);
 			this.tabPageGGear.TabIndex = 7;
 			this.tabPageGGear.Text = "G. Gear";
 			this.tabPageGGear.UseVisualStyleBackColor = true;
@@ -1681,9 +1681,9 @@
 			this.tabPageGenesis.Controls.Add(this.GenesisBrowseSavestates);
 			this.tabPageGenesis.Controls.Add(this.GenesisBrowseScreenshots);
 			this.tabPageGenesis.Controls.Add(this.GenesisROMsBox);
-			this.tabPageGenesis.Location = new System.Drawing.Point(4, 40);
+			this.tabPageGenesis.Location = new System.Drawing.Point(4, 22);
 			this.tabPageGenesis.Name = "tabPageGenesis";
-			this.tabPageGenesis.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGenesis.Size = new System.Drawing.Size(566, 296);
 			this.tabPageGenesis.TabIndex = 2;
 			this.tabPageGenesis.Text = "Genesis";
 			this.tabPageGenesis.UseVisualStyleBackColor = true;
@@ -1891,9 +1891,9 @@
 			this.tabPagePCE.Controls.Add(this.PCEBrowseSaveRAM);
 			this.tabPagePCE.Controls.Add(this.PCESaveRAMDescription);
 			this.tabPagePCE.Controls.Add(this.PCESaveRAMBox);
-			this.tabPagePCE.Location = new System.Drawing.Point(4, 40);
+			this.tabPagePCE.Location = new System.Drawing.Point(4, 22);
 			this.tabPagePCE.Name = "tabPagePCE";
-			this.tabPagePCE.Size = new System.Drawing.Size(566, 278);
+			this.tabPagePCE.Size = new System.Drawing.Size(566, 296);
 			this.tabPagePCE.TabIndex = 3;
 			this.tabPagePCE.Text = "PC Engine";
 			this.tabPagePCE.UseVisualStyleBackColor = true;
@@ -2134,9 +2134,9 @@
 			this.tabPageGameboy.Controls.Add(this.GBBrowseSaveRAM);
 			this.tabPageGameboy.Controls.Add(this.GBSaveRAMDescription);
 			this.tabPageGameboy.Controls.Add(this.GBSaveRAMBox);
-			this.tabPageGameboy.Location = new System.Drawing.Point(4, 40);
+			this.tabPageGameboy.Location = new System.Drawing.Point(4, 22);
 			this.tabPageGameboy.Name = "tabPageGameboy";
-			this.tabPageGameboy.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGameboy.Size = new System.Drawing.Size(566, 296);
 			this.tabPageGameboy.TabIndex = 4;
 			this.tabPageGameboy.Text = "Gameboy";
 			this.tabPageGameboy.UseVisualStyleBackColor = true;
@@ -2374,12 +2374,42 @@
 			this.tabPageGBA.Controls.Add(this.GBABrowseSaveRAM);
 			this.tabPageGBA.Controls.Add(this.GBASaveRAMDescription);
 			this.tabPageGBA.Controls.Add(this.GBASaveRAMBox);
-			this.tabPageGBA.Location = new System.Drawing.Point(4, 40);
+			this.tabPageGBA.Location = new System.Drawing.Point(4, 22);
 			this.tabPageGBA.Name = "tabPageGBA";
-			this.tabPageGBA.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGBA.Size = new System.Drawing.Size(566, 296);
 			this.tabPageGBA.TabIndex = 14;
 			this.tabPageGBA.Text = "GBA";
 			this.tabPageGBA.UseVisualStyleBackColor = true;
+			// 
+			// label5
+			// 
+			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(474, 213);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(32, 13);
+			this.label5.TabIndex = 125;
+			this.label5.Text = "BIOS";
+			// 
+			// button4
+			// 
+			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
+			this.button4.Location = new System.Drawing.Point(440, 209);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(26, 23);
+			this.button4.TabIndex = 124;
+			this.button4.UseVisualStyleBackColor = true;
+			this.button4.Click += new System.EventHandler(this.button4_Click);
+			// 
+			// GBABIOSBox
+			// 
+			this.GBABIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.GBABIOSBox.Location = new System.Drawing.Point(13, 209);
+			this.GBABIOSBox.Name = "GBABIOSBox";
+			this.GBABIOSBox.Size = new System.Drawing.Size(421, 20);
+			this.GBABIOSBox.TabIndex = 123;
 			// 
 			// GBABaseBox
 			// 
@@ -2581,9 +2611,9 @@
 			this.tabPageTI83.Controls.Add(this.TI83BrowseSaveRAM);
 			this.tabPageTI83.Controls.Add(this.TI83SaveRAMDescription);
 			this.tabPageTI83.Controls.Add(this.TI83SaveRAMBox);
-			this.tabPageTI83.Location = new System.Drawing.Point(4, 40);
+			this.tabPageTI83.Location = new System.Drawing.Point(4, 22);
 			this.tabPageTI83.Name = "tabPageTI83";
-			this.tabPageTI83.Size = new System.Drawing.Size(566, 278);
+			this.tabPageTI83.Size = new System.Drawing.Size(566, 296);
 			this.tabPageTI83.TabIndex = 5;
 			this.tabPageTI83.Text = "TI83";
 			this.tabPageTI83.UseVisualStyleBackColor = true;
@@ -3390,6 +3420,36 @@
 			this.tabPageColeco.Text = "Col. V.";
 			this.tabPageColeco.UseVisualStyleBackColor = true;
 			// 
+			// label4
+			// 
+			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(474, 183);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(32, 13);
+			this.label4.TabIndex = 112;
+			this.label4.Text = "BIOS";
+			// 
+			// button3
+			// 
+			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button3.Image = ((System.Drawing.Image)(resources.GetObject("button3.Image")));
+			this.button3.Location = new System.Drawing.Point(442, 179);
+			this.button3.Name = "button3";
+			this.button3.Size = new System.Drawing.Size(26, 23);
+			this.button3.TabIndex = 111;
+			this.button3.UseVisualStyleBackColor = true;
+			this.button3.Click += new System.EventHandler(this.button3_Click);
+			// 
+			// ColecoBIOSBox
+			// 
+			this.ColecoBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ColecoBIOSBox.Location = new System.Drawing.Point(13, 179);
+			this.ColecoBIOSBox.Name = "ColecoBIOSBox";
+			this.ColecoBIOSBox.Size = new System.Drawing.Size(421, 20);
+			this.ColecoBIOSBox.TabIndex = 110;
+			// 
 			// COLBaseBox
 			// 
 			this.COLBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -3719,36 +3779,67 @@
 			// 
 			// tabPageTools
 			// 
-			this.tabPageTools.Controls.Add(this.BaseROMLabel);
-			this.tabPageTools.Controls.Add(this.BrowseBaseROM);
-			this.tabPageTools.Controls.Add(this.BaseROMSBox);
-			this.tabPageTools.Controls.Add(this.labelFirmware);
-			this.tabPageTools.Controls.Add(this.buttonFirmware);
-			this.tabPageTools.Controls.Add(this.textBoxFirmware);
-			this.tabPageTools.Controls.Add(this.LogDescription);
-			this.tabPageTools.Controls.Add(this.BrowseLog);
-			this.tabPageTools.Controls.Add(this.LogBox);
-			this.tabPageTools.Controls.Add(this.MoviesBox);
-			this.tabPageTools.Controls.Add(this.MovieBackupsBox);
-			this.tabPageTools.Controls.Add(this.BrowseMovieBackups);
-			this.tabPageTools.Controls.Add(this.MovieBackupsDescription);
-			this.tabPageTools.Controls.Add(this.AVIBox);
-			this.tabPageTools.Controls.Add(this.AVIDescription);
-			this.tabPageTools.Controls.Add(this.BrowseAVI);
-			this.tabPageTools.Controls.Add(this.WatchBox);
-			this.tabPageTools.Controls.Add(this.BrowseLua);
-			this.tabPageTools.Controls.Add(this.WatchDescription);
-			this.tabPageTools.Controls.Add(this.LuaDescription);
-			this.tabPageTools.Controls.Add(this.BrowseWatch);
-			this.tabPageTools.Controls.Add(this.LuaBox);
-			this.tabPageTools.Controls.Add(this.BrowseMovies);
-			this.tabPageTools.Controls.Add(this.MoviesDescription);
-			this.tabPageTools.Location = new System.Drawing.Point(4, 40);
-			this.tabPageTools.Name = "tabPageTools";
-			this.tabPageTools.Size = new System.Drawing.Size(566, 278);
-			this.tabPageTools.TabIndex = 6;
-			this.tabPageTools.Text = "Tools";
-			this.tabPageTools.UseVisualStyleBackColor = true;
+			this.tabPageGlobal.Controls.Add(this.BaseROMLabel);
+			this.tabPageGlobal.Controls.Add(this.BrowseBaseROM);
+			this.tabPageGlobal.Controls.Add(this.BaseROMSBox);
+			this.tabPageGlobal.Controls.Add(this.labelFirmware);
+			this.tabPageGlobal.Controls.Add(this.buttonFirmware);
+			this.tabPageGlobal.Controls.Add(this.textBoxFirmware);
+			this.tabPageGlobal.Controls.Add(this.LogDescription);
+			this.tabPageGlobal.Controls.Add(this.BrowseLog);
+			this.tabPageGlobal.Controls.Add(this.LogBox);
+			this.tabPageGlobal.Controls.Add(this.MoviesBox);
+			this.tabPageGlobal.Controls.Add(this.MovieBackupsBox);
+			this.tabPageGlobal.Controls.Add(this.BrowseMovieBackups);
+			this.tabPageGlobal.Controls.Add(this.MovieBackupsDescription);
+			this.tabPageGlobal.Controls.Add(this.AVIBox);
+			this.tabPageGlobal.Controls.Add(this.AVIDescription);
+			this.tabPageGlobal.Controls.Add(this.BrowseAVI);
+			this.tabPageGlobal.Controls.Add(this.WatchBox);
+			this.tabPageGlobal.Controls.Add(this.BrowseLua);
+			this.tabPageGlobal.Controls.Add(this.WatchDescription);
+			this.tabPageGlobal.Controls.Add(this.LuaDescription);
+			this.tabPageGlobal.Controls.Add(this.BrowseWatch);
+			this.tabPageGlobal.Controls.Add(this.LuaBox);
+			this.tabPageGlobal.Controls.Add(this.BrowseMovies);
+			this.tabPageGlobal.Controls.Add(this.MoviesDescription);
+			this.tabPageGlobal.Location = new System.Drawing.Point(4, 40);
+			this.tabPageGlobal.Name = "tabPageTools";
+			this.tabPageGlobal.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGlobal.TabIndex = 6;
+			this.tabPageGlobal.Text = "Global";
+			this.tabPageGlobal.UseVisualStyleBackColor = true;
+			// 
+			// BaseROMLabel
+			// 
+			this.BaseROMLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BaseROMLabel.AutoSize = true;
+			this.BaseROMLabel.Location = new System.Drawing.Point(474, 235);
+			this.BaseROMLabel.Name = "BaseROMLabel";
+			this.BaseROMLabel.Size = new System.Drawing.Size(59, 13);
+			this.BaseROMLabel.TabIndex = 154;
+			this.BaseROMLabel.Text = "Base ROM";
+			// 
+			// BrowseBaseROM
+			// 
+			this.BrowseBaseROM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseBaseROM.Image = ((System.Drawing.Image)(resources.GetObject("BrowseBaseROM.Image")));
+			this.BrowseBaseROM.Location = new System.Drawing.Point(442, 231);
+			this.BrowseBaseROM.Name = "BrowseBaseROM";
+			this.BrowseBaseROM.Size = new System.Drawing.Size(26, 23);
+			this.BrowseBaseROM.TabIndex = 153;
+			this.BrowseBaseROM.UseVisualStyleBackColor = true;
+			this.BrowseBaseROM.Click += new System.EventHandler(this.BrowseBaseROM_Click);
+			// 
+			// BaseROMSBox
+			// 
+			this.BaseROMSBox.AcceptsReturn = true;
+			this.BaseROMSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BaseROMSBox.Location = new System.Drawing.Point(12, 231);
+			this.BaseROMSBox.Name = "BaseROMSBox";
+			this.BaseROMSBox.Size = new System.Drawing.Size(421, 20);
+			this.BaseROMSBox.TabIndex = 152;
 			// 
 			// labelFirmware
 			// 
@@ -3914,97 +4005,6 @@
 			this.label1.TabIndex = 204;
 			this.label1.Text = "Special Commands";
 			// 
-			// ColecoBIOSBox
-			// 
-			this.ColecoBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.ColecoBIOSBox.Location = new System.Drawing.Point(13, 179);
-			this.ColecoBIOSBox.Name = "ColecoBIOSBox";
-			this.ColecoBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.ColecoBIOSBox.TabIndex = 110;
-			// 
-			// button3
-			// 
-			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button3.Image = ((System.Drawing.Image)(resources.GetObject("button3.Image")));
-			this.button3.Location = new System.Drawing.Point(442, 179);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(26, 23);
-			this.button3.TabIndex = 111;
-			this.button3.UseVisualStyleBackColor = true;
-			this.button3.Click += new System.EventHandler(this.button3_Click);
-			// 
-			// label4
-			// 
-			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(474, 183);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(32, 13);
-			this.label4.TabIndex = 112;
-			this.label4.Text = "BIOS";
-			// 
-			// GBABIOSBox
-			// 
-			this.GBABIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.GBABIOSBox.Location = new System.Drawing.Point(13, 209);
-			this.GBABIOSBox.Name = "GBABIOSBox";
-			this.GBABIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.GBABIOSBox.TabIndex = 123;
-			// 
-			// button4
-			// 
-			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
-			this.button4.Location = new System.Drawing.Point(440, 209);
-			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(26, 23);
-			this.button4.TabIndex = 124;
-			this.button4.UseVisualStyleBackColor = true;
-			this.button4.Click += new System.EventHandler(this.button4_Click);
-			// 
-			// label5
-			// 
-			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(474, 213);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(32, 13);
-			this.label5.TabIndex = 125;
-			this.label5.Text = "BIOS";
-			// 
-			// BaseROMSBox
-			// 
-			this.BaseROMSBox.AcceptsReturn = true;
-			this.BaseROMSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.BaseROMSBox.Location = new System.Drawing.Point(12, 231);
-			this.BaseROMSBox.Name = "BaseROMSBox";
-			this.BaseROMSBox.Size = new System.Drawing.Size(421, 20);
-			this.BaseROMSBox.TabIndex = 152;
-			// 
-			// BrowseBaseROM
-			// 
-			this.BrowseBaseROM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BrowseBaseROM.Image = ((System.Drawing.Image)(resources.GetObject("BrowseBaseROM.Image")));
-			this.BrowseBaseROM.Location = new System.Drawing.Point(442, 231);
-			this.BrowseBaseROM.Name = "BrowseBaseROM";
-			this.BrowseBaseROM.Size = new System.Drawing.Size(26, 23);
-			this.BrowseBaseROM.TabIndex = 153;
-			this.BrowseBaseROM.UseVisualStyleBackColor = true;
-			this.BrowseBaseROM.Click += new System.EventHandler(this.BrowseBaseROM_Click);
-			// 
-			// BaseROMLabel
-			// 
-			this.BaseROMLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BaseROMLabel.AutoSize = true;
-			this.BaseROMLabel.Location = new System.Drawing.Point(474, 235);
-			this.BaseROMLabel.Name = "BaseROMLabel";
-			this.BaseROMLabel.Size = new System.Drawing.Size(59, 13);
-			this.BaseROMLabel.TabIndex = 154;
-			this.BaseROMLabel.Text = "Base ROM";
-			// 
 			// PathConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -4058,8 +4058,8 @@
 			this.tabPageColeco.PerformLayout();
 			this.tabPageC64.ResumeLayout(false);
 			this.tabPageC64.PerformLayout();
-			this.tabPageTools.ResumeLayout(false);
-			this.tabPageTools.PerformLayout();
+			this.tabPageGlobal.ResumeLayout(false);
+			this.tabPageGlobal.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -4118,7 +4118,7 @@
         private System.Windows.Forms.TextBox Sega8BaseBox;
         private System.Windows.Forms.Label Sega8BaseDescription;
         private System.Windows.Forms.Button Sega8BrowseBase;
-        private System.Windows.Forms.TabPage tabPageTools;
+        private System.Windows.Forms.TabPage tabPageGlobal;
         private System.Windows.Forms.TextBox GenesisBaseBox;
         private System.Windows.Forms.TextBox GenesisScreenshotsBox;
         private System.Windows.Forms.Button GenesisBrowseSaveRAM;
