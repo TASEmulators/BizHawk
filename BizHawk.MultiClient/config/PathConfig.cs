@@ -238,7 +238,7 @@ namespace BizHawk.MultiClient
 					tabControl1.SelectTab(tabPageGBA);
 					break;
 				case "NULL":
-					tabControl1.SelectTab(tabPageTools);
+					tabControl1.SelectTab(tabPageGlobal);
 					break;
 			}
 		}
