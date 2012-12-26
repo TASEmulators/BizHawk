@@ -16,9 +16,9 @@ void PPU::serialize(serializer &s) {
   Processor::serialize(s);
   PPUcounter::serialize(s);
 
-  s.array(vram);
-  s.array(oam);
-  s.array(cgram);
+  s.array(vram, 64 * 1024);
+  s.array(oam, 544);
+  s.array(cgram, 512);
 
   cache.serialize(s);
   bg1.serialize(s);
