@@ -20,7 +20,7 @@ fi
 #not debug
 export BIZWINCFLAGS="-I. -O3 -masm=intel -static-libgcc -static-libstdc++ ${cflags64}"
 
-export TARGET_LIBSNES_LIBDEPS="-L ../libco_msvc_win32/release/   -static-libgcc -static-libstdc++ ${cflags64} ${cflags32} -mwindows"
+export TARGET_LIBSNES_LIBDEPS="-L ../libco_msvc_win32/release/ -static  -static-libgcc -static-libstdc++ ${cflags64} ${cflags32} -mwindows"
 export profile=$2
 export bits=$1
 
