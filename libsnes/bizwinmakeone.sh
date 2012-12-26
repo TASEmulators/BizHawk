@@ -5,22 +5,32 @@ cd bsnes
 mkdir obj
 mkdir out
 
+if [ "$1" == "64" ]; then
+	export cflags64=-m64 ;
+	export compiler=i686-w64-mingw32-c++.exe
+fi
+
+if [ "$1" == "32" ]; then
+	export cflags32=-llibco_msvc_win32 ;
+fi
+
 #debug:
 #export BIZWINCFLAGS="-I. -O0 -g -masm=intel -DLIBCO_IMPORT -DLIBCO_MSVC -static-libgcc -static-libstdc++"
 
 #not debug
-export BIZWINCFLAGS="-I. -O3 -masm=intel -static-libgcc -static-libstdc++"
+export BIZWINCFLAGS="-I. -O3 -masm=intel -static-libgcc -static-libstdc++ ${cflags64}"
 
-export TARGET_LIBSNES_LIBDEPS="-L ../libco_msvc_win32/release/ -llibco_msvc_win32  -static-libgcc -static-libstdc++ -Wl,--subsystem,windows"
-export profile=$1
+export TARGET_LIBSNES_LIBDEPS="-L ../libco_msvc_win32/release/   -static-libgcc -static-libstdc++ ${cflags64} ${cflags32} -mwindows"
+export profile=$2
+export bits=$1
 
 platform=win target=libsnes make -e -j 4
 cd ..
 
-filename=libsneshawk-${profile}.exe
+filename=libsneshawk-${bits}-${profile}.exe
 targetdir=../BizHawk.MultiClient/output/dll
 targetpath=${targetdir}/${filename}
 cp bsnes/out/${filename} ${targetdir}
-if [ "$2" == "compress" ]; then
+if [ "$3" == "compress" ]; then
 	upx -9 ${targetpath} ;
 fi

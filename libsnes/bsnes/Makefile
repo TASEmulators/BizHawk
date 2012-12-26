@@ -37,7 +37,7 @@ else ifeq ($(platform),osx)
 else ifeq ($(platform),win)
   link += $(if $(findstring console,$(options)),-mconsole,-mwindows)
   link += -mthreads -s -luuid -lkernel32 -luser32 -lgdi32 -lcomctl32 -lcomdlg32 -lshell32 -lole32
-  link += -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc
+  link += -enable-auto-import -enable-runtime-pseudo-reloc
 else
   unknown_platform: help;
 endif
