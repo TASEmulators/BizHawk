@@ -376,8 +376,10 @@ namespace BizHawk.MultiClient
 			if (SNES_prepared.ContainsKey(profile)) return;
 
 			string bits = "32";
-			if (Win32.Is64BitOperatingSystem)
-				bits = "64";
+
+			//disabled til it works
+			//if (Win32.Is64BitOperatingSystem)
+			//  bits = "64";
 
 			string exename = "libsneshawk-" + bits + "-" + profile.ToLower() + ".exe";
 
