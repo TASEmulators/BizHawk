@@ -374,7 +374,12 @@ namespace BizHawk.MultiClient
 		void SNES_Check(string profile)
 		{
 			if (SNES_prepared.ContainsKey(profile)) return;
-			string exename = "libsneshawk-" + profile.ToLower() + ".exe";
+
+			string bits = "32";
+			if (Win32.Is64BitOperatingSystem)
+				bits = "64";
+
+			string exename = "libsneshawk-" + bits + "-" + profile.ToLower() + ".exe";
 
 			string thisDir = PathManager.GetExeDirectoryAbsolute();
 			string exePath = Path.Combine(thisDir, exename);
