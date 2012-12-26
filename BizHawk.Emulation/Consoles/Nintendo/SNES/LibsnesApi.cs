@@ -22,6 +22,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		//        this is a lot of work, but it will be some decent speedups. who wouldve ever thought to make an emulator this way? I will, from now on...
 		//todo - use a reader/writer ring buffer for communication instead of pipe
 		//todo - when exe wrapper is fully baked, put it into mingw so we can just have libsneshawk.exe without a separate dll. it hardly needs any debugging presently, it should be easy to maintain.
+		
+		//space optimizations to deploy later (only if people complain about so many files)
+		//todo - put executables in zipfiles and search for them there; dearchive to a .cache folder. check timestamps to know when to freshen. this is weird.....
 
 		//speedups to deploy later:
 		//todo - convey rom data faster than pipe blob (use shared memory) (WARNING: right now our general purpose shared memory is only 1MB. maybe wait until ring buffer IPC)
