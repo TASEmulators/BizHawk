@@ -32,6 +32,7 @@ namespace MonoMacWrapper
 		private void StartApplication()
 		{
 			BizHawk.HawkUIFactory.OpenDialogClass = typeof(MacOpenFileDialog);
+			BizHawk.HawkUIFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config ());
 			try
 			{

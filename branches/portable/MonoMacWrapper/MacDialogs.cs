@@ -132,8 +132,42 @@ namespace MonoMacWrapper
 				}
 				return retval;
 			}
+		}	
+	}
+
+	public class MacFolderBrowserDialog : BizHawk.IFolderBrowserDialog
+	{
+		private MonoMac.AppKit.NSOpenPanel _openPanel;
+
+		public MacFolderBrowserDialog()
+		{
+			_openPanel = new NSOpenPanel();
+			_openPanel.CanChooseDirectories = true;
+			_openPanel.CanChooseFiles = false;
 		}
 		
+		public System.Windows.Forms.DialogResult ShowDialog()
+		{
+			if(_openPanel.RunModal() == 1)
+			{
+				return System.Windows.Forms.DialogResult.OK;
+			}
+			return System.Windows.Forms.DialogResult.Cancel;
+		}
+		
+		public string Description 
+		{
+			get { return _openPanel.Title; }
+			set { _openPanel.Title = value; }
+		}
+		public string SelectedPath 
+		{
+			get { return _openPanel.Url.Path; }
+			set
+			{
+				_openPanel.DirectoryUrl = new MonoMac.Foundation.NSUrl(value, true);
+			}
+		}
 	}
 }
 

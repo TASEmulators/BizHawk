@@ -6,6 +6,7 @@ namespace BizHawk
 	public static class HawkUIFactory
 	{
 		public static Type OpenDialogClass = typeof(DefaultOpenFileDialog);
+		public static Type FolderBrowserClass = typeof(DefaultFolderBrowserDialog);
 		
 		public static IOpenFileDialog CreateOpenFileDialog()
 		{
@@ -14,6 +15,15 @@ namespace BizHawk
 				return (IOpenFileDialog)OpenDialogClass.GetConstructor(Type.EmptyTypes).Invoke(null);
 			}
 			return new DefaultOpenFileDialog();
+		}
+
+		public static IFolderBrowserDialog CreateFolderBrowserDialog()
+		{
+			if(typeof(IFolderBrowserDialog).IsAssignableFrom(FolderBrowserClass))
+			{
+				return (IFolderBrowserDialog)FolderBrowserClass.GetConstructor(Type.EmptyTypes).Invoke(null);
+			}
+			return new DefaultFolderBrowserDialog();
 		}
 	}
 	
@@ -63,6 +73,29 @@ namespace BizHawk
             get { return _capsule.FilterIndex; }
             set { _capsule.FilterIndex = value; }
         }
+	}
+
+	public class DefaultFolderBrowserDialog : IFolderBrowserDialog
+	{
+		private FolderBrowserDialog _capsule;
+		public DefaultFolderBrowserDialog()
+		{
+			_capsule = new FolderBrowserDialog();
+		}
+		public string Description 
+		{
+			get { return _capsule.Description; }
+			set { _capsule.Description = value; }
+		}
+		public string SelectedPath 
+		{
+			get { return _capsule.SelectedPath; }
+			set { _capsule.SelectedPath = value; }
+		}
+		public System.Windows.Forms.DialogResult ShowDialog()
+		{
+			return _capsule.ShowDialog();
+		}
 	}
 }
 
