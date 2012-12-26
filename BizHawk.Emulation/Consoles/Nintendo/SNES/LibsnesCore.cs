@@ -728,42 +728,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			int size = api.snes_get_memory_size(id);
 			int mask = size - 1;
+
+			byte* blockptr = api.snes_get_memory_data(id);
+
 			MemoryDomain md;
 
-			////have to bitmask these somehow because it's unmanaged memory and we would hate to clobber things or make them nondeterministic
-			//if (Util.IsPowerOfTwo(size))
-			//{
-			//  //can &mask for speed
-			//  md = new MemoryDomain(name, size, endian,
-			//     (addr) => blockptr[addr & mask],
-			//     (addr, value) => blockptr[addr & mask] = value);
-			//}
-			//else
-			//{
-			//  //have to use % (only OAM needs this, it seems)
-			//  //(OAM is actually two differently sized banks of memory which arent truly considered adjacent. maybe a better way to visualize it would be with an empty bus and adjacent banks)
-			//  md = new MemoryDomain(name, size, endian,
-			//     (addr) => blockptr[addr % size],
-			//     (addr, value) => blockptr[addr % size] = value);
-			//}
-
-			//EXTERNAL PROCESS CONVERSION: MUST MAKE THIS SAFE
-			//speed it up later
-			if (Util.IsPowerOfTwo(size))
+			if(id == LibsnesApi.SNES_MEMORY.OAM)
 			{
-				//can &mask for speed
+				//OAM is actually two differently sized banks of memory which arent truly considered adjacent. 
+				//maybe a better way to visualize it is with an empty bus and adjacent banks
+				//so, we just throw away everything above its size of 544 bytes
+				if (size != 544) throw new InvalidOperationException("oam size isnt 544 bytes.. wtf?");
 				md = new MemoryDomain(name, size, endian,
-					 (addr) => api.peek(id, (uint)(addr & mask)),
-					 (addr, value) => api.poke(id, (uint)(addr & mask), value));
+				   (addr) => (addr < 544) ? blockptr[addr] : (byte)0x00,
+					 (addr, value) => { if (addr < 544) blockptr[addr] = value; }
+					 );
 			}
 			else
-			{
-				//have to use % (only OAM needs this, it seems)
-				//(OAM is actually two differently sized banks of memory which arent truly considered adjacent. maybe a better way to visualize it would be with an empty bus and adjacent banks)
 				md = new MemoryDomain(name, size, endian,
-				 (addr) => api.peek(id, (uint)(addr % size)),
-					 (addr, value) => api.poke(id, (uint)(addr % size), value));
-			}
+						(addr) => blockptr[addr & mask],
+						(addr, value) => blockptr[addr & mask] = value);
 
 			MemoryDomains.Add(md);
 
