@@ -508,31 +508,33 @@ namespace SevenZip
             {
                 InSignatureFormatsReversed.Add(pair.Value, pair.Key);
             }
-        }
+				}
 
-        /// <summary>
-        /// Gets InArchiveFormat for specified archive file name
-        /// </summary>
-        /// <param name="fileName">Archive file name</param>
-        /// <param name="reportErrors">Indicates whether to throw exceptions</param>
-        /// <returns>InArchiveFormat recognized by the file name extension</returns>
-        /// <exception cref="System.ArgumentException"/>
-        public static InArchiveFormat FormatByFileName(string fileName, bool reportErrors)
-        {
-            if (String.IsNullOrEmpty(fileName) && reportErrors)
-            {
-				throw new ArgumentException("File name is null or empty string!");
-            }
-            string extension = Path.GetExtension(fileName).Substring(1);
-            if (!InExtensionFormats.ContainsKey(extension) && reportErrors)
-            {
-				if (FileChecker.ThrowExceptions)
-				 throw new ArgumentException("Extension \"" + extension + "\" is not a supported archive file name extension.");
-				else return InArchiveFormat.None;
+				/// <summary>
+				/// Gets InArchiveFormat for specified archive file name
+				/// </summary>
+				/// <param name="fileName">Archive file name</param>
+				/// <param name="reportErrors">Indicates whether to throw exceptions</param>
+				/// <returns>InArchiveFormat recognized by the file name extension</returns>
+				/// <exception cref="System.ArgumentException"/>
+				public static InArchiveFormat FormatByFileName(string fileName, bool reportErrors)
+				{
+					if (String.IsNullOrEmpty(fileName) && reportErrors)
+					{
+						throw new ArgumentException("File name is null or empty string!");
+					}
+					string extension = Path.GetExtension(fileName);
+					if (extension.StartsWith("."))
+						extension = extension.Substring(1);
+					if (!InExtensionFormats.ContainsKey(extension) && reportErrors)
+					{
+						if (FileChecker.ThrowExceptions)
+							throw new ArgumentException("Extension \"" + extension + "\" is not a supported archive file name extension.");
+						else return InArchiveFormat.None;
 
-            }
-            return InExtensionFormats[extension];
-        }
-    }
+					}
+					return InExtensionFormats[extension];
+				}
+		}
 #endif
 }
