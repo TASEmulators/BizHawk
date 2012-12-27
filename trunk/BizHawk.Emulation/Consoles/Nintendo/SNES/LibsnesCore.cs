@@ -768,18 +768,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				(addr) => romData[addr],
 				(addr, value) => romData[addr] = value);
 
+			
+
 			MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, Endian.Little);
 			MemoryDomains.Add(romDomain);
-			MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, Endian.Little);
-			MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, Endian.Little);
-			MakeMemoryDomain("OAM", LibsnesApi.SNES_MEMORY.OAM, Endian.Little);
-			MakeMemoryDomain("CGRAM", LibsnesApi.SNES_MEMORY.CGRAM, Endian.Little);
-			MakeMemoryDomain("APURAM", LibsnesApi.SNES_MEMORY.APURAM, Endian.Little);
 
-			if (!DeterministicEmulation)
-				MemoryDomains.Add(new MemoryDomain("BUS", 0x1000000, Endian.Little,
-					(addr) => api.peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
-					(addr, val) => api.poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
+			//someone needs to comprehensively address these in SGB mode, and go hook them up in the gameboy core
+			if (!IsSGB)
+			{
+				MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, Endian.Little);
+				MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, Endian.Little);
+				MakeMemoryDomain("OAM", LibsnesApi.SNES_MEMORY.OAM, Endian.Little);
+				MakeMemoryDomain("CGRAM", LibsnesApi.SNES_MEMORY.CGRAM, Endian.Little);
+				MakeMemoryDomain("APURAM", LibsnesApi.SNES_MEMORY.APURAM, Endian.Little);
+
+				if (!DeterministicEmulation)
+					MemoryDomains.Add(new MemoryDomain("BUS", 0x1000000, Endian.Little,
+						(addr) => api.peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
+						(addr, val) => api.poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
+			}
 		}
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
 		public MemoryDomain MainMemory { get; private set; }
