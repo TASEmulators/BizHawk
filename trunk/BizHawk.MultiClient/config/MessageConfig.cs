@@ -457,8 +457,8 @@ namespace BizHawk.MultiClient
 			Global.Config.DispInpy = 24;
 			Global.Config.DispRecx = 0;
 			Global.Config.DispRecy = 48;
-			Global.Config.DispMultix = 36;
-			Global.Config.DispMultiy = 0;
+			Global.Config.DispMultix = 0;
+			Global.Config.DispMultiy = 14;
 			Global.Config.DispMessagex = 3;
 			Global.Config.DispMessagey = 0;
 			Global.Config.DispAutoholdx = 0;
@@ -484,7 +484,7 @@ namespace BizHawk.MultiClient
 			Global.Config.DispLaganchor = 0;
 			Global.Config.DispInpanchor = 0;
 			Global.Config.DispRecanchor = 0;
-			Global.Config.DispMultianchor = 0;
+			Global.Config.DispMultianchor = 1;
 			Global.Config.DispMessageanchor = 2;
 			Global.Config.DispAutoholdanchor = 1;
 
