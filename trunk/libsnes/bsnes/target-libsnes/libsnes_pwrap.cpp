@@ -12,7 +12,158 @@
 #include <string>
 #include <vector>
 
+typedef uint8 u8;
+typedef int32 s32;
+typedef uint32 u32;
 
+class IPCRingBuffer
+{
+private:
+	HANDLE mmf;
+	u8* mmvaPtr;
+	volatile u8* begin;
+	volatile s32* head, *tail;
+	int bufsize;
+
+	//this code depends on conventional interpretations of volatile and sequence points which are unlikely to be violated on any system an emulator would be running on
+
+	void Setup(int size)
+	{
+		bool init = size != -1;
+		Owner = init;
+
+		mmvaPtr = (u8*)MapViewOfFile(mmf, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
+
+		//setup management area
+		head = (s32*)mmvaPtr;
+		tail = (s32*)mmvaPtr + 1;
+		s32* bufsizeptr = (s32*)mmvaPtr + 2;
+		begin = mmvaPtr + 12;
+
+		if (init)
+			*bufsizeptr = bufsize = size - 12;
+		else bufsize = *bufsizeptr;
+	}
+		
+	void WaitForWriteCapacity(int amt)
+	{
+		for (; ; )
+		{
+			//dont return when available == amt because then we would consume the buffer and be unable to distinguish between full and empty
+			if (Available() > amt)
+				return;
+			//this is a greedy spinlock.
+		}
+	}
+
+	int Size()
+	{
+		int h = *head;
+		int t = *tail;
+		int size = h - t;
+		if (size < 0) size += bufsize;
+		else if (size >= bufsize)
+		{
+			//shouldnt be possible for size to be anything but bufsize here
+			size = 0;
+		}
+		return size;
+	}
+
+	int Available()
+	{
+		return bufsize - Size();
+	}
+
+public:
+	bool Owner;
+
+	//void Allocate(int size) //not supported
+
+	void Open(const std::string& id)
+	{
+		HANDLE h = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, id.c_str());
+		if(h == INVALID_HANDLE_VALUE)
+			return;
+
+		mmf = h;
+				
+		Setup(-1);
+	}
+
+	~IPCRingBuffer()
+	{
+		if (mmf == NULL) return;
+		CloseHandle(mmf);
+		mmf = NULL;
+	}
+
+	int WaitForSomethingToRead()
+	{
+		for (; ; )
+		{
+			int available = Size();
+			if (available > 0)
+				return available;
+			//this is a greedy spinlock.
+		}
+	}
+
+	void Write(const void* ptr, int amt)
+	{
+		u8* bptr = (u8*)ptr;
+		int ofs = 0;
+		while (amt > 0)
+		{
+			int todo = amt;
+
+			//make sure we don't write a big chunk beyond the end of the buffer
+			int remain = bufsize - *head;
+			if (todo > remain) todo = remain;
+
+			//dont request the entire buffer. we would never get that much available, because we never completely fill up the buffer
+			if (todo > bufsize - 1) todo = bufsize - 1;
+
+			//a super efficient approach would chunk this several times maybe instead of waiting for the buffer to be emptied before writing again. but who cares
+			WaitForWriteCapacity(todo);
+
+			//messages are likely to be small. we should probably just loop to copy in here. but for now..
+			memcpy((u8*)begin + *head, bptr + ofs, todo);
+
+			amt -= todo;
+			ofs += todo;
+			*head += todo;
+			if (*head >= bufsize) *head -= bufsize;
+		}
+	}
+
+	void Read(void* ptr, int amt)
+	{
+		u8* bptr = (u8*)ptr;
+		int ofs = 0;
+		while (amt > 0)
+		{
+			int available = WaitForSomethingToRead();
+			int todo = amt;
+			if (todo > available) todo = available;
+
+			//make sure we don't read a big chunk beyond the end of the buffer
+			int remain = bufsize - *tail;
+			if (todo > remain) todo = remain;
+
+			//messages are likely to be small. we should probably just loop to copy in here. but for now..
+			memcpy(bptr + ofs, (u8*)begin + *tail, todo);
+
+			amt -= todo;
+			ofs += todo;
+			*tail += todo;
+			if (*tail >= bufsize) *tail -= bufsize;
+		}
+	}
+}; //class IPCRingBuffer
+
+static bool bufio = false;
+static IPCRingBuffer *rbuf = NULL, *wbuf = NULL;
 
 HANDLE hPipe, hMapFile;
 void* hMapFilePtr;
@@ -73,11 +224,20 @@ enum eMessage : int
 
 	eMessage_snes_allocSharedMemory,
 	eMessage_snes_freeSharedMemory,
-	eMessage_GetMemoryIdName
+	eMessage_GetMemoryIdName,
+
+	eMessage_SetBuffer,
+	eMessage_BeginBufferIO,
+	eMessage_EndBufferIO
 };
 
 void ReadPipeBuffer(void* buf, int len)
 {
+	if(bufio)
+	{
+		rbuf->Read(buf,len);
+		return;
+	}
 	DWORD bytesRead;
 	BOOL result = ReadFile(hPipe, buf, len, &bytesRead, NULL);
 	if(!result || bytesRead != len)
@@ -106,6 +266,13 @@ void WritePipeBuffer(const void* buf, int len)
 {
 	//static FILE* outf = NULL;
 	//if(!outf) outf = fopen("c:\\trace.bin","wb"); fwrite(buf,1,len,outf); fflush(outf);
+
+	if(bufio)
+	{
+		wbuf->Write(buf,len);
+		return;
+	}
+
 	DWORD bytesWritten;
 	BOOL result = WriteFile(hPipe, buf, len, &bytesWritten, NULL);
 	if(!result || bytesWritten != len)
@@ -377,12 +544,12 @@ void RunMessageLoop()
 			break;
 
 		case eMessage_snes_get_memory_size:
-			WritePipe(snes_get_memory_size(ReadPipe<unsigned int>()));
+			WritePipe(snes_get_memory_size(ReadPipe<u32>()));
 			break;
 
 		case eMessage_snes_get_memory_data:
 			{
-				unsigned int id = ReadPipe<unsigned int>();
+				unsigned int id = ReadPipe<u32>();
 				char* dstbuf = ReadPipeSharedPtr();
 				uint8_t* srcbuf = snes_get_memory_data(id);
 				memcpy(dstbuf,srcbuf,snes_get_memory_size(id));
@@ -392,8 +559,8 @@ void RunMessageLoop()
 			
 		case eMessage_peek:
 			{
-				int id = ReadPipe<int>();
-				unsigned int addr = ReadPipe<unsigned int>();
+				int id = ReadPipe<s32>();
+				unsigned int addr = ReadPipe<u32>();
 				uint8_t ret;
 				if(id == SNES_MEMORY_SYSBUS)
 					ret = bus_read(addr);
@@ -404,8 +571,8 @@ void RunMessageLoop()
 
 		case eMessage_poke:
 			{
-				int id = ReadPipe<int>();
-				unsigned int addr = ReadPipe<unsigned int>();
+				int id = ReadPipe<s32>();
+				unsigned int addr = ReadPipe<u32>();
 				uint8_t val = ReadPipe<uint8_t>();
 				if(id == SNES_MEMORY_SYSBUS)
 					bus_write(addr,val);
@@ -420,8 +587,8 @@ void RunMessageLoop()
 
 		case eMessage_snes_serialize:
 			{
-				int size = ReadPipe<int>();
-				int destOfs = ReadPipe<int>();
+				int size = ReadPipe<s32>();
+				int destOfs = ReadPipe<s32>();
 				char* buf = (char*)hMapFilePtr + destOfs;
 				bool ret = snes_serialize((uint8_t*)buf,size);
 				WritePipe(eMessage_Complete);
@@ -431,8 +598,8 @@ void RunMessageLoop()
 		case eMessage_snes_unserialize:
 			{
 				//auto blob = ReadPipeBlob();
-				int size = ReadPipe<int>();
-				int destOfs = ReadPipe<int>();
+				int size = ReadPipe<s32>();
+				int destOfs = ReadPipe<s32>();
 				char* buf = (char*)hMapFilePtr + destOfs;
 				bool ret = snes_unserialize((uint8_t*)buf	,size);
 				WritePipe(eMessage_Complete);
@@ -474,19 +641,19 @@ void RunMessageLoop()
 	
 		case eMessage_snes_set_layer_enable:
 			{
-				int layer = ReadPipe<int>();
-				int priority = ReadPipe<int>();
+				int layer = ReadPipe<s32>();
+				int priority = ReadPipe<s32>();
 				bool enable = ReadPipe<bool>();
 				snes_set_layer_enable(layer,priority,enable);
 				break;
 			}
 
 		case eMessage_snes_set_backdropColor:
-			snes_set_backdropColor(ReadPipe<int>());
+			snes_set_backdropColor(ReadPipe<s32>());
 			break;
 
 		case eMessage_snes_peek_logical_register:
-			WritePipe(snes_peek_logical_register(ReadPipe<int>()));
+			WritePipe(snes_peek_logical_register(ReadPipe<s32>()));
 			break;
 
 		case eMessage_GetMemoryIdName:
@@ -497,6 +664,25 @@ void RunMessageLoop()
 				WritePipeString(ret);
 				break;
 			}
+
+		case eMessage_SetBuffer:
+			{
+				int which = ReadPipe<s32>();
+				std::string name = ReadPipeString();
+				IPCRingBuffer* ipcrb = new IPCRingBuffer();
+				ipcrb->Open(name);
+				if(which==0) rbuf = ipcrb;
+				else wbuf = ipcrb;
+				break;
+			}
+
+		case eMessage_BeginBufferIO:
+			bufio = true;
+			break;
+
+		case eMessage_EndBufferIO:
+			bufio = false;
+			break;
 
 		} //switch(msg)
 	}
