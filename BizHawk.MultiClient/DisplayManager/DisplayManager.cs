@@ -523,12 +523,12 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
+				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, MessageFont, MT);
+				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, MessageFont, MT);
 				g.DrawString(MT, MessageFont, Color.Black,
-				Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
-					Global.Config.DispFPSy + 1);
+				x + 1, y + 1);
 				g.DrawString(MT, MessageFont, FixedMessagesColor,
-					Global.Config.DispFPSx, //TODO: Multitrack position variables
-					Global.Config.DispFPSy);
+					x, y);
 			}
 			if (Global.Config.DisplayFPS && FPS != null)
 			{
