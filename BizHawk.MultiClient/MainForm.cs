@@ -2043,9 +2043,9 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "A78":
-								string ntsc_biospath = Path.Combine(Global.Config.FirmwaresPath, "7800NTSCBIOS.bin");
-								string pal_biospath = Path.Combine(Global.Config.FirmwaresPath, "7800PALBIOS.bin");
-								string hsbiospath = Path.Combine(Global.Config.FirmwaresPath, "7800highscore.bin");
+								string ntsc_biospath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameA78NTSCBios);
+								string pal_biospath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameA78PALBios);
+								string hsbiospath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameA78HSCBios);
 
 								FileInfo ntscfile = new FileInfo(ntsc_biospath);
 								FileInfo palfile = new FileInfo(pal_biospath);

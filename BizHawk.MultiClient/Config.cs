@@ -220,6 +220,9 @@ namespace BizHawk.MultiClient
 		public string FilenameGBABIOS = "gbabios.rom";
 		public string FilenameCOLBios = "ColecoBios.bin";
 		public string FilenameINTVGROM = "grom.bin";
+		public string FilenameA78NTSCBios = "7800NTSCBIOS.bin";
+		public string FilenameA78PALBios = "7800PALBIOS.bin";
+		public string FilenameA78HSCBios = "7800highscore.bin";
 		public string FilenameINTVEROM = "erom.bin";
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
