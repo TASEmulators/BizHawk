@@ -2051,30 +2051,40 @@ namespace BizHawk.MultiClient
 								FileInfo palfile = new FileInfo(pal_biospath);
 								FileInfo hsfile = new FileInfo(hsbiospath);
 
+								byte[] NTSC_BIOS7800 = null;
+								byte[] PAL_BIOS7800 = null;
+								byte[] HighScoreBIOS = null;
 								if (!ntscfile.Exists)
 								{
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									throw new Exception();
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									//throw new Exception();
+								}
+								else
+								{
+									NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
 								}
 
 								if (!palfile.Exists)
 								{
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									throw new Exception();
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									//throw new Exception();
+								}
+								else
+								{
+									PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
 								}
 
 								if (!hsfile.Exists)
 								{
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									throw new Exception();
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									//throw new Exception();
+								}
+								else
+								{
+									HighScoreBIOS = File.ReadAllBytes(hsbiospath);
 								}
 
-								byte[] NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
-								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
-								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);
-
 								string gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-
 								var a78 = new BizHawk.Emulation.Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS, gamedbpath);
 								nextEmulator = a78;
 								break;
