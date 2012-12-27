@@ -501,7 +501,7 @@ namespace BizHawk.Emulation.Consoles.GB
 					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
 					readneeded = false;
 				}
-				return CachedMemory[addr & (CachedMemory.Length - 1)];
+				return CachedMemory[addr % CachedMemory.Length];
 			}
 			public void Poke(int addr, byte val)
 			{
@@ -513,7 +513,7 @@ namespace BizHawk.Emulation.Consoles.GB
 					System.Runtime.InteropServices.Marshal.Copy(data, CachedMemory, 0, length);
 					readneeded = false;
 				}
-				CachedMemory[addr & (CachedMemory.Length - 1)] = val;
+				CachedMemory[addr % CachedMemory.Length] = val;
 				writeneeded = true;
 			}
 		}
