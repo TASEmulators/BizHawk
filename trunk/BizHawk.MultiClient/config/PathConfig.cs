@@ -145,7 +145,9 @@ namespace BizHawk.MultiClient
 			Atari7800SaveRAMBox.Text = Global.Config.PathAtari7800SaveRAM;
 			Atari7800ScreenshotsBox.Text = Global.Config.PathAtari7800Screenshots;
 			Atari7800CheatsBox.Text = Global.Config.PathAtari7800Cheats;
-			//Atari7800FirmwaresBox.Text = Global.Config.PathAtari7800Firmwares;
+			Atari7800NTSCBIOSBox.Text = Global.Config.FilenameA78NTSCBios;
+			Atari7800PALBIOSBox.Text = Global.Config.FilenameA78PALBios;
+			Atari7800HighScoreBIOSBox.Text = Global.Config.FilenameA78HSCBios;
 
 			C64BaseBox.Text = Global.Config.BaseC64;
 			C64ROMsBox.Text = Global.Config.PathC64ROMs;
@@ -342,7 +344,9 @@ namespace BizHawk.MultiClient
 			Global.Config.PathAtari7800SaveRAM = Atari7800SaveRAMBox.Text;
 			Global.Config.PathAtari7800Screenshots = Atari7800ScreenshotsBox.Text;
 			Global.Config.PathAtari7800Cheats = Atari7800CheatsBox.Text;
-			//Global.Config.PathAtari7800Firmwares = Atari7800FirmwaresBox.Text;
+			Global.Config.FilenameA78NTSCBios = Atari7800NTSCBIOSBox.Text;
+			Global.Config.FilenameA78PALBios = Atari7800PALBIOSBox.Text;
+			Global.Config.FilenameA78HSCBios = Atari7800HighScoreBIOSBox.Text;
 
 			Global.Config.BaseC64 = C64BaseBox.Text;
 			Global.Config.PathC64ROMs = C64ROMsBox.Text;
@@ -1132,6 +1136,48 @@ namespace BizHawk.MultiClient
 		private void BrowseBaseROM_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(BaseROMSBox, BaseROMLabel.Text, "");
+		}
+
+		private void Atari7800BrowseNTSCBIOS_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
+			ofd.RestoreDirectory = false;
+			DialogResult result = ofd.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				var file = new FileInfo(ofd.FileName);
+				Atari7800NTSCBIOSBox.Text = file.Name;
+			}
+		}
+
+		private void Atari7800BrowsePALBIOS_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
+			ofd.RestoreDirectory = false;
+			DialogResult result = ofd.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				var file = new FileInfo(ofd.FileName);
+				Atari7800PALBIOSBox.Text = file.Name;
+			}
+		}
+
+		private void Atari7800BrowseHSCBIOS_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
+			ofd.RestoreDirectory = false;
+			DialogResult result = ofd.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				var file = new FileInfo(ofd.FileName);
+				Atari7800HighScoreBIOSBox.Text = file.Name;
+			}
 		}
 	}
 }
