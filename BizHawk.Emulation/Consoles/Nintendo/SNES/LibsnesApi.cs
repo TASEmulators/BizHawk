@@ -1,4 +1,9 @@
-﻿using System;
+﻿//controls whether the new shared memory ring buffer communication system is used
+//on the whole it seems to boost performance slightly for me, at the cost of exacerbating spikes
+//not sure if we should keep it
+//#define USE_BUFIO
+
+using System;
 using System.Linq;
 using System.Diagnostics;
 using System.Globalization;
@@ -10,6 +15,291 @@ using System.IO.MemoryMappedFiles;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 {
+
+	/// <summary>
+	/// a ring buffer suitable for IPC. It uses a spinlock to control access, so overhead can be kept to a minimum. 
+	/// you'll probably need to use this in pairs, so it will occupy two threads and degrade entirely if there is less than one processor.
+	/// </summary>
+	unsafe class IPCRingBuffer : IDisposable
+	{
+		MemoryMappedFile mmf;
+		MemoryMappedViewAccessor mmva;
+
+		byte* mmvaPtr;
+		volatile byte* begin;
+		volatile int* head, tail;
+		int bufsize;
+
+		public string Id;
+		public bool Owner;
+
+		/// <summary>
+		/// note that a few bytes of the size will be used for a management area
+		/// </summary>
+		/// <param name="size"></param>
+		public void Allocate(int size)
+		{
+			Owner = true;
+			Id = SuperGloballyUniqueID.Next();
+			mmf = MemoryMappedFile.CreateNew(Id, size);
+			Setup(size);
+		}
+
+		public void Open(string id)
+		{
+			Id = id;
+			mmf = MemoryMappedFile.OpenExisting(id);
+			Setup(-1);
+		}
+
+		void Setup(int size)
+		{
+			bool init = size != -1;
+
+			mmva = mmf.CreateViewAccessor();
+			byte* tempPtr = null;
+			mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref tempPtr);
+			mmvaPtr = tempPtr;
+
+			//setup management area
+			head = (int*)mmvaPtr;
+			tail = (int*)mmvaPtr + 1;
+			int* bufsizeptr = (int*)mmvaPtr + 2;
+			begin = mmvaPtr + 12;
+
+			if (init)
+				*bufsizeptr = bufsize = size - 12;
+			else bufsize = *bufsizeptr;
+		}
+
+		public void Dispose()
+		{
+			if (mmf == null) return;
+			mmva.Dispose();
+			mmf.Dispose();
+			mmf = null;
+		}
+
+		void WaitForWriteCapacity(int amt)
+		{
+			for (; ; )
+			{
+				//dont return when available == amt because then we would consume the buffer and be unable to distinguish between full and empty
+				if (Available > amt)
+					return;
+				//this is a greedy spinlock.
+			}
+		}
+
+		public int Available
+		{
+			get
+			{
+				return bufsize - Size;
+			}
+		}
+
+
+		public int Size
+		{
+			get
+			{
+				int h = *head;
+				int t = *tail;
+				int size = h - t;
+				if (size < 0) size += bufsize;
+				else if (size >= bufsize)
+				{
+					//shouldnt be possible for size to be anything but bufsize here, but just in case...
+					if (size > bufsize)
+						throw new InvalidOperationException("Critical error code pickpocket panda! This MUST be reported to the developers!");
+					size = 0;
+				}
+				return size;
+			}
+		}
+
+		int WaitForSomethingToRead()
+		{
+			for (; ; )
+			{
+				int available = Size;
+				if (available > 0)
+					return available;
+				//this is a greedy spinlock.
+			}
+		}
+
+		[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+		static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);
+
+		public void Write(IntPtr ptr, int amt)
+		{
+			byte* bptr = (byte*)ptr;
+			int ofs = 0;
+			while (amt > 0)
+			{
+				int todo = amt;
+
+				//make sure we don't write a big chunk beyond the end of the buffer
+				int remain = bufsize - *head;
+				if (todo > remain) todo = remain;
+
+				//dont request the entire buffer. we would never get that much available, because we never completely fill up the buffer
+				if (todo > bufsize - 1) todo = bufsize - 1;
+
+				//a super efficient approach would chunk this several times maybe instead of waiting for the buffer to be emptied before writing again. but who cares
+				WaitForWriteCapacity(todo);
+
+				//messages are likely to be small. we should probably just loop to copy in here. but for now..
+				CopyMemory(begin + *head, bptr + ofs, (ulong)todo);
+
+				amt -= todo;
+				ofs += todo;
+				*head += todo;
+				if (*head >= bufsize) *head -= bufsize;
+			}
+		}
+
+		public void Read(IntPtr ptr, int amt)
+		{
+			byte* bptr = (byte*)ptr;
+			int ofs = 0;
+			while (amt > 0)
+			{
+				int available = WaitForSomethingToRead();
+				int todo = amt;
+				if (todo > available) todo = available;
+
+				//make sure we don't read a big chunk beyond the end of the buffer
+				int remain = bufsize - *tail;
+				if (todo > remain) todo = remain;
+
+				//messages are likely to be small. we should probably just loop to copy in here. but for now..
+				CopyMemory(bptr + ofs, begin + *tail, (ulong)todo);
+
+				amt -= todo;
+				ofs += todo;
+				*tail += todo;
+				if (*tail >= bufsize) *tail -= bufsize;
+			}
+		}
+
+		public class Tester
+		{
+			Queue<byte> shazam = new Queue<byte>();
+			string bufid;
+
+			unsafe void a()
+			{
+				var buf = new IPCRingBuffer();
+				buf.Allocate(1024);
+				bufid = buf.Id;
+
+				int ctr = 0;
+				for (; ; )
+				{
+					Random r = new Random(ctr);
+					ctr++;
+					Console.WriteLine("Writing: {0}", ctr);
+
+					byte[] temp = new byte[r.Next(2048) + 1];
+					r.NextBytes(temp);
+					for (int i = 0; i < temp.Length; i++)
+						lock (shazam) shazam.Enqueue(temp[i]);
+					fixed (byte* tempptr = &temp[0])
+						buf.Write((IntPtr)tempptr, temp.Length);
+					//Console.WriteLine("wrote {0}; ringbufsize={1}", temp.Length, buf.Size);
+				}
+			}
+
+			unsafe void b()
+			{
+				var buf = new IPCRingBuffer();
+				buf.Open(bufid);
+
+				int ctr = 0;
+				for (; ; )
+				{
+					Random r = new Random(ctr + 1000);
+					ctr++;
+					Console.WriteLine("Reading : {0}", ctr);
+
+					int tryRead = r.Next(2048) + 1;
+					byte[] temp = new byte[tryRead];
+					fixed (byte* tempptr = &temp[0])
+						buf.Read((IntPtr)tempptr, tryRead);
+					//Console.WriteLine("read {0}; ringbufsize={1}", temp.Length, buf.Size);
+					for (int i = 0; i < temp.Length; i++)
+					{
+						byte b;
+						lock (shazam) b = shazam.Dequeue();
+						Debug.Assert(b == temp[i]);
+					}
+				}
+			}
+
+			public void Test()
+			{
+				var ta = new System.Threading.Thread(a);
+				var tb = new System.Threading.Thread(b);
+				ta.Start();
+				while (bufid == null) { }
+				tb.Start();
+			}
+		}
+	}
+
+	unsafe class IPCRingBufferStream : Stream
+	{
+		public IPCRingBufferStream(IPCRingBuffer buf)
+		{
+			this.buf = buf;
+		}
+		IPCRingBuffer buf;
+		public override bool CanRead { get { return true; } }
+		public override bool CanSeek { get { return false; } }
+		public override bool CanWrite { get { return true; } }
+		public override void Flush() { }
+		public override long Length { get { throw new NotImplementedException(); } }
+		public override long Position { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
+		public override long Seek(long offset, SeekOrigin origin) { throw new NotImplementedException(); }
+		public override void SetLength(long value) { throw new NotImplementedException(); }
+		public override int Read(byte[] buffer, int offset, int count)
+		{
+			if (buffer.Length < offset + count) throw new IndexOutOfRangeException();
+			fixed (byte* pbuffer = &buffer[offset])
+				buf.Read((IntPtr)pbuffer, count);
+			return count;
+		}
+
+		public override void Write(byte[] buffer, int offset, int count)
+		{
+			if (buffer.Length < offset + count) throw new IndexOutOfRangeException();
+			fixed (byte* pbuffer = &buffer[offset])
+				buf.Write((IntPtr)pbuffer, count);
+		}
+	}
+
+	class SuperGloballyUniqueID
+	{
+		public static string Next()
+		{
+			int myctr;
+			lock (typeof(SuperGloballyUniqueID))
+				myctr = ctr++;
+			return staticPart + "-" + myctr;
+		}
+
+		static SuperGloballyUniqueID()
+		{
+			staticPart = "bizhawk-" + System.Diagnostics.Process.GetCurrentProcess().Id.ToString() + "-" + Guid.NewGuid().ToString();
+		}
+
+		static int ctr;
+		static string staticPart;
+	}
+
 	public unsafe class LibsnesApi : IDisposable
 	{
 		//this wouldve been the ideal situation to learn protocol buffers, but since the number of messages here is so limited, it took less time to roll it by hand.
@@ -39,6 +329,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		MemoryMappedFile mmf;
 		MemoryMappedViewAccessor mmva;
 		byte* mmvaPtr;
+		IPCRingBuffer rbuf, wbuf;
+		IPCRingBufferStream rbufstr, wbufstr;
+		SwitcherStream rstream, wstream;
+		bool bufio;
 
 		public enum eMessage : int
 		{
@@ -97,6 +391,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			eMessage_snes_allocSharedMemory,
 			eMessage_snes_freeSharedMemory,
 			eMessage_GetMemoryIdName,
+
+			eMessage_SetBuffer,
+			eMessage_BeginBufferIO,
+			eMessage_EndBufferIO
 		};
 
 		static bool DryRun(string exePath)
@@ -155,8 +453,84 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			//TODO - start a thread to wait for process to exit and gracefully handle errors? how about the pipe?
 
 			pipe.WaitForConnection();
-			bwPipe = new BinaryWriter(pipe);
-			brPipe = new BinaryReader(pipe);
+
+			rbuf = new IPCRingBuffer();
+			wbuf = new IPCRingBuffer();
+			rbuf.Allocate(1024);
+			wbuf.Allocate(1024);
+			rbufstr = new IPCRingBufferStream(rbuf);
+			wbufstr = new IPCRingBufferStream(wbuf);
+
+			rstream = new SwitcherStream();
+			wstream = new SwitcherStream();
+
+			rstream.SetCurrStream(pipe);
+			wstream.SetCurrStream(pipe);
+
+			brPipe = new BinaryReader(rstream);
+			bwPipe = new BinaryWriter(wstream);
+
+			WritePipeMessage(eMessage.eMessage_SetBuffer);
+			bwPipe.Write(1);
+			WritePipeString(rbuf.Id);
+			WritePipeMessage(eMessage.eMessage_SetBuffer);
+			bwPipe.Write(0);
+			WritePipeString(wbuf.Id);
+			bwPipe.Flush();
+		}
+
+		class SwitcherStream : Stream
+		{
+			//switchstream method? flush old stream?
+			Stream CurrStream = null;
+
+			public void SetCurrStream(Stream str) { CurrStream = str; }
+
+			public SwitcherStream()
+			{
+			}
+
+			public override bool CanRead { get { return CurrStream.CanRead; } }
+			public override bool CanSeek { get { return CurrStream.CanSeek; } }
+			public override bool CanWrite { get { return CurrStream.CanWrite; } }
+			public override void Flush() 
+			{
+				CurrStream.Flush();
+			}
+
+			public override long Length { get { return CurrStream.Length; } }
+
+			public override long Position
+			{
+				get
+				{
+					return CurrStream.Position;
+				}
+				set
+				{
+					CurrStream.Position = Position;
+				}
+			}
+
+			public override int Read(byte[] buffer, int offset, int count)
+			{
+				return CurrStream.Read(buffer, offset, count);
+			}
+
+			public override long Seek(long offset, SeekOrigin origin)
+			{
+				return CurrStream.Seek(offset, origin);
+			}
+
+			public override void SetLength(long value)
+			{
+				CurrStream.SetLength(value);
+			}
+
+			public override void Write(byte[] buffer, int offset, int count)
+			{
+				CurrStream.Write(buffer, offset, count);
+			}
 		}
 
 		public void Dispose()
@@ -167,6 +541,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			pipe.Dispose();
 			mmva.Dispose();
 			mmf.Dispose();
+			rbuf.Dispose();
+			wbuf.Dispose();
+		}
+
+		public void BeginBufferIO()
+		{
+#if USE_BUFIO
+			bufio = true;
+			WritePipeMessage(eMessage.eMessage_BeginBufferIO);
+			rstream.SetCurrStream(rbufstr);
+			wstream.SetCurrStream(wbufstr);
+#endif
+		}
+
+		public void EndBufferIO()
+		{
+#if USE_BUFIO
+			bufio = false;
+			WritePipeMessage(eMessage.eMessage_EndBufferIO);
+			rstream.SetCurrStream(pipe);
+			wstream.SetCurrStream(pipe);
+#endif
 		}
 
 		void WritePipeString(string str)
@@ -186,14 +582,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			bwPipe.Write(blob.Length);
 			bwPipe.Write(blob);
+			bwPipe.Flush();
 		}
 
 		public int MessageCounter;
 
 		void WritePipeMessage(eMessage msg)
 		{
-			MessageCounter++;
+			if(!bufio) MessageCounter++;
 			bwPipe.Write((int)msg);
+			bwPipe.Flush();
 		}
 
 		eMessage ReadPipeMessage()
@@ -276,6 +674,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			WritePipeMessage(eMessage.eMessage_snes_get_memory_size);
 			bwPipe.Write((int)id);
+			bwPipe.Flush();
 			return brPipe.ReadInt32();
 		}
 
@@ -283,6 +682,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			WritePipeMessage(eMessage.eMessage_GetMemoryIdName);
 			bwPipe.Write((uint)id);
+			bwPipe.Flush();
 			return ReadPipeString();
 		}
 
@@ -298,6 +698,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			WritePipeMessage(eMessage.eMessage_peek);
 			bwPipe.Write((uint)id);
 			bwPipe.Write(addr);
+			bwPipe.Flush();
 			return brPipe.ReadByte();
 		}
 		public void poke(SNES_MEMORY id, uint addr, byte val)
@@ -306,6 +707,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			bwPipe.Write((uint)id);
 			bwPipe.Write(addr);
 			bwPipe.Write(val);
+			bwPipe.Flush();
 		}
 
 		public int snes_serialize_size()
@@ -317,13 +719,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
 		public static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);
 
-
-
 		public bool snes_serialize(IntPtr data, int size)
 		{
 			WritePipeMessage(eMessage.eMessage_snes_serialize);
 			bwPipe.Write(size);
 			bwPipe.Write(0); //mapped memory location to serialize to
+			bwPipe.Flush();
 			WaitForCompletion(); //serialize/unserialize can cause traces to get called (because serialize can cause execution?)
 			bool ret = brPipe.ReadBoolean();
 			if (ret)
@@ -339,6 +740,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			CopyMemory(mmvaPtr, data.ToPointer(), (ulong)size);
 			bwPipe.Write(size);
 			bwPipe.Write(0); //mapped memory location to serialize from
+			bwPipe.Flush();
 			WaitForCompletion(); //serialize/unserialize can cause traces to get called (because serialize can cause execution?)
 			bool ret = brPipe.ReadBoolean();
 			return ret;
@@ -375,18 +777,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			bwPipe.Write(layer);
 			bwPipe.Write(priority);
 			bwPipe.Write(enable);
+			bwPipe.Flush();
 		}
 
 		public void snes_set_backdropColor(int backdropColor)
 		{
 			WritePipeMessage(eMessage.eMessage_snes_set_backdropColor);
 			bwPipe.Write(backdropColor);
+			bwPipe.Flush();
 		}
 
 		public int snes_peek_logical_register(SNES_REG reg)
 		{
 			WritePipeMessage(eMessage.eMessage_snes_peek_logical_register);
 			bwPipe.Write((int)reg);
+			bwPipe.Flush();
 			return brPipe.ReadInt32();
 		}
 
@@ -395,7 +800,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			for (; ; )
 			{
 				var msg = ReadPipeMessage();
-				MessageCounter++;
+				if (!bufio) MessageCounter++;
 				//Console.WriteLine(msg);
 				switch (msg)
 				{
@@ -407,6 +812,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 							int width = brPipe.ReadInt32();
 							int height = brPipe.ReadInt32();
 							bwPipe.Write(0); //offset in mapped memory buffer
+							bwPipe.Flush();
 							brPipe.ReadBoolean(); //dummy synchronization
 							if (video_refresh != null)
 							{
@@ -426,6 +832,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 							if (input_state != null)
 								ret = input_state(port, device, index, id);
 							bwPipe.Write(ret);
+							bwPipe.Flush();
 							break;
 						}
 					case eMessage.eMessage_snes_cb_input_notify:
@@ -439,6 +846,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 						{
 							int nsamples = brPipe.ReadInt32();
 							bwPipe.Write(0); //location to store audio buffer in
+							bwPipe.Flush();
 							brPipe.ReadInt32(); //dummy synchronization
 
 							if (audio_sample != null)
@@ -453,6 +861,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 							}
 
 							bwPipe.Write(0); //dummy synchronization
+							bwPipe.Flush();
 							brPipe.ReadInt32();  //dummy synchronization
 							break;
 						}
@@ -509,7 +918,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 						}
 				}
 			}
-		}
+		} //WaitForCompletion()
 
 		class SharedMemoryBlock : IDisposable
 		{
@@ -556,6 +965,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			this.audio_sample = audio_sample;
 			WritePipeMessage(eMessage.eMessage_snes_enable_audio);
 			bwPipe.Write(audio_sample != null);
+			bwPipe.Flush();
 		}
 		public void snes_set_path_request(snes_path_request_t pathRequest) { this.pathRequest = pathRequest; }
 		public void snes_set_scanlineStart(snes_scanlineStart_t scanlineStart)
@@ -563,12 +973,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			this.scanlineStart = scanlineStart;
 			WritePipeMessage(eMessage.eMessage_snes_enable_scanline);
 			bwPipe.Write(scanlineStart != null);
+			bwPipe.Flush();
 		}
 		public void snes_set_trace_callback(snes_trace_t callback)
 		{
 			this.traceCallback = callback;
 			WritePipeMessage(eMessage.eMessage_snes_enable_trace);
 			bwPipe.Write(callback != null);
+			bwPipe.Flush();
 		}
 
 		public delegate void snes_video_refresh_t(int* data, int width, int height);

@@ -333,6 +333,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			api.MessageCounter = 0;
 
+			api.BeginBufferIO();
+
 			// for deterministic emulation, save the state we're going to use before frame advance
 			// don't do this during nocallbacks though, since it's already been done
 			if (!nocallbacks && DeterministicEmulation)
@@ -394,6 +396,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			//diagnostics for IPC traffic
 			//Console.WriteLine(api.MessageCounter);
+
+			api.EndBufferIO();
 		}
 
 		public DisplayType DisplayType
