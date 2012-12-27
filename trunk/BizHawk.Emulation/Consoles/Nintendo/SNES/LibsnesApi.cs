@@ -1,7 +1,7 @@
 ﻿//controls whether the new shared memory ring buffer communication system is used
 //on the whole it seems to boost performance slightly for me, at the cost of exacerbating spikes
 //not sure if we should keep it
-//#define USE_BUFIO
+#define USE_BUFIO
 
 using System;
 using System.Linq;
