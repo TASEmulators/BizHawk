@@ -8,8 +8,15 @@ namespace BizHawk.Emulation.Consoles.GB
 {
 	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
+		bool disposed = false;
+
 		Gameboy L;
 		Gameboy R;
+		// counter to ensure we do 35112 samples per frame
+		int overflowL = 0;
+		int overflowR = 0;
+
+		const int SampPerFrame = 35112;
 
 		Consoles.Nintendo.SNES.LibsnesCore.SnesSaveController LCont = new Nintendo.SNES.LibsnesCore.SnesSaveController(Gameboy.GbController);
 		Consoles.Nintendo.SNES.LibsnesCore.SnesSaveController RCont = new Nintendo.SNES.LibsnesCore.SnesSaveController(Gameboy.GbController);
@@ -38,6 +45,11 @@ namespace BizHawk.Emulation.Consoles.GB
 			Frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
+
+			blip_left = new Sound.Utilities.BlipBuffer(1024);
+			blip_right = new Sound.Utilities.BlipBuffer(1024);
+			blip_left.SetRates(2097152 * 2, 44100);
+			blip_right.SetRates(2097152 * 2, 44100);
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }
@@ -83,19 +95,22 @@ namespace BizHawk.Emulation.Consoles.GB
 			{
 				fixed (int* leftvbuff = &VideoBuffer[0])
 				{
+					// use pitch to have both cores write to the same video buffer, interleaved
 					int* rightvbuff = leftvbuff + 160;
 					const int pitch = 160 * 2;
 
-					fixed (short* leftsbuff = L.soundbuff, rightsbuff = R.soundbuff)
+					fixed (short* leftsbuff = LeftBuffer, rightsbuff = RightBuffer)
 					{
 
 						const int step = 32; // could be 1024 for GB
 
-						int nL = 0;
-						int nR = 0;
+						int nL = overflowL;
+						int nR = overflowR;
 
-						for (int target = step; target <= 35112; target += step)
+						// slowly step our way through the frame, while continually checking and resolving link cable status
+						for (int target = 0; target < SampPerFrame;)
 						{
+							target += step;
 
 							if (nL < target)
 							{
@@ -129,18 +144,21 @@ namespace BizHawk.Emulation.Consoles.GB
 							}
 
 						}
+						overflowL = nL - SampPerFrame;
+						overflowR = nR - SampPerFrame;
+						if (overflowL < 0 || overflowR < 0)
+							throw new Exception("Sound problem?");
 
 						if (rendersound)
 						{
-							L.soundbuffcontains = nL;
-							R.soundbuffcontains = nR;
+							PrepSound();
 						}
-						else
-						{
-							L.soundbuffcontains = 0;
-							R.soundbuffcontains = 0;
-						}
-
+						// copy extra samples back to beginning
+						for (int i = 0; i < overflowL * 2; i++)
+							LeftBuffer[i] = LeftBuffer[i + SampPerFrame * 2];
+						for (int i = 0; i < overflowR * 2; i++)
+							RightBuffer[i] = RightBuffer[i + SampPerFrame * 2];
+						
 					}
 
 				}
@@ -234,6 +252,10 @@ namespace BizHawk.Emulation.Consoles.GB
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
+			writer.Write(overflowL);
+			writer.Write(overflowR);
+			writer.Write(LatchL);
+			writer.Write(LatchR);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -244,6 +266,10 @@ namespace BizHawk.Emulation.Consoles.GB
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
+			overflowL = reader.ReadInt32();
+			overflowR = reader.ReadInt32();
+			LatchL = reader.ReadInt32();
+			LatchR = reader.ReadInt32();
 		}
 
 		public byte[] SaveStateBinary()
@@ -271,15 +297,18 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public void Dispose()
 		{
-			if (L != null)
+			if (!disposed)
 			{
 				L.Dispose();
 				L = null;
-			}
-			if (R != null)
-			{
 				R.Dispose();
 				R = null;
+				blip_left.Dispose();
+				blip_left = null;
+				blip_right.Dispose();
+				blip_right = null;
+
+				disposed = true;
 			}
 		}
 
@@ -290,16 +319,66 @@ namespace BizHawk.Emulation.Consoles.GB
 		public int BufferHeight { get { return 144; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
+		// we tried using the left and right buffers and then mixing them together... it was kind of a mess of code, and slow
+
+		Sound.Utilities.BlipBuffer blip_left;
+		Sound.Utilities.BlipBuffer blip_right;
+
+
+		short[] LeftBuffer = new short[(35112 + 2064) * 2];
+		short[] RightBuffer = new short[(35112 + 2064) * 2];
+
+		short[] SampleBuffer = new short[1536];
+		int SampleBufferContains = 0;
+
+		int LatchL;
+		int LatchR;
+
+		void PrepSound()
+		{
+			unsafe
+			{
+				fixed (short* sl = LeftBuffer, sr = RightBuffer)
+				{
+					for (uint i = 0; i < SampPerFrame * 2; i += 2)
+					{
+						// gameboy audio output is mono, so ignore one sample
+						int s = sl[i];
+						if (s != LatchL)
+						{
+							blip_left.AddDelta(i, s - LatchL);
+							LatchL = s;
+						}
+						s = sr[i];
+						if (s != LatchR)
+						{
+							blip_right.AddDelta(i, s - LatchR);
+							LatchR = s;
+						}
+					}
+
+				}
+			}
+			blip_left.EndFrame(SampPerFrame * 2);
+			blip_right.EndFrame(SampPerFrame * 2);
+			int count = blip_left.SamplesAvailable();
+			if (count != blip_right.SamplesAvailable())
+				throw new Exception("Sound problem?");
+
+			blip_left.ReadSamplesLeft(SampleBuffer, count);
+			blip_right.ReadSamplesRight(SampleBuffer, count);
+			SampleBufferContains = count;
+		}
+
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
-			// TODO
-			samples = new short[735 * 2];
-			nsamp = 735;
+			nsamp = SampleBufferContains;
+			samples = SampleBuffer;
 		}
 
 		public void DiscardSamples()
 		{
-			// TODO
+			SampleBufferContains = 0;
 		}
 	}
 }
