@@ -36,7 +36,10 @@ namespace BizHawk.MultiClient
 
 		public static Controller GBControls;
 		public static AutofireController AutofireGBControls;
-		
+
+		public static Controller DualGBControls;
+		public static AutofireController DualAutofireGBControls;
+
 		public static Controller GBAControls;
 		public static AutofireController AutofireGBAControls;
 

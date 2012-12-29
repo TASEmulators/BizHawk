@@ -23,6 +23,8 @@ namespace BizHawk.MultiClient
 			SNESController[2] = new SNESControllerTemplate(false);
 			SNESController[3] = new SNESControllerTemplate(false);
 			GBController[0] = new GBControllerTemplate(true);
+			DualGBController[0] = new DualGBControllerTemplate(true);
+			AutoDualGBController[0] = new DualGBControllerTemplate(true);
 			GBAutoController[0] = new GBControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
 
@@ -761,6 +763,10 @@ namespace BizHawk.MultiClient
 		public bool GB_AsSGB = false;
 		public Emulation.Consoles.GB.GBColors.ColorType CGBColors = Emulation.Consoles.GB.GBColors.ColorType.gambatte;
 
+		//Dual Gb
+		public DualGBControllerTemplate[] DualGBController = new DualGBControllerTemplate[1];
+		public DualGBControllerTemplate[] AutoDualGBController = new DualGBControllerTemplate[1];
+
 		//GBA settings
 		public GBAControllerTemplate[] GBAController = new GBAControllerTemplate[1];
 		public GBAControllerTemplate[] GBAAutoController = new GBAControllerTemplate[1];
@@ -1060,6 +1066,62 @@ namespace BizHawk.MultiClient
 			Start = "Return, X1 Start";
 			Select = "Space, X1 Back";
 			Power = "";
+		}
+	}
+
+	public class DualGBControllerTemplate : iControllerConfigObject
+	{
+		public string P1_Up = "";
+		public string P1_Down = "";
+		public string P1_Left = "";
+		public string P1_Right = "";
+		public string P1_A = "";
+		public string P1_B = "";
+		public string P1_Select = "";
+		public string P1_Start = "";
+		public string P1_Power = "";
+
+		public string P2_Up = "";
+		public string P2_Down = "";
+		public string P2_Left = "";
+		public string P2_Right = "";
+		public string P2_A = "";
+		public string P2_B = "";
+		public string P2_Select = "";
+		public string P2_Start = "";
+		public string P2_Power = "";
+
+		public bool Enabled = false;
+		public DualGBControllerTemplate() { }
+		public DualGBControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			P1_Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			P1_Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			P1_Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			P1_Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			P1_A = "X, X1 B";
+			P1_B = "Z, X1 A";
+			P1_Start = "Return, X1 Start";
+			P1_Select = "Space, X1 Back";
+			P1_Power = "";
+
+			P2_Up = "NumberPad8";
+			P2_Down = "NumberPad2";
+			P2_Left = "NumberPad4";
+			P2_Right = "NumberPad6";
+			P2_A = "C";
+			P2_B = "V";
+			P2_Select = "";
+			P2_Start = "";
 		}
 	}
 
