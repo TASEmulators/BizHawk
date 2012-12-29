@@ -113,10 +113,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			return (LibGambatte.gambatte_iscgb(GambatteState));
 		}
 
-		public void FrameAdvance(bool render, bool rendersound)
+		internal void FrameAdvancePrep()
 		{
-			uint nsamp = 35112; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
-
 			Controller.UpdateControls(Frame++);
 
 			// update our local copy of the controller data
@@ -155,26 +153,35 @@ namespace BizHawk.Emulation.Consoles.GB
 			else
 				tracecb = null;
 			LibGambatte.gambatte_settracecallback(GambatteState, tracecb);
+		}
 
-			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
-
-			//Console.WriteLine("===");
-
+		internal void FrameAdvancePost()
+		{
 			// upload any modified data to the memory domains
-
 			foreach (var r in MemoryRefreshers)
 				r.RefreshRead();
-
-			if (rendersound)
-				soundbuffcontains = (int)nsamp;
-			else
-				soundbuffcontains = 0;
 
 			if (IsLagFrame)
 				LagCount++;
 
 			if (endofframecallback != null)
 				endofframecallback(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
+		}
+
+		public void FrameAdvance(bool render, bool rendersound)
+		{
+			FrameAdvancePrep();
+
+			uint nsamp = 35112; // according to gambatte docs, this is the nominal length of a frame in 2mhz clocks
+
+			LibGambatte.gambatte_runfor(GambatteState, VideoBuffer, 160, soundbuff, ref nsamp);
+
+			if (rendersound)
+				soundbuffcontains = (int)nsamp;
+			else
+				soundbuffcontains = 0;
+
+			FrameAdvancePost();
 		}
 
 		/// <summary>
@@ -720,11 +727,11 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <summary>
 		/// sample pairs before resampling
 		/// </summary>
-		short[] soundbuff = new short[(35112 + 2064) * 2];
+		internal short[] soundbuff = new short[(35112 + 2064) * 2];
 		/// <summary>
 		/// how many sample pairs are in soundbuff
 		/// </summary>
-		int soundbuffcontains = 0;
+		internal int soundbuffcontains = 0;
 
 		Sound.Utilities.SpeexResampler resampler;
 		Sound.Utilities.DCFilter dcfilter;

@@ -2003,7 +2003,7 @@ namespace BizHawk.MultiClient
 								break;
 							case "GB":
 							case "GBC":
-								if (false) // DEBUG
+								if (true) // DEBUG
 								{
 									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
 									if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");

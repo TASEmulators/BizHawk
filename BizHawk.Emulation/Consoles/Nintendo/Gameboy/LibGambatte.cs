@@ -69,6 +69,8 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <returns>sample number at which the video frame was produced. -1 means no frame was produced.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_runfor(IntPtr core, int[] videobuf, int pitch, short[] soundbuf, ref uint samples);
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		unsafe public static extern int gambatte_runfor(IntPtr core, int* videobuf, int pitch, short* soundbuf, ref uint samples);
 
 		/// <summary>
 		/// Reset to initial state.
