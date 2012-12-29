@@ -2005,6 +2005,9 @@ namespace BizHawk.MultiClient
 							case "GBC":
 								if (true) // DEBUG
 								{
+									// this is horrible.  we MUST decide when we should be using Game.System and when we should be using Emulator.SystemID
+									game.System = "DGB"; // HACK
+
 									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
 									if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
 									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
