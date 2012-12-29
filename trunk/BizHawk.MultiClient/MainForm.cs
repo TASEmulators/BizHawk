@@ -948,6 +948,53 @@ namespace BizHawk.MultiClient
 			agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
 			Global.AutofireGBControls = agbControls;
 
+
+			var dualgbControls = new Controller(Gameboy.GbController);
+			dualgbControls.BindMulti("P1 Up", Global.Config.DualGBController[0].P1_Up);
+			dualgbControls.BindMulti("P1 Down", Global.Config.DualGBController[0].P1_Down);
+			dualgbControls.BindMulti("P1 Left", Global.Config.DualGBController[0].P1_Left);
+			dualgbControls.BindMulti("P1 Right", Global.Config.DualGBController[0].P1_Right);
+			dualgbControls.BindMulti("P1 A", Global.Config.DualGBController[0].P1_A);
+			dualgbControls.BindMulti("P1 B", Global.Config.DualGBController[0].P1_B);
+			dualgbControls.BindMulti("P1 Select", Global.Config.DualGBController[0].P1_Select);
+			dualgbControls.BindMulti("P1 Start", Global.Config.DualGBController[0].P1_Start);
+			dualgbControls.BindMulti("P1 Power", Global.Config.DualGBController[0].P1_Power);
+
+			dualgbControls.BindMulti("P2 Up", Global.Config.DualGBController[0].P2_Up);
+			dualgbControls.BindMulti("P2 Down", Global.Config.DualGBController[0].P2_Down);
+			dualgbControls.BindMulti("P2 Left", Global.Config.DualGBController[0].P2_Left);
+			dualgbControls.BindMulti("P2 Right", Global.Config.DualGBController[0].P2_Right);
+			dualgbControls.BindMulti("P2 A", Global.Config.DualGBController[0].P2_A);
+			dualgbControls.BindMulti("P2 B", Global.Config.DualGBController[0].P2_B);
+			dualgbControls.BindMulti("P2 Select", Global.Config.DualGBController[0].P2_Select);
+			dualgbControls.BindMulti("P2 Start", Global.Config.DualGBController[0].P2_Start);
+			dualgbControls.BindMulti("P2 Power", Global.Config.DualGBController[0].P2_Power);
+
+			Global.DualGBControls = dualgbControls;
+
+			var adualgbControls = new AutofireController(Gameboy.GbController);
+			adualgbControls.Autofire = true;
+			adualgbControls.BindMulti("P1 Up", Global.Config.AutoDualGBController[0].P1_Up);
+			adualgbControls.BindMulti("P1 Down", Global.Config.AutoDualGBController[0].P1_Down);
+			adualgbControls.BindMulti("P1 Left", Global.Config.AutoDualGBController[0].P1_Left);
+			adualgbControls.BindMulti("P1 Right", Global.Config.AutoDualGBController[0].P1_Right);
+			adualgbControls.BindMulti("P1 A", Global.Config.AutoDualGBController[0].P1_A);
+			adualgbControls.BindMulti("P1 B", Global.Config.AutoDualGBController[0].P1_B);
+			adualgbControls.BindMulti("P1 Select", Global.Config.AutoDualGBController[0].P1_Select);
+			adualgbControls.BindMulti("P1 Start", Global.Config.AutoDualGBController[0].P1_Start);
+
+			adualgbControls.BindMulti("P2 Up", Global.Config.AutoDualGBController[0].P2_Up);
+			adualgbControls.BindMulti("P2 Down", Global.Config.AutoDualGBController[0].P2_Down);
+			adualgbControls.BindMulti("P2 Left", Global.Config.AutoDualGBController[0].P2_Left);
+			adualgbControls.BindMulti("P2 Right", Global.Config.AutoDualGBController[0].P2_Right);
+			adualgbControls.BindMulti("P2 A", Global.Config.AutoDualGBController[0].P2_A);
+			adualgbControls.BindMulti("P2 B", Global.Config.AutoDualGBController[0].P2_B);
+			adualgbControls.BindMulti("P2 Select", Global.Config.AutoDualGBController[0].P2_Select);
+			adualgbControls.BindMulti("P2 Start", Global.Config.AutoDualGBController[0].P2_Start);
+
+			Global.DualAutofireGBControls = adualgbControls;
+
+			
 			var gbaControls = new Controller(GBA.GBAController);
 			gbaControls.BindMulti("Up", Global.Config.GBAController[0].Up);
 			gbaControls.BindMulti("Down", Global.Config.GBAController[0].Down);
@@ -1690,6 +1737,10 @@ namespace BizHawk.MultiClient
 				case "INTV":
 					Global.ActiveController = Global.IntellivisionControls;
 					Global.AutoFireController = Global.AutofireIntellivisionControls;
+					break;
+				case "DGB":
+					Global.ActiveController = Global.DualGBControls;
+					Global.AutoFireController = Global.DualAutofireGBControls;
 					break;
 				default:
 					Global.ActiveController = Global.NullControls;
