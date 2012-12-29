@@ -52,6 +52,9 @@ class Memory {
 	unsigned char serialCnt;
 	bool blanklcd;
 
+	bool LINKCABLE;
+	bool linkClockTrigger;
+
 	void updateInput();
 	void decEventCycles(MemEventId eventId, unsigned long dec);
 
@@ -176,6 +179,8 @@ public:
 	void setCgbPalette(unsigned *lut);
 	void setGameGenie(const std::string &codes) { cart.setGameGenie(codes); }
 	void setGameShark(const std::string &codes) { interrupter.setGameShark(codes); }
+
+	int LinkStatus(int which);
 };
 
 }

@@ -158,7 +158,8 @@ public:
 	unsigned char ExternalRead(unsigned short addr);
 	void ExternalWrite(unsigned short addr, unsigned char val);
 
-	
+	int LinkStatus(int which);
+
 private:
 	struct Priv;
 	Priv *const p_;

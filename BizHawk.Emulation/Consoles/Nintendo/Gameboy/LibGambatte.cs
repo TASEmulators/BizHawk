@@ -377,5 +377,14 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="val">byte to write</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_cpuwrite(IntPtr core, ushort addr, byte val);
+
+		/// <summary>
+		/// link cable stuff; never touch for normal operation
+		/// </summary>
+		/// <param name="core">opaque state pointe</param>
+		/// <param name="which">todo</param>
+		/// <returns>todo</returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_linkstatus(IntPtr core, int which);
 	}
 }

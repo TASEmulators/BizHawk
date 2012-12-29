@@ -1952,65 +1952,77 @@ namespace BizHawk.MultiClient
 								break;
 							case "GB":
 							case "GBC":
-								if (!Global.Config.GB_AsSGB)
+								if (false) // DEBUG
 								{
 									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
 									if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
 									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-									Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(nextComm, game, rom.FileData);
-									nextEmulator = gb;
-									if (gb.IsCGBMode())
-									{
-										gb.SetCGBColors(Global.Config.CGBColors);
-									}
-									else
-									{
-										try
-										{
-											using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
-											{
-												int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
-												if (colors != null)
-													gb.ChangeDMGColors(colors);
-											}
-										}
-										catch { }
-									}
+									GambatteLink gbl = new GambatteLink(nextComm, game, rom.FileData, game, rom.FileData);
+									nextEmulator = gbl;
+									// other stuff todo
 								}
 								else
 								{
-									// todo: get these bioses into a gamedb?? then we could demand different filenames for different regions?
-									string sgbromPath = Path.Combine(Global.Config.FirmwaresPath, "sgb.sfc"); //Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
-									byte[] sgbrom = null;
-									try
+									if (!Global.Config.GB_AsSGB)
 									{
-										if (File.Exists(sgbromPath))
+										if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
+										if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
+										if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
+										Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(nextComm, game, rom.FileData);
+										nextEmulator = gb;
+										if (gb.IsCGBMode())
 										{
-											sgbrom = File.ReadAllBytes(sgbromPath);
+											gb.SetCGBColors(Global.Config.CGBColors);
 										}
 										else
 										{
-											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + sgbromPath + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
-											Global.Config.GB_AsSGB = false;
-											game.System = "GB";
-											goto RETRY;
+											try
+											{
+												using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
+												{
+													int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
+													if (colors != null)
+														gb.ChangeDMGColors(colors);
+												}
+											}
+											catch { }
 										}
 									}
-									catch (Exception)
+									else
 									{
-										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
-										Global.Config.GB_AsSGB = false;
-										throw;
-									}
-									if (sgbrom != null)
-									{
-										game.System = "SNES";
-										game.AddOption("SGB");
-										nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
-										var snes = new LibsnesCore(nextComm);
-										nextEmulator = snes;
-										game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
-										snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
+										// todo: get these bioses into a gamedb?? then we could demand different filenames for different regions?
+										string sgbromPath = Path.Combine(Global.Config.FirmwaresPath, "sgb.sfc"); //Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
+										byte[] sgbrom = null;
+										try
+										{
+											if (File.Exists(sgbromPath))
+											{
+												sgbrom = File.ReadAllBytes(sgbromPath);
+											}
+											else
+											{
+												MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + sgbromPath + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
+												Global.Config.GB_AsSGB = false;
+												game.System = "GB";
+												goto RETRY;
+											}
+										}
+										catch (Exception)
+										{
+											// failed to load SGB bios.  to avoid catch-22, disable SGB mode
+											Global.Config.GB_AsSGB = false;
+											throw;
+										}
+										if (sgbrom != null)
+										{
+											game.System = "SNES";
+											game.AddOption("SGB");
+											nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
+											var snes = new LibsnesCore(nextComm);
+											nextEmulator = snes;
+											game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
+											snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
+										}
 									}
 								}
 								break;

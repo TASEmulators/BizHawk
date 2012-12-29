@@ -509,7 +509,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		/// <summary>
 		/// can freeze a copy of a controller input set and serialize\deserialize it
 		/// </summary>
-		class SnesSaveController : IController
+		public class SnesSaveController : IController
 		{
 			// this is all rather general, so perhaps should be moved out of LibsnesCore
 
@@ -579,6 +579,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				}
 			}
 
+			public void Clear()
+			{
+				buttons.Clear();
+			}
+
+			public void Set(string button)
+			{
+				buttons[button] = 1.0f;
+			}
+			
 			public bool this[string button]
 			{
 				get { return buttons[button] != 0; }
@@ -596,7 +606,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			public void UpdateControls(int frame)
 			{
-				throw new NotImplementedException();
+				//throw new NotImplementedException();
 			}
 		}
 
