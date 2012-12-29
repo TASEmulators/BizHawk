@@ -228,8 +228,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="port">0 or 1, corresponding to L and R physical ports on the snes</param>
+		/// <param name="device">LibsnesApi.SNES_DEVICE enum index specifying type of device</param>
+		/// <param name="index">meaningless for most controllers.  for multitap, 0-3 for which multitap controller</param>
+		/// <param name="id">button ID enum; in the case of a regular controller, this corresponds to shift register position</param>
+		/// <returns>for regular controllers, one bit D0 of button status.  for other controls, varying ranges depending on id</returns>
 		ushort snes_input_state(int port, int device, int index, int id)
 		{
+			// as this is implemented right now, only P1 and P2 normal controllers work
+
 			if (!nocallbacks && CoreComm.InputCallback != null) CoreComm.InputCallback();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
