@@ -62,6 +62,9 @@ extern "C"
 	__declspec(dllexport) unsigned char gambatte_cpuread(void *core, unsigned short addr);
 
 	__declspec(dllexport) void gambatte_cpuwrite(void *core, unsigned short addr, unsigned char val);
+
+	__declspec(dllexport) int gambatte_linkstatus(void *core, int which);
+
 }
 
 

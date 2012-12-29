@@ -492,6 +492,10 @@ namespace BizHawk.MultiClient
 			{
 				return GetGBAControllersAsMnemonic();
 			}
+			else if (ControlType == "Dual Gameboy Controller")
+			{
+				return "|.|"; // TODO
+			}
 
 			StringBuilder input = new StringBuilder("|");
 
@@ -906,6 +910,10 @@ namespace BizHawk.MultiClient
 			{
 				SetAtari7800AsMnemonic(mnemonic);
 				return;
+			}
+			else if (ControlType == "Dual Gameboy Controller")
+			{
+				return; // TODO
 			}
 
 			MnemonicChecker c = new MnemonicChecker(mnemonic);

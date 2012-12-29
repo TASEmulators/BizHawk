@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <summary>
 		/// internal gambatte state
 		/// </summary>
-		IntPtr GambatteState = IntPtr.Zero;
+		internal IntPtr GambatteState = IntPtr.Zero;
 
 		/// <summary>
 		/// keep a copy of the input callback delegate so it doesn't get GCed

@@ -234,3 +234,9 @@ __declspec(dllexport) void gambatte_cpuwrite(void *core, unsigned short addr, un
 	GB *g = (GB *) core;
 	g->ExternalWrite(addr, val);
 }
+
+__declspec(dllexport) int gambatte_linkstatus(void *core, int which)
+{
+	GB *g = (GB *) core;
+	return g->LinkStatus(which);
+}
