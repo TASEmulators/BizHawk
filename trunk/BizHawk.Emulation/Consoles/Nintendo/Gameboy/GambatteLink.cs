@@ -114,13 +114,14 @@ namespace BizHawk.Emulation.Consoles.GB
 						{
 							target += step;
 
-							if (nL < target)
+							// gambatte_runfor() aborts early when a frame is produced, but we don't want that, hence the while()
+							while (nL < target)
 							{
 								uint nsamp = (uint)(target - nL);
 								LibGambatte.gambatte_runfor(L.GambatteState, leftvbuff, pitch, leftsbuff + nL * 2, ref nsamp);
 								nL += (int)nsamp;
 							}
-							if (nR < target)
+							while (nR < target)
 							{
 								uint nsamp = (uint)(target - nR);
 								LibGambatte.gambatte_runfor(R.GambatteState, rightvbuff, pitch, rightsbuff + nR * 2, ref nsamp);
