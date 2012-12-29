@@ -1023,6 +1023,8 @@ namespace BizHawk.MultiClient
 			const double VBOY = (20000000 / (259 * 384 * 4));  //~50.273
 			const double LYNX = 59.8;
 			const double WSWAN = (3072000.0 / (159 * 256));
+			const double GB = 59.7275005696058;
+			const double A26 = 59.9227510135505;
 			double seconds = 0;
 			double frames = (double)frameCount;
 			if (frames < 1)
@@ -1042,6 +1044,7 @@ namespace BizHawk.MultiClient
 				case "FDS":
 				case "NES":
 				case "SNES":
+				case "SGB":
 					if (pal)
 						return frames / NES_PAL;
 					else
@@ -1049,6 +1052,14 @@ namespace BizHawk.MultiClient
 				case "PCE":
 				case "PCECD":
 					return frames / PCE;
+				case "GB":
+				case "GBC":
+				case "GBA":
+					return frames / GB;
+				case "A26":
+				case "A78":
+				case "Coleco":
+					return frames / A26;
 
 				//One Day!
 				case "VBOY":
