@@ -50,6 +50,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			blip_right = new Sound.Utilities.BlipBuffer(1024);
 			blip_left.SetRates(2097152 * 2, 44100);
 			blip_right.SetRates(2097152 * 2, 44100);
+
+			SetMemoryDomains();
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }
@@ -285,14 +287,19 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public CoreComm CoreComm { get; private set; }
 
-		public IList<MemoryDomain> MemoryDomains
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public IList<MemoryDomain> MemoryDomains { get; private set; }
+		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
 
-		public MemoryDomain MainMemory
+		void SetMemoryDomains()
 		{
-			get { throw new NotImplementedException(); }
+			var mm = new List<MemoryDomain>();
+
+			foreach (var md in L.MemoryDomains)
+				mm.Add(new MemoryDomain("L " + md.Name, md.Size, md.Endian, md.PeekByte, md.PokeByte));
+			foreach (var md in R.MemoryDomains)
+				mm.Add(new MemoryDomain("R " + md.Name, md.Size, md.Endian, md.PeekByte, md.PokeByte));
+
+			MemoryDomains = mm.AsReadOnly();
 		}
 
 		public void Dispose()
@@ -312,6 +319,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			}
 		}
 
+		#region VideoProvider
+
 		int[] VideoBuffer = new int[160 * 2 * 144];
 		public int[] GetVideoBuffer() { return VideoBuffer; }
 		public int VirtualWidth { get { return 320; } }
@@ -319,7 +328,11 @@ namespace BizHawk.Emulation.Consoles.GB
 		public int BufferHeight { get { return 144; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
-		// we tried using the left and right buffers and then mixing them together... it was kind of a mess of code, and slow
+		#endregion
+
+		#region SoundProvider
+
+		// i tried using the left and right buffers and then mixing them together... it was kind of a mess of code, and slow
 
 		Sound.Utilities.BlipBuffer blip_left;
 		Sound.Utilities.BlipBuffer blip_right;
@@ -380,5 +393,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		{
 			SampleBufferContains = 0;
 		}
+
+		#endregion
 	}
 }
