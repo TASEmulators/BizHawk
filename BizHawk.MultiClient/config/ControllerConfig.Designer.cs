@@ -79,6 +79,10 @@
 			this.GBController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage32 = new System.Windows.Forms.TabPage();
 			this.GBAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage65 = new System.Windows.Forms.TabPage();
+			this.GBDualPanel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage66 = new System.Windows.Forms.TabPage();
+			this.GBDualAutofirePanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageGBA = new System.Windows.Forms.TabPage();
 			this.pictureBox13 = new System.Windows.Forms.PictureBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -236,6 +240,8 @@
 			this.tabControl4.SuspendLayout();
 			this.tabPage31.SuspendLayout();
 			this.tabPage32.SuspendLayout();
+			this.tabPage65.SuspendLayout();
+			this.tabPage66.SuspendLayout();
 			this.tabPageGBA.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).BeginInit();
 			this.tabControl1.SuspendLayout();
@@ -754,7 +760,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.pictureBox2.Image = global::BizHawk.MultiClient.Properties.Resources.GBController;
-			this.pictureBox2.Location = new System.Drawing.Point(426, 35);
+			this.pictureBox2.Location = new System.Drawing.Point(590, 37);
 			this.pictureBox2.Name = "pictureBox2";
 			this.pictureBox2.Size = new System.Drawing.Size(174, 129);
 			this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -765,10 +771,12 @@
 			// 
 			this.tabControl4.Controls.Add(this.tabPage31);
 			this.tabControl4.Controls.Add(this.tabPage32);
+			this.tabControl4.Controls.Add(this.tabPage65);
+			this.tabControl4.Controls.Add(this.tabPage66);
 			this.tabControl4.Location = new System.Drawing.Point(17, 15);
 			this.tabControl4.Name = "tabControl4";
 			this.tabControl4.SelectedIndex = 0;
-			this.tabControl4.Size = new System.Drawing.Size(379, 398);
+			this.tabControl4.Size = new System.Drawing.Size(567, 398);
 			this.tabControl4.TabIndex = 0;
 			// 
 			// tabPage31
@@ -777,16 +785,19 @@
 			this.tabPage31.Location = new System.Drawing.Point(4, 22);
 			this.tabPage31.Name = "tabPage31";
 			this.tabPage31.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage31.Size = new System.Drawing.Size(371, 372);
+			this.tabPage31.Size = new System.Drawing.Size(559, 372);
 			this.tabPage31.TabIndex = 0;
 			this.tabPage31.Text = "Controller 1";
 			this.tabPage31.UseVisualStyleBackColor = true;
 			// 
 			// GBController1Panel
 			// 
+			this.GBController1Panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.GBController1Panel.Location = new System.Drawing.Point(6, 6);
 			this.GBController1Panel.Name = "GBController1Panel";
-			this.GBController1Panel.Size = new System.Drawing.Size(359, 332);
+			this.GBController1Panel.Size = new System.Drawing.Size(547, 332);
 			this.GBController1Panel.TabIndex = 1;
 			// 
 			// tabPage32
@@ -795,7 +806,7 @@
 			this.tabPage32.Location = new System.Drawing.Point(4, 22);
 			this.tabPage32.Name = "tabPage32";
 			this.tabPage32.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage32.Size = new System.Drawing.Size(371, 372);
+			this.tabPage32.Size = new System.Drawing.Size(559, 372);
 			this.tabPage32.TabIndex = 1;
 			this.tabPage32.Text = "Autofire 1";
 			this.tabPage32.UseVisualStyleBackColor = true;
@@ -806,6 +817,44 @@
 			this.GBAutofire1Panel.Name = "GBAutofire1Panel";
 			this.GBAutofire1Panel.Size = new System.Drawing.Size(359, 332);
 			this.GBAutofire1Panel.TabIndex = 2;
+			// 
+			// tabPage65
+			// 
+			this.tabPage65.Controls.Add(this.GBDualPanel);
+			this.tabPage65.Location = new System.Drawing.Point(4, 22);
+			this.tabPage65.Name = "tabPage65";
+			this.tabPage65.Size = new System.Drawing.Size(559, 372);
+			this.tabPage65.TabIndex = 2;
+			this.tabPage65.Text = "Dual";
+			this.tabPage65.UseVisualStyleBackColor = true;
+			// 
+			// GBDualPanel
+			// 
+			this.GBDualPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.GBDualPanel.Location = new System.Drawing.Point(6, 6);
+			this.GBDualPanel.Name = "GBDualPanel";
+			this.GBDualPanel.Size = new System.Drawing.Size(550, 236);
+			this.GBDualPanel.TabIndex = 3;
+			// 
+			// tabPage66
+			// 
+			this.tabPage66.Controls.Add(this.GBDualAutofirePanel);
+			this.tabPage66.Location = new System.Drawing.Point(4, 22);
+			this.tabPage66.Name = "tabPage66";
+			this.tabPage66.Size = new System.Drawing.Size(559, 372);
+			this.tabPage66.TabIndex = 3;
+			this.tabPage66.Text = "Autofire Dual";
+			this.tabPage66.UseVisualStyleBackColor = true;
+			// 
+			// GBDualAutofirePanel
+			// 
+			this.GBDualAutofirePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.GBDualAutofirePanel.Location = new System.Drawing.Point(6, 6);
+			this.GBDualAutofirePanel.Name = "GBDualAutofirePanel";
+			this.GBDualAutofirePanel.Size = new System.Drawing.Size(550, 332);
+			this.GBDualAutofirePanel.TabIndex = 4;
 			// 
 			// tabPageGBA
 			// 
@@ -2115,6 +2164,8 @@
 			this.tabControl4.ResumeLayout(false);
 			this.tabPage31.ResumeLayout(false);
 			this.tabPage32.ResumeLayout(false);
+			this.tabPage65.ResumeLayout(false);
+			this.tabPage66.ResumeLayout(false);
 			this.tabPageGBA.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).EndInit();
 			this.tabControl1.ResumeLayout(false);
@@ -2375,5 +2426,9 @@
 		private ControllerConfigPanel INTVController2Panel;
 		private System.Windows.Forms.TabPage tabPage64;
 		private ControllerConfigPanel INTVAutofire2Panel;
+		private System.Windows.Forms.TabPage tabPage65;
+		private ControllerConfigPanel GBDualPanel;
+		private System.Windows.Forms.TabPage tabPage66;
+		private ControllerConfigPanel GBDualAutofirePanel;
 	}
 }
