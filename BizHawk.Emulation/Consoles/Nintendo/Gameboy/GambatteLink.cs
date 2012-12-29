@@ -8,35 +8,6 @@ namespace BizHawk.Emulation.Consoles.GB
 {
 	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
-		class ControlSplitter : IController
-		{
-			public ControllerDefinition Type
-			{
-				get;
-				private set;
-			}
-
-			public bool this[string button]
-			{
-				get { throw new NotImplementedException(); }
-			}
-
-			public bool IsPressed(string button)
-			{
-				throw new NotImplementedException();
-			}
-
-			public float GetFloat(string name)
-			{
-				throw new NotImplementedException();
-			}
-
-			public void UpdateControls(int frame)
-			{
-			}
-		}
-
-
 		Gameboy L;
 		Gameboy R;
 
