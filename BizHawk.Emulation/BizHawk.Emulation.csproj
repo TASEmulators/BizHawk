@@ -161,7 +161,7 @@
     <Compile Include="Consoles\Coleco\MemoryMap.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
-    <Compile Include="Consoles\Coleco\ICart.cs" />
+    <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
