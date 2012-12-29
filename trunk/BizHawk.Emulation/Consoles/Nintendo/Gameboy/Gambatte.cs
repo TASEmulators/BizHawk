@@ -727,11 +727,11 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <summary>
 		/// sample pairs before resampling
 		/// </summary>
-		internal short[] soundbuff = new short[(35112 + 2064) * 2];
+		short[] soundbuff = new short[(35112 + 2064) * 2];
 		/// <summary>
 		/// how many sample pairs are in soundbuff
 		/// </summary>
-		internal int soundbuffcontains = 0;
+		int soundbuffcontains = 0;
 
 		Sound.Utilities.SpeexResampler resampler;
 		Sound.Utilities.DCFilter dcfilter;

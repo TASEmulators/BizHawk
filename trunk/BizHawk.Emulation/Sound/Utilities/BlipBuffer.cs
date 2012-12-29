@@ -69,6 +69,8 @@ namespace BizHawk.Emulation.Sound.Utilities
 			samples. Returns number of samples actually read.  */
 			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern int blip_read_samples(IntPtr context, short[] @out, int count, int stereo);
+			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			public static extern int blip_read_samples(IntPtr context, IntPtr @out, int count, int stereo);
 
 			/** Frees buffer. No effect if NULL is passed. */
 			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -136,5 +138,24 @@ namespace BizHawk.Emulation.Sound.Utilities
 				throw new ArgumentOutOfRangeException();
 			return BlipBufDll.blip_read_samples(context, output, count, stereo ? 1 : 0);
 		}
+
+		public int ReadSamplesLeft(short[] output, int count)
+		{
+			if (output.Length < count * 2)
+				throw new ArgumentOutOfRangeException();
+			return BlipBufDll.blip_read_samples(context, output, count, 1);
+		}
+
+		public int ReadSamplesRight(short[] output, int count)
+		{
+			if (output.Length < count * 2)
+				throw new ArgumentOutOfRangeException();
+			unsafe
+			{
+				fixed (short* s = &output[1])
+					return BlipBufDll.blip_read_samples(context, new IntPtr(s), count, 1);
+			}
+		}
+
 	}
 }
