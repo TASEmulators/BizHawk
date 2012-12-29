@@ -1023,7 +1023,7 @@ namespace BizHawk.MultiClient
 			const double VBOY = (20000000 / (259 * 384 * 4));  //~50.273
 			const double LYNX = 59.8;
 			const double WSWAN = (3072000.0 / (159 * 256));
-			const double GB = 59.7275005696058;
+			const double GB = 262144.0 / 4389.0;
 			const double A26 = 59.9227510135505;
 			double seconds = 0;
 			double frames = (double)frameCount;
