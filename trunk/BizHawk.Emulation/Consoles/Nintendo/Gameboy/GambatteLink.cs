@@ -20,6 +20,10 @@ namespace BizHawk.Emulation.Consoles.GB
 			L = new Gameboy(new CoreComm(), leftinfo, leftrom);
 			R = new Gameboy(new CoreComm(), rightinfo, rightrom);
 
+			// connect link cable
+			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
+			LibGambatte.gambatte_linkstatus(R.GambatteState, 259);
+
 			L.Controller = LCont;
 			R.Controller = RCont;
 
@@ -72,12 +76,81 @@ namespace BizHawk.Emulation.Consoles.GB
 			}
 
 			Frame++;
-			L.FrameAdvance(render, rendersound);
-			R.FrameAdvance(render, rendersound);
+			L.FrameAdvancePrep();
+			R.FrameAdvancePrep();
+
+			unsafe
+			{
+				fixed (int* leftvbuff = &VideoBuffer[0])
+				{
+					int* rightvbuff = leftvbuff + 160;
+					const int pitch = 160 * 2;
+
+					fixed (short* leftsbuff = L.soundbuff, rightsbuff = R.soundbuff)
+					{
+
+						const int step = 32; // could be 1024 for GB
+
+						int nL = 0;
+						int nR = 0;
+
+						for (int target = step; target <= 35112; target += step)
+						{
+
+							if (nL < target)
+							{
+								uint nsamp = (uint)(target - nL);
+								LibGambatte.gambatte_runfor(L.GambatteState, leftvbuff, pitch, leftsbuff + nL * 2, ref nsamp);
+								nL += (int)nsamp;
+							}
+							if (nR < target)
+							{
+								uint nsamp = (uint)(target - nR);
+								LibGambatte.gambatte_runfor(R.GambatteState, rightvbuff, pitch, rightsbuff + nR * 2, ref nsamp);
+								nR += (int)nsamp;
+							}
+							// poll link cable statuses
+
+							if (LibGambatte.gambatte_linkstatus(L.GambatteState, 256) != 0) // ClockTrigger
+							{
+								LibGambatte.gambatte_linkstatus(L.GambatteState, 257); // ack
+								int lo = LibGambatte.gambatte_linkstatus(L.GambatteState, 258); // GetOut
+								int ro = LibGambatte.gambatte_linkstatus(R.GambatteState, 258);
+								LibGambatte.gambatte_linkstatus(L.GambatteState, ro & 0xff); // ShiftIn
+								LibGambatte.gambatte_linkstatus(R.GambatteState, lo & 0xff); // ShiftIn
+							}
+							if (LibGambatte.gambatte_linkstatus(R.GambatteState, 256) != 0) // ClockTrigger
+							{
+								LibGambatte.gambatte_linkstatus(R.GambatteState, 257); // ack
+								int lo = LibGambatte.gambatte_linkstatus(L.GambatteState, 258); // GetOut
+								int ro = LibGambatte.gambatte_linkstatus(R.GambatteState, 258);
+								LibGambatte.gambatte_linkstatus(L.GambatteState, ro & 0xff); // ShiftIn
+								LibGambatte.gambatte_linkstatus(R.GambatteState, lo & 0xff); // ShiftIn
+							}
+
+						}
+
+						if (rendersound)
+						{
+							L.soundbuffcontains = nL;
+							R.soundbuffcontains = nR;
+						}
+						else
+						{
+							L.soundbuffcontains = 0;
+							R.soundbuffcontains = 0;
+						}
+
+					}
+
+				}
+			}
+
+			L.FrameAdvancePost();
+			R.FrameAdvancePost();
 			IsLagFrame = L.IsLagFrame && R.IsLagFrame;
 			if (IsLagFrame)
 				LagCount++;
-			BlitFrameBuffer();
 		}
 
 		public int Frame { get; private set; }
@@ -216,21 +289,6 @@ namespace BizHawk.Emulation.Consoles.GB
 		public int BufferWidth { get { return 320; } }
 		public int BufferHeight { get { return 144; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
-
-		void BlitFrameBuffer()
-		{
-			var lb = L.GetVideoBuffer();
-			var rb = R.GetVideoBuffer();
-			int destpos = 0;
-			for (int y = 0; y < 144; y++)
-			{
-				Buffer.BlockCopy(lb, 160 * 4 * y, VideoBuffer, destpos, 160 * 4);
-				destpos += 160 * 4;
-				Buffer.BlockCopy(rb, 160 * 4 * y, VideoBuffer, destpos, 160 * 4);
-				destpos += 160 * 4;
-			}
-		}
-
 
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
