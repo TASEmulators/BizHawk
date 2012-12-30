@@ -19,7 +19,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Makes a path relative to the %exe% dir
 		/// </summary>
-		public static string MakeProgramRelativePath(string path) { return MakeAbsolutePath("%exe%/" + path, ""); }
+		public static string MakeProgramRelativePath(string path) { return MakeAbsolutePath("%exe%/" + path); }
 
 		/// <summary>
 		/// The location of the default INI file
@@ -110,10 +110,10 @@ namespace BizHawk.MultiClient
 
 		public static string StandardFirmwareName(string name)
 		{
-			return Path.Combine(MakeAbsolutePath(Global.Config.FirmwaresPath, ""), name);
+			return Path.Combine(MakeAbsolutePath(Global.Config.FirmwaresPath), name);
 		}
 
-		public static string MakeAbsolutePath(string path, string system)
+		public static string MakeAbsolutePath(string path, string system = null)
 		{
 			//This function translates relative path and special identifiers in absolute paths
 
@@ -139,7 +139,7 @@ namespace BizHawk.MultiClient
 
 			if (path[0] == '.')
 			{
-				if (system.Length > 0)
+				if (!String.IsNullOrWhiteSpace(system))
 				{
 
 					path = path.Remove(0, 1);
@@ -219,7 +219,7 @@ namespace BizHawk.MultiClient
 
 		public static string GetLuaPath()
 		{
-			return MakeAbsolutePath(Global.Config.LuaPath, "");
+			return MakeAbsolutePath(Global.Config.LuaPath);
 		}
 
 		public static string GetRomsPath(string sysID)
@@ -282,7 +282,7 @@ namespace BizHawk.MultiClient
 					path = PathManager.MakeAbsolutePath(Global.Config.PathCOLROMs, "Coleco");
 					break;
 				default:
-					path = PathManager.MakeAbsolutePath(Global.Config.BaseROMPath, "");
+					path = PathManager.MakeAbsolutePath(Global.Config.BaseROMPath);
 					break;
 			}
 

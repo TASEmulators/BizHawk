@@ -470,7 +470,7 @@ namespace BizHawk.MultiClient
 		{
 			FolderBrowserDialog f = new FolderBrowserDialog();
 			f.Description = "Set the directory for " + Name;
-			f.SelectedPath = PathManager.MakeAbsolutePath(box.Text, "");
+			f.SelectedPath = PathManager.MakeAbsolutePath(box.Text);
 			DialogResult result = f.ShowDialog();
 			if (result == DialogResult.OK)
 				box.Text = f.SelectedPath;
@@ -1080,7 +1080,7 @@ namespace BizHawk.MultiClient
 		private void button2_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
 			ofd.Filter = "Binary Files (*.rom,*.bin,*.pce)|*.rom;*.bin;*.pce|All Files|*.*";
 			ofd.RestoreDirectory = false;
 			DialogResult result = ofd.ShowDialog();
@@ -1094,7 +1094,7 @@ namespace BizHawk.MultiClient
 		private void NESBrowseFDSBIOS_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
 			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
 			ofd.RestoreDirectory = false;
 			DialogResult result = ofd.ShowDialog();
@@ -1108,7 +1108,7 @@ namespace BizHawk.MultiClient
 		private void button3_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
 			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
 			ofd.RestoreDirectory = false;
 			DialogResult result = ofd.ShowDialog();
@@ -1122,7 +1122,7 @@ namespace BizHawk.MultiClient
 		private void button4_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
 			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
 			ofd.RestoreDirectory = false;
 			DialogResult result = ofd.ShowDialog();
@@ -1141,7 +1141,7 @@ namespace BizHawk.MultiClient
 		private void Atari7800BrowseNTSCBIOS_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
 			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
 			ofd.RestoreDirectory = false;
 			DialogResult result = ofd.ShowDialog();
@@ -1155,7 +1155,7 @@ namespace BizHawk.MultiClient
 		private void Atari7800BrowsePALBIOS_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
 			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
 			ofd.RestoreDirectory = false;
 			DialogResult result = ofd.ShowDialog();
@@ -1169,7 +1169,7 @@ namespace BizHawk.MultiClient
 		private void Atari7800BrowseHSCBIOS_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath, "");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
 			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
 			ofd.RestoreDirectory = false;
 			DialogResult result = ofd.ShowDialog();
