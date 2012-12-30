@@ -113,6 +113,8 @@ namespace BizHawk.Emulation.Consoles.GB
 						for (int target = 0; target < SampPerFrame;)
 						{
 							target += step;
+							if (target > SampPerFrame)
+								target = SampPerFrame; // don't run for slightly too long depending on step
 
 							// gambatte_runfor() aborts early when a frame is produced, but we don't want that, hence the while()
 							while (nL < target)
@@ -150,7 +152,7 @@ namespace BizHawk.Emulation.Consoles.GB
 						overflowL = nL - SampPerFrame;
 						overflowR = nR - SampPerFrame;
 						if (overflowL < 0 || overflowR < 0)
-							throw new Exception("Sound problem?");
+							throw new Exception("Timing problem?");
 
 						if (rendersound)
 						{
