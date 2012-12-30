@@ -108,6 +108,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public static string StandardFirmwareName(string name)
+		{
+			return Path.Combine(MakeAbsolutePath(Global.Config.FirmwaresPath, ""), name);
+		}
+
 		public static string MakeAbsolutePath(string path, string system)
 		{
 			//This function translates relative path and special identifiers in absolute paths
