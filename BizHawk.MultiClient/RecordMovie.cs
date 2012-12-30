@@ -38,7 +38,7 @@ namespace BizHawk.MultiClient
 			{
 				if (path[0] != '\\')
 					path = path.Insert(0, "\\");
-				path = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "") + path;
+				path = PathManager.MakeAbsolutePath(Global.Config.MoviesPath) + path;
 
 				if (path[path.Length - 4] != '.') //If no file extension, add movie extension
 					path += "." + Global.Config.MovieExtension;
@@ -165,7 +165,7 @@ namespace BizHawk.MultiClient
 		{
 			string filename = "";
 			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
 			sfd.DefaultExt = "." + Global.Config.MovieExtension;
 			sfd.FileName = RecordBox.Text;
 			sfd.OverwritePrompt = false;

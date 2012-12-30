@@ -592,7 +592,7 @@ namespace BizHawk.MultiClient
 			var ofd = new OpenFileDialog();
 			if (currentFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath);
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
