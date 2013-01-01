@@ -531,6 +531,14 @@ namespace BizHawk.MultiClient
 
 		#region Public Misc Methods
 
+		public MovieLog LogDump
+		{
+			get
+			{
+				return Log;
+			}
+		}
+
 		public bool FrameLagged(int frame)
 		{
 			return Log.FrameLagged(frame);
