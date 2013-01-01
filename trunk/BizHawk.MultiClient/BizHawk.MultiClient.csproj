@@ -442,6 +442,7 @@
     <Compile Include="tools\LuaWriterColorConfig.Designer.cs">
       <DependentUpon>LuaWriterColorConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\StateVisualizer.cs" />
     <Compile Include="tools\TraceLogger.cs">
       <SubType>Form</SubType>
     </Compile>
