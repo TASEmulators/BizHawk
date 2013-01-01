@@ -24,6 +24,22 @@ namespace BizHawk.MultiClient
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 #endif
 
+			// this check has to be done VERY early.  i stepped through a debug build with wrong .dll versions purposely used,
+			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
+			// zero 25-dec-2012 - only do for public builds. its annoying during development
+			if (!MainForm.INTERIM)
+			{
+				var thisversion = typeof(Program).Assembly.GetName().Version;
+				var utilversion = Assembly.LoadWithPartialName("Bizhawk.Util").GetName().Version;
+				var emulversion = Assembly.LoadWithPartialName("Bizhawk.Emulation").GetName().Version;
+
+				if (thisversion != utilversion || thisversion != emulversion)
+				{
+					MessageBox.Show("Conflicting revisions found!  Don't mix .dll versions!");
+					return;
+				}
+			}
+
 			SubMain(args);
 		}
 
@@ -32,21 +48,6 @@ namespace BizHawk.MultiClient
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-
-			// catch morons who mix versions
-			// zero 25-dec-2012 - only do for public builds. its annoying during development
-			if(!MainForm.INTERIM)
-			{
-				var thisversion = typeof(Program).Assembly.GetName().Version;
-				var utilversion = typeof(InputValidate).Assembly.GetName().Version;
-				var emulversion = typeof(Log).Assembly.GetName().Version;
-
-				if (thisversion != utilversion || thisversion != emulversion)
-				{
-					MessageBox.Show("Conflicting revisions found!  Don't mix .dll versions!");
-					return;
-				}
-			}
 
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config());
 
