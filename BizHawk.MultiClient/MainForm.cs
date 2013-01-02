@@ -99,6 +99,11 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		int autoDumpLength = 0;
 
+		static MainForm()
+		{
+			//if this isnt here, then our assemblyresolving hacks wont work due to the check for MainForm.INTERIM
+			//its.. weird. dont ask.
+		}
 
 		public MainForm(string[] args)
 		{
