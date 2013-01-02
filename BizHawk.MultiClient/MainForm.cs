@@ -2003,7 +2003,7 @@ namespace BizHawk.MultiClient
 								break;
 							case "GB":
 							case "GBC":
-								if (true) // DEBUG
+								if (false) // this code will load up a dual game boy
 								{
 									// this is horrible.  we MUST decide when we should be using Game.System and when we should be using Emulator.SystemID
 									game.System = "DGB"; // HACK
