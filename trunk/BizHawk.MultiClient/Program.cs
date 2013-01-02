@@ -13,9 +13,9 @@ namespace BizHawk.MultiClient
 {
 	static class Program
 	{
-		[STAThread]
-		unsafe static void Main(string[] args)
+		static Program()
 		{
+		http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 #if WINDOWS
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			SetDllDirectory(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll"));
@@ -24,6 +24,18 @@ namespace BizHawk.MultiClient
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 #endif
 
+		}
+
+		[STAThread]
+		unsafe static void Main(string[] args)
+		{
+			SubMain(args);
+		}
+
+		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+		static void SubMain(string[] args)
+		{
 			// this check has to be done VERY early.  i stepped through a debug build with wrong .dll versions purposely used,
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
 			// zero 25-dec-2012 - only do for public builds. its annoying during development
@@ -39,12 +51,6 @@ namespace BizHawk.MultiClient
 					return;
 				}
 			}
-
-			SubMain(args);
-		}
-
-		static void SubMain(string[] args)
-		{
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -114,13 +120,21 @@ namespace BizHawk.MultiClient
 
 		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			//load missing assemblies by trying to find them in the dll directory
-			string dllname = new AssemblyName(args.Name).Name + ".dll";
-			string directory = System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
-			string fname = Path.Combine(directory, dllname);
-			if (!File.Exists(fname)) return null;
-			//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
-			return Assembly.LoadFile(fname);
+			lock (AppDomain.CurrentDomain)
+			{
+				var asms = AppDomain.CurrentDomain.GetAssemblies();
+				foreach (var asm in asms)
+					if (asm.FullName == args.Name)
+						return asm;
+
+				//load missing assemblies by trying to find them in the dll directory
+				string dllname = new AssemblyName(args.Name).Name + ".dll";
+				string directory = System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
+				string fname = Path.Combine(directory, dllname);
+				if (!File.Exists(fname)) return null;
+				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
+				return Assembly.LoadFile(fname);
+			}
 		}
 
 #if WINDOWS
