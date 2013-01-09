@@ -1024,6 +1024,8 @@ namespace BizHawk.MultiClient
 		{
 			const double NES_PAL = 50.006977968268290849;
 			const double NES_NTSC = (double)60.098813897440515532;
+			const double SNES_NTSC = (double)21477272 / (4 * 341 * 262);
+			const double SNES_PAL = (double)21281370 / (4 * 341 * 312);
 			const double PCE = (7159090.90909090 / 455 / 263); //~59.826
 			const double SMS_NTSC = (3579545 / 262.0 / 228.0);
 			const double SMS_PAL = (3546893 / 313.0 / 228.0);
@@ -1051,12 +1053,16 @@ namespace BizHawk.MultiClient
 						return frames / SMS_NTSC;
 				case "FDS":
 				case "NES":
-				case "SNES":
-				case "SGB":
 					if (pal)
 						return frames / NES_PAL;
 					else
 						return frames / NES_NTSC;
+				case "SNES":
+				case "SGB":
+					if (pal)
+						return frames / SNES_PAL;
+					else
+						return frames / SNES_NTSC;
 				case "PCE":
 				case "PCECD":
 					return frames / PCE;
