@@ -204,8 +204,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 			else
 			{
-				CoreComm.VsyncNum = 50;
-				CoreComm.VsyncDen = 1;
+				//http://forums.nesdev.com/viewtopic.php?t=5367&start=19
+				CoreComm.VsyncNum = 21281370;
+				CoreComm.VsyncDen = 4 * 341 * 312;
 			}
 
 			CoreComm.CpuTraceAvailable = true;
