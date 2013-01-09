@@ -120,7 +120,11 @@ namespace BizHawk.Emulation.Sound
 			ser.BeginSection("Sunsoft5BAudio");
 			ser.Sync("RegNum", ref RegNum);
 			for (int i = 0; i < pulse.Length; i++)
+			{
+				ser.BeginSection("Pulse" + i);
 				pulse[i].SyncState(ser);
+				ser.EndSection();
+			}
 			ser.EndSection();
 		}
 
