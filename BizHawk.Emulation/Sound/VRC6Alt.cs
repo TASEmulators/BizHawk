@@ -5,67 +5,9 @@ using System.Text;
 
 namespace BizHawk.Emulation.Sound
 {
-	public class VRC6Alt// : IDisposable
+	public class VRC6Alt
 	{
 		// http://wiki.nesdev.com/w/index.php/VRC6_audio
-
-
-
-		/*
-		// the VRC6 now sends its blips back to the NES core, for simplicity
-		// (speed is the same)
-		
-		#region blip-buf interface
-
-		Sound.Utilities.BlipBuffer blip;
-
-		struct Delta
-		{
-			public uint time;
-			public int value;
-			public Delta(uint time, int value)
-			{
-				this.time = time;
-				this.value = value;
-			}
-		}
-		List<Delta> dlist = new List<Delta>();
-
-		uint sampleclock = 0;
-		const int blipsize = 4096;
-
-		short[] mixout = new short[blipsize];
-
-		public void ApplyCustomAudio(short[] samples)
-		{
-			
-			int nsamp = samples.Length / 2;
-			if (nsamp > blipsize) // oh well.
-				nsamp = blipsize;
-			uint targetclock = (uint)blip.ClocksNeeded(nsamp);
-			foreach (var d in dlist)
-				blip.AddDelta(d.time * targetclock / sampleclock, d.value);
-			dlist.Clear();
-			blip.EndFrame(targetclock);
-			sampleclock = 0;
-			blip.ReadSamples(mixout, nsamp, false);
-
-			for (int i = 0, j = 0; i < nsamp; i++, j += 2)
-			{
-				int s = mixout[i] +samples[j];
-				if (s > 32767)
-					samples[j] = 32767;
-				else if (s <= -32768)
-					samples[j] = -32768;
-				else
-					samples[j] = (short)s;
-				// nes audio is mono, so we can ignore the original value of samples[j+1]
-				samples[j + 1] = samples[j];
-			}
-			
-		}
-		#endregion
-		*/
 
 		Pulse pulse1, pulse2;
 		Saw saw;
@@ -80,37 +22,20 @@ namespace BizHawk.Emulation.Sound
 		public VRC6Alt(uint freq, Action<int> enqueuer)
 		{
 			this.enqueuer = enqueuer;
-			/*
-			if (freq > 0)
-			{
-				blip = new Utilities.BlipBuffer(blipsize);
-				blip.SetRates(freq, 44100);
-			}*/
 			pulse1 = new Pulse(PulseAddDiff);
 			pulse2 = new Pulse(PulseAddDiff);
 			saw = new Saw(SawAddDiff);
 		}
-		/*
-		public void Dispose()
-		{
-			if (blip != null)
-			{
-				blip.Dispose();
-				blip = null;
-			}
-		}*/
 
 		// the two pulse channels are about the same volume as 2a03 pulse channels.
 		// everything is flipped, though; but that's taken care of in the classes
 		void PulseAddDiff(int value)
 		{
-			//dlist.Add(new Delta(sampleclock, value * 360));
 			enqueuer(value * 360);
 		}
 		// saw ends up being not that loud because of differences in implementation
 		void SawAddDiff(int value)
 		{
-			//dlist.Add(new Delta(sampleclock, value * 360));
 			enqueuer(value * 360);
 		}
 
@@ -166,7 +91,6 @@ namespace BizHawk.Emulation.Sound
 				pulse2.Clock();
 				saw.Clock();
 			}
-			//sampleclock++;
 		}
 
 		class Saw
