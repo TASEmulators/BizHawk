@@ -1040,7 +1040,10 @@ namespace BizHawk.MultiClient
 			if (frames < 1)
 				return seconds;
 
-			bool pal = false; //TODO: pal flag
+			bool pal = false;
+			if (Header.HeaderParams.ContainsKey(MovieHeader.PAL))
+				if (Header.HeaderParams[MovieHeader.PAL] == "1")
+					pal = true;
 
 			switch (Header.GetHeaderLine(MovieHeader.PLATFORM))
 			{
