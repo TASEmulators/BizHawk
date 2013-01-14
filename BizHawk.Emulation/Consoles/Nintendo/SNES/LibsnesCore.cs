@@ -754,6 +754,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			int size = api.snes_get_memory_size(id);
 			int mask = size - 1;
 
+			//if this type of memory isnt available, dont make the memory domain (most commonly save ram)
+			if (size == 0)
+				return null;
+
 			byte* blockptr = api.snes_get_memory_data(id);
 
 			MemoryDomain md;
