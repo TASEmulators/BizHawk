@@ -2,8 +2,6 @@
 
 namespace SNES {
 
-Interface *interface = nullptr;
-
 Interface::Interface()
 	: wanttrace(false)
 {

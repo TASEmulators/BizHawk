@@ -202,7 +202,13 @@ namespace BizHawk.Emulation
 		{
 			cart = Cart.Create(rom, GameInfo.CartType);
 			ILogger logger = new ConsoleLogger();
-			HSC7800 hsc7800 = new HSC7800(hsbios, hsram);
+
+			HSC7800 hsc7800 = null;
+			if (hsbios != null)
+			{
+				hsc7800 = new HSC7800(hsbios, hsram);
+			}
+
 			Bios7800 bios7800 = new Bios7800(bios);
 			theMachine = MachineBase.Create
 				(GameInfo.MachineType,
@@ -260,25 +266,28 @@ namespace BizHawk.Emulation
 						delegate(int addr, byte val)
 						{
 						}));
-					_MemoryDomains.Add(new MemoryDomain(
-						"HSC ROM", hsbios.Length, Endian.Unknown,
-						delegate(int addr)
-						{
-							return hsbios[addr];
-						},
-						delegate(int addr, byte val)
-						{
-						}));
-					_MemoryDomains.Add(new MemoryDomain(
-						"HSC RAM", hsram.Length, Endian.Unknown,
-						delegate(int addr)
-						{
-							return hsram[addr];
-						},
-						delegate(int addr, byte val)
-						{
-							hsram[addr] = val;
-						}));
+					if (hsc7800 != null)
+					{
+						_MemoryDomains.Add(new MemoryDomain(
+							"HSC ROM", hsbios.Length, Endian.Unknown,
+							delegate(int addr)
+							{
+								return hsbios[addr];
+							},
+							delegate(int addr, byte val)
+							{
+							}));
+						_MemoryDomains.Add(new MemoryDomain(
+							"HSC RAM", hsram.Length, Endian.Unknown,
+							delegate(int addr)
+							{
+								return hsram[addr];
+							},
+							delegate(int addr, byte val)
+							{
+								hsram[addr] = val;
+							}));
+					}
 					_MemoryDomains.Add(new MemoryDomain(
 						"System Bus", 65536, Endian.Unknown,
 						delegate(int addr)

@@ -20,6 +20,7 @@ public:
   void serialize(serializer&);
   SMP();
   ~SMP();
+	void initialize();
 
   void disassemble_opcode(char *output, uint16 addr);
 

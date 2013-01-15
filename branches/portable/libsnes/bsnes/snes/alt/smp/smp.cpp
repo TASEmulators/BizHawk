@@ -138,11 +138,21 @@ void SMP::serialize(serializer &s) {
   s.integer(timer2.stage3_ticks);
 }
 
-SMP::SMP() {
-  apuram = new uint8[64 * 1024];
+SMP::SMP() :
+	apuram(nullptr)
+{
+  
 }
 
 SMP::~SMP() {
+	interface()->freeSharedMemory(apuram);
 }
+
+void SMP::initialize()
+{
+	apuram = (uint8*)interface()->allocSharedMemory("APURAM", 64 * 1024);
+}
+
+
 
 }

@@ -16,7 +16,10 @@ void PPU::step(unsigned clocks) {
 
 void PPU::synchronize_cpu() {
   if(CPU::Threaded == true) {
-    if(clock >= 0 && scheduler.sync != Scheduler::SynchronizeMode::All) co_switch(cpu.thread);
+    if(clock >= 0 && scheduler.sync != Scheduler::SynchronizeMode::All)
+      co_switch(cpu.thread);
+    else if(clock >= 0 && scheduler.sync == Scheduler::SynchronizeMode::All)
+      interface()->message("PPU had to advance nondeterministically!");
   } else {
     while(clock >= 0) cpu.enter();
   }
@@ -26,14 +29,32 @@ void PPU::Enter() { ppu.enter(); }
 
 void PPU::enter() {
   while(true) {
+    if(scheduler.sync == Scheduler::SynchronizeMode::CPU) {
+      synchronize_cpu(); // when in CPU sync mode, always switch back to CPU as soon as possible
+    }
     if(scheduler.sync == Scheduler::SynchronizeMode::All) {
       scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
 
+    switch(uindex)
+    {
+      case 0: enter1(); break;
+      case 1: enter2(); break;
+      case 2: enter3(); break;
+      case 3: enter4(); break;
+    }
+    uindex++;
+    uindex &= 3;
+  }
+}
+
+void PPU::enter1() {
     //H =    0 (initialize)
     scanline();
     add_clocks(10);
+}
 
+void PPU::enter2() {
     //H =   10 (cache mode7 registers + OAM address reset)
     cache.m7_hofs = regs.m7_hofs;
     cache.m7_vofs = regs.m7_vofs;
@@ -50,11 +71,15 @@ void PPU::enter() {
       }
     }
     add_clocks(502);
+}
 
+void PPU::enter3() {
     //H =  512 (render)
     render_scanline();
     add_clocks(640);
+}
 
+void PPU::enter4() {
     //H = 1152 (cache OBSEL)
     if(cache.oam_basesize != regs.oam_basesize) {
       cache.oam_basesize = regs.oam_basesize;
@@ -63,8 +88,6 @@ void PPU::enter() {
     cache.oam_nameselect = regs.oam_nameselect;
     cache.oam_tdaddr = regs.oam_tdaddr;
     add_clocks(lineclocks() - 1152);  //seek to start of next scanline
-
-  }
 }
 
 void PPU::add_clocks(unsigned clocks) {
@@ -84,7 +107,7 @@ void PPU::scanline() {
     regs.range_over = false;
   }
 
-	interface->scanlineStart(line);
+	interface()->scanlineStart(line);
 
   if(line == 1) {
     //mosaic reset
@@ -131,9 +154,9 @@ void PPU::power() {
   ppu1_version = config.ppu1.version;
   ppu2_version = config.ppu2.version;
 
-  for(auto &n : vram) n = 0x00;
-  for(auto &n : oam) n = 0x00;
-  for(auto &n : cgram) n = 0x00;
+	for(int i=0;i<128*1024;i++) vram[i] = 0;
+	for(int i=0;i<544;i++) oam[i] = 0;
+	for(int i=0;i<512;i++) cgram[i] = 0;
   flush_tiledata_cache();
 
   region = (system.region() == System::Region::NTSC ? 0 : 1);  //0 = NTSC, 1 = PAL
@@ -350,6 +373,8 @@ void PPU::reset() {
   PPUcounter::reset();
   memset(surface, 0, 512 * 512 * sizeof(uint32));
 
+  uindex = 0;
+
 	//zero 01-dec-2012 - gotta reset these sometime, somewhere
 	memset(oam_itemlist, 0, sizeof(oam_itemlist));
 	memset(oam_tilelist, 0, sizeof(oam_tilelist));
@@ -406,7 +431,20 @@ void PPU::set_frameskip(unsigned frameskip_) {
   framecounter = 0;
 }
 
-PPU::PPU() {
+PPU::PPU()
+	: vram(nullptr)
+	, oam(nullptr)
+	, cgram(nullptr)
+{
+  
+}
+
+void PPU::initialize()
+{
+	vram = (uint8*)interface()->allocSharedMemory("VRAM",128 * 1024);
+  oam = (uint8*)interface()->allocSharedMemory("OAM",544);
+  cgram = (uint8*)interface()->allocSharedMemory("CGRAM",512);
+
   surface = new uint32[512 * 512];
   output = surface + 16 * 512;
 
@@ -437,6 +475,9 @@ PPU::PPU() {
 PPU::~PPU() {
   delete[] surface;
   free_tiledata_cache();
+	interface()->freeSharedMemory(vram);
+	interface()->freeSharedMemory(oam);
+	interface()->freeSharedMemory(cgram);
 }
 
 }

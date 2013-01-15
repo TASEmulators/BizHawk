@@ -9,4 +9,4 @@ rem explicitly list the OK ones here as individual copies. until then....
 
 copy *.dll dll
 
-zip -X -9 -r BizHawk.zip BizHawk.MultiClient.exe DiscoHawk.exe dll gamedb NES\Palettes Lua Gameboy\Palettes Firmware/BIOS_Info.txt
+zip -X -9 -r BizHawk.zip BizHawk.MultiClient.exe DiscoHawk.exe dll gamedb NES\Palettes Lua Gameboy\Palettes Firmware/BIOS_Info.txt  -x *.pdb -x *.lib -x *.pgd -x *.exp

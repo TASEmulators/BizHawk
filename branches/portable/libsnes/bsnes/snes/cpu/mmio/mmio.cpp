@@ -43,7 +43,7 @@ void CPU::mmio_w4016(uint8 data) {
 uint8 CPU::mmio_r4016() {
   uint8 r = regs.mdr & 0xfc;
   r |= input.port1->data();
-  if (!status.auto_joypad_poll) interface->inputNotify(0x4016);
+  if (!status.auto_joypad_poll) interface()->inputNotify(0x4016);
   return r;
 }
 
@@ -54,7 +54,7 @@ uint8 CPU::mmio_r4016() {
 uint8 CPU::mmio_r4017() {
   uint8 r = (regs.mdr & 0xe0) | 0x1c;
   r |= input.port2->data();
-  if (!status.auto_joypad_poll) interface->inputNotify(0x4017);
+  if (!status.auto_joypad_poll) interface()->inputNotify(0x4017);
   return r;
 }
 
@@ -183,7 +183,7 @@ uint8 CPU::mmio_r4212() {
 
 //RDIO
 uint8 CPU::mmio_r4213() {
-  // interface->inputNotify(0x4213); // if there are lag counter issues with super scope, uncomment this
+  // interface()->inputNotify(0x4213); // if there are lag counter issues with super scope, uncomment this
   return status.pio;
 }
 
@@ -207,14 +207,14 @@ uint8 CPU::mmio_r4217() {
   return status.rdmpy >> 8;
 }
 
-uint8 CPU::mmio_r4218() { interface->inputNotify(0x4218); return status.joy1 >> 0; }  //JOY1L
-uint8 CPU::mmio_r4219() { interface->inputNotify(0x4219); return status.joy1 >> 8; }  //JOY1H
-uint8 CPU::mmio_r421a() { interface->inputNotify(0x421a); return status.joy2 >> 0; }  //JOY2L
-uint8 CPU::mmio_r421b() { interface->inputNotify(0x421b); return status.joy2 >> 8; }  //JOY2H
-uint8 CPU::mmio_r421c() { interface->inputNotify(0x421c); return status.joy3 >> 0; }  //JOY3L
-uint8 CPU::mmio_r421d() { interface->inputNotify(0x421d); return status.joy3 >> 8; }  //JOY3H
-uint8 CPU::mmio_r421e() { interface->inputNotify(0x421e); return status.joy4 >> 0; }  //JOY4L
-uint8 CPU::mmio_r421f() { interface->inputNotify(0x421f); return status.joy4 >> 8; }  //JOY4H
+uint8 CPU::mmio_r4218() { interface()->inputNotify(0x4218); return status.joy1 >> 0; }  //JOY1L
+uint8 CPU::mmio_r4219() { interface()->inputNotify(0x4219); return status.joy1 >> 8; }  //JOY1H
+uint8 CPU::mmio_r421a() { interface()->inputNotify(0x421a); return status.joy2 >> 0; }  //JOY2L
+uint8 CPU::mmio_r421b() { interface()->inputNotify(0x421b); return status.joy2 >> 8; }  //JOY2H
+uint8 CPU::mmio_r421c() { interface()->inputNotify(0x421c); return status.joy3 >> 0; }  //JOY3L
+uint8 CPU::mmio_r421d() { interface()->inputNotify(0x421d); return status.joy3 >> 8; }  //JOY3H
+uint8 CPU::mmio_r421e() { interface()->inputNotify(0x421e); return status.joy4 >> 0; }  //JOY4L
+uint8 CPU::mmio_r421f() { interface()->inputNotify(0x421f); return status.joy4 >> 8; }  //JOY4H
 
 //DMAPx
 uint8 CPU::mmio_r43x0(uint8 i) {

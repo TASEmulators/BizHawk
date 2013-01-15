@@ -522,6 +522,14 @@ namespace BizHawk.MultiClient
 
 		#region Public Misc Methods
 
+		public MovieLog LogDump
+		{
+			get
+			{
+				return Log;
+			}
+		}
+
 		public bool FrameLagged(int frame)
 		{
 			return Log.FrameLagged(frame);
@@ -1007,6 +1015,8 @@ namespace BizHawk.MultiClient
 		{
 			const double NES_PAL = 50.006977968268290849;
 			const double NES_NTSC = (double)60.098813897440515532;
+			const double SNES_NTSC = (double)21477272 / (4 * 341 * 262);
+			const double SNES_PAL = (double)21281370 / (4 * 341 * 312);
 			const double PCE = (7159090.90909090 / 455 / 263); //~59.826
 			const double SMS_NTSC = (3579545 / 262.0 / 228.0);
 			const double SMS_PAL = (3546893 / 313.0 / 228.0);
@@ -1014,12 +1024,17 @@ namespace BizHawk.MultiClient
 			const double VBOY = (20000000 / (259 * 384 * 4));  //~50.273
 			const double LYNX = 59.8;
 			const double WSWAN = (3072000.0 / (159 * 256));
+			const double GB = 262144.0 / 4389.0;
+			const double A26 = 59.9227510135505;
 			double seconds = 0;
 			double frames = (double)frameCount;
 			if (frames < 1)
 				return seconds;
 
-			bool pal = false; //TODO: pal flag
+			bool pal = false;
+			if (Header.HeaderParams.ContainsKey(MovieHeader.PAL))
+				if (Header.HeaderParams[MovieHeader.PAL] == "1")
+					pal = true;
 
 			switch (Header.GetHeaderLine(MovieHeader.PLATFORM))
 			{
@@ -1032,14 +1047,27 @@ namespace BizHawk.MultiClient
 						return frames / SMS_NTSC;
 				case "FDS":
 				case "NES":
-				case "SNES":
 					if (pal)
 						return frames / NES_PAL;
 					else
 						return frames / NES_NTSC;
+				case "SNES":
+				case "SGB":
+					if (pal)
+						return frames / SNES_PAL;
+					else
+						return frames / SNES_NTSC;
 				case "PCE":
 				case "PCECD":
 					return frames / PCE;
+				case "GB":
+				case "GBC":
+				case "GBA":
+					return frames / GB;
+				case "A26":
+				case "A78":
+				case "Coleco":
+					return frames / A26;
 
 				//One Day!
 				case "VBOY":

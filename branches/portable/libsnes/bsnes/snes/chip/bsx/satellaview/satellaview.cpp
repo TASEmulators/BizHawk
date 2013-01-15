@@ -38,7 +38,7 @@ uint8 BSXSatellaview::mmio_read(unsigned addr) {
 
       if(counter == 0) {
         time_t rawtime;
-        rawtime = SNES::interface->currentTime();
+        rawtime = SNES::interface()->currentTime();
         tm *t = localtime(&rawtime);
 
         regs.r2192_hour   = t->tm_hour;

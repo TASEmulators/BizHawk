@@ -122,6 +122,7 @@ public:
 	unsigned char ExternalRead(unsigned short addr) { return memory.peek(addr); }
 	void ExternalWrite(unsigned short addr, unsigned char val) { memory.write(addr, val, cycleCounter_); }
 
+	int LinkStatus(int which) { return memory.LinkStatus(which); }
 };
 
 }

@@ -79,7 +79,7 @@ namespace BizHawk.MultiClient
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
 			var ofd = HawkUIFactory.CreateOpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			ofd.Filter = filter;
 
@@ -284,7 +284,7 @@ namespace BizHawk.MultiClient
 		{
 			ClearList();
 
-			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
 			string extension = "*." + Global.Config.MovieExtension;

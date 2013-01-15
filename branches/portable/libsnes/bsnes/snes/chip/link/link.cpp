@@ -22,7 +22,7 @@ void Link::init() {
 
 void Link::load() {
   if(opened()) close();
-  string basename = interface->path(Cartridge::Slot::Base, "");
+  string basename = interface()->path(Cartridge::Slot::Base, "");
   string name = program != "" ? program : notdir(basename);
   string path = dir(basename);
   if(open(name, path)) {

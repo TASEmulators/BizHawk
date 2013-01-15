@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient
 			UpdateSoundDialog();
 
 			// to be removed
-			//if (Global.MainForm.INTERIM)
+			//if (MainForm.INTERIM)
 			//{
 			//	ThrottlecheckBox.Visible = true;
 			//}

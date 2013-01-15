@@ -260,4 +260,8 @@ void GB::setGameShark(const std::string &codes) {
 	p_->cpu.setGameShark(codes);
 }
 
+int GB::LinkStatus(int which) {
+	return p_->cpu.LinkStatus(which);
+}
+
 }

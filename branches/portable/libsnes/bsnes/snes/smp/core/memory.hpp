@@ -17,3 +17,9 @@ alwaysinline uint8 op_readdp(uint8 addr) {
 alwaysinline void op_writedp(uint8 addr, uint8 data) {
   return op_write((regs.p.p << 8) + addr, data);
 }
+
+alwaysinline void op_next() {
+  opcode = op_readpc();
+  uindex = -1;
+}
+

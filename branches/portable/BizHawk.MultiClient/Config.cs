@@ -23,6 +23,8 @@ namespace BizHawk.MultiClient
 			SNESController[2] = new SNESControllerTemplate(false);
 			SNESController[3] = new SNESControllerTemplate(false);
 			GBController[0] = new GBControllerTemplate(true);
+			DualGBController[0] = new DualGBControllerTemplate(true);
+			AutoDualGBController[0] = new DualGBControllerTemplate(true);
 			GBAutoController[0] = new GBControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
 
@@ -220,6 +222,9 @@ namespace BizHawk.MultiClient
 		public string FilenameGBABIOS = "gbabios.rom";
 		public string FilenameCOLBios = "ColecoBios.bin";
 		public string FilenameINTVGROM = "grom.bin";
+		public string FilenameA78NTSCBios = "7800NTSCBIOS.bin";
+		public string FilenameA78PALBios = "7800PALBIOS.bin";
+		public string FilenameA78HSCBios = "7800highscore.bin";
 		public string FilenameINTVEROM = "erom.bin";
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
@@ -298,9 +303,9 @@ namespace BizHawk.MultiClient
 		public int DispRecx = 0;
 		public int DispRecy = 56;
 		public int DispRecanchor = 0;
-		public int DispMultix = 36;
-		public int DispMultiy = 0;
-		public int DispMultianchor = 0;
+		public int DispMultix = 0;
+		public int DispMultiy = 14;
+		public int DispMultianchor = 1;
 		public bool DisplayGDI = false;
 		public bool SuppressGui = false;
 		public bool DisplayStatusBar = true;
@@ -743,6 +748,7 @@ namespace BizHawk.MultiClient
 		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
 		public SNESControllerTemplate[] SNESAutoController = new SNESControllerTemplate[4];
 		public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
+		public string SNESProfile = "Compatibility";
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
@@ -756,6 +762,10 @@ namespace BizHawk.MultiClient
 		public string GB_PaletteFile = "";
 		public bool GB_AsSGB = false;
 		public Emulation.Consoles.GB.GBColors.ColorType CGBColors = Emulation.Consoles.GB.GBColors.ColorType.gambatte;
+
+		//Dual Gb
+		public DualGBControllerTemplate[] DualGBController = new DualGBControllerTemplate[1];
+		public DualGBControllerTemplate[] AutoDualGBController = new DualGBControllerTemplate[1];
 
 		//GBA settings
 		public GBAControllerTemplate[] GBAController = new GBAControllerTemplate[1];
@@ -1056,6 +1066,62 @@ namespace BizHawk.MultiClient
 			Start = "Return, X1 Start";
 			Select = "Space, X1 Back";
 			Power = "";
+		}
+	}
+
+	public class DualGBControllerTemplate : iControllerConfigObject
+	{
+		public string P1_Up = "";
+		public string P1_Down = "";
+		public string P1_Left = "";
+		public string P1_Right = "";
+		public string P1_A = "";
+		public string P1_B = "";
+		public string P1_Select = "";
+		public string P1_Start = "";
+		public string P1_Power = "";
+
+		public string P2_Up = "";
+		public string P2_Down = "";
+		public string P2_Left = "";
+		public string P2_Right = "";
+		public string P2_A = "";
+		public string P2_B = "";
+		public string P2_Select = "";
+		public string P2_Start = "";
+		public string P2_Power = "";
+
+		public bool Enabled = false;
+		public DualGBControllerTemplate() { }
+		public DualGBControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			P1_Up = "UpArrow, X1 DpadUp, X1 LStickUp";
+			P1_Down = "DownArrow, X1 DpadDown, X1 LStickDown";
+			P1_Left = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			P1_Right = "RightArrow, X1 DpadRight, X1 LStickRight";
+			P1_A = "X, X1 B";
+			P1_B = "Z, X1 A";
+			P1_Start = "Return, X1 Start";
+			P1_Select = "Space, X1 Back";
+			P1_Power = "";
+
+			P2_Up = "NumberPad8";
+			P2_Down = "NumberPad2";
+			P2_Left = "NumberPad4";
+			P2_Right = "NumberPad6";
+			P2_A = "C";
+			P2_B = "V";
+			P2_Select = "";
+			P2_Start = "";
 		}
 	}
 

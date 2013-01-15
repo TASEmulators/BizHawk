@@ -1,8 +1,8 @@
 class PPU : public Processor, public PPUcounter {
 public:
-  uint8 vram[128 * 1024];
-  uint8 oam[544];
-  uint8 cgram[512];
+  uint8* vram; //[128 * 1024]
+  uint8* oam; //[544]
+  uint8* cgram; //[512]
 
   enum : bool { Threaded = true };
   alwaysinline void step(unsigned clocks);
@@ -11,6 +11,8 @@ public:
   #include "memory/memory.hpp"
   #include "mmio/mmio.hpp"
   #include "render/render.hpp"
+
+  int uindex;
 
   uint32 *surface;
   uint32 *output;
@@ -59,6 +61,10 @@ public:
   void render_scanline();
   void frame();
   void enter();
+  void enter1();
+  void enter2();
+  void enter3();
+  void enter4();
   void enable();
   void power();
   void reset();
@@ -70,6 +76,7 @@ public:
   void set_frameskip(unsigned frameskip);
 
   void serialize(serializer&);
+	void initialize();
   PPU();
   ~PPU();
 };

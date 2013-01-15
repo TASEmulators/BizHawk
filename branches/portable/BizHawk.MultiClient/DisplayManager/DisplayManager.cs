@@ -342,11 +342,21 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.IsFinished)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Frames.ToString() + " (Finished)";
+				StringBuilder s = new StringBuilder();
+				s.Append(Global.Emulator.Frame);
+				s.Append('/');
+				s.Append(Global.MovieSession.Movie.Frames);
+				s.Append(" (Finished)");
+				//return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Frames.ToString() + " (Finished)";
+				return s.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsPlaying)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Frames.ToString();
+				StringBuilder s = new StringBuilder();
+				s.Append(Global.Emulator.Frame);
+				s.Append('/');
+				s.Append(Global.MovieSession.Movie.Frames);
+				return s.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsRecording)
 			{
@@ -513,12 +523,12 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
+				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, MessageFont, MT);
+				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, MessageFont, MT);
 				g.DrawString(MT, MessageFont, Color.Black,
-				Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
-					Global.Config.DispFPSy + 1);
+				x + 1, y + 1);
 				g.DrawString(MT, MessageFont, FixedMessagesColor,
-					Global.Config.DispFPSx, //TODO: Multitrack position variables
-					Global.Config.DispFPSy);
+					x, y);
 			}
 			if (Global.Config.DisplayFPS && FPS != null)
 			{

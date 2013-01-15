@@ -171,11 +171,20 @@ void CPU::reset() {
   dma_reset();
 }
 
-CPU::CPU() : queue(512, { &CPU::queue_event, this }) {
+CPU::CPU() 
+	: queue(512, { &CPU::queue_event, this })
+	, wram(nullptr)
+{
   PPUcounter::scanline = { &CPU::scanline, this };
 }
 
 CPU::~CPU() {
+	interface()->freeSharedMemory(wram);
+}
+
+void CPU::initialize()
+{
+	wram = (uint8*)interface()->allocSharedMemory("WRAM", 128 * 1024);
 }
 
 }

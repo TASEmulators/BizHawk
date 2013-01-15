@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using System.Diagnostics;
 using BizHawk.Core;
 using BizHawk.DiscSystem;
 using BizHawk.Emulation.Consoles.Sega;
@@ -25,7 +26,7 @@ namespace BizHawk.MultiClient
 
 	public partial class MainForm : Form
 	{
-		public bool INTERIM = true;
+		public static bool INTERIM = true;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
 		public const string RELEASEDATE = "December 23, 2012";
 		private Control renderTarget;
@@ -102,6 +103,11 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		int autoDumpLength = 0;
 
+		static MainForm()
+		{
+			//if this isnt here, then our assemblyresolving hacks wont work due to the check for MainForm.INTERIM
+			//its.. weird. dont ask.
+		}
 
 		public MainForm(string[] args)
 		{
@@ -392,6 +398,40 @@ namespace BizHawk.MultiClient
 			base.Dispose(disposing);
 		}
 
+		//contains a mapping: profilename->exepath ; or null if the exe wasnt available
+		Dictionary<string, string> SNES_prepared = new Dictionary<string, string>();
+		string SNES_Prepare(string profile)
+		{
+			SNES_Check(profile);
+			if (SNES_prepared[profile] == null)
+			{
+				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + profile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
+			}
+			return SNES_prepared[profile];
+		}
+		void SNES_Check(string profile)
+		{
+			if (SNES_prepared.ContainsKey(profile)) return;
+
+			string bits = "32";
+
+			//disabled til it works
+			//if (Win32.Is64BitOperatingSystem)
+			//  bits = "64";
+
+			string exename = "libsneshawk-" + bits + "-" + profile.ToLower() + ".exe";
+
+			string thisDir = PathManager.GetExeDirectoryAbsolute();
+			string exePath = Path.Combine(thisDir, exename);
+			if (!File.Exists(exePath))
+				exePath = Path.Combine(Path.Combine(thisDir, "dll"), exename);
+
+			if (!File.Exists(exePath))
+				exePath = null;
+
+			SNES_prepared[profile] = exePath;
+		}
+
 		public void SyncCoreCommInputSignals(CoreComm target)
 		{
 			target.NES_BackdropColor = Global.Config.NESBackgroundColor;
@@ -405,11 +445,11 @@ namespace BizHawk.MultiClient
 			target.SMS_ShowBG = Global.Config.SMSDispBG;
 			target.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 
-			target.PSX_FirmwaresPath = Global.Config.FirmwaresPath; // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
+			target.PSX_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathPSXFirmwares, "PSX");
 
-			target.C64_FirmwaresPath = Global.Config.FirmwaresPath; // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
+			target.C64_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathC64Firmwares, "C64");
 
-			target.SNES_FirmwaresPath = Global.Config.FirmwaresPath; // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
+			target.SNES_FirmwaresPath = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath); // PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES");
 			target.SNES_ShowBG1_0 = Global.Config.SNES_ShowBG1_0;
 			target.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_1;
 			target.SNES_ShowBG2_0 = Global.Config.SNES_ShowBG2_0;
@@ -422,6 +462,8 @@ namespace BizHawk.MultiClient
 			target.SNES_ShowOBJ_1 = Global.Config.SNES_ShowOBJ2;
 			target.SNES_ShowOBJ_2 = Global.Config.SNES_ShowOBJ3;
 			target.SNES_ShowOBJ_3 = Global.Config.SNES_ShowOBJ4;
+
+			target.SNES_Profile = Global.Config.SNESProfile;
 
 			target.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 			target.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
@@ -969,6 +1011,53 @@ namespace BizHawk.MultiClient
 			agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
 			Global.AutofireGBControls = agbControls;
 
+
+			var dualgbControls = new Controller(Gameboy.GbController);
+			dualgbControls.BindMulti("P1 Up", Global.Config.DualGBController[0].P1_Up);
+			dualgbControls.BindMulti("P1 Down", Global.Config.DualGBController[0].P1_Down);
+			dualgbControls.BindMulti("P1 Left", Global.Config.DualGBController[0].P1_Left);
+			dualgbControls.BindMulti("P1 Right", Global.Config.DualGBController[0].P1_Right);
+			dualgbControls.BindMulti("P1 A", Global.Config.DualGBController[0].P1_A);
+			dualgbControls.BindMulti("P1 B", Global.Config.DualGBController[0].P1_B);
+			dualgbControls.BindMulti("P1 Select", Global.Config.DualGBController[0].P1_Select);
+			dualgbControls.BindMulti("P1 Start", Global.Config.DualGBController[0].P1_Start);
+			dualgbControls.BindMulti("P1 Power", Global.Config.DualGBController[0].P1_Power);
+
+			dualgbControls.BindMulti("P2 Up", Global.Config.DualGBController[0].P2_Up);
+			dualgbControls.BindMulti("P2 Down", Global.Config.DualGBController[0].P2_Down);
+			dualgbControls.BindMulti("P2 Left", Global.Config.DualGBController[0].P2_Left);
+			dualgbControls.BindMulti("P2 Right", Global.Config.DualGBController[0].P2_Right);
+			dualgbControls.BindMulti("P2 A", Global.Config.DualGBController[0].P2_A);
+			dualgbControls.BindMulti("P2 B", Global.Config.DualGBController[0].P2_B);
+			dualgbControls.BindMulti("P2 Select", Global.Config.DualGBController[0].P2_Select);
+			dualgbControls.BindMulti("P2 Start", Global.Config.DualGBController[0].P2_Start);
+			dualgbControls.BindMulti("P2 Power", Global.Config.DualGBController[0].P2_Power);
+
+			Global.DualGBControls = dualgbControls;
+
+			var adualgbControls = new AutofireController(Gameboy.GbController);
+			adualgbControls.Autofire = true;
+			adualgbControls.BindMulti("P1 Up", Global.Config.AutoDualGBController[0].P1_Up);
+			adualgbControls.BindMulti("P1 Down", Global.Config.AutoDualGBController[0].P1_Down);
+			adualgbControls.BindMulti("P1 Left", Global.Config.AutoDualGBController[0].P1_Left);
+			adualgbControls.BindMulti("P1 Right", Global.Config.AutoDualGBController[0].P1_Right);
+			adualgbControls.BindMulti("P1 A", Global.Config.AutoDualGBController[0].P1_A);
+			adualgbControls.BindMulti("P1 B", Global.Config.AutoDualGBController[0].P1_B);
+			adualgbControls.BindMulti("P1 Select", Global.Config.AutoDualGBController[0].P1_Select);
+			adualgbControls.BindMulti("P1 Start", Global.Config.AutoDualGBController[0].P1_Start);
+
+			adualgbControls.BindMulti("P2 Up", Global.Config.AutoDualGBController[0].P2_Up);
+			adualgbControls.BindMulti("P2 Down", Global.Config.AutoDualGBController[0].P2_Down);
+			adualgbControls.BindMulti("P2 Left", Global.Config.AutoDualGBController[0].P2_Left);
+			adualgbControls.BindMulti("P2 Right", Global.Config.AutoDualGBController[0].P2_Right);
+			adualgbControls.BindMulti("P2 A", Global.Config.AutoDualGBController[0].P2_A);
+			adualgbControls.BindMulti("P2 B", Global.Config.AutoDualGBController[0].P2_B);
+			adualgbControls.BindMulti("P2 Select", Global.Config.AutoDualGBController[0].P2_Select);
+			adualgbControls.BindMulti("P2 Start", Global.Config.AutoDualGBController[0].P2_Start);
+
+			Global.DualAutofireGBControls = adualgbControls;
+
+			
 			var gbaControls = new Controller(GBA.GBAController);
 			gbaControls.BindMulti("Up", Global.Config.GBAController[0].Up);
 			gbaControls.BindMulti("Down", Global.Config.GBAController[0].Down);
@@ -1717,6 +1806,10 @@ namespace BizHawk.MultiClient
 					Global.ActiveController = Global.IntellivisionControls;
 					Global.AutoFireController = Global.AutofireIntellivisionControls;
 					break;
+				case "DGB":
+					Global.ActiveController = Global.DualGBControls;
+					Global.AutoFireController = Global.DualAutofireGBControls;
+					break;
 				default:
 					Global.ActiveController = Global.NullControls;
 					break;
@@ -1866,7 +1959,7 @@ namespace BizHawk.MultiClient
 							case "PCE":
 							case "PCECD":
 								{
-									string biosPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenamePCEBios); //PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
+									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenamePCEBios); //PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
 									if (File.Exists(biosPath) == false)
 									{
 										RunLoopBlocked = true;
@@ -1916,6 +2009,7 @@ namespace BizHawk.MultiClient
 							case "SNES":
 								{
 									game.System = "SNES";
+									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
 									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
 									snes.Load(game, rom.FileData, null, deterministicemulation);
@@ -1956,7 +2050,7 @@ namespace BizHawk.MultiClient
 								break;
 							case "NES":
 								{
-									string biosPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameFDSBios);
+									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameFDSBios);
 									byte[] bios = null;
 									if (File.Exists(biosPath))
 									{
@@ -1989,71 +2083,87 @@ namespace BizHawk.MultiClient
 								break;
 							case "GB":
 							case "GBC":
-								if (!Global.Config.GB_AsSGB)
+								if (false) // this code will load up a dual game boy
 								{
+									// this is horrible.  we MUST decide when we should be using Game.System and when we should be using Emulator.SystemID
+									game.System = "DGB"; // HACK
+
 									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
 									if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
 									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-									Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(nextComm, game, rom.FileData);
-									nextEmulator = gb;
-									if (gb.IsCGBMode())
-									{
-										gb.SetCGBColors(Global.Config.CGBColors);
-									}
-									else
-									{
-										try
-										{
-											using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
-											{
-												int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
-												if (colors != null)
-													gb.ChangeDMGColors(colors);
-											}
-										}
-										catch { }
-									}
+									GambatteLink gbl = new GambatteLink(nextComm, game, rom.FileData, game, rom.FileData);
+									nextEmulator = gbl;
+									// other stuff todo
 								}
 								else
 								{
-									// todo: get these bioses into a gamedb?? then we could demand different filenames for different regions?
-									string sgbromPath = Path.Combine(Global.Config.FirmwaresPath, "sgb.sfc"); //Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
-									byte[] sgbrom = null;
-									try
+									if (!Global.Config.GB_AsSGB)
 									{
-										if (File.Exists(sgbromPath))
+										if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
+										if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
+										if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
+										Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(nextComm, game, rom.FileData);
+										nextEmulator = gb;
+										if (gb.IsCGBMode())
 										{
-											sgbrom = File.ReadAllBytes(sgbromPath);
+											gb.SetCGBColors(Global.Config.CGBColors);
 										}
 										else
 										{
-											RunLoopBlocked = true;
-											MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + sgbromPath + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
-											RunLoopBlocked = false;
-											Global.Config.GB_AsSGB = false;
-											game.System = "GB";
-											goto RETRY;
+											try
+											{
+												using (StreamReader f = new StreamReader(Global.Config.GB_PaletteFile))
+												{
+													int[] colors = GBtools.ColorChooserForm.LoadPalFile(f);
+													if (colors != null)
+														gb.ChangeDMGColors(colors);
+												}
+											}
+											catch { }
 										}
 									}
-									catch (Exception)
+									else
 									{
-										// failed to load SGB bios.  to avoid catch-22, disable SGB mode
-										Global.Config.GB_AsSGB = false;
-										throw;
-									}
-									if (sgbrom != null)
-									{
-										game.System = "SNES";
-										game.AddOption("SGB");
-										var snes = new LibsnesCore(nextComm);
-										nextEmulator = snes;
-										game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
-										snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
+										// todo: get these bioses into a gamedb?? then we could demand different filenames for different regions?
+										string sgbromPath = PathManager.StandardFirmwareName("sgb.sfc"); //Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSNESFirmwares, "SNES"), "sgb.sfc");
+										byte[] sgbrom = null;
+										try
+										{
+											if (File.Exists(sgbromPath))
+											{
+												sgbrom = File.ReadAllBytes(sgbromPath);
+											}
+											else
+											{
+                                                RunLoopBlocked = true;
+												MessageBox.Show("Couldn't open sgb.sfc from the configured SNES firmwares path, which is:\n\n" + sgbromPath + "\n\nPlease make sure it is available and try again.\n\nWe're going to disable SGB for now; please re-enable it when you've set up the file.");
+                                                RunLoopBlocked = false;
+												Global.Config.GB_AsSGB = false;
+												game.System = "GB";
+												goto RETRY;
+											}
+										}
+										catch (Exception)
+										{
+											// failed to load SGB bios.  to avoid catch-22, disable SGB mode
+											Global.Config.GB_AsSGB = false;
+											throw;
+										}
+										if (sgbrom != null)
+										{
+											game.System = "SNES";
+											game.AddOption("SGB");
+											nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
+											var snes = new LibsnesCore(nextComm);
+											nextEmulator = snes;
+											game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
+											snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
+										}
 									}
 								}
 								break;
 							case "Coleco":
-								string colbiosPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameCOLBios);
+								string colbiosPath = PathManager.StandardFirmwareName(Global.Config.FilenameCOLBios);
 								FileInfo colfile = new FileInfo(colbiosPath);
 								if (!colfile.Exists)
 								{
@@ -2071,11 +2181,11 @@ namespace BizHawk.MultiClient
 							case "INTV":
 								{
 									Intellivision intv = new Intellivision(nextComm, game, rom.RomData);
-									string eromPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameINTVEROM);
+									string eromPath = PathManager.StandardFirmwareName(Global.Config.FilenameINTVEROM);
 									if (!File.Exists(eromPath))
 										throw new InvalidOperationException("Specified EROM path does not exist:\n\n" + eromPath);
 									intv.LoadExecutiveRom(eromPath);
-									string gromPath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameINTVGROM);
+									string gromPath = PathManager.StandardFirmwareName(Global.Config.FilenameINTVGROM);
 									if (!File.Exists(gromPath))
 										throw new InvalidOperationException("Specified GROM path does not exist:\n\n" + gromPath);
 									intv.LoadGraphicsRom(gromPath);
@@ -2083,44 +2193,50 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "A78":
-								string ntsc_biospath = Path.Combine(Global.Config.FirmwaresPath, "7800NTSCBIOS.bin");
-								string pal_biospath = Path.Combine(Global.Config.FirmwaresPath, "7800PALBIOS.bin");
-								string hsbiospath = Path.Combine(Global.Config.FirmwaresPath, "7800highscore.bin");
+								string ntsc_biospath = PathManager.StandardFirmwareName(Global.Config.FilenameA78NTSCBios);
+								string pal_biospath = PathManager.StandardFirmwareName(Global.Config.FilenameA78PALBios);
+								string hsbiospath = PathManager.StandardFirmwareName(Global.Config.FilenameA78HSCBios);
 
 								FileInfo ntscfile = new FileInfo(ntsc_biospath);
 								FileInfo palfile = new FileInfo(pal_biospath);
 								FileInfo hsfile = new FileInfo(hsbiospath);
 
+								byte[] NTSC_BIOS7800 = null;
+								byte[] PAL_BIOS7800 = null;
+								byte[] HighScoreBIOS = null;
+                                RunLoopBlocked = true;
 								if (!ntscfile.Exists)
 								{
-									RunLoopBlocked = true;
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									RunLoopBlocked = false;
-									throw new Exception();
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + ntsc_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									//throw new Exception();
+								}
+								else
+								{
+									NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
 								}
 
 								if (!palfile.Exists)
 								{
-									RunLoopBlocked = true;
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									RunLoopBlocked = false;
-									throw new Exception();
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + pal_biospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									//throw new Exception();
+								}
+								else
+								{
+									PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
 								}
 
 								if (!hsfile.Exists)
 								{
-									RunLoopBlocked = true;
-									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
-									RunLoopBlocked = false;
-									throw new Exception();
+									MessageBox.Show("Unable to find the required Atari 7800 BIOS file - \n" + hsbiospath + "\nIf the selected game requires it, it may crash", "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									//throw new Exception();
 								}
-
-								byte[] NTSC_BIOS7800 = File.ReadAllBytes(ntsc_biospath);
-								byte[] PAL_BIOS7800 = File.ReadAllBytes(pal_biospath);
-								byte[] HighScoreBIOS = File.ReadAllBytes(hsbiospath);
+								else
+								{
+									HighScoreBIOS = File.ReadAllBytes(hsbiospath);
+								}
+                                RunLoopBlocked = false;
 
 								string gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-
 								var a78 = new BizHawk.Emulation.Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS, gamedbpath);
 								nextEmulator = a78;
 								break;
@@ -2132,7 +2248,7 @@ namespace BizHawk.MultiClient
 							case "GBA":
 								if (INTERIM)
 								{
-									string gbabiospath = Path.Combine(Global.Config.FirmwaresPath, Global.Config.FilenameGBABIOS);
+									string gbabiospath = PathManager.StandardFirmwareName(Global.Config.FilenameGBABIOS);
 									byte[] gbabios = null;
 
 									if (File.Exists(gbabiospath))
@@ -4145,12 +4261,12 @@ namespace BizHawk.MultiClient
 					if (!(Global.Emulator is NullEmulator))
 					{
 						sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath);
 					}
 					else
 					{
 						sfd.FileName = "NULL";
-						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+						sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath);
 					}
 					sfd.Filter = String.Format("{0} (*.{0})|*.{0}|All Files|*.*", aw.DesiredExtension());
 
@@ -4282,7 +4398,9 @@ namespace BizHawk.MultiClient
 				}
 				catch (Exception e)
 				{
+                    RunLoopBlocked = true;
 					MessageBox.Show("Video dumping died:\n\n" + e.ToString());
+                    RunLoopBlocked = false;
 					AbortAVI();
 				}
 
@@ -4392,21 +4510,23 @@ namespace BizHawk.MultiClient
 		void ProcessMovieImport(string fn)
 		{
 			var file = new FileInfo(fn);
-			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
 			string errorMsg = "";
 			string warningMsg = "";
 			Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
+            RunLoopBlocked = true;
 			if (errorMsg.Length > 0)
 				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			if (warningMsg.Length > 0)
 				Global.OSD.AddMessage(warningMsg);
 			else
-				Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies\\" +
+				Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as " + "Movies" + Path.DirectorySeparatorChar +
 										Path.GetFileName(fn) + "." + Global.Config.MovieExtension);
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
+            RunLoopBlocked = false;
 
-			string outPath = d + "\\" + Path.GetFileName(fn) + "." + Global.Config.MovieExtension;
+			string outPath = d + Path.DirectorySeparatorChar + Path.GetFileName(fn) + "." + Global.Config.MovieExtension;
 			m.WriteMovie(outPath);
 		}
 
@@ -5097,5 +5217,7 @@ namespace BizHawk.MultiClient
 					break;
 			}
 		}
+
+	
 	}
 }

@@ -203,6 +203,11 @@ namespace BizHawk.MultiClient
 				line = ParseHeader(line, MovieHeader.SGB);
 				AddHeaderLine(MovieHeader.SGB, line);
 			}
+			else if (line.Contains(MovieHeader.PAL))
+			{
+				line = ParseHeader(line, MovieHeader.PAL);
+				AddHeaderLine(MovieHeader.PAL, line);
+			}
 			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 			{
 				return false;

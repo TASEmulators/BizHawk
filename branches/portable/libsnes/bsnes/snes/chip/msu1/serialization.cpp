@@ -16,12 +16,12 @@ void MSU1::serialize(serializer &s) {
   s.integer(mmio.audio_play);
 
   if(datafile.open()) datafile.close();
-  if(datafile.open(interface->path(Cartridge::Slot::Base, "msu1.rom"), file::mode::read)) {
+  if(datafile.open(interface()->path(Cartridge::Slot::Base, "msu1.rom"), file::mode::read)) {
     datafile.seek(mmio.data_offset);
   }
 
   if(audiofile.open()) audiofile.close();
-  if(audiofile.open(interface->path(Cartridge::Slot::Base, { "track-", (unsigned)mmio.audio_track, ".pcm" }), file::mode::read)) {
+  if(audiofile.open(interface()->path(Cartridge::Slot::Base, { "track-", (unsigned)mmio.audio_track, ".pcm" }), file::mode::read)) {
     audiofile.seek(mmio.audio_offset);
   }
 }

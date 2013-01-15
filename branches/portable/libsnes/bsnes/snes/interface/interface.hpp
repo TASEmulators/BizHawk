@@ -19,6 +19,10 @@ struct Interface {
   
   bool wanttrace;
   virtual void cpuTrace(const char *msg);
+
+	//zero 23-dec-2012
+	virtual void* allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1) = 0;
+	virtual void freeSharedMemory(void* ptr) = 0;
 };
 
-extern Interface *interface;
+Interface *interface();

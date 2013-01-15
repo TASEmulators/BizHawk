@@ -73,7 +73,7 @@ void SPC7110::serialize(serializer &s) {
   s.integer(r4841);
   s.integer(r4842);
 
-  s.array(rtc);
+  s.array(rtc,20);
   s.integer(rtc_state);
   s.integer(rtc_mode);
   s.integer(rtc_index);

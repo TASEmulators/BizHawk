@@ -19,7 +19,8 @@ StaticRAM::~StaticRAM() { delete[] data_; }
 
 void MappedRAM::reset() {
   if(data_) {
-    delete[] data_;
+		if(name_) interface()->freeSharedMemory(data_);
+		else free(data_);
     data_ = 0;
   }
   size_ = 0;
@@ -35,7 +36,8 @@ void MappedRAM::map(uint8 *source, unsigned length) {
 void MappedRAM::copy(const uint8 *data, unsigned size) {
   if(!data_) {
     size_ = (size & ~255) + ((bool)(size & 255) << 8);
-    data_ = new uint8[size_]();
+		if(name_) data_ = (uint8*)interface()->allocSharedMemory(name_, size_);
+    else data_ = new uint8[size_]();
   }
   memcpy(data_, data, min(size_, size));
 }
@@ -47,7 +49,7 @@ unsigned MappedRAM::size() const { return size_; }
 uint8 MappedRAM::read(unsigned addr) { return data_[addr]; }
 void MappedRAM::write(unsigned addr, uint8 n) { if(!write_protect_) data_[addr] = n; }
 const uint8& MappedRAM::operator[](unsigned addr) const { return data_[addr]; }
-MappedRAM::MappedRAM() : data_(0), size_(0), write_protect_(false) {}
+MappedRAM::MappedRAM(const char* name) : data_(0), size_(0), write_protect_(false), name_(name) {}
 
 //Bus
 

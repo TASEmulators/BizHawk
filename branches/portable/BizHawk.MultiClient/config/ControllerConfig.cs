@@ -53,6 +53,20 @@ namespace BizHawk.MultiClient
 			GBController1Panel.LoadSettings(Global.Config.GBController[0]);
 			GBAutofire1Panel.LoadSettings(Global.Config.GBAutoController[0]);
 
+			GBDualPanel.Spacing = 24;
+			GBDualPanel.InputSize = 190;
+			GBDualPanel.LabelPadding = 5;
+			GBDualPanel.ColumnWidth = 250;
+			GBDualPanel.LabelWidth = 50;
+			GBDualPanel.LoadSettings(Global.Config.DualGBController[0]);
+
+			GBDualAutofirePanel.Spacing = 24;
+			GBDualAutofirePanel.InputSize = 190;
+			GBDualAutofirePanel.LabelPadding = 5;
+			GBDualAutofirePanel.ColumnWidth = 250;
+			GBDualAutofirePanel.LabelWidth = 50;
+			GBDualAutofirePanel.LoadSettings(Global.Config.AutoDualGBController[0]);
+
 			GBAController1Panel.LoadSettings(Global.Config.GBAController[0]);
 			GBAAutofire1Panel.LoadSettings(Global.Config.GBAAutoController[0]);
 
@@ -151,7 +165,7 @@ namespace BizHawk.MultiClient
 
 			SetTabByPlatform();
 
-			if (!Global.MainForm.INTERIM)
+			if (!MainForm.INTERIM)
 			{
 				PlatformTabControl.Controls.Remove(tabPageC64);
 				PlatformTabControl.Controls.Remove(tabPageGBA);

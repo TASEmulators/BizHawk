@@ -52,6 +52,39 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			IRQSignal = (irq_pending && irq_enabled);
 		}
 
+
+		static int RemapM117(int addr)
+		{
+			//addr &= 0x7007; // i don't know all of which bits are decoded, but this breaks stuff
+			switch (addr)
+			{
+				//prg
+				case 0x0000: return 0x0000;
+				case 0x0001: return 0x0001;
+				case 0x0002: return 0x1000;
+				//chr
+				case 0x2000: return 0x2000;
+				case 0x2001: return 0x2001;
+				case 0x2002: return 0x3000;
+				case 0x2003: return 0x3001;
+				case 0x2004: return 0x4000;
+				case 0x2005: return 0x4001;
+				case 0x2006: return 0x5000;
+				case 0x2007: return 0x5001;
+				//irq
+				// fake addressees to activate different irq handling logic
+				case 0x4001: return 0x10001;
+				case 0x4002: return 0x10002;
+				case 0x4003: return 0x10003;
+				case 0x6000: return 0x10004;
+				//mir
+				case 0x5000: return 0x6000;
+
+				//probably nothing at all
+				default: return 0xffff;
+			}
+		}
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
@@ -79,6 +112,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 					else
 						throw new Exception("Unknown PCB type for VRC7");
+					break;
+				case "MAPPER117":
+					// not sure quite what this is
+					// different address mapping, and somewhat different irq logic
+					Cart.vram_size = 0;
+					Cart.wram_size = 0;
+					remap = RemapM117;
+					fm = null;
 					break;
 				default:
 					return false;
@@ -220,6 +261,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x7001: //(ack)
 					irq_pending = false;
 					irq_enabled = irq_autoen;
+					SyncIRQ();
+					break;
+
+				// special irq logic for M117
+				// RemapM117() sends some addresses to these "virtual addresses" for irq handling
+				case 0x10001:
+					irq_reload = (byte)(237 - value); // what
+					break;
+				case 0x10002:
+					irq_pending = false;
+					SyncIRQ();
+					break;
+				case 0x10003:
+					irq_counter = irq_reload;
+					break;
+				case 0x10004:
+					irq_enabled = value.Bit(0);
+					irq_pending = false;
 					SyncIRQ();
 					break;
 			}

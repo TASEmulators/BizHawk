@@ -1,10 +1,11 @@
 struct SMP : public Processor, public SMPcore {
   static const uint8 iplrom[64];
-  uint8 apuram[64 * 1024];
+  uint8* apuram; //[64 * 1024];
 
   enum : bool { Threaded = true };
   alwaysinline void step(unsigned clocks);
   alwaysinline void synchronize_cpu();
+  alwaysinline void synchronize_cpu_force();
   alwaysinline void synchronize_dsp();
 
   uint8 port_read(uint2 port) const;
@@ -17,6 +18,7 @@ struct SMP : public Processor, public SMPcore {
   void serialize(serializer&);
   SMP();
   ~SMP();
+	void initialize();
 
 privileged:
   #include "memory/memory.hpp"

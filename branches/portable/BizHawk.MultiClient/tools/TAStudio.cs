@@ -185,7 +185,7 @@ namespace BizHawk.MultiClient
 
 		private void TAStudio_Load(object sender, EventArgs e)
 		{
-			if (!Global.MainForm.INTERIM)
+			if (!MainForm.INTERIM)
 			{
 				newProjectToolStripMenuItem.Enabled = false;
 				openProjectToolStripMenuItem.Enabled = false;
@@ -453,7 +453,7 @@ namespace BizHawk.MultiClient
 		private static string SaveRecordingAs()
 		{
 			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
 			sfd.DefaultExt = "." + Global.Config.MovieExtension;
 			sfd.FileName = Global.MovieSession.Movie.Filename;
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";

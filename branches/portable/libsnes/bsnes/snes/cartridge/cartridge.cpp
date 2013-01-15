@@ -37,7 +37,8 @@ void Cartridge::load(Mode cartridge_mode, const char *markup) {
 //print(markup, "\n\n");
 
   if(ram_size > 0) {
-    ram.map(allocate<uint8>(ram_size, 0xff), ram_size);
+		uint8* buf = (uint8*)interface()->allocSharedMemory("CARTRIDGE_RAM",ram_size,0xff);
+    ram.map(buf, ram_size);
     nvram.append({ "program.ram", ram.data(), ram.size() });
   }
 
@@ -80,7 +81,10 @@ void Cartridge::unload() {
   loaded = false;
 }
 
-Cartridge::Cartridge() {
+Cartridge::Cartridge()
+	: rom()
+	, ram("CARTRIDGE_RAM")
+{
   loaded = false;
   unload();
 }

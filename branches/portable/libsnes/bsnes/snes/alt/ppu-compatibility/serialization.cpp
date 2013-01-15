@@ -16,9 +16,9 @@ void PPU::serialize(serializer &s) {
   Processor::serialize(s);
   PPUcounter::serialize(s);
 
-  s.array(vram);
-  s.array(oam);
-  s.array(cgram);
+  s.array(vram,128 * 1024);
+  s.array(oam,544);
+  s.array(cgram,512);
 
   s.integer(ppu1_version);
   s.integer(ppu2_version);
@@ -156,6 +156,7 @@ void PPU::serialize(serializer &s) {
     s.integer(pixel_cache[n].pri_sub);
   }
 
+	//zero TODO - only on load
   //better to just take a small speed hit than store all of bg_tiledata[3][] ...
   flush_tiledata_cache();
 
@@ -202,6 +203,8 @@ void PPU::serialize(serializer &s) {
 
   s.array(oam_line_pal, 256);
   s.array(oam_line_pri, 256);
+
+  s.integer(uindex);
 }
 
 #endif

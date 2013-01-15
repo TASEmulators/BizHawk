@@ -4,8 +4,8 @@ uint2 Mouse::data() {
   if(counter >= 32) return 1;
 
   if(counter == 0) {
-    position_x = interface->inputPoll(port, Input::Device::Mouse, 0, (unsigned)Input::MouseID::X);  //-n = left, 0 = center, +n = right
-    position_y = interface->inputPoll(port, Input::Device::Mouse, 0, (unsigned)Input::MouseID::Y);  //-n = up,   0 = center, +n = down
+    position_x = interface()->inputPoll(port, Input::Device::Mouse, 0, (unsigned)Input::MouseID::X);  //-n = left, 0 = center, +n = right
+    position_y = interface()->inputPoll(port, Input::Device::Mouse, 0, (unsigned)Input::MouseID::Y);  //-n = up,   0 = center, +n = down
   }
 
   bool direction_x = position_x < 0;  //0 = right, 1 = left
@@ -27,8 +27,8 @@ uint2 Mouse::data() {
   case  6: return 0;
   case  7: return 0;
 
-  case  8: return interface->inputPoll(port, Input::Device::Mouse, 0, (unsigned)Input::MouseID::Right);
-  case  9: return interface->inputPoll(port, Input::Device::Mouse, 0, (unsigned)Input::MouseID::Left);
+  case  8: return interface()->inputPoll(port, Input::Device::Mouse, 0, (unsigned)Input::MouseID::Right);
+  case  9: return interface()->inputPoll(port, Input::Device::Mouse, 0, (unsigned)Input::MouseID::Left);
   case 10: return 0;  //speed (0 = slow, 1 = normal, 2 = fast, 3 = unused)
   case 11: return 0;  // ||
 
