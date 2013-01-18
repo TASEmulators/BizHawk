@@ -17,6 +17,7 @@ namespace BizHawk
 
 		public string SNES_ExePath;
 		public string SNES_Profile;
+		public bool SNES_UseRingBuffer;
 
 		public bool SNES_ShowBG1_0, SNES_ShowBG2_0, SNES_ShowBG3_0, SNES_ShowBG4_0;
 		public bool SNES_ShowBG1_1, SNES_ShowBG2_1, SNES_ShowBG3_1, SNES_ShowBG4_1;

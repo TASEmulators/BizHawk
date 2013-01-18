@@ -1018,12 +1018,6 @@
     <None Include="images\reboot.png" />
     <None Include="images\SNESControllerIcon.png" />
     <None Include="images\pencil.png" />
-    <Content Include="output\gamedb_sega_md.txt" />
-    <Content Include="output\gamedb.txt" />
-    <Content Include="output\gamedb_neshomebrew.txt" />
-    <Content Include="output\gamedb_pce_cd.txt" />
-    <Content Include="output\gamedb_pce_hucards.txt" />
-    <Content Include="output\gamedb_sega_8bit.txt" />
     <None Include="images\Refresh.bmp" />
     <None Include="images\TruncateFromRW.png" />
     <None Include="images\TruncateFromFile.png" />

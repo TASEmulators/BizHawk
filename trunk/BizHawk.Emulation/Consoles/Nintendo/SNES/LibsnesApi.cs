@@ -1,9 +1,4 @@
-﻿//controls whether the new shared memory ring buffer communication system is used
-//on the whole it seems to boost performance slightly for me, at the cost of exacerbating spikes
-//not sure if we should keep it
-#define USE_BUFIO
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Diagnostics;
 using System.Globalization;
@@ -550,22 +545,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		public void BeginBufferIO()
 		{
-#if USE_BUFIO
 			bufio = true;
 			WritePipeMessage(eMessage.eMessage_BeginBufferIO);
 			rstream.SetCurrStream(rbufstr);
 			wstream.SetCurrStream(wbufstr);
-#endif
 		}
 
 		public void EndBufferIO()
 		{
-#if USE_BUFIO
+			if(!bufio) return;
 			bufio = false;
 			WritePipeMessage(eMessage.eMessage_EndBufferIO);
 			rstream.SetCurrStream(pipe);
 			wstream.SetCurrStream(pipe);
-#endif
 		}
 
 		void WritePipeString(string str)

@@ -344,7 +344,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			api.MessageCounter = 0;
 
-			api.BeginBufferIO();
+			if(CoreComm.SNES_UseRingBuffer)
+				api.BeginBufferIO();
 
 			// for deterministic emulation, save the state we're going to use before frame advance
 			// don't do this during nocallbacks though, since it's already been done
