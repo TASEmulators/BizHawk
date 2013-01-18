@@ -543,6 +543,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			mmf.Dispose();
 			rbuf.Dispose();
 			wbuf.Dispose();
+			foreach (var smb in DeallocatedMemoryBlocks.Values)
+				smb.Dispose();
+			DeallocatedMemoryBlocks.Clear();
 		}
 
 		public void BeginBufferIO()
@@ -894,14 +897,35 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 						}
 					case eMessage.eMessage_snes_allocSharedMemory:
 						{
-							var smb = new SharedMemoryBlock();
-							smb.Name = ReadPipeString();
-							smb.Size = brPipe.ReadInt32();
-							smb.BlockName = InstanceName + smb.Name;
-							smb.Allocate();
-							if (SharedMemoryBlocks.ContainsKey(smb.Name))
+							var name = ReadPipeString();
+							var size = brPipe.ReadInt32();
+
+							if (SharedMemoryBlocks.ContainsKey(name))
 							{
-								throw new InvalidOperationException("Re-defined a shared memory block. Check bsnes init/shutdown code. Block name: " + smb.Name);
+								throw new InvalidOperationException("Re-defined a shared memory block. Check bsnes init/shutdown code. Block name: " + name);
+							}
+
+							//try reusing existing block; dispose it if it exists and if the size doesnt match
+							SharedMemoryBlock smb = null;
+							if (DeallocatedMemoryBlocks.ContainsKey(name))
+							{
+								smb = DeallocatedMemoryBlocks[name];
+								DeallocatedMemoryBlocks.Remove(name);
+								if (smb.Size != size)
+								{
+									smb.Dispose();
+									smb = null;
+								}
+							}
+
+							//allocate a new block if we have to
+							if(smb == null)
+							{
+								smb = new SharedMemoryBlock();
+								smb.Name = name;
+								smb.Size = size;
+								smb.BlockName = InstanceName + smb.Name;
+								smb.Allocate();
 							}
 
 							SharedMemoryBlocks[smb.Name] = smb;
@@ -912,7 +936,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 						{
 							string name = ReadPipeString();
 							var smb = SharedMemoryBlocks[name];
-							smb.Dispose();
+							DeallocatedMemoryBlocks[name] = smb;
 							SharedMemoryBlocks.Remove(name);
 							break;
 						}
@@ -946,6 +970,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		Dictionary<string, SharedMemoryBlock> SharedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
+		Dictionary<string, SharedMemoryBlock> DeallocatedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
 
 		snes_video_refresh_t video_refresh;
 		snes_input_poll_t input_poll;
