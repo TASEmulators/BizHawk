@@ -1814,12 +1814,15 @@ namespace BizHawk.MultiClient
 		private void miSnesOptions_Click(object sender, EventArgs e)
 		{
 			var so = new SNESOptions();
+			so.UseRingBuffer = Global.Config.SNESUseRingBuffer;
 			so.Profile = Global.Config.SNESProfile;
 			if (so.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				bool reboot = Global.Config.SNESProfile != so.Profile;
 				Global.Config.SNESProfile = so.Profile;
+				Global.Config.SNESUseRingBuffer = so.UseRingBuffer;
 				if (reboot) FlagNeedsReboot();
+				SyncCoreCommInputSignals();
 			}
 		}
 

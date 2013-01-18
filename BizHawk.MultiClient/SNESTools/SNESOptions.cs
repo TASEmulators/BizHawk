@@ -26,6 +26,12 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public bool UseRingBuffer
+		{
+			get { return cbRingbuf.Checked; }
+			set { cbRingbuf.Checked = value; }
+		}
+
 		private void btnOk_Click(object sender, EventArgs e)
 		{
 			DialogResult = System.Windows.Forms.DialogResult.OK;
