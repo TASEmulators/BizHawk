@@ -220,9 +220,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			BoardSystemHardReset();
 
-			//check fceux's PowerNES function for more information:
+			//check fceux's PowerNES and FCEU_MemoryRand function for more information:
 			//relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
-			for(int i=0;i<0x800;i++) if((i&1)!=0) ram[i] = 0xAA; else ram[i] = 0x55;
+			for(int i=0;i<0x800;i++) if((i&4)!=0) ram[i] = 0xFF; else ram[i] = 0x00;
 
 			SetupMemoryDomains();
 
