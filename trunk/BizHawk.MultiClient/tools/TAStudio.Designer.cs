@@ -98,10 +98,13 @@
 			this.TASView = new BizHawk.VirtualListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.VisualizerBox = new System.Windows.Forms.GroupBox();
+			this.button1 = new System.Windows.Forms.Button();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
+			this.VisualizerBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -112,7 +115,7 @@
             this.settingsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(460, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(586, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -486,9 +489,9 @@
 			this.groupBox1.Controls.Add(this.SelectionDisplay);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Location = new System.Drawing.Point(302, 55);
+			this.groupBox1.Location = new System.Drawing.Point(300, 55);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(146, 83);
+			this.groupBox1.Size = new System.Drawing.Size(274, 83);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Slicer";
@@ -643,9 +646,8 @@
 			// 
 			// TASView
 			// 
-			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
 			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
@@ -677,11 +679,35 @@
 			this.Log.Text = "Log";
 			this.Log.Width = 201;
 			// 
+			// VisualizerBox
+			// 
+			this.VisualizerBox.Controls.Add(this.button1);
+			this.VisualizerBox.Location = new System.Drawing.Point(300, 144);
+			this.VisualizerBox.Name = "VisualizerBox";
+			this.VisualizerBox.Size = new System.Drawing.Size(274, 166);
+			this.VisualizerBox.TabIndex = 6;
+			this.VisualizerBox.TabStop = false;
+			this.VisualizerBox.Text = "Visualize Savestates";
+			this.VisualizerBox.Visible = false;
+			this.VisualizerBox.Paint += new System.Windows.Forms.PaintEventHandler(this.VisualizerBox_Paint);
+			this.VisualizerBox.Enter += new System.EventHandler(this.VisualizerBox_Enter);
+			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(211, 137);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(57, 23);
+			this.button1.TabIndex = 0;
+			this.button1.Text = "Scan";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(460, 519);
+			this.ClientSize = new System.Drawing.Size(586, 519);
+			this.Controls.Add(this.VisualizerBox);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.groupBox1);
@@ -701,6 +727,7 @@
 			this.groupBox1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
+			this.VisualizerBox.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -773,5 +800,7 @@
 		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pasteInsertToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
+		private System.Windows.Forms.GroupBox VisualizerBox;
+		private System.Windows.Forms.Button button1;
     }
 }
