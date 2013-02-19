@@ -29,12 +29,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_mode", ref prg_mode);
+			ser.Sync("prg_mode_mapper", ref prg_mode_mapper);
 			ser.Sync("prg_page", ref prg_page);
 			ser.Sync("chr_block_or", ref chr_block_or);
 		}
 
-		bool prg_mode;
+		bool prg_mode_mapper;
 		int prg_page, chr_block_or;
 
 		public override void WriteWRAM(int addr, byte value)
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (addr & 1)
 			{
 				case 0:
-					prg_mode = value.Bit(7);
+					prg_mode_mapper = value.Bit(7);
 					prg_page = (value & 0xF) * 2;
 					break;
 				case 1:
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		protected override int Get_PRGBank_8K(int addr)
 		{
 			int bank_8k = mmc3.Get_PRGBank_8K(addr);
-			if (prg_mode == false) return bank_8k;
+			if (prg_mode_mapper == false) return bank_8k;
 			else if (addr < 0x4000)
 			{
 				return (addr >> 13) + prg_page;
