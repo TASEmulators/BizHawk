@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER185":
 				case "MAPPER003":
 					//we assume no bus conflicts for generic unknown cases.
 					//this was done originally to support Colorful Dragon (Unl) (Sachen) which bugs out if bus conflicts are emulated
@@ -36,7 +37,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//Licensed titles below are more likely to have used the same original discrete logic design and so suffer from the conflicts
 					bus_conflict = false;
 					break;
-
+				
 				case "NES-CNROM": //adventure island
 				case "UNIF_NES-CNROM": // some of these should be bus_conflict = false because UNIF is bad
 				case "HVC-CNROM":
@@ -110,6 +111,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("prg_mask", ref prg_mask);
 			ser.Sync("chr_mask", ref chr_mask);
 			ser.Sync("bus_conflict", ref bus_conflict);
+		}
+
+		public override byte ReadPRG(int addr)
+		{
+			if (prg_mask > 0)
+			{
+				return ROM[addr];
+			}
+			else
+			{
+				return ROM[addr & 0x3FFF]; //adelikat: Keeps Bird Week from crashing (only 16k PRG), but it doesn't work
+			}
+			
 		}
 
 	}
