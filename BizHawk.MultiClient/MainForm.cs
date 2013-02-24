@@ -2009,20 +2009,20 @@ namespace BizHawk.MultiClient
 								break;
 							case "GB":
 							case "GBC":
-								if (false) // this code will load up a dual game boy
-								{
-									// this is horrible.  we MUST decide when we should be using Game.System and when we should be using Emulator.SystemID
-									game.System = "DGB"; // HACK
+								//if (false) // this code will load up a dual game boy
+								//{
+								//    // this is horrible.  we MUST decide when we should be using Game.System and when we should be using Emulator.SystemID
+								//    game.System = "DGB"; // HACK
 
-									if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
-									if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
-									if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-									GambatteLink gbl = new GambatteLink(nextComm, game, rom.FileData, game, rom.FileData);
-									nextEmulator = gbl;
-									// other stuff todo
-								}
-								else
-								{
+								//    if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
+								//    if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
+								//    if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
+								//    GambatteLink gbl = new GambatteLink(nextComm, game, rom.FileData, game, rom.FileData);
+								//    nextEmulator = gbl;
+								//    // other stuff todo
+								//}
+								//else
+								//{
 									if (!Global.Config.GB_AsSGB)
 									{
 										if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
@@ -2084,7 +2084,7 @@ namespace BizHawk.MultiClient
 											snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
 										}
 									}
-								}
+								//}
 								break;
 							case "Coleco":
 								string colbiosPath = PathManager.StandardFirmwareName(Global.Config.FilenameCOLBios);

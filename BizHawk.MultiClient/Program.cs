@@ -9,13 +9,15 @@ using SlimDX.DirectSound;
 using Microsoft.VisualBasic.ApplicationServices;
 #endif
 
+#pragma warning disable 618
+
 namespace BizHawk.MultiClient
 {
 	static class Program
 	{
 		static Program()
 		{
-		http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
+			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 #if WINDOWS
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			SetDllDirectory(System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll"));
