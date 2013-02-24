@@ -6,6 +6,8 @@ using System.IO;
 using System.Collections.Generic;
 using BizHawk.Emulation.CPUs.M6502;
 
+#pragma warning disable 162
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	public partial class NES : IEmulator

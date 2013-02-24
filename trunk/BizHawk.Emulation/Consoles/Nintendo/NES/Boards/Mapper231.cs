@@ -41,7 +41,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		+---------------+---------------+
 		*/
 		public int prg_reg;
-		public bool low;
 		public int prg_bank_mask_16k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -83,17 +82,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override byte ReadPRG(int addr)
 		{
-			if (low)
-			{
-				int bank = prg_reg & 0x1E;
-				return ROM[(bank << 14) + addr];
-			}
-			else
-			{
-				int bank = prg_reg;
-				return ROM[(bank << 14) + addr - 0x4000];
-				
-			}
+			int bank = prg_reg;
+			return ROM[(bank << 14) + addr - 0x4000];
 		}
 	}
 }

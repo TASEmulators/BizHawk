@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		class RegistrationRecord
 		{
 			public object tag;
-			public int scanline;
+			public int scanline = 0;
 			public Action<int> callback;
 		}
 	}

@@ -33,6 +33,7 @@ namespace BizHawk.MultiClient
 		public string CurrentFile = "";
 
 		bool changes = false;
+		bool redo = false;
 		bool hasChanged = false;
 		bool ProcessingText;
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
@@ -932,6 +933,7 @@ namespace BizHawk.MultiClient
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LuaText.Undo();
+			redo = true;
 		}
 
 		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -950,6 +952,27 @@ namespace BizHawk.MultiClient
 			if (col.ShowDialog() == DialogResult.OK)
 			{
 				LuaText.BackColor = col.Color;
+			}
+		}
+
+		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (changes)
+			{
+				undoToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				undoToolStripMenuItem.Enabled = false;
+			}
+
+			if (redo)
+			{
+				redoToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				redoToolStripMenuItem.Enabled = false;
 			}
 		}
 	}
