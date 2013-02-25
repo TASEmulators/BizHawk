@@ -255,6 +255,7 @@
     </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="HawkFile.cs" />
+    <Compile Include="HistoryCollection.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" />

@@ -788,6 +788,6 @@ namespace BizHawk.MultiClient
 
 		SwappableDisplaySurfaceSet nativeDisplaySurfaceSet = new SwappableDisplaySurfaceSet();
 
-		Thread displayThread;
+		//Thread displayThread;
 	}
 }
