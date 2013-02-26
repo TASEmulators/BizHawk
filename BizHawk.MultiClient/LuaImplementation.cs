@@ -515,6 +515,8 @@ namespace BizHawk.MultiClient
 															"screenshot",
 															"screenshottoclipboard",
 															"setscreenshotosd",
+															"pause_av",
+															"unpause_av",
 		                                              	};
 
 		public static string[] FormsFunctions = new string[]
@@ -1202,6 +1204,16 @@ namespace BizHawk.MultiClient
 			}
 			else
 				Global.Emulator.CoreComm.InputCallback = null;
+		}
+
+		public void client_pause_av()
+		{
+			Global.MainForm.PauseAVI = true;
+		}
+
+		public void client_unpause_av()
+		{
+			Global.MainForm.PauseAVI = false;
 		}
 
 		//----------------------------------------------------

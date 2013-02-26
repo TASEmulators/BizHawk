@@ -35,6 +35,7 @@ namespace BizHawk.MultiClient
 		public string CurrentlyOpenRom;
 		SavestateManager StateSlots = new SavestateManager();
 
+		public bool PauseAVI = false;
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
 		public bool FastForward = false;
@@ -2967,7 +2968,10 @@ namespace BizHawk.MultiClient
 				MemoryPulse.Pulse();
 				//=======================================
 
-				AVIFrameAdvance();
+				if (!PauseAVI)
+				{
+					AVIFrameAdvance();
+				}
 	
 				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
 				{
@@ -2990,7 +2994,7 @@ namespace BizHawk.MultiClient
 				}
 				PressRewind = false;
 			}
-			if (true == UpdateFrame)
+			if (UpdateFrame)
 			{
 				if (ReturnToRecording)
 				{
