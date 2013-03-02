@@ -746,6 +746,12 @@ namespace BizHawk.MultiClient
 			}
 			
 			time += MakeDigits(minutes) + ":";
+
+			if (sec < 10) //Kludge
+			{
+				time += "0";
+			}
+
 			time += Math.Round((decimal)sec, 2).ToString();
 			
 			return time;
