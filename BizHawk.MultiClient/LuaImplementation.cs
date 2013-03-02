@@ -794,7 +794,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void gui_drawString(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
+		public void gui_drawString(object message, object X, object Y, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
 		{
 			gui_drawText(message, X, Y, color, fontsize, fontfamily, fontstyle);
 		}
