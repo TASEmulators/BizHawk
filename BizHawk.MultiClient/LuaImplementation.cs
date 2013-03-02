@@ -794,12 +794,12 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void gui_drawString(object message, object X, object Y, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
+		public void gui_drawString(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
 		{
 			gui_drawString(message, X, Y, color, fontsize, fontfamily, fontstyle);
 		}
 
-		public void gui_drawText(object message, object X, object Y, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
+		public void gui_drawText(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
 		{
 			using (var g = GetGraphics())
 			{
@@ -841,7 +841,6 @@ namespace BizHawk.MultiClient
 								break;
 						}
 					}
-
 
 					Font font = new System.Drawing.Font(family, fsize, fstyle, GraphicsUnit.Pixel);
 					g.DrawString(message.ToString(), font, GetBrush(color ?? "white"), LuaInt(X), LuaInt(Y));
