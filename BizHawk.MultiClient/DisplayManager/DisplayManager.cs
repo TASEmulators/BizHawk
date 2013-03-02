@@ -285,8 +285,8 @@ namespace BizHawk.MultiClient
 	{
 		public string FPS { get; set; }
 		public string MT { get; set; }
-		IBlitterFont MessageFont;
-		IBlitterFont AlertFont;
+		public IBlitterFont MessageFont;
+		public IBlitterFont AlertFont;
 		public void Dispose()
 		{
 
