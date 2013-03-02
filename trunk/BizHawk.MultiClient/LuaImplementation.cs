@@ -362,6 +362,8 @@ namespace BizHawk.MultiClient
 		                                      		"drawIcon",
 		                                      		"drawImage",
 													"addmessage",
+													"drawText",
+													"drawString",
 		                                      	};
 
 		public static string[] EmuFunctions = new string[]
@@ -787,6 +789,65 @@ namespace BizHawk.MultiClient
 				catch (Exception)
 				{
 					// need to stop the script from here
+					return;
+				}
+			}
+		}
+
+		public void gui_drawString(object message, object X, object Y, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
+		{
+			gui_drawString(message, X, Y, color, fontsize, fontfamily, fontstyle);
+		}
+
+		public void gui_drawText(object message, object X, object Y, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
+		{
+			using (var g = GetGraphics())
+			{
+				float x = LuaInt(X) + 0.1F;
+				try
+				{
+					int fsize = 12;
+					if (fontsize != null)
+					{
+						fsize = LuaInt(fontsize);
+					}
+
+					FontFamily family = FontFamily.GenericMonospace;
+					if (fontfamily != null)
+					{
+						family = new FontFamily(fontfamily.ToString());
+					}
+
+					FontStyle fstyle = FontStyle.Regular;
+					if (fontstyle != null)
+					{
+						string tmp = fontstyle.ToString().ToLower();
+						switch (tmp)
+						{
+							default:
+							case "regular":
+								break;
+							case "bold":
+								fstyle = FontStyle.Bold;
+								break;
+							case "italic":
+								fstyle = FontStyle.Italic;
+								break;
+							case "strikethrough":
+								fstyle = FontStyle.Strikeout;
+								break;
+							case "underline":
+								fstyle = FontStyle.Underline;
+								break;
+						}
+					}
+
+
+					Font font = new System.Drawing.Font(family, fsize, fstyle, GraphicsUnit.Pixel);
+					g.DrawString(message.ToString(), font, GetBrush(color ?? "white"), LuaInt(X), LuaInt(Y));
+				}
+				catch (Exception)
+				{
 					return;
 				}
 			}
