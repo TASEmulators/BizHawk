@@ -24,7 +24,14 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// The location of the default INI file
 		/// </summary>
-		public static string DefaultIniPath { get { return MakeProgramRelativePath("config.ini"); } }
+		public static string DefaultIniPath
+		{
+			get 
+			{
+				string blah = MakeProgramRelativePath("config.ini");
+				return blah;
+			} 
+		}
 
 		/// <summary>
 		/// Gets absolute base as derived from EXE
