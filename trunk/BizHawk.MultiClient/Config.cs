@@ -690,6 +690,7 @@ namespace BizHawk.MultiClient
 		public string SaveMovieBinding = "";
 		public string OpenVirtualPadBinding = "";
 		public string MoviePlaybackPokeModeBinding = "";
+		public string ClearFrameBinding = "";
 		// NES Sound settings
 		public bool NESEnableSquare1 = true;
 		public bool NESEnableSquare2 = true;

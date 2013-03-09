@@ -464,6 +464,7 @@ namespace BizHawk.MultiClient
 		{
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			Log.SetFrameAt(frame, mg.GetEmptyMnemonic());
+			changes = true;
 		}
 
 		public void AppendFrame(string record)
