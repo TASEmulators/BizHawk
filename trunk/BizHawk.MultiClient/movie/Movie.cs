@@ -263,7 +263,7 @@ namespace BizHawk.MultiClient
 
 		public void Stop()
 		{
-			if (Mode == MOVIEMODE.RECORD)
+			if (Mode == MOVIEMODE.RECORD || changes)
 			{
 				WriteMovie();
 			}
@@ -577,6 +577,17 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void PokeFrame(int frameNum, IController source)
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			mg.SetSource(source);
+			if (!mg.IsEmpty)
+			{
+				changes = true;
+				Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
+			}
+		}
+
 		public void CommitFrame(int frameNum, IController source)
 		{
 			//Note: Truncation here instead of loadstate will make VBA style loadstates
@@ -590,7 +601,7 @@ namespace BizHawk.MultiClient
 					Log .TruncateStates(Global.Emulator.Frame);
 				}
 			}
-
+			changes = true;
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			mg.SetSource(source);
 			Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
@@ -873,7 +884,7 @@ namespace BizHawk.MultiClient
 		private int preload_framecount; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 		private int lastlog;
 		private int rerecords;
-
+		private bool changes = false;
 		#endregion
 
 		#region Helpers

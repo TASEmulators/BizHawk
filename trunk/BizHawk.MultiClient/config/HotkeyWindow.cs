@@ -115,6 +115,7 @@ namespace BizHawk.MultiClient
 			IDW_SNES_ToggleOBJ4.SetBindings(Global.Config.ToggleSNESOBJ4Binding);
 			IDW_SaveMovie.SetBindings(Global.Config.SaveMovieBinding);
 			IDW_OpenVirtualPad.SetBindings(Global.Config.OpenVirtualPadBinding);
+			IDW_MoviePokeToggle.SetBindings(Global.Config.MoviePlaybackPokeModeBinding);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -239,6 +240,7 @@ namespace BizHawk.MultiClient
 			Global.Config.ToggleSNESOBJ4Binding = IDW_SNES_ToggleOBJ4.Text;
 
 			Global.Config.OpenVirtualPadBinding = IDW_OpenVirtualPad.Text;
+			Global.Config.MoviePlaybackPokeModeBinding = IDW_MoviePokeToggle.Text;
 
 			Global.OSD.AddMessage("Hotkey settings saved");
 			this.DialogResult = DialogResult.OK;
@@ -311,6 +313,11 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+		}
+
+		private void label80_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
