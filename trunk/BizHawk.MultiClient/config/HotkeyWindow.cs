@@ -269,6 +269,9 @@ namespace BizHawk.MultiClient
 				case "Tools":
 					IDW_RamWatch.Focus();
 					break;
+				case "SNES":
+					IDW_SNES_ToggleBG1.Focus();
+					break;
 			}
 		}
 
