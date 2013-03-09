@@ -564,6 +564,10 @@ namespace BizHawk.MultiClient
 					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
 				}
+				else if (Global.ClientControls["AutoholdAutofire"])
+				{
+					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+				}
 
 				//if (!EmulatorPaused)
 					//Global.ClickyVirtualPadController.FrameTick();
@@ -685,7 +689,7 @@ namespace BizHawk.MultiClient
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
 				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad" }
+				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad", "AutoholdAutofire" }
 		};
 
 		private void InitControls()
@@ -785,6 +789,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Stop AVI/WAV", Global.Config.AVIStopBinding);
 			controls.BindMulti("Toggle Menu", Global.Config.ToggleMenuBinding);
 			controls.BindMulti("Autohold", Global.Config.AutoholdBinding);
+			controls.BindMulti("AutoholdAutofire", Global.Config.AutoholdAutofireBinding);
 			controls.BindMulti("Clear Autohold", Global.Config.AutoholdClear);
 
 			Global.ClientControls = controls;

@@ -103,6 +103,7 @@ namespace BizHawk.MultiClient
 			IDW_DecSpeed.SetBindings(Global.Config.DecreaseSpeedBinding);
 			IDW_ToggleBGInput.SetBindings(Global.Config.ToggleBackgroundInput);
 			IDW_Autohold.SetBindings(Global.Config.AutoholdBinding);
+			IDW_AutoholdAutofire.SetBindings(Global.Config.AutoholdAutofireBinding);
 			IDW_ClearAutohold.SetBindings(Global.Config.AutoholdClear);
 			IDW_SNES_ToggleBG1.SetBindings(Global.Config.ToggleSNESBG1Binding);
 			IDW_SNES_ToggleBG2.SetBindings(Global.Config.ToggleSNESBG2Binding);
@@ -225,6 +226,7 @@ namespace BizHawk.MultiClient
 			Global.Config.ToggleBackgroundInput = IDW_ToggleBGInput.Text;
 
 			Global.Config.AutoholdBinding = IDW_Autohold.Text;
+			Global.Config.AutoholdAutofireBinding = IDW_AutoholdAutofire.Text;
 			Global.Config.AutoholdClear = IDW_ClearAutohold.Text;
 
 			Global.Config.ToggleSNESBG1Binding = IDW_SNES_ToggleBG1.Text;

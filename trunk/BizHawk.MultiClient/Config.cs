@@ -676,6 +676,7 @@ namespace BizHawk.MultiClient
 		public string IncreaseWindowSize = "Alt+UpArrow";
 		public string DecreaseWindowSize = "Alt+DownArrow";
 		public string AutoholdBinding = "";
+		public string AutoholdAutofireBinding = "";
 		public string AutoholdClear = "";
 		public string ToggleSNESBG1Binding = "";
 		public string ToggleSNESBG2Binding = "";
