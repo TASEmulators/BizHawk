@@ -1889,7 +1889,7 @@
 			this.IDW_SaveMovie.Location = new System.Drawing.Point(105, 139);
 			this.IDW_SaveMovie.Name = "IDW_SaveMovie";
 			this.IDW_SaveMovie.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SaveMovie.TabIndex = 118;
+			this.IDW_SaveMovie.TabIndex = 73;
 			// 
 			// IDW_MoviePokeToggle
 			// 
@@ -1899,7 +1899,7 @@
 			this.IDW_MoviePokeToggle.Location = new System.Drawing.Point(324, 136);
 			this.IDW_MoviePokeToggle.Name = "IDW_MoviePokeToggle";
 			this.IDW_MoviePokeToggle.Size = new System.Drawing.Size(100, 20);
-			this.IDW_MoviePokeToggle.TabIndex = 121;
+			this.IDW_MoviePokeToggle.TabIndex = 88;
 			// 
 			// tabPage4
 			// 
@@ -2326,7 +2326,7 @@
 			this.IDW_ClearFrame.Location = new System.Drawing.Point(324, 162);
 			this.IDW_ClearFrame.Name = "IDW_ClearFrame";
 			this.IDW_ClearFrame.Size = new System.Drawing.Size(100, 20);
-			this.IDW_ClearFrame.TabIndex = 120;
+			this.IDW_ClearFrame.TabIndex = 92;
 			// 
 			// ClearFrameLabel
 			// 
