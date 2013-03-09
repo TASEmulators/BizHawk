@@ -116,6 +116,7 @@ namespace BizHawk.MultiClient
 			IDW_SaveMovie.SetBindings(Global.Config.SaveMovieBinding);
 			IDW_OpenVirtualPad.SetBindings(Global.Config.OpenVirtualPadBinding);
 			IDW_MoviePokeToggle.SetBindings(Global.Config.MoviePlaybackPokeModeBinding);
+			IDW_ClearFrame.SetBindings(Global.Config.ClearFrameBinding);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -241,6 +242,7 @@ namespace BizHawk.MultiClient
 
 			Global.Config.OpenVirtualPadBinding = IDW_OpenVirtualPad.Text;
 			Global.Config.MoviePlaybackPokeModeBinding = IDW_MoviePokeToggle.Text;
+			Global.Config.ClearFrameBinding = IDW_ClearFrame.Text;
 
 			Global.OSD.AddMessage("Hotkey settings saved");
 			this.DialogResult = DialogResult.OK;

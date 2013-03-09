@@ -12,6 +12,15 @@ namespace BizHawk.MultiClient
 	{
 		public bool ReadOnly = true;	//Global Movie Read only setting
 
+		public void ClearFrame()
+		{
+			if (Global.MovieSession.Movie.IsPlaying)
+			{
+				Global.MovieSession.Movie.ClearFrame(Global.Emulator.Frame);
+				Global.OSD.AddMessage("Scrubbed input at frame " + Global.Emulator.Frame.ToString());
+			}
+		}
+
 		public void StartNewMovie(Movie m, bool record)
 		{
 			//If a movie is already loaded, save it before starting a new movie
@@ -282,7 +291,12 @@ namespace BizHawk.MultiClient
 				{
 					Global.MovieSession.Movie.CaptureState();
 					Global.MovieSession.LatchInputFromLog();
-					if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed || Global.Config.MoviePlaybackPokeMode)
+					if (Global.ClientControls["ClearFrame"])
+					{
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+						ClearFrame();
+					}
+					else if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed || Global.Config.MoviePlaybackPokeMode)
 					{
 						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 						Global.MovieSession.Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
