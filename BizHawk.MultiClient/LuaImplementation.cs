@@ -2106,14 +2106,24 @@ namespace BizHawk.MultiClient
 
 		public void joypad_set(LuaTable buttons, object controller = null)
 		{
-			foreach (var button in buttons.Keys)
+			try
 			{
-				if (Convert.ToBoolean(buttons[button]) == true)
-					if (controller == null)
-						Global.ClickyVirtualPadController.Click(button.ToString());
-					else
-						Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
+				foreach (var button in buttons.Keys)
+				{
+					if (Convert.ToBoolean(buttons[button]) == true)
+					{
+						if (controller == null)
+						{
+							Global.ClickyVirtualPadController.Click(button.ToString());
+						}
+						else
+						{
+							Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
+						}
+					}
+				}
 			}
+			catch { /*Eat it*/ } 
 		}
 
 		//----------------------------------------------------
