@@ -866,8 +866,10 @@ namespace BizHawk.MultiClient
 							if (!prohibit)
 							{
 								//restore this lua thread's preferred current directory
-								Environment.CurrentDirectory = lf.CurrentDirectory;
-								
+								if (lf.CurrentDirectory != null)
+								{
+									Environment.CurrentDirectory = lf.CurrentDirectory;
+								}
 								var result = LuaImp.ResumeScript(lf.Thread);
 								if (result.Terminated) lf.Stop();
 								lf.FrameWaiting = result.WaitForFrame;
