@@ -689,7 +689,7 @@ namespace BizHawk.MultiClient
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
 				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad", "AutoholdAutofire" }
+				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad", "AutoholdAutofire", "MoviePokeToggle" }
 		};
 
 		private void InitControls()
@@ -791,6 +791,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Autohold", Global.Config.AutoholdBinding);
 			controls.BindMulti("AutoholdAutofire", Global.Config.AutoholdAutofireBinding);
 			controls.BindMulti("Clear Autohold", Global.Config.AutoholdClear);
+			controls.BindMulti("MoviePokeToggle", Global.Config.MoviePlaybackPokeModeBinding);
 
 			Global.ClientControls = controls;
 
@@ -2831,7 +2832,9 @@ namespace BizHawk.MultiClient
 				case "Toggle Menu":
 					ShowHideMenu();
 					break;
-
+				case "MoviePokeToggle":
+					ToggleModePokeMode();
+					break;
 			} //switch(trigger)
 
 			return true;
@@ -5077,6 +5080,19 @@ namespace BizHawk.MultiClient
 		private void fullMovieLoadstatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.VBAStyleMovieLoadState ^= true;
+		}
+
+		private void ToggleModePokeMode()
+		{
+			Global.Config.MoviePlaybackPokeMode ^= true;
+			if (Global.Config.MoviePlaybackPokeMode)
+			{
+				Global.OSD.AddMessage("Movie Poke mode enabled");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Movie Poke mode disabled");
+			}
 		}
 	}
 }

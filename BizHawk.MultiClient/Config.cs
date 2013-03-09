@@ -580,6 +580,7 @@ namespace BizHawk.MultiClient
 		public bool UseDefaultAuthor = true;
 		public bool DisplaySubtitles = true;
 		public bool VBAStyleMovieLoadState = false;
+		public bool MoviePlaybackPokeMode = false;
 
 		//Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = true;
@@ -688,7 +689,7 @@ namespace BizHawk.MultiClient
 		public string ToggleSNESOBJ4Binding = "";
 		public string SaveMovieBinding = "";
 		public string OpenVirtualPadBinding = "";
-
+		public string MoviePlaybackPokeModeBinding = "";
 		// NES Sound settings
 		public bool NESEnableSquare1 = true;
 		public bool NESEnableSquare2 = true;

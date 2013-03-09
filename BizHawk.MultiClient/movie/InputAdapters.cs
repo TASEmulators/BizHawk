@@ -331,6 +331,23 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
+		public bool IsEmpty
+		{
+			get
+			{
+				string empty = GetEmptyMnemonic();
+				string input = GetControllersAsMnemonic();
+				if (empty == input)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
 		public string GetEmptyMnemonic()
 		{
 			switch (Global.Emulator.SystemId)
