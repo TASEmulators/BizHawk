@@ -2755,16 +2755,26 @@ namespace BizHawk.MultiClient
 					{
 						if (Global.MovieSession.Movie.IsActive)
 						{
-							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
-							if (Global.MovieSession.MultiTrack.IsActive)
+							
+							if (Global.Config.VBAStyleMovieLoadState)
 							{
-								Global.OSD.AddMessage("MultiTrack Enabled");
-								Global.OSD.MT = "Recording None";
+								Global.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
 							}
 							else
-								Global.OSD.AddMessage("MultiTrack Disabled");
-							Global.MovieSession.MultiTrack.RecordAll = false;
-							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+							{
+								Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+								if (Global.MovieSession.MultiTrack.IsActive)
+								{
+									Global.OSD.AddMessage("MultiTrack Enabled");
+									Global.OSD.MT = "Recording None";
+								}
+								else
+								{
+									Global.OSD.AddMessage("MultiTrack Disabled");
+								}
+								Global.MovieSession.MultiTrack.RecordAll = false;
+								Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+							}
 						}
 						else
 						{
@@ -5059,6 +5069,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-	
+		private void fullMovieLoadstatesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.VBAStyleMovieLoadState ^= true;
+		}
 	}
 }

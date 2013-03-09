@@ -68,10 +68,7 @@ namespace BizHawk.MultiClient
 
 		public int Rerecords
 		{
-			get
-			{
-				return rerecords;
-			}
+			get { return rerecords; }
 			set
 			{
 				rerecords = value;
@@ -81,26 +78,17 @@ namespace BizHawk.MultiClient
 
 		public string SysID
 		{
-			get
-			{
-				return Header.GetHeaderLine(MovieHeader.PLATFORM);
-			}
+			get { return Header.GetHeaderLine(MovieHeader.PLATFORM); }
 		}
 
 		public string GUID
 		{
-			get
-			{
-				return Header.GetHeaderLine(MovieHeader.GUID);
-			}
+			get { return Header.GetHeaderLine(MovieHeader.GUID); }
 		}
 
 		public string GameName
 		{
-			get
-			{
-				return Header.GetHeaderLine(MovieHeader.GAMENAME);
-			}
+			get { return Header.GetHeaderLine(MovieHeader.GAMENAME); }
 		}
 
 		public int Frames
@@ -127,10 +115,7 @@ namespace BizHawk.MultiClient
 
 		public bool StartsFromSavestate
 		{
-			get
-			{
-				return startsfromsavestate;
-			}
+			get { return startsfromsavestate; }
 			set
 			{
 				startsfromsavestate = value;
@@ -147,26 +132,17 @@ namespace BizHawk.MultiClient
 
 		public int StateFirstIndex
 		{
-			get
-			{
-				return Log.StateFirstIndex;
-			}
+			get { return Log.StateFirstIndex; }
 		}
 
 		public int StateLastIndex
 		{
-			get
-			{
-				return Log.StateLastIndex;
-			}
+			get { return Log.StateLastIndex; }
 		}
 
 		public bool StateCapturing
 		{
-			get
-			{
-				return statecapturing;
-			}
+			get { return statecapturing; }
 			set
 			{
 				statecapturing = value;
@@ -525,6 +501,7 @@ namespace BizHawk.MultiClient
 		public void TruncateMovie(int frame)
 		{
 			Log.TruncateMovie(frame);
+			Log.TruncateStates(frame);
 		}
 
 		#endregion
@@ -602,14 +579,17 @@ namespace BizHawk.MultiClient
 
 		public void CommitFrame(int frameNum, IController source)
 		{
-			//if (Global.Emulator.Frame < Log.Length())
-			//{
-			//    Log.Truncate(Global.Emulator.Frame);
-			//}
-
 			//Note: Truncation here instead of loadstate will make VBA style loadstates
 			//(Where an entire movie is loaded then truncated on the next frame
 			//this allows users to restore a movie with any savestate from that "timeline"
+			if (Global.Config.VBAStyleMovieLoadState)
+			{
+				if (Global.Emulator.Frame < Log.Length)
+				{
+					Log.TruncateMovie(Global.Emulator.Frame);
+					Log .TruncateStates(Global.Emulator.Frame);
+				}
+			}
 
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			mg.SetSource(source);
@@ -709,13 +689,19 @@ namespace BizHawk.MultiClient
 			}
 			if (stateFrame > 0 && stateFrame < Log.Length)
 			{
-				Log.TruncateStates(stateFrame);
-				Log.TruncateMovie(stateFrame);
+				if (!Global.Config.VBAStyleMovieLoadState)
+				{
+					Log.TruncateStates(stateFrame);
+					Log.TruncateMovie(stateFrame);
+				}
 			}
 			else if (stateFrame > Log.Length) //Post movie savestate
 			{
-				Log.TruncateStates(Log.Length);
-				Log.TruncateMovie(Log.Length);
+				if (!Global.Config.VBAStyleMovieLoadState)
+				{
+					Log.TruncateStates(Log.Length);
+					Log.TruncateMovie(Log.Length);
+				}
 				Mode = MOVIEMODE.FINISHED;
 			}
 			if (IsCountingRerecords)

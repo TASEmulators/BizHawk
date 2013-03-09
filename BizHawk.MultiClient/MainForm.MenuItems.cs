@@ -1269,6 +1269,15 @@ namespace BizHawk.MultiClient
 
 		private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
+			if (Global.MovieSession.MultiTrack.IsActive)
+			{
+				fullMovieLoadstatesToolStripMenuItem.Enabled = false;
+			}
+			else
+			{
+				fullMovieLoadstatesToolStripMenuItem.Enabled = true;
+			}
+
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				stopMovieToolStripMenuItem.Enabled = true;
@@ -1292,6 +1301,7 @@ namespace BizHawk.MultiClient
 			stopMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.StopMovieBinding;
 			playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayBeginningBinding;
 			saveMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveMovieBinding;
+			fullMovieLoadstatesToolStripMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
 		}
 
 		private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
