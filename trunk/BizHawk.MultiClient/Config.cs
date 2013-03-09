@@ -579,6 +579,7 @@ namespace BizHawk.MultiClient
 		public string DefaultAuthor = "default user";
 		public bool UseDefaultAuthor = true;
 		public bool DisplaySubtitles = true;
+		public bool VBAStyleMovieLoadState = false;
 
 		//Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = true;
