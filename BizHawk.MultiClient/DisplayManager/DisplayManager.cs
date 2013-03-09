@@ -567,9 +567,10 @@ namespace BizHawk.MultiClient
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
-			if (Global.ClientControls["Autohold"])
+			if (Global.ClientControls["Autohold"] || Global.ClientControls["AutoholdAutofire"])
 			{
 				StringBuilder disp = new StringBuilder("Held: ");
+
 				foreach (string s in Global.StickyXORAdapter.CurrentStickies)
 				{
 					disp.Append(s);
