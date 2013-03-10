@@ -5095,5 +5095,15 @@ namespace BizHawk.MultiClient
 				Global.OSD.AddMessage("Movie Poke mode disabled");
 			}
 		}
+
+		private void toolStripMenuItem6_Click(object sender, EventArgs e)
+		{
+			StopMovie(true);
+		}
+
+		private void stopMovieWithoutSavingToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			StopMovie(true);
+		}
 	}
 }

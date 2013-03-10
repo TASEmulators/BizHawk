@@ -218,6 +218,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public bool HasChanges
+		{
+			get { return changes; }
+		}
+
 		/// <summary>
 		/// Tells the movie to start recording from the beginning, this will clear sram, and the movie log
 		/// </summary>
@@ -251,7 +256,6 @@ namespace BizHawk.MultiClient
 			Mode = MOVIEMODE.RECORD;
 		}
 
-
 		/// <summary>
 		/// Tells the movie to go into playback mode
 		/// </summary>
@@ -261,13 +265,16 @@ namespace BizHawk.MultiClient
 			WriteMovie();
 		}
 
-		public void Stop()
+		public void Stop(bool abortchanges = false)
 		{
-			if (Mode == MOVIEMODE.RECORD || changes)
+			if (!abortchanges)
 			{
-				WriteMovie();
+				if (Mode == MOVIEMODE.RECORD || changes)
+				{
+					WriteMovie();
+				}
 			}
-
+			changes = false;
 			Mode = MOVIEMODE.INACTIVE;
 		}
 
@@ -330,6 +337,7 @@ namespace BizHawk.MultiClient
 			}
 
 			WriteMovie(Filename);
+			changes = false;
 		}
 
 		public void WriteBackup()
@@ -458,29 +466,33 @@ namespace BizHawk.MultiClient
 		public void ModifyFrame(string record, int frame)
 		{
 			Log.SetFrameAt(frame, record);
+			changes = true;
 		}
 
 		public void ClearFrame(int frame)
 		{
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			Log.SetFrameAt(frame, mg.GetEmptyMnemonic());
+			Log.SetFrameAt(frame, mg.GetEmptyMnemonic);
 			changes = true;
 		}
 
 		public void AppendFrame(string record)
 		{
 			Log.AppendFrame(record);
+			changes = true;
 		}
 
 		public void InsertFrame(string record, int frame)
 		{
 			Log.AddFrameAt(frame, record);
+			changes = true;
 		}
 
 		public void InsertBlankFrame(int frame)
 		{
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			Log.AddFrameAt(frame, mg.GetEmptyMnemonic());
+			Log.AddFrameAt(frame, mg.GetEmptyMnemonic);
+			changes = true;
 		}
 
 		public void DeleteFrame(int frame)
@@ -497,12 +509,14 @@ namespace BizHawk.MultiClient
 				}
 			}
 			Log.DeleteFrame(frame);
+			changes = true;
 		}
 
 		public void TruncateMovie(int frame)
 		{
 			Log.TruncateMovie(frame);
 			Log.TruncateStates(frame);
+			changes = true;
 		}
 
 		#endregion

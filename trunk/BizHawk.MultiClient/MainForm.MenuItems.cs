@@ -1154,6 +1154,15 @@ namespace BizHawk.MultiClient
 			{
 				cmiShowMenu.Visible = false;
 			}
+
+			if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges)
+			{
+				ContextMenuStopMovieNoSaving.Visible = true;
+			}
+			else
+			{
+				ContextMenuStopMovieNoSaving.Visible = false;
+			}
 		}
 
 
@@ -1315,6 +1324,15 @@ namespace BizHawk.MultiClient
 			playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayBeginningBinding;
 			saveMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveMovieBinding;
 			fullMovieLoadstatesToolStripMenuItem.Checked = Global.Config.VBAStyleMovieLoadState;
+
+			if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.HasChanges)
+			{
+				stopMovieWithoutSavingToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				stopMovieWithoutSavingToolStripMenuItem.Enabled = false;
+			}
 		}
 
 		private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
