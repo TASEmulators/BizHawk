@@ -4690,7 +4690,7 @@ namespace BizHawk.MultiClient
 			else if (oldp < 200) newp = 200;
 			else if (oldp < 400) newp = 400;
 			else if (oldp < 800) newp = 800;
-			else newp = 1000;
+			else newp = 1600;
 			SetSpeedPercent(newp);
 		}
 
