@@ -578,15 +578,10 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void PokeFrame(int frameNum, IController source)
+		public void PokeFrame(int frameNum, string input)
 		{
-			MnemonicsGenerator mg = new MnemonicsGenerator();
-			mg.SetSource(source);
-			if (!mg.IsEmpty)
-			{
-				changes = true;
-				Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
-			}
+			changes = true;
+			Log.SetFrameAt(frameNum, input);
 		}
 
 		public void CommitFrame(int frameNum, IController source)

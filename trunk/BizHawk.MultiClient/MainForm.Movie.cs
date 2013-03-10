@@ -299,7 +299,17 @@ namespace BizHawk.MultiClient
 					else if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed || Global.Config.MoviePlaybackPokeMode)
 					{
 						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
-						Global.MovieSession.Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+						MnemonicsGenerator mg = new MnemonicsGenerator();
+						mg.SetSource( Global.MovieOutputHardpoint);
+						if (!mg.IsEmpty)
+						{
+							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+							Global.MovieSession.Movie.PokeFrame(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
+						}
+						else
+						{
+							Global.MovieSession.LatchInputFromLog();
+						}
 					}
 				}
 			}
