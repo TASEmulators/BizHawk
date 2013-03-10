@@ -744,7 +744,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentROMToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentRoms.IsEmpty())
+			if (Global.Config.RecentRoms.IsEmpty)
 			{
 				var none = new ToolStripMenuItem();
 				none.Enabled = false;
@@ -753,7 +753,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				for (int x = 0; x < Global.Config.RecentRoms.Length(); x++)
+				for (int x = 0; x < Global.Config.RecentRoms.Count; x++)
 				{
 					string path = Global.Config.RecentRoms.GetRecentFileByPosition(x);
 					var item = new ToolStripMenuItem();
@@ -787,7 +787,7 @@ namespace BizHawk.MultiClient
 
 			recentToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentMovies.IsEmpty())
+			if (Global.Config.RecentMovies.IsEmpty)
 			{
 				var none = new ToolStripMenuItem();
 				none.Enabled = false;
@@ -796,7 +796,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				for (int x = 0; x < Global.Config.RecentMovies.Length(); x++)
+				for (int x = 0; x < Global.Config.RecentMovies.Count; x++)
 				{
 					string path = Global.Config.RecentMovies.GetRecentFileByPosition(x);
 					var item = new ToolStripMenuItem();
@@ -1003,9 +1003,14 @@ namespace BizHawk.MultiClient
 		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			if (EmulatorPaused)
+			{
 				wasPaused = true;
+			}
 			else
+			{
 				wasPaused = false;
+			}
+
 			didMenuPause = true;
 			PauseEmulator();
 
@@ -1089,23 +1094,29 @@ namespace BizHawk.MultiClient
 				}
 
 				cmiUndoSavestate.Visible = true;
-
 				cmiSeparator20.Visible = true;
-
 				cmiScreenshot.Visible = true;
 				cmiScreenshotClipboard.Visible = true;
 				cmiCloseRom.Visible = true;
 			}
 
-			if (Global.Config.RecentRoms.Length() == 0)
-				cmiLoadLastRom.Enabled = false;
-			else
+			if (Global.Config.RecentRoms.Count > 0)
+			{
 				cmiLoadLastRom.Enabled = true;
-
-			if (Global.Config.RecentMovies.Length() == 0)
-				cmiLoadLastMovie.Enabled = false;
+			}
 			else
+			{
+				cmiLoadLastRom.Enabled = false;
+			}
+
+			if (Global.Config.RecentMovies.Count > 0)
+			{
 				cmiLoadLastMovie.Enabled = true;
+			}
+			else
+			{
+				cmiLoadLastMovie.Enabled = false;
+			}
 
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State.bak";
 			var file = new FileInfo(path);
@@ -1140,7 +1151,9 @@ namespace BizHawk.MultiClient
 					cmiShowMenu.Text = "Show Menu";
 			}
 			else
+			{
 				cmiShowMenu.Visible = false;
+			}
 		}
 
 
