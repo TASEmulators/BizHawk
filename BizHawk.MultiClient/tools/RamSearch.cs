@@ -1842,7 +1842,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentSearches.IsEmpty())
+			if (Global.Config.RecentSearches.IsEmpty)
 			{
 				var none = new ToolStripMenuItem();
 				none.Enabled = false;
@@ -1851,7 +1851,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				for (int x = 0; x < Global.Config.RecentSearches.Length(); x++)
+				for (int x = 0; x < Global.Config.RecentSearches.Count; x++)
 				{
 					string path = Global.Config.RecentSearches.GetRecentFileByPosition(x);
 					var item = new ToolStripMenuItem();
