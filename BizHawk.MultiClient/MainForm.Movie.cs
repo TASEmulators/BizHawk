@@ -127,7 +127,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void StopMovie()
+		public void StopMovie(bool abortchanges = false)
 		{
 			string message = "Movie ";
 			if (Global.MovieSession.Movie.IsRecording)
@@ -143,7 +143,11 @@ namespace BizHawk.MultiClient
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.Stop();
+				Global.MovieSession.Movie.Stop(abortchanges);
+				if (!abortchanges)
+				{
+					Global.OSD.AddMessage(Path.GetFileName(Global.MovieSession.Movie.Filename) + " written to disk.");
+				}
 				Global.OSD.AddMessage(message);
 				Global.MainForm.ReadOnly = true;
 				SetMainformMovieInfo();

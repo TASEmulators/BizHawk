@@ -335,7 +335,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				string empty = GetEmptyMnemonic();
+				string empty = GetEmptyMnemonic;
 				string input = GetControllersAsMnemonic();
 				if (empty == input)
 				{
@@ -348,41 +348,44 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public string GetEmptyMnemonic()
+		public string GetEmptyMnemonic
 		{
-			switch (Global.Emulator.SystemId)
+			get
 			{
-				default:
-				case "NULL":
-					return "|.|";
-				case "A26":
-					return "|..|.....|.....|";
-				case "A78":
-					return "|....|......|......|";
-				case "TI83":
-					return "|..................................................|.|";
-				case "NES":
-					return "|.|........|........|........|........|";
-				case "SNES":
-					return "|.|............|............|............|............|";
-				case "SMS":
-				case "GG":
-				case "SG":
-					return "|......|......|..|";
-				case "GEN":
-					return "|.|........|........|";
-				case "GB":
-					return "|.|........|";
-				case "PCE":
-				case "PCECD":
-				case "SGX":
-					return "|.|........|........|........|........|........|";
-				case "Coleco":
-					return "|..................|..................|";
-				case "C64":
-					return "|.....|.....|..................................................................|";
-				case "GBA":
-					return "|.|..........|";
+				switch (Global.Emulator.SystemId)
+				{
+					default:
+					case "NULL":
+						return "|.|";
+					case "A26":
+						return "|..|.....|.....|";
+					case "A78":
+						return "|....|......|......|";
+					case "TI83":
+						return "|..................................................|.|";
+					case "NES":
+						return "|.|........|........|........|........|";
+					case "SNES":
+						return "|.|............|............|............|............|";
+					case "SMS":
+					case "GG":
+					case "SG":
+						return "|......|......|..|";
+					case "GEN":
+						return "|.|........|........|";
+					case "GB":
+						return "|.|........|";
+					case "PCE":
+					case "PCECD":
+					case "SGX":
+						return "|.|........|........|........|........|........|";
+					case "Coleco":
+						return "|..................|..................|";
+					case "C64":
+						return "|.....|.....|..................................................................|";
+					case "GBA":
+						return "|.|..........|";
+				}
 			}
 		}
 
