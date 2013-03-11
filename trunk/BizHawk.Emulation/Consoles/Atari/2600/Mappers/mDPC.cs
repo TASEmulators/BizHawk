@@ -20,6 +20,11 @@ namespace BizHawk
 
 			bool[] MusicMode = new bool[3]; //TOOD: savestates
 
+			public override byte PeekMemory(ushort addr)
+			{
+				return base.PeekMemory(addr); //TODO
+			}
+
 			public override byte ReadMemory(ushort addr)
 			{
 				if (addr < 0x1000)

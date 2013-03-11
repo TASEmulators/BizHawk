@@ -15,6 +15,11 @@ namespace BizHawk
 				if (addr < 0x1000) return base.ReadMemory(addr);
 				return core.rom[addr & 0x7FF];
 			}
+
+			public override byte PeekMemory(ushort addr)
+			{
+				return ReadMemory(addr);
+			}
 		}
 	}
 }

@@ -28,14 +28,28 @@ namespace BizHawk
 		class mF8 : MapperBase
 		{
 			int bank_4k = 0;
-			
+
+			private byte ReadMem(ushort addr, bool peek)
+			{
+				if (!peek)
+				{
+					Address(addr);
+				}
+
+				if (addr < 0x1000) return base.ReadMemory(addr);
+				return core.rom[(bank_4k << 12) + (addr & 0xFFF)];
+			}
 
 			public override byte ReadMemory(ushort addr)
 			{
-				Address(addr);
-				if (addr < 0x1000) return base.ReadMemory(addr);
-				return core.rom[(bank_4k << 12) + (addr&0xFFF)];
+				return ReadMem(addr, false);
 			}
+
+			public override byte PeekMemory(ushort addr)
+			{
+				return ReadMem(addr, true);
+			}
+
 			public override void WriteMemory(ushort addr, byte value)
 			{
 				Address(addr);

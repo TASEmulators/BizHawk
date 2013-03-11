@@ -3030,8 +3030,6 @@ namespace BizHawk.MultiClient
 				Global.Sound.UpdateSilence();
 		}
 
-
-
 		/// <summary>
 		/// Update all tools that are frame dependent like Ram Search before processing
 		/// </summary>
