@@ -33,6 +33,12 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 				return core.rom[(addr & 0x7FF)];
 			else return base.ReadMemory(addr);
 		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMemory(addr);
+		}
+
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr < 0x1000)

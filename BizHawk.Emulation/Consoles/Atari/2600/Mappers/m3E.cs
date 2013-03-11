@@ -78,6 +78,39 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 			return base.ReadMemory(addr);
 		}
 
+		public override byte PeekMemory(ushort addr)
+		{
+			if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+			else if (addr < 0x17FF) //Low 2k Bank
+			{
+				if (hasRam)
+				{
+					if (addr < 0x13FF)
+					{
+						return ram[(addr & 0x03FF) + (rambank_1k << 10)];
+					}
+					else
+					{
+						return ram[(addr & 0x03FF) + (rambank_1k << 10)]; //Reading from the write port triggers an unwanted write
+					}
+				}
+				else
+				{
+					int a = addr & 0x07FF; //2K
+					int bank = lowbank_2k << 11;
+					return core.rom[bank + a];
+				}
+			}
+			else if (addr < 0x2000) //High bank fixed to last 2k of ROM
+			{
+				return core.rom[(core.rom.Length - 2048) + (addr & 0x07FF)];
+			}
+			return base.ReadMemory(addr);
+		}
+
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr < 0x1000)

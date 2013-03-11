@@ -21,6 +21,9 @@ namespace BizHawk
 			CoreComm = comm;
 			var domains = new List<MemoryDomain>(1);
 			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value));
+			domains.Add(new MemoryDomain("TIA", 16, Endian.Little, addr => tia.ReadMemory((ushort)addr, true), (addr, value) => tia.WriteMemory((ushort)addr, value)));
+			domains.Add(new MemoryDomain("PIA", 1024, Endian.Little, addr => m6532.ReadMemory((ushort)addr, true), (addr, value) => m6532.WriteMemory((ushort)addr, value)));
+			domains.Add(new MemoryDomain("System Bus", 8192, Endian.Little, addr => mapper.PeekMemory((ushort)addr), (addr, value) => {}));
 			memoryDomains = domains.AsReadOnly();
 			CoreComm.CpuTraceAvailable = true;
 			this.rom = rom;

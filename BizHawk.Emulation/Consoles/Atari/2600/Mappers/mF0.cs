@@ -25,14 +25,28 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 	{
 		int bank = 0;
 
+		private byte ReadMem(ushort addr, bool peek)
+		{
+			if (!peek)
+			{
+				if (addr == 0x1FF0)
+					Increment();
+			}
+
+			if (addr < 0x1000) return base.ReadMemory(addr);
+			else return core.rom[bank * 4096 + (addr & 0xFFF)];
+		}
+
 		public override byte ReadMemory(ushort addr)
 		{
-			if (addr == 0x1FF0)
-				Increment();
-			
-			if (addr < 0x1000) return base.ReadMemory(addr);
-			else return core.rom[bank * 4 * 1024 + (addr & 0xFFF)];
+			return ReadMem(addr, false);
 		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMem(addr, true);
+		}
+		
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			if (addr < 0x1000) base.WriteMemory(addr, value);

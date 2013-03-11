@@ -45,6 +45,11 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 
 		private ByteBuffer myRAM = new ByteBuffer(32768);
 
+		public override byte PeekMemory(ushort addr)
+		{
+			return base.PeekMemory(addr); //TODO
+		}
+
 		public override byte ReadMemory(ushort addr)
 		{
 			byte val = 0;
