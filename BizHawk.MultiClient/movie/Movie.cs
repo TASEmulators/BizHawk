@@ -981,10 +981,7 @@ namespace BizHawk.MultiClient
 							StartsFromSavestate = true;
 					}
 
-					if (Header.AddHeaderFromLine(str))
-						continue;
-
-					if (str.Contains("LoopOffset"))
+					else if (str.Contains("LoopOffset"))
 					{
 						str = ParseHeader(str, "LoopOffset");
 						try
@@ -999,6 +996,10 @@ namespace BizHawk.MultiClient
 					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
+					}
+					else if (Header.AddHeaderFromLine(str))
+					{
+						continue;
 					}
 					else if (str[0] == '|')
 					{
