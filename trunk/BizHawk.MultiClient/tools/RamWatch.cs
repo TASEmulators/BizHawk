@@ -261,10 +261,10 @@ namespace BizHawk.MultiClient
 					switch (Global.Config.RamWatchPrev_Type)
 					{
 						case 1:
-							text = Watches[index].DiffToString(Watches[index].DiffPrev);
+							text = Watches[index].DiffPrevString;
 							break;
 						case 2:
-							text = Watches[index].DiffToString(Watches[index].DiffLastChange);
+							text = Watches[index].DiffLastChangeString;
 							break;
 					}
 					break;
@@ -1668,9 +1668,9 @@ namespace BizHawk.MultiClient
 					switch (Global.Config.RamWatchPrev_Type)
 					{
 						case 1:
-							return Watches[watch_index].DiffToString(Watches[watch_index].DiffPrev);
+							return Watches[watch_index].DiffPrevString;
 						case 2:
-							return Watches[watch_index].DiffToString(Watches[watch_index].DiffLastChange);
+							return Watches[watch_index].DiffLastChangeString;
 						default:
 							return "";
 					}

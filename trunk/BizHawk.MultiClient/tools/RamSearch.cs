@@ -2694,9 +2694,9 @@ namespace BizHawk.MultiClient
 					switch (Global.Config.RamWatchPrev_Type)
 					{
 						case 1:
-							return Searches[watch_index].DiffToString(Searches[watch_index].DiffPrev);
+							return Searches[watch_index].DiffPrevString;
 						case 2:
-							return Searches[watch_index].DiffToString(Searches[watch_index].DiffLastChange);
+							return Searches[watch_index].DiffLastChangeString;
 						default:
 							return "";
 					}

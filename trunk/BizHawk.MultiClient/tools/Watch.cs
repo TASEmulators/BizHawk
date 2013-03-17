@@ -70,7 +70,7 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
-		#region Properties
+		#region Publics
 
 		public MemoryDomain Domain;
 		public int Address;
@@ -85,110 +85,74 @@ namespace BizHawk.MultiClient
 		public string Notes;
 		public int Changecount;
 		public bool Deleted;
+		
+		#endregion
+
+		#region Properties
 
 		public int DiffPrev
 		{
-			get
-			{
-				return Value - Prev;
-			}
+			get { return Value - Prev; }
 		}
 		
 		public int DiffOriginal
 		{
-			get
-			{
-				return Value - Original;
-			}
+			get { return Value - Original; }
 		}
 
 		public int DiffLastChange
 		{
-			get
-			{
-				return Value - LastChange;
-			}
+			get { return Value - LastChange; }
 		}
 
 		public int DiffLastSearch
 		{
-			get
-			{
-				return Value - LastSearch;
-			}
-		
+			get { return Value - LastSearch; }
 		}
 
 		public string ValueString
 		{
-			get
-			{
-				return ValToString(Value);
-			}
+			get { return ValToString(Value); }
 		}
 
 		public string PrevString
 		{
-			get
-			{
-				return ValToString(Prev);
-			}
+			get { return ValToString(Prev); }
 		}
 
 		public string OriginalString
 		{
-			get
-			{
-				return ValToString(Original);
-			}
+			get { return ValToString(Original); }
 		}
 
 		public string LastChangeString
 		{
-			get
-			{
-				return ValToString(LastChange);
-			}
+			get { return ValToString(LastChange); }
 		}
 
 		public string LastSearchString
 		{
-			get
-			{
-				return ValToString(LastSearch);
-			}
-		}
-
-		public string DiffPrevString
-		{
-			get
-			{
-				return DiffToString(Prev);
-			}
+			get { return ValToString(LastSearch); }
 		}
 
 		public string DiffOriginalString
 		{
-			get
-			{
-				return DiffToString(Original);
-			}
-		}
-
-		public string DiffLastChangeString
-		{
-			get
-			{
-				return DiffToString(LastChange);
-			}
+			get { return DiffToString(Original); }
 		}
 
 		public string DiffLastSearchString
 		{
-			get
-			{
-				return DiffToString(LastSearch);
-			}
+			get { return DiffToString(LastSearch); }
+		}
+
+		public uint UnsignedValue
+		{
+			get { return UnsignedVal(Value); }
+		}
+
+		public int SignedValue
+		{
+			get { return SignedVal(Value); }
 		}
 
 		public char TypeChar
@@ -227,6 +191,16 @@ namespace BizHawk.MultiClient
 						return 's'; //Just in case
 				}
 			}
+		}
+
+		public string DiffPrevString
+		{
+			get { return DiffToString(this.DiffPrev); }
+		}
+
+		public string DiffLastChangeString
+		{
+			get { return DiffToString(this.DiffLastChange); }
 		}
 
 		#endregion
@@ -383,44 +357,6 @@ namespace BizHawk.MultiClient
 			return str.ToString();
 		}
 
-		public string ValToString(int val)
-		{
-			if (Type == TYPE.SEPARATOR)
-			{
-				return "";
-			}
-			else
-			{
-				switch (Signed)
-				{
-					default:
-					case DISPTYPE.UNSIGNED:
-						return UnsignedVal(val).ToString();
-					case DISPTYPE.SIGNED:
-						return SignedVal(val).ToString();
-					case DISPTYPE.HEX:
-						switch (Type)
-						{
-							default:
-							case TYPE.BYTE:
-								return String.Format("{0:X2}", val);
-							case TYPE.WORD:
-								return String.Format("{0:X4}", val);
-							case TYPE.DWORD:
-								return String.Format("{0:X8}", val);
-						}
-				}
-			}
-		}
-
-		public string DiffToString(int diff)
-		{
-			string converted = diff.ToString();
-			if (diff >= 0)
-				converted = "+" + converted;
-			return converted;
-		}
-
 		public void TrySetValue(string value)
 		{
 			switch (Signed)
@@ -452,6 +388,46 @@ namespace BizHawk.MultiClient
 		#endregion
 
 		#region Helpers
+
+		private string ValToString(int val)
+		{
+			if (Type == TYPE.SEPARATOR)
+			{
+				return "";
+			}
+			else
+			{
+				switch (Signed)
+				{
+					default:
+					case DISPTYPE.UNSIGNED:
+						return UnsignedVal(val).ToString();
+					case DISPTYPE.SIGNED:
+						return SignedVal(val).ToString();
+					case DISPTYPE.HEX:
+						switch (Type)
+						{
+							default:
+							case TYPE.BYTE:
+								return String.Format("{0:X2}", val);
+							case TYPE.WORD:
+								return String.Format("{0:X4}", val);
+							case TYPE.DWORD:
+								return String.Format("{0:X8}", val);
+						}
+				}
+			}
+		}
+
+
+
+		private string DiffToString(int diff)
+		{
+			string converted = diff.ToString();
+			if (diff >= 0)
+				converted = "+" + converted;
+			return converted;
+		}
 
 		private void PokeByte()
 		{
