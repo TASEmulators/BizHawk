@@ -345,9 +345,15 @@ namespace BizHawk.MultiClient
 				StringBuilder s = new StringBuilder();
 				s.Append(Global.Emulator.Frame);
 				s.Append('/');
-				s.Append(Global.MovieSession.Movie.Frames);
+				if (Global.MovieSession.Movie.Frames.HasValue)
+				{
+					s.Append(Global.MovieSession.Movie.Frames);
+				}
+				else
+				{
+					s.Append("infinity");
+				}
 				s.Append(" (Finished)");
-				//return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Frames.ToString() + " (Finished)";
 				return s.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsPlaying)
@@ -355,7 +361,14 @@ namespace BizHawk.MultiClient
 				StringBuilder s = new StringBuilder();
 				s.Append(Global.Emulator.Frame);
 				s.Append('/');
-				s.Append(Global.MovieSession.Movie.Frames);
+				if (Global.MovieSession.Movie.Frames.HasValue)
+				{
+					s.Append(Global.MovieSession.Movie.Frames);
+				}
+				else
+				{
+					s.Append("infinity");
+				}
 				return s.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsRecording)

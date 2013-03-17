@@ -244,7 +244,7 @@ namespace BizHawk.MultiClient
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
 					if (autoDumpLength == 0)
 					{
-						autoDumpLength = m.Frames;
+						autoDumpLength = m.RawFrames;
 					}
 					StartNewMovie(m, false);
 					Global.Config.RecentMovies.Add(cmdMovie);

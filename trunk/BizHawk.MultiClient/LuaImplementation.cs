@@ -2016,7 +2016,14 @@ namespace BizHawk.MultiClient
 
 		public int movie_length()
 		{
-			return Global.MovieSession.Movie.Frames;
+			if (Global.MovieSession.Movie.Frames.HasValue)
+			{
+				return Global.MovieSession.Movie.Frames.Value;
+			}
+			else
+			{
+				return -1;
+			}
 		}
 
 		public string movie_filename()
