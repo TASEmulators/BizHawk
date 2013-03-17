@@ -91,7 +91,22 @@ namespace BizHawk.MultiClient
 			get { return Header.GetHeaderLine(MovieHeader.GAMENAME); }
 		}
 
-		public int Frames
+		public int RawFrames
+		{
+			get
+			{
+				if (Loaded)
+				{
+					return Log.Length;
+				}
+				else
+				{
+					return preload_framecount;
+				}
+			}
+		}
+
+		public int? Frames
 		{
 			get
 			{
@@ -99,7 +114,7 @@ namespace BizHawk.MultiClient
 				{
 					if (Loop)
 					{
-						return 999999; //TODO: rethink this, maybe return a nullable int, and on the client side check for null and act accordingly
+						return null;
 					}
 					else
 					{

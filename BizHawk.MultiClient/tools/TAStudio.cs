@@ -146,7 +146,7 @@ namespace BizHawk.MultiClient
 
 		private void DisplayList()
 		{
-			TASView.ItemCount = Global.MovieSession.Movie.Frames;
+			TASView.ItemCount = Global.MovieSession.Movie.RawFrames;
 			if (Global.MovieSession.Movie.Frames == Global.Emulator.Frame && Global.MovieSession.Movie.StateLastIndex == Global.Emulator.Frame - 1)
 			{
 				//If we're at the end of the movie add one to show the cursor as a blank frame
