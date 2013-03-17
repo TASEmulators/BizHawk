@@ -627,17 +627,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			var temp = SaveStateBinary();
 			temp.SaveAsHex(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
+			writer.WriteLine("Frame {0}", Frame); // we don't parse this, it's only for the client to use
 			writer.WriteLine("Profile {0}", CoreComm.SNES_Profile);
 		}
 		public void LoadStateText(TextReader reader)
 		{
 			string hex = reader.ReadLine();
+			if (hex.StartsWith("emuVersion")) // movie save
+			{
+				do // theoretically, our portion should start right after StartsFromSavestate, maybe...
+				{
+					hex = reader.ReadLine();
+				} while (!hex.StartsWith("StartsFromSavestate"));
+				hex = reader.ReadLine();
+			}
 			byte[] state = new byte[hex.Length / 2];
 			state.ReadFromHex(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-			reader.ReadLine();
+			reader.ReadLine(); // Frame #
 			var profile = reader.ReadLine().Split(' ')[1];
 			ValidateLoadstateProfile(profile);
 		}
