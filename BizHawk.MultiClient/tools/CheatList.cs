@@ -158,14 +158,7 @@ namespace BizHawk.MultiClient
 
 		public Cheat GetCheat(MemoryDomain d, int address)
 		{
-			for (int x = 0; x < cheatList.Count; x++)
-			{
-				if (cheatList[x].address == address && cheatList[x].domain.Name == d.Name)
-				{
-					return cheatList[x];
-				}
-			}
-			return null;
+			return cheatList.Where(x => x.address == address && x.domain.Name == d.Name).FirstOrDefault();
 		}
 
 		public void RemoveCheat(MemoryDomain d, int address)
@@ -226,9 +219,11 @@ namespace BizHawk.MultiClient
 
 		public bool SaveCheatFile(string path)
 		{
-			var file = new FileInfo(path);
+			FileInfo file = new FileInfo(path);
 			if (!file.Directory.Exists)
+			{
 				file.Directory.Create();
+			}
 
 			using (StreamWriter sw = new StreamWriter(path))
 			{
