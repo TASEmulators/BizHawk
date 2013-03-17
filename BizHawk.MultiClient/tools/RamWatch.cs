@@ -1613,6 +1613,72 @@ namespace BizHawk.MultiClient
 					WatchListView.SelectItem(x, true);
 				}
 			}
+			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
+			{
+				ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+
+				if (indexes.Count > 0)
+				{
+					StringBuilder sb = new StringBuilder();
+					foreach (int index in indexes)
+					{
+						for(int i = 0; i < WatchListView.Columns.Count; i++)
+						{
+							if (WatchListView.Columns[i].Width > 0)
+							{
+								sb.Append(GetColumnValue(i, index));
+								sb.Append('\t');
+							}
+						}
+						sb.Remove(sb.Length - 1, 1);
+						sb.Append('\n');
+					}
+
+					if (!String.IsNullOrWhiteSpace(sb.ToString()))
+					{
+						Clipboard.SetDataObject(sb.ToString());
+					}
+				}
+			}
+		}
+
+		private string GetColumnValue(int column, int watch_index)
+		{
+			switch (WatchListView.Columns[column].Text.ToLower())
+			{
+				default:
+					return "";
+				case "address":
+					return Watches[watch_index].Address.ToString();
+				case "value":
+					return Watches[watch_index].Value.ToString();
+				case "prev":
+					switch (Global.Config.RamWatchPrev_Type)
+					{
+						case 1:
+							return Watches[watch_index].PrevString;
+						case 2:
+							return Watches[watch_index].LastChangeString;
+						default:
+							return "";
+					}
+				case "changes":
+					return Watches[watch_index].Changecount.ToString();
+				case "diff":
+					switch (Global.Config.RamWatchPrev_Type)
+					{
+						case 1:
+							return Watches[watch_index].DiffToString(Watches[watch_index].DiffPrev);
+						case 2:
+							return Watches[watch_index].DiffToString(Watches[watch_index].DiffLastChange);
+						default:
+							return "";
+					}
+				case "domain":
+					return Watches[watch_index].Domain.Name;
+				case "notes":
+					return Watches[watch_index].Notes;
+			}
 		}
 
 		private void showPreviousValueToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -1702,6 +1768,11 @@ namespace BizHawk.MultiClient
 			Global.MainForm.RamSearch1.UpdateValues();
 			Global.MainForm.HexEditor1.UpdateValues();
 			Global.MainForm.Cheats1.UpdateValues();
+		}
+
+		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
