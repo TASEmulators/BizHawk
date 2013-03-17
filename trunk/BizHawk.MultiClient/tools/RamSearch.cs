@@ -2640,6 +2640,71 @@ namespace BizHawk.MultiClient
 					SearchListView.SelectItem(x, true);
 				}
 			}
+			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
+			{
+				ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+				if (indexes.Count > 0)
+				{
+					StringBuilder sb = new StringBuilder();
+					foreach (int index in indexes)
+					{
+						for (int i = 0; i < SearchListView.Columns.Count; i++)
+						{
+							if (SearchListView.Columns[i].Width > 0)
+							{
+								sb.Append(GetColumnValue(i, index));
+								sb.Append('\t');
+							}
+						}
+						sb.Remove(sb.Length - 1, 1);
+						sb.Append('\n');
+					}
+
+					if (!String.IsNullOrWhiteSpace(sb.ToString()))
+					{
+						Clipboard.SetDataObject(sb.ToString());
+					}
+				}
+			}
+		}
+
+		private string GetColumnValue(int column, int watch_index)
+		{
+			switch (SearchListView.Columns[column].Text.ToLower())
+			{
+				default:
+					return "";
+				case "address":
+					return Searches[watch_index].Address.ToString(addressFormatStr);
+				case "value":
+					return Searches[watch_index].ValueString;
+				case "prev":
+					switch (Global.Config.RamWatchPrev_Type)
+					{
+						case 1:
+							return Searches[watch_index].PrevString;
+						case 2:
+							return Searches[watch_index].LastChangeString;
+						default:
+							return "";
+					}
+				case "changes":
+					return Searches[watch_index].Changecount.ToString();
+				case "diff":
+					switch (Global.Config.RamWatchPrev_Type)
+					{
+						case 1:
+							return Searches[watch_index].DiffToString(Searches[watch_index].DiffPrev);
+						case 2:
+							return Searches[watch_index].DiffToString(Searches[watch_index].DiffLastChange);
+						default:
+							return "";
+					}
+				case "domain":
+					return Searches[watch_index].Domain.Name;
+				case "notes":
+					return Searches[watch_index].Notes;
+			}
 		}
 
 		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
