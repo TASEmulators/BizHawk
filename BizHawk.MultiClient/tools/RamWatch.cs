@@ -1649,9 +1649,9 @@ namespace BizHawk.MultiClient
 				default:
 					return "";
 				case "address":
-					return Watches[watch_index].Address.ToString();
+					return Watches[watch_index].Address.ToString(addressFormatStr);
 				case "value":
-					return Watches[watch_index].Value.ToString();
+					return Watches[watch_index].ValueString;
 				case "prev":
 					switch (Global.Config.RamWatchPrev_Type)
 					{
