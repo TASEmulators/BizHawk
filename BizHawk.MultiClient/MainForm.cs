@@ -1780,7 +1780,9 @@ namespace BizHawk.MultiClient
 			Global.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
 
 			Global.MultitrackRewiringControllerAdapter.Source = Global.AutofireStickyXORAdapter;
-			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
+			Global.ForceOffAdaptor.Source = Global.MultitrackRewiringControllerAdapter;
+
+			Global.MovieInputSourceAdapter.Source = Global.ForceOffAdaptor;
 			Global.ControllerOutput.Source = Global.MovieOutputHardpoint;
 
 			Global.Emulator.Controller = Global.ControllerOutput;

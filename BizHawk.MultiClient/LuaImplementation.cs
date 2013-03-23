@@ -2117,15 +2117,82 @@ namespace BizHawk.MultiClient
 			{
 				foreach (var button in buttons.Keys)
 				{
-					if (Convert.ToBoolean(buttons[button]) == true)
+					bool invert = false;
+					bool? theValue = null;
+					string theValueStr = buttons[button].ToString();
+					
+					if (!String.IsNullOrWhiteSpace(theValueStr))
 					{
-						if (controller == null)
+						if (theValueStr.ToLower() == "false")
 						{
-							Global.ClickyVirtualPadController.Click(button.ToString());
+							theValue = false;
+						}
+						else if (theValueStr.ToLower() == "true")
+						{
+							theValue = true;
 						}
 						else
 						{
-							Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
+							invert = true;
+							theValue = null;
+						}
+					}
+					else
+					{
+						theValue = null;
+					}
+					
+
+					if (!invert)
+					{
+						if (theValue == true)
+						{
+							if (controller == null) //Force On
+							{
+								Global.ClickyVirtualPadController.Click(button.ToString());
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
+							}
+							else
+							{
+								Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
+								Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), false);
+							}
+						}
+						else if (theValue == false) //Force off
+						{
+							if (controller == null)
+							{
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), true);
+							}
+							else
+							{
+								Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), true);
+							}
+						}
+						else if (theValue == null)
+						{
+							//Turn everything off
+							if (controller == null)
+							{
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
+							}
+							else
+							{
+								Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), false);
+							}
+						}
+					}
+					else //Inverse
+					{
+						if (controller == null)
+						{
+							Global.StickyXORAdapter.SetSticky(button.ToString(), true);
+							Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
+						}
+						else
+						{
+							Global.StickyXORAdapter.SetSticky("P" + controller.ToString() + " " + button.ToString(), true);
+							Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), false);
 						}
 					}
 				}

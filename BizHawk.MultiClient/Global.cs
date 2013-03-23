@@ -237,6 +237,11 @@ namespace BizHawk.MultiClient
 		public static AutoFireStickyXORAdapter AutofireStickyXORAdapter = new AutoFireStickyXORAdapter();
 
 		/// <summary>
+		/// Forces any controller button to Off, useful for things like Joypad.Set
+		/// </summary>
+		public static ForceOffAdaptor ForceOffAdaptor = new ForceOffAdaptor();
+
+		/// <summary>
 		/// will OR together two IControllers
 		/// </summary>
 		public static ORAdapter OrControllerAdapter = new ORAdapter();

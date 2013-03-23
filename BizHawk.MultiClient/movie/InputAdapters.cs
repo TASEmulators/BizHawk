@@ -34,6 +34,23 @@ namespace BizHawk.MultiClient
 			Pressed.Add(button);
 		}
 
+		public void Unclick(string button)
+		{
+			Pressed.Remove(button);
+		}
+
+		public void Toggle(string button)
+		{
+			if (IsPressed(button))
+			{
+				Pressed.Remove(button);
+			}
+			else
+			{
+				Pressed.Add(button);
+			}
+		}
+
 		HashSet<string> Pressed = new HashSet<string>();
 	}
 
@@ -118,9 +135,45 @@ namespace BizHawk.MultiClient
 
 	}
 
+	public class ForceOffAdaptor : IController
+	{
+		public bool IsPressed(string button) { return this[button]; }
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+
+		protected HashSet<string> stickySet = new HashSet<string>();
+		public IController Source;
+		public IController SourceOr;
+		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+
+		public bool this[string button]
+		{
+			get
+			{
+				bool source = Source[button];
+				if (stickySet.Contains(button))
+				{
+					return false;
+				}
+				else
+				{
+					return Source[button];
+				}
+			}
+			set { throw new InvalidOperationException(); }
+		}
+
+		public void SetSticky(string button, bool isSticky)
+		{
+			if (isSticky)
+				stickySet.Add(button);
+			else stickySet.Remove(button);
+		}
+	}
+
 	public class StickyXORAdapter : IController
 	{
-		private HashSet<string> stickySet = new HashSet<string>();
+		protected HashSet<string> stickySet = new HashSet<string>();
 		public IController Source;
 
 		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
