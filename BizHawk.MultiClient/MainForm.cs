@@ -29,7 +29,7 @@ namespace BizHawk.MultiClient
 	{
 		public static bool INTERIM = true;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
-		public const string RELEASEDATE = "December 23, 2012";
+		public const string RELEASEDATE = "March 23, 2013";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -5104,6 +5104,18 @@ namespace BizHawk.MultiClient
 		private void stopMovieWithoutSavingToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			StopMovie(true);
+		}
+
+		public string GetEmuVersion()
+		{
+			if (INTERIM)
+			{
+				return "SVN " + SubWCRev.SVN_REV;
+			}
+			else
+			{
+				return EMUVERSION;
+			}
 		}
 	}
 }
