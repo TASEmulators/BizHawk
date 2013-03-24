@@ -48,23 +48,12 @@ namespace BizHawk.MultiClient
 
 		public MovieHeader() //All required fields will be set to default values
 		{
-			HeaderParams.Add(EMULATIONVERSION, MainForm.EMUVERSION);
+			HeaderParams.Add(EMULATIONVERSION, Global.MainForm.GetEmuVersion());
 			HeaderParams.Add(MOVIEVERSION, MovieVersion);
 			HeaderParams.Add(PLATFORM, "");
 			HeaderParams.Add(GAMENAME, "");
 			HeaderParams.Add(AUTHOR, "");
 			HeaderParams.Add(RERECORDS, "0");
-			HeaderParams.Add(GUID, MakeGUID());
-		}
-
-		public MovieHeader(string EmulatorVersion, string MovieVersion, string Platform, string GameName, string Author, int rerecords)
-		{
-			HeaderParams.Add(EMULATIONVERSION, EmulatorVersion);
-			HeaderParams.Add(MOVIEVERSION, MovieVersion);
-			HeaderParams.Add(PLATFORM, Platform);
-			HeaderParams.Add(GAMENAME, GameName);
-			HeaderParams.Add(AUTHOR, Author);
-			HeaderParams.Add(RERECORDS, rerecords.ToString());
 			HeaderParams.Add(GUID, MakeGUID());
 		}
 
