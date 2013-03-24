@@ -20,17 +20,14 @@ namespace BizHawk.MultiClient
 			recentlist.Clear();
 		}
 
-		public bool IsEmpty()
+		public bool IsEmpty
 		{
-			if (recentlist.Count == 0)
-				return true;
-			else
-				return false;
+			get { return recentlist.Count > 0 ? false : true; }
 		}
 
-		public int Length()
+		public int Count
 		{
-			return recentlist.Count;
+			get { return recentlist.Count; }
 		}
 
 		public void Add(string newFile)
@@ -44,7 +41,9 @@ namespace BizHawk.MultiClient
 			}
 			recentlist.Insert(0, newFile);
 			if (recentlist.Count > MAX_RECENT_FILES)
+			{
 				recentlist.Remove(recentlist[recentlist.Count - 1]);
+			}
 		}
 
 		public bool Remove(string newFile)
@@ -57,14 +56,8 @@ namespace BizHawk.MultiClient
 					recentlist.Remove(newFile); //intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
 					removed = true;
 				}
-
 			}
 			return removed;
-		}
-
-		public List<string> GetRecentList()
-		{
-			return recentlist;
 		}
 
 		public List<string> GetRecentListTruncated(int length)
@@ -80,9 +73,14 @@ namespace BizHawk.MultiClient
 
 		public string GetRecentFileByPosition(int position)
 		{
-			if (recentlist.Count == 0) 
+			if (recentlist.Count > 0)
+			{
+				return recentlist[position];
+			}
+			else
+			{
 				return "";
-			return recentlist[position];
+			}
 		}
 	}
 }

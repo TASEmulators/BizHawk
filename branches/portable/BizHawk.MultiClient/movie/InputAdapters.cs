@@ -34,6 +34,23 @@ namespace BizHawk.MultiClient
 			Pressed.Add(button);
 		}
 
+		public void Unclick(string button)
+		{
+			Pressed.Remove(button);
+		}
+
+		public void Toggle(string button)
+		{
+			if (IsPressed(button))
+			{
+				Pressed.Remove(button);
+			}
+			else
+			{
+				Pressed.Add(button);
+			}
+		}
+
 		HashSet<string> Pressed = new HashSet<string>();
 	}
 
@@ -118,9 +135,45 @@ namespace BizHawk.MultiClient
 
 	}
 
+	public class ForceOffAdaptor : IController
+	{
+		public bool IsPressed(string button) { return this[button]; }
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+
+		protected HashSet<string> stickySet = new HashSet<string>();
+		public IController Source;
+		public IController SourceOr;
+		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+
+		public bool this[string button]
+		{
+			get
+			{
+				bool source = Source[button];
+				if (stickySet.Contains(button))
+				{
+					return false;
+				}
+				else
+				{
+					return Source[button];
+				}
+			}
+			set { throw new InvalidOperationException(); }
+		}
+
+		public void SetSticky(string button, bool isSticky)
+		{
+			if (isSticky)
+				stickySet.Add(button);
+			else stickySet.Remove(button);
+		}
+	}
+
 	public class StickyXORAdapter : IController
 	{
-		private HashSet<string> stickySet = new HashSet<string>();
+		protected HashSet<string> stickySet = new HashSet<string>();
 		public IController Source;
 
 		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
@@ -331,41 +384,61 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
-		public string GetEmptyMnemonic()
+		public bool IsEmpty
 		{
-			switch (Global.Emulator.SystemId)
+			get
 			{
-				default:
-				case "NULL":
-					return "|.|";
-				case "A26":
-					return "|..|.....|.....|";
-				case "A78":
-					return "|....|......|......|";
-				case "TI83":
-					return "|..................................................|.|";
-				case "NES":
-					return "|.|........|........|........|........|";
-				case "SNES":
-					return "|.|............|............|............|............|";
-				case "SMS":
-				case "GG":
-				case "SG":
-					return "|......|......|..|";
-				case "GEN":
-					return "|.|........|........|";
-				case "GB":
-					return "|.|........|";
-				case "PCE":
-				case "PCECD":
-				case "SGX":
-					return "|.|........|........|........|........|........|";
-				case "Coleco":
-					return "|..................|..................|";
-				case "C64":
-					return "|.....|.....|..................................................................|";
-				case "GBA":
-					return "|.|..........|";
+				string empty = GetEmptyMnemonic;
+				string input = GetControllersAsMnemonic();
+				if (empty == input)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		public string GetEmptyMnemonic
+		{
+			get
+			{
+				switch (Global.Emulator.SystemId)
+				{
+					default:
+					case "NULL":
+						return "|.|";
+					case "A26":
+						return "|..|.....|.....|";
+					case "A78":
+						return "|....|......|......|";
+					case "TI83":
+						return "|..................................................|.|";
+					case "NES":
+						return "|.|........|........|........|........|";
+					case "SNES":
+						return "|.|............|............|............|............|";
+					case "SMS":
+					case "GG":
+					case "SG":
+						return "|......|......|..|";
+					case "GEN":
+						return "|.|........|........|";
+					case "GB":
+						return "|.|........|";
+					case "PCE":
+					case "PCECD":
+					case "SGX":
+						return "|.|........|........|........|........|........|";
+					case "Coleco":
+						return "|..................|..................|";
+					case "C64":
+						return "|.....|.....|..................................................................|";
+					case "GBA":
+						return "|.|..........|";
+				}
 			}
 		}
 

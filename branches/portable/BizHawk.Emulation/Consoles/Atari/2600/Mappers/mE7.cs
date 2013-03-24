@@ -38,14 +38,18 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 		ByteBuffer rambank1 = new ByteBuffer(1024);
 		bool EnableRam0 = false;
 
-		public override byte ReadMemory(ushort addr)
+		private byte ReadMem(ushort addr, bool peek)
 		{
 			if (addr < 0x1000)
 			{
 				return base.ReadMemory(addr);
 			}
 
-			Address(addr);
+			if (!peek)
+			{
+				Address(addr);
+			}
+
 			if (addr < 0x1800)
 			{
 				if (EnableRam0)
@@ -84,6 +88,17 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 				return base.ReadMemory(addr);
 			}
 		}
+
+		public override byte ReadMemory(ushort addr)
+		{
+			return ReadMem(addr, false);
+		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMem(addr, true);
+		}
+
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			Address(addr);

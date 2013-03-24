@@ -320,7 +320,7 @@ namespace BizHawk.MultiClient
 		eDisplayType CurrDisplaySelection { get { return (comboDisplayType.SelectedValue as eDisplayType?).Value; } }
 
 		//todo - something smarter to cycle through bitmaps without repeatedly trashing them (use the dispose callback on the viewer)
-		void RenderView()
+		private void RenderView()
 		{
 			Bitmap bmp = null;
 			System.Drawing.Imaging.BitmapData bmpdata = null;
@@ -412,7 +412,7 @@ namespace BizHawk.MultiClient
 				map = new SNESGraphicsDecoder.TileEntry[0];
 				viewBgMode = bg.BGMode;
 
-				bool handled = false;
+				//bool handled = false;
 				if (bg.Enabled)
 				{
 					//TODO - directColor in normal BG renderer
@@ -425,7 +425,7 @@ namespace BizHawk.MultiClient
 						bool mode7extbg = (bgnum == 2 && si.SETINI_Mode7ExtBG);
 						if (mode7 || mode7extbg)
 						{
-							handled = true;
+							//handled = true;
 							allocate(1024, 1024);
 							gd.DecodeMode7BG(pixelptr, stride / 4, mode7extbg);
 							numPixels = 128 * 128 * 8 * 8;
@@ -438,7 +438,7 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						handled = true;
+						//handled = true;
 						var dims = bg.ScreenSizeInPixels;
 						dims.Height = dims.Width = Math.Max(dims.Width, dims.Height);
 						allocate(dims.Width, dims.Height);

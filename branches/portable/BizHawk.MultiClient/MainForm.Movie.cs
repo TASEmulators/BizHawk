@@ -12,6 +12,15 @@ namespace BizHawk.MultiClient
 	{
 		public bool ReadOnly = true;	//Global Movie Read only setting
 
+		public void ClearFrame()
+		{
+			if (Global.MovieSession.Movie.IsPlaying)
+			{
+				Global.MovieSession.Movie.ClearFrame(Global.Emulator.Frame);
+				Global.OSD.AddMessage("Scrubbed input at frame " + Global.Emulator.Frame.ToString());
+			}
+		}
+
 		public void StartNewMovie(Movie m, bool record)
 		{
 			//If a movie is already loaded, save it before starting a new movie
@@ -122,7 +131,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void StopMovie()
+		public void StopMovie(bool abortchanges = false)
 		{
 			string message = "Movie ";
 			if (Global.MovieSession.Movie.IsRecording)
@@ -138,7 +147,11 @@ namespace BizHawk.MultiClient
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.Stop();
+				Global.MovieSession.Movie.Stop(abortchanges);
+				if (!abortchanges)
+				{
+					Global.OSD.AddMessage(Path.GetFileName(Global.MovieSession.Movie.Filename) + " written to disk.");
+				}
 				Global.OSD.AddMessage(message);
 				Global.MainForm.ReadOnly = true;
 				SetMainformMovieInfo();
@@ -286,9 +299,25 @@ namespace BizHawk.MultiClient
 				{
 					Global.MovieSession.Movie.CaptureState();
 					Global.MovieSession.LatchInputFromLog();
-					if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed)
+					if (Global.ClientControls["ClearFrame"])
 					{
-						Global.MovieSession.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+						ClearFrame();
+					}
+					else if (TAStudio1.IsHandleCreated && !TAStudio1.IsDisposed || Global.Config.MoviePlaybackPokeMode)
+					{
+						Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+						MnemonicsGenerator mg = new MnemonicsGenerator();
+						mg.SetSource( Global.MovieOutputHardpoint);
+						if (!mg.IsEmpty)
+						{
+							Global.MovieSession.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+							Global.MovieSession.Movie.PokeFrame(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
+						}
+						else
+						{
+							Global.MovieSession.LatchInputFromLog();
+						}
 					}
 				}
 			}

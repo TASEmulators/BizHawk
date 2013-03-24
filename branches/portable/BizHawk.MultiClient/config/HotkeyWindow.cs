@@ -103,6 +103,7 @@ namespace BizHawk.MultiClient
 			IDW_DecSpeed.SetBindings(Global.Config.DecreaseSpeedBinding);
 			IDW_ToggleBGInput.SetBindings(Global.Config.ToggleBackgroundInput);
 			IDW_Autohold.SetBindings(Global.Config.AutoholdBinding);
+			IDW_AutoholdAutofire.SetBindings(Global.Config.AutoholdAutofireBinding);
 			IDW_ClearAutohold.SetBindings(Global.Config.AutoholdClear);
 			IDW_SNES_ToggleBG1.SetBindings(Global.Config.ToggleSNESBG1Binding);
 			IDW_SNES_ToggleBG2.SetBindings(Global.Config.ToggleSNESBG2Binding);
@@ -114,6 +115,8 @@ namespace BizHawk.MultiClient
 			IDW_SNES_ToggleOBJ4.SetBindings(Global.Config.ToggleSNESOBJ4Binding);
 			IDW_SaveMovie.SetBindings(Global.Config.SaveMovieBinding);
 			IDW_OpenVirtualPad.SetBindings(Global.Config.OpenVirtualPadBinding);
+			IDW_MoviePokeToggle.SetBindings(Global.Config.MoviePlaybackPokeModeBinding);
+			IDW_ClearFrame.SetBindings(Global.Config.ClearFrameBinding);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -225,6 +228,7 @@ namespace BizHawk.MultiClient
 			Global.Config.ToggleBackgroundInput = IDW_ToggleBGInput.Text;
 
 			Global.Config.AutoholdBinding = IDW_Autohold.Text;
+			Global.Config.AutoholdAutofireBinding = IDW_AutoholdAutofire.Text;
 			Global.Config.AutoholdClear = IDW_ClearAutohold.Text;
 
 			Global.Config.ToggleSNESBG1Binding = IDW_SNES_ToggleBG1.Text;
@@ -237,6 +241,8 @@ namespace BizHawk.MultiClient
 			Global.Config.ToggleSNESOBJ4Binding = IDW_SNES_ToggleOBJ4.Text;
 
 			Global.Config.OpenVirtualPadBinding = IDW_OpenVirtualPad.Text;
+			Global.Config.MoviePlaybackPokeModeBinding = IDW_MoviePokeToggle.Text;
+			Global.Config.ClearFrameBinding = IDW_ClearFrame.Text;
 
 			Global.OSD.AddMessage("Hotkey settings saved");
 			this.DialogResult = DialogResult.OK;
@@ -262,6 +268,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "Tools":
 					IDW_RamWatch.Focus();
+					break;
+				case "SNES":
+					IDW_SNES_ToggleBG1.Focus();
 					break;
 			}
 		}
@@ -309,6 +318,11 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+		}
+
+		private void label80_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

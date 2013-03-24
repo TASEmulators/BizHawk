@@ -362,6 +362,8 @@ namespace BizHawk.MultiClient
 		                                      		"drawIcon",
 		                                      		"drawImage",
 													"addmessage",
+													"drawText",
+													"drawString",
 		                                      	};
 
 		public static string[] EmuFunctions = new string[]
@@ -515,6 +517,8 @@ namespace BizHawk.MultiClient
 															"screenshot",
 															"screenshottoclipboard",
 															"setscreenshotosd",
+															"pause_av",
+															"unpause_av",
 		                                              	};
 
 		public static string[] FormsFunctions = new string[]
@@ -785,6 +789,64 @@ namespace BizHawk.MultiClient
 				catch (Exception)
 				{
 					// need to stop the script from here
+					return;
+				}
+			}
+		}
+
+		public void gui_drawString(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
+		{
+			gui_drawText(X, Y, message, color, fontsize, fontfamily, fontstyle);
+		}
+
+		public void gui_drawText(object X, object Y, object message, object color = null, object fontsize = null, object fontfamily = null, object fontstyle = null)
+		{
+			using (var g = GetGraphics())
+			{
+				float x = LuaInt(X) + 0.1F;
+				try
+				{
+					int fsize = 12;
+					if (fontsize != null)
+					{
+						fsize = LuaInt(fontsize);
+					}
+
+					FontFamily family = FontFamily.GenericMonospace;
+					if (fontfamily != null)
+					{
+						family = new FontFamily(fontfamily.ToString());
+					}
+
+					FontStyle fstyle = FontStyle.Regular;
+					if (fontstyle != null)
+					{
+						string tmp = fontstyle.ToString().ToLower();
+						switch (tmp)
+						{
+							default:
+							case "regular":
+								break;
+							case "bold":
+								fstyle = FontStyle.Bold;
+								break;
+							case "italic":
+								fstyle = FontStyle.Italic;
+								break;
+							case "strikethrough":
+								fstyle = FontStyle.Strikeout;
+								break;
+							case "underline":
+								fstyle = FontStyle.Underline;
+								break;
+						}
+					}
+
+					Font font = new System.Drawing.Font(family, fsize, fstyle, GraphicsUnit.Pixel);
+					g.DrawString(message.ToString(), font, GetBrush(color ?? "white"), LuaInt(X), LuaInt(Y));
+				}
+				catch (Exception)
+				{
 					return;
 				}
 			}
@@ -1202,6 +1264,16 @@ namespace BizHawk.MultiClient
 			}
 			else
 				Global.Emulator.CoreComm.InputCallback = null;
+		}
+
+		public void client_pause_av()
+		{
+			Global.MainForm.PauseAVI = true;
+		}
+
+		public void client_unpause_av()
+		{
+			Global.MainForm.PauseAVI = false;
 		}
 
 		//----------------------------------------------------
@@ -1944,7 +2016,14 @@ namespace BizHawk.MultiClient
 
 		public int movie_length()
 		{
-			return Global.MovieSession.Movie.Frames;
+			if (Global.MovieSession.Movie.Frames.HasValue)
+			{
+				return Global.MovieSession.Movie.Frames.Value;
+			}
+			else
+			{
+				return -1;
+			}
 		}
 
 		public string movie_filename()
@@ -2034,14 +2113,91 @@ namespace BizHawk.MultiClient
 
 		public void joypad_set(LuaTable buttons, object controller = null)
 		{
-			foreach (var button in buttons.Keys)
+			try
 			{
-				if (Convert.ToBoolean(buttons[button]) == true)
-					if (controller == null)
-						Global.ClickyVirtualPadController.Click(button.ToString());
+				foreach (var button in buttons.Keys)
+				{
+					bool invert = false;
+					bool? theValue = null;
+					string theValueStr = buttons[button].ToString();
+					
+					if (!String.IsNullOrWhiteSpace(theValueStr))
+					{
+						if (theValueStr.ToLower() == "false")
+						{
+							theValue = false;
+						}
+						else if (theValueStr.ToLower() == "true")
+						{
+							theValue = true;
+						}
+						else
+						{
+							invert = true;
+							theValue = null;
+						}
+					}
 					else
-						Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
+					{
+						theValue = null;
+					}
+					
+
+					if (!invert)
+					{
+						if (theValue == true)
+						{
+							if (controller == null) //Force On
+							{
+								Global.ClickyVirtualPadController.Click(button.ToString());
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
+							}
+							else
+							{
+								Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
+								Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), false);
+							}
+						}
+						else if (theValue == false) //Force off
+						{
+							if (controller == null)
+							{
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), true);
+							}
+							else
+							{
+								Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), true);
+							}
+						}
+						else if (theValue == null)
+						{
+							//Turn everything off
+							if (controller == null)
+							{
+								Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
+							}
+							else
+							{
+								Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), false);
+							}
+						}
+					}
+					else //Inverse
+					{
+						if (controller == null)
+						{
+							Global.StickyXORAdapter.SetSticky(button.ToString(), true);
+							Global.ForceOffAdaptor.SetSticky(button.ToString(), false);
+						}
+						else
+						{
+							Global.StickyXORAdapter.SetSticky("P" + controller.ToString() + " " + button.ToString(), true);
+							Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), false);
+						}
+					}
+				}
 			}
+			catch { /*Eat it*/ } 
 		}
 
 		//----------------------------------------------------

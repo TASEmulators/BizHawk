@@ -285,8 +285,8 @@ namespace BizHawk.MultiClient
 	{
 		public string FPS { get; set; }
 		public string MT { get; set; }
-		IBlitterFont MessageFont;
-		IBlitterFont AlertFont;
+		public IBlitterFont MessageFont;
+		public IBlitterFont AlertFont;
 		public void Dispose()
 		{
 
@@ -345,9 +345,15 @@ namespace BizHawk.MultiClient
 				StringBuilder s = new StringBuilder();
 				s.Append(Global.Emulator.Frame);
 				s.Append('/');
-				s.Append(Global.MovieSession.Movie.Frames);
+				if (Global.MovieSession.Movie.Frames.HasValue)
+				{
+					s.Append(Global.MovieSession.Movie.Frames);
+				}
+				else
+				{
+					s.Append("infinity");
+				}
 				s.Append(" (Finished)");
-				//return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Frames.ToString() + " (Finished)";
 				return s.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsPlaying)
@@ -355,7 +361,14 @@ namespace BizHawk.MultiClient
 				StringBuilder s = new StringBuilder();
 				s.Append(Global.Emulator.Frame);
 				s.Append('/');
-				s.Append(Global.MovieSession.Movie.Frames);
+				if (Global.MovieSession.Movie.Frames.HasValue)
+				{
+					s.Append(Global.MovieSession.Movie.Frames);
+				}
+				else
+				{
+					s.Append("infinity");
+				}
 				return s.ToString();
 			}
 			else if (Global.MovieSession.Movie.IsRecording)
@@ -567,9 +580,10 @@ namespace BizHawk.MultiClient
 				g.DrawString(rerec, MessageFont, FixedMessagesColor, x, y);
 			}
 
-			if (Global.ClientControls["Autohold"])
+			if (Global.ClientControls["Autohold"] || Global.ClientControls["AutoholdAutofire"])
 			{
 				StringBuilder disp = new StringBuilder("Held: ");
+
 				foreach (string s in Global.StickyXORAdapter.CurrentStickies)
 				{
 					disp.Append(s);
@@ -788,6 +802,6 @@ namespace BizHawk.MultiClient
 
 		SwappableDisplaySurfaceSet nativeDisplaySurfaceSet = new SwappableDisplaySurfaceSet();
 
-		Thread displayThread;
+		//Thread displayThread;
 	}
 }

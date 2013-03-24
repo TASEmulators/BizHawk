@@ -29,6 +29,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public int TimeLineCount
+		{
+			get
+			{
+				return Timelines.Count;
+			}
+		}
+
 		private void AddLog(MovieLog log, int? slot)
 		{
 			sort();
@@ -57,7 +65,7 @@ namespace BizHawk.MultiClient
 		List<TimeLine> Timelines; //MovieLogs of all savestates and the loaded movie
 
 		//Represents a single timeline that consists of at least 1 slot
-		public class TimeLine
+		private class TimeLine
 		{
 			public TimeLine(MovieLog log, int? slot_number = null)
 			{

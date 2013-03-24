@@ -97,7 +97,7 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 			if (Global.Config.AutoLoadLuaSession)
 			{
-				if (!Global.Config.RecentLuaSession.IsEmpty())
+				if (!Global.Config.RecentLuaSession.IsEmpty)
 				{
 					LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
 				}
@@ -548,7 +548,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentLua.IsEmpty())
+			if (Global.Config.RecentLua.IsEmpty)
 			{
 				var none = new ToolStripMenuItem();
 				none.Enabled = false;
@@ -557,7 +557,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				for (int x = 0; x < Global.Config.RecentLua.Length(); x++)
+				for (int x = 0; x < Global.Config.RecentLua.Count; x++)
 				{
 					string path = Global.Config.RecentLua.GetRecentFileByPosition(x);
 					var item = new ToolStripMenuItem();
@@ -866,8 +866,10 @@ namespace BizHawk.MultiClient
 							if (!prohibit)
 							{
 								//restore this lua thread's preferred current directory
-								Environment.CurrentDirectory = lf.CurrentDirectory;
-								
+								if (lf.CurrentDirectory != null)
+								{
+									Environment.CurrentDirectory = lf.CurrentDirectory;
+								}
 								var result = LuaImp.ResumeScript(lf.Thread);
 								if (result.Terminated) lf.Stop();
 								lf.FrameWaiting = result.WaitForFrame;
@@ -1037,7 +1039,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentSessionsToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentLuaSession.IsEmpty())
+			if (Global.Config.RecentLuaSession.IsEmpty)
 			{
 				var none = new ToolStripMenuItem();
 				none.Enabled = false;
@@ -1046,7 +1048,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				for (int x = 0; x < Global.Config.RecentLuaSession.Length(); x++)
+				for (int x = 0; x < Global.Config.RecentLuaSession.Count; x++)
 				{
 					string path = Global.Config.RecentLuaSession.GetRecentFileByPosition(x);
 					var item = new ToolStripMenuItem();

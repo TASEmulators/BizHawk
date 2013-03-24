@@ -255,6 +255,7 @@
 			this.MovieView.DragDrop += new System.Windows.Forms.DragEventHandler(this.MovieView_DragDrop);
 			this.MovieView.DragEnter += new System.Windows.Forms.DragEventHandler(this.MovieView_DragEnter);
 			this.MovieView.DoubleClick += new System.EventHandler(this.MovieView_DoubleClick);
+			this.MovieView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MovieView_KeyDown);
 			// 
 			// columnHeader1
 			// 

@@ -19,12 +19,27 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 	{
 		int toggle = 0;
 
-		public override byte ReadMemory(ushort addr)
+		private byte ReadMem(ushort addr, bool peek)
 		{
-			Address(addr);
+			if (!peek)
+			{
+				Address(addr);
+			}
+
 			if (addr < 0x1000) return base.ReadMemory(addr);
 			return core.rom[toggle * 4 * 1024 + (addr & 0xFFF)];
 		}
+
+		public override byte ReadMemory(ushort addr)
+		{
+			return ReadMem(addr, false);
+		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMem(addr, true);
+		}
+
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			Address(addr);

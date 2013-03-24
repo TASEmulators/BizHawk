@@ -31,17 +31,32 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 		int toggle1 = 0;
 		int toggle2 = 0;
 		int toggle3 = 0;
-		
-		public override byte ReadMemory(ushort addr)
+
+		private byte ReadMem(ushort addr, bool peek)
 		{
-			Address(addr);
+			if (!peek)
+			{
+				Address(addr);
+			}
+
 			if (addr < 0x1000) return base.ReadMemory(addr);
 			else if (addr < 0x1400) return core.rom[toggle1 * 1024 + (addr & 0x3FF)];
 			else if (addr < 0x1800) return core.rom[toggle2 * 1024 + (addr & 0x3FF)];
 			else if (addr < 0x1C00) return core.rom[toggle3 * 1024 + (addr & 0x3FF)];
-			else 
+			else
 				return core.rom[7 * 1024 + (addr & 0x3FF)]; //7 because final bank is always set to last
 		}
+
+		public override byte ReadMemory(ushort addr)
+		{
+			return ReadMem(addr, false);
+		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMem(addr, true);
+		}
+
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			Address(addr);

@@ -32,20 +32,23 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 
 	class m4A50 : MapperBase 
 	{
-		int myLastData = 0xFF;
-		int myLastAddress = 0xFFFF;
-		
-		bool myIsRomHigh = true;
-		bool myBankChanged = true;
-		bool myIsRomLow = true;
-		bool myIsRomMiddle = true;
-		
-		int mySliceHigh = 0;
-		int mySliceLow = 0;
-		int mySliceMiddle = 0;
+		private int myLastData = 0xFF;
+		private int myLastAddress = 0xFFFF;
 
-		ByteBuffer myRAM = new ByteBuffer(32768);
-		
+		private bool myIsRomHigh = true;
+		private bool myIsRomLow = true;
+		private bool myIsRomMiddle = true;
+
+		private int mySliceHigh = 0;
+		private int mySliceLow = 0;
+		private int mySliceMiddle = 0;
+
+		private ByteBuffer myRAM = new ByteBuffer(32768);
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return base.PeekMemory(addr); //TODO
+		}
 
 		public override byte ReadMemory(ushort addr)
 		{
@@ -103,7 +106,6 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 					if (!myIsRomLow)
 					{
 						myRAM[(addr & 0x7ff) + mySliceLow] = value;
-						myBankChanged = true;
 					}
 				}
 				else if (((addr & 0x1fff) >= 0x1800) &&  // 1.5K region at 0x1800 - 0x1dff
@@ -112,7 +114,6 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 					if (!myIsRomMiddle)
 					{
 						myRAM[(addr & 0x7ff) + mySliceMiddle] = value;
-						myBankChanged = true;
 					}
 				}
 				else if ((addr & 0x1f00) == 0x1e00)      // 256B region at 0x1e00 - 0x1eff
@@ -120,7 +121,6 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 					if (!myIsRomHigh)
 					{
 						myRAM[(addr & 0xff) + mySliceHigh] = value;
-						myBankChanged = true;
 					}
 				}
 				else if ((addr & 0x1f00) == 0x1f00)      // 256B region at 0x1f00 - 0x1fff
@@ -130,7 +130,6 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 					{
 						mySliceHigh = (mySliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
 									  ((addr & 0x70) << 4);
-						myBankChanged = true;
 					}
 				}
 			}
@@ -147,57 +146,47 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 				{
 					myIsRomHigh = true;
 					mySliceHigh = (address & 0xff) << 8;
-					myBankChanged = true;
 				}
 				else if ((address & 0x0f00) == 0x0d00)  // Enable 256B of RAM at 0x1e00 - 0x1eff
 				{
 					myIsRomHigh = false;
 					mySliceHigh = (address & 0x7f) << 8;
-					myBankChanged = true;
 				}
 				else if ((address & 0x0f40) == 0x0e00)  // Enable 2K of ROM at 0x1000 - 0x17ff
 				{
 					myIsRomLow = true;
 					mySliceLow = (address & 0x1f) << 11;
-					myBankChanged = true;
 				}
 				else if ((address & 0x0f40) == 0x0e40)  // Enable 2K of RAM at 0x1000 - 0x17ff
 				{
 					myIsRomLow = false;
 					mySliceLow = (address & 0xf) << 11;
-					myBankChanged = true;
 				}
 				else if ((address & 0x0f40) == 0x0f00)  // Enable 1.5K of ROM at 0x1800 - 0x1dff
 				{
 					myIsRomMiddle = true;
 					mySliceMiddle = (address & 0x1f) << 11;
-					myBankChanged = true;
 				}
 				else if ((address & 0x0f50) == 0x0f40)  // Enable 1.5K of RAM at 0x1800 - 0x1dff
 				{
 					myIsRomMiddle = false;
 					mySliceMiddle = (address & 0xf) << 11;
-					myBankChanged = true;
 				}
 				else if ((address & 0x0f00) == 0x0400)   // Toggle bit A11 of lower block address
 				{
 					mySliceLow = mySliceLow ^ 0x800;
-					myBankChanged = true;
 				}
 				else if ((address & 0x0f00) == 0x0500)   // Toggle bit A12 of lower block address
 				{
 					mySliceLow = mySliceLow ^ 0x1000;
-					myBankChanged = true;
 				}
 				else if ((address & 0x0f00) == 0x0800)   // Toggle bit A11 of middle block address
 				{
 					mySliceMiddle = mySliceMiddle ^ 0x800;
-					myBankChanged = true;
 				}
 				else if ((address & 0x0f00) == 0x0900)   // Toggle bit A12 of middle block address
 				{
 					mySliceMiddle = mySliceMiddle ^ 0x1000;
-					myBankChanged = true;
 				}
 
 				// Zero-page hotspots for upper page
@@ -208,13 +197,11 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 				{
 					myIsRomHigh = true;
 					mySliceHigh = value << 8;
-					myBankChanged = true;
 				}
 				else if ((address & 0xf75) == 0x75)    // Enable 256B of RAM at 0x1e00 - 0x1eff
 				{
 					myIsRomHigh = false;
 					mySliceHigh = (value & 0x7f) << 8;
-					myBankChanged = true;
 				}
 
 				// Zero-page hotspots for lower and middle blocks
@@ -226,25 +213,21 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 					{
 						myIsRomLow = true;
 						mySliceLow = (value & 0xf) << 11;
-						myBankChanged = true;
 					}
 					else if ((value & 0xf0) == 0x40)   // Enable 2K of RAM at 0x1000 - 0x17ff
 					{
 						myIsRomLow = false;
 						mySliceLow = (value & 0xf) << 11;
-						myBankChanged = true;
 					}
 					else if ((value & 0xf0) == 0x90)   // Enable 1.5K of ROM at 0x1800 - 0x1dff
 					{
 						myIsRomMiddle = true;
 						mySliceMiddle = ((value & 0xf) | 0x10) << 11;
-						myBankChanged = true;
 					}
 					else if ((value & 0xf0) == 0xc0)   // Enable 1.5K of RAM at 0x1800 - 0x1dff
 					{
 						myIsRomMiddle = false;
 						mySliceMiddle = (value & 0xf) << 11;
-						myBankChanged = true;
 					}
 				}
 			}

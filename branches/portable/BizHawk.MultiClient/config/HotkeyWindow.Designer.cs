@@ -31,6 +31,8 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyWindow));
 			this.hotkeyTabs = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.label84 = new System.Windows.Forms.Label();
+			this.IDW_AutoholdAutofire = new BizHawk.MultiClient.InputWidget();
 			this.label82 = new System.Windows.Forms.Label();
 			this.IDW_HARDRESET = new BizHawk.MultiClient.InputWidget();
 			this.label83 = new System.Windows.Forms.Label();
@@ -164,6 +166,7 @@
 			this.IDW_SS3 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SS2 = new BizHawk.MultiClient.InputWidget();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.MoviePokeToggleLabel = new System.Windows.Forms.Label();
 			this.IDW_TOGGLEREADONLY = new BizHawk.MultiClient.InputWidget();
 			this.IDW_PLAYBEGINNING = new BizHawk.MultiClient.InputWidget();
 			this.label67 = new System.Windows.Forms.Label();
@@ -186,6 +189,7 @@
 			this.IDW_SELECTNONE = new BizHawk.MultiClient.InputWidget();
 			this.IDW_MTSELECTALL = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SaveMovie = new BizHawk.MultiClient.InputWidget();
+			this.IDW_MoviePokeToggle = new BizHawk.MultiClient.InputWidget();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.VirtualPadsLabel = new System.Windows.Forms.Label();
 			this.IDW_OpenVirtualPad = new BizHawk.MultiClient.InputWidget();
@@ -226,6 +230,8 @@
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
+			this.IDW_ClearFrame = new BizHawk.MultiClient.InputWidget();
+			this.ClearFrameLabel = new System.Windows.Forms.Label();
 			this.hotkeyTabs.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -252,6 +258,8 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.label84);
+			this.tabPage1.Controls.Add(this.IDW_AutoholdAutofire);
 			this.tabPage1.Controls.Add(this.label82);
 			this.tabPage1.Controls.Add(this.IDW_HARDRESET);
 			this.tabPage1.Controls.Add(this.label83);
@@ -322,6 +330,25 @@
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// label84
+			// 
+			this.label84.AutoSize = true;
+			this.label84.Location = new System.Drawing.Point(402, 182);
+			this.label84.Name = "label84";
+			this.label84.Size = new System.Drawing.Size(43, 13);
+			this.label84.TabIndex = 118;
+			this.label84.Text = "Autofire";
+			// 
+			// IDW_AutoholdAutofire
+			// 
+			this.IDW_AutoholdAutofire.AcceptsTab = true;
+			this.IDW_AutoholdAutofire.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_AutoholdAutofire.Conflicted = false;
+			this.IDW_AutoholdAutofire.Location = new System.Drawing.Point(492, 178);
+			this.IDW_AutoholdAutofire.Name = "IDW_AutoholdAutofire";
+			this.IDW_AutoholdAutofire.Size = new System.Drawing.Size(100, 20);
+			this.IDW_AutoholdAutofire.TabIndex = 119;
+			// 
 			// label82
 			// 
 			this.label82.AutoSize = true;
@@ -335,6 +362,7 @@
 			// 
 			this.IDW_HARDRESET.AcceptsTab = true;
 			this.IDW_HARDRESET.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_HARDRESET.Conflicted = false;
 			this.IDW_HARDRESET.Location = new System.Drawing.Point(93, 180);
 			this.IDW_HARDRESET.Name = "IDW_HARDRESET";
 			this.IDW_HARDRESET.Size = new System.Drawing.Size(100, 20);
@@ -362,6 +390,7 @@
 			// 
 			this.IDW_ClearAutohold.AcceptsTab = true;
 			this.IDW_ClearAutohold.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ClearAutohold.Conflicted = false;
 			this.IDW_ClearAutohold.Location = new System.Drawing.Point(93, 274);
 			this.IDW_ClearAutohold.Name = "IDW_ClearAutohold";
 			this.IDW_ClearAutohold.Size = new System.Drawing.Size(100, 20);
@@ -371,6 +400,7 @@
 			// 
 			this.IDW_Autohold.AcceptsTab = true;
 			this.IDW_Autohold.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_Autohold.Conflicted = false;
 			this.IDW_Autohold.Location = new System.Drawing.Point(93, 250);
 			this.IDW_Autohold.Name = "IDW_Autohold";
 			this.IDW_Autohold.Size = new System.Drawing.Size(100, 20);
@@ -389,6 +419,7 @@
 			// 
 			this.IDW_MAXTURBO.AcceptsTab = true;
 			this.IDW_MAXTURBO.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_MAXTURBO.Conflicted = false;
 			this.IDW_MAXTURBO.Location = new System.Drawing.Point(93, 106);
 			this.IDW_MAXTURBO.Name = "IDW_MAXTURBO";
 			this.IDW_MAXTURBO.Size = new System.Drawing.Size(100, 20);
@@ -402,11 +433,13 @@
 			this.label80.Size = new System.Drawing.Size(85, 13);
 			this.label80.TabIndex = 109;
 			this.label80.Text = "Toggle BG Input";
+			this.label80.Click += new System.EventHandler(this.label80_Click);
 			// 
 			// IDW_ToggleBGInput
 			// 
 			this.IDW_ToggleBGInput.AcceptsTab = true;
 			this.IDW_ToggleBGInput.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ToggleBGInput.Conflicted = false;
 			this.IDW_ToggleBGInput.Location = new System.Drawing.Point(292, 202);
 			this.IDW_ToggleBGInput.Name = "IDW_ToggleBGInput";
 			this.IDW_ToggleBGInput.Size = new System.Drawing.Size(100, 20);
@@ -425,6 +458,7 @@
 			// 
 			this.IDW_DecSpeed.AcceptsTab = true;
 			this.IDW_DecSpeed.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_DecSpeed.Conflicted = false;
 			this.IDW_DecSpeed.Location = new System.Drawing.Point(492, 130);
 			this.IDW_DecSpeed.Name = "IDW_DecSpeed";
 			this.IDW_DecSpeed.Size = new System.Drawing.Size(100, 20);
@@ -443,6 +477,7 @@
 			// 
 			this.IDW_IncSpeed.AcceptsTab = true;
 			this.IDW_IncSpeed.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_IncSpeed.Conflicted = false;
 			this.IDW_IncSpeed.Location = new System.Drawing.Point(492, 106);
 			this.IDW_IncSpeed.Name = "IDW_IncSpeed";
 			this.IDW_IncSpeed.Size = new System.Drawing.Size(100, 20);
@@ -668,6 +703,7 @@
 			// 
 			this.IDW_DecreaseWindowSize.AcceptsTab = true;
 			this.IDW_DecreaseWindowSize.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_DecreaseWindowSize.Conflicted = false;
 			this.IDW_DecreaseWindowSize.Location = new System.Drawing.Point(492, 82);
 			this.IDW_DecreaseWindowSize.Name = "IDW_DecreaseWindowSize";
 			this.IDW_DecreaseWindowSize.Size = new System.Drawing.Size(100, 20);
@@ -677,6 +713,7 @@
 			// 
 			this.IDW_IncreaseWindowSize.AcceptsTab = true;
 			this.IDW_IncreaseWindowSize.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_IncreaseWindowSize.Conflicted = false;
 			this.IDW_IncreaseWindowSize.Location = new System.Drawing.Point(492, 58);
 			this.IDW_IncreaseWindowSize.Name = "IDW_IncreaseWindowSize";
 			this.IDW_IncreaseWindowSize.Size = new System.Drawing.Size(100, 20);
@@ -686,6 +723,7 @@
 			// 
 			this.IDW_ToggleMenu.AcceptsTab = true;
 			this.IDW_ToggleMenu.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ToggleMenu.Conflicted = false;
 			this.IDW_ToggleMenu.Location = new System.Drawing.Point(292, 226);
 			this.IDW_ToggleMenu.Name = "IDW_ToggleMenu";
 			this.IDW_ToggleMenu.Size = new System.Drawing.Size(100, 20);
@@ -695,6 +733,7 @@
 			// 
 			this.IDW_StopAVI.AcceptsTab = true;
 			this.IDW_StopAVI.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_StopAVI.Conflicted = false;
 			this.IDW_StopAVI.Location = new System.Drawing.Point(492, 34);
 			this.IDW_StopAVI.Name = "IDW_StopAVI";
 			this.IDW_StopAVI.Size = new System.Drawing.Size(100, 20);
@@ -704,6 +743,7 @@
 			// 
 			this.IDW_RecordAVI.AcceptsTab = true;
 			this.IDW_RecordAVI.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RecordAVI.Conflicted = false;
 			this.IDW_RecordAVI.Location = new System.Drawing.Point(492, 10);
 			this.IDW_RecordAVI.Name = "IDW_RecordAVI";
 			this.IDW_RecordAVI.Size = new System.Drawing.Size(100, 20);
@@ -713,6 +753,7 @@
 			// 
 			this.IDW_RESET.AcceptsTab = true;
 			this.IDW_RESET.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RESET.Conflicted = false;
 			this.IDW_RESET.Location = new System.Drawing.Point(93, 154);
 			this.IDW_RESET.Name = "IDW_RESET";
 			this.IDW_RESET.Size = new System.Drawing.Size(100, 20);
@@ -722,6 +763,7 @@
 			// 
 			this.IDW_UNTHROTTLE.AcceptsTab = true;
 			this.IDW_UNTHROTTLE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_UNTHROTTLE.Conflicted = false;
 			this.IDW_UNTHROTTLE.Location = new System.Drawing.Point(93, 130);
 			this.IDW_UNTHROTTLE.Name = "IDW_UNTHROTTLE";
 			this.IDW_UNTHROTTLE.Size = new System.Drawing.Size(100, 20);
@@ -731,6 +773,7 @@
 			// 
 			this.IDW_VOLDOWN.AcceptsTab = true;
 			this.IDW_VOLDOWN.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_VOLDOWN.Conflicted = false;
 			this.IDW_VOLDOWN.Location = new System.Drawing.Point(292, 274);
 			this.IDW_VOLDOWN.Name = "IDW_VOLDOWN";
 			this.IDW_VOLDOWN.Size = new System.Drawing.Size(100, 20);
@@ -740,6 +783,7 @@
 			// 
 			this.IDW_VOLUP.AcceptsTab = true;
 			this.IDW_VOLUP.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_VOLUP.Conflicted = false;
 			this.IDW_VOLUP.Location = new System.Drawing.Point(292, 250);
 			this.IDW_VOLUP.Name = "IDW_VOLUP";
 			this.IDW_VOLUP.Size = new System.Drawing.Size(100, 20);
@@ -749,6 +793,7 @@
 			// 
 			this.IDW_InputDisplay.AcceptsTab = true;
 			this.IDW_InputDisplay.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_InputDisplay.Conflicted = false;
 			this.IDW_InputDisplay.Location = new System.Drawing.Point(293, 178);
 			this.IDW_InputDisplay.Name = "IDW_InputDisplay";
 			this.IDW_InputDisplay.Size = new System.Drawing.Size(100, 20);
@@ -758,6 +803,7 @@
 			// 
 			this.IDW_LagCounter.AcceptsTab = true;
 			this.IDW_LagCounter.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LagCounter.Conflicted = false;
 			this.IDW_LagCounter.Location = new System.Drawing.Point(293, 154);
 			this.IDW_LagCounter.Name = "IDW_LagCounter";
 			this.IDW_LagCounter.Size = new System.Drawing.Size(100, 20);
@@ -767,6 +813,7 @@
 			// 
 			this.IDW_FrameCounter.AcceptsTab = true;
 			this.IDW_FrameCounter.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_FrameCounter.Conflicted = false;
 			this.IDW_FrameCounter.Location = new System.Drawing.Point(293, 130);
 			this.IDW_FrameCounter.Name = "IDW_FrameCounter";
 			this.IDW_FrameCounter.Size = new System.Drawing.Size(100, 20);
@@ -776,6 +823,7 @@
 			// 
 			this.IDW_DisplayFPS.AcceptsTab = true;
 			this.IDW_DisplayFPS.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_DisplayFPS.Conflicted = false;
 			this.IDW_DisplayFPS.Location = new System.Drawing.Point(292, 106);
 			this.IDW_DisplayFPS.Name = "IDW_DisplayFPS";
 			this.IDW_DisplayFPS.Size = new System.Drawing.Size(100, 20);
@@ -785,6 +833,7 @@
 			// 
 			this.IDW_CloseROM.AcceptsTab = true;
 			this.IDW_CloseROM.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_CloseROM.Conflicted = false;
 			this.IDW_CloseROM.Location = new System.Drawing.Point(293, 82);
 			this.IDW_CloseROM.Name = "IDW_CloseROM";
 			this.IDW_CloseROM.Size = new System.Drawing.Size(100, 20);
@@ -794,6 +843,7 @@
 			// 
 			this.IDW_OpenROM.AcceptsTab = true;
 			this.IDW_OpenROM.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_OpenROM.Conflicted = false;
 			this.IDW_OpenROM.Location = new System.Drawing.Point(293, 58);
 			this.IDW_OpenROM.Name = "IDW_OpenROM";
 			this.IDW_OpenROM.Size = new System.Drawing.Size(100, 20);
@@ -803,6 +853,7 @@
 			// 
 			this.IDW_FRAMEADVANCE.AcceptsTab = true;
 			this.IDW_FRAMEADVANCE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_FRAMEADVANCE.Conflicted = false;
 			this.IDW_FRAMEADVANCE.Location = new System.Drawing.Point(93, 10);
 			this.IDW_FRAMEADVANCE.Name = "IDW_FRAMEADVANCE";
 			this.IDW_FRAMEADVANCE.Size = new System.Drawing.Size(100, 20);
@@ -812,6 +863,7 @@
 			// 
 			this.IDW_FULLSCREEN.AcceptsTab = true;
 			this.IDW_FULLSCREEN.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_FULLSCREEN.Conflicted = false;
 			this.IDW_FULLSCREEN.Location = new System.Drawing.Point(293, 34);
 			this.IDW_FULLSCREEN.Name = "IDW_FULLSCREEN";
 			this.IDW_FULLSCREEN.Size = new System.Drawing.Size(100, 20);
@@ -821,6 +873,7 @@
 			// 
 			this.IDW_SCREENSHOT.AcceptsTab = true;
 			this.IDW_SCREENSHOT.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SCREENSHOT.Conflicted = false;
 			this.IDW_SCREENSHOT.Location = new System.Drawing.Point(293, 10);
 			this.IDW_SCREENSHOT.Name = "IDW_SCREENSHOT";
 			this.IDW_SCREENSHOT.Size = new System.Drawing.Size(100, 20);
@@ -830,6 +883,7 @@
 			// 
 			this.IDW_REWIND.AcceptsTab = true;
 			this.IDW_REWIND.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_REWIND.Conflicted = false;
 			this.IDW_REWIND.Location = new System.Drawing.Point(93, 34);
 			this.IDW_REWIND.Name = "IDW_REWIND";
 			this.IDW_REWIND.Size = new System.Drawing.Size(100, 20);
@@ -839,6 +893,7 @@
 			// 
 			this.IDW_FASTFORWARD.AcceptsTab = true;
 			this.IDW_FASTFORWARD.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_FASTFORWARD.Conflicted = false;
 			this.IDW_FASTFORWARD.Location = new System.Drawing.Point(93, 82);
 			this.IDW_FASTFORWARD.Name = "IDW_FASTFORWARD";
 			this.IDW_FASTFORWARD.Size = new System.Drawing.Size(100, 20);
@@ -848,6 +903,7 @@
 			// 
 			this.IDW_REBOOTCORE.AcceptsTab = true;
 			this.IDW_REBOOTCORE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_REBOOTCORE.Conflicted = false;
 			this.IDW_REBOOTCORE.Location = new System.Drawing.Point(492, 154);
 			this.IDW_REBOOTCORE.Name = "IDW_REBOOTCORE";
 			this.IDW_REBOOTCORE.Size = new System.Drawing.Size(100, 20);
@@ -857,6 +913,7 @@
 			// 
 			this.IDW_PAUSE.AcceptsTab = true;
 			this.IDW_PAUSE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_PAUSE.Conflicted = false;
 			this.IDW_PAUSE.Location = new System.Drawing.Point(93, 58);
 			this.IDW_PAUSE.Name = "IDW_PAUSE";
 			this.IDW_PAUSE.Size = new System.Drawing.Size(100, 20);
@@ -866,6 +923,7 @@
 			// 
 			this.IDW_QuickLoad.AcceptsTab = true;
 			this.IDW_QuickLoad.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_QuickLoad.Conflicted = false;
 			this.IDW_QuickLoad.Location = new System.Drawing.Point(93, 202);
 			this.IDW_QuickLoad.Name = "IDW_QuickLoad";
 			this.IDW_QuickLoad.Size = new System.Drawing.Size(100, 20);
@@ -875,6 +933,7 @@
 			// 
 			this.IDW_QuickSave.AcceptsTab = true;
 			this.IDW_QuickSave.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_QuickSave.Conflicted = false;
 			this.IDW_QuickSave.Location = new System.Drawing.Point(93, 226);
 			this.IDW_QuickSave.Name = "IDW_QuickSave";
 			this.IDW_QuickSave.Size = new System.Drawing.Size(100, 20);
@@ -962,6 +1021,7 @@
 			// IDW_SS1
 			// 
 			this.IDW_SS1.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS1.Conflicted = false;
 			this.IDW_SS1.Location = new System.Drawing.Point(88, 6);
 			this.IDW_SS1.Name = "IDW_SS1";
 			this.IDW_SS1.Size = new System.Drawing.Size(100, 20);
@@ -1282,6 +1342,8 @@
 			// 
 			// IDW_NEXTSLOT
 			// 
+			this.IDW_NEXTSLOT.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_NEXTSLOT.Conflicted = false;
 			this.IDW_NEXTSLOT.Location = new System.Drawing.Point(361, 288);
 			this.IDW_NEXTSLOT.Name = "IDW_NEXTSLOT";
 			this.IDW_NEXTSLOT.Size = new System.Drawing.Size(100, 20);
@@ -1289,6 +1351,8 @@
 			// 
 			// IDW_PREVIOUSSLOT
 			// 
+			this.IDW_PREVIOUSSLOT.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_PREVIOUSSLOT.Conflicted = false;
 			this.IDW_PREVIOUSSLOT.Location = new System.Drawing.Point(361, 265);
 			this.IDW_PREVIOUSSLOT.Name = "IDW_PREVIOUSSLOT";
 			this.IDW_PREVIOUSSLOT.Size = new System.Drawing.Size(100, 20);
@@ -1296,6 +1360,8 @@
 			// 
 			// IDW_LOADNAMEDSTATE
 			// 
+			this.IDW_LOADNAMEDSTATE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LOADNAMEDSTATE.Conflicted = false;
 			this.IDW_LOADNAMEDSTATE.Location = new System.Drawing.Point(155, 287);
 			this.IDW_LOADNAMEDSTATE.Name = "IDW_LOADNAMEDSTATE";
 			this.IDW_LOADNAMEDSTATE.Size = new System.Drawing.Size(100, 20);
@@ -1303,6 +1369,8 @@
 			// 
 			// IDW_SAVENAMEDSTATE
 			// 
+			this.IDW_SAVENAMEDSTATE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SAVENAMEDSTATE.Conflicted = false;
 			this.IDW_SAVENAMEDSTATE.Location = new System.Drawing.Point(154, 261);
 			this.IDW_SAVENAMEDSTATE.Name = "IDW_SAVENAMEDSTATE";
 			this.IDW_SAVENAMEDSTATE.Size = new System.Drawing.Size(100, 20);
@@ -1310,6 +1378,8 @@
 			// 
 			// IDW_ST7
 			// 
+			this.IDW_ST7.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST7.Conflicted = false;
 			this.IDW_ST7.Location = new System.Drawing.Point(468, 150);
 			this.IDW_ST7.Name = "IDW_ST7";
 			this.IDW_ST7.Size = new System.Drawing.Size(100, 20);
@@ -1317,6 +1387,8 @@
 			// 
 			// IDW_ST0
 			// 
+			this.IDW_ST0.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST0.Conflicted = false;
 			this.IDW_ST0.Location = new System.Drawing.Point(468, 222);
 			this.IDW_ST0.Name = "IDW_ST0";
 			this.IDW_ST0.Size = new System.Drawing.Size(100, 20);
@@ -1324,6 +1396,8 @@
 			// 
 			// IDW_ST9
 			// 
+			this.IDW_ST9.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST9.Conflicted = false;
 			this.IDW_ST9.Location = new System.Drawing.Point(468, 198);
 			this.IDW_ST9.Name = "IDW_ST9";
 			this.IDW_ST9.Size = new System.Drawing.Size(100, 20);
@@ -1331,6 +1405,8 @@
 			// 
 			// IDW_ST8
 			// 
+			this.IDW_ST8.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST8.Conflicted = false;
 			this.IDW_ST8.Location = new System.Drawing.Point(468, 174);
 			this.IDW_ST8.Name = "IDW_ST8";
 			this.IDW_ST8.Size = new System.Drawing.Size(100, 20);
@@ -1338,6 +1414,8 @@
 			// 
 			// IDW_ST6
 			// 
+			this.IDW_ST6.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST6.Conflicted = false;
 			this.IDW_ST6.Location = new System.Drawing.Point(468, 126);
 			this.IDW_ST6.Name = "IDW_ST6";
 			this.IDW_ST6.Size = new System.Drawing.Size(100, 20);
@@ -1345,6 +1423,8 @@
 			// 
 			// IDW_ST5
 			// 
+			this.IDW_ST5.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST5.Conflicted = false;
 			this.IDW_ST5.Location = new System.Drawing.Point(468, 102);
 			this.IDW_ST5.Name = "IDW_ST5";
 			this.IDW_ST5.Size = new System.Drawing.Size(100, 20);
@@ -1352,6 +1432,8 @@
 			// 
 			// IDW_ST4
 			// 
+			this.IDW_ST4.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST4.Conflicted = false;
 			this.IDW_ST4.Location = new System.Drawing.Point(468, 78);
 			this.IDW_ST4.Name = "IDW_ST4";
 			this.IDW_ST4.Size = new System.Drawing.Size(100, 20);
@@ -1359,6 +1441,8 @@
 			// 
 			// IDW_ST3
 			// 
+			this.IDW_ST3.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST3.Conflicted = false;
 			this.IDW_ST3.Location = new System.Drawing.Point(468, 54);
 			this.IDW_ST3.Name = "IDW_ST3";
 			this.IDW_ST3.Size = new System.Drawing.Size(100, 20);
@@ -1366,6 +1450,8 @@
 			// 
 			// IDW_ST2
 			// 
+			this.IDW_ST2.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST2.Conflicted = false;
 			this.IDW_ST2.Location = new System.Drawing.Point(468, 30);
 			this.IDW_ST2.Name = "IDW_ST2";
 			this.IDW_ST2.Size = new System.Drawing.Size(100, 20);
@@ -1373,6 +1459,8 @@
 			// 
 			// IDW_ST1
 			// 
+			this.IDW_ST1.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ST1.Conflicted = false;
 			this.IDW_ST1.Location = new System.Drawing.Point(468, 6);
 			this.IDW_ST1.Name = "IDW_ST1";
 			this.IDW_ST1.Size = new System.Drawing.Size(100, 20);
@@ -1380,6 +1468,8 @@
 			// 
 			// IDW_LS7
 			// 
+			this.IDW_LS7.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS7.Conflicted = false;
 			this.IDW_LS7.Location = new System.Drawing.Point(281, 150);
 			this.IDW_LS7.Name = "IDW_LS7";
 			this.IDW_LS7.Size = new System.Drawing.Size(100, 20);
@@ -1387,6 +1477,8 @@
 			// 
 			// IDW_LS0
 			// 
+			this.IDW_LS0.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS0.Conflicted = false;
 			this.IDW_LS0.Location = new System.Drawing.Point(281, 222);
 			this.IDW_LS0.Name = "IDW_LS0";
 			this.IDW_LS0.Size = new System.Drawing.Size(100, 20);
@@ -1394,6 +1486,8 @@
 			// 
 			// IDW_LS9
 			// 
+			this.IDW_LS9.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS9.Conflicted = false;
 			this.IDW_LS9.Location = new System.Drawing.Point(281, 198);
 			this.IDW_LS9.Name = "IDW_LS9";
 			this.IDW_LS9.Size = new System.Drawing.Size(100, 20);
@@ -1401,6 +1495,8 @@
 			// 
 			// IDW_LS8
 			// 
+			this.IDW_LS8.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS8.Conflicted = false;
 			this.IDW_LS8.Location = new System.Drawing.Point(281, 174);
 			this.IDW_LS8.Name = "IDW_LS8";
 			this.IDW_LS8.Size = new System.Drawing.Size(100, 20);
@@ -1408,6 +1504,8 @@
 			// 
 			// IDW_LS6
 			// 
+			this.IDW_LS6.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS6.Conflicted = false;
 			this.IDW_LS6.Location = new System.Drawing.Point(281, 126);
 			this.IDW_LS6.Name = "IDW_LS6";
 			this.IDW_LS6.Size = new System.Drawing.Size(100, 20);
@@ -1415,6 +1513,8 @@
 			// 
 			// IDW_LS5
 			// 
+			this.IDW_LS5.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS5.Conflicted = false;
 			this.IDW_LS5.Location = new System.Drawing.Point(281, 102);
 			this.IDW_LS5.Name = "IDW_LS5";
 			this.IDW_LS5.Size = new System.Drawing.Size(100, 20);
@@ -1422,6 +1522,8 @@
 			// 
 			// IDW_LS4
 			// 
+			this.IDW_LS4.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS4.Conflicted = false;
 			this.IDW_LS4.Location = new System.Drawing.Point(281, 78);
 			this.IDW_LS4.Name = "IDW_LS4";
 			this.IDW_LS4.Size = new System.Drawing.Size(100, 20);
@@ -1429,6 +1531,8 @@
 			// 
 			// IDW_LS3
 			// 
+			this.IDW_LS3.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS3.Conflicted = false;
 			this.IDW_LS3.Location = new System.Drawing.Point(281, 54);
 			this.IDW_LS3.Name = "IDW_LS3";
 			this.IDW_LS3.Size = new System.Drawing.Size(100, 20);
@@ -1436,6 +1540,8 @@
 			// 
 			// IDW_LS2
 			// 
+			this.IDW_LS2.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS2.Conflicted = false;
 			this.IDW_LS2.Location = new System.Drawing.Point(281, 30);
 			this.IDW_LS2.Name = "IDW_LS2";
 			this.IDW_LS2.Size = new System.Drawing.Size(100, 20);
@@ -1443,6 +1549,8 @@
 			// 
 			// IDW_LS1
 			// 
+			this.IDW_LS1.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LS1.Conflicted = false;
 			this.IDW_LS1.Location = new System.Drawing.Point(281, 6);
 			this.IDW_LS1.Name = "IDW_LS1";
 			this.IDW_LS1.Size = new System.Drawing.Size(100, 20);
@@ -1450,6 +1558,8 @@
 			// 
 			// IDW_SS0
 			// 
+			this.IDW_SS0.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS0.Conflicted = false;
 			this.IDW_SS0.Location = new System.Drawing.Point(88, 222);
 			this.IDW_SS0.Name = "IDW_SS0";
 			this.IDW_SS0.Size = new System.Drawing.Size(100, 20);
@@ -1457,6 +1567,8 @@
 			// 
 			// IDW_SS9
 			// 
+			this.IDW_SS9.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS9.Conflicted = false;
 			this.IDW_SS9.Location = new System.Drawing.Point(88, 198);
 			this.IDW_SS9.Name = "IDW_SS9";
 			this.IDW_SS9.Size = new System.Drawing.Size(100, 20);
@@ -1464,6 +1576,8 @@
 			// 
 			// IDW_SS8
 			// 
+			this.IDW_SS8.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS8.Conflicted = false;
 			this.IDW_SS8.Location = new System.Drawing.Point(88, 174);
 			this.IDW_SS8.Name = "IDW_SS8";
 			this.IDW_SS8.Size = new System.Drawing.Size(100, 20);
@@ -1471,6 +1585,8 @@
 			// 
 			// IDW_SS7
 			// 
+			this.IDW_SS7.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS7.Conflicted = false;
 			this.IDW_SS7.Location = new System.Drawing.Point(88, 150);
 			this.IDW_SS7.Name = "IDW_SS7";
 			this.IDW_SS7.Size = new System.Drawing.Size(100, 20);
@@ -1478,6 +1594,8 @@
 			// 
 			// IDW_SS6
 			// 
+			this.IDW_SS6.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS6.Conflicted = false;
 			this.IDW_SS6.Location = new System.Drawing.Point(88, 126);
 			this.IDW_SS6.Name = "IDW_SS6";
 			this.IDW_SS6.Size = new System.Drawing.Size(100, 20);
@@ -1485,6 +1603,8 @@
 			// 
 			// IDW_SS5
 			// 
+			this.IDW_SS5.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS5.Conflicted = false;
 			this.IDW_SS5.Location = new System.Drawing.Point(88, 102);
 			this.IDW_SS5.Name = "IDW_SS5";
 			this.IDW_SS5.Size = new System.Drawing.Size(100, 20);
@@ -1492,6 +1612,8 @@
 			// 
 			// IDW_SS4
 			// 
+			this.IDW_SS4.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS4.Conflicted = false;
 			this.IDW_SS4.Location = new System.Drawing.Point(88, 78);
 			this.IDW_SS4.Name = "IDW_SS4";
 			this.IDW_SS4.Size = new System.Drawing.Size(100, 20);
@@ -1499,6 +1621,8 @@
 			// 
 			// IDW_SS3
 			// 
+			this.IDW_SS3.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS3.Conflicted = false;
 			this.IDW_SS3.Location = new System.Drawing.Point(88, 54);
 			this.IDW_SS3.Name = "IDW_SS3";
 			this.IDW_SS3.Size = new System.Drawing.Size(100, 20);
@@ -1506,6 +1630,8 @@
 			// 
 			// IDW_SS2
 			// 
+			this.IDW_SS2.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS2.Conflicted = false;
 			this.IDW_SS2.Location = new System.Drawing.Point(88, 30);
 			this.IDW_SS2.Name = "IDW_SS2";
 			this.IDW_SS2.Size = new System.Drawing.Size(100, 20);
@@ -1535,6 +1661,10 @@
 			this.tabPage3.Controls.Add(this.IDW_SELECTNONE);
 			this.tabPage3.Controls.Add(this.IDW_MTSELECTALL);
 			this.tabPage3.Controls.Add(this.IDW_SaveMovie);
+			this.tabPage3.Controls.Add(this.IDW_MoviePokeToggle);
+			this.tabPage3.Controls.Add(this.ClearFrameLabel);
+			this.tabPage3.Controls.Add(this.IDW_ClearFrame);
+			this.tabPage3.Controls.Add(this.MoviePokeToggleLabel);
 			this.tabPage3.Location = new System.Drawing.Point(4, 28);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -1543,10 +1673,20 @@
 			this.tabPage3.Text = "Movie";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
+			// MoviePokeToggleLabel
+			// 
+			this.MoviePokeToggleLabel.AutoSize = true;
+			this.MoviePokeToggleLabel.Location = new System.Drawing.Point(225, 139);
+			this.MoviePokeToggleLabel.Name = "MoviePokeToggleLabel";
+			this.MoviePokeToggleLabel.Size = new System.Drawing.Size(64, 13);
+			this.MoviePokeToggleLabel.TabIndex = 120;
+			this.MoviePokeToggleLabel.Text = "Movie Poke";
+			// 
 			// IDW_TOGGLEREADONLY
 			// 
 			this.IDW_TOGGLEREADONLY.AcceptsTab = true;
 			this.IDW_TOGGLEREADONLY.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_TOGGLEREADONLY.Conflicted = false;
 			this.IDW_TOGGLEREADONLY.Location = new System.Drawing.Point(105, 9);
 			this.IDW_TOGGLEREADONLY.Name = "IDW_TOGGLEREADONLY";
 			this.IDW_TOGGLEREADONLY.Size = new System.Drawing.Size(100, 20);
@@ -1556,6 +1696,7 @@
 			// 
 			this.IDW_PLAYBEGINNING.AcceptsTab = true;
 			this.IDW_PLAYBEGINNING.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_PLAYBEGINNING.Conflicted = false;
 			this.IDW_PLAYBEGINNING.Location = new System.Drawing.Point(105, 113);
 			this.IDW_PLAYBEGINNING.Name = "IDW_PLAYBEGINNING";
 			this.IDW_PLAYBEGINNING.Size = new System.Drawing.Size(100, 20);
@@ -1664,6 +1805,7 @@
 			// 
 			this.IDW_STOPMOVIE.AcceptsTab = true;
 			this.IDW_STOPMOVIE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_STOPMOVIE.Conflicted = false;
 			this.IDW_STOPMOVIE.Location = new System.Drawing.Point(105, 87);
 			this.IDW_STOPMOVIE.Name = "IDW_STOPMOVIE";
 			this.IDW_STOPMOVIE.Size = new System.Drawing.Size(100, 20);
@@ -1673,6 +1815,7 @@
 			// 
 			this.IDW_PLAYMOVIE.AcceptsTab = true;
 			this.IDW_PLAYMOVIE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_PLAYMOVIE.Conflicted = false;
 			this.IDW_PLAYMOVIE.Location = new System.Drawing.Point(105, 35);
 			this.IDW_PLAYMOVIE.Name = "IDW_PLAYMOVIE";
 			this.IDW_PLAYMOVIE.Size = new System.Drawing.Size(100, 20);
@@ -1682,6 +1825,7 @@
 			// 
 			this.IDW_RECORDMOVIE.AcceptsTab = true;
 			this.IDW_RECORDMOVIE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RECORDMOVIE.Conflicted = false;
 			this.IDW_RECORDMOVIE.Location = new System.Drawing.Point(105, 61);
 			this.IDW_RECORDMOVIE.Name = "IDW_RECORDMOVIE";
 			this.IDW_RECORDMOVIE.Size = new System.Drawing.Size(100, 20);
@@ -1691,6 +1835,7 @@
 			// 
 			this.IDW_TOGGLEMTRACK.AcceptsTab = true;
 			this.IDW_TOGGLEMTRACK.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_TOGGLEMTRACK.Conflicted = false;
 			this.IDW_TOGGLEMTRACK.Location = new System.Drawing.Point(324, 6);
 			this.IDW_TOGGLEMTRACK.Name = "IDW_TOGGLEMTRACK";
 			this.IDW_TOGGLEMTRACK.Size = new System.Drawing.Size(100, 20);
@@ -1700,6 +1845,7 @@
 			// 
 			this.IDW_MTDECPLAYER.AcceptsTab = true;
 			this.IDW_MTDECPLAYER.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_MTDECPLAYER.Conflicted = false;
 			this.IDW_MTDECPLAYER.Location = new System.Drawing.Point(324, 110);
 			this.IDW_MTDECPLAYER.Name = "IDW_MTDECPLAYER";
 			this.IDW_MTDECPLAYER.Size = new System.Drawing.Size(100, 20);
@@ -1709,6 +1855,7 @@
 			// 
 			this.IDW_MTINCPLAYER.AcceptsTab = true;
 			this.IDW_MTINCPLAYER.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_MTINCPLAYER.Conflicted = false;
 			this.IDW_MTINCPLAYER.Location = new System.Drawing.Point(324, 84);
 			this.IDW_MTINCPLAYER.Name = "IDW_MTINCPLAYER";
 			this.IDW_MTINCPLAYER.Size = new System.Drawing.Size(100, 20);
@@ -1718,6 +1865,7 @@
 			// 
 			this.IDW_SELECTNONE.AcceptsTab = true;
 			this.IDW_SELECTNONE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SELECTNONE.Conflicted = false;
 			this.IDW_SELECTNONE.Location = new System.Drawing.Point(324, 58);
 			this.IDW_SELECTNONE.Name = "IDW_SELECTNONE";
 			this.IDW_SELECTNONE.Size = new System.Drawing.Size(100, 20);
@@ -1727,6 +1875,7 @@
 			// 
 			this.IDW_MTSELECTALL.AcceptsTab = true;
 			this.IDW_MTSELECTALL.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_MTSELECTALL.Conflicted = false;
 			this.IDW_MTSELECTALL.Location = new System.Drawing.Point(324, 32);
 			this.IDW_MTSELECTALL.Name = "IDW_MTSELECTALL";
 			this.IDW_MTSELECTALL.Size = new System.Drawing.Size(100, 20);
@@ -1736,10 +1885,21 @@
 			// 
 			this.IDW_SaveMovie.AcceptsTab = true;
 			this.IDW_SaveMovie.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SaveMovie.Conflicted = false;
 			this.IDW_SaveMovie.Location = new System.Drawing.Point(105, 139);
 			this.IDW_SaveMovie.Name = "IDW_SaveMovie";
 			this.IDW_SaveMovie.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SaveMovie.TabIndex = 118;
+			this.IDW_SaveMovie.TabIndex = 73;
+			// 
+			// IDW_MoviePokeToggle
+			// 
+			this.IDW_MoviePokeToggle.AcceptsTab = true;
+			this.IDW_MoviePokeToggle.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_MoviePokeToggle.Conflicted = false;
+			this.IDW_MoviePokeToggle.Location = new System.Drawing.Point(324, 136);
+			this.IDW_MoviePokeToggle.Name = "IDW_MoviePokeToggle";
+			this.IDW_MoviePokeToggle.Size = new System.Drawing.Size(100, 20);
+			this.IDW_MoviePokeToggle.TabIndex = 88;
 			// 
 			// tabPage4
 			// 
@@ -1781,6 +1941,7 @@
 			// 
 			this.IDW_OpenVirtualPad.AcceptsTab = true;
 			this.IDW_OpenVirtualPad.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_OpenVirtualPad.Conflicted = false;
 			this.IDW_OpenVirtualPad.Location = new System.Drawing.Point(87, 217);
 			this.IDW_OpenVirtualPad.Name = "IDW_OpenVirtualPad";
 			this.IDW_OpenVirtualPad.Size = new System.Drawing.Size(100, 20);
@@ -1860,6 +2021,8 @@
 			// 
 			// IDW_TASTudio
 			// 
+			this.IDW_TASTudio.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_TASTudio.Conflicted = false;
 			this.IDW_TASTudio.Location = new System.Drawing.Point(87, 164);
 			this.IDW_TASTudio.Name = "IDW_TASTudio";
 			this.IDW_TASTudio.Size = new System.Drawing.Size(100, 20);
@@ -1869,6 +2032,7 @@
 			// 
 			this.IDW_RamWatch.AcceptsTab = true;
 			this.IDW_RamWatch.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RamWatch.Conflicted = false;
 			this.IDW_RamWatch.Location = new System.Drawing.Point(87, 13);
 			this.IDW_RamWatch.Name = "IDW_RamWatch";
 			this.IDW_RamWatch.Size = new System.Drawing.Size(100, 20);
@@ -1876,6 +2040,8 @@
 			// 
 			// IDW_TOOLBOX
 			// 
+			this.IDW_TOOLBOX.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_TOOLBOX.Conflicted = false;
 			this.IDW_TOOLBOX.Location = new System.Drawing.Point(87, 190);
 			this.IDW_TOOLBOX.Name = "IDW_TOOLBOX";
 			this.IDW_TOOLBOX.Size = new System.Drawing.Size(100, 20);
@@ -1885,6 +2051,7 @@
 			// 
 			this.IDW_Cheats.AcceptsTab = true;
 			this.IDW_Cheats.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_Cheats.Conflicted = false;
 			this.IDW_Cheats.Location = new System.Drawing.Point(87, 138);
 			this.IDW_Cheats.Name = "IDW_Cheats";
 			this.IDW_Cheats.Size = new System.Drawing.Size(100, 20);
@@ -1894,6 +2061,7 @@
 			// 
 			this.IDW_LuaConsole.AcceptsTab = true;
 			this.IDW_LuaConsole.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_LuaConsole.Conflicted = false;
 			this.IDW_LuaConsole.Location = new System.Drawing.Point(87, 112);
 			this.IDW_LuaConsole.Name = "IDW_LuaConsole";
 			this.IDW_LuaConsole.Size = new System.Drawing.Size(100, 20);
@@ -1903,6 +2071,7 @@
 			// 
 			this.IDW_HexEditor.AcceptsTab = true;
 			this.IDW_HexEditor.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_HexEditor.Conflicted = false;
 			this.IDW_HexEditor.Location = new System.Drawing.Point(87, 88);
 			this.IDW_HexEditor.Name = "IDW_HexEditor";
 			this.IDW_HexEditor.Size = new System.Drawing.Size(100, 20);
@@ -1912,6 +2081,7 @@
 			// 
 			this.IDW_RamPoke.AcceptsTab = true;
 			this.IDW_RamPoke.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RamPoke.Conflicted = false;
 			this.IDW_RamPoke.Location = new System.Drawing.Point(87, 63);
 			this.IDW_RamPoke.Name = "IDW_RamPoke";
 			this.IDW_RamPoke.Size = new System.Drawing.Size(100, 20);
@@ -1921,6 +2091,7 @@
 			// 
 			this.IDW_RamSearch.AcceptsTab = true;
 			this.IDW_RamSearch.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RamSearch.Conflicted = false;
 			this.IDW_RamSearch.Location = new System.Drawing.Point(87, 38);
 			this.IDW_RamSearch.Name = "IDW_RamSearch";
 			this.IDW_RamSearch.Size = new System.Drawing.Size(100, 20);
@@ -2028,6 +2199,7 @@
 			// 
 			this.IDW_SNES_ToggleBG4.AcceptsTab = true;
 			this.IDW_SNES_ToggleBG4.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleBG4.Conflicted = false;
 			this.IDW_SNES_ToggleBG4.Location = new System.Drawing.Point(93, 82);
 			this.IDW_SNES_ToggleBG4.Name = "IDW_SNES_ToggleBG4";
 			this.IDW_SNES_ToggleBG4.Size = new System.Drawing.Size(100, 20);
@@ -2037,6 +2209,7 @@
 			// 
 			this.IDW_SNES_ToggleBG3.AcceptsTab = true;
 			this.IDW_SNES_ToggleBG3.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleBG3.Conflicted = false;
 			this.IDW_SNES_ToggleBG3.Location = new System.Drawing.Point(93, 58);
 			this.IDW_SNES_ToggleBG3.Name = "IDW_SNES_ToggleBG3";
 			this.IDW_SNES_ToggleBG3.Size = new System.Drawing.Size(100, 20);
@@ -2046,6 +2219,7 @@
 			// 
 			this.IDW_SNES_ToggleBG2.AcceptsTab = true;
 			this.IDW_SNES_ToggleBG2.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleBG2.Conflicted = false;
 			this.IDW_SNES_ToggleBG2.Location = new System.Drawing.Point(93, 34);
 			this.IDW_SNES_ToggleBG2.Name = "IDW_SNES_ToggleBG2";
 			this.IDW_SNES_ToggleBG2.Size = new System.Drawing.Size(100, 20);
@@ -2055,6 +2229,7 @@
 			// 
 			this.IDW_SNES_ToggleBG1.AcceptsTab = true;
 			this.IDW_SNES_ToggleBG1.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleBG1.Conflicted = false;
 			this.IDW_SNES_ToggleBG1.Location = new System.Drawing.Point(93, 10);
 			this.IDW_SNES_ToggleBG1.Name = "IDW_SNES_ToggleBG1";
 			this.IDW_SNES_ToggleBG1.Size = new System.Drawing.Size(100, 20);
@@ -2064,6 +2239,7 @@
 			// 
 			this.IDW_SNES_ToggleOBJ4.AcceptsTab = true;
 			this.IDW_SNES_ToggleOBJ4.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleOBJ4.Conflicted = false;
 			this.IDW_SNES_ToggleOBJ4.Location = new System.Drawing.Point(93, 178);
 			this.IDW_SNES_ToggleOBJ4.Name = "IDW_SNES_ToggleOBJ4";
 			this.IDW_SNES_ToggleOBJ4.Size = new System.Drawing.Size(100, 20);
@@ -2073,6 +2249,7 @@
 			// 
 			this.IDW_SNES_ToggleOBJ3.AcceptsTab = true;
 			this.IDW_SNES_ToggleOBJ3.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleOBJ3.Conflicted = false;
 			this.IDW_SNES_ToggleOBJ3.Location = new System.Drawing.Point(93, 154);
 			this.IDW_SNES_ToggleOBJ3.Name = "IDW_SNES_ToggleOBJ3";
 			this.IDW_SNES_ToggleOBJ3.Size = new System.Drawing.Size(100, 20);
@@ -2082,6 +2259,7 @@
 			// 
 			this.IDW_SNES_ToggleOBJ2.AcceptsTab = true;
 			this.IDW_SNES_ToggleOBJ2.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleOBJ2.Conflicted = false;
 			this.IDW_SNES_ToggleOBJ2.Location = new System.Drawing.Point(93, 130);
 			this.IDW_SNES_ToggleOBJ2.Name = "IDW_SNES_ToggleOBJ2";
 			this.IDW_SNES_ToggleOBJ2.Size = new System.Drawing.Size(100, 20);
@@ -2091,6 +2269,7 @@
 			// 
 			this.IDW_SNES_ToggleOBJ1.AcceptsTab = true;
 			this.IDW_SNES_ToggleOBJ1.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SNES_ToggleOBJ1.Conflicted = false;
 			this.IDW_SNES_ToggleOBJ1.Location = new System.Drawing.Point(93, 106);
 			this.IDW_SNES_ToggleOBJ1.Name = "IDW_SNES_ToggleOBJ1";
 			this.IDW_SNES_ToggleOBJ1.Size = new System.Drawing.Size(100, 20);
@@ -2138,6 +2317,25 @@
 			this.AutoTabCheckBox.Text = "Auto Tab";
 			this.AutoTabCheckBox.UseVisualStyleBackColor = true;
 			this.AutoTabCheckBox.CheckedChanged += new System.EventHandler(this.AutoTabCheckBox_CheckedChanged);
+			// 
+			// IDW_ClearFrame
+			// 
+			this.IDW_ClearFrame.AcceptsTab = true;
+			this.IDW_ClearFrame.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ClearFrame.Conflicted = false;
+			this.IDW_ClearFrame.Location = new System.Drawing.Point(324, 162);
+			this.IDW_ClearFrame.Name = "IDW_ClearFrame";
+			this.IDW_ClearFrame.Size = new System.Drawing.Size(100, 20);
+			this.IDW_ClearFrame.TabIndex = 92;
+			// 
+			// ClearFrameLabel
+			// 
+			this.ClearFrameLabel.AutoSize = true;
+			this.ClearFrameLabel.Location = new System.Drawing.Point(225, 165);
+			this.ClearFrameLabel.Name = "ClearFrameLabel";
+			this.ClearFrameLabel.Size = new System.Drawing.Size(63, 13);
+			this.ClearFrameLabel.TabIndex = 121;
+			this.ClearFrameLabel.Text = "Scrub Input";
 			// 
 			// HotkeyWindow
 			// 
@@ -2375,5 +2573,11 @@
 		private InputWidget IDW_SaveMovie;
 		private System.Windows.Forms.Label VirtualPadsLabel;
 		private InputWidget IDW_OpenVirtualPad;
+		private System.Windows.Forms.Label label84;
+		private InputWidget IDW_AutoholdAutofire;
+		private System.Windows.Forms.Label MoviePokeToggleLabel;
+		private InputWidget IDW_MoviePokeToggle;
+		private System.Windows.Forms.Label ClearFrameLabel;
+		private InputWidget IDW_ClearFrame;
     }
 }

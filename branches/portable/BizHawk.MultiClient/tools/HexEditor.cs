@@ -2387,5 +2387,15 @@ namespace BizHawk.MultiClient
 		{
 			MouseIsDown = false;
 		}
+
+		private void AddressesLabel_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void MemoryViewerBox_Enter(object sender, EventArgs e)
+		{
+
+		}
 	}
 } 

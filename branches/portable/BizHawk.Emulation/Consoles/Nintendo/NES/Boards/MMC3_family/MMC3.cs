@@ -69,6 +69,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (board.Cart.chips.Contains("MMC3C")) MMC3Type = EMMC3Type.MMC3C;
 			else MMC3Type = EMMC3Type.MMC3C; //arbitrary choice. is it the best choice?
 
+			//initial values seem necessary
+			regs[0] = 0;
+			regs[1] = 2;
+			regs[2] = 4;
+			regs[3] = 5;
+			regs[4] = 6;
+			regs[5] = 7;
+			regs[6] = 0;
+			regs[7] = 1;
+
 			Sync();
 		}
 

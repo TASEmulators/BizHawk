@@ -68,10 +68,7 @@ namespace BizHawk.MultiClient
 
 		public int Rerecords
 		{
-			get
-			{
-				return rerecords;
-			}
+			get { return rerecords; }
 			set
 			{
 				rerecords = value;
@@ -81,29 +78,35 @@ namespace BizHawk.MultiClient
 
 		public string SysID
 		{
-			get
-			{
-				return Header.GetHeaderLine(MovieHeader.PLATFORM);
-			}
+			get { return Header.GetHeaderLine(MovieHeader.PLATFORM); }
 		}
 
 		public string GUID
 		{
-			get
-			{
-				return Header.GetHeaderLine(MovieHeader.GUID);
-			}
+			get { return Header.GetHeaderLine(MovieHeader.GUID); }
 		}
 
 		public string GameName
 		{
+			get { return Header.GetHeaderLine(MovieHeader.GAMENAME); }
+		}
+
+		public int RawFrames
+		{
 			get
 			{
-				return Header.GetHeaderLine(MovieHeader.GAMENAME);
+				if (Loaded)
+				{
+					return Log.Length;
+				}
+				else
+				{
+					return preload_framecount;
+				}
 			}
 		}
 
-		public int Frames
+		public int? Frames
 		{
 			get
 			{
@@ -111,7 +114,7 @@ namespace BizHawk.MultiClient
 				{
 					if (Loop)
 					{
-						return 999999; //TODO: rethink this, maybe return a nullable int, and on the client side check for null and act accordingly
+						return null;
 					}
 					else
 					{
@@ -127,10 +130,7 @@ namespace BizHawk.MultiClient
 
 		public bool StartsFromSavestate
 		{
-			get
-			{
-				return startsfromsavestate;
-			}
+			get { return startsfromsavestate; }
 			set
 			{
 				startsfromsavestate = value;
@@ -147,26 +147,17 @@ namespace BizHawk.MultiClient
 
 		public int StateFirstIndex
 		{
-			get
-			{
-				return Log.StateFirstIndex;
-			}
+			get { return Log.StateFirstIndex; }
 		}
 
 		public int StateLastIndex
 		{
-			get
-			{
-				return Log.StateLastIndex;
-			}
+			get { return Log.StateLastIndex; }
 		}
 
 		public bool StateCapturing
 		{
-			get
-			{
-				return statecapturing;
-			}
+			get { return statecapturing; }
 			set
 			{
 				statecapturing = value;
@@ -242,6 +233,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public bool HasChanges
+		{
+			get { return changes; }
+		}
+
 		/// <summary>
 		/// Tells the movie to start recording from the beginning, this will clear sram, and the movie log
 		/// </summary>
@@ -275,7 +271,6 @@ namespace BizHawk.MultiClient
 			Mode = MOVIEMODE.RECORD;
 		}
 
-
 		/// <summary>
 		/// Tells the movie to go into playback mode
 		/// </summary>
@@ -285,13 +280,16 @@ namespace BizHawk.MultiClient
 			WriteMovie();
 		}
 
-		public void Stop()
+		public void Stop(bool abortchanges = false)
 		{
-			if (Mode == MOVIEMODE.RECORD)
+			if (!abortchanges)
 			{
-				WriteMovie();
+				if (Mode == MOVIEMODE.RECORD || changes)
+				{
+					WriteMovie();
+				}
 			}
-
+			changes = false;
 			Mode = MOVIEMODE.INACTIVE;
 		}
 
@@ -354,6 +352,7 @@ namespace BizHawk.MultiClient
 			}
 
 			WriteMovie(Filename);
+			changes = false;
 		}
 
 		public void WriteBackup()
@@ -473,28 +472,33 @@ namespace BizHawk.MultiClient
 		public void ModifyFrame(string record, int frame)
 		{
 			Log.SetFrameAt(frame, record);
+			changes = true;
 		}
 
 		public void ClearFrame(int frame)
 		{
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			Log.SetFrameAt(frame, mg.GetEmptyMnemonic());
+			Log.SetFrameAt(frame, mg.GetEmptyMnemonic);
+			changes = true;
 		}
 
 		public void AppendFrame(string record)
 		{
 			Log.AppendFrame(record);
+			changes = true;
 		}
 
 		public void InsertFrame(string record, int frame)
 		{
 			Log.AddFrameAt(frame, record);
+			changes = true;
 		}
 
 		public void InsertBlankFrame(int frame)
 		{
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			Log.AddFrameAt(frame, mg.GetEmptyMnemonic());
+			Log.AddFrameAt(frame, mg.GetEmptyMnemonic);
+			changes = true;
 		}
 
 		public void DeleteFrame(int frame)
@@ -511,11 +515,14 @@ namespace BizHawk.MultiClient
 				}
 			}
 			Log.DeleteFrame(frame);
+			changes = true;
 		}
 
 		public void TruncateMovie(int frame)
 		{
 			Log.TruncateMovie(frame);
+			Log.TruncateStates(frame);
+			changes = true;
 		}
 
 		#endregion
@@ -591,17 +598,26 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void PokeFrame(int frameNum, string input)
+		{
+			changes = true;
+			Log.SetFrameAt(frameNum, input);
+		}
+
 		public void CommitFrame(int frameNum, IController source)
 		{
-			//if (Global.Emulator.Frame < Log.Length())
-			//{
-			//    Log.Truncate(Global.Emulator.Frame);
-			//}
-
 			//Note: Truncation here instead of loadstate will make VBA style loadstates
 			//(Where an entire movie is loaded then truncated on the next frame
 			//this allows users to restore a movie with any savestate from that "timeline"
-
+			if (Global.Config.VBAStyleMovieLoadState)
+			{
+				if (Global.Emulator.Frame < Log.Length)
+				{
+					Log.TruncateMovie(Global.Emulator.Frame);
+					Log .TruncateStates(Global.Emulator.Frame);
+				}
+			}
+			changes = true;
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			mg.SetSource(source);
 			Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
@@ -700,13 +716,19 @@ namespace BizHawk.MultiClient
 			}
 			if (stateFrame > 0 && stateFrame < Log.Length)
 			{
-				Log.TruncateStates(stateFrame);
-				Log.TruncateMovie(stateFrame);
+				if (!Global.Config.VBAStyleMovieLoadState)
+				{
+					Log.TruncateStates(stateFrame);
+					Log.TruncateMovie(stateFrame);
+				}
 			}
 			else if (stateFrame > Log.Length) //Post movie savestate
 			{
-				Log.TruncateStates(Log.Length);
-				Log.TruncateMovie(Log.Length);
+				if (!Global.Config.VBAStyleMovieLoadState)
+				{
+					Log.TruncateStates(Log.Length);
+					Log.TruncateMovie(Log.Length);
+				}
 				Mode = MOVIEMODE.FINISHED;
 			}
 			if (IsCountingRerecords)
@@ -737,6 +759,12 @@ namespace BizHawk.MultiClient
 			}
 			
 			time += MakeDigits(minutes) + ":";
+
+			if (sec < 10) //Kludge
+			{
+				time += "0";
+			}
+
 			time += Math.Round((decimal)sec, 2).ToString();
 			
 			return time;
@@ -872,7 +900,7 @@ namespace BizHawk.MultiClient
 		private int preload_framecount; //Not a a reliable number, used for preloading (when no log has yet been loaded), this is only for quick stat compilation for dialogs such as play movie
 		private int lastlog;
 		private int rerecords;
-
+		private bool changes = false;
 		#endregion
 
 		#region Helpers
@@ -959,10 +987,7 @@ namespace BizHawk.MultiClient
 							StartsFromSavestate = true;
 					}
 
-					if (Header.AddHeaderFromLine(str))
-						continue;
-
-					if (str.Contains("LoopOffset"))
+					else if (str.Contains("LoopOffset"))
 					{
 						str = ParseHeader(str, "LoopOffset");
 						try
@@ -977,6 +1002,10 @@ namespace BizHawk.MultiClient
 					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
+					}
+					else if (Header.AddHeaderFromLine(str))
+					{
+						continue;
 					}
 					else if (str[0] == '|')
 					{

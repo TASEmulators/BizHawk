@@ -208,9 +208,13 @@ namespace BizHawk.MultiClient
 		{
 			int x = MovieList.Count;
 			if (x == 1)
+			{
 				MovieCount.Text = x.ToString() + " movie";
+			}
 			else
+			{
 				MovieCount.Text = x.ToString() + " movies";
+			}
 		}
 
 		private void PreHighlightMovie()
@@ -236,15 +240,20 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < Indexes.Count; x++)
 			{
 				if (Path.GetExtension(MovieList[Indexes[x]].Filename).ToUpper() == "." + Global.Config.MovieExtension)
+				{
 					TAS.Add(x);
+				}
 			}
+
 			if (TAS.Count == 1)
 			{
 				HighlightMovie(TAS[0]);
 				return;
 			}
-			if (TAS.Count > 1)
+			else if (TAS.Count > 1)
+			{
 				Indexes = new List<int>(TAS);
+			}
 
 			//Final tie breaker - Last used file
 			DateTime t = new DateTime();
@@ -286,26 +295,37 @@ namespace BizHawk.MultiClient
 
 			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
 			if (!Directory.Exists(d))
+			{
 				Directory.CreateDirectory(d);
+			}
 			string extension = "*." + Global.Config.MovieExtension;
+			
 			foreach (string f in Directory.GetFiles(d, "*." + Global.Config.MovieExtension))
+			{
 				AddMovieToList(f, false);
+			}
 
 			if (Global.Config.MovieExtension != "*.tas")
 			{
 				foreach (string f in Directory.GetFiles(d, "*.tas"))
+				{
 					AddMovieToList(f, false);
+				}
 			}
 			else if (Global.Config.MovieExtension != "*.bkm")
 			{
 				foreach (string f in Directory.GetFiles(d, "*.bkm"))
+				{
 					AddMovieToList(f, false);
+				}
 			}
 
 			if (Global.Config.PlayMovie_ShowStateFiles)
 			{
 				foreach (string f in Directory.GetFiles(d, "*.state"))
+				{
 					AddStateToList(f);
+				}
 			}
 
 			if (Global.Config.PlayMovie_IncludeSubdir)
@@ -314,11 +334,16 @@ namespace BizHawk.MultiClient
 				foreach (string dir in subs)
 				{
 					foreach (string f in Directory.GetFiles(dir, "*." + Global.Config.MovieExtension))
+					{
 						AddMovieToList(f, false);
+					}
+
 					if (Global.Config.PlayMovie_ShowStateFiles)
 					{
 						foreach (string f in Directory.GetFiles(d, "*.state"))
+						{
 							AddStateToList(f);
+						}
 					}
 				}
 			}
@@ -326,7 +351,6 @@ namespace BizHawk.MultiClient
 
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
-			
 			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
 			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
 			MatchGameNameCheckBox.Checked = Global.Config.PlayMovie_MatchGameName;
@@ -387,15 +411,24 @@ namespace BizHawk.MultiClient
 
 				DetailsView.Items.Add(item);
 			}
+
 			if (MovieList[x].Header.Comments.Count > 0)
+			{
 				button1.Enabled = true;
+			}
 			else
+			{
 				button1.Enabled = false;
+			}
 
 			if (MovieList[x].Subtitles.Count() > 0)
+			{
 				button2.Enabled = true;
+			}
 			else
+			{
 				button2.Enabled = false;
+			}
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -480,6 +513,31 @@ namespace BizHawk.MultiClient
 			Global.Config.PlayMovie_MatchGameName = MatchGameNameCheckBox.Checked;
 			ScanFiles();
 			PreHighlightMovie();
+		}
+
+		private void MovieView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control && e.KeyCode == Keys.C)
+			{
+				ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
+				if (indexes.Count > 0)
+				{
+					StringBuilder copyStr = new StringBuilder();
+					foreach (int index in indexes)
+					{
+						copyStr.Append(MovieList[index].Filename);
+						copyStr.Append('\t');
+						copyStr.Append(MovieList[index].SysID);
+						copyStr.Append('\t');
+						copyStr.Append(MovieList[index].GameName);
+						copyStr.Append('\t');
+						copyStr.Append(MovieList[index].GetTime(true));
+						copyStr.Append('\n');
+
+						Clipboard.SetDataObject(copyStr.ToString());
+					}
+				}
+			}
 		}
 
 	}

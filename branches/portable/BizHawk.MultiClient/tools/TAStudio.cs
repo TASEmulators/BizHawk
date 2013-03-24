@@ -146,7 +146,7 @@ namespace BizHawk.MultiClient
 
 		private void DisplayList()
 		{
-			TASView.ItemCount = Global.MovieSession.Movie.Frames;
+			TASView.ItemCount = Global.MovieSession.Movie.RawFrames;
 			if (Global.MovieSession.Movie.Frames == Global.Emulator.Frame && Global.MovieSession.Movie.StateLastIndex == Global.Emulator.Frame - 1)
 			{
 				//If we're at the end of the movie add one to show the cursor as a blank frame
@@ -781,6 +781,40 @@ namespace BizHawk.MultiClient
 		private void TAStudio_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			Global.MainForm.ProcessInput();
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			//Do visualization
+			DoVisualizerScan = true;
+			VisualizerBox.Refresh();
+			DoVisualizerScan = false;
+		}
+
+		private void VisualizerBox_Paint(object sender, PaintEventArgs e)
+		{
+			if (DoVisualizerScan)
+			{
+				StateVisualizer vizualizer = new StateVisualizer();
+
+				for (int i = 0; i < vizualizer.TimeLineCount; i++)
+				{
+
+				}
+				
+				
+				int x = 0;
+				x++;
+				int y = x;
+				y++;
+			}
+		}
+
+		private bool DoVisualizerScan = false;
+
+		private void VisualizerBox_Enter(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

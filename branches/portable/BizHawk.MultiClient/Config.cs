@@ -579,6 +579,8 @@ namespace BizHawk.MultiClient
 		public string DefaultAuthor = "default user";
 		public bool UseDefaultAuthor = true;
 		public bool DisplaySubtitles = true;
+		public bool VBAStyleMovieLoadState = false;
+		public bool MoviePlaybackPokeMode = false;
 
 		//Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = true;
@@ -675,6 +677,7 @@ namespace BizHawk.MultiClient
 		public string IncreaseWindowSize = "Alt+UpArrow";
 		public string DecreaseWindowSize = "Alt+DownArrow";
 		public string AutoholdBinding = "";
+		public string AutoholdAutofireBinding = "";
 		public string AutoholdClear = "";
 		public string ToggleSNESBG1Binding = "";
 		public string ToggleSNESBG2Binding = "";
@@ -686,7 +689,8 @@ namespace BizHawk.MultiClient
 		public string ToggleSNESOBJ4Binding = "";
 		public string SaveMovieBinding = "";
 		public string OpenVirtualPadBinding = "";
-
+		public string MoviePlaybackPokeModeBinding = "";
+		public string ClearFrameBinding = "";
 		// NES Sound settings
 		public bool NESEnableSquare1 = true;
 		public bool NESEnableSquare2 = true;
@@ -749,6 +753,7 @@ namespace BizHawk.MultiClient
 		public SNESControllerTemplate[] SNESAutoController = new SNESControllerTemplate[4];
 		public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
 		public string SNESProfile = "Compatibility";
+		public bool SNESUseRingBuffer = true;
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];

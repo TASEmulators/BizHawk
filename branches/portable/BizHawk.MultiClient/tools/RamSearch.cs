@@ -11,38 +11,37 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-	//TODO:
-	//Go To Address (Ctrl+G) feature
-	//Multiple undo levels (List<List<string>> UndoLists)
-	
 	/// <summary>
 	/// A winform designed to search through ram values
 	/// </summary>
 	public partial class RamSearch : Form
 	{
-		string systemID = "NULL";
-		List<Watch> Searches = new List<Watch>();
-		List<Watch> undoList = new List<Watch>();
-		List<Watch> redoList = new List<Watch>();
+		//TODO:
+		//Go To Address (Ctrl+G) feature
+		//Multiple undo levels (List<List<string>> UndoLists)
+
+		private string systemID = "NULL";
+		private List<Watch> Searches = new List<Watch>();
+		private HistoryCollection SearchHistory;
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
-		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
-		MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
+		private List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
+		private MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
 
 		public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
 		public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY };
 		public enum SSigned { SIGNED, UNSIGNED, HEX };
 
 		//Reset window position item
-		int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
-		int defaultHeight;
-		int defaultAddressWidth;
-		int defaultValueWidth;
-		int defaultPrevWidth;
-		int defaultChangesWidth;
-		string currentFile = "";
-		string addressFormatStr = "{0:X4}  ";
-		bool sortReverse;
-		string sortedCol;
+		private int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
+		private int defaultHeight;
+		private int defaultAddressWidth;
+		private int defaultValueWidth;
+		private int defaultPrevWidth;
+		private int defaultChangesWidth;
+		private string currentFile = "";
+		private string addressFormatStr = "{0:X4}  ";
+		private bool sortReverse;
+		private string sortedCol;
 
 		public void SaveConfigSettings()
 		{
@@ -98,11 +97,10 @@ namespace BizHawk.MultiClient
 
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
-			ClearUndo();
-			ClearRedo();
 			LoadConfigSettings();
 			StartNewSearch();
 			SetMemoryDomainMenu();
+			SearchHistory = new HistoryCollection(Searches);
 		}
 
 		private void SetEndian()
@@ -393,8 +391,6 @@ namespace BizHawk.MultiClient
 
 		private void StartNewSearch()
 		{
-			ClearUndo();
-			ClearRedo();
 			IsAWeededList = false;
 			Searches.Clear();
 			SetPlatformAndMemoryDomainLabel();
@@ -454,6 +450,8 @@ namespace BizHawk.MultiClient
 			sortReverse = false;
 			sortedCol = "";
 			DisplaySearchList();
+			SearchHistory = new HistoryCollection(Searches);
+			UpdateUndoRedoToolItems();
 		}
 
 		private void DisplaySearchList()
@@ -521,7 +519,6 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
-				SaveUndo();
 				MessageLabel.Text = MakeAddressString(indexes.Count) + " removed";
 				for (int x = 0; x < indexes.Count; x++)
 				{
@@ -529,6 +526,9 @@ namespace BizHawk.MultiClient
 				}
 				indexes.Clear();
 				DisplaySearchList();
+
+				SearchHistory.AddState(Searches);
+				UpdateUndoRedoToolItems();
 			}
 		}
 
@@ -537,54 +537,35 @@ namespace BizHawk.MultiClient
 			RemoveAddresses();
 		}
 
-		/// <summary>
-		/// Saves the current search list to the undo list
-		/// This function should be called before any destructive operation to the list!
-		/// </summary>
-		private void SaveUndo()
+		private void UpdateUndoRedoToolItems()
 		{
-			undoList.Clear();
-			undoList.AddRange(Searches);
-			UndotoolStripButton.Enabled = true;
+			UndotoolStripButton.Enabled = SearchHistory.CanUndo;
+			RedotoolStripButton2.Enabled = SearchHistory.CanRedo;
 		}
 
 		private void DoUndo()
 		{
-			if (undoList.Count > 0)
+			if (SearchHistory.CanUndo)
 			{
-				MessageLabel.Text = MakeAddressString(undoList.Count - Searches.Count) + " restored";
-				redoList = new List<Watch>(Searches);
-				Searches = new List<Watch>(undoList);
-				ClearUndo();
-				RedotoolStripButton2.Enabled = true;
+				int oldVal = Searches.Count;
+				Searches = SearchHistory.Undo();
+				int newVal = Searches.Count;
+				MessageLabel.Text = MakeAddressString(newVal - oldVal) + " restored";
+				UpdateUndoRedoToolItems();
 				DisplaySearchList();
 			}
 		}
 
-		private void ClearUndo()
-		{
-			undoList.Clear();
-			UndotoolStripButton.Enabled = false;
-		}
-
-		private void ClearRedo()
-		{
-			redoList.Clear();
-			RedotoolStripButton2.Enabled = false;
-		}
-
 		private void DoRedo()
 		{
-			if (redoList.Count > 0)
+			if (SearchHistory.CanRedo)
 			{
-				MessageLabel.Text = MakeAddressString(Searches.Count - redoList.Count) + " removed";
-				undoList = new List<Watch>(Searches);
-				Searches = new List<Watch>(redoList);
-				ClearRedo();
-				UndotoolStripButton.Enabled = true;
+				int oldVal = Searches.Count;
+				Searches = SearchHistory.Redo();
+				int newVal = Searches.Count;
+				MessageLabel.Text = MakeAddressString(newVal - oldVal) + " removed";
+				UpdateUndoRedoToolItems();
 				DisplaySearchList();
-				//OutputLabel.Text = "Redo: s" + searchList.Count.ToString() + " u" +
-				//	undoList.Count.ToString() + " r" + redoList.Count.ToString();
 			}
 		}
 
@@ -689,13 +670,15 @@ namespace BizHawk.MultiClient
 
 		private void ClearChangeCounts()
 		{
-			SaveUndo();
 			for (int x = 0; x < Searches.Count; x++)
 			{
 				Searches[x].Changecount = 0;
 			}
 			DisplaySearchList();
 			MessageLabel.Text = "Change counts cleared";
+
+			SearchHistory.AddState(Searches);
+			UpdateUndoRedoToolItems();
 		}
 
 		private void ClearChangeCountstoolStripButton_Click(object sender, EventArgs e)
@@ -725,11 +708,12 @@ namespace BizHawk.MultiClient
 		{
 			if (GenerateWeedOutList())
 			{
-				SaveUndo();
 				MessageLabel.Text = MakeAddressString(Searches.Where(x => x.Deleted == true).Count()) + " removed";
 				TrimWeededList(); 
 				UpdateLastSearch();
 				DisplaySearchList();
+				SearchHistory.AddState(Searches);
+				UpdateUndoRedoToolItems();
 			}
 			else
 			{
@@ -1524,11 +1508,18 @@ namespace BizHawk.MultiClient
 		private void ConvertListsDataType(Watch.DISPTYPE s)
 		{
 			for (int x = 0; x < Searches.Count; x++)
+			{
 				Searches[x].Signed = s;
-			for (int x = 0; x < undoList.Count; x++)
-				undoList[x].Signed = s;
-			for (int x = 0; x < redoList.Count; x++)
-				redoList[x].Signed = s;
+			}
+
+			foreach (List<Watch> state in SearchHistory.History)
+			{
+				foreach (Watch watch in state)
+				{
+					watch.Signed = s;
+				}
+			}
+
 			SetSpecificValueBoxMaxLength();
 			sortReverse = false;
 			sortedCol = "";
@@ -1538,8 +1529,13 @@ namespace BizHawk.MultiClient
 		private void ConvertListsDataSize(Watch.TYPE s, bool bigendian)
 		{
 			ConvertDataSize(s, bigendian, ref Searches);
-			ConvertDataSize(s, bigendian, ref undoList);
-			ConvertDataSize(s, bigendian, ref redoList);
+
+			//TODO
+			//for (int i = 0; i < SearchHistory.History.Count; i++)
+			//{
+			//    ConvertDataSize(s, bigendian, ref SearchHistory.History[i]);
+			//}
+
 			SetSpecificValueBoxMaxLength();
 			sortReverse = false;
 			sortedCol = "";
@@ -1846,7 +1842,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentSearches.IsEmpty())
+			if (Global.Config.RecentSearches.IsEmpty)
 			{
 				var none = new ToolStripMenuItem();
 				none.Enabled = false;
@@ -1855,7 +1851,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				for (int x = 0; x < Global.Config.RecentSearches.Length(); x++)
+				for (int x = 0; x < Global.Config.RecentSearches.Count; x++)
 				{
 					string path = Global.Config.RecentSearches.GetRecentFileByPosition(x);
 					var item = new ToolStripMenuItem();
@@ -1959,19 +1955,31 @@ namespace BizHawk.MultiClient
 		private void searchToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Searches.Count == 0)
+			{
 				searchToolStripMenuItem.Enabled = false;
+			}
 			else
+			{
 				searchToolStripMenuItem.Enabled = true;
+			}
 
-			if (undoList.Count == 0)
-				undoToolStripMenuItem.Enabled = false;
-			else
+			if (SearchHistory.CanUndo)
+			{
 				undoToolStripMenuItem.Enabled = true;
-
-			if (redoList.Count == 0)
-				redoToolStripMenuItem.Enabled = false;
+			}
 			else
+			{
+				undoToolStripMenuItem.Enabled = false;
+			}
+
+			if (SearchHistory.CanRedo)
+			{
 				redoToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				redoToolStripMenuItem.Enabled = false;
+			}
 
 			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
 
@@ -2133,12 +2141,12 @@ namespace BizHawk.MultiClient
 
 		private void DoTruncate()
 		{
-			
-			SaveUndo();
 			MessageLabel.Text = MakeAddressString(Searches.Where(x => x.Deleted == true).Count()) + " removed";
 			TrimWeededList(); 
 			UpdateLastSearch();
 			DisplaySearchList();
+			SearchHistory.AddState(Searches);
+			UpdateUndoRedoToolItems();
 		}
 
 		private void TruncateFromFile()
@@ -2631,6 +2639,71 @@ namespace BizHawk.MultiClient
 				{
 					SearchListView.SelectItem(x, true);
 				}
+			}
+			else if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
+			{
+				ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+				if (indexes.Count > 0)
+				{
+					StringBuilder sb = new StringBuilder();
+					foreach (int index in indexes)
+					{
+						for (int i = 0; i < SearchListView.Columns.Count; i++)
+						{
+							if (SearchListView.Columns[i].Width > 0)
+							{
+								sb.Append(GetColumnValue(i, index));
+								sb.Append('\t');
+							}
+						}
+						sb.Remove(sb.Length - 1, 1);
+						sb.Append('\n');
+					}
+
+					if (!String.IsNullOrWhiteSpace(sb.ToString()))
+					{
+						Clipboard.SetDataObject(sb.ToString());
+					}
+				}
+			}
+		}
+
+		private string GetColumnValue(int column, int watch_index)
+		{
+			switch (SearchListView.Columns[column].Text.ToLower())
+			{
+				default:
+					return "";
+				case "address":
+					return Searches[watch_index].Address.ToString(addressFormatStr);
+				case "value":
+					return Searches[watch_index].ValueString;
+				case "prev":
+					switch (Global.Config.RamWatchPrev_Type)
+					{
+						case 1:
+							return Searches[watch_index].PrevString;
+						case 2:
+							return Searches[watch_index].LastChangeString;
+						default:
+							return "";
+					}
+				case "changes":
+					return Searches[watch_index].Changecount.ToString();
+				case "diff":
+					switch (Global.Config.RamWatchPrev_Type)
+					{
+						case 1:
+							return Searches[watch_index].DiffPrevString;
+						case 2:
+							return Searches[watch_index].DiffLastChangeString;
+						default:
+							return "";
+					}
+				case "domain":
+					return Searches[watch_index].Domain.Name;
+				case "notes":
+					return Searches[watch_index].Notes;
 			}
 		}
 
