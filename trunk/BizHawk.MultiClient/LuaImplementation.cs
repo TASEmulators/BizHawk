@@ -2737,7 +2737,7 @@ namespace BizHawk.MultiClient
 		//NES library
 		//----------------------------------------------------
 
-		public void nes_setscanlines(object top, object bottom)
+		public void nes_setscanlines(object top, object bottom, bool pal = false)
 		{
 
 			int first = LuaInt(top);
@@ -2760,24 +2760,54 @@ namespace BizHawk.MultiClient
 				last = 128;
 			}
 
-			Global.Config.NESTopLine = first;
-			Global.Config.NESBottomLine = last;
+			if (pal)
+			{
+				Global.Config.PAL_NESTopLine = first;
+				Global.Config.PAL_NESBottomLine = last;
+			}
+			else
+			{
+				Global.Config.NTSC_NESTopLine = first;
+				Global.Config.NTSC_NESBottomLine = last;
+			}
 
 			if (Global.Emulator is NES)
 			{
-				(Global.Emulator as NES).FirstDrawLine = first;
-				(Global.Emulator as NES).LastDrawLine = last;
+				if (pal)
+				{
+					(Global.Emulator as NES).PAL_FirstDrawLine = first;
+					(Global.Emulator as NES).PAL_LastDrawLine = last;
+				}
+				else
+				{
+					(Global.Emulator as NES).NTSC_FirstDrawLine = first;
+					(Global.Emulator as NES).NTSC_LastDrawLine = last;
+				}
 			}
 		}
 
-		public int nes_gettopscanline()
+		public int nes_gettopscanline(bool pal = false)
 		{
-			return Global.Config.NESTopLine;
+			if (pal)
+			{
+				return Global.Config.PAL_NESTopLine;
+			}
+			else
+			{
+				return Global.Config.NTSC_NESTopLine;
+			}
 		}
 
-		public int nes_getbottomscanline()
+		public int nes_getbottomscanline(bool pal = false)
 		{
-			return Global.Config.NESBottomLine;
+			if (pal)
+			{
+				return Global.Config.PAL_NESBottomLine;
+			}
+			else
+			{
+				return Global.Config.NTSC_NESBottomLine;
+			}
 		}
 
 		public bool nes_getclipleftandright()

@@ -41,8 +41,8 @@
 			this.btnAreaStandard = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.LastLineNumeric = new System.Windows.Forms.NumericUpDown();
-			this.FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
+			this.NTSC_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
+			this.NTSC_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.ClipLeftAndRightCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.checkUseBackdropColor = new System.Windows.Forms.CheckBox();
@@ -55,18 +55,24 @@
 			this.DispSprites = new System.Windows.Forms.CheckBox();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
 			this.RestoreDefaultsButton = new System.Windows.Forms.Button();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.PAL_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
+			this.PAL_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.LastLineNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.FirstLineNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).BeginInit();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(213, 372);
+			this.OK.Location = new System.Drawing.Point(213, 385);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 70;
@@ -78,7 +84,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(294, 372);
+			this.Cancel.Location = new System.Drawing.Point(294, 385);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 75;
@@ -88,7 +94,7 @@
 			// AllowMoreSprites
 			// 
 			this.AllowMoreSprites.AutoSize = true;
-			this.AllowMoreSprites.Location = new System.Drawing.Point(143, 17);
+			this.AllowMoreSprites.Location = new System.Drawing.Point(134, 96);
 			this.AllowMoreSprites.Name = "AllowMoreSprites";
 			this.AllowMoreSprites.Size = new System.Drawing.Size(203, 17);
 			this.AllowMoreSprites.TabIndex = 23;
@@ -155,24 +161,28 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.label6);
+			this.groupBox2.Controls.Add(this.PAL_LastLineNumeric);
+			this.groupBox2.Controls.Add(this.PAL_FirstLineNumeric);
+			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Controls.Add(this.btnAreaFull);
 			this.groupBox2.Controls.Add(this.btnAreaStandard);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label3);
-			this.groupBox2.Controls.Add(this.LastLineNumeric);
-			this.groupBox2.Controls.Add(this.FirstLineNumeric);
+			this.groupBox2.Controls.Add(this.NTSC_LastLineNumeric);
+			this.groupBox2.Controls.Add(this.NTSC_FirstLineNumeric);
 			this.groupBox2.Controls.Add(this.ClipLeftAndRightCheckBox);
 			this.groupBox2.Controls.Add(this.AllowMoreSprites);
 			this.groupBox2.Location = new System.Drawing.Point(12, 113);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(352, 134);
+			this.groupBox2.Size = new System.Drawing.Size(352, 150);
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Drawing Area";
 			// 
 			// btnAreaFull
 			// 
-			this.btnAreaFull.Location = new System.Drawing.Point(12, 99);
+			this.btnAreaFull.Location = new System.Drawing.Point(7, 115);
 			this.btnAreaFull.Name = "btnAreaFull";
 			this.btnAreaFull.Size = new System.Drawing.Size(94, 23);
 			this.btnAreaFull.TabIndex = 40;
@@ -182,7 +192,7 @@
 			// 
 			// btnAreaStandard
 			// 
-			this.btnAreaStandard.Location = new System.Drawing.Point(12, 71);
+			this.btnAreaStandard.Location = new System.Drawing.Point(8, 92);
 			this.btnAreaStandard.Name = "btnAreaStandard";
 			this.btnAreaStandard.Size = new System.Drawing.Size(94, 23);
 			this.btnAreaStandard.TabIndex = 35;
@@ -193,7 +203,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(4, 47);
+			this.label4.Location = new System.Drawing.Point(4, 69);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(49, 13);
 			this.label4.TabIndex = 24;
@@ -202,50 +212,50 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(5, 21);
+			this.label3.Location = new System.Drawing.Point(5, 43);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 13);
 			this.label3.TabIndex = 23;
 			this.label3.Text = "First line:";
 			// 
-			// LastLineNumeric
+			// NTSC_LastLineNumeric
 			// 
-			this.LastLineNumeric.Location = new System.Drawing.Point(59, 45);
-			this.LastLineNumeric.Maximum = new decimal(new int[] {
+			this.NTSC_LastLineNumeric.Location = new System.Drawing.Point(59, 67);
+			this.NTSC_LastLineNumeric.Maximum = new decimal(new int[] {
             239,
             0,
             0,
             0});
-			this.LastLineNumeric.Minimum = new decimal(new int[] {
+			this.NTSC_LastLineNumeric.Minimum = new decimal(new int[] {
             128,
             0,
             0,
             0});
-			this.LastLineNumeric.Name = "LastLineNumeric";
-			this.LastLineNumeric.Size = new System.Drawing.Size(47, 20);
-			this.LastLineNumeric.TabIndex = 28;
-			this.LastLineNumeric.Value = new decimal(new int[] {
+			this.NTSC_LastLineNumeric.Name = "NTSC_LastLineNumeric";
+			this.NTSC_LastLineNumeric.Size = new System.Drawing.Size(47, 20);
+			this.NTSC_LastLineNumeric.TabIndex = 28;
+			this.NTSC_LastLineNumeric.Value = new decimal(new int[] {
             128,
             0,
             0,
             0});
 			// 
-			// FirstLineNumeric
+			// NTSC_FirstLineNumeric
 			// 
-			this.FirstLineNumeric.Location = new System.Drawing.Point(59, 19);
-			this.FirstLineNumeric.Maximum = new decimal(new int[] {
+			this.NTSC_FirstLineNumeric.Location = new System.Drawing.Point(59, 41);
+			this.NTSC_FirstLineNumeric.Maximum = new decimal(new int[] {
             127,
             0,
             0,
             0});
-			this.FirstLineNumeric.Name = "FirstLineNumeric";
-			this.FirstLineNumeric.Size = new System.Drawing.Size(47, 20);
-			this.FirstLineNumeric.TabIndex = 21;
+			this.NTSC_FirstLineNumeric.Name = "NTSC_FirstLineNumeric";
+			this.NTSC_FirstLineNumeric.Size = new System.Drawing.Size(47, 20);
+			this.NTSC_FirstLineNumeric.TabIndex = 21;
 			// 
 			// ClipLeftAndRightCheckBox
 			// 
 			this.ClipLeftAndRightCheckBox.AutoSize = true;
-			this.ClipLeftAndRightCheckBox.Location = new System.Drawing.Point(143, 47);
+			this.ClipLeftAndRightCheckBox.Location = new System.Drawing.Point(134, 119);
 			this.ClipLeftAndRightCheckBox.Name = "ClipLeftAndRightCheckBox";
 			this.ClipLeftAndRightCheckBox.Size = new System.Drawing.Size(186, 17);
 			this.ClipLeftAndRightCheckBox.TabIndex = 30;
@@ -263,7 +273,7 @@
 			this.groupBox3.Controls.Add(this.groupBox4);
 			this.groupBox3.Controls.Add(this.DispBackground);
 			this.groupBox3.Controls.Add(this.DispSprites);
-			this.groupBox3.Location = new System.Drawing.Point(12, 253);
+			this.groupBox3.Location = new System.Drawing.Point(12, 266);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(352, 113);
 			this.groupBox3.TabIndex = 5;
@@ -354,7 +364,7 @@
 			// RestoreDefaultsButton
 			// 
 			this.RestoreDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.RestoreDefaultsButton.Location = new System.Drawing.Point(12, 372);
+			this.RestoreDefaultsButton.Location = new System.Drawing.Point(12, 385);
 			this.RestoreDefaultsButton.Name = "RestoreDefaultsButton";
 			this.RestoreDefaultsButton.Size = new System.Drawing.Size(102, 23);
 			this.RestoreDefaultsButton.TabIndex = 65;
@@ -362,13 +372,65 @@
 			this.RestoreDefaultsButton.UseVisualStyleBackColor = true;
 			this.RestoreDefaultsButton.Click += new System.EventHandler(this.RestoreDefaultsButton_Click);
 			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(62, 22);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(36, 13);
+			this.label5.TabIndex = 41;
+			this.label5.Text = "NTSC";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(131, 22);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(27, 13);
+			this.label6.TabIndex = 44;
+			this.label6.Text = "PAL";
+			// 
+			// PAL_LastLineNumeric
+			// 
+			this.PAL_LastLineNumeric.Location = new System.Drawing.Point(124, 67);
+			this.PAL_LastLineNumeric.Maximum = new decimal(new int[] {
+            239,
+            0,
+            0,
+            0});
+			this.PAL_LastLineNumeric.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+			this.PAL_LastLineNumeric.Name = "PAL_LastLineNumeric";
+			this.PAL_LastLineNumeric.Size = new System.Drawing.Size(47, 20);
+			this.PAL_LastLineNumeric.TabIndex = 43;
+			this.PAL_LastLineNumeric.Value = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+			// 
+			// PAL_FirstLineNumeric
+			// 
+			this.PAL_FirstLineNumeric.Location = new System.Drawing.Point(124, 41);
+			this.PAL_FirstLineNumeric.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+			this.PAL_FirstLineNumeric.Name = "PAL_FirstLineNumeric";
+			this.PAL_FirstLineNumeric.Size = new System.Drawing.Size(47, 20);
+			this.PAL_FirstLineNumeric.TabIndex = 42;
+			// 
 			// NESGraphicsConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(373, 396);
+			this.ClientSize = new System.Drawing.Size(373, 409);
 			this.Controls.Add(this.RestoreDefaultsButton);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
@@ -376,7 +438,7 @@
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(389, 434);
+			this.MaximumSize = new System.Drawing.Size(389, 494);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(389, 434);
 			this.Name = "NESGraphicsConfig";
@@ -388,11 +450,13 @@
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.LastLineNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.FirstLineNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -419,12 +483,16 @@
 		private System.Windows.Forms.Button ChangeBGColor;
 		private System.Windows.Forms.ColorDialog BGColorDialog;
 		private System.Windows.Forms.CheckBox checkUseBackdropColor;
-		private System.Windows.Forms.NumericUpDown FirstLineNumeric;
-		private System.Windows.Forms.NumericUpDown LastLineNumeric;
+		private System.Windows.Forms.NumericUpDown NTSC_FirstLineNumeric;
+		private System.Windows.Forms.NumericUpDown NTSC_LastLineNumeric;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button btnAreaFull;
 		private System.Windows.Forms.Button btnAreaStandard;
 		private System.Windows.Forms.Button RestoreDefaultsButton;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.NumericUpDown PAL_LastLineNumeric;
+		private System.Windows.Forms.NumericUpDown PAL_FirstLineNumeric;
+		private System.Windows.Forms.Label label5;
 	}
 }

@@ -150,12 +150,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public CoreComm CoreComm { get; private set; }
 
-		public DisplayType DisplayType { get { return BizHawk.DisplayType.NTSC; } }
+		public DisplayType DisplayType { get { return _display_type; } }
 
 		class MyVideoProvider : IVideoProvider
 		{
-			public int top = 8;
-			public int bottom = 231;
+			public int ntsc_top = 8;
+			public int ntsc_bottom = 231;
+			public int pal_top = 0;
+			public int pal_bottom = 239;
 			public int left = 0;
 			public int right = 255;
 			
@@ -173,6 +175,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public void FillFrameBuffer()
 			{
+				int the_top;
+				int the_bottom;
+				if (emu.DisplayType == DisplayType.NTSC)
+				{
+					the_top = ntsc_top;
+					the_bottom = ntsc_bottom;
+				}
+				else
+				{
+					the_top = pal_top;
+					the_bottom = pal_bottom;
+				}
+
 				int backdrop = 0;
 				if (emu.CoreComm != null)
 					backdrop = emu.CoreComm.NES_BackdropColor;
@@ -182,25 +197,60 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int width = BufferWidth;
 				for (int x = left; x <= right; x++)
 				{
-					for (int y = top; y <= bottom; y++)
+					for (int y = the_top; y <= the_bottom; y++)
 					{
 						short pixel = emu.ppu.xbuf[(y << 8) + x];
 						if ((pixel & 0x8000) != 0 && useBackdrop)
 						{
-							pixels[((y - top) * width) + (x - left)] = backdrop;
+							pixels[((y - the_top) * width) + (x - left)] = backdrop;
 						}
-						else pixels[((y - top) * width) + (x - left)] = emu.palette_compiled[pixel & 0x7FFF];
+						else pixels[((y - the_top) * width) + (x - left)] = emu.palette_compiled[pixel & 0x7FFF];
 					}
 				}
 			}
 			public int VirtualWidth { get { return BufferWidth; } }
 			public int BufferWidth { get { return right - left + 1; } }
-			public int BufferHeight { get { return bottom - top + 1; } }
 			public int BackgroundColor { get { return 0; } }
+			public int BufferHeight
+			{
+				get
+				{
+					if (emu.DisplayType == DisplayType.NTSC)
+					{
+						return ntsc_bottom - ntsc_top + 1;
+					}
+					else
+					{
+						return pal_bottom - pal_top + 1;
+					}
+				}
+			}
+			
 		}
 
-		public int FirstDrawLine { get { return videoProvider.top; } set { videoProvider.top = value; CoreComm.ScreenLogicalOffsetY = videoProvider.top; } }
-		public int LastDrawLine { get { return videoProvider.bottom; } set { videoProvider.bottom = value; } }
+		public int NTSC_FirstDrawLine
+		{
+			get { return videoProvider.ntsc_top; }
+			set { videoProvider.ntsc_top = value; CoreComm.ScreenLogicalOffsetY = videoProvider.ntsc_top; }
+		}
+
+		public int NTSC_LastDrawLine
+		{
+			get { return videoProvider.ntsc_bottom; }
+			set { videoProvider.ntsc_bottom = value; }
+		}
+
+		public int PAL_FirstDrawLine
+		{
+			get { return videoProvider.pal_top; }
+			set { videoProvider.pal_top = value; CoreComm.ScreenLogicalOffsetY = videoProvider.pal_top; }
+		}
+
+		public int PAL_LastDrawLine
+		{
+			get { return videoProvider.pal_bottom; }
+			set { videoProvider.pal_bottom = value; }
+		}
 
 		public void SetClipLeftAndRight(bool clip)
 		{

@@ -2005,8 +2005,10 @@ namespace BizHawk.MultiClient
 
 									NES nes = new NES(nextComm, game, rom.FileData, bios);
 									nes.SoundOn = Global.Config.SoundEnabled;
-									nes.FirstDrawLine = Global.Config.NESTopLine;
-									nes.LastDrawLine = Global.Config.NESBottomLine;
+									nes.NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine;
+									nes.NTSC_LastDrawLine = Global.Config.NTSC_NESBottomLine;
+									nes.PAL_FirstDrawLine = Global.Config.PAL_NESTopLine;
+									nes.NTSC_LastDrawLine = Global.Config.PAL_NESBottomLine;
 									nes.SetClipLeftAndRight(Global.Config.NESClipLeftAndRight);
 									nextEmulator = nes;
 									if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&

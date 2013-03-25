@@ -46,7 +46,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int[,] palette = new int[64,3];
 		int[] palette_compiled = new int[64*8];
 		IPortDevice[] ports;
-		
+
+		private DisplayType _display_type = DisplayType.NTSC;
+
 		//Sound config
 		public void SetSquare1(bool enabled) { apu.EnableSquare1 = enabled; }
 		public void SetSquare2(bool enabled) { apu.EnableSquare2 = enabled; }
@@ -184,6 +186,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					CoreComm.VsyncDen = 1;
 					cpuclockrate = 1662607;
 					cpu_sequence = cpu_sequence_PAL;
+					_display_type = DisplayType.PAL;
 					break;
 				case "NES-NTSC":
 				case "Famicom":
@@ -209,6 +212,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					CoreComm.VsyncDen = 1;
 					cpuclockrate = 1773448;
 					cpu_sequence = cpu_sequence_NTSC;
+					_display_type = DisplayType.DENDY;
 					break;
 				case null:
 					Console.WriteLine("Unknown NES system!  Defaulting to NTSC.");
