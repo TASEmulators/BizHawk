@@ -112,5 +112,5 @@ namespace BizHawk
 
 	public enum Endian { Big, Little, Unknown }
 
-	public enum DisplayType { NTSC, PAL }
+	public enum DisplayType { NTSC, PAL, DENDY }
 }

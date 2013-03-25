@@ -461,8 +461,10 @@ namespace BizHawk.MultiClient
 		public bool NESDispSprites = true;
 		public int NESBackgroundColor = 0;
 		public string NESPaletteFile = "";
-		public int NESTopLine = 8;
-		public int NESBottomLine = 231;
+		public int NTSC_NESTopLine = 8;
+		public int NTSC_NESBottomLine = 231;
+		public int PAL_NESTopLine = 8;
+		public int PAL_NESBottomLine = 231;
 
 		// gb gpu view settings
 		public bool AutoLoadGBGPUView = false;
