@@ -126,7 +126,8 @@
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
 			this.Name = "SNESOptions";
-			this.Text = "SNESOptions";
+			this.ShowIcon = false;
+			this.Text = "SNES Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
