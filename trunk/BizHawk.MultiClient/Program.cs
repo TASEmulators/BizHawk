@@ -99,6 +99,11 @@ namespace BizHawk.MultiClient
 			}
 			catch (Exception e)
 			{
+				string message = e.ToString();
+				if (e.InnerException != null)
+				{
+					message += "\n\nInner Exception:\n\n" + e.InnerException;
+				}
 				MessageBox.Show(e.ToString());
 			}
 #if WINDOWS
