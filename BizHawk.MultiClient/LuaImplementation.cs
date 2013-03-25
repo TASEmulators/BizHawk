@@ -212,6 +212,13 @@ namespace BizHawk.MultiClient
 				docs.Add("nes", NESFunctions[i], this.GetType().GetMethod("nes_" + NESFunctions[i]));
 			}
 
+			lua.NewTable("snes");
+			for (int i = 0; i < SNESFunctions.Length; i++)
+			{
+				lua.RegisterFunction("snes." + SNESFunctions[i], this, this.GetType().GetMethod("snes_" + SNESFunctions[i]));
+				docs.Add("snes", SNESFunctions[i], this.GetType().GetMethod("snes_" + SNESFunctions[i]));
+			}
+
 			lua.NewTable("event");
 			for (int i = 0; i < EventFunctions.Length; i++)
 			{
@@ -566,6 +573,27 @@ namespace BizHawk.MultiClient
 														"setallowmorethaneightsprites",
 														"addgamegenie",
 														"removegamegenie",
+		                                          	};
+
+		public static string[] SNESFunctions = new string[]
+													{
+														"setlayer_bg_1",
+														"setlayer_bg_2",
+														"setlayer_bg_3",
+														"setlayer_bg_4",
+														"getlayer_bg_1",
+														"getlayer_bg_2",
+														"getlayer_bg_3",
+														"getlayer_bg_4",
+
+														"setlayer_obj_1",
+														"setlayer_obj_2",
+														"setlayer_obj_3",
+														"setlayer_obj_4",
+														"getlayer_obj_1",
+														"getlayer_obj_2",
+														"getlayer_obj_3",
+														"getlayer_obj_4",
 		                                          	};
 
 		public static string[] EventFunctions = new string[]
@@ -2846,6 +2874,93 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
+
+		//----------------------------------------------------
+		//SNES library
+		//----------------------------------------------------
+		public bool snes_getlayer_bg_1()
+		{
+			return Global.Config.SNES_ShowBG1_1;
+		}
+
+		public bool snes_getlayer_bg_2()
+		{
+			return Global.Config.SNES_ShowBG2_1;
+		}
+
+		public bool snes_getlayer_bg_3()
+		{
+			return Global.Config.SNES_ShowBG3_1;
+		}
+
+		public bool snes_getlayer_bg_4()
+		{
+			return Global.Config.SNES_ShowBG4_1;
+		}
+
+		public bool snes_getlayer_obj_1()
+		{
+			return Global.Config.SNES_ShowOBJ1;
+		}
+
+		public bool snes_getlayer_obj_2()
+		{
+			return Global.Config.SNES_ShowOBJ2;
+		}
+
+		public bool snes_getlayer_obj_3()
+		{
+			return Global.Config.SNES_ShowOBJ3;
+		}
+
+		public bool snes_getlayer_obj_4()
+		{
+			return Global.Config.SNES_ShowOBJ4;
+		}
+
+
+		public void snes_setlayer_bg_1(bool value)
+		{
+			Global.MainForm.SNES_ToggleBG1(value);
+		}
+
+		public void snes_setlayer_bg_2(bool value)
+		{
+			Global.MainForm.SNES_ToggleBG2(value);
+		}
+
+		public void snes_setlayer_bg_3(bool value)
+		{
+			Global.MainForm.SNES_ToggleBG3(value);
+		}
+
+		public void snes_setlayer_bg_4(bool value)
+		{
+			Global.MainForm.SNES_ToggleBG4(value);
+		}
+
+		public void snes_setlayer_obj_1(bool value)
+		{
+			Global.MainForm.SNES_ToggleOBJ1(value);
+		}
+
+		public void snes_setlayer_obj_2(bool value)
+		{
+			Global.MainForm.SNES_ToggleOBJ2(value);
+		}
+
+		public void snes_setlayer_obj_3(bool value)
+		{
+			Global.MainForm.SNES_ToggleOBJ3(value);
+		}
+
+		public void snes_setlayer_obj_4(bool value)
+		{
+			Global.MainForm.SNES_ToggleOBJ4(value);
+		}
+		//----------------------------------------------------
+		//Events library
+		//----------------------------------------------------
 
 		public void event_onsavestate(LuaFunction luaf)
 		{

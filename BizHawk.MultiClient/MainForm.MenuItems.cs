@@ -1867,11 +1867,19 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNES_ToggleBG1()
+		public void SNES_ToggleBG1(bool? setto = null)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG1_1 = Global.Config.SNES_ShowBG1_0 ^= true;
+				}
+
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG1_1)
 				{
@@ -1884,11 +1892,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNES_ToggleBG2()
+		public void SNES_ToggleBG2(bool? setto = null)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG2_1 = Global.Config.SNES_ShowBG2_0 ^= true;
+				}
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG2_1)
 				{
@@ -1901,11 +1916,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNES_ToggleBG3()
+		public void SNES_ToggleBG3(bool? setto = null)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG3_1 = Global.Config.SNES_ShowBG3_0 ^= true;
+				}
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG3_1)
 				{
@@ -1918,11 +1940,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNES_ToggleBG4()
+		public void SNES_ToggleBG4(bool? setto = null)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowBG4_1 = Global.Config.SNES_ShowBG4_0 ^= true;
+				}
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowBG4_1)
 				{
@@ -1935,11 +1964,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNES_ToggleOBJ1()
+		public void SNES_ToggleOBJ1(bool? setto = null)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowOBJ1 ^= true;
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ1 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ1 ^= true;
+				}
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ1)
 				{
@@ -1952,11 +1988,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNES_ToggleOBJ2()
+		public void SNES_ToggleOBJ2(bool? setto = null)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowOBJ2 ^= true;
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ2 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ2 ^= true;
+				}
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ2)
 				{
@@ -1969,11 +2012,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNES_ToggleOBJ3()
+		public void SNES_ToggleOBJ3(bool? setto = null)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowOBJ3 ^= true;
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ3 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ3 ^= true;
+				}
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ3)
 				{
@@ -1986,11 +2036,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SNES_ToggleOBJ4()
+		public void SNES_ToggleOBJ4(bool? setto = null)
 		{
 			if (Global.Emulator is LibsnesCore)
 			{
-				Global.Config.SNES_ShowOBJ4 ^= true;
+				if (setto.HasValue)
+				{
+					Global.Config.SNES_ShowOBJ4 = setto.Value;
+				}
+				else
+				{
+					Global.Config.SNES_ShowOBJ4 ^= true;
+				}
 				SyncCoreCommInputSignals();
 				if (Global.Config.SNES_ShowOBJ4)
 				{
