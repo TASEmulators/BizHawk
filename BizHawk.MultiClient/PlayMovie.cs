@@ -395,7 +395,7 @@ namespace BizHawk.MultiClient
 						}
 						break;
 					case MovieHeader.EMULATIONVERSION:
-						if (kvp.Value.ToString() != MainForm.EMUVERSION)
+						if (kvp.Value.ToString() != Global.MainForm.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;
 						}

@@ -67,7 +67,7 @@ namespace BizHawk.MultiClient
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, MainForm.EMUVERSION);
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, Global.MainForm.GetEmuVersion());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);
