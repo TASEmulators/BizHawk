@@ -14,12 +14,14 @@ namespace MonoMacWrapper
 		private System.Collections.Generic.Dictionary<ToolStripMenuItem, MenuItemAdapter> _menuLookup;
 		private System.Threading.Thread _uiRunLoop;
 		private MainForm _mainWinForm;
+		private NSApplication _sharedApp;
 		public AppDelegate(){}
 
 		public override void FinishedLaunching(NSObject notification)
 		{
 			NSApplication.SharedApplication.BeginInvokeOnMainThread(()=>
             {
+				_sharedApp = NSApplication.SharedApplication;
 				StartApplication();
 			});
 		}
@@ -57,7 +59,7 @@ namespace MonoMacWrapper
 		{
 			while(!_mainWinForm.exit)
 			{
-				NSApplication.SharedApplication.InvokeOnMainThread(()=>
+				_sharedApp.InvokeOnMainThread(()=>
 				{
 					if(_mainWinForm.Visible && !_mainWinForm.RunLoopBlocked)
 						Application.DoEvents();
