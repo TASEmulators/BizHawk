@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using BizHawk.Emulation.CPUs.M6502;
 
 #pragma warning disable 162
@@ -299,6 +300,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3});
 		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3});
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected void RunCpuOne()
 		{
 			cpu_stepcounter++;
@@ -333,6 +336,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public byte ReadReg(int addr)
 		{
 			switch (addr)

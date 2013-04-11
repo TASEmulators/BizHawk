@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using BizHawk.Emulation.CPUs.M6502;
 
 
@@ -143,6 +144,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				idleSynch = true;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			void TriggerNMI()
 			{
 				nes.cpu.NMI = true;
@@ -163,6 +165,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			void runppu(int x)
 			{
 				//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
