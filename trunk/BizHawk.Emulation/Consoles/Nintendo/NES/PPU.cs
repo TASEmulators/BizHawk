@@ -144,7 +144,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				idleSynch = true;
 			}
 
+#if VS2012
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 			void TriggerNMI()
 			{
 				nes.cpu.NMI = true;
@@ -165,7 +167,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
+#if VS2012
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 			void runppu(int x)
 			{
 				//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity

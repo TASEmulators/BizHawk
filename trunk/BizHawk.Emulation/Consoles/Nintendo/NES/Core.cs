@@ -301,7 +301,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3});
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
 
+#if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 		protected void RunCpuOne()
 		{
 			cpu_stepcounter++;
@@ -336,7 +338,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+#if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 		public byte ReadReg(int addr)
 		{
 			switch (addr)
