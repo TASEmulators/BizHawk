@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Intellivision
+﻿namespace BizHawk.Emulation.Consoles.Intellivision
 {
 	public sealed class Cartridge : ICart
 	{

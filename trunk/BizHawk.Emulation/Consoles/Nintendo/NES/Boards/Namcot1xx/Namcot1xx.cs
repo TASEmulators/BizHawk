@@ -4,8 +4,6 @@
 //but mostly http://wiki.nesdev.com/w/index.php/INES_Mapper_206
 
 using System;
-using System.IO;
-using System.Diagnostics;
 
 //TODO - prg is 4 bits, chr is 6 bits
 

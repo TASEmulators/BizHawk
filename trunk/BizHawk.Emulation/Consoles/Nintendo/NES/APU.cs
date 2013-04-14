@@ -5,10 +5,7 @@
 //TODO - DMC cpu suspending - http://forums.nesdev.com/viewtopic.php?p=62690#p62690
 
 using System;
-using System.IO;
 using System.Collections.Generic;
-
-using BizHawk.Emulation.Sound;
 
 //http://wiki.nesdev.com/w/index.php/APU_Mixer_Emulation
 //http://wiki.nesdev.com/w/index.php/APU

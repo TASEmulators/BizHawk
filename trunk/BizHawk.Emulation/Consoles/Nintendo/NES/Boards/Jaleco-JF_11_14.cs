@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	/*
 	 * Life Span: October 1986 - April 1987

@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Diagnostics;
-
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//aka MMC6 aka StarTropics and StarTropics 2

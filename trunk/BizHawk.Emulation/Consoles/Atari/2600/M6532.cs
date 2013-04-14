@@ -1,8 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-
-namespace BizHawk.Emulation.Consoles.Atari
+﻿namespace BizHawk.Emulation.Consoles.Atari
 {
 	// Emulates the M6532 RIOT Chip
 	public partial class M6532

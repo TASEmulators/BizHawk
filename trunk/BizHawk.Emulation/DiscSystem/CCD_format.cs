@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BizHawk.DiscSystem
+﻿namespace BizHawk.DiscSystem
 {
 	//TBD CCD format
 	//check out ccd2iso linux program?

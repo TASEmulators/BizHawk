@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//Mapper 069 is FME7 
 	//or, Sunsoft-5, which is FME7 with additional sound hardware

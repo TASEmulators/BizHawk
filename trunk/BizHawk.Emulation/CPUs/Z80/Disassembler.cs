@@ -11,9 +11,6 @@
 //please note that however much youre tempted to, timings can't be put in a table here because they depend on how the instruction executes at runtime
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BizHawk.Emulation.CPUs.Z80 
 {

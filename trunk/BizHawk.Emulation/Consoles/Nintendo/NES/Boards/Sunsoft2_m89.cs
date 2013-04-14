@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA Sunsoft-2 chip (SUNSOFT-3 pcb)
 	//game=Tenka no Goikenban: Mito Koumon ; chip=sunsoft-2 ; pcb = SUNSOFT-3

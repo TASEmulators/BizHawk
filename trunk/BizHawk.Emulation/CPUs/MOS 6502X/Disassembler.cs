@@ -1,5 +1,3 @@
-using System;
-
 // Do not modify this file directly! This is GENERATED code.
 // Please open the CpuCoreGenerator solution and make your modifications there.
 
