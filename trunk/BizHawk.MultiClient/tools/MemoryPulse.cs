@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BizHawk.MultiClient
 {
@@ -13,7 +12,7 @@ namespace BizHawk.MultiClient
 			public MemoryDomain domain;
 		}
 
-		private static List<MemoryPulseEntry> entries = new List<MemoryPulseEntry>();
+		private static readonly List<MemoryPulseEntry> entries = new List<MemoryPulseEntry>();
 
 		public static void Pulse()
 		{

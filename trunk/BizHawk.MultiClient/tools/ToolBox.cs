@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Calculator;
@@ -67,7 +62,7 @@ namespace BizHawk.MultiClient
 				SNESGraphicsDebuggerButton.Visible = false;
 			}
 
-			Size = new Size(this.Size.Width, toolStrip1.Size.Height + 50);
+			Size = new Size(Size.Width, toolStrip1.Size.Height + 50);
 		}
 
 		private void toolStripButton1_Click(object sender, EventArgs e)

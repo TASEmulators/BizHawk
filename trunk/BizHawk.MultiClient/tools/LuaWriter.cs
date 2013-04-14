@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -31,21 +29,20 @@ namespace BizHawk.MultiClient
 		//listview object with lua functions, double click inserts them into the script
 
 		public string CurrentFile = "";
-
-		bool changes = false;
-		bool redo = false;
-		bool hasChanged = false;
-		bool ProcessingText;
 		public Regex keyWords = new Regex("and|break|do|else|if|end|false|for|function|in|local|nil|not|or|repeat|return|then|true|until|while|elseif");
-		char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
 		public Regex libraryWords;
 
-		List<int[]> pos = new List<int[]>();
+		private bool changes;
+		private bool redo;
+		private bool hasChanged;
+		private bool ProcessingText;
+		private readonly char[] Symbols = { '+', '-', '*', '/', '%', '^', '#', '=', '<', '>', '(', ')', '{', '}', '[', ']', ';', ':', ',', '.' };
+		private List<int[]> pos = new List<int[]>();
 
 		public LuaWriter()
 		{
 			InitializeComponent();
-			LuaText.MouseWheel += new MouseEventHandler(LuaText_MouseWheel);
+			LuaText.MouseWheel += LuaText_MouseWheel;
 		}
 
 		void LuaText_MouseWheel(object sender, MouseEventArgs e)
@@ -54,9 +51,13 @@ namespace BizHawk.MultiClient
 			{
 				Double Zoom;
 				if ((LuaText.ZoomFactor == 0.1F && e.Delta < 0) || (LuaText.ZoomFactor == 5.0F && e.Delta > 0))
-					Zoom = (LuaText.ZoomFactor * 100);
+				{
+					Zoom = (LuaText.ZoomFactor*100);
+				}
 				else
-					Zoom = (LuaText.ZoomFactor * 100) + e.Delta / 12;
+				{
+					Zoom = (LuaText.ZoomFactor*100) + e.Delta/12;
+				}
 
 				ZoomLabel.Text = string.Format("Zoom: {0:0}%", Zoom);
 			}
@@ -127,15 +128,15 @@ namespace BizHawk.MultiClient
 		private void AddCommentsAndStrings()
 		{
 			string temp = LuaText.Text;
-			int comment, longcomment, quote, apos, longstring, position = 0;
+			int position = 0;
 
 			while (position <= temp.Length)
 			{
-				comment = temp.IndexOf("--", position);
-				longcomment = temp.IndexOf("--[[", position);
-				quote = temp.IndexOf('"', position);
-				apos = temp.IndexOf('\'', position);
-				longstring = temp.IndexOf("[", position);
+				int comment = temp.IndexOf("--", position, StringComparison.Ordinal);
+				int longcomment = temp.IndexOf("--[[", position);
+				int quote = temp.IndexOf('"', position);
+				int apos = temp.IndexOf('\'', position);
+				int longstring = temp.IndexOf("[", position);
 
 				int secondBracket = temp.IndexOf('[', longstring + 1);
 				if (secondBracket >= 0)
@@ -199,41 +200,29 @@ namespace BizHawk.MultiClient
 		private string GetLongStringClosingBracket(string openingBracket)
 		{
 			string closingBrackets = "]";
-			int level = 0;
-
-			foreach (char c in openingBracket)
-				if (c == '=')
-					level++;
+			int level = openingBracket.Count(c => c == '=');
 
 			for (int x = 0; x < level; x++)
+			{
 				closingBrackets += '=';
+			}
 
 			return closingBrackets + ']';
 		}
 
-		private bool IsLongString(string longstring)
+		private static bool IsLongString(string longstring)
 		{
-			bool Validated = true;
-
-			foreach (char c in longstring)
-				if (c != '[' && c != '=')
-				{
-					Validated = false;
-					break;
-				}
-
-			return Validated;
+			return longstring.All(c => c == '[' || c == '=');
 		}
 
 		private void AddSymbols()
 		{
 			string temp = LuaText.Text;
-			int selection;
 
 			foreach (char mark in Symbols)
 			{
 				int currPos = 0;
-				selection = temp.IndexOf(mark, currPos);
+				int selection = temp.IndexOf(mark, currPos);
 
 				while (selection >= 0)
 				{
@@ -251,14 +240,18 @@ namespace BizHawk.MultiClient
 
 		private int AddString(int startPos, char mark)
 		{
-			int ending, endLine;
+			int endLine;
 
 			if (LuaText.GetLineFromCharIndex(startPos) + 1 == LuaText.Lines.Count())
+			{
 				endLine = LuaText.Text.Length - 1;
+			}
 			else
+			{
 				endLine = LuaText.GetFirstCharIndexFromLine(LuaText.GetLineFromCharIndex(startPos) + 1) - 1;
+			}
 
-			ending = 0;
+			int ending;
 
 			if (startPos != LuaText.Text.Length - 1)
 			{
@@ -300,12 +293,16 @@ namespace BizHawk.MultiClient
 			for (int x = wholestring.Length - 2; x > -1; x--)
 			{
 				if (wholestring[x] == '\\')
+				{
 					ammount++;
+				}
 				else
+				{
 					break;
+				}
 			}
 
-			return !(ammount % 2 == 0);
+			return ammount % 2 != 0;
 		}
 
 		private int AddComment(int startPos)
@@ -324,13 +321,17 @@ namespace BizHawk.MultiClient
 
 		private int AddMultiLineComment(int startPos)
 		{
-			int selection, endComment;
+			int endComment;
 
-			selection = LuaText.Text.IndexOf("]]");
+			int selection = LuaText.Text.IndexOf("]]", StringComparison.Ordinal);
 			if (selection > 0)
+			{
 				endComment = selection - startPos + 2;
+			}
 			else
+			{
 				endComment = LuaText.Text.Length;
+			}
 
 			AddPosition(startPos, endComment, Global.Config.LuaCommentColor, Global.Config.LuaCommentBold, 1);
 
@@ -363,19 +364,7 @@ namespace BizHawk.MultiClient
 
 		private bool IsThisPartOfStringOrComment(int startPos)
 		{
-			bool Validated = false;
-
-			foreach (int[] position in pos)
-			{
-				if (position[4] == 1)
-					if (position[0] <= startPos && position[0] + position[1] > startPos)
-					{
-						Validated = true;
-						break;
-					}
-			}
-
-			return Validated;
+			return pos.Where(position => position[4] == 1).Any(position => position[0] <= startPos && position[0] + position[1] > startPos);
 		}
 
 		private void AddPosition(int start, int lenght, int color, bool bold, int iscommentorstring)
@@ -395,7 +384,7 @@ namespace BizHawk.MultiClient
 					IndexToAdd = x + 1;
 			}
 
-			pos.Insert(IndexToAdd, new int[] { start, lenght, color, IsBold, iscommentorstring });
+			pos.Insert(IndexToAdd, new[] { start, lenght, color, IsBold, iscommentorstring });
 		}
 
 		private void ColorText()
@@ -467,7 +456,7 @@ namespace BizHawk.MultiClient
 		{
 			//LuaTextFont;
 			ProcessingText = true;
-			LuaText.SelectionTabs = new int[] { 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 480, 500, 520, 540, 560, 580, 600 }; //adelikat:  What a goofy way to have to do this
+			LuaText.SelectionTabs = new[] { 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 480, 500, 520, 540, 560, 580, 600 }; //adelikat:  What a goofy way to have to do this
 			LoadFont();
 			LuaText.BackColor = Color.FromArgb(Global.Config.LuaWriterBackColor);
 			LuaText.ZoomFactor = Global.Config.LuaWriterZoom;
@@ -513,7 +502,7 @@ namespace BizHawk.MultiClient
 
 		private void LuaWriter_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		private void LuaWriter_DragDrop(object sender, DragEventArgs e)
@@ -767,7 +756,7 @@ namespace BizHawk.MultiClient
 			int lastSpace = LuaText.Text.Substring(0, last).LastIndexOf(' ');
 			int lastTab = LuaText.Text.Substring(0, last).LastIndexOf('\t');
 			int lastLine = LuaText.Text.Substring(0, last).LastIndexOf('\n');
-			int start = 0;
+			int start;
 			if (lastSpace > lastLine || lastTab > lastLine)
 			{
 				if (lastSpace > lastTab)
@@ -839,7 +828,7 @@ namespace BizHawk.MultiClient
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			//TODO: check for changes and ask save
-			this.Close();
+			Close();
 		}
 
 		private void LuaWriter_FormClosing(object sender, FormClosingEventArgs e)

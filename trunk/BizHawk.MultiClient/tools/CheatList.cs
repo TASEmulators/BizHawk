@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.Globalization;
 using System.Windows.Forms;
@@ -17,7 +16,6 @@ namespace BizHawk.MultiClient
 
 		public bool LoadCheatFile(string path, bool append)
 		{
-			int y;
 			var file = new FileInfo(path);
 			if (file.Exists == false) return false;
 
@@ -26,8 +24,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!append) currentCheatFile = path;
 
-				string s = "";
-				string temp = "";
+				string s;
 
 				if (append == false)
 				{
@@ -39,10 +36,10 @@ namespace BizHawk.MultiClient
 					{
 						if (s.Length < 6) continue;
 						Cheat c = new Cheat();
-						temp = s.Substring(0, s.IndexOf('\t'));   //Address
+						string temp = s.Substring(0, s.IndexOf('\t'));
 						c.address = int.Parse(temp, NumberStyles.HexNumber);
 
-						y = s.IndexOf('\t') + 1;
+						int y = s.IndexOf('\t') + 1;
 						s = s.Substring(y, s.Length - y);   //Value
 						temp = s.Substring(0, 2);
 						c.value = byte.Parse(temp, NumberStyles.HexNumber);
@@ -106,9 +103,9 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.DisableCheatsOnLoad)
 			{
-				for (int x = 0; x < cheatList.Count; x++)
+				foreach (Cheat t in cheatList)
 				{
-					cheatList[x].Disable();
+					t.Disable();
 				}
 			}
 
@@ -134,11 +131,11 @@ namespace BizHawk.MultiClient
 		private MemoryDomain SetDomain(string name)
 		{
 			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+			foreach (MemoryDomain t in Global.Emulator.MemoryDomains)
 			{
-				if (Global.Emulator.MemoryDomains[x].Name == name)
+				if (t.Name == name)
 				{
-					return Global.Emulator.MemoryDomains[x];
+					return t;
 				}
 			}
 			return Global.Emulator.MemoryDomains[0];
@@ -146,19 +143,12 @@ namespace BizHawk.MultiClient
 
 		public bool IsActiveCheat(MemoryDomain d, int address)
 		{
-			for (int x = 0; x < cheatList.Count; x++)
-			{
-				if (cheatList[x].address == address && cheatList[x].domain.Name == d.Name)
-				{
-					return true;
-				}
-			}
-			return false;
+			return cheatList.Any(t => t.address == address && t.domain.Name == d.Name);
 		}
 
 		public Cheat GetCheat(MemoryDomain d, int address)
 		{
-			return cheatList.Where(x => x.address == address && x.domain.Name == d.Name).FirstOrDefault();
+			return cheatList.FirstOrDefault(x => x.address == address && x.domain.Name == d.Name);
 		}
 
 		public void RemoveCheat(MemoryDomain d, int address)
@@ -211,8 +201,11 @@ namespace BizHawk.MultiClient
 						break;
 				}
 				var f = new FileInfo(path);
-				if (f.Directory.Exists == false)
+				if (f.Directory != null && f.Directory.Exists == false)
+				{
 					f.Directory.Create();
+				}
+
 				return path;
 			}
 		}
@@ -220,7 +213,7 @@ namespace BizHawk.MultiClient
 		public bool SaveCheatFile(string path)
 		{
 			FileInfo file = new FileInfo(path);
-			if (!file.Directory.Exists)
+			if (file.Directory != null && !file.Directory.Exists)
 			{
 				file.Directory.Create();
 			}
@@ -229,23 +222,23 @@ namespace BizHawk.MultiClient
 			{
 				string str = "";
 
-				for (int x = 0; x < cheatList.Count; x++)
+				foreach (Cheat t in cheatList)
 				{
-					str += FormatAddress(cheatList[x].address) + "\t";
-					str += String.Format("{0:X2}", cheatList[x].value) + "\t";
+					str += FormatAddress(t.address) + "\t";
+					str += String.Format("{0:X2}", t.value) + "\t";
 					
-					if (cheatList[x].compare == null)
+					if (t.compare == null)
 					{
 						str += "N\t";
 					}
 					else
 					{
-						str += String.Format("{0:X2}", cheatList[x].compare) + "\t";
+						str += String.Format("{0:X2}", t.compare) + "\t";
 					}
 					
-					str += cheatList[x].domain.Name + "\t";
+					str += t.domain.Name + "\t";
 					
-					if (cheatList[x].IsEnabled())
+					if (t.IsEnabled())
 					{
 						str += "1\t";
 					}
@@ -254,7 +247,7 @@ namespace BizHawk.MultiClient
 						str += "0\t";
 					}
 					
-					str += cheatList[x].name + "\n";
+					str += t.name + "\n";
 				}
 
 				sw.WriteLine(str);
@@ -373,17 +366,7 @@ namespace BizHawk.MultiClient
 
 		public bool HasActiveCheats
 		{
-			get
-			{
-				for (int x = 0; x < cheatList.Count; x++)
-				{
-					if (cheatList[x].IsEnabled())
-					{
-						return true;
-					}
-				}
-				return false;
-			}
+			get { return cheatList.Any(t => t.IsEnabled()); }
 		}
 	}
 }

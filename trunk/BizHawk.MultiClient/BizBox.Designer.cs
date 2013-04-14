@@ -422,7 +422,6 @@
 			this.label28.Size = new System.Drawing.Size(104, 13);
 			this.label28.TabIndex = 25;
 			this.label28.Text = "author: Mike Murphy";
-			this.label28.Click += new System.EventHandler(this.label28_Click);
 			// 
 			// label30
 			// 
@@ -432,7 +431,6 @@
 			this.label30.Size = new System.Drawing.Size(80, 13);
 			this.label30.TabIndex = 23;
 			this.label30.Text = "Atari7800Hawk";
-			this.label30.Click += new System.EventHandler(this.label30_Click);
 			// 
 			// linkLabel4
 			// 

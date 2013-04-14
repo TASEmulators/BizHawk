@@ -1,7 +1,6 @@
 ﻿using BizHawk.Emulation.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Computers.Commodore64.Disk;
 using BizHawk.Emulation.Computers.Commodore64.MOS;
-using BizHawk.Emulation.Computers.Commodore64.Tape;
 using System.IO;
 
 namespace BizHawk.Emulation.Computers.Commodore64
@@ -18,7 +17,6 @@ namespace BizHawk.Emulation.Computers.Commodore64
 
 		private Motherboard board;
 		private VIC1541 disk;
-		private VIC1530 tape;
 
 		// ------------------------------------
 

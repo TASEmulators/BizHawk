@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace BizHawk.MultiClient
@@ -12,8 +10,7 @@ namespace BizHawk.MultiClient
 		{
 			TimeLine movietimeline = new TimeLine(Global.MovieSession.Movie.LogDump);
 
-			Timelines = new List<TimeLine>();
-			Timelines.Add(movietimeline);
+			Timelines = new List<TimeLine> {movietimeline};
 
 			//Load all 10 saveslots and process
 			for (int i = 0; i < 10; i++)

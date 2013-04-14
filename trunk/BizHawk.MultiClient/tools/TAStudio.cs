@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
@@ -29,9 +26,9 @@ namespace BizHawk.MultiClient
 		//Allow hotkeys when TAStudio has focus
 		//Reduce the memory footprint with compression and or dropping frames and rerunning them when requested.
 
-		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
-		int defaultHeight;
-		int stopOnFrame = 0;
+		private int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		private int defaultHeight;
+		private int stopOnFrame;
 
 		public bool Engaged; //When engaged the Client will listen to TAStudio for input
 
@@ -44,8 +41,8 @@ namespace BizHawk.MultiClient
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
-			TASView.QueryItemText += new QueryItemTextHandler(TASView_QueryItemText);
-			TASView.QueryItemBkColor += new QueryItemBkColorHandler(TASView_QueryItemBkColor);
+			TASView.QueryItemText += TASView_QueryItemText;
+			TASView.QueryItemBkColor += TASView_QueryItemBkColor;
 			TASView.VirtualMode = true;
 		}
 
@@ -53,15 +50,15 @@ namespace BizHawk.MultiClient
 		//TODO: move me
 		public class ClipboardEntry
 		{
-			public int frame;
-			public string inputstr;
+			public int Frame;
+			public string Inputstr;
 		}
 
 		public List<ClipboardEntry> Clipboard = new List<ClipboardEntry>();
 
 		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			TASView.BlazingFast = true;
 			if (Global.MovieSession.Movie.IsActive)
 			{
@@ -77,7 +74,7 @@ namespace BizHawk.MultiClient
 				TASView.BlazingFast = false;
 			}
 
-			if (Global.Emulator.Frame < this.stopOnFrame)
+			if (Global.Emulator.Frame < stopOnFrame)
 			{
 				Global.MainForm.PressFrameAdvance = true;
 			}
@@ -157,7 +154,7 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			TASView.Items.Clear();
 			LoadTAStudio();
 		}
@@ -205,12 +202,12 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.TAStudioSaveWindowPosition && Global.Config.TASWndx >= 0 && Global.Config.TASWndy >= 0)
 			{
-				this.Location = new Point(Global.Config.TASWndx, Global.Config.TASWndy);
+				Location = new Point(Global.Config.TASWndx, Global.Config.TASWndy);
 			}
 
 			if (Global.Config.TASWidth >= 0 && Global.Config.TASHeight >= 0)
 			{
-				this.Size = new System.Drawing.Size(Global.Config.TASWidth, Global.Config.TASHeight);
+				Size = new Size(Global.Config.TASWidth, Global.Config.TASHeight);
 			}
 
 		}
@@ -218,15 +215,15 @@ namespace BizHawk.MultiClient
 		private void SaveConfigSettings()
 		{
 			Engaged = false;
-			Global.Config.TASWndx = this.Location.X;
-			Global.Config.TASWndy = this.Location.Y;
-			Global.Config.TASWidth = this.Right - this.Left;
-			Global.Config.TASHeight = this.Bottom - this.Top;
+			Global.Config.TASWndx = Location.X;
+			Global.Config.TASWndy = Location.Y;
+			Global.Config.TASWidth = Right - Left;
+			Global.Config.TASHeight = Bottom - Top;
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -243,7 +240,7 @@ namespace BizHawk.MultiClient
 
 		private void restoreWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+			Size = new Size(defaultWidth, defaultHeight);
 		}
 
 		private void StopButton_Click(object sender, EventArgs e)
@@ -259,7 +256,7 @@ namespace BizHawk.MultiClient
 
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
-			this.stopOnFrame = 0;
+			stopOnFrame = 0;
 			if (Global.MovieSession.Movie.IsFinished || !Global.MovieSession.Movie.IsActive)
 			{
 				Global.MainForm.Rewind(1);
@@ -290,12 +287,12 @@ namespace BizHawk.MultiClient
 			if (ReadOnlyCheckBox.Checked)
 			{
 				Global.MainForm.SetReadOnly(true);
-				ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
+				ReadOnlyCheckBox.BackColor = SystemColors.Control;
 
 				if (Global.MovieSession.Movie.IsActive)
 				{
 					Global.MovieSession.Movie.SwitchToPlay();
-					toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read-Only Mode");
+					toolTip1.SetToolTip(ReadOnlyCheckBox, "Currently Read-Only Mode");
 				}
 			}
 			else
@@ -305,7 +302,7 @@ namespace BizHawk.MultiClient
 				if (Global.MovieSession.Movie.IsActive)
 				{
 					Global.MovieSession.Movie.SwitchToRecord();
-					toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read+Write Mode");
+					toolTip1.SetToolTip(ReadOnlyCheckBox, "Currently Read+Write Mode");
 				}
 			}
 		} 
@@ -320,12 +317,12 @@ namespace BizHawk.MultiClient
 		{
 			//TODO: adelikat: I removed the stop on frame feature, so this will keep playing into movie finished mode, need to rebuild that functionality
 
-			this.FastFowardToEnd.Checked ^= true;
-			Global.MainForm.FastForward = this.FastFowardToEnd.Checked;
-			if (true == this.FastFowardToEnd.Checked)
+			FastFowardToEnd.Checked ^= true;
+			Global.MainForm.FastForward = FastFowardToEnd.Checked;
+			if (FastFowardToEnd.Checked)
 			{
-				this.FastForward.Checked = false;
-				this.TurboFastForward.Checked = false;
+				FastForward.Checked = false;
+				TurboFastForward.Checked = false;
 			}
 		}
 
@@ -398,23 +395,23 @@ namespace BizHawk.MultiClient
 
 		private void FastForward_Click(object sender, EventArgs e)
 		{
-			this.FastForward.Checked ^= true;
-			Global.MainForm.FastForward = this.FastForward.Checked;
-			if (true == this.FastForward.Checked)
+			FastForward.Checked ^= true;
+			Global.MainForm.FastForward = FastForward.Checked;
+			if (FastForward.Checked)
 			{
-				this.TurboFastForward.Checked = false;
-				this.FastFowardToEnd.Checked = false;
+				TurboFastForward.Checked = false;
+				FastFowardToEnd.Checked = false;
 			}
 		}
 
 		private void TurboFastForward_Click(object sender, EventArgs e)
 		{
 			Global.MainForm.TurboFastForward ^= true;
-			this.TurboFastForward.Checked ^= true;
-			if (true == this.TurboFastForward.Checked)
+			TurboFastForward.Checked ^= true;
+			if (TurboFastForward.Checked)
 			{
-				this.FastForward.Checked = false;
-				this.FastFowardToEnd.Checked = false;
+				FastForward.Checked = false;
+				FastFowardToEnd.Checked = false;
 			}
 		}
 
@@ -427,13 +424,13 @@ namespace BizHawk.MultiClient
 		{
 			if (TASView.selectedItem <= Global.MovieSession.Movie.StateLastIndex)
 			{
-				this.stopOnFrame = 0;
+				stopOnFrame = 0;
 				Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
 			}
 			else
 			{
 				Global.MovieSession.Movie.RewindToFrame(Global.MovieSession.Movie.StateLastIndex);
-				this.stopOnFrame = TASView.selectedItem;
+				stopOnFrame = TASView.selectedItem;
 				Global.MainForm.PressFrameAdvance = true;
 			}
 
@@ -452,10 +449,12 @@ namespace BizHawk.MultiClient
 
 		private static string SaveRecordingAs()
 		{
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
-			sfd.DefaultExt = "." + Global.Config.MovieExtension;
-			sfd.FileName = Global.MovieSession.Movie.Filename;
+			SaveFileDialog sfd = new SaveFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath),
+					DefaultExt = "." + Global.Config.MovieExtension,
+					FileName = Global.MovieSession.Movie.Filename
+				};
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
@@ -473,9 +472,9 @@ namespace BizHawk.MultiClient
 		{
 
 			//if ((Control.MouseButtons & MouseButtons.Middle) > 0) //adelikat: TODO: right-click + mouse wheel won't work because in this dialog, right-click freezes emulation in the main window.  Why? Hex Editor doesn't do this for instance
-			if ((Control.ModifierKeys & Keys.Control) > 0)
+			if ((ModifierKeys & Keys.Control) > 0)
 			{
-				this.stopOnFrame = 0;
+				stopOnFrame = 0;
 
 				if (e.Delta > 0) //Scroll up
 				{
@@ -545,7 +544,7 @@ namespace BizHawk.MultiClient
 		private void DeleteFrames()
 		{
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
-			for (int index = 0; index < list.Count; index++)
+			foreach (object t in list)
 			{
 				Global.MovieSession.Movie.DeleteFrame(list[0]); //TODO: this doesn't allow of non-continuous deletion, instead it should iterate from last to first and remove the iterated value
 			}
@@ -580,8 +579,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			if (list.Count > 0)
 			{
-				InputPrompt prompt = new InputPrompt();
-				prompt.TextInputType = InputPrompt.InputType.UNSIGNED;
+				InputPrompt prompt = new InputPrompt {TextInputType = InputPrompt.InputType.UNSIGNED};
 				prompt.SetMessage("How many frames?");
 				prompt.SetInitialValue("1");
 				prompt.SetTitle("Insert new frames");
@@ -657,9 +655,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
 			for (int i = 0; i < list.Count; i++)
 			{
-				ClipboardEntry entry = new ClipboardEntry();
-				entry.frame = list[i];
-				entry.inputstr = Global.MovieSession.Movie.GetInput(list[i]);
+				ClipboardEntry entry = new ClipboardEntry {Frame = list[i], Inputstr = Global.MovieSession.Movie.GetInput(list[i])};
 				Clipboard.Add(entry);
 			}
 			UpdateSlicerDisplay();
@@ -704,7 +700,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int i = 0; i < Clipboard.Count; i++)
 				{
-					Global.MovieSession.Movie.ModifyFrame(Clipboard[i].inputstr, list[0] + i);
+					Global.MovieSession.Movie.ModifyFrame(Clipboard[i].Inputstr, list[0] + i);
 				}
 			}
 			UpdateValues();
@@ -717,7 +713,7 @@ namespace BizHawk.MultiClient
 			{
 				for (int i = 0; i < Clipboard.Count; i++)
 				{
-					Global.MovieSession.Movie.InsertFrame(Clipboard[i].inputstr, list[0] + i);
+					Global.MovieSession.Movie.InsertFrame(Clipboard[i].Inputstr, list[0] + i);
 				}
 			}
 			UpdateValues();
@@ -741,9 +737,7 @@ namespace BizHawk.MultiClient
 				Clipboard.Clear();
 				for (int i = 0; i < list.Count; i++)
 				{
-					ClipboardEntry entry = new ClipboardEntry();
-					entry.frame = list[i];
-					entry.inputstr = Global.MovieSession.Movie.GetInput(list[i]);
+					ClipboardEntry entry = new ClipboardEntry {Frame = list[i], Inputstr = Global.MovieSession.Movie.GetInput(list[i])};
 					Clipboard.Add(entry);
 					Global.MovieSession.Movie.DeleteFrame(list[0]);
 				}
@@ -786,31 +780,21 @@ namespace BizHawk.MultiClient
 		private void button1_Click(object sender, EventArgs e)
 		{
 			//Do visualization
-			DoVisualizerScan = true;
 			VisualizerBox.Refresh();
-			DoVisualizerScan = false;
 		}
 
 		private void VisualizerBox_Paint(object sender, PaintEventArgs e)
 		{
-			if (DoVisualizerScan)
-			{
-				StateVisualizer vizualizer = new StateVisualizer();
+			//if (DoVisualizerScan)
+			//{
+				//StateVisualizer vizualizer = new StateVisualizer();
 
-				for (int i = 0; i < vizualizer.TimeLineCount; i++)
-				{
+				//for (int i = 0; i < vizualizer.TimeLineCount; i++)
+				//{
 
-				}
-				
-				
-				int x = 0;
-				x++;
-				int y = x;
-				y++;
-			}
+				//}
+			//}
 		}
-
-		private bool DoVisualizerScan = false;
 
 		private void VisualizerBox_Enter(object sender, EventArgs e)
 		{

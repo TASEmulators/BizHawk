@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using LuaInterface;
 
 namespace BizHawk.MultiClient
 {
@@ -21,7 +18,7 @@ namespace BizHawk.MultiClient
 		string currentSessionFile = "";
 		List<LuaFile> luaList = new List<LuaFile>();
 		public LuaImplementation LuaImp;
-		string lastLuaFile = "";
+		string lastLuaFile = ""; //TODO: this isn't getting used!
 		bool changes = false;
 
 		private List<LuaFile> GetLuaFileList()
@@ -48,8 +45,8 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 			LuaImp = new LuaImplementation(this);
 			Closing += (o, e) => SaveConfigSettings();
-			LuaListView.QueryItemText += new QueryItemTextHandler(LuaListView_QueryItemText);
-			LuaListView.QueryItemBkColor += new QueryItemBkColorHandler(LuaListView_QueryItemBkColor);
+			LuaListView.QueryItemText += LuaListView_QueryItemText;
+			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
 			LuaListView.VirtualMode = true;
 		}
 
@@ -72,11 +69,17 @@ namespace BizHawk.MultiClient
 			if (column == 0)
 			{
 				if (luaList[index].IsSeparator)
-					color = this.BackColor;
+				{
+					color = BackColor;
+				}
 				else if (luaList[index].Enabled && !luaList[index].Paused)
+				{
 					color = Color.LightCyan;
+				}
 				else if (luaList[index].Enabled && luaList[index].Paused)
+				{
 					color = Color.IndianRed;
+				}
 			}
 
 			UpdateNumberOfScripts();
@@ -117,8 +120,10 @@ namespace BizHawk.MultiClient
 
 		private void StopAllScripts()
 		{
-			for (int x = 0; x < luaList.Count; x++)
-				luaList[x].Enabled = false;
+			foreach (LuaFile t in luaList)
+			{
+				t.Enabled = false;
+			}
 			Changes(true);
 		}
 
@@ -130,10 +135,10 @@ namespace BizHawk.MultiClient
 		private void SaveConfigSettings()
 		{
 			LuaImp.Close();
-			Global.Config.LuaConsoleWndx = this.Location.X;
-			Global.Config.LuaConsoleWndy = this.Location.Y;
-			Global.Config.LuaConsoleWidth = this.Right - this.Left;
-			Global.Config.LuaConsoleHeight = this.Bottom - this.Top;
+			Global.Config.LuaConsoleWndx = Location.X;
+			Global.Config.LuaConsoleWndy = Location.Y;
+			Global.Config.LuaConsoleWidth = Right - Left;
+			Global.Config.LuaConsoleHeight = Bottom - Top;
 		}
 
 		private void LoadConfigSettings()
@@ -146,18 +151,18 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.LuaConsoleWidth >= 0 && Global.Config.LuaConsoleHeight >= 0)
 			{
-				Size = new System.Drawing.Size(Global.Config.LuaConsoleWidth, Global.Config.LuaConsoleHeight);
+				Size = new Size(Global.Config.LuaConsoleWidth, Global.Config.LuaConsoleHeight);
 			}
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+			Size = new Size(defaultWidth, defaultHeight);
 		}
 
 		private FileInfo GetFileFromUser(string filter)
@@ -215,11 +220,11 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				for (int i = 0; i < luaList.Count; i++)
+				foreach (LuaFile t in luaList)
 				{
-					if (path == luaList[i].Path && luaList[i].Enabled == false && !Global.Config.DisableLuaScriptsOnLoad)
+					if (path == t.Path && t.Enabled == false && !Global.Config.DisableLuaScriptsOnLoad)
 					{
-						luaList[i].Toggle();
+						t.Toggle();
 						RunLuaScripts();
 						LuaListView.Refresh();
 						Changes(true);
@@ -242,11 +247,6 @@ namespace BizHawk.MultiClient
 		public void DisplayLuaList()
 		{
 			LuaListView.ItemCount = luaList.Count;
-		}
-
-		private void openToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			OpenLuaFile();
 		}
 
 		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -327,14 +327,14 @@ namespace BizHawk.MultiClient
 		{
 			string message = "";
 			int active = 0, paused = 0, separators = 0;
-			for (int x = 0; x < luaList.Count; x++)
+			foreach (LuaFile t in luaList)
 			{
-				if (!luaList[x].IsSeparator)
+				if (!t.IsSeparator)
 				{
-					if (luaList[x].Enabled)
+					if (t.Enabled)
 					{
 						active++;
-						if (luaList[x].Paused)
+						if (t.Paused)
 							paused++;
 					}
 				}
@@ -353,16 +353,6 @@ namespace BizHawk.MultiClient
 				message += L.ToString() + " scripts (" + active.ToString() + " active, " + paused.ToString() + " paused)";
 
 			NumberOfScripts.Text = message;
-		}
-
-		private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			MoveUp();
-		}
-
-		private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			MoveDown();
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -392,7 +382,7 @@ namespace BizHawk.MultiClient
 			bool result = true;
 			if (changes) result = AskSave();
 
-			if (result == true || suppressAsk)
+			if (result || suppressAsk)
 			{
 				ClearOutput();
 				StopAllScripts();
@@ -416,11 +406,6 @@ namespace BizHawk.MultiClient
 		private void autoloadConsoleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoLoadLuaConsole ^= true;
-		}
-
-		private void removeToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			RemoveScript();
 		}
 
 		private void RemoveScript()
@@ -452,19 +437,20 @@ namespace BizHawk.MultiClient
 
 		private void InsertSeparator()
 		{
-			LuaFile f = new LuaFile(true);
-			f.IsSeparator = true;
+			LuaFile f = new LuaFile(true) {IsSeparator = true};
 
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			int x;
 			if (indexes.Count > 0)
 			{
-				x = indexes[0];
 				if (indexes[0] > 0)
+				{
 					luaList.Insert(indexes[0], f);
+				}
 			}
 			else
+			{
 				luaList.Add(f);
+			}
 			DisplayLuaList();
 			LuaListView.Refresh();
 			Changes(true);
@@ -481,11 +467,10 @@ namespace BizHawk.MultiClient
 			if (indexes[0] == 0)
 				return;
 
-			LuaFile temp = new LuaFile(false);
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = luaList[index];
+				LuaFile temp = luaList[index];
 				luaList.Remove(luaList[index]);
 				luaList.Insert(index - 1, temp);
 
@@ -498,8 +483,10 @@ namespace BizHawk.MultiClient
 				i.Add(indexes[z] - 1);
 
 			LuaListView.SelectedIndices.Clear();
-			for (int z = 0; z < i.Count; z++)
-				LuaListView.SelectItem(i[z], true);
+			foreach (int t in i)
+			{
+				LuaListView.SelectItem(t, true);
+			}
 
 			DisplayLuaList();
 		}
@@ -507,11 +494,10 @@ namespace BizHawk.MultiClient
 		private void MoveDown()
 		{
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			LuaFile temp = new LuaFile(false);
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = luaList[index];
+				LuaFile temp = luaList[index];
 
 				if (index < luaList.Count - 1)
 				{
@@ -531,8 +517,10 @@ namespace BizHawk.MultiClient
 				i.Add(indexes[z] + 1);
 
 			LuaListView.SelectedIndices.Clear();
-			for (int z = 0; z < i.Count; z++)
-				LuaListView.SelectItem(i[z], true);
+			foreach (int t in i)
+			{
+				LuaListView.SelectItem(t, true);
+			}
 
 			DisplayLuaList();
 		}
@@ -550,9 +538,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.RecentLua.IsEmpty)
 			{
-				var none = new ToolStripMenuItem();
-				none.Enabled = false;
-				none.Text = "None";
+				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentToolStripMenuItem.DropDownItems.Add(none);
 			}
 			else
@@ -560,8 +546,7 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < Global.Config.RecentLua.Count; x++)
 				{
 					string path = Global.Config.RecentLua.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem();
-					item.Text = path;
+					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadLuaFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);
 				}
@@ -569,8 +554,7 @@ namespace BizHawk.MultiClient
 
 			recentToolStripMenuItem.DropDownItems.Add("-");
 
-			var clearitem = new ToolStripMenuItem();
-			clearitem.Text = "&Clear";
+			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
 			clearitem.Click += (o, ev) => Global.Config.RecentLua.Clear();
 			recentToolStripMenuItem.DropDownItems.Add(clearitem);
 		}
@@ -582,16 +566,7 @@ namespace BizHawk.MultiClient
 
 		private bool LuaAlreadyInSession(string path)
 		{
-			bool Validated = false;
-			for (int i = 0; i < luaList.Count; i++)
-			{
-				if (path == luaList[i].Path)
-				{
-					Validated = true;
-					break;
-				}
-			}
-			return Validated;
+			return luaList.Any(t => path == t.Path);
 		}
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
@@ -626,7 +601,7 @@ namespace BizHawk.MultiClient
 
 		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		private void LuaListView_KeyDown(object sender, KeyEventArgs e)
@@ -770,30 +745,32 @@ namespace BizHawk.MultiClient
 
 			using (StreamReader sr = file.OpenText())
 			{
-				bool enabled = false;
-				string s = "";
-				string temp = "";
-				LuaFile l;
+				string s;
 
 				while ((s = sr.ReadLine()) != null)
 				{
 					//.luases 
 					if (s.Length < 3) continue;
+					LuaFile l;
 					if (s.Substring(0, 3) == "---")
 					{
-						l = new LuaFile(true);
-						l.IsSeparator = true;
+						l = new LuaFile(true) {IsSeparator = true};
 					}
 					else
 					{
-						temp = s.Substring(0, 1); //Get enabled flag
+						string temp = s.Substring(0, 1);
 
+						bool enabled;
 						try
 						{
 							if (int.Parse(temp) == 0)
+							{
 								enabled = false;
+							}
 							else
+							{
 								enabled = true;
+							}
 						}
 						catch
 						{
@@ -846,10 +823,8 @@ namespace BizHawk.MultiClient
 				{
 					LuaImp.gui_drawNewEmu();
 				}
-				for (int i = 0; i < luaList.Count; i++)
+				foreach (var lf in luaList)
 				{
-					var lf = luaList[i];
-					
 					//save old current directory before this lua thread clobbers it for the .net thread
 					string oldcd = Environment.CurrentDirectory;
 
@@ -858,11 +833,7 @@ namespace BizHawk.MultiClient
 						//LuaImp.gui_clearGraphics();
 						if (lf.Enabled && lf.Thread != null && !(lf.Paused))
 						{
-							bool prohibit = false;
-							if (lf.FrameWaiting && !includeFrameWaiters)
-							{
-								prohibit = true;
-							}
+							bool prohibit = lf.FrameWaiting && !includeFrameWaiters;
 							if (!prohibit)
 							{
 								//restore this lua thread's preferred current directory
@@ -892,8 +863,7 @@ namespace BizHawk.MultiClient
 
 					//restore the current directory
 					Environment.CurrentDirectory = oldcd;
-
-				} //loop across luaList
+				}
 			}
 			//LuaImp.gui_drawFinishEmu();
 		}
@@ -922,10 +892,12 @@ namespace BizHawk.MultiClient
 
 		public bool WaitOne(int timeout)
 		{
-			if (!this.IsHandleCreated || this.IsDisposed)
+			if (!IsHandleCreated || IsDisposed)
+			{
 				return true;
+			}
 
-			return this.LuaImp.LuaWait.WaitOne(timeout);
+			return LuaImp.LuaWait.WaitOne(timeout);
 		}
 
 		private void openToolStripButton_Click(object sender, EventArgs e)
@@ -991,23 +963,25 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private bool SaveSession(string path)
+		private void SaveSession(string path)
 		{
-			var file = new FileInfo(path);
-
 			using (StreamWriter sw = new StreamWriter(path))
 			{
 				string str = "";
-				for (int i = 0; i < luaList.Count; i++)
+				foreach (LuaFile t in luaList)
 				{
-					if (!luaList[i].IsSeparator)
+					if (!t.IsSeparator)
 					{
-						if (luaList[i].Enabled)
+						if (t.Enabled)
+						{
 							str += "1 ";
+						}
 						else
+						{
 							str += "0 ";
+						}
 
-						str += luaList[i].Path + "\n";
+						str += t.Path + "\n";
 					}
 					else
 					{
@@ -1018,7 +992,6 @@ namespace BizHawk.MultiClient
 			}
 
 			Changes(false);
-			return true;
 		}
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1041,9 +1014,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.RecentLuaSession.IsEmpty)
 			{
-				var none = new ToolStripMenuItem();
-				none.Enabled = false;
-				none.Text = "None";
+				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentSessionsToolStripMenuItem.DropDownItems.Add(none);
 			}
 			else
@@ -1051,8 +1022,7 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < Global.Config.RecentLuaSession.Count; x++)
 				{
 					string path = Global.Config.RecentLuaSession.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem();
-					item.Text = path;
+					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadSessionFromRecent(path);
 					recentSessionsToolStripMenuItem.DropDownItems.Add(item);
 				}
@@ -1060,8 +1030,7 @@ namespace BizHawk.MultiClient
 
 			recentSessionsToolStripMenuItem.DropDownItems.Add("-");
 
-			var clearitem = new ToolStripMenuItem();
-			clearitem.Text = "&Clear";
+			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
 			clearitem.Click += (o, ev) => Global.Config.RecentLuaSession.Clear();
 			recentSessionsToolStripMenuItem.DropDownItems.Add(clearitem);
 		}
@@ -1132,10 +1101,12 @@ namespace BizHawk.MultiClient
 		private void scriptToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			bool luaRunning = false;
-			for (int i = 0; i < luaList.Count; i++)
+			foreach (LuaFile t in luaList)
 			{
-				if (luaList[i].Enabled)
+				if (t.Enabled)
+				{
 					luaRunning = true;
+				}
 			}
 
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
@@ -1184,9 +1155,9 @@ namespace BizHawk.MultiClient
 		{
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
 			bool luaRunning = false;
-			for (int i = 0; i < luaList.Count; i++)
+			foreach (LuaFile t in luaList)
 			{
-				if (luaList[i].Enabled)
+				if (t.Enabled)
 					luaRunning = true;
 			}
 
@@ -1236,11 +1207,6 @@ namespace BizHawk.MultiClient
 		private void autoloadSessionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoLoadLuaSession ^= true;
-		}
-
-		private void toolStripButton1_Click(object sender, EventArgs e)
-		{
-			TogglePause();
 		}
 
 		private void TogglePause()
@@ -1307,8 +1273,7 @@ namespace BizHawk.MultiClient
 
 		private void OpenLuaWriter(string path)
 		{
-			LuaWriter writer = new LuaWriter();
-			writer.CurrentFile = path;
+			LuaWriter writer = new LuaWriter {CurrentFile = path};
 			writer.Show();
 		}
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Diagnostics;
 
@@ -62,7 +61,7 @@ namespace BizHawk.MultiClient
 				System.IO.Path.GetDirectoryName(baseName),
 				System.IO.Path.GetFileNameWithoutExtension(baseName));
 
-			this.ext = System.IO.Path.GetExtension(baseName);
+			ext = System.IO.Path.GetExtension(baseName);
 
 			segment = 0;
 			OpenFileSegment();
@@ -285,7 +284,7 @@ namespace BizHawk.MultiClient
 
 		public void SetDefaultVideoCodecToken()
 		{
-			this.token = FFmpegWriterForm.FormatPreset.GetDefaultPreset();
+			token = FFmpegWriterForm.FormatPreset.GetDefaultPreset();
 		}
 
 		public string ShortName()

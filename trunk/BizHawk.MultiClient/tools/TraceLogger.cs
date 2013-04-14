@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -16,15 +13,15 @@ namespace BizHawk.MultiClient
 		//Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
 		//Remember window size
 
-		List<string> Instructions = new List<string>();
-		FileInfo LogFile;
+		private readonly List<string> Instructions = new List<string>();
+		private FileInfo LogFile;
 
 		public TraceLogger()
 		{
 			InitializeComponent();
 			
-			TraceView.QueryItemText += new QueryItemTextHandler(TraceView_QueryItemText);
-			TraceView.QueryItemBkColor += new QueryItemBkColorHandler(TraceView_QueryItemBkColor);
+			TraceView.QueryItemText += TraceView_QueryItemText;
+			TraceView.QueryItemBkColor += TraceView_QueryItemBkColor;
 			TraceView.VirtualMode = true;
 
 			Closing += (o, e) => SaveConfigSettings();
@@ -33,8 +30,8 @@ namespace BizHawk.MultiClient
 		public void SaveConfigSettings()
 		{
 			Global.CoreComm.Tracer.Enabled = false;
-			Global.Config.TraceLoggerWndx = this.Location.X;
-			Global.Config.TraceLoggerWndy = this.Location.Y;
+			Global.Config.TraceLoggerWndx = Location.X;
+			Global.Config.TraceLoggerWndy = Location.Y;
 		}
 
 		private void TraceView_QueryItemBkColor(int index, int column, ref Color color)
@@ -58,7 +55,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.TraceLoggerSaveWindowPosition && Global.Config.TraceLoggerWndx >= 0 && Global.Config.TraceLoggerWndy >= 0)
 			{
-				this.Location = new Point(Global.Config.TraceLoggerWndx, Global.Config.TraceLoggerWndy);
+				Location = new Point(Global.Config.TraceLoggerWndx, Global.Config.TraceLoggerWndy);
 			}
 
 			ClearList();
@@ -75,7 +72,7 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed)
+			if (!IsHandleCreated || IsDisposed)
 			{
 				return;
 			}
@@ -88,7 +85,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					this.Close();
+					Close();
 				}
 			}
 		}
@@ -169,11 +166,6 @@ namespace BizHawk.MultiClient
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.TraceLoggerSaveWindowPosition;
 		}
 
-		private void CloseButton_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.TraceLoggerSaveWindowPosition ^= true;
@@ -182,9 +174,7 @@ namespace BizHawk.MultiClient
 		private Point GetPromptPoint()
 		{
 			Point p = new Point(TraceView.Location.X + 30, TraceView.Location.Y + 30);
-			Point q = new Point();
-			q = PointToScreen(p);
-			return q;
+			return PointToScreen(p);
 		}
 
 		private void setMaxWindowLinesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -194,7 +184,7 @@ namespace BizHawk.MultiClient
 			p.SetInitialValue(Global.Config.TraceLoggerMaxLines.ToString());
 			p.TextInputType = InputPrompt.InputType.UNSIGNED;
 			p._Location = GetPromptPoint();
-			DialogResult result =  p.ShowDialog();
+			p.ShowDialog();
 			if (p.UserOK)
 			{
 				int x = int.Parse(p.UserText);
@@ -244,7 +234,7 @@ namespace BizHawk.MultiClient
 				string name = PathManager.FilesystemSafeName(Global.Game);
 				string filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.LogPath), name) + ".txt";
 				LogFile = new FileInfo(filename);
-				if (!LogFile.Directory.Exists)
+				if (LogFile.Directory != null && !LogFile.Directory.Exists)
 				{
 					LogFile.Directory.Create();
 				}

@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			};
 			public PPUPHASE ppuphase;
 
-			NES nes;
+			private readonly NES nes;
 			public PPU(NES nes)
 			{
 				this.nes = nes;
@@ -105,8 +105,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public void SyncState(Serializer ser)
 			{
-				byte temp8;
-
 				ser.Sync("ppudead", ref ppudead);
 				ser.Sync("idleSynch", ref idleSynch);
 				ser.Sync("NMI_PendingInstructions", ref NMI_PendingInstructions);
@@ -124,7 +122,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ser.Sync("Reg2002_vblank_active_pending", ref Reg2002_vblank_active_pending);
 				ser.Sync("Reg2002_vblank_clear_pending", ref Reg2002_vblank_clear_pending);
 				ppur.SyncState(ser);
-				temp8 = reg_2000.Value; ser.Sync("reg_2000.Value", ref temp8); reg_2000.Value = temp8;
+				byte temp8 = reg_2000.Value; ser.Sync("reg_2000.Value", ref temp8); reg_2000.Value = temp8;
 				temp8 = reg_2001.Value; ser.Sync("reg_2001.Value", ref temp8); reg_2001.Value = temp8;
 				ser.Sync("reg_2003", ref reg_2003);
 

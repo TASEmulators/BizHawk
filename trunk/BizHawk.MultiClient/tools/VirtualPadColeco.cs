@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -17,8 +12,8 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
-			this.BorderStyle = BorderStyle.Fixed3D;
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.VirtualPad_Paint);
+			BorderStyle = BorderStyle.Fixed3D;
+			Paint += VirtualPad_Paint;
 			InitializeComponent();
 		}
 
@@ -32,23 +27,23 @@ namespace BizHawk.MultiClient
 			if (keyData == Keys.Up)
 			{
 				//TODO: move to next logical key
-				this.Refresh();
+				Refresh();
 			}
 			else if (keyData == Keys.Down)
 			{
-				this.Refresh();
+				Refresh();
 			}
 			else if (keyData == Keys.Left)
 			{
-				this.Refresh();
+				Refresh();
 			}
 			else if (keyData == Keys.Right)
 			{
-				this.Refresh();
+				Refresh();
 			}
 			else if (keyData == Keys.Tab)
 			{
-				this.Refresh();
+				Refresh();
 			}
 			return true;
 		}

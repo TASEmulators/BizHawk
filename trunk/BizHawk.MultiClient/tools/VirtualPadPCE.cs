@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
 	public class VirtualPadPCE : VirtualPad
 	{
-
 		public VirtualPadPCE()
 		{
 			ButtonPoints[0] = new Point(14, 2);
@@ -25,100 +21,114 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
-			this.BorderStyle = BorderStyle.Fixed3D;
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.VirtualPad_Paint);
-			this.Size = new Size(174, 74);
+			BorderStyle = BorderStyle.Fixed3D;
+			Paint += VirtualPad_Paint;
+			Size = new Size(174, 74);
 
-			Point n = new Point(this.Size);
+			PU = new CheckBox
+				{
+					Appearance = Appearance.Button,
+					AutoSize = true,
+					Image = Properties.Resources.BlueUp,
+					ImageAlign = ContentAlignment.BottomRight,
+					Location = ButtonPoints[0],
+					TabIndex = 1,
+					UseVisualStyleBackColor = true
+				};
+			PU.CheckedChanged += Buttons_CheckedChanged;
 
-			this.PU = new CheckBox();
-			this.PU.Appearance = System.Windows.Forms.Appearance.Button;
-			this.PU.AutoSize = true;
-			this.PU.Image = global::BizHawk.MultiClient.Properties.Resources.BlueUp;
-			this.PU.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.PU.Location = ButtonPoints[0];
-			this.PU.TabIndex = 1;
-			this.PU.UseVisualStyleBackColor = true;
-			this.PU.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			PD = new CheckBox
+				{
+					Appearance = Appearance.Button,
+					AutoSize = true,
+					Image = Properties.Resources.BlueDown,
+					ImageAlign = ContentAlignment.BottomRight,
+					Location = ButtonPoints[1],
+					TabIndex = 4,
+					UseVisualStyleBackColor = true
+				};
+			PD.CheckedChanged += Buttons_CheckedChanged;
 
-			this.PD = new CheckBox();
-			this.PD.Appearance = System.Windows.Forms.Appearance.Button;
-			this.PD.AutoSize = true;
-			this.PD.Image = global::BizHawk.MultiClient.Properties.Resources.BlueDown;
-			this.PD.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.PD.Location = ButtonPoints[1];
-			this.PD.TabIndex = 4;
-			this.PD.UseVisualStyleBackColor = true;
-			this.PD.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			PR = new CheckBox
+				{
+					Appearance = Appearance.Button,
+					AutoSize = true,
+					Image = Properties.Resources.Forward,
+					ImageAlign = ContentAlignment.BottomRight,
+					Location = ButtonPoints[3],
+					TabIndex = 3,
+					UseVisualStyleBackColor = true
+				};
+			PR.CheckedChanged += Buttons_CheckedChanged;
 
-			this.PR = new CheckBox();
-			this.PR.Appearance = System.Windows.Forms.Appearance.Button;
-			this.PR.AutoSize = true;
-			this.PR.Image = global::BizHawk.MultiClient.Properties.Resources.Forward;
-			this.PR.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.PR.Location = ButtonPoints[3];
-			this.PR.TabIndex = 3;
-			this.PR.UseVisualStyleBackColor = true;
-			this.PR.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			PL = new CheckBox
+				{
+					Appearance = Appearance.Button,
+					AutoSize = true,
+					Image = Properties.Resources.Back,
+					ImageAlign = ContentAlignment.BottomRight,
+					Location = ButtonPoints[2],
+					TabIndex = 2,
+					UseVisualStyleBackColor = true
+				};
+			PL.CheckedChanged += Buttons_CheckedChanged;
 
-			this.PL = new CheckBox();
-			this.PL.Appearance = System.Windows.Forms.Appearance.Button;
-			this.PL.AutoSize = true;
-			this.PL.Image = global::BizHawk.MultiClient.Properties.Resources.Back;
-			this.PL.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.PL.Location = ButtonPoints[2];
-			this.PL.TabIndex = 2;
-			this.PL.UseVisualStyleBackColor = true;
-			this.PL.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			B1 = new CheckBox
+				{
+					Appearance = Appearance.Button,
+					AutoSize = true,
+					Location = ButtonPoints[4],
+					TabIndex = 5,
+					Text = "s",
+					TextAlign = ContentAlignment.BottomCenter,
+					UseVisualStyleBackColor = true
+				};
+			B1.CheckedChanged += Buttons_CheckedChanged;
 
-			this.B1 = new CheckBox();
-			this.B1.Appearance = System.Windows.Forms.Appearance.Button;
-			this.B1.AutoSize = true;
-			this.B1.Location = ButtonPoints[4];
-			this.B1.TabIndex = 5;
-			this.B1.Text = "s";
-			this.B1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			this.B1.UseVisualStyleBackColor = true;
-			this.B1.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			B2 = new CheckBox
+				{
+					Appearance = Appearance.Button,
+					AutoSize = true,
+					Location = ButtonPoints[5],
+					TabIndex = 6,
+					Text = "R",
+					TextAlign = ContentAlignment.BottomCenter,
+					UseVisualStyleBackColor = true
+				};
+			B2.CheckedChanged += Buttons_CheckedChanged;
 
-			this.B2 = new CheckBox();
-			this.B2.Appearance = System.Windows.Forms.Appearance.Button;
-			this.B2.AutoSize = true;
-			this.B2.Location = ButtonPoints[5];
-			this.B2.TabIndex = 6;
-			this.B2.Text = "R";
-			this.B2.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			this.B2.UseVisualStyleBackColor = true;
-			this.B2.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			B3 = new CheckBox
+				{
+					Appearance = Appearance.Button,
+					AutoSize = true,
+					Location = ButtonPoints[6],
+					TabIndex = 7,
+					Text = "II",
+					TextAlign = ContentAlignment.BottomCenter,
+					UseVisualStyleBackColor = true
+				};
+			B3.CheckedChanged += Buttons_CheckedChanged;
 
-			this.B3 = new CheckBox();
-			this.B3.Appearance = System.Windows.Forms.Appearance.Button;
-			this.B3.AutoSize = true;
-			this.B3.Location = ButtonPoints[6];
-			this.B3.TabIndex = 7;
-			this.B3.Text = "II";
-			this.B3.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			this.B3.UseVisualStyleBackColor = true;
-			this.B3.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
+			B4 = new CheckBox
+				{
+					Appearance = Appearance.Button,
+					AutoSize = true,
+					Location = ButtonPoints[7],
+					TabIndex = 8,
+					Text = "I",
+					TextAlign = ContentAlignment.BottomCenter,
+					UseVisualStyleBackColor = true
+				};
+			B4.CheckedChanged += Buttons_CheckedChanged;
 
-			this.B4 = new CheckBox();
-			this.B4.Appearance = System.Windows.Forms.Appearance.Button;
-			this.B4.AutoSize = true;
-			this.B4.Location = ButtonPoints[7];
-			this.B4.TabIndex = 8;
-			this.B4.Text = "I";
-			this.B4.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			this.B4.UseVisualStyleBackColor = true;
-			this.B4.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
-
-			this.Controls.Add(this.PU);
-			this.Controls.Add(this.PD);
-			this.Controls.Add(this.PL);
-			this.Controls.Add(this.PR);
-			this.Controls.Add(this.B1);
-			this.Controls.Add(this.B2);
-			this.Controls.Add(this.B3);
-			this.Controls.Add(this.B4);
+			Controls.Add(PU);
+			Controls.Add(PD);
+			Controls.Add(PL);
+			Controls.Add(PR);
+			Controls.Add(B1);
+			Controls.Add(B2);
+			Controls.Add(B3);
+			Controls.Add(B4);
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -126,23 +136,23 @@ namespace BizHawk.MultiClient
 			if (keyData == Keys.Up)
 			{
 				//TODO: move to next logical key
-				this.Refresh();
+				Refresh();
 			}
 			else if (keyData == Keys.Down)
 			{
-				this.Refresh();
+				Refresh();
 			}
 			else if (keyData == Keys.Left)
 			{
-				this.Refresh();
+				Refresh();
 			}
 			else if (keyData == Keys.Right)
 			{
-				this.Refresh();
+				Refresh();
 			}
 			else if (keyData == Keys.Tab)
 			{
-				this.Refresh();
+				Refresh();
 			}
 			return true;
 		}
