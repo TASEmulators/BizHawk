@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-	
 	/// <summary>
 	/// An object that represent a ram address and related properties
 	/// </summary>
@@ -195,12 +192,12 @@ namespace BizHawk.MultiClient
 
 		public string DiffPrevString
 		{
-			get { return DiffToString(this.DiffPrev); }
+			get { return DiffToString(DiffPrev); }
 		}
 
 		public string DiffLastChangeString
 		{
-			get { return DiffToString(this.DiffLastChange); }
+			get { return DiffToString(DiffLastChange); }
 		}
 
 		#endregion
@@ -325,9 +322,9 @@ namespace BizHawk.MultiClient
 			switch (Type)
 			{
 				case TYPE.BYTE:
-					return (uint)(byte)val;
+					return (byte)val;
 				case TYPE.WORD:
-					return (uint)(ushort)val;
+					return (ushort)val;
 			}
 			return (uint)val;
 		}
@@ -337,9 +334,9 @@ namespace BizHawk.MultiClient
 			switch (Type)
 			{
 				case TYPE.BYTE:
-					return (int)(sbyte)val;
+					return (sbyte)val;
 				case TYPE.WORD:
-					return (int)(short)val;
+					return (short)val;
 			}
 			return val;
 		}
@@ -504,9 +501,9 @@ namespace BizHawk.MultiClient
 
 		private int CompareAddress(Watch Other)
 		{
-			if (this.Address < Other.Address)
+			if (Address < Other.Address)
 				return -1;
-			else if (this.Address > Other.Address)
+			else if (Address > Other.Address)
 				return 1;
 			else
 				return 0;
@@ -516,16 +513,16 @@ namespace BizHawk.MultiClient
 		{
 			if (Signed == DISPTYPE.SIGNED)
 			{
-				if (SignedVal(this.Value) < SignedVal(Other.Value))
+				if (SignedVal(Value) < SignedVal(Other.Value))
 					return -1;
-				else if (SignedVal(this.Value) > SignedVal(Other.Value))
+				else if (SignedVal(Value) > SignedVal(Other.Value))
 					return 1;
 				else
 					return 0;
 			}
-			if (UnsignedVal(this.Value) < UnsignedVal(Other.Value))
+			if (UnsignedVal(Value) < UnsignedVal(Other.Value))
 				return -1;
-			else if (UnsignedVal(this.Value) > UnsignedVal(Other.Value))
+			else if (UnsignedVal(Value) > UnsignedVal(Other.Value))
 				return 1;
 			else
 				return 0;
@@ -535,16 +532,16 @@ namespace BizHawk.MultiClient
 		{
 			if (Signed == DISPTYPE.SIGNED)
 			{
-				if (SignedVal(this.Prev) < SignedVal(Other.Prev))
+				if (SignedVal(Prev) < SignedVal(Other.Prev))
 					return -1;
-				else if (SignedVal(this.Prev) > SignedVal(Other.Prev))
+				else if (SignedVal(Prev) > SignedVal(Other.Prev))
 					return 1;
 				else
 					return 0;
 			}
-			if (UnsignedVal(this.Prev) < UnsignedVal(Other.Prev))
+			if (UnsignedVal(Prev) < UnsignedVal(Other.Prev))
 				return -1;
-			else if (UnsignedVal(this.Prev) > UnsignedVal(Other.Prev))
+			else if (UnsignedVal(Prev) > UnsignedVal(Other.Prev))
 				return 1;
 			else
 				return 0;
@@ -554,16 +551,16 @@ namespace BizHawk.MultiClient
 		{
 			if (Signed == DISPTYPE.SIGNED)
 			{
-				if (SignedVal(this.Original) < SignedVal(Other.Original))
+				if (SignedVal(Original) < SignedVal(Other.Original))
 					return -1;
-				else if (SignedVal(this.Original) > SignedVal(Other.Original))
+				else if (SignedVal(Original) > SignedVal(Other.Original))
 					return 1;
 				else
 					return 0;
 			}
-			if (UnsignedVal(this.Original) < UnsignedVal(Other.Original))
+			if (UnsignedVal(Original) < UnsignedVal(Other.Original))
 				return -1;
-			else if (UnsignedVal(this.Original) > UnsignedVal(Other.Original))
+			else if (UnsignedVal(Original) > UnsignedVal(Other.Original))
 				return 1;
 			else
 				return 0;
@@ -573,16 +570,16 @@ namespace BizHawk.MultiClient
 		{
 			if (Signed == DISPTYPE.SIGNED)
 			{
-				if (SignedVal(this.LastChange) < SignedVal(Other.LastChange))
+				if (SignedVal(LastChange) < SignedVal(Other.LastChange))
 					return -1;
-				else if (SignedVal(this.LastChange) > SignedVal(Other.LastChange))
+				else if (SignedVal(LastChange) > SignedVal(Other.LastChange))
 					return 1;
 				else
 					return 0;
 			}
-			if (UnsignedVal(this.LastChange) < UnsignedVal(Other.LastChange))
+			if (UnsignedVal(LastChange) < UnsignedVal(Other.LastChange))
 				return -1;
-			else if (UnsignedVal(this.LastChange) > UnsignedVal(Other.LastChange))
+			else if (UnsignedVal(LastChange) > UnsignedVal(Other.LastChange))
 				return 1;
 			else
 				return 0;
@@ -592,16 +589,16 @@ namespace BizHawk.MultiClient
 		{
 			if (Signed == DISPTYPE.SIGNED)
 			{
-				if (SignedVal(this.LastSearch) < SignedVal(Other.LastSearch))
+				if (SignedVal(LastSearch) < SignedVal(Other.LastSearch))
 					return -1;
-				else if (SignedVal(this.LastSearch) > SignedVal(Other.LastSearch))
+				else if (SignedVal(LastSearch) > SignedVal(Other.LastSearch))
 					return 1;
 				else
 					return 0;
 			}
-			if (UnsignedVal(this.LastSearch) < UnsignedVal(Other.LastSearch))
+			if (UnsignedVal(LastSearch) < UnsignedVal(Other.LastSearch))
 				return -1;
-			else if (UnsignedVal(this.LastSearch) > UnsignedVal(Other.LastSearch))
+			else if (UnsignedVal(LastSearch) > UnsignedVal(Other.LastSearch))
 				return 1;
 			else
 				return 0;
@@ -609,9 +606,9 @@ namespace BizHawk.MultiClient
 
 		private int CompareDiffPrev(Watch Other)
 		{
-			if (this.DiffPrev < Other.DiffPrev)
+			if (DiffPrev < Other.DiffPrev)
 				return -1;
-			else if (this.DiffPrev > Other.DiffPrev)
+			else if (DiffPrev > Other.DiffPrev)
 				return 1;
 			else
 				return 0;
@@ -619,9 +616,9 @@ namespace BizHawk.MultiClient
 
 		private int CompareDiffOriginal(Watch Other)
 		{
-			if (this.DiffOriginal < Other.DiffOriginal)
+			if (DiffOriginal < Other.DiffOriginal)
 				return -1;
-			else if (this.DiffOriginal > Other.DiffOriginal)
+			else if (DiffOriginal > Other.DiffOriginal)
 				return 1;
 			else
 				return 0;
@@ -629,9 +626,9 @@ namespace BizHawk.MultiClient
 
 		private int CompareDiffLastChange(Watch Other)
 		{
-			if (this.DiffLastChange < Other.DiffLastChange)
+			if (DiffLastChange < Other.DiffLastChange)
 				return -1;
-			else if (this.DiffLastChange > Other.DiffLastChange)
+			else if (DiffLastChange > Other.DiffLastChange)
 				return 1;
 			else
 				return 0;
@@ -639,9 +636,9 @@ namespace BizHawk.MultiClient
 
 		private int CompareDiffLastSearch(Watch Other)
 		{
-			if (this.DiffLastSearch < Other.DiffLastSearch)
+			if (DiffLastSearch < Other.DiffLastSearch)
 				return -1;
-			else if (this.DiffLastSearch > Other.DiffLastSearch)
+			else if (DiffLastSearch > Other.DiffLastSearch)
 				return 1;
 			else
 				return 0;
@@ -649,9 +646,9 @@ namespace BizHawk.MultiClient
 
 		private int CompareChanges(Watch Other)
 		{
-			if (this.Changecount < Other.Changecount)
+			if (Changecount < Other.Changecount)
 				return -1;
-			else if (this.Changecount > Other.Changecount)
+			else if (Changecount > Other.Changecount)
 				return 1;
 			else
 				return 0;
@@ -659,23 +656,23 @@ namespace BizHawk.MultiClient
 
 		private int CompareNotes(Watch Other)
 		{
-			if (this.Notes == null & Other.Notes == null)
+			if (Notes == null & Other.Notes == null)
 				return 0;
-			else if (this.Notes == null)
+			else if (Notes == null)
 				return -1;
 			else if (Other.Notes == null)
 				return 1;
 			else
-				return this.Notes.CompareTo(Other.Notes);
+				return Notes.CompareTo(Other.Notes);
 		}
 
 		private int CompareDomain(Watch Other)
 		{
-			if (this.Domain == null & Other.Domain == null)
+			if (Domain == null & Other.Domain == null)
 			{
 				return 0;
 			}
-			else if (this.Domain == null)
+			else if (Domain == null)
 			{
 				return -1;
 			}
@@ -685,7 +682,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				return this.Domain.Name.CompareTo(Other.Domain.Name);
+				return Domain.Name.CompareTo(Other.Domain.Name);
 			}
 		}
 

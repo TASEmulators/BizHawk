@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
@@ -23,10 +19,6 @@ namespace BizHawk.MultiClient.GBtools
 		/// the most recently loaded or saved palette file
 		/// </summary>
 		string currentfile;
-		/// <summary>
-		/// whether currentfile has been modified
-		/// </summary>
-		bool filemodified;
 
 		/// <summary>
 		/// gambatte's default dmg colors
@@ -157,7 +149,6 @@ namespace BizHawk.MultiClient.GBtools
 					{
 						colors[i] = dlg.Color;
 						sender.BackColor = colors[i];
-						filemodified = true;
 						label4.Text = "Current palette file (modified):";
 					}
 				}
@@ -250,7 +241,6 @@ namespace BizHawk.MultiClient.GBtools
 				dlg.SetAllColors(DefaultDMGColors);
 				dlg.textBox1.Text = "(none)";
 				dlg.currentfile = "";
-				dlg.filemodified = false;
 
 				if (!string.IsNullOrEmpty(Global.Config.GB_PaletteFile))
 				{
@@ -287,7 +277,6 @@ namespace BizHawk.MultiClient.GBtools
 					SetAllColors(newcolors);
 					textBox1.Text = Path.GetFileName(filename);
 					currentfile = filename;
-					filemodified = false;
 					label4.Text = "Current palette file:";
 				}
 			}
@@ -310,7 +299,6 @@ namespace BizHawk.MultiClient.GBtools
 						savecolors[i] = colors[i].ToArgb() & 0xffffff;
 					SavePalFile(f, savecolors);
 					currentfile = filename;
-					filemodified = false;
 					label4.Text = "Current palette file:";
 					textBox1.Text = Path.GetFileName(filename);
 				}
@@ -389,7 +377,6 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			textBox1.Text = "(none)";
 			currentfile = "";
-			filemodified = false;
 			SetAllColors(DefaultDMGColors);
 		}
 
@@ -397,7 +384,6 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			textBox1.Text = "(none)";
 			currentfile = "";
-			filemodified = false;
 			SetAllColors(DefaultCGBColors);
 		}
 	}

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 
@@ -12,9 +7,9 @@ namespace BizHawk.MultiClient
 {
 	public partial class RamPoke : Form
 	{
-		public Watch watch = new Watch();
-		public MemoryDomain domain = Global.Emulator.MainMemory;
-		public Point location = new Point();
+		public Watch Watch = new Watch();
+		public MemoryDomain Domain = Global.Emulator.MainMemory;
+		public Point NewLocation = new Point();
 
 		public RamPoke()
 		{
@@ -24,17 +19,17 @@ namespace BizHawk.MultiClient
 		public void SetWatchObject(Watch w)
 		{
 			PopulateMemoryDomainComboBox();
-			watch = new Watch(w);
-			domain = w.Domain;
+			Watch = new Watch(w);
+			Domain = w.Domain;
 		}
 
 		private void RamPoke_Load(object sender, EventArgs e)
 		{
-			if (watch.Address == 0)
+			if (Watch.Address == 0)
 				PopulateMemoryDomainComboBox();
-			SetTypeRadio(watch.Type);
-			SetSignedRadio(watch.Signed);
-			if (watch.Signed == Watch.DISPTYPE.HEX)
+			SetTypeRadio(Watch.Type);
+			SetSignedRadio(Watch.Signed);
+			if (Watch.Signed == Watch.DISPTYPE.HEX)
 			{
 				ValueHexLabel.Text = "0x";
 			}
@@ -43,7 +38,7 @@ namespace BizHawk.MultiClient
 				ValueHexLabel.Text = "";
 			}
 
-			if (watch.BigEndian == true)
+			if (Watch.BigEndian)
 			{
 				BigEndianRadio.Checked = true;
 			}
@@ -55,11 +50,13 @@ namespace BizHawk.MultiClient
 			SetValueBox();
 			SetAddressBox();
 
-			AddressBox.MaxLength = GetNumDigits(domain.Size);
+			AddressBox.MaxLength = GetNumDigits(Domain.Size);
 			ValueBox.MaxLength = GetValueNumDigits();
 
-			if (location.X > 0 && location.Y > 0)
-				this.Location = location;
+			if (NewLocation.X > 0 && NewLocation.Y > 0)
+			{
+				Location = NewLocation;
+			}
 
 			UpdateTitleText();
 			SetDomainSelection();
@@ -69,7 +66,7 @@ namespace BizHawk.MultiClient
 
 		private void SetValueBoxProperties()
 		{
-			switch (watch.Signed)
+			switch (Watch.Signed)
 			{
 				case Watch.DISPTYPE.SIGNED:
 					SignedRadio.Checked = true;
@@ -93,7 +90,7 @@ namespace BizHawk.MultiClient
 		{
 			ValueHexLabel.Text = "0x";
 			ValueBox.MaxLength = GetValueNumDigits();
-			watch.Signed = Watch.DISPTYPE.HEX;
+			Watch.Signed = Watch.DISPTYPE.HEX;
 			FormatValue();
 		}
 
@@ -101,7 +98,7 @@ namespace BizHawk.MultiClient
 		{
 			ValueHexLabel.Text = "";
 			ValueBox.MaxLength = GetValueNumDigits();
-			watch.Signed = Watch.DISPTYPE.UNSIGNED;
+			Watch.Signed = Watch.DISPTYPE.UNSIGNED;
 			FormatValue();
 		}
 
@@ -109,7 +106,7 @@ namespace BizHawk.MultiClient
 		{
 			ValueHexLabel.Text = "";
 			ValueBox.MaxLength = GetValueNumDigits();
-			watch.Signed = Watch.DISPTYPE.SIGNED;
+			Watch.Signed = Watch.DISPTYPE.SIGNED;
 			FormatValue();
 		}
 
@@ -117,20 +114,20 @@ namespace BizHawk.MultiClient
 		{
 			if (HexRadio.Checked)
 				ValueBox.Text = String.Format("{0:X" +
-					GetValueNumDigits() + "}", watch.Value);
+					GetValueNumDigits() + "}", Watch.Value);
 			else
-				ValueBox.Text = watch.Value.ToString();
+				ValueBox.Text = Watch.Value.ToString();
 		}
 
 		private void SetAddressBox()
 		{
 			AddressBox.Text = String.Format("{0:X" +
-				GetNumDigits(watch.Address) + "}", watch.Address);
+				GetNumDigits(Watch.Address) + "}", Watch.Address);
 		}
 
 		private void UpdateTitleText()
 		{
-			Text = "Ram Poke - " + domain.ToString();
+			Text = "Ram Poke - " + Domain;
 		}
 
 		private void SetTypeRadio(Watch.TYPE a)
@@ -145,8 +142,6 @@ namespace BizHawk.MultiClient
 					break;
 				case Watch.TYPE.DWORD:
 					Byte4Radio.Checked = true;
-					break;
-				default:
 					break;
 			}
 		}
@@ -164,14 +159,12 @@ namespace BizHawk.MultiClient
 				case Watch.DISPTYPE.HEX:
 					HexRadio.Checked = true;
 					break;
-				default:
-					break;
 			}
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -179,7 +172,7 @@ namespace BizHawk.MultiClient
 			//Put user settings in the watch file
 
 			if (InputValidate.IsValidHexNumber(AddressBox.Text))
-				watch.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+				Watch.Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 			else
 			{
 				MessageBox.Show("Invalid Address, must be a valid hex number", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -190,37 +183,37 @@ namespace BizHawk.MultiClient
 
 			if (SignedRadio.Checked)
 			{
-				watch.Signed = Watch.DISPTYPE.SIGNED;
+				Watch.Signed = Watch.DISPTYPE.SIGNED;
 			}
 			else if (UnsignedRadio.Checked)
 			{
-				watch.Signed = Watch.DISPTYPE.UNSIGNED;
+				Watch.Signed = Watch.DISPTYPE.UNSIGNED;
 			}
 			else if (HexRadio.Checked)
 			{
-				watch.Signed = Watch.DISPTYPE.HEX;
+				Watch.Signed = Watch.DISPTYPE.HEX;
 			}
 
 			if (Byte1Radio.Checked)
 			{
-				watch.Type = Watch.TYPE.BYTE;
+				Watch.Type = Watch.TYPE.BYTE;
 			}
 			else if (Byte2Radio.Checked)
 			{
-				watch.Type = Watch.TYPE.WORD;
+				Watch.Type = Watch.TYPE.WORD;
 			}
 			else if (Byte4Radio.Checked)
 			{
-				watch.Type = Watch.TYPE.DWORD;
+				Watch.Type = Watch.TYPE.DWORD;
 			}
 
 			if (BigEndianRadio.Checked)
 			{
-				watch.BigEndian = true;
+				Watch.BigEndian = true;
 			}
 			else if (LittleEndianRadio.Checked)
 			{
-				watch.BigEndian = false;
+				Watch.BigEndian = false;
 			}
 
 			int? x = GetSpecificValue();
@@ -233,18 +226,18 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				watch.TrySetValue(ValueBox.Text);
+				Watch.TrySetValue(ValueBox.Text);
 			}
-			watch.Domain = domain;
-			watch.PokeAddress();
+			Watch.Domain = Domain;
+			Watch.PokeAddress();
 
 			string value;
 			if (HexRadio.Checked)
-				value = "0x" + String.Format("{0:X" + GetValueNumDigits() + "}", watch.Value);
+				value = "0x" + String.Format("{0:X" + GetValueNumDigits() + "}", Watch.Value);
 			else
-				value = watch.Value.ToString();
-			string address = String.Format("{0:X" + GetNumDigits(domain.Size).ToString()
-				+ "}", watch.Address);
+				value = Watch.Value.ToString();
+			string address = String.Format("{0:X" + GetNumDigits(Domain.Size).ToString()
+				+ "}", Watch.Address);
 
 
 			OutputLabel.Text = value + " written to " + address;
@@ -266,7 +259,7 @@ namespace BizHawk.MultiClient
 		{
 			ValueBox.Text = ValueBox.Text.Replace(" ", "");
 
-			switch (watch.Signed)
+			switch (Watch.Signed)
 			{
 				case Watch.DISPTYPE.UNSIGNED:
 					if (!InputValidate.IsValidUnsignedNumber(ValueBox.Text))
@@ -369,7 +362,7 @@ namespace BizHawk.MultiClient
 		private int? GetSpecificValue()
 		{
 			if (ValueBox.Text == "" || ValueBox.Text == "-") return 0;
-			bool i = false;
+			bool i;
 			switch (GetDataType())
 			{
 				case Watch.DISPTYPE.UNSIGNED:
@@ -440,10 +433,9 @@ namespace BizHawk.MultiClient
 			DomainComboBox.Items.Clear();
 			if (Global.Emulator.MemoryDomains.Count > 0)
 			{
-				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				foreach (MemoryDomain t in Global.Emulator.MemoryDomains)
 				{
-					string str = Global.Emulator.MemoryDomains[x].ToString();
-					DomainComboBox.Items.Add(str);
+					DomainComboBox.Items.Add(t.ToString());
 				}
 			}
 			SetDomainSelection();
@@ -451,14 +443,14 @@ namespace BizHawk.MultiClient
 
 		private void DomainComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
+			Domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
 			UpdateTitleText();
-			int x = GetNumDigits(domain.Size);
-			watch.Address = 0;
-			watch.Value = 0;
+			GetNumDigits(Domain.Size);
+			Watch.Address = 0;
+			Watch.Value = 0;
 			SetAddressBox();
 			SetValueBox();
-			AddressBox.MaxLength = GetNumDigits(domain.Size);
+			AddressBox.MaxLength = GetNumDigits(Domain.Size);
 		}
 
 		private void SetDomainSelection()
@@ -472,16 +464,16 @@ namespace BizHawk.MultiClient
 
 			for (int x = 0; x < max; x++)
 			{
-				if (domain.ToString() == DomainComboBox.Items[x].ToString())
+				if (Domain.ToString() == DomainComboBox.Items[x].ToString())
 					DomainComboBox.SelectedIndex = x;
 			}
 		}
 
 		private void FormatValue()
 		{
-			watch.Signed = GetDataType();
-			watch.TrySetValue(ValueBox.Text);
-			ValueBox.Text = watch.ValueString;
+			Watch.Signed = GetDataType();
+			Watch.TrySetValue(ValueBox.Text);
+			ValueBox.Text = Watch.ValueString;
 		}
 	}
 }

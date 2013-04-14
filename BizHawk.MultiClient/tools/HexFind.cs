@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -32,7 +30,7 @@ namespace BizHawk.MultiClient
 		{
 			if (location.X > 0 && location.Y > 0)
 			{
-				this.Location = location;
+				Location = location;
 			}
 		}
 
@@ -48,11 +46,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				List<byte> bytes = new List<byte>();
-				foreach (char c in FindBox.Text)
-				{
-					bytes.Add(Convert.ToByte(c));
-				}
+				List<byte> bytes = FindBox.Text.Select(c => Convert.ToByte(c)).ToList();
 
 				StringBuilder bytestring = new StringBuilder();
 				foreach (byte b in bytes)

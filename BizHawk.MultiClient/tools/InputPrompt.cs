@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
@@ -55,7 +50,7 @@ namespace BizHawk.MultiClient
 		{
 			if (_Location.X > 0 && _Location.Y > 0)
 			{
-				this.Location = _Location;
+				Location = _Location;
 			}
 		}
 
@@ -63,13 +58,13 @@ namespace BizHawk.MultiClient
 		{
 			UserOK = true;
 			UserText = PromptBox.Text;
-			this.Close();
+			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			UserOK = false;
-			this.Close();
+			Close();
 		}
 
 		private void PromptBox_KeyPress(object sender, KeyPressEventArgs e)

@@ -1091,7 +1091,6 @@
 			this.Controls.Add(this.KLeftArrow);
 			this.Name = "VirtualPadC64Keyboard";
 			this.Size = new System.Drawing.Size(454, 134);
-			this.Load += new System.EventHandler(this.VirtualPadC64Keyboard_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

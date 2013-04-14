@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -15,8 +11,6 @@ namespace BizHawk.MultiClient
 	{
 		public static bool SaveWchFile(string path, string domain_name, List<Watch> watchList)
 		{
-			var file = new FileInfo(path);
-
 			using (StreamWriter sw = new StreamWriter(path))
 			{
 				StringBuilder str = new StringBuilder();
@@ -27,16 +21,16 @@ namespace BizHawk.MultiClient
 				str.Append(Global.Emulator.SystemId);
 				str.Append('\n');
 
-				for (int x = 0; x < watchList.Count; x++)
+				foreach (Watch t in watchList)
 				{
-					str.Append(string.Format("{0:X4}", watchList[x].Address));
+					str.Append(string.Format("{0:X4}", t.Address));
 					str.Append('\t');
-					str.Append(watchList[x].TypeChar);
+					str.Append(t.TypeChar);
 					str.Append('\t');
-					str.Append(watchList[x].SignedChar);
+					str.Append(t.SignedChar);
 					str.Append('\t');
 
-					if (watchList[x].BigEndian == true)
+					if (t.BigEndian)
 					{
 						str.Append("1\t");
 					}
@@ -44,9 +38,9 @@ namespace BizHawk.MultiClient
 					{
 						str.Append("0\t");
 					}
-					str.Append(watchList[x].Domain.Name);
+					str.Append(t.Domain.Name);
 					str.Append('\t');
-					str.Append(watchList[x].Notes);
+					str.Append(t.Notes);
 					str.Append('\n');
 				}
 
@@ -58,16 +52,13 @@ namespace BizHawk.MultiClient
 		public static bool LoadWatchFile(string path, bool append, List<Watch> watchList, out string domain)
 		{
 			domain = "";
-			int y, z;
 			var file = new FileInfo(path);
 			if (file.Exists == false) return false;
 			bool isBizHawkWatch = true; //Hack to support .wch files from other emulators
 			bool isOldBizHawkWatch = false;
 			using (StreamReader sr = file.OpenText())
 			{
-				int count = 0;
-				string s = "";
-				string temp = "";
+				string s;
 
 				if (append == false)
 				{
@@ -93,7 +84,8 @@ namespace BizHawk.MultiClient
 					if (s.Length >= 8 && s.Substring(0, 8) == "SystemID")
 						continue;
 
-					z = StringHelpers.HowMany(s, '\t');
+					int z = StringHelpers.HowMany(s, '\t');
+					int y;
 					if (z == 5)
 					{
 						//If 5, then this is a post 1.0.5 .wch file
@@ -115,10 +107,9 @@ namespace BizHawk.MultiClient
 					{
 						continue;   //If not 4, something is wrong with this line, ignore it
 					}
-					count++;
 					Watch w = new Watch();
 
-					temp = s.Substring(0, s.IndexOf('\t'));
+					string temp = s.Substring(0, s.IndexOf('\t'));
 					try
 					{
 						w.Address = int.Parse(temp, NumberStyles.HexNumber);

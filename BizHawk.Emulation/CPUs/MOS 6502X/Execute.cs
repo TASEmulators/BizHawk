@@ -465,8 +465,6 @@ namespace BizHawk.Emulation.CPUs.M6502
 			End_SuppressInterrupt,
 		}
 
-		Action[] opcodeHandlers;
-
 		void InitOpcodeHandlers()
 		{
 			//delegates arent faster than the switch. pretty sure. dont use it.

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BizHawk.MultiClient.tools;
 
@@ -12,7 +7,8 @@ namespace BizHawk.MultiClient
 {
 	public partial class LuaFunctionList : Form
 	{
-		Sorting ColumnSort = new Sorting();
+		private readonly Sorting ColumnSort = new Sorting();
+		
 		public LuaFunctionList()
 		{
 			InitializeComponent();
@@ -28,8 +24,7 @@ namespace BizHawk.MultiClient
 			FunctionView.Items.Clear();
 			foreach (LuaDocumentation.LibraryFunction l in Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
 			{
-				ListViewItem item = new ListViewItem();
-				item.Text = l.ReturnType;
+				ListViewItem item = new ListViewItem {Text = l.ReturnType};
 				item.SubItems.Add(l.library + ".");
 				item.SubItems.Add(l.name);
 				item.SubItems.Add(l.ParameterList);
@@ -81,7 +76,7 @@ namespace BizHawk.MultiClient
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void FunctionView_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -91,7 +86,7 @@ namespace BizHawk.MultiClient
 
 		public class Sorting
 		{
-			private bool desc = false;
+			private bool desc;
 			private int column = 1;
 
 			public int Column

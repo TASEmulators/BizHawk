@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 
 namespace BizHawk.MultiClient
 {
@@ -39,7 +35,8 @@ namespace BizHawk.MultiClient
 			IsSeparator = false;
 
 			//the current directory for the lua task will start off wherever the lua file is located
-			CurrentDirectory = new FileInfo(path).Directory.FullName;
+			var directory_info = new FileInfo(path).Directory;
+			if (directory_info != null) CurrentDirectory = directory_info.FullName;
 		}
 
 		public LuaFile(bool isSeparator)

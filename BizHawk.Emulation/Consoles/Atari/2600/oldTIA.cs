@@ -31,7 +31,9 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public byte HM;
 			public bool reflect;
 			public bool delay;
+/*
 			public byte nusiz;
+*/
 		};
 		struct ballMissileData
 		{
@@ -39,8 +41,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public byte pos;
 			public byte HM;
 			public byte size;
+			/*
 			public bool reset;
 			public bool delay;
+			*/
+
 		};
 
 		ballMissileData ball;

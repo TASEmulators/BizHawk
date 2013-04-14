@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -14,11 +9,6 @@ namespace BizHawk.MultiClient
 		public VirtualPadC64Keyboard()
 		{
 			InitializeComponent();
-		}
-
-		private void VirtualPadC64Keyboard_Load(object sender, EventArgs e)
-		{
-			
 		}
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
