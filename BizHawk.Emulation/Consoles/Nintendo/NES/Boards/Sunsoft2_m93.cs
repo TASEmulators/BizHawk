@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//game=shanghai ; chip=sunsoft-2 ; pcb=SUNSOFT-3R
 	//game=fantasy zone ; chip=sunsoft-1 ; pcb = SUNSOFT-4

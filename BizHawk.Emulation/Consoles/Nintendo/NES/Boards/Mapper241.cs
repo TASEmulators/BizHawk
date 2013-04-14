@@ -1,9 +1,5 @@
 ﻿//163 is for nanjing games
 
-using System;
-using System.IO;
-using System.Diagnostics;
-
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	class Mapper241 : NES.NESBoardBase

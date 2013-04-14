@@ -12,11 +12,6 @@
 				//};
 
 using System;
-using System.Globalization;
-using System.IO;
-using System.Collections.Generic;
-using System.Diagnostics;
-using BizHawk.Emulation.CPUs.M6502;
 
 
 namespace BizHawk.Emulation.Consoles.Nintendo

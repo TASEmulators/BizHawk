@@ -4,8 +4,6 @@
 //Code for emulating iNES mappers 4,12,44,45,47,49,52,74,114,115,116,118,119,165,205,214,215,245,249,250,254
 
 using System;
-using System.IO;
-using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {

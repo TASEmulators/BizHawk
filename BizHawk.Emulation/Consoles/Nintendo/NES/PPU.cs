@@ -1,11 +1,7 @@
 ﻿//http://nesdev.parodius.com/bbs/viewtopic.php?p=4571&sid=db4c7e35316cc5d734606dd02f11dccb
 
 using System;
-using System.Globalization;
-using System.IO;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using BizHawk.Emulation.CPUs.M6502;
 
 
 namespace BizHawk.Emulation.Consoles.Nintendo

@@ -1,6 +1,3 @@
-using System;
-using System.Diagnostics;
-
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	[NES.INESBoardImplPriority]

@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Diagnostics;
-
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//aka NAMCOT-3446

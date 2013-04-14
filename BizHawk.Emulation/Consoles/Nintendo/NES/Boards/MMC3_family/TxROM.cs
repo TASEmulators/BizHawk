@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-//http://wiki.nesdev.com/w/index.php/TxROM
+﻿//http://wiki.nesdev.com/w/index.php/TxROM
 //read some background info on namco 108 and DxROM boards here
 
 namespace BizHawk.Emulation.Consoles.Nintendo

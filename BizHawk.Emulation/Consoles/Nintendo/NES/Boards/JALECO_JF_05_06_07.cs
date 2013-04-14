@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	/*
 	PRG-ROM - 32kb/16kb

@@ -4,14 +4,6 @@
 
 //TODO - correctly emulate PPU OFF state
 
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Collections.Generic;
-using BizHawk.Emulation.CPUs.M6502;
-
-
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	partial class NES

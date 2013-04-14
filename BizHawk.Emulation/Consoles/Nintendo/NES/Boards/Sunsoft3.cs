@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA mapper 67
 	//this may be confusing due to general chaos with the early sunsoft mappers. see docs/sunsoft.txt

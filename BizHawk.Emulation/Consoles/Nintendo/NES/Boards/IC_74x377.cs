@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo

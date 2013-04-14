@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using BizHawk.Emulation.CPUs.M6502;
 using BizHawk.Emulation.Consoles.Atari;
 using BizHawk.Emulation.Consoles.Atari._2600;

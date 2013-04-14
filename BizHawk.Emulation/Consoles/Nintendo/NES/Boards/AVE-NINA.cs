@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA half of mapper 034 (the other half is BxROM which is entirely different..)
 	class AVE_NINA_001 : NES.NESBoardBase

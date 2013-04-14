@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Nintendo.SNES
+﻿namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 {
 	public static class SnesColors
 	{

@@ -24,7 +24,6 @@
 //remember: may need another stream for that. the IBlob architecture doesnt demand multithreading support
 
 using System;
-using System.Text;
 using System.IO;
 using System.Collections.Generic;
 
