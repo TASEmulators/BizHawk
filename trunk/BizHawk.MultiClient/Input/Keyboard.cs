@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using SlimDX;
+﻿using SlimDX;
 using SlimDX.DirectInput;
 
 namespace BizHawk.MultiClient

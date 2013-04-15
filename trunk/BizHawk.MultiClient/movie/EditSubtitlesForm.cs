@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 
@@ -35,21 +30,21 @@ namespace BizHawk.MultiClient
 			{
 				int x = Height + ((SubGrid.Rows.Count - 8) * 21);
 				if (x < 600)
-					this.Height = x;
+					Height = x;
 				else
-					this.Height = 600;
+					Height = 600;
 			}
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void ShowError(int row, int column)
 		{
 			DataGridViewCell c = SubGrid.Rows[row].Cells[column];
-			string error = "Unable to parse value: " + c.Value.ToString();
+			string error = "Unable to parse value: " + c.Value;
 			string caption = "Parse Error Row " + row.ToString() + " Column " + column.ToString();
 			MessageBox.Show(error, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
@@ -85,16 +80,16 @@ namespace BizHawk.MultiClient
 				}
 				selectedMovie.WriteMovie();
 			}
-			this.Close();
+			Close();
 		}
 
 		public void GetMovie(Movie m)
 		{
 			selectedMovie = m;
 			SubtitleList subs = new SubtitleList(m);
-			if (subs.Count() == 0) return;
+			if (subs.Count == 0) return;
 
-			for (int x = 0; x < subs.Count(); x++)
+			for (int x = 0; x < subs.Count; x++)
 			{
 				Subtitle s = subs.GetSubtitleByIndex(x);
 				SubGrid.Rows.Add();

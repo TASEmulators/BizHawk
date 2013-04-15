@@ -1,22 +1,20 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Globalization;
 using System.IO;
 using System.Drawing.Imaging;
 
 namespace BizHawk.MultiClient
 {
-	public class PaletteViewer : Control
+	public sealed class PaletteViewer : Control
 	{
 		public class Palette
 		{
 			public int Address { get; private set; }
 			public int Value { get; set; }
-			public Color Color { get { return Color.FromArgb(Value); } private set { Value = value.ToArgb(); } }
+			public Color Color
+			{
+				get { return Color.FromArgb(Value); }
+			}
 
 			public Palette(int address)
 			{
@@ -25,11 +23,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public Palette[] bgPalettes = new Palette[16];
-		public Palette[] spritePalettes = new Palette[16];
+		public Palette[] BgPalettes = new Palette[16];
+		public Palette[] SpritePalettes = new Palette[16];
 
-		public Palette[] bgPalettesPrev = new Palette[16];
-		public Palette[] spritePalettesPrev = new Palette[16];
+		public Palette[] BgPalettesPrev = new Palette[16];
+		public Palette[] SpritePalettesPrev = new Palette[16];
 
 		public PaletteViewer()
 		{
@@ -38,16 +36,16 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
-			this.Size = new Size(128, 32);
-			this.BackColor = Color.Transparent;
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.PaletteViewer_Paint);
+			Size = new Size(128, 32);
+			BackColor = Color.Transparent;
+			Paint += PaletteViewer_Paint;
 
 			for (int x = 0; x < 16; x++)
 			{
-				bgPalettes[x] = new Palette(x);
-				spritePalettes[x] = new Palette(x + 16);
-				bgPalettesPrev[x] = new Palette(x);
-				spritePalettesPrev[x] = new Palette(x + 16);
+				BgPalettes[x] = new Palette(x);
+				SpritePalettes[x] = new Palette(x + 16);
+				BgPalettesPrev[x] = new Palette(x);
+				SpritePalettesPrev[x] = new Palette(x + 16);
 			}
 
 		}
@@ -56,8 +54,8 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < 16; x++)
 			{
-				e.Graphics.FillRectangle(new SolidBrush(bgPalettes[x].Color), new Rectangle(x * 16, 0, 16, 16));
-				e.Graphics.FillRectangle(new SolidBrush(spritePalettes[x].Color), new Rectangle(x * 16, 16, 16, 16));
+				e.Graphics.FillRectangle(new SolidBrush(BgPalettes[x].Color), new Rectangle(x * 16, 0, 16, 16));
+				e.Graphics.FillRectangle(new SolidBrush(SpritePalettes[x].Color), new Rectangle(x * 16, 16, 16, 16));
 			}
 		}
 
@@ -65,9 +63,9 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < 16; x++)
 			{
-				if (bgPalettes[x].Value != bgPalettesPrev[x].Value) 
+				if (BgPalettes[x].Value != BgPalettesPrev[x].Value) 
 					return true;
-				if (spritePalettes[x].Value != spritePalettesPrev[x].Value) 
+				if (SpritePalettes[x].Value != SpritePalettesPrev[x].Value) 
 					return true;
 			}
 			return false;
@@ -75,12 +73,14 @@ namespace BizHawk.MultiClient
 
 		public void Screenshot()
 		{
-			var sfd = new SaveFileDialog();
-			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-Palettes";
-			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES");
-			sfd.Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*";
+			var sfd = new SaveFileDialog
+				{
+					FileName = PathManager.FilesystemSafeName(Global.Game) + "-Palettes",
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"),
+					Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
+					RestoreDirectory = true
+				};
 
-			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
 			Global.Sound.StartSound();
@@ -116,7 +116,7 @@ namespace BizHawk.MultiClient
 
 			using (var img = b)
 			{
-				System.Windows.Forms.Clipboard.SetImage(img);
+				Clipboard.SetImage(img);
 			}
 		}
 	}

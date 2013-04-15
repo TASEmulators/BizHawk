@@ -1,20 +1,5 @@
-﻿using System;
-using System.Text;
-using System.Threading;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using BizHawk.Core;
-using BizHawk.Emulation.Consoles.Sega;
-using BizHawk.Emulation.Consoles.TurboGrafx;
-using BizHawk.Emulation.Consoles.Calculator;
-using BizHawk.Emulation.Consoles.Nintendo;
-
-namespace BizHawk.MultiClient
+﻿namespace BizHawk.MultiClient
 {
-
 	public class MovieSession
 	{
 		public MultitrackRecording MultiTrack = new MultitrackRecording();

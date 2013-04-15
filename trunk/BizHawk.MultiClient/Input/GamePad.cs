@@ -107,12 +107,12 @@ namespace BizHawk.MultiClient
 		}
 		public int NumButtons { get; private set; }
 
-		List<string> names = new List<string>();
-		List<Func<bool>> actions = new List<Func<bool>>();
+		private readonly List<string> names = new List<string>();
+		private readonly List<Func<bool>> actions = new List<Func<bool>>();
 
-		void AddItem(string name, Func<bool> callback)
+		void AddItem(string _name, Func<bool> callback)
 		{
-			names.Add(name);
+			names.Add(_name);
 			actions.Add(callback);
 			NumButtons++;
 		}
@@ -204,13 +204,15 @@ namespace BizHawk.MultiClient
 			// my first clue that it doesnt work is that LEFT  and RIGHT _ARENT USED_
 			// I should just look for C++ examples instead of trying to look for SlimDX examples
 
-			var parameters = new EffectParameters();
-			parameters.Duration = 0x2710;
-			parameters.Gain = 0x2710;
-			parameters.SamplePeriod = 0;
-			parameters.TriggerButton = 0;
-			parameters.TriggerRepeatInterval = 0x2710;
-			parameters.Flags = EffectFlags.None;
+			var parameters = new EffectParameters
+				{
+					Duration = 0x2710,
+					Gain = 0x2710,
+					SamplePeriod = 0,
+					TriggerButton = 0,
+					TriggerRepeatInterval = 0x2710,
+					Flags = EffectFlags.None
+				};
 			parameters.GetAxes(out temp1, out temp2);
 			parameters.SetAxes(temp1, temp2);
 			var effect = new Effect(joystick, EffectGuid.ConstantForce);

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
-using System.Windows.Forms;
 #if WINDOWS
 using SlimDX.DirectInput;
 #endif
@@ -22,7 +21,7 @@ namespace BizHawk.MultiClient
 			//when a button is released, all modified variants of it are released as well
 			if (!state)
 			{
-				var releases = Buttons.Where((kvp) => kvp.Key.Contains("+") && kvp.Key.EndsWith(ie.LogicalButton.Button)).ToArray();
+				var releases = Buttons.Where(kvp => kvp.Key.Contains("+") && kvp.Key.EndsWith(ie.LogicalButton.Button)).ToArray();
 				foreach (var kvp in releases)
 					Buttons[kvp.Key] = false;
 			}
@@ -40,7 +39,7 @@ namespace BizHawk.MultiClient
 
 			//For controller input, we want Shift+X to register as both Shift and X (for Keyboard controllers)
 			string[] subgroups = button.Split('+');
-			if (subgroups != null && subgroups.Length > 0)
+			if (subgroups.Length > 0)
 			{
 				foreach (string s in subgroups)
 				{
@@ -60,6 +59,7 @@ namespace BizHawk.MultiClient
 
 	public class Input
 	{
+		[Flags]
 		public enum ModifierKey
 		{
 			// Summary:
@@ -84,13 +84,12 @@ namespace BizHawk.MultiClient
 		}
 
 		public static Input Instance { get; private set; }
-		Thread UpdateThread;
+		readonly Thread UpdateThread;
 
 		private Input()
 		{
 #if WINDOWS
-			UpdateThread = new Thread(UpdateThreadProc);
-			UpdateThread.IsBackground = true;
+			UpdateThread = new Thread(UpdateThreadProc) {IsBackground = true};
 			UpdateThread.Start();
 #endif
 		}
@@ -116,8 +115,8 @@ namespace BizHawk.MultiClient
 				Button = button;
 				Modifiers = modifiers;
 			}
-			public string Button;
-			public ModifierKey Modifiers;
+			public readonly string Button;
+			public readonly ModifierKey Modifiers;
 
 			public bool Alt { get { return ((Modifiers & ModifierKey.Alt) != 0); } }
 			public bool Control { get { return ((Modifiers & ModifierKey.Control) != 0); } }
@@ -160,11 +159,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
-		WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
-		WorkingDictionary<string, bool> UnpressState = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
+		private readonly WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, bool> UnpressState = new WorkingDictionary<string, bool>();
+		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
 
-		HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
 		void HandleButton(string button, bool newState)
 		{
 			if (EnableIgnoreModifiers && IgnoreKeys.Contains(button)) return;
@@ -189,9 +188,11 @@ namespace BizHawk.MultiClient
 			if (button == "LeftAlt") mods &= ~ModifierKey.Alt;
 			if (button == "RightAlt") mods &= ~ModifierKey.Alt;
 
-			var ie = new InputEvent();
-			ie.EventType = newState ? InputEventType.Press : InputEventType.Release;
-			ie.LogicalButton = new LogicalButton(button, mods);
+			var ie = new InputEvent
+				{
+					EventType = newState ? InputEventType.Press : InputEventType.Release,
+					LogicalButton = new LogicalButton(button, mods)
+				};
 			LastState[button] = newState;
 
 			//track the pressed events with modifiers that we send so that we can send corresponding unpresses with modifiers
@@ -210,9 +211,11 @@ namespace BizHawk.MultiClient
 				if (ModifierState[button] != null)
 				{
 					LogicalButton alreadyReleased = ie.LogicalButton;
-					var ieModified = new InputEvent();
-					ieModified.LogicalButton = (LogicalButton)ModifierState[button];
-					ieModified.EventType = InputEventType.Release;
+					var ieModified = new InputEvent
+						{
+							LogicalButton = (LogicalButton) ModifierState[button],
+							EventType = InputEventType.Release
+						};
 					if (ieModified.LogicalButton != alreadyReleased)
 						_NewEvents.Add(ieModified);
 				}
@@ -223,7 +226,7 @@ namespace BizHawk.MultiClient
 		}
 
 		ModifierKey _Modifiers;
-		List<InputEvent> _NewEvents = new List<InputEvent>();
+		private readonly List<InputEvent> _NewEvents = new List<InputEvent>();
 
 		//do we need this?
 		public void ClearEvents()
@@ -234,7 +237,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		Queue<InputEvent> InputEvents = new Queue<InputEvent>();
+		private readonly Queue<InputEvent> InputEvents = new Queue<InputEvent>();
 		public InputEvent DequeueEvent()
 		{
 			lock (this)

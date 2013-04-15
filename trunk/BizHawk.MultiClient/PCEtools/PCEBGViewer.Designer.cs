@@ -285,7 +285,6 @@
 			this.Name = "PCEBGViewer";
 			this.ShowIcon = false;
 			this.Text = "PCE BG Viewer";
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PCEBGViewer_FormClosed);
 			this.Load += new System.EventHandler(this.PCEBGViewer_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

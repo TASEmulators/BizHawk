@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace BizHawk.MultiClient
 {
 	public class RecentFiles
 	{
-		private int MAX_RECENT_FILES;       //Maximum number of files
-		private List<string> recentlist;    //List of recent files
+		private readonly int MAX_RECENT_FILES;       //Maximum number of files
+		private readonly List<string> recentlist;    //List of recent files
 
 		public RecentFiles() : this(8) { }
 		public RecentFiles(int max)
@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
 
 		public bool IsEmpty
 		{
-			get { return recentlist.Count > 0 ? false : true; }
+			get { return recentlist.Count == 0; }
 		}
 
 		public int Count
@@ -63,12 +63,7 @@ namespace BizHawk.MultiClient
 		public List<string> GetRecentListTruncated(int length)
 		{
 			//iterate through list, truncating each item to length, and return the result in a List<string>
-			List<string> temp = new List<string>();
-			for (int x = 0; x < recentlist.Count; x++)
-			{
-				temp.Add(recentlist[x].Substring(0, length));
-			}
-			return temp;
+			return recentlist.Select(t => t.Substring(0, length)).ToList();
 		}
 
 		public string GetRecentFileByPosition(int position)

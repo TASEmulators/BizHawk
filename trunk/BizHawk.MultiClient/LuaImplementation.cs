@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using LuaInterface;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Threading;
+using System.Globalization;
 
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.MultiClient.tools;
@@ -17,17 +16,20 @@ namespace BizHawk.MultiClient
 	public class LuaImplementation
 	{
 		public LuaDocumentation docs = new LuaDocumentation();
-		private Lua lua = new Lua();
-		private LuaConsole Caller;
-		public EventWaitHandle LuaWait;
 		public bool isRunning;
-		private int CurrentMemoryDomain = 0; //Main memory by default
+		public EventWaitHandle LuaWait;
 		public bool FrameAdvanceRequested;
+
+		private Lua _lua = new Lua();
+		private readonly LuaConsole Caller;
+		private int CurrentMemoryDomain; //Main memory by default
 		private Lua currThread;
 		private LuaFunction savestate_registersavefunc;
 		private LuaFunction savestate_registerloadfunc;
 		private LuaFunction frame_startfunc;
 		private LuaFunction frame_endfunc;
+		private readonly Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
+		private readonly Dictionary<Color, Pen> Pens = new Dictionary<Color, Pen>();
 
 		public void SavestateRegisterSave(string name)
 		{
@@ -102,128 +104,128 @@ namespace BizHawk.MultiClient
 			LuaWait = new AutoResetEvent(false);
 			docs.Clear();
 			Caller = passed.get();
-			LuaRegister(lua);
+			LuaRegister(_lua);
 		}
 
 		public void Close()
 		{
-			lua = new Lua();
+			_lua = new Lua();
 			foreach (var brush in SolidBrushes.Values) brush.Dispose();
 			foreach (var brush in Pens.Values) brush.Dispose();
 		}
 
 		public void LuaRegister(Lua lua)
 		{
-			lua.RegisterFunction("print", this, this.GetType().GetMethod("print"));
+			lua.RegisterFunction("print", this, GetType().GetMethod("print"));
 
 			//Register libraries
 			lua.NewTable("console");
-			for (int i = 0; i < ConsoleFunctions.Length; i++)
+			foreach (string t in ConsoleFunctions)
 			{
-				lua.RegisterFunction("console." + ConsoleFunctions[i], this,
-									 this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
-				docs.Add("console", ConsoleFunctions[i], this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
+				lua.RegisterFunction("console." + t, this,
+				                     GetType().GetMethod("console_" + t));
+				docs.Add("console", t, GetType().GetMethod("console_" + t));
 			}
 
 			lua.NewTable("gui");
-			for (int i = 0; i < GuiFunctions.Length; i++)
+			foreach (string t in GuiFunctions)
 			{
-				lua.RegisterFunction("gui." + GuiFunctions[i], this, this.GetType().GetMethod("gui_" + GuiFunctions[i]));
-				docs.Add("gui", GuiFunctions[i], this.GetType().GetMethod("gui_" + GuiFunctions[i]));
+				lua.RegisterFunction("gui." + t, this, GetType().GetMethod("gui_" + t));
+				docs.Add("gui", t, GetType().GetMethod("gui_" + t));
 			}
 
 			lua.NewTable("emu");
-			for (int i = 0; i < EmuFunctions.Length; i++)
+			foreach (string t in EmuFunctions)
 			{
-				lua.RegisterFunction("emu." + EmuFunctions[i], this, this.GetType().GetMethod("emu_" + EmuFunctions[i]));
-				docs.Add("emu", EmuFunctions[i], this.GetType().GetMethod("emu_" + EmuFunctions[i]));
+				lua.RegisterFunction("emu." + t, this, GetType().GetMethod("emu_" + t));
+				docs.Add("emu", t, GetType().GetMethod("emu_" + t));
 			}
 
 			lua.NewTable("memory");
-			for (int i = 0; i < MemoryFunctions.Length; i++)
+			foreach (string t in MemoryFunctions)
 			{
-				lua.RegisterFunction("memory." + MemoryFunctions[i], this, this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
-				docs.Add("memory", MemoryFunctions[i], this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
+				lua.RegisterFunction("memory." + t, this, GetType().GetMethod("memory_" + t));
+				docs.Add("memory", t, GetType().GetMethod("memory_" + t));
 			}
 
 			lua.NewTable("mainmemory");
-			for (int i = 0; i < MainMemoryFunctions.Length; i++)
+			foreach (string t in MainMemoryFunctions)
 			{
-				lua.RegisterFunction("mainmemory." + MainMemoryFunctions[i], this,
-									 this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
-				docs.Add("mainmemory", MainMemoryFunctions[i], this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
+				lua.RegisterFunction("mainmemory." + t, this,
+				                     GetType().GetMethod("mainmemory_" + t));
+				docs.Add("mainmemory", t, GetType().GetMethod("mainmemory_" + t));
 			}
 
 			lua.NewTable("savestate");
-			for (int i = 0; i < SaveStateFunctions.Length; i++)
+			foreach (string t in SaveStateFunctions)
 			{
-				lua.RegisterFunction("savestate." + SaveStateFunctions[i], this,
-									 this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
-				docs.Add("savestate", SaveStateFunctions[i], this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
+				lua.RegisterFunction("savestate." + t, this,
+				                     GetType().GetMethod("savestate_" + t));
+				docs.Add("savestate", t, GetType().GetMethod("savestate_" + t));
 			}
 
 			lua.NewTable("movie");
-			for (int i = 0; i < MovieFunctions.Length; i++)
+			foreach (string t in MovieFunctions)
 			{
-				lua.RegisterFunction("movie." + MovieFunctions[i], this, this.GetType().GetMethod("movie_" + MovieFunctions[i]));
-				docs.Add("movie", MovieFunctions[i], this.GetType().GetMethod("movie_" + MovieFunctions[i]));
+				lua.RegisterFunction("movie." + t, this, GetType().GetMethod("movie_" + t));
+				docs.Add("movie", t, GetType().GetMethod("movie_" + t));
 			}
 
 			lua.NewTable("input");
-			for (int i = 0; i < InputFunctions.Length; i++)
+			foreach (string t in InputFunctions)
 			{
-				lua.RegisterFunction("input." + InputFunctions[i], this, this.GetType().GetMethod("input_" + InputFunctions[i]));
-				docs.Add("input", InputFunctions[i], this.GetType().GetMethod("input_" + InputFunctions[i]));
+				lua.RegisterFunction("input." + t, this, GetType().GetMethod("input_" + t));
+				docs.Add("input", t, GetType().GetMethod("input_" + t));
 			}
 
 			lua.NewTable("joypad");
-			for (int i = 0; i < JoypadFunctions.Length; i++)
+			foreach (string t in JoypadFunctions)
 			{
-				lua.RegisterFunction("joypad." + JoypadFunctions[i], this, this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
-				docs.Add("joypad", JoypadFunctions[i], this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
+				lua.RegisterFunction("joypad." + t, this, GetType().GetMethod("joypad_" + t));
+				docs.Add("joypad", t, GetType().GetMethod("joypad_" + t));
 			}
 
 			lua.NewTable("client");
-			for (int i = 0; i < MultiClientFunctions.Length; i++)
+			foreach (string t in MultiClientFunctions)
 			{
-				lua.RegisterFunction("client." + MultiClientFunctions[i], this,
-									 this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
-				docs.Add("client", MultiClientFunctions[i], this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
+				lua.RegisterFunction("client." + t, this,
+				                     GetType().GetMethod("client_" + t));
+				docs.Add("client", t, GetType().GetMethod("client_" + t));
 			}
 
 			lua.NewTable("forms");
-			for (int i = 0; i < FormsFunctions.Length; i++)
+			foreach (string t in FormsFunctions)
 			{
-				lua.RegisterFunction("forms." + FormsFunctions[i], this, this.GetType().GetMethod("forms_" + FormsFunctions[i]));
-				docs.Add("forms", FormsFunctions[i], this.GetType().GetMethod("forms_" + FormsFunctions[i]));
+				lua.RegisterFunction("forms." + t, this, GetType().GetMethod("forms_" + t));
+				docs.Add("forms", t, GetType().GetMethod("forms_" + t));
 			}
 
 			lua.NewTable("bit");
-			for (int i = 0; i < BitwiseFunctions.Length; i++)
+			foreach (string t in BitwiseFunctions)
 			{
-				lua.RegisterFunction("bit." + BitwiseFunctions[i], this, this.GetType().GetMethod("bit_" + BitwiseFunctions[i]));
-				docs.Add("bit", BitwiseFunctions[i], this.GetType().GetMethod("bit_" + BitwiseFunctions[i]));
+				lua.RegisterFunction("bit." + t, this, GetType().GetMethod("bit_" + t));
+				docs.Add("bit", t, GetType().GetMethod("bit_" + t));
 			}
 
 			lua.NewTable("nes");
-			for (int i = 0; i < NESFunctions.Length; i++)
+			foreach (string t in NESFunctions)
 			{
-				lua.RegisterFunction("nes." + NESFunctions[i], this, this.GetType().GetMethod("nes_" + NESFunctions[i]));
-				docs.Add("nes", NESFunctions[i], this.GetType().GetMethod("nes_" + NESFunctions[i]));
+				lua.RegisterFunction("nes." + t, this, GetType().GetMethod("nes_" + t));
+				docs.Add("nes", t, GetType().GetMethod("nes_" + t));
 			}
 
 			lua.NewTable("snes");
-			for (int i = 0; i < SNESFunctions.Length; i++)
+			foreach (string t in SNESFunctions)
 			{
-				lua.RegisterFunction("snes." + SNESFunctions[i], this, this.GetType().GetMethod("snes_" + SNESFunctions[i]));
-				docs.Add("snes", SNESFunctions[i], this.GetType().GetMethod("snes_" + SNESFunctions[i]));
+				lua.RegisterFunction("snes." + t, this, GetType().GetMethod("snes_" + t));
+				docs.Add("snes", t, GetType().GetMethod("snes_" + t));
 			}
 
 			lua.NewTable("event");
-			for (int i = 0; i < EventFunctions.Length; i++)
+			foreach (string t in EventFunctions)
 			{
-				lua.RegisterFunction("event." + EventFunctions[i], this, this.GetType().GetMethod("event_" + EventFunctions[i]));
-				docs.Add("event", EventFunctions[i], this.GetType().GetMethod("event_" + EventFunctions[i]));
+				lua.RegisterFunction("event." + t, this, GetType().GetMethod("event_" + t));
+				docs.Add("event", t, GetType().GetMethod("event_" + t));
 			}
 
 			docs.Sort();
@@ -231,7 +233,7 @@ namespace BizHawk.MultiClient
 
 		public Lua SpawnCoroutine(string File)
 		{
-			var t = lua.NewThread();
+			var t = _lua.NewThread();
 			//LuaRegister(t); //adelikat: Not sure why this was here but it was causing the entire luaimplmeentaiton to be duplicated each time, eventually resulting in crashes
 			var main = t.LoadFile(File);
 			t.Push(main); //push main function on to stack for subsequent resuming
@@ -251,20 +253,16 @@ namespace BizHawk.MultiClient
 
 		public Color GetColor(object color)
 		{
-			if (color.GetType() == typeof(Double))
+			if (color is double)
 			{
-				return
-					System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"),
-															System.Globalization.NumberStyles.HexNumber));
+				return Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), NumberStyles.HexNumber));
 			}
 			else
 			{
-				return System.Drawing.Color.FromName(color.ToString().ToLower());
+				return Color.FromName(color.ToString().ToLower());
 			}
 		}
 
-
-		Dictionary<Color, SolidBrush> SolidBrushes = new Dictionary<Color, SolidBrush>();
 		public SolidBrush GetBrush(object color)
 		{
 			Color c = GetColor(color);
@@ -277,7 +275,6 @@ namespace BizHawk.MultiClient
 			return b;
 		}
 
-		Dictionary<Color, Pen> Pens = new Dictionary<Color, Pen>();
 		public Pen GetPen(object color)
 		{
 			Color c = GetColor(color);
@@ -345,15 +342,15 @@ namespace BizHawk.MultiClient
 		/*************library definitions********************/
 		/****************************************************/
 
-		public static string[] ConsoleFunctions = new string[]
+		public static string[] ConsoleFunctions = new[]
 		                                          	{
 		                                          		"output",
 		                                          		"log",
 		                                          		"clear",
-		                                          		"getluafunctionslist",
+		                                          		"getluafunctionslist"
 		                                          	};
 
-		public static string[] GuiFunctions = new string[]
+		public static string[] GuiFunctions = new[]
 		                                      	{
 		                                      		"text",
 		                                      		"alert",
@@ -370,10 +367,10 @@ namespace BizHawk.MultiClient
 		                                      		"drawImage",
 													"addmessage",
 													"drawText",
-													"drawString",
+													"drawString"
 		                                      	};
 
-		public static string[] EmuFunctions = new string[]
+		public static string[] EmuFunctions = new[]
 		                                      	{
 		                                      		"frameadvance",
 		                                      		"yield",
@@ -392,10 +389,10 @@ namespace BizHawk.MultiClient
 		                                      		"limitframerate",
 		                                      		"displayvsync",
 		                                      		"enablerewind",
-													"on_snoop",
+													"on_snoop"
 		                                      	};
 
-		public static string[] MemoryFunctions = new string[]
+		public static string[] MemoryFunctions = new[]
 		                                         	{
 		                                         		"usememorydomain",
 		                                         		"getmemorydomainlist",
@@ -429,12 +426,12 @@ namespace BizHawk.MultiClient
 		                                         		"write_u24_be",
 		                                         		"write_u32_be",
 		                                         		"readbyte",
-		                                         		"writebyte",
+		                                         		"writebyte"
 		                                         		//"registerwrite",
 		                                         		//"registerread",
 		                                         	};
 
-		public static string[] MainMemoryFunctions = new string[]
+		public static string[] MainMemoryFunctions = new[]
 		                                             	{
 		                                             		"read_s8",
 		                                             		"read_u8",
@@ -465,20 +462,20 @@ namespace BizHawk.MultiClient
 		                                             		"write_u24_be",
 		                                             		"write_u32_be",
 															"readbyterange",
-															"writebyterange",
+															"writebyterange"
 		                                             	};
 
-		public static string[] SaveStateFunctions = new string[]
+		public static string[] SaveStateFunctions = new[]
 		                                            	{
 		                                            		"saveslot",
 		                                            		"loadslot",
 		                                            		"save",
 		                                            		"load",
 		                                            		"registersave",
-		                                            		"registerload",
+		                                            		"registerload"
 		                                            	};
 
-		public static string[] MovieFunctions = new string[]
+		public static string[] MovieFunctions = new[]
 		                                        	{
 		                                        		"mode",
 		                                        		"isloaded",
@@ -490,23 +487,23 @@ namespace BizHawk.MultiClient
 		                                        		"setreadonly",
 		                                        		"getrerecordcounting",
 		                                        		"setrerecordcounting",
-		                                        		"getinput",
+		                                        		"getinput"
 		                                        	};
 
-		public static string[] InputFunctions = new string[]
+		public static string[] InputFunctions = new[]
 		                                        	{
 		                                        		"get",
-		                                        		"getmouse",
+		                                        		"getmouse"
 		                                        	};
 
-		public static string[] JoypadFunctions = new string[]
+		public static string[] JoypadFunctions = new[]
 		                                         	{
 		                                         		"set",
 		                                         		"get",
 		                                         		"getimmediate"
 		                                         	};
 
-		public static string[] MultiClientFunctions = new string[]
+		public static string[] MultiClientFunctions = new[]
 		                                              	{
 		                                              		"getwindowsize",
 															"setwindowsize",
@@ -525,10 +522,10 @@ namespace BizHawk.MultiClient
 															"screenshottoclipboard",
 															"setscreenshotosd",
 															"pause_av",
-															"unpause_av",
+															"unpause_av"
 		                                              	};
 
-		public static string[] FormsFunctions = new string[]
+		public static string[] FormsFunctions = new[]
 		                                        	{
 		                                        		"newform",
 		                                        		"destroy",
@@ -543,10 +540,10 @@ namespace BizHawk.MultiClient
 		                                        		"clearclicks",
 		                                        		"gettext",
 														"setproperty",
-														"getproperty",
+														"getproperty"
 		                                        	};
 
-		public static string[] BitwiseFunctions = new string[]
+		public static string[] BitwiseFunctions = new[]
 		                                          	{
 		                                          		"band",
 		                                          		"lshift",
@@ -555,10 +552,10 @@ namespace BizHawk.MultiClient
 		                                          		"ror",
 		                                          		"bor",
 		                                          		"bxor",
-		                                          		"bnot",
+		                                          		"bnot"
 		                                          	};
 
-		public static string[] NESFunctions = new string[]
+		public static string[] NESFunctions = new[]
 		                                          	{
 		                                          		"setscanlines",
 														"gettopscanline",
@@ -572,10 +569,10 @@ namespace BizHawk.MultiClient
 														"getallowmorethaneightsprites",
 														"setallowmorethaneightsprites",
 														"addgamegenie",
-														"removegamegenie",
+														"removegamegenie"
 		                                          	};
 
-		public static string[] SNESFunctions = new string[]
+		public static string[] SNESFunctions = new[]
 													{
 														"setlayer_bg_1",
 														"setlayer_bg_2",
@@ -593,10 +590,10 @@ namespace BizHawk.MultiClient
 														"getlayer_obj_1",
 														"getlayer_obj_2",
 														"getlayer_obj_3",
-														"getlayer_obj_4",
+														"getlayer_obj_4"
 		                                          	};
 
-		public static string[] EventFunctions = new string[]
+		public static string[] EventFunctions = new[]
 													{
 														"onloadstate",
 														"onsavestate",
@@ -604,7 +601,7 @@ namespace BizHawk.MultiClient
 														"onframeend",
 														"onmemoryread",
 														"onmemorywrite",
-														"oninputpoll",
+														"oninputpoll"
 													};
 		/****************************************************/
 		/*************function definitions********************/
@@ -831,7 +828,6 @@ namespace BizHawk.MultiClient
 		{
 			using (var g = GetGraphics())
 			{
-				float x = LuaInt(X) + 0.1F;
 				try
 				{
 					int fsize = 12;
@@ -870,7 +866,7 @@ namespace BizHawk.MultiClient
 						}
 					}
 
-					Font font = new System.Drawing.Font(family, fsize, fstyle, GraphicsUnit.Pixel);
+					Font font = new Font(family, fsize, fstyle, GraphicsUnit.Pixel);
 					g.DrawString(message.ToString(), font, GetBrush(color ?? "white"), LuaInt(X), LuaInt(Y));
 				}
 				catch (Exception)
@@ -939,11 +935,11 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					System.Drawing.Point[] Points = new System.Drawing.Point[points.Values.Count];
+					Point[] Points = new Point[points.Values.Count];
 					int i = 0;
 					foreach (LuaTable point in points.Values)
 					{
-						Points[i] = new System.Drawing.Point(LuaInt(point[1]), LuaInt(point[2]));
+						Points[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
 						i++;
 					}
 
@@ -981,11 +977,11 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					System.Drawing.Point[] Points = new System.Drawing.Point[4];
+					Point[] Points = new Point[4];
 					int i = 0;
 					foreach (LuaTable point in points.Values)
 					{
-						Points[i] = new System.Drawing.Point(LuaInt(point[1]), LuaInt(point[2]));
+						Points[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
 						i++;
 						if (i >= 4)
 							break;
@@ -1250,12 +1246,12 @@ namespace BizHawk.MultiClient
 		// TODO: error handling for argument count mismatch
 		private void emu_setrenderplanes_do(object[] lua_p)
 		{
-			if (Global.Emulator is BizHawk.Emulation.Consoles.Nintendo.NES)
+			if (Global.Emulator is NES)
 			{
 				Global.CoreComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
 				Global.CoreComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
 			}
-			else if (Global.Emulator is BizHawk.Emulation.Consoles.TurboGrafx.PCEngine)
+			else if (Global.Emulator is Emulation.Consoles.TurboGrafx.PCEngine)
 			{
 				Global.CoreComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
 				Global.CoreComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
@@ -1265,7 +1261,7 @@ namespace BizHawk.MultiClient
 					Global.CoreComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
 				}
 			}
-			else if (Global.Emulator is BizHawk.Emulation.Consoles.Sega.SMS)
+			else if (Global.Emulator is Emulation.Consoles.Sega.SMS)
 			{
 				Global.CoreComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
 				Global.CoreComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
@@ -1327,12 +1323,7 @@ namespace BizHawk.MultiClient
 
 		public string memory_getmemorydomainlist()
 		{
-			string list = "";
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-			{
-				list += Global.Emulator.MemoryDomains[x].Name + '\n';
-			}
-			return list;
+			return Global.Emulator.MemoryDomains.Aggregate("", (current, t) => current + (t.Name + '\n'));
 		}
 
 		public string memory_getcurrentmemorydomain()
@@ -1615,7 +1606,7 @@ namespace BizHawk.MultiClient
 			int l = LuaInt(length);
 			int addr = LuaInt(address);
 			int last_addr = l + addr;
-			LuaTable table = lua.NewTable();
+			LuaTable table = _lua.NewTable();
 			for (int i = addr; i <= last_addr; i++)
 			{
 				string a = String.Format("{0:X2}", i);
@@ -2074,11 +2065,10 @@ namespace BizHawk.MultiClient
 
 		public LuaTable movie_getinput(object frame)
 		{
-			LuaTable input = lua.NewTable();
+			LuaTable input = _lua.NewTable();
 
 			string s = Global.MovieSession.Movie.GetInput(LuaInt(frame));
-			MovieControllerAdapter m = new MovieControllerAdapter();
-			m.Type = Global.MovieSession.MovieControllerAdapter.Type;
+			MovieControllerAdapter m = new MovieControllerAdapter {Type = Global.MovieSession.MovieControllerAdapter.Type};
 			m.SetControllersAsMnemonic(s);
 			foreach (string button in m.Type.BoolButtons)
 				input[button] = m[button];
@@ -2103,7 +2093,7 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public LuaTable input_get()
 		{
-			LuaTable buttons = lua.NewTable();
+			LuaTable buttons = _lua.NewTable();
 			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons())
 				if (kvp.Value)
 					buttons[kvp.Key] = true;
@@ -2117,7 +2107,7 @@ namespace BizHawk.MultiClient
 		//Currently sends all controllers, needs to control which ones it sends
 		public LuaTable joypad_get(object controller = null)
 		{
-			LuaTable buttons = lua.NewTable();
+			LuaTable buttons = _lua.NewTable();
 			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
 				if (controller == null)
 					buttons[button] = Global.ControllerOutput[button];
@@ -2133,7 +2123,7 @@ namespace BizHawk.MultiClient
 
 		public LuaTable joypad_getimmediate()
 		{
-			LuaTable buttons = lua.NewTable();
+			LuaTable buttons = _lua.NewTable();
 			foreach (string button in Global.ActiveController.Type.BoolButtons)
 				buttons[button] = Global.ActiveController[button];
 			return buttons;
@@ -2182,8 +2172,8 @@ namespace BizHawk.MultiClient
 							}
 							else
 							{
-								Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
-								Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), false);
+								Global.ClickyVirtualPadController.Click("P" + controller + " " + button);
+								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 							}
 						}
 						else if (theValue == false) //Force off
@@ -2194,7 +2184,7 @@ namespace BizHawk.MultiClient
 							}
 							else
 							{
-								Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), true);
+								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, true);
 							}
 						}
 						else if (theValue == null)
@@ -2206,7 +2196,7 @@ namespace BizHawk.MultiClient
 							}
 							else
 							{
-								Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), false);
+								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 							}
 						}
 					}
@@ -2219,8 +2209,8 @@ namespace BizHawk.MultiClient
 						}
 						else
 						{
-							Global.StickyXORAdapter.SetSticky("P" + controller.ToString() + " " + button.ToString(), true);
-							Global.ForceOffAdaptor.SetSticky("P" + controller.ToString() + " " + button.ToString(), false);
+							Global.StickyXORAdapter.SetSticky("P" + controller + " " + button, true);
+							Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, false);
 						}
 					}
 				}
@@ -2400,14 +2390,7 @@ namespace BizHawk.MultiClient
 		private LuaWinform GetForm(object form_handle)
 		{
 			IntPtr ptr = new IntPtr(LuaInt(form_handle));
-			foreach (LuaWinform form in LuaForms)
-			{
-				if (form.Handle == ptr)
-				{
-					return form;
-				}
-			}
-			return null;
+			return LuaForms.FirstOrDefault(form => form.Handle == ptr);
 		}
 
 		private void SetLocation(Control control, object X, object Y)
@@ -2721,7 +2704,7 @@ namespace BizHawk.MultiClient
 
 		public LuaTable input_getmouse()
 		{
-			LuaTable buttons = lua.NewTable();
+			LuaTable buttons = _lua.NewTable();
 			Point p = Global.RenderPanel.ScreenToScreen(Control.MousePosition);
 			buttons["X"] = p.X;
 			buttons["Y"] = p.Y;
@@ -2866,16 +2849,18 @@ namespace BizHawk.MultiClient
 			{
 				NESGameGenie gg = new NESGameGenie();
 				gg.DecodeGameGenieCode(code);
-				if (gg.address > 0 && gg.value > 0)
+				if (gg.Address > 0 && gg.Value > 0)
 				{
-					Cheat c = new Cheat();
-					c.name = code;
-					c.domain = Global.Emulator.MemoryDomains[1];
-					c.address = gg.address;
-					c.value = (byte)gg.value;
-					if (gg.compare != -1)
+					Cheat c = new Cheat
+						{
+							name = code,
+							domain = Global.Emulator.MemoryDomains[1],
+							address = gg.Address,
+							value = (byte) gg.Value
+						};
+					if (gg.Compare != -1)
 					{
-						c.compare = (byte)gg.compare;
+						c.compare = (byte)gg.Compare;
 					}
 					c.Enable();
 					Global.MainForm.Cheats1.AddCheat(c);
@@ -2889,16 +2874,18 @@ namespace BizHawk.MultiClient
 			{
 				NESGameGenie gg = new NESGameGenie();
 				gg.DecodeGameGenieCode(code);
-				if (gg.address > 0 && gg.value > 0)
+				if (gg.Address > 0 && gg.Value > 0)
 				{
-					Cheat c = new Cheat();
-					c.name = code;
-					c.domain = Global.Emulator.MemoryDomains[1];
-					c.address = gg.address;
-					c.value = (byte)gg.value;
-					if (gg.compare != -1)
+					Cheat c = new Cheat
+						{
+							name = code,
+							domain = Global.Emulator.MemoryDomains[1],
+							address = gg.Address,
+							value = (byte) gg.Value
+						};
+					if (gg.Compare != -1)
 					{
-						c.compare = (byte)gg.compare;
+						c.compare = (byte)gg.Compare;
 					}
 					Global.CheatList.RemoveCheat(Global.Emulator.MemoryDomains[1], c.address);
 				}

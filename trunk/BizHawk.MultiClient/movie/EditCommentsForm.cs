@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
@@ -39,7 +33,7 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -50,11 +44,11 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < CommentGrid.Rows.Count - 1; x++)
 				{
 					DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
-					selectedMovie.Header.Comments.Add("comment " + c.Value.ToString());
+					selectedMovie.Header.Comments.Add("comment " + c.Value);
 				}
 				selectedMovie.WriteMovie();
 			}
-			this.Close();
+			Close();
 		}
 
 		public void GetMovie(Movie m)

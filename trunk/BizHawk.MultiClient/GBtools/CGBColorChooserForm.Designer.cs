@@ -36,9 +36,9 @@
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.bmpView1 = new BizHawk.MultiClient.GBtools.BmpView();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.bmpView1 = new BizHawk.MultiClient.GBtools.BmpView();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
@@ -140,6 +140,14 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Preview";
 			// 
+			// bmpView1
+			// 
+			this.bmpView1.Location = new System.Drawing.Point(6, 19);
+			this.bmpView1.Name = "bmpView1";
+			this.bmpView1.Size = new System.Drawing.Size(256, 128);
+			this.bmpView1.TabIndex = 3;
+			this.bmpView1.Text = "bmpView1";
+			// 
 			// buttonOK
 			// 
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -160,14 +168,6 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
-			// bmpView1
-			// 
-			this.bmpView1.Location = new System.Drawing.Point(6, 19);
-			this.bmpView1.Name = "bmpView1";
-			this.bmpView1.Size = new System.Drawing.Size(256, 128);
-			this.bmpView1.TabIndex = 3;
-			this.bmpView1.Text = "bmpView1";
-			// 
 			// CGBColorChooserForm
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -182,6 +182,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "CGBColorChooserForm";
 			this.Text = "Gameboy Color Palette Config";
+			this.Load += new System.EventHandler(this.CGBColorChooserForm_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
