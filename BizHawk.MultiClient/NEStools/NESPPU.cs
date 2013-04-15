@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 using BizHawk.Emulation.Consoles.Nintendo;
-using System.Diagnostics;
 
 namespace BizHawk.MultiClient
 {
@@ -16,22 +10,18 @@ namespace BizHawk.MultiClient
 	{
 		//TODO:
 		//If 8/16 sprite mode, mouse over should put 32x64 version of prite
-
 		//Speedups
 		//Smarter refreshing?  only refresh when things of changed, perhaps peek at the ppu to when the pattern table has changed, or sprites have moved
 		//Maybe 48 individual bitmaps for sprites is faster than the overhead of redrawing all that transparent space
 
-		Bitmap ZoomBoxDefaultImage = new Bitmap(64, 64);
-		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
-		int defaultHeight;
-		NES Nes;
-
-		byte[] PPUBus = new byte[0x2000];
-		byte[] PPUBusprev = new byte[0x2000];
-		byte[] PALRAM = new byte[0x20];
-		byte[] PALRAMprev = new byte[0x20];
-
-		NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
+		private Bitmap ZoomBoxDefaultImage = new Bitmap(64, 64);
+		private NES _nes;
+		private readonly byte[] PPUBus = new byte[0x2000];
+		private readonly byte[] PPUBusprev = new byte[0x2000];
+		private readonly byte[] PALRAM = new byte[0x20];
+		private readonly byte[] PALRAMprev = new byte[0x20];
+		private readonly NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
+		private bool ForceChange;
 
 		public NESPPU()
 		{
@@ -53,24 +43,21 @@ namespace BizHawk.MultiClient
 
 		private void SaveConfigSettings()
 		{
-			Global.Config.NESPPUWndx = this.Location.X;
-			Global.Config.NESPPUWndy = this.Location.Y;
+			Global.Config.NESPPUWndx = Location.X;
+			Global.Config.NESPPUWndy = Location.Y;
 			Global.Config.NESPPURefreshRate = RefreshRate.Value;
 		}
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is NES)) this.Close();
-			if (!this.IsHandleCreated || this.IsDisposed) return;
-			Nes = Global.Emulator as NES;
+			if (!(Global.Emulator is NES)) Close();
+			if (!IsHandleCreated || IsDisposed) return;
+			_nes = Global.Emulator as NES;
 			Generate(true);
 		}
 
 		private void LoadConfigSettings()
 		{
-			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
-			defaultHeight = Size.Height;
-
 			if (Global.Config.NESPPUSaveWindowPosition && Global.Config.NESPPUWndx >= 0 && Global.Config.NESPPUWndy >= 0)
 				Location = new Point(Global.Config.NESPPUWndx, Global.Config.NESPPUWndy);
 		}
@@ -79,15 +66,14 @@ namespace BizHawk.MultiClient
 		{
 			return (byte)(((PPUBus[address] >> (7 - bit)) & 1));
 		}
-
-		bool ForceChange = false;
-		bool CheckChange()
+		
+		private bool CheckChange()
 		{
 			bool changed = false;
 			for (int x = 0; x < 0x20; x++)
 			{
 				PALRAMprev[x] = PALRAM[x];
-				PALRAM[x] = Nes.ppu.PALRAM[x];
+				PALRAM[x] = _nes.ppu.PALRAM[x];
 				if (PALRAM[x] != PALRAMprev[x])
 				{
 					changed = true;
@@ -97,7 +83,7 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < 0x2000; x++)
 			{
 				PPUBusprev[x] = PPUBus[x];
-				PPUBus[x] = Nes.ppu.ppubus_peek(x);
+				PPUBus[x] = _nes.ppu.ppubus_peek(x);
 				if (PPUBus[x] != PPUBusprev[x])
 				{
 					changed = true;
@@ -111,14 +97,14 @@ namespace BizHawk.MultiClient
 
 		unsafe void Generate(bool now = false)
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 
 			if (Global.Emulator.Frame % RefreshRate.Value == 0 || now)
 			{
 				bool Changed = CheckChange();
 
-				int b0 = 0;
-				int b1 = 0;
+				int b0;
+				int b1;
 				byte value;
 				int cvalue;
 
@@ -127,13 +113,12 @@ namespace BizHawk.MultiClient
 					ForceChange = false;
 
 					//Pattern Viewer
-					int pal;
 					for (int x = 0; x < 16; x++)
 					{
-						PaletteView.bgPalettesPrev[x].Value = PaletteView.bgPalettes[x].Value;
-						PaletteView.spritePalettesPrev[x].Value = PaletteView.spritePalettes[x].Value;
-						PaletteView.bgPalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].Address]);
-						PaletteView.spritePalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].Address]);
+						PaletteView.BgPalettesPrev[x].Value = PaletteView.BgPalettes[x].Value;
+						PaletteView.SpritePalettesPrev[x].Value = PaletteView.SpritePalettes[x].Value;
+						PaletteView.BgPalettes[x].Value = _nes.LookupColor(_nes.ppu.PALRAM[PaletteView.BgPalettes[x].Address]);
+						PaletteView.SpritePalettes[x].Value = _nes.LookupColor(_nes.ppu.PALRAM[PaletteView.SpritePalettes[x].Address]);
 					}
 					if (PaletteView.HasChanged())
 					{
@@ -144,6 +129,7 @@ namespace BizHawk.MultiClient
 					int* framebuf = (int*)bmpdata.Scan0.ToPointer();
 					for (int z = 0; z < 2; z++)
 					{
+						int pal;
 						if (z == 0)
 							pal = PatternView.Pal0;
 						else
@@ -162,7 +148,7 @@ namespace BizHawk.MultiClient
 										b1 = (byte)(((PPUBus[address + 8] >> (7 - x)) & 1));
 
 										value = (byte)(b0 + (b1 << 1));
-										cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal << 2)]);
+										cvalue = _nes.LookupColor(_nes.ppu.PALRAM[value + (pal << 2)]);
 										int adr = (x + (j << 3)) + (y + (i << 3)) * (bmpdata.Stride >> 2);
 										framebuf[adr + (z << 7)] = cvalue;
 									}
@@ -176,10 +162,9 @@ namespace BizHawk.MultiClient
 
 				System.Drawing.Imaging.BitmapData bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				int* framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
-				int BaseAddr, TileNum, Attributes, Palette;
 
-				int pt_add = Nes.ppu.reg_2000.obj_pattern_hi ? 0x1000 : 0;
-				bool is8x16 = Nes.ppu.reg_2000.obj_size_16;
+				int pt_add = _nes.ppu.reg_2000.obj_pattern_hi ? 0x1000 : 0;
+				bool is8x16 = _nes.ppu.reg_2000.obj_size_16;
 
 
 				//Sprite Viewer
@@ -187,9 +172,9 @@ namespace BizHawk.MultiClient
 				{
 					for (int r = 0; r < 16; r++)
 					{
-						BaseAddr = (r << 2) +  (n << 6);
-						TileNum = Nes.ppu.OAM[BaseAddr + 1];
-						int PatAddr = 0;
+						int BaseAddr = (r << 2) +  (n << 6);
+						int TileNum = _nes.ppu.OAM[BaseAddr + 1];
+						int PatAddr;
 
 						if (is8x16)
 						{
@@ -203,8 +188,8 @@ namespace BizHawk.MultiClient
 						}
 
 
-						Attributes = Nes.ppu.OAM[BaseAddr + 2];
-						Palette = Attributes & 0x03;
+						int Attributes = _nes.ppu.OAM[BaseAddr + 2];
+						int Palette = Attributes & 0x03;
 
 						for (int x = 0; x < 8; x++)
 						{
@@ -214,7 +199,7 @@ namespace BizHawk.MultiClient
 								b0 = (byte)(((PPUBus[address] >> (7 - x)) & 1));
 								b1 = (byte)(((PPUBus[address + 8] >> (7 - x)) & 1));
 								value = (byte)(b0 + (b1 << 1));
-								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
+								cvalue = _nes.LookupColor(_nes.ppu.PALRAM[16 + value + (Palette << 2)]);
 
 								int adr = (x + (r * 16)) + (y + (n * 24)) * (bmpdata2.Stride >> 2);
 								framebuf2[adr] = cvalue;
@@ -228,7 +213,7 @@ namespace BizHawk.MultiClient
 									b0 = (byte)(((PPUBus[address] >> (7 - x)) & 1));
 									b1 = (byte)(((PPUBus[address + 8] >> (7 - x)) & 1));
 									value = (byte)(b0 + (b1 << 1));
-									cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
+									cvalue = _nes.LookupColor(_nes.ppu.PALRAM[16 + value + (Palette << 2)]);
 
 									int adr = (x + (r << 4)) + ((y+8) + (n * 24)) * (bmpdata2.Stride >> 2);
 									framebuf2[adr] = cvalue;
@@ -243,17 +228,17 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public unsafe void UpdateValues()
+		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			if (!(Global.Emulator is NES)) return;
-			Nes.ppu.PPUViewCallback = Callback;
+			_nes.ppu.PPUViewCallback = Callback;
 		}
 
 		private void NESPPU_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
-			Nes = Global.Emulator as NES;
+			_nes = Global.Emulator as NES;
 			ClearDetails();
 			RefreshRate.Value = Global.Config.NESPPURefreshRate;
 			Generate(true);
@@ -288,7 +273,7 @@ namespace BizHawk.MultiClient
 				baseAddr += 16;
 			int column = (e.X - PaletteView.Location.X) / 16;
 			int addr = column + baseAddr;
-			AddressLabel.Text = "Address: 0x" + String.Format("{0:X4}", addr, NumberStyles.HexNumber);
+			AddressLabel.Text = "Address: 0x" + String.Format("{0:X4}", addr);
 			int val;
 			int offset = addr & 0x03;
 
@@ -297,19 +282,19 @@ namespace BizHawk.MultiClient
 
 			if (baseAddr == 0x3F00)
 			{
-				val = Nes.ppu.PALRAM[PaletteView.bgPalettes[column].Address];
+				val = _nes.ppu.PALRAM[PaletteView.BgPalettes[column].Address];
 				ValueLabel.Text = "ID: BG" + (column / 4).ToString();
-				g.FillRectangle(new SolidBrush(PaletteView.bgPalettes[column].Color), 0, 0, 64, 64);
+				g.FillRectangle(new SolidBrush(PaletteView.BgPalettes[column].Color), 0, 0, 64, 64);
 			}
 			else
 			{
-				val = Nes.ppu.PALRAM[PaletteView.spritePalettes[column].Address];
+				val = _nes.ppu.PALRAM[PaletteView.SpritePalettes[column].Address];
 				ValueLabel.Text = "ID: SPR" + (column / 4).ToString();
-				g.FillRectangle(new SolidBrush(PaletteView.spritePalettes[column].Color), 0, 0, 64, 64);
+				g.FillRectangle(new SolidBrush(PaletteView.SpritePalettes[column].Color), 0, 0, 64, 64);
 			}
 			g.Dispose();
 
-			Value3Label.Text = "Color: 0x" + String.Format("{0:X2}", val, NumberStyles.HexNumber);
+			Value3Label.Text = "Color: 0x" + String.Format("{0:X2}", val);
 			Value4Label.Text = "Offset: " + offset.ToString();
 			ZoomBox.Image = bmp;
 		}
@@ -346,7 +331,7 @@ namespace BizHawk.MultiClient
 				}
 				UpdatePaletteSelection();
 			}
-			HandleDefaultImage(e);
+			HandleDefaultImage();
 		}
 
 		private void UpdatePaletteSelection()
@@ -369,8 +354,8 @@ namespace BizHawk.MultiClient
 		private void PatternView_MouseMove(object sender, MouseEventArgs e)
 		{
 			int table = 0;
-			int address = 0;
-			int tile = 0;
+			int address;
+			int tile;
 			if (e.X > PatternView.Width / 2)
 				table = 1;
 
@@ -391,12 +376,12 @@ namespace BizHawk.MultiClient
 			tile += (e.Y / 8) * 16;
 			string Usage = "Usage: ";
 
-			if ((Nes.ppu.reg_2000.Value & 0x10) << 4 == ((address >> 4) & 0x100))
+			if ((_nes.ppu.reg_2000.Value & 0x10) << 4 == ((address >> 4) & 0x100))
 				Usage = "BG";
-			else if (((Nes.ppu.reg_2000.Value & 0x08) << 5) == ((address >> 4) & 0x100))
+			else if (((_nes.ppu.reg_2000.Value & 0x08) << 5) == ((address >> 4) & 0x100))
 				Usage = "SPR";
 
-			if ((Nes.ppu.reg_2000.Value & 0x20) > 0)
+			if ((_nes.ppu.reg_2000.Value & 0x20) > 0)
 				Usage += " (SPR16)";
 			
 			AddressLabel.Text = "Address: " + String.Format("{0:X4}", address);
@@ -531,7 +516,7 @@ namespace BizHawk.MultiClient
 
 		private void txtScanline_TextChanged(object sender, EventArgs e)
 		{
-			int temp = 0;
+			int temp;
 			if (int.TryParse(txtScanline.Text, out temp))
 			{
 				Callback.Scanline = temp;
@@ -540,9 +525,9 @@ namespace BizHawk.MultiClient
 
 		private void NESPPU_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (Nes == null) return;
-			if (Nes.ppu.PPUViewCallback == Callback)
-				Nes.ppu.PPUViewCallback = null;
+			if (_nes == null) return;
+			if (_nes.ppu.PPUViewCallback == Callback)
+				_nes.ppu.PPUViewCallback = null;
 		}
 
 		private void SpriteView_MouseEnter(object sender, EventArgs e)
@@ -557,12 +542,12 @@ namespace BizHawk.MultiClient
 
 		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
 		{
-			bool is8x16 = Nes.ppu.reg_2000.obj_size_16;
+			bool is8x16 = _nes.ppu.reg_2000.obj_size_16;
 			int SpriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
-			int X = Nes.ppu.OAM[(SpriteNumber * 4) + 3];
-			int Y = Nes.ppu.OAM[SpriteNumber * 4];
-			int Color = Nes.ppu.OAM[(SpriteNumber * 4) + 2] & 0x03;
-			int Attributes = Nes.ppu.OAM[(SpriteNumber * 4) + 2];
+			int X = _nes.ppu.OAM[(SpriteNumber * 4) + 3];
+			int Y = _nes.ppu.OAM[SpriteNumber * 4];
+			int Color = _nes.ppu.OAM[(SpriteNumber * 4) + 2] & 0x03;
+			int Attributes = _nes.ppu.OAM[(SpriteNumber * 4) + 2];
 
 			string flags = "Flags: ";
 			int h = GetBit(Attributes, 6);
@@ -577,7 +562,7 @@ namespace BizHawk.MultiClient
 			else
 				flags += "Front";
 
-			int Tile = Nes.ppu.OAM[SpriteNumber * 1]; ;
+			int Tile = _nes.ppu.OAM[SpriteNumber * 1];
 
 			AddressLabel.Text = "Number: " + String.Format("{0:X2}", SpriteNumber);
 			ValueLabel.Text = "X: " + String.Format("{0:X2}", X);
@@ -594,17 +579,17 @@ namespace BizHawk.MultiClient
 
 		private void PaletteView_MouseClick(object sender, MouseEventArgs e)
 		{
-			HandleDefaultImage(e);
+			HandleDefaultImage();
 		}
 
 		private void SpriteView_MouseClick(object sender, MouseEventArgs e)
 		{
-			HandleDefaultImage(e);
+			HandleDefaultImage();
 		}
 
-		private void HandleDefaultImage(MouseEventArgs e)
+		private void HandleDefaultImage()
 		{
-			if (Control.ModifierKeys == Keys.Shift) //if (e.Button == MouseButtons.Right)
+			if (ModifierKeys == Keys.Shift)
 			{
 				ZoomBoxDefaultImage = ZoomBox.Image as Bitmap;
 			}
@@ -687,12 +672,12 @@ namespace BizHawk.MultiClient
 
 		private void NESPPU_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (Control.ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
 				// find the control under the mouse
-				Point m = System.Windows.Forms.Cursor.Position;
+				Point m = Cursor.Position;
 				Control top = this;
-				Control found = null;
+				Control found;
 				do
 				{
 					found = top.GetChildAtPoint(top.PointToClient(m));
@@ -702,13 +687,19 @@ namespace BizHawk.MultiClient
 				if (found != null)
 				{
 
-					var meth = found.GetType().GetMethod("ScreenshotToClipboard", System.Type.EmptyTypes);
+					var meth = found.GetType().GetMethod("ScreenshotToClipboard", Type.EmptyTypes);
 					if (meth != null)
+					{
 						meth.Invoke(found, null);
+					}
 					else if (found is PictureBox)
+					{
 						Clipboard.SetImage((found as PictureBox).Image);
+					}
 					else
+					{
 						return;
+					}
 
 					toolStripStatusLabel1.Text = found.Text + " copied to clipboard.";
 

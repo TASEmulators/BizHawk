@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Calculator;
 
@@ -95,19 +90,19 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			if (!(Global.Emulator is TI83))
-				this.Close();
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+				Close();
+			if (!IsHandleCreated || IsDisposed) return;
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void SaveConfigSettings()
 		{
-			Global.Config.TI83KeyPadWndx = this.Location.X;
-			Global.Config.TI83KeyPadWndy = this.Location.Y;
+			Global.Config.TI83KeyPadWndx = Location.X;
+			Global.Config.TI83KeyPadWndy = Location.Y;
 		}
 
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -369,10 +364,15 @@ namespace BizHawk.MultiClient
 		private void showHotkToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.TI83ToolTips ^= true;
-			if (Global.Config.TI83ToolTips == true)
+
+			if (Global.Config.TI83ToolTips)
+			{
 				SetToolTips();
+			}
 			else
+			{
 				StopToolTips();
+			}
 		}
 
 		private void ZERO_Click(object sender, EventArgs e)

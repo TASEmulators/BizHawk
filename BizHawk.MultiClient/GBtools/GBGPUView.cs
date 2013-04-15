@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.MultiClient.GBtools
 {
@@ -36,7 +31,7 @@ namespace BizHawk.MultiClient.GBtools
 		IntPtr oam;
 
 		bool cgb; // set once at start
-		int lcdc; // set at each callback
+		int _lcdc; // set at each callback
 
 		IntPtr tilespal; // current palette to use on tiles
 
@@ -72,7 +67,7 @@ namespace BizHawk.MultiClient.GBtools
 			KeyPreview = true;
 
 			messagetimer.Interval = 5000;
-			messagetimer.Tick += new EventHandler(messagetimer_Tick);
+			messagetimer.Tick += messagetimer_Tick;
 
 			checkBoxAutoLoad.Checked = Global.Config.AutoLoadGBGPUView;
 			checkBoxSavePos.Checked = Global.Config.GBGPUViewSaveWindowPosition;
@@ -87,7 +82,7 @@ namespace BizHawk.MultiClient.GBtools
 			{
 				gb = Global.Emulator as Emulation.Consoles.GB.Gameboy;
 				cgb = gb.IsCGBMode();
-				lcdc = 0;
+				_lcdc = 0;
 				if (!gb.GetGPUMemoryAreas(out vram, out bgpal, out sppal, out oam))
 				{
 					gb = null;
@@ -365,12 +360,11 @@ namespace BizHawk.MultiClient.GBtools
 
 		void ScanlineCallback(int lcdc)
 		{
-			this.lcdc = lcdc;
+			_lcdc = lcdc;
 			// set alpha on all pixels
 			unsafe
 			{
-				int* p;
-				p = (int*)bgpal;
+				int* p = (int*)bgpal;
 				for (int i = 0; i < 32; i++)
 					p[i] |= unchecked((int)0xff000000);
 				p = (int*)sppal;
@@ -473,7 +467,7 @@ namespace BizHawk.MultiClient.GBtools
 			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
 			// this doesn't really work well; the update rate seems to be throttled
 			MouseEventArgs e = new MouseEventArgs(System.Windows.Forms.MouseButtons.None, 0, System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y, 0);
-			this.OnMouseMove(e);
+			OnMouseMove(e);
 		}
 
 		private void GBGPUView_FormClosed(object sender, FormClosedEventArgs e)
@@ -554,11 +548,13 @@ namespace BizHawk.MultiClient.GBtools
 		/// </summary>
 		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed)
-				return;
-			if (gb != null)
+			if (!IsHandleCreated || IsDisposed)
 			{
-				if (!this.Visible)
+				return;
+			}
+			else if (gb != null)
+			{
+				if (!Visible)
 				{
 					if (cbscanline_emu != -2)
 					{
@@ -684,14 +680,14 @@ namespace BizHawk.MultiClient.GBtools
 			if (bmpViewDetails.Height != 64)
 				bmpViewDetails.Height = 64;
 			var sb = new StringBuilder();
-			bool secondmap = win ? lcdc.Bit(6) : lcdc.Bit(3);
+			bool secondmap = win ? _lcdc.Bit(6) : _lcdc.Bit(3);
 			int mapoffs = secondmap ? 0x1c00 : 0x1800;
 			x /= 8;
 			y /= 8;
 			mapoffs += y * 32 + x;
 			byte* mapbase = (byte*)vram + mapoffs;
 			int tileindex = mapbase[0];
-			if (win || !lcdc.Bit(4)) // 0x9000 base
+			if (win || !_lcdc.Bit(4)) // 0x9000 base
 				if (tileindex < 128)
 					tileindex += 256; // compute all if from 0x8000 base
 			int tileoffs = tileindex * 16;
@@ -719,7 +715,7 @@ namespace BizHawk.MultiClient.GBtools
 
 		unsafe void SpriteMouseover(int x, int y)
 		{
-			bool tall = lcdc.Bit(2);
+			bool tall = _lcdc.Bit(2);
 			x /= 8;
 			y /= 8;
 			bmpViewDetails.ChangeBitmapSize(8, tall ? 16 : 8);
@@ -884,9 +880,9 @@ namespace BizHawk.MultiClient.GBtools
 
 		private void bmpView_MouseClick(object sender, MouseEventArgs e)
 		{
-			if (e.Button == System.Windows.Forms.MouseButtons.Right)
+			if (e.Button == MouseButtons.Right)
 				SetFreeze();
-			else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+			else if (e.Button == MouseButtons.Left)
 			{
 				if (sender == bmpViewBGPal)
 					tilespal = bgpal + e.X / 16 * 16;
@@ -897,23 +893,23 @@ namespace BizHawk.MultiClient.GBtools
 
 		#region copyimage
 
-		Timer messagetimer = new Timer();
+		private readonly Timer messagetimer = new Timer();
 
 		private void GBGPUView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (Control.ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
 				// find the control under the mouse
-				Point m = System.Windows.Forms.Cursor.Position;
+				Point m = Cursor.Position;
 				Control top = this;
-				Control found = null;
+				Control found;
 				do
 				{
 					found = top.GetChildAtPoint(top.PointToClient(m));
 					top = found;
 				} while (found != null && found.HasChildren);
 
-				if (found != null && found is BmpView)
+				if (found is BmpView)
 				{
 					var bv = found as BmpView;
 					Clipboard.SetImage(bv.bmp);
@@ -962,7 +958,7 @@ namespace BizHawk.MultiClient.GBtools
 				Global.Sound.StopSound();
 				var result = dlg.ShowDialog();
 				Global.Sound.StartSound();
-				if (result == System.Windows.Forms.DialogResult.OK)
+				if (result == DialogResult.OK)
 				{
 					// force full opaque
 					spriteback = Color.FromArgb(255, dlg.Color);

@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
 using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
@@ -14,13 +8,12 @@ namespace BizHawk.MultiClient
 	public partial class NESGraphicsConfig : Form
 	{
 		//TODO:
-		
 		//Allow selection of palette file from archive
 		//Hotkeys for BG & Sprite display toggle
 		//NTSC filter settings? Hue, Tint (This should probably be a multiclient thing, not a nes specific thing?)
 
-		HawkFile palette = null;
-		NES nes;
+		private HawkFile palette;
+		private NES nes;
 
 		public NESGraphicsConfig()
 		{
@@ -52,14 +45,18 @@ namespace BizHawk.MultiClient
 
 		private void BrowsePalette_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESPalette, "NES");
-			ofd.Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*";
-			ofd.RestoreDirectory = true;
+			OpenFileDialog ofd = new OpenFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESPalette, "NES"),
+					Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*",
+					RestoreDirectory = true
+				};
 
 			var result = ofd.ShowDialog();
 			if (result != DialogResult.OK)
+			{
 				return;
+			}
 
 			PalettePath.Text = ofd.FileName;
 		}
@@ -68,7 +65,6 @@ namespace BizHawk.MultiClient
 		{
 			if (PalettePath.Text.Length > 0)
 			{
-				string path = PathManager.MakeAbsolutePath(PalettePath.Text, "NES");
 				palette = new HawkFile(PalettePath.Text);
 
 				if (palette != null && palette.Exists)
@@ -108,9 +104,10 @@ namespace BizHawk.MultiClient
 			Global.Config.NESDispBackground = DispBackground.Checked;
 			Global.Config.NESBackgroundColor = BGColorDialog.Color.ToArgb();
 			if (!checkUseBackdropColor.Checked)
+			{
 				Global.Config.NESBackgroundColor &= 0x00FFFFFF;
-
-			this.Close();
+			}
+			Close();
 		}
 
 		private void SetColorBox()

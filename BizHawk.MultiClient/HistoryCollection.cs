@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace BizHawk.MultiClient
 {
 	public class HistoryCollection
 	{
 		public List<List<Watch>> History = new List<List<Watch>>();
-		private int curPos = 0; //1-based
+		private int curPos; //1-based
 
 		public HistoryCollection(List<Watch> newState)
 		{

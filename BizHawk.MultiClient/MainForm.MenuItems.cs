@@ -955,7 +955,7 @@ namespace BizHawk.MultiClient
 			s.DisableFrame();
 			int index = -1;
 			Subtitle sub = new Subtitle();
-			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count(); x++)
+			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count; x++)
 			{
 				sub = Global.MovieSession.Movie.Subtitles.GetSubtitleByIndex(x);
 				if (Global.Emulator.Frame == sub.Frame)

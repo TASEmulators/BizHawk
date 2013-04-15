@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo;
-using System.IO;
 
 namespace BizHawk.MultiClient
 {
@@ -17,12 +11,8 @@ namespace BizHawk.MultiClient
 		//TODO:
 		//Show Scroll Lines + UI Toggle
 
-		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
-		int defaultHeight;
-		NES Nes;
-
-		NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
-
+		private NES _nes;
+		private readonly NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
 
 		public NESNameTableViewer()
 		{
@@ -33,35 +23,35 @@ namespace BizHawk.MultiClient
 
 		private void SaveConfigSettings()
 		{
-			Global.Config.NESNameTableWndx = this.Location.X;
-			Global.Config.NESNameTableWndy = this.Location.Y;
+			Global.Config.NESNameTableWndx = Location.X;
+			Global.Config.NESNameTableWndy = Location.Y;
 			Global.Config.NESNameTableRefreshRate = RefreshRate.Value;
 		}
 
 		unsafe void Generate(bool now = false)
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
-			if (Nes == null) return;
+			if (!IsHandleCreated || IsDisposed) return;
+			if (_nes == null) return;
 
 			if (now == false)
 			{
 				if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
 			}
 
-			BitmapData bmpdata = NameTableView.nametables.LockBits(new Rectangle(0, 0, 512, 480), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			BitmapData bmpdata = NameTableView.Nametables.LockBits(new Rectangle(0, 0, 512, 480), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* dptr = (int*)bmpdata.Scan0.ToPointer();
 			int pitch = bmpdata.Stride / 4;
-			int pt_add = Nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
+			int pt_add = _nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
 
 			//buffer all the data from the ppu, because it will be read multiple times and that is slow
 			byte[] p = new byte[0x3000];
 			for (int x = 0; x < 0x3000; x++)
-				p[x] = Nes.ppu.ppubus_peek(x);
+				p[x] = _nes.ppu.ppubus_peek(x);
 
 			byte[] palram = new byte[0x20];
 			for (int x = 0; x < 0x20; x++)
-				palram[x] = Nes.ppu.PALRAM[x];
+				palram[x] = _nes.ppu.PALRAM[x];
 
 			int ytable = 0, yline = 0;
 			for (int y = 0; y < 480; y++)
@@ -102,19 +92,19 @@ namespace BizHawk.MultiClient
 						pixel |= at;
 
 					pixel = palram[pixel];
-					int cvalue = Nes.LookupColor(pixel);
+					int cvalue = _nes.LookupColor(pixel);
 					*dptr = cvalue;
 				}
 				dptr += pitch - 512;
 			}
 
-			NameTableView.nametables.UnlockBits(bmpdata);
+			NameTableView.Nametables.UnlockBits(bmpdata);
 			NameTableView.Refresh();
 		}
 
 		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			if (!(Global.Emulator is NES)) return;
 			NES.PPU ppu = (Global.Emulator as NES).ppu;
 			ppu.NTViewCallback = Callback;
@@ -122,27 +112,24 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is NES)) this.Close();
-			Nes = Global.Emulator as NES;
+			if (!(Global.Emulator is NES)) Close();
+			_nes = Global.Emulator as NES;
 			Generate(true);
 		}
 
 		private void NESNameTableViewer_Load(object sender, EventArgs e)
 		{
-			defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
-			defaultHeight = this.Size.Height;
-
 			if (Global.Config.NESNameTableSaveWindowPosition && Global.Config.NESNameTableWndx >= 0 && Global.Config.NESNameTableWndy >= 0)
-				this.Location = new Point(Global.Config.NESNameTableWndx, Global.Config.NESNameTableWndy);
+				Location = new Point(Global.Config.NESNameTableWndx, Global.Config.NESNameTableWndy);
 
-			Nes = Global.Emulator as NES;
+			_nes = Global.Emulator as NES;
 			RefreshRate.Value = Global.Config.NESNameTableRefreshRate;
 			Generate(true);
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -163,7 +150,7 @@ namespace BizHawk.MultiClient
 
 		private void txtScanline_TextChanged(object sender, EventArgs e)
 		{
-			int temp = 0;
+			int temp;
 			if (int.TryParse(txtScanline.Text, out temp))
 			{
 				Callback.Scanline = temp;
@@ -172,9 +159,9 @@ namespace BizHawk.MultiClient
 
 		private void NESNameTableViewer_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (Nes == null) return;
-			if (Nes.ppu.NTViewCallback == Callback)
-				Nes.ppu.NTViewCallback = null;
+			if (_nes == null) return;
+			if (_nes.ppu.NTViewCallback == Callback)
+				_nes.ppu.NTViewCallback = null;
 		}
 
 
@@ -222,7 +209,7 @@ namespace BizHawk.MultiClient
 			XYLabel.Text = TileX.ToString() + " : " + TileY.ToString();
 			int PPUAddress = 0x2000 + (NameTable * 0x400) + ((TileY % 30) * 32) + (TileX % 32);
 			PPUAddressLabel.Text = String.Format("{0:X4}", PPUAddress);
-			int TileID = Nes.ppu.ppubus_read(PPUAddress, true);
+			int TileID = _nes.ppu.ppubus_read(PPUAddress, true);
 			TileIDLabel.Text = String.Format("{0:X2}", TileID);
 			TableLabel.Text = NameTable.ToString();
 
@@ -232,18 +219,14 @@ namespace BizHawk.MultiClient
 				ytable += 2;
 				yline = 240;
 			}
-			int pt_add = Nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
 			int table = (e.X >> 8) + ytable;
 			int ntaddr = (table << 10);
 			int px = e.X & 255;
 			int py = e.Y - yline;
 			int tx = px >> 3;
 			int ty = py >> 3;
-			int ntbyte_ptr = ntaddr + (ty * 32) + tx;
 			int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
-			int nt = Nes.ppu.ppubus_peek(ntbyte_ptr + 0x2000);
-
-			int at = Nes.ppu.ppubus_peek(atbyte_ptr + 0x2000);
+			int at = _nes.ppu.ppubus_peek(atbyte_ptr + 0x2000);
 			if ((ty & 2) != 0) at >>= 4;
 			if ((tx & 2) != 0) at >>= 2;
 			at &= 0x03;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,9 +36,11 @@ namespace BizHawk.MultiClient
 			Movie m = new Movie();
 			errorMsg = "";
 			warningMsg = "";
+
+			string ext = path != null ? Path.GetExtension(path).ToUpper() : "";
 			try
 			{
-				switch (Path.GetExtension(path).ToUpper())
+				switch (ext)
 				{
 					case ".FCM":
 						m = ImportFCM(path, out errorMsg, out warningMsg);
@@ -96,17 +97,11 @@ namespace BizHawk.MultiClient
 		// Return whether or not the type of file provided can currently be imported.
 		public static bool IsValidMovieExtension(string extension)
 		{
-			string[] extensions = new string[13] {
+			string[] extensions = new[]
+			{
 				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "ZMV"
 			};
-			foreach (string ext in extensions)
-			{
-				if (extension.ToUpper() == "." + ext)
-				{
-					return true;
-				}
-			}
-			return false;
+			return extensions.Any(ext => extension.ToUpper() == "." + ext);
 		}
 
 		// Reduce all whitespace to single spaces.
@@ -132,35 +127,34 @@ namespace BizHawk.MultiClient
 		{
 			string[] buttons = new string[] { };
 			string controller = "";
-			switch (Path.GetExtension(path).ToUpper())
+			string ext = path != null ? Path.GetExtension(path).ToUpper() : "";
+			switch (ext)
 			{
 				case ".FM2":
-					buttons = new string[8] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
+					buttons = new[] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
 					controller = "NES Controller";
 					break;
 				case ".MC2":
-					buttons = new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
+					buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 					controller = "PC Engine Controller";
 					break;
 				case ".LSMV":
-					buttons = new string[12] {
+					buttons = new[] {
 						"B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R"
 					};
 					controller = "SNES Controller";
 					if (platform == "GB" || platform == "GBC")
 					{
-						buttons = new string[8] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
+						buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
 						controller = "Gameboy Controller";
 					}
 					break;
 			}
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = controller;
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = controller}};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
-			if (Path.GetExtension(path).ToUpper() == ".FM2" && sections.Length >= 2 && sections[1].Length != 0)
+			if (ext == ".FM2" && sections.Length >= 2 && sections[1].Length != 0)
 			{
 				controllers["Reset"] = (sections[1][0] == '1');
 				// Get the first invalid command warning message that arises.
@@ -194,7 +188,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-			if (Path.GetExtension(path).ToUpper() == ".LSMV" && sections.Length != 0)
+			if (ext == ".LSMV" && sections.Length != 0)
 			{
 				string flags = sections[0];
 				char[] off = { '.', ' ', '\t', '\n', '\r' };
@@ -223,7 +217,7 @@ namespace BizHawk.MultiClient
 			int start = 2;
 			int end = sections.Length - 1;
 			int player_offset = -1;
-			if (Path.GetExtension(path).ToUpper() == ".LSMV")
+			if (ext == ".LSMV")
 			{
 				// LSNES frames don't start or end with a |.
 				start--;
@@ -270,9 +264,10 @@ namespace BizHawk.MultiClient
 			{
 				// Concatenate the frame and message with default values for the additional fields.
 				string frame;
-				string message;
 				string length;
-				if (Path.GetExtension(path).ToUpper() != ".LSMV")
+				string ext = path != null ? Path.GetExtension(path).ToUpper() : "";
+
+				if (ext != ".LSMV")
 				{
 					frame = line.Substring(first + 1, second - first - 1);
 					length = "200";
@@ -282,7 +277,7 @@ namespace BizHawk.MultiClient
 					frame = line.Substring(0, first);
 					length = line.Substring(first + 1, second - first - 1);
 				}
-				message = line.Substring(second + 1).Trim();
+				string message = line.Substring(second + 1).Trim();
 				m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message);
 			}
 			return m;
@@ -311,7 +306,7 @@ namespace BizHawk.MultiClient
 			}
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
 			int lineNum = 0;
-			string line = "";
+			string line;
 			while ((line = sr.ReadLine()) != null)
 			{
 				lineNum++;
@@ -361,7 +356,7 @@ namespace BizHawk.MultiClient
 					byte[] md5 = DecodeBlob(blob);
 					if (md5 != null && md5.Length == 16)
 					{
-						m.Header.SetHeaderLine(MD5, BizHawk.Util.BytesToHexString(md5).ToLower());
+						m.Header.SetHeaderLine(MD5, Util.BytesToHexString(md5).ToLower());
 					}
 					else
 					{
@@ -421,12 +416,11 @@ namespace BizHawk.MultiClient
 		// Get the content for a particular header.
 		private static string ParseHeader(string line, string headerName)
 		{
-			string str;
 			// Case-insensitive search.
 			int x = line.ToLower().LastIndexOf(
 				headerName.ToLower()
 			) + headerName.Length;
-			str = line.Substring(x + 1, line.Length - x - 1);
+			string str = line.Substring(x + 1, line.Length - x - 1);
 			return str.Trim();
 		}
 
@@ -440,7 +434,7 @@ namespace BizHawk.MultiClient
 			if (blob[0] == '0' && (blob[1] == 'x' || blob[1] == 'X'))
 			{
 				// hex
-				return BizHawk.Util.HexStringToBytes(blob.Substring(2));
+				return Util.HexStringToBytes(blob.Substring(2));
 			}
 			else
 			{
@@ -537,8 +531,6 @@ namespace BizHawk.MultiClient
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
 			m.Rerecords = (int)rerecordCount;
-			// 014 4-byte little-endian unsigned int: length of controller data in bytes
-			uint movieDataSize = r.ReadUInt32();
 			/*
 			 018 4-byte little-endian unsigned int: offset to the savestate inside file
 			 The savestate offset is <header_size + length_of_metadata_in_bytes + padding>. The savestate offset should be
@@ -550,7 +542,7 @@ namespace BizHawk.MultiClient
 			uint firstFrameOffset = r.ReadUInt32();
 			// 020 16-byte md5sum of the ROM used
 			byte[] md5 = r.ReadBytes(16);
-			m.Header.SetHeaderLine(MD5, BizHawk.Util.BytesToHexString(md5).ToLower());
+			m.Header.SetHeaderLine(MD5, Util.BytesToHexString(md5).ToLower());
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion.ToString());
@@ -576,11 +568,9 @@ namespace BizHawk.MultiClient
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = "NES Controller";
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
+			string[] buttons = new[] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
 			bool fourscore = false;
 			int frame = 1;
@@ -728,10 +718,7 @@ namespace BizHawk.MultiClient
 		// FM2 file format: http://www.fceux.com/web/FM2.html
 		private static Movie ImportFM2(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = "";
-			warningMsg = "";
-			Movie m = ImportText(path, out errorMsg, out warningMsg);
-			return m;
+			return ImportText(path, out errorMsg, out warningMsg);
 		}
 
 		// FMV file format: http://tasvideos.org/FMV.html
@@ -813,9 +800,7 @@ namespace BizHawk.MultiClient
 			*/
 			m.Header.SetHeaderLine(MovieHeader.PAL, "False");
 			// 090 frame data begins here
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = "NES Controller";
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 Right
@@ -827,8 +812,8 @@ namespace BizHawk.MultiClient
 			 * 40 Select
 			 * 80 Start
 			*/
-			string[] buttons = new string[8] { "Right", "Left", "Up", "Down", "B", "A", "Select", "Start" };
-			bool[] masks = new bool[3] { controller1, controller2, FDS };
+			string[] buttons = new[] { "Right", "Left", "Up", "Down", "B", "A", "Select", "Start" };
+			bool[] masks = new[] { controller1, controller2, FDS };
 			/*
 			 The file has no terminator byte or frame count. The number of frames is the <filesize minus 144> divided by
 			 <number of bytes per frame>.
@@ -933,9 +918,10 @@ namespace BizHawk.MultiClient
 			// 018 40-byte zero-terminated ASCII movie name string
 			string description = NullTerminated(r.ReadStringFixedAscii(40));
 			m.Header.Comments.Add(COMMENT + " " + description);
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = "Genesis 3-Button Controller";
+			SimpleController controllers = new SimpleController
+				{
+					Type = new ControllerDefinition {Name = "Genesis 3-Button Controller"}
+				};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 040 frame data
@@ -1261,7 +1247,7 @@ namespace BizHawk.MultiClient
 			byte[] md5 = r.ReadBytes(16);
 			// Discard the second 16 bytes.
 			r.ReadBytes(16);
-			m.Header.SetHeaderLine(MD5, BizHawk.Util.BytesToHexString(md5).ToLower());
+			m.Header.SetHeaderLine(MD5, Util.BytesToHexString(md5).ToLower());
 			// 030 64-byte	Filename of the ROM used (with extension)
 			string gameName = NullTerminated(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
@@ -1270,8 +1256,8 @@ namespace BizHawk.MultiClient
 			m.Rerecords = (int)rerecordCount;
 			// 074 5-byte	 Console indicator (pce, ngp, pcfx, wswan)
 			string platform = NullTerminated(r.ReadStringFixedAscii(5));
-			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>()
-			{
+			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>
+				{
 				{
 					/*
 					 Normally, NES receives from 5 input ports, where the first 4 have a length of 1 byte, and the last has
@@ -1281,14 +1267,14 @@ namespace BizHawk.MultiClient
 					"nes", new Dictionary<string, object>
 					{
 						{"name", "NES"}, {"ports", 4}, {"bytesPerPort", 1},
-						{"buttons", new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" }}
+						{"buttons", new[] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" }}
 					}
 				},
 				{
 					"pce", new Dictionary<string, object>
 					{
 						{"name", "PC Engine"}, {"ports", 5}, {"bytesPerPort", 2},
-						{"buttons", new string[8] { "B1", "B2", "Select", "Run", "Up", "Right", "Down", "Left" }}
+						{"buttons", new[] { "B1", "B2", "Select", "Run", "Up", "Right", "Down", "Left" }}
 					}
 				}
 			};
@@ -1308,9 +1294,7 @@ namespace BizHawk.MultiClient
 			r.ReadBytes(103);
 			// TODO: Verify if NTSC/"PAL" mode used for the movie can be detected or not.
 			// 100 variable   Input data
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = name + " Controller";
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = name + " Controller"}};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			int bytes = 256;
 			// The input stream consists of 1 byte for power-on and reset, and then X bytes per each input port per frame.
@@ -1357,10 +1341,7 @@ namespace BizHawk.MultiClient
 		// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
 		private static Movie ImportMC2(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = "";
-			warningMsg = "";
-			Movie m = ImportText(path, out errorMsg, out warningMsg);
-			return m;
+			return ImportText(path, out errorMsg, out warningMsg);
 		}
 
 		// MMV file format: http://tasvideos.org/MMV.html
@@ -1435,10 +1416,8 @@ namespace BizHawk.MultiClient
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 00e4-00f3: binary: rom MD5 digest
 			byte[] md5 = r.ReadBytes(16);
-			m.Header.SetHeaderLine(MD5, String.Format("{0:x8}", BizHawk.Util.BytesToHexString(md5).ToLower()));
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = "SMS Controller";
+			m.Header.SetHeaderLine(MD5, String.Format("{0:x8}", Util.BytesToHexString(md5).ToLower()));
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SMS Controller"}};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 76543210
@@ -1451,7 +1430,7 @@ namespace BizHawk.MultiClient
 			 * bit 6 (0x40): start (Master System)
 			 * bit 7 (0x80): start (Game Gear)
 			*/
-			string[] buttons = new string[6] { "Up", "Down", "Left", "Right", "B1", "B2" };
+			string[] buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2" };
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
 				/*
@@ -1551,7 +1530,7 @@ namespace BizHawk.MultiClient
 			*/
 			bool fourscore = (controller1 == 5);
 			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
-			bool[] masks = new bool[5] { false, false, false, false, false };
+			bool[] masks = new[] { false, false, false, false, false };
 			if (fourscore)
 			{
 				/*
@@ -1567,7 +1546,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				byte[] types = new byte[2] { controller1, controller2 };
+				byte[] types = new[] { controller1, controller2 };
 				for (int controller = 1; controller <= types.Length; controller++)
 				{
 					masks[controller - 1] = (types[controller - 1] == 1);
@@ -1617,7 +1596,7 @@ namespace BizHawk.MultiClient
 			 * 5 - Family Trainer (2 bytes)
 			 * 6 - Oeka Kids writing tablet (3 bytes)
 			*/
-			string[] expansions = new string[7] {
+			string[] expansions = new[] {
 				"Unconnected", "Famicom 4-player adapter", "Famicom Arkanoid paddle", "Family Basic Keyboard",
 				"Alternate keyboard layout", "Family Trainer", "Oeka Kids writing tablet"
 			};
@@ -1666,9 +1645,7 @@ namespace BizHawk.MultiClient
 			// ... 4-byte little-endian unsigned int: length of controller data in bytes
 			uint length = r.ReadUInt32();
 			// ... (variable) controller data
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = "NES Controller";
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 Standard controllers store data in the following format:
@@ -1682,7 +1659,7 @@ namespace BizHawk.MultiClient
 			 * 80: Right
 			 Other controllers store data in their own formats, and are beyond the scope of this document.
 			*/
-			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
+			string[] buttons = new[] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			// The controller data contains <number_of_bytes> / <bytes_per_frame> frames.
 			long frameCount = length / bytesPerFrame;
 			for (int frame = 1; frame <= frameCount; frame++)
@@ -1774,9 +1751,7 @@ namespace BizHawk.MultiClient
 			 * bit 4: controller 5 in use
 			 * other: reserved, set to 0
 			*/
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = "SNES Controller";
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SNES Controller"}};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			bool[] controllersUsed = new bool[5];
 			for (int controller = 1; controller <= controllersUsed.Length; controller++)
@@ -1890,9 +1865,11 @@ namespace BizHawk.MultiClient
 			 00 40 Y
 			 00 80 B
 			*/
-			string[] buttons = new string[12] {
+			string[] buttons = new[]
+			{
 				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
 			};
+			
 			for (int frame = 0; frame <= frameCount; frame++)
 			{
 				controllers["Reset"] = true;
@@ -2084,14 +2061,16 @@ namespace BizHawk.MultiClient
 			// bit 2: if "1", movie is for the SGB system
 			bool is_sgb = (((flags >> 2) & 0x1) != 0);
 			// other: reserved, set to 0
+			
 			// (At most one of bits 0, 1, 2 can be "1")
-			if (!(is_gba ^ is_gbc ^ is_sgb) && (is_gba || is_gbc || is_sgb))
-			{
-				errorMsg = "This is not a valid .VBM file.";
-				r.Close();
-				fs.Close();
-				return null;
-			}
+			//if (!(is_gba ^ is_gbc ^ is_sgb) && (is_gba || is_gbc || is_sgb)) //TODO: adelikat: this doesn't do what the comment above suggests it is trying to check for, it is always false!
+			//{
+				//errorMsg = "This is not a valid .VBM file.";
+				//r.Close();
+				//fs.Close();
+				//return null;
+			//}
+			
 			// (If all 3 of these bits are "0", it is for regular GB.)
 			string platform = "GB";
 			if (is_gba)
@@ -2181,8 +2160,7 @@ namespace BizHawk.MultiClient
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii(128));
 			m.Header.Comments.Add(COMMENT + " " + movieDescription);
 			r.BaseStream.Position = firstFrameOffset;
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition()};
 			if (platform == "GBA")
 			{
 				controllers.Type.Name = "Gameboy Controller";
@@ -2202,7 +2180,7 @@ namespace BizHawk.MultiClient
 			 * 40 00 Up
 			 * 80 00 Down
 			*/
-			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
+			string[] buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
 			/*
 			 * 00 01 R
 			 * 00 02 L
@@ -2213,7 +2191,7 @@ namespace BizHawk.MultiClient
 			 * 00 40 Down motion sensor
 			 * 00 80 Up motion sensor
 			*/
-			string[] other = new string[8] {
+			string[] other = new[] {
 				"R", "L", "Reset (old timing)" , "Reset (new timing since version 1.1)", "Left motion sensor",
 				"Right motion sensor", "Down motion sensor", "Up motion sensor"
 			};
@@ -2362,9 +2340,7 @@ namespace BizHawk.MultiClient
 				return m;
 			}
 			r.BaseStream.Position = firstFrameOffset;
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = "NES Controller";
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 A
@@ -2376,7 +2352,7 @@ namespace BizHawk.MultiClient
 			 * 40 Left
 			 * 80 Right
 			*/
-			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
+			string[] buttons = new[] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
 				/*
@@ -2559,7 +2535,6 @@ namespace BizHawk.MultiClient
 			{
 				peripheral = "First Mouse";
 			}
-			controllerFlags >>= 1;
 			if (peripheral != "")
 			{
 				warningMsg = "Unable to import " + peripheral + ".";
@@ -2599,9 +2574,7 @@ namespace BizHawk.MultiClient
 			uint savestateSize = (uint)((r.ReadByte() | (r.ReadByte() << 8) | (r.ReadByte() << 16)) & 0x7FFFFF);
 			// Next follows a ZST format savestate.
 			r.ReadBytes((int)savestateSize);
-			SimpleController controllers = new SimpleController();
-			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = "SNES Controller";
+			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SNES Controller"}};
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * bit 11: A
@@ -2617,7 +2590,8 @@ namespace BizHawk.MultiClient
 			 * bit 1:  Left
 			 * bit 0:  Right
 			*/
-			string[] buttons = new string[12] {
+			string[] buttons = new[]
+			{
 				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
 			};
 			int frames = 1;

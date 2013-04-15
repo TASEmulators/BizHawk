@@ -1,19 +1,15 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Globalization;
 using System.IO;
 using System.Drawing.Imaging;
 
 namespace BizHawk.MultiClient
 {
-	public class SpriteViewer : Control
+	public sealed class SpriteViewer : Control
 	{
-		Size pSize;
 		public Bitmap sprites;
+
+		private readonly Size pSize;
 
 		public SpriteViewer()
 		{
@@ -23,9 +19,9 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
-			this.Size = pSize;
-			this.BackColor = Color.Transparent;
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.SpriteViewer_Paint);
+			Size = pSize;
+			BackColor = Color.Transparent;
+			Paint += SpriteViewer_Paint;
 		}
 
 		private void Display(Graphics g)
@@ -43,12 +39,14 @@ namespace BizHawk.MultiClient
 
 		public void Screenshot()
 		{
-			var sfd = new SaveFileDialog();
-			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-Sprites";
-			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES");
-			sfd.Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*";
+			var sfd = new SaveFileDialog
+				{
+					FileName = PathManager.FilesystemSafeName(Global.Game) + "-Sprites",
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"),
+					Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
+					RestoreDirectory = true
+				};
 
-			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
 			Global.Sound.StartSound();
@@ -84,7 +82,7 @@ namespace BizHawk.MultiClient
 
 			using (var img = b)
 			{
-				System.Windows.Forms.Clipboard.SetImage(img);
+				Clipboard.SetImage(img);
 			}
 		}
 	}

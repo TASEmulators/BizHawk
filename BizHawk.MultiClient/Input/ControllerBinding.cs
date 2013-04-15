@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace BizHawk.MultiClient
@@ -8,8 +7,8 @@ namespace BizHawk.MultiClient
 	public class Controller : IController
 	{
 		private ControllerDefinition type;
-		private WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
-		private WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
+		private readonly WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
 
 		public Controller(ControllerDefinition definition)
 		{
@@ -18,7 +17,7 @@ namespace BizHawk.MultiClient
 
 		public ControllerDefinition Type { get { return type; } }
 		/// <summary>don't do this</summary>
-		public void ForceType(ControllerDefinition newtype) { this.type = newtype; }
+		public void ForceType(ControllerDefinition newtype) { type = newtype; }
 		public bool this[string button] { get { return IsPressed(button); } }
 		public bool IsPressed(string button)
 		{
@@ -133,16 +132,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				List<string> list = new List<string>();
-				foreach (var button in buttons)
-				{
-					if (button.Value)
-					{
-						list.Add(button.Key);
-					}
-				}
-
-				return list;
+				return (from button in buttons where button.Value select button.Key).ToList();
 			}
 		}
 	}
@@ -212,7 +202,7 @@ namespace BizHawk.MultiClient
 			{
 				foreach (var bound_button in kvp.Value)
 				{
-					if (buttons[kvp.Key] == false && controller[bound_button] == true)
+					if (buttons[kvp.Key] == false && controller[bound_button])
 						buttonStarts[kvp.Key] = Global.Emulator.Frame;
 				}
 			}
@@ -269,16 +259,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				List<string> list = new List<string>();
-				foreach (var button in buttons)
-				{
-					if (button.Value)
-					{
-						list.Add(button.Key);
-					}
-				}
-
-				return list;
+				return (from button in buttons where button.Value select button.Key).ToList();
 			}
 		}
 	}

@@ -51,7 +51,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		HashSet<string> Pressed = new HashSet<string>();
+		readonly HashSet<string> Pressed = new HashSet<string>();
 	}
 
 	//filters input for things called Up and Down while considering the client's AllowUD_LR option.
@@ -67,8 +67,10 @@ namespace BizHawk.MultiClient
 
 		public bool IsPressed(string button)
 		{
-			if (Global.Config.AllowUD_LR == true)
+			if (Global.Config.AllowUD_LR)
+			{
 				return Source.IsPressed(button);
+			}
 
 			string prefix;
 
@@ -76,13 +78,17 @@ namespace BizHawk.MultiClient
 			{
 				prefix = button.GetPrecedingString("Down");
 				if (Source.IsPressed(prefix + "Up"))
+				{
 					return false;
+				}
 			}
 			if (button.Contains("Right"))
 			{
 				prefix = button.GetPrecedingString("Right");
 				if (Source.IsPressed(prefix + "Left"))
+				{
 					return false;
+				}
 			}
 
 			return Source.IsPressed(button);
@@ -150,7 +156,6 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				bool source = Source[button];
 				if (stickySet.Contains(button))
 				{
 					return false;
@@ -249,7 +254,7 @@ namespace BizHawk.MultiClient
 		public int Off { get; set; }
 		public WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
 		
-		private HashSet<string> stickySet = new HashSet<string>();
+		private readonly HashSet<string> stickySet = new HashSet<string>();
 
 		public IController Source;
 
@@ -508,13 +513,6 @@ namespace BizHawk.MultiClient
 
 			foreach (string button in Global.BUTTONS["Commodore 64 Keyboard"].Keys)
 			{
-				if (Global.BUTTONS["Commodore 64 Keyboard"][button] == "Key Restore")
-				{
-					int xx = 0;
-					xx++;
-					int y = xx;
-					y++;
-				}
 				input.Append(IsBasePressed(button) ? Global.BUTTONS["Commodore 64 Keyboard"][button] : ".");
 			}
 			input.Append('|');
@@ -683,7 +681,8 @@ namespace BizHawk.MultiClient
 	public class CopyControllerAdapter : IController
 	{
 		public IController Source;
-		NullController _null = new NullController();
+		
+		private readonly NullController _null = new NullController();
 
 		IController Curr
 		{
@@ -713,13 +712,15 @@ namespace BizHawk.MultiClient
 			string[] parts = button.Split(' ');
 			if (parts.Length < 2) return null;
 			if (parts[0][0] != 'P') return null;
-			int player = 0;
+			int player;
 			if (!int.TryParse(parts[0].Substring(1), out player))
+			{
 				return null;
-			var bnp = new ButtonNameParser();
-			bnp.PlayerNum = player;
-			bnp.ButtonPart = button.Substring(parts[0].Length + 1);
-			return bnp;
+			}
+			else
+			{
+				return new ButtonNameParser { PlayerNum = player, ButtonPart = button.Substring(parts[0].Length + 1) };
+			}
 		}
 
 		public int PlayerNum;
@@ -741,7 +742,7 @@ namespace BizHawk.MultiClient
 		public int PlayerTargetMask = 0;
 
 		public ControllerDefinition Type { get { return Source.Type; } }
-		public bool this[string button] { get { return this.IsPressed(button); } }
+		public bool this[string button] { get { return IsPressed(button); } }
 		public float GetFloat(string name) { return Source.GetFloat(name); }
 		public void UpdateControls(int frame) { Source.UpdateControls(frame); }
 
@@ -766,11 +767,6 @@ namespace BizHawk.MultiClient
 
 	public class MovieControllerAdapter : IController
 	{
-		public MovieControllerAdapter()
-		{
-			//OutputController = new ForceControllerAdapter();
-		}
-
 		//IController implementation:
 		public ControllerDefinition Type { get; set; }
 		public bool this[string button] { get { return MyBoolButtons[button]; } }
@@ -779,7 +775,7 @@ namespace BizHawk.MultiClient
 		public void UpdateControls(int frame) {  }
 		//--------
 
-		WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
 
 		void Force(string button, bool state)
 		{
@@ -790,11 +786,13 @@ namespace BizHawk.MultiClient
 
 		class MnemonicChecker
 		{
+			private readonly string m;
+
 			public MnemonicChecker(string _m)
 			{
 				m = _m;
 			}
-			string m;
+
 			public bool this[int c]
 			{
 				get { return m[c] != '.'; }

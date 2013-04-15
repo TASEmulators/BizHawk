@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -10,7 +9,7 @@ namespace BizHawk.MultiClient
 {
 	public class SubtitleList
 	{
-		private List<Subtitle> subs = new List<Subtitle>();
+		private readonly List<Subtitle> subs = new List<Subtitle>();
 
 		public SubtitleList()
 		{
@@ -19,9 +18,12 @@ namespace BizHawk.MultiClient
 
 		public SubtitleList(Movie m)
 		{
-			if (m.Subtitles.Count() == 0) return;
+			if (m != null && m.Subtitles.Count == 0)
+			{
+				return;
+			}
 
-			for (int x = 0; x < m.Subtitles.Count(); x++)
+			for (int x = 0; x < m.Subtitles.Count; x++)
 			{
 				Subtitle s = new Subtitle(m.Subtitles.GetSubtitleByIndex(x));
 				subs.Add(s);
@@ -37,7 +39,10 @@ namespace BizHawk.MultiClient
 
 		public string GetSubtitleText(int index)
 		{
-			if (index >= subs.Count || index < 0) return "";
+			if (index >= subs.Count || index < 0)
+			{
+				return "";
+			}
 
 			StringBuilder sb = new StringBuilder("subtitle ");
 			sb.Append(subs[index].Frame.ToString());
@@ -63,10 +68,12 @@ namespace BizHawk.MultiClient
 		{
 			if (subs.Count == 0) return "";
 
-			for (int x = 0; x < subs.Count; x++)
+			foreach (Subtitle t in subs)
 			{
-				if (frame >= subs[x].Frame && frame <= subs[x].Frame + subs[x].Duration)
-					return subs[x].Message;
+				if (frame >= t.Frame && frame <= t.Frame + t.Duration)
+				{
+					return t.Message;
+				}
 			}
 			return "";
 		}
@@ -75,33 +82,29 @@ namespace BizHawk.MultiClient
 		{
 			if (subs.Count == 0) return new Subtitle();
 
-			for (int x = 0; x < subs.Count; x++)
+			foreach (Subtitle t in subs)
 			{
-				if (frame >= subs[x].Frame && frame <= subs[x].Frame + subs[x].Duration)
-					return subs[x];
+				if (frame >= t.Frame && frame <= t.Frame + t.Duration)
+				{
+					return t;
+				}
 			}
 			return new Subtitle();
 		}
 
 		public List<Subtitle> GetSubtitles(int frame)
 		{
-			if (subs.Count == 0) 
-				return null;
-
-			List<Subtitle> s = new List<Subtitle>();
-
-			for (int x = 0; x < subs.Count; x++)
+			if (subs.Count == 0)
 			{
-				if (frame >= subs[x].Frame && frame <= subs[x].Frame + subs[x].Duration)
-					s.Add(subs[x]);
+				return null;
 			}
 
-			return s;
+			return subs.Where(t => frame >= t.Frame && frame <= t.Frame + t.Duration).ToList();
 		}
 
-		public int Count()
+		public int Count
 		{
-			return subs.Count;
+			get { return subs.Count; }
 		}
 
 		//TODO
