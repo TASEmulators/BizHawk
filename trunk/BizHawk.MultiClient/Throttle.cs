@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.IO;
 
 //this throttle is nitsuja's fine-tuned techniques from desmume
 
@@ -36,7 +35,7 @@ namespace BizHawk.MultiClient
 		}
 		public bool cfg_frameLimit
 		{
-			get 
+			get
 			{
 				if (Global.ClientControls["MaxTurbo"])
 				{
@@ -44,7 +43,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					return Global.Config.ClockThrottle; 
+					return Global.Config.ClockThrottle;
 				}
 			}
 		}
@@ -111,7 +110,7 @@ namespace BizHawk.MultiClient
 				SpeedThrottle(signal_paused);
 			}
 
-			if (cfg_autoframeskipenab && cfg_frameskiprate!=0)
+			if (cfg_autoframeskipenab && cfg_frameskiprate != 0)
 			{
 				if (!signal_frameAdvance && !signal_continuousframeAdvancing)
 				{
@@ -149,7 +148,7 @@ namespace BizHawk.MultiClient
 			{
 				ulong tmp;
 				QueryPerformanceCounter(out tmp);
-				return (ulong)tmp;
+				return tmp;
 			}
 			else
 			{
@@ -168,17 +167,14 @@ namespace BizHawk.MultiClient
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern bool QueryPerformanceFrequency(out ulong frequency);
 
-		[DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
-		static extern uint timeEndPeriod(uint uMilliseconds);
-
 		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
 		static extern uint timeBeginPeriod(uint uMilliseconds);
 
-		static int tmethod;
+		static readonly int tmethod;
 #endif
 
-		static ulong afsfreq;
-		static ulong tfreq;
+		static readonly ulong afsfreq;
+		static readonly ulong tfreq;
 
 		static Throttle()
 		{
@@ -196,13 +192,9 @@ namespace BizHawk.MultiClient
 			tfreq = afsfreq << 16;
 		}
 
-		public Throttle()
-		{
-		}
-
 		public void SetCoreFps(double desired_fps)
 		{
-            core_desiredfps = (ulong)(65536 * desired_fps);
+			core_desiredfps = (ulong)(65536 * desired_fps);
 			int target_pct = pct;
 			pct = -1;
 			SetSpeedPercent(target_pct);
@@ -217,7 +209,7 @@ namespace BizHawk.MultiClient
 			float fraction = percent / 100.0f;
 			desiredfps = (ulong)(core_desiredfps * fraction);
 			//Console.WriteLine("throttle set desiredfps " + desiredfps);
-            desiredspf = 65536.0f / desiredfps;
+			desiredspf = 65536.0f / desiredfps;
 			AutoFrameSkip_IgnorePreviousDelay();
 		}
 
@@ -226,12 +218,12 @@ namespace BizHawk.MultiClient
 		float desiredspf;
 
 		ulong ltime;
-		ulong beginticks = 0, endticks = 0, preThrottleEndticks = 0;
-		float fSkipFrames = 0;
-		float fSkipFramesError = 0;
-		int lastSkip = 0;
-		float lastError = 0;
-		float integral = 0;
+		ulong beginticks, endticks, preThrottleEndticks;
+		float fSkipFrames;
+		float fSkipFramesError;
+		int lastSkip;
+		float lastError;
+		float integral;
 
 		public void AutoFrameSkip_IgnorePreviousDelay()
 		{
@@ -357,8 +349,7 @@ namespace BizHawk.MultiClient
 
 			if ((ttime - ltime) < (tfreq / desiredfps))
 			{
-				ulong sleepy;
-				sleepy = (tfreq / desiredfps) - (ttime - ltime);
+				ulong sleepy = (tfreq / desiredfps) - (ttime - ltime);
 				sleepy *= 1000;
 				if (tfreq >= 65536)
 					sleepy /= afsfreq;
@@ -366,8 +357,8 @@ namespace BizHawk.MultiClient
 					sleepy = 0;
 				if (sleepy >= 10 || paused)
 				{
-					Thread.Sleep((int) (sleepy/2));
-						// reduce it further beacuse Sleep usually sleeps for more than the amount we tell it to
+					Thread.Sleep((int)(sleepy / 2));
+					// reduce it further beacuse Sleep usually sleeps for more than the amount we tell it to
 				}
 				else if (sleepy > 0) // spin for <1 millisecond waits
 				{

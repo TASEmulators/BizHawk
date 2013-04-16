@@ -24,15 +24,10 @@ namespace BizHawk.MultiClient
 
 		static LogWindow window;
 		static LogStream logStream;
-		static StringBuilder sbLog;
-		static bool NeedToRelease = false;
+		static bool NeedToRelease;
 
 		class LogStream : Stream
 		{
-			public LogStream()
-			{
-			}
-
 			public override bool CanRead { get { return false; } }
 			public override bool CanSeek { get { return false; } }
 			public override bool CanWrite { get { return true; } }
@@ -78,7 +73,7 @@ namespace BizHawk.MultiClient
 			{
 				//TODO - buffer undecoded characters (this may be important)
 				//(use decoder = System.Text.Encoding.Unicode.GetDecoder())
-				string str = System.Text.Encoding.ASCII.GetString(buffer, offset, count);
+				string str = Encoding.ASCII.GetString(buffer, offset, count);
 				if (Emit != null)
 					Emit(str);
 			}
@@ -146,7 +141,7 @@ namespace BizHawk.MultiClient
 			attachedConsole = false;
 
 			//ever since a recent KB, XP-based systems glitch out when attachconsole is called and theres no console to attach to.
-			if (System.Environment.OSVersion.Version.Major != 5)
+			if (Environment.OSVersion.Version.Major != 5)
 			{
 				if (Win32.AttachConsole(-1))
 				{
@@ -161,8 +156,8 @@ namespace BizHawk.MultiClient
 				if (Win32.AllocConsole())
 				{
 					//set icons for the console so we can tell them apart from the main window
-					Win32.SendMessage(Win32.GetConsoleWindow(), 0x0080/*WM_SETICON*/, 0/*ICON_SMALL*/, global::BizHawk.MultiClient.Properties.Resources.console16x16.GetHicon().ToInt32());
-					Win32.SendMessage(Win32.GetConsoleWindow(), 0x0080/*WM_SETICON*/, 1/*ICON_LARGE*/, global::BizHawk.MultiClient.Properties.Resources.console32x32.GetHicon().ToInt32());
+					Win32.SendMessage(Win32.GetConsoleWindow(), 0x0080/*WM_SETICON*/, 0/*ICON_SMALL*/, Properties.Resources.console16x16.GetHicon().ToInt32());
+					Win32.SendMessage(Win32.GetConsoleWindow(), 0x0080/*WM_SETICON*/, 1/*ICON_LARGE*/, Properties.Resources.console32x32.GetHicon().ToInt32());
 					hasConsole = true;
 				}
 				else
@@ -190,18 +185,8 @@ namespace BizHawk.MultiClient
 			if (attachedConsole)
 			{
 				Console.WriteLine();
-				Console.WriteLine("use cmd /c {0} to get more sensible console behaviour", System.IO.Path.GetFileName(PathManager.GetBasePathAbsolute()));
+				Console.WriteLine("use cmd /c {0} to get more sensible console behaviour", Path.GetFileName(PathManager.GetBasePathAbsolute()));
 			}
-		}
-
-
-
-		static void DotNetRewireConout()
-		{
-			Stream cstm = Console.OpenStandardOutput();
-			var cstw = new StreamWriter(cstm) { AutoFlush = true };
-			Console.SetOut(cstw);
-			Console.SetError(cstw);
 		}
 
 		static void ReleaseConsole()
@@ -255,7 +240,7 @@ namespace BizHawk.MultiClient
 				logStream = new LogStream();
 				Log.HACK_LOG_STREAM = logStream;
 				var sout = new StreamWriter(logStream) { AutoFlush = true };
-				sbLog = new StringBuilder(); //not using this right now
+				new StringBuilder(); //not using this right now
 				Console.SetOut(sout);
 				window = new LogWindow();
 				window.Show();

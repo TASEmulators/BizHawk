@@ -104,7 +104,7 @@ namespace BizHawk.MultiClient
 				{
 					message += "\n\nInner Exception:\n\n" + e.InnerException;
 				}
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(message);
 			}
 #if WINDOWS
 			finally
@@ -136,7 +136,7 @@ namespace BizHawk.MultiClient
 
 				//load missing assemblies by trying to find them in the dll directory
 				string dllname = new AssemblyName(args.Name).Name + ".dll";
-				string directory = System.IO.Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
+				string directory = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
 				string fname = Path.Combine(directory, dllname);
 				if (!File.Exists(fname)) return null;
 				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
@@ -148,7 +148,7 @@ namespace BizHawk.MultiClient
 		public class SingleInstanceController : WindowsFormsApplicationBase
 		{
 			MainForm mf;
-			string[] cmdArgs;
+			readonly string[] cmdArgs;
 			public SingleInstanceController(string[] args)
 			{
 				cmdArgs = args;

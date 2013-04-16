@@ -541,6 +541,9 @@
     <EmbeddedResource Include="GBtools\GBGPUView.resx">
       <DependentUpon>GBGPUView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.Movie.resx">
+      <DependentUpon>MainForm.Movie.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
