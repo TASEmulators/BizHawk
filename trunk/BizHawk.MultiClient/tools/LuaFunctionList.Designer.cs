@@ -59,6 +59,7 @@
             this.LibraryHead,
             this.LibraryName,
             this.LibraryParameters});
+			this.FunctionView.FullRowSelect = true;
 			this.FunctionView.GridLines = true;
 			this.FunctionView.Location = new System.Drawing.Point(12, 12);
 			this.FunctionView.Name = "FunctionView";
@@ -67,6 +68,8 @@
 			this.FunctionView.UseCompatibleStateImageBehavior = false;
 			this.FunctionView.View = System.Windows.Forms.View.Details;
 			this.FunctionView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.FunctionView_ColumnClick);
+			this.FunctionView.SelectedIndexChanged += new System.EventHandler(this.FunctionView_SelectedIndexChanged);
+			this.FunctionView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FunctionView_KeyDown);
 			// 
 			// LibraryReturn
 			// 
