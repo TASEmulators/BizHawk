@@ -1,11 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
@@ -17,12 +13,12 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 			foreach (var item in hawkfile.ArchiveItems)
 			{
-				var lvi = new ListViewItem();
-				lvi.Tag = item;
+				var lvi = new ListViewItem {Tag = item};
 				lvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				lvi.Text = item.name;
 				long size = item.size;
-				if (size % 1024 == 16 && Path.GetExtension(item.name).ToUpper() == ".NES")
+				var extension = Path.GetExtension(item.name);
+				if (extension != null && (size % 1024 == 16 && extension.ToUpper() == ".NES"))
 					size -= 16;
 				lvi.SubItems[1].Text = Util.FormatFileSize(size);
 				lvMembers.Items.Add(lvi);
@@ -59,11 +55,7 @@ namespace BizHawk.MultiClient
 
 		private void SortItems()
 		{
-			List<ListViewItem> lvitems = new List<ListViewItem>();
-			foreach(ListViewItem item in lvMembers.Items)
-			{
-				lvitems.Add(item);
-			}
+			List<ListViewItem> lvitems = lvMembers.Items.Cast<ListViewItem>().ToList();
 
 			List<ListViewItem> sorteditems = new List<ListViewItem>();
 
@@ -97,7 +89,14 @@ namespace BizHawk.MultiClient
 			{
 				if (lvMembers.SelectedIndices.Count == 0) return -1;
 				var ai = lvMembers.SelectedItems[0].Tag as HawkFile.ArchiveItem;
-				return ai.index;
+				if (ai != null)
+				{
+					return ai.index;
+				}
+				else
+				{
+					return -1;
+				}
 			}
 		}
 
@@ -121,18 +120,6 @@ namespace BizHawk.MultiClient
 		private void ArchiveChooser_Load(object sender, EventArgs e)
 		{
 			lvMembers.Items[0].Selected = true;
-		}
-
-		private void SetItem(int num)
-		{
-			if (num <= lvMembers.Items.Count)
-			{
-				foreach (ListViewItem item in lvMembers.SelectedItems)
-				{
-					item.Selected = false;
-				}
-				lvMembers.Items[num - 1].Selected = true;
-			}
 		}
 	}
 }

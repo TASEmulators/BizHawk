@@ -2,7 +2,7 @@
 {
 	public class MruStack<T>
 	{
-		private T[] store;
+		private readonly T[] store;
 		private int count;
 		private int head;
 

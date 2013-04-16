@@ -1924,7 +1924,7 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public void savestate_saveslot(object lua_input)
 		{
-			int x = 0;
+			int x;
 
 			try //adelikat:  This crap might not be necessary, need to test for a more elegant solution
 			{
@@ -1943,7 +1943,7 @@ namespace BizHawk.MultiClient
 
 		public void savestate_loadslot(object lua_input)
 		{
-			int x = 0;
+			int x;
 
 			try //adelikat:  This crap might not be necessary, need to test for a more elegant solution
 			{
@@ -1962,7 +1962,7 @@ namespace BizHawk.MultiClient
 
 		public void savestate_save(object lua_input)
 		{
-			if (lua_input.GetType() == typeof(string))
+			if (lua_input is string)
 			{
 				string path = lua_input.ToString();
 				var writer = new StreamWriter(path);
@@ -1972,7 +1972,7 @@ namespace BizHawk.MultiClient
 
 		public void savestate_load(object lua_input)
 		{
-			if (lua_input.GetType() == typeof(string))
+			if (lua_input is string)
 			{
 				Global.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()), true);
 			}
@@ -2136,7 +2136,7 @@ namespace BizHawk.MultiClient
 				foreach (var button in buttons.Keys)
 				{
 					bool invert = false;
-					bool? theValue = null;
+					bool? theValue;
 					string theValueStr = buttons[button].ToString();
 					
 					if (!String.IsNullOrWhiteSpace(theValueStr))
@@ -2187,7 +2187,7 @@ namespace BizHawk.MultiClient
 								Global.ForceOffAdaptor.SetSticky("P" + controller + " " + button, true);
 							}
 						}
-						else if (theValue == null)
+						else
 						{
 							//Turn everything off
 							if (controller == null)
