@@ -18,7 +18,7 @@
 
 	class mF0 : MapperBase 
 	{
-		int bank = 0;
+		int bank;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -29,7 +29,7 @@
 			}
 
 			if (addr < 0x1000) return base.ReadMemory(addr);
-			else return core.rom[bank * 4096 + (addr & 0xFFF)];
+			else return core.rom[(bank << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)

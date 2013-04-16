@@ -33,7 +33,7 @@
 
 	class mX07 : MapperBase
 	{
-		int rombank_2k = 0;
+		int rombank_2k;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{

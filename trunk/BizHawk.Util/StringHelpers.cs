@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace BizHawk
 {
@@ -11,13 +9,7 @@ namespace BizHawk
 		{
 			if (!String.IsNullOrEmpty(str))
 			{
-				int count = 0;
-				for (int x = 0; x < str.Length; x++)
-				{
-					if (str[x] == c)
-						count++;
-				}
-				return count;
+				return str.Count(t => t == c);
 			}
 			else
 			{

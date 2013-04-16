@@ -1,16 +1,10 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace BizHawk.Core
 {
 	public class HorizontalLine : Control
 	{
-		public HorizontalLine()
-		{
-		}
-
 		protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
 		{
 			base.SetBoundsCore(x, y, width, 2, specified);
@@ -31,7 +25,7 @@ namespace BizHawk.Core
 			set { _CheckBackColor = value; Refresh(); }
 		}
 
-		bool? _ForceChecked = null;
+		bool? _ForceChecked;
 		public bool? ForceChecked
 		{
 			get { return _ForceChecked; }
@@ -53,7 +47,7 @@ namespace BizHawk.Core
 				pevent.Graphics.FillRectangle(brush, glyphLoc);
 
 			//draw a checkbox menu glyph (we could do this more elegantly with DrawFrameControl) 
-			bool c = CheckState == System.Windows.Forms.CheckState.Checked;
+			bool c = CheckState == CheckState.Checked;
 			if (ForceChecked.HasValue)
 			{
 				c = ForceChecked.Value;

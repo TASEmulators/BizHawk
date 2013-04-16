@@ -11,20 +11,20 @@ namespace BizHawk.Emulation.Consoles.Calculator
 	public class TI83 : IEmulator
 	{
 		//hardware
-		Z80A cpu = new Z80A();
-		byte[] rom;
-		byte[] ram;
-		int romPageLow3Bits;
-		int romPageHighBit;
-		bool maskOn;
-		bool onPressed = false;
-		int keyboardMask;
+		private readonly Z80A cpu = new Z80A();
+		private readonly byte[] rom;
+		private byte[] ram;
+		private int romPageLow3Bits;
+		private int romPageHighBit;
+		private bool maskOn;
+		private bool onPressed;
+		private int keyboardMask;
 
-		int disp_mode;
-		int disp_move;
-		uint disp_x, disp_y;
-		int m_LinkOutput, m_LinkState;
-		bool m_CursorMoved;
+		private int disp_mode;
+		private int disp_move;
+		private uint disp_x, disp_y;
+		private int m_LinkOutput, m_LinkState;
+		private bool m_CursorMoved;
 
 		//-------
 
@@ -246,7 +246,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		void WriteDispData(byte value)
 		{
-			int offset = -1;
+			int offset;
 			if (disp_mode == 1)
 			{
 				offset = (int)disp_y * 12 + (int)disp_x;
@@ -367,7 +367,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		protected byte[] vram = new byte[0x300];
 		class MyVideoProvider : IVideoProvider
 		{
-			TI83 emu;
+			private readonly TI83 emu;
 			public MyVideoProvider(TI83 emu)
 			{
 				this.emu = emu;
