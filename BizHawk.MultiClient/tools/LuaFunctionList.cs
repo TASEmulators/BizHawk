@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using System.Text;
 using BizHawk.MultiClient.tools;
 
 namespace BizHawk.MultiClient
@@ -110,6 +111,35 @@ namespace BizHawk.MultiClient
 				get
 				{
 					return desc;
+				}
+			}
+		}
+
+		private void FunctionView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
+			{
+				ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
+
+				if (indexes.Count > 0)
+				{
+					StringBuilder sb = new StringBuilder();
+
+					foreach (int index in indexes)
+					{
+						var library_function = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList[index];
+						sb.Append(library_function.library).Append('.').Append(library_function.name).Append("()\n");
+					}
+
+					if (sb.Length > 0)
+					{
+						Clipboard.SetDataObject((sb.ToString()));
+					}
 				}
 			}
 		}
