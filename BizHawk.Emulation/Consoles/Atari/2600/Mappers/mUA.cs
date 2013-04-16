@@ -12,7 +12,7 @@
 
 	class mUA : MapperBase 
 	{
-		int toggle = 0;
+		int toggle;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -22,7 +22,7 @@
 			}
 			
 			if (addr < 0x1000) return base.ReadMemory(addr);
-			return core.rom[toggle * 4096 + (addr & 0xFFF)];
+			return core.rom[(toggle << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)

@@ -11,7 +11,7 @@
 
 	class mF6 : MapperBase 
 	{
-		int toggle = 0;
+		int toggle;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{

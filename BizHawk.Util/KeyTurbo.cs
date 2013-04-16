@@ -1,41 +1,36 @@
-﻿using System;
-using System.Collections;
-using System.Windows.Forms;
-
-namespace BizHawk
+﻿namespace BizHawk
 {
 	public class TurboKey
 	{
 		public void Reset(int downTime, int upTime)
 		{
-			value = false;
-			timer = 0;
-			this.upTime = upTime;
-			this.downTime = downTime;
+			Value = false;
+			_timer = 0;
+			_upTime = upTime;
+			_downTime = downTime;
 		}
 
 		public void Tick(bool down)
 		{
 			if (!down)
 			{
-				Reset(downTime, upTime);
+				Reset(_downTime, _upTime);
 				return;
 			}
 
-			timer++;
+			_timer++;
 
-			value = true;
-			if (timer > downTime)
-				value = false;
-			if(timer > (upTime+downTime))
+			Value = true;
+			if (_timer > _downTime)
+				Value = false;
+			if(_timer > (_upTime+_downTime))
 			{
-				timer = 0;
-				value = true;
+				_timer = 0;
+				Value = true;
 			}
 		}
 
-		public bool value;
-		int upTime, downTime;
-		int timer;
+		public bool Value;
+		private int _upTime, _downTime, _timer;
 	}
 }

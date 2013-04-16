@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Security.Permissions;
@@ -16,7 +15,7 @@ namespace BizHawk
 	/// </summary>
 	public sealed class FolderBrowserEx : Component
 	{
-		private static readonly int MAX_PATH = 260;
+		private const int MAX_PATH = 260;
 
 		// Root node of the tree view.
 		private FolderID startLocation = FolderID.Desktop;
@@ -25,13 +24,10 @@ namespace BizHawk
 		private int publicOptions = (int) Win32API.Shell32.BffStyles.RestrictToFilesystem |
 		                            (int) Win32API.Shell32.BffStyles.RestrictToDomain;
 
-		private int privateOptions = (int)(Win32API.Shell32.BffStyles.NewDialogStyle | Win32API.Shell32.BffStyles.ShowTextBox);
+		private const int privateOptions = (int) (Win32API.Shell32.BffStyles.NewDialogStyle | Win32API.Shell32.BffStyles.ShowTextBox);
 
 		// Description text to show.
 		public string Description = "Please select a folder below:";
-
-		// Folder chosen by the user.
-		private string directoryPath = String.Empty;
 
 		/// <summary>
 		/// Enum of CSIDLs identifying standard shell folders.
@@ -160,7 +156,6 @@ namespace BizHawk
 				}
 
 				// Convert to a string.
-				directoryPath = sb.ToString();
 			}
 			finally
 			{

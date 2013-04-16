@@ -14,7 +14,7 @@
 
 	class mFA : MapperBase 
 	{
-		int toggle = 0;
+		int toggle;
 		ByteBuffer aux_ram = new ByteBuffer(256);
 
 		private byte ReadMem(ushort addr, bool peek)
@@ -38,7 +38,7 @@
 			}
 			else
 			{
-				return core.rom[(toggle * 4096) + (addr & 0xFFF)];
+				return core.rom[(toggle << 12) + (addr & 0xFFF)];
 			}
 		}
 

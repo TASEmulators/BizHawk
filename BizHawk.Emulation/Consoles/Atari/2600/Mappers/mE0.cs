@@ -23,9 +23,9 @@
 
 	class mE0 : MapperBase 
 	{
-		int toggle1 = 0;
-		int toggle2 = 0;
-		int toggle3 = 0;
+		int toggle1;
+		int toggle2;
+		int toggle3;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -35,9 +35,9 @@
 			}
 
 			if (addr < 0x1000) return base.ReadMemory(addr);
-			else if (addr < 0x1400) return core.rom[toggle1 * 1024 + (addr & 0x3FF)];
-			else if (addr < 0x1800) return core.rom[toggle2 * 1024 + (addr & 0x3FF)];
-			else if (addr < 0x1C00) return core.rom[toggle3 * 1024 + (addr & 0x3FF)];
+			else if (addr < 0x1400) return core.rom[(toggle1 << 10) + (addr & 0x3FF)];
+			else if (addr < 0x1800) return core.rom[(toggle2 << 10) + (addr & 0x3FF)];
+			else if (addr < 0x1C00) return core.rom[(toggle3 << 10) + (addr & 0x3FF)];
 			else
 				return core.rom[7 * 1024 + (addr & 0x3FF)]; //7 because final bank is always set to last
 		}

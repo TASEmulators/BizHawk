@@ -21,7 +21,7 @@
 
 	class m3F :MapperBase 
 	{
-		int lowbank_2k = 0;
+		int lowbank_2k;
 
 		public override void SyncState(Serializer ser)
 		{

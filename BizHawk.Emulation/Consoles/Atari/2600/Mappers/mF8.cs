@@ -21,7 +21,7 @@
 
 		class mF8 : MapperBase
 		{
-			int bank_4k = 0;
+			int bank_4k;
 
 			private byte ReadMem(ushort addr, bool peek)
 			{

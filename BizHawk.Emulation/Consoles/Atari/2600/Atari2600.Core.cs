@@ -198,7 +198,7 @@ namespace BizHawk
 						game.Name,
 						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom)),
 						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom)),
-						mapper.GetType().ToString());
+						mapper.GetType());
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
@@ -260,7 +260,7 @@ namespace BizHawk
 			return value;
 		}
 
-		private bool bw = false;
+		private bool bw;
 		private bool p0difficulty = true;
 		private bool p1difficulty = true;
 

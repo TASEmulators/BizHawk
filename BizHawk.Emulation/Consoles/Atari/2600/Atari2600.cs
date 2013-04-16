@@ -19,11 +19,15 @@ namespace BizHawk
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom)
 		{
 			CoreComm = comm;
-			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value));
-			domains.Add(new MemoryDomain("TIA", 16, Endian.Little, addr => tia.ReadMemory((ushort)addr, true), (addr, value) => tia.WriteMemory((ushort)addr, value)));
-			domains.Add(new MemoryDomain("PIA", 1024, Endian.Little, addr => m6532.ReadMemory((ushort)addr, true), (addr, value) => m6532.WriteMemory((ushort)addr, value)));
-			domains.Add(new MemoryDomain("System Bus", 8192, Endian.Little, addr => mapper.PeekMemory((ushort)addr), (addr, value) => {}));
+			var domains = new List<MemoryDomain>(1)
+				{
+					new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value),
+					new MemoryDomain("TIA", 16, Endian.Little, addr => tia.ReadMemory((ushort) addr, true),
+					                 (addr, value) => tia.WriteMemory((ushort) addr, value)),
+					new MemoryDomain("PIA", 1024, Endian.Little, addr => m6532.ReadMemory((ushort) addr, true),
+					                 (addr, value) => m6532.WriteMemory((ushort) addr, value)),
+					new MemoryDomain("System Bus", 8192, Endian.Little, addr => mapper.PeekMemory((ushort) addr), (addr, value) => { })
+				};
 			memoryDomains = domains.AsReadOnly();
 			CoreComm.CpuTraceAvailable = true;
 			this.rom = rom;
@@ -72,8 +76,8 @@ namespace BizHawk
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return _islag; } }
 		private bool _islag = true;
-		private int _lagcount = 0;
-		private int _frame = 0;
+		private int _lagcount;
+		private int _frame;
 
 		public byte[] ReadSaveRam() { return null; }
 		public void StoreSaveRam(byte[] data) { }
@@ -95,7 +99,7 @@ namespace BizHawk
 			return ms.ToArray();
 		}
 
-		private IList<MemoryDomain> memoryDomains;
+		private readonly IList<MemoryDomain> memoryDomains;
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 		public void Dispose() { }

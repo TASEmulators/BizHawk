@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace BizHawk
 {
@@ -10,7 +6,7 @@ namespace BizHawk
 	{
 		public HexTextBox()
 		{
-			this.CharacterCasing = CharacterCasing.Upper;
+			CharacterCasing = CharacterCasing.Upper;
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
