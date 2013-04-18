@@ -517,7 +517,9 @@ namespace BizHawk.MultiClient
 		                                              		"opentasstudio",
 		                                              		"opencheats",
 															"screenwidth",
+                                                            "xpos",
 															"screenheight",
+                                                            "ypos",
 															"screenshot",
 															"screenshottoclipboard",
 															"setscreenshotosd",
@@ -2247,11 +2249,19 @@ namespace BizHawk.MultiClient
 		{
 			return Global.RenderPanel.NativeSize.Width;
 		}
+        public int client_xpos()
+        {
+            return Global.MainForm.DesktopLocation.X;
+        }
 
 		public int client_screenheight()
 		{
 			return Global.RenderPanel.NativeSize.Height;
 		}
+        public int client_ypos()
+        {
+            return Global.MainForm.DesktopLocation.Y;
+        }
 
 		public void client_openrom(object lua_input)
 		{
