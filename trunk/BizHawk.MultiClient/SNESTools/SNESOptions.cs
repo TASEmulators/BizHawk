@@ -32,6 +32,12 @@ namespace BizHawk.MultiClient
 			set { cbRingbuf.Checked = value; }
 		}
 
+		public bool AlwaysDoubleSize
+		{
+			get { return cbDoubleSize.Checked; }
+			set { cbDoubleSize.Checked = value; }
+		}
+
 		private void btnOk_Click(object sender, EventArgs e)
 		{
 			DialogResult = System.Windows.Forms.DialogResult.OK;
