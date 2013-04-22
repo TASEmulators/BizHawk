@@ -756,6 +756,7 @@ namespace BizHawk.MultiClient
 		public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
 		public string SNESProfile = "Compatibility";
 		public bool SNESUseRingBuffer = true;
+		public bool SNESAlwaysDoubleSize = false;
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];

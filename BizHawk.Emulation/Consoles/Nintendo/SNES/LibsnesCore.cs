@@ -284,13 +284,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		int field = 0;
 		void snes_video_refresh(int* data, int width, int height)
 		{
+			bool doubleSize = CoreComm.SNES_AlwaysDoubleSize;
+			bool lineDouble = doubleSize, dotDouble = doubleSize;
+
 			vidWidth = width;
 			vidHeight = height;
 
+			int yskip = 1, xskip = 1;
+
 			//if we are in high-res mode, we get double width. so, lets double the height here to keep it square.
 			//TODO - does interlacing have something to do with the correct way to handle this? need an example that turns it on.
-			int yskip = 1;
 			if (width == 512)
+			{
+				vidHeight *= 2;
+				yskip = 2;
+
+				lineDouble = true;
+				//we dont dot double here because the user wanted double res and the game provided double res
+				dotDouble = false;
+			}
+			else if (lineDouble)
 			{
 				vidHeight *= 2;
 				yskip = 2;
@@ -313,30 +326,36 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				field ^= 1;
 			}
 
+			if (dotDouble)
+			{
+				vidWidth *= 2;
+				xskip = 2;
+			}
+
 			int size = vidWidth * vidHeight;
 			if (vidBuffer.Length != size)
 				vidBuffer = new int[size];
 
-
-			for (int y = 0; y < height; y++)
-				for (int x = 0; x < width; x++)
+			for (int j = 0; j < 2; j++)
+			{
+				if (j == 1 && !dotDouble) break;
+				int xbonus = j;
+				for (int i = 0; i < 2; i++)
 				{
-					int si = y * srcPitch + x + srcStart;
-					int di = y * vidWidth * yskip + x;
-					int rgb = data[si];
-					vidBuffer[di] = rgb;
-				}
+					//potentially do this twice, if we need to line double
+					if (i == 1 && !lineDouble) break;
 
-			//alternate scanlines
-			if (width == 512)
-				for (int y = 0; y < height; y++)
-					for (int x = 0; x < width; x++)
-					{
-						int si = y * 1024 + x;
-						int di = y * vidWidth * yskip + x + 512;
-						int rgb = data[si];
-						vidBuffer[di] = rgb;
-					}
+					int bonus = i * vidWidth + xbonus;
+					for (int y = 0; y < height; y++)
+						for (int x = 0; x < width; x++)
+						{
+							int si = y * srcPitch + x + srcStart;
+							int di = y * vidWidth * yskip + x * xskip + bonus;
+							int rgb = data[si];
+							vidBuffer[di] = rgb;
+						}
+				}
+			}
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)

@@ -436,6 +436,7 @@ namespace BizHawk.MultiClient
 
 			target.SNES_Profile = Global.Config.SNESProfile;
 			target.SNES_UseRingBuffer = Global.Config.SNESUseRingBuffer;
+			target.SNES_AlwaysDoubleSize = Global.Config.SNESAlwaysDoubleSize;
 
 			target.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 			target.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
