@@ -308,11 +308,15 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-			c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
+			c.address = Address;
+			c.value = (byte)Value;
+			//c.
+			//c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+			//c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
 			c.compare = null;
-			c.domain = Global.Emulator.MemoryDomains[7]; //Bus
+			c.domain = Global.Emulator.MemoryDomains[6]; //Bus
 			c.Enable();
+			
 
 			Global.MainForm.Cheats1.AddCheat(c);
 		}
