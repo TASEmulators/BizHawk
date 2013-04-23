@@ -311,7 +311,7 @@ namespace BizHawk.MultiClient
 			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 			c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
 			c.compare = null;
-			c.domain = Global.Emulator.MemoryDomains[1]; //System Bus only
+			c.domain = Global.Emulator.MemoryDomains[7]; //Bus
 			c.Enable();
 
 			Global.MainForm.Cheats1.AddCheat(c);
