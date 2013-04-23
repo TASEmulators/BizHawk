@@ -3308,8 +3308,16 @@ namespace BizHawk.MultiClient
 
 		public void LoadGameGenieEC()
 		{
-			NESGameGenie gg = new NESGameGenie();
-			gg.Show();
+			if (Global.Emulator is NES)
+			{
+				NESGameGenie gg = new NESGameGenie();
+				gg.Show();
+			}
+			else if (Global.Emulator is LibsnesCore)
+			{
+				SNESGameGenie gg = new SNESGameGenie();
+				gg.Show();
+			}
 		}
 
 		public void LoadSNESGraphicsDebugger()
@@ -3515,7 +3523,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				FormBorderStyle = FormBorderStyle.FixedSingle;
+				FormBorderStyle = FormBorderStyle.Sizable;
 				WindowState = FormWindowState.Normal;
 				MainMenuStrip.Visible = true;
 				StatusSlot0.Visible = Global.Config.DisplayStatusBar;
@@ -5048,5 +5056,12 @@ namespace BizHawk.MultiClient
 				return EMUVERSION;
 			}
 		}
+
+		private void SNESgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+
 	}
 }

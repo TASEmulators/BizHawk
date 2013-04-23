@@ -56,10 +56,12 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is LibsnesCore)
 			{
 				SNESGraphicsDebuggerButton.Visible = true;
+				SNESGameGenie.Visible = true;
 			}
 			else
 			{
 				SNESGraphicsDebuggerButton.Visible = false;
+				SNESGameGenie.Visible = false;
 			}
 
 			Size = new Size(Size.Width, toolStrip1.Size.Height + 50);
@@ -140,6 +142,11 @@ namespace BizHawk.MultiClient
 		private void TAStudioButton_Click_1(object sender, EventArgs e)
 		{
 			Global.MainForm.LoadVirtualPads();
+		}
+
+		private void SNESGameGenie_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.LoadGameGenieEC();
 		}
 	}
 }
