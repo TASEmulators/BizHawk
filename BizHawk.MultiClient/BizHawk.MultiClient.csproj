@@ -387,6 +387,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SNESTools\SNESGameGenie.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SNESTools\SNESGameGenie.Designer.cs">
+      <DependentUpon>SNESGameGenie.cs</DependentUpon>
+    </Compile>
     <Compile Include="SNESTools\SNESGraphicsDebugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -565,6 +571,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SNESTools\SNESGameGenie.resx">
+      <DependentUpon>SNESGameGenie.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SNESTools\SNESGraphicsDebugger.resx">
       <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
