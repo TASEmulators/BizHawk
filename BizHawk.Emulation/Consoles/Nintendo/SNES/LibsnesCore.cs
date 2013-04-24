@@ -9,6 +9,8 @@
 
 using System;
 using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -101,15 +103,36 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		string snes_path_request(int slot, string hint)
 		{
-			//heres how to get MSU-1 working:
-			//if (hint == "msu1.rom") return @"c:\roms\SuperRoadBlaster\SuperRoadBlaster.msu";
-			//if (Path.GetExtension(hint).ToLower() == ".pcm")
-			//  return Path.Combine(@"c:\roms\SuperRoadBlaster\", hint);
-			//to do this accurately, we should be loading the xml file.
-			//perhaps, if we do that, bsnes will be asking us for the correct paths. at the very least, we could parse the xml ourselves and return the correct thing for msu1.rom
+			//every rom requests msu1.rom... why? who knows.
+			//also handle msu-1 pcm files here
+			bool is_msu1_rom = hint == "msu1.rom";
+			bool is_msu1_pcm = Path.GetExtension(hint).ToLower() == ".pcm";
+			if (is_msu1_rom || is_msu1_pcm)
+			{
+				//well, check if we have an msu-1 xml
+				if (romxml != null && romxml["cartridge"] != null && romxml["cartridge"]["msu1"] != null)
+				{
+					var msu1 = romxml["cartridge"]["msu1"];
+					if (is_msu1_rom && msu1["rom"].Attributes["name"] != null)
+						return CoreComm.AcquireSubfilePath(msu1["rom"].Attributes["name"].Value);
+					if (is_msu1_pcm)
+					{
+						//return @"D:\roms\snes\SuperRoadBlaster\SuperRoadBlaster-1.pcm";
+						//return "";
+						int wantsTrackNumber = int.Parse(hint.Replace("track-", "").Replace(".pcm", ""));
+						wantsTrackNumber++;
+						string wantsTrackString = wantsTrackNumber.ToString();
+						foreach (var child in msu1.ChildNodes.Cast<XmlNode>())
+						{
+							if (child.Name == "track" && child.Attributes["number"].Value == wantsTrackString)
+								return CoreComm.AcquireSubfilePath(child.Attributes["name"].Value);
+						}
+					}
+				}
 
-			//every rom requests this byuu homemade rom
-			if (hint == "msu1.rom") return "";
+				//not found.. what to do? (every rom will get here when msu1.rom is requested)
+				return "";
+			}
 
 			//build romfilename
 			string test = Path.Combine(CoreComm.SNES_FirmwaresPath ?? "", hint);
@@ -143,6 +166,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		public LibsnesApi api;
+		System.Xml.XmlDocument romxml;
 
 		public LibsnesCore(CoreComm comm)
 		{
@@ -155,7 +179,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		LibsnesApi.snes_trace_t tracecb;
 		LibsnesApi.snes_audio_sample_t soundcb;
 
-		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData, bool DeterministicEmulation)
+		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData, bool DeterministicEmulation, byte[] xmlData)
 		{
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
@@ -181,12 +205,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			InitAudio();
 
 			//strip header
-			if ((romData.Length & 0x7FFF) == 512)
-			{
-				var newData = new byte[romData.Length - 512];
-				Array.Copy(romData, 512, newData, 0, newData.Length);
-				romData = newData;
-			}
+			if(romData != null)
+				if ((romData.Length & 0x7FFF) == 512)
+				{
+					var newData = new byte[romData.Length - 512];
+					Array.Copy(romData, 512, newData, 0, newData.Length);
+					romData = newData;
+				}
 
 			if (game["SGB"])
 			{
@@ -197,8 +222,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 			else
 			{
+				//we may need to get some information out of the cart, even during the following bootup/load process
+				if (xmlData != null)
+				{
+					romxml = new System.Xml.XmlDocument();
+					romxml.Load(new MemoryStream(xmlData));
+
+					//bsnes wont inspect the xml to load the necessary sfc file.
+					//so, we have to do that here and pass it in as the romData :/
+					if (romxml["cartridge"] != null && romxml["cartridge"]["rom"] != null)
+						romData = File.ReadAllBytes(CoreComm.AcquireSubfilePath(romxml["cartridge"]["rom"].Attributes["name"].Value));
+					else
+						throw new Exception("Could not find rom file specification in xml file. Please check the integrity of your xml file");
+				}
+
 				SystemId = "SNES";
-				if (!api.snes_load_cartridge_normal(null, romData))
+				if (!api.snes_load_cartridge_normal(xmlData, romData))
 					throw new Exception("snes_load_cartridge_normal() failed");
 			}
 
@@ -822,14 +861,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			MemoryDomains = new List<MemoryDomain>();
 
-			var romDomain = new MemoryDomain("CARTROM", romData.Length, Endian.Little,
-				(addr) => romData[addr],
-				(addr, value) => romData[addr] = value);
-
-			
+			if (romData != null)
+			{
+				var romDomain = new MemoryDomain("CARTROM", romData.Length, Endian.Little,
+					(addr) => romData[addr],
+					(addr, value) => romData[addr] = value);
+				MemoryDomains.Add(romDomain);
+			}
 
 			MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, Endian.Little);
-			MemoryDomains.Add(romDomain);
 
 			//someone needs to comprehensively address these in SGB mode, and go hook them up in the gameboy core
 			if (!IsSGB)

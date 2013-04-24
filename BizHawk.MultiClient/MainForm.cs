@@ -1793,7 +1793,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL" };
+				string[] romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1927,6 +1927,17 @@ namespace BizHawk.MultiClient
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 
+						bool isXml = false;
+
+						//right now, xml is always snes.
+						//later, we may need to inspect the XML ourselves to dispatch it to the correct system (if any other systems ever use xml...)
+						if (file.Extension.ToLower() == ".xml")
+						{
+							game.System = "SNES";
+							isXml = true;
+						}
+
+
 					RETRY:
 						switch (game.System)
 						{
@@ -1934,9 +1945,20 @@ namespace BizHawk.MultiClient
 								{
 									game.System = "SNES";
 									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
+
+									//this isnt completely correct. might need to deal with the archive somehow.
+									//once done, code should be factored out to be useful in other platforms as well
+									//BUT!!! right now bsnes needs to open the file itself. lame.
+									//nextComm.AcquireSubfile = (subpath) =>
+									//  File.OpenRead(Path.Combine(Path.GetDirectoryName(path),subpath));
+									nextComm.AcquireSubfilePath = (subpath) =>
+									  Path.Combine(Path.GetDirectoryName(path),subpath);
+
 									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
-									snes.Load(game, rom.FileData, null, deterministicemulation);
+									byte[] romData = isXml?null:rom.FileData;
+									byte[] xmlData = isXml?rom.FileData:null;
+									snes.Load(game, romData, null, deterministicemulation, xmlData);
 								}
 								break;
 							case "SMS":
@@ -2081,7 +2103,7 @@ namespace BizHawk.MultiClient
 											var snes = new LibsnesCore(nextComm);
 											nextEmulator = snes;
 											game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
-											snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
+											snes.Load(game, rom.FileData, sgbrom, deterministicemulation, null);
 										}
 									}
 								//}
@@ -3596,11 +3618,11 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;%ARCH%",
 					"Music Files", "*.psf;*.sid",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
-					"Super NES", "*.smc;*.sfc;%ARCH%",
+					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
@@ -3621,10 +3643,10 @@ namespace BizHawk.MultiClient
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
-					"Super NES", "*.smc;*.sfc;%ARCH%",
+					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
