@@ -46,6 +46,8 @@
 			this.GameboyDebuggerTool = new System.Windows.Forms.ToolStripButton();
 			this.SNESGraphicsDebuggerButton = new System.Windows.Forms.ToolStripButton();
 			this.SNESGameGenie = new System.Windows.Forms.ToolStripButton();
+			this.GGGameGenie = new System.Windows.Forms.ToolStripButton();
+			this.GBGameGenie = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -54,26 +56,28 @@
 			this.toolStrip1.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.toolStripButton1,
-			this.toolStripButton2,
-			this.toolStripButton3,
-			this.toolStripButton4,
-			this.HexEditor,
-			this.toolStripButton5,
-			this.toolStripButton6,
-			this.TAStudioButton,
-			this.NESDebugger,
-			this.NESPPU,
-			this.NESNameTable,
-			this.NESGameGenie,
-			this.KeypadTool,
-			this.GameboyDebuggerTool,
-			this.SNESGraphicsDebuggerButton,
-			this.SNESGameGenie});
+            this.toolStripButton1,
+            this.toolStripButton2,
+            this.toolStripButton3,
+            this.toolStripButton4,
+            this.HexEditor,
+            this.toolStripButton5,
+            this.toolStripButton6,
+            this.TAStudioButton,
+            this.NESDebugger,
+            this.NESPPU,
+            this.NESNameTable,
+            this.NESGameGenie,
+            this.KeypadTool,
+            this.SNESGraphicsDebuggerButton,
+            this.SNESGameGenie,
+            this.GGGameGenie,
+            this.GBGameGenie,
+            this.GameboyDebuggerTool});
 			this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Table;
 			this.toolStrip1.Location = new System.Drawing.Point(12, 14);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(123, 431);
+			this.toolStrip1.Size = new System.Drawing.Size(123, 485);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.TabStop = true;
 			// 
@@ -217,14 +221,32 @@
 			this.SNESGameGenie.Text = "Game Genie";
 			this.SNESGameGenie.Click += new System.EventHandler(this.SNESGameGenie_Click);
 			// 
+			// GGGameGenie
+			// 
+			this.GGGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("GGGameGenie.Image")));
+			this.GGGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GGGameGenie.Name = "GGGameGenie";
+			this.GGGameGenie.Size = new System.Drawing.Size(110, 24);
+			this.GGGameGenie.Text = "Game Genie";
+			this.GGGameGenie.Click += new System.EventHandler(this.GGGameGenie_Click);
+			// 
+			// GBGameGenie
+			// 
+			this.GBGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("GBGameGenie.Image")));
+			this.GBGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GBGameGenie.Name = "GBGameGenie";
+			this.GBGameGenie.Size = new System.Drawing.Size(110, 24);
+			this.GBGameGenie.Text = "Game Genie";
+			this.GBGameGenie.Click += new System.EventHandler(this.GBGameGenie_Click);
+			// 
 			// ToolBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(213, 416);
+			this.ClientSize = new System.Drawing.Size(213, 553);
 			this.Controls.Add(this.toolStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Margin = new System.Windows.Forms.Padding(4);
 			this.MinimumSize = new System.Drawing.Size(167, 68);
 			this.Name = "ToolBox";
 			this.Text = "Tool Box";
@@ -255,6 +277,8 @@
 		private System.Windows.Forms.ToolStripButton SNESGraphicsDebuggerButton;
 		private System.Windows.Forms.ToolStripButton SNESGameGenie;
 		private System.Windows.Forms.ToolStripButton toolStripButton6;
+		private System.Windows.Forms.ToolStripButton GGGameGenie;
+		private System.Windows.Forms.ToolStripButton GBGameGenie;
 
 	}
 }

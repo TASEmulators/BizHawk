@@ -580,6 +580,12 @@ namespace BizHawk.MultiClient
 		public int SNESGGWndx = -1;
 		public int SNESGGWndy = -1;
 
+		// GB/GG Game Genie Encoder/Decoder
+		public bool GBGGAutoload = false;
+		public bool GBGGSaveWindowPosition = true;
+		public int GBGGWndx = -1;
+		public int GBGGWndy = -1;
+
 		//Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
 		public bool AutoLoadMostRecentMovie = false;
