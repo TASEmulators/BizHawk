@@ -101,6 +101,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		string snes_path_request(int slot, string hint)
 		{
+			//heres how to get MSU-1 working:
+			//if (hint == "msu1.rom") return @"c:\roms\SuperRoadBlaster\SuperRoadBlaster.msu";
+			//if (Path.GetExtension(hint).ToLower() == ".pcm")
+			//  return Path.Combine(@"c:\roms\SuperRoadBlaster\", hint);
+			//to do this accurately, we should be loading the xml file.
+			//perhaps, if we do that, bsnes will be asking us for the correct paths. at the very least, we could parse the xml ourselves and return the correct thing for msu1.rom
+
 			//every rom requests this byuu homemade rom
 			if (hint == "msu1.rom") return "";
 
