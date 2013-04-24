@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.MultiClient
 {
-    partial class SNESGameGenie
+	partial class GBGameGenie
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,9 @@
 			this.GameGenieCode = new System.Windows.Forms.TextBox();
 			this.GameGenieCodeBox = new System.Windows.Forms.GroupBox();
 			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
+			this.CompareBox = new BizHawk.HexTextBox();
 			this.ValueBox = new BizHawk.HexTextBox();
 			this.AddressBox = new BizHawk.HexTextBox();
 			this.AddCheat = new System.Windows.Forms.Button();
@@ -54,6 +56,7 @@
 			this.B0 = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.label6 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.ClearButton = new System.Windows.Forms.Button();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -73,7 +76,7 @@
 			this.GameGenieCode.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.GameGenieCode.Location = new System.Drawing.Point(8, 23);
 			this.GameGenieCode.Margin = new System.Windows.Forms.Padding(4);
-			this.GameGenieCode.MaxLength = 8;
+			this.GameGenieCode.MaxLength = 9;
 			this.GameGenieCode.Name = "GameGenieCode";
 			this.GameGenieCode.Size = new System.Drawing.Size(113, 22);
 			this.GameGenieCode.TabIndex = 20;
@@ -96,12 +99,22 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(11, 56);
+			this.label3.Location = new System.Drawing.Point(11, 84);
 			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(44, 17);
 			this.label3.TabIndex = 5;
 			this.label3.Text = "Value";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(11, 52);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(65, 17);
+			this.label2.TabIndex = 4;
+			this.label2.Text = "Compare";
 			// 
 			// label1
 			// 
@@ -113,10 +126,22 @@
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Address";
 			// 
+			// CompareBox
+			// 
+			this.CompareBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.CompareBox.Location = new System.Drawing.Point(116, 48);
+			this.CompareBox.Margin = new System.Windows.Forms.Padding(4);
+			this.CompareBox.MaxLength = 2;
+			this.CompareBox.Name = "CompareBox";
+			this.CompareBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.CompareBox.Size = new System.Drawing.Size(35, 22);
+			this.CompareBox.TabIndex = 22;
+			this.CompareBox.TextChanged += new System.EventHandler(this.CompareBox_TextChanged);
+			// 
 			// ValueBox
 			// 
 			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.ValueBox.Location = new System.Drawing.Point(140, 51);
+			this.ValueBox.Location = new System.Drawing.Point(116, 80);
 			this.ValueBox.Margin = new System.Windows.Forms.Padding(4);
 			this.ValueBox.MaxLength = 2;
 			this.ValueBox.Name = "ValueBox";
@@ -130,17 +155,17 @@
 			this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.AddressBox.Location = new System.Drawing.Point(100, 16);
 			this.AddressBox.Margin = new System.Windows.Forms.Padding(4);
-			this.AddressBox.MaxLength = 6;
+			this.AddressBox.MaxLength = 4;
 			this.AddressBox.Name = "AddressBox";
 			this.AddressBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.AddressBox.Size = new System.Drawing.Size(75, 22);
+			this.AddressBox.Size = new System.Drawing.Size(51, 22);
 			this.AddressBox.TabIndex = 21;
 			this.AddressBox.TextChanged += new System.EventHandler(this.AddressBox_TextChanged);
 			// 
 			// AddCheat
 			// 
 			this.AddCheat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.AddCheat.Location = new System.Drawing.Point(268, 276);
+			this.AddCheat.Location = new System.Drawing.Point(269, 276);
 			this.AddCheat.Margin = new System.Windows.Forms.Padding(4);
 			this.AddCheat.Name = "AddCheat";
 			this.AddCheat.Size = new System.Drawing.Size(92, 26);
@@ -354,28 +379,41 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.groupBox1.Controls.Add(this.label6);
+			this.groupBox1.Controls.Add(this.label5);
 			this.groupBox1.Controls.Add(this.label4);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.AddressBox);
 			this.groupBox1.Controls.Add(this.ValueBox);
+			this.groupBox1.Controls.Add(this.CompareBox);
 			this.groupBox1.Location = new System.Drawing.Point(41, 201);
 			this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-			this.groupBox1.Size = new System.Drawing.Size(183, 101);
+			this.groupBox1.Size = new System.Drawing.Size(168, 114);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(116, 56);
+			this.label6.Location = new System.Drawing.Point(92, 85);
 			this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(22, 17);
 			this.label6.TabIndex = 9;
 			this.label6.Text = "0x";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(92, 52);
+			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(22, 17);
+			this.label5.TabIndex = 8;
+			this.label5.Text = "0x";
 			// 
 			// label4
 			// 
@@ -390,7 +428,7 @@
 			// ClearButton
 			// 
 			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ClearButton.Location = new System.Drawing.Point(288, 210);
+			this.ClearButton.Location = new System.Drawing.Point(288, 201);
 			this.ClearButton.Margin = new System.Windows.Forms.Padding(4);
 			this.ClearButton.Name = "ClearButton";
 			this.ClearButton.Size = new System.Drawing.Size(72, 28);
@@ -449,7 +487,7 @@
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
-			// SNESGameGenie
+			// GBGameGenie
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -466,9 +504,10 @@
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(413, 354);
 			this.MinimumSize = new System.Drawing.Size(413, 354);
-			this.Name = "SNESGameGenie";
+			this.Name = "GBGameGenie";
 			this.ShowIcon = false;
 			this.Text = "Game Genie Encoder / Decoder";
+			this.Load += new System.EventHandler(this.GBGameGenie_Load);
 			this.GameGenieCodeBox.ResumeLayout(false);
 			this.GameGenieCodeBox.PerformLayout();
 			this.ButtonPanel.ResumeLayout(false);
@@ -485,8 +524,10 @@
 
         private System.Windows.Forms.TextBox GameGenieCode;
         private System.Windows.Forms.GroupBox GameGenieCodeBox;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private HexTextBox CompareBox;
         private HexTextBox ValueBox;
         private HexTextBox AddressBox;
         private System.Windows.Forms.Button AddCheat;
@@ -508,7 +549,8 @@
         private System.Windows.Forms.Button B3;
         private System.Windows.Forms.Button B1;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -516,6 +558,6 @@
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     }
 }

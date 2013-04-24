@@ -3318,6 +3318,11 @@ namespace BizHawk.MultiClient
 				SNESGameGenie gg = new SNESGameGenie();
 				gg.Show();
 			}
+			else if ((Global.Emulator.SystemId == "GB")  || (Global.Game.System == "GG"))
+			{
+				GBGameGenie gg = new GBGameGenie();
+				gg.Show();
+			}
 		}
 
 		public void LoadSNESGraphicsDebugger()
@@ -5058,6 +5063,16 @@ namespace BizHawk.MultiClient
 		}
 
 		private void SNESgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void GBgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void GGgameGenieEncoderDecoderToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadGameGenieEC();
 		}

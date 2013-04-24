@@ -1651,6 +1651,7 @@ namespace BizHawk.MultiClient
 
 				showClippedRegionsToolStripMenuItem.Visible = true;
 				highlightActiveDisplayRegionToolStripMenuItem.Visible = true;
+				GGgameGenieEncoderDecoderToolStripMenuItem.Visible = true;
 			}
 			else
 			{
@@ -1660,6 +1661,7 @@ namespace BizHawk.MultiClient
 
 				showClippedRegionsToolStripMenuItem.Visible = false;
 				highlightActiveDisplayRegionToolStripMenuItem.Visible = false;
+				GGgameGenieEncoderDecoderToolStripMenuItem.Visible = false;
 			}
 
 		}

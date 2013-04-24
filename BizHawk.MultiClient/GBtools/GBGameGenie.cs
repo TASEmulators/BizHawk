@@ -6,58 +6,54 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-	public partial class SNESGameGenie : Form
+	public partial class GBGameGenie : Form
 	{
 		public int Address = -1;
 		public int Value = -1;
+		public int Compare = -1;
 		private readonly Dictionary<char, int> GameGenieTable = new Dictionary<char, int>();
 		private bool Decoding = false;
 		private bool Encoding = false;
-         
 
-		public SNESGameGenie()
+		public GBGameGenie()
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
-            //including transposition
-            //Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
-            //Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
 
-			GameGenieTable.Add('D', 0);  	//0000
-			GameGenieTable.Add('F', 1);	//0001
-			GameGenieTable.Add('4', 2);	 //0010
-			GameGenieTable.Add('7', 3);	 //0011
-			GameGenieTable.Add('0', 4);	 //0100
-			GameGenieTable.Add('9', 5);	 //0101
-			GameGenieTable.Add('1', 6);	 //0110
-			GameGenieTable.Add('5', 7);	 //0111
-			GameGenieTable.Add('6', 8);	 //1000
-			GameGenieTable.Add('B', 9);	 //1001
-			GameGenieTable.Add('C', 10); 	//1010 
-			GameGenieTable.Add('8', 11); 	//1011 
-			GameGenieTable.Add('A', 12); 	//1100 
-			GameGenieTable.Add('2', 13); 	//1101 
-			GameGenieTable.Add('3', 14); 	//1110 
-			GameGenieTable.Add('E', 15); 	//1111 
+			GameGenieTable.Add('0', 0);     //0000
+			GameGenieTable.Add('1', 1);     //0001
+			GameGenieTable.Add('2', 2);     //0010
+			GameGenieTable.Add('3', 3);     //0011
+			GameGenieTable.Add('4', 4);     //0100
+			GameGenieTable.Add('5', 5);     //0101
+			GameGenieTable.Add('6', 6);     //0110
+			GameGenieTable.Add('7', 7);     //0111
+			GameGenieTable.Add('8', 8);     //1000
+			GameGenieTable.Add('9', 9);     //1001
+			GameGenieTable.Add('A', 10);    //1010
+			GameGenieTable.Add('B', 11);    //1011
+			GameGenieTable.Add('C', 12);    //1100
+			GameGenieTable.Add('D', 13);    //1101
+			GameGenieTable.Add('E', 14);    //1110
+			GameGenieTable.Add('F', 15);    //1111
 		}
 
-		private void SNESGameGenie_Load(object sender, EventArgs e)
+		private void GBGameGenie_Load(object sender, EventArgs e)
 		{
 			AddCheat.Enabled = false;
 
-			if (Global.Config.SNESGGSaveWindowPosition && Global.Config.SNESGGWndx >= 0 && Global.Config.SNESGGWndy >= 0)
-				Location = new Point(Global.Config.SNESGGWndx, Global.Config.SNESGGWndy);
+			if (Global.Config.GBGGSaveWindowPosition && Global.Config.GBGGWndx >= 0 && Global.Config.GBGGWndy >= 0)
+				Location = new Point(Global.Config.GBGGWndx, Global.Config.GBGGWndy);
 		}
 
 		private void SaveConfigSettings()
 		{
-			Global.Config.SNESGGWndx = Location.X;
-			Global.Config.SNESGGWndy = Location.Y;
+			Global.Config.GBGGWndx = Location.X;
+			Global.Config.GBGGWndy = Location.Y;
 		}
 
 		private void GameGenieCode_KeyPress(object sender, KeyPressEventArgs e)
 		{
-
 			//Make uppercase
 			if (e.KeyChar >= 97 && e.KeyChar < 123)
 				e.KeyChar -= (char)32;
@@ -72,21 +68,17 @@ namespace BizHawk.MultiClient
 
 		}
 
-		public void SNESDecodeGameGenieCode(string code)
+		public void GBDecodeGameGenieCode(string code)
 		{
-
-            //Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
-            //Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
-            //XXYY-YYYY, where XX is the value, and YY-YYYY is the address.
-            //Char # |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |
-            //Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
-			//maps to|     Value     |i|j|k|l|q|r|s|t|o|p|a|b|c|d|u|v|w|x|e|f|g|h|m|n|
-			//order  |     Value     |a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
-			//Decoding = true;
-
-			int x;
-			byte[] val = { 0, 0};
+			//No cypher on value
+			//Char # |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
+			//Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
+			//maps to|      Value    |A|B|C|D|E|F|G|H|I|J|K|L|XOR 0xF|a|b|c|c|NotUsed|e|f|g|h|
+			//proper |      Value    |XOR 0xF|A|B|C|D|E|F|G|H|I|J|K|L|g|h|a|b|Nothing|c|d|e|f|
   
+			int x;
+			byte[] val = { 0, 0 };
+
 			// Getting Value
 			if (code.Length > 0)
 			{
@@ -103,53 +95,57 @@ namespace BizHawk.MultiClient
 			if (code.Length > 2)
 			{
 				GameGenieTable.TryGetValue(code[2], out x);
-				Address = (x << 12);
+				Address = (x << 8);
 			}
-			
+			else
+				Address = -1;
+
 			if (code.Length > 3)
 			{
 				GameGenieTable.TryGetValue(code[3], out x);
 				Address |= (x << 4);
 			}
-			
+
 			if (code.Length > 4)
 			{
 				GameGenieTable.TryGetValue(code[4], out x);
-				Address |= ((x & 0xC) << 6);
-				Address |= ((x & 0x3) << 22);
+				Address |= x;
 			}
-			
+
 			if (code.Length > 5)
 			{
 				GameGenieTable.TryGetValue(code[5], out x);
-				Address |= ((x & 0xC) << 18);
-				Address |= ((x & 0x3) << 2);
+				Address |= ((x ^ 0xF) <<12);
 			}
-
-			if (code.Length > 6)
+			// compare need to be full
+			if (code.Length > 8)
 			{
+				int comp = 0;
 				GameGenieTable.TryGetValue(code[6], out x);
-				Address |= ((x & 0xC) >> 2);
-				Address |= ((x & 0x3) << 18);
+				comp = (x << 2);
+				// 8th character ignored
+				GameGenieTable.TryGetValue(code[8], out x);
+				comp |= ((x & 0xC) >> 2);
+				comp |= ((x & 0x3) << 6);
+				Compare = comp ^ 0xBA;
 			}
+			else
+				Compare = -1;
 
-			if (code.Length > 7)
-			{
-				GameGenieTable.TryGetValue(code[7], out x);
-				Address |= ((x & 0xC) << 14);
-				Address |= ((x & 0x3) << 10);
-			}
-			
 			SetProperties();
-
-        }
+		}
 
 		private void SetProperties()
 		{
 			if (Address >= 0)
-				AddressBox.Text = String.Format("{0:X6}", Address);
+				AddressBox.Text = String.Format("{0:X4}", Address);
 			else
 				AddressBox.Text = "";
+
+			if (Compare >= 0)
+				CompareBox.Text = String.Format("{0:X2}", Compare);
+			else
+				CompareBox.Text = "";
 
 			if (Value >= 0)
 				ValueBox.Text = String.Format("{0:X2}", Value);
@@ -158,12 +154,19 @@ namespace BizHawk.MultiClient
 
 		private void ClearProperties()
 		{
+			bool tempenc = Encoding;
+			bool tempdec = Decoding;
+			Encoding = true;
+			Decoding = true;
 			Address = -1;
 			Value = -1;
+			Compare = -1;
 			AddressBox.Text = "";
+			CompareBox.Text = "";
 			ValueBox.Text = "";
 			AddCheat.Enabled = false;
-			//Decoding = false;
+			Encoding = tempenc;
+			Decoding = tempdec;
 		}
 
 		private void GameGenieCode_TextChanged(object sender, EventArgs e)
@@ -174,7 +177,7 @@ namespace BizHawk.MultiClient
 				if (GameGenieCode.Text.Length > 0)
 				{
 					Decoding = true;
-					SNESDecodeGameGenieCode(GameGenieCode.Text);
+					GBDecodeGameGenieCode(GameGenieCode.Text);
 				}
 				else
 					ClearProperties();
@@ -185,7 +188,7 @@ namespace BizHawk.MultiClient
 
 		private void Keypad_Click(object sender, EventArgs e)
 		{
-			if (GameGenieCode.Text.Length < 8)
+			if (GameGenieCode.Text.Length < 9)
 			{
 				string code = "";
 				if (sender == B0) code = "0";
@@ -215,25 +218,53 @@ namespace BizHawk.MultiClient
 		{
 			if (Decoding == false)
 			{
-				if (AddressBox.Text.Length > 0 )
+				if (AddressBox.Text.Length > 0)
 				{
 					Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 					if (ValueBox.Text.Length > 0)
 						Value = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
 					else
 						Value = 0;
+					if (CompareBox.Text.Length == 2)
+						Compare = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
+					else
+						Compare = 0;
 					Encoding = true;
-					SNESEncodeGameGenie();
+					GBEncodeGameGenie();
 					Encoding = false;
-				}
+				} 
+			} 
+
+			TryEnableAddCheat();
+		}
+
+		private void CompareBox_TextChanged(object sender, EventArgs e)
+		{
+			if (Decoding == false)
+			{
+				if (CompareBox.Text.Length == 2)
+					Compare = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
+				if (AddressBox.Text.Length > 0)
+					Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+				else
+					Address = 0x0000;
+				if (ValueBox.Text.Length > 0)
+						Value = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
+				else
+					Value = 0;
+				Encoding = true;
+				GBEncodeGameGenie();
+				Encoding = false;
+				
 			}
 			TryEnableAddCheat();
-			
+		
+
 		}
 
 		private void TryEnableAddCheat()
 		{
-			if (AddressBox.Text.Length == 6 && ValueBox.Text.Length == 2)
+			if (AddressBox.Text.Length == 4 && ValueBox.Text.Length == 2)
 				AddCheat.Enabled = true;
 			else
 				AddCheat.Enabled = false;
@@ -248,46 +279,61 @@ namespace BizHawk.MultiClient
 					if (AddressBox.Text.Length > 0)
 						Address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 					else
-						Address = 0x000000;
+						Address = 0x0000;
+					if (CompareBox.Text.Length == 2)
+						Compare = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
+					else
+						Compare = 0;
 					Value = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
 					Encoding = true;
-					SNESEncodeGameGenie();
+					GBEncodeGameGenie();
 					Encoding = false;
 				}
 			}
 			TryEnableAddCheat();
-			
 		}
 
-
-        private void SNESEncodeGameGenie()
+		private void GBEncodeGameGenie()
 		{
-			//Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
-			//Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
-			//Char # |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |
-			//Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
-			//maps to|     Value     |i|j|k|l|q|r|s|t|o|p|a|b|c|d|u|v|w|x|e|f|g|h|m|n|
-			//order  |     Value     |a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
-			char[] letters = { 'D', 'F', '4', '7', '0', '9', '1', '5', '6', 'B', 'C', '8', 'A', '2', '3', 'E' };
+			char[] letters = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 			GameGenieCode.Text = "";
-			int[] num = { 0, 0, 0, 0, 0, 0, 0, 0 };
-			num[0] = (Value & 0xF0) >>4;
+			int[] num = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			num[0] = (Value & 0xF0) >> 4;
 			num[1] = Value & 0x0F;
 
-			num[2] = (Address & 0x00F000) >> 12; //ijkl
-			num[3] = (Address & 0x0000F0) >> 4; //qrst
-			num[4] = ((Address & 0x000300) >> 6) | ((Address & 0xC00000) >> 22); //opab
-			num[5] = ((Address & 0x300000) >> 18) | ((Address & 0x00000C) >>2); //cduv
-			num[6] = ((Address & 0x000003) << 2)| ((Address & 0x0C0000) >> 18);//wxef
-			num[7] = ((Address & 0x030000) >> 14) | ((Address & 0x000C00) >> 10);//ghmn*/
-			for (int x = 0; x < 8; x++) 
-				GameGenieCode.Text += letters[num[x]];
+			num[2] = (Address & 0x0F00) >> 8; 
+			num[3] = (Address & 0x00F0) >> 4;
+ 			num[4] = (Address & 0x000F);
+			num[5] = (((Address & 0xF000)  >> 12) ^ 0xF);
+			if (CompareBox.Text.Length == 2)
+			{
+				
+				int xoredcomp = ((Compare &0xFF) ^ 0xBA);
+				num[6] = ((xoredcomp & 0x30) >> 2);
+				num[6] |= ((xoredcomp & 0x0C) >> 2);
+				// 8th char has no real use (its value is not reflected in the address:value:compare
+				// probably a protection to stop people making code up, xor the 7th digit with 0x8
+				// to get back what the original code had (Might be more to it)
+				num[7] = num[6] ^ 8;
+				num[8] = ((xoredcomp & 0xC0) >> 6);
+				num[8] |= ((xoredcomp &0x03) << 2);
+				for (int x = 0; x < 9; x++)
+					GameGenieCode.Text += letters[num[x]];
+			}	
+			else
+			{
+				for (int x = 0; x < 6; x++)
+					GameGenieCode.Text += letters[num[x]];
+			}
+
+
 		}
 
 		private void ClearButton_Click(object sender, EventArgs e)
 		{
 			ClearProperties();
 			GameGenieCode.Text = "";
+
 		}
 
 		private void AddCheat_Click(object sender, EventArgs e)
@@ -307,18 +353,33 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-
 			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
 			c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
-			c.compare = null;
+
+			if (!String.IsNullOrWhiteSpace(CompareBox.Text))
+			{
+				try
+				{
+					c.compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
+				}
+				catch
+				{
+					c.compare = null;
+				}
+			}
+			else
+			{
+				c.compare = null;
+			}
 			c.Enable();
 			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-					if (Global.Emulator.MemoryDomains[x].ToString() == "BUS")
-					{
-						c.domain = Global.Emulator.MemoryDomains[x]; //Bus
-						Global.MainForm.Cheats1.AddCheat(c);
-						break;
-					}
+				if (Global.Emulator.MemoryDomains[x].ToString() == "System Bus")
+				{
+					c.domain = Global.Emulator.MemoryDomains[x]; //Bus
+					Global.MainForm.Cheats1.AddCheat(c);
+					break;
+				}
+			
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -328,18 +389,18 @@ namespace BizHawk.MultiClient
 
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.SNESGGSaveWindowPosition ^= true;
+			Global.Config.GBGGSaveWindowPosition ^= true;
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.SNESGGAutoload ^= true;
+			Global.Config.GBGGAutoload ^= true;
 		}
 
 		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			autoloadToolStripMenuItem.Checked = Global.Config.SNESGGAutoload;
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SNESGGSaveWindowPosition;
+			autoloadToolStripMenuItem.Checked = Global.Config.GBGGAutoload;
+			saveWindowPositionToolStripMenuItem.Checked = Global.Config.GBGGSaveWindowPosition;
 		}
 
 		private void GameGenieCode_KeyDown(object sender, KeyEventArgs e)
@@ -352,7 +413,5 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
-
-
 	}
 }

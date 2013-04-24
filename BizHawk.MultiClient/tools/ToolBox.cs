@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
+using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.MultiClient
 {
@@ -62,6 +63,22 @@ namespace BizHawk.MultiClient
 			{
 				SNESGraphicsDebuggerButton.Visible = false;
 				SNESGameGenie.Visible = false;
+			}
+			if (Global.Game.System == "GG") 
+			{
+				GGGameGenie.Visible = true;
+			}
+			else
+			{
+				GGGameGenie.Visible = false;
+			}
+			if (Global.Game.System == "GB")
+			{
+				GBGameGenie.Visible = true;
+			}
+			else
+			{
+				GBGameGenie.Visible = false;
 			}
 
 			Size = new Size(Size.Width, toolStrip1.Size.Height + 50);
@@ -148,5 +165,17 @@ namespace BizHawk.MultiClient
 		{
 			Global.MainForm.LoadGameGenieEC();
 		}
+
+		private void GGGameGenie_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.LoadGameGenieEC();
+		}
+
+		private void GBGameGenie_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.LoadGameGenieEC();
+		}
+
+
 	}
 }
