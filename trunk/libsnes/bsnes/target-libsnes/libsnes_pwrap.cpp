@@ -507,11 +507,16 @@ void RunMessageLoop()
 
 		case eMessage_snes_load_cartridge_normal:
 			{
-				std::string xml = ReadPipeString();
-				Blob rom_data = ReadPipeBlob();
+				Blob xml = ReadPipeBlob();
+				xml.push_back(0); //make sure the xml is null terminated
 				const char* xmlptr = NULL;
-				if(xml != "") xmlptr = xml.c_str();
-				bool ret = snes_load_cartridge_normal(xmlptr,(unsigned char*)&rom_data[0],rom_data.size());
+				if(xml.size() != 1) xmlptr = &xml[0];
+
+				Blob rom_data = ReadPipeBlob();
+				const unsigned char* rom_ptr = NULL;
+				if(rom_data.size() != 0) rom_ptr = (unsigned char*)&rom_data[0];
+
+				bool ret = snes_load_cartridge_normal(xmlptr,rom_ptr,rom_data.size());
 				WritePipe(eMessage_Complete);
 				WritePipe((char)(ret?1:0));
 				break;

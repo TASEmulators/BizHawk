@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.IO;
+using System.Text;
 namespace BizHawk
 {
 	public class CoreComm
@@ -14,6 +16,8 @@ namespace BizHawk
 		public string PSX_FirmwaresPath;
 		public string SNES_FirmwaresPath;
 		public string C64_FirmwaresPath;
+
+		public Func<string, string> AcquireSubfilePath;
 
 		public string SNES_ExePath;
 		public string SNES_Profile;
