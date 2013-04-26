@@ -586,6 +586,12 @@ namespace BizHawk.MultiClient
 		public int GBGGWndx = -1;
 		public int GBGGWndy = -1;
 
+		// GEN Game Genie Encoder/Decoder
+		public bool GENGGAutoload = false;
+		public bool GENGGSaveWindowPosition = true;
+		public int GENGGWndx = -1;
+		public int GENGGWndy = -1;
+
 		//Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
 		public bool AutoLoadMostRecentMovie = false;
