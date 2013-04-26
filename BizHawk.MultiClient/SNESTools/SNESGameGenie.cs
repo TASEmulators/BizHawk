@@ -305,12 +305,14 @@ namespace BizHawk.MultiClient
 			if (String.IsNullOrWhiteSpace(AddressBox.Text))
 				c.address = 0;
 			else
+			{
 				c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-
+				c.address += 0x8000;
+			}
 			if (String.IsNullOrWhiteSpace(ValueBox.Text))
 				c.value = 0;
 			else
-				c.value = (byte)((int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0xFF00) >> 8);
+				c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
 
 			c.compare = null;
 			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)

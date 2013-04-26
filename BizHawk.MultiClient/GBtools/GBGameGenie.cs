@@ -367,7 +367,7 @@ namespace BizHawk.MultiClient
 			if (String.IsNullOrWhiteSpace(ValueBox.Text))
 				c.value = 0;
 			else
-				c.value = (byte)((int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0xFF00) >> 8);
+				c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
 
 			if (!String.IsNullOrWhiteSpace(CompareBox.Text))
 			{
