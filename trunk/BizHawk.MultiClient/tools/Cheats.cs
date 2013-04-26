@@ -7,7 +7,9 @@ using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
 
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.MultiClient
 {
@@ -149,7 +151,7 @@ namespace BizHawk.MultiClient
 
 		private void ToggleGameGenieButtons()
 		{
-			if (Global.Emulator is NES)
+			if ((Global.Emulator is NES) || (Global.Emulator is Genesis) || (Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG") || (Global.Emulator is LibsnesCore))
 			{
 				toolStripButtonLoadGameGenie.Visible = true;
 				toolStripSeparator7.Visible = true;

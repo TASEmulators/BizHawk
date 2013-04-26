@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.GameGenieCode = new System.Windows.Forms.TextBox();
 			this.GameGenieCodeBox = new System.Windows.Forms.GroupBox();
+			this.GGCodeMaskBox = new System.Windows.Forms.MaskedTextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.ValueBox = new BizHawk.HexTextBox();
 			this.AddressBox = new BizHawk.HexTextBox();
-			this.AddCheat = new System.Windows.Forms.Button();
+			this.addcheatbt = new System.Windows.Forms.Button();
 			this.ButtonPanel = new System.Windows.Forms.Panel();
 			this.BF = new System.Windows.Forms.Button();
 			this.BD = new System.Windows.Forms.Button();
@@ -62,41 +62,43 @@
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.cheatname = new System.Windows.Forms.TextBox();
 			this.GameGenieCodeBox.SuspendLayout();
 			this.ButtonPanel.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// GameGenieCode
-			// 
-			this.GameGenieCode.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.GameGenieCode.Location = new System.Drawing.Point(8, 23);
-			this.GameGenieCode.Margin = new System.Windows.Forms.Padding(4);
-			this.GameGenieCode.MaxLength = 8;
-			this.GameGenieCode.Name = "GameGenieCode";
-			this.GameGenieCode.Size = new System.Drawing.Size(113, 22);
-			this.GameGenieCode.TabIndex = 20;
-			this.GameGenieCode.TextChanged += new System.EventHandler(this.GameGenieCode_TextChanged);
-			this.GameGenieCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameGenieCode_KeyDown);
-			this.GameGenieCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GameGenieCode_KeyPress);
 			// 
 			// GameGenieCodeBox
 			// 
-			this.GameGenieCodeBox.Controls.Add(this.GameGenieCode);
+			this.GameGenieCodeBox.Controls.Add(this.GGCodeMaskBox);
 			this.GameGenieCodeBox.Location = new System.Drawing.Point(41, 127);
 			this.GameGenieCodeBox.Margin = new System.Windows.Forms.Padding(4);
 			this.GameGenieCodeBox.Name = "GameGenieCodeBox";
 			this.GameGenieCodeBox.Padding = new System.Windows.Forms.Padding(4);
-			this.GameGenieCodeBox.Size = new System.Drawing.Size(153, 66);
+			this.GameGenieCodeBox.Size = new System.Drawing.Size(158, 66);
 			this.GameGenieCodeBox.TabIndex = 1;
 			this.GameGenieCodeBox.TabStop = false;
 			this.GameGenieCodeBox.Text = "Game Genie Code";
 			// 
+			// GGCodeMaskBox
+			// 
+			this.GGCodeMaskBox.Location = new System.Drawing.Point(33, 32);
+			this.GGCodeMaskBox.Mask = ">AAAA-AAAA";
+			this.GGCodeMaskBox.Name = "GGCodeMaskBox";
+			this.GGCodeMaskBox.Size = new System.Drawing.Size(99, 22);
+			this.GGCodeMaskBox.TabIndex = 10;
+			this.GGCodeMaskBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.GGCodeMaskBox.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
+			this.GGCodeMaskBox.TextChanged += new System.EventHandler(this.GGCodeMaskBox_TextChanged);
+			this.GGCodeMaskBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GGCodeMaskBox_KeyPress);
+			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(11, 56);
+			this.label3.Location = new System.Drawing.Point(11, 67);
 			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(44, 17);
@@ -106,7 +108,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(11, 20);
+			this.label1.Location = new System.Drawing.Point(11, 27);
 			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(60, 17);
@@ -116,7 +118,7 @@
 			// ValueBox
 			// 
 			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.ValueBox.Location = new System.Drawing.Point(140, 51);
+			this.ValueBox.Location = new System.Drawing.Point(140, 62);
 			this.ValueBox.Margin = new System.Windows.Forms.Padding(4);
 			this.ValueBox.MaxLength = 2;
 			this.ValueBox.Name = "ValueBox";
@@ -128,7 +130,7 @@
 			// AddressBox
 			// 
 			this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.AddressBox.Location = new System.Drawing.Point(100, 16);
+			this.AddressBox.Location = new System.Drawing.Point(100, 23);
 			this.AddressBox.Margin = new System.Windows.Forms.Padding(4);
 			this.AddressBox.MaxLength = 6;
 			this.AddressBox.Name = "AddressBox";
@@ -137,17 +139,18 @@
 			this.AddressBox.TabIndex = 21;
 			this.AddressBox.TextChanged += new System.EventHandler(this.AddressBox_TextChanged);
 			// 
-			// AddCheat
+			// addcheatbt
 			// 
-			this.AddCheat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.AddCheat.Location = new System.Drawing.Point(268, 276);
-			this.AddCheat.Margin = new System.Windows.Forms.Padding(4);
-			this.AddCheat.Name = "AddCheat";
-			this.AddCheat.Size = new System.Drawing.Size(92, 26);
-			this.AddCheat.TabIndex = 33;
-			this.AddCheat.Text = "&Add Cheat";
-			this.AddCheat.UseVisualStyleBackColor = true;
-			this.AddCheat.Click += new System.EventHandler(this.AddCheat_Click);
+			this.addcheatbt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.addcheatbt.Enabled = false;
+			this.addcheatbt.Location = new System.Drawing.Point(117, 201);
+			this.addcheatbt.Margin = new System.Windows.Forms.Padding(4);
+			this.addcheatbt.Name = "addcheatbt";
+			this.addcheatbt.Size = new System.Drawing.Size(82, 32);
+			this.addcheatbt.TabIndex = 33;
+			this.addcheatbt.Text = "&Add Cheat";
+			this.addcheatbt.UseVisualStyleBackColor = true;
+			this.addcheatbt.Click += new System.EventHandler(this.AddCheat_Click);
 			// 
 			// ButtonPanel
 			// 
@@ -168,7 +171,7 @@
 			this.ButtonPanel.Controls.Add(this.B4);
 			this.ButtonPanel.Controls.Add(this.B2);
 			this.ButtonPanel.Controls.Add(this.B0);
-			this.ButtonPanel.Location = new System.Drawing.Point(41, 37);
+			this.ButtonPanel.Location = new System.Drawing.Point(47, 37);
 			this.ButtonPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.ButtonPanel.Name = "ButtonPanel";
 			this.ButtonPanel.Size = new System.Drawing.Size(319, 82);
@@ -359,18 +362,19 @@
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.AddressBox);
 			this.groupBox1.Controls.Add(this.ValueBox);
-			this.groupBox1.Location = new System.Drawing.Point(41, 201);
+			this.groupBox1.Location = new System.Drawing.Point(207, 127);
 			this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
 			this.groupBox1.Size = new System.Drawing.Size(183, 101);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Decoded Value";
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(116, 56);
+			this.label6.Location = new System.Drawing.Point(116, 67);
 			this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(22, 17);
@@ -380,7 +384,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(76, 20);
+			this.label4.Location = new System.Drawing.Point(76, 27);
 			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(22, 17);
@@ -390,10 +394,9 @@
 			// ClearButton
 			// 
 			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ClearButton.Location = new System.Drawing.Point(288, 210);
-			this.ClearButton.Margin = new System.Windows.Forms.Padding(4);
+			this.ClearButton.Location = new System.Drawing.Point(41, 201);
 			this.ClearButton.Name = "ClearButton";
-			this.ClearButton.Size = new System.Drawing.Size(72, 28);
+			this.ClearButton.Size = new System.Drawing.Size(72, 32);
 			this.ClearButton.TabIndex = 32;
 			this.ClearButton.Text = "&Clear";
 			this.ClearButton.UseVisualStyleBackColor = true;
@@ -449,15 +452,33 @@
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.cheatname);
+			this.groupBox2.Location = new System.Drawing.Point(41, 242);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(349, 61);
+			this.groupBox2.TabIndex = 24;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Cheat Title (Uses GG code if left empty)";
+			// 
+			// cheatname
+			// 
+			this.cheatname.Location = new System.Drawing.Point(24, 28);
+			this.cheatname.Name = "cheatname";
+			this.cheatname.Size = new System.Drawing.Size(301, 22);
+			this.cheatname.TabIndex = 0;
+			// 
 			// SNESGameGenie
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(403, 315);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.ButtonPanel);
-			this.Controls.Add(this.AddCheat);
+			this.Controls.Add(this.addcheatbt);
 			this.Controls.Add(this.GameGenieCodeBox);
 			this.Controls.Add(this.menuStrip1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -476,6 +497,8 @@
 			this.groupBox1.PerformLayout();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -483,13 +506,12 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox GameGenieCode;
-        private System.Windows.Forms.GroupBox GameGenieCodeBox;
+		private System.Windows.Forms.GroupBox GameGenieCodeBox;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label1;
         private HexTextBox ValueBox;
         private HexTextBox AddressBox;
-        private System.Windows.Forms.Button AddCheat;
+        private System.Windows.Forms.Button addcheatbt;
         private System.Windows.Forms.Panel ButtonPanel;
         private System.Windows.Forms.Button B6;
         private System.Windows.Forms.Button B4;
@@ -517,5 +539,8 @@
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+		private System.Windows.Forms.MaskedTextBox GGCodeMaskBox;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.TextBox cheatname;
     }
 }

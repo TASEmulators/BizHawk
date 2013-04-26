@@ -3345,6 +3345,11 @@ namespace BizHawk.MultiClient
 				GBGameGenie gg = new GBGameGenie();
 				gg.Show();
 			}
+			else if (Global.Emulator is Genesis)
+			{
+				GenGameGenie gg = new GenGameGenie();
+				gg.Show();
+			}
 		}
 
 		public void LoadSNESGraphicsDebugger()
