@@ -1922,15 +1922,48 @@ namespace BizHawk.MultiClient
 								}
 						}
 					}
-					else
+					else if (file.Extension.ToLower() == ".xml")
+					{
+						var XMLG = XmlGame.Create(file);
+
+						if (XMLG != null)
+						{
+							game = XMLG.GI;
+
+							switch (game.System)
+							{
+								case "DGB":
+
+									var L = Database.GetGameInfo(XMLG.Assets["LeftRom"], "left.gb");
+									var R = Database.GetGameInfo(XMLG.Assets["RightRom"], "right.gb");
+
+									if (Global.Config.GB_ForceDMG) L.AddOption("ForceDMG");
+								    if (Global.Config.GB_GBACGB) L.AddOption("GBACGB");
+								    if (Global.Config.GB_MulticartCompat) L.AddOption("MulitcartCompat");
+									if (Global.Config.GB_ForceDMG) R.AddOption("ForceDMG");
+								    if (Global.Config.GB_GBACGB) R.AddOption("GBACGB");
+								    if (Global.Config.GB_MulticartCompat) R.AddOption("MulitcartCompat");
+
+									GambatteLink gbl = new GambatteLink(nextComm, L, XMLG.Assets["LeftRom"], R, XMLG.Assets["RightRom"]);
+								    nextEmulator = gbl;
+								    // other stuff todo
+									break;
+
+								default:
+									return false;
+							}
+
+						}
+						// if load fails, second chance to identify as a bsnes XML
+					}
+					else // most extensions
 					{
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 
 						bool isXml = false;
 
-						//right now, xml is always snes.
-						//later, we may need to inspect the XML ourselves to dispatch it to the correct system (if any other systems ever use xml...)
+						// other xml has already been handled
 						if (file.Extension.ToLower() == ".xml")
 						{
 							game.System = "SNES";
@@ -2031,20 +2064,6 @@ namespace BizHawk.MultiClient
 								break;
 							case "GB":
 							case "GBC":
-								//if (false) // this code will load up a dual game boy
-								//{
-								//    // this is horrible.  we MUST decide when we should be using Game.System and when we should be using Emulator.SystemID
-								//    game.System = "DGB"; // HACK
-
-								//    if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
-								//    if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
-								//    if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-								//    GambatteLink gbl = new GambatteLink(nextComm, game, rom.FileData, game, rom.FileData);
-								//    nextEmulator = gbl;
-								//    // other stuff todo
-								//}
-								//else
-								//{
 									if (!Global.Config.GB_AsSGB)
 									{
 										if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");

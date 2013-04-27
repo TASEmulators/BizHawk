@@ -517,6 +517,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\WatchCommon.cs" />
+    <Compile Include="XmlGame.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
     </EmbeddedResource>
