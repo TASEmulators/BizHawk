@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.MultiClient
 {
@@ -219,59 +220,62 @@ namespace BizHawk.MultiClient
 
 		private void addcheatbt_Click(object sender, EventArgs e)
 		{
-			Cheat c = new Cheat();
-			Cheat d = new Cheat();
-			if (cheatname.Text.Length > 0)
+			if (Global.Emulator is Genesis)
 			{
-				c.name = cheatname.Text + " Part 1";
-				d.name = cheatname.Text + " Part 2";
-			}
-			else
-			{
-				Processing = true;
-				GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-				c.name = GGCodeMaskBox.Text + " Part 1";
-				d.name = GGCodeMaskBox.Text + " Part 2";
-				GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
-				Processing = false;
-			}
-
-			if (String.IsNullOrWhiteSpace(AddressBox.Text))
-			{
-				c.address = 0;
-				d.address = 0+1;
-			}
-			else
-			{
-				c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-				d.address = c.address + 1;
-			}	
-			if (String.IsNullOrWhiteSpace(ValueBox.Text))
-			{
-				c.value = 0;
-				d.value = 0;
-			}
-			else
-			{
-				c.value = (byte)((int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0xFF00) >> 8);
-				d.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0x00FF);
-			}
-			c.compare = null;
-			d.compare = null;
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-
-				if (Global.Emulator.MemoryDomains[x].ToString() == "Rom Data")
+				Cheat c = new Cheat();
+				Cheat d = new Cheat();
+				if (cheatname.Text.Length > 0)
 				{
-					c.domain = Global.Emulator.MemoryDomains[x];
-					c.Enable();
-					Global.MainForm.Cheats1.AddCheat(c);
-					d.domain = Global.Emulator.MemoryDomains[x];
-					d.Enable();
-					Global.MainForm.Cheats1.AddCheat(d);
-					break;
+					c.name = cheatname.Text + " Part 1";
+					d.name = cheatname.Text + " Part 2";
+				}
+				else
+				{
+					Processing = true;
+					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
+					c.name = GGCodeMaskBox.Text + " Part 1";
+					d.name = GGCodeMaskBox.Text + " Part 2";
+					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+					Processing = false;
 				}
 
-			
+				if (String.IsNullOrWhiteSpace(AddressBox.Text))
+				{
+					c.address = 0;
+					d.address = 0 + 1;
+				}
+				else
+				{
+					c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+					d.address = c.address + 1;
+				}
+				if (String.IsNullOrWhiteSpace(ValueBox.Text))
+				{
+					c.value = 0;
+					d.value = 0;
+				}
+				else
+				{
+					c.value = (byte)((int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0xFF00) >> 8);
+					d.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber) & 0x00FF);
+				}
+				c.compare = null;
+				d.compare = null;
+				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+
+					if (Global.Emulator.MemoryDomains[x].ToString() == "Rom Data")
+					{
+						c.domain = Global.Emulator.MemoryDomains[x];
+						c.Enable();
+						Global.MainForm.Cheats1.AddCheat(c);
+						d.domain = Global.Emulator.MemoryDomains[x];
+						d.Enable();
+						Global.MainForm.Cheats1.AddCheat(d);
+						break;
+					}
+
+			}
+
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)

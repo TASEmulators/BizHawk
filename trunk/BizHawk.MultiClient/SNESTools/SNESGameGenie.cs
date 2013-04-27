@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
 
 namespace BizHawk.MultiClient
 {
@@ -290,41 +291,43 @@ namespace BizHawk.MultiClient
 
 		private void AddCheat_Click(object sender, EventArgs e)
 		{
-			Cheat c = new Cheat();
-			if (cheatname.Text.Length > 0)
-				c.name = cheatname.Text;
-			else
+			if (Global.Emulator is LibsnesCore)
 			{
-				Processing = true;
-				GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-				c.name = GGCodeMaskBox.Text;
-				GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
-				Processing = false;
-			}
-
-			if (String.IsNullOrWhiteSpace(AddressBox.Text))
-				c.address = 0;
-			else
-			{
-				c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-				c.address += 0x8000;
-			}
-			if (String.IsNullOrWhiteSpace(ValueBox.Text))
-				c.value = 0;
-			else
-				c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
-
-			c.compare = null;
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-
-				if (Global.Emulator.MemoryDomains[x].ToString() == "BUS")
+				Cheat c = new Cheat();
+				if (cheatname.Text.Length > 0)
+					c.name = cheatname.Text;
+				else
 				{
-					c.domain = Global.Emulator.MemoryDomains[x];
-					c.Enable();
-					Global.MainForm.Cheats1.AddCheat(c);
-					break;
+					Processing = true;
+					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
+					c.name = GGCodeMaskBox.Text;
+					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+					Processing = false;
 				}
 
+				if (String.IsNullOrWhiteSpace(AddressBox.Text))
+					c.address = 0;
+				else
+				{
+					c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+					c.address += 0x8000;
+				}
+				if (String.IsNullOrWhiteSpace(ValueBox.Text))
+					c.value = 0;
+				else
+					c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
+
+				c.compare = null;
+				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+
+					if (Global.Emulator.MemoryDomains[x].ToString() == "BUS")
+					{
+						c.domain = Global.Emulator.MemoryDomains[x];
+						c.Enable();
+						Global.MainForm.Cheats1.AddCheat(c);
+						break;
+					}
+			}
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)

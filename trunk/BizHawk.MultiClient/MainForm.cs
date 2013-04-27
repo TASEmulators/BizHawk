@@ -96,6 +96,10 @@ namespace BizHawk.MultiClient
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
 		public VirtualPadForm VirtualPadForm1 = new VirtualPadForm();
+		public NESGameGenie NESgg = new NESGameGenie();
+		public SNESGameGenie SNESgg = new SNESGameGenie();
+		public GBGameGenie GBgg = new GBGameGenie();
+		public GenGameGenie Gengg = new GenGameGenie();
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
@@ -3349,25 +3353,46 @@ namespace BizHawk.MultiClient
 
 		public void LoadGameGenieEC()
 		{
+
 			if (Global.Emulator is NES)
 			{
-				NESGameGenie gg = new NESGameGenie();
-				gg.Show();
+				if (!NESgg.IsHandleCreated || NESgg.IsDisposed)
+				{
+					NESgg = new NESGameGenie();
+					NESgg.Show();
+				}
+				else
+					NESgg.Focus();
 			}
 			else if (Global.Emulator is LibsnesCore)
 			{
-				SNESGameGenie gg = new SNESGameGenie();
-				gg.Show();
+				if (!SNESgg.IsHandleCreated || SNESgg.IsDisposed)
+				{
+					SNESgg = new SNESGameGenie();
+					SNESgg.Show();
+				}
+				else
+					SNESgg.Focus();
 			}
 			else if ((Global.Emulator.SystemId == "GB")  || (Global.Game.System == "GG"))
 			{
-				GBGameGenie gg = new GBGameGenie();
-				gg.Show();
+				if (!GBgg.IsHandleCreated || GBgg.IsDisposed)
+				{
+					GBgg = new GBGameGenie();
+					GBgg.Show();
+				}
+				else
+					GBgg.Focus();
 			}
 			else if (Global.Emulator is Genesis)
 			{
-				GenGameGenie gg = new GenGameGenie();
-				gg.Show();
+				if (!Gengg.IsHandleCreated || Gengg.IsDisposed)
+				{
+					Gengg = new GenGameGenie();
+					Gengg.Show();
+				}
+				else
+					Gengg.Focus();
 			}
 		}
 
