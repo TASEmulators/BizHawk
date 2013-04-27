@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Globalization;
+using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
@@ -331,39 +332,42 @@ namespace BizHawk.MultiClient
 
 		private void AddCheatClick()
 		{
-			Cheat c = new Cheat {name = GameGenieCode.Text};
+			if (Global.Emulator is NES)
+			{
+				Cheat c = new Cheat { name = GameGenieCode.Text };
 
-			if (String.IsNullOrWhiteSpace(AddressBox.Text))
-			{
-				return;
-			}
-			else if (String.IsNullOrWhiteSpace(ValueBox.Text))
-			{
-				return;
-			}
-			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-			c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
-
-			if (!String.IsNullOrWhiteSpace(CompareBox.Text))
-			{
-				try
+				if (String.IsNullOrWhiteSpace(AddressBox.Text))
 				{
-					c.compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
+					return;
 				}
-				catch
+				else if (String.IsNullOrWhiteSpace(ValueBox.Text))
+				{
+					return;
+				}
+				c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+				c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
+
+				if (!String.IsNullOrWhiteSpace(CompareBox.Text))
+				{
+					try
+					{
+						c.compare = byte.Parse(CompareBox.Text, NumberStyles.HexNumber);
+					}
+					catch
+					{
+						c.compare = null;
+					}
+				}
+				else
 				{
 					c.compare = null;
 				}
-			}
-			else
-			{
-				c.compare = null;
-			}
 
-			c.domain = Global.Emulator.MemoryDomains[1]; //System Bus only
-			c.Enable();
+				c.domain = Global.Emulator.MemoryDomains[1]; //System Bus only
+				c.Enable();
 
-			Global.MainForm.Cheats1.AddCheat(c);
+				Global.MainForm.Cheats1.AddCheat(c);
+			}
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)

@@ -33,9 +33,9 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.CompareBox = new HexTextBox();
-			this.ValueBox = new HexTextBox();
-			this.AddressBox = new HexTextBox();
+			this.CompareBox = new BizHawk.HexTextBox();
+			this.ValueBox = new BizHawk.HexTextBox();
+			this.AddressBox = new BizHawk.HexTextBox();
 			this.AddCheat = new System.Windows.Forms.Button();
 			this.ButtonPanel = new System.Windows.Forms.Panel();
 			this.N = new System.Windows.Forms.Button();
@@ -470,7 +470,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(302, 263);
+			this.ClientSize = new System.Drawing.Size(302, 262);
 			this.Controls.Add(this.ClearButton);
 			this.Controls.Add(this.Encoding);
 			this.Controls.Add(this.groupBox1);
@@ -485,7 +485,7 @@
 			this.MinimumSize = new System.Drawing.Size(312, 295);
 			this.Name = "NESGameGenie";
 			this.ShowIcon = false;
-			this.Text = "Game Genie Encoder / Decoder";
+			this.Text = "NES Game Genie Encoder / Decoder";
 			this.Load += new System.EventHandler(this.NESGameGenie_Load);
 			this.GameGenieCodeBox.ResumeLayout(false);
 			this.GameGenieCodeBox.PerformLayout();
