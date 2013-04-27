@@ -433,6 +433,8 @@ namespace BizHawk.MultiClient
 						return "|.|........|........|";
 					case "GB":
 						return "|.|........|";
+					case "DGB":
+						return "|.|........|.|........|";
 					case "PCE":
 					case "PCECD":
 					case "SGX":
@@ -521,6 +523,22 @@ namespace BizHawk.MultiClient
 			return input.ToString();
 		}
 
+		private string GetDualGameBoyControllerAsMnemonic()
+		{
+			// |.|........|.|........|
+			StringBuilder input = new StringBuilder();
+
+			foreach (var t in Global.DGBMnemonic)
+			{
+				if (t.Item1 != null)
+					input.Append(IsBasePressed(t.Item1) ? t.Item2 : '.');
+				else
+					input.Append(t.Item2); // seperator
+			}
+			return input.ToString();
+		}
+
+
 		private string GetA78ControllersAsMnemonic()
 		{
 			StringBuilder input = new StringBuilder("|");
@@ -565,7 +583,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (ControlType == "Dual Gameboy Controller")
 			{
-				return "|.|"; // TODO
+				return GetDualGameBoyControllerAsMnemonic();				
 			}
 
 			StringBuilder input = new StringBuilder("|");
@@ -924,6 +942,18 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void SetDualGameBoyControllerAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+			for (int i = 0; i < Global.DGBMnemonic.Length; i++)
+			{
+				var t = Global.DGBMnemonic[i];
+				if (t.Item1 != null)
+					Force(t.Item1, c[i]);
+			}
+		}
+
 		private void SetC64ControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
@@ -984,7 +1014,8 @@ namespace BizHawk.MultiClient
 			}
 			else if (ControlType == "Dual Gameboy Controller")
 			{
-				return; // TODO
+				SetDualGameBoyControllerAsMnemonic(mnemonic);
+				return;
 			}
 
 			MnemonicChecker c = new MnemonicChecker(mnemonic);

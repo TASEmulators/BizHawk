@@ -1,4 +1,5 @@
-﻿using BizHawk.DiscSystem;
+﻿using System;
+using BizHawk.DiscSystem;
 using System.Collections.Generic;
 #if WINDOWS
 using SlimDX.Direct3D9;
@@ -190,6 +191,35 @@ namespace BizHawk.MultiClient
 			{"Gameboy Controller", 1}, {"GBA Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
 			{"SNES Controller", 4}, {"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2}, {"Atari 7800 ProLine Joystick Controller", 2},
 			{"ColecoVision Basic Controller", 2}, {"Commodore 64 Controller", 2}
+		};
+
+		// just experimenting with different possibly more painful ways to handle mnemonics
+		// |P|UDLRsSBA|
+		public static Tuple<string, char>[] DGBMnemonic = new Tuple<string, char>[]
+		{
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P1 Power", 'P'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P1 Up", 'U'),
+			new Tuple<string, char>("P1 Down", 'D'),
+			new Tuple<string, char>("P1 Left", 'L'),
+			new Tuple<string, char>("P1 Right", 'R'),
+			new Tuple<string, char>("P1 Select", 's'),
+			new Tuple<string, char>("P1 Start", 'S'),
+			new Tuple<string, char>("P1 B", 'B'),
+			new Tuple<string, char>("P1 A", 'A'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P2 Power", 'P'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P2 Up", 'U'),
+			new Tuple<string, char>("P2 Down", 'D'),
+			new Tuple<string, char>("P2 Left", 'L'),
+			new Tuple<string, char>("P2 Right", 'R'),
+			new Tuple<string, char>("P2 Select", 's'),
+			new Tuple<string, char>("P2 Start", 'S'),
+			new Tuple<string, char>("P2 B", 'B'),
+			new Tuple<string, char>("P2 A", 'A'),
+			new Tuple<string, char>(null, '|')
 		};
 
 		/// <summary>
