@@ -45,6 +45,7 @@ namespace BizHawk.MultiClient
 							var ai = f.FindArchiveMember(filename.Substring(1));
 							if (ai != null)
 							{
+								f.Unbind();
 								f.BindArchiveMember(ai);
 								data = Util.ReadAllBytes(f.GetStream());
 							}
