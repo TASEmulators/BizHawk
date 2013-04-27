@@ -1148,6 +1148,7 @@ namespace BizHawk.MultiClient
 			P2_B = "V";
 			P2_Select = "";
 			P2_Start = "";
+			P2_Power = "";
 		}
 	}
 
