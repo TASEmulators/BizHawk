@@ -32,10 +32,13 @@ namespace BizHawk.MultiClient
 				var n = y.SelectSingleNode("./LoadAssets");
 				if (n != null)
 				{
+					MemoryStream HashStream = new MemoryStream();
+
 					foreach (XmlNode a in n.ChildNodes)
 					{
 						string name = a.Name;
 						string filename = a.Attributes["FileName"].Value;
+						byte[] data;
 						if (filename[0] == '|')
 						{
 							// in same archive
@@ -43,8 +46,7 @@ namespace BizHawk.MultiClient
 							if (ai != null)
 							{
 								f.BindArchiveMember(ai);
-								byte[] data = Util.ReadAllBytes(f.GetStream());
-								ret.Assets[name] = data;
+								data = Util.ReadAllBytes(f.GetStream());
 							}
 							else
 							{
@@ -58,20 +60,33 @@ namespace BizHawk.MultiClient
 							fullpath = Path.Combine(fullpath, filename);
 							try
 							{
-								byte[] data = File.ReadAllBytes(fullpath);
-								ret.Assets[name] = data;
+								data = File.ReadAllBytes(fullpath);
 							}
 							catch
 							{
 								throw new Exception("Couldn't load XMLGame LoadAsset \"" + name + "\"");
 							}
 						}
+						ret.Assets[name] = data;
+
+						using (var sha1 = System.Security.Cryptography.SHA1.Create())
+						{
+							sha1.TransformFinalBlock(data, 0, data.Length);
+							HashStream.Write(sha1.Hash, 0, sha1.Hash.Length);
+						}
 					}
+					ret.GI.Hash = Util.Hash_SHA1(HashStream.GetBuffer(), 0, (int)HashStream.Length);
+					HashStream.Close();
+				}
+				else
+				{
+					ret.GI.Hash = "0000000000000000000000000000000000000000";
 				}
 				return ret;
 			}
-			catch
+			catch (Exception e)
 			{
+				System.Windows.Forms.MessageBox.Show(e.ToString(), "XMLGame Load Error");
 				return null;
 			}
 		}
