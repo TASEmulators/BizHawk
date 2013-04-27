@@ -34,6 +34,8 @@ namespace BizHawk.MultiClient
 				{
 					MemoryStream HashStream = new MemoryStream();
 
+					int? OriginalIndex = null;
+
 					foreach (XmlNode a in n.ChildNodes)
 					{
 						string name = a.Name;
@@ -45,6 +47,8 @@ namespace BizHawk.MultiClient
 							var ai = f.FindArchiveMember(filename.Substring(1));
 							if (ai != null)
 							{
+								if (OriginalIndex == null)
+									OriginalIndex = f.GetBoundIndex();
 								f.Unbind();
 								f.BindArchiveMember(ai);
 								data = Util.ReadAllBytes(f.GetStream());
@@ -78,6 +82,11 @@ namespace BizHawk.MultiClient
 					}
 					ret.GI.Hash = Util.Hash_SHA1(HashStream.GetBuffer(), 0, (int)HashStream.Length);
 					HashStream.Close();
+					if (OriginalIndex != null)
+					{
+						f.Unbind();
+						f.BindArchiveMember((int)OriginalIndex);
+					}
 				}
 				else
 				{
