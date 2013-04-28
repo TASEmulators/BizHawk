@@ -249,12 +249,18 @@
     <Compile Include="GBtools\ColorChooserForm.designer.cs">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GBtools\GBGameGenie.cs" />
+    <Compile Include="GBtools\GBGameGenie.Designer.cs">
+      <DependentUpon>GBGameGenie.cs</DependentUpon>
+    </Compile>
     <Compile Include="GBtools\GBGPUView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GBtools\GBGPUView.Designer.cs">
       <DependentUpon>GBGPUView.cs</DependentUpon>
     </Compile>
+    <Compile Include="GenGameGenie.cs" />
+    <Compile Include="GenGameGenie.Designer.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="HistoryCollection.cs" />
@@ -389,6 +395,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SNESTools\SNESGameGenie.cs" />
+    <Compile Include="SNESTools\SNESGameGenie.Designer.cs">
+      <DependentUpon>SNESGameGenie.cs</DependentUpon>
+    </Compile>
     <Compile Include="SNESTools\SNESGraphicsDebugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -403,6 +413,9 @@
     </Compile>
     <Compile Include="SNESTools\SNESOptions.Designer.cs">
       <DependentUpon>SNESOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\AnalogControlPanel.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\HexColor.cs">
       <SubType>Form</SubType>
@@ -451,6 +464,12 @@
     </Compile>
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPadN64.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadN64.Designer.cs">
+      <DependentUpon>VirtualPadN64.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\VirtualPadA78.cs">
       <SubType>UserControl</SubType>
@@ -501,6 +520,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\WatchCommon.cs" />
+    <Compile Include="XmlGame.cs" />
     <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
       <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -540,9 +560,13 @@
     <EmbeddedResource Include="GBtools\ColorChooserForm.resx">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GBtools\GBGameGenie.resx">
+      <DependentUpon>GBGameGenie.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GBtools\GBGPUView.resx">
       <DependentUpon>GBGPUView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GenGameGenie.resx" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -567,6 +591,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SNESTools\SNESGameGenie.resx">
+      <DependentUpon>SNESGameGenie.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SNESTools\SNESGraphicsDebugger.resx">
       <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
@@ -605,6 +632,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="tools\VirtualPadN64.resx">
+      <DependentUpon>VirtualPadN64.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPadA78.resx">
       <DependentUpon>VirtualPadA78.cs</DependentUpon>
     </EmbeddedResource>
