@@ -92,6 +92,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y $(OutDir)mupen64plus.dll $(TargetDir)..\..\..\..\..\BizHawk.MultiClient\output\dll\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\r4300\x86\assemble.c" />
