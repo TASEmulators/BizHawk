@@ -20,6 +20,7 @@ using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.GBA;
 using BizHawk.Emulation.Computers.Commodore64;
 using BizHawk.Emulation;
+using BizHawk.Emulation.Consoles.Nintendo.N64;
 
 namespace BizHawk.MultiClient
 {
@@ -1566,6 +1567,7 @@ namespace BizHawk.MultiClient
 				case "C64": str += "Commodore 64"; break;
 				case "Coleco": str += "ColecoVision"; break;
 				case "GBA": str += "Game Boy Advance"; break;
+				case "N64": str += "Nintendo 64"; break;
 			}
 
 			if (INTERIM) str += " (interim)";
@@ -1797,7 +1799,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML" };
+				string[] romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -2229,6 +2231,12 @@ namespace BizHawk.MultiClient
 									//var gba = new GarboDev.GbaManager(nextComm);
 									gba.Load(rom.RomData, gbabios);
 									nextEmulator = gba;
+								}
+								break;
+							case "N64":
+								if (INTERIM)
+								{
+									nextEmulator = new N64(nextComm, game, rom.RomData);
 								}
 								break;
 						}
@@ -3667,7 +3675,7 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;%ARCH%",
 					"Music Files", "*.psf;*.sid",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
@@ -3687,6 +3695,7 @@ namespace BizHawk.MultiClient
 					"PSF Playstation Sound File (very experimental)", "*.psf",
 					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 					"SID Commodore 64 Music File", "*.sid;%ARCH%",
+					"Nintendo 64", "*.z64;*.v64;*.n64",
 					"All Files", "*.*");
 			}
 			else
