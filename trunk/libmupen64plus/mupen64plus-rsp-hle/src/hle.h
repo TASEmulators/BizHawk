@@ -78,7 +78,7 @@ typedef struct
     unsigned int yield_data_size;
 } OSTask_t;
 
-static inline const OSTask_t * const get_task()
+static const OSTask_t * const get_task()
 {
     return (OSTask_t*)(rsp.DMEM + 0xfc0);
 }
