@@ -357,6 +357,8 @@
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Input.cs" />
+    <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
+    <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Sega.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />

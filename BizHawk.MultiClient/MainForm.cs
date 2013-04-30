@@ -1873,14 +1873,24 @@ namespace BizHawk.MultiClient
 								game = new GameInfo {System = "PSX", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash};
 								disc.Dispose();
 							}
+								/*
 							else
 							{
 								game = new GameInfo {System = "PCECD", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash};
+							}*/
+							else
+							{
+								game = new GameInfo {System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash};
 							}
 						}
 
 						switch (game.System)
 						{
+							case "SAT":
+								var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm);
+								nextEmulator = saturn;
+								break;
+
 							case "PSX":
 								{
 									var psx = new Emulation.Consoles.PSX.Octoshock(nextComm);

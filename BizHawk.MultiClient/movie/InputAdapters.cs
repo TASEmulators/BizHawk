@@ -589,6 +589,10 @@ namespace BizHawk.MultiClient
 			{
 				return ""; // TODO
 			}
+			else if (ControlType == "Saturn Controller")
+			{
+				return ""; // TODO
+			}
 
 			StringBuilder input = new StringBuilder("|");
 
@@ -1022,6 +1026,11 @@ namespace BizHawk.MultiClient
 				return;
 			}
 			else if (ControlType == "Nintento 64 Controller")
+			{
+				// TODO
+				return;
+			}
+			else if (ControlType == "Saturn Controller")
 			{
 				// TODO
 				return;
