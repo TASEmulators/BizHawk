@@ -19,7 +19,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public IVideoProvider VideoProvider { get { return this; } }
 		public int[] frameBuffer = new int[640 * 480];
-		public int[] GetVideoBuffer() { return frameBuffer; }
+		public int[] GetVideoBuffer() 
+		{
+			for (int row = 0; row < 480; row++)
+			{
+				for (int col = 0; col < 640; col++)
+				{
+					int i = row * 640 + col;
+					frameBuffer[(479 - row) * 640 + col] = (m64p_FrameBuffer[(i * 3)] << 16) + (m64p_FrameBuffer[(i * 3) + 1] << 8) + (m64p_FrameBuffer[(i * 3) + 2]);
+				}
+			}
+			return frameBuffer;
+		}
 		public int VirtualWidth { get { return 640; } }
 		public int BufferWidth { get { return 640; } }
 		public int BufferHeight { get { return 480; } }
@@ -48,7 +59,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get { return true; } }
 		public void ResetFrameCounter() { }
-		public void FrameAdvance(bool render, bool rendersound) { Frame++; }
+		public void FrameAdvance(bool render, bool rendersound) 
+		{
+			m64pFrameComplete = false;
+			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
+			while (m64pFrameComplete == false) { }
+			Frame++; 
+		}
 
 		public bool DeterministicEmulation { get; set; }
 
@@ -165,6 +182,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreDoCommandRefInt(m64p_command Command, int ParamInt, ref int ParamPtr);
 		CoreDoCommandRefInt m64pCoreDoCommandRefInt;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreDoCommandFrameCallback(m64p_command Command, int ParamInt, FrameCallback ParamPtr);
+		CoreDoCommandFrameCallback m64pCoreDoCommandFrameCallback;
+
+		// Graphics plugin specific
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void ReadScreen2(byte[] framebuffer, ref int width, ref int height, int buffer);
+		ReadScreen2 GFXReadScreen2;
 
 		// This has the same calling pattern for all the plugins
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -175,11 +200,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public delegate void DebugCallback(IntPtr Context, int level, string Message);
 
+		public delegate void FrameCallback();
+		FrameCallback m64pFrameCallback;
+		
+		byte[] m64p_FrameBuffer = new byte[640 * 480 * 3];
+		public void Getm64pFrameBuffer()
+		{
+			int width = 0;
+			int height = 0;
+			GFXReadScreen2(m64p_FrameBuffer, ref width, ref height, 0);
+			m64pFrameComplete = true;
+		}
+
 		IntPtr CoreDll;
 		IntPtr GfxDll;
 		IntPtr RspDll;
 
 		Thread m64pEmulator;
+
+		bool m64pFrameComplete = false;
 
 		public N64(CoreComm comm, GameInfo game, byte[] rom)
 		{
@@ -196,9 +235,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pCoreDoCommandByteArray = (CoreDoCommandByteArray)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandByteArray));
 			m64pCoreDoCommandPtr = (CoreDoCommandPtr)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandPtr));
 			m64pCoreDoCommandRefInt = (CoreDoCommandRefInt)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRefInt));
+			m64pCoreDoCommandFrameCallback = (CoreDoCommandFrameCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandFrameCallback));
 			m64pCoreAttachPlugin = (CoreAttachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreAttachPlugin"), typeof(CoreAttachPlugin));
 
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
+			GFXReadScreen2 = (ReadScreen2)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2));
 
 			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
 
@@ -219,6 +260,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			// Set up and connect the graphics plugin
 			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_RSP, RspDll);
+
+			// Set up the frame callback function
+			m64pFrameCallback = new FrameCallback(Getm64pFrameBuffer);
+			result = m64pCoreDoCommandFrameCallback(m64p_command.M64CMD_SET_FRAME_CALLBACK, 0, m64pFrameCallback);
 
 			m64pEmulator = new Thread(ExecuteEmulator);
 			m64pEmulator.Start();
