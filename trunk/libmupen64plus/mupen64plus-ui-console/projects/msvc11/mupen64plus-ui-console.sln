@@ -14,6 +14,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-audio-sdl", "..
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-video-glide64mk2", "..\..\..\mupen64plus-video-glide64mk2\projects\msvc10\mupen64plus-video-glide64mk2.vcxproj", "{A4D13408-A794-4199-8FC7-4A9A32505005}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-audio-bkm", "..\..\..\mupen64plus-audio-bkm\mupen64plus-audio-bkm\mupen64plus-audio-bkm.vcxproj", "{B6F20769-1385-4C0F-91A9-26F47AD1E78F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -48,6 +50,10 @@ Global
 		{A4D13408-A794-4199-8FC7-4A9A32505005}.Debug|Win32.Build.0 = Debug|Win32
 		{A4D13408-A794-4199-8FC7-4A9A32505005}.Release|Win32.ActiveCfg = Release|Win32
 		{A4D13408-A794-4199-8FC7-4A9A32505005}.Release|Win32.Build.0 = Release|Win32
+		{B6F20769-1385-4C0F-91A9-26F47AD1E78F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B6F20769-1385-4C0F-91A9-26F47AD1E78F}.Debug|Win32.Build.0 = Debug|Win32
+		{B6F20769-1385-4C0F-91A9-26F47AD1E78F}.Release|Win32.ActiveCfg = Release|Win32
+		{B6F20769-1385-4C0F-91A9-26F47AD1E78F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

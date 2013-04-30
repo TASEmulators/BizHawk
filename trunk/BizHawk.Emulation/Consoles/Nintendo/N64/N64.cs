@@ -36,8 +36,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public int BufferHeight { get { return 480; } }
 		public int BackgroundColor { get { return 0; } }
 
+		short[] m64pAudioBuffer;
 		public ISoundProvider SoundProvider { get { return this; } }
-		public void GetSamples(short[] samples) { }
+		public void GetSamples(short[] samples)
+		{
+			if (m64pAudioBuffer.Length > 0)
+			{
+				for (int i = 0; i < samples.Length / 2; i++)
+				{
+					samples[i * 2] = m64pAudioBuffer[(int)((((double)m64pAudioBuffer.Length / 2) / (double)(samples.Length / 2)) * i) * 2];
+					samples[i * 2 + 1] = m64pAudioBuffer[(int)((((double)m64pAudioBuffer.Length / 2) / (double)(samples.Length / 2)) * i) * 2 + 1]; ;
+				}
+			}
+		}
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
 		public ISyncSoundProvider SyncSoundProvider { get { return null; } }
@@ -202,12 +213,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		private delegate void ReadScreen2(byte[] framebuffer, ref int width, ref int height, int buffer);
 		ReadScreen2 GFXReadScreen2;
 
+		// Audio plugin specific
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate int GetBufferSize();
+		GetBufferSize AudGetBufferSize;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void ReadAudioBuffer(short[] dest);
+		ReadAudioBuffer AudReadAudioBuffer;
+
 		// This has the same calling pattern for all the plugins
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate m64p_error PluginStartup(IntPtr CoreHandle, string Context, DebugCallback DebugCallback);
 
 		PluginStartup GfxPluginStartup;
 		PluginStartup RspPluginStartup;
+		PluginStartup AudPluginStartup;
 
 		public delegate void DebugCallback(IntPtr Context, int level, string Message);
 
@@ -227,12 +248,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		VICallback m64pVICallback;
 		public void FrameComplete()
 		{
+			int m64pAudioBufferSize = AudGetBufferSize();
+			m64pAudioBuffer = new short[m64pAudioBufferSize];
+			if (m64pAudioBufferSize > 0)
+			{
+				AudReadAudioBuffer(m64pAudioBuffer);
+			}
 			m64pFrameComplete = true;
 		}
 
 		IntPtr CoreDll;
 		IntPtr GfxDll;
 		IntPtr RspDll;
+		IntPtr AudDll;
 
 		Thread m64pEmulator;
 
@@ -248,6 +276,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			CoreDll = LoadLibrary("mupen64plus.dll");
 			GfxDll = LoadLibrary("mupen64plus-video-rice.dll");
 			RspDll = LoadLibrary("mupen64plus-rsp-hle.dll");
+			AudDll = LoadLibrary("mupen64plus-audio-bkm.dll");
 
 			m64pCoreStartup = (CoreStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreStartup"), typeof(CoreStartup));
 			m64pCoreDoCommandByteArray = (CoreDoCommandByteArray)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandByteArray));
@@ -260,6 +289,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
 			GFXReadScreen2 = (ReadScreen2)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2));
 
+			AudPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "PluginStartup"), typeof(PluginStartup));
+			AudGetBufferSize = (GetBufferSize)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetBufferSize"), typeof(GetBufferSize));
+			AudReadAudioBuffer = (ReadAudioBuffer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "ReadAudioBuffer"), typeof(ReadAudioBuffer));
+
 			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
 
 			// Set up the core
@@ -271,7 +304,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
 
 			// Set up a null audio plugin
-			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, IntPtr.Zero);
+			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
+			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, AudDll);
 
 			// Set up a null input plugin
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, IntPtr.Zero);
