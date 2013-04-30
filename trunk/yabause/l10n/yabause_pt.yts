@@ -1,0 +1,195 @@
+%1/%2 blocks free|%1/%2 blocos livres
+%1 Images (*.%2)|%1 Images (*.%2)
+503/512 blocks free|503/512 blocos livres
+510/512 blocks free|510/512 blocos livres
+About...|Sobre...
+&About...|&Sobre...
+About|Sobre
+&Action Replay|&Action Replay
+Action Replay Code :|Código do Action Replay
+Add Action Replay Code|Adicionar Código do Action Replay
+Add Codes...|Adicionar Códigos...
+Add Raw Memory Code|Adicionar o Endereço Original da Memória
+Address :|Endereço :
+Advanced|Avançado
+<a href="http://www.monkeystudio.org"><img src=":/icons/icons/made.png"></a>|<a href="http://www.monkeystudio.org"><img src=":/icons/icons/made.png"></a>
+Are you sure you want to delete '%1' ?|Você tem certeza de que deseja excluir '%1' ?
+Are you sure you want to format '%1' ?|Você tem certeza de que deseja formatar '%1' ?
+Backup Manager|Gerenciador de Backups
+Backup Manager...|Gerenciador de Backups...
+&Backup Ram Manager|&Gerenciador da Ram de Backup
+Backup Ram Manager|Gerenciador da Ram de Backup
+Bios|Bios
+Block Size :|Tamanho dos Blocos :
+&Browse|&Procurar
+Browse|Procurar
+Byte Write|Gravar Byte
+Cancel|Cancelar
+Cannot initialize|Não pode inicializar
+&Capture Screen|&Capturar Tela
+Cart/Memory|Cartucho/Memória
+Cartridge|Cartucho
+CD Images (*.iso *.cue *.bin)|Imagens de CD (*.iso *.cue *.bin)
+Cd-Rom|CD-Rom
+&Cheats|&Trapaças
+Cheats|Trapaças
+Cheats File|Arquivo de Trapaças
+&Cheat List|Lista de &Trapaças
+Cheats List|Lista de Trapaças
+Cheats List...|Lista de Trapaças
+Cheat Type|Tipo de Trapaça
+Choose a cdrom drive/mount point|Escolha um leitor de CD ou um ponto de montagem
+Choose a cheat file to open|Escolha um arquivo de trapaças para abrir
+Choose a cheat file to save to|Escolha um arquivo de trapaças para salvar
+Choose a file to save your state|Escolha um arquivo para salvar seu estado
+Choose a location for your screenshot|Escolha um local para sua captura de tela
+&Clear|&Limpar
+Close|Fechar
+Code|Código
+Comment :|Comentário :
+Data Size :|Tamanho dos Dados :
+_Debug|_Debug
+&Debug|&Debug
+&Delete|&Excluir
+Delete|Excluir
+Description|Descrição
+Description :|Descrição :
+Device List|Lista de Dispositivos
+Disabled|Desativado
+Down|Para baixo
+Download|Baixar
+Emu-Compatibility|Compatibilidade com o Emu
+Emulation|Emulação
+End Address:|Endereço Final:
+Enable|Ativar
+Enabled|Ativado
+English|Inglês
+&File|&Arquivo
+File|Arquivo
+File :|Arquivo :
+File Name :|Nome do Arquivo :
+File transfer|Transferência de arquivo
+<font color="red"><b>WARNING:</b> Master Codes are <b>NOT</b> supported.</font>|<font color="red"><b>AVISO:</b> Códigos Mestres <b>NÃO</b> são suportados.</font>
+Format|Formato
+FPS|QPS
+Frame Skip/Limiter|Pulo de quadros/Limitador
+French|Francês
+From|De
+From File|Do Arquivo
+From File...|Do Arquivo...
+&Fullscreen|Tela cheia
+Fullscreen|Tela cheia
+General|Geral
+German|Alemão
+Hard Reset|Reiniciar Hardware
+Height|Altura
+_Help|_Ajuda
+&Help|&Ajuda
+http://www.emu-compatibility.com/yabause/index.php?lang=uk|http://www.emu-compatibility.com/yabause/index.php?lang=uk
+http://www.monkeystudio.org|http://www.monkeystudio.org
+Input|Controles
+Invalid Address|Endereço Inválido
+Invalid Value|Valor Inválido
+Italian|Italiano
+Japanese|Japonês
+Language :|Idioma :
+&Layer|&Camada
+Layer|Camada
+Left|Esquerda
+Left trigger|Gatilho esquerdo
+Load as executable|Carregar como executável
+Load|Carregar
+&Load From File|&Carregar Do Arquivo
+Load State|Carregar Estado
+Load State As|Carregar Estado como
+Log|Log
+Long Write|Escrita Longa
+M68K|M68K
+Memory dump|Dump de memória
+Memory Dump|Dump de Memória
+Memory Editor|Editor de Memória
+&Memory Transfer|&Transferência de Memória
+Memory Transfer|Transferência de Memória
+Memory|Memória
+Mpeg ROM|ROM Mpeg
+MSH2|MSH2
+NBG0|NBG0
+NBG1|NBG1
+NBG2|NBG2
+NBG3|NBG3
+Ok|Ok
+&OK|&OK
+Open CD Rom|Abrir CD Rom
+Open CD Rom...|Abrir CD Rom...
+Open ISO|Abrir ISO
+Open ISO...|Abrir ISO...
+&Pause|&Pausar
+Pause|Pausar
+&Quit|&Sair
+Quit|Sair
+&Raw Memory Address|&Endereço Original da Memória
+RBG0|RBG0
+Region|Região
+&Reset|&Reiniciar
+Reset|Reiniciar
+Resolution|Resolução
+Right|Direita
+Right trigger|Gatilho direito
+R&un|Exec&utar
+Run|Executar
+Save Information|Informações sobre os Saves
+Save List|Lista dos Saves
+Save|Salvar
+Save State|Salvar Estado
+Save State As|Salvar Estado Como
+Save States|Salvar Estado
+&Save To File|&Salvar Para Arquivo
+Screenshot|Captura de tela
+SCSP|SCSP
+SCU-DSP|SCU-DSP
+Select a file to load your state|Escolha um arquivo para carregar seu estado
+Select your iso/cue/bin file|Escolha seu arquivo iso/cue/bin
+&Settings...|Configuraçõe&s...
+Settings|Configurações
+SH2 Interpreter|Interpretador SH2
+Sound Core|Núcleo de Som
+Sound|Som
+Spanish|Espanhol
+SSH2|SSH2
+Start|Iniciar
+Start Address:|Endereço Inicial:
+Status|Estado
+Store|Armazenar
+To File|Para Arquivo
+To File...|Para arquivo...
+toolBar|Barra de ferramentas
+Tools|Ferramentas
+To|Para
+Transfer|Transferência
+Translation|Tradução
+Unable to add code|Não foi possível adicionar código
+Unable to change description|Não foi possível modificar a descrição
+Unable to open file for loading|Não foi possível carregar o arquivo
+Unable to open file for saving|Não foi possível salvar o arquivo
+Unable to remove code|Não foi possível remover o código
+Unknow (%1)|Desconh (%1)
+Up|Para cima
+Upload|Subir
+Value :|Valor :
+Vdp1|Vdp1
+VDP1|VDP1
+Vdp2|Vdp2
+VDP2|VDP2
+Video Core|Núcleo de Vídeo
+Video Driver|Driver de Vídeo
+Video Format|Formato do Vídeo
+Video|Vídeo
+_View|_Visualizar
+&View|&Visualizar
+Waiting Input...|Aguardando Entrada de Dados...
+Width|Largura
+Word Write|Escrita Word
+Yabause Cheat Files (*.yct);;All Files (*)|Arquivos de trapaça Yabause (*.yct);;Todos os arquivos (*)
+Yabause Qt Gui<br />Based on Yabause 0.9.5<br /><a href="http://yabause.org">http://yabause.org</a><br />The Yabause Team<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>|Gui Qt do Yabause<br />Baseada no Yabause 0.9.5<br /><a href="http://yabause.org">http://yabause.org</a><br />O Time do Yabause<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>
+Yabause Qt GUI|Interface Gráfica do Usuário em Qt do Yabause
+Yabause Save State (*.yss)|Estado Salvo do Yabause

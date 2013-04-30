@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile
+	Name="NSIS script"
+	Version="8.00"
+	>
+	<Rules>
+		<CustomBuildRule
+			Name="NSIS script"
+			DisplayName="NSIS script"
+                        CommandLine="makensis &quot;/XOutFile '$(TargetPath)'&quot; $(InputName).nsi"
+                        Outputs="$(TargetPath)"
+			FileExtensions="*.nsi"
+                        ExecutionDescription="Building NSIS script $(InputName).nsi..."
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+	</Rules>
+</VisualStudioToolFile>

@@ -1,0 +1,63 @@
+<?xml version="1.0" standalone="yes"?>
+<object class="NSIBObjectData">
+  <object name="rootObject" class="NSCustomObject" id="1">
+  </object>
+  <array count="6" name="allObjects">
+    <object class="IBCarbonStaticText" id="319">
+      <string name="title">Address</string>
+      <string name="bounds">55 20 71 72 </string>
+    </object>
+    <object class="IBCarbonButton" id="181">
+      <ostype name="controlSignature">conf</ostype>
+      <int name="controlID">50</int>
+      <string name="title">Browse</string>
+      <string name="bounds">20 239 40 309 </string>
+    </object>
+    <object class="IBCarbonEditText" id="180">
+      <ostype name="controlSignature">conf</ostype>
+      <int name="controlID">1</int>
+      <string name="bounds">23 23 39 228 </string>
+    </object>
+    <object class="IBCarbonWindow" id="166">
+      <boolean name="hasCollapseBox">FALSE</boolean>
+      <boolean name="hasHorizontalZoom">FALSE</boolean>
+      <boolean name="isResizable">FALSE</boolean>
+      <boolean name="hasVerticalZoom">FALSE</boolean>
+      <int name="carbonWindowClass">5</int>
+      <string name="title">Load</string>
+      <object name="rootControl" class="IBCarbonRootControl" id="167">
+        <array count="4" name="subviews">
+          <reference idRef="180"/>
+          <reference idRef="181"/>
+          <object class="IBCarbonEditText" id="318">
+            <ostype name="controlSignature">conf</ostype>
+            <int name="controlID">2</int>
+            <string name="bounds">55 83 71 306 </string>
+          </object>
+          <reference idRef="319"/>
+        </array>
+        <string name="bounds">0 0 94 329 </string>
+      </object>
+      <string name="windowRect">72 111 166 440 </string>
+      <string name="ScreenRectAtEncodeTime">60 0 778 1280 </string>
+    </object>
+    <reference idRef="167"/>
+    <reference idRef="318"/>
+  </array>
+  <array count="6" name="allParents">
+    <reference idRef="167"/>
+    <reference idRef="167"/>
+    <reference idRef="167"/>
+    <reference idRef="1"/>
+    <reference idRef="166"/>
+    <reference idRef="167"/>
+  </array>
+  <dictionary count="2" name="nameTable">
+    <string>Dialog</string>
+    <reference idRef="166"/>
+    <string>File&apos;s Owner</string>
+    <reference idRef="1"/>
+  </dictionary>
+  <string name="targetFramework">IBCarbonFramework</string>
+  <unsigned_int name="nextObjectID">320</unsigned_int>
+</object>
