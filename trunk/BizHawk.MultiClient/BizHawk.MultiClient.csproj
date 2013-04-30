@@ -420,7 +420,9 @@
     <Compile Include="SNESTools\SNESOptions.Designer.cs">
       <DependentUpon>SNESOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\AnalogControlPanel.cs" />
+    <Compile Include="tools\AnalogControlPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\HexColor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -511,7 +513,9 @@
     <Compile Include="tools\VirtualPadGen3Button.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="tools\VirtualPadN64.cs" />
+    <Compile Include="tools\VirtualPadN64.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="tools\VirtualPadN64.Designer.cs">
       <DependentUpon>VirtualPadN64.cs</DependentUpon>
     </Compile>

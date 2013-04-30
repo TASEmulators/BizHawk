@@ -585,6 +585,10 @@ namespace BizHawk.MultiClient
 			{
 				return GetDualGameBoyControllerAsMnemonic();				
 			}
+			else if (ControlType == "Nintento 64 Controller")
+			{
+				return ""; // TODO
+			}
 
 			StringBuilder input = new StringBuilder("|");
 
@@ -1015,6 +1019,11 @@ namespace BizHawk.MultiClient
 			else if (ControlType == "Dual Gameboy Controller")
 			{
 				SetDualGameBoyControllerAsMnemonic(mnemonic);
+				return;
+			}
+			else if (ControlType == "Nintento 64 Controller")
+			{
+				// TODO
 				return;
 			}
 
