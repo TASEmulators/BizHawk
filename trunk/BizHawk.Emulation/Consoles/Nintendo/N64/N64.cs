@@ -161,6 +161,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			M64CMD_ADVANCE_FRAME
 		};
 
+		enum m64p_emu_state
+		{
+		  M64EMU_STOPPED = 1,
+		  M64EMU_RUNNING,
+		  M64EMU_PAUSED
+		};
+
 		//[DllImport(@"..\..\libmupen64plus\mupen64plus-ui-console\projects\msvc11\Release\mupen64plus.dll", CallingConvention = CallingConvention.Cdecl)]
 		//static extern m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string context, DebugCallback DebugCallback, string context2, IntPtr bar);
 
@@ -267,6 +274,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 			m64pEmulator = new Thread(ExecuteEmulator);
 			m64pEmulator.Start();
+
+			int state = -1;
+			do
+			{
+				m64pCoreDoCommandRefInt(m64p_command.M64CMD_CORE_STATE_QUERY, 1, ref state);
+			} while (state != (int)m64p_emu_state.M64EMU_PAUSED);
 		}
 
 		public void ExecuteEmulator()

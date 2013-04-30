@@ -985,7 +985,7 @@ void r4300_execute(void)
     debug_count = 0;
     delay_slot=0;
     stop = 0;
-    rompause = 0;
+    rompause = 1;
 
     /* clear instruction counters */
 #if defined(COUNT_INSTR)
