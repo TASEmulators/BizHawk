@@ -32,6 +32,7 @@
 #include "m64p_vidext.h"
 #include "vidext.h"
 #include "callbacks.h"
+#include "SDL_syswm.h"
 
 #if SDL_VERSION_ATLEAST(2,0,0)
 #include "vidext_sdl2_compat.h"
@@ -183,6 +184,7 @@ EXPORT m64p_error CALL VidExt_SetVideoMode(int Width, int Height, int BitsPerPix
 {
     const SDL_VideoInfo *videoInfo;
     int videoFlags = 0;
+	SDL_SysWMinfo SysInfo;
 
     /* call video extension override if necessary */
     if (l_VideoExtensionActive)
@@ -225,12 +227,21 @@ EXPORT m64p_error CALL VidExt_SetVideoMode(int Width, int Height, int BitsPerPix
     else
         DebugMessage(M64MSG_INFO, "Setting video mode: %ix%i", Width, Height);
 
+	videoFlags |= SDL_NOFRAME;
+
     l_pScreen = SDL_SetVideoMode(Width, Height, BitsPerPixel, videoFlags);
     if (l_pScreen == NULL)
     {
         DebugMessage(M64MSG_ERROR, "SDL_SetVideoMode failed: %s", SDL_GetError());
         return M64ERR_SYSTEM_FAIL;
     }
+
+	SDL_VERSION(&SysInfo.version);
+	if (SDL_GetWMInfo(&SysInfo))
+	{
+		// Hide the SDL window
+		ShowWindow(SysInfo.window,0);
+	}
 
     SDL_ShowCursor(SDL_DISABLE);
 
