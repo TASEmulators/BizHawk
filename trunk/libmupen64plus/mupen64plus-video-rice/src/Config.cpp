@@ -941,7 +941,8 @@ BOOL ReadIniFile()
 {
     std::ifstream inifile;
     char readinfo[100];
-    const char *ini_filepath = ConfigGetSharedDataFilepath(szIniFileName);
+    //const char *ini_filepath = ConfigGetSharedDataFilepath(szIniFileName);
+	const char *ini_filepath = ".\\RiceVideoLinux.ini";
 
     DebugMessage(M64MSG_VERBOSE, "Reading .ini file: %s", ini_filepath);
     inifile.open(ini_filepath);

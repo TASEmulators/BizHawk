@@ -81,11 +81,153 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public void Dispose() { }
 
+		[DllImport("kernel32.dll")]
+		public static extern IntPtr LoadLibrary(string dllToLoad);
+
+		[DllImport("kernel32.dll")]
+		public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+
+		[DllImport("kernel32.dll")]
+		public static extern bool FreeLibrary(IntPtr hModule);
+
+		enum m64p_error
+		{
+			M64ERR_SUCCESS = 0,
+			M64ERR_NOT_INIT,        /* Function is disallowed before InitMupen64Plus() is called */
+			M64ERR_ALREADY_INIT,    /* InitMupen64Plus() was called twice */
+			M64ERR_INCOMPATIBLE,    /* API versions between components are incompatible */
+			M64ERR_INPUT_ASSERT,    /* Invalid parameters for function call, such as ParamValue=NULL for GetCoreParameter() */
+			M64ERR_INPUT_INVALID,   /* Invalid input data, such as ParamValue="maybe" for SetCoreParameter() to set a BOOL-type value */
+			M64ERR_INPUT_NOT_FOUND, /* The input parameter(s) specified a particular item which was not found */
+			M64ERR_NO_MEMORY,       /* Memory allocation failed */
+			M64ERR_FILES,           /* Error opening, creating, reading, or writing to a file */
+			M64ERR_INTERNAL,        /* Internal error (bug) */
+			M64ERR_INVALID_STATE,   /* Current program state does not allow operation */
+			M64ERR_PLUGIN_FAIL,     /* A plugin function returned a fatal error */
+			M64ERR_SYSTEM_FAIL,     /* A system function call, such as an SDL or file operation, failed */
+			M64ERR_UNSUPPORTED,     /* Function call is not supported (ie, core not built with debugger) */
+			M64ERR_WRONG_TYPE       /* A given input type parameter cannot be used for desired operation */
+		};
+
+		enum m64p_plugin_type
+		{
+			M64PLUGIN_NULL = 0,
+			M64PLUGIN_RSP = 1,
+			M64PLUGIN_GFX,
+			M64PLUGIN_AUDIO,
+			M64PLUGIN_INPUT,
+			M64PLUGIN_CORE
+		};
+
+		enum m64p_command
+		{
+			M64CMD_NOP = 0,
+			M64CMD_ROM_OPEN,
+			M64CMD_ROM_CLOSE,
+			M64CMD_ROM_GET_HEADER,
+			M64CMD_ROM_GET_SETTINGS,
+			M64CMD_EXECUTE,
+			M64CMD_STOP,
+			M64CMD_PAUSE,
+			M64CMD_RESUME,
+			M64CMD_CORE_STATE_QUERY,
+			M64CMD_STATE_LOAD,
+			M64CMD_STATE_SAVE,
+			M64CMD_STATE_SET_SLOT,
+			M64CMD_SEND_SDL_KEYDOWN,
+			M64CMD_SEND_SDL_KEYUP,
+			M64CMD_SET_FRAME_CALLBACK,
+			M64CMD_TAKE_NEXT_SCREENSHOT,
+			M64CMD_CORE_STATE_SET,
+			M64CMD_READ_SCREEN,
+			M64CMD_RESET,
+			M64CMD_ADVANCE_FRAME
+		};
+
+		//[DllImport(@"..\..\libmupen64plus\mupen64plus-ui-console\projects\msvc11\Release\mupen64plus.dll", CallingConvention = CallingConvention.Cdecl)]
+		//static extern m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string context, DebugCallback DebugCallback, string context2, IntPtr bar);
+
+		// Core Specifc functions
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string Context, DebugCallback DebugCallback, string context2, IntPtr dummy);
+		CoreStartup m64pCoreStartup;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreAttachPlugin(m64p_plugin_type PluginType, IntPtr PluginLibHandle);
+		CoreAttachPlugin m64pCoreAttachPlugin;
+
+		// The last parameter is a void pointer, so make a few delegates for the versions we want to use
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreDoCommandByteArray(m64p_command Command, int ParamInt, byte[] ParamPtr);
+		CoreDoCommandByteArray m64pCoreDoCommandByteArray;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreDoCommandPtr(m64p_command Command, int ParamInt, IntPtr ParamPtr);
+		CoreDoCommandPtr m64pCoreDoCommandPtr;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreDoCommandRefInt(m64p_command Command, int ParamInt, ref int ParamPtr);
+		CoreDoCommandRefInt m64pCoreDoCommandRefInt;
+
+		// This has the same calling pattern for all the plugins
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate m64p_error PluginStartup(IntPtr CoreHandle, string Context, DebugCallback DebugCallback);
+
+		PluginStartup GfxPluginStartup;
+		PluginStartup RspPluginStartup;
+
+		public delegate void DebugCallback(IntPtr Context, int level, string Message);
+
+		IntPtr CoreDll;
+		IntPtr GfxDll;
+		IntPtr RspDll;
+
+		Thread m64pEmulator;
+
 		public N64(CoreComm comm, GameInfo game, byte[] rom)
 		{
 			CoreComm = comm;
 			this.rom = rom;
 			this.game = game;
+
+			// Load the core DLL and retrieve some function pointers
+			CoreDll = LoadLibrary("mupen64plus.dll");
+			GfxDll = LoadLibrary("mupen64plus-video-rice.dll");
+			RspDll = LoadLibrary("mupen64plus-rsp-hle.dll");
+
+			m64pCoreStartup = (CoreStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreStartup"), typeof(CoreStartup));
+			m64pCoreDoCommandByteArray = (CoreDoCommandByteArray)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandByteArray));
+			m64pCoreDoCommandPtr = (CoreDoCommandPtr)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandPtr));
+			m64pCoreDoCommandRefInt = (CoreDoCommandRefInt)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRefInt));
+			m64pCoreAttachPlugin = (CoreAttachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreAttachPlugin"), typeof(CoreAttachPlugin));
+
+			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
+
+			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
+
+			// Set up the core
+			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); }, "", IntPtr.Zero);
+			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);
+
+			// Set up and connect the graphics plugin
+			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
+			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
+
+			// Set up a null audio plugin
+			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, IntPtr.Zero);
+
+			// Set up a null input plugin
+			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, IntPtr.Zero);
+
+			// Set up and connect the graphics plugin
+			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
+			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_RSP, RspDll);
+
+			m64pEmulator = new Thread(ExecuteEmulator);
+			m64pEmulator.Start();
+		}
+
+		public void ExecuteEmulator()
+		{
+			byte[] blah = new byte[1];
+			m64pCoreDoCommandPtr(m64p_command.M64CMD_EXECUTE, 0, IntPtr.Zero);
 		}
 	}
 }
