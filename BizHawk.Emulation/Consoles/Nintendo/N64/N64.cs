@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		Thread m64pEmulator;
 
-		bool m64pFrameComplete = false;
+		volatile bool m64pFrameComplete = false;
 
 		public N64(CoreComm comm, GameInfo game, byte[] rom)
 		{
