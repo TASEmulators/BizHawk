@@ -300,7 +300,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public void ExecuteEmulator()
 		{
-			byte[] blah = new byte[1];
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_EXECUTE, 0, IntPtr.Zero);
 		}
 	}
