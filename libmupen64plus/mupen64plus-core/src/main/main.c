@@ -690,8 +690,8 @@ void new_vi(void)
         time = (int)(CalculatedTime - CurrentFPSTime);
         if (time > 0 && l_MainSpeedLimit)
         {
-            DebugMessage(M64MSG_VERBOSE, "    new_vi(): Waiting %ims", time);
-            SDL_Delay(time);
+            DebugMessage(M64MSG_VERBOSE, "    new_vi()");
+            //SDL_Delay(time);
         }
         CurrentFPSTime = CurrentFPSTime + time;
     }
