@@ -73,6 +73,7 @@
 m64p_handle g_CoreConfig = NULL;
 
 m64p_frame_callback g_FrameCallback = NULL;
+m64p_vi_callback g_VICallback = NULL;
 
 int         g_MemHasBeenBSwapped = 0;   // store byte-swapped flag so we don't swap twice when re-playing game
 int         g_EmulatorRunning = 0;      // need separate boolean to tell if emulator is running, since --nogui doesn't use a thread
@@ -652,12 +653,6 @@ void new_frame(void)
 
     /* advance the current frame */
     l_CurrentFrame++;
-
-    if (l_FrameAdvance) {
-        rompause = 1;
-        l_FrameAdvance = 0;
-        StateChanged(M64CORE_EMU_STATE, M64EMU_PAUSED);
-    }
 }
 
 void new_vi(void)
@@ -709,6 +704,14 @@ void new_vi(void)
     
     LastFPSTime = CurrentFPSTime ;
     end_section(IDLE_SECTION);
+	if (g_VICallback != NULL)
+        (*g_VICallback)();
+
+    if (l_FrameAdvance) {
+        rompause = 1;
+        l_FrameAdvance = 0;
+        StateChanged(M64CORE_EMU_STATE, M64EMU_PAUSED);
+    }
 }
 
 /*********************************************************************************************************
