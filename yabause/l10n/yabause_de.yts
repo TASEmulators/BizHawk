@@ -1,0 +1,195 @@
+%1/%2 blocks free|%1/%2 blöcke frei
+%1 Images (*.%2)|Bilder %1 (*.%2)
+503/512 blocks free|503/512 blöcke frei
+510/512 blocks free|510/512 blöcke frei
+About...|Über...
+&About...|&Ü Über...
+About|Über
+&Action Replay|&Action Replay
+Action Replay Code :|Action Replay Code :
+Add Action Replay Code|Action Replay Code zufügen
+Add Codes...|Codes zufügen...
+Add Raw Memory Code|Raw Memory Code zufügen
+Address :|Adresse :
+Advanced|Sonstiges
+<a href="http://www.monkeystudio.org"><img src=":/icons/icons/made.png"></a>|<a href="http://www.monkeystudio.org"><img src=":/icons/icons/made.png"></a>
+Are you sure you want to delete '%1' ?|Sind Sie sicher, dass Sie '%1' löschen möchten ?
+Are you sure you want to format '%1' ?|Sind Sie sicher, dass Sie '%1' formatieren möchten ?
+Backup Manager|Backup Manager
+Backup Manager...|Backup Manager...
+&Backup Ram Manager|&Backup Ram Manager
+Backup Ram Manager|Backup Ram Manager
+Bios|Bios
+Block Size :|Blockgröße :
+&Browse|&Browse
+Browse|Suchen
+Byte Write|Byte schreiben
+Cancel|Abbrechen
+Cannot initialize|Initialisierung fehlgeschlagen
+&Capture Screen|&Capture Screen
+Cart/Memory|Cartridge/Speicher
+Cartridge|Cartridge
+CD Images (*.iso *.cue *.bin)|CD Images (*.iso *.cue *.bin)
+Cd-Rom|Cd-Rom
+&Cheats|&Cheats
+Cheats|Cheats
+Cheats File|Cheatdatei
+&Cheat List|&Cheat List
+Cheats List|Cheatliste
+Cheats List...|Cheatliste...
+Cheat Type|Cheattyp
+Choose a cdrom drive/mount point|CD-Rom Laufwerk/Mount-Punkt auswählen
+Choose a cheat file to open|Cheatdatei zum öffnen auswählen
+Choose a cheat file to save to|Cheatdatei zum speichern auswählen
+Choose a file to save your state|Datei zum speichern des Status auswählen
+Choose a location for your screenshot|Speicherort für das Bildschirmfoto auswählen
+&Clear|&Leeren
+Close|Schliessen
+Code|Code
+Comment :|Kommentar :
+Data Size :|Datengrösse :
+_Debug|_Debug
+&Debug|&Debug
+&Delete|&Löschen
+Delete|Löschen
+Description|Beschreibung
+Description :|Beschreibung :
+Device List|Geräteliste
+Disabled|Deaktiviert
+Down|Runter
+Download|Herunterladen
+Emu-Compatibility|Emu-Kombatibilität
+Emulation|Emulation
+End Address:|Adressende
+Enable|Aktivieren
+Enabled|Aktiviert
+English|Englisch
+&File|&Datei
+File|Datei
+File :|File :
+File Name :|Dateiname :
+File transfer|Dateiübertragung
+<font color="red"><b>WARNING:</b> Master Codes are <b>NOT</b> supported.</font>|<font color="red"><b>WARNUNG :</b>Mastercodes werden <b>NICHT</b> unterstützt.</font>
+Format|Formatieren
+FPS|BPS
+Frame Skip/Limiter|Frames überspringen/limitieren
+French|Französisch
+From|Von
+From File|Von Datei
+From File...|Von Datei...
+&Fullscreen|&Vollbild
+Fullscreen|Vollbild
+General|Allgemein
+German|Deutsch
+Hard Reset|Hard Reset
+Height|Höhe
+_Help|_Hilfe
+&Help|&Hilfe
+http://www.emu-compatibility.com/yabause/index.php?lang=uk|http://www.emu-compatibility.com/yabause/index.php?lang=de
+http://www.monkeystudio.org|http://www.monkeystudio.org
+Input|Eingabe
+Invalid Address|Ungültige Adresse
+Invalid Value|Ungültiger Wert
+Italian|Italienisch
+Japanese|Japanisch
+Language :|Sprache :
+&Layer|&Schicht
+Layer|Schicht
+Left|Links
+Left trigger|Linker Trigger
+Load as executable|Als ausführbar laden
+Load|Laden
+&Load From File|&Von Datei laden
+Load State|Spielstand laden
+Load State As|Spielstand laden als
+Log|Protokoll
+Long Write|Long schreiben
+M68K|M68K
+Memory dump|Speicherabzug
+Memory Dump|Speicherabzug
+Memory Editor|Memory Editor
+&Memory Transfer|&Memory Transfer
+Memory Transfer|Memory Transfer
+Memory|Speicher
+Mpeg ROM|Mpeg ROM
+MSH2|MSH2
+NBG0|NBG0
+NBG1|NBG1
+NBG2|NBG2
+NBG3|NBG3
+Ok|Ok
+&OK|&OK
+Open CD Rom|CD-Rom öffnen
+Open CD Rom...|CD-Rom öffnen...
+Open ISO|ISO öffnen
+Open ISO...|ISO öffnen...
+&Pause|&Pause
+Pause|Pause
+&Quit|&Schliessen
+Quit|Schliessen
+&Raw Memory Address|&Raw Speicheradresse
+RBG0|RBG0
+Region|Region
+&Reset|&Zurücksetzen
+Reset|Zurücksetzen
+Resolution|Auflösung
+Right|Rechts
+Right trigger|Rechter Trigger
+R&un|S&tarten
+Run|Starten
+Save Information|Informationen speichern
+Save List|Liste speichern
+Save|Speichern
+Save State|Status speichern
+Save State As|Save State As
+Save States|Stati speichern
+&Save To File|&In Datei speichern
+Screenshot|Bilschirmfoto
+SCSP|SCSP
+SCU-DSP|SCU-DSP
+Select a file to load your state|Wählen Sie die Statusdatei aus
+Select your iso/cue/bin file|Wählen Sie Ihre iso/cue/bin-Datei
+&Settings...|Einstellungen...
+Settings|Einstellungen
+SH2 Interpreter|SH2 Interpreter
+Sound Core|Sound Kern
+Sound|Sound
+Spanish|Spanisch
+SSH2|SSH2
+Start|Start
+Start Address:|Adressanfang
+Status|Status
+Store|Sichern
+To File|in Datei
+To File...|in Datei...
+toolBar|Werkzeugleiste
+Tools|Tools
+To|zu
+Transfer|Transferieren
+Translation|Übersetzung
+Unable to add code|Code konnte nicht zugefügt werden
+Unable to change description|Beschreibung konnte nicht geändert werden
+Unable to open file for loading|Datei konnte nicht geöffnet werden
+Unable to open file for saving|Datei konnte nicht geschrieben werden
+Unable to remove code|Code konnte nicht entfernt werden
+Unknow (%1)|Unbekannt (%1)
+Up|Hoch
+Upload|Upload
+Value :|Wert :
+Vdp1|Vdp1
+VDP1|VDP1
+Vdp2|Vdp2
+VDP2|VDP2
+Video Core|Video Kern
+Video Driver|Video Treiber
+Video Format|Video Format
+Video|Video
+_View|_Sicht
+&View|&Sicht
+Waiting Input...|Warte auf EIngaben...
+Width|Breite
+Word Write|Word schreiben
+Yabause Cheat Files (*.yct);;All Files (*)|Yabause Cheat Dateien (*ycf);;Alle Dateien (*)
+Yabause Qt Gui<br />Based on Yabause 0.9.5<br /><a href="http://yabause.org">http://yabause.org</a><br />The Yabause Team<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>|Yabause Qt Gui<br />Based on Yabause 0.9.5<br /><a href="http://yabause.org">http://yabause.org</a><br />The Yabause Team<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>
+Yabause Qt GUI|Qt Grafik-Interface für Yabause
+Yabause Save State (*.yss)|Yabause Speicherstände (*.yss)

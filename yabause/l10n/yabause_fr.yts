@@ -1,0 +1,276 @@
+%1/%2 blocks free|%1/%2 blocs libre
+%1 Images (*.%2)|Images %1 (*.%2)
+503/512 blocks free|503/512 blocs libre
+510/512 blocks free|510/512 blocs libre
+About...|A Propos De...
+&About...|&A Propos De...
+About|A Propos De
+&Action Replay|&Action Replay
+Action Replay Code :|Code Action Replay :
+Add Action Replay Code|Ajouter un Code Action Replay
+Add Cheat|Ajouter un Cheat
+Add Codes...|Ajouter un Code...
+Add Raw Memory Code|Ajouter un Code Mémoire Brut
+Address|Adresse
+Address :|Adresse :
+Advanced|Avancé
+Always|Toujours
+Asia (NTSC)|Asie (NTSC)
+Asia (PAL)|Asie (PAL)
+Are you sure you want to delete '%1' ?|Etes vous sûr de vouloir supprimer '%1' ?
+Are you sure you want to format '%1' ?|Etes vous sûr de vouloir formater '%1' ?
+Auto-detect|Détection Auto
+Autostart|Démarrage Automatique
+Backup Manager|Gestion des Sauvegardes
+&Backup Manager...|&Gestion des Sauvegardes...
+Backup Manager...|Gestion des Sauvegardes...
+&Backup Ram Manager|&Gestion des Sauvegardes
+Backup Ram Manager|Gestion des Sauvegardes
+Bios|Bios :
+Block Size :|Taille du Bloc :
+&Browse|&Parcourir
+Browse|Parcourir
+Byte Write|Ecrire un Byte
+&Cancel|&Annuler
+Cancel|Annuler
+Cannot initialize|Ne peut pas Initialiser
+Cannot initialize Windows SPTI Driver|Ne peut pas initialiser le pilote SPTI
+&Capture Screen|&Capture d'Ecran
+Cart/Memory|Cartouche/Mémoire
+Cartridge|Cartouche :
+CD Images (*.iso *.cue *.bin)|Images CD (*.iso *.cue *.bin)
+Cd-Rom|CD-Rom :
+Central/South America (NTSC)|Amérique du Sud/Centrale (NTSC)
+Central/South America (PAL)|Amérique du Sud/Centrale (PAL)
+&Cheats|&Cheats
+Cheats|Cheats
+Cheats File|Fichier Cheat
+&Cheat List|Liste de &Cheat
+Cheats List|Liste de Cheat
+&Cheats List...|Liste de &Cheat...
+Cheats List...|Liste de Cheat...
+Cheat &Search...|&Rechercher un Cheat...
+Cheat Search|Rechercher un Cheat
+Cheat Type|Type de Cheat
+Choose a cdrom drive/mount point|Choisir un lecteur CD ou un point de montage
+Choose a cheat file to open|Choisir un fichier de Cheat à ouvrir
+Choose a cheat file to save to|Choisir un fichier de Cheat à enregistrer
+Choose a file to save your state|Choisir un fichier où enregistrer l'état
+Choose a location for your screenshot|Choisir un nom de fichier pour votre capture d'écran
+&Clear|&Effacer
+Clear configuration|Vider la Configuration
+&Close|&Fermer
+Close|Fermer
+Code|Code
+Comment :|Commentaire :
+Compare Type|Type de Comparaison
+Data Size|Taille Donnée
+Data Size :|Taille des Données :
+Data Type|Type Donnée
+_Debug|_Débug
+&Debug|&Débug
+&Delete|&Effacer
+Delete|Effacer
+Description|Description
+Description :|Description :
+Device List|Liste des Périphériques
+Disabled|Désactivé
+Down|Bas
+Download|Télécharger
+Dummy CD Drive|Lecteur de CD Factice
+Dummy Input Interface|Interface Contrôleur Factice
+Dummy OSD Interface|Interface OSD Factice
+Dummy Sound Interface|Interface Son Factice
+Dummy Video Interface|Interface Vidéo Factice
+Edit configuration|Editer la Configuration
+Emu-Compatibility|Emu-Compatibility
+&Emulation|&Emulation
+Emulation|Emulation
+End Address:|Adresse de Fin :
+Enable|Activer
+Enable Frame Skip/Limiter|Active le Saut  d'Image/Limitateur
+Enabled|Activé
+English|Anglais
+Europe + others (PAL)|Europe + Autres (PAL)
+Exact|Identique
+&File|&Fichier
+File|Fichier
+File :|Fichier :
+File:|Fichier :
+File Name :|Nom du Fichier :
+File transfer|Transfert de Fichier
+<font color="red"><b>WARNING:</b> Master Codes are <b>NOT</b> supported.</font>|<font color="red"><b>AVERTISSEMENT :</b> Les Codes Maîtres <b>NE SONT PAS</b> supportés.</font>
+Format|Formater
+FPS|FPS
+Frame Skip/Limiter|Saut d'Image/Limitateur
+&Frame Skip/Limiter|&Saut d'Image/Limitateur
+French|Français
+From|A Partir De
+From File|A Partir d'un Fichier
+From File...|A Partir d'un Fichier...
+&Fullscreen|&Plein Ecran
+Fullscreen|Plein Ecran
+General|Général
+German|Allemand
+Glut OSD Interface|Interface OSD GLut
+Greater then|Plus grand que
+Hard Reset|Redémarrage Matériel
+Height|Hauteur :
+_Help|_Aide
+&Help|&Aide
+Hide menubar|Cacher la Barre de Menu
+Hide toolbar|Cacher la Barre d'Outils
+http://www.emu-compatibility.com/yabause/index.php?lang=uk|http://www.emu-compatibility.com/yabause/index.php?lang=fr
+http://www.monkeystudio.org|http://www.monkeystudio.org
+Information...|Information...
+Input|Contrôleur
+Invalid Address|Adresse Invalide
+Invalid Value|Valeur Invalide
+ISO-File Virtual Drive|Lecteur de Fichier ISO Virtuel
+Italian|Italien
+Japan (NTSC)|Japon (NTSC)
+Japanese|Japonais
+Korea (NTSC)|Corée (NTSC)
+Language :|Langage :
+&Layer|&Couche
+Layer|Couche
+Left|Gauche
+Left trigger|Gâchette Gauche
+Less than|Moins que
+Linux CD Drive|Lecteur CD Linux
+Load as executable|Charger en tant qu'Executable
+Load|Charger
+&Load From File|&Charger à Partir d'un Fichier
+L&oad State|&Charger un Etat
+Load State|Charger l'Etat
+Load State As|Charger l'Etat sous
+&Log|&Journal
+Log|Journal
+Long Write|Ecrire un Long
+M68K|M68K
+&Master SH2|&Master SH2
+Master SH2|Master SH2
+Memory dump|Copier la mémoire
+Memory Dump|Copier la Mémoire
+Memory &Editor|&Editeur de Mémoire
+Memory Editor|Editeur de Mémoire
+&Memory Transfer|&Transfert de Mémoire
+Memory Transfer|Transfert de Mémoire
+Memory|Mémoire :
+Mpeg ROM|ROM MPEG :
+Mouse|Souris
+MSH2|MSH2
+NBG0|NBG0
+NBG1|NBG1
+NBG2|NBG2
+NBG3|NBG3
+Never|Jamais
+None|Aucun
+North America (NTSC)|Amérique du Nord (NTSC)
+Ok|Ok
+&OK|&OK
+On fullscreen|Plein Ecran
+Open CD Rom|Ouvrir un CD ROM
+Open &CD Rom...|Ouvrir un &CD Rom...
+Open CD Rom...|Ouvrir un CD ROM...
+Open ISO|Ouvrir un Fichier ISO
+Open &ISO...|Ouvrir un &ISO...
+Open ISO...|Ouvrir un Fichier ISO...
+OpenGL Video Interface|Interface Vidéo OpenGL
+OSD Core|Noyau OSD
+Pad|Manette
+Pad Configuration|Configuration de la Manette
+&Pause|&Pause
+Pause|Pause
+Qt Keyboard Input Interface|Interface Qt du Clavier
+&Quit|&Quitter
+Quit|Quitter
+&Raw Memory Address|Adresse Mémoire &Brut
+RBG0|RBG0
+Region|Région :
+&Reset|&Redémarrer
+Reset|Redémarrer
+Resolution|Résolution :
+Right|Droite
+Right trigger|Gâchette Droite
+R&un|L&ancer
+Run|Lancer
+Save Information|Informations sur la Sauvegarde
+Save List|Liste des Sauvegardes
+Save|Sauvegarder
+S&ave State|S&auvegarder un Etat
+Save State|Sauvegarder l'Etat
+Save State As|Sauvegarder l'Etat sous
+Save States|Sauvegarde d'Etat :
+&Save To File|&Sauvegarder Vers le Fichier
+Sc&reenshot|Copie d'Ec&ran
+Screenshot|Capture d'Ecran
+SCSP|SCSP
+SCU-DSP|SCU-DSP
+SDL Joystick Interface|Interface SDL du Joystick
+SDL Sound Interface|Interface SDL du Son
+Search|Rechercher
+Search/Add Cheats|Rechercher/Ajouter un Cheat
+Search Value:|Rechercher une Valeur :
+Select a file to load your state|Choisissez un fichier pour charger l'état
+Select your iso/cue/bin file|Choisissez votre fichier iso/cue/bin
+Set PC to Start Address|Sélection PC vers l'Adresse de Démarrage
+&Settings...|&Paramétres...
+Settings|Paramétres
+SH2 Debugger Interpreter|Interpréteur de Débugeur SH2
+SH2 Dynamic Recompiler|Recompileur Dynamique SH2
+SH2 Interpreter|Interpréteur SH2 :
+Show FPS|Afficher les FPS
+&Slave SH2|&Slave SH2
+Slave SH2|Slave SH2
+Software Video Interface|Interface Vidéo Logiciel
+Sound Core|Noyau Son :
+Sound|Son
+Spanish|Espagnol
+SSH2|SSH2
+Signed|Signé
+Software OSD Interface|Interface OSD Logiciel
+Start|Démarrer
+Start Address:|Adresse de Début :
+Status|Statut
+Store|Stocker
+To File|Vers un Fichier
+To File...|Vers un Fichier...
+toolBar|Barre d'Outils
+&Tools|Ou&tils
+Tools|Outils
+To|Vers
+&Transfer|&Transfert
+Transfer|Transfert
+Translation|Traduction :
+Unable to add code|Ne peut pas ajouter de Code
+Unable to change description|Ne peut pas changer la Description
+Unable to open file for loading|Ne peut pas ouvrir le fichier à Charger
+Unable to open file for saving|Ne peut pas ouvrir le fichier à sauvegarder
+Unable to remove code|Ne peut pas enlever le Code
+Unknow (%1)|Inconnu (%1)
+Unsigned|Non Signé
+Up|Haut
+Upload|Upload
+Value|Valeur
+Value :|Valeur :
+Vdp1|Vdp1
+VDP1|VDP1
+Vdp2|Vdp2
+VDP2|VDP2
+Video Core|Noyau Vidéo :
+Video Driver|Pilote Vidéo :
+Video Format|Format Vidéo :
+Video|Vidéo
+_View|_Visualiser
+&View|&Visualiser
+View|Visualiser
+Waiting Input...|En Attente du Contrôleur
+Width|Largeur :
+Windows SPTI Driver|Pilote Windows SPTI
+Word Write|Ecrire un Word
+Yabause Cheat Files (*.yct);;All Files (*)|Fichiers de  Cheat Yabause (*ycf);;Tous les Fichiers (*)
+Yabause is not initialized, can't manage backup ram.|Yabause n'est pas initialisé. Ne peut pas gérer la sauvegarde.
+Yabause Qt Gui<br />Based on Yabause %1<br /><a href="http://yabause.org">http://yabause.org</a><br />The Yabause Team<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>|Yabause Qt Gui<br />Basé sur Yabause %1 :<br /><a href="http://yabause.org">http://yabause.org</a><br />L'équipe de Yabause :<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>
+Yabause Qt GUI|Interface Graphique Qt pour Yabause
+Yabause Save State (*.yss)|Sauvegarde d'État Yabause (*.yss)

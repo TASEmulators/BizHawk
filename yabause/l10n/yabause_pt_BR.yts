@@ -1,0 +1,274 @@
+%1/%2 blocks free|%1/%2 blocos livres
+%1 Images (*.%2)|%1 Imagens (*.%2)
+503/512 blocks free|503/512 blocos livres
+510/512 blocks free|510/512 blocos livres
+About...|Sobre...
+&About...|&Sobre...
+About|Sobre
+&Action Replay|&Action Replay
+Action Replay Code :|Código do Action Replay
+Add Action Replay Code|Adicionar Código do Action Replay
+Add Cheat|Adicionar Trapaça
+Add Codes...|Adicionar Códigos...
+Add Raw Memory Code|Adicionar o Código da Memória Original
+Address|Endereço
+Address :|Endereço :
+Advanced|Avançado
+Always|Sempre
+Asia (NTSC)|Ásia (NTSC)
+Asia (PAL)|Ásia (PAL)
+Are you sure you want to delete '%1' ?|Você tem certeza que você quer apagar '%1' ?
+Are you sure you want to format '%1' ?|Você tem certeza que você quer formatar '%1' ?
+Auto-detect|Auto-detectar
+Autostart|Auto-iniciar
+Backup Manager|Gerenciador de Backups
+&Backup Manager...|&Gerenciador de Backups...
+Backup Manager...|Gerenciador de Backups...
+&Backup Ram Manager|&Gerenciador da Ram de Backup
+Backup Ram Manager|Gerenciador da Ram de Backup
+Bios|Bios
+Block Size :|Tamanho dos Blocos :
+&Browse|&Explorar
+Browse|Explorar
+Byte Write|Gravação do Byte
+&Cancel|&Cancelar
+Cancel|Cancelar
+Cannot initialize|Não consegue inicializar
+&Capture Screen|&Capturar Tela
+Cart/Memory|Cartucho/Memória
+Cartridge|Cartucho
+CD Images (*.iso *.cue *.bin)|Imagens de CD (*.iso *.cue *.bin)
+Cd-Rom|Cd-Rom
+Central/South America (NTSC)|América Central/do Sul (NTSC)
+Central/South America (PAL)|América Central/do Sul (PAL)
+&Cheats|&Códigos
+Cheats|Trapaças
+Cheats File|Arquivo das Trapaças
+&Cheat List|Lista de &Trapaças
+Cheats List|Lista de Trapaças
+&Cheats List...|&Lista de Trapaças...
+Cheats List...|Lista de Trapaças...
+Cheat &Search...|Busca de &Trapaças...
+Cheat Search|Busca de Trapaças
+Cheat Type|Tipo de Trapaça
+Choose a cdrom drive/mount point|Escolha um drive de cdrom/ponto de montagem
+Choose a cheat file to open|Escolha um arquivo de códigos para abrir
+Choose a cheat file to save to|Escolha um arquivo de códigos para salvar
+Choose a file to save your state|Escolha um arquivo para salvar seu estado
+Choose a location for your screenshot|Escolha um local para seu screenshot
+&Clear|&Limpar
+Clear configuration|Limpar configuração
+&Close|&Fechar
+Close|Fechar
+Code|Código
+Comment :|Comentário :
+Compare Type|Tipo de Comparação
+Data Size|Tamanho dos Dados
+Data Size :|Tamanho dos Dados :
+Data Type|Tipo de Dados
+_Debug|_Debug
+&Debug|&Debug
+&Delete|&Apagar
+Delete|Apagar
+Description|Descrição
+Description :|Descrição :
+Device List|Lista de Dispositivos
+Disabled|Desativado
+Down|Pra baixo
+Download|Baixar
+Dummy CD Drive|Imitação do Drive de CD
+Dummy Input Interface|Imitação da Interface de Entrada de Dados
+Dummy OSD Interface|Imitação da Interface OSD
+Dummy Sound Interface|Imitação da Interface de Som
+Dummy Video Interface|Imitação da Interface de Vídeo
+Edit configuration|Editar configuração
+Emu-Compatibility|Compatibilidade com o Emu
+&Emulation|&Emulação
+Emulation|Emulação
+End Address:|Endereço Final:
+Enable|Ativar
+Enable Frame Skip/Limiter|Ativar o Frame Skip/Limitador
+Enabled|Ativado
+English|Inglês
+Europe + others (PAL)|Europa + outros (PAL)
+Exact|Exato
+&File|&Arquivo
+File|Arquivo
+File :|Arquivo :
+File:|Arquivo:
+File Name :|Nome do Arquivo :
+File transfer|Transferência de arquivo
+<font color="red"><b>WARNING:</b> Master Codes are <b>NOT</b> supported.</font>|<font color="red"><b>AVISO:</b> Códigos Mestres <b>NÃO</b> são suportados.</font>
+Format|Formato
+FPS|FPS
+Frame Skip/Limiter|Frame Skip/Limitador
+&Frame Skip/Limiter|&Frame Skip/Limitador
+French|Francês
+From|De
+From File|Do Arquivo
+From File...|Do Arquivo...
+&Fullscreen|&Tela cheia
+Fullscreen|Tela cheia
+General|Geral
+German|Alemão
+Glut OSD Interface|Interface OSD do Glut
+Greater then|Maior do que
+Hard Reset|Reset Rígido
+Height|Altura
+_Help|_Ajuda
+&Help|&Ajuda
+Hide menubar|Esconder a barra do menu
+Hide toolbar|Esconder a barra de ferramentas
+http://www.emu-compatibility.com/yabause/index.php?lang=uk|http://www.emu-compatibility.com/yabause/index.php?lang=uk
+http://www.monkeystudio.org|http://www.monkeystudio.org
+Information...|Informação...
+Input|Controles
+Invalid Address|Endereço Inválido
+Invalid Value|Valor Inválido
+ISO-File Virtual Drive|Drive Virtual do Arquivo-ISO
+Italian|Italiano
+Japan (NTSC)|Japão (NTSC)
+Japanese|Japonês
+Korea (NTSC)|Coréia (NTSC)
+Language :|Idioma :
+&Layer|&Camada
+Layer|Camada
+Left|Esquerda
+Left trigger|Gatilho esquerdo
+Less than|Menos do que
+Linux CD Drive|Drive de CD do Linux
+Load as executable|Carregar como executável
+Load|Carregar
+&Load From File|&Carregar Do Arquivo
+L&oad State|C&arregar o State
+Load State|Carregar State
+Load State As|Carregar State Como
+&Log|&Log
+Log|Log
+Long Write|Gravação Longa
+M68K|M68K
+&Master SH2|&SH2 Mestre
+Master SH2|SH2 Mestre
+Memory dump|Dump da memória
+Memory Dump|Dump da Memória
+Memory &Editor|Editor de &Memória
+Memory Editor|Editor de Memória
+&Memory Transfer|&Transferência de Memória
+Memory Transfer|Transferência de Memória
+Memory|Memória
+Mpeg ROM|ROM Mpeg
+Mouse|Mouse
+MSH2|MSH2
+NBG0|NBG0
+NBG1|NBG1
+NBG2|NBG2
+NBG3|NBG3
+Never|Nunca
+None|Nenhum
+North America (NTSC)|América do Norte (NTSC)
+Ok|Ok
+&OK|&OK
+On fullscreen|Na tela cheia
+Open CD Rom|Abrir o CD Rom
+Open &CD Rom...|Abrir &CD Rom...
+Open CD Rom...|Abrir o CD Rom...
+Open ISO|Abrir a ISO
+Open &ISO...|Abrir &ISO...
+Open ISO...|Abrir a ISO...
+OpenGL Video Interface|Interface de Vídeo do OpenGL
+OSD Core|Núcleo do OSD
+Pad|Pad
+&Pause|&Pausar
+Pause|Pausar
+Qt Keyboard Input Interface|Interface da Entrada de Dados do Teclado do Qt
+&Quit|&Sair
+Quit|Sair
+&Raw Memory Address|&Endereço da Memória Original
+RBG0|RBG0
+Region|Região
+&Reset|&Resetar
+Reset|Resetar
+Resolution|Resolução
+Right|Direita
+Right trigger|Gatilho direito
+R&un|E&xecutar
+Run|Executar
+Save Information|Informações sobre os Saves
+Save List|Lista dos Saves
+Save|Salvar
+S&ave State|S&ave State
+Save State|Salvar o State
+Save State As|Salvar o State Como
+Save States|Salvar os States
+&Save To File|&Salvar para o Arquivo
+Sc&reenshot|Sc&reenshot
+Screenshot|Screenshot
+SCSP|SCSP
+SCU-DSP|SCU-DSP
+SDL Joystick Interface|Interface SDL do Joystick
+SDL Sound Interface|Interface de Som SDL
+Search|Busca
+Search/Add Cheats|Procurar/Adicionar Trapaças
+Search Value:|Procurar Valor:
+Select a file to load your state|Selecione um arquivo para carregar seu state
+Select your iso/cue/bin file|Selecione seu arquivo iso/cue/bin
+Set PC to Start Address|Configurar o PC pra Iniciar no Endereço
+&Settings...|&Configurações...
+Settings|Configurações
+SH2 Debugger Interpreter|Interpretador do Debugger SH2
+SH2 Dynamic Recompiler|Recompilador Dinâmico do SH2
+SH2 Interpreter|Interpretador SH2
+Show FPS|Mostrar FPS
+&Slave SH2|&SH2 Escravo
+Slave SH2|SH2 Escravo
+Software Video Interface|Interface de Vídeo do Software
+Sound Core|Núcleo do Som
+Sound|Som
+Spanish|Espanhol
+SSH2|SSH2
+Signed|Assinado
+Software OSD Interface|Interface OSD do Software
+Start|Iniciar
+Start Address:|Endereço Inicial:
+Status|Status
+Store|Armazenar
+To File|Para o Arquivo
+To File...|Para o Arquivo...
+toolBar|Barra de ferramentas
+&Tools|&Ferramentas
+Tools|Ferramentas
+To|Para
+&Transfer|&Transferência
+Transfer|Transferência
+Translation|Tradução
+Unable to add code|Incapaz de adicionar o código
+Unable to change description|Incapaz de mudar a descrição
+Unable to open file for loading|Incapaz de abrir o arquivo para carregar
+Unable to open file for saving|Incapaz de abrir o arquivo para salvar
+Unable to remove code|Incapaz de remover o código
+Unknow (%1)|(%1) Desconhecido
+Unsigned|Não Assinado
+Up|Para cima
+Upload|Upload
+Value|Valor
+Value :|Valor :
+Vdp1|Vdp1
+VDP1|VDP1
+Vdp2|Vdp2
+VDP2|VDP2
+Video Core|Núcleo do Vídeo
+Video Driver|Driver do Vídeo
+Video Format|Formato do Vídeo
+Video|Vídeo
+_View|_Visualizar
+&View|&Visualizar
+View|Visualizar
+Waiting Input...|Esperando a Entrada dos Dados...
+Width|Largura
+Windows SPTI Driver|Drive SPTI do Windows
+Word Write|Gravação das Palavras
+Yabause Cheat Files (*.yct);;All Files (*)|Arquivos das Trapaças do Yabause (*.yct);;Todos os Arquivos (*)
+Yabause is not initialized, can't manage backup ram.|O Yabause não está inicializado, não pode gerenciar a ram do backup.
+Yabause Qt Gui<br />Based on Yabause %1<br /><a href="http://yabause.org">http://yabause.org</a><br />The Yabause Team<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>|Gui Qt do Yabause<br />Baseada no Yabause %1<br /><a href="http://yabause.org">http://yabause.org</a><br />O Time Yabause<br /><a href="mailto:pasnox@gmail.com">Filipe AZEVEDO</a>
+Yabause Qt GUI|GUI Qt do Yabause
+Yabause Save State (*.yss)|Save State do Yabause (*.yss)
