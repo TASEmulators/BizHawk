@@ -158,7 +158,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			M64CMD_CORE_STATE_SET,
 			M64CMD_READ_SCREEN,
 			M64CMD_RESET,
-			M64CMD_ADVANCE_FRAME
+			M64CMD_ADVANCE_FRAME,
+			M64CMD_SET_VI_CALLBACK
 		};
 
 		enum m64p_emu_state
@@ -192,6 +193,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreDoCommandFrameCallback(m64p_command Command, int ParamInt, FrameCallback ParamPtr);
 		CoreDoCommandFrameCallback m64pCoreDoCommandFrameCallback;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreDoCommandVICallback(m64p_command Command, int ParamInt, VICallback ParamPtr);
+		CoreDoCommandVICallback m64pCoreDoCommandVICallback;
 
 		// Graphics plugin specific
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -216,6 +220,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			int width = 0;
 			int height = 0;
 			GFXReadScreen2(m64p_FrameBuffer, ref width, ref height, 0);
+			//m64pFrameComplete = true;
+		}
+
+		public delegate void VICallback();
+		VICallback m64pVICallback;
+		public void FrameComplete()
+		{
 			m64pFrameComplete = true;
 		}
 
@@ -243,6 +254,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pCoreDoCommandPtr = (CoreDoCommandPtr)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandPtr));
 			m64pCoreDoCommandRefInt = (CoreDoCommandRefInt)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRefInt));
 			m64pCoreDoCommandFrameCallback = (CoreDoCommandFrameCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandFrameCallback));
+			m64pCoreDoCommandVICallback = (CoreDoCommandVICallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandVICallback));
 			m64pCoreAttachPlugin = (CoreAttachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreAttachPlugin"), typeof(CoreAttachPlugin));
 
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
@@ -271,6 +283,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			// Set up the frame callback function
 			m64pFrameCallback = new FrameCallback(Getm64pFrameBuffer);
 			result = m64pCoreDoCommandFrameCallback(m64p_command.M64CMD_SET_FRAME_CALLBACK, 0, m64pFrameCallback);
+
+			// Set up the vi callback function
+			m64pVICallback = new VICallback(FrameComplete);
+			result = m64pCoreDoCommandVICallback(m64p_command.M64CMD_SET_VI_CALLBACK, 0, m64pVICallback);
 
 			m64pEmulator = new Thread(ExecuteEmulator);
 			m64pEmulator.Start();
