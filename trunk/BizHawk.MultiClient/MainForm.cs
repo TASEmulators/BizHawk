@@ -1887,7 +1887,7 @@ namespace BizHawk.MultiClient
 						switch (game.System)
 						{
 							case "SAT":
-								var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm);
+								var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc);
 								nextEmulator = saturn;
 								break;
 
