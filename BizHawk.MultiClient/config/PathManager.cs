@@ -109,6 +109,10 @@ namespace BizHawk.MultiClient
 					return Global.Config.BaseCOL;
 				case "GBA":
 					return Global.Config.BaseGBA;
+				case "N64":
+					return Global.Config.BaseN64;
+				case "SATURN":
+					return Global.Config.BaseSaturn;
 				case "NULL":
 				default:
 					return "";

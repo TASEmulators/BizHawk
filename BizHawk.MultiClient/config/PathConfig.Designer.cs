@@ -280,6 +280,15 @@
 			this.Atari2600ROMsDescription = new System.Windows.Forms.Label();
 			this.Atari2600BrowseROMs = new System.Windows.Forms.Button();
 			this.tabPageAtari7800 = new System.Windows.Forms.TabPage();
+			this.label8 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.Atari7800BrowseHSCBIOS = new System.Windows.Forms.Button();
+			this.Atari7800BrowsePALBIOS = new System.Windows.Forms.Button();
+			this.Atari7800BrowseNTSCBIOS = new System.Windows.Forms.Button();
+			this.Atari7800HighScoreBIOSBox = new System.Windows.Forms.TextBox();
+			this.Atari7800PALBIOSBox = new System.Windows.Forms.TextBox();
+			this.Atari7800NTSCBIOSBox = new System.Windows.Forms.TextBox();
 			this.Atari7800SaveRAMsDescription = new System.Windows.Forms.Label();
 			this.BrowseAtari7800SaveRAM = new System.Windows.Forms.Button();
 			this.Atari7800SaveRAMBox = new System.Windows.Forms.TextBox();
@@ -361,15 +370,26 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.Atari7800NTSCBIOSBox = new System.Windows.Forms.TextBox();
-			this.Atari7800PALBIOSBox = new System.Windows.Forms.TextBox();
-			this.Atari7800HighScoreBIOSBox = new System.Windows.Forms.TextBox();
-			this.Atari7800BrowseNTSCBIOS = new System.Windows.Forms.Button();
-			this.Atari7800BrowsePALBIOS = new System.Windows.Forms.Button();
-			this.Atari7800BrowseHSCBIOS = new System.Windows.Forms.Button();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
+			this.tabPageN64 = new System.Windows.Forms.TabPage();
+			this.tabPageSaturn = new System.Windows.Forms.TabPage();
+			this.N64BaseBox = new System.Windows.Forms.TextBox();
+			this.N64CheatsDescription = new System.Windows.Forms.Label();
+			this.N64BrowseCheats = new System.Windows.Forms.Button();
+			this.N64CheatsBox = new System.Windows.Forms.TextBox();
+			this.N64ScreenshotsBox = new System.Windows.Forms.TextBox();
+			this.N64BaseDescription = new System.Windows.Forms.Label();
+			this.N64ScreenshotsDescription = new System.Windows.Forms.Label();
+			this.N64BrowseBase = new System.Windows.Forms.Button();
+			this.N64BrowseScreenshots = new System.Windows.Forms.Button();
+			this.N64ROMsBox = new System.Windows.Forms.TextBox();
+			this.N64BrowseSavestates = new System.Windows.Forms.Button();
+			this.N64SavestatesDescription = new System.Windows.Forms.Label();
+			this.N64ROMsDescription = new System.Windows.Forms.Label();
+			this.N64SavestatesBox = new System.Windows.Forms.TextBox();
+			this.N64BrowseROMs = new System.Windows.Forms.Button();
+			this.N64BrowseSaveRAM = new System.Windows.Forms.Button();
+			this.N64SaveRAMDescription = new System.Windows.Forms.Label();
+			this.N64SaveRAMBox = new System.Windows.Forms.TextBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPageGlobal.SuspendLayout();
 			this.tabPageNES.SuspendLayout();
@@ -387,6 +407,7 @@
 			this.tabPageIntellivision.SuspendLayout();
 			this.tabPageColeco.SuspendLayout();
 			this.tabPageC64.SuspendLayout();
+			this.tabPageN64.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// Cancel
@@ -794,6 +815,8 @@
 			this.tabControl1.Controls.Add(this.tabPageIntellivision);
 			this.tabControl1.Controls.Add(this.tabPageColeco);
 			this.tabControl1.Controls.Add(this.tabPageC64);
+			this.tabControl1.Controls.Add(this.tabPageN64);
+			this.tabControl1.Controls.Add(this.tabPageSaturn);
 			this.tabControl1.Location = new System.Drawing.Point(13, 97);
 			this.tabControl1.Multiline = true;
 			this.tabControl1.Name = "tabControl1";
@@ -830,7 +853,7 @@
 			this.tabPageGlobal.Controls.Add(this.MoviesDescription);
 			this.tabPageGlobal.Location = new System.Drawing.Point(4, 40);
 			this.tabPageGlobal.Name = "tabPageGlobal";
-			this.tabPageGlobal.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGlobal.Size = new System.Drawing.Size(566, 288);
 			this.tabPageGlobal.TabIndex = 6;
 			this.tabPageGlobal.Text = "Global";
 			this.tabPageGlobal.UseVisualStyleBackColor = true;
@@ -984,10 +1007,10 @@
 			this.tabPageNES.Controls.Add(this.NESROMsDescription);
 			this.tabPageNES.Controls.Add(this.NESSaveRAMBox);
 			this.tabPageNES.Controls.Add(this.NESBrowseROMs);
-			this.tabPageNES.Location = new System.Drawing.Point(4, 40);
+			this.tabPageNES.Location = new System.Drawing.Point(4, 22);
 			this.tabPageNES.Name = "tabPageNES";
 			this.tabPageNES.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageNES.Size = new System.Drawing.Size(566, 278);
+			this.tabPageNES.Size = new System.Drawing.Size(566, 306);
 			this.tabPageNES.TabIndex = 0;
 			this.tabPageNES.Text = "NES";
 			this.tabPageNES.UseVisualStyleBackColor = true;
@@ -1135,9 +1158,9 @@
 			this.tabPageSNES.Controls.Add(this.SNESROMsDescription);
 			this.tabPageSNES.Controls.Add(this.SNESSaveRAMBox);
 			this.tabPageSNES.Controls.Add(this.SNESBrowseROMs);
-			this.tabPageSNES.Location = new System.Drawing.Point(4, 40);
+			this.tabPageSNES.Location = new System.Drawing.Point(4, 22);
 			this.tabPageSNES.Name = "tabPageSNES";
-			this.tabPageSNES.Size = new System.Drawing.Size(566, 278);
+			this.tabPageSNES.Size = new System.Drawing.Size(566, 306);
 			this.tabPageSNES.TabIndex = 11;
 			this.tabPageSNES.Text = "SNES";
 			this.tabPageSNES.UseVisualStyleBackColor = true;
@@ -1343,10 +1366,10 @@
 			this.tabPageSMS.Controls.Add(this.Sega8BrowseSaveRAM);
 			this.tabPageSMS.Controls.Add(this.Sega8SaveRAMDescription);
 			this.tabPageSMS.Controls.Add(this.Sega8SaveRAMBox);
-			this.tabPageSMS.Location = new System.Drawing.Point(4, 40);
+			this.tabPageSMS.Location = new System.Drawing.Point(4, 22);
 			this.tabPageSMS.Name = "tabPageSMS";
 			this.tabPageSMS.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageSMS.Size = new System.Drawing.Size(566, 278);
+			this.tabPageSMS.Size = new System.Drawing.Size(566, 306);
 			this.tabPageSMS.TabIndex = 1;
 			this.tabPageSMS.Text = "SMS";
 			this.tabPageSMS.UseVisualStyleBackColor = true;
@@ -1431,9 +1454,9 @@
 			this.tabPageSG1000.Controls.Add(this.SGROMsDescription);
 			this.tabPageSG1000.Controls.Add(this.SGSaveRAMBox);
 			this.tabPageSG1000.Controls.Add(this.SGBrowseROMs);
-			this.tabPageSG1000.Location = new System.Drawing.Point(4, 40);
+			this.tabPageSG1000.Location = new System.Drawing.Point(4, 22);
 			this.tabPageSG1000.Name = "tabPageSG1000";
-			this.tabPageSG1000.Size = new System.Drawing.Size(566, 278);
+			this.tabPageSG1000.Size = new System.Drawing.Size(566, 306);
 			this.tabPageSG1000.TabIndex = 8;
 			this.tabPageSG1000.Text = "SG-1000";
 			this.tabPageSG1000.UseVisualStyleBackColor = true;
@@ -1639,9 +1662,9 @@
 			this.tabPageGGear.Controls.Add(this.GGBrowseSaveRAM);
 			this.tabPageGGear.Controls.Add(this.GGSaveRAMDescription);
 			this.tabPageGGear.Controls.Add(this.GGSaveRAMBox);
-			this.tabPageGGear.Location = new System.Drawing.Point(4, 40);
+			this.tabPageGGear.Location = new System.Drawing.Point(4, 22);
 			this.tabPageGGear.Name = "tabPageGGear";
-			this.tabPageGGear.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGGear.Size = new System.Drawing.Size(566, 306);
 			this.tabPageGGear.TabIndex = 7;
 			this.tabPageGGear.Text = "G. Gear";
 			this.tabPageGGear.UseVisualStyleBackColor = true;
@@ -1846,9 +1869,9 @@
 			this.tabPageGenesis.Controls.Add(this.GenesisBrowseSavestates);
 			this.tabPageGenesis.Controls.Add(this.GenesisBrowseScreenshots);
 			this.tabPageGenesis.Controls.Add(this.GenesisROMsBox);
-			this.tabPageGenesis.Location = new System.Drawing.Point(4, 40);
+			this.tabPageGenesis.Location = new System.Drawing.Point(4, 22);
 			this.tabPageGenesis.Name = "tabPageGenesis";
-			this.tabPageGenesis.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGenesis.Size = new System.Drawing.Size(566, 306);
 			this.tabPageGenesis.TabIndex = 2;
 			this.tabPageGenesis.Text = "Genesis";
 			this.tabPageGenesis.UseVisualStyleBackColor = true;
@@ -2056,9 +2079,9 @@
 			this.tabPagePCE.Controls.Add(this.PCEBrowseSaveRAM);
 			this.tabPagePCE.Controls.Add(this.PCESaveRAMDescription);
 			this.tabPagePCE.Controls.Add(this.PCESaveRAMBox);
-			this.tabPagePCE.Location = new System.Drawing.Point(4, 40);
+			this.tabPagePCE.Location = new System.Drawing.Point(4, 22);
 			this.tabPagePCE.Name = "tabPagePCE";
-			this.tabPagePCE.Size = new System.Drawing.Size(566, 278);
+			this.tabPagePCE.Size = new System.Drawing.Size(566, 306);
 			this.tabPagePCE.TabIndex = 3;
 			this.tabPagePCE.Text = "PC Engine";
 			this.tabPagePCE.UseVisualStyleBackColor = true;
@@ -2299,9 +2322,9 @@
 			this.tabPageGameboy.Controls.Add(this.GBBrowseSaveRAM);
 			this.tabPageGameboy.Controls.Add(this.GBSaveRAMDescription);
 			this.tabPageGameboy.Controls.Add(this.GBSaveRAMBox);
-			this.tabPageGameboy.Location = new System.Drawing.Point(4, 40);
+			this.tabPageGameboy.Location = new System.Drawing.Point(4, 22);
 			this.tabPageGameboy.Name = "tabPageGameboy";
-			this.tabPageGameboy.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGameboy.Size = new System.Drawing.Size(566, 306);
 			this.tabPageGameboy.TabIndex = 4;
 			this.tabPageGameboy.Text = "Gameboy";
 			this.tabPageGameboy.UseVisualStyleBackColor = true;
@@ -2541,7 +2564,7 @@
 			this.tabPageGBA.Controls.Add(this.GBASaveRAMBox);
 			this.tabPageGBA.Location = new System.Drawing.Point(4, 40);
 			this.tabPageGBA.Name = "tabPageGBA";
-			this.tabPageGBA.Size = new System.Drawing.Size(566, 278);
+			this.tabPageGBA.Size = new System.Drawing.Size(566, 288);
 			this.tabPageGBA.TabIndex = 14;
 			this.tabPageGBA.Text = "GBA";
 			this.tabPageGBA.UseVisualStyleBackColor = true;
@@ -2776,9 +2799,9 @@
 			this.tabPageTI83.Controls.Add(this.TI83BrowseSaveRAM);
 			this.tabPageTI83.Controls.Add(this.TI83SaveRAMDescription);
 			this.tabPageTI83.Controls.Add(this.TI83SaveRAMBox);
-			this.tabPageTI83.Location = new System.Drawing.Point(4, 40);
+			this.tabPageTI83.Location = new System.Drawing.Point(4, 22);
 			this.tabPageTI83.Name = "tabPageTI83";
-			this.tabPageTI83.Size = new System.Drawing.Size(566, 278);
+			this.tabPageTI83.Size = new System.Drawing.Size(566, 306);
 			this.tabPageTI83.TabIndex = 5;
 			this.tabPageTI83.Text = "TI83";
 			this.tabPageTI83.UseVisualStyleBackColor = true;
@@ -2984,7 +3007,7 @@
 			this.tabPageAtari2600.Controls.Add(this.Atari2600BrowseROMs);
 			this.tabPageAtari2600.Location = new System.Drawing.Point(4, 40);
 			this.tabPageAtari2600.Name = "tabPageAtari2600";
-			this.tabPageAtari2600.Size = new System.Drawing.Size(566, 278);
+			this.tabPageAtari2600.Size = new System.Drawing.Size(566, 288);
 			this.tabPageAtari2600.TabIndex = 9;
 			this.tabPageAtari2600.Text = "A. 2600";
 			this.tabPageAtari2600.UseVisualStyleBackColor = true;
@@ -3175,6 +3198,99 @@
 			this.tabPageAtari7800.TabIndex = 15;
 			this.tabPageAtari7800.Text = "A. 7800";
 			this.tabPageAtari7800.UseVisualStyleBackColor = true;
+			// 
+			// label8
+			// 
+			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(474, 264);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(83, 13);
+			this.label8.TabIndex = 110;
+			this.label8.Text = "Highscore BIOS";
+			// 
+			// label7
+			// 
+			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(474, 235);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(55, 13);
+			this.label7.TabIndex = 109;
+			this.label7.Text = "PAL BIOS";
+			// 
+			// label6
+			// 
+			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(474, 209);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(64, 13);
+			this.label6.TabIndex = 108;
+			this.label6.Text = "NTSC BIOS";
+			// 
+			// Atari7800BrowseHSCBIOS
+			// 
+			this.Atari7800BrowseHSCBIOS.AccessibleName = "Atari7800BrowseCheats";
+			this.Atari7800BrowseHSCBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Atari7800BrowseHSCBIOS.Image = ((System.Drawing.Image)(resources.GetObject("Atari7800BrowseHSCBIOS.Image")));
+			this.Atari7800BrowseHSCBIOS.Location = new System.Drawing.Point(442, 259);
+			this.Atari7800BrowseHSCBIOS.Name = "Atari7800BrowseHSCBIOS";
+			this.Atari7800BrowseHSCBIOS.Size = new System.Drawing.Size(26, 23);
+			this.Atari7800BrowseHSCBIOS.TabIndex = 107;
+			this.Atari7800BrowseHSCBIOS.UseVisualStyleBackColor = true;
+			this.Atari7800BrowseHSCBIOS.Click += new System.EventHandler(this.Atari7800BrowseHSCBIOS_Click);
+			// 
+			// Atari7800BrowsePALBIOS
+			// 
+			this.Atari7800BrowsePALBIOS.AccessibleName = "Atari7800BrowseCheats";
+			this.Atari7800BrowsePALBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Atari7800BrowsePALBIOS.Image = ((System.Drawing.Image)(resources.GetObject("Atari7800BrowsePALBIOS.Image")));
+			this.Atari7800BrowsePALBIOS.Location = new System.Drawing.Point(442, 232);
+			this.Atari7800BrowsePALBIOS.Name = "Atari7800BrowsePALBIOS";
+			this.Atari7800BrowsePALBIOS.Size = new System.Drawing.Size(26, 23);
+			this.Atari7800BrowsePALBIOS.TabIndex = 106;
+			this.Atari7800BrowsePALBIOS.UseVisualStyleBackColor = true;
+			this.Atari7800BrowsePALBIOS.Click += new System.EventHandler(this.Atari7800BrowsePALBIOS_Click);
+			// 
+			// Atari7800BrowseNTSCBIOS
+			// 
+			this.Atari7800BrowseNTSCBIOS.AccessibleName = "Atari7800BrowseCheats";
+			this.Atari7800BrowseNTSCBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Atari7800BrowseNTSCBIOS.Image = ((System.Drawing.Image)(resources.GetObject("Atari7800BrowseNTSCBIOS.Image")));
+			this.Atari7800BrowseNTSCBIOS.Location = new System.Drawing.Point(442, 206);
+			this.Atari7800BrowseNTSCBIOS.Name = "Atari7800BrowseNTSCBIOS";
+			this.Atari7800BrowseNTSCBIOS.Size = new System.Drawing.Size(26, 23);
+			this.Atari7800BrowseNTSCBIOS.TabIndex = 105;
+			this.Atari7800BrowseNTSCBIOS.UseVisualStyleBackColor = true;
+			this.Atari7800BrowseNTSCBIOS.Click += new System.EventHandler(this.Atari7800BrowseNTSCBIOS_Click);
+			// 
+			// Atari7800HighScoreBIOSBox
+			// 
+			this.Atari7800HighScoreBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.Atari7800HighScoreBIOSBox.Location = new System.Drawing.Point(13, 259);
+			this.Atari7800HighScoreBIOSBox.Name = "Atari7800HighScoreBIOSBox";
+			this.Atari7800HighScoreBIOSBox.Size = new System.Drawing.Size(421, 20);
+			this.Atari7800HighScoreBIOSBox.TabIndex = 104;
+			// 
+			// Atari7800PALBIOSBox
+			// 
+			this.Atari7800PALBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.Atari7800PALBIOSBox.Location = new System.Drawing.Point(13, 232);
+			this.Atari7800PALBIOSBox.Name = "Atari7800PALBIOSBox";
+			this.Atari7800PALBIOSBox.Size = new System.Drawing.Size(421, 20);
+			this.Atari7800PALBIOSBox.TabIndex = 103;
+			// 
+			// Atari7800NTSCBIOSBox
+			// 
+			this.Atari7800NTSCBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.Atari7800NTSCBIOSBox.Location = new System.Drawing.Point(13, 206);
+			this.Atari7800NTSCBIOSBox.Name = "Atari7800NTSCBIOSBox";
+			this.Atari7800NTSCBIOSBox.Size = new System.Drawing.Size(421, 20);
+			this.Atari7800NTSCBIOSBox.TabIndex = 102;
 			// 
 			// Atari7800SaveRAMsDescription
 			// 
@@ -3379,7 +3495,7 @@
 			this.tabPageIntellivision.Location = new System.Drawing.Point(4, 40);
 			this.tabPageIntellivision.Name = "tabPageIntellivision";
 			this.tabPageIntellivision.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageIntellivision.Size = new System.Drawing.Size(566, 278);
+			this.tabPageIntellivision.Size = new System.Drawing.Size(566, 288);
 			this.tabPageIntellivision.TabIndex = 10;
 			this.tabPageIntellivision.Text = "Int.V.";
 			this.tabPageIntellivision.UseVisualStyleBackColor = true;
@@ -3589,7 +3705,7 @@
 			this.tabPageColeco.Controls.Add(this.COLBrowseROMs);
 			this.tabPageColeco.Location = new System.Drawing.Point(4, 40);
 			this.tabPageColeco.Name = "tabPageColeco";
-			this.tabPageColeco.Size = new System.Drawing.Size(566, 278);
+			this.tabPageColeco.Size = new System.Drawing.Size(566, 288);
 			this.tabPageColeco.TabIndex = 13;
 			this.tabPageColeco.Text = "Col. V.";
 			this.tabPageColeco.UseVisualStyleBackColor = true;
@@ -3796,7 +3912,7 @@
 			this.tabPageC64.Controls.Add(this.C64BaseBox);
 			this.tabPageC64.Location = new System.Drawing.Point(4, 40);
 			this.tabPageC64.Name = "tabPageC64";
-			this.tabPageC64.Size = new System.Drawing.Size(566, 278);
+			this.tabPageC64.Size = new System.Drawing.Size(566, 288);
 			this.tabPageC64.TabIndex = 12;
 			this.tabPageC64.Text = "C64";
 			this.tabPageC64.UseVisualStyleBackColor = true;
@@ -4023,98 +4139,221 @@
 			this.label1.TabIndex = 204;
 			this.label1.Text = "Special Commands";
 			// 
-			// Atari7800NTSCBIOSBox
+			// tabPageN64
 			// 
-			this.Atari7800NTSCBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tabPageN64.Controls.Add(this.N64BaseBox);
+			this.tabPageN64.Controls.Add(this.N64CheatsDescription);
+			this.tabPageN64.Controls.Add(this.N64BrowseCheats);
+			this.tabPageN64.Controls.Add(this.N64CheatsBox);
+			this.tabPageN64.Controls.Add(this.N64ScreenshotsBox);
+			this.tabPageN64.Controls.Add(this.N64BaseDescription);
+			this.tabPageN64.Controls.Add(this.N64ScreenshotsDescription);
+			this.tabPageN64.Controls.Add(this.N64BrowseBase);
+			this.tabPageN64.Controls.Add(this.N64BrowseScreenshots);
+			this.tabPageN64.Controls.Add(this.N64ROMsBox);
+			this.tabPageN64.Controls.Add(this.N64BrowseSavestates);
+			this.tabPageN64.Controls.Add(this.N64SavestatesDescription);
+			this.tabPageN64.Controls.Add(this.N64ROMsDescription);
+			this.tabPageN64.Controls.Add(this.N64SavestatesBox);
+			this.tabPageN64.Controls.Add(this.N64BrowseROMs);
+			this.tabPageN64.Controls.Add(this.N64BrowseSaveRAM);
+			this.tabPageN64.Controls.Add(this.N64SaveRAMDescription);
+			this.tabPageN64.Controls.Add(this.N64SaveRAMBox);
+			this.tabPageN64.Location = new System.Drawing.Point(4, 40);
+			this.tabPageN64.Name = "tabPageN64";
+			this.tabPageN64.Size = new System.Drawing.Size(566, 288);
+			this.tabPageN64.TabIndex = 16;
+			this.tabPageN64.Text = "N64";
+			this.tabPageN64.UseVisualStyleBackColor = true;
+			// 
+			// tabPageSaturn
+			// 
+			this.tabPageSaturn.Location = new System.Drawing.Point(4, 40);
+			this.tabPageSaturn.Name = "tabPageSaturn";
+			this.tabPageSaturn.Size = new System.Drawing.Size(566, 288);
+			this.tabPageSaturn.TabIndex = 17;
+			this.tabPageSaturn.Text = "Saturn";
+			this.tabPageSaturn.UseVisualStyleBackColor = true;
+			// 
+			// N64BaseBox
+			// 
+			this.N64BaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800NTSCBIOSBox.Location = new System.Drawing.Point(13, 206);
-			this.Atari7800NTSCBIOSBox.Name = "Atari7800NTSCBIOSBox";
-			this.Atari7800NTSCBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.Atari7800NTSCBIOSBox.TabIndex = 102;
+			this.N64BaseBox.Location = new System.Drawing.Point(13, 21);
+			this.N64BaseBox.Name = "N64BaseBox";
+			this.N64BaseBox.Size = new System.Drawing.Size(421, 20);
+			this.N64BaseBox.TabIndex = 129;
 			// 
-			// Atari7800PALBIOSBox
+			// N64CheatsDescription
 			// 
-			this.Atari7800PALBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.N64CheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64CheatsDescription.AutoSize = true;
+			this.N64CheatsDescription.Location = new System.Drawing.Point(474, 183);
+			this.N64CheatsDescription.Name = "N64CheatsDescription";
+			this.N64CheatsDescription.Size = new System.Drawing.Size(40, 13);
+			this.N64CheatsDescription.TabIndex = 128;
+			this.N64CheatsDescription.Text = "Cheats";
+			// 
+			// N64BrowseCheats
+			// 
+			this.N64BrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64BrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("N64BrowseCheats.Image")));
+			this.N64BrowseCheats.Location = new System.Drawing.Point(442, 179);
+			this.N64BrowseCheats.Name = "N64BrowseCheats";
+			this.N64BrowseCheats.Size = new System.Drawing.Size(26, 23);
+			this.N64BrowseCheats.TabIndex = 140;
+			this.N64BrowseCheats.UseVisualStyleBackColor = true;
+			this.N64BrowseCheats.Click += new System.EventHandler(this.N64BrowseCheats_Click);
+			// 
+			// N64CheatsBox
+			// 
+			this.N64CheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800PALBIOSBox.Location = new System.Drawing.Point(13, 232);
-			this.Atari7800PALBIOSBox.Name = "Atari7800PALBIOSBox";
-			this.Atari7800PALBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.Atari7800PALBIOSBox.TabIndex = 103;
+			this.N64CheatsBox.Location = new System.Drawing.Point(13, 179);
+			this.N64CheatsBox.Name = "N64CheatsBox";
+			this.N64CheatsBox.Size = new System.Drawing.Size(421, 20);
+			this.N64CheatsBox.TabIndex = 139;
 			// 
-			// Atari7800HighScoreBIOSBox
+			// N64ScreenshotsBox
 			// 
-			this.Atari7800HighScoreBIOSBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.N64ScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800HighScoreBIOSBox.Location = new System.Drawing.Point(13, 259);
-			this.Atari7800HighScoreBIOSBox.Name = "Atari7800HighScoreBIOSBox";
-			this.Atari7800HighScoreBIOSBox.Size = new System.Drawing.Size(421, 20);
-			this.Atari7800HighScoreBIOSBox.TabIndex = 104;
+			this.N64ScreenshotsBox.Location = new System.Drawing.Point(13, 149);
+			this.N64ScreenshotsBox.Name = "N64ScreenshotsBox";
+			this.N64ScreenshotsBox.Size = new System.Drawing.Size(421, 20);
+			this.N64ScreenshotsBox.TabIndex = 137;
 			// 
-			// Atari7800BrowseNTSCBIOS
+			// N64BaseDescription
 			// 
-			this.Atari7800BrowseNTSCBIOS.AccessibleName = "Atari7800BrowseCheats";
-			this.Atari7800BrowseNTSCBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800BrowseNTSCBIOS.Image = ((System.Drawing.Image)(resources.GetObject("Atari7800BrowseNTSCBIOS.Image")));
-			this.Atari7800BrowseNTSCBIOS.Location = new System.Drawing.Point(442, 206);
-			this.Atari7800BrowseNTSCBIOS.Name = "Atari7800BrowseNTSCBIOS";
-			this.Atari7800BrowseNTSCBIOS.Size = new System.Drawing.Size(26, 23);
-			this.Atari7800BrowseNTSCBIOS.TabIndex = 105;
-			this.Atari7800BrowseNTSCBIOS.UseVisualStyleBackColor = true;
-			this.Atari7800BrowseNTSCBIOS.Click += new System.EventHandler(this.Atari7800BrowseNTSCBIOS_Click);
+			this.N64BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64BaseDescription.AutoSize = true;
+			this.N64BaseDescription.Location = new System.Drawing.Point(474, 25);
+			this.N64BaseDescription.Name = "N64BaseDescription";
+			this.N64BaseDescription.Size = new System.Drawing.Size(31, 13);
+			this.N64BaseDescription.TabIndex = 127;
+			this.N64BaseDescription.Text = "Base";
 			// 
-			// Atari7800BrowsePALBIOS
+			// N64ScreenshotsDescription
 			// 
-			this.Atari7800BrowsePALBIOS.AccessibleName = "Atari7800BrowseCheats";
-			this.Atari7800BrowsePALBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800BrowsePALBIOS.Image = ((System.Drawing.Image)(resources.GetObject("Atari7800BrowsePALBIOS.Image")));
-			this.Atari7800BrowsePALBIOS.Location = new System.Drawing.Point(442, 232);
-			this.Atari7800BrowsePALBIOS.Name = "Atari7800BrowsePALBIOS";
-			this.Atari7800BrowsePALBIOS.Size = new System.Drawing.Size(26, 23);
-			this.Atari7800BrowsePALBIOS.TabIndex = 106;
-			this.Atari7800BrowsePALBIOS.UseVisualStyleBackColor = true;
-			this.Atari7800BrowsePALBIOS.Click += new System.EventHandler(this.Atari7800BrowsePALBIOS_Click);
+			this.N64ScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64ScreenshotsDescription.AutoSize = true;
+			this.N64ScreenshotsDescription.Location = new System.Drawing.Point(474, 153);
+			this.N64ScreenshotsDescription.Name = "N64ScreenshotsDescription";
+			this.N64ScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+			this.N64ScreenshotsDescription.TabIndex = 126;
+			this.N64ScreenshotsDescription.Text = "Screenshots";
 			// 
-			// Atari7800BrowseHSCBIOS
+			// N64BrowseBase
 			// 
-			this.Atari7800BrowseHSCBIOS.AccessibleName = "Atari7800BrowseCheats";
-			this.Atari7800BrowseHSCBIOS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Atari7800BrowseHSCBIOS.Image = ((System.Drawing.Image)(resources.GetObject("Atari7800BrowseHSCBIOS.Image")));
-			this.Atari7800BrowseHSCBIOS.Location = new System.Drawing.Point(442, 259);
-			this.Atari7800BrowseHSCBIOS.Name = "Atari7800BrowseHSCBIOS";
-			this.Atari7800BrowseHSCBIOS.Size = new System.Drawing.Size(26, 23);
-			this.Atari7800BrowseHSCBIOS.TabIndex = 107;
-			this.Atari7800BrowseHSCBIOS.UseVisualStyleBackColor = true;
-			this.Atari7800BrowseHSCBIOS.Click += new System.EventHandler(this.Atari7800BrowseHSCBIOS_Click);
+			this.N64BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64BrowseBase.Image = ((System.Drawing.Image)(resources.GetObject("N64BrowseBase.Image")));
+			this.N64BrowseBase.Location = new System.Drawing.Point(442, 21);
+			this.N64BrowseBase.Name = "N64BrowseBase";
+			this.N64BrowseBase.Size = new System.Drawing.Size(26, 23);
+			this.N64BrowseBase.TabIndex = 130;
+			this.N64BrowseBase.UseVisualStyleBackColor = true;
+			this.N64BrowseBase.Click += new System.EventHandler(this.N64BrowseBase_Click);
 			// 
-			// label6
+			// N64BrowseScreenshots
 			// 
-			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(474, 209);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(64, 13);
-			this.label6.TabIndex = 108;
-			this.label6.Text = "NTSC BIOS";
+			this.N64BrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64BrowseScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("N64BrowseScreenshots.Image")));
+			this.N64BrowseScreenshots.Location = new System.Drawing.Point(442, 149);
+			this.N64BrowseScreenshots.Name = "N64BrowseScreenshots";
+			this.N64BrowseScreenshots.Size = new System.Drawing.Size(26, 23);
+			this.N64BrowseScreenshots.TabIndex = 138;
+			this.N64BrowseScreenshots.UseVisualStyleBackColor = true;
+			this.N64BrowseScreenshots.Click += new System.EventHandler(this.N64BrowseScreenshots_Click);
 			// 
-			// label7
+			// N64ROMsBox
 			// 
-			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(474, 235);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(55, 13);
-			this.label7.TabIndex = 109;
-			this.label7.Text = "PAL BIOS";
+			this.N64ROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64ROMsBox.Location = new System.Drawing.Point(13, 59);
+			this.N64ROMsBox.Name = "N64ROMsBox";
+			this.N64ROMsBox.Size = new System.Drawing.Size(421, 20);
+			this.N64ROMsBox.TabIndex = 131;
 			// 
-			// label8
+			// N64BrowseSavestates
 			// 
-			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(474, 264);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(83, 13);
-			this.label8.TabIndex = 110;
-			this.label8.Text = "Highscore BIOS";
+			this.N64BrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64BrowseSavestates.Image = ((System.Drawing.Image)(resources.GetObject("N64BrowseSavestates.Image")));
+			this.N64BrowseSavestates.Location = new System.Drawing.Point(442, 89);
+			this.N64BrowseSavestates.Name = "N64BrowseSavestates";
+			this.N64BrowseSavestates.Size = new System.Drawing.Size(26, 23);
+			this.N64BrowseSavestates.TabIndex = 134;
+			this.N64BrowseSavestates.UseVisualStyleBackColor = true;
+			this.N64BrowseSavestates.Click += new System.EventHandler(this.N64BrowseSavestates_Click);
+			// 
+			// N64SavestatesDescription
+			// 
+			this.N64SavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64SavestatesDescription.AutoSize = true;
+			this.N64SavestatesDescription.Location = new System.Drawing.Point(474, 93);
+			this.N64SavestatesDescription.Name = "N64SavestatesDescription";
+			this.N64SavestatesDescription.Size = new System.Drawing.Size(60, 13);
+			this.N64SavestatesDescription.TabIndex = 123;
+			this.N64SavestatesDescription.Text = "Savestates";
+			// 
+			// N64ROMsDescription
+			// 
+			this.N64ROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64ROMsDescription.AutoSize = true;
+			this.N64ROMsDescription.Location = new System.Drawing.Point(474, 63);
+			this.N64ROMsDescription.Name = "N64ROMsDescription";
+			this.N64ROMsDescription.Size = new System.Drawing.Size(37, 13);
+			this.N64ROMsDescription.TabIndex = 125;
+			this.N64ROMsDescription.Text = "ROMs";
+			// 
+			// N64SavestatesBox
+			// 
+			this.N64SavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64SavestatesBox.Location = new System.Drawing.Point(13, 89);
+			this.N64SavestatesBox.Name = "N64SavestatesBox";
+			this.N64SavestatesBox.Size = new System.Drawing.Size(421, 20);
+			this.N64SavestatesBox.TabIndex = 133;
+			// 
+			// N64BrowseROMs
+			// 
+			this.N64BrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64BrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("N64BrowseROMs.Image")));
+			this.N64BrowseROMs.Location = new System.Drawing.Point(442, 59);
+			this.N64BrowseROMs.Name = "N64BrowseROMs";
+			this.N64BrowseROMs.Size = new System.Drawing.Size(26, 23);
+			this.N64BrowseROMs.TabIndex = 132;
+			this.N64BrowseROMs.UseVisualStyleBackColor = true;
+			this.N64BrowseROMs.Click += new System.EventHandler(this.N64BrowseROMs_Click);
+			// 
+			// N64BrowseSaveRAM
+			// 
+			this.N64BrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64BrowseSaveRAM.Image = ((System.Drawing.Image)(resources.GetObject("N64BrowseSaveRAM.Image")));
+			this.N64BrowseSaveRAM.Location = new System.Drawing.Point(442, 119);
+			this.N64BrowseSaveRAM.Name = "N64BrowseSaveRAM";
+			this.N64BrowseSaveRAM.Size = new System.Drawing.Size(26, 23);
+			this.N64BrowseSaveRAM.TabIndex = 136;
+			this.N64BrowseSaveRAM.UseVisualStyleBackColor = true;
+			this.N64BrowseSaveRAM.Click += new System.EventHandler(this.N64BrowseSaveRAM_Click);
+			// 
+			// N64SaveRAMDescription
+			// 
+			this.N64SaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64SaveRAMDescription.AutoSize = true;
+			this.N64SaveRAMDescription.Location = new System.Drawing.Point(474, 123);
+			this.N64SaveRAMDescription.Name = "N64SaveRAMDescription";
+			this.N64SaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+			this.N64SaveRAMDescription.TabIndex = 124;
+			this.N64SaveRAMDescription.Text = "Save RAM";
+			// 
+			// N64SaveRAMBox
+			// 
+			this.N64SaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.N64SaveRAMBox.Location = new System.Drawing.Point(13, 119);
+			this.N64SaveRAMBox.Name = "N64SaveRAMBox";
+			this.N64SaveRAMBox.Size = new System.Drawing.Size(421, 20);
+			this.N64SaveRAMBox.TabIndex = 135;
 			// 
 			// PathConfig
 			// 
@@ -4171,6 +4410,8 @@
 			this.tabPageColeco.PerformLayout();
 			this.tabPageC64.ResumeLayout(false);
 			this.tabPageC64.PerformLayout();
+			this.tabPageN64.ResumeLayout(false);
+			this.tabPageN64.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -4518,5 +4759,25 @@
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.TabPage tabPageN64;
+		private System.Windows.Forms.TabPage tabPageSaturn;
+		private System.Windows.Forms.TextBox N64BaseBox;
+		private System.Windows.Forms.Label N64CheatsDescription;
+		private System.Windows.Forms.Button N64BrowseCheats;
+		private System.Windows.Forms.TextBox N64CheatsBox;
+		private System.Windows.Forms.TextBox N64ScreenshotsBox;
+		private System.Windows.Forms.Label N64BaseDescription;
+		private System.Windows.Forms.Label N64ScreenshotsDescription;
+		private System.Windows.Forms.Button N64BrowseBase;
+		private System.Windows.Forms.Button N64BrowseScreenshots;
+		private System.Windows.Forms.TextBox N64ROMsBox;
+		private System.Windows.Forms.Button N64BrowseSavestates;
+		private System.Windows.Forms.Label N64SavestatesDescription;
+		private System.Windows.Forms.Label N64ROMsDescription;
+		private System.Windows.Forms.TextBox N64SavestatesBox;
+		private System.Windows.Forms.Button N64BrowseROMs;
+		private System.Windows.Forms.Button N64BrowseSaveRAM;
+		private System.Windows.Forms.Label N64SaveRAMDescription;
+		private System.Windows.Forms.TextBox N64SaveRAMBox;
     }
 }

@@ -206,8 +206,22 @@ namespace BizHawk.MultiClient
 		public string PathCOLROMs = ".";
 		public string PathCOLSavestates = Path.Combine(".", "State");
 		public string PathCOLScreenshots = Path.Combine(".", "Screenshots");
-
 		public string PathCOLCheats = Path.Combine(".", "Cheats");
+
+		public string BaseN64 = Path.Combine(".", "N64");
+		public string PathN64ROMs = ".";
+		public string PathN64Savestates = Path.Combine(".", "State");
+		public string PathN64SaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathN64Screenshots = Path.Combine(".", "Screenshots");
+		public string PathN64Cheats = Path.Combine(".", "Cheats");
+
+		public string BaseSaturn = Path.Combine(".", "Saturn");
+		public string PathSaturnROMs = ".";
+		public string PathSaturnSavestates = Path.Combine(".", "State");
+		public string PathSaturnSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathSaturnScreenshots = Path.Combine(".", "Screenshots");
+		public string PathSaturnCheats = Path.Combine(".", "Cheats");
+
 		public string MoviesPath = Path.Combine(".", "Movies");
 		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
 		public string LuaPath = Path.Combine(".", "Lua");
