@@ -10,6 +10,19 @@ extern "C" {
 #include "../yui.h"
 }
 
+CDInterface FECD =
+{
+	2,
+	"FECD",
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+};
+
+
 extern "C" SH2Interface_struct *SH2CoreList[] = {
 &SH2Interpreter,
 &SH2DebugInterpreter,
@@ -24,6 +37,7 @@ NULL
 extern "C" CDInterface *CDCoreList[] = {
 &DummyCD,
 &ISOCD,
+&FECD,
 NULL
 };
 
@@ -92,15 +106,22 @@ extern "C" int vdp2width;
 /* Tells the yui to exchange front and back video buffers. This may end
    up being moved to the Video Core. */
 void YuiSwapBuffers(void)
-{
+{	
 	if (vidbuff)
 	{
-		u32 *src = dispbuffer;
-		u32 *dst = vidbuff;
+		u8 *src = (u8*)dispbuffer;
+		u8 *dst = (u8*)vidbuff;
 
 		for (int j = 0; j < vdp2height; j++)
 			for (int i = 0; i < vdp2width; i++)
-				*dst++ = *src++ | 0xff000000;			
+			{
+				dst[0] = src[2];
+				dst[1] = src[1];
+				dst[2] = src[0];
+				dst[3] = 0xff;
+				src += 4;
+				dst += 4;
+			}	
 	}
 }
 
@@ -132,20 +153,27 @@ extern "C" __declspec(dllexport) void libyabause_deinit()
 	YabauseDeInit();
 }
 
-extern "C" __declspec(dllexport) int libyabause_init()
+extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD)
 {
+	FECD.DeInit = _CD->DeInit;
+	FECD.GetStatus = _CD->GetStatus;
+	FECD.Init = _CD->Init;
+	FECD.ReadAheadFAD = _CD->ReadAheadFAD;
+	FECD.ReadSectorFAD = _CD->ReadSectorFAD;
+	FECD.ReadTOC = _CD->ReadTOC;
+
 	yabauseinit_struct yinit;
 	memset(&yinit, 0, sizeof(yabauseinit_struct));
 	yinit.percoretype = PERCORE_DUMMY;
 	yinit.sh2coretype = SH2CORE_INTERPRETER;
 	yinit.vidcoretype = VIDCORE_SOFT;
 	yinit.sndcoretype = SNDCORE_DUMMY;
-	yinit.cdcoretype = CDCORE_ISO; //CDCORE_DUMMY;
+	yinit.cdcoretype = 2; // CDCORE_ISO; //CDCORE_DUMMY;
 	yinit.m68kcoretype = M68KCORE_C68K;
 	yinit.cartpath = CART_NONE;
 	yinit.regionid = REGION_AUTODETECT;
 	yinit.biospath = NULL;
-	yinit.cdpath = "D:\\encodes\\saturnimages\\Castlevania SOTN.iso"; //NULL;
+	yinit.cdpath = "Saturnus"; //NULL;
 	yinit.buppath = NULL;
 	yinit.mpegpath = NULL;
 	yinit.cartpath = NULL;
@@ -154,7 +182,6 @@ extern "C" __declspec(dllexport) int libyabause_init()
 
 	if (YabauseInit(&yinit) != 0)
 		return 0;
-
 	
 	return 1;
 }
