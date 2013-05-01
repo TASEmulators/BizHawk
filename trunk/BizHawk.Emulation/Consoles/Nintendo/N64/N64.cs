@@ -214,6 +214,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void ReadAudioBuffer(short[] dest);
 		ReadAudioBuffer AudReadAudioBuffer;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate int GetAudioRate();
+		GetAudioRate AudGetAudioRate;
 
 		// This has the same calling pattern for all the plugins
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -288,6 +291,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			AudPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "PluginStartup"), typeof(PluginStartup));
 			AudGetBufferSize = (GetBufferSize)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetBufferSize"), typeof(GetBufferSize));
 			AudReadAudioBuffer = (ReadAudioBuffer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "ReadAudioBuffer"), typeof(ReadAudioBuffer));
+			AudGetAudioRate = (GetAudioRate)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetAudioRate"), typeof(GetAudioRate));
 
 			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
 

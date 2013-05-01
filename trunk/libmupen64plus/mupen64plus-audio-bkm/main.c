@@ -746,3 +746,8 @@ EXPORT int CALL GetBufferSize()
 {
 	return buffer_pos/2;
 }
+
+EXPORT int CALL GetAudioRate()
+{
+	return GameFreq;
+}
