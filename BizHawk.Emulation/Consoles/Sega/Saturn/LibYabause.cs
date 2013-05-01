@@ -72,8 +72,9 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		/// <param name="w">width of framebuffer</param>
 		/// <param name="h">height of framebuffer</param>
 		/// <param name="nsamp">number of sample pairs produced</param>
+		/// <returns>true if lagged</returns>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void libyabause_frameadvance(out int w, out int h, out int nsamp);
+		public static extern bool libyabause_frameadvance(out int w, out int h, out int nsamp);
 
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libyabause_deinit();

@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			CoreComm.RomStatusDetails = "Yeh";
 			this.CoreComm = CoreComm;
 			this.CD = CD;
+			ResetFrameCounter();
 			Init();
 		}
 
@@ -150,41 +151,22 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 			LibYabause.libyabause_setpads(p11, p12, p21, p22);
 
-			LibYabause.libyabause_frameadvance(out w, out h, out nsamp);
+			IsLagFrame = LibYabause.libyabause_frameadvance(out w, out h, out nsamp);
 			BufferWidth = w;
 			BufferHeight = h;
 			SoundNSamp = nsamp;
 			Frame++;
-			LagCount++;
+			if (IsLagFrame)
+				LagCount++;
 			//Console.WriteLine(nsamp);
 		}
 
-		public int Frame
-		{
-			get;
-			private set;
-		}
+		public int Frame { get; private set; }
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; private set; }
 
-		public int LagCount
-		{
-			get;
-			set;
-		}
-
-		public bool IsLagFrame
-		{
-			get { return true; }
-		}
-
-		public string SystemId
-		{
-			get { return "SAT"; }
-		}
-
-		public bool DeterministicEmulation
-		{
-			get { return true; }
-		}
+		public string SystemId { get { return "SAT"; } }
+		public bool DeterministicEmulation { get { return true; } }
 
 		public byte[] ReadSaveRam()
 		{
@@ -209,6 +191,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		{
 			Frame = 0;
 			LagCount = 0;
+			IsLagFrame = false;
 		}
 
 		public void SaveStateText(System.IO.TextWriter writer)
