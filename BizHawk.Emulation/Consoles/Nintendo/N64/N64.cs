@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.N64
 {
-	public class N64 : IEmulator, IVideoProvider, ISoundProvider
+	public class N64 : IEmulator, IVideoProvider
 	{
 		public string SystemId { get { return "N64"; } }
 
@@ -36,23 +36,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public int BufferHeight { get { return 480; } }
 		public int BackgroundColor { get { return 0; } }
 
-		short[] m64pAudioBuffer;
-		public ISoundProvider SoundProvider { get { return this; } }
-		public void GetSamples(short[] samples)
-		{
-			if (m64pAudioBuffer.Length > 0)
-			{
-				for (int i = 0; i < samples.Length / 2; i++)
-				{
-					samples[i * 2] = m64pAudioBuffer[(int)((((double)m64pAudioBuffer.Length / 2) / (double)(samples.Length / 2)) * i) * 2];
-					samples[i * 2 + 1] = m64pAudioBuffer[(int)((((double)m64pAudioBuffer.Length / 2) / (double)(samples.Length / 2)) * i) * 2 + 1]; ;
-				}
-			}
-		}
-		public void DiscardSamples() { }
-		public int MaxVolume { get; set; }
-		public ISyncSoundProvider SyncSoundProvider { get { return null; } }
-		public bool StartAsyncSound() { return true; }
+		Sound.Utilities.SpeexResampler resampler;
+
+		short[] m64pAudioBuffer = new short[2];
+		public ISoundProvider SoundProvider { get { return null; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return resampler; } }
+		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }
 
 		public ControllerDefinition ControllerDefinition { get { return N64ControllerDefinition; } }
@@ -107,7 +96,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public IList<MemoryDomain> MemoryDomains { get { return null; } }
 		public MemoryDomain MainMemory { get { return null; } }
 
-		public void Dispose() { }
+		public void Dispose()
+		{
+			resampler.Dispose();
+			resampler = null;
+		}
 
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string dllToLoad);
@@ -249,10 +242,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void FrameComplete()
 		{
 			int m64pAudioBufferSize = AudGetBufferSize();
-			m64pAudioBuffer = new short[m64pAudioBufferSize];
+
+			if (m64pAudioBuffer.Length < m64pAudioBufferSize)
+				m64pAudioBuffer = new short[m64pAudioBufferSize];
 			if (m64pAudioBufferSize > 0)
 			{
 				AudReadAudioBuffer(m64pAudioBuffer);
+				resampler.EnqueueSamples(m64pAudioBuffer, m64pAudioBufferSize / 2);
 			}
 			m64pFrameComplete = true;
 		}
@@ -330,11 +326,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			{
 				m64pCoreDoCommandRefInt(m64p_command.M64CMD_CORE_STATE_QUERY, 1, ref state);
 			} while (state != (int)m64p_emu_state.M64EMU_PAUSED);
+
+			resampler = new Sound.Utilities.SpeexResampler(6, 32000, 44100, 32000, 44100, null, null);
 		}
 
 		public void ExecuteEmulator()
 		{
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_EXECUTE, 0, IntPtr.Zero);
 		}
+
+
 	}
 }
