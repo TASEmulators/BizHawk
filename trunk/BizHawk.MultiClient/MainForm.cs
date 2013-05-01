@@ -1626,6 +1626,8 @@ namespace BizHawk.MultiClient
 				case "Coleco": str += "ColecoVision"; break;
 				case "GBA": str += "Game Boy Advance"; break;
 				case "N64": str += "Nintendo 64"; break;
+				case "SAT": str += "Saturn"; break;
+				case "DGB": str += "Game Boy Link"; break;
 			}
 
 			if (INTERIM) str += " (interim)";
@@ -1932,17 +1934,16 @@ namespace BizHawk.MultiClient
 
 							if (Emulation.Consoles.PSX.Octoshock.CheckIsPSX(disc))
 							{
-								game = new GameInfo {System = "PSX", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash};
+								game = new GameInfo { System = "PSX", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 								disc.Dispose();
 							}
-								/*
+							else if (disc.DetectSegaSaturn())
+							{
+								game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
+							}
 							else
 							{
-								game = new GameInfo {System = "PCECD", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash};
-							}*/
-							else
-							{
-								game = new GameInfo {System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash};
+								game = new GameInfo { System = "PCECD", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 							}
 						}
 
