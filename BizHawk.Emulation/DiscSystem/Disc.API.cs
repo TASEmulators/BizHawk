@@ -116,7 +116,6 @@ namespace BizHawk.DiscSystem
 			}
 		}
 
-
 		/// <summary>
 		/// Returns a SectorEntry from which you can retrieve various interesting pieces of information about the sector.
 		/// The SectorEntry's interface is not likely to be stable, though, but it may be more convenient.
@@ -205,6 +204,20 @@ namespace BizHawk.DiscSystem
 				return Util.Hash_MD5(buffer, 0, lba_len * 2352);
 			}
 			return "no data track found";
+		}
+
+		/// <summary>
+		/// this isn't quite right...
+		/// </summary>
+		/// <returns></returns>
+		public bool DetectSegaSaturn()
+		{
+			byte[] data = new byte[2048];
+			ReadLBA_2048(0, data, 0);
+			byte[] cmp = System.Text.Encoding.ASCII.GetBytes("SEGA SEGASATURN");
+			byte[] cmp2 = new byte[15];
+			Buffer.BlockCopy(data, 0, cmp2, 0, 15);
+			return System.Linq.Enumerable.SequenceEqual(cmp, cmp2);
 		}
 	}
 }
