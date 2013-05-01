@@ -39,6 +39,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		Sound.Utilities.SpeexResampler resampler;
 
+		uint m64pSamplingRate;
+
 		short[] m64pAudioBuffer = new short[2];
 		public ISoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return resampler; } }
@@ -285,10 +287,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		VICallback m64pVICallback;
 		public void FrameComplete()
 		{
-			int m64pAudioBufferSize = AudGetBufferSize();
+			/*
+			uint s = (uint)AudGetAudioRate();
+			if (s != m64pSamplingRate)
+			{
+				m64pSamplingRate = s;
+				resampler.ChangeRate(s, 44100, s, 44100);
+				Console.WriteLine("N64 ARate Change {0}", s);
+			}*/
 
+			int m64pAudioBufferSize = AudGetBufferSize();
 			if (m64pAudioBuffer.Length < m64pAudioBufferSize)
 				m64pAudioBuffer = new short[m64pAudioBufferSize];
+
 			if (m64pAudioBufferSize > 0)
 			{
 				AudReadAudioBuffer(m64pAudioBuffer);
@@ -382,6 +393,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 				m64pCoreDoCommandRefInt(m64p_command.M64CMD_CORE_STATE_QUERY, 1, ref state);
 			} while (state != (int)m64p_emu_state.M64EMU_PAUSED);
 
+			/*
+			m64pSamplingRate = (uint)AudGetAudioRate();
+			resampler = new Sound.Utilities.SpeexResampler(6, m64pSamplingRate, 44100, m64pSamplingRate, 44100, null, null);
+			Console.WriteLine("N64 Initial ARate {0}", m64pSamplingRate);
+			*/
 			resampler = new Sound.Utilities.SpeexResampler(6, 32000, 44100, 32000, 44100, null, null);
 			AttachedCore = this;
 		}
