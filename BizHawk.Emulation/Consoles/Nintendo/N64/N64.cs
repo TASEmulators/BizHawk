@@ -106,7 +106,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			{
 				// Stop the core, and wait for it to end
 				m64pCoreDoCommandPtr(m64p_command.M64CMD_STOP, 0, IntPtr.Zero);
-				m64pEmulator.Join();
+				//m64pEmulator.Join();
+				while (emulator_running) { }
 
 				resampler.Dispose();
 				resampler = null;
@@ -402,9 +403,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			AttachedCore = this;
 		}
 
+		volatile bool emulator_running = false;
 		public void ExecuteEmulator()
 		{
+			emulator_running = true;
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_EXECUTE, 0, IntPtr.Zero);
+			emulator_running = false;
 		}
 
 
