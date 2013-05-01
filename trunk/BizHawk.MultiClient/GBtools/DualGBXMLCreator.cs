@@ -55,41 +55,82 @@ namespace BizHawk.MultiClient.GBtools
 
 		bool Recalculate()
 		{
-			string PathLeft = dualGBFileSelector1.GetName();
-			string PathRight = dualGBFileSelector2.GetName();
-			string Name = textBoxName.Name;
-
-			if (string.IsNullOrWhiteSpace(PathLeft) || string.IsNullOrWhiteSpace(PathRight) || string.IsNullOrWhiteSpace(Name))
-				return false;
-
-			List<char> NewPathL = new List<char>();
-
-			for (int i = 0; i < PathLeft.Length && i < PathRight.Length; i++)
+			try
 			{
-				if (PathLeft[i] == PathRight[i])
-					NewPathL.Add(PathLeft[i]);
-				else
-					break;
+				string PathLeft = dualGBFileSelector1.GetName();
+				string PathRight = dualGBFileSelector2.GetName();
+				string Name = textBoxName.Text;
+
+				if (string.IsNullOrWhiteSpace(PathLeft) || string.IsNullOrWhiteSpace(PathRight) || string.IsNullOrWhiteSpace(Name))
+					throw new Exception("Blank Names");
+
+				List<char> NewPathL = new List<char>();
+
+				for (int i = 0; i < PathLeft.Length && i < PathRight.Length; i++)
+				{
+					if (PathLeft[i] == PathRight[i])
+						NewPathL.Add(PathLeft[i]);
+					else
+						break;
+				}
+				string BasePath = new string(NewPathL.ToArray());
+				if (string.IsNullOrWhiteSpace(BasePath))
+					throw new Exception("Common path?");
+				BasePath = Path.GetDirectoryName(BasePath);
+				PathLeft = GetRelativePath(BasePath, PathLeft);
+				PathRight = GetRelativePath(BasePath, PathRight);
+
+				BasePath = Path.Combine(BasePath, Name) + ".xml";
+
+				StringWriter XML = new StringWriter();
+				XML.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+				XML.WriteLine("<BizHawk-XMLGame System=\"DGB\" Name=\"{0}\">", Name);
+				XML.WriteLine("  <LoadAssets>");
+				XML.WriteLine("    <LeftRom FileName=\"{0}\"/>", PathLeft);
+				XML.WriteLine("    <RightRom FileName=\"{0}\"/>", PathRight);
+				XML.WriteLine("  </LoadAssets>");
+				XML.WriteLine("</BizHawk-XMLGame>");
+
+				textBoxOutputDir.Text = BasePath;
+				textBoxXML.Text = XML.ToString();
+				buttonOK.Enabled = true;
+				return true;
 			}
-			string BasePath = new string(NewPathL.ToArray());
-			if (string.IsNullOrWhiteSpace(BasePath))
+			catch (Exception e)
+			{
+				textBoxOutputDir.Text = "";
+				textBoxXML.Text = "Failed!\n" + e.ToString();
+				buttonOK.Enabled = false;
 				return false;
-			BasePath = System.IO.Path.GetDirectoryName(BasePath);
-			PathLeft = GetRelativePath(BasePath, PathLeft);
-			PathRight = GetRelativePath(BasePath, PathRight);
+			}
+		}
 
-			StringWriter XML = new StringWriter();
-			XML.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-			XML.WriteLine("<BizHawk-XMLGame System=\"DGB\" Name=\"{0}\">", Name);
-			XML.WriteLine("  <LoadAssets>");
-			XML.WriteLine("    <LeftRom FileName=\"{0}\"/>", PathLeft);
-			XML.WriteLine("    <RightRom FileName=\"{0}\"/>", PathRight);
-			XML.WriteLine("  </LoadAssets>");
-			XML.WriteLine("</BizHawk-XMLGame>");
+		private void textBoxName_TextChanged(object sender, EventArgs e)
+		{
+			Recalculate();
+		}
 
-			textBoxOutputDir.Text = BasePath;
-			textBoxXML.Text = XML.ToString();
-			return true;
+		private void dualGBFileSelector1_NameChanged(object sender, EventArgs e)
+		{
+			Recalculate();
+		}
+
+		private void dualGBFileSelector2_NameChanged(object sender, EventArgs e)
+		{
+			Recalculate();
+		}
+
+		private void buttonOK_Click(object sender, EventArgs e)
+		{
+			if (Recalculate())
+			{
+				using (var sw = new StreamWriter(textBoxOutputDir.Text))
+				{
+					sw.Write(textBoxXML.Text);
+				}
+				DialogResult = System.Windows.Forms.DialogResult.OK;
+				Close();
+			}
 		}
 	}
 }
