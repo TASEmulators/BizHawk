@@ -64,6 +64,9 @@ namespace BizHawk.MultiClient
 		public static Controller ColecoControls;
 		public static AutofireController AutofireColecoControls;
 
+		public static Controller SaturnControls;
+		public static AutofireController AutofireSaturnControls;
+
 		public static Controller IntellivisionControls;
 		public static AutofireController AutofireIntellivisionControls;
 
