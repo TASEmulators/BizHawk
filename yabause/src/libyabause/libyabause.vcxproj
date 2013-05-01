@@ -151,10 +151,6 @@
     <ClInclude Include="..\sh2int.h" />
     <ClInclude Include="..\sh2trace.h" />
     <ClInclude Include="..\smpc.h" />
-    <ClInclude Include="..\sndal.h" />
-    <ClInclude Include="..\snddx.h" />
-    <ClInclude Include="..\sndmac.h" />
-    <ClInclude Include="..\sndsdl.h" />
     <ClInclude Include="..\threads.h" />
     <ClInclude Include="..\titan\titan.h" />
     <ClInclude Include="..\vdp1.h" />

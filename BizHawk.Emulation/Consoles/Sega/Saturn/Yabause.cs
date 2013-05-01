@@ -20,6 +20,9 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		static Yabause AttachedCore = null;
 		GCHandle VideoHandle;
 		DiscSystem.Disc CD;
+		GCHandle SoundHandle;
+
+		bool Disposed = false;
 
 		LibYabause.CDInterface.Init InitH;
 		LibYabause.CDInterface.DeInit DeInitH;
@@ -44,6 +47,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 				AttachedCore = null;
 			}
 			VideoHandle = GCHandle.Alloc(VideoBuffer, GCHandleType.Pinned);
+			SoundHandle = GCHandle.Alloc(SoundBuffer, GCHandleType.Pinned);
 
 			LibYabause.CDInterface CDInt = new LibYabause.CDInterface();
 			CDInt.InitFunc = InitH = new LibYabause.CDInterface.Init(CD_Init);
@@ -57,7 +61,11 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 				throw new Exception("libyabause_init() failed!");
 
 			LibYabause.libyabause_setvidbuff(VideoHandle.AddrOfPinnedObject());
+			LibYabause.libyabause_setsndbuff(SoundHandle.AddrOfPinnedObject());
 			AttachedCore = this;
+
+			BufferWidth = 320;
+			BufferHeight = 224;
 		}
 
 		public ControllerDefinition ControllerDefinition
@@ -69,12 +77,14 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
-			int w, h;
-			LibYabause.libyabause_frameadvance(out w, out h);
+			int w, h, nsamp;
+			LibYabause.libyabause_frameadvance(out w, out h, out nsamp);
 			BufferWidth = w;
 			BufferHeight = h;
+			SoundNSamp = nsamp;
 			Frame++;
 			LagCount++;
+			//Console.WriteLine(nsamp);
 		}
 
 		public int Frame
@@ -164,9 +174,15 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 		public void Dispose()
 		{
-			LibYabause.libyabause_setvidbuff(IntPtr.Zero);
-			LibYabause.libyabause_deinit();
-			VideoHandle.Free();
+			if (!Disposed)
+			{
+				LibYabause.libyabause_setvidbuff(IntPtr.Zero);
+				LibYabause.libyabause_setsndbuff(IntPtr.Zero);
+				LibYabause.libyabause_deinit();
+				VideoHandle.Free();
+				SoundHandle.Free();
+				Disposed = true;
+			}
 		}
 
 		#region IVideoProvider
@@ -183,11 +199,12 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 		#region ISyncSoundProvider
 
-		short[] SoundBuffer = new short[735 * 2];
+		short[] SoundBuffer = new short[44100 * 2];
+		int SoundNSamp = 0;
 
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
-			nsamp = 735;
+			nsamp = SoundNSamp;
 			samples = SoundBuffer;
 		}
 
@@ -323,7 +340,6 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		{
 			// ignored for now
 		}
-
 
 		#endregion
 	}
