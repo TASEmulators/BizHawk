@@ -5229,6 +5229,16 @@ namespace BizHawk.MultiClient
 			LoadGameGenieEC();
 		}
 
+		private void createDualGBXMLToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Sound.StopSound();
+			using (var dlg = new GBtools.DualGBXMLCreator())
+			{
+				dlg.ShowDialog(this);
+			}
+			Global.Sound.StartSound();
+		}
+
 
 	}
 }
