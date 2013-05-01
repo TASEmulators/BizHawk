@@ -8,6 +8,7 @@ extern "C" {
 #include "../vidsoft.h"
 #include "../vdp2.h"
 #include "../yui.h"
+#include "../movie.h"
 }
 
 CDInterface FECD =
@@ -176,13 +177,15 @@ extern "C" __declspec(dllexport) void libyabause_softreset()
 	YabauseResetButton();
 }
 
-extern "C" __declspec(dllexport) void libyabause_frameadvance(int *w, int *h, int *nsamp)
+extern "C" __declspec(dllexport) int libyabause_frameadvance(int *w, int *h, int *nsamp)
 {
+	LagFrameFlag = 1;
 	sndbuffpos = 0;
 	YabauseEmulate();
 	*w = vdp2width;
 	*h = vdp2height;
 	*nsamp = sndbuffpos;
+	return LagFrameFlag;
 }
 
 extern "C" __declspec(dllexport) void libyabause_deinit()
