@@ -91,20 +91,24 @@
 			this.textBoxName.Name = "textBoxName";
 			this.textBoxName.Size = new System.Drawing.Size(323, 20);
 			this.textBoxName.TabIndex = 0;
+			this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
 			// 
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonOK.Enabled = false;
 			this.buttonOK.Location = new System.Drawing.Point(12, 477);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 3;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.Location = new System.Drawing.Point(272, 477);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
@@ -157,8 +161,10 @@
 			this.textBoxXML.Multiline = true;
 			this.textBoxXML.Name = "textBoxXML";
 			this.textBoxXML.ReadOnly = true;
+			this.textBoxXML.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.textBoxXML.Size = new System.Drawing.Size(323, 212);
 			this.textBoxXML.TabIndex = 0;
+			this.textBoxXML.WordWrap = false;
 			// 
 			// dualGBFileSelector2
 			// 
@@ -168,6 +174,7 @@
 			this.dualGBFileSelector2.Name = "dualGBFileSelector2";
 			this.dualGBFileSelector2.Size = new System.Drawing.Size(323, 29);
 			this.dualGBFileSelector2.TabIndex = 0;
+			this.dualGBFileSelector2.NameChanged += new System.EventHandler(this.dualGBFileSelector2_NameChanged);
 			// 
 			// dualGBFileSelector1
 			// 
@@ -177,6 +184,7 @@
 			this.dualGBFileSelector1.Name = "dualGBFileSelector1";
 			this.dualGBFileSelector1.Size = new System.Drawing.Size(323, 29);
 			this.dualGBFileSelector1.TabIndex = 0;
+			this.dualGBFileSelector1.NameChanged += new System.EventHandler(this.dualGBFileSelector1_NameChanged);
 			// 
 			// DualGBXMLCreator
 			// 
