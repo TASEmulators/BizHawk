@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 {
 	public class N64 : IEmulator, IVideoProvider
 	{
+		static N64 AttachedCore = null;
 		public string SystemId { get { return "N64"; } }
 
 		public CoreComm CoreComm { get; private set; }
@@ -96,10 +97,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public IList<MemoryDomain> MemoryDomains { get { return null; } }
 		public MemoryDomain MainMemory { get { return null; } }
 
+		bool disposed = false;
 		public void Dispose()
 		{
-			resampler.Dispose();
-			resampler = null;
+			if (!disposed)
+			{
+				// Stop the core, and wait for it to end
+				m64pCoreDoCommandPtr(m64p_command.M64CMD_STOP, 0, IntPtr.Zero);
+				m64pEmulator.Join();
+
+				resampler.Dispose();
+				resampler = null;
+
+				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_GFX);
+				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO);
+				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_INPUT);
+				m64pCoreDetachPlugin(m64p_plugin_type.M64PLUGIN_RSP);
+
+				GfxPluginShutdown();
+				FreeLibrary(GfxDll);
+
+				AudPluginShutdown();
+				FreeLibrary(AudDll);
+
+				RspPluginShutdown();
+				FreeLibrary(RspDll);
+
+				m64pCoreDoCommandPtr(m64p_command.M64CMD_ROM_CLOSE, 0, IntPtr.Zero);
+				m64pCoreShutdown();
+				FreeLibrary(CoreDll);
+
+				disposed = true;
+			}
 		}
 
 		[DllImport("kernel32.dll")]
@@ -181,8 +210,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		delegate m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string Context, DebugCallback DebugCallback, string context2, IntPtr dummy);
 		CoreStartup m64pCoreStartup;
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreShutdown();
+		CoreShutdown m64pCoreShutdown;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreAttachPlugin(m64p_plugin_type PluginType, IntPtr PluginLibHandle);
 		CoreAttachPlugin m64pCoreAttachPlugin;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error CoreDetachPlugin(m64p_plugin_type PluginType);
+		CoreDetachPlugin m64pCoreDetachPlugin;
 
 		// The last parameter is a void pointer, so make a few delegates for the versions we want to use
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -221,10 +256,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		// This has the same calling pattern for all the plugins
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate m64p_error PluginStartup(IntPtr CoreHandle, string Context, DebugCallback DebugCallback);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate m64p_error PluginShutdown();
 
 		PluginStartup GfxPluginStartup;
 		PluginStartup RspPluginStartup;
 		PluginStartup AudPluginStartup;
+
+		PluginShutdown GfxPluginShutdown;
+		PluginShutdown RspPluginShutdown;
+		PluginShutdown AudPluginShutdown;
 
 		public delegate void DebugCallback(IntPtr Context, int level, string Message);
 
@@ -267,6 +308,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public N64(CoreComm comm, GameInfo game, byte[] rom)
 		{
+			if (AttachedCore != null)
+			{
+				AttachedCore.Dispose();
+				AttachedCore = null;
+			}
 			CoreComm = comm;
 			this.rom = rom;
 			this.game = game;
@@ -276,24 +322,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			GfxDll = LoadLibrary("mupen64plus-video-rice.dll");
 			RspDll = LoadLibrary("mupen64plus-rsp-hle.dll");
 			AudDll = LoadLibrary("mupen64plus-audio-bkm.dll");
-
+			
 			m64pCoreStartup = (CoreStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreStartup"), typeof(CoreStartup));
+			m64pCoreShutdown = (CoreShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreShutdown"), typeof(CoreShutdown));
 			m64pCoreDoCommandByteArray = (CoreDoCommandByteArray)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandByteArray));
 			m64pCoreDoCommandPtr = (CoreDoCommandPtr)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandPtr));
 			m64pCoreDoCommandRefInt = (CoreDoCommandRefInt)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRefInt));
 			m64pCoreDoCommandFrameCallback = (CoreDoCommandFrameCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandFrameCallback));
 			m64pCoreDoCommandVICallback = (CoreDoCommandVICallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandVICallback));
 			m64pCoreAttachPlugin = (CoreAttachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreAttachPlugin"), typeof(CoreAttachPlugin));
+			m64pCoreDetachPlugin = (CoreDetachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDetachPlugin"), typeof(CoreDetachPlugin));
 
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
+			GfxPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginShutdown"), typeof(PluginShutdown));
 			GFXReadScreen2 = (ReadScreen2)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2));
 
 			AudPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "PluginStartup"), typeof(PluginStartup));
+			AudPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "PluginShutdown"), typeof(PluginShutdown));
 			AudGetBufferSize = (GetBufferSize)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetBufferSize"), typeof(GetBufferSize));
 			AudReadAudioBuffer = (ReadAudioBuffer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "ReadAudioBuffer"), typeof(ReadAudioBuffer));
 			AudGetAudioRate = (GetAudioRate)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetAudioRate"), typeof(GetAudioRate));
 
 			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
+			RspPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginShutdown"), typeof(PluginShutdown));
 
 			// Set up the core
 			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); }, "", IntPtr.Zero);
@@ -332,6 +383,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			} while (state != (int)m64p_emu_state.M64EMU_PAUSED);
 
 			resampler = new Sound.Utilities.SpeexResampler(6, 32000, 44100, 32000, 44100, null, null);
+			AttachedCore = this;
 		}
 
 		public void ExecuteEmulator()
