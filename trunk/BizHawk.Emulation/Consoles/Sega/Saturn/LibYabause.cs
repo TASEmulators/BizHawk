@@ -16,6 +16,13 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		public static extern void libyabause_setvidbuff(IntPtr buff);
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="buff">persistent location of s16 interleaved</param>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_setsndbuff(IntPtr buff);
+
+		/// <summary>
 		/// soft reset, or something like that
 		/// </summary>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -26,8 +33,9 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		/// </summary>
 		/// <param name="w">width of framebuffer</param>
 		/// <param name="h">height of framebuffer</param>
+		/// <param name="nsamp">number of sample pairs produced</param>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void libyabause_frameadvance(out int w, out int h);
+		public static extern void libyabause_frameadvance(out int w, out int h, out int nsamp);
 
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libyabause_deinit();

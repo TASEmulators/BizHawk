@@ -22,6 +22,8 @@ CDInterface FECD =
 	NULL,
 };
 
+SoundInterface_struct FESND;
+
 
 extern "C" SH2Interface_struct *SH2CoreList[] = {
 &SH2Interpreter,
@@ -43,6 +45,7 @@ NULL
 
 extern "C" SoundInterface_struct *SNDCoreList[] = {
 &SNDDummy,
+&FESND,
 NULL
 };
 
@@ -98,6 +101,9 @@ int YuiSetVideoMode(int width, int height, int bpp, int fullscreen)
 	return 0; // success
 }
 
+
+s16 *sndbuff = NULL;
+int sndbuffpos = 0;
 u32 *vidbuff = NULL;
 
 extern "C" int vdp2height;
@@ -125,9 +131,30 @@ void YuiSwapBuffers(void)
 	}
 }
 
+static void FESNDUpdateAudio(UNUSED u32 *leftchanbuffer, UNUSED u32 *rightchanbuffer, UNUSED u32 num_samples)
+{
+	/*
+	static s16 stereodata16[44100 / 50];
+	ScspConvert32uto16s((s32 *)leftchanbuffer, (s32 *)rightchanbuffer, (s16 *)stereodata16, num_samples);
+	*/
+}
+
+static u32 FESNDGetAudioSpace(void)
+{
+	return 44100;
+}
 // some garbage from the sound system, we'll have to fix this all up
 extern "C" void DRV_AviSoundUpdate(void* soundData, int soundLen)
 {
+	// soundLen should be number of sample pairs (4 byte units)
+	if (sndbuff)
+	{
+		s16 *src = (s16*)soundData;
+		s16 *dst = sndbuff;
+		dst += sndbuffpos * 2;
+		memcpy (dst, src, soundLen * 4);
+		sndbuffpos += soundLen;
+	}
 }
 
 // must hold at least 704x512 pixels
@@ -136,16 +163,23 @@ extern "C" __declspec(dllexport) void libyabause_setvidbuff(u32 *buff)
 	vidbuff = buff;
 }
 
+extern "C" __declspec(dllexport) void libyabause_setsndbuff(s16 *buff)
+{
+	sndbuff = buff;
+}
+
 extern "C" __declspec(dllexport) void libyabause_softreset()
 {
 	YabauseResetButton();
 }
 
-extern "C" __declspec(dllexport) void libyabause_frameadvance(int *w, int *h)
+extern "C" __declspec(dllexport) void libyabause_frameadvance(int *w, int *h, int *nsamp)
 {
+	sndbuffpos = 0;
 	YabauseEmulate();
 	*w = vdp2width;
 	*h = vdp2height;
+	*nsamp = sndbuffpos;
 }
 
 extern "C" __declspec(dllexport) void libyabause_deinit()
@@ -162,12 +196,19 @@ extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD)
 	FECD.ReadSectorFAD = _CD->ReadSectorFAD;
 	FECD.ReadTOC = _CD->ReadTOC;
 
+	// only overwrite a few SNDDummy functions
+	memcpy(&FESND, &SNDDummy, sizeof(FESND));
+	FESND.id = 2;
+	FESND.Name = "FESND";
+	FESND.GetAudioSpace = FESNDGetAudioSpace;
+	FESND.UpdateAudio = FESNDUpdateAudio;
+
 	yabauseinit_struct yinit;
 	memset(&yinit, 0, sizeof(yabauseinit_struct));
 	yinit.percoretype = PERCORE_DUMMY;
 	yinit.sh2coretype = SH2CORE_INTERPRETER;
 	yinit.vidcoretype = VIDCORE_SOFT;
-	yinit.sndcoretype = SNDCORE_DUMMY;
+	yinit.sndcoretype = 2; //SNDCORE_DUMMY;
 	yinit.cdcoretype = 2; // CDCORE_ISO; //CDCORE_DUMMY;
 	yinit.m68kcoretype = M68KCORE_C68K;
 	yinit.cartpath = CART_NONE;
@@ -183,5 +224,9 @@ extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD)
 	if (YabauseInit(&yinit) != 0)
 		return 0;
 	
+	SpeedThrottleDisable();
+	DisableAutoFrameSkip();
+	ScspSetFrameAccurate(1);
+
 	return 1;
 }

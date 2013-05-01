@@ -230,18 +230,6 @@
     <ClInclude Include="..\smpc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\sndal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\snddx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\sndmac.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\sndsdl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\threads.h">
       <Filter>Header Files</Filter>
     </ClInclude>
