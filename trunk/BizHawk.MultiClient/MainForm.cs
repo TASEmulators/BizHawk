@@ -1037,6 +1037,64 @@ namespace BizHawk.MultiClient
 			agbaControls.BindMulti("Power", Global.Config.GBAAutoController[0].Power);
 			Global.AutofireGBAControls = agbaControls;
 
+			var satControls = new Controller(Emulation.Consoles.Sega.Saturn.Yabause.SaturnController);
+			satControls.BindMulti("P1 Up", Global.Config.SaturnController[0].Up);
+			satControls.BindMulti("P1 Down", Global.Config.SaturnController[0].Down);
+			satControls.BindMulti("P1 Left", Global.Config.SaturnController[0].Left);
+			satControls.BindMulti("P1 Right", Global.Config.SaturnController[0].Right);
+			satControls.BindMulti("P1 A", Global.Config.SaturnController[0].A);
+			satControls.BindMulti("P1 B", Global.Config.SaturnController[0].B);
+			satControls.BindMulti("P1 C", Global.Config.SaturnController[0].C);
+			satControls.BindMulti("P1 X", Global.Config.SaturnController[0].X);
+			satControls.BindMulti("P1 Y", Global.Config.SaturnController[0].Y);
+			satControls.BindMulti("P1 Z", Global.Config.SaturnController[0].Z);
+			satControls.BindMulti("P1 L", Global.Config.SaturnController[0].L);
+			satControls.BindMulti("P1 R", Global.Config.SaturnController[0].R);
+			satControls.BindMulti("P1 Start", Global.Config.SaturnController[0].Start);
+			satControls.BindMulti("P2 Up", Global.Config.SaturnController[1].Up);
+			satControls.BindMulti("P2 Down", Global.Config.SaturnController[1].Down);
+			satControls.BindMulti("P2 Left", Global.Config.SaturnController[1].Left);
+			satControls.BindMulti("P2 Right", Global.Config.SaturnController[1].Right);
+			satControls.BindMulti("P2 A", Global.Config.SaturnController[1].A);
+			satControls.BindMulti("P2 B", Global.Config.SaturnController[1].B);
+			satControls.BindMulti("P2 C", Global.Config.SaturnController[1].C);
+			satControls.BindMulti("P2 X", Global.Config.SaturnController[1].X);
+			satControls.BindMulti("P2 Y", Global.Config.SaturnController[1].Y);
+			satControls.BindMulti("P2 Z", Global.Config.SaturnController[1].Z);
+			satControls.BindMulti("P2 L", Global.Config.SaturnController[1].L);
+			satControls.BindMulti("P2 R", Global.Config.SaturnController[1].R);
+			satControls.BindMulti("P2 Start", Global.Config.SaturnController[1].Start);
+			Global.SaturnControls = satControls;
+
+			var asatControls = new AutofireController(Emulation.Consoles.Sega.Saturn.Yabause.SaturnController);
+			asatControls.BindMulti("P1 Up", Global.Config.SaturnAutoController[0].Up);
+			asatControls.BindMulti("P1 Down", Global.Config.SaturnAutoController[0].Down);
+			asatControls.BindMulti("P1 Left", Global.Config.SaturnAutoController[0].Left);
+			asatControls.BindMulti("P1 Right", Global.Config.SaturnAutoController[0].Right);
+			asatControls.BindMulti("P1 A", Global.Config.SaturnAutoController[0].A);
+			asatControls.BindMulti("P1 B", Global.Config.SaturnAutoController[0].B);
+			asatControls.BindMulti("P1 C", Global.Config.SaturnAutoController[0].C);
+			asatControls.BindMulti("P1 X", Global.Config.SaturnAutoController[0].X);
+			asatControls.BindMulti("P1 Y", Global.Config.SaturnAutoController[0].Y);
+			asatControls.BindMulti("P1 Z", Global.Config.SaturnAutoController[0].Z);
+			asatControls.BindMulti("P1 L", Global.Config.SaturnAutoController[0].L);
+			asatControls.BindMulti("P1 R", Global.Config.SaturnAutoController[0].R);
+			asatControls.BindMulti("P1 Start", Global.Config.SaturnAutoController[0].Start);
+			asatControls.BindMulti("P2 Up", Global.Config.SaturnAutoController[1].Up);
+			asatControls.BindMulti("P2 Down", Global.Config.SaturnAutoController[1].Down);
+			asatControls.BindMulti("P2 Left", Global.Config.SaturnAutoController[1].Left);
+			asatControls.BindMulti("P2 Right", Global.Config.SaturnAutoController[1].Right);
+			asatControls.BindMulti("P2 A", Global.Config.SaturnAutoController[1].A);
+			asatControls.BindMulti("P2 B", Global.Config.SaturnAutoController[1].B);
+			asatControls.BindMulti("P2 C", Global.Config.SaturnAutoController[1].C);
+			asatControls.BindMulti("P2 X", Global.Config.SaturnAutoController[1].X);
+			asatControls.BindMulti("P2 Y", Global.Config.SaturnAutoController[1].Y);
+			asatControls.BindMulti("P2 Z", Global.Config.SaturnAutoController[1].Z);
+			asatControls.BindMulti("P2 L", Global.Config.SaturnAutoController[1].L);
+			asatControls.BindMulti("P2 R", Global.Config.SaturnAutoController[1].R);
+			asatControls.BindMulti("P2 Start", Global.Config.SaturnAutoController[1].Start);
+			Global.AutofireSaturnControls = asatControls;
+
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenesisController[0].Up);
 			genControls.BindMulti("P1 Left", Global.Config.GenesisController[0].Left);
@@ -1743,6 +1801,10 @@ namespace BizHawk.MultiClient
 				case "Coleco":
 					Global.ActiveController = Global.ColecoControls;
 					Global.AutoFireController = Global.AutofireColecoControls;
+					break;
+				case "SAT":
+					Global.ActiveController = Global.SaturnControls;
+					Global.AutoFireController = Global.AutofireSaturnControls;
 					break;
 				case "C64":
 					Global.ActiveController = Global.Commodore64Controls;

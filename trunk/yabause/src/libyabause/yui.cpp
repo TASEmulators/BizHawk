@@ -106,6 +106,9 @@ s16 *sndbuff = NULL;
 int sndbuffpos = 0;
 u32 *vidbuff = NULL;
 
+PerPad_struct *ctrl1;
+PerPad_struct *ctrl2;
+
 extern "C" int vdp2height;
 extern "C" int vdp2width;
 
@@ -187,6 +190,14 @@ extern "C" __declspec(dllexport) void libyabause_deinit()
 	YabauseDeInit();
 }
 
+extern "C" __declspec(dllexport) void libyabause_setpads(u8 p11, u8 p12, u8 p21, u8 p22)
+{
+	ctrl1->padbits[0] = p11;
+	ctrl1->padbits[1] = p12;
+	ctrl2->padbits[0] = p21;
+	ctrl2->padbits[1] = p22;
+}
+
 extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD)
 {
 	FECD.DeInit = _CD->DeInit;
@@ -227,6 +238,9 @@ extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD)
 	SpeedThrottleDisable();
 	DisableAutoFrameSkip();
 	ScspSetFrameAccurate(1);
+
+	ctrl1 = PerPadAdd(&PORTDATA1);
+	ctrl2 = PerPadAdd(&PORTDATA2);
 
 	return 1;
 }

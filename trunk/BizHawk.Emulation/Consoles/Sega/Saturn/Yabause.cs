@@ -12,8 +12,10 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		{
 			Name = "Saturn Controller",
 			BoolButtons =
-			{					
-				"Up", "Down", "Left", "Right", "Start", "Z", "Y", "X", "B", "A", "L", "R"
+			{	
+				"Power", "Reset",
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Start", "P1 Z", "P1 Y", "P1 X", "P1 C", "P1 B", "P1 A", "P1 L", "P1 R",
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Start", "P2 Z", "P2 Y", "P2 X", "P2 C", "P2 B", "P2 A", "P2 L", "P2 R",
 			}
 		};
 
@@ -78,6 +80,76 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			int w, h, nsamp;
+
+			LibYabause.Buttons1 p11 = (LibYabause.Buttons1)0xff;
+			LibYabause.Buttons2 p12 = (LibYabause.Buttons2)0xff;
+			LibYabause.Buttons1 p21 = (LibYabause.Buttons1)0xff;
+			LibYabause.Buttons2 p22 = (LibYabause.Buttons2)0xff;
+
+			if (Controller["P1 A"])
+				p11 &= ~LibYabause.Buttons1.A;
+			if (Controller["P1 B"])
+				p11 &= ~LibYabause.Buttons1.B;
+			if (Controller["P1 C"])
+				p11 &= ~LibYabause.Buttons1.C;
+			if (Controller["P1 Start"])
+				p11 &= ~LibYabause.Buttons1.S;
+			if (Controller["P1 Left"])
+				p11 &= ~LibYabause.Buttons1.L;
+			if (Controller["P1 Right"])
+				p11 &= ~LibYabause.Buttons1.R;
+			if (Controller["P1 Up"])
+				p11 &= ~LibYabause.Buttons1.U;
+			if (Controller["P1 Down"])
+				p11 &= ~LibYabause.Buttons1.D;
+			if (Controller["P1 L"])
+				p12 &= ~LibYabause.Buttons2.L;
+			if (Controller["P1 R"])
+				p12 &= ~LibYabause.Buttons2.R;
+			if (Controller["P1 X"])
+				p12 &= ~LibYabause.Buttons2.X;
+			if (Controller["P1 Y"])
+				p12 &= ~LibYabause.Buttons2.Y;
+			if (Controller["P1 Z"])
+				p12 &= ~LibYabause.Buttons2.Z;
+
+			if (Controller["P2 A"])
+				p21 &= ~LibYabause.Buttons1.A;
+			if (Controller["P2 B"])
+				p21 &= ~LibYabause.Buttons1.B;
+			if (Controller["P2 C"])
+				p21 &= ~LibYabause.Buttons1.C;
+			if (Controller["P2 Start"])
+				p21 &= ~LibYabause.Buttons1.S;
+			if (Controller["P2 Left"])
+				p21 &= ~LibYabause.Buttons1.L;
+			if (Controller["P2 Right"])
+				p21 &= ~LibYabause.Buttons1.R;
+			if (Controller["P2 Up"])
+				p21 &= ~LibYabause.Buttons1.U;
+			if (Controller["P2 Down"])
+				p21 &= ~LibYabause.Buttons1.D;
+			if (Controller["P2 L"])
+				p22 &= ~LibYabause.Buttons2.L;
+			if (Controller["P2 R"])
+				p22 &= ~LibYabause.Buttons2.R;
+			if (Controller["P2 X"])
+				p22 &= ~LibYabause.Buttons2.X;
+			if (Controller["P2 Y"])
+				p22 &= ~LibYabause.Buttons2.Y;
+			if (Controller["P2 Z"])
+				p22 &= ~LibYabause.Buttons2.Z;
+
+
+			if (Controller["Reset"])
+				LibYabause.libyabause_softreset();
+			if (Controller["Power"])
+			{
+				// TODO
+			}
+
+			LibYabause.libyabause_setpads(p11, p12, p21, p22);
+
 			LibYabause.libyabause_frameadvance(out w, out h, out nsamp);
 			BufferWidth = w;
 			BufferHeight = h;

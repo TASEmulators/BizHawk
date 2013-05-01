@@ -34,6 +34,12 @@ namespace BizHawk.MultiClient
 			GenesisController[0] = new GenControllerTemplate(true);
 			GenesisAutoController[0] = new GenControllerTemplate(false);
 
+			SaturnController[0] = new SaturnControllerTemplate(true);
+			SaturnController[1] = new SaturnControllerTemplate(false);
+
+			SaturnAutoController[0] = new SaturnControllerTemplate(false);
+			SaturnAutoController[1] = new SaturnControllerTemplate(false);
+
 			Atari2600Controller[0] = new SingleButtonJoyStickTemplate(true);
 			Atari2600Controller[1] = new SingleButtonJoyStickTemplate(false);
 			Atari2600AutoController[0] = new SingleButtonJoyStickTemplate(false);
@@ -811,6 +817,11 @@ namespace BizHawk.MultiClient
 		public GBAControllerTemplate[] GBAController = new GBAControllerTemplate[1];
 		public GBAControllerTemplate[] GBAAutoController = new GBAControllerTemplate[1];
 
+		//Saturn
+		public SaturnControllerTemplate[] SaturnController = new SaturnControllerTemplate[2];
+		public SaturnControllerTemplate[] SaturnAutoController = new SaturnControllerTemplate[2];
+		public SaturnConsoleButtonTemplate[] SaturnConsoleButtons = new SaturnConsoleButtonTemplate[1];
+
 		//Commodore 64 Settings
 		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
 		public SingleButtonJoyStickTemplate[] C64AutoJoysticks = new SingleButtonJoyStickTemplate[2]; 
@@ -882,6 +893,19 @@ namespace BizHawk.MultiClient
 			Pause = "V, X1 Start";
 		}
 	}
+
+	public class SaturnConsoleButtonTemplate : iControllerConfigObject
+	{
+		public string Reset = "";
+		public string Power = "";
+
+		public void SetDefaults()
+		{
+			Reset = "";
+			Power = "";
+		}
+	}
+
 
 	public class GenConsoleButtonTemplate : iControllerConfigObject
 	{
@@ -1163,6 +1187,37 @@ namespace BizHawk.MultiClient
 			P2_Select = "";
 			P2_Start = "";
 			P2_Power = "";
+		}
+	}
+
+	public class SaturnControllerTemplate : iControllerConfigObject
+	{
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string A = "";
+		public string B = "";
+		public string C = "";
+		public string X = "";
+		public string Y = "";
+		public string Z = "";
+		public string L = "";
+		public string R = "";
+		public string Start = "";
+		public bool Enabled;
+
+		public SaturnControllerTemplate() { }
+		public SaturnControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+		public void SetDefaults()
+		{
+			Enabled = true;
 		}
 	}
 
