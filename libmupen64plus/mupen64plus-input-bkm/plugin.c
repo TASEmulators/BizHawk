@@ -464,7 +464,7 @@ EXPORT void CALL SDL_KeyUp(int keymod, int keysym)
 {
 }
 
-EXPORT void CALL SetKeys(int num, int keys, unsigned char X, char Y)
+EXPORT void CALL SetKeys(int num, int keys, char X, char Y)
 {
 	controllers[num].R_DPAD = (keys >> 0) & 0x01;
 	controllers[num].L_DPAD = (keys >> 1) & 0x01;
@@ -481,6 +481,6 @@ EXPORT void CALL SetKeys(int num, int keys, unsigned char X, char Y)
 	controllers[num].R_TRIG = (keys >> 12) & 0x01;
 	controllers[num].L_TRIG = (keys >> 13) & 0x01;
 
-	controllers[num].X_AXIS = 0;
-	controllers[num].Y_AXIS = 0;
+	controllers[num].X_AXIS = X;
+	controllers[num].Y_AXIS = Y;
 }
