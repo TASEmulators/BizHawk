@@ -499,13 +499,15 @@ BOOL LoadConfiguration(void)
 {
     IniSections.clear();
     bIniIsChanged = false;
-    strcpy(szIniFileName, INI_FILE);
+    /*
+	strcpy(szIniFileName, INI_FILE);
 
     if (!ReadIniFile())
     {
         DebugMessage(M64MSG_ERROR, "Unable to read ini file from disk");
         return FALSE;
     }
+	*/
 
     if (l_ConfigVideoGeneral == NULL || l_ConfigVideoRice == NULL)
     {
