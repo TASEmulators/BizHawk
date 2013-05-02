@@ -1,8 +1,6 @@
 ﻿//TODO - emulation of mirroring is all bolloxed.
 
 using System;
-using System.IO;
-using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {

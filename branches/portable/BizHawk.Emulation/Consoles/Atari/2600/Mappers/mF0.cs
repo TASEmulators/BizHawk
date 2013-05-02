@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Atari._2600
+﻿namespace BizHawk.Emulation.Consoles.Atari._2600
 {
 	/*
 	F0 (Megaboy)
@@ -23,7 +18,7 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 
 	class mF0 : MapperBase 
 	{
-		int bank = 0;
+		int bank;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -34,7 +29,7 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 			}
 
 			if (addr < 0x1000) return base.ReadMemory(addr);
-			else return core.rom[bank * 4096 + (addr & 0xFFF)];
+			else return core.rom[(bank << 12) + (addr & 0xFFF)];
 		}
 
 		public override byte ReadMemory(ushort addr)

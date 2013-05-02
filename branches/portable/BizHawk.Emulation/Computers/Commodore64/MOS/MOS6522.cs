@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
@@ -35,7 +32,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private static byte[] portBit = new byte[] { 0x80, 0x40 };
 		private static byte[] portMask = new byte[] { 0x7F, 0xBF };
 
-		private uint acrShiftMode;
 		private bool caPulse;
 		private bool cbPulse;
 		private bool[] enableIrqCA;
@@ -55,13 +51,12 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 		private bool pbLatchEnable;
 		private byte paOut;
 		private byte pbOut;
-		private bool[] pbPulse;
-		private uint[] pcrControlA;
-		private uint[] pcrControlB;
+		private readonly bool[] pbPulse;
+		private readonly uint[] pcrControlA;
+		private readonly uint[] pcrControlB;
 		private byte sr;
 		private uint srControl;
-		private uint srCounter;
-		private uint[] tControl;
+		private readonly uint[] tControl;
 
 		public Func<bool> ReadCA0;
 		public Func<bool> ReadCA1;
@@ -90,7 +85,6 @@ namespace BizHawk.Emulation.Computers.Commodore64.MOS
 
 		public void HardReset()
 		{
-			acrShiftMode = 0;
 			caPulse = false;
 			cbPulse = false;
 			enableIrqCA[0] = false;

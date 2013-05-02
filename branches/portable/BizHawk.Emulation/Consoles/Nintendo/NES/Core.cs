@@ -1,9 +1,6 @@
 using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using BizHawk.Emulation.CPUs.M6502;
 
 #pragma warning disable 162
@@ -46,7 +43,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int[,] palette = new int[64,3];
 		int[] palette_compiled = new int[64*8];
 		IPortDevice[] ports;
-		
+
+		private DisplayType _display_type = DisplayType.NTSC;
+
 		//Sound config
 		public void SetSquare1(bool enabled) { apu.EnableSquare1 = enabled; }
 		public void SetSquare2(bool enabled) { apu.EnableSquare2 = enabled; }
@@ -184,6 +183,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					CoreComm.VsyncDen = 1;
 					cpuclockrate = 1662607;
 					cpu_sequence = cpu_sequence_PAL;
+					_display_type = DisplayType.PAL;
 					break;
 				case "NES-NTSC":
 				case "Famicom":
@@ -209,6 +209,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					CoreComm.VsyncDen = 1;
 					cpuclockrate = 1773448;
 					cpu_sequence = cpu_sequence_NTSC;
+					_display_type = DisplayType.DENDY;
 					break;
 				case null:
 					Console.WriteLine("Unknown NES system!  Defaulting to NTSC.");
@@ -295,6 +296,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3});
 		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3});
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
+
+#if VS2012
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 		protected void RunCpuOne()
 		{
 			cpu_stepcounter++;
@@ -329,6 +334,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+#if VS2012
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 		public byte ReadReg(int addr)
 		{
 			switch (addr)

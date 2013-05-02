@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// one of the VS unisystem mappers
 	// a lot of dumps are labelled incorrectly

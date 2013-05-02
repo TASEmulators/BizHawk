@@ -1,0 +1,544 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BizHawk.Emulation</RootNamespace>
+    <AssemblyName>BizHawk.Emulation</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;VS2012</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EMU7800, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\BizHawk.MultiClient\output\dll\EMU7800.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Buffer.cs" />
+    <Compile Include="Computers\Commodore64\C64.Core.cs" />
+    <Compile Include="Computers\Commodore64\C64.cs" />
+    <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
+    <Compile Include="Computers\Commodore64\C64.Input.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper000B.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper000F.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0011.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0012.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0013.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
+    <Compile Include="Computers\Commodore64\Disk\VIC1541.cs" />
+    <Compile Include="Computers\Commodore64\Disk\VIC1541.PLA.cs" />
+    <Compile Include="Computers\Commodore64\Media\PRG.cs" />
+    <Compile Include="Computers\Commodore64\Memory.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Cart.cs" />
+    <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\CassettePort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6510.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6522.cs" />
+    <Compile Include="Computers\Commodore64\Media\D64.cs" />
+    <Compile Include="Computers\Commodore64\Media\Disk.cs" />
+    <Compile Include="Computers\Commodore64\Media\G64.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6526.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6567.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6581.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6569.cs" />
+    <Compile Include="Computers\Commodore64\C64.Savestate.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOSPLA.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Port.cs" />
+    <Compile Include="Computers\Commodore64\MOS\SerialPort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Sid.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Timer.cs" />
+    <Compile Include="Computers\Commodore64\MOS\UserPort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
+    <Compile Include="Computers\Commodore64\Tape\VIC1530.cs" />
+    <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
+    <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\m3Fe.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\m0840.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\m3E.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\m3F.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\m4A50.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mDPC.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mE0.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mE7.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mEF.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mF0.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mF4.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mCV.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\m2K.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\m4K.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mF6.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mF8.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mFA.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mFE.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mMC.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mUA.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mX07.cs" />
+    <Compile Include="Consoles\Atari\2600\oldTIA.cs" />
+    <Compile Include="Consoles\Atari\2600\M6532.cs" />
+    <Compile Include="Consoles\Atari\2600\TIA.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.Core.cs" />
+    <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
+    <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
+    <Compile Include="Consoles\Calculator\TI83.cs" />
+    <Compile Include="Consoles\Coleco\ColecoVision.cs" />
+    <Compile Include="Consoles\Coleco\Input.cs" />
+    <Compile Include="Consoles\Coleco\MemoryMap.cs" />
+    <Compile Include="Consoles\Coleco\TMS9918A.cs" />
+    <Compile Include="Consoles\Intellivision\Cartridge.cs" />
+    <Compile Include="Consoles\Intellivision\ICart.cs" />
+    <Compile Include="Consoles\Intellivision\Intellicart.cs" />
+    <Compile Include="Consoles\Intellivision\Intellivision.cs" />
+    <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
+    <Compile Include="Consoles\Intellivision\PSG.cs" />
+    <Compile Include="Consoles\Intellivision\STIC.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
+    <Compile Include="Consoles\Nintendo\NES\APU.cs" />
+    <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\AxROM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI-FCG-1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_02_74.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_161_32.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper028.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\CNROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\CPROM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\ExROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\GxROM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\IC_74x377.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\IREM-74_161_161_21_138.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Irem_G101.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Irem_H3001.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\IREM_TAM_S1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Jaleco-JF_11_14.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_05_06_07.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_13.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_17.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_19.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_SS8806.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper015.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper036.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper038.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper040.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper041.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper042.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper045.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper057.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper058.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper069.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper090.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper091.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper099.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper101.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper103.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper108.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper116.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper120.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper132.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper143.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper156.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper164.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper168.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper176.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper177.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper178.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper180.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper193.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper200.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper201.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper203.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper207.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper218.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper225.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper226.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper227.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper230.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper231.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper233.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper240.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper241.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper242.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper078.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper046.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper243.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper246.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper50.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper60.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper61.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper62.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MLT-ACTION52.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MLT-MAX15.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\HKROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper012.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper037.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper044.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper052.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper074.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper115.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper165.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper182.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper189.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper191.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper192.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper194.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper197.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper205.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper245.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper249.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper250.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\NES-QJ.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TQROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TLSROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TVROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\DRROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper076.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper088.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper095.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper112.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper154.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper206.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namco163Audio.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namcot1xx.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\NAMCOT_m19_m210.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\NanJing.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\NES-EVENT.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\NovelDiamond.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\NROM368.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\SEEPROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m89.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m93.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft3.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft4.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\SxROM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\TAITO_74_161_161_32.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Taito_TC0190FMC.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Taito_X1_005.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Taito_X1_017.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN-800032.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN_800008.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UxROM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\VRC1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\VRC2_4.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\VRC3.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
+    <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Core.cs" />
+    <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
+    <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
+    <Compile Include="Consoles\Nintendo\NES\FDS\RamAdapter.cs" />
+    <Compile Include="Consoles\Nintendo\NES\iNES.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NES.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />
+    <Compile Include="Consoles\Nintendo\NES\PPU.cs" />
+    <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
+    <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Unif.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\SnesColors.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
+    <Compile Include="Consoles\PC Engine\ADPCM.cs" />
+    <Compile Include="Consoles\PC Engine\ArcadeCard.cs" />
+    <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
+    <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
+    <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
+    <Compile Include="Consoles\PC Engine\TurboCD.cs" />
+    <Compile Include="Consoles\PSX\LibMednahawkDll.cs" />
+    <Compile Include="Consoles\PSX\Octoshock.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Input.cs" />
+    <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />
+    <Compile Include="Consoles\Sega\SMS\MemoryMap.Sega.cs" />
+    <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />
+    <Compile Include="Consoles\Sega\SMS\VDP.Mode4.cs" />
+    <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
+    <Compile Include="CPUs\68000\Diassembler.cs" />
+    <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
+    <Compile Include="CPUs\68000\Instructions\DataMovement.cs" />
+    <Compile Include="CPUs\68000\Instructions\IntegerMath.cs" />
+    <Compile Include="CPUs\68000\Instructions\ProgramFlow.cs" />
+    <Compile Include="CPUs\68000\Instructions\Supervisor.cs" />
+    <Compile Include="CPUs\68000\MC68000.cs" />
+    <Compile Include="CPUs\68000\Memory.cs" />
+    <Compile Include="CPUs\68000\OpcodeTable.cs" />
+    <Compile Include="CPUs\68000\Tables.cs" />
+    <Compile Include="CPUs\CP1610\CP1610.cs" />
+    <Compile Include="CPUs\CP1610\Disassembler.cs" />
+    <Compile Include="CPUs\CP1610\Execute.cs" />
+    <Compile Include="CPUs\HuC6280\Disassembler.cs" />
+    <Compile Include="CPUs\HuC6280\Execute.cs" />
+    <Compile Include="CPUs\HuC6280\HuC6280.cs" />
+    <Compile Include="CPUs\MOS 6502X\Disassembler.cs" />
+    <Compile Include="CPUs\MOS 6502X\Execute.cs" />
+    <Compile Include="CPUs\MOS 6502X\MOS6502X.cs" />
+    <Compile Include="CPUs\MOS 6502X\MOS6502XDouble.cs" />
+    <Compile Include="CPUs\MOS 6502X\MOS6502XNative.cs" />
+    <Compile Include="CPUs\Native68000\Musashi.cs" />
+    <Compile Include="CPUs\x86\Disassembler.cs" />
+    <Compile Include="CPUs\x86\Execute.cs" />
+    <Compile Include="CPUs\x86\Timing.cs" />
+    <Compile Include="CPUs\x86\x86.cs" />
+    <Compile Include="CPUs\Z80-GB\Execute.cs" />
+    <Compile Include="CPUs\Z80-GB\Interrupts.cs" />
+    <Compile Include="CPUs\Z80-GB\NewDisassembler.cs" />
+    <Compile Include="CPUs\Z80-GB\Registers.cs" />
+    <Compile Include="CPUs\Z80-GB\Tables.cs" />
+    <Compile Include="CPUs\Z80-GB\Z80.cs" />
+    <Compile Include="CPUs\Z80\Disassembler.cs" />
+    <Compile Include="CPUs\Z80\Execute.cs" />
+    <Compile Include="CPUs\Z80\Interrupts.cs" />
+    <Compile Include="CPUs\Z80\Registers.cs" />
+    <Compile Include="CPUs\Z80\Tables.cs" />
+    <Compile Include="CPUs\Z80\Z80A.cs" />
+    <Compile Include="Database\CRC32.cs" />
+    <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\GameInfo.cs" />
+    <Compile Include="DiscSystem\Blobs\Blob_ECM.cs" />
+    <Compile Include="DiscSystem\Blobs\Blob_WaveFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\Blobs\RiffMaster.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\CCD_format.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\CUE_format.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\Decoding.cs" />
+    <Compile Include="DiscSystem\Disc.API.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\Disc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\DiscTOC.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\ECM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\GPL_ECM.cs" />
+    <Compile Include="DiscSystem\Subcode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\TOC_format.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\Base Implementations\IPS.cs" />
+    <Compile Include="Interfaces\Base Implementations\Movies.cs" />
+    <Compile Include="Interfaces\Base Implementations\NullController.cs" />
+    <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
+    <Compile Include="Interfaces\CoreComms.cs" />
+    <Compile Include="Interfaces\ISyncSoundProvider.cs" />
+    <Compile Include="Properties\svnrev.cs" />
+    <Compile Include="QuickCollections.cs" />
+    <Compile Include="Sound\CDAudio.cs" />
+    <Compile Include="Sound\MMC5Audio.cs" />
+    <Compile Include="Sound\Sunsoft5BAudio.cs" />
+    <Compile Include="Sound\Utilities\BlipBuffer.cs" />
+    <Compile Include="Sound\Utilities\DCFilter.cs" />
+    <Compile Include="Sound\Utilities\Equalizer.cs" />
+    <Compile Include="Sound\Utilities\SpeexResampler.cs" />
+    <Compile Include="Sound\Utilities\BufferedAsync.cs" />
+    <Compile Include="Sound\Utilities\Metaspu.cs" />
+    <Compile Include="Interfaces\IController.cs" />
+    <Compile Include="Interfaces\IEmulator.cs" />
+    <Compile Include="Interfaces\ISoundProvider.cs" />
+    <Compile Include="Interfaces\IVideoProvider.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="Consoles\PC Engine\Input.cs" />
+    <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
+    <Compile Include="Consoles\PC Engine\MemoryMap.SF2.cs" />
+    <Compile Include="Consoles\PC Engine\MemoryMap.SuperGrafx.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.cs" />
+    <Compile Include="Sound\HuC6280PSG.cs" />
+    <Compile Include="Consoles\PC Engine\VCE.cs" />
+    <Compile Include="Consoles\PC Engine\VDC.cs" />
+    <Compile Include="Consoles\PC Engine\VDC.Render.cs" />
+    <Compile Include="Consoles\PC Engine\VPC.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Consoles\Sega\Genesis\Genesis.cs" />
+    <Compile Include="Consoles\Sega\Genesis\GenVDP.cs" />
+    <Compile Include="Consoles\Sega\Genesis\GenVDP.DMA.cs" />
+    <Compile Include="Consoles\Sega\Genesis\GenVDP.Render.cs" />
+    <Compile Include="Consoles\Sega\Genesis\IO.cs" />
+    <Compile Include="Consoles\Sega\Genesis\MemoryMap.68000.cs" />
+    <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
+    <Compile Include="Sound\VRC6Alt.cs" />
+    <Compile Include="Sound\YM2612.cs" />
+    <Compile Include="Consoles\Sega\SMS\BIOS.cs" />
+    <Compile Include="Sound\Utilities\SoundMixer.cs" />
+    <Compile Include="Consoles\Sega\SMS\Input.cs" />
+    <Compile Include="Sound\SN76489.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.cs" />
+    <Compile Include="Consoles\Sega\SMS\VDP.cs" />
+    <Compile Include="Sound\YM2413.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="Sound\Utilities\Waves.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Computers\Commodore64\docs\CRT.TXT" />
+    <Content Include="Consoles\Coleco\docs\CV-Sound.txt" />
+    <Content Include="Consoles\Coleco\docs\CV-Tech.txt" />
+    <Content Include="Consoles\Nintendo\NES\Docs\sunsoft.txt" />
+    <Content Include="Consoles\Nintendo\NES\Docs\sxrom_notes.txt" />
+    <Content Include="Consoles\PC Engine\Compat.txt" />
+    <Content Include="Consoles\Sega\Genesis\Compat.txt" />
+    <Content Include="Consoles\Sega\SMS\Compat.txt" />
+    <Content Include="Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Computers\Commodore64\Peripheral\" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Consoles\Atari\docs\stella.pdf" />
+    <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
+    <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
+    <None Include="Consoles\Nintendo\NES\Docs\BoardTable.xlsx" />
+    <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
+    <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)subwcrev.sh" "$(ProjectDir)"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

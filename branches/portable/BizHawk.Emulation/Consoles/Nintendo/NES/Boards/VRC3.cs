@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//mapper 73 AKA salamander
 	//different IRQ logic than other VRC

@@ -9,7 +9,8 @@
 
 using System;
 using System.Linq;
-using System.Globalization;
+using System.Xml;
+using System.Xml.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -102,8 +103,36 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 		string snes_path_request(int slot, string hint)
 		{
-			//every rom requests this byuu homemade rom
-			if (hint == "msu1.rom") return "";
+			//every rom requests msu1.rom... why? who knows.
+			//also handle msu-1 pcm files here
+			bool is_msu1_rom = hint == "msu1.rom";
+			bool is_msu1_pcm = Path.GetExtension(hint).ToLower() == ".pcm";
+			if (is_msu1_rom || is_msu1_pcm)
+			{
+				//well, check if we have an msu-1 xml
+				if (romxml != null && romxml["cartridge"] != null && romxml["cartridge"]["msu1"] != null)
+				{
+					var msu1 = romxml["cartridge"]["msu1"];
+					if (is_msu1_rom && msu1["rom"].Attributes["name"] != null)
+						return CoreComm.AcquireSubfilePath(msu1["rom"].Attributes["name"].Value);
+					if (is_msu1_pcm)
+					{
+						//return @"D:\roms\snes\SuperRoadBlaster\SuperRoadBlaster-1.pcm";
+						//return "";
+						int wantsTrackNumber = int.Parse(hint.Replace("track-", "").Replace(".pcm", ""));
+						wantsTrackNumber++;
+						string wantsTrackString = wantsTrackNumber.ToString();
+						foreach (var child in msu1.ChildNodes.Cast<XmlNode>())
+						{
+							if (child.Name == "track" && child.Attributes["number"].Value == wantsTrackString)
+								return CoreComm.AcquireSubfilePath(child.Attributes["name"].Value);
+						}
+					}
+				}
+
+				//not found.. what to do? (every rom will get here when msu1.rom is requested)
+				return "";
+			}
 
 			//build romfilename
 			string test = Path.Combine(CoreComm.SNES_FirmwaresPath ?? "", hint);
@@ -137,6 +166,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		}
 
 		public LibsnesApi api;
+		System.Xml.XmlDocument romxml;
 
 		public LibsnesCore(CoreComm comm)
 		{
@@ -149,7 +179,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		LibsnesApi.snes_trace_t tracecb;
 		LibsnesApi.snes_audio_sample_t soundcb;
 
-		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData, bool DeterministicEmulation)
+		public void Load(GameInfo game, byte[] romData, byte[] sgbRomData, bool DeterministicEmulation, byte[] xmlData)
 		{
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
@@ -175,12 +205,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			InitAudio();
 
 			//strip header
-			if ((romData.Length & 0x7FFF) == 512)
-			{
-				var newData = new byte[romData.Length - 512];
-				Array.Copy(romData, 512, newData, 0, newData.Length);
-				romData = newData;
-			}
+			if(romData != null)
+				if ((romData.Length & 0x7FFF) == 512)
+				{
+					var newData = new byte[romData.Length - 512];
+					Array.Copy(romData, 512, newData, 0, newData.Length);
+					romData = newData;
+				}
 
 			if (game["SGB"])
 			{
@@ -191,8 +222,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			}
 			else
 			{
+				//we may need to get some information out of the cart, even during the following bootup/load process
+				if (xmlData != null)
+				{
+					romxml = new System.Xml.XmlDocument();
+					romxml.Load(new MemoryStream(xmlData));
+
+					//bsnes wont inspect the xml to load the necessary sfc file.
+					//so, we have to do that here and pass it in as the romData :/
+					if (romxml["cartridge"] != null && romxml["cartridge"]["rom"] != null)
+						romData = File.ReadAllBytes(CoreComm.AcquireSubfilePath(romxml["cartridge"]["rom"].Attributes["name"].Value));
+					else
+						throw new Exception("Could not find rom file specification in xml file. Please check the integrity of your xml file");
+				}
+
 				SystemId = "SNES";
-				if (!api.snes_load_cartridge_normal(null, romData))
+				if (!api.snes_load_cartridge_normal(xmlData, romData))
 					throw new Exception("snes_load_cartridge_normal() failed");
 			}
 
@@ -285,13 +330,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		int field = 0;
 		void snes_video_refresh(int* data, int width, int height)
 		{
+			bool doubleSize = CoreComm.SNES_AlwaysDoubleSize;
+			bool lineDouble = doubleSize, dotDouble = doubleSize;
+
 			vidWidth = width;
 			vidHeight = height;
 
+			int yskip = 1, xskip = 1;
+
 			//if we are in high-res mode, we get double width. so, lets double the height here to keep it square.
 			//TODO - does interlacing have something to do with the correct way to handle this? need an example that turns it on.
-			int yskip = 1;
 			if (width == 512)
+			{
+				vidHeight *= 2;
+				yskip = 2;
+
+				lineDouble = true;
+				//we dont dot double here because the user wanted double res and the game provided double res
+				dotDouble = false;
+			}
+			else if (lineDouble)
 			{
 				vidHeight *= 2;
 				yskip = 2;
@@ -314,30 +372,36 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				field ^= 1;
 			}
 
+			if (dotDouble)
+			{
+				vidWidth *= 2;
+				xskip = 2;
+			}
+
 			int size = vidWidth * vidHeight;
 			if (vidBuffer.Length != size)
 				vidBuffer = new int[size];
 
-
-			for (int y = 0; y < height; y++)
-				for (int x = 0; x < width; x++)
+			for (int j = 0; j < 2; j++)
+			{
+				if (j == 1 && !dotDouble) break;
+				int xbonus = j;
+				for (int i = 0; i < 2; i++)
 				{
-					int si = y * srcPitch + x + srcStart;
-					int di = y * vidWidth * yskip + x;
-					int rgb = data[si];
-					vidBuffer[di] = rgb;
-				}
+					//potentially do this twice, if we need to line double
+					if (i == 1 && !lineDouble) break;
 
-			//alternate scanlines
-			if (width == 512)
-				for (int y = 0; y < height; y++)
-					for (int x = 0; x < width; x++)
-					{
-						int si = y * 1024 + x;
-						int di = y * vidWidth * yskip + x + 512;
-						int rgb = data[si];
-						vidBuffer[di] = rgb;
-					}
+					int bonus = i * vidWidth + xbonus;
+					for (int y = 0; y < height; y++)
+						for (int x = 0; x < width; x++)
+						{
+							int si = y * srcPitch + x + srcStart;
+							int di = y * vidWidth * yskip + x * xskip + bonus;
+							int rgb = data[si];
+							vidBuffer[di] = rgb;
+						}
+				}
+			}
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
@@ -797,14 +861,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		{
 			MemoryDomains = new List<MemoryDomain>();
 
-			var romDomain = new MemoryDomain("CARTROM", romData.Length, Endian.Little,
-				(addr) => romData[addr],
-				(addr, value) => romData[addr] = value);
-
-			
+			if (romData != null)
+			{
+				var romDomain = new MemoryDomain("CARTROM", romData.Length, Endian.Little,
+					(addr) => romData[addr],
+					(addr, value) => romData[addr] = value);
+				MemoryDomains.Add(romDomain);
+			}
 
 			MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, Endian.Little);
-			MemoryDomains.Add(romDomain);
 
 			//someone needs to comprehensively address these in SGB mode, and go hook them up in the gameboy core
 			if (!IsSGB)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Computers.Commodore64.MOS
 {
 	// used as Color RAM in C64
 

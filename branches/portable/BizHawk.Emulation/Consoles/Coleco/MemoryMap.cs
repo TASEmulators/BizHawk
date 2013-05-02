@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace BizHawk.Emulation.Consoles.Coleco
+﻿namespace BizHawk.Emulation.Consoles.Coleco
 {
     public partial class ColecoVision
     {

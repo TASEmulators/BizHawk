@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Atari._2600
+﻿namespace BizHawk.Emulation.Consoles.Atari._2600
 {
 	/*
 	E7 (M-Network)
@@ -32,11 +27,11 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 
 	class mE7 : MapperBase
 	{
-		int rombank_1k = 0;
-		int rambank1_toggle = 0;
-		ByteBuffer rambank0 = new ByteBuffer(1024);
-		ByteBuffer rambank1 = new ByteBuffer(1024);
-		bool EnableRam0 = false;
+		private int rombank_1k;
+		private int rambank1_toggle;
+		private ByteBuffer rambank0 = new ByteBuffer(1024);
+		private ByteBuffer rambank1 = new ByteBuffer(1024);
+		private bool EnableRam0;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{

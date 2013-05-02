@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// http://wiki.nesdev.com/w/index.php/User:Tepples/Multi-discrete_mapper
 	public class Mapper028 : NES.NESBoardBase

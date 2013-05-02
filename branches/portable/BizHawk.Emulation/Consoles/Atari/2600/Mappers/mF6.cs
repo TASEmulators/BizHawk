@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Atari._2600
+﻿namespace BizHawk.Emulation.Consoles.Atari._2600
 {
 	/*
 	F6 (Atari style 16K)
@@ -16,7 +11,7 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 
 	class mF6 : MapperBase 
 	{
-		int toggle = 0;
+		int toggle;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Xml;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
 

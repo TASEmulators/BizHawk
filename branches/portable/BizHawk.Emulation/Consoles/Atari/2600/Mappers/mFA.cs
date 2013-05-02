@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Atari._2600
+﻿namespace BizHawk.Emulation.Consoles.Atari._2600
 {
 	/*
 	FA (RAM Plus)
@@ -19,7 +14,7 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 
 	class mFA : MapperBase 
 	{
-		int toggle = 0;
+		int toggle;
 		ByteBuffer aux_ram = new ByteBuffer(256);
 
 		private byte ReadMem(ushort addr, bool peek)
@@ -43,7 +38,7 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 			}
 			else
 			{
-				return core.rom[(toggle * 4096) + (addr & 0xFFF)];
+				return core.rom[(toggle << 12) + (addr & 0xFFF)];
 			}
 		}
 

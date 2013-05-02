@@ -1,56 +1,54 @@
 ﻿using System;
-using System.Globalization;
-using System.IO;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Consoles.Atari
 {
 	// Emulates the TIA
-	public partial class TIA : IVideoProvider, ISoundProvider
+	public class TIA : IVideoProvider, ISoundProvider
 	{
-		Atari2600 core;
-
 		public bool frameComplete;
-		byte hsyncCnt = 0;
-		int capChargeStart = 0;
-		bool capCharging = false;
 
-		static byte CXP0 = 0x01;
-		static byte CXP1 = 0x02;
-		static byte CXM0 = 0x04;
-		static byte CXM1 = 0x08;
-		static byte CXPF = 0x10;
-		static byte CXBL = 0x20;
+		private readonly Atari2600 core;
+		private byte hsyncCnt;
+		private int capChargeStart;
+		private bool capCharging;
+
+		private const byte CXP0 = 0x01;
+		private const byte CXP1 = 0x02;
+		private const byte CXM0 = 0x04;
+		private const byte CXM1 = 0x08;
+		private const byte CXPF = 0x10;
+		private const byte CXBL = 0x20;
 
 		struct missileData
 		{
-			public bool enabled;
-			public bool resetToPlayer;
-			public byte hPosCnt;
-			public byte size;
-			public byte number;
-			public byte HM;
-			public byte collisions;
+			public bool Enabled;
+			public bool ResetToPlayer;
+			public byte HPosCnt;
+			public byte Size;
+			public byte Number;
+			public byte Hm;
+			public byte Collisions;
 
-			public bool tick()
+			public bool Tick()
 			{
 				bool result = false;
 
 				// At hPosCnt == 0, start drawing the missile, if enabled
-				if (hPosCnt < (1 << size))
+				if (HPosCnt < (1 << Size))
 				{
-					if (enabled && !resetToPlayer)
+					if (Enabled && !ResetToPlayer)
 					{
 						// Draw the missile
 						result = true;
 					}
 				}
 				
-				if ((number & 0x07) == 0x01 || ((number & 0x07) == 0x03))
+				if ((Number & 0x07) == 0x01 || ((Number & 0x07) == 0x03))
 				{
-					if (hPosCnt >= 16 && hPosCnt <= (16 + (1 << size) - 1) )
+					if (HPosCnt >= 16 && HPosCnt <= (16 + (1 << Size) - 1) )
 					{
-						if (enabled && !resetToPlayer)
+						if (Enabled && !ResetToPlayer)
 						{
 							// Draw the missile
 							result = true;
@@ -58,11 +56,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 					}
 				}
 
-				if (((number & 0x07) == 0x02 || ((number & 0x07) == 0x03) || ((number & 0x07) == 0x06)))
+				if (((Number & 0x07) == 0x02 || ((Number & 0x07) == 0x03) || ((Number & 0x07) == 0x06)))
 				{
-					if (hPosCnt >= 32 && hPosCnt <= (32 + (1 << size) - 1) )
+					if (HPosCnt >= 32 && HPosCnt <= (32 + (1 << Size) - 1) )
 					{
-						if (enabled && !resetToPlayer)
+						if (Enabled && !ResetToPlayer)
 						{
 							// Draw the missile
 							result = true;
@@ -70,11 +68,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 					}
 				}
 
-				if ((number & 0x07) == 0x04 || (number & 0x07) == 0x06)
+				if ((Number & 0x07) == 0x04 || (Number & 0x07) == 0x06)
 				{
-					if (hPosCnt >= 64 && hPosCnt <= (64 + (1 << size) - 1) )
+					if (HPosCnt >= 64 && HPosCnt <= (64 + (1 << Size) - 1) )
 					{
-						if (enabled && !resetToPlayer)
+						if (Enabled && !ResetToPlayer)
 						{
 							// Draw the missile
 							result = true;
@@ -83,9 +81,9 @@ namespace BizHawk.Emulation.Consoles.Atari
 				}
 
 				// Increment the counter
-				hPosCnt++;
+				HPosCnt++;
 				// Counter loops at 160 
-				hPosCnt %= 160;
+				HPosCnt %= 160;
 
 				return result;
 			}
@@ -93,13 +91,13 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("Missile");
-				ser.Sync("enabled", ref enabled);
-				ser.Sync("resetToPlayer", ref resetToPlayer);
-				ser.Sync("hPosCnt", ref hPosCnt);
-				ser.Sync("size", ref size);
-				ser.Sync("number", ref number);
-				ser.Sync("HM", ref HM);
-				ser.Sync("collisions", ref collisions);
+				ser.Sync("enabled", ref Enabled);
+				ser.Sync("resetToPlayer", ref ResetToPlayer);
+				ser.Sync("hPosCnt", ref HPosCnt);
+				ser.Sync("size", ref Size);
+				ser.Sync("number", ref Number);
+				ser.Sync("HM", ref Hm);
+				ser.Sync("collisions", ref Collisions);
 				ser.EndSection();
 			}
 		}
@@ -152,9 +150,9 @@ namespace BizHawk.Emulation.Consoles.Atari
 					}
 
 					// Reset missile, if desired
-					if (scanCnt == 0x04 && hPosCnt <= 16 && missile.resetToPlayer)
+					if (scanCnt == 0x04 && hPosCnt <= 16 && missile.ResetToPlayer)
 					{
-						missile.hPosCnt = 0;
+						missile.HPosCnt = 0;
 					}
 
 					// Increment counter
@@ -380,13 +378,13 @@ namespace BizHawk.Emulation.Consoles.Atari
 		ballData ball;
 
 
-		bool vblankEnabled = false;
-		bool vsyncEnabled = false;
+		bool vblankEnabled;
+		bool vsyncEnabled;
 
-		List<uint[]> scanlinesBuffer = new List<uint[]>();
+		private readonly List<uint[]> scanlinesBuffer = new List<uint[]>();
 		uint[] scanline = new uint[160];
 
-		UInt32[] palette = new UInt32[]{
+		private readonly UInt32[] palette = new UInt32[]{
 		  0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,
 		  0xaaaaaa, 0, 0xc0c0c0, 0, 0xd6d6d6, 0, 0xececec, 0,
 		  0x484800, 0, 0x69690f, 0, 0x86861d, 0, 0xa2a22a, 0,
@@ -454,7 +452,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			int sr3 = 2;
 
 			/// <summary>counter based off AUDF</summary>
-			byte freqcnt = 0;
+			byte freqcnt;
 
 			/// <summary>latched audio value</summary>
 			bool on = true;
@@ -693,13 +691,13 @@ namespace BizHawk.Emulation.Consoles.Atari
 				collisions |= (player0.tick() ? CXP0 : (byte)0x00);
 
 				// ---- Missile 0 ----
-				collisions |= (player0.missile.tick() ? CXM0 : (byte)0x00);
+				collisions |= (player0.missile.Tick() ? CXM0 : (byte)0x00);
 
 				// ---- Player 1 ----
 				collisions |= (player1.tick() ? CXP1 : (byte)0x00);
 
 				// ---- Missile 0 ----
-				collisions |= (player1.missile.tick() ? CXM1 : (byte)0x00);
+				collisions |= (player1.missile.Tick() ? CXM1 : (byte)0x00);
 
 				// ---- Ball ----
 				collisions |= (ball.tick() ? CXBL : (byte)0x00);
@@ -742,7 +740,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 				if ((collisions & CXM1) != 0)
 				{
-					player1.missile.collisions |= collisions;
+					player1.missile.Collisions |= collisions;
 					if (core.CoreComm.Atari2600_ShowMissle2)
 					{
 						pixelColor = palette[player1.color];
@@ -760,7 +758,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 				if ((collisions & CXM0) != 0)
 				{
-					player0.missile.collisions |= collisions;
+					player0.missile.Collisions |= collisions;
 					if (core.CoreComm.Atari2600_ShowMissle1)
 					{
 						pixelColor = palette[player0.color];
@@ -868,10 +866,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 							{ }
 
 							// If the move counter still has a bit in common with the HM register
-							if (((15 - hmove.missile0Cnt) ^ ((player0.missile.HM & 0x07) | ((~(player0.missile.HM & 0x08)) & 0x08))) != 0x0F)
+							if (((15 - hmove.missile0Cnt) ^ ((player0.missile.Hm & 0x07) | ((~(player0.missile.Hm & 0x08)) & 0x08))) != 0x0F)
 							{
 								// "Clock-Stuffing"
-								player0.missile.tick();
+								player0.missile.Tick();
 
 								// Increase by 1, max of 15
 								hmove.missile0Cnt++;
@@ -905,10 +903,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 						if (hmove.missile1Latch)
 						{
 							// If the move counter still has a bit in common with the HM register
-							if (((15 - hmove.missile1Cnt) ^ ((player1.missile.HM & 0x07) | ((~(player1.missile.HM & 0x08)) & 0x08))) != 0x0F)
+							if (((15 - hmove.missile1Cnt) ^ ((player1.missile.Hm & 0x07) | ((~(player1.missile.Hm & 0x08)) & 0x08))) != 0x0F)
 							{
 								// "Clock-Stuffing"
-								player1.missile.tick();
+								player1.missile.Tick();
 
 								// Increase by 1, max of 15
 								hmove.missile1Cnt++;
@@ -1013,11 +1011,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			ushort maskedAddr = (ushort)(addr & 0x000F);
 			if (maskedAddr == 0x00) // CXM0P
 			{
-				return (byte)((((player0.missile.collisions & CXP1) != 0) ? 0x80 : 0x00) | (((player0.missile.collisions & CXP0) != 0) ? 0x40 : 0x00));
+				return (byte)((((player0.missile.Collisions & CXP1) != 0) ? 0x80 : 0x00) | (((player0.missile.Collisions & CXP0) != 0) ? 0x40 : 0x00));
 			}
 			else if (maskedAddr == 0x01) // CXM1P
 			{
-				return (byte)((((player1.missile.collisions & CXP0) != 0) ? 0x80 : 0x00) | (((player1.missile.collisions & CXP1) != 0) ? 0x40 : 0x00));
+				return (byte)((((player1.missile.Collisions & CXP0) != 0) ? 0x80 : 0x00) | (((player1.missile.Collisions & CXP1) != 0) ? 0x40 : 0x00));
 			}
 			else if (maskedAddr == 0x02) // CXP0FB
 			{
@@ -1029,11 +1027,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x04) // CXM0FB
 			{
-				return (byte)((((player0.missile.collisions & CXPF) != 0) ? 0x80 : 0x00) | (((player0.missile.collisions & CXBL) != 0) ? 0x40 : 0x00));
+				return (byte)((((player0.missile.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((player0.missile.Collisions & CXBL) != 0) ? 0x40 : 0x00));
 			}
 			else if (maskedAddr == 0x05) // CXM1FB
 			{
-				return (byte)((((player1.missile.collisions & CXPF) != 0) ? 0x80 : 0x00) | (((player1.missile.collisions & CXBL) != 0) ? 0x40 : 0x00));
+				return (byte)((((player1.missile.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((player1.missile.Collisions & CXBL) != 0) ? 0x40 : 0x00));
 			}
 			else if (maskedAddr == 0x06) // CXBLPF
 			{
@@ -1041,7 +1039,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x07) // CXPPMM
 			{
-				return (byte)((((player0.collisions & CXP1) != 0) ? 0x80 : 0x00) | (((player0.missile.collisions & CXM1) != 0) ? 0x40 : 0x00));
+				return (byte)((((player0.collisions & CXP1) != 0) ? 0x80 : 0x00) | (((player0.missile.Collisions & CXM1) != 0) ? 0x40 : 0x00));
 			}
 			else if (maskedAddr == 0x08) // INPT0
 			{
@@ -1123,14 +1121,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x04) // NUSIZ0
 			{
 				player0.nusiz = (byte)(value & 0x37);
-				player0.missile.size = (byte)((value & 0x30) >> 4);
-				player0.missile.number = (byte)(value & 0x07);
+				player0.missile.Size = (byte)((value & 0x30) >> 4);
+				player0.missile.Number = (byte)(value & 0x07);
 			}
 			else if (maskedAddr == 0x05) // NUSIZ1
 			{
 				player1.nusiz = (byte)(value & 0x37);
-				player1.missile.size = (byte)((value & 0x30) >> 4);
-				player1.missile.number = (byte)(value & 0x07);
+				player1.missile.Size = (byte)((value & 0x30) >> 4);
+				player1.missile.Number = (byte)(value & 0x07);
 			}
 			else if (maskedAddr == 0x06) // COLUP0
 			{
@@ -1232,11 +1230,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x12) // RESM0
 			{
-				player0.missile.hPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+				player0.missile.HPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
 			}
 			else if (maskedAddr == 0x13) // RESM1
 			{
-				player1.missile.hPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+				player1.missile.HPosCnt = (byte)(hsyncCnt < 68 ? 160 - 2 : 160 - 4);
 			}
 			else if (maskedAddr == 0x14) // RESBL
 			{
@@ -1281,11 +1279,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x1D) // ENAM0
 			{
-				player0.missile.enabled = (value & 0x02) != 0;
+				player0.missile.Enabled = (value & 0x02) != 0;
 			}
 			else if (maskedAddr == 0x1E) // ENAM1
 			{
-				player1.missile.enabled = (value & 0x02) != 0;
+				player1.missile.Enabled = (value & 0x02) != 0;
 			}
 			else if (maskedAddr == 0x1F) // ENABL
 			{
@@ -1301,11 +1299,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x22) // HMM0
 			{
-				player0.missile.HM = (byte)((value & 0xF0) >> 4);
+				player0.missile.Hm = (byte)((value & 0xF0) >> 4);
 			}
 			else if (maskedAddr == 0x23) // HMM1
 			{
-				player1.missile.HM = (byte)((value & 0xF0) >> 4);
+				player1.missile.Hm = (byte)((value & 0xF0) >> 4);
 			}
 			else if (maskedAddr == 0x24) // HMBL
 			{
@@ -1325,11 +1323,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x28) // RESMP0
 			{
-				player0.missile.resetToPlayer = (value & 0x02) != 0;
+				player0.missile.ResetToPlayer = (value & 0x02) != 0;
 			}
 			else if (maskedAddr == 0x29) // RESMP1
 			{
-				player1.missile.resetToPlayer = (value & 0x02) != 0;
+				player1.missile.ResetToPlayer = (value & 0x02) != 0;
 			}
 			else if (maskedAddr == 0x2A) // HMOVE
 			{
@@ -1340,17 +1338,17 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x2B) // HMCLR
 			{
 				player0.HM = 0;
-				player0.missile.HM = 0;
+				player0.missile.Hm = 0;
 				player1.HM = 0;
-				player1.missile.HM = 0;
+				player1.missile.Hm = 0;
 				ball.HM = 0;
 			}
 			else if (maskedAddr == 0x2C) // CXCLR
 			{
 				player0.collisions = 0;
-				player0.missile.collisions = 0;
+				player0.missile.Collisions = 0;
 				player1.collisions = 0;
-				player1.missile.collisions = 0;
+				player1.missile.Collisions = 0;
 				ball.collisions = 0;
 			}
 		}

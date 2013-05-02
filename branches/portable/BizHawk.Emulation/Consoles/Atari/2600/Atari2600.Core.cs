@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using BizHawk.Emulation.CPUs.M6502;
 using BizHawk.Emulation.Consoles.Atari;
 using BizHawk.Emulation.Consoles.Atari._2600;
@@ -200,7 +198,7 @@ namespace BizHawk
 						game.Name,
 						Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(rom)),
 						Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(rom)),
-						mapper.GetType().ToString());
+						mapper.GetType());
 		}
 
 		public void FrameAdvance(bool render, bool rendersound)
@@ -218,6 +216,7 @@ namespace BizHawk
 				if (CoreComm.Tracer.Enabled)
 					CoreComm.Tracer.Put(cpu.TraceState());
 				cpu.ExecuteOne();
+				mapper.ClockCpu();
 				//if (cpu.PendingCycles <= 0)
 				//{
 				//  //Console.WriteLine("Tia clocks: " + tia.scanlinePos + "    CPU pending: " + cpu.PendingCycles);
@@ -262,7 +261,7 @@ namespace BizHawk
 			return value;
 		}
 
-		private bool bw = false;
+		private bool bw;
 		private bool p0difficulty = true;
 		private bool p1difficulty = true;
 
@@ -296,5 +295,6 @@ namespace BizHawk
 		public virtual void WriteMemory(ushort addr, byte value) { core.BaseWriteMemory(addr, value); }
 		public virtual void SyncState(Serializer ser) { }
 		public virtual void Dispose() { }
+		public virtual void ClockCpu() { }
 	}
 }

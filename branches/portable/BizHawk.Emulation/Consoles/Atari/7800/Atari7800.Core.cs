@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using BizHawk.Emulation.CPUs.M6502;
-using BizHawk.Emulation.Consoles.Atari;
-using EMU7800.Core;
+﻿using EMU7800.Core;
 
 namespace BizHawk.Emulation
 {

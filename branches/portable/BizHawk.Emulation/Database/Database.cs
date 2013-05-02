@@ -168,6 +168,12 @@ namespace BizHawk
 				case ".GBA":
 					Game.System = "GBA";
 					break;
+
+				case ".Z64":
+				case ".V64":
+				case ".N64":
+					Game.System = "N64";
+					break;
 			}
 
 			Game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');

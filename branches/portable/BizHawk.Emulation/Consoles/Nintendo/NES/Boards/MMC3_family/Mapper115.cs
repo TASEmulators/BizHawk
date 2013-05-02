@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//this class also handles mapper 248
 	//FCEUX uses 115 to implement 248 as well (as of 09-apr-2012 it does it buggily in the case of Bao Qing Tian (As))

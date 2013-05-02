@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// smb2j (us pirate)
 	public class Mapper040 : NES.NESBoardBase

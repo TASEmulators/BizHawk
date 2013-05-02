@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Diagnostics;
-
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//this board contains a Namcot 109 and some extra ram for nametables

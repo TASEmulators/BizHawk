@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
 using System.Collections.Generic;
@@ -263,16 +261,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		public override int Read(byte[] buffer, int offset, int count)
 		{
 			if (buffer.Length < offset + count) throw new IndexOutOfRangeException();
-			fixed (byte* pbuffer = &buffer[offset])
-				buf.Read((IntPtr)pbuffer, count);
+			if(buffer.Length != 0)
+				fixed (byte* pbuffer = &buffer[offset])
+					buf.Read((IntPtr)pbuffer, count);
 			return count;
 		}
 
 		public override void Write(byte[] buffer, int offset, int count)
 		{
 			if (buffer.Length < offset + count) throw new IndexOutOfRangeException();
-			fixed (byte* pbuffer = &buffer[offset])
-				buf.Write((IntPtr)pbuffer, count);
+			if(buffer.Length != 0)
+				fixed (byte* pbuffer = &buffer[offset])
+					buf.Write((IntPtr)pbuffer, count);
 		}
 	}
 
@@ -648,11 +648,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return ret;
 		}
 
-		public bool snes_load_cartridge_normal(string rom_xml, byte[] rom_data)
+		public bool snes_load_cartridge_normal(byte[] rom_xml, byte[] rom_data)
 		{
 			WritePipeMessage(eMessage.eMessage_snes_load_cartridge_normal);
-			WritePipeString(rom_xml ?? "");
-			WritePipeBlob(rom_data);
+			WritePipeBlob(rom_xml ?? new byte[0]);
+			WritePipeBlob(rom_data ?? new byte[0]);
 			//not a very obvious order.. because we do tons of work immediately after the last param goes down and need to answer messages
 			WaitForCompletion();
 			bool ret = brPipe.ReadBoolean();

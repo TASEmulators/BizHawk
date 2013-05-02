@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Atari._2600
+﻿namespace BizHawk.Emulation.Consoles.Atari._2600
 {
 	/*
 	3E (Boulderdash
@@ -25,9 +20,9 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 	*/
 	class m3E : MapperBase 
 	{
-		int lowbank_2k = 0;
-		int rambank_1k = 0;
-		bool hasRam = false;
+		int lowbank_2k;
+		int rambank_1k;
+		bool hasRam;
 		ByteBuffer ram = new ByteBuffer(262144); //Up to 256k
 
 		public override void SyncState(Serializer ser)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// mmc3 multi, PAL, "Super Mario Bros. / Tetris / Nintendo World Cup"
 	public class Mapper037 : MMC3Board_Base

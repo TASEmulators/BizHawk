@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// Doki Doki Panic (FDS port)
 	// "BTL 2708"
 	public class Mapper103 : NES.NESBoardBase
 	{
 		int prg;
-		bool romenable = false;
+		bool romenable;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{

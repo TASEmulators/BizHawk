@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Diagnostics;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//http://wiki.nesdev.com/w/index.php/INES_Mapper_044
 	public class Mapper049 : MMC3Board_Base

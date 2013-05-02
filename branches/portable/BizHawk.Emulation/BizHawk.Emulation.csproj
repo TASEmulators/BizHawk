@@ -49,7 +49,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;VS2010</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -172,6 +172,7 @@
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
@@ -355,6 +356,8 @@
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Input.cs" />
+    <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
+    <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Sega.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />

@@ -1,28 +1,24 @@
 ﻿using System;
-using System.Globalization;
-using System.IO;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Consoles.Atari
 {
 	// Emulates the TIA
-	public partial class oldTIA
+	public class oldTIA
 	{
-		Atari2600 core;
+		private readonly Atari2600 core;
 
 		public bool audioEnabled = false;
 		public byte audioFreqDiv = 0;
 
 		UInt32 PF; // PlayField data
 		byte BKcolor, PFcolor;
-		bool PFpriority = false;
-		bool PFreflect = false;
-		bool PFscore = false;
-		bool inpt_latching = false;
-
-		bool inpt4 = false;
-
-		bool hmoveHappened = false;
+		bool PFpriority;
+		bool PFreflect;
+		bool PFscore;
+		bool inpt_latching;
+		bool inpt4;
+		bool hmoveHappened;
 
 		struct playerData
 		{
@@ -33,7 +29,9 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public byte HM;
 			public bool reflect;
 			public bool delay;
+/*
 			public byte nusiz;
+*/
 		};
 		struct ballMissileData
 		{
@@ -41,8 +39,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public byte pos;
 			public byte HM;
 			public byte size;
+			/*
 			public bool reset;
 			public bool delay;
+			*/
+
 		};
 
 		ballMissileData ball;
@@ -50,18 +51,18 @@ namespace BizHawk.Emulation.Consoles.Atari
 		playerData player0;
 		playerData player1;
 
-		byte player0copies = 0;
-		byte player0copy1 = 0;
-		byte player0copy2 = 0;
-		byte player1copies = 0;
-		byte player1copy1 = 0;
-		byte player1copy2 = 0;
+		byte player0copies;
+		byte player0copy1;
+		byte player0copy2;
+		byte player1copies;
+		byte player1copy1;
+		byte player1copy2;
 
-		byte P0_collisions = 0;
-		byte P1_collisions = 0;
-		byte M0_collisions = 0;
-		byte M1_collisions = 0;
-		byte BL_collisions = 0;
+		byte P0_collisions;
+		byte P1_collisions;
+		byte M0_collisions;
+		byte M1_collisions;
+		byte BL_collisions;
 
 		const byte COLP0 = 0x01;
 		const byte COLP1 = 0x02;
@@ -70,17 +71,16 @@ namespace BizHawk.Emulation.Consoles.Atari
 		const byte COLPF = 0x10;
 		const byte COLBL = 0x20;
 
-		bool vblankEnabled = false;
+		bool vblankEnabled;
 
-
-		int[] frameBuffer;
+		readonly int[] frameBuffer;
 		public bool frameComplete;
 
-		List<uint[]> scanlinesBuffer = new List<uint[]> ();
+		readonly List<uint[]> scanlinesBuffer = new List<uint[]> ();
 		uint[] scanline = new uint[160];
 		public int scanlinePos;
 
-		int[] hmove = new int[] { 0,-1,-2,-3,-4,-5,-6,-7,-8,7,6,5,4,3,2,1 };
+		readonly int[] hmove = new int[] { 0,-1,-2,-3,-4,-5,-6,-7,-8,7,6,5,4,3,2,1 };
 
 		UInt32[] palette = new UInt32[]{
 		  0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,
@@ -119,6 +119,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public oldTIA(Atari2600 core, int[] frameBuffer)
 		{
+			player1copy2 = 0;
+			player0copy2 = 0;
 			this.core = core;
 			BKcolor = 0x00;
 			this.frameBuffer = frameBuffer;
@@ -159,8 +161,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				}
 			}
 
-			UInt32 color;
-			color = palette[BKcolor];
+			uint color = palette[BKcolor];
 			byte collisions = 0;
 
 			if ((PF & PFmask) != 0)
@@ -286,7 +287,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				}
 			}
 
-			if ((PF & PFmask) != 0 && PFpriority == true)
+			if ((PF & PFmask) != 0 && PFpriority)
 			{
 				color = palette[PFcolor];
 				if (PFscore)
@@ -368,7 +369,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				if (inpt_latching)
 				{
-					if (inpt4 == true)
+					if (inpt4)
 					{
 						inpt4 = ((core.ReadControls1(peek) & 0x08) != 0);
 					}
@@ -524,7 +525,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x0F) // PF2
 			{
-				PF = (UInt32)((PF & 0xFFF00) + reverseBits(value));
+				PF = (PF & 0xFFF00) + reverseBits(value);
 			}
 			else if (maskedAddr == 0x10) // RESP0
 			{

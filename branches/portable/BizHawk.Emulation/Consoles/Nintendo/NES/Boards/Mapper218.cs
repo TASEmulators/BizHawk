@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Consoles.Nintendo
+﻿namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	// rewires pins to use internal CIRAM as both nametable and pattern data, so
 	// the entire cart is just a single PRGROM chip (plus CIC)

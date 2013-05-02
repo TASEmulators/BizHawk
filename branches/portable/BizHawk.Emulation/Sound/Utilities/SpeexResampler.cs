@@ -343,6 +343,19 @@ namespace BizHawk.Emulation.Sound.Utilities
 			dstRate = ratioden;
 		}
 
+		/// <summary>change sampling rate on the fly</summary>
+		/// <param name="rationum">numerator of srate change ratio (inrate / outrate)</param>
+		/// <param name="ratioden">demonenator of srate change ratio (inrate / outrate)</param>
+		/// <param name="sratein">sampling rate in, rounded to nearest hz</param>
+		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
+		public void ChangeRate(uint rationum, uint ratioden, uint sratein, uint srateout)
+		{
+#if WINDOWS
+			CheckError(LibSpeexDSP.speex_resampler_set_rate_frac(st, rationum, ratioden, sratein, srateout));
+#endif
+			outbuf = new short[inbuf.Length * ratioden / rationum / 2 * 2 + 128];
+		}
+
 		/// <summary>
 		/// add a sample to the queue
 		/// </summary>

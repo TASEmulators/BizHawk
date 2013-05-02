@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.GBA
@@ -114,7 +111,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 		/// <summary>
 		/// parameter to libmeteor_getmemoryarea
 		/// </summary>
-		public enum MemoryArea : int
+		public enum MemoryArea
 		{
 			/// <summary>
 			/// BIOS, may be invalid if bios not loaded. valid size: 16K.  system bus: @00000000h

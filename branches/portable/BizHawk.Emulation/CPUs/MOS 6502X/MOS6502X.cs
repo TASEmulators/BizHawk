@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 
 namespace BizHawk.Emulation.CPUs.M6502

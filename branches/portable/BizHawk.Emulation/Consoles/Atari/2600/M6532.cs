@@ -1,16 +1,12 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-
-namespace BizHawk.Emulation.Consoles.Atari
+﻿namespace BizHawk.Emulation.Consoles.Atari
 {
 	// Emulates the M6532 RIOT Chip
-	public partial class M6532
+	public class M6532
 	{
-		Atari2600 core;
-
 		public byte ddra = 0x00;
 		public byte ddrb = 0x00;
+
+		private readonly Atari2600 core;
 
 		public struct timerData
 		{
