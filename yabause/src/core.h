@@ -160,6 +160,7 @@ static INLINE int StateWriteHeader(FILE *fp, const char *name, int version) {
 }
 
 static INLINE int StateFinishHeader(FILE *fp, int offset) {
+	/*
    IOCheck_struct check;
    int size = 0;
    size = ftell(fp) - offset;
@@ -169,6 +170,8 @@ static INLINE int StateFinishHeader(FILE *fp, int offset) {
    ywrite(&check, (void *)&size, sizeof(size), 1, fp); // write true size
    fseek(fp, 0, SEEK_END);
    return (check.done == check.size) ? (size + 12) : -1;
+   */
+	return 0;
 }
 
 static INLINE int StateCheckRetrieveHeader(FILE *fp, const char *name, int *version, int *size) {

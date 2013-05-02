@@ -177,6 +177,21 @@ extern "C" __declspec(dllexport) void libyabause_softreset()
 	YabauseResetButton();
 }
 
+extern "C" __declspec(dllexport) void libyabause_hardreset()
+{
+	YabauseReset();
+}
+
+extern "C" __declspec(dllexport) int libyabause_loadstate(const char *fn)
+{
+	return !YabLoadState(fn);
+}
+
+extern "C" __declspec(dllexport) int libyabause_savestate(const char *fn)
+{
+	return !YabSaveState(fn);
+}
+
 extern "C" __declspec(dllexport) int libyabause_frameadvance(int *w, int *h, int *nsamp)
 {
 	LagFrameFlag = 1;

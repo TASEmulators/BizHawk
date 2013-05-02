@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace BizHawk.Emulation.Consoles.Sega.Saturn
 {
@@ -202,26 +203,99 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			IsLagFrame = false;
 		}
 
-		public void SaveStateText(System.IO.TextWriter writer)
+		#region savestates
+
+		void LoadCoreBinary(byte[] data)
 		{
+			var fp = new FilePiping();
+			fp.Offer(data);
+			bool succeed = LibYabause.libyabause_loadstate(fp.GetPipeNameNative());
+			var e = fp.GetResults();
+			if (e != null)
+				throw e;
+			if (!succeed)
+				throw new Exception("libyabause_loadstate() failed");
 		}
 
-		public void LoadStateText(System.IO.TextReader reader)
+		byte[] SaveCoreBinary()
 		{
+			var ms = new MemoryStream();
+			var fp = new FilePiping();
+			fp.Get(ms);
+			bool succeed = LibYabause.libyabause_savestate(fp.GetPipeNameNative());
+			var e = fp.GetResults();
+			if (e != null)
+				throw e;
+			var ret = ms.ToArray();
+			ms.Close();
+			if (!succeed)
+				throw new Exception("libyabause_savestate() failed");
+			return ret;
 		}
 
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
+		// these next 5 functions are all exact copy paste from gambatte.
+		// if something's wrong here, it's probably wrong there too
+
+		public void SaveStateText(TextWriter writer)
 		{
+			var temp = SaveStateBinary();
+			temp.SaveAsHex(writer);
+			// write extra copy of stuff we don't use
+			writer.WriteLine("Frame {0}", Frame);
 		}
 
-		public void LoadStateBinary(System.IO.BinaryReader reader)
+		public void LoadStateText(TextReader reader)
 		{
+			string hex = reader.ReadLine();
+			if (hex.StartsWith("emuVersion")) // movie save
+			{
+				do // theoretically, our portion should start right after StartsFromSavestate, maybe...
+				{
+					hex = reader.ReadLine();
+				} while (!hex.StartsWith("StartsFromSavestate"));
+				hex = reader.ReadLine();
+			}
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHex(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			byte[] data = SaveCoreBinary();
+
+			writer.Write(data.Length);
+			writer.Write(data);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			int length = reader.ReadInt32();
+			byte[] data = reader.ReadBytes(length);
+
+			LoadCoreBinary(data);
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			LagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			return new byte[0];
+			MemoryStream ms = new MemoryStream();
+			BinaryWriter bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
 		}
+
+#endregion
 
 		public CoreComm CoreComm { get; private set; }
 
