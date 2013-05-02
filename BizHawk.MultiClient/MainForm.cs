@@ -2082,8 +2082,16 @@ namespace BizHawk.MultiClient
 						switch (game.System)
 						{
 							case "SAT":
-								var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc);
-								nextEmulator = saturn;
+								{
+									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameSaturnBios);
+									if (!File.Exists(biosPath))
+									{
+										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
+										return false;
+									}
+									var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath));
+									nextEmulator = saturn;
+								}
 								break;
 
 							case "PSX":

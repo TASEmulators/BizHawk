@@ -83,9 +83,10 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		/// 
 		/// </summary>
 		/// <param name="intf">cd interface.  struct need not persist after call, but the function pointers better</param>
+		/// <param name="biosfn">path to bios, pass null to use built in bios emulation</param>
 		/// <returns></returns>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool libyabause_init(ref CDInterface intf);
+		public static extern bool libyabause_init(ref CDInterface intf, string biosfn);
 
 		public struct CDInterface
 		{
