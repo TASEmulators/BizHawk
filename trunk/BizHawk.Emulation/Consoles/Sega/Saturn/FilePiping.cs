@@ -38,6 +38,39 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			PipeName = "BizHawk-" + Guid.NewGuid().ToString();
 		}
 
+		public void Get(Stream s)
+		{
+			if (thr != null)
+				throw new Exception("Can only serve one thing at a time!");
+			if (e != null)
+				throw new Exception("Previous attempt failed!", e);
+			if (!s.CanWrite)
+				throw new ArgumentException("Stream must be readable!");
+
+			using (var evt = new ManualResetEventSlim())
+			{
+				thr = new Thread(delegate()
+					{
+						try
+						{
+							using (var srv = new NamedPipeServerStream(PipeName, PipeDirection.In))
+							{
+								evt.Set();
+								srv.WaitForConnection();
+								srv.CopyTo(s);
+								//srv.Flush();
+							}
+						}
+						catch (Exception ee)
+						{
+							e = ee;
+						}
+					});
+				thr.Start();
+				evt.Wait();
+			}
+		}
+
 		public void Offer(Stream s)
 		{
 			if (thr != null)
@@ -47,23 +80,28 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			if (!s.CanRead)
 				throw new ArgumentException("Stream must be readable!");
 
-			thr = new Thread(delegate()
-				{
-					try
+			using (var evt = new ManualResetEventSlim())
+			{
+				thr = new Thread(delegate()
 					{
-						using (var srv = new NamedPipeServerStream(PipeName, PipeDirection.Out))
+						try
 						{
-							srv.WaitForConnection();
-							s.CopyTo(srv);
-							srv.WaitForPipeDrain();
+							using (var srv = new NamedPipeServerStream(PipeName, PipeDirection.Out))
+							{
+								evt.Set();
+								srv.WaitForConnection();
+								s.CopyTo(srv);
+								srv.WaitForPipeDrain();
+							}
 						}
-					}
-					catch (Exception ee)// might want to do something about this...
-					{
-						e = ee;
-					}
-				});
-			thr.Start();
+						catch (Exception ee)
+						{
+							e = ee;
+						}
+					});
+				thr.Start();
+				evt.Wait();
+			}
 		}
 
 		public Exception GetResults()

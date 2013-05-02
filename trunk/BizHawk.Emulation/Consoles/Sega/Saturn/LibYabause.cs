@@ -67,6 +67,28 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		public static extern void libyabause_softreset();
 
 		/// <summary>
+		/// hard reset, or something like that
+		/// </summary>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_hardreset();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fn"></param>
+		/// <returns>success</returns>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_loadstate(string fn);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fn"></param>
+		/// <returns>success</returns>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_savestate(string fn);
+
+		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="w">width of framebuffer</param>
