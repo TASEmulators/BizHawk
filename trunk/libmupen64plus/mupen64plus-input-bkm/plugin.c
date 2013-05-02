@@ -89,6 +89,8 @@ static int romopen = 0;         // is a rom opened
 
 static unsigned char myKeyState[SDL_NUM_SCANCODES];
 
+BUTTONS controllers[4];
+
 #ifdef __linux__
 static struct ff_effect ffeffect[3];
 static struct ff_effect ffstrong[3];
@@ -355,6 +357,7 @@ EXPORT void CALL ControllerCommand(int Control, unsigned char *Command)
         }
 }
 
+
 /******************************************************************
   Function: GetKeys
   Purpose:  To get the current state of the controllers buttons.
@@ -365,7 +368,7 @@ EXPORT void CALL ControllerCommand(int Control, unsigned char *Command)
 *******************************************************************/
 EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
 {
-	// Use a call back function here, or look up a buffer
+	(*Keys).Value = controllers[Control].Value;
 }
 
 /******************************************************************
@@ -380,11 +383,17 @@ EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
 EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo)
 {
     int i;
+	memset( controller, 0, sizeof( SController ) * 4 );
+
+	for (i = 0; i < 4; i++)
+        controller[i].control = ControlInfo.Controls + i;
 
     for( i = 0; i < 4; i++ )
     {
         controller[i].control->Plugin = PLUGIN_MEMPAK;
     }
+
+	controller[0].control->Present = 1;
 
     DebugMessage(M64MSG_INFO, "%s version %i.%i.%i initialized.", PLUGIN_NAME, VERSION_PRINTF_SPLIT(PLUGIN_VERSION));
 }
@@ -455,3 +464,23 @@ EXPORT void CALL SDL_KeyUp(int keymod, int keysym)
 {
 }
 
+EXPORT void CALL SetKeys(int num, int keys, unsigned char X, char Y)
+{
+	controllers[num].R_DPAD = (keys >> 0) & 0x01;
+	controllers[num].L_DPAD = (keys >> 1) & 0x01;
+	controllers[num].U_DPAD = (keys >> 2) & 0x01;
+	controllers[num].D_DPAD = (keys >> 3) & 0x01;
+	controllers[num].START_BUTTON = (keys >> 4) & 0x01;
+	controllers[num].Z_TRIG = (keys >> 5) & 0x01;
+	controllers[num].B_BUTTON = (keys >> 6) & 0x01;
+	controllers[num].A_BUTTON = (keys >> 7) & 0x01;
+	controllers[num].R_CBUTTON = (keys >> 8) & 0x01;
+	controllers[num].L_CBUTTON = (keys >> 9) & 0x01;
+	controllers[num].U_CBUTTON = (keys >> 10) & 0x01;
+	controllers[num].D_CBUTTON = (keys >> 11) & 0x01;
+	controllers[num].R_TRIG = (keys >> 12) & 0x01;
+	controllers[num].L_TRIG = (keys >> 13) & 0x01;
+
+	controllers[num].X_AXIS = 0;
+	controllers[num].Y_AXIS = 0;
+}
