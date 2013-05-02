@@ -190,6 +190,7 @@ extern "C" __declspec(dllexport) int libyabause_frameadvance(int *w, int *h, int
 
 extern "C" __declspec(dllexport) void libyabause_deinit()
 {
+	PerPortReset();
 	YabauseDeInit();
 }
 
