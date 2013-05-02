@@ -342,6 +342,7 @@ namespace BizHawk.Emulation.Sound.Utilities
 		public void ChangeRate(uint rationum, uint ratioden, uint sratein, uint srateout)
 		{
 			CheckError(LibSpeexDSP.speex_resampler_set_rate_frac(st, rationum, ratioden, sratein, srateout));
+			outbuf = new short[inbuf.Length * ratioden / rationum / 2 * 2 + 128];
 		}
 
 		/// <summary>
