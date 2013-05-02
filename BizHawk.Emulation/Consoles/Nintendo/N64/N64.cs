@@ -69,9 +69,32 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void FrameAdvance(bool render, bool rendersound) 
 		{
 			m64pFrameComplete = false;
+			InpSetKeys(0, ReadController(1), 0, 0);
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 			while (m64pFrameComplete == false) { }
 			Frame++; 
+		}
+
+		public int ReadController(int num)
+		{
+			int buttons = 0;
+
+			if (Controller["P1 DPad R"]) buttons |= (1 << 0);
+			if (Controller["P1 DPad L"]) buttons |= (1 << 1);
+			if (Controller["P1 DPad D"]) buttons |= (1 << 2);
+			if (Controller["P1 DPad U"]) buttons |= (1 << 3);
+			if (Controller["P1 Start"]) buttons |= (1 << 4);
+			if (Controller["P1 Z"]) buttons |= (1 << 5);
+			if (Controller["P1 B"]) buttons |= (1 << 6);
+			if (Controller["P1 A"]) buttons |= (1 << 7);
+			if (Controller["P1 C Right"]) buttons |= (1 << 8);
+			if (Controller["P1 C Left"]) buttons |= (1 << 9);
+			if (Controller["P1 C Down"]) buttons |= (1 << 10);
+			if (Controller["P1 C Up"]) buttons |= (1 << 11);
+			if (Controller["P1 R"]) buttons |= (1 << 12);
+			if (Controller["P1 L"]) buttons |= (1 << 13);
+
+			return buttons;
 		}
 
 		public bool DeterministicEmulation { get; set; }
@@ -126,6 +149,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 				AudPluginShutdown();
 				FreeLibrary(AudDll);
+
+				InpPluginShutdown();
+				FreeLibrary(InpDll);
 
 				RspPluginShutdown();
 				FreeLibrary(RspDll);
@@ -253,6 +279,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		private delegate int GetBufferSize();
 		GetBufferSize AudGetBufferSize;
 
+		// Input plugin specific
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate int SetKeys(int num, int keys, byte X, byte Y);
+		SetKeys InpSetKeys;
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void ReadAudioBuffer(short[] dest);
 		ReadAudioBuffer AudReadAudioBuffer;
@@ -269,10 +300,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		PluginStartup GfxPluginStartup;
 		PluginStartup RspPluginStartup;
 		PluginStartup AudPluginStartup;
+		PluginStartup InpPluginStartup;
 
 		PluginShutdown GfxPluginShutdown;
 		PluginShutdown RspPluginShutdown;
 		PluginShutdown AudPluginShutdown;
+		PluginShutdown InpPluginShutdown;
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void DebugCallback(IntPtr Context, int level, string Message);
@@ -319,6 +352,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		IntPtr GfxDll;
 		IntPtr RspDll;
 		IntPtr AudDll;
+		IntPtr InpDll;
 
 		Thread m64pEmulator;
 
@@ -340,6 +374,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			GfxDll = LoadLibrary("mupen64plus-video-rice.dll");
 			RspDll = LoadLibrary("mupen64plus-rsp-hle.dll");
 			AudDll = LoadLibrary("mupen64plus-audio-bkm.dll");
+			InpDll = LoadLibrary("mupen64plus-input-bkm.dll");
 			
 			m64pCoreStartup = (CoreStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreStartup"), typeof(CoreStartup));
 			m64pCoreShutdown = (CoreShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreShutdown"), typeof(CoreShutdown));
@@ -361,6 +396,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			AudReadAudioBuffer = (ReadAudioBuffer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "ReadAudioBuffer"), typeof(ReadAudioBuffer));
 			AudGetAudioRate = (GetAudioRate)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "GetAudioRate"), typeof(GetAudioRate));
 
+			InpPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginStartup"), typeof(PluginStartup));
+			InpPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginShutdown"), typeof(PluginShutdown));
+			InpSetKeys = (SetKeys)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetKeys"), typeof(SetKeys));
+
 			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
 			RspPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginShutdown"), typeof(PluginShutdown));
 
@@ -377,7 +416,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, AudDll);
 
 			// Set up a null input plugin
-			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, IntPtr.Zero);
+			result = AudPluginStartup(CoreDll, "Input", (IntPtr foo, int level, string Message) => { });
+			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, InpDll);
 
 			// Set up and connect the graphics plugin
 			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { });
