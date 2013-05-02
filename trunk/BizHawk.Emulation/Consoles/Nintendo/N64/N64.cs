@@ -69,6 +69,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void FrameAdvance(bool render, bool rendersound) 
 		{
 			m64pFrameComplete = false;
+			/*
+			sbyte x = 0;
+			sbyte y = 0;
+			if (Controller["P1 DPad R"]) x = 80;
+			if (Controller["P1 DPad L"]) x = -80;
+			if (Controller["P1 DPad D"]) y = -80;
+			if (Controller["P1 DPad U"]) y = 80;
+			InpSetKeys(0, ReadController(1), x, y);
+			*/
 			InpSetKeys(0, ReadController(1), 0, 0);
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 			while (m64pFrameComplete == false) { }
@@ -281,7 +290,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		// Input plugin specific
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate int SetKeys(int num, int keys, byte X, byte Y);
+		private delegate int SetKeys(int num, int keys, sbyte X, sbyte Y);
 		SetKeys InpSetKeys;
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
