@@ -33,16 +33,16 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		LibYabause.CDInterface.ReadSectorFAD ReadSectorFADH;
 		LibYabause.CDInterface.ReadAheadFAD ReadAheadFADH;
 
-		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD)
+		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, byte[] bios)
 		{
 			CoreComm.RomStatusDetails = "Yeh";
 			this.CoreComm = CoreComm;
 			this.CD = CD;
 			ResetFrameCounter();
-			Init();
+			Init(bios);
 		}
 
-		void Init()
+		void Init(byte[] bios)
 		{
 			if (AttachedCore != null)
 			{
@@ -60,8 +60,16 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			CDInt.ReadSectorFADFunc = ReadSectorFADH = new LibYabause.CDInterface.ReadSectorFAD(CD_ReadSectorFAD);
 			CDInt.ReadAheadFADFunc = ReadAheadFADH = new LibYabause.CDInterface.ReadAheadFAD(CD_ReadAheadFAD);
 
-			if (!LibYabause.libyabause_init(ref CDInt))
+			var fp = new FilePiping();
+			string BiosPipe = fp.GetPipeNameNative();
+			fp.Offer(bios);
+
+			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe))
 				throw new Exception("libyabause_init() failed!");
+
+			var e = fp.GetResults();
+			if (e != null)
+				throw e;
 
 			LibYabause.libyabause_setvidbuff(VideoHandle.AddrOfPinnedObject());
 			LibYabause.libyabause_setsndbuff(SoundHandle.AddrOfPinnedObject());

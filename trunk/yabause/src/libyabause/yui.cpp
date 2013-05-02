@@ -201,7 +201,7 @@ extern "C" __declspec(dllexport) void libyabause_setpads(u8 p11, u8 p12, u8 p21,
 	ctrl2->padbits[1] = p22;
 }
 
-extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD)
+extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD, const char *biosfn)
 {
 	FECD.DeInit = _CD->DeInit;
 	FECD.GetStatus = _CD->GetStatus;
@@ -227,7 +227,7 @@ extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD)
 	yinit.m68kcoretype = M68KCORE_C68K;
 	yinit.cartpath = CART_NONE;
 	yinit.regionid = REGION_AUTODETECT;
-	yinit.biospath = NULL;
+	yinit.biospath = biosfn;
 	yinit.cdpath = "Saturnus"; //NULL;
 	yinit.buppath = NULL;
 	yinit.mpegpath = NULL;

@@ -256,6 +256,7 @@ namespace BizHawk.MultiClient
 		public string FilenameA78PALBios = "7800PALBIOS.bin";
 		public string FilenameA78HSCBios = "7800highscore.bin";
 		public string FilenameINTVEROM = "erom.bin";
+		public string FilenameSaturnBios = "Sega Saturn BIOS v1.01 (JAP).bin";
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
