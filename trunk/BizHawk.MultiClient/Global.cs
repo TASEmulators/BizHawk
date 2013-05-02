@@ -73,6 +73,9 @@ namespace BizHawk.MultiClient
 		public static Controller Commodore64Controls;
 		public static AutofireController AutofireCommodore64Controls;
 
+		public static Controller N64Controls;
+		public static AutofireController AutofireN64Controls;
+
 		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>
 		{
 			{

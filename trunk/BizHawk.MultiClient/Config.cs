@@ -71,6 +71,16 @@ namespace BizHawk.MultiClient
 			SNESAutoController[2] = new SNESControllerTemplate(false);
 			SNESAutoController[3] = new SNESControllerTemplate(false);
 
+			N64Controller[0] = new N64ButtonsTemplate(true);
+			N64Controller[1] = new N64ButtonsTemplate(false);
+			N64Controller[2] = new N64ButtonsTemplate(false);
+			N64Controller[3] = new N64ButtonsTemplate(false);
+			N64AutoController[0] = new N64ButtonsTemplate(false);
+			N64AutoController[1] = new N64ButtonsTemplate(false);
+			N64AutoController[2] = new N64ButtonsTemplate(false);
+			N64AutoController[3] = new N64ButtonsTemplate(false);
+			N64ConsoleButtons = new N64ConsoleButtonsTemplate(true);
+
 			ColecoController[0] = new ColecoVisionControllerTemplate(true);
 			ColecoController[1] = new ColecoVisionControllerTemplate(false);
 			ColecoAutoController[0] = new ColecoVisionControllerTemplate(false);
@@ -796,6 +806,10 @@ namespace BizHawk.MultiClient
 		public bool SNESUseRingBuffer = true;
 		public bool SNESAlwaysDoubleSize = false;
 
+		public N64ButtonsTemplate[] N64Controller = new N64ButtonsTemplate[4];
+		public N64ButtonsTemplate[] N64AutoController = new N64ButtonsTemplate[4];
+		public N64ConsoleButtonsTemplate N64ConsoleButtons = new N64ConsoleButtonsTemplate();
+
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
 
@@ -1376,6 +1390,63 @@ namespace BizHawk.MultiClient
 			Reset = "";
 			Select = "";
 			Pause = "";
+		}
+	}
+
+	public class N64ButtonsTemplate : iControllerConfigObject
+	{
+		public string DPadU = "UpArrow, X1 DpadUp, X1 LStickUp";
+		public string DPadD = "DownArrow, X1 DpadDown, X1 LStickDown";
+		public string DPadL = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+		public string DPadR = "RightArrow, X1 DpadRight, X1 LStickRight";
+		public string Start = "V, X1 Start";
+		public string Z = "Z, X1 A";
+		public string B = "X, X1 X";
+		public string A = "C";
+		public string CUp = "NumberPad8, J1 RotationZ-";
+		public string CDown = "NumberPad2, J1 RoationZ+";
+		public string CLeft = "NumberPad4, J1 Z-";
+		public string CRight = "NumberPad6, J1 Z+";
+		public string L = "D";
+		public string R = "F";
+
+		public bool Enabled = false;
+
+		public N64ButtonsTemplate() { }
+		public N64ButtonsTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+		}
+	}
+
+	public class N64ConsoleButtonsTemplate : iControllerConfigObject
+	{
+		public string Power = "";
+		public string Reset = "";
+		public bool Enabled = false;
+
+		public N64ConsoleButtonsTemplate() { }
+		public N64ConsoleButtonsTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Power = "";
+			Reset = "";
 		}
 	}
 
