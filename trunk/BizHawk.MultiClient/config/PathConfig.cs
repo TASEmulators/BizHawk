@@ -157,6 +157,13 @@ namespace BizHawk.MultiClient
 			N64ScreenshotsBox.Text = Global.Config.PathN64Screenshots;
 			N64CheatsBox.Text = Global.Config.PathN64Cheats;
 
+			SaturnBaseBox.Text = Global.Config.BaseSaturn;
+			SaturnROMsBox.Text = Global.Config.PathSaturnROMs;
+			SaturnSavestatesBox.Text = Global.Config.PathSaturnSavestates;
+			SaturnSaveRAMBox.Text = Global.Config.PathSaturnSaveRAM;
+			SaturnScreenshotsBox.Text = Global.Config.PathSaturnScreenshots;
+			SaturnCheatsBox.Text = Global.Config.PathSaturnCheats;
+
 			MoviesBox.Text = Global.Config.MoviesPath;
 			MovieBackupsBox.Text = Global.Config.MoviesBackupPath;
 			LuaBox.Text = Global.Config.LuaPath;
@@ -236,6 +243,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "N64":
 					tabControl1.SelectTab(tabPageN64);
+					break;
+				case "SAT":
+					tabControl1.SelectTab(tabPageSaturn);
 					break;
 				case "NULL":
 					tabControl1.SelectTab(tabPageGlobal);
@@ -362,6 +372,13 @@ namespace BizHawk.MultiClient
 			Global.Config.PathN64Screenshots = N64ScreenshotsBox.Text;
 			Global.Config.PathN64Cheats = N64CheatsBox.Text;
 
+			Global.Config.BaseSaturn = SaturnBaseBox.Text;
+			Global.Config.PathSaturnROMs = SaturnROMsBox.Text;
+			Global.Config.PathSaturnSavestates = SaturnSavestatesBox.Text;
+			Global.Config.PathSaturnSaveRAM = SaturnSaveRAMBox.Text;
+			Global.Config.PathSaturnScreenshots = SaturnScreenshotsBox.Text;
+			Global.Config.PathSaturnCheats = SaturnCheatsBox.Text;
+
 			Global.Config.MoviesPath = MoviesBox.Text;
 			Global.Config.MoviesBackupPath = MovieBackupsBox.Text;
 			Global.Config.LuaPath = LuaBox.Text;
@@ -465,6 +482,10 @@ namespace BizHawk.MultiClient
 			N64ROMsBox.Enabled = !RecentForROMs.Checked;
 			N64BrowseROMs.Enabled = !RecentForROMs.Checked;
 			N64ROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			SaturnROMsBox.Enabled = !RecentForROMs.Checked;
+			SaturnBrowseROMs.Enabled = !RecentForROMs.Checked;
+			SaturnROMsDescription.Enabled = !RecentForROMs.Checked;
 
 			BaseROMSBox.Enabled = !RecentForROMs.Checked;
 			BrowseBaseROM.Enabled = !RecentForROMs.Checked;
@@ -1129,6 +1150,31 @@ namespace BizHawk.MultiClient
 		private void N64BrowseCheats_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(N64CheatsBox, N64CheatsDescription.Text, "N64");
+		}
+
+		private void button9_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnROMsBox, SaturnROMsDescription.Text, "SAT");
+		}
+
+		private void SaturnBrowseBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnBaseBox, SaturnBaseDescription.Text);
+		}
+
+		private void SaturnBrowseSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnSavestatesBox, SaturnSavestatesDescription.Text, "SAT");
+		}
+
+		private void SaturnBrowseSaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnSaveRAMBox, SaturnSaveRAMDescription.Text, "SAT");
+		}
+
+		private void SaturnBrowseScreenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnScreenshotsBox, SaturnScreenshotsDescription.Text, "SAT");
 		}
 	}
 }
