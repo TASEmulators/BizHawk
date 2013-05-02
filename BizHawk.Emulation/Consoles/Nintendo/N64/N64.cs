@@ -380,10 +380,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 			// Load the core DLL and retrieve some function pointers
 			CoreDll = LoadLibrary("mupen64plus.dll");
+			if (CoreDll == IntPtr.Zero)
+				throw new InvalidOperationException(string.Format("Failed to load mupen64plus.dll"));
 			GfxDll = LoadLibrary("mupen64plus-video-rice.dll");
+			if (GfxDll == IntPtr.Zero)
+				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-video-rice.dll"));
 			RspDll = LoadLibrary("mupen64plus-rsp-hle.dll");
+			if (RspDll == IntPtr.Zero)
+				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-rsp-hle.dll"));
 			AudDll = LoadLibrary("mupen64plus-audio-bkm.dll");
+			if (AudDll == IntPtr.Zero)
+				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-audio-bkm.dll"));
 			InpDll = LoadLibrary("mupen64plus-input-bkm.dll");
+			if (InpDll == IntPtr.Zero)
+				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-input-bkm.dll"));
 			
 			m64pCoreStartup = (CoreStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreStartup"), typeof(CoreStartup));
 			m64pCoreShutdown = (CoreShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreShutdown"), typeof(CoreShutdown));
