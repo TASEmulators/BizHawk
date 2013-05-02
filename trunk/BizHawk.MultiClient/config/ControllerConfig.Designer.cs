@@ -210,6 +210,27 @@
 			this.label38 = new System.Windows.Forms.Label();
 			this.AllowLR = new System.Windows.Forms.CheckBox();
 			this.AutoTab = new System.Windows.Forms.CheckBox();
+			this.tabPageN64 = new System.Windows.Forms.TabPage();
+			this.pictureBox18 = new System.Windows.Forms.PictureBox();
+			this.tabcontrol69 = new System.Windows.Forms.TabControl();
+			this.tabPage67 = new System.Windows.Forms.TabPage();
+			this.N64Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage68 = new System.Windows.Forms.TabPage();
+			this.N64Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage69 = new System.Windows.Forms.TabPage();
+			this.N64Controller3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage70 = new System.Windows.Forms.TabPage();
+			this.N64Controller4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage71 = new System.Windows.Forms.TabPage();
+			this.N64ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage72 = new System.Windows.Forms.TabPage();
+			this.N64Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage73 = new System.Windows.Forms.TabPage();
+			this.N64Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage74 = new System.Windows.Forms.TabPage();
+			this.N64Autofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage75 = new System.Windows.Forms.TabPage();
+			this.N64Autofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.PlatformTabControl.SuspendLayout();
 			this.tabPageNES.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
@@ -318,6 +339,18 @@
 			this.tabPage64.SuspendLayout();
 			this.tabPageTI83.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
+			this.tabPageN64.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox18)).BeginInit();
+			this.tabcontrol69.SuspendLayout();
+			this.tabPage67.SuspendLayout();
+			this.tabPage68.SuspendLayout();
+			this.tabPage69.SuspendLayout();
+			this.tabPage70.SuspendLayout();
+			this.tabPage71.SuspendLayout();
+			this.tabPage72.SuspendLayout();
+			this.tabPage73.SuspendLayout();
+			this.tabPage74.SuspendLayout();
+			this.tabPage75.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// PlatformTabControl
@@ -338,6 +371,7 @@
 			this.PlatformTabControl.Controls.Add(this.tabPageColeco);
 			this.PlatformTabControl.Controls.Add(this.tabPageINTV);
 			this.PlatformTabControl.Controls.Add(this.tabPageTI83);
+			this.PlatformTabControl.Controls.Add(this.tabPageN64);
 			this.PlatformTabControl.Location = new System.Drawing.Point(12, 21);
 			this.PlatformTabControl.Name = "PlatformTabControl";
 			this.PlatformTabControl.SelectedIndex = 0;
@@ -2118,6 +2152,203 @@
 			this.AutoTab.UseVisualStyleBackColor = true;
 			this.AutoTab.CheckedChanged += new System.EventHandler(this.AutoTab_CheckedChanged);
 			// 
+			// tabPageN64
+			// 
+			this.tabPageN64.Controls.Add(this.pictureBox18);
+			this.tabPageN64.Controls.Add(this.tabcontrol69);
+			this.tabPageN64.Location = new System.Drawing.Point(4, 22);
+			this.tabPageN64.Name = "tabPageN64";
+			this.tabPageN64.Size = new System.Drawing.Size(787, 425);
+			this.tabPageN64.TabIndex = 13;
+			this.tabPageN64.Text = "N64";
+			this.tabPageN64.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox18
+			// 
+			this.pictureBox18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox18.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox18.Image = global::BizHawk.MultiClient.Properties.Resources.NES_Controller;
+			this.pictureBox18.Location = new System.Drawing.Point(488, 31);
+			this.pictureBox18.Name = "pictureBox18";
+			this.pictureBox18.Size = new System.Drawing.Size(284, 125);
+			this.pictureBox18.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox18.TabIndex = 8;
+			this.pictureBox18.TabStop = false;
+			// 
+			// tabcontrol69
+			// 
+			this.tabcontrol69.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.tabcontrol69.Controls.Add(this.tabPage67);
+			this.tabcontrol69.Controls.Add(this.tabPage68);
+			this.tabcontrol69.Controls.Add(this.tabPage69);
+			this.tabcontrol69.Controls.Add(this.tabPage70);
+			this.tabcontrol69.Controls.Add(this.tabPage71);
+			this.tabcontrol69.Controls.Add(this.tabPage72);
+			this.tabcontrol69.Controls.Add(this.tabPage73);
+			this.tabcontrol69.Controls.Add(this.tabPage74);
+			this.tabcontrol69.Controls.Add(this.tabPage75);
+			this.tabcontrol69.Location = new System.Drawing.Point(15, 10);
+			this.tabcontrol69.Name = "tabcontrol69";
+			this.tabcontrol69.SelectedIndex = 0;
+			this.tabcontrol69.Size = new System.Drawing.Size(453, 404);
+			this.tabcontrol69.TabIndex = 7;
+			// 
+			// tabPage67
+			// 
+			this.tabPage67.Controls.Add(this.N64Controller1Panel);
+			this.tabPage67.Location = new System.Drawing.Point(4, 22);
+			this.tabPage67.Name = "tabPage67";
+			this.tabPage67.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage67.Size = new System.Drawing.Size(445, 378);
+			this.tabPage67.TabIndex = 0;
+			this.tabPage67.Text = "Pad 1";
+			this.tabPage67.UseVisualStyleBackColor = true;
+			// 
+			// N64Controller1Panel
+			// 
+			this.N64Controller1Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Controller1Panel.Name = "N64Controller1Panel";
+			this.N64Controller1Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Controller1Panel.TabIndex = 0;
+			// 
+			// tabPage68
+			// 
+			this.tabPage68.Controls.Add(this.N64Controller2Panel);
+			this.tabPage68.Location = new System.Drawing.Point(4, 22);
+			this.tabPage68.Name = "tabPage68";
+			this.tabPage68.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage68.Size = new System.Drawing.Size(445, 378);
+			this.tabPage68.TabIndex = 1;
+			this.tabPage68.Text = "Pad 2";
+			this.tabPage68.UseVisualStyleBackColor = true;
+			// 
+			// N64Controller2Panel
+			// 
+			this.N64Controller2Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Controller2Panel.Name = "N64Controller2Panel";
+			this.N64Controller2Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Controller2Panel.TabIndex = 0;
+			// 
+			// tabPage69
+			// 
+			this.tabPage69.Controls.Add(this.N64Controller3Panel);
+			this.tabPage69.Location = new System.Drawing.Point(4, 22);
+			this.tabPage69.Name = "tabPage69";
+			this.tabPage69.Size = new System.Drawing.Size(445, 378);
+			this.tabPage69.TabIndex = 2;
+			this.tabPage69.Text = "Pad 3";
+			this.tabPage69.UseVisualStyleBackColor = true;
+			// 
+			// N64Controller3Panel
+			// 
+			this.N64Controller3Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Controller3Panel.Name = "N64Controller3Panel";
+			this.N64Controller3Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Controller3Panel.TabIndex = 0;
+			// 
+			// tabPage70
+			// 
+			this.tabPage70.Controls.Add(this.N64Controller4Panel);
+			this.tabPage70.Location = new System.Drawing.Point(4, 22);
+			this.tabPage70.Name = "tabPage70";
+			this.tabPage70.Size = new System.Drawing.Size(445, 378);
+			this.tabPage70.TabIndex = 3;
+			this.tabPage70.Text = "Pad 4";
+			this.tabPage70.UseVisualStyleBackColor = true;
+			// 
+			// N64Controller4Panel
+			// 
+			this.N64Controller4Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Controller4Panel.Name = "N64Controller4Panel";
+			this.N64Controller4Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Controller4Panel.TabIndex = 0;
+			// 
+			// tabPage71
+			// 
+			this.tabPage71.Controls.Add(this.N64ConsoleButtons);
+			this.tabPage71.Location = new System.Drawing.Point(4, 22);
+			this.tabPage71.Name = "tabPage71";
+			this.tabPage71.Size = new System.Drawing.Size(445, 378);
+			this.tabPage71.TabIndex = 4;
+			this.tabPage71.Text = "Console";
+			this.tabPage71.UseVisualStyleBackColor = true;
+			// 
+			// N64ConsoleButtons
+			// 
+			this.N64ConsoleButtons.Location = new System.Drawing.Point(17, 15);
+			this.N64ConsoleButtons.Name = "N64ConsoleButtons";
+			this.N64ConsoleButtons.Size = new System.Drawing.Size(368, 341);
+			this.N64ConsoleButtons.TabIndex = 0;
+			// 
+			// tabPage72
+			// 
+			this.tabPage72.Controls.Add(this.N64Autofire1Panel);
+			this.tabPage72.Location = new System.Drawing.Point(4, 22);
+			this.tabPage72.Name = "tabPage72";
+			this.tabPage72.Size = new System.Drawing.Size(445, 378);
+			this.tabPage72.TabIndex = 5;
+			this.tabPage72.Text = "Autofire 1";
+			this.tabPage72.UseVisualStyleBackColor = true;
+			// 
+			// N64Autofire1Panel
+			// 
+			this.N64Autofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Autofire1Panel.Name = "N64Autofire1Panel";
+			this.N64Autofire1Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Autofire1Panel.TabIndex = 0;
+			// 
+			// tabPage73
+			// 
+			this.tabPage73.Controls.Add(this.N64Autofire2Panel);
+			this.tabPage73.Location = new System.Drawing.Point(4, 22);
+			this.tabPage73.Name = "tabPage73";
+			this.tabPage73.Size = new System.Drawing.Size(445, 378);
+			this.tabPage73.TabIndex = 6;
+			this.tabPage73.Text = "Autofire 2";
+			this.tabPage73.UseVisualStyleBackColor = true;
+			// 
+			// N64Autofire2Panel
+			// 
+			this.N64Autofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Autofire2Panel.Name = "N64Autofire2Panel";
+			this.N64Autofire2Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Autofire2Panel.TabIndex = 0;
+			// 
+			// tabPage74
+			// 
+			this.tabPage74.Controls.Add(this.N64Autofire3Panel);
+			this.tabPage74.Location = new System.Drawing.Point(4, 22);
+			this.tabPage74.Name = "tabPage74";
+			this.tabPage74.Size = new System.Drawing.Size(445, 378);
+			this.tabPage74.TabIndex = 7;
+			this.tabPage74.Text = "Autofire 3";
+			this.tabPage74.UseVisualStyleBackColor = true;
+			// 
+			// N64Autofire3Panel
+			// 
+			this.N64Autofire3Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Autofire3Panel.Name = "N64Autofire3Panel";
+			this.N64Autofire3Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Autofire3Panel.TabIndex = 0;
+			// 
+			// tabPage75
+			// 
+			this.tabPage75.Controls.Add(this.N64Autofire4Panel);
+			this.tabPage75.Location = new System.Drawing.Point(4, 22);
+			this.tabPage75.Name = "tabPage75";
+			this.tabPage75.Size = new System.Drawing.Size(445, 378);
+			this.tabPage75.TabIndex = 8;
+			this.tabPage75.Text = "Autofire 4";
+			this.tabPage75.UseVisualStyleBackColor = true;
+			// 
+			// N64Autofire4Panel
+			// 
+			this.N64Autofire4Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Autofire4Panel.Name = "N64Autofire4Panel";
+			this.N64Autofire4Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Autofire4Panel.TabIndex = 0;
+			// 
 			// ControllerConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2132,7 +2363,7 @@
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.PlatformTabControl);
 			this.Name = "ControllerConfig";
-			this.Text = "ControllerConfig";
+			this.Text = "Controller Configuration";
 			this.Load += new System.EventHandler(this.ControllerConfig_Load);
 			this.PlatformTabControl.ResumeLayout(false);
 			this.tabPageNES.ResumeLayout(false);
@@ -2242,6 +2473,18 @@
 			this.tabPage64.ResumeLayout(false);
 			this.tabPageTI83.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
+			this.tabPageN64.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox18)).EndInit();
+			this.tabcontrol69.ResumeLayout(false);
+			this.tabPage67.ResumeLayout(false);
+			this.tabPage68.ResumeLayout(false);
+			this.tabPage69.ResumeLayout(false);
+			this.tabPage70.ResumeLayout(false);
+			this.tabPage71.ResumeLayout(false);
+			this.tabPage72.ResumeLayout(false);
+			this.tabPage73.ResumeLayout(false);
+			this.tabPage74.ResumeLayout(false);
+			this.tabPage75.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -2430,5 +2673,26 @@
 		private ControllerConfigPanel GBDualPanel;
 		private System.Windows.Forms.TabPage tabPage66;
 		private ControllerConfigPanel GBDualAutofirePanel;
+		private System.Windows.Forms.TabPage tabPageN64;
+		private System.Windows.Forms.PictureBox pictureBox18;
+		private System.Windows.Forms.TabControl tabcontrol69;
+		private System.Windows.Forms.TabPage tabPage67;
+		private ControllerConfigPanel N64Controller1Panel;
+		private System.Windows.Forms.TabPage tabPage68;
+		private ControllerConfigPanel N64Controller2Panel;
+		private System.Windows.Forms.TabPage tabPage69;
+		private ControllerConfigPanel N64Controller3Panel;
+		private System.Windows.Forms.TabPage tabPage70;
+		private ControllerConfigPanel N64Controller4Panel;
+		private System.Windows.Forms.TabPage tabPage71;
+		private ControllerConfigPanel N64ConsoleButtons;
+		private System.Windows.Forms.TabPage tabPage72;
+		private ControllerConfigPanel N64Autofire1Panel;
+		private System.Windows.Forms.TabPage tabPage73;
+		private ControllerConfigPanel N64Autofire2Panel;
+		private System.Windows.Forms.TabPage tabPage74;
+		private ControllerConfigPanel N64Autofire3Panel;
+		private System.Windows.Forms.TabPage tabPage75;
+		private ControllerConfigPanel N64Autofire4Panel;
 	}
 }

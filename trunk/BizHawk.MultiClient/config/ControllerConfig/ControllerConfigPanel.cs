@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -102,8 +99,6 @@ namespace BizHawk.MultiClient
 
 			foreach (MemberInfo member in members)
 			{
-				Type type = member.GetType();
-
 				if (member.MemberType.ToString() == "Field" && member.ToString().Contains("System.String"))
 				{
 					buttons.Add(member.Name);
@@ -115,7 +110,6 @@ namespace BizHawk.MultiClient
 		{
 			for (int button = 0; button < buttons.Count; button++)
 			{
-				FieldInfo buttonF = ControllerConfigObject.GetType().GetField(buttons[button]);
 				object field = ControllerConfigObject.GetType().GetField(buttons[button]).GetValue(ControllerConfigObject);
 
 				if (field == null)
@@ -132,28 +126,27 @@ namespace BizHawk.MultiClient
 		private void Startup()
 		{
 			int x = InputMarginLeft;
-			int y = MarginTop - Spacing; ;
+			int y = MarginTop - Spacing;
 			for (int i = 0; i < buttons.Count; i++)
 			{
 				y += Spacing;
-				if (y > (this.Size.Height - 23))
+				if (y > (Size.Height - 23))
 				{
 					y = MarginTop;
 					x += ColumnWidth;
 				}
-				InputWidget iw = new InputWidget();
-				iw.Location = new Point(x, y);
-				iw.Size = new Size(InputSize, 23);
-				iw.TabIndex = i;
+				InputWidget iw = new InputWidget {Location = new Point(x, y), Size = new Size(InputSize, 23), TabIndex = i};
 				iw.BringToFront();
-				iw.Enter += new System.EventHandler(this.InputWidget_Enter);
-				iw.Leave += new System.EventHandler(this.InputWidget_Leave);
+				iw.Enter += InputWidget_Enter;
+				iw.Leave += InputWidget_Leave;
 				Controls.Add(iw);
 				Inputs.Add(iw);
-				Label l = new Label();
-				l.Location = new Point(x + InputSize + LabelPadding, y + 3);
-				l.Text = buttons[i].Replace('_', ' ').Trim();
-				l.Width = LabelWidth;
+				Label l = new Label
+					{
+						Location = new Point(x + InputSize + LabelPadding, y + 3),
+						Text = buttons[i].Replace('_', ' ').Trim(),
+						Width = LabelWidth
+					};
 				Controls.Add(l);
 				Labels.Add(l);
 			}
@@ -184,10 +177,7 @@ namespace BizHawk.MultiClient
 
 		private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (ControllerConfigObject is iControllerConfigObject)
-			{
-				(ControllerConfigObject as iControllerConfigObject).SetDefaults();
-			}
+			ControllerConfigObject.SetDefaults();
 			SetWidgetStrings();
 		}
 	}
