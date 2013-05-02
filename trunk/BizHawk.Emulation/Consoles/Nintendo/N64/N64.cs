@@ -270,8 +270,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		PluginShutdown RspPluginShutdown;
 		PluginShutdown AudPluginShutdown;
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void DebugCallback(IntPtr Context, int level, string Message);
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void FrameCallback();
 		FrameCallback m64pFrameCallback;
 		
@@ -284,18 +286,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			//m64pFrameComplete = true;
 		}
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void VICallback();
 		VICallback m64pVICallback;
 		public void FrameComplete()
 		{
-			/*
 			uint s = (uint)AudGetAudioRate();
 			if (s != m64pSamplingRate)
 			{
 				m64pSamplingRate = s;
 				resampler.ChangeRate(s, 44100, s, 44100);
-				Console.WriteLine("N64 ARate Change {0}", s);
-			}*/
+				//Console.WriteLine("N64 ARate Change {0}", s);
+			}
 
 			int m64pAudioBufferSize = AudGetBufferSize();
 			if (m64pAudioBuffer.Length < m64pAudioBufferSize)
@@ -359,22 +361,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			RspPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginShutdown"), typeof(PluginShutdown));
 
 			// Set up the core
-			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); }, "", IntPtr.Zero);
+			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { }, "", IntPtr.Zero);
 			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);
 
 			// Set up and connect the graphics plugin
-			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
+			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
 
 			// Set up a null audio plugin
-			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
+			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, AudDll);
 
 			// Set up a null input plugin
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, IntPtr.Zero);
 
 			// Set up and connect the graphics plugin
-			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
+			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_RSP, RspDll);
 
 			// Set up the frame callback function
@@ -394,12 +396,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 				m64pCoreDoCommandRefInt(m64p_command.M64CMD_CORE_STATE_QUERY, 1, ref state);
 			} while (state != (int)m64p_emu_state.M64EMU_PAUSED);
 
-			/*
+			
 			m64pSamplingRate = (uint)AudGetAudioRate();
 			resampler = new Sound.Utilities.SpeexResampler(6, m64pSamplingRate, 44100, m64pSamplingRate, 44100, null, null);
-			Console.WriteLine("N64 Initial ARate {0}", m64pSamplingRate);
-			*/
-			resampler = new Sound.Utilities.SpeexResampler(6, 32000, 44100, 32000, 44100, null, null);
+			//Console.WriteLine("N64 Initial ARate {0}", m64pSamplingRate);
+			
+			//resampler = new Sound.Utilities.SpeexResampler(6, 32000, 44100, 32000, 44100, null, null);
 			AttachedCore = this;
 		}
 
