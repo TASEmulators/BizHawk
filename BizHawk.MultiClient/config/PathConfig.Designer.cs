@@ -361,17 +361,7 @@
 			this.C64SavestatesBox = new System.Windows.Forms.TextBox();
 			this.C64ROMsBox = new System.Windows.Forms.TextBox();
 			this.C64BaseBox = new System.Windows.Forms.TextBox();
-			this.BasePathBox = new System.Windows.Forms.TextBox();
-			this.BrowseBase = new System.Windows.Forms.Button();
-			this.BaseDescription = new System.Windows.Forms.Label();
-			this.RecentForROMs = new System.Windows.Forms.CheckBox();
-			this.SaveButton = new System.Windows.Forms.Button();
-			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-			this.button1 = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tabPageN64 = new System.Windows.Forms.TabPage();
-			this.tabPageSaturn = new System.Windows.Forms.TabPage();
 			this.N64BaseBox = new System.Windows.Forms.TextBox();
 			this.N64CheatsDescription = new System.Windows.Forms.Label();
 			this.N64BrowseCheats = new System.Windows.Forms.Button();
@@ -390,6 +380,34 @@
 			this.N64BrowseSaveRAM = new System.Windows.Forms.Button();
 			this.N64SaveRAMDescription = new System.Windows.Forms.Label();
 			this.N64SaveRAMBox = new System.Windows.Forms.TextBox();
+			this.tabPageSaturn = new System.Windows.Forms.TabPage();
+			this.SaturnBaseBox = new System.Windows.Forms.TextBox();
+			this.SaturnCheatsDescription = new System.Windows.Forms.Label();
+			this.SaturnBrowseCheats = new System.Windows.Forms.Button();
+			this.SaturnCheatsBox = new System.Windows.Forms.TextBox();
+			this.SaturnScreenshotsBox = new System.Windows.Forms.TextBox();
+			this.SaturnBaseDescription = new System.Windows.Forms.Label();
+			this.SaturnScreenshotsDescription = new System.Windows.Forms.Label();
+			this.SaturnBrowseBase = new System.Windows.Forms.Button();
+			this.SaturnBrowseScreenshots = new System.Windows.Forms.Button();
+			this.SaturnROMsBox = new System.Windows.Forms.TextBox();
+			this.SaturnBrowseSavestates = new System.Windows.Forms.Button();
+			this.SaturnSavestatesDescription = new System.Windows.Forms.Label();
+			this.SaturnROMsDescription = new System.Windows.Forms.Label();
+			this.SaturnSavestatesBox = new System.Windows.Forms.TextBox();
+			this.SaturnBrowseROMs = new System.Windows.Forms.Button();
+			this.SaturnBrowseSaveRAM = new System.Windows.Forms.Button();
+			this.SaturnSaveRAMDescription = new System.Windows.Forms.Label();
+			this.SaturnSaveRAMBox = new System.Windows.Forms.TextBox();
+			this.BasePathBox = new System.Windows.Forms.TextBox();
+			this.BrowseBase = new System.Windows.Forms.Button();
+			this.BaseDescription = new System.Windows.Forms.Label();
+			this.RecentForROMs = new System.Windows.Forms.CheckBox();
+			this.SaveButton = new System.Windows.Forms.Button();
+			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+			this.button1 = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tabControl1.SuspendLayout();
 			this.tabPageGlobal.SuspendLayout();
 			this.tabPageNES.SuspendLayout();
@@ -408,6 +426,7 @@
 			this.tabPageColeco.SuspendLayout();
 			this.tabPageC64.SuspendLayout();
 			this.tabPageN64.SuspendLayout();
+			this.tabPageSaturn.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// Cancel
@@ -1007,10 +1026,10 @@
 			this.tabPageNES.Controls.Add(this.NESROMsDescription);
 			this.tabPageNES.Controls.Add(this.NESSaveRAMBox);
 			this.tabPageNES.Controls.Add(this.NESBrowseROMs);
-			this.tabPageNES.Location = new System.Drawing.Point(4, 22);
+			this.tabPageNES.Location = new System.Drawing.Point(4, 40);
 			this.tabPageNES.Name = "tabPageNES";
 			this.tabPageNES.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageNES.Size = new System.Drawing.Size(566, 306);
+			this.tabPageNES.Size = new System.Drawing.Size(566, 288);
 			this.tabPageNES.TabIndex = 0;
 			this.tabPageNES.Text = "NES";
 			this.tabPageNES.UseVisualStyleBackColor = true;
@@ -1158,9 +1177,9 @@
 			this.tabPageSNES.Controls.Add(this.SNESROMsDescription);
 			this.tabPageSNES.Controls.Add(this.SNESSaveRAMBox);
 			this.tabPageSNES.Controls.Add(this.SNESBrowseROMs);
-			this.tabPageSNES.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSNES.Location = new System.Drawing.Point(4, 40);
 			this.tabPageSNES.Name = "tabPageSNES";
-			this.tabPageSNES.Size = new System.Drawing.Size(566, 306);
+			this.tabPageSNES.Size = new System.Drawing.Size(566, 288);
 			this.tabPageSNES.TabIndex = 11;
 			this.tabPageSNES.Text = "SNES";
 			this.tabPageSNES.UseVisualStyleBackColor = true;
@@ -1366,10 +1385,10 @@
 			this.tabPageSMS.Controls.Add(this.Sega8BrowseSaveRAM);
 			this.tabPageSMS.Controls.Add(this.Sega8SaveRAMDescription);
 			this.tabPageSMS.Controls.Add(this.Sega8SaveRAMBox);
-			this.tabPageSMS.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSMS.Location = new System.Drawing.Point(4, 40);
 			this.tabPageSMS.Name = "tabPageSMS";
 			this.tabPageSMS.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageSMS.Size = new System.Drawing.Size(566, 306);
+			this.tabPageSMS.Size = new System.Drawing.Size(566, 288);
 			this.tabPageSMS.TabIndex = 1;
 			this.tabPageSMS.Text = "SMS";
 			this.tabPageSMS.UseVisualStyleBackColor = true;
@@ -1454,9 +1473,9 @@
 			this.tabPageSG1000.Controls.Add(this.SGROMsDescription);
 			this.tabPageSG1000.Controls.Add(this.SGSaveRAMBox);
 			this.tabPageSG1000.Controls.Add(this.SGBrowseROMs);
-			this.tabPageSG1000.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSG1000.Location = new System.Drawing.Point(4, 40);
 			this.tabPageSG1000.Name = "tabPageSG1000";
-			this.tabPageSG1000.Size = new System.Drawing.Size(566, 306);
+			this.tabPageSG1000.Size = new System.Drawing.Size(566, 288);
 			this.tabPageSG1000.TabIndex = 8;
 			this.tabPageSG1000.Text = "SG-1000";
 			this.tabPageSG1000.UseVisualStyleBackColor = true;
@@ -1662,9 +1681,9 @@
 			this.tabPageGGear.Controls.Add(this.GGBrowseSaveRAM);
 			this.tabPageGGear.Controls.Add(this.GGSaveRAMDescription);
 			this.tabPageGGear.Controls.Add(this.GGSaveRAMBox);
-			this.tabPageGGear.Location = new System.Drawing.Point(4, 22);
+			this.tabPageGGear.Location = new System.Drawing.Point(4, 40);
 			this.tabPageGGear.Name = "tabPageGGear";
-			this.tabPageGGear.Size = new System.Drawing.Size(566, 306);
+			this.tabPageGGear.Size = new System.Drawing.Size(566, 288);
 			this.tabPageGGear.TabIndex = 7;
 			this.tabPageGGear.Text = "G. Gear";
 			this.tabPageGGear.UseVisualStyleBackColor = true;
@@ -1869,9 +1888,9 @@
 			this.tabPageGenesis.Controls.Add(this.GenesisBrowseSavestates);
 			this.tabPageGenesis.Controls.Add(this.GenesisBrowseScreenshots);
 			this.tabPageGenesis.Controls.Add(this.GenesisROMsBox);
-			this.tabPageGenesis.Location = new System.Drawing.Point(4, 22);
+			this.tabPageGenesis.Location = new System.Drawing.Point(4, 40);
 			this.tabPageGenesis.Name = "tabPageGenesis";
-			this.tabPageGenesis.Size = new System.Drawing.Size(566, 306);
+			this.tabPageGenesis.Size = new System.Drawing.Size(566, 288);
 			this.tabPageGenesis.TabIndex = 2;
 			this.tabPageGenesis.Text = "Genesis";
 			this.tabPageGenesis.UseVisualStyleBackColor = true;
@@ -2079,9 +2098,9 @@
 			this.tabPagePCE.Controls.Add(this.PCEBrowseSaveRAM);
 			this.tabPagePCE.Controls.Add(this.PCESaveRAMDescription);
 			this.tabPagePCE.Controls.Add(this.PCESaveRAMBox);
-			this.tabPagePCE.Location = new System.Drawing.Point(4, 22);
+			this.tabPagePCE.Location = new System.Drawing.Point(4, 40);
 			this.tabPagePCE.Name = "tabPagePCE";
-			this.tabPagePCE.Size = new System.Drawing.Size(566, 306);
+			this.tabPagePCE.Size = new System.Drawing.Size(566, 288);
 			this.tabPagePCE.TabIndex = 3;
 			this.tabPagePCE.Text = "PC Engine";
 			this.tabPagePCE.UseVisualStyleBackColor = true;
@@ -2322,9 +2341,9 @@
 			this.tabPageGameboy.Controls.Add(this.GBBrowseSaveRAM);
 			this.tabPageGameboy.Controls.Add(this.GBSaveRAMDescription);
 			this.tabPageGameboy.Controls.Add(this.GBSaveRAMBox);
-			this.tabPageGameboy.Location = new System.Drawing.Point(4, 22);
+			this.tabPageGameboy.Location = new System.Drawing.Point(4, 40);
 			this.tabPageGameboy.Name = "tabPageGameboy";
-			this.tabPageGameboy.Size = new System.Drawing.Size(566, 306);
+			this.tabPageGameboy.Size = new System.Drawing.Size(566, 288);
 			this.tabPageGameboy.TabIndex = 4;
 			this.tabPageGameboy.Text = "Gameboy";
 			this.tabPageGameboy.UseVisualStyleBackColor = true;
@@ -2799,9 +2818,9 @@
 			this.tabPageTI83.Controls.Add(this.TI83BrowseSaveRAM);
 			this.tabPageTI83.Controls.Add(this.TI83SaveRAMDescription);
 			this.tabPageTI83.Controls.Add(this.TI83SaveRAMBox);
-			this.tabPageTI83.Location = new System.Drawing.Point(4, 22);
+			this.tabPageTI83.Location = new System.Drawing.Point(4, 40);
 			this.tabPageTI83.Name = "tabPageTI83";
-			this.tabPageTI83.Size = new System.Drawing.Size(566, 306);
+			this.tabPageTI83.Size = new System.Drawing.Size(566, 288);
 			this.tabPageTI83.TabIndex = 5;
 			this.tabPageTI83.Text = "TI83";
 			this.tabPageTI83.UseVisualStyleBackColor = true;
@@ -4067,78 +4086,6 @@
 			this.C64BaseBox.Size = new System.Drawing.Size(421, 20);
 			this.C64BaseBox.TabIndex = 28;
 			// 
-			// BasePathBox
-			// 
-			this.BasePathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.BasePathBox.Location = new System.Drawing.Point(29, 27);
-			this.BasePathBox.Name = "BasePathBox";
-			this.BasePathBox.Size = new System.Drawing.Size(456, 20);
-			this.BasePathBox.TabIndex = 0;
-			// 
-			// BrowseBase
-			// 
-			this.BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BrowseBase.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
-			this.BrowseBase.Location = new System.Drawing.Point(494, 27);
-			this.BrowseBase.Name = "BrowseBase";
-			this.BrowseBase.Size = new System.Drawing.Size(26, 23);
-			this.BrowseBase.TabIndex = 1;
-			this.BrowseBase.UseVisualStyleBackColor = true;
-			this.BrowseBase.Click += new System.EventHandler(this.BrowseBase_Click);
-			// 
-			// BaseDescription
-			// 
-			this.BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BaseDescription.AutoSize = true;
-			this.BaseDescription.Location = new System.Drawing.Point(526, 30);
-			this.BaseDescription.Name = "BaseDescription";
-			this.BaseDescription.Size = new System.Drawing.Size(64, 13);
-			this.BaseDescription.TabIndex = 25;
-			this.BaseDescription.Text = "Global Base";
-			// 
-			// RecentForROMs
-			// 
-			this.RecentForROMs.AutoSize = true;
-			this.RecentForROMs.Location = new System.Drawing.Point(29, 63);
-			this.RecentForROMs.Name = "RecentForROMs";
-			this.RecentForROMs.Size = new System.Drawing.Size(184, 17);
-			this.RecentForROMs.TabIndex = 2;
-			this.RecentForROMs.Text = "Always use recent path for ROMs";
-			this.RecentForROMs.UseVisualStyleBackColor = true;
-			this.RecentForROMs.CheckedChanged += new System.EventHandler(this.RecentForROMs_CheckedChanged);
-			// 
-			// SaveButton
-			// 
-			this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.SaveButton.Location = new System.Drawing.Point(12, 435);
-			this.SaveButton.Name = "SaveButton";
-			this.SaveButton.Size = new System.Drawing.Size(75, 23);
-			this.SaveButton.TabIndex = 200;
-			this.SaveButton.Text = "&Save";
-			this.SaveButton.UseVisualStyleBackColor = true;
-			this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
-			// 
-			// button1
-			// 
-			this.button1.Image = global::BizHawk.MultiClient.Properties.Resources.Help;
-			this.button1.Location = new System.Drawing.Point(459, 57);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(26, 23);
-			this.button1.TabIndex = 203;
-			this.toolTip1.SetToolTip(this.button1, "A list of special symbols useable for paths");
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(491, 64);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(97, 13);
-			this.label1.TabIndex = 204;
-			this.label1.Text = "Special Commands";
-			// 
 			// tabPageN64
 			// 
 			this.tabPageN64.Controls.Add(this.N64BaseBox);
@@ -4165,15 +4112,6 @@
 			this.tabPageN64.TabIndex = 16;
 			this.tabPageN64.Text = "N64";
 			this.tabPageN64.UseVisualStyleBackColor = true;
-			// 
-			// tabPageSaturn
-			// 
-			this.tabPageSaturn.Location = new System.Drawing.Point(4, 40);
-			this.tabPageSaturn.Name = "tabPageSaturn";
-			this.tabPageSaturn.Size = new System.Drawing.Size(566, 288);
-			this.tabPageSaturn.TabIndex = 17;
-			this.tabPageSaturn.Text = "Saturn";
-			this.tabPageSaturn.UseVisualStyleBackColor = true;
 			// 
 			// N64BaseBox
 			// 
@@ -4355,6 +4293,284 @@
 			this.N64SaveRAMBox.Size = new System.Drawing.Size(421, 20);
 			this.N64SaveRAMBox.TabIndex = 135;
 			// 
+			// tabPageSaturn
+			// 
+			this.tabPageSaturn.Controls.Add(this.SaturnBaseBox);
+			this.tabPageSaturn.Controls.Add(this.SaturnCheatsDescription);
+			this.tabPageSaturn.Controls.Add(this.SaturnBrowseCheats);
+			this.tabPageSaturn.Controls.Add(this.SaturnCheatsBox);
+			this.tabPageSaturn.Controls.Add(this.SaturnScreenshotsBox);
+			this.tabPageSaturn.Controls.Add(this.SaturnBaseDescription);
+			this.tabPageSaturn.Controls.Add(this.SaturnScreenshotsDescription);
+			this.tabPageSaturn.Controls.Add(this.SaturnBrowseBase);
+			this.tabPageSaturn.Controls.Add(this.SaturnBrowseScreenshots);
+			this.tabPageSaturn.Controls.Add(this.SaturnROMsBox);
+			this.tabPageSaturn.Controls.Add(this.SaturnBrowseSavestates);
+			this.tabPageSaturn.Controls.Add(this.SaturnSavestatesDescription);
+			this.tabPageSaturn.Controls.Add(this.SaturnROMsDescription);
+			this.tabPageSaturn.Controls.Add(this.SaturnSavestatesBox);
+			this.tabPageSaturn.Controls.Add(this.SaturnBrowseROMs);
+			this.tabPageSaturn.Controls.Add(this.SaturnBrowseSaveRAM);
+			this.tabPageSaturn.Controls.Add(this.SaturnSaveRAMDescription);
+			this.tabPageSaturn.Controls.Add(this.SaturnSaveRAMBox);
+			this.tabPageSaturn.Location = new System.Drawing.Point(4, 40);
+			this.tabPageSaturn.Name = "tabPageSaturn";
+			this.tabPageSaturn.Size = new System.Drawing.Size(566, 288);
+			this.tabPageSaturn.TabIndex = 17;
+			this.tabPageSaturn.Text = "Saturn";
+			this.tabPageSaturn.UseVisualStyleBackColor = true;
+			// 
+			// SaturnBaseBox
+			// 
+			this.SaturnBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnBaseBox.Location = new System.Drawing.Point(13, 21);
+			this.SaturnBaseBox.Name = "SaturnBaseBox";
+			this.SaturnBaseBox.Size = new System.Drawing.Size(421, 20);
+			this.SaturnBaseBox.TabIndex = 147;
+			// 
+			// SaturnCheatsDescription
+			// 
+			this.SaturnCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnCheatsDescription.AutoSize = true;
+			this.SaturnCheatsDescription.Location = new System.Drawing.Point(474, 183);
+			this.SaturnCheatsDescription.Name = "SaturnCheatsDescription";
+			this.SaturnCheatsDescription.Size = new System.Drawing.Size(40, 13);
+			this.SaturnCheatsDescription.TabIndex = 146;
+			this.SaturnCheatsDescription.Text = "Cheats";
+			// 
+			// SaturnBrowseCheats
+			// 
+			this.SaturnBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnBrowseCheats.Image = ((System.Drawing.Image)(resources.GetObject("SaturnBrowseCheats.Image")));
+			this.SaturnBrowseCheats.Location = new System.Drawing.Point(442, 179);
+			this.SaturnBrowseCheats.Name = "SaturnBrowseCheats";
+			this.SaturnBrowseCheats.Size = new System.Drawing.Size(26, 23);
+			this.SaturnBrowseCheats.TabIndex = 158;
+			this.SaturnBrowseCheats.UseVisualStyleBackColor = true;
+			// 
+			// SaturnCheatsBox
+			// 
+			this.SaturnCheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnCheatsBox.Location = new System.Drawing.Point(13, 179);
+			this.SaturnCheatsBox.Name = "SaturnCheatsBox";
+			this.SaturnCheatsBox.Size = new System.Drawing.Size(421, 20);
+			this.SaturnCheatsBox.TabIndex = 157;
+			// 
+			// SaturnScreenshotsBox
+			// 
+			this.SaturnScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnScreenshotsBox.Location = new System.Drawing.Point(13, 149);
+			this.SaturnScreenshotsBox.Name = "SaturnScreenshotsBox";
+			this.SaturnScreenshotsBox.Size = new System.Drawing.Size(421, 20);
+			this.SaturnScreenshotsBox.TabIndex = 155;
+			// 
+			// SaturnBaseDescription
+			// 
+			this.SaturnBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnBaseDescription.AutoSize = true;
+			this.SaturnBaseDescription.Location = new System.Drawing.Point(474, 25);
+			this.SaturnBaseDescription.Name = "SaturnBaseDescription";
+			this.SaturnBaseDescription.Size = new System.Drawing.Size(31, 13);
+			this.SaturnBaseDescription.TabIndex = 145;
+			this.SaturnBaseDescription.Text = "Base";
+			// 
+			// SaturnScreenshotsDescription
+			// 
+			this.SaturnScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnScreenshotsDescription.AutoSize = true;
+			this.SaturnScreenshotsDescription.Location = new System.Drawing.Point(474, 153);
+			this.SaturnScreenshotsDescription.Name = "SaturnScreenshotsDescription";
+			this.SaturnScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+			this.SaturnScreenshotsDescription.TabIndex = 144;
+			this.SaturnScreenshotsDescription.Text = "Screenshots";
+			// 
+			// SaturnBrowseBase
+			// 
+			this.SaturnBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnBrowseBase.Image = ((System.Drawing.Image)(resources.GetObject("SaturnBrowseBase.Image")));
+			this.SaturnBrowseBase.Location = new System.Drawing.Point(442, 21);
+			this.SaturnBrowseBase.Name = "SaturnBrowseBase";
+			this.SaturnBrowseBase.Size = new System.Drawing.Size(26, 23);
+			this.SaturnBrowseBase.TabIndex = 148;
+			this.SaturnBrowseBase.UseVisualStyleBackColor = true;
+			this.SaturnBrowseBase.Click += new System.EventHandler(this.SaturnBrowseBase_Click);
+			// 
+			// SaturnBrowseScreenshots
+			// 
+			this.SaturnBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnBrowseScreenshots.Image = ((System.Drawing.Image)(resources.GetObject("SaturnBrowseScreenshots.Image")));
+			this.SaturnBrowseScreenshots.Location = new System.Drawing.Point(442, 149);
+			this.SaturnBrowseScreenshots.Name = "SaturnBrowseScreenshots";
+			this.SaturnBrowseScreenshots.Size = new System.Drawing.Size(26, 23);
+			this.SaturnBrowseScreenshots.TabIndex = 156;
+			this.SaturnBrowseScreenshots.UseVisualStyleBackColor = true;
+			this.SaturnBrowseScreenshots.Click += new System.EventHandler(this.SaturnBrowseScreenshots_Click);
+			// 
+			// SaturnROMsBox
+			// 
+			this.SaturnROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnROMsBox.Location = new System.Drawing.Point(13, 59);
+			this.SaturnROMsBox.Name = "SaturnROMsBox";
+			this.SaturnROMsBox.Size = new System.Drawing.Size(421, 20);
+			this.SaturnROMsBox.TabIndex = 149;
+			// 
+			// SaturnBrowseSavestates
+			// 
+			this.SaturnBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnBrowseSavestates.Image = ((System.Drawing.Image)(resources.GetObject("SaturnBrowseSavestates.Image")));
+			this.SaturnBrowseSavestates.Location = new System.Drawing.Point(442, 89);
+			this.SaturnBrowseSavestates.Name = "SaturnBrowseSavestates";
+			this.SaturnBrowseSavestates.Size = new System.Drawing.Size(26, 23);
+			this.SaturnBrowseSavestates.TabIndex = 152;
+			this.SaturnBrowseSavestates.UseVisualStyleBackColor = true;
+			this.SaturnBrowseSavestates.Click += new System.EventHandler(this.SaturnBrowseSavestates_Click);
+			// 
+			// SaturnSavestatesDescription
+			// 
+			this.SaturnSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnSavestatesDescription.AutoSize = true;
+			this.SaturnSavestatesDescription.Location = new System.Drawing.Point(474, 93);
+			this.SaturnSavestatesDescription.Name = "SaturnSavestatesDescription";
+			this.SaturnSavestatesDescription.Size = new System.Drawing.Size(60, 13);
+			this.SaturnSavestatesDescription.TabIndex = 141;
+			this.SaturnSavestatesDescription.Text = "Savestates";
+			// 
+			// SaturnROMsDescription
+			// 
+			this.SaturnROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnROMsDescription.AutoSize = true;
+			this.SaturnROMsDescription.Location = new System.Drawing.Point(474, 63);
+			this.SaturnROMsDescription.Name = "SaturnROMsDescription";
+			this.SaturnROMsDescription.Size = new System.Drawing.Size(37, 13);
+			this.SaturnROMsDescription.TabIndex = 143;
+			this.SaturnROMsDescription.Text = "ROMs";
+			// 
+			// SaturnSavestatesBox
+			// 
+			this.SaturnSavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnSavestatesBox.Location = new System.Drawing.Point(13, 89);
+			this.SaturnSavestatesBox.Name = "SaturnSavestatesBox";
+			this.SaturnSavestatesBox.Size = new System.Drawing.Size(421, 20);
+			this.SaturnSavestatesBox.TabIndex = 151;
+			// 
+			// SaturnBrowseROMs
+			// 
+			this.SaturnBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnBrowseROMs.Image = ((System.Drawing.Image)(resources.GetObject("SaturnBrowseROMs.Image")));
+			this.SaturnBrowseROMs.Location = new System.Drawing.Point(442, 59);
+			this.SaturnBrowseROMs.Name = "SaturnBrowseROMs";
+			this.SaturnBrowseROMs.Size = new System.Drawing.Size(26, 23);
+			this.SaturnBrowseROMs.TabIndex = 150;
+			this.SaturnBrowseROMs.UseVisualStyleBackColor = true;
+			this.SaturnBrowseROMs.Click += new System.EventHandler(this.button9_Click);
+			// 
+			// SaturnBrowseSaveRAM
+			// 
+			this.SaturnBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnBrowseSaveRAM.Image = ((System.Drawing.Image)(resources.GetObject("SaturnBrowseSaveRAM.Image")));
+			this.SaturnBrowseSaveRAM.Location = new System.Drawing.Point(442, 119);
+			this.SaturnBrowseSaveRAM.Name = "SaturnBrowseSaveRAM";
+			this.SaturnBrowseSaveRAM.Size = new System.Drawing.Size(26, 23);
+			this.SaturnBrowseSaveRAM.TabIndex = 154;
+			this.SaturnBrowseSaveRAM.UseVisualStyleBackColor = true;
+			this.SaturnBrowseSaveRAM.Click += new System.EventHandler(this.SaturnBrowseSaveRAM_Click);
+			// 
+			// SaturnSaveRAMDescription
+			// 
+			this.SaturnSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnSaveRAMDescription.AutoSize = true;
+			this.SaturnSaveRAMDescription.Location = new System.Drawing.Point(474, 123);
+			this.SaturnSaveRAMDescription.Name = "SaturnSaveRAMDescription";
+			this.SaturnSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+			this.SaturnSaveRAMDescription.TabIndex = 142;
+			this.SaturnSaveRAMDescription.Text = "Save RAM";
+			// 
+			// SaturnSaveRAMBox
+			// 
+			this.SaturnSaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SaturnSaveRAMBox.Location = new System.Drawing.Point(13, 119);
+			this.SaturnSaveRAMBox.Name = "SaturnSaveRAMBox";
+			this.SaturnSaveRAMBox.Size = new System.Drawing.Size(421, 20);
+			this.SaturnSaveRAMBox.TabIndex = 153;
+			// 
+			// BasePathBox
+			// 
+			this.BasePathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BasePathBox.Location = new System.Drawing.Point(29, 27);
+			this.BasePathBox.Name = "BasePathBox";
+			this.BasePathBox.Size = new System.Drawing.Size(456, 20);
+			this.BasePathBox.TabIndex = 0;
+			// 
+			// BrowseBase
+			// 
+			this.BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BrowseBase.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.BrowseBase.Location = new System.Drawing.Point(494, 27);
+			this.BrowseBase.Name = "BrowseBase";
+			this.BrowseBase.Size = new System.Drawing.Size(26, 23);
+			this.BrowseBase.TabIndex = 1;
+			this.BrowseBase.UseVisualStyleBackColor = true;
+			this.BrowseBase.Click += new System.EventHandler(this.BrowseBase_Click);
+			// 
+			// BaseDescription
+			// 
+			this.BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BaseDescription.AutoSize = true;
+			this.BaseDescription.Location = new System.Drawing.Point(526, 30);
+			this.BaseDescription.Name = "BaseDescription";
+			this.BaseDescription.Size = new System.Drawing.Size(64, 13);
+			this.BaseDescription.TabIndex = 25;
+			this.BaseDescription.Text = "Global Base";
+			// 
+			// RecentForROMs
+			// 
+			this.RecentForROMs.AutoSize = true;
+			this.RecentForROMs.Location = new System.Drawing.Point(29, 63);
+			this.RecentForROMs.Name = "RecentForROMs";
+			this.RecentForROMs.Size = new System.Drawing.Size(184, 17);
+			this.RecentForROMs.TabIndex = 2;
+			this.RecentForROMs.Text = "Always use recent path for ROMs";
+			this.RecentForROMs.UseVisualStyleBackColor = true;
+			this.RecentForROMs.CheckedChanged += new System.EventHandler(this.RecentForROMs_CheckedChanged);
+			// 
+			// SaveButton
+			// 
+			this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.SaveButton.Location = new System.Drawing.Point(12, 435);
+			this.SaveButton.Name = "SaveButton";
+			this.SaveButton.Size = new System.Drawing.Size(75, 23);
+			this.SaveButton.TabIndex = 200;
+			this.SaveButton.Text = "&Save";
+			this.SaveButton.UseVisualStyleBackColor = true;
+			this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
+			// 
+			// button1
+			// 
+			this.button1.Image = global::BizHawk.MultiClient.Properties.Resources.Help;
+			this.button1.Location = new System.Drawing.Point(459, 57);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(26, 23);
+			this.button1.TabIndex = 203;
+			this.toolTip1.SetToolTip(this.button1, "A list of special symbols useable for paths");
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(491, 64);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(97, 13);
+			this.label1.TabIndex = 204;
+			this.label1.Text = "Special Commands";
+			// 
 			// PathConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -4412,6 +4628,8 @@
 			this.tabPageC64.PerformLayout();
 			this.tabPageN64.ResumeLayout(false);
 			this.tabPageN64.PerformLayout();
+			this.tabPageSaturn.ResumeLayout(false);
+			this.tabPageSaturn.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -4779,5 +4997,23 @@
 		private System.Windows.Forms.Button N64BrowseSaveRAM;
 		private System.Windows.Forms.Label N64SaveRAMDescription;
 		private System.Windows.Forms.TextBox N64SaveRAMBox;
+		private System.Windows.Forms.TextBox SaturnBaseBox;
+		private System.Windows.Forms.Label SaturnCheatsDescription;
+		private System.Windows.Forms.Button SaturnBrowseCheats;
+		private System.Windows.Forms.TextBox SaturnCheatsBox;
+		private System.Windows.Forms.TextBox SaturnScreenshotsBox;
+		private System.Windows.Forms.Label SaturnBaseDescription;
+		private System.Windows.Forms.Label SaturnScreenshotsDescription;
+		private System.Windows.Forms.Button SaturnBrowseBase;
+		private System.Windows.Forms.Button SaturnBrowseScreenshots;
+		private System.Windows.Forms.TextBox SaturnROMsBox;
+		private System.Windows.Forms.Button SaturnBrowseSavestates;
+		private System.Windows.Forms.Label SaturnSavestatesDescription;
+		private System.Windows.Forms.Label SaturnROMsDescription;
+		private System.Windows.Forms.TextBox SaturnSavestatesBox;
+		private System.Windows.Forms.Button SaturnBrowseROMs;
+		private System.Windows.Forms.Button SaturnBrowseSaveRAM;
+		private System.Windows.Forms.Label SaturnSaveRAMDescription;
+		private System.Windows.Forms.TextBox SaturnSaveRAMBox;
     }
 }
