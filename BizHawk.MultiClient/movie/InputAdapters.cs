@@ -445,6 +445,8 @@ namespace BizHawk.MultiClient
 						return "|.....|.....|..................................................................|";
 					case "GBA":
 						return "|.|..........|";
+					case "N64":
+						return "|.|............|............|............|............|";
 				}
 			}
 		}
@@ -559,6 +561,35 @@ namespace BizHawk.MultiClient
 			return input.ToString();
 		}
 
+		private string GetN64ControllersAsMnemonic()
+		{
+			StringBuilder input = new StringBuilder("|");
+			if (IsBasePressed("Power"))
+			{
+				input.Append('P');
+			}
+			else if (IsBasePressed("Reset"))
+			{
+				input.Append('r');
+			}
+			else
+			{
+				input.Append('.');
+			}
+			input.Append('|');
+
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
+				}
+				input.Append('|');
+			}
+
+			return input.ToString();
+		}
+
 		public string GetControllersAsMnemonic()
 		{
 			if (ControlType == "Null Controller")
@@ -583,11 +614,11 @@ namespace BizHawk.MultiClient
 			}
 			else if (ControlType == "Dual Gameboy Controller")
 			{
-				return GetDualGameBoyControllerAsMnemonic();				
+				return GetDualGameBoyControllerAsMnemonic();
 			}
 			else if (ControlType == "Nintento 64 Controller")
 			{
-				return ""; // TODO
+				return GetN64ControllersAsMnemonic();
 			}
 			else if (ControlType == "Saturn Controller")
 			{
@@ -908,6 +939,42 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void SetN64ControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+			{
+				Force("Reset", true);
+			}
+
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+
+				if (mnemonic.Length < srcindex + 3 + Global.BUTTONS[ControlType].Count - 1)
+				{
+					return;
+				}
+
+				int start = 3;
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+			}
+		}
+
 		private void SetAtari7800AsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
@@ -1027,7 +1094,7 @@ namespace BizHawk.MultiClient
 			}
 			else if (ControlType == "Nintento 64 Controller")
 			{
-				// TODO
+				SetN64ControllersAsMnemonic(mnemonic);
 				return;
 			}
 			else if (ControlType == "Saturn Controller")
