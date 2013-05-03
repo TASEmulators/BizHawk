@@ -93,9 +93,6 @@
     <ClCompile Include="..\smpc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\sndal.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\snddummy.c">
       <Filter>Source Files</Filter>
     </ClCompile>

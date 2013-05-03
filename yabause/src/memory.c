@@ -1067,8 +1067,8 @@ int YabSaveState(const char *filename)
    ywrite(&check, (void *)&temp, sizeof(int), 1, fp);
    temp = (yabsys.CurSH2FreqType == CLKTYPE_26MHZ) ? 268 : 286;
    ywrite(&check, (void *)&temp, sizeof(int), 1, fp);
-   temp32 = (yabsys.UsecFrac * temp / 10) >> YABSYS_TIMING_BITS;
-   ywrite(&check, (void *)&temp32, sizeof(u32), 1, fp);
+   //temp32 = (yabsys.UsecFrac * temp / 10) >> YABSYS_TIMING_BITS;
+   ywrite(&check, (void *)&yabsys.UsecFrac, sizeof(u32), 1, fp);
    ywrite(&check, (void *)&yabsys.CurSH2FreqType, sizeof(int), 1, fp);
    ywrite(&check, (void *)&yabsys.IsPal, sizeof(int), 1, fp);
    /*
@@ -1299,11 +1299,11 @@ int YabLoadState(const char *filename)
    yread(&check, (void *)&yabsys.MaxLineCount, sizeof(int), 1, fp);
    yread(&check, (void *)&temp, sizeof(int), 1, fp);
    yread(&check, (void *)&temp, sizeof(int), 1, fp);
-   yread(&check, (void *)&temp32, sizeof(u32), 1, fp);
+   yread(&check, (void *)&yabsys.UsecFrac, sizeof(u32), 1, fp);
    yread(&check, (void *)&yabsys.CurSH2FreqType, sizeof(int), 1, fp);
    yread(&check, (void *)&yabsys.IsPal, sizeof(int), 1, fp);
-   YabauseChangeTiming(yabsys.CurSH2FreqType);
-   yabsys.UsecFrac = (temp32 << YABSYS_TIMING_BITS) * temp / 10;
+   //YabauseChangeTiming(yabsys.CurSH2FreqType);
+   //yabsys.UsecFrac = (temp32 << YABSYS_TIMING_BITS) * temp / 10;
 
    if (headerversion > 1) {
 

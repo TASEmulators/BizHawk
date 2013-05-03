@@ -105,7 +105,6 @@
     <ClCompile Include="..\sh2int.c" />
     <ClCompile Include="..\sh2trace.c" />
     <ClCompile Include="..\smpc.c" />
-    <ClCompile Include="..\sndal.c" />
     <ClCompile Include="..\snddummy.c" />
     <ClCompile Include="..\sndwav.c" />
     <ClCompile Include="..\thr-dummy.c" />
