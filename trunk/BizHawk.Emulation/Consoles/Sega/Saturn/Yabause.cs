@@ -154,9 +154,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			if (Controller["Reset"])
 				LibYabause.libyabause_softreset();
 			if (Controller["Power"])
-			{
-				// TODO
-			}
+				LibYabause.libyabause_hardreset();
 
 			LibYabause.libyabause_setpads(p11, p12, p21, p22);
 
@@ -177,24 +175,48 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		public string SystemId { get { return "SAT"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
+		#region saveram
+
 		public byte[] ReadSaveRam()
 		{
-			return new byte[0];
+			var ms = new MemoryStream();
+			var fp = new FilePiping();
+			fp.Get(ms);
+			bool success = LibYabause.libyabause_savesaveram(fp.GetPipeNameNative());
+			var e = fp.GetResults();
+			if (e != null)
+				throw e;
+			if (!success)
+				throw new Exception("libyabause_savesaveram() failed!");
+			var ret = ms.ToArray();
+			ms.Dispose();
+			return ret;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
+			var fp = new FilePiping();
+			fp.Offer(data);
+			bool success = LibYabause.libyabause_loadsaveram(fp.GetPipeNameNative());
+			var e = fp.GetResults();
+			if (e != null)
+				throw e;
+			if (!success)
+				throw new Exception("libyabause_loadsaveram() failed!");
 		}
 
 		public void ClearSaveRam()
 		{
+			LibYabause.libyabause_clearsaveram();
 		}
 
 		public bool SaveRamModified
 		{
-			get;
-			set;
+			get { return true; }
+			set { if (!value) throw new InvalidOperationException(); }
 		}
+
+		#endregion
 
 		public void ResetFrameCounter()
 		{
@@ -295,7 +317,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			return ms.ToArray();
 		}
 
-#endregion
+		#endregion
 
 		public CoreComm CoreComm { get; private set; }
 
@@ -345,29 +367,11 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			samples = SoundBuffer;
 		}
 
-		public void DiscardSamples()
-		{
-		}
-
-		public ISoundProvider SoundProvider
-		{
-			get { return null; }
-		}
-
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return this; }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return false;
-		}
-
-		public void EndAsyncSound()
-		{
-
-		}
+		public void DiscardSamples() { }
+		public ISoundProvider SoundProvider { get { return null; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
+		public bool StartAsyncSound() { return false; }
+		public void EndAsyncSound() { }
 
 		#endregion
 

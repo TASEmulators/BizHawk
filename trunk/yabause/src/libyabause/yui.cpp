@@ -192,6 +192,21 @@ extern "C" __declspec(dllexport) int libyabause_savestate(const char *fn)
 	return !YabSaveState(fn);
 }
 
+extern "C" __declspec(dllexport) int libyabause_savesaveram(const char *fn)
+{
+	return !T123Save(BupRam, 0x10000, 1, fn);
+}
+
+extern "C" __declspec(dllexport) int libyabause_loadsaveram(const char *fn)
+{
+	return !T123Load(BupRam, 0x10000, 1, fn);
+}
+
+extern "C" __declspec(dllexport) void libyabause_clearsaveram()
+{
+	FormatBackupRam(BupRam, 0x10000);
+}
+
 extern "C" __declspec(dllexport) int libyabause_frameadvance(int *w, int *h, int *nsamp)
 {
 	LagFrameFlag = 1;
