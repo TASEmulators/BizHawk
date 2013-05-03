@@ -287,6 +287,9 @@ typedef struct scsp_t
   u32 mcipd;            // pending main cpu interrupt
 
   s32 stack[32 * 2];    // two last generation slot output (SCSP STACK)
+
+  u32 slotstart;
+
   slot_t slot[32];      // 32 slots
 
   u8 *scsp_ram;         // scsp ram pointer
@@ -2847,6 +2850,8 @@ scsp_init (u8 *scsp_ram, void (*sint_hand)(u32), void (*mint_hand)(void))
   scsp.sintf = sint_hand;
   scsp.mintf = mint_hand;
 
+  scsp.slotstart = 0x4b435546;
+
   for (i = 0; i < SCSP_ENV_LEN; i++)
     {
       // Attack Curve (x^7 ?)
@@ -3748,6 +3753,109 @@ M68KClearCodeBreakpoints ()
   ScspInternalVars->numcodebreakpoints = 0;
 }
 
+void StateFlatten(slot_t *s)
+{
+	s->buf8 = (s8*)(int)(s->buf8 - (s8*)scsp.scsp_ram);
+	s->buf16 = (s16*)(int)(s->buf16 - (s16*)scsp.scsp_ram);
+	if (s->einc)
+		s->einc = (s32*)(int)(s->einc - (s32*)s);
+	if (s->arp == &scsp_null_rate[0])
+		s->arp = (s32*)(void*)0xdeadbeef;
+	else
+		s->arp = (s32*)(int)(s->arp - scsp_attack_rate);
+	if (s->drp == &scsp_null_rate[0])
+		s->drp = (s32*)(void*)0xdeadbeef;
+	else
+		s->drp = (s32*)(int)(s->drp - scsp_decay_rate);
+	if (s->srp == &scsp_null_rate[0])
+		s->srp = (s32*)(void*)0xdeadbeef;
+	else
+		s->srp = (s32*)(int)(s->srp - scsp_decay_rate);
+	if (s->rrp == &scsp_null_rate[0])
+		s->rrp = (s32*)(void*)0xdeadbeef;
+	else
+		s->rrp = (s32*)(int)(s->rrp - scsp_decay_rate);
+
+	if (s->lfofmw == scsp_lfo_sawt_f)
+		s->lfofmw = (s32*)1;
+	else if (s->lfofmw == scsp_lfo_squa_f)
+		s->lfofmw = (s32*)2;
+	else if (s->lfofmw == scsp_lfo_tri_f)
+		s->lfofmw = (s32*)3;
+	else if (s->lfofmw == scsp_lfo_noi_f)
+		s->lfofmw = (s32*)4;
+	
+	if (s->lfoemw == scsp_lfo_sawt_e)
+		s->lfoemw = (s32*)1;
+	else if (s->lfoemw == scsp_lfo_squa_e)
+		s->lfoemw = (s32*)2;
+	else if (s->lfoemw == scsp_lfo_tri_e)
+		s->lfoemw = (s32*)3;
+	else if (s->lfoemw == scsp_lfo_noi_e)
+		s->lfoemw = (s32*)4;
+
+	if (s->enxt == scsp_env_null_next)
+		s->enxt = (void (*)(slot_t*))(void*)1;
+	else if (s->enxt == scsp_release_next)
+		s->enxt = (void (*)(slot_t*))(void*)2;
+	else if (s->enxt == scsp_sustain_next)
+		s->enxt = (void (*)(slot_t*))(void*)3;
+	else if (s->enxt == scsp_decay_next)
+		s->enxt = (void (*)(slot_t*))(void*)4;
+	else if (s->enxt == scsp_attack_next)
+		s->enxt = (void (*)(slot_t*))(void*)5;
+}
+
+void StateUnFlatten(slot_t *s)
+{
+	s->buf8 = (s8*)scsp.scsp_ram + (int)(s->buf8);
+	s->buf16 = (s16*)scsp.scsp_ram + (int)(s->buf16);
+	if (s->einc)
+		s->einc = (s32*)s + (int)(s->einc);
+	if (s->arp == (void*)0xdeadbeef)
+		s->arp = &scsp_null_rate[0];
+	else
+		s->arp = scsp_attack_rate + (int)(s->arp);
+	if (s->drp == (void*)0xdeadbeef)
+		s->drp = &scsp_null_rate[0];
+	else
+		s->drp = scsp_decay_rate + (int)(s->drp);
+	if (s->srp == (void*)0xdeadbeef)
+		s->srp = &scsp_null_rate[0];
+	else
+		s->srp = scsp_decay_rate + (int)(s->srp);
+	if (s->rrp == (void*)0xdeadbeef)
+		s->rrp = &scsp_null_rate[0];
+	else
+		s->rrp = scsp_decay_rate + (int)(s->rrp);
+
+	switch ((int)(s->lfofmw))
+	{
+	case 1: s->lfofmw = scsp_lfo_sawt_f; break;
+	case 2: s->lfofmw = scsp_lfo_squa_f; break;
+	case 3: s->lfofmw = scsp_lfo_tri_f; break;
+	case 4: s->lfofmw = scsp_lfo_noi_f; break;
+	}
+
+	switch ((int)(s->lfoemw))
+	{
+	case 1: s->lfoemw = scsp_lfo_sawt_e; break;
+	case 2: s->lfoemw = scsp_lfo_squa_e; break;
+	case 3: s->lfoemw = scsp_lfo_tri_e; break;
+	case 4: s->lfoemw = scsp_lfo_noi_e; break;
+	}
+
+	switch ((int)(s->enxt))
+	{
+	case 1: s->enxt = scsp_env_null_next; break;
+	case 2: s->enxt = scsp_release_next; break;
+	case 3: s->enxt = scsp_sustain_next; break;
+	case 4: s->enxt = scsp_decay_next; break;
+	case 5: s->enxt = scsp_attack_next; break;
+	}
+}
+
+
 //////////////////////////////////////////////////////////////////////////////
 
 int
@@ -3787,7 +3895,13 @@ SoundSaveState (FILE *fp)
   // Sound RAM is important
   ywrite (&check, (void *)SoundRam, 0x80000, 1, fp);
 
+  for (i = 0; i < 32; i++)
+	  StateFlatten(&scsp.slot[i]);
+
   ywrite (&check, (void *)&scsp, offsetof(scsp_t, scsp_ram), 1, fp);
+
+  for (i = 0; i < 32; i++)
+	  StateUnFlatten(&scsp.slot[i]);
 
   /*
   // Write slot internal variables
@@ -3908,6 +4022,9 @@ SoundLoadState (FILE *fp, int version, int size)
   yread (&check, (void *)SoundRam, 0x80000, 1, fp);
 
   yread (&check, (void *)&scsp, offsetof(scsp_t, scsp_ram), 1, fp);
+
+  for (i = 0; i < 32; i++)
+	  StateUnFlatten(&scsp.slot[i]);
 
   /*
   if (version > 1)

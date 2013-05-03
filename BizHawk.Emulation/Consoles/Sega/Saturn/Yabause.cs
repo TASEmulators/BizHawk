@@ -166,6 +166,8 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			if (IsLagFrame)
 				LagCount++;
 			//Console.WriteLine(nsamp);
+
+			//CheckStates();
 		}
 
 		public int Frame { get; private set; }
@@ -316,6 +318,34 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			bw.Flush();
 			return ms.ToArray();
 		}
+
+		/// <summary>
+		/// does a save, load, save combo, and checks the two saves for identicalness.
+		/// </summary>
+		void CheckStates()
+		{
+			byte[] s1 = SaveStateBinary();
+			LoadStateBinary(new BinaryReader(new MemoryStream(s1, false)));
+			byte[] s2 = SaveStateBinary();
+			if (s1.Length != s2.Length)
+				throw new Exception(string.Format("CheckStates: Length {0} != {1}", s1.Length, s2.Length));
+			unsafe
+			{
+				fixed (byte* b1 = &s1[0], b2 = &s2[0])
+				{
+					for (int i = 0; i < s1.Length; i++)
+					{
+						if (b1[i] != b2[i])
+						{
+							File.WriteAllBytes("save1.raw", s1);
+							File.WriteAllBytes("save2.raw", s2);
+							throw new Exception(string.Format("CheckStates s1[{0}] = {1}, s2[{0}] = {2}", i, b1[i], b2[i]));
+						}
+					}
+				}
+			}
+		}
+	
 
 		#endregion
 
