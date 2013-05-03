@@ -69,6 +69,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void FrameAdvance(bool render, bool rendersound) 
 		{
 			m64pFrameComplete = false;
+
+			if (Controller["Reset"])
+			{
+				m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 0, IntPtr.Zero);
+			}
+			if (Controller["Power"])
+			{
+				m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 1, IntPtr.Zero);
+			}			
 			/*
 			sbyte x = 0;
 			sbyte y = 0;
