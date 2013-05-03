@@ -19,22 +19,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public GameInfo game;
 
 		public IVideoProvider VideoProvider { get { return this; } }
-		public int[] frameBuffer = new int[640 * 480];
+		public int[] frameBuffer = new int[800 * 600];
 		public int[] GetVideoBuffer() 
 		{
-			for (int row = 0; row < 480; row++)
+			for (int row = 0; row < 600; row++)
 			{
-				for (int col = 0; col < 640; col++)
+				for (int col = 0; col < 800; col++)
 				{
-					int i = row * 640 + col;
-					frameBuffer[(479 - row) * 640 + col] = (m64p_FrameBuffer[(i * 3)] << 16) + (m64p_FrameBuffer[(i * 3) + 1] << 8) + (m64p_FrameBuffer[(i * 3) + 2]);
+					int i = row * 800 + col;
+					frameBuffer[(599 - row) * 800 + col] = (m64p_FrameBuffer[(i * 3)] << 16) + (m64p_FrameBuffer[(i * 3) + 1] << 8) + (m64p_FrameBuffer[(i * 3) + 2]);
 				}
 			}
 			return frameBuffer;
 		}
-		public int VirtualWidth { get { return 640; } }
-		public int BufferWidth { get { return 640; } }
-		public int BufferHeight { get { return 480; } }
+		public int VirtualWidth { get { return 800; } }
+		public int BufferWidth { get { return 800; } }
+		public int BufferHeight { get { return 600; } }
 		public int BackgroundColor { get { return 0; } }
 
 		Sound.Utilities.SpeexResampler resampler;
@@ -244,6 +244,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		  M64EMU_PAUSED
 		};
 
+		enum m64p_type
+		{
+		  M64TYPE_INT = 1,
+		  M64TYPE_FLOAT,
+		  M64TYPE_BOOL,
+		  M64TYPE_STRING
+		};
+
 		//[DllImport(@"..\..\libmupen64plus\mupen64plus-ui-console\projects\msvc11\Release\mupen64plus.dll", CallingConvention = CallingConvention.Cdecl)]
 		//static extern m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string context, DebugCallback DebugCallback, string context2, IntPtr bar);
 
@@ -260,6 +268,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreDetachPlugin(m64p_plugin_type PluginType);
 		CoreDetachPlugin m64pCoreDetachPlugin;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error ConfigOpenSection(string SectionName, ref IntPtr ConfigSectionHandle);
+		ConfigOpenSection m64pConfigOpenSection;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error ConfigSetParameter(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, ref int ParamValue);
+		ConfigSetParameter m64pConfigSetParameter;
 
 		// The last parameter is a void pointer, so make a few delegates for the versions we want to use
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -323,7 +337,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public delegate void FrameCallback();
 		FrameCallback m64pFrameCallback;
 		
-		byte[] m64p_FrameBuffer = new byte[640 * 480 * 3];
+		byte[] m64p_FrameBuffer = new byte[800 * 600 * 3];
 		public void Getm64pFrameBuffer()
 		{
 			int width = 0;
@@ -404,6 +418,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pCoreDoCommandVICallback = (CoreDoCommandVICallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandVICallback));
 			m64pCoreAttachPlugin = (CoreAttachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreAttachPlugin"), typeof(CoreAttachPlugin));
 			m64pCoreDetachPlugin = (CoreDetachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDetachPlugin"), typeof(CoreDetachPlugin));
+			m64pConfigOpenSection = (ConfigOpenSection)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigOpenSection"), typeof(ConfigOpenSection));
+			m64pConfigSetParameter = (ConfigSetParameter)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigSetParameter"), typeof(ConfigSetParameter));
 
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
 			GfxPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginShutdown"), typeof(PluginShutdown));
@@ -429,6 +445,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			// Set up and connect the graphics plugin
 			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
+
+			// Configure the video plugin
+			IntPtr video_section = IntPtr.Zero;
+			m64pConfigOpenSection("Video-General", ref video_section);
+			int width = 800;
+			result = m64pConfigSetParameter(video_section, "ScreenWidth", m64p_type.M64TYPE_INT, ref width);
+			int height = 600;
+			result = m64pConfigSetParameter(video_section, "ScreenHeight", m64p_type.M64TYPE_INT, ref height);
 
 			// Set up a null audio plugin
 			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { });
