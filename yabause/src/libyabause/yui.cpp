@@ -258,6 +258,8 @@ extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD, const cha
 	DisableAutoFrameSkip();
 	ScspSetFrameAccurate(1);
 
+	OSDChangeCore(OSDCORE_DUMMY);
+
 	ctrl1 = PerPadAdd(&PORTDATA1);
 	ctrl2 = PerPadAdd(&PORTDATA2);
 
