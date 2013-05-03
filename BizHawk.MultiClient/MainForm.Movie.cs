@@ -91,7 +91,9 @@ namespace BizHawk.MultiClient
 		{
 			// put any BEETA quality cores here
 			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA ||
-				Global.Emulator is Emulation.Consoles.Sega.Genesis)
+				Global.Emulator is Emulation.Consoles.Sega.Genesis ||
+				Global.Emulator is Emulation.Consoles.Nintendo.N64.N64 ||
+				Global.Emulator is Emulation.Consoles.Sega.Saturn.Yabause)
 			{
 				var result = MessageBox.Show
 					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
