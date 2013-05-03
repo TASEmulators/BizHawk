@@ -82,6 +82,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stddef.h>
 #include <math.h>
 
 #include "c68k/c68k.h"
@@ -285,12 +286,15 @@ typedef struct scsp_t
   u32 mcieb;            // allow main cpu interrupt
   u32 mcipd;            // pending main cpu interrupt
 
+  s32 stack[32 * 2];    // two last generation slot output (SCSP STACK)
+  slot_t slot[32];      // 32 slots
+
   u8 *scsp_ram;         // scsp ram pointer
   void (*mintf)(void);  // main cpu interupt function pointer
   void (*sintf)(u32);   // sound cpu interrupt function pointer
 
-  s32 stack[32 * 2];    // two last generation slot output (SCSP STACK)
-  slot_t slot[32];      // 32 slots
+  //s32 stack[32 * 2];    // two last generation slot output (SCSP STACK)
+  //slot_t slot[32];      // 32 slots
 } scsp_t;
 
 ////////////////////////////////////////////////////////////////
@@ -3783,6 +3787,9 @@ SoundSaveState (FILE *fp)
   // Sound RAM is important
   ywrite (&check, (void *)SoundRam, 0x80000, 1, fp);
 
+  ywrite (&check, (void *)&scsp, offsetof(scsp_t, scsp_ram), 1, fp);
+
+  /*
   // Write slot internal variables
   for (i = 0; i < 32; i++)
     {
@@ -3860,7 +3867,7 @@ SoundSaveState (FILE *fp)
   ywrite (&check, (void *)&scsp.mcipd, 4, 1, fp);
 
   ywrite (&check, (void *)scsp.stack, 4, 32 * 2, fp);
-
+  */
   return StateFinishHeader (fp, offset);
 }
 
@@ -3900,6 +3907,9 @@ SoundLoadState (FILE *fp, int version, int size)
   // Lastly, sound ram
   yread (&check, (void *)SoundRam, 0x80000, 1, fp);
 
+  yread (&check, (void *)&scsp, offsetof(scsp_t, scsp_ram), 1, fp);
+
+  /*
   if (version > 1)
     {
       // Internal variables need to be regenerated
@@ -4023,6 +4033,8 @@ SoundLoadState (FILE *fp, int version, int size)
 
       yread (&check, (void *)scsp.stack, 4, 32 * 2, fp);
     }
+  */
+
 
   return size;
 }
