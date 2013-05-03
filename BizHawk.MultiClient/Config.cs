@@ -79,7 +79,7 @@ namespace BizHawk.MultiClient
 			N64AutoController[1] = new N64ButtonsTemplate(false);
 			N64AutoController[2] = new N64ButtonsTemplate(false);
 			N64AutoController[3] = new N64ButtonsTemplate(false);
-			N64ConsoleButtons = new N64ConsoleButtonsTemplate(true);
+			N64ConsoleButtons = new Standard2ButtonConsoleTemplate(true);
 
 			ColecoController[0] = new ColecoVisionControllerTemplate(true);
 			ColecoController[1] = new ColecoVisionControllerTemplate(false);
@@ -809,7 +809,7 @@ namespace BizHawk.MultiClient
 
 		public N64ButtonsTemplate[] N64Controller = new N64ButtonsTemplate[4];
 		public N64ButtonsTemplate[] N64AutoController = new N64ButtonsTemplate[4];
-		public N64ConsoleButtonsTemplate N64ConsoleButtons = new N64ConsoleButtonsTemplate();
+		public Standard2ButtonConsoleTemplate N64ConsoleButtons = new Standard2ButtonConsoleTemplate();
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
@@ -1428,14 +1428,14 @@ namespace BizHawk.MultiClient
 		}
 	}
 
-	public class N64ConsoleButtonsTemplate : iControllerConfigObject
+	public class Standard2ButtonConsoleTemplate : iControllerConfigObject
 	{
 		public string Power = "";
 		public string Reset = "";
 		public bool Enabled = false;
 
-		public N64ConsoleButtonsTemplate() { }
-		public N64ConsoleButtonsTemplate(bool defaults)
+		public Standard2ButtonConsoleTemplate() { }
+		public Standard2ButtonConsoleTemplate(bool defaults)
 		{
 			if (defaults)
 			{
