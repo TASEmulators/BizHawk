@@ -101,6 +101,13 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libyabause_deinit();
 
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_savesaveram(string fn);
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_loadsaveram(string fn);
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_clearsaveram();
+
 		/// <summary>
 		/// 
 		/// </summary>
