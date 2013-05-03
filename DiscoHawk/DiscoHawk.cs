@@ -53,9 +53,39 @@ namespace BizHawk
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 #endif
 
+			ChangeWindowMessageFilter(WM_DROPFILES, ChangeWindowMessageFilterFlags.Add);
+			ChangeWindowMessageFilter(WM_COPYDATA, ChangeWindowMessageFilterFlags.Add);
+			ChangeWindowMessageFilter(0x0049, ChangeWindowMessageFilterFlags.Add);
+
 			SubMain(args);
 		}
+		private const UInt32 WM_DROPFILES = 0x0233;
+		private const UInt32 WM_COPYDATA = 0x004A;
+		[DllImport("user32")]
+		public static extern bool ChangeWindowMessageFilter(uint msg, ChangeWindowMessageFilterFlags flags);
+		public enum ChangeWindowMessageFilterFlags : uint
+		{
+			Add = 1, Remove = 2
+		};
+    public enum MessageFilterInfo : uint
+    {
+        None=0, AlreadyAllowed=1, AlreadyDisAllowed=2, AllowedHigher=3
+    };
 
+    public enum ChangeWindowMessageFilterExAction : uint
+    {
+        Reset = 0, Allow = 1, DisAllow = 2
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CHANGEFILTERSTRUCT
+    {
+        public uint size;
+        public MessageFilterInfo info;
+    }
+
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
 		static void SubMain(string[] args)
 		{
 			var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
