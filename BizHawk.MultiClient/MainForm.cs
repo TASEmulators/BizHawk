@@ -1508,9 +1508,9 @@ namespace BizHawk.MultiClient
 			N64Controls.BindMulti("Reset", Global.Config.N64ConsoleButtons.Reset);
 
 			N64Controls.BindMulti("P1 DPad U", Global.Config.N64Controller[0].DPadU);
-			N64Controls.BindMulti("P1 DPad L", Global.Config.N64Controller[0].DPadD);
-			N64Controls.BindMulti("P1 DPad R", Global.Config.N64Controller[0].DPadL);
-			N64Controls.BindMulti("P1 DPad D", Global.Config.N64Controller[0].DPadR);
+			N64Controls.BindMulti("P1 DPad L", Global.Config.N64Controller[0].DPadL);
+			N64Controls.BindMulti("P1 DPad R", Global.Config.N64Controller[0].DPadR);
+			N64Controls.BindMulti("P1 DPad D", Global.Config.N64Controller[0].DPadD);
 			N64Controls.BindMulti("P1 Start", Global.Config.N64Controller[0].Start);
 			N64Controls.BindMulti("P1 Z", Global.Config.N64Controller[0].Z);
 			N64Controls.BindMulti("P1 B", Global.Config.N64Controller[0].B);
@@ -1523,9 +1523,9 @@ namespace BizHawk.MultiClient
 			N64Controls.BindMulti("P1 R", Global.Config.N64Controller[0].R);
 
 			N64Controls.BindMulti("P2 DPad U", Global.Config.N64Controller[1].DPadU);
-			N64Controls.BindMulti("P2 DPad L", Global.Config.N64Controller[1].DPadD);
-			N64Controls.BindMulti("P2 DPad R", Global.Config.N64Controller[1].DPadL);
-			N64Controls.BindMulti("P2 DPad D", Global.Config.N64Controller[1].DPadR);
+			N64Controls.BindMulti("P2 DPad L", Global.Config.N64Controller[1].DPadL);
+			N64Controls.BindMulti("P2 DPad R", Global.Config.N64Controller[1].DPadR);
+			N64Controls.BindMulti("P2 DPad D", Global.Config.N64Controller[1].DPadD);
 			N64Controls.BindMulti("P2 Start", Global.Config.N64Controller[1].Start);
 			N64Controls.BindMulti("P2 Z", Global.Config.N64Controller[1].Z);
 			N64Controls.BindMulti("P2 B", Global.Config.N64Controller[1].B);
@@ -1538,9 +1538,9 @@ namespace BizHawk.MultiClient
 			N64Controls.BindMulti("P2 R", Global.Config.N64Controller[1].R);
 
 			N64Controls.BindMulti("P3 DPad U", Global.Config.N64Controller[2].DPadU);
-			N64Controls.BindMulti("P3 DPad L", Global.Config.N64Controller[2].DPadD);
-			N64Controls.BindMulti("P3 DPad R", Global.Config.N64Controller[2].DPadL);
-			N64Controls.BindMulti("P3 DPad D", Global.Config.N64Controller[2].DPadR);
+			N64Controls.BindMulti("P3 DPad L", Global.Config.N64Controller[2].DPadL);
+			N64Controls.BindMulti("P3 DPad R", Global.Config.N64Controller[2].DPadR);
+			N64Controls.BindMulti("P3 DPad D", Global.Config.N64Controller[2].DPadD);
 			N64Controls.BindMulti("P3 Start", Global.Config.N64Controller[2].Start);
 			N64Controls.BindMulti("P3 Z", Global.Config.N64Controller[2].Z);
 			N64Controls.BindMulti("P3 B", Global.Config.N64Controller[2].B);
@@ -1553,9 +1553,9 @@ namespace BizHawk.MultiClient
 			N64Controls.BindMulti("P3 R", Global.Config.N64Controller[2].R);
 
 			N64Controls.BindMulti("P4 DPad U", Global.Config.N64Controller[3].DPadU);
-			N64Controls.BindMulti("P4 DPad L", Global.Config.N64Controller[3].DPadD);
-			N64Controls.BindMulti("P4 DPad R", Global.Config.N64Controller[3].DPadL);
-			N64Controls.BindMulti("P4 DPad D", Global.Config.N64Controller[3].DPadR);
+			N64Controls.BindMulti("P4 DPad L", Global.Config.N64Controller[3].DPadL);
+			N64Controls.BindMulti("P4 DPad R", Global.Config.N64Controller[3].DPadR);
+			N64Controls.BindMulti("P4 DPad D", Global.Config.N64Controller[3].DPadD);
 			N64Controls.BindMulti("P4 Start", Global.Config.N64Controller[3].Start);
 			N64Controls.BindMulti("P4 Z", Global.Config.N64Controller[3].Z);
 			N64Controls.BindMulti("P4 B", Global.Config.N64Controller[3].B);
@@ -1572,9 +1572,9 @@ namespace BizHawk.MultiClient
 			var N64AControls = new AutofireController(N64.N64ControllerDefinition);
 			
 			N64AControls.BindMulti("P1 DPad U", Global.Config.N64AutoController[0].DPadU);
-			N64AControls.BindMulti("P1 DPad L", Global.Config.N64AutoController[0].DPadD);
-			N64AControls.BindMulti("P1 DPad R", Global.Config.N64AutoController[0].DPadL);
-			N64AControls.BindMulti("P1 DPad D", Global.Config.N64AutoController[0].DPadR);
+			N64AControls.BindMulti("P1 DPad L", Global.Config.N64AutoController[0].DPadL);
+			N64AControls.BindMulti("P1 DPad R", Global.Config.N64AutoController[0].DPadR);
+			N64AControls.BindMulti("P1 DPad D", Global.Config.N64AutoController[0].DPadD);
 			N64AControls.BindMulti("P1 Start", Global.Config.N64AutoController[0].Start);
 			N64AControls.BindMulti("P1 Z", Global.Config.N64AutoController[0].Z);
 			N64AControls.BindMulti("P1 B", Global.Config.N64AutoController[0].B);
@@ -1587,9 +1587,9 @@ namespace BizHawk.MultiClient
 			N64AControls.BindMulti("P1 R", Global.Config.N64AutoController[0].R);
 
 			N64AControls.BindMulti("P2 DPad U", Global.Config.N64AutoController[1].DPadU);
-			N64AControls.BindMulti("P2 DPad L", Global.Config.N64AutoController[1].DPadD);
-			N64AControls.BindMulti("P2 DPad R", Global.Config.N64AutoController[1].DPadL);
-			N64AControls.BindMulti("P2 DPad D", Global.Config.N64AutoController[1].DPadR);
+			N64AControls.BindMulti("P2 DPad L", Global.Config.N64AutoController[1].DPadL);
+			N64AControls.BindMulti("P2 DPad R", Global.Config.N64AutoController[1].DPadR);
+			N64AControls.BindMulti("P2 DPad D", Global.Config.N64AutoController[1].DPadD);
 			N64AControls.BindMulti("P2 Start", Global.Config.N64AutoController[1].Start);
 			N64AControls.BindMulti("P2 Z", Global.Config.N64AutoController[1].Z);
 			N64AControls.BindMulti("P2 B", Global.Config.N64AutoController[1].B);
@@ -1602,9 +1602,9 @@ namespace BizHawk.MultiClient
 			N64AControls.BindMulti("P2 R", Global.Config.N64AutoController[1].R);
 
 			N64AControls.BindMulti("P3 DPad U", Global.Config.N64AutoController[2].DPadU);
-			N64AControls.BindMulti("P3 DPad L", Global.Config.N64AutoController[2].DPadD);
-			N64AControls.BindMulti("P3 DPad R", Global.Config.N64AutoController[2].DPadL);
-			N64AControls.BindMulti("P3 DPad D", Global.Config.N64AutoController[2].DPadR);
+			N64AControls.BindMulti("P3 DPad L", Global.Config.N64AutoController[2].DPadL);
+			N64AControls.BindMulti("P3 DPad R", Global.Config.N64AutoController[2].DPadR);
+			N64AControls.BindMulti("P3 DPad D", Global.Config.N64AutoController[2].DPadD);
 			N64AControls.BindMulti("P3 Start", Global.Config.N64AutoController[2].Start);
 			N64AControls.BindMulti("P3 Z", Global.Config.N64AutoController[2].Z);
 			N64AControls.BindMulti("P3 B", Global.Config.N64AutoController[2].B);
@@ -1617,9 +1617,9 @@ namespace BizHawk.MultiClient
 			N64AControls.BindMulti("P3 R", Global.Config.N64AutoController[2].R);
 
 			N64AControls.BindMulti("P4 DPad U", Global.Config.N64AutoController[3].DPadU);
-			N64AControls.BindMulti("P4 DPad L", Global.Config.N64AutoController[3].DPadD);
-			N64AControls.BindMulti("P4 DPad R", Global.Config.N64AutoController[3].DPadL);
-			N64AControls.BindMulti("P4 DPad D", Global.Config.N64AutoController[3].DPadR);
+			N64AControls.BindMulti("P4 DPad L", Global.Config.N64AutoController[3].DPadL);
+			N64AControls.BindMulti("P4 DPad R", Global.Config.N64AutoController[3].DPadR);
+			N64AControls.BindMulti("P4 DPad D", Global.Config.N64AutoController[3].DPadD);
 			N64AControls.BindMulti("P4 Start", Global.Config.N64AutoController[3].Start);
 			N64AControls.BindMulti("P4 Z", Global.Config.N64AutoController[3].Z);
 			N64AControls.BindMulti("P4 B", Global.Config.N64AutoController[3].B);
