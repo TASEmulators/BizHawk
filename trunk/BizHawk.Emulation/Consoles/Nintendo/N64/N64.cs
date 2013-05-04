@@ -372,26 +372,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		VICallback m64pVICallback;
 		public void FrameComplete()
 		{
-			if (resampler != null)
+			uint s = (uint)AudGetAudioRate();
+			if (s != m64pSamplingRate)
 			{
-				// the way i've fubared up the core, a first framecomplete callback happens in init, before everything is set up
-				uint s = (uint)AudGetAudioRate();
-				if (s != m64pSamplingRate)
-				{
-					m64pSamplingRate = s;
-					resampler.ChangeRate(s, 44100, s, 44100);
-					//Console.WriteLine("N64 ARate Change {0}", s);
-				}
+				m64pSamplingRate = s;
+				resampler.ChangeRate(s, 44100, s, 44100);
+				//Console.WriteLine("N64 ARate Change {0}", s);
+			}
 
-				int m64pAudioBufferSize = AudGetBufferSize();
-				if (m64pAudioBuffer.Length < m64pAudioBufferSize)
-					m64pAudioBuffer = new short[m64pAudioBufferSize];
+			int m64pAudioBufferSize = AudGetBufferSize();
+			if (m64pAudioBuffer.Length < m64pAudioBufferSize)
+				m64pAudioBuffer = new short[m64pAudioBufferSize];
 
-				if (m64pAudioBufferSize > 0)
-				{
-					AudReadAudioBuffer(m64pAudioBuffer);
-					resampler.EnqueueSamples(m64pAudioBuffer, m64pAudioBufferSize / 2);
-				}
+			if (m64pAudioBufferSize > 0)
+			{
+				AudReadAudioBuffer(m64pAudioBuffer);
+				resampler.EnqueueSamples(m64pAudioBuffer, m64pAudioBufferSize / 2);
 			}
 			m64pFrameComplete.Set();
 		}
@@ -514,8 +510,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			//m64pFrameComplete.WaitOne();
 			m64pStartupComplete.WaitOne();
 
-			// because of when we're doing this, we can't call this yet
-			m64pSamplingRate = 32000; // (uint)AudGetAudioRate();
+			m64pSamplingRate = (uint)AudGetAudioRate();
 			resampler = new Sound.Utilities.SpeexResampler(6, m64pSamplingRate, 44100, m64pSamplingRate, 44100, null, null);
 			//Console.WriteLine("N64 Initial ARate {0}", m64pSamplingRate);
 			
