@@ -1400,20 +1400,20 @@ namespace BizHawk.MultiClient
 
 	public class N64ButtonsTemplate : iControllerConfigObject
 	{
-		public string DPadU = "UpArrow, X1 DpadUp, X1 LStickUp";
-		public string DPadD = "DownArrow, X1 DpadDown, X1 LStickDown";
-		public string DPadL = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
-		public string DPadR = "RightArrow, X1 DpadRight, X1 LStickRight";
-		public string Start = "V, X1 Start";
-		public string Z = "Z, X1 A";
-		public string B = "X, X1 X";
-		public string A = "C";
-		public string CUp = "NumberPad8, J1 RotationZ-";
-		public string CDown = "NumberPad2, J1 RoationZ+";
-		public string CLeft = "NumberPad4, J1 Z-";
-		public string CRight = "NumberPad6, J1 Z+";
-		public string L = "D";
-		public string R = "F";
+		public string DPadU = "";
+		public string DPadD = "";
+		public string DPadL = "";
+		public string DPadR = "";
+		public string Start = "";
+		public string Z = "";
+		public string B = "";
+		public string A = "";
+		public string CUp = "";
+		public string CDown = "";
+		public string CLeft = "";
+		public string CRight = "";
+		public string L = "";
+		public string R = "";
 
 		public bool Enabled = false;
 
@@ -1428,6 +1428,21 @@ namespace BizHawk.MultiClient
 
 		public void SetDefaults()
 		{
+			DPadU = "UpArrow, X1 DpadUp, X1 LStickUp";
+			DPadD = "DownArrow, X1 DpadDown, X1 LStickDown";
+			DPadL = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			DPadR = "RightArrow, X1 DpadRight, X1 LStickRight";
+			Start = "V, X1 Start";
+			Z = "Z, X1 A";
+			B = "X, X1 X";
+			A = "C";
+			CUp = "NumberPad8, J1 RotationZ-";
+			CDown = "NumberPad2, J1 RoationZ+";
+			CLeft = "NumberPad4, J1 Z-";
+			CRight = "NumberPad6, J1 Z+";
+			L = "D";
+			R = "F";
+
 			Enabled = true;
 		}
 	}
