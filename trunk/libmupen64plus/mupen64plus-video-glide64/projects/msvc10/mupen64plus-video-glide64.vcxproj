@@ -60,7 +60,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\..\mupen64plus-ui-console\projects\msvc8\$(Configuration)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\..\mupen64plus-ui-console\projects\msvc8\$(Configuration)"
+xcopy /y $(OutDir)$(TargetName)$(TargetExt) $(TargetDir)..\..\..\..\..\BizHawk.MultiClient\output\dll\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,7 +84,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\..\mupen64plus-ui-console\projects\msvc8\$(Configuration)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\..\mupen64plus-ui-console\projects\msvc8\$(Configuration)"
+xcopy /y $(OutDir)$(TargetName)$(TargetExt) $(TargetDir)..\..\..\..\..\BizHawk.MultiClient\output\dll\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
