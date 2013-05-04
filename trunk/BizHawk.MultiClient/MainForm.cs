@@ -1785,7 +1785,8 @@ namespace BizHawk.MultiClient
 			atariToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
 			colecoToolStripMenuItem.Visible = false;
-			
+			n64ToolStripMenuItem.Visible = false;
+
 			switch (system)
 			{
 				case "TI83":
@@ -1832,6 +1833,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "Coleco":
 					colecoToolStripMenuItem.Visible = true;
+					break;
+				case "N64":
+					n64ToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -5089,7 +5093,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void FlagNeedsReboot()
+		public void FlagNeedsReboot()
 		{
 			NeedsReboot = true;
 			SetRebootIconStatus();
@@ -5382,6 +5386,10 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 		}
 
-
+		private void videoConfigToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new N64VideoConfig().ShowDialog();
+			;
+		}
 	}
 }
