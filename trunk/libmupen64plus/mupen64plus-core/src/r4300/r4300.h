@@ -22,6 +22,9 @@
 #ifndef R4300_H
 #define R4300_H
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 #include "recomp.h"
 #include "memory/tlb.h"
 
@@ -29,7 +32,8 @@ extern precomp_instr *PC;
 
 extern precomp_block *blocks[0x100000], *actual;
 
-extern int stop, llbit, rompause;
+extern int stop, llbit; //, rompause;
+extern HANDLE rompausesem;
 extern long long int reg[32], hi, lo;
 extern long long int local_rs;
 extern unsigned int reg_cop0[32];
