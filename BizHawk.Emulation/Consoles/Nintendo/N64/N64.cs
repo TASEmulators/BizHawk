@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public GameInfo game;
 
 		public IVideoProvider VideoProvider { get { return this; } }
-		public int[] frameBuffer = new int[800 * 600];
+		public int[] frameBuffer;// = new int[800 * 600];
 		public int[] GetVideoBuffer() 
 		{
 			/*
@@ -34,10 +34,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			*/
 			return frameBuffer;
 		}
-		public int VirtualWidth { get { return 800; } }
-		public int BufferWidth { get { return 800; } }
-		public int BufferHeight { get { return 600; } }
+		public int VirtualWidth { get; set; }
+		public int BufferWidth { get; set; }
+		public int BufferHeight { get; set; }
 		public int BackgroundColor { get { return 0; } }
+		public void SetVideoSize(int vidX, int vidY)
+		{
+			VirtualWidth = vidX;
+			BufferWidth = vidX;
+			BufferHeight = vidY;
+
+			frameBuffer = new int[vidX * vidY];
+			m64p_FrameBuffer = new int[vidX * vidY];
+
+		}
 
 		Sound.Utilities.SpeexResampler resampler;
 
@@ -305,6 +315,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void ReadScreen2(int[] framebuffer, ref int width, ref int height, int buffer);
 		ReadScreen2 GFXReadScreen2;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void ReadScreen2Res(IntPtr dummy, ref int width, ref int height, int buffer);
+		ReadScreen2Res GFXReadScreen2Res;
 
 		// Audio plugin specific
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -349,21 +362,30 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void StartupCallback();
 
-		int[] m64p_FrameBuffer = new int[800 * 600];
+		int[] m64p_FrameBuffer;// = new int[800 * 600];
 		public void Getm64pFrameBuffer()
 		{
 			int width = 0;
 			int height = 0;
+			// Get the size of the frame buffer
+			GFXReadScreen2Res(IntPtr.Zero, ref width, ref height, 0);
+			// If it's not the same size as the current one, change the sizes
+			if (width != BufferWidth || height != BufferHeight)
+			{
+				SetVideoSize(width, height);
+			}
+
+			// Actually get the frame buffer
 			GFXReadScreen2(m64p_FrameBuffer, ref width, ref height, 0);
 			
 			// vflip
-			int fromindex = 800 * 599 * 4;
+			int fromindex = BufferWidth * (BufferHeight - 1) * 4;
 			int toindex = 0;
-			for (int j = 0; j < 600; j++)
+			for (int j = 0; j < BufferHeight; j++)
 			{
-				Buffer.BlockCopy(m64p_FrameBuffer, fromindex, frameBuffer, toindex, 800 * 4);
-				fromindex -= 800 * 4;
-				toindex += 800 * 4;
+				Buffer.BlockCopy(m64p_FrameBuffer, fromindex, frameBuffer, toindex, BufferWidth * 4);
+				fromindex -= BufferWidth * 4;
+				toindex += BufferWidth * 4;
 			}
 		}
 
@@ -404,7 +426,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		ManualResetEvent m64pStartupComplete = new ManualResetEvent(false);
 
-		public N64(CoreComm comm, GameInfo game, byte[] rom)
+		public N64(CoreComm comm, GameInfo game, byte[] rom, int vidX, int vidY)
 		{
 			if (AttachedCore != null)
 			{
@@ -447,6 +469,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
 			GfxPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginShutdown"), typeof(PluginShutdown));
 			GFXReadScreen2 = (ReadScreen2)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2));
+			GFXReadScreen2Res = (ReadScreen2Res)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2Res));
 
 			AudPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "PluginStartup"), typeof(PluginStartup));
 			AudPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(AudDll, "PluginShutdown"), typeof(PluginShutdown));
@@ -469,13 +492,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
 
+			SetVideoSize(vidX, vidY);
 			// Configure the video plugin
 			IntPtr video_section = IntPtr.Zero;
 			m64pConfigOpenSection("Video-General", ref video_section);
-			int width = 800;
-			result = m64pConfigSetParameter(video_section, "ScreenWidth", m64p_type.M64TYPE_INT, ref width);
-			int height = 600;
-			result = m64pConfigSetParameter(video_section, "ScreenHeight", m64p_type.M64TYPE_INT, ref height);
+			result = m64pConfigSetParameter(video_section, "ScreenWidth", m64p_type.M64TYPE_INT, ref vidX);
+			result = m64pConfigSetParameter(video_section, "ScreenHeight", m64p_type.M64TYPE_INT, ref vidY);
 
 			// Set up a null audio plugin
 			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { });
