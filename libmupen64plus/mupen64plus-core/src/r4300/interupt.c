@@ -388,21 +388,23 @@ void gen_interupt(void)
             refresh_stat();
 
             // if paused, poll for input events
-            if(rompause)
-            {
+            //if(rompause)
+            //{
                 osd_render();  // draw Paused message in case gfx.updateScreen didn't do it
                 VidExt_GL_SwapBuffers();
-                while(rompause)
-                {
-                    SDL_Delay(10);
+            //    while(rompause)
+            //    {
+                    //SDL_Delay(10);
+
                     SDL_PumpEvents();
 #ifdef WITH_LIRC
                     lircCheckInput();
 #endif //WITH_LIRC
-                }
-            }
+            //    }
+            //}
 
             new_vi();
+			WaitForSingleObject(rompausesem, INFINITE);
             if (vi_register.vi_v_sync == 0) vi_register.vi_delay = 500000;
             else vi_register.vi_delay = ((vi_register.vi_v_sync + 1)*1500);
             next_vi += vi_register.vi_delay;

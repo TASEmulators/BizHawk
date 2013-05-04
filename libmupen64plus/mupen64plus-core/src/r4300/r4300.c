@@ -45,7 +45,8 @@
 
 unsigned int r4300emu = 0;
 int no_compiled_jump = 0;
-int llbit, rompause;
+int llbit; //, rompause;
+HANDLE rompausesem;
 #if NEW_DYNAREC != NEW_DYNAREC_ARM
 int stop;
 long long int reg[32], hi, lo;
@@ -985,7 +986,8 @@ void r4300_execute(void)
     debug_count = 0;
     delay_slot=0;
     stop = 0;
-    rompause = 1;
+    //rompause = 1;
+	rompausesem = CreateSemaphore(NULL, 0, 1, NULL);
 
     /* clear instruction counters */
 #if defined(COUNT_INSTR)
