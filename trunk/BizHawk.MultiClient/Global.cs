@@ -180,7 +180,7 @@ namespace BizHawk.MultiClient
 				"Nintento 64 Controller", new Dictionary<string, string>()
 				{
 					{"DPad U", "U"}, {"DPad D", "D"}, {"DPad L", "L"}, {"DPad R", "R"},
-					{"A", "A"}, {"B", "B"}, {"Z", "Z"}, {"Start", "S"}, {"L", "L"}, {"R", "R"},
+					{"B", "B"}, {"A", "A"}, {"Z", "Z"}, {"Start", "S"}, {"L", "L"}, {"R", "R"},
 					{"C Up", "u"}, {"C Down", "d"}, {"C Left", "l"}, {"C Right", "r"}
 				}
 			},
