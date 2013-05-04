@@ -5391,5 +5391,10 @@ namespace BizHawk.MultiClient
 			new N64VideoConfig().ShowDialog();
 			;
 		}
+
+		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new BizHawk.MultiClient.tools.N64VideoPluginconfig().ShowDialog();
+		}
 	}
 }

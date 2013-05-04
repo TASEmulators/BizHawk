@@ -441,6 +441,12 @@
     <Compile Include="tools\AnalogControlPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\N64VideoPluginconfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\N64VideoPluginconfig.Designer.cs">
+      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\HexColor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -637,6 +643,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SNESTools\SNESOptions.resx">
       <DependentUpon>SNESOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\N64VideoPluginconfig.resx">
+      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexColor.resx">
       <DependentUpon>HexColor.cs</DependentUpon>
