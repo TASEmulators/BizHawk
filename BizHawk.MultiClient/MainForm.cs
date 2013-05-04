@@ -2443,7 +2443,7 @@ namespace BizHawk.MultiClient
 									}
 									else
 									{
-										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabiospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
 										throw new Exception();
 									}
 									GBA gba = new GBA(nextComm);
