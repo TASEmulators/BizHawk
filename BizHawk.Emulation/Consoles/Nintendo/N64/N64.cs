@@ -522,9 +522,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void ExecuteEmulator()
 		{
 			emulator_running = true;
+			var cb = new StartupCallback(() => m64pStartupComplete.Set());
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_EXECUTE, 0,
-				Marshal.GetFunctionPointerForDelegate(new StartupCallback(() => m64pStartupComplete.Set())));
+				Marshal.GetFunctionPointerForDelegate(cb));
 			emulator_running = false;
+			cb.GetType();
 		}
 
 
