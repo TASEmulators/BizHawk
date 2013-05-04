@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public int Frame { get; set; }
 		public int LagCount { get; set; }
-		public bool IsLagFrame { get { return true; } }
+		public bool IsLagFrame { get; set; }
 		public void ResetFrameCounter() { }
 		public void FrameAdvance(bool render, bool rendersound) 
 		{
@@ -138,10 +138,60 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			ser.EndSection();
 		}
 
-		public void SaveStateText(TextWriter writer) { SyncState(Serializer.CreateTextWriter(writer)); }
-		public void LoadStateText(TextReader reader) { SyncState(Serializer.CreateTextReader(reader)); }
-		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
-		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }
+		// these next 5 functions are all exact copy paste from gambatte.
+		// if something's wrong here, it's probably wrong there too
+
+		public void SaveStateText(TextWriter writer)
+		{
+			var temp = SaveStateBinary();
+			temp.SaveAsHex(writer);
+			// write extra copy of stuff we don't use
+			writer.WriteLine("Frame {0}", Frame);
+		}
+
+		public void LoadStateText(TextReader reader)
+		{
+			string hex = reader.ReadLine();
+			if (hex.StartsWith("emuVersion")) // movie save
+			{
+				do // theoretically, our portion should start right after StartsFromSavestate, maybe...
+				{
+					hex = reader.ReadLine();
+				} while (!hex.StartsWith("StartsFromSavestate"));
+				hex = reader.ReadLine();
+			}
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHex(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			byte[] data = new byte[16788288 + 1024];
+			int bytes_used = m64pCoreSaveState(data);
+
+			writer.Write(data.Length);
+			writer.Write(data);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			int length = reader.ReadInt32();
+			byte[] data = reader.ReadBytes(length);
+
+			m64pCoreLoadState(data);
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			LagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
+		}
+
 		public byte[] SaveStateBinary()
 		{
 			MemoryStream ms = new MemoryStream();
@@ -293,6 +343,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error ConfigSetParameter(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, ref int ParamValue);
 		ConfigSetParameter m64pConfigSetParameter;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate int CoreSaveState(byte[] buffer);
+		CoreSaveState m64pCoreSaveState;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate int CoreLoadState(byte[] buffer);
+		CoreLoadState m64pCoreLoadState;
 
 		// The last parameter is a void pointer, so make a few delegates for the versions we want to use
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -465,6 +521,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pCoreDetachPlugin = (CoreDetachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDetachPlugin"), typeof(CoreDetachPlugin));
 			m64pConfigOpenSection = (ConfigOpenSection)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigOpenSection"), typeof(ConfigOpenSection));
 			m64pConfigSetParameter = (ConfigSetParameter)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigSetParameter"), typeof(ConfigSetParameter));
+			m64pCoreSaveState = (CoreSaveState)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_save_bkm"), typeof(CoreSaveState));
+			m64pCoreLoadState = (CoreLoadState)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_load_bkm"), typeof(CoreLoadState));
 
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
 			GfxPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginShutdown"), typeof(PluginShutdown));
