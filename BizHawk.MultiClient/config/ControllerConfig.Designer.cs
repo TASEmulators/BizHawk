@@ -34,203 +34,216 @@
 			this.pictureBox14 = new System.Windows.Forms.PictureBox();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage13 = new System.Windows.Forms.TabPage();
-			this.NESController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage14 = new System.Windows.Forms.TabPage();
-			this.NESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage15 = new System.Windows.Forms.TabPage();
-			this.NESController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage16 = new System.Windows.Forms.TabPage();
-			this.NESController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage17 = new System.Windows.Forms.TabPage();
-			this.NESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage18 = new System.Windows.Forms.TabPage();
-			this.NESAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage19 = new System.Windows.Forms.TabPage();
-			this.NESAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage20 = new System.Windows.Forms.TabPage();
-			this.NESAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage21 = new System.Windows.Forms.TabPage();
-			this.NESAutofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageSNES = new System.Windows.Forms.TabPage();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.tabControl3 = new System.Windows.Forms.TabControl();
 			this.tabPage22 = new System.Windows.Forms.TabPage();
-			this.SNESController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage23 = new System.Windows.Forms.TabPage();
-			this.SNESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage24 = new System.Windows.Forms.TabPage();
-			this.SNESController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage25 = new System.Windows.Forms.TabPage();
-			this.SNESController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage26 = new System.Windows.Forms.TabPage();
-			this.SNESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage27 = new System.Windows.Forms.TabPage();
-			this.SNESAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage28 = new System.Windows.Forms.TabPage();
-			this.SNESAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage29 = new System.Windows.Forms.TabPage();
-			this.SNESAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage30 = new System.Windows.Forms.TabPage();
-			this.SNESAutofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageGameboy = new System.Windows.Forms.TabPage();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.tabControl4 = new System.Windows.Forms.TabControl();
 			this.tabPage31 = new System.Windows.Forms.TabPage();
-			this.GBController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage32 = new System.Windows.Forms.TabPage();
-			this.GBAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage65 = new System.Windows.Forms.TabPage();
-			this.GBDualPanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage66 = new System.Windows.Forms.TabPage();
-			this.GBDualAutofirePanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageGBA = new System.Windows.Forms.TabPage();
 			this.pictureBox13 = new System.Windows.Forms.PictureBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.GBAController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.GBAAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageGenesis = new System.Windows.Forms.TabPage();
 			this.pictureBox6 = new System.Windows.Forms.PictureBox();
 			this.tabControl9 = new System.Windows.Forms.TabControl();
 			this.tabPage52 = new System.Windows.Forms.TabPage();
-			this.GenesisController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage53 = new System.Windows.Forms.TabPage();
 			this.tabPage54 = new System.Windows.Forms.TabPage();
-			this.GenesisConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage55 = new System.Windows.Forms.TabPage();
-			this.GenesisAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage56 = new System.Windows.Forms.TabPage();
 			this.tabPageSMS = new System.Windows.Forms.TabPage();
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
 			this.tabControl5 = new System.Windows.Forms.TabControl();
 			this.tabPage33 = new System.Windows.Forms.TabPage();
-			this.SMSController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage34 = new System.Windows.Forms.TabPage();
-			this.SMSController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Console = new System.Windows.Forms.TabPage();
-			this.SMSConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage51 = new System.Windows.Forms.TabPage();
-			this.SMSAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage57 = new System.Windows.Forms.TabPage();
-			this.SMSAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPagePCE = new System.Windows.Forms.TabPage();
 			this.pictureBox4 = new System.Windows.Forms.PictureBox();
 			this.tabControl6 = new System.Windows.Forms.TabControl();
 			this.tabPage36 = new System.Windows.Forms.TabPage();
-			this.PCEController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage37 = new System.Windows.Forms.TabPage();
-			this.PCEController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage38 = new System.Windows.Forms.TabPage();
-			this.PCEController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage39 = new System.Windows.Forms.TabPage();
-			this.PCEController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage40 = new System.Windows.Forms.TabPage();
-			this.PCEController5Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage41 = new System.Windows.Forms.TabPage();
-			this.PCEAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage42 = new System.Windows.Forms.TabPage();
-			this.PCEAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage43 = new System.Windows.Forms.TabPage();
-			this.PCEAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage44 = new System.Windows.Forms.TabPage();
-			this.PCEAutofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage45 = new System.Windows.Forms.TabPage();
-			this.PCEAutofire5Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageAtari2600 = new System.Windows.Forms.TabPage();
 			this.pictureBox5 = new System.Windows.Forms.PictureBox();
 			this.tabControl7 = new System.Windows.Forms.TabControl();
 			this.tabPage46 = new System.Windows.Forms.TabPage();
-			this.Atari2600Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage47 = new System.Windows.Forms.TabPage();
-			this.Atari2600Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage48 = new System.Windows.Forms.TabPage();
-			this.Atari2600ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage35 = new System.Windows.Forms.TabPage();
-			this.Atari2600Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage58 = new System.Windows.Forms.TabPage();
-			this.Atari2600Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageAtari7800 = new System.Windows.Forms.TabPage();
 			this.pictureBox16 = new System.Windows.Forms.PictureBox();
 			this.tabControl11 = new System.Windows.Forms.TabControl();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.Atari7800Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
-			this.Atari7800Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
-			this.Atari7800ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage6 = new System.Windows.Forms.TabPage();
-			this.Atari7800Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
-			this.Atari7800Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageC64 = new System.Windows.Forms.TabPage();
 			this.tabControl8 = new System.Windows.Forms.TabControl();
 			this.tabPage49 = new System.Windows.Forms.TabPage();
 			this.pictureBox8 = new System.Windows.Forms.PictureBox();
-			this.C64Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage50 = new System.Windows.Forms.TabPage();
 			this.pictureBox9 = new System.Windows.Forms.PictureBox();
-			this.C64Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage10 = new System.Windows.Forms.TabPage();
 			this.pictureBox10 = new System.Windows.Forms.PictureBox();
-			this.C64Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage11 = new System.Windows.Forms.TabPage();
 			this.pictureBox11 = new System.Windows.Forms.PictureBox();
-			this.C64Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage12 = new System.Windows.Forms.TabPage();
-			this.C64KeyboardPanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.pictureBox12 = new System.Windows.Forms.PictureBox();
 			this.tabPageColeco = new System.Windows.Forms.TabPage();
 			this.pictureBox15 = new System.Windows.Forms.PictureBox();
 			this.tabControl10 = new System.Windows.Forms.TabControl();
 			this.tabPage60 = new System.Windows.Forms.TabPage();
-			this.COLController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage61 = new System.Windows.Forms.TabPage();
-			this.COLAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage62 = new System.Windows.Forms.TabPage();
-			this.COLController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage63 = new System.Windows.Forms.TabPage();
-			this.COLAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageINTV = new System.Windows.Forms.TabPage();
 			this.pictureBox17 = new System.Windows.Forms.PictureBox();
 			this.tabControl12 = new System.Windows.Forms.TabControl();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
-			this.INTVController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage9 = new System.Windows.Forms.TabPage();
-			this.INTVAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage59 = new System.Windows.Forms.TabPage();
-			this.INTVController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPage64 = new System.Windows.Forms.TabPage();
-			this.INTVAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.tabPageTI83 = new System.Windows.Forms.TabPage();
 			this.pictureBox7 = new System.Windows.Forms.PictureBox();
-			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPageN64 = new System.Windows.Forms.TabPage();
+			this.pictureBox18 = new System.Windows.Forms.PictureBox();
+			this.tabcontrol69 = new System.Windows.Forms.TabControl();
+			this.tabPage67 = new System.Windows.Forms.TabPage();
+			this.tabPage68 = new System.Windows.Forms.TabPage();
+			this.tabPage69 = new System.Windows.Forms.TabPage();
+			this.tabPage70 = new System.Windows.Forms.TabPage();
+			this.tabPage71 = new System.Windows.Forms.TabPage();
+			this.tabPage72 = new System.Windows.Forms.TabPage();
+			this.tabPage73 = new System.Windows.Forms.TabPage();
+			this.tabPage74 = new System.Windows.Forms.TabPage();
+			this.tabPage75 = new System.Windows.Forms.TabPage();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AllowLR = new System.Windows.Forms.CheckBox();
 			this.AutoTab = new System.Windows.Forms.CheckBox();
-			this.tabPageN64 = new System.Windows.Forms.TabPage();
-			this.pictureBox18 = new System.Windows.Forms.PictureBox();
-			this.tabcontrol69 = new System.Windows.Forms.TabControl();
-			this.tabPage67 = new System.Windows.Forms.TabPage();
+			this.tabPageSaturn = new System.Windows.Forms.TabPage();
+			this.NESController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.NESAutofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SNESAutofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GBController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GBAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GBDualPanel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GBDualAutofirePanel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GBAController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GBAAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GenesisController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GenesisConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.GenesisAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SMSController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SMSController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SMSConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SMSAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.SMSAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEController3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEController4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEController5Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEAutofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEAutofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.PCEAutofire5Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari2600Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari2600Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari2600ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari2600Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari2600Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari7800Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari7800Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari7800ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari7800Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.Atari7800Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.C64Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.C64Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.C64Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.C64Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.C64KeyboardPanel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.COLController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.COLAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.COLController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.COLAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.INTVController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.INTVAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.INTVController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.INTVAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.N64Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage68 = new System.Windows.Forms.TabPage();
 			this.N64Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage69 = new System.Windows.Forms.TabPage();
 			this.N64Controller3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage70 = new System.Windows.Forms.TabPage();
 			this.N64Controller4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage71 = new System.Windows.Forms.TabPage();
 			this.N64ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage72 = new System.Windows.Forms.TabPage();
 			this.N64Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage73 = new System.Windows.Forms.TabPage();
 			this.N64Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage74 = new System.Windows.Forms.TabPage();
 			this.N64Autofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
-			this.tabPage75 = new System.Windows.Forms.TabPage();
 			this.N64Autofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.pictureBox19 = new System.Windows.Forms.PictureBox();
+			this.tabControl13 = new System.Windows.Forms.TabControl();
+			this.tabPage76 = new System.Windows.Forms.TabPage();
+			this.SaturnController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage77 = new System.Windows.Forms.TabPage();
+			this.SaturnController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage78 = new System.Windows.Forms.TabPage();
+			this.SaturnConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage79 = new System.Windows.Forms.TabPage();
+			this.SaturnAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage80 = new System.Windows.Forms.TabPage();
+			this.SaturnAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.PlatformTabControl.SuspendLayout();
 			this.tabPageNES.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
@@ -351,6 +364,14 @@
 			this.tabPage73.SuspendLayout();
 			this.tabPage74.SuspendLayout();
 			this.tabPage75.SuspendLayout();
+			this.tabPageSaturn.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox19)).BeginInit();
+			this.tabControl13.SuspendLayout();
+			this.tabPage76.SuspendLayout();
+			this.tabPage77.SuspendLayout();
+			this.tabPage78.SuspendLayout();
+			this.tabPage79.SuspendLayout();
+			this.tabPage80.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// PlatformTabControl
@@ -372,6 +393,7 @@
 			this.PlatformTabControl.Controls.Add(this.tabPageINTV);
 			this.PlatformTabControl.Controls.Add(this.tabPageTI83);
 			this.PlatformTabControl.Controls.Add(this.tabPageN64);
+			this.PlatformTabControl.Controls.Add(this.tabPageSaturn);
 			this.PlatformTabControl.Location = new System.Drawing.Point(12, 21);
 			this.PlatformTabControl.Name = "PlatformTabControl";
 			this.PlatformTabControl.SelectedIndex = 0;
@@ -432,13 +454,6 @@
 			this.tabPage13.Text = "Pad 1";
 			this.tabPage13.UseVisualStyleBackColor = true;
 			// 
-			// NESController1Panel
-			// 
-			this.NESController1Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESController1Panel.Name = "NESController1Panel";
-			this.NESController1Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESController1Panel.TabIndex = 0;
-			// 
 			// tabPage14
 			// 
 			this.tabPage14.Controls.Add(this.NESController2Panel);
@@ -450,13 +465,6 @@
 			this.tabPage14.Text = "Pad 2";
 			this.tabPage14.UseVisualStyleBackColor = true;
 			// 
-			// NESController2Panel
-			// 
-			this.NESController2Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESController2Panel.Name = "NESController2Panel";
-			this.NESController2Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESController2Panel.TabIndex = 0;
-			// 
 			// tabPage15
 			// 
 			this.tabPage15.Controls.Add(this.NESController3Panel);
@@ -466,13 +474,6 @@
 			this.tabPage15.TabIndex = 2;
 			this.tabPage15.Text = "Pad 3";
 			this.tabPage15.UseVisualStyleBackColor = true;
-			// 
-			// NESController3Panel
-			// 
-			this.NESController3Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESController3Panel.Name = "NESController3Panel";
-			this.NESController3Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESController3Panel.TabIndex = 0;
 			// 
 			// tabPage16
 			// 
@@ -484,13 +485,6 @@
 			this.tabPage16.Text = "Pad 4";
 			this.tabPage16.UseVisualStyleBackColor = true;
 			// 
-			// NESController4Panel
-			// 
-			this.NESController4Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESController4Panel.Name = "NESController4Panel";
-			this.NESController4Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESController4Panel.TabIndex = 0;
-			// 
 			// tabPage17
 			// 
 			this.tabPage17.Controls.Add(this.NESConsoleButtons);
@@ -500,13 +494,6 @@
 			this.tabPage17.TabIndex = 4;
 			this.tabPage17.Text = "Console";
 			this.tabPage17.UseVisualStyleBackColor = true;
-			// 
-			// NESConsoleButtons
-			// 
-			this.NESConsoleButtons.Location = new System.Drawing.Point(10, 10);
-			this.NESConsoleButtons.Name = "NESConsoleButtons";
-			this.NESConsoleButtons.Size = new System.Drawing.Size(368, 341);
-			this.NESConsoleButtons.TabIndex = 0;
 			// 
 			// tabPage18
 			// 
@@ -518,13 +505,6 @@
 			this.tabPage18.Text = "Autofire 1";
 			this.tabPage18.UseVisualStyleBackColor = true;
 			// 
-			// NESAutofire1Panel
-			// 
-			this.NESAutofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESAutofire1Panel.Name = "NESAutofire1Panel";
-			this.NESAutofire1Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESAutofire1Panel.TabIndex = 0;
-			// 
 			// tabPage19
 			// 
 			this.tabPage19.Controls.Add(this.NESAutofire2Panel);
@@ -534,13 +514,6 @@
 			this.tabPage19.TabIndex = 6;
 			this.tabPage19.Text = "Autofire 2";
 			this.tabPage19.UseVisualStyleBackColor = true;
-			// 
-			// NESAutofire2Panel
-			// 
-			this.NESAutofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESAutofire2Panel.Name = "NESAutofire2Panel";
-			this.NESAutofire2Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESAutofire2Panel.TabIndex = 0;
 			// 
 			// tabPage20
 			// 
@@ -552,13 +525,6 @@
 			this.tabPage20.Text = "Autofire 3";
 			this.tabPage20.UseVisualStyleBackColor = true;
 			// 
-			// NESAutofire3Panel
-			// 
-			this.NESAutofire3Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESAutofire3Panel.Name = "NESAutofire3Panel";
-			this.NESAutofire3Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESAutofire3Panel.TabIndex = 0;
-			// 
 			// tabPage21
 			// 
 			this.tabPage21.Controls.Add(this.NESAutofire4Panel);
@@ -568,13 +534,6 @@
 			this.tabPage21.TabIndex = 8;
 			this.tabPage21.Text = "Autofire 4";
 			this.tabPage21.UseVisualStyleBackColor = true;
-			// 
-			// NESAutofire4Panel
-			// 
-			this.NESAutofire4Panel.Location = new System.Drawing.Point(10, 10);
-			this.NESAutofire4Panel.Name = "NESAutofire4Panel";
-			this.NESAutofire4Panel.Size = new System.Drawing.Size(392, 332);
-			this.NESAutofire4Panel.TabIndex = 0;
 			// 
 			// tabPageSNES
 			// 
@@ -632,13 +591,6 @@
 			this.tabPage22.Text = "Pad 1";
 			this.tabPage22.UseVisualStyleBackColor = true;
 			// 
-			// SNESController1Panel
-			// 
-			this.SNESController1Panel.Location = new System.Drawing.Point(10, 10);
-			this.SNESController1Panel.Name = "SNESController1Panel";
-			this.SNESController1Panel.Size = new System.Drawing.Size(392, 360);
-			this.SNESController1Panel.TabIndex = 1;
-			// 
 			// tabPage23
 			// 
 			this.tabPage23.Controls.Add(this.SNESController2Panel);
@@ -650,13 +602,6 @@
 			this.tabPage23.Text = "Pad 2";
 			this.tabPage23.UseVisualStyleBackColor = true;
 			// 
-			// SNESController2Panel
-			// 
-			this.SNESController2Panel.Location = new System.Drawing.Point(10, 10);
-			this.SNESController2Panel.Name = "SNESController2Panel";
-			this.SNESController2Panel.Size = new System.Drawing.Size(392, 332);
-			this.SNESController2Panel.TabIndex = 2;
-			// 
 			// tabPage24
 			// 
 			this.tabPage24.Controls.Add(this.SNESController3Panel);
@@ -666,13 +611,6 @@
 			this.tabPage24.TabIndex = 2;
 			this.tabPage24.Text = "Pad 3";
 			this.tabPage24.UseVisualStyleBackColor = true;
-			// 
-			// SNESController3Panel
-			// 
-			this.SNESController3Panel.Location = new System.Drawing.Point(10, 10);
-			this.SNESController3Panel.Name = "SNESController3Panel";
-			this.SNESController3Panel.Size = new System.Drawing.Size(392, 332);
-			this.SNESController3Panel.TabIndex = 3;
 			// 
 			// tabPage25
 			// 
@@ -684,13 +622,6 @@
 			this.tabPage25.Text = "Pad 4";
 			this.tabPage25.UseVisualStyleBackColor = true;
 			// 
-			// SNESController4Panel
-			// 
-			this.SNESController4Panel.Location = new System.Drawing.Point(10, 10);
-			this.SNESController4Panel.Name = "SNESController4Panel";
-			this.SNESController4Panel.Size = new System.Drawing.Size(392, 332);
-			this.SNESController4Panel.TabIndex = 3;
-			// 
 			// tabPage26
 			// 
 			this.tabPage26.Controls.Add(this.SNESConsoleButtons);
@@ -700,13 +631,6 @@
 			this.tabPage26.TabIndex = 4;
 			this.tabPage26.Text = "Console";
 			this.tabPage26.UseVisualStyleBackColor = true;
-			// 
-			// SNESConsoleButtons
-			// 
-			this.SNESConsoleButtons.Location = new System.Drawing.Point(10, 10);
-			this.SNESConsoleButtons.Name = "SNESConsoleButtons";
-			this.SNESConsoleButtons.Size = new System.Drawing.Size(368, 125);
-			this.SNESConsoleButtons.TabIndex = 1;
 			// 
 			// tabPage27
 			// 
@@ -718,13 +642,6 @@
 			this.tabPage27.Text = "Autofire 1";
 			this.tabPage27.UseVisualStyleBackColor = true;
 			// 
-			// SNESAutofire1Panel
-			// 
-			this.SNESAutofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.SNESAutofire1Panel.Name = "SNESAutofire1Panel";
-			this.SNESAutofire1Panel.Size = new System.Drawing.Size(392, 332);
-			this.SNESAutofire1Panel.TabIndex = 3;
-			// 
 			// tabPage28
 			// 
 			this.tabPage28.Controls.Add(this.SNESAutofire2Panel);
@@ -734,13 +651,6 @@
 			this.tabPage28.TabIndex = 6;
 			this.tabPage28.Text = "Autofire 2";
 			this.tabPage28.UseVisualStyleBackColor = true;
-			// 
-			// SNESAutofire2Panel
-			// 
-			this.SNESAutofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.SNESAutofire2Panel.Name = "SNESAutofire2Panel";
-			this.SNESAutofire2Panel.Size = new System.Drawing.Size(392, 332);
-			this.SNESAutofire2Panel.TabIndex = 3;
 			// 
 			// tabPage29
 			// 
@@ -752,13 +662,6 @@
 			this.tabPage29.Text = "Autofire 3";
 			this.tabPage29.UseVisualStyleBackColor = true;
 			// 
-			// SNESAutofire3Panel
-			// 
-			this.SNESAutofire3Panel.Location = new System.Drawing.Point(10, 10);
-			this.SNESAutofire3Panel.Name = "SNESAutofire3Panel";
-			this.SNESAutofire3Panel.Size = new System.Drawing.Size(392, 332);
-			this.SNESAutofire3Panel.TabIndex = 3;
-			// 
 			// tabPage30
 			// 
 			this.tabPage30.Controls.Add(this.SNESAutofire4Panel);
@@ -768,13 +671,6 @@
 			this.tabPage30.TabIndex = 8;
 			this.tabPage30.Text = "Autofire 4";
 			this.tabPage30.UseVisualStyleBackColor = true;
-			// 
-			// SNESAutofire4Panel
-			// 
-			this.SNESAutofire4Panel.Location = new System.Drawing.Point(10, 10);
-			this.SNESAutofire4Panel.Name = "SNESAutofire4Panel";
-			this.SNESAutofire4Panel.Size = new System.Drawing.Size(392, 332);
-			this.SNESAutofire4Panel.TabIndex = 3;
 			// 
 			// tabPageGameboy
 			// 
@@ -824,16 +720,6 @@
 			this.tabPage31.Text = "Controller 1";
 			this.tabPage31.UseVisualStyleBackColor = true;
 			// 
-			// GBController1Panel
-			// 
-			this.GBController1Panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.GBController1Panel.Location = new System.Drawing.Point(6, 6);
-			this.GBController1Panel.Name = "GBController1Panel";
-			this.GBController1Panel.Size = new System.Drawing.Size(547, 332);
-			this.GBController1Panel.TabIndex = 1;
-			// 
 			// tabPage32
 			// 
 			this.tabPage32.Controls.Add(this.GBAutofire1Panel);
@@ -845,13 +731,6 @@
 			this.tabPage32.Text = "Autofire 1";
 			this.tabPage32.UseVisualStyleBackColor = true;
 			// 
-			// GBAutofire1Panel
-			// 
-			this.GBAutofire1Panel.Location = new System.Drawing.Point(6, 6);
-			this.GBAutofire1Panel.Name = "GBAutofire1Panel";
-			this.GBAutofire1Panel.Size = new System.Drawing.Size(359, 332);
-			this.GBAutofire1Panel.TabIndex = 2;
-			// 
 			// tabPage65
 			// 
 			this.tabPage65.Controls.Add(this.GBDualPanel);
@@ -862,15 +741,6 @@
 			this.tabPage65.Text = "Dual";
 			this.tabPage65.UseVisualStyleBackColor = true;
 			// 
-			// GBDualPanel
-			// 
-			this.GBDualPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.GBDualPanel.Location = new System.Drawing.Point(6, 6);
-			this.GBDualPanel.Name = "GBDualPanel";
-			this.GBDualPanel.Size = new System.Drawing.Size(550, 236);
-			this.GBDualPanel.TabIndex = 3;
-			// 
 			// tabPage66
 			// 
 			this.tabPage66.Controls.Add(this.GBDualAutofirePanel);
@@ -880,15 +750,6 @@
 			this.tabPage66.TabIndex = 3;
 			this.tabPage66.Text = "Autofire Dual";
 			this.tabPage66.UseVisualStyleBackColor = true;
-			// 
-			// GBDualAutofirePanel
-			// 
-			this.GBDualAutofirePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.GBDualAutofirePanel.Location = new System.Drawing.Point(6, 6);
-			this.GBDualAutofirePanel.Name = "GBDualAutofirePanel";
-			this.GBDualAutofirePanel.Size = new System.Drawing.Size(550, 332);
-			this.GBDualAutofirePanel.TabIndex = 4;
 			// 
 			// tabPageGBA
 			// 
@@ -936,13 +797,6 @@
 			this.tabPage1.Text = "Controller 1";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
-			// GBAController1Panel
-			// 
-			this.GBAController1Panel.Location = new System.Drawing.Point(6, 6);
-			this.GBAController1Panel.Name = "GBAController1Panel";
-			this.GBAController1Panel.Size = new System.Drawing.Size(359, 332);
-			this.GBAController1Panel.TabIndex = 1;
-			// 
 			// tabPage2
 			// 
 			this.tabPage2.Controls.Add(this.GBAAutofire1Panel);
@@ -953,13 +807,6 @@
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Autofire 1";
 			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
-			// GBAAutofire1Panel
-			// 
-			this.GBAAutofire1Panel.Location = new System.Drawing.Point(6, 6);
-			this.GBAAutofire1Panel.Name = "GBAAutofire1Panel";
-			this.GBAAutofire1Panel.Size = new System.Drawing.Size(359, 332);
-			this.GBAAutofire1Panel.TabIndex = 2;
 			// 
 			// tabPageGenesis
 			// 
@@ -1012,13 +859,6 @@
 			this.tabPage52.Text = "Pad 1";
 			this.tabPage52.UseVisualStyleBackColor = true;
 			// 
-			// GenesisController1Panel
-			// 
-			this.GenesisController1Panel.Location = new System.Drawing.Point(10, 10);
-			this.GenesisController1Panel.Name = "GenesisController1Panel";
-			this.GenesisController1Panel.Size = new System.Drawing.Size(392, 332);
-			this.GenesisController1Panel.TabIndex = 1;
-			// 
 			// tabPage53
 			// 
 			this.tabPage53.Location = new System.Drawing.Point(4, 22);
@@ -1039,13 +879,6 @@
 			this.tabPage54.Text = "Console";
 			this.tabPage54.UseVisualStyleBackColor = true;
 			// 
-			// GenesisConsoleButtons
-			// 
-			this.GenesisConsoleButtons.Location = new System.Drawing.Point(10, 10);
-			this.GenesisConsoleButtons.Name = "GenesisConsoleButtons";
-			this.GenesisConsoleButtons.Size = new System.Drawing.Size(368, 125);
-			this.GenesisConsoleButtons.TabIndex = 1;
-			// 
 			// tabPage55
 			// 
 			this.tabPage55.Controls.Add(this.GenesisAutofire1Panel);
@@ -1055,13 +888,6 @@
 			this.tabPage55.TabIndex = 3;
 			this.tabPage55.Text = "Autofire 1";
 			this.tabPage55.UseVisualStyleBackColor = true;
-			// 
-			// GenesisAutofire1Panel
-			// 
-			this.GenesisAutofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.GenesisAutofire1Panel.Name = "GenesisAutofire1Panel";
-			this.GenesisAutofire1Panel.Size = new System.Drawing.Size(392, 332);
-			this.GenesisAutofire1Panel.TabIndex = 2;
 			// 
 			// tabPage56
 			// 
@@ -1123,13 +949,6 @@
 			this.tabPage33.Text = "Pad 1";
 			this.tabPage33.UseVisualStyleBackColor = true;
 			// 
-			// SMSController1Panel
-			// 
-			this.SMSController1Panel.Location = new System.Drawing.Point(6, 6);
-			this.SMSController1Panel.Name = "SMSController1Panel";
-			this.SMSController1Panel.Size = new System.Drawing.Size(326, 332);
-			this.SMSController1Panel.TabIndex = 1;
-			// 
 			// tabPage34
 			// 
 			this.tabPage34.Controls.Add(this.SMSController2Panel);
@@ -1141,13 +960,6 @@
 			this.tabPage34.Text = "Pad 1";
 			this.tabPage34.UseVisualStyleBackColor = true;
 			// 
-			// SMSController2Panel
-			// 
-			this.SMSController2Panel.Location = new System.Drawing.Point(6, 6);
-			this.SMSController2Panel.Name = "SMSController2Panel";
-			this.SMSController2Panel.Size = new System.Drawing.Size(326, 332);
-			this.SMSController2Panel.TabIndex = 2;
-			// 
 			// Console
 			// 
 			this.Console.Controls.Add(this.SMSConsoleButtons);
@@ -1157,13 +969,6 @@
 			this.Console.TabIndex = 2;
 			this.Console.Text = "Console";
 			this.Console.UseVisualStyleBackColor = true;
-			// 
-			// SMSConsoleButtons
-			// 
-			this.SMSConsoleButtons.Location = new System.Drawing.Point(6, 6);
-			this.SMSConsoleButtons.Name = "SMSConsoleButtons";
-			this.SMSConsoleButtons.Size = new System.Drawing.Size(322, 125);
-			this.SMSConsoleButtons.TabIndex = 1;
 			// 
 			// tabPage51
 			// 
@@ -1175,13 +980,6 @@
 			this.tabPage51.Text = "Autofire 1";
 			this.tabPage51.UseVisualStyleBackColor = true;
 			// 
-			// SMSAutofire1Panel
-			// 
-			this.SMSAutofire1Panel.Location = new System.Drawing.Point(6, 6);
-			this.SMSAutofire1Panel.Name = "SMSAutofire1Panel";
-			this.SMSAutofire1Panel.Size = new System.Drawing.Size(326, 332);
-			this.SMSAutofire1Panel.TabIndex = 3;
-			// 
 			// tabPage57
 			// 
 			this.tabPage57.Controls.Add(this.SMSAutofire2Panel);
@@ -1191,13 +989,6 @@
 			this.tabPage57.TabIndex = 4;
 			this.tabPage57.Text = "Autofire 2";
 			this.tabPage57.UseVisualStyleBackColor = true;
-			// 
-			// SMSAutofire2Panel
-			// 
-			this.SMSAutofire2Panel.Location = new System.Drawing.Point(6, 6);
-			this.SMSAutofire2Panel.Name = "SMSAutofire2Panel";
-			this.SMSAutofire2Panel.Size = new System.Drawing.Size(326, 332);
-			this.SMSAutofire2Panel.TabIndex = 4;
 			// 
 			// tabPagePCE
 			// 
@@ -1256,13 +1047,6 @@
 			this.tabPage36.Text = "Pad 1";
 			this.tabPage36.UseVisualStyleBackColor = true;
 			// 
-			// PCEController1Panel
-			// 
-			this.PCEController1Panel.Location = new System.Drawing.Point(10, 10);
-			this.PCEController1Panel.Name = "PCEController1Panel";
-			this.PCEController1Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEController1Panel.TabIndex = 2;
-			// 
 			// tabPage37
 			// 
 			this.tabPage37.Controls.Add(this.PCEController2Panel);
@@ -1274,13 +1058,6 @@
 			this.tabPage37.Text = "Pad 2";
 			this.tabPage37.UseVisualStyleBackColor = true;
 			// 
-			// PCEController2Panel
-			// 
-			this.PCEController2Panel.Location = new System.Drawing.Point(10, 10);
-			this.PCEController2Panel.Name = "PCEController2Panel";
-			this.PCEController2Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEController2Panel.TabIndex = 2;
-			// 
 			// tabPage38
 			// 
 			this.tabPage38.Controls.Add(this.PCEController3Panel);
@@ -1290,13 +1067,6 @@
 			this.tabPage38.TabIndex = 2;
 			this.tabPage38.Text = "Pad 3";
 			this.tabPage38.UseVisualStyleBackColor = true;
-			// 
-			// PCEController3Panel
-			// 
-			this.PCEController3Panel.Location = new System.Drawing.Point(10, 10);
-			this.PCEController3Panel.Name = "PCEController3Panel";
-			this.PCEController3Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEController3Panel.TabIndex = 2;
 			// 
 			// tabPage39
 			// 
@@ -1308,13 +1078,6 @@
 			this.tabPage39.Text = "Pad 4";
 			this.tabPage39.UseVisualStyleBackColor = true;
 			// 
-			// PCEController4Panel
-			// 
-			this.PCEController4Panel.Location = new System.Drawing.Point(10, 10);
-			this.PCEController4Panel.Name = "PCEController4Panel";
-			this.PCEController4Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEController4Panel.TabIndex = 2;
-			// 
 			// tabPage40
 			// 
 			this.tabPage40.Controls.Add(this.PCEController5Panel);
@@ -1324,13 +1087,6 @@
 			this.tabPage40.TabIndex = 4;
 			this.tabPage40.Text = "Pad 5";
 			this.tabPage40.UseVisualStyleBackColor = true;
-			// 
-			// PCEController5Panel
-			// 
-			this.PCEController5Panel.Location = new System.Drawing.Point(10, 10);
-			this.PCEController5Panel.Name = "PCEController5Panel";
-			this.PCEController5Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEController5Panel.TabIndex = 2;
 			// 
 			// tabPage41
 			// 
@@ -1342,13 +1098,6 @@
 			this.tabPage41.Text = "Autofire 1";
 			this.tabPage41.UseVisualStyleBackColor = true;
 			// 
-			// PCEAutofire1Panel
-			// 
-			this.PCEAutofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.PCEAutofire1Panel.Name = "PCEAutofire1Panel";
-			this.PCEAutofire1Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEAutofire1Panel.TabIndex = 2;
-			// 
 			// tabPage42
 			// 
 			this.tabPage42.Controls.Add(this.PCEAutofire2Panel);
@@ -1358,13 +1107,6 @@
 			this.tabPage42.TabIndex = 6;
 			this.tabPage42.Text = "Autofire 2";
 			this.tabPage42.UseVisualStyleBackColor = true;
-			// 
-			// PCEAutofire2Panel
-			// 
-			this.PCEAutofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.PCEAutofire2Panel.Name = "PCEAutofire2Panel";
-			this.PCEAutofire2Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEAutofire2Panel.TabIndex = 2;
 			// 
 			// tabPage43
 			// 
@@ -1376,13 +1118,6 @@
 			this.tabPage43.Text = "Autofire 3";
 			this.tabPage43.UseVisualStyleBackColor = true;
 			// 
-			// PCEAutofire3Panel
-			// 
-			this.PCEAutofire3Panel.Location = new System.Drawing.Point(10, 10);
-			this.PCEAutofire3Panel.Name = "PCEAutofire3Panel";
-			this.PCEAutofire3Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEAutofire3Panel.TabIndex = 2;
-			// 
 			// tabPage44
 			// 
 			this.tabPage44.Controls.Add(this.PCEAutofire4Panel);
@@ -1393,13 +1128,6 @@
 			this.tabPage44.Text = "Autofire 4";
 			this.tabPage44.UseVisualStyleBackColor = true;
 			// 
-			// PCEAutofire4Panel
-			// 
-			this.PCEAutofire4Panel.Location = new System.Drawing.Point(10, 10);
-			this.PCEAutofire4Panel.Name = "PCEAutofire4Panel";
-			this.PCEAutofire4Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEAutofire4Panel.TabIndex = 2;
-			// 
 			// tabPage45
 			// 
 			this.tabPage45.Controls.Add(this.PCEAutofire5Panel);
@@ -1409,13 +1137,6 @@
 			this.tabPage45.TabIndex = 9;
 			this.tabPage45.Text = "Autofire 5";
 			this.tabPage45.UseVisualStyleBackColor = true;
-			// 
-			// PCEAutofire5Panel
-			// 
-			this.PCEAutofire5Panel.Location = new System.Drawing.Point(20, 11);
-			this.PCEAutofire5Panel.Name = "PCEAutofire5Panel";
-			this.PCEAutofire5Panel.Size = new System.Drawing.Size(326, 332);
-			this.PCEAutofire5Panel.TabIndex = 2;
 			// 
 			// tabPageAtari2600
 			// 
@@ -1468,13 +1189,6 @@
 			this.tabPage46.Text = "Joystick 1";
 			this.tabPage46.UseVisualStyleBackColor = true;
 			// 
-			// Atari2600Controller1Panel
-			// 
-			this.Atari2600Controller1Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari2600Controller1Panel.Name = "Atari2600Controller1Panel";
-			this.Atari2600Controller1Panel.Size = new System.Drawing.Size(365, 332);
-			this.Atari2600Controller1Panel.TabIndex = 1;
-			// 
 			// tabPage47
 			// 
 			this.tabPage47.Controls.Add(this.Atari2600Controller2Panel);
@@ -1486,13 +1200,6 @@
 			this.tabPage47.Text = "Joystick 2";
 			this.tabPage47.UseVisualStyleBackColor = true;
 			// 
-			// Atari2600Controller2Panel
-			// 
-			this.Atari2600Controller2Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari2600Controller2Panel.Name = "Atari2600Controller2Panel";
-			this.Atari2600Controller2Panel.Size = new System.Drawing.Size(365, 332);
-			this.Atari2600Controller2Panel.TabIndex = 2;
-			// 
 			// tabPage48
 			// 
 			this.tabPage48.Controls.Add(this.Atari2600ConsoleButtons);
@@ -1502,13 +1209,6 @@
 			this.tabPage48.TabIndex = 2;
 			this.tabPage48.Text = "Console";
 			this.tabPage48.UseVisualStyleBackColor = true;
-			// 
-			// Atari2600ConsoleButtons
-			// 
-			this.Atari2600ConsoleButtons.Location = new System.Drawing.Point(10, 10);
-			this.Atari2600ConsoleButtons.Name = "Atari2600ConsoleButtons";
-			this.Atari2600ConsoleButtons.Size = new System.Drawing.Size(359, 125);
-			this.Atari2600ConsoleButtons.TabIndex = 1;
 			// 
 			// tabPage35
 			// 
@@ -1520,13 +1220,6 @@
 			this.tabPage35.Text = "Autofire 1";
 			this.tabPage35.UseVisualStyleBackColor = true;
 			// 
-			// Atari2600Autofire1Panel
-			// 
-			this.Atari2600Autofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari2600Autofire1Panel.Name = "Atari2600Autofire1Panel";
-			this.Atari2600Autofire1Panel.Size = new System.Drawing.Size(368, 332);
-			this.Atari2600Autofire1Panel.TabIndex = 3;
-			// 
 			// tabPage58
 			// 
 			this.tabPage58.Controls.Add(this.Atari2600Autofire2Panel);
@@ -1536,13 +1229,6 @@
 			this.tabPage58.TabIndex = 4;
 			this.tabPage58.Text = "Autofire 2";
 			this.tabPage58.UseVisualStyleBackColor = true;
-			// 
-			// Atari2600Autofire2Panel
-			// 
-			this.Atari2600Autofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari2600Autofire2Panel.Name = "Atari2600Autofire2Panel";
-			this.Atari2600Autofire2Panel.Size = new System.Drawing.Size(368, 332);
-			this.Atari2600Autofire2Panel.TabIndex = 3;
 			// 
 			// tabPageAtari7800
 			// 
@@ -1595,13 +1281,6 @@
 			this.tabPage3.Text = "Joystick 1";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
-			// Atari7800Controller1Panel
-			// 
-			this.Atari7800Controller1Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800Controller1Panel.Name = "Atari7800Controller1Panel";
-			this.Atari7800Controller1Panel.Size = new System.Drawing.Size(365, 332);
-			this.Atari7800Controller1Panel.TabIndex = 1;
-			// 
 			// tabPage4
 			// 
 			this.tabPage4.Controls.Add(this.Atari7800Controller2Panel);
@@ -1613,13 +1292,6 @@
 			this.tabPage4.Text = "Joystick 2";
 			this.tabPage4.UseVisualStyleBackColor = true;
 			// 
-			// Atari7800Controller2Panel
-			// 
-			this.Atari7800Controller2Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800Controller2Panel.Name = "Atari7800Controller2Panel";
-			this.Atari7800Controller2Panel.Size = new System.Drawing.Size(365, 332);
-			this.Atari7800Controller2Panel.TabIndex = 2;
-			// 
 			// tabPage5
 			// 
 			this.tabPage5.Controls.Add(this.Atari7800ConsoleButtons);
@@ -1629,13 +1301,6 @@
 			this.tabPage5.TabIndex = 2;
 			this.tabPage5.Text = "Console";
 			this.tabPage5.UseVisualStyleBackColor = true;
-			// 
-			// Atari7800ConsoleButtons
-			// 
-			this.Atari7800ConsoleButtons.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800ConsoleButtons.Name = "Atari7800ConsoleButtons";
-			this.Atari7800ConsoleButtons.Size = new System.Drawing.Size(359, 125);
-			this.Atari7800ConsoleButtons.TabIndex = 1;
 			// 
 			// tabPage6
 			// 
@@ -1647,13 +1312,6 @@
 			this.tabPage6.Text = "Autofire 1";
 			this.tabPage6.UseVisualStyleBackColor = true;
 			// 
-			// Atari7800Autofire1Panel
-			// 
-			this.Atari7800Autofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800Autofire1Panel.Name = "Atari7800Autofire1Panel";
-			this.Atari7800Autofire1Panel.Size = new System.Drawing.Size(368, 332);
-			this.Atari7800Autofire1Panel.TabIndex = 3;
-			// 
 			// tabPage7
 			// 
 			this.tabPage7.Controls.Add(this.Atari7800Autofire2Panel);
@@ -1663,13 +1321,6 @@
 			this.tabPage7.TabIndex = 4;
 			this.tabPage7.Text = "Autofire 2";
 			this.tabPage7.UseVisualStyleBackColor = true;
-			// 
-			// Atari7800Autofire2Panel
-			// 
-			this.Atari7800Autofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.Atari7800Autofire2Panel.Name = "Atari7800Autofire2Panel";
-			this.Atari7800Autofire2Panel.Size = new System.Drawing.Size(368, 332);
-			this.Atari7800Autofire2Panel.TabIndex = 3;
 			// 
 			// tabPageC64
 			// 
@@ -1721,13 +1372,6 @@
 			this.pictureBox8.TabIndex = 5;
 			this.pictureBox8.TabStop = false;
 			// 
-			// C64Controller1Panel
-			// 
-			this.C64Controller1Panel.Location = new System.Drawing.Point(10, 10);
-			this.C64Controller1Panel.Name = "C64Controller1Panel";
-			this.C64Controller1Panel.Size = new System.Drawing.Size(369, 332);
-			this.C64Controller1Panel.TabIndex = 2;
-			// 
 			// tabPage50
 			// 
 			this.tabPage50.Controls.Add(this.pictureBox9);
@@ -1752,13 +1396,6 @@
 			this.pictureBox9.TabIndex = 6;
 			this.pictureBox9.TabStop = false;
 			// 
-			// C64Controller2Panel
-			// 
-			this.C64Controller2Panel.Location = new System.Drawing.Point(10, 10);
-			this.C64Controller2Panel.Name = "C64Controller2Panel";
-			this.C64Controller2Panel.Size = new System.Drawing.Size(369, 332);
-			this.C64Controller2Panel.TabIndex = 3;
-			// 
 			// tabPage10
 			// 
 			this.tabPage10.Controls.Add(this.pictureBox10);
@@ -1781,13 +1418,6 @@
 			this.pictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.pictureBox10.TabIndex = 7;
 			this.pictureBox10.TabStop = false;
-			// 
-			// C64Autofire1Panel
-			// 
-			this.C64Autofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.C64Autofire1Panel.Name = "C64Autofire1Panel";
-			this.C64Autofire1Panel.Size = new System.Drawing.Size(369, 332);
-			this.C64Autofire1Panel.TabIndex = 4;
 			// 
 			// tabPage11
 			// 
@@ -1812,13 +1442,6 @@
 			this.pictureBox11.TabIndex = 8;
 			this.pictureBox11.TabStop = false;
 			// 
-			// C64Autofire2Panel
-			// 
-			this.C64Autofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.C64Autofire2Panel.Name = "C64Autofire2Panel";
-			this.C64Autofire2Panel.Size = new System.Drawing.Size(369, 332);
-			this.C64Autofire2Panel.TabIndex = 4;
-			// 
 			// tabPage12
 			// 
 			this.tabPage12.Controls.Add(this.C64KeyboardPanel);
@@ -1829,16 +1452,6 @@
 			this.tabPage12.TabIndex = 4;
 			this.tabPage12.Text = "Keyboard";
 			this.tabPage12.UseVisualStyleBackColor = true;
-			// 
-			// C64KeyboardPanel
-			// 
-			this.C64KeyboardPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.C64KeyboardPanel.Location = new System.Drawing.Point(4, 131);
-			this.C64KeyboardPanel.Name = "C64KeyboardPanel";
-			this.C64KeyboardPanel.Size = new System.Drawing.Size(754, 259);
-			this.C64KeyboardPanel.TabIndex = 10;
 			// 
 			// pictureBox12
 			// 
@@ -1898,13 +1511,6 @@
 			this.tabPage60.Text = "Controller 1";
 			this.tabPage60.UseVisualStyleBackColor = true;
 			// 
-			// COLController1Panel
-			// 
-			this.COLController1Panel.Location = new System.Drawing.Point(10, 10);
-			this.COLController1Panel.Name = "COLController1Panel";
-			this.COLController1Panel.Size = new System.Drawing.Size(355, 332);
-			this.COLController1Panel.TabIndex = 1;
-			// 
 			// tabPage61
 			// 
 			this.tabPage61.Controls.Add(this.COLAutofire1Panel);
@@ -1916,13 +1522,6 @@
 			this.tabPage61.Text = "Autofire 1";
 			this.tabPage61.UseVisualStyleBackColor = true;
 			// 
-			// COLAutofire1Panel
-			// 
-			this.COLAutofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.COLAutofire1Panel.Name = "COLAutofire1Panel";
-			this.COLAutofire1Panel.Size = new System.Drawing.Size(359, 332);
-			this.COLAutofire1Panel.TabIndex = 2;
-			// 
 			// tabPage62
 			// 
 			this.tabPage62.Controls.Add(this.COLController2Panel);
@@ -1933,13 +1532,6 @@
 			this.tabPage62.Text = "Controller 2";
 			this.tabPage62.UseVisualStyleBackColor = true;
 			// 
-			// COLController2Panel
-			// 
-			this.COLController2Panel.Location = new System.Drawing.Point(10, 10);
-			this.COLController2Panel.Name = "COLController2Panel";
-			this.COLController2Panel.Size = new System.Drawing.Size(358, 332);
-			this.COLController2Panel.TabIndex = 2;
-			// 
 			// tabPage63
 			// 
 			this.tabPage63.Controls.Add(this.COLAutofire2Panel);
@@ -1949,13 +1541,6 @@
 			this.tabPage63.TabIndex = 3;
 			this.tabPage63.Text = "Autofire 2";
 			this.tabPage63.UseVisualStyleBackColor = true;
-			// 
-			// COLAutofire2Panel
-			// 
-			this.COLAutofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.COLAutofire2Panel.Name = "COLAutofire2Panel";
-			this.COLAutofire2Panel.Size = new System.Drawing.Size(358, 332);
-			this.COLAutofire2Panel.TabIndex = 3;
 			// 
 			// tabPageINTV
 			// 
@@ -2003,13 +1588,6 @@
 			this.tabPage8.Text = "Controller 1";
 			this.tabPage8.UseVisualStyleBackColor = true;
 			// 
-			// INTVController1Panel
-			// 
-			this.INTVController1Panel.Location = new System.Drawing.Point(10, 10);
-			this.INTVController1Panel.Name = "INTVController1Panel";
-			this.INTVController1Panel.Size = new System.Drawing.Size(355, 332);
-			this.INTVController1Panel.TabIndex = 1;
-			// 
 			// tabPage9
 			// 
 			this.tabPage9.Controls.Add(this.INTVAutofire1Panel);
@@ -2021,13 +1599,6 @@
 			this.tabPage9.Text = "Autofire 1";
 			this.tabPage9.UseVisualStyleBackColor = true;
 			// 
-			// INTVAutofire1Panel
-			// 
-			this.INTVAutofire1Panel.Location = new System.Drawing.Point(10, 10);
-			this.INTVAutofire1Panel.Name = "INTVAutofire1Panel";
-			this.INTVAutofire1Panel.Size = new System.Drawing.Size(359, 332);
-			this.INTVAutofire1Panel.TabIndex = 2;
-			// 
 			// tabPage59
 			// 
 			this.tabPage59.Controls.Add(this.INTVController2Panel);
@@ -2038,13 +1609,6 @@
 			this.tabPage59.Text = "Controller 2";
 			this.tabPage59.UseVisualStyleBackColor = true;
 			// 
-			// INTVController2Panel
-			// 
-			this.INTVController2Panel.Location = new System.Drawing.Point(10, 10);
-			this.INTVController2Panel.Name = "INTVController2Panel";
-			this.INTVController2Panel.Size = new System.Drawing.Size(358, 332);
-			this.INTVController2Panel.TabIndex = 2;
-			// 
 			// tabPage64
 			// 
 			this.tabPage64.Controls.Add(this.INTVAutofire2Panel);
@@ -2054,13 +1618,6 @@
 			this.tabPage64.TabIndex = 3;
 			this.tabPage64.Text = "Autofire 2";
 			this.tabPage64.UseVisualStyleBackColor = true;
-			// 
-			// INTVAutofire2Panel
-			// 
-			this.INTVAutofire2Panel.Location = new System.Drawing.Point(10, 10);
-			this.INTVAutofire2Panel.Name = "INTVAutofire2Panel";
-			this.INTVAutofire2Panel.Size = new System.Drawing.Size(358, 332);
-			this.INTVAutofire2Panel.TabIndex = 3;
 			// 
 			// tabPageTI83
 			// 
@@ -2086,15 +1643,139 @@
 			this.pictureBox7.TabIndex = 4;
 			this.pictureBox7.TabStop = false;
 			// 
-			// TI83ControllerPanel
+			// tabPageN64
 			// 
-			this.TI83ControllerPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TI83ControllerPanel.Location = new System.Drawing.Point(11, 8);
-			this.TI83ControllerPanel.Name = "TI83ControllerPanel";
-			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 414);
-			this.TI83ControllerPanel.TabIndex = 1;
+			this.tabPageN64.Controls.Add(this.pictureBox18);
+			this.tabPageN64.Controls.Add(this.tabcontrol69);
+			this.tabPageN64.Location = new System.Drawing.Point(4, 22);
+			this.tabPageN64.Name = "tabPageN64";
+			this.tabPageN64.Size = new System.Drawing.Size(787, 425);
+			this.tabPageN64.TabIndex = 13;
+			this.tabPageN64.Text = "N64";
+			this.tabPageN64.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox18
+			// 
+			this.pictureBox18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox18.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox18.Image = global::BizHawk.MultiClient.Properties.Resources.NES_Controller;
+			this.pictureBox18.Location = new System.Drawing.Point(488, 31);
+			this.pictureBox18.Name = "pictureBox18";
+			this.pictureBox18.Size = new System.Drawing.Size(284, 125);
+			this.pictureBox18.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox18.TabIndex = 8;
+			this.pictureBox18.TabStop = false;
+			// 
+			// tabcontrol69
+			// 
+			this.tabcontrol69.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.tabcontrol69.Controls.Add(this.tabPage67);
+			this.tabcontrol69.Controls.Add(this.tabPage68);
+			this.tabcontrol69.Controls.Add(this.tabPage69);
+			this.tabcontrol69.Controls.Add(this.tabPage70);
+			this.tabcontrol69.Controls.Add(this.tabPage71);
+			this.tabcontrol69.Controls.Add(this.tabPage72);
+			this.tabcontrol69.Controls.Add(this.tabPage73);
+			this.tabcontrol69.Controls.Add(this.tabPage74);
+			this.tabcontrol69.Controls.Add(this.tabPage75);
+			this.tabcontrol69.Location = new System.Drawing.Point(15, 10);
+			this.tabcontrol69.Name = "tabcontrol69";
+			this.tabcontrol69.SelectedIndex = 0;
+			this.tabcontrol69.Size = new System.Drawing.Size(453, 404);
+			this.tabcontrol69.TabIndex = 7;
+			// 
+			// tabPage67
+			// 
+			this.tabPage67.Controls.Add(this.N64Controller1Panel);
+			this.tabPage67.Location = new System.Drawing.Point(4, 22);
+			this.tabPage67.Name = "tabPage67";
+			this.tabPage67.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage67.Size = new System.Drawing.Size(445, 378);
+			this.tabPage67.TabIndex = 0;
+			this.tabPage67.Text = "Pad 1";
+			this.tabPage67.UseVisualStyleBackColor = true;
+			// 
+			// tabPage68
+			// 
+			this.tabPage68.Controls.Add(this.N64Controller2Panel);
+			this.tabPage68.Location = new System.Drawing.Point(4, 22);
+			this.tabPage68.Name = "tabPage68";
+			this.tabPage68.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage68.Size = new System.Drawing.Size(445, 378);
+			this.tabPage68.TabIndex = 1;
+			this.tabPage68.Text = "Pad 2";
+			this.tabPage68.UseVisualStyleBackColor = true;
+			// 
+			// tabPage69
+			// 
+			this.tabPage69.Controls.Add(this.N64Controller3Panel);
+			this.tabPage69.Location = new System.Drawing.Point(4, 22);
+			this.tabPage69.Name = "tabPage69";
+			this.tabPage69.Size = new System.Drawing.Size(445, 378);
+			this.tabPage69.TabIndex = 2;
+			this.tabPage69.Text = "Pad 3";
+			this.tabPage69.UseVisualStyleBackColor = true;
+			// 
+			// tabPage70
+			// 
+			this.tabPage70.Controls.Add(this.N64Controller4Panel);
+			this.tabPage70.Location = new System.Drawing.Point(4, 22);
+			this.tabPage70.Name = "tabPage70";
+			this.tabPage70.Size = new System.Drawing.Size(445, 378);
+			this.tabPage70.TabIndex = 3;
+			this.tabPage70.Text = "Pad 4";
+			this.tabPage70.UseVisualStyleBackColor = true;
+			// 
+			// tabPage71
+			// 
+			this.tabPage71.Controls.Add(this.N64ConsoleButtons);
+			this.tabPage71.Location = new System.Drawing.Point(4, 22);
+			this.tabPage71.Name = "tabPage71";
+			this.tabPage71.Size = new System.Drawing.Size(445, 378);
+			this.tabPage71.TabIndex = 4;
+			this.tabPage71.Text = "Console";
+			this.tabPage71.UseVisualStyleBackColor = true;
+			// 
+			// tabPage72
+			// 
+			this.tabPage72.Controls.Add(this.N64Autofire1Panel);
+			this.tabPage72.Location = new System.Drawing.Point(4, 22);
+			this.tabPage72.Name = "tabPage72";
+			this.tabPage72.Size = new System.Drawing.Size(445, 378);
+			this.tabPage72.TabIndex = 5;
+			this.tabPage72.Text = "Autofire 1";
+			this.tabPage72.UseVisualStyleBackColor = true;
+			// 
+			// tabPage73
+			// 
+			this.tabPage73.Controls.Add(this.N64Autofire2Panel);
+			this.tabPage73.Location = new System.Drawing.Point(4, 22);
+			this.tabPage73.Name = "tabPage73";
+			this.tabPage73.Size = new System.Drawing.Size(445, 378);
+			this.tabPage73.TabIndex = 6;
+			this.tabPage73.Text = "Autofire 2";
+			this.tabPage73.UseVisualStyleBackColor = true;
+			// 
+			// tabPage74
+			// 
+			this.tabPage74.Controls.Add(this.N64Autofire3Panel);
+			this.tabPage74.Location = new System.Drawing.Point(4, 22);
+			this.tabPage74.Name = "tabPage74";
+			this.tabPage74.Size = new System.Drawing.Size(445, 378);
+			this.tabPage74.TabIndex = 7;
+			this.tabPage74.Text = "Autofire 3";
+			this.tabPage74.UseVisualStyleBackColor = true;
+			// 
+			// tabPage75
+			// 
+			this.tabPage75.Controls.Add(this.N64Autofire4Panel);
+			this.tabPage75.Location = new System.Drawing.Point(4, 22);
+			this.tabPage75.Name = "tabPage75";
+			this.tabPage75.Size = new System.Drawing.Size(445, 378);
+			this.tabPage75.TabIndex = 8;
+			this.tabPage75.Text = "Autofire 4";
+			this.tabPage75.UseVisualStyleBackColor = true;
 			// 
 			// Cancel
 			// 
@@ -2152,58 +1833,491 @@
 			this.AutoTab.UseVisualStyleBackColor = true;
 			this.AutoTab.CheckedChanged += new System.EventHandler(this.AutoTab_CheckedChanged);
 			// 
-			// tabPageN64
+			// tabPageSaturn
 			// 
-			this.tabPageN64.Controls.Add(this.pictureBox18);
-			this.tabPageN64.Controls.Add(this.tabcontrol69);
-			this.tabPageN64.Location = new System.Drawing.Point(4, 22);
-			this.tabPageN64.Name = "tabPageN64";
-			this.tabPageN64.Size = new System.Drawing.Size(787, 425);
-			this.tabPageN64.TabIndex = 13;
-			this.tabPageN64.Text = "N64";
-			this.tabPageN64.UseVisualStyleBackColor = true;
+			this.tabPageSaturn.Controls.Add(this.pictureBox19);
+			this.tabPageSaturn.Controls.Add(this.tabControl13);
+			this.tabPageSaturn.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSaturn.Name = "tabPageSaturn";
+			this.tabPageSaturn.Size = new System.Drawing.Size(787, 425);
+			this.tabPageSaturn.TabIndex = 14;
+			this.tabPageSaturn.Text = "Saturn";
+			this.tabPageSaturn.UseVisualStyleBackColor = true;
 			// 
-			// pictureBox18
+			// NESController1Panel
 			// 
-			this.pictureBox18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox18.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pictureBox18.Image = global::BizHawk.MultiClient.Properties.Resources.NES_Controller;
-			this.pictureBox18.Location = new System.Drawing.Point(488, 31);
-			this.pictureBox18.Name = "pictureBox18";
-			this.pictureBox18.Size = new System.Drawing.Size(284, 125);
-			this.pictureBox18.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.pictureBox18.TabIndex = 8;
-			this.pictureBox18.TabStop = false;
+			this.NESController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController1Panel.Name = "NESController1Panel";
+			this.NESController1Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController1Panel.TabIndex = 0;
 			// 
-			// tabcontrol69
+			// NESController2Panel
 			// 
-			this.tabcontrol69.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.tabcontrol69.Controls.Add(this.tabPage67);
-			this.tabcontrol69.Controls.Add(this.tabPage68);
-			this.tabcontrol69.Controls.Add(this.tabPage69);
-			this.tabcontrol69.Controls.Add(this.tabPage70);
-			this.tabcontrol69.Controls.Add(this.tabPage71);
-			this.tabcontrol69.Controls.Add(this.tabPage72);
-			this.tabcontrol69.Controls.Add(this.tabPage73);
-			this.tabcontrol69.Controls.Add(this.tabPage74);
-			this.tabcontrol69.Controls.Add(this.tabPage75);
-			this.tabcontrol69.Location = new System.Drawing.Point(15, 10);
-			this.tabcontrol69.Name = "tabcontrol69";
-			this.tabcontrol69.SelectedIndex = 0;
-			this.tabcontrol69.Size = new System.Drawing.Size(453, 404);
-			this.tabcontrol69.TabIndex = 7;
+			this.NESController2Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController2Panel.Name = "NESController2Panel";
+			this.NESController2Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController2Panel.TabIndex = 0;
 			// 
-			// tabPage67
+			// NESController3Panel
 			// 
-			this.tabPage67.Controls.Add(this.N64Controller1Panel);
-			this.tabPage67.Location = new System.Drawing.Point(4, 22);
-			this.tabPage67.Name = "tabPage67";
-			this.tabPage67.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage67.Size = new System.Drawing.Size(445, 378);
-			this.tabPage67.TabIndex = 0;
-			this.tabPage67.Text = "Pad 1";
-			this.tabPage67.UseVisualStyleBackColor = true;
+			this.NESController3Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController3Panel.Name = "NESController3Panel";
+			this.NESController3Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController3Panel.TabIndex = 0;
+			// 
+			// NESController4Panel
+			// 
+			this.NESController4Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESController4Panel.Name = "NESController4Panel";
+			this.NESController4Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESController4Panel.TabIndex = 0;
+			// 
+			// NESConsoleButtons
+			// 
+			this.NESConsoleButtons.Location = new System.Drawing.Point(10, 10);
+			this.NESConsoleButtons.Name = "NESConsoleButtons";
+			this.NESConsoleButtons.Size = new System.Drawing.Size(368, 341);
+			this.NESConsoleButtons.TabIndex = 0;
+			// 
+			// NESAutofire1Panel
+			// 
+			this.NESAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire1Panel.Name = "NESAutofire1Panel";
+			this.NESAutofire1Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire1Panel.TabIndex = 0;
+			// 
+			// NESAutofire2Panel
+			// 
+			this.NESAutofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire2Panel.Name = "NESAutofire2Panel";
+			this.NESAutofire2Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire2Panel.TabIndex = 0;
+			// 
+			// NESAutofire3Panel
+			// 
+			this.NESAutofire3Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire3Panel.Name = "NESAutofire3Panel";
+			this.NESAutofire3Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire3Panel.TabIndex = 0;
+			// 
+			// NESAutofire4Panel
+			// 
+			this.NESAutofire4Panel.Location = new System.Drawing.Point(10, 10);
+			this.NESAutofire4Panel.Name = "NESAutofire4Panel";
+			this.NESAutofire4Panel.Size = new System.Drawing.Size(392, 332);
+			this.NESAutofire4Panel.TabIndex = 0;
+			// 
+			// SNESController1Panel
+			// 
+			this.SNESController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.SNESController1Panel.Name = "SNESController1Panel";
+			this.SNESController1Panel.Size = new System.Drawing.Size(392, 360);
+			this.SNESController1Panel.TabIndex = 1;
+			// 
+			// SNESController2Panel
+			// 
+			this.SNESController2Panel.Location = new System.Drawing.Point(10, 10);
+			this.SNESController2Panel.Name = "SNESController2Panel";
+			this.SNESController2Panel.Size = new System.Drawing.Size(392, 332);
+			this.SNESController2Panel.TabIndex = 2;
+			// 
+			// SNESController3Panel
+			// 
+			this.SNESController3Panel.Location = new System.Drawing.Point(10, 10);
+			this.SNESController3Panel.Name = "SNESController3Panel";
+			this.SNESController3Panel.Size = new System.Drawing.Size(392, 332);
+			this.SNESController3Panel.TabIndex = 3;
+			// 
+			// SNESController4Panel
+			// 
+			this.SNESController4Panel.Location = new System.Drawing.Point(10, 10);
+			this.SNESController4Panel.Name = "SNESController4Panel";
+			this.SNESController4Panel.Size = new System.Drawing.Size(392, 332);
+			this.SNESController4Panel.TabIndex = 3;
+			// 
+			// SNESConsoleButtons
+			// 
+			this.SNESConsoleButtons.Location = new System.Drawing.Point(10, 10);
+			this.SNESConsoleButtons.Name = "SNESConsoleButtons";
+			this.SNESConsoleButtons.Size = new System.Drawing.Size(368, 125);
+			this.SNESConsoleButtons.TabIndex = 1;
+			// 
+			// SNESAutofire1Panel
+			// 
+			this.SNESAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.SNESAutofire1Panel.Name = "SNESAutofire1Panel";
+			this.SNESAutofire1Panel.Size = new System.Drawing.Size(392, 332);
+			this.SNESAutofire1Panel.TabIndex = 3;
+			// 
+			// SNESAutofire2Panel
+			// 
+			this.SNESAutofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.SNESAutofire2Panel.Name = "SNESAutofire2Panel";
+			this.SNESAutofire2Panel.Size = new System.Drawing.Size(392, 332);
+			this.SNESAutofire2Panel.TabIndex = 3;
+			// 
+			// SNESAutofire3Panel
+			// 
+			this.SNESAutofire3Panel.Location = new System.Drawing.Point(10, 10);
+			this.SNESAutofire3Panel.Name = "SNESAutofire3Panel";
+			this.SNESAutofire3Panel.Size = new System.Drawing.Size(392, 332);
+			this.SNESAutofire3Panel.TabIndex = 3;
+			// 
+			// SNESAutofire4Panel
+			// 
+			this.SNESAutofire4Panel.Location = new System.Drawing.Point(10, 10);
+			this.SNESAutofire4Panel.Name = "SNESAutofire4Panel";
+			this.SNESAutofire4Panel.Size = new System.Drawing.Size(392, 332);
+			this.SNESAutofire4Panel.TabIndex = 3;
+			// 
+			// GBController1Panel
+			// 
+			this.GBController1Panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.GBController1Panel.Location = new System.Drawing.Point(6, 6);
+			this.GBController1Panel.Name = "GBController1Panel";
+			this.GBController1Panel.Size = new System.Drawing.Size(547, 332);
+			this.GBController1Panel.TabIndex = 1;
+			// 
+			// GBAutofire1Panel
+			// 
+			this.GBAutofire1Panel.Location = new System.Drawing.Point(6, 6);
+			this.GBAutofire1Panel.Name = "GBAutofire1Panel";
+			this.GBAutofire1Panel.Size = new System.Drawing.Size(359, 332);
+			this.GBAutofire1Panel.TabIndex = 2;
+			// 
+			// GBDualPanel
+			// 
+			this.GBDualPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.GBDualPanel.Location = new System.Drawing.Point(6, 6);
+			this.GBDualPanel.Name = "GBDualPanel";
+			this.GBDualPanel.Size = new System.Drawing.Size(550, 236);
+			this.GBDualPanel.TabIndex = 3;
+			// 
+			// GBDualAutofirePanel
+			// 
+			this.GBDualAutofirePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.GBDualAutofirePanel.Location = new System.Drawing.Point(6, 6);
+			this.GBDualAutofirePanel.Name = "GBDualAutofirePanel";
+			this.GBDualAutofirePanel.Size = new System.Drawing.Size(550, 332);
+			this.GBDualAutofirePanel.TabIndex = 4;
+			// 
+			// GBAController1Panel
+			// 
+			this.GBAController1Panel.Location = new System.Drawing.Point(6, 6);
+			this.GBAController1Panel.Name = "GBAController1Panel";
+			this.GBAController1Panel.Size = new System.Drawing.Size(359, 332);
+			this.GBAController1Panel.TabIndex = 1;
+			// 
+			// GBAAutofire1Panel
+			// 
+			this.GBAAutofire1Panel.Location = new System.Drawing.Point(6, 6);
+			this.GBAAutofire1Panel.Name = "GBAAutofire1Panel";
+			this.GBAAutofire1Panel.Size = new System.Drawing.Size(359, 332);
+			this.GBAAutofire1Panel.TabIndex = 2;
+			// 
+			// GenesisController1Panel
+			// 
+			this.GenesisController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.GenesisController1Panel.Name = "GenesisController1Panel";
+			this.GenesisController1Panel.Size = new System.Drawing.Size(392, 332);
+			this.GenesisController1Panel.TabIndex = 1;
+			// 
+			// GenesisConsoleButtons
+			// 
+			this.GenesisConsoleButtons.Location = new System.Drawing.Point(10, 10);
+			this.GenesisConsoleButtons.Name = "GenesisConsoleButtons";
+			this.GenesisConsoleButtons.Size = new System.Drawing.Size(368, 125);
+			this.GenesisConsoleButtons.TabIndex = 1;
+			// 
+			// GenesisAutofire1Panel
+			// 
+			this.GenesisAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.GenesisAutofire1Panel.Name = "GenesisAutofire1Panel";
+			this.GenesisAutofire1Panel.Size = new System.Drawing.Size(392, 332);
+			this.GenesisAutofire1Panel.TabIndex = 2;
+			// 
+			// SMSController1Panel
+			// 
+			this.SMSController1Panel.Location = new System.Drawing.Point(6, 6);
+			this.SMSController1Panel.Name = "SMSController1Panel";
+			this.SMSController1Panel.Size = new System.Drawing.Size(326, 332);
+			this.SMSController1Panel.TabIndex = 1;
+			// 
+			// SMSController2Panel
+			// 
+			this.SMSController2Panel.Location = new System.Drawing.Point(6, 6);
+			this.SMSController2Panel.Name = "SMSController2Panel";
+			this.SMSController2Panel.Size = new System.Drawing.Size(326, 332);
+			this.SMSController2Panel.TabIndex = 2;
+			// 
+			// SMSConsoleButtons
+			// 
+			this.SMSConsoleButtons.Location = new System.Drawing.Point(6, 6);
+			this.SMSConsoleButtons.Name = "SMSConsoleButtons";
+			this.SMSConsoleButtons.Size = new System.Drawing.Size(322, 125);
+			this.SMSConsoleButtons.TabIndex = 1;
+			// 
+			// SMSAutofire1Panel
+			// 
+			this.SMSAutofire1Panel.Location = new System.Drawing.Point(6, 6);
+			this.SMSAutofire1Panel.Name = "SMSAutofire1Panel";
+			this.SMSAutofire1Panel.Size = new System.Drawing.Size(326, 332);
+			this.SMSAutofire1Panel.TabIndex = 3;
+			// 
+			// SMSAutofire2Panel
+			// 
+			this.SMSAutofire2Panel.Location = new System.Drawing.Point(6, 6);
+			this.SMSAutofire2Panel.Name = "SMSAutofire2Panel";
+			this.SMSAutofire2Panel.Size = new System.Drawing.Size(326, 332);
+			this.SMSAutofire2Panel.TabIndex = 4;
+			// 
+			// PCEController1Panel
+			// 
+			this.PCEController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.PCEController1Panel.Name = "PCEController1Panel";
+			this.PCEController1Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEController1Panel.TabIndex = 2;
+			// 
+			// PCEController2Panel
+			// 
+			this.PCEController2Panel.Location = new System.Drawing.Point(10, 10);
+			this.PCEController2Panel.Name = "PCEController2Panel";
+			this.PCEController2Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEController2Panel.TabIndex = 2;
+			// 
+			// PCEController3Panel
+			// 
+			this.PCEController3Panel.Location = new System.Drawing.Point(10, 10);
+			this.PCEController3Panel.Name = "PCEController3Panel";
+			this.PCEController3Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEController3Panel.TabIndex = 2;
+			// 
+			// PCEController4Panel
+			// 
+			this.PCEController4Panel.Location = new System.Drawing.Point(10, 10);
+			this.PCEController4Panel.Name = "PCEController4Panel";
+			this.PCEController4Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEController4Panel.TabIndex = 2;
+			// 
+			// PCEController5Panel
+			// 
+			this.PCEController5Panel.Location = new System.Drawing.Point(10, 10);
+			this.PCEController5Panel.Name = "PCEController5Panel";
+			this.PCEController5Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEController5Panel.TabIndex = 2;
+			// 
+			// PCEAutofire1Panel
+			// 
+			this.PCEAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.PCEAutofire1Panel.Name = "PCEAutofire1Panel";
+			this.PCEAutofire1Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEAutofire1Panel.TabIndex = 2;
+			// 
+			// PCEAutofire2Panel
+			// 
+			this.PCEAutofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.PCEAutofire2Panel.Name = "PCEAutofire2Panel";
+			this.PCEAutofire2Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEAutofire2Panel.TabIndex = 2;
+			// 
+			// PCEAutofire3Panel
+			// 
+			this.PCEAutofire3Panel.Location = new System.Drawing.Point(10, 10);
+			this.PCEAutofire3Panel.Name = "PCEAutofire3Panel";
+			this.PCEAutofire3Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEAutofire3Panel.TabIndex = 2;
+			// 
+			// PCEAutofire4Panel
+			// 
+			this.PCEAutofire4Panel.Location = new System.Drawing.Point(10, 10);
+			this.PCEAutofire4Panel.Name = "PCEAutofire4Panel";
+			this.PCEAutofire4Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEAutofire4Panel.TabIndex = 2;
+			// 
+			// PCEAutofire5Panel
+			// 
+			this.PCEAutofire5Panel.Location = new System.Drawing.Point(20, 11);
+			this.PCEAutofire5Panel.Name = "PCEAutofire5Panel";
+			this.PCEAutofire5Panel.Size = new System.Drawing.Size(326, 332);
+			this.PCEAutofire5Panel.TabIndex = 2;
+			// 
+			// Atari2600Controller1Panel
+			// 
+			this.Atari2600Controller1Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari2600Controller1Panel.Name = "Atari2600Controller1Panel";
+			this.Atari2600Controller1Panel.Size = new System.Drawing.Size(365, 332);
+			this.Atari2600Controller1Panel.TabIndex = 1;
+			// 
+			// Atari2600Controller2Panel
+			// 
+			this.Atari2600Controller2Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari2600Controller2Panel.Name = "Atari2600Controller2Panel";
+			this.Atari2600Controller2Panel.Size = new System.Drawing.Size(365, 332);
+			this.Atari2600Controller2Panel.TabIndex = 2;
+			// 
+			// Atari2600ConsoleButtons
+			// 
+			this.Atari2600ConsoleButtons.Location = new System.Drawing.Point(10, 10);
+			this.Atari2600ConsoleButtons.Name = "Atari2600ConsoleButtons";
+			this.Atari2600ConsoleButtons.Size = new System.Drawing.Size(359, 125);
+			this.Atari2600ConsoleButtons.TabIndex = 1;
+			// 
+			// Atari2600Autofire1Panel
+			// 
+			this.Atari2600Autofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari2600Autofire1Panel.Name = "Atari2600Autofire1Panel";
+			this.Atari2600Autofire1Panel.Size = new System.Drawing.Size(368, 332);
+			this.Atari2600Autofire1Panel.TabIndex = 3;
+			// 
+			// Atari2600Autofire2Panel
+			// 
+			this.Atari2600Autofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari2600Autofire2Panel.Name = "Atari2600Autofire2Panel";
+			this.Atari2600Autofire2Panel.Size = new System.Drawing.Size(368, 332);
+			this.Atari2600Autofire2Panel.TabIndex = 3;
+			// 
+			// Atari7800Controller1Panel
+			// 
+			this.Atari7800Controller1Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Controller1Panel.Name = "Atari7800Controller1Panel";
+			this.Atari7800Controller1Panel.Size = new System.Drawing.Size(365, 332);
+			this.Atari7800Controller1Panel.TabIndex = 1;
+			// 
+			// Atari7800Controller2Panel
+			// 
+			this.Atari7800Controller2Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Controller2Panel.Name = "Atari7800Controller2Panel";
+			this.Atari7800Controller2Panel.Size = new System.Drawing.Size(365, 332);
+			this.Atari7800Controller2Panel.TabIndex = 2;
+			// 
+			// Atari7800ConsoleButtons
+			// 
+			this.Atari7800ConsoleButtons.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800ConsoleButtons.Name = "Atari7800ConsoleButtons";
+			this.Atari7800ConsoleButtons.Size = new System.Drawing.Size(359, 125);
+			this.Atari7800ConsoleButtons.TabIndex = 1;
+			// 
+			// Atari7800Autofire1Panel
+			// 
+			this.Atari7800Autofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Autofire1Panel.Name = "Atari7800Autofire1Panel";
+			this.Atari7800Autofire1Panel.Size = new System.Drawing.Size(368, 332);
+			this.Atari7800Autofire1Panel.TabIndex = 3;
+			// 
+			// Atari7800Autofire2Panel
+			// 
+			this.Atari7800Autofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.Atari7800Autofire2Panel.Name = "Atari7800Autofire2Panel";
+			this.Atari7800Autofire2Panel.Size = new System.Drawing.Size(368, 332);
+			this.Atari7800Autofire2Panel.TabIndex = 3;
+			// 
+			// C64Controller1Panel
+			// 
+			this.C64Controller1Panel.Location = new System.Drawing.Point(10, 10);
+			this.C64Controller1Panel.Name = "C64Controller1Panel";
+			this.C64Controller1Panel.Size = new System.Drawing.Size(369, 332);
+			this.C64Controller1Panel.TabIndex = 2;
+			// 
+			// C64Controller2Panel
+			// 
+			this.C64Controller2Panel.Location = new System.Drawing.Point(10, 10);
+			this.C64Controller2Panel.Name = "C64Controller2Panel";
+			this.C64Controller2Panel.Size = new System.Drawing.Size(369, 332);
+			this.C64Controller2Panel.TabIndex = 3;
+			// 
+			// C64Autofire1Panel
+			// 
+			this.C64Autofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.C64Autofire1Panel.Name = "C64Autofire1Panel";
+			this.C64Autofire1Panel.Size = new System.Drawing.Size(369, 332);
+			this.C64Autofire1Panel.TabIndex = 4;
+			// 
+			// C64Autofire2Panel
+			// 
+			this.C64Autofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.C64Autofire2Panel.Name = "C64Autofire2Panel";
+			this.C64Autofire2Panel.Size = new System.Drawing.Size(369, 332);
+			this.C64Autofire2Panel.TabIndex = 4;
+			// 
+			// C64KeyboardPanel
+			// 
+			this.C64KeyboardPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.C64KeyboardPanel.Location = new System.Drawing.Point(4, 131);
+			this.C64KeyboardPanel.Name = "C64KeyboardPanel";
+			this.C64KeyboardPanel.Size = new System.Drawing.Size(754, 259);
+			this.C64KeyboardPanel.TabIndex = 10;
+			// 
+			// COLController1Panel
+			// 
+			this.COLController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.COLController1Panel.Name = "COLController1Panel";
+			this.COLController1Panel.Size = new System.Drawing.Size(355, 332);
+			this.COLController1Panel.TabIndex = 1;
+			// 
+			// COLAutofire1Panel
+			// 
+			this.COLAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.COLAutofire1Panel.Name = "COLAutofire1Panel";
+			this.COLAutofire1Panel.Size = new System.Drawing.Size(359, 332);
+			this.COLAutofire1Panel.TabIndex = 2;
+			// 
+			// COLController2Panel
+			// 
+			this.COLController2Panel.Location = new System.Drawing.Point(10, 10);
+			this.COLController2Panel.Name = "COLController2Panel";
+			this.COLController2Panel.Size = new System.Drawing.Size(358, 332);
+			this.COLController2Panel.TabIndex = 2;
+			// 
+			// COLAutofire2Panel
+			// 
+			this.COLAutofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.COLAutofire2Panel.Name = "COLAutofire2Panel";
+			this.COLAutofire2Panel.Size = new System.Drawing.Size(358, 332);
+			this.COLAutofire2Panel.TabIndex = 3;
+			// 
+			// INTVController1Panel
+			// 
+			this.INTVController1Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVController1Panel.Name = "INTVController1Panel";
+			this.INTVController1Panel.Size = new System.Drawing.Size(355, 332);
+			this.INTVController1Panel.TabIndex = 1;
+			// 
+			// INTVAutofire1Panel
+			// 
+			this.INTVAutofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVAutofire1Panel.Name = "INTVAutofire1Panel";
+			this.INTVAutofire1Panel.Size = new System.Drawing.Size(359, 332);
+			this.INTVAutofire1Panel.TabIndex = 2;
+			// 
+			// INTVController2Panel
+			// 
+			this.INTVController2Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVController2Panel.Name = "INTVController2Panel";
+			this.INTVController2Panel.Size = new System.Drawing.Size(358, 332);
+			this.INTVController2Panel.TabIndex = 2;
+			// 
+			// INTVAutofire2Panel
+			// 
+			this.INTVAutofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.INTVAutofire2Panel.Name = "INTVAutofire2Panel";
+			this.INTVAutofire2Panel.Size = new System.Drawing.Size(358, 332);
+			this.INTVAutofire2Panel.TabIndex = 3;
+			// 
+			// TI83ControllerPanel
+			// 
+			this.TI83ControllerPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TI83ControllerPanel.Location = new System.Drawing.Point(11, 8);
+			this.TI83ControllerPanel.Name = "TI83ControllerPanel";
+			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 414);
+			this.TI83ControllerPanel.TabIndex = 1;
 			// 
 			// N64Controller1Panel
 			// 
@@ -2212,33 +2326,12 @@
 			this.N64Controller1Panel.Size = new System.Drawing.Size(392, 332);
 			this.N64Controller1Panel.TabIndex = 0;
 			// 
-			// tabPage68
-			// 
-			this.tabPage68.Controls.Add(this.N64Controller2Panel);
-			this.tabPage68.Location = new System.Drawing.Point(4, 22);
-			this.tabPage68.Name = "tabPage68";
-			this.tabPage68.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage68.Size = new System.Drawing.Size(445, 378);
-			this.tabPage68.TabIndex = 1;
-			this.tabPage68.Text = "Pad 2";
-			this.tabPage68.UseVisualStyleBackColor = true;
-			// 
 			// N64Controller2Panel
 			// 
 			this.N64Controller2Panel.Location = new System.Drawing.Point(10, 10);
 			this.N64Controller2Panel.Name = "N64Controller2Panel";
 			this.N64Controller2Panel.Size = new System.Drawing.Size(392, 332);
 			this.N64Controller2Panel.TabIndex = 0;
-			// 
-			// tabPage69
-			// 
-			this.tabPage69.Controls.Add(this.N64Controller3Panel);
-			this.tabPage69.Location = new System.Drawing.Point(4, 22);
-			this.tabPage69.Name = "tabPage69";
-			this.tabPage69.Size = new System.Drawing.Size(445, 378);
-			this.tabPage69.TabIndex = 2;
-			this.tabPage69.Text = "Pad 3";
-			this.tabPage69.UseVisualStyleBackColor = true;
 			// 
 			// N64Controller3Panel
 			// 
@@ -2247,32 +2340,12 @@
 			this.N64Controller3Panel.Size = new System.Drawing.Size(392, 332);
 			this.N64Controller3Panel.TabIndex = 0;
 			// 
-			// tabPage70
-			// 
-			this.tabPage70.Controls.Add(this.N64Controller4Panel);
-			this.tabPage70.Location = new System.Drawing.Point(4, 22);
-			this.tabPage70.Name = "tabPage70";
-			this.tabPage70.Size = new System.Drawing.Size(445, 378);
-			this.tabPage70.TabIndex = 3;
-			this.tabPage70.Text = "Pad 4";
-			this.tabPage70.UseVisualStyleBackColor = true;
-			// 
 			// N64Controller4Panel
 			// 
 			this.N64Controller4Panel.Location = new System.Drawing.Point(10, 10);
 			this.N64Controller4Panel.Name = "N64Controller4Panel";
 			this.N64Controller4Panel.Size = new System.Drawing.Size(392, 332);
 			this.N64Controller4Panel.TabIndex = 0;
-			// 
-			// tabPage71
-			// 
-			this.tabPage71.Controls.Add(this.N64ConsoleButtons);
-			this.tabPage71.Location = new System.Drawing.Point(4, 22);
-			this.tabPage71.Name = "tabPage71";
-			this.tabPage71.Size = new System.Drawing.Size(445, 378);
-			this.tabPage71.TabIndex = 4;
-			this.tabPage71.Text = "Console";
-			this.tabPage71.UseVisualStyleBackColor = true;
 			// 
 			// N64ConsoleButtons
 			// 
@@ -2281,32 +2354,12 @@
 			this.N64ConsoleButtons.Size = new System.Drawing.Size(368, 341);
 			this.N64ConsoleButtons.TabIndex = 0;
 			// 
-			// tabPage72
-			// 
-			this.tabPage72.Controls.Add(this.N64Autofire1Panel);
-			this.tabPage72.Location = new System.Drawing.Point(4, 22);
-			this.tabPage72.Name = "tabPage72";
-			this.tabPage72.Size = new System.Drawing.Size(445, 378);
-			this.tabPage72.TabIndex = 5;
-			this.tabPage72.Text = "Autofire 1";
-			this.tabPage72.UseVisualStyleBackColor = true;
-			// 
 			// N64Autofire1Panel
 			// 
 			this.N64Autofire1Panel.Location = new System.Drawing.Point(10, 10);
 			this.N64Autofire1Panel.Name = "N64Autofire1Panel";
 			this.N64Autofire1Panel.Size = new System.Drawing.Size(392, 332);
 			this.N64Autofire1Panel.TabIndex = 0;
-			// 
-			// tabPage73
-			// 
-			this.tabPage73.Controls.Add(this.N64Autofire2Panel);
-			this.tabPage73.Location = new System.Drawing.Point(4, 22);
-			this.tabPage73.Name = "tabPage73";
-			this.tabPage73.Size = new System.Drawing.Size(445, 378);
-			this.tabPage73.TabIndex = 6;
-			this.tabPage73.Text = "Autofire 2";
-			this.tabPage73.UseVisualStyleBackColor = true;
 			// 
 			// N64Autofire2Panel
 			// 
@@ -2315,16 +2368,6 @@
 			this.N64Autofire2Panel.Size = new System.Drawing.Size(392, 332);
 			this.N64Autofire2Panel.TabIndex = 0;
 			// 
-			// tabPage74
-			// 
-			this.tabPage74.Controls.Add(this.N64Autofire3Panel);
-			this.tabPage74.Location = new System.Drawing.Point(4, 22);
-			this.tabPage74.Name = "tabPage74";
-			this.tabPage74.Size = new System.Drawing.Size(445, 378);
-			this.tabPage74.TabIndex = 7;
-			this.tabPage74.Text = "Autofire 3";
-			this.tabPage74.UseVisualStyleBackColor = true;
-			// 
 			// N64Autofire3Panel
 			// 
 			this.N64Autofire3Panel.Location = new System.Drawing.Point(10, 10);
@@ -2332,22 +2375,127 @@
 			this.N64Autofire3Panel.Size = new System.Drawing.Size(392, 332);
 			this.N64Autofire3Panel.TabIndex = 0;
 			// 
-			// tabPage75
-			// 
-			this.tabPage75.Controls.Add(this.N64Autofire4Panel);
-			this.tabPage75.Location = new System.Drawing.Point(4, 22);
-			this.tabPage75.Name = "tabPage75";
-			this.tabPage75.Size = new System.Drawing.Size(445, 378);
-			this.tabPage75.TabIndex = 8;
-			this.tabPage75.Text = "Autofire 4";
-			this.tabPage75.UseVisualStyleBackColor = true;
-			// 
 			// N64Autofire4Panel
 			// 
 			this.N64Autofire4Panel.Location = new System.Drawing.Point(10, 10);
 			this.N64Autofire4Panel.Name = "N64Autofire4Panel";
 			this.N64Autofire4Panel.Size = new System.Drawing.Size(392, 332);
 			this.N64Autofire4Panel.TabIndex = 0;
+			// 
+			// pictureBox19
+			// 
+			this.pictureBox19.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox19.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox19.Location = new System.Drawing.Point(439, 34);
+			this.pictureBox19.Name = "pictureBox19";
+			this.pictureBox19.Size = new System.Drawing.Size(285, 233);
+			this.pictureBox19.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox19.TabIndex = 6;
+			this.pictureBox19.TabStop = false;
+			// 
+			// tabControl13
+			// 
+			this.tabControl13.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.tabControl13.Controls.Add(this.tabPage76);
+			this.tabControl13.Controls.Add(this.tabPage77);
+			this.tabControl13.Controls.Add(this.tabPage78);
+			this.tabControl13.Controls.Add(this.tabPage79);
+			this.tabControl13.Controls.Add(this.tabPage80);
+			this.tabControl13.Location = new System.Drawing.Point(17, 15);
+			this.tabControl13.Name = "tabControl13";
+			this.tabControl13.SelectedIndex = 0;
+			this.tabControl13.Size = new System.Drawing.Size(346, 401);
+			this.tabControl13.TabIndex = 5;
+			// 
+			// tabPage76
+			// 
+			this.tabPage76.Controls.Add(this.SaturnController1Panel);
+			this.tabPage76.Location = new System.Drawing.Point(4, 22);
+			this.tabPage76.Name = "tabPage76";
+			this.tabPage76.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage76.Size = new System.Drawing.Size(338, 375);
+			this.tabPage76.TabIndex = 0;
+			this.tabPage76.Text = "Pad 1";
+			this.tabPage76.UseVisualStyleBackColor = true;
+			// 
+			// SaturnController1Panel
+			// 
+			this.SaturnController1Panel.Location = new System.Drawing.Point(6, 6);
+			this.SaturnController1Panel.Name = "SaturnController1Panel";
+			this.SaturnController1Panel.Size = new System.Drawing.Size(326, 332);
+			this.SaturnController1Panel.TabIndex = 1;
+			// 
+			// tabPage77
+			// 
+			this.tabPage77.Controls.Add(this.SaturnController2Panel);
+			this.tabPage77.Location = new System.Drawing.Point(4, 22);
+			this.tabPage77.Name = "tabPage77";
+			this.tabPage77.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage77.Size = new System.Drawing.Size(338, 375);
+			this.tabPage77.TabIndex = 1;
+			this.tabPage77.Text = "Pad 1";
+			this.tabPage77.UseVisualStyleBackColor = true;
+			// 
+			// SaturnController2Panel
+			// 
+			this.SaturnController2Panel.Location = new System.Drawing.Point(6, 6);
+			this.SaturnController2Panel.Name = "SaturnController2Panel";
+			this.SaturnController2Panel.Size = new System.Drawing.Size(326, 332);
+			this.SaturnController2Panel.TabIndex = 2;
+			// 
+			// tabPage78
+			// 
+			this.tabPage78.Controls.Add(this.SaturnConsoleButtons);
+			this.tabPage78.Location = new System.Drawing.Point(4, 22);
+			this.tabPage78.Name = "tabPage78";
+			this.tabPage78.Size = new System.Drawing.Size(338, 375);
+			this.tabPage78.TabIndex = 2;
+			this.tabPage78.Text = "Console";
+			this.tabPage78.UseVisualStyleBackColor = true;
+			// 
+			// SaturnConsoleButtons
+			// 
+			this.SaturnConsoleButtons.Location = new System.Drawing.Point(6, 6);
+			this.SaturnConsoleButtons.Name = "SaturnConsoleButtons";
+			this.SaturnConsoleButtons.Size = new System.Drawing.Size(322, 125);
+			this.SaturnConsoleButtons.TabIndex = 1;
+			// 
+			// tabPage79
+			// 
+			this.tabPage79.Controls.Add(this.SaturnAutofire1Panel);
+			this.tabPage79.Location = new System.Drawing.Point(4, 22);
+			this.tabPage79.Name = "tabPage79";
+			this.tabPage79.Size = new System.Drawing.Size(338, 375);
+			this.tabPage79.TabIndex = 3;
+			this.tabPage79.Text = "Autofire 1";
+			this.tabPage79.UseVisualStyleBackColor = true;
+			// 
+			// SaturnAutofire1Panel
+			// 
+			this.SaturnAutofire1Panel.Location = new System.Drawing.Point(6, 6);
+			this.SaturnAutofire1Panel.Name = "SaturnAutofire1Panel";
+			this.SaturnAutofire1Panel.Size = new System.Drawing.Size(326, 332);
+			this.SaturnAutofire1Panel.TabIndex = 3;
+			// 
+			// tabPage80
+			// 
+			this.tabPage80.Controls.Add(this.SaturnAutofire2Panel);
+			this.tabPage80.Location = new System.Drawing.Point(4, 22);
+			this.tabPage80.Name = "tabPage80";
+			this.tabPage80.Size = new System.Drawing.Size(338, 375);
+			this.tabPage80.TabIndex = 4;
+			this.tabPage80.Text = "Autofire 2";
+			this.tabPage80.UseVisualStyleBackColor = true;
+			// 
+			// SaturnAutofire2Panel
+			// 
+			this.SaturnAutofire2Panel.Location = new System.Drawing.Point(6, 6);
+			this.SaturnAutofire2Panel.Name = "SaturnAutofire2Panel";
+			this.SaturnAutofire2Panel.Size = new System.Drawing.Size(326, 332);
+			this.SaturnAutofire2Panel.TabIndex = 4;
 			// 
 			// ControllerConfig
 			// 
@@ -2485,6 +2633,14 @@
 			this.tabPage73.ResumeLayout(false);
 			this.tabPage74.ResumeLayout(false);
 			this.tabPage75.ResumeLayout(false);
+			this.tabPageSaturn.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox19)).EndInit();
+			this.tabControl13.ResumeLayout(false);
+			this.tabPage76.ResumeLayout(false);
+			this.tabPage77.ResumeLayout(false);
+			this.tabPage78.ResumeLayout(false);
+			this.tabPage79.ResumeLayout(false);
+			this.tabPage80.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -2694,5 +2850,18 @@
 		private ControllerConfigPanel N64Autofire3Panel;
 		private System.Windows.Forms.TabPage tabPage75;
 		private ControllerConfigPanel N64Autofire4Panel;
+		private System.Windows.Forms.TabPage tabPageSaturn;
+		private System.Windows.Forms.PictureBox pictureBox19;
+		private System.Windows.Forms.TabControl tabControl13;
+		private System.Windows.Forms.TabPage tabPage76;
+		private ControllerConfigPanel SaturnController1Panel;
+		private System.Windows.Forms.TabPage tabPage77;
+		private ControllerConfigPanel SaturnController2Panel;
+		private System.Windows.Forms.TabPage tabPage78;
+		private ControllerConfigPanel SaturnConsoleButtons;
+		private System.Windows.Forms.TabPage tabPage79;
+		private ControllerConfigPanel SaturnAutofire1Panel;
+		private System.Windows.Forms.TabPage tabPage80;
+		private ControllerConfigPanel SaturnAutofire2Panel;
 	}
 }

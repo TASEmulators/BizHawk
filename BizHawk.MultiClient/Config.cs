@@ -835,7 +835,7 @@ namespace BizHawk.MultiClient
 		//Saturn
 		public SaturnControllerTemplate[] SaturnController = new SaturnControllerTemplate[2];
 		public SaturnControllerTemplate[] SaturnAutoController = new SaturnControllerTemplate[2];
-		public SaturnConsoleButtonTemplate[] SaturnConsoleButtons = new SaturnConsoleButtonTemplate[1];
+		public SaturnConsoleButtonTemplate SaturnConsoleButtons = new SaturnConsoleButtonTemplate();
 
 		//Commodore 64 Settings
 		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
