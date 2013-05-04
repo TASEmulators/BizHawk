@@ -349,14 +349,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void StartupCallback();
 
-		//byte[] m64p_FrameBuffer = new byte[800 * 600 * 3];
+		int[] m64p_FrameBuffer = new int[800 * 600];
 		public void Getm64pFrameBuffer()
 		{
 			int width = 0;
 			int height = 0;
-			//GFXReadScreen2(m64p_FrameBuffer, ref width, ref height, 0);
-			GFXReadScreen2(frameBuffer, ref width, ref height, 0);
-			//m64pFrameComplete = true;
+			GFXReadScreen2(m64p_FrameBuffer, ref width, ref height, 0);
+			
+			// vflip
+			int fromindex = 800 * 599 * 4;
+			int toindex = 0;
+			for (int j = 0; j < 600; j++)
+			{
+				Buffer.BlockCopy(m64p_FrameBuffer, fromindex, frameBuffer, toindex, 800 * 4);
+				fromindex -= 800 * 4;
+				toindex += 800 * 4;
+			}
 		}
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
