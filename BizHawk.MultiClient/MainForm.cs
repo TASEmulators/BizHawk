@@ -2455,7 +2455,7 @@ namespace BizHawk.MultiClient
 							case "N64":
 								if (INTERIM)
 								{
-									nextEmulator = new N64(nextComm, game, rom.RomData, 640, 480);
+									nextEmulator = new N64(nextComm, game, rom.RomData, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
 								}
 								break;
 						}
