@@ -1038,6 +1038,8 @@ namespace BizHawk.MultiClient
 			Global.AutofireGBAControls = agbaControls;
 
 			var satControls = new Controller(Emulation.Consoles.Sega.Saturn.Yabause.SaturnController);
+			satControls.BindMulti("Power", Global.Config.SaturnConsoleButtons.Power);
+			satControls.BindMulti("Reset", Global.Config.SaturnConsoleButtons.Reset);
 			satControls.BindMulti("P1 Up", Global.Config.SaturnController[0].Up);
 			satControls.BindMulti("P1 Down", Global.Config.SaturnController[0].Down);
 			satControls.BindMulti("P1 Left", Global.Config.SaturnController[0].Left);

@@ -68,6 +68,17 @@ namespace BizHawk.MultiClient
 			N64Autofire3Panel.LoadSettings(Global.Config.N64AutoController[2]);
 			N64Autofire4Panel.LoadSettings(Global.Config.N64AutoController[3]);
 
+			SaturnController1Panel.Spacing = 25;
+			SaturnController1Panel.LoadSettings(Global.Config.SaturnController[0]);
+			SaturnController2Panel.Spacing = 25;
+			SaturnController2Panel.LoadSettings(Global.Config.SaturnController[1]);
+			SaturnConsoleButtons.Spacing = 25;
+			SaturnConsoleButtons.LoadSettings(Global.Config.SaturnConsoleButtons);
+			SaturnAutofire1Panel.Spacing = 25;
+			SaturnAutofire1Panel.LoadSettings(Global.Config.SaturnAutoController[0]);
+			SaturnAutofire2Panel.Spacing = 25;
+			SaturnAutofire2Panel.LoadSettings(Global.Config.SaturnAutoController[1]);
+
 			SNESController1Panel.Spacing = 25;
 			SNESController2Panel.Spacing = 25;
 			SNESController3Panel.Spacing = 25;
@@ -265,7 +276,7 @@ namespace BizHawk.MultiClient
 					PlatformTabControl.SelectTab(tabPageN64);
 					break;
 				case "SAT":
-					//TODO
+					PlatformTabControl.SelectTab(tabPageSaturn);
 					break;
 			}
 		}
