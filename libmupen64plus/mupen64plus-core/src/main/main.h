@@ -43,7 +43,7 @@ void new_vi(void);
 int  main_set_core_defaults(void);
 void main_message(m64p_msg_level level, unsigned int osd_corner, const char *format, ...);
 
-m64p_error main_run(void);
+m64p_error main_run(void (*startcb)(void));
 void main_stop(void);
 void main_toggle_pause(void);
 void main_advance_one(void);

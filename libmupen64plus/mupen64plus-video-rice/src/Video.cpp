@@ -936,7 +936,7 @@ EXPORT void CALL ReadScreen2(void *dest, int *width, int *height, int bFront)
     else
         glReadBuffer( GL_BACK );
     glReadPixels( 0, 0, windowSetting.uDisplayWidth, windowSetting.uDisplayHeight,
-                 GL_RGB, GL_UNSIGNED_BYTE, dest );
+                 GL_BGRA, GL_UNSIGNED_BYTE, dest );
     glReadBuffer( oldMode );
 #endif
 }
