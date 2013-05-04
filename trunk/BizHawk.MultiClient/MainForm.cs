@@ -5394,7 +5394,8 @@ namespace BizHawk.MultiClient
 
 		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new BizHawk.MultiClient.tools.N64VideoPluginconfig().ShowDialog();
+			new BizHawk.MultiClient.N64VideoPluginconfig().ShowDialog();
 		}
+
 	}
 }

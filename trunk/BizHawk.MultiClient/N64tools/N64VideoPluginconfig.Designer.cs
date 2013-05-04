@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.tools
+﻿namespace BizHawk.MultiClient
 {
 	partial class N64VideoPluginconfig
 	{
