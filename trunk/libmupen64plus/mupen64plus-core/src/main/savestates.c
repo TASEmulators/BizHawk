@@ -1663,7 +1663,7 @@ EXPORT int CALL savestates_save_bkm(char *curr)
 	}
 	else
 	{
-		PUTDATA(curr, unsigned int, 0);
+		PUTDATA(curr, unsigned int, 0xa4000040);
 	}
 
     PUTDATA(curr, unsigned int, next_interupt);
