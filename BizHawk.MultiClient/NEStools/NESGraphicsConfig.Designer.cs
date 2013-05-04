@@ -37,6 +37,10 @@
 			this.PalettePath = new System.Windows.Forms.TextBox();
 			this.BrowsePalette = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.PAL_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
+			this.PAL_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label5 = new System.Windows.Forms.Label();
 			this.btnAreaFull = new System.Windows.Forms.Button();
 			this.btnAreaStandard = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
@@ -55,18 +59,14 @@
 			this.DispSprites = new System.Windows.Forms.CheckBox();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
 			this.RestoreDefaultsButton = new System.Windows.Forms.Button();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.PAL_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
-			this.PAL_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).BeginInit();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
@@ -179,6 +179,58 @@
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Drawing Area";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(131, 22);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(27, 13);
+			this.label6.TabIndex = 44;
+			this.label6.Text = "PAL";
+			// 
+			// PAL_LastLineNumeric
+			// 
+			this.PAL_LastLineNumeric.Location = new System.Drawing.Point(124, 67);
+			this.PAL_LastLineNumeric.Maximum = new decimal(new int[] {
+            239,
+            0,
+            0,
+            0});
+			this.PAL_LastLineNumeric.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+			this.PAL_LastLineNumeric.Name = "PAL_LastLineNumeric";
+			this.PAL_LastLineNumeric.Size = new System.Drawing.Size(47, 20);
+			this.PAL_LastLineNumeric.TabIndex = 43;
+			this.PAL_LastLineNumeric.Value = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+			// 
+			// PAL_FirstLineNumeric
+			// 
+			this.PAL_FirstLineNumeric.Location = new System.Drawing.Point(124, 41);
+			this.PAL_FirstLineNumeric.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+			this.PAL_FirstLineNumeric.Name = "PAL_FirstLineNumeric";
+			this.PAL_FirstLineNumeric.Size = new System.Drawing.Size(47, 20);
+			this.PAL_FirstLineNumeric.TabIndex = 42;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(62, 22);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(36, 13);
+			this.label5.TabIndex = 41;
+			this.label5.Text = "NTSC";
 			// 
 			// btnAreaFull
 			// 
@@ -331,6 +383,7 @@
 			// 
 			// BackgroundColorPanel
 			// 
+			this.BackgroundColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.BackgroundColorPanel.Location = new System.Drawing.Point(4, 8);
 			this.BackgroundColorPanel.Name = "BackgroundColorPanel";
 			this.BackgroundColorPanel.Size = new System.Drawing.Size(20, 16);
@@ -372,58 +425,6 @@
 			this.RestoreDefaultsButton.UseVisualStyleBackColor = true;
 			this.RestoreDefaultsButton.Click += new System.EventHandler(this.RestoreDefaultsButton_Click);
 			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(62, 22);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(36, 13);
-			this.label5.TabIndex = 41;
-			this.label5.Text = "NTSC";
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(131, 22);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(27, 13);
-			this.label6.TabIndex = 44;
-			this.label6.Text = "PAL";
-			// 
-			// PAL_LastLineNumeric
-			// 
-			this.PAL_LastLineNumeric.Location = new System.Drawing.Point(124, 67);
-			this.PAL_LastLineNumeric.Maximum = new decimal(new int[] {
-            239,
-            0,
-            0,
-            0});
-			this.PAL_LastLineNumeric.Minimum = new decimal(new int[] {
-            128,
-            0,
-            0,
-            0});
-			this.PAL_LastLineNumeric.Name = "PAL_LastLineNumeric";
-			this.PAL_LastLineNumeric.Size = new System.Drawing.Size(47, 20);
-			this.PAL_LastLineNumeric.TabIndex = 43;
-			this.PAL_LastLineNumeric.Value = new decimal(new int[] {
-            128,
-            0,
-            0,
-            0});
-			// 
-			// PAL_FirstLineNumeric
-			// 
-			this.PAL_FirstLineNumeric.Location = new System.Drawing.Point(124, 41);
-			this.PAL_FirstLineNumeric.Maximum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            0});
-			this.PAL_FirstLineNumeric.Name = "PAL_FirstLineNumeric";
-			this.PAL_FirstLineNumeric.Size = new System.Drawing.Size(47, 20);
-			this.PAL_FirstLineNumeric.TabIndex = 42;
-			// 
 			// NESGraphicsConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -450,13 +451,13 @@
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}

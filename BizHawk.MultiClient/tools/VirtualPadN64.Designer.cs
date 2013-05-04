@@ -50,7 +50,7 @@
 			this.PL.Appearance = System.Windows.Forms.Appearance.Button;
 			this.PL.AutoSize = true;
 			this.PL.Image = global::BizHawk.MultiClient.Properties.Resources.Back;
-			this.PL.Location = new System.Drawing.Point(20, 229);
+			this.PL.Location = new System.Drawing.Point(3, 207);
 			this.PL.Name = "PL";
 			this.PL.Size = new System.Drawing.Size(22, 22);
 			this.PL.TabIndex = 7;
@@ -62,7 +62,7 @@
 			this.PD.Appearance = System.Windows.Forms.Appearance.Button;
 			this.PD.AutoSize = true;
 			this.PD.Image = global::BizHawk.MultiClient.Properties.Resources.BlueDown;
-			this.PD.Location = new System.Drawing.Point(41, 238);
+			this.PD.Location = new System.Drawing.Point(24, 216);
 			this.PD.Name = "PD";
 			this.PD.Size = new System.Drawing.Size(22, 22);
 			this.PD.TabIndex = 6;
@@ -74,7 +74,7 @@
 			this.PR.Appearance = System.Windows.Forms.Appearance.Button;
 			this.PR.AutoSize = true;
 			this.PR.Image = global::BizHawk.MultiClient.Properties.Resources.Forward;
-			this.PR.Location = new System.Drawing.Point(62, 229);
+			this.PR.Location = new System.Drawing.Point(45, 207);
 			this.PR.Name = "PR";
 			this.PR.Size = new System.Drawing.Size(22, 22);
 			this.PR.TabIndex = 5;
@@ -86,7 +86,7 @@
 			this.PU.Appearance = System.Windows.Forms.Appearance.Button;
 			this.PU.AutoSize = true;
 			this.PU.Image = global::BizHawk.MultiClient.Properties.Resources.BlueUp;
-			this.PU.Location = new System.Drawing.Point(41, 217);
+			this.PU.Location = new System.Drawing.Point(24, 195);
 			this.PU.Name = "PU";
 			this.PU.Size = new System.Drawing.Size(22, 22);
 			this.PU.TabIndex = 4;
@@ -97,7 +97,7 @@
 			// 
 			this.BL.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BL.AutoSize = true;
-			this.BL.Location = new System.Drawing.Point(14, 180);
+			this.BL.Location = new System.Drawing.Point(3, 148);
 			this.BL.Name = "BL";
 			this.BL.Size = new System.Drawing.Size(23, 23);
 			this.BL.TabIndex = 8;
@@ -109,7 +109,7 @@
 			// 
 			this.BR.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BR.AutoSize = true;
-			this.BR.Location = new System.Drawing.Point(177, 180);
+			this.BR.Location = new System.Drawing.Point(138, 148);
 			this.BR.Name = "BR";
 			this.BR.Size = new System.Drawing.Size(25, 23);
 			this.BR.TabIndex = 9;
@@ -121,7 +121,7 @@
 			// 
 			this.BS.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BS.AutoSize = true;
-			this.BS.Location = new System.Drawing.Point(98, 191);
+			this.BS.Location = new System.Drawing.Point(74, 157);
 			this.BS.Name = "BS";
 			this.BS.Size = new System.Drawing.Size(24, 23);
 			this.BS.TabIndex = 10;
@@ -133,7 +133,7 @@
 			// 
 			this.BZ.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BZ.AutoSize = true;
-			this.BZ.Location = new System.Drawing.Point(98, 270);
+			this.BZ.Location = new System.Drawing.Point(74, 245);
 			this.BZ.Name = "BZ";
 			this.BZ.Size = new System.Drawing.Size(24, 23);
 			this.BZ.TabIndex = 11;
@@ -144,7 +144,7 @@
 			// 
 			this.BB.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BB.AutoSize = true;
-			this.BB.Location = new System.Drawing.Point(98, 220);
+			this.BB.Location = new System.Drawing.Point(98, 195);
 			this.BB.Name = "BB";
 			this.BB.Size = new System.Drawing.Size(24, 23);
 			this.BB.TabIndex = 12;
@@ -156,7 +156,7 @@
 			// 
 			this.BA.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BA.AutoSize = true;
-			this.BA.Location = new System.Drawing.Point(128, 229);
+			this.BA.Location = new System.Drawing.Point(128, 206);
 			this.BA.Name = "BA";
 			this.BA.Size = new System.Drawing.Size(24, 23);
 			this.BA.TabIndex = 13;
@@ -168,7 +168,7 @@
 			// 
 			this.CU.Appearance = System.Windows.Forms.Appearance.Button;
 			this.CU.AutoSize = true;
-			this.CU.Location = new System.Drawing.Point(212, 216);
+			this.CU.Location = new System.Drawing.Point(138, 235);
 			this.CU.Name = "CU";
 			this.CU.Size = new System.Drawing.Size(31, 23);
 			this.CU.TabIndex = 14;
@@ -180,7 +180,7 @@
 			// 
 			this.CL.Appearance = System.Windows.Forms.Appearance.Button;
 			this.CL.AutoSize = true;
-			this.CL.Location = new System.Drawing.Point(190, 245);
+			this.CL.Location = new System.Drawing.Point(116, 258);
 			this.CL.Name = "CL";
 			this.CL.Size = new System.Drawing.Size(29, 23);
 			this.CL.TabIndex = 15;
@@ -192,7 +192,7 @@
 			// 
 			this.CR.Appearance = System.Windows.Forms.Appearance.Button;
 			this.CR.AutoSize = true;
-			this.CR.Location = new System.Drawing.Point(225, 245);
+			this.CR.Location = new System.Drawing.Point(151, 259);
 			this.CR.Name = "CR";
 			this.CR.Size = new System.Drawing.Size(31, 23);
 			this.CR.TabIndex = 16;
@@ -204,7 +204,7 @@
 			// 
 			this.CD.Appearance = System.Windows.Forms.Appearance.Button;
 			this.CD.AutoSize = true;
-			this.CD.Location = new System.Drawing.Point(212, 274);
+			this.CD.Location = new System.Drawing.Point(138, 284);
 			this.CD.Name = "CD";
 			this.CD.Size = new System.Drawing.Size(31, 23);
 			this.CD.TabIndex = 17;
@@ -215,9 +215,9 @@
 			// AnalogControl1
 			// 
 			this.AnalogControl1.BackColor = System.Drawing.Color.Transparent;
-			this.AnalogControl1.Location = new System.Drawing.Point(14, 27);
+			this.AnalogControl1.Location = new System.Drawing.Point(24, 14);
 			this.AnalogControl1.Name = "AnalogControl1";
-			this.AnalogControl1.Size = new System.Drawing.Size(205, 147);
+			this.AnalogControl1.Size = new System.Drawing.Size(128, 128);
 			this.AnalogControl1.TabIndex = 0;
 			// 
 			// VirtualPadN64
@@ -240,7 +240,7 @@
 			this.Controls.Add(this.PU);
 			this.Controls.Add(this.AnalogControl1);
 			this.Name = "VirtualPadN64";
-			this.Size = new System.Drawing.Size(463, 332);
+			this.Size = new System.Drawing.Size(201, 332);
 			this.Load += new System.EventHandler(this.UserControl1_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
