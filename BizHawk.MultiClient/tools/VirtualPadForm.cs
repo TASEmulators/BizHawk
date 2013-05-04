@@ -173,6 +173,14 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(_ataripad1);
 					ControllerBox.Controls.Add(_ataripad2);
 					break;
+				case "N64":
+					VirtualPadN64 n64k = new VirtualPadN64
+						{
+							Location = new Point(8, 19)
+						};
+					Pads.Add(n64k);
+					ControllerBox.Controls.Add(n64k);
+					break;
 			}
 
 			//Hack for now
