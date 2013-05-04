@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public int[] frameBuffer = new int[800 * 600];
 		public int[] GetVideoBuffer() 
 		{
+			/*
 			for (int row = 0; row < 600; row++)
 			{
 				for (int col = 0; col < 800; col++)
@@ -30,6 +31,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 					frameBuffer[(599 - row) * 800 + col] = (m64p_FrameBuffer[(i * 3)] << 16) + (m64p_FrameBuffer[(i * 3) + 1] << 8) + (m64p_FrameBuffer[(i * 3) + 2]);
 				}
 			}
+			*/
 			return frameBuffer;
 		}
 		public int VirtualWidth { get { return 800; } }
@@ -301,7 +303,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		// Graphics plugin specific
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void ReadScreen2(byte[] framebuffer, ref int width, ref int height, int buffer);
+		private delegate void ReadScreen2(int[] framebuffer, ref int width, ref int height, int buffer);
 		ReadScreen2 GFXReadScreen2;
 
 		// Audio plugin specific
@@ -343,13 +345,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void FrameCallback();
 		FrameCallback m64pFrameCallback;
-		
-		byte[] m64p_FrameBuffer = new byte[800 * 600 * 3];
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void StartupCallback();
+
+		//byte[] m64p_FrameBuffer = new byte[800 * 600 * 3];
 		public void Getm64pFrameBuffer()
 		{
 			int width = 0;
 			int height = 0;
-			GFXReadScreen2(m64p_FrameBuffer, ref width, ref height, 0);
+			//GFXReadScreen2(m64p_FrameBuffer, ref width, ref height, 0);
+			GFXReadScreen2(frameBuffer, ref width, ref height, 0);
 			//m64pFrameComplete = true;
 		}
 
@@ -391,6 +397,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		Thread m64pEmulator;
 
 		AutoResetEvent m64pFrameComplete = new AutoResetEvent(false);
+
+		ManualResetEvent m64pStartupComplete = new ManualResetEvent(false);
 
 		public N64(CoreComm comm, GameInfo game, byte[] rom)
 		{
@@ -496,6 +504,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			} while (state != (int)m64p_emu_state.M64EMU_PAUSED);
 			*/
 			//m64pFrameComplete.WaitOne();
+			m64pStartupComplete.WaitOne();
 
 			// because of when we're doing this, we can't call this yet
 			m64pSamplingRate = 32000; // (uint)AudGetAudioRate();
@@ -510,7 +519,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void ExecuteEmulator()
 		{
 			emulator_running = true;
-			m64pCoreDoCommandPtr(m64p_command.M64CMD_EXECUTE, 0, IntPtr.Zero);
+			m64pCoreDoCommandPtr(m64p_command.M64CMD_EXECUTE, 0,
+				Marshal.GetFunctionPointerForDelegate(new StartupCallback(() => m64pStartupComplete.Set())));
 			emulator_running = false;
 		}
 

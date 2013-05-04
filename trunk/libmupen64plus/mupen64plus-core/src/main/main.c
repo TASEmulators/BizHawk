@@ -722,7 +722,7 @@ void new_vi(void)
 /*********************************************************************************************************
 * emulation thread - runs the core
 */
-m64p_error main_run(void)
+m64p_error main_run(void (*startcb)(void))
 {
     /* take the r4300 emulator mode from the config file at this point and cache it in a global variable */
     r4300emu = ConfigGetParamInt(g_CoreConfig, "R4300Emulator");
@@ -790,7 +790,7 @@ m64p_error main_run(void)
     /* call r4300 CPU core and run the game */
     r4300_reset_hard();
     r4300_reset_soft();
-    r4300_execute();
+    r4300_execute(startcb);
 
     /* now begin to shut down */
 #ifdef WITH_LIRC

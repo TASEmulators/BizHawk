@@ -975,7 +975,7 @@ static void dynarec_setup_code(void)
 }
 #endif
 
-void r4300_execute(void)
+void r4300_execute(void (*startcb)(void))
 {
 #if defined(COUNT_INSTR) || (defined(DYNAREC) && defined(PROFILE_R4300))
     unsigned int i;
@@ -998,6 +998,9 @@ void r4300_execute(void)
     last_addr = 0xa4000040;
     next_interupt = 624999;
     init_interupt();
+
+	if (startcb)
+		startcb();
 
 	// now that everything has been set up, we stop here to wait for the first frame
 	WaitForSingleObject(rompausesem, INFINITE);
