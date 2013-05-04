@@ -468,8 +468,8 @@ EXPORT void CALL SetKeys(int num, int keys, char X, char Y)
 {
 	controllers[num].R_DPAD = (keys >> 0) & 0x01;
 	controllers[num].L_DPAD = (keys >> 1) & 0x01;
-	controllers[num].U_DPAD = (keys >> 2) & 0x01;
-	controllers[num].D_DPAD = (keys >> 3) & 0x01;
+	controllers[num].D_DPAD = (keys >> 2) & 0x01;
+	controllers[num].U_DPAD = (keys >> 3) & 0x01;
 	controllers[num].START_BUTTON = (keys >> 4) & 0x01;
 	controllers[num].Z_TRIG = (keys >> 5) & 0x01;
 	controllers[num].B_BUTTON = (keys >> 6) & 0x01;
