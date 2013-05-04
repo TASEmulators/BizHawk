@@ -260,6 +260,10 @@ namespace BizHawk.MultiClient
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
 
+		//N64 Config Settings
+		public int N64VideoSizeX = 320;
+		public int N64VideoSizeY = 240;
+
 		// General Client Settings
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
