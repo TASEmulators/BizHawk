@@ -488,17 +488,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pEmulator = new Thread(ExecuteEmulator);
 			m64pEmulator.Start();
 
-			int state = -1;
+			//int state = -1;
 			/*
 			do
 			{
 				m64pCoreDoCommandRefInt(m64p_command.M64CMD_CORE_STATE_QUERY, 1, ref state);
 			} while (state != (int)m64p_emu_state.M64EMU_PAUSED);
 			*/
-			m64pFrameComplete.WaitOne();
+			//m64pFrameComplete.WaitOne();
 
-			
-			m64pSamplingRate = (uint)AudGetAudioRate();
+			// because of when we're doing this, we can't call this yet
+			m64pSamplingRate = 32000; // (uint)AudGetAudioRate();
 			resampler = new Sound.Utilities.SpeexResampler(6, m64pSamplingRate, 44100, m64pSamplingRate, 44100, null, null);
 			//Console.WriteLine("N64 Initial ARate {0}", m64pSamplingRate);
 			
