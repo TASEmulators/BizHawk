@@ -68,8 +68,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void ResetFrameCounter() { }
 		public void FrameAdvance(bool render, bool rendersound) 
 		{
-			m64pFrameComplete = false;
-
 			if (Controller["Reset"])
 			{
 				m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 0, IntPtr.Zero);
@@ -89,7 +87,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			*/
 			InpSetKeys(0, ReadController(1), 0, 0);
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
-			while (m64pFrameComplete == false) { }
+			m64pFrameComplete.WaitOne();
 			Frame++; 
 		}
 
@@ -381,7 +379,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 					resampler.EnqueueSamples(m64pAudioBuffer, m64pAudioBufferSize / 2);
 				}
 			}
-			m64pFrameComplete = true;
+			m64pFrameComplete.Set();
 		}
 
 		IntPtr CoreDll;
@@ -392,7 +390,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		Thread m64pEmulator;
 
-		volatile bool m64pFrameComplete = false;
+		AutoResetEvent m64pFrameComplete = new AutoResetEvent(false);
 
 		public N64(CoreComm comm, GameInfo game, byte[] rom)
 		{
@@ -497,8 +495,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 				m64pCoreDoCommandRefInt(m64p_command.M64CMD_CORE_STATE_QUERY, 1, ref state);
 			} while (state != (int)m64p_emu_state.M64EMU_PAUSED);
 			*/
-			m64pFrameComplete = false;
-			while (!m64pFrameComplete) { }
+			m64pFrameComplete.WaitOne();
 
 			
 			m64pSamplingRate = (uint)AudGetAudioRate();
