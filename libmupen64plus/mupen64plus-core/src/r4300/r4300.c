@@ -999,6 +999,9 @@ void r4300_execute(void)
     next_interupt = 624999;
     init_interupt();
 
+	// now that everything has been set up, we stop here to wait for the first frame
+	WaitForSingleObject(rompausesem, INFINITE);
+
     if (r4300emu == CORE_PURE_INTERPRETER)
     {
         DebugMessage(M64MSG_INFO, "Starting R4300 emulator: Pure Interpreter");
