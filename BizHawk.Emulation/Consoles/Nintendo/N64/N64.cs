@@ -497,9 +497,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			CoreDll = LoadLibrary("mupen64plus.dll");
 			if (CoreDll == IntPtr.Zero)
 				throw new InvalidOperationException(string.Format("Failed to load mupen64plus.dll"));
-			GfxDll = LoadLibrary("mupen64plus-video-rice.dll");
+			GfxDll = LoadLibrary("mupen64plus-video-glide64.dll");
 			if (GfxDll == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-video-rice.dll"));
+				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-video-glide64.dll"));
 			RspDll = LoadLibrary("mupen64plus-rsp-hle.dll");
 			if (RspDll == IntPtr.Zero)
 				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-rsp-hle.dll"));
@@ -543,12 +543,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			RspPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginShutdown"), typeof(PluginShutdown));
 
 			// Set up the core
-			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { }, "", IntPtr.Zero);
+			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); }, "", IntPtr.Zero);
 			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);
-
-			// Set up and connect the graphics plugin
-			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { });
-			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
 
 			SetVideoSize(vidX, vidY);
 			// Configure the video plugin
@@ -557,16 +553,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			result = m64pConfigSetParameter(video_section, "ScreenWidth", m64p_type.M64TYPE_INT, ref vidX);
 			result = m64pConfigSetParameter(video_section, "ScreenHeight", m64p_type.M64TYPE_INT, ref vidY);
 
+			// Set up and connect the graphics plugin
+			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { /*Console.WriteLine(Message);*/ });
+			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
+
 			// Set up a null audio plugin
-			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { });
+			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, AudDll);
 
 			// Set up a null input plugin
-			result = AudPluginStartup(CoreDll, "Input", (IntPtr foo, int level, string Message) => { });
+			result = AudPluginStartup(CoreDll, "Input", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, InpDll);
 
 			// Set up and connect the graphics plugin
-			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { });
+			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_RSP, RspDll);
 
 			// Set up the frame callback function
