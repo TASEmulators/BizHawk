@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			{
 				m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 1, IntPtr.Zero);
 			}			
-			
+			/*
 			sbyte x = 0;
 			sbyte y = 0;
 			if (Controller["P1 DPad R"]) x = 80;
@@ -96,8 +96,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			if (Controller["P1 DPad D"]) y = -80;
 			if (Controller["P1 DPad U"]) y = 80;
 			InpSetKeys(0, ReadController(1), x, y);
-			
-			//InpSetKeys(0, ReadController(1), 0, 0);
+			*/
+			InpSetKeys(0, ReadController(1), 0, 0);
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 			m64pFrameComplete.WaitOne();
 			Frame++; 
