@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			{
 				m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 1, IntPtr.Zero);
 			}			
-			/*
+			
 			sbyte x = 0;
 			sbyte y = 0;
 			if (Controller["P1 DPad R"]) x = 80;
@@ -96,8 +96,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			if (Controller["P1 DPad D"]) y = -80;
 			if (Controller["P1 DPad U"]) y = 80;
 			InpSetKeys(0, ReadController(1), x, y);
-			*/
-			InpSetKeys(0, ReadController(1), 0, 0);
+			
+			//InpSetKeys(0, ReadController(1), 0, 0);
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 			m64pFrameComplete.WaitOne();
 			Frame++; 
@@ -543,7 +543,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			RspPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginShutdown"), typeof(PluginShutdown));
 
 			// Set up the core
-			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); }, "", IntPtr.Zero);
+			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { }, "", IntPtr.Zero);
 			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);
 
 			SetVideoSize(vidX, vidY);
@@ -554,19 +554,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			result = m64pConfigSetParameter(video_section, "ScreenHeight", m64p_type.M64TYPE_INT, ref vidY);
 
 			// Set up and connect the graphics plugin
-			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { /*Console.WriteLine(Message);*/ });
+			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_GFX, GfxDll);
 
 			// Set up a null audio plugin
-			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
+			result = AudPluginStartup(CoreDll, "Audio", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_AUDIO, AudDll);
 
 			// Set up a null input plugin
-			result = AudPluginStartup(CoreDll, "Input", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
+			result = AudPluginStartup(CoreDll, "Input", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_INPUT, InpDll);
 
 			// Set up and connect the graphics plugin
-			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { Console.WriteLine(Message); });
+			result = RspPluginStartup(CoreDll, "RSP", (IntPtr foo, int level, string Message) => { });
 			result = m64pCoreAttachPlugin(m64p_plugin_type.M64PLUGIN_RSP, RspDll);
 
 			// Set up the frame callback function
@@ -576,6 +576,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			// Set up the vi callback function
 			m64pVICallback = new VICallback(FrameComplete);
 			result = m64pCoreDoCommandVICallback(m64p_command.M64CMD_SET_VI_CALLBACK, 0, m64pVICallback);
+
+			//MemoryDomains.Add(new MemoryDomain("RDRAM", 0x400000, Endian.Little, refresher.Peek, refresher.Poke));
 
 			m64pEmulator = new Thread(ExecuteEmulator);
 			m64pEmulator.Start();
