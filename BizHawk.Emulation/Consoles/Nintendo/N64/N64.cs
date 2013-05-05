@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -77,7 +74,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public int Frame { get; set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
-		public void ResetFrameCounter() { }
+		public void ResetFrameCounter()
+		{
+			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
+		}
 		public void FrameAdvance(bool render, bool rendersound) 
 		{
 			if (Controller["Reset"])
