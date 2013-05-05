@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			return ms.ToArray();
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get { return null; } }
+		public IList<MemoryDomain> MemoryDomains { get; private set; }
 		public MemoryDomain MainMemory { get { return null; } }
 
 		bool disposed = false;
@@ -321,6 +321,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		  M64TYPE_STRING
 		};
 
+		enum m64p_dbg_memptr_type {
+		  M64P_DBG_PTR_RDRAM = 1,
+		  M64P_DBG_PTR_PI_REG,
+		  M64P_DBG_PTR_SI_REG,
+		  M64P_DBG_PTR_VI_REG,
+		  M64P_DBG_PTR_RI_REG,
+		  M64P_DBG_PTR_AI_REG
+		};
+
 		//[DllImport(@"..\..\libmupen64plus\mupen64plus-ui-console\projects\msvc11\Release\mupen64plus.dll", CallingConvention = CallingConvention.Cdecl)]
 		//static extern m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string context, DebugCallback DebugCallback, string context2, IntPtr bar);
 
@@ -349,6 +358,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate int CoreLoadState(byte[] buffer);
 		CoreLoadState m64pCoreLoadState;
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate IntPtr DebugMemGetPointer(m64p_dbg_memptr_type mem_ptr_type);
+		DebugMemGetPointer m64pDebugMemGetPointer;
 
 		// The last parameter is a void pointer, so make a few delegates for the versions we want to use
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -476,6 +488,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		IntPtr AudDll;
 		IntPtr InpDll;
 
+		IntPtr rdram;
+		public byte getRDRAMByte(int address)
+		{
+			byte[] result = new byte[1];
+			System.Runtime.InteropServices.Marshal.Copy(rdram+address, result, 0, 1);
+			return result[0];
+		}
+		public void setRDRAMByte(int address, byte data)
+		{
+			byte[] result = new byte[1];
+			result[0] = data;
+			System.Runtime.InteropServices.Marshal.Copy(result, 0, rdram + address, 1);
+		}
+
 		Thread m64pEmulator;
 
 		AutoResetEvent m64pFrameComplete = new AutoResetEvent(false);
@@ -523,7 +549,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pConfigSetParameter = (ConfigSetParameter)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigSetParameter"), typeof(ConfigSetParameter));
 			m64pCoreSaveState = (CoreSaveState)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_save_bkm"), typeof(CoreSaveState));
 			m64pCoreLoadState = (CoreLoadState)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_load_bkm"), typeof(CoreLoadState));
-
+			m64pDebugMemGetPointer = (DebugMemGetPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugMemGetPointer"), typeof(DebugMemGetPointer));
+			
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
 			GfxPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginShutdown"), typeof(PluginShutdown));
 			GFXReadScreen2 = (ReadScreen2)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2));
@@ -577,7 +604,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pVICallback = new VICallback(FrameComplete);
 			result = m64pCoreDoCommandVICallback(m64p_command.M64CMD_SET_VI_CALLBACK, 0, m64pVICallback);
 
-			//MemoryDomains.Add(new MemoryDomain("RDRAM", 0x400000, Endian.Little, refresher.Peek, refresher.Poke));
+			MemoryDomains = new List<MemoryDomain>();
+			MemoryDomains.Add(new MemoryDomain("RDRAM", 0x400000, Endian.Little, getRDRAMByte, setRDRAMByte));
+
+			rdram = m64pDebugMemGetPointer(m64p_dbg_memptr_type.M64P_DBG_PTR_RDRAM);
 
 			m64pEmulator = new Thread(ExecuteEmulator);
 			m64pEmulator.Start();
