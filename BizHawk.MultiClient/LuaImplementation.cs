@@ -397,6 +397,7 @@ namespace BizHawk.MultiClient
 		                                         		"usememorydomain",
 		                                         		"getmemorydomainlist",
 		                                         		"getcurrentmemorydomain",
+																								"memory_getcurrentmemorydomainsize",
 		                                         		"read_s8",
 		                                         		"read_u8",
 		                                         		"read_s16_le",
@@ -1331,6 +1332,11 @@ namespace BizHawk.MultiClient
 		public string memory_getcurrentmemorydomain()
 		{
 			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Name;
+		}
+
+		public int memory_getcurrentmemorydomainsize()
+		{
+			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Size;
 		}
 
 		public uint memory_readbyte(object lua_addr)
