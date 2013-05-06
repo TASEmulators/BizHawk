@@ -1248,9 +1248,9 @@ namespace BizHawk.MultiClient
 							break;
 						case Watch.TYPE.DWORD:
 							{
-								byte HIWORDhigh = (byte)(Watches[indexes[i]].Value / 0x1000000);
-								byte HIWORDlow = (byte)(Watches[indexes[i]].Value / 0x10000);
-								byte LOWORDhigh = (byte)(Watches[indexes[i]].Value / 0x100);
+								byte HIWORDhigh = (byte)(Watches[indexes[i]].Value >> 24);
+								byte HIWORDlow = (byte)(Watches[indexes[i]].Value >> 16);
+								byte LOWORDhigh = (byte)(Watches[indexes[i]].Value >> 8);
 								byte LOWORDlow = (byte)(Watches[indexes[i]].Value);
 								int a1 = Watches[indexes[i]].Address;
 								int a2 = Watches[indexes[i]].Address + 1;
