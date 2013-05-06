@@ -849,6 +849,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			bw.Flush();
 			return ms.ToArray();
 		}
+
+		public bool BinarySaveStatesPreferred { get { return false; } }
 	}
 }
 

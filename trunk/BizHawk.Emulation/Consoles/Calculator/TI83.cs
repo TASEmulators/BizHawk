@@ -588,6 +588,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			return new byte[0];
 		}
 
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		public string SystemId { get { return "TI83"; } }
 
 		private IList<MemoryDomain> memoryDomains;

@@ -63,6 +63,11 @@ namespace BizHawk
 		byte[] SaveStateBinary();
 
 		/// <summary>
+		/// true if the core would rather give a binary savestate than a text one.  both must function regardless
+		/// </summary>
+		bool BinarySaveStatesPreferred { get; }
+
+		/// <summary>
 		/// the corecomm module in use by this core.
 		/// </summary>
 		CoreComm CoreComm { get; }

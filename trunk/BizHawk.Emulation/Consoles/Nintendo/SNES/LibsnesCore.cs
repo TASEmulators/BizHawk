@@ -787,6 +787,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return ms.ToArray();
 		}
 
+		public bool BinarySaveStatesPreferred { get { return true; } }
+
 		/// <summary>
 		/// handle the unmanaged part of loadstating
 		/// </summary>

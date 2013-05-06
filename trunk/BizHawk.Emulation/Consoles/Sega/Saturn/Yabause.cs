@@ -310,6 +310,8 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			Frame = reader.ReadInt32();
 		}
 
+		public bool BinarySaveStatesPreferred { get { return true; } }
+
 		public byte[] SaveStateBinary()
 		{
 			MemoryStream ms = new MemoryStream();

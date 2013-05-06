@@ -140,6 +140,8 @@ namespace BizHawk.Emulation.Computers.Commodore64
 			return ms.ToArray();
 		}
 
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		private void SetupMemoryDomains()
 		{
 			// chips must be initialized before this code runs!
