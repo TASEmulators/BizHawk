@@ -662,7 +662,7 @@ EXPORT int CALL savestates_load_bkm(char * curr)
     // assert(savestateData+savestateSize == curr)
 
     to_little_endian_buffer(queue, 4, 256);
-    //load_eventqueue_infos(queue);
+    load_eventqueue_infos(queue);
 
     last_addr = PC->addr;
 
