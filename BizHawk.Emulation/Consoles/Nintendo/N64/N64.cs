@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		}
 
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
-		public MemoryDomain MainMemory { get { return null; } }
+		public MemoryDomain MainMemory { get; private set; }
 
 		bool disposed = false;
 		public void Dispose()
@@ -608,6 +608,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 			MemoryDomains = new List<MemoryDomain>();
 			MemoryDomains.Add(new MemoryDomain("RDRAM", 0x400000, Endian.Little, getRDRAMByte, setRDRAMByte));
+			MainMemory = MemoryDomains[0];
 
 			rdram = m64pDebugMemGetPointer(m64p_dbg_memptr_type.M64P_DBG_PTR_RDRAM);
 
