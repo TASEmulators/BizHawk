@@ -301,6 +301,9 @@ namespace BizHawk.MultiClient
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
 
+		public enum SaveStateTypeE { Default, Binary, Text };
+		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
+
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
 		public int FrameSkip = 4;
