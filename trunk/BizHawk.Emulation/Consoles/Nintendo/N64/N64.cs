@@ -75,6 +75,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			*/
 			api.set_buttons(0, ReadController(1), x, y);
 			api.frame_advance();
+			IsLagFrame = api.IsLagFrame();
+			if (IsLagFrame) LagCount++;
 			Frame++; 
 		}
 
