@@ -449,17 +449,17 @@ namespace BizHawk.MultiClient
 		{
 			if (BigEndian)
 			{
-				Domain.PokeByte(Address + 0, (byte)(Value << 24));
-				Domain.PokeByte(Address + 1, (byte)(Value << 16));
-				Domain.PokeByte(Address + 2, (byte)(Value << 8));
+				Domain.PokeByte(Address + 0, (byte)(Value >> 24));
+				Domain.PokeByte(Address + 1, (byte)(Value >> 16));
+				Domain.PokeByte(Address + 2, (byte)(Value >> 8));
 				Domain.PokeByte(Address + 3, (byte)(Value));
 			}
 			else
 			{
 				Domain.PokeByte(Address + 0, (byte)(Value));
-				Domain.PokeByte(Address + 1, (byte)(Value << 8));
-				Domain.PokeByte(Address + 2, (byte)(Value << 16));
-				Domain.PokeByte(Address + 3, (byte)(Value << 24));
+				Domain.PokeByte(Address + 1, (byte)(Value >> 8));
+				Domain.PokeByte(Address + 2, (byte)(Value >> 16));
+				Domain.PokeByte(Address + 3, (byte)(Value >> 24));
 			}
 		}
 
