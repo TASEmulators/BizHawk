@@ -1973,8 +1973,7 @@ namespace BizHawk.MultiClient
 			if (lua_input is string)
 			{
 				string path = lua_input.ToString();
-				var writer = new StreamWriter(path);
-				Global.MainForm.SaveStateFile(writer, path, true);
+				Global.MainForm.SaveStateFile(path, path, true);
 			}
 		}
 

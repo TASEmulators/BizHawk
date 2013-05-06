@@ -3419,30 +3419,45 @@ namespace BizHawk.MultiClient
 				file.CopyTo(backup);
 			}
 
-			var writer = new StreamWriter(path);
-			SaveStateFile(writer, name, false);
+			SaveStateFile(path, name, false);
 			LuaConsole1.LuaImp.SavestateRegisterSave(name);
 		}
 
-		public void SaveStateFile(StreamWriter writer, string name, bool fromLua)
+		public void SaveStateFile(string filename, string name, bool fromLua)
 		{
-			Global.Emulator.SaveStateText(writer);
-			HandleMovieSaveState(writer);
-			if (Global.Config.SaveScreenshotWithStates)
+			// since movie mode requires input log, always save text in that case
+			if (Global.MovieSession.Movie.IsActive ||
+				Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
+				(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
 			{
-				writer.Write("Framebuffer ");
-				Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
+				var writer = new StreamWriter(filename);
+				Global.Emulator.SaveStateText(writer);
+				HandleMovieSaveState(writer);
+				if (Global.Config.SaveScreenshotWithStates)
+				{
+					writer.Write("Framebuffer ");
+					Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
+				}
+				writer.Close();
 			}
-
-			writer.Close();
-
+			else
+			{
+				// binary savestate
+				var writer = new BinaryWriter(new FileStream(filename, FileMode.Create));
+				Global.Emulator.SaveStateBinary(writer);
+				if (Global.Config.SaveScreenshotWithStates)
+				{
+					writer.Write("FRAMEBUFFA");
+					var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+					writer.Write(buff.Length);
+					writer.Write(buff);
+				}
+				writer.Close();
+			}
 			Global.OSD.AddMessage("Saved state: " + name);
 
 			if (!fromLua)
-			{
-
 				UpdateStatusSlots();
-			}
 		}
 
 		private void SaveStateAs()
@@ -3463,12 +3478,56 @@ namespace BizHawk.MultiClient
 			if (result != DialogResult.OK)
 				return;
 
-			var writer = new StreamWriter(sfd.FileName);
-			SaveStateFile(writer, sfd.FileName, false);
+			SaveStateFile(sfd.FileName, sfd.FileName, false);
 		}
 
 		public void LoadStateFile(string path, string name, bool fromLua = false)
 		{
+			if (!Global.MovieSession.Movie.IsActive)
+			{
+				// only when movies are not playing can we possibly load binary savestates
+				bool binary = false;
+				using (var s = new FileStream(path, FileMode.Open, FileAccess.Read))
+				{
+					int i;
+					while ((i = s.ReadByte()) != -1)
+					{
+						// unicode support will need something better here
+						if (i < 0x9 || (i > 0x7f))
+						{
+							binary = true;
+							break;
+						}
+					}
+				}
+
+				if (binary)
+				{
+					using (var reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
+					{
+						Global.Emulator.LoadStateBinary(reader);
+						try
+						{
+							string s = reader.ReadString();
+							if (s.Equals("FRAMEBUFFA"))
+							{
+								int len = reader.ReadInt32();
+								var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+								for (int i = 0; i < len; i++)
+									buff[i] = reader.ReadInt32();
+							}
+						}
+						catch { }
+					}
+					goto cleanup;
+				}
+				else
+				{
+					// fall through to text situation
+				}
+			}
+
+
 			if (HandleMovieLoadState(path))
 			{
 				var reader = new StreamReader(path);
@@ -3488,15 +3547,17 @@ namespace BizHawk.MultiClient
 				}
 
 				reader.Close();
-				Global.OSD.ClearGUIText();
-				UpdateToolsBefore(fromLua);
-				UpdateToolsAfter(fromLua);
-				UpdateToolsLoadstate();
-				Global.OSD.AddMessage("Loaded state: " + name);
-				LuaConsole1.LuaImp.SavestateRegisterLoad(name);
 			}
 			else
 				Global.OSD.AddMessage("Loadstate error!");
+
+			cleanup:
+			Global.OSD.ClearGUIText();
+			UpdateToolsBefore(fromLua);
+			UpdateToolsAfter(fromLua);
+			UpdateToolsLoadstate();
+			Global.OSD.AddMessage("Loaded state: " + name);
+			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
 		}
 
 		public void LoadState(string name, bool fromLua = false)
@@ -5395,6 +5456,34 @@ namespace BizHawk.MultiClient
 		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new BizHawk.MultiClient.N64VideoPluginconfig().ShowDialog();
+		}
+
+		private void savestateTypeToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			defaultToolStripMenuItem.Checked = false;
+			binaryToolStripMenuItem.Checked = false;
+			textToolStripMenuItem.Checked = false;
+			switch (Global.Config.SaveStateType)
+			{
+				case Config.SaveStateTypeE.Binary: binaryToolStripMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Text: textToolStripMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Default: defaultToolStripMenuItem.Checked = true; break;
+			}
+		}
+
+		private void defaultToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
+		}
+
+		private void binaryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
+		}
+
+		private void textToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
 		}
 
 	}
