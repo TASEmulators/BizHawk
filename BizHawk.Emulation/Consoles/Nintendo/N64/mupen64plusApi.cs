@@ -288,6 +288,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		private delegate int SetKeys(int num, int keys, sbyte X, sbyte Y);
 		SetKeys InpSetKeys;
 
+		/// <summary>
+		/// Resets the internal lag indicator to true.
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void ResetLagFlag();
+		ResetLagFlag InpResetLagFlag;
+
+		/// <summary>
+		/// Checks the internal lag indicator. It will be set to 0 if the input has been read since it was last reset
+		/// </summary>
+		/// <returns></returns>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate int CheckLagFlag();
+		CheckLagFlag InpCheckLagFlag;
+
 
 		// These are common for all four plugins
 
@@ -488,6 +503,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			InpPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginStartup"), typeof(PluginStartup));
 			InpPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginShutdown"), typeof(PluginShutdown));
 			InpSetKeys = (SetKeys)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetKeys"), typeof(SetKeys));
+			InpResetLagFlag = (ResetLagFlag)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "ResetLagFlag"), typeof(ResetLagFlag));
+			InpCheckLagFlag = (CheckLagFlag)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "CheckLagFlag"), typeof(CheckLagFlag));
 
 			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
 			RspPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginShutdown"), typeof(PluginShutdown));
@@ -594,8 +611,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public void frame_advance()
 		{
+			InpResetLagFlag();
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 			m64pFrameComplete.WaitOne();
+		}
+
+		public bool IsLagFrame()
+		{
+			return (InpCheckLagFlag() == 1 ? true : false);
 		}
 
 		public int SaveState(byte[] buffer)

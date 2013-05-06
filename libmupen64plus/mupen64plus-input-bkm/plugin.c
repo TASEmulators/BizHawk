@@ -91,6 +91,8 @@ static unsigned char myKeyState[SDL_NUM_SCANCODES];
 
 BUTTONS controllers[4];
 
+int LagFlag = 1;
+
 #ifdef __linux__
 static struct ff_effect ffeffect[3];
 static struct ff_effect ffstrong[3];
@@ -369,6 +371,7 @@ EXPORT void CALL ControllerCommand(int Control, unsigned char *Command)
 EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
 {
 	(*Keys).Value = controllers[Control].Value;
+	LagFlag = 0;
 }
 
 /******************************************************************
@@ -483,4 +486,14 @@ EXPORT void CALL SetKeys(int num, int keys, char X, char Y)
 
 	controllers[num].X_AXIS = X;
 	controllers[num].Y_AXIS = Y;
+}
+
+EXPORT void CALL ResetLagFlag()
+{
+	LagFlag = 1;
+}
+
+EXPORT int CALL CheckLagFlag()
+{
+	return LagFlag;
 }
