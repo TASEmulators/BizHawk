@@ -74,7 +74,7 @@ namespace BizHawk.MultiClient
 
 			string prefix;
 
-			if (button.Contains("Down"))
+			if (button.Contains("Down") && !button.Contains(" C "))
 			{
 				prefix = button.GetPrecedingString("Down");
 				if (Source.IsPressed(prefix + "Up"))
@@ -82,7 +82,7 @@ namespace BizHawk.MultiClient
 					return false;
 				}
 			}
-			if (button.Contains("Right"))
+			if (button.Contains("Right") && !button.Contains(" C "))
 			{
 				prefix = button.GetPrecedingString("Right");
 				if (Source.IsPressed(prefix + "Left"))
