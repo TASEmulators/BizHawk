@@ -476,8 +476,8 @@ EXPORT void CALL SetKeys(int num, int keys, char X, char Y)
 	controllers[num].A_BUTTON = (keys >> 7) & 0x01;
 	controllers[num].R_CBUTTON = (keys >> 8) & 0x01;
 	controllers[num].L_CBUTTON = (keys >> 9) & 0x01;
-	controllers[num].U_CBUTTON = (keys >> 10) & 0x01;
-	controllers[num].D_CBUTTON = (keys >> 11) & 0x01;
+	controllers[num].D_CBUTTON = (keys >> 10) & 0x01;
+	controllers[num].U_CBUTTON = (keys >> 11) & 0x01;
 	controllers[num].R_TRIG = (keys >> 12) & 0x01;
 	controllers[num].L_TRIG = (keys >> 13) & 0x01;
 
