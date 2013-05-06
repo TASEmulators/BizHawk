@@ -204,6 +204,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			return buf;
 		}
 
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			Cpu.SaveStateBinary(writer);

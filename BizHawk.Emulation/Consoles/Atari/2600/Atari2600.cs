@@ -99,6 +99,8 @@ namespace BizHawk
 			return ms.ToArray();
 		}
 
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		private readonly IList<MemoryDomain> memoryDomains;
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }

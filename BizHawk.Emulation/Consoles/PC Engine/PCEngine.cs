@@ -535,6 +535,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			return buf;
 		}
 
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(10);

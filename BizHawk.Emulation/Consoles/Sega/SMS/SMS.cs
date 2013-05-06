@@ -315,6 +315,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 			return buf;
 		}
 
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			Cpu.SaveStateBinary(writer);

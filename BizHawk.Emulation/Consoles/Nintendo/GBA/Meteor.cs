@@ -176,6 +176,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 			return ms.ToArray();
 		}
 
+		public bool BinarySaveStatesPreferred { get { return true; } }
+
 		#endregion
 
 		public CoreComm CoreComm { get; private set; }

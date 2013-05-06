@@ -284,6 +284,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			return ms.ToArray();
 		}
 
+		public bool BinarySaveStatesPreferred { get { return true; } }
+
 		#endregion
 
 		public CoreComm CoreComm { get; private set; }

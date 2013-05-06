@@ -54,6 +54,7 @@ namespace BizHawk
 		public void SaveStateBinary(BinaryWriter writer) { }
 		public void LoadStateBinary(BinaryReader reader) { }
 		public byte[] SaveStateBinary() { return new byte[1]; }
+		public bool BinarySaveStatesPreferred { get { return false; } }
 		public int[] GetVideoBuffer() { return frameBuffer; }
         public int VirtualWidth { get { return 256; } }
         public int BufferWidth { get { return 256; } }

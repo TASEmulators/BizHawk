@@ -117,6 +117,9 @@ namespace BizHawk.Emulation
 			bw.Flush();
 			return ms.ToArray();
 		}
+
+		public bool BinarySaveStatesPreferred { get { return true; } }
+
 		void SyncState(Serializer ser)
 		{
 			byte[] core = null;

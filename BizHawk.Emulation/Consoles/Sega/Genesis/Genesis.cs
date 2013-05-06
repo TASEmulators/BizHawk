@@ -408,6 +408,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             return buf;
 		}
 
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		IList<MemoryDomain> memoryDomains;
 
 		void SetupMemoryDomains()

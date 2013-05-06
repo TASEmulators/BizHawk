@@ -176,6 +176,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			return ms.ToArray();
 		}
 
+		public bool BinarySaveStatesPreferred { get { return true; } }
+
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
 		public MemoryDomain MainMemory { get; private set; }
 
