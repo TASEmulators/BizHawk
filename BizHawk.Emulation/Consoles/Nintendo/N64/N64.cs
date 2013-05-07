@@ -42,6 +42,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 				"P3 DPad R", "P3 DPad L", "P3 DPad D", "P3 DPad U", "P3 Start", "P3 Z", "P3 B", "P3 A", "P3 C Right", "P3 C Left", "P3 C Down", "P3 C Up", "P3 R", "P3 L",
 				"P4 DPad R", "P4 DPad L", "P4 DPad D", "P4 DPad U", "P4 Start", "P4 Z", "P4 B", "P4 A", "P4 C Right", "P4 C Left", "P4 C Down", "P4 C Up", "P4 R", "P4 L",
 				"Reset", "Power"
+			},
+			FloatControls =
+			{
+				"P1 X Axis", "P1 Y Axis",
+				"P2 X Axis", "P2 Y Axis",
+				"P3 X Axis", "P3 Y Axis",
+				"P4 X Axis", "P4 Y Axis"
 			}
 		};
 
@@ -73,6 +80,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			if (Controller["P1 DPad D"]) y = -80;
 			if (Controller["P1 DPad U"]) y = 80;
 			*/
+
+			float X_Axis = Controller.GetFloat("P1 X Axis");
+			float Y_Axis = Controller.GetFloat("P1 Y Axis");
+
+			// ... convert the float values to a signed bytes somehow ...
+
 			api.set_buttons(0, ReadController(1), x, y);
 			api.frame_advance();
 			IsLagFrame = api.IsLagFrame();
