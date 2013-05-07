@@ -117,4 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="AnisotropicFiltering_LB.ToolTip" xml:space="preserve">
+    <value>Enable/Disable Anisotropic Filtering for Mipmapping (0=no filtering, 2-16=quality). 
+This is uneffective if Mipmapping is 0.
+If the given value is to high to be supported by your graphic card, the value will be
+ the highest value your graphic card can support. Better result with Trilinear filtering
+</value>
+  </data>
+  <data name="RiceAnisotropicFiltering_TB.ToolTip" xml:space="preserve">
+    <value>Enable/Disable Anisotropic Filtering for Mipmapping (0=no filtering, 2-16=quality). 
+This is uneffective if Mipmapping is 0.
+If the given value is to high to be supported by your graphic card, the value will be
+ the highest value your graphic card can support. Better result with Trilinear filtering</value>
+  </data>
 </root>
