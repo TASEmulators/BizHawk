@@ -18,6 +18,7 @@
 #include gamedb_gb.txt
 #include gamedb_gbc.txt
 #include gamedb_snes.txt
+#include gamedb_n64.txt
 
 ; ************ TI-83 ************
 
