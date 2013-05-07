@@ -117,10 +117,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public bool DeterministicEmulation { get; set; }
 
-		public byte[] ReadSaveRam() { return null; }
-		public void StoreSaveRam(byte[] data) { }
-		public void ClearSaveRam() { }
-		public bool SaveRamModified { get; set; }
+		public byte[] ReadSaveRam()
+		{
+			byte[] ret = new byte[0x800 + 4 * 0x8000];
+			api.SaveSaveram(ret);
+			return ret;
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			api.LoadSaveram(data);
+		}
+
+		public void ClearSaveRam()
+		{
+			api.InitSaveram();
+		}
+
+		public bool SaveRamModified { get { return true; } set { } }
 
 		void SyncState(Serializer ser)
 		{

@@ -41,18 +41,19 @@
 
 static unsigned char eeprom[0x800];
 static unsigned char mempack[4][0x8000];
+int saveramModified = 0;
 
-static char *get_eeprom_path(void)
+/*static char *get_eeprom_path(void)
 {
     return formatstr("%s%s.eep", get_savesrampath(), ROM_SETTINGS.goodname);
-}
+}*/
 
 static void eeprom_format(void)
 {
     memset(eeprom, 0, sizeof(eeprom));
 }
 
-static void eeprom_read_file(void)
+/*static void eeprom_read_file(void)
 {
     char *filename = get_eeprom_path();
 
@@ -69,11 +70,11 @@ static void eeprom_read_file(void)
     }
 
     free(filename);
-}
+}*/
 
 static void eeprom_write_file(void)
 {
-    char *filename = get_eeprom_path();
+    /*char *filename = get_eeprom_path();
 
     switch (write_to_file(filename, eeprom, sizeof(eeprom)))
     {
@@ -86,13 +87,15 @@ static void eeprom_write_file(void)
         default: break;
     }
 
-    free(filename);
+    free(filename);*/
+
+	saveramModified = 1;
 }
 
-static char *get_mempack_path(void)
+/*static char *get_mempack_path(void)
 {
     return formatstr("%s%s.mpk", get_savesrampath(), ROM_SETTINGS.goodname);
-}
+}*/
 
 static void mempack_format(void)
 {
@@ -128,7 +131,7 @@ static void mempack_format(void)
     }
 }
 
-static void mempack_read_file(void)
+/*static void mempack_read_file(void)
 {
     char *filename = get_mempack_path();
 
@@ -145,11 +148,11 @@ static void mempack_read_file(void)
     }
 
     free(filename);
-}
+}*/
 
 static void mempack_write_file(void)
 {
-    char *filename = get_mempack_path();
+    /*char *filename = get_mempack_path();
 
     switch (write_to_file(filename, mempack, sizeof(mempack)))
     {
@@ -162,7 +165,9 @@ static void mempack_write_file(void)
         default: break;
     }
 
-    free(filename);
+    free(filename);*/
+
+	saveramModified = 1;
 }
 
 //#define DEBUG_PIF
@@ -216,7 +221,7 @@ static void EepromCommand(unsigned char *Command)
 #ifdef DEBUG_PIF
         DebugMessage(M64MSG_INFO, "EepromCommand() read 8-byte block %i", Command[3]);
 #endif
-        eeprom_read_file();
+        //eeprom_read_file();
         memcpy(&Command[4], eeprom + Command[3]*8, 8);
     }
     break;
@@ -225,7 +230,7 @@ static void EepromCommand(unsigned char *Command)
 #ifdef DEBUG_PIF
         DebugMessage(M64MSG_INFO, "EepromCommand() write 8-byte block %i", Command[3]);
 #endif
-        eeprom_read_file();
+        //eeprom_read_file();
         memcpy(eeprom + Command[3]*8, &Command[4], 8);
         eeprom_write_file();
     }
@@ -397,7 +402,7 @@ static void internal_ControllerCommand(int Control, unsigned char *Command)
                     address &= 0xFFE0;
                     if (address <= 0x7FE0)
                     {
-                        mempack_read_file();
+                        //mempack_read_file();
                         memcpy(&Command[5], &mempack[Control][address], 0x20);
                     }
                     else
@@ -444,7 +449,7 @@ static void internal_ControllerCommand(int Control, unsigned char *Command)
                     address &= 0xFFE0;
                     if (address <= 0x7FE0)
                     {
-                        mempack_read_file();
+                        //mempack_read_file();
                         memcpy(&mempack[Control][address], &Command[5], 0x20);
                         mempack_write_file();
                     }
@@ -590,3 +595,21 @@ void update_pif_read(void)
     input.readController(-1, NULL);
 }
 
+EXPORT void CALL init_saveram(void)
+{
+	eeprom_format();
+	mempack_format();
+	saveramModified = 0;
+}
+
+EXPORT void CALL save_saveram(unsigned char * dest)
+{
+	memcpy(dest, eeprom, 0x800);
+	memcpy(dest + 0x800, mempack, 4 * 0x8000);
+}
+
+EXPORT void CALL load_saveram(unsigned char * src)
+{
+	memcpy(eeprom, src, 0x800);
+	memcpy(mempack, src + 0x800, 4 * 0x8000);
+}
