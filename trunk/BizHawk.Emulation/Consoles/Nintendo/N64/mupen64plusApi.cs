@@ -204,6 +204,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		delegate IntPtr DebugMemGetPointer(m64p_dbg_memptr_type mem_ptr_type);
 		DebugMemGetPointer m64pDebugMemGetPointer;
 
+		/// <summary>
+		/// Initializes the saveram (eeprom and 4 mempacks)
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate IntPtr init_saveram();
+		init_saveram m64pinit_saveram;
+
+		/// <summary>
+		/// Pulls out the saveram for bizhawk to save
+		/// </summary>
+		/// <param name="dest">A byte array to save the saveram into</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate IntPtr save_saveram(byte[] dest);
+		save_saveram m64psave_saveram;
+
+		/// <summary>
+		/// Restores the saveram from bizhawk
+		/// </summary>
+		/// <param name="src">A byte array containing the saveram to restore</param>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate IntPtr load_saveram(byte[] src);
+		load_saveram m64pload_saveram;
+
 		// The last parameter of CoreDoCommand is actually a void pointer, so instead we'll make a few delegates for the versions we want to use
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreDoCommandByteArray(m64p_command Command, int ParamInt, byte[] ParamPtr);
@@ -458,6 +481,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			// Get the pointer for RDRAM
 			rdram = m64pDebugMemGetPointer(m64p_dbg_memptr_type.M64P_DBG_PTR_RDRAM);
 
+			InitSaveram();
+
 			// Start the emulator in another thread
 			m64pEmulator = new Thread(ExecuteEmulator);
 			m64pEmulator.Start();
@@ -502,6 +527,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pCoreSaveState = (savestates_save_bkm)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_save_bkm"), typeof(savestates_save_bkm));
 			m64pCoreLoadState = (savestates_load_bkm)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_load_bkm"), typeof(savestates_load_bkm));
 			m64pDebugMemGetPointer = (DebugMemGetPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugMemGetPointer"), typeof(DebugMemGetPointer));
+			m64pinit_saveram = (init_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "init_saveram"), typeof(init_saveram));
+			m64psave_saveram = (save_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "save_saveram"), typeof(save_saveram));
+			m64pload_saveram = (load_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "load_saveram"), typeof(load_saveram));
 
 			GfxPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginStartup"), typeof(PluginStartup));
 			GfxPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "PluginShutdown"), typeof(PluginShutdown));
@@ -643,6 +671,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void LoadState(byte[] buffer)
 		{
 			m64pCoreLoadState(buffer);
+		}
+
+		public void InitSaveram()
+		{
+			m64pinit_saveram();
+		}
+
+		public void SaveSaveram(byte[] dest)
+		{
+			m64psave_saveram(dest);
+		}
+
+		public void LoadSaveram(byte[] src)
+		{
+			m64pload_saveram(src);
 		}
 
 		public void Dispose()
