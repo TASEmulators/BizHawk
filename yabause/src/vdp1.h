@@ -66,6 +66,8 @@ extern VideoInterface_struct *VIDCore;
 extern VideoInterface_struct VIDDummy;
 
 extern u8 * Vdp1Ram;
+// purely for debugging purposes
+extern u8 *Vdp1FrameBuffer;
 
 u8 FASTCALL	Vdp1RamReadByte(u32);
 u16 FASTCALL	Vdp1RamReadWord(u32);

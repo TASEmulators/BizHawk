@@ -202,9 +202,49 @@ extern "C" __declspec(dllexport) int libyabause_loadsaveram(const char *fn)
 	return !T123Load(BupRam, 0x10000, 1, fn);
 }
 
+extern "C" __declspec(dllexport) int libyabause_saveramodified()
+{
+	return BupRamWritten;
+}
+
 extern "C" __declspec(dllexport) void libyabause_clearsaveram()
 {
 	FormatBackupRam(BupRam, 0x10000);
+}
+
+typedef struct
+{
+	void *data;
+	const char *name;
+	int length;
+} memoryarea;
+
+memoryarea normmemareas[] =
+{
+	{NULL, "Boot Rom", 512 * 1024},
+	{NULL, "Backup Ram", 64 * 1024},
+	{NULL, "Work Ram Low", 1024 * 1024},
+	{NULL, "Sound Ram", 512 * 1024},
+	{NULL, "VDP1 Ram", 512 * 1024},
+	{NULL, "VDP1 Framebuffer", 512 * 1024},
+	{NULL, "VDP2 Ram", 512 * 1024},
+	{NULL, "VDP2 CRam", 4 * 1024},
+	{NULL, "Work Ram High", 1024 * 1024},
+	{NULL, NULL, 0}
+};
+
+extern "C" __declspec(dllexport) memoryarea *libyabause_getmemoryareas()
+{
+	normmemareas[0].data = BiosRom;
+	normmemareas[1].data = BupRam;
+	normmemareas[2].data = LowWram;
+	normmemareas[3].data = SoundRam;
+	normmemareas[4].data = Vdp1Ram;
+	normmemareas[5].data = Vdp1FrameBuffer;
+	normmemareas[6].data = Vdp2Ram;
+	normmemareas[7].data = Vdp2ColorRam;
+	normmemareas[8].data = HighWram;
+	return &normmemareas[0];
 }
 
 extern "C" __declspec(dllexport) int libyabause_frameadvance(int *w, int *h, int *nsamp)

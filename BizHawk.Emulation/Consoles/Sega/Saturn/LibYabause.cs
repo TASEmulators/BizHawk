@@ -107,6 +107,32 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		public static extern bool libyabause_loadsaveram(string fn);
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libyabause_clearsaveram();
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_saveramodified();
+
+		public struct NativeMemoryDomain
+		{
+			public IntPtr data;
+			public string name;
+			public int length;
+		}
+
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr libyabause_getmemoryareas();
+
+		public static IEnumerable<NativeMemoryDomain> libyabause_getmemoryareas_ex()
+		{
+			var ret = new List<NativeMemoryDomain>();
+			IntPtr start = libyabause_getmemoryareas();
+			while (true)
+			{
+				var nmd = (NativeMemoryDomain)Marshal.PtrToStructure(start, typeof(NativeMemoryDomain));
+				if (nmd.data == IntPtr.Zero || nmd.name == null)
+					return ret.AsReadOnly();
+				ret.Add(nmd);
+				start += Marshal.SizeOf(typeof(NativeMemoryDomain));
+			}
+		}
 
 		/// <summary>
 		/// 
