@@ -347,6 +347,8 @@ namespace BizHawk.MultiClient
 				case "A78": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtari7800SaveRAM, "A78"), name + ".SaveRAM");
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESSaveRAM, "SNES"), name + ".SaveRAM");
 				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSaveRAM, "PSX"), name + ".SaveRAM");
+				case "SAT": return Path.Combine(MakeAbsolutePath(Global.Config.PathSaturnSaveRAM, "SAT"), name + ".SaveRAM");
+				case "N64": return Path.Combine(MakeAbsolutePath(Global.Config.PathN64SaveRAM, "N64"), name + ".SaveRAM");
 				default: return Path.Combine(GetBasePathAbsolute(), name + ".SaveRAM");
 			}
 		}
@@ -374,6 +376,8 @@ namespace BizHawk.MultiClient
 				case "PSX": return MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX");
 				case "C64": return MakeAbsolutePath(Global.Config.PathC64Savestates, "C64");
 				case "Coleco": return MakeAbsolutePath(Global.Config.PathCOLSavestates, "Coleco");
+				case "SAT": return MakeAbsolutePath(Global.Config.PathSaturnSavestates, "SAT");
+				case "N64": return MakeAbsolutePath(Global.Config.PathN64Savestates, "N64");
 			}
 		}
 
@@ -406,6 +410,8 @@ namespace BizHawk.MultiClient
 				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXSavestates, "PSX"), name);
 				case "C64": return Path.Combine(MakeAbsolutePath(Global.Config.PathC64Savestates, "C64"), name);
 				case "Coleco": return Path.Combine(MakeAbsolutePath(Global.Config.PathCOLSavestates, "Coleco"), name);
+				case "SAT": return Path.Combine(MakeAbsolutePath(Global.Config.PathSaturnSavestates, "SAT"), name);
+				case "N64": return Path.Combine(MakeAbsolutePath(Global.Config.PathN64Savestates, "N64"), name);
 			}
 			return "";
 		}
@@ -432,6 +438,8 @@ namespace BizHawk.MultiClient
 				case "SNES": return Path.Combine(MakeAbsolutePath(Global.Config.PathSNESScreenshots, "SNES"), name);
 				case "PSX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPSXScreenshots, "PSX"), name);
 				case "Coleco": return Path.Combine(MakeAbsolutePath(Global.Config.PathCOLScreenshots, "Coleco"), name);
+				case "SAT": return Path.Combine(MakeAbsolutePath(Global.Config.PathSaturnScreenshots, "SAT"), name);
+				case "N64": return Path.Combine(MakeAbsolutePath(Global.Config.PathN64Screenshots, "N64"), name);
 			}
 			return "";
 		}
