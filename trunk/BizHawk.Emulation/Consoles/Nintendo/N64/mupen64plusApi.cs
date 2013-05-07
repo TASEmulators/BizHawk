@@ -371,7 +371,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		IntPtr AudDll;
 		IntPtr InpDll;
 
-		public mupen64plusApi(N64 bizhawkCore, byte[] rom, int vidX, int vidY)
+		public mupen64plusApi(N64 bizhawkCore, byte[] rom, int vidX, int vidY, string PluginName)
 		{
 			if (AttachedCore != null)
 			{
@@ -381,13 +381,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 			this.bizhawkCore = bizhawkCore;
 
+			string VidDllName;
+			if (PluginName == "Rice")
+			{
+				VidDllName = "mupen64plus-video-rice.dll";
+			}
+			else if (PluginName == "Glide64")
+			{
+				VidDllName = "mupen64plus-video-glide64.dll";
+			}
+			else
+			{
+				throw new InvalidOperationException(string.Format("Unknown plugin \"" + PluginName));
+			}
+
 			// Load each of the DLLs
 			CoreDll = LoadLibrary("mupen64plus.dll");
 			if (CoreDll == IntPtr.Zero)
 				throw new InvalidOperationException(string.Format("Failed to load mupen64plus.dll"));
-			GfxDll = LoadLibrary("mupen64plus-video-glide64.dll");
+			GfxDll = LoadLibrary(VidDllName);
 			if (GfxDll == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-video-glide64.dll"));
+				throw new InvalidOperationException(string.Format("Failed to load " + VidDllName));
 			RspDll = LoadLibrary("mupen64plus-rsp-hle.dll");
 			if (RspDll == IntPtr.Zero)
 				throw new InvalidOperationException(string.Format("Failed to load mupen64plus-rsp-hle.dll"));
