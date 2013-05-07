@@ -78,6 +78,8 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 			BufferWidth = 320;
 			BufferHeight = 224;
+
+			InitMemoryDomains();
 		}
 
 		public ControllerDefinition ControllerDefinition
@@ -214,8 +216,8 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 		public bool SaveRamModified
 		{
-			get { return true; }
-			set { if (!value) throw new InvalidOperationException(); }
+			get { return LibYabause.libyabause_saveramodified(); }
+			set { throw new InvalidOperationException("No you may not!"); }
 		}
 
 		#endregion
@@ -353,15 +355,53 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 		public CoreComm CoreComm { get; private set; }
 
-		public IList<MemoryDomain> MemoryDomains
+		#region memorydomains
+
+		void InitMemoryDomains()
 		{
-			get { throw new NotImplementedException(); }
+			var ret = new List<MemoryDomain>();
+			var nmds = LibYabause.libyabause_getmemoryareas_ex();
+			foreach (var nmd in nmds)
+			{
+				int l = nmd.length;
+				IntPtr d = nmd.data;
+				ret.Add(new MemoryDomain(
+					nmd.name,
+					nmd.length,
+					Endian.Little,
+					delegate(int addr)
+					{
+						if (addr < 0 || addr >= l)
+							throw new ArgumentOutOfRangeException();
+						unsafe
+						{
+							byte* p = (byte*)d;
+							return p[addr];
+						}
+					},
+					delegate(int addr, byte val)
+					{
+						if (addr < 0 || addr >= l)
+							throw new ArgumentOutOfRangeException();
+						unsafe
+						{
+							byte* p = (byte*)d;
+							//p[addr] = val;
+						}
+					}
+				));
+			}
+			// fulfill the prophecy of MainMemory always being MemoryDomains[0]
+			var tmp = ret[2];
+			ret[2] = ret[0];
+			ret[0] = tmp;
+			MemoryDomains = ret.AsReadOnly();
 		}
 
-		public MemoryDomain MainMemory
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public IList<MemoryDomain> MemoryDomains { get; private set; }
+		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
+
+		#endregion
 
 		public void Dispose()
 		{
