@@ -78,6 +78,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		public byte[] ReadSaveRam()
 		{
+			if (disposed)
+				throw new ObjectDisposedException(this.GetType().ToString());
 			if (!LibMeteor.libmeteor_hassaveram())
 				return null;
 			IntPtr data = IntPtr.Zero;
@@ -92,17 +94,30 @@ namespace BizHawk.Emulation.Consoles.Nintendo.GBA
 
 		public void StoreSaveRam(byte[] data)
 		{
+			if (disposed)
+				throw new ObjectDisposedException(this.GetType().ToString());
 			if (!LibMeteor.libmeteor_loadsaveram(data, (uint)data.Length))
 				throw new Exception("libmeteor_loadsaveram() returned false!");
 		}
 
 		public void ClearSaveRam()
 		{
+			if (disposed)
+				throw new ObjectDisposedException(this.GetType().ToString());
 			LibMeteor.libmeteor_clearsaveram();
 		}
 
 		public bool SaveRamModified
-		{ get { return LibMeteor.libmeteor_hassaveram(); } set { } }
+		{
+			get
+			{
+				if (disposed)
+					throw new ObjectDisposedException(this.GetType().ToString());
+				return LibMeteor.libmeteor_hassaveram();
+			}
+			set
+			{ }
+		}
 
 		#endregion
 
