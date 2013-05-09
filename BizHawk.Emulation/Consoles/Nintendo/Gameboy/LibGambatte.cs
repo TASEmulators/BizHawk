@@ -39,10 +39,11 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="romdata">the rom data, can be disposed of once this function returns</param>
 		/// <param name="length">length of romdata in bytes</param>
+		/// <param name="now">RTC time when the rom is loaded</param>
 		/// <param name="flags">ORed combination of LoadFlags.</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, LoadFlags flags);
+		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, long now, LoadFlags flags);
 
 		/// <summary>
 		/// Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
@@ -74,8 +75,9 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
+		/// <param name="now">RTC time when the reset occurs</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_reset(IntPtr core);
+		public static extern void gambatte_reset(IntPtr core, long now);
 
 		/// <summary>
 		/// palette type for gambatte_setdmgpalettecolor
@@ -190,6 +192,21 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// <param name="sl">0-153 inclusive</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
+
+		/// <summary>
+		/// type of the RTC callback
+		/// </summary>
+		/// <returns>what time is it, unixy</returns>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate long RTCCallback();
+
+		/// <summary>
+		/// sets RTC callback.  probably mandatory.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="callback">the callback</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setrtccallback(IntPtr core, RTCCallback callback);
 
 		/// <summary>
 		/// Sets the directory used for storing save data. The default is the same directory as the ROM Image file.

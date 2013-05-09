@@ -166,6 +166,10 @@ public:
 		display.setScanlineCallback(callback, sl);
 	}
 
+	void setRTCCallback(std::time_t (*callback)()) {
+		cart.setRTCCallback(callback);
+	}
+
 	void setEndtime(unsigned long cc, unsigned long inc);
 	
 	void setSoundBuffer(uint_least32_t *const buf) { sound.setBuffer(buf); }

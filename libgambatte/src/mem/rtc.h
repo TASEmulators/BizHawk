@@ -39,6 +39,7 @@ private:
 	unsigned char dataS;
 	bool enabled;
 	bool lastLatchData;
+	std::time_t (*timeCB)();
 	
 	void doLatch();
 	void doSwapActive();
@@ -83,6 +84,10 @@ public:
 // 		if (activeSet)
 		(this->*activeSet)(data);
 		*activeData = data;
+	}
+
+	void setRTCCallback(std::time_t (*callback)()) {
+		timeCB = callback;
 	}
 };
 

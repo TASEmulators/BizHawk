@@ -19,8 +19,10 @@
 #ifndef INITSTATE_H
 #define INITSTATE_H
 
+#include <ctime>
+
 namespace gambatte {
-void setInitState(struct SaveState &state, bool cgb, bool gbaCgbMode);
+void setInitState(struct SaveState &state, bool cgb, bool gbaCgbMode, std::time_t now);
 }
 
 #endif
