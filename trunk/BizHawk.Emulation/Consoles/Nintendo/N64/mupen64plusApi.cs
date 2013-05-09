@@ -712,9 +712,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			if (!disposed)
 			{
 				// Stop the core, and wait for it to end
-				m64pCoreDoCommandPtr(m64p_command.M64CMD_STOP, 0, IntPtr.Zero);
-				//m64pEmulator.Join();
-				while (emulator_running) { }
+				while (emulator_running)
+				{
+					// Repeatedly send the stop command, because sometimes sending it just once doesn't work
+					m64pCoreDoCommandPtr(m64p_command.M64CMD_STOP, 0, IntPtr.Zero);
+				}
 
 				// Backup the saveram in case bizhawk wants to get at is after we've freed the libraries
 				saveram_backup = SaveSaveram();
