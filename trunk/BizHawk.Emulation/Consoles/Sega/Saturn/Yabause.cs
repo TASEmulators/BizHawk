@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		GCHandle SoundHandle;
 
 		bool Disposed = false;
+		byte[] DisposedSaveRam;
 
 		LibYabause.CDInterface.Init InitH;
 		LibYabause.CDInterface.DeInit DeInitH;
@@ -183,40 +184,68 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 
 		public byte[] ReadSaveRam()
 		{
-			var ms = new MemoryStream();
-			var fp = new FilePiping();
-			fp.Get(ms);
-			bool success = LibYabause.libyabause_savesaveram(fp.GetPipeNameNative());
-			var e = fp.GetResults();
-			if (e != null)
-				throw e;
-			if (!success)
-				throw new Exception("libyabause_savesaveram() failed!");
-			var ret = ms.ToArray();
-			ms.Dispose();
-			return ret;
+			if (Disposed)
+			{
+				return DisposedSaveRam ?? new byte[0];
+			}
+			else
+			{
+				var ms = new MemoryStream();
+				var fp = new FilePiping();
+				fp.Get(ms);
+				bool success = LibYabause.libyabause_savesaveram(fp.GetPipeNameNative());
+				var e = fp.GetResults();
+				if (e != null)
+					throw e;
+				if (!success)
+					throw new Exception("libyabause_savesaveram() failed!");
+				var ret = ms.ToArray();
+				ms.Dispose();
+				return ret;
+			}
+
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			var fp = new FilePiping();
-			fp.Offer(data);
-			bool success = LibYabause.libyabause_loadsaveram(fp.GetPipeNameNative());
-			var e = fp.GetResults();
-			if (e != null)
-				throw e;
-			if (!success)
-				throw new Exception("libyabause_loadsaveram() failed!");
+			if (Disposed)
+			{
+				throw new Exception("It's a bit late for that");
+			}
+			else
+			{
+				var fp = new FilePiping();
+				fp.Offer(data);
+				bool success = LibYabause.libyabause_loadsaveram(fp.GetPipeNameNative());
+				var e = fp.GetResults();
+				if (e != null)
+					throw e;
+				if (!success)
+					throw new Exception("libyabause_loadsaveram() failed!");
+			}
 		}
 
 		public void ClearSaveRam()
 		{
-			LibYabause.libyabause_clearsaveram();
+			if (Disposed)
+			{
+				throw new Exception("It's a bit late for that");
+			}
+			else
+			{
+				LibYabause.libyabause_clearsaveram();
+			}
 		}
 
 		public bool SaveRamModified
 		{
-			get { return LibYabause.libyabause_saveramodified(); }
+			get
+			{
+				if (Disposed)
+					return DisposedSaveRam != null;
+				else
+					return LibYabause.libyabause_saveramodified();
+			}
 			set { throw new InvalidOperationException("No you may not!"); }
 		}
 
@@ -407,6 +436,8 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		{
 			if (!Disposed)
 			{
+				if (SaveRamModified)
+					DisposedSaveRam = ReadSaveRam();
 				LibYabause.libyabause_setvidbuff(IntPtr.Zero);
 				LibYabause.libyabause_setsndbuff(IntPtr.Zero);
 				LibYabause.libyabause_deinit();
