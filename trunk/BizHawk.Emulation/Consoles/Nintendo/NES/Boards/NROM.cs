@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "JALECO-JF-01": //Exerion (J)
 				case "UNIF_NES-NROM-256": // Locksmith
 				case "UNIF_NES-NROM-128": // various
+				case "TENGEN-800003": // ms pac man, others
 					AssertPrg(8, 16, 32); AssertChr(8); AssertVram(0); AssertWram(0, 8);
 					break;
 
