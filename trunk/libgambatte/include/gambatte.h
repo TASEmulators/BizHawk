@@ -23,6 +23,7 @@
 #include "gbint.h"
 #include <string>
 #include <sstream>
+#include <ctime>
 
 namespace gambatte {
 enum { BG_PALETTE = 0, SP1_PALETTE = 1, SP2_PALETTE = 2 };
@@ -44,7 +45,7 @@ public:
 	  * @param flags    ORed combination of LoadFlags.
 	  * @return 0 on success, negative value on failure.
 	  */
-	int load(const char *romfiledata, unsigned romfilelength, unsigned flags = 0);
+	int load(const char *romfiledata, unsigned romfilelength, std::time_t now, unsigned flags = 0);
 	
 	/** Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
 	  * or until a video frame has been drawn.
@@ -73,7 +74,7 @@ public:
 	/** Reset to initial state.
 	  * Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 	  */
-	void reset();
+	void reset(std::time_t now);
 	
 	/** @param palNum 0 <= palNum < 3. One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.
 	  * @param colorNum 0 <= colorNum < 4
@@ -89,6 +90,7 @@ public:
 	void setWriteCallback(void (*callback)(unsigned));
 	void setTraceCallback(void (*callback)(void *));
 	void setScanlineCallback(void (*callback)(), int sl);
+	void setRTCCallback(std::time_t (*callback)());
 
 	/** Sets the directory used for storing save data. The default is the same directory as the ROM Image file. */
 	void setSaveDir(const std::string &sdir);

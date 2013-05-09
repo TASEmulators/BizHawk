@@ -8,11 +8,11 @@ extern "C"
 	__declspec(dllexport) void *gambatte_create();
 	__declspec(dllexport) void gambatte_destroy(void *core);
 
-	__declspec(dllexport) int gambatte_load(void *core, const char *romfiledata, unsigned romfilelength, unsigned flags);
+	__declspec(dllexport) int gambatte_load(void *core, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags);
 
 	__declspec(dllexport) long gambatte_runfor(void *core, unsigned long *videobuf, int pitch, short *soundbuf, unsigned *samples);
 
-	__declspec(dllexport) void gambatte_reset(void *core);
+	__declspec(dllexport) void gambatte_reset(void *core, long long now);
 
 	__declspec(dllexport) void gambatte_setdmgpalettecolor(void *core, unsigned palnum, unsigned colornum, unsigned rgb32);
 
@@ -27,6 +27,8 @@ extern "C"
 	__declspec(dllexport) void gambatte_settracecallback(void *core, void (*callback)(void *));
 
 	__declspec(dllexport) void gambatte_setscanlinecallback(void *core, void (*callback)(), int sl);
+
+	__declspec(dllexport) void gambatte_setrtccallback(void *core, long long (*callback)());
 
 	__declspec(dllexport) void gambatte_setsavedir(void *core, const char *sdir);
 

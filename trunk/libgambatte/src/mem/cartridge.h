@@ -93,6 +93,10 @@ public:
 	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 	const char * romTitle() const { return reinterpret_cast<const char *>(memptrs.romdata() + 0x134); }
 	void setGameGenie(const std::string &codes);
+
+	void setRTCCallback(std::time_t (*callback)()) {
+		rtc.setRTCCallback(callback);
+	}
 };
 
 }
