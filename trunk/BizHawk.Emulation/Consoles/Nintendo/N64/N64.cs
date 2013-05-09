@@ -215,13 +215,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		mupen64plusApi api;
 
-		public N64(CoreComm comm, GameInfo game, byte[] rom, int vidX, int vidY, string PluginName)
+		public N64(CoreComm comm, GameInfo game, byte[] rom, VideoPluginSettings video_settings)
 		{
 			CoreComm = comm;
 			this.rom = rom;
 			this.game = game;
 
-			api = new mupen64plusApi(this, rom, vidX, vidY, PluginName);
+			api = new mupen64plusApi(this, rom, video_settings);
 
 			MemoryDomains = new List<MemoryDomain>();
 			MemoryDomains.Add(new MemoryDomain("RDRAM", 0x400000, Endian.Little, api.getRDRAMByte, api.setRDRAMByte));

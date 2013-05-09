@@ -2455,7 +2455,45 @@ namespace BizHawk.MultiClient
 							case "N64":
 								if (INTERIM)
 								{
-									nextEmulator = new N64(nextComm, game, rom.RomData, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY, Global.Config.N64VidPlugin);
+									BizHawk.Emulation.Consoles.Nintendo.N64.VideoPluginSettings video_settings = new BizHawk.Emulation.Consoles.Nintendo.N64.VideoPluginSettings(Global.Config.N64VidPlugin, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
+									if (Global.Config.N64VidPlugin == "Rice")
+									{
+										video_settings.Parameters.Add("NormalAlphaBlender", Global.Config.RiceNormalAlphaBlender);
+										video_settings.Parameters.Add("FastTextureLoading", Global.Config.RiceFastTextureLoading);
+										video_settings.Parameters.Add("AccurateTextureMapping", Global.Config.RiceAccurateTextureMapping);
+										video_settings.Parameters.Add("InN64Resolution", Global.Config.RiceInN64Resolution);
+										video_settings.Parameters.Add("SaveVRAM", Global.Config.RiceSaveVRAM);
+										video_settings.Parameters.Add("DoubleSizeForSmallTxtrBuf", Global.Config.RiceDoubleSizeForSmallTxtrBuf);
+										video_settings.Parameters.Add("DefaultCombinerDisable", Global.Config.RiceDefaultCombinerDisable);
+										video_settings.Parameters.Add("EnableHacks", Global.Config.RiceEnableHacks);
+										video_settings.Parameters.Add("WinFrameMode", Global.Config.RiceWinFrameMode);
+										video_settings.Parameters.Add("FullTMEMEmulation", Global.Config.RiceFullTMEMEmulation);
+										video_settings.Parameters.Add("OpenGLVertexClipper", Global.Config.RiceOpenGLVertexClipper);
+										video_settings.Parameters.Add("EnableSSE", Global.Config.RiceEnableSSE);
+										video_settings.Parameters.Add("EnableVertexShader", Global.Config.RiceEnableVertexShader);
+										video_settings.Parameters.Add("SkipFrame", Global.Config.RiceSkipFrame);
+										video_settings.Parameters.Add("TexRectOnly", Global.Config.RiceTexRectOnly);
+										video_settings.Parameters.Add("SmallTextureOnly", Global.Config.RiceSmallTextureOnly);
+										video_settings.Parameters.Add("LoadHiResCRCOnly", Global.Config.RiceLoadHiResCRCOnly);
+										video_settings.Parameters.Add("LoadHiResTextures", Global.Config.RiceLoadHiResTextures);
+										video_settings.Parameters.Add("DumpTexturesToFiles", Global.Config.RiceDumpTexturesToFiles);
+										video_settings.Parameters.Add("FrameBufferSetting", Global.Config.RiceFrameBufferSetting);
+										video_settings.Parameters.Add("FrameBufferWriteBackControl", Global.Config.RiceFrameBufferWriteBackControl);
+										video_settings.Parameters.Add("RenderToTexture", Global.Config.RiceRenderToTexture);
+										video_settings.Parameters.Add("ScreenUpdateSetting", Global.Config.RiceScreenUpdateSetting);
+										video_settings.Parameters.Add("Mipmapping", Global.Config.RiceMipmapping);
+										video_settings.Parameters.Add("FogMethod", Global.Config.RiceFogMethod);
+										video_settings.Parameters.Add("ForceTextureFilter", Global.Config.RiceForceTextureFilter);
+										video_settings.Parameters.Add("TextureEnhancement", Global.Config.RiceTextureEnhancement);
+										video_settings.Parameters.Add("TextureEnhancementControl", Global.Config.RiceTextureEnhancementControl);
+										video_settings.Parameters.Add("TextureQuality", Global.Config.RiceTextureQuality);
+										video_settings.Parameters.Add("OpenGLDepthBufferSetting", Global.Config.RiceOpenGLDepthBufferSetting);
+										video_settings.Parameters.Add("MultiSampling", Global.Config.RiceMultiSampling);
+										video_settings.Parameters.Add("ColorQuality", Global.Config.RiceColorQuality);
+										video_settings.Parameters.Add("OpenGLRenderSetting", Global.Config.RiceOpenGLRenderSetting);
+										video_settings.Parameters.Add("AnisotropicFiltering", Global.Config.RiceAnisotropicFiltering);
+									}
+									nextEmulator = new N64(nextComm, game, rom.RomData, video_settings);
 								}
 								break;
 						}

@@ -394,7 +394,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		IntPtr AudDll;
 		IntPtr InpDll;
 
-		public mupen64plusApi(N64 bizhawkCore, byte[] rom, int vidX, int vidY, string PluginName)
+		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings)
 		{
 			if (AttachedCore != null)
 			{
@@ -405,17 +405,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			this.bizhawkCore = bizhawkCore;
 
 			string VidDllName;
-			if (PluginName == "Rice")
+			if (video_settings.PluginName == "Rice")
 			{
 				VidDllName = "mupen64plus-video-rice.dll";
 			}
-			else if (PluginName == "Glide64")
+			else if (video_settings.PluginName == "Glide64")
 			{
 				VidDllName = "mupen64plus-video-glide64.dll";
 			}
 			else
 			{
-				throw new InvalidOperationException(string.Format("Unknown plugin \"" + PluginName));
+				throw new InvalidOperationException(string.Format("Unknown plugin \"" + video_settings.PluginName));
 			}
 
 			// Load each of the DLLs
@@ -444,15 +444,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);
 
 			// Resize the video to the size in bizhawk's settings
-			SetVideoSize(vidX, vidY);
+			SetVideoSize(video_settings.Width, video_settings.Height);
 
 			// Open the general video settings section in the config system
 			IntPtr video_section = IntPtr.Zero;
 			m64pConfigOpenSection("Video-General", ref video_section);
 
 			// Set the desired width and height for mupen64plus
-			result = m64pConfigSetParameter(video_section, "ScreenWidth", m64p_type.M64TYPE_INT, ref vidX);
-			result = m64pConfigSetParameter(video_section, "ScreenHeight", m64p_type.M64TYPE_INT, ref vidY);
+			result = m64pConfigSetParameter(video_section, "ScreenWidth", m64p_type.M64TYPE_INT, ref video_settings.Width);
+			result = m64pConfigSetParameter(video_section, "ScreenHeight", m64p_type.M64TYPE_INT, ref video_settings.Height);
+
+			set_video_parameters(video_settings);
 
 			// Set up and connect the graphics plugin
 			result = GfxPluginStartup(CoreDll, "Video", (IntPtr foo, int level, string Message) => { });
@@ -560,6 +562,37 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 			bizhawkCore.frameBuffer = new int[vidX * vidY];
 			m64p_FrameBuffer = new int[vidX * vidY];
+		}
+
+		public void set_video_parameters(VideoPluginSettings video_settings)
+		{
+			IntPtr video_plugin_section = IntPtr.Zero;
+			if (video_settings.PluginName == "Rice")
+			{
+				m64pConfigOpenSection("Video-Rice", ref video_plugin_section);
+			}
+			else if (video_settings.PluginName == "Glide64")
+			{
+				m64pConfigOpenSection("Video-Glide64", ref video_plugin_section);
+			}
+			else
+			{
+				return;
+			}
+
+			foreach (string Parameter in video_settings.Parameters.Keys)
+			{
+				int value = 0;
+				if (video_settings.Parameters[Parameter].GetType() == typeof(int))
+				{
+					value = (int)video_settings.Parameters[Parameter];
+				}
+				else if (video_settings.Parameters[Parameter].GetType() == typeof(bool))
+				{
+					value = (bool)video_settings.Parameters[Parameter] ? 1 : 0;
+				}
+				m64pConfigSetParameter(video_plugin_section, Parameter, m64p_type.M64TYPE_INT, ref value);
+			}
 		}
 
 
@@ -747,6 +780,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 				disposed = true;
 			}
+		}
+	}
+
+	public class VideoPluginSettings
+	{
+		public string PluginName;
+		//public Dictionary<string, int> IntParameters = new Dictionary<string,int>();
+		//public Dictionary<string, string> StringParameters = new Dictionary<string,string>();
+
+		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
+		public int Height;
+		public int Width;
+
+		public VideoPluginSettings (string Name, int Width, int Height)
+		{
+			this.PluginName = Name;
+			this.Width = Width;
+			this.Height = Height;
 		}
 	}
 }
