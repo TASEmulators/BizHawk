@@ -119,9 +119,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public byte[] ReadSaveRam()
 		{
-			byte[] ret = new byte[0x800 + 4 * 0x8000];
-			api.SaveSaveram(ret);
-			return ret;
+			return api.SaveSaveram();
 		}
 
 		public void StoreSaveRam(byte[] data)

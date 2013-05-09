@@ -673,14 +673,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pCoreLoadState(buffer);
 		}
 
+		byte[] saveram_backup;
+
 		public void InitSaveram()
 		{
 			m64pinit_saveram();
 		}
 
-		public void SaveSaveram(byte[] dest)
+		public byte[] SaveSaveram()
 		{
-			m64psave_saveram(dest);
+			if (disposed)
+			{
+				if (saveram_backup != null)
+				{
+					return saveram_backup;
+				}
+				else
+				{
+					// This shouldn't happen!!
+					return new byte[0x800 + 4 * 0x8000];
+				}
+			}
+			else
+			{
+				byte[] dest = new byte[0x800 + 4 * 0x8000];
+				m64psave_saveram(dest);
+				return dest;
+			}
 		}
 
 		public void LoadSaveram(byte[] src)
@@ -696,6 +715,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 				m64pCoreDoCommandPtr(m64p_command.M64CMD_STOP, 0, IntPtr.Zero);
 				//m64pEmulator.Join();
 				while (emulator_running) { }
+
+				// Backup the saveram in case bizhawk wants to get at is after we've freed the libraries
+				saveram_backup = SaveSaveram();
 
 				bizhawkCore.resampler.Dispose();
 				bizhawkCore.resampler = null;
