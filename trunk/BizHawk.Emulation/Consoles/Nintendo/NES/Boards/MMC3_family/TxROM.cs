@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "KONAMI-TLROM": //Super C
 				case "HVC-TLROM": //8 eyes (J)
 				case "UNIF_NES-TLROM": // Gaiapolis (obviously a clone board, but which one?)
-					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(0);
+					AssertPrg(128, 256, 512); AssertChr(64, 128, 256); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
 				case "NES-TL1ROM": //Double dragon 2
