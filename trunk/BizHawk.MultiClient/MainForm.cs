@@ -101,6 +101,7 @@ namespace BizHawk.MultiClient
 		public SNESGameGenie SNESgg = new SNESGameGenie();
 		public GBGameGenie GBgg = new GBGameGenie();
 		public GenGameGenie Gengg = new GenGameGenie();
+		public NESSoundConfig NesSound = new NESSoundConfig();
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
@@ -3677,6 +3678,20 @@ namespace BizHawk.MultiClient
 				RamSearch1.Focus();
 		}
 
+		public void LoadNesSoundConfig()
+		{
+			if (Global.Emulator is NES)
+			{
+				if (!NesSound.IsHandleCreated || NesSound.IsDisposed)
+				{
+					NesSound = new NESSoundConfig();
+					NesSound.Show();
+				}
+				else
+					NesSound.Focus();
+			}
+		}
+
 		public void LoadGameGenieEC()
 		{
 
@@ -5072,13 +5087,7 @@ namespace BizHawk.MultiClient
 
 		private void soundChannelsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is NES)
-			{
-				Global.Sound.StopSound();
-				NESSoundConfig config = new NESSoundConfig();
-				config.ShowDialog();
-				Global.Sound.StartSound();
-			}
+			LoadNesSoundConfig();
 		}
 
 		public void ClearSaveRAM()
