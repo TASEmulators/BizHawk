@@ -5063,11 +5063,11 @@ namespace BizHawk.MultiClient
 		public void SetNESSoundChannels()
 		{
 			NES nes = Global.Emulator as NES;
-			nes.SetSquare1(Global.Config.NESEnableSquare1);
-			nes.SetSquare2(Global.Config.NESEnableSquare2);
-			nes.SetTriangle(Global.Config.NESEnableTriangle);
-			nes.SetNoise(Global.Config.NESEnableNoise);
-			nes.SetDMC(Global.Config.NESEnableDMC);
+			nes.SetSquare1(Global.Config.NESSquare1);
+			nes.SetSquare2(Global.Config.NESSquare2);
+			nes.SetTriangle(Global.Config.NESTriangle);
+			nes.SetNoise(Global.Config.NESNoise);
+			nes.SetDMC(Global.Config.NESDMC);
 		}
 
 		private void soundChannelsToolStripMenuItem_Click(object sender, EventArgs e)
