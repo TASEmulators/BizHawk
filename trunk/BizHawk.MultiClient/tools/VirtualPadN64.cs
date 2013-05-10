@@ -156,5 +156,17 @@ namespace BizHawk.MultiClient
 				Global.StickyXORAdapter.SetSticky(Controller + " DPad R", PR.Checked);
 			}
 		}
+
+		private void AnalogControl1_MouseClick(object sender, MouseEventArgs e)
+		{
+			Global.StickyXORAdapter.SetFloat("P1 X Axis", AnalogControl1.X);
+			Global.StickyXORAdapter.SetFloat("P1 Y Axis", -AnalogControl1.Y);
+		}
+
+		private void AnalogControl1_MouseMove(object sender, MouseEventArgs e)
+		{
+			Global.StickyXORAdapter.SetFloat("P1 X Axis", AnalogControl1.X);
+			Global.StickyXORAdapter.SetFloat("P1 Y Axis", -AnalogControl1.Y);
+		}
 	}
 }
