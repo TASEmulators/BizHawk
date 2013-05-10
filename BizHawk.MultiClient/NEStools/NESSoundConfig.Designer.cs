@@ -79,7 +79,7 @@
 			// 
 			this.trackBar1.Location = new System.Drawing.Point(12, 12);
 			this.trackBar1.Name = "trackBar1";
-			this.trackBar1.Size = new System.Drawing.Size(104, 42);
+			this.trackBar1.Size = new System.Drawing.Size(104, 45);
 			this.trackBar1.TabIndex = 2;
 			this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
 			// 
@@ -87,7 +87,7 @@
 			// 
 			this.trackBar2.Location = new System.Drawing.Point(12, 60);
 			this.trackBar2.Name = "trackBar2";
-			this.trackBar2.Size = new System.Drawing.Size(104, 42);
+			this.trackBar2.Size = new System.Drawing.Size(104, 45);
 			this.trackBar2.TabIndex = 3;
 			this.trackBar2.ValueChanged += new System.EventHandler(this.trackBar2_ValueChanged);
 			// 
@@ -95,7 +95,7 @@
 			// 
 			this.trackBar3.Location = new System.Drawing.Point(12, 108);
 			this.trackBar3.Name = "trackBar3";
-			this.trackBar3.Size = new System.Drawing.Size(104, 42);
+			this.trackBar3.Size = new System.Drawing.Size(104, 45);
 			this.trackBar3.TabIndex = 4;
 			this.trackBar3.ValueChanged += new System.EventHandler(this.trackBar3_ValueChanged);
 			// 
@@ -103,7 +103,7 @@
 			// 
 			this.trackBar4.Location = new System.Drawing.Point(12, 156);
 			this.trackBar4.Name = "trackBar4";
-			this.trackBar4.Size = new System.Drawing.Size(104, 42);
+			this.trackBar4.Size = new System.Drawing.Size(104, 45);
 			this.trackBar4.TabIndex = 5;
 			this.trackBar4.ValueChanged += new System.EventHandler(this.trackBar4_ValueChanged);
 			// 
@@ -111,7 +111,7 @@
 			// 
 			this.trackBar5.Location = new System.Drawing.Point(12, 204);
 			this.trackBar5.Name = "trackBar5";
-			this.trackBar5.Size = new System.Drawing.Size(104, 42);
+			this.trackBar5.Size = new System.Drawing.Size(104, 45);
 			this.trackBar5.TabIndex = 6;
 			this.trackBar5.ValueChanged += new System.EventHandler(this.trackBar5_ValueChanged);
 			// 
@@ -229,6 +229,7 @@
 			this.Controls.Add(this.trackBar1);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
+			this.MaximizeBox = false;
 			this.Name = "NESSoundConfig";
 			this.ShowIcon = false;
 			this.Text = "NES Sound Channels";
