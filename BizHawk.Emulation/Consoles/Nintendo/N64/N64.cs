@@ -84,7 +84,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			float X_Axis = Controller.GetFloat("P1 X Axis");
 			float Y_Axis = Controller.GetFloat("P1 Y Axis");
 
-			// ... convert the float values to a signed bytes somehow ...
+			// Analog stick right = +X
+			// Analog stick up = +Y
+
+			x = (sbyte)X_Axis;
+			y = (sbyte)Y_Axis;
 
 			api.set_buttons(0, ReadController(1), x, y);
 			api.frame_advance();

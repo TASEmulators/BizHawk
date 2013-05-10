@@ -144,7 +144,7 @@ namespace BizHawk.MultiClient
 	public class ForceOffAdaptor : IController
 	{
 		public bool IsPressed(string button) { return this[button]; }
-		public float GetFloat(string name) { return 0.0f; } //TODO
+		public float GetFloat(string name) { return Source.GetFloat(name); } //TODO
 		public void UpdateControls(int frame) { }
 
 		protected HashSet<string> stickySet = new HashSet<string>();
@@ -185,7 +185,16 @@ namespace BizHawk.MultiClient
 		public bool Locked = false; //Pretty much a hack, 
 
 		public bool IsPressed(string button) { return this[button]; }
-		public float GetFloat(string name) { return 0.0f; } //TODO
+
+		WorkingDictionary<string,float> FloatSet = new WorkingDictionary<string,float>();
+		public void SetFloat(string name, float value)
+		{
+			FloatSet[name] = value;
+		}
+		public float GetFloat(string name)
+		{
+			return FloatSet[name];
+		}
 		public void UpdateControls(int frame) { }
 
 		public bool this[string button] { 
@@ -323,7 +332,7 @@ namespace BizHawk.MultiClient
 		public bool Locked = false; //Pretty much a hack, 
 
 
-		public float GetFloat(string name) { return 0.0f; } //TODO
+		public float GetFloat(string name) { return Source.GetFloat(name); } //TODO
 		public void UpdateControls(int frame) { }
 
 		public void SetSticky(string button, bool isSticky)
@@ -859,11 +868,12 @@ namespace BizHawk.MultiClient
 		public ControllerDefinition Type { get; set; }
 		public bool this[string button] { get { return MyBoolButtons[button]; } }
 		public bool IsPressed(string button) { return MyBoolButtons[button]; }
-		public float GetFloat(string name) { return 0; }
+		public float GetFloat(string name) { return MyFloatControls[name]; }
 		public void UpdateControls(int frame) {  }
 		//--------
 
 		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
 
 		void Force(string button, bool state)
 		{
@@ -910,6 +920,11 @@ namespace BizHawk.MultiClient
 			foreach (string button in Type.BoolButtons)
 			{
 				MyBoolButtons[button] = source[button];
+			}
+
+			foreach (string name in Type.FloatControls)
+			{
+				MyFloatControls[name] = source.GetFloat(name);
 			}
 		}
 

@@ -215,10 +215,13 @@
 			// AnalogControl1
 			// 
 			this.AnalogControl1.BackColor = System.Drawing.Color.Transparent;
+			this.AnalogControl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.AnalogControl1.Location = new System.Drawing.Point(24, 14);
 			this.AnalogControl1.Name = "AnalogControl1";
-			this.AnalogControl1.Size = new System.Drawing.Size(128, 128);
+			this.AnalogControl1.Size = new System.Drawing.Size(132, 132);
 			this.AnalogControl1.TabIndex = 0;
+			this.AnalogControl1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AnalogControl1_MouseClick);
+			this.AnalogControl1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AnalogControl1_MouseMove);
 			// 
 			// VirtualPadN64
 			// 
