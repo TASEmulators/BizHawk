@@ -789,11 +789,17 @@ namespace BizHawk.MultiClient
 		public string MoviePlaybackPokeModeBinding = "";
 		public string ClearFrameBinding = "";
 		// NES Sound settings
-		public bool NESEnableSquare1 = true;
-		public bool NESEnableSquare2 = true;
-		public bool NESEnableTriangle = true;
-		public bool NESEnableNoise = true;
-		public bool NESEnableDMC = true;
+		public int NESSquare1 = 376;
+		public int NESSquare2 = 376;
+		public int NESTriangle = 426;
+		public int NESNoise = 247;
+		public int NESDMC = 167;
+
+		public const int NESSquare1Max = 376;
+		public const int NESSquare2Max = 376;
+		public const int NESTriangleMax = 426;
+		public const int NESNoiseMax = 247;
+		public const int NESDMCMax = 167;
 
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;

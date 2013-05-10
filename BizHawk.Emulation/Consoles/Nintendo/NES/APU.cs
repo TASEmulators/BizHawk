@@ -24,11 +24,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			public static bool CFG_DECLICK = true;
 
-			public bool EnableSquare1 = false;
-			public bool EnableSquare2 = false;
-			public bool EnableTriangle = true;
-			public bool EnableNoise = false;
-			public bool EnableDMC = true;
+			public int Square1V = 376;
+			public int Square2V = 376;
+			public int TriangleV = 426;
+			public int NoiseV = 247;
+			public int DMCV = 167;
 
 			public bool recalculate = false;
 
@@ -43,11 +43,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				pulse[1] = new PulseUnit(this, 1);
 				if (old != null)
 				{
-					EnableSquare1 = old.EnableSquare1;
-					EnableSquare2 = old.EnableSquare2;
-					EnableTriangle = old.EnableTriangle;
-					EnableNoise = old.EnableNoise;
-					EnableDMC = old.EnableDMC;
+					Square1V = old.Square1V;
+					Square2V = old.Square2V;
+					TriangleV = old.TriangleV;
+					NoiseV = old.NoiseV;
+					DMCV = old.DMCV;
 				}
 			}
 
@@ -1138,12 +1138,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					int s_dmc = dmc.sample;
 					//int s_ext = 0; //gamepak
 
+					/*
 					if (!EnableSquare1) s_pulse0 = 0;
 					if (!EnableSquare2) s_pulse1 = 0;
 					if (!EnableTriangle) s_tri = 0;
 					if (!EnableNoise) s_noise = 0;
 					if (!EnableDMC) s_dmc = 0;
-
+					*/
+					
 					//const float NOISEADJUST = 0.5f;
 
 					//linear approximation
@@ -1153,9 +1155,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
 					//int mix = (int)(50000 * output);
 
+					int mix = Square1V * s_pulse0
+						+ Square2V * s_pulse1
+						+ TriangleV * s_tri
+						+ NoiseV * s_noise
+						+ DMCV * s_dmc;
+					/*
 					int pulse_out = 376 * (s_pulse0 + s_pulse1);
 					int tnd_out = 426 * s_tri + 247 * s_noise + 167 * s_dmc;
 					int mix = pulse_out + tnd_out;
+					*/
 					//int pulse_out = pulse_table[s_pulse0 + s_pulse1];
 					//int tnd_out = tnd_table[3 * s_tri + 2 * s_noise + s_dmc];
 					//int mix = pulse_out + tnd_out;
