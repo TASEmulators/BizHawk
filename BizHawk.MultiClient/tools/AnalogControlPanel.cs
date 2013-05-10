@@ -48,7 +48,10 @@ namespace BizHawk.MultiClient
 
 		private int GFXToReal(int val)
 		{
-			return (val * 2) - 128;
+			int ret = (val * 2) - 128;
+			if (ret > 127) ret = 127;
+			if (ret < -128) ret = -128;
+			return ret;
 		}
 
 		private void AnalogControlPanel_Paint(object sender, PaintEventArgs e)
