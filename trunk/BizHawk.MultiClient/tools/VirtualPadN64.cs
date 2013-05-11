@@ -155,6 +155,46 @@ namespace BizHawk.MultiClient
 			{
 				Global.StickyXORAdapter.SetSticky(Controller + " DPad R", PR.Checked);
 			}
+			else if (sender == CR)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " C Right", CR.Checked);
+			}
+			else if (sender == CL)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " C Left", CL.Checked);
+			}
+			else if (sender == CU)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " C Up", CU.Checked);
+			}
+			else if (sender == CD)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " C Down", CD.Checked);
+			}
+			else if (sender == BR)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " R", BR.Checked);
+			}
+			else if (sender == BL)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " L", BL.Checked);
+			}
+			else if (sender == BS)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " Start", BS.Checked);
+			}
+			else if (sender == BA)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " A", BA.Checked);
+			}
+			else if (sender == BB)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " B", BB.Checked);
+			}
+			else if (sender == BZ)
+			{
+				Global.StickyXORAdapter.SetSticky(Controller + " Z", BZ.Checked);
+			}
 		}
 
 		private void AnalogControl1_MouseClick(object sender, MouseEventArgs e)

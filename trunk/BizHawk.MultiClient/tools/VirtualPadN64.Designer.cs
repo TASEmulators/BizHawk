@@ -139,6 +139,7 @@
 			this.BZ.TabIndex = 11;
 			this.BZ.Text = "Z";
 			this.BZ.UseVisualStyleBackColor = true;
+			this.BZ.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
 			// BB
 			// 
