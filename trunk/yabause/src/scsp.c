@@ -2842,6 +2842,8 @@ scsp_init (u8 *scsp_ram, void (*sint_hand)(u32), void (*mint_hand)(void))
 
   scsp_shutdown ();
 
+  memset(&scsp, 0, sizeof(scsp));
+
   scsp_isr = &scsp_reg[0x0000];
   scsp_ccr = &scsp_reg[0x0400];
   scsp_dcr = &scsp_reg[0x0700];
@@ -3755,25 +3757,27 @@ M68KClearCodeBreakpoints ()
 
 void StateFlatten(slot_t *s)
 {
-	s->buf8 = (s8*)(int)(s->buf8 - (s8*)scsp.scsp_ram);
-	s->buf16 = (s16*)(int)(s->buf16 - (s16*)scsp.scsp_ram);
+	if (s->buf8)
+		s->buf8 = (s8*)(int)(s->buf8 - (s8*)scsp.scsp_ram);
+	if (s->buf16)
+		s->buf16 = (s16*)(int)(s->buf16 - (s16*)scsp.scsp_ram);
 	if (s->einc)
 		s->einc = (s32*)(int)(s->einc - (s32*)s);
 	if (s->arp == &scsp_null_rate[0])
 		s->arp = (s32*)(void*)0xdeadbeef;
-	else
+	else if (s->arp)
 		s->arp = (s32*)(int)(s->arp - scsp_attack_rate);
 	if (s->drp == &scsp_null_rate[0])
 		s->drp = (s32*)(void*)0xdeadbeef;
-	else
+	else if (s->drp)
 		s->drp = (s32*)(int)(s->drp - scsp_decay_rate);
 	if (s->srp == &scsp_null_rate[0])
 		s->srp = (s32*)(void*)0xdeadbeef;
-	else
+	else if (s->srp)
 		s->srp = (s32*)(int)(s->srp - scsp_decay_rate);
 	if (s->rrp == &scsp_null_rate[0])
 		s->rrp = (s32*)(void*)0xdeadbeef;
-	else
+	else if (s->rrp)
 		s->rrp = (s32*)(int)(s->rrp - scsp_decay_rate);
 
 	if (s->lfofmw == scsp_lfo_sawt_f)
@@ -3808,25 +3812,27 @@ void StateFlatten(slot_t *s)
 
 void StateUnFlatten(slot_t *s)
 {
-	s->buf8 = (s8*)scsp.scsp_ram + (int)(s->buf8);
-	s->buf16 = (s16*)scsp.scsp_ram + (int)(s->buf16);
+	if (s->buf8)
+		s->buf8 = (s8*)scsp.scsp_ram + (int)(s->buf8);
+	if (s->buf16)
+		s->buf16 = (s16*)scsp.scsp_ram + (int)(s->buf16);
 	if (s->einc)
 		s->einc = (s32*)s + (int)(s->einc);
 	if (s->arp == (void*)0xdeadbeef)
 		s->arp = &scsp_null_rate[0];
-	else
+	else if (s->arp)
 		s->arp = scsp_attack_rate + (int)(s->arp);
 	if (s->drp == (void*)0xdeadbeef)
 		s->drp = &scsp_null_rate[0];
-	else
+	else if (s->drp)
 		s->drp = scsp_decay_rate + (int)(s->drp);
 	if (s->srp == (void*)0xdeadbeef)
 		s->srp = &scsp_null_rate[0];
-	else
+	else if (s->srp)
 		s->srp = scsp_decay_rate + (int)(s->srp);
 	if (s->rrp == (void*)0xdeadbeef)
 		s->rrp = &scsp_null_rate[0];
-	else
+	else if (s->rrp)
 		s->rrp = scsp_decay_rate + (int)(s->rrp);
 
 	switch ((int)(s->lfofmw))
