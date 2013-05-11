@@ -415,7 +415,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 						unsafe
 						{
 							byte* p = (byte*)d;
-							//p[addr] = val;
+							p[addr] = val;
 						}
 					}
 				));
