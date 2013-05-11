@@ -50,6 +50,9 @@ namespace BizHawk.Emulation.Consoles.GB
 			blip_right.SetRates(2097152 * 2, 44100);
 
 			SetMemoryDomains();
+
+			L.CoreComm.InputCallback = CallbackLinker;
+			R.CoreComm.InputCallback = CallbackLinker;
 		}
 
 		public IVideoProvider VideoProvider { get { return this; } }
@@ -70,6 +73,15 @@ namespace BizHawk.Emulation.Consoles.GB
 
 		public ControllerDefinition ControllerDefinition { get { return DualGbController; } }
 		public IController Controller { get; set; }
+
+		/// <summary>
+		/// each sub-core calls this
+		/// </summary>
+		void CallbackLinker()
+		{
+			if (CoreComm.InputCallback != null)
+				CoreComm.InputCallback();
+		}
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
