@@ -66,6 +66,8 @@ static void (*l_DebugCallback)(void *, int, const char *) = NULL;
 static void *l_DebugCallContext = NULL;
 static int l_PluginInit = 0;
 
+static void (*l_inputCallback)() = NULL;
+
 static unsigned short button_bits[] = {
     0x0001,  // R_DPAD
     0x0002,  // L_DPAD
@@ -90,8 +92,6 @@ static int romopen = 0;         // is a rom opened
 static unsigned char myKeyState[SDL_NUM_SCANCODES];
 
 BUTTONS controllers[4];
-
-int LagFlag = 1;
 
 #ifdef __linux__
 static struct ff_effect ffeffect[3];
@@ -370,8 +370,8 @@ EXPORT void CALL ControllerCommand(int Control, unsigned char *Command)
 *******************************************************************/
 EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
 {
+	(*l_inputCallback)();
 	(*Keys).Value = controllers[Control].Value;
-	LagFlag = 0;
 }
 
 /******************************************************************
@@ -488,12 +488,7 @@ EXPORT void CALL SetKeys(int num, int keys, char X, char Y)
 	controllers[num].Y_AXIS = Y;
 }
 
-EXPORT void CALL ResetLagFlag()
+EXPORT void CALL SetInputCallback(void (*inputCallback)())
 {
-	LagFlag = 1;
-}
-
-EXPORT int CALL CheckLagFlag()
-{
-	return LagFlag;
+	l_inputCallback = inputCallback;
 }

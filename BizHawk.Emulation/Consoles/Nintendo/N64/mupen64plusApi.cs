@@ -312,19 +312,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		SetKeys InpSetKeys;
 
 		/// <summary>
-		/// Resets the internal lag indicator to true.
+		/// Sets a callback to use when the mupen core wants controller buttons
 		/// </summary>
+		/// <param name="inputCallback">The delegate to use</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void ResetLagFlag();
-		ResetLagFlag InpResetLagFlag;
+		private delegate void SetInputCallback(InputCallback inputCallback);
+		SetInputCallback InpSetInputCallback;
 
-		/// <summary>
-		/// Checks the internal lag indicator. It will be set to 0 if the input has been read since it was last reset
-		/// </summary>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate int CheckLagFlag();
-		CheckLagFlag InpCheckLagFlag;
+		public delegate void InputCallback();
+		InputCallback InpInputCallback;
 
 
 		// These are common for all four plugins
@@ -547,8 +544,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			InpPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginStartup"), typeof(PluginStartup));
 			InpPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "PluginShutdown"), typeof(PluginShutdown));
 			InpSetKeys = (SetKeys)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetKeys"), typeof(SetKeys));
-			InpResetLagFlag = (ResetLagFlag)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "ResetLagFlag"), typeof(ResetLagFlag));
-			InpCheckLagFlag = (CheckLagFlag)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "CheckLagFlag"), typeof(CheckLagFlag));
+			InpSetInputCallback = (SetInputCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InpDll, "SetInputCallback"), typeof(SetInputCallback));
 
 			RspPluginStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginStartup"), typeof(PluginStartup));
 			RspPluginShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(RspDll, "PluginShutdown"), typeof(PluginShutdown));
@@ -686,14 +682,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public void frame_advance()
 		{
-			InpResetLagFlag();
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 			m64pFrameComplete.WaitOne();
 		}
 
-		public bool IsLagFrame()
+		public void SetM64PInputCallback(InputCallback inputCallback)
 		{
-			return (InpCheckLagFlag() == 1 ? true : false);
+			InpInputCallback = inputCallback;
+			InpSetInputCallback(InpInputCallback);
 		}
 
 		public int SaveState(byte[] buffer)
