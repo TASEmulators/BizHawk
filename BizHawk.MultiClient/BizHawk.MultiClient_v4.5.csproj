@@ -249,11 +249,15 @@
     <Compile Include="GBtools\ColorChooserForm.designer.cs">
       <DependentUpon>ColorChooserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GBtools\DualGBFileSelector.cs" />
+    <Compile Include="GBtools\DualGBFileSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="GBtools\DualGBFileSelector.Designer.cs">
       <DependentUpon>DualGBFileSelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="GBtools\DualGBXMLCreator.cs" />
+    <Compile Include="GBtools\DualGBXMLCreator.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GBtools\DualGBXMLCreator.Designer.cs">
       <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
     </Compile>
