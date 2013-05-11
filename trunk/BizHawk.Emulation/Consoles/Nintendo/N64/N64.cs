@@ -71,7 +71,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			{
 				api.hard_reset();
 			}
-			
+
+			IsLagFrame = true;
+			api.frame_advance();
+			if (IsLagFrame) LagCount++;
+			Frame++; 
+		}
+
+		public void setControllers()
+		{
+			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
+			IsLagFrame = false;
+
 			sbyte x = 0;
 			sbyte y = 0;
 			/*
@@ -91,10 +102,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			y = (sbyte)Y_Axis;
 
 			api.set_buttons(0, ReadController(1), x, y);
-			api.frame_advance();
-			IsLagFrame = api.IsLagFrame();
-			if (IsLagFrame) LagCount++;
-			Frame++; 
 		}
 
 		public int ReadController(int num)
@@ -232,6 +239,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			this.game = game;
 
 			api = new mupen64plusApi(this, rom, video_settings);
+			api.SetM64PInputCallback(new mupen64plusApi.InputCallback(setControllers));
 
 			MemoryDomains = new List<MemoryDomain>();
 			MemoryDomains.Add(new MemoryDomain("RDRAM", 0x400000, Endian.Little, api.getRDRAMByte, api.setRDRAMByte));
