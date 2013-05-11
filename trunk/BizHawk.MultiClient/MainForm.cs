@@ -987,8 +987,7 @@ namespace BizHawk.MultiClient
 
 			Global.DualGBControls = dualgbControls;
 
-			var adualgbControls = new AutofireController(Gameboy.GbController);
-			adualgbControls.Autofire = true;
+			var adualgbControls = new AutofireController(Gameboy.GbController) {Autofire = true};
 			adualgbControls.BindMulti("P1 Up", Global.Config.AutoDualGBController[0].P1_Up);
 			adualgbControls.BindMulti("P1 Down", Global.Config.AutoDualGBController[0].P1_Down);
 			adualgbControls.BindMulti("P1 Left", Global.Config.AutoDualGBController[0].P1_Left);
@@ -1660,7 +1659,8 @@ namespace BizHawk.MultiClient
 			bool isLua = false;
 			foreach (string path in filePaths)
 			{
-				if (Path.GetExtension(path).ToUpper() == ".LUA")
+				var extension = Path.GetExtension(path);
+				if (extension != null && extension.ToUpper() == ".LUA")
 				{
 					OpenLuaConsole();
 					LuaConsole1.LoadLuaFile(path);
@@ -1670,27 +1670,29 @@ namespace BizHawk.MultiClient
 			if (isLua)
 				return;
 
-			if (Path.GetExtension(filePaths[0]).ToUpper() == ".LUASES")
+			var ext = Path.GetExtension(filePaths[0]) ?? "";
+			if (ext.ToUpper() == ".LUASES")
 			{
 				OpenLuaConsole();
 				LuaConsole1.LoadLuaSession(filePaths[0]);
 			}
-
-			else if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
+			else if (IsValidMovieExtension(ext))
 			{
 				Movie m = new Movie(filePaths[0]);
 				StartNewMovie(m, false);
 
 			}
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".STATE")
+			else if (ext.ToUpper() == ".STATE")
+			{
 				LoadStateFile(filePaths[0], Path.GetFileName(filePaths[0]));
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".CHT")
+			}
+			else if (ext.ToUpper() == ".CHT")
 			{
 				LoadCheatsWindow();
 				Cheats1.LoadCheatFile(filePaths[0], false);
 				Cheats1.DisplayCheatsList();
 			}
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".WCH")
+			else if (ext.ToUpper() == ".WCH")
 			{
 				LoadRamWatch(true);
 				RamWatch1.LoadWatchFile(filePaths[0], false);
@@ -1706,8 +1708,8 @@ namespace BizHawk.MultiClient
 				else
 					LoadRom(CurrentlyOpenRom);
 
-				string errorMsg = "";
-				string warningMsg = "";
+				string errorMsg;
+				string warningMsg;
 				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
 				if (errorMsg.Length > 0)
 				{
@@ -2295,7 +2297,7 @@ namespace BizHawk.MultiClient
 										if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
 										if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
 										if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-										Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(nextComm, game, rom.FileData);
+										Gameboy gb = new Gameboy(nextComm, game, rom.FileData);
 										nextEmulator = gb;
 										if (gb.IsCGBMode())
 										{
@@ -5497,12 +5499,11 @@ namespace BizHawk.MultiClient
 		private void videoConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new N64VideoConfig().ShowDialog();
-			;
 		}
 
 		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new BizHawk.MultiClient.N64VideoPluginconfig().ShowDialog();
+			new N64VideoPluginconfig().ShowDialog();
 		}
 
 		private void savestateTypeToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
