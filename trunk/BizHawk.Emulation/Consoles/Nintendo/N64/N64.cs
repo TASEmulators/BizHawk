@@ -179,6 +179,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			writer.Write(data.Length);
 			writer.Write(data);
 
+			byte[] saveram = api.SaveSaveram();
+			writer.Write(saveram);
+
 			// other variables
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
@@ -191,6 +194,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			byte[] data = reader.ReadBytes(length);
 
 			api.LoadState(data);
+
+			data = reader.ReadBytes(0x800 + 0x8000 * 4);
+			api.LoadSaveram(data);
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
