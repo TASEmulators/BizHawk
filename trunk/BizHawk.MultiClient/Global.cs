@@ -194,6 +194,11 @@ namespace BizHawk.MultiClient
 			}
 		};
 
+		public static readonly Dictionary<string, Dictionary<string, string>> ANALOGS = new Dictionary<string, Dictionary<string, string>>
+		{
+			{"Nintento 64 Controller", new Dictionary<string, string> {{"X Axis", "X"}, {"Y Axis", "Y"}}}
+		};
+
 		public static readonly Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>
 		{
 			{"Atari 2600 Basic Controller", new Dictionary<string, string> {{"Reset", "r"}, {"Select", "s"}}},

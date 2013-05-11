@@ -398,6 +398,11 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
+		float GetBaseFloat(string name)
+		{
+			return Source.GetFloat(name);
+		}
+
 		public bool IsEmpty
 		{
 			get
@@ -595,6 +600,12 @@ namespace BizHawk.MultiClient
 				{
 					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
 				}
+				
+				foreach (string name in Global.ANALOGS[ControlType].Keys)
+				{
+					input.Append(String.Format("{0:000}", (int)GetBaseFloat("P" + player + " " + name) + 128));
+				}
+				
 				input.Append('|');
 			}
 
@@ -880,6 +891,11 @@ namespace BizHawk.MultiClient
 			MyBoolButtons[button] = state;
 		}
 
+		void Force(string name, float state)
+		{
+			MyFloatControls[name] = state;
+		}
+
 		string ControlType { get { return Type.Name; } }
 
 		class MnemonicChecker
@@ -1006,7 +1022,7 @@ namespace BizHawk.MultiClient
 
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + Global.ANALOGS[ControlType].Count * 3 + 1);
 
 				if (mnemonic.Length < srcindex + 3 + Global.BUTTONS[ControlType].Count - 1)
 				{
@@ -1017,6 +1033,17 @@ namespace BizHawk.MultiClient
 				foreach (string button in Global.BUTTONS[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+
+				foreach (string name in Global.ANALOGS[ControlType].Keys)
+				{
+					if (InputValidate.IsValidUnsignedNumber(mnemonic.Substring(srcindex + start, 3)))
+					{
+						Console.WriteLine((float)(Int32.Parse(mnemonic.Substring(srcindex + start, 3)) - 128));
+						Force("P" + player + " " + name, Int32.Parse(mnemonic.Substring(srcindex + start, 3)) - 128);
+					}
+
+					start += 3;
 				}
 			}
 		}
