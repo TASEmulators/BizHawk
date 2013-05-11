@@ -319,18 +319,25 @@ EXPORT void CALL AiDacrateChanged( int SystemType )
     if (!l_PluginInit)
         return;
 
-    switch (SystemType)
-    {
-        case SYSTEM_NTSC:
-            f = 48681812 / (*AudioInfo.AI_DACRATE_REG + 1);
-            break;
-        case SYSTEM_PAL:
-            f = 49656530 / (*AudioInfo.AI_DACRATE_REG + 1);
-            break;
-        case SYSTEM_MPAL:
-            f = 48628316 / (*AudioInfo.AI_DACRATE_REG + 1);
-            break;
-    }
+	if (*AudioInfo.AI_DACRATE_REG == 0)
+	{
+		f = DEFAULT_FREQUENCY;
+	}
+	else
+	{
+		switch (SystemType)
+		{
+			case SYSTEM_NTSC:
+				f = 48681812 / (*AudioInfo.AI_DACRATE_REG + 1);
+				break;
+			case SYSTEM_PAL:
+				f = 49656530 / (*AudioInfo.AI_DACRATE_REG + 1);
+				break;
+			case SYSTEM_MPAL:
+				f = 48628316 / (*AudioInfo.AI_DACRATE_REG + 1);
+				break;
+		}
+	}
     InitializeAudio(f);
 }
 
