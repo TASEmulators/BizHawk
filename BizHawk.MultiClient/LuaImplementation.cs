@@ -501,7 +501,8 @@ namespace BizHawk.MultiClient
 		                                         	{
 		                                         		"set",
 		                                         		"get",
-		                                         		"getimmediate"
+		                                         		"getimmediate",
+														"setanalog"
 		                                         	};
 
 		public static string[] MultiClientFunctions = new[]
@@ -2223,6 +2224,36 @@ namespace BizHawk.MultiClient
 				}
 			}
 			catch { /*Eat it*/ } 
+		}
+
+		public void joypad_setanalog(LuaTable controls, object controller = null)
+		{
+			try
+			{
+				foreach (var name in controls.Keys)
+				{
+					float theValue;
+					string theValueStr = controls[name].ToString();
+
+					if (!String.IsNullOrWhiteSpace(theValueStr))
+					{
+						try
+						{
+							theValue = float.Parse(theValueStr);
+							if (controller == null)
+							{
+								Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
+							}
+							else
+							{
+								Global.StickyXORAdapter.SetFloat("P" + controller + " " + name.ToString(), theValue);
+							}
+						}
+						catch { }
+					}
+				}
+			}
+			catch { /*Eat it*/ }
 		}
 
 		//----------------------------------------------------
