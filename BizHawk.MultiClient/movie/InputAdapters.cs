@@ -1039,7 +1039,6 @@ namespace BizHawk.MultiClient
 				{
 					if (InputValidate.IsValidUnsignedNumber(mnemonic.Substring(srcindex + start, 3)))
 					{
-						Console.WriteLine((float)(Int32.Parse(mnemonic.Substring(srcindex + start, 3)) - 128));
 						Force("P" + player + " " + name, Int32.Parse(mnemonic.Substring(srcindex + start, 3)) - 128);
 					}
 
