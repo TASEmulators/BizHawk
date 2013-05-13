@@ -56,7 +56,7 @@ extern int vdp1cor;
 extern int vdp1cog;
 extern int vdp1cob;
 
-
+GLuint DefaultFrameBuffer;
 
 #ifdef HAVE_GLXGETPROCADDRESS
 void STDCALL * (*yglGetProcAddress)(const char *szProcName) = (void STDCALL *(*)(const char *))glXGetProcAddress;
@@ -467,6 +467,8 @@ void YglTMAllocate(YglTexture * output, unsigned int w, unsigned int h, unsigned
 
 int YglGLInit(int width, int height) {
    int status;
+
+   glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &DefaultFrameBuffer);
    
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -558,7 +560,7 @@ int YglGLInit(int width, int height) {
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-   glBindFramebuffer(GL_FRAMEBUFFER, 0 );
+   glBindFramebuffer(GL_FRAMEBUFFER, DefaultFrameBuffer);
    glBindTexture(GL_TEXTURE_2D,_Ygl->texture);
    
    return 0;
@@ -635,6 +637,8 @@ int YglInit(int width, int height, unsigned int depth) {
    }
 
    YglGLInit(width, height);
+   glViewport(0, 0, GlWidth, GlHeight);
+   YglNeedToUpdateWindow();
 
    // Set up Extention
 /* would be much better to test the opengl api */
@@ -768,7 +772,7 @@ int YglInit(int width, int height, unsigned int depth) {
       return -1;
    }
    
-   glBindFramebuffer(GL_FRAMEBUFFER, 0 );   
+   glBindFramebuffer(GL_FRAMEBUFFER, DefaultFrameBuffer);   
    
    _Ygl->st = 0;
    _Ygl->msglength = 0;
@@ -1473,7 +1477,7 @@ void YglRenderVDP1(void) {
    _Ygl->drawframe=(_Ygl->drawframe^0x01)&0x01;
    
    // glFlush(); need??
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+   glBindFramebuffer(GL_FRAMEBUFFER, DefaultFrameBuffer);
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_BLEND);
    

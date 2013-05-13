@@ -1305,6 +1305,7 @@ int YabLoadState(const char *filename)
    //YabauseChangeTiming(yabsys.CurSH2FreqType);
    //yabsys.UsecFrac = (temp32 << YABSYS_TIMING_BITS) * temp / 10;
 
+   /*
    if (headerversion > 1) {
 
    yread(&check, (void *)&outputwidth, sizeof(outputwidth), 1, fp);
@@ -1338,7 +1339,7 @@ int YabLoadState(const char *filename)
    fseek(fp, movieposition, SEEK_SET);
    MovieReadState(fp, filename);
    }
-   
+   */
    fclose(fp);
 
    ScspUnMuteAudio(SCSP_MUTE_SYSTEM);

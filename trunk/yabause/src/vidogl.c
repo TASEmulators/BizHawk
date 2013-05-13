@@ -2176,6 +2176,8 @@ static void SetSaturnResolution(int width, int height)
 
 int VIDOGLInit(void)
 {
+	GlWidth = 320;
+	GlHeight = 224;
 
    if (YglInit(2048, 1024, 8) != 0)
       return -1;
