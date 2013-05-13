@@ -356,7 +356,47 @@ BOOL InitConfiguration(void)
     ConfigSetDefaultInt(l_ConfigVideoRice, "ColorQuality", TEXTURE_FMT_A8R8G8B8, "Color bit depth for rendering window (0=32 bits, 1=16 bits)");
     ConfigSetDefaultInt(l_ConfigVideoRice, "OpenGLRenderSetting", OGL_DEVICE, "OpenGL level to support (0=auto, 1=OGL_1.1, 2=OGL_1.2, 3=OGL_1.3, 4=OGL_1.4, 5=OGL_1.4_V2, 6=OGL_TNT2, 7=NVIDIA_OGL, 8=OGL_FRAGMENT_PROGRAM)");
     ConfigSetDefaultInt(l_ConfigVideoRice, "AnisotropicFiltering", 0, "Enable/Disable Anisotropic Filtering for Mipmapping (0=no filtering, 2-16=quality). This is uneffective if Mipmapping is 0. If the given value is to high to be supported by your graphic card, the value will be the highest value your graphic card can support. Better result with Trilinear filtering");
-    return TRUE;
+
+	// Per-game hacks
+	ConfigSetDefaultBool(l_ConfigVideoRice, "DisableTextureCRC", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "DisableCulling", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "IncTexRectEdge", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "ZHack", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "TextureScaleHack", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "PrimaryDepthHack", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "Texture1Hack", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "FastLoadTile", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "UseSmallerTexture", FALSE, "...?");
+
+	ConfigSetDefaultInt(l_ConfigVideoRice, "VIWidth", -1, "...?");
+	ConfigSetDefaultInt(l_ConfigVideoRice, "VIHeight", -1, "...?");
+	ConfigSetDefaultInt(l_ConfigVideoRice, "UseCIWidthAndRatio", NOT_USE_CI_WIDTH_AND_RATIO, "...?");
+	ConfigSetDefaultInt(l_ConfigVideoRice, "FullTMEM", 0, "...?");
+
+	ConfigSetDefaultBool(l_ConfigVideoRice, "TxtSizeMethod2", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "EnableTxtLOD", FALSE, "...?");
+
+	ConfigSetDefaultInt(l_ConfigVideoRice, "FastTextureCRC", 0, "...?");
+
+	ConfigSetDefaultBool(l_ConfigVideoRice, "EmulateClear", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "ForceScreenClear", FALSE, "...?");
+
+	ConfigSetDefaultInt(l_ConfigVideoRice, "AccurateTextureMapping", 0, "...?");
+	ConfigSetDefaultInt(l_ConfigVideoRice, "NormalBlender", 0, "...?");
+
+	ConfigSetDefaultBool(l_ConfigVideoRice, "DisableBlender", FALSE, "...?");
+
+	ConfigSetDefaultInt(l_ConfigVideoRice, "NormalCombiner", 0, "...?");
+
+	ConfigSetDefaultBool(l_ConfigVideoRice, "ForceDepthBuffer", FALSE, "...?");
+	ConfigSetDefaultBool(l_ConfigVideoRice, "DisableObjBG", FALSE, "...?");
+
+	ConfigSetDefaultInt(l_ConfigVideoRice, "FrameBufferOption", 0, "...?");
+	ConfigSetDefaultInt(l_ConfigVideoRice, "RenderToTextureOption", 0, "...?");
+	ConfigSetDefaultInt(l_ConfigVideoRice, "ScreenUpdateSetting", 0, "...?");
+
+
+	return TRUE;
 }
 
 bool isMMXSupported() 
@@ -703,42 +743,44 @@ void GenerateCurrentRomOptions()
 
 void Ini_GetRomOptions(LPGAMESETTING pGameSetting)
 {
+	/*
     int i;
 
     i = FindIniEntry(pGameSetting->romheader.dwCRC1,
                      pGameSetting->romheader.dwCRC2,
                      pGameSetting->romheader.nCountryID,
                      (char*)pGameSetting->szGameName, 1);
+	*/
 
-    pGameSetting->bDisableTextureCRC    = IniSections[i].bDisableTextureCRC;
-    pGameSetting->bDisableCulling       = IniSections[i].bDisableCulling;
-    pGameSetting->bIncTexRectEdge       = IniSections[i].bIncTexRectEdge;
-    pGameSetting->bZHack                = IniSections[i].bZHack;
-    pGameSetting->bTextureScaleHack     = IniSections[i].bTextureScaleHack;
-    pGameSetting->bPrimaryDepthHack     = IniSections[i].bPrimaryDepthHack;
-    pGameSetting->bTexture1Hack         = IniSections[i].bTexture1Hack;
-    pGameSetting->bFastLoadTile         = IniSections[i].bFastLoadTile;
-    pGameSetting->bUseSmallerTexture    = IniSections[i].bUseSmallerTexture;
+    pGameSetting->bDisableTextureCRC    = ConfigGetParamBool(l_ConfigVideoRice, "DisableTextureCRC");
+    pGameSetting->bDisableCulling       = ConfigGetParamBool(l_ConfigVideoRice, "DisableCulling");
+    pGameSetting->bIncTexRectEdge       = ConfigGetParamBool(l_ConfigVideoRice, "IncTexRectEdge");
+    pGameSetting->bZHack                = ConfigGetParamBool(l_ConfigVideoRice, "ZHack");
+    pGameSetting->bTextureScaleHack     = ConfigGetParamBool(l_ConfigVideoRice, "TextureScaleHack");
+    pGameSetting->bPrimaryDepthHack     = ConfigGetParamBool(l_ConfigVideoRice, "PrimaryDepthHack");
+    pGameSetting->bTexture1Hack         = ConfigGetParamBool(l_ConfigVideoRice, "Texture1Hack");
+    pGameSetting->bFastLoadTile         = ConfigGetParamBool(l_ConfigVideoRice, "FastLoadTile");
+    pGameSetting->bUseSmallerTexture    = ConfigGetParamBool(l_ConfigVideoRice, "UseSmallerTexture");
 
-    pGameSetting->VIWidth               = IniSections[i].VIWidth;
-    pGameSetting->VIHeight              = IniSections[i].VIHeight;
-    pGameSetting->UseCIWidthAndRatio    = IniSections[i].UseCIWidthAndRatio;
-    pGameSetting->dwFullTMEM            = IniSections[i].dwFullTMEM;
-    pGameSetting->bTxtSizeMethod2       = IniSections[i].bTxtSizeMethod2;
-    pGameSetting->bEnableTxtLOD         = IniSections[i].bEnableTxtLOD;
+    pGameSetting->VIWidth               = ConfigGetParamInt(l_ConfigVideoRice, "VIWidth");
+    pGameSetting->VIHeight              = ConfigGetParamInt(l_ConfigVideoRice, "VIHeight");
+    pGameSetting->UseCIWidthAndRatio    = ConfigGetParamInt(l_ConfigVideoRice, "UseCIWidthAndRatio");
+    pGameSetting->dwFullTMEM            = ConfigGetParamInt(l_ConfigVideoRice, "FullTMEM");
+    pGameSetting->bTxtSizeMethod2       = ConfigGetParamBool(l_ConfigVideoRice, "TxtSizeMethod2");
+    pGameSetting->bEnableTxtLOD         = ConfigGetParamBool(l_ConfigVideoRice, "EnableTxtLOD");
 
-    pGameSetting->dwFastTextureCRC      = IniSections[i].dwFastTextureCRC;
-    pGameSetting->bEmulateClear         = IniSections[i].bEmulateClear;
-    pGameSetting->bForceScreenClear     = IniSections[i].bForceScreenClear;
-    pGameSetting->dwAccurateTextureMapping  = IniSections[i].dwAccurateTextureMapping;
-    pGameSetting->dwNormalBlender       = IniSections[i].dwNormalBlender;
-    pGameSetting->bDisableBlender       = IniSections[i].bDisableBlender;
-    pGameSetting->dwNormalCombiner      = IniSections[i].dwNormalCombiner;
-    pGameSetting->bForceDepthBuffer     = IniSections[i].bForceDepthBuffer;
-    pGameSetting->bDisableObjBG         = IniSections[i].bDisableObjBG;
-    pGameSetting->dwFrameBufferOption   = IniSections[i].dwFrameBufferOption;
-    pGameSetting->dwRenderToTextureOption   = IniSections[i].dwRenderToTextureOption;
-    pGameSetting->dwScreenUpdateSetting = IniSections[i].dwScreenUpdateSetting;
+    pGameSetting->dwFastTextureCRC      = ConfigGetParamInt(l_ConfigVideoRice, "FastTextureCRC");
+    pGameSetting->bEmulateClear         = ConfigGetParamBool(l_ConfigVideoRice, "EmulateClear");
+    pGameSetting->bForceScreenClear     = ConfigGetParamBool(l_ConfigVideoRice, "ForceScreenClear");
+    pGameSetting->dwAccurateTextureMapping  = ConfigGetParamInt(l_ConfigVideoRice, "AccurateTextureMapping");
+    pGameSetting->dwNormalBlender       = ConfigGetParamInt(l_ConfigVideoRice, "NormalBlender");
+    pGameSetting->bDisableBlender       = ConfigGetParamBool(l_ConfigVideoRice, "DisableBlender");
+    pGameSetting->dwNormalCombiner      = ConfigGetParamInt(l_ConfigVideoRice, "NormalCombiner");
+    pGameSetting->bForceDepthBuffer     = ConfigGetParamBool(l_ConfigVideoRice, "ForceDepthBuffer");
+    pGameSetting->bDisableObjBG         = ConfigGetParamBool(l_ConfigVideoRice, "DisableObjBG");
+    pGameSetting->dwFrameBufferOption   = ConfigGetParamInt(l_ConfigVideoRice, "FrameBufferOption");
+    pGameSetting->dwRenderToTextureOption   = ConfigGetParamInt(l_ConfigVideoRice, "RenderToTextureOption");
+    pGameSetting->dwScreenUpdateSetting = ConfigGetParamInt(l_ConfigVideoRice, "ScreenUpdateSetting");
 }
 
 void Ini_StoreRomOptions(LPGAMESETTING pGameSetting)
