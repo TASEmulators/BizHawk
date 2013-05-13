@@ -394,7 +394,7 @@ EXPORT m64p_error CALL VidExt_GL_SwapBuffers(void)
     if (!SDL_WasInit(SDL_INIT_VIDEO))
         return M64ERR_NOT_INIT;
 
-    SDL_GL_SwapBuffers();
+    //SDL_GL_SwapBuffers();
     return M64ERR_SUCCESS;
 }
 
