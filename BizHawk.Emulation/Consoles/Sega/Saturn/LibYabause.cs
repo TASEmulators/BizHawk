@@ -135,13 +135,22 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		}
 
 		/// <summary>
+		/// only works in GL mode
+		/// </summary>
+		/// <param name="w">width</param>
+		/// <param name="h">height</param>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_glresize(int w, int h);
+
+		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="intf">cd interface.  struct need not persist after call, but the function pointers better</param>
 		/// <param name="biosfn">path to bios, pass null to use built in bios emulation</param>
+		/// <param name="usegl">true for opengl</param>
 		/// <returns></returns>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool libyabause_init(ref CDInterface intf, string biosfn);
+		public static extern bool libyabause_init(ref CDInterface intf, string biosfn, bool usegl);
 
 		public struct CDInterface
 		{

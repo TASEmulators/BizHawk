@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			string BiosPipe = fp.GetPipeNameNative();
 			fp.Offer(bios);
 
-			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe))
+			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe, false))
 				throw new Exception("libyabause_init() failed!");
 
 			var e = fp.GetResults();
@@ -77,6 +77,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			LibYabause.libyabause_setsndbuff(SoundHandle.AddrOfPinnedObject());
 			AttachedCore = this;
 
+			// with or without GL, this is the guaranteed frame -1 size.
 			BufferWidth = 320;
 			BufferHeight = 224;
 
