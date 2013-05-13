@@ -391,7 +391,7 @@ void gen_interupt(void)
             //if(rompause)
             //{
                 osd_render();  // draw Paused message in case gfx.updateScreen didn't do it
-                VidExt_GL_SwapBuffers();
+                //VidExt_GL_SwapBuffers();
             //    while(rompause)
             //    {
                     //SDL_Delay(10);

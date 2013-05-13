@@ -394,7 +394,7 @@ void COGLGraphicsContext::UpdateFrame(bool swaponly)
    if(renderCallback)
        (*renderCallback)(status.bScreenIsDrawn);
 
-   CoreVideo_GL_SwapBuffers();
+   //CoreVideo_GL_SwapBuffers();
    
    /*if(options.bShowFPS)
      {
