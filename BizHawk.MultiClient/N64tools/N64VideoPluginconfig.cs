@@ -83,6 +83,43 @@ namespace BizHawk.MultiClient
 			Global.Config.RiceOpenGLRenderSetting = RiceOpenGLRenderSetting_Combo.SelectedIndex;
 			Global.Config.RiceAnisotropicFiltering = RiceAnisotropicFiltering_TB.Value;
 
+			Global.Config.RiceUseDefaultHacks = RiceUseDefaultHacks_CB.Checked;
+			Global.Config.RiceDisableTextureCRC = RiceDisableTextureCRC_CB.Checked;
+			Global.Config.RiceDisableCulling = RiceDisableCulling_CB.Checked;
+			Global.Config.RiceIncTexRectEdge = RiceIncTexRectEdge_CB.Checked;
+			Global.Config.RiceZHack = RiceZHack_CB.Checked;
+			Global.Config.RiceTextureScaleHack = RiceTextureScaleHack_CB.Checked;
+			Global.Config.RicePrimaryDepthHack = RicePrimaryDepthHack_CB.Checked;
+			Global.Config.RiceTexture1Hack = RiceTexture1Hack_CB.Checked;
+			Global.Config.RiceFastLoadTile = RiceFastLoadTile_CB.Checked;
+			Global.Config.RiceUseSmallerTexture = RiceUseSmallerTexture_CB.Checked;
+
+			if (InputValidate.IsValidSignedNumber(RiceVIWidth_Text.Text))
+				Global.Config.RiceVIWidth = int.Parse(RiceVIWidth_Text.Text);
+			else
+				Global.Config.RiceVIWidth = -1;
+
+			if (InputValidate.IsValidSignedNumber(RiceVIHeight_Text.Text))
+				Global.Config.RiceVIHeight = int.Parse(RiceVIHeight_Text.Text);
+			else
+				Global.Config.RiceVIHeight = -1;
+
+			Global.Config.RiceUseCIWidthAndRatio = RiceUseCIWidthAndRatio_Combo.SelectedIndex;
+			Global.Config.RiceFullTMEM = RiceFullTMEM_Combo.SelectedIndex;
+			Global.Config.RiceTxtSizeMethod2 = RiceTxtSizeMethod2_CB.Checked;
+			Global.Config.RiceEnableTxtLOD = RiceEnableTxtLOD_CB.Checked;
+			Global.Config.RiceFastTextureCRC = RiceFastTextureCRC_Combo.SelectedIndex;
+			Global.Config.RiceEmulateClear = RiceEmulateClear_CB.Checked;
+			Global.Config.RiceForceScreenClear = RiceForceScreenClear_CB.Checked;
+			Global.Config.RiceAccurateTextureMappingHack = RiceAccurateTextureMappingHack_Combo.SelectedIndex;
+			Global.Config.RiceNormalBlender = RiceNormalBlender_Combo.SelectedIndex;
+			Global.Config.RiceDisableBlender = RiceDisableBlender_CB.Checked;
+			Global.Config.RiceForceDepthBuffer = RiceForceDepthBuffer_CB.Checked;
+			Global.Config.RiceDisableObjBG = RiceDisableObjBG_CB.Checked;
+			Global.Config.RiceFrameBufferOption = RiceFrameBufferOption_Combo.SelectedIndex;
+			Global.Config.RiceRenderToTextureOption = RiceRenderToTextureOption_Combo.SelectedIndex;
+			Global.Config.RiceScreenUpdateSettingHack = RiceScreenUpdateSettingHack_Combo.SelectedIndex;
+			Global.Config.RiceEnableHacksForGame = RiceEnableHacksForGame_Combo.SelectedIndex;
 		}
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
@@ -147,12 +184,140 @@ namespace BizHawk.MultiClient
 			RiceAnisotropicFiltering_TB.Value = Global.Config.RiceAnisotropicFiltering;
 			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value.ToString();
 
+			RiceUseDefaultHacks_CB.Checked = Global.Config.RiceUseDefaultHacks;
+
+			UpdateHacksSection();
+			if (!Global.Config.RiceUseDefaultHacks)
+			{
+				RiceTexture1Hack_CB.Checked = Global.Config.RiceTexture1Hack;
+
+				RiceDisableTextureCRC_CB.Checked = Global.Config.RiceDisableTextureCRC;
+				RiceDisableCulling_CB.Checked = Global.Config.RiceDisableCulling;
+				RiceIncTexRectEdge_CB.Checked = Global.Config.RiceIncTexRectEdge;
+				RiceZHack_CB.Checked = Global.Config.RiceZHack;
+				RiceTextureScaleHack_CB.Checked = Global.Config.RiceTextureScaleHack;
+				RicePrimaryDepthHack_CB.Checked = Global.Config.RicePrimaryDepthHack;
+				RiceTexture1Hack_CB.Checked = Global.Config.RiceTexture1Hack;
+				RiceFastLoadTile_CB.Checked = Global.Config.RiceFastLoadTile;
+				RiceUseSmallerTexture_CB.Checked = Global.Config.RiceUseSmallerTexture;
+				RiceVIWidth_Text.Text = Global.Config.RiceVIWidth.ToString();
+				RiceVIHeight_Text.Text = Global.Config.RiceVIHeight.ToString();
+				RiceUseCIWidthAndRatio_Combo.SelectedIndex = Global.Config.RiceUseCIWidthAndRatio;
+				RiceFullTMEM_Combo.SelectedIndex = Global.Config.RiceFullTMEM;
+				RiceTxtSizeMethod2_CB.Checked = Global.Config.RiceTxtSizeMethod2;
+				RiceEnableTxtLOD_CB.Checked = Global.Config.RiceEnableTxtLOD;
+				RiceFastTextureCRC_Combo.SelectedIndex = Global.Config.RiceFastTextureCRC;
+				RiceEmulateClear_CB.Checked = Global.Config.RiceEmulateClear;
+				RiceForceScreenClear_CB.Checked = Global.Config.RiceForceScreenClear;
+				RiceAccurateTextureMappingHack_Combo.SelectedIndex = Global.Config.RiceAccurateTextureMappingHack;
+				RiceNormalBlender_Combo.SelectedIndex = Global.Config.RiceNormalBlender;
+				RiceDisableBlender_CB.Checked = Global.Config.RiceDisableBlender;
+				RiceForceDepthBuffer_CB.Checked = Global.Config.RiceForceDepthBuffer;
+				RiceDisableObjBG_CB.Checked = Global.Config.RiceDisableObjBG;
+				RiceFrameBufferOption_Combo.SelectedIndex = Global.Config.RiceFrameBufferOption;
+				RiceRenderToTextureOption_Combo.SelectedIndex = Global.Config.RiceRenderToTextureOption;
+				RiceScreenUpdateSettingHack_Combo.SelectedIndex = Global.Config.RiceScreenUpdateSettingHack;
+				RiceEnableHacksForGame_Combo.SelectedIndex = Global.Config.RiceEnableHacksForGame;
+			}
 		}
 		
 		private void RiceAnisotropicFiltering_TB_Scroll_1(object sender, EventArgs e)
 		{
 			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value.ToString();
 		}
+
+		private void RiceUseDefaultHacks_CB_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateHacksSection();
+		}
+
+		private void UpdateHacksSection()
+		{
+			if (RiceUseDefaultHacks_CB.Checked)
+			{
+				RiceDisableTextureCRC_CB.Checked = GetBoolFromDB("RiceDisableTextureCRC");
+				RiceDisableCulling_CB.Checked = GetBoolFromDB("RiceDisableCulling");
+				RiceIncTexRectEdge_CB.Checked = GetBoolFromDB("RiceIncTexRectEdge");
+				RiceZHack_CB.Checked = GetBoolFromDB("RiceZHack");
+				RiceTextureScaleHack_CB.Checked = GetBoolFromDB("RiceTextureScaleHack");
+				RicePrimaryDepthHack_CB.Checked = GetBoolFromDB("RicePrimaryDepthHack");
+				RiceTexture1Hack_CB.Checked = GetBoolFromDB("RiceTexture1Hack");
+				RiceFastLoadTile_CB.Checked = GetBoolFromDB("RiceFastLoadTile");
+				RiceUseSmallerTexture_CB.Checked = GetBoolFromDB("RiceUseSmallerTexture");
+				RiceVIWidth_Text.Text = GetIntFromDB("RiceVIWidth", -1).ToString();
+				RiceVIHeight_Text.Text = GetIntFromDB("RiceVIHeight", -1).ToString();
+				RiceUseCIWidthAndRatio_Combo.SelectedIndex = GetIntFromDB("RiceUseCIWidthAndRatio", 0);
+				RiceFullTMEM_Combo.SelectedIndex = GetIntFromDB("RiceFullTMEM", 0);
+				RiceTxtSizeMethod2_CB.Checked = GetBoolFromDB("RiceTxtSizeMethod2");
+				RiceEnableTxtLOD_CB.Checked = GetBoolFromDB("RiceEnableTxtLOD");
+				RiceFastTextureCRC_Combo.SelectedIndex = GetIntFromDB("RiceFastTextureCRC", 0);
+				RiceEmulateClear_CB.Checked = GetBoolFromDB("RiceEmulateClear");
+				RiceForceScreenClear_CB.Checked = GetBoolFromDB("RiceForceScreenClear");
+				RiceAccurateTextureMappingHack_Combo.SelectedIndex = GetIntFromDB("RiceAccurateTextureMapping", 0);
+				RiceNormalBlender_Combo.SelectedIndex = GetIntFromDB("RiceNormalBlender", 0);
+				RiceDisableBlender_CB.Checked = GetBoolFromDB("RiceDisableBlender");
+				RiceForceDepthBuffer_CB.Checked = GetBoolFromDB("RiceForceDepthBuffer");
+				RiceDisableObjBG_CB.Checked = GetBoolFromDB("RiceDisableObjBG");
+				RiceFrameBufferOption_Combo.SelectedIndex = GetIntFromDB("RiceFrameBufferOption", 0);
+				RiceRenderToTextureOption_Combo.SelectedIndex = GetIntFromDB("RiceRenderToTextureOption", 0);
+				RiceScreenUpdateSettingHack_Combo.SelectedIndex = GetIntFromDB("RiceScreenUpdateSettingHack", 0);
+				RiceEnableHacksForGame_Combo.SelectedIndex = GetIntFromDB("RiceEnableHacksForGame", 0);
+				
+				ToggleHackCheckboxEnable(false);
+			}
+			else
+			{
+				ToggleHackCheckboxEnable(true);
+			}
+		}
+
+		public bool GetBoolFromDB(string parameter)
+		{
+			if (Global.Game.OptionPresent(parameter) && Global.Game.OptionValue(parameter) == "true")
+				return true;
+			else
+				return false;
+		}
+
+		public int GetIntFromDB(string parameter, int defaultVal)
+		{
+			if (Global.Game.OptionPresent(parameter) && InputValidate.IsValidUnsignedNumber(Global.Game.OptionValue(parameter)))
+				return int.Parse(Global.Game.OptionValue(parameter));
+			else
+				return defaultVal;
+		}
+
+		public void ToggleHackCheckboxEnable (bool val)
+		{
+			RiceDisableTextureCRC_CB.Enabled = val;
+			RiceDisableCulling_CB.Enabled = val;
+			RiceIncTexRectEdge_CB.Enabled = val;
+			RiceZHack_CB.Enabled = val;
+			RiceTextureScaleHack_CB.Enabled = val;
+			RicePrimaryDepthHack_CB.Enabled = val;
+			RiceTexture1Hack_CB.Enabled = val;
+			RiceFastLoadTile_CB.Enabled = val;
+			RiceUseSmallerTexture_CB.Enabled = val;
+			RiceVIWidth_Text.Enabled = val;
+			RiceVIHeight_Text.Enabled = val;
+			RiceUseCIWidthAndRatio_Combo.Enabled = val;
+			RiceFullTMEM_Combo.Enabled = val;
+			RiceTxtSizeMethod2_CB.Enabled = val;
+			RiceEnableTxtLOD_CB.Enabled = val;
+			RiceFastTextureCRC_Combo.Enabled = val;
+			RiceEmulateClear_CB.Enabled = val;
+			RiceForceScreenClear_CB.Enabled = val;
+			RiceAccurateTextureMappingHack_Combo.Enabled = val;
+			RiceNormalBlender_Combo.Enabled = val;
+			RiceDisableBlender_CB.Enabled = val;
+			RiceForceDepthBuffer_CB.Enabled = val;
+			RiceDisableObjBG_CB.Enabled = val;
+			RiceFrameBufferOption_Combo.Enabled = val;
+			RiceRenderToTextureOption_Combo.Enabled = val;
+			RiceScreenUpdateSettingHack_Combo.Enabled = val;
+			RiceEnableHacksForGame_Combo.Enabled = val;
+		}
+
 
 
 	}
