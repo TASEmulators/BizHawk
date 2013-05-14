@@ -393,8 +393,9 @@ BOOL InitConfiguration(void)
 
 	ConfigSetDefaultInt(l_ConfigVideoRice, "FrameBufferOption", 0, "...?");
 	ConfigSetDefaultInt(l_ConfigVideoRice, "RenderToTextureOption", 0, "...?");
-	ConfigSetDefaultInt(l_ConfigVideoRice, "ScreenUpdateSetting", 0, "...?");
+	ConfigSetDefaultInt(l_ConfigVideoRice, "ScreenUpdateSettingHack", 0, "...?");
 
+	ConfigSetDefaultInt(l_ConfigVideoRice, "EnableHacksForGame", NO_HACK_FOR_GAME, "...?");
 
 	return TRUE;
 }
@@ -714,6 +715,8 @@ void GenerateCurrentRomOptions()
         options.enableHackForGames = HACK_FOR_MARIO_KART;
     }
 
+	options.enableHackForGames = (HACK_FOR_GAMES)ConfigGetParamInt(l_ConfigVideoRice, "EnableHacksForGame");
+
     if (options.enableHackForGames != NO_HACK_FOR_GAME)
         DebugMessage(M64MSG_INFO, "Enabled hacks for game: '%s'", g_curRomInfo.szGameName);
 
@@ -780,7 +783,7 @@ void Ini_GetRomOptions(LPGAMESETTING pGameSetting)
     pGameSetting->bDisableObjBG         = ConfigGetParamBool(l_ConfigVideoRice, "DisableObjBG");
     pGameSetting->dwFrameBufferOption   = ConfigGetParamInt(l_ConfigVideoRice, "FrameBufferOption");
     pGameSetting->dwRenderToTextureOption   = ConfigGetParamInt(l_ConfigVideoRice, "RenderToTextureOption");
-    pGameSetting->dwScreenUpdateSetting = ConfigGetParamInt(l_ConfigVideoRice, "ScreenUpdateSetting");
+    pGameSetting->dwScreenUpdateSetting = ConfigGetParamInt(l_ConfigVideoRice, "ScreenUpdateSettingHack");
 }
 
 void Ini_StoreRomOptions(LPGAMESETTING pGameSetting)

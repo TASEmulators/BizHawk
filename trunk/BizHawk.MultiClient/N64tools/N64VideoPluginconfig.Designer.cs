@@ -93,7 +93,45 @@
 			this.RiceLoadHiResTextures_CB = new System.Windows.Forms.CheckBox();
 			this.RiceDumpTexturesToFiles_CB = new System.Windows.Forms.CheckBox();
 			this.RiceGameSpecificTab = new System.Windows.Forms.TabPage();
+			this.label27 = new System.Windows.Forms.Label();
+			this.RiceEnableHacksForGame_Combo = new System.Windows.Forms.ComboBox();
+			this.RiceForceDepthBuffer_CB = new System.Windows.Forms.CheckBox();
+			this.label28 = new System.Windows.Forms.Label();
+			this.RiceUseCIWidthAndRatio_Combo = new System.Windows.Forms.ComboBox();
+			this.label26 = new System.Windows.Forms.Label();
+			this.RiceRenderToTextureOption_Combo = new System.Windows.Forms.ComboBox();
+			this.label25 = new System.Windows.Forms.Label();
+			this.RiceFrameBufferOption_Combo = new System.Windows.Forms.ComboBox();
+			this.label24 = new System.Windows.Forms.Label();
+			this.RiceNormalBlender_Combo = new System.Windows.Forms.ComboBox();
+			this.label23 = new System.Windows.Forms.Label();
+			this.RiceAccurateTextureMappingHack_Combo = new System.Windows.Forms.ComboBox();
+			this.label22 = new System.Windows.Forms.Label();
+			this.RiceFastTextureCRC_Combo = new System.Windows.Forms.ComboBox();
+			this.label21 = new System.Windows.Forms.Label();
+			this.RiceFullTMEM_Combo = new System.Windows.Forms.ComboBox();
+			this.label20 = new System.Windows.Forms.Label();
+			this.RiceScreenUpdateSettingHack_Combo = new System.Windows.Forms.ComboBox();
+			this.label19 = new System.Windows.Forms.Label();
+			this.RiceVIHeight_Text = new System.Windows.Forms.TextBox();
 			this.label4 = new System.Windows.Forms.Label();
+			this.RiceVIWidth_Text = new System.Windows.Forms.TextBox();
+			this.RiceTextureScaleHack_CB = new System.Windows.Forms.CheckBox();
+			this.RiceFastLoadTile_CB = new System.Windows.Forms.CheckBox();
+			this.RiceUseSmallerTexture_CB = new System.Windows.Forms.CheckBox();
+			this.RiceEnableTxtLOD_CB = new System.Windows.Forms.CheckBox();
+			this.RiceZHack_CB = new System.Windows.Forms.CheckBox();
+			this.RicePrimaryDepthHack_CB = new System.Windows.Forms.CheckBox();
+			this.RiceDisableObjBG_CB = new System.Windows.Forms.CheckBox();
+			this.RiceDisableBlender_CB = new System.Windows.Forms.CheckBox();
+			this.RiceForceScreenClear_CB = new System.Windows.Forms.CheckBox();
+			this.RiceEmulateClear_CB = new System.Windows.Forms.CheckBox();
+			this.RiceTxtSizeMethod2_CB = new System.Windows.Forms.CheckBox();
+			this.RiceIncTexRectEdge_CB = new System.Windows.Forms.CheckBox();
+			this.RiceDisableCulling_CB = new System.Windows.Forms.CheckBox();
+			this.RiceDisableTextureCRC_CB = new System.Windows.Forms.CheckBox();
+			this.RiceTexture1Hack_CB = new System.Windows.Forms.CheckBox();
+			this.RiceUseDefaultHacks_CB = new System.Windows.Forms.CheckBox();
 			this.button1 = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -936,23 +974,509 @@
 			// 
 			// RiceGameSpecificTab
 			// 
+			this.RiceGameSpecificTab.Controls.Add(this.label27);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceEnableHacksForGame_Combo);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceForceDepthBuffer_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.label28);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceUseCIWidthAndRatio_Combo);
+			this.RiceGameSpecificTab.Controls.Add(this.label26);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceRenderToTextureOption_Combo);
+			this.RiceGameSpecificTab.Controls.Add(this.label25);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceFrameBufferOption_Combo);
+			this.RiceGameSpecificTab.Controls.Add(this.label24);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceNormalBlender_Combo);
+			this.RiceGameSpecificTab.Controls.Add(this.label23);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceAccurateTextureMappingHack_Combo);
+			this.RiceGameSpecificTab.Controls.Add(this.label22);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceFastTextureCRC_Combo);
+			this.RiceGameSpecificTab.Controls.Add(this.label21);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceFullTMEM_Combo);
+			this.RiceGameSpecificTab.Controls.Add(this.label20);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceScreenUpdateSettingHack_Combo);
+			this.RiceGameSpecificTab.Controls.Add(this.label19);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceVIHeight_Text);
 			this.RiceGameSpecificTab.Controls.Add(this.label4);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceVIWidth_Text);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceTextureScaleHack_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceFastLoadTile_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceUseSmallerTexture_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceEnableTxtLOD_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceZHack_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RicePrimaryDepthHack_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceDisableObjBG_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceDisableBlender_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceForceScreenClear_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceEmulateClear_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceTxtSizeMethod2_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceIncTexRectEdge_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceDisableCulling_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceDisableTextureCRC_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceTexture1Hack_CB);
+			this.RiceGameSpecificTab.Controls.Add(this.RiceUseDefaultHacks_CB);
 			this.RiceGameSpecificTab.Location = new System.Drawing.Point(4, 22);
 			this.RiceGameSpecificTab.Name = "RiceGameSpecificTab";
 			this.RiceGameSpecificTab.Padding = new System.Windows.Forms.Padding(3);
 			this.RiceGameSpecificTab.Size = new System.Drawing.Size(564, 310);
 			this.RiceGameSpecificTab.TabIndex = 1;
-			this.RiceGameSpecificTab.Text = "Game Specific";
+			this.RiceGameSpecificTab.Text = "Per-Game Hacks";
 			this.RiceGameSpecificTab.UseVisualStyleBackColor = true;
+			// 
+			// label27
+			// 
+			this.label27.AutoSize = true;
+			this.label27.Location = new System.Drawing.Point(310, 178);
+			this.label27.Name = "label27";
+			this.label27.Size = new System.Drawing.Size(119, 13);
+			this.label27.TabIndex = 52;
+			this.label27.Text = "Enable hacks for game:";
+			// 
+			// RiceEnableHacksForGame_Combo
+			// 
+			this.RiceEnableHacksForGame_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RiceEnableHacksForGame_Combo.FormattingEnabled = true;
+			this.RiceEnableHacksForGame_Combo.Items.AddRange(new object[] {
+            "NO_HACK_FOR_GAME",
+            "HACK_FOR_BANJO_TOOIE",
+            "HACK_FOR_DR_MARIO",
+            "HACK_FOR_ZELDA",
+            "HACK_FOR_MARIO_TENNIS",
+            "HACK_FOR_BANJO",
+            "HACK_FOR_PD",
+            "HACK_FOR_GE",
+            "HACK_FOR_PILOT_WINGS",
+            "HACK_FOR_YOSHI",
+            "HACK_FOR_NITRO",
+            "HACK_FOR_TONYHAWK",
+            "HACK_FOR_NASCAR",
+            "HACK_FOR_SUPER_BOWLING",
+            "HACK_FOR_CONKER",
+            "HACK_FOR_ALL_STAR_BASEBALL",
+            "HACK_FOR_TIGER_HONEY_HUNT",
+            "HACK_REVERSE_XY_COOR",
+            "HACK_REVERSE_Y_COOR",
+            "HACK_FOR_GOLDEN_EYE",
+            "HACK_FOR_FZERO",
+            "HACK_FOR_COMMANDCONQUER",
+            "HACK_FOR_RUMBLE",
+            "HACK_FOR_SOUTH_PARK_RALLY",
+            "HACK_FOR_BUST_A_MOVE",
+            "HACK_FOR_OGRE_BATTLE",
+            "HACK_FOR_TWINE",
+            "HACK_FOR_EXTREME_G2",
+            "HACK_FOR_ROGUE_SQUADRON",
+            "HACK_FOR_MARIO_GOLF",
+            "HACK_FOR_MLB",
+            "HACK_FOR_POLARISSNOCROSS",
+            "HACK_FOR_TOPGEARRALLY",
+            "HACK_FOR_DUKE_NUKEM",
+            "HACK_FOR_ZELDA_MM",
+            "HACK_FOR_MARIO_KART"});
+			this.RiceEnableHacksForGame_Combo.Location = new System.Drawing.Point(313, 194);
+			this.RiceEnableHacksForGame_Combo.Name = "RiceEnableHacksForGame_Combo";
+			this.RiceEnableHacksForGame_Combo.Size = new System.Drawing.Size(240, 21);
+			this.RiceEnableHacksForGame_Combo.TabIndex = 51;
+			// 
+			// RiceForceDepthBuffer_CB
+			// 
+			this.RiceForceDepthBuffer_CB.AutoSize = true;
+			this.RiceForceDepthBuffer_CB.Location = new System.Drawing.Point(173, 186);
+			this.RiceForceDepthBuffer_CB.Name = "RiceForceDepthBuffer_CB";
+			this.RiceForceDepthBuffer_CB.Size = new System.Drawing.Size(116, 17);
+			this.RiceForceDepthBuffer_CB.TabIndex = 50;
+			this.RiceForceDepthBuffer_CB.Text = "Force Depth Buffer";
+			this.RiceForceDepthBuffer_CB.UseVisualStyleBackColor = true;
+			// 
+			// label28
+			// 
+			this.label28.AutoSize = true;
+			this.label28.Location = new System.Drawing.Point(12, 275);
+			this.label28.Name = "label28";
+			this.label28.Size = new System.Drawing.Size(115, 13);
+			this.label28.TabIndex = 49;
+			this.label28.Text = "Screen Update Setting";
+			// 
+			// RiceUseCIWidthAndRatio_Combo
+			// 
+			this.RiceUseCIWidthAndRatio_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RiceUseCIWidthAndRatio_Combo.FormattingEnabled = true;
+			this.RiceUseCIWidthAndRatio_Combo.Items.AddRange(new object[] {
+            "SCREEN_UPDATE_DEFAULT",
+            "SCREEN_UPDATE_AT_VI_UPDATE",
+            "SCREEN_UPDATE_AT_VI_CHANGE",
+            "SCREEN_UPDATE_AT_CI_CHANGE",
+            "SCREEN_UPDATE_AT_1ST_CI_CHANGE",
+            "SCREEN_UPDATE_AT_1ST_PRIMITIVE",
+            "SCREEN_UPDATE_BEFORE_SCREEN_CLEAR",
+            "SCREEN_UPDATE_AT_VI_UPDATE_AND_DRAWN"});
+			this.RiceUseCIWidthAndRatio_Combo.Location = new System.Drawing.Point(133, 241);
+			this.RiceUseCIWidthAndRatio_Combo.Name = "RiceUseCIWidthAndRatio_Combo";
+			this.RiceUseCIWidthAndRatio_Combo.Size = new System.Drawing.Size(274, 21);
+			this.RiceUseCIWidthAndRatio_Combo.TabIndex = 48;
+			// 
+			// label26
+			// 
+			this.label26.AutoSize = true;
+			this.label26.Location = new System.Drawing.Point(310, 138);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(121, 13);
+			this.label26.TabIndex = 47;
+			this.label26.Text = "Render to texture option";
+			// 
+			// RiceRenderToTextureOption_Combo
+			// 
+			this.RiceRenderToTextureOption_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RiceRenderToTextureOption_Combo.FormattingEnabled = true;
+			this.RiceRenderToTextureOption_Combo.Items.AddRange(new object[] {
+            "TXT_BUF_NONE",
+            "TXT_BUF_IGNORE",
+            "TXT_BUF_NORMAL",
+            "TXT_BUF_WRITE_BACK",
+            "TXT_BUF_WRITE_BACK_AND_RELOAD"});
+			this.RiceRenderToTextureOption_Combo.Location = new System.Drawing.Point(313, 154);
+			this.RiceRenderToTextureOption_Combo.Name = "RiceRenderToTextureOption_Combo";
+			this.RiceRenderToTextureOption_Combo.Size = new System.Drawing.Size(240, 21);
+			this.RiceRenderToTextureOption_Combo.TabIndex = 46;
+			// 
+			// label25
+			// 
+			this.label25.AutoSize = true;
+			this.label25.Location = new System.Drawing.Point(310, 95);
+			this.label25.Name = "label25";
+			this.label25.Size = new System.Drawing.Size(97, 13);
+			this.label25.TabIndex = 45;
+			this.label25.Text = "Framebuffer Option";
+			// 
+			// RiceFrameBufferOption_Combo
+			// 
+			this.RiceFrameBufferOption_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RiceFrameBufferOption_Combo.FormattingEnabled = true;
+			this.RiceFrameBufferOption_Combo.Items.AddRange(new object[] {
+            "FRM_BUF_NONE",
+            "FRM_BUF_IGNORE",
+            "FRM_BUF_BASIC",
+            "FRM_BUF_BASIC_AND_WRITEBACK",
+            "FRM_BUF_WRITEBACK_AND_RELOAD",
+            "FRM_BUF_COMPLETE",
+            "FRM_BUF_WITH_EMULATOR",
+            "FRM_BUF_BASIC_AND_WITH_EMULATOR",
+            "FRM_BUF_WITH_EMULATOR_READ_ONLY",
+            "FRM_BUF_WITH_EMULATOR_WRITE_ONLY"});
+			this.RiceFrameBufferOption_Combo.Location = new System.Drawing.Point(313, 114);
+			this.RiceFrameBufferOption_Combo.Name = "RiceFrameBufferOption_Combo";
+			this.RiceFrameBufferOption_Combo.Size = new System.Drawing.Size(239, 21);
+			this.RiceFrameBufferOption_Combo.TabIndex = 44;
+			// 
+			// label24
+			// 
+			this.label24.AutoSize = true;
+			this.label24.Location = new System.Drawing.Point(430, 34);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(79, 13);
+			this.label24.TabIndex = 43;
+			this.label24.Text = "Normal Blender";
+			this.label24.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// RiceNormalBlender_Combo
+			// 
+			this.RiceNormalBlender_Combo.DisplayMember = "0,1,2,3";
+			this.RiceNormalBlender_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RiceNormalBlender_Combo.FormattingEnabled = true;
+			this.RiceNormalBlender_Combo.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2"});
+			this.RiceNormalBlender_Combo.Location = new System.Drawing.Point(515, 31);
+			this.RiceNormalBlender_Combo.Name = "RiceNormalBlender_Combo";
+			this.RiceNormalBlender_Combo.Size = new System.Drawing.Size(37, 21);
+			this.RiceNormalBlender_Combo.TabIndex = 42;
+			// 
+			// label23
+			// 
+			this.label23.AutoSize = true;
+			this.label23.Location = new System.Drawing.Point(376, 7);
+			this.label23.Name = "label23";
+			this.label23.Size = new System.Drawing.Size(133, 13);
+			this.label23.TabIndex = 41;
+			this.label23.Text = "Accurate Texture Mapping";
+			this.label23.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.toolTip1.SetToolTip(this.label23, "\\");
+			// 
+			// RiceAccurateTextureMappingHack_Combo
+			// 
+			this.RiceAccurateTextureMappingHack_Combo.DisplayMember = "0,1,2,3";
+			this.RiceAccurateTextureMappingHack_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RiceAccurateTextureMappingHack_Combo.FormattingEnabled = true;
+			this.RiceAccurateTextureMappingHack_Combo.Items.AddRange(new object[] {
+            "0",
+            "1"});
+			this.RiceAccurateTextureMappingHack_Combo.Location = new System.Drawing.Point(515, 4);
+			this.RiceAccurateTextureMappingHack_Combo.Name = "RiceAccurateTextureMappingHack_Combo";
+			this.RiceAccurateTextureMappingHack_Combo.Size = new System.Drawing.Size(37, 21);
+			this.RiceAccurateTextureMappingHack_Combo.TabIndex = 40;
+			// 
+			// label22
+			// 
+			this.label22.AutoSize = true;
+			this.label22.Location = new System.Drawing.Point(418, 61);
+			this.label22.Name = "label22";
+			this.label22.Size = new System.Drawing.Size(91, 13);
+			this.label22.TabIndex = 39;
+			this.label22.Text = "Fast Texture CRC";
+			this.label22.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// RiceFastTextureCRC_Combo
+			// 
+			this.RiceFastTextureCRC_Combo.DisplayMember = "0,1,2,3";
+			this.RiceFastTextureCRC_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RiceFastTextureCRC_Combo.FormattingEnabled = true;
+			this.RiceFastTextureCRC_Combo.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2"});
+			this.RiceFastTextureCRC_Combo.Location = new System.Drawing.Point(515, 58);
+			this.RiceFastTextureCRC_Combo.Name = "RiceFastTextureCRC_Combo";
+			this.RiceFastTextureCRC_Combo.Size = new System.Drawing.Size(37, 21);
+			this.RiceFastTextureCRC_Combo.TabIndex = 38;
+			// 
+			// label21
+			// 
+			this.label21.AutoSize = true;
+			this.label21.Location = new System.Drawing.Point(454, 88);
+			this.label21.Name = "label21";
+			this.label21.Size = new System.Drawing.Size(55, 13);
+			this.label21.TabIndex = 37;
+			this.label21.Text = "FullTMEM";
+			this.label21.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// RiceFullTMEM_Combo
+			// 
+			this.RiceFullTMEM_Combo.DisplayMember = "0,1,2,3";
+			this.RiceFullTMEM_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RiceFullTMEM_Combo.FormattingEnabled = true;
+			this.RiceFullTMEM_Combo.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2"});
+			this.RiceFullTMEM_Combo.Location = new System.Drawing.Point(515, 85);
+			this.RiceFullTMEM_Combo.Name = "RiceFullTMEM_Combo";
+			this.RiceFullTMEM_Combo.Size = new System.Drawing.Size(36, 21);
+			this.RiceFullTMEM_Combo.TabIndex = 36;
+			// 
+			// label20
+			// 
+			this.label20.AutoSize = true;
+			this.label20.Location = new System.Drawing.Point(8, 244);
+			this.label20.Name = "label20";
+			this.label20.Size = new System.Drawing.Size(119, 13);
+			this.label20.TabIndex = 35;
+			this.label20.Text = "Use CI Width and Ratio";
+			// 
+			// RiceScreenUpdateSettingHack_Combo
+			// 
+			this.RiceScreenUpdateSettingHack_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.RiceScreenUpdateSettingHack_Combo.FormattingEnabled = true;
+			this.RiceScreenUpdateSettingHack_Combo.Items.AddRange(new object[] {
+            "NOT_USE_CI_WIDTH_AND_RATIO",
+            "USE_CI_WIDTH_AND_RATIO_FOR_NTSC",
+            "USE_CI_WIDTH_AND_RATIO_FOR_PAL"});
+			this.RiceScreenUpdateSettingHack_Combo.Location = new System.Drawing.Point(133, 272);
+			this.RiceScreenUpdateSettingHack_Combo.Name = "RiceScreenUpdateSettingHack_Combo";
+			this.RiceScreenUpdateSettingHack_Combo.Size = new System.Drawing.Size(274, 21);
+			this.RiceScreenUpdateSettingHack_Combo.TabIndex = 34;
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(306, 62);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(51, 13);
+			this.label19.TabIndex = 20;
+			this.label19.Text = "VI Height";
+			// 
+			// RiceVIHeight_Text
+			// 
+			this.RiceVIHeight_Text.Location = new System.Drawing.Point(363, 59);
+			this.RiceVIHeight_Text.Name = "RiceVIHeight_Text";
+			this.RiceVIHeight_Text.Size = new System.Drawing.Size(36, 20);
+			this.RiceVIHeight_Text.TabIndex = 19;
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(125, 124);
+			this.label4.Location = new System.Drawing.Point(309, 34);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(104, 13);
-			this.label4.TabIndex = 0;
-			this.label4.Text = "Nothing To see here";
+			this.label4.Size = new System.Drawing.Size(48, 13);
+			this.label4.TabIndex = 18;
+			this.label4.Text = "VI Width";
+			// 
+			// RiceVIWidth_Text
+			// 
+			this.RiceVIWidth_Text.Location = new System.Drawing.Point(363, 31);
+			this.RiceVIWidth_Text.Name = "RiceVIWidth_Text";
+			this.RiceVIWidth_Text.Size = new System.Drawing.Size(36, 20);
+			this.RiceVIWidth_Text.TabIndex = 17;
+			// 
+			// RiceTextureScaleHack_CB
+			// 
+			this.RiceTextureScaleHack_CB.AutoSize = true;
+			this.RiceTextureScaleHack_CB.Location = new System.Drawing.Point(6, 140);
+			this.RiceTextureScaleHack_CB.Name = "RiceTextureScaleHack_CB";
+			this.RiceTextureScaleHack_CB.Size = new System.Drawing.Size(121, 17);
+			this.RiceTextureScaleHack_CB.TabIndex = 16;
+			this.RiceTextureScaleHack_CB.Text = "Texture Scale Hack";
+			this.RiceTextureScaleHack_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceFastLoadTile_CB
+			// 
+			this.RiceFastLoadTile_CB.AutoSize = true;
+			this.RiceFastLoadTile_CB.Location = new System.Drawing.Point(6, 209);
+			this.RiceFastLoadTile_CB.Name = "RiceFastLoadTile_CB";
+			this.RiceFastLoadTile_CB.Size = new System.Drawing.Size(93, 17);
+			this.RiceFastLoadTile_CB.TabIndex = 15;
+			this.RiceFastLoadTile_CB.Text = "Fast Load Tile";
+			this.RiceFastLoadTile_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceUseSmallerTexture_CB
+			// 
+			this.RiceUseSmallerTexture_CB.AutoSize = true;
+			this.RiceUseSmallerTexture_CB.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.RiceUseSmallerTexture_CB.Location = new System.Drawing.Point(173, 209);
+			this.RiceUseSmallerTexture_CB.Name = "RiceUseSmallerTexture_CB";
+			this.RiceUseSmallerTexture_CB.Size = new System.Drawing.Size(121, 17);
+			this.RiceUseSmallerTexture_CB.TabIndex = 14;
+			this.RiceUseSmallerTexture_CB.Text = "Use Smaller Texture";
+			this.RiceUseSmallerTexture_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceEnableTxtLOD_CB
+			// 
+			this.RiceEnableTxtLOD_CB.AutoSize = true;
+			this.RiceEnableTxtLOD_CB.Location = new System.Drawing.Point(173, 71);
+			this.RiceEnableTxtLOD_CB.Name = "RiceEnableTxtLOD_CB";
+			this.RiceEnableTxtLOD_CB.Size = new System.Drawing.Size(102, 17);
+			this.RiceEnableTxtLOD_CB.TabIndex = 13;
+			this.RiceEnableTxtLOD_CB.Text = "Enable Txt LOD";
+			this.RiceEnableTxtLOD_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceZHack_CB
+			// 
+			this.RiceZHack_CB.AutoSize = true;
+			this.RiceZHack_CB.Location = new System.Drawing.Point(6, 117);
+			this.RiceZHack_CB.Name = "RiceZHack_CB";
+			this.RiceZHack_CB.Size = new System.Drawing.Size(62, 17);
+			this.RiceZHack_CB.TabIndex = 12;
+			this.RiceZHack_CB.Text = "Z Hack";
+			this.RiceZHack_CB.UseVisualStyleBackColor = true;
+			// 
+			// RicePrimaryDepthHack_CB
+			// 
+			this.RicePrimaryDepthHack_CB.AutoSize = true;
+			this.RicePrimaryDepthHack_CB.Location = new System.Drawing.Point(6, 163);
+			this.RicePrimaryDepthHack_CB.Name = "RicePrimaryDepthHack_CB";
+			this.RicePrimaryDepthHack_CB.Size = new System.Drawing.Size(121, 17);
+			this.RicePrimaryDepthHack_CB.TabIndex = 11;
+			this.RicePrimaryDepthHack_CB.Text = "Primary Depth Hack";
+			this.RicePrimaryDepthHack_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceDisableObjBG_CB
+			// 
+			this.RiceDisableObjBG_CB.AutoSize = true;
+			this.RiceDisableObjBG_CB.Location = new System.Drawing.Point(173, 163);
+			this.RiceDisableObjBG_CB.Name = "RiceDisableObjBG_CB";
+			this.RiceDisableObjBG_CB.Size = new System.Drawing.Size(98, 17);
+			this.RiceDisableObjBG_CB.TabIndex = 10;
+			this.RiceDisableObjBG_CB.Text = "Disable Obj BG";
+			this.RiceDisableObjBG_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceDisableBlender_CB
+			// 
+			this.RiceDisableBlender_CB.AutoSize = true;
+			this.RiceDisableBlender_CB.Location = new System.Drawing.Point(173, 140);
+			this.RiceDisableBlender_CB.Name = "RiceDisableBlender_CB";
+			this.RiceDisableBlender_CB.Size = new System.Drawing.Size(100, 17);
+			this.RiceDisableBlender_CB.TabIndex = 9;
+			this.RiceDisableBlender_CB.Text = "Disable Blender";
+			this.RiceDisableBlender_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceForceScreenClear_CB
+			// 
+			this.RiceForceScreenClear_CB.AutoSize = true;
+			this.RiceForceScreenClear_CB.Location = new System.Drawing.Point(173, 117);
+			this.RiceForceScreenClear_CB.Name = "RiceForceScreenClear_CB";
+			this.RiceForceScreenClear_CB.Size = new System.Drawing.Size(117, 17);
+			this.RiceForceScreenClear_CB.TabIndex = 8;
+			this.RiceForceScreenClear_CB.Text = "Force Screen Clear";
+			this.RiceForceScreenClear_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceEmulateClear_CB
+			// 
+			this.RiceEmulateClear_CB.AutoSize = true;
+			this.RiceEmulateClear_CB.Location = new System.Drawing.Point(173, 94);
+			this.RiceEmulateClear_CB.Name = "RiceEmulateClear_CB";
+			this.RiceEmulateClear_CB.Size = new System.Drawing.Size(91, 17);
+			this.RiceEmulateClear_CB.TabIndex = 7;
+			this.RiceEmulateClear_CB.Text = "Emulate Clear";
+			this.RiceEmulateClear_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceTxtSizeMethod2_CB
+			// 
+			this.RiceTxtSizeMethod2_CB.AutoSize = true;
+			this.RiceTxtSizeMethod2_CB.Location = new System.Drawing.Point(173, 48);
+			this.RiceTxtSizeMethod2_CB.Name = "RiceTxtSizeMethod2_CB";
+			this.RiceTxtSizeMethod2_CB.Size = new System.Drawing.Size(112, 17);
+			this.RiceTxtSizeMethod2_CB.TabIndex = 6;
+			this.RiceTxtSizeMethod2_CB.Text = "Txt Size Method 2";
+			this.RiceTxtSizeMethod2_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceIncTexRectEdge_CB
+			// 
+			this.RiceIncTexRectEdge_CB.AutoSize = true;
+			this.RiceIncTexRectEdge_CB.Location = new System.Drawing.Point(6, 94);
+			this.RiceIncTexRectEdge_CB.Name = "RiceIncTexRectEdge_CB";
+			this.RiceIncTexRectEdge_CB.Size = new System.Drawing.Size(116, 17);
+			this.RiceIncTexRectEdge_CB.TabIndex = 5;
+			this.RiceIncTexRectEdge_CB.Text = "Inc Tex Rect Edge";
+			this.RiceIncTexRectEdge_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceDisableCulling_CB
+			// 
+			this.RiceDisableCulling_CB.AutoSize = true;
+			this.RiceDisableCulling_CB.Location = new System.Drawing.Point(6, 71);
+			this.RiceDisableCulling_CB.Name = "RiceDisableCulling_CB";
+			this.RiceDisableCulling_CB.Size = new System.Drawing.Size(95, 17);
+			this.RiceDisableCulling_CB.TabIndex = 4;
+			this.RiceDisableCulling_CB.Text = "Disable Culling";
+			this.RiceDisableCulling_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceDisableTextureCRC_CB
+			// 
+			this.RiceDisableTextureCRC_CB.AutoSize = true;
+			this.RiceDisableTextureCRC_CB.Location = new System.Drawing.Point(6, 48);
+			this.RiceDisableTextureCRC_CB.Name = "RiceDisableTextureCRC_CB";
+			this.RiceDisableTextureCRC_CB.Size = new System.Drawing.Size(125, 17);
+			this.RiceDisableTextureCRC_CB.TabIndex = 3;
+			this.RiceDisableTextureCRC_CB.Text = "Disable Texture CRC";
+			this.RiceDisableTextureCRC_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceTexture1Hack_CB
+			// 
+			this.RiceTexture1Hack_CB.AutoSize = true;
+			this.RiceTexture1Hack_CB.Location = new System.Drawing.Point(6, 186);
+			this.RiceTexture1Hack_CB.Name = "RiceTexture1Hack_CB";
+			this.RiceTexture1Hack_CB.Size = new System.Drawing.Size(97, 17);
+			this.RiceTexture1Hack_CB.TabIndex = 2;
+			this.RiceTexture1Hack_CB.Text = "Texture1 Hack";
+			this.RiceTexture1Hack_CB.UseVisualStyleBackColor = true;
+			// 
+			// RiceUseDefaultHacks_CB
+			// 
+			this.RiceUseDefaultHacks_CB.AutoSize = true;
+			this.RiceUseDefaultHacks_CB.Location = new System.Drawing.Point(6, 6);
+			this.RiceUseDefaultHacks_CB.Name = "RiceUseDefaultHacks_CB";
+			this.RiceUseDefaultHacks_CB.Size = new System.Drawing.Size(165, 17);
+			this.RiceUseDefaultHacks_CB.TabIndex = 1;
+			this.RiceUseDefaultHacks_CB.Text = "Use defaults for current game";
+			this.RiceUseDefaultHacks_CB.UseVisualStyleBackColor = true;
+			this.RiceUseDefaultHacks_CB.CheckedChanged += new System.EventHandler(this.RiceUseDefaultHacks_CB_CheckedChanged);
 			// 
 			// button1
 			// 
@@ -1076,12 +1600,50 @@
 		private System.Windows.Forms.CheckBox RiceLoadHiResTextures_CB;
 		private System.Windows.Forms.CheckBox RiceDumpTexturesToFiles_CB;
 		private System.Windows.Forms.TabPage RiceGameSpecificTab;
-		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.Label label17;
 		private System.Windows.Forms.Label label18;
 		private System.Windows.Forms.ComboBox RiceFrameBufferWriteBackControl_Combo;
 		private System.Windows.Forms.ComboBox RiceFrameBufferSetting_Combo;
 		private System.Windows.Forms.ComboBox RiceRenderToTexture_Combo;
+		private System.Windows.Forms.CheckBox RiceTexture1Hack_CB;
+		private System.Windows.Forms.CheckBox RiceUseDefaultHacks_CB;
+		private System.Windows.Forms.CheckBox RiceTxtSizeMethod2_CB;
+		private System.Windows.Forms.CheckBox RiceIncTexRectEdge_CB;
+		private System.Windows.Forms.CheckBox RiceDisableCulling_CB;
+		private System.Windows.Forms.CheckBox RiceDisableTextureCRC_CB;
+		private System.Windows.Forms.CheckBox RiceTextureScaleHack_CB;
+		private System.Windows.Forms.CheckBox RiceFastLoadTile_CB;
+		private System.Windows.Forms.CheckBox RiceUseSmallerTexture_CB;
+		private System.Windows.Forms.CheckBox RiceEnableTxtLOD_CB;
+		private System.Windows.Forms.CheckBox RiceZHack_CB;
+		private System.Windows.Forms.CheckBox RicePrimaryDepthHack_CB;
+		private System.Windows.Forms.CheckBox RiceDisableObjBG_CB;
+		private System.Windows.Forms.CheckBox RiceDisableBlender_CB;
+		private System.Windows.Forms.CheckBox RiceForceScreenClear_CB;
+		private System.Windows.Forms.CheckBox RiceEmulateClear_CB;
+		private System.Windows.Forms.Label label19;
+		private System.Windows.Forms.TextBox RiceVIHeight_Text;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.TextBox RiceVIWidth_Text;
+		private System.Windows.Forms.Label label20;
+		private System.Windows.Forms.ComboBox RiceScreenUpdateSettingHack_Combo;
+		private System.Windows.Forms.Label label22;
+		private System.Windows.Forms.ComboBox RiceFastTextureCRC_Combo;
+		private System.Windows.Forms.Label label21;
+		private System.Windows.Forms.ComboBox RiceFullTMEM_Combo;
+		private System.Windows.Forms.Label label23;
+		private System.Windows.Forms.ComboBox RiceAccurateTextureMappingHack_Combo;
+		private System.Windows.Forms.Label label26;
+		private System.Windows.Forms.ComboBox RiceRenderToTextureOption_Combo;
+		private System.Windows.Forms.Label label25;
+		private System.Windows.Forms.ComboBox RiceFrameBufferOption_Combo;
+		private System.Windows.Forms.Label label24;
+		private System.Windows.Forms.ComboBox RiceNormalBlender_Combo;
+		private System.Windows.Forms.Label label28;
+		private System.Windows.Forms.ComboBox RiceUseCIWidthAndRatio_Combo;
+		private System.Windows.Forms.CheckBox RiceForceDepthBuffer_CB;
+		private System.Windows.Forms.Label label27;
+		private System.Windows.Forms.ComboBox RiceEnableHacksForGame_Combo;
 	}
 }

@@ -303,6 +303,35 @@ namespace BizHawk.MultiClient
 		public bool RiceLoadHiResTextures = false;
 		public bool RiceDumpTexturesToFiles = false;
 
+		public bool RiceUseDefaultHacks = true;
+		public bool RiceDisableTextureCRC = false;
+		public bool RiceDisableCulling = false;
+		public bool RiceIncTexRectEdge = false;
+		public bool RiceZHack = false;
+		public bool RiceTextureScaleHack = false;
+		public bool RicePrimaryDepthHack = false;
+		public bool RiceTexture1Hack = false;
+		public bool RiceFastLoadTile = false;
+		public bool RiceUseSmallerTexture = false;
+		public int RiceVIWidth = -1;
+		public int RiceVIHeight = -1;
+		public int RiceUseCIWidthAndRatio = 0;
+		public int RiceFullTMEM = 0;
+		public bool RiceTxtSizeMethod2 = false;
+		public bool RiceEnableTxtLOD = false;
+		public int RiceFastTextureCRC = 0;
+		public bool RiceEmulateClear = false;
+		public bool RiceForceScreenClear = false;
+		public int RiceAccurateTextureMappingHack = 0;
+		public int RiceNormalBlender = 0;
+		public bool RiceDisableBlender = false;
+		public bool RiceForceDepthBuffer = false;
+		public bool RiceDisableObjBG = false;
+		public int RiceFrameBufferOption = 0;
+		public int RiceRenderToTextureOption = 0;
+		public int RiceScreenUpdateSettingHack = 0;
+		public int RiceEnableHacksForGame = 0;
+
 		// General Client Settings
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
