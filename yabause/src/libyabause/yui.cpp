@@ -467,10 +467,37 @@ extern "C" __declspec(dllexport) void libyabause_setpads(u8 p11, u8 p12, u8 p21,
 	ctrl2->padbits[1] = p22;
 }
 
+int glnativefactor = 0;
+
 extern "C" __declspec(dllexport) void libyabause_glresize(int w, int h)
 {
-	if (usinggl)
+	if (usinggl && !glnativefactor)
 		VIDCore->Resize(w, h, 0);
+}
+
+extern "C" __declspec(dllexport) void libyabause_glsetnativefactor(int n)
+{
+	if (!usinggl)
+		return;
+	if (n > 4)
+		n = 4;
+	if (n < 0)
+		n = 0;
+	glnativefactor = n;
+	if (n)
+		VIDCore->Resize(vdp2width_gl * n, vdp2height_gl * n, 0);
+}
+
+void (*vdp2hookfcn)(u16 v) = NULL;
+
+void vdp2newhook(u16 v)
+{
+	vdp2hookfcn(v);
+	if (glnativefactor)
+	{
+		if (glwidth != vdp2width_gl * glnativefactor || glheight != vdp2height_gl * glnativefactor)
+			VIDCore->Resize(vdp2width_gl * glnativefactor, vdp2height_gl * glnativefactor, 0);
+	}
 }
 
 extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD, const char *biosfn, int usegl)
@@ -513,6 +540,13 @@ extern "C" __declspec(dllexport) int libyabause_init(CDInterface *_CD, const cha
 	yinit.cartpath = NULL;
 	yinit.netlinksetting = NULL;
 	yinit.videoformattype = VIDEOFORMATTYPE_NTSC;
+
+	if (usegl && !vdp2hookfcn)
+	{
+		// hook vdp2setresolution
+		vdp2hookfcn = VIDOGL.Vdp2SetResolution;
+		VIDOGL.Vdp2SetResolution = vdp2newhook;
+	}
 
 	if (YabauseInit(&yinit) != 0)
 		return 0;

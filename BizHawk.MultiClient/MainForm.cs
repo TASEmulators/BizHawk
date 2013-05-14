@@ -1789,6 +1789,7 @@ namespace BizHawk.MultiClient
 			sNESToolStripMenuItem.Visible = false;
 			colecoToolStripMenuItem.Visible = false;
 			n64ToolStripMenuItem.Visible = false;
+			saturnToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1840,6 +1841,9 @@ namespace BizHawk.MultiClient
 				case "N64":
 					n64ToolStripMenuItem.Visible = true;
 					break;
+				case "SAT":
+					saturnToolStripMenuItem.Visible = true;
+					break;
 			}
 		}
 
@@ -1879,6 +1883,26 @@ namespace BizHawk.MultiClient
 				NESSpeicalMenuAdd("Insert Coin 1", "VS Coin 1", "Coin 1 inserted.");
 			if (ss.Contains("VS Coin 2"))
 				NESSpeicalMenuAdd("Insert Coin 2", "VS Coin 2", "Coin 2 inserted.");
+		}
+
+		void SaturnSetPrefs(Emulation.Consoles.Sega.Saturn.Yabause e = null)
+		{
+			if (e == null)
+				e = Global.Emulator as Emulation.Consoles.Sega.Saturn.Yabause;
+
+			if (Global.Config.SaturnUseGL != e.GLMode)
+			{
+				// theoretically possible; not coded. meh.
+				FlagNeedsReboot();
+				return;
+			}
+			if (e.GLMode && Global.Config.SaturnUseGL)
+			{
+				if (Global.Config.SaturnDispFree)
+					e.SetGLRes(0, Global.Config.SaturnGLW, Global.Config.SaturnGLH);
+				else
+					e.SetGLRes(Global.Config.SaturnDispFactor, 0, 0);
+			}
 		}
 
 		void SyncControls()
@@ -2098,8 +2122,9 @@ namespace BizHawk.MultiClient
 										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
 										return false;
 									}
-									var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath));
+									var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
 									nextEmulator = saturn;
+									SaturnSetPrefs(saturn);
 								}
 								break;
 
@@ -5532,6 +5557,18 @@ namespace BizHawk.MultiClient
 		private void textToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
+		}
+
+		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new SATTools.SaturnPrefs())
+			{
+				var result = dlg.ShowDialog(this);
+				if (result == System.Windows.Forms.DialogResult.OK)
+				{
+					SaturnSetPrefs();
+				}
+			}
 		}
 
 	}
