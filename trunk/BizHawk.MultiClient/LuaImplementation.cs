@@ -544,7 +544,8 @@ namespace BizHawk.MultiClient
 		                                        		"clearclicks",
 		                                        		"gettext",
 														"setproperty",
-														"getproperty"
+														"getproperty",
+														"openfile"
 		                                        	};
 
 		public static string[] BitwiseFunctions = new[]
@@ -2746,6 +2747,29 @@ namespace BizHawk.MultiClient
 			}
 
 			return "";
+		}
+
+		// filterext format ex: "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
+		public string forms_openfile(string FileName = null, string InitialDirectory = null, string Filter = "All files (*.*)|*.*")
+		{
+			OpenFileDialog openFileDialog1 = new OpenFileDialog();
+			if (InitialDirectory != null)
+			{
+				openFileDialog1.InitialDirectory = InitialDirectory; 
+			}
+			if (FileName != null)
+			{
+				openFileDialog1.FileName = FileName;
+			}
+			 if (Filter != null)
+			{
+				openFileDialog1.AddExtension = true;
+				openFileDialog1.Filter = Filter;
+			}
+			if (openFileDialog1.ShowDialog() == DialogResult.OK)
+				return openFileDialog1.FileName;
+			else
+				return "";
 		}
 
 		public LuaTable input_getmouse()
