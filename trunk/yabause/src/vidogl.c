@@ -127,8 +127,8 @@ int vdp1cor=0;
 int vdp1cog=0;
 int vdp1cob=0;
 
-static int vdp2width;
-static int vdp2height;
+int vdp2width_gl;
+int vdp2height_gl;
 static int nbg0priority=0;
 static int nbg1priority=0;
 static int nbg2priority=0;
@@ -910,24 +910,24 @@ static void Vdp2GenerateWindowInfo(void)
     {
 
         // resize to fit resolusion
-        if( m_vWindinfo0_size != vdp2height )
+        if( m_vWindinfo0_size != vdp2height_gl )
         {
             if(m_vWindinfo0 != NULL) free(m_vWindinfo0);
-            m_vWindinfo0 = (vdp2WindowInfo*)malloc(sizeof(vdp2WindowInfo)*(vdp2height+8));
+            m_vWindinfo0 = (vdp2WindowInfo*)malloc(sizeof(vdp2WindowInfo)*(vdp2height_gl+8));
 
-            for( i=0; i<vdp2height; i++ )
+            for( i=0; i<vdp2height_gl; i++ )
             {
                m_vWindinfo0[i].WinShowLine = 1; 
                m_vWindinfo0[i].WinHStart   = 0;
                m_vWindinfo0[i].WinHEnd     = 1024;
             }
 
-            m_vWindinfo0_size = vdp2height;
+            m_vWindinfo0_size = vdp2height_gl;
             m_b0WindowChg = 1;
         }
 
         HShift = 0;
-        if( vdp2width>=640 ) HShift = 0; else HShift = 1;
+        if( vdp2width_gl>=640 ) HShift = 0; else HShift = 1;
 
 
         // Line Table mode
@@ -940,7 +940,7 @@ static void Vdp2GenerateWindowInfo(void)
             LineWinAddr = (u32)((( (Vdp2Regs->LWTA0.part.U & 0x07) << 15) | (Vdp2Regs->LWTA0.part.L >> 1) ) << 2);
             _Ygl->win0_vertexcnt = 0;
             
-            for( v = 0; v < vdp2height; v++ )
+            for( v = 0; v < vdp2height_gl; v++ )
             {
                 if( v < Vdp2Regs->WPSY0 || v > Vdp2Regs->WPEY0 )
                 {
@@ -1016,7 +1016,7 @@ static void Vdp2GenerateWindowInfo(void)
                 m_b0WindowChg = 1;
             }
 
-            for( v = 0; v < vdp2height; v++ )
+            for( v = 0; v < vdp2height_gl; v++ )
             {
 
                 m_vWindinfo0[v].WinHStart = Vdp2Regs->WPSX0 >> HShift;
@@ -1068,23 +1068,23 @@ static void Vdp2GenerateWindowInfo(void)
     {
 
         // resize to fit resolution
-        if( m_vWindinfo1_size != vdp2height )
+        if( m_vWindinfo1_size != vdp2height_gl )
         {
             if(m_vWindinfo1 != NULL) free(m_vWindinfo1);
-            m_vWindinfo1 = (vdp2WindowInfo*)malloc(sizeof(vdp2WindowInfo)*vdp2height);
+            m_vWindinfo1 = (vdp2WindowInfo*)malloc(sizeof(vdp2WindowInfo)*vdp2height_gl);
 
-            for( i=0; i<vdp2height; i++ )
+            for( i=0; i<vdp2height_gl; i++ )
             {
                m_vWindinfo1[i].WinShowLine = 1; 
                m_vWindinfo1[i].WinHStart   = 0;
                m_vWindinfo1[i].WinHEnd     = 1024;
             }
 
-            m_vWindinfo1_size = vdp2height;
+            m_vWindinfo1_size = vdp2height_gl;
             m_b1WindowChg = 1;
         }
 
-        if( vdp2width>=640 ) HShift = 0; else HShift = 1;
+        if( vdp2width_gl>=640 ) HShift = 0; else HShift = 1;
 
 
         // LineTable mode
@@ -1097,7 +1097,7 @@ static void Vdp2GenerateWindowInfo(void)
             // start address for Window table
             LineWinAddr = (u32)((( (Vdp2Regs->LWTA1.part.U & 0x07) << 15) | (Vdp2Regs->LWTA1.part.L >> 1) ) << 2);
             
-            for( v = 0; v < vdp2height; v++ )
+            for( v = 0; v < vdp2height_gl; v++ )
             {
                 if( v < Vdp2Regs->WPSY1 || v > Vdp2Regs->WPEY1 )
                 {
@@ -1169,7 +1169,7 @@ static void Vdp2GenerateWindowInfo(void)
                 m_b1WindowChg = 1;
             }
 
-            for( v = 0; v < vdp2height; v++ )
+            for( v = 0; v < vdp2height_gl; v++ )
             {
                 m_vWindinfo1[v].WinHStart = Vdp2Regs->WPSX1 >> HShift;
                 m_vWindinfo1[v].WinHEnd   = Vdp2Regs->WPEX1 >> HShift;
@@ -1326,7 +1326,7 @@ void Vdp2GenLineinfo( vdp2draw_struct *info )
    if( VDPLINE_SX(info->islinescroll)) bound += 0x04;
    if( VDPLINE_SZ(info->islinescroll)) bound += 0x04;   
    
-   for( i = 0; i < vdp2height; i += info->lineinc )
+   for( i = 0; i < vdp2height_gl; i += info->lineinc )
    {
       index = 0;
       if( VDPLINE_SX(info->islinescroll))
@@ -1575,7 +1575,7 @@ static void Vdp2DrawPattern(vdp2draw_struct *info, YglTexture *texture)
    
    
    // Screen culling
-   if( tile.vertices[0] >= vdp2width || tile.vertices[1] >= vdp2height || tile.vertices[2] < 0 || tile.vertices[5] < 0 )
+   if( tile.vertices[0] >= vdp2width_gl || tile.vertices[1] >= vdp2height_gl || tile.vertices[2] < 0 || tile.vertices[5] < 0 )
    {   
       info->x += tile.w;
       info->y += tile.h;      
@@ -1770,18 +1770,18 @@ static void Vdp2DrawMap(vdp2draw_struct *info, YglTexture *texture)
    X = info->x;
 
    info->patternpixelwh = 8 * info->patternwh;
-   info->draww = (int)((float)vdp2width / info->coordincx);
-   info->drawh = (int)((float)vdp2height / info->coordincy);
+   info->draww = (int)((float)vdp2width_gl / info->coordincx);
+   info->drawh = (int)((float)vdp2height_gl / info->coordincy);
 
    i=0;
    yy = info->y*info->coordincy;
-   while( yy < vdp2height )
+   while( yy < vdp2height_gl )
    {
       Y = info->y;
       j=0;
       info->x = X;      
       xx = info->x*info->coordincx;
-      while( xx < vdp2width )
+      while( xx < vdp2width_gl )
       {
          info->y = Y;
          info->PlaneAddr(info, info->mapwh * i + j);
@@ -1914,16 +1914,16 @@ static void FASTCALL Vdp2DrawRotation(vdp2draw_struct *info, vdp2rotationparamet
    u32 LineColorRamAdress;   
 
    vdp2rotationparameter_struct *parameter;
-   if( vdp2height >= 448 ) vres = (vdp2height>>1); else vres = vdp2height;
-   if( vdp2width >= 640 ) hres = (vdp2width>>1); else hres = vdp2width;
+   if( vdp2height_gl >= 448 ) vres = (vdp2height_gl>>1); else vres = vdp2height_gl;
+   if( vdp2width_gl >= 640 ) hres = (vdp2width_gl>>1); else hres = vdp2width_gl;
    info->vertices[0] = 0;
    info->vertices[1] = 0;
-   info->vertices[2] = vdp2width;
+   info->vertices[2] = vdp2width_gl;
    info->vertices[3] = 0;
-   info->vertices[4] = vdp2width;
-   info->vertices[5] = vdp2height;
+   info->vertices[4] = vdp2width_gl;
+   info->vertices[5] = vdp2height_gl;
    info->vertices[6] = 0;
-   info->vertices[7] = vdp2height;
+   info->vertices[7] = vdp2height_gl;
    cellw = info->cellw;
    cellh = info->cellh;   
    info->cellw = hres;
@@ -2168,8 +2168,8 @@ static void SetSaturnResolution(int width, int height)
 {
    YglChangeResolution(width, height);
 
-   vdp2width=width;
-   vdp2height=height;
+   vdp2width_gl=width;
+   vdp2height_gl=height;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2219,7 +2219,7 @@ void VIDOGLResize(unsigned int w, unsigned int h, int on)
    glViewport(0, 0, w, h);
    YglNeedToUpdateWindow();
 
-   SetSaturnResolution(vdp2width, vdp2height);
+   SetSaturnResolution(vdp2width_gl, vdp2height_gl);
 
 }
 
@@ -3066,7 +3066,7 @@ static void Vdp2DrawBackScreen(void)
 
    if (Vdp2Regs->BKTAU & 0x8000)
    {
-      for(y = 0; y < vdp2height; y++)
+      for(y = 0; y < vdp2height_gl; y++)
       {
          dot = T1ReadWord(Vdp2Ram, scrAddr);
          scrAddr += 2;
@@ -3076,7 +3076,7 @@ static void Vdp2DrawBackScreen(void)
          lineColors[3*y+2] = (dot & 0x7C00) >> 7;
          line[4*y+0] = 0;
          line[4*y+1] = y;
-         line[4*y+2] = vdp2width;
+         line[4*y+2] = vdp2width_gl;
          line[4*y+3] = y;         
       }
       
@@ -3084,7 +3084,7 @@ static void Vdp2DrawBackScreen(void)
       glEnableClientState(GL_COLOR_ARRAY);
       glVertexPointer(2, GL_INT, 0, line);
       glEnableClientState(GL_VERTEX_ARRAY);
-      glDrawArrays(GL_LINES,0,vdp2height*2);
+      glDrawArrays(GL_LINES,0,vdp2height_gl*2);
       glDisableClientState(GL_COLOR_ARRAY);      
       glColor3ub(0xFF, 0xFF, 0xFF);
    }
@@ -3096,12 +3096,12 @@ static void Vdp2DrawBackScreen(void)
 
       line[0] = 0;
       line[1] = 0;
-      line[2] = vdp2width;
+      line[2] = vdp2width_gl;
       line[3] = 0;    
-      line[4] = vdp2width;
-      line[5] = vdp2height;
+      line[4] = vdp2width_gl;
+      line[5] = vdp2height_gl;
       line[6] = 0;
-      line[7] = vdp2height;    
+      line[7] = vdp2height_gl;    
 
       glDisable(GL_TEXTURE_2D);
       glVertexPointer(2, GL_INT, 0, line);
@@ -3293,10 +3293,10 @@ static void Vdp2DrawNBG0(void)
          }
 
          yy = info.y;
-         while( yy < vdp2height )
+         while( yy < vdp2height_gl )
          {
             xx = info.x;
-            while( xx < vdp2width )
+            while( xx < vdp2width_gl )
             {
                info.vertices[0] = xx * info.coordincx;
                info.vertices[1] = yy * info.coordincy;
@@ -3461,10 +3461,10 @@ static void Vdp2DrawNBG1(void)
       }
       
       yy = info.y;
-      while( yy < vdp2height )
+      while( yy < vdp2height_gl )
       {
          xx = info.x;
-         while( xx < vdp2width )
+         while( xx < vdp2width_gl )
          {
             info.vertices[0] = xx * info.coordincx;
             info.vertices[1] = yy * info.coordincy;

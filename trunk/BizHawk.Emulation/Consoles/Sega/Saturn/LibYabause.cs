@@ -49,7 +49,8 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		/// <summary>
 		/// set video buffer
 		/// </summary>
-		/// <param name="buff">704x512x32bit, should persist over time</param>
+		/// <param name="buff">32 bit color, should persist over time.  must hold at least 704*512px in software mode, or (704*n*512*n)px
+		/// in hardware mode with native factor size, or w*hpx in gl mode with explicit size</param>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libyabause_setvidbuff(IntPtr buff);
 
@@ -135,12 +136,20 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		}
 
 		/// <summary>
-		/// only works in GL mode
+		/// set the overall resolution. only works in gl mode and when nativefactor = 0
 		/// </summary>
 		/// <param name="w">width</param>
 		/// <param name="h">height</param>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libyabause_glresize(int w, int h);
+
+		/// <summary>
+		/// cause the overall resolution to automatically switch to a multiple of the original console resolution, as the original console resolution changes.
+		/// only applies in gl mode.
+		/// </summary>
+		/// <param name="n">factor, 1-4, 0 to disable.</param>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_glsetnativefactor(int n);
 
 		/// <summary>
 		/// 

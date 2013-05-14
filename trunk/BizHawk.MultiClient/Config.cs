@@ -577,6 +577,13 @@ namespace BizHawk.MultiClient
 		public bool SNES_ShowOBJ3 = true;
 		public bool SNES_ShowOBJ4 = true;
 
+		// SATURN GRAPHICS SETTINGS
+		public bool SaturnUseGL = false;
+		public int SaturnDispFactor = 1;
+		public bool SaturnDispFree = false;
+		public int SaturnGLW = 640;
+		public int SaturnGLH = 480;
+
 		// PCE Graphics settings
 		public bool PCEDispBG1 = true;
 		public bool PCEDispOBJ1 = true;

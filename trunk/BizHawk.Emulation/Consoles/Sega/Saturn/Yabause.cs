@@ -35,16 +35,16 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		LibYabause.CDInterface.ReadSectorFAD ReadSectorFADH;
 		LibYabause.CDInterface.ReadAheadFAD ReadAheadFADH;
 
-		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, byte[] bios)
+		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, byte[] bios, bool GL = false)
 		{
 			CoreComm.RomStatusDetails = "Yeh";
 			this.CoreComm = CoreComm;
 			this.CD = CD;
 			ResetFrameCounter();
-			Init(bios);
+			Init(bios, GL);
 		}
 
-		void Init(byte[] bios)
+		void Init(byte[] bios, bool GL = false)
 		{
 			if (AttachedCore != null)
 			{
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			string BiosPipe = fp.GetPipeNameNative();
 			fp.Offer(bios);
 
-			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe, false))
+			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe, GL))
 				throw new Exception("libyabause_init() failed!");
 
 			var e = fp.GetResults();
@@ -77,11 +77,13 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			LibYabause.libyabause_setsndbuff(SoundHandle.AddrOfPinnedObject());
 			AttachedCore = this;
 
-			// with or without GL, this is the guaranteed frame -1 size.
+			// with or without GL, this is the guaranteed frame -1 size; (unless you do a gl resize)
 			BufferWidth = 320;
 			BufferHeight = 224;
 
 			InitMemoryDomains();
+
+			GLMode = GL;
 		}
 
 		public ControllerDefinition ControllerDefinition
@@ -90,6 +92,42 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		}
 
 		public IController Controller { get; set; }
+
+		public bool GLMode { get; private set; }
+
+		public void SetGLRes(int factor, int width, int height)
+		{
+			if (!GLMode)
+				return;
+
+			if (factor < 0) factor = 0;
+			if (factor > 4) factor = 4;
+
+			int maxwidth, maxheight;
+
+			if (factor == 0)
+			{
+				maxwidth = width;
+				maxheight = height;
+			}
+			else
+			{
+				maxwidth = 704 * factor;
+				maxheight = 512 * factor;
+			}
+			if (maxwidth * maxheight > VideoBuffer.Length)
+			{
+				VideoHandle.Free();
+				VideoBuffer = new int[maxwidth * maxheight];
+				VideoHandle = GCHandle.Alloc(VideoBuffer, GCHandleType.Pinned);
+				LibYabause.libyabause_setvidbuff(VideoHandle.AddrOfPinnedObject());
+			}
+			LibYabause.libyabause_glsetnativefactor(factor);
+			if (factor == 0)
+				LibYabause.libyabause_glresize(width, height);
+		}
+		
+		
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
