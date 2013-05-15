@@ -3920,7 +3920,7 @@ namespace BizHawk.MultiClient
 					video_settings.Parameters.Add("FastTextureCRC", N64GetIntFromDB("RiceFastTextureCRC", 0));
 					video_settings.Parameters.Add("EmulateClear", N64GetBoolFromDB("RiceEmulateClear"));
 					video_settings.Parameters.Add("ForceScreenClear", N64GetBoolFromDB("RiceForceScreenClear"));
-					video_settings.Parameters.Add("AccurateTextureMapping", N64GetIntFromDB("RiceAccurateTextureMapping", 0));
+					video_settings.Parameters.Add("AccurateTextureMappingHack", N64GetIntFromDB("RiceAccurateTextureMappingHack", 0));
 					video_settings.Parameters.Add("NormalBlender", N64GetIntFromDB("RiceNormalBlender", 0));
 					video_settings.Parameters.Add("DisableBlender", N64GetBoolFromDB("RiceDisableBlender"));
 					video_settings.Parameters.Add("ForceDepthBuffer", N64GetBoolFromDB("RiceForceDepthBuffer"));
