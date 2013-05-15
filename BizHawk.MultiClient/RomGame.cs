@@ -45,6 +45,9 @@ namespace BizHawk.MultiClient
 			if (file.Extension == ".SMD")
 				RomData = DeInterleaveSMD(RomData);
 
+			if (file.Extension == ".Z64" || file.Extension == ".N64" || file.Extension == ".V64")
+				RomData = SwapN64(RomData);
+
 			GameInfo = Database.GetGameInfo(RomData, file.Name);
 			
 			CheckForPatchOptions();
@@ -77,6 +80,46 @@ namespace BizHawk.MultiClient
 					output[(page * 0x4000) + (i * 2) + 0] = source[(page * 0x4000) + 0x2000 + i];
 					output[(page * 0x4000) + (i * 2) + 1] = source[(page * 0x4000) + 0x0000 + i];
 				}
+			}
+			return output;
+		}
+
+		private static byte[] SwapN64(byte[] source)
+		{
+			// N64 roms are in one of the following formats:
+			//  .Z64 = No swapping
+			//  .N64 = Word Swapped
+			//  .V64 = Bytse Swapped
+
+			// File extension does not always match the format
+
+			int size = source.Length;
+			byte[] output = new byte[size];
+
+			// V64 format
+			if (source[0] == 0x37)
+			{
+				for (int i = 0; i < size; i += 2)
+				{
+					output[i] = source[i + 1];
+					output[i + 1] = source[i];
+				}
+			}
+			// N64 format
+			else if (source[0] == 0x40)
+			{
+				for (int i = 0; i < size; i += 4)
+				{
+					output[i] = source[i + 3];
+					output[i + 3] = source[i];
+					output[i + 1] = source[i + 2];
+					output[i + 2] = source[i + 1];
+				}
+			}
+			// Z64 format (or some other unknown format)
+			else
+			{
+				return source;
 			}
 			return output;
 		}
