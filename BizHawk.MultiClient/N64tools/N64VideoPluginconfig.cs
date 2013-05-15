@@ -253,7 +253,7 @@ namespace BizHawk.MultiClient
 				RiceFastTextureCRC_Combo.SelectedIndex = GetIntFromDB("RiceFastTextureCRC", 0);
 				RiceEmulateClear_CB.Checked = GetBoolFromDB("RiceEmulateClear");
 				RiceForceScreenClear_CB.Checked = GetBoolFromDB("RiceForceScreenClear");
-				RiceAccurateTextureMappingHack_Combo.SelectedIndex = GetIntFromDB("RiceAccurateTextureMapping", 0);
+				RiceAccurateTextureMappingHack_Combo.SelectedIndex = GetIntFromDB("RiceAccurateTextureMappingHack", 0);
 				RiceNormalBlender_Combo.SelectedIndex = GetIntFromDB("RiceNormalBlender", 0);
 				RiceDisableBlender_CB.Checked = GetBoolFromDB("RiceDisableBlender");
 				RiceForceDepthBuffer_CB.Checked = GetBoolFromDB("RiceForceDepthBuffer");

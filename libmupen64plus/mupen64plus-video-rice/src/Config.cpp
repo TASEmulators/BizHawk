@@ -381,7 +381,7 @@ BOOL InitConfiguration(void)
 	ConfigSetDefaultBool(l_ConfigVideoRice, "EmulateClear", FALSE, "...?");
 	ConfigSetDefaultBool(l_ConfigVideoRice, "ForceScreenClear", FALSE, "...?");
 
-	ConfigSetDefaultInt(l_ConfigVideoRice, "AccurateTextureMapping", 0, "...?");
+	ConfigSetDefaultInt(l_ConfigVideoRice, "AccurateTextureMappingHack", 0, "...?");
 	ConfigSetDefaultInt(l_ConfigVideoRice, "NormalBlender", 0, "...?");
 
 	ConfigSetDefaultBool(l_ConfigVideoRice, "DisableBlender", FALSE, "...?");
@@ -775,7 +775,7 @@ void Ini_GetRomOptions(LPGAMESETTING pGameSetting)
     pGameSetting->dwFastTextureCRC      = ConfigGetParamInt(l_ConfigVideoRice, "FastTextureCRC");
     pGameSetting->bEmulateClear         = ConfigGetParamBool(l_ConfigVideoRice, "EmulateClear");
     pGameSetting->bForceScreenClear     = ConfigGetParamBool(l_ConfigVideoRice, "ForceScreenClear");
-    pGameSetting->dwAccurateTextureMapping  = ConfigGetParamInt(l_ConfigVideoRice, "AccurateTextureMapping");
+    pGameSetting->dwAccurateTextureMapping  = ConfigGetParamInt(l_ConfigVideoRice, "AccurateTextureMappingHack");
     pGameSetting->dwNormalBlender       = ConfigGetParamInt(l_ConfigVideoRice, "NormalBlender");
     pGameSetting->bDisableBlender       = ConfigGetParamBool(l_ConfigVideoRice, "DisableBlender");
     pGameSetting->dwNormalCombiner      = ConfigGetParamInt(l_ConfigVideoRice, "NormalCombiner");
