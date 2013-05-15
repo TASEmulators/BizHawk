@@ -3932,7 +3932,33 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
+					video_settings.Parameters.Add("DisableTextureCRC", Global.Config.RiceDisableTextureCRC);
+					video_settings.Parameters.Add("DisableCulling", Global.Config.RiceDisableCulling);
+					video_settings.Parameters.Add("IncTexRectEdge", Global.Config.RiceIncTexRectEdge);
+					video_settings.Parameters.Add("ZHack", Global.Config.RiceZHack);
+					video_settings.Parameters.Add("TextureScaleHack", Global.Config.RiceTextureScaleHack);
+					video_settings.Parameters.Add("PrimaryDepthHack", Global.Config.RicePrimaryDepthHack);
 					video_settings.Parameters.Add("Texture1Hack", Global.Config.RiceTexture1Hack);
+					video_settings.Parameters.Add("FastLoadTile", Global.Config.RiceFastLoadTile);
+					video_settings.Parameters.Add("UseSmallerTexture", Global.Config.RiceUseSmallerTexture);
+					video_settings.Parameters.Add("VIWidth", Global.Config.RiceVIWidth);
+					video_settings.Parameters.Add("VIHeight", Global.Config.RiceVIHeight);
+					video_settings.Parameters.Add("UseCIWidthAndRatio", Global.Config.RiceUseCIWidthAndRatio);
+					video_settings.Parameters.Add("FullTMEM", Global.Config.RiceFullTMEM);
+					video_settings.Parameters.Add("TxtSizeMethod2", Global.Config.RiceTxtSizeMethod2);
+					video_settings.Parameters.Add("EnableTxtLOD", Global.Config.RiceEnableTxtLOD);
+					video_settings.Parameters.Add("FastTextureCRC", Global.Config.RiceFastTextureCRC);
+					video_settings.Parameters.Add("EmulateClear", Global.Config.RiceEmulateClear);
+					video_settings.Parameters.Add("ForceScreenClear", Global.Config.RiceForceScreenClear);
+					video_settings.Parameters.Add("AccurateTextureMappingHack", Global.Config.RiceAccurateTextureMappingHack);
+					video_settings.Parameters.Add("NormalBlender", Global.Config.RiceNormalBlender);
+					video_settings.Parameters.Add("DisableBlender", Global.Config.RiceDisableBlender);
+					video_settings.Parameters.Add("ForceDepthBuffer", Global.Config.RiceForceDepthBuffer);
+					video_settings.Parameters.Add("DisableObjBG", Global.Config.RiceDisableObjBG);
+					video_settings.Parameters.Add("FrameBufferOption", Global.Config.RiceFrameBufferOption);
+					video_settings.Parameters.Add("RenderToTextureOption", Global.Config.RiceRenderToTextureOption);
+					video_settings.Parameters.Add("ScreenUpdateSettingHack", Global.Config.RiceScreenUpdateSettingHack);
+					video_settings.Parameters.Add("EnableHacksForGame", Global.Config.RiceEnableHacksForGame);
 				}
 			}
 
