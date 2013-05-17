@@ -1100,14 +1100,9 @@
 			this.RiceUseCIWidthAndRatio_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.RiceUseCIWidthAndRatio_Combo.FormattingEnabled = true;
 			this.RiceUseCIWidthAndRatio_Combo.Items.AddRange(new object[] {
-            "SCREEN_UPDATE_DEFAULT",
-            "SCREEN_UPDATE_AT_VI_UPDATE",
-            "SCREEN_UPDATE_AT_VI_CHANGE",
-            "SCREEN_UPDATE_AT_CI_CHANGE",
-            "SCREEN_UPDATE_AT_1ST_CI_CHANGE",
-            "SCREEN_UPDATE_AT_1ST_PRIMITIVE",
-            "SCREEN_UPDATE_BEFORE_SCREEN_CLEAR",
-            "SCREEN_UPDATE_AT_VI_UPDATE_AND_DRAWN"});
+            "NOT_USE_CI_WIDTH_AND_RATIO",
+            "USE_CI_WIDTH_AND_RATIO_FOR_NTSC",
+            "USE_CI_WIDTH_AND_RATIO_FOR_PAL"});
 			this.RiceUseCIWidthAndRatio_Combo.Location = new System.Drawing.Point(133, 241);
 			this.RiceUseCIWidthAndRatio_Combo.Name = "RiceUseCIWidthAndRatio_Combo";
 			this.RiceUseCIWidthAndRatio_Combo.Size = new System.Drawing.Size(274, 21);
@@ -1276,9 +1271,14 @@
 			this.RiceScreenUpdateSettingHack_Combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.RiceScreenUpdateSettingHack_Combo.FormattingEnabled = true;
 			this.RiceScreenUpdateSettingHack_Combo.Items.AddRange(new object[] {
-            "NOT_USE_CI_WIDTH_AND_RATIO",
-            "USE_CI_WIDTH_AND_RATIO_FOR_NTSC",
-            "USE_CI_WIDTH_AND_RATIO_FOR_PAL"});
+            "SCREEN_UPDATE_DEFAULT",
+            "SCREEN_UPDATE_AT_VI_UPDATE",
+            "SCREEN_UPDATE_AT_VI_CHANGE",
+            "SCREEN_UPDATE_AT_CI_CHANGE",
+            "SCREEN_UPDATE_AT_1ST_CI_CHANGE",
+            "SCREEN_UPDATE_AT_1ST_PRIMITIVE",
+            "SCREEN_UPDATE_BEFORE_SCREEN_CLEAR",
+            "SCREEN_UPDATE_AT_VI_UPDATE_AND_DRAWN"});
 			this.RiceScreenUpdateSettingHack_Combo.Location = new System.Drawing.Point(133, 272);
 			this.RiceScreenUpdateSettingHack_Combo.Name = "RiceScreenUpdateSettingHack_Combo";
 			this.RiceScreenUpdateSettingHack_Combo.Size = new System.Drawing.Size(274, 21);
