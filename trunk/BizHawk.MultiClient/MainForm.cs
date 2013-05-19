@@ -2483,6 +2483,7 @@ namespace BizHawk.MultiClient
 							case "N64":
 								if (INTERIM)
 								{
+									Global.Game = game;
 									VideoPluginSettings video_settings = N64GenerateVideoSettings();
 									nextEmulator = new N64(nextComm, game, rom.RomData, video_settings);
 								}
