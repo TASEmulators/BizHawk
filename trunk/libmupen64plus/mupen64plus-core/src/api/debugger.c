@@ -220,8 +220,52 @@ EXPORT void * CALL DebugMemGetPointer(m64p_dbg_memptr_type mem_ptr_type)
             return &ri_register;
         case M64P_DBG_PTR_AI_REG:
             return &ai_register;
+
+		case EEPROM:
+            return eeprom;
+		case MEMPAK1:
+			return mempack[0];
+		case MEMPAK2:
+			return mempack[1];
+		case MEMPAK3:
+            return mempack[2];
+		case MEMPAK4:
+            return mempack[3];
         default:
             DebugMessage(M64MSG_ERROR, "Bug: DebugMemGetPointer() called with invalid m64p_dbg_memptr_type");
+            return NULL;
+    }
+}
+
+EXPORT int CALL MemGetSize(m64p_dbg_memptr_type mem_ptr_type)
+{
+    switch (mem_ptr_type)
+    {
+        case M64P_DBG_PTR_RDRAM:
+            return 0x800000;
+        case M64P_DBG_PTR_PI_REG:
+            return sizeof(PI_register);
+        case M64P_DBG_PTR_SI_REG:
+            return sizeof(SI_register);
+        case M64P_DBG_PTR_VI_REG:
+            return sizeof(VI_register);
+        case M64P_DBG_PTR_RI_REG:
+            return sizeof(RI_register);
+        case M64P_DBG_PTR_AI_REG:
+            return sizeof(AI_register);
+
+		case EEPROM:
+            return 0x800;
+		case MEMPAK1:
+			return 0x8000;
+		case MEMPAK2:
+			return 0x8000;
+		case MEMPAK3:
+            return 0x8000;
+		case MEMPAK4:
+            return 0x8000;
+        default:
+            DebugMessage(M64MSG_ERROR, "Bug: MemGetSize() called with invalid m64p_dbg_memptr_type");
             return NULL;
     }
 }

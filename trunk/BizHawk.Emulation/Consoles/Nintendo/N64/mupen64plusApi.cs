@@ -101,15 +101,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			M64TYPE_STRING
 		};
 
-		enum m64p_dbg_memptr_type
+		public enum N64_MEMORY : uint
 		{
-			M64P_DBG_PTR_RDRAM = 1,
-			M64P_DBG_PTR_PI_REG,
-			M64P_DBG_PTR_SI_REG,
-			M64P_DBG_PTR_VI_REG,
-			M64P_DBG_PTR_RI_REG,
-			M64P_DBG_PTR_AI_REG
-		};
+			RDRAM = 1,
+			PI_REG,
+			SI_REG,
+			VI_REG,
+			RI_REG,
+			AI_REG,
+
+			EEPROM = 100,
+			MEMPAK1,
+			MEMPAK2,
+			MEMPAK3,
+			MEMPAK4
+		}
 
 		// Core Specifc functions
 
@@ -201,8 +207,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		/// <param name="mem_ptr_type">The section to get a pointer for</param>
 		/// <returns>A pointer to the section requested</returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate IntPtr DebugMemGetPointer(m64p_dbg_memptr_type mem_ptr_type);
+		delegate IntPtr DebugMemGetPointer(N64_MEMORY mem_ptr_type);
 		DebugMemGetPointer m64pDebugMemGetPointer;
+
+		/// <summary>
+		/// Gets the size of the given memory area
+		/// </summary>
+		/// <param name="mem_ptr_type">The section to get the size of</param>
+		/// <returns>The size of the section requested</returns>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate int MemGetSize(N64_MEMORY mem_ptr_type);
+		MemGetSize m64pMemGetSize;
 
 		/// <summary>
 		/// Initializes the saveram (eeprom and 4 mempacks)
@@ -477,9 +492,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pVICallback = new VICallback(VI);
 			result = m64pCoreDoCommandVICallback(m64p_command.M64CMD_SET_VI_CALLBACK, 0, m64pVICallback);
 
-			// Get the pointer for RDRAM
-			rdram = m64pDebugMemGetPointer(m64p_dbg_memptr_type.M64P_DBG_PTR_RDRAM);
-
 			InitSaveram();
 
 			// Start the emulator in another thread
@@ -526,6 +538,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pCoreSaveState = (savestates_save_bkm)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_save_bkm"), typeof(savestates_save_bkm));
 			m64pCoreLoadState = (savestates_load_bkm)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_load_bkm"), typeof(savestates_load_bkm));
 			m64pDebugMemGetPointer = (DebugMemGetPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugMemGetPointer"), typeof(DebugMemGetPointer));
+			m64pMemGetSize = (MemGetSize)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "MemGetSize"), typeof(MemGetSize));
 			m64pinit_saveram = (init_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "init_saveram"), typeof(init_saveram));
 			m64psave_saveram = (save_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "save_saveram"), typeof(save_saveram));
 			m64pload_saveram = (load_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "load_saveram"), typeof(load_saveram));
@@ -651,18 +664,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			m64pFrameComplete.Set();
 		}
 
-		IntPtr rdram;
-		public byte getRDRAMByte(int address)
+		public int get_memory_size(N64_MEMORY id)
 		{
-			byte[] result = new byte[1];
-			System.Runtime.InteropServices.Marshal.Copy(rdram + address, result, 0, 1);
-			return result[0];
+			return m64pMemGetSize(id);
 		}
-		public void setRDRAMByte(int address, byte data)
+
+		public IntPtr get_memory_ptr(N64_MEMORY id)
 		{
-			byte[] result = new byte[1];
-			result[0] = data;
-			System.Runtime.InteropServices.Marshal.Copy(result, 0, rdram + address, 1);
+			return m64pDebugMemGetPointer(id);
 		}
 
 		public void set_buttons(int num, int keys, sbyte X, sbyte Y)

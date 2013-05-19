@@ -257,7 +257,13 @@ typedef enum {
   M64P_DBG_PTR_SI_REG,
   M64P_DBG_PTR_VI_REG,
   M64P_DBG_PTR_RI_REG,
-  M64P_DBG_PTR_AI_REG
+  M64P_DBG_PTR_AI_REG,
+
+  EEPROM = 100,
+  MEMPAK1,
+  MEMPAK2,
+  MEMPAK3,
+  MEMPAK4
 } m64p_dbg_memptr_type;
 
 typedef enum {
