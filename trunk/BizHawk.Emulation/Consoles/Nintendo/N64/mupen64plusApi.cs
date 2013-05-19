@@ -708,6 +708,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public void LoadState(byte[] buffer)
 		{
+			// This is a dirty hack...
+			// When using the dynamic recompiler if a state is loaded too early some pointers are not set up yet, so mupen
+			// tries to access null pointers and the emulator crashes. It seems like it takes 2 frames to fully set up the recompiler,
+			// so if two frames haven't been run yet, run them, then load the state.
+			if (bizhawkCore.Frame < 2)
+			{
+				frame_advance();
+				frame_advance();
+			}
+			
 			m64pCoreLoadState(buffer);
 		}
 
