@@ -39,8 +39,8 @@
 #include "main/util.h"
 #include "plugin/plugin.h"
 
-static unsigned char eeprom[0x800];
-static unsigned char mempack[4][0x8000];
+unsigned char eeprom[0x800];
+unsigned char mempack[4][0x8000];
 int saveramModified = 0;
 
 /*static char *get_eeprom_path(void)

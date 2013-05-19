@@ -222,8 +222,61 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
 
+		#region memorydomains
+
+		MemoryDomain MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, Endian endian)
+		{
+			int size = api.get_memory_size(id);
+
+			//if this type of memory isnt available, dont make the memory domain
+			if (size == 0)
+				return null;
+
+			IntPtr memPtr = api.get_memory_ptr(id);
+
+			MemoryDomain md = new MemoryDomain(
+				name,
+				size,
+				endian,
+				delegate(int addr)
+				{
+					if (addr < 0 || addr >= size)
+						throw new ArgumentOutOfRangeException();
+					return Marshal.ReadByte(memPtr, addr);
+				},
+				delegate(int addr, byte val)
+				{
+					if (addr < 0 || addr >= size)
+						throw new ArgumentOutOfRangeException();
+					Marshal.WriteByte(memPtr + addr, val);
+				});
+
+			MemoryDomains.Add(md);
+
+			return md;
+		}
+
+		void InitMemoryDomains()
+		{
+			MemoryDomains = new List<MemoryDomain>();
+			MakeMemoryDomain("RDRAM", mupen64plusApi.N64_MEMORY.RDRAM, Endian.Little);
+			MakeMemoryDomain("PI Register", mupen64plusApi.N64_MEMORY.PI_REG, Endian.Little);
+			MakeMemoryDomain("SI Register", mupen64plusApi.N64_MEMORY.SI_REG, Endian.Little);
+			MakeMemoryDomain("VI Register", mupen64plusApi.N64_MEMORY.VI_REG, Endian.Little);
+			MakeMemoryDomain("RI Register", mupen64plusApi.N64_MEMORY.RI_REG, Endian.Little);
+			MakeMemoryDomain("AI Register", mupen64plusApi.N64_MEMORY.AI_REG, Endian.Little);
+
+			MakeMemoryDomain("EEPROM", mupen64plusApi.N64_MEMORY.EEPROM, Endian.Little);
+			MakeMemoryDomain("Mempak 1", mupen64plusApi.N64_MEMORY.MEMPAK1, Endian.Little);
+			MakeMemoryDomain("Mempak 2", mupen64plusApi.N64_MEMORY.MEMPAK2, Endian.Little);
+			MakeMemoryDomain("Mempak 3", mupen64plusApi.N64_MEMORY.MEMPAK3, Endian.Little);
+			MakeMemoryDomain("Mempak 4", mupen64plusApi.N64_MEMORY.MEMPAK4, Endian.Little);
+		}
+
 		public IList<MemoryDomain> MemoryDomains { get; private set; }
-		public MemoryDomain MainMemory { get; private set; }
+		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
+
+		#endregion
 
 		public void Dispose()
 		{
@@ -241,9 +294,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			api = new mupen64plusApi(this, rom, video_settings);
 			api.SetM64PInputCallback(new mupen64plusApi.InputCallback(setControllers));
 
-			MemoryDomains = new List<MemoryDomain>();
-			MemoryDomains.Add(new MemoryDomain("RDRAM", 0x400000, Endian.Little, api.getRDRAMByte, api.setRDRAMByte));
-			MainMemory = MemoryDomains[0];
+			InitMemoryDomains();
 		}
 	}
 }
