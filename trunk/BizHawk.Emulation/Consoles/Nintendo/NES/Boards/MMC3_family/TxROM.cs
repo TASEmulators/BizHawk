@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					Cart.wram_battery = false;
 					break;
 				case "ACCLAIM-MC-ACC": //alien 3 (U), bart simpson vs the world (U)
-					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
+					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
 				case "NES-B4": //batman (U)
