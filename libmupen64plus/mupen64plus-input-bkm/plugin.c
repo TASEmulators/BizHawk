@@ -388,15 +388,12 @@ EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo)
     int i;
 	memset( controller, 0, sizeof( SController ) * 4 );
 
-	for (i = 0; i < 4; i++)
-        controller[i].control = ControlInfo.Controls + i;
-
     for( i = 0; i < 4; i++ )
     {
-        controller[i].control->Plugin = PLUGIN_MEMPAK;
+		controller[i].control = ControlInfo.Controls + i;
+		controller[i].control->Plugin = PLUGIN_MEMPAK;
+		controller[i].control->Present = 1;
     }
-
-	controller[0].control->Present = 1;
 
     DebugMessage(M64MSG_INFO, "%s version %i.%i.%i initialized.", PLUGIN_NAME, VERSION_PRINTF_SPLIT(PLUGIN_VERSION));
 }
