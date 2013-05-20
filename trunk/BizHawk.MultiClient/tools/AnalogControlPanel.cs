@@ -92,5 +92,13 @@ namespace BizHawk.MultiClient
 
 			Refresh();
 		}
+
+		public void SetPosition(int Xval, int Yval)
+		{
+			X = Xval;
+			Y = Yval;
+			
+			Refresh();
+		}
 	}
 }
