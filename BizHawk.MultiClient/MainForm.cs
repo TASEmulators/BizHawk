@@ -2104,6 +2104,7 @@ namespace BizHawk.MultiClient
 							}
 							else if (disc.DetectSegaSaturn())
 							{
+								Console.WriteLine("Sega Saturn disc detected!");
 								game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 							}
 							else
