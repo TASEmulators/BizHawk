@@ -83,45 +83,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			if (CoreComm.InputCallback != null) CoreComm.InputCallback();
 			IsLagFrame = false;
 
-			sbyte x = 0;
-			sbyte y = 0;
-			/*
-			if (Controller["P1 DPad R"]) x = 80;
-			if (Controller["P1 DPad L"]) x = -80;
-			if (Controller["P1 DPad D"]) y = -80;
-			if (Controller["P1 DPad U"]) y = 80;
-			*/
-
-			float X_Axis = Controller.GetFloat("P1 X Axis");
-			float Y_Axis = Controller.GetFloat("P1 Y Axis");
-
 			// Analog stick right = +X
 			// Analog stick up = +Y
 
-			x = (sbyte)X_Axis;
-			y = (sbyte)Y_Axis;
-
-			api.set_buttons(0, ReadController(1), x, y);
+			for (int i = 0; i < 4; i++)
+			{
+				api.set_buttons(i, ReadController(i+1), (sbyte)Controller.GetFloat("P" + (i+1) + " X Axis"), (sbyte)Controller.GetFloat("P" + (i+1) + " Y Axis"));
+			}
 		}
 
 		public int ReadController(int num)
 		{
 			int buttons = 0;
 
-			if (Controller["P1 DPad R"]) buttons |= (1 << 0);
-			if (Controller["P1 DPad L"]) buttons |= (1 << 1);
-			if (Controller["P1 DPad D"]) buttons |= (1 << 2);
-			if (Controller["P1 DPad U"]) buttons |= (1 << 3);
-			if (Controller["P1 Start"]) buttons |= (1 << 4);
-			if (Controller["P1 Z"]) buttons |= (1 << 5);
-			if (Controller["P1 B"]) buttons |= (1 << 6);
-			if (Controller["P1 A"]) buttons |= (1 << 7);
-			if (Controller["P1 C Right"]) buttons |= (1 << 8);
-			if (Controller["P1 C Left"]) buttons |= (1 << 9);
-			if (Controller["P1 C Down"]) buttons |= (1 << 10);
-			if (Controller["P1 C Up"]) buttons |= (1 << 11);
-			if (Controller["P1 R"]) buttons |= (1 << 12);
-			if (Controller["P1 L"]) buttons |= (1 << 13);
+			if (Controller["P" + num + " DPad R"]) buttons |= (1 << 0);
+			if (Controller["P" + num + " DPad L"]) buttons |= (1 << 1);
+			if (Controller["P" + num + " DPad D"]) buttons |= (1 << 2);
+			if (Controller["P" + num + " DPad U"]) buttons |= (1 << 3);
+			if (Controller["P" + num + " Start"]) buttons |= (1 << 4);
+			if (Controller["P" + num + " Z"]) buttons |= (1 << 5);
+			if (Controller["P" + num + " B"]) buttons |= (1 << 6);
+			if (Controller["P" + num + " A"]) buttons |= (1 << 7);
+			if (Controller["P" + num + " C Right"]) buttons |= (1 << 8);
+			if (Controller["P" + num + " C Left"]) buttons |= (1 << 9);
+			if (Controller["P" + num + " C Down"]) buttons |= (1 << 10);
+			if (Controller["P" + num + " C Up"]) buttons |= (1 << 11);
+			if (Controller["P" + num + " R"]) buttons |= (1 << 12);
+			if (Controller["P" + num + " L"]) buttons |= (1 << 13);
 
 			return buttons;
 		}
