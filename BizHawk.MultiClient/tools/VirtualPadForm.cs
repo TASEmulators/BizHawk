@@ -174,12 +174,18 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(_ataripad2);
 					break;
 				case "N64":
-					VirtualPadN64 n64k = new VirtualPadN64
-						{
-							Location = new Point(8, 19)
-						};
-					Pads.Add(n64k);
-					ControllerBox.Controls.Add(n64k);
+					VirtualPadN64 n64pad1 = new VirtualPadN64 { Location = new Point(8, 19), Controller = "P1" };
+					VirtualPadN64 n64pad2 = new VirtualPadN64 { Location = new Point(208, 19), Controller = "P2" };
+					VirtualPadN64 n64pad3 = new VirtualPadN64 { Location = new Point(408, 19), Controller = "P3" };
+					VirtualPadN64 n64pad4 = new VirtualPadN64 { Location = new Point(608, 19), Controller = "P4" };
+					Pads.Add(n64pad1);
+					Pads.Add(n64pad2);
+					Pads.Add(n64pad3);
+					Pads.Add(n64pad4);
+					ControllerBox.Controls.Add(n64pad1);
+					ControllerBox.Controls.Add(n64pad2);
+					ControllerBox.Controls.Add(n64pad3);
+					ControllerBox.Controls.Add(n64pad4);
 					break;
 			}
 
@@ -275,6 +281,12 @@ namespace BizHawk.MultiClient
 							Pads[1].SetButtons(str.Substring(20, 18));
 							break;
 						case "C64":
+							break;
+						case "N64":
+							Pads[0].SetButtons(str.Substring(3, 20));
+							Pads[1].SetButtons(str.Substring(24, 20));
+							Pads[2].SetButtons(str.Substring(45, 20));
+							Pads[3].SetButtons(str.Substring(66, 20));
 							break;
 					}
 				}

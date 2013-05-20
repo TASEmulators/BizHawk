@@ -244,7 +244,7 @@
 			this.Controls.Add(this.PU);
 			this.Controls.Add(this.AnalogControl1);
 			this.Name = "VirtualPadN64";
-			this.Size = new System.Drawing.Size(201, 332);
+			this.Size = new System.Drawing.Size(200, 332);
 			this.Load += new System.EventHandler(this.UserControl1_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();

@@ -106,6 +106,19 @@ namespace BizHawk.MultiClient
 			if (buttons[11] == '.') CD.Checked = false; else CD.Checked = true;
 			if (buttons[12] == '.') CL.Checked = false; else CL.Checked = true;
 			if (buttons[13] == '.') CR.Checked = false; else CR.Checked = true;
+
+			int x = 0;
+			int y = 0;
+			if (InputValidate.IsValidUnsignedNumber(buttons.Substring(14, 3)))
+			{
+				x = Int32.Parse(buttons.Substring(14, 3)) - 128;
+
+			}
+			if (InputValidate.IsValidUnsignedNumber(buttons.Substring(17, 3)))
+			{
+				y = Int32.Parse(buttons.Substring(17, 3)) - 128;
+			}
+			AnalogControl1.SetPosition(x, y);
 		}
 
 		public string GetMnemonic()
@@ -199,14 +212,14 @@ namespace BizHawk.MultiClient
 
 		private void AnalogControl1_MouseClick(object sender, MouseEventArgs e)
 		{
-			Global.StickyXORAdapter.SetFloat("P1 X Axis", AnalogControl1.X);
-			Global.StickyXORAdapter.SetFloat("P1 Y Axis", -AnalogControl1.Y - 1);
+			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", AnalogControl1.X);
+			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", -AnalogControl1.Y - 1);
 		}
 
 		private void AnalogControl1_MouseMove(object sender, MouseEventArgs e)
 		{
-			Global.StickyXORAdapter.SetFloat("P1 X Axis", AnalogControl1.X);
-			Global.StickyXORAdapter.SetFloat("P1 Y Axis", -AnalogControl1.Y - 1);
+			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", AnalogControl1.X);
+			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", -AnalogControl1.Y - 1);
 		}
 	}
 }
