@@ -39,87 +39,87 @@ namespace BizHawk.MultiClient
 			Global.MainForm.FlagNeedsReboot(); //TODO: this won't always be necessary, keep that in mind
 			
 			//Rice
-			Global.Config.RicePlugin.RiceNormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
-			Global.Config.RicePlugin.RiceFastTextureLoading = RiceFastTextureLoading_CB.Checked;
-			Global.Config.RicePlugin.RiceAccurateTextureMapping = RiceAccurateTextureMapping_CB.Checked;
-			Global.Config.RicePlugin.RiceInN64Resolution = RiceInN64Resolution_CB.Checked;
-			Global.Config.RicePlugin.RiceSaveVRAM = RiceSaveVRAM_CB.Checked;
-			Global.Config.RicePlugin.RiceDoubleSizeForSmallTxtrBuf = RiceDoubleSizeForSmallTxtrBuf_CB.Checked;
-			Global.Config.RicePlugin.RiceDefaultCombinerDisable = RiceDefaultCombinerDisable_CB.Checked;
-			Global.Config.RicePlugin.RiceEnableHacks = RiceEnableHacks_CB.Checked;
-			Global.Config.RicePlugin.RiceWinFrameMode = RiceWinFrameMode_CB.Checked;
-			Global.Config.RicePlugin.RiceFullTMEMEmulation = RiceFullTMEMEmulation_CB.Checked;
-			Global.Config.RicePlugin.RiceOpenGLVertexClipper = RiceOpenGLVertexClipper_CB.Checked;
-			Global.Config.RicePlugin.RiceEnableSSE = RiceEnableSSE_CB.Checked;
-			Global.Config.RicePlugin.RiceEnableVertexShader = RiceEnableVertexShader_CB.Checked;
-			Global.Config.RicePlugin.RiceSkipFrame = RiceSkipFrame_CB.Checked;
-			Global.Config.RicePlugin.RiceTexRectOnly = RiceTexRectOnly_CB.Checked;
-			Global.Config.RicePlugin.RiceSmallTextureOnly = RiceSmallTextureOnly_CB.Checked;
-			Global.Config.RicePlugin.RiceLoadHiResCRCOnly = RiceLoadHiResCRCOnly_CB.Checked;
-			Global.Config.RicePlugin.RiceLoadHiResTextures = RiceLoadHiResTextures_CB.Checked;
-			Global.Config.RicePlugin.RiceDumpTexturesToFiles = RiceDumpTexturesToFiles_CB.Checked;
+			Global.Config.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
+			Global.Config.RicePlugin.FastTextureLoading = RiceFastTextureLoading_CB.Checked;
+			Global.Config.RicePlugin.AccurateTextureMapping = RiceAccurateTextureMapping_CB.Checked;
+			Global.Config.RicePlugin.InN64Resolution = RiceInN64Resolution_CB.Checked;
+			Global.Config.RicePlugin.SaveVRAM = RiceSaveVRAM_CB.Checked;
+			Global.Config.RicePlugin.DoubleSizeForSmallTxtrBuf = RiceDoubleSizeForSmallTxtrBuf_CB.Checked;
+			Global.Config.RicePlugin.DefaultCombinerDisable = RiceDefaultCombinerDisable_CB.Checked;
+			Global.Config.RicePlugin.EnableHacks = RiceEnableHacks_CB.Checked;
+			Global.Config.RicePlugin.WinFrameMode = RiceWinFrameMode_CB.Checked;
+			Global.Config.RicePlugin.FullTMEMEmulation = RiceFullTMEMEmulation_CB.Checked;
+			Global.Config.RicePlugin.OpenGLVertexClipper = RiceOpenGLVertexClipper_CB.Checked;
+			Global.Config.RicePlugin.EnableSSE = RiceEnableSSE_CB.Checked;
+			Global.Config.RicePlugin.EnableVertexShader = RiceEnableVertexShader_CB.Checked;
+			Global.Config.RicePlugin.SkipFrame = RiceSkipFrame_CB.Checked;
+			Global.Config.RicePlugin.TexRectOnly = RiceTexRectOnly_CB.Checked;
+			Global.Config.RicePlugin.SmallTextureOnly = RiceSmallTextureOnly_CB.Checked;
+			Global.Config.RicePlugin.LoadHiResCRCOnly = RiceLoadHiResCRCOnly_CB.Checked;
+			Global.Config.RicePlugin.LoadHiResTextures = RiceLoadHiResTextures_CB.Checked;
+			Global.Config.RicePlugin.DumpTexturesToFiles = RiceDumpTexturesToFiles_CB.Checked;
 
-			Global.Config.RicePlugin.RiceFrameBufferSetting = RiceFrameBufferSetting_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceFrameBufferWriteBackControl = RiceFrameBufferWriteBackControl_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceRenderToTexture = RiceRenderToTexture_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceScreenUpdateSetting = RiceScreenUpdateSetting_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceMipmapping = RiceMipmapping_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceFogMethod = RiceFogMethod_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceForceTextureFilter = RiceForceTextureFilter_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceTextureEnhancement = RiceTextureEnhancement_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceTextureEnhancementControl = RiceTextureEnhancementControl_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceTextureQuality = RiceTextureQuality_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceOpenGLDepthBufferSetting = (RiceOpenGLDepthBufferSetting_Combo.SelectedIndex + 1) * 16;
+			Global.Config.RicePlugin.FrameBufferSetting = RiceFrameBufferSetting_Combo.SelectedIndex;
+			Global.Config.RicePlugin.FrameBufferWriteBackControl = RiceFrameBufferWriteBackControl_Combo.SelectedIndex;
+			Global.Config.RicePlugin.RenderToTexture = RiceRenderToTexture_Combo.SelectedIndex;
+			Global.Config.RicePlugin.ScreenUpdateSetting = RiceScreenUpdateSetting_Combo.SelectedIndex;
+			Global.Config.RicePlugin.Mipmapping = RiceMipmapping_Combo.SelectedIndex;
+			Global.Config.RicePlugin.FogMethod = RiceFogMethod_Combo.SelectedIndex;
+			Global.Config.RicePlugin.ForceTextureFilter = RiceForceTextureFilter_Combo.SelectedIndex;
+			Global.Config.RicePlugin.TextureEnhancement = RiceTextureEnhancement_Combo.SelectedIndex;
+			Global.Config.RicePlugin.TextureEnhancementControl = RiceTextureEnhancementControl_Combo.SelectedIndex;
+			Global.Config.RicePlugin.TextureQuality = RiceTextureQuality_Combo.SelectedIndex;
+			Global.Config.RicePlugin.OpenGLDepthBufferSetting = (RiceOpenGLDepthBufferSetting_Combo.SelectedIndex + 1) * 16;
 			switch (RiceMultiSampling_Combo.SelectedIndex)
 			{
-				case 0: Global.Config.RicePlugin.RiceMultiSampling = 0; break;
-				case 1: Global.Config.RicePlugin.RiceMultiSampling = 2; break;
-				case 2: Global.Config.RicePlugin.RiceMultiSampling = 4; break;
-				case 3: Global.Config.RicePlugin.RiceMultiSampling = 8; break;
-				case 4: Global.Config.RicePlugin.RiceMultiSampling = 16; break;
-				default: Global.Config.RicePlugin.RiceMultiSampling = 0; break;
+				case 0: Global.Config.RicePlugin.MultiSampling = 0; break;
+				case 1: Global.Config.RicePlugin.MultiSampling = 2; break;
+				case 2: Global.Config.RicePlugin.MultiSampling = 4; break;
+				case 3: Global.Config.RicePlugin.MultiSampling = 8; break;
+				case 4: Global.Config.RicePlugin.MultiSampling = 16; break;
+				default: Global.Config.RicePlugin.MultiSampling = 0; break;
 			}
-			Global.Config.RicePlugin.RiceColorQuality = RiceColorQuality_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceOpenGLRenderSetting = RiceOpenGLRenderSetting_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceAnisotropicFiltering = RiceAnisotropicFiltering_TB.Value;
+			Global.Config.RicePlugin.ColorQuality = RiceColorQuality_Combo.SelectedIndex;
+			Global.Config.RicePlugin.OpenGLRenderSetting = RiceOpenGLRenderSetting_Combo.SelectedIndex;
+			Global.Config.RicePlugin.AnisotropicFiltering = RiceAnisotropicFiltering_TB.Value;
 
-			Global.Config.RicePlugin.RiceUseDefaultHacks = RiceUseDefaultHacks_CB.Checked;
-			Global.Config.RicePlugin.RiceDisableTextureCRC = RiceDisableTextureCRC_CB.Checked;
-			Global.Config.RicePlugin.RiceDisableCulling = RiceDisableCulling_CB.Checked;
-			Global.Config.RicePlugin.RiceIncTexRectEdge = RiceIncTexRectEdge_CB.Checked;
-			Global.Config.RicePlugin.RiceZHack = RiceZHack_CB.Checked;
-			Global.Config.RicePlugin.RiceTextureScaleHack = RiceTextureScaleHack_CB.Checked;
-			Global.Config.RicePlugin.RicePrimaryDepthHack = RicePrimaryDepthHack_CB.Checked;
-			Global.Config.RicePlugin.RiceTexture1Hack = RiceTexture1Hack_CB.Checked;
-			Global.Config.RicePlugin.RiceFastLoadTile = RiceFastLoadTile_CB.Checked;
-			Global.Config.RicePlugin.RiceUseSmallerTexture = RiceUseSmallerTexture_CB.Checked;
+			Global.Config.RicePlugin.UseDefaultHacks = RiceUseDefaultHacks_CB.Checked;
+			Global.Config.RicePlugin.DisableTextureCRC = RiceDisableTextureCRC_CB.Checked;
+			Global.Config.RicePlugin.DisableCulling = RiceDisableCulling_CB.Checked;
+			Global.Config.RicePlugin.IncTexRectEdge = RiceIncTexRectEdge_CB.Checked;
+			Global.Config.RicePlugin.ZHack = RiceZHack_CB.Checked;
+			Global.Config.RicePlugin.TextureScaleHack = RiceTextureScaleHack_CB.Checked;
+			Global.Config.RicePlugin.PrimaryDepthHack = RicePrimaryDepthHack_CB.Checked;
+			Global.Config.RicePlugin.Texture1Hack = RiceTexture1Hack_CB.Checked;
+			Global.Config.RicePlugin.FastLoadTile = RiceFastLoadTile_CB.Checked;
+			Global.Config.RicePlugin.UseSmallerTexture = RiceUseSmallerTexture_CB.Checked;
 
 			if (InputValidate.IsValidSignedNumber(RiceVIWidth_Text.Text))
-				Global.Config.RicePlugin.RiceVIWidth = int.Parse(RiceVIWidth_Text.Text);
+				Global.Config.RicePlugin.VIWidth = int.Parse(RiceVIWidth_Text.Text);
 			else
-				Global.Config.RicePlugin.RiceVIWidth = -1;
+				Global.Config.RicePlugin.VIWidth = -1;
 
 			if (InputValidate.IsValidSignedNumber(RiceVIHeight_Text.Text))
-				Global.Config.RicePlugin.RiceVIHeight = int.Parse(RiceVIHeight_Text.Text);
+				Global.Config.RicePlugin.VIHeight = int.Parse(RiceVIHeight_Text.Text);
 			else
-				Global.Config.RicePlugin.RiceVIHeight = -1;
+				Global.Config.RicePlugin.VIHeight = -1;
 
-			Global.Config.RicePlugin.RiceUseCIWidthAndRatio = RiceUseCIWidthAndRatio_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceFullTMEM = RiceFullTMEM_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceTxtSizeMethod2 = RiceTxtSizeMethod2_CB.Checked;
-			Global.Config.RicePlugin.RiceEnableTxtLOD = RiceEnableTxtLOD_CB.Checked;
-			Global.Config.RicePlugin.RiceFastTextureCRC = RiceFastTextureCRC_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceEmulateClear = RiceEmulateClear_CB.Checked;
-			Global.Config.RicePlugin.RiceForceScreenClear = RiceForceScreenClear_CB.Checked;
-			Global.Config.RicePlugin.RiceAccurateTextureMappingHack = RiceAccurateTextureMappingHack_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceNormalBlender = RiceNormalBlender_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceDisableBlender = RiceDisableBlender_CB.Checked;
-			Global.Config.RicePlugin.RiceForceDepthBuffer = RiceForceDepthBuffer_CB.Checked;
-			Global.Config.RicePlugin.RiceDisableObjBG = RiceDisableObjBG_CB.Checked;
-			Global.Config.RicePlugin.RiceFrameBufferOption = RiceFrameBufferOption_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceRenderToTextureOption = RiceRenderToTextureOption_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceScreenUpdateSettingHack = RiceScreenUpdateSettingHack_Combo.SelectedIndex;
-			Global.Config.RicePlugin.RiceEnableHacksForGame = RiceEnableHacksForGame_Combo.SelectedIndex;
+			Global.Config.RicePlugin.UseCIWidthAndRatio = RiceUseCIWidthAndRatio_Combo.SelectedIndex;
+			Global.Config.RicePlugin.FullTMEM = RiceFullTMEM_Combo.SelectedIndex;
+			Global.Config.RicePlugin.TxtSizeMethod2 = RiceTxtSizeMethod2_CB.Checked;
+			Global.Config.RicePlugin.EnableTxtLOD = RiceEnableTxtLOD_CB.Checked;
+			Global.Config.RicePlugin.FastTextureCRC = RiceFastTextureCRC_Combo.SelectedIndex;
+			Global.Config.RicePlugin.EmulateClear = RiceEmulateClear_CB.Checked;
+			Global.Config.RicePlugin.ForceScreenClear = RiceForceScreenClear_CB.Checked;
+			Global.Config.RicePlugin.AccurateTextureMappingHack = RiceAccurateTextureMappingHack_Combo.SelectedIndex;
+			Global.Config.RicePlugin.NormalBlender = RiceNormalBlender_Combo.SelectedIndex;
+			Global.Config.RicePlugin.DisableBlender = RiceDisableBlender_CB.Checked;
+			Global.Config.RicePlugin.ForceDepthBuffer = RiceForceDepthBuffer_CB.Checked;
+			Global.Config.RicePlugin.DisableObjBG = RiceDisableObjBG_CB.Checked;
+			Global.Config.RicePlugin.FrameBufferOption = RiceFrameBufferOption_Combo.SelectedIndex;
+			Global.Config.RicePlugin.RenderToTextureOption = RiceRenderToTextureOption_Combo.SelectedIndex;
+			Global.Config.RicePlugin.ScreenUpdateSettingHack = RiceScreenUpdateSettingHack_Combo.SelectedIndex;
+			Global.Config.RicePlugin.EnableHacksForGame = RiceEnableHacksForGame_Combo.SelectedIndex;
 		}
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
@@ -139,38 +139,38 @@ namespace BizHawk.MultiClient
 
 			//Rice
 			Global.MainForm.FlagNeedsReboot(); //TODO: this won't always be necessary, keep that in mind
-			RiceNormalAlphaBlender_CB.Checked = Global.Config.RicePlugin.RiceNormalAlphaBlender;
-			RiceFastTextureLoading_CB.Checked = Global.Config.RicePlugin.RiceFastTextureLoading;
-			RiceAccurateTextureMapping_CB.Checked = Global.Config.RicePlugin.RiceAccurateTextureMapping;
-			RiceInN64Resolution_CB.Checked = Global.Config.RicePlugin.RiceInN64Resolution;
-			RiceSaveVRAM_CB.Checked = Global.Config.RicePlugin.RiceSaveVRAM;
-			RiceDoubleSizeForSmallTxtrBuf_CB.Checked = Global.Config.RicePlugin.RiceDoubleSizeForSmallTxtrBuf;
-			RiceDefaultCombinerDisable_CB.Checked = Global.Config.RicePlugin.RiceDefaultCombinerDisable;
-			RiceEnableHacks_CB.Checked = Global.Config.RicePlugin.RiceEnableHacks;
-			RiceWinFrameMode_CB.Checked = Global.Config.RicePlugin.RiceWinFrameMode;
-			RiceFullTMEMEmulation_CB.Checked = Global.Config.RicePlugin.RiceFullTMEMEmulation;
-			RiceOpenGLVertexClipper_CB.Checked = Global.Config.RicePlugin.RiceOpenGLVertexClipper;
-			RiceEnableSSE_CB.Checked = Global.Config.RicePlugin.RiceEnableSSE;
-			RiceEnableVertexShader_CB.Checked = Global.Config.RicePlugin.RiceEnableVertexShader;
-			RiceSkipFrame_CB.Checked = Global.Config.RicePlugin.RiceSkipFrame;
-			RiceTexRectOnly_CB.Checked = Global.Config.RicePlugin.RiceTexRectOnly;
-			RiceSmallTextureOnly_CB.Checked = Global.Config.RicePlugin.RiceSmallTextureOnly;
-			RiceLoadHiResCRCOnly_CB.Checked = Global.Config.RicePlugin.RiceLoadHiResCRCOnly;
-			RiceLoadHiResTextures_CB.Checked = Global.Config.RicePlugin.RiceLoadHiResTextures;
-			RiceDumpTexturesToFiles_CB.Checked = Global.Config.RicePlugin.RiceDumpTexturesToFiles;
+			RiceNormalAlphaBlender_CB.Checked = Global.Config.RicePlugin.NormalAlphaBlender;
+			RiceFastTextureLoading_CB.Checked = Global.Config.RicePlugin.FastTextureLoading;
+			RiceAccurateTextureMapping_CB.Checked = Global.Config.RicePlugin.AccurateTextureMapping;
+			RiceInN64Resolution_CB.Checked = Global.Config.RicePlugin.InN64Resolution;
+			RiceSaveVRAM_CB.Checked = Global.Config.RicePlugin.SaveVRAM;
+			RiceDoubleSizeForSmallTxtrBuf_CB.Checked = Global.Config.RicePlugin.DoubleSizeForSmallTxtrBuf;
+			RiceDefaultCombinerDisable_CB.Checked = Global.Config.RicePlugin.DefaultCombinerDisable;
+			RiceEnableHacks_CB.Checked = Global.Config.RicePlugin.EnableHacks;
+			RiceWinFrameMode_CB.Checked = Global.Config.RicePlugin.WinFrameMode;
+			RiceFullTMEMEmulation_CB.Checked = Global.Config.RicePlugin.FullTMEMEmulation;
+			RiceOpenGLVertexClipper_CB.Checked = Global.Config.RicePlugin.OpenGLVertexClipper;
+			RiceEnableSSE_CB.Checked = Global.Config.RicePlugin.EnableSSE;
+			RiceEnableVertexShader_CB.Checked = Global.Config.RicePlugin.EnableVertexShader;
+			RiceSkipFrame_CB.Checked = Global.Config.RicePlugin.SkipFrame;
+			RiceTexRectOnly_CB.Checked = Global.Config.RicePlugin.TexRectOnly;
+			RiceSmallTextureOnly_CB.Checked = Global.Config.RicePlugin.SmallTextureOnly;
+			RiceLoadHiResCRCOnly_CB.Checked = Global.Config.RicePlugin.LoadHiResCRCOnly;
+			RiceLoadHiResTextures_CB.Checked = Global.Config.RicePlugin.LoadHiResTextures;
+			RiceDumpTexturesToFiles_CB.Checked = Global.Config.RicePlugin.DumpTexturesToFiles;
 
-			RiceFrameBufferSetting_Combo.SelectedIndex = Global.Config.RicePlugin.RiceFrameBufferSetting;
-			RiceFrameBufferWriteBackControl_Combo.SelectedIndex = Global.Config.RicePlugin.RiceFrameBufferWriteBackControl;
-			RiceRenderToTexture_Combo.SelectedIndex = Global.Config.RicePlugin.RiceRenderToTexture;
-			RiceScreenUpdateSetting_Combo.SelectedIndex = Global.Config.RicePlugin.RiceScreenUpdateSetting;
-			RiceMipmapping_Combo.SelectedIndex = Global.Config.RicePlugin.RiceMipmapping;
-			RiceFogMethod_Combo.SelectedIndex = Global.Config.RicePlugin.RiceFogMethod;
-			RiceForceTextureFilter_Combo.SelectedIndex = Global.Config.RicePlugin.RiceForceTextureFilter;
-			RiceTextureEnhancement_Combo.SelectedIndex = Global.Config.RicePlugin.RiceTextureEnhancement;
-			RiceTextureEnhancementControl_Combo.SelectedIndex = Global.Config.RicePlugin.RiceTextureEnhancementControl;
-			RiceTextureQuality_Combo.SelectedIndex = Global.Config.RicePlugin.RiceTextureQuality;
-			RiceOpenGLDepthBufferSetting_Combo.SelectedIndex = (Global.Config.RicePlugin.RiceOpenGLDepthBufferSetting /16) -1;
-			switch (Global.Config.RicePlugin.RiceMultiSampling)
+			RiceFrameBufferSetting_Combo.SelectedIndex = Global.Config.RicePlugin.FrameBufferSetting;
+			RiceFrameBufferWriteBackControl_Combo.SelectedIndex = Global.Config.RicePlugin.FrameBufferWriteBackControl;
+			RiceRenderToTexture_Combo.SelectedIndex = Global.Config.RicePlugin.RenderToTexture;
+			RiceScreenUpdateSetting_Combo.SelectedIndex = Global.Config.RicePlugin.ScreenUpdateSetting;
+			RiceMipmapping_Combo.SelectedIndex = Global.Config.RicePlugin.Mipmapping;
+			RiceFogMethod_Combo.SelectedIndex = Global.Config.RicePlugin.FogMethod;
+			RiceForceTextureFilter_Combo.SelectedIndex = Global.Config.RicePlugin.ForceTextureFilter;
+			RiceTextureEnhancement_Combo.SelectedIndex = Global.Config.RicePlugin.TextureEnhancement;
+			RiceTextureEnhancementControl_Combo.SelectedIndex = Global.Config.RicePlugin.TextureEnhancementControl;
+			RiceTextureQuality_Combo.SelectedIndex = Global.Config.RicePlugin.TextureQuality;
+			RiceOpenGLDepthBufferSetting_Combo.SelectedIndex = (Global.Config.RicePlugin.OpenGLDepthBufferSetting / 16) - 1;
+			switch (Global.Config.RicePlugin.MultiSampling)
 			{
 				case 0: RiceMultiSampling_Combo.SelectedIndex = 0; break;
 				case 2: RiceMultiSampling_Combo.SelectedIndex = 1; break;
@@ -179,45 +179,45 @@ namespace BizHawk.MultiClient
 				case 16: RiceMultiSampling_Combo.SelectedIndex = 4; break;
 				default: RiceMultiSampling_Combo.SelectedIndex = 0; break;
 			}
-			RiceColorQuality_Combo.SelectedIndex = Global.Config.RicePlugin.RiceColorQuality;
-			RiceOpenGLRenderSetting_Combo.SelectedIndex = Global.Config.RicePlugin.RiceOpenGLRenderSetting;
-			RiceAnisotropicFiltering_TB.Value = Global.Config.RicePlugin.RiceAnisotropicFiltering;
+			RiceColorQuality_Combo.SelectedIndex = Global.Config.RicePlugin.ColorQuality;
+			RiceOpenGLRenderSetting_Combo.SelectedIndex = Global.Config.RicePlugin.OpenGLRenderSetting;
+			RiceAnisotropicFiltering_TB.Value = Global.Config.RicePlugin.AnisotropicFiltering;
 			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value.ToString();
 
-			RiceUseDefaultHacks_CB.Checked = Global.Config.RicePlugin.RiceUseDefaultHacks;
+			RiceUseDefaultHacks_CB.Checked = Global.Config.RicePlugin.UseDefaultHacks;
 
 			UpdateHacksSection();
-			if (!Global.Config.RicePlugin.RiceUseDefaultHacks)
+			if (!Global.Config.RicePlugin.UseDefaultHacks)
 			{
-				RiceTexture1Hack_CB.Checked = Global.Config.RicePlugin.RiceTexture1Hack;
+				RiceTexture1Hack_CB.Checked = Global.Config.RicePlugin.Texture1Hack;
 
-				RiceDisableTextureCRC_CB.Checked = Global.Config.RicePlugin.RiceDisableTextureCRC;
-				RiceDisableCulling_CB.Checked = Global.Config.RicePlugin.RiceDisableCulling;
-				RiceIncTexRectEdge_CB.Checked = Global.Config.RicePlugin.RiceIncTexRectEdge;
-				RiceZHack_CB.Checked = Global.Config.RicePlugin.RiceZHack;
-				RiceTextureScaleHack_CB.Checked = Global.Config.RicePlugin.RiceTextureScaleHack;
-				RicePrimaryDepthHack_CB.Checked = Global.Config.RicePlugin.RicePrimaryDepthHack;
-				RiceTexture1Hack_CB.Checked = Global.Config.RicePlugin.RiceTexture1Hack;
-				RiceFastLoadTile_CB.Checked = Global.Config.RicePlugin.RiceFastLoadTile;
-				RiceUseSmallerTexture_CB.Checked = Global.Config.RicePlugin.RiceUseSmallerTexture;
-				RiceVIWidth_Text.Text = Global.Config.RicePlugin.RiceVIWidth.ToString();
-				RiceVIHeight_Text.Text = Global.Config.RicePlugin.RiceVIHeight.ToString();
-				RiceUseCIWidthAndRatio_Combo.SelectedIndex = Global.Config.RicePlugin.RiceUseCIWidthAndRatio;
-				RiceFullTMEM_Combo.SelectedIndex = Global.Config.RicePlugin.RiceFullTMEM;
-				RiceTxtSizeMethod2_CB.Checked = Global.Config.RicePlugin.RiceTxtSizeMethod2;
-				RiceEnableTxtLOD_CB.Checked = Global.Config.RicePlugin.RiceEnableTxtLOD;
-				RiceFastTextureCRC_Combo.SelectedIndex = Global.Config.RicePlugin.RiceFastTextureCRC;
-				RiceEmulateClear_CB.Checked = Global.Config.RicePlugin.RiceEmulateClear;
-				RiceForceScreenClear_CB.Checked = Global.Config.RicePlugin.RiceForceScreenClear;
-				RiceAccurateTextureMappingHack_Combo.SelectedIndex = Global.Config.RicePlugin.RiceAccurateTextureMappingHack;
-				RiceNormalBlender_Combo.SelectedIndex = Global.Config.RicePlugin.RiceNormalBlender;
-				RiceDisableBlender_CB.Checked = Global.Config.RicePlugin.RiceDisableBlender;
-				RiceForceDepthBuffer_CB.Checked = Global.Config.RicePlugin.RiceForceDepthBuffer;
-				RiceDisableObjBG_CB.Checked = Global.Config.RicePlugin.RiceDisableObjBG;
-				RiceFrameBufferOption_Combo.SelectedIndex = Global.Config.RicePlugin.RiceFrameBufferOption;
-				RiceRenderToTextureOption_Combo.SelectedIndex = Global.Config.RicePlugin.RiceRenderToTextureOption;
-				RiceScreenUpdateSettingHack_Combo.SelectedIndex = Global.Config.RicePlugin.RiceScreenUpdateSettingHack;
-				RiceEnableHacksForGame_Combo.SelectedIndex = Global.Config.RicePlugin.RiceEnableHacksForGame;
+				RiceDisableTextureCRC_CB.Checked = Global.Config.RicePlugin.DisableTextureCRC;
+				RiceDisableCulling_CB.Checked = Global.Config.RicePlugin.DisableCulling;
+				RiceIncTexRectEdge_CB.Checked = Global.Config.RicePlugin.IncTexRectEdge;
+				RiceZHack_CB.Checked = Global.Config.RicePlugin.ZHack;
+				RiceTextureScaleHack_CB.Checked = Global.Config.RicePlugin.TextureScaleHack;
+				RicePrimaryDepthHack_CB.Checked = Global.Config.RicePlugin.PrimaryDepthHack;
+				RiceTexture1Hack_CB.Checked = Global.Config.RicePlugin.Texture1Hack;
+				RiceFastLoadTile_CB.Checked = Global.Config.RicePlugin.FastLoadTile;
+				RiceUseSmallerTexture_CB.Checked = Global.Config.RicePlugin.UseSmallerTexture;
+				RiceVIWidth_Text.Text = Global.Config.RicePlugin.VIWidth.ToString();
+				RiceVIHeight_Text.Text = Global.Config.RicePlugin.VIHeight.ToString();
+				RiceUseCIWidthAndRatio_Combo.SelectedIndex = Global.Config.RicePlugin.UseCIWidthAndRatio;
+				RiceFullTMEM_Combo.SelectedIndex = Global.Config.RicePlugin.FullTMEM;
+				RiceTxtSizeMethod2_CB.Checked = Global.Config.RicePlugin.TxtSizeMethod2;
+				RiceEnableTxtLOD_CB.Checked = Global.Config.RicePlugin.EnableTxtLOD;
+				RiceFastTextureCRC_Combo.SelectedIndex = Global.Config.RicePlugin.FastTextureCRC;
+				RiceEmulateClear_CB.Checked = Global.Config.RicePlugin.EmulateClear;
+				RiceForceScreenClear_CB.Checked = Global.Config.RicePlugin.ForceScreenClear;
+				RiceAccurateTextureMappingHack_Combo.SelectedIndex = Global.Config.RicePlugin.AccurateTextureMappingHack;
+				RiceNormalBlender_Combo.SelectedIndex = Global.Config.RicePlugin.NormalBlender;
+				RiceDisableBlender_CB.Checked = Global.Config.RicePlugin.DisableBlender;
+				RiceForceDepthBuffer_CB.Checked = Global.Config.RicePlugin.ForceDepthBuffer;
+				RiceDisableObjBG_CB.Checked = Global.Config.RicePlugin.DisableObjBG;
+				RiceFrameBufferOption_Combo.SelectedIndex = Global.Config.RicePlugin.FrameBufferOption;
+				RiceRenderToTextureOption_Combo.SelectedIndex = Global.Config.RicePlugin.RenderToTextureOption;
+				RiceScreenUpdateSettingHack_Combo.SelectedIndex = Global.Config.RicePlugin.ScreenUpdateSettingHack;
+				RiceEnableHacksForGame_Combo.SelectedIndex = Global.Config.RicePlugin.EnableHacksForGame;
 			}
 		}
 		
