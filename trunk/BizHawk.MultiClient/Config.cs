@@ -1968,6 +1968,40 @@ namespace BizHawk.MultiClient
 			get { return PLUGINTYPE.RICE; }
 		}
 
+		public void FillPerGameHacks(GameInfo game)
+		{
+			if (Global.Config.RicePlugin.UseDefaultHacks)
+			{
+				DisableTextureCRC = game.GetBool("RiceDisableTextureCRC", false);
+				DisableCulling = game.GetBool("RiceDisableCulling", false);
+				IncTexRectEdge = game.GetBool("RiceIncTexRectEdge", false);
+				ZHack = game.GetBool("RiceZHack", false);
+				TextureScaleHack = game.GetBool("RiceTextureScaleHack", false);
+				PrimaryDepthHack = game.GetBool("RicePrimaryDepthHack", false);
+				Texture1Hack = game.GetBool("RiceTexture1Hack", false);
+				FastLoadTile = game.GetBool("RiceFastLoadTile", false);
+				UseSmallerTexture = game.GetBool("RiceUseSmallerTexture", false);
+				VIWidth = game.GetInt("RiceVIWidth", -1);
+				VIHeight = game.GetInt("RiceVIHeight", -1);
+				UseCIWidthAndRatio = game.GetInt("RiceUseCIWidthAndRatio", 0);
+				FullTMEM = game.GetInt("RiceFullTMEM", 0);
+				TxtSizeMethod2 = game.GetBool("RiceTxtSizeMethod2", false);
+				EnableTxtLOD = game.GetBool("RiceEnableTxtLOD", false);
+				FastTextureCRC = game.GetInt("RiceFastTextureCRC", 0);
+				EmulateClear = game.GetBool("RiceEmulateClear", false);
+				ForceScreenClear = game.GetBool("RiceForceScreenClear", false);
+				AccurateTextureMappingHack = game.GetInt("RiceAccurateTextureMappingHack", 0);
+				NormalBlender = game.GetInt("RiceNormalBlender", 0);
+				DisableBlender = game.GetBool("RiceDisableBlender", false);
+				ForceDepthBuffer = game.GetBool("RiceForceDepthBuffer", false);
+				DisableObjBG = game.GetBool("RiceDisableObjBG", false);
+				FrameBufferOption = game.GetInt("RiceFrameBufferOption", 0);
+				RenderToTextureOption = game.GetInt("RiceRenderToTextureOption", 0);
+				ScreenUpdateSettingHack = game.GetInt("RiceScreenUpdateSettingHack", 0);
+				EnableHacksForGame = game.GetInt("RiceEnableHacksForGame", 0);
+			}
+		}
+
 		public Dictionary<string, object> GetPluginSettings()
 		{
 			//TODO: deal witn the game depedent settings
@@ -1975,10 +2009,10 @@ namespace BizHawk.MultiClient
 			System.Reflection.MemberInfo[] members = Global.Config.RicePlugin.GetType().GetMembers();
 			foreach (System.Reflection.MemberInfo member in members)
 			{
-				object field = Global.Config.RicePlugin.GetType().GetField(member.Name).GetValue(Global.Config.RicePlugin);
 				if (member.MemberType.ToString() == "Field")
 				{
-					dictionary.Add(member.Name, member);
+					object field = Global.Config.RicePlugin.GetType().GetField(member.Name).GetValue(Global.Config.RicePlugin);
+					dictionary.Add(member.Name, field);
 				}
 			}
 
