@@ -6,6 +6,7 @@ using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.Nintendo;
 using BizHawk.Emulation.Consoles.Coleco;
+using BizHawk.Emulation.Consoles.Nintendo.N64;
 
 namespace BizHawk.MultiClient
 {
@@ -106,6 +107,20 @@ namespace BizHawk.MultiClient
 				else if (Global.Emulator is ColecoVision)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.SKIPBIOS, Global.Config.ColecoSkipBiosIntro.ToString());
+				}
+
+				else if (Global.Emulator is N64)
+				{
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.VIDEOPLUGIN, Global.Config.N64VidPlugin);
+
+					if (Global.Config.N64VidPlugin == "Rice")
+					{
+						var rice_settings = Global.Config.RicePlugin.GetPluginSettings();
+						foreach(var setting in rice_settings)
+						{
+							MovieToRecord.Header.SetHeaderLine(setting.Key, setting.Value.ToString());
+						}
+					}
 				}
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")

@@ -36,6 +36,9 @@ namespace BizHawk.MultiClient
 		//BIO skipping setting (affects sync)
 		public const string SKIPBIOS = "Skip_Bios";
 
+		//Plugin Settings
+		public const string VIDEOPLUGIN = "VideoPlugin";
+
 		public static string MovieVersion = "BizHawk v0.0.1";
 
 		public static string MakeGUID()
@@ -199,6 +202,11 @@ namespace BizHawk.MultiClient
 			{
 				line = ParseHeader(line, PAL);
 				AddHeaderLine(PAL, line);
+			}
+			else if (line.Contains(VIDEOPLUGIN))
+			{
+				line = ParseHeader(line, VIDEOPLUGIN);
+				AddHeaderLine(VIDEOPLUGIN, line);
 			}
 			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 			{
