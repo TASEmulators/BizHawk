@@ -186,7 +186,7 @@ namespace BizHawk.MultiClient
 
 			RiceUseDefaultHacks_CB.Checked = Global.Config.RicePlugin.UseDefaultHacks;
 
-			UpdateHacksSection();
+			UpdateRiceHacksSection();
 			if (!Global.Config.RicePlugin.UseDefaultHacks)
 			{
 				RiceTexture1Hack_CB.Checked = Global.Config.RicePlugin.Texture1Hack;
@@ -219,6 +219,64 @@ namespace BizHawk.MultiClient
 				RiceScreenUpdateSettingHack_Combo.SelectedIndex = Global.Config.RicePlugin.ScreenUpdateSettingHack;
 				RiceEnableHacksForGame_Combo.SelectedIndex = Global.Config.RicePlugin.EnableHacksForGame;
 			}
+
+			Glide_autodetect_ucode.Checked = Global.Config.GlidePlugin.autodetect_ucode;
+			Glide_ucode.Text = Global.Config.GlidePlugin.ucode.ToString();
+			Glide_flame_corona.Checked = Global.Config.GlidePlugin.flame_corona;
+			Glide_card_id.SelectedIndex = Global.Config.GlidePlugin.card_id;
+			Glide_tex_filter.SelectedIndex = Global.Config.GlidePlugin.tex_filter;
+			Glide_wireframe.Checked = Global.Config.GlidePlugin.wireframe;
+			Glide_wfmode.SelectedIndex = Global.Config.GlidePlugin.wfmode;
+			Glide_fast_crc.Checked = Global.Config.GlidePlugin.fast_crc;
+			Glide_filter_cache.Checked = Global.Config.GlidePlugin.filter_cache;
+			Glide_unk_as_red.Checked = Global.Config.GlidePlugin.unk_as_red;
+			Glide_fb_read_always.Checked = Global.Config.GlidePlugin.fb_read_always;
+			Glide_motionblur.Checked = Global.Config.GlidePlugin.motionblur;
+			Glide_fb_render.Checked = Global.Config.GlidePlugin.fb_render;
+			Glide_noditheredalpha.Checked = Global.Config.GlidePlugin.noditheredalpha;
+			Glide_noglsl.Checked = Global.Config.GlidePlugin.noglsl;
+			Glide_fbo.Checked = Global.Config.GlidePlugin.fbo;
+			Glide_disable_auxbuf.Checked = Global.Config.GlidePlugin.disable_auxbuf;
+			
+			GlideUseDefaultHacks1.Checked = Global.Config.GlidePlugin.UseDefaultHacks;
+			Glide_alt_tex_size.Checked = Global.Config.GlidePlugin.alt_tex_size;
+			Glide_buff_clear.Checked = Global.Config.GlidePlugin.buff_clear;
+			Glide_decrease_fillrect_edge.Checked = Global.Config.GlidePlugin.decrease_fillrect_edge;
+			Glide_detect_cpu_write.Checked = Global.Config.GlidePlugin.detect_cpu_write;
+			Glide_fb_clear.Checked = Global.Config.GlidePlugin.fb_clear;
+			Glide_fb_hires.Checked = Global.Config.GlidePlugin.fb_hires;
+			Glide_fb_get_info.Checked = Global.Config.GlidePlugin.fb_get_info;
+			Glide_fb_read_alpha.Checked = Global.Config.GlidePlugin.fb_read_alpha;
+			Glide_fb_smart.Checked = Global.Config.GlidePlugin.fb_smart;
+			Glide_fillcolor_fix.Checked = Global.Config.GlidePlugin.fillcolor_fix;
+			Glide_fog.Checked = Global.Config.GlidePlugin.fog;
+			Glide_force_depth_compare.Checked = Global.Config.GlidePlugin.force_depth_compare;
+			Glide_force_microcheck.Checked = Global.Config.GlidePlugin.force_microcheck;
+			Glide_fb_hires_buf_clear.Checked = Global.Config.GlidePlugin.fb_hires_buf_clear;
+			Glide_fb_ignore_aux_copy.Checked = Global.Config.GlidePlugin.fb_ignore_aux_copy;
+			Glide_fb_ignore_previous.Checked = Global.Config.GlidePlugin.fb_ignore_previous;
+			Glide_increase_primdepth.Checked = Global.Config.GlidePlugin.increase_primdepth;
+			Glide_increase_texrect_edge.Checked = Global.Config.GlidePlugin.increase_texrect_edge;
+			Glide_fb_optimize_texrect.Checked = Global.Config.GlidePlugin.fb_optimize_texrect;
+			Glide_fb_optimize_write.Checked = Global.Config.GlidePlugin.fb_optimize_write;
+			Glide_PPL.Checked = Global.Config.GlidePlugin.PPL;
+			Glide_soft_depth_compare.Checked = Global.Config.GlidePlugin.soft_depth_compare;
+			Glide_use_sts1_only.Checked = Global.Config.GlidePlugin.use_sts1_only;
+			Glide_wrap_big_tex.Checked = Global.Config.GlidePlugin.wrap_big_tex;
+			
+			GlideUseDefaultHacks2.Checked = Global.Config.GlidePlugin.UseDefaultHacks;
+			Glide_depth_bias.Text = Global.Config.GlidePlugin.depth_bias.ToString();
+			Glide_filtering.SelectedIndex = Global.Config.GlidePlugin.filtering;
+			Glide_fix_tex_coord.Text = Global.Config.GlidePlugin.fix_tex_coord.ToString();
+			Glide_lodmode.SelectedIndex = Global.Config.GlidePlugin.lodmode;
+			Glide_offset_x.Text = Global.Config.GlidePlugin.offset_x.ToString();
+			Glide_offset_y.Text = Global.Config.GlidePlugin.offset_y.ToString();
+			Glide_scale_x.Text = Global.Config.GlidePlugin.scale_x.ToString();
+			Glide_scale_y.Text = Global.Config.GlidePlugin.scale_y.ToString();
+			Glide_stipple_mode.Text = Global.Config.GlidePlugin.stipple_mode.ToString();
+			Glide_stipple_pattern.Text = Global.Config.GlidePlugin.stipple_pattern.ToString();
+			Glide_swapmode.SelectedIndex = Global.Config.GlidePlugin.swapmode;
+			Glide_enable_hacks_for_game.SelectedIndex = Global.Config.GlidePlugin.enable_hacks_for_game;
 		}
 		
 		private void RiceAnisotropicFiltering_TB_Scroll_1(object sender, EventArgs e)
@@ -228,10 +286,10 @@ namespace BizHawk.MultiClient
 
 		private void RiceUseDefaultHacks_CB_CheckedChanged(object sender, EventArgs e)
 		{
-			UpdateHacksSection();
+			UpdateRiceHacksSection();
 		}
 
-		private void UpdateHacksSection()
+		private void UpdateRiceHacksSection()
 		{
 			if (RiceUseDefaultHacks_CB.Checked)
 			{
@@ -263,11 +321,11 @@ namespace BizHawk.MultiClient
 				RiceScreenUpdateSettingHack_Combo.SelectedIndex = GetIntFromDB("RiceScreenUpdateSettingHack", 0);
 				RiceEnableHacksForGame_Combo.SelectedIndex = GetIntFromDB("RiceEnableHacksForGame", 0);
 				
-				ToggleHackCheckboxEnable(false);
+				ToggleRiceHackCheckboxEnable(false);
 			}
 			else
 			{
-				ToggleHackCheckboxEnable(true);
+				ToggleRiceHackCheckboxEnable(true);
 			}
 		}
 
@@ -287,7 +345,7 @@ namespace BizHawk.MultiClient
 				return defaultVal;
 		}
 
-		public void ToggleHackCheckboxEnable (bool val)
+		public void ToggleRiceHackCheckboxEnable (bool val)
 		{
 			RiceDisableTextureCRC_CB.Enabled = val;
 			RiceDisableCulling_CB.Enabled = val;
