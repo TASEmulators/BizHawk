@@ -334,6 +334,7 @@ namespace BizHawk.MultiClient
 		//public int RiceEnableHacksForGame = 0;
 
 		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();
+		public N64GlidePluginSettings GlidePlugin = new N64GlidePluginSettings();
 
 		// General Client Settings
 		public int Input_Hotkey_OverrideOptions = 0;
@@ -1953,7 +1954,7 @@ namespace BizHawk.MultiClient
 	}
 
 
-	public enum PLUGINTYPE { RICE }; 
+	public enum PLUGINTYPE { RICE, GLIDE }; 
 
 	public interface iPluginSettings
 	{
@@ -2084,5 +2085,93 @@ namespace BizHawk.MultiClient
 		public int RenderToTextureOption = 0;
 		public int ScreenUpdateSettingHack = 0;
 		public int EnableHacksForGame = 0;
+	}
+
+	public class N64GlidePluginSettings : iPluginSettings
+	{
+		public PLUGINTYPE PluginType
+		{
+			get { return PLUGINTYPE.GLIDE; }
+		}
+
+		public void FillPerGameHacks(GameInfo game)
+		{
+			if (Global.Config.GlidePlugin.UseDefaultHacks)
+			{
+				
+			}
+		}
+
+		public Dictionary<string, object> GetPluginSettings()
+		{
+			//TODO: deal witn the game depedent settings
+			Dictionary<string, object> dictionary = new Dictionary<string, object>();
+			System.Reflection.MemberInfo[] members = Global.Config.RicePlugin.GetType().GetMembers();
+			foreach (System.Reflection.MemberInfo member in members)
+			{
+				if (member.MemberType.ToString() == "Field")
+				{
+					object field = Global.Config.RicePlugin.GetType().GetField(member.Name).GetValue(Global.Config.RicePlugin);
+					dictionary.Add(member.Name, field);
+				}
+			}
+
+			return dictionary;
+		}
+
+		public int wfmode;
+		public bool wireframe;
+		public int card_id;
+		public bool flame_corona;
+		public int ucode;
+		public bool autodetect_ucode;
+		public bool motionblur;
+		public bool fb_read_always;
+		public bool unk_as_red;
+		public bool filter_cache;
+		public bool fast_crc;
+		public bool disable_auxbuf;
+		public bool fbo;
+		public bool noglsl;
+		public bool noditheredalpha;
+		public int tex_filter;
+		public bool fb_render;
+		public bool wrap_big_tex;
+		public bool use_sts1_only;
+		public bool soft_depth_compare;
+		public bool PPL;
+		public bool fb_optimize_write;
+		public bool fb_optimize_texrect;
+		public bool increase_texrect_edge;
+		public bool increase_primdepth;
+		public bool fb_ignore_previous;
+		public bool fb_ignore_aux_copy;
+		public bool fb_hires_buf_clear;
+		public bool force_microcheck;
+		public bool force_depth_compare;
+		public bool fog;
+		public bool fillcolor_fix;
+		public bool fb_smart;
+		public bool fb_read_alpha;
+		public bool fb_get_info;
+		public bool fb_hires;
+		public bool fb_clear;
+		public bool detect_cpu_write;
+		public bool decrease_fillrect_edge;
+		public bool buff_clear;
+		public bool alt_tex_size;
+		public bool UseDefaultHacks;
+		public int enable_hacks_for_game;
+		public int swapmode;
+		public int stipple_pattern;
+		public int stipple_mode;
+		public int scale_y;
+		public int scale_x;
+		public int offset_y;
+		public int offset_x;
+		public int lodmode;
+		public int fix_tex_coord;
+		public int filtering;
+		public int depth_bias;
 	}
 }

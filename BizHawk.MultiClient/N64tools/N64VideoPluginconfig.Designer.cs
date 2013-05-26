@@ -135,6 +135,18 @@
 			this.Glide64TabPage = new System.Windows.Forms.TabPage();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.Glide64General = new System.Windows.Forms.TabPage();
+			this.Glide_disable_auxbuf = new System.Windows.Forms.CheckBox();
+			this.Glide_fbo = new System.Windows.Forms.CheckBox();
+			this.Glide_noglsl = new System.Windows.Forms.CheckBox();
+			this.Glide_noditheredalpha = new System.Windows.Forms.CheckBox();
+			this.label32 = new System.Windows.Forms.Label();
+			this.Glide_tex_filter = new System.Windows.Forms.ComboBox();
+			this.Glide_fb_render = new System.Windows.Forms.CheckBox();
+			this.Glide_motionblur = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_read_always = new System.Windows.Forms.CheckBox();
+			this.Glide_unk_as_red = new System.Windows.Forms.CheckBox();
+			this.Glide_filter_cache = new System.Windows.Forms.CheckBox();
+			this.Glide_fast_crc = new System.Windows.Forms.CheckBox();
 			this.label31 = new System.Windows.Forms.Label();
 			this.Glide_wfmode = new System.Windows.Forms.ComboBox();
 			this.Glide_wireframe = new System.Windows.Forms.CheckBox();
@@ -145,72 +157,60 @@
 			this.Glide_ucode = new System.Windows.Forms.ComboBox();
 			this.Glide_autodetect_ucode = new System.Windows.Forms.CheckBox();
 			this.GlidePerGameHacks1 = new System.Windows.Forms.TabPage();
-			this.button1 = new System.Windows.Forms.Button();
-			this.CancelBT = new System.Windows.Forms.Button();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.Glide_fast_crc = new System.Windows.Forms.CheckBox();
-			this.Glide_filter_cache = new System.Windows.Forms.CheckBox();
-			this.Glide_unk_as_red = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_read_always = new System.Windows.Forms.CheckBox();
-			this.Glide_motionblur = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_render = new System.Windows.Forms.CheckBox();
-			this.Glide_tex_filter = new System.Windows.Forms.ComboBox();
-			this.label32 = new System.Windows.Forms.Label();
-			this.Glide_noditheredalpha = new System.Windows.Forms.CheckBox();
-			this.Glide_noglsl = new System.Windows.Forms.CheckBox();
-			this.Glide_fbo = new System.Windows.Forms.CheckBox();
-			this.Glide_disable_auxbuf = new System.Windows.Forms.CheckBox();
-			this.checkBox1 = new System.Windows.Forms.CheckBox();
-			this.Glide_alt_tex_size = new System.Windows.Forms.CheckBox();
-			this.Glide_buff_clear = new System.Windows.Forms.CheckBox();
-			this.Glide_decrease_fillrect_edge = new System.Windows.Forms.CheckBox();
-			this.Glide_detect_cpu_write = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_clear = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_hires = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_get_info = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_read_alpha = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_smart = new System.Windows.Forms.CheckBox();
-			this.Glide_fillcolor_fix = new System.Windows.Forms.CheckBox();
-			this.Glide_fog = new System.Windows.Forms.CheckBox();
-			this.Glide_force_depth_compare = new System.Windows.Forms.CheckBox();
-			this.Glide_force_microcheck = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_hires_buf_clear = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_ignore_aux_copy = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_ignore_previous = new System.Windows.Forms.CheckBox();
-			this.Glide_increase_primdepth = new System.Windows.Forms.CheckBox();
-			this.Glide_increase_texrect_edge = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_optimize_texrect = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_optimize_write = new System.Windows.Forms.CheckBox();
-			this.Glide_PPL = new System.Windows.Forms.CheckBox();
-			this.Glide_soft_depth_compare = new System.Windows.Forms.CheckBox();
-			this.Glide_use_sts1_only = new System.Windows.Forms.CheckBox();
 			this.Glide_wrap_big_tex = new System.Windows.Forms.CheckBox();
+			this.Glide_use_sts1_only = new System.Windows.Forms.CheckBox();
+			this.Glide_soft_depth_compare = new System.Windows.Forms.CheckBox();
+			this.Glide_PPL = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_optimize_write = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_optimize_texrect = new System.Windows.Forms.CheckBox();
+			this.Glide_increase_texrect_edge = new System.Windows.Forms.CheckBox();
+			this.Glide_increase_primdepth = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_ignore_previous = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_ignore_aux_copy = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_hires_buf_clear = new System.Windows.Forms.CheckBox();
+			this.Glide_force_microcheck = new System.Windows.Forms.CheckBox();
+			this.Glide_force_depth_compare = new System.Windows.Forms.CheckBox();
+			this.Glide_fog = new System.Windows.Forms.CheckBox();
+			this.Glide_fillcolor_fix = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_smart = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_read_alpha = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_get_info = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_hires = new System.Windows.Forms.CheckBox();
+			this.Glide_fb_clear = new System.Windows.Forms.CheckBox();
+			this.Glide_detect_cpu_write = new System.Windows.Forms.CheckBox();
+			this.Glide_decrease_fillrect_edge = new System.Windows.Forms.CheckBox();
+			this.Glide_buff_clear = new System.Windows.Forms.CheckBox();
+			this.Glide_alt_tex_size = new System.Windows.Forms.CheckBox();
+			this.GlideUseDefaultHacks1 = new System.Windows.Forms.CheckBox();
 			this.GlidePerGameHacks2 = new System.Windows.Forms.TabPage();
-			this.checkBox2 = new System.Windows.Forms.CheckBox();
-			this.label33 = new System.Windows.Forms.Label();
-			this.Glide_depth_bias = new System.Windows.Forms.TextBox();
-			this.label34 = new System.Windows.Forms.Label();
-			this.Glide_filtering = new System.Windows.Forms.ComboBox();
-			this.label35 = new System.Windows.Forms.Label();
-			this.Glide_fix_tex_coord = new System.Windows.Forms.TextBox();
-			this.label36 = new System.Windows.Forms.Label();
-			this.Glide_lodmode = new System.Windows.Forms.ComboBox();
-			this.label37 = new System.Windows.Forms.Label();
-			this.Glide_offset_x = new System.Windows.Forms.TextBox();
-			this.label38 = new System.Windows.Forms.Label();
-			this.Glide_offset_y = new System.Windows.Forms.TextBox();
+			this.label44 = new System.Windows.Forms.Label();
+			this.Glide_enable_hacks_for_game = new System.Windows.Forms.ComboBox();
+			this.label43 = new System.Windows.Forms.Label();
+			this.Glide_swapmode = new System.Windows.Forms.ComboBox();
+			this.label42 = new System.Windows.Forms.Label();
+			this.Glide_stipple_pattern = new System.Windows.Forms.TextBox();
+			this.label41 = new System.Windows.Forms.Label();
+			this.Glide_stipple_mode = new System.Windows.Forms.TextBox();
 			this.label39 = new System.Windows.Forms.Label();
 			this.Glide_scale_y = new System.Windows.Forms.TextBox();
 			this.label40 = new System.Windows.Forms.Label();
 			this.Glide_scale_x = new System.Windows.Forms.TextBox();
-			this.label41 = new System.Windows.Forms.Label();
-			this.Glide_stipple_mode = new System.Windows.Forms.TextBox();
-			this.label42 = new System.Windows.Forms.Label();
-			this.Glide_stipple_pattern = new System.Windows.Forms.TextBox();
-			this.label43 = new System.Windows.Forms.Label();
-			this.Glide_swapmode = new System.Windows.Forms.ComboBox();
-			this.label44 = new System.Windows.Forms.Label();
-			this.comboBox1 = new System.Windows.Forms.ComboBox();
+			this.label38 = new System.Windows.Forms.Label();
+			this.Glide_offset_y = new System.Windows.Forms.TextBox();
+			this.label37 = new System.Windows.Forms.Label();
+			this.Glide_offset_x = new System.Windows.Forms.TextBox();
+			this.label36 = new System.Windows.Forms.Label();
+			this.Glide_lodmode = new System.Windows.Forms.ComboBox();
+			this.label35 = new System.Windows.Forms.Label();
+			this.Glide_fix_tex_coord = new System.Windows.Forms.TextBox();
+			this.label34 = new System.Windows.Forms.Label();
+			this.Glide_filtering = new System.Windows.Forms.ComboBox();
+			this.label33 = new System.Windows.Forms.Label();
+			this.Glide_depth_bias = new System.Windows.Forms.TextBox();
+			this.GlideUseDefaultHacks2 = new System.Windows.Forms.CheckBox();
+			this.button1 = new System.Windows.Forms.Button();
+			this.CancelBT = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -1613,6 +1613,130 @@
 			this.Glide64General.Text = "General";
 			this.Glide64General.UseVisualStyleBackColor = true;
 			// 
+			// Glide_disable_auxbuf
+			// 
+			this.Glide_disable_auxbuf.AutoSize = true;
+			this.Glide_disable_auxbuf.Location = new System.Drawing.Point(199, 278);
+			this.Glide_disable_auxbuf.Name = "Glide_disable_auxbuf";
+			this.Glide_disable_auxbuf.Size = new System.Drawing.Size(111, 17);
+			this.Glide_disable_auxbuf.TabIndex = 22;
+			this.Glide_disable_auxbuf.Text = "Disable aux buffer";
+			this.Glide_disable_auxbuf.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fbo
+			// 
+			this.Glide_fbo.AutoSize = true;
+			this.Glide_fbo.Location = new System.Drawing.Point(199, 255);
+			this.Glide_fbo.Name = "Glide_fbo";
+			this.Glide_fbo.Size = new System.Drawing.Size(138, 17);
+			this.Glide_fbo.TabIndex = 21;
+			this.Glide_fbo.Text = "Use framebuffer objects";
+			this.Glide_fbo.UseVisualStyleBackColor = true;
+			// 
+			// Glide_noglsl
+			// 
+			this.Glide_noglsl.AutoSize = true;
+			this.Glide_noglsl.Location = new System.Drawing.Point(199, 232);
+			this.Glide_noglsl.Name = "Glide_noglsl";
+			this.Glide_noglsl.Size = new System.Drawing.Size(142, 17);
+			this.Glide_noglsl.TabIndex = 20;
+			this.Glide_noglsl.Text = "Disable GLSL combiners";
+			this.Glide_noglsl.UseVisualStyleBackColor = true;
+			// 
+			// Glide_noditheredalpha
+			// 
+			this.Glide_noditheredalpha.AutoSize = true;
+			this.Glide_noditheredalpha.Location = new System.Drawing.Point(199, 209);
+			this.Glide_noditheredalpha.Name = "Glide_noditheredalpha";
+			this.Glide_noditheredalpha.Size = new System.Drawing.Size(131, 17);
+			this.Glide_noditheredalpha.TabIndex = 19;
+			this.Glide_noditheredalpha.Text = "Disable dithered alpha";
+			this.Glide_noditheredalpha.UseVisualStyleBackColor = true;
+			// 
+			// label32
+			// 
+			this.label32.AutoSize = true;
+			this.label32.Location = new System.Drawing.Point(206, 89);
+			this.label32.Name = "label32";
+			this.label32.Size = new System.Drawing.Size(85, 13);
+			this.label32.TabIndex = 18;
+			this.label32.Text = "Texture Filtering:";
+			// 
+			// Glide_tex_filter
+			// 
+			this.Glide_tex_filter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.Glide_tex_filter.FormattingEnabled = true;
+			this.Glide_tex_filter.Items.AddRange(new object[] {
+            "None",
+            "Blur edges",
+            "Super 2xSai",
+            "Hq2x",
+            "Hq4x"});
+			this.Glide_tex_filter.Location = new System.Drawing.Point(297, 86);
+			this.Glide_tex_filter.Name = "Glide_tex_filter";
+			this.Glide_tex_filter.Size = new System.Drawing.Size(78, 21);
+			this.Glide_tex_filter.TabIndex = 17;
+			// 
+			// Glide_fb_render
+			// 
+			this.Glide_fb_render.AutoSize = true;
+			this.Glide_fb_render.Location = new System.Drawing.Point(199, 186);
+			this.Glide_fb_render.Name = "Glide_fb_render";
+			this.Glide_fb_render.Size = new System.Drawing.Size(118, 17);
+			this.Glide_fb_render.TabIndex = 16;
+			this.Glide_fb_render.Text = "Depth buffer render";
+			this.Glide_fb_render.UseVisualStyleBackColor = true;
+			// 
+			// Glide_motionblur
+			// 
+			this.Glide_motionblur.AutoSize = true;
+			this.Glide_motionblur.Location = new System.Drawing.Point(9, 255);
+			this.Glide_motionblur.Name = "Glide_motionblur";
+			this.Glide_motionblur.Size = new System.Drawing.Size(79, 17);
+			this.Glide_motionblur.TabIndex = 13;
+			this.Glide_motionblur.Text = "Motion Blur";
+			this.Glide_motionblur.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_read_always
+			// 
+			this.Glide_fb_read_always.AutoSize = true;
+			this.Glide_fb_read_always.Location = new System.Drawing.Point(9, 232);
+			this.Glide_fb_read_always.Name = "Glide_fb_read_always";
+			this.Glide_fb_read_always.Size = new System.Drawing.Size(164, 17);
+			this.Glide_fb_read_always.TabIndex = 12;
+			this.Glide_fb_read_always.Text = "Framebuffer read every frame";
+			this.Glide_fb_read_always.UseVisualStyleBackColor = true;
+			// 
+			// Glide_unk_as_red
+			// 
+			this.Glide_unk_as_red.AutoSize = true;
+			this.Glide_unk_as_red.Location = new System.Drawing.Point(9, 209);
+			this.Glide_unk_as_red.Name = "Glide_unk_as_red";
+			this.Glide_unk_as_red.Size = new System.Drawing.Size(187, 17);
+			this.Glide_unk_as_red.TabIndex = 11;
+			this.Glide_unk_as_red.Text = "Display unknown combines as red";
+			this.Glide_unk_as_red.UseVisualStyleBackColor = true;
+			// 
+			// Glide_filter_cache
+			// 
+			this.Glide_filter_cache.AutoSize = true;
+			this.Glide_filter_cache.Location = new System.Drawing.Point(9, 186);
+			this.Glide_filter_cache.Name = "Glide_filter_cache";
+			this.Glide_filter_cache.Size = new System.Drawing.Size(82, 17);
+			this.Glide_filter_cache.TabIndex = 10;
+			this.Glide_filter_cache.Text = "Filter Cache";
+			this.Glide_filter_cache.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fast_crc
+			// 
+			this.Glide_fast_crc.AutoSize = true;
+			this.Glide_fast_crc.Location = new System.Drawing.Point(9, 163);
+			this.Glide_fast_crc.Name = "Glide_fast_crc";
+			this.Glide_fast_crc.Size = new System.Drawing.Size(71, 17);
+			this.Glide_fast_crc.TabIndex = 9;
+			this.Glide_fast_crc.Text = "Fast CRC";
+			this.Glide_fast_crc.UseVisualStyleBackColor = true;
+			// 
 			// label31
 			// 
 			this.label31.AutoSize = true;
@@ -1743,7 +1867,7 @@
 			this.GlidePerGameHacks1.Controls.Add(this.Glide_decrease_fillrect_edge);
 			this.GlidePerGameHacks1.Controls.Add(this.Glide_buff_clear);
 			this.GlidePerGameHacks1.Controls.Add(this.Glide_alt_tex_size);
-			this.GlidePerGameHacks1.Controls.Add(this.checkBox1);
+			this.GlidePerGameHacks1.Controls.Add(this.GlideUseDefaultHacks1);
 			this.GlidePerGameHacks1.Location = new System.Drawing.Point(4, 22);
 			this.GlidePerGameHacks1.Name = "GlidePerGameHacks1";
 			this.GlidePerGameHacks1.Padding = new System.Windows.Forms.Padding(3);
@@ -1751,398 +1875,6 @@
 			this.GlidePerGameHacks1.TabIndex = 1;
 			this.GlidePerGameHacks1.Text = "Per Game Settings";
 			this.GlidePerGameHacks1.UseVisualStyleBackColor = true;
-			// 
-			// button1
-			// 
-			this.button1.Location = new System.Drawing.Point(365, 373);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 1;
-			this.button1.Text = "Save";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// CancelBT
-			// 
-			this.CancelBT.Location = new System.Drawing.Point(461, 373);
-			this.CancelBT.Name = "CancelBT";
-			this.CancelBT.Size = new System.Drawing.Size(75, 23);
-			this.CancelBT.TabIndex = 2;
-			this.CancelBT.Text = "Cancel";
-			this.CancelBT.UseVisualStyleBackColor = true;
-			this.CancelBT.Click += new System.EventHandler(this.CancelBT_Click);
-			// 
-			// toolTip1
-			// 
-			this.toolTip1.AutoPopDelay = 10000;
-			this.toolTip1.InitialDelay = 500;
-			this.toolTip1.IsBalloon = true;
-			this.toolTip1.ReshowDelay = 100;
-			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-			// 
-			// Glide_fast_crc
-			// 
-			this.Glide_fast_crc.AutoSize = true;
-			this.Glide_fast_crc.Location = new System.Drawing.Point(9, 163);
-			this.Glide_fast_crc.Name = "Glide_fast_crc";
-			this.Glide_fast_crc.Size = new System.Drawing.Size(71, 17);
-			this.Glide_fast_crc.TabIndex = 9;
-			this.Glide_fast_crc.Text = "Fast CRC";
-			this.Glide_fast_crc.UseVisualStyleBackColor = true;
-			// 
-			// Glide_filter_cache
-			// 
-			this.Glide_filter_cache.AutoSize = true;
-			this.Glide_filter_cache.Location = new System.Drawing.Point(9, 186);
-			this.Glide_filter_cache.Name = "Glide_filter_cache";
-			this.Glide_filter_cache.Size = new System.Drawing.Size(82, 17);
-			this.Glide_filter_cache.TabIndex = 10;
-			this.Glide_filter_cache.Text = "Filter Cache";
-			this.Glide_filter_cache.UseVisualStyleBackColor = true;
-			// 
-			// Glide_unk_as_red
-			// 
-			this.Glide_unk_as_red.AutoSize = true;
-			this.Glide_unk_as_red.Location = new System.Drawing.Point(9, 209);
-			this.Glide_unk_as_red.Name = "Glide_unk_as_red";
-			this.Glide_unk_as_red.Size = new System.Drawing.Size(187, 17);
-			this.Glide_unk_as_red.TabIndex = 11;
-			this.Glide_unk_as_red.Text = "Display unknown combines as red";
-			this.Glide_unk_as_red.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_read_always
-			// 
-			this.Glide_fb_read_always.AutoSize = true;
-			this.Glide_fb_read_always.Location = new System.Drawing.Point(9, 232);
-			this.Glide_fb_read_always.Name = "Glide_fb_read_always";
-			this.Glide_fb_read_always.Size = new System.Drawing.Size(164, 17);
-			this.Glide_fb_read_always.TabIndex = 12;
-			this.Glide_fb_read_always.Text = "Framebuffer read every frame";
-			this.Glide_fb_read_always.UseVisualStyleBackColor = true;
-			// 
-			// Glide_motionblur
-			// 
-			this.Glide_motionblur.AutoSize = true;
-			this.Glide_motionblur.Location = new System.Drawing.Point(9, 255);
-			this.Glide_motionblur.Name = "Glide_motionblur";
-			this.Glide_motionblur.Size = new System.Drawing.Size(79, 17);
-			this.Glide_motionblur.TabIndex = 13;
-			this.Glide_motionblur.Text = "Motion Blur";
-			this.Glide_motionblur.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_render
-			// 
-			this.Glide_fb_render.AutoSize = true;
-			this.Glide_fb_render.Location = new System.Drawing.Point(199, 186);
-			this.Glide_fb_render.Name = "Glide_fb_render";
-			this.Glide_fb_render.Size = new System.Drawing.Size(118, 17);
-			this.Glide_fb_render.TabIndex = 16;
-			this.Glide_fb_render.Text = "Depth buffer render";
-			this.Glide_fb_render.UseVisualStyleBackColor = true;
-			// 
-			// Glide_tex_filter
-			// 
-			this.Glide_tex_filter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.Glide_tex_filter.FormattingEnabled = true;
-			this.Glide_tex_filter.Items.AddRange(new object[] {
-            "None",
-            "Blur edges",
-            "Super 2xSai",
-            "Hq2x",
-            "Hq4x"});
-			this.Glide_tex_filter.Location = new System.Drawing.Point(297, 86);
-			this.Glide_tex_filter.Name = "Glide_tex_filter";
-			this.Glide_tex_filter.Size = new System.Drawing.Size(78, 21);
-			this.Glide_tex_filter.TabIndex = 17;
-			// 
-			// label32
-			// 
-			this.label32.AutoSize = true;
-			this.label32.Location = new System.Drawing.Point(206, 89);
-			this.label32.Name = "label32";
-			this.label32.Size = new System.Drawing.Size(85, 13);
-			this.label32.TabIndex = 18;
-			this.label32.Text = "Texture Filtering:";
-			// 
-			// Glide_noditheredalpha
-			// 
-			this.Glide_noditheredalpha.AutoSize = true;
-			this.Glide_noditheredalpha.Location = new System.Drawing.Point(199, 209);
-			this.Glide_noditheredalpha.Name = "Glide_noditheredalpha";
-			this.Glide_noditheredalpha.Size = new System.Drawing.Size(131, 17);
-			this.Glide_noditheredalpha.TabIndex = 19;
-			this.Glide_noditheredalpha.Text = "Disable dithered alpha";
-			this.Glide_noditheredalpha.UseVisualStyleBackColor = true;
-			// 
-			// Glide_noglsl
-			// 
-			this.Glide_noglsl.AutoSize = true;
-			this.Glide_noglsl.Location = new System.Drawing.Point(199, 232);
-			this.Glide_noglsl.Name = "Glide_noglsl";
-			this.Glide_noglsl.Size = new System.Drawing.Size(142, 17);
-			this.Glide_noglsl.TabIndex = 20;
-			this.Glide_noglsl.Text = "Disable GLSL combiners";
-			this.Glide_noglsl.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fbo
-			// 
-			this.Glide_fbo.AutoSize = true;
-			this.Glide_fbo.Location = new System.Drawing.Point(199, 255);
-			this.Glide_fbo.Name = "Glide_fbo";
-			this.Glide_fbo.Size = new System.Drawing.Size(138, 17);
-			this.Glide_fbo.TabIndex = 21;
-			this.Glide_fbo.Text = "Use framebuffer objects";
-			this.Glide_fbo.UseVisualStyleBackColor = true;
-			// 
-			// Glide_disable_auxbuf
-			// 
-			this.Glide_disable_auxbuf.AutoSize = true;
-			this.Glide_disable_auxbuf.Location = new System.Drawing.Point(199, 278);
-			this.Glide_disable_auxbuf.Name = "Glide_disable_auxbuf";
-			this.Glide_disable_auxbuf.Size = new System.Drawing.Size(111, 17);
-			this.Glide_disable_auxbuf.TabIndex = 22;
-			this.Glide_disable_auxbuf.Text = "Disable aux buffer";
-			this.Glide_disable_auxbuf.UseVisualStyleBackColor = true;
-			// 
-			// checkBox1
-			// 
-			this.checkBox1.AutoSize = true;
-			this.checkBox1.Location = new System.Drawing.Point(6, 6);
-			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(165, 17);
-			this.checkBox1.TabIndex = 2;
-			this.checkBox1.Text = "Use defaults for current game";
-			this.checkBox1.UseVisualStyleBackColor = true;
-			// 
-			// Glide_alt_tex_size
-			// 
-			this.Glide_alt_tex_size.AutoSize = true;
-			this.Glide_alt_tex_size.Location = new System.Drawing.Point(6, 39);
-			this.Glide_alt_tex_size.Name = "Glide_alt_tex_size";
-			this.Glide_alt_tex_size.Size = new System.Drawing.Size(169, 17);
-			this.Glide_alt_tex_size.TabIndex = 3;
-			this.Glide_alt_tex_size.Text = "Alternate Texture Size Method";
-			this.Glide_alt_tex_size.UseVisualStyleBackColor = true;
-			// 
-			// Glide_buff_clear
-			// 
-			this.Glide_buff_clear.AutoSize = true;
-			this.Glide_buff_clear.Location = new System.Drawing.Point(6, 62);
-			this.Glide_buff_clear.Name = "Glide_buff_clear";
-			this.Glide_buff_clear.Size = new System.Drawing.Size(153, 17);
-			this.Glide_buff_clear.TabIndex = 4;
-			this.Glide_buff_clear.Text = "Buffer clear on every frame";
-			this.Glide_buff_clear.UseVisualStyleBackColor = true;
-			// 
-			// Glide_decrease_fillrect_edge
-			// 
-			this.Glide_decrease_fillrect_edge.AutoSize = true;
-			this.Glide_decrease_fillrect_edge.Location = new System.Drawing.Point(6, 85);
-			this.Glide_decrease_fillrect_edge.Name = "Glide_decrease_fillrect_edge";
-			this.Glide_decrease_fillrect_edge.Size = new System.Drawing.Size(133, 17);
-			this.Glide_decrease_fillrect_edge.TabIndex = 5;
-			this.Glide_decrease_fillrect_edge.Text = "Decrease Fillrect Edge";
-			this.Glide_decrease_fillrect_edge.UseVisualStyleBackColor = true;
-			// 
-			// Glide_detect_cpu_write
-			// 
-			this.Glide_detect_cpu_write.AutoSize = true;
-			this.Glide_detect_cpu_write.Location = new System.Drawing.Point(6, 108);
-			this.Glide_detect_cpu_write.Name = "Glide_detect_cpu_write";
-			this.Glide_detect_cpu_write.Size = new System.Drawing.Size(113, 17);
-			this.Glide_detect_cpu_write.TabIndex = 6;
-			this.Glide_detect_cpu_write.Text = "Detect CPU writes";
-			this.Glide_detect_cpu_write.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_clear
-			// 
-			this.Glide_fb_clear.AutoSize = true;
-			this.Glide_fb_clear.Location = new System.Drawing.Point(6, 131);
-			this.Glide_fb_clear.Name = "Glide_fb_clear";
-			this.Glide_fb_clear.Size = new System.Drawing.Size(106, 17);
-			this.Glide_fb_clear.TabIndex = 7;
-			this.Glide_fb_clear.Text = "Clear framebuffer";
-			this.Glide_fb_clear.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_hires
-			// 
-			this.Glide_fb_hires.AutoSize = true;
-			this.Glide_fb_hires.Location = new System.Drawing.Point(6, 154);
-			this.Glide_fb_hires.Name = "Glide_fb_hires";
-			this.Glide_fb_hires.Size = new System.Drawing.Size(109, 17);
-			this.Glide_fb_hires.TabIndex = 15;
-			this.Glide_fb_hires.Text = "Hi-res framebuffer";
-			this.Glide_fb_hires.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_get_info
-			// 
-			this.Glide_fb_get_info.AutoSize = true;
-			this.Glide_fb_get_info.Location = new System.Drawing.Point(6, 177);
-			this.Glide_fb_get_info.Name = "Glide_fb_get_info";
-			this.Glide_fb_get_info.Size = new System.Drawing.Size(119, 17);
-			this.Glide_fb_get_info.TabIndex = 16;
-			this.Glide_fb_get_info.Text = "Get framebuffer info";
-			this.Glide_fb_get_info.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_read_alpha
-			// 
-			this.Glide_fb_read_alpha.AutoSize = true;
-			this.Glide_fb_read_alpha.Location = new System.Drawing.Point(6, 200);
-			this.Glide_fb_read_alpha.Name = "Glide_fb_read_alpha";
-			this.Glide_fb_read_alpha.Size = new System.Drawing.Size(135, 17);
-			this.Glide_fb_read_alpha.TabIndex = 17;
-			this.Glide_fb_read_alpha.Text = "Framebuffer read alpha";
-			this.Glide_fb_read_alpha.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_smart
-			// 
-			this.Glide_fb_smart.AutoSize = true;
-			this.Glide_fb_smart.Location = new System.Drawing.Point(6, 223);
-			this.Glide_fb_smart.Name = "Glide_fb_smart";
-			this.Glide_fb_smart.Size = new System.Drawing.Size(109, 17);
-			this.Glide_fb_smart.TabIndex = 18;
-			this.Glide_fb_smart.Text = "Smart framebuffer";
-			this.Glide_fb_smart.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fillcolor_fix
-			// 
-			this.Glide_fillcolor_fix.AutoSize = true;
-			this.Glide_fillcolor_fix.Location = new System.Drawing.Point(6, 246);
-			this.Glide_fillcolor_fix.Name = "Glide_fillcolor_fix";
-			this.Glide_fillcolor_fix.Size = new System.Drawing.Size(77, 17);
-			this.Glide_fillcolor_fix.TabIndex = 19;
-			this.Glide_fillcolor_fix.Text = "Fillcolor Fix";
-			this.Glide_fillcolor_fix.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fog
-			// 
-			this.Glide_fog.AutoSize = true;
-			this.Glide_fog.Location = new System.Drawing.Point(6, 269);
-			this.Glide_fog.Name = "Glide_fog";
-			this.Glide_fog.Size = new System.Drawing.Size(86, 17);
-			this.Glide_fog.TabIndex = 20;
-			this.Glide_fog.Text = "Fog Enabled";
-			this.Glide_fog.UseVisualStyleBackColor = true;
-			// 
-			// Glide_force_depth_compare
-			// 
-			this.Glide_force_depth_compare.AutoSize = true;
-			this.Glide_force_depth_compare.Location = new System.Drawing.Point(192, 39);
-			this.Glide_force_depth_compare.Name = "Glide_force_depth_compare";
-			this.Glide_force_depth_compare.Size = new System.Drawing.Size(130, 17);
-			this.Glide_force_depth_compare.TabIndex = 21;
-			this.Glide_force_depth_compare.Text = "Force Depth Compare";
-			this.Glide_force_depth_compare.UseVisualStyleBackColor = true;
-			// 
-			// Glide_force_microcheck
-			// 
-			this.Glide_force_microcheck.AutoSize = true;
-			this.Glide_force_microcheck.Location = new System.Drawing.Point(192, 62);
-			this.Glide_force_microcheck.Name = "Glide_force_microcheck";
-			this.Glide_force_microcheck.Size = new System.Drawing.Size(165, 17);
-			this.Glide_force_microcheck.TabIndex = 22;
-			this.Glide_force_microcheck.Text = "Check microcode each frame";
-			this.Glide_force_microcheck.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_hires_buf_clear
-			// 
-			this.Glide_fb_hires_buf_clear.AutoSize = true;
-			this.Glide_fb_hires_buf_clear.Location = new System.Drawing.Point(192, 85);
-			this.Glide_fb_hires_buf_clear.Name = "Glide_fb_hires_buf_clear";
-			this.Glide_fb_hires_buf_clear.Size = new System.Drawing.Size(109, 17);
-			this.Glide_fb_hires_buf_clear.TabIndex = 23;
-			this.Glide_fb_hires_buf_clear.Text = "Hi-res buffer clear";
-			this.Glide_fb_hires_buf_clear.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_ignore_aux_copy
-			// 
-			this.Glide_fb_ignore_aux_copy.AutoSize = true;
-			this.Glide_fb_ignore_aux_copy.Location = new System.Drawing.Point(192, 108);
-			this.Glide_fb_ignore_aux_copy.Name = "Glide_fb_ignore_aux_copy";
-			this.Glide_fb_ignore_aux_copy.Size = new System.Drawing.Size(102, 17);
-			this.Glide_fb_ignore_aux_copy.TabIndex = 24;
-			this.Glide_fb_ignore_aux_copy.Text = "Ignore aux copy";
-			this.Glide_fb_ignore_aux_copy.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_ignore_previous
-			// 
-			this.Glide_fb_ignore_previous.AutoSize = true;
-			this.Glide_fb_ignore_previous.Location = new System.Drawing.Point(192, 131);
-			this.Glide_fb_ignore_previous.Name = "Glide_fb_ignore_previous";
-			this.Glide_fb_ignore_previous.Size = new System.Drawing.Size(100, 17);
-			this.Glide_fb_ignore_previous.TabIndex = 25;
-			this.Glide_fb_ignore_previous.Text = "Ignore Previous";
-			this.Glide_fb_ignore_previous.UseVisualStyleBackColor = true;
-			// 
-			// Glide_increase_primdepth
-			// 
-			this.Glide_increase_primdepth.AutoSize = true;
-			this.Glide_increase_primdepth.Location = new System.Drawing.Point(192, 154);
-			this.Glide_increase_primdepth.Name = "Glide_increase_primdepth";
-			this.Glide_increase_primdepth.Size = new System.Drawing.Size(116, 17);
-			this.Glide_increase_primdepth.TabIndex = 26;
-			this.Glide_increase_primdepth.Text = "Increase primdepth";
-			this.Glide_increase_primdepth.UseVisualStyleBackColor = true;
-			// 
-			// Glide_increase_texrect_edge
-			// 
-			this.Glide_increase_texrect_edge.AutoSize = true;
-			this.Glide_increase_texrect_edge.Location = new System.Drawing.Point(192, 177);
-			this.Glide_increase_texrect_edge.Name = "Glide_increase_texrect_edge";
-			this.Glide_increase_texrect_edge.Size = new System.Drawing.Size(129, 17);
-			this.Glide_increase_texrect_edge.TabIndex = 27;
-			this.Glide_increase_texrect_edge.Text = "Increase texrect edge";
-			this.Glide_increase_texrect_edge.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_optimize_texrect
-			// 
-			this.Glide_fb_optimize_texrect.AutoSize = true;
-			this.Glide_fb_optimize_texrect.Location = new System.Drawing.Point(192, 200);
-			this.Glide_fb_optimize_texrect.Name = "Glide_fb_optimize_texrect";
-			this.Glide_fb_optimize_texrect.Size = new System.Drawing.Size(101, 17);
-			this.Glide_fb_optimize_texrect.TabIndex = 28;
-			this.Glide_fb_optimize_texrect.Text = "Optimize texrect";
-			this.Glide_fb_optimize_texrect.UseVisualStyleBackColor = true;
-			// 
-			// Glide_fb_optimize_write
-			// 
-			this.Glide_fb_optimize_write.AutoSize = true;
-			this.Glide_fb_optimize_write.Location = new System.Drawing.Point(192, 223);
-			this.Glide_fb_optimize_write.Name = "Glide_fb_optimize_write";
-			this.Glide_fb_optimize_write.Size = new System.Drawing.Size(91, 17);
-			this.Glide_fb_optimize_write.TabIndex = 29;
-			this.Glide_fb_optimize_write.Text = "Optimize write";
-			this.Glide_fb_optimize_write.UseVisualStyleBackColor = true;
-			// 
-			// Glide_PPL
-			// 
-			this.Glide_PPL.AutoSize = true;
-			this.Glide_PPL.Location = new System.Drawing.Point(192, 246);
-			this.Glide_PPL.Name = "Glide_PPL";
-			this.Glide_PPL.Size = new System.Drawing.Size(46, 17);
-			this.Glide_PPL.TabIndex = 30;
-			this.Glide_PPL.Text = "PPL";
-			this.Glide_PPL.UseVisualStyleBackColor = true;
-			// 
-			// Glide_soft_depth_compare
-			// 
-			this.Glide_soft_depth_compare.AutoSize = true;
-			this.Glide_soft_depth_compare.Location = new System.Drawing.Point(192, 269);
-			this.Glide_soft_depth_compare.Name = "Glide_soft_depth_compare";
-			this.Glide_soft_depth_compare.Size = new System.Drawing.Size(119, 17);
-			this.Glide_soft_depth_compare.TabIndex = 31;
-			this.Glide_soft_depth_compare.Text = "Soft depth compare";
-			this.Glide_soft_depth_compare.UseVisualStyleBackColor = true;
-			// 
-			// Glide_use_sts1_only
-			// 
-			this.Glide_use_sts1_only.AutoSize = true;
-			this.Glide_use_sts1_only.Location = new System.Drawing.Point(375, 39);
-			this.Glide_use_sts1_only.Name = "Glide_use_sts1_only";
-			this.Glide_use_sts1_only.Size = new System.Drawing.Size(89, 17);
-			this.Glide_use_sts1_only.TabIndex = 32;
-			this.Glide_use_sts1_only.Text = "Use sts1 only";
-			this.Glide_use_sts1_only.UseVisualStyleBackColor = true;
 			// 
 			// Glide_wrap_big_tex
 			// 
@@ -2154,10 +1886,250 @@
 			this.Glide_wrap_big_tex.Text = "Wrap big tex";
 			this.Glide_wrap_big_tex.UseVisualStyleBackColor = true;
 			// 
+			// Glide_use_sts1_only
+			// 
+			this.Glide_use_sts1_only.AutoSize = true;
+			this.Glide_use_sts1_only.Location = new System.Drawing.Point(375, 39);
+			this.Glide_use_sts1_only.Name = "Glide_use_sts1_only";
+			this.Glide_use_sts1_only.Size = new System.Drawing.Size(89, 17);
+			this.Glide_use_sts1_only.TabIndex = 32;
+			this.Glide_use_sts1_only.Text = "Use sts1 only";
+			this.Glide_use_sts1_only.UseVisualStyleBackColor = true;
+			// 
+			// Glide_soft_depth_compare
+			// 
+			this.Glide_soft_depth_compare.AutoSize = true;
+			this.Glide_soft_depth_compare.Location = new System.Drawing.Point(192, 269);
+			this.Glide_soft_depth_compare.Name = "Glide_soft_depth_compare";
+			this.Glide_soft_depth_compare.Size = new System.Drawing.Size(119, 17);
+			this.Glide_soft_depth_compare.TabIndex = 31;
+			this.Glide_soft_depth_compare.Text = "Soft depth compare";
+			this.Glide_soft_depth_compare.UseVisualStyleBackColor = true;
+			// 
+			// Glide_PPL
+			// 
+			this.Glide_PPL.AutoSize = true;
+			this.Glide_PPL.Location = new System.Drawing.Point(192, 246);
+			this.Glide_PPL.Name = "Glide_PPL";
+			this.Glide_PPL.Size = new System.Drawing.Size(46, 17);
+			this.Glide_PPL.TabIndex = 30;
+			this.Glide_PPL.Text = "PPL";
+			this.Glide_PPL.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_optimize_write
+			// 
+			this.Glide_fb_optimize_write.AutoSize = true;
+			this.Glide_fb_optimize_write.Location = new System.Drawing.Point(192, 223);
+			this.Glide_fb_optimize_write.Name = "Glide_fb_optimize_write";
+			this.Glide_fb_optimize_write.Size = new System.Drawing.Size(91, 17);
+			this.Glide_fb_optimize_write.TabIndex = 29;
+			this.Glide_fb_optimize_write.Text = "Optimize write";
+			this.Glide_fb_optimize_write.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_optimize_texrect
+			// 
+			this.Glide_fb_optimize_texrect.AutoSize = true;
+			this.Glide_fb_optimize_texrect.Location = new System.Drawing.Point(192, 200);
+			this.Glide_fb_optimize_texrect.Name = "Glide_fb_optimize_texrect";
+			this.Glide_fb_optimize_texrect.Size = new System.Drawing.Size(101, 17);
+			this.Glide_fb_optimize_texrect.TabIndex = 28;
+			this.Glide_fb_optimize_texrect.Text = "Optimize texrect";
+			this.Glide_fb_optimize_texrect.UseVisualStyleBackColor = true;
+			// 
+			// Glide_increase_texrect_edge
+			// 
+			this.Glide_increase_texrect_edge.AutoSize = true;
+			this.Glide_increase_texrect_edge.Location = new System.Drawing.Point(192, 177);
+			this.Glide_increase_texrect_edge.Name = "Glide_increase_texrect_edge";
+			this.Glide_increase_texrect_edge.Size = new System.Drawing.Size(129, 17);
+			this.Glide_increase_texrect_edge.TabIndex = 27;
+			this.Glide_increase_texrect_edge.Text = "Increase texrect edge";
+			this.Glide_increase_texrect_edge.UseVisualStyleBackColor = true;
+			// 
+			// Glide_increase_primdepth
+			// 
+			this.Glide_increase_primdepth.AutoSize = true;
+			this.Glide_increase_primdepth.Location = new System.Drawing.Point(192, 154);
+			this.Glide_increase_primdepth.Name = "Glide_increase_primdepth";
+			this.Glide_increase_primdepth.Size = new System.Drawing.Size(116, 17);
+			this.Glide_increase_primdepth.TabIndex = 26;
+			this.Glide_increase_primdepth.Text = "Increase primdepth";
+			this.Glide_increase_primdepth.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_ignore_previous
+			// 
+			this.Glide_fb_ignore_previous.AutoSize = true;
+			this.Glide_fb_ignore_previous.Location = new System.Drawing.Point(192, 131);
+			this.Glide_fb_ignore_previous.Name = "Glide_fb_ignore_previous";
+			this.Glide_fb_ignore_previous.Size = new System.Drawing.Size(100, 17);
+			this.Glide_fb_ignore_previous.TabIndex = 25;
+			this.Glide_fb_ignore_previous.Text = "Ignore Previous";
+			this.Glide_fb_ignore_previous.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_ignore_aux_copy
+			// 
+			this.Glide_fb_ignore_aux_copy.AutoSize = true;
+			this.Glide_fb_ignore_aux_copy.Location = new System.Drawing.Point(192, 108);
+			this.Glide_fb_ignore_aux_copy.Name = "Glide_fb_ignore_aux_copy";
+			this.Glide_fb_ignore_aux_copy.Size = new System.Drawing.Size(102, 17);
+			this.Glide_fb_ignore_aux_copy.TabIndex = 24;
+			this.Glide_fb_ignore_aux_copy.Text = "Ignore aux copy";
+			this.Glide_fb_ignore_aux_copy.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_hires_buf_clear
+			// 
+			this.Glide_fb_hires_buf_clear.AutoSize = true;
+			this.Glide_fb_hires_buf_clear.Location = new System.Drawing.Point(192, 85);
+			this.Glide_fb_hires_buf_clear.Name = "Glide_fb_hires_buf_clear";
+			this.Glide_fb_hires_buf_clear.Size = new System.Drawing.Size(109, 17);
+			this.Glide_fb_hires_buf_clear.TabIndex = 23;
+			this.Glide_fb_hires_buf_clear.Text = "Hi-res buffer clear";
+			this.Glide_fb_hires_buf_clear.UseVisualStyleBackColor = true;
+			// 
+			// Glide_force_microcheck
+			// 
+			this.Glide_force_microcheck.AutoSize = true;
+			this.Glide_force_microcheck.Location = new System.Drawing.Point(192, 62);
+			this.Glide_force_microcheck.Name = "Glide_force_microcheck";
+			this.Glide_force_microcheck.Size = new System.Drawing.Size(165, 17);
+			this.Glide_force_microcheck.TabIndex = 22;
+			this.Glide_force_microcheck.Text = "Check microcode each frame";
+			this.Glide_force_microcheck.UseVisualStyleBackColor = true;
+			// 
+			// Glide_force_depth_compare
+			// 
+			this.Glide_force_depth_compare.AutoSize = true;
+			this.Glide_force_depth_compare.Location = new System.Drawing.Point(192, 39);
+			this.Glide_force_depth_compare.Name = "Glide_force_depth_compare";
+			this.Glide_force_depth_compare.Size = new System.Drawing.Size(130, 17);
+			this.Glide_force_depth_compare.TabIndex = 21;
+			this.Glide_force_depth_compare.Text = "Force Depth Compare";
+			this.Glide_force_depth_compare.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fog
+			// 
+			this.Glide_fog.AutoSize = true;
+			this.Glide_fog.Location = new System.Drawing.Point(6, 269);
+			this.Glide_fog.Name = "Glide_fog";
+			this.Glide_fog.Size = new System.Drawing.Size(86, 17);
+			this.Glide_fog.TabIndex = 20;
+			this.Glide_fog.Text = "Fog Enabled";
+			this.Glide_fog.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fillcolor_fix
+			// 
+			this.Glide_fillcolor_fix.AutoSize = true;
+			this.Glide_fillcolor_fix.Location = new System.Drawing.Point(6, 246);
+			this.Glide_fillcolor_fix.Name = "Glide_fillcolor_fix";
+			this.Glide_fillcolor_fix.Size = new System.Drawing.Size(77, 17);
+			this.Glide_fillcolor_fix.TabIndex = 19;
+			this.Glide_fillcolor_fix.Text = "Fillcolor Fix";
+			this.Glide_fillcolor_fix.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_smart
+			// 
+			this.Glide_fb_smart.AutoSize = true;
+			this.Glide_fb_smart.Location = new System.Drawing.Point(6, 223);
+			this.Glide_fb_smart.Name = "Glide_fb_smart";
+			this.Glide_fb_smart.Size = new System.Drawing.Size(109, 17);
+			this.Glide_fb_smart.TabIndex = 18;
+			this.Glide_fb_smart.Text = "Smart framebuffer";
+			this.Glide_fb_smart.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_read_alpha
+			// 
+			this.Glide_fb_read_alpha.AutoSize = true;
+			this.Glide_fb_read_alpha.Location = new System.Drawing.Point(6, 200);
+			this.Glide_fb_read_alpha.Name = "Glide_fb_read_alpha";
+			this.Glide_fb_read_alpha.Size = new System.Drawing.Size(135, 17);
+			this.Glide_fb_read_alpha.TabIndex = 17;
+			this.Glide_fb_read_alpha.Text = "Framebuffer read alpha";
+			this.Glide_fb_read_alpha.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_get_info
+			// 
+			this.Glide_fb_get_info.AutoSize = true;
+			this.Glide_fb_get_info.Location = new System.Drawing.Point(6, 177);
+			this.Glide_fb_get_info.Name = "Glide_fb_get_info";
+			this.Glide_fb_get_info.Size = new System.Drawing.Size(119, 17);
+			this.Glide_fb_get_info.TabIndex = 16;
+			this.Glide_fb_get_info.Text = "Get framebuffer info";
+			this.Glide_fb_get_info.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_hires
+			// 
+			this.Glide_fb_hires.AutoSize = true;
+			this.Glide_fb_hires.Location = new System.Drawing.Point(6, 154);
+			this.Glide_fb_hires.Name = "Glide_fb_hires";
+			this.Glide_fb_hires.Size = new System.Drawing.Size(109, 17);
+			this.Glide_fb_hires.TabIndex = 15;
+			this.Glide_fb_hires.Text = "Hi-res framebuffer";
+			this.Glide_fb_hires.UseVisualStyleBackColor = true;
+			// 
+			// Glide_fb_clear
+			// 
+			this.Glide_fb_clear.AutoSize = true;
+			this.Glide_fb_clear.Location = new System.Drawing.Point(6, 131);
+			this.Glide_fb_clear.Name = "Glide_fb_clear";
+			this.Glide_fb_clear.Size = new System.Drawing.Size(106, 17);
+			this.Glide_fb_clear.TabIndex = 7;
+			this.Glide_fb_clear.Text = "Clear framebuffer";
+			this.Glide_fb_clear.UseVisualStyleBackColor = true;
+			// 
+			// Glide_detect_cpu_write
+			// 
+			this.Glide_detect_cpu_write.AutoSize = true;
+			this.Glide_detect_cpu_write.Location = new System.Drawing.Point(6, 108);
+			this.Glide_detect_cpu_write.Name = "Glide_detect_cpu_write";
+			this.Glide_detect_cpu_write.Size = new System.Drawing.Size(113, 17);
+			this.Glide_detect_cpu_write.TabIndex = 6;
+			this.Glide_detect_cpu_write.Text = "Detect CPU writes";
+			this.Glide_detect_cpu_write.UseVisualStyleBackColor = true;
+			// 
+			// Glide_decrease_fillrect_edge
+			// 
+			this.Glide_decrease_fillrect_edge.AutoSize = true;
+			this.Glide_decrease_fillrect_edge.Location = new System.Drawing.Point(6, 85);
+			this.Glide_decrease_fillrect_edge.Name = "Glide_decrease_fillrect_edge";
+			this.Glide_decrease_fillrect_edge.Size = new System.Drawing.Size(133, 17);
+			this.Glide_decrease_fillrect_edge.TabIndex = 5;
+			this.Glide_decrease_fillrect_edge.Text = "Decrease Fillrect Edge";
+			this.Glide_decrease_fillrect_edge.UseVisualStyleBackColor = true;
+			// 
+			// Glide_buff_clear
+			// 
+			this.Glide_buff_clear.AutoSize = true;
+			this.Glide_buff_clear.Location = new System.Drawing.Point(6, 62);
+			this.Glide_buff_clear.Name = "Glide_buff_clear";
+			this.Glide_buff_clear.Size = new System.Drawing.Size(153, 17);
+			this.Glide_buff_clear.TabIndex = 4;
+			this.Glide_buff_clear.Text = "Buffer clear on every frame";
+			this.Glide_buff_clear.UseVisualStyleBackColor = true;
+			// 
+			// Glide_alt_tex_size
+			// 
+			this.Glide_alt_tex_size.AutoSize = true;
+			this.Glide_alt_tex_size.Location = new System.Drawing.Point(6, 39);
+			this.Glide_alt_tex_size.Name = "Glide_alt_tex_size";
+			this.Glide_alt_tex_size.Size = new System.Drawing.Size(169, 17);
+			this.Glide_alt_tex_size.TabIndex = 3;
+			this.Glide_alt_tex_size.Text = "Alternate Texture Size Method";
+			this.Glide_alt_tex_size.UseVisualStyleBackColor = true;
+			// 
+			// GlideUseDefaultHacks1
+			// 
+			this.GlideUseDefaultHacks1.AutoSize = true;
+			this.GlideUseDefaultHacks1.Location = new System.Drawing.Point(6, 6);
+			this.GlideUseDefaultHacks1.Name = "GlideUseDefaultHacks1";
+			this.GlideUseDefaultHacks1.Size = new System.Drawing.Size(165, 17);
+			this.GlideUseDefaultHacks1.TabIndex = 2;
+			this.GlideUseDefaultHacks1.Text = "Use defaults for current game";
+			this.GlideUseDefaultHacks1.UseVisualStyleBackColor = true;
+			// 
 			// GlidePerGameHacks2
 			// 
 			this.GlidePerGameHacks2.Controls.Add(this.label44);
-			this.GlidePerGameHacks2.Controls.Add(this.comboBox1);
+			this.GlidePerGameHacks2.Controls.Add(this.Glide_enable_hacks_for_game);
 			this.GlidePerGameHacks2.Controls.Add(this.label43);
 			this.GlidePerGameHacks2.Controls.Add(this.Glide_swapmode);
 			this.GlidePerGameHacks2.Controls.Add(this.label42);
@@ -2180,7 +2152,7 @@
 			this.GlidePerGameHacks2.Controls.Add(this.Glide_filtering);
 			this.GlidePerGameHacks2.Controls.Add(this.label33);
 			this.GlidePerGameHacks2.Controls.Add(this.Glide_depth_bias);
-			this.GlidePerGameHacks2.Controls.Add(this.checkBox2);
+			this.GlidePerGameHacks2.Controls.Add(this.GlideUseDefaultHacks2);
 			this.GlidePerGameHacks2.Location = new System.Drawing.Point(4, 22);
 			this.GlidePerGameHacks2.Name = "GlidePerGameHacks2";
 			this.GlidePerGameHacks2.Size = new System.Drawing.Size(564, 310);
@@ -2188,123 +2160,99 @@
 			this.GlidePerGameHacks2.Text = "More Per Game Settings";
 			this.GlidePerGameHacks2.UseVisualStyleBackColor = true;
 			// 
-			// checkBox2
+			// label44
 			// 
-			this.checkBox2.AutoSize = true;
-			this.checkBox2.Location = new System.Drawing.Point(6, 6);
-			this.checkBox2.Name = "checkBox2";
-			this.checkBox2.Size = new System.Drawing.Size(165, 17);
-			this.checkBox2.TabIndex = 3;
-			this.checkBox2.Text = "Use defaults for current game";
-			this.checkBox2.UseVisualStyleBackColor = true;
+			this.label44.AutoSize = true;
+			this.label44.Location = new System.Drawing.Point(199, 65);
+			this.label44.Name = "label44";
+			this.label44.Size = new System.Drawing.Size(119, 13);
+			this.label44.TabIndex = 54;
+			this.label44.Text = "Enable hacks for game:";
 			// 
-			// label33
+			// Glide_enable_hacks_for_game
 			// 
-			this.label33.AutoSize = true;
-			this.label33.Location = new System.Drawing.Point(3, 39);
-			this.label33.Name = "label33";
-			this.label33.Size = new System.Drawing.Size(86, 13);
-			this.label33.TabIndex = 20;
-			this.label33.Text = "Depth bias level:";
-			// 
-			// Glide_depth_bias
-			// 
-			this.Glide_depth_bias.Location = new System.Drawing.Point(92, 36);
-			this.Glide_depth_bias.Name = "Glide_depth_bias";
-			this.Glide_depth_bias.Size = new System.Drawing.Size(36, 20);
-			this.Glide_depth_bias.TabIndex = 19;
-			// 
-			// label34
-			// 
-			this.label34.AutoSize = true;
-			this.label34.Location = new System.Drawing.Point(3, 65);
-			this.label34.Name = "label34";
-			this.label34.Size = new System.Drawing.Size(75, 13);
-			this.label34.TabIndex = 22;
-			this.label34.Text = "Filtering mode:";
-			// 
-			// Glide_filtering
-			// 
-			this.Glide_filtering.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.Glide_filtering.FormattingEnabled = true;
-			this.Glide_filtering.Items.AddRange(new object[] {
+			this.Glide_enable_hacks_for_game.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.Glide_enable_hacks_for_game.FormattingEnabled = true;
+			this.Glide_enable_hacks_for_game.Items.AddRange(new object[] {
             "None",
-            "Force bilinear",
-            "Force point-sampled"});
-			this.Glide_filtering.Location = new System.Drawing.Point(92, 62);
-			this.Glide_filtering.Name = "Glide_filtering";
-			this.Glide_filtering.Size = new System.Drawing.Size(78, 21);
-			this.Glide_filtering.TabIndex = 21;
+            "Zelda",
+            "Bomberman64",
+            "Diddy Kong Racing",
+            "Tonic Trouble",
+            "PPL",
+            "All-Star Baseball",
+            "Doraemon 2",
+            "Space Invaders",
+            "Beetle Adventure Racing",
+            "ISS64",
+            "Resident Evil 2",
+            "WCW Nitro",
+            "Chopper Attack",
+            "Yoshi Story",
+            "F-Zero",
+            "Paper Mario",
+            "Top Gear Rally",
+            "Top Gear Rally 2",
+            "Killer Instinct",
+            "LEGO Racers"});
+			this.Glide_enable_hacks_for_game.Location = new System.Drawing.Point(324, 62);
+			this.Glide_enable_hacks_for_game.Name = "Glide_enable_hacks_for_game";
+			this.Glide_enable_hacks_for_game.Size = new System.Drawing.Size(226, 21);
+			this.Glide_enable_hacks_for_game.TabIndex = 53;
 			// 
-			// label35
+			// label43
 			// 
-			this.label35.AutoSize = true;
-			this.label35.Location = new System.Drawing.Point(3, 92);
-			this.label35.Name = "label35";
-			this.label35.Size = new System.Drawing.Size(70, 13);
-			this.label35.TabIndex = 24;
-			this.label35.Text = "Fix tex coord:";
+			this.label43.AutoSize = true;
+			this.label43.Location = new System.Drawing.Point(194, 39);
+			this.label43.Name = "label43";
+			this.label43.Size = new System.Drawing.Size(124, 13);
+			this.label43.TabIndex = 40;
+			this.label43.Text = "Buffer swapping method:";
 			// 
-			// Glide_fix_tex_coord
+			// Glide_swapmode
 			// 
-			this.Glide_fix_tex_coord.Location = new System.Drawing.Point(92, 89);
-			this.Glide_fix_tex_coord.Name = "Glide_fix_tex_coord";
-			this.Glide_fix_tex_coord.Size = new System.Drawing.Size(36, 20);
-			this.Glide_fix_tex_coord.TabIndex = 23;
+			this.Glide_swapmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.Glide_swapmode.FormattingEnabled = true;
+			this.Glide_swapmode.Items.AddRange(new object[] {
+            "Old",
+            "New",
+            "Hybrid"});
+			this.Glide_swapmode.Location = new System.Drawing.Point(324, 35);
+			this.Glide_swapmode.Name = "Glide_swapmode";
+			this.Glide_swapmode.Size = new System.Drawing.Size(78, 21);
+			this.Glide_swapmode.TabIndex = 39;
 			// 
-			// label36
+			// label42
 			// 
-			this.label36.AutoSize = true;
-			this.label36.Location = new System.Drawing.Point(3, 118);
-			this.label36.Name = "label36";
-			this.label36.Size = new System.Drawing.Size(86, 13);
-			this.label36.TabIndex = 26;
-			this.label36.Text = "LOD calculation:";
+			this.label42.AutoSize = true;
+			this.label42.Location = new System.Drawing.Point(3, 275);
+			this.label42.Name = "label42";
+			this.label42.Size = new System.Drawing.Size(78, 13);
+			this.label42.TabIndex = 38;
+			this.label42.Text = "Stipple pattern:";
 			// 
-			// Glide_lodmode
+			// Glide_stipple_pattern
 			// 
-			this.Glide_lodmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.Glide_lodmode.FormattingEnabled = true;
-			this.Glide_lodmode.Items.AddRange(new object[] {
-            "Off",
-            "Fast",
-            "Precise"});
-			this.Glide_lodmode.Location = new System.Drawing.Point(92, 115);
-			this.Glide_lodmode.Name = "Glide_lodmode";
-			this.Glide_lodmode.Size = new System.Drawing.Size(78, 21);
-			this.Glide_lodmode.TabIndex = 25;
+			this.Glide_stipple_pattern.Location = new System.Drawing.Point(92, 272);
+			this.Glide_stipple_pattern.Name = "Glide_stipple_pattern";
+			this.Glide_stipple_pattern.Size = new System.Drawing.Size(36, 20);
+			this.Glide_stipple_pattern.TabIndex = 37;
 			// 
-			// label37
+			// label41
 			// 
-			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(3, 145);
-			this.label37.Name = "label37";
-			this.label37.Size = new System.Drawing.Size(48, 13);
-			this.label37.TabIndex = 28;
-			this.label37.Text = "Offset X:";
+			this.label41.AutoSize = true;
+			this.label41.Location = new System.Drawing.Point(3, 249);
+			this.label41.Name = "label41";
+			this.label41.Size = new System.Drawing.Size(71, 13);
+			this.label41.TabIndex = 36;
+			this.label41.Text = "Stipple mode:";
 			// 
-			// Glide_offset_x
+			// Glide_stipple_mode
 			// 
-			this.Glide_offset_x.Location = new System.Drawing.Point(92, 142);
-			this.Glide_offset_x.Name = "Glide_offset_x";
-			this.Glide_offset_x.Size = new System.Drawing.Size(36, 20);
-			this.Glide_offset_x.TabIndex = 27;
-			// 
-			// label38
-			// 
-			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(3, 171);
-			this.label38.Name = "label38";
-			this.label38.Size = new System.Drawing.Size(48, 13);
-			this.label38.TabIndex = 30;
-			this.label38.Text = "Offset Y:";
-			// 
-			// Glide_offset_y
-			// 
-			this.Glide_offset_y.Location = new System.Drawing.Point(92, 168);
-			this.Glide_offset_y.Name = "Glide_offset_y";
-			this.Glide_offset_y.Size = new System.Drawing.Size(36, 20);
-			this.Glide_offset_y.TabIndex = 29;
+			this.Glide_stipple_mode.Location = new System.Drawing.Point(92, 246);
+			this.Glide_stipple_mode.Name = "Glide_stipple_mode";
+			this.Glide_stipple_mode.Size = new System.Drawing.Size(36, 20);
+			this.Glide_stipple_mode.TabIndex = 35;
 			// 
 			// label39
 			// 
@@ -2339,99 +2287,151 @@
 			this.Glide_scale_x.Size = new System.Drawing.Size(36, 20);
 			this.Glide_scale_x.TabIndex = 31;
 			// 
-			// label41
+			// label38
 			// 
-			this.label41.AutoSize = true;
-			this.label41.Location = new System.Drawing.Point(3, 249);
-			this.label41.Name = "label41";
-			this.label41.Size = new System.Drawing.Size(71, 13);
-			this.label41.TabIndex = 36;
-			this.label41.Text = "Stipple mode:";
+			this.label38.AutoSize = true;
+			this.label38.Location = new System.Drawing.Point(3, 171);
+			this.label38.Name = "label38";
+			this.label38.Size = new System.Drawing.Size(48, 13);
+			this.label38.TabIndex = 30;
+			this.label38.Text = "Offset Y:";
 			// 
-			// Glide_stipple_mode
+			// Glide_offset_y
 			// 
-			this.Glide_stipple_mode.Location = new System.Drawing.Point(92, 246);
-			this.Glide_stipple_mode.Name = "Glide_stipple_mode";
-			this.Glide_stipple_mode.Size = new System.Drawing.Size(36, 20);
-			this.Glide_stipple_mode.TabIndex = 35;
+			this.Glide_offset_y.Location = new System.Drawing.Point(92, 168);
+			this.Glide_offset_y.Name = "Glide_offset_y";
+			this.Glide_offset_y.Size = new System.Drawing.Size(36, 20);
+			this.Glide_offset_y.TabIndex = 29;
 			// 
-			// label42
+			// label37
 			// 
-			this.label42.AutoSize = true;
-			this.label42.Location = new System.Drawing.Point(3, 275);
-			this.label42.Name = "label42";
-			this.label42.Size = new System.Drawing.Size(78, 13);
-			this.label42.TabIndex = 38;
-			this.label42.Text = "Stipple pattern:";
+			this.label37.AutoSize = true;
+			this.label37.Location = new System.Drawing.Point(3, 145);
+			this.label37.Name = "label37";
+			this.label37.Size = new System.Drawing.Size(48, 13);
+			this.label37.TabIndex = 28;
+			this.label37.Text = "Offset X:";
 			// 
-			// Glide_stipple_pattern
+			// Glide_offset_x
 			// 
-			this.Glide_stipple_pattern.Location = new System.Drawing.Point(92, 272);
-			this.Glide_stipple_pattern.Name = "Glide_stipple_pattern";
-			this.Glide_stipple_pattern.Size = new System.Drawing.Size(36, 20);
-			this.Glide_stipple_pattern.TabIndex = 37;
+			this.Glide_offset_x.Location = new System.Drawing.Point(92, 142);
+			this.Glide_offset_x.Name = "Glide_offset_x";
+			this.Glide_offset_x.Size = new System.Drawing.Size(36, 20);
+			this.Glide_offset_x.TabIndex = 27;
 			// 
-			// label43
+			// label36
 			// 
-			this.label43.AutoSize = true;
-			this.label43.Location = new System.Drawing.Point(194, 39);
-			this.label43.Name = "label43";
-			this.label43.Size = new System.Drawing.Size(124, 13);
-			this.label43.TabIndex = 40;
-			this.label43.Text = "Buffer swapping method:";
+			this.label36.AutoSize = true;
+			this.label36.Location = new System.Drawing.Point(3, 118);
+			this.label36.Name = "label36";
+			this.label36.Size = new System.Drawing.Size(86, 13);
+			this.label36.TabIndex = 26;
+			this.label36.Text = "LOD calculation:";
 			// 
-			// Glide_swapmode
+			// Glide_lodmode
 			// 
-			this.Glide_swapmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.Glide_swapmode.FormattingEnabled = true;
-			this.Glide_swapmode.Items.AddRange(new object[] {
-            "Old",
-            "New",
-            "Hybrid"});
-			this.Glide_swapmode.Location = new System.Drawing.Point(324, 35);
-			this.Glide_swapmode.Name = "Glide_swapmode";
-			this.Glide_swapmode.Size = new System.Drawing.Size(78, 21);
-			this.Glide_swapmode.TabIndex = 39;
+			this.Glide_lodmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.Glide_lodmode.FormattingEnabled = true;
+			this.Glide_lodmode.Items.AddRange(new object[] {
+            "Off",
+            "Fast",
+            "Precise"});
+			this.Glide_lodmode.Location = new System.Drawing.Point(92, 115);
+			this.Glide_lodmode.Name = "Glide_lodmode";
+			this.Glide_lodmode.Size = new System.Drawing.Size(78, 21);
+			this.Glide_lodmode.TabIndex = 25;
 			// 
-			// label44
+			// label35
 			// 
-			this.label44.AutoSize = true;
-			this.label44.Location = new System.Drawing.Point(199, 65);
-			this.label44.Name = "label44";
-			this.label44.Size = new System.Drawing.Size(119, 13);
-			this.label44.TabIndex = 54;
-			this.label44.Text = "Enable hacks for game:";
+			this.label35.AutoSize = true;
+			this.label35.Location = new System.Drawing.Point(3, 92);
+			this.label35.Name = "label35";
+			this.label35.Size = new System.Drawing.Size(70, 13);
+			this.label35.TabIndex = 24;
+			this.label35.Text = "Fix tex coord:";
 			// 
-			// comboBox1
+			// Glide_fix_tex_coord
 			// 
-			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Items.AddRange(new object[] {
+			this.Glide_fix_tex_coord.Location = new System.Drawing.Point(92, 89);
+			this.Glide_fix_tex_coord.Name = "Glide_fix_tex_coord";
+			this.Glide_fix_tex_coord.Size = new System.Drawing.Size(36, 20);
+			this.Glide_fix_tex_coord.TabIndex = 23;
+			// 
+			// label34
+			// 
+			this.label34.AutoSize = true;
+			this.label34.Location = new System.Drawing.Point(3, 65);
+			this.label34.Name = "label34";
+			this.label34.Size = new System.Drawing.Size(75, 13);
+			this.label34.TabIndex = 22;
+			this.label34.Text = "Filtering mode:";
+			// 
+			// Glide_filtering
+			// 
+			this.Glide_filtering.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.Glide_filtering.FormattingEnabled = true;
+			this.Glide_filtering.Items.AddRange(new object[] {
             "None",
-            "Zelda",
-            "Bomberman64",
-            "Diddy Kong Racing",
-            "Tonic Trouble",
-            "PPL",
-            "All-Star Baseball",
-            "Doraemon 2",
-            "Space Invaders",
-            "Beetle Adventure Racing",
-            "ISS64",
-            "Resident Evil 2",
-            "WCW Nitro",
-            "Chopper Attack",
-            "Yoshi Story",
-            "F-Zero",
-            "Paper Mario",
-            "Top Gear Rally",
-            "Top Gear Rally 2",
-            "Killer Instinct",
-            "LEGO Racers"});
-			this.comboBox1.Location = new System.Drawing.Point(324, 62);
-			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(226, 21);
-			this.comboBox1.TabIndex = 53;
+            "Force bilinear",
+            "Force point-sampled"});
+			this.Glide_filtering.Location = new System.Drawing.Point(92, 62);
+			this.Glide_filtering.Name = "Glide_filtering";
+			this.Glide_filtering.Size = new System.Drawing.Size(78, 21);
+			this.Glide_filtering.TabIndex = 21;
+			// 
+			// label33
+			// 
+			this.label33.AutoSize = true;
+			this.label33.Location = new System.Drawing.Point(3, 39);
+			this.label33.Name = "label33";
+			this.label33.Size = new System.Drawing.Size(86, 13);
+			this.label33.TabIndex = 20;
+			this.label33.Text = "Depth bias level:";
+			// 
+			// Glide_depth_bias
+			// 
+			this.Glide_depth_bias.Location = new System.Drawing.Point(92, 36);
+			this.Glide_depth_bias.Name = "Glide_depth_bias";
+			this.Glide_depth_bias.Size = new System.Drawing.Size(36, 20);
+			this.Glide_depth_bias.TabIndex = 19;
+			// 
+			// GlideUseDefaultHacks2
+			// 
+			this.GlideUseDefaultHacks2.AutoSize = true;
+			this.GlideUseDefaultHacks2.Location = new System.Drawing.Point(6, 6);
+			this.GlideUseDefaultHacks2.Name = "GlideUseDefaultHacks2";
+			this.GlideUseDefaultHacks2.Size = new System.Drawing.Size(165, 17);
+			this.GlideUseDefaultHacks2.TabIndex = 3;
+			this.GlideUseDefaultHacks2.Text = "Use defaults for current game";
+			this.GlideUseDefaultHacks2.UseVisualStyleBackColor = true;
+			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(365, 373);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 1;
+			this.button1.Text = "Save";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
+			// CancelBT
+			// 
+			this.CancelBT.Location = new System.Drawing.Point(461, 373);
+			this.CancelBT.Name = "CancelBT";
+			this.CancelBT.Size = new System.Drawing.Size(75, 23);
+			this.CancelBT.TabIndex = 2;
+			this.CancelBT.Text = "Cancel";
+			this.CancelBT.UseVisualStyleBackColor = true;
+			this.CancelBT.Click += new System.EventHandler(this.CancelBT_Click);
+			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutoPopDelay = 10000;
+			this.toolTip1.InitialDelay = 500;
+			this.toolTip1.IsBalloon = true;
+			this.toolTip1.ReshowDelay = 100;
+			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -2629,10 +2629,10 @@
 		private System.Windows.Forms.CheckBox Glide_decrease_fillrect_edge;
 		private System.Windows.Forms.CheckBox Glide_buff_clear;
 		private System.Windows.Forms.CheckBox Glide_alt_tex_size;
-		private System.Windows.Forms.CheckBox checkBox1;
+		private System.Windows.Forms.CheckBox GlideUseDefaultHacks1;
 		private System.Windows.Forms.TabPage GlidePerGameHacks2;
 		private System.Windows.Forms.Label label44;
-		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.ComboBox Glide_enable_hacks_for_game;
 		private System.Windows.Forms.Label label43;
 		private System.Windows.Forms.ComboBox Glide_swapmode;
 		private System.Windows.Forms.Label label42;
@@ -2655,6 +2655,6 @@
 		private System.Windows.Forms.ComboBox Glide_filtering;
 		private System.Windows.Forms.Label label33;
 		private System.Windows.Forms.TextBox Glide_depth_bias;
-		private System.Windows.Forms.CheckBox checkBox2;
+		private System.Windows.Forms.CheckBox GlideUseDefaultHacks2;
 	}
 }
