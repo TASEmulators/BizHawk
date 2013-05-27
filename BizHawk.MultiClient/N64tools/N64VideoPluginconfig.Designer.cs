@@ -135,6 +135,15 @@
 			this.Glide64TabPage = new System.Windows.Forms.TabPage();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.Glide64General = new System.Windows.Forms.TabPage();
+			this.label39 = new System.Windows.Forms.Label();
+			this.Glide_scale_y = new System.Windows.Forms.TextBox();
+			this.label40 = new System.Windows.Forms.Label();
+			this.Glide_scale_x = new System.Windows.Forms.TextBox();
+			this.label38 = new System.Windows.Forms.Label();
+			this.Glide_offset_y = new System.Windows.Forms.TextBox();
+			this.label37 = new System.Windows.Forms.Label();
+			this.Glide_offset_x = new System.Windows.Forms.TextBox();
+			this.Glide_fb_get_info = new System.Windows.Forms.CheckBox();
 			this.Glide_disable_auxbuf = new System.Windows.Forms.CheckBox();
 			this.Glide_fbo = new System.Windows.Forms.CheckBox();
 			this.Glide_noglsl = new System.Windows.Forms.CheckBox();
@@ -202,15 +211,6 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.Glide_fb_get_info = new System.Windows.Forms.CheckBox();
-			this.label39 = new System.Windows.Forms.Label();
-			this.Glide_scale_y = new System.Windows.Forms.TextBox();
-			this.label40 = new System.Windows.Forms.Label();
-			this.Glide_scale_x = new System.Windows.Forms.TextBox();
-			this.label38 = new System.Windows.Forms.Label();
-			this.Glide_offset_y = new System.Windows.Forms.TextBox();
-			this.label37 = new System.Windows.Forms.Label();
-			this.Glide_offset_x = new System.Windows.Forms.TextBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -1622,6 +1622,81 @@
 			this.Glide64General.Text = "General";
 			this.Glide64General.UseVisualStyleBackColor = true;
 			// 
+			// label39
+			// 
+			this.label39.AutoSize = true;
+			this.label39.Location = new System.Drawing.Point(386, 265);
+			this.label39.Name = "label39";
+			this.label39.Size = new System.Drawing.Size(47, 13);
+			this.label39.TabIndex = 42;
+			this.label39.Text = "Scale Y:";
+			// 
+			// Glide_scale_y
+			// 
+			this.Glide_scale_y.Location = new System.Drawing.Point(455, 262);
+			this.Glide_scale_y.Name = "Glide_scale_y";
+			this.Glide_scale_y.Size = new System.Drawing.Size(56, 20);
+			this.Glide_scale_y.TabIndex = 41;
+			// 
+			// label40
+			// 
+			this.label40.AutoSize = true;
+			this.label40.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.label40.Location = new System.Drawing.Point(386, 239);
+			this.label40.Name = "label40";
+			this.label40.Size = new System.Drawing.Size(47, 13);
+			this.label40.TabIndex = 40;
+			this.label40.Text = "Scale X:";
+			// 
+			// Glide_scale_x
+			// 
+			this.Glide_scale_x.Location = new System.Drawing.Point(455, 236);
+			this.Glide_scale_x.Name = "Glide_scale_x";
+			this.Glide_scale_x.Size = new System.Drawing.Size(56, 20);
+			this.Glide_scale_x.TabIndex = 39;
+			// 
+			// label38
+			// 
+			this.label38.AutoSize = true;
+			this.label38.Location = new System.Drawing.Point(386, 213);
+			this.label38.Name = "label38";
+			this.label38.Size = new System.Drawing.Size(48, 13);
+			this.label38.TabIndex = 38;
+			this.label38.Text = "Offset Y:";
+			// 
+			// Glide_offset_y
+			// 
+			this.Glide_offset_y.Location = new System.Drawing.Point(455, 210);
+			this.Glide_offset_y.Name = "Glide_offset_y";
+			this.Glide_offset_y.Size = new System.Drawing.Size(56, 20);
+			this.Glide_offset_y.TabIndex = 37;
+			// 
+			// label37
+			// 
+			this.label37.AutoSize = true;
+			this.label37.Location = new System.Drawing.Point(386, 187);
+			this.label37.Name = "label37";
+			this.label37.Size = new System.Drawing.Size(48, 13);
+			this.label37.TabIndex = 36;
+			this.label37.Text = "Offset X:";
+			// 
+			// Glide_offset_x
+			// 
+			this.Glide_offset_x.Location = new System.Drawing.Point(455, 184);
+			this.Glide_offset_x.Name = "Glide_offset_x";
+			this.Glide_offset_x.Size = new System.Drawing.Size(56, 20);
+			this.Glide_offset_x.TabIndex = 35;
+			// 
+			// Glide_fb_get_info
+			// 
+			this.Glide_fb_get_info.AutoSize = true;
+			this.Glide_fb_get_info.Location = new System.Drawing.Point(9, 278);
+			this.Glide_fb_get_info.Name = "Glide_fb_get_info";
+			this.Glide_fb_get_info.Size = new System.Drawing.Size(119, 17);
+			this.Glide_fb_get_info.TabIndex = 23;
+			this.Glide_fb_get_info.Text = "Get framebuffer info";
+			this.Glide_fb_get_info.UseVisualStyleBackColor = true;
+			// 
 			// Glide_disable_auxbuf
 			// 
 			this.Glide_disable_auxbuf.AutoSize = true;
@@ -1683,7 +1758,7 @@
             "Hq4x"});
 			this.Glide_tex_filter.Location = new System.Drawing.Point(297, 86);
 			this.Glide_tex_filter.Name = "Glide_tex_filter";
-			this.Glide_tex_filter.Size = new System.Drawing.Size(78, 21);
+			this.Glide_tex_filter.Size = new System.Drawing.Size(95, 21);
 			this.Glide_tex_filter.TabIndex = 17;
 			// 
 			// Glide_fb_render
@@ -2154,7 +2229,7 @@
 			// label44
 			// 
 			this.label44.AutoSize = true;
-			this.label44.Location = new System.Drawing.Point(199, 65);
+			this.label44.Location = new System.Drawing.Point(271, 62);
 			this.label44.Name = "label44";
 			this.label44.Size = new System.Drawing.Size(119, 13);
 			this.label44.TabIndex = 54;
@@ -2185,15 +2260,15 @@
             "Top Gear Rally 2",
             "Killer Instinct",
             "LEGO Racers"});
-			this.Glide_enable_hacks_for_game.Location = new System.Drawing.Point(324, 62);
+			this.Glide_enable_hacks_for_game.Location = new System.Drawing.Point(396, 59);
 			this.Glide_enable_hacks_for_game.Name = "Glide_enable_hacks_for_game";
-			this.Glide_enable_hacks_for_game.Size = new System.Drawing.Size(226, 21);
+			this.Glide_enable_hacks_for_game.Size = new System.Drawing.Size(155, 21);
 			this.Glide_enable_hacks_for_game.TabIndex = 53;
 			// 
 			// label43
 			// 
 			this.label43.AutoSize = true;
-			this.label43.Location = new System.Drawing.Point(194, 39);
+			this.label43.Location = new System.Drawing.Point(266, 36);
 			this.label43.Name = "label43";
 			this.label43.Size = new System.Drawing.Size(124, 13);
 			this.label43.TabIndex = 40;
@@ -2207,7 +2282,7 @@
             "Old",
             "New",
             "Hybrid"});
-			this.Glide_swapmode.Location = new System.Drawing.Point(324, 35);
+			this.Glide_swapmode.Location = new System.Drawing.Point(396, 32);
 			this.Glide_swapmode.Name = "Glide_swapmode";
 			this.Glide_swapmode.Size = new System.Drawing.Size(78, 21);
 			this.Glide_swapmode.TabIndex = 39;
@@ -2225,7 +2300,7 @@
 			// 
 			this.Glide_stipple_pattern.Location = new System.Drawing.Point(92, 272);
 			this.Glide_stipple_pattern.Name = "Glide_stipple_pattern";
-			this.Glide_stipple_pattern.Size = new System.Drawing.Size(36, 20);
+			this.Glide_stipple_pattern.Size = new System.Drawing.Size(78, 20);
 			this.Glide_stipple_pattern.TabIndex = 37;
 			// 
 			// label41
@@ -2301,7 +2376,7 @@
             "Force point-sampled"});
 			this.Glide_filtering.Location = new System.Drawing.Point(92, 62);
 			this.Glide_filtering.Name = "Glide_filtering";
-			this.Glide_filtering.Size = new System.Drawing.Size(78, 21);
+			this.Glide_filtering.Size = new System.Drawing.Size(138, 21);
 			this.Glide_filtering.TabIndex = 21;
 			// 
 			// label33
@@ -2358,81 +2433,6 @@
 			this.toolTip1.IsBalloon = true;
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-			// 
-			// Glide_fb_get_info
-			// 
-			this.Glide_fb_get_info.AutoSize = true;
-			this.Glide_fb_get_info.Location = new System.Drawing.Point(9, 278);
-			this.Glide_fb_get_info.Name = "Glide_fb_get_info";
-			this.Glide_fb_get_info.Size = new System.Drawing.Size(119, 17);
-			this.Glide_fb_get_info.TabIndex = 23;
-			this.Glide_fb_get_info.Text = "Get framebuffer info";
-			this.Glide_fb_get_info.UseVisualStyleBackColor = true;
-			// 
-			// label39
-			// 
-			this.label39.AutoSize = true;
-			this.label39.Location = new System.Drawing.Point(386, 265);
-			this.label39.Name = "label39";
-			this.label39.Size = new System.Drawing.Size(47, 13);
-			this.label39.TabIndex = 42;
-			this.label39.Text = "Scale Y:";
-			// 
-			// Glide_scale_y
-			// 
-			this.Glide_scale_y.Location = new System.Drawing.Point(475, 262);
-			this.Glide_scale_y.Name = "Glide_scale_y";
-			this.Glide_scale_y.Size = new System.Drawing.Size(36, 20);
-			this.Glide_scale_y.TabIndex = 41;
-			// 
-			// label40
-			// 
-			this.label40.AutoSize = true;
-			this.label40.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.label40.Location = new System.Drawing.Point(386, 239);
-			this.label40.Name = "label40";
-			this.label40.Size = new System.Drawing.Size(47, 13);
-			this.label40.TabIndex = 40;
-			this.label40.Text = "Scale X:";
-			// 
-			// Glide_scale_x
-			// 
-			this.Glide_scale_x.Location = new System.Drawing.Point(475, 236);
-			this.Glide_scale_x.Name = "Glide_scale_x";
-			this.Glide_scale_x.Size = new System.Drawing.Size(36, 20);
-			this.Glide_scale_x.TabIndex = 39;
-			// 
-			// label38
-			// 
-			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(386, 213);
-			this.label38.Name = "label38";
-			this.label38.Size = new System.Drawing.Size(48, 13);
-			this.label38.TabIndex = 38;
-			this.label38.Text = "Offset Y:";
-			// 
-			// Glide_offset_y
-			// 
-			this.Glide_offset_y.Location = new System.Drawing.Point(475, 210);
-			this.Glide_offset_y.Name = "Glide_offset_y";
-			this.Glide_offset_y.Size = new System.Drawing.Size(36, 20);
-			this.Glide_offset_y.TabIndex = 37;
-			// 
-			// label37
-			// 
-			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(386, 187);
-			this.label37.Name = "label37";
-			this.label37.Size = new System.Drawing.Size(48, 13);
-			this.label37.TabIndex = 36;
-			this.label37.Text = "Offset X:";
-			// 
-			// Glide_offset_x
-			// 
-			this.Glide_offset_x.Location = new System.Drawing.Point(475, 184);
-			this.Glide_offset_x.Name = "Glide_offset_x";
-			this.Glide_offset_x.Size = new System.Drawing.Size(36, 20);
-			this.Glide_offset_x.TabIndex = 35;
 			// 
 			// N64VideoPluginconfig
 			// 
