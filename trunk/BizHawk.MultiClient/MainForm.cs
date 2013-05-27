@@ -3870,6 +3870,11 @@ namespace BizHawk.MultiClient
 				Global.Config.RicePlugin.FillPerGameHacks(game);
 				video_settings.Parameters = Global.Config.RicePlugin.GetPluginSettings();
 			}
+			else if (Global.Config.N64VidPlugin == "Glide64")
+			{
+				Global.Config.GlidePlugin.FillPerGameHacks(game);
+				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
+			}
 
 			return video_settings;
 		}

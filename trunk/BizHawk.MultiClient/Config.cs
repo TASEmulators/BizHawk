@@ -2098,7 +2098,39 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.GlidePlugin.UseDefaultHacks)
 			{
+				alt_tex_size = Global.Game.GetBool("Glide_alt_tex_size", false);
+				buff_clear = Global.Game.GetBool("Glide_buff_clear", true);
+				decrease_fillrect_edge = Global.Game.GetBool("Glide_decrease_fillrect_edge", false);
+				detect_cpu_write = Global.Game.GetBool("Glide_detect_cpu_write", false);
+				fb_clear = Global.Game.GetBool("Glide_fb_clear", false);
+				fb_hires = Global.Game.GetBool("Glide_fb_clear", true);
+				fb_read_alpha = Global.Game.GetBool("Glide_fb_read_alpha", false);
+				fb_smart = Global.Game.GetBool("Glide_fb_smart", false);
+				fillcolor_fix = Global.Game.GetBool("Glide_fillcolor_fix", false);
+				fog = Global.Game.GetBool("Glide_fog", true);
+				force_depth_compare = Global.Game.GetBool("Glide_force_depth_compare", false);
+				force_microcheck = Global.Game.GetBool("Glide_force_microcheck", false);
+				fb_hires_buf_clear = Global.Game.GetBool("Glide_fb_hires_buf_clear", true);
+				fb_ignore_aux_copy = Global.Game.GetBool("Glide_fb_ignore_aux_copy", false);
+				fb_ignore_previous = Global.Game.GetBool("Glide_fb_ignore_previous", false);
+				increase_primdepth = Global.Game.GetBool("Glide_increase_primdepth", false);
+				increase_texrect_edge = Global.Game.GetBool("Glide_increase_texrect_edge", false);
+				fb_optimize_texrect = Global.Game.GetBool("Glide_fb_optimize_texrect", true);
+				fb_optimize_write = Global.Game.GetBool("Glide_fb_optimize_write", false);
+				PPL = Global.Game.GetBool("Glide_PPL", false);
+				soft_depth_compare = Global.Game.GetBool("Glide_soft_depth_compare", false);
+				use_sts1_only = Global.Game.GetBool("Glide_use_sts1_only", false);
+				wrap_big_tex = Global.Game.GetBool("Glide_wrap_big_tex", false);
+
+				depth_bias = Global.Game.GetInt("Glide_depth_bias", 20);
+				filtering = Global.Game.GetInt("Glide_filtering", 1);
+				fix_tex_coord = Global.Game.GetInt("Glide_fix_tex_coord", 0);
+				lodmode = Global.Game.GetInt("Glide_lodmode", 0);
 				
+				stipple_mode = Global.Game.GetInt("Glide_stipple_mode", 2);
+				stipple_pattern = Global.Game.GetInt("Glide_stipple_pattern", 1041204192);
+				swapmode = Global.Game.GetInt("Glide_swapmode", 1);
+				enable_hacks_for_game = Global.Game.GetInt("Glide_enable_hacks_for_game", 0);
 			}
 		}
 
@@ -2106,12 +2138,12 @@ namespace BizHawk.MultiClient
 		{
 			//TODO: deal witn the game depedent settings
 			Dictionary<string, object> dictionary = new Dictionary<string, object>();
-			System.Reflection.MemberInfo[] members = Global.Config.RicePlugin.GetType().GetMembers();
+			System.Reflection.MemberInfo[] members = Global.Config.GlidePlugin.GetType().GetMembers();
 			foreach (System.Reflection.MemberInfo member in members)
 			{
 				if (member.MemberType.ToString() == "Field")
 				{
-					object field = Global.Config.RicePlugin.GetType().GetField(member.Name).GetValue(Global.Config.RicePlugin);
+					object field = Global.Config.GlidePlugin.GetType().GetField(member.Name).GetValue(Global.Config.GlidePlugin);
 					dictionary.Add(member.Name, field);
 				}
 			}
