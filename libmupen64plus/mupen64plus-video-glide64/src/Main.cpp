@@ -182,6 +182,29 @@ DWORD resolutions[0x18][2] = {
   { 2048, 2048 }
 };
 
+enum {
+	NONE,
+    ZELDA,
+	BOMBERMAN64,
+	DIDDY,
+	TONIC,
+	ASB,
+	DORAEMON2,
+	INVADERS,
+	BAR,
+	ISS64,
+	RE2,
+	NITRO,
+	CHOPPER,
+	YOSHI,
+	FZERO,
+	PM,
+	TGR,
+	TGR2,
+	KI,
+	LEGO
+};
+
 // ref rate
 // 60=0x0, 70=0x1, 72=0x2, 75=0x3, 80=0x4, 90=0x5, 100=0x6, 85=0x7, 120=0x8, none=0xff
 
@@ -449,107 +472,109 @@ void ReadSpecialSettings (const char name[21])
   else if (strstr(name, (const char *)"LEGORacers"))
     settings.lego = TRUE;
 
-  INI_Open ();
-  if (INI_FindSection (name,FALSE) == FALSE)
+  int EnableHacksForGame = (int)Config_ReadInt ("enable_hacks_for_game", "???", 0, TRUE, FALSE);
+
+  switch (EnableHacksForGame)
   {
-    INI_Close ();
-    return;
+	case ZELDA:
+		settings.zelda = TRUE;
+		break;
+	case BOMBERMAN64:
+		settings.bomberman64 = TRUE;
+		break;
+	case DIDDY:
+		settings.diddy = TRUE;
+		break;
+	case TONIC:
+		settings.tonic = TRUE;
+		break;
+	case ASB:
+		settings.ASB = TRUE;
+		break;
+	case DORAEMON2:
+		settings.doraemon2 = TRUE;
+		break;
+	case INVADERS:
+		settings.invaders = TRUE;
+		break;
+	case BAR:
+		settings.BAR = TRUE;
+		break;
+	case ISS64:
+		settings.ISS64 = TRUE;
+		break;
+	case RE2:
+		settings.RE2 = TRUE;
+		ZLUT_init();
+		break;
+	case NITRO:
+		settings.nitro = TRUE;
+		break;
+	case CHOPPER:
+		settings.chopper = TRUE;
+		break;
+	case YOSHI:
+		settings.yoshi= TRUE;
+		break;
+	case FZERO:
+		settings.fzero = TRUE;
+		break;
+	case PM:
+		settings.PM = TRUE;
+		break;
+	case TGR:
+		settings.TGR = TRUE;
+		break;
+	case TGR2:
+		settings.TGR2 = TRUE;
+		break;
+	case KI:
+		settings.KI = TRUE;
+		break;
+	case LEGO:
+		settings.lego = TRUE;
+		break;
   }
 
-  int offset_x = INI_ReadInt ("offset_x", -1, 0);
-  int offset_y = INI_ReadInt ("offset_y", -1, 0);
-  int scale_x = INI_ReadInt ("scale_x", -1, 0);
-  int scale_y = INI_ReadInt ("scale_y", -1, 0);
-  int alt_tex_size = INI_ReadInt ("alt_tex_size", -1, 0);
-  int use_sts1_only = INI_ReadInt ("use_sts1_only", -1, 0);
-  int ppl = INI_ReadInt ("PPL", -1, 0);
-  //  int texrect_zbuf = INI_ReadInt ("force_texrect_zbuf", -1, 0);
-  int optimize_texrect = INI_ReadInt ("optimize_texrect", -1, 0);
-  int optimize_write = INI_ReadInt ("optimize_write", -1, 0);
-  int ignore_aux_copy = INI_ReadInt ("ignore_aux_copy", -1, 0);
-  int ignore_previous = INI_ReadInt ("ignore_previous", -1, 0);
-  int hires_buf_clear = INI_ReadInt ("hires_buf_clear", -1, 0);
-  int wrap_big_tex = INI_ReadInt ("wrap_big_tex", -1, 0);
-  int tex_fix = INI_ReadInt ("fix_tex_coord", -1, 0);
-  int soft_depth_compare = INI_ReadInt ("soft_depth_compare", -1, 0);
-  int force_depth_compare = INI_ReadInt ("force_depth_compare", -1, 0);
-  int fillcolor_fix = INI_ReadInt ("fillcolor_fix", -1, 0);
-  int depth_bias = INI_ReadInt ("depth_bias", -1, 0);
-  int increase_texrect_edge = INI_ReadInt ("increase_texrect_edge", -1, 0);
-  int decrease_fillrect_edge = INI_ReadInt ("decrease_fillrect_edge", -1, 0);
-  int increase_primdepth = INI_ReadInt ("increase_primdepth", -1, 0);
-  int stipple_mode = INI_ReadInt ("stipple_mode", -1, 0);
-  int stipple_pattern = INI_ReadInt ("stipple_pattern", -1, 0);
-  int force_microcheck = INI_ReadInt ("force_microcheck", -1, 0);
-  int info_disable = INI_ReadInt ("fb_info_disable", -1, 0);
-  int hires_disable = INI_ReadInt ("fb_hires_disable", -1, 0);
 
-  if (offset_x != -1) settings.offset_x = offset_x;
-  if (offset_y != -1) settings.offset_y = offset_y;
-  if (scale_x != -1) settings.scale_x = scale_x;
-  if (scale_y != -1) settings.scale_y = scale_y;
-  if (alt_tex_size != -1) settings.alt_tex_size = alt_tex_size;
-  if (use_sts1_only != -1) settings.use_sts1_only = use_sts1_only;
-  if (ppl != -1) settings.PPL = ppl;
-  //  if (texrect_zbuf != -1) settings.force_texrect_zbuf = texrect_zbuf;
-  if (optimize_texrect != -1) settings.fb_optimize_texrect = optimize_texrect;
-  if (optimize_write != -1) settings.fb_optimize_write = optimize_write;
-  if (ignore_aux_copy != -1) settings.fb_ignore_aux_copy = ignore_aux_copy;
-  if (hires_buf_clear != -1) settings.fb_hires_buf_clear = hires_buf_clear;
-  if (wrap_big_tex != -1) settings.wrap_big_tex = wrap_big_tex;
-  if (tex_fix != -1) settings.fix_tex_coord = tex_fix;
-  if (soft_depth_compare != -1) settings.soft_depth_compare = soft_depth_compare;
-  if (force_depth_compare != -1) settings.force_depth_compare = force_depth_compare;
-  if (fillcolor_fix != -1) settings.fillcolor_fix = fillcolor_fix;
-  if (depth_bias != -1) settings.depth_bias = -depth_bias;
-  if (increase_texrect_edge != -1) settings.increase_texrect_edge = increase_texrect_edge;
-  if (decrease_fillrect_edge != -1) settings.decrease_fillrect_edge = decrease_fillrect_edge;
-  if (increase_primdepth != -1) settings.increase_primdepth = increase_primdepth;
-  if (stipple_mode != -1) settings.stipple_mode = stipple_mode;
-  if (stipple_pattern != -1) settings.stipple_pattern = (DWORD)stipple_pattern;
-  if (force_microcheck != -1) settings.force_microcheck = force_microcheck;
-  if (ignore_previous != -1) settings.fb_ignore_previous = ignore_previous;
-  if (info_disable == 1) settings.fb_get_info = 0;
-  if (hires_disable == 1) settings.fb_hires = 0;
-  if (settings.lodmode == 0)
-  {
-    int lodmode = INI_ReadInt ("lodmode", -1, 0);
-    if (lodmode > 0)
-      settings.lodmode = lodmode;
-  }
+  settings.offset_x = (int)Config_ReadInt ("offset_x", "???", 0, TRUE, FALSE);
+  settings.offset_y = (int)Config_ReadInt ("offset_y", "???", 0, TRUE, FALSE);
+  settings.scale_x = (int)Config_ReadInt ("scale_x", "???", 100000, TRUE, FALSE);
+  settings.scale_y = (int)Config_ReadInt ("scale_y", "???", 100000, TRUE, FALSE);
+  settings.alt_tex_size = (BOOL)Config_ReadInt ("alt_tex_size", "???", 0);
+  settings.use_sts1_only = (BOOL)Config_ReadInt ("use_sts1_only", "???", 0);
+  settings.PPL = (BOOL)Config_ReadInt ("PPL", "???", 0);
+  settings.fb_optimize_texrect = (BOOL)Config_ReadInt ("fb_optimize_texrect", "???", 1);
+  settings.fb_optimize_write = (BOOL)Config_ReadInt ("fb_optimize_write", "???", 0);
+  settings.fb_ignore_aux_copy = (BOOL)Config_ReadInt ("fb_ignore_aux_copy", "???", 0);
+  settings.fb_hires_buf_clear = (BOOL)Config_ReadInt ("fb_hires_buf_clear", "???", 1);
+  settings.wrap_big_tex = (BOOL)Config_ReadInt ("wrap_big_tex", "???", 0);
+  settings.fix_tex_coord = (BOOL)Config_ReadInt ("fix_tex_coord", "???", 0);
+  settings.soft_depth_compare = (BOOL)Config_ReadInt ("soft_depth_compare", "???", 0);
+  settings.force_depth_compare = (BOOL)Config_ReadInt ("force_depth_compare", "???", 0);
+  settings.fillcolor_fix = (BOOL)Config_ReadInt ("fillcolor_fix", "???", 0);
+  settings.depth_bias = -(int)Config_ReadInt ("depth_bias", "???", 20, TRUE, FALSE);
+  settings.increase_texrect_edge = (BOOL)Config_ReadInt ("increase_texrect_edge", "???", 0);
+  settings.decrease_fillrect_edge = (BOOL)Config_ReadInt ("decrease_fillrect_edge", "???", 0);
+  settings.increase_primdepth = (BOOL)Config_ReadInt ("increase_primdepth", "???", 0);
+  settings.stipple_mode = (int)Config_ReadInt ("stipple_mode", "???", 1, TRUE, FALSE);
+  settings.stipple_pattern = (DWORD)Config_ReadInt ("stipple_pattern", "???", 1041204192, TRUE, FALSE);
+  settings.force_microcheck = (BOOL)Config_ReadInt ("force_microcheck", "???", 0);
+  settings.fb_ignore_previous = (BOOL)Config_ReadInt ("fb_ignore_previous", "???", 0);
+  settings.fb_get_info = (BOOL)Config_ReadInt ("fb_get_info", "???", 0);
+  settings.fb_hires = (BOOL)Config_ReadInt ("fb_hires", "???", 0);
 
-  if (settings.custom_ini)
-  {
-    int filtering = INI_ReadInt ("filtering", -1, 0);
-    int fog = INI_ReadInt ("fog", -1, 0);
-    int buff_clear = INI_ReadInt ("buff_clear", -1, 0);
-    int swapmode = INI_ReadInt ("swapmode", -1, 0);
-    int smart_read = INI_ReadInt ("fb_smart", -1, 0);
-    int read_alpha = INI_ReadInt ("fb_read_alpha", -1, 0);
-    int depth_clear = INI_ReadInt ("fb_clear", -1, 0);
-    //FIXME unused int depth_render = INI_ReadInt ("fb_render", -1, 0);
-    //int resolution = (INT)INI_ReadInt ("resolution", -1, 0);
-    int cpu_write_hack = (INT)INI_ReadInt ("detect_cpu_write", -1, 0);
+  settings.lodmode = (int)Config_ReadInt ("lodmode", "???", 0, TRUE, FALSE);
 
-    if (filtering != -1) settings.filtering = filtering;
-    if (fog != -1) settings.fog = fog;
-    if (buff_clear != -1) settings.buff_clear = buff_clear;
-    if (swapmode != -1) settings.swapmode= swapmode;
-    //    settings.swapmode = 2;
-    if (smart_read != -1) settings.fb_smart = smart_read;
-    if (read_alpha != -1) settings.fb_read_alpha= read_alpha;
-    if (depth_clear != -1) settings.fb_depth_clear = depth_clear;
-    if (cpu_write_hack != -1) settings.cpu_write_hack = cpu_write_hack;
-    /*
-    if (resolution != -1)
-    {
-      settings.res_data = (DWORD) resolution;
-      if (settings.res_data >= 0x18) settings.res_data = 12;
-      settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
-      settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
-    }
-    */
-  }
+  settings.filtering = (int)Config_ReadInt ("filtering", "???", 1, TRUE, FALSE);
+  settings.fog = (int)Config_ReadInt ("fog", "???", 1, TRUE, FALSE);
+  settings.buff_clear = (BOOL)Config_ReadInt ("buff_clear", "???", 1);
+  settings.swapmode = (int)Config_ReadInt ("swapmode", "???", 1, TRUE, FALSE);
+  settings.fb_smart = (BOOL)Config_ReadInt ("fb_smart", "???", 0);
+  settings.fb_read_alpha = (BOOL)Config_ReadInt ("fb_read_alpha", "???", 0);
+  settings.fb_depth_clear = (BOOL)Config_ReadInt ("fb_depth_clear", "???", 0);
+  settings.cpu_write_hack = (BOOL)Config_ReadInt ("cpu_write_hack", "???", 0);
+
   if (settings.fb_depth_render)
     settings.fb_depth_clear = TRUE;
   INI_Close ();
