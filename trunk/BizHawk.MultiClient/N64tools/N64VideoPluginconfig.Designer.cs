@@ -174,7 +174,6 @@
 			this.Glide_fillcolor_fix = new System.Windows.Forms.CheckBox();
 			this.Glide_fb_smart = new System.Windows.Forms.CheckBox();
 			this.Glide_fb_read_alpha = new System.Windows.Forms.CheckBox();
-			this.Glide_fb_get_info = new System.Windows.Forms.CheckBox();
 			this.Glide_fb_hires = new System.Windows.Forms.CheckBox();
 			this.Glide_fb_clear = new System.Windows.Forms.CheckBox();
 			this.Glide_detect_cpu_write = new System.Windows.Forms.CheckBox();
@@ -191,14 +190,6 @@
 			this.Glide_stipple_pattern = new System.Windows.Forms.TextBox();
 			this.label41 = new System.Windows.Forms.Label();
 			this.Glide_stipple_mode = new System.Windows.Forms.TextBox();
-			this.label39 = new System.Windows.Forms.Label();
-			this.Glide_scale_y = new System.Windows.Forms.TextBox();
-			this.label40 = new System.Windows.Forms.Label();
-			this.Glide_scale_x = new System.Windows.Forms.TextBox();
-			this.label38 = new System.Windows.Forms.Label();
-			this.Glide_offset_y = new System.Windows.Forms.TextBox();
-			this.label37 = new System.Windows.Forms.Label();
-			this.Glide_offset_x = new System.Windows.Forms.TextBox();
 			this.label36 = new System.Windows.Forms.Label();
 			this.Glide_lodmode = new System.Windows.Forms.ComboBox();
 			this.label35 = new System.Windows.Forms.Label();
@@ -211,6 +202,15 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.Glide_fb_get_info = new System.Windows.Forms.CheckBox();
+			this.label39 = new System.Windows.Forms.Label();
+			this.Glide_scale_y = new System.Windows.Forms.TextBox();
+			this.label40 = new System.Windows.Forms.Label();
+			this.Glide_scale_x = new System.Windows.Forms.TextBox();
+			this.label38 = new System.Windows.Forms.Label();
+			this.Glide_offset_y = new System.Windows.Forms.TextBox();
+			this.label37 = new System.Windows.Forms.Label();
+			this.Glide_offset_x = new System.Windows.Forms.TextBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -1584,6 +1584,15 @@
 			// 
 			// Glide64General
 			// 
+			this.Glide64General.Controls.Add(this.label39);
+			this.Glide64General.Controls.Add(this.Glide_scale_y);
+			this.Glide64General.Controls.Add(this.label40);
+			this.Glide64General.Controls.Add(this.Glide_scale_x);
+			this.Glide64General.Controls.Add(this.label38);
+			this.Glide64General.Controls.Add(this.Glide_offset_y);
+			this.Glide64General.Controls.Add(this.label37);
+			this.Glide64General.Controls.Add(this.Glide_offset_x);
+			this.Glide64General.Controls.Add(this.Glide_fb_get_info);
 			this.Glide64General.Controls.Add(this.Glide_disable_auxbuf);
 			this.Glide64General.Controls.Add(this.Glide_fbo);
 			this.Glide64General.Controls.Add(this.Glide_noglsl);
@@ -1860,7 +1869,6 @@
 			this.GlidePerGameHacks1.Controls.Add(this.Glide_fillcolor_fix);
 			this.GlidePerGameHacks1.Controls.Add(this.Glide_fb_smart);
 			this.GlidePerGameHacks1.Controls.Add(this.Glide_fb_read_alpha);
-			this.GlidePerGameHacks1.Controls.Add(this.Glide_fb_get_info);
 			this.GlidePerGameHacks1.Controls.Add(this.Glide_fb_hires);
 			this.GlidePerGameHacks1.Controls.Add(this.Glide_fb_clear);
 			this.GlidePerGameHacks1.Controls.Add(this.Glide_detect_cpu_write);
@@ -2046,16 +2054,6 @@
 			this.Glide_fb_read_alpha.Text = "Framebuffer read alpha";
 			this.Glide_fb_read_alpha.UseVisualStyleBackColor = true;
 			// 
-			// Glide_fb_get_info
-			// 
-			this.Glide_fb_get_info.AutoSize = true;
-			this.Glide_fb_get_info.Location = new System.Drawing.Point(6, 177);
-			this.Glide_fb_get_info.Name = "Glide_fb_get_info";
-			this.Glide_fb_get_info.Size = new System.Drawing.Size(119, 17);
-			this.Glide_fb_get_info.TabIndex = 16;
-			this.Glide_fb_get_info.Text = "Get framebuffer info";
-			this.Glide_fb_get_info.UseVisualStyleBackColor = true;
-			// 
 			// Glide_fb_hires
 			// 
 			this.Glide_fb_hires.AutoSize = true;
@@ -2125,6 +2123,7 @@
 			this.GlideUseDefaultHacks1.TabIndex = 2;
 			this.GlideUseDefaultHacks1.Text = "Use defaults for current game";
 			this.GlideUseDefaultHacks1.UseVisualStyleBackColor = true;
+			this.GlideUseDefaultHacks1.CheckedChanged += new System.EventHandler(this.GlideUseDefaultHacks1_CheckedChanged);
 			// 
 			// GlidePerGameHacks2
 			// 
@@ -2136,14 +2135,6 @@
 			this.GlidePerGameHacks2.Controls.Add(this.Glide_stipple_pattern);
 			this.GlidePerGameHacks2.Controls.Add(this.label41);
 			this.GlidePerGameHacks2.Controls.Add(this.Glide_stipple_mode);
-			this.GlidePerGameHacks2.Controls.Add(this.label39);
-			this.GlidePerGameHacks2.Controls.Add(this.Glide_scale_y);
-			this.GlidePerGameHacks2.Controls.Add(this.label40);
-			this.GlidePerGameHacks2.Controls.Add(this.Glide_scale_x);
-			this.GlidePerGameHacks2.Controls.Add(this.label38);
-			this.GlidePerGameHacks2.Controls.Add(this.Glide_offset_y);
-			this.GlidePerGameHacks2.Controls.Add(this.label37);
-			this.GlidePerGameHacks2.Controls.Add(this.Glide_offset_x);
 			this.GlidePerGameHacks2.Controls.Add(this.label36);
 			this.GlidePerGameHacks2.Controls.Add(this.Glide_lodmode);
 			this.GlidePerGameHacks2.Controls.Add(this.label35);
@@ -2179,7 +2170,6 @@
             "Bomberman64",
             "Diddy Kong Racing",
             "Tonic Trouble",
-            "PPL",
             "All-Star Baseball",
             "Doraemon 2",
             "Space Invaders",
@@ -2253,71 +2243,6 @@
 			this.Glide_stipple_mode.Name = "Glide_stipple_mode";
 			this.Glide_stipple_mode.Size = new System.Drawing.Size(36, 20);
 			this.Glide_stipple_mode.TabIndex = 35;
-			// 
-			// label39
-			// 
-			this.label39.AutoSize = true;
-			this.label39.Location = new System.Drawing.Point(3, 223);
-			this.label39.Name = "label39";
-			this.label39.Size = new System.Drawing.Size(47, 13);
-			this.label39.TabIndex = 34;
-			this.label39.Text = "Scale Y:";
-			// 
-			// Glide_scale_y
-			// 
-			this.Glide_scale_y.Location = new System.Drawing.Point(92, 220);
-			this.Glide_scale_y.Name = "Glide_scale_y";
-			this.Glide_scale_y.Size = new System.Drawing.Size(36, 20);
-			this.Glide_scale_y.TabIndex = 33;
-			// 
-			// label40
-			// 
-			this.label40.AutoSize = true;
-			this.label40.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.label40.Location = new System.Drawing.Point(3, 197);
-			this.label40.Name = "label40";
-			this.label40.Size = new System.Drawing.Size(47, 13);
-			this.label40.TabIndex = 32;
-			this.label40.Text = "Scale X:";
-			// 
-			// Glide_scale_x
-			// 
-			this.Glide_scale_x.Location = new System.Drawing.Point(92, 194);
-			this.Glide_scale_x.Name = "Glide_scale_x";
-			this.Glide_scale_x.Size = new System.Drawing.Size(36, 20);
-			this.Glide_scale_x.TabIndex = 31;
-			// 
-			// label38
-			// 
-			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(3, 171);
-			this.label38.Name = "label38";
-			this.label38.Size = new System.Drawing.Size(48, 13);
-			this.label38.TabIndex = 30;
-			this.label38.Text = "Offset Y:";
-			// 
-			// Glide_offset_y
-			// 
-			this.Glide_offset_y.Location = new System.Drawing.Point(92, 168);
-			this.Glide_offset_y.Name = "Glide_offset_y";
-			this.Glide_offset_y.Size = new System.Drawing.Size(36, 20);
-			this.Glide_offset_y.TabIndex = 29;
-			// 
-			// label37
-			// 
-			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(3, 145);
-			this.label37.Name = "label37";
-			this.label37.Size = new System.Drawing.Size(48, 13);
-			this.label37.TabIndex = 28;
-			this.label37.Text = "Offset X:";
-			// 
-			// Glide_offset_x
-			// 
-			this.Glide_offset_x.Location = new System.Drawing.Point(92, 142);
-			this.Glide_offset_x.Name = "Glide_offset_x";
-			this.Glide_offset_x.Size = new System.Drawing.Size(36, 20);
-			this.Glide_offset_x.TabIndex = 27;
 			// 
 			// label36
 			// 
@@ -2404,6 +2329,7 @@
 			this.GlideUseDefaultHacks2.TabIndex = 3;
 			this.GlideUseDefaultHacks2.Text = "Use defaults for current game";
 			this.GlideUseDefaultHacks2.UseVisualStyleBackColor = true;
+			this.GlideUseDefaultHacks2.CheckedChanged += new System.EventHandler(this.GlideUseDefaultHacks2_CheckedChanged);
 			// 
 			// button1
 			// 
@@ -2432,6 +2358,81 @@
 			this.toolTip1.IsBalloon = true;
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+			// 
+			// Glide_fb_get_info
+			// 
+			this.Glide_fb_get_info.AutoSize = true;
+			this.Glide_fb_get_info.Location = new System.Drawing.Point(9, 278);
+			this.Glide_fb_get_info.Name = "Glide_fb_get_info";
+			this.Glide_fb_get_info.Size = new System.Drawing.Size(119, 17);
+			this.Glide_fb_get_info.TabIndex = 23;
+			this.Glide_fb_get_info.Text = "Get framebuffer info";
+			this.Glide_fb_get_info.UseVisualStyleBackColor = true;
+			// 
+			// label39
+			// 
+			this.label39.AutoSize = true;
+			this.label39.Location = new System.Drawing.Point(386, 265);
+			this.label39.Name = "label39";
+			this.label39.Size = new System.Drawing.Size(47, 13);
+			this.label39.TabIndex = 42;
+			this.label39.Text = "Scale Y:";
+			// 
+			// Glide_scale_y
+			// 
+			this.Glide_scale_y.Location = new System.Drawing.Point(475, 262);
+			this.Glide_scale_y.Name = "Glide_scale_y";
+			this.Glide_scale_y.Size = new System.Drawing.Size(36, 20);
+			this.Glide_scale_y.TabIndex = 41;
+			// 
+			// label40
+			// 
+			this.label40.AutoSize = true;
+			this.label40.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.label40.Location = new System.Drawing.Point(386, 239);
+			this.label40.Name = "label40";
+			this.label40.Size = new System.Drawing.Size(47, 13);
+			this.label40.TabIndex = 40;
+			this.label40.Text = "Scale X:";
+			// 
+			// Glide_scale_x
+			// 
+			this.Glide_scale_x.Location = new System.Drawing.Point(475, 236);
+			this.Glide_scale_x.Name = "Glide_scale_x";
+			this.Glide_scale_x.Size = new System.Drawing.Size(36, 20);
+			this.Glide_scale_x.TabIndex = 39;
+			// 
+			// label38
+			// 
+			this.label38.AutoSize = true;
+			this.label38.Location = new System.Drawing.Point(386, 213);
+			this.label38.Name = "label38";
+			this.label38.Size = new System.Drawing.Size(48, 13);
+			this.label38.TabIndex = 38;
+			this.label38.Text = "Offset Y:";
+			// 
+			// Glide_offset_y
+			// 
+			this.Glide_offset_y.Location = new System.Drawing.Point(475, 210);
+			this.Glide_offset_y.Name = "Glide_offset_y";
+			this.Glide_offset_y.Size = new System.Drawing.Size(36, 20);
+			this.Glide_offset_y.TabIndex = 37;
+			// 
+			// label37
+			// 
+			this.label37.AutoSize = true;
+			this.label37.Location = new System.Drawing.Point(386, 187);
+			this.label37.Name = "label37";
+			this.label37.Size = new System.Drawing.Size(48, 13);
+			this.label37.TabIndex = 36;
+			this.label37.Text = "Offset X:";
+			// 
+			// Glide_offset_x
+			// 
+			this.Glide_offset_x.Location = new System.Drawing.Point(475, 184);
+			this.Glide_offset_x.Name = "Glide_offset_x";
+			this.Glide_offset_x.Size = new System.Drawing.Size(36, 20);
+			this.Glide_offset_x.TabIndex = 35;
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -2622,7 +2623,6 @@
 		private System.Windows.Forms.CheckBox Glide_fillcolor_fix;
 		private System.Windows.Forms.CheckBox Glide_fb_smart;
 		private System.Windows.Forms.CheckBox Glide_fb_read_alpha;
-		private System.Windows.Forms.CheckBox Glide_fb_get_info;
 		private System.Windows.Forms.CheckBox Glide_fb_hires;
 		private System.Windows.Forms.CheckBox Glide_fb_clear;
 		private System.Windows.Forms.CheckBox Glide_detect_cpu_write;
@@ -2639,14 +2639,6 @@
 		private System.Windows.Forms.TextBox Glide_stipple_pattern;
 		private System.Windows.Forms.Label label41;
 		private System.Windows.Forms.TextBox Glide_stipple_mode;
-		private System.Windows.Forms.Label label39;
-		private System.Windows.Forms.TextBox Glide_scale_y;
-		private System.Windows.Forms.Label label40;
-		private System.Windows.Forms.TextBox Glide_scale_x;
-		private System.Windows.Forms.Label label38;
-		private System.Windows.Forms.TextBox Glide_offset_y;
-		private System.Windows.Forms.Label label37;
-		private System.Windows.Forms.TextBox Glide_offset_x;
 		private System.Windows.Forms.Label label36;
 		private System.Windows.Forms.ComboBox Glide_lodmode;
 		private System.Windows.Forms.Label label35;
@@ -2656,5 +2648,14 @@
 		private System.Windows.Forms.Label label33;
 		private System.Windows.Forms.TextBox Glide_depth_bias;
 		private System.Windows.Forms.CheckBox GlideUseDefaultHacks2;
+		private System.Windows.Forms.CheckBox Glide_fb_get_info;
+		private System.Windows.Forms.Label label39;
+		private System.Windows.Forms.TextBox Glide_scale_y;
+		private System.Windows.Forms.Label label40;
+		private System.Windows.Forms.TextBox Glide_scale_x;
+		private System.Windows.Forms.Label label38;
+		private System.Windows.Forms.TextBox Glide_offset_y;
+		private System.Windows.Forms.Label label37;
+		private System.Windows.Forms.TextBox Glide_offset_x;
 	}
 }
