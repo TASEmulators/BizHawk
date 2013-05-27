@@ -2007,14 +2007,11 @@ namespace BizHawk.MultiClient
 		{
 			//TODO: deal witn the game depedent settings
 			Dictionary<string, object> dictionary = new Dictionary<string, object>();
-			System.Reflection.MemberInfo[] members = Global.Config.RicePlugin.GetType().GetMembers();
-			foreach (System.Reflection.MemberInfo member in members)
+			System.Reflection.FieldInfo[] members = Global.Config.RicePlugin.GetType().GetFields();
+			foreach (System.Reflection.FieldInfo member in members)
 			{
-				if (member.MemberType.ToString() == "Field")
-				{
-					object field = Global.Config.RicePlugin.GetType().GetField(member.Name).GetValue(Global.Config.RicePlugin);
-					dictionary.Add(member.Name, field);
-				}
+				object field = Global.Config.RicePlugin.GetType().GetField(member.Name).GetValue(Global.Config.RicePlugin);
+				dictionary.Add(member.Name, field);
 			}
 
 			return dictionary;
@@ -2138,14 +2135,11 @@ namespace BizHawk.MultiClient
 		{
 			//TODO: deal witn the game depedent settings
 			Dictionary<string, object> dictionary = new Dictionary<string, object>();
-			System.Reflection.MemberInfo[] members = Global.Config.GlidePlugin.GetType().GetMembers();
-			foreach (System.Reflection.MemberInfo member in members)
+			System.Reflection.FieldInfo[] members = Global.Config.GlidePlugin.GetType().GetFields();
+			foreach (System.Reflection.FieldInfo member in members)
 			{
-				if (member.MemberType.ToString() == "Field")
-				{
-					object field = Global.Config.GlidePlugin.GetType().GetField(member.Name).GetValue(Global.Config.GlidePlugin);
-					dictionary.Add(member.Name, field);
-				}
+				object field = Global.Config.GlidePlugin.GetType().GetField(member.Name).GetValue(Global.Config.GlidePlugin);
+				dictionary.Add(member.Name, field);
 			}
 
 			return dictionary;
