@@ -425,6 +425,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SATTools\SaturnPrefs.cs" />
+    <Compile Include="SATTools\SaturnPrefs.Designer.cs">
+      <DependentUpon>SaturnPrefs.cs</DependentUpon>
+    </Compile>
     <Compile Include="SNESTools\SNESGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -634,6 +638,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SATTools\SaturnPrefs.resx">
+      <DependentUpon>SaturnPrefs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
