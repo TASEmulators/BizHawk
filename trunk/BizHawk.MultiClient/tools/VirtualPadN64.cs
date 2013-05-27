@@ -141,6 +141,8 @@ namespace BizHawk.MultiClient
 			input.Append(CD.Checked ? "d" : ".");
 			input.Append(CL.Checked ? "l" : "."); 
 			input.Append(CR.Checked ? "r" : ".");
+			input.Append(String.Format("{0:000}", AnalogControl1.X + 128));
+			input.Append(String.Format("{0:000}", AnalogControl1.Y + 128));
 
 			input.Append("|");
 			return input.ToString();
