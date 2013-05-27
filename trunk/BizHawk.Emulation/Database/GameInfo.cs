@@ -106,6 +106,8 @@ namespace BizHawk
 		{
 			if (OptionPresent(parameter) && OptionValue(parameter) == "true")
 				return true;
+			else if (OptionPresent(parameter) && OptionValue(parameter) == "false")
+				return false;
 			else
 				return defaultVal;
 		}

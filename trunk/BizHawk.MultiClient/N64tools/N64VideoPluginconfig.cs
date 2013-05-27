@@ -120,6 +120,97 @@ namespace BizHawk.MultiClient
 			Global.Config.RicePlugin.RenderToTextureOption = RiceRenderToTextureOption_Combo.SelectedIndex;
 			Global.Config.RicePlugin.ScreenUpdateSettingHack = RiceScreenUpdateSettingHack_Combo.SelectedIndex;
 			Global.Config.RicePlugin.EnableHacksForGame = RiceEnableHacksForGame_Combo.SelectedIndex;
+
+			Global.Config.GlidePlugin.autodetect_ucode = Glide_autodetect_ucode.Checked;
+			Global.Config.GlidePlugin.ucode = Glide_ucode.SelectedIndex;
+			Global.Config.GlidePlugin.flame_corona = Glide_flame_corona.Checked;
+			Global.Config.GlidePlugin.card_id = Glide_card_id.SelectedIndex;
+			Global.Config.GlidePlugin.tex_filter = Glide_tex_filter.SelectedIndex;
+			Global.Config.GlidePlugin.wireframe = Glide_wireframe.Checked;
+			Global.Config.GlidePlugin.wfmode = Glide_wfmode.SelectedIndex;
+			Global.Config.GlidePlugin.fast_crc = Glide_fast_crc.Checked;
+			Global.Config.GlidePlugin.filter_cache = Glide_filter_cache.Checked;
+			Global.Config.GlidePlugin.unk_as_red = Glide_unk_as_red.Checked;
+			Global.Config.GlidePlugin.fb_read_always = Glide_fb_read_always.Checked;
+			Global.Config.GlidePlugin.motionblur = Glide_motionblur.Checked;
+			Global.Config.GlidePlugin.fb_render = Glide_fb_render.Checked;
+			Global.Config.GlidePlugin.noditheredalpha = Glide_noditheredalpha.Checked;
+			Global.Config.GlidePlugin.noglsl = Glide_noglsl.Checked;
+			Global.Config.GlidePlugin.fbo = Glide_fbo.Checked;
+			Global.Config.GlidePlugin.disable_auxbuf = Glide_disable_auxbuf.Checked;
+			Global.Config.GlidePlugin.fb_get_info = Glide_fb_get_info.Checked;
+
+			if (InputValidate.IsValidSignedNumber(Glide_offset_x.Text))
+				Global.Config.GlidePlugin.offset_x = int.Parse(Glide_offset_x.Text);
+			else
+				Global.Config.GlidePlugin.offset_x = 0;
+
+			if (InputValidate.IsValidSignedNumber(Glide_offset_y.Text))
+				Global.Config.GlidePlugin.offset_y = int.Parse(Glide_offset_y.Text);
+			else
+				Global.Config.GlidePlugin.offset_y = 0;
+
+			if (InputValidate.IsValidSignedNumber(Glide_scale_x.Text))
+				Global.Config.GlidePlugin.scale_x = int.Parse(Glide_scale_x.Text);
+			else
+				Global.Config.GlidePlugin.scale_x = 100000;
+
+			if (InputValidate.IsValidSignedNumber(Glide_scale_y.Text))
+				Global.Config.GlidePlugin.scale_y = int.Parse(Glide_scale_y.Text);
+			else
+				Global.Config.GlidePlugin.scale_y = 100000;
+
+			Global.Config.GlidePlugin.UseDefaultHacks = GlideUseDefaultHacks1.Checked || GlideUseDefaultHacks2.Checked;
+			Global.Config.GlidePlugin.alt_tex_size = Glide_alt_tex_size.Checked;
+			Global.Config.GlidePlugin.buff_clear = Glide_buff_clear.Checked;
+			Global.Config.GlidePlugin.decrease_fillrect_edge = Glide_decrease_fillrect_edge.Checked;
+			Global.Config.GlidePlugin.detect_cpu_write = Glide_detect_cpu_write.Checked;
+			Global.Config.GlidePlugin.fb_clear = Glide_fb_clear.Checked;
+			Global.Config.GlidePlugin.fb_hires = Glide_fb_hires.Checked;
+			Global.Config.GlidePlugin.fb_read_alpha = Glide_fb_read_alpha.Checked;
+			Global.Config.GlidePlugin.fb_smart = Glide_fb_smart.Checked;
+			Global.Config.GlidePlugin.fillcolor_fix = Glide_fillcolor_fix.Checked;
+			Global.Config.GlidePlugin.fog = Glide_fog.Checked;
+			Global.Config.GlidePlugin.force_depth_compare = Glide_force_depth_compare.Checked;
+			Global.Config.GlidePlugin.force_microcheck = Glide_force_microcheck.Checked;
+			Global.Config.GlidePlugin.fb_hires_buf_clear = Glide_fb_hires_buf_clear.Checked;
+			Global.Config.GlidePlugin.fb_ignore_aux_copy = Glide_fb_ignore_aux_copy.Checked;
+			Global.Config.GlidePlugin.fb_ignore_previous = Glide_fb_ignore_previous.Checked;
+			Global.Config.GlidePlugin.increase_primdepth = Glide_increase_primdepth.Checked;
+			Global.Config.GlidePlugin.increase_texrect_edge = Glide_increase_texrect_edge.Checked;
+			Global.Config.GlidePlugin.fb_optimize_texrect = Glide_fb_optimize_texrect.Checked;
+			Global.Config.GlidePlugin.fb_optimize_write = Glide_fb_optimize_write.Checked;
+			Global.Config.GlidePlugin.PPL = Glide_PPL.Checked;
+			Global.Config.GlidePlugin.soft_depth_compare = Glide_soft_depth_compare.Checked;
+			Global.Config.GlidePlugin.use_sts1_only = Glide_use_sts1_only.Checked;
+			Global.Config.GlidePlugin.wrap_big_tex = Glide_wrap_big_tex.Checked;
+
+			if (InputValidate.IsValidSignedNumber(Glide_depth_bias.Text))
+				Global.Config.GlidePlugin.depth_bias = int.Parse(Glide_depth_bias.Text);
+			else
+				Global.Config.GlidePlugin.depth_bias = 20;
+
+			Global.Config.GlidePlugin.filtering = Glide_filtering.SelectedIndex;
+
+			if (InputValidate.IsValidSignedNumber(Glide_fix_tex_coord.Text))
+				Global.Config.GlidePlugin.fix_tex_coord = int.Parse(Glide_fix_tex_coord.Text);
+			else
+				Global.Config.GlidePlugin.fix_tex_coord = 0;
+
+			Global.Config.GlidePlugin.lodmode = Glide_lodmode.SelectedIndex;
+
+			if (InputValidate.IsValidSignedNumber(Glide_stipple_mode.Text))
+				Global.Config.GlidePlugin.stipple_mode = int.Parse(Glide_stipple_mode.Text);
+			else
+				Global.Config.GlidePlugin.stipple_mode = 2;
+
+			if (InputValidate.IsValidSignedNumber(Glide_stipple_pattern.Text))
+				Global.Config.GlidePlugin.stipple_pattern = int.Parse(Glide_stipple_pattern.Text);
+			else
+				Global.Config.GlidePlugin.stipple_pattern = 1041204192;
+
+			Global.Config.GlidePlugin.swapmode = Glide_swapmode.SelectedIndex;
+			Global.Config.GlidePlugin.enable_hacks_for_game = Glide_enable_hacks_for_game.SelectedIndex;
 		}
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
