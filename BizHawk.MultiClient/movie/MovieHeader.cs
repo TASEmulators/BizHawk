@@ -221,7 +221,41 @@ namespace BizHawk.MultiClient
 				return false;
 			}
 			else
-				Comments.Add(line);
+			{
+				if (HeaderParams[PLATFORM] == "N64")
+				{
+					if (HeaderParams[VIDEOPLUGIN] == "Rice")
+					{
+						ICollection<string> settings = Global.Config.RicePlugin.GetPluginSettings().Keys;
+						foreach (string setting in settings)
+						{
+							if (line.Contains(setting))
+							{
+								line = ParseHeader(line, setting);
+								AddHeaderLine(setting, line);
+								break;
+							}
+						}
+					}
+					else if (HeaderParams[VIDEOPLUGIN] == "Glide64")
+					{
+						ICollection<string> settings = Global.Config.GlidePlugin.GetPluginSettings().Keys;
+						foreach (string setting in settings)
+						{
+							if (line.Contains(setting))
+							{
+								line = ParseHeader(line, setting);
+								AddHeaderLine(setting, line);
+								break;
+							}
+						}
+					}
+				}
+				else
+				{
+					Comments.Add(line);
+				}
+			}
 
 			return true;
 		}

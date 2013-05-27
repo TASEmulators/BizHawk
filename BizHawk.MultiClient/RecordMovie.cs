@@ -121,6 +121,14 @@ namespace BizHawk.MultiClient
 							MovieToRecord.Header.SetHeaderLine(setting.Key, setting.Value.ToString());
 						}
 					}
+					else if (Global.Config.N64VidPlugin == "Glide64")
+					{
+						var glide_settings = Global.Config.GlidePlugin.GetPluginSettings();
+						foreach (var setting in glide_settings)
+						{
+							MovieToRecord.Header.SetHeaderLine(setting.Key, setting.Value.ToString());
+						}
+					}
 				}
 
 				if (StartFromCombo.SelectedItem.ToString() == "Now")

@@ -3865,17 +3865,42 @@ namespace BizHawk.MultiClient
 		public VideoPluginSettings N64GenerateVideoSettings(GameInfo game)
 		{
 			VideoPluginSettings video_settings = new VideoPluginSettings(Global.Config.N64VidPlugin, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
-			if (Global.Config.N64VidPlugin == "Rice")
+
+			string PluginToUse = "";
+			/*
+			if (Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64")
+			{
+				PluginToUse = Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.VIDEOPLUGIN];
+			}
+			*/
+			if (PluginToUse == "")
+			{
+				PluginToUse = Global.Config.N64VidPlugin;
+			}
+
+			if (PluginToUse == "Rice")
 			{
 				Global.Config.RicePlugin.FillPerGameHacks(game);
 				video_settings.Parameters = Global.Config.RicePlugin.GetPluginSettings();
 			}
-			else if (Global.Config.N64VidPlugin == "Glide64")
+			else if (PluginToUse == "Glide64")
 			{
 				Global.Config.GlidePlugin.FillPerGameHacks(game);
 				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
 			}
-
+			/*
+			if (Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64")
+			{
+				List<string> settings = new List<string>(video_settings.Parameters.Keys);
+				foreach (string setting in settings)
+				{
+					if (Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
+					{
+						video_settings.Parameters[setting] = Global.MovieSession.Movie.Header.HeaderParams[setting];
+					}
+				}
+			}
+			*/
 			return video_settings;
 		}
 
