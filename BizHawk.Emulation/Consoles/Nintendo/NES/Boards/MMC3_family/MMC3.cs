@@ -332,7 +332,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		protected virtual int MapCHR(int addr)
 		{
 			int bank_1k = Get_CHRBank_1K(addr);
-			bank_1k &= chr_mask;
+			// allow NPOT chr sizes
+			bank_1k %= chr_mask + 1;
 			addr = (bank_1k << 10) | (addr & 0x3FF);
 			return addr;
 		}
