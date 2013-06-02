@@ -1,5 +1,6 @@
 ﻿using System;
 using BizHawk.Emulation.Sound;
+using System.Collections.Generic;
 #if WINDOWS
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
@@ -8,6 +9,30 @@ using SlimDX.Multimedia;
 namespace BizHawk.MultiClient
 {
 #if WINDOWS
+	public static class SoundEnumeration
+	{
+		public static DirectSound Create()
+		{
+			var dc = DirectSound.GetDevices();
+			foreach (var dev in dc)
+			{
+				if (dev.Description == Global.Config.SoundDevice)
+					return new DirectSound(dev.DriverGuid);
+			}
+			return new DirectSound();
+		}
+
+		public static IEnumerable<string> DeviceNames()
+		{
+			var ret = new List<string>();
+			var dc = DirectSound.GetDevices();
+			foreach (var dev in dc)
+				ret.Add(dev.Description);
+			return ret;
+		}
+	}
+
+
 	public class Sound : IDisposable
 	{
 		public bool needDiscard;
