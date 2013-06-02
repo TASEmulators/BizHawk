@@ -60,7 +60,7 @@ namespace BizHawk.MultiClient
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config());
 
 #if WINDOWS
-			try { Global.DSound = new DirectSound(); }
+			try { Global.DSound = SoundEnumeration.Create(); }
 			catch
 			{
 				MessageBox.Show("Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 41khz instead of 48khz in mmsys.cpl.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
