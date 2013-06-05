@@ -364,6 +364,34 @@ namespace BizHawk
 			}
 		}
 
+		private static int Hex2Int(char c)
+		{
+			if (c <= '9')
+				return c - '0';
+			else if (c <= 'F')
+				return c - '7';
+			else
+				return c - 'W';
+		}
+
+		public static void ReadFromHexFast(this byte[] buffer, string hex)
+		{
+			//if (hex.Length % 2 != 0)
+			//	throw new Exception("Hex value string does not appear to be properly formatted.");
+			for (int i = 0; i < buffer.Length && i * 2 < hex.Length; i++)
+			{
+				buffer[i] = (byte)(Hex2Int(hex[i * 2]) * 16 + Hex2Int(hex[i * 2 + 1]));
+			}
+			/*
+			var b = new byte[buffer.Length];
+			b.ReadFromHex(hex);
+			for (int i = 0; i < buffer.Length; i++)
+			{
+				if (b[i] != buffer[i])
+					throw new Exception();
+			}*/
+		}
+
 		public static void ReadFromHex(this short[] buffer, string hex)
 		{
 			if (hex.Length % 4 != 0)
