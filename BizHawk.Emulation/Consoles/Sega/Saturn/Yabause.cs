@@ -350,7 +350,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 				hex = reader.ReadLine();
 			}
 			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
+			state.ReadFromHexFast(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
 
