@@ -260,6 +260,18 @@ namespace BizHawk
 			writer.WriteLine();
 		}
 
+		static readonly char[] HexConv = {'0', '1', '2', '3', '4', '5', '6', '7',
+											 '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+		public static void SaveAsHexFast(this byte[] buffer, TextWriter writer)
+		{
+			for (int i = 0; i < buffer.Length; i++)
+			{
+				writer.Write(HexConv[buffer[i] >> 4]);
+				writer.Write(HexConv[buffer[i] & 15]);
+			}
+			writer.WriteLine();
+		}
+
 		public static void SaveAsHex(this byte[] buffer, TextWriter writer, int length)
 		{
 			for (int i = 0; i < length; i++)
