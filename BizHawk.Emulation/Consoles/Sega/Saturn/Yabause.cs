@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
+			temp.SaveAsHexFast(writer);
 			// write extra copy of stuff we don't use
 			writer.WriteLine("Frame {0}", Frame);
 		}
