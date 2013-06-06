@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		public void SaveStateText(TextWriter writer)
 		{
 			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
+			temp.SaveAsHexFast(writer);
 			// write extra copy of stuff we don't use
 			writer.WriteLine("Frame {0}", Frame);
 		}
@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 				hex = reader.ReadLine();
 			}
 			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
+			state.ReadFromHexFast(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
 
