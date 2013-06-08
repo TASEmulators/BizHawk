@@ -216,12 +216,30 @@ namespace BizHawk.MultiClient
 		{
 			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", AnalogControl1.X);
 			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", -AnalogControl1.Y - 1);
+			ManualX.Value = AnalogControl1.X;
+			ManualY.Value = -AnalogControl1.Y - 1;
 		}
 
 		private void AnalogControl1_MouseMove(object sender, MouseEventArgs e)
 		{
 			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", AnalogControl1.X);
 			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", -AnalogControl1.Y - 1);
+			ManualX.Value = AnalogControl1.X;
+			ManualY.Value = -AnalogControl1.Y - 1;
+		}
+
+		private void ManualX_ValueChanged(object sender, EventArgs e)
+		{
+			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", (float)ManualX.Value);
+			AnalogControl1.X = (int)ManualX.Value;
+			AnalogControl1.Refresh();
+		}
+
+		private void ManualY_ValueChanged(object sender, EventArgs e)
+		{
+			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", (float)ManualY.Value);
+			AnalogControl1.Y = -((int)ManualY.Value + 1);
+			AnalogControl1.Refresh();
 		}
 	}
 }
