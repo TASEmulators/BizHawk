@@ -2486,7 +2486,12 @@ namespace BizHawk.MultiClient
 								{
 									Global.Game = game;
 									VideoPluginSettings video_settings = N64GenerateVideoSettings(game);
-									nextEmulator = new N64(nextComm, game, rom.RomData, video_settings);
+									int SaveType = 0;
+									if (game.OptionValue("SaveType") == "EEPROM_16K")
+									{
+										SaveType = 1;
+									}
+									nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
 								}
 								break;
 						}

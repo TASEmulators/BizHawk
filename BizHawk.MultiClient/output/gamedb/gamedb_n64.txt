@@ -48,13 +48,13 @@ F32B6DE2F87928378F26CA17B68B27D87FDEFCE1	G	Army Men - Sarge's Heroes 2 (USA)	N64
 2DBFE78F97B8D6E1A33B73D244BE831D18B0491E	G	Bakuretsu Muteki Bangaioh (Japan)	N64		RiceIncTexRectEdge=true;Glide_filtering=0
 28E6D11F6F48C86A9B7C112C672109E1C2D7E5D0	G	Bakushou Jinsei 64 - Mezase! Resort Ou (Japan)	N64		Glide_filtering=0
 90726D7E7CD5BF6CDFD38F45C9ACBF4D45BD9FD8	G	Banjo to Kazooie no Daibouken (Japan)	N64		Glide_fb_smart=true
-5A5172383037D171F121790959962703BE1F373C	G	Banjo to Kazooie no Daibouken 2 (Japan)	N64		Glide_fb_smart=true
+5A5172383037D171F121790959962703BE1F373C	G	Banjo to Kazooie no Daibouken 2 (Japan)	N64		Glide_fb_smart=true;SaveType=EEPROM_16K
 BB359A75941DF74BF7290212C89FBC6E2C5601FE	G	Banjo-Kazooie (Europe) (En,Fr,De)	N64		Glide_fb_smart=true
 DED6EE166E740AD1BC810FD678A84B48E245AB80	G	Banjo-Kazooie (USA) (Rev A)	N64		Glide_fb_smart=true
 1FE1632098865F639E22C11B9A81EE8F29C75D7A	G	Banjo-Kazooie (USA)	N64		RiceFrameBufferOption=8;RiceRenderToTextureOption=4;RiceScreenUpdateSettingHack=4;Glide_fb_smart=true
-4CA2D332F6E6B018777AFC6A8B7880B38B6DFB79	G	Banjo-Tooie (Australia)	N64		Glide_fb_smart=true
-93BF2FAC1387320AD07251CB4B64FD36BAC1D7A6	G	Banjo-Tooie (Europe) (En,Fr,De,Es)	N64		RiceEnableHacksForGame=1;Glide_fb_smart=true
-AF1A89E12B638B8D82CC4C085C8E01D4CBA03FB3	G	Banjo-Tooie (USA)	N64		RiceEnableHacksForGame=1;Glide_fb_smart=true
+4CA2D332F6E6B018777AFC6A8B7880B38B6DFB79	G	Banjo-Tooie (Australia)	N64		Glide_fb_smart=true;SaveType=EEPROM_16K
+93BF2FAC1387320AD07251CB4B64FD36BAC1D7A6	G	Banjo-Tooie (Europe) (En,Fr,De,Es)	N64		RiceEnableHacksForGame=1;Glide_fb_smart=true;SaveType=EEPROM_16K
+AF1A89E12B638B8D82CC4C085C8E01D4CBA03FB3	G	Banjo-Tooie (USA)	N64		RiceEnableHacksForGame=1;Glide_fb_smart=true;SaveType=EEPROM_16K
 1718C9048CB7849A59D48138A058B20BF191EBF6	G	Bass Rush - ECOGEAR PowerWorm Championship (Japan)	N64
 946B3E08A1A4DE4F917AD547BB24F533B737F712	G	Bassmasters 2000 (USA)	N64
 F7382358250965E9757BA9A89FE42D033DBE7FE8	G	Batman Beyond - Return of the Joker (USA)	N64
@@ -136,15 +136,15 @@ FEC40EF7D8B973C5937ADE10423D0CF1B5A18E3C	G	Clay Fighter 63 1-3 (Europe)	N64
 0D5211E211E7FC063C63C3E8235B62BC288CE305	G	Command & Conquer (Europe) (En,Fr)	N64		Glide_fix_tex_coord=1;Glide_fog=false
 725083ECE68D5DEB9724D3FA3F2A65F0291B2D5D	G	Command & Conquer (Germany)	N64		Glide_fix_tex_coord=1;Glide_fog=false
 B559E86D98DE598B1D25583CA082FAA4B7C62641	G	Command & Conquer (USA)	N64		RiceEnableHacksForGame=21;Glide_fix_tex_coord=1;Glide_fog=false
-EE7BC6656FD1E1D9FFB3D19ADD759F28B88DF710	G	Conker's Bad Fur Day (Europe)	N64		Glide_fb_ignore_previous=true;Glide_fb_smart=true;Glide_fb_clear=true
-4CBADD3C4E0729DEC46AF64AD018050EADA4F47A	G	Conker's Bad Fur Day (USA)	N64		RiceEnableHacksForGame=14;RiceFrameBufferOption=3;RiceRenderToTextureOption=4;Glide_fb_ignore_previous=true;Glide_fb_smart=true;Glide_fb_clear=true
+EE7BC6656FD1E1D9FFB3D19ADD759F28B88DF710	G	Conker's Bad Fur Day (Europe)	N64		Glide_fb_ignore_previous=true;Glide_fb_smart=true;Glide_fb_clear=true;SaveType=EEPROM_16K
+4CBADD3C4E0729DEC46AF64AD018050EADA4F47A	G	Conker's Bad Fur Day (USA)	N64		RiceEnableHacksForGame=14;RiceFrameBufferOption=3;RiceRenderToTextureOption=4;Glide_fb_ignore_previous=true;Glide_fb_smart=true;Glide_fb_clear=true;SaveType=EEPROM_16K
 428F53A060103FD88EBFBDCC032A99CAEA901E17	G	Cruis'n Exotica (USA)	N64		RiceForceScreenClear=true;RiceFrameBufferOption=2;Glide_buff_clear=false;Glide_swapmode=0
 404AB549CD148EA07F40D66C0B896A343741BBF6	G	Cruis'n USA (Europe)	N64
 71BB3D8850B6A4A294AECA2ABAD1F936E4F85F0F	G	Cruis'n USA (USA) (Rev A)	N64
 54A875EE0B482036FA401A6BC2B242699F0259F7	G	Cruis'n USA (USA) (Rev B)	N64
 AEFE77A5518FE74519908B6CBC97CB81B8570897	G	Cruis'n USA (USA)	N64
-EE508F14C936265D101C9699B5AE1A722B3E7D9E	G	Cruis'n World (Europe)	N64		RiceUseCIWidthAndRatio=2
-6DA1A6A2BDA687D50E798D80C342948AD1738202	G	Cruis'n World (USA)	N64
+EE508F14C936265D101C9699B5AE1A722B3E7D9E	G	Cruis'n World (Europe)	N64		RiceUseCIWidthAndRatio=2;SaveType=EEPROM_16K
+6DA1A6A2BDA687D50E798D80C342948AD1738202	G	Cruis'n World (USA)	N64		SaveType=EEPROM_16K
 49DE08F08400A477485C4798D6CD81D95842C806	G	Custom Robo (Japan)	N64		Glide_filtering=0
 F9515C2482AF8DF791339536F60260509C424F6A	G	Custom Robo V2 (Japan)	N64		Glide_filtering=0
 AE220AC1CD6D892098937DC639C925F9EF158759	G	CyberTiger (Europe)	N64		Glide_fix_tex_coord=16;Glide_filtering=0
@@ -177,8 +177,8 @@ B63060F69BB4E1547DA1D762E740D19393977055	G	Doom 64 (Europe)	N64		Glide_fillcolor
 6FB0CE9C75BBE54B6E1EDE337652B0221E5F2AAD	G	Doom 64 (USA) (Rev A)	N64		Glide_fillcolor_fix=true;Glide_filtering=0
 799A588D73DA3FCCE8031026A8187DA92B91C817	G	Doom 64 (USA)	N64		Glide_fillcolor_fix=true;Glide_filtering=0
 BBEB7B7A92A68B17CA72DCB9D7FB16F7B771C4F6	G	Doraemon - Nobita to 3tsu no Seireiseki (Japan)	N64
-4B187360E1999556662C28B65DD179432EC61F9A	G	Doraemon 2 - Nobita to Hikari no Shinden (Japan)	N64
-DD9BA0F6CFC10C3B78401CC55D06AD534F39D5B1	G	Doraemon 3 - Nobita no Machi SOS! (Japan)	N64
+4B187360E1999556662C28B65DD179432EC61F9A	G	Doraemon 2 - Nobita to Hikari no Shinden (Japan)	N64		SaveType=EEPROM_16K
+DD9BA0F6CFC10C3B78401CC55D06AD534F39D5B1	G	Doraemon 3 - Nobita no Machi SOS! (Japan)	N64		SaveType=EEPROM_16K
 E106DFF7146F72415337C96DEB14F630E1580EFB	G	Doubutsu no Mori (Japan)	N64
 A130D3622CE40E0158DB2DA4247101F6E92206FC	G	Dr. Mario 64 (USA)	N64		RiceEnableHacksForGame=2;RiceFastTextureCRC=2;RiceTextureScaleHack=true;RiceFrameBufferOption=7;RiceRenderToTextureOption=3;Glide_fix_tex_coord=256;Glide_fb_optimize_write=true;Glide_filtering=0;Glide_fb_smart=true
 EFBDBCB499A3D8A37613CA1D94528016BDBF5735	G	Dragon Sword 64 (USA) (Proto)	N64
@@ -201,10 +201,10 @@ D460DC1EB24EF3E1E27C6B125C8C8D8324A64125	G	ECW Hardcore Revolution (USA)	N64
 97777CA06F4E8AFF8F1E95033CC8D3833BE40F76	G	Elmo's Letter Adventure (USA)	N64
 7195EA96D9FE5DE065AF61F70D55C92C8EE905E6	G	Elmo's Number Journey (USA)	N64
 4161B5C100EC82B0241B20CA8F81366E23564CCB	G	Eltale Monsters (Japan)	N64		Glide_filtering=2
-5ABFB6024F935EF5FE0067F39FD594C50697C749	G	Excitebike 64 (Europe)	N64		Glide_filtering=0;Glide_fb_smart=true
-E2C8D01FC66C0A575E79CB338678F1FD065226D6	G	Excitebike 64 (Japan)	N64		Glide_filtering=0;Glide_fb_smart=true
-DAAF564815E9EEF3FC163B9546B5880EE256274B	G	Excitebike 64 (USA) (Demo) (Kiosk)	N64		Glide_filtering=0;Glide_fb_smart=true
-A847DD011E98204AD198CADEB6C80DDA10D9A40E	G	Excitebike 64 (USA)	N64		RiceFastTextureCRC=1;RiceRenderToTextureOption=3;Glide_filtering=0;Glide_fb_smart=true
+5ABFB6024F935EF5FE0067F39FD594C50697C749	G	Excitebike 64 (Europe)	N64		Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K
+E2C8D01FC66C0A575E79CB338678F1FD065226D6	G	Excitebike 64 (Japan)	N64		Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K
+DAAF564815E9EEF3FC163B9546B5880EE256274B	G	Excitebike 64 (USA) (Demo) (Kiosk)	N64		Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K
+A847DD011E98204AD198CADEB6C80DDA10D9A40E	G	Excitebike 64 (USA)	N64		RiceFastTextureCRC=1;RiceRenderToTextureOption=3;Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K
 E7120856ECC9A7F29C21F45130ECA0ECA8A7BFEC	G	Extreme-G (Europe) (En,Fr,De,Es,It)	N64		Glide_filtering=0;Glide_fb_smart=true
 D9D6F7CC456B530FD3233EF2D8D6B9F845CEE043	G	Extreme-G (Japan)	N64
 EB9B273431970A6124319A8FD125F0B2CACD8966	G	Extreme-G (USA)	N64		Glide_filtering=0;Glide_fb_smart=true
@@ -377,8 +377,8 @@ B3242226237A401436D9D7A8D533296333E64240	G	Knife Edge - Nose Gunner (Japan)	N64	
 B247167E37E7F62924BE6B0D2362A091FD2352AC	G	Knife Edge - Nose Gunner (USA)	N64		Glide_wrap_big_tex=true
 181D220EFAA3E06AC5A7BAAC4B6A351B762EC384	G	Knockout Kings 2000 (Europe)	N64		Glide_filtering=0
 AE7229676DA9ACB39BECB03246969693585B7728	G	Knockout Kings 2000 (USA)	N64		RiceUseCIWidthAndRatio=1;RiceRenderToTextureOption=3;Glide_filtering=0
-6390DC1CD4600CA57069D92F39F108A4CC1B62F1	G	Kobe Bryant in NBA Courtside (Europe)	N64
-49346B3124750C14DDDF56B9BB2FE38B618F28F2	G	Kobe Bryant's NBA Courtside (USA)	N64
+6390DC1CD4600CA57069D92F39F108A4CC1B62F1	G	Kobe Bryant in NBA Courtside (Europe)	N64		SaveType=EEPROM_16K
+49346B3124750C14DDDF56B9BB2FE38B618F28F2	G	Kobe Bryant's NBA Courtside (USA)	N64		SaveType=EEPROM_16K
 DFDF852D0939466AD1F1627F4DE29B7288A77589	G	Last Legion UX (Japan)	N64
 B38B71D2961DFFB523020A67F4807A4B704E347A	G	Legend of Zelda, The - Majora's Mask (Europe) (En,Fr,De,Es) (Beta)	N64		Glide_enable_hacks_for_game=1
 BB4E4757D10727C7584C59C1F2E5F44196E9C293	G	Legend of Zelda, The - Majora's Mask (Europe) (En,Fr,De,Es) (Rev A)	N64		Glide_enable_hacks_for_game=1
@@ -401,8 +401,8 @@ D3A13C0CFDFF835FDF87D5DC7C5149FBA564877F	G	Lode Runner 3-D (USA)	N64
 05B307B8804F992AF1A1E2FBAFBD588501FDF799	G	Lylat Wars (Europe) (En,Fr,De)	N64
 19FC1FE13A3C50A5D03D44D2E93440967C7F3618	G	Mace - The Dark Age (Europe)	N64		Glide_fix_tex_coord=8
 05D82A2C73AC536180B68137DBB9972A9E8E883E	G	Mace - The Dark Age (USA)	N64		Glide_fix_tex_coord=8
-ACF22B715B11609F42DF24ABAC143BC0221D12F4	G	Madden Football 64 (Europe)	N64
-B0DE34B759F18AD86D39A4C68C9840D35CE25809	G	Madden Football 64 (USA)	N64
+ACF22B715B11609F42DF24ABAC143BC0221D12F4	G	Madden Football 64 (Europe)	N64		SaveType=EEPROM_16K
+B0DE34B759F18AD86D39A4C68C9840D35CE25809	G	Madden Football 64 (USA)	N64		SaveType=EEPROM_16K
 EC01DE96960EA23A9EE997F4456C5C8EE7BAF7E4	G	Madden NFL 2000 (USA)	N64
 93F5BA646098E1AA45ECEC6312604A0932EDD24B	G	Madden NFL 2001 (USA)	N64		RiceScreenUpdateSettingHack=4
 DE51147A238158ADC059D0CC75FD39BBB08DCFC6	G	Madden NFL 2002 (USA)	N64		Glide_fix_tex_coord=1;Glide_filtering=0
@@ -433,13 +433,13 @@ D7BA071C220A71F5E4503E55C98C91FF8F027848	G	Mario Party (Europe) (En,Fr,De)	N64		
 FA5D1426488B298A1C5C383360A78F1A3DE18DC7	G	Mario Party 2 (Europe) (En,Fr,De,Es,It)	N64		Glide_filtering=0;Glide_swapmode=2
 26F4637167AAAA0E420BB4FDB26A965FD34F8D19	G	Mario Party 2 (Japan)	N64		Glide_filtering=0;Glide_swapmode=2
 166EDA1C05670D337E2C3F15A5DB528AE1E5D6E3	G	Mario Party 2 (USA)	N64		Glide_filtering=0;Glide_swapmode=2
-9E1DDFE872C6D43AE51010A9E8A6FE2D2E634B50	G	Mario Party 3 (Europe) (En,Fr,De,Es)	N64		RiceTextureScaleHack=true;Glide_fix_tex_coord=1;Glide_filtering=0
-43CF5EB8BD68EF57BA1C9B4CAE7BD18F1826E543	G	Mario Party 3 (Japan)	N64		Glide_fix_tex_coord=1;Glide_filtering=0
-6BEB80FF822B96BCF85DCDB512E8B2B7969D8259	G	Mario Party 3 (USA)	N64		RiceFastTextureCRC=1;RiceTextureScaleHack=true;Glide_fix_tex_coord=1;Glide_filtering=0
+9E1DDFE872C6D43AE51010A9E8A6FE2D2E634B50	G	Mario Party 3 (Europe) (En,Fr,De,Es)	N64		RiceTextureScaleHack=true;Glide_fix_tex_coord=1;Glide_filtering=0;SaveType=EEPROM_16K
+43CF5EB8BD68EF57BA1C9B4CAE7BD18F1826E543	G	Mario Party 3 (Japan)	N64		Glide_fix_tex_coord=1;Glide_filtering=0;SaveType=EEPROM_16K
+6BEB80FF822B96BCF85DCDB512E8B2B7969D8259	G	Mario Party 3 (USA)	N64		RiceFastTextureCRC=1;RiceTextureScaleHack=true;Glide_fix_tex_coord=1;Glide_filtering=0;SaveType=EEPROM_16K
 B9CCA3FF260B9FF427D981626B82F96DE73586D3	G	Mario Story (Japan)	N64		Glide_enable_hacks_for_game=15;Glide_fb_hires_buf_clear=false;Glide_fb_optimize_texrect=false;Glide_swapmode=2;Glide_fb_smart=true;Glide_fb_read_alpha=true
-B5E4AA1ABF8FC8022FC47F30CD6D4AC6A6B21684	G	Mario Tennis (Europe)	N64
-999047F07CEC931FFBDCC7B33B8502EF602807EE	G	Mario Tennis (USA)	N64		RiceEnableHacksForGame=4;RiceAccurateTextureMappingHack=1;RiceFastTextureCRC=1;RiceTxtSizeMethod2=true;RiceFrameBufferOption=4;RiceRenderToTextureOption=4
-8AA424795BBE87C659F777D0843E236340B12E16	G	Mario Tennis 64 (Japan)	N64
+B5E4AA1ABF8FC8022FC47F30CD6D4AC6A6B21684	G	Mario Tennis (Europe)	N64		SaveType=EEPROM_16K
+999047F07CEC931FFBDCC7B33B8502EF602807EE	G	Mario Tennis (USA)	N64		RiceEnableHacksForGame=4;RiceAccurateTextureMappingHack=1;RiceFastTextureCRC=1;RiceTxtSizeMethod2=true;RiceFrameBufferOption=4;RiceRenderToTextureOption=4;SaveType=EEPROM_16K
+8AA424795BBE87C659F777D0843E236340B12E16	G	Mario Tennis 64 (Japan)	N64		SaveType=EEPROM_16K
 F24FE0AFF01AEC018E2DD558EC4F076CF328129F	G	Mega Man 64 (USA)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0
 62CE9D1C1F4CF7BEAA1EF7C456C155F63F13F057	G	Mia Hamm Soccer 64 (USA) (En,Es)	N64
 F629A56ED36FB3889841A047D7C4CD2B9731EB43	G	Michael Owen's World League Soccer 2000 (Europe)	N64
@@ -509,7 +509,7 @@ D4CB60EB3645AE803A1EFC234CEFFD8F424DC8F7	G	NBA Live 2000 (Europe) (En,Fr,De,Es)	
 94416270D83A87E360BAC5059CC5F7365CA120AC	G	NBA Pro 98 (Europe)	N64
 5DECF930D859E8B834A5F897955880556CA6AADF	G	NBA Pro 99 (Europe)	N64
 702D6D55FC23C56B8A57D7348D159098FFF98650	G	NBA Showtime - NBA on NBC (USA)	N64
-A9BA0A4AFEED48080F54AA237850F3676B3D9980	G	Neon Genesis Evangelion (Japan)	N64		RiceAccurateTextureMappingHack=1;RiceFastTextureCRC=1;Glide_filtering=0
+A9BA0A4AFEED48080F54AA237850F3676B3D9980	G	Neon Genesis Evangelion (Japan)	N64		RiceAccurateTextureMappingHack=1;RiceFastTextureCRC=1;Glide_filtering=0;SaveType=EEPROM_16K
 2392F403B0993F838912CEFA83AEFD35D34A05A0	G	New Tetris, The (Europe)	N64		RiceIncTexRectEdge=true;Glide_fix_tex_coord=1;Glide_increase_texrect_edge=true;Glide_filtering=0;Glide_fog=false
 83FFF25E82181A6993F28C91B9EEB8430396838B	G	New Tetris, The (USA)	N64		RiceVIWidth=400;RiceVIHeight=300;Glide_fix_tex_coord=1;Glide_increase_texrect_edge=true;Glide_filtering=0;Glide_fog=false
 2853AFD9E38D63D913C8484F546804708C8AD712	G	NFL Blitz (USA)	N64
@@ -558,13 +558,13 @@ B8F29E8EFCF51EE9A6A16E2A1E60442B4F304950	G	Pachinko 365 Nichi (Japan)	N64
 7DB4808042B9651B47592E814AC4C125B51D4D2F	G	Paperboy (Europe)	N64
 B043C47B9758FA6BB289CA7DBA2068BDA6CAFA3A	G	Paperboy (USA)	N64
 9887A0E4BFE3C5E85E31638853574069F6C41CD3	G	Parlor! Pro 64 - Pachinko Jikki Simulation Game (Japan)	N64		Glide_force_microcheck=true
-16783D9DE1FF772E215F47441612D6805AA98C67	G	PD Ultraman Battle Collection 64 (Japan)	N64		Glide_filtering=0
+16783D9DE1FF772E215F47441612D6805AA98C67	G	PD Ultraman Battle Collection 64 (Japan)	N64		Glide_filtering=0;SaveType=EEPROM_16K
 9848CC288B388D23E0AE026EF58DA8FC936D7605	G	Penny Racers (Europe)	N64
 1D4FCE8AD6B1F0072D89AEB4C3187BC853B750A0	G	Penny Racers (USA)	N64
-A663D3F4EEE0B198471132DB92E9639A9EDD1985	G	Perfect Dark (Europe) (En,Fr,De,Es,It)	N64		Glide_decrease_fillrect_edge=true;Glide_fb_optimize_texrect=false;Glide_fb_smart=true;Glide_fb_clear=true
-99BCAAA4841B09C845E1094006DF8F637862F02E	G	Perfect Dark (Japan)	N64		Glide_decrease_fillrect_edge=true;Glide_fb_optimize_texrect=false;Glide_fb_smart=true;Glide_fb_clear=true
-AF8788AC4D1A57260EAE9C53FFE851FCF2A3319B	G	Perfect Dark (USA) (Rev A)	N64		Glide_decrease_fillrect_edge=true;Glide_fb_optimize_texrect=false;Glide_fb_smart=true;Glide_fb_clear=true
-60DFE17923C03875B499B3CD3200F05CB538B7AD	G	Perfect Dark (USA)	N64		Glide_decrease_fillrect_edge=true;Glide_fb_optimize_texrect=false;Glide_fb_smart=true;Glide_fb_clear=true
+A663D3F4EEE0B198471132DB92E9639A9EDD1985	G	Perfect Dark (Europe) (En,Fr,De,Es,It)	N64		Glide_decrease_fillrect_edge=true;Glide_fb_optimize_texrect=false;Glide_fb_smart=true;Glide_fb_clear=true;SaveType=EEPROM_16K
+99BCAAA4841B09C845E1094006DF8F637862F02E	G	Perfect Dark (Japan)	N64		Glide_decrease_fillrect_edge=true;Glide_fb_optimize_texrect=false;Glide_fb_smart=true;Glide_fb_clear=true;SaveType=EEPROM_16K
+AF8788AC4D1A57260EAE9C53FFE851FCF2A3319B	G	Perfect Dark (USA) (Rev A)	N64		Glide_decrease_fillrect_edge=true;Glide_fb_optimize_texrect=false;Glide_fb_smart=true;Glide_fb_clear=true;SaveType=EEPROM_16K
+60DFE17923C03875B499B3CD3200F05CB538B7AD	G	Perfect Dark (USA)	N64		Glide_decrease_fillrect_edge=true;Glide_fb_optimize_texrect=false;Glide_fb_smart=true;Glide_fb_clear=true;SaveType=EEPROM_16K
 6E8DFCCFE93318A597E99C9186D5E8CDCA3BE987	G	PGA European Tour (USA)	N64
 F9E838CF5CFD0FA493D5E5F7A7D450A80787C814	G	PGA European Tour Golf (Europe) (En,Fr,De,Es,It)	N64
 A28C689E58F58B4A2A672D3D010436661D247476	G	Pikachuu Genki de Chuu (Japan)	N64
@@ -652,8 +652,8 @@ D86A7ED2F203BA9DF0CE5B18D9E4E2E2D9B62A3F	G	Robotron 64 (Europe)	N64
 A1AA086F0826BEE4BE71C16BC67468B8D8A49065	G	Rocket - Robot on Wheels (Europe) (En,Fr,De)	N64
 622D71A44DA0B81EA68092CAC9198C66154A4F4A	G	Rocket - Robot on Wheels (USA)	N64		RiceFastTextureCRC=1
 E807ED78DB0B3440F76B445BF989A943BC05E0AD	G	Rockman Dash - Hagane no Boukenshin (Japan)	N64		Glide_increase_texrect_edge=true;Glide_filtering=0
-FAA21C8E0282D21EAC2D1B35B020F40381E18FC4	G	RR64 - Ridge Racer 64 (Europe)	N64		Glide_filtering=0
-5F079CD9827B24D12AF4961482A0FCC679E53042	G	RR64 - Ridge Racer 64 (USA)	N64		Glide_filtering=0
+FAA21C8E0282D21EAC2D1B35B020F40381E18FC4	G	RR64 - Ridge Racer 64 (Europe)	N64		Glide_filtering=0;SaveType=EEPROM_16K
+5F079CD9827B24D12AF4961482A0FCC679E53042	G	RR64 - Ridge Racer 64 (USA)	N64		Glide_filtering=0;SaveType=EEPROM_16K
 A68294E47C82639C9BCDAE1B7306AC2A2E2F47B5	G	RTL World League Soccer 2000 (Germany)	N64
 32CABA1042CABBF366852D629D3FEE1A5186BCE3	G	Rugrats - Die grosse Schatzsuche (Germany)	N64
 FB2A62F1625630D6F0BEB5FD00A32E12155D50E8	G	Rugrats - Scavenger Hunt (USA)	N64
@@ -724,9 +724,9 @@ D8BDDB9727264C14BF3BC20B2FE983FB86EADA32	G	Star Wars - Shutsugeki! Rogue Chuutai
 93ED6F1497EDE2239F9D75B4A39204B6C9DD9FFD	G	Star Wars - Teikoku no Kage (Japan)	N64
 C949856A6CB0B59A2D171C8AD2E8D913CCA23022	G	Star Wars Episode I - Battle for Naboo (Europe)	N64
 E4441A6EEB67861408C2E009BAAE8AAD4DF34021	G	Star Wars Episode I - Battle for Naboo (USA)	N64
-899A8245DA017289C88E97327FDCD6694B770A25	G	Star Wars Episode I - Racer (Europe) (En,Fr,De)	N64
-9577CCD2D069D0E7E306CF21DDB0E4765A308072	G	Star Wars Episode I - Racer (Japan)	N64
-3542D5597C8A56EA8F5C63BCEAE97A24C4C08D58	G	Star Wars Episode I - Racer (USA)	N64		RiceZHack=true
+899A8245DA017289C88E97327FDCD6694B770A25	G	Star Wars Episode I - Racer (Europe) (En,Fr,De)	N64		SaveType=EEPROM_16K
+9577CCD2D069D0E7E306CF21DDB0E4765A308072	G	Star Wars Episode I - Racer (Japan)	N64		SaveType=EEPROM_16K
+3542D5597C8A56EA8F5C63BCEAE97A24C4C08D58	G	Star Wars Episode I - Racer (USA)	N64		RiceZHack=true;SaveType=EEPROM_16K
 BD8AB8994BE02368C844234006E5C11509CE2894	G	StarCraft 64 (Australia)	N64		RiceNormalBlender=2;RiceUseCIWidthAndRatio=1;RiceRenderToTextureOption=3;Glide_detect_cpu_write=true;Glide_filtering=2;Glide_fog=false
 BC585DA421CABA45F5EB87CAA6D7A138A09E9B43	G	StarCraft 64 (Germany) (Proto)	N64		Glide_detect_cpu_write=true;Glide_filtering=2;Glide_fog=false
 472573D057E42653B7413861319B9F7342F2467D	G	StarCraft 64 (USA) (Beta)	N64
@@ -909,9 +909,9 @@ E020C26DEDE0C349181CF08A3541816DC47F63A8	G	WWF WrestleMania 2000 (Japan)	N64
 E3316269B8466FE1FB968AC9338E6ACDC0379970	G	Xena - Warrior Princess - The Talisman of Fate (USA)	N64
 3A13B42074C2B6948F55F22D3E4FE44FBF2CDE6A	G	Xplorer 64 (Germany) (v1.067) (Unl)	N64
 09929CA361D47FB9FC0EB4077CF1FB77CB843CEF	G	Yakouchuu II - Satsujin Kouro (Japan)	N64		Glide_filtering=0
-FF320B4122894C773F465A8996E82A00F3116E83	G	Yoshi Story (Japan)	N64		Glide_enable_hacks_for_game=13;Glide_fix_tex_coord=32;Glide_fog=false
-5B56EC1DA78456F968129BADDC1F233E1FB4F4F3	G	Yoshi's Story (Europe) (En,Fr,De)	N64		RiceEnableHacksForGame=9;RiceFrameBufferOption=3;RiceRenderToTextureOption=3;Glide_enable_hacks_for_game=13;Glide_fix_tex_coord=32;Glide_fog=false
-B13072FEF6C6DF48C07D8822C01E5BC59036F6DA	G	Yoshi's Story (USA) (En,Ja)	N64		RiceEnableHacksForGame=9;RiceFrameBufferOption=3;RiceRenderToTextureOption=3;Glide_enable_hacks_for_game=13;Glide_fix_tex_coord=32;Glide_fog=false
+FF320B4122894C773F465A8996E82A00F3116E83	G	Yoshi Story (Japan)	N64		Glide_enable_hacks_for_game=13;Glide_fix_tex_coord=32;Glide_fog=false;SaveType=EEPROM_16K
+5B56EC1DA78456F968129BADDC1F233E1FB4F4F3	G	Yoshi's Story (Europe) (En,Fr,De)	N64		RiceEnableHacksForGame=9;RiceFrameBufferOption=3;RiceRenderToTextureOption=3;Glide_enable_hacks_for_game=13;Glide_fix_tex_coord=32;Glide_fog=false;SaveType=EEPROM_16K
+B13072FEF6C6DF48C07D8822C01E5BC59036F6DA	G	Yoshi's Story (USA) (En,Ja)	N64		RiceEnableHacksForGame=9;RiceFrameBufferOption=3;RiceRenderToTextureOption=3;Glide_enable_hacks_for_game=13;Glide_fix_tex_coord=32;Glide_fog=false;SaveType=EEPROM_16K
 039A75636C34D219D489D0A84A671D00DC23E7C4	G	Yuke Yuke!! Trouble Makers (Japan)	N64
 41FDB879AB422EC158B4EAFEA69087F255EA8589	G	Zelda no Densetsu - Mujura no Kamen (Japan) (Rev A)	N64		Glide_enable_hacks_for_game=1;Glide_wrap_big_tex=true;Glide_fb_smart=true;Glide_fb_clear=true
 5FB2301AACBF85278AF30DCA3E4194AD48599E36	G	Zelda no Densetsu - Mujura no Kamen (Japan)	N64		RiceDisableObjBG=true;Glide_enable_hacks_for_game=1;Glide_wrap_big_tex=true;Glide_fb_smart=true;Glide_fb_clear=true

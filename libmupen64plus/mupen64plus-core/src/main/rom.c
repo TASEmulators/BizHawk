@@ -125,6 +125,7 @@ m64p_error open_rom(const unsigned char* romimage, unsigned int size)
     char buffer[256];
     unsigned char imagetype;
     int i;
+	m64p_handle CoreSection = NULL;
 
     /* check input requirements */
     if (rom != NULL)
@@ -169,6 +170,7 @@ m64p_error open_rom(const unsigned char* romimage, unsigned int size)
     trim(ROM_PARAMS.headername); /* Remove trailing whitespace from ROM name. */
 
     /* Look up this ROM in the .ini file and fill in goodname, etc */
+	/*
     if ((entry=ini_search_by_md5(digest)) != NULL ||
         (entry=ini_search_by_crc(sl(ROM_HEADER.CRC1),sl(ROM_HEADER.CRC2))) != NULL)
     {
@@ -188,6 +190,22 @@ m64p_error open_rom(const unsigned char* romimage, unsigned int size)
         ROM_SETTINGS.players = 0;
         ROM_SETTINGS.rumble = 0;
     }
+	*/
+
+	strcpy(ROM_SETTINGS.goodname, ROM_PARAMS.headername);
+    strcat(ROM_SETTINGS.goodname, " (unknown rom)");
+
+	ROM_SETTINGS.savetype = 0;
+    if (ConfigOpenSection("Core", &CoreSection) == M64ERR_SUCCESS)
+    {
+		ConfigSetDefaultInt(CoreSection, "SaveType", NONE, "The savetype for the game");
+		ROM_SETTINGS.savetype = ConfigGetParamInt(CoreSection, "SaveType");
+    }
+    
+    ROM_SETTINGS.status = 0;
+    ROM_SETTINGS.players = 0;
+    ROM_SETTINGS.rumble = 0;
+
 
     /* print out a bunch of info about the ROM */
     DebugMessage(M64MSG_INFO, "Goodname: %s", ROM_SETTINGS.goodname);
