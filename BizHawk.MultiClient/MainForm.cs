@@ -2023,7 +2023,7 @@ namespace BizHawk.MultiClient
 				Global.MovieOutputHardpoint.Source = Global.MovieInputSourceAdapter;
 		}
 
-		public bool LoadRom(string path, bool deterministicemulation = false)
+		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
 		{
 			if (path == null) return false;
 			using (var file = new HawkFile())
@@ -2485,7 +2485,7 @@ namespace BizHawk.MultiClient
 								if (INTERIM)
 								{
 									Global.Game = game;
-									VideoPluginSettings video_settings = N64GenerateVideoSettings(game);
+									VideoPluginSettings video_settings = N64GenerateVideoSettings(game, hasmovie);
 									int SaveType = 0;
 									if (game.OptionValue("SaveType") == "EEPROM_16K")
 									{
@@ -3867,21 +3867,21 @@ namespace BizHawk.MultiClient
 				Cheats1.Focus();
 		}
 
-		public VideoPluginSettings N64GenerateVideoSettings(GameInfo game)
+		public VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
 		{
-			VideoPluginSettings video_settings = new VideoPluginSettings(Global.Config.N64VidPlugin, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
-
 			string PluginToUse = "";
-			/*
-			if (Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64")
+
+			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
 			{
 				PluginToUse = Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.VIDEOPLUGIN];
 			}
-			*/
-			if (PluginToUse == "")
+
+			if (PluginToUse == "" || (PluginToUse != "Rice" && PluginToUse != "Glide64")) 
 			{
 				PluginToUse = Global.Config.N64VidPlugin;
 			}
+
+			VideoPluginSettings video_settings = new VideoPluginSettings(PluginToUse, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
 
 			if (PluginToUse == "Rice")
 			{
@@ -3893,19 +3893,44 @@ namespace BizHawk.MultiClient
 				Global.Config.GlidePlugin.FillPerGameHacks(game);
 				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
 			}
-			/*
-			if (Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64")
+			
+			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
 			{
 				List<string> settings = new List<string>(video_settings.Parameters.Keys);
 				foreach (string setting in settings)
 				{
 					if (Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
 					{
-						video_settings.Parameters[setting] = Global.MovieSession.Movie.Header.HeaderParams[setting];
+						string Value = Global.MovieSession.Movie.Header.HeaderParams[setting];
+						if (video_settings.Parameters[setting].GetType() == typeof(bool))
+						{
+							try
+							{
+								video_settings.Parameters[setting] = bool.Parse(Value);
+							}
+							catch { }
+							/*
+							if (Value == "True")
+							{
+								video_settings.Parameters[setting] = true;
+							}
+							else if (Value == "False")
+							{
+								video_settings.Parameters[setting] = false;
+							}*/
+						}
+						else if (video_settings.Parameters[setting].GetType() == typeof(int))
+						{
+							try
+							{
+								video_settings.Parameters[setting] = int.Parse(Value);
+							}
+							catch { }
+						}
 					}
 				}
 			}
-			*/
+			
 			return video_settings;
 		}
 

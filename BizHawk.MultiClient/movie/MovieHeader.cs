@@ -224,29 +224,32 @@ namespace BizHawk.MultiClient
 			{
 				if (HeaderParams[PLATFORM] == "N64")
 				{
-					if (HeaderParams[VIDEOPLUGIN] == "Rice")
+					if (HeaderParams.ContainsKey(VIDEOPLUGIN))
 					{
-						ICollection<string> settings = Global.Config.RicePlugin.GetPluginSettings().Keys;
-						foreach (string setting in settings)
+						if (HeaderParams[VIDEOPLUGIN] == "Rice")
 						{
-							if (line.Contains(setting))
+							ICollection<string> settings = Global.Config.RicePlugin.GetPluginSettings().Keys;
+							foreach (string setting in settings)
 							{
-								line = ParseHeader(line, setting);
-								AddHeaderLine(setting, line);
-								break;
+								if (line.Contains(setting))
+								{
+									line = ParseHeader(line, setting);
+									AddHeaderLine(setting, line);
+									break;
+								}
 							}
 						}
-					}
-					else if (HeaderParams[VIDEOPLUGIN] == "Glide64")
-					{
-						ICollection<string> settings = Global.Config.GlidePlugin.GetPluginSettings().Keys;
-						foreach (string setting in settings)
+						else if (HeaderParams[VIDEOPLUGIN] == "Glide64")
 						{
-							if (line.Contains(setting))
+							ICollection<string> settings = Global.Config.GlidePlugin.GetPluginSettings().Keys;
+							foreach (string setting in settings)
 							{
-								line = ParseHeader(line, setting);
-								AddHeaderLine(setting, line);
-								break;
+								if (line.Contains(setting))
+								{
+									line = ParseHeader(line, setting);
+									AddHeaderLine(setting, line);
+									break;
+								}
 							}
 						}
 					}
