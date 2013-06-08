@@ -5435,11 +5435,6 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 		}
 
-		private void videoConfigToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new N64VideoConfig().ShowDialog();
-		}
-
 		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new N64VideoPluginconfig().ShowDialog();
