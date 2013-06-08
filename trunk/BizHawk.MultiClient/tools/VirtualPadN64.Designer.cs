@@ -42,7 +42,13 @@
 			this.CL = new System.Windows.Forms.CheckBox();
 			this.CR = new System.Windows.Forms.CheckBox();
 			this.CD = new System.Windows.Forms.CheckBox();
+			this.ManualX = new System.Windows.Forms.NumericUpDown();
+			this.ManualY = new System.Windows.Forms.NumericUpDown();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.AnalogControl1 = new BizHawk.MultiClient.AnalogControlPanel();
+			((System.ComponentModel.ISupportInitialize)(this.ManualX)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.ManualY)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// PL
@@ -213,11 +219,66 @@
 			this.CD.UseVisualStyleBackColor = true;
 			this.CD.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 			// 
+			// ManualX
+			// 
+			this.ManualX.Location = new System.Drawing.Point(144, 30);
+			this.ManualX.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+			this.ManualX.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
+			this.ManualX.Name = "ManualX";
+			this.ManualX.Size = new System.Drawing.Size(47, 20);
+			this.ManualX.TabIndex = 20;
+			this.ManualX.ValueChanged += new System.EventHandler(this.ManualX_ValueChanged);
+			// 
+			// ManualY
+			// 
+			this.ManualY.Location = new System.Drawing.Point(144, 69);
+			this.ManualY.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+			this.ManualY.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
+			this.ManualY.Name = "ManualY";
+			this.ManualY.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.ManualY.Size = new System.Drawing.Size(47, 20);
+			this.ManualY.TabIndex = 21;
+			this.ManualY.ValueChanged += new System.EventHandler(this.ManualY_ValueChanged);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(144, 14);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(14, 13);
+			this.label1.TabIndex = 22;
+			this.label1.Text = "X";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(144, 53);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(14, 13);
+			this.label2.TabIndex = 23;
+			this.label2.Text = "Y";
+			// 
 			// AnalogControl1
 			// 
 			this.AnalogControl1.BackColor = System.Drawing.Color.Transparent;
 			this.AnalogControl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.AnalogControl1.Location = new System.Drawing.Point(24, 14);
+			this.AnalogControl1.Location = new System.Drawing.Point(6, 14);
 			this.AnalogControl1.Name = "AnalogControl1";
 			this.AnalogControl1.Size = new System.Drawing.Size(132, 132);
 			this.AnalogControl1.TabIndex = 0;
@@ -228,6 +289,10 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.ManualY);
+			this.Controls.Add(this.ManualX);
 			this.Controls.Add(this.CD);
 			this.Controls.Add(this.CR);
 			this.Controls.Add(this.CL);
@@ -246,6 +311,8 @@
 			this.Name = "VirtualPadN64";
 			this.Size = new System.Drawing.Size(200, 332);
 			this.Load += new System.EventHandler(this.UserControl1_Load);
+			((System.ComponentModel.ISupportInitialize)(this.ManualX)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.ManualY)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -268,5 +335,9 @@
 		private System.Windows.Forms.CheckBox CL;
 		private System.Windows.Forms.CheckBox CR;
 		private System.Windows.Forms.CheckBox CD;
+		private System.Windows.Forms.NumericUpDown ManualY;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.NumericUpDown ManualX;
 	}
 }
