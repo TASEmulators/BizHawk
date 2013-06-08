@@ -406,7 +406,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 		IntPtr AudDll;
 		IntPtr InpDll;
 
-		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings)
+		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType)
 		{
 			if (AttachedCore != null)
 			{
@@ -451,6 +451,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 			// Start up the core
 			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core", (IntPtr foo, int level, string Message) => { }, "", IntPtr.Zero);
+
+			// Set the savetype if needed
+			if (SaveType != 0)
+			{
+				IntPtr core_section = IntPtr.Zero;
+				m64pConfigOpenSection("Core", ref core_section);
+				m64pConfigSetParameter(core_section, "SaveType", m64p_type.M64TYPE_INT, ref SaveType);
+			}
 
 			// Pass the rom to the core
 			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);

@@ -273,13 +273,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 
 		mupen64plusApi api;
 
-		public N64(CoreComm comm, GameInfo game, byte[] rom, VideoPluginSettings video_settings)
+		public N64(CoreComm comm, GameInfo game, byte[] rom, VideoPluginSettings video_settings, int SaveType)
 		{
 			CoreComm = comm;
 			this.rom = rom;
 			this.game = game;
 
-			api = new mupen64plusApi(this, rom, video_settings);
+			api = new mupen64plusApi(this, rom, video_settings, SaveType);
 			api.SetM64PInputCallback(new mupen64plusApi.InputCallback(setControllers));
 
 			InitMemoryDomains();
