@@ -34,7 +34,7 @@ namespace BizHawk.MultiClient
 				SetSyncDependentSettings();
 			}
 
-			LoadRom(Global.MainForm.CurrentlyOpenRom, true);
+			LoadRom(Global.MainForm.CurrentlyOpenRom, true, !record);
 
 			Global.Config.RecentMovies.Add(m.Filename);
 			if (Global.MovieSession.Movie.StartsFromSavestate)
@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				LoadRom(CurrentlyOpenRom, true);
+				LoadRom(CurrentlyOpenRom, true, true);
 				if (Global.MovieSession.Movie.StartsFromSavestate)
 				{
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
