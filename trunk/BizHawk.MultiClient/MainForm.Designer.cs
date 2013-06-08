@@ -288,8 +288,7 @@
 			this.colecoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.skipBIOSIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.n64ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.videoConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.tempN64PluginControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.N64PluginSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.forumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2505,25 +2504,17 @@
 			// n64ToolStripMenuItem
 			// 
 			this.n64ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.videoConfigToolStripMenuItem,
-            this.tempN64PluginControlToolStripMenuItem});
+            this.N64PluginSettingsToolStripMenuItem});
 			this.n64ToolStripMenuItem.Name = "n64ToolStripMenuItem";
 			this.n64ToolStripMenuItem.Size = new System.Drawing.Size(38, 17);
 			this.n64ToolStripMenuItem.Text = "N64";
 			// 
-			// videoConfigToolStripMenuItem
-			// 
-			this.videoConfigToolStripMenuItem.Name = "videoConfigToolStripMenuItem";
-			this.videoConfigToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.videoConfigToolStripMenuItem.Text = "Video Settings";
-			this.videoConfigToolStripMenuItem.Click += new System.EventHandler(this.videoConfigToolStripMenuItem_Click);
-			// 
 			// tempN64PluginControlToolStripMenuItem
 			// 
-			this.tempN64PluginControlToolStripMenuItem.Name = "tempN64PluginControlToolStripMenuItem";
-			this.tempN64PluginControlToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.tempN64PluginControlToolStripMenuItem.Text = "Temp N64 Plugin Control";
-			this.tempN64PluginControlToolStripMenuItem.Click += new System.EventHandler(this.tempN64PluginControlToolStripMenuItem_Click);
+			this.N64PluginSettingsToolStripMenuItem.Name = "tempN64PluginControlToolStripMenuItem";
+			this.N64PluginSettingsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.N64PluginSettingsToolStripMenuItem.Text = "Video Plugin Settings";
+			this.N64PluginSettingsToolStripMenuItem.Click += new System.EventHandler(this.tempN64PluginControlToolStripMenuItem_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -3286,8 +3277,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator29;
 		private System.Windows.Forms.ToolStripMenuItem createDualGBXMLToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem n64ToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem videoConfigToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem tempN64PluginControlToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem N64PluginSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem savestateTypeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem defaultToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem binaryToolStripMenuItem;
