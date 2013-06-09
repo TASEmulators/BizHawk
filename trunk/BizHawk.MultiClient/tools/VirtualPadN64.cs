@@ -8,6 +8,9 @@ namespace BizHawk.MultiClient
 	{
 		public string Controller = "P1";
 
+		private int old_X = 0;
+		private int old_Y = 0;
+
 		public VirtualPadN64()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -214,32 +217,39 @@ namespace BizHawk.MultiClient
 
 		private void AnalogControl1_MouseClick(object sender, MouseEventArgs e)
 		{
-			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", AnalogControl1.X);
-			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", -AnalogControl1.Y - 1);
-			ManualX.Value = AnalogControl1.X;
-			ManualY.Value = -AnalogControl1.Y - 1;
+			set_analog(AnalogControl1.X, AnalogControl1.Y);
 		}
 
 		private void AnalogControl1_MouseMove(object sender, MouseEventArgs e)
 		{
-			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", AnalogControl1.X);
-			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", -AnalogControl1.Y - 1);
-			ManualX.Value = AnalogControl1.X;
-			ManualY.Value = -AnalogControl1.Y - 1;
+			set_analog(AnalogControl1.X, AnalogControl1.Y);
 		}
 
 		private void ManualX_ValueChanged(object sender, EventArgs e)
 		{
-			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", (float)ManualX.Value);
-			AnalogControl1.X = (int)ManualX.Value;
-			AnalogControl1.Refresh();
+			if (ManualX.Value != old_X)
+				set_analog((int)ManualX.Value, old_Y);
 		}
 
 		private void ManualY_ValueChanged(object sender, EventArgs e)
 		{
-			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", (float)ManualY.Value);
-			AnalogControl1.Y = -((int)ManualY.Value + 1);
+			if (ManualY.Value != old_Y)
+				set_analog(old_X, (int)ManualY.Value);
+		}
+
+		public void set_analog(int X, int Y)
+		{
+			Global.StickyXORAdapter.SetFloat(Controller + " X Axis", X);
+			Global.StickyXORAdapter.SetFloat(Controller + " Y Axis", Y);
+
+			AnalogControl1.X = X;
+			AnalogControl1.Y = Y;
 			AnalogControl1.Refresh();
+
+			old_X = X;
+			old_Y = Y;
+			ManualX.Value = X;
+			ManualY.Value = Y;
 		}
 	}
 }
