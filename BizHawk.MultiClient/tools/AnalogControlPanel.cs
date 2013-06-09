@@ -5,8 +5,8 @@ namespace BizHawk.MultiClient
 {
 	public sealed class AnalogControlPanel : Panel
 	{
-		public int X = 1;
-		public int Y = 1;
+		public int X = 0;
+		public int Y = 0;
 
 		private readonly Brush WhiteBrush = Brushes.White;
 		private readonly Brush BlackBrush = Brushes.Black;
@@ -19,7 +19,7 @@ namespace BizHawk.MultiClient
 		private readonly Pen RedPen;
 		private readonly Pen BluePen;
 
-		private const int DOTW = 8;
+		private Bitmap dot = new Bitmap(7, 7);
 
 		public AnalogControlPanel()
 		{
@@ -39,6 +39,13 @@ namespace BizHawk.MultiClient
 			RedPen = new Pen(RedBrush);
 			BluePen = new Pen(BlueBrush);
 			BorderStyle = BorderStyle.Fixed3D;
+			
+			// Draw the dot into a bitmap
+			Graphics g = Graphics.FromImage(dot);
+			g.Clear(Color.Transparent);
+			g.FillRectangle(RedBrush, 2, 0, 3, 7);
+			g.FillRectangle(RedBrush, 1, 1, 5, 5);
+			g.FillRectangle(RedBrush, 0, 2, 7, 3);
 		}
 
 		private int RealToGFX(int val)
@@ -48,7 +55,7 @@ namespace BizHawk.MultiClient
 
 		private int GFXToReal(int val)
 		{
-			int ret = (val * 2) - 128;
+			int ret = (val * 2);
 			if (ret > 127) ret = 127;
 			if (ret < -128) ret = -128;
 			return ret;
@@ -62,12 +69,13 @@ namespace BizHawk.MultiClient
 				e.Graphics.FillRectangle(GrayBrush, 0, 0, 128, 128);
 				e.Graphics.FillEllipse(WhiteBrush, 0, 0, 127, 127);
 				e.Graphics.DrawEllipse(BlackPen, 0, 0, 127, 127);
-				e.Graphics.DrawLine(BlackPen, 65, 0, 65, 127);
-				e.Graphics.DrawLine(BlackPen, 0, 65, 127, 65);
+				e.Graphics.DrawLine(BlackPen, 64, 0, 64, 127);
+				e.Graphics.DrawLine(BlackPen, 0, 63, 127, 63);
 
 				//Line
-				e.Graphics.DrawLine(BluePen, 64, 64, RealToGFX(X), RealToGFX(Y));
-				e.Graphics.FillEllipse(RedBrush, RealToGFX(X) - (DOTW / 2), RealToGFX(Y) - (DOTW / 2), DOTW, DOTW);
+				e.Graphics.DrawLine(BluePen, 64, 63, RealToGFX(X), 127 - RealToGFX(Y));
+				e.Graphics.DrawImage(dot, RealToGFX(X) - 3, 127 - RealToGFX(Y) - 3);
+
 			}
 		}
 
@@ -75,8 +83,8 @@ namespace BizHawk.MultiClient
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				X = GFXToReal(e.X);
-				Y = GFXToReal(e.Y);
+				X = GFXToReal(e.X - 64);
+				Y = GFXToReal(-(e.Y - 63));
 			}
 
 			Refresh();
@@ -86,8 +94,8 @@ namespace BizHawk.MultiClient
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				X = GFXToReal(e.X);
-				Y = GFXToReal(e.Y);
+				X = GFXToReal(e.X - 64);
+				Y = GFXToReal(-(e.Y - 63));
 			}
 
 			Refresh();
