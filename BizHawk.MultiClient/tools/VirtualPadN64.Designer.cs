@@ -115,7 +115,7 @@
 			// 
 			this.BR.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BR.AutoSize = true;
-			this.BR.Location = new System.Drawing.Point(138, 148);
+			this.BR.Location = new System.Drawing.Point(172, 148);
 			this.BR.Name = "BR";
 			this.BR.Size = new System.Drawing.Size(25, 23);
 			this.BR.TabIndex = 9;
@@ -127,7 +127,7 @@
 			// 
 			this.BS.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BS.AutoSize = true;
-			this.BS.Location = new System.Drawing.Point(74, 157);
+			this.BS.Location = new System.Drawing.Point(87, 157);
 			this.BS.Name = "BS";
 			this.BS.Size = new System.Drawing.Size(24, 23);
 			this.BS.TabIndex = 10;
@@ -151,7 +151,7 @@
 			// 
 			this.BB.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BB.AutoSize = true;
-			this.BB.Location = new System.Drawing.Point(98, 195);
+			this.BB.Location = new System.Drawing.Point(83, 195);
 			this.BB.Name = "BB";
 			this.BB.Size = new System.Drawing.Size(24, 23);
 			this.BB.TabIndex = 12;
@@ -163,7 +163,7 @@
 			// 
 			this.BA.Appearance = System.Windows.Forms.Appearance.Button;
 			this.BA.AutoSize = true;
-			this.BA.Location = new System.Drawing.Point(128, 206);
+			this.BA.Location = new System.Drawing.Point(113, 206);
 			this.BA.Name = "BA";
 			this.BA.Size = new System.Drawing.Size(24, 23);
 			this.BA.TabIndex = 13;
@@ -175,7 +175,7 @@
 			// 
 			this.CU.Appearance = System.Windows.Forms.Appearance.Button;
 			this.CU.AutoSize = true;
-			this.CU.Location = new System.Drawing.Point(138, 235);
+			this.CU.Location = new System.Drawing.Point(147, 235);
 			this.CU.Name = "CU";
 			this.CU.Size = new System.Drawing.Size(31, 23);
 			this.CU.TabIndex = 14;
@@ -187,7 +187,7 @@
 			// 
 			this.CL.Appearance = System.Windows.Forms.Appearance.Button;
 			this.CL.AutoSize = true;
-			this.CL.Location = new System.Drawing.Point(116, 258);
+			this.CL.Location = new System.Drawing.Point(129, 258);
 			this.CL.Name = "CL";
 			this.CL.Size = new System.Drawing.Size(29, 23);
 			this.CL.TabIndex = 15;
@@ -199,7 +199,7 @@
 			// 
 			this.CR.Appearance = System.Windows.Forms.Appearance.Button;
 			this.CR.AutoSize = true;
-			this.CR.Location = new System.Drawing.Point(151, 259);
+			this.CR.Location = new System.Drawing.Point(164, 258);
 			this.CR.Name = "CR";
 			this.CR.Size = new System.Drawing.Size(31, 23);
 			this.CR.TabIndex = 16;
@@ -211,7 +211,7 @@
 			// 
 			this.CD.Appearance = System.Windows.Forms.Appearance.Button;
 			this.CD.AutoSize = true;
-			this.CD.Location = new System.Drawing.Point(138, 284);
+			this.CD.Location = new System.Drawing.Point(147, 281);
 			this.CD.Name = "CD";
 			this.CD.Size = new System.Drawing.Size(31, 23);
 			this.CD.TabIndex = 17;
@@ -309,7 +309,7 @@
 			this.Controls.Add(this.PU);
 			this.Controls.Add(this.AnalogControl1);
 			this.Name = "VirtualPadN64";
-			this.Size = new System.Drawing.Size(200, 332);
+			this.Size = new System.Drawing.Size(200, 316);
 			this.Load += new System.EventHandler(this.UserControl1_Load);
 			((System.ComponentModel.ISupportInitialize)(this.ManualX)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.ManualY)).EndInit();
