@@ -381,6 +381,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_mask = num_prg_banks - 1;
 
 			int num_chr_banks = (Cart.chr_size);
+			if (num_chr_banks == 0) // vram only board
+				num_chr_banks = 8;
 			chr_mask = num_chr_banks - 1;
 
 			mmc3 = new MMC3(this, num_prg_banks);
