@@ -266,8 +266,8 @@
 			// 
 			// textBox1
 			// 
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox1.BackColor = System.Drawing.SystemColors.Control;
 			this.textBox1.Location = new System.Drawing.Point(17, 195);
 			this.textBox1.Name = "textBox1";
@@ -343,6 +343,7 @@
 			this.Name = "ColorChooserForm";
 			this.ShowIcon = false;
 			this.Text = "Gameboy Palette Config";
+			this.Load += new System.EventHandler(this.ColorChooserForm_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragEnter);
 			this.ResumeLayout(false);

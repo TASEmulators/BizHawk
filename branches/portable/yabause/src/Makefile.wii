@@ -1,0 +1,53 @@
+#       Makefile.wii
+#       Wii makefile
+#	Copyright (C) 2002, 2003, 2004 Lawrence Sebald
+#       Copyright (C) 2004-2008 Theo Berkau
+#	Based on KOS makefiles (C) by Dan Potter
+#
+#	This program is free software; you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation; either version 2 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program; if not, write to the Free Software
+#	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+#
+
+ifeq ($(strip $(DEVKITPPC)),)
+$(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC)
+endif
+
+include $(DEVKITPPC)/wii_rules
+
+TARGET = yabause.elf
+DDEFINES=
+VDEFINES=-DPACKAGE=\"yabause-wii\" -DVERSION=\"0.9.6\" -DWORDS_BIGENDIAN -DREENTRANT_SYSCALLS_PROVIDED
+MACHDEP = -DGEKKO -mcpu=750 -meabi -mhard-float
+CFLAGS=$(VDEFINES) $(DDEFINES) -g -O2 -mrvl -Wall $(MACHDEP) -I$(LIBOGC_INC)
+LDFLAGS= -g $(MACHDEP) -mrvl -Wl,-Map,$(notdir $@).map
+LIBS := -lfat -lwiiuse -lbte -logc -lm
+OBJS = bios.o cdbase.o cheat.o coffelf.o cs0.o cs1.o cs2.o debug.o \
+error.o m68kcore.o m68kc68k.o m68kd.o memory.o netlink.o peripheral.o \
+profile.o scsp.o scu.o sh2core.o sh2idle.o sh2int.o sh2d.o smpc.o vdp1.o \
+vdp2.o vidshared.o vidsoft.o yabause.o ygl.o c68k/c68k.o c68k/c68kexec.o \
+wii/yui.o wii/perwii.o wii/sndwii.o
+DEPSDIR = $(CURDIR)
+export LD := $(CC)
+export LIBPATHS := -L$(LIBOGC_LIB)
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+
+clean:
+	rm -f $(OBJS)
+	rm -f $(TARGET)                       
+
+c68k/c68kexec.o:
+	$(CC) $(VDEFINES) $(DDEFINES) -mrvl -Wall $(MACHDEP) -I$(LIBOGC_INC) -c c68k/c68kexec.c -o $@

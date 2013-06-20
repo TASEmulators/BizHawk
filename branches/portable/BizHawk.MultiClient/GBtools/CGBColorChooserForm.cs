@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.GB;
 
@@ -69,7 +64,8 @@ namespace BizHawk.MultiClient.GBtools
 				type = GBColors.ColorType.vbabgbold;
 			if (sender == radioButton6)
 				type = GBColors.ColorType.gba;
-			if ((sender as RadioButton).Checked)
+			var radio_button = sender as RadioButton;
+			if (radio_button != null && radio_button.Checked)
 				RefreshType();
 		}
 
@@ -86,6 +82,11 @@ namespace BizHawk.MultiClient.GBtools
 				else
 					return false;
 			}
+		}
+
+		private void CGBColorChooserForm_Load(object sender, EventArgs e)
+		{
+
 		}
 
 	}

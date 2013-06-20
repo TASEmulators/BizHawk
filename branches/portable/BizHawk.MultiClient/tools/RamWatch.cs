@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -22,30 +21,23 @@ namespace BizHawk.MultiClient
 		//A GUI interface for setting the x,y coordinates of the ram watch display
 		//Allow each watch to be on or off screen, and on its own x,y
 
-		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
-		int defaultHeight;
-		int defaultAddressWidth;
-		int defaultValueWidth;
-		int defaultPrevWidth;
-		int defaultChangeWidth;
-		int defaultDiffWidth;
-		int defaultDomainWidth;
-		int NotesWidth;
+		private int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		private int defaultHeight;
 
-		string systemID = "NULL";
-		MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
-		List<Watch> Watches = new List<Watch>();
-		string currentFile = "";
-		bool changes = false;
-		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
-		string addressFormatStr = "{0:X4}  ";
+		private string systemID = "NULL";
+		private MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
+		private readonly List<Watch> Watches = new List<Watch>();
+		private string currentFile = "";
+		private bool changes = false;
+		private readonly List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
+		private string addressFormatStr = "{0:X4}  ";
 
 		string sortedCol;
 		bool sortReverse;
 
 		public void Restart()
 		{
-			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch)
+			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
 			{
 				return;
 			}
@@ -62,12 +54,7 @@ namespace BizHawk.MultiClient
 
 		public List<Watch> GetRamWatchList()
 		{
-			List<Watch> w = new List<Watch>();
-			for (int x = 0; x < Watches.Count; x++)
-			{
-				w.Add(new Watch(Watches[x]));
-			}
-			return w;
+			return Watches.Select(t => new Watch(t)).ToList();
 		}
 
 		public void DisplayWatchList()
@@ -77,14 +64,14 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch)
+			if ((!IsHandleCreated || IsDisposed) && !Global.Config.DisplayRamWatch)
 			{
 				return;
 			}
 
-			for (int x = 0; x < Watches.Count; x++)
+			foreach (Watch t in Watches)
 			{
-				Watches[x].PeekAddress();
+				t.PeekAddress();
 			}
 
 			if (Global.Config.DisplayRamWatch)
@@ -97,7 +84,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 
 			WatchListView.BlazingFast = true;
 			WatchListView.Refresh();
@@ -118,13 +105,6 @@ namespace BizHawk.MultiClient
 
 			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
 			defaultHeight = Size.Height;
-			defaultAddressWidth = WatchListView.Columns[Global.Config.RamWatchAddressIndex].Width;
-			defaultValueWidth = WatchListView.Columns[Global.Config.RamWatchValueIndex].Width;
-			defaultPrevWidth = WatchListView.Columns[Global.Config.RamWatchPrevIndex].Width;
-			defaultChangeWidth = WatchListView.Columns[Global.Config.RamWatchChangeIndex].Width;
-			defaultDiffWidth = WatchListView.Columns[Global.Config.RamWatchDiffIndex].Width;
-			defaultDomainWidth = WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width;
-			NotesWidth = WatchListView.Columns[Global.Config.RamWatchNotesIndex].Width;
 
 
 			if (Global.Config.RamWatchSaveWindowPosition && Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
@@ -134,7 +114,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
 			{
-				Size = new System.Drawing.Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
+				Size = new Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
 			}
 			SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
 			SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
@@ -182,17 +162,17 @@ namespace BizHawk.MultiClient
 			Global.Config.RamWatchDomainWidth = WatchListView.Columns[Global.Config.RamWatchDomainIndex].Width;
 			Global.Config.RamWatchNotesWidth = WatchListView.Columns[Global.Config.RamWatchNotesIndex].Width;
 
-			Global.Config.RamWatchWndx = this.Location.X;
-			Global.Config.RamWatchWndy = this.Location.Y;
-			Global.Config.RamWatchWidth = this.Right - this.Left;
-			Global.Config.RamWatchHeight = this.Bottom - this.Top;
+			Global.Config.RamWatchWndx = Location.X;
+			Global.Config.RamWatchWndy = Location.Y;
+			Global.Config.RamWatchWidth = Right - Left;
+			Global.Config.RamWatchHeight = Bottom - Top;
 		}
 
 		public RamWatch()
 		{
 			InitializeComponent();
-			WatchListView.QueryItemText += new QueryItemTextHandler(WatchListView_QueryItemText);
-			WatchListView.QueryItemBkColor += new QueryItemBkColorHandler(WatchListView_QueryItemBkColor);
+			WatchListView.QueryItemText += WatchListView_QueryItemText;
+			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
 			WatchListView.VirtualMode = true;
 			Closing += (o, e) => SaveConfigSettings();
 			sortReverse = false;
@@ -217,7 +197,7 @@ namespace BizHawk.MultiClient
 			{
 				if (Watches[index].Type == Watch.TYPE.SEPARATOR)
 				{
-					color = this.BackColor;
+					color = BackColor;
 				}
 				if (Global.CheatList.IsActiveCheat(Domain, Watches[index].Address))
 				{
@@ -291,12 +271,15 @@ namespace BizHawk.MultiClient
 				Global.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					if (string.Compare(currentFile, "") == 0)
+					if (String.CompareOrdinal(currentFile, "") == 0)
 					{
 						SaveAs();
 					}
 					else
+					{
 						SaveWatchFile(currentFile);
+					}
+
 					return true;
 				}
 				else if (result == DialogResult.No)
@@ -331,7 +314,7 @@ namespace BizHawk.MultiClient
 			bool result = true;
 			if (changes) result = AskSave();
 
-			if (result == true || suppressAsk)
+			if (result || suppressAsk)
 			{
 				Watches.Clear();
 				DisplayWatchList();
@@ -344,28 +327,21 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private bool SaveWatchFile(string path)
+		private void SaveWatchFile(string path)
 		{
-			return WatchCommon.SaveWchFile(path, Domain.Name, Watches);
+			WatchCommon.SaveWchFile(path, Domain.Name, Watches);
 		}
 
 		private void UpdateWatchCount()
 		{
-			int count = 0;
-			foreach (Watch w in Watches)
-			{
-				if (!(w.Type == Watch.TYPE.SEPARATOR))
-				{
-					count++;
-				}
-			}
+			int count = Watches.Count(w => w.Type != Watch.TYPE.SEPARATOR);
 
 			WatchCountLabel.Text = count.ToString() + (count == 1 ? " watch" : " watches");
 		}
 
 		public bool LoadWatchFile(string path, bool append)
 		{
-			string domain = "";
+			string domain;
 			bool result = WatchCommon.LoadWatchFile(path, append, Watches, out domain);
 
 			if (result)
@@ -393,24 +369,18 @@ namespace BizHawk.MultiClient
 		private Point GetPromptPoint()
 		{
 			Point p = new Point(WatchListView.Location.X, WatchListView.Location.Y);
-			Point q = new Point();
-			q = PointToScreen(p);
-			return q;
+			return PointToScreen(p);
 		}
 
 		private void AddNewWatch()
 		{
-
-			RamWatchNewWatch r = new RamWatchNewWatch();
-			r.location = GetPromptPoint();
-
-			Watch w = new Watch();
-			w.Domain = Domain;
+			RamWatchNewWatch r = new RamWatchNewWatch {location = GetPromptPoint()};
+			Watch w = new Watch {Domain = Domain};
 			r.SetWatch(w);
 			Global.Sound.StopSound();
 			r.ShowDialog();
 			Global.Sound.StartSound();
-			if (r.SelectionWasMade == true)
+			if (r.SelectionWasMade)
 			{
 				InitializeAddress(r.Watch);
 				Watches.Add(r.Watch);
@@ -438,14 +408,13 @@ namespace BizHawk.MultiClient
 
 		void EditWatchObject(int pos)
 		{
-			RamWatchNewWatch r = new RamWatchNewWatch();
-			r.location = GetPromptPoint();
+			RamWatchNewWatch r = new RamWatchNewWatch {location = GetPromptPoint()};
 			r.SetWatch(Watches[pos], "Edit Watch");
 			Global.Sound.StopSound();
 			r.ShowDialog();
 			Global.Sound.StartSound();
 
-			if (r.SelectionWasMade == true)
+			if (r.SelectionWasMade)
 			{
 				Changes();
 				Watches[pos] = r.Watch;
@@ -487,15 +456,14 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
-				RamWatchNewWatch r = new RamWatchNewWatch();
-				r.location = GetPromptPoint();
+				RamWatchNewWatch r = new RamWatchNewWatch {location = GetPromptPoint()};
 				r.SetWatch(Watches[indexes[0]], "Duplicate Watch");
 
 				Global.Sound.StopSound();
 				r.ShowDialog();
 				Global.Sound.StartSound();
 
-				if (r.SelectionWasMade == true)
+				if (r.SelectionWasMade)
 				{
 					InitializeAddress(r.Watch);
 					Changes();
@@ -514,11 +482,10 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 			if (indexes[0] == 0)
 				return;
-			Watch temp = new Watch();
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = Watches[index];
+				Watch temp = Watches[index];
 				Watches.Remove(Watches[index]);
 				Watches.Insert(index - 1, temp);
 
@@ -533,9 +500,9 @@ namespace BizHawk.MultiClient
 			}
 
 			WatchListView.SelectedIndices.Clear();
-			for (int z = 0; z < i.Count; z++)
+			foreach (int t in i)
 			{
-				WatchListView.SelectItem(i[z], true);
+				WatchListView.SelectItem(t, true);
 			}
 
 			DisplayWatchList();
@@ -544,11 +511,10 @@ namespace BizHawk.MultiClient
 		void MoveDown()
 		{
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-			Watch temp = new Watch();
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = Watches[index];
+				Watch temp = Watches[index];
 
 				if (index < Watches.Count - 1)
 				{
@@ -565,11 +531,15 @@ namespace BizHawk.MultiClient
 
 			List<int> i = new List<int>();
 			for (int z = 0; z < indexes.Count; z++)
+			{
 				i.Add(indexes[z] + 1);
+			}
 
 			WatchListView.SelectedIndices.Clear();
-			for (int z = 0; z < i.Count; z++)
-				WatchListView.SelectItem(i[z], true);
+			foreach (int t in i)
+			{
+				WatchListView.SelectItem(t, true);
+			}
 
 			DisplayWatchList();
 		}
@@ -579,7 +549,7 @@ namespace BizHawk.MultiClient
 			if (!AskSave())
 				return;
 
-			this.Close();
+			Close();
 		}
 
 		private void newListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -627,7 +597,7 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(currentFile, "") == 0)
+			if (String.CompareOrdinal(currentFile, "") == 0)
 			{
 				SaveAs();
 			}
@@ -662,11 +632,6 @@ namespace BizHawk.MultiClient
 				LoadWatchFile(file.FullName, true);
 			DisplayWatchList();
 			Changes();
-		}
-
-		private void autoLoadToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			UpdateAutoLoadRamWatch();
 		}
 
 		private void newWatchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -707,10 +672,14 @@ namespace BizHawk.MultiClient
 
 		private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Global.Config.AutoLoadRamWatch == true)
+			if (Global.Config.AutoLoadRamWatch)
+			{
 				autoLoadToolStripMenuItem.Checked = true;
+			}
 			else
+			{
 				autoLoadToolStripMenuItem.Checked = false;
+			}
 
 			if (!changes)
 			{
@@ -734,9 +703,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.RecentWatches.IsEmpty)
 			{
-				var none = new ToolStripMenuItem();
-				none.Enabled = false;
-				none.Text = "None";
+				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentToolStripMenuItem.DropDownItems.Add(none);
 			}
 			else
@@ -744,8 +711,7 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < Global.Config.RecentWatches.Count; x++)
 				{
 					string path = Global.Config.RecentWatches.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem();
-					item.Text = path;
+					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadWatchFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);
 				}
@@ -753,18 +719,21 @@ namespace BizHawk.MultiClient
 
 			recentToolStripMenuItem.DropDownItems.Add("-");
 
-			var clearitem = new ToolStripMenuItem();
-			clearitem.Text = "&Clear";
+			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
 			clearitem.Click += (o, ev) => Global.Config.RecentWatches.Clear();
 			recentToolStripMenuItem.DropDownItems.Add(clearitem);
 
-			var auto = new ToolStripMenuItem();
-			auto.Text = "&Auto-Load";
+			var auto = new ToolStripMenuItem {Text = "&Auto-Load"};
 			auto.Click += (o, ev) => UpdateAutoLoadRamWatch();
-			if (Global.Config.AutoLoadRamWatch == true)
+			if (Global.Config.AutoLoadRamWatch)
+			{
 				auto.Checked = true;
+			}
 			else
+			{
 				auto.Checked = false;
+			}
+
 			recentToolStripMenuItem.DropDownItems.Add(auto);
 		}
 
@@ -789,7 +758,7 @@ namespace BizHawk.MultiClient
 
 		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+			Size = new Size(defaultWidth, defaultHeight);
 
 			Global.Config.RamWatchAddressIndex = 0;
 			Global.Config.RamWatchValueIndex = 1;
@@ -841,16 +810,15 @@ namespace BizHawk.MultiClient
 		private void InsertSeparator()
 		{
 			Changes();
-			Watch w = new Watch();
-			w.Type = Watch.TYPE.SEPARATOR;
+			Watch w = new Watch {Type = Watch.TYPE.SEPARATOR};
 
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-			int x;
 			if (indexes.Count > 0)
 			{
-				x = indexes[0];
 				if (indexes[0] > 0)
+				{
 					Watches.Insert(indexes[0], w);
+				}
 			}
 			else
 			{
@@ -914,7 +882,7 @@ namespace BizHawk.MultiClient
 			{
 				p.SetWatchObject(Watches[indexes[0]]);
 			}
-			p.location = GetPromptPoint();
+			p.NewLocation = GetPromptPoint();
 			p.ShowDialog();
 			UpdateValues();
 			
@@ -1015,14 +983,12 @@ namespace BizHawk.MultiClient
 					if (Global.CheatList.IsActiveCheat(Domain, Watches[indexes[0]].Address))
 					{
 						freezeToolStripMenuItem.Text = "&Unfreeze address";
-						freezeToolStripMenuItem.Image =
-							BizHawk.MultiClient.Properties.Resources.Unfreeze;
+						freezeToolStripMenuItem.Image = Properties.Resources.Unfreeze;
 					}
 					else
 					{
 						freezeToolStripMenuItem.Text = "&Freeze address";
-						freezeToolStripMenuItem.Image =
-							BizHawk.MultiClient.Properties.Resources.Freeze;
+						freezeToolStripMenuItem.Image = Properties.Resources.Freeze;
 					}
 				}
 				else
@@ -1039,14 +1005,12 @@ namespace BizHawk.MultiClient
 					if (allCheats)
 					{
 						freezeToolStripMenuItem.Text = "&Unfreeze address";
-						freezeToolStripMenuItem.Image =
-							BizHawk.MultiClient.Properties.Resources.Unfreeze;
+						freezeToolStripMenuItem.Image = Properties.Resources.Unfreeze;
 					}
 					else
 					{
 						freezeToolStripMenuItem.Text = "&Freeze address";
-						freezeToolStripMenuItem.Image =
-							BizHawk.MultiClient.Properties.Resources.Freeze;
+						freezeToolStripMenuItem.Image = Properties.Resources.Freeze;
 					}
 				}
 			}
@@ -1119,13 +1083,16 @@ namespace BizHawk.MultiClient
 
 		private void RamWatch_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; 
 		}
 
 		private void ClearChangeCounts()
 		{
-			for (int x = 0; x < Watches.Count; x++)
-				Watches[x].Changecount = 0;
+			foreach (Watch t in Watches)
+			{
+				t.Changecount = 0;
+			}
+
 			DisplayWatchList();
 			MessageLabel.Text = "Change counts cleared";
 		}
@@ -1241,16 +1208,6 @@ namespace BizHawk.MultiClient
 			{
 				FreezeAddress();
 			}
-		}
-
-		private int WORDGetLowerByte(int value)
-		{
-			return value / 256;
-		}
-
-		private int WORDGetUpperByte(int value)
-		{
-			return value >> 2;
 		}
 
 		private void FreezeAddress()
@@ -1399,8 +1356,7 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 				{
 					string str = Global.Emulator.MemoryDomains[x].ToString();
-					var item = new ToolStripMenuItem();
-					item.Text = str;
+					var item = new ToolStripMenuItem {Text = str};
 					{
 						int z = x;
 						item.Click += (o, ev) => SetMemoryDomain(z);
@@ -1414,17 +1370,23 @@ namespace BizHawk.MultiClient
 				}
 			}
 			else
+			{
 				memoryDomainsToolStripMenuItem.Enabled = false;
+			}
 		}
 
 		private void CheckDomainMenuItems()
 		{
-			for (int x = 0; x < domainMenuItems.Count; x++)
+			foreach (ToolStripMenuItem t in domainMenuItems)
 			{
-				if (Domain.Name == domainMenuItems[x].Text)
-					domainMenuItems[x].Checked = true;
+				if (Domain.Name == t.Text)
+				{
+					t.Checked = true;
+				}
 				else
-					domainMenuItems[x].Checked = false;
+				{
+					t.Checked = false;
+				}
 			}
 		}
 
@@ -1437,9 +1399,9 @@ namespace BizHawk.MultiClient
 		{
 			ColumnHeader header = e.Header;
 
-			int lowIndex = 0;
-			int highIndex = 0;
-			int changeIndex = 0;
+			int lowIndex;
+			int highIndex;
+			int changeIndex;
 			if (e.NewDisplayIndex > e.OldDisplayIndex)
 			{
 				changeIndex = -1;
@@ -1522,25 +1484,27 @@ namespace BizHawk.MultiClient
 
 			WatchListView.Columns.Clear();
 
-			List<KeyValuePair<int, string>> columnSettings = new List<KeyValuePair<int, string>>();
-			columnSettings.Add(new KeyValuePair<int,string>(Global.Config.RamWatchAddressIndex, "Address"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchValueIndex, "Value"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchPrevIndex, "Prev"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchChangeIndex, "Changes"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchDiffIndex, "Diff"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchDomainIndex, "Domain"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchNotesIndex, "Notes"));
+			List<KeyValuePair<int, string>> columnSettings = new List<KeyValuePair<int, string>>
+				{
+					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Address"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchValueIndex, "Value"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchPrevIndex, "Prev"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchChangeIndex, "Changes"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchDiffIndex, "Diff"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchDomainIndex, "Domain"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchNotesIndex, "Notes")
+				};
 
 			columnSettings = columnSettings.OrderBy(s => s.Key).ToList();
 		
 
-			for (int i = 0; i < columnSettings.Count; i++)
+			foreach (KeyValuePair<int, string> t in columnSettings)
 			{
-				for (int j = 0; j < columnHeaders.Count; j++)
+				foreach (ColumnHeader t1 in columnHeaders)
 				{
-					if (columnSettings[i].Value == columnHeaders[j].Text)
+					if (t.Value == t1.Text)
 					{
-						WatchListView.Columns.Add(columnHeaders[j]);
+						WatchListView.Columns.Add(t1);
 					}
 				}
 			}
@@ -1549,7 +1513,7 @@ namespace BizHawk.MultiClient
 		private void OrderColumn(int columnToOrder)
 		{
 			string columnName = WatchListView.Columns[columnToOrder].Text;
-			if (sortedCol.CompareTo(columnName) != 0)
+			if (String.Compare(sortedCol, columnName, StringComparison.Ordinal) != 0)
 			{
 				sortReverse = false;
 			}

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
@@ -33,8 +28,8 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
-			this.BorderStyle = BorderStyle.Fixed3D;
-			this.Size = new Size(174, 74);
+			BorderStyle = BorderStyle.Fixed3D;
+			Size = new Size(174, 74);
 			Controller = "P1";
 		}
 

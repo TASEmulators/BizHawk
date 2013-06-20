@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace BizHawk
 {
@@ -80,7 +77,6 @@ namespace BizHawk
 		/// <summary>
 		/// validates is a Hex number 0-9, A-F (must be capital letters)
 		/// </summary>
-		/// <param name="input"></param>
 		/// <returns></returns>
 		public static bool IsValidHexNumber(string Str)
 		{

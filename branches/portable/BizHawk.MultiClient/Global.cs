@@ -1,9 +1,10 @@
-﻿using BizHawk.DiscSystem;
+﻿using System;
+using BizHawk.DiscSystem;
 using System.Collections.Generic;
 #if WINDOWS
 using SlimDX.Direct3D9;
 using SlimDX.DirectSound;
-using System.Drawing;
+
 #endif
 
 namespace BizHawk.MultiClient
@@ -63,64 +64,67 @@ namespace BizHawk.MultiClient
 		public static Controller ColecoControls;
 		public static AutofireController AutofireColecoControls;
 
+		public static Controller SaturnControls;
+		public static AutofireController AutofireSaturnControls;
+
 		public static Controller IntellivisionControls;
 		public static AutofireController AutofireIntellivisionControls;
 
 		public static Controller Commodore64Controls;
 		public static AutofireController AutofireCommodore64Controls;
 
-		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>()
+		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>
 		{
 			{
-				"Gameboy Controller", new Dictionary<string, string>()
+				"Gameboy Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
 					{"A", "A"}
 				}
 			},
 			{
-				"GBA Controller", new Dictionary<string, string>()
+				"GBA Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
 					{"A", "A"}, {"L", "L"}, {"R", "R"}
 				}
 			},
 			{
-				"Genesis 3-Button Controller", new Dictionary<string, string>()
+				"Genesis 3-Button Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Start", "S"}, {"A", "A"}, {"B", "B"},
 					{"C", "C"}
 				}
 			},
 			{
-				"NES Controller", new Dictionary<string, string>()
+				"NES Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
 					{"A", "A"}
 				}
 			},
 			{
-				"SNES Controller", new Dictionary<string, string>()
+				"SNES Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
 					{"A", "A"}, {"X", "X"}, {"Y", "Y"}, {"L", "L"}, {"R", "R"}
 				}
 			},
 			{
-				"PC Engine Controller", new Dictionary<string, string>()
+				"PC Engine Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Run", "r"}, {"B2", "2"},
 					{"B1", "1"}
 				}
 			},
 			{
-				"SMS Controller", new Dictionary<string, string>()
+				"SMS Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"B1", "1"}, {"B2", "2"}
 				}
 			},
 			{
-				"TI83 Controller", new Dictionary<string, string>()
+				"TI83 Controller", new Dictionary<string, string>
 				{
 					{"0", "0"}, {"1", "1"}, {"2", "2"}, {"3", "3"}, {"4", "4"}, {"5", "5"}, {"6", "6"}, {"7", "7"},
 					{"8", "8"}, {"9", "9"}, {"DOT", "`"}, {"ON", "O"}, {"ENTER", "="}, {"UP", "U"}, {"DOWN", "D"},
@@ -133,25 +137,25 @@ namespace BizHawk.MultiClient
 				}
 			},
 			{
-				"Atari 2600 Basic Controller", new Dictionary<string,string>()
+				"Atari 2600 Basic Controller", new Dictionary<string,string>
 				{	
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Button", "B"}
 				}
 			},
 			{
-				"Atari 7800 ProLine Joystick Controller", new Dictionary<string,string>()
+				"Atari 7800 ProLine Joystick Controller", new Dictionary<string,string>
 				{	
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Trigger", "1"}, {"Trigger 2", "2"}
 				}
 			},
 			{
-				"Commodore 64 Controller", new Dictionary<string,string>()
+				"Commodore 64 Controller", new Dictionary<string,string>
 				{	
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Button", "B"}
 				}
 			},
 			{
-				"Commodore 64 Keyboard", new Dictionary<string,string>()
+				"Commodore 64 Keyboard", new Dictionary<string,string>
 				{	
 					{"Key F1", "1"}, {"Key F3", "3"}, {"Key F5", "5"}, {"Key F7", "7"},
 					{"Key Left Arrow", "l"}, {"Key 1", "1"}, {"Key 2", "2"}, {"Key 3", "3"}, {"Key 4", "4"}, {"Key 5", "5"}, {"Key 6", "6"}, {"Key 7", "7"}, {"Key 8", "8"}, {"Key 9", "9"}, {"Key 0", "0"}, {"Key Plus", "+"}, {"Key Minus", "-"}, {"Key Pound", "l"}, {"Key Clear/Home", "c"}, {"Key Insert/Delete", "i"}, 
@@ -162,7 +166,7 @@ namespace BizHawk.MultiClient
 				}
 			},
 			{
-				"ColecoVision Basic Controller", new Dictionary<string, string>()
+				"ColecoVision Basic Controller", new Dictionary<string, string>
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"L", "l"}, {"R", "r"},
 					{"Key1", "1"}, {"Key2", "2"}, {"Key3", "3"}, {"Key4", "4"}, {"Key5", "5"}, {"Key6", "6"}, 
@@ -171,25 +175,54 @@ namespace BizHawk.MultiClient
 			}
 		};
 
-		public static readonly Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>()
+		public static readonly Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>
 		{
-			{"Atari 2600 Basic Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
-			{"Atari 7800 ProLine Joystick Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Select", "s"}}},
-			{"Gameboy Controller", new Dictionary<string, string>() {{"Power", "P"}}},
-			{"GBA Controller", new Dictionary<string, string>() {{"Power", "P"}}},
-			{"Genesis 3-Button Controller", new Dictionary<string, string>() {{"Reset", "r"}}},
-			{"NES Controller", new Dictionary<string, string>() {{"Reset", "r"}, {"Power", "P"}, {"FDS Eject", "E"}, {"FDS Insert 0", "0"}, {"FDS Insert 1", "1"}, {"VS Coin 1", "c"}, {"VS Coin 2", "C"}}},
-			{"SNES Controller", new Dictionary<string, string>() {{"Power", "P"}, {"Reset", "r"}}},
-			{"PC Engine Controller", new Dictionary<string, string>() {}},
-			{"SMS Controller", new Dictionary<string, string>() {{"Pause", "p"}, {"Reset", "r"}}},
-			{"TI83 Controller", new Dictionary<string, string>() {}}
+			{"Atari 2600 Basic Controller", new Dictionary<string, string> {{"Reset", "r"}, {"Select", "s"}}},
+			{"Atari 7800 ProLine Joystick Controller", new Dictionary<string, string> {{"Reset", "r"}, {"Select", "s"}}},
+			{"Gameboy Controller", new Dictionary<string, string> {{"Power", "P"}}},
+			{"GBA Controller", new Dictionary<string, string> {{"Power", "P"}}},
+			{"Genesis 3-Button Controller", new Dictionary<string, string> {{"Reset", "r"}}},
+			{"NES Controller", new Dictionary<string, string> {{"Reset", "r"}, {"Power", "P"}, {"FDS Eject", "E"}, {"FDS Insert 0", "0"}, {"FDS Insert 1", "1"}, {"VS Coin 1", "c"}, {"VS Coin 2", "C"}}},
+			{"SNES Controller", new Dictionary<string, string> {{"Power", "P"}, {"Reset", "r"}}},
+			{"PC Engine Controller", new Dictionary<string, string> {}},
+			{"SMS Controller", new Dictionary<string, string> {{"Pause", "p"}, {"Reset", "r"}}},
+			{"TI83 Controller", new Dictionary<string, string> {}}
 		};
 
-		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>()
+		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>
 		{
 			{"Gameboy Controller", 1}, {"GBA Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
 			{"SNES Controller", 4}, {"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2}, {"Atari 7800 ProLine Joystick Controller", 2},
 			{"ColecoVision Basic Controller", 2}, {"Commodore 64 Controller", 2}
+		};
+
+		// just experimenting with different possibly more painful ways to handle mnemonics
+		// |P|UDLRsSBA|
+		public static Tuple<string, char>[] DGBMnemonic = new Tuple<string, char>[]
+		{
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P1 Power", 'P'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P1 Up", 'U'),
+			new Tuple<string, char>("P1 Down", 'D'),
+			new Tuple<string, char>("P1 Left", 'L'),
+			new Tuple<string, char>("P1 Right", 'R'),
+			new Tuple<string, char>("P1 Select", 's'),
+			new Tuple<string, char>("P1 Start", 'S'),
+			new Tuple<string, char>("P1 B", 'B'),
+			new Tuple<string, char>("P1 A", 'A'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P2 Power", 'P'),
+			new Tuple<string, char>(null, '|'),
+			new Tuple<string, char>("P2 Up", 'U'),
+			new Tuple<string, char>("P2 Down", 'D'),
+			new Tuple<string, char>("P2 Left", 'L'),
+			new Tuple<string, char>("P2 Right", 'R'),
+			new Tuple<string, char>("P2 Select", 's'),
+			new Tuple<string, char>("P2 Start", 'S'),
+			new Tuple<string, char>("P2 B", 'B'),
+			new Tuple<string, char>("P2 A", 'A'),
+			new Tuple<string, char>(null, '|')
 		};
 
 		/// <summary>
@@ -258,7 +291,7 @@ namespace BizHawk.MultiClient
 		public static string GetOutputControllersAsMnemonic()
 		{
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			mg.SetSource(Global.ControllerOutput);
+			mg.SetSource(ControllerOutput);
 			return mg.GetControllersAsMnemonic();
 		}
 

@@ -34,6 +34,12 @@ namespace BizHawk.MultiClient
 			GenesisController[0] = new GenControllerTemplate(true);
 			GenesisAutoController[0] = new GenControllerTemplate(false);
 
+			SaturnController[0] = new SaturnControllerTemplate(true);
+			SaturnController[1] = new SaturnControllerTemplate(false);
+
+			SaturnAutoController[0] = new SaturnControllerTemplate(false);
+			SaturnAutoController[1] = new SaturnControllerTemplate(false);
+
 			Atari2600Controller[0] = new SingleButtonJoyStickTemplate(true);
 			Atari2600Controller[1] = new SingleButtonJoyStickTemplate(false);
 			Atari2600AutoController[0] = new SingleButtonJoyStickTemplate(false);
@@ -206,8 +212,22 @@ namespace BizHawk.MultiClient
 		public string PathCOLROMs = ".";
 		public string PathCOLSavestates = Path.Combine(".", "State");
 		public string PathCOLScreenshots = Path.Combine(".", "Screenshots");
-
 		public string PathCOLCheats = Path.Combine(".", "Cheats");
+
+		public string BaseN64 = Path.Combine(".", "N64");
+		public string PathN64ROMs = ".";
+		public string PathN64Savestates = Path.Combine(".", "State");
+		public string PathN64SaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathN64Screenshots = Path.Combine(".", "Screenshots");
+		public string PathN64Cheats = Path.Combine(".", "Cheats");
+
+		public string BaseSaturn = Path.Combine(".", "Saturn");
+		public string PathSaturnROMs = ".";
+		public string PathSaturnSavestates = Path.Combine(".", "State");
+		public string PathSaturnSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathSaturnScreenshots = Path.Combine(".", "Screenshots");
+		public string PathSaturnCheats = Path.Combine(".", "Cheats");
+
 		public string MoviesPath = Path.Combine(".", "Movies");
 		public string MoviesBackupPath = Path.Combine(".", "Movies", "backup");
 		public string LuaPath = Path.Combine(".", "Lua");
@@ -461,8 +481,10 @@ namespace BizHawk.MultiClient
 		public bool NESDispSprites = true;
 		public int NESBackgroundColor = 0;
 		public string NESPaletteFile = "";
-		public int NESTopLine = 8;
-		public int NESBottomLine = 231;
+		public int NTSC_NESTopLine = 8;
+		public int NTSC_NESBottomLine = 231;
+		public int PAL_NESTopLine = 8;
+		public int PAL_NESBottomLine = 231;
 
 		// gb gpu view settings
 		public bool AutoLoadGBGPUView = false;
@@ -571,6 +593,24 @@ namespace BizHawk.MultiClient
 		public bool NESGGSaveWindowPosition = true;
 		public int NESGGWndx = -1;
 		public int NESGGWndy = -1;
+
+		// SNES Game Genie Encoder/Decoder
+		public bool SNESGGAutoload = false;
+		public bool SNESGGSaveWindowPosition = true;
+		public int SNESGGWndx = -1;
+		public int SNESGGWndy = -1;
+
+		// GB/GG Game Genie Encoder/Decoder
+		public bool GBGGAutoload = false;
+		public bool GBGGSaveWindowPosition = true;
+		public int GBGGWndx = -1;
+		public int GBGGWndy = -1;
+
+		// GEN Game Genie Encoder/Decoder
+		public bool GENGGAutoload = false;
+		public bool GENGGSaveWindowPosition = true;
+		public int GENGGWndx = -1;
+		public int GENGGWndy = -1;
 
 		//Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
@@ -754,6 +794,7 @@ namespace BizHawk.MultiClient
 		public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
 		public string SNESProfile = "Compatibility";
 		public bool SNESUseRingBuffer = true;
+		public bool SNESAlwaysDoubleSize = false;
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
@@ -775,6 +816,11 @@ namespace BizHawk.MultiClient
 		//GBA settings
 		public GBAControllerTemplate[] GBAController = new GBAControllerTemplate[1];
 		public GBAControllerTemplate[] GBAAutoController = new GBAControllerTemplate[1];
+
+		//Saturn
+		public SaturnControllerTemplate[] SaturnController = new SaturnControllerTemplate[2];
+		public SaturnControllerTemplate[] SaturnAutoController = new SaturnControllerTemplate[2];
+		public SaturnConsoleButtonTemplate[] SaturnConsoleButtons = new SaturnConsoleButtonTemplate[1];
 
 		//Commodore 64 Settings
 		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
@@ -847,6 +893,19 @@ namespace BizHawk.MultiClient
 			Pause = "V, X1 Start";
 		}
 	}
+
+	public class SaturnConsoleButtonTemplate : iControllerConfigObject
+	{
+		public string Reset = "";
+		public string Power = "";
+
+		public void SetDefaults()
+		{
+			Reset = "";
+			Power = "";
+		}
+	}
+
 
 	public class GenConsoleButtonTemplate : iControllerConfigObject
 	{
@@ -1127,6 +1186,38 @@ namespace BizHawk.MultiClient
 			P2_B = "V";
 			P2_Select = "";
 			P2_Start = "";
+			P2_Power = "";
+		}
+	}
+
+	public class SaturnControllerTemplate : iControllerConfigObject
+	{
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string A = "";
+		public string B = "";
+		public string C = "";
+		public string X = "";
+		public string Y = "";
+		public string Z = "";
+		public string L = "";
+		public string R = "";
+		public string Start = "";
+		public bool Enabled;
+
+		public SaturnControllerTemplate() { }
+		public SaturnControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+		public void SetDefaults()
+		{
+			Enabled = true;
 		}
 	}
 

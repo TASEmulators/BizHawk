@@ -1,12 +1,5 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Globalization;
-using System.IO;
-using System.Drawing.Imaging;
 using BizHawk.Core;
 
 namespace BizHawk.MultiClient
@@ -17,7 +10,7 @@ namespace BizHawk.MultiClient
 		{
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			if(!DesignMode)
-				this.BackColor = Color.Transparent;
+				BackColor = Color.Transparent;
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

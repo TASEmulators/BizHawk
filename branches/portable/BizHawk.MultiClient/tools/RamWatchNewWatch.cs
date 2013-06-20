@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 
@@ -16,7 +11,7 @@ namespace BizHawk.MultiClient
 		public bool SelectionWasMade = false;
 		public Point location = new Point();
 
-		private bool DoNotResetAddress = false;
+		private bool DoNotResetAddress;
 
 		public RamWatchNewWatch()
 		{
@@ -27,7 +22,7 @@ namespace BizHawk.MultiClient
 		{
 			DoNotResetAddress = true; //Hack for the drop down event changing when initializing the drop down
 			Watch = new Watch(watch);
-			this.Text = message;
+			Text = message;
 
 			NotesBox.Text = watch.Notes;
 			setTypeRadio();
@@ -43,7 +38,7 @@ namespace BizHawk.MultiClient
 		{
 			if (location.X > 0 && location.Y > 0)
 			{
-				this.Location = location;
+				Location = location;
 			}
 
 			populateMemoryDomainComboBox();
@@ -53,7 +48,7 @@ namespace BizHawk.MultiClient
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			SelectionWasMade = false;
-			this.Close();
+			Close();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -111,7 +106,7 @@ namespace BizHawk.MultiClient
 			Watch.Domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
 			Watch.Notes = NotesBox.Text;
 
-			this.Close();
+			Close();
 		}
 
 		private void AddressBox_Leave(object sender, EventArgs e)
@@ -143,7 +138,6 @@ namespace BizHawk.MultiClient
 			if (!DoNotResetAddress)
 			{
 				Watch.Domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
-				int x = getNumDigits(Watch.Domain.Size);
 				Watch.Address = 0;
 				Watch.Value = 0;
 				setAddressBox();
@@ -212,10 +206,9 @@ namespace BizHawk.MultiClient
 			DomainComboBox.Items.Clear();
 			if (Global.Emulator.MemoryDomains.Count > 0)
 			{
-				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				foreach (MemoryDomain t in Global.Emulator.MemoryDomains)
 				{
-					string str = Global.Emulator.MemoryDomains[x].ToString();
-					DomainComboBox.Items.Add(str);
+					DomainComboBox.Items.Add(t.ToString());
 				}
 			}
 			setDomainSelection();
@@ -238,8 +231,6 @@ namespace BizHawk.MultiClient
 					break;
 				case Watch.DISPTYPE.HEX:
 					HexRadio.Checked = true;
-					break;
-				default:
 					break;
 			}
 		}

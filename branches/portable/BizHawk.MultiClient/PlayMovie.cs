@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -12,15 +9,15 @@ namespace BizHawk.MultiClient
 {
 	public partial class PlayMovie : Form
 	{
-		List<Movie> MovieList = new List<Movie>();
-		bool sortReverse;
-		string sortedCol;
+		private readonly List<Movie> MovieList = new List<Movie>();
+		private bool sortReverse;
+		private string sortedCol;
 
 		public PlayMovie()
 		{
 			InitializeComponent();
-			MovieView.QueryItemText += new QueryItemTextHandler(MovieView_QueryItemText);
-			MovieView.QueryItemBkColor += new QueryItemBkColorHandler(MovieView_QueryItemBkColor);
+			MovieView.QueryItemText += MovieView_QueryItemText;
+			MovieView.QueryItemBkColor += MovieView_QueryItemBkColor;
 			MovieView.VirtualMode = true;
 			sortReverse = false;
 			sortedCol = "";
@@ -54,15 +51,17 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void Run()
 		{
 			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
-			if (indexes.Count == 0) 
+			if (indexes.Count == 0)
+			{
 				return;
-			
+			}
+
 			//Import file if necessary
 
 			
@@ -73,7 +72,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.MainForm.ReadOnly = ReadOnlyCheckBox.Checked;
 			Run();
-			this.Close();
+			Close();
 		}
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
@@ -115,13 +114,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private int AddStateToList(string filename)
+		private void AddStateToList(string filename)
 		{
 			using (var file = new HawkFile(filename))
 			{
-				if (!file.Exists)
-					return 0;
-				else
+				if (file.Exists)
 				{
 					int x = IsDuplicate(filename);
 					if (x == 0)
@@ -133,10 +130,8 @@ namespace BizHawk.MultiClient
 							MovieList.Add(m);
 							sortReverse = false;
 							sortedCol = "";
-							x = MovieList.Count - 1;
 						}
 					}
-					return x;
 				}
 			}
 		}
@@ -256,9 +251,8 @@ namespace BizHawk.MultiClient
 			}
 
 			//Final tie breaker - Last used file
-			DateTime t = new DateTime();
 			FileInfo f = new FileInfo(MovieList[Indexes[0]].Filename);
-			t = f.LastAccessTime;
+			DateTime t = f.LastAccessTime;
 			int mostRecent = Indexes[0];
 			for (int x = 1; x < Indexes.Count; x++)
 			{
@@ -298,8 +292,7 @@ namespace BizHawk.MultiClient
 			{
 				Directory.CreateDirectory(d);
 			}
-			string extension = "*." + Global.Config.MovieExtension;
-			
+
 			foreach (string f in Directory.GetFiles(d, "*." + Global.Config.MovieExtension))
 			{
 				AddMovieToList(f, false);
@@ -379,29 +372,29 @@ namespace BizHawk.MultiClient
 				ListViewItem item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);
 
-				switch (kvp.Key.ToString())
+				switch (kvp.Key)
 				{
 					case MovieHeader.SHA1:
-						if (kvp.Value.ToString() != Global.Game.Hash)
+						if (kvp.Value != Global.Game.Hash)
 						{
 							item.BackColor = Color.Pink;
 							toolTip1.SetToolTip(DetailsView, "Current SHA1: " + Global.Game.Hash);
 						}
 						break;
 					case MovieHeader.MOVIEVERSION:
-						if (kvp.Value.ToString() != MovieHeader.MovieVersion)
+						if (kvp.Value != MovieHeader.MovieVersion)
 						{
 							item.BackColor = Color.Yellow;
 						}
 						break;
 					case MovieHeader.EMULATIONVERSION:
-						if (kvp.Value.ToString() != MainForm.EMUVERSION)
+						if (kvp.Value != Global.MainForm.GetEmuVersion())
 						{
 							item.BackColor = Color.Yellow;
 						}
 						break;
 					case MovieHeader.PLATFORM:
-						if (kvp.Value.ToString() != Global.Game.System)
+						if (kvp.Value != Global.Game.System)
 						{
 							item.BackColor = Color.Pink;
 						}
@@ -421,7 +414,7 @@ namespace BizHawk.MultiClient
 				button1.Enabled = false;
 			}
 
-			if (MovieList[x].Subtitles.Count() > 0)
+			if (MovieList[x].Subtitles.Count > 0)
 			{
 				button2.Enabled = true;
 			}
@@ -435,8 +428,7 @@ namespace BizHawk.MultiClient
 		{
 			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
 			if (indexes.Count == 0) return;
-			EditCommentsForm c = new EditCommentsForm();
-			c.ReadOnly = true;
+			EditCommentsForm c = new EditCommentsForm {ReadOnly = true};
 			c.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
 			c.Show();
 		}
@@ -445,8 +437,7 @@ namespace BizHawk.MultiClient
 		{
 			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
 			if (indexes.Count == 0) return;
-			EditSubtitlesForm s = new EditSubtitlesForm();
-			s.ReadOnly = true;
+			EditSubtitlesForm s = new EditSubtitlesForm {ReadOnly = true};
 			s.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
 			s.Show();
 		}
@@ -454,12 +445,12 @@ namespace BizHawk.MultiClient
 		private void MovieView_DoubleClick(object sender, EventArgs e)
 		{
 			Run();
-			this.Close();
+			Close();
 		}
 
 		private void MovieView_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		private void MovieView_DragDrop(object sender, DragEventArgs e)

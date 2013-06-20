@@ -120,7 +120,6 @@
 			this.Controls.Add(this.PU);
 			this.Name = "VirtualPadA78";
 			this.Size = new System.Drawing.Size(128, 89);
-			this.Load += new System.EventHandler(this.VirtualPadA78_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

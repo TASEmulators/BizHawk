@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
-
 using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
@@ -33,7 +26,6 @@ namespace BizHawk.MultiClient
 			if (RecordBox.Text.Length == 0)
 				return "";
 			string path = RecordBox.Text;
-			int x = path.LastIndexOf(Path.DirectorySeparatorChar);
 			if (path.LastIndexOf(Path.DirectorySeparatorChar) == -1)
 			{
 				if (path[0] != Path.DirectorySeparatorChar)
@@ -58,7 +50,7 @@ namespace BizHawk.MultiClient
 				if (test.Exists)
 				{
 					var result = MessageBox.Show(path + " already exists, overwrite?", "Confirm overwrite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-					if (result == System.Windows.Forms.DialogResult.Cancel)
+					if (result == DialogResult.Cancel)
 						return;
 				}
 
@@ -67,7 +59,7 @@ namespace BizHawk.MultiClient
 
 				//Header
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, MainForm.EMUVERSION);
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, Global.MainForm.GetEmuVersion());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);
@@ -127,7 +119,7 @@ namespace BizHawk.MultiClient
 					var file = new FileInfo(temppath);
 					using (StreamReader sr = file.OpenText())
 					{
-						string str = "";
+						string str;
 
 						while ((str = sr.ReadLine()) != null)
 						{
@@ -147,7 +139,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.Config.DefaultAuthor = AuthorBox.Text;
 				}
-				this.Close();
+				Close();
 			}
 			else
 			{
@@ -158,17 +150,19 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 			string filename = "";
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
-			sfd.DefaultExt = "." + Global.Config.MovieExtension;
-			sfd.FileName = RecordBox.Text;
-			sfd.OverwritePrompt = false;
+			SaveFileDialog sfd = new SaveFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath),
+					DefaultExt = "." + Global.Config.MovieExtension,
+					FileName = RecordBox.Text,
+					OverwritePrompt = false
+				};
 			string filter = "Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|Savestates|*.state|All Files|*.*";
 			sfd.Filter = filter;
 
@@ -199,7 +193,7 @@ namespace BizHawk.MultiClient
 
 		private void RecordBox_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		private void RecordBox_DragDrop(object sender, DragEventArgs e)

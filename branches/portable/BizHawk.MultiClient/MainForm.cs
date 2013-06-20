@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
-using System.Diagnostics;
 using BizHawk.Core;
 using BizHawk.DiscSystem;
 using BizHawk.Emulation.Consoles.Sega;
@@ -20,6 +20,7 @@ using BizHawk.Emulation.Consoles.GB;
 using BizHawk.Emulation.Consoles.Nintendo.GBA;
 using BizHawk.Emulation.Computers.Commodore64;
 using BizHawk.Emulation;
+using BizHawk.Emulation.Consoles.Nintendo.N64;
 
 namespace BizHawk.MultiClient
 {
@@ -28,12 +29,8 @@ namespace BizHawk.MultiClient
 	{
 		public static bool INTERIM = true;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
-		public const string RELEASEDATE = "December 23, 2012";
-		private Control renderTarget;
-		private RetainedViewportPanel retainedPanel;
+		public const string RELEASEDATE = "March 23, 2013";
 		public string CurrentlyOpenRom;
-		SavestateManager StateSlots = new SavestateManager();
-
 		public bool PauseAVI = false;
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
@@ -42,39 +39,49 @@ namespace BizHawk.MultiClient
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
 		public bool NeedsReboot = false;
+
+		private Control renderTarget;
+		private RetainedViewportPanel retainedPanel;
+		private readonly SavestateManager StateSlots = new SavestateManager();
+		private readonly Dictionary<string, string> SNES_prepared = new Dictionary<string, string>();
+
 		//avi/wav state
-		IVideoWriter CurrAviWriter = null;
-		ISoundProvider AviSoundInput = null;
+		IVideoWriter CurrAviWriter;
+		ISoundProvider AviSoundInput;
 		/// <summary>
 		/// an audio proxy used for dumping
 		/// </summary>
-		Emulation.Sound.MetaspuSoundProvider DumpProxy = null;
+		Emulation.Sound.MetaspuSoundProvider DumpProxy;
 		/// <summary>audio timekeeping for video dumping</summary>
-		long SoundRemainder = 0;
-		int avwriter_resizew;
-		int avwriter_resizeh;
+		private long SoundRemainder;
+		private int avwriter_resizew;
+		private int avwriter_resizeh;
 
 		//runloop control
         private Thread runLoopThread;
 		private System.Timers.Timer renderTimer;
         public bool RunLoopBlocked { get; set; }
-		public bool exit;
-		bool runloop_frameProgress;
-		DateTime FrameAdvanceTimestamp = DateTime.MinValue;
 		public bool EmulatorPaused { get; private set; }
 		public EventWaitHandle MainWait;
-		int runloop_fps;
-		int runloop_last_fps;
-		bool runloop_frameadvance;
-		DateTime runloop_second;
-		bool runloop_last_ff;
 
-		Throttle throttle;
-		bool unthrottled = false;
+		private bool exit;
+		private bool runloop_frameProgress;
+		private DateTime FrameAdvanceTimestamp = DateTime.MinValue;
+		private int runloop_fps;
+		private int runloop_last_fps;
+		private bool runloop_frameadvance;
+		private DateTime runloop_second;
+		private bool runloop_last_ff;
+
+		private readonly Throttle throttle;
+		private bool unthrottled;
 
 		//For handling automatic pausing when entering the menu
-		private bool wasPaused = false;
-		private bool didMenuPause = false;
+		private bool wasPaused;
+		private bool didMenuPause;
+
+		private bool InFullscreen;
+		private Point _windowed_location;
 
 		//tool dialogs
 		public RamWatch RamWatch1 = new RamWatch();
@@ -95,6 +102,10 @@ namespace BizHawk.MultiClient
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
 		public VirtualPadForm VirtualPadForm1 = new VirtualPadForm();
+		public NESGameGenie NESgg = new NESGameGenie();
+		public SNESGameGenie SNESgg = new SNESGameGenie();
+		public GBGameGenie GBgg = new GBGameGenie();
+		public GenGameGenie Gengg = new GenGameGenie();
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
@@ -102,7 +113,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// number of frames to autodump
 		/// </summary>
-		int autoDumpLength = 0;
+		int autoDumpLength;
 
 		static MainForm()
 		{
@@ -112,11 +123,10 @@ namespace BizHawk.MultiClient
 
 		public MainForm(string[] args)
 		{
-			Global.MovieSession = new MovieSession();
-			Global.MovieSession.Movie = new Movie();
+			Global.MovieSession = new MovieSession {Movie = new Movie()};
 			MainWait = new AutoResetEvent(false);
 #if WINDOWS
-			Icon = BizHawk.MultiClient.Properties.Resources.logo;
+			Icon = Properties.Resources.logo;
 #else
 			Icon = Icon.FromHandle(BizHawk.MultiClient.Properties.Resources.corphawk.GetHicon());
 #endif
@@ -132,7 +142,7 @@ namespace BizHawk.MultiClient
 
 			throttle = new Throttle();
 
-			DiscSystem.FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
+			FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
 
 			Global.CheatList = new CheatList();
 			UpdateStatusSlots();
@@ -354,7 +364,7 @@ namespace BizHawk.MultiClient
 			}
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
-				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
+				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 
 			if (Global.Config.DisplayStatusBar == false)
 				StatusSlot0.Visible = false;
@@ -400,7 +410,6 @@ namespace BizHawk.MultiClient
 		}
 
 		//contains a mapping: profilename->exepath ; or null if the exe wasnt available
-		Dictionary<string, string> SNES_prepared = new Dictionary<string, string>();
 		string SNES_Prepare(string profile)
 		{
 			SNES_Check(profile);
@@ -414,7 +423,7 @@ namespace BizHawk.MultiClient
 		{
 			if (SNES_prepared.ContainsKey(profile)) return;
 
-			string bits = "32";
+			const string bits = "32";
 
 			//disabled til it works
 			//if (Win32.Is64BitOperatingSystem)
@@ -466,6 +475,7 @@ namespace BizHawk.MultiClient
 
 			target.SNES_Profile = Global.Config.SNESProfile;
 			target.SNES_UseRingBuffer = Global.Config.SNESUseRingBuffer;
+			target.SNES_AlwaysDoubleSize = Global.Config.SNESAlwaysDoubleSize;
 
 			target.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 			target.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
@@ -488,15 +498,12 @@ namespace BizHawk.MultiClient
 		{
 			Global.DisplayManager.Suspend();
 
-			bool gdi = Global.Config.DisplayGDI;
 #if WINDOWS
-			if (Global.Direct3D == null)
-				gdi = true;
+			bool gdi = Global.Config.DisplayGDI || Global.Direct3D == null;
 #else
 			//if(OpenTK.Configuration.RunningOnMacOS) //OpenTK on Mac OS X doesn't support OpenGL WinForms control right now. :-(
 				gdi = true; //I can't test OpenGL myself, so I'm not going to maintain it until I can
 #endif
-
 			if (renderTarget != null)
 			{
 				renderTarget.Dispose();
@@ -676,13 +683,13 @@ namespace BizHawk.MultiClient
 			{
 				if (EmulatorPaused)
 				{
-					PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
+					PauseStrip.Image = Properties.Resources.Pause;
 					PauseStrip.Visible = true;
 					PauseStrip.ToolTipText = "Emulator Paused";
 				}
 				else
 				{
-					PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+					PauseStrip.Image = Properties.Resources.Blank;
 					PauseStrip.Visible = false;
 					PauseStrip.ToolTipText = "";
 				}
@@ -871,8 +878,7 @@ namespace BizHawk.MultiClient
 			}
 			Global.SMSControls = smsControls;
 
-			var asmsControls = new AutofireController(SMS.SmsController);
-			asmsControls.Autofire = true;
+			var asmsControls = new AutofireController(SMS.SmsController) {Autofire = true};
 			asmsControls.BindMulti("Reset", Global.Config.SMSConsoleButtons.Reset);
 			asmsControls.BindMulti("Pause", Global.Config.SMSConsoleButtons.Pause);
 			for (int i = 0; i < 2; i++)
@@ -901,8 +907,7 @@ namespace BizHawk.MultiClient
 			}
 			Global.PCEControls = pceControls;
 
-			var apceControls = new AutofireController(PCEngine.PCEngineController);
-			apceControls.Autofire = true;
+			var apceControls = new AutofireController(PCEngine.PCEngineController) {Autofire = true};
 			for (int i = 0; i < 5; i++)
 			{
 				apceControls.BindMulti("P" + (i + 1) + " Up", Global.Config.PCEAutoController[i].Up);
@@ -940,8 +945,7 @@ namespace BizHawk.MultiClient
 			Global.SNESControls = snesControls;
 
 
-			var asnesControls = new AutofireController(LibsnesCore.SNESController);
-			asnesControls.Autofire = true;
+			var asnesControls = new AutofireController(LibsnesCore.SNESController) {Autofire = true};
 			for (int i = 0; i < 4; i++)
 			{
 				asnesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.SNESAutoController[i].Up);
@@ -980,8 +984,7 @@ namespace BizHawk.MultiClient
 
 			Global.NESControls = nesControls;
 
-			var anesControls = new AutofireController(NES.NESController);
-			anesControls.Autofire = true;
+			var anesControls = new AutofireController(NES.NESController) {Autofire = true};
 
 			for (int i = 0; i < 2 /*TODO*/; i++)
 			{
@@ -1008,8 +1011,7 @@ namespace BizHawk.MultiClient
 			gbControls.BindMulti("Power", Global.Config.GBController[0].Power);
 			Global.GBControls = gbControls;
 
-			var agbControls = new AutofireController(Gameboy.GbController);
-			agbControls.Autofire = true;
+			var agbControls = new AutofireController(Gameboy.GbController) {Autofire = true};
 			agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
 			agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
 			agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
@@ -1094,6 +1096,64 @@ namespace BizHawk.MultiClient
 			agbaControls.BindMulti("R", Global.Config.GBAAutoController[0].R);
 			agbaControls.BindMulti("Power", Global.Config.GBAAutoController[0].Power);
 			Global.AutofireGBAControls = agbaControls;
+
+			var satControls = new Controller(Emulation.Consoles.Sega.Saturn.Yabause.SaturnController);
+			satControls.BindMulti("P1 Up", Global.Config.SaturnController[0].Up);
+			satControls.BindMulti("P1 Down", Global.Config.SaturnController[0].Down);
+			satControls.BindMulti("P1 Left", Global.Config.SaturnController[0].Left);
+			satControls.BindMulti("P1 Right", Global.Config.SaturnController[0].Right);
+			satControls.BindMulti("P1 A", Global.Config.SaturnController[0].A);
+			satControls.BindMulti("P1 B", Global.Config.SaturnController[0].B);
+			satControls.BindMulti("P1 C", Global.Config.SaturnController[0].C);
+			satControls.BindMulti("P1 X", Global.Config.SaturnController[0].X);
+			satControls.BindMulti("P1 Y", Global.Config.SaturnController[0].Y);
+			satControls.BindMulti("P1 Z", Global.Config.SaturnController[0].Z);
+			satControls.BindMulti("P1 L", Global.Config.SaturnController[0].L);
+			satControls.BindMulti("P1 R", Global.Config.SaturnController[0].R);
+			satControls.BindMulti("P1 Start", Global.Config.SaturnController[0].Start);
+			satControls.BindMulti("P2 Up", Global.Config.SaturnController[1].Up);
+			satControls.BindMulti("P2 Down", Global.Config.SaturnController[1].Down);
+			satControls.BindMulti("P2 Left", Global.Config.SaturnController[1].Left);
+			satControls.BindMulti("P2 Right", Global.Config.SaturnController[1].Right);
+			satControls.BindMulti("P2 A", Global.Config.SaturnController[1].A);
+			satControls.BindMulti("P2 B", Global.Config.SaturnController[1].B);
+			satControls.BindMulti("P2 C", Global.Config.SaturnController[1].C);
+			satControls.BindMulti("P2 X", Global.Config.SaturnController[1].X);
+			satControls.BindMulti("P2 Y", Global.Config.SaturnController[1].Y);
+			satControls.BindMulti("P2 Z", Global.Config.SaturnController[1].Z);
+			satControls.BindMulti("P2 L", Global.Config.SaturnController[1].L);
+			satControls.BindMulti("P2 R", Global.Config.SaturnController[1].R);
+			satControls.BindMulti("P2 Start", Global.Config.SaturnController[1].Start);
+			Global.SaturnControls = satControls;
+
+			var asatControls = new AutofireController(Emulation.Consoles.Sega.Saturn.Yabause.SaturnController);
+			asatControls.BindMulti("P1 Up", Global.Config.SaturnAutoController[0].Up);
+			asatControls.BindMulti("P1 Down", Global.Config.SaturnAutoController[0].Down);
+			asatControls.BindMulti("P1 Left", Global.Config.SaturnAutoController[0].Left);
+			asatControls.BindMulti("P1 Right", Global.Config.SaturnAutoController[0].Right);
+			asatControls.BindMulti("P1 A", Global.Config.SaturnAutoController[0].A);
+			asatControls.BindMulti("P1 B", Global.Config.SaturnAutoController[0].B);
+			asatControls.BindMulti("P1 C", Global.Config.SaturnAutoController[0].C);
+			asatControls.BindMulti("P1 X", Global.Config.SaturnAutoController[0].X);
+			asatControls.BindMulti("P1 Y", Global.Config.SaturnAutoController[0].Y);
+			asatControls.BindMulti("P1 Z", Global.Config.SaturnAutoController[0].Z);
+			asatControls.BindMulti("P1 L", Global.Config.SaturnAutoController[0].L);
+			asatControls.BindMulti("P1 R", Global.Config.SaturnAutoController[0].R);
+			asatControls.BindMulti("P1 Start", Global.Config.SaturnAutoController[0].Start);
+			asatControls.BindMulti("P2 Up", Global.Config.SaturnAutoController[1].Up);
+			asatControls.BindMulti("P2 Down", Global.Config.SaturnAutoController[1].Down);
+			asatControls.BindMulti("P2 Left", Global.Config.SaturnAutoController[1].Left);
+			asatControls.BindMulti("P2 Right", Global.Config.SaturnAutoController[1].Right);
+			asatControls.BindMulti("P2 A", Global.Config.SaturnAutoController[1].A);
+			asatControls.BindMulti("P2 B", Global.Config.SaturnAutoController[1].B);
+			asatControls.BindMulti("P2 C", Global.Config.SaturnAutoController[1].C);
+			asatControls.BindMulti("P2 X", Global.Config.SaturnAutoController[1].X);
+			asatControls.BindMulti("P2 Y", Global.Config.SaturnAutoController[1].Y);
+			asatControls.BindMulti("P2 Z", Global.Config.SaturnAutoController[1].Z);
+			asatControls.BindMulti("P2 L", Global.Config.SaturnAutoController[1].L);
+			asatControls.BindMulti("P2 R", Global.Config.SaturnAutoController[1].R);
+			asatControls.BindMulti("P2 Start", Global.Config.SaturnAutoController[1].Start);
+			Global.AutofireSaturnControls = asatControls;
 
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenesisController[0].Up);
@@ -1523,7 +1583,6 @@ namespace BizHawk.MultiClient
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-
 #if WINDOWS
 			bool isLua = false;
 			foreach (string path in filePaths)
@@ -1631,6 +1690,9 @@ namespace BizHawk.MultiClient
 				case "C64": str += "Commodore 64"; break;
 				case "Coleco": str += "ColecoVision"; break;
 				case "GBA": str += "Game Boy Advance"; break;
+				case "N64": str += "Nintendo 64"; break;
+				case "SAT": str += "Saturn"; break;
+				case "DGB": str += "Game Boy Link"; break;
 			}
 
 			if (INTERIM) str += " (interim)";
@@ -1711,8 +1773,8 @@ namespace BizHawk.MultiClient
 		void NESSpeicalMenuAdd(string name, string button, string msg)
 		{
 			nESSpeicalToolStripMenuItem.Visible = true;
-			nESSpeicalToolStripMenuItem.DropDownItems.Add(name, null, delegate(object sender, EventArgs e)
-			{
+			nESSpeicalToolStripMenuItem.DropDownItems.Add(name, null, delegate
+				{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
 				{
 					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
@@ -1807,6 +1869,10 @@ namespace BizHawk.MultiClient
 					Global.ActiveController = Global.ColecoControls;
 					Global.AutoFireController = Global.AutofireColecoControls;
 					break;
+				case "SAT":
+					Global.ActiveController = Global.SaturnControls;
+					Global.AutoFireController = Global.AutofireSaturnControls;
+					break;
 				case "C64":
 					Global.ActiveController = Global.Commodore64Controls;
 					Global.AutoFireController = Global.AutofireCommodore64Controls;
@@ -1831,9 +1897,7 @@ namespace BizHawk.MultiClient
 
 		void RewireInputChain()
 		{
-			Global.ControllerInputCoalescer = new ControllerInputCoalescer();
-
-			Global.ControllerInputCoalescer.Type = Global.ActiveController.Type;
+			Global.ControllerInputCoalescer = new ControllerInputCoalescer {Type = Global.ActiveController.Type};
 
 			Global.OrControllerAdapter.Source = Global.ActiveController;
 			Global.OrControllerAdapter.SourceOr = Global.AutoFireController;
@@ -1864,7 +1928,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL" };
+				string[] romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -1939,28 +2003,31 @@ namespace BizHawk.MultiClient
 							// In the future we need to do something smarter, possibly including simply asking the user
 							// what system the game is for.
 
-							if (BizHawk.Emulation.Consoles.PSX.Octoshock.CheckIsPSX(disc))
+							if (Emulation.Consoles.PSX.Octoshock.CheckIsPSX(disc))
 							{
-								game = new GameInfo();
-								game.System = "PSX";
-								game.Name = Path.GetFileNameWithoutExtension(file.Name);
-								game.Hash = hash;
+								game = new GameInfo { System = "PSX", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 								disc.Dispose();
+							}
+							else if (disc.DetectSegaSaturn())
+							{
+								game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 							}
 							else
 							{
-								game = new GameInfo();
-								game.System = "PCECD";
-								game.Name = Path.GetFileNameWithoutExtension(file.Name);
-								game.Hash = hash;
+								game = new GameInfo { System = "PCECD", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 							}
 						}
 
 						switch (game.System)
 						{
+							case "SAT":
+								var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc);
+								nextEmulator = saturn;
+								break;
+
 							case "PSX":
 								{
-									var psx = new BizHawk.Emulation.Consoles.PSX.Octoshock(nextComm);
+									var psx = new Emulation.Consoles.PSX.Octoshock(nextComm);
 									nextEmulator = psx;
 									psx.LoadCuePath(file.CanonicalFullPath);
 									nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
@@ -2009,10 +2076,54 @@ namespace BizHawk.MultiClient
 								}
 						}
 					}
-					else
+					else if (file.Extension.ToLower() == ".xml")
+					{
+						var XMLG = XmlGame.Create(file);
+
+						if (XMLG != null)
+						{
+							game = XMLG.GI;
+
+							switch (game.System)
+							{
+								case "DGB":
+
+									var L = Database.GetGameInfo(XMLG.Assets["LeftRom"], "left.gb");
+									var R = Database.GetGameInfo(XMLG.Assets["RightRom"], "right.gb");
+
+									if (Global.Config.GB_ForceDMG) L.AddOption("ForceDMG");
+								    if (Global.Config.GB_GBACGB) L.AddOption("GBACGB");
+								    if (Global.Config.GB_MulticartCompat) L.AddOption("MulitcartCompat");
+									if (Global.Config.GB_ForceDMG) R.AddOption("ForceDMG");
+								    if (Global.Config.GB_GBACGB) R.AddOption("GBACGB");
+								    if (Global.Config.GB_MulticartCompat) R.AddOption("MulitcartCompat");
+
+									GambatteLink gbl = new GambatteLink(nextComm, L, XMLG.Assets["LeftRom"], R, XMLG.Assets["RightRom"]);
+								    nextEmulator = gbl;
+								    // other stuff todo
+									break;
+
+								default:
+									return false;
+							}
+
+						}
+						// if load fails, second chance to identify as a bsnes XML
+					}
+					else // most extensions
 					{
 						rom = new RomGame(file);
 						game = rom.GameInfo;
+
+						bool isXml = false;
+
+						// other xml has already been handled
+						if (file.Extension.ToLower() == ".xml")
+						{
+							game.System = "SNES";
+							isXml = true;
+						}
+
 
 					RETRY:
 						switch (game.System)
@@ -2021,9 +2132,20 @@ namespace BizHawk.MultiClient
 								{
 									game.System = "SNES";
 									nextComm.SNES_ExePath = SNES_Prepare(Global.Config.SNESProfile);
+
+									//this isnt completely correct. might need to deal with the archive somehow.
+									//once done, code should be factored out to be useful in other platforms as well
+									//BUT!!! right now bsnes needs to open the file itself. lame.
+									//nextComm.AcquireSubfile = (subpath) =>
+									//  File.OpenRead(Path.Combine(Path.GetDirectoryName(path),subpath));
+									nextComm.AcquireSubfilePath = (subpath) =>
+									  Path.Combine(Path.GetDirectoryName(path),subpath);
+
 									var snes = new LibsnesCore(nextComm);
 									nextEmulator = snes;
-									snes.Load(game, rom.FileData, null, deterministicemulation);
+									byte[] romData = isXml?null:rom.FileData;
+									byte[] xmlData = isXml?rom.FileData:null;
+									snes.Load(game, romData, null, deterministicemulation, xmlData);
 								}
 								break;
 							case "SMS":
@@ -2078,10 +2200,14 @@ namespace BizHawk.MultiClient
 										}
 									}
 
-									NES nes = new NES(nextComm, game, rom.FileData, bios);
-									nes.SoundOn = Global.Config.SoundEnabled;
-									nes.FirstDrawLine = Global.Config.NESTopLine;
-									nes.LastDrawLine = Global.Config.NESBottomLine;
+									NES nes = new NES(nextComm, game, rom.FileData, bios)
+										{
+											SoundOn = Global.Config.SoundEnabled,
+											NTSC_FirstDrawLine = Global.Config.NTSC_NESTopLine,
+											NTSC_LastDrawLine = Global.Config.NTSC_NESBottomLine,
+											PAL_FirstDrawLine = Global.Config.PAL_NESTopLine
+										};
+									nes.NTSC_LastDrawLine = Global.Config.PAL_NESBottomLine;
 									nes.SetClipLeftAndRight(Global.Config.NESClipLeftAndRight);
 									nextEmulator = nes;
 									if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&
@@ -2094,20 +2220,6 @@ namespace BizHawk.MultiClient
 								break;
 							case "GB":
 							case "GBC":
-								//if (false) // this code will load up a dual game boy
-								//{
-								//    // this is horrible.  we MUST decide when we should be using Game.System and when we should be using Emulator.SystemID
-								//    game.System = "DGB"; // HACK
-
-								//    if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
-								//    if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
-								//    if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-								//    GambatteLink gbl = new GambatteLink(nextComm, game, rom.FileData, game, rom.FileData);
-								//    nextEmulator = gbl;
-								//    // other stuff todo
-								//}
-								//else
-								//{
 									if (!Global.Config.GB_AsSGB)
 									{
 										if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
@@ -2168,7 +2280,7 @@ namespace BizHawk.MultiClient
 											var snes = new LibsnesCore(nextComm);
 											nextEmulator = snes;
 											game.FirmwareHash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(sgbrom));
-											snes.Load(game, rom.FileData, sgbrom, deterministicemulation);
+											snes.Load(game, rom.FileData, sgbrom, deterministicemulation, null);
 										}
 									}
 								//}
@@ -2248,7 +2360,7 @@ namespace BizHawk.MultiClient
                                 RunLoopBlocked = false;
 
 								string gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-								var a78 = new BizHawk.Emulation.Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS, gamedbpath);
+								var a78 = new Atari7800(nextComm, game, rom.RomData, NTSC_BIOS7800, PAL_BIOS7800, HighScoreBIOS, gamedbpath);
 								nextEmulator = a78;
 								break;
 							case "C64":
@@ -2277,6 +2389,12 @@ namespace BizHawk.MultiClient
 									//var gba = new GarboDev.GbaManager(nextComm);
 									gba.Load(rom.RomData, gbabios);
 									nextEmulator = gba;
+								}
+								break;
+							case "N64":
+								if (INTERIM)
+								{
+									nextEmulator = new N64(nextComm, game, rom.RomData);
 								}
 								break;
 						}
@@ -2424,52 +2542,52 @@ namespace BizHawk.MultiClient
 
 		private void UpdateDumpIcon()
 		{
-			DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			DumpStatus.Image = Properties.Resources.Blank;
 			DumpStatus.ToolTipText = "";
 
 			if (Global.Emulator == null) return;
 			if (Global.Game == null) return;
 
 			var status = Global.Game.Status;
-			string annotation = "";
+			string annotation;
 			if (status == RomStatus.BadDump)
 			{
-				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.ExclamationRed;
+				DumpStatus.Image = Properties.Resources.ExclamationRed;
 				annotation = "Warning: Bad ROM Dump";
 			}
 			else if (status == RomStatus.Overdump)
 			{
-				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.ExclamationRed;
+				DumpStatus.Image = Properties.Resources.ExclamationRed;
 				annotation = "Warning: Overdump";
 			}
 			else if (status == RomStatus.NotInDatabase)
 			{
-				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.RetroQuestion;
+				DumpStatus.Image = Properties.Resources.RetroQuestion;
 				annotation = "Warning: Unknown ROM";
 			}
 			else if (status == RomStatus.TranslatedRom)
 			{
-				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.Translation;
+				DumpStatus.Image = Properties.Resources.Translation;
 				annotation = "Translated ROM";
 			}
 			else if (status == RomStatus.Homebrew)
 			{
-				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.HomeBrew;
+				DumpStatus.Image = Properties.Resources.HomeBrew;
 				annotation = "Homebrew ROM";
 			}
 			else if (Global.Game.Status == RomStatus.Hack)
 			{
-				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.Hack;
+				DumpStatus.Image = Properties.Resources.Hack;
 				annotation = "Hacked ROM";
 			}
 			else if (Global.Game.Status == RomStatus.Unknown)
 			{
-				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.Hack;
+				DumpStatus.Image = Properties.Resources.Hack;
 				annotation = "Warning: ROM of Unknown Character";
 			}
 			else
 			{
-				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
+				DumpStatus.Image = Properties.Resources.GreenCheck;
 				annotation = "Verified good dump";
 			}
 			if (!string.IsNullOrEmpty(Global.Emulator.CoreComm.RomStatusAnnotation))
@@ -2506,15 +2624,15 @@ namespace BizHawk.MultiClient
 			string path = PathManager.SaveRamPath(Global.Game);
 
 			var f = new FileInfo(path);
-			if (f.Directory.Exists == false)
+			if (f.Directory != null && f.Directory.Exists == false)
 				f.Directory.Create();
 
 			//Make backup first
-			if (Global.Config.BackupSaveram && f.Exists == true)
+			if (Global.Config.BackupSaveram && f.Exists)
 			{
 				string backup = path + ".bak";
 				var backupFile = new FileInfo(backup);
-				if (backupFile.Exists == true)
+				if (backupFile.Exists)
 					backupFile.Delete();
 				f.CopyTo(backup);
 			}
@@ -2546,14 +2664,14 @@ namespace BizHawk.MultiClient
 			get
 			{
 				//the main form gets input
-				if (Form.ActiveForm == this) return true;
+				if (ActiveForm == this) return true;
 
 				//modals that need to capture input for binding purposes get input, of course
-				if (Form.ActiveForm is HotkeyWindow) return true;
-				if (Form.ActiveForm is ControllerConfig) return true;
-				if (Form.ActiveForm is TAStudio) return true;
+				if (ActiveForm is HotkeyWindow) return true;
+				if (ActiveForm is ControllerConfig) return true;
+				if (ActiveForm is TAStudio) return true;
 				//if no form is active on this process, then the background input setting applies
-				if (Form.ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
+				if (ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
 
 				return false;
 			}
@@ -2625,10 +2743,7 @@ namespace BizHawk.MultiClient
 						handled = false;
 						if (ie.EventType == Input.InputEventType.Press)
 						{
-							foreach (var trigger in triggers)
-							{
-								handled |= CheckHotkey(trigger);
-							}
+							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
 						}
 
 						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
@@ -2645,10 +2760,7 @@ namespace BizHawk.MultiClient
 							handled = false;
 							if (ie.EventType == Input.InputEventType.Press)
 							{
-								foreach (var trigger in triggers)
-								{
-									handled |= CheckHotkey(trigger);
-								}
+								handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
 							}
 
 							//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
@@ -2662,10 +2774,7 @@ namespace BizHawk.MultiClient
 						handled = false;
 						if (ie.EventType == Input.InputEventType.Press)
 						{
-							foreach (var trigger in triggers)
-							{
-								handled |= CheckHotkey(trigger);
-							}
+							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
 						}
 
 						//hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
@@ -3010,7 +3119,7 @@ namespace BizHawk.MultiClient
 					Global.MovieSession.Movie.SwitchToPlay();
 				}
 			}
-			if (UpdateFrame == true)
+			if (UpdateFrame)
 			{
 				runFrame = true;
 				if (Global.MovieSession.Movie.IsRecording)
@@ -3209,7 +3318,7 @@ namespace BizHawk.MultiClient
 		{
 			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				System.Windows.Forms.Clipboard.SetImage(img);
+				Clipboard.SetImage(img);
 			}
 			Global.OSD.AddMessage("Screenshot saved to clipboard.");
 		}
@@ -3230,7 +3339,7 @@ namespace BizHawk.MultiClient
 		public void TakeScreenshot(string path)
 		{
 			var fi = new FileInfo(path);
-			if (fi.Directory.Exists == false)
+			if (fi.Directory != null && fi.Directory.Exists == false)
 				fi.Directory.Create();
 			using (var img = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
@@ -3244,15 +3353,15 @@ namespace BizHawk.MultiClient
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 
 			var file = new FileInfo(path);
-			if (file.Directory.Exists == false)
+			if (file.Directory != null && file.Directory.Exists == false)
 				file.Directory.Create();
 
 			//Make backup first
-			if (Global.Config.BackupSavestates && file.Exists == true)
+			if (Global.Config.BackupSavestates && file.Exists)
 			{
 				string backup = path + ".bak";
 				var backupFile = new FileInfo(backup);
-				if (backupFile.Exists == true)
+				if (backupFile.Exists)
 					backupFile.Delete();
 				file.CopyTo(backup);
 			}
@@ -3293,7 +3402,7 @@ namespace BizHawk.MultiClient
 			sfd.InitialDirectory = path;
 			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
 			var file = new FileInfo(path);
-			if (file.Directory.Exists == false)
+			if (file.Directory != null && file.Directory.Exists == false)
 				file.Directory.Create();
 
             RunLoopBlocked = true;
@@ -3386,7 +3495,7 @@ namespace BizHawk.MultiClient
 
 		private void UpdateAutoLoadRecentRom()
 		{
-			if (Global.Config.AutoLoadMostRecentRom == true)
+			if (Global.Config.AutoLoadMostRecentRom)
 			{
 				autoloadMostRecentToolStripMenuItem.Checked = false;
 				Global.Config.AutoLoadMostRecentRom = false;
@@ -3400,7 +3509,7 @@ namespace BizHawk.MultiClient
 
 		private void UpdateAutoLoadRecentMovie()
 		{
-			if (Global.Config.AutoLoadMostRecentMovie == true)
+			if (Global.Config.AutoLoadMostRecentMovie)
 			{
 				autoloadMostRecentToolStripMenuItem1.Checked = false;
 				Global.Config.AutoLoadMostRecentMovie = false;
@@ -3427,9 +3536,51 @@ namespace BizHawk.MultiClient
 
 		public void LoadGameGenieEC()
 		{
-			NESGameGenie gg = new NESGameGenie();
-			RunLoopBlocked = true;
-			gg.Show();
+
+			if (Global.Emulator is NES)
+			{
+				if (!NESgg.IsHandleCreated || NESgg.IsDisposed)
+				{
+					NESgg = new NESGameGenie();
+					RunLoopBlocked = true;
+					NESgg.Show();
+				}
+				else
+					NESgg.Focus();
+			}
+			else if (Global.Emulator is LibsnesCore)
+			{
+				if (!SNESgg.IsHandleCreated || SNESgg.IsDisposed)
+				{
+					SNESgg = new SNESGameGenie();
+					RunLoopBlocked = true;
+					SNESgg.Show();
+				}
+				else
+					SNESgg.Focus();
+			}
+			else if ((Global.Emulator.SystemId == "GB")  || (Global.Game.System == "GG"))
+			{
+				if (!GBgg.IsHandleCreated || GBgg.IsDisposed)
+				{
+					GBgg = new GBGameGenie();
+					RunLoopBlocked = true;
+					GBgg.Show();
+				}
+				else
+					GBgg.Focus();
+			}
+			else if (Global.Emulator is Genesis)
+			{
+				if (!Gengg.IsHandleCreated || Gengg.IsDisposed)
+				{
+					Gengg = new GenGameGenie();
+					RunLoopBlocked = true;
+					Gengg.Show();
+				}
+				else
+					Gengg.Focus();
+			}
 			RunLoopBlocked = false;
 		}
 
@@ -3643,14 +3794,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private bool InFullscreen = false;
-		private Point WindowedLocation;
-
 		public void ToggleFullscreen()
 		{
 			if (InFullscreen == false)
 			{
-				WindowedLocation = Location;
+				_windowed_location = Location;
 				FormBorderStyle = FormBorderStyle.None;
 				WindowState = FormWindowState.Maximized;
 				if (Global.Config.ShowMenuInFullscreen)
@@ -3664,11 +3812,11 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				FormBorderStyle = FormBorderStyle.FixedSingle;
+				FormBorderStyle = FormBorderStyle.Sizable;
 				WindowState = FormWindowState.Normal;
 				MainMenuStrip.Visible = true;
 				StatusSlot0.Visible = Global.Config.DisplayStatusBar;
-				Location = WindowedLocation;
+				Location = _windowed_location;
 				PerformLayout();
 				FrameBufferResized();
 				InFullscreen = false;
@@ -3689,7 +3837,7 @@ namespace BizHawk.MultiClient
 		protected override bool ProcessDialogChar(char charCode)
 		{
 			//this is necessary to trap alt+char combinations so that only our hotkey system gets them
-			if ((Control.ModifierKeys & Keys.Alt) != 0)
+			if ((ModifierKeys & Keys.Alt) != 0)
 				return true;
 			else return base.ProcessDialogChar(charCode);
 		}
@@ -3697,11 +3845,7 @@ namespace BizHawk.MultiClient
 		//sends a simulation of a plain alt key keystroke
 		void SendPlainAltKey(int lparam)
 		{
-			Message m = new Message();
-			m.WParam = new IntPtr(0xF100); //SC_KEYMENU
-			m.LParam = new IntPtr(lparam);
-			m.Msg = 0x0112; //WM_SYSCOMMAND
-			m.HWnd = Handle;
+			Message m = new Message {WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle};
 			base.WndProc(ref m);
 		}
 
@@ -3726,7 +3870,7 @@ namespace BizHawk.MultiClient
 			return str;
 		}
 
-		int LastOpenRomFilter = 0;
+		int LastOpenRomFilter;
 		private void OpenROM()
 		{
 			var ofd = BizHawk.HawkUIFactory.CreateOpenFileDialog();
@@ -3737,11 +3881,11 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.cue;*.exe;*.gb;*.gbc;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;%ARCH%",
 					"Music Files", "*.psf;*.sid",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
-					"Super NES", "*.smc;*.sfc;%ARCH%",
+					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
@@ -3757,16 +3901,17 @@ namespace BizHawk.MultiClient
 					"PSF Playstation Sound File (very experimental)", "*.psf",
 					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 					"SID Commodore 64 Music File", "*.sid;%ARCH%",
+					"Nintendo 64", "*.z64;*.v64;*.n64",
 					"All Files", "*.*");
 			}
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
 #if WINDOWS
-					"Super NES", "*.smc;*.sfc;%ARCH%",
+					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 #endif
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
@@ -3857,8 +4002,8 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.SaveWindowPosition)
 			{
-				Global.Config.MainWndx = this.Location.X;
-				Global.Config.MainWndy = this.Location.Y;
+				Global.Config.MainWndx = Location.X;
+				Global.Config.MainWndy = Location.Y;
 			}
 			else
 			{
@@ -4216,9 +4361,10 @@ namespace BizHawk.MultiClient
 			IVideoWriter aw = null;
 			var writers = VideoWriterInventory.GetAllVideoWriters();
 
+			var video_writers = writers as IVideoWriter[] ?? writers.ToArray();
 			if (unattended)
 			{
-				foreach (var w in writers)
+				foreach (var w in video_writers)
 				{
 					if (w.ShortName() == videowritername)
 					{
@@ -4229,10 +4375,10 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(writers, Global.MainForm, out avwriter_resizew, out avwriter_resizeh);
+				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(video_writers, Global.MainForm, out avwriter_resizew, out avwriter_resizeh);
 			}
 
-			foreach (var w in writers)
+			foreach (var w in video_writers)
 			{
 				if (w != aw)
 					w.Dispose();
@@ -4309,7 +4455,7 @@ namespace BizHawk.MultiClient
 				//commit the avi writing last, in case there were any errors earlier
 				CurrAviWriter = aw;
 				Global.OSD.AddMessage("A/V capture started");
-				AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.AVI;
+				AVIStatusLabel.Image = Properties.Resources.AVI;
 				AVIStatusLabel.ToolTipText = "A/V capture in progress";
 				AVIStatusLabel.Visible = true;
 
@@ -4342,7 +4488,7 @@ namespace BizHawk.MultiClient
 			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
 			Global.OSD.AddMessage("A/V capture aborted");
-			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
 			AviSoundInput = null;
@@ -4363,7 +4509,7 @@ namespace BizHawk.MultiClient
 			CurrAviWriter.Dispose();
 			CurrAviWriter = null;
 			Global.OSD.AddMessage("A/V capture stopped");
-			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
 			AviSoundInput = null;
@@ -4423,7 +4569,7 @@ namespace BizHawk.MultiClient
 				catch (Exception e)
 				{
                     RunLoopBlocked = true;
-					MessageBox.Show("Video dumping died:\n\n" + e.ToString());
+					MessageBox.Show("Video dumping died:\n\n" + e);
                     RunLoopBlocked = false;
 					AbortAVI();
 				}
@@ -4448,7 +4594,7 @@ namespace BizHawk.MultiClient
 
 			if (state.Exists == false) return;
 			if (backup.Exists == false) return;
-			if (temp.Exists == true) temp.Delete();
+			if (temp.Exists) temp.Delete();
 
 			backup.CopyTo(path + ".bak.tmp");
 			backup.Delete();
@@ -4495,24 +4641,23 @@ namespace BizHawk.MultiClient
 		private void importMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var ofd = BizHawk.HawkUIFactory.CreateOpenFileDialog();
-			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
+            ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 			ofd.Multiselect = true;
-			ofd.Filter = FormatFilter(
-				"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
-				"FCEUX", "*.fm2",
-				"PCEjin/Mednafen", "*.mc2;*.mcm",
-				"Dega", "*.mmv",
-				"Gens", "*.gmv",
-				"Visual Boy Advance", "*.vbm",
-				"LSNES", "*.lsmv",
-				"FCEU", "*.fcm",
-				"Famtasia", "*.fmv",
-				"VirtuaNES", "*.vmv",
-				"Nintendulator", "*.nmv",
-				"Snes9x", "*.smv",
-				"ZSNES", "*.zmv",
-				"All Files", "*.*");
-
+            ofd.Filter = FormatFilter(
+						"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
+						"FCEUX", "*.fm2",
+						"PCEjin/Mednafen", "*.mc2;*.mcm",
+						"Dega", "*.mmv",
+						"Gens", "*.gmv",
+						"Visual Boy Advance", "*.vbm",
+						"LSNES", "*.lsmv",
+						"FCEU", "*.fcm",
+						"Famtasia", "*.fmv",
+						"VirtuaNES", "*.vmv",
+						"Nintendulator", "*.nmv",
+						"Snes9x", "*.smv",
+						"ZSNES", "*.zmv",
+						"All Files", "*.*");
 			ofd.RestoreDirectory = false;
 
             RunLoopBlocked = true;
@@ -4533,10 +4678,9 @@ namespace BizHawk.MultiClient
 
 		void ProcessMovieImport(string fn)
 		{
-			var file = new FileInfo(fn);
 			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
-			string errorMsg = "";
-			string warningMsg = "";
+			string errorMsg;
+			string warningMsg;
 			Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
             RunLoopBlocked = true;
 			if (errorMsg.Length > 0)
@@ -4606,7 +4750,6 @@ namespace BizHawk.MultiClient
 			if (num_images < 1 || frameskip < 1 || gifSpeed == 0) return false;//Exits if settings are bad
 			#region declare/insantiate variables
 			List<Image> images = new List<Image>(); //Variable for holding all images for the gif animation
-			Image tempImage; //Holding the image in case it doesn't end up being added to the animation
 			// Such a scenario could be a frameskip setting of 2 and a gifSpeed setting of 3
 			// This would result in 1 of every 3 images being requested getting skipped.
 			// My math might be wrong at this hour, but you get the point!
@@ -4620,7 +4763,7 @@ namespace BizHawk.MultiClient
 			images.Add(Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage());
 			while (images.Count < totalFrames)
 			{
-				tempImage = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage();
+				Image tempImage = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage(); //Holding the image in case it doesn't end up being added to the animation
 				if (gifSpeed < 0)
 					for (speedTracker = 0; speedTracker > gifSpeed; speedTracker--)
 						images.Add(tempImage); //If the speed of the animation is to be slowed down, then add that many copies
@@ -4654,9 +4797,8 @@ namespace BizHawk.MultiClient
 			#region make gif file
 			byte[] GifAnimation = { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
 			MemoryStream MS = new MemoryStream();
-			BinaryReader BR = new BinaryReader(MS);
 			var fi = new FileInfo(filename);
-			if (fi.Directory.Exists == false)
+			if (fi.Directory != null && fi.Directory.Exists == false)
 				fi.Directory.Create();
 			BinaryWriter BW = new BinaryWriter(new FileStream(filename, FileMode.Create));
 			images[0].Save(MS, ImageFormat.Gif);
@@ -4702,48 +4844,6 @@ namespace BizHawk.MultiClient
 		}
 
 		#endregion
-
-		private void animatedGIFConfigToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GifAnimator g = new GifAnimator();
-			RunLoopBlocked = true;
-			g.Show();
-			RunLoopBlocked = false;
-		}
-
-		private void makeAnimatedGIFToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			makeAnimatedGif();
-		}
-
-		private void makeAnimatedGif()
-		{
-			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + "AGIF.{0:yyyy-MM-dd HH.mm.ss}.gif", DateTime.Now);
-			AnimatedGif(Global.Config.GifAnimatorNumFrames, Global.Config.GifAnimatorFrameSkip, Global.Config.GifAnimatorSpeed, Global.Config.GifAnimatorReversable, path);
-		}
-		private void makeAnimatedGif(string path)
-		{
-			AnimatedGif(Global.Config.GifAnimatorNumFrames, Global.Config.GifAnimatorFrameSkip, Global.Config.GifAnimatorSpeed, Global.Config.GifAnimatorReversable, path);
-		}
-
-		private void makeAnimatedGifAsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + "AGIF.{0:yyyy-MM-dd HH.mm.ss}.gif", DateTime.Now);
-
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.InitialDirectory = Path.GetDirectoryName(path);
-			sfd.FileName = Path.GetFileName(path);
-			sfd.Filter = "GIF File (*.gif)|*.gif";
-
-            RunLoopBlocked = true;
-			Global.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
-            RunLoopBlocked = false;
-			if (result != DialogResult.OK)
-				return;
-			makeAnimatedGif(sfd.FileName);
-		}
 
 		private void ShowConsole()
 		{
@@ -4835,7 +4935,7 @@ namespace BizHawk.MultiClient
 		private void IncreaseSpeed()
 		{
 			int oldp = Global.Config.SpeedPercent;
-			int newp = 0;
+			int newp;
 			if (oldp < 3) newp = 3;
 			else if (oldp < 6) newp = 6;
 			else if (oldp < 12) newp = 12;
@@ -4854,7 +4954,7 @@ namespace BizHawk.MultiClient
 		private void DecreaseSpeed()
 		{
 			int oldp = Global.Config.SpeedPercent;
-			int newp = 0;
+			int newp;
 			if (oldp > 800) newp = 800;
 			else if (oldp > 400) newp = 400;
 			else if (oldp > 200) newp = 200;
@@ -5034,11 +5134,6 @@ namespace BizHawk.MultiClient
 			Global.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
 		}
 
-		private void loadConfigToolStripMenuItem_Click_1(object sender, EventArgs e)
-		{
-
-		}
-
 		private void saveMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveMovie();
@@ -5139,11 +5234,11 @@ namespace BizHawk.MultiClient
 					}
 					if (Global.Emulator.CoreComm.DriveLED)
 					{
-						StatusBarLedLight.Image = BizHawk.MultiClient.Properties.Resources.LightOn;
+						StatusBarLedLight.Image = Properties.Resources.LightOn;
 					}
 					else
 					{
-						StatusBarLedLight.Image = BizHawk.MultiClient.Properties.Resources.LightOff;
+						StatusBarLedLight.Image = Properties.Resources.LightOff;
 					}
 				}
 				else
@@ -5228,15 +5323,15 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case 0:
-					KeyPriorityStatusBarLabel.Image = BizHawk.MultiClient.Properties.Resources.Both;
+					KeyPriorityStatusBarLabel.Image = Properties.Resources.Both;
 					KeyPriorityStatusBarLabel.ToolTipText = "Key priority: Allow both hotkeys and controller buttons";
 					break;
 				case 1:
-					KeyPriorityStatusBarLabel.Image = BizHawk.MultiClient.Properties.Resources.GameController;
+					KeyPriorityStatusBarLabel.Image = Properties.Resources.GameController;
 					KeyPriorityStatusBarLabel.ToolTipText = "Key priority: Controller buttons will override hotkeys";
 					break;
 				case 2:
-					KeyPriorityStatusBarLabel.Image = BizHawk.MultiClient.Properties.Resources.HotKeys;
+					KeyPriorityStatusBarLabel.Image = Properties.Resources.HotKeys;
 					KeyPriorityStatusBarLabel.ToolTipText = "Key priority: Hotkeys will override controller buttons";
 					break;
 			}
@@ -5269,5 +5364,44 @@ namespace BizHawk.MultiClient
 		{
 			StopMovie(true);
 		}
+
+		public string GetEmuVersion()
+		{
+			if (INTERIM)
+			{
+				return "SVN " + SubWCRev.SVN_REV;
+			}
+			else
+			{
+				return EMUVERSION;
+			}
+		}
+
+		private void SNESgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void GBgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void GGgameGenieEncoderDecoderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void createDualGBXMLToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Sound.StopSound();
+			using (var dlg = new GBtools.DualGBXMLCreator())
+			{
+				dlg.ShowDialog(this);
+			}
+			Global.Sound.StartSound();
+		}
+
+
 	}
 }

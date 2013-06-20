@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
 	public partial class VirtualPadForm : Form
 	{
-		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
-		int defaultHeight;
-
-
-		List<IVirtualPad> Pads = new List<IVirtualPad>();
+		private int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		private int defaultHeight;
+		private readonly List<IVirtualPad> Pads = new List<IVirtualPad>();
 
 		public VirtualPadForm()
 		{
@@ -38,22 +32,22 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.VirtualPadSaveWindowPosition && Global.Config.VPadWndx >= 0 && Global.Config.VPadWndy >= 0)
 			{
-				this.Location = new Point(Global.Config.VPadWndx, Global.Config.VPadWndy);
+				Location = new Point(Global.Config.VPadWndx, Global.Config.VPadWndy);
 			}
 
 			if (Global.Config.VirtualPadSaveWindowPosition &&  Global.Config.VPadWidth >= 0 && Global.Config.VPadHeight >= 0)
 			{
-				Size = new System.Drawing.Size(Global.Config.VPadWidth, Global.Config.VPadHeight);
+				Size = new Size(Global.Config.VPadWidth, Global.Config.VPadHeight);
 			}
 		}
 
 		private void SaveConfigSettings()
 		{
-			Global.Config.VPadWndx = this.Location.X;
-			Global.Config.VPadWndy = this.Location.Y;
+			Global.Config.VPadWndx = Location.X;
+			Global.Config.VPadWndy = Location.Y;
 
-			Global.Config.VPadWidth = this.Right - this.Left;
-			Global.Config.VPadHeight = this.Bottom - this.Top;
+			Global.Config.VPadWidth = Right - Left;
+			Global.Config.VPadHeight = Bottom - Top;
 
 			Pads.Clear();
 		}
@@ -62,90 +56,59 @@ namespace BizHawk.MultiClient
 		{
 			switch (Global.Emulator.SystemId)
 			{
-				case "NULL":
-				default:
-					break;
 				case "A26":
-					VirtualPadA26 ataripad1 = new VirtualPadA26();
-					ataripad1.Location = new Point(8, 19);
-					ataripad1.Controller = "P1";
-					VirtualPadA26 ataripad2 = new VirtualPadA26();
-					ataripad2.Location = new Point(188, 19);
-					ataripad2.Controller = "P2";
+					VirtualPadA26 ataripad1 = new VirtualPadA26 {Location = new Point(8, 19), Controller = "P1"};
+					VirtualPadA26 ataripad2 = new VirtualPadA26 {Location = new Point(188, 19), Controller = "P2"};
 					Pads.Add(ataripad1);
 					Pads.Add(ataripad2);
 					ControllerBox.Controls.Add(ataripad1);
 					ControllerBox.Controls.Add(ataripad2);
-					VirtualPadA26Control ataricontrols = new VirtualPadA26Control();
-					ataricontrols.Location = new Point(8, 109);
+					VirtualPadA26Control ataricontrols = new VirtualPadA26Control {Location = new Point(8, 109)};
 					Pads.Add(ataricontrols);
 					ControllerBox.Controls.Add(Pads[2] as Control);
 					break;
 				case "A78":
-					VirtualPadA78 atari78pad1 = new VirtualPadA78();
-					atari78pad1.Location = new Point(8, 19);
-					atari78pad1.Controller = "P1";
-					VirtualPadA78 atari78pad2 = new VirtualPadA78();
-					atari78pad2.Location = new Point(150, 19);
-					atari78pad2.Controller = "P2";
+					VirtualPadA78 atari78pad1 = new VirtualPadA78 {Location = new Point(8, 19), Controller = "P1"};
+					VirtualPadA78 atari78pad2 = new VirtualPadA78 {Location = new Point(150, 19), Controller = "P2"};
 					Pads.Add(atari78pad1);
 					Pads.Add(atari78pad2);
 					ControllerBox.Controls.Add(atari78pad1);
 					ControllerBox.Controls.Add(atari78pad2);
-					VirtualPadA78Control atari78controls = new VirtualPadA78Control();
-					atari78controls.Location = new Point(8, 125);
+					VirtualPadA78Control atari78controls = new VirtualPadA78Control {Location = new Point(8, 125)};
 					Pads.Add(atari78controls);
 					ControllerBox.Controls.Add(Pads[2] as Control);
 					break;
 				case "NES":
-					VirtualPadNES nespad1 = new VirtualPadNES();
-					nespad1.Location = new Point(8, 19);
-					nespad1.Controller = "P1";
-					VirtualPadNES nespad2 = new VirtualPadNES();
-					nespad2.Location = new Point(188, 19);
-					nespad2.Controller = "P2";
+					VirtualPadNES nespad1 = new VirtualPadNES {Location = new Point(8, 19), Controller = "P1"};
+					VirtualPadNES nespad2 = new VirtualPadNES {Location = new Point(188, 19), Controller = "P2"};
 					Pads.Add(nespad1);
 					Pads.Add(nespad2);
 					ControllerBox.Controls.Add(nespad1);
 					ControllerBox.Controls.Add(nespad2);
-					VirtualPadNESControl controlpad1 = new VirtualPadNESControl();
-					controlpad1.Location = new Point(8, 109);
+					VirtualPadNESControl controlpad1 = new VirtualPadNESControl {Location = new Point(8, 109)};
 					Pads.Add(controlpad1);
 					ControllerBox.Controls.Add(controlpad1);
 					break;
 				case "SMS":
 				case "SG":
 				case "GG":
-					VirtualPadSMS smspad1 = new VirtualPadSMS();
-					smspad1.Location = new Point(8, 19);
-					smspad1.Controller = "P1";
-					VirtualPadSMS smspad2 = new VirtualPadSMS();
-					smspad2.Location = new Point(188, 19);
-					smspad2.Controller = "P2";
+					VirtualPadSMS smspad1 = new VirtualPadSMS {Location = new Point(8, 19), Controller = "P1"};
+					VirtualPadSMS smspad2 = new VirtualPadSMS {Location = new Point(188, 19), Controller = "P2"};
 					Pads.Add(smspad1);
 					Pads.Add(smspad2);
 					ControllerBox.Controls.Add(smspad1);
 					ControllerBox.Controls.Add(smspad2);
-					VirtualPadSMSControl controlpad2 = new VirtualPadSMSControl();
-					controlpad2.Location = new Point(8, 109);
+					VirtualPadSMSControl controlpad2 = new VirtualPadSMSControl {Location = new Point(8, 109)};
 					Pads.Add(controlpad2);
 					ControllerBox.Controls.Add(Pads[2] as Control);
 					break;
 				case "PCE":
 				case "PCECD":
 				case "SGX":
-					VirtualPadPCE pcepad1 = new VirtualPadPCE();
-					pcepad1.Location = new Point(8, 19);
-					pcepad1.Controller = "P1";
-					VirtualPadPCE pcepad2 = new VirtualPadPCE();
-					pcepad2.Location = new Point(188, 19);
-					pcepad2.Controller = "P2";
-					VirtualPadPCE pcepad3 = new VirtualPadPCE();
-					pcepad3.Location = new Point(8, 109);
-					pcepad3.Controller = "P3";
-					VirtualPadPCE pcepad4 = new VirtualPadPCE();
-					pcepad4.Location = new Point(188, 109);
-					pcepad4.Controller = "P4";
+					VirtualPadPCE pcepad1 = new VirtualPadPCE {Location = new Point(8, 19), Controller = "P1"};
+					VirtualPadPCE pcepad2 = new VirtualPadPCE {Location = new Point(188, 19), Controller = "P2"};
+					VirtualPadPCE pcepad3 = new VirtualPadPCE {Location = new Point(8, 109), Controller = "P3"};
+					VirtualPadPCE pcepad4 = new VirtualPadPCE {Location = new Point(188, 109), Controller = "P4"};
 					Pads.Add(pcepad1);
 					Pads.Add(pcepad2);
 					Pads.Add(pcepad3);
@@ -156,20 +119,11 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(pcepad4);
 					break;
 				case "SNES":
-					VirtualPadSNES snespad1 = new VirtualPadSNES();
-					snespad1.Location = new Point(8, 19);
-					snespad1.Controller = "P1";
-					VirtualPadSNES snespad2 = new VirtualPadSNES();
-					snespad2.Location = new Point(188, 19);
-					snespad2.Controller = "P2";
-					VirtualPadSNES snespad3 = new VirtualPadSNES();
-					snespad3.Location = new Point(8, 95);
-					snespad3.Controller = "P3";
-					VirtualPadSNES snespad4 = new VirtualPadSNES();
-					snespad4.Location = new Point(188, 95);
-					snespad4.Controller = "P4";
-					VirtualPadSNESControl snescontrolpad = new VirtualPadSNESControl();
-					snescontrolpad.Location = new Point(8, 170);
+					VirtualPadSNES snespad1 = new VirtualPadSNES {Location = new Point(8, 19), Controller = "P1"};
+					VirtualPadSNES snespad2 = new VirtualPadSNES {Location = new Point(188, 19), Controller = "P2"};
+					VirtualPadSNES snespad3 = new VirtualPadSNES {Location = new Point(8, 95), Controller = "P3"};
+					VirtualPadSNES snespad4 = new VirtualPadSNES {Location = new Point(188, 95), Controller = "P4"};
+					VirtualPadSNESControl snescontrolpad = new VirtualPadSNESControl {Location = new Point(8, 170)};
 					Pads.Add(snespad1);
 					Pads.Add(snespad2);
 					Pads.Add(snespad3);
@@ -183,54 +137,37 @@ namespace BizHawk.MultiClient
 					break;
 				case "GB":
 				case "GBC":
-					VirtualPadGB gbpad1 = new VirtualPadGB();
-					gbpad1.Location = new Point(8, 19);
-					gbpad1.Controller = "";
+					VirtualPadGB gbpad1 = new VirtualPadGB {Location = new Point(8, 19), Controller = ""};
 					Pads.Add(gbpad1);
 					ControllerBox.Controls.Add(gbpad1);
-					VirtualPadGBControl gbcontrolpad = new VirtualPadGBControl();
-					gbcontrolpad.Location = new Point(8, 109);
+					VirtualPadGBControl gbcontrolpad = new VirtualPadGBControl {Location = new Point(8, 109)};
 					Pads.Add(gbcontrolpad);
 					ControllerBox.Controls.Add(gbcontrolpad);
 					break;
 				case "GBA":
-					VirtualPadGBA gbapad1 = new VirtualPadGBA();
-					gbapad1.Location = new Point(8, 19);
-					gbapad1.Controller = "";
+					VirtualPadGBA gbapad1 = new VirtualPadGBA {Location = new Point(8, 19), Controller = ""};
 					Pads.Add(gbapad1);
 					ControllerBox.Controls.Add(gbapad1);
 					break;
 				case "GEN":
-					VirtualPadGen3Button genpad1 = new VirtualPadGen3Button();
-					genpad1.Location = new Point(8, 19);
-					genpad1.Controller = "P1";
+					VirtualPadGen3Button genpad1 = new VirtualPadGen3Button {Location = new Point(8, 19), Controller = "P1"};
 					Pads.Add(genpad1);
 					ControllerBox.Controls.Add(genpad1);
 					break;
 				case "Coleco":
-					VirtualPadColeco coleco1 = new VirtualPadColeco();
-					coleco1.Location = new Point(8, 19);
-					coleco1.Controller = "P1";
-					VirtualPadColeco coleco2 = new VirtualPadColeco();
-					coleco2.Location = new Point(130, 19);
-					coleco2.Controller = "P2";
+					VirtualPadColeco coleco1 = new VirtualPadColeco {Location = new Point(8, 19), Controller = "P1"};
+					VirtualPadColeco coleco2 = new VirtualPadColeco {Location = new Point(130, 19), Controller = "P2"};
 					Pads.Add(coleco1);
 					Pads.Add(coleco2);
 					ControllerBox.Controls.Add(coleco1);
 					ControllerBox.Controls.Add(coleco2);
 					break;
 				case "C64":
-					VirtualPadC64Keyboard c64k = new VirtualPadC64Keyboard();
-					c64k.Location = new Point(8, 19);
+					VirtualPadC64Keyboard c64k = new VirtualPadC64Keyboard {Location = new Point(8, 19)};
 					Pads.Add(c64k);
 					ControllerBox.Controls.Add(c64k);
-
-					VirtualPadA26 _ataripad1 = new VirtualPadA26();
-					_ataripad1.Location = new Point(8, 159);
-					_ataripad1.Controller = "P1";
-					VirtualPadA26 _ataripad2 = new VirtualPadA26();
-					_ataripad2.Location = new Point(218, 159);
-					_ataripad2.Controller = "P2";
+					VirtualPadA26 _ataripad1 = new VirtualPadA26 {Location = new Point(8, 159), Controller = "P1"};
+					VirtualPadA26 _ataripad2 = new VirtualPadA26 {Location = new Point(218, 159), Controller = "P2"};
 					Pads.Add(_ataripad1);
 					Pads.Add(_ataripad2);
 					ControllerBox.Controls.Add(_ataripad1);
@@ -241,31 +178,34 @@ namespace BizHawk.MultiClient
 			//Hack for now
 			if (Global.Emulator.SystemId == "C64")
 			{
-				if (this.Width < 505)
+				if (Width < 505)
 				{
-					this.Width = 505;
-					ControllerBox.Width = this.Width - 37;
+					Width = 505;
+					ControllerBox.Width = Width - 37;
 				}
 			}
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		public void ClearVirtualPadHolds()
 		{
 			foreach (var controller in ControllerBox.Controls)
 			{
-				if (controller is IVirtualPad)
-					((IVirtualPad)controller).Clear();
+				var pad = controller as IVirtualPad;
+				if (pad != null)
+				{
+					pad.Clear();
+				}
 			}
 		}
 
 		public void Restart()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			ControllerBox.Controls.Clear();
 			Pads.Clear();
 			LoadPads();
@@ -273,12 +213,12 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
 				string str = Global.MovieSession.Movie.GetInput(Global.Emulator.Frame);
-				if (Global.Config.TASUpdatePads == true && str != "")
+				if (Global.Config.TASUpdatePads && str != "")
 				{
 					switch (Global.Emulator.SystemId)
 					{
@@ -328,8 +268,6 @@ namespace BizHawk.MultiClient
 							break;
 						case "C64":
 							break;
-						default:
-							break;
 					}
 				}
 			}
@@ -378,7 +316,7 @@ namespace BizHawk.MultiClient
 
 		private void RestoreDefaultSettings()
 		{
-			this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+			Size = new Size(defaultWidth, defaultHeight);
 
 			Global.Config.VirtualPadSaveWindowPosition = true;
 			Global.Config.VPadHeight = -1;

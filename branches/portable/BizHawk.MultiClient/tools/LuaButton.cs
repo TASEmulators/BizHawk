@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient.tools
@@ -10,8 +7,8 @@ namespace BizHawk.MultiClient.tools
 	{
 		private void DoLuaClick(object sender, EventArgs e)
 		{
-			LuaWinform parent = this.Parent as LuaWinform;
-			parent.DoLuaEvent(this.Handle);
+			LuaWinform parent = Parent as LuaWinform;
+			if (parent != null) parent.DoLuaEvent(Handle);
 		}
 
 		protected override void OnClick(EventArgs e)

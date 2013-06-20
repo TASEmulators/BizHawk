@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.Reflection;
 
@@ -109,6 +107,10 @@ namespace BizHawk.MultiClient
 					return Global.Config.BaseCOL;
 				case "GBA":
 					return Global.Config.BaseGBA;
+				case "N64":
+					return Global.Config.BaseN64;
+				case "SAT":
+					return Global.Config.BaseSaturn;
 				case "NULL":
 				default:
 					return "";
@@ -235,7 +237,7 @@ namespace BizHawk.MultiClient
 
 		public static string GetRomsPath(string sysID)
 		{
-			string path = "";
+			string path;
 
 			if (Global.Config.UseRecentForROMs)
 				return Environment.SpecialFolder.Recent.ToString();
@@ -243,57 +245,63 @@ namespace BizHawk.MultiClient
 			switch (sysID)
 			{
 				case "C64":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathC64ROMs, "C64");
+					path = MakeAbsolutePath(Global.Config.PathC64ROMs, "C64");
 					break;
 				case "PSX":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathPSXROMs, "PSX");
+					path = MakeAbsolutePath(Global.Config.PathPSXROMs, "PSX");
 					break;
 				case "INTV":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathINTVROMs, "INTV");
+					path = MakeAbsolutePath(Global.Config.PathINTVROMs, "INTV");
 					break;
 				case "SNES":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathSNESROMs, "SNES");
+					path = MakeAbsolutePath(Global.Config.PathSNESROMs, "SNES");
 					break;
 				case "A26":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathAtari2600ROMs, "A26");
+					path = MakeAbsolutePath(Global.Config.PathAtari2600ROMs, "A26");
 					break;
 				case "A78":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathAtari7800ROMs, "A78");
+					path = MakeAbsolutePath(Global.Config.PathAtari7800ROMs, "A78");
 					break;
 				case "NES":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathNESROMs, "NES");
+					path = MakeAbsolutePath(Global.Config.PathNESROMs, "NES");
 					break;
 				case "SMS":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathSMSROMs, "SMS");
+					path = MakeAbsolutePath(Global.Config.PathSMSROMs, "SMS");
 					break;
 				case "SG":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathSGROMs, "SG");
+					path = MakeAbsolutePath(Global.Config.PathSGROMs, "SG");
 					break;
 				case "GG":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathGGROMs, "GG");
+					path = MakeAbsolutePath(Global.Config.PathGGROMs, "GG");
 					break;
 				case "GEN":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathGenesisROMs, "GEN");
+					path = MakeAbsolutePath(Global.Config.PathGenesisROMs, "GEN");
 					break;
 				case "SFX":
 				case "PCE":
 				case "PCECD":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathPCEROMs, "PCE");
+					path = MakeAbsolutePath(Global.Config.PathPCEROMs, "PCE");
 					break;
 				case "GB":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathGBROMs, "GB");
+					path = MakeAbsolutePath(Global.Config.PathGBROMs, "GB");
 					break;
 				case "GBA":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathGBAROMs, "GBA");
+					path = MakeAbsolutePath(Global.Config.PathGBAROMs, "GBA");
 					break;
 				case "TI83":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathTI83ROMs, "TI83");
+					path = MakeAbsolutePath(Global.Config.PathTI83ROMs, "TI83");
 					break;
 				case "Coleco":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathCOLROMs, "Coleco");
+					path = MakeAbsolutePath(Global.Config.PathCOLROMs, "Coleco");
+					break;
+				case "N64":
+					path = MakeAbsolutePath(Global.Config.PathN64ROMs, "N64");
+					break;
+				case "SAT":
+					path = MakeAbsolutePath(Global.Config.PathSaturnROMs, "SAT");
 					break;
 				default:
-					path = PathManager.MakeAbsolutePath(Global.Config.BaseROMPath);
+					path = MakeAbsolutePath(Global.Config.BaseROMPath);
 					break;
 			}
 
@@ -304,11 +312,7 @@ namespace BizHawk.MultiClient
 		{
 			string newStr = name;
 			char[] chars = Path.GetInvalidFileNameChars();
-			foreach (char c in chars)
-			{
-				newStr = newStr.Replace(c.ToString(), "");
-			}
-			return newStr;
+			return chars.Aggregate(newStr, (current, c) => current.Replace(c.ToString(), ""));
 		}
 
 		public static string FilesystemSafeName(GameInfo game)

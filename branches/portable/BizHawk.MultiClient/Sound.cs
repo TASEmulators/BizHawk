@@ -8,24 +8,20 @@ using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 #endif
 
-using BizHawk.Emulation.Consoles.Nintendo;
-
 namespace BizHawk.MultiClient
 {
 #if WINDOWS
 	public class Sound : IDisposable
 	{
-		private bool Muted = false;
-		private bool disposed = false;
-
-		private SecondarySoundBuffer DSoundBuffer;
-		private byte[] SoundBuffer;
-		private const int BufferSize = 4410 * 2 * 2; // 1/10th of a second, 2 bytes per sample, 2 channels;
-		//private int SoundBufferPosition; //TODO: use this
 		public bool needDiscard;
 
-		private BufferedAsync semisync = new BufferedAsync();
-
+		private bool Muted;
+		private readonly bool disposed;
+		private SecondarySoundBuffer DSoundBuffer;
+		private readonly byte[] SoundBuffer;
+		private const int BufferSize = 4410 * 2 * 2; // 1/10th of a second, 2 bytes per sample, 2 channels;
+		//private int SoundBufferPosition; //TODO: use this
+		private readonly BufferedAsync semisync = new BufferedAsync();
 		private ISoundProvider asyncsoundProvider;
 		private ISyncSoundProvider syncsoundProvider;
 
@@ -35,18 +31,23 @@ namespace BizHawk.MultiClient
 			{
 				device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
 
-				var format = new WaveFormat();
-				format.SamplesPerSecond = 44100;
-				format.BitsPerSample = 16;
-				format.Channels = 2;
-				format.FormatTag = WaveFormatTag.Pcm;
-				format.BlockAlignment = 4;
+				var format = new WaveFormat
+					{
+						SamplesPerSecond = 44100,
+						BitsPerSample = 16,
+						Channels = 2,
+						FormatTag = WaveFormatTag.Pcm,
+						BlockAlignment = 4
+					};
 				format.AverageBytesPerSecond = format.SamplesPerSecond * format.Channels * (format.BitsPerSample / 8);
 
-				var desc = new SoundBufferDescription();
-				desc.Format = format;
-				desc.Flags = BufferFlags.GlobalFocus | BufferFlags.Software | BufferFlags.GetCurrentPosition2 | BufferFlags.ControlVolume;
-				desc.SizeInBytes = BufferSize;
+				var desc = new SoundBufferDescription
+					{
+						Format = format,
+						Flags =
+							BufferFlags.GlobalFocus | BufferFlags.Software | BufferFlags.GetCurrentPosition2 | BufferFlags.ControlVolume,
+						SizeInBytes = BufferSize
+					};
 				DSoundBuffer = new SecondarySoundBuffer(device, desc);
 				ChangeVolume(Global.Config.SoundVolume);
 			}
@@ -161,7 +162,7 @@ namespace BizHawk.MultiClient
 			int samplesNeeded = SNDDXGetAudioSpace() * 2;
 			short[] samples;
 
-			int samplesProvided = 0;
+			int samplesProvided;
 
 
 			if (Muted)
@@ -242,22 +243,10 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void UpdateSoundSettings()
 		{
-			int vol = Global.Config.SoundVolume;
 			if (!Global.Config.SoundEnabled || Global.Config.SoundVolume == 0)
 				DSoundBuffer.Volume = -5000;
 			else
 				DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 15);
-
-			/* //adelikat: I've been told this isn't TAS safe, so I'm disabling this speed hack
-			if (Global.Emulator is NES)
-			{
-				NES n = Global.Emulator as NES;
-				if (Global.Config.SoundEnabled == false)
-					n.SoundOn = false;
-				else
-					n.SoundOn = true;
-			}
-			*/
 		}
 	}
 #else

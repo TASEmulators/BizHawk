@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
@@ -25,7 +20,7 @@ namespace BizHawk.MultiClient
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -35,8 +30,8 @@ namespace BizHawk.MultiClient
 			sub.X = (int)XNumeric.Value;
 			sub.Duration = (int)DurationNumeric.Value;
 			sub.Color = (uint)colorDialog1.Color.ToArgb();
-			this.DialogResult = DialogResult.OK;
-			this.Close();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		private void SubtitleMaker_Load(object sender, EventArgs e)
@@ -54,7 +49,9 @@ namespace BizHawk.MultiClient
 		private void ColorPanel_DoubleClick(object sender, EventArgs e)
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
+			{
 				ColorPanel.BackColor = colorDialog1.Color;
+			}
 		}
 	}
 }

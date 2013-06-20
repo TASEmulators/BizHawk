@@ -1,5 +1,4 @@
-﻿using BizHawk.MultiClient;
-using BizHawk.Emulation.Consoles.Nintendo;
+﻿using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {

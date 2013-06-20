@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+﻿using System.IO;
 
 namespace BizHawk.MultiClient
 {
 	class SavestateManager
 	{
-		private bool[] slots = new bool[10];
-		private bool[] redo = new bool[10];
+		private readonly bool[] slots = new bool[10];
+		private readonly bool[] redo = new bool[10];
 
 		public SavestateManager()
 		{
@@ -18,7 +14,6 @@ namespace BizHawk.MultiClient
 
 		public void Update()
 		{
-			string path;
 			if (Global.Game == null || Global.Emulator == null)
 			{
 				for (int x = 0; x < 10; x++)
@@ -27,9 +22,9 @@ namespace BizHawk.MultiClient
 			}
 			for (int x = 0; x < 10; x++)
 			{
-				path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + x + ".State";
+				string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + x + ".State";
 				var file = new FileInfo(path);
-				if (file.Directory.Exists == false)
+				if (file.Directory != null && file.Directory.Exists == false)
 					file.Directory.Create();
 				slots[x] = file.Exists;
 			}

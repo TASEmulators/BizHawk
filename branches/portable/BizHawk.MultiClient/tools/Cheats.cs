@@ -1,30 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
 
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.MultiClient
 {
 	public partial class Cheats : Form
 	{
-		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
-		int defaultHeight;
-		int defaultNameWidth;
-		int defaultAddressWidth;
-		int defaultValueWidth;
-		int defaultCompareWidth;
-		int defaultDomainWidth;
-		int defaultOnWidth;
-
-		
+		private int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
+		private int defaultHeight;
+		private int defaultNameWidth;
+		private int defaultAddressWidth;
+		private int defaultValueWidth;
+		private int defaultCompareWidth;
+		private int defaultDomainWidth;
+		private int defaultOnWidth;
 
 		private void ClearFields()
 		{
@@ -39,14 +37,14 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			NewCheatList(); //Should be run even if dialog isn't open so cheats system can work
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			ClearFields();
 			ToggleGameGenieButtons();
 		}
 
 		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			CheatListView.ItemCount = Global.CheatList.Count;
 			DisplayCheatsList();
 			CheatListView.Refresh();
@@ -56,8 +54,8 @@ namespace BizHawk.MultiClient
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
-			CheatListView.QueryItemText += new QueryItemTextHandler(CheatListView_QueryItemText);
-			CheatListView.QueryItemBkColor += new QueryItemBkColorHandler(CheatListView_QueryItemBkColor);
+			CheatListView.QueryItemText += CheatListView_QueryItemText;
+			CheatListView.QueryItemBkColor += CheatListView_QueryItemBkColor;
 			CheatListView.VirtualMode = true;
 		}
 
@@ -85,7 +83,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					color = this.BackColor;
+					color = BackColor;
 				}
 			}
 		}
@@ -153,7 +151,7 @@ namespace BizHawk.MultiClient
 
 		private void ToggleGameGenieButtons()
 		{
-			if (Global.Emulator is NES)
+			if ((Global.Emulator is NES) || (Global.Emulator is Genesis) || (Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG") || (Global.Emulator is LibsnesCore))
 			{
 				toolStripButtonLoadGameGenie.Visible = true;
 				toolStripSeparator7.Visible = true;
@@ -179,8 +177,6 @@ namespace BizHawk.MultiClient
 			//Hacky Disabling if not a supported core
 			switch (Global.Emulator.SystemId)
 			{
-				default:
-					break;
 				case "UglyBrokenCore":
 					AddCheatGroup.Enabled = false;
 					CheatListView.Enabled = false;
@@ -194,9 +190,9 @@ namespace BizHawk.MultiClient
 			DomainComboBox.Items.Clear();
 			if (Global.Emulator.MemoryDomains.Count > 0)
 			{
-				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				foreach (MemoryDomain t in Global.Emulator.MemoryDomains)
 				{
-					string str = Global.Emulator.MemoryDomains[x].ToString();
+					string str = t.ToString();
 					DomainComboBox.Items.Add(str);
 				}
 				DomainComboBox.SelectedIndex = 0;
@@ -212,7 +208,7 @@ namespace BizHawk.MultiClient
 			Changes();
 			Global.CheatList.Add(c);
 			Global.OSD.AddMessage("Cheat added.");
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			DisplayCheatsList();
 			CheatListView.Refresh();
 
@@ -228,7 +224,7 @@ namespace BizHawk.MultiClient
 			Global.CheatList.RemoveCheat(c.domain, c.address);
 
 			Global.OSD.AddMessage("Cheat removed.");
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			DisplayCheatsList();
 			CheatListView.Refresh();
 			Global.MainForm.RamWatch1.UpdateValues();
@@ -264,9 +260,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.RecentCheats.IsEmpty)
 			{
-				var none = new ToolStripMenuItem();
-				none.Enabled = false;
-				none.Text = "None";
+				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentToolStripMenuItem.DropDownItems.Add(none);
 			}
 			else
@@ -274,8 +268,7 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < Global.Config.RecentCheats.Count; x++)
 				{
 					string path = Global.Config.RecentCheats.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem();
-					item.Text = path;
+					var item = new ToolStripMenuItem {Text = path};
 					item.Click += (o, ev) => LoadCheatFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);
 				}
@@ -283,8 +276,7 @@ namespace BizHawk.MultiClient
 
 			recentToolStripMenuItem.DropDownItems.Add("-");
 
-			var clearitem = new ToolStripMenuItem();
-			clearitem.Text = "&Clear";
+			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
 			clearitem.Click += (o, ev) => Global.Config.RecentCheats.Clear();
 			recentToolStripMenuItem.DropDownItems.Add(clearitem);
 		}
@@ -309,7 +301,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.CheatsWidth >= 0 && Global.Config.CheatsHeight >= 0)
 			{
-				Size = new System.Drawing.Size(Global.Config.CheatsWidth, Global.Config.CheatsHeight);
+				Size = new Size(Global.Config.CheatsWidth, Global.Config.CheatsHeight);
 			}
 
 			if (Global.Config.CheatsNameWidth > 0)
@@ -341,10 +333,10 @@ namespace BizHawk.MultiClient
 		public void SaveConfigSettings()
 		{
 			ColumnPositionSet();
-			Global.Config.CheatsWndx = this.Location.X;
-			Global.Config.CheatsWndy = this.Location.Y;
-			Global.Config.CheatsWidth = this.Right - this.Left;
-			Global.Config.CheatsHeight = this.Bottom - this.Top;
+			Global.Config.CheatsWndx = Location.X;
+			Global.Config.CheatsWndy = Location.Y;
+			Global.Config.CheatsWidth = Right - Left;
+			Global.Config.CheatsHeight = Bottom - Top;
 
 			Global.Config.CheatsNameWidth = CheatListView.Columns[Global.Config.CheatsNameIndex].Width;
 			Global.Config.CheatsAddressWidth = CheatListView.Columns[Global.Config.CheatsAddressIndex].Width;
@@ -365,11 +357,10 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
 			if (indexes[0] == 0)
 				return;
-			Cheat temp = new Cheat();
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = Global.CheatList.Cheat(index);
+				Cheat temp = Global.CheatList.Cheat(index);
 				Global.CheatList.Remove(Global.CheatList.Cheat(index));
 				Global.CheatList.Insert(index - 1, temp);
 
@@ -384,9 +375,9 @@ namespace BizHawk.MultiClient
 			}
 
 			CheatListView.SelectedIndices.Clear();
-			for (int z = 0; z < i.Count; z++)
+			foreach (int t in i)
 			{
-				CheatListView.SelectItem(i[z], true);
+				CheatListView.SelectItem(t, true);
 			}
 
 			DisplayCheatsList();
@@ -395,11 +386,10 @@ namespace BizHawk.MultiClient
 		private void MoveDown()
 		{
 			ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
-			Cheat temp = new Cheat();
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = Global.CheatList.Cheat(index);
+				Cheat temp = Global.CheatList.Cheat(index);
 
 				if (index < Global.CheatList.Count - 1)
 				{
@@ -499,7 +489,7 @@ namespace BizHawk.MultiClient
 				if (result == DialogResult.Yes)
 				{
 					//TOOD: Do quicksave if filename, else save as
-					if (string.Compare(Global.CheatList.currentCheatFile, "") == 0)
+					if (String.CompareOrdinal(Global.CheatList.currentCheatFile, "") == 0)
 					{
 						SaveAs();
 					}
@@ -520,7 +510,7 @@ namespace BizHawk.MultiClient
 			bool result = true;
 			if (Global.CheatList.Changes) result = AskSave();
 
-			if (result == true)
+			if (result)
 			{
 				Global.CheatList.Clear();
 				DisplayCheatsList();
@@ -625,19 +615,20 @@ namespace BizHawk.MultiClient
 		private void InsertSeparator()
 		{
 			Changes();
-			Cheat c = new Cheat();
-			c.address = -1;
+			Cheat c = new Cheat {address = -1};
 
 			ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
-			int x;
 			if (indexes.Count > 0)
 			{
-				x = indexes[0];
 				if (indexes[0] > 0)
+				{
 					Global.CheatList.Insert(indexes[0], c);
+				}
 			}
 			else
+			{
 				Global.CheatList.Add(c);
+			}
 			DisplayCheatsList();
 			CheatListView.Refresh();
 		}
@@ -659,8 +650,7 @@ namespace BizHawk.MultiClient
 				return null;
 			}
 			
-			Cheat c = new Cheat();
-			c.name = NameBox.Text;
+			Cheat c = new Cheat {name = NameBox.Text};
 
 			try
 			{
@@ -956,13 +946,12 @@ namespace BizHawk.MultiClient
 			}
 
 			string Str = e.Label;
-			int index = e.Item;
 			Global.CheatList.cheatList[e.Item].name = Str;
 		}
 
 		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+			Size = new Size(defaultWidth, defaultHeight);
 			Global.Config.CheatsNameIndex = 0;
 			Global.Config.CheatsAddressIndex = 1;
 			Global.Config.CheatsValueIndex = 2;
@@ -983,7 +972,7 @@ namespace BizHawk.MultiClient
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1021,9 +1010,9 @@ namespace BizHawk.MultiClient
 				Global.OSD.AddMessage("All cheats disabled.");
 			}
 
-			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
+			foreach (Cheat t in Global.CheatList.cheatList)
 			{
-				Global.CheatList.cheatList[x].Disable();
+				t.Disable();
 			}
 
 			MemoryPulse.Clear();
@@ -1035,7 +1024,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.CheatList.Clear();
 			MemoryPulse.Clear();
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			CheatListView.Refresh();
 			UpdateNumberOfCheats();
 			Global.OSD.AddMessage("All cheats removed");
@@ -1080,9 +1069,9 @@ namespace BizHawk.MultiClient
 		{
 			ColumnHeader header = e.Header;
 
-			int lowIndex = 0;
-			int highIndex = 0;
-			int changeIndex = 0;
+			int lowIndex;
+			int highIndex;
+			int changeIndex;
 			if (e.NewDisplayIndex > e.OldDisplayIndex)
 			{
 				changeIndex = -1;
@@ -1163,23 +1152,25 @@ namespace BizHawk.MultiClient
 
 			CheatListView.Columns.Clear();
 
-			List<KeyValuePair<int, string>> columnSettings = new List<KeyValuePair<int, string>>();
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Name"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Address"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Value"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Compare"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Domain"));
-			columnSettings.Add(new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "On"));
+			List<KeyValuePair<int, string>> columnSettings = new List<KeyValuePair<int, string>>
+				{
+					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Name"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Address"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Value"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Compare"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "Domain"),
+					new KeyValuePair<int, string>(Global.Config.RamWatchAddressIndex, "On")
+				};
 
 			columnSettings = columnSettings.OrderBy(s => s.Key).ToList();
 
-			for (int i = 0; i < columnSettings.Count; i++)
+			foreach (KeyValuePair<int, string> t in columnSettings)
 			{
-				for (int j = 0; j < columnHeaders.Count; j++)
+				foreach (ColumnHeader t1 in columnHeaders)
 				{
-					if (columnSettings[i].Value == columnHeaders[j].Text)
+					if (t.Value == t1.Text)
 					{
-						CheatListView.Columns.Add(columnHeaders[j]);
+						CheatListView.Columns.Add(t1);
 					}
 				}
 			}
@@ -1187,7 +1178,7 @@ namespace BizHawk.MultiClient
 
 		private void Cheats_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		private void Cheats_DragDrop(object sender, DragEventArgs e)

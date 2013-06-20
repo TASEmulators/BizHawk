@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
@@ -17,16 +13,12 @@ namespace BizHawk.MultiClient.GBtools
 			InitializeComponent();
 		}
 
-		Color[] colors = new Color[12];
+		private readonly Color[] colors = new Color[12];
 
 		/// <summary>
 		/// the most recently loaded or saved palette file
 		/// </summary>
 		string currentfile;
-		/// <summary>
-		/// whether currentfile has been modified
-		/// </summary>
-		bool filemodified;
 
 		/// <summary>
 		/// gambatte's default dmg colors
@@ -35,7 +27,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
-			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
+			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000
 		};
 
 		/// <summary>
@@ -45,7 +37,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			10798341, 8956165, 1922333, 337157,
 			10798341, 8956165, 1922333, 337157,
-			10798341, 8956165, 1922333, 337157,
+			10798341, 8956165, 1922333, 337157
 		};
 
 
@@ -80,7 +72,7 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			for (int i = firstindex + 1; i < lastindex; i++)
 			{
-				double pos = (double)(i - firstindex) / (double)(lastindex - firstindex);
+				double pos = (i - firstindex) / (double)(lastindex - firstindex);
 				colors[i] = betweencolor(colors[firstindex], colors[lastindex], pos);
 			}
 			RefreshAllBackdrops();
@@ -151,13 +143,12 @@ namespace BizHawk.MultiClient.GBtools
 
 				var result = dlg.ShowDialog(this);
 
-				if (result == System.Windows.Forms.DialogResult.OK)
+				if (result == DialogResult.OK)
 				{
 					if (colors[i] != dlg.Color)
 					{
 						colors[i] = dlg.Color;
 						sender.BackColor = colors[i];
-						filemodified = true;
 						label4.Text = "Current palette file (modified):";
 					}
 				}
@@ -167,7 +158,7 @@ namespace BizHawk.MultiClient.GBtools
 		/// <summary>
 		/// ini keys for gambatte palette file
 		/// </summary>
-		static string[] paletteinikeys =
+		private static readonly string[] paletteinikeys =
 		{
 			"Background0",
 			"Background1",
@@ -229,14 +220,17 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			f.WriteLine("[General]");
 			for (int i = 0; i < 12; i++)
-				f.WriteLine(string.Format("{0}={1}", paletteinikeys[i], colors[i]));
+				f.WriteLine(String.Format("{0}={1}", paletteinikeys[i], colors[i]));
 		}
 
-		void SetAllColors(int[] colors)
+		void SetAllColors(int[] _colors)
 		{
 			// fix alpha to 255 in created color objects, else problems
-			for (int i = 0; i < this.colors.Length; i++)
-				this.colors[i] = Color.FromArgb(255, Color.FromArgb(colors[i]));
+			for (int i = 0; i < colors.Length; i++)
+			{
+				colors[i] = Color.FromArgb(255, Color.FromArgb(_colors[i]));
+			}
+
 			RefreshAllBackdrops();
 		}
 
@@ -250,7 +244,6 @@ namespace BizHawk.MultiClient.GBtools
 				dlg.SetAllColors(DefaultDMGColors);
 				dlg.textBox1.Text = "(none)";
 				dlg.currentfile = "";
-				dlg.filemodified = false;
 
 				if (!string.IsNullOrEmpty(Global.Config.GB_PaletteFile))
 				{
@@ -287,7 +280,6 @@ namespace BizHawk.MultiClient.GBtools
 					SetAllColors(newcolors);
 					textBox1.Text = Path.GetFileName(filename);
 					currentfile = filename;
-					filemodified = false;
 					label4.Text = "Current palette file:";
 				}
 			}
@@ -310,7 +302,6 @@ namespace BizHawk.MultiClient.GBtools
 						savecolors[i] = colors[i].ToArgb() & 0xffffff;
 					SavePalFile(f, savecolors);
 					currentfile = filename;
-					filemodified = false;
 					label4.Text = "Current palette file:";
 					textBox1.Text = Path.GetFileName(filename);
 				}
@@ -330,8 +321,10 @@ namespace BizHawk.MultiClient.GBtools
 				ofd.RestoreDirectory = true;
 
 				var result = ofd.ShowDialog(this);
-				if (result != System.Windows.Forms.DialogResult.OK)
+				if (result != DialogResult.OK)
+				{
 					return;
+				}
 
 				LoadColorFile(ofd.FileName, true);
 			}
@@ -374,8 +367,10 @@ namespace BizHawk.MultiClient.GBtools
 				sfd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				sfd.RestoreDirectory = true;
 				var result = sfd.ShowDialog(this);
-				if (result != System.Windows.Forms.DialogResult.OK)
+				if (result != DialogResult.OK)
+				{
 					return;
+				}
 
 				SaveColorFile(sfd.FileName);
 			}
@@ -389,7 +384,6 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			textBox1.Text = "(none)";
 			currentfile = "";
-			filemodified = false;
 			SetAllColors(DefaultDMGColors);
 		}
 
@@ -397,8 +391,12 @@ namespace BizHawk.MultiClient.GBtools
 		{
 			textBox1.Text = "(none)";
 			currentfile = "";
-			filemodified = false;
 			SetAllColors(DefaultCGBColors);
+		}
+
+		private void ColorChooserForm_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

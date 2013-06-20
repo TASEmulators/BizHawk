@@ -643,9 +643,7 @@ namespace BizHawk.MultiClient
 			luaNativeSurfacePreOSD = new DisplaySurface(1, 1); 
 		}
 
-		volatile bool VsyncToggle = false;
-		volatile bool VsyncRequested = false;
-		SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
+		readonly SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
 
 
 		DisplaySurface luaEmuSurface = null;

@@ -4,32 +4,32 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm
 	{
-		MruStack<MemoryStream> RewindBuf = new MruStack<MemoryStream>(15000);
-		byte[] LastState;
-        bool RewindImpossible = false;
+		private readonly MruStack<MemoryStream> RewindBuf = new MruStack<MemoryStream>(15000);
+		private byte[] LastState;
+		private bool RewindImpossible;
 
 		void CaptureRewindState()
 		{
-            if (RewindImpossible)
-                return;
+			if (RewindImpossible)
+				return;
 
 			if (LastState == null)
 			{
 				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
 				LastState = Global.Emulator.SaveStateBinary();
-                if (LastState.Length > 0x100000)
-                {
-                    RewindImpossible = true;
-                    LastState = null;
-                    Global.OSD.AddMessage("Rewind Disabled: State too large.");
-										Global.OSD.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
-                }
+				if (LastState.Length > 0x100000)
+				{
+					RewindImpossible = true;
+					LastState = null;
+					Global.OSD.AddMessage("Rewind Disabled: State too large.");
+					Global.OSD.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
+				}
 
 				return;
 			}
 
 			// Otherwise, it's not the first frame, so build a delta.
-            if (LastState.Length <= 0x10000)
+			if (LastState.Length <= 0x10000)
 				CaptureRewindState64K();
 			else
 				CaptureRewindStateLarge();
@@ -202,7 +202,7 @@ namespace BizHawk.MultiClient
 		{
 			for (int i = 0; i < frames; i++)
 			{
-				if (RewindBuf.Count == 0 || (true == Global.MovieSession.Movie.Loaded && 0 == Global.MovieSession.Movie.Frames))
+				if (RewindBuf.Count == 0 || (Global.MovieSession.Movie.Loaded && 0 == Global.MovieSession.Movie.Frames))
 				{
 					return;
 				}
@@ -220,13 +220,13 @@ namespace BizHawk.MultiClient
 		public void ResetRewindBuffer()
 		{
 			RewindBuf.Clear();
-            RewindImpossible = false;
+			RewindImpossible = false;
 			LastState = null;
 		}
 
-        public int RewindBufferCount()
-        {
-            return RewindBuf.Count;
-        }
+		public int RewindBufferCount()
+		{
+			return RewindBuf.Count;
+		}
 	}
 }

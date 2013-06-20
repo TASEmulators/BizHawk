@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Emulation", "BizHawk.Emulation\BizHawk.Emulation.csproj", "{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Emulation_v4.5", "BizHawk.Emulation\BizHawk.Emulation_v4.5.csproj", "{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Util", "BizHawk.Util\BizHawk.Util.csproj", "{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Util_v4.5", "BizHawk.Util\BizHawk.Util_v4.5.csproj", "{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.MultiClient", "BizHawk.MultiClient\BizHawk.MultiClient.csproj", "{DD448B37-BA3F-4544-9754-5406E8094723}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.MultiClient_v4.5", "BizHawk.MultiClient\BizHawk.MultiClient_v4.5.csproj", "{DD448B37-BA3F-4544-9754-5406E8094723}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoHawk", "DiscoHawk\DiscoHawk.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoHawk_4.5", "DiscoHawk\DiscoHawk_4.5.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

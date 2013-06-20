@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
 using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
@@ -14,13 +8,12 @@ namespace BizHawk.MultiClient
 	public partial class NESGraphicsConfig : Form
 	{
 		//TODO:
-		
 		//Allow selection of palette file from archive
 		//Hotkeys for BG & Sprite display toggle
 		//NTSC filter settings? Hue, Tint (This should probably be a multiclient thing, not a nes specific thing?)
 
-		HawkFile palette = null;
-		NES nes;
+		private HawkFile palette;
+		private NES nes;
 
 		public NESGraphicsConfig()
 		{
@@ -35,8 +28,10 @@ namespace BizHawk.MultiClient
 
 		private void LoadStuff()
 		{
-			FirstLineNumeric.Value = Global.Config.NESTopLine;
-			LastLineNumeric.Value = Global.Config.NESBottomLine;
+			NTSC_FirstLineNumeric.Value = Global.Config.NTSC_NESTopLine;
+			NTSC_LastLineNumeric.Value = Global.Config.NTSC_NESBottomLine;
+			PAL_FirstLineNumeric.Value = Global.Config.PAL_NESTopLine;
+			PAL_LastLineNumeric.Value = Global.Config.PAL_NESBottomLine;
 			AllowMoreSprites.Checked = Global.Config.NESAllowMoreThanEightSprites;
 			ClipLeftAndRightCheckBox.Checked = Global.Config.NESClipLeftAndRight;
 			AutoLoadPalette.Checked = Global.Config.NESAutoLoadPalette;
@@ -57,7 +52,9 @@ namespace BizHawk.MultiClient
 
 			var result = ofd.ShowDialog();
 			if (result != DialogResult.OK)
+			{
 				return;
+			}
 
 			PalettePath.Text = ofd.FileName;
 		}
@@ -66,7 +63,6 @@ namespace BizHawk.MultiClient
 		{
 			if (PalettePath.Text.Length > 0)
 			{
-				string path = PathManager.MakeAbsolutePath(PalettePath.Text, "NES");
 				palette = new HawkFile(PalettePath.Text);
 
 				if (palette != null && palette.Exists)
@@ -86,10 +82,18 @@ namespace BizHawk.MultiClient
 				Global.OSD.AddMessage("Standard Palette set");
 			}
 
-			Global.Config.NESTopLine = (int)FirstLineNumeric.Value;
-			Global.Config.NESBottomLine = (int)LastLineNumeric.Value;
-			nes.FirstDrawLine = (int)FirstLineNumeric.Value;
-			nes.LastDrawLine = (int)LastLineNumeric.Value;
+			Global.Config.NTSC_NESTopLine = (int)NTSC_FirstLineNumeric.Value;
+			nes.NTSC_FirstDrawLine = (int)NTSC_FirstLineNumeric.Value;
+
+			Global.Config.NTSC_NESBottomLine = (int)NTSC_LastLineNumeric.Value;
+			nes.NTSC_LastDrawLine = (int)NTSC_LastLineNumeric.Value;
+
+			Global.Config.PAL_NESTopLine = (int)PAL_FirstLineNumeric.Value;
+			nes.PAL_FirstDrawLine = (int)PAL_FirstLineNumeric.Value;
+
+			Global.Config.PAL_NESBottomLine = (int)PAL_LastLineNumeric.Value;
+			nes.PAL_LastDrawLine = (int)PAL_LastLineNumeric.Value;
+
 			Global.Config.NESAllowMoreThanEightSprites = AllowMoreSprites.Checked;
 			Global.Config.NESClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
 			nes.SetClipLeftAndRight(ClipLeftAndRightCheckBox.Checked);
@@ -98,9 +102,10 @@ namespace BizHawk.MultiClient
 			Global.Config.NESDispBackground = DispBackground.Checked;
 			Global.Config.NESBackgroundColor = BGColorDialog.Color.ToArgb();
 			if (!checkUseBackdropColor.Checked)
+			{
 				Global.Config.NESBackgroundColor &= 0x00FFFFFF;
-
-			this.Close();
+			}
+			Close();
 		}
 
 		private void SetColorBox()
@@ -125,14 +130,14 @@ namespace BizHawk.MultiClient
 
 		private void btnAreaStandard_Click(object sender, EventArgs e)
 		{
-			FirstLineNumeric.Value = 8;
-			LastLineNumeric.Value = 231;
+			NTSC_FirstLineNumeric.Value = 8;
+			NTSC_LastLineNumeric.Value = 231;
 		}
 
 		private void btnAreaFull_Click(object sender, EventArgs e)
 		{
-			FirstLineNumeric.Value = 0;
-			LastLineNumeric.Value = 239;
+			NTSC_FirstLineNumeric.Value = 0;
+			NTSC_LastLineNumeric.Value = 239;
 		}
 
 		private void BackgroundColorPanel_DoubleClick(object sender, EventArgs e)
@@ -142,8 +147,10 @@ namespace BizHawk.MultiClient
 
 		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
 		{
-			FirstLineNumeric.Value = 8;
-			LastLineNumeric.Value = 231;
+			NTSC_FirstLineNumeric.Value = 8;
+			NTSC_LastLineNumeric.Value = 231;
+			PAL_FirstLineNumeric.Value = 0;
+			PAL_LastLineNumeric.Value = 239;
 			AllowMoreSprites.Checked = false;
 			ClipLeftAndRightCheckBox.Checked = false;
 			AutoLoadPalette.Checked = true;

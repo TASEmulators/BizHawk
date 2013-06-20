@@ -1,21 +1,17 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Globalization;
 using System.IO;
 using System.Drawing.Imaging;
 
 namespace BizHawk.MultiClient
 {
-	public class PatternViewer : Control
+	public sealed class PatternViewer : Control
 	{
-		Size pSize;
 		public Bitmap pattern;
 		public int Pal0 = 0; //0-7 Palette choice
 		public int Pal1 = 0;
+
+		private readonly Size pSize;
 
 		public PatternViewer()
 		{
@@ -26,9 +22,9 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
-			this.Size = pSize;
-			this.BackColor = Color.Transparent;
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.PatternViewer_Paint);
+			Size = pSize;
+			BackColor = Color.Transparent;
+			Paint += PatternViewer_Paint;
 		}
 
 		private void PatternViewer_Paint(object sender, PaintEventArgs e)
@@ -38,12 +34,14 @@ namespace BizHawk.MultiClient
 
 		public void Screenshot()
 		{
-			var sfd = new SaveFileDialog();
-			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-Patterns";
-			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES");
-			sfd.Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*";
+			var sfd = new SaveFileDialog
+				{
+					FileName = PathManager.FilesystemSafeName(Global.Game) + "-Patterns",
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"),
+					Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
+					RestoreDirectory = true
+				};
 
-			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
 			Global.Sound.StartSound();
@@ -79,7 +77,7 @@ namespace BizHawk.MultiClient
 
 			using (var img = b)
 			{
-				System.Windows.Forms.Clipboard.SetImage(img);
+				Clipboard.SetImage(img);
 			}
 		}
 	}

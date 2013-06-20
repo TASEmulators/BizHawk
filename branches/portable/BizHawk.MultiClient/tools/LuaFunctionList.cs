@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using System.Text;
 using BizHawk.MultiClient.tools;
 
 namespace BizHawk.MultiClient
 {
 	public partial class LuaFunctionList : Form
 	{
-		Sorting ColumnSort = new Sorting();
+		private readonly Sorting ColumnSort = new Sorting();
+		
 		public LuaFunctionList()
 		{
 			InitializeComponent();
@@ -30,8 +27,7 @@ namespace BizHawk.MultiClient
 			FunctionView.Items.Clear();
 			foreach (LuaDocumentation.LibraryFunction l in Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList)
 			{
-				ListViewItem item = new ListViewItem();
-				item.Text = l.ReturnType;
+				ListViewItem item = new ListViewItem {Text = l.ReturnType};
 				item.SubItems.Add(l.library + ".");
 				item.SubItems.Add(l.name);
 				item.SubItems.Add(l.ParameterList);
@@ -83,7 +79,7 @@ namespace BizHawk.MultiClient
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void FunctionView_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -93,7 +89,7 @@ namespace BizHawk.MultiClient
 
 		public class Sorting
 		{
-			private bool desc = false;
+			private bool desc;
 			private int column = 1;
 
 			public int Column
@@ -117,6 +113,35 @@ namespace BizHawk.MultiClient
 				get
 				{
 					return desc;
+				}
+			}
+		}
+
+		private void FunctionView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
+			{
+				ListView.SelectedIndexCollection indexes = FunctionView.SelectedIndices;
+
+				if (indexes.Count > 0)
+				{
+					StringBuilder sb = new StringBuilder();
+
+					foreach (int index in indexes)
+					{
+						var library_function = Global.MainForm.LuaConsole1.LuaImp.docs.FunctionList[index];
+						sb.Append(library_function.library).Append('.').Append(library_function.name).Append("()\n");
+					}
+
+					if (sb.Length > 0)
+					{
+						Clipboard.SetDataObject((sb.ToString()));
+					}
 				}
 			}
 		}

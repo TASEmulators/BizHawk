@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Media;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
 	public partial class AboutBox : Form
 	{
-		SoundPlayer sfx;
-		Random r = new Random();
-		int ctr = 0;
-		Point loc;
+		private readonly SoundPlayer sfx;
+		private readonly Random r = new Random();
+		private int ctr;
+		private Point loc;
 
 		public AboutBox()
 		{
@@ -122,13 +117,8 @@ namespace BizHawk.MultiClient
 			pictureBox4.Location = new Point(21 + xbleh, 89);
 		}
 
-		int xbleh = 0;
-		int bounceCounter = -1;
-
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			base.OnPaint(e);
-		}
+		private int xbleh;
+		private int bounceCounter = -1;
 
 		public void PaintJunk(Graphics g)
 		{
@@ -137,7 +127,7 @@ namespace BizHawk.MultiClient
 			using (Font font = new Font("Courier New", 20, FontStyle.Bold))
 			{
 				if (bounceCounter == -1) return;
-				string str = "INTERIM BUILD";
+				const string str = "INTERIM BUILD";
 				float x = 0;
 				int timefactor = bounceCounter;
 				for (int i = 0; i < str.Length; i++)
@@ -158,7 +148,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		int[] DigitTable ={
+		private readonly int[] DigitTable ={
 			0,3,6,9,12,
 			14,15,15,16,16,16,15,15,14,12,
 			9,6,3,0,2,4,4,5,5,5,
@@ -174,16 +164,14 @@ namespace BizHawk.MultiClient
 
 		private void Close_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void Close_MouseEnter(object sender, EventArgs e)
 		{
-			int width = Width;
-			int height = Height;
-			Random r = new Random();
-			width = r.Next(1, Width - CloseBtn.Width);
-			height = r.Next(1, Height - CloseBtn.Height);
+			Random random = new Random();
+			int width = random.Next(1, Width - CloseBtn.Width);
+			int height = random.Next(1, Height - CloseBtn.Height);
 			CloseBtn.Location = new Point(width, height);
 			CloseBtn.BringToFront();
 		}
@@ -203,7 +191,7 @@ namespace BizHawk.MultiClient
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			AboutBox ab = this.FindForm() as AboutBox;
+			AboutBox ab = FindForm() as AboutBox;
 			if (ab != null)
 				ab.PaintJunk(e.Graphics);
 		}
@@ -212,8 +200,7 @@ namespace BizHawk.MultiClient
 		{
 			get
 			{
-				CreateParams cp;
-				cp = base.CreateParams;
+				CreateParams cp = base.CreateParams;
 				cp.Style &= ~0x04000000; //WS_CLIPSIBLINGS
 				cp.Style &= ~0x02000000; //WS_CLIPCHILDREN
 				return cp;

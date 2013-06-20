@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SlimDX;
 using SlimDX.XInput;
 
 namespace BizHawk.MultiClient
@@ -65,8 +64,8 @@ namespace BizHawk.MultiClient
 
 		public int NumButtons { get; private set; }
 
-		List<string> names = new List<string>();
-		List<Func<bool>> actions = new List<Func<bool>>();
+		private readonly List<string> names = new List<string>();
+		private readonly List<Func<bool>> actions = new List<Func<bool>>();
 
 		void InitializeButtons()
 		{

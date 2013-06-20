@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using System.Reflection;
 
 namespace BizHawk.MultiClient
 {
@@ -53,12 +46,10 @@ namespace BizHawk.MultiClient
 			INTVBaseBox.Text = Global.Config.BaseINTV;
 			INTVRomsBox.Text = Global.Config.PathINTVROMs;
 			INTVSavestatesBox.Text = Global.Config.PathINTVSavestates;
-			INTVSaveRAMBox.Text = Global.Config.PathINTVSaveRAM; ;
+			INTVSaveRAMBox.Text = Global.Config.PathINTVSaveRAM;
 			INTVScreenshotsBox.Text = Global.Config.PathINTVScreenshots;
 			INTVCheatsBox.Text = Global.Config.PathINTVCheats;
-			//INTVEROMBox.Text = Global.Config.PathINTVEROM;
-			//INTVGROMBox.Text = Global.Config.PathINTVGROM;
-			
+
 			NESBaseBox.Text = Global.Config.BaseNES;
 			NESROMsBox.Text = Global.Config.PathNESROMs;
 			NESSavestatesBox.Text = Global.Config.PathNESSavestates;
@@ -66,7 +57,6 @@ namespace BizHawk.MultiClient
 			NESScreenshotsBox.Text = Global.Config.PathNESScreenshots;
 			NESCheatsBox.Text = Global.Config.PathNESCheats;
 			NESPaletteBox.Text = Global.Config.PathNESPalette;
-			//NESFDSBiosBox.Text = Global.Config.PathFDSBios;
 
 			SNESBaseBox.Text = Global.Config.BaseSNES;
 			SNESROMsBox.Text = Global.Config.PathSNESROMs;
@@ -74,7 +64,6 @@ namespace BizHawk.MultiClient
 			SNESSaveRAMBox.Text = Global.Config.PathSNESSaveRAM;
 			SNESScreenshotsBox.Text = Global.Config.PathSNESScreenshots;
 			SNESCheatsBox.Text = Global.Config.PathSNESCheats;
-			//SNESFirmwaresBox.Text = Global.Config.PathSNESFirmwares;
 
 			Sega8BaseBox.Text = Global.Config.BaseSMS;
 			Sega8ROMsBox.Text = Global.Config.PathSMSROMs;
@@ -154,13 +143,26 @@ namespace BizHawk.MultiClient
 			C64SavestatesBox.Text = Global.Config.PathC64Savestates;
 			C64ScreenshotsBox.Text = Global.Config.PathC64Screenshots;
 			C64CheatsBox.Text = Global.Config.PathC64Cheats;
-			//C64FirmwaresBox.Text = Global.Config.PathC64Firmwares;
 
 			COLBaseBox.Text = Global.Config.BaseCOL;
 			COLROMsBox.Text = Global.Config.PathCOLROMs;
 			COLSavestatesBox.Text = Global.Config.PathCOLSavestates;
 			COLScreenshotsBox.Text = Global.Config.PathCOLScreenshots;
 			COLCheatsBox.Text = Global.Config.PathCOLCheats;
+
+			N64BaseBox.Text = Global.Config.BaseN64;
+			N64ROMsBox.Text = Global.Config.PathN64ROMs;
+			N64SavestatesBox.Text = Global.Config.PathN64Savestates;
+			N64SaveRAMBox.Text = Global.Config.PathN64SaveRAM;
+			N64ScreenshotsBox.Text = Global.Config.PathN64Screenshots;
+			N64CheatsBox.Text = Global.Config.PathN64Cheats;
+
+			SaturnBaseBox.Text = Global.Config.BaseSaturn;
+			SaturnROMsBox.Text = Global.Config.PathSaturnROMs;
+			SaturnSavestatesBox.Text = Global.Config.PathSaturnSavestates;
+			SaturnSaveRAMBox.Text = Global.Config.PathSaturnSaveRAM;
+			SaturnScreenshotsBox.Text = Global.Config.PathSaturnScreenshots;
+			SaturnCheatsBox.Text = Global.Config.PathSaturnCheats;
 
 			MoviesBox.Text = Global.Config.MoviesPath;
 			MovieBackupsBox.Text = Global.Config.MoviesBackupPath;
@@ -239,6 +241,12 @@ namespace BizHawk.MultiClient
 				case "GBA":
 					tabControl1.SelectTab(tabPageGBA);
 					break;
+				case "N64":
+					tabControl1.SelectTab(tabPageN64);
+					break;
+				case "SAT":
+					tabControl1.SelectTab(tabPageSaturn);
+					break;
 				case "NULL":
 					tabControl1.SelectTab(tabPageGlobal);
 					break;
@@ -255,8 +263,6 @@ namespace BizHawk.MultiClient
 			Global.Config.PathINTVSavestates = INTVSavestatesBox.Text;
 			Global.Config.PathINTVScreenshots = INTVScreenshotsBox.Text;
 			Global.Config.PathINTVCheats = INTVCheatsBox.Text;
-			//Global.Config.PathINTVEROM = INTVEROMBox.Text;
-			//Global.Config.PathINTVGROM = INTVGROMBox.Text;
 
 			Global.Config.BaseNES = NESBaseBox.Text;
 			Global.Config.PathNESROMs = NESROMsBox.Text;
@@ -272,7 +278,6 @@ namespace BizHawk.MultiClient
 			Global.Config.PathSNESSaveRAM = SNESSaveRAMBox.Text;
 			Global.Config.PathSNESScreenshots = SNESScreenshotsBox.Text;
 			Global.Config.PathSNESCheats = SNESCheatsBox.Text;
-			//Global.Config.PathSNESFirmwares = SNESFirmwaresBox.Text;
 
 			Global.Config.BaseSMS = Sega8BaseBox.Text;
 			Global.Config.PathSMSROMs = Sega8ROMsBox.Text;
@@ -353,13 +358,26 @@ namespace BizHawk.MultiClient
 			Global.Config.PathC64Savestates = C64SavestatesBox.Text;
 			Global.Config.PathC64Screenshots = C64ScreenshotsBox.Text;
 			Global.Config.PathC64Cheats = C64CheatsBox.Text;
-			//Global.Config.PathC64Firmwares = C64FirmwaresBox.Text;
 
 			Global.Config.BaseCOL = COLBaseBox.Text;
 			Global.Config.PathCOLROMs = COLROMsBox.Text;
 			Global.Config.PathCOLSavestates = COLSavestatesBox.Text;
 			Global.Config.PathCOLScreenshots = COLScreenshotsBox.Text;
 			Global.Config.PathCOLCheats = COLCheatsBox.Text;
+
+			Global.Config.BaseN64 = N64BaseBox.Text;
+			Global.Config.PathN64ROMs = N64ROMsBox.Text;
+			Global.Config.PathN64Savestates = N64SavestatesBox.Text;
+			Global.Config.PathN64SaveRAM = N64SaveRAMBox.Text;
+			Global.Config.PathN64Screenshots = N64ScreenshotsBox.Text;
+			Global.Config.PathN64Cheats = N64CheatsBox.Text;
+
+			Global.Config.BaseSaturn = SaturnBaseBox.Text;
+			Global.Config.PathSaturnROMs = SaturnROMsBox.Text;
+			Global.Config.PathSaturnSavestates = SaturnSavestatesBox.Text;
+			Global.Config.PathSaturnSaveRAM = SaturnSaveRAMBox.Text;
+			Global.Config.PathSaturnScreenshots = SaturnScreenshotsBox.Text;
+			Global.Config.PathSaturnCheats = SaturnCheatsBox.Text;
 
 			Global.Config.MoviesPath = MoviesBox.Text;
 			Global.Config.MoviesBackupPath = MovieBackupsBox.Text;
@@ -382,14 +400,14 @@ namespace BizHawk.MultiClient
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			Global.OSD.AddMessage("Path config aborted");
-			this.Close();
+			Close();
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
 			Global.OSD.AddMessage("Path settings saved");
-			this.Close();
+			Close();
 		}
 
 		private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -461,24 +479,32 @@ namespace BizHawk.MultiClient
 			INTVBrowseROMs.Enabled = !RecentForROMs.Checked;
 			INTVROMsDescription.Enabled = !RecentForROMs.Checked;
 
+			N64ROMsBox.Enabled = !RecentForROMs.Checked;
+			N64BrowseROMs.Enabled = !RecentForROMs.Checked;
+			N64ROMsDescription.Enabled = !RecentForROMs.Checked;
+
+			SaturnROMsBox.Enabled = !RecentForROMs.Checked;
+			SaturnBrowseROMs.Enabled = !RecentForROMs.Checked;
+			SaturnROMsDescription.Enabled = !RecentForROMs.Checked;
+
 			BaseROMSBox.Enabled = !RecentForROMs.Checked;
 			BrowseBaseROM.Enabled = !RecentForROMs.Checked;
 			BaseROMLabel.Enabled = !RecentForROMs.Checked;
 		}
 
-		private void BrowseFolder(TextBox box, string Name)
+		private void BrowseFolder(TextBox box, string _Name)
 		{
 			IFolderBrowserDialog f = HawkUIFactory.CreateFolderBrowserDialog();
-			f.Description = "Set the directory for " + Name;
+			f.Description = "Set the directory for " + _Name;
 			f.SelectedPath = PathManager.MakeAbsolutePath(box.Text);
 			DialogResult result = f.ShowDialog();
 			if (result == DialogResult.OK)
 				box.Text = f.SelectedPath;
 		}
 
-		private void BrowseFolder(TextBox box, string Name, string System)
+		private void BrowseFolder(TextBox box, string _Name, string System)
 		{
-			folderBrowserDialog1.Description = "Set the directory for " + Name;
+			folderBrowserDialog1.Description = "Set the directory for " + _Name;
 			folderBrowserDialog1.SelectedPath = PathManager.MakeAbsolutePath(box.Text, System);
 			DialogResult result = folderBrowserDialog1.ShowDialog();
 			if (result == DialogResult.OK)
@@ -812,49 +838,6 @@ namespace BizHawk.MultiClient
 			BrowseFolder(INTVCheatsBox, INTVCheatsDescription.Text, "INTV");
 		}
 
-		void BrowseForBios(string filter, string config, string system, TextBox tb)
-		{
-			var ofd = HawkUIFactory.CreateOpenFileDialog();
-			
-			if (!String.IsNullOrWhiteSpace(config))
-			{
-				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Path.GetDirectoryName(config), system);
-			}
-			else
-			{
-				ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.BaseCOL, "Coleco");
-			}
-
-			ofd.Filter = filter;
-			ofd.FileName = Path.GetFileName(config);
-
-			var result = ofd.ShowDialog();
-			if (result != DialogResult.OK)
-				return;
-
-			if (File.Exists(ofd.FileName) == false)
-				return;
-
-			tb.Text = ofd.FileName;
-		}
-
-
-		/*private void INTVBrowseEROM_Click(object sender, EventArgs e)
-		{
-			BrowseForBios(
-				"Intellivision EROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
-				 Global.Config.PathINTVEROM, "INTV", 
-				INTVEROMBox);
-		}*/
-
-		/*private void INTVBroseGROM_Click(object sender, EventArgs e)
-		{
-			BrowseForBios(
-				"Intellivision GROM (*.bin; *.int)|*.bin;*.int|All Files|*.*",
-				 Global.Config.PathINTVGROM, "INTV",
-				INTVGROMBox);
-		}*/
-
 		private void BrowseMovieBackups_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(MovieBackupsBox, MovieBackupsDescription.Text);
@@ -890,11 +873,6 @@ namespace BizHawk.MultiClient
 			BrowseFolder(SNESCheatsBox, SNESCheatsDescription.Text, "SNES");
 		}
 
-		/*private void SNESBrowseFirmwares_Click(object sender, EventArgs e)
-		{
-			BrowseFolder(SNESFirmwaresBox, SNESFirmwaresDescription.Text);
-		}*/
-
 		private void BrowseLog_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(LogBox, LogDescription.Text);
@@ -908,19 +886,6 @@ namespace BizHawk.MultiClient
 		private void BrowseSNESSaveRAM_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(SNESSaveRAMBox, SNESSaveRAMDescription.Text);
-		}
-
-		/*private void NESBrowseFDSBios_Click(object sender, EventArgs e)
-		{
-			BrowseForBios(
-				"ROM files (*.rom)|*.rom|All Files|*.*",
-				 Global.Config.PathFDSBios, "NES",
-				NESFDSBiosBox);
-		}*/
-
-		private void SNESFirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
 		}
 
 		private void BrowseC64Base_Click(object sender, EventArgs e)
@@ -948,16 +913,6 @@ namespace BizHawk.MultiClient
 			BrowseFolder(C64CheatsBox, C64CheatsDescription.Text, "C64");
 		}
 
-		/*private void C64BrowseFirmwares_Click(object sender, EventArgs e)
-		{
-			BrowseFolder(C64FirmwaresBox, C64FirmwaresDescription.Text, "C64");
-		}*/
-
-		private void C64FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
-		}
-
 		private void BrowseCOLBase_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(COLBaseBox, COLBaseDescription.Text);
@@ -982,14 +937,6 @@ namespace BizHawk.MultiClient
 		{
 			BrowseFolder(COLScreenshotsBox, COLScreenshotsDescription.Text, "Coleco");
 		}
-
-		/*private void COLBrowseBios_Click(object sender, EventArgs e)
-		{
-			BrowseForBios(
-				"ROM files (*.bin)|*.bin|All Files|*.*",
-				 Global.Config.PathCOLBios, "Coleco",
-				COLBiosBox);
-		}*/
 
 		private void GBABrowseBase_Click(object sender, EventArgs e)
 		{
@@ -1021,23 +968,9 @@ namespace BizHawk.MultiClient
 			BrowseFolder(GBACheatsBox, GBACheatsDescription.Text, "GBA");
 		}
 
-		/*private void GBABrowseFirmwares_Click(object sender, EventArgs e)
-		{
-			BrowseForBios(
-				"GBA BIOS (*.rom)|*.rom|All Files|*.*",
-				 Global.Config.PathGBABIOS, "GBA",
-				GBAFirmwaresBox);
-		}*/
-
-		private void Atari78FirmwaresDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/Firmwares.html");
-		}
-
 		private void BrowseAtari7800Base_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(Atari7800BaseBox, Atari7800BaseDescription.Text);
-			
 		}
 
 		private void Atari7800BrowseROMs_Click(object sender, EventArgs e)
@@ -1060,11 +993,6 @@ namespace BizHawk.MultiClient
 			BrowseFolder(Atari7800CheatsBox, Atari7800CheatsDescription.Text, "A78");
 		}
 
-		/*private void Atari7800BrowseFirmwares_Click(object sender, EventArgs e)
-		{
-			BrowseFolder(Atari7800FirmwaresBox, Atari7800FirmwaresDescription.Text, "A78");
-		}*/
-
 		private void BrowseAtari7800SaveRAM_Click(object sender, EventArgs e)
 		{
 			BrowseFolder(Atari7800SaveRAMBox, Atari7800SaveRAMsDescription.Text, "A78");
@@ -1077,10 +1005,12 @@ namespace BizHawk.MultiClient
 
 		private void button2_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
-			ofd.Filter = "Binary Files (*.rom,*.bin,*.pce)|*.rom;*.bin;*.pce|All Files|*.*";
-			ofd.RestoreDirectory = false;
+			OpenFileDialog ofd = new OpenFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
+					Filter = "Binary Files (*.rom,*.bin,*.pce)|*.rom;*.bin;*.pce|All Files|*.*",
+					RestoreDirectory = false
+				};
 			DialogResult result = ofd.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -1091,10 +1021,12 @@ namespace BizHawk.MultiClient
 
 		private void NESBrowseFDSBIOS_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
-			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
-			ofd.RestoreDirectory = false;
+			OpenFileDialog ofd = new OpenFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
+					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
+					RestoreDirectory = false
+				};
 			DialogResult result = ofd.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -1105,10 +1037,12 @@ namespace BizHawk.MultiClient
 
 		private void button3_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
-			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
-			ofd.RestoreDirectory = false;
+			OpenFileDialog ofd = new OpenFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
+					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
+					RestoreDirectory = false
+				};
 			DialogResult result = ofd.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -1119,10 +1053,12 @@ namespace BizHawk.MultiClient
 
 		private void button4_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
-			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
-			ofd.RestoreDirectory = false;
+			OpenFileDialog ofd = new OpenFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
+					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
+					RestoreDirectory = false
+				};
 			DialogResult result = ofd.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -1138,10 +1074,12 @@ namespace BizHawk.MultiClient
 
 		private void Atari7800BrowseNTSCBIOS_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
-			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
-			ofd.RestoreDirectory = false;
+			OpenFileDialog ofd = new OpenFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
+					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
+					RestoreDirectory = false
+				};
 			DialogResult result = ofd.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -1152,10 +1090,12 @@ namespace BizHawk.MultiClient
 
 		private void Atari7800BrowsePALBIOS_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
-			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
-			ofd.RestoreDirectory = false;
+			OpenFileDialog ofd = new OpenFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
+					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
+					RestoreDirectory = false
+				};
 			DialogResult result = ofd.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -1166,16 +1106,73 @@ namespace BizHawk.MultiClient
 
 		private void Atari7800BrowseHSCBIOS_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath);
-			ofd.Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*";
-			ofd.RestoreDirectory = false;
+			OpenFileDialog ofd = new OpenFileDialog
+				{
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.FirmwaresPath),
+					Filter = "Binary Files (*.rom,*.bin)|*.rom;*.bin|All Files|*.*",
+					RestoreDirectory = false
+				};
 			DialogResult result = ofd.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 				var file = new FileInfo(ofd.FileName);
 				Atari7800HighScoreBIOSBox.Text = file.Name;
 			}
+		}
+
+		private void N64BrowseBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(N64BaseBox, N64BaseDescription.Text);
+		}
+
+		private void N64BrowseROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(N64ROMsBox, N64ROMsDescription.Text, "N64");
+		}
+
+		private void N64BrowseSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(N64SavestatesBox, N64SavestatesDescription.Text, "N64");
+		}
+
+		private void N64BrowseSaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(N64SaveRAMBox, N64SaveRAMDescription.Text, "N64");
+		}
+
+		private void N64BrowseScreenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(N64ScreenshotsBox, N64ScreenshotsDescription.Text, "N64");
+		}
+
+		private void N64BrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(N64CheatsBox, N64CheatsDescription.Text, "N64");
+		}
+
+		private void button9_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnROMsBox, SaturnROMsDescription.Text, "SAT");
+		}
+
+		private void SaturnBrowseBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnBaseBox, SaturnBaseDescription.Text);
+		}
+
+		private void SaturnBrowseSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnSavestatesBox, SaturnSavestatesDescription.Text, "SAT");
+		}
+
+		private void SaturnBrowseSaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnSaveRAMBox, SaturnSaveRAMDescription.Text, "SAT");
+		}
+
+		private void SaturnBrowseScreenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(SaturnScreenshotsBox, SaturnScreenshotsDescription.Text, "SAT");
 		}
 	}
 }

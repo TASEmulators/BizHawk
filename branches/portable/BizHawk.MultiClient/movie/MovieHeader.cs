@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace BizHawk.MultiClient
@@ -48,23 +45,19 @@ namespace BizHawk.MultiClient
 
 		public MovieHeader() //All required fields will be set to default values
 		{
-			HeaderParams.Add(EMULATIONVERSION, MainForm.EMUVERSION);
+			if (Global.MainForm != null)
+			{
+				HeaderParams.Add(EMULATIONVERSION, Global.MainForm.GetEmuVersion());
+			}
+			else
+			{
+				HeaderParams.Add(EMULATIONVERSION, MainForm.EMUVERSION);
+			}
 			HeaderParams.Add(MOVIEVERSION, MovieVersion);
 			HeaderParams.Add(PLATFORM, "");
 			HeaderParams.Add(GAMENAME, "");
 			HeaderParams.Add(AUTHOR, "");
 			HeaderParams.Add(RERECORDS, "0");
-			HeaderParams.Add(GUID, MakeGUID());
-		}
-
-		public MovieHeader(string EmulatorVersion, string MovieVersion, string Platform, string GameName, string Author, int rerecords)
-		{
-			HeaderParams.Add(EMULATIONVERSION, EmulatorVersion);
-			HeaderParams.Add(MOVIEVERSION, MovieVersion);
-			HeaderParams.Add(PLATFORM, Platform);
-			HeaderParams.Add(GAMENAME, GameName);
-			HeaderParams.Add(AUTHOR, Author);
-			HeaderParams.Add(RERECORDS, rerecords.ToString());
 			HeaderParams.Add(GUID, MakeGUID());
 		}
 
@@ -75,7 +68,7 @@ namespace BizHawk.MultiClient
 		/// <param name="value"></param>
 		public void AddHeaderLine(string key, string value)
 		{
-			string temp = value;
+			string temp;
 
 			if (!HeaderParams.TryGetValue(key, out temp)) //TODO: does a failed attempt mess with value?
 				HeaderParams.Add(key, value);
@@ -98,7 +91,7 @@ namespace BizHawk.MultiClient
 
 		public string GetHeaderLine(string key)
 		{
-			string value = "";
+			string value;
 			HeaderParams.TryGetValue(key, out value);
 			return value;
 		}
@@ -115,17 +108,16 @@ namespace BizHawk.MultiClient
 				sw.WriteLine(kvp.Key + " " + kvp.Value);
 			}
 
-			for (int x = 0; x < Comments.Count; x++)
+			foreach (string t in Comments)
 			{
-				sw.WriteLine(Comments[x]);
+				sw.WriteLine(t);
 			}
 		}
 
 		private string ParseHeader(string line, string headerName)
 		{
-			string str;
 			int x = line.LastIndexOf(headerName) + headerName.Length;
-			str = line.Substring(x + 1, line.Length - x - 1);
+			string str = line.Substring(x + 1, line.Length - x - 1);
 			return str;
 		}
 
@@ -138,75 +130,75 @@ namespace BizHawk.MultiClient
 		public bool AddHeaderFromLine(string line)
 		{
 			if (line.Length == 0) return false;
-			else if (line.Contains(MovieHeader.EMULATIONVERSION))
+			else if (line.Contains(EMULATIONVERSION))
 			{
-				line = ParseHeader(line, MovieHeader.EMULATIONVERSION);
-				AddHeaderLine(MovieHeader.EMULATIONVERSION, line);
+				line = ParseHeader(line, EMULATIONVERSION);
+				AddHeaderLine(EMULATIONVERSION, line);
 			}
-			else if (line.Contains(MovieHeader.MOVIEVERSION))
+			else if (line.Contains(MOVIEVERSION))
 			{
-				line = ParseHeader(line, MovieHeader.MOVIEVERSION);
-				AddHeaderLine(MovieHeader.MOVIEVERSION, line);
+				line = ParseHeader(line, MOVIEVERSION);
+				AddHeaderLine(MOVIEVERSION, line);
 			}
-			else if (line.Contains(MovieHeader.PLATFORM))
+			else if (line.Contains(PLATFORM))
 			{
-				line = ParseHeader(line, MovieHeader.PLATFORM);
-				AddHeaderLine(MovieHeader.PLATFORM, line);
+				line = ParseHeader(line, PLATFORM);
+				AddHeaderLine(PLATFORM, line);
 			}
-			else if (line.Contains(MovieHeader.GAMENAME))
+			else if (line.Contains(GAMENAME))
 			{
-				line = ParseHeader(line, MovieHeader.GAMENAME);
-				AddHeaderLine(MovieHeader.GAMENAME, line);
+				line = ParseHeader(line, GAMENAME);
+				AddHeaderLine(GAMENAME, line);
 			}
-			else if (line.Contains(MovieHeader.RERECORDS))
+			else if (line.Contains(RERECORDS))
 			{
-				line = ParseHeader(line, MovieHeader.RERECORDS);
-				AddHeaderLine(MovieHeader.RERECORDS, line);
+				line = ParseHeader(line, RERECORDS);
+				AddHeaderLine(RERECORDS, line);
 			}
-			else if (line.Contains(MovieHeader.AUTHOR))
+			else if (line.Contains(AUTHOR))
 			{
-				line = ParseHeader(line, MovieHeader.AUTHOR);
-				AddHeaderLine(MovieHeader.AUTHOR, line);
+				line = ParseHeader(line, AUTHOR);
+				AddHeaderLine(AUTHOR, line);
 			}
-			else if (line.ToUpper().Contains(MovieHeader.GUID))
+			else if (line.ToUpper().Contains(GUID))
 			{
-				line = ParseHeader(line, MovieHeader.GUID);
-				AddHeaderLine(MovieHeader.GUID, line);
+				line = ParseHeader(line, GUID);
+				AddHeaderLine(GUID, line);
 			}
-			else if (line.Contains(MovieHeader.STARTSFROMSAVESTATE))
+			else if (line.Contains(STARTSFROMSAVESTATE))
 			{
-				line = ParseHeader(line, MovieHeader.STARTSFROMSAVESTATE);
-				AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, line);
+				line = ParseHeader(line, STARTSFROMSAVESTATE);
+				AddHeaderLine(STARTSFROMSAVESTATE, line);
 			}
-			else if (line.Contains(MovieHeader.SHA1))
+			else if (line.Contains(SHA1))
 			{
-				line = ParseHeader(line, MovieHeader.SHA1);
-				AddHeaderLine(MovieHeader.SHA1, line);
+				line = ParseHeader(line, SHA1);
+				AddHeaderLine(SHA1, line);
 			}
-			else if (line.Contains(MovieHeader.SKIPBIOS))
+			else if (line.Contains(SKIPBIOS))
 			{
-				line = ParseHeader(line, MovieHeader.SKIPBIOS);
-				AddHeaderLine(MovieHeader.SKIPBIOS, line);
+				line = ParseHeader(line, SKIPBIOS);
+				AddHeaderLine(SKIPBIOS, line);
 			}
-			else if (line.Contains(MovieHeader.GB_FORCEDMG))
+			else if (line.Contains(GB_FORCEDMG))
 			{
-				line = ParseHeader(line, MovieHeader.GB_FORCEDMG);
-				AddHeaderLine(MovieHeader.GB_FORCEDMG, line);
+				line = ParseHeader(line, GB_FORCEDMG);
+				AddHeaderLine(GB_FORCEDMG, line);
 			}
-			else if (line.Contains(MovieHeader.GB_GBA_IN_CGB))
+			else if (line.Contains(GB_GBA_IN_CGB))
 			{
-				line = ParseHeader(line, MovieHeader.GB_GBA_IN_CGB);
-				AddHeaderLine(MovieHeader.GB_GBA_IN_CGB, line);
+				line = ParseHeader(line, GB_GBA_IN_CGB);
+				AddHeaderLine(GB_GBA_IN_CGB, line);
 			}
-			else if (line.Contains(MovieHeader.SGB))
+			else if (line.Contains(SGB))
 			{
-				line = ParseHeader(line, MovieHeader.SGB);
-				AddHeaderLine(MovieHeader.SGB, line);
+				line = ParseHeader(line, SGB);
+				AddHeaderLine(SGB, line);
 			}
-			else if (line.Contains(MovieHeader.PAL))
+			else if (line.Contains(PAL))
 			{
-				line = ParseHeader(line, MovieHeader.PAL);
-				AddHeaderLine(MovieHeader.PAL, line);
+				line = ParseHeader(line, PAL);
+				AddHeaderLine(PAL, line);
 			}
 			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 			{
@@ -230,7 +222,7 @@ namespace BizHawk.MultiClient
 		{
 			using (reader)
 			{
-				string str = "";
+				string str;
 				while ((str = reader.ReadLine()) != null)
 				{
 					AddHeaderFromLine(str);

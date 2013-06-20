@@ -1,0 +1,616 @@
+AC_INIT(yabause, 0.9.10)
+
+if test "x$host_alias" = "xpowerpc-gekko" ; then
+	config_guess_sucks=$host_alias
+	host_alias=powerpc
+elif test "x$host_alias" = "xpsp" ; then
+	config_guess_sucks=$host_alias
+	host_alias=mips
+fi
+
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
+if test ! "x$config_guess_sucks" = "x" ; then
+	host_alias=$config_guess_sucks
+fi
+
+# hack to reset host_alias when we're not cross compiling
+if test "x$host_alias" = "x$build_alias"; then
+	host_alias=
+fi
+
+AM_INIT_AUTOMAKE([1.8.0])
+
+AC_PROG_RANLIB
+
+# Check for --host=psp now because we need to get the PSP SDK directory and
+# set linker flags/libraries
+if test "x$host_alias" = "xpsp" ; then
+	AC_MSG_CHECKING([for PSPSDK])
+	if test -z "$PSPSDK"; then
+		saved_IFS=$IFS
+		IFS=$PATH_SEPARATOR
+		for dir in $PATH; do
+			IFS=$saved_IFS
+			test -z "$dir" && dir=.
+			if test -x "$dir/psp-config"; then
+				PSPSDK=`"$dir/psp-config" -p`
+				test -n "$PSPSDK" && break
+			fi
+		done
+		IFS=$saved_IFS
+	fi
+	if test -n "$PSPSDK"; then
+		AC_MSG_RESULT([$PSPSDK])
+	else
+		AC_MSG_RESULT([not found])
+		AC_MSG_ERROR([Please set the PSPSDK variable])
+	fi
+	CFLAGS="-G0 -falign-functions=16 -I$PSPSDK/include -DNO_CLI $CFLAGS"
+	LDFLAGS="-specs=$PSPSDK/lib/prxspecs -Wl,-q,-T$PSPSDK/lib/linkfile.prx -L$PSPSDK/lib $LDFLAGS"
+	LIBS="$LIBS -lm -lc -lpspaudio -lpspctrl -lpspdisplay -lpspgu -lpspge -lpsppower -lpsputility -lpspuser"
+fi
+
+AC_PROG_CC
+
+if test `expr x$CC : x$host_alias` -eq 0 ; then
+	AC_MSG_ERROR([$CC is not a cross compiler and we're cross-compiling.])
+fi
+
+AC_PROG_CPP
+AC_PROG_INSTALL
+
+AC_LANG(C)
+AC_LANG(C++)
+
+AC_C_BIGENDIAN
+
+AM_PROG_CC_C_O
+AM_PROG_AS
+
+# Check what kind of CPU we're running on
+case "$target_cpu" in
+	x86|i?86)     yabause_cpu=x86; AC_DEFINE(CPU_X86);;
+	x86_64|amd64) yabause_cpu=x64; AC_DEFINE(CPU_X64);;
+	armv7*) yabause_cpu=arm; AC_DEFINE(CPU_ARM);;
+	*)            if test "$host_alias" = psp; then
+	                  yabause_cpu=psp; AC_DEFINE(CPU_PSP)
+	              else
+	                  yabause_cpu=unknown
+	              fi;;
+esac
+
+
+#################################################################################
+#										#
+# phase 1, we're checking for things that could be used by Yabause library	#
+#										#
+#################################################################################
+
+# checking for gettimeofday
+AC_CHECK_HEADERS([sys/time.h])
+AC_CHECK_FUNCS([gettimeofday])
+
+# checking for floorf (C99 single-precision math)
+OLDLIBS="$LIBS"
+LIBS="$LIBS -lm"
+AC_CHECK_FUNCS([floorf])
+LIBS="$OLDLIBS"
+
+# checking for mini18n
+if test ! "x$MINI18N" = "x" ; then
+	OLDCPPFLAGS="$CPPFLAGS"
+	OLDLDFLAGS="$LDFLAGS"
+	CPPFLAGS="$CPPFLAGS -I$MINI18N/include"
+	LDFLAGS="$LDFLAGS -L$MINI18N/lib"
+
+	AC_CHECK_LIB(mini18n, mini18n, [YAB_LINK_MINI18N], [
+		CPPFLAGS="$OLDCPPFLAGS"
+		LDFLAGS="$OLDLDFLAGS"
+		])
+else
+	AC_CHECK_LIB(mini18n, mini18n, [YAB_LINK_MINI18N])
+fi
+
+# checking for variadic macros
+AC_MSG_CHECKING([[whether the compiled supports c99 variadic macros]])
+AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[#define MACRO(...) puts(__VA_ARGS__)]], [[MACRO("foo");]]),
+	AC_DEFINE(HAVE_C99_VARIADIC_MACROS)
+	AC_MSG_RESULT(yes), AC_MSG_RESULT(no))
+
+# checking for SDL (can be used for sound and input)
+use_sdl=yes
+AC_ARG_WITH(sdl, AC_HELP_STRING(--without-sdl, don't use SDL), [use_sdl=$withval])
+
+if test x$use_sdl = xyes ; then
+	case $host in
+		*darwin*)
+			OLDLDFLAGS="$LDFLAGS"
+			LDFLAGS="$LDFLAGS -framework SDL"
+			AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+			int t(void) { return 0; }
+			]],[[
+			int foo = t();
+			]])],[AC_DEFINE(HAVE_LIBSDL)
+			SDL_LIBS="-framework SDL"], [])
+			LDFLAGS="$OLDLDFLAGS"
+			;;
+		*)
+			YAB_CHECK_HOST_TOOLS(HAVE_LIBSDL, [sdl-config sdl11-config])
+
+			if test ! x$HAVE_LIBSDL = x ; then
+				SDL_CFLAGS=`$HAVE_LIBSDL --cflags`
+				SDL_LIBS=`$HAVE_LIBSDL --libs`
+				AC_DEFINE(HAVE_LIBSDL)
+			fi
+			;;
+	esac
+
+	CFLAGS="$CFLAGS $SDL_CFLAGS"
+	LIBS="$LIBS $SDL_LIBS"
+fi
+
+# checking for OpenGL (most ports needs it for video)
+use_opengl=yes
+AC_ARG_WITH(opengl, AC_HELP_STRING(--without-opengl, don't use OpenGL), [use_opengl=$withval])
+
+if test x$use_opengl = xyes ; then
+	case $host in
+		*darwin*)
+			LIBS="$LIBS -framework OpenGL"
+			AC_DEFINE(HAVE_LIBGL)
+			;;
+		*cygwin* | *mingw32*)
+			YAB_LIBS="$YAB_LIBS -lopengl32 -lglut32"
+			AC_DEFINE(HAVE_LIBGL)
+			;;
+		*linux* | *bsd*)
+			AC_PATH_XTRA
+			LIBS="$LIBS $X_LIBS"
+			CFLAGS="$CFLAGS $X_CFLAGS"
+
+			AC_CHECK_LIB(GL, glEnable, [
+				LIBS="$LIBS -lGL"
+				AC_DEFINE(HAVE_LIBGL)
+				],, $LIBS)
+			AC_CHECK_LIB(glut, glutGetModifiers,[
+				LIBS="$LIBS -lglut"
+				AC_DEFINE(HAVE_LIBGLUT)],, $LIBS)
+			AC_CHECK_FUNC(glXGetProcAddress, AC_DEFINE(HAVE_GLXGETPROCADDRESS))
+			;;
+		*)
+			AC_CHECK_LIB(GL, glEnable, [
+				LIBS="$LIBS -lGL"
+				AC_DEFINE(HAVE_LIBGL)
+				],, $LIBS)
+			AC_CHECK_LIB(glut, glutGetModifiers,[
+				LIBS="$LIBS -lglut"
+				AC_DEFINE(HAVE_LIBGLUT)],, $LIBS)
+			;;
+	esac
+fi
+
+# checking for OpenAL (can be used for sound)
+use_openal=yes
+AC_ARG_WITH(openal, AC_HELP_STRING(--without-openal, "don't use OpenAL"), [use_openal=$withval])
+
+if test x$use_openal = xyes ; then
+	case $host in
+		*darwin*)
+			LIBS="$LIBS -framework OpenAL"
+			AC_DEFINE(HAVE_LIBAL)
+			;;
+		*mingw32*)
+			# The OpenAL sound code uses Pthreads at the moment, so MinGW
+			# won't work right now.
+			;;
+		*)
+			AC_CHECK_LIB(pthread, main)
+			AC_CHECK_LIB(openal, alBufferData, [
+				LIBS="$LIBS -lopenal"
+				AC_DEFINE(HAVE_LIBAL)
+				],, $LIBS)
+            ;;
+	esac
+fi
+
+# platform-specific features
+case $host in
+	*darwin*)
+		yabause_arch=macosx
+		AC_DEFINE([ARCH_IS_MACOSX])
+		LIBS="$LIBS -framework CoreFoundation -framework IOKit"
+		major=`expr $host_os : "darwin\(@<:@^.@:>@*\)"` 	 
+		if test $major -ge 7 ; then
+			sdkversion=0
+			sdkfile=""
+			for i in /Developer/SDKs/MacOSX10.*.sdk; do
+       				j=`expr $i : "/Developer/SDKs/MacOSX10.\(.\).*.sdk"`
+       				if test $j -gt $sdkversion ; then
+					sdkversion=$j
+					sdkfile=$i
+       				fi
+			done
+			AC_ARG_WITH([sdk], AC_HELP_STRING(--with-sdk, [choose your sdk (macosx only)]), [sdkfile=$withval])
+
+			YAB_DEP_DISABLED
+
+			CFLAGS="$CFLAGS -mmacosx-version-min=10.3 -isysroot $sdkfile -arch i386 -arch ppc"
+			LDFLAGS="$LDFLAGS -Wl,-macosx_version_min,10.3 -arch i386 -arch ppc"
+			AC_DEFINE(MAC_OS_X_VERSION_MAX_ALLOWED, MAC_OS_X_VERSION_10_3)
+		fi
+		;;
+	*linux*)
+		yabause_arch=linux
+		LIBS="$LIBS -lm"
+		AC_DEFINE([ARCH_IS_LINUX])
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <linux/cdrom.h>]], [[int i = CDSL_CURRENT;]])],
+			[],
+			[AC_DEFINE(LINUX_CDROM_H_IS_BROKEN)])
+		;;
+	*cygwin*)
+		yabause_arch=windows
+		AC_DEFINE([ARCH_IS_WINDOWS])
+                AC_DEFINE(_WIN32_IE, 0x0500)
+		;;
+	*mingw32*)
+		yabause_arch=windows
+		AC_DEFINE([ARCH_IS_WINDOWS])
+		AC_CHECK_HEADERS("wnaspi32.h", [], [], [#include <windows.h>])
+                AC_DEFINE(_WIN32_IE, 0x0500)
+		;;
+	*freebsd*)
+		yabause_arch=freebsd
+		AC_DEFINE([ARCH_IS_FREEBSD])
+		;;
+	*netbsd* | *openbsd*)
+		yabause_arch=netbsd
+		AC_DEFINE([ARCH_IS_NETBSD])
+		;;
+	*)
+		case $host_alias in
+			psp)
+				yabause_arch=psp
+				;;
+			*)
+				yabause_arch="."
+				AC_DEFINE(UNKNOWN_ARCH)
+				;;
+		esac
+		;;
+esac
+
+# users can turn c68k compilation off (forced off on PSP)
+if test "x$yabause_arch" = "xpsp"; then
+	compile_c68k=no
+else
+	compile_c68k=yes
+fi
+AC_ARG_WITH(c68k, AC_HELP_STRING(--without-c68k, don't compile C68k), [compile_c68k=$withval])
+if test x$compile_c68k = xyes ; then
+	if test "x$yabause_arch" = "xpsp"; then
+		AC_MSG_ERROR([c68k is not supported on PSP])
+	fi
+	AC_DEFINE(HAVE_C68K)
+fi
+AM_CONDITIONAL(COMPILE_C68K, test x$compile_c68k = xyes)
+
+# Q68 emulator is optional (but required on PSP)
+if test "x$yabause_arch" = "xpsp"; then
+	compile_q68=yes
+else
+	compile_q68=no
+fi
+AC_ARG_WITH(q68, AC_HELP_STRING(--with-q68, [include Q68 68k emulator (requires a C99-compliant compiler like GCC)]), [compile_q68=$withval])
+if test "x$compile_q68" = "xyes"; then
+	AC_DEFINE(HAVE_Q68)
+elif test "x$yabause_arch" = "xpsp"; then
+	AC_MSG_ERROR([Q68 is required on PSP])
+fi
+AM_CONDITIONAL(COMPILE_Q68, test "x$compile_q68" = "xyes")
+
+# JIT for Q68 can be disabled (and is automatically disabled on unsupported
+# systems)
+q68_use_jit=maybe
+AC_ARG_ENABLE(q68-jit, AC_HELP_STRING(--disable-q68-jit, [disable dynamic (Just-In-Time) translation for Q68]), [q68_use_jit=$enableval])
+case $yabause_cpu in
+	x86|x64|psp)
+		if test "x$q68_use_jit" = "xmaybe"; then
+			q68_use_jit=yes
+		fi
+		;;
+	*)
+		if test "x$q68_use_jit" = "xyes"; then
+			AC_MSG_ERROR([Q68 dynamic translation is not supported on this CPU]);
+		elif test "x$q68_use_jit" = "xmaybe"; then
+			AC_MSG_WARN([Disabling Q68 dynamic translation (not supported on this CPU)]);
+		fi
+		;;
+esac
+if test "x$q68_use_jit" = "xyes"; then
+	AC_DEFINE(Q68_USE_JIT)
+fi
+AM_CONDITIONAL([Q68_USE_JIT], test "x$q68_use_jit" = "xyes")
+
+# Allow disabling of dynarec
+AC_ARG_ENABLE(dynarec, AC_HELP_STRING(--disable-dynarec, [Disable dynarec core]), [], [use_dynarec=yes])
+
+if test "x$use_dynarec" = "xyes"; then
+	AC_DEFINE(USE_DYNAREC)
+fi
+
+AM_CONDITIONAL([USE_DYNAREC], test "x$use_dynarec" = "xyes")
+
+#################################################################################
+#										#
+# phase 2, we're done with Yabause library, now we're tring to configure ports	#
+#										#
+#################################################################################
+
+# qt
+AC_PATH_PROGS(HAVE_QMAKE, [qmake-qt4 qmake])
+
+if test ! x$HAVE_QMAKE = x ; then
+	yabause_available_yuis="qt $yabause_available_yuis"
+fi
+
+# gtk
+want_gtk=yes
+AC_ARG_WITH(gtk, AC_HELP_STRING(--without-gtk, don't try to configure the gtk port), [want_gtk=$withval])
+
+YAB_CHECK_HOST_TOOLS(HAVE_PKG, [pkg-config])
+if test ! x$HAVE_PKG = x ; then
+	if test "x$want_gtk" = "xyes" && `$HAVE_PKG gtk+-2.0` ; then
+		if test "x$use_opengl" = "xyes" ; then
+			if `$HAVE_PKG gtkglext-1.0` ; then
+				yabause_available_yuis="gtk $yabause_available_yuis"
+				YUI_gtk_CFLAGS=`$HAVE_PKG gtkglext-1.0 --cflags`
+				YUI_gtk_LIBS=`$HAVE_PKG gtkglext-1.0 --libs`
+				AC_DEFINE(HAVE_LIBGTKGLEXT)
+			else
+				AC_MSG_NOTICE([Found OpenGL and Gtk+ but not libgtkglext.])
+				AC_MSG_NOTICE([You can either:])
+				AC_MSG_NOTICE([- install libgtkglext to compile a gtk port with OpenGL support])
+				AC_MSG_NOTICE([- re-run configure with --without-opengl flag to compile a gtk port without OpenGL support])
+				AC_MSG_NOTICE([- re-run configure with --without-gtk flag to disable gtk port compilation])
+				AC_MSG_ERROR([Can't go further, please install libgtkglext or re-run configure with --without-opengl or --without-gtk])
+			fi
+		else
+			yabause_available_yuis="gtk $yabause_available_yuis"
+			YUI_gtk_CFLAGS=`$HAVE_PKG gtk+-2.0 --cflags`
+			YUI_gtk_LIBS=`$HAVE_PKG gtk+-2.0 --libs`
+		fi
+	fi
+fi
+
+# carbon
+OLDLDFLAGS="$LDFLAGS"
+LDFLAGS="$LDFLAGS -framework Carbon"
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+	int t(void) { return 0; }
+        ]],[[
+        int foo = t();
+        ]])],[YUI_carbon_LIBS="-framework Carbon -framework AGL"
+		yabause_available_yuis="carbon $yabause_available_yuis"], [])
+LDFLAGS="$OLDLDFLAGS"
+
+# windows
+YAB_CHECK_HOST_TOOLS(WINDRES, [windres])
+AC_CHECK_HEADER([windows.h], [yabause_available_yuis="windows $yabause_available_yuis"], [])
+
+# wii
+if test "x$host_alias" = "xpowerpc-gekko" ; then
+	if test \( "x$LIBOGC" = "x" \) -a \( ! "x$DEVKITPRO" = "x" \) ; then
+		LIBOGC="$DEVKITPRO/libogc"
+	fi
+	if test "x$LIBOGC" = "x" ; then
+		AC_MSG_ERROR([Please set the LIBOGC variable])
+	else
+		CPPFLAGS="-I$LIBOGC/include $CPPFLAGS"
+		LDFLAGS="-L$LIBOGC/lib/wii $LDFLAGS"
+		CFLAGS="-mrvl -mcpu=750 -meabi -mhard-float $CFLAGS"
+		LIBS="-lfat -lwiiuse -lbte -logc -lm $LIBS"
+	fi
+
+	AC_DEFINE(GEKKO)
+
+	yabause_available_yuis="wii"
+fi
+
+# PSP
+if test "x$host_alias" = "xpsp" ; then
+	AC_DEFINE(PSP)
+	yabause_available_yuis="psp"
+fi
+
+# adding . as a fallback when no other port is available
+yabause_available_yuis="$yabause_available_yuis ."
+
+yabause_yui=`echo $yabause_available_yuis | cut -d\  -f1`
+
+AC_ARG_WITH([port], AC_HELP_STRING(--with-port, choose your port), [yabause_manual_yui=$withval])
+for yabause_available_yui in $yabause_available_yuis; do
+	if test x$yabause_available_yui = x$yabause_manual_yui; then
+		yabause_yui=$yabause_manual_yui
+	fi
+done
+
+if ! test "x$yabause_yui" = "x." ; then
+	eval YAB_CFLAGS=\$YUI_${yabause_yui}_CFLAGS
+	eval YAB_LIBS=\$YUI_${yabause_yui}_LIBS
+	AC_SUBST(YAB_CFLAGS)
+	AC_SUBST(YAB_LIBS)
+fi
+
+AC_SUBST(yabause_yui)
+
+
+AC_ARG_ENABLE(debug, AC_HELP_STRING(--enable-debug, enable general debug information) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(DEBUG)
+	fi])
+AC_ARG_ENABLE(vdp1-debug, AC_HELP_STRING(--enable-vdp1-debug, enable vdp1 debug information) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(VDP1_DEBUG)
+	fi])
+AC_ARG_ENABLE(vdp2-debug, AC_HELP_STRING(--enable-vdp2-debug, enable vdp2 debug information) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(VDP2_DEBUG)
+	fi])
+AC_ARG_ENABLE(cd-debug, AC_HELP_STRING(--enable-cd-debug, enable cdblock debug information) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(CDDEBUG)
+	fi])
+AC_ARG_ENABLE(smpc-debug, AC_HELP_STRING(--enable-smpc-debug, enable smpc debug information) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(SMPC_DEBUG)
+	fi])
+AC_ARG_ENABLE(scsp-debug, AC_HELP_STRING(--enable-scsp-debug, enable scsp debug information) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(SCSP_DEBUG)
+	fi])
+AC_ARG_ENABLE(idle-debug, AC_HELP_STRING(--enable-idle-debug, enable idle cpu debug information) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(IDLE_DETECT_VERBOSE)
+	fi])
+AC_ARG_ENABLE(mic-shaders, AC_HELP_STRING(--enable-mic-shaders, enable OpenGL shaders for gouraud and mesh) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(USEMICSHADERS)
+	fi])
+AC_ARG_ENABLE(network, AC_HELP_STRING(--enable-network, enable network) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(USESOCKET)
+	fi])
+AC_ARG_ENABLE(perkeyname, AC_HELP_STRING(--enable-perkeyname, use peripheral key name callback) ,
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(PERKEYNAME)
+	fi])
+AC_ARG_ENABLE(exec-from-cache, AC_HELP_STRING(--enable-exec-from-cache, [allow code execution from 0xC0000000]),
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(EXEC_FROM_CACHE)
+	fi])
+AC_ARG_ENABLE(optimized-dma, AC_HELP_STRING(--enable-optimized-dma, [use optimized DMA when possible]),
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(OPTIMIZED_DMA)
+	fi])
+AC_ARG_ENABLE(new-scsp, AC_HELP_STRING(--enable-new-scsp, [enable experimental new SCSP implementation]),
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE(USE_SCSP2)
+	fi])
+AM_CONDITIONAL([USE_SCSP2], [test "${enable_new_scsp}" = "yes"])
+
+
+#### PSP options
+
+AC_ARG_ENABLE(psp-debug, AC_HELP_STRING(--enable-psp-debug, [enable PSP debugging output]),
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE([PSP_DEBUG])
+	fi])
+
+AC_ARG_ENABLE(psp-profile, AC_HELP_STRING(--enable-psp-profile, [enable profiling on PSP port]),
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE([SYS_PROFILE_H], ["psp/profile.h"])
+	fi])
+
+AC_ARG_WITH(psp-me-test, AC_HELP_STRING(--with-psp-me-test, [build ME library test program]))
+AM_CONDITIONAL([BUILD_ME_TEST], [test "${with_psp_me_test}" = "yes"])
+
+AC_ARG_ENABLE(debug-psp-sh2, AC_HELP_STRING(--enable-debug-psp-sh2, [include PSP SH-2 core for testing]),
+	[if test "x$enableval" = "xyes" ; then
+		AC_DEFINE([TEST_PSP_SH2])
+	fi])
+AM_CONDITIONAL([TEST_PSP_SH2], [test "${enable_debug_psp_sh2}" = "yes"])
+
+### End PSP options
+
+AC_CONFIG_FILES([Makefile
+	l10n/Makefile
+	doc/Doxyfile
+	src/Makefile
+	src/carbon/Makefile
+	src/dreamcast/Makefile
+	src/gtk/Makefile
+	src/gtk/doc/Makefile
+	src/psp/Makefile
+	src/qt/Makefile
+	src/qt/yabause.pro
+	src/qt/doc/Makefile
+	src/wii/Makefile
+	src/windows/Makefile
+	autopackage/default.apspec
+])
+if test x$yabause_yui = xqt ; then
+	case $host in
+		*mingw*)
+			case $build in
+				*linux*)
+					qmake_spec="-win32 -spec mkspecs/win32-x11-g++"
+					;;
+				*darwin*)
+					qmake_spec="-win32 -spec mkspecs/win32-osx-g++"
+					;;
+				*)
+					if test "x$cross_compiling" = "xyes" ; then
+						AC_MSG_ERROR([cross-compiling $host port on $build is not supported yet])
+					fi
+					;;
+			esac
+			;;
+		*darwin*)
+			case $build in
+				*darwin*)
+					qmake_spec="-spec macx-g++"
+					;;
+				*)
+					AC_MSG_ERROR([cross-compiling $host port on $build is not supported yet])
+					;;
+			esac
+			;;
+		*)
+			if test "x$cross_compiling" = "xyes" ; then
+				AC_MSG_ERROR([cross-compiling $host port on $build is not supported yet])
+			fi
+			;;
+	esac
+	AC_CONFIG_FILES([src/qt/Makefile.qmake:src/qt/yabause.pro],
+			[( cd src/qt && $QMAKE yabause.pro $QMAKE_SPEC -o Makefile.qmake )],
+			[QMAKE=$HAVE_QMAKE QMAKE_SPEC="$qmake_spec"])
+fi
+
+AC_CONFIG_COMMANDS([src/c68k/Makefile], [( cd src/c68k/ && $CONFIG_SHELL ${ac_srcdir}/configure )])
+
+AM_CONDITIONAL([YUI_IS_CARBON], [test ${yabause_yui} = "carbon"])
+AM_CONDITIONAL([YUI_IS_DREAMCAST], [test ${yabause_yui} = "dreamcast"])
+AM_CONDITIONAL([YUI_IS_GTK], [test ${yabause_yui} = "gtk"])
+AM_CONDITIONAL([YUI_IS_PSP], [test ${yabause_yui} = "psp"])
+AM_CONDITIONAL([YUI_IS_QT], [test ${yabause_yui} = "qt"])
+AM_CONDITIONAL([YUI_IS_WII], [test ${yabause_yui} = "wii"])
+AM_CONDITIONAL([YUI_IS_WINDOWS], [test ${yabause_yui} = "windows"])
+
+AM_CONDITIONAL([ARCH_IS_FREEBSD], [test ${yabause_arch} = "freebsd"])
+AM_CONDITIONAL([ARCH_IS_LINUX], [test ${yabause_arch} = "linux"])
+AM_CONDITIONAL([ARCH_IS_MACOSX], [test ${yabause_arch} = "macosx"])
+AM_CONDITIONAL([ARCH_IS_NETBSD], [test ${yabause_arch} = "netbsd"])
+AM_CONDITIONAL([ARCH_IS_WINDOWS], [test ${yabause_arch} = "windows"])
+
+AM_CONDITIONAL([CPU_IS_ARM], [test ${yabause_cpu} = "arm"])
+AM_CONDITIONAL([CPU_IS_X86], [test ${yabause_cpu} = "x86"])
+AM_CONDITIONAL([CPU_IS_X64], [test ${yabause_cpu} = "x64"])
+AM_CONDITIONAL([CPU_IS_PSP], [test ${yabause_cpu} = "psp"])
+
+AC_OUTPUT
+
+echo "=================="
+echo "WARNING"
+echo
+echo "Compiling Yabause with autootols is deprecated"
+echo
+echo "Please use CMake instead"
+echo
+echo "=================="
+echo "configure report"
+echo
+echo "available ports: $yabause_available_yuis"
+echo "selected port:   $yabause_yui"
+echo "=================="

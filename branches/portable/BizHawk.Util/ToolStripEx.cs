@@ -2,7 +2,6 @@
 
 using System;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 
 /// <summary>
 /// This class adds on to the functionality provided in System.Windows.Forms.ToolStrip.
@@ -19,11 +18,11 @@ public class ToolStripEx : ToolStrip
 	{
 		get
 		{
-			return this.clickThrough;
+			return clickThrough;
 		}
 		set
 		{
-			this.clickThrough = value;
+			clickThrough = value;
 		}
 	}
 	
@@ -31,7 +30,7 @@ public class ToolStripEx : ToolStrip
 	protected override void WndProc(ref Message m)
 	{
 		base.WndProc(ref m);
-		if (this.clickThrough &&
+		if (clickThrough &&
 			m.Msg == NativeConstants.WM_MOUSEACTIVATE &&
 			m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT)
 		{
@@ -56,11 +55,11 @@ public class MenuStripEx : MenuStrip
 	{
 		get
 		{
-			return this.clickThrough;
+			return clickThrough;
 		}
 		set
 		{
-			this.clickThrough = value;
+			clickThrough = value;
 		}
 	}
 	
@@ -68,7 +67,7 @@ public class MenuStripEx : MenuStrip
 	protected override void WndProc(ref Message m)
 	{
 		base.WndProc(ref m);
-		if (this.clickThrough &&
+		if (clickThrough &&
 			m.Msg == NativeConstants.WM_MOUSEACTIVATE &&
 			m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT)
 		{

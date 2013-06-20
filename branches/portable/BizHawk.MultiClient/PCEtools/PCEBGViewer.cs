@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using BizHawk.Emulation.Consoles.TurboGrafx;
@@ -13,10 +8,8 @@ namespace BizHawk.MultiClient
 {
 	public partial class PCEBGViewer : Form
 	{
-		PCEngine pce;
-		int VDCtype = 0;
-		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
-		int defaultHeight;
+		private PCEngine pce;
+		private int VDCtype;
 
 		public PCEBGViewer()
 		{
@@ -36,13 +29,12 @@ namespace BizHawk.MultiClient
 			BitmapData buf = canvas.bat.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, canvas.bat.PixelFormat);
 			int pitch = buf.Stride / 4;
 			int* begin = (int*)buf.Scan0.ToPointer();
-			int* p = begin;
 
 			// TODO: this does not clear background, why?
 			//for (int i = 0; i < pitch * buf.Height; ++i, ++p)
 			//	*p = canvas.BackColor.ToArgb();
 
-			p = begin;
+			int* p = begin;
 			for (int y = 0; y < height; ++y)
 			{
 				int yTile = y / 8;
@@ -72,10 +64,10 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			if (!(Global.Emulator is PCEngine))
 			{
-				this.Close();
+				Close();
 				return;
 			}
 			pce = Global.Emulator as PCEngine;
@@ -83,23 +75,20 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			if (!(Global.Emulator is PCEngine)) return;
 			Generate();
 		}
 
 		private void SaveConfigSettings()
 		{
-			Global.Config.PCEBGViewerWndx = this.Location.X;
-			Global.Config.PCEBGViewerWndy = this.Location.Y;
+			Global.Config.PCEBGViewerWndx = Location.X;
+			Global.Config.PCEBGViewerWndy = Location.Y;
 			Global.Config.PCEBGViewerRefreshRate = RefreshRate.Value;
 		}
 
 		private void LoadConfigSettings()
 		{
-			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
-			defaultHeight = Size.Height;
-
 			if (Global.Config.PCEBGViewerSaveWIndowPosition && Global.Config.PCEBGViewerWndx >= 0 && Global.Config.PCEBGViewerWndy >= 0)
 				Location = new Point(Global.Config.PCEBGViewerWndx, Global.Config.PCEBGViewerWndy);
 		}
@@ -118,19 +107,9 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void PCEBGViewer_FormClosed(object sender, FormClosedEventArgs e)
-		{
-
-		}
-
-		private void vdcComboBox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			Generate();
-		}
-
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)

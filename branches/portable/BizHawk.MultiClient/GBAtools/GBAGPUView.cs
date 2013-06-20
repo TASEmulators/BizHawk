@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BizHawk.MultiClient.GBtools;
 
@@ -15,16 +10,16 @@ namespace BizHawk.MultiClient.GBAtools
 		Emulation.Consoles.Nintendo.GBA.GBA gba;
 
 		// emulator memory areas
-		IntPtr vram;
-		IntPtr oam;
-		IntPtr mmio;
-		IntPtr palram;
+		private IntPtr vram;
+		private IntPtr oam;
+		private IntPtr mmio;
+		private IntPtr palram;
 		// color conversion to RGB888
-		int[] ColorConversion;
+		private readonly int[] ColorConversion;
 
 		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal, sprites, bgtiles16, bgtiles256, sptiles16, sptiles256;
 
-		MobileDetailView details, memory;
+		MobileDetailView memory;
 
 		public GBAGPUView()
 		{
@@ -331,13 +326,12 @@ namespace BizHawk.MultiClient.GBAtools
 			if (!attr0.Bit(8) && attr0.Bit(9))
 				return; // 2x with affine off
 
-			int tw, th;
 			int shape = attr0 >> 14;
 			if (shape == 3)
 				return;
 			int size = attr1 >> 14;
-			tw = spritesizes[shape, size, 0];
-			th = spritesizes[shape, size, 1];
+			int tw = spritesizes[shape, size, 0];
+			int th = spritesizes[shape, size, 1];
 
 			bool eightbit = attr0.Bit(13);
 			bool hflip = attr1.Bit(12);
@@ -649,7 +643,7 @@ namespace BizHawk.MultiClient.GBAtools
 			sptiles256 = MakeMBVWidget("Sprite Tiles (8bpp)", 128, 256);
 			bgtiles16 = MakeMBVWidget("Background Tiles (4bpp)", 512, 256);
 			bgtiles256 = MakeMBVWidget("Background Tiles (8bpp)", 256, 256);
-			details = MakeMDVWidget("Details", 128, 192);
+			MakeMDVWidget("Details", 128, 192);
 			memory = MakeMDVWidget("Details - Memory", 128, 192);
 			listBoxWidgets.EndUpdate();
 
@@ -694,7 +688,7 @@ namespace BizHawk.MultiClient.GBAtools
 		/// <summary>belongs in ToolsBefore</summary>
 		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed)
+			if (!IsHandleCreated || IsDisposed)
 				return;
 			if (gba != null)
 			{

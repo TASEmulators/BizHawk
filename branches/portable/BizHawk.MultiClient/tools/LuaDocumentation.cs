@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -39,16 +38,7 @@ namespace BizHawk.MultiClient.tools
 
 		public List<string> GetFunctionsByLibrary(string library)
 		{
-			List<string> functions = new List<string>();
-			for (int i = 0; i < FunctionList.Count; i++)
-			{
-				if (FunctionList[i].library == library)
-				{
-					functions.Add(FunctionList[i].name);
-				}
-			}
-
-			return functions;
+			return (from t in FunctionList where t.library == library select t.name).ToList();
 		}
 
 		public class LibraryFunction
@@ -94,9 +84,7 @@ namespace BizHawk.MultiClient.tools
 			{
 				get
 				{
-					string r = "";
-					r = return_type.Replace("System.", "").Replace("LuaInterface.", "").ToLower().Trim();
-					return r;
+					return return_type.Replace("System.", "").Replace("LuaInterface.", "").ToLower().Trim();
 				}
 			}
 		}

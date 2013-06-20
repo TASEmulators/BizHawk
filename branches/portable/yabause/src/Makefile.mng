@@ -1,0 +1,86 @@
+#       Makefile.mng
+#       Mingw makefile
+#	Copyright (C) 2002, 2003, 2004 Lawrence Sebald
+#       Copyright (C) 2004-2007 Theo Berkau
+#	Based on KOS makefiles (C) by Dan Potter
+#
+#	This program is free software; you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation; either version 2 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program; if not, write to the Free Software
+#	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+#
+
+TARGET = yabause.exe
+CC = gcc
+RC = windres
+#DDEFINES=-DDEBUG
+VERSION=0.9.10
+DDEFINES=
+VDEFINES=-DPACKAGE=\"yabause-win\" -DVERSION=\"$(VERSION)\" -DHAVE_LIBGLUT -DHAVE_LIBGL \
+       -D_WIN32_IE=0x0500 -D_UNICODE -DUNICODE -DHAVE_LIBMINI18N
+CFLAGS=$(VDEFINES) $(DDEFINES) -O3 -fomit-frame-pointer -fno-strict-aliasing -Wall
+#CFLAGS=$(VDEFINES) $(DDEFINES) -O3 -fno-strict-aliasing -Wall -g
+CFLAGS2= -fomit-frame-pointer -fno-strict-aliasing -Wall 
+#CFLAGS2= -fno-strict-aliasing -Wall -g
+LDFLAGS=-lmingw32 -lopengl32 -lglut32 -lkernel32 -lgdi32 -lcomctl32 -lcomdlg32 -lwinmm \
+       -lws2_32 -ldxguid -ldinput8 -ldxerr8 -ldsound -lmini18n -lvfw32 -mwindows -mthreads
+OBJS = bios.o cdbase.o cheat.o coffelf.o cs0.o cs1.o cs2.o debug.o error.o m68kcore.o \
+       m68kc68k.o m68kd.o memory.o movie.o netlink.o peripheral.o profile.o scsp.o scu.o sh2core.o \
+       sh2idle.o sh2int.o sh2d.o smpc.o vdp1.o vdp2.o vdp2debug.o vidogl.o vidshared.o \
+       vidsoft.o yabause.o ygl.o cd-windows.o c68k/c68k.o c68k/c68kexec.o c68k/gen68k.o \
+       windows/perdx.o windows/snddx.o windows/yui.o windows/cheats.o windows/resource.o \
+       windows/custctl.o windows/disasm.o windows/hexedit.o windows/cpudebug/yuidebug.o \
+       windows/cpudebug/debug-68k.o windows/cpudebug/debug-scsp.o windows/cpudebug/debug-scu.o \
+       windows/cpudebug/debug-sh2.o windows/cpudebug/debug-smpc.o windows/cpudebug/debug-vdp1.o \
+       windows/cpudebug/debug-vdp2.o windows/settings/settings.o windows/settings/settings-basic.o \
+       windows/settings/settings-input.o windows/settings/settings-log.o windows/settings/settings-netlink.o \
+       windows/settings/settings-sound.o windows/settings/settings-video.o windows\bup-manager.o windows\aviout.o windows\ramwatch.o
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+.c.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
+windows/resource.o: windows/resource.rc windows/resource.h
+	cd windows && $(RC) $(VDEFINES) $(DDEFINES) resource.rc -o resource.o
+	cd ..
+clean:
+	rm -f $(OBJS)
+	rm -f $(TARGET)
+
+installer:
+	makensis "/XOutFile ..\..\yabause-$(VERSION)-win.exe" windows\installer\installer.nsi
+
+release:
+	zip -9 yabause-$(VERSION)-win.zip * -i *.dll -i yabause.exe
+	cd .. && zip -9 src\yabause-$(VERSION)-win.zip * -i AUTHORS -i Changelog -i COPYING -i README -i README.WIN
+
+cdbase.o: cdbase.h
+cs0.o: cs0.h core.h
+cs1.o: cs1.h core.h
+debug.o: debug.h
+memory.o: debug.h memory.h
+scu.o: scu.h debug.h core.h
+sh2core.o: sh2core.h core.h
+sh2int.o: sh2core.h sh2int.h core.h
+vdp1.o: vdp1.h debug.h memory.h
+c68k/c68k.o: c68k/c68k.h
+c68k/c68kexec.o: c68k/c68k.h c68k/c68k_ini.inc
+	$(CC) $(CFLAGS2) -c c68k/c68kexec.c -o $@
+c68k/c68k_ini.inc: c68k/gen68k.exe
+c68k/gen68k.exe: c68k/c68kexec.c c68k/c68k.c c68k/gen68k.c
+	$(CC) $(CFLAGS) -DC68K_GEN -o $@ $^
+	cd c68k && gen68k
+
+                        

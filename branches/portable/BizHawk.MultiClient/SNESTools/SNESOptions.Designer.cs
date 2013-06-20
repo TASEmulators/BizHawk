@@ -35,13 +35,15 @@
 			this.rbPerformance = new System.Windows.Forms.RadioButton();
 			this.cbRingbuf = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.cbDoubleSize = new System.Windows.Forms.CheckBox();
+			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(141, 172);
+			this.btnOk.Location = new System.Drawing.Point(141, 249);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 0;
@@ -53,7 +55,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(222, 172);
+			this.btnCancel.Location = new System.Drawing.Point(222, 249);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 1;
@@ -113,20 +115,42 @@
 			this.label1.Text = "This was designed as an optimization but it isn\'t clear whether it works. Feel fr" +
     "ee to try different settings and let us know the results.";
 			// 
+			// cbDoubleSize
+			// 
+			this.cbDoubleSize.AutoSize = true;
+			this.cbDoubleSize.Location = new System.Drawing.Point(18, 165);
+			this.cbDoubleSize.Name = "cbDoubleSize";
+			this.cbDoubleSize.Size = new System.Drawing.Size(178, 17);
+			this.cbDoubleSize.TabIndex = 6;
+			this.cbDoubleSize.Text = "Always Double-Size Framebuffer";
+			this.cbDoubleSize.UseVisualStyleBackColor = true;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(36, 186);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(254, 45);
+			this.label2.TabIndex = 7;
+			this.label2.Text = "Some games are changing the resolution constantly (e.g. SD3) so this option can f" +
+    "orce the SNES output to stay double-size always.";
+			// 
 			// SNESOptions
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(300, 198);
+			this.ClientSize = new System.Drawing.Size(300, 275);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.cbDoubleSize);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.cbRingbuf);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
 			this.Name = "SNESOptions";
-			this.Text = "SNESOptions";
+			this.ShowIcon = false;
+			this.Text = "SNES Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
@@ -143,5 +167,7 @@
 		private System.Windows.Forms.RadioButton rbPerformance;
 		private System.Windows.Forms.CheckBox cbRingbuf;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.CheckBox cbDoubleSize;
+		private System.Windows.Forms.Label label2;
 	}
 }

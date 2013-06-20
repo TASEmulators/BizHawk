@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BizHawk.MultiClient
 {
@@ -83,6 +83,13 @@ namespace BizHawk.MultiClient
 		/// Indicates whether this file is an archive
 		/// </summary>
 		public bool IsArchive { get { return extractor != null; } }
+
+		int? BoundIndex = null;
+
+		public int? GetBoundIndex()
+		{
+			return BoundIndex;
+		}
 
 
 		public class ArchiveItem
@@ -224,10 +231,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public ArchiveItem FindArchiveMember(string name)
 		{
-			foreach (var ai in ArchiveItems)
-				if (ai.name == name)
-					return ai;
-			return null;
+			return ArchiveItems.FirstOrDefault(ai => ai.name == name);
 		}
 
 		/// <summary>
@@ -269,7 +273,7 @@ namespace BizHawk.MultiClient
 			}
 #endif
 			Console.WriteLine("HawkFile bound " + CanonicalFullPath);
-
+			BoundIndex = archiveIndex;
 			return this;
 		}
 
@@ -281,6 +285,7 @@ namespace BizHawk.MultiClient
 			if (boundStream != null && boundStream != rootStream) boundStream.Close();
 			boundStream = null;
 			memberPath = null;
+			BoundIndex = null;
 		}
 
 		/// <summary>
@@ -387,10 +392,7 @@ namespace BizHawk.MultiClient
 			{
 				var afd = extractor.ArchiveFileData[i];
 				if (afd.IsDirectory) continue;
-				var ai = new ArchiveItem();
-				ai.name = FixArchiveFilename(afd.FileName);
-				ai.size = (long)afd.Size; //ulong. obnoxious.
-				ai.index = i;
+				var ai = new ArchiveItem {name = FixArchiveFilename(afd.FileName), size = (long) afd.Size, index = i};
 				archiveItems.Add(ai);
 			}
 #else
@@ -413,9 +415,10 @@ namespace BizHawk.MultiClient
 		{
 			int offset;
 			bool isExecutable;
-			foreach(string ext in NonArchiveExtensions)
-				if(Path.GetExtension(path).Substring(1).ToLower() == ext.ToLower())
-					return;
+			if (NonArchiveExtensions.Any(ext => Path.GetExtension(path).Substring(1).ToLower() == ext.ToLower()))
+			{
+				return;
+			}
 
 #if WINDOWS			
 			SevenZip.FileChecker.ThrowExceptions = false;

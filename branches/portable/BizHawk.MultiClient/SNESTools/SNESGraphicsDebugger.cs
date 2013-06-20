@@ -25,11 +25,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Nintendo.SNES;
@@ -118,7 +114,7 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsAfter()
 		{
 			SyncCore();
-			if (this.Visible && !checkScanlineControl.Checked)
+			if (Visible && !checkScanlineControl.Checked)
 			{
 				RegenerateData();
 				UpdateValues();
@@ -128,7 +124,7 @@ namespace BizHawk.MultiClient
 		public void UpdateToolsLoadstate()
 		{
 			SyncCore();
-			if (this.Visible)
+			if (Visible)
 			{
 				RegenerateData();
 				UpdateValues();
@@ -174,7 +170,7 @@ namespace BizHawk.MultiClient
 
 			if (currentSnesCore != null)
 			{
-				if (this.Visible && checkScanlineControl.Checked)
+				if (Visible && checkScanlineControl.Checked)
 					currentSnesCore.ScanlineHookManager.Register(this, ScanlineHook);
 				else
 					currentSnesCore.ScanlineHookManager.Unregister(this);
@@ -211,7 +207,7 @@ namespace BizHawk.MultiClient
 
 		void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!IsHandleCreated || IsDisposed) return;
 			if (currentSnesCore == null) return;
 
 			txtOBSELSizeBits.Text = si.OBSEL_Size.ToString();
@@ -488,23 +484,23 @@ namespace BizHawk.MultiClient
 		
 		class DisplayTypeItem
 		{
-			public eDisplayType type { get; set; }
-			public string descr { get; set; }
+			public eDisplayType Type { get; private set; }
+			public string Descr { get; private set; }
 			public DisplayTypeItem(string descr, eDisplayType type)
 			{
-				this.type = type;
-				this.descr = descr;
+				Type = type;
+				Descr = descr;
 			}
 		}
 
 		class PaletteTypeItem
 		{
-			public SnesColors.ColorType type { get; set; }
-			public string descr { get; set; }
+			public SnesColors.ColorType Type { get; private set; }
+			public string Descr { get; private set; }
 			public PaletteTypeItem(string descr, SnesColors.ColorType type)
 			{
-				this.type = type;
-				this.descr = descr;
+				Type = type;
+				Descr = descr;
 			}
 		}
 
@@ -519,7 +515,7 @@ namespace BizHawk.MultiClient
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -540,12 +536,12 @@ namespace BizHawk.MultiClient
 
 		private void SNESGraphicsDebugger_Load(object sender, EventArgs e)
 		{
-			defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
-			defaultHeight = this.Size.Height;
+			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = Size.Height;
 
 			if (Global.Config.SNESGraphicsDebuggerSaveWindowPosition && Global.Config.SNESGraphicsDebuggerWndx >= 0 && Global.Config.SNESGraphicsDebuggerWndy >= 0)
 			{
-				this.Location = new Point(Global.Config.SNESGraphicsDebuggerWndx, Global.Config.SNESGraphicsDebuggerWndy);
+				Location = new Point(Global.Config.SNESGraphicsDebuggerWndx, Global.Config.SNESGraphicsDebuggerWndy);
 			}
 
 			checkBackdropColor.Checked = Global.Config.SNESGraphicsUseUserBackdropColor;
@@ -561,8 +557,8 @@ namespace BizHawk.MultiClient
 
 		private void SaveConfigSettings()
 		{
-			Global.Config.SNESGraphicsDebuggerWndx = this.Location.X;
-			Global.Config.SNESGraphicsDebuggerWndy = this.Location.Y;
+			Global.Config.SNESGraphicsDebuggerWndx = Location.X;
+			Global.Config.SNESGraphicsDebuggerWndy = Location.Y;
 		}
 
 		bool suppression = false;
@@ -889,7 +885,7 @@ namespace BizHawk.MultiClient
 			{
 				viewerPan = true;
 				panStartLocation = viewer.PointToScreen(e.Location);
-				this.Cursor = Cursors.SizeAll;
+				Cursor = Cursors.SizeAll;
 			}
 
 			if ((e.Button & System.Windows.Forms.MouseButtons.Right) != 0)
@@ -933,7 +929,7 @@ namespace BizHawk.MultiClient
 		{
 			viewerPan = false;
 			viewer.Capture = false;
-			this.Cursor = Cursors.Default;
+			Cursor = Cursors.Default;
 		}
 
 		private void viewer_MouseMove(object sender, MouseEventArgs e)
@@ -1296,7 +1292,7 @@ namespace BizHawk.MultiClient
 					}
 					string label = "";
 					if (found.Name == "viewer")
-						label = displayTypeItems.Find((x) => x.type == CurrDisplaySelection).descr;
+						label = displayTypeItems.Find((x) => x.Type == CurrDisplaySelection).Descr;
 					if (found.Name == "viewerTile")
 						label = "Tile";
 					if (found.Name == "viewerMapEntryTile")

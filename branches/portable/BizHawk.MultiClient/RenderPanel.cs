@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
 using System.Drawing;
 using sysdrawingfont=System.Drawing.Font;
 using sysdrawing2d=System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
-using System.Text;
 using System.Windows.Forms;
 #if WINDOWS
 using SlimDX;
@@ -60,7 +56,6 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				var currentTextureSize = Texture.GetLevelDescription(0);
 				if (imageWidth != width || imageHeight != height)
 				{
 					needsRecreating = true;
@@ -132,7 +127,7 @@ namespace BizHawk.MultiClient
 		void FastRenderAndPresent(DisplaySurface surface);
 		void Render(DisplaySurface surface);
 		void RenderOverlay(DisplaySurface surface);
-		void Clear(System.Drawing.Color color);
+		void Clear(Color color);
 		void Present();
 		bool Resized { get; set; }
 		Size NativeSize { get; }
@@ -146,10 +141,11 @@ namespace BizHawk.MultiClient
 
 	public class SysdrawingRenderPanel : IRenderer, IBlitter
 	{
-		sysdrawingfont MessageFont;
-		sysdrawingfont AlertFont;
-		DisplaySurface tempBuffer;
-		Graphics g;
+		private readonly sysdrawingfont MessageFont;
+		private readonly sysdrawingfont AlertFont;
+		private DisplaySurface tempBuffer;
+		private Graphics g;
+		private readonly SwappableDisplaySurfaceSet surfaceSet = new SwappableDisplaySurfaceSet();
 
 		public bool Resized { get; set; }
 		public void Dispose() { }
@@ -160,9 +156,8 @@ namespace BizHawk.MultiClient
 			lock (this)
 				tempBuffer = surfaceSet.AllocateSurface(backingControl.Width, backingControl.Height, false);
 
-			RenderInternal(surface, false);
+			RenderInternal(surface);
 		}
-		SwappableDisplaySurfaceSet surfaceSet = new SwappableDisplaySurfaceSet();
 
 		class FontWrapper : IBlitterFont
 		{
@@ -170,7 +165,8 @@ namespace BizHawk.MultiClient
 			{
 				this.font = font;
 			}
-			public sysdrawingfont font;
+			
+			public readonly sysdrawingfont font;
 		}
 
 		public Size NativeSize { get { return backingControl.ClientSize; } }
@@ -297,9 +293,9 @@ namespace BizHawk.MultiClient
 		public bool Resized { get; set; }
 		public string FPS { get; set; }
 		public string MT { get; set; }
-		private Direct3D d3d;
-		private Device Device;
-		private Control backingControl;
+		private readonly Direct3D d3d;
+		private Device _device;
+		private readonly Control backingControl;
 		public ImageTexture Texture;
 		private Sprite Sprite;
 		private d3d9font MessageFont;
@@ -311,7 +307,8 @@ namespace BizHawk.MultiClient
 			{
 				this.font = font;
 			}
-			public d3d9font font;
+
+			public readonly d3d9font font;
 		}
 
 		void IBlitter.Open()
@@ -374,10 +371,10 @@ namespace BizHawk.MultiClient
 				Sprite = null;
 			}
 
-			if (Device != null)
+			if (_device != null)
 			{
-				Device.Dispose();
-				Device = null;
+				_device.Dispose();
+				_device = null;
 			}
 
 			if (MessageFont != null)
@@ -419,12 +416,12 @@ namespace BizHawk.MultiClient
 			{
 				flags = CreateFlags.HardwareVertexProcessing;
 			}
-			Device = new Device(d3d, 0, DeviceType.Hardware, backingControl.Handle, flags, pp);
-			Sprite = new Sprite(Device);
-			Texture = new ImageTexture(Device);
+			_device = new Device(d3d, 0, DeviceType.Hardware, backingControl.Handle, flags, pp);
+			Sprite = new Sprite(_device);
+			Texture = new ImageTexture(_device);
 
-			MessageFont = new d3d9font(Device, 16, 0, FontWeight.Bold, 1, false, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
-			AlertFont = new d3d9font(Device, 16, 0, FontWeight.ExtraBold, 1, true, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
+			MessageFont = new d3d9font(_device, 16, 0, FontWeight.Bold, 1, false, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
+			AlertFont = new d3d9font(_device, 16, 0, FontWeight.ExtraBold, 1, true, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
 			// NOTE: if you add ANY objects, like new fonts, textures, etc, to this method
 			// ALSO add dispose code in DestroyDevice() or you will be responsible for VRAM memory leaks.
 
@@ -432,11 +429,11 @@ namespace BizHawk.MultiClient
 
 		public void Render()
 		{
-			if (Device == null || Resized || Vsync != VsyncRequested)
+			if (_device == null || Resized || Vsync != VsyncRequested)
 				backingControl.Invoke(() => CreateDevice());
 
 			Resized = false;
-			Device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
+			_device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
 			Present();
 		}
 
@@ -470,7 +467,7 @@ namespace BizHawk.MultiClient
 				if (Global.Sound != null) Global.Sound.StopSound();
 				do
 				{
-					r = Device.TestCooperativeLevel();
+					r = _device.TestCooperativeLevel();
 					Thread.Sleep(100);
 				} while (r == ResultCode.DeviceLost);
 				if (Global.Sound != null) Global.Sound.StartSound();
@@ -484,14 +481,14 @@ namespace BizHawk.MultiClient
 
 		void RenderPrep()
 		{
-			if (Device == null || Resized || Vsync != VsyncRequested)
+			if (_device == null || Resized || Vsync != VsyncRequested)
 				backingControl.Invoke(() => CreateDevice());
 			Resized = false;
 		}
 
 		public void Clear(Color color)
 		{
-			Device.Clear(ClearFlags.Target, col(color), 0.0f, 0);
+			_device.Clear(ClearFlags.Target, col(color), 0.0f, 0);
 		}
 
 		private void RenderExec(DisplaySurface surface, bool overlay)
@@ -505,32 +502,32 @@ namespace BizHawk.MultiClient
 
 			Texture.SetImage(surface, surface.Width, surface.Height);
 
-			if(!overlay) Device.Clear(ClearFlags.Target, BackgroundColor, 0.0f, 0);
+			if(!overlay) _device.Clear(ClearFlags.Target, BackgroundColor, 0.0f, 0);
 			// figure out scaling factor
 			float widthScale = (float)backingControl.Size.Width / surface.Width;
 			float heightScale = (float)backingControl.Size.Height / surface.Height;
 			float finalScale = Math.Min(widthScale, heightScale);
 
-			Device.BeginScene();
+			_device.BeginScene();
 
 			SpriteFlags flags = SpriteFlags.None;
 			if (overlay) flags |= SpriteFlags.AlphaBlend;
 			Sprite.Begin(flags);
 			if (Global.Config.DispBlurry)
 			{
-				Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
-				Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
+				_device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
+				_device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
 			}
 			else
 			{
-				Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
-				Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
+				_device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
+				_device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
 			}
 			Sprite.Transform = Matrix.Scaling(finalScale, finalScale, 0f);
 			Sprite.Draw(Texture.Texture, new Rectangle(0, 0, surface.Width, surface.Height), new Vector3(surface.Width / 2f, surface.Height / 2f, 0), new Vector3(backingControl.Size.Width / 2f / finalScale, backingControl.Size.Height / 2f / finalScale, 0), Color.White);
 			Sprite.End();
 
-			Device.EndScene();
+			_device.EndScene();
 		}
 
 		public void Present()
@@ -539,9 +536,9 @@ namespace BizHawk.MultiClient
 			RenderWrapper(_Present);
 		}
 
-		System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-		long stopwatchthrottle = System.Diagnostics.Stopwatch.Frequency / 50;
-		long stopwatchtmr = 0;
+		private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+		private readonly long stopwatchthrottle = System.Diagnostics.Stopwatch.Frequency / 50;
+		private long stopwatchtmr;
 		private void _Present()
 		{
 			// according to the internet, D3DPRESENT_DONOTWAIT is not terribly reliable
@@ -558,7 +555,7 @@ namespace BizHawk.MultiClient
 				{
 					stopwatch.Restart();
 					//Device.GetSwapChain(0).Present(SlimDX.Direct3D9.Present.DoNotWait);
-					Device.Present(SlimDX.Direct3D9.Present.None);
+					_device.Present(SlimDX.Direct3D9.Present.None);
 					stopwatch.Stop();
 					stopwatchtmr += stopwatch.ElapsedTicks;
 					//Console.WriteLine('.');
@@ -566,7 +563,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 			else
-				Device.Present(SlimDX.Direct3D9.Present.None);
+				_device.Present(SlimDX.Direct3D9.Present.None);
 		}
 
 		// not used anywhere?

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -29,8 +25,7 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.WriteMovie();
 			}
 
-			Global.MovieSession = new MovieSession();
-			Global.MovieSession.Movie = m;
+			Global.MovieSession = new MovieSession {Movie = m};
 			RewireInputChain();
 
 			if (!record)
@@ -66,21 +61,21 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.IsPlaying)
 			{
 				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
-				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Play;
+				PlayRecordStatus.Image = Properties.Resources.Play;
 				PlayRecordStatus.ToolTipText = "Movie is in playback mode";
 				PlayRecordStatus.Visible = true;
 			}
 			else if (Global.MovieSession.Movie.IsRecording)
 			{
 				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
-				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.RecordHS;
+				PlayRecordStatus.Image = Properties.Resources.RecordHS;
 				PlayRecordStatus.ToolTipText = "Movie is in record mode";
 				PlayRecordStatus.Visible = true;
 			}
 			else if (!Global.MovieSession.Movie.IsActive)
 			{
 				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name;
-				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+				PlayRecordStatus.Image = Properties.Resources.Blank;
 				PlayRecordStatus.ToolTipText = "No movie is active";
 				PlayRecordStatus.Visible = false;
 			}
@@ -90,7 +85,7 @@ namespace BizHawk.MultiClient
 		{
 			RunLoopBlocked = true;
 			PlayMovie p = new PlayMovie();
-			DialogResult d = p.ShowDialog();
+			p.ShowDialog();
 			RunLoopBlocked = false;
 		}
 
@@ -106,7 +101,7 @@ namespace BizHawk.MultiClient
 					"is currently BETA-status.  We appreciate your help in testing Bizhawk. " +
 					"You can record a movie on this core if you'd like to, but expect to " +
 					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
-				if (result != System.Windows.Forms.DialogResult.Yes)
+				if (result != DialogResult.Yes)
 					return;
 			}
 			RecordMovie r = new RecordMovie();
@@ -342,11 +337,10 @@ namespace BizHawk.MultiClient
 		//On movie load, these need to be set based on the contents of the movie file
 		private void SetSyncDependentSettings()
 		{
-			string str = "";
 			switch (Global.Emulator.SystemId)
 			{
 				case "Coleco":
-					str = Global.MovieSession.Movie.Header.GetHeaderLine(MovieHeader.SKIPBIOS);
+					string str = Global.MovieSession.Movie.Header.GetHeaderLine(MovieHeader.SKIPBIOS);
 					if (!String.IsNullOrWhiteSpace(str))
 					{
 						if (str.ToLower() == "true")
