@@ -414,9 +414,9 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void UpdateSoundSettings()
 		{
-			if (Global.Emulator is NES)
+			if (Global.Emulator is BizHawk.Emulation.Consoles.Nintendo.NES)
 			{
-				NES n = Global.Emulator as NES;
+				BizHawk.Emulation.Consoles.Nintendo.NES n = Global.Emulator as BizHawk.Emulation.Consoles.Nintendo.NES;
 				if (Global.Config.SoundEnabled == false)
 					n.SoundOn = false;
 				else

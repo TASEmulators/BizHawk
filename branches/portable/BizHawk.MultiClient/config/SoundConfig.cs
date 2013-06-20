@@ -28,16 +28,19 @@ namespace BizHawk.MultiClient
 			// vestigal
 			ThrottlecheckBox.Visible = false;
 
-
+#if WINDOWS
 			var dd = SoundEnumeration.DeviceNames();
+#endif
 			listBoxSoundDevices.Items.Add("<default>");
 			listBoxSoundDevices.SelectedIndex = 0;
+#if WINDOWS
 			foreach (var d in dd)
 			{
 				listBoxSoundDevices.Items.Add(d);
 				if (d == Global.Config.SoundDevice)
 					listBoxSoundDevices.SelectedItem = d;
 			}
+#endif
 		}
 
 		private void OK_Click(object sender, EventArgs e)

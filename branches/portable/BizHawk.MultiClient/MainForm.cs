@@ -503,7 +503,7 @@ namespace BizHawk.MultiClient
 			bool gdi = Global.Config.DisplayGDI || Global.Direct3D == null;
 #else
 			//if(OpenTK.Configuration.RunningOnMacOS) //OpenTK on Mac OS X doesn't support OpenGL WinForms control right now. :-(
-				gdi = true; //I can't test OpenGL myself, so I'm not going to maintain it until I can
+			bool gdi = true; //I can't test OpenGL myself, so I'm not going to maintain it until I can
 #endif
 			if (renderTarget != null)
 			{
@@ -3692,7 +3692,9 @@ namespace BizHawk.MultiClient
 			UpdateToolsAfter(fromLua);
 			UpdateToolsLoadstate();
 			Global.OSD.AddMessage("Loaded state: " + name);
+#if WINDOWS
 			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
+#endif
 		}
 
 		public void LoadState(string name, bool fromLua = false)
