@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.PlatformTabControl = new System.Windows.Forms.TabControl();
 			this.tabPageNES = new System.Windows.Forms.TabPage();
 			this.pictureBox14 = new System.Windows.Forms.PictureBox();
@@ -205,6 +204,40 @@
 			this.tabPageTI83 = new System.Windows.Forms.TabPage();
 			this.pictureBox7 = new System.Windows.Forms.PictureBox();
 			this.TI83ControllerPanel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPageN64 = new System.Windows.Forms.TabPage();
+			this.pictureBox18 = new System.Windows.Forms.PictureBox();
+			this.tabcontrol69 = new System.Windows.Forms.TabControl();
+			this.tabPage67 = new System.Windows.Forms.TabPage();
+			this.N64Controller1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage68 = new System.Windows.Forms.TabPage();
+			this.N64Controller2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage69 = new System.Windows.Forms.TabPage();
+			this.N64Controller3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage70 = new System.Windows.Forms.TabPage();
+			this.N64Controller4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage71 = new System.Windows.Forms.TabPage();
+			this.N64ConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage72 = new System.Windows.Forms.TabPage();
+			this.N64Autofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage73 = new System.Windows.Forms.TabPage();
+			this.N64Autofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage74 = new System.Windows.Forms.TabPage();
+			this.N64Autofire3Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage75 = new System.Windows.Forms.TabPage();
+			this.N64Autofire4Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPageSaturn = new System.Windows.Forms.TabPage();
+			this.pictureBox19 = new System.Windows.Forms.PictureBox();
+			this.tabControl13 = new System.Windows.Forms.TabControl();
+			this.tabPage76 = new System.Windows.Forms.TabPage();
+			this.SaturnController1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage77 = new System.Windows.Forms.TabPage();
+			this.SaturnController2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage78 = new System.Windows.Forms.TabPage();
+			this.SaturnConsoleButtons = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage79 = new System.Windows.Forms.TabPage();
+			this.SaturnAutofire1Panel = new BizHawk.MultiClient.ControllerConfigPanel();
+			this.tabPage80 = new System.Windows.Forms.TabPage();
+			this.SaturnAutofire2Panel = new BizHawk.MultiClient.ControllerConfigPanel();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
@@ -318,6 +351,26 @@
 			this.tabPage64.SuspendLayout();
 			this.tabPageTI83.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
+			this.tabPageN64.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox18)).BeginInit();
+			this.tabcontrol69.SuspendLayout();
+			this.tabPage67.SuspendLayout();
+			this.tabPage68.SuspendLayout();
+			this.tabPage69.SuspendLayout();
+			this.tabPage70.SuspendLayout();
+			this.tabPage71.SuspendLayout();
+			this.tabPage72.SuspendLayout();
+			this.tabPage73.SuspendLayout();
+			this.tabPage74.SuspendLayout();
+			this.tabPage75.SuspendLayout();
+			this.tabPageSaturn.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox19)).BeginInit();
+			this.tabControl13.SuspendLayout();
+			this.tabPage76.SuspendLayout();
+			this.tabPage77.SuspendLayout();
+			this.tabPage78.SuspendLayout();
+			this.tabPage79.SuspendLayout();
+			this.tabPage80.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// PlatformTabControl
@@ -338,6 +391,8 @@
 			this.PlatformTabControl.Controls.Add(this.tabPageColeco);
 			this.PlatformTabControl.Controls.Add(this.tabPageINTV);
 			this.PlatformTabControl.Controls.Add(this.tabPageTI83);
+			this.PlatformTabControl.Controls.Add(this.tabPageN64);
+			this.PlatformTabControl.Controls.Add(this.tabPageSaturn);
 			this.PlatformTabControl.Location = new System.Drawing.Point(12, 21);
 			this.PlatformTabControl.Name = "PlatformTabControl";
 			this.PlatformTabControl.SelectedIndex = 0;
@@ -1104,7 +1159,7 @@
 			this.tabPage34.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage34.Size = new System.Drawing.Size(338, 375);
 			this.tabPage34.TabIndex = 1;
-			this.tabPage34.Text = "Pad 1";
+			this.tabPage34.Text = "Pad 2";
 			this.tabPage34.UseVisualStyleBackColor = true;
 			// 
 			// SMSController2Panel
@@ -2062,6 +2117,330 @@
 			this.TI83ControllerPanel.Size = new System.Drawing.Size(567, 414);
 			this.TI83ControllerPanel.TabIndex = 1;
 			// 
+			// tabPageN64
+			// 
+			this.tabPageN64.Controls.Add(this.pictureBox18);
+			this.tabPageN64.Controls.Add(this.tabcontrol69);
+			this.tabPageN64.Location = new System.Drawing.Point(4, 22);
+			this.tabPageN64.Name = "tabPageN64";
+			this.tabPageN64.Size = new System.Drawing.Size(787, 425);
+			this.tabPageN64.TabIndex = 13;
+			this.tabPageN64.Text = "N64";
+			this.tabPageN64.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox18
+			// 
+			this.pictureBox18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox18.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox18.Image = global::BizHawk.MultiClient.Properties.Resources.N64;
+			this.pictureBox18.Location = new System.Drawing.Point(488, 31);
+			this.pictureBox18.Name = "pictureBox18";
+			this.pictureBox18.Size = new System.Drawing.Size(284, 236);
+			this.pictureBox18.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox18.TabIndex = 8;
+			this.pictureBox18.TabStop = false;
+			// 
+			// tabcontrol69
+			// 
+			this.tabcontrol69.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.tabcontrol69.Controls.Add(this.tabPage67);
+			this.tabcontrol69.Controls.Add(this.tabPage68);
+			this.tabcontrol69.Controls.Add(this.tabPage69);
+			this.tabcontrol69.Controls.Add(this.tabPage70);
+			this.tabcontrol69.Controls.Add(this.tabPage71);
+			this.tabcontrol69.Controls.Add(this.tabPage72);
+			this.tabcontrol69.Controls.Add(this.tabPage73);
+			this.tabcontrol69.Controls.Add(this.tabPage74);
+			this.tabcontrol69.Controls.Add(this.tabPage75);
+			this.tabcontrol69.Location = new System.Drawing.Point(15, 10);
+			this.tabcontrol69.Name = "tabcontrol69";
+			this.tabcontrol69.SelectedIndex = 0;
+			this.tabcontrol69.Size = new System.Drawing.Size(453, 404);
+			this.tabcontrol69.TabIndex = 7;
+			// 
+			// tabPage67
+			// 
+			this.tabPage67.Controls.Add(this.N64Controller1Panel);
+			this.tabPage67.Location = new System.Drawing.Point(4, 22);
+			this.tabPage67.Name = "tabPage67";
+			this.tabPage67.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage67.Size = new System.Drawing.Size(445, 378);
+			this.tabPage67.TabIndex = 0;
+			this.tabPage67.Text = "Pad 1";
+			this.tabPage67.UseVisualStyleBackColor = true;
+			// 
+			// N64Controller1Panel
+			// 
+			this.N64Controller1Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Controller1Panel.Name = "N64Controller1Panel";
+			this.N64Controller1Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Controller1Panel.TabIndex = 0;
+			// 
+			// tabPage68
+			// 
+			this.tabPage68.Controls.Add(this.N64Controller2Panel);
+			this.tabPage68.Location = new System.Drawing.Point(4, 22);
+			this.tabPage68.Name = "tabPage68";
+			this.tabPage68.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage68.Size = new System.Drawing.Size(445, 378);
+			this.tabPage68.TabIndex = 1;
+			this.tabPage68.Text = "Pad 2";
+			this.tabPage68.UseVisualStyleBackColor = true;
+			// 
+			// N64Controller2Panel
+			// 
+			this.N64Controller2Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Controller2Panel.Name = "N64Controller2Panel";
+			this.N64Controller2Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Controller2Panel.TabIndex = 0;
+			// 
+			// tabPage69
+			// 
+			this.tabPage69.Controls.Add(this.N64Controller3Panel);
+			this.tabPage69.Location = new System.Drawing.Point(4, 22);
+			this.tabPage69.Name = "tabPage69";
+			this.tabPage69.Size = new System.Drawing.Size(445, 378);
+			this.tabPage69.TabIndex = 2;
+			this.tabPage69.Text = "Pad 3";
+			this.tabPage69.UseVisualStyleBackColor = true;
+			// 
+			// N64Controller3Panel
+			// 
+			this.N64Controller3Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Controller3Panel.Name = "N64Controller3Panel";
+			this.N64Controller3Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Controller3Panel.TabIndex = 0;
+			// 
+			// tabPage70
+			// 
+			this.tabPage70.Controls.Add(this.N64Controller4Panel);
+			this.tabPage70.Location = new System.Drawing.Point(4, 22);
+			this.tabPage70.Name = "tabPage70";
+			this.tabPage70.Size = new System.Drawing.Size(445, 378);
+			this.tabPage70.TabIndex = 3;
+			this.tabPage70.Text = "Pad 4";
+			this.tabPage70.UseVisualStyleBackColor = true;
+			// 
+			// N64Controller4Panel
+			// 
+			this.N64Controller4Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Controller4Panel.Name = "N64Controller4Panel";
+			this.N64Controller4Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Controller4Panel.TabIndex = 0;
+			// 
+			// tabPage71
+			// 
+			this.tabPage71.Controls.Add(this.N64ConsoleButtons);
+			this.tabPage71.Location = new System.Drawing.Point(4, 22);
+			this.tabPage71.Name = "tabPage71";
+			this.tabPage71.Size = new System.Drawing.Size(445, 378);
+			this.tabPage71.TabIndex = 4;
+			this.tabPage71.Text = "Console";
+			this.tabPage71.UseVisualStyleBackColor = true;
+			// 
+			// N64ConsoleButtons
+			// 
+			this.N64ConsoleButtons.Location = new System.Drawing.Point(17, 15);
+			this.N64ConsoleButtons.Name = "N64ConsoleButtons";
+			this.N64ConsoleButtons.Size = new System.Drawing.Size(368, 341);
+			this.N64ConsoleButtons.TabIndex = 0;
+			// 
+			// tabPage72
+			// 
+			this.tabPage72.Controls.Add(this.N64Autofire1Panel);
+			this.tabPage72.Location = new System.Drawing.Point(4, 22);
+			this.tabPage72.Name = "tabPage72";
+			this.tabPage72.Size = new System.Drawing.Size(445, 378);
+			this.tabPage72.TabIndex = 5;
+			this.tabPage72.Text = "Autofire 1";
+			this.tabPage72.UseVisualStyleBackColor = true;
+			// 
+			// N64Autofire1Panel
+			// 
+			this.N64Autofire1Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Autofire1Panel.Name = "N64Autofire1Panel";
+			this.N64Autofire1Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Autofire1Panel.TabIndex = 0;
+			// 
+			// tabPage73
+			// 
+			this.tabPage73.Controls.Add(this.N64Autofire2Panel);
+			this.tabPage73.Location = new System.Drawing.Point(4, 22);
+			this.tabPage73.Name = "tabPage73";
+			this.tabPage73.Size = new System.Drawing.Size(445, 378);
+			this.tabPage73.TabIndex = 6;
+			this.tabPage73.Text = "Autofire 2";
+			this.tabPage73.UseVisualStyleBackColor = true;
+			// 
+			// N64Autofire2Panel
+			// 
+			this.N64Autofire2Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Autofire2Panel.Name = "N64Autofire2Panel";
+			this.N64Autofire2Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Autofire2Panel.TabIndex = 0;
+			// 
+			// tabPage74
+			// 
+			this.tabPage74.Controls.Add(this.N64Autofire3Panel);
+			this.tabPage74.Location = new System.Drawing.Point(4, 22);
+			this.tabPage74.Name = "tabPage74";
+			this.tabPage74.Size = new System.Drawing.Size(445, 378);
+			this.tabPage74.TabIndex = 7;
+			this.tabPage74.Text = "Autofire 3";
+			this.tabPage74.UseVisualStyleBackColor = true;
+			// 
+			// N64Autofire3Panel
+			// 
+			this.N64Autofire3Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Autofire3Panel.Name = "N64Autofire3Panel";
+			this.N64Autofire3Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Autofire3Panel.TabIndex = 0;
+			// 
+			// tabPage75
+			// 
+			this.tabPage75.Controls.Add(this.N64Autofire4Panel);
+			this.tabPage75.Location = new System.Drawing.Point(4, 22);
+			this.tabPage75.Name = "tabPage75";
+			this.tabPage75.Size = new System.Drawing.Size(445, 378);
+			this.tabPage75.TabIndex = 8;
+			this.tabPage75.Text = "Autofire 4";
+			this.tabPage75.UseVisualStyleBackColor = true;
+			// 
+			// N64Autofire4Panel
+			// 
+			this.N64Autofire4Panel.Location = new System.Drawing.Point(10, 10);
+			this.N64Autofire4Panel.Name = "N64Autofire4Panel";
+			this.N64Autofire4Panel.Size = new System.Drawing.Size(392, 332);
+			this.N64Autofire4Panel.TabIndex = 0;
+			// 
+			// tabPageSaturn
+			// 
+			this.tabPageSaturn.Controls.Add(this.pictureBox19);
+			this.tabPageSaturn.Controls.Add(this.tabControl13);
+			this.tabPageSaturn.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSaturn.Name = "tabPageSaturn";
+			this.tabPageSaturn.Size = new System.Drawing.Size(787, 425);
+			this.tabPageSaturn.TabIndex = 14;
+			this.tabPageSaturn.Text = "Saturn";
+			this.tabPageSaturn.UseVisualStyleBackColor = true;
+			// 
+			// pictureBox19
+			// 
+			this.pictureBox19.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox19.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.pictureBox19.Image = global::BizHawk.MultiClient.Properties.Resources.SaturnController;
+			this.pictureBox19.Location = new System.Drawing.Point(377, 37);
+			this.pictureBox19.Name = "pictureBox19";
+			this.pictureBox19.Size = new System.Drawing.Size(400, 275);
+			this.pictureBox19.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.pictureBox19.TabIndex = 6;
+			this.pictureBox19.TabStop = false;
+			// 
+			// tabControl13
+			// 
+			this.tabControl13.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.tabControl13.Controls.Add(this.tabPage76);
+			this.tabControl13.Controls.Add(this.tabPage77);
+			this.tabControl13.Controls.Add(this.tabPage78);
+			this.tabControl13.Controls.Add(this.tabPage79);
+			this.tabControl13.Controls.Add(this.tabPage80);
+			this.tabControl13.Location = new System.Drawing.Point(17, 15);
+			this.tabControl13.Name = "tabControl13";
+			this.tabControl13.SelectedIndex = 0;
+			this.tabControl13.Size = new System.Drawing.Size(346, 401);
+			this.tabControl13.TabIndex = 5;
+			// 
+			// tabPage76
+			// 
+			this.tabPage76.Controls.Add(this.SaturnController1Panel);
+			this.tabPage76.Location = new System.Drawing.Point(4, 22);
+			this.tabPage76.Name = "tabPage76";
+			this.tabPage76.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage76.Size = new System.Drawing.Size(338, 375);
+			this.tabPage76.TabIndex = 0;
+			this.tabPage76.Text = "Pad 1";
+			this.tabPage76.UseVisualStyleBackColor = true;
+			// 
+			// SaturnController1Panel
+			// 
+			this.SaturnController1Panel.Location = new System.Drawing.Point(6, 6);
+			this.SaturnController1Panel.Name = "SaturnController1Panel";
+			this.SaturnController1Panel.Size = new System.Drawing.Size(326, 332);
+			this.SaturnController1Panel.TabIndex = 1;
+			// 
+			// tabPage77
+			// 
+			this.tabPage77.Controls.Add(this.SaturnController2Panel);
+			this.tabPage77.Location = new System.Drawing.Point(4, 22);
+			this.tabPage77.Name = "tabPage77";
+			this.tabPage77.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage77.Size = new System.Drawing.Size(338, 375);
+			this.tabPage77.TabIndex = 1;
+			this.tabPage77.Text = "Pad 1";
+			this.tabPage77.UseVisualStyleBackColor = true;
+			// 
+			// SaturnController2Panel
+			// 
+			this.SaturnController2Panel.Location = new System.Drawing.Point(6, 6);
+			this.SaturnController2Panel.Name = "SaturnController2Panel";
+			this.SaturnController2Panel.Size = new System.Drawing.Size(326, 332);
+			this.SaturnController2Panel.TabIndex = 2;
+			// 
+			// tabPage78
+			// 
+			this.tabPage78.Controls.Add(this.SaturnConsoleButtons);
+			this.tabPage78.Location = new System.Drawing.Point(4, 22);
+			this.tabPage78.Name = "tabPage78";
+			this.tabPage78.Size = new System.Drawing.Size(338, 375);
+			this.tabPage78.TabIndex = 2;
+			this.tabPage78.Text = "Console";
+			this.tabPage78.UseVisualStyleBackColor = true;
+			// 
+			// SaturnConsoleButtons
+			// 
+			this.SaturnConsoleButtons.Location = new System.Drawing.Point(6, 6);
+			this.SaturnConsoleButtons.Name = "SaturnConsoleButtons";
+			this.SaturnConsoleButtons.Size = new System.Drawing.Size(322, 125);
+			this.SaturnConsoleButtons.TabIndex = 1;
+			// 
+			// tabPage79
+			// 
+			this.tabPage79.Controls.Add(this.SaturnAutofire1Panel);
+			this.tabPage79.Location = new System.Drawing.Point(4, 22);
+			this.tabPage79.Name = "tabPage79";
+			this.tabPage79.Size = new System.Drawing.Size(338, 375);
+			this.tabPage79.TabIndex = 3;
+			this.tabPage79.Text = "Autofire 1";
+			this.tabPage79.UseVisualStyleBackColor = true;
+			// 
+			// SaturnAutofire1Panel
+			// 
+			this.SaturnAutofire1Panel.Location = new System.Drawing.Point(6, 6);
+			this.SaturnAutofire1Panel.Name = "SaturnAutofire1Panel";
+			this.SaturnAutofire1Panel.Size = new System.Drawing.Size(326, 332);
+			this.SaturnAutofire1Panel.TabIndex = 3;
+			// 
+			// tabPage80
+			// 
+			this.tabPage80.Controls.Add(this.SaturnAutofire2Panel);
+			this.tabPage80.Location = new System.Drawing.Point(4, 22);
+			this.tabPage80.Name = "tabPage80";
+			this.tabPage80.Size = new System.Drawing.Size(338, 375);
+			this.tabPage80.TabIndex = 4;
+			this.tabPage80.Text = "Autofire 2";
+			this.tabPage80.UseVisualStyleBackColor = true;
+			// 
+			// SaturnAutofire2Panel
+			// 
+			this.SaturnAutofire2Panel.Location = new System.Drawing.Point(6, 6);
+			this.SaturnAutofire2Panel.Name = "SaturnAutofire2Panel";
+			this.SaturnAutofire2Panel.Size = new System.Drawing.Size(326, 332);
+			this.SaturnAutofire2Panel.TabIndex = 4;
+			// 
 			// Cancel
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -2132,7 +2511,7 @@
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.PlatformTabControl);
 			this.Name = "ControllerConfig";
-			this.Text = "ControllerConfig";
+			this.Text = "Controller Configuration";
 			this.Load += new System.EventHandler(this.ControllerConfig_Load);
 			this.PlatformTabControl.ResumeLayout(false);
 			this.tabPageNES.ResumeLayout(false);
@@ -2242,6 +2621,26 @@
 			this.tabPage64.ResumeLayout(false);
 			this.tabPageTI83.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
+			this.tabPageN64.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox18)).EndInit();
+			this.tabcontrol69.ResumeLayout(false);
+			this.tabPage67.ResumeLayout(false);
+			this.tabPage68.ResumeLayout(false);
+			this.tabPage69.ResumeLayout(false);
+			this.tabPage70.ResumeLayout(false);
+			this.tabPage71.ResumeLayout(false);
+			this.tabPage72.ResumeLayout(false);
+			this.tabPage73.ResumeLayout(false);
+			this.tabPage74.ResumeLayout(false);
+			this.tabPage75.ResumeLayout(false);
+			this.tabPageSaturn.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox19)).EndInit();
+			this.tabControl13.ResumeLayout(false);
+			this.tabPage76.ResumeLayout(false);
+			this.tabPage77.ResumeLayout(false);
+			this.tabPage78.ResumeLayout(false);
+			this.tabPage79.ResumeLayout(false);
+			this.tabPage80.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -2430,5 +2829,39 @@
 		private ControllerConfigPanel GBDualPanel;
 		private System.Windows.Forms.TabPage tabPage66;
 		private ControllerConfigPanel GBDualAutofirePanel;
+		private System.Windows.Forms.TabPage tabPageN64;
+		private System.Windows.Forms.PictureBox pictureBox18;
+		private System.Windows.Forms.TabControl tabcontrol69;
+		private System.Windows.Forms.TabPage tabPage67;
+		private ControllerConfigPanel N64Controller1Panel;
+		private System.Windows.Forms.TabPage tabPage68;
+		private ControllerConfigPanel N64Controller2Panel;
+		private System.Windows.Forms.TabPage tabPage69;
+		private ControllerConfigPanel N64Controller3Panel;
+		private System.Windows.Forms.TabPage tabPage70;
+		private ControllerConfigPanel N64Controller4Panel;
+		private System.Windows.Forms.TabPage tabPage71;
+		private ControllerConfigPanel N64ConsoleButtons;
+		private System.Windows.Forms.TabPage tabPage72;
+		private ControllerConfigPanel N64Autofire1Panel;
+		private System.Windows.Forms.TabPage tabPage73;
+		private ControllerConfigPanel N64Autofire2Panel;
+		private System.Windows.Forms.TabPage tabPage74;
+		private ControllerConfigPanel N64Autofire3Panel;
+		private System.Windows.Forms.TabPage tabPage75;
+		private ControllerConfigPanel N64Autofire4Panel;
+		private System.Windows.Forms.TabPage tabPageSaturn;
+		private System.Windows.Forms.PictureBox pictureBox19;
+		private System.Windows.Forms.TabControl tabControl13;
+		private System.Windows.Forms.TabPage tabPage76;
+		private ControllerConfigPanel SaturnController1Panel;
+		private System.Windows.Forms.TabPage tabPage77;
+		private ControllerConfigPanel SaturnController2Panel;
+		private System.Windows.Forms.TabPage tabPage78;
+		private ControllerConfigPanel SaturnConsoleButtons;
+		private System.Windows.Forms.TabPage tabPage79;
+		private ControllerConfigPanel SaturnAutofire1Panel;
+		private System.Windows.Forms.TabPage tabPage80;
+		private ControllerConfigPanel SaturnAutofire2Panel;
 	}
 }

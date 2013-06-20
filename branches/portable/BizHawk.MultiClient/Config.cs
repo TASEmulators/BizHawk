@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace BizHawk.MultiClient
 {
@@ -70,6 +71,16 @@ namespace BizHawk.MultiClient
 			SNESAutoController[1] = new SNESControllerTemplate(false);
 			SNESAutoController[2] = new SNESControllerTemplate(false);
 			SNESAutoController[3] = new SNESControllerTemplate(false);
+
+			N64Controller[0] = new N64ButtonsTemplate(true);
+			N64Controller[1] = new N64ButtonsTemplate(false);
+			N64Controller[2] = new N64ButtonsTemplate(false);
+			N64Controller[3] = new N64ButtonsTemplate(false);
+			N64AutoController[0] = new N64ButtonsTemplate(false);
+			N64AutoController[1] = new N64ButtonsTemplate(false);
+			N64AutoController[2] = new N64ButtonsTemplate(false);
+			N64AutoController[3] = new N64ButtonsTemplate(false);
+			N64ConsoleButtons = new Standard2ButtonConsoleTemplate(true);
 
 			ColecoController[0] = new ColecoVisionControllerTemplate(true);
 			ColecoController[1] = new ColecoVisionControllerTemplate(false);
@@ -246,8 +257,84 @@ namespace BizHawk.MultiClient
 		public string FilenameA78PALBios = "7800PALBIOS.bin";
 		public string FilenameA78HSCBios = "7800highscore.bin";
 		public string FilenameINTVEROM = "erom.bin";
+		public string FilenameSaturnBios = "Sega Saturn BIOS v1.01 (JAP).bin";
 
 		public string FFMpegPath = "%exe%/dll/ffmpeg.exe";
+
+		//N64 Config Settings
+		public string N64VidPlugin = "Rice";
+		public int N64VideoSizeX = 320;
+		public int N64VideoSizeY = 240;
+
+	
+		//public int RiceFrameBufferSetting = 0;
+		//public int RiceFrameBufferWriteBackControl = 0;
+		//public int RiceRenderToTexture = 0;
+		//public int RiceScreenUpdateSetting = 4;
+		//public int RiceMipmapping = 2;
+		//public int RiceFogMethod = 0;
+		//public int RiceForceTextureFilter = 0;
+		//public int RiceTextureEnhancement = 0;
+		//public int RiceTextureEnhancementControl = 0;
+		//public int RiceTextureQuality = 0;
+		//public int RiceOpenGLDepthBufferSetting = 16;
+		//public int RiceMultiSampling = 0;
+		//public int RiceColorQuality = 0;
+		//public int RiceOpenGLRenderSetting = 0;
+		//public int RiceAnisotropicFiltering = 0;
+
+		
+		//public bool RiceNormalAlphaBlender = false; 
+		//public bool RiceFastTextureLoading = false;
+		//public bool RiceAccurateTextureMapping = true;
+		//public bool RiceInN64Resolution = false;
+		//public bool RiceSaveVRAM = false;
+		//public bool RiceDoubleSizeForSmallTxtrBuf = false;
+		//public bool RiceDefaultCombinerDisable = false;
+		//public bool RiceEnableHacks = true;
+		//public bool RiceWinFrameMode = false;
+		//public bool RiceFullTMEMEmulation = false;
+		//public bool RiceOpenGLVertexClipper = false;
+		//public bool RiceEnableSSE = true;
+		//public bool RiceEnableVertexShader = false;
+		//public bool RiceSkipFrame = false;
+		//public bool RiceTexRectOnly = false;
+		//public bool RiceSmallTextureOnly = false;
+		//public bool RiceLoadHiResCRCOnly = true;
+		//public bool RiceLoadHiResTextures = false;
+		//public bool RiceDumpTexturesToFiles = false;
+
+		//public bool RiceUseDefaultHacks = true;
+		//public bool RiceDisableTextureCRC = false;
+		//public bool RiceDisableCulling = false;
+		//public bool RiceIncTexRectEdge = false;
+		//public bool RiceZHack = false;
+		//public bool RiceTextureScaleHack = false;
+		//public bool RicePrimaryDepthHack = false;
+		//public bool RiceTexture1Hack = false;
+		//public bool RiceFastLoadTile = false;
+		//public bool RiceUseSmallerTexture = false;
+		//public int RiceVIWidth = -1;
+		//public int RiceVIHeight = -1;
+		//public int RiceUseCIWidthAndRatio = 0;
+		//public int RiceFullTMEM = 0;
+		//public bool RiceTxtSizeMethod2 = false;
+		//public bool RiceEnableTxtLOD = false;
+		//public int RiceFastTextureCRC = 0;
+		//public bool RiceEmulateClear = false;
+		//public bool RiceForceScreenClear = false;
+		//public int RiceAccurateTextureMappingHack = 0;
+		//public int RiceNormalBlender = 0;
+		//public bool RiceDisableBlender = false;
+		//public bool RiceForceDepthBuffer = false;
+		//public bool RiceDisableObjBG = false;
+		//public int RiceFrameBufferOption = 0;
+		//public int RiceRenderToTextureOption = 0;
+		//public int RiceScreenUpdateSettingHack = 0;
+		//public int RiceEnableHacksForGame = 0;
+
+		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();
+		public N64GlidePluginSettings GlidePlugin = new N64GlidePluginSettings();
 
 		// General Client Settings
 		public int Input_Hotkey_OverrideOptions = 0;
@@ -285,6 +372,9 @@ namespace BizHawk.MultiClient
 		public bool SupressAskSave = false;
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
+
+		public enum SaveStateTypeE { Default, Binary, Text };
+		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
@@ -346,6 +436,7 @@ namespace BizHawk.MultiClient
 		public bool MuteFrameAdvance = true;
 		public int SoundVolume = 100; //Range 0-100
 		public bool SoundThrottle = false;
+		public string SoundDevice = "";
 
 		// Log Window
 		public bool LogWindowSaveWindowPosition = true;
@@ -519,6 +610,13 @@ namespace BizHawk.MultiClient
 		public bool SNES_ShowOBJ2 = true;
 		public bool SNES_ShowOBJ3 = true;
 		public bool SNES_ShowOBJ4 = true;
+
+		// SATURN GRAPHICS SETTINGS
+		public bool SaturnUseGL = false;
+		public int SaturnDispFactor = 1;
+		public bool SaturnDispFree = false;
+		public int SaturnGLW = 640;
+		public int SaturnGLH = 480;
 
 		// PCE Graphics settings
 		public bool PCEDispBG1 = true;
@@ -732,11 +830,17 @@ namespace BizHawk.MultiClient
 		public string MoviePlaybackPokeModeBinding = "";
 		public string ClearFrameBinding = "";
 		// NES Sound settings
-		public bool NESEnableSquare1 = true;
-		public bool NESEnableSquare2 = true;
-		public bool NESEnableTriangle = true;
-		public bool NESEnableNoise = true;
-		public bool NESEnableDMC = true;
+		public int NESSquare1 = 376;
+		public int NESSquare2 = 376;
+		public int NESTriangle = 426;
+		public int NESNoise = 247;
+		public int NESDMC = 167;
+
+		public const int NESSquare1Max = 376;
+		public const int NESSquare2Max = 376;
+		public const int NESTriangleMax = 426;
+		public const int NESNoiseMax = 247;
+		public const int NESDMCMax = 167;
 
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
@@ -796,6 +900,10 @@ namespace BizHawk.MultiClient
 		public bool SNESUseRingBuffer = true;
 		public bool SNESAlwaysDoubleSize = false;
 
+		public N64ButtonsTemplate[] N64Controller = new N64ButtonsTemplate[4];
+		public N64ButtonsTemplate[] N64AutoController = new N64ButtonsTemplate[4];
+		public Standard2ButtonConsoleTemplate N64ConsoleButtons = new Standard2ButtonConsoleTemplate();
+
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
 
@@ -820,7 +928,7 @@ namespace BizHawk.MultiClient
 		//Saturn
 		public SaturnControllerTemplate[] SaturnController = new SaturnControllerTemplate[2];
 		public SaturnControllerTemplate[] SaturnAutoController = new SaturnControllerTemplate[2];
-		public SaturnConsoleButtonTemplate[] SaturnConsoleButtons = new SaturnConsoleButtonTemplate[1];
+		public SaturnConsoleButtonTemplate SaturnConsoleButtons = new SaturnConsoleButtonTemplate();
 
 		//Commodore 64 Settings
 		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
@@ -1379,6 +1487,78 @@ namespace BizHawk.MultiClient
 		}
 	}
 
+	public class N64ButtonsTemplate : iControllerConfigObject
+	{
+		public string DPadU = "";
+		public string DPadD = "";
+		public string DPadL = "";
+		public string DPadR = "";
+		public string Start = "";
+		public string Z = "";
+		public string B = "";
+		public string A = "";
+		public string CUp = "";
+		public string CDown = "";
+		public string CLeft = "";
+		public string CRight = "";
+		public string L = "";
+		public string R = "";
+
+		public bool Enabled = false;
+
+		public N64ButtonsTemplate() { }
+		public N64ButtonsTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			DPadU = "UpArrow, X1 DpadUp, X1 LStickUp";
+			DPadD = "DownArrow, X1 DpadDown, X1 LStickDown";
+			DPadL = "LeftArrow, X1 DpadLeft, X1 LStickLeft";
+			DPadR = "RightArrow, X1 DpadRight, X1 LStickRight";
+			Start = "V, X1 Start";
+			Z = "Z, X1 A";
+			B = "X, X1 X";
+			A = "C";
+			CUp = "NumberPad8, J1 RotationZ-";
+			CDown = "NumberPad2, J1 RoationZ+";
+			CLeft = "NumberPad4, J1 Z-";
+			CRight = "NumberPad6, J1 Z+";
+			L = "D";
+			R = "F";
+
+			Enabled = true;
+		}
+	}
+
+	public class Standard2ButtonConsoleTemplate : iControllerConfigObject
+	{
+		public string Power = "";
+		public string Reset = "";
+		public bool Enabled = false;
+
+		public Standard2ButtonConsoleTemplate() { }
+		public Standard2ButtonConsoleTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				SetDefaults();
+			}
+		}
+
+		public void SetDefaults()
+		{
+			Enabled = true;
+			Power = "";
+			Reset = "";
+		}
+	}
+
 	public class ColecoVisionControllerTemplate : iControllerConfigObject
 	{
 		public string Up = "";
@@ -1772,5 +1952,253 @@ namespace BizHawk.MultiClient
 	public interface iControllerConfigObject
 	{
 		void SetDefaults();
+	}
+
+
+	public enum PLUGINTYPE { RICE, GLIDE }; 
+
+	public interface iPluginSettings
+	{
+		PLUGINTYPE PluginType { get; }
+		Dictionary<string, object> GetPluginSettings();
+	}
+
+	public class N64RicePluginSettings : iPluginSettings
+	{
+		public PLUGINTYPE PluginType
+		{
+			get { return PLUGINTYPE.RICE; }
+		}
+
+		public void FillPerGameHacks(GameInfo game)
+		{
+			if (Global.Config.RicePlugin.UseDefaultHacks)
+			{
+				DisableTextureCRC = game.GetBool("RiceDisableTextureCRC", false);
+				DisableCulling = game.GetBool("RiceDisableCulling", false);
+				IncTexRectEdge = game.GetBool("RiceIncTexRectEdge", false);
+				ZHack = game.GetBool("RiceZHack", false);
+				TextureScaleHack = game.GetBool("RiceTextureScaleHack", false);
+				PrimaryDepthHack = game.GetBool("RicePrimaryDepthHack", false);
+				Texture1Hack = game.GetBool("RiceTexture1Hack", false);
+				FastLoadTile = game.GetBool("RiceFastLoadTile", false);
+				UseSmallerTexture = game.GetBool("RiceUseSmallerTexture", false);
+				VIWidth = game.GetInt("RiceVIWidth", -1);
+				VIHeight = game.GetInt("RiceVIHeight", -1);
+				UseCIWidthAndRatio = game.GetInt("RiceUseCIWidthAndRatio", 0);
+				FullTMEM = game.GetInt("RiceFullTMEM", 0);
+				TxtSizeMethod2 = game.GetBool("RiceTxtSizeMethod2", false);
+				EnableTxtLOD = game.GetBool("RiceEnableTxtLOD", false);
+				FastTextureCRC = game.GetInt("RiceFastTextureCRC", 0);
+				EmulateClear = game.GetBool("RiceEmulateClear", false);
+				ForceScreenClear = game.GetBool("RiceForceScreenClear", false);
+				AccurateTextureMappingHack = game.GetInt("RiceAccurateTextureMappingHack", 0);
+				NormalBlender = game.GetInt("RiceNormalBlender", 0);
+				DisableBlender = game.GetBool("RiceDisableBlender", false);
+				ForceDepthBuffer = game.GetBool("RiceForceDepthBuffer", false);
+				DisableObjBG = game.GetBool("RiceDisableObjBG", false);
+				FrameBufferOption = game.GetInt("RiceFrameBufferOption", 0);
+				RenderToTextureOption = game.GetInt("RiceRenderToTextureOption", 0);
+				ScreenUpdateSettingHack = game.GetInt("RiceScreenUpdateSettingHack", 0);
+				EnableHacksForGame = game.GetInt("RiceEnableHacksForGame", 0);
+			}
+		}
+
+		public Dictionary<string, object> GetPluginSettings()
+		{
+			//TODO: deal witn the game depedent settings
+			Dictionary<string, object> dictionary = new Dictionary<string, object>();
+			System.Reflection.FieldInfo[] members = Global.Config.RicePlugin.GetType().GetFields();
+			foreach (System.Reflection.FieldInfo member in members)
+			{
+				object field = Global.Config.RicePlugin.GetType().GetField(member.Name).GetValue(Global.Config.RicePlugin);
+				dictionary.Add(member.Name, field);
+			}
+
+			return dictionary;
+		}
+
+		public int FrameBufferSetting = 0;
+		public int FrameBufferWriteBackControl = 0;
+		public int RenderToTexture = 0;
+		public int ScreenUpdateSetting = 4;
+		public int Mipmapping = 2;
+		public int FogMethod = 0;
+		public int ForceTextureFilter = 0;
+		public int TextureEnhancement = 0;
+		public int TextureEnhancementControl = 0;
+		public int TextureQuality = 0;
+		public int OpenGLDepthBufferSetting = 16;
+		public int MultiSampling = 0;
+		public int ColorQuality = 0;
+		public int OpenGLRenderSetting = 0;
+		public int AnisotropicFiltering = 0;
+
+
+		public bool NormalAlphaBlender = false;
+		public bool FastTextureLoading = false;
+		public bool AccurateTextureMapping = true;
+		public bool InN64Resolution = false;
+		public bool SaveVRAM = false;
+		public bool DoubleSizeForSmallTxtrBuf = false;
+		public bool DefaultCombinerDisable = false;
+		public bool EnableHacks = true;
+		public bool WinFrameMode = false;
+		public bool FullTMEMEmulation = false;
+		public bool OpenGLVertexClipper = false;
+		public bool EnableSSE = true;
+		public bool EnableVertexShader = false;
+		public bool SkipFrame = false;
+		public bool TexRectOnly = false;
+		public bool SmallTextureOnly = false;
+		public bool LoadHiResCRCOnly = true;
+		public bool LoadHiResTextures = false;
+		public bool DumpTexturesToFiles = false;
+
+		public bool UseDefaultHacks = true;
+		public bool DisableTextureCRC = false;
+		public bool DisableCulling = false;
+		public bool IncTexRectEdge = false;
+		public bool ZHack = false;
+		public bool TextureScaleHack = false;
+		public bool PrimaryDepthHack = false;
+		public bool Texture1Hack = false;
+		public bool FastLoadTile = false;
+		public bool UseSmallerTexture = false;
+		public int VIWidth = -1;
+		public int VIHeight = -1;
+		public int UseCIWidthAndRatio = 0;
+		public int FullTMEM = 0;
+		public bool TxtSizeMethod2 = false;
+		public bool EnableTxtLOD = false;
+		public int FastTextureCRC = 0;
+		public bool EmulateClear = false;
+		public bool ForceScreenClear = false;
+		public int AccurateTextureMappingHack = 0;
+		public int NormalBlender = 0;
+		public bool DisableBlender = false;
+		public bool ForceDepthBuffer = false;
+		public bool DisableObjBG = false;
+		public int FrameBufferOption = 0;
+		public int RenderToTextureOption = 0;
+		public int ScreenUpdateSettingHack = 0;
+		public int EnableHacksForGame = 0;
+	}
+
+	public class N64GlidePluginSettings : iPluginSettings
+	{
+		public PLUGINTYPE PluginType
+		{
+			get { return PLUGINTYPE.GLIDE; }
+		}
+
+		public void FillPerGameHacks(GameInfo game)
+		{
+			if (Global.Config.GlidePlugin.UseDefaultHacks)
+			{
+				alt_tex_size = Global.Game.GetBool("Glide_alt_tex_size", false);
+				buff_clear = Global.Game.GetBool("Glide_buff_clear", true);
+				decrease_fillrect_edge = Global.Game.GetBool("Glide_decrease_fillrect_edge", false);
+				detect_cpu_write = Global.Game.GetBool("Glide_detect_cpu_write", false);
+				fb_clear = Global.Game.GetBool("Glide_fb_clear", false);
+				fb_hires = Global.Game.GetBool("Glide_fb_clear", true);
+				fb_read_alpha = Global.Game.GetBool("Glide_fb_read_alpha", false);
+				fb_smart = Global.Game.GetBool("Glide_fb_smart", false);
+				fillcolor_fix = Global.Game.GetBool("Glide_fillcolor_fix", false);
+				fog = Global.Game.GetBool("Glide_fog", true);
+				force_depth_compare = Global.Game.GetBool("Glide_force_depth_compare", false);
+				force_microcheck = Global.Game.GetBool("Glide_force_microcheck", false);
+				fb_hires_buf_clear = Global.Game.GetBool("Glide_fb_hires_buf_clear", true);
+				fb_ignore_aux_copy = Global.Game.GetBool("Glide_fb_ignore_aux_copy", false);
+				fb_ignore_previous = Global.Game.GetBool("Glide_fb_ignore_previous", false);
+				increase_primdepth = Global.Game.GetBool("Glide_increase_primdepth", false);
+				increase_texrect_edge = Global.Game.GetBool("Glide_increase_texrect_edge", false);
+				fb_optimize_texrect = Global.Game.GetBool("Glide_fb_optimize_texrect", true);
+				fb_optimize_write = Global.Game.GetBool("Glide_fb_optimize_write", false);
+				PPL = Global.Game.GetBool("Glide_PPL", false);
+				soft_depth_compare = Global.Game.GetBool("Glide_soft_depth_compare", false);
+				use_sts1_only = Global.Game.GetBool("Glide_use_sts1_only", false);
+				wrap_big_tex = Global.Game.GetBool("Glide_wrap_big_tex", false);
+
+				depth_bias = Global.Game.GetInt("Glide_depth_bias", 20);
+				filtering = Global.Game.GetInt("Glide_filtering", 1);
+				fix_tex_coord = Global.Game.GetInt("Glide_fix_tex_coord", 0);
+				lodmode = Global.Game.GetInt("Glide_lodmode", 0);
+				
+				stipple_mode = Global.Game.GetInt("Glide_stipple_mode", 2);
+				stipple_pattern = Global.Game.GetInt("Glide_stipple_pattern", 1041204192);
+				swapmode = Global.Game.GetInt("Glide_swapmode", 1);
+				enable_hacks_for_game = Global.Game.GetInt("Glide_enable_hacks_for_game", 0);
+			}
+		}
+
+		public Dictionary<string, object> GetPluginSettings()
+		{
+			//TODO: deal witn the game depedent settings
+			Dictionary<string, object> dictionary = new Dictionary<string, object>();
+			System.Reflection.FieldInfo[] members = Global.Config.GlidePlugin.GetType().GetFields();
+			foreach (System.Reflection.FieldInfo member in members)
+			{
+				object field = Global.Config.GlidePlugin.GetType().GetField(member.Name).GetValue(Global.Config.GlidePlugin);
+				dictionary.Add(member.Name, field);
+			}
+
+			return dictionary;
+		}
+
+		public int wfmode = 1;
+		public bool wireframe = false;
+		public int card_id = 0;
+		public bool flame_corona = false;
+		public int ucode = 2;
+		public bool autodetect_ucode = true;
+		public bool motionblur = false;
+		public bool fb_read_always = false;
+		public bool unk_as_red = false;
+		public bool filter_cache = false;
+		public bool fast_crc = false;
+		public bool disable_auxbuf = false;
+		public bool fbo = false;
+		public bool noglsl = true;
+		public bool noditheredalpha = true;
+		public int tex_filter = 0;
+		public bool fb_render = false;
+		public bool wrap_big_tex = false;
+		public bool use_sts1_only = false;
+		public bool soft_depth_compare = false;
+		public bool PPL = false;
+		public bool fb_optimize_write = false;
+		public bool fb_optimize_texrect = true;
+		public bool increase_texrect_edge = false;
+		public bool increase_primdepth = false;
+		public bool fb_ignore_previous = false;
+		public bool fb_ignore_aux_copy = false;
+		public bool fb_hires_buf_clear = true;
+		public bool force_microcheck = false;
+		public bool force_depth_compare = false;
+		public bool fog = true;
+		public bool fillcolor_fix = false;
+		public bool fb_smart = false;
+		public bool fb_read_alpha = false;
+		public bool fb_get_info = false;
+		public bool fb_hires = true;
+		public bool fb_clear = false;
+		public bool detect_cpu_write = false;
+		public bool decrease_fillrect_edge = false;
+		public bool buff_clear = true;
+		public bool alt_tex_size = false;
+		public bool UseDefaultHacks = true;
+		public int enable_hacks_for_game = 0;
+		public int swapmode = 1;
+		public int stipple_pattern = 1041204192;
+		public int stipple_mode = 2;
+		public int scale_y = 100000;
+		public int scale_x = 100000;
+		public int offset_y = 0;
+		public int offset_x = 0;
+		public int lodmode = 0;
+		public int fix_tex_coord = 0;
+		public int filtering = 1;
+		public int depth_bias = 20;
 	}
 }

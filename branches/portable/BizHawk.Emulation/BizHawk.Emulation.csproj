@@ -172,6 +172,7 @@
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
+    <Compile Include="Consoles\Nintendo\N64\mupen64plusApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
@@ -356,6 +357,7 @@
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Input.cs" />
+    <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
     <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
     <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />

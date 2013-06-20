@@ -531,10 +531,10 @@ namespace BizHawk.MultiClient
 			else
 			{
 				var file = new FileInfo(CurrentFile);
-				if (!file.Exists)
+				/*if (!file.Exists)
 				{
 					SaveScriptAs();
-				}
+				}*/
 				using (StreamWriter sw = new StreamWriter(CurrentFile))
 				{
 					sw.Write(LuaText.Text);

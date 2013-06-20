@@ -47,11 +47,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		private DisplayType _display_type = DisplayType.NTSC;
 
 		//Sound config
-		public void SetSquare1(bool enabled) { apu.EnableSquare1 = enabled; }
-		public void SetSquare2(bool enabled) { apu.EnableSquare2 = enabled; }
-		public void SetTriangle(bool enabled) { apu.EnableTriangle = enabled; }
-		public void SetNoise(bool enabled) { apu.EnableNoise = enabled; }
-		public void SetDMC(bool enabled) { apu.EnableDMC = enabled; }
+		public void SetSquare1(int v) { apu.Square1V = v; }
+		public void SetSquare2(int v) { apu.Square2V = v; }
+		public void SetTriangle(int v) { apu.TriangleV = v; }
+		public void SetNoise(int v) { apu.NoiseV = v; }
+		public void SetDMC(int v) { apu.DMCV = v; }
 
 		public void Dispose()
 		{

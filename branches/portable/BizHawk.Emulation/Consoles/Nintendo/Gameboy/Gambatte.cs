@@ -24,6 +24,21 @@ namespace BizHawk.Emulation.Consoles.GB
 		/// </summary>
 		LibGambatte.Buttons CurrentButtons = 0;
 
+		/// <summary>
+		/// RTC time when emulation begins.
+		/// </summary>
+		long zerotime;
+
+		LibGambatte.RTCCallback TimeCallback;
+
+		long GetCurrentTime()
+		{
+			long fn = Frame;
+			fn /= 60; // exactly 60 fps.  in case you feel bad about it, remember that we're not exactly tracking cpu cycles either.
+			fn += zerotime;
+			return fn;
+		}
+
 		public Gameboy(CoreComm comm, GameInfo game, byte[] romdata)
 		{
 			CoreComm = comm;
@@ -53,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.GB
 				flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 
 
-			if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, flags) != 0)
+			if (LibGambatte.gambatte_load(GambatteState, romdata, (uint)romdata.Length, GetCurrentTime(), flags) != 0)
 				throw new Exception("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 
 			// set real default colors (before anyone mucks with them at all)
@@ -77,6 +92,9 @@ namespace BizHawk.Emulation.Consoles.GB
 				Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(romdata)),
 				Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(romdata))
 				);
+
+			TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
+			LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
 		}
 
 		public static readonly ControllerDefinition GbController = new ControllerDefinition
@@ -143,7 +161,7 @@ namespace BizHawk.Emulation.Consoles.GB
 				r.RefreshWrite();
 
 			if (Controller["Power"])
-				LibGambatte.gambatte_reset(GambatteState);
+				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
 
 			RefreshMemoryCallbacks();
 			if (CoreComm.Tracer.Enabled)
@@ -404,6 +422,8 @@ namespace BizHawk.Emulation.Consoles.GB
 			bw.Flush();
 			return ms.ToArray();
 		}
+
+		public bool BinarySaveStatesPreferred { get { return true; } }
 
 		#endregion
 

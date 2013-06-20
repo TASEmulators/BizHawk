@@ -25,15 +25,19 @@ namespace BizHawk.MultiClient
 			SoundVolNumeric.Value = Global.Config.SoundVolume;
 			UpdateSoundDialog();
 
-			// to be removed
-			//if (MainForm.INTERIM)
-			//{
-			//	ThrottlecheckBox.Visible = true;
-			//}
-			//else
-			//{
-				ThrottlecheckBox.Visible = false;
-			//}
+			// vestigal
+			ThrottlecheckBox.Visible = false;
+
+
+			var dd = SoundEnumeration.DeviceNames();
+			listBoxSoundDevices.Items.Add("<default>");
+			listBoxSoundDevices.SelectedIndex = 0;
+			foreach (var d in dd)
+			{
+				listBoxSoundDevices.Items.Add(d);
+				if (d == Global.Config.SoundDevice)
+					listBoxSoundDevices.SelectedItem = d;
+			}
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -42,6 +46,7 @@ namespace BizHawk.MultiClient
 			Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
 			Global.Config.SoundVolume = SoundVolBar.Value;
 			Global.Config.SoundThrottle = ThrottlecheckBox.Checked;
+			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
 			Global.Sound.ChangeVolume(Global.Config.SoundVolume);
 			Global.Sound.UpdateSoundSettings();
 			Global.Sound.StartSound();

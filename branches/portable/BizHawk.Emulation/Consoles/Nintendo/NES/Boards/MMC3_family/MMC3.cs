@@ -332,7 +332,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		protected virtual int MapCHR(int addr)
 		{
 			int bank_1k = Get_CHRBank_1K(addr);
-			bank_1k &= chr_mask;
+			// allow NPOT chr sizes
+			bank_1k %= chr_mask + 1;
 			addr = (bank_1k << 10) | (addr & 0x3FF);
 			return addr;
 		}
@@ -380,6 +381,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_mask = num_prg_banks - 1;
 
 			int num_chr_banks = (Cart.chr_size);
+			if (num_chr_banks == 0) // vram only board
+				num_chr_banks = 8;
 			chr_mask = num_chr_banks - 1;
 
 			mmc3 = new MMC3(this, num_prg_banks);

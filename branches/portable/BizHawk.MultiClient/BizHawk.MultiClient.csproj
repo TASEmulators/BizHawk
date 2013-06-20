@@ -414,6 +414,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SATTools\SaturnPrefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SATTools\SaturnPrefs.Designer.cs">
+      <DependentUpon>SaturnPrefs.cs</DependentUpon>
+    </Compile>
     <Compile Include="SNESTools\SNESGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -437,6 +443,12 @@
     </Compile>
     <Compile Include="tools\AnalogControlPanel.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="N64tools\N64VideoPluginconfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="N64tools\N64VideoPluginconfig.Designer.cs">
+      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\HexColor.cs">
       <SubType>Form</SubType>
@@ -619,6 +631,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="SATTools\SaturnPrefs.resx">
+      <DependentUpon>SaturnPrefs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -631,6 +646,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SNESTools\SNESOptions.resx">
       <DependentUpon>SNESOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="N64tools\N64VideoPluginconfig.resx">
+      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexColor.resx">
       <DependentUpon>HexColor.cs</DependentUpon>
@@ -1077,6 +1095,7 @@
     <None Include="images\Both.png" />
     <None Include="config\ControllerImages\A78Joystick.png" />
     <None Include="config\ControllerImages\IntVController.png" />
+    <Content Include="config\ControllerImages\SaturnController.jpg" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

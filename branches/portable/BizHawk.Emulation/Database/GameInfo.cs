@@ -99,6 +99,37 @@ namespace BizHawk
             return int.Parse(Options[option], NumberStyles.HexNumber);
         }
 
+		/// <param name="parameter">The option to look up</param>
+		/// <param name="defaultVal">The value to return if the option is invalid or doesn't exist</param>
+		/// <returns> The bool value from the database if present, otherwise the given default value</returns>
+		public bool GetBool(string parameter, bool defaultVal)
+		{
+			if (OptionPresent(parameter) && OptionValue(parameter) == "true")
+				return true;
+			else if (OptionPresent(parameter) && OptionValue(parameter) == "false")
+				return false;
+			else
+				return defaultVal;
+		}
+
+		/// <param name="parameter">The option to look up</param>
+		/// <param name="defaultVal">The value to return if the option is invalid or doesn't exist</param>
+		/// <returns> The int value from the database if present, otherwise the given default value</returns>
+		public int GetInt(string parameter, int defaultVal)
+		{
+			if (OptionPresent(parameter))
+				try
+				{
+					return int.Parse(OptionValue(parameter));
+				}
+				catch
+				{
+					return defaultVal;
+				}
+			else
+				return defaultVal;
+		}
+
 		public ICollection<string> GetOptions()
 		{
 			return Options.Keys;

@@ -45,7 +45,8 @@
 
 unsigned int r4300emu = 0;
 int no_compiled_jump = 0;
-int llbit, rompause;
+int llbit; //, rompause;
+HANDLE rompausesem;
 #if NEW_DYNAREC != NEW_DYNAREC_ARM
 int stop;
 long long int reg[32], hi, lo;
@@ -974,7 +975,7 @@ static void dynarec_setup_code(void)
 }
 #endif
 
-void r4300_execute(void)
+void r4300_execute(void (*startcb)(void))
 {
 #if defined(COUNT_INSTR) || (defined(DYNAREC) && defined(PROFILE_R4300))
     unsigned int i;
@@ -985,7 +986,8 @@ void r4300_execute(void)
     debug_count = 0;
     delay_slot=0;
     stop = 0;
-    rompause = 1;
+    //rompause = 1;
+	rompausesem = CreateSemaphore(NULL, 0, 1, NULL);
 
     /* clear instruction counters */
 #if defined(COUNT_INSTR)
@@ -996,6 +998,12 @@ void r4300_execute(void)
     last_addr = 0xa4000040;
     next_interupt = 624999;
     init_interupt();
+
+	if (startcb)
+		startcb();
+
+	// now that everything has been set up, we stop here to wait for the first frame
+	WaitForSingleObject(rompausesem, INFINITE);
 
     if (r4300emu == CORE_PURE_INTERPRETER)
     {

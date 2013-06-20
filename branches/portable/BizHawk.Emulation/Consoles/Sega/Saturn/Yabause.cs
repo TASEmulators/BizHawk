@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace BizHawk.Emulation.Consoles.Sega.Saturn
 {
@@ -25,6 +26,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		GCHandle SoundHandle;
 
 		bool Disposed = false;
+		byte[] DisposedSaveRam;
 
 		LibYabause.CDInterface.Init InitH;
 		LibYabause.CDInterface.DeInit DeInitH;
@@ -33,16 +35,16 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		LibYabause.CDInterface.ReadSectorFAD ReadSectorFADH;
 		LibYabause.CDInterface.ReadAheadFAD ReadAheadFADH;
 
-		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD)
+		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, byte[] bios, bool GL = false)
 		{
 			CoreComm.RomStatusDetails = "Yeh";
 			this.CoreComm = CoreComm;
 			this.CD = CD;
 			ResetFrameCounter();
-			Init();
+			Init(bios, GL);
 		}
 
-		void Init()
+		void Init(byte[] bios, bool GL = false)
 		{
 			if (AttachedCore != null)
 			{
@@ -60,15 +62,28 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			CDInt.ReadSectorFADFunc = ReadSectorFADH = new LibYabause.CDInterface.ReadSectorFAD(CD_ReadSectorFAD);
 			CDInt.ReadAheadFADFunc = ReadAheadFADH = new LibYabause.CDInterface.ReadAheadFAD(CD_ReadAheadFAD);
 
-			if (!LibYabause.libyabause_init(ref CDInt))
+			var fp = new FilePiping();
+			string BiosPipe = fp.GetPipeNameNative();
+			fp.Offer(bios);
+
+			if (!LibYabause.libyabause_init(ref CDInt, BiosPipe, GL))
 				throw new Exception("libyabause_init() failed!");
+
+			var e = fp.GetResults();
+			if (e != null)
+				throw e;
 
 			LibYabause.libyabause_setvidbuff(VideoHandle.AddrOfPinnedObject());
 			LibYabause.libyabause_setsndbuff(SoundHandle.AddrOfPinnedObject());
 			AttachedCore = this;
 
+			// with or without GL, this is the guaranteed frame -1 size; (unless you do a gl resize)
 			BufferWidth = 320;
 			BufferHeight = 224;
+
+			InitMemoryDomains();
+
+			GLMode = GL;
 		}
 
 		public ControllerDefinition ControllerDefinition
@@ -77,6 +92,42 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		}
 
 		public IController Controller { get; set; }
+
+		public bool GLMode { get; private set; }
+
+		public void SetGLRes(int factor, int width, int height)
+		{
+			if (!GLMode)
+				return;
+
+			if (factor < 0) factor = 0;
+			if (factor > 4) factor = 4;
+
+			int maxwidth, maxheight;
+
+			if (factor == 0)
+			{
+				maxwidth = width;
+				maxheight = height;
+			}
+			else
+			{
+				maxwidth = 704 * factor;
+				maxheight = 512 * factor;
+			}
+			if (maxwidth * maxheight > VideoBuffer.Length)
+			{
+				VideoHandle.Free();
+				VideoBuffer = new int[maxwidth * maxheight];
+				VideoHandle = GCHandle.Alloc(VideoBuffer, GCHandleType.Pinned);
+				LibYabause.libyabause_setvidbuff(VideoHandle.AddrOfPinnedObject());
+			}
+			LibYabause.libyabause_glsetnativefactor(factor);
+			if (factor == 0)
+				LibYabause.libyabause_glresize(width, height);
+		}
+		
+		
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
@@ -145,9 +196,7 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			if (Controller["Reset"])
 				LibYabause.libyabause_softreset();
 			if (Controller["Power"])
-			{
-				// TODO
-			}
+				LibYabause.libyabause_hardreset();
 
 			LibYabause.libyabause_setpads(p11, p12, p21, p22);
 
@@ -159,6 +208,8 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			if (IsLagFrame)
 				LagCount++;
 			//Console.WriteLine(nsamp);
+
+			//CheckStates();
 		}
 
 		public int Frame { get; private set; }
@@ -168,24 +219,76 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		public string SystemId { get { return "SAT"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
+		#region saveram
+
 		public byte[] ReadSaveRam()
 		{
-			return new byte[0];
+			if (Disposed)
+			{
+				return DisposedSaveRam ?? new byte[0];
+			}
+			else
+			{
+				var ms = new MemoryStream();
+				var fp = new FilePiping();
+				fp.Get(ms);
+				bool success = LibYabause.libyabause_savesaveram(fp.GetPipeNameNative());
+				var e = fp.GetResults();
+				if (e != null)
+					throw e;
+				if (!success)
+					throw new Exception("libyabause_savesaveram() failed!");
+				var ret = ms.ToArray();
+				ms.Dispose();
+				return ret;
+			}
+
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
+			if (Disposed)
+			{
+				throw new Exception("It's a bit late for that");
+			}
+			else
+			{
+				var fp = new FilePiping();
+				fp.Offer(data);
+				bool success = LibYabause.libyabause_loadsaveram(fp.GetPipeNameNative());
+				var e = fp.GetResults();
+				if (e != null)
+					throw e;
+				if (!success)
+					throw new Exception("libyabause_loadsaveram() failed!");
+			}
 		}
 
 		public void ClearSaveRam()
 		{
+			if (Disposed)
+			{
+				throw new Exception("It's a bit late for that");
+			}
+			else
+			{
+				LibYabause.libyabause_clearsaveram();
+			}
 		}
 
 		public bool SaveRamModified
 		{
-			get;
-			set;
+			get
+			{
+				if (Disposed)
+					return DisposedSaveRam != null;
+				else
+					return LibYabause.libyabause_saveramodified();
+			}
+			set { throw new InvalidOperationException("No you may not!"); }
 		}
+
+		#endregion
 
 		public void ResetFrameCounter()
 		{
@@ -194,43 +297,186 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			IsLagFrame = false;
 		}
 
-		public void SaveStateText(System.IO.TextWriter writer)
+		#region savestates
+
+		void LoadCoreBinary(byte[] data)
 		{
+			var fp = new FilePiping();
+			fp.Offer(data);
+			bool succeed = LibYabause.libyabause_loadstate(fp.GetPipeNameNative());
+			var e = fp.GetResults();
+			if (e != null)
+				throw e;
+			if (!succeed)
+				throw new Exception("libyabause_loadstate() failed");
 		}
 
-		public void LoadStateText(System.IO.TextReader reader)
+		byte[] SaveCoreBinary()
 		{
+			var ms = new MemoryStream();
+			var fp = new FilePiping();
+			fp.Get(ms);
+			bool succeed = LibYabause.libyabause_savestate(fp.GetPipeNameNative());
+			var e = fp.GetResults();
+			if (e != null)
+				throw e;
+			var ret = ms.ToArray();
+			ms.Close();
+			if (!succeed)
+				throw new Exception("libyabause_savestate() failed");
+			return ret;
 		}
 
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
+		// these next 5 functions are all exact copy paste from gambatte.
+		// if something's wrong here, it's probably wrong there too
+
+		public void SaveStateText(TextWriter writer)
 		{
+			var temp = SaveStateBinary();
+			temp.SaveAsHexFast(writer);
+			// write extra copy of stuff we don't use
+			writer.WriteLine("Frame {0}", Frame);
 		}
 
-		public void LoadStateBinary(System.IO.BinaryReader reader)
+		public void LoadStateText(TextReader reader)
 		{
+			string hex = reader.ReadLine();
+			if (hex.StartsWith("emuVersion")) // movie save
+			{
+				do // theoretically, our portion should start right after StartsFromSavestate, maybe...
+				{
+					hex = reader.ReadLine();
+				} while (!hex.StartsWith("StartsFromSavestate"));
+				hex = reader.ReadLine();
+			}
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHexFast(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			byte[] data = SaveCoreBinary();
+
+			writer.Write(data.Length);
+			writer.Write(data);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			int length = reader.ReadInt32();
+			byte[] data = reader.ReadBytes(length);
+
+			LoadCoreBinary(data);
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			LagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
+		}
+
+		public bool BinarySaveStatesPreferred { get { return true; } }
 
 		public byte[] SaveStateBinary()
 		{
-			return new byte[0];
+			MemoryStream ms = new MemoryStream();
+			BinaryWriter bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
 		}
+
+		/// <summary>
+		/// does a save, load, save combo, and checks the two saves for identicalness.
+		/// </summary>
+		void CheckStates()
+		{
+			byte[] s1 = SaveStateBinary();
+			LoadStateBinary(new BinaryReader(new MemoryStream(s1, false)));
+			byte[] s2 = SaveStateBinary();
+			if (s1.Length != s2.Length)
+				throw new Exception(string.Format("CheckStates: Length {0} != {1}", s1.Length, s2.Length));
+			unsafe
+			{
+				fixed (byte* b1 = &s1[0], b2 = &s2[0])
+				{
+					for (int i = 0; i < s1.Length; i++)
+					{
+						if (b1[i] != b2[i])
+						{
+							File.WriteAllBytes("save1.raw", s1);
+							File.WriteAllBytes("save2.raw", s2);
+							throw new Exception(string.Format("CheckStates s1[{0}] = {1}, s2[{0}] = {2}", i, b1[i], b2[i]));
+						}
+					}
+				}
+			}
+		}
+	
+
+		#endregion
 
 		public CoreComm CoreComm { get; private set; }
 
-		public IList<MemoryDomain> MemoryDomains
+		#region memorydomains
+
+		void InitMemoryDomains()
 		{
-			get { throw new NotImplementedException(); }
+			var ret = new List<MemoryDomain>();
+			var nmds = LibYabause.libyabause_getmemoryareas_ex();
+			foreach (var nmd in nmds)
+			{
+				int l = nmd.length;
+				IntPtr d = nmd.data;
+				ret.Add(new MemoryDomain(
+					nmd.name,
+					nmd.length,
+					Endian.Little,
+					delegate(int addr)
+					{
+						if (addr < 0 || addr >= l)
+							throw new ArgumentOutOfRangeException();
+						unsafe
+						{
+							byte* p = (byte*)d;
+							return p[addr];
+						}
+					},
+					delegate(int addr, byte val)
+					{
+						if (addr < 0 || addr >= l)
+							throw new ArgumentOutOfRangeException();
+						unsafe
+						{
+							byte* p = (byte*)d;
+							p[addr] = val;
+						}
+					}
+				));
+			}
+			// fulfill the prophecy of MainMemory always being MemoryDomains[0]
+			var tmp = ret[2];
+			ret[2] = ret[0];
+			ret[0] = tmp;
+			MemoryDomains = ret.AsReadOnly();
 		}
 
-		public MemoryDomain MainMemory
-		{
-			get { throw new NotImplementedException(); }
-		}
+		public IList<MemoryDomain> MemoryDomains { get; private set; }
+		public MemoryDomain MainMemory { get { return MemoryDomains[0]; } }
+
+		#endregion
 
 		public void Dispose()
 		{
 			if (!Disposed)
 			{
+				if (SaveRamModified)
+					DisposedSaveRam = ReadSaveRam();
 				LibYabause.libyabause_setvidbuff(IntPtr.Zero);
 				LibYabause.libyabause_setsndbuff(IntPtr.Zero);
 				LibYabause.libyabause_deinit();
@@ -263,29 +509,11 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 			samples = SoundBuffer;
 		}
 
-		public void DiscardSamples()
-		{
-		}
-
-		public ISoundProvider SoundProvider
-		{
-			get { return null; }
-		}
-
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return this; }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return false;
-		}
-
-		public void EndAsyncSound()
-		{
-
-		}
+		public void DiscardSamples() { }
+		public ISoundProvider SoundProvider { get { return null; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
+		public bool StartAsyncSound() { return false; }
+		public void EndAsyncSound() { }
 
 		#endregion
 

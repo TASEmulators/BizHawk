@@ -194,7 +194,7 @@ static INLINE void T3WriteLong(T3Memory * mem, u32 addr, u32 val)
 static INLINE int T123Load(void * mem, u32 size, int type, const char *filename)
 {
    FILE *fp;
-   u32 filesize, filesizecheck;
+   u32 filesizecheck;
    u8 *buffer;
    u32 i;
 
@@ -205,41 +205,47 @@ static INLINE int T123Load(void * mem, u32 size, int type, const char *filename)
       return -1;
 
    // Calculate file size
-   fseek(fp, 0, SEEK_END);
-   filesize = ftell(fp);
-   fseek(fp, 0, SEEK_SET);
+   //fseek(fp, 0, SEEK_END);
+   //filesize = ftell(fp);
+   //fseek(fp, 0, SEEK_SET);
 
-   if (filesize > size)
-      return -1;
+   //if (filesize > size)
+   //   return -1;
 
-   if ((buffer = (u8 *)malloc(filesize)) == NULL)
+   if ((buffer = (u8 *)malloc(size)) == NULL)
    {
       fclose(fp);
       return -1;
    }
 
-   filesizecheck = (u32)fread((void *)buffer, 1, filesize, fp);
-   fclose(fp);
+   filesizecheck = (u32)fread((void *)buffer, 1, size, fp);
+   // make sure there are no bytes left in the file
+   if (filesizecheck != size || fgetc(fp) != EOF)
+   {
+      free(buffer);
+      fclose(fp);
+      return -1;
+   }
 
-   if (filesizecheck != filesize) return -1;
+   fclose(fp);
 
    switch (type)
    {
       case 1:
       {
-         for (i = 0; i < filesize; i++)
+         for (i = 0; i < size; i++)
             T1WriteByte((u8 *) mem, i, buffer[i]);
          break;
       }
       case 2:
       {
-         for (i = 0; i < filesize; i++)
+         for (i = 0; i < size; i++)
             T2WriteByte((u8 *) mem, i, buffer[i]);
          break;
       }
       case 3:
       {
-         for (i = 0; i < filesize; i++)
+         for (i = 0; i < size; i++)
             T3WriteByte((T3Memory *) mem, i, buffer[i]);
          break;
       }

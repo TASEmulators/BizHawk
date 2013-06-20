@@ -82,6 +82,10 @@ public:
 	void setScanlineCallback(void (*callback)(), int sl) {
 		memory.setScanlineCallback(callback, sl);
 	}
+
+	void setRTCCallback(std::time_t (*callback)()) {
+		memory.setRTCCallback(callback);
+	}
 	
 	void setSaveDir(const std::string &sdir) {
 		memory.setSaveDir(sdir);

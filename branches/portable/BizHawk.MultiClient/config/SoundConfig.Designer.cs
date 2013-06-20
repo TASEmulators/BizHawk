@@ -36,6 +36,8 @@
 			this.SoundVolBar = new System.Windows.Forms.TrackBar();
 			this.SoundVolNumeric = new System.Windows.Forms.NumericUpDown();
 			this.ThrottlecheckBox = new System.Windows.Forms.CheckBox();
+			this.listBoxSoundDevices = new System.Windows.Forms.ListBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.SoundVolGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).BeginInit();
@@ -45,7 +47,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(200, 209);
+			this.Cancel.Location = new System.Drawing.Point(317, 209);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 0;
@@ -57,7 +59,7 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.OK.Location = new System.Drawing.Point(119, 209);
+			this.OK.Location = new System.Drawing.Point(236, 209);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
@@ -67,7 +69,6 @@
 			// 
 			// SoundOnCheckBox
 			// 
-			this.SoundOnCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SoundOnCheckBox.AutoSize = true;
 			this.SoundOnCheckBox.Location = new System.Drawing.Point(147, 12);
 			this.SoundOnCheckBox.Name = "SoundOnCheckBox";
@@ -79,7 +80,6 @@
 			// 
 			// MuteFrameAdvance
 			// 
-			this.MuteFrameAdvance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MuteFrameAdvance.AutoSize = true;
 			this.MuteFrameAdvance.Location = new System.Drawing.Point(147, 35);
 			this.MuteFrameAdvance.Name = "MuteFrameAdvance";
@@ -129,13 +129,35 @@
 			this.ThrottlecheckBox.Text = "Sound Throttle";
 			this.ThrottlecheckBox.UseVisualStyleBackColor = true;
 			// 
+			// listBoxSoundDevices
+			// 
+			this.listBoxSoundDevices.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.listBoxSoundDevices.FormattingEnabled = true;
+			this.listBoxSoundDevices.Location = new System.Drawing.Point(108, 108);
+			this.listBoxSoundDevices.Name = "listBoxSoundDevices";
+			this.listBoxSoundDevices.Size = new System.Drawing.Size(284, 95);
+			this.listBoxSoundDevices.TabIndex = 6;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(108, 92);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(78, 13);
+			this.label1.TabIndex = 7;
+			this.label1.Text = "Sound Device:";
+			// 
 			// SoundConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(287, 244);
+			this.ClientSize = new System.Drawing.Size(404, 244);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.listBoxSoundDevices);
 			this.Controls.Add(this.ThrottlecheckBox);
 			this.Controls.Add(this.SoundVolGroup);
 			this.Controls.Add(this.MuteFrameAdvance);
@@ -166,5 +188,7 @@
         private System.Windows.Forms.NumericUpDown SoundVolNumeric;
         private System.Windows.Forms.TrackBar SoundVolBar;
 		private System.Windows.Forms.CheckBox ThrottlecheckBox;
+		private System.Windows.Forms.ListBox listBoxSoundDevices;
+		private System.Windows.Forms.Label label1;
     }
 }

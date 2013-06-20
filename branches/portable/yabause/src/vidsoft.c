@@ -158,7 +158,7 @@ static int nbg1priority=0;
 static int nbg2priority=0;
 static int nbg3priority=0;
 static int rbg0priority=0;
-#ifdef USE_OPENGL
+#if 0 //def USE_OPENGL
 static int outputwidth;
 static int outputheight;
 #endif
@@ -1659,7 +1659,7 @@ int VIDSoftInit(void)
    vdp2width = 320;
    vdp2height = 224;
 
-#ifdef USE_OPENGL
+#if 0 //def USE_OPENGL
    YuiSetVideoAttribute(DOUBLEBUFFER, 1);
 
    if (!YglScreenInit(8, 8, 8, 24))
@@ -1714,7 +1714,7 @@ static int IsFullscreen = 0;
 
 void VIDSoftResize(unsigned int w, unsigned int h, int on)
 {
-#ifdef USE_OPENGL
+#if 0 //def USE_OPENGL
    IsFullscreen = on;
 
    if (on)
@@ -3017,8 +3017,8 @@ void VIDSoftVdp2DrawEnd(void)
 
    if (OSDUseBuffer())
       OSDDisplayMessages(dispbuffer, vdp2width, vdp2height);
-
-#ifdef USE_OPENGL
+ 
+#if 0 // def USE_OPENGL
    glRasterPos2i(0, 0);
    glPixelZoom((float)outputwidth / (float)vdp2width, 0 - ((float)outputheight / (float)vdp2height));
    glDrawPixels(vdp2width, vdp2height, GL_RGBA, GL_UNSIGNED_BYTE, dispbuffer);
@@ -3259,7 +3259,7 @@ void VIDSoftVdp1EraseFrameBuffer(void)
 
 void VIDSoftGetGlSize(int *width, int *height)
 {
-#ifdef USE_OPENGL
+#if 0 // def USE_OPENGL
    *width = outputwidth;
    *height = outputheight;
 #else

@@ -36,6 +36,9 @@ namespace BizHawk.MultiClient
 		//BIO skipping setting (affects sync)
 		public const string SKIPBIOS = "Skip_Bios";
 
+		//Plugin Settings
+		public const string VIDEOPLUGIN = "VideoPlugin";
+
 		public static string MovieVersion = "BizHawk v0.0.1";
 
 		public static string MakeGUID()
@@ -200,6 +203,11 @@ namespace BizHawk.MultiClient
 				line = ParseHeader(line, PAL);
 				AddHeaderLine(PAL, line);
 			}
+			else if (line.Contains(VIDEOPLUGIN))
+			{
+				line = ParseHeader(line, VIDEOPLUGIN);
+				AddHeaderLine(VIDEOPLUGIN, line);
+			}
 			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 			{
 				return false;
@@ -213,7 +221,44 @@ namespace BizHawk.MultiClient
 				return false;
 			}
 			else
-				Comments.Add(line);
+			{
+				if (HeaderParams[PLATFORM] == "N64")
+				{
+					if (HeaderParams.ContainsKey(VIDEOPLUGIN))
+					{
+						if (HeaderParams[VIDEOPLUGIN] == "Rice")
+						{
+							ICollection<string> settings = Global.Config.RicePlugin.GetPluginSettings().Keys;
+							foreach (string setting in settings)
+							{
+								if (line.Contains(setting))
+								{
+									line = ParseHeader(line, setting);
+									AddHeaderLine(setting, line);
+									break;
+								}
+							}
+						}
+						else if (HeaderParams[VIDEOPLUGIN] == "Glide64")
+						{
+							ICollection<string> settings = Global.Config.GlidePlugin.GetPluginSettings().Keys;
+							foreach (string setting in settings)
+							{
+								if (line.Contains(setting))
+								{
+									line = ParseHeader(line, setting);
+									AddHeaderLine(setting, line);
+									break;
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					Comments.Add(line);
+				}
+			}
 
 			return true;
 		}

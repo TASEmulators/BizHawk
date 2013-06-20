@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
@@ -31,6 +25,59 @@ namespace BizHawk.MultiClient
 			NESAutofire2Panel.LoadSettings(Global.Config.NESAutoController[1]);
 			NESAutofire3Panel.LoadSettings(Global.Config.NESAutoController[2]);
 			NESAutofire4Panel.LoadSettings(Global.Config.NESAutoController[3]);
+
+			N64Controller1Panel.InputSize = 110;
+			N64Controller1Panel.LabelWidth = 50;
+			N64Controller1Panel.ColumnWidth = 170;
+
+			N64Autofire1Panel.InputSize = 110;
+			N64Autofire1Panel.LabelWidth = 50;
+			N64Autofire1Panel.ColumnWidth = 170;
+
+			N64Controller2Panel.InputSize = 110;
+			N64Controller2Panel.LabelWidth = 50;
+			N64Controller2Panel.ColumnWidth = 170;
+
+			N64Autofire2Panel.InputSize = 110;
+			N64Autofire2Panel.LabelWidth = 50;
+			N64Autofire2Panel.ColumnWidth = 170;
+
+			N64Controller3Panel.InputSize = 110;
+			N64Controller3Panel.LabelWidth = 50;
+			N64Controller3Panel.ColumnWidth = 170;
+
+			N64Autofire3Panel.InputSize = 110;
+			N64Autofire3Panel.LabelWidth = 50;
+			N64Autofire3Panel.ColumnWidth = 170;
+
+			N64Controller4Panel.InputSize = 110;
+			N64Controller4Panel.LabelWidth = 50;
+			N64Controller4Panel.ColumnWidth = 170;
+
+			N64Autofire4Panel.InputSize = 110;
+			N64Autofire4Panel.LabelWidth = 50;
+			N64Autofire4Panel.ColumnWidth = 170;
+
+			N64Controller1Panel.LoadSettings(Global.Config.N64Controller[0]);
+			N64Controller2Panel.LoadSettings(Global.Config.N64Controller[1]);
+			N64Controller3Panel.LoadSettings(Global.Config.N64Controller[2]);
+			N64Controller4Panel.LoadSettings(Global.Config.N64Controller[3]);
+			N64ConsoleButtons.LoadSettings(Global.Config.N64ConsoleButtons);
+			N64Autofire1Panel.LoadSettings(Global.Config.N64AutoController[0]);
+			N64Autofire2Panel.LoadSettings(Global.Config.N64AutoController[1]);
+			N64Autofire3Panel.LoadSettings(Global.Config.N64AutoController[2]);
+			N64Autofire4Panel.LoadSettings(Global.Config.N64AutoController[3]);
+
+			SaturnController1Panel.Spacing = 25;
+			SaturnController1Panel.LoadSettings(Global.Config.SaturnController[0]);
+			SaturnController2Panel.Spacing = 25;
+			SaturnController2Panel.LoadSettings(Global.Config.SaturnController[1]);
+			SaturnConsoleButtons.Spacing = 25;
+			SaturnConsoleButtons.LoadSettings(Global.Config.SaturnConsoleButtons);
+			SaturnAutofire1Panel.Spacing = 25;
+			SaturnAutofire1Panel.LoadSettings(Global.Config.SaturnAutoController[0]);
+			SaturnAutofire2Panel.Spacing = 25;
+			SaturnAutofire2Panel.LoadSettings(Global.Config.SaturnAutoController[1]);
 
 			SNESController1Panel.Spacing = 25;
 			SNESController2Panel.Spacing = 25;
@@ -142,7 +189,6 @@ namespace BizHawk.MultiClient
 			COLAutofire2Panel.ColumnWidth = 170;
 			COLAutofire2Panel.LoadSettings(Global.Config.ColecoAutoController[1]);
 
-
 			INTVController1Panel.InputSize = 110;
 			INTVController1Panel.LabelWidth = 50;
 			INTVController1Panel.ColumnWidth = 170;
@@ -226,19 +272,13 @@ namespace BizHawk.MultiClient
 				case "TI83":
 					PlatformTabControl.SelectTab(tabPageTI83);
 					break;
+				case "N64":
+					PlatformTabControl.SelectTab(tabPageN64);
+					break;
+				case "SAT":
+					PlatformTabControl.SelectTab(tabPageSaturn);
+					break;
 			}
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			//Input.Instance.EnableIgnoreModifiers = true;
-			base.OnShown(e);
-		}
-
-		protected override void OnClosed(EventArgs e)
-		{
-			base.OnClosed(e);
-			//Input.Instance.EnableIgnoreModifiers = false;
 		}
 
 		private void SetAutoTab()
@@ -329,7 +369,7 @@ namespace BizHawk.MultiClient
 			}
 
 			Global.OSD.AddMessage("Controller settings saved");
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 

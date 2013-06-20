@@ -49,7 +49,8 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		/// <summary>
 		/// set video buffer
 		/// </summary>
-		/// <param name="buff">704x512x32bit, should persist over time</param>
+		/// <param name="buff">32 bit color, should persist over time.  must hold at least 704*512px in software mode, or (704*n*512*n)px
+		/// in hardware mode with native factor size, or w*hpx in gl mode with explicit size</param>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libyabause_setvidbuff(IntPtr buff);
 
@@ -67,6 +68,28 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		public static extern void libyabause_softreset();
 
 		/// <summary>
+		/// hard reset, or something like that
+		/// </summary>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_hardreset();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fn"></param>
+		/// <returns>success</returns>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_loadstate(string fn);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fn"></param>
+		/// <returns>success</returns>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_savestate(string fn);
+
+		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="w">width of framebuffer</param>
@@ -79,13 +102,64 @@ namespace BizHawk.Emulation.Consoles.Sega.Saturn
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void libyabause_deinit();
 
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_savesaveram(string fn);
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_loadsaveram(string fn);
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_clearsaveram();
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool libyabause_saveramodified();
+
+		public struct NativeMemoryDomain
+		{
+			public IntPtr data;
+			public string name;
+			public int length;
+		}
+
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr libyabause_getmemoryareas();
+
+		public static IEnumerable<NativeMemoryDomain> libyabause_getmemoryareas_ex()
+		{
+			var ret = new List<NativeMemoryDomain>();
+			IntPtr start = libyabause_getmemoryareas();
+			while (true)
+			{
+				var nmd = (NativeMemoryDomain)Marshal.PtrToStructure(start, typeof(NativeMemoryDomain));
+				if (nmd.data == IntPtr.Zero || nmd.name == null)
+					return ret.AsReadOnly();
+				ret.Add(nmd);
+				start += Marshal.SizeOf(typeof(NativeMemoryDomain));
+			}
+		}
+
+		/// <summary>
+		/// set the overall resolution. only works in gl mode and when nativefactor = 0
+		/// </summary>
+		/// <param name="w">width</param>
+		/// <param name="h">height</param>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_glresize(int w, int h);
+
+		/// <summary>
+		/// cause the overall resolution to automatically switch to a multiple of the original console resolution, as the original console resolution changes.
+		/// only applies in gl mode.
+		/// </summary>
+		/// <param name="n">factor, 1-4, 0 to disable.</param>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_glsetnativefactor(int n);
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="intf">cd interface.  struct need not persist after call, but the function pointers better</param>
+		/// <param name="biosfn">path to bios, pass null to use built in bios emulation</param>
+		/// <param name="usegl">true for opengl</param>
 		/// <returns></returns>
 		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool libyabause_init(ref CDInterface intf);
+		public static extern bool libyabause_init(ref CDInterface intf, string biosfn, bool usegl);
 
 		public struct CDInterface
 		{

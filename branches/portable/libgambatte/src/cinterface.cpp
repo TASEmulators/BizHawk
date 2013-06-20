@@ -17,10 +17,10 @@ __declspec(dllexport) void gambatte_destroy(void *core)
 	delete g;
 }
 
-__declspec(dllexport) int gambatte_load(void *core, const char *romfiledata, unsigned romfilelength, unsigned flags)
+__declspec(dllexport) int gambatte_load(void *core, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags)
 {
 	GB *g = (GB *) core;
-	int ret = g->load(romfiledata, romfilelength, flags);
+	int ret = g->load(romfiledata, romfilelength, now, flags);
 	return ret;
 }
 
@@ -33,10 +33,10 @@ __declspec(dllexport) long gambatte_runfor(void *core, unsigned long *videobuf, 
 	return ret;
 }
 
-__declspec(dllexport) void gambatte_reset(void *core)
+__declspec(dllexport) void gambatte_reset(void *core, long long now)
 {
 	GB *g = (GB *) core;
-	g->reset();
+	g->reset(now);
 }
 
 __declspec(dllexport) void gambatte_setdmgpalettecolor(void *core, unsigned palnum, unsigned colornum, unsigned rgb32)
@@ -93,6 +93,12 @@ __declspec(dllexport) void gambatte_setscanlinecallback(void *core, void (*callb
 {
 	GB *g = (GB *) core;
 	g->setScanlineCallback(callback, sl);
+}
+
+__declspec(dllexport) void gambatte_setrtccallback(void *core, long long (*callback)())
+{
+	GB *g = (GB *) core;
+	g->setRTCCallback(callback);
 }
 
 __declspec(dllexport) void gambatte_setsavedir(void *core, const char *sdir)

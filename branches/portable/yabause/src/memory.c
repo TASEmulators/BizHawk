@@ -1028,7 +1028,7 @@ int YabSaveState(const char *filename)
 #endif
 
    // Write version(fix me)
-   i = 2;
+   i = 1;//2;
    ywrite(&check, (void *)&i, sizeof(i), 1, fp);
 
    // Skip the next 4 bytes for now
@@ -1036,10 +1036,10 @@ int YabSaveState(const char *filename)
    ywrite(&check, (void *)&i, sizeof(i), 1, fp);
 
    //write frame number
-   ywrite(&check, (void *)&framecounter, 4, 1, fp);
+   //ywrite(&check, (void *)&framecounter, 4, 1, fp);
 
    //this will be updated with the movie position later
-   ywrite(&check, (void *)&framecounter, 4, 1, fp);
+   //ywrite(&check, (void *)&framecounter, 4, 1, fp);
 
    // Go through each area and write each state
    i += CartSaveState(fp);
@@ -1067,11 +1067,11 @@ int YabSaveState(const char *filename)
    ywrite(&check, (void *)&temp, sizeof(int), 1, fp);
    temp = (yabsys.CurSH2FreqType == CLKTYPE_26MHZ) ? 268 : 286;
    ywrite(&check, (void *)&temp, sizeof(int), 1, fp);
-   temp32 = (yabsys.UsecFrac * temp / 10) >> YABSYS_TIMING_BITS;
-   ywrite(&check, (void *)&temp32, sizeof(u32), 1, fp);
+   //temp32 = (yabsys.UsecFrac * temp / 10) >> YABSYS_TIMING_BITS;
+   ywrite(&check, (void *)&yabsys.UsecFrac, sizeof(u32), 1, fp);
    ywrite(&check, (void *)&yabsys.CurSH2FreqType, sizeof(int), 1, fp);
    ywrite(&check, (void *)&yabsys.IsPal, sizeof(int), 1, fp);
-
+   /*
    VIDCore->GetGlSize(&outputwidth, &outputheight);
 
    totalsize=outputwidth * outputheight * sizeof(u32);
@@ -1097,15 +1097,15 @@ int YabSaveState(const char *filename)
    movieposition=ftell(fp);
    //write the movie to the end of the savestate
    SaveMovieInState(fp, check);
-
+   */
    i += StateFinishHeader(fp, offset);
-
+   /*
    // Go back and update size
    fseek(fp, 8, SEEK_SET);
    ywrite(&check, (void *)&i, sizeof(i), 1, fp);
    fseek(fp, 16, SEEK_SET);
    ywrite(&check, (void *)&movieposition, sizeof(movieposition), 1, fp);
-
+   */
    fclose(fp);
 
    OSDPushMessage(OSDMSG_STATUS, 150, "STATE SAVED");
@@ -1187,14 +1187,14 @@ int YabLoadState(const char *filename)
    }
 
    // Make sure size variable matches actual size minus header
-   fseek(fp, 0, SEEK_END);
+   //fseek(fp, 0, SEEK_END);
 
-   if (size != (ftell(fp) - headersize))
-   {
-      fclose(fp);
-      return -2;
-   }
-   fseek(fp, headersize, SEEK_SET);
+   //if (size != (ftell(fp) - headersize))
+   //{
+   //   fclose(fp);
+   //   return -2;
+   //}
+   //fseek(fp, headersize, SEEK_SET);
 
    // Verify version here
 
@@ -1299,12 +1299,13 @@ int YabLoadState(const char *filename)
    yread(&check, (void *)&yabsys.MaxLineCount, sizeof(int), 1, fp);
    yread(&check, (void *)&temp, sizeof(int), 1, fp);
    yread(&check, (void *)&temp, sizeof(int), 1, fp);
-   yread(&check, (void *)&temp32, sizeof(u32), 1, fp);
+   yread(&check, (void *)&yabsys.UsecFrac, sizeof(u32), 1, fp);
    yread(&check, (void *)&yabsys.CurSH2FreqType, sizeof(int), 1, fp);
    yread(&check, (void *)&yabsys.IsPal, sizeof(int), 1, fp);
-   YabauseChangeTiming(yabsys.CurSH2FreqType);
-   yabsys.UsecFrac = (temp32 << YABSYS_TIMING_BITS) * temp / 10;
+   //YabauseChangeTiming(yabsys.CurSH2FreqType);
+   //yabsys.UsecFrac = (temp32 << YABSYS_TIMING_BITS) * temp / 10;
 
+   /*
    if (headerversion > 1) {
 
    yread(&check, (void *)&outputwidth, sizeof(outputwidth), 1, fp);
@@ -1338,7 +1339,7 @@ int YabLoadState(const char *filename)
    fseek(fp, movieposition, SEEK_SET);
    MovieReadState(fp, filename);
    }
-   
+   */
    fclose(fp);
 
    ScspUnMuteAudio(SCSP_MUTE_SYSTEM);

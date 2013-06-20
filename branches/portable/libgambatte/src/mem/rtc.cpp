@@ -33,12 +33,13 @@ Rtc::Rtc()
   dataM(0),
   dataS(0),
   enabled(false),
-  lastLatchData(false)
+  lastLatchData(false),
+  timeCB(0)
 {
 }
 
 void Rtc::doLatch() {
-	std::time_t tmp = ((dataDh & 0x40) ? haltTime : std::time(0)) - baseTime;
+	std::time_t tmp = ((dataDh & 0x40) ? haltTime : timeCB()) - baseTime;
 	
 	while (tmp > 0x1FF * 86400) {
 		baseTime += 0x1FF * 86400;
@@ -113,42 +114,42 @@ void Rtc::loadState(const SaveState &state) {
 }
 
 void Rtc::setDh(const unsigned new_dh) {
-	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : std::time(0);
+	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : timeCB();
 	const std::time_t old_highdays = ((unixtime - baseTime) / 86400) & 0x100;
 	baseTime += old_highdays * 86400;
 	baseTime -= ((new_dh & 0x1) << 8) * 86400;
 	
 	if ((dataDh ^ new_dh) & 0x40) {
 		if (new_dh & 0x40)
-			haltTime = std::time(0);
+			haltTime = timeCB();
 		else
-			baseTime += std::time(0) - haltTime;
+			baseTime += timeCB() - haltTime;
 	}
 }
 
 void Rtc::setDl(const unsigned new_lowdays) {
-	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : std::time(0);
+	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : timeCB();
 	const std::time_t old_lowdays = ((unixtime - baseTime) / 86400) & 0xFF;
 	baseTime += old_lowdays * 86400;
 	baseTime -= new_lowdays * 86400;
 }
 
 void Rtc::setH(const unsigned new_hours) {
-	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : std::time(0);
+	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : timeCB();
 	const std::time_t old_hours = ((unixtime - baseTime) / 3600) % 24;
 	baseTime += old_hours * 3600;
 	baseTime -= new_hours * 3600;
 }
 
 void Rtc::setM(const unsigned new_minutes) {
-	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : std::time(0);
+	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : timeCB();
 	const std::time_t old_minutes = ((unixtime - baseTime) / 60) % 60;
 	baseTime += old_minutes * 60;
 	baseTime -= new_minutes * 60;
 }
 
 void Rtc::setS(const unsigned new_seconds) {
-	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : std::time(0);
+	const std::time_t unixtime = (dataDh & 0x40) ? haltTime : timeCB();
 	baseTime += (unixtime - baseTime) % 60;
 	baseTime -= new_seconds;
 }

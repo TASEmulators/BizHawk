@@ -397,6 +397,7 @@ namespace BizHawk.MultiClient
 		                                         		"usememorydomain",
 		                                         		"getmemorydomainlist",
 		                                         		"getcurrentmemorydomain",
+																								"getcurrentmemorydomainsize",
 		                                         		"read_s8",
 		                                         		"read_u8",
 		                                         		"read_s16_le",
@@ -500,7 +501,8 @@ namespace BizHawk.MultiClient
 		                                         	{
 		                                         		"set",
 		                                         		"get",
-		                                         		"getimmediate"
+		                                         		"getimmediate",
+														"setanalog"
 		                                         	};
 
 		public static string[] MultiClientFunctions = new[]
@@ -542,7 +544,8 @@ namespace BizHawk.MultiClient
 		                                        		"clearclicks",
 		                                        		"gettext",
 														"setproperty",
-														"getproperty"
+														"getproperty",
+														"openfile"
 		                                        	};
 
 		public static string[] BitwiseFunctions = new[]
@@ -1333,6 +1336,11 @@ namespace BizHawk.MultiClient
 			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Name;
 		}
 
+		public int memory_getcurrentmemorydomainsize()
+		{
+			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Size;
+		}
+
 		public uint memory_readbyte(object lua_addr)
 		{
 			int addr = LuaInt(lua_addr);
@@ -1967,8 +1975,7 @@ namespace BizHawk.MultiClient
 			if (lua_input is string)
 			{
 				string path = lua_input.ToString();
-				var writer = new StreamWriter(path);
-				Global.MainForm.SaveStateFile(writer, path, true);
+				Global.MainForm.SaveStateFile(path, path, true);
 			}
 		}
 
@@ -2218,6 +2225,36 @@ namespace BizHawk.MultiClient
 				}
 			}
 			catch { /*Eat it*/ } 
+		}
+
+		public void joypad_setanalog(LuaTable controls, object controller = null)
+		{
+			try
+			{
+				foreach (var name in controls.Keys)
+				{
+					float theValue;
+					string theValueStr = controls[name].ToString();
+
+					if (!String.IsNullOrWhiteSpace(theValueStr))
+					{
+						try
+						{
+							theValue = float.Parse(theValueStr);
+							if (controller == null)
+							{
+								Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
+							}
+							else
+							{
+								Global.StickyXORAdapter.SetFloat("P" + controller + " " + name.ToString(), theValue);
+							}
+						}
+						catch { }
+					}
+				}
+			}
+			catch { /*Eat it*/ }
 		}
 
 		//----------------------------------------------------
@@ -2710,6 +2747,29 @@ namespace BizHawk.MultiClient
 			}
 
 			return "";
+		}
+
+		// filterext format ex: "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
+		public string forms_openfile(string FileName = null, string InitialDirectory = null, string Filter = "All files (*.*)|*.*")
+		{
+			OpenFileDialog openFileDialog1 = new OpenFileDialog();
+			if (InitialDirectory != null)
+			{
+				openFileDialog1.InitialDirectory = InitialDirectory; 
+			}
+			if (FileName != null)
+			{
+				openFileDialog1.FileName = FileName;
+			}
+			 if (Filter != null)
+			{
+				openFileDialog1.AddExtension = true;
+				openFileDialog1.Filter = Filter;
+			}
+			if (openFileDialog1.ShowDialog() == DialogResult.OK)
+				return openFileDialog1.FileName;
+			else
+				return "";
 		}
 
 		public LuaTable input_getmouse()

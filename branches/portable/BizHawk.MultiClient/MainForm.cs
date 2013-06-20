@@ -106,6 +106,7 @@ namespace BizHawk.MultiClient
 		public SNESGameGenie SNESgg = new SNESGameGenie();
 		public GBGameGenie GBgg = new GBGameGenie();
 		public GenGameGenie Gengg = new GenGameGenie();
+		public NESSoundConfig NesSound = new NESSoundConfig();
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
@@ -1046,8 +1047,7 @@ namespace BizHawk.MultiClient
 
 			Global.DualGBControls = dualgbControls;
 
-			var adualgbControls = new AutofireController(Gameboy.GbController);
-			adualgbControls.Autofire = true;
+			var adualgbControls = new AutofireController(Gameboy.GbController) {Autofire = true};
 			adualgbControls.BindMulti("P1 Up", Global.Config.AutoDualGBController[0].P1_Up);
 			adualgbControls.BindMulti("P1 Down", Global.Config.AutoDualGBController[0].P1_Down);
 			adualgbControls.BindMulti("P1 Left", Global.Config.AutoDualGBController[0].P1_Left);
@@ -1098,6 +1098,8 @@ namespace BizHawk.MultiClient
 			Global.AutofireGBAControls = agbaControls;
 
 			var satControls = new Controller(Emulation.Consoles.Sega.Saturn.Yabause.SaturnController);
+			satControls.BindMulti("Power", Global.Config.SaturnConsoleButtons.Power);
+			satControls.BindMulti("Reset", Global.Config.SaturnConsoleButtons.Reset);
 			satControls.BindMulti("P1 Up", Global.Config.SaturnController[0].Up);
 			satControls.BindMulti("P1 Down", Global.Config.SaturnController[0].Down);
 			satControls.BindMulti("P1 Left", Global.Config.SaturnController[0].Left);
@@ -1561,6 +1563,137 @@ namespace BizHawk.MultiClient
 			autofireC64Controls.BindMulti("P2 Button", Global.Config.C64AutoJoysticks[1].Button);
 
 			Global.AutofireCommodore64Controls = autofireC64Controls;
+
+			var N64Controls = new Controller(N64.N64ControllerDefinition);
+
+			N64Controls.BindMulti("Power", Global.Config.N64ConsoleButtons.Power);
+			N64Controls.BindMulti("Reset", Global.Config.N64ConsoleButtons.Reset);
+
+			N64Controls.BindMulti("P1 DPad U", Global.Config.N64Controller[0].DPadU);
+			N64Controls.BindMulti("P1 DPad L", Global.Config.N64Controller[0].DPadL);
+			N64Controls.BindMulti("P1 DPad R", Global.Config.N64Controller[0].DPadR);
+			N64Controls.BindMulti("P1 DPad D", Global.Config.N64Controller[0].DPadD);
+			N64Controls.BindMulti("P1 Start", Global.Config.N64Controller[0].Start);
+			N64Controls.BindMulti("P1 Z", Global.Config.N64Controller[0].Z);
+			N64Controls.BindMulti("P1 B", Global.Config.N64Controller[0].B);
+			N64Controls.BindMulti("P1 A", Global.Config.N64Controller[0].A);
+			N64Controls.BindMulti("P1 C Up", Global.Config.N64Controller[0].CUp);
+			N64Controls.BindMulti("P1 C Down", Global.Config.N64Controller[0].CDown);
+			N64Controls.BindMulti("P1 C Left", Global.Config.N64Controller[0].CLeft);
+			N64Controls.BindMulti("P1 C Right", Global.Config.N64Controller[0].CRight);
+			N64Controls.BindMulti("P1 L", Global.Config.N64Controller[0].L);
+			N64Controls.BindMulti("P1 R", Global.Config.N64Controller[0].R);
+
+			N64Controls.BindMulti("P2 DPad U", Global.Config.N64Controller[1].DPadU);
+			N64Controls.BindMulti("P2 DPad L", Global.Config.N64Controller[1].DPadL);
+			N64Controls.BindMulti("P2 DPad R", Global.Config.N64Controller[1].DPadR);
+			N64Controls.BindMulti("P2 DPad D", Global.Config.N64Controller[1].DPadD);
+			N64Controls.BindMulti("P2 Start", Global.Config.N64Controller[1].Start);
+			N64Controls.BindMulti("P2 Z", Global.Config.N64Controller[1].Z);
+			N64Controls.BindMulti("P2 B", Global.Config.N64Controller[1].B);
+			N64Controls.BindMulti("P2 A", Global.Config.N64Controller[1].A);
+			N64Controls.BindMulti("P2 C Up", Global.Config.N64Controller[1].CUp);
+			N64Controls.BindMulti("P2 C Down", Global.Config.N64Controller[1].CDown);
+			N64Controls.BindMulti("P2 C Left", Global.Config.N64Controller[1].CLeft);
+			N64Controls.BindMulti("P2 C Right", Global.Config.N64Controller[1].CRight);
+			N64Controls.BindMulti("P2 L", Global.Config.N64Controller[1].L);
+			N64Controls.BindMulti("P2 R", Global.Config.N64Controller[1].R);
+
+			N64Controls.BindMulti("P3 DPad U", Global.Config.N64Controller[2].DPadU);
+			N64Controls.BindMulti("P3 DPad L", Global.Config.N64Controller[2].DPadL);
+			N64Controls.BindMulti("P3 DPad R", Global.Config.N64Controller[2].DPadR);
+			N64Controls.BindMulti("P3 DPad D", Global.Config.N64Controller[2].DPadD);
+			N64Controls.BindMulti("P3 Start", Global.Config.N64Controller[2].Start);
+			N64Controls.BindMulti("P3 Z", Global.Config.N64Controller[2].Z);
+			N64Controls.BindMulti("P3 B", Global.Config.N64Controller[2].B);
+			N64Controls.BindMulti("P3 A", Global.Config.N64Controller[2].A);
+			N64Controls.BindMulti("P3 C Up", Global.Config.N64Controller[2].CUp);
+			N64Controls.BindMulti("P3 C Down", Global.Config.N64Controller[2].CDown);
+			N64Controls.BindMulti("P3 C Left", Global.Config.N64Controller[2].CLeft);
+			N64Controls.BindMulti("P3 C Right", Global.Config.N64Controller[2].CRight);
+			N64Controls.BindMulti("P3 L", Global.Config.N64Controller[2].L);
+			N64Controls.BindMulti("P3 R", Global.Config.N64Controller[2].R);
+
+			N64Controls.BindMulti("P4 DPad U", Global.Config.N64Controller[3].DPadU);
+			N64Controls.BindMulti("P4 DPad L", Global.Config.N64Controller[3].DPadL);
+			N64Controls.BindMulti("P4 DPad R", Global.Config.N64Controller[3].DPadR);
+			N64Controls.BindMulti("P4 DPad D", Global.Config.N64Controller[3].DPadD);
+			N64Controls.BindMulti("P4 Start", Global.Config.N64Controller[3].Start);
+			N64Controls.BindMulti("P4 Z", Global.Config.N64Controller[3].Z);
+			N64Controls.BindMulti("P4 B", Global.Config.N64Controller[3].B);
+			N64Controls.BindMulti("P4 A", Global.Config.N64Controller[3].A);
+			N64Controls.BindMulti("P4 C Up", Global.Config.N64Controller[3].CUp);
+			N64Controls.BindMulti("P4 C Down", Global.Config.N64Controller[3].CDown);
+			N64Controls.BindMulti("P4 C Left", Global.Config.N64Controller[3].CLeft);
+			N64Controls.BindMulti("P4 C Right", Global.Config.N64Controller[3].CRight);
+			N64Controls.BindMulti("P4 L", Global.Config.N64Controller[3].L);
+			N64Controls.BindMulti("P4 R", Global.Config.N64Controller[3].R);
+
+			Global.N64Controls = N64Controls;
+
+			var N64AControls = new AutofireController(N64.N64ControllerDefinition);
+			
+			N64AControls.BindMulti("P1 DPad U", Global.Config.N64AutoController[0].DPadU);
+			N64AControls.BindMulti("P1 DPad L", Global.Config.N64AutoController[0].DPadL);
+			N64AControls.BindMulti("P1 DPad R", Global.Config.N64AutoController[0].DPadR);
+			N64AControls.BindMulti("P1 DPad D", Global.Config.N64AutoController[0].DPadD);
+			N64AControls.BindMulti("P1 Start", Global.Config.N64AutoController[0].Start);
+			N64AControls.BindMulti("P1 Z", Global.Config.N64AutoController[0].Z);
+			N64AControls.BindMulti("P1 B", Global.Config.N64AutoController[0].B);
+			N64AControls.BindMulti("P1 A", Global.Config.N64AutoController[0].A);
+			N64AControls.BindMulti("P1 C Up", Global.Config.N64AutoController[0].CUp);
+			N64AControls.BindMulti("P1 C Down", Global.Config.N64AutoController[0].CDown);
+			N64AControls.BindMulti("P1 C Left", Global.Config.N64AutoController[0].CLeft);
+			N64AControls.BindMulti("P1 C Right", Global.Config.N64AutoController[0].CRight);
+			N64AControls.BindMulti("P1 L", Global.Config.N64AutoController[0].L);
+			N64AControls.BindMulti("P1 R", Global.Config.N64AutoController[0].R);
+
+			N64AControls.BindMulti("P2 DPad U", Global.Config.N64AutoController[1].DPadU);
+			N64AControls.BindMulti("P2 DPad L", Global.Config.N64AutoController[1].DPadL);
+			N64AControls.BindMulti("P2 DPad R", Global.Config.N64AutoController[1].DPadR);
+			N64AControls.BindMulti("P2 DPad D", Global.Config.N64AutoController[1].DPadD);
+			N64AControls.BindMulti("P2 Start", Global.Config.N64AutoController[1].Start);
+			N64AControls.BindMulti("P2 Z", Global.Config.N64AutoController[1].Z);
+			N64AControls.BindMulti("P2 B", Global.Config.N64AutoController[1].B);
+			N64AControls.BindMulti("P2 A", Global.Config.N64AutoController[1].A);
+			N64AControls.BindMulti("P2 C Up", Global.Config.N64AutoController[1].CUp);
+			N64AControls.BindMulti("P2 C Down", Global.Config.N64AutoController[1].CDown);
+			N64AControls.BindMulti("P2 C Left", Global.Config.N64AutoController[1].CLeft);
+			N64AControls.BindMulti("P2 C Right", Global.Config.N64AutoController[1].CRight);
+			N64AControls.BindMulti("P2 L", Global.Config.N64AutoController[1].L);
+			N64AControls.BindMulti("P2 R", Global.Config.N64AutoController[1].R);
+
+			N64AControls.BindMulti("P3 DPad U", Global.Config.N64AutoController[2].DPadU);
+			N64AControls.BindMulti("P3 DPad L", Global.Config.N64AutoController[2].DPadL);
+			N64AControls.BindMulti("P3 DPad R", Global.Config.N64AutoController[2].DPadR);
+			N64AControls.BindMulti("P3 DPad D", Global.Config.N64AutoController[2].DPadD);
+			N64AControls.BindMulti("P3 Start", Global.Config.N64AutoController[2].Start);
+			N64AControls.BindMulti("P3 Z", Global.Config.N64AutoController[2].Z);
+			N64AControls.BindMulti("P3 B", Global.Config.N64AutoController[2].B);
+			N64AControls.BindMulti("P3 A", Global.Config.N64AutoController[2].A);
+			N64AControls.BindMulti("P3 C Up", Global.Config.N64AutoController[2].CUp);
+			N64AControls.BindMulti("P3 C Down", Global.Config.N64AutoController[2].CDown);
+			N64AControls.BindMulti("P3 C Left", Global.Config.N64AutoController[2].CLeft);
+			N64AControls.BindMulti("P3 C Right", Global.Config.N64AutoController[2].CRight);
+			N64AControls.BindMulti("P3 L", Global.Config.N64AutoController[2].L);
+			N64AControls.BindMulti("P3 R", Global.Config.N64AutoController[2].R);
+
+			N64AControls.BindMulti("P4 DPad U", Global.Config.N64AutoController[3].DPadU);
+			N64AControls.BindMulti("P4 DPad L", Global.Config.N64AutoController[3].DPadL);
+			N64AControls.BindMulti("P4 DPad R", Global.Config.N64AutoController[3].DPadR);
+			N64AControls.BindMulti("P4 DPad D", Global.Config.N64AutoController[3].DPadD);
+			N64AControls.BindMulti("P4 Start", Global.Config.N64AutoController[3].Start);
+			N64AControls.BindMulti("P4 Z", Global.Config.N64AutoController[3].Z);
+			N64AControls.BindMulti("P4 B", Global.Config.N64AutoController[3].B);
+			N64AControls.BindMulti("P4 A", Global.Config.N64AutoController[3].A);
+			N64AControls.BindMulti("P4 C Up", Global.Config.N64AutoController[3].CUp);
+			N64AControls.BindMulti("P4 C Down", Global.Config.N64AutoController[3].CDown);
+			N64AControls.BindMulti("P4 C Left", Global.Config.N64AutoController[3].CLeft);
+			N64AControls.BindMulti("P4 C Right", Global.Config.N64AutoController[3].CRight);
+			N64AControls.BindMulti("P4 L", Global.Config.N64AutoController[3].L);
+			N64AControls.BindMulti("P4 R", Global.Config.N64AutoController[3].R);
+
+			Global.AutofireN64Controls = N64AControls;
 		}
 
 		private static void FormDragEnter(object sender, DragEventArgs e)
@@ -1587,7 +1720,8 @@ namespace BizHawk.MultiClient
 			bool isLua = false;
 			foreach (string path in filePaths)
 			{
-				if (Path.GetExtension(path).ToUpper() == ".LUA")
+				var extension = Path.GetExtension(path);
+				if (extension != null && extension.ToUpper() == ".LUA")
 				{
 					OpenLuaConsole();
 					LuaConsole1.LoadLuaFile(path);
@@ -1598,28 +1732,31 @@ namespace BizHawk.MultiClient
 				return;
 #endif
 
-			if (Path.GetExtension(filePaths[0]).ToUpper() == ".LUASES")
+			var ext = Path.GetExtension(filePaths[0]) ?? "";
+			if (ext.ToUpper() == ".LUASES")
 			{
 #if WINDOWS
 				OpenLuaConsole();
 				LuaConsole1.LoadLuaSession(filePaths[0]);
 #endif
 			}
-			else if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
+			else if (IsValidMovieExtension(ext))
 			{
 				Movie m = new Movie(filePaths[0]);
 				StartNewMovie(m, false);
 
 			}
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".STATE")
+			else if (ext.ToUpper() == ".STATE")
+			{
 				LoadStateFile(filePaths[0], Path.GetFileName(filePaths[0]));
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".CHT")
+			}
+			else if (ext.ToUpper() == ".CHT")
 			{
 				LoadCheatsWindow();
 				Cheats1.LoadCheatFile(filePaths[0], false);
 				Cheats1.DisplayCheatsList();
 			}
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".WCH")
+			else if (ext.ToUpper() == ".WCH")
 			{
 				LoadRamWatch(true);
 				RamWatch1.LoadWatchFile(filePaths[0], false);
@@ -1635,8 +1772,8 @@ namespace BizHawk.MultiClient
 				else
 					LoadRom(CurrentlyOpenRom);
 
-				string errorMsg = "";
-				string warningMsg = "";
+				string errorMsg;
+				string warningMsg;
 				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
 				if (errorMsg.Length > 0)
 				{
@@ -1717,7 +1854,9 @@ namespace BizHawk.MultiClient
 			atariToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
 			colecoToolStripMenuItem.Visible = false;
-			
+			n64ToolStripMenuItem.Visible = false;
+			saturnToolStripMenuItem.Visible = false;
+
 			switch (system)
 			{
 				case "TI83":
@@ -1765,7 +1904,11 @@ namespace BizHawk.MultiClient
 				case "Coleco":
 					colecoToolStripMenuItem.Visible = true;
 					break;
-				default:
+				case "N64":
+					n64ToolStripMenuItem.Visible = true;
+					break;
+				case "SAT":
+					saturnToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -1790,7 +1933,6 @@ namespace BizHawk.MultiClient
 
 		void NESSpeicalMenuControls()
 		{
-
 			// ugly and hacky
 			nESSpeicalToolStripMenuItem.Visible = false;
 			nESSpeicalToolStripMenuItem.DropDownItems.Clear();
@@ -1807,6 +1949,26 @@ namespace BizHawk.MultiClient
 				NESSpeicalMenuAdd("Insert Coin 1", "VS Coin 1", "Coin 1 inserted.");
 			if (ss.Contains("VS Coin 2"))
 				NESSpeicalMenuAdd("Insert Coin 2", "VS Coin 2", "Coin 2 inserted.");
+		}
+
+		void SaturnSetPrefs(Emulation.Consoles.Sega.Saturn.Yabause e = null)
+		{
+			if (e == null)
+				e = Global.Emulator as Emulation.Consoles.Sega.Saturn.Yabause;
+
+			if (Global.Config.SaturnUseGL != e.GLMode)
+			{
+				// theoretically possible; not coded. meh.
+				FlagNeedsReboot();
+				return;
+			}
+			if (e.GLMode && Global.Config.SaturnUseGL)
+			{
+				if (Global.Config.SaturnDispFree)
+					e.SetGLRes(0, Global.Config.SaturnGLW, Global.Config.SaturnGLH);
+				else
+					e.SetGLRes(Global.Config.SaturnDispFactor, 0, 0);
+			}
 		}
 
 		void SyncControls()
@@ -1869,6 +2031,10 @@ namespace BizHawk.MultiClient
 					Global.ActiveController = Global.ColecoControls;
 					Global.AutoFireController = Global.AutofireColecoControls;
 					break;
+				case "N64":
+					Global.ActiveController = Global.N64Controls;
+					Global.AutoFireController = Global.AutofireN64Controls;
+					break;
 				case "SAT":
 					Global.ActiveController = Global.SaturnControls;
 					Global.AutoFireController = Global.AutofireSaturnControls;
@@ -1923,7 +2089,7 @@ namespace BizHawk.MultiClient
 				Global.MovieOutputHardpoint.Source = Global.MovieInputSourceAdapter;
 		}
 
-		public bool LoadRom(string path, bool deterministicemulation = false)
+		public bool LoadRom(string path, bool deterministicemulation = false, bool hasmovie = false)
 		{
 			if (path == null) return false;
 			using (var file = new HawkFile())
@@ -2010,6 +2176,7 @@ namespace BizHawk.MultiClient
 							}
 							else if (disc.DetectSegaSaturn())
 							{
+								Console.WriteLine("Sega Saturn disc detected!");
 								game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 							}
 							else
@@ -2021,8 +2188,17 @@ namespace BizHawk.MultiClient
 						switch (game.System)
 						{
 							case "SAT":
-								var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc);
-								nextEmulator = saturn;
+								{
+									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameSaturnBios);
+									if (!File.Exists(biosPath))
+									{
+										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
+										return false;
+									}
+									var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
+									nextEmulator = saturn;
+									SaturnSetPrefs(saturn);
+								}
 								break;
 
 							case "PSX":
@@ -2225,7 +2401,7 @@ namespace BizHawk.MultiClient
 										if (Global.Config.GB_ForceDMG) game.AddOption("ForceDMG");
 										if (Global.Config.GB_GBACGB) game.AddOption("GBACGB");
 										if (Global.Config.GB_MulticartCompat) game.AddOption("MulitcartCompat");
-										Emulation.Consoles.GB.Gameboy gb = new Emulation.Consoles.GB.Gameboy(nextComm, game, rom.FileData);
+										Gameboy gb = new Gameboy(nextComm, game, rom.FileData);
 										nextEmulator = gb;
 										if (gb.IsCGBMode())
 										{
@@ -2381,7 +2557,7 @@ namespace BizHawk.MultiClient
 									else
 									{
 										RunLoopBlocked = true;
-										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabios, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+										MessageBox.Show("Unable to find the required GBA BIOS file - \n" + gbabiospath, "Unable to load BIOS", MessageBoxButtons.OK, MessageBoxIcon.Error);
 										RunLoopBlocked = false;
 										throw new Exception();
 									}
@@ -2394,7 +2570,14 @@ namespace BizHawk.MultiClient
 							case "N64":
 								if (INTERIM)
 								{
-									nextEmulator = new N64(nextComm, game, rom.RomData);
+									Global.Game = game;
+									VideoPluginSettings video_settings = N64GenerateVideoSettings(game, hasmovie);
+									int SaveType = 0;
+									if (game.OptionValue("SaveType") == "EEPROM_16K")
+									{
+										SaveType = 1;
+									}
+									nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
 								}
 								break;
 						}
@@ -3366,32 +3549,47 @@ namespace BizHawk.MultiClient
 				file.CopyTo(backup);
 			}
 
-			var writer = new StreamWriter(path);
-			SaveStateFile(writer, name, false);
+			SaveStateFile(path, name, false);
 #if WINDOWS
 			LuaConsole1.LuaImp.SavestateRegisterSave(name);
 #endif
 		}
 
-		public void SaveStateFile(StreamWriter writer, string name, bool fromLua)
+		public void SaveStateFile(string filename, string name, bool fromLua)
 		{
-			Global.Emulator.SaveStateText(writer);
-			HandleMovieSaveState(writer);
-			if (Global.Config.SaveScreenshotWithStates)
+			// since movie mode requires input log, always save text in that case
+			if (Global.MovieSession.Movie.IsActive ||
+				Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
+				(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
 			{
-				writer.Write("Framebuffer ");
-				Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
+				var writer = new StreamWriter(filename);
+				Global.Emulator.SaveStateText(writer);
+				HandleMovieSaveState(writer);
+				if (Global.Config.SaveScreenshotWithStates)
+				{
+					writer.Write("Framebuffer ");
+					Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
+				}
+				writer.Close();
 			}
-
-			writer.Close();
-
+			else
+			{
+				// binary savestate
+				var writer = new BinaryWriter(new FileStream(filename, FileMode.Create));
+				Global.Emulator.SaveStateBinary(writer);
+				if (Global.Config.SaveScreenshotWithStates)
+				{
+					writer.Write("FRAMEBUFFA");
+					var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+					writer.Write(buff.Length);
+					writer.Write(buff);
+				}
+				writer.Close();
+			}
 			Global.OSD.AddMessage("Saved state: " + name);
 
 			if (!fromLua)
-			{
-
 				UpdateStatusSlots();
-			}
 		}
 
 		private void SaveStateAs()
@@ -3414,12 +3612,56 @@ namespace BizHawk.MultiClient
 			if (result != DialogResult.OK)
 				return;
 
-			var writer = new StreamWriter(sfd.FileName);
-			SaveStateFile(writer, sfd.FileName, false);
+			SaveStateFile(sfd.FileName, sfd.FileName, false);
 		}
 
 		public void LoadStateFile(string path, string name, bool fromLua = false)
 		{
+			if (!Global.MovieSession.Movie.IsActive)
+			{
+				// only when movies are not playing can we possibly load binary savestates
+				bool binary = false;
+				using (var s = new FileStream(path, FileMode.Open, FileAccess.Read))
+				{
+					int i;
+					while ((i = s.ReadByte()) != -1)
+					{
+						// unicode support will need something better here
+						if (i < 0x9 || (i > 0x7f))
+						{
+							binary = true;
+							break;
+						}
+					}
+				}
+
+				if (binary)
+				{
+					using (var reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
+					{
+						Global.Emulator.LoadStateBinary(reader);
+						try
+						{
+							string s = reader.ReadString();
+							if (s.Equals("FRAMEBUFFA"))
+							{
+								int len = reader.ReadInt32();
+								var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+								for (int i = 0; i < len; i++)
+									buff[i] = reader.ReadInt32();
+							}
+						}
+						catch { }
+					}
+					goto cleanup;
+				}
+				else
+				{
+					// fall through to text situation
+				}
+			}
+
+
 			if (HandleMovieLoadState(path))
 			{
 				var reader = new StreamReader(path);
@@ -3439,17 +3681,18 @@ namespace BizHawk.MultiClient
 				}
 
 				reader.Close();
-				Global.OSD.ClearGUIText();
-				UpdateToolsBefore(fromLua);
-				UpdateToolsAfter(fromLua);
-				UpdateToolsLoadstate();
-				Global.OSD.AddMessage("Loaded state: " + name);
-#if WINDOWS
-				LuaConsole1.LuaImp.SavestateRegisterLoad(name);
-#endif
+
 			}
 			else
 				Global.OSD.AddMessage("Loadstate error!");
+
+			cleanup:
+			Global.OSD.ClearGUIText();
+			UpdateToolsBefore(fromLua);
+			UpdateToolsAfter(fromLua);
+			UpdateToolsLoadstate();
+			Global.OSD.AddMessage("Loaded state: " + name);
+			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
 		}
 
 		public void LoadState(string name, bool fromLua = false)
@@ -3532,6 +3775,20 @@ namespace BizHawk.MultiClient
 			}
 			else
 				RamSearch1.Focus();
+		}
+
+		public void LoadNesSoundConfig()
+		{
+			if (Global.Emulator is NES)
+			{
+				if (!NesSound.IsHandleCreated || NesSound.IsDisposed)
+				{
+					NesSound = new NESSoundConfig();
+					NesSound.Show();
+				}
+				else
+					NesSound.Focus();
+			}
 		}
 
 		public void LoadGameGenieEC()
@@ -3734,6 +3991,90 @@ namespace BizHawk.MultiClient
 			else
 				Cheats1.Focus();
 		}
+
+		public VideoPluginSettings N64GenerateVideoSettings(GameInfo game, bool hasmovie)
+		{
+			string PluginToUse = "";
+
+			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
+			{
+				PluginToUse = Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.VIDEOPLUGIN];
+			}
+
+			if (PluginToUse == "" || (PluginToUse != "Rice" && PluginToUse != "Glide64")) 
+			{
+				PluginToUse = Global.Config.N64VidPlugin;
+			}
+
+			VideoPluginSettings video_settings = new VideoPluginSettings(PluginToUse, Global.Config.N64VideoSizeX, Global.Config.N64VideoSizeY);
+
+			if (PluginToUse == "Rice")
+			{
+				Global.Config.RicePlugin.FillPerGameHacks(game);
+				video_settings.Parameters = Global.Config.RicePlugin.GetPluginSettings();
+			}
+			else if (PluginToUse == "Glide64")
+			{
+				Global.Config.GlidePlugin.FillPerGameHacks(game);
+				video_settings.Parameters = Global.Config.GlidePlugin.GetPluginSettings();
+			}
+			
+			if (hasmovie && Global.MovieSession.Movie.Header.HeaderParams[MovieHeader.PLATFORM] == "N64" && Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(MovieHeader.VIDEOPLUGIN))
+			{
+				List<string> settings = new List<string>(video_settings.Parameters.Keys);
+				foreach (string setting in settings)
+				{
+					if (Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
+					{
+						string Value = Global.MovieSession.Movie.Header.HeaderParams[setting];
+						if (video_settings.Parameters[setting].GetType() == typeof(bool))
+						{
+							try
+							{
+								video_settings.Parameters[setting] = bool.Parse(Value);
+							}
+							catch { }
+							/*
+							if (Value == "True")
+							{
+								video_settings.Parameters[setting] = true;
+							}
+							else if (Value == "False")
+							{
+								video_settings.Parameters[setting] = false;
+							}*/
+						}
+						else if (video_settings.Parameters[setting].GetType() == typeof(int))
+						{
+							try
+							{
+								video_settings.Parameters[setting] = int.Parse(Value);
+							}
+							catch { }
+						}
+					}
+				}
+			}
+			
+			return video_settings;
+		}
+
+		public bool N64GetBoolFromDB(string parameter)
+		{
+			if (Global.Game.OptionPresent(parameter) && Global.Game.OptionValue(parameter) == "true")
+				return true;
+			else
+				return false;
+		}
+
+		public int N64GetIntFromDB(string parameter, int defaultVal)
+		{
+			if (Global.Game.OptionPresent(parameter) && InputValidate.IsValidUnsignedNumber(Global.Game.OptionValue(parameter)))
+				return int.Parse(Global.Game.OptionValue(parameter));
+			else
+				return defaultVal;
+		}
+
 
 		private int lastWidth = -1;
 		private int lastHeight = -1;
@@ -4730,121 +5071,6 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
-		#region Animaged Gifs
-		/// <summary>
-		/// Creates Animated Gifs
-		/// </summary>
-		/// <param name="num_images">Total number of frames in the gif</param>
-		/// <param name="frameskip">How many frames to skip per screenshot in the image.  
-		/// A value of 5 means that frame 1002 will be an image and 1007 will be an image in the gif 
-		/// A value of 1 means that frame 1001 will be an image and 1002 will be an image in the gif</param>
-		/// <param name="gifSpeed">How quickly the animated gif will run.  A value of 1 or -1 = normal emulator speed.
-		/// A value of 2 will double the speed of the gif.
-		/// Input a negative value to slow down the speed of the gif.
-		/// A value of -2 will be half speed</param>
-		/// <param name="reversable">Flag for making the gif loop back and forth</param>
-		/// <param name="filename">location to save the file</param>
-		/// <returns>false if the parameters are incorrect, true if it completes</returns>
-		public bool AnimatedGif(int num_images, int frameskip, int gifSpeed, bool reversable, String filename)
-		{
-			if (num_images < 1 || frameskip < 1 || gifSpeed == 0) return false;//Exits if settings are bad
-			#region declare/insantiate variables
-			List<Image> images = new List<Image>(); //Variable for holding all images for the gif animation
-			// Such a scenario could be a frameskip setting of 2 and a gifSpeed setting of 3
-			// This would result in 1 of every 3 images being requested getting skipped.
-			// My math might be wrong at this hour, but you get the point!
-			int speedTracker = 0; // To keep track of when to add another image to the list
-			bool status = PressFrameAdvance;
-			PressFrameAdvance = true;
-			#endregion
-
-			#region Get the Images for the File
-			int totalFrames = (gifSpeed > 0 ? num_images : (num_images * (gifSpeed * -1)));
-			images.Add(Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage());
-			while (images.Count < totalFrames)
-			{
-				Image tempImage = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage(); //Holding the image in case it doesn't end up being added to the animation
-				if (gifSpeed < 0)
-					for (speedTracker = 0; speedTracker > gifSpeed; speedTracker--)
-						images.Add(tempImage); //If the speed of the animation is to be slowed down, then add that many copies
-				//of the image to the list
-
-				for (int j = 0; j < frameskip; j++)
-				{
-					StepRunLoop_Core();
-					Global.Emulator.FrameAdvance(true); //Frame advance
-					//Global.RenderPanel.Render(Global.Emulator.VideoProvider);
-
-					if (gifSpeed > 0)
-					{
-						speedTracker++;//Advance the frame counter for adding to the List of Images
-						if (speedTracker == Math.Max(gifSpeed, frameskip))
-						{
-							images.Add(tempImage);
-							speedTracker = 0;
-						}
-					}
-				}
-			}
-			#endregion
-			PressFrameAdvance = status;
-
-			/*
-			 * The following code was obtained from here:
-			 * http://social.msdn.microsoft.com/Forums/en-US/csharpgeneral/thread/0c4252c8-8274-449c-ad9b-e4f07a8f8cdd/
-			 * Modified to work with the BizHawk Project
-			 */
-			#region make gif file
-			byte[] GifAnimation = { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
-			MemoryStream MS = new MemoryStream();
-			var fi = new FileInfo(filename);
-			if (fi.Directory != null && fi.Directory.Exists == false)
-				fi.Directory.Create();
-			BinaryWriter BW = new BinaryWriter(new FileStream(filename, FileMode.Create));
-			images[0].Save(MS, ImageFormat.Gif);
-			byte[] B = MS.ToArray();
-			B[10] = (byte)(B[10] & 0X78); //No global color table.
-			BW.Write(B, 0, 13);
-			BW.Write(GifAnimation);
-			WriteGifImg(B, BW);
-			for (int I = 1; I < images.Count; I++)
-			{
-				MS.SetLength(0);
-				images[I].Save(MS, ImageFormat.Gif);
-				B = MS.ToArray();
-				WriteGifImg(B, BW);
-			}
-			if (reversable)
-			{
-				for (int I = images.Count - 2; I >= 0; I--)//Start at (count - 2) because last image is already in place
-				{
-					MS.SetLength(0);
-					images[I].Save(MS, ImageFormat.Gif);
-					B = MS.ToArray();
-					WriteGifImg(B, BW);
-				}
-			}
-			BW.Write(B[B.Length - 1]);
-			BW.Close();
-			MS.Dispose();
-			#endregion
-
-			return true;
-		}
-
-		public void WriteGifImg(byte[] B, BinaryWriter BW)
-		{
-			byte[] Delay = { 0, 0 };
-			B[785] = Delay[0];
-			B[786] = Delay[1];
-			B[798] = (byte)(B[798] | 0X87);
-			BW.Write(B, 781, 18);
-			BW.Write(B, 13, 768);
-			BW.Write(B, 799, B.Length - 800);
-		}
-
-		#endregion
-
 		private void ShowConsole()
 		{
 #if WINDOWS
@@ -4973,24 +5199,16 @@ namespace BizHawk.MultiClient
 		public void SetNESSoundChannels()
 		{
 			NES nes = Global.Emulator as NES;
-			nes.SetSquare1(Global.Config.NESEnableSquare1);
-			nes.SetSquare2(Global.Config.NESEnableSquare2);
-			nes.SetTriangle(Global.Config.NESEnableTriangle);
-			nes.SetNoise(Global.Config.NESEnableNoise);
-			nes.SetDMC(Global.Config.NESEnableDMC);
+			nes.SetSquare1(Global.Config.NESSquare1);
+			nes.SetSquare2(Global.Config.NESSquare2);
+			nes.SetTriangle(Global.Config.NESTriangle);
+			nes.SetNoise(Global.Config.NESNoise);
+			nes.SetDMC(Global.Config.NESDMC);
 		}
 
 		private void soundChannelsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is NES)
-			{
-				Global.Sound.StopSound();
-				RunLoopBlocked = true;
-				NESSoundConfig config = new NESSoundConfig();
-				config.ShowDialog();
-				RunLoopBlocked = false;
-				Global.Sound.StartSound();
-			}
+			LoadNesSoundConfig();
 		}
 
 		public void ClearSaveRAM()
@@ -5105,7 +5323,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void FlagNeedsReboot()
+		public void FlagNeedsReboot()
 		{
 			NeedsReboot = true;
 			SetRebootIconStatus();
@@ -5402,6 +5620,50 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 		}
 
+		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new N64VideoPluginconfig().ShowDialog();
+		}
+
+		private void savestateTypeToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			defaultToolStripMenuItem.Checked = false;
+			binaryToolStripMenuItem.Checked = false;
+			textToolStripMenuItem.Checked = false;
+			switch (Global.Config.SaveStateType)
+			{
+				case Config.SaveStateTypeE.Binary: binaryToolStripMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Text: textToolStripMenuItem.Checked = true; break;
+				case Config.SaveStateTypeE.Default: defaultToolStripMenuItem.Checked = true; break;
+			}
+		}
+
+		private void defaultToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
+		}
+
+		private void binaryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
+		}
+
+		private void textToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
+		}
+
+		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new SATTools.SaturnPrefs())
+			{
+				var result = dlg.ShowDialog(this);
+				if (result == System.Windows.Forms.DialogResult.OK)
+				{
+					SaturnSetPrefs();
+				}
+			}
+		}
 
 	}
 }

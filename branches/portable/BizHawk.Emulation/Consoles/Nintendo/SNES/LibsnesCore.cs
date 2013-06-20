@@ -787,6 +787,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			return ms.ToArray();
 		}
 
+		public bool BinarySaveStatesPreferred { get { return true; } }
+
 		/// <summary>
 		/// handle the unmanaged part of loadstating
 		/// </summary>
@@ -860,6 +862,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 		void SetupMemoryDomains(byte[] romData)
 		{
 			MemoryDomains = new List<MemoryDomain>();
+			// remember, MainMemory must always be the same as MemoryDomains[0], else GIANT DRAGONS
+			MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, Endian.Little);
 
 			if (romData != null)
 			{
@@ -869,7 +873,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 				MemoryDomains.Add(romDomain);
 			}
 
-			MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, Endian.Little);
 
 			//someone needs to comprehensively address these in SGB mode, and go hook them up in the gameboy core
 			if (!IsSGB)

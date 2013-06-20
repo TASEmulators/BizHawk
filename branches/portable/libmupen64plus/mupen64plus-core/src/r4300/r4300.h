@@ -22,6 +22,9 @@
 #ifndef R4300_H
 #define R4300_H
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 #include "recomp.h"
 #include "memory/tlb.h"
 
@@ -29,7 +32,8 @@ extern precomp_instr *PC;
 
 extern precomp_block *blocks[0x100000], *actual;
 
-extern int stop, llbit, rompause;
+extern int stop, llbit; //, rompause;
+extern HANDLE rompausesem;
 extern long long int reg[32], hi, lo;
 extern long long int local_rs;
 extern unsigned int reg_cop0[32];
@@ -52,7 +56,7 @@ void init_blocks(void);
 void free_blocks(void);
 void r4300_reset_hard(void);
 void r4300_reset_soft(void);
-void r4300_execute(void);
+void r4300_execute(void (*startcb)(void));
 void pure_interpreter(void);
 void compare_core(void);
 void jump_to_func(void);

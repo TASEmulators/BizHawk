@@ -34,7 +34,7 @@ namespace BizHawk.MultiClient
 				SetSyncDependentSettings();
 			}
 
-			LoadRom(Global.MainForm.CurrentlyOpenRom, true);
+			LoadRom(Global.MainForm.CurrentlyOpenRom, true, !record);
 
 			Global.Config.RecentMovies.Add(m.Filename);
 			if (Global.MovieSession.Movie.StartsFromSavestate)
@@ -94,7 +94,9 @@ namespace BizHawk.MultiClient
 			RunLoopBlocked = true;
 			// put any BEETA quality cores here
 			if (Global.Emulator is Emulation.Consoles.Nintendo.GBA.GBA ||
-				Global.Emulator is Emulation.Consoles.Sega.Genesis)
+				Global.Emulator is Emulation.Consoles.Sega.Genesis ||
+				Global.Emulator is Emulation.Consoles.Nintendo.N64.N64 ||
+				Global.Emulator is Emulation.Consoles.Sega.Saturn.Yabause)
 			{
 				var result = MessageBox.Show
 					(this, "Thanks for using Bizhawk!  The emulation core you have selected " +
@@ -113,7 +115,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				LoadRom(CurrentlyOpenRom, true);
+				LoadRom(CurrentlyOpenRom, true, true);
 				if (Global.MovieSession.Movie.StartsFromSavestate)
 				{
 					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));

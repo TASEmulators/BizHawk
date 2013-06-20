@@ -68,7 +68,7 @@ long GB::runFor(gambatte::uint_least32_t *const videoBuf, const int pitch,
 	return cyclesSinceBlit < 0 ? cyclesSinceBlit : static_cast<long>(samples) - (cyclesSinceBlit >> 1);
 }
 
-void GB::reset() {
+void GB::reset(const std::time_t now) {
 	if (p_->cpu.loaded()) {
 		
 		int length = p_->cpu.saveSavedataLength();
@@ -81,7 +81,7 @@ void GB::reset() {
 		
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode);
+		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode, now);
 		p_->cpu.loadState(state);
 		if (length > 0)
 		{
@@ -111,11 +111,15 @@ void GB::setScanlineCallback(void (*callback)(), int sl) {
 	p_->cpu.setScanlineCallback(callback, sl);
 }
 
+void GB::setRTCCallback(long long (*callback)()) {
+	p_->cpu.setRTCCallback(callback);
+}
+
 void GB::setSaveDir(const std::string &sdir) {
 	p_->cpu.setSaveDir(sdir);
 }
 
-int GB::load(const char *romfiledata, unsigned romfilelength, const unsigned flags) {
+int GB::load(const char *romfiledata, unsigned romfilelength, const std::time_t now, const unsigned flags) {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();
 	
@@ -124,7 +128,7 @@ int GB::load(const char *romfiledata, unsigned romfilelength, const unsigned fla
 	if (!failed) {
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode = flags & GBA_CGB);
+		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode = flags & GBA_CGB, now);
 		p_->cpu.loadState(state);
 		//p_->cpu.loadSavedata();
 		

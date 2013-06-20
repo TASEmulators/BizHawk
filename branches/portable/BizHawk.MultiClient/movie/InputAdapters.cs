@@ -74,7 +74,7 @@ namespace BizHawk.MultiClient
 
 			string prefix;
 
-			if (button.Contains("Down"))
+			if (button.Contains("Down") && !button.Contains(" C "))
 			{
 				prefix = button.GetPrecedingString("Down");
 				if (Source.IsPressed(prefix + "Up"))
@@ -82,7 +82,7 @@ namespace BizHawk.MultiClient
 					return false;
 				}
 			}
-			if (button.Contains("Right"))
+			if (button.Contains("Right") && !button.Contains(" C "))
 			{
 				prefix = button.GetPrecedingString("Right");
 				if (Source.IsPressed(prefix + "Left"))
@@ -144,7 +144,7 @@ namespace BizHawk.MultiClient
 	public class ForceOffAdaptor : IController
 	{
 		public bool IsPressed(string button) { return this[button]; }
-		public float GetFloat(string name) { return 0.0f; } //TODO
+		public float GetFloat(string name) { return Source.GetFloat(name); } //TODO
 		public void UpdateControls(int frame) { }
 
 		protected HashSet<string> stickySet = new HashSet<string>();
@@ -185,7 +185,16 @@ namespace BizHawk.MultiClient
 		public bool Locked = false; //Pretty much a hack, 
 
 		public bool IsPressed(string button) { return this[button]; }
-		public float GetFloat(string name) { return 0.0f; } //TODO
+
+		WorkingDictionary<string,float> FloatSet = new WorkingDictionary<string,float>();
+		public void SetFloat(string name, float value)
+		{
+			FloatSet[name] = value;
+		}
+		public float GetFloat(string name)
+		{
+			return FloatSet[name];
+		}
 		public void UpdateControls(int frame) { }
 
 		public bool this[string button] { 
@@ -323,7 +332,7 @@ namespace BizHawk.MultiClient
 		public bool Locked = false; //Pretty much a hack, 
 
 
-		public float GetFloat(string name) { return 0.0f; } //TODO
+		public float GetFloat(string name) { return Source.GetFloat(name); } //TODO
 		public void UpdateControls(int frame) { }
 
 		public void SetSticky(string button, bool isSticky)
@@ -389,6 +398,11 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
+		float GetBaseFloat(string name)
+		{
+			return Source.GetFloat(name);
+		}
+
 		public bool IsEmpty
 		{
 			get
@@ -445,6 +459,10 @@ namespace BizHawk.MultiClient
 						return "|.....|.....|..................................................................|";
 					case "GBA":
 						return "|.|..........|";
+					case "N64":
+						return "|.|............|............|............|............|";
+					case "SAT":
+						return "|.|.............|.............|";
 				}
 			}
 		}
@@ -559,6 +577,70 @@ namespace BizHawk.MultiClient
 			return input.ToString();
 		}
 
+		private string GetN64ControllersAsMnemonic()
+		{
+			StringBuilder input = new StringBuilder("|");
+			if (IsBasePressed("Power"))
+			{
+				input.Append('P');
+			}
+			else if (IsBasePressed("Reset"))
+			{
+				input.Append('r');
+			}
+			else
+			{
+				input.Append('.');
+			}
+			input.Append('|');
+
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
+				}
+				
+				foreach (string name in Global.ANALOGS[ControlType].Keys)
+				{
+					input.Append(String.Format("{0:000}", (int)GetBaseFloat("P" + player + " " + name) + 128));
+				}
+				
+				input.Append('|');
+			}
+
+			return input.ToString();
+		}
+
+		private string GetSaturnControllersAsMnemonic()
+		{
+			StringBuilder input = new StringBuilder("|");
+			if (IsBasePressed("Power"))
+			{
+				input.Append('P');
+			}
+			else if (IsBasePressed("Reset"))
+			{
+				input.Append('r');
+			}
+			else
+			{
+				input.Append('.');
+			}
+			input.Append('|');
+
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					input.Append(IsBasePressed("P" + player + " " + button) ? Global.BUTTONS[ControlType][button] : ".");
+				}
+				input.Append('|');
+			}
+
+			return input.ToString();
+		}
+
 		public string GetControllersAsMnemonic()
 		{
 			if (ControlType == "Null Controller")
@@ -583,15 +665,15 @@ namespace BizHawk.MultiClient
 			}
 			else if (ControlType == "Dual Gameboy Controller")
 			{
-				return GetDualGameBoyControllerAsMnemonic();				
+				return GetDualGameBoyControllerAsMnemonic();
 			}
 			else if (ControlType == "Nintento 64 Controller")
 			{
-				return ""; // TODO
+				return GetN64ControllersAsMnemonic();
 			}
 			else if (ControlType == "Saturn Controller")
 			{
-				return ""; // TODO
+				return GetSaturnControllersAsMnemonic();
 			}
 
 			StringBuilder input = new StringBuilder("|");
@@ -797,15 +879,21 @@ namespace BizHawk.MultiClient
 		public ControllerDefinition Type { get; set; }
 		public bool this[string button] { get { return MyBoolButtons[button]; } }
 		public bool IsPressed(string button) { return MyBoolButtons[button]; }
-		public float GetFloat(string name) { return 0; }
+		public float GetFloat(string name) { return MyFloatControls[name]; }
 		public void UpdateControls(int frame) {  }
 		//--------
 
 		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
 
 		void Force(string button, bool state)
 		{
 			MyBoolButtons[button] = state;
+		}
+
+		void Force(string name, float state)
+		{
+			MyFloatControls[name] = state;
 		}
 
 		string ControlType { get { return Type.Name; } }
@@ -848,6 +936,11 @@ namespace BizHawk.MultiClient
 			foreach (string button in Type.BoolButtons)
 			{
 				MyBoolButtons[button] = source[button];
+			}
+
+			foreach (string name in Type.FloatControls)
+			{
+				MyFloatControls[name] = source.GetFloat(name);
 			}
 		}
 
@@ -895,6 +988,88 @@ namespace BizHawk.MultiClient
 			{
 				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
 				
+				if (mnemonic.Length < srcindex + 3 + Global.BUTTONS[ControlType].Count - 1)
+				{
+					return;
+				}
+
+				int start = 3;
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+			}
+		}
+
+		private void SetN64ControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+			{
+				Force("Reset", true);
+			}
+
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + Global.ANALOGS[ControlType].Count * 3 + 1);
+
+				if (mnemonic.Length < srcindex + 3 + Global.BUTTONS[ControlType].Count - 1)
+				{
+					return;
+				}
+
+				int start = 3;
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					Force("P" + player + " " + button, c[srcindex + start++]);
+				}
+
+				foreach (string name in Global.ANALOGS[ControlType].Keys)
+				{
+					if (InputValidate.IsValidUnsignedNumber(mnemonic.Substring(srcindex + start, 3)))
+					{
+						Force("P" + player + " " + name, Int32.Parse(mnemonic.Substring(srcindex + start, 3)) - 128);
+					}
+
+					start += 3;
+				}
+			}
+		}
+
+		private void SetSaturnControllersAsMnemonic(string mnemonic)
+		{
+			MnemonicChecker c = new MnemonicChecker(mnemonic);
+			MyBoolButtons.Clear();
+
+			if (mnemonic.Length < 2)
+			{
+				return;
+			}
+
+			if (mnemonic[1] == 'P')
+			{
+				Force("Power", true);
+			}
+			else if (mnemonic[1] != '.' && mnemonic[1] != '0')
+			{
+				Force("Reset", true);
+			}
+
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+
 				if (mnemonic.Length < srcindex + 3 + Global.BUTTONS[ControlType].Count - 1)
 				{
 					return;
@@ -1027,12 +1202,12 @@ namespace BizHawk.MultiClient
 			}
 			else if (ControlType == "Nintento 64 Controller")
 			{
-				// TODO
+				SetN64ControllersAsMnemonic(mnemonic);
 				return;
 			}
 			else if (ControlType == "Saturn Controller")
 			{
-				// TODO
+				SetSaturnControllersAsMnemonic(mnemonic);
 				return;
 			}
 

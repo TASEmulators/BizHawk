@@ -179,6 +179,8 @@ namespace BizHawk.Emulation.Consoles.Intellivision
 			return new byte[0];
 		}
 
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
 		public CoreComm CoreComm { get; private set; }
 
 		public IList<MemoryDomain> MemoryDomains

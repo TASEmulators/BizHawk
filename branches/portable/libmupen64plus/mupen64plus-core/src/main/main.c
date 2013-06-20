@@ -289,11 +289,13 @@ static void main_set_speedlimiter(int enable)
 
 static int main_is_paused(void)
 {
-    return (g_EmulatorRunning && rompause);
+    return (g_EmulatorRunning);// && rompause);
 }
 
 void main_toggle_pause(void)
 {
+	MessageBox(NULL, "This wasn't supposed to happen!", "Call Spooky", 0);
+	/*
     if (!g_EmulatorRunning)
         return;
 
@@ -321,12 +323,14 @@ void main_toggle_pause(void)
 
     rompause = !rompause;
     l_FrameAdvance = 0;
+	*/
 }
 
 void main_advance_one(void)
 {
     l_FrameAdvance = 1;
-    rompause = 0;
+    //rompause = 0;
+	ReleaseSemaphore(rompausesem, 1, NULL);
     StateChanged(M64CORE_EMU_STATE, M64EMU_RUNNING);
 }
 
@@ -413,8 +417,8 @@ m64p_error main_core_state_query(m64p_core_param param, int *rval)
         case M64CORE_EMU_STATE:
             if (!g_EmulatorRunning)
                 *rval = M64EMU_STOPPED;
-            else if (rompause)
-                *rval = M64EMU_PAUSED;
+            //else if (rompause)
+            //    *rval = M64EMU_PAUSED;
             else
                 *rval = M64EMU_RUNNING;
             break;
@@ -667,14 +671,14 @@ void new_vi(void)
     double VILimitMilliseconds = 1000.0 / ROM_PARAMS.vilimit;
     double AdjustedLimit = VILimitMilliseconds * 100.0 / l_SpeedFactor;  // adjust for selected emulator speed
     int time;
-
+	
     start_section(IDLE_SECTION);
     VI_Counter++;
 
 #ifdef DBG
     if(g_DebuggerActive) DebuggerCallback(DEBUG_UI_VI, 0);
 #endif
-
+	/*
     if(LastFPSTime == 0)
     {
         LastFPSTime = CounterTime = SDL_GetTicks();
@@ -703,12 +707,13 @@ void new_vi(void)
     }
     
     LastFPSTime = CurrentFPSTime ;
+	*/
     end_section(IDLE_SECTION);
 	if (g_VICallback != NULL)
         (*g_VICallback)();
 
     if (l_FrameAdvance) {
-        rompause = 1;
+        //rompause = 1;
         l_FrameAdvance = 0;
         StateChanged(M64CORE_EMU_STATE, M64EMU_PAUSED);
     }
@@ -717,7 +722,7 @@ void new_vi(void)
 /*********************************************************************************************************
 * emulation thread - runs the core
 */
-m64p_error main_run(void)
+m64p_error main_run(void (*startcb)(void))
 {
     /* take the r4300 emulator mode from the config file at this point and cache it in a global variable */
     r4300emu = ConfigGetParamInt(g_CoreConfig, "R4300Emulator");
@@ -785,7 +790,7 @@ m64p_error main_run(void)
     /* call r4300 CPU core and run the game */
     r4300_reset_hard();
     r4300_reset_soft();
-    r4300_execute();
+    r4300_execute(startcb);
 
     /* now begin to shut down */
 #ifdef WITH_LIRC
@@ -838,12 +843,13 @@ void main_stop(void)
         osd_delete_message(l_msgVol);
         l_msgVol = NULL;
     }
-    if (rompause)
-    {
-        rompause = 0;
+	stop = 1;
+    //if (rompause)
+    //{
+    //    rompause = 0;
+		ReleaseSemaphore(rompausesem, 1, NULL);
         StateChanged(M64CORE_EMU_STATE, M64EMU_RUNNING);
-    }
-    stop = 1;
+    //}    
 #ifdef DBG
     if(g_DebuggerActive)
     {

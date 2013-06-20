@@ -26,6 +26,8 @@
 
 #define VIDCORE_OGL   1
 
+extern int vdp2width_gl;
+extern int vdp2height_gl;
 extern VideoInterface_struct VIDOGL;
 #endif
 
