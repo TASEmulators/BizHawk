@@ -419,6 +419,13 @@
     <Compile Include="DiscSystem\CCD_format.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DiscSystem\cdfs\EndianBitConverter.cs" />
+    <Compile Include="DiscSystem\cdfs\ISODirectoryNode.cs" />
+    <Compile Include="DiscSystem\cdfs\ISOFile.cs" />
+    <Compile Include="DiscSystem\cdfs\ISOFileNode.cs" />
+    <Compile Include="DiscSystem\cdfs\ISONode.cs" />
+    <Compile Include="DiscSystem\cdfs\ISONodeRecord.cs" />
+    <Compile Include="DiscSystem\cdfs\ISOVolumeDescriptor.cs" />
     <Compile Include="DiscSystem\CUE_format.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -429,6 +436,7 @@
     <Compile Include="DiscSystem\Disc.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DiscSystem\Disc.Id.cs" />
     <Compile Include="DiscSystem\DiscTOC.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -503,6 +511,7 @@
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\Genesis\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
+    <Content Include="DiscSystem\cdfs\notes.txt" />
     <Content Include="Notes.txt" />
   </ItemGroup>
   <ItemGroup>
