@@ -69,6 +69,25 @@ void SetVSync(int value)
 		wglSwapIntervalEXT(value);
 }
 
+void WindowsHeadlessHost::InitSound(PMixer *mixer)
+{
+	gmixer = mixer;
+}
+void WindowsHeadlessHost::UpdateSound()
+{
+}
+void WindowsHeadlessHost::ShutdownSound()
+{
+	gmixer = NULL;
+}
+
+int WindowsHeadlessHost::SendSound(short *buff, int n)
+{
+	if (!gmixer)
+		return 0;
+	return gmixer->Mix(buff, n);
+}
+
 // TODO: also fix up GetSysDirectories
 void WindowsHeadlessHost::LoadNativeAssets()
 {

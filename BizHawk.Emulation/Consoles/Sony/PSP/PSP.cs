@@ -90,7 +90,12 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			PPSSPPDll.advance();
+			// problem 1: audio can be 48khz, if a particular core parameter is set.  we're not accounting for that.
+			// problem 2: we seem to be getting approximately the right amount of output, but with
+			// a lot of jitter on the per-frame buffer size
+			nsampavail = PPSSPPDll.mixsound(audiobuffer, audiobuffer.Length / 2);
 			LogFlush();
+			//Console.WriteLine("Audio Service: {0}", nsampavail);
 		}
 
 		public int Frame
@@ -184,11 +189,12 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		public int BufferHeight { get { return screenheight; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
-		readonly short[] audiobuffer = new short[735 * 2];
+		readonly short[] audiobuffer = new short[2048 * 2];
+		int nsampavail = 0;
 		public void GetSamples(out short[] samples, out int nsamp)
 		{			
-			samples = audiobuffer;	
-			nsamp = 735;	
+			samples = audiobuffer;
+			nsamp = nsampavail;
 		}
 		public void DiscardSamples()
 		{
