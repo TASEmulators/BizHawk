@@ -2117,15 +2117,24 @@ namespace BizHawk.MultiClient
 						{
 							case "SAT":
 								{
-									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameSaturnBios);
-									if (!File.Exists(biosPath))
+									// hax ahoy: use this to instead load the PSP when you "load" a saturn rom.
+									if (false)
 									{
-										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
-										return false;
+										var psp = new Emulation.Consoles.Sony.PSP.PSP(nextComm);
+										nextEmulator = psp;
 									}
-									var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
-									nextEmulator = saturn;
-									SaturnSetPrefs(saturn);
+									else
+									{
+										string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameSaturnBios);
+										if (!File.Exists(biosPath))
+										{
+											MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
+											return false;
+										}
+										var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
+										nextEmulator = saturn;
+										SaturnSetPrefs(saturn);
+									}
 								}
 								break;
 
