@@ -548,9 +548,6 @@
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
     <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)subwcrev.sh" "$(ProjectDir)"</PreBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>del /q "E:\Programming\Bizhawk\BizHawk.MultiClient\output*.pdb"</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
