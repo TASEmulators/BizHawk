@@ -2102,11 +2102,11 @@ namespace BizHawk.MultiClient
 								game = new GameInfo { System = "PSX", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 								disc.Dispose();
 							}
-							else if (disc.DetectSegaSaturn())
-							{
-								Console.WriteLine("Sega Saturn disc detected!");
-								game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
-							}
+                            //else if (disc.DetectSegaSaturn())  // DetectSegaSaturn does not exist
+                            //{
+                            //    Console.WriteLine("Sega Saturn disc detected!");
+                            //    game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
+                            //}
 							else
 							{
 								game = new GameInfo { System = "PCECD", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
