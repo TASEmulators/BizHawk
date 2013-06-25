@@ -366,6 +366,8 @@
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Mode4.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
+    <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
+    <Compile Include="Consoles\Sony\PSP\PSP.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
     <Compile Include="CPUs\68000\Instructions\DataMovement.cs" />

@@ -675,6 +675,10 @@ namespace BizHawk.MultiClient
 			{
 				return GetSaturnControllersAsMnemonic();
 			}
+			else if (ControlType == "PSP Controller")
+			{
+				return "|.|"; // TODO
+			}
 
 			StringBuilder input = new StringBuilder("|");
 
@@ -1208,6 +1212,11 @@ namespace BizHawk.MultiClient
 			else if (ControlType == "Saturn Controller")
 			{
 				SetSaturnControllersAsMnemonic(mnemonic);
+				return;
+			}
+			else if (ControlType == "PSP Controller")
+			{
+				// TODO
 				return;
 			}
 
