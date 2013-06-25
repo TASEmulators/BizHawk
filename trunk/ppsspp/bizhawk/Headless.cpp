@@ -167,7 +167,7 @@ BZEXPORT int BZAPI init(const char *fn, void (BZAPI* logcallback)(char, const ch
 	CoreParameter coreParameter;
 	coreParameter.cpuCore = CPU_JIT;
 	coreParameter.gpuCore = GPU_GLES;
-	coreParameter.enableSound = false;
+	coreParameter.enableSound = true;
 	coreParameter.fileToStart = fn;
 	coreParameter.mountIso = "";
 	coreParameter.startPaused = true;
@@ -182,7 +182,7 @@ BZEXPORT int BZAPI init(const char *fn, void (BZAPI* logcallback)(char, const ch
 	coreParameter.pixelHeight = 272;
 	coreParameter.unthrottle = true;
 
-	g_Config.bEnableSound = false;
+	g_Config.bEnableSound = true;
 	g_Config.bFirstRun = false;
 	g_Config.bIgnoreBadMemAccess = true;
 	// Never report from tests.
@@ -238,6 +238,11 @@ BZEXPORT void BZAPI die()
 	host = NULL;
 	headlessHost = NULL;
 	logger = NULL;
+}
+
+BZEXPORT int BZAPI mixsound(short *buff, int nsamp)
+{
+	return headlessHost->SendSound(buff, nsamp);
 }
 
 BZEXPORT void BZAPI advance()

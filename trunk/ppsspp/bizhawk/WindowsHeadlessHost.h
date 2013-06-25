@@ -38,9 +38,17 @@ public:
 	virtual void SetComparisonScreenshot(const std::string &filename);
 	virtual void SendBackBuffer(void *dest);
 
+	virtual void WindowsHeadlessHost::InitSound(PMixer *mixer);
+	virtual void WindowsHeadlessHost::UpdateSound();
+	virtual void WindowsHeadlessHost::ShutdownSound();
+
+	virtual int SendSound(short *buff, int n);
+
 private:
 	bool ResizeGL();
 	void LoadNativeAssets();
+
+	PMixer *gmixer;
 
 	HWND hWnd;
 	HDC hDC;

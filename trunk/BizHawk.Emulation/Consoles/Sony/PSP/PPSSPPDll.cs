@@ -25,5 +25,8 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern void advance();
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int mixsound(short[] buff, int nsamp);
 	}
 }
