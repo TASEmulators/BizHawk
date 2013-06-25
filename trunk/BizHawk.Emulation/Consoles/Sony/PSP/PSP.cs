@@ -80,6 +80,8 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 				PPSSPPDll.die();
 				logcallback = null;
 				disposed = true;
+				LogFlush();
+				Console.WriteLine("PSP Core Disposed.");
 			}
 		}
 
@@ -88,6 +90,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			PPSSPPDll.advance();
+			LogFlush();
 		}
 
 		public int Frame

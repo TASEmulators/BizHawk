@@ -95,10 +95,24 @@ void WindowsHeadlessHost::SendDebugOutput(const std::string &output)
 	OutputDebugString(output.c_str());
 }
 
-void WindowsHeadlessHost::SendBackBuffer(void *dest)
+void WindowsHeadlessHost::SendBackBuffer(void *_dest)
 {
+	int *dest = (int *)_dest;
 	glReadBuffer(GL_BACK);
 	glReadPixels(0, 0, 480, 272, GL_BGRA, GL_UNSIGNED_BYTE, dest);
+	
+	// vflip
+	int buff[480];
+	for (int j = 0; j < 272 / 2; j++)
+	{
+		int *l1 = dest + 480 * j;
+		int *l2 = dest + 480 * (271 - j);
+		int s = 480 * 4;
+
+		memcpy(buff, l1, s);
+		memcpy(l1, l2, s);
+		memcpy(l2, buff, s);
+	}
 }
 
 void WindowsHeadlessHost::SendDebugScreenshot(const u8 *pixbuf, u32 w, u32 h)
