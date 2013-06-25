@@ -12,15 +12,25 @@ namespace BizHawk.DiscSystem
 		/// <summary>
 		/// finds a file in the same directory with an extension alternate to the supplied one.
 		/// If two are found, an exception is thrown (later, we may have heuristics to try to acquire the desired content)
+		/// TODO - this whole concept could be turned into a gigantic FileResolver class and be way more powerful
 		/// </summary>
-		string FindAlternateExtensionFile(string path, bool caseSensitive)
+		string FindAlternateExtensionFile(string path, bool caseSensitive, string baseDir)
 		{
 			string targetFile = Path.GetFileName(path);
 			string targetFragment = Path.GetFileNameWithoutExtension(path);
 			var di = new FileInfo(path).Directory;
+			
+			//if the directory doesnt exist, it may be because it was a full path or something. try an alternate base directory
+			if (!di.Exists)
+				di = new DirectoryInfo(baseDir);
+
 			var results = new List<FileInfo>();
 			foreach (var fi in di.GetFiles())
 			{
+				//dont acquire cue files...
+				if (Path.GetExtension(fi.FullName).ToLower() == ".cue")
+					continue;
+
 				string fragment = Path.GetFileNameWithoutExtension(fi.FullName);
 				//match files with differing extensions
 				int cmp = string.Compare(fragment, targetFragment, !caseSensitive);
@@ -36,11 +46,12 @@ namespace BizHawk.DiscSystem
 			return results[0].FullName;
 		}
 
-		void FromCuePathInternal(string cuePath, CueBinPrefs prefs)
+		//cue files can get their data from other sources using this
+		Dictionary<string, string> CueFileResolver = new Dictionary<string, string>();
+
+		void FromCueInternal(Cue cue, string cueDir, CueBinPrefs prefs)
 		{
-			string cueDir = Path.GetDirectoryName(cuePath);
-			var cue = new Cue();
-			cue.LoadFromPath(cuePath);
+			//TODO - add cue directory to CueBinPrefs???? could make things cleaner...
 
 			var session = new DiscTOC.Session();
 			session.num = 1;
@@ -56,6 +67,9 @@ namespace BizHawk.DiscSystem
 
 				string blobPath = Path.Combine(cueDir, cue_file.Path);
 
+				if (CueFileResolver.ContainsKey(cue_file.Path))
+					blobPath = CueFileResolver[cue_file.Path];
+
 				int blob_sectorsize = Cue.BINSectorSizeForTrackType(cue_file.Tracks[0].TrackType);
 				int blob_length_aba, blob_leftover;
 				IBlob cue_blob = null;
@@ -63,11 +77,11 @@ namespace BizHawk.DiscSystem
 				//try any way we can to acquire a file
 				if (!File.Exists(blobPath) && prefs.ExtensionAware)
 				{
-					blobPath = FindAlternateExtensionFile(blobPath, prefs.CaseSensitive);
+					blobPath = FindAlternateExtensionFile(blobPath, prefs.CaseSensitive, cueDir);
 				}
 
 				if (!File.Exists(blobPath))
-					throw new DiscReferenceException(blobPath,"");
+					throw new DiscReferenceException(blobPath, "");
 
 				//some simple rules to mutate the file type if we received something fishy
 				string blobPathExt = Path.GetExtension(blobPath).ToLower();
@@ -90,7 +104,7 @@ namespace BizHawk.DiscSystem
 				}
 				else if (cue_file.FileType == Cue.CueFileType.ECM)
 				{
-					if(!Blob_ECM.IsECM(blobPath))
+					if (!Blob_ECM.IsECM(blobPath))
 					{
 						throw new DiscReferenceException(blobPath, "an ECM file was specified or detected, but it isn't a valid ECM file. You've got issues. Consult your iso vendor.");
 					}
@@ -265,7 +279,7 @@ namespace BizHawk.DiscSystem
 							{
 								case ETrackType.Audio:  //all 2352 bytes are present
 								case ETrackType.Mode1_2352: //2352 bytes are present, containing 2048 bytes of user data as well as ECM
-								case ETrackType.Mode2_2352: //2352 bytes are present, containing 2336 bytes of user data, with no ECM
+								case ETrackType.Mode2_2352: //2352 bytes are present, containing the entirety of a mode2 sector (could be form0,1,2)
 									{
 										//these cases are all 2352 bytes
 										//in all these cases, either no ECM is present or ECM is provided.
@@ -273,7 +287,15 @@ namespace BizHawk.DiscSystem
 										Sector_RawBlob sector_rawblob = new Sector_RawBlob();
 										sector_rawblob.Blob = cue_blob;
 										sector_rawblob.Offset = (long)blob_timestamp * 2352;
-										Sector_Raw sector_raw = new Sector_Raw();
+										Sector_Mode1_or_Mode2_2352 sector_raw;
+										if(cue_track.TrackType == ETrackType.Mode1_2352)
+											sector_raw  = new Sector_Mode1_2352();
+										else if (cue_track.TrackType == ETrackType.Audio)
+											sector_raw = new Sector_Mode1_2352(); //TODO should probably make a new sector adapter which errors if 2048B are requested
+										else if (cue_track.TrackType == ETrackType.Mode2_2352)
+											sector_raw = new Sector_Mode2_2352();
+										else throw new InvalidOperationException();
+
 										sector_raw.BaseSector = sector_rawblob;
 										//take care to handle final sectors that are too short.
 										if (is_last_aba_in_track && blob_leftover > 0)
@@ -337,6 +359,14 @@ namespace BizHawk.DiscSystem
 				session.length_aba = lastTrack.Indexes[1].aba + lastTrack.length_aba - firstTrack.Indexes[0].aba;
 				TOC.length_aba += toc_session.length_aba;
 			}
+		}
+
+		void FromCuePathInternal(string cuePath, CueBinPrefs prefs)
+		{
+			string cueDir = Path.GetDirectoryName(cuePath);
+			var cue = new Cue();
+			cue.LoadFromPath(cuePath);
+			FromCueInternal(cue, cueDir, prefs);
 		}
 	}
 
@@ -451,8 +481,13 @@ namespace BizHawk.DiscSystem
 		{
 			FileInfo fiCue = new FileInfo(cuePath);
 			if (!fiCue.Exists) throw new FileNotFoundException();
-			File.ReadAllText(cuePath);
-			TextReader tr = new StreamReader(cuePath);
+			string cueString = File.ReadAllText(cuePath);
+			LoadFromString(cueString);
+		}
+
+		public void LoadFromString(string cueString)
+		{
+			TextReader tr = new StringReader(cueString);
 
 			bool track_has_pregap = false;
 			bool track_has_postgap = false;
