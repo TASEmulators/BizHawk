@@ -2060,84 +2060,75 @@ namespace BizHawk.MultiClient
 
 				try
 				{
-					//if (file.Extension.ToLower() == ".exe")
-					//{
-					//  PSX psx = new PSX();
-					//  nextEmulator = psx;
-					//  psx.LoadFile(file.CanonicalFullPath);
-					//  game = new GameInfo();
-					//  game.System = "PSX";
-					//  game.Name = "xx";
-					//  game.Hash = "xx";
-					//}
-					//else 
-					if (file.Extension.ToLower() == ".iso")
+					string ext = file.Extension.ToLower();
+					if (ext == ".iso" || ext == ".cue")
 					{
-						//if (Global.PsxCoreLibrary.IsOpen)
-						//{
-						//  // sorry zero ;'( I leave de-RomGameifying this to you
-						//  //PsxCore psx = new PsxCore(Global.PsxCoreLibrary);
-						//  //nextEmulator = psx;
-						//  //game = new RomGame();
-						//  //var disc = Disc.FromIsoPath(path);
-						//  //Global.DiscHopper.Clear();
-						//  //Global.DiscHopper.Enqueue(disc);
-						//  //Global.DiscHopper.Insert();
-						//  //psx.SetDiscHopper(Global.DiscHopper);
-						//}
-					}
-					else if (file.Extension.ToLower() == ".cue")
-					{
-						Disc disc = Disc.FromCuePath(path, new CueBinPrefs());
+						Disc disc;
+						if (ext == ".iso")
+							disc = Disc.FromIsoPath(path);
+						else
+							disc = Disc.FromCuePath(path, new CueBinPrefs());
 						var hash = disc.GetHash();
 						game = Database.CheckDatabase(hash);
 						if (game == null)
 						{
-							// Game was not found in DB. For now we're going to send it to the PCE-CD core.
-							// In the future we need to do something smarter, possibly including simply asking the user
-							// what system the game is for.
+							// try to use our wizard methods
+							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 
+							switch (disc.DetectDiscType())
+							{
+								case DiscType.SegaSaturn:
+									game.System = "SAT";
+									break;
+								case DiscType.SonyPSP:
+									game.System = "PSP";
+									break;
+								case DiscType.SonyPSX:
+									game.System = "PSX";
+									break;
+								case DiscType.TurboCD:
+								case DiscType.UnknownCDFS:
+								case DiscType.UnknownFormat:
+								default: // PCECD was bizhawk's first CD core, so this prevents regressions
+									game.System = "PCECD";
+									break;
+							}
+							
+							/* probably dead code here
 							if (Emulation.Consoles.PSX.Octoshock.CheckIsPSX(disc))
 							{
 								game = new GameInfo { System = "PSX", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 								disc.Dispose();
 							}
+							*/
                             //else if (disc.DetectSegaSaturn())  // DetectSegaSaturn does not exist
                             //{
                             //    Console.WriteLine("Sega Saturn disc detected!");
                             //    game = new GameInfo { System = "SAT", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
                             //}
-							else
-							{
-								game = new GameInfo { System = "PCECD", Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
-							}
 						}
 
 						switch (game.System)
 						{
 							case "SAT":
 								{
-									// hax ahoy: use this to instead load the PSP when you "load" a saturn rom.
-									if (false)
+									string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameSaturnBios);
+									if (!File.Exists(biosPath))
 									{
-										var psp = new Emulation.Consoles.Sony.PSP.PSP(nextComm);
-										nextEmulator = psp;
+										MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
+										return false;
 									}
-									else
-									{
-										string biosPath = PathManager.StandardFirmwareName(Global.Config.FilenameSaturnBios);
-										if (!File.Exists(biosPath))
-										{
-											MessageBox.Show("Saturn BIOS not found.  Please check firmware configurations.");
-											return false;
-										}
-										var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
-										nextEmulator = saturn;
-										SaturnSetPrefs(saturn);
-									}
+									var saturn = new Emulation.Consoles.Sega.Saturn.Yabause(nextComm, disc, File.ReadAllBytes(biosPath), Global.Config.SaturnUseGL);
+									nextEmulator = saturn;
+									SaturnSetPrefs(saturn);
 								}
 								break;
-
+							case "PSP":
+								{
+									var psp = new Emulation.Consoles.Sony.PSP.PSP(nextComm, file.Name);
+									nextEmulator = psp;
+								}
+								break;
 							case "PSX":
 								{
 									var psx = new Emulation.Consoles.PSX.Octoshock(nextComm);
@@ -2146,7 +2137,6 @@ namespace BizHawk.MultiClient
 									nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								}
 								break;
-
 							case "PCE":
 							case "PCECD":
 								{
@@ -2217,7 +2207,7 @@ namespace BizHawk.MultiClient
 							}
 
 						}
-						// if load fails, second chance to identify as a bsnes XML
+						// if load fails, are we supposed to retry as a bsnes XML????????
 					}
 					else // most extensions
 					{
