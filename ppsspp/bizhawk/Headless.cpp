@@ -204,6 +204,9 @@ BZEXPORT int BZAPI init(const char *fn, void (BZAPI* logcallback)(char, const ch
 	g_Config.iButtonPreference = PSP_SYSTEMPARAM_BUTTON_CROSS;
 	g_Config.iLockParentalLevel = 9;
 
+	g_Config.flashDirectory = "PSP/flash0/";
+	g_Config.memCardDirectory = "PSP/memstick/";
+
 	if (!PSP_Init(coreParameter, &error_string))
 	{
 		logcallback('!', "PSP_Init() failed\n");
