@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		static PSP attachedcore = null;
 		GCHandle vidhandle;
 
-		public PSP(CoreComm comm)
+		public PSP(CoreComm comm, string isopath)
 		{
 			if (attachedcore != null)
 			{
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 
 			logcallback = new PPSSPPDll.LogCB(LogCallbackFunc);
 
-			bool good = PPSSPPDll.init(@"D:\Games\jpcsp\umdimages\Final Fantasy Anniversary Edition [U] [ULUS-10251].iso", logcallback);
+			bool good = PPSSPPDll.init(isopath, logcallback);
 			LogFlush();
 			if (!good)
 				throw new Exception("PPSSPP Init failed!");
