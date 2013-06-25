@@ -11,7 +11,14 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		public static readonly ControllerDefinition PSPController = new ControllerDefinition
 		{
 			Name = "PSP Controller",
-			BoolButtons = { "TO", "BE", "CHANGED" }
+			BoolButtons =
+			{					
+				"Up", "Down", "Left", "Right", "Select", "Start", "L", "R", "Square", "Triangle", "Circle", "Cross", "Power"
+			},
+			FloatControls =
+			{
+				"Stick X", "Stick Y"
+			}
 		};
 
 		public IVideoProvider VideoProvider { get { return this; } }
