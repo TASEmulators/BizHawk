@@ -411,6 +411,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			if(CoreComm.SNES_UseRingBuffer)
 				api.BeginBufferIO();
 
+			/* if the input poll callback is called, it will set this to false
+			 * this has to be done before we save the per-frame state in deterministic
+			 * mode, because in there, the core actually advances, and might advance
+			 * through the point in time where IsLagFrame gets set to false.  makes sense?
+			 */
+
+			IsLagFrame = true;
+
 			// for deterministic emulation, save the state we're going to use before frame advance
 			// don't do this during nocallbacks though, since it's already been done
 			if (!nocallbacks && DeterministicEmulation)
@@ -456,9 +464,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 			api.snes_set_layer_enable(4, 1, CoreComm.SNES_ShowOBJ_1);
 			api.snes_set_layer_enable(4, 2, CoreComm.SNES_ShowOBJ_2);
 			api.snes_set_layer_enable(4, 3, CoreComm.SNES_ShowOBJ_3);
-
-			// if the input poll callback is called, it will set this to false
-			IsLagFrame = true;
 
 			//apparently this is one frame?
 			timeFrameCounter++;
