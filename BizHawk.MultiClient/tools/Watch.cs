@@ -82,7 +82,7 @@ namespace BizHawk.MultiClient
 		public string Notes;
 		public int Changecount;
 		public bool Deleted;
-		
+
 		#endregion
 
 		#region Properties

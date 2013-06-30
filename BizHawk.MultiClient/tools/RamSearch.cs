@@ -77,10 +77,14 @@ namespace BizHawk.MultiClient
 			sortReverse = false;
 			sortedCol = "";
 
-			for (int x = Searches.Count - 1; x >= 0; x--)
+			if (!Global.Config.RamSearchFastMode)
 			{
-				Searches[x].PeekAddress();
+				for (int x = Searches.Count - 1; x >= 0; x--)
+				{
+					Searches[x].PeekAddress();
+				}
 			}
+
 			if (AutoSearchCheckBox.Checked)
 			{
 				DoSearch();
@@ -690,6 +694,14 @@ namespace BizHawk.MultiClient
 
 		private void DoSearch()
 		{
+			if (Global.Config.RamSearchFastMode)
+			{
+				for (int x = Searches.Count - 1; x >= 0; x--)
+				{
+					Searches[x].PeekAddress();
+				}
+			}
+
 			if (GenerateWeedOutList())
 			{
 				MessageLabel.Text = MakeAddressString(Searches.Count(x => x.Deleted)) + " removed";
@@ -1887,6 +1899,7 @@ namespace BizHawk.MultiClient
 
 		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
+			fastModeToolStripMenuItem.Checked = Global.Config.RamSearchFastMode;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
 			previewModeToolStripMenuItem.Checked = Global.Config.RamSearchPreviewMode;
 			alwaysExcludeRamSearchListToolStripMenuItem.Checked = Global.Config.AlwaysExcludeRamWatch;
@@ -2705,6 +2718,16 @@ namespace BizHawk.MultiClient
 		private void clearUndoHistoryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SearchHistory.Clear();
+		}
+
+		private void fastModeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchFastMode ^= true;
+			Global.Config.RamSearchPreviewMode = !Global.Config.RamSearchFastMode;
+			if (Global.Config.RamSearchFastMode && Global.Config.RamSearchPreviousAs > 1)
+			{
+				Global.Config.RamSearchPreviousAs = 0;
+			}
 		}
 	}
 }
