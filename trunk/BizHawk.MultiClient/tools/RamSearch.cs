@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 
 		private string systemID = "NULL";
 		private List<Watch> Searches = new List<Watch>();
-		private HistoryCollection SearchHistory;
+		private HistoryCollection SearchHistory = new HistoryCollection();
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 		private readonly List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		private MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
@@ -73,7 +73,7 @@ namespace BizHawk.MultiClient
 			{
 				SearchListView.BlazingFast = true;
 			}
-			
+
 			sortReverse = false;
 			sortedCol = "";
 
@@ -153,7 +153,7 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
 				{
 					string str = Global.Emulator.MemoryDomains[x].ToString();
-					var item = new ToolStripMenuItem {Text = str};
+					var item = new ToolStripMenuItem { Text = str };
 					{
 						int z = x;
 						item.Click += (o, ev) => SetMemoryDomainNew(z);
@@ -385,6 +385,7 @@ namespace BizHawk.MultiClient
 		private void StartNewSearch()
 		{
 			IsAWeededList = false;
+			SearchHistory.Clear();
 			Searches.Clear();
 			SetPlatformAndMemoryDomainLabel();
 			int count = 0;
@@ -692,7 +693,7 @@ namespace BizHawk.MultiClient
 			if (GenerateWeedOutList())
 			{
 				MessageLabel.Text = MakeAddressString(Searches.Count(x => x.Deleted)) + " removed";
-				TrimWeededList(); 
+				TrimWeededList();
 				UpdateLastSearch();
 				DisplaySearchList();
 				SearchHistory.AddState(Searches);
@@ -1831,7 +1832,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.RecentSearches.IsEmpty)
 			{
-				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
+				var none = new ToolStripMenuItem { Enabled = false, Text = "None" };
 				recentToolStripMenuItem.DropDownItems.Add(none);
 			}
 			else
@@ -1839,7 +1840,7 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < Global.Config.RecentSearches.Count; x++)
 				{
 					string path = Global.Config.RecentSearches.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem {Text = path};
+					var item = new ToolStripMenuItem { Text = path };
 					item.Click += (o, ev) => LoadSearchFromRecent(path);
 					recentToolStripMenuItem.DropDownItems.Add(item);
 				}
@@ -1847,7 +1848,7 @@ namespace BizHawk.MultiClient
 
 			recentToolStripMenuItem.DropDownItems.Add("-");
 
-			var clearitem = new ToolStripMenuItem {Text = "&Clear"};
+			var clearitem = new ToolStripMenuItem { Text = "&Clear" };
 			clearitem.Click += (o, ev) => Global.Config.RecentSearches.Clear();
 			recentToolStripMenuItem.DropDownItems.Add(clearitem);
 		}
@@ -1914,7 +1915,7 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(currentFile, "") == 0) 
+			if (string.Compare(currentFile, "") == 0)
 				SaveAs();
 			else
 				SaveSearchFile(currentFile);
@@ -1932,32 +1933,10 @@ namespace BizHawk.MultiClient
 
 		private void searchToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Searches.Count == 0)
-			{
-				searchToolStripMenuItem.Enabled = false;
-			}
-			else
-			{
-				searchToolStripMenuItem.Enabled = true;
-			}
-
-			if (SearchHistory.CanUndo)
-			{
-				undoToolStripMenuItem.Enabled = true;
-			}
-			else
-			{
-				undoToolStripMenuItem.Enabled = false;
-			}
-
-			if (SearchHistory.CanRedo)
-			{
-				redoToolStripMenuItem.Enabled = true;
-			}
-			else
-			{
-				redoToolStripMenuItem.Enabled = false;
-			}
+			clearUndoHistoryToolStripMenuItem.Enabled = SearchHistory.HasHistory;
+			searchToolStripMenuItem.Enabled = Searches.Any();
+			undoToolStripMenuItem.Enabled = SearchHistory.CanUndo;
+			redoToolStripMenuItem.Enabled = SearchHistory.CanRedo;
 
 			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
 
@@ -2120,7 +2099,7 @@ namespace BizHawk.MultiClient
 		private void DoTruncate()
 		{
 			MessageLabel.Text = MakeAddressString(Searches.Count(x => x.Deleted)) + " removed";
-			TrimWeededList(); 
+			TrimWeededList();
 			UpdateLastSearch();
 			DisplaySearchList();
 			SearchHistory.AddState(Searches);
@@ -2137,7 +2116,7 @@ namespace BizHawk.MultiClient
 				LoadSearchFile(file.FullName, false, temp);
 				TruncateList(temp);
 				DoTruncate();
-				
+
 			}
 		}
 
@@ -2693,7 +2672,7 @@ namespace BizHawk.MultiClient
 
 		private void viewInHexEditorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ListView.SelectedIndexCollection indexes =SearchListView.SelectedIndices;
+			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
 				Global.MainForm.LoadHexEditor();
@@ -2717,10 +2696,15 @@ namespace BizHawk.MultiClient
 			Global.MainForm.Cheats1.UpdateValues();
 		}
 
-        private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            alwaysOnTopToolStripMenuItem.Checked = alwaysOnTopToolStripMenuItem.Checked == false;
-            this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
-        }
+		private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			alwaysOnTopToolStripMenuItem.Checked = alwaysOnTopToolStripMenuItem.Checked == false;
+			this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
+		}
+
+		private void clearUndoHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SearchHistory.Clear();
+		}
 	}
 }
