@@ -505,6 +505,7 @@ namespace BizHawk.MultiClient
 		public int RamSearchValueIndex = 1;
 		public int RamSearchPrevIndex = 2;
 		public int RamSearchChangesIndex = 3;
+		public bool RamSearchFastMode = false;
 
 		// HexEditor Settings
 		public bool AutoLoadHexEditor = false;
