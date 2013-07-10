@@ -5504,5 +5504,34 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void controllersToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			OpenControllerConfig();
+		}
+
+		private void hotkeysToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			OpenHotkeyDialog();
+		}
+
+		private void messagesToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			new MessageConfig().ShowDialog();
+		}
+
+		private void pathsToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			new PathConfig().ShowDialog();
+		}
+
+		private void soundToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			OpenSoundConfigDialog();
+		}
+
+		private void autofireToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			new AutofireConfig().ShowDialog();
+		}
 	}
 }

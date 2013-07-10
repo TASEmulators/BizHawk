@@ -180,6 +180,11 @@ namespace BizHawk.MultiClient
 
 		private void soundToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			OpenSoundConfigDialog();
+		}
+
+		private void OpenSoundConfigDialog()
+		{
 			SoundConfig s = new SoundConfig();
 			var result = s.ShowDialog();
 			if (result == System.Windows.Forms.DialogResult.OK)
@@ -453,7 +458,11 @@ namespace BizHawk.MultiClient
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			
+			OpenControllerConfig();
+		}
+
+		private void OpenControllerConfig()
+		{
 			ControllerConfig c = new ControllerConfig();
 			c.ShowDialog();
 			if (c.DialogResult == DialogResult.OK)
@@ -464,6 +473,11 @@ namespace BizHawk.MultiClient
 		}
 
 		private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenHotkeyDialog();
+		}
+
+		private void OpenHotkeyDialog()
 		{
 			HotkeyWindow h = new HotkeyWindow();
 			h.ShowDialog();
@@ -705,8 +719,7 @@ namespace BizHawk.MultiClient
 
 		private void messagesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			MessageConfig m = new MessageConfig();
-			m.ShowDialog();
+			new MessageConfig().ShowDialog();
 		}
 
 		private void autoloadVirtualKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
@@ -729,8 +742,7 @@ namespace BizHawk.MultiClient
 
 		private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PathConfig p = new PathConfig();
-			p.ShowDialog();
+			new PathConfig().ShowDialog();
 		}
 
 		private void displayRerecordCountToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1002,19 +1014,13 @@ namespace BizHawk.MultiClient
 
 		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (EmulatorPaused)
-			{
-				wasPaused = true;
-			}
-			else
-			{
-				wasPaused = false;
-			}
-
+			wasPaused = EmulatorPaused;
 			didMenuPause = true;
 			PauseEmulator();
 
 			//TODO - MUST refactor this to hide all and then view a set depending on the state
+
+			configToolStripMenuItem1.Visible = InFullscreen;
 
 			if (IsNullEmulator())
 			{
@@ -1044,10 +1050,12 @@ namespace BizHawk.MultiClient
 				if (InFullscreen)
 				{
 					cmiOpenRom.Visible = true;
+					configToolStripMenuItem1.Visible = true;
 				}
 				else
 				{
 					cmiOpenRom.Visible = false;
+					configToolStripMenuItem1.Visible = false;
 				}
 				
 				cmiLoadLastRom.Visible = false;
