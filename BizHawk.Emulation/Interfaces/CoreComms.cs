@@ -6,10 +6,10 @@ namespace BizHawk
 	public class CoreComm
 	{
 		public int NES_BackdropColor;
-		public bool NES_UnlimitedSprites;
-		public bool NES_ShowBG, NES_ShowOBJ;
-		public bool PCE_ShowBG1, PCE_ShowOBJ1, PCE_ShowBG2, PCE_ShowOBJ2;
-		public bool SMS_ShowBG, SMS_ShowOBJ;
+		public bool NES_UnlimitedSprites = false;
+		public bool NES_ShowBG = true, NES_ShowOBJ = true;
+		public bool PCE_ShowBG1 = true, PCE_ShowOBJ1 = true, PCE_ShowBG2 = true, PCE_ShowOBJ2 = true;
+		public bool SMS_ShowBG = true, SMS_ShowOBJ = true;
 		public bool GG_ShowClippedRegions;
 		public bool GG_HighlightActiveDisplayRegion;
 
@@ -28,7 +28,7 @@ namespace BizHawk
 		public bool SNES_ShowBG1_1, SNES_ShowBG2_1, SNES_ShowBG3_1, SNES_ShowBG4_1;
 		public bool SNES_ShowOBJ_0, SNES_ShowOBJ_1, SNES_ShowOBJ_2, SNES_ShowOBJ_3;
 
-		public bool Atari2600_ShowBG, Atari2600_ShowPlayer1, Atari2600_ShowPlayer2, Atari2600_ShowMissle1, Atari2600_ShowMissle2, Atari2600_ShowBall, Atari2600_ShowPF;
+		public bool Atari2600_ShowBG = true, Atari2600_ShowPlayer1 = true, Atari2600_ShowPlayer2 = true, Atari2600_ShowMissle1 = true, Atari2600_ShowMissle2 = true, Atari2600_ShowBall = true, Atari2600_ShowPF = true;
 
 		/// <summary>
 		/// if this is set, then the cpu should dump trace info to CpuTraceStream
