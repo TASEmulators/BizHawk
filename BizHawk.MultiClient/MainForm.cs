@@ -1117,6 +1117,7 @@ namespace BizHawk.MultiClient
 			Global.AutoFireController = BindToDefinitionAF(def, Global.Config.AllTrollersAutoFire);
 
 			// allow propogating controls that are in the current controller definition but not in the prebaked one
+			// these two lines shouldn't be required anymore under the new system?
 			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
 			Global.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);			
 			RewireInputChain();
