@@ -4590,7 +4590,15 @@ namespace BizHawk.MultiClient
 
 		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new N64VideoPluginconfig().ShowDialog();
+			var result = new N64VideoPluginconfig().ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				Global.OSD.AddMessage("Plugin settings saved");
+			}
+			else
+			{
+				Global.OSD.AddMessage("Plugin settings aborted");
+			}
 		}
 
 		private void savestateTypeToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
