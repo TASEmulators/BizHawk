@@ -31,6 +31,8 @@ namespace BizHawk.MultiClient
 		protected List<InputWidget> Inputs = new List<InputWidget>();
 		protected List<Label> Labels = new List<Label>();
 
+		private Size _panelSize = new Size(0, 0);
+
 		public ControllerConfigPanel()
 		{
 			InitializeComponent();
@@ -86,8 +88,16 @@ namespace BizHawk.MultiClient
 				RealConfigObject[buttons[button]] = Inputs[button].Text;
 		}
 
-		public void LoadSettings(Dictionary<string, string> configobj, List<string> configbuttons = null)
+		public void LoadSettings(Dictionary<string, string> configobj, List<string> configbuttons = null, int? width = null, int? height = null)
 		{
+			if (width.HasValue && height.HasValue)
+			{
+				_panelSize = new Size(width.Value, height.Value);
+			}
+			else
+			{
+			}
+			_panelSize = Size;
 			RealConfigObject = configobj;
 			RealConfigButtons = configbuttons;
 			SetButtonList();
@@ -121,7 +131,7 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < buttons.Count; i++)
 			{
 				y += Spacing;
-				if (y > (Size.Height - 23))
+				if (y > (_panelSize.Height - 23))
 				{
 					y = MarginTop;
 					x += ColumnWidth;

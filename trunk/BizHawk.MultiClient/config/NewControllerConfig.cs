@@ -81,7 +81,7 @@ namespace BizHawk.MultiClient.config
 				var cp = new ControllerConfigPanel();
 				cp.Dock = DockStyle.Fill;
 				dest.Controls.Add(cp);
-				cp.LoadSettings(settings);
+				cp.LoadSettings(settings, null, dest.Width, dest.Height);
 			}
 			else
 			{
@@ -99,7 +99,7 @@ namespace BizHawk.MultiClient.config
 						var cp = new ControllerConfigPanel();
 						cp.Dock = DockStyle.Fill;
 						tt.TabPages[pageidx].Controls.Add(cp);
-						cp.LoadSettings(settings, buckets[i]);
+						cp.LoadSettings(settings, buckets[i], tt.Width, tt.Height);
 						pageidx++;
 					}
 				}
