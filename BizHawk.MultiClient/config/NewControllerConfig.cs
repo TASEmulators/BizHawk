@@ -115,50 +115,14 @@ namespace BizHawk.MultiClient.config
 			}
 		}
 
-		/*
-		static void DoLoadSettings(ControllerConfigPanel cp, ControllerDefinition def, Dictionary<string, Dictionary<string, string>> settingsblock)
-		{
-			cp.Spacing = 24;
-			cp.InputSize = 100;
-			cp.LabelPadding = 5;
-			cp.ColumnWidth = 170;
-			cp.LabelWidth = 60;
-
-			Dictionary<string, string> settings;
-			if (!settingsblock.TryGetValue(def.Name, out settings))
-			{
-				settings = new Dictionary<string, string>();
-				settingsblock[def.Name] = settings;
-			}
-			// check to make sure that the settings object has all of the appropriate boolbuttons
-			foreach (string button in def.BoolButtons)
-			{
-				if (!settings.Keys.Contains(button))
-					settings[button] = "";
-			}
-			cp.LoadSettings(settings);
-		}
-		*/
-
 		public NewControllerConfig(ControllerDefinition def)
 			: this()
 		{
 			SuspendLayout();
-			/*
-			var normcontrls = new ControllerConfigPanel();
-			normcontrls.Dock = DockStyle.Fill;
-			tabPage1.Controls.Add(normcontrls);
-			DoLoadSettings(normcontrls, def, Global.Config.AllTrollers);
-
-			var autofirecontrls = new ControllerConfigPanel();
-			autofirecontrls.Dock = DockStyle.Fill;
-			tabPage2.Controls.Add(autofirecontrls);
-			DoLoadSettings(autofirecontrls, def, Global.Config.AllTrollersAutoFire);
-			*/
 			LoadToPanel(tabPage1, def, Global.Config.AllTrollers);
 			LoadToPanel(tabPage2, def, Global.Config.AllTrollersAutoFire);
 
-			label1.Text = "Currently Configuring: " + def.Name;
+			Text = def.Name + " Configuration";
 			checkBoxUDLR.Checked = Global.Config.AllowUD_LR;
 			checkBoxAutoTab.Checked = Global.Config.InputConfigAutoTab;
 
@@ -224,6 +188,11 @@ namespace BizHawk.MultiClient.config
 		{
 			Global.OSD.AddMessage("Controller config aborted");
 			Close();
+		}
+
+		private void NewControllerConfig_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
