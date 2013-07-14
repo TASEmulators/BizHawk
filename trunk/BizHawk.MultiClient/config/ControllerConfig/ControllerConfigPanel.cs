@@ -11,18 +11,22 @@ namespace BizHawk.MultiClient
 
 	public partial class ControllerConfigPanel : UserControl
 	{
+		// the dictionary that results are saved to
 		Dictionary<string, string> RealConfigObject;
+		// if nonnull, the list of keys to use.  used to have the config panel operate on a smaller list than the whole dictionary;
+		// for instance, to show only a single player
+		List<string> RealConfigButtons;
 
 		public List<string> buttons = new List<string>();
 
 		public int InputMarginLeft = 0;
-		public int LabelPadding = 10;
+		public int LabelPadding = 5;
 
 		public int MarginTop = 0;
-		public int Spacing = 30;
-		public int InputSize = 200;
-		public int ColumnWidth = 220;
-		public int LabelWidth = 100;
+		public int Spacing = 24;
+		public int InputSize = 100;
+		public int ColumnWidth = 170;
+		public int LabelWidth = 60;
 
 		protected List<InputWidget> Inputs = new List<InputWidget>();
 		protected List<Label> Labels = new List<Label>();
@@ -82,9 +86,10 @@ namespace BizHawk.MultiClient
 				RealConfigObject[buttons[button]] = Inputs[button].Text;
 		}
 
-		public void LoadSettings(Dictionary<string, string> configobj)
+		public void LoadSettings(Dictionary<string, string> configobj, List<string> configbuttons = null)
 		{
 			RealConfigObject = configobj;
+			RealConfigButtons = configbuttons;
 			SetButtonList();
 			Startup();
 			SetWidgetStrings();
@@ -93,7 +98,8 @@ namespace BizHawk.MultiClient
 		protected void SetButtonList()
 		{
 			buttons.Clear();
-			foreach (string s in RealConfigObject.Keys)
+			IEnumerable<string> bl = RealConfigButtons ?? (IEnumerable<string>)RealConfigObject.Keys;
+			foreach (string s in bl)
 				buttons.Add(s);
 		}
 

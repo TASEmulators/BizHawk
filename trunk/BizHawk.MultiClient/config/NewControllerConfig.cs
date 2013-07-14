@@ -32,14 +32,90 @@ namespace BizHawk.MultiClient.config
 			//ControllerImages.Add(, Properties.Resources);
 		}
 
+		const int MAXPLAYERS = 8;
+
 		private NewControllerConfig()
 		{
 			InitializeComponent();
 		}
 
-		ControllerConfigPanel normcontrls;
-		ControllerConfigPanel autofirecontrls;
+		static void LoadToPanel(Control dest, ControllerDefinition def, Dictionary<string, Dictionary<string, string>> settingsblock)
+		{
+			Dictionary<string, string> settings;
+			if (!settingsblock.TryGetValue(def.Name, out settings))
+			{
+				settings = new Dictionary<string, string>();
+				settingsblock[def.Name] = settings;
+			}
+			// check to make sure that the settings object has all of the appropriate boolbuttons
+			foreach (string button in def.BoolButtons)
+			{
+				if (!settings.Keys.Contains(button))
+					settings[button] = "";
+			}
 
+			if (settings.Keys.Count == 0)
+				return;
+
+			// split the list of all settings into buckets by player number
+			List<string>[] buckets = new List<string>[MAXPLAYERS + 1];
+			for (int i = 0; i < buckets.Length; i++)
+				buckets[i] = new List<string>();
+
+			foreach (string button in settings.Keys)
+			{
+				int i;
+				for (i = 1; i <= MAXPLAYERS; i++)
+				{
+					if (button.StartsWith("P" + i))
+						break;
+				}
+				if (i > MAXPLAYERS) // couldn't find
+					i = 0;
+				buckets[i].Add(button);
+			}
+
+			if (buckets[0].Count == settings.Keys.Count)
+			{
+				// everything went into bucket 0, so make no tabs at all
+				var cp = new ControllerConfigPanel();
+				cp.Dock = DockStyle.Fill;
+				dest.Controls.Add(cp);
+				cp.LoadSettings(settings);
+			}
+			else
+			{
+				// create multiple player tabs
+				var tt = new TabControl();
+				tt.Dock = DockStyle.Fill;
+				dest.Controls.Add(tt);
+				int pageidx = 0;
+				for (int i = 1; i <= MAXPLAYERS; i++)
+				{
+					if (buckets[i].Count > 0)
+					{
+						tt.TabPages.Add("Player " + i);
+
+						var cp = new ControllerConfigPanel();
+						cp.Dock = DockStyle.Fill;
+						tt.TabPages[pageidx].Controls.Add(cp);
+						cp.LoadSettings(settings, buckets[i]);
+						pageidx++;
+					}
+				}
+				if (buckets[0].Count > 0)
+				{
+					tt.TabPages.Add("Console");
+					var cp = new ControllerConfigPanel();
+					cp.Dock = DockStyle.Fill;
+					tt.TabPages[pageidx].Controls.Add(cp);
+					cp.LoadSettings(settings, buckets[0]);
+					pageidx++;
+				}
+			}
+		}
+
+		/*
 		static void DoLoadSettings(ControllerConfigPanel cp, ControllerDefinition def, Dictionary<string, Dictionary<string, string>> settingsblock)
 		{
 			cp.Spacing = 24;
@@ -62,20 +138,25 @@ namespace BizHawk.MultiClient.config
 			}
 			cp.LoadSettings(settings);
 		}
+		*/
 
 		public NewControllerConfig(ControllerDefinition def)
 			: this()
 		{
 			SuspendLayout();
-			normcontrls = new ControllerConfigPanel();
+			/*
+			var normcontrls = new ControllerConfigPanel();
 			normcontrls.Dock = DockStyle.Fill;
 			tabPage1.Controls.Add(normcontrls);
 			DoLoadSettings(normcontrls, def, Global.Config.AllTrollers);
 
-			autofirecontrls = new ControllerConfigPanel();
+			var autofirecontrls = new ControllerConfigPanel();
 			autofirecontrls.Dock = DockStyle.Fill;
 			tabPage2.Controls.Add(autofirecontrls);
 			DoLoadSettings(autofirecontrls, def, Global.Config.AllTrollersAutoFire);
+			*/
+			LoadToPanel(tabPage1, def, Global.Config.AllTrollers);
+			LoadToPanel(tabPage2, def, Global.Config.AllTrollersAutoFire);
 
 			label1.Text = "Currently Configuring: " + def.Name;
 			checkBoxUDLR.Checked = Global.Config.AllowUD_LR;
@@ -96,10 +177,31 @@ namespace BizHawk.MultiClient.config
 			tableLayoutPanel1.ColumnStyles[1].Width = bmp.Width;
 		}
 
+		// lazy methods, but they're not called often and actually
+		// tracking all of the ControllerConfigPanels wouldn't be simpler
+		static void SetAutoTab(Control c, bool value)
+		{
+			if (c is ControllerConfigPanel)
+				(c as ControllerConfigPanel).SetAutoTab(value);
+			else if (c.HasChildren)
+				foreach (Control cc in c.Controls)
+					SetAutoTab(cc, value);
+		}
+
+		static void Save(Control c)
+		{
+			if (c is ControllerConfigPanel)
+				(c as ControllerConfigPanel).Save();
+			else if (c.HasChildren)
+				foreach (Control cc in c.Controls)
+					Save(cc);
+		}
+
+
+
 		private void checkBoxAutoTab_CheckedChanged(object sender, EventArgs e)
 		{
-			normcontrls.SetAutoTab(checkBoxAutoTab.Checked);
-			autofirecontrls.SetAutoTab(checkBoxAutoTab.Checked);
+			SetAutoTab(this, checkBoxAutoTab.Checked);
 		}
 
 		private void checkBoxUDLR_CheckedChanged(object sender, EventArgs e)
@@ -111,8 +213,7 @@ namespace BizHawk.MultiClient.config
 			Global.Config.AllowUD_LR = checkBoxUDLR.Checked;
 			Global.Config.InputConfigAutoTab = checkBoxAutoTab.Checked;
 
-			normcontrls.Save();
-			autofirecontrls.Save();
+			Save(this);
 
 			Global.OSD.AddMessage("Controller settings saved");
 			DialogResult = DialogResult.OK;
