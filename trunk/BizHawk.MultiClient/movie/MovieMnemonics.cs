@@ -402,9 +402,17 @@ namespace BizHawk.MultiClient
 					input.Append(IsBasePressed("P" + player + " " + button) ? MnemonicConstants.BUTTONS[ControlType][button] : ".");
 				}
 
-				foreach (string name in MnemonicConstants.ANALOGS[ControlType].Keys)
+				if (MnemonicConstants.ANALOGS[ControlType].Keys.Count > 0)
 				{
-					input.Append(String.Format("{0:000}", (int)GetBaseFloat("P" + player + " " + name) + 128));
+					foreach (string name in MnemonicConstants.ANALOGS[ControlType].Keys)
+					{
+						int val = (int)GetBaseFloat("P" + player + " " + name);
+						if (val != 0)
+						{
+							input.Append(String.Format("{0:000}", val)).Append(',');
+						}
+					}
+					input.Remove(input.Length - 1, 1);
 				}
 
 				input.Append('|');
