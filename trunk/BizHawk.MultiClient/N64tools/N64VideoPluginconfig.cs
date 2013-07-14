@@ -19,12 +19,14 @@ namespace BizHawk.MultiClient
 		private void CancelBT_Click(object sender, EventArgs e)
 		{
 			//Add confirmation of cancelling change
+			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
@@ -229,7 +231,6 @@ namespace BizHawk.MultiClient
 			PluginComboBox.Text = Global.Config.N64VidPlugin;
 
 			//Rice
-			Global.MainForm.FlagNeedsReboot(); //TODO: this won't always be necessary, keep that in mind
 			RiceNormalAlphaBlender_CB.Checked = Global.Config.RicePlugin.NormalAlphaBlender;
 			RiceFastTextureLoading_CB.Checked = Global.Config.RicePlugin.FastTextureLoading;
 			RiceAccurateTextureMapping_CB.Checked = Global.Config.RicePlugin.AccurateTextureMapping;
