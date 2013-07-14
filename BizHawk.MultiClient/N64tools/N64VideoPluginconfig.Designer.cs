@@ -313,7 +313,7 @@
 			this.RiceTabPage.Controls.Add(this.RiceTabControl);
 			this.RiceTabPage.Location = new System.Drawing.Point(4, 22);
 			this.RiceTabPage.Name = "RiceTabPage";
-			this.RiceTabPage.Size = new System.Drawing.Size(572, 339);
+			this.RiceTabPage.Size = new System.Drawing.Size(572, 343);
 			this.RiceTabPage.TabIndex = 4;
 			this.RiceTabPage.Text = "Rice";
 			this.RiceTabPage.UseVisualStyleBackColor = true;
@@ -1555,7 +1555,7 @@
 			this.Glide64TabPage.Location = new System.Drawing.Point(4, 22);
 			this.Glide64TabPage.Name = "Glide64TabPage";
 			this.Glide64TabPage.Padding = new System.Windows.Forms.Padding(3);
-			this.Glide64TabPage.Size = new System.Drawing.Size(572, 339);
+			this.Glide64TabPage.Size = new System.Drawing.Size(572, 343);
 			this.Glide64TabPage.TabIndex = 5;
 			this.Glide64TabPage.Text = "Glide64";
 			this.Glide64TabPage.UseVisualStyleBackColor = true;
@@ -2434,8 +2434,9 @@
 			this.Controls.Add(this.SaveButton);
 			this.Controls.Add(this.N64plugintabcontrol);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "N64VideoPluginconfig";
-			this.Text = "Video Plugin Config";
+			this.Text = "Video Plugin Configuration";
 			this.Load += new System.EventHandler(this.N64VideoPluginconfig_Load);
 			this.N64plugintabcontrol.ResumeLayout(false);
 			this.N64vpluginglobaltab.ResumeLayout(false);
