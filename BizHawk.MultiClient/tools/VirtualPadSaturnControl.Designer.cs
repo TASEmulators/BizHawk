@@ -63,7 +63,7 @@
 			this.Controls.Add(this.B2);
 			this.Controls.Add(this.B1);
 			this.Name = "VirtualPadSaturnControl";
-			this.Size = new System.Drawing.Size(104, 29);
+			this.Size = new System.Drawing.Size(110, 32);
 			this.Load += new System.EventHandler(this.VirtualPadSaturnControl_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();

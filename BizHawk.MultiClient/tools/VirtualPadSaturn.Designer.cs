@@ -217,7 +217,7 @@
 			this.Controls.Add(this.PR);
 			this.Controls.Add(this.PU);
 			this.Name = "VirtualPadSaturn";
-			this.Size = new System.Drawing.Size(196, 92);
+			this.Size = new System.Drawing.Size(204, 92);
 			this.Load += new System.EventHandler(this.VirtualPadSaturn_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
