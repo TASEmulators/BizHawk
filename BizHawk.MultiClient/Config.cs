@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Drawing;
 using System.Collections.Generic;
 
@@ -8,6 +9,7 @@ namespace BizHawk.MultiClient
 	{
 		public Config()
 		{
+			/*
 			SMSController[0] = new SMSControllerTemplate(true);
 			SMSController[1] = new SMSControllerTemplate(false);
 			PCEController[0] = new PCEControllerTemplate(true);
@@ -102,6 +104,7 @@ namespace BizHawk.MultiClient
 			SNESConsoleButtons = new NESConsoleButtonTemplate();
 			SMSConsoleButtons = new SMSConsoleButtonTemplate();
 			GenesisConsoleButtons = new GenConsoleButtonTemplate();
+			*/
 		}
 
 		// Directories
@@ -843,6 +846,10 @@ namespace BizHawk.MultiClient
 		public const int NESNoiseMax = 247;
 		public const int NESDMCMax = 167;
 
+		// [ControllerType][ControllerName] => Bind
+		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
+		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
+
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
 		public bool SmsAllowOverlock = false;
@@ -851,66 +858,66 @@ namespace BizHawk.MultiClient
 		public bool GGShowClippedRegions = false;
 		public bool GGHighlightActiveDisplayRegion = false;
 
-		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
-		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
-		public SMSConsoleButtonTemplate SMSConsoleButtons = new SMSConsoleButtonTemplate();
+		//public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
+		//public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
+		//public SMSConsoleButtonTemplate SMSConsoleButtons = new SMSConsoleButtonTemplate();
 
 		// PCEngine Settings
 		public bool PceSpriteLimit = false;
 		public bool PceEqualizeVolume = false;
 		public bool PceArcadeCardRewindHack = true;
-		public PCEControllerTemplate[] PCEController = new PCEControllerTemplate[5];
-		public PCEControllerTemplate[] PCEAutoController = new PCEControllerTemplate[5];
+		//public PCEControllerTemplate[] PCEController = new PCEControllerTemplate[5];
+		//public PCEControllerTemplate[] PCEAutoController = new PCEControllerTemplate[5];
 
 		// Genesis Settings
-		public GenControllerTemplate[] GenesisController = new GenControllerTemplate[1];
-		public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
-		public GenConsoleButtonTemplate GenesisConsoleButtons = new GenConsoleButtonTemplate();
+		//public GenControllerTemplate[] GenesisController = new GenControllerTemplate[1];
+		//public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
+		//public GenConsoleButtonTemplate GenesisConsoleButtons = new GenConsoleButtonTemplate();
 
 		//Atari 2600 Settings
-		public SingleButtonJoyStickTemplate[] Atari2600Controller = new SingleButtonJoyStickTemplate[2];
-		public SingleButtonJoyStickTemplate[] Atari2600AutoController = new SingleButtonJoyStickTemplate[2];
-		public Atari2600ConsoleButtonsTemplate[] Atari2600ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
+		//public SingleButtonJoyStickTemplate[] Atari2600Controller = new SingleButtonJoyStickTemplate[2];
+		//public SingleButtonJoyStickTemplate[] Atari2600AutoController = new SingleButtonJoyStickTemplate[2];
+		//public Atari2600ConsoleButtonsTemplate[] Atari2600ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
 		public bool Atari2600_BW = false;
 		public bool Atari2600_LeftDifficulty = true;
 		public bool Atari2600_RightDifficulty = true;
 
 		//Atari 7800 Settings
-		public DoubleButtonJoyStickTemplate[] Atari7800Controller = new DoubleButtonJoyStickTemplate[2];
-		public DoubleButtonJoyStickTemplate[] Atari7800AutoController = new DoubleButtonJoyStickTemplate[2];
-		public Atari7800ConsoleButtonsTemplate[] Atari7800ConsoleButtons = new Atari7800ConsoleButtonsTemplate[1];
+		//public DoubleButtonJoyStickTemplate[] Atari7800Controller = new DoubleButtonJoyStickTemplate[2];
+		//public DoubleButtonJoyStickTemplate[] Atari7800AutoController = new DoubleButtonJoyStickTemplate[2];
+		//public Atari7800ConsoleButtonsTemplate[] Atari7800ConsoleButtons = new Atari7800ConsoleButtonsTemplate[1];
 
 		//ColecoVision
-		public ColecoVisionControllerTemplate[] ColecoController = new ColecoVisionControllerTemplate[2];
-		public ColecoVisionControllerTemplate[] ColecoAutoController = new ColecoVisionControllerTemplate[2];
+		//public ColecoVisionControllerTemplate[] ColecoController = new ColecoVisionControllerTemplate[2];
+		//public ColecoVisionControllerTemplate[] ColecoAutoController = new ColecoVisionControllerTemplate[2];
 
 		//Intellivision
-		public IntellivisionControllerTemplate[] IntellivisionController = new IntellivisionControllerTemplate[2];
-		public IntellivisionControllerTemplate[] IntellivisionAutoController = new IntellivisionControllerTemplate[2];
+		//public IntellivisionControllerTemplate[] IntellivisionController = new IntellivisionControllerTemplate[2];
+		//public IntellivisionControllerTemplate[] IntellivisionAutoController = new IntellivisionControllerTemplate[2];
 
 		//NES settings
-		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
-		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
-		public NESConsoleButtonTemplate NESConsoleButtons = new NESConsoleButtonTemplate();
+		//public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
+		//public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
+		//public NESConsoleButtonTemplate NESConsoleButtons = new NESConsoleButtonTemplate();
 
 		//SNES settings
-		public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
-		public SNESControllerTemplate[] SNESAutoController = new SNESControllerTemplate[4];
-		public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
+		//public SNESControllerTemplate[] SNESController = new SNESControllerTemplate[4];
+		//public SNESControllerTemplate[] SNESAutoController = new SNESControllerTemplate[4];
+		//public NESConsoleButtonTemplate SNESConsoleButtons = new NESConsoleButtonTemplate();
 		public string SNESProfile = "Compatibility";
 		public bool SNESUseRingBuffer = true;
 		public bool SNESAlwaysDoubleSize = false;
 
-		public N64ButtonsTemplate[] N64Controller = new N64ButtonsTemplate[4];
-		public N64ButtonsTemplate[] N64AutoController = new N64ButtonsTemplate[4];
-		public Standard2ButtonConsoleTemplate N64ConsoleButtons = new Standard2ButtonConsoleTemplate();
+		//public N64ButtonsTemplate[] N64Controller = new N64ButtonsTemplate[4];
+		//public N64ButtonsTemplate[] N64AutoController = new N64ButtonsTemplate[4];
+		//public Standard2ButtonConsoleTemplate N64ConsoleButtons = new Standard2ButtonConsoleTemplate();
 
 		//TI 83 settings
-		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
+		//public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
 
 		//GB settings
-		public GBControllerTemplate[] GBController = new GBControllerTemplate[1];
-		public GBControllerTemplate[] GBAutoController = new GBControllerTemplate[1];
+		//public GBControllerTemplate[] GBController = new GBControllerTemplate[1];
+		//public GBControllerTemplate[] GBAutoController = new GBControllerTemplate[1];
 		public bool GB_ForceDMG = false;
 		public bool GB_GBACGB = false;
 		public bool GB_MulticartCompat = false;
@@ -919,23 +926,23 @@ namespace BizHawk.MultiClient
 		public Emulation.Consoles.GB.GBColors.ColorType CGBColors = Emulation.Consoles.GB.GBColors.ColorType.gambatte;
 
 		//Dual Gb
-		public DualGBControllerTemplate[] DualGBController = new DualGBControllerTemplate[1];
-		public DualGBControllerTemplate[] AutoDualGBController = new DualGBControllerTemplate[1];
+		//public DualGBControllerTemplate[] DualGBController = new DualGBControllerTemplate[1];
+		//public DualGBControllerTemplate[] AutoDualGBController = new DualGBControllerTemplate[1];
 
 		//GBA settings
-		public GBAControllerTemplate[] GBAController = new GBAControllerTemplate[1];
-		public GBAControllerTemplate[] GBAAutoController = new GBAControllerTemplate[1];
+		//public GBAControllerTemplate[] GBAController = new GBAControllerTemplate[1];
+		//public GBAControllerTemplate[] GBAAutoController = new GBAControllerTemplate[1];
 
 		//Saturn
-		public SaturnControllerTemplate[] SaturnController = new SaturnControllerTemplate[2];
-		public SaturnControllerTemplate[] SaturnAutoController = new SaturnControllerTemplate[2];
-		public SaturnConsoleButtonTemplate SaturnConsoleButtons = new SaturnConsoleButtonTemplate();
+		//public SaturnControllerTemplate[] SaturnController = new SaturnControllerTemplate[2];
+		//public SaturnControllerTemplate[] SaturnAutoController = new SaturnControllerTemplate[2];
+		//public SaturnConsoleButtonTemplate SaturnConsoleButtons = new SaturnConsoleButtonTemplate();
 
 		//Commodore 64 Settings
-		public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
-		public SingleButtonJoyStickTemplate[] C64AutoJoysticks = new SingleButtonJoyStickTemplate[2]; 
-		public C64KeyboardTemplate C64Keyboard = new C64KeyboardTemplate();
-		public C64KeyboardTemplate C64AutofireKeyboard = new C64KeyboardTemplate();
+		//public SingleButtonJoyStickTemplate[] C64Joysticks = new SingleButtonJoyStickTemplate[2];
+		//public SingleButtonJoyStickTemplate[] C64AutoJoysticks = new SingleButtonJoyStickTemplate[2]; 
+		//public C64KeyboardTemplate C64Keyboard = new C64KeyboardTemplate();
+		//public C64KeyboardTemplate C64AutofireKeyboard = new C64KeyboardTemplate();
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;
@@ -975,6 +982,7 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_ShowPlayfield = true;
 	}
 
+	/*
 	public class NESConsoleButtonTemplate : iControllerConfigObject
 	{
 		public string Reset = "";
@@ -1949,12 +1957,12 @@ namespace BizHawk.MultiClient
 			SIN = "Period";         //49
 		}
 	}
-
+	*/
 	public interface iControllerConfigObject
 	{
 		void SetDefaults();
 	}
-
+	
 
 	public enum PLUGINTYPE { RICE, GLIDE }; 
 

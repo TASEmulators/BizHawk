@@ -14,6 +14,7 @@ namespace BizHawk.MultiClient
 
 		private void ControllerConfig_Load(object sender, EventArgs e)
 		{
+			/*
 			AllowLR.Checked = Global.Config.AllowUD_LR;
 
 			NESController1Panel.LoadSettings(Global.Config.NESController[0]);
@@ -208,7 +209,7 @@ namespace BizHawk.MultiClient
 			INTVAutofire2Panel.LabelWidth = 50;
 			INTVAutofire2Panel.ColumnWidth = 170;
 			INTVAutofire2Panel.LoadSettings(Global.Config.IntellivisionAutoController[1]);
-
+			*/
 			SetTabByPlatform();
 
 			if (!MainForm.INTERIM)
