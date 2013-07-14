@@ -187,6 +187,17 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(n64pad3);
 					ControllerBox.Controls.Add(n64pad4);
 					break;
+				case "SAT":
+					VirtualPadSaturn saturnpad1 = new VirtualPadSaturn { Location = new Point(8, 19), Controller = "P1" };
+					VirtualPadSaturn saturnpad2 = new VirtualPadSaturn { Location = new Point(208, 19), Controller = "P2" };
+					Pads.Add(saturnpad1);
+					Pads.Add(saturnpad2);
+					ControllerBox.Controls.Add(saturnpad1);
+					ControllerBox.Controls.Add(saturnpad2);
+					VirtualPadSaturnControl saturncontrols = new VirtualPadSaturnControl { Location = new Point(8, 125) };
+					Pads.Add(saturncontrols);
+					ControllerBox.Controls.Add(saturncontrols);
+					break;
 			}
 
 			//Hack for now

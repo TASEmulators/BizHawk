@@ -4,9 +4,9 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-	public partial class VirtualPadA78Control : UserControl, IVirtualPad
+	public partial class VirtualPadSaturnControl : UserControl, IVirtualPad
 	{
-		public VirtualPadA78Control()
+		public VirtualPadSaturnControl()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -14,6 +14,11 @@ namespace BizHawk.MultiClient
 			BorderStyle = BorderStyle.Fixed3D;
 			Paint += VirtualPad_Paint;
 			InitializeComponent();
+		}
+
+		private void VirtualPadSaturnControl_Load(object sender, EventArgs e)
+		{
+
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -53,24 +58,20 @@ namespace BizHawk.MultiClient
 			StringBuilder input = new StringBuilder("");
 			input.Append(B1.Checked ? "P" : ".");
 			input.Append(B2.Checked ? "r" : ".");
-			input.Append(B3.Checked ? "s" : ".");
-			input.Append(B4.Checked ? "p" : ".");
 			input.Append("|");
 			return input.ToString();
 		}
 
 		public void SetButtons(string buttons)
 		{
-			if (buttons.Length < 4) return;
+			if (buttons.Length < 2) return;
 			if (buttons[0] == '.') B1.Checked = false; else B1.Checked = true;
 			if (buttons[1] == '.') B2.Checked = false; else B2.Checked = true;
-			if (buttons[2] == '.') B3.Checked = false; else B3.Checked = true;
-			if (buttons[3] == '.') B4.Checked = false; else B4.Checked = true;
 		}
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (Global.Emulator.SystemId != "A78")
+			if (Global.Emulator.SystemId != "SAT")
 			{
 				return;
 			}
@@ -82,34 +83,17 @@ namespace BizHawk.MultiClient
 			{
 				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
 			}
-			else if (sender == B3)
-			{
-				Global.StickyXORAdapter.SetSticky("Select", B3.Checked);
-			}
-			else if (sender == B4)
-			{
-				Global.StickyXORAdapter.SetSticky("Pause", B4.Checked);
-			}
 		}
 
 		public void Clear()
 		{
-			if (Global.Emulator.SystemId != "A78") return;
+			if (Global.Emulator.SystemId != "SAT") return;
 
 			if (B1.Checked) Global.StickyXORAdapter.SetSticky("Power", false);
 			if (B2.Checked) Global.StickyXORAdapter.SetSticky("Reset", false);
-			if (B3.Checked) Global.StickyXORAdapter.SetSticky("Select", false);
-			if (B4.Checked) Global.StickyXORAdapter.SetSticky("Pause", false);
 
 			B1.Checked = false;
 			B2.Checked = false;
-			B3.Checked = false;
-			B4.Checked = false;
-		}
-
-		private void VirtualPadA78Control_Load(object sender, EventArgs e)
-		{
-
 		}
 	}
 }

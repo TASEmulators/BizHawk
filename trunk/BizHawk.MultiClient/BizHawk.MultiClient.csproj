@@ -544,6 +544,18 @@
     <Compile Include="tools\VirtualPadN64.Designer.cs">
       <DependentUpon>VirtualPadN64.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadSaturn.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSaturn.Designer.cs">
+      <DependentUpon>VirtualPadSaturn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPadSaturnControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSaturnControl.Designer.cs">
+      <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPadSNES.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -696,6 +708,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPadN64.resx">
       <DependentUpon>VirtualPadN64.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPadSaturn.resx">
+      <DependentUpon>VirtualPadSaturn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPadSaturnControl.resx">
+      <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

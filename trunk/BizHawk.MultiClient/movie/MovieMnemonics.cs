@@ -119,8 +119,8 @@ namespace BizHawk.MultiClient
 				"Saturn Controller", new Dictionary<string, string>()
 				{
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"},
-					{"Start", "S"}, {"Z", "Z"}, {"Y", "Y"}, {"X", "X"}, {"C", "C"}, {"B", "B"}, {"A", "A"},
-					{"L", "L"}, {"R", "R"},
+					{"Start", "S"}, {"X", "X"}, {"Y", "Y"}, {"Z", "Z"}, {"A", "A"}, {"B", "B"}, {"C", "C"},
+					{"L", "l"}, {"R", "r"},
 				}
 			}
 		};
