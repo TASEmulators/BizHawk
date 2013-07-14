@@ -317,6 +317,7 @@
     <Compile Include="movie\MovieHeader.cs" />
     <Compile Include="movie\MovieImport.cs" />
     <Compile Include="movie\MovieLog.cs" />
+    <Compile Include="movie\MovieMnemonics.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
     <Compile Include="movie\Subtitle.cs" />
