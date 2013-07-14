@@ -463,7 +463,8 @@ namespace BizHawk.MultiClient
 
 		private void OpenControllerConfig()
 		{
-			ControllerConfig c = new ControllerConfig();
+			//ControllerConfig c = new ControllerConfig();
+			config.NewControllerConfig c = new config.NewControllerConfig(Global.Emulator.ControllerDefinition);
 			c.ShowDialog();
 			if (c.DialogResult == DialogResult.OK)
 			{

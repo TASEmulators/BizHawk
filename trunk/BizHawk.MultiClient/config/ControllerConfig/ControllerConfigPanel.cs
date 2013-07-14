@@ -74,7 +74,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void Save()
+		virtual public void Save()
 		{
 			for (int button = 0; button < buttons.Count; button++)
 			{
@@ -83,7 +83,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void LoadSettings(iControllerConfigObject configobj)
+		virtual public void LoadSettings(iControllerConfigObject configobj)
 		{
 			ControllerConfigObject = configobj;
 
@@ -92,7 +92,7 @@ namespace BizHawk.MultiClient
 			SetWidgetStrings();
 		}
 
-		private void SetButtonList()
+		virtual protected void SetButtonList()
 		{
 			buttons.Clear();
 			MemberInfo[] members = ControllerConfigObject.GetType().GetMembers();
@@ -106,7 +106,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void SetWidgetStrings()
+		virtual protected void SetWidgetStrings()
 		{
 			for (int button = 0; button < buttons.Count; button++)
 			{
@@ -123,7 +123,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void Startup()
+		protected void Startup()
 		{
 			int x = InputMarginLeft;
 			int y = MarginTop - Spacing;
@@ -175,7 +175,7 @@ namespace BizHawk.MultiClient
 			ClearAll();
 		}
 
-		private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+		virtual protected void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ControllerConfigObject.SetDefaults();
 			SetWidgetStrings();

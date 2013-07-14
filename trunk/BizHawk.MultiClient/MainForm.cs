@@ -804,7 +804,7 @@ namespace BizHawk.MultiClient
 
 			Global.NullControls = new Controller(NullEmulator.NullController);
 			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
-
+			/*
 			var smsControls = new Controller(SMS.SmsController);
 			smsControls.BindMulti("Reset", Global.Config.SMSConsoleButtons.Reset);
 			smsControls.BindMulti("Pause", Global.Config.SMSConsoleButtons.Pause);
@@ -905,7 +905,7 @@ namespace BizHawk.MultiClient
 			Global.AutofireSNESControls = asnesControls;
 
 			var nesControls = new Controller(NES.NESController);
-			for (int i = 0; i < 2 /*TODO*/; i++)
+			for (int i = 0; i < 2; i++) // TODO: more than 2
 			{
 				nesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESController[i].Up);
 				nesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.NESController[i].Down);
@@ -927,7 +927,7 @@ namespace BizHawk.MultiClient
 
 			var anesControls = new AutofireController(NES.NESController) {Autofire = true};
 
-			for (int i = 0; i < 2 /*TODO*/; i++)
+			for (int i = 0; i < 2; i++) // TODO: more than 2
 			{
 				anesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESAutoController[i].Up);
 				anesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.NESAutoController[i].Down);
@@ -1634,6 +1634,8 @@ namespace BizHawk.MultiClient
 			N64AControls.BindMulti("P4 R", Global.Config.N64AutoController[3].R);
 
 			Global.AutofireN64Controls = N64AControls;
+ 
+			*/
 		}
 
 		private static void FormDragEnter(object sender, DragEventArgs e)
@@ -1905,8 +1907,47 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		static Controller BindToDefinition(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds)
+		{
+			var ret = new Controller(def);
+			Dictionary<string, string> binds;
+			if (allbinds.TryGetValue(def.Name, out binds))
+			{
+				foreach (string cbutton in def.BoolButtons)
+				{
+					string bind;
+					if (binds.TryGetValue(cbutton, out bind))
+						ret.BindMulti(cbutton, bind);
+				}
+			}
+			return ret;
+		}
+		// could merge these two methods...
+		static AutofireController BindToDefinitionAF(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds)
+		{
+			var ret = new AutofireController(def);
+			Dictionary<string, string> binds;
+			if (allbinds.TryGetValue(def.Name, out binds))
+			{
+				foreach (string cbutton in def.BoolButtons)
+				{
+					string bind;
+					if (binds.TryGetValue(cbutton, out bind))
+						ret.BindMulti(cbutton, bind);
+				}
+			}
+			return ret;
+		}
+
+
 		void SyncControls()
 		{
+			var def = Global.Emulator.ControllerDefinition;
+
+			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers);
+			Global.AutoFireController = BindToDefinitionAF(def, Global.Config.AllTrollersAutoFire);
+
+			/*
 			if (Global.Game == null) return;
 			switch (Global.Game.System)
 			{
@@ -1989,6 +2030,7 @@ namespace BizHawk.MultiClient
 					Global.ActiveController = Global.NullControls;
 					break;
 			}
+			*/
 			// allow propogating controls that are in the current controller definition but not in the prebaked one
 			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
 			Global.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);			
@@ -2763,6 +2805,7 @@ namespace BizHawk.MultiClient
 				//modals that need to capture input for binding purposes get input, of course
 				if (ActiveForm is HotkeyWindow) return true;
 				if (ActiveForm is ControllerConfig) return true;
+				if (ActiveForm is config.NewControllerConfig) return true;
 				if (ActiveForm is TAStudio) return true;
 				//if no form is active on this process, then the background input setting applies
 				if (ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
@@ -2881,7 +2924,6 @@ namespace BizHawk.MultiClient
 				}
 
 			} //foreach event
-
 		}
 
 		private void ClearAutohold()

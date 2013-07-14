@@ -178,6 +178,9 @@
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ControllerConfig\NewControllerConfigPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -192,6 +195,12 @@
     </Compile>
     <Compile Include="config\MessageConfig.Designer.cs">
       <DependentUpon>MessageConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\NewControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NewControllerConfig.Designer.cs">
+      <DependentUpon>NewControllerConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
@@ -571,6 +580,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NewControllerConfig.resx">
+      <DependentUpon>NewControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
