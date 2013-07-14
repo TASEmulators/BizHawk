@@ -7,6 +7,8 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
+	// this is a little messy right now because of remnants of the old config system
+
 	public partial class ControllerConfigPanel : UserControl
 	{
 		iControllerConfigObject ControllerConfigObject; //Object that values will be saved to (In Config.cs)
