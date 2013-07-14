@@ -38,10 +38,10 @@
 			this.autolaodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.StickyBox = new System.Windows.Forms.CheckBox();
 			this.restoreDefaultSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.StickyBox = new System.Windows.Forms.CheckBox();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -54,7 +54,7 @@
 			this.ControllerBox.ContextMenuStrip = this.contextMenuStrip1;
 			this.ControllerBox.Location = new System.Drawing.Point(9, 26);
 			this.ControllerBox.Name = "ControllerBox";
-			this.ControllerBox.Size = new System.Drawing.Size(367, 251);
+			this.ControllerBox.Size = new System.Drawing.Size(431, 251);
 			this.ControllerBox.TabIndex = 5;
 			this.ControllerBox.TabStop = false;
 			this.ControllerBox.Text = "Controllers";
@@ -79,7 +79,7 @@
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(388, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(452, 24);
 			this.menuStrip1.TabIndex = 6;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -116,6 +116,18 @@
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
 			this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
 			// 
+			// restoreDefaultSettingsToolStripMenuItem
+			// 
+			this.restoreDefaultSettingsToolStripMenuItem.Name = "restoreDefaultSettingsToolStripMenuItem";
+			this.restoreDefaultSettingsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.restoreDefaultSettingsToolStripMenuItem.Text = "Restore Default Settings";
+			this.restoreDefaultSettingsToolStripMenuItem.Click += new System.EventHandler(this.restoreDefaultSettingsToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
+			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -136,23 +148,11 @@
 			this.StickyBox.UseVisualStyleBackColor = true;
 			this.StickyBox.CheckedChanged += new System.EventHandler(this.StickyBox_CheckedChanged);
 			// 
-			// restoreDefaultSettingsToolStripMenuItem
-			// 
-			this.restoreDefaultSettingsToolStripMenuItem.Name = "restoreDefaultSettingsToolStripMenuItem";
-			this.restoreDefaultSettingsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.restoreDefaultSettingsToolStripMenuItem.Text = "Restore Default Settings";
-			this.restoreDefaultSettingsToolStripMenuItem.Click += new System.EventHandler(this.restoreDefaultSettingsToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
-			// 
 			// VirtualPadForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(388, 312);
+			this.ClientSize = new System.Drawing.Size(452, 312);
 			this.Controls.Add(this.ControllerBox);
 			this.Controls.Add(this.StickyBox);
 			this.Controls.Add(this.menuStrip1);
