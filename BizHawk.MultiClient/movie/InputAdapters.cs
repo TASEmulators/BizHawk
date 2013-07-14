@@ -62,7 +62,8 @@ namespace BizHawk.MultiClient
 		public IController Source;
 
 		public bool this[string button] { get { return IsPressed(button); } }
-		public float GetFloat(string name) { return 0.0f; } //TODO
+		// the float format implies no U+D and no L+R no matter what, so just passthru
+		public float GetFloat(string name) { return Source.GetFloat(name); }
 		public void UpdateControls(int frame) { }
 
 		public bool IsPressed(string button)
@@ -122,7 +123,9 @@ namespace BizHawk.MultiClient
 	public class ORAdapter : IController
 	{
 		public bool IsPressed(string button) { return this[button]; }
-		public float GetFloat(string name) { return 0.0f; } //TODO
+		// pass floats solely from the original source
+		// this works in the code because SourceOr is the autofire controller
+		public float GetFloat(string name) { return Source.GetFloat(name); }
 		public void UpdateControls(int frame) { }
 
 		public IController Source;
@@ -144,7 +147,9 @@ namespace BizHawk.MultiClient
 	public class ForceOffAdaptor : IController
 	{
 		public bool IsPressed(string button) { return this[button]; }
-		public float GetFloat(string name) { return Source.GetFloat(name); } //TODO
+		// what exactly would we want to do here with floats?
+		// ForceOffAdaptor is only used by lua, and the code there looks like a big mess...
+		public float GetFloat(string name) { return Source.GetFloat(name); }
 		public void UpdateControls(int frame) { }
 
 		protected HashSet<string> stickySet = new HashSet<string>();
@@ -186,15 +191,23 @@ namespace BizHawk.MultiClient
 
 		public bool IsPressed(string button) { return this[button]; }
 
-		WorkingDictionary<string,float> FloatSet = new WorkingDictionary<string,float>();
+		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
+		// otherwise, the source is passed thru.
+		WorkingDictionary<string,float?> FloatSet = new WorkingDictionary<string,float?>();
 		public void SetFloat(string name, float value)
 		{
 			FloatSet[name] = value;
 		}
 		public float GetFloat(string name)
 		{
-			return FloatSet[name];
+			return FloatSet[name] ?? Source.GetFloat(name);
 		}
+		public void ClearStickyFloats()
+		{
+			FloatSet.Clear();
+		}
+
+
 		public void UpdateControls(int frame) { }
 
 		public bool this[string button] { 
@@ -331,8 +344,8 @@ namespace BizHawk.MultiClient
 		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
 		public bool Locked = false; //Pretty much a hack, 
 
-
-		public float GetFloat(string name) { return Source.GetFloat(name); } //TODO
+		// dumb passthrough for floats, because autofire doesn't care about them
+		public float GetFloat(string name) { return Source.GetFloat(name); }
 		public void UpdateControls(int frame) { }
 
 		public void SetSticky(string button, bool isSticky)
@@ -450,25 +463,31 @@ namespace BizHawk.MultiClient
 
 		public ControllerDefinition Type { get { return Source.Type; } }
 		public bool this[string button] { get { return IsPressed(button); } }
-		public float GetFloat(string name) { return Source.GetFloat(name); }
+		// floats can be player number remapped just like boolbuttons
+		public float GetFloat(string name) { return Source.GetFloat(RemapButtonName(name)); }
 		public void UpdateControls(int frame) { Source.UpdateControls(frame); }
 
-		public bool IsPressed(string button)
+		string RemapButtonName(string button)
 		{
 			//do we even have a source?
-			if (PlayerSource == -1) return Source.IsPressed(button);
+			if (PlayerSource == -1) return button;
 
 			//see if we're being asked for a button that we know how to rewire
 			ButtonNameParser bnp = ButtonNameParser.Parse(button);
-			if (bnp == null) return Source.IsPressed(button);
+			if (bnp == null) return button;
 
 			//ok, this looks like a normal `P1 Button` type thing. we can handle it
 			//were we supposed to replace this one?
 			int foundPlayerMask = (1 << bnp.PlayerNum);
-			if ((PlayerTargetMask & foundPlayerMask) == 0) return Source.IsPressed(button);
+			if ((PlayerTargetMask & foundPlayerMask) == 0) return button;
 			//ok, we were. swap out the source player and then grab his button
 			bnp.PlayerNum = PlayerSource;
-			return Source.IsPressed(bnp.ToString());
+			return bnp.ToString();
+		}
+
+		public bool IsPressed(string button)
+		{
+			return Source.IsPressed(RemapButtonName(button));
 		}
 	}
 

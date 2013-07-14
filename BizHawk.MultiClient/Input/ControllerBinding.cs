@@ -24,8 +24,9 @@ namespace BizHawk.MultiClient
 			return buttons[button];
 		}
 
-
-		public float GetFloat(string name) { throw new NotImplementedException(); }
+		// the default state of an unpressed float is assumed to be zero.
+		// so always return zero here, until we add a float binding infrastructure to Controller
+		public float GetFloat(string name) { return 0.0f; }
 		public void UpdateControls(int frame) { }
 
 		//look for bindings which are activated by the supplied physical button.
