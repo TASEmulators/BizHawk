@@ -1725,6 +1725,7 @@ namespace BizHawk.MultiClient
 				CaptureRewindState();
 
 				Global.StickyXORAdapter.ClearStickies();
+				Global.StickyXORAdapter.ClearStickyFloats();
 				Global.AutofireStickyXORAdapter.ClearStickies();
 
 				RewireSound();
