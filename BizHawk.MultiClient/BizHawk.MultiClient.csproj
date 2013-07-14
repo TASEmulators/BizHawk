@@ -172,9 +172,6 @@
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\ControllerConfig\NewControllerConfigPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
     </Compile>

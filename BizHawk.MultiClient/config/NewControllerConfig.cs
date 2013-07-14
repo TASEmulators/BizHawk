@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using BizHawk.MultiClient.config.ControllerConfig;
 
 namespace BizHawk.MultiClient.config
 {
@@ -38,10 +37,10 @@ namespace BizHawk.MultiClient.config
 			InitializeComponent();
 		}
 
-		NewControllerConfigPanel normcontrls;
-		NewControllerConfigPanel autofirecontrls;
+		ControllerConfigPanel normcontrls;
+		ControllerConfigPanel autofirecontrls;
 
-		static void DoLoadSettings(NewControllerConfigPanel cp, ControllerDefinition def, Dictionary<string, Dictionary<string, string>> settingsblock)
+		static void DoLoadSettings(ControllerConfigPanel cp, ControllerDefinition def, Dictionary<string, Dictionary<string, string>> settingsblock)
 		{
 			cp.Spacing = 24;
 			cp.InputSize = 100;
@@ -68,12 +67,12 @@ namespace BizHawk.MultiClient.config
 			: this()
 		{
 			SuspendLayout();
-			normcontrls = new NewControllerConfigPanel();
+			normcontrls = new ControllerConfigPanel();
 			normcontrls.Dock = DockStyle.Fill;
 			tabPage1.Controls.Add(normcontrls);
 			DoLoadSettings(normcontrls, def, Global.Config.AllTrollers);
 
-			autofirecontrls = new NewControllerConfigPanel();
+			autofirecontrls = new ControllerConfigPanel();
 			autofirecontrls.Dock = DockStyle.Fill;
 			tabPage2.Controls.Add(autofirecontrls);
 			DoLoadSettings(autofirecontrls, def, Global.Config.AllTrollersAutoFire);

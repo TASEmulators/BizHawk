@@ -11,7 +11,7 @@ namespace BizHawk.MultiClient
 
 	public partial class ControllerConfigPanel : UserControl
 	{
-		iControllerConfigObject ControllerConfigObject; //Object that values will be saved to (In Config.cs)
+		Dictionary<string, string> RealConfigObject;
 
 		public List<string> buttons = new List<string>();
 
@@ -76,52 +76,35 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		virtual public void Save()
+		public void Save()
 		{
 			for (int button = 0; button < buttons.Count; button++)
-			{
-				FieldInfo buttonF = ControllerConfigObject.GetType().GetField(buttons[button]);
-				buttonF.SetValue(ControllerConfigObject, Inputs[button].Text);
-			}
+				RealConfigObject[buttons[button]] = Inputs[button].Text;
 		}
 
-		virtual public void LoadSettings(iControllerConfigObject configobj)
+		public void LoadSettings(Dictionary<string, string> configobj)
 		{
-			ControllerConfigObject = configobj;
-
+			RealConfigObject = configobj;
 			SetButtonList();
 			Startup();
 			SetWidgetStrings();
 		}
 
-		virtual protected void SetButtonList()
+		protected void SetButtonList()
 		{
 			buttons.Clear();
-			MemberInfo[] members = ControllerConfigObject.GetType().GetMembers();
-
-			foreach (MemberInfo member in members)
-			{
-				if (member.MemberType.ToString() == "Field" && member.ToString().Contains("System.String"))
-				{
-					buttons.Add(member.Name);
-				}
-			}
+			foreach (string s in RealConfigObject.Keys)
+				buttons.Add(s);
 		}
 
-		virtual protected void SetWidgetStrings()
+		protected void SetWidgetStrings()
 		{
 			for (int button = 0; button < buttons.Count; button++)
 			{
-				object field = ControllerConfigObject.GetType().GetField(buttons[button]).GetValue(ControllerConfigObject);
-
-				if (field == null)
-				{
-					Inputs[button].SetBindings("");
-				}
-				else
-				{
-					Inputs[button].SetBindings(field.ToString());
-				}
+				string s;
+				if (!RealConfigObject.TryGetValue(buttons[button], out s))
+					s = "";
+				Inputs[button].SetBindings(s);
 			}
 		}
 
@@ -177,9 +160,11 @@ namespace BizHawk.MultiClient
 			ClearAll();
 		}
 
-		virtual protected void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+		protected void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ControllerConfigObject.SetDefaults();
+			// this is a TODO: we have no concept of default values in our config system at the moment
+			// so for the moment, "defaults" = "no binds at all"
+			RealConfigObject.Clear();
 			SetWidgetStrings();
 		}
 	}
