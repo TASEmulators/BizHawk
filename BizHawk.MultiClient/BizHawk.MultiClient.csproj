@@ -166,12 +166,6 @@
     <Compile Include="config\AutofireConfig.Designer.cs">
       <DependentUpon>AutofireConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\ControllerConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig.Designer.cs">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -571,9 +565,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ControllerConfig.resx">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
