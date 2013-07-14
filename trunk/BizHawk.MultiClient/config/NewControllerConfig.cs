@@ -109,7 +109,7 @@ namespace BizHawk.MultiClient.config
 					var cp = new ControllerConfigPanel();
 					cp.Dock = DockStyle.Fill;
 					tt.TabPages[pageidx].Controls.Add(cp);
-					cp.LoadSettings(settings, buckets[0]);
+					cp.LoadSettings(settings, buckets[0], tt.Width, tt.Height);
 					pageidx++;
 				}
 			}
