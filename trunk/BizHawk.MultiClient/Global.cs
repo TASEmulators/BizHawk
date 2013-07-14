@@ -25,56 +25,9 @@ namespace BizHawk.MultiClient
 		public static CoreComm CoreComm;
 		public static GameInfo Game;
 		public static CheatList CheatList;
-
+		
 		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;
-
-		public static Controller NESControls;
-		public static AutofireController AutofireNESControls;
-
-		public static Controller SNESControls;
-		public static AutofireController AutofireSNESControls;
-
-		public static Controller GBControls;
-		public static AutofireController AutofireGBControls;
-
-		public static Controller DualGBControls;
-		public static AutofireController DualAutofireGBControls;
-
-		public static Controller GBAControls;
-		public static AutofireController AutofireGBAControls;
-
-		public static Controller PCEControls;
-		public static AutofireController AutofirePCEControls;
-
-		public static Controller SMSControls;
-		public static AutofireController AutofireSMSControls;
-
-		public static Controller GenControls;
-		public static AutofireController AutofireGenControls;
-
-		public static Controller TI83Controls;
-
-		public static Controller Atari2600Controls;
-		public static AutofireController AutofireAtari2600Controls;
-
-		public static Controller Atari7800Controls;
-		public static AutofireController AutofireAtari7800Controls;
-
-		public static Controller ColecoControls;
-		public static AutofireController AutofireColecoControls;
-
-		public static Controller SaturnControls;
-		public static AutofireController AutofireSaturnControls;
-
-		public static Controller IntellivisionControls;
-		public static AutofireController AutofireIntellivisionControls;
-
-		public static Controller Commodore64Controls;
-		public static AutofireController AutofireCommodore64Controls;
-
-		public static Controller N64Controls;
-		public static AutofireController AutofireN64Controls;
 
 		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>
 		{
