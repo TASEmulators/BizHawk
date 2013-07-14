@@ -41,12 +41,12 @@
             this.clearToolStripMenuItem,
             this.restoreDefaultsToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(160, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(160, 48);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
 			this.clearToolStripMenuItem.Text = "&Clear";
 			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
 			// 
@@ -63,6 +63,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ContextMenuStrip = this.contextMenuStrip1;
 			this.Name = "ControllerConfigPanel";
+			this.Size = new System.Drawing.Size(203, 292);
 			this.Load += new System.EventHandler(this.ControllerConfigPanel_Load);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);

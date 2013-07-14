@@ -52,7 +52,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(3, 3);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(521, 450);
+			this.tabControl1.Size = new System.Drawing.Size(494, 464);
 			this.tabControl1.TabIndex = 1;
 			// 
 			// tabPage1
@@ -60,7 +60,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(513, 424);
+			this.tabPage1.Size = new System.Drawing.Size(486, 438);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Normal Controls";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -79,7 +79,7 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 476);
+			this.label2.Location = new System.Drawing.Point(12, 490);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(140, 13);
 			this.label2.TabIndex = 2;
@@ -89,7 +89,7 @@
 			// 
 			this.checkBoxAutoTab.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxAutoTab.AutoSize = true;
-			this.checkBoxAutoTab.Location = new System.Drawing.Point(187, 474);
+			this.checkBoxAutoTab.Location = new System.Drawing.Point(187, 488);
 			this.checkBoxAutoTab.Name = "checkBoxAutoTab";
 			this.checkBoxAutoTab.Size = new System.Drawing.Size(70, 17);
 			this.checkBoxAutoTab.TabIndex = 3;
@@ -101,7 +101,7 @@
 			// 
 			this.checkBoxUDLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxUDLR.AutoSize = true;
-			this.checkBoxUDLR.Location = new System.Drawing.Point(263, 474);
+			this.checkBoxUDLR.Location = new System.Drawing.Point(263, 488);
 			this.checkBoxUDLR.Name = "checkBoxUDLR";
 			this.checkBoxUDLR.Size = new System.Drawing.Size(84, 17);
 			this.checkBoxUDLR.TabIndex = 4;
@@ -112,7 +112,7 @@
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.Location = new System.Drawing.Point(696, 471);
+			this.buttonOK.Location = new System.Drawing.Point(696, 485);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 5;
@@ -123,7 +123,8 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.Location = new System.Drawing.Point(777, 471);
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(777, 485);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 6;
@@ -138,14 +139,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tableLayoutPanel1.ColumnCount = 2;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 313F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 340F));
 			this.tableLayoutPanel1.Controls.Add(this.tabControl1, 0, 0);
 			this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 1, 0);
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 1;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(840, 456);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(840, 470);
 			this.tableLayoutPanel1.TabIndex = 7;
 			// 
 			// pictureBox1
@@ -153,18 +154,21 @@
 			this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox1.Location = new System.Drawing.Point(530, 23);
+			this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pictureBox1.Location = new System.Drawing.Point(503, 23);
 			this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 23, 3, 3);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(307, 430);
+			this.pictureBox1.Size = new System.Drawing.Size(334, 444);
 			this.pictureBox1.TabIndex = 2;
 			this.pictureBox1.TabStop = false;
 			// 
 			// NewControllerConfig
 			// 
+			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(864, 501);
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(864, 515);
 			this.Controls.Add(this.checkBoxUDLR);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.buttonCancel);
