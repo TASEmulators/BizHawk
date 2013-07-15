@@ -96,8 +96,9 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
+				_panelSize = Size;
 			}
-			_panelSize = Size;
+			
 			RealConfigObject = configobj;
 			RealConfigButtons = configbuttons;
 			SetButtonList();

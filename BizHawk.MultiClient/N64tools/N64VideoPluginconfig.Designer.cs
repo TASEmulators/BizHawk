@@ -2409,6 +2409,7 @@
 			// CancelBT
 			// 
 			this.CancelBT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.CancelBT.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.CancelBT.Location = new System.Drawing.Point(490, 373);
 			this.CancelBT.Name = "CancelBT";
 			this.CancelBT.Size = new System.Drawing.Size(75, 23);
@@ -2427,8 +2428,10 @@
 			// 
 			// N64VideoPluginconfig
 			// 
+			this.AcceptButton = this.SaveButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.CancelBT;
 			this.ClientSize = new System.Drawing.Size(577, 401);
 			this.Controls.Add(this.CancelBT);
 			this.Controls.Add(this.SaveButton);
