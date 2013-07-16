@@ -368,6 +368,8 @@
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Mode4.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
+    <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
+    <Compile Include="Consoles\Sony\PSP\PSP.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
     <Compile Include="CPUs\68000\Instructions\DataMovement.cs" />
@@ -419,6 +421,13 @@
     <Compile Include="DiscSystem\CCD_format.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DiscSystem\cdfs\EndianBitConverter.cs" />
+    <Compile Include="DiscSystem\cdfs\ISODirectoryNode.cs" />
+    <Compile Include="DiscSystem\cdfs\ISOFile.cs" />
+    <Compile Include="DiscSystem\cdfs\ISOFileNode.cs" />
+    <Compile Include="DiscSystem\cdfs\ISONode.cs" />
+    <Compile Include="DiscSystem\cdfs\ISONodeRecord.cs" />
+    <Compile Include="DiscSystem\cdfs\ISOVolumeDescriptor.cs" />
     <Compile Include="DiscSystem\CUE_format.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -429,6 +438,7 @@
     <Compile Include="DiscSystem\Disc.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DiscSystem\Disc.ID.cs" />
     <Compile Include="DiscSystem\DiscTOC.cs">
       <SubType>Code</SubType>
     </Compile>
