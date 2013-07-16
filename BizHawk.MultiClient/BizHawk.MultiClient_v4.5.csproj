@@ -168,12 +168,6 @@
     <Compile Include="config\AutofireConfig.Designer.cs">
       <DependentUpon>AutofireConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\ControllerConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig.Designer.cs">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -194,6 +188,12 @@
     </Compile>
     <Compile Include="config\MessageConfig.Designer.cs">
       <DependentUpon>MessageConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\NewControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NewControllerConfig.Designer.cs">
+      <DependentUpon>NewControllerConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
@@ -325,6 +325,7 @@
     <Compile Include="movie\MovieHeader.cs" />
     <Compile Include="movie\MovieImport.cs" />
     <Compile Include="movie\MovieLog.cs" />
+    <Compile Include="movie\MovieMnemonics.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
     <Compile Include="movie\Subtitle.cs" />
@@ -336,12 +337,6 @@
       <DependentUpon>SubtitleMaker.cs</DependentUpon>
     </Compile>
     <Compile Include="MruStack.cs" />
-    <Compile Include="N64tools\N64VideoConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="N64tools\N64VideoConfig.Designer.cs">
-      <DependentUpon>N64VideoConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="N64tools\N64VideoPluginconfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -425,7 +420,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SATTools\SaturnPrefs.cs" />
+    <Compile Include="SATTools\SaturnPrefs.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="SATTools\SaturnPrefs.Designer.cs">
       <DependentUpon>SaturnPrefs.cs</DependentUpon>
     </Compile>
@@ -549,6 +546,18 @@
     <Compile Include="tools\VirtualPadGen3Button.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPadSaturn.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSaturn.Designer.cs">
+      <DependentUpon>VirtualPadSaturn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPadSaturnControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSaturnControl.Designer.cs">
+      <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\VirtualPadSNES.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -569,14 +578,14 @@
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\ControllerConfig.resx">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NewControllerConfig.resx">
+      <DependentUpon>NewControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
@@ -614,9 +623,6 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="N64tools\N64VideoConfig.resx">
-      <DependentUpon>N64VideoConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="N64tools\N64VideoPluginconfig.resx">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
@@ -702,6 +708,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\VirtualPadForm.resx">
       <DependentUpon>VirtualPadForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPadSaturn.resx">
+      <DependentUpon>VirtualPadSaturn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\VirtualPadSaturnControl.resx">
+      <DependentUpon>VirtualPadSaturnControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
