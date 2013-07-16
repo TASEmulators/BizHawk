@@ -701,7 +701,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentWatches.IsEmpty)
+			if (Global.Config.RecentWatches.Empty)
 			{
 				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentToolStripMenuItem.DropDownItems.Add(none);

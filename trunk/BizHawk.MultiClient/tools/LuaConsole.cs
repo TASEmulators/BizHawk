@@ -100,7 +100,7 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 			if (Global.Config.AutoLoadLuaSession)
 			{
-				if (!Global.Config.RecentLuaSession.IsEmpty)
+				if (!Global.Config.RecentLuaSession.Empty)
 				{
 					LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
 				}
@@ -536,7 +536,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentLua.IsEmpty)
+			if (Global.Config.RecentLua.Empty)
 			{
 				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentToolStripMenuItem.DropDownItems.Add(none);
@@ -1012,7 +1012,7 @@ namespace BizHawk.MultiClient
 			//repopulate it with an up to date list
 			recentSessionsToolStripMenuItem.DropDownItems.Clear();
 
-			if (Global.Config.RecentLuaSession.IsEmpty)
+			if (Global.Config.RecentLuaSession.Empty)
 			{
 				var none = new ToolStripMenuItem {Enabled = false, Text = "None"};
 				recentSessionsToolStripMenuItem.DropDownItems.Add(none);

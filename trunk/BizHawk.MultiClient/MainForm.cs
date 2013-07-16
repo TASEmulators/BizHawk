@@ -1,30 +1,29 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using BizHawk.Core;
 using BizHawk.DiscSystem;
+using BizHawk.Emulation;
+using BizHawk.Emulation.Computers.Commodore64;
+using BizHawk.Emulation.Consoles.Calculator;
+using BizHawk.Emulation.Consoles.Coleco;
+using BizHawk.Emulation.Consoles.GB;
+using BizHawk.Emulation.Consoles.Intellivision;
+using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Consoles.Nintendo.GBA;
+using BizHawk.Emulation.Consoles.Nintendo.N64;
+using BizHawk.Emulation.Consoles.Nintendo.SNES;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.TurboGrafx;
-using BizHawk.Emulation.Consoles.Calculator;
-using BizHawk.Emulation.Consoles.Nintendo;
-using BizHawk.Emulation.Consoles.Nintendo.SNES;
-using BizHawk.Emulation.Consoles.Coleco;
-using System.Collections.Generic;
-using BizHawk.Emulation.Consoles.Intellivision;
-using BizHawk.Emulation.Consoles.GB;
-using BizHawk.Emulation.Consoles.Nintendo.GBA;
-using BizHawk.Emulation.Computers.Commodore64;
-using BizHawk.Emulation;
-using BizHawk.Emulation.Consoles.Nintendo.N64;
 
 namespace BizHawk.MultiClient
 {
-
 	public partial class MainForm : Form
 	{
 		public static bool INTERIM = true;
@@ -238,7 +237,7 @@ namespace BizHawk.MultiClient
 					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
 				}
 			}
-			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty)
+			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.Empty)
 				LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
 
 			if (cmdMovie != null)
@@ -260,7 +259,7 @@ namespace BizHawk.MultiClient
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
 			}
-			else if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.IsEmpty)
+			else if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.Empty)
 			{
 				if (Global.Game == null)
 				{
@@ -807,11 +806,6 @@ namespace BizHawk.MultiClient
 
 		}
 
-		private static void FormDragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
-
 		private bool IsValidMovieExtension(string ext)
 		{
 			if (ext.ToUpper() == "." + Global.Config.MovieExtension)
@@ -822,83 +816,6 @@ namespace BizHawk.MultiClient
 				return true;
 
 			return false;
-		}
-
-		private void FormDragDrop(object sender, DragEventArgs e)
-		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			bool isLua = false;
-			foreach (string path in filePaths)
-			{
-				var extension = Path.GetExtension(path);
-				if (extension != null && extension.ToUpper() == ".LUA")
-				{
-					OpenLuaConsole();
-					LuaConsole1.LoadLuaFile(path);
-					isLua = true;
-				}
-			}
-			if (isLua)
-				return;
-
-			var ext = Path.GetExtension(filePaths[0]) ?? "";
-			if (ext.ToUpper() == ".LUASES")
-			{
-				OpenLuaConsole();
-				LuaConsole1.LoadLuaSession(filePaths[0]);
-			}
-			else if (IsValidMovieExtension(ext))
-			{
-				Movie m = new Movie(filePaths[0]);
-				StartNewMovie(m, false);
-
-			}
-			else if (ext.ToUpper() == ".STATE")
-			{
-				LoadStateFile(filePaths[0], Path.GetFileName(filePaths[0]));
-			}
-			else if (ext.ToUpper() == ".CHT")
-			{
-				LoadCheatsWindow();
-				Cheats1.LoadCheatFile(filePaths[0], false);
-				Cheats1.DisplayCheatsList();
-			}
-			else if (ext.ToUpper() == ".WCH")
-			{
-				LoadRamWatch(true);
-				RamWatch1.LoadWatchFile(filePaths[0], false);
-				RamWatch1.DisplayWatchList();
-			}
-
-			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
-			{
-				//tries to open a legacy movie format as if it were a BKM, by importing it
-
-				if (CurrentlyOpenRom == null)
-					OpenROM();
-				else
-					LoadRom(CurrentlyOpenRom);
-
-				string errorMsg;
-				string warningMsg;
-				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-				if (errorMsg.Length > 0)
-				{
-					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-				else
-				{
-					//fix movie extension to something palatable for these purposes. 
-					//for instance, something which doesnt clobber movies you already may have had.
-					//i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					m.Filename += ".autoimported." + Global.Config.MovieExtension;
-					m.WriteMovie();
-					StartNewMovie(m, false);
-				}
-				Global.OSD.AddMessage(warningMsg);
-			}
-			else
-				LoadRom(filePaths[0]);
 		}
 
 		public bool IsNullEmulator()
@@ -1629,7 +1546,7 @@ namespace BizHawk.MultiClient
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show("Exception during loadgame:\n\n" + ex.ToString());
+					MessageBox.Show("Exception during loadgame:\n\n" + ex);
 					return false;
 				}
 
@@ -1672,7 +1589,7 @@ namespace BizHawk.MultiClient
 
 				//restarts the lua console if a different rom is loaded.
 				//im not really a fan of how this is done..
-				if (Global.Config.RecentRoms.IsEmpty || Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
+				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
 				{
 #if WINDOWS
 					LuaConsole1.Restart();
@@ -3030,7 +2947,7 @@ namespace BizHawk.MultiClient
 					if (Global.MovieSession.Movie.Header.HeaderParams.ContainsKey(setting))
 					{
 						string Value = Global.MovieSession.Movie.Header.HeaderParams[setting];
-						if (video_settings.Parameters[setting].GetType() == typeof(bool))
+						if (video_settings.Parameters[setting] is bool)
 						{
 							try
 							{
@@ -3047,7 +2964,7 @@ namespace BizHawk.MultiClient
 								video_settings.Parameters[setting] = false;
 							}*/
 						}
-						else if (video_settings.Parameters[setting].GetType() == typeof(int))
+						else if (video_settings.Parameters[setting] is int)
 						{
 							try
 							{
@@ -3958,42 +3875,6 @@ namespace BizHawk.MultiClient
 			r.Show();
 		}
 
-		private void importMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
-					Multiselect = true,
-					Filter = FormatFilter(
-						"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.zmv;",
-						"FCEUX", "*.fm2",
-						"PCEjin/Mednafen", "*.mc2;*.mcm",
-						"Dega", "*.mmv",
-						"Gens", "*.gmv",
-						"Visual Boy Advance", "*.vbm",
-						"LSNES", "*.lsmv",
-						"FCEU", "*.fcm",
-						"Famtasia", "*.fmv",
-						"VirtuaNES", "*.vmv",
-						"Nintendulator", "*.nmv",
-						"Snes9x", "*.smv",
-						"ZSNES", "*.zmv",
-						"All Files", "*.*"),
-					RestoreDirectory = false
-				};
-
-			Global.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			Global.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return;
-
-			foreach (string fn in ofd.FileNames)
-			{
-				ProcessMovieImport(fn);
-			}
-		}
-
 		void ProcessMovieImport(string fn)
 		{
 			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
@@ -4126,11 +4007,6 @@ namespace BizHawk.MultiClient
 			FrameBufferResized();
 		}
 
-		private void neverBeAskedToSaveChangesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SupressAskSave ^= true;
-		}
-
 		private void IncreaseSpeed()
 		{
 			int oldp = Global.Config.SpeedPercent;
@@ -4179,11 +4055,6 @@ namespace BizHawk.MultiClient
 			nes.SetDMC(Global.Config.NESDMC);
 		}
 
-		private void soundChannelsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadNesSoundConfig();
-		}
-
 		public void ClearSaveRAM()
 		{
 			//zero says: this is sort of sketchy... but this is no time for rearchitecting
@@ -4208,81 +4079,6 @@ namespace BizHawk.MultiClient
 			catch { }
 		}
 
-		private void changeDMGPalettesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.Emulator is Gameboy)
-			{
-				var g = Global.Emulator as Gameboy;
-				if (g.IsCGBMode())
-				{
-					if (GBtools.CGBColorChooserForm.DoCGBColorChooserFormDialog(this))
-					{
-						g.SetCGBColors(Global.Config.CGBColors);
-					}
-				}
-				else
-				{
-					GBtools.ColorChooserForm.DoColorChooserFormDialog(g.ChangeDMGColors, this);
-				}
-			}
-		}
-
-		private void captureOSDToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			Global.Config.Screenshot_CaptureOSD ^= true;
-		}
-
-		private void screenshotToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-		{
-			captureOSDToolStripMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
-		}
-
-		private void sNESToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			if ((Global.Emulator as LibsnesCore).IsSGB)
-			{
-				loadGBInSGBToolStripMenuItem.Visible = true;
-				loadGBInSGBToolStripMenuItem.Checked = Global.Config.GB_AsSGB;
-			}
-			else
-				loadGBInSGBToolStripMenuItem.Visible = false;
-		}
-
-		private void loadGBInSGBToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			loadGBInSGBToolStripMenuItem_Click(sender, e);
-		}
-
-		private void loadGBInSGBToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GB_AsSGB ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void MainForm_Resize(object sender, EventArgs e)
-		{
-			Global.RenderPanel.Resized = true;
-		}
-
-		private void backupSaveramToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.BackupSaveram ^= true;
-			if (Global.Config.BackupSaveram)
-			{
-				Global.OSD.AddMessage("Backup saveram enabled");
-			}
-			else
-			{
-				Global.OSD.AddMessage("Backup saveram disabled");
-			}
-
-		}
-
-		private void toolStripStatusLabel2_Click(object sender, EventArgs e)
-		{
-			RebootCore();
-		}
-
 		private void SetRebootIconStatus()
 		{
 			if (NeedsReboot)
@@ -4302,33 +4098,6 @@ namespace BizHawk.MultiClient
 			Global.OSD.AddMessage("Core reboot needed for this setting");
 		}
 
-		private void traceLoggerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadTraceLogger();
-		}
-
-		private void blurryToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.DispBlurry ^= true;
-		}
-
-		private void showClippedRegionsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GGShowClippedRegions ^= true;
-			Global.CoreComm.GG_ShowClippedRegions = Global.Config.GGShowClippedRegions;
-		}
-
-		private void highlightActiveDisplayRegionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GGHighlightActiveDisplayRegion ^= true;
-			Global.CoreComm.GG_HighlightActiveDisplayRegion = Global.Config.GGHighlightActiveDisplayRegion;
-		}
-
-		private void saveMovieToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SaveMovie();
-		}
-
 		private void SaveMovie()
 		{
 			if (Global.MovieSession.Movie.IsActive)
@@ -4336,78 +4105,6 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.WriteMovie();
 				Global.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
 			}
-		}
-
-		private void saveMovieToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			SaveMovie();
-		}
-
-		private void virtualPadToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadVirtualPads();
-		}
-
-		private void showBGToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowBG ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showPlayer1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowPlayer1 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showPlayer2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowPlayer2 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showMissle1ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowMissle1 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showMissle2ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowMissle2 ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showBallToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowBall ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void showPlayfieldToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Atari2600_ShowPlayfield ^= true;
-			SyncCoreCommInputSignals();
-		}
-
-		private void gPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGBGPUView();
-		}
-
-		private void miLimitFramerate_DropDownOpened(object sender, EventArgs e)
-		{
-		}
-
-		private void skipBIOIntroToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.ColecoSkipBiosIntro ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void colecoToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.ColecoSkipBiosIntro;
 		}
 
 		private void HandleToggleLight()
@@ -4439,70 +4136,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void gPUViewToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGBAGPUView();
-		}
-
-		private void bothHotkeysAndControllersToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Input_Hotkey_OverrideOptions = 0;
-			UpdateKeyPriorityIcon();
-		}
-
-		private void inputOverridesHotkeysToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Input_Hotkey_OverrideOptions = 1;
-			UpdateKeyPriorityIcon();
-		}
-
-		private void hotkeysOverrideInputToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.Input_Hotkey_OverrideOptions = 2;
-			UpdateKeyPriorityIcon();
-		}
-
-		private void keyPriorityToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			switch (Global.Config.Input_Hotkey_OverrideOptions)
-			{
-				default:
-				case 0:
-					bothHotkeysAndControllersToolStripMenuItem.Checked = true;
-					inputOverridesHotkeysToolStripMenuItem.Checked = false;
-					hotkeysOverrideInputToolStripMenuItem.Checked = false;
-					break;
-				case 1:
-					bothHotkeysAndControllersToolStripMenuItem.Checked = false;
-					inputOverridesHotkeysToolStripMenuItem.Checked = true;
-					hotkeysOverrideInputToolStripMenuItem.Checked = false;
-					break;
-				case 2:
-					bothHotkeysAndControllersToolStripMenuItem.Checked = false;
-					inputOverridesHotkeysToolStripMenuItem.Checked = false;
-					hotkeysOverrideInputToolStripMenuItem.Checked = true;
-					break;
-			}
-		}
-
-		private void KeyPriorityStatusBarLabel_Click(object sender, EventArgs e)
-		{
-			switch (Global.Config.Input_Hotkey_OverrideOptions)
-			{
-				default:
-				case 0:
-					Global.Config.Input_Hotkey_OverrideOptions = 1;
-					break;
-				case 1:
-					Global.Config.Input_Hotkey_OverrideOptions = 2;
-					break;
-				case 2:
-					Global.Config.Input_Hotkey_OverrideOptions = 0;
-					break;
-			}
-			UpdateKeyPriorityIcon();
-		}
-
 		private void UpdateKeyPriorityIcon()
 		{
 			switch (Global.Config.Input_Hotkey_OverrideOptions)
@@ -4523,11 +4156,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void fullMovieLoadstatesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.VBAStyleMovieLoadState ^= true;
-		}
-
 		private void ToggleModePokeMode()
 		{
 			Global.Config.MoviePlaybackPokeMode ^= true;
@@ -4541,16 +4169,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void toolStripMenuItem6_Click(object sender, EventArgs e)
-		{
-			StopMovie(true);
-		}
-
-		private void stopMovieWithoutSavingToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			StopMovie(true);
-		}
-
 		public string GetEmuVersion()
 		{
 			if (INTERIM)
@@ -4561,114 +4179,6 @@ namespace BizHawk.MultiClient
 			{
 				return EMUVERSION;
 			}
-		}
-
-		private void SNESgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGameGenieEC();
-		}
-
-		private void GBgameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGameGenieEC();
-		}
-
-		private void GGgameGenieEncoderDecoderToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			LoadGameGenieEC();
-		}
-
-		private void createDualGBXMLToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Sound.StopSound();
-			using (var dlg = new GBtools.DualGBXMLCreator())
-			{
-				dlg.ShowDialog(this);
-			}
-			Global.Sound.StartSound();
-		}
-
-		private void tempN64PluginControlToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var result = new N64VideoPluginconfig().ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				Global.OSD.AddMessage("Plugin settings saved");
-			}
-			else
-			{
-				Global.OSD.AddMessage("Plugin settings aborted");
-			}
-		}
-
-		private void savestateTypeToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			defaultToolStripMenuItem.Checked = false;
-			binaryToolStripMenuItem.Checked = false;
-			textToolStripMenuItem.Checked = false;
-			switch (Global.Config.SaveStateType)
-			{
-				case Config.SaveStateTypeE.Binary: binaryToolStripMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Text: textToolStripMenuItem.Checked = true; break;
-				case Config.SaveStateTypeE.Default: defaultToolStripMenuItem.Checked = true; break;
-			}
-		}
-
-		private void defaultToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
-		}
-
-		private void binaryToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
-		}
-
-		private void textToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
-		}
-
-		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			using (var dlg = new SATTools.SaturnPrefs())
-			{
-				var result = dlg.ShowDialog(this);
-				if (result == System.Windows.Forms.DialogResult.OK)
-				{
-					SaturnSetPrefs();
-				}
-			}
-		}
-
-		private void controllersToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			OpenControllerConfig();
-		}
-
-		private void hotkeysToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			OpenHotkeyDialog();
-		}
-
-		private void messagesToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			new MessageConfig().ShowDialog();
-		}
-
-		private void pathsToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			new PathConfig().ShowDialog();
-		}
-
-		private void soundToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			OpenSoundConfigDialog();
-		}
-
-		private void autofireToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
-			new AutofireConfig().ShowDialog();
 		}
 	}
 }

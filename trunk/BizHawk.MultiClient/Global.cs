@@ -1,9 +1,7 @@
-﻿using System;
-using BizHawk.DiscSystem;
-using System.Collections.Generic;
-#if WINDOWS
+﻿using BizHawk.DiscSystem;
 using SlimDX.Direct3D9;
 using SlimDX.DirectSound;
+#if WINDOWS
 
 #endif
 
