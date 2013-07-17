@@ -30,10 +30,13 @@ namespace BizHawk.MultiClient.config
 		}
 
 		const int MAXPLAYERS = 8;
+		string ControllerType;
 
 		private NewControllerConfig()
 		{
 			InitializeComponent();
+			if (!MainForm.INTERIM)
+				buttonSaveAllDefaults.Hide();
 		}
 
 		static void LoadToPanel(Control dest, ControllerDefinition def, Dictionary<string, Dictionary<string, string>> settingsblock)
@@ -111,6 +114,7 @@ namespace BizHawk.MultiClient.config
 		public NewControllerConfig(ControllerDefinition def)
 			: this()
 		{
+			ControllerType = def.Name;
 			SuspendLayout();
 			LoadToPanel(tabPage1, def, Global.Config.AllTrollers);
 			LoadToPanel(tabPage2, def, Global.Config.AllTrollersAutoFire);
@@ -186,6 +190,65 @@ namespace BizHawk.MultiClient.config
 		private void NewControllerConfig_Load(object sender, EventArgs e)
 		{
 
+		}
+
+		private static string ControlDefaultPath
+		{
+			get { return PathManager.MakeProgramRelativePath("defctrl.json"); }
+		}
+
+		private void buttonLoadDefaults_Click(object sender, EventArgs e)
+		{
+			// this is not clever.  i'm going to replace it with something more clever
+
+			var result = MessageBox.Show("OK to load control defaults for this controller?", "Bizhawk", MessageBoxButtons.YesNo);
+			if (result == System.Windows.Forms.DialogResult.Yes)
+			{
+				ControlDefaults cd = new ControlDefaults();
+				cd = ConfigService.Load(ControlDefaultPath, cd);
+				Dictionary<string, string> settings;
+				if (cd.AllTrollers.TryGetValue(ControllerType, out settings))
+					Global.Config.AllTrollers[ControllerType] = settings;
+				else
+					Global.Config.AllTrollers[ControllerType].Clear();
+				if (cd.AllTrollersAutoFire.TryGetValue(ControllerType, out settings))
+					Global.Config.AllTrollersAutoFire[ControllerType] = settings;
+				else
+					Global.Config.AllTrollersAutoFire[ControllerType].Clear();
+
+				Global.OSD.AddMessage("Default controls loaded");
+				DialogResult = System.Windows.Forms.DialogResult.OK;
+				Close();
+			}
+		}
+
+		private void buttonSaveAllDefaults_Click(object sender, EventArgs e)
+		{
+			var result = MessageBox.Show("OK to save defaults for ALL cores?", "Bizhawk", MessageBoxButtons.YesNo);
+			if (result == System.Windows.Forms.DialogResult.Yes)
+			{
+				ControlDefaults cd = new ControlDefaults();
+				cd.AllTrollers = Global.Config.AllTrollers;
+				cd.AllTrollersAutoFire = Global.Config.AllTrollersAutoFire;
+				ConfigService.Save(ControlDefaultPath, cd);
+			}
+		}
+
+		class ControlDefaults
+		{
+			public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
+			public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
+		}
+
+		public static void ConfigCheckAllControlDefaults(Config c)
+		{
+			if (c.AllTrollers.Count == 0 && c.AllTrollersAutoFire.Count == 0)
+			{
+				ControlDefaults cd = new ControlDefaults();
+				cd = ConfigService.Load(ControlDefaultPath, cd);
+				c.AllTrollers = cd.AllTrollers;
+				c.AllTrollersAutoFire = cd.AllTrollersAutoFire;
+			}
 		}
 	}
 }
