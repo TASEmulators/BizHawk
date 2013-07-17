@@ -23,7 +23,7 @@ namespace BizHawk.MultiClient
 						config = (T)s.Deserialize(r, typeof(T));
 					}
 			}
-			catch (Exception e) { MessageBox.Show(e.ToString()); }
+			catch (Exception e) { MessageBox.Show(e.ToString(), "Config Error"); }
 			if (config == null) return new T();
 
 			//patch up arrays in the config with the minimum number of things
