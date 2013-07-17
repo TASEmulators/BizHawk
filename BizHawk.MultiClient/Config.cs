@@ -6,6 +6,11 @@ namespace BizHawk.MultiClient
 {
 	public class Config
 	{
+		public Config()
+		{
+			config.NewControllerConfig.ConfigCheckAllControlDefaults(this);
+		}
+
 		// Directories
 		public bool UseRecentForROMs = false;
 		public string LastRomPath = ".";
