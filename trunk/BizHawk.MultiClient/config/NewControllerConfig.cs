@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient.config
 {
 	public partial class NewControllerConfig : Form
 	{
-		static Dictionary<string, Bitmap> ControllerImages = new Dictionary<string, Bitmap>();
+		static readonly Dictionary<string, Bitmap> ControllerImages = new Dictionary<string, Bitmap>();
 		static NewControllerConfig()
 		{
 			ControllerImages.Add("NES Controller", Properties.Resources.NES_Controller);
@@ -78,16 +75,14 @@ namespace BizHawk.MultiClient.config
 			if (buckets[0].Count == settings.Keys.Count)
 			{
 				// everything went into bucket 0, so make no tabs at all
-				var cp = new ControllerConfigPanel();
-				cp.Dock = DockStyle.Fill;
+				var cp = new ControllerConfigPanel {Dock = DockStyle.Fill};
 				dest.Controls.Add(cp);
 				cp.LoadSettings(settings, null, dest.Width, dest.Height);
 			}
 			else
 			{
 				// create multiple player tabs
-				var tt = new TabControl();
-				tt.Dock = DockStyle.Fill;
+				var tt = new TabControl {Dock = DockStyle.Fill};
 				dest.Controls.Add(tt);
 				int pageidx = 0;
 				for (int i = 1; i <= MAXPLAYERS; i++)
@@ -96,8 +91,7 @@ namespace BizHawk.MultiClient.config
 					{
 						tt.TabPages.Add("Player " + i);
 
-						var cp = new ControllerConfigPanel();
-						cp.Dock = DockStyle.Fill;
+						var cp = new ControllerConfigPanel {Dock = DockStyle.Fill};
 						tt.TabPages[pageidx].Controls.Add(cp);
 						cp.LoadSettings(settings, buckets[i], tt.Width, tt.Height);
 						pageidx++;
@@ -106,8 +100,7 @@ namespace BizHawk.MultiClient.config
 				if (buckets[0].Count > 0)
 				{
 					tt.TabPages.Add("Console");
-					var cp = new ControllerConfigPanel();
-					cp.Dock = DockStyle.Fill;
+					var cp = new ControllerConfigPanel {Dock = DockStyle.Fill};
 					tt.TabPages[pageidx].Controls.Add(cp);
 					cp.LoadSettings(settings, buckets[0], tt.Width, tt.Height);
 					pageidx++;

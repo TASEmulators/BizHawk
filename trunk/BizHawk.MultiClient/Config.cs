@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Drawing;
 using System.Collections.Generic;
 
@@ -7,10 +6,6 @@ namespace BizHawk.MultiClient
 {
 	public class Config
 	{
-		public Config()
-		{
-		}
-
 		// Directories
 		public bool UseRecentForROMs = false;
 		public string LastRomPath = ".";
@@ -172,73 +167,6 @@ namespace BizHawk.MultiClient
 		public string N64VidPlugin = "Rice";
 		public int N64VideoSizeX = 320;
 		public int N64VideoSizeY = 240;
-
-	
-		//public int RiceFrameBufferSetting = 0;
-		//public int RiceFrameBufferWriteBackControl = 0;
-		//public int RiceRenderToTexture = 0;
-		//public int RiceScreenUpdateSetting = 4;
-		//public int RiceMipmapping = 2;
-		//public int RiceFogMethod = 0;
-		//public int RiceForceTextureFilter = 0;
-		//public int RiceTextureEnhancement = 0;
-		//public int RiceTextureEnhancementControl = 0;
-		//public int RiceTextureQuality = 0;
-		//public int RiceOpenGLDepthBufferSetting = 16;
-		//public int RiceMultiSampling = 0;
-		//public int RiceColorQuality = 0;
-		//public int RiceOpenGLRenderSetting = 0;
-		//public int RiceAnisotropicFiltering = 0;
-
-		
-		//public bool RiceNormalAlphaBlender = false; 
-		//public bool RiceFastTextureLoading = false;
-		//public bool RiceAccurateTextureMapping = true;
-		//public bool RiceInN64Resolution = false;
-		//public bool RiceSaveVRAM = false;
-		//public bool RiceDoubleSizeForSmallTxtrBuf = false;
-		//public bool RiceDefaultCombinerDisable = false;
-		//public bool RiceEnableHacks = true;
-		//public bool RiceWinFrameMode = false;
-		//public bool RiceFullTMEMEmulation = false;
-		//public bool RiceOpenGLVertexClipper = false;
-		//public bool RiceEnableSSE = true;
-		//public bool RiceEnableVertexShader = false;
-		//public bool RiceSkipFrame = false;
-		//public bool RiceTexRectOnly = false;
-		//public bool RiceSmallTextureOnly = false;
-		//public bool RiceLoadHiResCRCOnly = true;
-		//public bool RiceLoadHiResTextures = false;
-		//public bool RiceDumpTexturesToFiles = false;
-
-		//public bool RiceUseDefaultHacks = true;
-		//public bool RiceDisableTextureCRC = false;
-		//public bool RiceDisableCulling = false;
-		//public bool RiceIncTexRectEdge = false;
-		//public bool RiceZHack = false;
-		//public bool RiceTextureScaleHack = false;
-		//public bool RicePrimaryDepthHack = false;
-		//public bool RiceTexture1Hack = false;
-		//public bool RiceFastLoadTile = false;
-		//public bool RiceUseSmallerTexture = false;
-		//public int RiceVIWidth = -1;
-		//public int RiceVIHeight = -1;
-		//public int RiceUseCIWidthAndRatio = 0;
-		//public int RiceFullTMEM = 0;
-		//public bool RiceTxtSizeMethod2 = false;
-		//public bool RiceEnableTxtLOD = false;
-		//public int RiceFastTextureCRC = 0;
-		//public bool RiceEmulateClear = false;
-		//public bool RiceForceScreenClear = false;
-		//public int RiceAccurateTextureMappingHack = 0;
-		//public int RiceNormalBlender = 0;
-		//public bool RiceDisableBlender = false;
-		//public bool RiceForceDepthBuffer = false;
-		//public bool RiceDisableObjBG = false;
-		//public int RiceFrameBufferOption = 0;
-		//public int RiceRenderToTextureOption = 0;
-		//public int RiceScreenUpdateSettingHack = 0;
-		//public int RiceEnableHacksForGame = 0;
 
 		public N64RicePluginSettings RicePlugin = new N64RicePluginSettings();
 		public N64GlidePluginSettings GlidePlugin = new N64GlidePluginSettings();
