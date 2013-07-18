@@ -32,11 +32,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				CoreComm.UsesDriveLed = true;
 				b.SetDriveLightCallback((val) => CoreComm.DriveLED = val);
 			}
-			if (vs_io)
-			{
-				ControllerDefinition.BoolButtons.Add("VS Coin 1");
-				ControllerDefinition.BoolButtons.Add("VS Coin 2");
-			}
 		}
 
 		private NES()
@@ -817,11 +812,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("cpu_step", ref cpu_step);
 			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
 			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
-			if (vs_io)
-			{
-				ser.Sync("vs_coin1", ref vs_coin1);
-				ser.Sync("vs_coin2", ref vs_coin2);
-			}
 			ser.BeginSection("Board");
 			board.SyncState(ser);
 			if (board is NESBoardBase && !((NESBoardBase)board).SyncStateFlag)
