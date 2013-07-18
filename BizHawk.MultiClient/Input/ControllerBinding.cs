@@ -10,9 +10,22 @@ namespace BizHawk.MultiClient
 		private readonly WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
 
+		private readonly WorkingDictionary<string, float> FloatButtons = new WorkingDictionary<string, float>();
+
+		private readonly Dictionary<string, ControllerDefinition.FloatRange> FloatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
+
+		private readonly Dictionary<string, string> FloatBinds = new Dictionary<string, string>();
+
 		public Controller(ControllerDefinition definition)
 		{
 			type = definition;
+			for (int i = 0; i < type.FloatControls.Count; i++)
+			{
+				FloatButtons[type.FloatControls[i]] = type.FloatRanges[i].Mid;
+				FloatRanges[type.FloatControls[i]] = type.FloatRanges[i];
+			}
+			FloatBinds.Add("J5 X", "P1 X Axis");
+			FloatBinds.Add("J5 Y", "P1 Y Axis");
 		}
 
 		public ControllerDefinition Type { get { return type; } }
@@ -24,9 +37,7 @@ namespace BizHawk.MultiClient
 			return buttons[button];
 		}
 
-		// the default state of an unpressed float is assumed to be zero.
-		// so always return zero here, until we add a float binding infrastructure to Controller
-		public float GetFloat(string name) { return 0.0f; }
+		public float GetFloat(string name) { return FloatButtons[name]; }
 		public void UpdateControls(int frame) { }
 
 		//look for bindings which are activated by the supplied physical button.
@@ -72,8 +83,20 @@ namespace BizHawk.MultiClient
 				buttons[kvp.Key] = false;
 				foreach (var bound_button in kvp.Value)
 				{
-					if(controller[bound_button])
+					if (controller[bound_button])
 						buttons[kvp.Key] = true;
+				}
+			}
+			foreach (var kvp in FloatBinds)
+			{
+				float input = controller.GetFloat(kvp.Key);
+				string outkey = kvp.Value;
+				ControllerDefinition.FloatRange range;
+				if (FloatRanges.TryGetValue(outkey, out range))
+				{
+					// input range is assumed to be -10000,0,10000
+					// this is where deadzone, axis flip, sensitivity would be implemented
+					FloatButtons[outkey] = (input + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
 				}
 			}
 		}

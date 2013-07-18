@@ -49,6 +49,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 				"P2 X Axis", "P2 Y Axis",
 				"P3 X Axis", "P3 Y Axis",
 				"P4 X Axis", "P4 Y Axis"
+			},
+			FloatRanges =
+			{
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f},
+				new[] {-128.0f, 0.0f, 127.0f}
 			}
 		};
 

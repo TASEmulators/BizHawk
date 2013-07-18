@@ -1928,6 +1928,9 @@ namespace BizHawk.MultiClient
 				}
 
 			} //foreach event
+
+			// also handle floats
+			Global.ControllerInputCoalescer.AcceptNewFloats(Input.Instance.GetFloats());
 		}
 
 		private void ClearAutohold()

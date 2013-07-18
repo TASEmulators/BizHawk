@@ -87,6 +87,13 @@ namespace BizHawk.MultiClient
 				return;
 		}
 
+		public IEnumerable<Tuple<string, float>> GetFloats()
+		{
+			var pis = typeof(JoystickState).GetProperties();
+			foreach (var pi in pis)
+				yield return new Tuple<string, float>(pi.Name, 10.0f * (float)(int)pi.GetValue(state, null));
+		}
+
 		/// <summary>FOR DEBUGGING ONLY</summary>
 		public JoystickState GetInternalState()
 		{
