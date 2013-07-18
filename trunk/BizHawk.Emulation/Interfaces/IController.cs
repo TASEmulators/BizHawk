@@ -1,12 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk
 {
+	// doesn't do what is desired
+	// http://connect.microsoft.com/VisualStudio/feedback/details/459307/extension-add-methods-are-not-considered-in-c-collection-initializers
+	/*
+	public static class UltimateMagic
+	{
+		public static void Add(this List<ControllerDefinition.FloatRange l, float Min, float Mid, float Max)
+		{
+			l.Add(new ControllerDefinition.FloatRange(Min, Mid, Max);
+		}
+	}
+	*/
+
 	public class ControllerDefinition
 	{
+		public struct FloatRange
+		{
+			public readonly float Min;
+			public readonly float Max;
+			/// <summary>
+			/// default position
+			/// </summary>
+			public readonly float Mid;
+			public FloatRange(float Min, float Mid, float Max)
+			{
+				this.Min = Min;
+				this.Mid = Mid;
+				this.Max = Max;
+			}
+			// for terse construction
+			public static implicit operator FloatRange(float[] f)
+			{
+				if (f.Length != 3)
+					throw new ArgumentException();
+				return new FloatRange(f[0], f[1], f[2]);
+			}
+		}
+
 		public string Name;
 		public List<string> BoolButtons = new List<string>();
 		public List<string> FloatControls = new List<string>();
+		public List<FloatRange> FloatRanges = new List<FloatRange>();
 		/// <summary>
 		/// copy
 		/// </summary>

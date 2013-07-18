@@ -163,6 +163,7 @@ namespace BizHawk.MultiClient
 		private readonly WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, bool> UnpressState = new WorkingDictionary<string, bool>();
 		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
+		private readonly List<Tuple<string, float>> FloatValues = new List<Tuple<string, float>>();
 
 		void HandleButton(string button, bool newState)
 		{
@@ -254,6 +255,16 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public List<Tuple<string, float>> GetFloats()
+		{
+			List<Tuple<string, float>> FloatValuesCopy;
+			lock (FloatValues)
+			{
+				FloatValuesCopy = new List<Tuple<string, float>>(FloatValues);
+			}
+			return FloatValuesCopy;
+		}
+
 #if WINDOWS
 		void UpdateThreadProc()
 		{
@@ -276,23 +287,31 @@ namespace BizHawk.MultiClient
 					else
 						HandleButton(k.ToString(), false);
 
-				//analyze xinput
-				for (int i = 0; i < GamePad360.Devices.Count; i++)
+				lock (FloatValues)
 				{
-					var pad = GamePad360.Devices[i];
-					string xname = "X" + (i + 1) + " ";
-					for (int b = 0; b < pad.NumButtons; b++)
-						HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
-				}
+					FloatValues.Clear();
 
-				//analyze joysticks
-				for (int i = 0; i < GamePad.Devices.Count; i++)
-				{
-					var pad = GamePad.Devices[i];
-					string jname = "J" + (i + 1) + " ";
+					//analyze xinput
+					for (int i = 0; i < GamePad360.Devices.Count; i++)
+					{
+						var pad = GamePad360.Devices[i];
+						string xname = "X" + (i + 1) + " ";
+						for (int b = 0; b < pad.NumButtons; b++)
+							HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
+					}
 
-					for (int b = 0; b < pad.NumButtons; b++)
-						HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
+					//analyze joysticks
+					for (int i = 0; i < GamePad.Devices.Count; i++)
+					{
+						var pad = GamePad.Devices[i];
+						string jname = "J" + (i + 1) + " ";
+
+						for (int b = 0; b < pad.NumButtons; b++)
+							HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
+						foreach (var sv in pad.GetFloats())
+							FloatValues.Add(new Tuple<string, float>(jname + sv.Item1, sv.Item2));
+					}
+
 				}
 
 				bool swallow = !Global.MainForm.AllowInput;

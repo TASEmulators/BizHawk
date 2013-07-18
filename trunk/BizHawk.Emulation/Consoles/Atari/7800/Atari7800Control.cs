@@ -48,6 +48,14 @@ namespace BizHawk.Emulation
 				"P2 Paddle",
 				"P3 Paddle",
 				"P4 Paddle"
+			},
+			FloatRanges =
+			{
+				// what is the center point supposed to be here?
+				new[] {0.0f, 0.0f, 700000.0f},
+				new[] {0.0f, 0.0f, 700000.0f},
+				new[] {0.0f, 0.0f, 700000.0f},
+				new[] {0.0f, 0.0f, 700000.0f}
 			}
 		};
 		public static ControllerDefinition Keypad = new ControllerDefinition
@@ -103,6 +111,12 @@ namespace BizHawk.Emulation
 			{
 				"P1 Driving",
 				"P2 Driving"
+			},
+			FloatRanges =
+			{
+				new[] {0.0f, 0.0f, 3.0f},
+				new[] {0.0f, 0.0f, 3.0f},
+				new[] {0.0f, 0.0f, 3.0f}
 			}
 		};
 		public static ControllerDefinition BoosterGrip = new ControllerDefinition
@@ -159,6 +173,14 @@ namespace BizHawk.Emulation
 			{
 				"P1 VPos", "P1 HPos",
 				"P2 VPos", "P2 HPos"
+			},
+			FloatRanges =
+			{
+				// how many scanlines are there again??
+				new[] {0.0f, 0.0f, 240.0f},
+				new[] {0.0f, 0.0f, 319.0f},
+				new[] {0.0f, 0.0f, 240.0f},
+				new[] {0.0f, 0.0f, 319.0f}
 			}
 		};
 

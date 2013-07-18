@@ -101,9 +101,10 @@ namespace BizHawk.MultiClient
 		public ControllerDefinition Type { get; set; }
 
 		protected WorkingDictionary<string, bool> Buttons = new WorkingDictionary<string, bool>();
+		protected WorkingDictionary<string, float> Floats = new WorkingDictionary<string, float>();
 		public virtual bool this[string button] { get { return Buttons[button]; } set { Buttons[button] = value; } }
 		public virtual bool IsPressed(string button) { return this[button]; }
-		public float GetFloat(string name) { return 0.0f; } //TODO
+		public float GetFloat(string name) { return Floats[name]; }
 		public void UpdateControls(int frame) { }
 
 		public IEnumerable<KeyValuePair<string, bool>> BoolButtons()
@@ -117,6 +118,12 @@ namespace BizHawk.MultiClient
 			{
 				Buttons[button] = source[button];
 			}
+		}
+
+		public void AcceptNewFloats(IEnumerable<Tuple<string, float>> NewValues)
+		{
+			foreach (var sv in NewValues)
+				Floats[sv.Item1] = sv.Item2;
 		}
 	}
 
