@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				throw new InvalidOperationException();
+				// no vram or anything here ever
 			}
 			else
 			{
