@@ -24,8 +24,8 @@ namespace BizHawk.MultiClient
 				FloatButtons[type.FloatControls[i]] = type.FloatRanges[i].Mid;
 				FloatRanges[type.FloatControls[i]] = type.FloatRanges[i];
 			}
-			FloatBinds.Add("J5 X", "P1 X Axis");
-			FloatBinds.Add("J5 Y", "P1 Y Axis");
+			FloatBinds.Add("J1 X", "P1 X Axis");
+			FloatBinds.Add("J1 Y", "P1 Y Axis");
 		}
 
 		public ControllerDefinition Type { get { return type; } }

@@ -7,6 +7,8 @@ namespace BizHawk.MultiClient
 		private readonly MruStack<MemoryStream> RewindBuf = new MruStack<MemoryStream>(15000);
 		private byte[] LastState;
 		private bool RewindImpossible;
+		private int RewindFrequency = 1;
+
 
 		void CaptureRewindState()
 		{
@@ -17,23 +19,35 @@ namespace BizHawk.MultiClient
 			{
 				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
 				LastState = Global.Emulator.SaveStateBinary();
+				
+				
 				if (LastState.Length > 0x100000)
 				{
-					RewindImpossible = true;
-					LastState = null;
-					Global.OSD.AddMessage("Rewind Disabled: State too large.");
-					if (Global.Emulator.SystemId == "PCE")
-						Global.OSD.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
+					//RewindImpossible = true;
+					//LastState = null;
+					//Global.OSD.AddMessage("Rewind Disabled: State too large.");
+					//if (Global.Emulator.SystemId == "PCE")
+					//	Global.OSD.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
+					RewindFrequency = 60;
+					Global.OSD.AddMessage("Rewind frequency set to 60");
+				}
+				else if (LastState.Length > 32768)
+				{
+					RewindFrequency = 2;
+					Global.OSD.AddMessage("Rewind frequency set to 2");
 				}
 
 				return;
 			}
 
 			// Otherwise, it's not the first frame, so build a delta.
-			if (LastState.Length <= 0x10000)
-				CaptureRewindState64K();
-			else
-				CaptureRewindStateLarge();
+			if (Global.Emulator.Frame%RewindFrequency == 0)
+			{
+				if (LastState.Length <= 0x10000)
+					CaptureRewindState64K();
+				else
+					CaptureRewindStateLarge();
+			}
 		}
 
 		// Builds a delta for states that are <= 64K in size.
