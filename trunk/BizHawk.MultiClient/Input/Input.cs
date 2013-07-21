@@ -298,6 +298,8 @@ namespace BizHawk.MultiClient
 						string xname = "X" + (i + 1) + " ";
 						for (int b = 0; b < pad.NumButtons; b++)
 							HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
+						foreach (var sv in pad.GetFloats())
+							FloatValues.Add(new Tuple<string,float>(xname + sv.Item1, sv.Item2));
 					}
 
 					//analyze joysticks
