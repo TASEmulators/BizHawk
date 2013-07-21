@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 			}
 
 			// Otherwise, it's not the first frame, so build a delta.
-			if (Global.Emulator.Frame%RewindFrequency == 0)
+			if (LastState != null && Global.Emulator.Frame % RewindFrequency == 0)
 			{
 				if (LastState.Length <= 0x10000)
 					CaptureRewindState64K();
