@@ -548,24 +548,6 @@ namespace BizHawk.MultiClient
 			LoadNESPPU();
 		}
 
-		private void enableRewindToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RewindEnabled ^= true;
-			RewindMessage();
-		}
-
-		public void RewindMessage()
-		{
-			if (Global.Config.RewindEnabled)
-			{
-				Global.OSD.AddMessage("Rewind enabled");
-			}
-			else
-			{
-				Global.OSD.AddMessage("Rewind disabled");
-			}
-		}
-
 		private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadHexEditor();
@@ -1348,7 +1330,6 @@ namespace BizHawk.MultiClient
 
 		private void enableToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
 			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;
 			backupSavestatesToolStripMenuItem.Checked = Global.Config.BackupSavestates;
 			autoSavestatesToolStripMenuItem.Checked = Global.Config.AutoSavestates;
@@ -2707,6 +2688,11 @@ namespace BizHawk.MultiClient
 		private void fullMovieLoadstatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.VBAStyleMovieLoadState ^= true;
+		}
+
+		private void rewindOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new RewindConfig().ShowDialog();
 		}
 	}
 }

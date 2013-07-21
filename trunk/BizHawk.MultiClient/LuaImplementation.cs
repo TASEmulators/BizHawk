@@ -1208,13 +1208,14 @@ namespace BizHawk.MultiClient
 			{
 				if (temp == "0" || temp.ToLower() == "false")
 				{
-					Global.Config.RewindEnabled = false;
+					Global.MainForm.RewindActive = false;
+					Global.OSD.AddMessage("Rewind suspended");
 				}
 				else
 				{
-					Global.Config.RewindEnabled = true;
+					Global.MainForm.RewindActive = true;
+					Global.OSD.AddMessage("Rewind enabled");
 				}
-				Global.MainForm.RewindMessage();
 			}
 		}
 
@@ -2233,21 +2234,20 @@ namespace BizHawk.MultiClient
 			{
 				foreach (var name in controls.Keys)
 				{
-					float theValue;
 					string theValueStr = controls[name].ToString();
 
 					if (!String.IsNullOrWhiteSpace(theValueStr))
 					{
 						try
 						{
-							theValue = float.Parse(theValueStr);
+							float theValue = float.Parse(theValueStr);
 							if (controller == null)
 							{
 								Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
 							}
 							else
 							{
-								Global.StickyXORAdapter.SetFloat("P" + controller + " " + name.ToString(), theValue);
+								Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
 							}
 						}
 						catch { }

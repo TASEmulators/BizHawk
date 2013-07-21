@@ -208,6 +208,12 @@
       <DependentUpon>PathInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PathManager.cs" />
+    <Compile Include="config\RewindConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\RewindConfig.Designer.cs">
+      <DependentUpon>RewindConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\SoundConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -589,6 +595,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\RewindConfig.resx">
+      <DependentUpon>RewindConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GBAtools\GBAGPUView.resx">
       <DependentUpon>GBAGPUView.cs</DependentUpon>

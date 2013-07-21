@@ -10,34 +10,14 @@ namespace BizHawk.MultiClient
 		private int RewindFrequency = 1;
 
 
-		void CaptureRewindState()
+		private void CaptureRewindState()
 		{
 			if (RewindImpossible)
 				return;
 
 			if (LastState == null)
 			{
-				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
-				LastState = Global.Emulator.SaveStateBinary();
-				
-				
-				if (LastState.Length > 0x100000)
-				{
-					//RewindImpossible = true;
-					//LastState = null;
-					//Global.OSD.AddMessage("Rewind Disabled: State too large.");
-					//if (Global.Emulator.SystemId == "PCE")
-					//	Global.OSD.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
-					RewindFrequency = 60;
-					Global.OSD.AddMessage("Rewind frequency set to 60");
-				}
-				else if (LastState.Length > 32768)
-				{
-					RewindFrequency = 2;
-					Global.OSD.AddMessage("Rewind frequency set to 2");
-				}
-
-				return;
+				DoRewindSettings();
 			}
 
 			// Otherwise, it's not the first frame, so build a delta.
@@ -47,6 +27,80 @@ namespace BizHawk.MultiClient
 					CaptureRewindState64K();
 				else
 					CaptureRewindStateLarge();
+			}
+		}
+
+		public void DoRewindSettings()
+		{
+			// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
+			LastState = Global.Emulator.SaveStateBinary();
+
+			if (LastState.Length > 0x100000)
+			{
+				if (RewindActive != Global.Config.RewindEnabledLarge)
+				{
+					Global.OSD.AddMessage("Rewind " + (Global.Config.RewindEnabledLarge ? "Enabled" : "Disabled"));
+				}
+
+				if (Global.Config.RewindEnabledLarge)
+				{
+					RewindActive = true;
+
+					if (RewindFrequency != Global.Config.RewindFrequencyLarge)
+					{
+						Global.OSD.AddMessage("Rewind frequency set to " + Global.Config.RewindFrequencyLarge.ToString());
+					}
+					RewindFrequency = Global.Config.RewindFrequencyLarge;
+				}
+				else
+				{
+					RewindActive = false;
+					LastState = null;
+				}
+			}
+			else if (LastState.Length > 32768)
+			{
+				if (RewindActive != Global.Config.RewindEnabledMedium)
+				{
+					Global.OSD.AddMessage("Rewind " + (Global.Config.RewindEnabledMedium ? "Enabled" : "Disabled"));
+				}
+
+				if (Global.Config.RewindEnabledMedium)
+				{
+					RewindActive = true;
+					if (RewindFrequency != Global.Config.RewindFrequencyMedium)
+					{
+						Global.OSD.AddMessage("Rewind frequency set to " + Global.Config.RewindFrequencyMedium.ToString());
+					}
+					RewindFrequency = Global.Config.RewindFrequencyMedium;
+				}
+				else
+				{
+					RewindActive = false;
+					LastState = null;
+				}
+			}
+			else
+			{
+				if (RewindActive != Global.Config.RewindEnabledSmall)
+				{
+					Global.OSD.AddMessage("Rewind " + (Global.Config.RewindEnabledSmall ? "Enabled" : "Disabled"));
+				}
+
+				if (Global.Config.RewindEnabledSmall)
+				{
+					RewindActive = true;
+					if (RewindFrequency != Global.Config.RewindFrequencySmall)
+					{
+						Global.OSD.AddMessage("Rewind frequency set to " + Global.Config.RewindFrequencySmall.ToString());
+					}
+					RewindFrequency = Global.Config.RewindFrequencySmall;
+				}
+				else
+				{
+					RewindActive = false;
+					LastState = null;
+				}
 			}
 		}
 

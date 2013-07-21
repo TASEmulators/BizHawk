@@ -39,6 +39,8 @@ namespace BizHawk.MultiClient
 		public bool UpdateFrame = false;
 		public bool NeedsReboot = false;
 
+		public bool RewindActive = true;
+
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		private readonly SavestateManager StateSlots = new SavestateManager();
@@ -2242,7 +2244,7 @@ namespace BizHawk.MultiClient
 			}
 
 			bool ReturnToRecording = Global.MovieSession.Movie.IsRecording;
-			if (Global.Config.RewindEnabled && (Global.ClientControls["Rewind"] || PressRewind))
+			if (RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
 				suppressCaptureRewind = true;
@@ -2311,7 +2313,7 @@ namespace BizHawk.MultiClient
 					Global.OSD.FPS = fps_string;
 				}
 
-				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
+				if (!suppressCaptureRewind && RewindActive) CaptureRewindState();
 
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)

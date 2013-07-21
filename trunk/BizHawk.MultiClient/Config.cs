@@ -224,7 +224,16 @@ namespace BizHawk.MultiClient
 		public bool ClockThrottle = true;
 		public bool AutoMinimizeSkipping = true;
 		public bool VSyncThrottle = false;
-		public bool RewindEnabled = true;
+
+		//Rewind settings
+		public bool RewindEnabledSmall = true;
+		public bool RewindEnabledMedium = true;
+		public bool RewindEnabledLarge = true;
+
+		public int RewindFrequencySmall = 1;
+		public int RewindFrequencyMedium = 2;
+		public int RewindFrequencyLarge = 60;
+
 		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
 		public bool VSync = false;
 
