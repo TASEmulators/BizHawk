@@ -121,19 +121,7 @@ namespace BizHawk.MultiClient
 		private void button2_Click(object sender, EventArgs e)
 		{
 			Global.OSD.AddMessage("Hotkey config aborted");
-			this.Close();
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			//Input.Instance.EnableIgnoreModifiers = true;
-			base.OnShown(e);
-		}
-
-		protected override void OnClosed(EventArgs e)
-		{
-			base.OnClosed(e);
-			//Input.Instance.EnableIgnoreModifiers = false;
+			Close();
 		}
 
 		private void IDB_SAVE_Click(object sender, EventArgs e)
@@ -245,8 +233,8 @@ namespace BizHawk.MultiClient
 			Global.Config.ClearFrameBinding = IDW_ClearFrame.Text;
 
 			Global.OSD.AddMessage("Hotkey settings saved");
-			this.DialogResult = DialogResult.OK;
-			this.Close();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		private void hotkeyTabs_SelectedIndexChanged(object sender, EventArgs e)
@@ -255,8 +243,6 @@ namespace BizHawk.MultiClient
 			string name = hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Text;
 			switch (name)
 			{
-				default:
-					break;
 				case "General":
 					IDW_FRAMEADVANCE.Focus();
 					break;
