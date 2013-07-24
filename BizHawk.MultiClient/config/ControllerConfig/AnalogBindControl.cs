@@ -16,6 +16,7 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 			InitializeComponent();
 		}
 
+		public string ButtonName;
 		public Config.AnalogBind Bind;
 		bool listening = false;
 
@@ -23,6 +24,7 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 			: this()
 		{
 			this.Bind = Bind;
+			this.ButtonName = ButtonName;
 			labelButtonName.Text = ButtonName;
 			trackBarSensitivity.Value = (int)(Bind.Mult * 1000.0f);
 			textBox1.Text = Bind.Value;

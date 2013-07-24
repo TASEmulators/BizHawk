@@ -165,6 +165,7 @@ namespace BizHawk.MultiClient
 		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
 		private readonly WorkingDictionary<string, float> FloatValues = new WorkingDictionary<string, float>();
 		private readonly WorkingDictionary<string, float> FloatDeltas = new WorkingDictionary<string, float>();
+		private bool trackdeltas = false;
 
 		void HandleButton(string button, bool newState)
 		{
@@ -304,7 +305,8 @@ namespace BizHawk.MultiClient
 						{
 							string n = xname = sv.Item1;
 							float f = sv.Item2;
-							FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+							if (trackdeltas)
+								FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
 							FloatValues[n] = f;
 						}
 					}
@@ -323,8 +325,8 @@ namespace BizHawk.MultiClient
 							float f = sv.Item2;
 							//if (n == "J5 RotationZ")
 							//	System.Diagnostics.Debugger.Break();
-
-							FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+							if (trackdeltas)
+								FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
 							FloatValues[n] = f;
 						}
 					}
@@ -350,15 +352,16 @@ namespace BizHawk.MultiClient
 
 		public void StartListeningForFloatEvents()
 		{
-			lock (this)
+			lock (FloatValues)
 			{
 				FloatDeltas.Clear();
+				trackdeltas = true;
 			}
 		}
 
 		public string GetNextFloatEvent()
 		{
-			lock (this)
+			lock (FloatValues)
 			{
 				foreach (var kvp in FloatDeltas)
 				{
@@ -368,6 +371,14 @@ namespace BizHawk.MultiClient
 				}
 			}
 			return null;
+		}
+
+		public void StopListeningForFloatEvents()
+		{
+			lock (FloatValues)
+			{
+				trackdeltas = false;
+			}
 		}
 
 		public void Update()

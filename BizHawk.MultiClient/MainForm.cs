@@ -995,7 +995,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		static Controller BindToDefinition(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds)
+		static Controller BindToDefinition(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds, Dictionary<string, Dictionary<string, Config.AnalogBind>> analogbinds)
 		{
 			var ret = new Controller(def);
 			Dictionary<string, string> binds;
@@ -1008,9 +1008,21 @@ namespace BizHawk.MultiClient
 						ret.BindMulti(cbutton, bind);
 				}
 			}
+			Dictionary<string, Config.AnalogBind> abinds;
+			if (analogbinds.TryGetValue(def.Name, out abinds))
+			{
+				foreach (string cbutton in def.FloatControls)
+				{
+					Config.AnalogBind bind;
+					if (abinds.TryGetValue(cbutton, out bind))
+					{
+						ret.BindFloat(cbutton, bind);
+					}
+				}
+			}
 			return ret;
 		}
-		// could merge these two methods...
+
 		static AutofireController BindToDefinitionAF(ControllerDefinition def, Dictionary<string, Dictionary<string, string>> allbinds)
 		{
 			var ret = new AutofireController(def);
@@ -1032,7 +1044,7 @@ namespace BizHawk.MultiClient
 		{
 			var def = Global.Emulator.ControllerDefinition;
 
-			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers);
+			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
 			Global.AutoFireController = BindToDefinitionAF(def, Global.Config.AllTrollersAutoFire);
 
 			// allow propogating controls that are in the current controller definition but not in the prebaked one
