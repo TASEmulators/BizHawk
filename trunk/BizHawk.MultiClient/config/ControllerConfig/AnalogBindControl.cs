@@ -40,6 +40,7 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 				Bind.Value = bindval;
 				textBox1.Text = Bind.Value;
 				buttonBind.Text = "Bind!";
+				Input.Instance.StopListeningForFloatEvents();
 			}
 		}
 
@@ -50,6 +51,7 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 				timer1.Stop();
 				listening = false;
 				buttonBind.Text = "Bind!";
+				Input.Instance.StopListeningForFloatEvents();
 			}
 			else
 			{
