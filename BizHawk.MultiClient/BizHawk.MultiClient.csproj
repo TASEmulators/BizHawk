@@ -206,7 +206,9 @@
       <DependentUpon>PathInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PathManager.cs" />
-    <Compile Include="config\RewindConfig.cs" />
+    <Compile Include="config\RewindConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="config\RewindConfig.Designer.cs">
       <DependentUpon>RewindConfig.cs</DependentUpon>
     </Compile>

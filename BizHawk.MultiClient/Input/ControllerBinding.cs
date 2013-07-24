@@ -14,7 +14,7 @@ namespace BizHawk.MultiClient
 
 		private readonly Dictionary<string, ControllerDefinition.FloatRange> FloatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
 
-		private readonly Dictionary<string, string> FloatBinds = new Dictionary<string, string>();
+		private readonly Dictionary<string, Config.AnalogBind> FloatBinds = new Dictionary<string, Config.AnalogBind>();
 
 		public Controller(ControllerDefinition definition)
 		{
@@ -24,8 +24,8 @@ namespace BizHawk.MultiClient
 				FloatButtons[type.FloatControls[i]] = type.FloatRanges[i].Mid;
 				FloatRanges[type.FloatControls[i]] = type.FloatRanges[i];
 			}
-			FloatBinds.Add("J1 X", "P1 X Axis");
-			FloatBinds.Add("J1 Y", "P1 Y Axis");
+			FloatBinds.Add("J5 X", new Config.AnalogBind("P1 X Axis", 1.0f));
+			FloatBinds.Add("J5 Y", new Config.AnalogBind("P1 Y Axis", -1.0f));
 		}
 
 		public ControllerDefinition Type { get { return type; } }
@@ -90,13 +90,14 @@ namespace BizHawk.MultiClient
 			foreach (var kvp in FloatBinds)
 			{
 				float input = controller.GetFloat(kvp.Key);
-				string outkey = kvp.Value;
+				string outkey = kvp.Value.Value;
+				float multiplier = kvp.Value.Mult;
 				ControllerDefinition.FloatRange range;
 				if (FloatRanges.TryGetValue(outkey, out range))
 				{
 					// input range is assumed to be -10000,0,10000
-					// this is where deadzone, axis flip, sensitivity would be implemented
-					FloatButtons[outkey] = (input + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
+					// todo: deadzones and such
+					FloatButtons[outkey] = (input * multiplier + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
 				}
 			}
 		}

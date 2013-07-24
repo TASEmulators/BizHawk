@@ -207,6 +207,7 @@ namespace BizHawk.MultiClient.config
 				ControlDefaults cd = new ControlDefaults();
 				cd = ConfigService.Load(ControlDefaultPath, cd);
 				Dictionary<string, string> settings;
+				Dictionary<string, Config.AnalogBind> asettings;
 				if (cd.AllTrollers.TryGetValue(ControllerType, out settings))
 					Global.Config.AllTrollers[ControllerType] = settings;
 				else
@@ -215,6 +216,10 @@ namespace BizHawk.MultiClient.config
 					Global.Config.AllTrollersAutoFire[ControllerType] = settings;
 				else
 					Global.Config.AllTrollersAutoFire[ControllerType].Clear();
+				if (cd.AllTrollersAnalog.TryGetValue(ControllerType, out asettings))
+					Global.Config.AllTrollersAnalog[ControllerType] = asettings;
+				else
+					Global.Config.AllTrollersAnalog[ControllerType].Clear();
 
 				Global.OSD.AddMessage("Default controls loaded");
 				DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -230,6 +235,7 @@ namespace BizHawk.MultiClient.config
 				ControlDefaults cd = new ControlDefaults();
 				cd.AllTrollers = Global.Config.AllTrollers;
 				cd.AllTrollersAutoFire = Global.Config.AllTrollersAutoFire;
+				cd.AllTrollersAnalog = Global.Config.AllTrollersAnalog;
 				ConfigService.Save(ControlDefaultPath, cd);
 			}
 		}
@@ -238,16 +244,18 @@ namespace BizHawk.MultiClient.config
 		{
 			public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
 			public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
+			public Dictionary<string, Dictionary<string, Config.AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, Config.AnalogBind>>();
 		}
 
 		public static void ConfigCheckAllControlDefaults(Config c)
 		{
-			if (c.AllTrollers.Count == 0 && c.AllTrollersAutoFire.Count == 0)
+			if (c.AllTrollers.Count == 0 && c.AllTrollersAutoFire.Count == 0 && c.AllTrollersAnalog.Count == 0)
 			{
 				ControlDefaults cd = new ControlDefaults();
 				cd = ConfigService.Load(ControlDefaultPath, cd);
 				c.AllTrollers = cd.AllTrollers;
 				c.AllTrollersAutoFire = cd.AllTrollersAutoFire;
+				c.AllTrollersAnalog = cd.AllTrollersAnalog;
 			}
 		}
 	}

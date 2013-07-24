@@ -692,9 +692,23 @@ namespace BizHawk.MultiClient
 		public const int NESNoiseMax = 247;
 		public const int NESDMCMax = 167;
 
-		// [ControllerType][ControllerName] => Bind
+		public class AnalogBind
+		{
+			/// <summary>the physical stick that we're bound to</summary>
+			public string Value;
+			/// <summary>sensitivity and flip</summary>
+			public float Mult;
+			public AnalogBind(string Value, float Mult)
+			{
+				this.Value = Value;
+				this.Mult = Mult;
+			}
+		}
+
+		// [ControllerType][ButtonName] => Physical Bind
 		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
 		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
+		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, AnalogBind>>();
 
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
