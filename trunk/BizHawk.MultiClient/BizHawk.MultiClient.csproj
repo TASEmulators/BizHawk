@@ -166,6 +166,15 @@
     <Compile Include="config\AutofireConfig.Designer.cs">
       <DependentUpon>AutofireConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ControllerConfig\AnalogBindControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig\AnalogBindControl.Designer.cs">
+      <DependentUpon>AnalogBindControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ControllerConfig\AnalogBindPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -581,6 +590,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
       <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ControllerConfig\AnalogBindControl.resx">
+      <DependentUpon>AnalogBindControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>

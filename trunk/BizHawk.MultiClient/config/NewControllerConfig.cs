@@ -39,19 +39,34 @@ namespace BizHawk.MultiClient.config
 				buttonSaveAllDefaults.Hide();
 		}
 
-		static void LoadToPanel(Control dest, ControllerDefinition def, Dictionary<string, Dictionary<string, string>> settingsblock)
+		delegate Control PanelCreator<T>(Dictionary<string, T> settings, List<string> buttons, Size size);
+
+		Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
-			Dictionary<string, string> settings;
-			if (!settingsblock.TryGetValue(def.Name, out settings))
+			var cp = new ControllerConfigPanel {Dock = DockStyle.Fill};
+			cp.LoadSettings(settings, buttons, size.Width, size.Height);
+			return cp;
+		}
+
+		Control CreateAnalogPanel(Dictionary<string, Config.AnalogBind> settings, List<string> buttons, Size size)
+		{
+			var acp = new config.ControllerConfig.AnalogBindPanel(settings, buttons);
+			return acp;
+		}
+
+		static void LoadToPanel<T>(Control dest, string ControllerName, IEnumerable<string> ControllerButtons, Dictionary<string, Dictionary<string, T>> settingsblock, T defaultvalue, PanelCreator<T> createpanel)
+		{
+			Dictionary<string, T> settings;
+			if (!settingsblock.TryGetValue(ControllerName, out settings))
 			{
-				settings = new Dictionary<string, string>();
-				settingsblock[def.Name] = settings;
+				settings = new Dictionary<string, T>();
+				settingsblock[ControllerName] = settings;
 			}
 			// check to make sure that the settings object has all of the appropriate boolbuttons
-			foreach (string button in def.BoolButtons)
+			foreach (string button in ControllerButtons)
 			{
 				if (!settings.Keys.Contains(button))
-					settings[button] = "";
+					settings[button] = defaultvalue;
 			}
 
 			if (settings.Keys.Count == 0)
@@ -78,9 +93,7 @@ namespace BizHawk.MultiClient.config
 			if (buckets[0].Count == settings.Keys.Count)
 			{
 				// everything went into bucket 0, so make no tabs at all
-				var cp = new ControllerConfigPanel {Dock = DockStyle.Fill};
-				dest.Controls.Add(cp);
-				cp.LoadSettings(settings, null, dest.Width, dest.Height);
+				dest.Controls.Add(createpanel(settings, null, dest.Size));
 			}
 			else
 			{
@@ -93,19 +106,14 @@ namespace BizHawk.MultiClient.config
 					if (buckets[i].Count > 0)
 					{
 						tt.TabPages.Add("Player " + i);
-
-						var cp = new ControllerConfigPanel {Dock = DockStyle.Fill};
-						tt.TabPages[pageidx].Controls.Add(cp);
-						cp.LoadSettings(settings, buckets[i], tt.Width, tt.Height);
+						tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[i], tt.Size));
 						pageidx++;
 					}
 				}
 				if (buckets[0].Count > 0)
 				{
 					tt.TabPages.Add("Console");
-					var cp = new ControllerConfigPanel {Dock = DockStyle.Fill};
-					tt.TabPages[pageidx].Controls.Add(cp);
-					cp.LoadSettings(settings, buckets[0], tt.Width, tt.Height);
+					tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
 					pageidx++;
 				}
 			}
@@ -116,8 +124,9 @@ namespace BizHawk.MultiClient.config
 		{
 			ControllerType = def.Name;
 			SuspendLayout();
-			LoadToPanel(tabPage1, def, Global.Config.AllTrollers);
-			LoadToPanel(tabPage2, def, Global.Config.AllTrollersAutoFire);
+			LoadToPanel(tabPage1, def.Name, def.BoolButtons, Global.Config.AllTrollers, "", CreateNormalPanel);
+			LoadToPanel(tabPage2, def.Name, def.BoolButtons, Global.Config.AllTrollersAutoFire, "", CreateNormalPanel);
+			LoadToPanel(tabPage3, def.Name, def.FloatControls, Global.Config.AllTrollersAnalog, new Config.AnalogBind("", 1.0f), CreateAnalogPanel);
 
 			Text = def.Name + " Configuration";
 			checkBoxUDLR.Checked = Global.Config.AllowUD_LR;

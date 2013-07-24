@@ -41,6 +41,7 @@
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.buttonLoadDefaults = new System.Windows.Forms.Button();
 			this.buttonSaveAllDefaults = new System.Windows.Forms.Button();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.tabControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -50,6 +51,7 @@
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Controls.Add(this.tabPage3);
 			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl1.Location = new System.Drawing.Point(3, 3);
 			this.tabControl1.Name = "tabControl1";
@@ -184,6 +186,15 @@
 			this.buttonSaveAllDefaults.UseVisualStyleBackColor = true;
 			this.buttonSaveAllDefaults.Click += new System.EventHandler(this.buttonSaveAllDefaults_Click);
 			// 
+			// tabPage3
+			// 
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Size = new System.Drawing.Size(486, 438);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "Analog Controls";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
 			// NewControllerConfig
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -225,5 +236,6 @@
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Button buttonLoadDefaults;
 		private System.Windows.Forms.Button buttonSaveAllDefaults;
+		private System.Windows.Forms.TabPage tabPage3;
 	}
 }
