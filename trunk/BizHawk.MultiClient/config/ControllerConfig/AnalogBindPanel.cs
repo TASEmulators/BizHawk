@@ -35,5 +35,14 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 			}
 			ResumeLayout();
 		}
+
+		public void Save()
+		{
+			foreach (Control c in Controls)
+			{
+				var abc = (AnalogBindControl)c;
+				RealConfigObject[abc.ButtonName] = abc.Bind;
+			}
+		}
 	}
 }

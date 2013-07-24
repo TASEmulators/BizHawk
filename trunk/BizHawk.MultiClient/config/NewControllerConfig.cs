@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using BizHawk.MultiClient.config.ControllerConfig;
 
 namespace BizHawk.MultiClient.config
 {
@@ -50,7 +51,7 @@ namespace BizHawk.MultiClient.config
 
 		Control CreateAnalogPanel(Dictionary<string, Config.AnalogBind> settings, List<string> buttons, Size size)
 		{
-			var acp = new config.ControllerConfig.AnalogBindPanel(settings, buttons);
+			var acp = new AnalogBindPanel(settings, buttons);
 			return acp;
 		}
 
@@ -153,6 +154,8 @@ namespace BizHawk.MultiClient.config
 		{
 			if (c is ControllerConfigPanel)
 				(c as ControllerConfigPanel).SetAutoTab(value);
+			else if (c is AnalogBindPanel)
+				;// TODO
 			else if (c.HasChildren)
 				foreach (Control cc in c.Controls)
 					SetAutoTab(cc, value);
@@ -162,6 +165,8 @@ namespace BizHawk.MultiClient.config
 		{
 			if (c is ControllerConfigPanel)
 				(c as ControllerConfigPanel).Save();
+			else if (c is AnalogBindPanel)
+				(c as AnalogBindPanel).Save();
 			else if (c.HasChildren)
 				foreach (Control cc in c.Controls)
 					Save(cc);

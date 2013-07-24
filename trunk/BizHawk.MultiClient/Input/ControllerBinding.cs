@@ -24,8 +24,8 @@ namespace BizHawk.MultiClient
 				FloatButtons[type.FloatControls[i]] = type.FloatRanges[i].Mid;
 				FloatRanges[type.FloatControls[i]] = type.FloatRanges[i];
 			}
-			FloatBinds.Add("J5 X", new Config.AnalogBind("P1 X Axis", 1.0f));
-			FloatBinds.Add("J5 Y", new Config.AnalogBind("P1 Y Axis", -1.0f));
+			//FloatBinds.Add("J5 X", new Config.AnalogBind("P1 X Axis", 1.0f));
+			//FloatBinds.Add("J5 Y", new Config.AnalogBind("P1 Y Axis", -1.0f));
 		}
 
 		public ControllerDefinition Type { get { return type; } }
@@ -89,15 +89,18 @@ namespace BizHawk.MultiClient
 			}
 			foreach (var kvp in FloatBinds)
 			{
-				float input = controller.GetFloat(kvp.Key);
-				string outkey = kvp.Value.Value;
+				float input = controller.GetFloat(kvp.Value.Value);
+				string outkey = kvp.Key;
 				float multiplier = kvp.Value.Mult;
 				ControllerDefinition.FloatRange range;
 				if (FloatRanges.TryGetValue(outkey, out range))
 				{
 					// input range is assumed to be -10000,0,10000
 					// todo: deadzones and such
-					FloatButtons[outkey] = (input * multiplier + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
+					float output = (input * multiplier + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
+					if (output < range.Min) output = range.Min;
+					if (output > range.Max) output = range.Max;
+					FloatButtons[outkey] = output;
 				}
 			}
 		}
@@ -132,6 +135,11 @@ namespace BizHawk.MultiClient
 			string[] controlbindings = controlString.Split(',');
 			foreach (string control in controlbindings)
 				bindings[button].Add(control.Trim());
+		}
+
+		public void BindFloat(string button, Config.AnalogBind bind)
+		{
+			FloatBinds[button] = bind;
 		}
 
 		/// <summary>
