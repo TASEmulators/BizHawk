@@ -692,7 +692,7 @@ namespace BizHawk.MultiClient
 		public const int NESNoiseMax = 247;
 		public const int NESDMCMax = 167;
 
-		public class AnalogBind
+		public struct AnalogBind
 		{
 			/// <summary>the physical stick that we're bound to</summary>
 			public string Value;

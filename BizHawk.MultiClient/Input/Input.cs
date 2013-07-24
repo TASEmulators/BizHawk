@@ -163,7 +163,8 @@ namespace BizHawk.MultiClient
 		private readonly WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, bool> UnpressState = new WorkingDictionary<string, bool>();
 		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
-		private readonly List<Tuple<string, float>> FloatValues = new List<Tuple<string, float>>();
+		private readonly WorkingDictionary<string, float> FloatValues = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, float> FloatDeltas = new WorkingDictionary<string, float>();
 
 		void HandleButton(string button, bool newState)
 		{
@@ -257,10 +258,11 @@ namespace BizHawk.MultiClient
 
 		public List<Tuple<string, float>> GetFloats()
 		{
-			List<Tuple<string, float>> FloatValuesCopy;
+			List<Tuple<string, float>> FloatValuesCopy = new List<Tuple<string,float>>();
 			lock (FloatValues)
 			{
-				FloatValuesCopy = new List<Tuple<string, float>>(FloatValues);
+				foreach (var kvp in FloatValues)
+					FloatValuesCopy.Add(new Tuple<string, float>(kvp.Key, kvp.Value));
 			}
 			return FloatValuesCopy;
 		}
@@ -289,7 +291,7 @@ namespace BizHawk.MultiClient
 
 				lock (FloatValues)
 				{
-					FloatValues.Clear();
+					//FloatValues.Clear();
 
 					//analyze xinput
 					for (int i = 0; i < GamePad360.Devices.Count; i++)
@@ -299,7 +301,12 @@ namespace BizHawk.MultiClient
 						for (int b = 0; b < pad.NumButtons; b++)
 							HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
 						foreach (var sv in pad.GetFloats())
-							FloatValues.Add(new Tuple<string,float>(xname + sv.Item1, sv.Item2));
+						{
+							string n = xname = sv.Item1;
+							float f = sv.Item2;
+							FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+							FloatValues[n] = f;
+						}
 					}
 
 					//analyze joysticks
@@ -311,7 +318,15 @@ namespace BizHawk.MultiClient
 						for (int b = 0; b < pad.NumButtons; b++)
 							HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
 						foreach (var sv in pad.GetFloats())
-							FloatValues.Add(new Tuple<string, float>(jname + sv.Item1, sv.Item2));
+						{
+							string n = jname + sv.Item1;
+							float f = sv.Item2;
+							//if (n == "J5 RotationZ")
+							//	System.Diagnostics.Debugger.Break();
+
+							FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+							FloatValues[n] = f;
+						}
 					}
 
 				}
@@ -332,6 +347,28 @@ namespace BizHawk.MultiClient
 			}
 		}
 #endif
+
+		public void StartListeningForFloatEvents()
+		{
+			lock (this)
+			{
+				FloatDeltas.Clear();
+			}
+		}
+
+		public string GetNextFloatEvent()
+		{
+			lock (this)
+			{
+				foreach (var kvp in FloatDeltas)
+				{
+					// need to wiggle the stick a bit
+					if (kvp.Value >= 20000.0f)
+						return kvp.Key;
+				}
+			}
+			return null;
+		}
 
 		public void Update()
 		{
