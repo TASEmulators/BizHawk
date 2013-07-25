@@ -51,7 +51,7 @@ namespace BizHawk.MultiClient.config
 
 		Control CreateAnalogPanel(Dictionary<string, Config.AnalogBind> settings, List<string> buttons, Size size)
 		{
-			var acp = new AnalogBindPanel(settings, buttons);
+			var acp = new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill };
 			return acp;
 		}
 

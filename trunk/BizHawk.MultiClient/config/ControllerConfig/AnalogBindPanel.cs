@@ -29,8 +29,6 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 				var ctrl = new AnalogBindControl(ButtonName, RealConfigObject[ButtonName]);
 				ctrl.Location = new Point(x, y);
 				y += ctrl.Height + 4;
-				if (Width < ctrl.Width + 8)
-					Width = ctrl.Width + 8;
 				Controls.Add(ctrl);
 			}
 			ResumeLayout();
