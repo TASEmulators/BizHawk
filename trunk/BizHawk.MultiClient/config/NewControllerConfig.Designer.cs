@@ -32,6 +32,7 @@
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.label2 = new System.Windows.Forms.Label();
 			this.checkBoxAutoTab = new System.Windows.Forms.CheckBox();
 			this.checkBoxUDLR = new System.Windows.Forms.CheckBox();
@@ -41,7 +42,6 @@
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.buttonLoadDefaults = new System.Windows.Forms.Button();
 			this.buttonSaveAllDefaults = new System.Windows.Forms.Button();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.tabControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -78,6 +78,15 @@
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Autofire Controls";
 			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Size = new System.Drawing.Size(486, 438);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "Analog Controls";
+			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
 			// label2
 			// 
@@ -168,6 +177,7 @@
 			// 
 			// buttonLoadDefaults
 			// 
+			this.buttonLoadDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonLoadDefaults.Location = new System.Drawing.Point(615, 485);
 			this.buttonLoadDefaults.Name = "buttonLoadDefaults";
 			this.buttonLoadDefaults.Size = new System.Drawing.Size(75, 23);
@@ -178,6 +188,7 @@
 			// 
 			// buttonSaveAllDefaults
 			// 
+			this.buttonSaveAllDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonSaveAllDefaults.Location = new System.Drawing.Point(534, 485);
 			this.buttonSaveAllDefaults.Name = "buttonSaveAllDefaults";
 			this.buttonSaveAllDefaults.Size = new System.Drawing.Size(75, 23);
@@ -185,15 +196,6 @@
 			this.buttonSaveAllDefaults.Text = "Save All";
 			this.buttonSaveAllDefaults.UseVisualStyleBackColor = true;
 			this.buttonSaveAllDefaults.Click += new System.EventHandler(this.buttonSaveAllDefaults_Click);
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(486, 438);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Analog Controls";
-			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
 			// NewControllerConfig
 			// 
