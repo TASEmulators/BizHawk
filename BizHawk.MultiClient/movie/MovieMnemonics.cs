@@ -406,7 +406,36 @@ namespace BizHawk.MultiClient
 				{
 					foreach (string name in MnemonicConstants.ANALOGS[ControlType].Keys)
 					{
-						int val = (int)GetBaseFloat("P" + player + " " + name);
+						int val = 0;
+						
+						//Nasty hackery
+						if (name == "X Axis")
+						{
+							if (IsBasePressed("P" + player + " A Up"))
+							{
+								val = 127;
+							}
+							else if (IsBasePressed("P" + player + " A Down"))
+							{
+								val = -127;
+							}
+						}
+						else if (name == "Y Axis")
+						{
+							if (IsBasePressed("P" + player + " A Left"))
+							{
+								val = -127;
+							}
+							else if (IsBasePressed("P" + player + " A Right"))
+							{
+								val = 127;
+							}
+						}
+						else
+						{
+							val = (int)GetBaseFloat("P" + player + " " + name);
+						}
+
 						if (val != 0)
 						{
 							input.Append(String.Format("{0:000}", val)).Append(',');
