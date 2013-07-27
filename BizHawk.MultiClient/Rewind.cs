@@ -33,7 +33,8 @@ namespace BizHawk.MultiClient
 					
 					//I checked the DeleteOnClose operation to make sure it cleans up when the process is aborted, and it seems to.
 					//Otherwise we would have a more complex tempfile management problem here.
-					mStream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 512, FileOptions.DeleteOnClose);
+					//4KB buffer chosen due to similarity to .net defaults, and fear of anything larger making hiccups for small systems (we could try asyncing this stuff though...)
+					mStream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4*1024, FileOptions.DeleteOnClose);
 				}
 				else
 				{
@@ -54,14 +55,32 @@ namespace BizHawk.MultiClient
 			Stream mStream;
 			LinkedList<ListItem> mBookmarks = new LinkedList<ListItem>();
 			LinkedListNode<ListItem> mHead, mTail;
-			long mCapacity;
+			long mCapacity, mSize;
 
+			/// <summary>
+			/// Returns the amount of the buffer that's used
+			/// </summary>
+			public long Size { get { return mSize; } }
+
+			/// <summary>
+			/// Gets the current fullness ratio (Size/Capacity). Note that this wont reach 100% due to the buffer size not being a multiple of a fixed savestate size.
+			/// </summary>
+			public float FullnessRatio { get { return (float)((double)Size / (double)mCapacity); } }
+
+			/// <summary>
+			/// the number of frames stored here
+			/// </summary>
 			public int Count { get { return mBookmarks.Count; } }
+
+			/// <summary>
+			/// The underlying stream to 
+			/// </summary>
 			public Stream Stream { get { return mStream; } }
 
 			public void Clear()
 			{
 				mHead = mTail = null;
+				mSize = 0;
 				mBookmarks.Clear();
 			}
 
@@ -88,6 +107,8 @@ namespace BizHawk.MultiClient
 
 			public long Enqueue(int timestamp, int amount)
 			{
+				mSize += amount;
+
 				if (mHead == null)
 				{
 					mTail = mHead = mBookmarks.AddFirst(new ListItem(timestamp, 0, amount));
@@ -130,6 +151,7 @@ namespace BizHawk.MultiClient
 					if (mHead.Value.endExclusive > mTail.Value.index && mHead.Value.index <= mTail.Value.index)
 					{
 						LinkedListNode<ListItem> nextTail = mTail.Next;
+						mSize -= mTail.Value.length;
 						mBookmarks.Remove(mTail);
 						mTail = nextTail;
 					}
@@ -143,6 +165,7 @@ namespace BizHawk.MultiClient
 			{
 				if (mHead == null) throw new InvalidOperationException("Attempted to pop from an empty data structure");
 				var ret = mHead.Value;
+				mSize -= ret.length;
 				LinkedListNode<ListItem> nextHead = mHead.Previous;
 				mBookmarks.Remove(mHead);
 				if (mHead == mTail)
@@ -157,6 +180,7 @@ namespace BizHawk.MultiClient
 			{
 				if (mTail == null) throw new InvalidOperationException("Attempted to dequeue from an empty data structure");
 				var ret = mTail.Value;
+				mSize -= ret.length;
 				LinkedListNode<ListItem> nextTail = mTail.Next;
 				mBookmarks.Remove(mTail);
 				if (mTail == mHead)
