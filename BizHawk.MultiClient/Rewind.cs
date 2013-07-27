@@ -29,7 +29,7 @@ namespace BizHawk.MultiClient
 				mCapacity = capacity;
 				if (onDisk)
 				{
-					var path = Path.GetTempFileName() + ".biz.rewindbuf";
+					var path = Path.Combine(System.IO.Path.GetTempPath(), "bizhawk.rewindbuf-pid" + System.Diagnostics.Process.GetCurrentProcess().Id + "-" + Guid.NewGuid().ToString());
 					
 					//I checked the DeleteOnClose operation to make sure it cleans up when the process is aborted, and it seems to.
 					//Otherwise we would have a more complex tempfile management problem here.
