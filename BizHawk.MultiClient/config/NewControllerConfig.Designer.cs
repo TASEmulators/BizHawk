@@ -41,7 +41,6 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.buttonLoadDefaults = new System.Windows.Forms.Button();
-			this.buttonSaveAllDefaults = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -186,17 +185,6 @@
 			this.buttonLoadDefaults.UseVisualStyleBackColor = true;
 			this.buttonLoadDefaults.Click += new System.EventHandler(this.buttonLoadDefaults_Click);
 			// 
-			// buttonSaveAllDefaults
-			// 
-			this.buttonSaveAllDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonSaveAllDefaults.Location = new System.Drawing.Point(534, 485);
-			this.buttonSaveAllDefaults.Name = "buttonSaveAllDefaults";
-			this.buttonSaveAllDefaults.Size = new System.Drawing.Size(75, 23);
-			this.buttonSaveAllDefaults.TabIndex = 9;
-			this.buttonSaveAllDefaults.Text = "Save All";
-			this.buttonSaveAllDefaults.UseVisualStyleBackColor = true;
-			this.buttonSaveAllDefaults.Click += new System.EventHandler(this.buttonSaveAllDefaults_Click);
-			// 
 			// NewControllerConfig
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -204,7 +192,6 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(864, 515);
-			this.Controls.Add(this.buttonSaveAllDefaults);
 			this.Controls.Add(this.buttonLoadDefaults);
 			this.Controls.Add(this.checkBoxUDLR);
 			this.Controls.Add(this.tableLayoutPanel1);
@@ -237,7 +224,6 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Button buttonLoadDefaults;
-		private System.Windows.Forms.Button buttonSaveAllDefaults;
 		private System.Windows.Forms.TabPage tabPage3;
 	}
 }

@@ -36,8 +36,6 @@ namespace BizHawk.MultiClient.config
 		private NewControllerConfig()
 		{
 			InitializeComponent();
-			if (!MainForm.INTERIM)
-				buttonSaveAllDefaults.Hide();
 		}
 
 		delegate Control PanelCreator<T>(Dictionary<string, T> settings, List<string> buttons, Size size);
@@ -222,13 +220,19 @@ namespace BizHawk.MultiClient.config
 
 		private void buttonLoadDefaults_Click(object sender, EventArgs e)
 		{
+			RestoreDefaults();
+			Close();
+		}
+
+		public void RestoreDefaults()
+		{
 			// this is not clever.  i'm going to replace it with something more clever
 
 			ControlDefaults cd = new ControlDefaults();
 			cd = ConfigService.Load(ControlDefaultPath, cd);
 			Dictionary<string, string> settings;
 			Dictionary<string, Config.AnalogBind> asettings;
-				
+
 			if (cd.AllTrollers.TryGetValue(ControllerType, out settings))
 			{
 				Global.Config.AllTrollers[ControllerType] = settings;
@@ -254,23 +258,6 @@ namespace BizHawk.MultiClient.config
 			else
 			{
 				Global.Config.AllTrollersAnalog[ControllerType].Clear();
-			}
-
-			Close();
-		}
-
-		private void buttonSaveAllDefaults_Click(object sender, EventArgs e)
-		{
-			var result = MessageBox.Show("OK to save defaults for ALL cores?", "Bizhawk", MessageBoxButtons.YesNo);
-			if (result == DialogResult.Yes)
-			{
-				ControlDefaults cd = new ControlDefaults
-					{
-						AllTrollers = Global.Config.AllTrollers,
-						AllTrollersAutoFire = Global.Config.AllTrollersAutoFire,
-						AllTrollersAnalog = Global.Config.AllTrollersAnalog
-					};
-				ConfigService.Save(ControlDefaultPath, cd);
 			}
 		}
 
