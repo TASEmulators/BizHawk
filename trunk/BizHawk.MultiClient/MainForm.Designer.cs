@@ -1325,6 +1325,7 @@
 			this.configToolStripMenuItem.Name = "configToolStripMenuItem";
 			this.configToolStripMenuItem.Size = new System.Drawing.Size(55, 19);
 			this.configToolStripMenuItem.Text = "&Config";
+			this.configToolStripMenuItem.DropDownOpened += new System.EventHandler(this.configToolStripMenuItem_DropDownOpened);
 			// 
 			// controllersToolStripMenuItem
 			// 

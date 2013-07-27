@@ -4197,5 +4197,10 @@ namespace BizHawk.MultiClient
 				return EMUVERSION;
 			}
 		}
+
+		private void configToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			controllersToolStripMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+		}
 	}
 }
