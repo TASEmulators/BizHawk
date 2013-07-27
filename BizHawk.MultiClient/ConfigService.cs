@@ -18,7 +18,7 @@ namespace BizHawk.MultiClient
 				if (file.Exists)
 					using (var reader = file.OpenText())
 					{
-						var s = new JsonSerializer {SuppressMissingMemberException = true};
+						var s = new JsonSerializer {SuppressMissingMemberException = true, SuppressDuplicateMemberException = true};
 						var r = new JsonReader(reader);
 						config = (T)s.Deserialize(r, typeof(T));
 					}
