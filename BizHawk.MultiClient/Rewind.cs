@@ -299,7 +299,6 @@ namespace BizHawk.MultiClient
 
 		void CaptureRewindStateNonDelta()
 		{
-			Console.WriteLine(RewindBuf.Size);
 			byte[] CurrentState = Global.Emulator.SaveStateBinary();
 
 			long offset = RewindBuf.Enqueue(0, CurrentState.Length + 1);
