@@ -85,17 +85,20 @@ namespace BizHawk.MultiClient
 			}
 
 			/// <summary>
-			/// The push and pop semantics are for historical reasons and not resemblence 
+			/// The push and pop semantics are for historical reasons and not resemblence to normal definitions
 			/// </summary>
-			public void PushMemoryStream(MemoryStream ms)
+			public void Push(ArraySegment<byte> seg)
 			{
-				var buf = ms.GetBuffer();
-				int len = (int)ms.Length;
+				var buf = seg.Array;
+				int len = seg.Count;
 				long offset = Enqueue(0, len);
 				mStream.Position = offset;
-				mStream.Write(buf, 0, len);
+				mStream.Write(buf, seg.Offset, len);
 			}
 
+			/// <summary>
+			/// The push and pop semantics are for historical reasons and not resemblence to normal definitions
+			/// </summary>
 			public MemoryStream PopMemoryStream()
 			{
 				var item = Pop();
@@ -289,58 +292,77 @@ namespace BizHawk.MultiClient
 		// Builds a delta for states that are <= 64K in size.
 		void CaptureRewindState64K() { CaptureRewindStateDelta(true); }
 
+		byte[] TempBuf = new byte[0];
 		void CaptureRewindStateDelta(bool isSmall)
 		{
 			byte[] CurrentState = Global.Emulator.SaveStateBinary();
 			int beginChangeSequence = -1;
 			bool inChangeSequence = false;
-			var ms = new MemoryStream();
-			var writer = new BinaryWriter(ms);
-			if (CurrentState.Length != LastState.Length)
+			MemoryStream ms;
+
+			//try to set up the buffer in advance so we dont ever have exceptions in here
+			if(TempBuf.Length < CurrentState.Length)
+				TempBuf = new byte[CurrentState.Length*2];
+
+			ms = new MemoryStream(TempBuf, 0, TempBuf.Length, true, true); 
+		RETRY:
+			try
 			{
-				writer.Write(true); // full state
-				writer.Write(LastState);
-			}
-			else
-			{
-				writer.Write(false); // delta state
-				for (int i = 0; i < CurrentState.Length; i++)
+				var writer = new BinaryWriter(ms);
+				if (CurrentState.Length != LastState.Length)
 				{
-					if (inChangeSequence == false)
+					writer.Write(true); // full state
+					writer.Write(LastState);
+				}
+				else
+				{
+					writer.Write(false); // delta state
+					for (int i = 0; i < CurrentState.Length; i++)
 					{
-						if (i >= LastState.Length)
+						if (inChangeSequence == false)
+						{
+							if (i >= LastState.Length)
+								continue;
+							if (CurrentState[i] == LastState[i])
+								continue;
+
+							inChangeSequence = true;
+							beginChangeSequence = i;
 							continue;
+						}
+
+						if (i - beginChangeSequence == 254 || i == CurrentState.Length - 1)
+						{
+							writer.Write((byte)(i - beginChangeSequence + 1));
+							if (isSmall) writer.Write((ushort)beginChangeSequence);
+							else writer.Write(beginChangeSequence);
+							writer.Write(LastState, beginChangeSequence, i - beginChangeSequence + 1);
+							inChangeSequence = false;
+							continue;
+						}
+
 						if (CurrentState[i] == LastState[i])
-							continue;
-
-						inChangeSequence = true;
-						beginChangeSequence = i;
-						continue;
-					}
-
-					if (i - beginChangeSequence == 254 || i == CurrentState.Length - 1)
-					{
-						writer.Write((byte)(i - beginChangeSequence + 1));
-						if(isSmall) writer.Write((ushort)beginChangeSequence);
-						else writer.Write(beginChangeSequence);
-						writer.Write(LastState, beginChangeSequence, i - beginChangeSequence + 1);
-						inChangeSequence = false;
-						continue;
-					}
-
-					if (CurrentState[i] == LastState[i])
-					{
-						writer.Write((byte)(i - beginChangeSequence));
-						if(isSmall) writer.Write((ushort)beginChangeSequence);
-						else writer.Write(beginChangeSequence);
-						writer.Write(LastState, beginChangeSequence, i - beginChangeSequence);
-						inChangeSequence = false;
+						{
+							writer.Write((byte)(i - beginChangeSequence));
+							if (isSmall) writer.Write((ushort)beginChangeSequence);
+							else writer.Write(beginChangeSequence);
+							writer.Write(LastState, beginChangeSequence, i - beginChangeSequence);
+							inChangeSequence = false;
+						}
 					}
 				}
 			}
+			catch (NotSupportedException)
+			{
+				//ok... we had an exception after all
+				//if we did actually run out of room in the memorystream, then try it again with a bigger buffer
+				TempBuf = new byte[TempBuf.Length * 2];
+				goto RETRY;
+			}
+			
 			LastState = CurrentState;
-			ms.Position = 0;
-			RewindBuf.PushMemoryStream(ms);
+			var seg = new ArraySegment<byte>(TempBuf, 0, (int)ms.Position);
+			RewindBuf.Push(seg);
 		}
 
 		void RewindLarge() { RewindDelta(false); }
