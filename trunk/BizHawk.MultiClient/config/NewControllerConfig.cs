@@ -120,14 +120,16 @@ namespace BizHawk.MultiClient.config
 			}
 		}
 
+		private ControllerDefinition the_definition;
+		
+
 		public NewControllerConfig(ControllerDefinition def)
 			: this()
 		{
+			the_definition = def;
 			ControllerType = def.Name;
 			SuspendLayout();
-			LoadToPanel(tabPage1, def.Name, def.BoolButtons, Global.Config.AllTrollers, "", CreateNormalPanel);
-			LoadToPanel(tabPage2, def.Name, def.BoolButtons, Global.Config.AllTrollersAutoFire, "", CreateNormalPanel);
-			LoadToPanel(tabPage3, def.Name, def.FloatControls, Global.Config.AllTrollersAnalog, new Config.AnalogBind("", 1.0f), CreateAnalogPanel);
+			LoadPanels();
 
 			Text = def.Name + " Configuration";
 			checkBoxUDLR.Checked = Global.Config.AllowUD_LR;
@@ -135,6 +137,13 @@ namespace BizHawk.MultiClient.config
 
 			SetControllerPicture(def.Name);
 			ResumeLayout();
+		}
+
+		private void LoadPanels()
+		{
+			LoadToPanel(tabPage1, the_definition.Name, the_definition.BoolButtons, Global.Config.AllTrollers, "", CreateNormalPanel);
+			LoadToPanel(tabPage2, the_definition.Name, the_definition.BoolButtons, Global.Config.AllTrollersAutoFire, "", CreateNormalPanel);
+			LoadToPanel(tabPage3, the_definition.Name, the_definition.FloatControls, Global.Config.AllTrollersAnalog, new Config.AnalogBind("", 1.0f), CreateAnalogPanel);
 		}
 
 		void SetControllerPicture(string ControlName)
@@ -215,41 +224,52 @@ namespace BizHawk.MultiClient.config
 		{
 			// this is not clever.  i'm going to replace it with something more clever
 
-			var result = MessageBox.Show("OK to load control defaults for this controller?", "Bizhawk", MessageBoxButtons.YesNo);
-			if (result == System.Windows.Forms.DialogResult.Yes)
+			ControlDefaults cd = new ControlDefaults();
+			cd = ConfigService.Load(ControlDefaultPath, cd);
+			Dictionary<string, string> settings;
+			Dictionary<string, Config.AnalogBind> asettings;
+				
+			if (cd.AllTrollers.TryGetValue(ControllerType, out settings))
 			{
-				ControlDefaults cd = new ControlDefaults();
-				cd = ConfigService.Load(ControlDefaultPath, cd);
-				Dictionary<string, string> settings;
-				Dictionary<string, Config.AnalogBind> asettings;
-				if (cd.AllTrollers.TryGetValue(ControllerType, out settings))
-					Global.Config.AllTrollers[ControllerType] = settings;
-				else
-					Global.Config.AllTrollers[ControllerType].Clear();
-				if (cd.AllTrollersAutoFire.TryGetValue(ControllerType, out settings))
-					Global.Config.AllTrollersAutoFire[ControllerType] = settings;
-				else
-					Global.Config.AllTrollersAutoFire[ControllerType].Clear();
-				if (cd.AllTrollersAnalog.TryGetValue(ControllerType, out asettings))
-					Global.Config.AllTrollersAnalog[ControllerType] = asettings;
-				else
-					Global.Config.AllTrollersAnalog[ControllerType].Clear();
-
-				Global.OSD.AddMessage("Default controls loaded");
-				DialogResult = System.Windows.Forms.DialogResult.OK;
-				Close();
+				Global.Config.AllTrollers[ControllerType] = settings;
 			}
+			else
+			{
+				Global.Config.AllTrollers[ControllerType].Clear();
+			}
+
+			if (cd.AllTrollersAutoFire.TryGetValue(ControllerType, out settings))
+			{
+				Global.Config.AllTrollersAutoFire[ControllerType] = settings;
+			}
+			else
+			{
+				Global.Config.AllTrollersAutoFire[ControllerType].Clear();
+			}
+
+			if (cd.AllTrollersAnalog.TryGetValue(ControllerType, out asettings))
+			{
+				Global.Config.AllTrollersAnalog[ControllerType] = asettings;
+			}
+			else
+			{
+				Global.Config.AllTrollersAnalog[ControllerType].Clear();
+			}
+
+			Close();
 		}
 
 		private void buttonSaveAllDefaults_Click(object sender, EventArgs e)
 		{
 			var result = MessageBox.Show("OK to save defaults for ALL cores?", "Bizhawk", MessageBoxButtons.YesNo);
-			if (result == System.Windows.Forms.DialogResult.Yes)
+			if (result == DialogResult.Yes)
 			{
-				ControlDefaults cd = new ControlDefaults();
-				cd.AllTrollers = Global.Config.AllTrollers;
-				cd.AllTrollersAutoFire = Global.Config.AllTrollersAutoFire;
-				cd.AllTrollersAnalog = Global.Config.AllTrollersAnalog;
+				ControlDefaults cd = new ControlDefaults
+					{
+						AllTrollers = Global.Config.AllTrollers,
+						AllTrollersAutoFire = Global.Config.AllTrollersAutoFire,
+						AllTrollersAnalog = Global.Config.AllTrollersAnalog
+					};
 				ConfigService.Save(ControlDefaultPath, cd);
 			}
 		}
