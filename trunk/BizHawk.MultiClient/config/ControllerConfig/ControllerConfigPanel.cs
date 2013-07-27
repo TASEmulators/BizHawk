@@ -178,10 +178,7 @@ namespace BizHawk.MultiClient
 
 		protected void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			// this is a TODO: we have no concept of default values in our config system at the moment
-			// so for the moment, "defaults" = "no binds at all"
-			RealConfigObject.Clear();
-			SetWidgetStrings();
+			//TODO
 		}
 	}
 }
