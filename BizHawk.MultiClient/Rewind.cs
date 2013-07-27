@@ -8,9 +8,11 @@ namespace BizHawk.MultiClient
 	{
 		//adelikat: change the way this is constructed to control whether its on disk or in memory
 		private readonly StreamBlobDatabase RewindBuf = new StreamBlobDatabase(true,128*1024*1024);
+
 		private byte[] LastState;
 		private bool RewindImpossible;
 		private int RewindFrequency = 1;
+		private bool RewindDeltaEnable = false;
 
 		/// <summary>
 		/// Manages a ring buffer of storage which can continually chow its own tail to keep growing forward.
@@ -250,13 +252,18 @@ namespace BizHawk.MultiClient
 				DoRewindSettings();
 			}
 
-			// Otherwise, it's not the first frame, so build a delta.
+		
+			//log a frame
 			if (LastState != null && Global.Emulator.Frame % RewindFrequency == 0)
 			{
-				if (LastState.Length <= 0x10000)
-					CaptureRewindState64K();
-				else
-					CaptureRewindStateLarge();
+				if (RewindDeltaEnable)
+				{
+					if (LastState.Length <= 0x10000)
+						CaptureRewindStateDelta(true);
+					else
+						CaptureRewindStateDelta(false);
+				}
+				else CaptureRewindStateNonDelta();
 			}
 		}
 
@@ -285,17 +292,37 @@ namespace BizHawk.MultiClient
 				SetRewindParams(Global.Config.RewindEnabledMedium,Global.Config.RewindFrequencyMedium);
 			else
 				SetRewindParams(Global.Config.RewindEnabledSmall, Global.Config.RewindFrequencySmall);
+
+			//adelikat: placeholder for plucking from config
+			RewindDeltaEnable = true;
 		}
 
-		// Builds a delta for states that are > 64K in size.
-		void CaptureRewindStateLarge() { CaptureRewindStateDelta(false); }
-		// Builds a delta for states that are <= 64K in size.
-		void CaptureRewindState64K() { CaptureRewindStateDelta(true); }
+		void CaptureRewindStateNonDelta()
+		{
+			Console.WriteLine(RewindBuf.Size);
+			byte[] CurrentState = Global.Emulator.SaveStateBinary();
+
+			long offset = RewindBuf.Enqueue(0, CurrentState.Length + 1);
+			Stream stream = RewindBuf.Stream;
+			stream.Position = offset;
+
+			//write the header for a non-delta frame
+			stream.WriteByte(1); //i.e. true
+			stream.Write(CurrentState, 0, CurrentState.Length);
+		}
 
 		byte[] TempBuf = new byte[0];
 		void CaptureRewindStateDelta(bool isSmall)
 		{
 			byte[] CurrentState = Global.Emulator.SaveStateBinary();
+
+			//in case the state sizes mismatch, capture a full state rather than trying to do anything clever
+			if (CurrentState.Length != LastState.Length)
+			{
+				CaptureRewindStateNonDelta();
+				return;
+			}
+
 			int beginChangeSequence = -1;
 			bool inChangeSequence = false;
 			MemoryStream ms;
@@ -309,46 +336,38 @@ namespace BizHawk.MultiClient
 			try
 			{
 				var writer = new BinaryWriter(ms);
-				if (CurrentState.Length != LastState.Length)
+				writer.Write(false); // delta state
+				for (int i = 0; i < CurrentState.Length; i++)
 				{
-					writer.Write(true); // full state
-					writer.Write(LastState);
-				}
-				else
-				{
-					writer.Write(false); // delta state
-					for (int i = 0; i < CurrentState.Length; i++)
+					if (inChangeSequence == false)
 					{
-						if (inChangeSequence == false)
-						{
-							if (i >= LastState.Length)
-								continue;
-							if (CurrentState[i] == LastState[i])
-								continue;
-
-							inChangeSequence = true;
-							beginChangeSequence = i;
+						if (i >= LastState.Length)
 							continue;
-						}
-
-						if (i - beginChangeSequence == 254 || i == CurrentState.Length - 1)
-						{
-							writer.Write((byte)(i - beginChangeSequence + 1));
-							if (isSmall) writer.Write((ushort)beginChangeSequence);
-							else writer.Write(beginChangeSequence);
-							writer.Write(LastState, beginChangeSequence, i - beginChangeSequence + 1);
-							inChangeSequence = false;
-							continue;
-						}
-
 						if (CurrentState[i] == LastState[i])
-						{
-							writer.Write((byte)(i - beginChangeSequence));
-							if (isSmall) writer.Write((ushort)beginChangeSequence);
-							else writer.Write(beginChangeSequence);
-							writer.Write(LastState, beginChangeSequence, i - beginChangeSequence);
-							inChangeSequence = false;
-						}
+							continue;
+
+						inChangeSequence = true;
+						beginChangeSequence = i;
+						continue;
+					}
+
+					if (i - beginChangeSequence == 254 || i == CurrentState.Length - 1)
+					{
+						writer.Write((byte)(i - beginChangeSequence + 1));
+						if (isSmall) writer.Write((ushort)beginChangeSequence);
+						else writer.Write(beginChangeSequence);
+						writer.Write(LastState, beginChangeSequence, i - beginChangeSequence + 1);
+						inChangeSequence = false;
+						continue;
+					}
+
+					if (CurrentState[i] == LastState[i])
+					{
+						writer.Write((byte)(i - beginChangeSequence));
+						if (isSmall) writer.Write((ushort)beginChangeSequence);
+						else writer.Write(beginChangeSequence);
+						writer.Write(LastState, beginChangeSequence, i - beginChangeSequence);
+						inChangeSequence = false;
 					}
 				}
 			}
