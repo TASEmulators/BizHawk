@@ -7,7 +7,7 @@ namespace BizHawk.MultiClient
 	public partial class MainForm
 	{
 		//adelikat: change the way this is constructed to control whether its on disk or in memory
-		private readonly StreamBlobDatabase RewindBuf = new StreamBlobDatabase(true,64*1024);
+		private readonly StreamBlobDatabase RewindBuf = new StreamBlobDatabase(true,128*1024*1024);
 		private byte[] LastState;
 		private bool RewindImpossible;
 		private int RewindFrequency = 1;
