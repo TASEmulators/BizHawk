@@ -89,10 +89,11 @@ namespace BizHawk.MultiClient
 			/// </summary>
 			public void PushMemoryStream(MemoryStream ms)
 			{
-				var buf = ms.ToArray();
-				long offset = Enqueue(0, buf.Length);
+				var buf = ms.GetBuffer();
+				int len = (int)ms.Length;
+				long offset = Enqueue(0, len);
 				mStream.Position = offset;
-				mStream.Write(buf, 0, buf.Length);
+				mStream.Write(buf, 0, len);
 			}
 
 			public MemoryStream PopMemoryStream()
@@ -330,7 +331,8 @@ namespace BizHawk.MultiClient
 					if (CurrentState[i] == LastState[i])
 					{
 						writer.Write((byte)(i - beginChangeSequence));
-						writer.Write((ushort)beginChangeSequence);
+						if(isSmall) writer.Write((ushort)beginChangeSequence);
+						else writer.Write(beginChangeSequence);
 						writer.Write(LastState, beginChangeSequence, i - beginChangeSequence);
 						inChangeSequence = false;
 					}
