@@ -111,7 +111,14 @@ namespace BizHawk.MultiClient.config
 				}
 				if (buckets[0].Count > 0)
 				{
-					tt.TabPages.Add("Console");
+					if (Global.Emulator.SystemId == "C64") //This is a kludge, if there starts to be more exceptions to this pattern, we will need a more robust solution
+					{
+						tt.TabPages.Add("Keyboard");
+					}
+					else
+					{
+						tt.TabPages.Add("Console");
+					}
 					tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
 					pageidx++;
 				}
@@ -142,6 +149,11 @@ namespace BizHawk.MultiClient.config
 			LoadToPanel(tabPage1, the_definition.Name, the_definition.BoolButtons, Global.Config.AllTrollers, "", CreateNormalPanel);
 			LoadToPanel(tabPage2, the_definition.Name, the_definition.BoolButtons, Global.Config.AllTrollersAutoFire, "", CreateNormalPanel);
 			LoadToPanel(tabPage3, the_definition.Name, the_definition.FloatControls, Global.Config.AllTrollersAnalog, new Config.AnalogBind("", 1.0f), CreateAnalogPanel);
+
+			if (tabPage3.Controls.Count == 0)
+			{
+				tabControl1.TabPages.Remove(tabPage3);
+			}
 		}
 
 		void SetControllerPicture(string ControlName)
