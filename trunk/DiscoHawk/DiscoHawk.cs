@@ -32,6 +32,9 @@ namespace BizHawk
 			string directory = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
 			string fname = Path.Combine(directory, dllname);
 			if (!File.Exists(fname)) return null;
+
+			ApplyMOTW(fname);
+
 			//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
 			return Assembly.LoadFile(fname);
 		}
@@ -40,14 +43,60 @@ namespace BizHawk
 #if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern bool SetDllDirectory(string lpPathName);
+
+		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
+		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
+		static void RemoveMOTW(string path)
+		{
+			DeleteFileW(path + ":Zone.Identifier");
+		}
+
+		//for debugging purposes, this is provided. when we're satisfied everyone understands whats going on, we'll get rid of this
+		[DllImportAttribute("kernel32.dll", EntryPoint = "CreateFileW")]
+		public static extern System.IntPtr CreateFileW([InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] string lpFileName, int dwDesiredAccess, int dwShareMode, [InAttribute()] int lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, [InAttribute()] int hTemplateFile);
+		static void ApplyMOTW(string path)
+		{
+			int generic_write = 0x40000000;
+			int file_share_write = 2;
+			int create_always = 2;
+			var adsHandle = CreateFileW(path + ":Zone.Identifier", generic_write, file_share_write, 0, create_always, 0, 0);
+			using (var sfh = new Microsoft.Win32.SafeHandles.SafeFileHandle(adsHandle, true))
+			{
+				var adsStream = new System.IO.FileStream(sfh, FileAccess.Write);
+				StreamWriter sw = new StreamWriter(adsStream);
+				sw.Write("[ZoneTransfer]\r\nZoneId=3");
+				sw.Flush();
+				adsStream.Close();
+			}
+		}
+
+		static void WhackAllMOTW(string dllDir)
+		{
+			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+			while (todo.Count > 0)
+			{
+				var di = todo.Dequeue();
+				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
+				foreach (var fi in di.GetFiles("*.dll"))
+					RemoveMOTW(fi.FullName);
+			}
+
+		}
 #endif
 
 		[STAThread]
 		static void Main(string[] args)
 		{
+
 #if WINDOWS
 			// this will look in subdirectory "dll" to load pinvoked stuff
-			SetDllDirectory(System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll"));
+			string dllDir = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
+			SetDllDirectory(dllDir);
+
+			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
+			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+			WhackAllMOTW(dllDir);
 
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
