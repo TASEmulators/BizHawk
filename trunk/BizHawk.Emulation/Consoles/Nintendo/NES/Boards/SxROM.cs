@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		//regenerable state
 		IntBuffer chr_banks_4k = new IntBuffer(2);
-		IntBuffer prg_banks_16k = new IntBuffer(4);
+		IntBuffer prg_banks_16k = new IntBuffer(2);
 
 		public class MMC1_SerialController
 		{
@@ -146,6 +146,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr_mode = 1;
 			scnt.Reset();
 			mirror = NES.NESBoardBase.EMirrorType.Horizontal;
+			SyncCHR();
+			SyncPRG();
 		}
 
 		public void Write(int addr, byte value)
@@ -215,7 +217,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				else
 				{
 					//...$8000:
-					prg_banks_16k[0] = (prg & ~1) + 1;
+					prg_banks_16k[0] = prg;
 					prg_banks_16k[1] = 0x1F;
 				}
 			}
@@ -407,7 +409,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void Dispose()
 		{
 			base.Dispose();
-			mmc1.Dispose();
+			if(mmc1 != null) mmc1.Dispose();
 		}
 
 	} //class SxROM

@@ -83,6 +83,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
 					AssertBattery(false);
 					break;
+				case "HVC-TSROM": //SMB3 (J)
+					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
+					AssertBattery(false);
+					break;
 				case "UNIF_TSROM":
 					Cart.wram_size = 8;
 					Cart.wram_battery = false;
