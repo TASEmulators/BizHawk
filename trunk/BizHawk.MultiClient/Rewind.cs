@@ -292,7 +292,7 @@ namespace BizHawk.MultiClient
 			{
 				SetRewindParams(Global.Config.RewindEnabledLarge, Global.Config.RewindFrequencyLarge);
 			}
-			else if (LastState.Length >= Global.Config.RewindFrequencyMedium)
+			else if (LastState.Length >= Global.Config.Rewind_MediumStateSize)
 			{
 				SetRewindParams(Global.Config.RewindEnabledMedium, Global.Config.RewindFrequencyMedium);
 			}
