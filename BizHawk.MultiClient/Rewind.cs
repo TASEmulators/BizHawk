@@ -1,12 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace BizHawk.MultiClient
 {
 	public partial class MainForm
 	{
 		private StreamBlobDatabase RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * (long)1024 * (long)1024);
+		private RewindThreader RewindThread;
 
 		private byte[] LastState;
 		private bool RewindImpossible;
@@ -239,6 +242,128 @@ namespace BizHawk.MultiClient
 					Console.WriteLine("{0}, {1}", test, sbb.Count);
 				}
 			}
+		} //class StreamBlobDatabase
+
+		class RewindThreader : IDisposable
+		{
+			//adelikat: tweak this to test performance with threading or not with threading
+			public static bool IsThreaded = true;
+
+			MainForm mf;
+
+			public RewindThreader(MainForm mf)
+			{
+				this.mf = mf;
+
+				if (IsThreaded)
+				{
+					ewh = new EventWaitHandle(false, EventResetMode.AutoReset);
+					ewh2 = new EventWaitHandle(false, EventResetMode.AutoReset);
+					thread = new Thread(ThreadProc);
+					thread.IsBackground = true;
+					thread.Start();
+				}
+			}
+
+			public void Dispose()
+			{
+				if (!IsThreaded)
+					return;
+
+				var job = new Job();
+				job.Type = JobType.Abort;
+				Jobs.Enqueue(job);
+				ewh.Set();
+
+				thread.Join();
+				ewh.Dispose();
+				ewh2.Dispose();
+			}
+
+			void ThreadProc()
+			{
+				for (; ; )
+				{
+					ewh.WaitOne();
+					while (Jobs.Count != 0)
+					{
+						Job job = null;
+						if (Jobs.TryDequeue(out job))
+						{
+							if (job.Type == JobType.Abort)
+								return;
+							if (job.Type == JobType.Capture)
+							{
+								mf._RunCapture(job.CoreState);
+							}
+							if (job.Type == JobType.Rewind)
+							{
+								mf._RunRewind(job.Frames);
+								ewh2.Set();
+							}
+						}
+					}
+				}
+			}
+
+			EventWaitHandle ewh, ewh2;
+			Thread thread;	
+
+			public void Rewind(int frames)
+			{
+				if (!IsThreaded)
+				{
+					mf._RunRewind(frames);
+					return;
+				}
+
+				var job = new Job();
+				job.Type = JobType.Rewind;
+				job.Frames = frames;
+				Jobs.Enqueue(job);
+				ewh.Set();
+				ewh2.WaitOne();
+			}
+
+			void DoSafeEnqueue(Job job)
+			{
+				Jobs.Enqueue(job);
+				ewh.Set();
+
+				//just in case... we're getting really behind.. slow it down here
+				//if this gets backed up too much, then the rewind will seem to malfunction since it requires all the captures in the queue to complete first
+				while (Jobs.Count > 15)
+				{
+					Thread.Sleep(0);
+				}
+			}
+
+			public void Capture(byte[] coreSavestate)
+			{
+				if (!IsThreaded)
+				{
+					mf._RunCapture(coreSavestate);
+					return;
+				}
+				var job = new Job();
+				job.Type = JobType.Capture;
+				job.CoreState = coreSavestate;
+				DoSafeEnqueue(job);
+			}
+
+			enum JobType
+			{
+				Capture, Rewind, Abort
+			}
+
+			class Job
+			{
+				public JobType Type;
+				public byte[] CoreState;
+				public int Frames;
+			}
+
+			ConcurrentQueue<Job> Jobs = new ConcurrentQueue<Job>();
 		}
 
 		private void CaptureRewindState()
@@ -255,14 +380,8 @@ namespace BizHawk.MultiClient
 			//log a frame
 			if (LastState != null && Global.Emulator.Frame % RewindFrequency == 0)
 			{
-				if (RewindDeltaEnable)
-				{
-					if (LastState.Length <= 0x10000)
-						CaptureRewindStateDelta(true);
-					else
-						CaptureRewindStateDelta(false);
-				}
-				else CaptureRewindStateNonDelta();
+				byte[] CurrentState = Global.Emulator.SaveStateBinary();
+				RewindThread.Capture(CurrentState);
 			}
 		}
 
@@ -284,6 +403,9 @@ namespace BizHawk.MultiClient
 		{
 			long cap = Global.Config.Rewind_BufferSize * (long)1024 * (long)1024;
 			RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap);
+			if (RewindThread != null)
+				RewindThread.Dispose();
+			RewindThread = new RewindThreader(this);
 			
 			// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
 			LastState = Global.Emulator.SaveStateBinary();
@@ -304,10 +426,8 @@ namespace BizHawk.MultiClient
 			RewindDeltaEnable = Global.Config.Rewind_UseDelta;
 		}
 
-		void CaptureRewindStateNonDelta()
+		void CaptureRewindStateNonDelta(byte[] CurrentState)
 		{
-			byte[] CurrentState = Global.Emulator.SaveStateBinary();
-
 			long offset = RewindBuf.Enqueue(0, CurrentState.Length + 1);
 			Stream stream = RewindBuf.Stream;
 			stream.Position = offset;
@@ -318,14 +438,12 @@ namespace BizHawk.MultiClient
 		}
 
 		byte[] TempBuf = new byte[0];
-		void CaptureRewindStateDelta(bool isSmall)
+		void CaptureRewindStateDelta(byte[] CurrentState, bool isSmall)
 		{
-			byte[] CurrentState = Global.Emulator.SaveStateBinary();
-
 			//in case the state sizes mismatch, capture a full state rather than trying to do anything clever
 			if (CurrentState.Length != LastState.Length)
 			{
-				CaptureRewindStateNonDelta();
+				CaptureRewindStateNonDelta(CurrentState);
 				return;
 			}
 
@@ -423,16 +541,33 @@ namespace BizHawk.MultiClient
 
 		public void Rewind(int frames)
 		{
+			RewindThread.Rewind(frames);
+		}
+
+		void _RunRewind(int frames)
+		{
 			for (int i = 0; i < frames; i++)
 			{
 				if (RewindBuf.Count == 0 || (Global.MovieSession.Movie.Loaded && 0 == Global.MovieSession.Movie.Frames))
 					return;
-				
+
 				if (LastState.Length < 0x10000)
 					Rewind64K();
 				else
 					RewindLarge();
 			}
+		}
+
+		void _RunCapture(byte[] coreSavestate)
+		{
+			if (RewindDeltaEnable)
+			{
+				if (LastState.Length <= 0x10000)
+					CaptureRewindStateDelta(coreSavestate, true);
+				else
+					CaptureRewindStateDelta(coreSavestate, false);
+			}
+			else CaptureRewindStateNonDelta(coreSavestate);
 		}
 
 		public void ResetRewindBuffer()
