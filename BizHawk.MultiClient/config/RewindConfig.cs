@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace BizHawk.MultiClient
 {
 	public partial class RewindConfig : Form
 	{
+		private long StateSize;
 		public RewindConfig()
 		{
 			InitializeComponent();
@@ -12,6 +14,8 @@ namespace BizHawk.MultiClient
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
+			UseDeltaCompression.Checked = Global.Config.Rewind_UseDelta;
+
 			SmallSavestateNumeric.Value = Global.Config.RewindFrequencySmall;
 			MediumSavestateNumeric.Value = Global.Config.RewindFrequencyMedium;
 			LargeSavestateNumeric.Value = Global.Config.RewindFrequencyLarge;
@@ -23,6 +27,40 @@ namespace BizHawk.MultiClient
 			SetSmallEnabled();
 			SetMediumEnabled();
 			SetLargeEnabled();
+
+			SetStateSize();
+		}
+
+		private void SetStateSize()
+		{
+			StateSize = Global.Emulator.SaveStateBinary().Length;
+
+			double num = StateSize / 1024.0;
+			StateSizeLabel.Text = String.Format("{0:0.00}", num) + " kb";
+
+			SmallLabel1.Text = "Small savestates (less than " + (Global.Config.Rewind_MediumStateSize / 1024).ToString() + "kb)";
+			MediumLabel1.Text = "Medium savestates (" + (Global.Config.Rewind_MediumStateSize / 1024).ToString()
+				+ " - " + (Global.Config.Rewind_LargeStateSize / 1024) + "kb)";
+			LargeLabel1.Text = "Large savestates (" + (Global.Config.Rewind_LargeStateSize / 1024) + "kb or more)";
+
+			if (StateSize >= Global.Config.Rewind_LargeStateSize)
+			{
+				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
+			}
+			else if (StateSize >= Global.Config.Rewind_MediumStateSize)
+			{
+				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
+				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+			}
+			else
+			{
+				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
+				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+			}
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
@@ -44,6 +82,8 @@ namespace BizHawk.MultiClient
 			Global.Config.RewindEnabledLarge = LargeStateEnabledBox.Checked;
 
 			Global.MainForm.DoRewindSettings();
+
+			Global.Config.Rewind_UseDelta = UseDeltaCompression.Checked;
 
 			Close();
 		}
