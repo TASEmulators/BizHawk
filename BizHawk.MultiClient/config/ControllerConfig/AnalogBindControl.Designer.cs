@@ -57,15 +57,15 @@
 			// 
 			// trackBarSensitivity
 			// 
-			this.trackBarSensitivity.LargeChange = 2000;
+			this.trackBarSensitivity.LargeChange = 20;
 			this.trackBarSensitivity.Location = new System.Drawing.Point(169, 3);
-			this.trackBarSensitivity.Maximum = 2000;
-			this.trackBarSensitivity.Minimum = -2000;
+			this.trackBarSensitivity.Maximum = 20;
+			this.trackBarSensitivity.Minimum = -20;
 			this.trackBarSensitivity.Name = "trackBarSensitivity";
 			this.trackBarSensitivity.Size = new System.Drawing.Size(104, 42);
-			this.trackBarSensitivity.SmallChange = 1000;
+			this.trackBarSensitivity.SmallChange = 10;
 			this.trackBarSensitivity.TabIndex = 2;
-			this.trackBarSensitivity.TickFrequency = 1000;
+			this.trackBarSensitivity.TickFrequency = 10;
 			this.trackBarSensitivity.ValueChanged += new System.EventHandler(this.trackBarSensitivity_ValueChanged);
 			// 
 			// labelSensitivity
