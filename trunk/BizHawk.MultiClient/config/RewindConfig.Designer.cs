@@ -320,7 +320,7 @@
 			// UseDeltaCompression
 			// 
 			this.UseDeltaCompression.AutoSize = true;
-			this.UseDeltaCompression.Location = new System.Drawing.Point(9, 61);
+			this.UseDeltaCompression.Location = new System.Drawing.Point(9, 39);
 			this.UseDeltaCompression.Name = "UseDeltaCompression";
 			this.UseDeltaCompression.Size = new System.Drawing.Size(133, 17);
 			this.UseDeltaCompression.TabIndex = 4;
@@ -490,7 +490,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(126, 39);
+			this.label4.Location = new System.Drawing.Point(148, 70);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(21, 13);
 			this.label4.TabIndex = 16;
@@ -498,7 +498,7 @@
 			// 
 			// BufferSizeUpDown
 			// 
-			this.BufferSizeUpDown.Location = new System.Drawing.Point(73, 37);
+			this.BufferSizeUpDown.Location = new System.Drawing.Point(90, 68);
 			this.BufferSizeUpDown.Maximum = new decimal(new int[] {
             32768,
             0,
@@ -521,20 +521,20 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(25, 39);
+			this.label3.Location = new System.Drawing.Point(11, 70);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(51, 13);
+			this.label3.Size = new System.Drawing.Size(81, 13);
 			this.label3.TabIndex = 6;
-			this.label3.Text = "Max size:";
+			this.label3.Text = "Max buffer size:";
 			// 
 			// DiskBufferCheckbox
 			// 
 			this.DiskBufferCheckbox.AutoSize = true;
 			this.DiskBufferCheckbox.Location = new System.Drawing.Point(9, 16);
 			this.DiskBufferCheckbox.Name = "DiskBufferCheckbox";
-			this.DiskBufferCheckbox.Size = new System.Drawing.Size(112, 17);
+			this.DiskBufferCheckbox.Size = new System.Drawing.Size(188, 17);
 			this.DiskBufferCheckbox.TabIndex = 5;
-			this.DiskBufferCheckbox.Text = "Use disk for buffer";
+			this.DiskBufferCheckbox.Text = "Use disk for buffer instead of RAM";
 			this.DiskBufferCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// RewindConfig

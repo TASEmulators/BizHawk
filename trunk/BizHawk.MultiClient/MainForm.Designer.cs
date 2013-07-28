@@ -342,6 +342,7 @@
 			this.pathsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.soundToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.autofireToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rewindToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiScreenshot = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiCloseRom = new System.Windows.Forms.ToolStripMenuItem();
@@ -1380,7 +1381,7 @@
 			this.rewindOptionsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
 			this.rewindOptionsToolStripMenuItem.Name = "rewindOptionsToolStripMenuItem";
 			this.rewindOptionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.rewindOptionsToolStripMenuItem.Text = "Rewind...";
+			this.rewindOptionsToolStripMenuItem.Text = "&Rewind...";
 			this.rewindOptionsToolStripMenuItem.Click += new System.EventHandler(this.rewindOptionsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator9
@@ -2925,7 +2926,8 @@
             this.messagesToolStripMenuItem1,
             this.pathsToolStripMenuItem1,
             this.soundToolStripMenuItem1,
-            this.autofireToolStripMenuItem1});
+            this.autofireToolStripMenuItem1,
+            this.rewindToolStripMenuItem});
 			this.configToolStripMenuItem1.Name = "configToolStripMenuItem1";
 			this.configToolStripMenuItem1.Size = new System.Drawing.Size(216, 22);
 			this.configToolStripMenuItem1.Text = "Config";
@@ -2977,6 +2979,14 @@
 			this.autofireToolStripMenuItem1.Size = new System.Drawing.Size(141, 22);
 			this.autofireToolStripMenuItem1.Text = "&Autofire...";
 			this.autofireToolStripMenuItem1.Click += new System.EventHandler(this.autofireToolStripMenuItem1_Click);
+			// 
+			// rewindToolStripMenuItem
+			// 
+			this.rewindToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
+			this.rewindToolStripMenuItem.Name = "rewindToolStripMenuItem";
+			this.rewindToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.rewindToolStripMenuItem.Text = "&Rewind";
+			this.rewindToolStripMenuItem.Click += new System.EventHandler(this.rewindOptionsToolStripMenuItem_Click);
 			// 
 			// cmiScreenshot
 			// 
@@ -3364,6 +3374,7 @@
 		private System.Windows.Forms.ToolStripMenuItem soundToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem autofireToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem rewindOptionsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem rewindToolStripMenuItem;
 	}
 }
 
