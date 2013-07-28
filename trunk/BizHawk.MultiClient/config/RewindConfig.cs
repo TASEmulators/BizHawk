@@ -19,6 +19,9 @@ namespace BizHawk.MultiClient
 		{
 			StateSize = Global.Emulator.SaveStateBinary().Length;
 
+			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
+			BufferSizeUpDown.Value = Global.Config.Rewind_BufferSize;
+
 			MediumStateSize = Global.Config.Rewind_MediumStateSize;
 			LargeStateSize = Global.Config.Rewind_LargeStateSize;
 
@@ -101,7 +104,8 @@ namespace BizHawk.MultiClient
 
 			Global.Config.Rewind_MediumStateSize = (int)(MediumStateUpDown.Value * 1024);
 			Global.Config.Rewind_LargeStateSize = (int)(LargeStateUpDown.Value * 1024);
-
+			Global.Config.Rewind_OnDisk = DiskBufferCheckbox.Checked;
+			Global.Config.Rewind_BufferSize = (int)BufferSizeUpDown.Value;
 			Close();
 		}
 
