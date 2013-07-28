@@ -47,6 +47,9 @@
 			this.SmallLabel2 = new System.Windows.Forms.Label();
 			this.SmallLabel3 = new System.Windows.Forms.Label();
 			this.SmallSavestateNumeric = new System.Windows.Forms.NumericUpDown();
+			this.UseDeltaCompression = new System.Windows.Forms.CheckBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.StateSizeLabel = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
@@ -56,7 +59,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(215, 137);
+			this.OK.Location = new System.Drawing.Point(215, 186);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -68,7 +71,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(296, 137);
+			this.Cancel.Location = new System.Drawing.Point(296, 186);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -106,7 +109,7 @@
 			this.groupBox1.Controls.Add(this.SmallLabel3);
 			this.groupBox1.Controls.Add(this.SmallSavestateNumeric);
 			this.groupBox1.Controls.Add(this.SmallLabel1);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(12, 38);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(359, 118);
 			this.groupBox1.TabIndex = 3;
@@ -292,13 +295,44 @@
             0,
             0});
 			// 
+			// UseDeltaCompression
+			// 
+			this.UseDeltaCompression.AutoSize = true;
+			this.UseDeltaCompression.Location = new System.Drawing.Point(21, 162);
+			this.UseDeltaCompression.Name = "UseDeltaCompression";
+			this.UseDeltaCompression.Size = new System.Drawing.Size(133, 17);
+			this.UseDeltaCompression.TabIndex = 4;
+			this.UseDeltaCompression.Text = "Use delta compression";
+			this.UseDeltaCompression.UseVisualStyleBackColor = true;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(18, 9);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(118, 13);
+			this.label1.TabIndex = 5;
+			this.label1.Text = "Current Savestate Size:";
+			// 
+			// StateSizeLabel
+			// 
+			this.StateSizeLabel.AutoSize = true;
+			this.StateSizeLabel.Location = new System.Drawing.Point(142, 9);
+			this.StateSizeLabel.Name = "StateSizeLabel";
+			this.StateSizeLabel.Size = new System.Drawing.Size(28, 13);
+			this.StateSizeLabel.TabIndex = 6;
+			this.StateSizeLabel.Text = "0 kb";
+			// 
 			// RewindConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(383, 172);
+			this.ClientSize = new System.Drawing.Size(383, 221);
+			this.Controls.Add(this.StateSizeLabel);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.UseDeltaCompression);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
@@ -312,6 +346,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.SmallSavestateNumeric)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -336,5 +371,8 @@
 		private System.Windows.Forms.CheckBox LargeStateEnabledBox;
 		private System.Windows.Forms.CheckBox MediumStateEnabledBox;
 		private System.Windows.Forms.CheckBox SmallStateEnabledBox;
+		private System.Windows.Forms.CheckBox UseDeltaCompression;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label StateSizeLabel;
 	}
 }

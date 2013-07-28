@@ -44,5 +44,11 @@ namespace BizHawk.MultiClient
 			linkLabel4.LinkVisited = true;
 			System.Diagnostics.Process.Start("http://emu7800.sourceforge.net/");
 		}
+
+		private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			linkLabel5.LinkVisited = true;
+			System.Diagnostics.Process.Start("https://code.google.com/p/mupen64plus/");
+		}
 	}
 }

@@ -41,6 +41,9 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.linkLabel4 = new System.Windows.Forms.LinkLabel();
+			this.label28 = new System.Windows.Forms.Label();
+			this.label30 = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
 			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
@@ -63,9 +66,9 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label27 = new System.Windows.Forms.Label();
-			this.label28 = new System.Windows.Forms.Label();
-			this.label30 = new System.Windows.Forms.Label();
-			this.linkLabel4 = new System.Windows.Forms.LinkLabel();
+			this.linkLabel5 = new System.Windows.Forms.LinkLabel();
+			this.label29 = new System.Windows.Forms.Label();
+			this.label31 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -74,7 +77,7 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.OK.Location = new System.Drawing.Point(361, 455);
+			this.OK.Location = new System.Drawing.Point(361, 478);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -96,7 +99,7 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(173, 459);
+			this.linkLabel1.Location = new System.Drawing.Point(173, 482);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(180, 13);
 			this.linkLabel1.TabIndex = 2;
@@ -183,6 +186,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.linkLabel5);
+			this.panel1.Controls.Add(this.label29);
+			this.panel1.Controls.Add(this.label31);
 			this.panel1.Controls.Add(this.linkLabel4);
 			this.panel1.Controls.Add(this.label28);
 			this.panel1.Controls.Add(this.label30);
@@ -209,8 +215,37 @@
 			this.panel1.Controls.Add(this.label8);
 			this.panel1.Location = new System.Drawing.Point(12, 182);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(423, 267);
+			this.panel1.Size = new System.Drawing.Size(423, 290);
 			this.panel1.TabIndex = 11;
+			// 
+			// linkLabel4
+			// 
+			this.linkLabel4.AutoSize = true;
+			this.linkLabel4.Location = new System.Drawing.Point(212, 225);
+			this.linkLabel4.Name = "linkLabel4";
+			this.linkLabel4.Size = new System.Drawing.Size(55, 13);
+			this.linkLabel4.TabIndex = 26;
+			this.linkLabel4.TabStop = true;
+			this.linkLabel4.Text = "EMU7800";
+			this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
+			// 
+			// label28
+			// 
+			this.label28.AutoSize = true;
+			this.label28.Location = new System.Drawing.Point(212, 238);
+			this.label28.Name = "label28";
+			this.label28.Size = new System.Drawing.Size(104, 13);
+			this.label28.TabIndex = 25;
+			this.label28.Text = "author: Mike Murphy";
+			// 
+			// label30
+			// 
+			this.label30.AutoSize = true;
+			this.label30.Location = new System.Drawing.Point(204, 207);
+			this.label30.Name = "label30";
+			this.label30.Size = new System.Drawing.Size(80, 13);
+			this.label30.TabIndex = 23;
+			this.label30.Text = "Atari7800Hawk";
 			// 
 			// label12
 			// 
@@ -414,34 +449,34 @@
 			this.label27.TabIndex = 12;
 			this.label27.Text = "SaxxonPike";
 			// 
-			// label28
+			// linkLabel5
 			// 
-			this.label28.AutoSize = true;
-			this.label28.Location = new System.Drawing.Point(212, 238);
-			this.label28.Name = "label28";
-			this.label28.Size = new System.Drawing.Size(104, 13);
-			this.label28.TabIndex = 25;
-			this.label28.Text = "author: Mike Murphy";
+			this.linkLabel5.AutoSize = true;
+			this.linkLabel5.Location = new System.Drawing.Point(21, 256);
+			this.linkLabel5.Name = "linkLabel5";
+			this.linkLabel5.Size = new System.Drawing.Size(72, 13);
+			this.linkLabel5.TabIndex = 29;
+			this.linkLabel5.TabStop = true;
+			this.linkLabel5.Text = "Mupen64Plus";
+			this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
 			// 
-			// label30
+			// label29
 			// 
-			this.label30.AutoSize = true;
-			this.label30.Location = new System.Drawing.Point(204, 207);
-			this.label30.Name = "label30";
-			this.label30.Size = new System.Drawing.Size(80, 13);
-			this.label30.TabIndex = 23;
-			this.label30.Text = "Atari7800Hawk";
+			this.label29.AutoSize = true;
+			this.label29.Location = new System.Drawing.Point(21, 269);
+			this.label29.Name = "label29";
+			this.label29.Size = new System.Drawing.Size(101, 13);
+			this.label29.TabIndex = 28;
+			this.label29.Text = "Ported by: micro500";
 			// 
-			// linkLabel4
+			// label31
 			// 
-			this.linkLabel4.AutoSize = true;
-			this.linkLabel4.Location = new System.Drawing.Point(212, 225);
-			this.linkLabel4.Name = "linkLabel4";
-			this.linkLabel4.Size = new System.Drawing.Size(55, 13);
-			this.linkLabel4.TabIndex = 26;
-			this.linkLabel4.TabStop = true;
-			this.linkLabel4.Text = "EMU7800";
-			this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
+			this.label31.AutoSize = true;
+			this.label31.Location = new System.Drawing.Point(13, 238);
+			this.label31.Name = "label31";
+			this.label31.Size = new System.Drawing.Size(55, 13);
+			this.label31.TabIndex = 27;
+			this.label31.Text = "N64Hawk";
 			// 
 			// BizBox
 			// 
@@ -449,7 +484,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.OK;
-			this.ClientSize = new System.Drawing.Size(448, 490);
+			this.ClientSize = new System.Drawing.Size(448, 513);
 			this.Controls.Add(this.label27);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label7);
@@ -516,5 +551,8 @@
 		private System.Windows.Forms.Label label28;
 		private System.Windows.Forms.Label label30;
 		private System.Windows.Forms.LinkLabel linkLabel4;
+		private System.Windows.Forms.LinkLabel linkLabel5;
+		private System.Windows.Forms.Label label29;
+		private System.Windows.Forms.Label label31;
 	}
 }

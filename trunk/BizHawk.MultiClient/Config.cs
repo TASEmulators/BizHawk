@@ -226,13 +226,15 @@ namespace BizHawk.MultiClient
 		public bool VSyncThrottle = false;
 
 		//Rewind settings
+		public bool Rewind_UseDelta = true;
 		public bool RewindEnabledSmall = true;
 		public bool RewindEnabledMedium = true;
 		public bool RewindEnabledLarge = true;
-
 		public int RewindFrequencySmall = 1;
 		public int RewindFrequencyMedium = 2;
 		public int RewindFrequencyLarge = 60;
+		public int Rewind_MediumStateSize = 262144; //256kb
+		public int Rewind_LargeStateSize = 1048576; //1mb
 
 		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
 		public bool VSync = false;

@@ -286,15 +286,21 @@ namespace BizHawk.MultiClient
 			// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
 			LastState = Global.Emulator.SaveStateBinary();
 
-			if (LastState.Length > 0x100000)
-				SetRewindParams(Global.Config.RewindEnabledLarge,Global.Config.RewindFrequencyLarge);
-			else if (LastState.Length > 32768)
-				SetRewindParams(Global.Config.RewindEnabledMedium,Global.Config.RewindFrequencyMedium);
+			if (LastState.Length >= Global.Config.Rewind_LargeStateSize)
+			{
+				SetRewindParams(Global.Config.RewindEnabledLarge, Global.Config.RewindFrequencyLarge);
+			}
+			else if (LastState.Length >= Global.Config.RewindFrequencyMedium)
+			{
+				SetRewindParams(Global.Config.RewindEnabledMedium, Global.Config.RewindFrequencyMedium);
+			}
 			else
+			{
 				SetRewindParams(Global.Config.RewindEnabledSmall, Global.Config.RewindFrequencySmall);
+			}
 
 			//adelikat: placeholder for plucking from config
-			RewindDeltaEnable = true;
+			RewindDeltaEnable = Global.Config.Rewind_UseDelta;
 		}
 
 		void CaptureRewindStateNonDelta()
