@@ -75,8 +75,9 @@ namespace BizHawk.MultiClient
 			tooltip1.AutoPopDelay = 2000;
 		}
 
-		public InputWidget(int maxBindings)
+		public InputWidget(int maxBindings, bool autotab)
 		{
+			this.AutoTab = autotab;
 			this.ContextMenu = new ContextMenu();
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
 			MaxBind = maxBindings;

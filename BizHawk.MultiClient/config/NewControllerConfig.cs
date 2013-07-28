@@ -43,7 +43,7 @@ namespace BizHawk.MultiClient.config
 		Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
 			var cp = new ControllerConfigPanel {Dock = DockStyle.Fill};
-			cp.LoadSettings(settings, buttons, size.Width, size.Height);
+			cp.LoadSettings(settings, checkBoxAutoTab.Checked, buttons, size.Width, size.Height);
 			return cp;
 		}
 
