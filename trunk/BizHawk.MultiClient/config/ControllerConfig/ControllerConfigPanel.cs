@@ -175,10 +175,5 @@ namespace BizHawk.MultiClient
 		{
 			ClearAll();
 		}
-
-		protected void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			//TODO
-		}
 	}
 }
