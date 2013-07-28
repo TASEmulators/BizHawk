@@ -50,16 +50,30 @@
 			this.UseDeltaCompression = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.StateSizeLabel = new System.Windows.Forms.Label();
+			this.MediumStateTrackbar = new System.Windows.Forms.TrackBar();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.MediumStateSizeLabel = new System.Windows.Forms.Label();
+			this.LargeStateSizeLabel = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.LargeStateTrackbar = new System.Windows.Forms.TrackBar();
+			this.MediumStateUpDown = new System.Windows.Forms.NumericUpDown();
+			this.LargeStateUpDown = new System.Windows.Forms.NumericUpDown();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SmallSavestateNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.MediumStateTrackbar)).BeginInit();
+			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.MediumStateUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.LargeStateUpDown)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(215, 186);
+			this.OK.Location = new System.Drawing.Point(215, 293);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -71,7 +85,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(296, 186);
+			this.Cancel.Location = new System.Drawing.Point(296, 293);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -297,8 +311,9 @@
 			// 
 			// UseDeltaCompression
 			// 
+			this.UseDeltaCompression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.UseDeltaCompression.AutoSize = true;
-			this.UseDeltaCompression.Location = new System.Drawing.Point(21, 162);
+			this.UseDeltaCompression.Location = new System.Drawing.Point(21, 273);
 			this.UseDeltaCompression.Name = "UseDeltaCompression";
 			this.UseDeltaCompression.Size = new System.Drawing.Size(133, 17);
 			this.UseDeltaCompression.TabIndex = 4;
@@ -323,13 +338,141 @@
 			this.StateSizeLabel.TabIndex = 6;
 			this.StateSizeLabel.Text = "0 kb";
 			// 
+			// MediumStateTrackbar
+			// 
+			this.MediumStateTrackbar.LargeChange = 256;
+			this.MediumStateTrackbar.Location = new System.Drawing.Point(71, 19);
+			this.MediumStateTrackbar.Maximum = 4096;
+			this.MediumStateTrackbar.Minimum = 1;
+			this.MediumStateTrackbar.Name = "MediumStateTrackbar";
+			this.MediumStateTrackbar.Size = new System.Drawing.Size(186, 45);
+			this.MediumStateTrackbar.TabIndex = 7;
+			this.MediumStateTrackbar.TickFrequency = 256;
+			this.MediumStateTrackbar.Value = 1;
+			this.MediumStateTrackbar.ValueChanged += new System.EventHandler(this.MediumStateTrackbar_ValueChanged);
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.LargeStateUpDown);
+			this.groupBox2.Controls.Add(this.MediumStateUpDown);
+			this.groupBox2.Controls.Add(this.LargeStateSizeLabel);
+			this.groupBox2.Controls.Add(this.label5);
+			this.groupBox2.Controls.Add(this.LargeStateTrackbar);
+			this.groupBox2.Controls.Add(this.MediumStateSizeLabel);
+			this.groupBox2.Controls.Add(this.label2);
+			this.groupBox2.Controls.Add(this.MediumStateTrackbar);
+			this.groupBox2.Location = new System.Drawing.Point(12, 162);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(359, 105);
+			this.groupBox2.TabIndex = 8;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "State size definition";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(11, 35);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(44, 13);
+			this.label2.TabIndex = 8;
+			this.label2.Text = "Medium";
+			// 
+			// MediumStateSizeLabel
+			// 
+			this.MediumStateSizeLabel.AutoSize = true;
+			this.MediumStateSizeLabel.Location = new System.Drawing.Point(317, 32);
+			this.MediumStateSizeLabel.Name = "MediumStateSizeLabel";
+			this.MediumStateSizeLabel.Size = new System.Drawing.Size(19, 13);
+			this.MediumStateSizeLabel.TabIndex = 9;
+			this.MediumStateSizeLabel.Text = "kb";
+			// 
+			// LargeStateSizeLabel
+			// 
+			this.LargeStateSizeLabel.AutoSize = true;
+			this.LargeStateSizeLabel.Location = new System.Drawing.Point(316, 68);
+			this.LargeStateSizeLabel.Name = "LargeStateSizeLabel";
+			this.LargeStateSizeLabel.Size = new System.Drawing.Size(19, 13);
+			this.LargeStateSizeLabel.TabIndex = 12;
+			this.LargeStateSizeLabel.Text = "kb";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(11, 71);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(34, 13);
+			this.label5.TabIndex = 11;
+			this.label5.Text = "Large";
+			// 
+			// LargeStateTrackbar
+			// 
+			this.LargeStateTrackbar.LargeChange = 1024;
+			this.LargeStateTrackbar.Location = new System.Drawing.Point(71, 55);
+			this.LargeStateTrackbar.Maximum = 16384;
+			this.LargeStateTrackbar.Minimum = 256;
+			this.LargeStateTrackbar.Name = "LargeStateTrackbar";
+			this.LargeStateTrackbar.Size = new System.Drawing.Size(186, 45);
+			this.LargeStateTrackbar.TabIndex = 10;
+			this.LargeStateTrackbar.TickFrequency = 1024;
+			this.LargeStateTrackbar.Value = 256;
+			this.LargeStateTrackbar.ValueChanged += new System.EventHandler(this.LargeStateTrackbar_ValueChanged);
+			// 
+			// MediumStateUpDown
+			// 
+			this.MediumStateUpDown.Location = new System.Drawing.Point(263, 28);
+			this.MediumStateUpDown.Maximum = new decimal(new int[] {
+            4096,
+            0,
+            0,
+            0});
+			this.MediumStateUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.MediumStateUpDown.Name = "MediumStateUpDown";
+			this.MediumStateUpDown.Size = new System.Drawing.Size(52, 20);
+			this.MediumStateUpDown.TabIndex = 13;
+			this.MediumStateUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.MediumStateUpDown.ValueChanged += new System.EventHandler(this.MediumStateUpDown_ValueChanged);
+			// 
+			// LargeStateUpDown
+			// 
+			this.LargeStateUpDown.Location = new System.Drawing.Point(263, 64);
+			this.LargeStateUpDown.Maximum = new decimal(new int[] {
+            16384,
+            0,
+            0,
+            0});
+			this.LargeStateUpDown.Minimum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+			this.LargeStateUpDown.Name = "LargeStateUpDown";
+			this.LargeStateUpDown.Size = new System.Drawing.Size(52, 20);
+			this.LargeStateUpDown.TabIndex = 14;
+			this.LargeStateUpDown.Value = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+			this.LargeStateUpDown.ValueChanged += new System.EventHandler(this.LargeStateUpDown_ValueChanged);
+			// 
 			// RewindConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(383, 221);
+			this.ClientSize = new System.Drawing.Size(383, 328);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.StateSizeLabel);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.UseDeltaCompression);
@@ -345,6 +488,12 @@
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.SmallSavestateNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.MediumStateTrackbar)).EndInit();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.MediumStateUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.LargeStateUpDown)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -374,5 +523,14 @@
 		private System.Windows.Forms.CheckBox UseDeltaCompression;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label StateSizeLabel;
+		private System.Windows.Forms.TrackBar MediumStateTrackbar;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label MediumStateSizeLabel;
+		private System.Windows.Forms.Label LargeStateSizeLabel;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.TrackBar LargeStateTrackbar;
+		private System.Windows.Forms.NumericUpDown LargeStateUpDown;
+		private System.Windows.Forms.NumericUpDown MediumStateUpDown;
 	}
 }
