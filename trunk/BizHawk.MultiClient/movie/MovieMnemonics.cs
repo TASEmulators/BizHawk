@@ -786,7 +786,7 @@ namespace BizHawk.MultiClient
 
 			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + MnemonicConstants.ANALOGS[ControlType].Count * 3 + 1);
+				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + MnemonicConstants.ANALOGS[ControlType].Count * 4 + 1);
 
 				if (mnemonic.Length < srcindex + 3 + MnemonicConstants.BUTTONS[ControlType].Count - 1)
 				{
@@ -801,12 +801,12 @@ namespace BizHawk.MultiClient
 
 				foreach (string name in MnemonicConstants.ANALOGS[ControlType].Keys)
 				{
-					if (InputValidate.IsValidUnsignedNumber(mnemonic.Substring(srcindex + start, 3)))
+					if (InputValidate.IsValidSignedNumber(mnemonic.Substring(srcindex + start, 4)))
 					{
-						Force("P" + player + " " + name, Int32.Parse(mnemonic.Substring(srcindex + start, 3)) - 128);
+						Force("P" + player + " " + name, Int32.Parse(mnemonic.Substring(srcindex + start, 4)));
 					}
 
-					start += 3;
+					start += 5;
 				}
 			}
 		}
