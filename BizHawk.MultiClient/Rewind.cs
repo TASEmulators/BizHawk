@@ -6,7 +6,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm
 	{
-		private readonly StreamBlobDatabase RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * 1024 * 1024);
+		private StreamBlobDatabase RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, Global.Config.Rewind_BufferSize * (long)1024 * (long)1024);
 
 		private byte[] LastState;
 		private bool RewindImpossible;
@@ -25,7 +25,7 @@ namespace BizHawk.MultiClient
 				mStream = null;
 			}
 			
-			public StreamBlobDatabase(bool onDisk, long capacity = 256*1024*1024)
+			public StreamBlobDatabase(bool onDisk, long capacity)
 			{
 				mCapacity = capacity;
 				if (onDisk)
@@ -216,7 +216,7 @@ namespace BizHawk.MultiClient
 
 			void Test()
 			{
-				var sbb = new StreamBlobDatabase(false);
+				var sbb = new StreamBlobDatabase(false, Global.Config.Rewind_BufferSize * 1024 * 1024);
 				var rand = new Random(0);
 				int timestamp = 0;
 				for (; ; )
@@ -282,6 +282,9 @@ namespace BizHawk.MultiClient
 
 		public void DoRewindSettings()
 		{
+			long cap = Global.Config.Rewind_BufferSize * (long)1024 * (long)1024;
+			RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap);
+			
 			// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
 			LastState = Global.Emulator.SaveStateBinary();
 
