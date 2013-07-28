@@ -117,4 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAAAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAA
+        AAD///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af//
+        /wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af//
+        /wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af//
+        /wH///8B////Af///wH///8B////Af///wH///8B////AcvJxP+WSST/////Af///wH///8B////Af//
+        /wH///8B////Af///wH///8B////Af///wH///8B////AcvJxP+dTij/nU0l/////wH///8B////Af//
+        /wH///8B////Af///wH///8B////Af///wH///8B////AcvJxP+gUCr/0nVH/6tUKf+iTyf/mksl/5JH
+        I/+SRyP/kkcj/5JHI/9+Qib/////Af///wH///8B////AcvJxP+iVjH/4YZY//aPW//phlX/2XtN/8hw
+        RP+3ZTv/qlsz/6pbM/+qWzP/g0Yn/////wH///8B////Af///wHilW7/+8Ch//+zjP//nm3/9o9b/+mG
+        Vf/Ze03/yHBE/8hwRP/DbUL/w21C/4tJKf////8B////Af///wH///8B3dHH/+icdv/7wKH//7OL//+z
+        jf/4qH//7qF6/+GYdP/hmHT/4Zh0/9eIYf+STCv/////Af///wH///8B////Af///wHc08r/6Jx2//u/
+        oP/OZzP/55Rs/+aOYv/lh1j/5YdY/+WHWP/lh1j/zHJD/////wH///8B////Af///wH///8B////AdzT
+        yv/nmnP/0nA+/////wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af//
+        /wH///8B3NPK/+eac/////8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af//
+        /wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af//
+        /wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af//
+        /wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af//
+        /wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af//
+        /wH///8BAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA
+        //8AAP//AAD//w==
+</value>
+  </data>
 </root>
