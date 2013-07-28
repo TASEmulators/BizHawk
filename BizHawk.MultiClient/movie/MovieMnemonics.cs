@@ -419,6 +419,10 @@ namespace BizHawk.MultiClient
 							{
 								val = -127;
 							}
+							else
+							{
+								val = (int)GetBaseFloat("P" + player + " " + name);
+							}
 						}
 						else if (name == "Y Axis")
 						{
@@ -429,6 +433,10 @@ namespace BizHawk.MultiClient
 							else if (IsBasePressed("P" + player + " A Right"))
 							{
 								val = 127;
+							}
+							else
+							{
+								val = (int)GetBaseFloat("P" + player + " " + name);
 							}
 						}
 						else
