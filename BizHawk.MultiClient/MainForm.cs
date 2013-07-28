@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm : Form
 	{
-		public static bool INTERIM = true;
+		public static bool INTERIM = false;
 		public const string EMUVERSION = "Version " + VersionInfo.MAINVERSION;
 		public const string RELEASEDATE = "March 23, 2013";
 		public string CurrentlyOpenRom;
@@ -1540,17 +1540,14 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "N64":
-								if (INTERIM)
+								Global.Game = game;
+								VideoPluginSettings video_settings = N64GenerateVideoSettings(game, hasmovie);
+								int SaveType = 0;
+								if (game.OptionValue("SaveType") == "EEPROM_16K")
 								{
-									Global.Game = game;
-									VideoPluginSettings video_settings = N64GenerateVideoSettings(game, hasmovie);
-									int SaveType = 0;
-									if (game.OptionValue("SaveType") == "EEPROM_16K")
-									{
-										SaveType = 1;
-									}
-									nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
+									SaveType = 1;
 								}
+								nextEmulator = new N64(nextComm, game, rom.RomData, video_settings, SaveType);
 								break;
 						}
 					}
@@ -3177,10 +3174,11 @@ namespace BizHawk.MultiClient
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.xml;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.col;*.rom;*.cue;*.sgb;*.z64;*.v64;*.n64;*.xml;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;*.fds;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
+					"Nintendo 64", "*.z64;*.v64;*.n64",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
