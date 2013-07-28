@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 			this.Bind = Bind;
 			this.ButtonName = ButtonName;
 			labelButtonName.Text = ButtonName;
-			trackBarSensitivity.Value = (int)(Bind.Mult * 1000.0f);
+			trackBarSensitivity.Value = (int)(Bind.Mult * 10.0f);
 			textBox1.Text = Bind.Value;
 		}
 
@@ -64,7 +64,7 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 
 		private void trackBarSensitivity_ValueChanged(object sender, EventArgs e)
 		{
-			Bind.Mult = trackBarSensitivity.Value / 1000.0f;
+			Bind.Mult = trackBarSensitivity.Value / 10.0f;
 			labelSensitivity.Text = string.Format("Sensitivity: {0}", Bind.Mult);
 		}
 	}
