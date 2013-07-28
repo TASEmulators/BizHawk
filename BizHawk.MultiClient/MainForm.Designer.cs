@@ -1377,6 +1377,7 @@
 			// 
 			// rewindOptionsToolStripMenuItem
 			// 
+			this.rewindOptionsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
 			this.rewindOptionsToolStripMenuItem.Name = "rewindOptionsToolStripMenuItem";
 			this.rewindOptionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.rewindOptionsToolStripMenuItem.Text = "Rewind...";

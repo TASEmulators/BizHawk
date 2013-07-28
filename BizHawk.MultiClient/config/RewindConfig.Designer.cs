@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RewindConfig));
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.SmallLabel1 = new System.Windows.Forms.Label();
@@ -52,27 +53,27 @@
 			this.StateSizeLabel = new System.Windows.Forms.Label();
 			this.MediumStateTrackbar = new System.Windows.Forms.TrackBar();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.MediumStateSizeLabel = new System.Windows.Forms.Label();
+			this.LargeStateUpDown = new System.Windows.Forms.NumericUpDown();
+			this.MediumStateUpDown = new System.Windows.Forms.NumericUpDown();
 			this.LargeStateSizeLabel = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.LargeStateTrackbar = new System.Windows.Forms.TrackBar();
-			this.MediumStateUpDown = new System.Windows.Forms.NumericUpDown();
-			this.LargeStateUpDown = new System.Windows.Forms.NumericUpDown();
+			this.MediumStateSizeLabel = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.DiskBufferCheckbox = new System.Windows.Forms.CheckBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
 			this.label4 = new System.Windows.Forms.Label();
+			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
+			this.label3 = new System.Windows.Forms.Label();
+			this.DiskBufferCheckbox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SmallSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumStateTrackbar)).BeginInit();
 			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.MediumStateUpDown)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.LargeStateUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.MediumStateUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).BeginInit();
 			this.groupBox3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.SuspendLayout();
@@ -376,23 +377,51 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "State size definition";
 			// 
-			// label2
+			// LargeStateUpDown
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(11, 35);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(44, 13);
-			this.label2.TabIndex = 8;
-			this.label2.Text = "Medium";
+			this.LargeStateUpDown.Location = new System.Drawing.Point(263, 64);
+			this.LargeStateUpDown.Maximum = new decimal(new int[] {
+            16384,
+            0,
+            0,
+            0});
+			this.LargeStateUpDown.Minimum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+			this.LargeStateUpDown.Name = "LargeStateUpDown";
+			this.LargeStateUpDown.Size = new System.Drawing.Size(52, 20);
+			this.LargeStateUpDown.TabIndex = 14;
+			this.LargeStateUpDown.Value = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+			this.LargeStateUpDown.ValueChanged += new System.EventHandler(this.LargeStateUpDown_ValueChanged);
 			// 
-			// MediumStateSizeLabel
+			// MediumStateUpDown
 			// 
-			this.MediumStateSizeLabel.AutoSize = true;
-			this.MediumStateSizeLabel.Location = new System.Drawing.Point(317, 32);
-			this.MediumStateSizeLabel.Name = "MediumStateSizeLabel";
-			this.MediumStateSizeLabel.Size = new System.Drawing.Size(19, 13);
-			this.MediumStateSizeLabel.TabIndex = 9;
-			this.MediumStateSizeLabel.Text = "kb";
+			this.MediumStateUpDown.Location = new System.Drawing.Point(263, 28);
+			this.MediumStateUpDown.Maximum = new decimal(new int[] {
+            4096,
+            0,
+            0,
+            0});
+			this.MediumStateUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.MediumStateUpDown.Name = "MediumStateUpDown";
+			this.MediumStateUpDown.Size = new System.Drawing.Size(52, 20);
+			this.MediumStateUpDown.TabIndex = 13;
+			this.MediumStateUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.MediumStateUpDown.ValueChanged += new System.EventHandler(this.MediumStateUpDown_ValueChanged);
 			// 
 			// LargeStateSizeLabel
 			// 
@@ -425,51 +454,23 @@
 			this.LargeStateTrackbar.Value = 256;
 			this.LargeStateTrackbar.ValueChanged += new System.EventHandler(this.LargeStateTrackbar_ValueChanged);
 			// 
-			// MediumStateUpDown
+			// MediumStateSizeLabel
 			// 
-			this.MediumStateUpDown.Location = new System.Drawing.Point(263, 28);
-			this.MediumStateUpDown.Maximum = new decimal(new int[] {
-            4096,
-            0,
-            0,
-            0});
-			this.MediumStateUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.MediumStateUpDown.Name = "MediumStateUpDown";
-			this.MediumStateUpDown.Size = new System.Drawing.Size(52, 20);
-			this.MediumStateUpDown.TabIndex = 13;
-			this.MediumStateUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.MediumStateUpDown.ValueChanged += new System.EventHandler(this.MediumStateUpDown_ValueChanged);
+			this.MediumStateSizeLabel.AutoSize = true;
+			this.MediumStateSizeLabel.Location = new System.Drawing.Point(317, 32);
+			this.MediumStateSizeLabel.Name = "MediumStateSizeLabel";
+			this.MediumStateSizeLabel.Size = new System.Drawing.Size(19, 13);
+			this.MediumStateSizeLabel.TabIndex = 9;
+			this.MediumStateSizeLabel.Text = "kb";
 			// 
-			// LargeStateUpDown
+			// label2
 			// 
-			this.LargeStateUpDown.Location = new System.Drawing.Point(263, 64);
-			this.LargeStateUpDown.Maximum = new decimal(new int[] {
-            16384,
-            0,
-            0,
-            0});
-			this.LargeStateUpDown.Minimum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-			this.LargeStateUpDown.Name = "LargeStateUpDown";
-			this.LargeStateUpDown.Size = new System.Drawing.Size(52, 20);
-			this.LargeStateUpDown.TabIndex = 14;
-			this.LargeStateUpDown.Value = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-			this.LargeStateUpDown.ValueChanged += new System.EventHandler(this.LargeStateUpDown_ValueChanged);
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(11, 35);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(44, 13);
+			this.label2.TabIndex = 8;
+			this.label2.Text = "Medium";
 			// 
 			// groupBox3
 			// 
@@ -486,24 +487,14 @@
 			this.groupBox3.TabIndex = 9;
 			this.groupBox3.TabStop = false;
 			// 
-			// DiskBufferCheckbox
+			// label4
 			// 
-			this.DiskBufferCheckbox.AutoSize = true;
-			this.DiskBufferCheckbox.Location = new System.Drawing.Point(9, 16);
-			this.DiskBufferCheckbox.Name = "DiskBufferCheckbox";
-			this.DiskBufferCheckbox.Size = new System.Drawing.Size(112, 17);
-			this.DiskBufferCheckbox.TabIndex = 5;
-			this.DiskBufferCheckbox.Text = "Use disk for buffer";
-			this.DiskBufferCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(25, 39);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(51, 13);
-			this.label3.TabIndex = 6;
-			this.label3.Text = "Max size:";
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(126, 39);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(21, 13);
+			this.label4.TabIndex = 16;
+			this.label4.Text = "mb";
 			// 
 			// BufferSizeUpDown
 			// 
@@ -527,14 +518,24 @@
             0,
             0});
 			// 
-			// label4
+			// label3
 			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(126, 39);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(21, 13);
-			this.label4.TabIndex = 16;
-			this.label4.Text = "mb";
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(25, 39);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(51, 13);
+			this.label3.TabIndex = 6;
+			this.label3.Text = "Max size:";
+			// 
+			// DiskBufferCheckbox
+			// 
+			this.DiskBufferCheckbox.AutoSize = true;
+			this.DiskBufferCheckbox.Location = new System.Drawing.Point(9, 16);
+			this.DiskBufferCheckbox.Name = "DiskBufferCheckbox";
+			this.DiskBufferCheckbox.Size = new System.Drawing.Size(112, 17);
+			this.DiskBufferCheckbox.TabIndex = 5;
+			this.DiskBufferCheckbox.Text = "Use disk for buffer";
+			this.DiskBufferCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// RewindConfig
 			// 
@@ -550,8 +551,8 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "RewindConfig";
-			this.ShowIcon = false;
 			this.Text = "Rewind Settings";
 			this.Load += new System.EventHandler(this.RewindConfig_Load);
 			this.groupBox1.ResumeLayout(false);
@@ -562,9 +563,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.MediumStateTrackbar)).EndInit();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.MediumStateUpDown)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.LargeStateUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.MediumStateUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
