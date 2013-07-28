@@ -486,7 +486,7 @@ namespace BizHawk.MultiClient
 				s = new StringBuilder(Global.MovieSession.Movie.GetInput(Global.Emulator.Frame - 1));
 			}
 
-			s.Replace(".", " ").Replace("|", "");
+			s.Replace(".", " ").Replace("|", "").Replace(" 000, 000", "         ");
 			
 			return s.ToString();
 		}

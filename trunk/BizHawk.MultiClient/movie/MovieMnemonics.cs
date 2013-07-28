@@ -444,10 +444,12 @@ namespace BizHawk.MultiClient
 							val = (int)GetBaseFloat("P" + player + " " + name);
 						}
 
-						if (val != 0)
+						if (val >= 0)
 						{
-							input.Append(String.Format("{0:000}", val)).Append(',');
+							input.Append(' ');
 						}
+
+						input.Append(String.Format("{0:000}", val)).Append(',');
 					}
 					input.Remove(input.Length - 1, 1);
 				}
