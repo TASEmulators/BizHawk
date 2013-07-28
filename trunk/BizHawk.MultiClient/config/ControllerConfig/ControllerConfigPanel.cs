@@ -87,8 +87,10 @@ namespace BizHawk.MultiClient
 				RealConfigObject[buttons[button]] = Inputs[button].Text;
 		}
 
-		public void LoadSettings(Dictionary<string, string> configobj, List<string> configbuttons = null, int? width = null, int? height = null)
+		public bool Autotab = false;
+		public void LoadSettings(Dictionary<string, string> configobj, bool autotab, List<string> configbuttons = null, int? width = null, int? height = null)
 		{
+			Autotab = autotab;
 			if (width.HasValue && height.HasValue)
 			{
 				_panelSize = new Size(width.Value, height.Value);
@@ -137,6 +139,7 @@ namespace BizHawk.MultiClient
 					x += ColumnWidth;
 				}
 				InputWidget iw = new InputWidget {Location = new Point(x, y), Size = new Size(InputSize, 23), TabIndex = i};
+				iw.AutoTab = Autotab;
 				iw.BringToFront();
 				iw.Enter += InputWidget_Enter;
 				iw.Leave += InputWidget_Leave;
