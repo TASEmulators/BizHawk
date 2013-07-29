@@ -39,7 +39,7 @@ namespace BizHawk
 		/// <returns></returns>
 		public static bool IsValidSignedNumber(string Str)
 		{
-			char[] input = (Str.ToCharArray());
+			char[] input = (Str.Trim().ToCharArray());
 			ASCIIEncoding AE = new ASCIIEncoding();
 			// Check each character in the new label to determine if it is a number.
 			for (int x = 0; x < input.Length; x++)
