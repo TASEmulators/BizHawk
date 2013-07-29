@@ -13,21 +13,25 @@ namespace BizHawk.MultiClient.config
 		static NewControllerConfig()
 		{
 			ControllerImages.Add("NES Controller", Properties.Resources.NES_Controller);
-			ControllerImages.Add("Atari 7800 ProLine Joystick Controller", Properties.Resources.A78Joystick);
-			ControllerImages.Add("SNES Controller", Properties.Resources.SNES_Controller);
+            ControllerImages.Add("SNES Controller", Properties.Resources.SNES_Controller);
+            ControllerImages.Add("Nintento 64 Controller", Properties.Resources.N64);
+            ControllerImages.Add("Gameboy Controller", Properties.Resources.GBController);
+            ControllerImages.Add("GBA Controller", Properties.Resources.GBA_Controller);
+            ControllerImages.Add("Dual Gameboy Controller", Properties.Resources.GBController);
+
+            ControllerImages.Add("ColecoVision Basic Controller", Properties.Resources.colecovisioncontroller);
+            ControllerImages.Add("SMS Controller", Properties.Resources.SMSController);
+            ControllerImages.Add("Genesis 3-Button Controller", Properties.Resources.GENController);
+            ControllerImages.Add("Saturn Controller", Properties.Resources.SaturnController);
+
+            ControllerImages.Add("Atari 2600 Basic Controller", Properties.Resources.atari_controller);
+            ControllerImages.Add("Atari 7800 ProLine Joystick Controller", Properties.Resources.A78Joystick);
+
+            ControllerImages.Add("PC Engine Controller", Properties.Resources.PCEngineController);
 			ControllerImages.Add("Commodore 64 Controller", Properties.Resources.C64Joystick);
-			ControllerImages.Add("GBA Controller", Properties.Resources.GBA_Controller);
-			ControllerImages.Add("Dual Gameboy Controller", Properties.Resources.GBController);
-			ControllerImages.Add("Nintento 64 Controller", Properties.Resources.N64);
-			ControllerImages.Add("Saturn Controller", Properties.Resources.SaturnController);
-			//ControllerImages.Add("PSP Controller", Properties.Resources);
-			ControllerImages.Add("PC Engine Controller", Properties.Resources.PCEngineController);
-			ControllerImages.Add("Atari 2600 Basic Controller", Properties.Resources.atari_controller);
-			ControllerImages.Add("Genesis 3-Button Controller", Properties.Resources.GENController);
-			ControllerImages.Add("Gameboy Controller", Properties.Resources.GBController);
-			ControllerImages.Add("SMS Controller", Properties.Resources.SMSController);
-			ControllerImages.Add("TI83 Controller", Properties.Resources.TI83_Controller);
-			//ControllerImages.Add(, Properties.Resources);
+            ControllerImages.Add("TI83 Controller", Properties.Resources.TI83_Controller);
+
+            //ControllerImages.Add("PSP Controller", Properties.Resources); //TODO
 		}
 
 		const int MAXPLAYERS = 8;
