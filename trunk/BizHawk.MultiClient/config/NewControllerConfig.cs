@@ -235,10 +235,73 @@ namespace BizHawk.MultiClient.config
 			get { return PathManager.MakeProgramRelativePath("defctrl.json"); }
 		}
 
+        private TabControl GetTabControl(System.Windows.Forms.Control.ControlCollection controls)
+        {
+            if (controls != null)
+            {
+                foreach (Control c in controls)
+                {
+                    if (c is TabControl)
+                    {
+                        return (c as TabControl);
+                    }
+                }
+            }
+            return null;
+        }
+
 		private void buttonLoadDefaults_Click(object sender, EventArgs e)
 		{
-			RestoreDefaults();
-			Close();
+            tabControl1.SuspendLayout();
+            RestoreDefaults();
+
+            string wasTabbedMain = tabControl1.SelectedTab.Name;
+            TabControl tb1 = GetTabControl(tabPage1.Controls ?? null);
+            TabControl tb2 = GetTabControl(tabPage2.Controls ?? null);
+            TabControl tb3 = GetTabControl(tabPage3.Controls ?? null);
+            int? wasTabbedPage1 = null;
+            int? wasTabbedPage2 = null;
+            int? wasTabbedPage3 = null;
+
+            if (tb1 != null && tb1.SelectedTab != null) { wasTabbedPage1 = tb1.SelectedIndex; }
+            if (tb2 != null && tb2.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
+            if (tb3 != null && tb3.SelectedTab != null) { wasTabbedPage2 = tb3.SelectedIndex; }
+
+            tabPage1.Controls.Clear();
+            tabPage2.Controls.Clear();
+            tabPage3.Controls.Clear();
+            LoadPanels();
+
+            tabControl1.SelectTab(wasTabbedMain);
+
+            if (wasTabbedPage1.HasValue)
+            {
+                TabControl newTb1 = GetTabControl(tabPage1.Controls ?? null);
+                if (newTb1 != null)
+                {
+                    newTb1.SelectTab(wasTabbedPage1.Value);
+                }
+            }
+
+            if (wasTabbedPage2.HasValue)
+            {
+                TabControl newTb2 = GetTabControl(tabPage2.Controls ?? null);
+                if (newTb2 != null)
+                {
+                    newTb2.SelectTab(wasTabbedPage2.Value);
+                }
+            }
+
+            if (wasTabbedPage3.HasValue)
+            {
+                TabControl newTb3 = GetTabControl(tabPage3.Controls ?? null);
+                if (newTb3 != null)
+                {
+                    newTb3.SelectTab(wasTabbedPage3.Value);
+                }
+            }
+
+            tabControl1.ResumeLayout();
 		}
 
 		public void RestoreDefaults()
