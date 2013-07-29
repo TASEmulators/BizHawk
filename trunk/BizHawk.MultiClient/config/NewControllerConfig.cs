@@ -19,11 +19,12 @@ namespace BizHawk.MultiClient.config
             ControllerImages.Add("GBA Controller", Properties.Resources.GBA_Controller);
             ControllerImages.Add("Dual Gameboy Controller", Properties.Resources.GBController);
 
-            ControllerImages.Add("ColecoVision Basic Controller", Properties.Resources.colecovisioncontroller);
             ControllerImages.Add("SMS Controller", Properties.Resources.SMSController);
             ControllerImages.Add("Genesis 3-Button Controller", Properties.Resources.GENController);
             ControllerImages.Add("Saturn Controller", Properties.Resources.SaturnController);
 
+            ControllerImages.Add("Intellivision Controller", Properties.Resources.IntVController);
+            ControllerImages.Add("ColecoVision Basic Controller", Properties.Resources.colecovisioncontroller);
             ControllerImages.Add("Atari 2600 Basic Controller", Properties.Resources.atari_controller);
             ControllerImages.Add("Atari 7800 ProLine Joystick Controller", Properties.Resources.A78Joystick);
 
