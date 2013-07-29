@@ -23,8 +23,8 @@ namespace BizHawk.MultiClient
 
 		public int MarginTop = 0;
 		public int Spacing = 24;
-		public int InputSize = 100;
-		public int ColumnWidth = 210;
+		public int InputSize = 170;
+		public int ColumnWidth = 280;
 		public int LabelWidth = 60;
 
 		protected List<InputWidget> Inputs = new List<InputWidget>();
@@ -133,7 +133,7 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < buttons.Count; i++)
 			{
 				y += Spacing;
-				if (y > (_panelSize.Height))
+				if (y > (_panelSize.Height - 30))
 				{
 					y = MarginTop;
 					x += ColumnWidth;
