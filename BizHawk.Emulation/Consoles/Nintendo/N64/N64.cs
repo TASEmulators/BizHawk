@@ -37,10 +37,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			Name = "Nintento 64 Controller",
 			BoolButtons =
 			{
-				"P1 DPad R", "P1 DPad L", "P1 DPad D", "P1 DPad U", "P1 Start", "P1 Z", "P1 B", "P1 A", "P1 C Right", "P1 C Left", "P1 C Down", "P1 C Up", "P1 R", "P1 L", "P1 A Up", "P1 A Down", "P1 A Left", "P1 A Right",
-				"P2 DPad R", "P2 DPad L", "P2 DPad D", "P2 DPad U", "P2 Start", "P2 Z", "P2 B", "P2 A", "P2 C Right", "P2 C Left", "P2 C Down", "P2 C Up", "P2 R", "P2 L", "P2 A Up", "P2 A Down", "P2 A Left", "P2 A Right",
-				"P3 DPad R", "P3 DPad L", "P3 DPad D", "P3 DPad U", "P3 Start", "P3 Z", "P3 B", "P3 A", "P3 C Right", "P3 C Left", "P3 C Down", "P3 C Up", "P3 R", "P3 L", "P3 A Up", "P3 A Down", "P3 A Left", "P3 A Right",
-				"P4 DPad R", "P4 DPad L", "P4 DPad D", "P4 DPad U", "P4 Start", "P4 Z", "P4 B", "P4 A", "P4 C Right", "P4 C Left", "P4 C Down", "P4 C Up", "P4 R", "P4 L", "P4 A Up", "P4 A Down", "P4 A Left", "P4 A Right",
+				"P1 A Up", "P1 A Down", "P1 A Left", "P1 A Right", "P1 DPad U", "P1 DPad D", "P1 DPad L", "P1 DPad R", "P1 Start", "P1 Z", "P1 B", "P1 A", "P1 C Up", "P1 C Down", "P1 C Right", "P1 C Left", "P1 L", "P1 R", 
+				"P2 A Up", "P2 A Down", "P2 A Left", "P2 A Right", "P2 DPad U", "P2 DPad D", "P2 DPad L", "P2 DPad R", "P2 Start", "P2 Z", "P2 B", "P2 A", "P2 C Up", "P2 C Down", "P2 C Right", "P2 C Left", "P2 L", "P2 R", 
+				"P3 A Up", "P3 A Down", "P3 A Left", "P3 A Right", "P3 DPad U", "P3 DPad D", "P3 DPad L", "P3 DPad R", "P3 Start", "P3 Z", "P3 B", "P3 A", "P3 C Up", "P3 C Down", "P3 C Right", "P3 C Left", "P3 L", "P3 R", 
+				"P4 A Up", "P4 A Down", "P4 A Left", "P4 A Right", "P4 DPad U", "P4 DPad D", "P4 DPad L", "P4 DPad R", "P4 Start", "P4 Z", "P4 B", "P4 A", "P4 C Up", "P4 C Down", "P4 C Right", "P4 C Left", "P4 L", "P4 R", 
 				"Reset", "Power"
 			},
 			FloatControls =
