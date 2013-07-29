@@ -125,7 +125,7 @@ namespace BizHawk.MultiClient
 		public void EraseMappings()
 		{
 			ClearBindings();
-			conflicted = false;
+			Conflicted = false;
 			Text = "";
 		}
 
@@ -142,7 +142,7 @@ namespace BizHawk.MultiClient
 				if (TempBindingStr == "Escape")
 				{
 					ClearBindings();
-					conflicted = false;
+					Conflicted = false;
 					Increment();
 					return;
 				}
