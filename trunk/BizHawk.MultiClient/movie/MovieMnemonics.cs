@@ -786,7 +786,7 @@ namespace BizHawk.MultiClient
 
 			for (int player = 1; player <= MnemonicConstants.PLAYERS[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + MnemonicConstants.ANALOGS[ControlType].Count * 4 + 1);
+				int srcindex = (player - 1) * (MnemonicConstants.BUTTONS[ControlType].Count + MnemonicConstants.ANALOGS[ControlType].Count * 4 + 1 + 1);
 
 				if (mnemonic.Length < srcindex + 3 + MnemonicConstants.BUTTONS[ControlType].Count - 1)
 				{
