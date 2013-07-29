@@ -457,6 +457,17 @@
       "P2 B1": "",
       "P2 B2": "",
     },
+    "Genesis 3-Button Controller": {
+      "Reset": "",
+      "P1 Up": "UpArrow, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "DownArrow, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow, X1 DpadRight, X1 LStickRight",
+      "P1 A": "Z, J1 B1, X1 A",
+      "P1 B": "X, J1 B1, X1 B",
+      "P1 C": "C, J1 B4, X1 X",
+      "P1 Start": "Return, X1 J1 B10, X1 Start",
+    },
     "Dual Gameboy Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
