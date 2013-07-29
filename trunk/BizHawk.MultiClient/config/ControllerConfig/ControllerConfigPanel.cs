@@ -133,7 +133,7 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < buttons.Count; i++)
 			{
 				y += Spacing;
-				if (y > (_panelSize.Height - 23))
+				if (y > (_panelSize.Height))
 				{
 					y = MarginTop;
 					x += ColumnWidth;
