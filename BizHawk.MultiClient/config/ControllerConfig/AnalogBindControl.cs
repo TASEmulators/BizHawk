@@ -27,6 +27,9 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 			this.ButtonName = ButtonName;
 			labelButtonName.Text = ButtonName;
 			trackBarSensitivity.Value = (int)(Bind.Mult * 10.0f);
+			trackBarDeadzone.Value = (int)(Bind.Deadzone * 10.0f);
+			trackBarSensitivity_ValueChanged(null, null);
+			trackBarDeadzone_ValueChanged(null, null);
 			textBox1.Text = Bind.Value;
 		}
 
@@ -66,6 +69,12 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 		{
 			Bind.Mult = trackBarSensitivity.Value / 10.0f;
 			labelSensitivity.Text = string.Format("Sensitivity: {0}", Bind.Mult);
+		}
+
+		private void trackBarDeadzone_ValueChanged(object sender, EventArgs e)
+		{
+			Bind.Deadzone = trackBarDeadzone.Value / 10.0f;
+			labelDeadzone.Text = string.Format("Deadzone: {0}", Bind.Deadzone);
 		}
 	}
 }

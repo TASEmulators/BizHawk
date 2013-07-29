@@ -92,11 +92,27 @@ namespace BizHawk.MultiClient
 				float input = controller.GetFloat(kvp.Value.Value);
 				string outkey = kvp.Key;
 				float multiplier = kvp.Value.Mult;
+				float deadzone = kvp.Value.Deadzone;
 				ControllerDefinition.FloatRange range;
 				if (FloatRanges.TryGetValue(outkey, out range))
 				{
 					// input range is assumed to be -10000,0,10000
-					// todo: deadzones and such
+
+					// first, modify for deadzone
+					{
+						float absinput = Math.Abs(input);
+						float zeropoint = deadzone * 10000.0f;
+						if (absinput < zeropoint)
+							input = 0.0f;
+						else
+						{
+							absinput -= zeropoint;
+							absinput *= 10000.0f;
+							absinput /= (10000.0f - zeropoint);
+							input = absinput * Math.Sign(input);
+						}
+					}
+
 					float output = (input * multiplier + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
 					if (output < range.Min) output = range.Min;
 					if (output > range.Max) output = range.Max;

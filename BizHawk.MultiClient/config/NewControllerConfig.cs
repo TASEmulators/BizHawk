@@ -153,7 +153,7 @@ namespace BizHawk.MultiClient.config
 		{
 			LoadToPanel(tabPage1, the_definition.Name, the_definition.BoolButtons, Global.Config.AllTrollers, "", CreateNormalPanel);
 			LoadToPanel(tabPage2, the_definition.Name, the_definition.BoolButtons, Global.Config.AllTrollersAutoFire, "", CreateNormalPanel);
-			LoadToPanel(tabPage3, the_definition.Name, the_definition.FloatControls, Global.Config.AllTrollersAnalog, new Config.AnalogBind("", 1.0f), CreateAnalogPanel);
+			LoadToPanel(tabPage3, the_definition.Name, the_definition.FloatControls, Global.Config.AllTrollersAnalog, new Config.AnalogBind("", 1.0f, 0.0f), CreateAnalogPanel);
 
 			if (tabPage3.Controls.Count == 0)
 			{

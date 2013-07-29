@@ -702,10 +702,13 @@ namespace BizHawk.MultiClient
 			public string Value;
 			/// <summary>sensitivity and flip</summary>
 			public float Mult;
-			public AnalogBind(string Value, float Mult)
+			/// <summary>portion of axis to ignore</summary>
+			public float Deadzone;
+			public AnalogBind(string Value, float Mult, float Deadzone)
 			{
 				this.Value = Value;
 				this.Mult = Mult;
+				this.Deadzone = Deadzone;
 			}
 		}
 
