@@ -222,13 +222,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			Frame = reader.ReadInt32();
 		}
 
+		byte[] SaveStateBinaryPrivateBuff = new byte[0];
+
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
+			// WELCOME TO THE HACK ZONE
+			byte[] saveram = api.SaveSaveram();
+
+			int lenwant = 4 + SaveStatePrivateBuff.Length + saveram.Length + 1 + 4 + 4;
+			if (SaveStateBinaryPrivateBuff.Length != lenwant)
+			{
+				Console.WriteLine("Allocating new N64 private buffer size {0}", lenwant);
+				SaveStateBinaryPrivateBuff = new byte[lenwant];
+			}
+
+			MemoryStream ms = new MemoryStream(SaveStateBinaryPrivateBuff);
 			BinaryWriter bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
-			return ms.ToArray();
+
+			if (ms.Length != SaveStateBinaryPrivateBuff.Length)
+				throw new Exception("Unexpected Length");
+
+			return SaveStateBinaryPrivateBuff;// ms.ToArray();
 		}
 
 		public bool BinarySaveStatesPreferred { get { return true; } }
