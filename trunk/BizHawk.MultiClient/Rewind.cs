@@ -251,8 +251,9 @@ namespace BizHawk.MultiClient
 
 			MainForm mf;
 
-			public RewindThreader(MainForm mf)
+			public RewindThreader(MainForm mf, bool isThreaded)
 			{
+				IsThreaded = isThreaded;
 				this.mf = mf;
 
 				if (IsThreaded)
@@ -405,7 +406,7 @@ namespace BizHawk.MultiClient
 			RewindBuf = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, cap);
 			if (RewindThread != null)
 				RewindThread.Dispose();
-			RewindThread = new RewindThreader(this);
+			RewindThread = new RewindThreader(this, Global.Config.Rewind_IsThreaded);
 			
 			// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
 			LastState = Global.Emulator.SaveStateBinary();

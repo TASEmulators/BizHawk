@@ -18,7 +18,7 @@ namespace BizHawk.MultiClient
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
 			StateSize = Global.Emulator.SaveStateBinary().Length;
-
+			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
 			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
 			BufferSizeUpDown.Value = Global.Config.Rewind_BufferSize;
 
@@ -106,6 +106,12 @@ namespace BizHawk.MultiClient
 			Global.Config.Rewind_LargeStateSize = (int)(LargeStateUpDown.Value * 1024);
 			Global.Config.Rewind_OnDisk = DiskBufferCheckbox.Checked;
 			Global.Config.Rewind_BufferSize = (int)BufferSizeUpDown.Value;
+			if (Global.Config.Rewind_IsThreaded != RewindIsThreadedCheckbox.Checked)
+			{
+				Global.MainForm.FlagNeedsReboot();
+				Global.Config.Rewind_IsThreaded = RewindIsThreadedCheckbox.Checked;
+			}
+
 			Close();
 		}
 

@@ -65,6 +65,7 @@
 			this.BufferSizeUpDown = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
 			this.DiskBufferCheckbox = new System.Windows.Forms.CheckBox();
+			this.RewindIsThreadedCheckbox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
@@ -81,7 +82,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(215, 369);
+			this.OK.Location = new System.Drawing.Point(215, 389);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -93,7 +94,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(296, 369);
+			this.Cancel.Location = new System.Drawing.Point(296, 389);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -131,7 +132,7 @@
 			this.groupBox1.Controls.Add(this.SmallLabel3);
 			this.groupBox1.Controls.Add(this.SmallSavestateNumeric);
 			this.groupBox1.Controls.Add(this.SmallLabel1);
-			this.groupBox1.Location = new System.Drawing.Point(12, 128);
+			this.groupBox1.Location = new System.Drawing.Point(12, 154);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(359, 118);
 			this.groupBox1.TabIndex = 3;
@@ -320,7 +321,7 @@
 			// UseDeltaCompression
 			// 
 			this.UseDeltaCompression.AutoSize = true;
-			this.UseDeltaCompression.Location = new System.Drawing.Point(9, 39);
+			this.UseDeltaCompression.Location = new System.Drawing.Point(9, 38);
 			this.UseDeltaCompression.Name = "UseDeltaCompression";
 			this.UseDeltaCompression.Size = new System.Drawing.Size(133, 17);
 			this.UseDeltaCompression.TabIndex = 4;
@@ -370,7 +371,7 @@
 			this.groupBox2.Controls.Add(this.MediumStateSizeLabel);
 			this.groupBox2.Controls.Add(this.label2);
 			this.groupBox2.Controls.Add(this.MediumStateTrackbar);
-			this.groupBox2.Location = new System.Drawing.Point(12, 252);
+			this.groupBox2.Location = new System.Drawing.Point(12, 278);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(359, 105);
 			this.groupBox2.TabIndex = 8;
@@ -476,6 +477,7 @@
 			// 
 			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Controls.Add(this.RewindIsThreadedCheckbox);
 			this.groupBox3.Controls.Add(this.label4);
 			this.groupBox3.Controls.Add(this.BufferSizeUpDown);
 			this.groupBox3.Controls.Add(this.label3);
@@ -483,14 +485,14 @@
 			this.groupBox3.Controls.Add(this.UseDeltaCompression);
 			this.groupBox3.Location = new System.Drawing.Point(12, 25);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(359, 97);
+			this.groupBox3.Size = new System.Drawing.Size(359, 123);
 			this.groupBox3.TabIndex = 9;
 			this.groupBox3.TabStop = false;
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(148, 70);
+			this.label4.Location = new System.Drawing.Point(148, 86);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(21, 13);
 			this.label4.TabIndex = 16;
@@ -498,7 +500,7 @@
 			// 
 			// BufferSizeUpDown
 			// 
-			this.BufferSizeUpDown.Location = new System.Drawing.Point(90, 68);
+			this.BufferSizeUpDown.Location = new System.Drawing.Point(90, 84);
 			this.BufferSizeUpDown.Maximum = new decimal(new int[] {
             32768,
             0,
@@ -521,7 +523,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(11, 70);
+			this.label3.Location = new System.Drawing.Point(11, 86);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(81, 13);
 			this.label3.TabIndex = 6;
@@ -537,13 +539,23 @@
 			this.DiskBufferCheckbox.Text = "Use disk for buffer instead of RAM";
 			this.DiskBufferCheckbox.UseVisualStyleBackColor = true;
 			// 
+			// RewindIsThreadedCheckbox
+			// 
+			this.RewindIsThreadedCheckbox.AutoSize = true;
+			this.RewindIsThreadedCheckbox.Location = new System.Drawing.Point(9, 60);
+			this.RewindIsThreadedCheckbox.Name = "RewindIsThreadedCheckbox";
+			this.RewindIsThreadedCheckbox.Size = new System.Drawing.Size(111, 17);
+			this.RewindIsThreadedCheckbox.TabIndex = 17;
+			this.RewindIsThreadedCheckbox.Text = "Threaded Rewind";
+			this.RewindIsThreadedCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// RewindConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(383, 404);
+			this.ClientSize = new System.Drawing.Size(383, 424);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.StateSizeLabel);
@@ -612,5 +624,6 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.NumericUpDown BufferSizeUpDown;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.CheckBox RewindIsThreadedCheckbox;
 	}
 }
