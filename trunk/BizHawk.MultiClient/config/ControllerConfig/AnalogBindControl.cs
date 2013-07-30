@@ -68,13 +68,13 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 		private void trackBarSensitivity_ValueChanged(object sender, EventArgs e)
 		{
 			Bind.Mult = trackBarSensitivity.Value / 10.0f;
-			labelSensitivity.Text = string.Format("Sensitivity: {0}", Bind.Mult);
+			labelSensitivity.Text = String.Format("Sensitivity: {0}", (Bind.Mult*100)) + "%";
 		}
 
 		private void trackBarDeadzone_ValueChanged(object sender, EventArgs e)
 		{
 			Bind.Deadzone = trackBarDeadzone.Value / 10.0f;
-			labelDeadzone.Text = string.Format("Deadzone: {0}", Bind.Deadzone);
+			labelDeadzone.Text = String.Format("Deadzone: {0}", (Bind.Deadzone*100)) + "%";
 		}
 	}
 }
