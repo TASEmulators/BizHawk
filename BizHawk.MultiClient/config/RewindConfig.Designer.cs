@@ -66,6 +66,11 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.DiskBufferCheckbox = new System.Windows.Forms.CheckBox();
 			this.RewindIsThreadedCheckbox = new System.Windows.Forms.CheckBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.FullnessLabel = new System.Windows.Forms.Label();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.label7 = new System.Windows.Forms.Label();
+			this.RewindFramesUsedLabel = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
@@ -77,12 +82,13 @@
 			((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).BeginInit();
 			this.groupBox3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
+			this.groupBox4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(215, 389);
+			this.OK.Location = new System.Drawing.Point(215, 430);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -94,7 +100,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(296, 389);
+			this.Cancel.Location = new System.Drawing.Point(296, 430);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -132,7 +138,7 @@
 			this.groupBox1.Controls.Add(this.SmallLabel3);
 			this.groupBox1.Controls.Add(this.SmallSavestateNumeric);
 			this.groupBox1.Controls.Add(this.SmallLabel1);
-			this.groupBox1.Location = new System.Drawing.Point(12, 154);
+			this.groupBox1.Location = new System.Drawing.Point(12, 195);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(359, 118);
 			this.groupBox1.TabIndex = 3;
@@ -331,16 +337,16 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(18, 9);
+			this.label1.Location = new System.Drawing.Point(12, 17);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(118, 13);
+			this.label1.Size = new System.Drawing.Size(81, 13);
 			this.label1.TabIndex = 5;
-			this.label1.Text = "Current Savestate Size:";
+			this.label1.Text = "Savestate Size:";
 			// 
 			// StateSizeLabel
 			// 
 			this.StateSizeLabel.AutoSize = true;
-			this.StateSizeLabel.Location = new System.Drawing.Point(142, 9);
+			this.StateSizeLabel.Location = new System.Drawing.Point(92, 17);
 			this.StateSizeLabel.Name = "StateSizeLabel";
 			this.StateSizeLabel.Size = new System.Drawing.Size(28, 13);
 			this.StateSizeLabel.TabIndex = 6;
@@ -371,7 +377,7 @@
 			this.groupBox2.Controls.Add(this.MediumStateSizeLabel);
 			this.groupBox2.Controls.Add(this.label2);
 			this.groupBox2.Controls.Add(this.MediumStateTrackbar);
-			this.groupBox2.Location = new System.Drawing.Point(12, 278);
+			this.groupBox2.Location = new System.Drawing.Point(12, 319);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(359, 105);
 			this.groupBox2.TabIndex = 8;
@@ -483,9 +489,9 @@
 			this.groupBox3.Controls.Add(this.label3);
 			this.groupBox3.Controls.Add(this.DiskBufferCheckbox);
 			this.groupBox3.Controls.Add(this.UseDeltaCompression);
-			this.groupBox3.Location = new System.Drawing.Point(12, 25);
+			this.groupBox3.Location = new System.Drawing.Point(12, 72);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(359, 123);
+			this.groupBox3.Size = new System.Drawing.Size(359, 117);
 			this.groupBox3.TabIndex = 9;
 			this.groupBox3.TabStop = false;
 			// 
@@ -549,17 +555,67 @@
 			this.RewindIsThreadedCheckbox.Text = "Threaded Rewind";
 			this.RewindIsThreadedCheckbox.UseVisualStyleBackColor = true;
 			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(285, 33);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(26, 13);
+			this.label6.TabIndex = 10;
+			this.label6.Text = "Full:";
+			// 
+			// FullnessLabel
+			// 
+			this.FullnessLabel.AutoSize = true;
+			this.FullnessLabel.Location = new System.Drawing.Point(312, 33);
+			this.FullnessLabel.Name = "FullnessLabel";
+			this.FullnessLabel.Size = new System.Drawing.Size(21, 13);
+			this.FullnessLabel.TabIndex = 11;
+			this.FullnessLabel.Text = "0%";
+			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.RewindFramesUsedLabel);
+			this.groupBox4.Controls.Add(this.label7);
+			this.groupBox4.Controls.Add(this.label1);
+			this.groupBox4.Controls.Add(this.FullnessLabel);
+			this.groupBox4.Controls.Add(this.label6);
+			this.groupBox4.Controls.Add(this.StateSizeLabel);
+			this.groupBox4.Location = new System.Drawing.Point(12, 12);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(359, 59);
+			this.groupBox4.TabIndex = 12;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "Current Statistics";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(233, 17);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(78, 13);
+			this.label7.TabIndex = 12;
+			this.label7.Text = "Frames Stored:";
+			// 
+			// RewindFramesUsedLabel
+			// 
+			this.RewindFramesUsedLabel.AutoSize = true;
+			this.RewindFramesUsedLabel.Location = new System.Drawing.Point(312, 17);
+			this.RewindFramesUsedLabel.Name = "RewindFramesUsedLabel";
+			this.RewindFramesUsedLabel.Size = new System.Drawing.Size(13, 13);
+			this.RewindFramesUsedLabel.TabIndex = 13;
+			this.RewindFramesUsedLabel.Text = "0";
+			// 
 			// RewindConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(383, 424);
+			this.ClientSize = new System.Drawing.Size(383, 465);
+			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.StateSizeLabel);
-			this.Controls.Add(this.label1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
@@ -581,8 +637,9 @@
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -625,5 +682,10 @@
 		private System.Windows.Forms.NumericUpDown BufferSizeUpDown;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.CheckBox RewindIsThreadedCheckbox;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label FullnessLabel;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.Label RewindFramesUsedLabel;
+		private System.Windows.Forms.Label label7;
 	}
 }

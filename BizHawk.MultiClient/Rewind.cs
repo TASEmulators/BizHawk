@@ -16,6 +16,8 @@ namespace BizHawk.MultiClient
 		private int RewindFrequency = 1;
 		private bool RewindDeltaEnable = false;
 
+		public float Rewind_FullnessRatio { get { return RewindBuf.FullnessRatio; } }
+		public int Rewind_Count { get { return RewindBuf.Count; } }
 		/// <summary>
 		/// Manages a ring buffer of storage which can continually chow its own tail to keep growing forward.
 		/// Probably only useful for the rewind buffer, so I didnt put it in another file
