@@ -17,6 +17,8 @@ namespace BizHawk.MultiClient
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
+			FullnessLabel.Text = String.Format("{0:0.00}", Global.MainForm.Rewind_FullnessRatio * 100) + "%";
+			RewindFramesUsedLabel.Text = Global.MainForm.Rewind_Count.ToString();
 			StateSize = Global.Emulator.SaveStateBinary().Length;
 			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
 			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
@@ -53,7 +55,17 @@ namespace BizHawk.MultiClient
 		private void SetStateSize()
 		{
 			double num = StateSize / 1024.0;
-			StateSizeLabel.Text = String.Format("{0:0.00}", num) + " kb";
+
+			if (StateSize >= 1024)
+			{
+				num /= 1024.0;
+				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " mb";
+			}
+			else
+			{
+				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " kb";
+			}
+
 
 			SmallLabel1.Text = "Small savestates (less than " + (MediumStateSize / 1024).ToString() + "kb)";
 			MediumLabel1.Text = "Medium savestates (" + (MediumStateSize / 1024).ToString()
