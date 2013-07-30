@@ -188,9 +188,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.N64
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
 
+		byte[] SaveStatePrivateBuff = new byte[16788288 + 1024];
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			byte[] data = new byte[16788288 + 1024];
+			byte[] data = SaveStatePrivateBuff;
 			int bytes_used = api.SaveState(data);
 
 			writer.Write(data.Length);
