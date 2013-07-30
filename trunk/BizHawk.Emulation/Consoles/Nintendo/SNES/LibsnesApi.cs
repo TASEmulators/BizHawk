@@ -947,7 +947,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.SNES
 
 			public void Allocate()
 			{
-				mmf = MemoryMappedFile.CreateNew(BlockName, Size);
+				//we can't allocate 0 bytes here.. so just allocate 1 byte here if 0 was requested. it should be OK, and we dont have to handle cases where blocks havent been allocated
+				int sizeToAlloc = Size;
+				if (sizeToAlloc == 0) sizeToAlloc = 1;
+				mmf = MemoryMappedFile.CreateNew(BlockName, sizeToAlloc);
 				mmva = mmf.CreateViewAccessor();
 				mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref Ptr);
 			}
