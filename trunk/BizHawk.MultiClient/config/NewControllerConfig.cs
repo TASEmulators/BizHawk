@@ -170,6 +170,23 @@ namespace BizHawk.MultiClient.config
 			pictureBox1.Image = bmp;
 			pictureBox1.Size = bmp.Size;
 			tableLayoutPanel1.ColumnStyles[1].Width = bmp.Width;
+
+            //Uberhack
+            if (ControlName == "Commodore 64 Controller")
+            {
+                PictureBox pictureBox2 = new PictureBox();
+                pictureBox2.Image = Properties.Resources.C64Keyboard;
+                pictureBox2.Size = Properties.Resources.C64Keyboard.Size;
+                tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Width;
+                pictureBox1.Height /= 2;
+                pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                pictureBox1.Dock = DockStyle.Top;
+                pictureBox2.Location = new Point(pictureBox1.Location.X, pictureBox1.Location.Y + pictureBox1.Size.Height + 10);
+                tableLayoutPanel1.Controls.Add(pictureBox2, 1, 0);
+
+                
+                pictureBox2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            }
 		}
 
 		// lazy methods, but they're not called often and actually
