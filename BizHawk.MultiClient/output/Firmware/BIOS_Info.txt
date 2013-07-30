@@ -42,6 +42,13 @@ filename	        hash
 7800NTSCBIOS.bin        sha1:D9D134BB6B36907C615A594CC7688F7BFCEF5B43	 
 7800PALBIOS.bin         sha1:5A140136A16D1D83E4FF32A19409CA376A8DF874	 
 
+Sega Saturn
+Sega Saturn BIOS v1.00 (US).bin	sha1:2b8cb4f87580683eb4d760e4ed210813d667f0a2
+Sega Saturn BIOS v1.00 (JAP).bin	sha1:2b8cb4f87580683eb4d760e4ed210813d667f0a2
+Sega Saturn BIOS v1.01 (JAP).bin	sha1:df94c5b4d47eb3cc404d88b33a8fda237eaf4720
+Sega Saturn BIOS (EUR).bin	sha1:faa8ea183a6d7bbe5d4e03bb1332519800d3fbc3
+Note: The 1.01 JAP bios is used by default.
+
 
 Colecovision
 filename	 hash
