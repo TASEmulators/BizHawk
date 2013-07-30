@@ -2155,11 +2155,29 @@ namespace BizHawk.MultiClient
 		public LuaTable joypad_get(object controller = null)
 		{
 			LuaTable buttons = _lua.NewTable();
-			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
-				if (controller == null)
-					buttons[button] = Global.ControllerOutput[button];
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
-					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
+            foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+            {
+                if (controller == null)
+                {
+                    buttons[button] = Global.ControllerOutput[button];
+                }
+                else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+                {
+                    buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
+                }
+            }
+
+            foreach (string button in Global.ControllerOutput.Source.Type.FloatControls)
+            {
+                if (controller == null)
+                {
+                    buttons[button] = Global.ControllerOutput.GetFloat(button);
+                }
+                else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+                {
+                    buttons[button.Substring(3)] = Global.ControllerOutput.GetFloat("P" + LuaInt(controller) + " " + button.Substring(3));
+                }
+            }
 
 			buttons["clear"] = null;
 			buttons["getluafunctionslist"] = null;
