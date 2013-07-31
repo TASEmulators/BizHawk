@@ -132,14 +132,13 @@ namespace BizHawk.MultiClient.config
 
 		private ControllerDefinition the_definition;
 		
-
 		public NewControllerConfig(ControllerDefinition def)
 			: this()
 		{
 			the_definition = def;
 			ControllerType = def.Name;
 			SuspendLayout();
-			LoadPanels();
+			LoadPanels(Global.Config);
 
 			Text = def.Name + " Configuration";
 			checkBoxUDLR.Checked = Global.Config.AllowUD_LR;
@@ -149,16 +148,28 @@ namespace BizHawk.MultiClient.config
 			ResumeLayout();
 		}
 
-		private void LoadPanels()
+		private void LoadPanels(Dictionary<string, Dictionary<string, string>> normal,
+			Dictionary<string, Dictionary<string, string>> autofire,
+			Dictionary<string, Dictionary<string, Config.AnalogBind>> analog)
 		{
-			LoadToPanel(tabPage1, the_definition.Name, the_definition.BoolButtons, Global.Config.AllTrollers, "", CreateNormalPanel);
-			LoadToPanel(tabPage2, the_definition.Name, the_definition.BoolButtons, Global.Config.AllTrollersAutoFire, "", CreateNormalPanel);
-			LoadToPanel(tabPage3, the_definition.Name, the_definition.FloatControls, Global.Config.AllTrollersAnalog, new Config.AnalogBind("", 1.0f, 0.0f), CreateAnalogPanel);
+			LoadToPanel(tabPage1, the_definition.Name, the_definition.BoolButtons, normal, "", CreateNormalPanel);
+			LoadToPanel(tabPage2, the_definition.Name, the_definition.BoolButtons, autofire, "", CreateNormalPanel);
+			LoadToPanel(tabPage3, the_definition.Name, the_definition.FloatControls, analog, new Config.AnalogBind("", 1.0f, 0.0f), CreateAnalogPanel);
 
 			if (tabPage3.Controls.Count == 0)
 			{
 				tabControl1.TabPages.Remove(tabPage3);
 			}
+		}
+
+		private void LoadPanels(ControlDefaults cd)
+		{
+			LoadPanels(cd.AllTrollers, cd.AllTrollersAutoFire, cd.AllTrollersAnalog);
+		}
+
+		private void LoadPanels(Config c)
+		{
+			LoadPanels(c.AllTrollers, c.AllTrollersAutoFire, c.AllTrollersAnalog);
 		}
 
 		void SetControllerPicture(string ControlName)
@@ -202,18 +213,22 @@ namespace BizHawk.MultiClient.config
 					SetAutoTab(cc, value);
 		}
 
-		static void Save(Control c)
+		void Save()
 		{
-			if (c is ControllerConfigPanel)
-				(c as ControllerConfigPanel).Save();
-			else if (c is AnalogBindPanel)
-				(c as AnalogBindPanel).Save();
-			else if (c.HasChildren)
-				foreach (Control cc in c.Controls)
-					Save(cc);
+			ActOnControlCollection<ControllerConfigPanel>(tabPage1, (c) => c.Save(Global.Config.AllTrollers[the_definition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(tabPage2, (c) => c.Save(Global.Config.AllTrollersAutoFire[the_definition.Name]));
+			ActOnControlCollection<AnalogBindPanel>(tabPage3, (c) => c.Save(Global.Config.AllTrollersAnalog[the_definition.Name]));
 		}
 
-
+		static void ActOnControlCollection<T>(Control c, Action<T> proc)
+			where T : Control
+		{
+			if (c is T)
+				proc(c as T);
+			else if (c.HasChildren)
+				foreach (Control cc in c.Controls)
+					ActOnControlCollection(cc, proc);
+		}
 
 		private void checkBoxAutoTab_CheckedChanged(object sender, EventArgs e)
 		{
@@ -229,7 +244,7 @@ namespace BizHawk.MultiClient.config
 			Global.Config.AllowUD_LR = checkBoxUDLR.Checked;
 			Global.Config.InputConfigAutoTab = checkBoxAutoTab.Checked;
 
-			Save(this);
+			Save();
 
 			Global.OSD.AddMessage("Controller settings saved");
 			DialogResult = DialogResult.OK;
@@ -270,7 +285,6 @@ namespace BizHawk.MultiClient.config
 		private void buttonLoadDefaults_Click(object sender, EventArgs e)
 		{
             tabControl1.SuspendLayout();
-            RestoreDefaults();
 
             string wasTabbedMain = tabControl1.SelectedTab.Name;
             TabControl tb1 = GetTabControl(tabPage1.Controls ?? null);
@@ -287,7 +301,13 @@ namespace BizHawk.MultiClient.config
             tabPage1.Controls.Clear();
             tabPage2.Controls.Clear();
             tabPage3.Controls.Clear();
-            LoadPanels();
+
+			// load panels directly from the default config.
+			// this means that the changes are NOT committed.  so "Cancel" works right and you
+			// still have to hit OK at the end.
+			ControlDefaults cd = new ControlDefaults();
+			cd = ConfigService.Load(ControlDefaultPath, cd);
+			LoadPanels(cd);
 
             tabControl1.SelectTab(wasTabbedMain);
 
@@ -319,43 +339,6 @@ namespace BizHawk.MultiClient.config
             }
 
             tabControl1.ResumeLayout();
-		}
-
-		public void RestoreDefaults()
-		{
-			// this is not clever.  i'm going to replace it with something more clever
-
-			ControlDefaults cd = new ControlDefaults();
-			cd = ConfigService.Load(ControlDefaultPath, cd);
-			Dictionary<string, string> settings;
-			Dictionary<string, Config.AnalogBind> asettings;
-
-			if (cd.AllTrollers.TryGetValue(ControllerType, out settings))
-			{
-				Global.Config.AllTrollers[ControllerType] = settings;
-			}
-			else
-			{
-				Global.Config.AllTrollers[ControllerType].Clear();
-			}
-
-			if (cd.AllTrollersAutoFire.TryGetValue(ControllerType, out settings))
-			{
-				Global.Config.AllTrollersAutoFire[ControllerType] = settings;
-			}
-			else
-			{
-				Global.Config.AllTrollersAutoFire[ControllerType].Clear();
-			}
-
-			if (cd.AllTrollersAnalog.TryGetValue(ControllerType, out asettings))
-			{
-				Global.Config.AllTrollersAnalog[ControllerType] = asettings;
-			}
-			else
-			{
-				Global.Config.AllTrollersAnalog[ControllerType].Clear();
-			}
 		}
 
 		class ControlDefaults

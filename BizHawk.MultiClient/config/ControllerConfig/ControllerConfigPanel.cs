@@ -81,10 +81,15 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void Save()
+		/// <summary>
+		/// save to config
+		/// </summary>
+		/// <param name="SaveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
+		public void Save(Dictionary<string, string>SaveConfigObject = null)
 		{
+			var saveto = SaveConfigObject ?? RealConfigObject;
 			for (int button = 0; button < buttons.Count; button++)
-				RealConfigObject[buttons[button]] = Inputs[button].Text;
+				saveto[buttons[button]] = Inputs[button].Text;
 		}
 
 		public bool Autotab = false;
