@@ -12,7 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-video-rice", ".
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-audio-sdl", "..\..\..\mupen64plus-audio-sdl\projects\msvc11\mupen64plus-audio-sdl.vcxproj", "{96969748-EA54-43FC-8103-A346E9AD98E7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-video-glide64mk2", "..\..\..\mupen64plus-video-glide64mk2\projects\msvc10\mupen64plus-video-glide64mk2.vcxproj", "{A4D13408-A794-4199-8FC7-4A9A32505005}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-video-glide64mk2", "..\..\..\mupen64plus-video-glide64mk2\projects\msvc11\mupen64plus-video-glide64mk2.vcxproj", "{A4D13408-A794-4199-8FC7-4A9A32505005}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mupen64plus-audio-bkm", "..\..\..\mupen64plus-audio-bkm\mupen64plus-audio-bkm\mupen64plus-audio-bkm.vcxproj", "{B6F20769-1385-4C0F-91A9-26F47AD1E78F}"
 EndProject
