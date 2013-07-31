@@ -23,6 +23,7 @@
 #define __OSD_H__
 
 #include "main/list.h"
+#include "osal/preproc.h"
 
 /******************************************************************
    osd_corner
@@ -100,36 +101,36 @@ void osd_message_set_user_managed(osd_message_t *);
 
 #else
 
-static inline void osd_init(int width, int height)
+static osal_inline void osd_init(int width, int height)
 {
 }
 
-static inline void osd_exit(void)
+static osal_inline void osd_exit(void)
 {
 }
 
-static inline void osd_render(void)
+static osal_inline void osd_render(void)
 {
 }
 
-static inline osd_message_t * osd_new_message(enum osd_corner eCorner, const char *fmt, ...)
+static osal_inline osd_message_t * osd_new_message(enum osd_corner eCorner, const char *fmt, ...)
 {
 	return NULL;
 }
 
-static inline void osd_update_message(osd_message_t *msg, const char *fmt, ...)
+static osal_inline void osd_update_message(osd_message_t *msg, const char *fmt, ...)
 {
 }
 
-static inline void osd_delete_message(osd_message_t *msg)
+static osal_inline void osd_delete_message(osd_message_t *msg)
 {
 }
 
-static inline void osd_message_set_static(osd_message_t *msg)
+static osal_inline void osd_message_set_static(osd_message_t *msg)
 {
 }
 
-static inline void osd_message_set_user_managed(osd_message_t *msg)
+static osal_inline void osd_message_set_user_managed(osd_message_t *msg)
 {
 }
 

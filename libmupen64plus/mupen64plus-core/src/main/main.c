@@ -527,8 +527,19 @@ m64p_error main_core_state_set(m64p_core_param param, int val)
             main_set_speedlimiter(val);
             return M64ERR_SUCCESS;
         case M64CORE_VIDEO_SIZE:
-            // you cannot force the screen size using this function
-            return M64ERR_INPUT_INVALID;
+        {
+            // the front-end app is telling us that the user has resized the video output frame, and so
+            // we should try to update the video plugin accordingly.  First, check state
+            int width, height;
+            if (!g_EmulatorRunning)
+                return M64ERR_INVALID_STATE;
+            width = (val >> 16) & 0xffff;
+            height = val & 0xffff;
+            // then call the video plugin.  if the video plugin supports resizing, it will resize its viewport and call
+            // VidExt_ResizeWindow to update the window manager handling our opengl output window
+            gfx.resizeVideoOutput(width, height);
+            return M64ERR_SUCCESS;
+        }
         case M64CORE_AUDIO_VOLUME:
             if (!g_EmulatorRunning)
                 return M64ERR_INVALID_STATE;

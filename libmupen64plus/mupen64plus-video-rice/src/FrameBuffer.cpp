@@ -618,13 +618,13 @@ uint32 CalculateRDRAMCRC(void *pPhysicalAddress, uint32 left, uint32 top, uint32
             uint32* pStart = (uint32*)pPhysicalAddress;
             pStart += (top * pitch) + (((left<<size)+1)>>3);
 
-            uint32 y = dwAsmHeight;
-            uint32 x,esi;
+            int y = dwAsmHeight;
 
-            while((int)y >= 0)
+            while(y >= 0)
             {
-                x = dwAsmdwBytesPerLine - 4;
-                while((int)x >= 0)
+                uint32 esi = 0;
+                int x = dwAsmdwBytesPerLine - 4;
+                while(x >= 0)
                 {
                     esi = *(uint32*)(pAsmStart + x);
                     esi ^= x;

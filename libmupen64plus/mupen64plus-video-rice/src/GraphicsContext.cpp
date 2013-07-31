@@ -65,6 +65,11 @@ bool CGraphicsContext::Initialize(uint32 dwWidth, uint32 dwHeight, BOOL bWindowe
     return true;
 }
 
+bool CGraphicsContext::ResizeInitialize(uint32 dwWidth, uint32 dwHeight, BOOL bWindowed )
+{
+    return true;
+}
+
 void CGraphicsContext::CleanUp()
 {
     m_bActive = false;

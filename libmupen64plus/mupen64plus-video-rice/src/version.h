@@ -27,10 +27,10 @@
 #define VERSION_H
 
 #define PLUGIN_NAME    "Mupen64Plus OpenGL Video Plugin by Rice"
-#define PLUGIN_VERSION           0x016305
-#define VIDEO_PLUGIN_API_VERSION 0x020100
+#define PLUGIN_VERSION           0x020000
+#define VIDEO_PLUGIN_API_VERSION 0x020200
 #define CONFIG_API_VERSION       0x020000
-#define VIDEXT_API_VERSION       0x020000
+#define VIDEXT_API_VERSION       0x030000
 
 #define VERSION_PRINTF_SPLIT(x) (((x) >> 16) & 0xffff), (((x) >> 8) & 0xff), ((x) & 0xff)
 

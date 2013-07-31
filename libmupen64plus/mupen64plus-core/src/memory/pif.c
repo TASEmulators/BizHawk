@@ -497,6 +497,8 @@ void update_pif_write(void)
             }
             // calculate the proper response for the given challenge (X-Scale's algorithm)
             n64_cic_nus_6105(challenge, response, CHL_LEN - 2);
+            PIF_RAMb[46] = 0;
+            PIF_RAMb[47] = 0;
             // re-format the 'response' into a byte stream
             for (i = 0; i < 15; i++)
             {

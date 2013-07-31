@@ -122,7 +122,7 @@ void to_big_endian_buffer(void *buffer, size_t length, size_t count)
 /**********************
      GUI utilities
  **********************/
-void countrycodestring(char countrycode, char *string)
+void countrycodestring(unsigned short countrycode, char *string)
 {
     switch (countrycode)
     {

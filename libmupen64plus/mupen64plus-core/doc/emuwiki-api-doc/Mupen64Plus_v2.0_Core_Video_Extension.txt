@@ -51,13 +51,14 @@ All of these functions should only be called from within the video plugin; they 
 <br />
 {| border="1"
 |Prototype
-|'''<tt>m64p_error VidExt_SetVideoMode(int Width, int Height, int BitsPerPixel, m64p_video_mode ScreenMode)</tt>'''
+|'''<tt>m64p_error VidExt_SetVideoMode(int Width, int Height, int BitsPerPixel, m64p_video_mode ScreenMode, m64p_video_flags Flags)</tt>'''
 |-
 |Input Parameters
 |'''<tt>Width</tt>''' Horizontal resolution in pixels of desired video window<br />
 '''<tt>Height</tt>''' Vertical resolution in pixels of desired video window<br />
 '''<tt>BitsPerPixel</tt>''' Pixel color resolution of desired video window.  This value must be 16, 24, or 32<br />
-'''<tt>ScreenMode</tt>''' Either <tt>M64VIDEO_WINDOWED</tt> or <tt>M64VIDEO_FULLSCREEN</tt>
+'''<tt>ScreenMode</tt>''' Either <tt>M64VIDEO_WINDOWED</tt> or <tt>M64VIDEO_FULLSCREEN</tt><br />
+'''<tt>Flags</tt>''' Logical-OR combination of flags which describes the video plugin's capabilities.
 |-
 |Requirements
 |The video extension must be initialized before calling this function.
@@ -94,6 +95,44 @@ All of these functions should only be called from within the video plugin; they 
 |This function toggles between fullscreen and windowed rendering modes.
 |}
 <br />
+{| border="1"
+|Prototype
+|'''<tt>m64p_error VidExt_ResizeWindow(int Width, int Height)</tt>'''
+|-
+|Input Parameters
+|'''<tt>Width</tt>''' Horizontal resolution of resized window in pixels<br />
+'''<tt>Height</tt>''' Vertical resolution of resized window in pixels
+|-
+|Requirements
+|The video extension must be initialized before calling this function.  The rendering window should already be created.
+|-
+|Usage
+|This function is called when the video plugin has resized its OpenGL output viewport in response to a ResizeVideoOutput() call, and requests that the window manager update the OpenGL rendering window size to match.  If a front-end application does not support resizable windows and never sets the M64CORE_VIDEO_SIZE core variable with the M64CMD_CORE_STATE_SET command, then this function should not be called.
+|}
+<br />
+
+===Window Resizing===
+The window resizing functionality is particularly complicated, so here is a high-level description of the events which make it happen:
+
+====Without video extension:====
+# In VidExt_SetVideoMode(), check if M64VIDEOFLAG_SUPPORT_RESIZING is set
+#* if True, create SDL window with RESIZABLE attribute
+# Core receives SDL_RESIZE messages in SDL event loop
+# If present, Core calls ResizeVideoOutput function in video plugin
+# Video Plugin calls ResizeWindow function in Video Extension
+#* Core calls SDL_SetVideoMode()
+# Core emits M64CORE_VIDEO_SIZE state changed callback
+
+====With video extension:====
+# in Front-end SetVideoMode() callback
+#* if M64VIDEOFLAG_SUPPORT_RESIZING is set, create resizable window frame
+# Front-end GUI gets window resize notification
+# Front-end calls CoreDoCommand w/ M64CMD_CORE_STATE_SET, w/ M64CORE_VIDEO_SIZE
+# If present, Core calls ResizeVideoOutput function in video plugin
+# Video Plugin calls ResizeWindow function in Video Extension
+# Core emits M64CORE_VIDEO_SIZE state changed callback
+
+In the Core Video Extension function ResizeWindow, the SDL function SetVideoMode() is called.  This function will destroy the current OpenGL context and create a new one.  For this reason, any video plugin which supports resizable windows must completely reset its OpenGL state including uploading any textures, FBOs, programs, etc after calling the VidExt_ResizeWindow function.
 
 == OpenGL Functions ==
 {| border="1"

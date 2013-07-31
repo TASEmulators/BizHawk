@@ -1723,6 +1723,8 @@ void DumpCachedTexture( TxtrCacheEntry &entry )
         newinfo.foldername = NULL;
         newinfo.filename = NULL;
         newinfo.filename_a = NULL;
+        newinfo.type = NO_TEXTURE;
+        newinfo.bSeparatedAlpha = false;
 
         uint64 crc64 = newinfo.crc32;
         crc64 <<= 32;

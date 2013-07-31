@@ -447,7 +447,6 @@ void gen_interupt(void)
             remove_interupt_event();
             MI_register.mi_intr_reg |= 0x02;
             si_register.si_stat |= 0x1000;
-            si_register.si_stat &= ~0x1;
             if (MI_register.mi_intr_reg & MI_register.mi_intr_mask_reg)
                 Cause = (Cause | 0x400) & 0xFFFFFF83;
             else

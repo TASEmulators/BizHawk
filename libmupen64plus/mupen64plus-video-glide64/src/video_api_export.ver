@@ -15,6 +15,7 @@ ViStatusChanged;
 ViWidthChanged;
 ReadScreen2;
 SetRenderingCallback;
+ResizeVideoOutput;
 FBRead;
 FBWrite;
 FBGetFrameBufferInfo;

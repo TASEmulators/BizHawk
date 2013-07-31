@@ -34,7 +34,7 @@ extern CONTROL Controls[4];
 
 /*** Version requirement information ***/
 #define RSP_API_VERSION   0x20000
-#define GFX_API_VERSION   0x20100
+#define GFX_API_VERSION   0x20200
 #define AUDIO_API_VERSION 0x20000
 #define INPUT_API_VERSION 0x20000
 
@@ -55,6 +55,7 @@ typedef struct _gfx_plugin_functions
 	ptr_ViWidthChanged   viWidthChanged;
 	ptr_ReadScreen2      readScreen;
 	ptr_SetRenderingCallback setRenderingCallback;
+    ptr_ResizeVideoOutput    resizeVideoOutput;
 
 	/* frame buffer plugin spec extension */
 	ptr_FBRead          fBRead;

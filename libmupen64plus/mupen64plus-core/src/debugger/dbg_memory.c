@@ -75,6 +75,8 @@ static MEMBREAKWRITE(write_rom, 8);
 
 #if !defined(NO_ASM) && (defined(__i386__) || defined(__x86_64__))
 
+/* we must define PACKAGE so that bfd.h (which is included from dis-asm.h) doesn't throw an error */
+#define PACKAGE "mupen64plus-core"
 #include <dis-asm.h>
 #include <stdarg.h>
 
