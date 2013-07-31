@@ -1,24 +1,24 @@
 {
   "AllTrollers": {
-      "NES Controller": {
-      "P1 Up": "UpArrow,J1 POV1U,  X1 DpadUp, X1 LStickUp",
-      "P1 Down": "DownArrow,J1 POV1D,  X1 DpadDown, X1 LStickDown",
-      "P1 Left": "LeftArrow,J1 POV1L,  X1 DpadLeft, X1 LStickLeft",
-      "P1 Right": "RightArrow,J1 POV1R,  X1 DpadRight, X1 LStickRight",
-      "P1 Start": "Return, J1 B10, X1 Start",
+    "NES Controller": {
+      "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
       "P1 Select": "Space, J1 B9, X1 Back",
+      "P1 Start": "Return, J1 B10, X1 Start",
       "P1 B": "X, X1 B",
       "P1 A": "Z, X1 A",
-      "Reset": "",
-      "Power": "",
       "P2 Up": "",
       "P2 Down": "",
       "P2 Left": "",
       "P2 Right": "",
-      "P2 Start": "",
       "P2 Select": "",
+      "P2 Start": "",
       "P2 B": "",
-      "P2 A": ""
+      "P2 A": "",
+      "Reset": "",
+      "Power": ""
     },
     "SNES Controller": {
       "Reset": "",
@@ -70,7 +70,7 @@
       "P4 B": "",
       "P4 A": "",
       "P4 L": "",
-      "P4 R": "",
+      "P4 R": ""
     },
     "Nintento 64 Controller": {
       "P1 A Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -80,7 +80,7 @@
       "P1 DPad U": "",
       "P1 DPad D": "",
       "P1 DPad L": "",
-      "P1 DPad R": "",         
+      "P1 DPad R": "",
       "P1 Start": "Return, J1 B10, X1 Start",
       "P1 Z": "D, J1 B3",
       "P1 B": "S, J1 B1, X1 B",
@@ -88,7 +88,7 @@
       "P1 C Up": "NumberPad8, J1 RotationZ-",
       "P1 C Down": "NumberPad2, J1 RotationZ+",
       "P1 C Left": "NumberPad4, J1 Z-",
-      "P1 C Right": "NumberPad6, J1 Z+",      
+      "P1 C Right": "NumberPad6, J1 Z+",
       "P1 L": "Q, J1 B5",
       "P1 R": "W, J1 B6",
       "P2 X Axis": "",
@@ -100,7 +100,7 @@
       "P2 DPad U": "",
       "P2 DPad D": "",
       "P2 DPad L": "",
-      "P2 DPad R": "",         
+      "P2 DPad R": "",
       "P2 Start": "",
       "P2 Z": "",
       "P2 B": "",
@@ -108,7 +108,7 @@
       "P2 C Up": "",
       "P2 C Down": "",
       "P2 C Left": "",
-      "P2 C Right": "",      
+      "P2 C Right": "",
       "P2 L": "",
       "P2 R": "",
       "P3 X Axis": "",
@@ -120,7 +120,7 @@
       "P3 DPad U": "",
       "P3 DPad D": "",
       "P3 DPad L": "",
-      "P3 DPad R": "",         
+      "P3 DPad R": "",
       "P3 Start": "",
       "P3 Z": "",
       "P3 B": "",
@@ -128,7 +128,7 @@
       "P3 C Up": "",
       "P3 C Down": "",
       "P3 C Left": "",
-      "P3 C Right": "",      
+      "P3 C Right": "",
       "P3 L": "",
       "P3 R": "",
       "P4 X Axis": "",
@@ -140,7 +140,7 @@
       "P4 DPad U": "",
       "P4 DPad D": "",
       "P4 DPad L": "",
-      "P4 DPad R": "",         
+      "P4 DPad R": "",
       "P4 Start": "",
       "P4 Z": "",
       "P4 B": "",
@@ -148,7 +148,7 @@
       "P4 C Up": "",
       "P4 C Down": "",
       "P4 C Left": "",
-      "P4 C Right": "",      
+      "P4 C Right": "",
       "P4 L": "",
       "P4 R": "",
       "Reset": "",
@@ -163,7 +163,7 @@
       "Select": "Space, J1 B9, X1 Back",
       "B": "Z, J1 B1, X1 B",
       "A": "X, J1 B2, X1 A",
-      "Power": "",
+      "Power": ""
     },
     "GBAController": {
       "Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -176,7 +176,7 @@
       "A": "X, X1 A",
       "L": "W, J1 B5, X1 LeftTrigger",
       "R": "E, J1 B6, X1 RightTrigger",
-      "Power": "",
+      "Power": ""
     },
     "Atari 2600 Basic Controller": {
       "Reset": "",
@@ -185,12 +185,12 @@
       "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
       "P1 Left": "LeftArrow,J1 POV1L,  X1 DpadLeft, X1 LStickLeft",
       "P1 Right": "RightArrow,J1 POV1R,  X1 DpadRight, X1 LStickRight",
-      "P1 Button": "Z, J1 B1, X1 A",     
+      "P1 Button": "Z, J1 B1, X1 A",
       "P2 Up": "NumberPad8, J1 RotationZ-",
       "P2 Down": "NumberPad2, J1 RotationZ+",
       "P2 Left": "NumberPad4, J1 Z-",
       "P2 Right": "NumberPad6, J1 Z+",
-      "P2 Button": "NumberPad1, J1 B4",
+      "P2 Button": "NumberPad1, J1 B4"
     },
     "Atari 7800 ProLine Joystick Controller": {
       "Power": "",
@@ -208,7 +208,7 @@
       "P2 Left": "NumberPad4, J1 Z-",
       "P2 Right": "NumberPad6, J1 Z+",
       "P2 Trigger 1": "NumberPad1, J1 B4",
-      "P2 Trigger 2": "NumberPad3, B1 B3",
+      "P2 Trigger 2": "NumberPad3, B1 B3"
     },
     "Commodore 64 Controller": {
       "P1 Up": "NumberPad8, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -255,7 +255,6 @@
       "Key At": "LeftBracket",
       "Key Asterisk": "RightBracket",
       "Key Up Arrow": "Backslash",
-      "Key Left Arrow": "",
       "Key Restore": "",
       "Key Run/Stop": "CapsLock",
       "Key Lck": "",
@@ -287,7 +286,7 @@
       "Key Right Shift": "RightShift",
       "Key Cursor Up/Down": "DownArrow",
       "Key Cursor Left/Right": "RightArrow",
-      "Key Space": "Space",
+      "Key Space": "Space"
     },
     "Intellivision Controller": {
       "P1 Up": "UpArrow, J1 POV1U,  X1 DpadUp, X1 LStickUp",
@@ -325,7 +324,7 @@
       "P2 Key8": "",
       "P2 Key9": "",
       "P2 Enter": "",
-      "P2 Clear": "",
+      "P2 Clear": ""
     },
     "Saturn Controller": {
       "Power": "",
@@ -337,7 +336,7 @@
       "P1 Start": "Return, X1 Start",
       "P1 X": "D, J1 B4",
       "P1 Y": "S, J1 B5",
-      "P1 Z": "A, J1 B6",     
+      "P1 Z": "A, J1 B6",
       "P1 A": "C, J1 B1",
       "P1 B": "X, J1 B2",
       "P1 C": "Z, J1 B5",
@@ -357,7 +356,7 @@
       "P2 L": "",
       "P2 R": ""
     },
-      "PC Engine Controller": {
+    "PC Engine Controller": {
       "Reset": "",
       "Power": "",
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -399,9 +398,9 @@
       "P5 B1": "",
       "P5 B2": "",
       "P5 Select": "",
-      "P5 Run": "",
+      "P5 Run": ""
     },
-      "ColecoVision Basic Controller": {
+    "ColecoVision Basic Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
       "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
@@ -437,9 +436,9 @@
       "P2 Key9": "",
       "P2 Star": "",
       "P2 Key0": "",
-      "P2 Pound": "",
+      "P2 Pound": ""
     },
-      "SMS Controller": {
+    "SMS Controller": {
       "P1 Up": "UpArrow, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, X1 DpadDown, X1 LStickDown",
       "P1 Left": "LeftArrow, X1 DpadLeft, X1 LStickLeft",
@@ -453,7 +452,7 @@
       "P2 Left": "",
       "P2 Right": "",
       "P2 B1": "",
-      "P2 B2": "",
+      "P2 B2": ""
     },
     "Genesis 3-Button Controller": {
       "Reset": "",
@@ -464,7 +463,7 @@
       "P1 A": "Z, J1 B1, X1 A",
       "P1 B": "X, J1 B1, X1 B",
       "P1 C": "C, J1 B4, X1 X",
-      "P1 Start": "Return, X1 J1 B10, X1 Start",
+      "P1 Start": "Return, X1 J1 B10, X1 Start"
     },
     "Dual Gameboy Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -537,8 +536,8 @@
       "SECOND": "Slash",
       "MODE": "BackSlash",
       "DEL": "Delete",
-      "COMMA": "Comma",
-    },
+      "COMMA": "Comma"
+    }
   },
   "AllTrollersAutoFire": {
     "NES Controller": {
@@ -546,20 +545,20 @@
       "P1 Down": "",
       "P1 Left": "",
       "P1 Right": "",
-      "P1 Start": "",
       "P1 Select": "",
+      "P1 Start": "",
       "P1 B": "A, J1 B4",
       "P1 A": "S, J1 B3",
-      "Reset": "",
-      "Power": "",
       "P2 Up": "",
       "P2 Down": "",
       "P2 Left": "",
       "P2 Right": "",
-      "P2 Start": "",
       "P2 Select": "",
+      "P2 Start": "",
       "P2 B": "",
-      "P2 A": ""
+      "P2 A": "",
+      "Reset": "",
+      "Power": ""
     },
     "Gameboy Controller": {
       "Up": "",
@@ -570,7 +569,7 @@
       "Select": "",
       "B": "A, J1 B4",
       "A": "S, J1 B3",
-      "Power": "",
+      "Power": ""
     },
     "GBAController": {
       "Up": "",
@@ -583,7 +582,7 @@
       "A": "S, J1 B3",
       "L": "",
       "R": "",
-      "Power": "",
+      "Power": ""
     },
     "Atari 2600 Basic Controller": {
       "Reset": "",
@@ -592,15 +591,15 @@
       "P1 Down": "",
       "P1 Left": "",
       "P1 Right": "",
-      "P1 Button": "A, J1 B4",     
+      "P1 Button": "A, J1 B4",
       "P2 Up": "",
       "P2 Down": "",
       "P2 Left": "",
       "P2 Right": "",
-      "P2 Button": "S, J1 B3",
-      },
+      "P2 Button": "S, J1 B3"
+    },
     "Null Controller": {},
-  "PC Engine Controller": {
+    "PC Engine Controller": {
       "Reset": "",
       "Power": "",
       "P1 Up": "",
@@ -642,7 +641,7 @@
       "P5 B2": "",
       "P5 B1": "",
       "P5 Select": "",
-      "P5 Run": "",
+      "P5 Run": ""
     },
     "SMS Controller": {
       "P1 Up": "",
@@ -658,7 +657,7 @@
       "P2 Left": "",
       "P2 Right": "",
       "P2 B1": "",
-      "P2 B2": "",
+      "P2 B2": ""
     }
   },
   "AllTrollersAnalog": {
@@ -703,6 +702,7 @@
         "Mult": 1,
         "Deadzone": 0
       }
-    }
-  },
+    },
+    "NES Controller": {}
+  }
 }

@@ -145,6 +145,10 @@ namespace BizHawk.MultiClient.config
 			checkBoxAutoTab.Checked = Global.Config.InputConfigAutoTab;
 
 			SetControllerPicture(def.Name);
+
+			if (!MainForm.INTERIM)
+				buttonSaveDefaults.Hide();
+
 			ResumeLayout();
 		}
 
@@ -218,6 +222,12 @@ namespace BizHawk.MultiClient.config
 			ActOnControlCollection<ControllerConfigPanel>(tabPage1, (c) => c.Save(Global.Config.AllTrollers[the_definition.Name]));
 			ActOnControlCollection<ControllerConfigPanel>(tabPage2, (c) => c.Save(Global.Config.AllTrollersAutoFire[the_definition.Name]));
 			ActOnControlCollection<AnalogBindPanel>(tabPage3, (c) => c.Save(Global.Config.AllTrollersAnalog[the_definition.Name]));
+		}
+		void SaveToDefaults(ControlDefaults cd)
+		{
+			ActOnControlCollection<ControllerConfigPanel>(tabPage1, (c) => c.Save(cd.AllTrollers[the_definition.Name]));
+			ActOnControlCollection<ControllerConfigPanel>(tabPage2, (c) => c.Save(cd.AllTrollersAutoFire[the_definition.Name]));
+			ActOnControlCollection<AnalogBindPanel>(tabPage3, (c) => c.Save(cd.AllTrollersAnalog[the_definition.Name]));
 		}
 
 		static void ActOnControlCollection<T>(Control c, Action<T> proc)
@@ -357,6 +367,23 @@ namespace BizHawk.MultiClient.config
 				c.AllTrollers = cd.AllTrollers;
 				c.AllTrollersAutoFire = cd.AllTrollersAutoFire;
 				c.AllTrollersAnalog = cd.AllTrollersAnalog;
+			}
+		}
+
+		private void buttonSaveDefaults_Click(object sender, EventArgs e)
+		{
+			var result = MessageBox.Show(this, "OK to overwrite defaults for current control scheme?", "Save Defaults", MessageBoxButtons.YesNo);
+			if (result == DialogResult.Yes)
+			{
+				ControlDefaults cd = new ControlDefaults();
+				cd = ConfigService.Load(ControlDefaultPath, cd);
+				cd.AllTrollers[the_definition.Name] = new Dictionary<string, string>();
+				cd.AllTrollersAutoFire[the_definition.Name] = new Dictionary<string, string>();
+				cd.AllTrollersAnalog[the_definition.Name] = new Dictionary<string, Config.AnalogBind>();
+
+				SaveToDefaults(cd);
+
+				ConfigService.Save(ControlDefaultPath, cd);
 			}
 		}
 	}
