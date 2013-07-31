@@ -34,12 +34,17 @@ namespace BizHawk.MultiClient.config.ControllerConfig
 			ResumeLayout();
 		}
 
-		public void Save()
+		/// <summary>
+		/// save to config
+		/// </summary>
+		/// <param name="SaveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
+		public void Save(Dictionary<string, Config.AnalogBind> SaveConfigObject = null)
 		{
+			var saveto = SaveConfigObject ?? RealConfigObject;
 			foreach (Control c in Controls)
 			{
 				var abc = (AnalogBindControl)c;
-				RealConfigObject[abc.ButtonName] = abc.Bind;
+				saveto[abc.ButtonName] = abc.Bind;
 			}
 		}
 	}
