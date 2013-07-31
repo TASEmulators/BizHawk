@@ -352,18 +352,14 @@ namespace BizHawk.Emulation
 				unsafe
 				{
 					fixed (byte* src_ = framebuffer.VideoBuffer)
+					fixed (int* dst_ = vidbuffer)
+					fixed (int* pal = TIATables.NTSCPalette)
 					{
-						fixed (int* dst_ = vidbuffer)
+						byte* src = src_;
+						int* dst = dst_;
+						for (int i = 0; i < vidbuffer.Length; i++)
 						{
-							fixed (int* pal = TIATables.NTSCPalette)
-							{
-								byte* src = src_;
-								int* dst = dst_;
-								for (int i = 0; i < vidbuffer.Length; i++)
-								{
-									*dst++ = pal[*src++];
-								}
-							}
+							*dst++ = pal[*src++];
 						}
 					}
 				}
