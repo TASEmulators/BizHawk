@@ -45,7 +45,6 @@
 
 DWORD LoadNone (unsigned char * dst, unsigned char * src, int wid_64, int height, int line, int real_width, int tile)
 {
-    memset (texture, 0xFF, sizeof(texture));
     return GR_TEXFMT_ARGB_1555;
 }
 

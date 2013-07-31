@@ -25,12 +25,12 @@
 #define __VERSION_H__
 
 #define MUPEN_CORE_NAME "Mupen64Plus Core"
-#define MUPEN_CORE_VERSION 0x016305
+#define MUPEN_CORE_VERSION 0x020000
 
-#define FRONTEND_API_VERSION 0x020100
+#define FRONTEND_API_VERSION 0x020101
 #define CONFIG_API_VERSION   0x020200
 #define DEBUG_API_VERSION    0x020000
-#define VIDEXT_API_VERSION   0x020000
+#define VIDEXT_API_VERSION   0x030000
 
 #define VERSION_PRINTF_SPLIT(x) (((x) >> 16) & 0xffff), (((x) >> 8) & 0xff), ((x) & 0xff)
 

@@ -2,7 +2,7 @@
 #
 # mupen64plus binary bundle install script
 #
-# Copyright 2007-2009 The Mupen64Plus Development Team
+# Copyright 2007-2013 The Mupen64Plus Development Team
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -65,6 +65,28 @@ LIBDIR="${4:-${PREFIX}/lib}"
 PLUGINDIR="${5:-${PREFIX}/lib/mupen64plus}"
 MANDIR="${6:-${PREFIX}/share/man}"
 
+# simple check for permissions
+if [ -d "${SHAREDIR}" -a ! -w "${SHAREDIR}" ]; then
+	printf "Error: you do not have permission to install at: ${SHAREDIR}\nMaybe you need to be root?\n"
+	exit 1
+fi
+if [ -d "${BINDIR}" -a ! -w "${BINDIR}" ]; then
+	printf "Error: you do not have permission to install at: ${BINDIR}\nMaybe you need to be root?\n"
+	exit 1
+fi
+if [ -d "${LIBDIR}" -a ! -w "${LIBDIR}" ]; then
+	printf "Error: you do not have permission to install at: ${LIBDIR}\nMaybe you need to be root?\n"
+	exit 1
+fi
+if [ -d "${PLUGINDIR}" -a ! -w "${PLUGINDIR}" ]; then
+	printf "Error: you do not have permission to install at: ${PLUGINDIR}\nMaybe you need to be root?\n"
+	exit 1
+fi
+if [ -d "${MANDIR}" -a ! -w "${MANDIR}" ]; then
+	printf "Error: you do not have permission to install at: ${MANDIR}\nMaybe you need to be root?\n"
+	exit 1
+fi
+
 printf "Installing Mupen64Plus Binary Bundle to ${PREFIX}\n"
 # Mupen64Plus-Core
 $INSTALL -d -v "${LIBDIR}"
@@ -89,8 +111,10 @@ $INSTALL -m 0644 "${INSTALL_STRIP_FLAG}" mupen64plus-audio-sdl.so "${PLUGINDIR}"
 $INSTALL -m 0644 "${INSTALL_STRIP_FLAG}" mupen64plus-input-sdl.so "${PLUGINDIR}"
 $INSTALL -m 0644 "${INSTALL_STRIP_FLAG}" mupen64plus-rsp-hle.so "${PLUGINDIR}"
 $INSTALL -m 0644 "${INSTALL_STRIP_FLAG}" mupen64plus-video-rice.so "${PLUGINDIR}"
+$INSTALL -m 0644 "${INSTALL_STRIP_FLAG}" mupen64plus-video-glide64mk2.so "${PLUGINDIR}"
 $INSTALL -m 0644 RiceVideoLinux.ini "${SHAREDIR}"
 $INSTALL -m 0644 InputAutoCfg.ini "${SHAREDIR}"
+$INSTALL -m 0644 Glide64mk2.ini "${SHAREDIR}"
 
 printf "Installation successful.\n"
 

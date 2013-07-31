@@ -1,6 +1,21 @@
 Mupen64Plus-Core Emulator Library RELEASE
 -----------------------------------------
 
+Mupen64Plus v2.0 - July 4th, 2013
+---------------------------------
+ - Fixes for various games (DK64, Zelda, Blast Corps)
+ - add Ari64's dynamic recompiler for x86 (32-bit) and ARM
+ - improved PJ64 savestate loading
+ - support video window resizing (with help from video plugin and front-end application)
+ - Auto-detect savestate type (Mupen64Plus or PJ64) when loading from a slot
+ - many various code cleanups in core from casualjames
+ - support to build against SDL2
+ - debugger code cleanup
+ - Project files for Visual Studio 2012
+ - Makefile changes
+   - add support for PowerPC and MinGW32 builds
+   - add cross-compiling support to build Win32 executables (MXE) under Linux
+
 Mupen64Plus v1.99.5 - March 10, 2012
 ------------------------------------
  - New feature: support for N64 internal real-time clock

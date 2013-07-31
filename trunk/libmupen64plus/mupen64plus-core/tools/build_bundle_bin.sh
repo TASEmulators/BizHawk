@@ -2,7 +2,7 @@
 #/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 # *   Mupen64plus - build_bundle_bin.sh                                     *
 # *   Mupen64Plus homepage: http://code.google.com/p/mupen64plus/           *
-# *   Copyright (C) 2009 Richard Goedeken                                   *
+# *   Copyright (C) 2009-2013 Richard Goedeken                              *
 # *                                                                         *
 # *   This program is free software; you can redistribute it and/or modify  *
 # *   it under the terms of the GNU General Public License as published by  *
@@ -42,6 +42,7 @@ hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-audio-sdl
 hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-input-sdl
 hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-rsp-hle
 hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-video-rice
+hg clone -r $1 http://bitbucket.org/richard42/mupen64plus-video-glide64mk2
 shift
 for dirname in ./mupen64plus-*; do rm -rf ${dirname}/.hg*; done
 
@@ -52,7 +53,7 @@ echo "************************************ Building Mupen64Plus modules"
 cd ..
 tar xzvf source/mupen64plus-core/tools/m64p_helper_scripts.tar.gz
 
-./m64p_build.sh $@
+./m64p_build.sh COREDIR=/usr/local/lib/ $@
 mv "test" "${OUTPUTDIR}"
 
 echo "************************************ Creating archive"

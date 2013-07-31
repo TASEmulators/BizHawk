@@ -104,6 +104,7 @@ ptr_VidExt_ListFullscreenModes   CoreVideo_ListFullscreenModes = NULL;
 ptr_VidExt_SetVideoMode          CoreVideo_SetVideoMode = NULL;
 ptr_VidExt_SetCaption            CoreVideo_SetCaption = NULL;
 ptr_VidExt_ToggleFullScreen      CoreVideo_ToggleFullScreen = NULL;
+ptr_VidExt_ResizeWindow          CoreVideo_ResizeWindow = NULL;
 ptr_VidExt_GL_GetProcAddress     CoreVideo_GL_GetProcAddress = NULL;
 ptr_VidExt_GL_SetAttribute       CoreVideo_GL_SetAttribute = NULL;
 ptr_VidExt_GL_SwapBuffers        CoreVideo_GL_SwapBuffers = NULL;
@@ -1009,13 +1010,14 @@ EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Con
     CoreVideo_SetVideoMode = (ptr_VidExt_SetVideoMode) osal_dynlib_getproc(CoreLibHandle, "VidExt_SetVideoMode");
     CoreVideo_SetCaption = (ptr_VidExt_SetCaption) osal_dynlib_getproc(CoreLibHandle, "VidExt_SetCaption");
     CoreVideo_ToggleFullScreen = (ptr_VidExt_ToggleFullScreen) osal_dynlib_getproc(CoreLibHandle, "VidExt_ToggleFullScreen");
+    CoreVideo_ResizeWindow = (ptr_VidExt_ResizeWindow) osal_dynlib_getproc(CoreLibHandle, "VidExt_ResizeWindow");
     CoreVideo_GL_GetProcAddress = (ptr_VidExt_GL_GetProcAddress) osal_dynlib_getproc(CoreLibHandle, "VidExt_GL_GetProcAddress");
     CoreVideo_GL_SetAttribute = (ptr_VidExt_GL_SetAttribute) osal_dynlib_getproc(CoreLibHandle, "VidExt_GL_SetAttribute");
     CoreVideo_GL_SwapBuffers = (ptr_VidExt_GL_SwapBuffers) osal_dynlib_getproc(CoreLibHandle, "VidExt_GL_SwapBuffers");
 
     if (!CoreVideo_Init || !CoreVideo_Quit || !CoreVideo_ListFullscreenModes || !CoreVideo_SetVideoMode ||
         !CoreVideo_SetCaption || !CoreVideo_ToggleFullScreen || !CoreVideo_GL_GetProcAddress ||
-        !CoreVideo_GL_SetAttribute || !CoreVideo_GL_SwapBuffers)
+        !CoreVideo_GL_SetAttribute || !CoreVideo_GL_SwapBuffers || !CoreVideo_ResizeWindow)
     {
         WriteLog(M64MSG_ERROR, "Couldn't connect to Core video functions");
         return M64ERR_INCOMPATIBLE;
@@ -1366,6 +1368,18 @@ EXPORT void CALL ProcessRDPList(void)
   *gfx.DPC_CURRENT_REG = *gfx.DPC_END_REG;
 }
 #endif
+
+/******************************************************************
+Function: ResizeVideoOutput
+Purpose:  This function is called to force us to resize our output OpenGL window.
+          This is currently unsupported, and should never be called because we do
+          not pass the RESIZABLE flag to VidExt_SetVideoMode when initializing.
+input:    new width and height
+output:   none
+*******************************************************************/
+EXPORT void CALL ResizeVideoOutput(int Width, int Height)
+{
+}
 
 /******************************************************************
 Function: RomClosed

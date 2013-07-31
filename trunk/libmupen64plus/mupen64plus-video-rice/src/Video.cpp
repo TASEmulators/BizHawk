@@ -95,6 +95,7 @@ ptr_VidExt_ListFullscreenModes   CoreVideo_ListFullscreenModes = NULL;
 ptr_VidExt_SetVideoMode          CoreVideo_SetVideoMode = NULL;
 ptr_VidExt_SetCaption            CoreVideo_SetCaption = NULL;
 ptr_VidExt_ToggleFullScreen      CoreVideo_ToggleFullScreen = NULL;
+ptr_VidExt_ResizeWindow          CoreVideo_ResizeWindow = NULL;
 ptr_VidExt_GL_GetProcAddress     CoreVideo_GL_GetProcAddress = NULL;
 ptr_VidExt_GL_SetAttribute       CoreVideo_GL_SetAttribute = NULL;
 ptr_VidExt_GL_GetAttribute       CoreVideo_GL_GetAttribute = NULL;
@@ -125,6 +126,35 @@ static void ChangeWindowStep2()
     status.ToToggleFullScreen = FALSE;
 }
 
+static void ResizeStep2(void)
+{
+    g_CritialSection.Lock();
+
+    // Delete all OpenGL textures
+    gTextureManager.CleanUp();
+    RDP_Cleanup();
+    // delete our opengl renderer
+    CDeviceBuilder::GetBuilder()->DeleteRender();
+
+    // call video extension function with updated width, height (this creates a new OpenGL context)
+    windowSetting.uDisplayWidth = status.gNewResizeWidth;
+    windowSetting.uDisplayHeight = status.gNewResizeHeight;
+    CoreVideo_ResizeWindow(windowSetting.uDisplayWidth, windowSetting.uDisplayHeight);
+
+    // re-initialize our OpenGL graphics context state
+    bool res = CGraphicsContext::Get()->ResizeInitialize(windowSetting.uDisplayWidth, windowSetting.uDisplayHeight, !windowSetting.bDisplayFullscreen);
+    if (res)
+    {
+        // re-create the OpenGL renderer
+        CDeviceBuilder::GetBuilder()->CreateRender();
+        CRender::GetRender()->Initialize();
+        DLParser_Init();
+    }
+
+    g_CritialSection.Unlock();
+    status.ToResize = false;
+}
+
 static void UpdateScreenStep2 (void)
 {
     status.bVIOriginIsUpdated = false;
@@ -132,6 +162,11 @@ static void UpdateScreenStep2 (void)
     if( status.ToToggleFullScreen && status.gDlistCount > 0 )
     {
         ChangeWindowStep2();
+        return;
+    }
+    if (status.ToResize && status.gDlistCount > 0)
+    {
+        ResizeStep2();
         return;
     }
 
@@ -597,13 +632,14 @@ EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Con
     CoreVideo_SetVideoMode = (ptr_VidExt_SetVideoMode) osal_dynlib_getproc(CoreLibHandle, "VidExt_SetVideoMode");
     CoreVideo_SetCaption = (ptr_VidExt_SetCaption) osal_dynlib_getproc(CoreLibHandle, "VidExt_SetCaption");
     CoreVideo_ToggleFullScreen = (ptr_VidExt_ToggleFullScreen) osal_dynlib_getproc(CoreLibHandle, "VidExt_ToggleFullScreen");
+    CoreVideo_ResizeWindow = (ptr_VidExt_ResizeWindow) osal_dynlib_getproc(CoreLibHandle, "VidExt_ResizeWindow");
     CoreVideo_GL_GetProcAddress = (ptr_VidExt_GL_GetProcAddress) osal_dynlib_getproc(CoreLibHandle, "VidExt_GL_GetProcAddress");
     CoreVideo_GL_SetAttribute = (ptr_VidExt_GL_SetAttribute) osal_dynlib_getproc(CoreLibHandle, "VidExt_GL_SetAttribute");
     CoreVideo_GL_GetAttribute = (ptr_VidExt_GL_GetAttribute) osal_dynlib_getproc(CoreLibHandle, "VidExt_GL_GetAttribute");
     CoreVideo_GL_SwapBuffers = (ptr_VidExt_GL_SwapBuffers) osal_dynlib_getproc(CoreLibHandle, "VidExt_GL_SwapBuffers");
 
     if (!CoreVideo_Init || !CoreVideo_Quit || !CoreVideo_ListFullscreenModes || !CoreVideo_SetVideoMode ||
-        !CoreVideo_SetCaption || !CoreVideo_ToggleFullScreen || !CoreVideo_GL_GetProcAddress ||
+        !CoreVideo_ResizeWindow || !CoreVideo_SetCaption || !CoreVideo_ToggleFullScreen || !CoreVideo_GL_GetProcAddress ||
         !CoreVideo_GL_SetAttribute || !CoreVideo_GL_GetAttribute || !CoreVideo_GL_SwapBuffers)
     {
         DebugMessage(M64MSG_ERROR, "Couldn't connect to Core video extension functions");
@@ -771,6 +807,7 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
     windowSetting.fViWidth = 320;
     windowSetting.fViHeight = 240;
     status.ToToggleFullScreen = FALSE;
+    status.ToResize = false;
     status.bDisableFPS=false;
 
     if (!InitConfiguration())
@@ -783,6 +820,14 @@ EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info)
     CGraphicsContext::InitDeviceParameters();
 
     return(TRUE);
+}
+
+EXPORT void CALL ResizeVideoOutput(int width, int height)
+{
+    // save the new window resolution.  actual resizing operation is asynchronous (it happens later)
+    status.gNewResizeWidth = width;
+    status.gNewResizeHeight = height;
+    status.ToResize = true;
 }
 
 //---------------------------------------------------------------------------------------

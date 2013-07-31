@@ -398,14 +398,12 @@ BMGError WritePNG( const char *filename, struct BMGImageStruct img )
     png_structp png_ptr = NULL;
     png_infop   info_ptr = NULL;
     png_colorp  PNGPalette = NULL;
-    int     GrayScale;
 
     unsigned char   *bits, *p, *q;
     unsigned char   **rows = NULL;
-    int     NumColors = 0;
+    volatile int GrayScale, NumColors;  // mark as volatile so GCC won't throw warning with -Wclobbered
 
     int     DIBScanWidth;
-    int     HasPalette;
     FILE        *outfile = NULL;
     int     i;
     BMGError    tmp;
@@ -453,8 +451,9 @@ BMGError WritePNG( const char *filename, struct BMGImageStruct img )
             longjmp( err_jmp, (int)tmp );
     }
 
-    HasPalette = img.bits_per_pixel <= 8;
-    if ( HasPalette )
+    GrayScale = 0;
+    NumColors = 0;
+    if (img.bits_per_pixel <= 8)  // has palette
     {
         NumColors = img.palette_size;
         /* if this is a grayscale image then set the flag and delete the palette*/
@@ -465,10 +464,8 @@ BMGError WritePNG( const char *filename, struct BMGImageStruct img )
             i++;
             bits += img.bytes_per_palette_entry;
         }
-        GrayScale = i == NumColors;
+        GrayScale = (i == NumColors);
     }
-    else
-        GrayScale = 0;
 
     /* dimensions */
     DIBScanWidth = ( img.width * img.bits_per_pixel + 7 ) / 8;

@@ -425,7 +425,7 @@ grSstWinOpen(
 
 	CoreVideo_GL_SetAttribute(M64P_GL_SWAP_CONTROL, 0);
 
-    if (CoreVideo_SetVideoMode(width, height, 0, screen_mode) != M64ERR_SUCCESS)
+    if (CoreVideo_SetVideoMode(width, height, 0, screen_mode, (m64p_video_flags) 0) != M64ERR_SUCCESS)
     {
         WriteLog(M64MSG_ERROR, "Could not set video mode.");
         return 0;

@@ -227,9 +227,9 @@ These core parameters may be read and/or written using the M64CMD_CORE_STATE_QUE
 |-
 |M64CORE_VIDEO_SIZE
 |Yes
-|No
+|Yes
 |<tt>(ScreenWidth << 16) + ScreenHeight</tt>
-|This parameter is read-only.
+|This parameter can only be read or written when the emulator is running or paused.  This parameter may be written by the front-end application in response to a window resizing event.  Upon receiving this command, the core will pass the new width and height to the ResizeVideoOutput function in the video plugin (video API v2.2.0).  If the video plugin supports resizing, it will update its viewport and then call the video extension function VidExt_ResizeWindow to update the window manager.
 |-
 |M64CORE_AUDIO_VOLUME
 |Yes
@@ -294,7 +294,7 @@ These core parameters may be read and/or written using the M64CMD_CORE_STATE_QUE
 |The Mupen64Plus library must already be initialized before calling this function.  This function cannot be called while the emulator is running.
 |-
 |Usage
-|This function overrides the core's internal SDL-based OpenGL functions which are called from the video plugin to perform various basic tasks like opening the video window, toggling between windowed and fullscreen modes, and swapping frame buffers after a frame has been rendered.  This override functionality allows a front-end to define its own video extension functions to be used instead of the SDL functions, such as for the purpose of embedding the emulator display window inside of a Qt GUI window.  If any of the function pointers in the structure are NULL, the override function will be disabled and the core's internal SDL functions will be used.  The v2.0 core expects the <tt>Functions</tt> struct member to be equal to 9 or more.
+|This function overrides the core's internal SDL-based OpenGL functions which are called from the video plugin to perform various basic tasks like opening the video window, toggling between windowed and fullscreen modes, and swapping frame buffers after a frame has been rendered.  This override functionality allows a front-end to define its own video extension functions to be used instead of the SDL functions, such as for the purpose of embedding the emulator display window inside of a Qt GUI window.  If any of the function pointers in the structure are NULL, the override function will be disabled and the core's internal SDL functions will be used.  The core library with a Video Extension API v3.0 expects the <tt>Functions</tt> struct member to be equal to 11 or more.
 |}
 <br />
 

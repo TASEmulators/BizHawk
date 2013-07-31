@@ -1,6 +1,18 @@
 Mupen64Plus-Video-Rice RELEASE
 ------------------------------
 
+Mupen64Plus-Video-Rice v2.0 - July 4, 2013
+------------------------------------------
+ - support for resizable video window
+ - add support to build and run with OpenGL ES 2.0
+ - improve hi-resolution texture loading support
+ - fix texture CRC calculation for non-x86 (or NO_ASM) platforms
+ - support to build against SDL2
+ - Project files for Visual Studio 2012
+ - Makefile changes
+   - add support for PowerPC and MinGW32 builds
+   - add cross-compiling support to build Win32 executables (MXE) under Linux
+
 Mupen64Plus-Video-Rice v1.99.5 - March 10, 2012
 -----------------------------------------------
  - Hires texture loading: support for 8-bit PNG images

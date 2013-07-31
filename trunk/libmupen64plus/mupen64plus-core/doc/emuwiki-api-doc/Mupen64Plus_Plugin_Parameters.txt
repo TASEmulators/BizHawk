@@ -229,9 +229,21 @@ The Mupen64Plus-Input-SDL plugin uses a separate config section for each simulat
 {| border="1"
 !Parameter Name!!Type!!Usage
 |-
-|Version
+|version
 |M64TYPE_FLOAT
 |Mupen64Plus Input-SDL config parameter set version number.  Please don't change.
+|-
+|mode
+|M64TYPE_INT
+|Controller configuration mode: 0=Fully Manual, 1=Auto with named SDL Device, 2=Fully automatic
+|-
+|device
+|M64TYPE_INT
+|Specifies which joystick is bound to this controller: -1=No joystick, 0 or more= SDL Joystick number
+|-
+|name
+|M64TYPE_STRING
+|SDL joystick name (or Keyboard)
 |-
 |plugged
 |M64TYPE_BOOL
@@ -244,10 +256,6 @@ The Mupen64Plus-Input-SDL plugin uses a separate config section for each simulat
 |mouse
 |M64TYPE_BOOL
 |If True, then mouse buttons may be used with this controller, and mouse movement will map to X/Y analog stick
-|-
-|device
-|M64TYPE_INT
-|Specifies which joystick is bound to this controller: -2=Keyboard/mouse, -1=Auto config, 0 or more= SDL Joystick number
 |-
 |MouseSensitivity
 |M64TYPE_STRING

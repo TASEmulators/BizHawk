@@ -2,7 +2,7 @@
 #/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 # *   Mupen64plus - build_modules_src.sh                                    *
 # *   Mupen64Plus homepage: http://code.google.com/p/mupen64plus/           *
-# *   Copyright (C) 2009 Richard Goedeken                                   *
+# *   Copyright (C) 2009-2013 Richard Goedeken                              *
 # *                                                                         *
 # *   This program is free software; you can redistribute it and/or modify  *
 # *   it under the terms of the GNU General Public License as published by  *
@@ -28,7 +28,7 @@ if [ $# -lt 2 ]; then
     exit 1
 fi
 
-modules='mupen64plus-core mupen64plus-rom mupen64plus-ui-console mupen64plus-audio-sdl mupen64plus-input-sdl mupen64plus-rsp-hle mupen64plus-video-rice'
+modules='mupen64plus-core mupen64plus-rom mupen64plus-ui-console mupen64plus-audio-sdl mupen64plus-input-sdl mupen64plus-rsp-hle mupen64plus-video-rice mupen64plus-video-glide64mk2'
 for modname in ${modules}; do
   echo "************************************ Downloading and packaging module source code: ${modname}"
   rm -rf "tmp"

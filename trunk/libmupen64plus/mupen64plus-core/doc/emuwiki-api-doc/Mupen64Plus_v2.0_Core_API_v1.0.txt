@@ -30,6 +30,10 @@ The expected sequence of operations which will be taken by the front-end applica
 #* Use <tt>CoreDoCommand</tt> to start emulation
 #* When emulation is finished, call <tt>CoreDetachPlugin</tt> on all plugins, then close the ROM
 
+== Versioning ==
+=== [[Mupen64Plus v2.0 API Versioning|API Versioning Scheme]] ===
+Since the !Mupen64Plus emulator comprises 6 different software modules which can be mixed and matched (the front-end app, the core library, and 4 plugins), and the interfaces between these modules change over time, there are many hard-to-diagnose bugs which could show up due to incompatibilities between these different modules.  For this reason, we use a comprehensive versioning scheme which allows any 2 components to determine whether or not they are compatible, and to support forward and backward compatibility as necessary.  This scheme is described in detail in this document.
+
 == Core API ==
 === [[Mupen64Plus v2.0 Core Basic|Basic Core Functions]] ===
 

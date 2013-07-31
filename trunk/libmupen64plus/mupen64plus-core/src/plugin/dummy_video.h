@@ -39,6 +39,7 @@ extern void dummyvideo_ViStatusChanged(void);
 extern void dummyvideo_ViWidthChanged(void);
 extern void dummyvideo_ReadScreen2(void *dest, int *width, int *height, int front);
 extern void dummyvideo_SetRenderingCallback(void (*callback)(int));
+extern void dummyvideo_ResizeVideoOutput(int width, int height);
 
 extern void dummyvideo_FBRead(unsigned int addr);
 extern void dummyvideo_FBWrite(unsigned int addr, unsigned int size);

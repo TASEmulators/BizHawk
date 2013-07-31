@@ -77,42 +77,52 @@ static int search_dir_file(char *destpath, const char *path, const char *filenam
 
 int osal_mkdirp(const char *dirpath, int mode)
 {
-    char *mypath, *currpath;
+    char *mypath, *currpath, *lastchar;
     struct _stat fileinfo;
 
-    // Terminate quickly if the path already exists
-    if (_stat(dirpath, &fileinfo) == 0 && (fileinfo.st_mode & _S_IFDIR))
-        return 0;
-
-    // Create partial paths
-    mypath = currpath = strdup(dirpath);
+    // Create a copy of the path, so we can modify it
+    mypath = currpath = _strdup(dirpath);
     if (mypath == NULL)
         return 1;
 
+	// if the directory path ends with a separator, remove it
+	lastchar = mypath + strlen(mypath) - 1;
+	if (strchr(OSAL_DIR_SEPARATORS, *lastchar) != NULL)
+		*lastchar = 0;
+
+    // Terminate quickly if the path already exists
+    if (_stat(mypath, &fileinfo) == 0 && (fileinfo.st_mode & _S_IFDIR))
+		goto goodexit;
+
     while ((currpath = strpbrk(currpath + 1, OSAL_DIR_SEPARATORS)) != NULL)
     {
+		// if slash is right after colon, then we are looking at drive name prefix (C:\) and should
+		// just skip it, because _stat and _mkdir will both fail for "C:"
+		if (currpath > mypath && currpath[-1] == ':')
+			continue;
         *currpath = '\0';
         if (_stat(mypath, &fileinfo) != 0)
         {
             if (_mkdir(mypath) != 0)
-                break;
+				goto errorexit;
         }
-        else
+        else if (!(fileinfo.st_mode & _S_IFDIR))
         {
-            if (!(fileinfo.st_mode & _S_IFDIR))
-                break;
+			goto errorexit;
         }
         *currpath = OSAL_DIR_SEPARATORS[0];
     }
-    free(mypath);
-    if (currpath != NULL)
-        return 1;
 
     // Create full path
-    if (_stat(dirpath, &fileinfo) != 0 && _mkdir(dirpath) != 0)
-        return 1;
+    if  (_mkdir(mypath) != 0)
+        goto errorexit;
 
+goodexit:
+	free(mypath);
     return 0;
+errorexit:
+	free(mypath);
+	return 1;
 }
 
 const char * osal_get_shared_filepath(const char *filename, const char *firstsearch, const char *secondsearch)

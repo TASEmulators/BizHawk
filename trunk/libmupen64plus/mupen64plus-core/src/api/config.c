@@ -1413,7 +1413,10 @@ EXPORT const char * CALL ConfigGetSharedDataFilepath(const char *filename)
 EXPORT const char * CALL ConfigGetUserConfigPath(void)
 {
     if (l_ConfigDirOverride != NULL)
+    {
+        osal_mkdirp(l_ConfigDirOverride, 0700);
         return l_ConfigDirOverride;
+    }
     else
         return osal_get_user_configpath();
 }
