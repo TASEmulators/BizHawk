@@ -41,8 +41,30 @@ namespace BizHawk.MultiClient
             string p = Global.Config.FirmwaresPath;
             FileInfo file;
 
-            file = new FileInfo(Path.Combine(p, Global.Config.FilenameFDSBios));
-            if (file.Exists) Disksys_ROM_PicBox.Image = MultiClient.Properties.Resources.GreenCheck; else Disksys_ROM_PicBox.Image = MultiClient.Properties.Resources.ExclamationRed;
+            //FDS
+            CheckFile(Global.Config.FilenameFDSBios, Disksys_ROM_PicBox);
+
+            //SNES
+            CheckFile("cx4.rom", CX4_PicBox);
+            CheckFile("dsp1b.rom", DSP1B_ROM_PicBox);
+            CheckFile("dsp2.rom", DSP2_ROM_PicBox);
+            CheckFile("dsp3.rom", DSP3_ROM_PicBox);
+            CheckFile("dsp4.rom", DSP4_ROM_PicBox);
+            CheckFile("st010.rom", ST010_ROM_PicBox);
+            CheckFile("st011.rom", ST011_ROM_PicBox);
+            CheckFile("st018.rom", ST018_ROM_PicBox);
+
+            //SGB
+            CheckFile("sgb.sfc", SGB_SFC_PicBox);
+
+            //PCE
+            //CheckFile(Global.Config.Path
+        }
+
+        private void CheckFile(string filename, PictureBox pic)
+        {
+            FileInfo file = new FileInfo(Path.Combine(Global.Config.FirmwaresPath, filename));
+            if (file.Exists) pic.Image = MultiClient.Properties.Resources.GreenCheck; else pic.Image = MultiClient.Properties.Resources.ExclamationRed;
         }
     }
 }
