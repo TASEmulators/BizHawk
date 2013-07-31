@@ -4199,6 +4199,12 @@ namespace BizHawk.MultiClient
 		private void configToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			controllersToolStripMenuItem.Enabled = !(Global.Emulator is NullEmulator);
+            firmwaresToolStripMenuItem.Visible = INTERIM;
 		}
+
+        private void firmwaresToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new FirmwaresConfig().Show();
+        }
 	}
 }

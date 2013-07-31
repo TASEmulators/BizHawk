@@ -181,6 +181,12 @@
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\FirmwaresConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\FirmwaresConfig.Designer.cs">
+      <DependentUpon>FirmwaresConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\GifAnimator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -596,6 +602,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\FirmwaresConfig.resx">
+      <DependentUpon>FirmwaresConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
