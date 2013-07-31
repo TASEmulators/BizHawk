@@ -353,6 +353,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "HVC-SIROM": //Igo: Kyuu Roban Taikyoku  
 					AssertPrg(32); AssertChr(16); AssertVram(0); AssertWram(8);
 					break;
+				case "HVC-SJROM": //zombie hunter.. but it has no wram????
+					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0);
+					break;
 				case "NES-SJROM": //air fortress
 					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8);
 					break;
