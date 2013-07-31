@@ -73,8 +73,6 @@
       "P4 R": "",
     },
     "Nintento 64 Controller": {
-      "P1 X Axis": "J1 X",
-      "P1 Y Axis": "J1 Y",
       "P1 A Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 A Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
       "P1 A Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
@@ -602,7 +600,6 @@
       "P2 Button": "S, J1 B3",
       },
     "Null Controller": {},
-  },
   "PC Engine Controller": {
       "Reset": "",
       "Power": "",
@@ -663,4 +660,49 @@
       "P2 B1": "",
       "P2 B2": "",
     }
+  },
+  "AllTrollersAnalog": {
+    "Nintento 64 Controller": {
+      "P1 X Axis": {
+        "Value": "J1 X",
+        "Mult": 1,
+        "Deadzone": 0
+      },
+      "P1 Y Axis": {
+        "Value": "J1 Y",
+        "Mult": 1,
+        "Deadzone": 0
+      },
+      "P2 X Axis": {
+        "Value": "",
+        "Mult": 1,
+        "Deadzone": 0
+      },
+      "P2 Y Axis": {
+        "Value": "",
+        "Mult": 1,
+        "Deadzone": 0
+      },
+      "P3 X Axis": {
+        "Value": "",
+        "Mult": 1,
+        "Deadzone": 0
+      },
+      "P3 Y Axis": {
+        "Value": "",
+        "Mult": 1,
+        "Deadzone": 0
+      },
+      "P4 X Axis": {
+        "Value": "",
+        "Mult": 1,
+        "Deadzone": 0
+      },
+      "P4 Y Axis": {
+        "Value": "",
+        "Mult": 1,
+        "Deadzone": 0
+      }
+    }
+  },
 }
