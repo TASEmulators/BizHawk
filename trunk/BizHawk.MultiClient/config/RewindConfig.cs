@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 		{
 			double num = StateSize / 1024.0;
 
-			if (StateSize >= 1024)
+            if (num >= 1024)
 			{
 				num /= 1024.0;
 				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " mb";
