@@ -18,6 +18,7 @@ namespace BizHawk.MultiClient
 
 		public float Rewind_FullnessRatio { get { return RewindBuf.FullnessRatio; } }
 		public int Rewind_Count { get { return RewindBuf.Count; } }
+        public long Rewind_Size { get { return RewindBuf.Size; } }
 		/// <summary>
 		/// Manages a ring buffer of storage which can continually chow its own tail to keep growing forward.
 		/// Probably only useful for the rewind buffer, so I didnt put it in another file
