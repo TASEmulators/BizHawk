@@ -9,7 +9,7 @@ namespace BizHawk.MultiClient
 		private long StateSize;
 		private int MediumStateSize;
 		private int LargeStateSize;
-
+        private int StateSizeCategory = 1; //1 = small, 2 = med, 3 = larg //TODO: enum
 		public RewindConfig()
 		{
 			InitializeComponent();
@@ -74,22 +74,27 @@ namespace BizHawk.MultiClient
 
 			if (StateSize >= LargeStateSize)
 			{
-				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+                StateSizeCategory = 3;
+                SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
 				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
 				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
 			}
 			else if (StateSize >= MediumStateSize)
 			{
-				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+                StateSizeCategory = 2;
+                SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
 				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
 				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
 			}
 			else
 			{
-				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
+                StateSizeCategory = 1;
+                SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
 				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
 				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
 			}
+
+            CalculateEstimates();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
@@ -235,5 +240,71 @@ namespace BizHawk.MultiClient
 			LargeStateSize = LargeStateTrackbar.Value * 1024;
 			SetStateSize();
 		}
+
+        private void CalculateEstimates()
+        {
+            long avg_state_size = 0;
+
+            if (UseDeltaCompression.Checked)
+            {
+
+                avg_state_size = (long)(Global.MainForm.Rewind_Size / Global.MainForm.Rewind_Count);
+            }
+            else
+            {
+                avg_state_size = StateSize;
+            }
+
+            long buffer_size = (long)(BufferSizeUpDown.Value);
+            buffer_size *= 1024 * 1024;
+            long est_frames = buffer_size / avg_state_size;
+
+
+            
+            long est_frequency = 0;
+            switch (StateSizeCategory)
+            {
+                case 1:
+                    est_frequency = (long)SmallSavestateNumeric.Value;
+                    break;
+                case 2:
+                    est_frequency = (long)MediumSavestateNumeric.Value;
+                    break;
+                case 3:
+                    est_frequency = (long)LargeSavestateNumeric.Value;
+                    break;
+            }
+            long est_total_frames = est_frames * est_frequency;
+            double minutes = est_total_frames / 60 / 60;
+
+            AverageStoredStateSizeLabel.Text = String.Format("{0:n0}", avg_state_size) + " bytes";
+            ApproxFramesLabel.Text = String.Format("{0:n0}", est_frames) + " frames";
+            EstTimeLabel.Text = String.Format("{0:n}", minutes) + " minutes";
+        }
+
+        private void BufferSizeUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            CalculateEstimates();
+        }
+
+        private void UseDeltaCompression_CheckedChanged(object sender, EventArgs e)
+        {
+            CalculateEstimates();
+        }
+
+        private void SmallSavestateNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            CalculateEstimates();
+        }
+
+        private void MediumSavestateNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            CalculateEstimates();
+        }
+
+        private void LargeSavestateNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            CalculateEstimates();
+        }
 	}
 }
