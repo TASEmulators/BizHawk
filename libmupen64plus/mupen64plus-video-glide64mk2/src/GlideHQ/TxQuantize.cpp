@@ -26,7 +26,11 @@
 #endif
 
 #include <functional>
+
+//zero 01-aug-2013 - no need to include <thread> if option isnt selected
+#if !defined(NO_FILTER_THREAD)
 #include <thread>
+#endif
 
 /* NOTE: The codes are not optimized. They can be made faster. */
 
