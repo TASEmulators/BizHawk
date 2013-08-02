@@ -391,10 +391,15 @@ namespace BizHawk.MultiClient
 
 		void SetRewindParams(bool enabled, int frequency)
 		{
-			if(RewindActive != enabled)
-				Global.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
-			if (RewindFrequency != frequency)
-				Global.OSD.AddMessage("Rewind frequency set to " + frequency);
+            if (RewindActive != enabled)
+            {
+                Global.OSD.AddMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
+            }
+
+            if (RewindFrequency != frequency && enabled)
+            {
+                Global.OSD.AddMessage("Rewind frequency set to " + frequency);
+            }
 
 			RewindActive = enabled;
 			RewindFrequency = frequency;
