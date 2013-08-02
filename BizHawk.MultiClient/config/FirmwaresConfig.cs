@@ -22,31 +22,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class FirmwaresConfig : Form
 	{
-
-		private const int idUnsure = 0;
-		private const int idMissing = 1;
-		private const int idOk = 2;
-
-		class FDR
-		{
-			public FDR(string hash, string systemId, string recommendedName, string descr, string configMember = null)
-			{
-				this.hash = hash;
-				this.systemId = systemId;
-				this.recommendedName = recommendedName;
-				this.descr = descr;
-				this.configMember = configMember;
-			}
-			public string hash;
-			public string systemId;
-			public string recommendedName;
-			public string descr;
-			public string configMember;
-
-			//sort of sloppy to store this here..
-			public FileInfo userPath;
-		}
-
+		//master firmware DB.. for now. might need to go somewhere else later
 		FDR[] dbItems = new[] {
 			new FDR("E4E41472C454F928E53EB10E0509BF7D1146ECC1", "NES", "disksys.rom", "FDS Bios", "FilenameFDSBios"),
 			new FDR("973E10840DB683CF3FAF61BD443090786B3A9F04", "SNES", "sgb.sfc", "Super GameBoy Rom"),
@@ -76,6 +52,7 @@ namespace BizHawk.MultiClient
 			new FDR("ADC7C31E18C7C7413D54802EF2F4193DA14711AA", "C64", "c64-chargen.bin", "C64 Chargen Rom")
 		};
 
+		//friendly names than the system Ids
 		static readonly Dictionary<string, string> systemGroupNames = new Dictionary<string, string>()
 			{
 				{ "NES", "NES" },
@@ -90,20 +67,47 @@ namespace BizHawk.MultiClient
 				{ "C64", "C64" },
 			};
 
+		class FDR
+		{
+			public FDR(string hash, string systemId, string recommendedName, string descr, string configMember = null)
+			{
+				this.hash = hash;
+				this.systemId = systemId;
+				this.recommendedName = recommendedName;
+				this.descr = descr;
+				this.configMember = configMember;
+			}
+			public string hash;
+			public string systemId;
+			public string recommendedName;
+			public string descr;
+			public string configMember;
+
+			//sort of sloppy to store this here..
+			public FileInfo userPath;
+		}
+
+	
+		private const int idUnsure = 0;
+		private const int idMissing = 1;
+		private const int idOk = 2;
+
+		Font fixedFont;
+
 		public FirmwaresConfig()
 		{
 			InitializeComponent();
 
+			//prep imagelist for listview with 3 item states for {idUnsure, idMissing, idOk}
 			imageList1.Images.AddRange(new[] { MultiClient.Properties.Resources.RetroQuestion, MultiClient.Properties.Resources.ExclamationRed, MultiClient.Properties.Resources.GreenCheck });
-
-			
 		}
-
-		Font fixedFont;
+		
 		private void FirmwaresConfig_Load(object sender, EventArgs e)
 		{
+			//we'll use this font for displaying the hash, so they dont look all jagged in a long list
 			fixedFont = new Font(new FontFamily("Courier New"), 8);
 
+			//populate listview from firmware DB
 			var groups = new Dictionary<string, ListViewGroup>();
 			foreach (var fdr in dbItems)
 			{
@@ -117,6 +121,8 @@ namespace BizHawk.MultiClient
 				lvi.SubItems.Add(fdr.descr);
 				lvi.SubItems[2].Font = fixedFont;
 				lvFirmwares.Items.Add(lvi);
+
+				//build the groups in the listview as we go:
 				if (!groups.ContainsKey(fdr.systemId))
 				{
 					lvFirmwares.Groups.Add(fdr.systemId, systemGroupNames[fdr.systemId]);
@@ -126,6 +132,9 @@ namespace BizHawk.MultiClient
 				lvi.Group = groups[fdr.systemId];
 			}
 
+			//now that we have some items in the listview, we can size the hash column to something sensible. why not the others, too?
+			lvFirmwares.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
+			lvFirmwares.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
 			lvFirmwares.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
 
 			DoScan();
@@ -136,12 +145,25 @@ namespace BizHawk.MultiClient
 			fixedFont.Dispose();
 		}
 
-		private void CloseBtn_Click(object sender, EventArgs e)
+		private void tbbGroup_Click(object sender, EventArgs e)
 		{
-			Close();
+			//toggle the grouping state
+			lvFirmwares.ShowGroups = !lvFirmwares.ShowGroups;
 		}
 
+		private void lvFirmwares_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			//TBD
+			//http://msdn.microsoft.com/en-us/library/ms996467.aspx#sorting_customfeatures
+		}
 
+		private void tbbScan_Click(object sender, EventArgs e)
+		{
+			//user-initiated scan
+			DoScan();
+		}
+
+		//represents a file found on disk in the user's firmware directory.
 		class RealFirmwareFile
 		{
 			public FileInfo fi;
@@ -150,13 +172,6 @@ namespace BizHawk.MultiClient
 
 		private void DoScan()
 		{
-			//string p = Global.Config.FirmwaresPath;
-			//CheckFile(Global.Config.FilenameFDSBios, Disksys_ROM_PicBox);
-			//CheckFile("cx4.rom", CX4_PicBox);
-
-			//PCE
-			//CheckFile(Global.Config.Path
-
 			//build a list of files under the global firmwares path, and build a hash for each of them while we're at it
 			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(Global.Config.FirmwaresPath) });
 			var files = new List<RealFirmwareFile>();
@@ -174,12 +189,14 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			//now, contemplate each file and see if it matches a known firmware
-			//this algorithm is slow.
+			//clean out our runtime state to get ready for a new scan result
 			foreach (var fdr in dbItems)
 				fdr.userPath = null;
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 				lvi.ImageIndex = idUnsure;
+
+			//now, contemplate each file and see if it matches a known firmware (this algorithm is slow)
+			//if it matches, make a note for later use
 			foreach (var f in files)
 			{
 				foreach (var fdr in dbItems)
@@ -196,12 +213,13 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			//set unfound firmwares to missing icon
+			//set unfound firmwares to missing icon (theres no good reason for this, but its a reminder that if we thread this later we may want to start it that way, or something like that)
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 				if(lvi.ImageIndex == idUnsure)
 					lvi.ImageIndex = idMissing;
 
-			//set config entries
+			//set entries in the Global.Config class for firmwares that have been bound to emulator cores.
+			//this system is due to be replaced with something else
 			foreach (var fdr in dbItems)
 			{
 				if(fdr.configMember == null) continue;
@@ -213,17 +231,6 @@ namespace BizHawk.MultiClient
 
 				typeof(Config).GetField(fdr.configMember).SetValue(Global.Config, path);
 			}
-		}
-
-		private void tbbGroup_Click(object sender, EventArgs e)
-		{
-			lvFirmwares.ShowGroups = !lvFirmwares.ShowGroups;
-		}
-
-		private void lvFirmwares_ColumnClick(object sender, ColumnClickEventArgs e)
-		{
-			//TBD
-			//http://msdn.microsoft.com/en-us/library/ms996467.aspx#sorting_customfeatures
 		}
 
 		private void tbbOrganize_Click(object sender, EventArgs e)
@@ -252,10 +259,6 @@ namespace BizHawk.MultiClient
 			DoScan();
 		}
 
-		private void tbbScan_Click(object sender, EventArgs e)
-		{
-			DoScan();
-		}
 
 	}
 }
