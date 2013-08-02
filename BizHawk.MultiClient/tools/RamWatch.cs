@@ -1590,15 +1590,14 @@ namespace BizHawk.MultiClient
 						{
 							if (WatchListView.Columns[i].Width > 0)
 							{
-								sb.Append(GetColumnValue(i, index));
-								sb.Append('\t');
+								sb.Append(GetColumnValue(i, index)).Append('\t');
 							}
 						}
 						sb.Remove(sb.Length - 1, 1);
 						sb.Append('\n');
 					}
 
-					if (!String.IsNullOrWhiteSpace(sb.ToString()))
+					if (sb.Length > 0)
 					{
 						Clipboard.SetDataObject(sb.ToString());
 					}

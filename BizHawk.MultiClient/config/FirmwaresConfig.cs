@@ -259,6 +259,34 @@ namespace BizHawk.MultiClient
 			DoScan();
 		}
 
+        private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
+            {
+                ListView.SelectedIndexCollection indexes = lvFirmwares.SelectedIndices;
+                if (indexes.Count > 0)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (int index in indexes)
+                    {
+                        foreach (ListViewItem.ListViewSubItem item in lvFirmwares.Items[index].SubItems)
+                        {
+                            if (!String.IsNullOrWhiteSpace(item.Text))
+                            {
+                                sb.Append(item.Text).Append('\t');
+                            }
+                        }
+                        sb.Remove(sb.Length - 1, 1);
+                    }
+
+                    if (sb.Length > 0)
+                    {
+                        Clipboard.SetDataObject(sb.ToString());
+                    }
+                }
+            }
+        }
+
 
 	}
 }
