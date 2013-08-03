@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using BizHawk.Emulation.Consoles.Nintendo.N64;
 
 namespace BizHawk.MultiClient
 {
@@ -352,6 +353,18 @@ namespace BizHawk.MultiClient
 			Global.Config.VirtualPadSaveWindowPosition = true;
 			Global.Config.VPadHeight = -1;
 			Global.Config.VPadWidth = -1;
+		}
+
+		//TODO: multi-player
+		public void BumpAnalogValue(int? dx, int? dy)
+		{
+			//TODO: make an analog flag in virtualpads that have it, and check the virtualpads loaded, instead of doing this hardcoded
+			if (Global.Emulator is N64)
+			{
+				(Pads[0] as VirtualPadN64).FudgeAnalog(dx, dy);
+
+				UpdateValues();
+			}
 		}
 	}
 }

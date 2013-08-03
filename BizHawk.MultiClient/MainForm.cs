@@ -696,7 +696,8 @@ namespace BizHawk.MultiClient
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
 				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad", "AutoholdAutofire", "MoviePokeToggle", "ClearFrame" }
+				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad", "AutoholdAutofire", "MoviePokeToggle", "ClearFrame",
+				"YUpLargeBinding"}
 		};
 
 		private void InitControls()
@@ -800,6 +801,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Clear Autohold", Global.Config.AutoholdClear);
 			controls.BindMulti("MoviePokeToggle", Global.Config.MoviePlaybackPokeModeBinding);
 			controls.BindMulti("ClearFrame", Global.Config.ClearFrameBinding);
+			controls.BindMulti("YUpLargeBinding", Global.Config.YUpLargeBinding);
 
 			Global.ClientControls = controls;
 
@@ -2185,6 +2187,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "MoviePokeToggle":
 					ToggleModePokeMode();
+					break;
+				case "YUpLargeBinding":
+					VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_LargeChange);
 					break;
 			} //switch(trigger)
 

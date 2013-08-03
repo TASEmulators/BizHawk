@@ -251,5 +251,32 @@ namespace BizHawk.MultiClient
 			ManualX.Value = X;
 			ManualY.Value = Y;
 		}
+
+		//TODO: multiplayer
+		public void FudgeAnalog(int? dx, int? dy)
+		{
+			int newx = AnalogControl1.X;
+			int newy = AnalogControl1.Y;
+			if (dx.HasValue)
+			{
+				newx = AnalogControl1.X + dx.Value;
+				if (newx > AnalogControlPanel.Max) newx = AnalogControlPanel.Max;
+				if (newx < AnalogControlPanel.Min) newx = AnalogControlPanel.Min;
+				
+			}
+
+			if (dy.HasValue)
+			{
+				newy = AnalogControl1.Y + dy.Value;
+				if (newy > AnalogControlPanel.Max) newy = AnalogControlPanel.Max;
+				if (newy < AnalogControlPanel.Min) newy = AnalogControlPanel.Min;
+				
+			}
+
+			AnalogControl1.SetPosition(newx, newy);
+			ManualX.Value = newx;
+			ManualY.Value = newy;
+			Refresh();
+		}
 	}
 }

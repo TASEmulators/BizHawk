@@ -684,6 +684,12 @@ namespace BizHawk.MultiClient
 		public string OpenVirtualPadBinding = "";
 		public string MoviePlaybackPokeModeBinding = "";
 		public string ClearFrameBinding = "";
+		public string YUpLargeBinding = "";
+
+		//Analog Hotkey values
+		public int Analog_LargeChange = 10;
+		public int Analog_SmallChange = 1;
+
 		// NES Sound settings
 		public int NESSquare1 = 376;
 		public int NESSquare2 = 376;

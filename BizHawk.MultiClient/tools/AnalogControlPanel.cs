@@ -108,5 +108,8 @@ namespace BizHawk.MultiClient
 			
 			Refresh();
 		}
+
+		public static int Max = 127;
+		public static int Min = -127;
 	}
 }
