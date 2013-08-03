@@ -166,7 +166,6 @@
 			this.IDW_SS3 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SS2 = new BizHawk.MultiClient.InputWidget();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.MoviePokeToggleLabel = new System.Windows.Forms.Label();
 			this.IDW_TOGGLEREADONLY = new BizHawk.MultiClient.InputWidget();
 			this.IDW_PLAYBEGINNING = new BizHawk.MultiClient.InputWidget();
 			this.label67 = new System.Windows.Forms.Label();
@@ -190,6 +189,9 @@
 			this.IDW_MTSELECTALL = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SaveMovie = new BizHawk.MultiClient.InputWidget();
 			this.IDW_MoviePokeToggle = new BizHawk.MultiClient.InputWidget();
+			this.ClearFrameLabel = new System.Windows.Forms.Label();
+			this.IDW_ClearFrame = new BizHawk.MultiClient.InputWidget();
+			this.MoviePokeToggleLabel = new System.Windows.Forms.Label();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.VirtualPadsLabel = new System.Windows.Forms.Label();
 			this.IDW_OpenVirtualPad = new BizHawk.MultiClient.InputWidget();
@@ -226,12 +228,13 @@
 			this.IDW_SNES_ToggleOBJ3 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SNES_ToggleOBJ2 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SNES_ToggleOBJ1 = new BizHawk.MultiClient.InputWidget();
+			this.tabPage6 = new System.Windows.Forms.TabPage();
 			this.IDB_SAVE = new System.Windows.Forms.Button();
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
-			this.IDW_ClearFrame = new BizHawk.MultiClient.InputWidget();
-			this.ClearFrameLabel = new System.Windows.Forms.Label();
+			this.AnalogYUpLargeLabel = new System.Windows.Forms.Label();
+			this.IDW_YUPLARGE = new BizHawk.MultiClient.InputWidget();
 			this.hotkeyTabs.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -247,6 +250,7 @@
 			this.hotkeyTabs.Controls.Add(this.tabPage3);
 			this.hotkeyTabs.Controls.Add(this.tabPage4);
 			this.hotkeyTabs.Controls.Add(this.tabPage5);
+			this.hotkeyTabs.Controls.Add(this.tabPage6);
 			this.hotkeyTabs.ItemSize = new System.Drawing.Size(65, 24);
 			this.hotkeyTabs.Location = new System.Drawing.Point(12, 12);
 			this.hotkeyTabs.Name = "hotkeyTabs";
@@ -258,6 +262,7 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage6.Controls.Add(this.IDW_YUPLARGE);
 			this.tabPage1.Controls.Add(this.label84);
 			this.tabPage1.Controls.Add(this.IDW_AutoholdAutofire);
 			this.tabPage1.Controls.Add(this.label82);
@@ -1673,15 +1678,6 @@
 			this.tabPage3.Text = "Movie";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
-			// MoviePokeToggleLabel
-			// 
-			this.MoviePokeToggleLabel.AutoSize = true;
-			this.MoviePokeToggleLabel.Location = new System.Drawing.Point(225, 139);
-			this.MoviePokeToggleLabel.Name = "MoviePokeToggleLabel";
-			this.MoviePokeToggleLabel.Size = new System.Drawing.Size(64, 13);
-			this.MoviePokeToggleLabel.TabIndex = 120;
-			this.MoviePokeToggleLabel.Text = "Movie Poke";
-			// 
 			// IDW_TOGGLEREADONLY
 			// 
 			this.IDW_TOGGLEREADONLY.AcceptsTab = true;
@@ -1900,6 +1896,34 @@
 			this.IDW_MoviePokeToggle.Name = "IDW_MoviePokeToggle";
 			this.IDW_MoviePokeToggle.Size = new System.Drawing.Size(100, 20);
 			this.IDW_MoviePokeToggle.TabIndex = 88;
+			// 
+			// ClearFrameLabel
+			// 
+			this.ClearFrameLabel.AutoSize = true;
+			this.ClearFrameLabel.Location = new System.Drawing.Point(225, 165);
+			this.ClearFrameLabel.Name = "ClearFrameLabel";
+			this.ClearFrameLabel.Size = new System.Drawing.Size(62, 13);
+			this.ClearFrameLabel.TabIndex = 121;
+			this.ClearFrameLabel.Text = "Scrub Input";
+			// 
+			// IDW_ClearFrame
+			// 
+			this.IDW_ClearFrame.AcceptsTab = true;
+			this.IDW_ClearFrame.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ClearFrame.Conflicted = false;
+			this.IDW_ClearFrame.Location = new System.Drawing.Point(324, 162);
+			this.IDW_ClearFrame.Name = "IDW_ClearFrame";
+			this.IDW_ClearFrame.Size = new System.Drawing.Size(100, 20);
+			this.IDW_ClearFrame.TabIndex = 92;
+			// 
+			// MoviePokeToggleLabel
+			// 
+			this.MoviePokeToggleLabel.AutoSize = true;
+			this.MoviePokeToggleLabel.Location = new System.Drawing.Point(225, 139);
+			this.MoviePokeToggleLabel.Name = "MoviePokeToggleLabel";
+			this.MoviePokeToggleLabel.Size = new System.Drawing.Size(64, 13);
+			this.MoviePokeToggleLabel.TabIndex = 120;
+			this.MoviePokeToggleLabel.Text = "Movie Poke";
 			// 
 			// tabPage4
 			// 
@@ -2275,6 +2299,17 @@
 			this.IDW_SNES_ToggleOBJ1.Size = new System.Drawing.Size(100, 20);
 			this.IDW_SNES_ToggleOBJ1.TabIndex = 250;
 			// 
+			// tabPage6
+			// 
+			this.tabPage6.Location = new System.Drawing.Point(4, 28);
+			this.tabPage6.Name = "tabPage6";
+			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage6.Size = new System.Drawing.Size(605, 315);
+			this.tabPage6.TabIndex = 0;
+			this.tabPage6.Text = "Analog";
+			this.tabPage6.UseVisualStyleBackColor = true;
+			this.tabPage6.Controls.Add(AnalogYUpLargeLabel);
+			// 
 			// IDB_SAVE
 			// 
 			this.IDB_SAVE.Location = new System.Drawing.Point(441, 9);
@@ -2318,24 +2353,24 @@
 			this.AutoTabCheckBox.UseVisualStyleBackColor = true;
 			this.AutoTabCheckBox.CheckedChanged += new System.EventHandler(this.AutoTabCheckBox_CheckedChanged);
 			// 
-			// IDW_ClearFrame
+			// AnalogYUpLargeLabel
 			// 
-			this.IDW_ClearFrame.AcceptsTab = true;
-			this.IDW_ClearFrame.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_ClearFrame.Conflicted = false;
-			this.IDW_ClearFrame.Location = new System.Drawing.Point(324, 162);
-			this.IDW_ClearFrame.Name = "IDW_ClearFrame";
-			this.IDW_ClearFrame.Size = new System.Drawing.Size(100, 20);
-			this.IDW_ClearFrame.TabIndex = 92;
+			this.AnalogYUpLargeLabel.AutoSize = true;
+			this.AnalogYUpLargeLabel.Location = new System.Drawing.Point(6, 14);
+			this.AnalogYUpLargeLabel.Name = "AnalogYUpLargeLabel";
+			this.AnalogYUpLargeLabel.Size = new System.Drawing.Size(61, 13);
+			this.AnalogYUpLargeLabel.TabIndex = 120;
+			this.AnalogYUpLargeLabel.Text = "Y Up Large";
 			// 
-			// ClearFrameLabel
+			// IDW_YUPLARGE
 			// 
-			this.ClearFrameLabel.AutoSize = true;
-			this.ClearFrameLabel.Location = new System.Drawing.Point(225, 165);
-			this.ClearFrameLabel.Name = "ClearFrameLabel";
-			this.ClearFrameLabel.Size = new System.Drawing.Size(63, 13);
-			this.ClearFrameLabel.TabIndex = 121;
-			this.ClearFrameLabel.Text = "Scrub Input";
+			this.IDW_YUPLARGE.AcceptsTab = true;
+			this.IDW_YUPLARGE.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_YUPLARGE.Conflicted = false;
+			this.IDW_YUPLARGE.Location = new System.Drawing.Point(93, 10);
+			this.IDW_YUPLARGE.Name = "IDW_YUPLARGE";
+			this.IDW_YUPLARGE.Size = new System.Drawing.Size(100, 20);
+			this.IDW_YUPLARGE.TabIndex = 121;
 			// 
 			// HotkeyWindow
 			// 
@@ -2367,6 +2402,8 @@
 			this.tabPage4.PerformLayout();
 			this.tabPage5.ResumeLayout(false);
 			this.tabPage5.PerformLayout();
+			this.tabPage6.ResumeLayout();
+			this.tabPage6.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -2379,6 +2416,7 @@
 		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.TabPage tabPage4;
 		private System.Windows.Forms.TabPage tabPage5;
+	    private System.Windows.Forms.TabPage tabPage6;
 
         private System.Windows.Forms.Button IDB_SAVE;
         private System.Windows.Forms.Button IDB_CANCEL;
@@ -2579,5 +2617,7 @@
 		private InputWidget IDW_MoviePokeToggle;
 		private System.Windows.Forms.Label ClearFrameLabel;
 		private InputWidget IDW_ClearFrame;
+		private System.Windows.Forms.Label AnalogYUpLargeLabel;
+		private InputWidget IDW_YUPLARGE;
     }
 }
