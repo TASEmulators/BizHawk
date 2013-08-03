@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -35,10 +36,10 @@ namespace BizHawk.MultiClient
 			new FDR("6472828403DE3589433A906E2C3F3D274C0FF008", "SNES", "st010.rom", "ST010 Rom"),
 			new FDR("FECBAE2CEC76C710422486BAA186FFA7CA1CF925", "SNES", "st011.rom", "ST011 Rom"),
 			new FDR("91383B92745CC7CC4F15409AC5BC2C2F699A43F1", "SNES", "st018.rom", "ST018 Rom"),
-			new FDR("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", "PCECD", "[BIOS] Super CD-ROM System (Japan) (v3.0).pce", "Super CD-ROM System v3.0 (J)","FilenamePCEBios"),
-			new FDR("2B8CB4F87580683EB4D760E4ED210813D667F0A2", "SAT", "Sega Saturn BIOS v1.00 (US).bin", "Sega Saturn Bios v1.00 (NTSC)"),
-			new FDR("FAA8EA183A6D7BBE5D4E03BB1332519800D3FBC3", "SAT", "Sega Saturn BIOS (EUR).bin", "Sega Saturn Bios v1.00 (PAL)"),
-			new FDR("DF94C5B4D47EB3CC404D88B33A8FDA237EAF4720", "SAT", "Sega Saturn BIOS v1.01 (JAP).bin", "Sega Saturn Bios v1.01 (J)", "FilenameSaturnBios"),
+			new FDR("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", "PCECD", "pcecd-3.0-J.pce", "Super CD-ROM System v3.0 (J)","FilenamePCEBios"),
+			new FDR("2B8CB4F87580683EB4D760E4ED210813D667F0A2", "SAT", "saturn-1.00-NTSC.bin", "Sega Saturn Bios v1.00 (NTSC)"),
+			new FDR("FAA8EA183A6D7BBE5D4E03BB1332519800D3FBC3", "SAT", "saturn-1.00-PAL.bin", "Sega Saturn Bios v1.00 (PAL)"),
+			new FDR("DF94C5B4D47EB3CC404D88B33A8FDA237EAF4720", "SAT", "saturn-1.01-J.bin", "Sega Saturn Bios v1.01 (J)", "FilenameSaturnBios"),
 			new FDR("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", "A78", "7800NTSCBIOS.bin", "Atari 7800 NTSC Bios", "FilenameA78NTSCBios"),
 			new FDR("5A140136A16D1D83E4FF32A19409CA376A8DF874", "A78", "7800PALBIOS.bin", "Atari 7800 PAL Bios", "FilenameA78PALBios"),
 			new FDR("A3AF676991391A6DD716C79022D4947206B78164", "A78", "7800highscore.bin", "Atari 7800 Highscore Bios", "FilenameA78HSCBios"),
@@ -94,12 +95,35 @@ namespace BizHawk.MultiClient
 
 		Font fixedFont;
 
+
+		class ListViewSorter : IComparer
+		{
+			public FirmwaresConfig dialog;
+			public int column;
+			public int sign;
+			public ListViewSorter(FirmwaresConfig dialog, int column)
+			{
+				this.dialog = dialog;
+				this.column = column;
+			}
+			public int Compare(object a, object b)
+			{
+				var lva = (ListViewItem)a;
+				var lvb = (ListViewItem)b;
+				return sign*string.Compare(lva.SubItems[column].Text, lvb.SubItems[column].Text);
+			}
+		}
+
+		ListViewSorter listviewSorter;
+
 		public FirmwaresConfig()
 		{
 			InitializeComponent();
 
 			//prep imagelist for listview with 3 item states for {idUnsure, idMissing, idOk}
 			imageList1.Images.AddRange(new[] { MultiClient.Properties.Resources.RetroQuestion, MultiClient.Properties.Resources.ExclamationRed, MultiClient.Properties.Resources.GreenCheck });
+
+			listviewSorter = new ListViewSorter(this, -1);
 		}
 		
 		private void FirmwaresConfig_Load(object sender, EventArgs e)
@@ -153,8 +177,15 @@ namespace BizHawk.MultiClient
 
 		private void lvFirmwares_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			//TBD
-			//http://msdn.microsoft.com/en-us/library/ms996467.aspx#sorting_customfeatures
+			if (listviewSorter.column != e.Column)
+			{
+				listviewSorter.column = e.Column;
+				listviewSorter.sign = 1;
+			}
+			else listviewSorter.sign *= -1;
+			lvFirmwares.ListViewItemSorter = listviewSorter;
+			lvFirmwares.SetSortIcon(e.Column, listviewSorter.sign == 1 ? SortOrder.Descending : SortOrder.Ascending);
+			lvFirmwares.Sort();
 		}
 
 		private void tbbScan_Click(object sender, EventArgs e)
@@ -179,12 +210,16 @@ namespace BizHawk.MultiClient
 			{
 				var di = todo.Dequeue();
 				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
+				byte[] buffer = new byte[0];
 				foreach (var fi in di.GetFiles())
 				{
 					var rff = new RealFirmwareFile();
 					rff.fi = fi;
-					var bytes = File.ReadAllBytes(fi.FullName); //TODO - go faster by reusing buffers
-					rff.hash = Util.Hash_SHA1(bytes, 0, bytes.Length);
+					long len = fi.Length;
+					if (len > buffer.Length)
+						buffer = new byte[len];
+					using (var fs = fi.OpenRead()) fs.Read(buffer, 0, (int)len);
+					rff.hash = Util.Hash_SHA1(buffer, 0, (int)len);
 					files.Add(rff);
 				}
 			}
@@ -204,11 +239,13 @@ namespace BizHawk.MultiClient
 					if (fdr.hash == f.hash)
 					{
 						foreach (ListViewItem lvi in lvFirmwares.Items)
+						{
 							if (lvi.Tag == fdr)
 							{
 								lvi.ImageIndex = idOk;
 								fdr.userPath = f.fi;
 							}
+						}
 					}
 				}
 			}
@@ -252,41 +289,50 @@ namespace BizHawk.MultiClient
 				}
 				catch
 				{
+					//sometimes moves fail. especially in newer versions of windows with explorers more fragile than your great-grandma.
+					//I am embarassed that I know that.
 				}
 			}
 
-			//to be safe, better do this.
+			//to be safe, better do this. we want the db to track the state of the files after theyre moved.
 			DoScan();
 		}
 
-        private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) //Copy
-            {
-                ListView.SelectedIndexCollection indexes = lvFirmwares.SelectedIndices;
-                if (indexes.Count > 0)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    foreach (int index in indexes)
-                    {
-                        foreach (ListViewItem.ListViewSubItem item in lvFirmwares.Items[index].SubItems)
-                        {
-                            if (!String.IsNullOrWhiteSpace(item.Text))
-                            {
-                                sb.Append(item.Text).Append('\t');
-                            }
-                        }
-                        sb.Remove(sb.Length - 1, 1);
-                    }
+		private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift)
+			{
+				ListviewCopy();
+			}
+		}
 
-                    if (sb.Length > 0)
-                    {
-                        Clipboard.SetDataObject(sb.ToString());
-                    }
-                }
-            }
-        }
+		void ListviewCopy()
+		{
+			ListView.SelectedIndexCollection indexes = lvFirmwares.SelectedIndices;
+			if (indexes.Count <= 0)
+				return;
 
+			StringBuilder sb = new StringBuilder();
+			
+			//walk over each selected item and subitem within it to generate a string from it
+			foreach (int index in indexes)
+			{
+				foreach (ListViewItem.ListViewSubItem item in lvFirmwares.Items[index].SubItems)
+				{
+					if (!String.IsNullOrWhiteSpace(item.Text))
+						sb.Append(item.Text).Append('\t');
+				}
+				//remove the last tab
+				sb.Remove(sb.Length - 1, 1);
+
+				sb.Append("\r\n");
+			}
+
+			//remove last newline
+			sb.Length -= 2;
+
+			if (sb.Length > 0) Clipboard.SetDataObject(sb.ToString());
+		}
 
 	}
 }
