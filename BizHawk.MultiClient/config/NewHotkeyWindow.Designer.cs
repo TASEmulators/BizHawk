@@ -53,7 +53,7 @@
 			// 
 			this.AutoTabCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AutoTabCheckBox.AutoSize = true;
-			this.AutoTabCheckBox.Location = new System.Drawing.Point(409, 422);
+			this.AutoTabCheckBox.Location = new System.Drawing.Point(453, 422);
 			this.AutoTabCheckBox.Name = "AutoTabCheckBox";
 			this.AutoTabCheckBox.Size = new System.Drawing.Size(70, 17);
 			this.AutoTabCheckBox.TabIndex = 101;
@@ -70,7 +70,7 @@
 			this.HotkeyTabControl.Location = new System.Drawing.Point(12, 12);
 			this.HotkeyTabControl.Name = "HotkeyTabControl";
 			this.HotkeyTabControl.SelectedIndex = 0;
-			this.HotkeyTabControl.Size = new System.Drawing.Size(685, 394);
+			this.HotkeyTabControl.Size = new System.Drawing.Size(729, 394);
 			this.HotkeyTabControl.TabIndex = 102;
 			// 
 			// tabPage1
@@ -78,7 +78,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(677, 368);
+			this.tabPage1.Size = new System.Drawing.Size(721, 368);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "For designer";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -87,7 +87,7 @@
 			// 
 			this.IDB_CANCEL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.IDB_CANCEL.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.IDB_CANCEL.Location = new System.Drawing.Point(637, 418);
+			this.IDB_CANCEL.Location = new System.Drawing.Point(681, 418);
 			this.IDB_CANCEL.Name = "IDB_CANCEL";
 			this.IDB_CANCEL.Size = new System.Drawing.Size(60, 22);
 			this.IDB_CANCEL.TabIndex = 103;
@@ -99,7 +99,7 @@
 			// IDB_SAVE
 			// 
 			this.IDB_SAVE.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.IDB_SAVE.Location = new System.Drawing.Point(571, 418);
+			this.IDB_SAVE.Location = new System.Drawing.Point(615, 418);
 			this.IDB_SAVE.Name = "IDB_SAVE";
 			this.IDB_SAVE.Size = new System.Drawing.Size(60, 22);
 			this.IDB_SAVE.TabIndex = 104;
@@ -111,7 +111,7 @@
 			// RestoreDefaults
 			// 
 			this.RestoreDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.RestoreDefaults.Location = new System.Drawing.Point(485, 418);
+			this.RestoreDefaults.Location = new System.Drawing.Point(529, 418);
 			this.RestoreDefaults.Name = "RestoreDefaults";
 			this.RestoreDefaults.Size = new System.Drawing.Size(60, 22);
 			this.RestoreDefaults.TabIndex = 105;
@@ -126,7 +126,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.IDB_CANCEL;
-			this.ClientSize = new System.Drawing.Size(709, 445);
+			this.ClientSize = new System.Drawing.Size(753, 445);
 			this.Controls.Add(this.RestoreDefaults);
 			this.Controls.Add(this.IDB_SAVE);
 			this.Controls.Add(this.IDB_CANCEL);

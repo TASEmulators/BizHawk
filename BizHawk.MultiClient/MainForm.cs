@@ -571,7 +571,7 @@ namespace BizHawk.MultiClient
 					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
 				}
-				else if (Global.ClientControls["AutoholdAutofire"])
+				else if (Global.ClientControls["Autofire"])
 				{
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 				}
@@ -1868,7 +1868,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "Clear Autohold": ClearAutohold(); break;
 				case "Screenshot": TakeScreenshot(); break;
-				case "Toggle Fullscreen": ToggleFullscreen(); break;
+				case "Full Screen": ToggleFullscreen(); break;
 				case "Open ROM": OpenROM(); break;
 				case "Close ROM": CloseROM(); break;
 				case "Display FPS": ToggleFPS(); break;
@@ -1999,7 +1999,7 @@ namespace BizHawk.MultiClient
 				case "Hex Editor": LoadHexEditor(); break;
 				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": LoadCheatsWindow(); break;
-				case "TASTudio": LoadTAStudio(); break;
+				case "TAStudio": LoadTAStudio(); break;
 				case "ToolBox": LoadToolBox(); break;
 				case "Virtual Pad": LoadVirtualPads(); break;
 
@@ -2011,9 +2011,9 @@ namespace BizHawk.MultiClient
 				case "Toggle OBJ 2": SNES_ToggleOBJ2(); break;
 				case "Toggle OBJ 3": SNES_ToggleOBJ3(); break;
 				case "Toggle OBJ 4": SNES_ToggleOBJ4(); break;
-				
 
-				case "Y Up Large Binding":
+
+				case "Y Up Large":
 					VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_LargeChange);
 					break;
 			}
@@ -2114,8 +2114,8 @@ namespace BizHawk.MultiClient
 			bool coreskipaudio = false;
 			if (runFrame)
 			{
-				bool ff = Global.ClientControls["Fast Forward"] || Global.ClientControls["MaxTurbo"];
-				bool fff = Global.ClientControls["MaxTurbo"];
+				bool ff = Global.ClientControls["Fast Forward"] || Global.ClientControls["Turbo"];
+				bool fff = Global.ClientControls["Turbo"];
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
 
