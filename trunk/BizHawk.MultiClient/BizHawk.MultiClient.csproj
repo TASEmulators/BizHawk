@@ -208,6 +208,12 @@
     <Compile Include="config\NewControllerConfig.Designer.cs">
       <DependentUpon>NewControllerConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\NewHotkeyWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NewHotkeyWindow.Designer.cs">
+      <DependentUpon>NewHotkeyWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PathConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -611,6 +617,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\NewControllerConfig.resx">
       <DependentUpon>NewControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NewHotkeyWindow.resx">
+      <DependentUpon>NewHotkeyWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PathInfo.resx">
       <DependentUpon>PathInfo.cs</DependentUpon>

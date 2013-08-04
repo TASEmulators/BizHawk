@@ -18,7 +18,7 @@ namespace BizHawk.MultiClient
 		string[] Bindings = new string[4];
 		string wasPressed = "";
 		ToolTip tooltip1 = new ToolTip();
-		public string ButtonName;
+		public string WidgetName;
 		Color _highlight_color = Color.LightCyan;
 		Color _no_highlight_color = SystemColors.Window;
 

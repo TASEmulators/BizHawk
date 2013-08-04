@@ -684,127 +684,21 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static ControllerDefinition ClientControlsDef = new ControllerDefinition
-		{
-			Name = "Emulator Frontend Controls",
-			BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State",
-				"Emulator Pause", "Frame Advance", "Unthrottle", "MaxTurbo", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
-				"SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
-				"SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
-				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor",
-				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
-				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-				"Soft Reset", "Decrement Player", "Record AVI/WAV", "Stop AVI/WAV", "Toggle Menu", "Increase Speed", "Decrease Speed", "Toggle Background Input",
-				"Autohold", "Clear Autohold", "SNES Toggle BG 1", "SNES Toggle BG 2", "SNES Toggle BG 3", "SNES Toggle BG 4", "SNES Toggle OBJ 1", "SNES Toggle OBJ 2", "SNES Toggle OBJ 3",
-				"SNES Toggle OBJ 4", "Reboot Core", "Save Movie", "Virtual Pad", "AutoholdAutofire", "MoviePokeToggle", "ClearFrame",
-				"YUpLargeBinding"}
-		};
-
 		private void InitControls()
 		{
-			var controls = new Controller(ClientControlsDef);
+			var controls = new Controller(
+				new ControllerDefinition()
+				{
+					Name = "Emulator Frontend Controls",
+					BoolButtons = Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToList()
+				});
 
-			controls.BindMulti("SNES Toggle BG 1", Global.Config.ToggleSNESBG1Binding);
-			controls.BindMulti("SNES Toggle BG 2", Global.Config.ToggleSNESBG2Binding);
-			controls.BindMulti("SNES Toggle BG 3", Global.Config.ToggleSNESBG3Binding);
-			controls.BindMulti("SNES Toggle BG 4", Global.Config.ToggleSNESBG4Binding);
-
-			controls.BindMulti("SNES Toggle OBJ 1", Global.Config.ToggleSNESOBJ1Binding);
-			controls.BindMulti("SNES Toggle OBJ 2", Global.Config.ToggleSNESOBJ2Binding);
-			controls.BindMulti("SNES Toggle OBJ 3", Global.Config.ToggleSNESOBJ3Binding);
-			controls.BindMulti("SNES Toggle OBJ 4", Global.Config.ToggleSNESOBJ4Binding);
-			controls.BindMulti("Save Movie", Global.Config.SaveMovieBinding);
-			controls.BindMulti("IncreaseWindowSize", Global.Config.IncreaseWindowSize);
-			controls.BindMulti("DecreaseWindowSize", Global.Config.DecreaseWindowSize);
-			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
-			controls.BindMulti("Rewind", Global.Config.RewindBinding);
-			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
-			controls.BindMulti("Reboot Core", Global.Config.RebootCoreResetBinding);
-			controls.BindMulti("Emulator Pause", Global.Config.EmulatorPauseBinding);
-			controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
-			controls.BindMulti("Increase Speed", Global.Config.IncreaseSpeedBinding);
-			controls.BindMulti("Decrease Speed", Global.Config.DecreaseSpeedBinding);
-			controls.BindMulti("Toggle Background Input", Global.Config.ToggleBackgroundInput);
-			controls.BindMulti("Unthrottle", Global.Config.TurboBinding);
-			controls.BindMulti("MaxTurbo", Global.Config.MaxTurboBinding);
-			controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
-			controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
-			controls.BindMulti("Quick Save State", Global.Config.QuickSave);
-			controls.BindMulti("Quick Load State", Global.Config.QuickLoad);
-			controls.BindMulti("SelectSlot0", Global.Config.SelectSlot0);
-			controls.BindMulti("SelectSlot1", Global.Config.SelectSlot1);
-			controls.BindMulti("SelectSlot2", Global.Config.SelectSlot2);
-			controls.BindMulti("SelectSlot3", Global.Config.SelectSlot3);
-			controls.BindMulti("SelectSlot4", Global.Config.SelectSlot4);
-			controls.BindMulti("SelectSlot5", Global.Config.SelectSlot5);
-			controls.BindMulti("SelectSlot6", Global.Config.SelectSlot6);
-			controls.BindMulti("SelectSlot7", Global.Config.SelectSlot7);
-			controls.BindMulti("SelectSlot8", Global.Config.SelectSlot8);
-			controls.BindMulti("SelectSlot9", Global.Config.SelectSlot9);
-			controls.BindMulti("SaveSlot0", Global.Config.SaveSlot0);
-			controls.BindMulti("SaveSlot1", Global.Config.SaveSlot1);
-			controls.BindMulti("SaveSlot2", Global.Config.SaveSlot2);
-			controls.BindMulti("SaveSlot3", Global.Config.SaveSlot3);
-			controls.BindMulti("SaveSlot4", Global.Config.SaveSlot4);
-			controls.BindMulti("SaveSlot5", Global.Config.SaveSlot5);
-			controls.BindMulti("SaveSlot6", Global.Config.SaveSlot6);
-			controls.BindMulti("SaveSlot7", Global.Config.SaveSlot7);
-			controls.BindMulti("SaveSlot8", Global.Config.SaveSlot8);
-			controls.BindMulti("SaveSlot9", Global.Config.SaveSlot9);
-			controls.BindMulti("LoadSlot0", Global.Config.LoadSlot0);
-			controls.BindMulti("LoadSlot1", Global.Config.LoadSlot1);
-			controls.BindMulti("LoadSlot2", Global.Config.LoadSlot2);
-			controls.BindMulti("LoadSlot3", Global.Config.LoadSlot3);
-			controls.BindMulti("LoadSlot4", Global.Config.LoadSlot4);
-			controls.BindMulti("LoadSlot5", Global.Config.LoadSlot5);
-			controls.BindMulti("LoadSlot6", Global.Config.LoadSlot6);
-			controls.BindMulti("LoadSlot7", Global.Config.LoadSlot7);
-			controls.BindMulti("LoadSlot8", Global.Config.LoadSlot8);
-			controls.BindMulti("LoadSlot9", Global.Config.LoadSlot9);
-			controls.BindMulti("ToolBox", Global.Config.ToolBox);
-			controls.BindMulti("Save Named State", Global.Config.SaveNamedState);
-			controls.BindMulti("Load Named State", Global.Config.LoadNamedState);
-			controls.BindMulti("Previous Slot", Global.Config.PreviousSlot);
-			controls.BindMulti("Next Slot", Global.Config.NextSlot);
-			controls.BindMulti("Ram Watch", Global.Config.RamWatch);
-			controls.BindMulti("TASTudio", Global.Config.TASTudio);
-			controls.BindMulti("Virtual Pad", Global.Config.OpenVirtualPadBinding);
-			controls.BindMulti("Ram Search", Global.Config.RamSearch);
-			controls.BindMulti("Ram Poke", Global.Config.RamPoke);
-			controls.BindMulti("Hex Editor", Global.Config.HexEditor);
-			controls.BindMulti("Lua Console", Global.Config.LuaConsole);
-			controls.BindMulti("Cheats", Global.Config.Cheats);
-			controls.BindMulti("Open ROM", Global.Config.OpenROM);
-			controls.BindMulti("Close ROM", Global.Config.CloseROM);
-			controls.BindMulti("Display FPS", Global.Config.FPSBinding);
-			controls.BindMulti("Display FrameCounter", Global.Config.FrameCounterBinding);
-			controls.BindMulti("Display LagCounter", Global.Config.LagCounterBinding);
-			controls.BindMulti("Display Input", Global.Config.InputDisplayBinding);
-			controls.BindMulti("Toggle Read Only", Global.Config.ReadOnlyToggleBinding);
-			controls.BindMulti("Play Movie", Global.Config.PlayMovieBinding);
-			controls.BindMulti("Record Movie", Global.Config.RecordMovieBinding);
-			controls.BindMulti("Stop Movie", Global.Config.StopMovieBinding);
-			controls.BindMulti("Play Beginning", Global.Config.PlayBeginningBinding);
-			controls.BindMulti("Volume Up", Global.Config.VolUpBinding);
-			controls.BindMulti("Volume Down", Global.Config.VolDownBinding);
-			controls.BindMulti("Toggle MultiTrack", Global.Config.ToggleMultiTrack);
-			controls.BindMulti("Record All", Global.Config.MTRecordAll);
-			controls.BindMulti("Record None", Global.Config.MTRecordNone);
-			controls.BindMulti("Increment Player", Global.Config.MTIncrementPlayer);
-			controls.BindMulti("Decrement Player", Global.Config.MTDecrementPlayer);
-			controls.BindMulti("Soft Reset", Global.Config.SoftResetBinding);
-			controls.BindMulti("Record AVI/WAV", Global.Config.AVIRecordBinding);
-			controls.BindMulti("Stop AVI/WAV", Global.Config.AVIStopBinding);
-			controls.BindMulti("Toggle Menu", Global.Config.ToggleMenuBinding);
-			controls.BindMulti("Autohold", Global.Config.AutoholdBinding);
-			controls.BindMulti("AutoholdAutofire", Global.Config.AutoholdAutofireBinding);
-			controls.BindMulti("Clear Autohold", Global.Config.AutoholdClear);
-			controls.BindMulti("MoviePokeToggle", Global.Config.MoviePlaybackPokeModeBinding);
-			controls.BindMulti("ClearFrame", Global.Config.ClearFrameBinding);
-			controls.BindMulti("YUpLargeBinding", Global.Config.YUpLargeBinding);
+			foreach (Binding b in Global.Config.HotkeyBindings)
+			{
+				controls.BindMulti(b.DisplayName, b.Bindings);
+			}
 
 			Global.ClientControls = controls;
-
 			Global.NullControls = new Controller(NullEmulator.NullController);
 			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
 
@@ -824,10 +718,7 @@ namespace BizHawk.MultiClient
 
 		public bool IsNullEmulator()
 		{
-			if (Global.Emulator is NullEmulator)
-				return true;
-			else
-				return false;
+			return Global.Emulator is NullEmulator;
 		}
 
 		private string DisplayNameForSystem(string system)
@@ -943,7 +834,7 @@ namespace BizHawk.MultiClient
 		{
 			nESSpeicalToolStripMenuItem.Visible = true;
 			nESSpeicalToolStripMenuItem.DropDownItems.Add(name, null, delegate
-				{
+			{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
 				{
 					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
@@ -952,9 +843,7 @@ namespace BizHawk.MultiClient
 						Global.OSD.AddMessage(msg);
 					}
 				}
-
-			}
-			);
+			});
 		}
 
 		void NESSpeicalMenuControls()
@@ -1802,7 +1691,7 @@ namespace BizHawk.MultiClient
 			writer.Close();
 		}
 
-		void OnSelectSlot(int num)
+		void SelectSlot(int num)
 		{
 			Global.Config.SaveSlot = num;
 			SaveSlotSelectedMessage();
@@ -1820,7 +1709,8 @@ namespace BizHawk.MultiClient
 				if (ActiveForm == this) return true;
 
 				//modals that need to capture input for binding purposes get input, of course
-				if (ActiveForm is HotkeyWindow) return true;
+				//if (ActiveForm is HotkeyWindow) return true;
+				if (ActiveForm is NewHotkeyWindow) return true;
 				//if (ActiveForm is ControllerConfig) return true;
 				if (ActiveForm is config.NewControllerConfig) return true;
 				if (ActiveForm is TAStudio) return true;
@@ -1959,239 +1849,172 @@ namespace BizHawk.MultiClient
 			//todo - could have these in a table somehow ?
 			switch (trigger)
 			{
-				default:
-					return false;
-
-				case "SNES Toggle BG 1":
-					SNES_ToggleBG1();
-					break;
-				case "SNES Toggle BG 2":
-					SNES_ToggleBG2();
-					break;
-				case "SNES Toggle BG 3":
-					SNES_ToggleBG3();
-					break;
-				case "SNES Toggle BG 4":
-					SNES_ToggleBG4();
-					break;
-				case "SNES Toggle OBJ 1":
-					SNES_ToggleOBJ1();
-					break;
-				case "SNES Toggle OBJ 2":
-					SNES_ToggleOBJ2();
-					break;
-				case "SNES Toggle OBJ 3":
-					SNES_ToggleOBJ3();
-					break;
-				case "SNES Toggle OBJ 4":
-					SNES_ToggleOBJ4();
-					break;
-				case "Save Movie":
-					SaveMovie();
-					break;
-				case "Clear Autohold":
-					ClearAutohold();
-					break;
-				case "IncreaseWindowSize":
-					IncreaseWindowSize();
-					break;
-				case "DecreaseWindowSize":
-					DecreaseWIndowSize();
-					break;
-				case "Record AVI/WAV":
-					RecordAVI();
-					break;
-				case "Stop AVI/WAV":
-					StopAVI();
-					break;
-				case "ToolBox":
-					LoadToolBox();
-					break;
-				case "Increase Speed":
-					IncreaseSpeed();
-					break;
-				case "Decrease Speed":
-					DecreaseSpeed();
-					break;
-				case "Toggle Background Input":
-					ToggleBackgroundInput();
-					break;
-				case "Quick Save State":
-					if (!IsNullEmulator())
-						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
-					break;
-
-				case "Quick Load State":
-					if (!IsNullEmulator())
-						LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
-					break;
-
-				case "Unthrottle":
+				case "Pause": TogglePause(); break;
+				case "Toggle Throttle":
 					unthrottled ^= true;
 					Global.OSD.AddMessage("Unthrottled: " + unthrottled);
 					break;
-
-				case "Reboot Core":
-					{
-						bool autoSaveState = Global.Config.AutoSavestates;
-						Global.Config.AutoSavestates = false;
-						LoadRom(CurrentlyOpenRom);
-						Global.Config.AutoSavestates = autoSaveState;
-						break;
-					}
-
-				case "Hard Reset":
-					HardReset();
+				case "Soft Reset": SoftReset(); break;
+				case "Hard Reset": HardReset(); break;
+				case "Quick Load":
+					if (!IsNullEmulator())
+						LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
 					break;
-				case "Screenshot":
-					TakeScreenshot();
+				case "Quick Save":
+					if (!IsNullEmulator())
+						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
 					break;
-
-				case "SaveSlot0": if (!IsNullEmulator()) SaveState("QuickSave0"); break;
-				case "SaveSlot1": if (!IsNullEmulator()) SaveState("QuickSave1"); break;
-				case "SaveSlot2": if (!IsNullEmulator()) SaveState("QuickSave2"); break;
-				case "SaveSlot3": if (!IsNullEmulator()) SaveState("QuickSave3"); break;
-				case "SaveSlot4": if (!IsNullEmulator()) SaveState("QuickSave4"); break;
-				case "SaveSlot5": if (!IsNullEmulator()) SaveState("QuickSave5"); break;
-				case "SaveSlot6": if (!IsNullEmulator()) SaveState("QuickSave6"); break;
-				case "SaveSlot7": if (!IsNullEmulator()) SaveState("QuickSave7"); break;
-				case "SaveSlot8": if (!IsNullEmulator()) SaveState("QuickSave8"); break;
-				case "SaveSlot9": if (!IsNullEmulator()) SaveState("QuickSave9"); break;
-				case "LoadSlot0": if (!IsNullEmulator()) LoadState("QuickSave0"); break;
-				case "LoadSlot1": if (!IsNullEmulator()) LoadState("QuickSave1"); break;
-				case "LoadSlot2": if (!IsNullEmulator()) LoadState("QuickSave2"); break;
-				case "LoadSlot3": if (!IsNullEmulator()) LoadState("QuickSave3"); break;
-				case "LoadSlot4": if (!IsNullEmulator()) LoadState("QuickSave4"); break;
-				case "LoadSlot5": if (!IsNullEmulator()) LoadState("QuickSave5"); break;
-				case "LoadSlot6": if (!IsNullEmulator()) LoadState("QuickSave6"); break;
-				case "LoadSlot7": if (!IsNullEmulator()) LoadState("QuickSave7"); break;
-				case "LoadSlot8": if (!IsNullEmulator()) LoadState("QuickSave8"); break;
-				case "LoadSlot9": if (!IsNullEmulator()) LoadState("QuickSave9"); break;
-				case "SelectSlot0": OnSelectSlot(0); break;
-				case "SelectSlot1": OnSelectSlot(1); break;
-				case "SelectSlot2": OnSelectSlot(2); break;
-				case "SelectSlot3": OnSelectSlot(3); break;
-				case "SelectSlot4": OnSelectSlot(4); break;
-				case "SelectSlot5": OnSelectSlot(5); break;
-				case "SelectSlot6": OnSelectSlot(6); break;
-				case "SelectSlot7": OnSelectSlot(7); break;
-				case "SelectSlot8": OnSelectSlot(8); break;
-				case "SelectSlot9": OnSelectSlot(9); break;
-
+				case "Clear Autohold": ClearAutohold(); break;
+				case "Screenshot": TakeScreenshot(); break;
 				case "Toggle Fullscreen": ToggleFullscreen(); break;
+				case "Open ROM": OpenROM(); break;
+				case "Close ROM": CloseROM(); break;
+				case "Display FPS": ToggleFPS(); break;
+				case "Frame Counter": ToggleFrameCounter(); break;
+				case "Lag Counter": ToggleLagCounter(); break;
+				case "Input Display": ToggleInputDisplay(); break;
+				case "Toggle BG Input": ToggleBackgroundInput(); break;
+				case "Toggle Menu": ShowHideMenu(); break;
+				case "Volume Up": VolumeUp(); break;
+				case "Volume Down": VolumeDown(); break;
+				case "Record A/V": RecordAVI(); break;
+				case "Stop A/V": StopAVI(); break;
+				case "Larger Window": IncreaseWindowSize(); break;
+				case "Smaller Window": DecreaseWIndowSize(); break;
+				case "Increase Speed": IncreaseSpeed(); break;
+				case "Decrease Speed": DecreaseSpeed(); break;
+				case "Reboot Core":
+					bool autoSaveState = Global.Config.AutoSavestates;
+					Global.Config.AutoSavestates = false;
+					LoadRom(CurrentlyOpenRom);
+					Global.Config.AutoSavestates = autoSaveState;
+					break;
+
+				case "Save State 0": SaveState("QuickSave0"); break;
+				case "Save State 1": SaveState("QuickSave1"); break;
+				case "Save State 2": SaveState("QuickSave2"); break;
+				case "Save State 3": SaveState("QuickSave3"); break;
+				case "Save State 4": SaveState("QuickSave4"); break;
+				case "Save State 5": SaveState("QuickSave5"); break;
+				case "Save State 6": SaveState("QuickSave6"); break;
+				case "Save State 7": SaveState("QuickSave7"); break;
+				case "Save State 8": SaveState("QuickSave8"); break;
+				case "Save State 9": SaveState("QuickSave9"); break;
+				case "Load State 0": LoadState("QuickSave0"); break;
+				case "Load State 1": LoadState("QuickSave1"); break;
+				case "Load State 2": LoadState("QuickSave2"); break;
+				case "Load State 3": LoadState("QuickSave3"); break;
+				case "Load State 4": LoadState("QuickSave4"); break;
+				case "Load State 5": LoadState("QuickSave5"); break;
+				case "Load State 6": LoadState("QuickSave6"); break;
+				case "Load State 7": LoadState("QuickSave7"); break;
+				case "Load State 8": LoadState("QuickSave8"); break;
+				case "Load State 9": LoadState("QuickSave9"); break;
+				case "Select State 0": SelectSlot(0); break;
+				case "Select State 1": SelectSlot(1); break;
+				case "Select State 2": SelectSlot(2); break;
+				case "Select State 3": SelectSlot(3); break;
+				case "Select State 4": SelectSlot(4); break;
+				case "Select State 5": SelectSlot(5); break;
+				case "Select State 6": SelectSlot(6); break;
+				case "Select State 7": SelectSlot(7); break;
+				case "Select State 8": SelectSlot(8); break;
+				case "Select State 9": SelectSlot(9); break;
 				case "Save Named State": SaveStateAs(); break;
 				case "Load Named State": LoadStateAs(); break;
 				case "Previous Slot": PreviousSlot(); break;
 				case "Next Slot": NextSlot(); break;
+
+
+				case "Toggle read-only": ToggleReadOnly(); break;
+				case "Play Movie": PlayMovie(); break;
+				case "Record Movie": RecordMovie(); break;
+				case "Stop Movie": StopMovie(); break;
+				case "Play from beginning": PlayMovieFromBeginning(); break;
+				case "Save Movie": SaveMovie(); break;
+				case "Toggle MultiTrack":
+					if (Global.MovieSession.Movie.IsActive)
+					{
+
+						if (Global.Config.VBAStyleMovieLoadState)
+						{
+							Global.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
+						}
+						else
+						{
+							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+							if (Global.MovieSession.MultiTrack.IsActive)
+							{
+								Global.OSD.AddMessage("MultiTrack Enabled");
+								Global.OSD.MT = "Recording None";
+							}
+							else
+							{
+								Global.OSD.AddMessage("MultiTrack Disabled");
+							}
+							Global.MovieSession.MultiTrack.RecordAll = false;
+							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+						}
+					}
+					else
+					{
+						Global.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
+					}
+					break;
+				case "MT Select All":
+					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+					Global.MovieSession.MultiTrack.RecordAll = true;
+					Global.OSD.MT = "Recording All";
+					break;
+				case "MT Select None":
+					Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					Global.OSD.MT = "Recording None";
+					break;
+				case "MT Increment Player":
+					Global.MovieSession.MultiTrack.CurrentPlayer++;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+					{
+						Global.MovieSession.MultiTrack.CurrentPlayer = 1;
+					}
+					Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					break;
+				case "MT Decrement Player":
+					Global.MovieSession.MultiTrack.CurrentPlayer--;
+					Global.MovieSession.MultiTrack.RecordAll = false;
+					if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
+					{
+						Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
+					}
+					Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+					break;
+				case "Movie Poke": ToggleModePokeMode(); break;
+
 				case "Ram Watch": LoadRamWatch(true); break;
 				case "Ram Search": LoadRamSearch(); break;
-				case "Ram Poke":
-					{
-						RamPoke r = new RamPoke();
-						r.Show();
-						break;
-					}
+				case "Ram Poke": new RamPoke().Show(); break;
 				case "Hex Editor": LoadHexEditor(); break;
 				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": LoadCheatsWindow(); break;
 				case "TASTudio": LoadTAStudio(); break;
+				case "ToolBox": LoadToolBox(); break;
 				case "Virtual Pad": LoadVirtualPads(); break;
-				case "Open ROM": OpenROM(); break;
-				case "Close ROM": CloseROM(); break;
-				case "Display FPS": ToggleFPS(); break;
-				case "Display FrameCounter": ToggleFrameCounter(); break;
-				case "Display LagCounter": ToggleLagCounter(); break;
-				case "Display Input": ToggleInputDisplay(); break;
-				case "Toggle Read Only": ToggleReadOnly(); break;
-				case "Play Movie": PlayMovie(); break;
-				case "Record Movie": RecordMovie(); break;
-				case "Stop Movie": StopMovie(); break;
-				case "Play Beginning": PlayMovieFromBeginning(); break;
-				case "Volume Up": VolumeUp(); break;
-				case "Volume Down": VolumeDown(); break;
-				case "Soft Reset": SoftReset(); break;
-				case "Toggle MultiTrack":
-					{
-						if (Global.MovieSession.Movie.IsActive)
-						{
-							
-							if (Global.Config.VBAStyleMovieLoadState)
-							{
-								Global.OSD.AddMessage("Multi-track can not be used in Full Movie Loadstates mode");
-							}
-							else
-							{
-								Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
-								if (Global.MovieSession.MultiTrack.IsActive)
-								{
-									Global.OSD.AddMessage("MultiTrack Enabled");
-									Global.OSD.MT = "Recording None";
-								}
-								else
-								{
-									Global.OSD.AddMessage("MultiTrack Disabled");
-								}
-								Global.MovieSession.MultiTrack.RecordAll = false;
-								Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-							}
-						}
-						else
-						{
-							Global.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
-						}
-						break;
-					}
-				case "Increment Player":
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer++;
-						Global.MovieSession.MultiTrack.RecordAll = false;
-						if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
-						{
-							Global.MovieSession.MultiTrack.CurrentPlayer = 1;
-						}
-						Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
-						break;
-					}
 
-				case "Decrement Player":
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer--;
-						Global.MovieSession.MultiTrack.RecordAll = false;
-						if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
-						{
-							Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
-						}
-						Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
-						break;
-					}
-				case "Record All":
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-						Global.MovieSession.MultiTrack.RecordAll = true;
-						Global.OSD.MT = "Recording All";
-						break;
-					}
-				case "Record None":
-					{
-						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
-						Global.MovieSession.MultiTrack.RecordAll = false;
-						Global.OSD.MT = "Recording None";
-						break;
-					}
-				case "Emulator Pause":
-					//used to be here: (the pause hotkey is ignored when we are frame advancing)
-					TogglePause();
-					break;
-				case "Toggle Menu":
-					ShowHideMenu();
-					break;
-				case "MoviePokeToggle":
-					ToggleModePokeMode();
-					break;
-				case "YUpLargeBinding":
+				case "SNES Toggle BG 1": SNES_ToggleBG1(); break;
+				case "SNES Toggle BG 2": SNES_ToggleBG2(); break;
+				case "SNES Toggle BG 3": SNES_ToggleBG3(); break;
+				case "SNES Toggle BG 4": SNES_ToggleBG4(); break;
+				case "SNES Toggle OBJ 1": SNES_ToggleOBJ1(); break;
+				case "SNES Toggle OBJ 2": SNES_ToggleOBJ2(); break;
+				case "SNES Toggle OBJ 3": SNES_ToggleOBJ3(); break;
+				case "SNES Toggle OBJ 4": SNES_ToggleOBJ4(); break;
+				
+
+				case "Y Up Large Binding":
 					VirtualPadForm1.BumpAnalogValue(null, Global.Config.Analog_LargeChange);
 					break;
-			} //switch(trigger)
+			}
 
 			return true;
 		}
@@ -2503,6 +2326,11 @@ namespace BizHawk.MultiClient
 
 		public void SaveState(string name)
 		{
+			if (IsNullEmulator())
+			{
+				return;
+			}
+
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 
 			var file = new FileInfo(path);
@@ -2662,6 +2490,11 @@ namespace BizHawk.MultiClient
 
 		public void LoadState(string name, bool fromLua = false)
 		{
+			if (IsNullEmulator())
+			{
+				return;
+			}
+
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 			if (File.Exists(path) == false)
 			{
