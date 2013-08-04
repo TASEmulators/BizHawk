@@ -127,7 +127,7 @@ namespace BizHawk.MultiClient
 				string s;
 				if (!RealConfigObject.TryGetValue(buttons[button], out s))
 					s = "";
-				Inputs[button].SetBindings(s);
+				Inputs[button].Bindings = s;
 			}
 		}
 

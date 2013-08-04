@@ -106,7 +106,7 @@ namespace BizHawk.MultiClient
 
 					InputWidget w = new InputWidget()
 					{
-						Text = b.Bindings,
+						Bindings = b.Bindings,
 						Location = new Point(_x + iw_offset_x , _y + iw_offset_y),
 						AutoTab = AutoTabCheckBox.Checked,
 						Width = iw_width,
