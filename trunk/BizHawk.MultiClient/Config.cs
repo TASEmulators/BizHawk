@@ -698,7 +698,15 @@ namespace BizHawk.MultiClient
 			new Binding() { DisplayName = "Toggle OBJ 4", Bindings = "", TabGroup = "SNES", DefaultBinding = "", Ordinal = 7 },
 
 			//Analog
-			new Binding() { DisplayName = "Y Up Large", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 0 },
+			new Binding() { DisplayName = "Y Up Small", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 0 },
+			new Binding() { DisplayName = "Y Up Large", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 1 },
+			new Binding() { DisplayName = "Y Down Small", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 2 },
+			new Binding() { DisplayName = "Y Down Large", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 3 },
+			new Binding() { DisplayName = "X Up Small", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 4 },
+			new Binding() { DisplayName = "X Up Large", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 5 },
+			new Binding() { DisplayName = "X Down Small", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 6 },
+			new Binding() { DisplayName = "X Down Large", Bindings = "", TabGroup = "Analog", DefaultBinding = "", Ordinal = 7 },
+			
 		};
 
 		//Analog Hotkey values
